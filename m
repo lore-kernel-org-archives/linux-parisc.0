@@ -1,30 +1,58 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [PATCH -mm 0/3] fix iommu segment boundary problems (parisc)
-Date: Wed, 5 Mar 2008 19:19:31 -0500 (EST)
-Message-ID: <20080306001933.248744E43@hiauly1.hia.nrc.ca>
-References: <20080305154502.GA32538@colo.lackof.org>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [patch 4/6] ARM: move bridge enable out of
+	pcibios_enable_resources()
+Date: Thu, 6 Mar 2008 15:06:40 +0000
+Message-ID: <20080306150640.GL3283@flint.arm.linux.org.uk>
+References: <20080228000437.880811124@ldl.fc.hp.com>
+	<20080228001053.013269726@ldl.fc.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: fujita.tomonori@lab.ntt.co.jp, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org, tomof@acm.org, kyle@parisc-linux.org,
-	matthew@wil.cx, grundler@parisc-linux.org,
-	akpm@linux-foundation.org
-To: grundler@parisc-linux.org (Grant Grundler)
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080305154502.GA32538@colo.lackof.org> from "Grant Grundler" at Mar 5, 2008 08:45:02 am
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-arch@vger.kernel.org, Chris Zankel <chris@zankel.net>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, Matthew Wilcox <matthew@wil.cx>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Kyle McMartin <kyle@parisc-linux.org>, linuxppc-dev@ozlabs.org,
+	Paul Mackerras <paulus@samba.org>, linux-pci@atrey.karlin.mff.cuni.cz,
+	linux-arm-kernel@lists.arm.linux.org.uk
+To: Bjorn Helgaas <bjorn.helgaas@hp.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk>
+In-Reply-To: <20080228001053.013269726@ldl.fc.hp.com>
+List-Id: ARM Linux kernel discussions <linux-arm-kernel.lists.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=unsubscribe>
+List-Archive: <http://lists.arm.linux.org.uk/lurker/list/linux-arm-kernel.html>
+List-Post: <mailto:linux-arm-kernel@lists.arm.linux.org.uk>
+List-Help: <mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=help>
+List-Subscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=subscribe>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk
 
-> And thanks to Joel Soete (rubisher) for testing. I tried to test the
-> sba_iommu code on my local box but had issues with the unpatched kernel
-> (using kyle's parisc-2.6.git tree) that I have yet to resolve (could be
-> HW problems).
+On Wed, Feb 27, 2008 at 05:04:41PM -0700, Bjorn Helgaas wrote:
+> Move bridge enable from pcibios_enable_resources() to
+> platform_pci_enable_device() so the former matches other
+> architectures and can be shared.
+> 
+> Signed-off-by: Bjorn Helgaas <bjorn.helgaas@hp.com>
+> 
+> Index: work6/arch/arm/kernel/bios32.c
+> ===================================================================
+> --- work6.orig/arch/arm/kernel/bios32.c	2008-02-27 11:25:29.000000000 -0700
+> +++ work6/arch/arm/kernel/bios32.c	2008-02-27 11:55:59.000000000 -0700
+> @@ -683,15 +683,32 @@
+>  			cmd |= PCI_COMMAND_MEMORY;
+>  	}
+>  
+> +	if (cmd != old_cmd) {
+> +		printk("PCI: enabling device %s (%04x -> %04x)\n",
+> +		       pci_name(dev), old_cmd, cmd);
 
-I built two kernels today using kyle's parisc-2.6.git tree (UP 32 bit
-and SMP 64 bit).  Aside from some section mismatch warnings, they both
-seem to work fine.
+Should be dev_info().
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Apart from that...
+
+Acked-by: Russell King <rmk+kernel@arm.linux.org.uk>
+
+-------------------------------------------------------------------
+List admin: http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel
+FAQ:        http://www.arm.linux.org.uk/mailinglists/faq.php
+Etiquette:  http://www.arm.linux.org.uk/mailinglists/etiquette.php
