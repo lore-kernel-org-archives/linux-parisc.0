@@ -1,34 +1,30 @@
-From: Stuart Brady <sdbrady@ntlworld.com>
-Subject: Segfault when ogg123 exits
-Date: Wed, 5 Mar 2008 21:31:28 +0000
-Message-ID: <20080305213128.GA27120@miranda.arrow>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [PATCH -mm 0/3] fix iommu segment boundary problems (parisc)
+Date: Wed, 5 Mar 2008 19:19:31 -0500 (EST)
+Message-ID: <20080306001933.248744E43@hiauly1.hia.nrc.ca>
+References: <20080305154502.GA32538@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: fujita.tomonori@lab.ntt.co.jp, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org, tomof@acm.org, kyle@parisc-linux.org,
+	matthew@wil.cx, grundler@parisc-linux.org,
+	akpm@linux-foundation.org
+To: grundler@parisc-linux.org (Grant Grundler)
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20080305154502.GA32538@colo.lackof.org> from "Grant Grundler" at Mar 5, 2008 08:45:02 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi,
+> And thanks to Joel Soete (rubisher) for testing. I tried to test the
+> sba_iommu code on my local box but had issues with the unpatched kernel
+> (using kyle's parisc-2.6.git tree) that I have yet to resolve (could be
+> HW problems).
 
-It seems ogg123 segfaults when it finishes playing.  Note that I'm not
-pressing ^C -- I'm not even sure whether the "^C bug" is still around.
->From the backtrace, it looks like this may well be the same problem I
-reported with SDL_Quit() and timer_create():
+I built two kernels today using kyle's parisc-2.6.git tree (UP 32 bit
+and SMP 64 bit).  Aside from some section mismatch warnings, they both
+seem to work fine.
 
-#0  0x00000000 in ?? ()
-#1  0x400a7aac in _dl_close_worker () from /lib/ld.so.1
-#2  0x400a7c08 in _dl_close () from /lib/ld.so.1
-#3  0x400190dc in dlclose_doit () from /lib/libdl.so.2
-#4  0x400a1834 in _dl_catch_error () from /lib/ld.so.1
-#5  0x40019590 in _dlerror_run () from /lib/libdl.so.2
-#6  0x40019118 in dlclose () from /lib/libdl.so.2
-#7  0x402f9ffc in ao_shutdown () from /usr/lib/libao.so.2
-#8  0x40c57bd4 in exit () from /lib/libc.so.6
-#9  0x000182fc in main ()
-
-Would any glibc hackers feel like taking a closer look at this?
-
-Cheers,
+Dave
 -- 
-Stuart Brady
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
