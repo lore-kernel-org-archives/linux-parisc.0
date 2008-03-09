@@ -1,24 +1,30 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: Fwd: [parisc-linux] [PATCH] Section mismatch fix
-Date: Thu, 6 Mar 2008 13:10:45 -0500
-Message-ID: <20080306181045.GB8170@phobos.i.cabal.ca>
-References: <200712261807.01768.deller@gmx.de>
+From: Joel Soete <soete.joel@scarlet.be>
+Subject: Yet another ccio fix idea?
+Date: Sun, 09 Mar 2008 13:55:15 +0000
+Message-ID: <47D3EC43.3070101@scarlet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: Kyle McMartin <kyle@parisc-linux.org>,
+	Matthew Wilcox <matthew@wil.cx>
+To: Grant Grundler <grundler@parisc-linux.org>,
+	linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200712261807.01768.deller@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Dec 26, 2007 at 06:07:01PM +0100, Helge Deller wrote:
-> Just resending it to our new mailing list (my original mail was eaten by our old list).
-> Kyle wanted to (partly) add it to his tree, but it's not there yet.
-> 
-> Helge
-> 
+Hello Grant,
 
-Got it, sorry.
+Always tracking this ccio-dma bug, I figure out this stuff could be helpfull:
+--- a/drivers/parisc/ccio-dma.c	2008-03-09 12:55:00.000000000 +0000
++++ b/drivers/parisc/ccio-dma.c	2008-03-09 12:55:21.000000000 +0000
+@@ -802,7 +802,7 @@
+  			 * Hopefully someone figures out how to patch (NOP) the
+  			 * FDC/SYNC out at boot time.
+  			 */
+-			asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr[7]));
++			asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr));
 
---Kyle
+What's your opinion?
+
+Tx,
+	r.
