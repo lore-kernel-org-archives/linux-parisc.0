@@ -1,7 +1,7 @@
 From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: Yet another ccio fix idea?
-Date: Sun, 9 Mar 2008 11:46:12 -0600
-Message-ID: <20080309174612.GA19976@colo.lackof.org>
+Date: Sun, 9 Mar 2008 11:48:25 -0600
+Message-ID: <20080309174825.GB19976@colo.lackof.org>
 References: <47D3EC43.3070101@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -28,12 +28,15 @@ On Sun, Mar 09, 2008 at 01:55:15PM +0000, Joel Soete wrote:
 >  			 */
 > -			asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr[7]));
 > +			asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr));
+
+BTW, once you've tested/demostrated this fixes the DMA problems on C-xxx,
+please resend with "Signed-off-by:" line.
+
+thanks,
+grant
+
 >
 > What's your opinion?
-
-I think you are right. That's what sba_iommu.c is using on line 560.
-
-Have you tested this to see if it solves your problem?
-
-cheers,
-grant
+>
+> Tx,
+> 	r.
