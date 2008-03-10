@@ -1,44 +1,35 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: Yet another ccio fix idea?
-Date: Mon, 10 Mar 2008 14:59:47 -0500
-Message-ID: <1205179187.2941.23.camel@localhost.localdomain>
-References: <47D3EC43.3070101@scarlet.be>
+Date: Mon, 10 Mar 2008 16:37:12 -0400 (EDT)
+Message-ID: <20080310203713.3A93D4E4A@hiauly1.hia.nrc.ca>
+References: <1205179187.2941.23.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org,
-	Kyle McMartin <kyle@parisc-linux.org>,
-	Matthew Wilcox <matthew@wil.cx>
-To: Joel Soete <soete.joel@scarlet.be>
+Content-Type: text/plain; charset=US-ASCII
+Cc: soete.joel@scarlet.be, grundler@parisc-linux.org,
+	linux-parisc@vger.kernel.org, kyle@parisc-linux.org, matthew@wil.cx
+To: James.Bottomley@HansenPartnership.com (James Bottomley)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <47D3EC43.3070101@scarlet.be>
+In-Reply-To: <1205179187.2941.23.camel@localhost.localdomain> from "James Bottomley" at Mar 10, 2008 02:59:47 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 2008-03-09 at 13:55 +0000, Joel Soete wrote:
-> Hello Grant,
+> asm volatile("fdc %%r0(%0)" : : "r" (&pdir_ptr[7]))
 > 
-> Always tracking this ccio-dma bug, I figure out this stuff could be helpfull:
-> --- a/drivers/parisc/ccio-dma.c	2008-03-09 12:55:00.000000000 +0000
-> +++ b/drivers/parisc/ccio-dma.c	2008-03-09 12:55:21.000000000 +0000
-> @@ -802,7 +802,7 @@
->   			 * Hopefully someone figures out how to patch (NOP) the
->   			 * FDC/SYNC out at boot time.
->   			 */
-> -			asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr[7]));
-> +			asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr));
+> Flushing pdir_ptr may or may not work depending on the cache line width
+> (pdr_ptr[7] is 28 bytes away, so if the line size is 16 it will fail;
+> although I think almost every machine with a ccio has a 32 byte or
+> higher cache line width).
 
-That's the wrong fix.  What it's trying to do is flush the write made
-above this to pdir_ptr[7].  Therefore there should be an '&' in front,
-so
+Actually, pdr_ptr is a char *, so this is 7 bytes away.  However,
+I think you are correct in saying that pdr_ptr[7] needs to be flushed.
 
-asm volatile("fdc %%r0(%0)" : : "r" (&pdir_ptr[7]))
+The same issue would appear to apply to the other flush in the file.
 
-Flushing pdir_ptr may or may not work depending on the cache line width
-(pdr_ptr[7] is 28 bytes away, so if the line size is 16 it will fail;
-although I think almost every machine with a ccio has a 32 byte or
-higher cache line width).
+The cache line alignment of pdir's isn't immediately apparent to
+me.  If the pdir was defined as a two word array, it might span
+two lines.
 
-James
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
