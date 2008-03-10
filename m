@@ -1,42 +1,41 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: Yet another ccio fix idea?
-Date: Sun, 9 Mar 2008 11:48:25 -0600
-Message-ID: <20080309174825.GB19976@colo.lackof.org>
-References: <47D3EC43.3070101@scarlet.be>
+From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Subject: [PATCH] make ptr_to_pide() static
+Date: Mon, 10 Mar 2008 20:43:24 +0900
+Message-ID: <20080310204320Z.tomof@acm.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org,
-	Kyle McMartin <kyle@parisc-linux.org>,
-	Matthew Wilcox <matthew@wil.cx>
-To: Joel Soete <soete.joel@scarlet.be>
+Content-Type: Text/Plain; charset=us-ascii
+Cc: kyle@parisc-linux.org
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <47D3EC43.3070101@scarlet.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Mar 09, 2008 at 01:55:15PM +0000, Joel Soete wrote:
-> Hello Grant,
->
-> Always tracking this ccio-dma bug, I figure out this stuff could be 
-> helpfull:
-> --- a/drivers/parisc/ccio-dma.c	2008-03-09 12:55:00.000000000 +0000
-> +++ b/drivers/parisc/ccio-dma.c	2008-03-09 12:55:21.000000000 +0000
-> @@ -802,7 +802,7 @@
->  			 * Hopefully someone figures out how to patch (NOP) the
->  			 * FDC/SYNC out at boot time.
->  			 */
-> -			asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr[7]));
-> +			asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr));
+Sorry, I should have made ptr_to_pide() static.
 
-BTW, once you've tested/demostrated this fixes the DMA problems on C-xxx,
-please resend with "Signed-off-by:" line.
+=
+From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Subject: [PATCH] make ptr_to_pide() static
 
-thanks,
-grant
+Signed-off-by: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+---
+ drivers/parisc/sba_iommu.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
->
-> What's your opinion?
->
-> Tx,
-> 	r.
+diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
+index e834127..a8b7699 100644
+--- a/drivers/parisc/sba_iommu.c
++++ b/drivers/parisc/sba_iommu.c
+@@ -314,8 +314,8 @@ sba_dump_sg( struct ioc *ioc, struct scatterlist *startsg, int nents)
+ #define RESMAP_MASK(n)    (~0UL << (BITS_PER_LONG - (n)))
+ #define RESMAP_IDX_MASK   (sizeof(unsigned long) - 1)
+ 
+-unsigned long ptr_to_pide(struct ioc *ioc, unsigned long *res_ptr,
+-			  unsigned int bitshiftcnt)
++static unsigned long ptr_to_pide(struct ioc *ioc, unsigned long *res_ptr,
++				 unsigned int bitshiftcnt)
+ {
+ 	return (((unsigned long)res_ptr - (unsigned long)ioc->res_map) << 3)
+ 		+ bitshiftcnt;
+-- 
+1.5.3.7
+
