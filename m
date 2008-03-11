@@ -1,35 +1,38 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: Yet another ccio fix idea?
-Date: Mon, 10 Mar 2008 16:37:12 -0400 (EDT)
-Message-ID: <20080310203713.3A93D4E4A@hiauly1.hia.nrc.ca>
-References: <1205179187.2941.23.camel@localhost.localdomain>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: Segfault when ogg123 exits
+Date: Mon, 10 Mar 2008 20:39:12 -0400
+Message-ID: <119aab440803101739l778c3220w9102f6d814839694@mail.gmail.com>
+References: <20080305213128.GA27120@miranda.arrow>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: soete.joel@scarlet.be, grundler@parisc-linux.org,
-	linux-parisc@vger.kernel.org, kyle@parisc-linux.org, matthew@wil.cx
-To: James.Bottomley@HansenPartnership.com (James Bottomley)
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org
+To: "Stuart Brady" <sdbrady@ntlworld.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1205179187.2941.23.camel@localhost.localdomain> from "James Bottomley" at Mar 10, 2008 02:59:47 pm
+In-Reply-To: <20080305213128.GA27120@miranda.arrow>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> asm volatile("fdc %%r0(%0)" : : "r" (&pdir_ptr[7]))
-> 
-> Flushing pdir_ptr may or may not work depending on the cache line width
-> (pdr_ptr[7] is 28 bytes away, so if the line size is 16 it will fail;
-> although I think almost every machine with a ccio has a 32 byte or
-> higher cache line width).
+On Wed, Mar 5, 2008 at 5:31 PM, Stuart Brady <sdbrady@ntlworld.com> wrote:
+>  It seems ogg123 segfaults when it finishes playing.  Note that I'm not
+>  pressing ^C -- I'm not even sure whether the "^C bug" is still around.
+>  From the backtrace, it looks like this may well be the same problem I
+>  reported with SDL_Quit() and timer_create():
+>
+>  #0  0x00000000 in ?? ()
+>  #1  0x400a7aac in _dl_close_worker () from /lib/ld.so.1
+>  #2  0x400a7c08 in _dl_close () from /lib/ld.so.1
+>  #3  0x400190dc in dlclose_doit () from /lib/libdl.so.2
+>  #4  0x400a1834 in _dl_catch_error () from /lib/ld.so.1
+>  #5  0x40019590 in _dlerror_run () from /lib/libdl.so.2
+>  #6  0x40019118 in dlclose () from /lib/libdl.so.2
+>  #7  0x402f9ffc in ao_shutdown () from /usr/lib/libao.so.2
+>  #8  0x40c57bd4 in exit () from /lib/libc.so.6
+>  #9  0x000182fc in main ()
+>
+>  Would any glibc hackers feel like taking a closer look at this?
 
-Actually, pdr_ptr is a char *, so this is 7 bytes away.  However,
-I think you are correct in saying that pdr_ptr[7] needs to be flushed.
+Can you distill this into a smaller testcase? Maybe a call to dlopen()
+to load a library that has a function called by timer_create?
 
-The same issue would appear to apply to the other flush in the file.
-
-The cache line alignment of pdir's isn't immediately apparent to
-me.  If the pdir was defined as a two word array, it might span
-two lines.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Cheers,
+Carlos.
