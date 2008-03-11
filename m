@@ -1,26 +1,27 @@
-From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
-Subject: Re: [PATCH] make ptr_to_pide() static
-Date: Wed, 12 Mar 2008 08:06:33 +0900
-Message-ID: <20080312080633Z.fujita.tomonori@lab.ntt.co.jp>
-References: <20080310204320Z.tomof@acm.org>
-	<20080311200016.GA17356@phobos.i.cabal.ca>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: Segfault when ogg123 exits
+Date: Tue, 11 Mar 2008 19:15:47 -0400
+Message-ID: <119aab440803111615i2903c5a1td814c3fd14ef56c6@mail.gmail.com>
+References: <20080305213128.GA27120@miranda.arrow>
+	 <119aab440803101739l778c3220w9102f6d814839694@mail.gmail.com>
+	 <20080311020956.GA4155@miranda.arrow>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: fujita.tomonori@lab.ntt.co.jp, linux-parisc@vger.kernel.org,
-	kyle@parisc-linux.org, tomof@acm.org
-To: kyle@mcmartin.ca
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org
+To: "Stuart Brady" <sdbrady@ntlworld.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080311200016.GA17356@phobos.i.cabal.ca>
+In-Reply-To: <20080311020956.GA4155@miranda.arrow>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 11 Mar 2008 16:00:17 -0400
-Kyle McMartin <kyle@mcmartin.ca> wrote:
+On Mon, Mar 10, 2008 at 10:09 PM, Stuart Brady <sdbrady@ntlworld.com> wrote:
+>  I just ran ogg123 in gdb with a breakpoint set on timer_create(), and it
+>  didn't get triggered, so timer_create() itself seems unlikely to be the
+>  problem, but I can certainly try chopping libao down a bit.
 
-> On Mon, Mar 10, 2008 at 08:43:24PM +0900, FUJITA Tomonori wrote:
-> > Sorry, I should have made ptr_to_pide() static.
-> > 
-> 
-> np. ack.
+Excellent, this is exactly the way you want to track this down. You
+may wish to run strace to see what types of system calls the program
+is making.
 
-Thanks, can you please push this via your git tree?
+Cheers,
+Carlos.
