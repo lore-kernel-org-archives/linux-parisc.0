@@ -1,28 +1,19 @@
-From: Stuart Brady <sdbrady@ntlworld.com>
-Subject: Re: Segfault when ogg123 exits
-Date: Tue, 11 Mar 2008 02:09:56 +0000
-Message-ID: <20080311020956.GA4155@miranda.arrow>
-References: <20080305213128.GA27120@miranda.arrow> <119aab440803101739l778c3220w9102f6d814839694@mail.gmail.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [PATCH] make ptr_to_pide() static
+Date: Tue, 11 Mar 2008 16:00:17 -0400
+Message-ID: <20080311200016.GA17356@phobos.i.cabal.ca>
+References: <20080310204320Z.tomof@acm.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org, kyle@parisc-linux.org, tomof@acm.org
+To: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440803101739l778c3220w9102f6d814839694@mail.gmail.com>
+In-Reply-To: <20080310204320Z.tomof@acm.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Mar 10, 2008 at 08:39:12PM -0400, Carlos O'Donell wrote:
-> Can you distill this into a smaller testcase? Maybe a call to dlopen()
-> to load a library that has a function called by timer_create?
+On Mon, Mar 10, 2008 at 08:43:24PM +0900, FUJITA Tomonori wrote:
+> Sorry, I should have made ptr_to_pide() static.
+> 
 
-I just ran ogg123 in gdb with a breakpoint set on timer_create(), and it
-didn't get triggered, so timer_create() itself seems unlikely to be the
-problem, but I can certainly try chopping libao down a bit.
-
-BTW, this happens with both the OSS and ALSA plugins.
-
-Side note: I've found that while running 'while (true); do true; done',
-mmapped ALSA output seems to work!  If I drop the brackets, I just get 
-noise -- presumably because it doesn't fork without them.
--- 
-Stuart Brady
+np. ack.
