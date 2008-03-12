@@ -1,42 +1,43 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: Yet another ccio fix idea?
-Date: Wed, 12 Mar 2008 07:47:22 -0400
-Message-ID: <1205322442.2941.104.camel@localhost.localdomain>
-References: <JXM1RH$256C92C0CB28292D8C30F2A8EBC987EF@scarlet.be>
+Date: Wed, 12 Mar 2008 08:51:03 -0400 (EDT)
+Message-ID: <20080312125104.AE1C54E4F@hiauly1.hia.nrc.ca>
+References: <1205322442.2941.104.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: dave <dave@hiauly1.hia.nrc.ca>,
-	"soete.joel" <soete.joel@scarlet.be>,
-	grundler <grundler@parisc-linux.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	kyle <kyle@parisc-linux.org>, matthew <matthew@wil.cx>
-To: rubisher <rubisher@scarlet.be>
+Content-Type: text/plain; charset=US-ASCII
+Cc: rubisher@scarlet.be, soete.joel@scarlet.be,
+	grundler@parisc-linux.org, linux-parisc@vger.kernel.org,
+	kyle@parisc-linux.org, matthew@wil.cx
+To: James.Bottomley@HansenPartnership.com (James Bottomley)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <JXM1RH$256C92C0CB28292D8C30F2A8EBC987EF@scarlet.be>
+In-Reply-To: <1205322442.2941.104.camel@localhost.localdomain> from "James Bottomley" at Mar 12, 2008 07:47:22 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2008-03-12 at 10:16 +0100, rubisher wrote:
-> -       asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr));
-> +       asm volatile("fdc %%r0(%0)" : : "r" (&pdir_ptr[1]));
-> +       asm volatile("fdc %%r0(%0)" : : "r" (&pdir_ptr[0]));
->         asm volatile("sync");
+> However, since it's contained in a u64 pointer, it must reasonably be on
+> an 8 byte boundary (or be triggering an unaligned poiner error) and
+> therefore shouldn't span multiple cache lines anyway.
 
-Actually, no, I'm afraid this is wrong.
+It's not a hard rule that u64 objects be aligned on an 8 byte
+boundary as the PA 1.x architecture doesn't have 64-bit integer
+loads and stores.  A u64 object has to be loaded with two
+32-bit loads and lives in a pair of 32-bit registers.  As a 
+result, an unaligned u64 object will only trigger an unaligned
+pointer error if it is not aligned on a 4 byte boundary.
 
-The code is a complete dogs breakfast, since pdir_ptr is defined as u64
-* in ccio_pdir_entry() and char * in ccio_mark_invalid.
+However in GCC, we force u64 alignment (except in packed structs)
+to a 8 byte boundary.  This allows casting pointers between long
+longs and doubles.  It also simplifies the GCC backend as otherwise
+special treatment would be needed for long longs.  There's been some
+discussion of this for x86 recently.
 
-What Dave was pointing out is that this structure is 8 bytes long and
-may span two cache lines on the word boundary.  Assuming that's the
-case, this needs to flush the first and second word, not the first and
-second u64 entry as your code would (the second flush is actually
-flushing the next pdir entry).
+In this situation, the alignment of pdir's depends on how they
+were originally declared.  If declared as long long, GCC will give
+them 8 byte alignment, so the two words should always be in the
+same cache line.  On the otherhand, if the pdir is declared as
+a pair of 32-bit words, the pdir might span two cache lines.
 
-However, since it's contained in a u64 pointer, it must reasonably be on
-an 8 byte boundary (or be triggering an unaligned poiner error) and
-therefore shouldn't span multiple cache lines anyway.
-
-James
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
