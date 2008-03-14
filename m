@@ -1,60 +1,52 @@
 From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: Yet another ccio fix idea?
-Date: Thu, 13 Mar 2008 21:50:20 -0600
-Message-ID: <20080314035020.GA24794@colo.lackof.org>
-References: <47D3EC43.3070101@scarlet.be> <1205179187.2941.23.camel@localhost.localdomain>
+Date: Thu, 13 Mar 2008 21:57:31 -0600
+Message-ID: <20080314035731.GB24794@colo.lackof.org>
+References: <JXM1RH$256C92C0CB28292D8C30F2A8EBC987EF@scarlet.be> <1205322442.2941.104.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Joel Soete <soete.joel@scarlet.be>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org,
-	Kyle McMartin <kyle@parisc-linux.org>,
-	Matthew Wilcox <matthew@wil.cx>
+Cc: rubisher <rubisher@scarlet.be>, dave <dave@hiauly1.hia.nrc.ca>,
+	"soete.joel" <soete.joel@scarlet.be>,
+	grundler <grundler@parisc-linux.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	kyle <kyle@parisc-linux.org>, matthew <matthew@wil.cx>
 To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1205179187.2941.23.camel@localhost.localdomain>
+In-Reply-To: <1205322442.2941.104.camel@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Mar 10, 2008 at 02:59:47PM -0500, James Bottomley wrote:
-> On Sun, 2008-03-09 at 13:55 +0000, Joel Soete wrote:
-> > Hello Grant,
-> > 
-> > Always tracking this ccio-dma bug, I figure out this stuff could be helpfull:
-> > --- a/drivers/parisc/ccio-dma.c	2008-03-09 12:55:00.000000000 +0000
-> > +++ b/drivers/parisc/ccio-dma.c	2008-03-09 12:55:21.000000000 +0000
-> > @@ -802,7 +802,7 @@
-> >   			 * Hopefully someone figures out how to patch (NOP) the
-> >   			 * FDC/SYNC out at boot time.
-> >   			 */
-> > -			asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr[7]));
-> > +			asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr));
+On Wed, Mar 12, 2008 at 07:47:22AM -0400, James Bottomley wrote:
+> On Wed, 2008-03-12 at 10:16 +0100, rubisher wrote:
+> > -       asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr));
+> > +       asm volatile("fdc %%r0(%0)" : : "r" (&pdir_ptr[1]));
+> > +       asm volatile("fdc %%r0(%0)" : : "r" (&pdir_ptr[0]));
+> >         asm volatile("sync");
 > 
-> That's the wrong fix.  What it's trying to do is flush the write made
-> above this to pdir_ptr[7].  Therefore there should be an '&' in front,
-> so
+> Actually, no, I'm afraid this is wrong.
 > 
-> asm volatile("fdc %%r0(%0)" : : "r" (&pdir_ptr[7]))
+> The code is a complete dogs breakfast, since pdir_ptr is defined as u64
+> * in ccio_pdir_entry() and char * in ccio_mark_invalid.
 
-In this case, it's certainly the same cacheline.
-I can guarantee pdir_ptr is 8 byte aligned.
+*ugh* sorry about that.
+And pdir_ptr cast to "u32 *" in both uses where it's dereferenced.
 
-> Flushing pdir_ptr may or may not work depending on the cache line width
-> (pdr_ptr[7] is 28 bytes away, so if the line size is 16 it will fail;
-> although I think almost every machine with a ccio has a 32 byte or
-> higher cache line width).
 
-Yes (32-byte cachelines at least) and jda already pointed out pdir_ptr
-is a char*.
+> What Dave was pointing out is that this structure is 8 bytes long and
+> may span two cache lines on the word boundary.  Assuming that's the
+> case, this needs to flush the first and second word, not the first and
+> second u64 entry as your code would (the second flush is actually
+> flushing the next pdir entry).
+> 
+> However, since it's contained in a u64 pointer, it must reasonably be on
+> an 8 byte boundary (or be triggering an unaligned poiner error) and
+> therefore shouldn't span multiple cache lines anyway.
 
-thanks,
+pdir_ptr will always point at a u64 * and will always be 8 byte aligned.
+The allocation is done in ccio_ioc_init():
+        ioc->pdir_base = (u64 *)__get_free_pages(GFP_KERNEL,
+                                                 get_order(ioc->pdir_size));
+
+hth,
 grant
 
-> 
-> James
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
