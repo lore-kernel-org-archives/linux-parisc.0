@@ -1,90 +1,68 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: "rubisher" <rubisher@scarlet.be>
 Subject: Re: Yet another ccio fix idea?
-Date: Fri, 14 Mar 2008 00:02:52 -0600
-Message-ID: <20080314060251.GJ24794@colo.lackof.org>
-References: <JXM1RH$256C92C0CB28292D8C30F2A8EBC987EF@scarlet.be>
+Date: Fri, 14 Mar 2008 09:30:30 +0100
+Message-ID: <JXPOYU$E007A732ACC03B562E930344C50EC8E3@scarlet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: dave <dave@hiauly1.hia.nrc.ca>,
-	"James.Bottomley" <James.Bottomley@HansenPartnership.com>,
-	"soete.joel" <soete.joel@scarlet.be>,
-	grundler <grundler@parisc-linux.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	kyle <kyle@parisc-linux.org>, matthew <matthew@wil.cx>
-To: rubisher <rubisher@scarlet.be>
+Content-Type: text/plain; charset=US-ASCII
+Cc: "dave" <dave@hiauly1.hia.nrc.ca>,
+	"James\.Bottomley" <James.Bottomley@HansenPartnership.com>,
+	"soete\.joel" <soete.joel@scarlet.be>,
+	"grundler" <grundler@parisc-linux.org>,
+	"linux-parisc" <linux-parisc@vger.kernel.org>,
+	"kyle" <kyle@parisc-linux.org>, "matthew" <matthew@wil.cx>,
+	"rubisher" <rubisher@scarlet.be>
+To: "dave" <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <JXM1RH$256C92C0CB28292D8C30F2A8EBC987EF@scarlet.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Mar 12, 2008 at 10:16:29AM +0100, rubisher wrote:
-...
-> mmm follwing stuff shouldn't so be enough:
-> Index: b/drivers/parisc/ccio-dma.c
-> ===================================================================
-> --- a/drivers/parisc/ccio-dma.c 2008-03-12 08:49:20.000000000 +0000
-> +++ b/drivers/parisc/ccio-dma.c 2008-03-12 08:50:54.000000000 +0000
-> @@ -624,7 +624,8 @@
->         ** the real mode coherence index generation of U2, the PDIR entry
->         ** must be flushed to memory to retain coherence."
->         */
-> -       asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr));
-> +       asm volatile("fdc %%r0(%0)" : : "r" (&pdir_ptr[1]));
-> +       asm volatile("fdc %%r0(%0)" : : "r" (&pdir_ptr[0]));
-
-NACK
-
->         asm volatile("sync");
->  }
+> > In this situation, the alignment of pdir's depends on how they
+> > were originally declared.  If declared as long long, GCC will give
+> > them 8 byte alignment, so the two words should always be in the
+> > same cache line.  On the otherhand, if the pdir is declared as
+> > a pair of 32-bit words, the pdir might span two cache lines.
 > 
-> @@ -695,7 +696,7 @@
->                 ** Hopefully someone figures out how to patch (NOP) the
->                 ** FDC/SYNC out at boot time.
->                 */
-> -               asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr[7]));
-> +               asm volatile("fdc %%r0(%0)" : : "r" (&pdir_ptr[7]));
-
-NACK - keep it simple with the original proposed patch.
-
-> PS: in this doc feb96a6.pdf (easy to find) it was said:
-> "[snip]
-> Entries in the PA 7200 and PA 8000 caches are stored in lines
-> of 32 bytes.
-> [snip]
+> It looks to me like pdirs should be 8 byte aligned and thus always
+> should lie in a cache line.
 > 
-> Because one-word writes occur in the I/O system, for registers,
-> semaphores, or short DMA writes it was necessary that the I/O
-> adapter implement a one-line-deep cache to buffer cache lines,
-> so that these one-word writes could be executed by performing
-> a coherent read private transaction on the Runway bus, obtaining
-> the most recent copy of the cache line, modifying it locally in
-> cache, and finally writing the modified line back to main memory.
-...
-
-> 2 thinks:
->     - it seems to confirm that cache line is well 32bytes wide ;-)
+> The following insn appears to put hints in the wrong place on
+> a 64-bit kernel since `pa' is then a 64-bit type:
 > 
->     - for 'one word writes...' how should it be implemented?
+>         asm volatile("depw  %1,31,12,%0" : "+r" (pa) : "r" (hints));
+> 
+> The depw will operate on the left word.  Looks like it should be
+> 
+>         asm volatile("depw  %1,31,12,%R0" : "+r" (pa) : "r" (hints));
+> 
+As far as I never reach to boot a 64bit kernel on this box, I would like to
+test but am I facing to a gcc bug or did I again miss something:
+{standard input}: Assembler messages:
+{standard input}:97: Error: Field out of range [0..31] (68).
+{standard input}:97: Error: Invalid operands
+{standard input}:1199: Error: Field out of range [0..31] (68).
+{standard input}:1199: Error: Invalid operands
+make[3]: *** [drivers/parisc/ccio-dma.o] Error 1
 
-"one word writes" refers to DMA writes, not CPU writes.
+(The original compile fine???)
 
->       It look like the sba_iommu driver:
->       "READ_REG(ioc-ioc_ha_IOC_PCOM); /* flush purges */
->       but without more detailed docs on U2/UTurn ccio, I don't know how to
->       implement matter, sorry.
+> when __LP64__ is defined.  Think the same is true for the following
+> depw as well.
+> 
+Ok I will check in deep.
 
-The IOMMU driver programs the IO Pdir with the results of "lci" instruction
-and this should be all the IOMMU needs to coherently read/modify/write
-the cacheline that the "one word" DMA write is targeting. In short,
-it's already implemented or I'd think we'd see much worse problems
-on ccio platforms.
-
-hth,
-grant
-
+Tx,
+    r.
+> Dave
+> -- 
+> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+> National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 > 
 > 
-> 
-> ---
-> Scarlet One, ADSL 6 Mbps + Telephone, from EUR 29,95...
-> http://www.scarlet.be/
+---
+Scarlet One, ADSL 6 Mbps + Telephone, from EUR 29,95...
+http://www.scarlet.be/
+
