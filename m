@@ -1,82 +1,74 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: rubisher <rubisher@scarlet.be>
 Subject: Re: panic in iommu_is_span_boundary with 32-bit kernel on c3750
-Date: Sat, 15 Mar 2008 01:08:53 -0600
-Message-ID: <20080315070853.GC2158@colo.lackof.org>
-References: <20080314233156.E0DAB4E77@hiauly1.hia.nrc.ca> <20080315070548.GB2158@colo.lackof.org>
+Date: Sat, 15 Mar 2008 12:01:37 +0000
+Message-ID: <47DBBAA1.4020102@scarlet.be>
+References: <20080314233156.E0DAB4E77@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	linux-parisc@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080315070548.GB2158@colo.lackof.org>
+In-Reply-To: <20080314233156.E0DAB4E77@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Mar 15, 2008 at 01:05:48AM -0600, Grant Grundler wrote:
-> On Fri, Mar 14, 2008 at 07:31:54PM -0400, John David Anglin wrote:
-> > Kyle's tree (vmlinux-2.6.25-rc4-01283-gef95dd8) panics on my c3750 at
-> > iommu_is_span_boundary+0x28.
+John David Anglin wrote:
+> Kyle's tree (vmlinux-2.6.25-rc4-01283-gef95dd8) panics on my c3750 at
+> iommu_is_span_boundary+0x28.  Looking at the code, I see the panic is
+> caused by a call with r23 = 0.  The call is from sba_alloc_range.  The
+> actual call appears to be from an inlined copy of sba_search_bitmap.
+> It seems that boundary_size must be 0.
 > 
-> 32-bit or 64-bit kernel?
+> Should there be a check in sba_search_bitmap, or is the problem
+> deeper in dma_get_seg_boundary?
+> 
+> Dave
 
-doh...nm. I finally read the whole subject line (32-bit). :)
-Please just ignore that and focus on the rest of the email.
+Yes Kyle tree doesn't yet include the latest patch of Fujita Tomonori?
 
-grant
+Here it was:
 
-> 
-> >  Looking at the code, I see the panic is
-> > caused by a call with r23 = 0.  The call is from sba_alloc_range.  The
-> > actual call appears to be from an inlined copy of sba_search_bitmap.
-> > It seems that boundary_size must be 0.
-> > 
-> > Should there be a check in sba_search_bitmap, or is the problem
-> > deeper in dma_get_seg_boundary?
-> 
-> I don't expect a deeper problem given this definition:
-> static inline unsigned long dma_get_seg_boundary(struct device *dev)
-> {
->         return dev->dma_parms ?
->                 dev->dma_parms->segment_boundary_mask : 0xffffffff;
-> }
-> 
-> I'm not sure how boundary_size could ever be zero.
-> Could this code generate a zero value?
-> 
->         boundary_size = ALIGN(dma_get_seg_boundary(dev) + 1, 1 << IOVP_SHIFT);
->         boundary_size >>= IOVP_SHIFT;
-> 
-> I thought ALIGN() would "ROUND_UP()". So it should always be at least 1
-> returned.
-> 
-> But in the 32-bit kernel ~0 + 1 == 0 (with overflow).
-> Will the ALIGN do the right thing in that case?
-> It looks like it will return 0 because of overflow and I think the
-> intent is "4GB >> IOVP_SHIFT" (so 20 bits, ie 1MB).
-> Maybe we want dma_get_seg_boundary() to deal with the ALIGN and other stuff
-> so it just returns a PAGE_SIZE count?
-> 
-> A simple test before assigning boundary_size would be to check
-> "dev->dma_parms". If dev->dma_parms is zero, just return 1 << 20
-> and see if that works for you.
-> 
-> But I'm pretty tired right now (long week) and I can't wrap my brain
-> around the bit flipping. Would be good if someone else confirmed.
-> 
-> cheers,
-> grant
-> 
-> > 
-> > Dave
-> > -- 
-> > J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-> > National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Really sorry about the bug. Can you try the following patch? It's on
+the top of the patchset.
+
+Thanks,
+
+diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
+index 2f3b364..d0855a1 100644
+--- a/drivers/parisc/ccio-dma.c
++++ b/drivers/parisc/ccio-dma.c
+@@ -366,8 +366,8 @@ ccio_alloc_range(struct ioc *ioc, struct device *dev, size_t size)
+  	** ggg sacrifices another 710 to the computer gods.
+  	*/
+
+-	boundary_size = ALIGN(dma_get_seg_boundary(dev) + 1, 1 << IOVP_SHIFT);
+-	boundary_size >>= IOVP_SHIFT;
++	boundary_size = ALIGN((unsigned long long)dma_get_seg_boundary(dev) + 1,
++			      1ULL << IOVP_SHIFT) >> IOVP_SHIFT;
+
+  	if (pages_needed <= 8) {
+  		/*
+diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
+index e834127..bdbe780 100644
+--- a/drivers/parisc/sba_iommu.c
++++ b/drivers/parisc/sba_iommu.c
+@@ -341,8 +341,8 @@ sba_search_bitmap(struct ioc *ioc, struct device *dev,
+  	unsigned long shift;
+  	int ret;
+
+-	boundary_size = ALIGN(dma_get_seg_boundary(dev) + 1, 1 << IOVP_SHIFT);
+-	boundary_size >>= IOVP_SHIFT;
++	boundary_size = ALIGN((unsigned long long)dma_get_seg_boundary(dev) + 1,
++			      1ULL << IOVP_SHIFT) >> IOVP_SHIFT;
+
+  #if defined(ZX1_SUPPORT)
+  	BUG_ON(ioc->ibase & ~IOVP_MASK);
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+It works to me on c110, d380, b2k (32bit kernels) and b2k 64bit kernel.
+
+Hth,
+	r.
