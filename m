@@ -1,45 +1,74 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: panic in iommu_is_span_boundary with 32-bit kernel on c3750
-Date: Sun, 16 Mar 2008 10:29:50 -0400 (EDT)
-Message-ID: <20080316142954.6689F4E4A@hiauly1.hia.nrc.ca>
-References: <47DBBAA1.4020102@scarlet.be>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: [git patches] parisc bug fixes for 2.6.25
+Date: Sun, 16 Mar 2008 13:35:39 -0400
+Message-ID: <20080316173539.GA3904@phobos.i.cabal.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org
-To: rubisher@scarlet.be (rubisher)
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: torvalds@linux-foundation.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <47DBBAA1.4020102@scarlet.be> from "rubisher" at Mar 15, 2008 12:01:37 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> Really sorry about the bug. Can you try the following patch? It's on
-> the top of the patchset.
+The following changes since commit cdeeeae056a429e729ae9e914fa8142ee45bee93:
+  Linus Torvalds (1):
+        Linux 2.6.25-rc5
 
-Thanks, this fixed the panic.
+are available in the git repository at:
 
-However, there's still something wrong with this kernel regarding user
-authetication with ssh/sshd/pam:
+  git://git.kernel.org/pub/scm/linux/kernel/git/kyle/parisc-2.6.git master
 
-Mar 16 09:55:06 hiauly6 sshd[11861]: Invalid user xxxx from 76.66.48.108
-Mar 16 09:55:10 hiauly6 sshd[11864]: pam_unix(ssh:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=bas15-ottawa23-1279406188.dsl.bell.ca  user=xxxx
-Mar 16 09:55:12 hiauly6 sshd[11861]: error: PAM: Authentication failure for illegal user xxxx from bas15-ottawa23-1279406188.dsl.bell.ca
-Mar 16 09:55:12 hiauly6 sshd[11861]: Failed keyboard-interactive/pam for invalid user xxxx from 76.66.48.108 port 49155 ssh2
-Mar 16 09:55:19 hiauly6 sshd[11867]: pam_unix(ssh:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=bas15-ottawa23-1279406188.dsl.bell.ca  user=xxxx
-Mar 16 09:55:21 hiauly6 sshd[11861]: error: PAM: Authentication failure for illegal user xxxx from bas15-ottawa23-1279406188.dsl.bell.ca
-Mar 16 09:55:21 hiauly6 sshd[11861]: Failed keyboard-interactive/pam for invalid user xxxx from 76.66.48.108 port 49155 ssh2
+Adrian Bunk (1):
+      [PARISC] move defconfig to arch/parisc/configs/
 
-The actual user name has been changed to `xxxx', but it's correct.
-Don't know why ssh thought the user was invalid the first time.
+FUJITA Tomonori (1):
+      [PARISC] make ptr_to_pide() static
 
-Started ssh again from remote node:
+Helge Deller (1):
+      [PARISC] head.S: section mismatch fixes
 
-Mar 16 09:55:42 hiauly6 sshd[11900]: Accepted keyboard-interactive/pam for xxxx from 76.66.48.108 port 49156 ssh2
-Mar 16 09:55:42 hiauly6 sshd[11908]: pam_unix(ssh:session): session opened for user xxxx by (uid=0)
+James Bottomley (1):
+      [PARISC] add pa8900 CPUs to hardware inventory
 
-With a previous 2.6.25 kernel, I actually ended up logged into a different
-user account a couple of times.  This never happens with 2.6.22.
+Joel Soete (1):
+      [PARISC] pdc_stable: fix compile errors
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Kyle McMartin (11):
+      [PARISC] remove old timerfd syscall
+      [PARISC] wire up timerfd syscalls
+      [PARISC] move VMALLOC_* definitions to fixmap.h
+      [PARISC] unbreak pgalloc.h
+      [PARISC] bump __NR_syscalls
+      [PARISC] remove unused pdc_iodc_printf function
+      [PARISC] dump_stack in show_regs
+      [PARISC] pdc_console: fix bizarre panic on boot
+      [PARISC] clean up show_stack
+      [PARISC] futex: special case cmpxchg NULL in kernel space
+      [PARISC] add back Crestone Peak cpu
+
+Randolph Chung (1):
+      [PARISC] clean up include/asm-parisc/elf.h
+
+Thibaut VARENE (1):
+      [PARISC] add back AD1889 MAINTAINERS entry
+
+ MAINTAINERS                                        |    9 ++++++
+ arch/parisc/Makefile                               |    3 ++
+ .../{defconfig => configs/default_defconfig}       |    0 
+ arch/parisc/kernel/firmware.c                      |   27 +++++++++++------
+ arch/parisc/kernel/hardware.c                      |   13 ++++++++-
+ arch/parisc/kernel/head.S                          |    7 ++--
+ arch/parisc/kernel/pdc_cons.c                      |   30 ++++++++++---------
+ arch/parisc/kernel/syscall_table.S                 |    5 ++-
+ arch/parisc/kernel/traps.c                         |   25 ++++++++++++++--
+ drivers/parisc/pdc_stable.c                        |    6 ++--
+ drivers/parisc/sba_iommu.c                         |    4 +-
+ include/asm-parisc/elf.h                           |   22 ++++++--------
+ include/asm-parisc/fixmap.h                        |    9 +++++-
+ include/asm-parisc/futex.h                         |   10 +++++-
+ include/asm-parisc/pdc.h                           |    3 +-
+ include/asm-parisc/pgalloc.h                       |    4 +-
+ include/asm-parisc/pgtable.h                       |    8 -----
+ include/asm-parisc/unistd.h                        |    5 ++-
+ 18 files changed, 125 insertions(+), 65 deletions(-)
+ rename arch/parisc/{defconfig => configs/default_defconfig} (100%)
