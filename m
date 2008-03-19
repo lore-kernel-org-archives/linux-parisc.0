@@ -1,55 +1,52 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [git patches] parisc bug fixes for 2.6.25
-Date: Mon, 17 Mar 2008 19:43:09 -0400 (EDT)
-Message-ID: <20080317234310.39A744DBD@hiauly1.hia.nrc.ca>
-References: <20080317185411.996EA4DBD@hiauly1.hia.nrc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [Patch] ccio-dma.c [Was: Yet another ccio fix idea?]
+Date: Wed, 19 Mar 2008 00:19:52 -0600
+Message-ID: <20080319061952.GA3876@colo.lackof.org>
+References: <JXM1RH$256C92C0CB28292D8C30F2A8EBC987EF@scarlet.be> <20080314060251.GJ24794@colo.lackof.org> <47DC21AB.9090005@scarlet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: kyle@mcmartin.ca, carlos@systemhalted.org,
-	linux-parisc@vger.kernel.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Content-Type: text/plain; charset=us-ascii
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	dave <dave@hiauly1.hia.nrc.ca>,
+	"James.Bottomley" <James.Bottomley@HansenPartnership.com>,
+	"soete.joel" <soete.joel@scarlet.be>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	kyle <kyle@parisc-linux.org>, matthew <matthew@wil.cx>
+To: rubisher <rubisher@scarlet.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080317185411.996EA4DBD@hiauly1.hia.nrc.ca> from "John David Anglin" at Mar 17, 2008 02:54:10 pm
+In-Reply-To: <47DC21AB.9090005@scarlet.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > upeek: ptrace(PTRACE_PEEKUSER,11233,4294967292,0): Input/output error
-> > root@hiauly6:/etc#
-> 
-> This reminds me of the off by one, comiclr, bug last summer.  There
-> seems to be two other places in syscall.S where we might have the same
-> bug.
+On Sat, Mar 15, 2008 at 07:21:15PM +0000, rubisher wrote:
+...
+>>> -               asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr[7]));
+>>> +               asm volatile("fdc %%r0(%0)" : : "r" (&pdir_ptr[7]));
+>> NACK - keep it simple with the original proposed patch.
+> Ok here it is:
+> Signed-off-by: Joel Soete <soete dot joel at scarlet dot be>
 
-The attached patch while probably correct doesn't resolve the problem.
-grpck is broken with 2.6.25-rc5-01448-g96f1bb3.  It isn't with 2.6.22.19.
-Somehow, the problem seems specific to 32-bit kernels.
+Acked-by: Grant Grundler <grundler@parisc-linux.org>
 
-The same strace error occurs on both systems, so it's a separate issue.
+Kyle,
+please apply :)
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+thanks,
+grant
 
-diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
-index 69b6eeb..3f6eeef 100644
---- a/arch/parisc/kernel/syscall.S
-+++ b/arch/parisc/kernel/syscall.S
-@@ -310,7 +310,7 @@ tracesys_next:
- 	ldo	-16(%r30),%r29			/* Reference param save area */
- #endif
- 
--	comiclr,>>=	__NR_Linux_syscalls, %r20, %r0
-+	comiclr,>>	__NR_Linux_syscalls, %r20, %r0
- 	b,n	.Lsyscall_nosys
- 
- 	LDREGX  %r20(%r19), %r19
-@@ -402,7 +402,7 @@ lws_start:
- #endif	
- 
-         /* Is the lws entry number valid? */
--	comiclr,>>=	__NR_lws_entries, %r20, %r0
-+	comiclr,>>	__NR_lws_entries, %r20, %r0
- 	b,n	lws_exit_nosys
- 
- 	/* WARNING: Trashing sr2 and sr3 */
+> ---
+>  drivers/parisc/ccio-dma.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Index: b/drivers/parisc/ccio-dma.c
+> ===================================================================
+> --- a/drivers/parisc/ccio-dma.c 2008-03-12 08:49:20.000000000 +0000
+> +++ b/drivers/parisc/ccio-dma.c 2008-03-15 19:19:52.000000000 +0000
+> @@ -695,7 +695,7 @@
+>                 ** Hopefully someone figures out how to patch (NOP) the
+>                 ** FDC/SYNC out at boot time.
+>                 */
+> -               asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr[7]));
+> +               asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr));
+>
+>                 iovp     += IOVP_SIZE;
+>                 byte_cnt -= IOVP_SIZE;
