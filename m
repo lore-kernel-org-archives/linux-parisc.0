@@ -1,52 +1,40 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [Patch] ccio-dma.c [Was: Yet another ccio fix idea?]
-Date: Wed, 19 Mar 2008 00:19:52 -0600
-Message-ID: <20080319061952.GA3876@colo.lackof.org>
-References: <JXM1RH$256C92C0CB28292D8C30F2A8EBC987EF@scarlet.be> <20080314060251.GJ24794@colo.lackof.org> <47DC21AB.9090005@scarlet.be>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [alpha, hppa] GCC-4.3 as the default compilers for lenny?
+Date: Sat, 22 Mar 2008 17:50:17 -0400
+Message-ID: <119aab440803221450v1387e168l8423d74237057fa3@mail.gmail.com>
+References: <18405.27903.317733.531002@gargle.gargle.HOWL>
+	 <119aab440803221402w2bfe5a7le9499e4eb6e0e3c1@mail.gmail.com>
+	 <18405.30165.498589.795298@gargle.gargle.HOWL>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	dave <dave@hiauly1.hia.nrc.ca>,
-	"James.Bottomley" <James.Bottomley@HansenPartnership.com>,
-	"soete.joel" <soete.joel@scarlet.be>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	kyle <kyle@parisc-linux.org>, matthew <matthew@wil.cx>
-To: rubisher <rubisher@scarlet.be>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org, debian-hppa@lists.debian.org,
+	debian-gcc@lists.debian.org, "Aurelien Jarno" <aurel32@debian.org>,
+	debian-release@lists.debian.org
+To: "Matthias Klose" <doko@cs.tu-berlin.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <47DC21AB.9090005@scarlet.be>
+In-Reply-To: <18405.30165.498589.795298@gargle.gargle.HOWL>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Mar 15, 2008 at 07:21:15PM +0000, rubisher wrote:
-...
->>> -               asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr[7]));
->>> +               asm volatile("fdc %%r0(%0)" : : "r" (&pdir_ptr[7]));
->> NACK - keep it simple with the original proposed patch.
-> Ok here it is:
-> Signed-off-by: Joel Soete <soete dot joel at scarlet dot be>
-
-Acked-by: Grant Grundler <grundler@parisc-linux.org>
-
-Kyle,
-please apply :)
-
-thanks,
-grant
-
-> ---
->  drivers/parisc/ccio-dma.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Sat, Mar 22, 2008 at 5:10 PM, Matthias Klose <doko@cs.tu-berlin.de> wrote:
+> Carlos O'Donell writes:
+>  > >   - gij/gcj shows bus errors on hppa (either 4.2 or 4.3).
+>  >
+>  > Has gij/gcj ever worked on hppa-linux?
 >
-> Index: b/drivers/parisc/ccio-dma.c
-> ===================================================================
-> --- a/drivers/parisc/ccio-dma.c 2008-03-12 08:49:20.000000000 +0000
-> +++ b/drivers/parisc/ccio-dma.c 2008-03-15 19:19:52.000000000 +0000
-> @@ -695,7 +695,7 @@
->                 ** Hopefully someone figures out how to patch (NOP) the
->                 ** FDC/SYNC out at boot time.
->                 */
-> -               asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr[7]));
-> +               asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr));
->
->                 iovp     += IOVP_SIZE;
->                 byte_cnt -= IOVP_SIZE;
+>  at least the gij/gcj before adding support for generics (1.5) did
+>  work.  Now that a working runtime is required for the compiler makes
+>  things different. Please try to run a random HelloWorld program using
+>  the interpreter.
+
+I'm not at all interested in gij/gcj. Why do we require that all
+languages be functional for a gcc release? This is a difficult goal to
+meet.
+
+As the hppa-linux libc-ports maintainer I *am* interested in seeing
+the list of regressions you have and commenting on them.
+
+Also note that the hppa-linux list is "linux-parisc@vger.kernel.org"
+
+Cheers,
+Carlos.
