@@ -1,30 +1,37 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [alpha, hppa] GCC-4.3 as the default compilers for lenny?
-Date: Wed, 26 Mar 2008 10:46:12 -0600
-Message-ID: <20080326164612.GC24944@colo.lackof.org>
-References: <18405.27903.317733.531002@gargle.gargle.HOWL> <119aab440803221402w2bfe5a7le9499e4eb6e0e3c1@mail.gmail.com> <47E583EA.7000006@aurel32.net> <119aab440803251542l4d86ef9bvaf8163e940e1ab35@mail.gmail.com> <20080326162035.GB24944@colo.lackof.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: GCC 4.3 and PLABEL32 issues.
+Date: Wed, 26 Mar 2008 14:14:16 -0400 (EDT)
+Message-ID: <20080326181417.7D8254F00@hiauly1.hia.nrc.ca>
+References: <20080326123741.GH16721@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Carlos O'Donell <carlos@systemhalted.org>,
-	Aurelien Jarno <aurelien@aurel32.net>,
-	Matthias Klose <doko@cs.tu-berlin.de>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
-	debian-release@lists.debian.org
-To: Grant Grundler <grundler@parisc-linux.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: carlos@systemhalted.org, dave.anglin@nrc.ca,
+	linux-parisc@vger.kernel.org, aurel32@debian.org
+To: matthew@wil.cx (Matthew Wilcox)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080326162035.GB24944@colo.lackof.org>
+In-Reply-To: <20080326123741.GH16721@parisc-linux.org> from "Matthew Wilcox" at Mar 26, 2008 06:37:41 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Mar 26, 2008 at 10:20:35AM -0600, Grant Grundler wrote:
-> Another gcc problem report:
-> 
-> That past weekend I built the latest parisc-2.6-25-rc6 kernel from
-> Kyle's tree using gcc-4.1, gcc-4.2, and gcc-4.3. All three kernels
-> booted but the networking only worked for gcc-4.1 kernel.
+> I thought Mozilla also used the low bits of pointers for special cases
 
-Sorry, I just realized I didn't mention the gcc versions are whatever is
-currently in "Debian testing" for parisc.
+Effectively, all code that has to deal with the underlying details
+of the function pointer implementation is affected.  This includes
+unwind code, and code to dynamically load libraries and plugins.
 
-grant
+> ... and the kernel even has macros to return 'either a pointer or an
+> error code' (PTR_ERR, ERR_PTR, IS_ERR).  Although the kernel probably
+> wouldn't trip this, as I can't think of any function which returns a
+> function-pointer-or-error (and besides the test isn't 'are the bottom
+> bits set', but 'if you cast this pointer back to an unsigned long, is it
+> greater than -4095'.
+
+The PLABEL bit is defined in the runtime and only affects the runtime.
+I think the only time the kernel would need to care about this is for
+signal handlers.  In the runtime, page 0 is reserved to catch invalid
+pointer accesses.  I'm sure the kernel has to be aware of this.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
