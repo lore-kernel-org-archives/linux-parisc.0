@@ -1,63 +1,66 @@
-From: Jesper Juhl <jesper.juhl@gmail.com>
-Subject: [PATCH] parisc floppy: kill the 'register' keyword from header
-Date: Wed, 26 Mar 2008 02:16:42 +0100 (CET)
-Message-ID: <alpine.LNX.1.00.0803260212140.1901@dragon.funnycrock.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: GCC 4.3 and PLABEL32 issues.
+Date: Tue, 25 Mar 2008 22:59:05 -0400
+Message-ID: <119aab440803251959j8596a72wc399174db02ed71f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Kyle McMartin <kyle@parisc-linux.org>,
-	Matthew Wilcox <matthew@wil.cx>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org, Ian Molton <spyro@f2s.com>,
-	Alain L Knaff <Alain.Knaff@lll.lu>,
-	David C Niemi <niemi@tux.org>,
-	Trivial Patch Monkey <trivial@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-To: LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+To: "John David Anglin" <dave.anglin@nrc.ca>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	"Aurelien Jarno" <aurel32@debian.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Dave,
 
-When compilers became generally better at optimizing code than humans, the
-register keyword became mostly useless. For the floppy driver it certainly
-is since it's so slow compared to the rest of the system that optimizing
-access to a single variable or two isn't going to make any real
-difference
-So let's just leave it to the compiler - it'll do a better job anyway.
+The following reduced testcase:
 
-This patch does away with a few register keywords in the parisc floppy 
-driver.
+cat >> foo.c <<EOF
+#include <stdio.h>
+#include <stdlib.h>
 
+int main (void) {
+  printf ("&printf = %x\n", (unsigned long)&printf);
+  if (((unsigned long) &printf) & 3)
+    {
+      printf ("printf is a PLABEL32\n");
+    }
+  return 0;
+}
+EOF
 
-Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
----
+carlos@firin:~/fsrc/gcc-work$
+/usr/local/tools/bin/hppa-linux-gcc-4.2.4 -o foo foo.c
+carlos@firin:~/fsrc/gcc-work$ ./foo
+&printf = 119ea
+printf is a PLABEL32
 
- floppy.h |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+carlos@firin:~/fsrc/gcc-work$
+/usr/local/tools/bin/hppa-linux-gcc-4.3.1 -o foo foo.c
+carlos@firin:~/fsrc/gcc-work$ ./foo
+&printf = 119ea
 
-diff --git a/include/asm-parisc/floppy.h b/include/asm-parisc/floppy.h
-index 4ca69f5..2f0a371 100644
---- a/include/asm-parisc/floppy.h
-+++ b/include/asm-parisc/floppy.h
-@@ -64,7 +64,7 @@ static int doing_pdma=0;
- 
- static void floppy_hardint(int irq, void *dev_id, struct pt_regs * regs)
- {
--	register unsigned char st;
-+	unsigned char st;
- 
- #undef TRACE_FLPY_INT
- 
-@@ -84,8 +84,8 @@ static void floppy_hardint(int irq, void *dev_id, struct pt_regs * regs)
- #endif
- 
- 	{
--		register int lcount;
--		register char *lptr = virtual_dma_addr;
-+		int lcount;
-+		char *lptr = virtual_dma_addr;
- 
- 		for (lcount = virtual_dma_count; lcount; lcount--) {
- 			st = fd_inb(virtual_dma_port+4) & 0xa0 ;
+GCC 4.3, even at -O0, reduces "((unsigned long) &printf) & 3)" to "0".
 
+~~~ foo.c.003t.original ~~~
+;; Function main (main)
+;; enabled by -tree-original
 
+{
+  printf ((const char * restrict) (char *) "&printf = %x\n", (long
+unsigned int) printf);
+  if (0)
+    {
+      printf ((const char * restrict) (char *) "printf is a PLABEL32\n");
+    }
+  return 0;
+}
+~~~
+If the if condition is reduced to "0" as early as 003t.original, does
+that mean it's the C frontend fault?
+
+This issue is breaks glibc's detection of PLABEL's during startup
+relocation processing.
+
+Cheers,
+Carlos.
