@@ -1,36 +1,43 @@
-From: rubisher <rubisher@scarlet.be>
-Subject: [Patch] typo fixe in parisc memcpy
-Date: Sat, 29 Mar 2008 19:25:06 +0000
-Message-ID: <47EE9792.2080609@scarlet.be>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [alpha, hppa] GCC-4.3 as the default compilers for lenny?
+Date: Sat, 5 Apr 2008 12:17:19 -0600
+Message-ID: <20080405181719.GB19742@colo.lackof.org>
+References: <18405.27903.317733.531002@gargle.gargle.HOWL> <119aab440803221402w2bfe5a7le9499e4eb6e0e3c1@mail.gmail.com> <47E583EA.7000006@aurel32.net> <119aab440803251542l4d86ef9bvaf8163e940e1ab35@mail.gmail.com> <20080326162035.GB24944@colo.lackof.org> <20080328055652.GA24649@colo.lackof.org> <47EE894C.4010004@scarlet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: text/plain; charset=us-ascii
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	Carlos O'Donell <carlos@systemhalted.org>,
+	Aurelien Jarno <aurelien@aurel32.net>,
+	Matthias Klose <doko@cs.tu-berlin.de>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
+	debian-release@lists.debian.org
+To: rubisher <rubisher@scarlet.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <47EE894C.4010004@scarlet.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello Kyle,
+On Sat, Mar 29, 2008 at 06:24:12PM +0000, rubisher wrote:
+...
+>> I looked at gcc-43 build output to check warnings related to networking
+>> as suggest by John David Anglin.
+...
+> That remember me that when I discover those new warnings with gcc-4.2 
+> <http://article.gmane.org/gmane.linux.ports.parisc/70>
+> "discards qualifiers from pointer target type", they disapeared with 
+> gcc-4.3
 
-As discussed by this thread <http://www.mail-archive.com/linux-parisc@vger.kernel.org/msg00058.html>
-may I re-submit you this hunk:
+I saw that but don't know what it's about.
 
-a fixe of likely's macro usage:
-Signed-off-by: Joel Soete <soete dot joel at scarlet dot be>
-Index: linux-current/arch/parisc/lib/memcpy.c
-===================================================================
---- linux-current.orig/arch/parisc/lib/memcpy.c    2008-01-05 13:57:26.000000000 +0000
-+++ linux-current/arch/parisc/lib/memcpy.c    2008-01-05 13:58:01.000000000 +0000
-@@ -405,7 +405,7 @@
+> and btw this nic wasn't working anymore (no ping no ssh, ...) 
+> even thought the kernel was booting. Unfortunately, I didn't have time to 
+> investigate in more details (and it wasn't question to use gcc-4.3 as new 
+> default), sorry. If you compare your kernel build output with gcc-4.2 and 
+> 4.3 do you also notice this differences?
 
-  unaligned_copy:
-      /* possibly we are aligned on a word, but not on a double... */
--    if (likely(t1 & (sizeof(unsigned int)-1)) == 0) {
-+    if (likely((t1 & (sizeof(unsigned int) - 1)) == 0)) {
-          t2 = src & (sizeof(unsigned int) - 1);
+By "build output" do you mean the binary (e.g. dot-o files) or log of what
+was compiled and which warnings were emitted?
 
-          if (unlikely(t2 != 0)) {
-=== <> ===
-
-Tia,
-	r.
+thanks
+grant
