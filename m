@@ -1,28 +1,23 @@
-From: Matthew Wilcox <matthew@wil.cx>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: ls -l is broken
-Date: Sun, 6 Apr 2008 16:42:04 -0600
-Message-ID: <20080406224204.GE16451@parisc-linux.org>
-References: <20080406222813.F11CA4E43@hiauly1.hia.nrc.ca>
+Date: Sun, 6 Apr 2008 19:09:59 -0400 (EDT)
+Message-ID: <20080406231000.D53CB4FC8@hiauly1.hia.nrc.ca>
+References: <20080406224204.GE16451@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Cc: linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: matthew@wil.cx (Matthew Wilcox)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080406222813.F11CA4E43@hiauly1.hia.nrc.ca>
+In-Reply-To: <20080406224204.GE16451@parisc-linux.org> from "Matthew Wilcox" at Apr 6, 2008 04:42:04 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Apr 06, 2008 at 06:28:12PM -0400, John David Anglin wrote:
-> I just noticed that ls -l is broken:
-> 
-> dave@mx3210:~/gnu/gcc/gcc$ ls -l ltsugar.m4
-> ls: ltsugar.m4: Operation not supported
-> -rw-r--r-- 1 dave dave 4122 Mar 16 16:50 ltsugar.m4
+> If you strace it, what syscall returns -EOPNOTSUPP?
 
-If you strace it, what syscall returns -EOPNOTSUPP?
+strace is broken and quits before the relevant syscall.  Think I
+mentioned this before is a different context.
 
+Dave
 -- 
-Intel are signing my paycheques ... these opinions are still mine
-"Bill, look, we understand that you're interested in selling us this
-operating system, but compare it to ours.  We can't possibly take such
-a retrograde step."
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
