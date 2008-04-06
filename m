@@ -1,7 +1,7 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: ls -l is broken
-Date: Sun, 6 Apr 2008 19:09:59 -0400 (EDT)
-Message-ID: <20080406231000.D53CB4FC8@hiauly1.hia.nrc.ca>
+Date: Sun, 6 Apr 2008 19:37:05 -0400 (EDT)
+Message-ID: <20080406233706.C157C4FC9@hiauly1.hia.nrc.ca>
 References: <20080406224204.GE16451@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -14,8 +14,13 @@ List-Id: linux-parisc.vger.kernel.org
 
 > If you strace it, what syscall returns -EOPNOTSUPP?
 
-strace is broken and quits before the relevant syscall.  Think I
-mentioned this before is a different context.
+Just wondering if this has something to do with the following:
+
+ (ENOTSUP and EOPNOTSUPP have the same value  on  Linux,
+  but  according  to POSIX.1 these error values should be
+  distinct.)
+
+Doing a google on the subject, it seems that this is a known debian bug.
 
 Dave
 -- 
