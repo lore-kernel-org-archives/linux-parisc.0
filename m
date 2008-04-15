@@ -1,26 +1,188 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: Request for backport of [PARISC] futex: special case cmpxchg
-	NULL in kernel space
-Date: Tue, 15 Apr 2008 12:09:03 -0400
-Message-ID: <20080415160903.GD22873@phobos.i.cabal.ca>
-References: <1208274312.3131.11.camel@localhost.localdomain>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Request for backport of [PARISC] pdc_console: fix bizarre panic on
+	boot
+Date: Tue, 15 Apr 2008 11:46:03 -0500
+Message-ID: <1208277963.3131.18.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: stable@kernel.org, Parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain
+Cc: Parisc List <linux-parisc@vger.kernel.org>
+To: stable@kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1208274312.3131.11.camel@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Apr 15, 2008 at 10:45:11AM -0500, James Bottomley wrote:
-> This is a fix for a bug introduced by tglx into 2.6.25 which we fixed
-> upstream.  However, he also got it backported to stable, so now 2.6.24.4
-> panics on boot on parisc.  The attached is the fix.
-> 
+Lack of this causes boot panics with the stable kernel on all 2.6.24.x
+kernels.  The fix is upstream as:
 
-The fix is fine, but it was misdiagnosed. The problem is actually that
-swapper's *mm is unset. I switched it to if (!current->mm) in git,
-but as usual I'm a slacker and haven't pushed it anywhere.
+commit ef1afd4d79f0479960ff36bb5fe6ec6eba1ebff2
+Author: Kyle McMartin <kyle@shortfin.cabal.ca>
+Date:   Mon Feb 18 23:34:34 2008 -0800
 
-+1 for stable from me.
+    [PARISC] pdc_console: fix bizarre panic on boot
+
+James
+
+---
+
+From: Kyle McMartin <kyle@shortfin.cabal.ca>
+Subject: [PARISC] pdc_console: fix bizarre panic on boot
+
+Commit:
+
+commit 721fdf34167580ff98263c74cead8871d76936e6
+Author: Kyle McMartin <kyle@shortfin.cabal.ca>
+Date:   Thu Dec 6 09:32:15 2007 -0800
+
+    [PARISC] print more than one character at a time for pdc console
+
+introduced a subtle bug by accidentally removing the "static" from
+iodc_dbuf. This resulted in, what appeared to be, a trap without
+*current set to a task. Probably the result of a trap in real mode
+while calling firmware.
+
+Also do other misc clean ups. Since the only input from firmware is non
+blocking, share iodc_dbuf between input and output, and spinlock the
+only callers.
+
+[jejb: fixed up rejections against the stable tree]
+
+Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
+Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+
+---
+ arch/parisc/kernel/firmware.c |   27 +++++++++++++++++----------
+ arch/parisc/kernel/pdc_cons.c |   19 +++++++++++++++++--
+ include/asm-parisc/pdc.h      |    3 +--
+ 3 files changed, 35 insertions(+), 14 deletions(-)
+
+diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
+index 4ab83d5..7177a6c 100644
+--- a/arch/parisc/kernel/firmware.c
++++ b/arch/parisc/kernel/firmware.c
+@@ -1080,6 +1080,9 @@ void pdc_io_reset_devices(void)
+ 	spin_unlock_irqrestore(&pdc_lock, flags);
+ }
+ 
++/* locked by pdc_console_lock */
++static int __attribute__((aligned(8)))   iodc_retbuf[32];
++static char __attribute__((aligned(64))) iodc_dbuf[4096];
+ 
+ /**
+  * pdc_iodc_print - Console print using IODC.
+@@ -1091,24 +1094,20 @@ void pdc_io_reset_devices(void)
+  * Since the HP console requires CR+LF to perform a 'newline', we translate
+  * "\n" to "\r\n".
+  */
+-int pdc_iodc_print(unsigned char *str, unsigned count)
++int pdc_iodc_print(const unsigned char *str, unsigned count)
+ {
+-	/* XXX Should we spinlock posx usage */
+ 	static int posx;        /* for simple TAB-Simulation... */
+-	int __attribute__((aligned(8)))   iodc_retbuf[32];
+-	char __attribute__((aligned(64))) iodc_dbuf[4096];
+ 	unsigned int i;
+ 	unsigned long flags;
+ 
+-	memset(iodc_dbuf, 0, 4096);
+-	for (i = 0; i < count && i < 2048;) {
++	for (i = 0; i < count && i < 79;) {
+ 		switch(str[i]) {
+ 		case '\n':
+ 			iodc_dbuf[i+0] = '\r';
+ 			iodc_dbuf[i+1] = '\n';
+ 			i += 2;
+ 			posx = 0;
+-			break;
++			goto print;
+ 		case '\t':
+ 			while (posx & 7) {
+ 				iodc_dbuf[i] = ' ';
+@@ -1124,6 +1123,16 @@ int pdc_iodc_print(unsigned char *str, unsigned count)
+ 		}
+ 	}
+ 
++	/* if we're at the end of line, and not already inserting a newline,
++	 * insert one anyway. iodc console doesn't claim to support >79 char
++	 * lines. don't account for this in the return value.
++	 */
++	if (i == 79 && iodc_dbuf[i-1] != '\n') {
++		iodc_dbuf[i+0] = '\r';
++		iodc_dbuf[i+1] = '\n';
++	}
++
++print:
+         spin_lock_irqsave(&pdc_lock, flags);
+         real32_call(PAGE0->mem_cons.iodc_io,
+                     (unsigned long)PAGE0->mem_cons.hpa, ENTRY_IO_COUT,
+@@ -1142,11 +1151,9 @@ int pdc_iodc_print(unsigned char *str, unsigned count)
+  */
+ int pdc_iodc_getc(void)
+ {
+-	unsigned long flags;
+-        static int __attribute__((aligned(8)))   iodc_retbuf[32];
+-        static char __attribute__((aligned(64))) iodc_dbuf[4096];
+ 	int ch;
+ 	int status;
++	unsigned long flags;
+ 
+ 	/* Bail if no console input device. */
+ 	if (!PAGE0->mem_kbd.iodc_io)
+diff --git a/arch/parisc/kernel/pdc_cons.c b/arch/parisc/kernel/pdc_cons.c
+index 33b1f84..7f471a4 100644
+--- a/arch/parisc/kernel/pdc_cons.c
++++ b/arch/parisc/kernel/pdc_cons.c
+@@ -52,10 +52,18 @@
+ #include <linux/tty.h>
+ #include <asm/pdc.h>		/* for iodc_call() proto and friends */
+ 
++static spinlock_t pdc_console_lock = SPIN_LOCK_UNLOCKED;
+ 
+ static void pdc_console_write(struct console *co, const char *s, unsigned count)
+ {
+-	pdc_iodc_print(s, count);
++	int i = 0;
++	unsigned long flags;
++
++	spin_lock_irqsave(&pdc_console_lock, flags);
++	do {
++		i += pdc_iodc_print(s + i, count - i);
++	} while (i < count);
++	spin_unlock_irqrestore(&pdc_console_lock, flags);
+ }
+ 
+ void pdc_printf(const char *fmt, ...)
+@@ -73,7 +81,14 @@ void pdc_printf(const char *fmt, ...)
+ 
+ int pdc_console_poll_key(struct console *co)
+ {
+-	return pdc_iodc_getc();
++	int c;
++	unsigned long flags;
++
++	spin_lock_irqsave(&pdc_console_lock, flags);
++	c = pdc_iodc_getc();
++	spin_unlock_irqrestore(&pdc_console_lock, flags);
++
++	return c;
+ }
+ 
+ static int pdc_console_setup(struct console *co, char *options)
+diff --git a/include/asm-parisc/pdc.h b/include/asm-parisc/pdc.h
+index deda8c3..9eaa794 100644
+--- a/include/asm-parisc/pdc.h
++++ b/include/asm-parisc/pdc.h
+@@ -645,8 +645,7 @@ int pdc_soft_power_button(int sw_control);
+ void pdc_io_reset(void);
+ void pdc_io_reset_devices(void);
+ int pdc_iodc_getc(void);
+-int pdc_iodc_print(unsigned char *str, unsigned count);
+-void pdc_printf(const char *fmt, ...);
++int pdc_iodc_print(const unsigned char *str, unsigned count);
+ 
+ void pdc_emergency_unlock(void);
+ int pdc_sti_call(unsigned long func, unsigned long flags,
+-- 
+1.5.3.8
+
+
+
