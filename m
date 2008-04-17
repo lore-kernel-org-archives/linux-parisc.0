@@ -1,86 +1,26 @@
-From: Chris Wright <chrisw@sous-sol.org>
-Subject: PARISC futex: special case cmpxchg NULL in kernel space
-Date: Wed, 16 Apr 2008 18:02:21 -0700
-Message-ID: <20080417010400.234642889@sous-sol.org>
-References: <20080417010122.148289106@sous-sol.org>
-Cc: Justin Forbes <jmforbes@linuxtx.org>,
-	Zwane Mwaikambo <zwane@arm.linux.org.uk>,
-	"Theodore Ts'o" <tytso@mit.edu>,
-	Randy Dunlap <rdunlap@xenotime.net>,
-	Dave Jones <davej@redhat.com>,
-	Chuck Wolber <chuckw@quantumlinux.com>,
-	Chris Wedgwood <reviews@ml.cw.f00f.org>,
-	Michael Krufky <mkrufky@linuxtv.org>,
-	Chuck Ebbert <cebbert@redhat.com>,
-	Domenico Andreoli <cavokz@gmail.com>,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	alan@lxorguk.ukuu.org.uk,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Kyle McMartin <kyle@shortfin.cabal.ca>,
-	Kyle McMartin <kyle@mcmartin.ca>
-To: linux-kernel@vger.kernel.org, stable@kernel.org
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Fixed strace [ was Re: ls -l is broken ]
+Date: Thu, 17 Apr 2008 03:53:57 -0400
+Message-ID: <20080417075357.GB23641@phobos.i.cabal.ca>
+References: <20080406224204.GE16451@parisc-linux.org> <20080406231000.D53CB4FC8@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Matthew Wilcox <matthew@wil.cx>, linux-parisc@vger.kernel.org,
+	debian-hppa@lists.debian.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20080406231000.D53CB4FC8@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
--stable review patch.  If anyone has any objections, please let us know.
----------------------
+On Sun, Apr 06, 2008 at 07:09:59PM -0400, John David Anglin wrote:
+> > If you strace it, what syscall returns -EOPNOTSUPP?
+> 
+> strace is broken and quits before the relevant syscall.  Think I
+> mentioned this before is a different context.
+> 
 
-From: Kyle McMartin <kyle@shortfin.cabal.ca>
+Fixed & updated strace available at
+http://people.debian.org/~kyle/strace/
 
-upstream commit: c20a84c91048c76c1379011c96b1a5cee5c7d9a0
-
-commit f9e77acd4060fefbb60a351cdb8d30fca27fe194
-Author: Thomas Gleixner <tglx@linutronix.de>
-Date:   Sun Feb 24 02:10:05 2008 +0000
-
-    futex: runtime enable pi and robust functionality
- 
-
-which was backported to stable based on mainline Commit
-a0c1e9073ef7428a14309cba010633a6cd6719ea added code to futex.c
-to detect whether futex_atomic_cmpxchg_inatomic was implemented at run
-time:
-
-+       curval = cmpxchg_futex_value_locked(NULL, 0, 0);
-+       if (curval == -EFAULT)
-+               futex_cmpxchg_enabled = 1;
-
-This is bogus on parisc, since page zero in kernel virtual space is the
-gateway page for syscall entry, and should not be read from the kernel.
-(That, and we really don't like the kernel faulting on its own address
- space...)
-
-Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
-Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-Signed-off-by: Chris Wright <chrisw@sous-sol.org>
----
- include/asm-parisc/futex.h |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
---- a/include/asm-parisc/futex.h
-+++ b/include/asm-parisc/futex.h
-@@ -56,6 +56,12 @@ futex_atomic_cmpxchg_inatomic(int __user
- 	int err = 0;
- 	int uval;
- 
-+	/* futex.c wants to do a cmpxchg_inatomic on kernel NULL, which is
-+	 * our gateway page, and causes no end of trouble...
-+	 */
-+	if (segment_eq(KERNEL_DS, get_fs()) && !uaddr)
-+		return -EFAULT;
-+
- 	if (!access_ok(VERIFY_WRITE, uaddr, sizeof(int)))
- 		return -EFAULT;
- 
-@@ -67,5 +73,5 @@ futex_atomic_cmpxchg_inatomic(int __user
- 	return uval;
- }
- 
--#endif
--#endif
-+#endif /*__KERNEL__*/
-+#endif /*_ASM_PARISC_FUTEX_H*/
-
--- 
+cheers, Kyle
