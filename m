@@ -1,93 +1,188 @@
 From: chrisw@sous-sol.org
-Subject: patch parisc-futex-special-case-cmpxchg-null-in-kernel-space.patch queued to 2.6.24-stable tree
-Date: Wed, 16 Apr 2008 17:29:30 -0700
-Message-ID: <200804170029.m3H0TU5u009587@sous-sol.org>
-References: <1208274312.3131.11.camel@localhost.localdomain>
+Subject: patch parisc-pdc_console-fix-bizarre-panic-on-boot.patch queued to 2.6.24-stable tree
+Date: Wed, 16 Apr 2008 17:29:33 -0700
+Message-ID: <200804170029.m3H0TXqH010278@sous-sol.org>
+References: <1208277963.3131.18.camel@localhost.localdomain>
 Cc: stable@kernel.org, stable-commits@vger.kernel.org
 To: James.Bottomley@HansenPartnership.com, chrisw@sous-sol.org,
-	kyle@mcmartin.ca, kyle@shortfin.cabal.ca,
-	linux-parisc@vger.kernel.org, tglx@linutronix.de
+	kyle@parisc-linux.org, kyle@shortfin.cabal.ca,
+	linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1208274312.3131.11.camel@localhost.localdomain>
+In-Reply-To: <1208277963.3131.18.camel@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 
 This is a note to let you know that we have just queued up the patch titled
 
-     Subject: PARISC futex: special case cmpxchg NULL in kernel space
+     Subject: PARISC pdc_console: fix bizarre panic on boot
 
 to the 2.6.24-stable tree.  Its filename is
 
-     parisc-futex-special-case-cmpxchg-null-in-kernel-space.patch
+     parisc-pdc_console-fix-bizarre-panic-on-boot.patch
 
 A git repo of this tree can be found at 
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 
->From stable-bounces@linux.kernel.org  Wed Apr 16 16:44:42 2008
+>From stable-bounces@linux.kernel.org  Wed Apr 16 16:51:47 2008
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
 To: stable@kernel.org
-Date: Tue, 15 Apr 2008 10:45:11 -0500
-Message-Id: <1208274312.3131.11.camel@localhost.localdomain>
+Date: Tue, 15 Apr 2008 11:46:03 -0500
+Message-Id: <1208277963.3131.18.camel@localhost.localdomain>
 Cc: Parisc List <linux-parisc@vger.kernel.org>
-Subject: PARISC futex: special case cmpxchg NULL in kernel space
+Subject: PARISC pdc_console: fix bizarre panic on boot
 
 From: Kyle McMartin <kyle@shortfin.cabal.ca>
 
-upstream commit: c20a84c91048c76c1379011c96b1a5cee5c7d9a0
+upstream commit ef1afd4d79f0479960ff36bb5fe6ec6eba1ebff2
 
-commit f9e77acd4060fefbb60a351cdb8d30fca27fe194
-Author: Thomas Gleixner <tglx@linutronix.de>
-Date:   Sun Feb 24 02:10:05 2008 +0000
+commit 721fdf34167580ff98263c74cead8871d76936e6
+Author: Kyle McMartin <kyle@shortfin.cabal.ca>
+Date:   Thu Dec 6 09:32:15 2007 -0800
 
-    futex: runtime enable pi and robust functionality
- 
+    [PARISC] print more than one character at a time for pdc console
 
-which was backported to stable based on mainline Commit
-a0c1e9073ef7428a14309cba010633a6cd6719ea added code to futex.c
-to detect whether futex_atomic_cmpxchg_inatomic was implemented at run
-time:
+introduced a subtle bug by accidentally removing the "static" from
+iodc_dbuf. This resulted in, what appeared to be, a trap without
+*current set to a task. Probably the result of a trap in real mode
+while calling firmware.
 
-+       curval = cmpxchg_futex_value_locked(NULL, 0, 0);
-+       if (curval == -EFAULT)
-+               futex_cmpxchg_enabled = 1;
+Also do other misc clean ups. Since the only input from firmware is non
+blocking, share iodc_dbuf between input and output, and spinlock the
+only callers.
 
-This is bogus on parisc, since page zero in kernel virtual space is the
-gateway page for syscall entry, and should not be read from the kernel.
-(That, and we really don't like the kernel faulting on its own address
- space...)
+[jejb: fixed up rejections against the stable tree]
 
-Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
 Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
 Signed-off-by: Chris Wright <chrisw@sous-sol.org>
 ---
- include/asm-parisc/futex.h |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ arch/parisc/kernel/firmware.c |   27 +++++++++++++++++----------
+ arch/parisc/kernel/pdc_cons.c |   19 +++++++++++++++++--
+ include/asm-parisc/pdc.h      |    3 +--
+ 3 files changed, 35 insertions(+), 14 deletions(-)
 
---- a/include/asm-parisc/futex.h
-+++ b/include/asm-parisc/futex.h
-@@ -56,6 +56,12 @@ futex_atomic_cmpxchg_inatomic(int __user
- 	int err = 0;
- 	int uval;
- 
-+	/* futex.c wants to do a cmpxchg_inatomic on kernel NULL, which is
-+	 * our gateway page, and causes no end of trouble...
-+	 */
-+	if (segment_eq(KERNEL_DS, get_fs()) && !uaddr)
-+		return -EFAULT;
-+
- 	if (!access_ok(VERIFY_WRITE, uaddr, sizeof(int)))
- 		return -EFAULT;
- 
-@@ -67,5 +73,5 @@ futex_atomic_cmpxchg_inatomic(int __user
- 	return uval;
+--- a/arch/parisc/kernel/firmware.c
++++ b/arch/parisc/kernel/firmware.c
+@@ -1080,6 +1080,9 @@ void pdc_io_reset_devices(void)
+ 	spin_unlock_irqrestore(&pdc_lock, flags);
  }
  
--#endif
--#endif
-+#endif /*__KERNEL__*/
-+#endif /*_ASM_PARISC_FUTEX_H*/
++/* locked by pdc_console_lock */
++static int __attribute__((aligned(8)))   iodc_retbuf[32];
++static char __attribute__((aligned(64))) iodc_dbuf[4096];
+ 
+ /**
+  * pdc_iodc_print - Console print using IODC.
+@@ -1091,24 +1094,20 @@ void pdc_io_reset_devices(void)
+  * Since the HP console requires CR+LF to perform a 'newline', we translate
+  * "\n" to "\r\n".
+  */
+-int pdc_iodc_print(unsigned char *str, unsigned count)
++int pdc_iodc_print(const unsigned char *str, unsigned count)
+ {
+-	/* XXX Should we spinlock posx usage */
+ 	static int posx;        /* for simple TAB-Simulation... */
+-	int __attribute__((aligned(8)))   iodc_retbuf[32];
+-	char __attribute__((aligned(64))) iodc_dbuf[4096];
+ 	unsigned int i;
+ 	unsigned long flags;
+ 
+-	memset(iodc_dbuf, 0, 4096);
+-	for (i = 0; i < count && i < 2048;) {
++	for (i = 0; i < count && i < 79;) {
+ 		switch(str[i]) {
+ 		case '\n':
+ 			iodc_dbuf[i+0] = '\r';
+ 			iodc_dbuf[i+1] = '\n';
+ 			i += 2;
+ 			posx = 0;
+-			break;
++			goto print;
+ 		case '\t':
+ 			while (posx & 7) {
+ 				iodc_dbuf[i] = ' ';
+@@ -1124,6 +1123,16 @@ int pdc_iodc_print(unsigned char *str, u
+ 		}
+ 	}
+ 
++	/* if we're at the end of line, and not already inserting a newline,
++	 * insert one anyway. iodc console doesn't claim to support >79 char
++	 * lines. don't account for this in the return value.
++	 */
++	if (i == 79 && iodc_dbuf[i-1] != '\n') {
++		iodc_dbuf[i+0] = '\r';
++		iodc_dbuf[i+1] = '\n';
++	}
++
++print:
+         spin_lock_irqsave(&pdc_lock, flags);
+         real32_call(PAGE0->mem_cons.iodc_io,
+                     (unsigned long)PAGE0->mem_cons.hpa, ENTRY_IO_COUT,
+@@ -1142,11 +1151,9 @@ int pdc_iodc_print(unsigned char *str, u
+  */
+ int pdc_iodc_getc(void)
+ {
+-	unsigned long flags;
+-        static int __attribute__((aligned(8)))   iodc_retbuf[32];
+-        static char __attribute__((aligned(64))) iodc_dbuf[4096];
+ 	int ch;
+ 	int status;
++	unsigned long flags;
+ 
+ 	/* Bail if no console input device. */
+ 	if (!PAGE0->mem_kbd.iodc_io)
+--- a/arch/parisc/kernel/pdc_cons.c
++++ b/arch/parisc/kernel/pdc_cons.c
+@@ -52,10 +52,18 @@
+ #include <linux/tty.h>
+ #include <asm/pdc.h>		/* for iodc_call() proto and friends */
+ 
++static spinlock_t pdc_console_lock = SPIN_LOCK_UNLOCKED;
+ 
+ static void pdc_console_write(struct console *co, const char *s, unsigned count)
+ {
+-	pdc_iodc_print(s, count);
++	int i = 0;
++	unsigned long flags;
++
++	spin_lock_irqsave(&pdc_console_lock, flags);
++	do {
++		i += pdc_iodc_print(s + i, count - i);
++	} while (i < count);
++	spin_unlock_irqrestore(&pdc_console_lock, flags);
+ }
+ 
+ void pdc_printf(const char *fmt, ...)
+@@ -73,7 +81,14 @@ void pdc_printf(const char *fmt, ...)
+ 
+ int pdc_console_poll_key(struct console *co)
+ {
+-	return pdc_iodc_getc();
++	int c;
++	unsigned long flags;
++
++	spin_lock_irqsave(&pdc_console_lock, flags);
++	c = pdc_iodc_getc();
++	spin_unlock_irqrestore(&pdc_console_lock, flags);
++
++	return c;
+ }
+ 
+ static int pdc_console_setup(struct console *co, char *options)
+--- a/include/asm-parisc/pdc.h
++++ b/include/asm-parisc/pdc.h
+@@ -645,8 +645,7 @@ int pdc_soft_power_button(int sw_control
+ void pdc_io_reset(void);
+ void pdc_io_reset_devices(void);
+ int pdc_iodc_getc(void);
+-int pdc_iodc_print(unsigned char *str, unsigned count);
+-void pdc_printf(const char *fmt, ...);
++int pdc_iodc_print(const unsigned char *str, unsigned count);
+ 
+ void pdc_emergency_unlock(void);
+ int pdc_sti_call(unsigned long func, unsigned long flags,
 
 
 Patches currently in stable-queue which might be from James.Bottomley@HansenPartnership.com are
