@@ -1,37 +1,31 @@
-From: chrisw@sous-sol.org
-Subject: patch parisc-pdc_console-fix-bizarre-panic-on-boot.patch queued to 2.6.24-stable tree
-Date: Wed, 16 Apr 2008 17:29:33 -0700
-Message-ID: <200804170029.m3H0TXqH010278@sous-sol.org>
-References: <1208277963.3131.18.camel@localhost.localdomain>
-Cc: stable@kernel.org, stable-commits@vger.kernel.org
-To: James.Bottomley@HansenPartnership.com, chrisw@sous-sol.org,
-	kyle@parisc-linux.org, kyle@shortfin.cabal.ca,
-	linux-parisc@vger.kernel.org
+From: Chris Wright <chrisw@sous-sol.org>
+Subject: PARISC pdc_console: fix bizarre panic on boot
+Date: Wed, 16 Apr 2008 18:02:22 -0700
+Message-ID: <20080417010402.200417728@sous-sol.org>
+References: <20080417010122.148289106@sous-sol.org>
+Cc: Justin Forbes <jmforbes@linuxtx.org>,
+	Zwane Mwaikambo <zwane@arm.linux.org.uk>,
+	"Theodore Ts'o" <tytso@mit.edu>,
+	Randy Dunlap <rdunlap@xenotime.net>,
+	Dave Jones <davej@redhat.com>,
+	Chuck Wolber <chuckw@quantumlinux.com>,
+	Chris Wedgwood <reviews@ml.cw.f00f.org>,
+	Michael Krufky <mkrufky@linuxtv.org>,
+	Chuck Ebbert <cebbert@redhat.com>,
+	Domenico Andreoli <cavokz@gmail.com>,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	alan@lxorguk.ukuu.org.uk,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Kyle McMartin <kyle@shortfin.cabal.ca>,
+	Kyle McMartin <kyle@parisc-linux.org>
+To: linux-kernel@vger.kernel.org, stable@kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1208277963.3131.18.camel@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-This is a note to let you know that we have just queued up the patch titled
-
-     Subject: PARISC pdc_console: fix bizarre panic on boot
-
-to the 2.6.24-stable tree.  Its filename is
-
-     parisc-pdc_console-fix-bizarre-panic-on-boot.patch
-
-A git repo of this tree can be found at 
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-
-
->From stable-bounces@linux.kernel.org  Wed Apr 16 16:51:47 2008
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: stable@kernel.org
-Date: Tue, 15 Apr 2008 11:46:03 -0500
-Message-Id: <1208277963.3131.18.camel@localhost.localdomain>
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-Subject: PARISC pdc_console: fix bizarre panic on boot
+-stable review patch.  If anyone has any objections, please let us know.
+---------------------
 
 From: Kyle McMartin <kyle@shortfin.cabal.ca>
 
@@ -184,8 +178,4 @@ Signed-off-by: Chris Wright <chrisw@sous-sol.org>
  void pdc_emergency_unlock(void);
  int pdc_sti_call(unsigned long func, unsigned long flags,
 
-
-Patches currently in stable-queue which might be from James.Bottomley@HansenPartnership.com are
-
-queue-2.6.24/parisc-pdc_console-fix-bizarre-panic-on-boot.patch
-queue-2.6.24/parisc-futex-special-case-cmpxchg-null-in-kernel-space.patch
+-- 
