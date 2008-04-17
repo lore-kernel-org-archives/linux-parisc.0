@@ -1,26 +1,26 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Fixed strace [ was Re: ls -l is broken ]
-Date: Thu, 17 Apr 2008 03:53:57 -0400
-Message-ID: <20080417075357.GB23641@phobos.i.cabal.ca>
-References: <20080406224204.GE16451@parisc-linux.org> <20080406231000.D53CB4FC8@hiauly1.hia.nrc.ca>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Working 2.6.24 debian testing kernels available
+Date: Thu, 17 Apr 2008 11:16:49 -0500
+Message-ID: <1208449009.3150.23.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Matthew Wilcox <matthew@wil.cx>, linux-parisc@vger.kernel.org,
-	debian-hppa@lists.debian.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Content-Type: text/plain
+To: Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080406231000.D53CB4FC8@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Apr 06, 2008 at 07:09:59PM -0400, John David Anglin wrote:
-> > If you strace it, what syscall returns -EOPNOTSUPP?
-> 
-> strace is broken and quits before the relevant syscall.  Think I
-> mentioned this before is a different context.
-> 
+The latest testing kernel release (2.5.24-5) doesn't boot on parisc
+because of problems in the 2.6.24.4 stable kernel on which it is based.
+I've put a BinNMU version (2.6.24-5+b1) that adds the two missing
+patches to get this kernel booting again in:
 
-Fixed & updated strace available at
-http://people.debian.org/~kyle/strace/
+http://www.parisc-linux.org/~jejb/parisc_debs/
 
-cheers, Kyle
+For those tracking this, the two debian bugs are:
+
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=476285
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=476292
+
+James
+
+
