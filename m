@@ -1,49 +1,32 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [REGRESSION] 2.6.25 on parisc - CPU 1 is stuck
-Date: Mon, 21 Apr 2008 09:43:38 -0500
-Message-ID: <1208789018.3640.6.camel@localhost.localdomain>
-References: <20080420231818.GA2162@ska.dandreoli.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [PARISC] fix signal trampoline cache flushing
+Date: Mon, 21 Apr 2008 07:51:01 -0700
+Message-ID: <119aab440804210751g67baf212o786edbc6f9a5168e@mail.gmail.com>
+References: <20080415223638.GD17646@phobos.i.cabal.ca>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org
-To: Domenico Andreoli <cavokz@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org
+To: "Kyle McMartin" <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080420231818.GA2162@ska.dandreoli.com>
+In-Reply-To: <20080415223638.GD17646@phobos.i.cabal.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2008-04-21 at 01:18 +0200, Domenico Andreoli wrote: 
-> as soon as I booted my dual PA8600 with 2.6.25 I got 1 CPU less. The
-> only other kernel I successfully used on that box is Debian's 2.6.22-3.
-> 
-> Debian never built 2.6.23 for parisc, 2.6.24 was still hanging last
-> time I checked it, 2.6.25 did not even build until recent -rc. So I am
-> not in the best position to bisect.
+On Tue, Apr 15, 2008 at 3:36 PM, Kyle McMartin <kyle@mcmartin.ca> wrote:
+>  diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
+>  index 58fccc9..06213d1 100644
+>  --- a/arch/parisc/kernel/signal.c
+>  +++ b/arch/parisc/kernel/signal.c
+>  @@ -534,7 +534,8 @@ insert_restart_trampoline(struct pt_regs *regs)
+>                  * Flushing one cacheline is cheap.
+>                  * "sync" on bigger (> 4 way) boxes is not.
+>                  */
+>  -               flush_icache_range(regs->gr[30], regs->gr[30] + 4);
+>  +               flush_user_dcache_range(regs->gr[30], regs->gr[30] + 4);
+>  +               flush_user_icache_range(regs->gr[30], regs->gr[30] + 4);
 
-Try this one; it's a corrected version of debian 2.6.24-1 for parisc
-systems:
+We also have a restartable syscall trampoline (I think this is unique
+to PA), does that one also need fixing?
 
-http://www.parisc-linux.org/~jejb/parisc_debs/linux-image-2.6.24-1-parisc64-smp_2.6.24-5+b1_hppa.deb
-
-It's known to boot correctly on B, A and rp3440 systems, but we don't
-have a J system to try it out on.
-
-> Here is the relevant dmesg.
-> Releasing cpu 1 now, hpa=fffffffffffa2000
-> SMP: CPU:1 is stuck.
-> CPU(s): 2 x PA8600 (PCX-W+) at 552.000000 MHz
-> Setting cache flush threshold to f84c0 (1 CPUs online)
-
-Unfortunately that doesn't tell us anything other than the start IPI
-failed for some reason.  One thing to try with the J series is a 32 bit
-kernel just in case: they're the only SMP systems that will boot 32
-bits, just in case you could try a 32 bit smp kernel.
-
-As Dave Anglin said, it could be a config problem, although when I have
-CPUs deconfigured by firmware, they usually don't show up in the
-inventory.
-
-James
-
-
+Cheers,
+Carlos.
