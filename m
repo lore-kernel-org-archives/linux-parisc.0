@@ -1,50 +1,42 @@
-From: Mel Gorman <mel@csn.ul.ie>
-Subject: Re: parisc DISCONTIGMEM compile breakage
-Date: Tue, 6 May 2008 16:49:23 +0100
-Message-ID: <20080506154922.GB5034@csn.ul.ie>
-References: <20080506134648.GA30082@cs181133002.pp.htv.fi> <20080506152457.GA13070@phobos.i.cabal.ca>
+From: Domenico Andreoli <cavokz@gmail.com>
+Subject: Re: [REGRESSION] 2.6.25 on parisc - CPU 1 is stuck
+Date: Tue, 6 May 2008 18:32:06 +0200
+Message-ID: <20080506163206.GA2211@ska.dandreoli.com>
+References: <20080420231818.GA2162@ska.dandreoli.com> <1208789018.3640.6.camel@localhost.localdomain> <20080423004440.GB21544@colo.lackof.org> <20080423005438.GK19802@phobos.i.cabal.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Cc: Adrian Bunk <bunk@kernel.org>,
-	Christoph Lameter <clameter@sgi.com>,
-	Lee Schermerhorn <lee.schermerhorn@hp.com>,
-	kyle@parisc-linux.org, matthew@wil.cx, grundler@parisc-linux.org,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org
 To: Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080506152457.GA13070@phobos.i.cabal.ca>
+In-Reply-To: <20080423005438.GK19802@phobos.i.cabal.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On (06/05/08 11:24), Kyle McMartin didst pronounce:
-> On Tue, May 06, 2008 at 04:46:48PM +0300, Adrian Bunk wrote:
-> > Commit 54a6eb5c4765aa573a030ceeba2c14e3d2ea5706
-> > (mm: use two zonelist that are filtered by GFP mask)
-> > causes the following build error with CONFIG_DISCONTIGMEM=y
-> > on parisc:
+On Tue, Apr 22, 2008 at 08:54:38PM -0400, Kyle McMartin wrote:
+> On Tue, Apr 22, 2008 at 06:44:40PM -0600, Grant Grundler wrote:
 > > 
-> > <--  snip  -->
-> > 
-> > ...
-> >   CC      arch/parisc/mm/init.o
-> > /home/bunk/linux/kernel-2.6/git/linux-2.6/arch/parisc/mm/init.c: In function 'show_mem':
-> > /home/bunk/linux/kernel-2.6/git/linux-2.6/arch/parisc/mm/init.c:609: error: too few arguments to function 'node_zonelist'
-> > make[2]: *** [arch/parisc/mm/init.o] Error 1
+> > *nod* I don't expect CPUs to show up in inventory if they are
+> > deconfigured in BCH. Maybe J-class firmware has this wrong? *shrug*
+> > Something worth checking I guess.
 > > 
 > 
-> yes. the obvious fix works and boots, but I haven't quite determined why
-> they decided to add this yet, so no patch committed plz.
+> i booted the kernel from my rp3440 on my j6000. i also get this cpu1 is
+> stuck message. putting a panic in the SMP C-code entrypoint is never
+> hit.
 > 
+> most oddly, putting a hpmc-causing insn sequence in the entry point
+> doesn't trigger either, so the cpu isn't coming out of the rendezvous.
+> 
+> even more oddly, the stwa insn in the bring up code looks fine.
 
-I'm not sure what you are referring to as "this" here. If you mean the
-zonelist changes, they were done to reduce the number of zonelists that
-exist, to clear up an anomoly with MPOL_BIND and to remove a hack called
-alloc_should_filter_zonelist() in the page allocator. The pa-risc code that
-walks zonelists (presumably for debugging) has been around for a while and
-was updated at the same time as the zonelist patches were done, just not as
-well as it should have been.
+still nothing changed with 2.6.26-rc1-00110-ga153063
 
--- 
-Mel Gorman
-Part-time Phd Student                          Linux Technology Center
-University of Limerick                         IBM Dublin Software Lab
+cheers,
+Domenico
+
+-----[ Domenico Andreoli, aka cavok
+ --[ http://www.dandreoli.com/gpgkey.asc
+   ---[ 3A0F 2F80 F79C 678A 8936  4FEE 0677 9033 A20E BC50
