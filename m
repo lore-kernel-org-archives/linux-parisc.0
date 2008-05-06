@@ -1,42 +1,20 @@
-From: Domenico Andreoli <cavokz@gmail.com>
-Subject: Re: [REGRESSION] 2.6.25 on parisc - CPU 1 is stuck
-Date: Tue, 6 May 2008 18:32:06 +0200
-Message-ID: <20080506163206.GA2211@ska.dandreoli.com>
-References: <20080420231818.GA2162@ska.dandreoli.com> <1208789018.3640.6.camel@localhost.localdomain> <20080423004440.GB21544@colo.lackof.org> <20080423005438.GK19802@phobos.i.cabal.ca>
+From: Christoph Lameter <clameter@sgi.com>
+Subject: Re: parisc DISCONTIGMEM compile breakage
+Date: Tue, 6 May 2008 10:54:59 -0700 (PDT)
+Message-ID: <Pine.LNX.4.64.0805061053100.23336@schroedinger.engr.sgi.com>
+References: <20080506134648.GA30082@cs181133002.pp.htv.fi>
+ <20080506152713.GA5034@csn.ul.ie>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Adrian Bunk <bunk@kernel.org>,
+	Lee Schermerhorn <lee.schermerhorn@hp.com>,
+	kyle@parisc-linux.org, matthew@wil.cx, grundler@parisc-linux.org,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Mel Gorman <mel@csn.ul.ie>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080423005438.GK19802@phobos.i.cabal.ca>
+In-Reply-To: <20080506152713.GA5034@csn.ul.ie>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Apr 22, 2008 at 08:54:38PM -0400, Kyle McMartin wrote:
-> On Tue, Apr 22, 2008 at 06:44:40PM -0600, Grant Grundler wrote:
-> > 
-> > *nod* I don't expect CPUs to show up in inventory if they are
-> > deconfigured in BCH. Maybe J-class firmware has this wrong? *shrug*
-> > Something worth checking I guess.
-> > 
-> 
-> i booted the kernel from my rp3440 on my j6000. i also get this cpu1 is
-> stuck message. putting a panic in the SMP C-code entrypoint is never
-> hit.
-> 
-> most oddly, putting a hpmc-causing insn sequence in the entry point
-> doesn't trigger either, so the cpu isn't coming out of the rendezvous.
-> 
-> even more oddly, the stwa insn in the bring up code looks fine.
+Reviewed-by: Christoph Lameter <clameter@sgi.com>
 
-still nothing changed with 2.6.26-rc1-00110-ga153063
-
-cheers,
-Domenico
-
------[ Domenico Andreoli, aka cavok
- --[ http://www.dandreoli.com/gpgkey.asc
-   ---[ 3A0F 2F80 F79C 678A 8936  4FEE 0677 9033 A20E BC50
