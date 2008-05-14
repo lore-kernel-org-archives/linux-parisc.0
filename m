@@ -1,101 +1,82 @@
-From: Ulrich Drepper <drepper@redhat.com>
-Subject: [PATCH] flag parameters: arch-specific SOCK_NONBLOCK
-Date: Tue, 13 May 2008 00:31:50 -0400
-Message-ID: <200805130431.m4D4Vo5e017311@devserv.devel.redhat.com>
-Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org
-To: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1757964AbYEMEcJ@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+From: "Robert P. J. Day" <rpjday@crashcourse.ca>
+Subject: [PATCH] PARISC: Remove ioctl.h content picked up from
+ <asm-generic/ioctl.h>.
+Date: Wed, 14 May 2008 15:14:52 -0400 (EDT)
+Message-ID: <alpine.LFD.1.10.0805141511400.22428@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The value of O_NONBLOCK clashes on Alpha dn PARISC with the bits used
-for socket types.  Therefore we cannot define SOCK_NONBLOCK as
-O_NONBLOCK on these platforms.  This patch adds support for an
-arch-specific SOCK_NONBLOCK value which doesn't add costs for
-other architectures.
 
- include/asm-alpha/socket.h  |    5 +++++
- include/asm-parisc/socket.h |    5 +++++
- include/linux/net.h         |    2 ++
- net/socket.c                |    9 +++++++++
- 4 files changed, 21 insertions(+)
+Now that <asm-generic/ioctl.h> allows overriding of the most commonly
+changed macro values, take advantage of that.
 
+Signed-off-by: Robert P. J. Day <rpjday@crashcourse.ca>
 
-Signed-off-by: Ulrich Drepper <drepper@redhat.com>
+---
 
-diff --git a/include/asm-alpha/socket.h b/include/asm-alpha/socket.h
-index 08c9793..a1057c2 100644
---- a/include/asm-alpha/socket.h
-+++ b/include/asm-alpha/socket.h
-@@ -62,4 +62,9 @@
- 
- #define SO_MARK			36
- 
-+/* O_NONBLOCK clashes with the bits used for socket types.  Therefore we
-+ * have to define SOCK_NONBLOCK to a different value here.
-+ */
-+#define SOCK_NONBLOCK	0x40000000
-+
- #endif /* _ASM_SOCKET_H */
-diff --git a/include/asm-parisc/socket.h b/include/asm-parisc/socket.h
-index 69a7a0d..fba402c 100644
---- a/include/asm-parisc/socket.h
-+++ b/include/asm-parisc/socket.h
-@@ -54,4 +54,9 @@
- 
- #define SO_MARK			0x401f
- 
-+/* O_NONBLOCK clashes with the bits used for socket types.  Therefore we
-+ * have to define SOCK_NONBLOCK to a different value here.
-+ */
-+#define SOCK_NONBLOCK   0x40000000
-+
- #endif /* _ASM_SOCKET_H */
-diff --git a/include/linux/net.h b/include/linux/net.h
-index 1b35fd5..dd3b6cd 100644
---- a/include/linux/net.h
-+++ b/include/linux/net.h
-@@ -102,7 +102,9 @@ enum sock_type {
- 
- /* Flags for socket, socketpair, paccept */
- #define SOCK_CLOEXEC	O_CLOEXEC
-+#ifndef SOCK_NONBLOCK
- #define SOCK_NONBLOCK	O_NONBLOCK
-+#endif
- 
- #endif /* ARCH_HAS_SOCKET_TYPES */
- 
-diff --git a/net/socket.c b/net/socket.c
-index 962bf07..5111af1 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -1231,6 +1231,9 @@ asmlinkage long sys_socket(int family, int type, int protocol)
- 		return -EINVAL;
- 	type &= SOCK_TYPE_MASK;
- 
-+	if (SOCK_NONBLOCK != O_NONBLOCK && (flags & SOCK_NONBLOCK))
-+		flags = (flags & ~SOCK_NONBLOCK) | O_NONBLOCK;
-+
- 	retval = sock_create(family, type, protocol, &sock);
- 	if (retval < 0)
- 		goto out;
-@@ -1265,6 +1268,9 @@ asmlinkage long sys_socketpair(int family, int type, int protocol,
- 		return -EINVAL;
- 	type &= SOCK_TYPE_MASK;
- 
-+	if (SOCK_NONBLOCK != O_NONBLOCK && (flags & SOCK_NONBLOCK))
-+		flags = (flags & ~SOCK_NONBLOCK) | O_NONBLOCK;
-+
- 	/*
- 	 * Obtain the first socket and check if the underlying protocol
- 	 * supports the socketpair call.
-@@ -1430,6 +1436,9 @@ long do_accept(int fd, struct sockaddr __user *upeer_sockaddr,
- 	if (flags & ~(SOCK_CLOEXEC | SOCK_NONBLOCK))
- 		return -EINVAL;
- 
-+	if (SOCK_NONBLOCK != O_NONBLOCK && (flags & SOCK_NONBLOCK))
-+		flags = (flags & ~SOCK_NONBLOCK) | O_NONBLOCK;
-+
- 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
- 	if (!sock)
- 		goto out;
+  i *think* this leaves an equivalent ioctl.h file, but feel free to
+check it carefully and tweak if necessary.
+
+diff --git a/include/asm-parisc/ioctl.h b/include/asm-parisc/ioctl.h
+index 68338d2..ec8efa0 100644
+--- a/include/asm-parisc/ioctl.h
++++ b/include/asm-parisc/ioctl.h
+@@ -32,21 +32,6 @@
+  * NOTE: This limits the max parameter size to 16kB -1 !
+  */
+
+-#define _IOC_NRBITS	8
+-#define _IOC_TYPEBITS	8
+-#define _IOC_SIZEBITS	14
+-#define _IOC_DIRBITS	2
+-
+-#define _IOC_NRMASK	((1 << _IOC_NRBITS)-1)
+-#define _IOC_TYPEMASK	((1 << _IOC_TYPEBITS)-1)
+-#define _IOC_SIZEMASK	((1 << _IOC_SIZEBITS)-1)
+-#define _IOC_DIRMASK	((1 << _IOC_DIRBITS)-1)
+-
+-#define _IOC_NRSHIFT	0
+-#define _IOC_TYPESHIFT	(_IOC_NRSHIFT+_IOC_NRBITS)
+-#define _IOC_SIZESHIFT	(_IOC_TYPESHIFT+_IOC_TYPEBITS)
+-#define _IOC_DIRSHIFT	(_IOC_SIZESHIFT+_IOC_SIZEBITS)
+-
+ /*
+  * Direction bits.
+  */
+@@ -54,40 +39,6 @@
+ #define _IOC_WRITE	2U
+ #define _IOC_READ	1U
+
+-#define _IOC(dir,type,nr,size) \
+-	(((dir)  << _IOC_DIRSHIFT) | \
+-	 ((type) << _IOC_TYPESHIFT) | \
+-	 ((nr)   << _IOC_NRSHIFT) | \
+-	 ((size) << _IOC_SIZESHIFT))
+-
+-/* provoke compile error for invalid uses of size argument */
+-extern unsigned int __invalid_size_argument_for_IOC;
+-#define _IOC_TYPECHECK(t) \
+-	((sizeof(t) == sizeof(t[1]) && \
+-	  sizeof(t) < (1 << _IOC_SIZEBITS)) ? \
+-	  sizeof(t) : __invalid_size_argument_for_IOC)
+-
+-/* used to create numbers */
+-#define _IO(type,nr)		_IOC(_IOC_NONE,(type),(nr),0)
+-#define _IOR(type,nr,size)	_IOC(_IOC_READ,(type),(nr),(_IOC_TYPECHECK(size)))
+-#define _IOW(type,nr,size)	_IOC(_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
+-#define _IOWR(type,nr,size)	_IOC(_IOC_READ|_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
+-#define _IOR_BAD(type,nr,size)	_IOC(_IOC_READ,(type),(nr),sizeof(size))
+-#define _IOW_BAD(type,nr,size)	_IOC(_IOC_WRITE,(type),(nr),sizeof(size))
+-#define _IOWR_BAD(type,nr,size)	_IOC(_IOC_READ|_IOC_WRITE,(type),(nr),sizeof(size))
+-
+-/* used to decode ioctl numbers.. */
+-#define _IOC_DIR(nr)		(((nr) >> _IOC_DIRSHIFT) & _IOC_DIRMASK)
+-#define _IOC_TYPE(nr)		(((nr) >> _IOC_TYPESHIFT) & _IOC_TYPEMASK)
+-#define _IOC_NR(nr)		(((nr) >> _IOC_NRSHIFT) & _IOC_NRMASK)
+-#define _IOC_SIZE(nr)		(((nr) >> _IOC_SIZESHIFT) & _IOC_SIZEMASK)
+-
+-/* ...and for the drivers/sound files... */
