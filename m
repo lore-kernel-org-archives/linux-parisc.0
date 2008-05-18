@@ -1,63 +1,69 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: Git head doesn't boot on A500
-Date: Sun, 18 May 2008 14:26:03 -0600
-Message-ID: <20080518202603.GA9093@colo.lackof.org>
-References: <7d01f9f00805170620t30630519h4890037400c62fb5@mail.gmail.com> <20080517152623.GA26649@colo.lackof.org> <7d01f9f00805171752r4eb8ee5nbfee8f832677f792@mail.gmail.com> <20080518071342.GB26649@colo.lackof.org> <48305728.20403@gmx.de>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+Subject: uid/gid issues on 2.6.26-rc2
+Date: Sun, 18 May 2008 22:31:13 +0200
+Message-ID: <7d01f9f00805181331y77b83a35jb897b622f163b0ef@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	Thibaut VARENE <T-Bone@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=UTF-8
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <48305728.20403@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, May 18, 2008 at 06:19:52PM +0200, Helge Deller wrote:
-...
->> using ".text.head" (not .head.text) which has corresponding "code" in
->> their vmlinux.lds.  Could someone kindly point out how .head.text works 
->> for parisc?
->
-> Yeah, my fault (no idea why it worked for me???).
+Hi pa-ckers
 
-Kyle's explanation sounds right or I expect the sections wouldn't
-have been included at all (or something like that) - and maybe it
-really only matters for SMP - ie getting secondary CPUs running.
+I'm sorry to be yet again just a whistle blower, I couldn't dig that
+situation more yet but I'd like to raise awareness in case someone
+else experiences the same symptoms. Also, what I'm seeing is a major
+security flaw...
 
-> I see two options:
-> 1) revert my patch (gets to linker warnings and have to build up a new 
-> patch, ideally adding a section for .text.head to vmlinux.lds.S),
-> 2) apply the attached patch.
->
-> Opinions?
+I'm running TOB on my A500 nosmp (when running SMP the timer code
+borks gently). Randomly, the system seems to goof off regarding uids
+and gids.
 
-(2) works for me. I'm booting with 64-bit on a500...at least it's
-now finding all the disks and attempting to mount NFS root.
+Typically, I'd ssh into the box as a regular user, and I end up with a
+root prompt. Sometimes "w" will output nothing. dpkg will complain
+about non-existing vlock group, etc.
 
->
-> Helge
+Installing some package (with apt-get) I got the following message:
+dpkg: syntax error: unknown group `vlock' in statoverride file
+Trying again, it worked just fine
 
-> diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
-> index 50b4a3a..2e516b8 100644
-> --- a/arch/parisc/kernel/vmlinux.lds.S
-> +++ b/arch/parisc/kernel/vmlinux.lds.S
-> @@ -50,6 +50,7 @@ SECTIONS
->  
->  	_text = .;		/* Text and read-only data */
->  	.text ALIGN(16) : {
-> +		HEAD_TEXT
+WRT ssh:
 
-grundler <537>fgrep HEAD_TEXT include/*/*.h
-include/asm-generic/vmlinux.lds.h:#define HEAD_TEXT  *(.head.text)
+>From the remote host, I sometime got:
+varenet@dogma:~$ ssh mkhppa3
+ssh_exchange_identification: Connection closed by remote host
 
-Yeah, I like that better than depending on *(.text) to include it.
+Trying again, I ended up with a root shell. Logging out and back in I
+eventually got my own user's prompt.
 
-thanks,
-grant
+Then, checking auth.log, I spotted a few very surprising things:
 
->  		TEXT_TEXT
->  		SCHED_TEXT
->  		LOCK_TEXT
+May 18 09:15:04 mkhppa3 sshd[1265]: Invalid user varenet from 147.215.7.200
+May 18 09:15:04 mkhppa3 sshd[1265]: Failed none for invalid user
+varenet from 147.215.7.200 port 58220 ssh2
 
+May 18 20:50:04 mkhppa3 sshd[12623]: fatal: Privilege separation user
+sshd does not exist
+May 18 20:50:08 mkhppa3 sshd[12624]: Invalid user lucas from 147.215.7.12
+May 18 20:50:08 mkhppa3 sshd[12624]: Failed none for invalid user
+lucas from 147.215.7.12 port 59591 ssh2
+
+(needless to say, user "sshd" exists locally and "varenet" and "lucas"
+are on the ldap db. Plus, he could log in on a second attempt)
+
+also:
+May 18 12:17:01 mkhppa3 CRON[1302]: pam_unix(cron:account): could not
+identify user (from getpwnam(root))
+
+There's not much more evidence (couldn't find anything in other
+logfiles or in dmesg...), but the box clearly didn't expose any such
+symptom when running 2.6.22.14
+
+HTH
+
+T-Bone
+
+-- 
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
