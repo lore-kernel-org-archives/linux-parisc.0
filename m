@@ -1,79 +1,25 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: Git head doesn't boot on A500
-Date: Sun, 18 May 2008 01:13:42 -0600
-Message-ID: <20080518071342.GB26649@colo.lackof.org>
-References: <7d01f9f00805170620t30630519h4890037400c62fb5@mail.gmail.com> <20080517152623.GA26649@colo.lackof.org> <7d01f9f00805171752r4eb8ee5nbfee8f832677f792@mail.gmail.com>
+Date: Sun, 18 May 2008 12:18:36 -0400
+Message-ID: <20080518161836.GC6540@phobos.i.cabal.ca>
+References: <7d01f9f00805170620t30630519h4890037400c62fb5@mail.gmail.com> <20080517152623.GA26649@colo.lackof.org> <7d01f9f00805171752r4eb8ee5nbfee8f832677f792@mail.gmail.com> <20080518071342.GB26649@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>,
+Cc: Thibaut VARENE <T-Bone@parisc-linux.org>,
 	linux-parisc@vger.kernel.org
-To: Thibaut VARENE <T-Bone@parisc-linux.org>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <7d01f9f00805171752r4eb8ee5nbfee8f832677f792@mail.gmail.com>
+In-Reply-To: <20080518071342.GB26649@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, May 18, 2008 at 02:52:00AM +0200, Thibaut VARENE wrote:
-> On Sat, May 17, 2008 at 5:26 PM, Grant Grundler
-> <grundler@parisc-linux.org> wrote:
-> > On Sat, May 17, 2008 at 03:20:46PM +0200, Thibaut VARENE wrote:
-> >> Hi pa-ckers
-> >>
-> >> Just a quick failure report, I tested git head + jejb's zonelist patch
-> >> on my A500 (gcc-4.2) and it hpmc'd the box (afaict) very early during
-> >> bootup. I'll dig that more ASAP.
+On Sun, May 18, 2008 at 01:13:42AM -0600, Grant Grundler wrote:
+> So I don't understand how __HEAD works...and all the other arches are
+> using ".text.head" (not .head.text) which has corresponding "code" in
+> their vmlinux.lds.  Could someone kindly point out how .head.text 
+> works for parisc?
 > 
-> Kyle eventually spotted the offending patch:
-> http://git.kernel.org/?p=linux/kernel/git/kyle/parisc-2.6.git;a=commitdiff;h=bd3bb8c15b9a80dbddfb7905b237a4a11a4725b4;hp=492c2e476eac010962850006c49df326919b284c
-> 
-> Out of this patch, the only two non-offending hunks are:
-> diff --git a/arch/parisc/kernel/head.S b/arch/parisc/kernel/head.S
-> index ec2482d..5680a2c 100644 (file)
-> --- a/arch/parisc/kernel/head.S
-> +++ b/arch/parisc/kernel/head.S
-> @@ -32,7 +32,7 @@ ENTRY(boot_args)
->         .word 0 /* arg3 */
->  END(boot_args)
-> 
-> -       .section .text.head
-> +       __HEAD
->         .align  4
->         .import init_thread_union,data
->         .import fault_vector_20,code    /* IVA parisc 2.0 32 bit */
 
-So I don't understand how __HEAD works...and all the other arches are
-using ".text.head" (not .head.text) which has corresponding "code" in
-their vmlinux.lds.  Could someone kindly point out how .head.text 
-works for parisc?
+*(.text) will include .head.text...
 
-> and
-> 
-> diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
-> index 69b6eeb..ae509d8 100644 (file)
-> --- a/arch/parisc/kernel/syscall.S
-> +++ b/arch/parisc/kernel/syscall.S
-> @@ -636,7 +637,7 @@ END(sys_call_table64)
->                 All light-weight-syscall atomic operations
->                 will use this set of locks
->         */
-> -       .section .data
-> +       .section .data, "aw"
->         .align  PAGE_SIZE
->  ENTRY(lws_lock_start)
->         /* lws locks */
-> 
-> I'm now debugging the timer_interrupt problems, will keep the list posted.
-
-That shouldn't be too hard...I can help a bit later tomorrow.
-
-thanks,
-grant
-
-> 
-> HTH
-> 
-> T-Bone
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
