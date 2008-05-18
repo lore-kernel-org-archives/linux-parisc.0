@@ -1,86 +1,79 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: Git head doesn't boot on A500
-Date: Sun, 18 May 2008 18:19:52 +0200
-Message-ID: <48305728.20403@gmx.de>
-References: <7d01f9f00805170620t30630519h4890037400c62fb5@mail.gmail.com> <20080517152623.GA26649@colo.lackof.org> <7d01f9f00805171752r4eb8ee5nbfee8f832677f792@mail.gmail.com> <20080518071342.GB26649@colo.lackof.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060402080201090608000109"
-Cc: Thibaut VARENE <T-Bone@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080518071342.GB26649@colo.lackof.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [patch 11/18] m68k: Some input drivers do not check the platform
+Date: Sun, 18 May 2008 20:47:17 +0200
+Message-ID: <20080518185152.437771120@mail.of.borg>
+References: <20080518184706.631023070@mail.of.borg>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-input@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Return-path: <linux-input-owner@vger.kernel.org>
+List-ID: <linux-input.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------060402080201090608000109
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Grant Grundler wrote:
-> On Sun, May 18, 2008 at 02:52:00AM +0200, Thibaut VARENE wrote:
->> On Sat, May 17, 2008 at 5:26 PM, Grant Grundler
->> <grundler@parisc-linux.org> wrote:
->>> On Sat, May 17, 2008 at 03:20:46PM +0200, Thibaut VARENE wrote:
->>>> Hi pa-ckers
->>>>
->>>> Just a quick failure report, I tested git head + jejb's zonelist patch
->>>> on my A500 (gcc-4.2) and it hpmc'd the box (afaict) very early during
->>>> bootup. I'll dig that more ASAP.
->> Kyle eventually spotted the offending patch:
->> http://git.kernel.org/?p=linux/kernel/git/kyle/parisc-2.6.git;a=commitdiff;h=bd3bb8c15b9a80dbddfb7905b237a4a11a4725b4;hp=492c2e476eac010962850006c49df326919b284c
->>
->> Out of this patch, the only two non-offending hunks are:
->> diff --git a/arch/parisc/kernel/head.S b/arch/parisc/kernel/head.S
->> index ec2482d..5680a2c 100644 (file)
->> --- a/arch/parisc/kernel/head.S
->> +++ b/arch/parisc/kernel/head.S
->> @@ -32,7 +32,7 @@ ENTRY(boot_args)
->>         .word 0 /* arg3 */
->>  END(boot_args)
->>
->> -       .section .text.head
->> +       __HEAD
->>         .align  4
->>         .import init_thread_union,data
->>         .import fault_vector_20,code    /* IVA parisc 2.0 32 bit */
-> 
-> So I don't understand how __HEAD works...and all the other arches are
-> using ".text.head" (not .head.text) which has corresponding "code" in
-> their vmlinux.lds.  Could someone kindly point out how .head.text 
-> works for parisc?
+Some input drivers do not check whether they're actually running on the
+correct platform, causing multi-platform kernels to crash if they are not.
 
-Yeah, my fault (no idea why it worked for me???).
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/input/keyboard/hilkbd.c  |    4 ++++
+ drivers/input/misc/hp_sdc_rtc.c  |    5 +++++
+ drivers/input/serio/hp_sdc_mlc.c |    5 +++++
+ 3 files changed, 14 insertions(+)
 
-I see two options:
-1) revert my patch (gets to linker warnings and have to build up a new 
-patch, ideally adding a section for .text.head to vmlinux.lds.S),
-2) apply the attached patch.
-
-Opinions?
-
-Helge
-
---------------060402080201090608000109
-Content-Type: text/plain;
- name="t66"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="t66"
-
-diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
-index 50b4a3a..2e516b8 100644
---- a/arch/parisc/kernel/vmlinux.lds.S
-+++ b/arch/parisc/kernel/vmlinux.lds.S
-@@ -50,6 +50,7 @@ SECTIONS
+--- a/drivers/input/keyboard/hilkbd.c
++++ b/drivers/input/keyboard/hilkbd.c
+@@ -217,6 +217,10 @@ hil_keyb_init(void)
+ 		return -ENOMEM;
  
- 	_text = .;		/* Text and read-only data */
- 	.text ALIGN(16) : {
-+		HEAD_TEXT
- 		TEXT_TEXT
- 		SCHED_TEXT
- 		LOCK_TEXT
+ #if defined(CONFIG_HP300)
++	if (!MACH_IS_HP300) {
++		err = -ENODEV;
++		goto err1;
++	}
+ 	if (!hwreg_present((void *)(HILBASE + HIL_DATA))) {
+ 		printk(KERN_ERR "HIL: hardware register was not found\n");
+ 		err = -ENODEV;
+--- a/drivers/input/misc/hp_sdc_rtc.c
++++ b/drivers/input/misc/hp_sdc_rtc.c
+@@ -691,6 +691,11 @@ static int __init hp_sdc_rtc_init(void)
+ {
+ 	int ret;
+ 
++#ifdef __mc68000__
++	if (!MACH_IS_HP300)
++		return -ENODEV;
++#endif
++
+ 	init_MUTEX(&i8042tregs);
+ 
+ 	if ((ret = hp_sdc_request_timer_irq(&hp_sdc_rtc_isr)))
+--- a/drivers/input/serio/hp_sdc_mlc.c
++++ b/drivers/input/serio/hp_sdc_mlc.c
+@@ -306,6 +306,11 @@ static int __init hp_sdc_mlc_init(void)
+ {
+ 	hil_mlc *mlc = &hp_sdc_mlc;
+ 
++#ifdef __mc68000__
++	if (!MACH_IS_HP300)
++		return -ENODEV;
++#endif
++
+ 	printk(KERN_INFO PREFIX "Registering the System Domain Controller's HIL MLC.\n");
+ 
+ 	hp_sdc_mlc_priv.emtestmode = 0;
 
---------------060402080201090608000109--
+-- 
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
+
