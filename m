@@ -1,43 +1,60 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: Git head doesn't boot on A500
-Date: Tue, 20 May 2008 21:59:17 +0200
-Message-ID: <48332D95.3020409@gmx.de>
-References: <7d01f9f00805170620t30630519h4890037400c62fb5@mail.gmail.com> <20080517152623.GA26649@colo.lackof.org> <7d01f9f00805171752r4eb8ee5nbfee8f832677f792@mail.gmail.com> <20080518071342.GB26649@colo.lackof.org> <48305728.20403@gmx.de> <20080518202603.GA9093@colo.lackof.org>
+From: "rubisher" <rubisher@scarlet.be>
+Subject: Re: BUG 2.6.26-rc2: deadlock with pa_tlb_lock
+Date: Wed, 21 May 2008 00:39:33 +0100
+Message-ID: <K16XPX$D5402EE5D532F39790DD094A456EC2C4@scarlet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: Thibaut VARENE <T-Bone@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>, kyle@mcmartin.ca
+Content-Type: text/plain; charset=US-ASCII
+Cc: "grundler" <grundler@parisc-linux.org>,
+	"linux-parisc" <linux-parisc@vger.kernel.org>,
+	"rubisher" <rubisher@scarlet.be>
+To: "grundler" <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080518202603.GA9093@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Grant Grundler wrote:
-> On Sun, May 18, 2008 at 06:19:52PM +0200, Helge Deller wrote:
-...
-> (2) works for me. I'm booting with 64-bit on a500...at least it's
-> now finding all the disks and attempting to mount NFS root.
+> On Tue, May 20, 2008 at 01:36:14PM +0100, rubisher wrote:
+> > Hello,
+> > 
+> > > Hey,
+> > >
+> > > Rebuilding now with gcc-4.2 (instead of gcc-4.3) and retesting
+> > > with 2.6.26-rc3.
+> > >
+> > Just a short report, tbh I didn't pay attention that gcc-4.3 became the
+> > default gcc on my unstable install:
+> > same Kyle git tree 2.6.26-rc2 + fixed vmlinux.lds 32bit up build for d380 &
+> > b2k with new gcc-4.3 boot well but nic failed to work (either from box ping
+> > outside or the contrary: nothing respond)? (the same for the 2 different
+boxes.)
 > 
->> diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
->> index 50b4a3a..2e516b8 100644
->> --- a/arch/parisc/kernel/vmlinux.lds.S
->> +++ b/arch/parisc/kernel/vmlinux.lds.S
->> @@ -50,6 +50,7 @@ SECTIONS
->>  
->>  	_text = .;		/* Text and read-only data */
->>  	.text ALIGN(16) : {
->> +		HEAD_TEXT
+> Yes - we have to track down what causes the network to fail.
+> ARP is still working correctly so I'm doubtful this is a
+> NIC driver problem. I've posted more notes on this several
+> weeks ago.
 > 
-> grundler <537>fgrep HEAD_TEXT include/*/*.h
-> include/asm-generic/vmlinux.lds.h:#define HEAD_TEXT  *(.head.text)
-> 
-> Yeah, I like that better than depending on *(.text) to include it.
+oops sorry I missed it or simply wrongly understand ;<?
 
-So, this is the way to go ?
-Should I clean up the patch and send to Linus, or Kyle, will you do that 
-anyway with other patches?
-I think this really should go into 2.6.26.
+> The gcc-4.3/networking bug is a seperate issue from the bug
+> which I original reported in this thread.
+> 
+ok
 
-Helge
+cu,
+  J.
+> hth,
+> grant
+> 
+> > Otoh, same src tree rebuild with gcc-4.2 works fine on the boxes without any
+> > other chg.
+> > 
+> > Hth,
+> >   r.
+> > 
+> > 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+> 
 
