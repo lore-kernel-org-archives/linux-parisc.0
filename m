@@ -1,103 +1,51 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: [bug] gcc-4.[23] miscompiling causing networking to bugger up
-Date: Wed, 28 May 2008 19:37:14 -0400
-Message-ID: <119aab440805281637x722fd461n335a49aaa41c8a2c@mail.gmail.com>
-References: <20080528190946.GA30501@phobos.i.cabal.ca>
-	 <20080528200035.GB30501@phobos.i.cabal.ca>
-	 <119aab440805281555n7d16c1ccn4a2d73f267c3b686@mail.gmail.com>
-	 <20080528230025.GC30501@phobos.i.cabal.ca>
+Date: Wed, 28 May 2008 19:41:10 -0400
+Message-ID: <20080528234110.GD30501@phobos.i.cabal.ca>
+References: <20080528190946.GA30501@phobos.i.cabal.ca> <20080528200035.GB30501@phobos.i.cabal.ca> <119aab440805281555n7d16c1ccn4a2d73f267c3b686@mail.gmail.com> <20080528230025.GC30501@phobos.i.cabal.ca> <119aab440805281637x722fd461n335a49aaa41c8a2c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_17919_23051230.1212017834995"
-To: "Kyle McMartin" <kyle@mcmartin.ca>,
+Content-Type: text/plain; charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
 	linux-parisc <linux-parisc@vger.kernel.org>
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080528230025.GC30501@phobos.i.cabal.ca>
+In-Reply-To: <119aab440805281637x722fd461n335a49aaa41c8a2c@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-------=_Part_17919_23051230.1212017834995
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Wed, May 28, 2008 at 07:37:14PM -0400, Carlos O'Donell wrote:
+> On Wed, May 28, 2008 at 7:00 PM, Kyle McMartin <kyle@mcmartin.ca> wrote:
+> > Building the kernel without optimization is very tetchy... if you can
+> > guess what passes to remove, I can try... one of the optimization
+> > effects that must go is DCE though, otherwise we'll have undefined
+> > references to things (ie: kmalloc_too_much in a switch that should have
+> > been eliminated except the constant case.)
+> 
+> You *need* to build the kernel with -fno-dce and -fno-tree-dce?
+> Are you working around another compiler bug?
+> 
+> Take a look at the attached scripts I use.
+> 
+> ./o2list.sh > o2list.txt
+> ./permute-options.sh o2list.txt > run.sh
+> chmod u+x
+> run.sh
+> 
+> Normally I can simply run the results on a target and
+> know which is good and which is bad. Unfortunately
+> you have to link each into a kernel and try to boot.
+> 
 
-On Wed, May 28, 2008 at 7:00 PM, Kyle McMartin <kyle@mcmartin.ca> wrote:
-> Building the kernel without optimization is very tetchy... if you can
-> guess what passes to remove, I can try... one of the optimization
-> effects that must go is DCE though, otherwise we'll have undefined
-> references to things (ie: kmalloc_too_much in a switch that should have
-> been eliminated except the constant case.)
+Other way around... we *need* dce (but apparnetly not on this file)
+because of inline constructs like
 
-You *need* to build the kernel with -fno-dce and -fno-tree-dce?
-Are you working around another compiler bug?
+	switch (sizeof(some constant)) {
+	1:
+		blah;
+	default:
+		some_undefined_reference();
+	}
 
-Take a look at the attached scripts I use.
+Ah well, anyway, it works built at -O0, and buggers up at -O1.
 
-./o2list.sh > o2list.txt
-./permute-options.sh o2list.txt > run.sh
-chmod u+x
-run.sh
-
-Normally I can simply run the results on a target and
-know which is good and which is bad. Unfortunately
-you have to link each into a kernel and try to boot.
-
-Cheers,
-Carlos.
-
-------=_Part_17919_23051230.1212017834995
-Content-Type: application/x-sh; name=o2list.sh
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fgsjqb7j0
-Content-Disposition: attachment; filename=o2list.sh
-
-IyEvYmluL2Jhc2gKCiMgT3B0aW1pemF0aW9ucyBhdCAtTzIKbzJmbGFncz0oIi1mdGhyZWFkLWp1
-bXBzIgoJIi1mY3Jvc3NqdW1waW5nIlwKCSItZm9wdGltaXplLXNpYmxpbmctY2FsbHMiXAoJIi1m
-Y3NlLWZvbGxvdy1qdW1wcyJcCgkiLWZjc2Utc2tpcC1ibG9ja3MiXAoJIi1mZ2NzZSJcCgkiLWZl
-eHBlbnNpdmUtb3B0aW1pemF0aW9ucyJcCgkiLWZpcGEtdHlwZS1lc2NhcGUiXAoJIi1mc3RyZW5n
-dGgtcmVkdWNlIlwKCSItZnJlcnVuLWNzZS1hZnRlci1sb29wIlwKCSItZnJlcnVuLWxvb3Atb3B0
-IlwKCSItZmNhbGxlci1zYXZlcyJcCgkiLWZwZWVwaG9sZTIiXAoJIi1mc2NoZWR1bGUtaW5zbnMi
-XAoJIi1mc2NoZWR1bGUtaW5zbnMyIlwKCSItZnJlZ21vdmUiXAoJIi1mc3RyaWN0LWFsaWFzaW5n
-IlwKCSItZmRlbGV0ZS1udWxsLXBvaW50ZXItY2hlY2tzIlwKCSItZnJlb3JkZXItYmxvY2tzIlwK
-CSItZnJlb3JkZXItZnVuY3Rpb25zIlwKCSItZnRyZWUtc3RvcmUtY2NwIlwKCSItZnRyZWUtc3Rv
-cmUtY29weS1wcm9wIlwKCSItZnRyZWUtdnJwIlwKCSItZnRyZWUtcHJlIikKCnByZWZpeD0iJDEi
-CnBvc3RmaXg9IiQyIgoKIyAxIGF0IGF0aW1lLgpmb3Igb3B0aW9uIGluICR7bzJmbGFnc1tAXX07
-IGRvCiAgZWNobyAkcHJlZml4ICRvcHRpb24gJHBvc3RmaXgKZG9uZTsKCiMgMSBhdCBhIHRpbWUg
-YWRkaW5nLgpvcHRpb25zPSIiCmZvciBvcHRpb24gaW4gJHtvMmZsYWdzW0BdfTsgZG8KICBvcHRp
-b25zPSIkb3B0aW9ucyAkb3B0aW9uIgogIGVjaG8gJHByZWZpeCAkb3B0aW9ucyAkcG9zdGZpeApk
-b25lCgo=
-------=_Part_17919_23051230.1212017834995
-Content-Type: application/x-sh; name=permute-build.sh
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fgsjrdb21
-Content-Disposition: attachment; filename=permute-build.sh
-
-IyEvYmluL2Jhc2gKCmlmIFsgJCMgLW5lICIxIiBdOyB0aGVuCiAgICBlY2hvICIkMDogPEZsYWcg
-ZmlsZT4iCiAgICBleGl0IDEKZmkKCmZsYWdmaWxlPSIkMSIKbzFmbGFncz0oIi1mZGVmZXItcG9w
-IlwKCSItZmRlbGF5ZWQtYnJhbmNoIlwKCSItZm9taXQtZnJhbWUtcG9pbnRlciJcCgkiLWZndWVz
-cy1icmFuY2gtcHJvYmFiaWxpdHkiXAoJIi1mY3Byb3AtcmVnaXN0ZXJzIlwKCSItZmxvb3Atb3B0
-aW1pemUiXAoJIi1maWYtY29udmVyc2lvbiJcCgkiLWZpZi1jb252ZXJzaW9uMiJcCgkiLWZpcGEt
-cHVyZS1jb25zdCJcCgkiLWZpcGEtcmVmZXJlbmNlIlwKCSItZnRyZWUtY2NwIlwKCSItZnRyZWUt
-ZGNlIlwKCSItZnRyZWUtZG9taW5hdG9yLW9wdHMiXAoJIi1mdHJlZS1kc2UiXAoJIi1mdHJlZS10
-ZXIiXAoJIi1mdHJlZS1scnMiXAoJIi1mdHJlZS1zcmEiXAoJIi1mdHJlZS1jb3B5cmVuYW1lIlwK
-CSItZnRyZWUtZnJlIlwKCSItZnRyZWUtY29weS1wcm9wIlwKCSItZnRyZWUtc2luayJcCgkiLWZ0
-cmVlLXNhbGlhcyJcCgkiLWZ1bml0LWF0LWEtdGltZSJcCgkiLWZ0cmVlLWNoIlwKCSItZm1lcmdl
-LWNvbnN0YW50cyJcCgkiLWZhbGlnbi1sb29wcyJcCgkiLWZhbGlnbi1qdW1wcyJcCgkiLWZhbGln
-bi1sYWJlbHMiXAoJIi1mYWxpZ24tZnVuY3Rpb25zIlwKCSItZnJlb3JkZXItYmxvY2tzIlwKCSIt
-ZnJlb3JkZXItYmxvY2tzLWFuZC1wYXJ0aXRpb24iKQoKcHJlZml4PSJhcm0tbm9uZS1saW51eC1n
-bnVlYWJpLSIKY2M9IiR7cHJlZml4fWdjYyIKbzFmPSIke28xZmxhZ3NbQF19IgpjZmxhZ3M9Ii1z
-dGF0aWMgLWciCmNvdW50PSIxIgpvdXRwdXQ9InNhbXBsZSIKaW5wdXQ9InNhbXBsZS5jIgoKcnVu
-X2NvbXBpbGUoKSB7CiAgICBsb2NhbCBvMWY9IiQxIgogICAgbG9jYWwgY291bnQ9IiQyIgogICAg
-bG9jYWwgcG9zdGZpeD0iJDMiCiAgICB3aGlsZSBbIHRydWUgXTsgZG8KICAgICAgICByZWFkIGZs
-YWdzCiAgICAgICAgaWYgWyAhIC16ICIkZmxhZ3MiIF07IHRoZW4KCSAgICBlY2hvICJlY2hvIENv
-bXBpbGUgJHtvdXRwdXR9JHtjb3VudH0ke3Bvc3RmaXh9IC4uLiIKICAgICAgICAgICAgZWNobyAi
-JGNjICRjZmxhZ3MgJG8xZiAkZmxhZ3MgLW8gJHtvdXRwdXR9JHtjb3VudH0ke3Bvc3RmaXh9ICR7
-aW5wdXR9ID4mIC9kZXYvbnVsbCIKICAgICAgICBlbHNlCgkgICAgZWNobyAiZWNobyBEb25lLiIK
-ICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgZmkKICAgICAgICBjb3VudD0kKCgkY291bnQrMSkp
-CiAgICBkb25lIDwgJGZsYWdmaWxlCn0KCiMgRmlyc3QgcnVuOiBUdXJuIG9uIGFsbCAtTzEgZmxh
-Z3MsIGFuZCBwZXJtdXRlIC1PMiBmbGFncy4KIyBHQ0Mgd2lsbCBoYXZlIHNldCBvcHRpbWl6ZSA9
-PSAwLgpydW5fY29tcGlsZSAiJG8xZiIgIiRjb3VudCIgIi1vcHQwIgojIFNlY29uZCBydW4gdGhy
-b3VnaCB3aXRoIC1PMSBvbiwgYW5kIC1PMiBmbGFnIHBlcm11dGF0aW9uLgojIEdDQyB3aWxsIGhh
-dmUgc2V0IG9wdGltaXplID09IDEKcnVuX2NvbXBpbGUgIi1PMSIgIiRjb3VudCIgIi1vcHQxIgoK
-
-------=_Part_17919_23051230.1212017834995--
+Want a copy of each of the .S?
