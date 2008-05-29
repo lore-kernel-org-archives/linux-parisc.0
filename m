@@ -1,24 +1,34 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [bug] gcc-4.[23] miscompiling causing networking to bugger up
-Date: Wed, 28 May 2008 21:11:09 -0400 (EDT)
-Message-ID: <20080529011109.C1A444DCB@hiauly1.hia.nrc.ca>
-References: <20080529000219.GE30501@phobos.i.cabal.ca>
+From: rubisher <rubisher@scarlet.be>
+Subject: 6a4be75aa84b0bea7939bca1af112fb3c2dfd86e make my gcc (still 4.2)
+ unhappy ;<(
+Date: Thu, 29 May 2008 17:24:04 +0000
+Message-ID: <483EE6B4.2080600@scarlet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: kyle@mcmartin.ca, carlos@systemhalted.org,
-	linux-parisc@vger.kernel.org
-To: kyle@mcmartin.ca (Kyle McMartin)
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080529000219.GE30501@phobos.i.cabal.ca> from "Kyle McMartin" at May 28, 2008 08:02:19 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> I tried 4.4 from svn a few days (more like 2 weeks maybe) ago. Is that
-> recent enough or should I try 4.3-head as well (no problem to do.)
+Hello Kyle,
 
-4.4 has new bugs.
+This hunk:
++
++/* from pacache.S -- needed for copy_page */
++extern void copy_user_page_asm(void);
++EXPORT_SYMBOL(copy_user_page_asm);
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+made my 32bit kernel build failing because:
+<./include/asm-parisc/page.h>
+
+contains this prototype:
+
+void copy_user_page_asm(void *to, void *from);
+
+I so tried:
++extern void copy_user_page_asm(void *to, void *from);
+
+and it seems to help to build a bootable kernel on my b2k but I ignore if it's the right stuff to do?
+
+Tia,
+	r.
