@@ -1,38 +1,86 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [bug] gcc-4.3 miscompiling causing networking to bugger up
-Date: Sat, 31 May 2008 10:43:57 -0400
-Message-ID: <119aab440805310743g6c7bbd7and5dcbce603ac85df@mail.gmail.com>
-References: <20080528234110.GD30501@phobos.i.cabal.ca>
-	 <20080529000059.9C6434E77@hiauly1.hia.nrc.ca>
-	 <20080529000219.GE30501@phobos.i.cabal.ca>
-	 <119aab440805281707o78b19a65ke45692f67b6f542@mail.gmail.com>
-	 <20080531041010.GA27970@phobos.i.cabal.ca>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] convert sticore.c to PCI ROM API (bugzilla #9425)
+Date: Sat, 31 May 2008 19:15:16 +0200
+Message-ID: <20080531191516.ae60240f.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
-	linux-parisc@vger.kernel.org, "Randolph Chung" <tausq@debian.org>
-To: "Kyle McMartin" <kyle@mcmartin.ca>
+Content-Type: text/plain; charset=US-ASCII
+Cc: adaplas@gmail.com, protasnb@gmail.com, <jsimmons@infradead.org>
+To: linux-parisc@vger.kernel.org,
+	Linux-fbdev-devel <linux-fbdev-devel@lists.sourceforge.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080531041010.GA27970@phobos.i.cabal.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, May 31, 2008 at 12:10 AM, Kyle McMartin <kyle@mcmartin.ca> wrote:
-> I've found the solution to the bug, it seems something is going wonky
-> because of ip_fast_csum missing a "memory" clobber.
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-Great news!
+Convert console/sticore.c file to use PCI ROM API.
 
-The asm does advance the iph pointer, and reads the header data
-without telling gcc. The input/output operands only state the pointer
-may be read and modified not the memory at the pointer.
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-The compiler may have cached iph writes in registers and they may not
-be in memory yet. Under normal circumstances I would say "Add a memory
-input operand for the header data e.g. "m" (*header_struct_pointer)",
-but the relationship with ihl and iph is not known the compiler. In
-this case it is probably correct to use the "memory" clobber as a
-catch all.
+---
+I don't have cross-compiler nor the hardware so PARISC guys
+please test it.
 
-Cheers,
-Carlos.
+diff -urp linux-2.6.25/drivers/video/console/sticore.c linux-new/drivers/video/console/sticore.c
+--- linux-2.6.25/drivers/video/console/sticore.c	2008-04-17 04:49:44.000000000 +0200
++++ linux-new/drivers/video/console/sticore.c	2008-05-31 14:47:14.794107818 +0200
+@@ -780,7 +780,8 @@ out_err:
+ }
+ 
+ static struct sti_struct * __devinit
+-sti_try_rom_generic(unsigned long address, unsigned long hpa, struct pci_dev *pd)
++sti_try_rom_generic(char __iomem *address, unsigned long hpa,
++		    struct pci_dev *pd)
+ {
+ 	struct sti_struct *sti;
+ 	int ok;
+@@ -868,10 +869,8 @@ test_rom:
+ 	/* disable STI PCI ROM. ROM and card RAM overlap and
+ 	 * leaving it enabled would force HPMCs
+ 	 */
+-	if (sti->pd) {
+-		unsigned long rom_base;
+-		rom_base = pci_resource_start(sti->pd, PCI_ROM_RESOURCE);	
+-		pci_write_config_dword(sti->pd, PCI_ROM_ADDRESS, rom_base & ~PCI_ROM_ADDRESS_ENABLE);
++	if (sti->pd && rom_base) {
++		pci_unmap_rom(sti->pd, rom_base);
+ 		DPRINTK((KERN_DEBUG "STI PCI ROM disabled\n"));
+ 	}
+ 
+@@ -930,22 +929,22 @@ static int __devinit sticore_pci_init(st
+ 		const struct pci_device_id *ent)
+ {
+ #ifdef CONFIG_PCI
+-	unsigned long fb_base, rom_base;
+-	unsigned int fb_len, rom_len;
++	unsigned long fb_base;
++	unsigned int fb_len;
++	char __iomem *rom_base;
++	size_t rom_len;
+ 	struct sti_struct *sti;
+ 	
+ 	pci_enable_device(pd);
+ 
+ 	fb_base = pci_resource_start(pd, 0);
+ 	fb_len = pci_resource_len(pd, 0);
+-	rom_base = pci_resource_start(pd, PCI_ROM_RESOURCE);
+-	rom_len = pci_resource_len(pd, PCI_ROM_RESOURCE);
++	rom_base = pci_map_rom(pd, &rom_len);
+ 	if (rom_base) {
+-		pci_write_config_dword(pd, PCI_ROM_ADDRESS, rom_base | PCI_ROM_ADDRESS_ENABLE);
+-		DPRINTK((KERN_DEBUG "STI PCI ROM enabled at 0x%08lx\n", rom_base));
++		DPRINTK((KERN_DEBUG "STI PCI ROM enabled at 0x%p\n", rom_base));
+ 	}
+ 
+-	printk(KERN_INFO "STI PCI graphic ROM found at %08lx (%u kB), fb at %08lx (%u MB)\n",
++	printk(KERN_INFO "STI PCI graphic ROM found at %p (%u kB), fb at %08lx (%u MB)\n",
+ 		rom_base, rom_len/1024, fb_base, fb_len/1024/1024);
+ 
+ 	DPRINTK((KERN_DEBUG "Trying PCI STI ROM at %08lx, PCI hpa at %08lx\n",
+
+
+
+----------------------------------------------------------------------
+Podbij Dziki Zachod!Gra strategiczna online
+Sprawdz >>> http://link.interia.pl/f1dff
+
