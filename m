@@ -1,86 +1,52 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] convert sticore.c to PCI ROM API (bugzilla #9425)
-Date: Sat, 31 May 2008 19:15:16 +0200
-Message-ID: <20080531191516.ae60240f.krzysztof.h1@poczta.fm>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [bug] gcc-4.3 miscompiling causing networking to bugger up
+Date: Sat, 31 May 2008 19:37:12 -0600
+Message-ID: <20080601013712.GB7909@colo.lackof.org>
+References: <20080528234110.GD30501@phobos.i.cabal.ca> <20080529000059.9C6434E77@hiauly1.hia.nrc.ca> <20080529000219.GE30501@phobos.i.cabal.ca> <119aab440805281707o78b19a65ke45692f67b6f542@mail.gmail.com> <20080531041010.GA27970@phobos.i.cabal.ca> <20080531105858.GD28074@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: adaplas@gmail.com, protasnb@gmail.com, <jsimmons@infradead.org>
-To: linux-parisc@vger.kernel.org,
-	Linux-fbdev-devel <linux-fbdev-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+	Carlos O'Donell <carlos@systemhalted.org>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	linux-parisc@vger.kernel.org
+To: Matthew Wilcox <matthew@wil.cx>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20080531105858.GD28074@parisc-linux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+On Sat, May 31, 2008 at 04:58:58AM -0600, Matthew Wilcox wrote:
+...
+> So if GCC has something in a register, it might not bother to write it
+> back to ram before this asm if we don't have the memory clobber.
 
-Convert console/sticore.c file to use PCI ROM API.
+Willy, thanks for explaining...I had to reread this a few times to
+"get it". This would also explain why we saw it on ip_output where
+the ipv4 header was being written.
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+> Fantastic work, Kyle.  Thanks for spending so much time on this.
 
----
-I don't have cross-compiler nor the hardware so PARISC guys
-please test it.
+Agreed. I owe you a bar of chocolate.
 
-diff -urp linux-2.6.25/drivers/video/console/sticore.c linux-new/drivers/video/console/sticore.c
---- linux-2.6.25/drivers/video/console/sticore.c	2008-04-17 04:49:44.000000000 +0200
-+++ linux-new/drivers/video/console/sticore.c	2008-05-31 14:47:14.794107818 +0200
-@@ -780,7 +780,8 @@ out_err:
- }
- 
- static struct sti_struct * __devinit
--sti_try_rom_generic(unsigned long address, unsigned long hpa, struct pci_dev *pd)
-+sti_try_rom_generic(char __iomem *address, unsigned long hpa,
-+		    struct pci_dev *pd)
- {
- 	struct sti_struct *sti;
- 	int ok;
-@@ -868,10 +869,8 @@ test_rom:
- 	/* disable STI PCI ROM. ROM and card RAM overlap and
- 	 * leaving it enabled would force HPMCs
- 	 */
--	if (sti->pd) {
--		unsigned long rom_base;
--		rom_base = pci_resource_start(sti->pd, PCI_ROM_RESOURCE);	
--		pci_write_config_dword(sti->pd, PCI_ROM_ADDRESS, rom_base & ~PCI_ROM_ADDRESS_ENABLE);
-+	if (sti->pd && rom_base) {
-+		pci_unmap_rom(sti->pd, rom_base);
- 		DPRINTK((KERN_DEBUG "STI PCI ROM disabled\n"));
- 	}
- 
-@@ -930,22 +929,22 @@ static int __devinit sticore_pci_init(st
- 		const struct pci_device_id *ent)
- {
- #ifdef CONFIG_PCI
--	unsigned long fb_base, rom_base;
--	unsigned int fb_len, rom_len;
-+	unsigned long fb_base;
-+	unsigned int fb_len;
-+	char __iomem *rom_base;
-+	size_t rom_len;
- 	struct sti_struct *sti;
- 	
- 	pci_enable_device(pd);
- 
- 	fb_base = pci_resource_start(pd, 0);
- 	fb_len = pci_resource_len(pd, 0);
--	rom_base = pci_resource_start(pd, PCI_ROM_RESOURCE);
--	rom_len = pci_resource_len(pd, PCI_ROM_RESOURCE);
-+	rom_base = pci_map_rom(pd, &rom_len);
- 	if (rom_base) {
--		pci_write_config_dword(pd, PCI_ROM_ADDRESS, rom_base | PCI_ROM_ADDRESS_ENABLE);
--		DPRINTK((KERN_DEBUG "STI PCI ROM enabled at 0x%08lx\n", rom_base));
-+		DPRINTK((KERN_DEBUG "STI PCI ROM enabled at 0x%p\n", rom_base));
- 	}
- 
--	printk(KERN_INFO "STI PCI graphic ROM found at %08lx (%u kB), fb at %08lx (%u MB)\n",
-+	printk(KERN_INFO "STI PCI graphic ROM found at %p (%u kB), fb at %08lx (%u MB)\n",
- 		rom_base, rom_len/1024, fb_base, fb_len/1024/1024);
- 
- 	DPRINTK((KERN_DEBUG "Trying PCI STI ROM at %08lx, PCI hpa at %08lx\n",
+> > diff --git a/include/asm-parisc/checksum.h b/include/asm-parisc/checksum.h
+> > index cc3ec1b..1916ebe 100644
+> > --- a/include/asm-parisc/checksum.h
+> > +++ b/include/asm-parisc/checksum.h
+> > @@ -65,7 +65,7 @@ static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
+> >  "2:\n"
+> >  	: "=r" (sum), "=r" (iph), "=r" (ihl)
+> >  	: "1" (iph), "2" (ihl)
+> > -	: "r19", "r20", "r21" );
+> > +	: "r19", "r20", "r21", "memory" );
+> >  
+> >  	return (__force __sum16)sum;
+> >  }
 
+Does csum_ipv6_magic() also need the same treatment?
 
+Kyle suspects csum_ipv6_magic() might be ok because it's passing
+in a "struct ipv6_addr *".  If that's correct, maybe we should ask
+davem/et al to change ip_fast_csum() to take "struct iphdr *" as well?
 
-----------------------------------------------------------------------
-Podbij Dziki Zachod!Gra strategiczna online
-Sprawdz >>> http://link.interia.pl/f1dff
-
+thanks,
+grant
