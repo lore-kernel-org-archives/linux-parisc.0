@@ -1,53 +1,60 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
 Subject: Re: [RESEND] [PATCH] convert sticore.c to PCI ROM API
-Date: Fri, 06 Jun 2008 18:27:41 -0500
-Message-ID: <1212794861.16182.39.camel@localhost.localdomain>
+Date: Sat, 7 Jun 2008 11:08:36 +0200
+Message-ID: <20080607110836.b2c9f48a.krzysztof.h1@poczta.fm>
 References: <20080605231327.af9cc9e6.krzysztof.h1@poczta.fm>
-	 <1212704814.4241.37.camel@localhost.localdomain>
-	 <20080606223507.0daf2b80.krzysztof.h1@poczta.fm>
+	<1212704814.4241.37.camel@localhost.localdomain>
+	<20080606223507.0daf2b80.krzysztof.h1@poczta.fm>
+	<1212794861.16182.39.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-fbdev-devel <linux-fbdev-devel@lists.sourceforge.net>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: Krzysztof Helt <krzysztof.h1@poczta.fm>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Jon Smirl <jonsmirl@yahoo.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080606223507.0daf2b80.krzysztof.h1@poczta.fm>
+In-Reply-To: <1212794861.16182.39.camel@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2008-06-06 at 22:35 +0200, Krzysztof Helt wrote:
-> On Thu, 05 Jun 2008 17:26:54 -0500
-> James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
+On Fri, 06 Jun 2008 18:27:41 -0500
+James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
+
+> On Fri, 2008-06-06 at 22:35 +0200, Krzysztof Helt wrote:
+
+> > What is you advise for this patch James?
 > 
-> > 
-> > I'm really not sure this is such a good idea.  pci_map_rom() can do an
-> > ioremap() on the region.  In that case, gsc_readl which punches through
-> > our virtual memory into physical I/O space will fail.  What assurance do
-> > we have that all STI roms are correctly set up so pci_map_rom() isn't
-> > inclined to ioremap them?
-> > 
+> The more I look at this the more I doubt that it's a good thing.  STI is
+> really a platform driver; it has to function for both GSC and PCI
+> busses.  pci_map_rom() seems to be a bit of a minefield designed for x86
+> centric video cards, which STI definitely isn't.  The sticore driver is
+> also designed to operate on unmapped ranges ... at least this is the way
+> it's designed for the GSC, so the PCI part has to follow suit.
 > 
-> I haven't thought about this. The ROM the Helge tested was obviously
-> set up correctly, otherwise reading the ROM signature would be impossible.
+> Our simple base get and enabling transparently the driver currently has
+> says what we're doing; I don't really see why it needs to switch to
+> pci_map_rom.  Additionally, I fear that switching to pci_map_rom will
+> cause us to break later on down the road.
+> 
 
-I suspect Helge only tested GSC based cards, which will work just fine
-because they use the old logic.
+I am forwarding it to the reporter of the bug 9425 as this bug should be 
+closed without changing the code.
 
-> What is you advise for this patch James?
+A very similar case is for the bug 9424. I analyzed code for the Matrox
+framebuffers and it is not worth changing. The idea behind the  pci_map_rom()
+is that it enables and maps the ROM area. The Matrox framebuffer has
+these two separated as the ROM may appear in the already mapped area.
+The ROM is always enabled but not always mapped.
 
-The more I look at this the more I doubt that it's a good thing.  STI is
-really a platform driver; it has to function for both GSC and PCI
-busses.  pci_map_rom() seems to be a bit of a minefield designed for x86
-centric video cards, which STI definitely isn't.  The sticore driver is
-also designed to operate on unmapped ranges ... at least this is the way
-it's designed for the GSC, so the PCI part has to follow suit.
+The only unification I see is to export pci_rom_enable/pci_rom_disable()
+and use them inside the Matrox and sticore drivers (so no ioremap() 
+is done but the code is shorter).
 
-Our simple base get and enabling transparently the driver currently has
-says what we're doing; I don't really see why it needs to switch to
-pci_map_rom.  Additionally, I fear that switching to pci_map_rom will
-cause us to break later on down the road.
+Regards,
+Krzysztof
 
-James
-
+----------------------------------------------------------------------
+Tanie rozmowy!
+Sprawdz >>>  http://link.interia.pl/f1e22 
 
