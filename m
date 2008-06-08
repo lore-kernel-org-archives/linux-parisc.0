@@ -1,57 +1,36 @@
-From: rubisher <rubisher@scarlet.be>
-Subject: [Patch] cleanup pleonasm in unaligned.c
-Date: Sat, 07 Jun 2008 21:52:01 +0000
-Message-ID: <484B0301.2050505@scarlet.be>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [RESEND] [PATCH] convert sticore.c to PCI ROM API
+Date: Sun, 08 Jun 2008 18:24:29 +0200
+Message-ID: <484C07BD.8090308@gmx.de>
+References: <20080605231327.af9cc9e6.krzysztof.h1@poczta.fm>	 <1212704814.4241.37.camel@localhost.localdomain>	 <20080606223507.0daf2b80.krzysztof.h1@poczta.fm> <1212794861.16182.39.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: linux-parisc@vger.kernel.org
-To: "Carlos O'Donell" <carlos@systemhalted.org>,
-	Kyle McMartin <kyle@mcmartin.ca>
+Cc: Krzysztof Helt <krzysztof.h1@poczta.fm>,
+	linux-parisc@vger.kernel.org
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1212794861.16182.39.camel@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello Carlos, Kyle,
+James Bottomley wrote:
+> On Fri, 2008-06-06 at 22:35 +0200, Krzysztof Helt wrote:
+>> On Thu, 05 Jun 2008 17:26:54 -0500
+>> James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
+>>
+>>> I'm really not sure this is such a good idea.  pci_map_rom() can do an
+>>> ioremap() on the region.  In that case, gsc_readl which punches through
+>>> our virtual memory into physical I/O space will fail.  What assurance do
+>>> we have that all STI roms are correctly set up so pci_map_rom() isn't
+>>> inclined to ioremap them?
+>>>
+>> I haven't thought about this. The ROM the Helge tested was obviously
+>> set up correctly, otherwise reading the ROM signature would be impossible.
+> 
+> I suspect Helge only tested GSC based cards, which will work just fine
+> because they use the old logic.
 
-Trying to refresh my memory about gcc "memory" clobber, I just figure out that I missed what looks to me a useless 
-redundancy in some FIXUP_BRANCH_CLOBBER usage in the mentioned file:
+No, tested on Tadpole Laptop (7100LC) and c3k with VisEG PCI.
+But it's OK that the patch was dropped...
 
-you did well:
-#define FIXUP_BRANCH_CLOBBER "r1"
-
-I think so what is following is just a cleanup which wouldn't affect the generated code, even thought:
---- ./a/arch/parisc/kernel/unaligned.c	2008-05-17 16:44:35.000000000 +0000
-+++ ./b/arch/parisc/kernel/unaligned.c	2008-06-07 21:30:56.000000000 +0000
-@@ -350,7 +350,7 @@
-  	ASM_EXCEPTIONTABLE_ENTRY(2b,4b)
-  	: "=r" (ret)
-  	: "r" (val), "r" (regs->ior), "r" (regs->isr)
--	: "r19", "r20", "r21", "r22", "r1", FIXUP_BRANCH_CLOBBER );
-+	: "r19", "r20", "r21", "r22", FIXUP_BRANCH_CLOBBER );
-
-  	return 0;
-  }
-@@ -402,7 +402,7 @@
-  	ASM_EXCEPTIONTABLE_ENTRY(4b,6b)
-  	: "=r" (ret)
-  	: "r" (val), "r" (regs->ior), "r" (regs->isr)
--	: "r19", "r20", "r21", "r22", "r1", FIXUP_BRANCH_CLOBBER );
-+	: "r19", "r20", "r21", "r22", FIXUP_BRANCH_CLOBBER );
-  #else
-      {
-  	unsigned long valh=(val>>32),vall=(val&0xffffffffl);
-@@ -437,7 +437,7 @@
-  	ASM_EXCEPTIONTABLE_ENTRY(5b,7b)
-  	: "=r" (ret)
-  	: "r" (valh), "r" (vall), "r" (regs->ior), "r" (regs->isr)
--	: "r19", "r20", "r21", "r1", FIXUP_BRANCH_CLOBBER );
-+	: "r19", "r20", "r21", FIXUP_BRANCH_CLOBBER );
-      }
-  #endif
-
-=== <> ===
-
-What's your opinion?
-
-Cheers,
-	r.
+Helge
