@@ -1,47 +1,53 @@
-From: Thiemo Seufer <ths@networkno.de>
-Subject: Re: hppa release status
-Date: Fri, 13 Jun 2008 10:48:09 +0100
-Message-ID: <20080613094809.GA17481__31493.464872665$1213352453$gmane$org@networkno.de>
-References: <20080608194617.GT10194@mails.so.argh.org> <484EF5D7.5000209@gmx.de> <1213285147.3426.23.camel@localhost.localdomain> <20080613084410.GB12988@artemis.madism.org>
+From: Kyle McMartin <kyle@hera.kernel.org>
+Subject: [git patches] parisc bug fixes for 2.6.26
+Date: Fri, 13 Jun 2008 16:32:25 +0000
+Message-ID: <20080613163225.GA11701@hera.kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	Andreas Barth <aba@not.so.argh.org>,
-	debian-hppa@lists.debian.org, debian-release@lists.debian.o
+Cc: akpm@linux-foundation.org, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+To: torvalds@linux-foundation.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080613084410.GB12988@artemis.madism.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Pierre Habouzit wrote:
-[snip]
-> > Actually, I can't reproduce this on ion, which is my debian testing
-> > build box.  The only difference from a normal testing system is that
-> > it's running 2.6.26-rc1 (it's also a pa8800 which makes its coherency a
-> > bit more stringent).  Building python 2.5.2-6 and running all the built
-> > in tests except the two parisc exceptions runs.  Ryan Murray stated that
-> > the failing test was test_sys, so this is what I get running it alone:
-> > 
-> > jejb@ion> pwd
-> > /home/jejb/sources/python2.5-2.5.2/build-shared
-> > jejb@ion> ./python  -E -tt ../Lib/test/regrtest.py -w -l -uall -s
-> > test_sys
-> > test_sys
-> > 1 test OK.
-> > 
-> > So I think more investigation of the actual alleged failure is
-> > warranted.  At this time, if it is a real failure, I'm not sure it's
-> > necessarily threads related.
-> 
->   This is really coherent with our observations: LT is almost pure C,
-> and kfreebsd uses LT and python works really well. So either it's a bug
-> in the LT hppa specific code, or a kernel issue. Your tests tends to
-> show the latter.
+Purely bugfixes (and a reversion of the section name patch since it broke
+on a pile of machines.)
 
-I recall a similiar failure on mips/mipsel went away after upgrading the
-buildd kernels to 2.6.24+. (I have no idea what version the hppa buildds
-use.)
+cheers, Kyle
 
+The following changes since commit 5dd34572ad9a3be430632dd42e4af2ea370b397b:
+  Linus Torvalds (1):
+        Linux 2.6.26-rc6
 
-Thiemo
+are available in the git repository at:
+
+  /pub/scm/linux/kernel/git/kyle/parisc-2.6.git master
+
+Kyle McMartin (7):
+      Revert "parisc: fix trivial section name warnings"
+      parisc: move head.S to head.text section
+      parisc: export copy_user_page_asm
+      parisc: export empty_zero_page
+      parisc: fix off by one in setup_sigcontext32
+      parisc: fix miscompilation of ip_fast_csum with gcc >= 4.3
+      parisc: update my email address
+
+ MAINTAINERS                       |    8 ++++----
+ arch/parisc/hpux/gate.S           |    3 +--
+ arch/parisc/hpux/wrappers.S       |    3 +--
+ arch/parisc/kernel/entry.S        |    3 +--
+ arch/parisc/kernel/head.S         |    1 +
+ arch/parisc/kernel/hpmc.S         |    3 +--
+ arch/parisc/kernel/pacache.S      |    3 +--
+ arch/parisc/kernel/parisc_ksyms.c |    3 +++
+ arch/parisc/kernel/perf_asm.S     |    2 +-
+ arch/parisc/kernel/real2.S        |   13 ++++++-------
+ arch/parisc/kernel/signal32.c     |    4 ++--
+ arch/parisc/kernel/syscall.S      |    5 ++---
+ arch/parisc/kernel/vmlinux.lds.S  |    1 +
+ arch/parisc/lib/fixup.S           |    3 +--
+ arch/parisc/lib/lusercopy.S       |    5 ++---
+ arch/parisc/mm/init.c             |    1 +
+ include/asm-parisc/checksum.h     |    2 +-
+ 17 files changed, 30 insertions(+), 33 deletions(-)
