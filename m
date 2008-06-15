@@ -1,21 +1,28 @@
-From: rubisher <rubisher@scarlet.be>
-Subject: Is www.parisc-linux.org down?
-Date: Sun, 15 Jun 2008 13:11:15 +0000
-Message-ID: <485514F3.9050401@scarlet.be>
+From: Adrian Bunk <bunk@kernel.org>
+Subject: [2.6 patch] binfmt_som.c: add MODULE_LICENSE
+Date: Sun, 15 Jun 2008 19:13:16 +0300
+Message-ID: <20080615161316.GA7865@cs181133002.pp.htv.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: kyle@mcmartin.ca, matthew@wil.cx, grundler@parisc-linux.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello dear parisc-linux.org maintainers,
+This patch adds the missing MODULE_LICENSE("GPL").
 
-I try to look for some archived mail on 'http://parisc-linux.org/mailing-lists/index.html'
+Reported-by: Adrian Bunk <bunk@kernel.org>
+Signed-off-by: Adrian Bunk <bunk@kernel.org>
 
-but it din't answers: 'The server at www.parisc-linux.org is taking too long to respond.'
-
-I just hope it's just a temporary failure.
-
-Tia,
-	r.
+---
+4cec562181f818f16f072b9a14ca7a0ce6c66417 diff --git a/fs/binfmt_som.c b/fs/binfmt_som.c
+index fdc36bf..6d3bebb 100644
+--- a/fs/binfmt_som.c
++++ b/fs/binfmt_som.c
+@@ -308,3 +308,5 @@ static void __exit exit_som_binfmt(void)
+ 
+ core_initcall(init_som_binfmt);
+ module_exit(exit_som_binfmt);
++
++MODULE_LICENSE("GPL");
