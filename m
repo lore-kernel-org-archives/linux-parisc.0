@@ -1,53 +1,97 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: ldcw inline assembler patch
-Date: Mon, 16 Jun 2008 16:50:23 -0400
-Message-ID: <119aab440806161350w4d15c14ex735377b78f697fd8@mail.gmail.com>
-References: <4853E587.9020802@gmx.de>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] don't activate unsupported GSC STI cards on HPPA
+Date: Mon, 16 Jun 2008 22:50:28 +0200
+Message-ID: <200806162250.28773.deller@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org,
-	"John David Anglin" <dave.anglin@nrc.ca>
-To: "Helge Deller" <deller@gmx.de>
+Content-Type: text/plain;
+  charset="us-ascii"
+Cc: linux-parisc@vger.kernel.org
+To: linux-fbdev-devel@lists.sourceforge.net
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4853E587.9020802@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Jun 14, 2008 at 11:36 AM, Helge Deller <deller@gmx.de> wrote:
-> I'm wondering if this patch might help people who are seeing locking
-> problems on SMP boxes ?
-> Helge
->
-> diff --git a/include/asm-parisc/system.h b/include/asm-parisc/system.h
-> index ee80c92..4752684 100644
-> --- a/include/asm-parisc/system.h
-> +++ b/include/asm-parisc/system.h
-> @@ -168,8 +168,9 @@ static inline void set_eiem(unsigned long val)
->  /* LDCW, the only atomic read-write operation PA-RISC has. *sigh*.  */
->  #define __ldcw(a) ({                                           \
->        unsigned __ret;                                         \
-> -       __asm__ __volatile__(__LDCW " 0(%1),%0"                 \
-> -               : "=r" (__ret) : "r" (a));                      \
-> +       __asm__ __volatile__(__LDCW " 0(%2),%0"                 \
-> +                       : "=r" (__ret), "=m" (*(a))             \
-> +                       : "r" (a), "m" (*(a))   );              \
->        __ret;                                                  \
->  })
+On HPPA there exists some older GSC graphics cards, which
+need special graphic-card-BIOS patching to become supported.
+Since we don't have yet implemented the patching, it's better
+to detect such cards in advance, inform to the user that there 
+are known problems and to not activate the card.
 
-You don't want to do that, the compiler might hold "=m" (*(a)) in a
-temporary memory location.
+Problematic GSC cards and BIOS versions are:
+* Hyperdrive/Hyperbowl (A4071A) graphics card series: 
+   * ID = 0x2BCB015A (Version 8.04/8)
+   * ID = 0x2BCB015A (Version 8.04/11)
+* Thunder 1 VISUALIZE 48 card: 
+   * ID = 0x2F23E5FC (Version 8.05/9)
+* Thunder 2 VISUALIZE 48 XP card: 
+   * ID = 0x2F8D570E (Version 8.05/12)
+* Some Hyperion and ThunderHawk GSC cards
 
-e.g.
-temp_mem = *a;
-reg2 = &temp_mem;
-... operation ...
-*a = temp_mem;
+Further details are described here:
+http://parisc-linux.org/faq/graphics-howto.html
 
-You would be atomic with regards to the store to temp_mem, but not a.
-Infact this could always be the case.
 
-I'm now of the opinion that we need a "memory" clobber in the original
-expression to prevent this from ever happening.
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Cheers,
-Carlos.
+
+ sticore.c |   30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
+
+
+diff --git a/drivers/video/console/sticore.c b/drivers/video/console/sticore.c
+index e9ab657..e5eec26 100644
+--- a/drivers/video/console/sticore.c
++++ b/drivers/video/console/sticore.c
+@@ -24,6 +24,7 @@
+ #include <asm/hardware.h>
+ #include <asm/parisc-device.h>
+ #include <asm/cacheflush.h>
++#include <asm/grfioctl.h>
+ 
+ #include "../sticore.h"
+ 
+@@ -728,6 +729,7 @@ sti_read_rom(int wordmode, struct sti_struct *sti, unsigned long address)
+ {
+ 	struct sti_cooked_rom *cooked;
+ 	struct sti_rom *raw = NULL;
++	unsigned long revno;
+ 
+ 	cooked = kmalloc(sizeof *cooked, GFP_KERNEL);
+ 	if (!cooked)
+@@ -770,9 +772,35 @@ sti_read_rom(int wordmode, struct sti_struct *sti, unsigned long address)
+ 	sti->graphics_id[1] = raw->graphics_id[1];
+ 	
+ 	sti_dump_rom(raw);
+-	
++
++	/* check if the ROM routines in this card are compatible */
++	if (wordmode || sti->graphics_id[1] != 0x09A02587)
++		goto ok;
++
++	revno = (raw->revno[0] << 8) | raw->revno[1];
++
++	switch (sti->graphics_id[0]) {
++	case S9000_ID_HCRX:
++		/* HyperA or HyperB ? */
++		if (revno == 0x8408 || revno == 0x840b)
++			goto msg_not_supported;
++		break;
++	case CRT_ID_THUNDER:
++		if (revno == 0x8509)
++			goto msg_not_supported;
++		break;
++	case CRT_ID_THUNDER2:
++		if (revno == 0x850c)
++			goto msg_not_supported;
++	}
++ok:
+ 	return 1;
+ 
++msg_not_supported:
++	printk(KERN_ERR "Sorry, this GSC/STI card is not yet supported.\n");
++	printk(KERN_ERR "Please see http://parisc-linux.org/faq/"
++			"graphics-howto.html for more info.\n");
++	/* fall through */
+ out_err:
+ 	kfree(raw);
+ 	kfree(cooked);
