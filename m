@@ -1,52 +1,58 @@
-From: Adrian Bunk <bunk@kernel.org>
-Subject: Re: parisc: pcibios_init_bus() isn't called
-Date: Tue, 17 Jun 2008 12:01:43 +0300
-Message-ID: <20080617090143.GB20169@cs181133002.pp.htv.fi>
-References: <20080615161327.GC7865@cs181133002.pp.htv.fi> <20080616224107.GA32030@colo.lackof.org>
+From: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: architectures with ARCH_SUPPORTS_AOUT but no binfmt_aout
+Date: Tue, 17 Jun 2008 10:46:44 +0100
+Message-ID: <1213696004.26255.960.camel@pmac.infradead.org>
+References: <1213565555.26255.522.camel@pmac.infradead.org>
+	 <1213604973-7073-1-git-send-email-jacmet@sunsite.dk>
+	 <1213617663.26255.708.camel@pmac.infradead.org>
+	 <20080616121727.GB10854@cs181133002.pp.htv.fi>
+	 <1213619214.26255.721.camel@pmac.infradead.org>
+	 <20080617084235.GA20169@cs181133002.pp.htv.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: kyle@mcmartin.ca, matthew@wil.cx, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>,
-	ink@jurassic.park.msu.ru
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080616224107.GA32030@colo.lackof.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain
+Cc: Peter Korsgaard <jacmet@sunsite.dk>, linux-kernel@vger.kernel.org,
+	sam@ravnborg.org, dhowells@redhat.com, andi@firstfloor.org,
+	"Kirill A. Shutemov" <k.shutemov@gmail.com>,
+	ysato@users.sourceforge.jp, takata@linux-m32r.org,
+	linux-m32r@ml.linux-m32r.org, kyle@mcmartin.ca, matthew@wil.cx,
+	grundler@parisc-linux.org, linux-parisc@vger.kernel.org,
+	lethal@linux-sh.org, linux-sh@vger.kernel.org,
+	linux-arch@vger.kernel.org
+To: Adrian Bunk <bunk@kernel.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20080617084235.GA20169@cs181133002.pp.htv.fi>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jun 16, 2008 at 04:41:07PM -0600, Grant Grundler wrote:
-> On Sun, Jun 15, 2008 at 07:13:27PM +0300, Adrian Bunk wrote:
-> > arch/parisc/kernel/pci.c:pcibios_init_bus() never gets called - this
-> > doesn't seem to be intentionally?
+On Tue, 2008-06-17 at 11:42 +0300, Adrian Bunk wrote:
 > 
-> I think this is accidentally abandoned code and introduced here:
->     http://lkml.org/lkml/2001/12/22/43
+> > Why _are_ there architectures which define ARCH_SUPPORTS_AOUT and have
+> > <asm/a.out.h> but don't support binfmt_aout, anyway? How does that make
+> > sense?
+> 
+> My guess would be that binfmt_aout isn't actually used there.
+> 
+> The affected architectures are:
+> - h8300
+> - m32r
+> - parisc
+> - sh
+> - v850
+> 
+> v850 is broken beyond repair, and I hope my patch to remove the 
+> architecture will make it into 2.6.27.
+> 
+> For the other 4 architectures I have Cc'ed the architecture maintainers.
 
-As far as I can see this patch never made it into the tree?
+There's another set of architectures which have <asm/a.out.h> but don't
+define ARCH_SUPPORTS_AOUT. Including PowerPC.
 
-Ivan, do you remember details about this?
+I think we can probably get away with removing <asm/a.out.h> from every
+architecture other than Alpha, ARM, m68k and x86, and killing
+ARCH_SUPPORTS_AOUT completely.
 
-> So it was called from pci_do_scan_bus(). Can you track down when this
-> was removed from pci_do_scan_bus() ?
-> 
-> But it was once used by parisc port:
->     http://lists.parisc-linux.org/pipermail/parisc-linux/2001-June/037259.html
-> 
-> and then perhaps got removed soon after in the generic code:
->     http://www.cs.helsinki.fi/linux/linux-kernel/2003-01/0388.html
-> 
-> But I'm not finding the exact patch that removed it.
-> 
-> thanks,
-> grant
-
-cu
-Adrian
+Or maybe, as dhowells suggests, re-defining ARCH_SUPPORTS_AOUT to be set
+only on Alpha, ARM, m68k and x86 (so BINFMT_AOUT can depend on it).
 
 -- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
-
+dwmw2
