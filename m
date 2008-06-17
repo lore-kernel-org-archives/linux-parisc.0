@@ -1,38 +1,62 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: ldcw inline assembler patch
-Date: Mon, 16 Jun 2008 23:34:01 -0400
-Message-ID: <119aab440806162034m3800b8ebxfc001bbe5e2b4b9a@mail.gmail.com>
-References: <4853E587.9020802@gmx.de>
-	 <119aab440806161350w4d15c14ex735377b78f697fd8@mail.gmail.com>
-	 <4856D5E4.7090206@gmx.de>
-	 <119aab440806161454v49c15f47k75dbf27215d4a978@mail.gmail.com>
-	 <20080616215726.GD18358@phobos.i.cabal.ca>
-	 <20080616220550.GB28190@parisc-linux.org>
-	 <119aab440806161514j16dad9ednb1b5124f52b6f162@mail.gmail.com>
-	 <119aab440806161856h6133585cpfadb8fe0427e901e@mail.gmail.com>
+From: Adrian Bunk <bunk@kernel.org>
+Subject: architectures with ARCH_SUPPORTS_AOUT but no binfmt_aout
+Date: Tue, 17 Jun 2008 11:42:35 +0300
+Message-ID: <20080617084235.GA20169@cs181133002.pp.htv.fi>
+References: <1213565555.26255.522.camel@pmac.infradead.org> <1213604973-7073-1-git-send-email-jacmet@sunsite.dk> <1213617663.26255.708.camel@pmac.infradead.org> <20080616121727.GB10854@cs181133002.pp.htv.fi> <1213619214.26255.721.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "Kyle McMartin" <kyle@mcmartin.ca>, "Helge Deller" <deller@gmx.de>,
-	linux-parisc@vger.kernel.org,
-	"John David Anglin" <dave.anglin@nrc.ca>
-To: "Matthew Wilcox" <matthew@wil.cx>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440806161856h6133585cpfadb8fe0427e901e@mail.gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Cc: Peter Korsgaard <jacmet@sunsite.dk>, linux-kernel@vger.kernel.org,
+	sam@ravnborg.org, dhowells@redhat.com, andi@firstfloor.org,
+	"Kirill A. Shutemov" <k.shutemov@gmail.com>,
+	ysato@users.sourceforge.jp, takata@linux-m32r.org,
+	linux-m32r@ml.linux-m32r.org, kyle@mcmartin.ca, matthew@wil.cx,
+	grundler@parisc-linux.org, linux-parisc@vger.kernel.org,
+	lethal@linux-sh.org, linux-sh@vger.kernel.org
+To: David Woodhouse <dwmw2@infradead.org>
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <1213619214.26255.721.camel@pmac.infradead.org>
+List-ID: <linux-sh.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jun 16, 2008 at 9:56 PM, Carlos O'Donell
-<carlos@systemhalted.org> wrote:
-> The compiler creates memory temporaries all the times and expects the
-> optimizers to see that the temporaries are not needed. However,
-> sometimes the temporaries aren't removed.
+On Mon, Jun 16, 2008 at 01:26:54PM +0100, David Woodhouse wrote:
+>...
+> Actually, I think we can drop the preceding patch too -- it's not
+> necessary to fix the regression in 2.6.26, and dhowells suggests that we
+> might still want to use ARCH_SUPPORTS_AOUT, by making BINFMT_AOUT depend
+> on it instead of that hard-coded list of architectures.
+> 
+> If we do that, then ARCH_SUPPORTS_AOUT would need to be defined on a
+> different set of architectures to the ones it's currently defined on --
+> so I don't really want to go there before 2.6.26. I'll push just the
+> parts which were included in the mail I just sent.
+> 
+> Why _are_ there architectures which define ARCH_SUPPORTS_AOUT and have
+> <asm/a.out.h> but don't support binfmt_aout, anyway? How does that make
+> sense?
 
-It turns out this should never happen because raw_spinlock_t->lock is volatile.
+My guess would be that binfmt_aout isn't actually used there.
 
-Therefore the memory clobber is not required.
+The affected architectures are:
+- h8300
+- m32r
+- parisc
+- sh
+- v850
 
-The memory barriers will prevent code from being moved before the lock
-or past the unlock.
+v850 is broken beyond repair, and I hope my patch to remove the 
+architecture will make it into 2.6.27.
 
-Cheers,
-Carlos.
+For the other 4 architectures I have Cc'ed the architecture maintainers.
+
+> dwmw2
+
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
+
