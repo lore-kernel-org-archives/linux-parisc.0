@@ -1,136 +1,148 @@
 From: Joel Soete <soete.joel@scarlet.be>
-Subject: Re: in ccio_io_pdir_entry(), BUG_ON() seems to break gcc-4.2	optimization?
-Date: Thu, 19 Jun 2008 19:44:43 +0000
-Message-ID: <485AB72B.2090304@scarlet.be>
-References: <48550D05.2060501@scarlet.be> <20080619160441.GA6049@colo.lackof.org>
+Subject: Re: Yet another inline asm worry: mtsp() macro (and may be other)?
+Date: Thu, 19 Jun 2008 20:01:02 +0000
+Message-ID: <485ABAFE.2010504@scarlet.be>
+References: <K2PKFI$6B7F5B0E10C229208B934B9E4E289468@scarlet.be> <20080619161151.GB6049@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: rubisher <rubisher@scarlet.be>, linux-parisc@vger.kernel.org
+Cc: linux-parisc <linux-parisc@vger.kernel.org>,
+	Helge Deller <deller@gmx.de>, kyle <kyle@mcmartin.ca>
 To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080619160441.GA6049@colo.lackof.org>
+In-Reply-To: <20080619161151.GB6049@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 
 
 Grant Grundler wrote:
-> On Sun, Jun 15, 2008 at 12:37:25PM +0000, rubisher wrote:
+> On Thu, Jun 19, 2008 at 12:40:30PM +0100, Joel Soete wrote:
 >> Hello all,
 >>
->> looking at this hunk:
->> void CCIO_INLINE
->> ccio_io_pdir_entry(u64 *pdir_ptr, space_t sid, unsigned long vba,
->>                    unsigned long hints)
->> {
->>         register unsigned long pa;
->>         register unsigned long ci; /* coherent index */
+>> Grant, in a first approach I would like to address this post to you because
+>> all start from ccio-dma (again yes) when I figure out that in fact gcc-4.2 rob
+>> a part this driver code???
+> ..
+>> My first worry was about the form takes the resulting code of <ccio_io_pdir_entry>
+>> for remind:
+>>     0:   cb 39 a0 60     movb,<> r25,r25,38 <ccio_io_pdir_entry+0x38>
+>>     4:   34 1c 00 00     ldi 0,ret0
+> ...
+>> The question was why sr1 is always set to 0 when it's actualy a function
+>> parameter (iirc 2d arg i.e. r25?)
 >>
->>         /* We currently only support kernel addresses */
->>         BUG_ON(sid != KERNEL_SPACE);
-> ...
->> and I noticed that resulting code looks like:
->>    0:   cb 39 a0 60     movb,<> r25,r25,38 <ccio_io_pdir_entry+0x38>
->>    4:   34 1c 00 00     ldi 0,ret0
+>> Fwiw removing BUG_ON() seems to fix this issue?
 > 
-> The BUG_ON is causing the movb to be inserted. And then the compiler knows
-> the value is zero and can either copy from a register or "load immediate 0".
-> It probably chose the "ldi 0" because it avoids register interlocks and
-> can always be executed.
+> Yes. I just replied to your previous mail.
 > 
-> The movb will either branch to +0x38 (and nullifies the delay slot)
-> or execute the ldi. So it looks right to me.
-> 
-> BTW, I think the BUG_ON can go away. It's good for debugging but doesn't
-> need to be in every kernel.
-> 
-> ...
->> And my worry was about lines 4: and 8:.
->> According to the C code, I don't understand why optimization want to 
->> initialize sr1 to 0 while it should be set to r25 (i.e. arg1)?
-> 
-> Does the BUG_ON explaination make sense to you?
-> 
-Well I nerver imagine that a compiler can make proof of this kind of induction spirit ;-) but that's give the sense, tx.
+yes.
 
->> Otoh, the sba botherhood code didn't showing the same behaviour:
->>    0:   22 a0 0e 01     ldil L%-10000000,r21
->>    4:   34 1c 00 00     ldi 0,ret0
->>    8:   34 1d 20 01     ldi -1000,ret1
->>    c:   0a b8 0a 15     add,l r24,r21,r21
->>   10:   08 15 02 56     copy r21,r22
->>   14:   34 15 00 00     ldi 0,r21
->>   18:   0b 95 02 15     and r21,ret0,r21
->>   1c:   0b b6 02 16     and r22,ret1,r22
->>   20:   00 19 58 20     mtsp r25,sr1
->>   24:   07 00 53 13     lci r0(sr1,r24),r19
->>   28:   d2 73 1a 6c     extrw,u r19,19,20,r19
->>   2c:   23 80 00 01     ldil L%-80000000,ret0
->>   30:   34 1d 00 00     ldi 0,ret1
->>
->> but didn't start with BUG_ON(),
+>> btw as far as it must be KERNEL_SPACE, couldn't we simplify stuff: removing
+>> sid parameter and replace mtsp macro call with a simple asm volatile("mtsp
+>> %%r0,%%sr1":::"memory")?
 > 
-> Right. That should be a clue. :)
+> We could. But I thought there are cases were we might want to DMA to/from
+> user space directly and that's why Space ID is a parameter.
+
+Ok but it was a BUG if temporary space reg is not 0, so???
+
+> My guess is
+> we are creating a kernel alias for user space and using the alias instead.
+> If that's correct and is the long term plan, we could remove the "sid"
+> parameter.
 > 
+
+Nice to me.
+btw system seems to boot too with asm volatile("mtsp %%r0,%%sr1":::"memory")
+may be the cpp can catch in the mtsp(gr, cr) macro if gr==0 then I can use this insn if not the original macro???
+
+Tx again,
+	j.
+
+
 > hth,
 > grant
 > 
-Tx again,
-	J.
-
-ps: ccio_io_pdir_entry() seems to works fine without BUG_ON().
->> I simply try to remove this from ccio code 
->> and get a better result:
->> 00000000 <ccio_io_pdir_entry>:
->>    0:   00 19 58 20     mtsp r25,sr1
->>    4:   23 80 0e 01     ldil L%-10000000,ret0
->>    8:   0b 98 0a 1c     add,l r24,ret0,ret0
->>    c:   d7 97 0c 14     depw r23,31,12,ret0
->>   10:   0f 5c 12 88     stw ret0,4(r26)
->>   14:   07 00 53 18     lci r0(sr1,r24),r24
->>   18:   d3 18 1a 74     extrw,u r24,19,12,r24
->>   1c:   34 1c 00 00     ldi 0,ret0
->>   20:   d7 98 0e 14     depw r24,15,12,ret0
->>   24:   0f 5c 12 80     stw ret0,0(r26)
->>   28:   07 40 12 80     fdc r0(r26)
->>   2c:   00 00 04 00     sync
->>   30:   e8 40 c0 02     bv,n r0(rp)
->> Disassembly of section .init.text:
+>> Then I look for all the call to function (ccio_io_pdir_entry) even thought
+>> it's inligned with those mtsp and lci it would be easy to find it.
+>> The C code learn me that it would call in ccio_map_single() and thanks with
+>> iommu_helper.h in ccio_map_sg(). But objdump -D ccio-dma.o shows me only one
+>> place where this code is used
+>> 00000000 <ccio_map_single>:
+>> [snip]
+>>   84:   34 14 00 00     ldi 0,r20
+>>   88:   00 14 58 20     mtsp r20,sr1
+>>   8c:   0a a3 0a 13     add,l r3,r21,r19
+>>   90:   d6 65 0c 14     depw r5,31,12,r19
+>>   94:   0f 53 12 88     stw r19,4(r26)
+>>   98:   04 60 53 1c     lci r0(sr1,r3),ret0
+>>   9c:   d3 9c 1a 74     extrw,u ret0,19,12,ret0
+>>   a0:   d6 9c 0e 14     depw ret0,15,12,r20
+>>   a4:   0f 54 12 80     stw r20,0(r26)
+>>   a8:   07 40 12 80     fdc r0(r26)
+>>   ac:   00 00 04 00     sync
+>> [snip]
 >>
->> But this time, it seems not consider assembly:
->>         asm volatile ("lci %%r0(%%sr1, %1), %0" : "=r" (ci) : "r" (vba));
->>         asm volatile ("extru %1,19,12,%0" : "+r" (ci) : "r" (ci));
->>         asm volatile ("depw  %1,15,12,%0" : "+r" (pa) : "r" (ci));
+>> and not in ccio_map_sg() (even not a call to ccio_io_pdir_entry() in case he
+>> didn't reach to inline it).
 >>
->> as a 'volatile' block and insert line 1c:
->> This could may be solved by re-write as an one 'volatile' asm block like:
->> 	asm volatile (
->> 	"lci %%r0(%%sr1, %1), %1"
->> 	"\textru        %1,19,12,%1\n"
->> 	"\tdepw         %1,15,12,%0\n"
->> 	: "=r" (pa)
->> 	: "r" (vba));
+>> And the wonder is that my system d380 is even booting and running despite this
+>> lake???
 >>
->> and even add a clobber 'memory'
->> 	asm volatile (
->> 	"lci %%r0(%%sr1, %1), %1"
->> 	"\textru        %1,19,12,%1\n"
->> 	"\tdepw         %1,15,12,%0\n"
->> 	: "=r" (pa)
->> 	: "r" (vba)
->> 	: "memory");
+>> That said with gcc-4.3, I find well this code iin the 2 functions.
+>> And here commes my worry about mtsp() macro: here is the resulting code with
+>> gcc-4.3:
+>> 00000000 <ccio_map_sg>:
+>> [snip]
+>> __ 1a0:   34 1a 00 00     ldi 0,r26__
+>>  1a4:   20 a0 02 00     ldil L%10000000,r5
+>>  1a8:   8e 80 61 28     cmpib,> 0,r20,244 <ccio_map_sg+0x244>
+>>  1ac:   20 40 0e 01     ldil L%-10000000,rp
+>>  1b0:   86 c0 21 88     cmpib,= 0,r22,27c <ccio_map_sg+0x27c>
+>>  1b4:   34 19 00 00     ldi 0,r25
+>>  1b8:   0f e0 10 9c     ldw 0(r31),ret0
+>>  1bc:   0d 80 10 94     ldw 0(r12),r20
+>>  1c0:   d7 80 1c 1e     depwi 0,31,2,ret0
+>>  1c4:   4b b3 00 20     ldw 10(ret1),r19
+>>  1c8:   0a 9c 04 1c     sub ret0,r20,ret0
+>>  1cc:   0f f0 10 95     ldw 8(r31),r21
+>>  1d0:   d3 9c 1f 45     extrw,s ret0,26,27,ret0
+>>  1d4:   0a b3 0a 13     add,l r19,r21,r19
+>>  1d8:   d7 9c 09 8c     depw,z ret0,19,20,ret0
+>>  1dc:   0f e8 10 94     ldw 4(r31),r20
+>>  1e0:   08 bc 0a 1c     add,l ret0,r5,ret0
+>>  1e4:   6b b3 00 20     stw r19,10(ret1)
+>>  1e8:   0a b9 0a 15     add,l r25,r21,r21
+>>  1ec:   0a 9c 0a 14     add,l ret0,r20,r20
+>> __ 1f0:   00 1a 58 20     mtsp r26,sr1  __
+>>  1f4:   08 54 0a 1c     add,l r20,rp,ret0
+>>  1f8:   d7 8e 0c 14     depw r14,31,12,ret0
+>>  1fc:   0e dc 12 88     stw ret0,4(r22)
+>>  200:   06 80 53 13     lci r0(sr1,r20),r19
+>>  204:   d2 73 1a 74     extrw,u r19,19,12,r19
+>>  208:   08 1a 02 5c     copy r26,ret0
+>>  20c:   d7 93 0e 14     depw r19,15,12,ret0
+>>  210:   0e dc 12 80     stw ret0,0(r22)
+>>  214:   06 c0 12 80     fdc r0(r22)
+>>  218:   00 00 04 00     sync
+>> [snip]
 >>
->> But I have no clue how to restore BUG_ON() and avoid wrong optimization?
+>> My worry is the number of insn between the ldi 0,r26 and the mtsp r26,sr1.
 >>
->> Any idea?
+>> Here, I supposed it's harmless but may be different in other critical path?
 >>
->> Tia,
->> 	r.
+>> Wouldn't it be interesting (if possible) to insure that the load of the reg
+>> and mtsp stay close together? (or may be simply detect the case of a const == 0?)
 >>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>> What your opinion?
+>>
+>> Tx again,
+>>     J.
+>>
+>> PS: I didn't find back gcc-4.0 to check if my previous perf test could failed
+>> for this reason?
+>>
+>>
 > --
 > To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
 > the body of a message to majordomo@vger.kernel.org
