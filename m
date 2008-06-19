@@ -1,27 +1,25 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: in ccio_io_pdir_entry(), BUG_ON() seems to break gcc-4.2
-Date: Thu, 19 Jun 2008 18:41:52 -0400 (EDT)
-Message-ID: <20080619224154.4F8F04DCB@hiauly1.hia.nrc.ca>
-References: <20080619160441.GA6049@colo.lackof.org>
+Subject: Re: in ccio_io_pdir_entry(), BUG_ON() seems to break gcc-4.2    optimization?
+Date: Thu, 19 Jun 2008 18:48:11 -0400 (EDT)
+Message-ID: <20080619224813.6F4934DF8@hiauly1.hia.nrc.ca>
+References: <485AB72B.2090304@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: rubisher@scarlet.be, linux-parisc@vger.kernel.org
-To: grundler@parisc-linux.org (Grant Grundler)
+Cc: grundler@parisc-linux.org, rubisher@scarlet.be,
+	linux-parisc@vger.kernel.org
+To: soete.joel@scarlet.be (Joel Soete)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080619160441.GA6049@colo.lackof.org> from "Grant Grundler" at Jun 19, 2008 10:04:41 am
+In-Reply-To: <485AB72B.2090304@scarlet.be> from "Joel Soete" at Jun 19, 2008 07:44:43 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> >    4:   34 1c 00 00     ldi 0,ret0
-> 
-> The BUG_ON is causing the movb to be inserted. And then the compiler knows
-> the value is zero and can either copy from a register or "load immediate 0".
-> It probably chose the "ldi 0" because it avoids register interlocks and
-> can always be executed.
+> > Does the BUG_ON explaination make sense to you?
+> > 
+> Well I nerver imagine that a compiler can make proof of this kind of induction spirit ;-) but that's give the sense, tx.
 
-This might not be correct with gnu as, but I think "ldi 0" is done as
-
-	or r0,r0,ret0
+Yes, the current compiler eliminates a lot of dead code based on induction.
+This occurs a lot when functions are inlined, etc.  Makes debugging a real
+problem.
 
 Dave
 -- 
