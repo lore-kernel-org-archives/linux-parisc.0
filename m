@@ -1,127 +1,80 @@
-From: rubisher <rubisher@scarlet.be>
-Subject: Re: Yet another inline asm worry: mtsp() macro (and may be other)?
-Date: Sat, 21 Jun 2008 19:17:07 +0000
-Message-ID: <485D53B3.1070806@scarlet.be>
-References: <K2RLMV$5D6B8CC1910705073A720C99B9A05EBA@scarlet.be> <20080620171151.GU4392@parisc-linux.org>
+From: Adrian Bunk <bunk@kernel.org>
+Subject: Re: architectures with ARCH_SUPPORTS_AOUT but no binfmt_aout
+Date: Sun, 22 Jun 2008 12:49:07 +0300
+Message-ID: <20080622094907.GF27069@cs181133002.pp.htv.fi>
+References: <1213565555.26255.522.camel@pmac.infradead.org> <1213604973-7073-1-git-send-email-jacmet@sunsite.dk> <1213617663.26255.708.camel@pmac.infradead.org> <20080616121727.GB10854@cs181133002.pp.htv.fi> <1213619214.26255.721.camel@pmac.infradead.org> <20080617084235.GA20169@cs181133002.pp.htv.fi> <1213696004.26255.960.camel@pmac.infradead.org> <20080617101112.GE20169@cs181133002.pp.htv.fi> <1213702113.26255.996.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: Joel Soete <soete.joel@scarlet.be>,
-	grundler <grundler@parisc-linux.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	deller <deller@gmx.de>, kyle <kyle@mcmartin.ca>
-To: Matthew Wilcox <matthew@wil.cx>
+Content-Type: text/plain; charset=utf-8
+Cc: Peter Korsgaard <jacmet@sunsite.dk>, linux-kernel@vger.kernel.org,
+	sam@ravnborg.org, dhowells@redhat.com, andi@firstfloor.org,
+	"Kirill A. Shutemov" <k.shutemov@gmail.com>,
+	ysato@users.sourceforge.jp, takata@linux-m32r.org,
+	linux-m32r@ml.linux-m32r.org, kyle@mcmartin.ca, matthew@wil.cx,
+	grundler@parisc-linux.org, linux-parisc@vger.kernel.org,
+	lethal@linux-sh.org, linux-sh@vger.kernel.org,
+	linux-arch@vger.kernel.org, gerg@uclinux.org
+To: David Woodhouse <dwmw2@infradead.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080620171151.GU4392@parisc-linux.org>
+In-Reply-To: <1213702113.26255.996.camel@pmac.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Matthew Wilcox wrote:
-> On Fri, Jun 20, 2008 at 03:01:43PM +0100, Joel Soete wrote:
->> Well I tried something:
->> @@ -103,10 +108,23 @@
->>  	cr;				\
->>  })
->>  
->> -#define mtsp(gr, cr) \
->> -	__asm__ __volatile__("mtsp %0,%1" \
->> -		: /* no outputs */ \
->> -		: "r" (gr), "i" (cr) : "memory")
->> +#define mtsp(lval, i_sr)					\
->> +{								\
->> +	if (lval) {						\
->> +		unsigned long reg = (unsigned long)(lval);	\
->> +		__asm__ __volatile__(				\
->> +			"mtsp %0, %%sr%1"			\
->> +			: /* no outputs */			\
->> +			: "r" (reg), "i" (i_sr)			\
->> +			: "memory");				\
->> +	} else {						\
->> +		__asm__ __volatile__(				\
->> +			"mtsp %%r0, %%sr%0"			\
->> +			: /* no outputs */			\
->> +			: "i" (i_sr)				\
->> +			: "memory");				\
->> +	};							\
->> +}
->>  
->> that does well the drill for ccio-dma driver but else where (memcpy or cache)
->> it looks worse then the original, so get rid of this idea.
+On Tue, Jun 17, 2008 at 12:28:33PM +0100, David Woodhouse wrote:
+> On Tue, 2008-06-17 at 13:11 +0300, Adrian Bunk wrote:
+> > The pattern for this stuff is to provide a HAVE_AOUT kconfig variable 
+> > that gets select'ed by these architectures.
 > 
-> Try this instead:
+> http://git.infradead.org/users/dwmw2/aout-2.6.git?a=commitdiff;h=a5db5179
 > 
-> #define mtsp(space, cr)	{						\
-> 	if (__builtin_constant_p(space) && (space == 0)) {		\
-> 		__asm__ __volatile__("mtsp %%r0, %0" :			\
-> 			/* no outputs */ : "i" (cr) : "memory");	\
-> 	} else {							\
-> 		__asm__ __volatile__("mtsp %0, %1" :			\
-> 			/* no outputs */ : "r" (space), "i" (cr) :	\
-> 				"memory");				\
-> 	}								\
-> }
+> Subject: [PATCH] Introduce HAVE_AOUT symbol to remove hard-coded arch list for BINFMT_AOUT
 > 
-This does the same job for ccio-dma driver, no change for cache but for memory it's a bit mixed, I let you appreciate:
-[snip]
-00000000 <copy_to_user>:                                        00000000 <copy_to_user>:
-    0:   6b c2 3f d9     stw rp,-14(sp)                             0:   6b c2 3f d9     stw rp,-14(sp)
-    4:   34 1c 00 00     ldi 0,ret0                            |    4:   00 00 58 20     mtsp r0,sr1
-    8:   00 1c 58 20     mtsp ret0,sr1                         |    8:   03 c0 08 bc     mfctl tr6,ret0
-    c:   03 c0 08 b3     mfctl tr6,r19                         |    c:   0f 98 10 93     ldw c(ret0),r19
-   10:   0e 78 10 9c     ldw c(r19),ret0                       |   10:   86 60 20 28     cmpib,= 0,r19,2c <copy_to_user+0x2c>
-   14:   93 80 20 00     cmpiclr,= 0,ret0,r0                   |   14:   34 1c 00 00     ldi 0,ret0
-   18:   00 00 c4 bc     mfsp sr3,ret0                             18:   00 00 c4 bc     mfsp sr3,ret0
-   1c:   00 1c 98 20     mtsp ret0,sr2                             1c:   00 1c 98 20     mtsp ret0,sr2
-   20:   4b c2 3f d9     ldw -14(sp),rp                            20:   4b c2 3f d9     ldw -14(sp),rp
-   24:   e8 00 00 00     b,l 2c <copy_to_user+0x2c>,r0             24:   e8 00 00 00     b,l 2c <copy_to_user+0x2c>,r0
-   28:   08 00 02 40     nop                                       28:   08 00 02 40     nop
-   2c:   08 00 02 40     nop                                   |   2c:   00 1c 98 20     mtsp ret0,sr2
-                                                               >   30:   4b c2 3f d9     ldw -14(sp),rp
-                                                               >   34:   e8 00 00 00     b,l 3c <copy_to_user+0x3c>,r0
-                                                               >   38:   08 00 02 40     nop
-                                                               >   3c:   08 00 02 40     nop
-[snip]
-00000000 <copy_from_user>:                                      00000000 <copy_from_user>:
-    0:   6b c2 3f d9     stw rp,-14(sp)                             0:   6b c2 3f d9     stw rp,-14(sp)
-    4:   03 c0 08 bc     mfctl tr6,ret0                             4:   03 c0 08 bc     mfctl tr6,ret0
-    8:   0f 98 10 93     ldw c(ret0),r19                            8:   0f 98 10 93     ldw c(ret0),r19
-    c:   86 60 20 38     cmpib,= 0,r19,30 <copy_from_user+0x30 |    c:   86 60 20 30     cmpib,= 0,r19,2c <copy_from_user+0x2c
-   10:   34 1c 00 00     ldi 0,ret0                                10:   34 1c 00 00     ldi 0,ret0
-   14:   00 00 c4 bc     mfsp sr3,ret0                             14:   00 00 c4 bc     mfsp sr3,ret0
-   18:   00 1c 58 20     mtsp ret0,sr1                             18:   00 1c 58 20     mtsp ret0,sr1
-   1c:   34 1c 00 00     ldi 0,ret0                            |   1c:   00 00 98 20     mtsp r0,sr2
-   20:   00 1c 98 20     mtsp ret0,sr2                         |   20:   4b c2 3f d9     ldw -14(sp),rp
-   24:   4b c2 3f d9     ldw -14(sp),rp                        |   24:   e8 00 00 00     b,l 2c <copy_from_user+0x2c>,r0
-   28:   e8 00 00 00     b,l 30 <copy_from_user+0x30>,r0       |   28:   08 00 02 40     nop
-   2c:   08 00 02 40     nop                                   |   2c:   00 1c 58 20     mtsp ret0,sr1
-   30:   00 1c 58 20     mtsp ret0,sr1                         |   30:   00 00 98 20     mtsp r0,sr2
-   34:   34 1c 00 00     ldi 0,ret0                            |   34:   4b c2 3f d9     ldw -14(sp),rp
-   38:   00 1c 98 20     mtsp ret0,sr2                         |   38:   e8 00 00 00     b,l 40 <copy_from_user+0x40>,r0
-   3c:   4b c2 3f d9     ldw -14(sp),rp                        |   3c:   08 00 02 40     nop
-   40:   e8 00 00 00     b,l 48 <copy_from_user+0x48>,r0       |   40:   08 00 02 40     nop
-   44:   08 00 02 40     nop                                   <
-   48:   08 00 02 40     nop                                   <
-Disassembly of section .text.copy_in_user:                      Disassembly of section .text.copy_in_user:
-[snip]
+> HAVE_AOUT doesn't quite do the same thing as the recently removed
+> ARCH_SUPPORTS_AOUT config option. That was set even on platforms where
+> binfmt_aout isn't supported, although it's not entirely clear why.
+> 
+> So it's best just to introduce a new symbol, handled consistently with
+> other similar HAVE_xxx symbols; with a simple 'select' the arch Kconfig.
+> 
+> Signed-off-by: David Woodhouse <dwmw2@infradead.org>
+> ---
+>  arch/alpha/Kconfig |    1 +
+>  arch/arm/Kconfig   |    1 +
+>  arch/m68k/Kconfig  |    1 +
+>  arch/x86/Kconfig   |    1 +
+>  fs/Kconfig.binfmt  |    5 ++++-
+>  5 files changed, 8 insertions(+), 1 deletions(-)
+>...
+> --- a/fs/Kconfig.binfmt
+> +++ b/fs/Kconfig.binfmt
+> @@ -59,9 +59,12 @@ config BINFMT_SHARED_FLAT
+>  	help
+>  	  Support FLAT shared libraries
+>  
+> +config HAVE_AOUT
+> +       def_bool n
+> +
+>  config BINFMT_AOUT
+>  	tristate "Kernel support for a.out and ECOFF binaries"
+> -	depends on (X86_32 || ALPHA || ARM || M68K)
+> +	depends on HAVE_AOUT
+>  	---help---
+>  	  A.out (Assembler.OUTput) is a set of formats for libraries and
+>  	  executables used in the earliest versions of UNIX.  Linux used
 
-00000000 <memcpy>:                                              00000000 <memcpy>:
-    0:   6b c2 3f d9     stw rp,-14(sp)                             0:   6b c2 3f d9     stw rp,-14(sp)
-    4:   34 1c 00 00     ldi 0,ret0                            |    4:   6f c4 00 80     stw,ma r4,40(sp)
-    8:   6f c4 00 80     stw,ma r4,40(sp)                      |    8:   08 1a 02 44     copy r26,r4
-    c:   08 1a 02 44     copy r26,r4                           |    c:   00 00 58 20     mtsp r0,sr1
-   10:   00 1c 58 20     mtsp ret0,sr1                         |   10:   00 00 98 20     mtsp r0,sr2
-   14:   34 13 00 00     ldi 0,r19                             |   14:   e8 40 00 00     b,l 1c <memcpy+0x1c>,rp
-   18:   00 13 98 20     mtsp r19,sr2                          |   18:   08 00 02 40     nop
-   1c:   e8 40 00 00     b,l 24 <memcpy+0x24>,rp               |   1c:   4b c2 3f 59     ldw -54(sp),rp
-   20:   08 00 02 40     nop                                   |   20:   08 04 02 5c     copy r4,ret0
-   24:   4b c2 3f 59     ldw -54(sp),rp                        |   24:   e8 40 c0 00     bv r0(rp)
-   28:   08 04 02 5c     copy r4,ret0                          |   28:   4f c4 3f 81     ldw,mb -40(sp),r4
-   2c:   e8 40 c0 00     bv r0(rp)                             <
-   30:   4f c4 3f 81     ldw,mb -40(sp),r4                     <
-[snip]
+What about m68knommu?
 
-Anyway, it's far well better than mine.
+I don't know whether it was intentionally available there, but the 
+removal in your patch does not seem to be intentional.
 
-Tx,
-	J.
+> dwmw2
 
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
