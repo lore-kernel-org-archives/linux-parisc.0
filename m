@@ -1,36 +1,26 @@
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: architectures with ARCH_SUPPORTS_AOUT but no binfmt_aout
-Date: Fri, 27 Jun 2008 12:27:31 -0400
-Message-ID: <20080627162731.GD8381@c2.user-mode-linux.org>
-References: <1213617663.26255.708.camel@pmac.infradead.org> <20080616121727.GB10854@cs181133002.pp.htv.fi> <1213619214.26255.721.camel@pmac.infradead.org> <20080617084235.GA20169@cs181133002.pp.htv.fi> <1213696004.26255.960.camel@pmac.infradead.org> <20080617101112.GE20169@cs181133002.pp.htv.fi> <1213702113.26255.996.camel@pmac.infradead.org> <20080622094907.GF27069@cs181133002.pp.htv.fi> <1214134850.2409.2.camel@shinybook.infradead.org> <20080624114643.GB16021@cs181140183.pp.htv.fi>
+From: Roland McGrath <roland@redhat.com>
+Subject: Re: [2.6 patch] asm/ptrace.h userspace headers cleanup
+Date: Mon, 23 Jun 2008 13:08:51 -0700 (PDT)
+Message-ID: <20080627204953.DA76515427E@magilla.localdomain>
+References: <20080623174809.GE4756@cs181140183.pp.htv.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Peter Korsgaard <jacmet@sunsite.dk>,
-	linux-kernel@vger.kernel.org, sam@ravnborg.org,
-	dhowells@redhat.com, andi@firstfloor.org,
-	"Kirill A. Shutemov" <k.shutemov@gmail.com>,
-	ysato@users.sourceforge.jp, takata@linux-m32r.org,
-	linux-m32r@ml.linux-m32r.org, kyle@mcmartin.ca, matthew@wil.cx,
-	grundler@parisc-linux.org, linux-parisc@vger.kernel.org,
-	lethal@linux-sh.org, linux-sh@vger.kernel.org,
-	linux-arch@vger.kernel.org, gerg@uclinux.org
+Cc: linux-kernel@vger.kernel.org, rmk@arm.linux.org.uk,
+	cooloney@kernel.org, dev-etrax@axis.com, dhowells@redhat.com,
+	gerg@uclinux.org, yasutake.koichi@jp.panasonic.com,
+	linux-parisc@vger.kernel.org, paulus@samba.org,
+	linuxppc-dev@ozlabs.org, linux-sh@vger.kernel.org,
+	chris@zankel.net, linux-mips@linux-mips.org,
+	ysato@users.sourceforge.jp,
+	Andrew Morton <akpm@linux-foundation.org>
 To: Adrian Bunk <bunk@kernel.org>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <20080624114643.GB16021@cs181140183.pp.htv.fi>
-List-ID: <linux-arch.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: Adrian Bunk's message of  Monday, 23 June 2008 20:48:09 +0300 <20080623174809.GE4756@cs181140183.pp.htv.fi>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Jun 24, 2008 at 02:46:43PM +0300, Adrian Bunk wrote:
-> I found another similar case:
-> 
-> X86_32 UML.
-> 
-> a.out is most likely working there?
+That all looks fine to me, though I won't claim to have paid close
+attention to the nits in the various odd archs' files.
 
-Yup, if it works on the host, it'll work in UML.
-
-     	   	 Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Thanks,
+Roland
