@@ -1,37 +1,34 @@
-From: Chris Zankel <chris@zankel.net>
+From: David Howells <dhowells@redhat.com>
 Subject: Re: [2.6 patch] asm/ptrace.h userspace headers cleanup
-Date: Tue, 24 Jun 2008 01:25:36 -0700
-Message-ID: <4860AF80.5060809@zankel.net>
+Date: Tue, 24 Jun 2008 11:23:48 +0100
+Message-ID: <8058.1214303028@redhat.com>
 References: <20080623174809.GE4756@cs181140183.pp.htv.fi>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Cc: Roland McGrath <roland@redhat.com>, linux-kernel@vger.kernel.org,
-	rmk@arm.linux.org.uk, cooloney@kernel.org, dev-etrax@axis.com,
-	dhowells@redhat.com, gerg@uclinux.org,
+Cc: dhowells@redhat.com, Roland McGrath <roland@redhat.com>,
+	linux-kernel@vger.kernel.org, rmk@arm.linux.org.uk,
+	cooloney@kernel.org, dev-etrax@axis.com, gerg@uclinux.org,
 	yasutake.koichi@jp.panasonic.com, linux-parisc@vger.kernel.org,
 	paulus@samba.org, linuxppc-dev@ozlabs.org,
-	linux-sh@vger.kernel.org, linux-mips@linux-mips.org,
-	ysato@users.sourceforge.jp,
+	linux-sh@vger.kernel.org, chris@zankel.net,
+	linux-mips@linux-mips.org, ysato@users.sourceforge.jp,
 	Andrew Morton <akpm@linux-foundation.org>
 To: Adrian Bunk <bunk@kernel.org>
-Return-path: <linux-mips-bounce@linux-mips.org>
+Return-path: <linux-sh-owner@vger.kernel.org>
 In-Reply-To: <20080623174809.GE4756@cs181140183.pp.htv.fi>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-ID: <linux-parisc.vger.kernel.org>
+List-ID: <linux-sh.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-Adrian Bunk wrote:
+Adrian Bunk <bunk@kernel.org> wrote:
+
 > This patch contains the following cleanups for the asm/ptrace.h 
 > userspace headers:
-> - xtensa: cosmetical change to remove empty
->             #ifndef __ASSEMBLY__ #else #endif
->           from the userspace headers
-> 
-> Signed-off-by: Adrian Bunk <bunk@kernel.org>
+> - include/asm-generic/Kbuild.asm already lists ptrace.h, remove
+>   the superfluous listings in the Kbuild files of the following
+>   architectures:
+> ...
+>   - frv
+> ...
+> - don't expose function prototypes and macros to userspace:
+> ...
+>   - mn10300
 
-The Xtensa part also looks ok.
-
-Acked-by: Chris Zankel <chris@zankel.net>
-
-
-Regards,
--Chris
+Acked-by: David Howells <dhowells@redhat.com> (FRV and MN10300)
