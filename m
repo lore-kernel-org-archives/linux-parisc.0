@@ -1,26 +1,36 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: Jesper Nilsson <jesper.nilsson@axis.com>
 Subject: Re: [2.6 patch] asm/ptrace.h userspace headers cleanup
-Date: Mon, 23 Jun 2008 23:18:26 -0600
-Message-ID: <20080624051826.GC19434@colo.lackof.org>
+Date: Tue, 24 Jun 2008 10:15:39 +0200
+Message-ID: <20080624081539.GE5064@axis.com>
 References: <20080623174809.GE4756@cs181140183.pp.htv.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Roland McGrath <roland@redhat.com>, linux-kernel@vger.kernel.org,
-	rmk@arm.linux.org.uk, cooloney@kernel.org, dev-etrax@axis.com,
-	dhowells@redhat.com, gerg@uclinux.org,
-	yasutake.koichi@jp.panasonic.com, linux-parisc@vger.kernel.org,
-	paulus@samba.org, linuxppc-dev@ozlabs.org,
-	linux-sh@vger.kernel.org, chris@zankel.net,
-	linux-mips@linux-mips.org, ysato@users.sourceforge.jp,
+Cc: Roland McGrath <roland@redhat.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"rmk@arm.linux.org.uk" <rmk@arm.linux.org.uk>,
+	"cooloney@kernel.org" <cooloney@kernel.org>,
+	dev-etrax <dev-etrax@axis.com>,
+	"dhowells@redhat.com" <dhowells@redhat.com>,
+	"gerg@uclinux.org" <gerg@uclinux.org>,
+	"yasutake.koichi@jp.panasonic.com" <yasutake.koichi@jp.panasonic.com>,
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+	"paulus@samba.org" <paulus@samba.org>,
+	"linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
+	"linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+	"chris@zankel.net" <chris@zankel.net>,
+	"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
+	"ysato@users.sourceforge.jp" <ysato@users.sourceforge.jp>,
 	Andrew Morton <akpm@linux-foundation.org>
 To: Adrian Bunk <bunk@kernel.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
+Return-path: <linux-mips-bounce@linux-mips.org>
 In-Reply-To: <20080623174809.GE4756@cs181140183.pp.htv.fi>
+Errors-to: linux-mips-bounce@linux-mips.org
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jun 23, 2008 at 08:48:09PM +0300, Adrian Bunk wrote:
-> This patch contains the following cleanups for the asm/ptrace.h 
+Hi,
+
+On Mon, Jun 23, 2008 at 07:48:09PM +0200, Adrian Bunk wrote:
+> This patch contains the following cleanups for the asm/ptrace.h
 > userspace headers:
 > - include/asm-generic/Kbuild.asm already lists ptrace.h, remove
 >   the superfluous listings in the Kbuild files of the following
@@ -35,31 +45,21 @@ On Mon, Jun 23, 2008 at 08:48:09PM +0300, Adrian Bunk wrote:
 >   - cris
 >   - mn10300
 >   - parisc
-...
-> diff --git a/include/asm-parisc/ptrace.h b/include/asm-parisc/ptrace.h
-> index 93f990e..3e94c5d 100644
-> --- a/include/asm-parisc/ptrace.h
-> +++ b/include/asm-parisc/ptrace.h
-> @@ -33,7 +33,6 @@ struct pt_regs {
->  	unsigned long ipsw;	/* CR22 */
->  };
->  
-> -#define task_regs(task) ((struct pt_regs *) ((char *)(task) + TASK_REGS))
->  /*
->   * The numbers chosen here are somewhat arbitrary but absolutely MUST
->   * not overlap with any of the number assigned in <linux/ptrace.h>.
-> @@ -43,8 +42,11 @@ struct pt_regs {
->   * since we have taken branch traps too)
->   */
->  #define PTRACE_SINGLEBLOCK	12	/* resume execution until next branch */
-> +
->  #ifdef __KERNEL__
->  
-> +#define task_regs(task) ((struct pt_regs *) ((char *)(task) + TASK_REGS))
-> +
->  /* XXX should we use iaoq[1] or iaoq[0] ? */
->  #define user_mode(regs)			(((regs)->iaoq[0] & 3) ? 1 : 0)
->  #define user_space(regs)		(((regs)->iasq[1] != 0) ? 1 : 0)
+> - remove #ifdef CONFIG_'s around #define's:
+>   - blackfin
+>   - m68knommu
+> - sh: AFAIK __SH5__ should work in both kernel and userspace,
+>       no need to leak CONFIG_SUPERH64 to userspace
+> - xtensa: cosmetical change to remove empty
+>             #ifndef __ASSEMBLY__ #else #endif
+>           from the userspace headers
+> 
+> Signed-off-by: Adrian Bunk <bunk@kernel.org>
 
-Looks fine to me.
-Acked-by: Grant Grundler <grundler@parisc-linux.org>
+The CRIS parts look ok.
+
+Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
+
+/^JN - Jesper Nilsson
+-- 
+               Jesper Nilsson -- jesper.nilsson@axis.com
