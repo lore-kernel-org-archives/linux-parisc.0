@@ -1,58 +1,36 @@
-From: "Joel Soete" <soete.joel@scarlet.be>
-Subject: Re: in ccio_io_pdir_entry(),BUG_ON() seems to break gcc-4.2
-	optimization?
-Date: Thu, 26 Jun 2008 07:28:03 +0100
-Message-ID: <K324MR$1963B6E59C4D4D716463AB17911CD186@scarlet.be>
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: architectures with ARCH_SUPPORTS_AOUT but no binfmt_aout
+Date: Fri, 27 Jun 2008 12:27:31 -0400
+Message-ID: <20080627162731.GD8381@c2.user-mode-linux.org>
+References: <1213617663.26255.708.camel@pmac.infradead.org> <20080616121727.GB10854@cs181133002.pp.htv.fi> <1213619214.26255.721.camel@pmac.infradead.org> <20080617084235.GA20169@cs181133002.pp.htv.fi> <1213696004.26255.960.camel@pmac.infradead.org> <20080617101112.GE20169@cs181133002.pp.htv.fi> <1213702113.26255.996.camel@pmac.infradead.org> <20080622094907.GF27069@cs181133002.pp.htv.fi> <1214134850.2409.2.camel@shinybook.infradead.org> <20080624114643.GB16021@cs181140183.pp.htv.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: "linux-parisc" <linux-parisc@vger.kernel.org>
-To: "Grant Grundler" <grundler@parisc-linux.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	Peter Korsgaard <jacmet@sunsite.dk>,
+	linux-kernel@vger.kernel.org, sam@ravnborg.org,
+	dhowells@redhat.com, andi@firstfloor.org,
+	"Kirill A. Shutemov" <k.shutemov@gmail.com>,
+	ysato@users.sourceforge.jp, takata@linux-m32r.org,
+	linux-m32r@ml.linux-m32r.org, kyle@mcmartin.ca, matthew@wil.cx,
+	grundler@parisc-linux.org, linux-parisc@vger.kernel.org,
+	lethal@linux-sh.org, linux-sh@vger.kernel.org,
+	linux-arch@vger.kernel.org, gerg@uclinux.org
+To: Adrian Bunk <bunk@kernel.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20080624114643.GB16021@cs181140183.pp.htv.fi>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Just for remind:
+On Tue, Jun 24, 2008 at 02:46:43PM +0300, Adrian Bunk wrote:
+> I found another similar case:
+> 
+> X86_32 UML.
+> 
+> a.out is most likely working there?
 
-Joel Soete wrote:
- >
- >
-[snip]
- >>> But this time, it seems not consider assembly:
- >>>         asm volatile ("lci %%r0(%%sr1, %1), %0" : "=r" (ci) : "r"
- >>> (vba));
- >>>         asm volatile ("extru %1,19,12,%0" : "+r" (ci) : "r" (ci));
- >>>         asm volatile ("depw  %1,15,12,%0" : "+r" (pa) : "r" (ci));
- >>>
- >>> as a 'volatile' block and insert line 1c:
+Yup, if it works on the host, it'll work in UML.
 
-This seems to make better what I want:
-        __asm__ __volatile__ (
-        "lci    %%r0(%%sr1, %2), %0\n"
-        "\textru        %0,19,12,%0\n"
-        "\tdepw         %0,15,12,%1\n"
-        : "+r" (ci), "+r" (pa)
-        : "r" (vba)
-        : "memory"
-        );
+     	   	 Jeff
 
-
-in <ccio_map_sg>
-  200:	06 80 53 13 	lci r0(sr1,r20),r19		      |	 200:	08 1a 02 54 	copy r26,r20
-  204:	d2 73 1a 74 	extrw,u r19,19,12,r19		      |	 204:	06 a0 53 14 	lci
-r0(sr1,r21),r20
-  208:	08 1a 02 5c 	copy r26,ret0			      |	 208:	d2 94 1a 74 	extrw,u
-r20,19,12,r20
-  20c:	d7 93 0e 14 	depw r19,15,12,ret0		      |	 20c:	d7 94 0e 14 	depw
-r20,15,12,ret0
-  210:	0e dc 12 80 	stw ret0,0(r22)				 210:	0e dc 12 80 	stw ret0,0(r22)
-  214:	06 c0 12 80 	fdc r0(r22)				 214:	06 c0 12 80 	fdc r0(r22)
-  218:	00 00 04 00 	sync					 218:	00 00 04 00 	sync
-
-J.
-
-PS: I don't yet understand why kernel panicing when I try to get rid to
-reserve 'ci' variable and use in place a gr as r19 (even if clobbered), the
-produced object seems ok but resulting kernel panicing (even after a full
-rebuild after a make distclean???)
-
-
+-- 
+Work email - jdike at linux dot intel dot com
