@@ -1,58 +1,32 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: in ccio_io_pdir_entry(),BUG_ON() seems to break gcc-4.2     optimization?
-Date: Sat, 28 Jun 2008 18:45:10 -0400 (EDT)
-Message-ID: <20080628224510.D3FDA431A@hiauly1.hia.nrc.ca>
-References: <4866BA91.9040607@scarlet.be>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: Another ldcw inline assembler patch
+Date: Sat, 28 Jun 2008 17:34:07 -0600
+Message-ID: <20080628233406.GI14894@parisc-linux.org>
+References: <20080628220756.GA8620@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: grundler@parisc-linux.org, linux-parisc@vger.kernel.org
-To: soete.joel@scarlet.be (Joel Soete)
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4866BA91.9040607@scarlet.be> from "Joel Soete" at Jun 28, 2008 10:26:25 pm
+In-Reply-To: <20080628220756.GA8620@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> Grant Grundler wrote:
-> > On Thu, Jun 26, 2008 at 07:28:03AM +0100, Joel Soete wrote:
-> >> Just for remind:
-> >>
-> >> Joel Soete wrote:
-> >>  >
-> >>  >
-> >> [snip]
-> >>  >>> But this time, it seems not consider assembly:
-> >>  >>>         asm volatile ("lci %%r0(%%sr1, %1), %0" : "=r" (ci) : "r"
-> >>  >>> (vba));
-> >>  >>>         asm volatile ("extru %1,19,12,%0" : "+r" (ci) : "r" (ci));
-> >>  >>>         asm volatile ("depw  %1,15,12,%0" : "+r" (pa) : "r" (ci));
-> >>  >>>
-> >>  >>> as a 'volatile' block and insert line 1c:
-> >>
-> >> This seems to make better what I want:
-> >>         __asm__ __volatile__ (
-> >>         "lci    %%r0(%%sr1, %2), %0\n"
-> >>         "\textru        %0,19,12,%0\n"
-> >>         "\tdepw         %0,15,12,%1\n"
-> >>         : "+r" (ci), "+r" (pa)
-> >>         : "r" (vba)
-> >>         : "memory"
-> > 
-> > Why the "memory"? This asm code isn't modifying memory at all.
-> > 
-> well I certainly still have wrongly understand what "memory" clobber means but for me "pa" is a memory location modified 
-> (the plus sign in '"+r" (pa)' and that either after 64bit computation or 32bit initialization pa=0).
+On Sat, Jun 28, 2008 at 06:07:57PM -0400, John David Anglin wrote:
+> There are two reasons to expose the memory *a in the asm:
+> 
+> 1) To prevent the compiler from discarding a preceeding write to *a, and
+> 2) to prevent it from caching *a in a register over the asm.
 
-The "+r" constraint indicates a register operand that is both read and written.
-However, "ci" and "pa" are not read, so the constraints for them should be
-"=r".  None of the instructions modify memory, so the "memory" clobber
-is unnecessary.
+Do either of those scenarios apply, given that every usage of this is
+preceded by an asm clobbering memory?
 
-> so why not simply get rid of its declaration (btw save a line of code ;-)) and just use a common temporay reg as r19?
+I believe the correct thing to do is to take out the two mb()s in the
+various spin_lock routines and make the __ldcw() macro itself clobber
+memory.
 
-r19 is the pic register in 64-bit mode and can't be used without saving
-and restoring it.
-
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Intel are signing my paycheques ... these opinions are still mine
+"Bill, look, we understand that you're interested in selling us this
+operating system, but compare it to ours.  We can't possibly take such
+a retrograde step."
