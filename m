@@ -1,54 +1,34 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: Another ldcw inline assembler patch
-Date: Sun, 29 Jun 2008 16:09:27 -0500
-Message-ID: <1214773767.3405.17.camel@localhost.localdomain>
-References: <20080628220756.GA8620@hiauly1.hia.nrc.ca>
-	 <20080628233406.GI14894@parisc-linux.org>
-	 <20080629205556.GA8381@colo.lackof.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: kernel fault when booting with dual link network card
+Date: Sun, 29 Jun 2008 15:11:14 -0600
+Message-ID: <20080629211114.GA9572@colo.lackof.org>
+References: <20080629151759.GA7856@spring.luon.net> <1214755234.3405.5.camel@localhost.localdomain> <20080629162220.GL14894@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Matthew Wilcox <matthew@wil.cx>,
-	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	linux-parisc@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Sjoerd Simons <sjoerd@luon.net>, linux-parisc@vger.kernel.org
+To: Matthew Wilcox <matthew@wil.cx>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080629205556.GA8381@colo.lackof.org>
+In-Reply-To: <20080629162220.GL14894@parisc-linux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 2008-06-29 at 14:55 -0600, Grant Grundler wrote:
-> On Sat, Jun 28, 2008 at 05:34:07PM -0600, Matthew Wilcox wrote:
-> > On Sat, Jun 28, 2008 at 06:07:57PM -0400, John David Anglin wrote:
-> > > There are two reasons to expose the memory *a in the asm:
-> > > 
-> > > 1) To prevent the compiler from discarding a preceeding write to *a, and
-> > > 2) to prevent it from caching *a in a register over the asm.
-> > 
-> > Do either of those scenarios apply, given that every usage of this is
-> > preceded by an asm clobbering memory?
-> > 
-> > I believe the correct thing to do is to take out the two mb()s in the
-> > various spin_lock routines and make the __ldcw() macro itself clobber
-> > memory.
+On Sun, Jun 29, 2008 at 10:22:21AM -0600, Matthew Wilcox wrote:
+...
+> > the I/O module error seems to indicate an incorrect GSC DMA read.
 > 
-> I agree. Do you want jda to submit another patch or did you want kyle to
-> take jda's patch and apply a second one to remove the mb()'s?
+> I don't think it's going to tell us anything useful.  I believe that
+> we've not set up the cardmode Dino correctly to respond to iomem space
+> and as a result the first access to iomem space will fault.
 
-I really wouldn't do that.  Parisc is fairly unique in that we have C
-spinlocks (most other architectures have asm coded ones).  The
-requirement of the spinlock routines are that they be atomic memory
-clobbers (as in the sequence of statements that does one shouldn't be
-moved by the compiler)---which is why our C ones have mb before and
-after.
+It depends on if the first access is a read or a write. If it's a read
+(and odds are good that's true), we will get the exact IP that faulted 
+and get something about "CPU timeout" in the PIM dump.
 
-if you make __ldcw() a memory clobber, that will pretty much cover the
-atomic memory clobber requirements of __raw_spin_lock_flags() ... but
-look at the rest of them ... it won't cover for them.  If we have to
-have these mb()s in the rest, it makes sense to have them in
-__raw_spin_lock_flags() as well, just to avoid problems if someone tries
-to optimise again.  There probably should be a comment in this file to
-that effect.
+> Of course, this is a machine with CCIO, so it could be something going
+> wrong with the CCIO programming too.  But I think it's Dino.
 
-James
+I doubt it too. I agree it's much more likely something with Dino.
 
-
+thanks,
+grant
