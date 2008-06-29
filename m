@@ -1,29 +1,45 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: in ccio_io_pdir_entry(),BUG_ON() seems to break gcc-4.2
-	optimization?
-Date: Sun, 29 Jun 2008 14:52:42 -0600
-Message-ID: <20080629205242.GA7629@colo.lackof.org>
-References: <K324MR$1963B6E59C4D4D716463AB17911CD186@scarlet.be> <20080628202347.GA23898@colo.lackof.org> <4866BA91.9040607@scarlet.be>
+Subject: Re: Another ldcw inline assembler patch
+Date: Sun, 29 Jun 2008 14:55:56 -0600
+Message-ID: <20080629205556.GA8381@colo.lackof.org>
+References: <20080628220756.GA8620@hiauly1.hia.nrc.ca> <20080628233406.GI14894@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc <linux-parisc@vger.kernel.org>
-To: Joel Soete <soete.joel@scarlet.be>
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	linux-parisc@vger.kernel.org
+To: Matthew Wilcox <matthew@wil.cx>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4866BA91.9040607@scarlet.be>
+In-Reply-To: <20080628233406.GI14894@parisc-linux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Jun 28, 2008 at 10:26:25PM +0000, Joel Soete wrote:
-...
->> What's wrong with "ci" variable? It's just another register.
-> well the idea is that "ci" variable is just there as a tmp variable just 
-> used in this asm code, right.
-> so why not simply get rid of its declaration (btw save a line of code ;-)) 
-> and just use a common temporay reg as r19?
+On Sat, Jun 28, 2008 at 05:34:07PM -0600, Matthew Wilcox wrote:
+> On Sat, Jun 28, 2008 at 06:07:57PM -0400, John David Anglin wrote:
+> > There are two reasons to expose the memory *a in the asm:
+> > 
+> > 1) To prevent the compiler from discarding a preceeding write to *a, and
+> > 2) to prevent it from caching *a in a register over the asm.
+> 
+> Do either of those scenarios apply, given that every usage of this is
+> preceded by an asm clobbering memory?
+> 
+> I believe the correct thing to do is to take out the two mb()s in the
+> various spin_lock routines and make the __ldcw() macro itself clobber
+> memory.
 
-No - don't do that. Let the compiler do the work of allocating registers.
-It's really good at it. :)  Much better than you and I combined. :)
-All we need to do is tell the compiler we need a register.
+I agree. Do you want jda to submit another patch or did you want kyle to
+take jda's patch and apply a second one to remove the mb()'s?
 
-cheers,
+thanks.
 grant
+
+> 
+> -- 
+> Intel are signing my paycheques ... these opinions are still mine
+> "Bill, look, we understand that you're interested in selling us this
+> operating system, but compare it to ours.  We can't possibly take such
+> a retrograde step."
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
