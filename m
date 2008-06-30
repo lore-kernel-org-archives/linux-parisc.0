@@ -1,34 +1,56 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: kernel fault when booting with dual link network card
-Date: Sun, 29 Jun 2008 15:11:14 -0600
-Message-ID: <20080629211114.GA9572@colo.lackof.org>
-References: <20080629151759.GA7856@spring.luon.net> <1214755234.3405.5.camel@localhost.localdomain> <20080629162220.GL14894@parisc-linux.org>
+From: Joel Soete <soete.joel@scarlet.be>
+Subject: Re: in ccio_io_pdir_entry(),BUG_ON() seems to break gcc-4.2	optimization?
+Date: Mon, 30 Jun 2008 18:28:36 +0000
+Message-ID: <486925D4.7090608@scarlet.be>
+References: <K324MR$1963B6E59C4D4D716463AB17911CD186@scarlet.be> <20080628202347.GA23898@colo.lackof.org> <4866BA91.9040607@scarlet.be> <20080629205242.GA7629@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Sjoerd Simons <sjoerd@luon.net>, linux-parisc@vger.kernel.org
-To: Matthew Wilcox <matthew@wil.cx>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: linux-parisc <linux-parisc@vger.kernel.org>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080629162220.GL14894@parisc-linux.org>
+In-Reply-To: <20080629205242.GA7629@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Jun 29, 2008 at 10:22:21AM -0600, Matthew Wilcox wrote:
-...
-> > the I/O module error seems to indicate an incorrect GSC DMA read.
+Hello Grant,
+
+Grant Grundler wrote:
+> On Sat, Jun 28, 2008 at 10:26:25PM +0000, Joel Soete wrote:
+> ...
+>>> What's wrong with "ci" variable? It's just another register.
+>> well the idea is that "ci" variable is just there as a tmp variable just 
+>> used in this asm code, right.
+>> so why not simply get rid of its declaration (btw save a line of code ;-)) 
+>> and just use a common temporay reg as r19?
 > 
-> I don't think it's going to tell us anything useful.  I believe that
-> we've not set up the cardmode Dino correctly to respond to iomem space
-> and as a result the first access to iomem space will fault.
+> No - don't do that. Let the compiler do the work of allocating registers.
+> It's really good at it. :)  Much better than you and I combined. :)
 
-It depends on if the first access is a read or a write. If it's a read
-(and odds are good that's true), we will get the exact IP that faulted 
-and get something about "CPU timeout" in the PIM dump.
+You and gcc already prove it to me ;-)
 
-> Of course, this is a machine with CCIO, so it could be something going
-> wrong with the CCIO programming too.  But I think it's Dino.
+> All we need to do is tell the compiler we need a register.
+> 
+Ok
 
-I doubt it too. I agree it's much more likely something with Dino.
+Taken also into account of David remarks, here is the latest stuff tested with success:
 
-thanks,
-grant
+         __asm__ __volatile__ (
+         "lci    %%r0(%%sr1, %2), %0\n"
+         "\textru        %0,19,12,%0\n"
+         "\tdepw         %0,15,12,%1\n"
+         : "=r" (ci), "=r" (pa)
+         : "r" (vba)
+         );
+
+Tx to all for kind comments, they learn me a lot ;-)
+
+J.
+
+> cheers,
+> grant
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+> 
