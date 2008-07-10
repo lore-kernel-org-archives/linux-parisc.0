@@ -1,33 +1,38 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [PATCH] drop superfluous .align 16
-Date: Wed, 9 Jul 2008 16:55:11 -0400 (EDT)
-Message-ID: <20080709205511.9BC204E4A@hiauly1.hia.nrc.ca>
-References: <119aab440807091322m3e76510bg6569f12ded12fac1@mail.gmail.com>
+From: Domenico Andreoli <cavokz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [Bug #10786] parisc: 64bit SMP does not boot on J5600
+Date: Thu, 10 Jul 2008 15:42:00 +0200
+Message-ID: <20080710134159.GA4331@ska.dandreoli.com>
+References: <Vu1KV8Wj_GP.A.qW.DzLcIB@albercik> <uBi7uNfg81L.A.C4C.s1LcIB@albercik>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: deller@gmx.de, kyle@mcmartin.ca, linux-parisc@vger.kernel.org,
-	tausq@parisc-linux.org
-To: carlos@systemhalted.org (Carlos O'Donell)
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440807091322m3e76510bg6569f12ded12fac1@mail.gmail.com> from "Carlos O'Donell" at Jul 9, 2008 04:22:04 pm
+Content-Type: text/plain; charset=us-ascii
+Cc: Linux Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+	Kernel Testers List <kernel-testers-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+	Kyle McMartin <kyle-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
+	linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Rafael J. Wysocki" <rjw-KKrjLPT3xs0@public.gmane.org>
+Return-path: <kernel-testers-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <uBi7uNfg81L.A.C4C.s1LcIB@albercik>
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-> On Wed, Jul 9, 2008 at 3:50 PM, Helge Deller <deller@gmx.de> wrote:
-> > So, I still think it would be better to remove the .align16, or
-> > alternatively to move it in front of ENTRY(lws_lock_start) [to be on the
-> > safe side].
-> >
-> > Am I really that wrong?
+On Sun, Jul 06, 2008 at 01:45:52PM +0200, Rafael J. Wysocki wrote:
 > 
-> No, you are absolutely right. I forgot the locks are referenced via
-> lws_lock_start, and the symbol needs to be aligned. Sorry, I thought
-> there was another symbol elsewhere.
+> The following bug entry is on the current list of known regressions
+> from 2.6.25.  Please verify if it still should be listed.
 
-This would be clearer if there was an ENTRY_ALIGNED macro (e.g.,
-ENTRY_ALIGNED(lws_lock_start, 16)).  It's probably overkill though.
+I am going to check it later. Last time I saw it was around 2.6.26-rc7/8.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Anyway the error message was not the same firstly reported there,
+it could be another problem. More details will follow. Thank you.
+
+> Bug-Entry	: http://bugzilla.kernel.org/show_bug.cgi?id=10786
+> Subject		: parisc: 64bit SMP does not boot on J5600
+> Submitter	: Domenico Andreoli <cavokz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> Date		: 2008-05-22 16:14 (46 days old)
+> References	: http://marc.info/?l=linux-kernel&m=121147328028081&w=4
+
+ciao,
+Domenico
+
+-----[ Domenico Andreoli, aka cavok
+ --[ http://www.dandreoli.com/gpgkey.asc
+   ---[ 3A0F 2F80 F79C 678A 8936  4FEE 0677 9033 A20E BC50
