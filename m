@@ -1,41 +1,113 @@
-From: Helge Deller <deller@gmx.de>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: [PATCH] Document LWS ABI.
-Date: Tue, 15 Jul 2008 19:32:50 +0200
-Message-ID: <487CDF42.3050800@gmx.de>
+Date: Tue, 15 Jul 2008 15:51:07 -0400
+Message-ID: <119aab440807151251m7d00ca82gde10474cb35e8430@mail.gmail.com>
 References: <119aab440807150533y2b56f612w6f6fa12ed28b45fe@mail.gmail.com>
+	 <487CDF42.3050800@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: Kyle McMartin <kyle@mcmartin.ca>,
-	John David Anglin <dave.anglin@nrc.ca>,
+Content-Type: multipart/mixed;
+	boundary="----=_Part_14571_9724522.1216151467651"
+Cc: "Kyle McMartin" <kyle@mcmartin.ca>,
+	"John David Anglin" <dave.anglin@nrc.ca>,
 	linux-parisc <linux-parisc@vger.kernel.org>
-To: Carlos O'Donell <carlos@systemhalted.org>
+To: "Helge Deller" <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440807150533y2b56f612w6f6fa12ed28b45fe@mail.gmail.com>
+In-Reply-To: <487CDF42.3050800@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Carlos O'Donell wrote:
-> Helge,
-> 
-> The LWS interface *already* has a 64-bit runtime entry point, see
-> arch/parisc/kernel/syscall.S:
-> [....]
+------=_Part_14571_9724522.1216151467651
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Sure. I thought the discussion was about adding a 64-bit runtime entry 
-point which operates on a 64-bit pointer. But this can be done discussed 
-when 64-bit userspace is coming...
+On Tue, Jul 15, 2008 at 1:32 PM, Helge Deller <deller@gmx.de> wrote:
+>> The LWS interface *already* has a 64-bit runtime entry point, see
+>> arch/parisc/kernel/syscall.S:
+>> [....]
+>
+> Sure. I thought the discussion was about adding a 64-bit runtime entry point
+> which operates on a 64-bit pointer. But this can be done discussed when
+> 64-bit userspace is coming...
 
-> Helge, please review. I rolled in your fix for the superfluous .align
-> 16. I would like your signed-off-by if you think the patch is good.
-> 
-> [PARISC] Document LWS ABI and LWS cleanups.
-> 
-> Document the LWS ABI including implementation notes for
-> userspace, and comment cleanup.
-> 
-> Remove extraneous .align 16 after lws_lock_start.
-> 
-> Signed-off-by: Carlos O'Donell <carlos@systemhalted.org>
+The entry point is already there. It's LWS #1. Apparnetly I created it
+with a 64-bit userspace in mind.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+>> Helge, please review. I rolled in your fix for the superfluous .align
+>> 16. I would like your signed-off-by if you think the patch is good.
+>>
+>> [PARISC] Document LWS ABI and LWS cleanups.
+>>
+>> Document the LWS ABI including implementation notes for
+>> userspace, and comment cleanup.
+>>
+>> Remove extraneous .align 16 after lws_lock_start.
+>>
+>> Signed-off-by: Carlos O'Donell <carlos@systemhalted.org>
+>
+> Signed-off-by: Helge Deller <deller@gmx.de>
 
+Thanks.
+
+Kyle,
+
+Please apply the patch and send it upstream?
+
+Cheers,
+Carlos.
+
+------=_Part_14571_9724522.1216151467651
+Content-Type: text/x-diff; name=syscall.S.diff
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fiox68gd0
+Content-Disposition: attachment; filename=syscall.S.diff
+
+W1BBUklTQ10gRG9jdW1lbnQgTFdTIEFCSSBhbmQgTFdTIGNsZWFudXBzLgoKRG9jdW1lbnQgdGhl
+IExXUyBBQkkgaW5jbHVkaW5nIGltcGxlbWVudGF0aW9uIG5vdGVzIGZvcgp1c2Vyc3BhY2UsIGFu
+ZCBjb21tZW50IGNsZWFudXAuCgpSZW1vdmUgZXh0cmFuZW91cyAuYWxpZ24gMTYgYWZ0ZXIgbHdz
+X2xvY2tfc3RhcnQuCgpTaWduZWQtb2ZmLWJ5OiBDYXJsb3MgTydEb25lbGwgPGNhcmxvc0BzeXN0
+ZW1oYWx0ZWQub3JnPgpTaWduZWQtb2ZmLWJ5OiBIZWxnZSBEZWxsZXIgPGRlbGxlckBnbXguZGU+
+CgpkaWZmIC0tZ2l0IGEvYXJjaC9wYXJpc2Mva2VybmVsL3N5c2NhbGwuUyBiL2FyY2gvcGFyaXNj
+L2tlcm5lbC9zeXNjYWxsLlMKaW5kZXggNjliNmVlYi4uM2ZjNzNhZCAxMDA2NDQKLS0tIGEvYXJj
+aC9wYXJpc2Mva2VybmVsL3N5c2NhbGwuUworKysgYi9hcmNoL3BhcmlzYy9rZXJuZWwvc3lzY2Fs
+bC5TCkBAIC0zNjUsMTcgKzM2NSw1MSBAQCB0cmFjZXN5c19zaWdleGl0OgogCiAKIAkvKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCi0JCUxp
+Z2h0LXdlaWdodC1zeXNjYWxsIGNvZGUKKwkJMzIvNjQtYml0IExpZ2h0LVdlaWdodC1TeXNjYWxs
+IEFCSQogCi0JCXIyMCAtIGx3cyBudW1iZXIKLQkJcjI2LHIyNSxyMjQscjIzLHIyMiAtIElucHV0
+IHJlZ2lzdGVycwotCQlyMjggLSBGdW5jdGlvbiByZXR1cm4gcmVnaXN0ZXIKLQkJcjIxIC0gRXJy
+b3IgY29kZS4KKwkJKiAtIEluZGljYXRlcyBhIGhpbnQgZm9yIHVzZXJzcGFjZSBpbmxpbmUgYXNt
+CisJCWltcGxlbWVudGF0aW9ucy4KIAotCQlTY3JhY3RoOiBBbnkgb2YgdGhlIGFib3ZlIHRoYXQg
+YXJlbid0IGJlaW5nCi0JCWN1cnJlbnRseSB1c2VkLCBpbmNsdWRpbmcgcjEuIAorCQlTeXNjYWxs
+IG51bWJlciAoY2FsbGVyLXNhdmVzKQorCSAgICAgICAgLSAlcjIwCisJICAgICAgICAqIEluIGFz
+bSBjbG9iYmVyLgogCi0JCVJldHVybiBwb2ludGVyOiByMzEgKE5vdCB1c2FibGUpCisJCUFyZ3Vt
+ZW50IHJlZ2lzdGVycyAoY2FsbGVyLXNhdmVzKQorCSAgICAgICAgLSAlcjI2LCAlcjI1LCAlcjI0
+LCAlcjIzLCAlcjIyCisJICAgICAgICAqIEluIGFzbSBpbnB1dC4KKworCQlSZXR1cm4gcmVnaXN0
+ZXJzIChjYWxsZXItc2F2ZXMpCisJICAgICAgICAtICVyMjggKHJldHVybiksICVyMjEgKGVycm5v
+KQorCSAgICAgICAgKiBJbiBhc20gb3V0cHV0LgorCisJCUNhbGxlci1zYXZlcyByZWdpc3RlcnMK
+KwkgICAgICAgIC0gJXIxLCAlcjI3LCAlcjI5CisJICAgICAgICAtICVyMiAocmV0dXJuIHBvaW50
+ZXIpCisJICAgICAgICAtICVyMzEgKGJsZSBsaW5rIHJlZ2lzdGVyKQorCSAgICAgICAgKiBJbiBh
+c20gY2xvYmJlci4KKworCQlDYWxsZWUtc2F2ZXMgcmVnaXN0ZXJzCisJICAgICAgICAtICVyMy0l
+cjE4CisJICAgICAgICAtICVyMzAgKHN0YWNrIHBvaW50ZXIpCisJICAgICAgICAqIE5vdCBpbiBh
+c20gY2xvYmJlci4KKworCQlJZiB1c2Vyc3BhY2UgaXMgMzItYml0OgorCQlDYWxsZWUtc2F2ZXMg
+cmVnaXN0ZXJzCisJICAgICAgICAtICVyMTkgKDMyLWJpdCBQSUMgcmVnaXN0ZXIpCisKKwkJRGlm
+ZmVyZW5jZXMgZnJvbSAzMi1iaXQgY2FsbGluZyBjb252ZW50aW9uOgorCQktIFN5c2NhbGwgbnVt
+YmVyIGluICVyMjAKKwkJLSBBZGRpdGlvbmFsIGFyZ3VtZW50IHJlZ2lzdGVyICVyMjIgKGFyZzQp
+CisJCS0gQ2FsbGVlLXNhdmVzICVyMTkuCisKKwkJSWYgdXNlcnNwYWNlIGlzIDY0LWJpdDoKKwkJ
+Q2FsbGVlLXNhdmVzIHJlZ2lzdGVycworCQktICVyMjcgKDY0LWJpdCBQSUMgcmVnaXN0ZXIpCisK
+KwkJRGlmZmVyZW5jZXMgZnJvbSA2NC1iaXQgY2FsbGluZyBjb252ZW50aW9uOgorCQktIFN5c2Nh
+bGwgbnVtYmVyIGluICVyMjAKKwkJLSBBZGRpdGlvbmFsIGFyZ3VtZW50IHJlZ2lzdGVyICVyMjIg
+KGFyZzQpCisJCS0gQ2FsbGVlLXNhdmVzICVyMjcuCiAKIAkJRXJyb3IgY29kZXMgcmV0dXJuZWQg
+YnkgZW50cnkgcGF0aDoKIApAQCAtNDczLDcgKzUwNyw4IEBAIGx3c19jb21wYXJlX2FuZF9zd2Fw
+NjQ6CiAJYixuCWx3c19jb21wYXJlX2FuZF9zd2FwCiAjZWxzZQogCS8qIElmIHdlIGFyZSBub3Qg
+YSA2NC1iaXQga2VybmVsLCB0aGVuIHdlIGRvbid0Ci0JICogaW1wbGVtZW50IGhhdmluZyA2NC1i
+aXQgaW5wdXQgcmVnaXN0ZXJzCisJICogaGF2ZSA2NC1iaXQgaW5wdXQgcmVnaXN0ZXJzLCBhbmQg
+Y2FsbGluZworCSAqIHRoZSA2NC1iaXQgTFdTIENBUyByZXR1cm5zIEVOT1NZUy4KIAkgKi8KIAli
+LG4JbHdzX2V4aXRfbm9zeXMKICNlbmRpZgpAQCAtNjM1LDEyICs2NzAsMTUgQEAgRU5EKHN5c19j
+YWxsX3RhYmxlNjQpCiAJLyoKIAkJQWxsIGxpZ2h0LXdlaWdodC1zeXNjYWxsIGF0b21pYyBvcGVy
+YXRpb25zIAogCQl3aWxsIHVzZSB0aGlzIHNldCBvZiBsb2NrcyAKKworCQlOT1RFOiBUaGUgbHdz
+X2xvY2tfc3RhcnQgc3ltYm9sIG11c3QgYmUgCisJCWF0IGxlYXN0IDE2LWJ5dGUgYWxpZ25lZCBm
+b3Igc2FmZSB1c2UKKwkJd2l0aCBsZGN3LgogCSovCiAJLnNlY3Rpb24gLmRhdGEKIAkuYWxpZ24J
+UEFHRV9TSVpFCiBFTlRSWShsd3NfbG9ja19zdGFydCkKIAkvKiBsd3MgbG9ja3MgKi8KLQkuYWxp
+Z24gMTYKIAkucmVwdCAxNgogCS8qIEtlZXAgbG9ja3MgYWxpZ25lZCBhdCAxNi1ieXRlcyAqLwog
+CS53b3JkIDEK
+------=_Part_14571_9724522.1216151467651--
