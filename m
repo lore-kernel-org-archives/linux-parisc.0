@@ -1,58 +1,40 @@
-From: Mikulas Patocka <mpatocka@redhat.com>
-Subject: Re: [PATCH] block: fix q->max_segment_size checking in blk_recalc_rq_segments
- about VMERGE
-Date: Tue, 15 Jul 2008 17:50:37 -0400 (EDT)
-Message-ID: <Pine.LNX.4.64.0807151731530.14420@devserv.devel.redhat.com>
-References: <1216118676-13625-1-git-send-email-fujita.tomonori@lab.ntt.co.jp>
-  <Pine.LNX.4.64.0807150924250.21598@devserv.devel.redhat.com>
- <20080715231956A.fujita.tomonori@lab.ntt.co.jp>  <1216133421.3312.30.camel@localhost.localdomain>
-  <Pine.LNX.4.64.0807151104450.26824@devserv.devel.redhat.com>
- <1216136503.3312.48.camel@localhost.localdomain>
- <Pine.LNX.4.64.0807151147040.29803@devserv.devel.redhat.com>
- <1216138072.3312.54.camel@localhost.localdomain>
- <Pine.LNX.4.64.0807151210400.31336@devserv.devel.redhat.com>
- <1216139792.3312.74.camel@localhost.localdomain>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [PATCH] Document LWS ABI.
+Date: Tue, 15 Jul 2008 20:15:13 -0400 (EDT)
+Message-ID: <20080716001514.74D5F431A@hiauly1.hia.nrc.ca>
+References: <119aab440807151251m7d00ca82gde10474cb35e8430@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>,
-	jens.axboe@oracle.com, linux-kernel@vger.kernel.org,
-	linux-scsi@vger.kernel.org, davem@davemloft.net,
+Content-Type: text/plain; charset=US-ASCII
+Cc: deller@gmx.de, kyle@mcmartin.ca, dave.anglin@nrc.ca,
 	linux-parisc@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <1216139792.3312.74.camel@localhost.localdomain>
-List-ID: <linux-scsi.vger.kernel.org>
+To: carlos@systemhalted.org (Carlos O'Donell)
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <119aab440807151251m7d00ca82gde10474cb35e8430@mail.gmail.com> from "Carlos O'Donell" at Jul 15, 2008 03:51:07 pm
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > > Yes, but it's gains very little ... architectures that don't want it can
-> > > already turn it off, and it's useful for those, like parisc, who do.
-> > 
-> > It increases maintainability of the code, reduces bloat and bugs.
+> >> The LWS interface *already* has a 64-bit runtime entry point, see
+> >> arch/parisc/kernel/syscall.S:
+> >> [....]
+> >
+> > Sure. I thought the discussion was about adding a 64-bit runtime entry point
+> > which operates on a 64-bit pointer. But this can be done discussed when
+> > 64-bit userspace is coming...
 > 
-> That's not really a good reason.  You can eliminate code because it's
-> unused and unikely to be used or you redo it to better or fix it to be
-> less buggy.  You don't simply eliminate useful functionality that
-> currently has in-tree users, however marginal you might opine those
-> users to be.
-> 
-> James
+> The entry point is already there. It's LWS #1. Apparnetly I created it
+> with a 64-bit userspace in mind.
 
-So show a specific device where the virtual merge accounting is useful.
+You didn't respond to the issue.
 
-(1) The device that is often used in alpha or pa-risc environments --- 
-because the accounting is not used on other archs.
+> Please apply the patch and send it upstream?
 
-(2) The device that is performance-sensitive --- not something outdated or 
-unusual.
+This ABI change is unjustified and I won't approve the Helge's GCC patch
+with this change.  You will also have to change the glibc code to match.
 
-(3) And the device that has limited sg-list size, so that generic I/O 
-requests made by the kernel hit this limit. (if the sg-list is so big that 
-nr_phys_segments of most requests fits into it, you don't need to count 
-nr_hw_segments --- because nr_hw_segments < nr_phys_segments and 
-nr_phys_segments already fits).
+Kyle indicated that he didn't want any major changes to the LWS interface,
+so reserving several new registers is unnecessary.
 
-[ the device that traverses its sg-list slowly doesn't fall into category 
-(3), beacuse virtual merging would happen with or without nr_hw_segments 
-accounting ]
-
-Mikulas
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
