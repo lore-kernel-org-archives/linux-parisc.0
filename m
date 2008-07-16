@@ -1,42 +1,48 @@
-From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
-Subject: Re: [PATCH] block: fix q->max_segment_size checking in
- blk_recalc_rq_segments about VMERGE
-Date: Wed, 16 Jul 2008 09:34:36 +0900
-Message-ID: <20080716093456J.fujita.tomonori@lab.ntt.co.jp>
-References: <Pine.LNX.4.64.0807151033040.25390@devserv.devel.redhat.com>
-	<20080716003047P.fujita.tomonori@lab.ntt.co.jp>
-	<Pine.LNX.4.64.0807151143050.29803@devserv.devel.redhat.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [PATCH] Document LWS ABI.
+Date: Tue, 15 Jul 2008 20:54:24 -0400
+Message-ID: <119aab440807151754r376e339eoe5e496f4642de4df@mail.gmail.com>
+References: <119aab440807151251m7d00ca82gde10474cb35e8430@mail.gmail.com>
+	 <20080716001514.74D5F431A@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: fujita.tomonori@lab.ntt.co.jp, jens.axboe@oracle.com,
-	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-	davem@davemloft.net, linux-parisc@vger.kernel.org
-To: mpatocka@redhat.com
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0807151143050.29803@devserv.devel.redhat.com>
-List-ID: <linux-scsi.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: deller@gmx.de, kyle@mcmartin.ca, dave.anglin@nrc.ca,
+	linux-parisc@vger.kernel.org
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20080716001514.74D5F431A@hiauly1.hia.nrc.ca>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 15 Jul 2008 11:46:46 -0400 (EDT)
-Mikulas Patocka <mpatocka@redhat.com> wrote:
+On Tue, Jul 15, 2008 at 8:15 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+>> > Sure. I thought the discussion was about adding a 64-bit runtime entry point
+>> > which operates on a 64-bit pointer. But this can be done discussed when
+>> > 64-bit userspace is coming...
+>>
+>> The entry point is already there. It's LWS #1. Apparnetly I created it
+>> with a 64-bit userspace in mind.
+>
+> You didn't respond to the issue.
 
-> >> Even if we fix it now, the question is: how long it will stay fixed? Until
-> >> someone makes another change to struct device that restricts boundaries on
-> >> some wacky hardware.
-> >
-> > I'm not sure how the boundary restriction of a device can break
-> > the VMERGE accounting.
-> 
-> Because block layer code doesn't know anything about the device, pci 
-> access restrictions and so on.
+It doesn't work for the 64-bit runtime, I only used stw/ldw, and it
+should be std/ldd. Which operation depends on the width of userspace,
+so in all likelyhood I have to just duplicate the code. No real
+problem there.
 
-Not true, the block layer knows about the device restrictions like DMA
-boundary.
+>> Please apply the patch and send it upstream?
+>
+> This ABI change is unjustified and I won't approve the Helge's GCC patch
+> with this change.  You will also have to change the glibc code to match.
+>
+> Kyle indicated that he didn't want any major changes to the LWS interface,
+> so reserving several new registers is unnecessary.
 
-But it's not the point here because the boundary restriction doesn't
-matter for the VMERGE accounting. An IOMMU just returns an error if it
-can't allocate an I/O space fit for the device restrictions.
+All I have done is clarify the intended interface. There has been no
+actual change from what is already implemented. The glibc code already
+matches this interface.
 
+The question is "Are you OK with the existing ABI?" :-)
 
-Please give me an example how the boundary restriction of a device can
-break the VMERGE accounting and an IOMMU if you aren't still sure.
+Cheers,
+Carlos.
