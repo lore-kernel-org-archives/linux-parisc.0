@@ -1,64 +1,46 @@
-From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
-Subject: Re: [PATCH] block: fix q->max_segment_size checking in
- blk_recalc_rq_segments about VMERGE
-Date: Thu, 17 Jul 2008 13:14:18 +0900
-Message-ID: <20080717131444K.fujita.tomonori@lab.ntt.co.jp>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: Re: [PATCH] block: fix q->max_segment_size checking in blk_recalc_rq_segments
+ about VMERGE
+Date: Thu, 17 Jul 2008 07:50:24 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.0807170746001.31185@devserv.devel.redhat.com>
 References: <Pine.LNX.4.64.0807151143050.29803@devserv.devel.redhat.com>
-	<20080716093456J.fujita.tomonori@lab.ntt.co.jp>
-	<Pine.LNX.4.64.0807161359001.30207@devserv.devel.redhat.com>
+ <20080716093456J.fujita.tomonori@lab.ntt.co.jp>
+ <Pine.LNX.4.64.0807161359001.30207@devserv.devel.redhat.com>
+ <20080717131444K.fujita.tomonori@lab.ntt.co.jp>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: fujita.tomonori@lab.ntt.co.jp, jens.axboe@oracle.com,
-	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-	davem@davemloft.net, linux-parisc@vger.kernel.org
-To: mpatocka@redhat.com
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0807161359001.30207@devserv.devel.redhat.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: jens.axboe@oracle.com, linux-kernel@vger.kernel.org,
+	linux-scsi@vger.kernel.org, davem@davemloft.net,
+	linux-parisc@vger.kernel.org
+To: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <20080717131444K.fujita.tomonori@lab.ntt.co.jp>
+List-ID: <linux-scsi.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 16 Jul 2008 14:02:27 -0400 (EDT)
-Mikulas Patocka <mpatocka@redhat.com> wrote:
-
-> On Wed, 16 Jul 2008, FUJITA Tomonori wrote:
+> > > Please give me an example how the boundary restriction of a device can
+> > > break the VMERGE accounting and an IOMMU if you aren't still sure.
+> > 
+> > You have dma_get_seg_boundary and dma_get_max_seg_size. On sparc64, adding 
+> > one of these broken VMERGE accounting (the VMERGE didn't happen past 64-kb 
+> > boundary and bio layer thought that VMERGE would be possible).
 > 
-> > On Tue, 15 Jul 2008 11:46:46 -0400 (EDT)
-> > Mikulas Patocka <mpatocka@redhat.com> wrote:
-> > 
-> > > >> Even if we fix it now, the question is: how long it will stay fixed? Until
-> > > >> someone makes another change to struct device that restricts boundaries on
-> > > >> some wacky hardware.
-> > > >
-> > > > I'm not sure how the boundary restriction of a device can break
-> > > > the VMERGE accounting.
-> > > 
-> > > Because block layer code doesn't know anything about the device, pci 
-> > > access restrictions and so on.
-> > 
-> > Not true, the block layer knows about the device restrictions like DMA
-> > boundary.
-> > 
-> > But it's not the point here because the boundary restriction doesn't
-> > matter for the VMERGE accounting. An IOMMU just returns an error if it
-> > can't allocate an I/O space fit for the device restrictions.
-> > 
-> > 
-> > Please give me an example how the boundary restriction of a device can
-> > break the VMERGE accounting and an IOMMU if you aren't still sure.
+> If the device has 64KB boundary restriction, the device also has
+> max_seg_size restriction of 64KB or under. So the vmerge acounting
+> works (though we need to fix it to handle max_seg_size, as discussed).
 > 
-> You have dma_get_seg_boundary and dma_get_max_seg_size. On sparc64, adding 
-> one of these broken VMERGE accounting (the VMERGE didn't happen past 64-kb 
-> boundary and bio layer thought that VMERGE would be possible).
+> > And if you fix this case, someone will break it again, sooner or later, by 
+> > adding new restriction.
+> 
+> All restrictions that IOMMUs need to know are dma_get_seg_boundary and
+> dma_get_max_seg_size.
+> 
+> What is your new restriction?
 
-If the device has 64KB boundary restriction, the device also has
-max_seg_size restriction of 64KB or under. So the vmerge acounting
-works (though we need to fix it to handle max_seg_size, as discussed).
+We don't know what happens in the future. And that is the problem that we 
+don't know --- but we have two pieces of code (blk-merge and iommu) that 
+try to calculate the same number (number of hw segments) and if they get 
+different result, it will crash. If the calculations were done at one 
+place, there would be no problem with that.
 
-
-> And if you fix this case, someone will break it again, sooner or later, by 
-> adding new restriction.
-
-What is your new restriction?
-
-All restrictions that IOMMUs need to know are dma_get_seg_boundary and
-dma_get_max_seg_size.
+Mikulas
