@@ -1,45 +1,42 @@
-From: Joel Soete <soete.joel@scarlet.be>
-Subject: [PATCH] ccio_clear_io_tlb() don't need to compute io page number
- a second time.
-Date: Sat, 19 Jul 2008 21:34:08 +0000
-Message-ID: <48825DD0.5000308@scarlet.be>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: 64bit kernel not booting with CONFIG_PRINTK_TIME=y
+Date: Sat, 19 Jul 2008 17:54:59 -0400
+Message-ID: <20080719215459.GA2550@phobos.i.cabal.ca>
+References: <20080717190502.74c238d5@bleh.bxl.tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: linux-kernel@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20080717190502.74c238d5@bleh.bxl.tuxicoman.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello Kyle,
+On Thu, Jul 17, 2008 at 07:05:02PM +0200, Guy Martin wrote:
+> 
+> Recompiling with CONFIG_PRINTK_TIME=n makes it works straight away.
+>
 
-In ccio-dma.c, I noticed that eventhought the prototype of the function ccio_clear_io_tlb() is:
-static CCIO_INLINE void
-ccio_clear_io_tlb(struct ioc *ioc, dma_addr_t iovp, size_t byte_cnt)
+The problem is kernel/printk.c around line 731.
 
-i.e. the second arg being iovp (afaik the io virtual page number) deduced from the iova (io virtual address)
+t = jiffies * (NSEC_PER_SEC / HZ);
+do_div(t, 10000000000); is doing some badness (which is hard as hell to
+debug since printk isn't working.)
 
-it's so useless to:
-         iovp &= IOVP_MASK;      /* clear offset bits, just want pagenum */
+It's doing some sort of bollocks when jiffies is between 9 and 10...
 
-and the only place where it's called is:
-         ccio_clear_io_tlb(ioc, CCIO_IOVP(iova), saved_byte_cnt);
+do_div being:
 
-it's well an iovp given the macro definition:
-#define CCIO_IOVP(iova) ((iova) & IOVP_MASK)
+# define do_div(n,base) ({                                      \
+        uint32_t __base = (base);                               \
+        uint32_t __rem;                                         \
+        __rem = ((uint64_t)(n)) % __base;                       \
+        (n) = ((uint64_t)(n)) / __base;                         \
+        __rem;                                                  \
+ })
 
-May I so suggest following patch:
---- a/drivers/parisc/ccio-dma.c	2008-07-19 21:17:37.000000000 +0000
-+++ b/drivers/parisc/ccio-dma.c	2008-07-19 21:32:54.000000000 +0000
-@@ -643,7 +643,6 @@
-  {
-  	u32 chain_size = 1 << ioc->chainid_shift;
+I'm *guessing* that umoddi3 or udivdi3 is doing an xmpyu or something,
+which since this is probably before fpu init, is trapping, which is
+trying to printk, which is recursively exploding.
 
--	iovp &= IOVP_MASK;	/* clear offset bits, just want pagenum */
-  	byte_cnt += chain_size;
-
-  	while(byte_cnt > chain_size) {
-=== <> ===
-
-Tia,
-	J.
+regards, Kyle
