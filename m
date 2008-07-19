@@ -1,42 +1,43 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: 64bit kernel not booting with CONFIG_PRINTK_TIME=y
-Date: Sat, 19 Jul 2008 17:54:59 -0400
-Message-ID: <20080719215459.GA2550@phobos.i.cabal.ca>
-References: <20080717190502.74c238d5@bleh.bxl.tuxicoman.be>
+Date: Sat, 19 Jul 2008 19:04:18 -0400
+Message-ID: <20080719230418.GA4263@phobos.i.cabal.ca>
+References: <20080717190502.74c238d5@bleh.bxl.tuxicoman.be> <20080719215459.GA2550@phobos.i.cabal.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
 To: Guy Martin <gmsoft@tuxicoman.be>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080717190502.74c238d5@bleh.bxl.tuxicoman.be>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755958AbYGSXE3@vger.kernel.org>
+In-Reply-To: <20080719215459.GA2550@phobos.i.cabal.ca>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Jul 17, 2008 at 07:05:02PM +0200, Guy Martin wrote:
+On Sat, Jul 19, 2008 at 05:54:59PM -0400, Kyle McMartin wrote:
+> I'm *guessing* that umoddi3 or udivdi3 is doing an xmpyu or something,
+> which since this is probably before fpu init, is trapping, which is
+> trying to printk, which is recursively exploding.
 > 
-> Recompiling with CONFIG_PRINTK_TIME=n makes it works straight away.
->
 
-The problem is kernel/printk.c around line 731.
+If my guess is right, this quick fix might work. Can you please test it,
+as my a500 decided to have its scsi controller die in the middle of
+this...
 
-t = jiffies * (NSEC_PER_SEC / HZ);
-do_div(t, 10000000000); is doing some badness (which is hard as hell to
-debug since printk isn't working.)
+(Proper fix is probably to bring fpu bringup into head.S, since it will
+ be necessary for any printk with CONFIG_PRINTK_TIME on. (Or bring back
+ my use embedded libgcc patch, which was buggy on 32-bit. :\ ))
 
-It's doing some sort of bollocks when jiffies is between 9 and 10...
-
-do_div being:
-
-# define do_div(n,base) ({                                      \
-        uint32_t __base = (base);                               \
-        uint32_t __rem;                                         \
-        __rem = ((uint64_t)(n)) % __base;                       \
-        (n) = ((uint64_t)(n)) / __base;                         \
-        __rem;                                                  \
- })
-
-I'm *guessing* that umoddi3 or udivdi3 is doing an xmpyu or something,
-which since this is probably before fpu init, is trapping, which is
-trying to printk, which is recursively exploding.
-
-regards, Kyle
+diff --git a/init/main.c b/init/main.c
+index edeace0..729b150 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -560,9 +560,9 @@ asmlinkage void __init start_kernel(void)
+ 	tick_init();
+ 	boot_cpu_init();
+ 	page_address_init();
++	setup_arch(&command_line);
+ 	printk(KERN_NOTICE);
+ 	printk(linux_banner);
+-	setup_arch(&command_line);
+ 	mm_init_owner(&init_mm, &init_task);
+ 	setup_command_line(command_line);
+ 	unwind_setup();
