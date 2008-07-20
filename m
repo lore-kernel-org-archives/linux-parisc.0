@@ -1,33 +1,578 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: 2.6.26 kernel crash
-Date: Sun, 20 Jul 2008 13:38:09 -0400 (EDT)
-Message-ID: <20080720173810.6EE7F4E43@hiauly1.hia.nrc.ca>
-References: <200807201907.59762.deller@gmx.de>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [RFC] Patch for glibc	getcontext()/makecontext()/setcontext()/swapcontext()
+Date: Sun, 20 Jul 2008 20:28:14 +0200
+Message-ID: <488383BE.3070806@gmx.de>
+References: <200807190011.02042.deller@gmx.de> <20080720023342.GB6427@phobos.i.cabal.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org
-To: deller@gmx.de (Helge Deller)
+Content-Type: multipart/mixed;
+ boundary="------------070908020905060806090801"
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	carlos@systemhalted.org, Randolph Chung <tausq@parisc-linux.org>
+To: linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200807201907.59762.deller@gmx.de> from "Helge Deller" at Jul 20, 2008 07:07:59 pm
+In-Reply-To: <20080720023342.GB6427@phobos.i.cabal.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > Kernel Fault: Code=15 regs=5f578640 (Addr=000127ec)
-> > 
-> >      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> > PSW: 00000000000001001111110000001111 Not tainted
-> > r00-03  0004fc0f 10644f10 1011ee68 5f578288
-> > r04-07  00000014 8c1fe860 8c1fe828 8eb7d030
-> > r08-11  105ee890 00000040 0001264a 000d3b60
-> > r12-15  00000000 000d3b5c 000dde68 000b0000
-> > r16-19  8eb7d250 000b0000 ffffffff 000127ec
+This is a multi-part message in MIME format.
+--------------070908020905060806090801
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-FWIW, this is the instruction:
+Kyle McMartin wrote:
+> On Sat, Jul 19, 2008 at 12:11:01AM +0200, Helge Deller wrote:
+>> - only integer parameters allowed (but that's usual on most arches)
+>> - 32bit userspace implementation only
+>> - do I need to save the FP regs?
+>> - maybe more?
+>>
+>> Any feedback is very much appreciated.
+>> (Please be kind, my hppa assembler knowledge isn't that good)
+>>
+> 
+> You probably need to save fpregs as well, but you could just steal all
+> that from setjmp (ordering matters with fprs.)
 
-dave@hiauly6:~/opt/gnu/bin$ disasm 0x0e601093
-   0:	0e 60 10 93 	ldw 0(r19),r19
+Thanks Kyle!
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Attached is an updated patch, which
+- saves and restores the FP regs
+- passes glibc's stdlib/tst-setcontext.c test
+
+Helge
+
+--------------070908020905060806090801
+Content-Type: text/x-patch;
+ name="getcontext_12.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="getcontext_12.diff"
+
+diff -up ports/sysdeps/unix/sysv/linux/hppa/Makefile.org ports/sysdeps/unix/sysv/linux/hppa/Makefile
+--- ports/sysdeps/unix/sysv/linux/hppa/Makefile.org	2008-07-16 19:41:29.000000000 +0200
++++ ports/sysdeps/unix/sysv/linux/hppa/Makefile	2008-07-16 19:41:37.000000000 +0200
+@@ -1,2 +1,7 @@
+ # linux/hppa does not use -lmilli anymore
+ gnulib := -lgcc
++
++ifeq ($(subdir),stdlib)
++gen-as-const-headers += ucontext_i.sym
++endif
++
+diff -up ports/sysdeps/unix/sysv/linux/hppa/getcontext.S.org ports/sysdeps/unix/sysv/linux/hppa/getcontext.S
+--- ports/sysdeps/unix/sysv/linux/hppa/getcontext.S.org	2008-07-16 19:52:11.000000000 +0200
++++ ports/sysdeps/unix/sysv/linux/hppa/getcontext.S	2008-07-20 20:03:29.000000000 +0200
+@@ -0,0 +1,158 @@
++/* Get current user context.
++   Copyright (C) 2008 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Helge Deller <deller@gmx.de>, 2008.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#include <sysdep.h>
++
++#include "ucontext_i.h"
++
++
++	/* Trampoline function.  */
++	.type	__getcontext_ret, #function
++__getcontext_ret:
++	copy	%r23, %r3
++	copy	%r24, %r4
++	copy	%r25, %r5
++	copy	%r26, %r6
++	bv	0(%r20)
++	copy	%r0, %ret0
++	.size	__getcontext_ret, .-__getcontext_ret
++
++
++ENTRY(__getcontext)
++	/* Save the register.  */
++	stw	%r0, oR0(%r26)
++	stw	%r1, oR1(%r26)
++	/* stw	%r2, oR2(%r26) - used for trampoline.  */
++	stw	%r3, oR3(%r26)
++	stw	%r4, oR4(%r26)
++	stw	%r5, oR5(%r26)
++	stw	%r6, oR6(%r26)
++	stw	%r7, oR7(%r26)
++	stw	%r8, oR8(%r26)
++	stw	%r9, oR9(%r26)
++	stw	%r10, oR10(%r26)
++	stw	%r11, oR11(%r26)
++	stw	%r12, oR12(%r26)
++	stw	%r13, oR13(%r26)
++	stw	%r14, oR14(%r26)
++	stw	%r15, oR15(%r26)
++	stw	%r16, oR16(%r26)
++	stw	%r17, oR17(%r26)
++	stw	%r18, oR18(%r26)
++	stw	%r19, oR19(%r26)
++	/* stw	%r20, oR20(%r26) - used for trampoline.  */
++	stw	%r21, oR21(%r26)
++	stw	%r22, oR22(%r26)
++	/* stw	%r23, oR23(%r26) - used for trampoline.  */
++	/* stw	%r24, oR24(%r26) - used for trampoline.  */
++	/* stw	%r25, oR25(%r26) - used for trampoline.  */
++	/* stw	%r26, oR26(%r26) - used for trampoline.  */
++	stw	%r27, oR27(%r26)
++	stw	%r28, oR28(%r26)
++	stw	%r29, oR29(%r26)
++	ldo	-64(%sp), %r1	/* Calculate %sp in %r1.  */
++	stw	%r1, oR30(%r26)	/* Save new %sp.  */
++	stw	%r31, oR31(%r26)
++
++	stw	%r0, oUC_FLAGS(%r26)
++	/* stw	%r0, oUC_LINK(%r26) - DO NOT OVERWRITE!  */
++	stw	%r1, oSS_SP(%r26)  /* New %sp.  */
++	stw	%r0, oSS_FLAGS(%r26)
++	stw	%r0, oSS_SIZE(%r26)
++
++	stw	%r0, oSC_FLAGS(%r26)
++
++	stw	%r0, oIASQ0(%r26)
++	stw	%r0, oIASQ1(%r26)
++	stw	%r0, oIAOQ0(%r26)
++	stw	%r0, oIAOQ1(%r26)
++	stw	%r0, oSAR(%r26) /* used as flag in swapcontext().  */
++
++
++	/* Store floating-point regs.  */
++	ldo	oFPREGS0(%r26),%r1
++	fstds,ma %fr0, 8(%r1)
++	fstds,ma %fr1, 8(%r1)
++	fstds,ma %fr2, 8(%r1)
++	fstds,ma %fr3, 8(%r1)
++	fstds,ma %fr4, 8(%r1)
++	fstds,ma %fr5, 8(%r1)
++	fstds,ma %fr6, 8(%r1)
++	fstds,ma %fr7, 8(%r1)
++	fstds,ma %fr8, 8(%r1)
++	fstds,ma %fr9, 8(%r1)
++	fstds,ma %fr10, 8(%r1)
++	fstds,ma %fr11, 8(%r1)
++	fstds,ma %fr12, 8(%r1)
++	fstds,ma %fr13, 8(%r1)
++	fstds,ma %fr14, 8(%r1)
++	fstds,ma %fr15, 8(%r1)
++	fstds,ma %fr16, 8(%r1)
++	fstds,ma %fr17, 8(%r1)
++	fstds,ma %fr18, 8(%r1)
++	fstds,ma %fr19, 8(%r1)
++	fstds,ma %fr20, 8(%r1)
++	fstds,ma %fr21, 8(%r1)
++	fstds,ma %fr22, 8(%r1)
++	fstds,ma %fr23, 8(%r1)
++	fstds,ma %fr24, 8(%r1)
++	fstds,ma %fr25, 8(%r1)
++	fstds,ma %fr26, 8(%r1)
++	fstds,ma %fr27, 8(%r1)
++	fstds,ma %fr28, 8(%r1)
++	fstds,ma %fr29, 8(%r1)
++	fstds,ma %fr30, 8(%r1)
++	fstds	 %fr31, 0(%r1)
++
++	/* Prologue */
++	stwm	%r4, 64(%r30)
++#ifdef PIC
++	stw	%r19, -32(%r30)
++#endif
++
++	/* Set up the trampoline registers.
++	   r20, r23, r24, r25, r26 and r2 are clobbered
++	   by call to getcontext() anyway. Reuse them.  */
++	stw	%r2, oR20(%r26)
++	stw	%r3, oR23(%r26)
++	stw	%r4, oR24(%r26)
++	stw	%r5, oR25(%r26)
++	stw	%r6, oR26(%r26)
++	ldil	L%__getcontext_ret, %r1
++	ldo     R%__getcontext_ret(%r1), %r1
++	stw	%r1, oR2(%r26)
++
++	/* Save the current signal mask.  */
++	/* sigprocmask(SIG_BLOCK, NULL, &ucp->uc_sigmask);  */
++	ldo	oSIGMASK(%r26), %r24
++	copy	%r0, %r25
++	bl	sigprocmask, %r2
++	ldi	SIG_BLOCK, %r26
++
++	/* Epilogue */
++	ldw	-84(%r30), %r2
++#ifdef PIC
++	ldw	-96(%r30), %r19
++#endif
++	bv	%r0(%r2)
++	ldwm	-64(%r30), %r4
++END(__getcontext)
++
++weak_alias (__getcontext, getcontext)
+diff -up ports/sysdeps/unix/sysv/linux/hppa/makecontext.c.org ports/sysdeps/unix/sysv/linux/hppa/makecontext.c
+--- ports/sysdeps/unix/sysv/linux/hppa/makecontext.c.org	2008-07-16 21:41:02.000000000 +0200
++++ ports/sysdeps/unix/sysv/linux/hppa/makecontext.c	2008-07-20 16:42:15.000000000 +0200
+@@ -0,0 +1,79 @@
++/* Create new context.
++   Copyright (C) 2008 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Helge Deller <deller@gmx.de>, 2008.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#include <libintl.h>
++#include <stdarg.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <sysdep.h>
++#include <ucontext.h>
++
++/* XXX: This implementation only handles integer arguments.  */
++
++void
++__makecontext (ucontext_t *ucp, void (*func) (void), int argc, ...)
++{
++  unsigned int *sp;
++  va_list ap;
++  int i;
++
++  if (argc > 8)
++    {
++      fprintf (stderr, _("\
++makecontext: does not know how to handle more than 8 arguments\n"));
++      exit (-1);
++    }
++
++  /* Generate room on stack for parameter if needed and uc_link.  */
++  sp = (unsigned int *) ucp->uc_stack.ss_sp;
++
++  /* Address to jump to.  */
++  ucp->uc_mcontext.sc_gr[2] = (unsigned long) func;
++
++  va_start (ap, argc);
++  /* Handle arguments.  */
++  for (i = 0; i < argc; ++i)
++    switch (i)
++      {
++      case 0:
++      case 1:
++      case 2:
++      case 3:
++      	ucp->uc_mcontext.sc_gr[26-i] = va_arg (ap, int);
++	break;
++      case 4:
++      case 5:
++      case 6:
++      case 7:
++	if (sizeof(unsigned long) == 4) {
++		/* 32bit: put arg7-arg4 on stack.  */
++		sp[7-i] = va_arg (ap, int);
++	} else {
++		/* 64bit: r19-r22 are arg7-arg4.  */
++		ucp->uc_mcontext.sc_gr[22+4-i] = va_arg (ap, int);
++	}
++	break;
++      }
++  va_end (ap);
++
++}
++
++
++weak_alias(__makecontext, makecontext)
+diff -up ports/sysdeps/unix/sysv/linux/hppa/setcontext.S.org ports/sysdeps/unix/sysv/linux/hppa/setcontext.S
+--- ports/sysdeps/unix/sysv/linux/hppa/setcontext.S.org	2008-07-16 22:29:10.000000000 +0200
++++ ports/sysdeps/unix/sysv/linux/hppa/setcontext.S	2008-07-20 20:13:05.000000000 +0200
+@@ -0,0 +1,155 @@
++/* Install given context.
++   Copyright (C) 2008 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Helge Deller <deller@gmx.de>, 2008.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#include <sysdep.h>
++
++#include "ucontext_i.h"
++
++
++ENTRY(__setcontext)
++	/* Prologue */
++	stwm	%r3, 64(%r30)
++#ifdef PIC
++	stw	%r19, -32(%r30)
++#endif
++
++	/* Save ucp.  */
++	copy	%r26, %r3
++
++L(_again):
++	/* Set the current signal mask.  */
++	/* sigprocmask(SIG_BLOCK, &ucp->uc_sigmask, NULL);  */
++	copy	%r0, %r24
++	ldo	oSIGMASK(%r3), %r25
++	bl	sigprocmask, %r2
++	ldi	SIG_SETMASK, %r26
++
++	comib,<> 0,%ret0,L(_error)
++	nop
++
++	/* Save %sp, %dp.  */
++	copy	%sp, %r4
++	copy	%dp, %r5
++	copy	%r19, %r6
++
++	/* Get the registers.  */
++	ldw	oR1(%r3), %r1
++	ldw	oR2(%r3), %r2
++	/* ldw	oR3(%r3), %r3 - used for ucp pointer.	*/
++	/* ldw	oR4(%r3), %r4 - used for original %sp.	*/
++	/* ldw	oR5(%r3), %r5 - used for %dp / %r27.	*/
++	/* ldw	oR6(%r3), %r6 - used for %r19.		*/
++	ldw	oR7(%r3), %r7
++	ldw	oR8(%r3), %r8
++	ldw	oR9(%r3), %r9
++	ldw	oR10(%r3), %r10
++	ldw	oR11(%r3), %r11
++	ldw	oR12(%r3), %r12
++	ldw	oR13(%r3), %r13
++	ldw	oR14(%r3), %r14
++	ldw	oR15(%r3), %r15
++	ldw	oR16(%r3), %r16
++	ldw	oR17(%r3), %r17
++	ldw	oR18(%r3), %r18
++	ldw	oR19(%r3), %r19
++	ldw	oR20(%r3), %r20
++	ldw	oR21(%r3), %r21
++	/* ldw	oR22(%r3), %r22 - dyncall arg.  */
++	ldw	oR23(%r3), %r23
++	ldw	oR24(%r3), %r24
++	ldw	oR25(%r3), %r25
++	ldw	oR26(%r3), %r26
++	ldw	oR27(%r3), %r27
++	ldw	oR28(%r3), %r28
++	ldw	oR29(%r3), %r29
++	ldw	oR30(%r3), %r30
++	/* ldw	oR31(%r3), %r31 - dyncall scratch register */
++
++	/* Restore floating-point registers.  */
++	ldo	 oFPREGS31(%r3), %r22
++	fldds	  0(%r22), %fr31
++	fldds,mb -8(%r22), %fr30
++	fldds,mb -8(%r22), %fr29
++	fldds,mb -8(%r22), %fr28
++	fldds,mb -8(%r22), %fr27
++	fldds,mb -8(%r22), %fr26
++	fldds,mb -8(%r22), %fr25
++	fldds,mb -8(%r22), %fr24
++	fldds,mb -8(%r22), %fr23
++	fldds,mb -8(%r22), %fr22
++	fldds,mb -8(%r22), %fr21
++	fldds,mb -8(%r22), %fr20
++	fldds,mb -8(%r22), %fr19
++	fldds,mb -8(%r22), %fr18
++	fldds,mb -8(%r22), %fr17
++	fldds,mb -8(%r22), %fr16
++	fldds,mb -8(%r22), %fr15
++	fldds,mb -8(%r22), %fr14
++	fldds,mb -8(%r22), %fr13
++	fldds,mb -8(%r22), %fr12
++	fldds,mb -8(%r22), %fr11
++	fldds,mb -8(%r22), %fr10
++	fldds,mb -8(%r22), %fr9
++	fldds,mb -8(%r22), %fr8
++	fldds,mb -8(%r22), %fr7
++	fldds,mb -8(%r22), %fr6
++	fldds,mb -8(%r22), %fr5
++	fldds,mb -8(%r22), %fr4
++	fldds,mb -8(%r22), %fr3
++	fldds,mb -8(%r22), %fr2
++	fldds,mb -8(%r22), %fr1
++	fldds,mb -8(%r22), %fr0
++
++	/* Calculate new stack pointer.  */
++	ldw	oSS_SP(%r3), %sp
++	ldo	64(%sp), %sp
++
++	/* Call function.  */
++	copy	%r2, %r22
++	bl	$$dyncall, %r31
++	copy	%r31, %r2
++
++	/* We return here. Get new ucp in %r3, reload %sp.  */
++	ldw	oUC_LINK(%r3), %r3
++	copy	%r4, %sp
++	copy	%r5, %dp
++	copy	%r6, %r19
++
++	/* If ucp == NULL then exit().  */
++	comib,<> 0,%r3,L(_again)
++	nop
++
++	/* If we looped through all uc_link contexts, exit now.  */
++	bl	_exit, %r2
++	ldi	-1, %r26
++	
++
++L(_error):
++	/* Epilogue */
++	ldw	-84(%r30), %r2
++#ifdef PIC
++	ldw	-96(%r30), %r19
++#endif
++	bv	%r0(%r2)
++	ldwm	-64(%r30), %r3
++L(pseudo_end):
++PSEUDO_END(__setcontext)
++
++weak_alias(__setcontext, setcontext)
+diff -up ports/sysdeps/unix/sysv/linux/hppa/swapcontext.c.org ports/sysdeps/unix/sysv/linux/hppa/swapcontext.c
+--- ports/sysdeps/unix/sysv/linux/hppa/swapcontext.c.org	2008-07-20 18:27:22.000000000 +0200
++++ ports/sysdeps/unix/sysv/linux/hppa/swapcontext.c	2008-07-20 18:32:51.000000000 +0200
+@@ -0,0 +1,43 @@
++/* Swap to new context.
++   Copyright (C) 2008 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Helge Deller <deller@gmx.de>, 2008.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#include <ucontext.h>
++
++extern int __getcontext (ucontext_t *ucp);
++extern int __setcontext (const ucontext_t *ucp);
++
++int
++__swapcontext (ucontext_t *oucp, const ucontext_t *ucp)
++{
++  /* Save the current machine context to oucp.  */
++  __getcontext (oucp);
++
++  /* sc_sar flags to skip the setcontext call on reactivation.  */
++  if (oucp->uc_mcontext.sc_sar == 0) {
++  	++oucp->uc_mcontext.sc_sar;
++
++	/* Restore the machine context in ucp.  */
++  	__setcontext (ucp);
++  }
++
++  return 0;
++}
++
++weak_alias (__swapcontext, swapcontext)
+diff -up ports/sysdeps/unix/sysv/linux/hppa/ucontext_i.sym.org ports/sysdeps/unix/sysv/linux/hppa/ucontext_i.sym
+--- ports/sysdeps/unix/sysv/linux/hppa/ucontext_i.sym.org	2008-07-16 19:27:46.000000000 +0200
++++ ports/sysdeps/unix/sysv/linux/hppa/ucontext_i.sym	2008-07-20 20:03:07.000000000 +0200
+@@ -0,0 +1,59 @@
++#include <stddef.h>
++#include <signal.h>
++#include <sys/ucontext.h>
++
++--
++
++SIG_BLOCK
++SIG_SETMASK
++
++#define ucontext(member)	offsetof (ucontext_t, member)
++#define mcontext(member)	ucontext (uc_mcontext.member)
++#define mreg(reg)		mcontext (sc_gr[reg])
++
++oUC_FLAGS	ucontext (uc_flags)
++oUC_LINK	ucontext (uc_link)
++oSS_SP		ucontext (uc_stack.ss_sp)
++oSS_FLAGS	ucontext (uc_stack.ss_flags)
++oSS_SIZE	ucontext (uc_stack.ss_size)
++oSC_FLAGS	mcontext (sc_flags)
++oR0		mreg (0)
++oR1		mreg (1)
++oR2		mreg (2)
++oR3		mreg (3)
++oR4		mreg (4)
++oR5		mreg (5)
++oR6		mreg (6)
++oR7		mreg (7)
++oR8		mreg (8)
++oR9		mreg (9)
++oR10		mreg (10)
++oR11		mreg (11)
++oR12		mreg (12)
++oR13		mreg (13)
++oR14		mreg (14)
++oR15		mreg (15)
++oR16		mreg (16)
++oR17		mreg (17)
++oR18		mreg (18)
++oR19		mreg (19)
++oR20		mreg (20)
++oR21		mreg (21)
++oR22		mreg (22)
++oR23		mreg (23)
++oR24		mreg (24)
++oR25		mreg (25)
++oR26		mreg (26)
++oR27		mreg (27)
++oR28		mreg (28)
++oR29		mreg (29)
++oR30		mreg (30)
++oR31		mreg (31)
++oFPREGS0	mcontext (sc_fr[0])
++oFPREGS31	mcontext (sc_fr[31])
++oIASQ0		mcontext (sc_iasq[0])
++oIASQ1		mcontext (sc_iasq[1])
++oIAOQ0		mcontext (sc_iaoq[0])
++oIAOQ1		mcontext (sc_iaoq[1])
++oSAR		mcontext (sc_sar)
++oSIGMASK	ucontext (uc_sigmask)
+
+--------------070908020905060806090801--
