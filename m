@@ -1,102 +1,68 @@
-From: "Joel Soete" <soete.joel@scarlet.be>
-Subject: Re:ccio_mark_invalid(): would it have to clear a bit or byte?
-Date: Tue, 22 Jul 2008 13:56:12 +0100
-Message-ID: <K4ERXO$E35D44DFC4755555727B2E485DE272F6@scarlet.be>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: linux-next: Requirements and process
+Date: Wed, 23 Jul 2008 14:41:04 +1000
+Message-ID: <20080723144104.ac3a74e4.sfr@canb.auug.org.au>
+References: <20080503154542.18807e59.sfr@canb.auug.org.au>
+	<20080502233519.a988b552.akpm@linux-foundation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: "linux-parisc" <linux-parisc@vger.kernel.org>
-To: "soete\.joel" <soete.joel@scarlet.be>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Wed__23_Jul_2008_14_41_04_+1000_WinOkhk5k6GJ0abh"
+Cc: linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	Linus <torvalds@linux-foundation.org>,
+	Hirokazu Takata <takata@linux-m32r.org>,
+	linux-m32r@ml.linux-m32r.org, Kyle McMartin <kyle@mcmartin.ca>,
+	Matthew Wilcox <matthew@wil.cx>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, Chris Zankel <chris@zankel.net>
+To: Andrew Morton <akpm@linux-foundation.org>
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20080502233519.a988b552.akpm@linux-foundation.org>
+List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> Hello all,
-> 
-> given this comment:
->   * Given a virtual address (vba, arg2) and space id, (sid, arg1),
->   * load the I/O PDIR entry pointed to by pdir_ptr (arg0). Each IO Pdir
->   * entry consists of 8 bytes as shown below (MSB == bit 0):
->   *
->   *
->   * WORD 0:
->   * +------+----------------+-----------------------------------------------+
->   * | Phys | Virtual Index  |               Phys                            |
->   * | 0:3  |     0:11       |               4:19                            |
->   * |4 bits|   12 bits      |              16 bits                          |
->   * +------+----------------+-----------------------------------------------+
->   * WORD 1:
->   * +-----------------------+-----------------------------------------------+
->   * |      Phys    |  Rsvd  | Prefetch |Update |Rsvd  |Lock  |Safe  |Valid  |
->   * |     20:39    |        | Enable   |Enable |      |Enable|DMA   |       |
->   * |    20 bits   | 5 bits | 1 bit    |1 bit  |2 bits|1 bit |1 bit |1 bit  |
->   * +-----------------------+-----------------------------------------------+
->   *
-> 
-> and also this:
->          while (byte_cnt > 0) {
->                  /* clear I/O Pdir entry "valid" bit first */
->                  ((unsigned char *) pdir_ptr)[7] = 0;
-> 
-> So if I well understand 'Valid' field of a pdir entry is well of 1 bit but
-the code cleanup a all byte?
-> 
-> Is coding something like:
-> #define PTE_VALID_BIT_MASK      0xfffffffffffffffeULL	
-> 
-> 		*pdir_ptr &= PTE_VALID_BIT_MASK;
-> 
-> wouldn't do better what comment says it does?
-> 
-may be a more detail patch would better explain the idea:
-@@ -674,19 +673,27 @@
- static CCIO_INLINE void
- ccio_mark_invalid(struct ioc *ioc, dma_addr_t iova, size_t byte_cnt)
- {
--       u32 iovp = (u32)CCIO_IOVP(iova);
--       size_t saved_byte_cnt;
-+       u32     iovp;
-+       u64     *pdir_ptr;
-+       size_t  saved_byte_cnt;
- 
-+       iovp = (u32)CCIO_IOVP(iova);
-+       pdir_ptr = &ioc->pdir_base[PDIR_INDEX(iovp)];
-        /* round up to nearest page size */
-        saved_byte_cnt = byte_cnt = ALIGN(byte_cnt, IOVP_SIZE);
- 
-        while(byte_cnt > 0) {
-                /* invalidate one page at a time */
-                unsigned int idx = PDIR_INDEX(iovp);
--               char *pdir_ptr = (char *) &(ioc->pdir_base[idx]);
--
-                BUG_ON(idx >= (ioc->pdir_size / sizeof(u64)));
--               pdir_ptr[7] = 0;        /* clear only VALID bit */ 
-+
-+               /* clear only VALID bit */
-+#ifdef __LP64__
-+                *pdir_ptr &= ~((u64) IOPDIR_VALID);
-+#else
-+                ((unsigned long *) pdir_ptr)[1] &= ~IOPDIR_VALID;
-+#endif
-+
-                /*
-                ** FIXME: PCX_W platforms don't need FDC/SYNC. (eg C360)
-                **   PCX-U/U+ do. (eg C200/C240)
-@@ -695,8 +702,9 @@
-                ** Hopefully someone figures out how to patch (NOP) the
-                ** FDC/SYNC out at boot time.
-                */
--               asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr[7]));
-+               asm volatile("fdc %%r0(%0)" : : "r" (pdir_ptr));
- 
-+               pdir_ptr++;
-                iovp     += IOVP_SIZE;
-                byte_cnt -= IOVP_SIZE;
-        }
-=== <> ===
+--Signature=_Wed__23_Jul_2008_14_41_04_+1000_WinOkhk5k6GJ0abh
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But it doesn'r fix any issue, though.
+On Fri, 2 May 2008 23:35:19 -0700 Andrew Morton <akpm@linux-foundation.org>=
+ wrote:
+>
+> On Sat, 3 May 2008 15:45:42 +1000 Stephen Rothwell <sfr@canb.auug.org.au>=
+ wrote:
+>=20
+> > The following architectures are not in linux-next (and should be):
+> >=20
+> > alpha		cris		frv
+> > h8300		m32r		m68knommu
+> > mips		mn10300		parisc
+> > um		v850		xtensa
+>=20
+> mips, m32r, parisc and xtensa do have git trees.  The rest are mastered as
+> discrete patches in -mm.
+>=20
+> Except for m68knommu, which pops unexpectedly out of the woodwork during
+> the merge window.  I've asked that this be altered ;)
 
+So (from the above list) cris, m68knommu and mips have joined the
+linux-next fray ...
+
+(cc's some maintainers)
+--=20
 Cheers,
-    J.
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
 
+--Signature=_Wed__23_Jul_2008_14_41_04_+1000_WinOkhk5k6GJ0abh
+Content-Type: application/pgp-signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkiGtmAACgkQjjKRsyhoI8wyOACbBTwN5V0gylPybMMxU5tHHps7
+3O4An0XbMoeQaeGJGIPgQjKZkqC5byEO
+=8ZSr
+-----END PGP SIGNATURE-----
+
+--Signature=_Wed__23_Jul_2008_14_41_04_+1000_WinOkhk5k6GJ0abh--
