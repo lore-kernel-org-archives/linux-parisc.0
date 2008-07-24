@@ -1,95 +1,48 @@
-From: "Joel Soete" <soete.joel@scarlet.be>
-Subject: ccio-dma: is issue could be related to too much io_tlb entries?
-Date: Thu, 24 Jul 2008 14:13:55 +0100
-Message-ID: <K4II37$FC5730FEE6DF5668DA61E723AC34CF60@scarlet.be>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: Re: [PATCH] block: fix q->max_segment_size checking in blk_recalc_rq_segments
+ about VMERGE
+Date: Thu, 24 Jul 2008 11:07:02 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.0807241103190.1545@devserv.devel.redhat.com>
+References: <1216520228.3376.33.camel@localhost.localdomain>
+ <20080719.210737.197246608.davem@davemloft.net>  <1216565545.4199.10.camel@localhost.localdomain>
+  <20080720.102302.137955996.davem@davemloft.net> <1216575211.4199.35.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: "kyle" <kyle@mcmartin.ca>,
-	"linux-parisc" <linux-parisc@vger.kernel.org>
-To: "grundler" <grundler@parisc-linux.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: David Miller <davem@davemloft.net>, fujita.tomonori@lab.ntt.co.jp,
+	jens.axboe@oracle.com, linux-kernel@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-parisc@vger.kernel.org
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1216575211.4199.35.camel@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello Grant, Kyle, et al.,
+> > For a dumb I/O card, you advertise SG_ALL capabilities, the IOMMU
+> > is going to merge things as it would have anyways, and you have
+> > code in the driver to advance SG entries after each "dumb I/O".
+> 
+> Not that dumb ... they just have a limited number of SG slots.  We
+> wouldn't want to run them as spoon fed PIO because that really would
+> kill performance.
+> 
+> > There is zero value to the vmerge code, the real gains are being
+> > realized already.
+> 
+> There is value to me in my testbed, which I can't achieve any other way
+> (except by buying different SCSI cards).
+> 
+> As I said, you can compile it out on sparc just fine.  I wish to keep it
+> running for parisc, so I'll maintain it.  If it ever bit rots out of
+> parisc like it has done for the other architectures, then feel free to
+> remove it.
+> 
+> James
 
-Iirc the number of io_tlb enties on this u2/uturn ioa is of 256?
+So try to #define BIO_VMERGE_BOUNDARY 0 for Pa-Risc and tell us what 
+performance degradation do you see (and what driver do you use and what is 
+the I/O pattern).
 
-Because issue occur only when I do a lot of I/O on scsi disk (sometime request
-of mapping reach 128 pages), the idea was that it could induce some exceed of
-iotlb entries.
+If you show something specific, we can consider that --- but you haven't 
+yet told us anything, except generic talk.
 
-I so turn on some STAT (just used_pages) and grab following data:
-[snip]
-IO PDIR size    : 131072 bytes (16384 entries)
-IO PDIR entries : 16384 total  170 used (16214 free, 1%)
-Resource bitmap : 2048 bytes (16384 pages)
-  Bitmap search : 36221/36430/38793 (min/avg/max CPU Cycles)
-
-IO PDIR size    : 131072 bytes (16384 entries)
-IO PDIR entries : 16384 total  235 used (16149 free, 1%)
-Resource bitmap : 2048 bytes (16384 pages)
-  Bitmap search : 36220/36346/37806 (min/avg/max CPU Cycles)
-
-IO PDIR size    : 131072 bytes (16384 entries)
-IO PDIR entries : 16384 total  718 used (15666 free, 4%)
-Resource bitmap : 2048 bytes (16384 pages)
-  Bitmap search : 36222/36342/38472 (min/avg/max CPU Cycles)
-
-## issue occurs just when I ready above message. 
-
-IO PDIR size    : 131072 bytes (16384 entries)
-IO PDIR entries : 16384 total  444 used (15940 free, 2%)
-Resource bitmap : 2048 bytes (16384 pages)
-  Bitmap search : 36220/36330/37830 (min/avg/max CPU Cycles)
-[snip]
-
-Even thought, I ended the stress test, the system continue to work smoothly
-with 444 used entries?
-
-Anyway, difference between those last 2 samples (718 - 444) = 274 increase of
-io_pdir entries.
-
-I also add a loop to bitcount entries of res_map and grab more:
-[snip]
-IO PDIR size    : 262144 bytes (32768 entries)  
-IO PDIR entries : 32768 total  329 used (32439 free, 1%)
-IO PDIR entries : 329 res_map_count
-Resource bitmap : 4096 bytes (32768 pages)
-  Bitmap search : 36221/36626/38310 (min/avg/max CPU Cycles)
-
-IO PDIR size    : 262144 bytes (32768 entries)  
-IO PDIR entries : 32768 total  801 used (31967 free, 2%)
-IO PDIR entries : 801 res_map_count
-Resource bitmap : 4096 bytes (32768 pages)
-  Bitmap search : 36215/36325/37852 (min/avg/max CPU Cycles)
-
-IO PDIR size    : 262144 bytes (32768 entries)  
-IO PDIR entries : 32768 total  329 used (32439 free, 1%)
-IO PDIR entries : 329 res_map_count
-Resource bitmap : 4096 bytes (32768 pages)
-  Bitmap search : 36222/36883/38742 (min/avg/max CPU Cycles)
-
-[...]
-
-(in 1 second 801 - 329 = 472)
-
-But continuing a bit test (by accident), I noticed that system can survive with:
-
-IO PDIR size    : 262144 bytes (32768 entries)
-IO PDIR entries : 32768 total  1478 used (31290 free, 4%)
-IO PDIR entries : 1478 res_map_count
-Resource bitmap : 4096 bytes (32768 pages)
-  Bitmap search : 36223/36696/38463 (min/avg/max CPU Cycles)
-
-Well as scatterlist is still puzzling me, I can still be confused between
-iommu and mmu pages mapping, sorry so in advance if it's yet another annoying
-comment.
-
-Tx again,
-    J.
-
-
-
-
-
+Mikulas
