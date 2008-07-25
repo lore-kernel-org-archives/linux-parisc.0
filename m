@@ -1,32 +1,30 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] block: fix q->max_segment_size checking in
- blk_recalc_rq_segments about VMERGE
-Date: Thu, 24 Jul 2008 22:21:52 -0700 (PDT)
-Message-ID: <20080724.222152.193709632.davem@davemloft.net>
-References: <Pine.LNX.4.64.0807241727320.12036@devserv.devel.redhat.com>
-	<20080724.145336.41899163.davem@davemloft.net>
-	<1216957670.4524.87.camel@localhost.localdomain>
+From: Huang Weiyi <weiyi.huang@gmail.com>
+Subject: arch/parisc/kernel/signal.c: Removed duplicated include
+Date: Fri, 25 Jul 2008 23:30:10 +0800
+Message-ID: <20080725224619.9137.WEIYI.HUANG@gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: mpatocka@redhat.com, fujita.tomonori@lab.ntt.co.jp,
-	jens.axboe@oracle.com, linux-kernel@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-parisc@vger.kernel.org
-To: James.Bottomley@HansenPartnership.com
+Content-Type: text/plain; charset="US-ASCII"
+Cc: linux-parisc@vger.kernel.org
+To: kyle@mcmartin.ca, matthew@wil.cx, grundler@parisc-linux.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1216957670.4524.87.camel@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Date: Thu, 24 Jul 2008 23:47:50 -0400
+Removed duplicated include file <linux/compat.h> in 
+arch/parisc/kernel/signal.c.
 
-> I'm sorry sparc broke, really I am ... but you changed your iommu code
-> from one with a working vmerge to one without and failed to turn off
-> vmerging.  Partly it wasn't noticed because at 2*PAGE_SIZE you have a
-> strange vmerge boundary, so it's harder to notice.   However, I can't
-> extrapolate that just because this happened on sparc it will inevitably
-> happen on all other architectures.
+Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
 
-The vmerge boundary on sparc64 was 8K which is equal to sparc64's base
-PAGE_SIZE.  I don't know where you get that 2*PAGE_SIZE from.
+diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
+index 06213d1..71ab17a 100644
+--- a/arch/parisc/kernel/signal.c
++++ b/arch/parisc/kernel/signal.c
+@@ -33,7 +33,6 @@
+ #include <asm/asm-offsets.h>
+
+ #ifdef CONFIG_COMPAT
+-#include <linux/compat.h>
+ #include "signal32.h"
+ #endif
+
 
