@@ -1,34 +1,28 @@
-From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: Cupertino test ring problem?
-Date: Mon, 4 Aug 2008 10:59:08 +0200
-Message-ID: <7d01f9f00808040159ud7f1afw8e0ee77760bc9c68@mail.gmail.com>
-References: <1217254746.3503.61.camel@localhost.localdomain>
-	 <488DFD62.4080307@hp.com> <20080728171500.GB16059@parisc-linux.org>
-	 <488F777E.6090405@hp.com>
-	 <1217363136.6103.68.camel@localhost.localdomain>
-	 <488F842F.3040000@hp.com>
-	 <1217369386.6103.73.camel@localhost.localdomain>
-	 <20080731051524.GC18732@colo.lackof.org> <4891F5C0.8010307@hp.com>
-	 <20080801233142.GC26550@colo.lackof.org>
+Date: Mon, 4 Aug 2008 11:34:12 -0400 (EDT)
+Message-ID: <20080804153412.D8CA54EAE@hiauly1.hia.nrc.ca>
+References: <7d01f9f00808040159ud7f1afw8e0ee77760bc9c68@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: "Parisc List" <linux-parisc@vger.kernel.org>
-To: "Grant Grundler" <grundler@parisc-linux.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: grundler@parisc-linux.org, linux-parisc@vger.kernel.org
+To: T-Bone@parisc-linux.org (Thibaut VARENE)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080801233142.GC26550@colo.lackof.org>
+In-Reply-To: <7d01f9f00808040159ud7f1afw8e0ee77760bc9c68@mail.gmail.com> from "Thibaut VARENE" at Aug 4, 2008 10:59:08 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Aug 2, 2008 at 1:31 AM, Grant Grundler
-<grundler@parisc-linux.org> wrote:
+> Is there a source tarball of that, or a list of applied patches? I
+> would very much like to use that "homebrew" kernel on my cluster as
+> well, until newer kernels are proven reliable enough...
 
-> It wasn't and the default debian kernel didn't boot either.
-> I've set the default kernel to jda's 2.6.22.19 patched kernel.
+I built a tar ball, linux-2.6.22.19-jda.tar.gz.  It is in my home directory
+on gsyprf11.  The source is also there.  The most important patch is
+compat_sys_getdents.d from Kyle.  The base is linux-2.6.22.19.tar.bz2
+from kernel.org.  The .config file was derived from some earlier config
+file on this machine (can't remember which).
 
-Is there a source tarball of that, or a list of applied patches? I
-would very much like to use that "homebrew" kernel on my cluster as
-well, until newer kernels are proven reliable enough...
-
-Thx
-
-T-Bone
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
