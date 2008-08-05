@@ -1,37 +1,92 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: Fixed strace [ was Re: ls -l is broken ]
-Date: Mon, 4 Aug 2008 15:39:57 -0400 (EDT)
-Message-ID: <20080804193957.783104E6A@hiauly1.hia.nrc.ca>
-References: <20080417075357.GB23641@phobos.i.cabal.ca>
+From: "Joel Soete" <soete.joel@scarlet.be>
+Subject: Re: ccio-dma: is issue could be related to too much io_tlb entries?
+Date: Tue,  5 Aug 2008 15:21:32 +0100
+Message-ID: <K54T7W$01C58047996F3451AE396720C28F9E08@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: matthew@wil.cx, linux-parisc@vger.kernel.org,
-	debian-hppa@lists.debian.org
-To: kyle@mcmartin.ca (Kyle McMartin)
+Cc: "grundler" <grundler@parisc-linux.org>, "kyle" <kyle@mcmartin.ca>,
+	"linux-parisc" <linux-parisc@vger.kernel.org>
+To: "grundler" <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080417075357.GB23641@phobos.i.cabal.ca> from "Kyle McMartin" at Apr 17, 2008 03:53:57 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Sun, Apr 06, 2008 at 07:09:59PM -0400, John David Anglin wrote:
-> > > If you strace it, what syscall returns -EOPNOTSUPP?
+> On Thu, Jul 24, 2008 at 02:13:55PM +0100, Joel Soete wrote:
+> > Hello Grant, Kyle, et al.,
 > > 
-> > strace is broken and quits before the relevant syscall.  Think I
-> > mentioned this before is a different context.
-> > 
+> > Iirc the number of io_tlb enties on this u2/uturn ioa is of 256?
 > 
-> Fixed & updated strace available at
-> http://people.debian.org/~kyle/strace/
+> ISTR that u2 and uturn have different number of IO TLB entries.
+> But I don't recall how many exactly. Need the ERSs to look that up.
+> 
+Well, I don't yet find the right way to get access, sorry.
 
-lgetxattr("strace_4.5.16-1_hppa.deb", "security.selinux"..., 0x2c768, 255) = -1 EOPNOTSUPP 
-(Operation not supported)
+> > Because issue occur only when I do a lot of I/O on scsi disk (sometime request
+> > of mapping reach 128 pages), the idea was that it could induce some exceed of
+> > iotlb entries.
+> > 
+[snip]
+> 
+> The number of "used" entries include "in flight" DMA and pci_consistent
+allocations. This generally isn't that many pages of RAM.
+> 
+Ok,
+But the idea was that if so much pdir entries was mapped in a so short time
+(1s), it should be also that the device will try to use them on the fly (just
+an hypothesis.)
+And so far as I can observe, the pb occurs when os operate on numerous huge
+data blocks (i.e. a tar -xvf of a linux tree into a single fs); so in this
+case it should be that the i/o device trigger many i/o tlb miss and may be
+much more i/o tlb entries then it can be freed?
+What I observe also is that the pb become worse either with a system with few
+ram (like my c110 with 64M) or when I resurrect CCIO_MEM_RATIO (e.g. 2 or 4)
+on a system with 256Mb of RAM). In those last 2 cases the effect is the same:
+  a/ it makes the pdir_size and the number of pdir entries smaller
+  b/ as well for chainid_shift.
 
-This is probably the correct return but the manpage for lgetxattr says
-it should return ENOTSUP.  Possibly, the problem occurs on hppa because
-ENOTSUP and EOPNOTSUPP are different codes.  In any case, the current
-version of ls only checks for ENOTSUP.
+This last point (b/) make me thought that it would also make smaller the
+number of 4k-byte per chainid and so for a same DMA block size it would
+required more iotlb entries.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Obviously just speculation ;<).
+
+Even thought 3 things sure: 
+  - issue occurs for huge I/O
+  - become worse with reduced iov_space_size (physical or logical)
+  - backport sba help a bit but doesn't fix issue      
+
+> > Anyway, difference between those last 2 samples (718 - 444) = 274 increase of
+> > io_pdir entries.
+> 
+> That's about right for a SCSI device since it can't have that much
+> IO in flight for one or two disks.
+> 
+[snip]
+> 
+> Of course. The number of "used" entries in the IO Pdir has no direct
+> correlation to the number of "in use" IO TLB entries. IO TLB is fixed
+> size while the IO Pdir size can vary between boots.
+> 
+> > 
+> > Well as scatterlist is still puzzling me, I can still be confused between
+> > iommu and mmu pages mapping, sorry so in advance if it's yet another annoying
+> > comment.
+> 
+> IOMMU is an MMU for IO devices. MMU is the same thing for CPU.
+> Differences exist between those two. DMA is generally to larger
+> chunks/regions of RAM (256-2K bytes) while CPUs need to enforce
+> access rights (X/R/W) to memory and deal with cachelines or less.
+> 
+(well I still have difficulties in the relationship between all those buffers
+which are caches and tlb and over that I/O DMA with its own set of cache and
+iotlb. Fortunately there are now good doc freely available and good engine to
+look for it, but it's not yet so easy to me)
+
+Tx again for advises,
+    J.
+
+> hth,
+> grant
+> --
+
+
