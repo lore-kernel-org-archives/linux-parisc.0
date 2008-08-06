@@ -1,62 +1,60 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: Re: X won't start with VisEG and 2.6.22.19
-Date: Wed, 6 Aug 2008 07:11:19 +0200
-Message-ID: <20080806071119.22b6a21f@bleh.bxl.tuxicoman.be>
-References: <488DFD62.4080307@hp.com>
-	<20080728171500.GB16059@parisc-linux.org>
-	<488F777E.6090405@hp.com>
-	<1217363136.6103.68.camel@localhost.localdomain>
-	<488F842F.3040000@hp.com>
-	<1217369386.6103.73.camel@localhost.localdomain>
-	<20080731051524.GC18732@colo.lackof.org>
-	<4891F5C0.8010307@hp.com>
-	<20080801233142.GC26550@colo.lackof.org>
-	<7d01f9f00808040159ud7f1afw8e0ee77760bc9c68@mail.gmail.com>
-	<20080806014207.GA2590@hiauly1.hia.nrc.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [PATCH] fix unwind crash - was: Re: 2.6.26 kernel crash
+Date: Wed, 6 Aug 2008 15:41:25 -0400
+Message-ID: <20080806194125.GA3281@phobos.i.cabal.ca>
+References: <200807201846.11809.deller@gmx.de> <200807201907.59762.deller@gmx.de> <488F7E32.4070204@gmx.de> <1e3eba760808030726l93f60dftdcec0c487933129b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: dave@hiauly1.hia.nrc.ca, Thibaut VARENE <T-Bone@parisc-linux.org>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	Parisc List <linux-parisc@vger.kernel.org>, deller@gmx.de
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Content-Type: text/plain; charset=us-ascii
+Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	Kyle McMartin <kyle@mcmartin.ca>
+To: Randolph Chung <randolph@tausq.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080806014207.GA2590@hiauly1.hia.nrc.ca>
+In-Reply-To: <1e3eba760808030726l93f60dftdcec0c487933129b@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-Hi Dave,
-
-This has been introduced in latest Xorg. When it modify the fb device,
-Xorg query the kernel again to make sure changes are the expected ones.
-Apparently, stifb doesn't return what it was expecting.
-
-You'll find the Xorg code in hw/xfree86/fbdevhw/fbdevhw.c,
-fbdevHWSetMode().
-
-
-Cheers,
-  Guy
-
-
-On Tue, 5 Aug 2008 21:42:08 -0400
-John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
-
-> > > It wasn't and the default debian kernel didn't boot either.
-> > > I've set the default kernel to jda's 2.6.22.19 patched kernel.
-> > 
-> > Is there a source tarball of that, or a list of applied patches? I
-> > would very much like to use that "homebrew" kernel on my cluster as
-> > well, until newer kernels are proven reliable enough...
+On Sun, Aug 03, 2008 at 07:26:48AM -0700, Randolph Chung wrote:
+> (Apologize for my earlier html mail - resent in a more proper format)
 > 
-> I should mention that I've had a problem with starting X with lenny
-> and 2.6.22.  This has been a problem for sometime.  I've tried
-> simplifying the xorg.conf file and adding the mode helper to the
-> kernel, but I haven't found the magic incantation that works.
+> Helge, your patch doesn't look quite right.
 > 
-> Dave
+> The kernel unwinder is only supposed to be called for kernel
+> addresses. Kyle says he thinks he knows what is wrong so he's going to
+> poke at it.
+> 
+> Maybe we can make the kernel unwinder more robust against invalid
+> addresses passed to it though.
+> 
 
+I think this will fix the problem, though I should audit show_stack
+callers to make sure.
 
--- 
-Guy Martin
-Gentoo Linux - HPPA port lead
+diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
+index 675f1d0..721d281 100644
+--- a/arch/parisc/kernel/traps.c
++++ b/arch/parisc/kernel/traps.c
+@@ -121,11 +121,12 @@ static void print_fr(char *level, struct pt_regs *regs)
+ 
+ void show_regs(struct pt_regs *regs)
+ {
+-	int i;
++	int i, user;
+ 	char *level;
+ 	unsigned long cr30, cr31;
+ 
+-	level = user_mode(regs) ? KERN_DEBUG : KERN_CRIT;
++	user = !!user_mode(regs);
++	level = user ? KERN_DEBUG : KERN_CRIT;
+ 
+ 	print_gr(level, regs);
+ 
+@@ -152,7 +153,8 @@ void show_regs(struct pt_regs *regs)
+ 	printk(level);
+ 	print_symbol(" RP(r2): %s\n", regs->gr[2]);
+ 
+-	parisc_show_stack(current, NULL, regs);
++	if (!user)
++		parisc_show_stack(current, NULL, regs);
+ }
+ 
+ 
