@@ -1,60 +1,33 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH] fix unwind crash - was: Re: 2.6.26 kernel crash
-Date: Wed, 6 Aug 2008 15:41:25 -0400
-Message-ID: <20080806194125.GA3281@phobos.i.cabal.ca>
-References: <200807201846.11809.deller@gmx.de> <200807201907.59762.deller@gmx.de> <488F7E32.4070204@gmx.de> <1e3eba760808030726l93f60dftdcec0c487933129b@mail.gmail.com>
+From: Adrian Bunk <bunk@kernel.org>
+Subject: [2.6 patch] binfmt_som.c: add MODULE_LICENSE
+Date: Thu, 7 Aug 2008 00:11:55 +0300
+Message-ID: <20080806211155.GV1702@cs181140183.pp.htv.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	Kyle McMartin <kyle@mcmartin.ca>
-To: Randolph Chung <randolph@tausq.org>
+Content-Type: text/plain; charset=utf-8
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>
+To: kyle@mcmartin.ca, matthew@wil.cx, grundler@parisc-linux.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1e3eba760808030726l93f60dftdcec0c487933129b@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Aug 03, 2008 at 07:26:48AM -0700, Randolph Chung wrote:
-> (Apologize for my earlier html mail - resent in a more proper format)
-> 
-> Helge, your patch doesn't look quite right.
-> 
-> The kernel unwinder is only supposed to be called for kernel
-> addresses. Kyle says he thinks he knows what is wrong so he's going to
-> poke at it.
-> 
-> Maybe we can make the kernel unwinder more robust against invalid
-> addresses passed to it though.
-> 
+This patch adds the missing MODULE_LICENSE("GPL").
 
-I think this will fix the problem, though I should audit show_stack
-callers to make sure.
+Reported-by: Adrian Bunk <bunk@kernel.org>
+Signed-off-by: Adrian Bunk <bunk@kernel.org>
 
-diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index 675f1d0..721d281 100644
---- a/arch/parisc/kernel/traps.c
-+++ b/arch/parisc/kernel/traps.c
-@@ -121,11 +121,12 @@ static void print_fr(char *level, struct pt_regs *regs)
+---
+
+This patch has been sent on:
+- 15 Jun 2008
+
+4cec562181f818f16f072b9a14ca7a0ce6c66417 diff --git a/fs/binfmt_som.c b/fs/binfmt_som.c
+index fdc36bf..6d3bebb 100644
+--- a/fs/binfmt_som.c
++++ b/fs/binfmt_som.c
+@@ -308,3 +308,5 @@ static void __exit exit_som_binfmt(void)
  
- void show_regs(struct pt_regs *regs)
- {
--	int i;
-+	int i, user;
- 	char *level;
- 	unsigned long cr30, cr31;
- 
--	level = user_mode(regs) ? KERN_DEBUG : KERN_CRIT;
-+	user = !!user_mode(regs);
-+	level = user ? KERN_DEBUG : KERN_CRIT;
- 
- 	print_gr(level, regs);
- 
-@@ -152,7 +153,8 @@ void show_regs(struct pt_regs *regs)
- 	printk(level);
- 	print_symbol(" RP(r2): %s\n", regs->gr[2]);
- 
--	parisc_show_stack(current, NULL, regs);
-+	if (!user)
-+		parisc_show_stack(current, NULL, regs);
- }
- 
- 
+ core_initcall(init_som_binfmt);
+ module_exit(exit_som_binfmt);
++
++MODULE_LICENSE("GPL");
