@@ -1,34 +1,62 @@
-From: Bdale Garbee <bdale@hp.com>
+From: Adrian Bunk <bunk@kernel.org>
 Subject: Re: [2.6 patch] binfmt_som.c: add MODULE_LICENSE
-Date: Sun, 10 Aug 2008 10:41:54 -0300
-Message-ID: <1218375714.18157.56.camel@rover.gag.com>
-References: <20080806211155.GV1702@cs181140183.pp.htv.fi>
-	 <20080810005511.GB2617@colo.lackof.org>
-	 <20080810010005.GL8618@parisc-linux.org>
+Date: Sun, 10 Aug 2008 17:11:59 +0300
+Message-ID: <20080810141159.GA13105@cs181140183.pp.htv.fi>
+References: <20080806211155.GV1702@cs181140183.pp.htv.fi> <20080810005511.GB2617@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	Adrian Bunk <bunk@kernel.org>, kyle@mcmartin.ca,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>
-To: Matthew Wilcox <matthew@wil.cx>
+Content-Type: text/plain; charset=utf-8
+Cc: kyle@mcmartin.ca, matthew@wil.cx, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>, bdale@hp.com
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080810010005.GL8618@parisc-linux.org>
+In-Reply-To: <20080810005511.GB2617@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, 2008-08-09 at 19:00 -0600, Matthew Wilcox wrote:
-> On Sat, Aug 09, 2008 at 06:55:11PM -0600, Grant Grundler wrote:
-> > Someone from HP needs to ACK this patch since I believe HP funded the code
-> > changes made during the parisc-linux port. This should be a no-brainer
-> > and I expect Bdale Garbee can quickly take care of this.
+On Sat, Aug 09, 2008 at 06:55:11PM -0600, Grant Grundler wrote:
+> +bdale@hp.com
+> 
+> On Thu, Aug 07, 2008 at 12:11:55AM +0300, Adrian Bunk wrote:
+> > This patch adds the missing MODULE_LICENSE("GPL").
+> > 
+> > Reported-by: Adrian Bunk <bunk@kernel.org>
+> > Signed-off-by: Adrian Bunk <bunk@kernel.org>
+> > 
+> > ---
+> > 
+> > This patch has been sent on:
+> > - 15 Jun 2008
+> > 
+> > 4cec562181f818f16f072b9a14ca7a0ce6c66417 diff --git a/fs/binfmt_som.c b/fs/binfmt_som.c
+> > index fdc36bf..6d3bebb 100644
+> > --- a/fs/binfmt_som.c
+> > +++ b/fs/binfmt_som.c
+> > @@ -308,3 +308,5 @@ static void __exit exit_som_binfmt(void)
+> >  
+> >  core_initcall(init_som_binfmt);
+> >  module_exit(exit_som_binfmt);
+> > +
+> > +MODULE_LICENSE("GPL");
+> 
+> Someone from HP needs to ACK this patch since I believe HP funded the code
+> changes made during the parisc-linux port. This should be a no-brainer
+> and I expect Bdale Garbee can quickly take care of this.
 
-> I believe I did this work before joining Linuxcare,
-> so I don't believe HP has any claim to it at all.  You'd have to check
-> CVS history to be sure.  
+Either the file is available since the beginning under the terms of the 
+GPLv2 (or a compatible license that can be reduced to GPLv2) or it's 
+addition to the kernel was a huge mistake.
 
-If that is indeed the timing, I agree.  If not, let me know, and I'll
-see if I can push the right buttons in HP.
+> thanks,
+> grant
 
-Bdale
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
