@@ -1,55 +1,59 @@
-From: Matthew Wilcox <matthew@wil.cx>
+From: Adrian Bunk <bunk@kernel.org>
 Subject: Re: [2.6 patch] binfmt_som.c: add MODULE_LICENSE
-Date: Mon, 11 Aug 2008 11:11:36 -0600
-Message-ID: <20080811171136.GS8618@parisc-linux.org>
-References: <20080811104643.GA3338@cs181140183.pp.htv.fi> <20080811145652.100E74E77@hiauly1.hia.nrc.ca>
+Date: Mon, 11 Aug 2008 21:43:41 +0300
+Message-ID: <20080811184341.GA1880@cs181140183.pp.htv.fi>
+References: <20080811155158.GA21292@cs181140183.pp.htv.fi> <20080811165644.B18F04DE6@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Adrian Bunk <bunk@kernel.org>, grundler@parisc-linux.org,
-	kyle@mcmartin.ca, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-	bdale@hp.com
+Content-Type: text/plain; charset=utf-8
+Cc: grundler@parisc-linux.org, kyle@mcmartin.ca, matthew@wil.cx,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org, bdale@hp.com
 To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080811145652.100E74E77@hiauly1.hia.nrc.ca>
+In-Reply-To: <20080811165644.B18F04DE6@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Aug 11, 2008 at 10:56:51AM -0400, John David Anglin wrote:
-> This file was included before the SCO situation arose.  The copyright
-> notice is similar to most.  Checking 2.6.22.19, I see that more than
-> half the .c files lack MODULE_LICENSE("GPL") lines.
+On Mon, Aug 11, 2008 at 12:56:43PM -0400, John David Anglin wrote:
+> > The toplevel COPYING file of the kernel sources contains the exact 
+> > licence text for all files (including binfmt_som.c) in the kernel.
 > 
-> I don't understand why we are talking about HP here.  According to
-> Matthew, his last commit to this file occured while he worked for
-> Genedata.
+> The COPYING file contains the license text but it doesn't say clearly
+> what the license applies to.  The closest thing to this is the statement
+> 
+>    Also note that the GPL below is copyrighted by the Free Software
+>    Foundation, but the instance of code that it refers to (the Linux
+>    kernel) is copyrighted by me and others who actually wrote it.
+> 
+> in the COPYING file.  The applicability of the GPL is parenthetical.
+> The HOWTO file is more specific, but a clear license statement at the
+> top level of the "source" tree is missing.
 
-Whoops, that was in the linux-2.2 CVS repository.  There were subsequent
-commits in the 2.4/2.5/2.6 repositories, some of which HP might have
-a claim to.
+There's a file named COPYING at the top level, and a file named README 
+at the top level that says:
 
-> It is my understanding that copyright normally acrues
-> to employers in employment situations.  If Matthew was an employee
-> and not an independent contractor at the time, then why are we not
-> talking about Genedata, or its subsequent owner?
+WHAT IS LINUX?
+...
+  It is distributed under the GNU General Public License - see the
+  accompanying COPYING file for more details. 
 
-While I don't have a copy of my employment contract with Genedata any
-more, my recollection is that they did not claim copyright on works I
-produced that were off company time.  It would be governed by Swiss law
-which I believe would not permit such a term in the contract.
 
-> Subsequent
-> employment at HP or their funding of the parisc port shouldn't
-> affect the licensing of a file that was previously contributed.
+The GPLv2 licence on the Linux kernel is generally agreed upon 
+(whether one likes it or not is a different question, but all 
+contributors are aware that it applies) and has even been successfully 
+enforced at court, which makes your attempts of finding a way to 
+possibly interpret it differently kinda strange.
 
-That's my basic argument.  If binfmt_elf had contained the GPL
-boilerplate, I would have copied that when creating binfmt_som.  It was
-intended to be GPL, it was a derivative work of GPL file (that also
-didn't explicitly state it was GPL), it has been treated as GPL for
-almost a decade.
+
+> Dave
+
+cu
+Adrian
 
 -- 
-Intel are signing my paycheques ... these opinions are still mine
-"Bill, look, we understand that you're interested in selling us this
-operating system, but compare it to ours.  We can't possibly take such
-a retrograde step."
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
+
