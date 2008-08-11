@@ -1,47 +1,74 @@
-From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
-Subject: Re: [PATCH] ide: remove unused macros from <asm-parisc/ide.h>
-Date: Sun, 10 Aug 2008 20:03:27 +0200
-Message-ID: <200808102003.27727.bzolnier@gmail.com>
-References: <200808101747.08025.bzolnier@gmail.com> <20080810155437.GA6576@phobos.i.cabal.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [2.6 patch] binfmt_som.c: add MODULE_LICENSE
+Date: Sun, 10 Aug 2008 18:05:35 -0600
+Message-ID: <20080811000535.GB14163@colo.lackof.org>
+References: <20080806211155.GV1702@cs181140183.pp.htv.fi> <20080810005511.GB2617@colo.lackof.org> <20080810010005.GL8618@parisc-linux.org> <1218375714.18157.56.camel@rover.gag.com> <20080810151433.GO8618@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
-Return-path: <linux-ide-owner@vger.kernel.org>
-In-Reply-To: <20080810155437.GA6576@phobos.i.cabal.ca>
-List-ID: <linux-ide.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Bdale Garbee <bdale@hp.com>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	Adrian Bunk <bunk@kernel.org>, kyle@mcmartin.ca,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>
+To: Matthew Wilcox <matthew@wil.cx>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20080810151433.GO8618@parisc-linux.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sunday 10 August 2008, Kyle McMartin wrote:
-> On Sun, Aug 10, 2008 at 05:47:07PM +0200, Bartlomiej Zolnierkiewicz wrote:
-> > 
-> > Cc: Kyle McMartin <kyle@mcmartin.ca>
-> > Signed-off-by: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
-> > ---
-> >  include/asm-parisc/ide.h |    4 ----
-> >  1 file changed, 4 deletions(-)
-> > 
-> > Index: b/include/asm-parisc/ide.h
-> > ===================================================================
-> > --- a/include/asm-parisc/ide.h
-> > +++ b/include/asm-parisc/ide.h
-> > @@ -13,10 +13,6 @@
-> >  
-> >  #ifdef __KERNEL__
-> >  
-> > -#define ide_request_irq(irq,hand,flg,dev,id)	request_irq((irq),(hand),(flg),(dev),(id))
-> > -#define ide_free_irq(irq,dev_id)		free_irq((irq), (dev_id))
-> > -#define ide_request_region(from,extent,name)	request_region((from), (extent), (name))
-> > -#define ide_release_region(from,extent)		release_region((from), (extent))
-> >  /* Generic I/O and MEMIO string operations.  */
-> >  
+On Sun, Aug 10, 2008 at 09:14:33AM -0600, Matthew Wilcox wrote:
+...
+> > If that is indeed the timing, I agree.  If not, let me know, and I'll
+> > see if I can push the right buttons in HP.
 > 
-> Thanks Bart!
+> http://cvs.parisc-linux.org/obsolete/linux-2.2/fs/binfmt_som.c?rev=1.8&view=log
 > 
-> Groovy... Want me to merge this, or will you shepherd it in?
+> indicates I first committed the file in June 1999 and was the majority
+> committer to this file (prumpf also committed some code).  My last
+> commit to it was in November 1999 (while I still worked for Genedata).
 
-In the fear of include/asm-parisc/ shuffle I would prefer that you pick it.
+Ok - I didn't realize that.
 
-Thanks.
+> At some point around then, we moved to the 2.4 CVS tree:
+> 
+> http://cvs.parisc-linux.org/linux-2.4/fs/binfmt_som.c?rev=1.21&view=log
+> 
+> and there are some commits from other people at HP and myself while at
+> Linuxcare and HP.
+
+Thanks for digging this up.
+I expect it should be easy for Bdale to get this rubber stamped
+by any one of the HP linux kernel engineers.  HP legal shouldn't
+need to be involved.
+
+
+
+> 
+> The 2.5 development tree:
+> http://cvs.parisc-linux.org/linux-2.5/fs/binfmt_som.c?rev=1.3&view=log
+> 
+> doesn't show anything of great interest.
+> 
+> and the 2.6 tree represents accurately how much effort we put into SOM:
+> http://cvs.parisc-linux.org/linux-2.6/fs/binfmt_som.c?rev=1.8&view=log
+> 
+> 
+> So while HP has a legitimate claim to some parts of the file, my initial
+> contributions before I worked for Linuxcare or HP were the largest and I
+> don't think that anyone has a legitimate claim that this is not a
+> derived work of GPL code, and hence I think Adrian's patch should be
+> accepted.
+
+I agree and apologize for my bad memory and lazy attitude. I didn't mean
+to make a big deal of this - just assumed HP was the right party to
+address this to.
+
+cheers,
+grant
+
+> 
+> -- 
+> Intel are signing my paycheques ... these opinions are still mine
+> "Bill, look, we understand that you're interested in selling us this
+> operating system, but compare it to ours.  We can't possibly take such
+> a retrograde step."
