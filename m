@@ -1,72 +1,33 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Bdale Garbee <bdale@hp.com>
 Subject: Re: [2.6 patch] binfmt_som.c: add MODULE_LICENSE
-Date: Mon, 11 Aug 2008 10:56:51 -0400 (EDT)
-Message-ID: <20080811145652.100E74E77@hiauly1.hia.nrc.ca>
-References: <20080811104643.GA3338@cs181140183.pp.htv.fi>
+Date: Mon, 11 Aug 2008 11:15:08 -0300
+Message-ID: <1218464108.31573.1.camel@rover.gag.com>
+References: <20080806211155.GV1702@cs181140183.pp.htv.fi>
+	 <20080810005511.GB2617@colo.lackof.org>
+	 <20080810010005.GL8618@parisc-linux.org>
+	 <1218375714.18157.56.camel@rover.gag.com>
+	 <20080810151433.GO8618@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: grundler@parisc-linux.org, kyle@mcmartin.ca, matthew@wil.cx,
+Content-Type: text/plain
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	Adrian Bunk <bunk@kernel.org>, kyle@mcmartin.ca,
 	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org, bdale@hp.com
-To: bunk@kernel.org (Adrian Bunk)
+	Andrew Morton <akpm@linux-foundation.org>
+To: Matthew Wilcox <matthew@wil.cx>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080811104643.GA3338@cs181140183.pp.htv.fi> from "Adrian Bunk" at Aug 11, 2008 01:46:43 pm
+In-Reply-To: <20080810151433.GO8618@parisc-linux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Sun, Aug 10, 2008 at 06:10:15PM -0600, Grant Grundler wrote:
-> > On Sun, Aug 10, 2008 at 05:11:59PM +0300, Adrian Bunk wrote:
-> > > On Sat, Aug 09, 2008 at 06:55:11PM -0600, Grant Grundler wrote:
-> > ...
-> > > > Someone from HP needs to ACK this patch since I believe HP funded the code
-> > > > changes made during the parisc-linux port. This should be a no-brainer
-> > > > and I expect Bdale Garbee can quickly take care of this.
-> > > 
-> > > Either the file is available since the beginning under the terms of the 
-> > > GPLv2 (or a compatible license that can be reduced to GPLv2) or it's 
-> > > addition to the kernel was a huge mistake.
-> > 
-> > As a former HP employee who was one of the several parisc-linux developers,
-> > I'm certain the intent was to release this as GPL. That's why I said
-> > "this should be a no-brainer".
-> > 
-> > However, it's still HP's (and not my) right to assert that.
-> 
-> If it wasn't already 100% clear that the file was released under
-> the terms of the GPLv2 (or a compatible license that can be reduced
-> to GPLv2) at the day when it was included into the kernel something
-> went horribly wrong back then.
-> 
-> Otherwise HP would have the situation SCO was desperately searching for...
+On Sun, 2008-08-10 at 09:14 -0600, Matthew Wilcox wrote:
 
-This file was included before the SCO situation arose.  The copyright
-notice is similar to most.  Checking 2.6.22.19, I see that more than
-half the .c files lack MODULE_LICENSE("GPL") lines.
+> So while HP has a legitimate claim to some parts of the file, my initial
+> contributions before I worked for Linuxcare or HP were the largest and I
+> don't think that anyone has a legitimate claim that this is not a
+> derived work of GPL code, and hence I think Adrian's patch should be
+> accepted.
 
-I don't understand why we are talking about HP here.  According to
-Matthew, his last commit to this file occured while he worked for
-Genedata.  It is my understanding that copyright normally acrues
-to employers in employment situations.  If Matthew was an employee
-and not an independent contractor at the time, then why are we not
-talking about Genedata, or its subsequent owner?  Subsequent
-employment at HP or their funding of the parisc port shouldn't
-affect the licensing of a file that was previously contributed.
-The file appears to be a derived work.  This may also affect its
-copyright status.  The only reason HP should be involved is if the
-file somehow contains material copyrighted by HP.
+I agree.  Thanks for tracking down the details.
 
-The whole licensing issue for the linux program and modules,
-particularly for individual files, appears to be a mess.  The
-COPYING file is vague on the licensing for files.   The recommended
-wording suggested by the FSF isn't used.  I can't see that adding
-MODULE_LICENSE("GPL") lines is going to help much.
+Bdale
 
-There are several GPL licenses and versions.  The line isn't
-going to mean much to a lawyer.  I really think each file should
-be specific about its licensing in words that can be clearly
-understood.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
