@@ -1,86 +1,40 @@
-From: Christoph Hellwig <hch@lst.de>
-Subject: [RFC] remove dead code from sys_parisc32.c
-Date: Sun, 17 Aug 2008 04:41:51 +0200
-Message-ID: <20080817024151.GA24129@lst.de>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: missing compat_sys_ptrace conversions for mips and parisc
+Date: Sun, 17 Aug 2008 13:14:34 +0200
+Message-ID: <48A8081A.4080609@gmx.de>
+References: <20080817022924.GA23625@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: linux-mips@linux-mips.org, linux-parisc@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>, Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20080817022924.GA23625@lst.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Unless I'm totally missing something get_fd_set32/set_fd_set32 are
-completely unused.
+Christoph Hellwig wrote:
+> Currently mips and parisc are the only architectures not yet converted
+> to the generic compat_sys_ptrace.  The conversion is rather trivial and
+> only involves splitting the current compat_ptrace handler into a
+> compat_arch_ptrace with all the meat and the existing compat_sys_ptrace
+> that does all the boilerplate code, just like the generic sys_ptrace.
+> To get the generic compat_sys_ptrace you have to add a
+> 
+> 	#define __ARCH_WANT_COMPAT_SYS_PTRACE
+> 
+> to ptrace.h for now, but once mips and parisc are converted this will of
+> course be removed.  Take a look at the powerpc conversion as an example:
+> 
+> 	http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git&a=commitdiff&h=81e695c026eeda9a97e412fa4f458e5cab2f6c85
 
+I could take care of this for parisc. Just looked into the code and it 
+seems it could cleanup the code nicely as well.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+But I don't want to step on Kyle's toe, since I assume he prepares the 
+asm-parisc/ move in the parisc-2.6 git tree during the next days.
 
-Index: linux-2.6/arch/parisc/kernel/sys_parisc32.c
-===================================================================
---- linux-2.6.orig/arch/parisc/kernel/sys_parisc32.c	2008-08-16 23:40:26.000000000 -0300
-+++ linux-2.6/arch/parisc/kernel/sys_parisc32.c	2008-08-16 23:40:46.000000000 -0300
-@@ -284,68 +284,6 @@ int cp_compat_stat(struct kstat *stat, s
- 	return err;
- }
- 
--/*** copied from mips64 ***/
--/*
-- * Ooo, nasty.  We need here to frob 32-bit unsigned longs to
-- * 64-bit unsigned longs.
-- */
--
--static inline int
--get_fd_set32(unsigned long n, u32 *ufdset, unsigned long *fdset)
--{
--	n = (n + 8*sizeof(u32) - 1) / (8*sizeof(u32));
--	if (ufdset) {
--		unsigned long odd;
--
--		if (!access_ok(VERIFY_WRITE, ufdset, n*sizeof(u32)))
--			return -EFAULT;
--
--		odd = n & 1UL;
--		n &= ~1UL;
--		while (n) {
--			unsigned long h, l;
--			__get_user(l, ufdset);
--			__get_user(h, ufdset+1);
--			ufdset += 2;
--			*fdset++ = h << 32 | l;
--			n -= 2;
--		}
--		if (odd)
--			__get_user(*fdset, ufdset);
--	} else {
--		/* Tricky, must clear full unsigned long in the
--		 * kernel fdset at the end, this makes sure that
--		 * actually happens.
--		 */
--		memset(fdset, 0, ((n + 1) & ~1)*sizeof(u32));
--	}
--	return 0;
--}
--
--static inline void
--set_fd_set32(unsigned long n, u32 *ufdset, unsigned long *fdset)
--{
--	unsigned long odd;
--	n = (n + 8*sizeof(u32) - 1) / (8*sizeof(u32));
--
--	if (!ufdset)
--		return;
--
--	odd = n & 1UL;
--	n &= ~1UL;
--	while (n) {
--		unsigned long h, l;
--		l = *fdset++;
--		h = l >> 32;
--		__put_user(l, ufdset);
--		__put_user(h, ufdset+1);
--		ufdset += 2;
--		n -= 2;
--	}
--	if (odd)
--		__put_user(*fdset, ufdset);
--}
+Kyle: any comments? Should I prepare some patches? Or do you want to 
+take care of the compat_sys_ptrace yourself?
+
+Helge
+
