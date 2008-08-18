@@ -1,24 +1,29 @@
-From: tsbogend@alpha.franken.de (Thomas Bogendoerfer)
+From: Randolph Chung <randolph@tausq.org>
 Subject: Re: missing compat_sys_ptrace conversions for mips and parisc
-Date: Sun, 17 Aug 2008 16:46:51 +0200
-Message-ID: <20080817144651.GA30963@alpha.franken.de>
-References: <20080817022924.GA23625@lst.de>
+Date: Mon, 18 Aug 2008 09:42:53 +0800
+Message-ID: <48A8D39D.3070005@tausq.org>
+References: <20080817022924.GA23625@lst.de> <48A8081A.4080609@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-mips@linux-mips.org, linux-parisc@vger.kernel.org
-To: Christoph Hellwig <hch@lst.de>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <20080817022924.GA23625@lst.de>
-Errors-to: linux-mips-bounce@linux-mips.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <48A8081A.4080609@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Aug 17, 2008 at 04:29:24AM +0200, Christoph Hellwig wrote:
-> Currently mips and parisc are the only architectures not yet converted
+> I could take care of this for parisc. Just looked into the code and it 
+> seems it could cleanup the code nicely as well.
+> 
+> But I don't want to step on Kyle's toe, since I assume he prepares the 
+> asm-parisc/ move in the parisc-2.6 git tree during the next days.
 
-I'll send a patch for mips in a couple of minutes to Ralf.
+Whoever does this change, I would appreciate if you could run a gdb 
+testsuite before and after and compare the results.
 
-Thomas.
+You can just build the debian package. I believe it runs the testsuite 
+by default. (although i see from buildd.d.o that the latest version is 
+FTBFS because of some header issues?)
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                                [ RFC1925, 2.3 ]
+thanks
+randolph
