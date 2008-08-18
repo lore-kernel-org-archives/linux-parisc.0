@@ -1,29 +1,106 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: missing compat_sys_ptrace conversions for mips and parisc
-Date: Mon, 18 Aug 2008 09:42:53 +0800
-Message-ID: <48A8D39D.3070005@tausq.org>
-References: <20080817022924.GA23625@lst.de> <48A8081A.4080609@gmx.de>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [RFC] remove dead code from sys_parisc32.c
+Date: Mon, 18 Aug 2008 14:44:52 -0600
+Message-ID: <20080818204452.GA15693@colo.lackof.org>
+References: <20080817024151.GA24129@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <48A8081A.4080609@gmx.de>
+In-Reply-To: <20080817024151.GA24129@lst.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> I could take care of this for parisc. Just looked into the code and it 
-> seems it could cleanup the code nicely as well.
+On Sun, Aug 17, 2008 at 04:41:51AM +0200, Christoph Hellwig wrote:
+> Unless I'm totally missing something get_fd_set32/set_fd_set32 are
+> completely unused.
+
+I think get_fd_set32 was replaced by compat_get_fd_set.
+In any case, I didn't find any users either.
+
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Ack-by: Grant Grundler <grundler@parisc-linux.org>
+
+thanks,
+grant
+
 > 
-> But I don't want to step on Kyle's toe, since I assume he prepares the 
-> asm-parisc/ move in the parisc-2.6 git tree during the next days.
-
-Whoever does this change, I would appreciate if you could run a gdb 
-testsuite before and after and compare the results.
-
-You can just build the debian package. I believe it runs the testsuite 
-by default. (although i see from buildd.d.o that the latest version is 
-FTBFS because of some header issues?)
-
-thanks
-randolph
+> Index: linux-2.6/arch/parisc/kernel/sys_parisc32.c
+> ===================================================================
+> --- linux-2.6.orig/arch/parisc/kernel/sys_parisc32.c	2008-08-16 23:40:26.000000000 -0300
+> +++ linux-2.6/arch/parisc/kernel/sys_parisc32.c	2008-08-16 23:40:46.000000000 -0300
+> @@ -284,68 +284,6 @@ int cp_compat_stat(struct kstat *stat, s
+>  	return err;
+>  }
+>  
+> -/*** copied from mips64 ***/
+> -/*
+> - * Ooo, nasty.  We need here to frob 32-bit unsigned longs to
+> - * 64-bit unsigned longs.
+> - */
+> -
+> -static inline int
+> -get_fd_set32(unsigned long n, u32 *ufdset, unsigned long *fdset)
+> -{
+> -	n = (n + 8*sizeof(u32) - 1) / (8*sizeof(u32));
+> -	if (ufdset) {
+> -		unsigned long odd;
+> -
+> -		if (!access_ok(VERIFY_WRITE, ufdset, n*sizeof(u32)))
+> -			return -EFAULT;
+> -
+> -		odd = n & 1UL;
+> -		n &= ~1UL;
+> -		while (n) {
+> -			unsigned long h, l;
+> -			__get_user(l, ufdset);
+> -			__get_user(h, ufdset+1);
+> -			ufdset += 2;
+> -			*fdset++ = h << 32 | l;
+> -			n -= 2;
+> -		}
+> -		if (odd)
+> -			__get_user(*fdset, ufdset);
+> -	} else {
+> -		/* Tricky, must clear full unsigned long in the
+> -		 * kernel fdset at the end, this makes sure that
+> -		 * actually happens.
+> -		 */
+> -		memset(fdset, 0, ((n + 1) & ~1)*sizeof(u32));
+> -	}
+> -	return 0;
+> -}
+> -
+> -static inline void
+> -set_fd_set32(unsigned long n, u32 *ufdset, unsigned long *fdset)
+> -{
+> -	unsigned long odd;
+> -	n = (n + 8*sizeof(u32) - 1) / (8*sizeof(u32));
+> -
+> -	if (!ufdset)
+> -		return;
+> -
+> -	odd = n & 1UL;
+> -	n &= ~1UL;
+> -	while (n) {
+> -		unsigned long h, l;
+> -		l = *fdset++;
+> -		h = l >> 32;
+> -		__put_user(l, ufdset);
+> -		__put_user(h, ufdset+1);
+> -		ufdset += 2;
+> -		n -= 2;
+> -	}
+> -	if (odd)
+> -		__put_user(*fdset, ufdset);
+> -}
+> -
+>  struct msgbuf32 {
+>      int mtype;
+>      char mtext[1];
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
