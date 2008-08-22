@@ -1,151 +1,46 @@
-From: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Subject: [patch] vsprintf: use new vsprintf symbolic function pointer format
-Date: Fri, 22 Aug 2008 09:34:43 -0600
-Message-ID: <200808220934.44782.bjorn.helgaas@hp.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [patch] vsprintf: use new vsprintf symbolic function pointer
+	format
+Date: Fri, 22 Aug 2008 12:32:12 -0400
+Message-ID: <20080822163212.GE1563@phobos.i.cabal.ca>
+References: <200808220934.44782.bjorn.helgaas@hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Cc: linux-kernel@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
+Content-Type: text/plain; charset=us-ascii
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
 	Matthew Wilcox <matthew@wil.cx>,
 	Grant Grundler <grundler@parisc-linux.org>,
 	linux-parisc@vger.kernel.org,
 	Jesse Barnes <jbarnes@virtuousgeek.org>
-To: Andrew Morton <akpm@linux-foundation.org>
+To: Bjorn Helgaas <bjorn.helgaas@hp.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <200808220934.44782.bjorn.helgaas@hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Use the '%pF' format to get rid of an "#ifdef DEBUG" and make
-some printks atomic.
+On Fri, Aug 22, 2008 at 09:34:43AM -0600, Bjorn Helgaas wrote:
+> Use the '%pF' format to get rid of an "#ifdef DEBUG" and make
+> some printks atomic.
+> 
+> This removes the last in-tree uses of print_fn_descriptor_symbol().
+> I marked print_fn_descriptor_symbol() deprecated and scheduled it
+> for removal next year to give time for out-of-tree modules to be
+> updated.
+> 
+> I cc'd the parisc folks because print_fn_descriptor_symbol() is
+> currently broken there (it needs to dereference the function pointer
+> similar to ia64 and power).  This patch shouldn't make anything worse,
+> but it means we need to fix dereference_function_descriptor() instead
+> of print_fn_descriptor_symbol() to get meaningful initcall_debug
+> output.
+> 
 
-This removes the last in-tree uses of print_fn_descriptor_symbol().
-I marked print_fn_descriptor_symbol() deprecated and scheduled it
-for removal next year to give time for out-of-tree modules to be
-updated.
+Yeah, I sent a few patches a couple months ago fixing this up for
+print_fn_..._symbol, but they were never applied, and I kind of forgot
+about them. It only really effects me once and a while during a merge
+window when I need to use initcall_debug, so it's easily forgotten.
 
-I cc'd the parisc folks because print_fn_descriptor_symbol() is
-currently broken there (it needs to dereference the function pointer
-similar to ia64 and power).  This patch shouldn't make anything worse,
-but it means we need to fix dereference_function_descriptor() instead
-of print_fn_descriptor_symbol() to get meaningful initcall_debug
-output.
+I've got a patch, I'll send it along in a bit when one of my machines
+finally boots and I can test it.
 
-Signed-off-by: Bjorn Helgaas <bjorn.helgaas@hp.com>
----
-
- Documentation/feature-removal-schedule.txt |    8 ++++++++
- drivers/base/power/main.c                  |    7 ++-----
- drivers/pci/quirks.c                       |    5 +----
- include/linux/kallsyms.h                   |    8 +++-----
- init/main.c                                |   14 ++++++--------
- 5 files changed, 20 insertions(+), 22 deletions(-)
-
-
-diff --git a/Documentation/feature-removal-schedule.txt b/Documentation/feature-removal-schedule.txt
-index eb1a47b..6951fb4 100644
---- a/Documentation/feature-removal-schedule.txt
-+++ b/Documentation/feature-removal-schedule.txt
-@@ -322,3 +322,11 @@ Why:  Accounting can now be enabled/disabled without kernel recompilation.
-       controlled by a kernel/module/sysfs/sysctl parameter.
- Who:  Krzysztof Piotr Oledzki <ole@ans.pl>
- 
-+---------------------------
-+
-+What: print_fn_descriptor_symbol()
-+When: October 2009
-+Why:  The %pF vsprintf format provides the same functionality in a
-+      simpler way.  print_fn_descriptor_symbol() is deprecated but
-+      still present to give out-of-tree modules time to change.
-+Who:  Bjorn Helgaas <bjorn.helgaas@hp.com>
-diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-index 3250c52..cd12708 100644
---- a/drivers/base/power/main.c
-+++ b/drivers/base/power/main.c
-@@ -787,10 +787,7 @@ EXPORT_SYMBOL_GPL(device_suspend);
- 
- void __suspend_report_result(const char *function, void *fn, int ret)
- {
--	if (ret) {
--		printk(KERN_ERR "%s(): ", function);
--		print_fn_descriptor_symbol("%s returns ", fn);
--		printk("%d\n", ret);
--	}
-+	if (ret)
-+		printk(KERN_ERR "%s(): %pF returns %d\n", function, fn, ret);
- }
- EXPORT_SYMBOL_GPL(__suspend_report_result);
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 9236e7f..0143268 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -1560,10 +1560,7 @@ static void pci_do_fixups(struct pci_dev *dev, struct pci_fixup *f, struct pci_f
- 	while (f < end) {
- 		if ((f->vendor == dev->vendor || f->vendor == (u16) PCI_ANY_ID) &&
-  		    (f->device == dev->device || f->device == (u16) PCI_ANY_ID)) {
--#ifdef DEBUG
--			dev_dbg(&dev->dev, "calling ");
--			print_fn_descriptor_symbol("%s\n", f->hook);
--#endif
-+			dev_dbg(&dev->dev, "calling %pF\n", f->hook);
- 			f->hook(dev);
- 		}
- 		f++;
-diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
-index b961448..f3fe343 100644
---- a/include/linux/kallsyms.h
-+++ b/include/linux/kallsyms.h
-@@ -93,12 +93,10 @@ static inline void print_symbol(const char *fmt, unsigned long addr)
- }
- 
- /*
-- * Pretty-print a function pointer.
-- *
-- * ia64 and ppc64 function pointers are really function descriptors,
-- * which contain a pointer the real address.
-+ * Pretty-print a function pointer.  This function is deprecated.
-+ * Please use the "%pF" vsprintf format instead.
-  */
--static inline void print_fn_descriptor_symbol(const char *fmt, void *addr)
-+static inline void __deprecated print_fn_descriptor_symbol(const char *fmt, void *addr)
- {
- #if defined(CONFIG_IA64) || defined(CONFIG_PPC64)
- 	addr = *(void **)addr;
-diff --git a/init/main.c b/init/main.c
-index f6f7042..75a038d 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -708,7 +708,7 @@ int do_one_initcall(initcall_t fn)
- 	int result;
- 
- 	if (initcall_debug) {
--		print_fn_descriptor_symbol("calling  %s\n", fn);
-+		printk("calling  %pF\n", fn);
- 		t0 = ktime_get();
- 	}
- 
-@@ -718,9 +718,8 @@ int do_one_initcall(initcall_t fn)
- 		t1 = ktime_get();
- 		delta = ktime_sub(t1, t0);
- 
--		print_fn_descriptor_symbol("initcall %s", fn);
--		printk(" returned %d after %Ld msecs\n", result,
--			(unsigned long long) delta.tv64 >> 20);
-+		printk("initcall %pF returned %d after %Ld msecs\n", fn,
-+		       result, (unsigned long long) delta.tv64 >> 20);
- 	}
- 
- 	msgbuf[0] = 0;
-@@ -736,10 +735,9 @@ int do_one_initcall(initcall_t fn)
- 		strlcat(msgbuf, "disabled interrupts ", sizeof(msgbuf));
- 		local_irq_enable();
- 	}
--	if (msgbuf[0]) {
--		print_fn_descriptor_symbol(KERN_WARNING "initcall %s", fn);
--		printk(" returned with %s\n", msgbuf);
--	}
-+	if (msgbuf[0])
-+		printk(KERN_WARNING "initcall %pF returned with %s\n",
-+		       fn, msgbuf);
- 
- 	return result;
- }
+regards, Kyle
