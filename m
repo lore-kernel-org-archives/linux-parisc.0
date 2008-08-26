@@ -1,26 +1,73 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: __kernel_suseconds_t is int on PA-RISC (and SPARC64)?
-Date: Tue, 26 Aug 2008 13:50:24 -0700 (PDT)
-Message-ID: <20080826.135024.03095891.davem@davemloft.net>
-References: <Pine.LNX.4.64.0808262207450.7910@anakin>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [PATCH] mips: Add dma_mmap_coherent()
+Date: Tue, 26 Aug 2008 15:01:18 -0600
+Message-ID: <20080826210118.GA26235@colo.lackof.org>
+References: <K6047O$07C3A675C0E02FC7BE973C0D5DEF9AAA@scarlet.be> <s5hy72pmefh.wl%tiwai@suse.de> <48B0678E.9010208@scarlet.be> <s5hej4blrx7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org, linux-m68k@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-To: geert@linux-m68k.org
+Content-Type: text/plain; charset=us-ascii
+Cc: Joel Soete <soete.joel@scarlet.be>,
+	"James.Bottomley" <James.Bottomley@HansenPartnership.com>,
+	linux-mips <linux-mips@linux-mips.org>,
+	ralf <ralf@linux-mips.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0808262207450.7910@anakin>
+In-Reply-To: <s5hej4blrx7.wl%tiwai@suse.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 26 Aug 2008 22:11:25 +0200 (CEST)
+On Tue, Aug 26, 2008 at 05:25:24PM +0200, Takashi Iwai wrote:
+...
+> Now updated my git tree:
+>     http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=shortlog;h=topic/dma-fix
+> I'll post each patch again if preferred.
 
-> Apparently __kernel_suseconds_t is `int' on PA-RISC (and on SPARC64),
-> while it's `long' on all other platforms.
++#ifdef CONFIG_SND_COHERENT_DMA
+ #define SNDRV_DMA_TYPE_DEV_SG          3       /* generic device SG-buffer */
++#else
++#define SNDRV_DMA_TYPE_DEV_SG  SNDRV_DMA_TYPE_DEV /* no SG-buf support */
++#endif
+
+Hi Takashi,
+I had to look at a previous patch to figure out CONFIG_SND_COHERENT_DMA
+is an arch dependent flag:
+
++config SND_COHERENT_DMA
++       def_bool y
++       depends on !PPC32 || !NOT_COHERENT_CACHE
++       depends on !ARM
++       depends on !MIPS
++       depends on !PARISC
+
+In general, I don't expect this to be a compile time option.
+I'm wondering if extending the DMA API to provide an
+interface for user space to also be DMA coherent.
+Maybe something to talk about at Linux Plumbers Conf
+or kernel summit...
+
+> Do you guys see any pending issues?  I'd love to merge these patches
+> into the upstream for 2.6.28.
+
+SPARC/SPARC64 usually falls into the same category as parisc/mips.
+
 > 
-> Is there a specific reason for that?
+> To get things clear -- I don't intend to fix the problem of mmap on
+> every non-coherent platform perfectly (yet).  Instead, this patch
+> series is intended to fix the current behavior, at least, for the
+> sound drivers not to crash unconditionally.  It provides a (minimal)
+> way to mmap the pages taken via dma_alloc_coherent().
 
-An existing API probably decided it for us :-)
+*nod* that's reasonable.
 
-Anyways, no use in wondering why, it can't be changed at this point.
+thanks,
+grant
+
+> 
+> 
+> Thanks,
+> 
+> Takashi
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
