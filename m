@@ -1,67 +1,34 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [PATCH] drop superfluous .align 16
-Date: Tue, 26 Aug 2008 11:35:07 -0400
-Message-ID: <119aab440808260835w1e87dd23n715cc51ffe03f2b8@mail.gmail.com>
-References: <200808242026.06295.deller@gmx.de>
-	 <200808242051.12202.deller@gmx.de>
-	 <1219604258.4550.3.camel@localhost.localdomain>
-	 <48B2A62C.2060001@gmx.de> <20080826042619.GB30449@colo.lackof.org>
-	 <119aab440808260542i28772da4x89c1f98d8a28d710@mail.gmail.com>
-	 <1219759828.3341.6.camel@localhost.localdomain>
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] compat_sys_ptrace conversions for parisc
+Date: Tue, 26 Aug 2008 22:03:11 +0200
+Message-ID: <20080826200311.GC3791@lst.de>
+References: <200808242026.06295.deller@gmx.de> <200808242033.25481.deller@gmx.de> <20080825171103.GB28485@phobos.i.cabal.ca> <48B2F0AF.3020005@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "Grant Grundler" <grundler@parisc-linux.org>,
-	"Helge Deller" <deller@gmx.de>,
+Content-Type: text/plain; charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
 	linux-parisc <linux-parisc@vger.kernel.org>,
-	"Kyle McMartin" <kyle@mcmartin.ca>
-To: "James Bottomley" <James.Bottomley@hansenpartnership.com>
+	Christoph Hellwig <hch@lst.de>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1219759828.3341.6.camel@localhost.localdomain>
+In-Reply-To: <48B2F0AF.3020005@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Aug 26, 2008 at 10:10 AM, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> On Tue, 2008-08-26 at 08:42 -0400, Carlos O'Donell wrote:
->> On Tue, Aug 26, 2008 at 12:26 AM, Grant Grundler
->> <grundler@parisc-linux.org> wrote:
->> > Thanks for tracking and resubmitting this...Carlos already ACK'd and I think
->> > it would be good if kyle added it to his patch queue.
->> >
->> > But I liked two other things proposed in this thread.
->> > 1) jejb's preference to document the alignement requirement
->> > 2) jda's proposal for ENTRY_ALIGN() (which accomplishes (1))
->> >
->> > So I've hacked your patch to include those two things.
->> >
->> > I've only build-tested this for 64-bit builds.
->> >
->> > thanks,
->> > grant
->> >
->> > Signed-off-by: Helge Deller <deller@gmx.de>
->> > Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
->
-> Can we get this right, please ... we'll get into awful penguin trouble
-> if he catches us misusing the DCO:
->
->> Signed-off-by: Carlos O'Donell <carlos@systemhalted.org>
->
-> That's not signed off by you.  You only get to add a signed-off-by if
-> the patch physically passes through your hands.  That means that Grant's
-> above is correct because he modified the patch and resent it, but yours
-> isn't because you did nothing with it (and you didn't pass it on).
->
-> You can add Acked-by: if you like (that usually means I'm the person in
-> charge of the relevant code and I approved sending it through someone
-> else's tree) or Reviewed-by: (I actually looked through the patch and it
-> seems to be fine to me).
+On Mon, Aug 25, 2008 at 07:49:35PM +0200, Helge Deller wrote:
+> I agree that my comment suggests that splitting the patch into two parts 
+> could make sense to track the changes easier, but if you look into the 
+> original code you'll see, that I would need to duplicate all of the 
+> arch_ptrace code and then make the copied part 64bit-ready. Then the 
+> second patch would delete all of this again and replacing it with the 
+> generic function calls.
+> IMHO that's a lot of coding and changes without any need. You'll first 
+> need to understand coding in my first patch which is then deleted 
+> afterwards with the second patch again. And if you look at the final 
+> ptrace.c file after applying my patch which I posted here, you'll see 
+> that arch_ptrace is now really small and simple to understand.
+> 
+> That said, I'm not very motivated to split my patch.
 
-Quite right. Sorry for the cut-n-paste.
+Oh, parisc actually uses sys_ptrace as the 32bit entry point.  Yes, I
+see your point and take back the suggestion.
 
-Since I wrote the code, I consider myself the maintainer.
-
-Acked-by: Carlos O'Donell <carlos@systemhalted.org>
-
-Cheers,
-Carlos.
