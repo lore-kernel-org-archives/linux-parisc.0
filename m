@@ -1,61 +1,38 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] Change cpu_data[] and cpu_devices[] from array sized
- by NR_CPUS to per_cpu variables
-Date: Wed, 27 Aug 2008 22:42:39 +0200
-Message-ID: <48B5BC3F.5080604@gmx.de>
-References: <200808242026.06295.deller@gmx.de> <200808242121.49849.deller@gmx.de> <48B1D185.4060805@gmx.de> <20080827045110.GA30954@colo.lackof.org>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [PATCH 03/59] CRED: Wrap task credential accesses in the
+	PA-RISC arch
+Date: Wed, 27 Aug 2008 18:19:24 -0400
+Message-ID: <20080827221924.GA6298@phobos.i.cabal.ca>
+References: <20080827134541.19980.61042.stgit@warthog.procyon.org.uk> <20080827134557.19980.40787.stgit@warthog.procyon.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: linux-parisc <linux-parisc@vger.kernel.org>,
-	Kyle McMartin <kyle@mcmartin.ca>
-To: Grant Grundler <grundler@parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	Serge Hallyn <serue@us.ibm.com>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	Matthew Wilcox <matthew@wil.cx>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	linux-parisc@vger.kernel.org
+To: David Howells <dhowells@redhat.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080827045110.GA30954@colo.lackof.org>
+In-Reply-To: <20080827134557.19980.40787.stgit@warthog.procyon.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Grant Grundler wrote:
-> On Sun, Aug 24, 2008 at 11:24:21PM +0200, Helge Deller wrote:
->> Updated patch attached, which fixes some build problems and section 
->> mismatches.
->> Boot-tested on a UP 32bit machine with CONFIG_SMP=y.
+On Wed, Aug 27, 2008 at 02:45:57PM +0100, David Howells wrote:
+> Wrap access to task credentials so that they can be separated more easily from
+> the task_struct during the introduction of COW creds.
 > 
-> Fixed this build failure (64-bit):
->   CC      arch/parisc/kernel/perf.o
-> arch/parisc/kernel/perf.c: In function 'perf_init':
-> arch/parisc/kernel/perf.c:544: error: 'cpu_data' undeclared (first use in this function)
-> arch/parisc/kernel/perf.c:544: error: (Each undeclared identifier is reported only once
-> arch/parisc/kernel/perf.c:544: error: for each function it appears in.)
-> make[1]: *** [arch/parisc/kernel/perf.o] Error 1
+> Change most current->(|e|s|fs)[ug]id to current_(|e|s|fs)[ug]id().
 > 
-> Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
+> Change some task->e?[ug]id to task_e?[ug]id().  In some places it makes more
+> sense to use RCU directly rather than a convenient wrapper; these will be
+> addressed by later patches.
+> 
 
-Thanks!
+OK.
 
-Acked-by: Helge Deller <deller@gmx.de>
+Feel free to push this with the rest of them, if you haven't already,
+with my blessing.
 
-
-> diff --git a/arch/parisc/kernel/perf.c b/arch/parisc/kernel/perf.c
-> index f696f57..c661db7 100644
-> --- a/arch/parisc/kernel/perf.c
-> +++ b/arch/parisc/kernel/perf.c
-> @@ -55,6 +55,7 @@
->  #include <asm/processor.h>
->  #include <asm/runway.h>
->  #include <asm/io.h>		/* for __raw_read() */
-> +#include <asm/percpu.h>
->  
->  #include "perf_images.h"
->  
-> @@ -541,9 +542,9 @@ static int __init perf_init(void)
->  	spin_lock_init(&perf_lock);
->  
->  	/* TODO: this only lets us access the first cpu.. what to do for SMP? */
-> -	cpu_device = cpu_data[0].dev;
-> +	cpu_device = per_cpu(cpu_data, 0).dev;
->  	printk("Performance monitoring counters enabled for %s\n",
-> -		cpu_data[0].dev->name);
-> +		cpu_device->name);
->  
->  	return 0;
->  }
+r, Kyle
