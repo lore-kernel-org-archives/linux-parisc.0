@@ -1,64 +1,61 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH] mips: Add dma_mmap_coherent()
-Date: Wed, 27 Aug 2008 09:06:46 -0500
-Message-ID: <1219846006.3292.3.camel@localhost.localdomain>
-References: <K6047O$07C3A675C0E02FC7BE973C0D5DEF9AAA@scarlet.be>
-	 <s5hy72pmefh.wl%tiwai@suse.de> <48B0678E.9010208@scarlet.be>
-	 <s5hej4blrx7.wl%tiwai@suse.de> <20080826210118.GA26235@colo.lackof.org>
-	 <s5h4p57hv4h.wl%tiwai@suse.de>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] Change cpu_data[] and cpu_devices[] from array sized
+ by NR_CPUS to per_cpu variables
+Date: Wed, 27 Aug 2008 22:42:39 +0200
+Message-ID: <48B5BC3F.5080604@gmx.de>
+References: <200808242026.06295.deller@gmx.de> <200808242121.49849.deller@gmx.de> <48B1D185.4060805@gmx.de> <20080827045110.GA30954@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	Joel Soete <soete.joel@scarlet.be>,
-	linux-mips <linux-mips@linux-mips.org>,
-	ralf <ralf@linux-mips.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <s5h4p57hv4h.wl%tiwai@suse.de>
-Errors-to: linux-mips-bounce@linux-mips.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: linux-parisc <linux-parisc@vger.kernel.org>,
+	Kyle McMartin <kyle@mcmartin.ca>
+To: Grant Grundler <grundler@parisc-linux.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20080827045110.GA30954@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2008-08-27 at 07:42 +0200, Takashi Iwai wrote:
-> At Tue, 26 Aug 2008 15:01:18 -0600,
-> Grant Grundler wrote:
-> > 
-> > On Tue, Aug 26, 2008 at 05:25:24PM +0200, Takashi Iwai wrote:
-> > ...
-> > > Now updated my git tree:
-> > >     http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=shortlog;h=topic/dma-fix
-> > > I'll post each patch again if preferred.
-> > 
-> > +#ifdef CONFIG_SND_COHERENT_DMA
-> >  #define SNDRV_DMA_TYPE_DEV_SG          3       /* generic device SG-buffer */
-> > +#else
-> > +#define SNDRV_DMA_TYPE_DEV_SG  SNDRV_DMA_TYPE_DEV /* no SG-buf support */
-> > +#endif
-> > 
-> > Hi Takashi,
-> > I had to look at a previous patch to figure out CONFIG_SND_COHERENT_DMA
-> > is an arch dependent flag:
-> > 
-> > +config SND_COHERENT_DMA
-> > +       def_bool y
-> > +       depends on !PPC32 || !NOT_COHERENT_CACHE
-> > +       depends on !ARM
-> > +       depends on !MIPS
-> > +       depends on !PARISC
-> > 
-> > In general, I don't expect this to be a compile time option.
+Grant Grundler wrote:
+> On Sun, Aug 24, 2008 at 11:24:21PM +0200, Helge Deller wrote:
+>> Updated patch attached, which fixes some build problems and section 
+>> mismatches.
+>> Boot-tested on a UP 32bit machine with CONFIG_SMP=y.
 > 
-> Right now it has to be a compile-time option because
-> - dma_mmap_coherent() isn't implemented in every architecture (thus
->   fails to build), and 
-> - pages allocated via dma_mmap_coherent() aren't always suitable for
->   SG-mapping.
+> Fixed this build failure (64-bit):
+>   CC      arch/parisc/kernel/perf.o
+> arch/parisc/kernel/perf.c: In function 'perf_init':
+> arch/parisc/kernel/perf.c:544: error: 'cpu_data' undeclared (first use in this function)
+> arch/parisc/kernel/perf.c:544: error: (Each undeclared identifier is reported only once
+> arch/parisc/kernel/perf.c:544: error: for each function it appears in.)
+> make[1]: *** [arch/parisc/kernel/perf.o] Error 1
+> 
+> Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
 
-This is trivially fixable by the usual methods, so, as Grant says, we
-should employ them rather than non-standard ways of doing this
+Thanks!
 
-Basically, you're asking to extend the DMA API, so this should be taken
-to linux-arch.  That way, it might also give visibility to the graphics
-people and we can negotiate over a unified API.
+Acked-by: Helge Deller <deller@gmx.de>
 
-James
+
+> diff --git a/arch/parisc/kernel/perf.c b/arch/parisc/kernel/perf.c
+> index f696f57..c661db7 100644
+> --- a/arch/parisc/kernel/perf.c
+> +++ b/arch/parisc/kernel/perf.c
+> @@ -55,6 +55,7 @@
+>  #include <asm/processor.h>
+>  #include <asm/runway.h>
+>  #include <asm/io.h>		/* for __raw_read() */
+> +#include <asm/percpu.h>
+>  
+>  #include "perf_images.h"
+>  
+> @@ -541,9 +542,9 @@ static int __init perf_init(void)
+>  	spin_lock_init(&perf_lock);
+>  
+>  	/* TODO: this only lets us access the first cpu.. what to do for SMP? */
+> -	cpu_device = cpu_data[0].dev;
+> +	cpu_device = per_cpu(cpu_data, 0).dev;
+>  	printk("Performance monitoring counters enabled for %s\n",
+> -		cpu_data[0].dev->name);
+> +		cpu_device->name);
+>  
+>  	return 0;
+>  }
