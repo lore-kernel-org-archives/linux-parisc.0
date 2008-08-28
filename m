@@ -1,38 +1,43 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH 03/59] CRED: Wrap task credential accesses in the
-	PA-RISC arch
-Date: Wed, 27 Aug 2008 18:19:24 -0400
-Message-ID: <20080827221924.GA6298@phobos.i.cabal.ca>
-References: <20080827134541.19980.61042.stgit@warthog.procyon.org.uk> <20080827134557.19980.40787.stgit@warthog.procyon.org.uk>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: linux-next: parisc tree build failure
+Date: Thu, 28 Aug 2008 11:58:20 +1000
+Message-ID: <20080828115820.d2e4f55b.sfr@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	Serge Hallyn <serue@us.ibm.com>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	Matthew Wilcox <matthew@wil.cx>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: David Howells <dhowells@redhat.com>
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Thu__28_Aug_2008_11_58_20_+1000_SVqVYf0IRTHmToor"
+Cc: linux-next@vger.kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>, <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080827134557.19980.40787.stgit@warthog.procyon.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Aug 27, 2008 at 02:45:57PM +0100, David Howells wrote:
-> Wrap access to task credentials so that they can be separated more easily from
-> the task_struct during the introduction of COW creds.
-> 
-> Change most current->(|e|s|fs)[ug]id to current_(|e|s|fs)[ug]id().
-> 
-> Change some task->e?[ug]id to task_e?[ug]id().  In some places it makes more
-> sense to use RCU directly rather than a convenient wrapper; these will be
-> addressed by later patches.
-> 
+--Signature=_Thu__28_Aug_2008_11_58_20_+1000_SVqVYf0IRTHmToor
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-OK.
+Hi Kyle,
 
-Feel free to push this with the rest of them, if you haven't already,
-with my blessing.
+A parisc defconfig build of linux-next (next-20080827) fails like this:
 
-r, Kyle
+sound/parisc/harmony.c:872: error: 'reutrn' undeclared (first use in this f=
+unction)
+
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
+
+--Signature=_Thu__28_Aug_2008_11_58_20_+1000_SVqVYf0IRTHmToor
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAki2BjwACgkQjjKRsyhoI8z+5QCgqLd5poZVufkcv4e5r6Fwigx8
+7eIAmwcKp9BDwKYxvX+8ym2Q7gVnPalM
+=H3BS
+-----END PGP SIGNATURE-----
+
+--Signature=_Thu__28_Aug_2008_11_58_20_+1000_SVqVYf0IRTHmToor--
