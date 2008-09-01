@@ -1,55 +1,61 @@
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-Subject: Re: [PATCH] Re: Linux 2.6.27-rc5
-Date: Sat, 30 Aug 2008 22:21:42 +0200
-Message-ID: <200808302221.43237.rjw@sisk.pl>
-References: <alpine.LFD.1.10.0808281555230.3300@nehalem.linux-foundation.org> <g9b7oa$g8l$1@ger.gmane.org>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: linux-next: parisc tree build failure
+Date: Tue, 2 Sep 2008 03:32:42 +1000
+Message-ID: <20080902033242.bce78fa0.sfr@canb.auug.org.au>
+References: <20080828115820.d2e4f55b.sfr@canb.auug.org.au>
+	<20080828143319.GD6298@phobos.i.cabal.ca>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: linux-kernel@vger.kernel.org,
-	Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-	Andrew Morton <akpm@linux-foundation.org>
-To: Helge Deller <deller@gmx.de>
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Tue__2_Sep_2008_03_32_42_+1000_=bB4y9NGpOU/m=hb"
+Cc: linux-parisc@vger.kernel.org, linux-next@vger.kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>, Takashi Iwai <tiwai@suse.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <g9b7oa$g8l$1@ger.gmane.org>
+In-Reply-To: <20080828143319.GD6298@phobos.i.cabal.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-[Adding CCs]
+--Signature=_Tue__2_Sep_2008_03_32_42_+1000_=bB4y9NGpOU/m=hb
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Saturday, 30 of August 2008, Helge Deller wrote:
-> commit da574983de9f9283ba35662c8723627096e160de
-> Author: Al Viro <viro@zeniv.linux.org.uk>
-> [PATCH] fix hpux_getdents() - Missing checks for -EFAULT, broken handling of
-> overflow.
-> 
-> introduced a build breakage:
->   CC      arch/parisc/hpux/fs.o
-> arch/parisc/hpux/fs.c: In function `filldir':
-> arch/parisc/hpux/fs.c:107: error: `buffer' undeclared (first use in this
-> function)
-> make[1]: *** [arch/parisc/hpux/fs.o] Error 1
-> 
-> 
-> This patch fixes it.
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> 
-> 
-> diff --git a/arch/parisc/hpux/fs.c b/arch/parisc/hpux/fs.c
-> index 69ff671..12c04c5 100644
-> --- a/arch/parisc/hpux/fs.c
-> +++ b/arch/parisc/hpux/fs.c
-> @@ -104,7 +104,7 @@ static int filldir(void * __buf, const char * name, int
-> namlen, loff_t offset,
->         buf->count -= reclen;
->         return 0;
->  Efault:
-> -       buffer->error = -EFAULT;
-> +       buf->error = -EFAULT;
->         return -EFAULT;
->  }
->  
-> 
-> 
+Hi Kyle,
+
+On Thu, 28 Aug 2008 10:33:19 -0400 Kyle McMartin <kyle@mcmartin.ca> wrote:
+>
+> On Thu, Aug 28, 2008 at 11:58:20AM +1000, Stephen Rothwell wrote:
+> > Hi Kyle,
+> >=20
+> > A parisc defconfig build of linux-next (next-20080827) fails like this:
+> >=20
+> > sound/parisc/harmony.c:872: error: 'reutrn' undeclared (first use in th=
+is function)
+>=20
+> You're looking the wrong way... we didn't touch this code...
+
+Indeed.
+
+Hi Takashi,
+
+The above was introduced by commit
+59112f679b3ace91b5b74b965c4f918c5aa095fe ("ALSA: Kill snd_assert() in
+other places") in the sound tree.
+
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
+
+--Signature=_Tue__2_Sep_2008_03_32_42_+1000_=bB4y9NGpOU/m=hb
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAki8JzoACgkQjjKRsyhoI8w7egCeKoDiMEZKtp3AcsYqGJYjieHd
+BMUAoI7dXnPiZOkI/7rco6qgg1U2otKR
+=QqLw
+-----END PGP SIGNATURE-----
+
+--Signature=_Tue__2_Sep_2008_03_32_42_+1000_=bB4y9NGpOU/m=hb--
