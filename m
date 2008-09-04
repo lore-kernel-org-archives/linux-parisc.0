@@ -1,56 +1,50 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [PATCH] initialise the unwinder really early
-Date: Thu, 04 Sep 2008 11:34:41 -0500
-Message-ID: <1220546081.3276.24.camel@localhost.localdomain>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: NTPL transition
+Date: Thu, 4 Sep 2008 13:29:06 -0400
+Message-ID: <119aab440809041029v6d7592bau15a2307099e5f02e@mail.gmail.com>
+References: <20080904114551.GA18877@tilt.dandreoli.com>
+	 <119aab440809040713m2a448cd4sea02cd2df7d7b42c@mail.gmail.com>
+	 <20080904152329.GA24316@colo.lackof.org>
+	 <119aab440809040831m2a4a3cffy3a8fbc747ca3b4a2@mail.gmail.com>
+	 <20080904160407.GB24316@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-To: Parisc List <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "Debian HPPA Port List" <debian-hppa@lists.debian.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: "dann frazier" <dannf@dannf.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20080904160407.GB24316@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The stack traces from the recent boot panic showed that the unwinder
-wasn't working correctly.  Debugging by tausq revealed that it wasn't
-set up yet, so fix this by calling it first from setup_arch().
+On Thu, Sep 4, 2008 at 12:04 PM, dann frazier <dannf@dannf.org> wrote:
+> If we continue to use libc6 as the package name as we're currently
+> doing, at some point libc will get upgraded to the NPTL interface and
+> things will start crashing immediately. I asked if we could just do
+> "whatever x86 did", and kyle said that we have a problem they didn't -
+> our data nptl/lt data structures are incompatible.
+>
+> We can deal with that to an extent by adding a second libc package,
+> e.g., libc6.1. But, jejb pointed out that, since most libs depend on
+> libc, we'll need to be able to have libs for both interfaces at the
+> same time to support a transitional upgrade - and that implies an
+> SONAME bump for every C library.
+>
+> Hopefully there's an easier way, but I don't know of one.
 
-James
+How far away is queeze?
 
----
+I have to go write some, code, and test some changes, and get back to
+the list with some options.
 
-diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
-index 39e7c5a..0391631 100644
---- a/arch/parisc/kernel/setup.c
-+++ b/arch/parisc/kernel/setup.c
-@@ -44,6 +44,7 @@
- #include <asm/pdc_chassis.h>
- #include <asm/io.h>
- #include <asm/setup.h>
-+#include <asm/unwind.h>
- 
- static char __initdata command_line[COMMAND_LINE_SIZE];
- 
-@@ -123,6 +124,7 @@ void __init setup_arch(char **cmdline_p)
- #ifdef CONFIG_64BIT
- 	extern int parisc_narrow_firmware;
- #endif
-+	unwind_init();
- 
- 	init_per_cpu(smp_processor_id());	/* Set Modes & Enable FP */
- 
-diff --git a/arch/parisc/kernel/unwind.c b/arch/parisc/kernel/unwind.c
-index 701b2d2..6773c58 100644
---- a/arch/parisc/kernel/unwind.c
-+++ b/arch/parisc/kernel/unwind.c
-@@ -170,7 +170,7 @@ void unwind_table_remove(struct unwind_table *table)
- }
- 
- /* Called from setup_arch to import the kernel unwind info */
--static int unwind_init(void)
-+int unwind_init(void)
- {
- 	long start, stop;
- 	register unsigned long gp __asm__ ("r27");
-@@ -417,5 +417,3 @@ int unwind_to_user(struct unwind_frame_info *info)
- 
- 	return ret;
- }
+Namely:
+
+Is it possible to change the pthread structures such that writing the
+compatibility code is easy?
+- Leave padding where the old lock words were and detect statically
+initialized locks by looking at these words?
+- Does this break Gentoo? I think they just emerge world.
+- Does this break Ubuntu hppa? Probably.
+
+Chers,
+Carlos.
