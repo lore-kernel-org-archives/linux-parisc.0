@@ -1,63 +1,113 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: NTPL transition
-Date: Thu, 04 Sep 2008 12:52:44 -0500
-Message-ID: <1220550764.3276.45.camel@localhost.localdomain>
-References: <20080904114551.GA18877@tilt.dandreoli.com>
-	 <119aab440809040713m2a448cd4sea02cd2df7d7b42c@mail.gmail.com>
-	 <20080904152329.GA24316@colo.lackof.org>
-	 <119aab440809040831m2a4a3cffy3a8fbc747ca3b4a2@mail.gmail.com>
-	 <20080904160407.GB24316@colo.lackof.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: __kernel_suseconds_t is int on PA-RISC (and SPARC64)?
+Date: Thu, 4 Sep 2008 22:40:00 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0809042238090.19113@anakin>
+References: <Pine.LNX.4.64.0808262207450.7910@anakin> <48B46672.1000902@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Carlos O'Donell <carlos@systemhalted.org>,
-	Debian HPPA Port List <debian-hppa@lists.debian.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: dann frazier <dannf@dannf.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080904160407.GB24316@colo.lackof.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org,
+	Linux/m68k <linux-m68k@vger.kernel.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1758536AbYIDUkZ@vger.kernel.org>
+In-Reply-To: <48B46672.1000902@gmx.de>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2008-09-04 at 10:04 -0600, dann frazier wrote:
-> On Thu, Sep 04, 2008 at 11:31:52AM -0400, Carlos O'Donell wrote:
-> > On Thu, Sep 4, 2008 at 11:23 AM, dann frazier <dannf@dannf.org> wrote:
-> > > I've already done the initial bootstrapping and John Wright and I have
-> > > a buildd actively rebuilding bits against sid. We're rsyncing the
-> > > results out to here:
-> > >  http://parisc-linux.org/~dannf/hppa-nptl-mirror/unstable/
-> > >
-> > > Suffice to say, the rebuild is going fairly smoothly. But, I wonder
-> > > how we're going to transition systems over to an NPTL userspace. Does
-> > > anyone have a plan for that?
+On Tue, 26 Aug 2008, Helge Deller wrote:
+> Geert Uytterhoeven wrote:
+> > Apparently __kernel_suseconds_t is `int' on PA-RISC (and on SPARC64),
+> > while it's `long' on all other platforms.
 > > 
-> > Isn't this the responsibility of the package manager?
-> > 
-> > Why wouldn't apt-get dist-upgrade work?
+> > Is there a specific reason for that?
 > 
-> We had a discussion about this on IRC, a while back, let me see if I
-> can recap...
+> I don't know for sure, but arch/parisc/kernel/syscall_table.S states:
+> /* even though manpage says struct timeval contains longs, ours has
+>  * time_t and suseconds_t -- both of which are safe wide/narrow */
+>    ENTRY_COMP(setitimer)
 > 
-> If we continue to use libc6 as the package name as we're currently
-> doing, at some point libc will get upgraded to the NPTL interface and
-> things will start crashing immediately. I asked if we could just do
-> "whatever x86 did", and kyle said that we have a problem they didn't -
-> our data nptl/lt data structures are incompatible.
+> So it was probably chosen to be int so that it can be easily used in 32- and
+> 64bit kernels (or compat code).
 > 
-> We can deal with that to an extent by adding a second libc package,
-> e.g., libc6.1. But, jejb pointed out that, since most libs depend on
-> libc, we'll need to be able to have libs for both interfaces at the
-> same time to support a transitional upgrade - and that implies an
-> SONAME bump for every C library.
-> 
-> Hopefully there's an easier way, but I don't know of one.
+> > This causes compiler warnings in the HP SDC Real Time Clock driver,
+> > which is shared between PA-RISC and m68k:
 
-Can we go via an intermediate library that would coexist with current
-glibc?  Something like libc6-nptl, then we do the transitional update
-with the tools and other libraries moving over to libc6-nptl, then the
-final piece of the upgrade is libc6 going to nptl based libc6.1 and we
-remove the transitional libc6-nptl?  This type of flip will have to be
-done via ld.so.conf magic, but it should be doable.
+Here's a patch to fix the compiler warnings. Is this OK for PA-RISC?
 
-James
+SUbject: [PATCH] HP input: kill warnings due to suseconds_t differences
 
+Kill compiler warnings related to printf() formats in the input drivers for
+various HP9000 machines, which are shared between PA-RISC (suseconds_t is int)
+and m68k (suseconds_t is long). As both are 32-bit, it's safe to cast to int.
 
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/input/misc/hp_sdc_rtc.c |   10 +++++-----
+ drivers/input/serio/hp_sdc.c    |    2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+--- a/drivers/input/misc/hp_sdc_rtc.c
++++ b/drivers/input/misc/hp_sdc_rtc.c
+@@ -458,35 +458,35 @@ static int hp_sdc_rtc_proc_output (char 
+ 		p += sprintf(p, "i8042 rtc\t: READ FAILED!\n");
+ 	} else {
+ 		p += sprintf(p, "i8042 rtc\t: %ld.%02d seconds\n", 
+-			     tv.tv_sec, tv.tv_usec/1000);
++			     tv.tv_sec, (int)tv.tv_usec/1000);
+ 	}
+ 
+ 	if (hp_sdc_rtc_read_fhs(&tv)) {
+ 		p += sprintf(p, "handshake\t: READ FAILED!\n");
+ 	} else {
+         	p += sprintf(p, "handshake\t: %ld.%02d seconds\n", 
+-			     tv.tv_sec, tv.tv_usec/1000);
++			     tv.tv_sec, (int)tv.tv_usec/1000);
+ 	}
+ 
+ 	if (hp_sdc_rtc_read_mt(&tv)) {
+ 		p += sprintf(p, "alarm\t\t: READ FAILED!\n");
+ 	} else {
+ 		p += sprintf(p, "alarm\t\t: %ld.%02d seconds\n", 
+-			     tv.tv_sec, tv.tv_usec/1000);
++			     tv.tv_sec, (int)tv.tv_usec/1000);
+ 	}
+ 
+ 	if (hp_sdc_rtc_read_dt(&tv)) {
+ 		p += sprintf(p, "delay\t\t: READ FAILED!\n");
+ 	} else {
+ 		p += sprintf(p, "delay\t\t: %ld.%02d seconds\n", 
+-			     tv.tv_sec, tv.tv_usec/1000);
++			     tv.tv_sec, (int)tv.tv_usec/1000);
+ 	}
+ 
+ 	if (hp_sdc_rtc_read_ct(&tv)) {
+ 		p += sprintf(p, "periodic\t: READ FAILED!\n");
+ 	} else {
+ 		p += sprintf(p, "periodic\t: %ld.%02d seconds\n", 
+-			     tv.tv_sec, tv.tv_usec/1000);
++			     tv.tv_sec, (int)tv.tv_usec/1000);
+ 	}
+ 
+         p += sprintf(p,
+--- a/drivers/input/serio/hp_sdc.c
++++ b/drivers/input/serio/hp_sdc.c
+@@ -323,7 +323,7 @@ static void hp_sdc_tasklet(unsigned long
+ 			 * it back to the application. and be less verbose.
+ 			 */
+ 			printk(KERN_WARNING PREFIX "read timeout (%ius)!\n",
+-			       tv.tv_usec - hp_sdc.rtv.tv_usec);
++			       (int)(tv.tv_usec - hp_sdc.rtv.tv_usec));
+ 			curr->idx += hp_sdc.rqty;
+ 			hp_sdc.rqty = 0;
+ 			tmp = curr->seq[curr->actidx];
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
