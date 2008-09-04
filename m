@@ -1,73 +1,46 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] Correct printk %pF to work on all architectures
-Date: Wed, 3 Sep 2008 17:01:52 -0700 (PDT)
-Message-ID: <alpine.LFD.1.10.0809031636320.3515@nehalem.linux-foundation.org>
-References: <1220473137.3254.29.camel@localhost.localdomain>  <alpine.LFD.1.10.0809031419560.3515@nehalem.linux-foundation.org>  <1220481754.3254.42.camel@localhost.localdomain>  <alpine.LFD.1.10.0809031546310.3515@nehalem.linux-foundation.org>
- <1220482853.3254.47.camel@localhost.localdomain>  <alpine.LFD.1.10.0809031602270.3515@nehalem.linux-foundation.org> <1220484812.3254.59.camel@localhost.localdomain>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: dhcp problems in cupertino
+Date: Wed, 3 Sep 2008 18:50:01 -0600
+Message-ID: <20080904005001.GA22774@colo.lackof.org>
+References: <1220463337.3254.23.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-arch@vger.kernel.org,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	linux-ia64@vger.kernel.org, linuxppc-dev@ozlabs.org
+Content-Type: text/plain; charset=us-ascii
+Cc: Parisc List <linux-parisc@vger.kernel.org>
 To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <1220484812.3254.59.camel@localhost.localdomain>
-List-ID: <linux-ia64.vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1220463337.3254.23.camel@localhost.localdomain>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-
-On Wed, 3 Sep 2008, James Bottomley wrote:
+On Wed, Sep 03, 2008 at 12:35:37PM -0500, James Bottomley wrote:
+> It looks like the old dhcp server was converted to dhcp3 without pulling
+> across all of the dhcp entries.  I've added the gig-e network and and
+> entry for ion (which I needed to get it to come up).  However, there are
+> evidently still machines out there trying and failing to get IP
+> addresses:
 > 
-> Oh ... because Arjan has a patch to export
-> dereference_function_descriptor.  I suppose I could make him do the
-> heavy lifting, but it seemed sensible to make it easy for him (and me)
-> by putting it in a header.
+> Sep  3 10:24:29 gsyprf11 dhcpd: DHCPDISCOVER from 00:17:08:c8:75:40 via eth11: network 192.168.1/24: no free leases
+> Sep  3 10:36:29 gsyprf11 dhcpd: DHCPDISCOVER from 00:04:ea:b1:cf:80 via eth10: network 192.168.0/24: no free leases
+
+gsyprf11 intentionally has no free leases. I plan was gsyprf11 should
+only serve IP's for the systems that can/should netboot from it.
+ie other parisc systems.
+
+> So whoever's systems these are will need to add an entry for them.
+
+I don't know offhand which systems they represent but can probably
+work that out. I just add those to the dhcp server running on gsyprf10.
+
+I suspect it's a FC switch or something like that.
+
+thanks,
+grant
+
 > 
-> http://marc.info/?l=linux-kernel&m=121976793429869
-
-Ahh.
-
-NOW it all starts to make sense.
-
-Or perhaps not sense, but I at least understand why people want to move it 
-around. The kernel.h location kind of goes together with that 
-core_kernel_text() thing, although it seems to be more of a "random 
-collection of routines" thing than anything else (but hey, that's the very 
-definition of "kernel.h" for you).
-
-The module.h location still seems to be more of a "oh, both 
-kernel/extable.c and lib/vsprintf.c already included <linux/module.h>" and 
-it's a bit sad, since it really has nothing at all to do with modules.
-
-Grr. It does seem like we don't have any kind of "abi" header file. 
-<linux/kernel.h> and <asm/processor.h> has various random things.
-
-So yea, there doesn't seem to be any _obvious_ place that makes sense.
-
-		Linus
-
-Not-very-strong-opinion: How about <asm/sections.h>? That does seem to be 
-where we already hide things like "in_kernel_text()" at least on powerpc. 
-In fact, since we already always have a generic version, the patch would 
-actually be something like
-
- - in <asm-generic/sections.h>, just do
-
-	#define dereference_function_descriptor(p) (p)
-
- - in architectures that want to override it
-
-	#undef dereference_function_descriptor
-
-   followed by 
-
-	static inline void *dereference_function_descriptor(..) ..
-	or
-	#define dereference_function_descriptor my_fn_dereference
-
-   since they all include the generic one as a base
-
-Hmm? I do admit that "<asm/sections.h>" doesn't really strike me as a very 
-natural name for this, but kernel/extable.c does already include it for 
-other reasons, and it's at least no worse than module.h.
+> James
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
