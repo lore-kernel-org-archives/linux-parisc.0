@@ -1,42 +1,59 @@
-From: "Luck, Tony" <tony.luck@intel.com>
-Subject: RE: [PATCH] Correct printk %pF to work on all architectures
-Date: Thu, 4 Sep 2008 16:07:45 -0700
-Message-ID: <57C9024A16AD2D4C97DC78E552063EA30A0DC383@orsmsx505.amr.corp.intel.com>
-References: <1220473137.3254.29.camel@localhost.localdomain>
-	 <alpine.LFD.1.10.0809031419560.3515@nehalem.linux-foundation.org>
-	 <1220481754.3254.42.camel@localhost.localdomain>
-	 <alpine.LFD.1.10.0809031546310.3515@nehalem.linux-foundation.org>
-	 <1220482853.3254.47.camel@localhost.localdomain>
-	 <alpine.LFD.1.10.0809031602270.3515@nehalem.linux-foundation.org>
-	 <1220484812.3254.59.camel@localhost.localdomain>
-	 <alpine.LFD.1.10.0809031636320.3515@nehalem.linux-foundation.org>
-	 <1220492616.3254.64.camel@localhost.localdomain>
- <1220567811.4879.85.camel@pasglop>
+From: Domenico Andreoli <cavok@dandreoli.com>
+Subject: Re: NTPL transition
+Date: Fri, 5 Sep 2008 01:22:57 +0200
+Message-ID: <20080904232257.GA25926@tilt.dandreoli.com>
+References: <20080904114551.GA18877@tilt.dandreoli.com> <119aab440809040713m2a448cd4sea02cd2df7d7b42c@mail.gmail.com> <20080904152329.GA24316@colo.lackof.org> <119aab440809040831m2a4a3cffy3a8fbc747ca3b4a2@mail.gmail.com> <20080904160407.GB24316@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-	"linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
-	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: Carlos O'Donell <carlos@systemhalted.org>,
+	Debian HPPA Port List <debian-hppa@lists.debian.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: dann frazier <dannf@dannf.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1220567811.4879.85.camel@pasglop>
+In-Reply-To: <20080904160407.GB24316@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
->> Make dereference_function_descriptor() more accommodating by allowing
->> architecture overrides.  I put the three overrides (for parisc64, ppc64
->> and ia64) in arch/kernel/module.c because that's where the kernel
->> internal linker which knows how to deal with function descriptors sits.
->>
->> Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
->
-> Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+On Thu, Sep 04, 2008 at 10:04:07AM -0600, dann frazier wrote:
+> On Thu, Sep 04, 2008 at 11:31:52AM -0400, Carlos O'Donell wrote:
+> > On Thu, Sep 4, 2008 at 11:23 AM, dann frazier <dannf@dannf.org> wrote:
+> > > I've already done the initial bootstrapping and John Wright and I have
+> > > a buildd actively rebuilding bits against sid. We're rsyncing the
+> > > results out to here:
+> > >  http://parisc-linux.org/~dannf/hppa-nptl-mirror/unstable/
+> > >
+> > > Suffice to say, the rebuild is going fairly smoothly. But, I wonder
+> > > how we're going to transition systems over to an NPTL userspace. Does
+> > > anyone have a plan for that?
+> > 
+> > Isn't this the responsibility of the package manager?
+> > 
+> > Why wouldn't apt-get dist-upgrade work?
+> 
+> We had a discussion about this on IRC, a while back, let me see if I
+> can recap...
+> 
+> If we continue to use libc6 as the package name as we're currently
+> doing, at some point libc will get upgraded to the NPTL interface and
+> things will start crashing immediately. I asked if we could just do
+> "whatever x86 did", and kyle said that we have a problem they didn't -
+> our data nptl/lt data structures are incompatible.
+> 
+> We can deal with that to an extent by adding a second libc package,
+> e.g., libc6.1. But, jejb pointed out that, since most libs depend on
+> libc, we'll need to be able to have libs for both interfaces at the
+> same time to support a transitional upgrade - and that implies an
+> SONAME bump for every C library.
 
-ia64 bits still build, boot and work too.
+I am not understanding why "we'll need to be able to have libs for both
+interfaces at the same time to support a transitional upgrade".
 
-Acked-by: Tony Luck <tony.luck@intel.com>
+Suppose the new libc6 (LT) is a compatibility wrapper around new libc6.1
+(NPTL). The remainder is really an apt's job.
 
--Tony
+cheers,
+Domenico
+
+-----[ Domenico Andreoli, aka cavok
+ --[ http://www.dandreoli.com/gpgkey.asc
+   ---[ 3A0F 2F80 F79C 678A 8936  4FEE 0677 9033 A20E BC50
