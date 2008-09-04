@@ -1,7 +1,7 @@
 From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: dhcp problems in cupertino
-Date: Wed, 3 Sep 2008 18:50:01 -0600
-Message-ID: <20080904005001.GA22774@colo.lackof.org>
+Date: Wed, 3 Sep 2008 18:56:10 -0600
+Message-ID: <20080904005610.GB22774@colo.lackof.org>
 References: <1220463337.3254.23.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -14,33 +14,25 @@ List-Id: linux-parisc.vger.kernel.org
 
 On Wed, Sep 03, 2008 at 12:35:37PM -0500, James Bottomley wrote:
 > It looks like the old dhcp server was converted to dhcp3 without pulling
-> across all of the dhcp entries.  I've added the gig-e network and and
+> across all of the dhcp entries.
+
+I suspect I "upgraded" the switchs and never realized I needed to add the IP
+to DHCP.
+
+> I've added the gig-e network and
 > entry for ion (which I needed to get it to come up).  However, there are
 > evidently still machines out there trying and failing to get IP
 > addresses:
 > 
 > Sep  3 10:24:29 gsyprf11 dhcpd: DHCPDISCOVER from 00:17:08:c8:75:40 via eth11: network 192.168.1/24: no free leases
+
+ProCurve Switch 2848#
+
+Just "telnet 192.168.1.131".
+
 > Sep  3 10:36:29 gsyprf11 dhcpd: DHCPDISCOVER from 00:04:ea:b1:cf:80 via eth10: network 192.168.0/24: no free leases
 
-gsyprf11 intentionally has no free leases. I plan was gsyprf11 should
-only serve IP's for the systems that can/should netboot from it.
-ie other parisc systems.
-
-> So whoever's systems these are will need to add an entry for them.
-
-I don't know offhand which systems they represent but can probably
-work that out. I just add those to the dhcp server running on gsyprf10.
-
-I suspect it's a FC switch or something like that.
+HP J4813A ProCurve Switch 2524
 
 thanks,
 grant
-
-> 
-> James
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
