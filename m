@@ -1,27 +1,52 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Debian parisc config for 2.6.26 broke the real time clock
-Date: Sat, 06 Sep 2008 10:06:26 -0500
-Message-ID: <1220713586.3430.14.camel@localhost.localdomain>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: NTPL transition
+Date: Sat, 6 Sep 2008 11:31:50 -0400
+Message-ID: <119aab440809060831u790ad62dte057bedf68e0d988@mail.gmail.com>
+References: <Pine.LNX.4.62.0809061002060.19796@sci.felk.cvut.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: waldi@debian.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: debian-hppa@lists.debian.org,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: "Petr Salinger" <Petr.Salinger@seznam.cz>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.62.0809061002060.19796@sci.felk.cvut.cz>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Parisc is a CONFIG_GEN_RTC architecture (we use the generic real time
-clock driver).  Starting with 2.6.26, debian is now enabling
-CONFIG_RTC_CLASS (for platforms with specific RTC drivers) which
-disables CONFIG_GEN_RTC and means that hwclock (and ntp tracking) are
-broken on parisc with debian kernels 2.6.26 and above.
+On Sat, Sep 6, 2008 at 4:24 AM, Petr Salinger <Petr.Salinger@seznam.cz> wrote:
+> IMHO, there is no need for versioning. Moreover it wouldn't be sufficient.
 
-All of the arch/parisc/config files get this right, so someone at debian
-must have screwed up somehow.  The config option CONFIG_RTC_CLASS must
-be set to 'N' for all parisc systems.  I'd suggest checking the debian
-kernel configs against the in-tree default files to see if there are any
-other cockups like this.
+You must versioning the affected interfaces, otherwise you will never
+be able to remove the compatibility code.
 
-James
+> Imagine function in a shared library foo which takes as argument
+> pthread_mutex_t and does usual:
+>
+>        pthread_mutex_lock()
+>        do some work
+>        pthread_mutex_unlock()
+>
+> And a program bar, which uses foo. Inside bar is a static initialized lock.
+> The foo might be (re)compiled against NPTL, while bar would be still
+> compiled against LT. Therefore check_and_reset() should be called as long as
+> any installed (debian) package have not been recompiled against NPTL. The
+> overhead of check_and_reset() looks very small, it should be no problem at
+> all. The harder part is to determine each place, where
+> check_and_reset() should be called. It have to be in all places,
+> where static initialized lock might be passed for the 1st time,
+> i.e. it should be in  pthread_mutex_lock(), but not in
+> pthread_mutex_unlock().
 
+Yes, certainly, this is a valid case.
 
+Any function that manipulates a changed structure needs to be versioned.
+
+Eventually, one day, debian hppa will configure glibc with
+--enable-oldest-abi at a high enough value that the compat code will
+be dropped (because we have proved no package needs it and we have an
+upgrade path).
+
+Do you have any other concerns?
+
+Cheers,
+Carlos.
