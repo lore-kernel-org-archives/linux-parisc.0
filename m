@@ -1,39 +1,40 @@
-From: David Brownell <david-b@pacbell.net>
+From: David Miller <davem@davemloft.net>
 Subject: Re: [PATCH] fix RTC_CLASS regression with PARISC
-Date: Mon, 8 Sep 2008 16:32:25 -0700
-Message-ID: <200809081632.26166.david-b@pacbell.net>
-References: <200809081429.57805.david-b@pacbell.net> <20080908.160441.124972717.davem@davemloft.net> <1220916186.8074.84.camel@localhost.localdomain>
+Date: Mon, 08 Sep 2008 16:43:05 -0700 (PDT)
+Message-ID: <20080908.164305.140831737.davem@davemloft.net>
+References: <1220914847.8074.81.camel@localhost.localdomain>
+	<20080908.160441.124972717.davem@davemloft.net>
+	<1220916186.8074.84.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Cc: David Miller <davem@davemloft.net>, torvalds@linux-foundation.org,
+Content-Type: Text/Plain; charset=us-ascii
+Cc: david-b@pacbell.net, torvalds@linux-foundation.org,
 	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
 	linux-parisc@vger.kernel.org
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
+To: James.Bottomley@HansenPartnership.com
 Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <1220916186.8074.84.camel@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Monday 08 September 2008, James Bottomley wrote:
->=20
-> > All the powerpc folks are doing is providing a dummy shim into the
-> > RTC layer using their machine description vector, and not really us=
-ing
-> > the RTC layer drivers at all.
->=20
-> But realistically that's all we need. =A0Our RTC is controlled by two
-> calls into firmware: a get and a set; nothing else. =A0We don't have =
-the
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Date: Mon, 08 Sep 2008 18:23:06 -0500
+
+> But realistically that's all we need.  Our RTC is controlled by two
+> calls into firmware: a get and a set; nothing else.  We don't have the
 > docs to get at the clock without the firmware calls.
 
-True for PARISC ... but not for PowerPC.  Lots of PowerPC
-system boards use off-the-shelf RTCs with more capabilities
-than the machine description vector acknowledges.
+I wrote RTC layer drivers on sparc64 that make the firmware calls in
+the Niagara system case, exactly like your case.
 
-- Dave
+Really, this is the way to do this.
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Since you're not reading what I implemented, I'll read it for you :-/
+
+See drivers/rtc/rtc-sun4v.c, that's the driver
+
+Code in arch/sparc64/kernel/time.c creates and registers the
+appropriate platform_device object once the correct system type is
+detected, and then rtc-sun4v.c attaches when such objects have been
+registered.
+
+Likewise for all the other RTC types that can be found on Sparc machines.
