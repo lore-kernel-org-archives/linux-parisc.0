@@ -1,51 +1,48 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [PATCH] fix RTC_CLASS regression with PARISC
-Date: Mon, 08 Sep 2008 10:53:25 -0500
-Message-ID: <1220889205.8074.16.camel@localhost.localdomain>
+From: Bastian Blank <waldi@debian.org>
+Subject: Re: Debian parisc config for 2.6.26 broke the real time clock
+Date: Mon, 8 Sep 2008 18:37:04 +0200
+Message-ID: <20080908163703.GA3218@wavehammer.waldi.eu.org>
+References: <1220713586.3430.14.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: linux-kernel <linux-kernel@vger.kernel.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	David Brownell <david-b@pacbell.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	debian-hppa@lists.debian.org
+To: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	debian-kernel@lists.debian.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1220713586.3430.14.camel@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-As of 2.6.26, most distribution kernels for PARISC are coming with the
-wrong RTC infrastructure enabled, meaning that userland can no longer
-get at the RTC, so all our parisc clocks are drifting.
+On Sat, Sep 06, 2008 at 10:06:26AM -0500, James Bottomley wrote:
+> Parisc is a CONFIG_GEN_RTC architecture (we use the generic real time
+> clock driver).
 
-The fault is this patch:
+Well.
 
-commit c750090085f260503d8beec1c73c4d2e4fe93628
-Author: David Brownell <david-b@pacbell.net>
-Date:   Mon Apr 28 02:11:52 2008 -0700
+>                 Starting with 2.6.26, debian is now enabling
+> CONFIG_RTC_CLASS (for platforms with specific RTC drivers) which
+> disables CONFIG_GEN_RTC and means that hwclock (and ntp tracking) are
+> broken on parisc with debian kernels 2.6.26 and above.
 
-    rtc: avoid legacy drivers with generic framework
+Yes. Most arches already needs it anyway.
 
-Which makes drivers/rtc take precedence over the generic rtc.  However,
-for parisc we only have the generic rtc, so in essence this turns off
-our ability to access the rtc.  Put it back again by making RTC_CLASS
-unselectable if the architecture is parisc.
+> All of the arch/parisc/config files get this right, so someone at debian
+> must have screwed up somehow.  The config option CONFIG_RTC_CLASS must
+> be set to 'N' for all parisc systems.
 
-Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+Apparently hppa uses its special rtc type.  I propose that you take a
+look at drivers/rtc/rtc-ppc.c and write a wrapper rtc module.
 
----
+>                                        I'd suggest checking the debian
+> kernel configs against the in-tree default files to see if there are any
+> other cockups like this.
 
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 9a9755c..472fb19 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -8,7 +8,7 @@ config RTC_LIB
- menuconfig RTC_CLASS
- 	tristate "Real Time Clock"
- 	default n
--	depends on !S390
-+	depends on !(S390 || PARISC)
- 	select RTC_LIB
- 	help
- 	  Generic RTC class support. If you say yes here, you will
+If there are, this are bugs in the kernel themself. I'm no hppa
+developer so I won't waste my time with such.
 
+Bastian
 
+-- 
+Those who hate and fight must stop themselves -- otherwise it is not stopped.
+		-- Spock, "Day of the Dove", stardate unknown
