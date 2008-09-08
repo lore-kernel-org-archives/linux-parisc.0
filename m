@@ -1,48 +1,63 @@
-From: Bastian Blank <waldi@debian.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 Subject: Re: Debian parisc config for 2.6.26 broke the real time clock
-Date: Mon, 8 Sep 2008 18:37:04 +0200
-Message-ID: <20080908163703.GA3218@wavehammer.waldi.eu.org>
+Date: Mon, 08 Sep 2008 11:58:22 -0500
+Message-ID: <1220893102.8074.41.camel@localhost.localdomain>
 References: <1220713586.3430.14.camel@localhost.localdomain>
+	 <20080908163703.GA3218@wavehammer.waldi.eu.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
+Content-Type: text/plain
+Cc: debian-kernel@lists.debian.org,
+	Parisc List <linux-parisc@vger.kernel.org>,
 	debian-hppa@lists.debian.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	debian-kernel@lists.debian.org
+To: Bastian Blank <waldi@debian.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1220713586.3430.14.camel@localhost.localdomain>
+In-Reply-To: <20080908163703.GA3218@wavehammer.waldi.eu.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Sep 06, 2008 at 10:06:26AM -0500, James Bottomley wrote:
-> Parisc is a CONFIG_GEN_RTC architecture (we use the generic real time
-> clock driver).
+On Mon, 2008-09-08 at 18:37 +0200, Bastian Blank wrote:
+> On Sat, Sep 06, 2008 at 10:06:26AM -0500, James Bottomley wrote:
+> > Parisc is a CONFIG_GEN_RTC architecture (we use the generic real time
+> > clock driver).
+> 
+> Well.
+> 
+> >                 Starting with 2.6.26, debian is now enabling
+> > CONFIG_RTC_CLASS (for platforms with specific RTC drivers) which
+> > disables CONFIG_GEN_RTC and means that hwclock (and ntp tracking) are
+> > broken on parisc with debian kernels 2.6.26 and above.
+> 
+> Yes. Most arches already needs it anyway.
+> 
+> > All of the arch/parisc/config files get this right, so someone at debian
+> > must have screwed up somehow.  The config option CONFIG_RTC_CLASS must
+> > be set to 'N' for all parisc systems.
+> 
+> Apparently hppa uses its special rtc type.  I propose that you take a
+> look at drivers/rtc/rtc-ppc.c and write a wrapper rtc module.
 
-Well.
+That may be the way forwards depending on what the RTC developers say,
+but it certainly won't fix the 2.6.26 regression.
 
->                 Starting with 2.6.26, debian is now enabling
-> CONFIG_RTC_CLASS (for platforms with specific RTC drivers) which
-> disables CONFIG_GEN_RTC and means that hwclock (and ntp tracking) are
-> broken on parisc with debian kernels 2.6.26 and above.
+> >                                        I'd suggest checking the debian
+> > kernel configs against the in-tree default files to see if there are any
+> > other cockups like this.
+> 
+> If there are, this are bugs in the kernel themself. I'm no hppa
+> developer so I won't waste my time with such.
 
-Yes. Most arches already needs it anyway.
+Hardly, the bug is actually in the debian configs.  You have
+CONFIG_RTC_CLASS as a generic override.  This is wrong, it needs to be
+subordinate to CONIFG_GEN_RTC.  The quick fix would be to move the
+CONFIG_RTC_CLASS sequence down from generic to the architectures ... if
+you're incapable of doing that, I might be able to find time to look at
+doing it for you.
 
-> All of the arch/parisc/config files get this right, so someone at debian
-> must have screwed up somehow.  The config option CONFIG_RTC_CLASS must
-> be set to 'N' for all parisc systems.
+The real bug looks to be the debian config system which relies on
+concatenation ... what's really needed is a way of turning
+CONFIG_RTC_CLASS off on parisc while keeping RTC_CLASS generic for those
+architectures that need it.
 
-Apparently hppa uses its special rtc type.  I propose that you take a
-look at drivers/rtc/rtc-ppc.c and write a wrapper rtc module.
+James
 
->                                        I'd suggest checking the debian
-> kernel configs against the in-tree default files to see if there are any
-> other cockups like this.
 
-If there are, this are bugs in the kernel themself. I'm no hppa
-developer so I won't waste my time with such.
-
-Bastian
-
--- 
-Those who hate and fight must stop themselves -- otherwise it is not stopped.
-		-- Spock, "Day of the Dove", stardate unknown
