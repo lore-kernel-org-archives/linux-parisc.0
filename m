@@ -1,60 +1,64 @@
-From: David Miller <davem@davemloft.net>
+From: David Brownell <david-b@pacbell.net>
 Subject: Re: [PATCH] fix RTC_CLASS regression with PARISC
-Date: Mon, 08 Sep 2008 19:52:35 -0700 (PDT)
-Message-ID: <20080908.195235.200905674.davem@davemloft.net>
-References: <200809081629.21125.david-b@pacbell.net>
-	<20080908.164427.216880550.davem@davemloft.net>
-	<200809081755.26148.david-b@pacbell.net>
+Date: Mon, 8 Sep 2008 20:17:23 -0700
+Message-ID: <200809082017.24152.david-b@pacbell.net>
+References: <200809081629.21125.david-b@pacbell.net> <200809081755.26148.david-b@pacbell.net> <20080908.195235.200905674.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Cc: James.Bottomley@hansenpartnership.com,
 	torvalds@linux-foundation.org, akpm@linux-foundation.org,
 	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
 	alessandro.zummo@towertech.it
-To: david-b@pacbell.net
+To: David Miller <davem@davemloft.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200809081755.26148.david-b@pacbell.net>
+In-Reply-To: <20080908.195235.200905674.davem@davemloft.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: David Brownell <david-b@pacbell.net>
-Date: Mon, 8 Sep 2008 17:55:25 -0700
+On Monday 08 September 2008, David Miller wrote:
+>=20
+> > > int update_persistent_clock(struct timespec now)
+> > > {
+> > > =A0=A0=A0=A0struct rtc_device *rtc =3D rtc_class_open("rtc0");
 
-> On Monday 08 September 2008, David Miller wrote:
-> > From: David Brownell <david-b@pacbell.net>
-> > Date: Mon, 8 Sep 2008 16:29:20 -0700
-> > 
-> > > That said, there's a bit of unresolved stuff around NTP hooks
-> > > in the kernel.  Some patches are pending to let thtem work with
-> > > the RTC framework -- where writing an RTC may need to sleep,
-> > > for example because the RTC is on an I2C or SPI bus.  And
-> > > then there's the discussion of whether that shouldn't all be
-> > > handled by NTPD anyway, no special kernel support desired.
-> > > Alessandro has opinions there.  ;)
-> > 
-> > My update_persistent_clock() on sparc64 is:
-> > 
-> > int update_persistent_clock(struct timespec now)
-> > {
-> > 	struct rtc_device *rtc = rtc_class_open("rtc0");
-> 
-> I'd be tempted to cache that ... notice how you never
-> close it, too.  That will goof lots of refcounts...
+One more point:  that should probably use CONFIG_RTC_HCTOSYS_DEVICE
+instead of hard-wiring to "rtc0".  Yeah, I'm sure your SPARCs have
+lots of RTCs to choose from -- not! -- but I'd like to see you end
+up with code that many folk can reuse/recycle/pirate.  ;)
 
-Well if I cache it then we'll hold it forever and that's not
-so nice right?
 
-I'm going to put the missing rtc_close() in there for now to
-fix the leak.
+> >=20
+> > I'd be tempted to cache that ... notice how you never
+> > close it, too. =A0That will goof lots of refcounts...
+>=20
+> Well if I cache it then we'll hold it forever and that's not
+> so nice right?
 
-I'm happy to cache this if you think it's warranted, but then
-this is like saying that the refcount doesn't matter :-)
+Why wouldn't it be, so long as it's eventually closed
+to prevent leakage?  Other code can rtc_class_open() too;
+unlike a userspace open("/dev/rtc0", ...) this isn't an
+exclusive operation.
 
-> =============== CUT ON THE DOTTED LINE ==================
-> Subject: ntp: let update_persistent_clock() sleep
-> From: "Maciej W. Rozycki" <macro@linux-mips.org>
 
-I see, as Paul mentioned this is needed for stuff like RTCs
-behind I2C.
+> I'm going to put the missing rtc_close() in there for now to
+> fix the leak.
+>=20
+> I'm happy to cache this if you think it's warranted, but then
+> this is like saying that the refcount doesn't matter :-)
 
-This change isn't in Linus's tree yet.
+If you're concerned about stuff like "rmmod my-i2c-rtc-driver"
+losing (or "rmmod my-i2c-rtc-driver's-i2c-adapter") ... what's
+supposed to happen is that you start getting an -ENODEV return
+from your rtc_set_mmss() call, and then you close and null your
+cached handle to free up its memory.
+
+The next time you go through this routine you'd see nothing
+is cached and then try to get an RTC.  Maybe it's available
+again; maybe not.
+
+- Dave
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
