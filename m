@@ -1,28 +1,34 @@
-From: Bastian Blank <waldi@debian.org>
-Subject: Re: Debian parisc config for 2.6.26 broke the real time clock
-Date: Tue, 9 Sep 2008 20:01:27 +0200
-Message-ID: <20080909180127.GA2712@wavehammer.waldi.eu.org>
-References: <1220713586.3430.14.camel@localhost.localdomain> <20080908163703.GA3218@wavehammer.waldi.eu.org> <1220893102.8074.41.camel@localhost.localdomain> <20080909165835.GB1447@colo.lackof.org> <1220982515.3334.29.camel@localhost.localdomain>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [PATCH] Correct printk %pF to work on all architectures
+Date: Tue, 9 Sep 2008 14:08:40 -0400
+Message-ID: <20080909180840.GA1940@phobos.i.cabal.ca>
+References: <1220481754.3254.42.camel@localhost.localdomain> <alpine.LFD.1.10.0809031546310.3515@nehalem.linux-foundation.org> <1220482853.3254.47.camel@localhost.localdomain> <alpine.LFD.1.10.0809031602270.3515@nehalem.linux-foundation.org> <1220484812.3254.59.camel@localhost.localdomain> <alpine.LFD.1.10.0809031636320.3515@nehalem.linux-foundation.org> <1220492616.3254.64.camel@localhost.localdomain> <1220567811.4879.85.camel@pasglop> <57C9024A16AD2D4C97DC78E552063EA30A0DC383@orsmsx505.amr.corp.intel.com> <1220969561.3334.7.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: dann frazier <dannf@dannf.org>, debian-kernel@lists.debian.org,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	debian-hppa@lists.debian.org
+Content-Type: text/plain; charset=us-ascii
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	"Luck, Tony" <tony.luck@intel.com>,
+	"benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
+	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>
 To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1220982515.3334.29.camel@localhost.localdomain>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <1220969561.3334.7.camel@localhost.localdomain>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Sep 09, 2008 at 12:48:35PM -0500, James Bottomley wrote:
-> They certainly have to be inessential to the parisc ABI ... they don't
-> work if anything's actually trying to use them.
+On Tue, Sep 09, 2008 at 09:12:41AM -0500, James Bottomley wrote:
+> OK, so could we get this in to -rc5 please?  It's a bug fix for parisc
+> since we're currently printing rubbish.
+> 
 
-Really? Which sort of "don't work" is this? Why should a I2C rtc device
-(some dallas chip) not work?
+While I suppose it's a "parisc" patch, I'm not going to try to push it
+unless either Linus just applies it, or we get an ack from the ppc/ia64
+folks too.
 
-Bastian
+... That said, please apply it, Linus. :)
 
--- 
-No problem is insoluble.
-		-- Dr. Janet Wallace, "The Deadly Years", stardate 3479.4
+Acked-by: Kyle McMartin <kyle@mcmartin.ca>
+
+regards, Kyle
