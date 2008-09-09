@@ -1,37 +1,53 @@
-From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
-Subject: Re: Debian parisc config for 2.6.26 broke the real time clock
-Date: Tue, 9 Sep 2008 21:35:32 +0200
-Message-ID: <7d01f9f00809091235p7673625fm8cefa4a2e9d9965a@mail.gmail.com>
-References: <20080909184648.GC2772@parisc-linux.org>
-	 <20080909192010.0207A4E2A@hiauly1.hia.nrc.ca>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH] Correct printk %pF to work on all architectures
+Date: Wed, 10 Sep 2008 08:05:18 +1000
+Message-ID: <1220997918.4879.392.camel@pasglop>
+References: <1220481754.3254.42.camel@localhost.localdomain>
+	 <alpine.LFD.1.10.0809031546310.3515@nehalem.linux-foundation.org>
+	 <1220482853.3254.47.camel@localhost.localdomain>
+	 <alpine.LFD.1.10.0809031602270.3515@nehalem.linux-foundation.org>
+	 <1220484812.3254.59.camel@localhost.localdomain>
+	 <alpine.LFD.1.10.0809031636320.3515@nehalem.linux-foundation.org>
+	 <1220492616.3254.64.camel@localhost.localdomain>
+	 <1220567811.4879.85.camel@pasglop>
+	 <57C9024A16AD2D4C97DC78E552063EA30A0DC383@orsmsx505.amr.corp.intel.com>
+	 <1220969561.3334.7.camel@localhost.localdomain>
+	 <20080909180840.GA1940@phobos.i.cabal.ca>
+Reply-To: benh@kernel.crashing.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: "Matthew Wilcox" <matthew@wil.cx>,
-	James.Bottomley@hansenpartnership.com, waldi@debian.org,
-	dannf@dannf.org, debian-kernel@lists.debian.org,
-	linux-parisc@vger.kernel.org, debian-hppa@lists.debian.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080909192010.0207A4E2A@hiauly1.hia.nrc.ca>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	"Luck, Tony" <tony.luck@intel.com>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
+	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: Kyle McMartin <kyle@mcmartin.ca>
+Return-path: <linux-ia64-owner@vger.kernel.org>
+In-Reply-To: <20080909180840.GA1940@phobos.i.cabal.ca>
+List-ID: <linux-ia64.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Sep 9, 2008 at 9:20 PM, John David Anglin
-<dave@hiauly1.hia.nrc.ca> wrote:
->> This I2C bus is not acessible by the operating system (as far as I know).
->
-> HP-UX seems to be able to access fan and power status somehow.  It
+On Tue, 2008-09-09 at 14:08 -0400, Kyle McMartin wrote:
+> On Tue, Sep 09, 2008 at 09:12:41AM -0500, James Bottomley wrote:
+> > OK, so could we get this in to -rc5 please?  It's a bug fix for parisc
+> > since we're currently printing rubbish.
+> > 
+> 
+> While I suppose it's a "parisc" patch, I'm not going to try to push it
+> unless either Linus just applies it, or we get an ack from the ppc/ia64
+> folks too.
+> 
+> ... That said, please apply it, Linus. :)
+> 
+> Acked-by: Kyle McMartin <kyle@mcmartin.ca>
 
-Fan and power status are accessed through PDC. That's what I do with
-the pdc_chassis driver, and what's exposed in /proc/chassis on !PAT
-boxes (I don't have the PAT specs to implement the proper calls,
-unfortunately). AFAIK, there's no need to use i2c to retrieve that
-info, it's all PDC glue.
+Got one from us already but here it is again
 
-HTH
+Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 
-T-Bone
+Cheers,
+Ben.
 
--- 
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+
