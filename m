@@ -1,45 +1,28 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Bastian Blank <waldi@debian.org>
 Subject: Re: Debian parisc config for 2.6.26 broke the real time clock
-Date: Tue, 09 Sep 2008 12:53:52 -0500
-Message-ID: <1220982832.3334.34.camel@localhost.localdomain>
-References: <1220713586.3430.14.camel@localhost.localdomain>
-	 <20080908163703.GA3218@wavehammer.waldi.eu.org>
-	 <1220893102.8074.41.camel@localhost.localdomain>
-	 <20080909165835.GB1447@colo.lackof.org>
-	 <20080909173837.GA1457@wavehammer.waldi.eu.org>
+Date: Tue, 9 Sep 2008 20:01:27 +0200
+Message-ID: <20080909180127.GA2712@wavehammer.waldi.eu.org>
+References: <1220713586.3430.14.camel@localhost.localdomain> <20080908163703.GA3218@wavehammer.waldi.eu.org> <1220893102.8074.41.camel@localhost.localdomain> <20080909165835.GB1447@colo.lackof.org> <1220982515.3334.29.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: debian-kernel@lists.debian.org,
+Content-Type: text/plain; charset=utf-8
+Cc: dann frazier <dannf@dannf.org>, debian-kernel@lists.debian.org,
 	Parisc List <linux-parisc@vger.kernel.org>,
 	debian-hppa@lists.debian.org
-To: Bastian Blank <waldi@debian.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080909173837.GA1457@wavehammer.waldi.eu.org>
+In-Reply-To: <1220982515.3334.29.camel@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2008-09-09 at 19:38 +0200, Bastian Blank wrote:
-> On Tue, Sep 09, 2008 at 10:58:35AM -0600, dann frazier wrote:
-> > fyi, I've got an hppa build in progress - disabling RTC_CLASS causes
-> > the symbols below to be removed (essentially, ^rtc_*)
-> 
-> The whole new-style rtc support.
+On Tue, Sep 09, 2008 at 12:48:35PM -0500, James Bottomley wrote:
+> They certainly have to be inessential to the parisc ABI ... they don't
+> work if anything's actually trying to use them.
 
-But it doesn't work, that's rather the point of all of this.  If it
-doesn't work, it can hardly be a committed ABI.
+Really? Which sort of "don't work" is this? Why should a I2C rtc device
+(some dallas chip) not work?
 
-> > I'm not sure what's behind the hppa/ABI removal commits - I didn't see
-> > this discussed on the list - but I think it should be safe to remove
-> > these symbols from the ABI files if we can demonstrate that none of
-> > the conglomerate packages use them.
-> 
-> Why does noone write this 30 lines module and fix it for all?
+Bastian
 
-Because only an idiot would fix a bug in a released product by
-introducing a new feature: that's QA and release process 101.  New
-features belong in the next merge window, which will be for 2.6.28 by
-which time it should have been reasonably QA'd by the parisc developers.
-
-James
-
-
+-- 
+No problem is insoluble.
+		-- Dr. Janet Wallace, "The Deadly Years", stardate 3479.4
