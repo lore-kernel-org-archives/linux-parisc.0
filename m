@@ -1,53 +1,78 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH] Correct printk %pF to work on all architectures
-Date: Wed, 10 Sep 2008 08:05:18 +1000
-Message-ID: <1220997918.4879.392.camel@pasglop>
-References: <1220481754.3254.42.camel@localhost.localdomain>
-	 <alpine.LFD.1.10.0809031546310.3515@nehalem.linux-foundation.org>
-	 <1220482853.3254.47.camel@localhost.localdomain>
-	 <alpine.LFD.1.10.0809031602270.3515@nehalem.linux-foundation.org>
-	 <1220484812.3254.59.camel@localhost.localdomain>
-	 <alpine.LFD.1.10.0809031636320.3515@nehalem.linux-foundation.org>
-	 <1220492616.3254.64.camel@localhost.localdomain>
-	 <1220567811.4879.85.camel@pasglop>
-	 <57C9024A16AD2D4C97DC78E552063EA30A0DC383@orsmsx505.amr.corp.intel.com>
-	 <1220969561.3334.7.camel@localhost.localdomain>
-	 <20080909180840.GA1940@phobos.i.cabal.ca>
-Reply-To: benh@kernel.crashing.org
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] fix RTC_CLASS regression with PARISC
+Date: Wed, 10 Sep 2008 14:04:17 -0700
+Message-ID: <20080910140417.bc35c199.akpm@linux-foundation.org>
+References: <200809081629.21125.david-b@pacbell.net>
+	<20080908.164427.216880550.davem@davemloft.net>
+	<200809081755.26148.david-b@pacbell.net>
+	<20080908.195235.200905674.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	"Luck, Tony" <tony.luck@intel.com>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-	"linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
-	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: Kyle McMartin <kyle@mcmartin.ca>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20080909180840.GA1940@phobos.i.cabal.ca>
-List-ID: <linux-ia64.vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: david-b@pacbell.net, James.Bottomley@hansenpartnership.com,
+	torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org, alessandro.zummo@towertech.it,
+	Thomas Gleixner <tglx@linutronix.de>
+To: David Miller <davem@davemloft.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20080908.195235.200905674.davem@davemloft.net>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2008-09-09 at 14:08 -0400, Kyle McMartin wrote:
-> On Tue, Sep 09, 2008 at 09:12:41AM -0500, James Bottomley wrote:
-> > OK, so could we get this in to -rc5 please?  It's a bug fix for parisc
-> > since we're currently printing rubbish.
+On Mon, 08 Sep 2008 19:52:35 -0700 (PDT)
+David Miller <davem@davemloft.net> wrote:
+
+> From: David Brownell <david-b@pacbell.net>
+> Date: Mon, 8 Sep 2008 17:55:25 -0700
+> 
+> > On Monday 08 September 2008, David Miller wrote:
+> > > From: David Brownell <david-b@pacbell.net>
+> > > Date: Mon, 8 Sep 2008 16:29:20 -0700
+> > > 
+> > > > That said, there's a bit of unresolved stuff around NTP hooks
+> > > > in the kernel.  Some patches are pending to let thtem work with
+> > > > the RTC framework -- where writing an RTC may need to sleep,
+> > > > for example because the RTC is on an I2C or SPI bus.  And
+> > > > then there's the discussion of whether that shouldn't all be
+> > > > handled by NTPD anyway, no special kernel support desired.
+> > > > Alessandro has opinions there.  ;)
+> > > 
+> > > My update_persistent_clock() on sparc64 is:
+> > > 
+> > > int update_persistent_clock(struct timespec now)
+> > > {
+> > > 	struct rtc_device *rtc = rtc_class_open("rtc0");
 > > 
+> > I'd be tempted to cache that ... notice how you never
+> > close it, too.  That will goof lots of refcounts...
 > 
-> While I suppose it's a "parisc" patch, I'm not going to try to push it
-> unless either Linus just applies it, or we get an ack from the ppc/ia64
-> folks too.
+> Well if I cache it then we'll hold it forever and that's not
+> so nice right?
 > 
-> ... That said, please apply it, Linus. :)
+> I'm going to put the missing rtc_close() in there for now to
+> fix the leak.
 > 
-> Acked-by: Kyle McMartin <kyle@mcmartin.ca>
+> I'm happy to cache this if you think it's warranted, but then
+> this is like saying that the refcount doesn't matter :-)
+> 
+> > =============== CUT ON THE DOTTED LINE ==================
+> > Subject: ntp: let update_persistent_clock() sleep
+> > From: "Maciej W. Rozycki" <macro@linux-mips.org>
+> 
+> I see, as Paul mentioned this is needed for stuff like RTCs
+> behind I2C.
+> 
+> This change isn't in Linus's tree yet.
 
-Got one from us already but here it is again
+Should it be?
 
-Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Its current status is: stuck in -mm.  I've sent it to Thomas a couple
+of times marked "for 2.6.27?" and he might have applied it now (I'm a
+few days behind, waiting for linux-next to start up again).
 
-Cheers,
-Ben.
+It was not included in Thomas's recent mainline pull request:
+
+From: Thomas Gleixner <tglx@tglx.de>
+Subject: [GIT pull] timer updates for 2.6.27
+Date: Tue, 9 Sep 2008 22:32:39 +0200 (CEST)
 
 
