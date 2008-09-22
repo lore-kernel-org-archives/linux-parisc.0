@@ -1,47 +1,155 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: linux-next: manual merge of the parisc tree
-Date: Fri, 12 Sep 2008 06:07:49 +1000
-Message-ID: <20080912060749.9abe535b.sfr@canb.auug.org.au>
+From: Srinivasa Ds <srinivasa@in.ibm.com>
+Subject: [RFC][PATCH] Demultiplexing SIGTRAP signal
+Date: Mon, 22 Sep 2008 16:02:32 +0530
+Message-ID: <200809221602.32616.srinivasa@in.ibm.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Fri__12_Sep_2008_06_07_49_+1000_3RrOVX4RS7D8e07p"
-Cc: linux-next@vger.kernel.org, Adrian Bunk <bunk@kernel.org>,
-	David Woodhouse <dwmw2@infradead.org>
-To: Kyle McMartin <kyle@mcmartin.ca>, <linux-parisc@vger.kernel.org>
-Return-path: <linux-next-owner@vger.kernel.org>
-List-ID: <linux-next.vger.kernel.org>
+Content-Type: text/plain;
+  charset="us-ascii"
+To: linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+	paulus@samba.org, roland@redhat.com, linuxppc-dev@ozlabs.org,
+	mingo@elte.hu, linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Signature=_Fri__12_Sep_2008_06_07_49_+1000_3RrOVX4RS7D8e07p
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Currently a SIGTRAP signal can denote any one of below reasons.
+	- Breakpoint hit
+	- H/W debug register hit
+	- Single step
+	- SIGTRAP signal sent through kill() or rasie()
 
-Hi Kyle,
+Architectures like powerpc/parisc provides infrastructure to demultiplex
+SIGTRAP signal by passing down the information for receiving SIGTRAP through
+si_code of siginfot_t structure. Here is an attempt is generalise this 
+infrastructure by extending it to x86 and x86_64 archs. 
 
-Today's linux-next merge of the parisc tree got a conflict in
-include/asm-parisc/a.out.h between commit
-9d5a9e74655b9d04d0ec9c8e47801163b7b74211 ("Remove asm/a.out.h files for
-all architectures without a.out support") from the dwmw2 tree and commit
-aa12a68bd7340733a06a2ceddb0e2a9d3d9e1a5a ("parisc: move
-include/asm-parisc to arch/parisc/include/asm") from the parisc tree.
+Signed-off-by: Srinivasa DS <srinivasa@in.ibm.com>
 
-I just removed the file.
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
 
---Signature=_Fri__12_Sep_2008_06_07_49_+1000_3RrOVX4RS7D8e07p
-Content-Type: application/pgp-signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+---
+ arch/ia64/include/asm/siginfo.h    |    5 -----
+ arch/powerpc/include/asm/siginfo.h |    5 -----
+ arch/x86/kernel/traps_32.c         |   19 +++++++++++++++++--
+ arch/x86/kernel/traps_64.c         |    7 ++++++-
+ include/asm-generic/siginfo.h      |    2 ++
+ include/asm-parisc/siginfo.h       |    5 -----
+ 6 files changed, 25 insertions(+), 18 deletions(-)
 
-iEYEARECAAYFAkjJepUACgkQjjKRsyhoI8xG0wCbBWzc1j3PurgxCr3zv6/TByqA
-hjkAoLMpG6vz04NkUEjlbs1FEuJkUWhk
-=+WvT
------END PGP SIGNATURE-----
-
---Signature=_Fri__12_Sep_2008_06_07_49_+1000_3RrOVX4RS7D8e07p--
+Index: linux-2.6.27-rc7/arch/ia64/include/asm/siginfo.h
+===================================================================
+--- linux-2.6.27-rc7.orig/arch/ia64/include/asm/siginfo.h
++++ linux-2.6.27-rc7/arch/ia64/include/asm/siginfo.h
+@@ -113,11 +113,6 @@ typedef struct siginfo {
+ #undef NSIGSEGV
+ #define NSIGSEGV	3
+ 
+-/*
+- * SIGTRAP si_codes
+- */
+-#define TRAP_BRANCH	(__SI_FAULT|3)	/* process taken branch trap */
+-#define TRAP_HWBKPT	(__SI_FAULT|4)	/* hardware breakpoint or watchpoint */
+ #undef NSIGTRAP
+ #define NSIGTRAP	4
+ 
+Index: linux-2.6.27-rc7/arch/powerpc/include/asm/siginfo.h
+===================================================================
+--- linux-2.6.27-rc7.orig/arch/powerpc/include/asm/siginfo.h
++++ linux-2.6.27-rc7/arch/powerpc/include/asm/siginfo.h
+@@ -15,11 +15,6 @@
+ 
+ #include <asm-generic/siginfo.h>
+ 
+-/*
+- * SIGTRAP si_codes
+- */
+-#define TRAP_BRANCH	(__SI_FAULT|3)	/* process taken branch trap */
+-#define TRAP_HWBKPT	(__SI_FAULT|4)	/* hardware breakpoint or watchpoint */
+ #undef NSIGTRAP
+ #define NSIGTRAP	4
+ 
+Index: linux-2.6.27-rc7/arch/x86/kernel/traps_32.c
+===================================================================
+--- linux-2.6.27-rc7.orig/arch/x86/kernel/traps_32.c
++++ linux-2.6.27-rc7/arch/x86/kernel/traps_32.c
+@@ -890,6 +890,7 @@ void __kprobes do_int3(struct pt_regs *r
+ void __kprobes do_debug(struct pt_regs *regs, long error_code)
+ {
+ 	struct task_struct *tsk = current;
++	struct siginfo info;
+ 	unsigned int condition;
+ 
+ 	trace_hardirqs_fixup();
+@@ -935,8 +936,22 @@ void __kprobes do_debug(struct pt_regs *
+ 			goto clear_TF_reenable;
+ 	}
+ 
+-	/* Ok, finally something we can handle */
+-	send_sigtrap(tsk, regs, error_code);
++	tsk->thread.trap_no = 1;
++	tsk->thread.error_code = error_code;
++
++	memset(&info, 0, sizeof(info));
++	info.si_signo = SIGTRAP;
++	if (condition & DR_STEP)
++		info.si_code = TRAP_TRACE;
++	else if (condition & (DR_TRAP0|DR_TRAP1|DR_TRAP2|DR_TRAP3))
++		info.si_code = TRAP_HWBKPT;
++	else
++		info.si_code = TRAP_BRKPT;
++	/* User-mode ip? */
++	info.si_addr = user_mode_vm(regs) ? (void __user *) regs->ip : NULL;
++
++	/* Send us the fake SIGTRAP */
++	force_sig_info(SIGTRAP, &info, tsk);
+ 
+ 	/*
+ 	 * Disable additional traps. They'll be re-enabled when
+Index: linux-2.6.27-rc7/arch/x86/kernel/traps_64.c
+===================================================================
+--- linux-2.6.27-rc7.orig/arch/x86/kernel/traps_64.c
++++ linux-2.6.27-rc7/arch/x86/kernel/traps_64.c
+@@ -936,7 +936,12 @@ asmlinkage void __kprobes do_debug(struc
+ 	tsk->thread.error_code = error_code;
+ 	info.si_signo = SIGTRAP;
+ 	info.si_errno = 0;
+-	info.si_code = TRAP_BRKPT;
++	if (condition & DR_STEP)
++		info.si_code = TRAP_TRACE;
++	else if (condition & (DR_TRAP0|DR_TRAP1|DR_TRAP2|DR_TRAP3))
++		info.si_code = TRAP_HWBKPT;
++	else
++		info.si_code = TRAP_BRKPT;
+ 	info.si_addr = user_mode(regs) ? (void __user *)regs->ip : NULL;
+ 	force_sig_info(SIGTRAP, &info, tsk);
+ 
+Index: linux-2.6.27-rc7/include/asm-generic/siginfo.h
+===================================================================
+--- linux-2.6.27-rc7.orig/include/asm-generic/siginfo.h
++++ linux-2.6.27-rc7/include/asm-generic/siginfo.h
+@@ -199,6 +199,8 @@ typedef struct siginfo {
+  */
+ #define TRAP_BRKPT	(__SI_FAULT|1)	/* process breakpoint */
+ #define TRAP_TRACE	(__SI_FAULT|2)	/* process trace trap */
++#define TRAP_BRANCH     (__SI_FAULT|3)  /* process taken branch trap */
++#define TRAP_HWBKPT     (__SI_FAULT|4)  /* hardware breakpoint or watchpoint 
+*/
+ #define NSIGTRAP	2
+ 
+ /*
+Index: linux-2.6.27-rc7/include/asm-parisc/siginfo.h
+===================================================================
+--- linux-2.6.27-rc7.orig/include/asm-parisc/siginfo.h
++++ linux-2.6.27-rc7/include/asm-parisc/siginfo.h
+@@ -3,11 +3,6 @@
+ 
+ #include <asm-generic/siginfo.h>
+ 
+-/*
+- * SIGTRAP si_codes
+- */
+-#define TRAP_BRANCH	(__SI_FAULT|3)	/* process taken branch trap */
+-#define TRAP_HWBKPT	(__SI_FAULT|4)	/* hardware breakpoint or watchpoint */
+ #undef NSIGTRAP
+ #define NSIGTRAP	4
+ 
