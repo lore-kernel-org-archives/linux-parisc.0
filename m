@@ -1,31 +1,88 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [git patches] merge request for parisc tree
-Date: Wed, 22 Oct 2008 21:08:36 +0200
-Message-ID: <48FF7A34.3020504@gmx.de>
-References: <20081020213113.GA16559@hera.kernel.org>
+From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Subject: [PATCH] parisc: remove dead BIO_VMERGE_BOUNDARY and
+ BIO_VMERGE_MAX_SIZE definitions
+Date: Fri, 24 Oct 2008 14:41:01 +0900
+Message-ID: <20081024143826Z.fujita.tomonori@lab.ntt.co.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@hera.kernel.org>
+Content-Type: Text/Plain; charset=us-ascii
+Cc: kyle@mcmartin.ca, matthew@wil.cx, grundler@parisc-linux.org,
+	jens.axboe@oracle.com, linux-kernel@vger.kernel.org
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081020213113.GA16559@hera.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Kyle McMartin wrote:
-> The following changes since commit d403a6484f0341bf0624d17ece46f24f741b6a92:
->   Linus Torvalds (1):
->         Merge phase #1 of git://git.kernel.org/.../tip/linux-2.6-tip
-> 
-> are available in the git repository at:
-> 
->   hera.kernel.org:/pub/scm/linux/kernel/git/kyle/parisc-2.6.git master
- > [...]
+The block layer dropped the virtual merge feature
+(b8b3e16cfe6435d961f6aaebcfd52a1ff2a988c5). BIO_VMERGE_BOUNDARY and
+BIO_VMERGE_MAX_SIZE definitions are meaningless now.
 
-Hi Kyle,
+Signed-off-by: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+---
+ arch/parisc/include/asm/io.h |    6 ------
+ arch/parisc/kernel/setup.c   |    5 -----
+ drivers/parisc/ccio-dma.c    |    2 --
+ drivers/parisc/sba_iommu.c   |    2 --
+ 4 files changed, 0 insertions(+), 15 deletions(-)
 
-thanks for pushing some patches upstream.
-But is there a reason, why you didn't applied others (e.g. the userspace 
-crash fix)?
+diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
+index 55ddb18..b92efb3 100644
+--- a/arch/parisc/include/asm/io.h
++++ b/arch/parisc/include/asm/io.h
+@@ -4,12 +4,6 @@
+ #include <linux/types.h>
+ #include <asm/pgtable.h>
+ 
+-extern unsigned long parisc_vmerge_boundary;
+-extern unsigned long parisc_vmerge_max_size;
+-
+-#define BIO_VMERGE_BOUNDARY	parisc_vmerge_boundary
+-#define BIO_VMERGE_MAX_SIZE	parisc_vmerge_max_size
+-
+ #define virt_to_phys(a) ((unsigned long)__pa(a))
+ #define phys_to_virt(a) __va(a)
+ #define virt_to_bus virt_to_phys
+diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
+index 7d27853..8d8b024 100644
+--- a/arch/parisc/kernel/setup.c
++++ b/arch/parisc/kernel/setup.c
+@@ -58,11 +58,6 @@ int parisc_bus_is_phys __read_mostly = 1;	/* Assume no IOMMU is present */
+ EXPORT_SYMBOL(parisc_bus_is_phys);
+ #endif
+ 
+-/* This sets the vmerge boundary and size, it's here because it has to
+- * be available on all platforms (zero means no-virtual merging) */
+-unsigned long parisc_vmerge_boundary = 0;
+-unsigned long parisc_vmerge_max_size = 0;
+-
+ void __init setup_cmdline(char **cmdline_p)
+ {
+ 	extern unsigned int boot_args[];
+diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
+index dcc1e99..62cc21d 100644
+--- a/drivers/parisc/ccio-dma.c
++++ b/drivers/parisc/ccio-dma.c
+@@ -1578,8 +1578,6 @@ static int __init ccio_probe(struct parisc_device *dev)
+ 
+ 	ioc_count++;
+ 
+-	parisc_vmerge_boundary = IOVP_SIZE;
+-	parisc_vmerge_max_size = BITS_PER_LONG * IOVP_SIZE;
+ 	parisc_has_iommu();
+ 	return 0;
+ }
+diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
+index bc73b96..bdc9a0a 100644
+--- a/drivers/parisc/sba_iommu.c
++++ b/drivers/parisc/sba_iommu.c
+@@ -1979,8 +1979,6 @@ sba_driver_callback(struct parisc_device *dev)
+ 	proc_create("sba_iommu-bitmap", 0, root, &sba_proc_bitmap_fops);
+ #endif
+ 
+-	parisc_vmerge_boundary = IOVP_SIZE;
+-	parisc_vmerge_max_size = IOVP_SIZE * BITS_PER_LONG;
+ 	parisc_has_iommu();
+ 	return 0;
+ }
+-- 
+1.5.4.2
 
-Helge
