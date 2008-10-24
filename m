@@ -1,88 +1,53 @@
-From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
-Subject: [PATCH] parisc: remove dead BIO_VMERGE_BOUNDARY and
- BIO_VMERGE_MAX_SIZE definitions
-Date: Fri, 24 Oct 2008 14:41:01 +0900
-Message-ID: <20081024143826Z.fujita.tomonori@lab.ntt.co.jp>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: NTPL transition
+Date: Fri, 24 Oct 2008 01:45:05 -0400
+Message-ID: <119aab440810232245r4414de7bhc4435905e233d9fd@mail.gmail.com>
+References: <Pine.LNX.4.62.0809061002060.19796@sci.felk.cvut.cz>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: kyle@mcmartin.ca, matthew@wil.cx, grundler@parisc-linux.org,
-	jens.axboe@oracle.com, linux-kernel@vger.kernel.org
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: debian-hppa@lists.debian.org,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: "Petr Salinger" <Petr.Salinger@seznam.cz>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.62.0809061002060.19796@sci.felk.cvut.cz>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The block layer dropped the virtual merge feature
-(b8b3e16cfe6435d961f6aaebcfd52a1ff2a988c5). BIO_VMERGE_BOUNDARY and
-BIO_VMERGE_MAX_SIZE definitions are meaningless now.
+On Sat, Sep 6, 2008 at 4:24 AM, Petr Salinger <Petr.Salinger@seznam.cz> wrote:
+> Imagine function in a shared library foo which takes as argument
+> pthread_mutex_t and does usual:
+>
+>        pthread_mutex_lock()
+>        do some work
+>        pthread_mutex_unlock()
+>
+> And a program bar, which uses foo. Inside bar is a static initialized lock.
+> The foo might be (re)compiled against NPTL, while bar would be still
+> compiled against LT. Therefore check_and_reset() should be called as long as
+> any installed (debian) package have not been recompiled against NPTL. The
+> overhead of check_and_reset() looks very small, it should be no problem at
+> all. The harder part is to determine each place, where
+> check_and_reset() should be called. It have to be in all places,
+> where static initialized lock might be passed for the 1st time,
+> i.e. it should be in  pthread_mutex_lock(), but not in
+> pthread_mutex_unlock().
 
-Signed-off-by: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
----
- arch/parisc/include/asm/io.h |    6 ------
- arch/parisc/kernel/setup.c   |    5 -----
- drivers/parisc/ccio-dma.c    |    2 --
- drivers/parisc/sba_iommu.c   |    2 --
- 4 files changed, 0 insertions(+), 15 deletions(-)
+I reviewed the compatibility provided by glibc for the pthread_cond_t
+change in 2.3.2, and I see no such guarantee that an address of a
+pthread_cont_t in an old binary can be safely passed to a library
+rebuilt against the new libc . When upstream changed pthread_cond_t,
+making it larger, they versioned the interface, and the old function
+mallocs a pointer to the new structure and call the new function with
+the newly malloc'd structure.
 
-diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
-index 55ddb18..b92efb3 100644
---- a/arch/parisc/include/asm/io.h
-+++ b/arch/parisc/include/asm/io.h
-@@ -4,12 +4,6 @@
- #include <linux/types.h>
- #include <asm/pgtable.h>
- 
--extern unsigned long parisc_vmerge_boundary;
--extern unsigned long parisc_vmerge_max_size;
--
--#define BIO_VMERGE_BOUNDARY	parisc_vmerge_boundary
--#define BIO_VMERGE_MAX_SIZE	parisc_vmerge_max_size
--
- #define virt_to_phys(a) ((unsigned long)__pa(a))
- #define phys_to_virt(a) __va(a)
- #define virt_to_bus virt_to_phys
-diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
-index 7d27853..8d8b024 100644
---- a/arch/parisc/kernel/setup.c
-+++ b/arch/parisc/kernel/setup.c
-@@ -58,11 +58,6 @@ int parisc_bus_is_phys __read_mostly = 1;	/* Assume no IOMMU is present */
- EXPORT_SYMBOL(parisc_bus_is_phys);
- #endif
- 
--/* This sets the vmerge boundary and size, it's here because it has to
-- * be available on all platforms (zero means no-virtual merging) */
--unsigned long parisc_vmerge_boundary = 0;
--unsigned long parisc_vmerge_max_size = 0;
--
- void __init setup_cmdline(char **cmdline_p)
- {
- 	extern unsigned int boot_args[];
-diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-index dcc1e99..62cc21d 100644
---- a/drivers/parisc/ccio-dma.c
-+++ b/drivers/parisc/ccio-dma.c
-@@ -1578,8 +1578,6 @@ static int __init ccio_probe(struct parisc_device *dev)
- 
- 	ioc_count++;
- 
--	parisc_vmerge_boundary = IOVP_SIZE;
--	parisc_vmerge_max_size = BITS_PER_LONG * IOVP_SIZE;
- 	parisc_has_iommu();
- 	return 0;
- }
-diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-index bc73b96..bdc9a0a 100644
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -1979,8 +1979,6 @@ sba_driver_callback(struct parisc_device *dev)
- 	proc_create("sba_iommu-bitmap", 0, root, &sba_proc_bitmap_fops);
- #endif
- 
--	parisc_vmerge_boundary = IOVP_SIZE;
--	parisc_vmerge_max_size = IOVP_SIZE * BITS_PER_LONG;
- 	parisc_has_iommu();
- 	return 0;
- }
--- 
-1.5.4.2
+I think 99% of all situations are covered by providing an old
+function. Guarding the new function against a mixed ABI use seems like
+a performance penalty with an unknown benefit. Clearly if upstream
+glibc didn't think it was usefull, should we also ignore this
+scenario?
 
+I have compat patches in testing on my SMP parisc64 box. I should have
+some results by next week.
+
+Cheers,
+Carlos.
