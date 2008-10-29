@@ -1,53 +1,55 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: Linux 2.6.28-rc1: slab error in cache_alloc_debugcheck_after()
-Date: Sun, 26 Oct 2008 17:23:37 -0500
-Message-ID: <1225059817.3958.9.camel@localhost.localdomain>
-References: <4904CF9F.8060405@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain
-Cc: linux-parisc <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
+From: akpm@linux-foundation.org
+Subject: [patch 1/2] parisc/lib/: make code static
+Date: Wed, 29 Oct 2008 14:23:32 -0700
+Message-ID: <200810292123.m9TLNWmM020652@imap1.linux-foundation.org>
+Cc: matthew@wil.cx, grundler@parisc-linux.org,
+	linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
+	bunk@kernel.org
+To: kyle@mcmartin.ca
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4904CF9F.8060405@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 2008-10-26 at 21:14 +0100, Helge Deller wrote:
-> Just tried 2.6.28-rc1:
-> ....
-> usbcore: registered new interface driver usbhid
-> usbhid: v2.6:USB HID core driver
-> TCP cubic registered
-> NET: Registered protocol family 17
-> RPC: Registered udp transport module.
-> RPC: Registered tcp transport module.
-> rtc-parisc rtc-parisc: setting system clock to 2008-10-26 19:59:18 UTC 
-> (1225051158)
-> usb 1-1: new low speed USB device using ohci_hcd and address 2
-> usb 1-1: configuration #1 chosen from 1 choice
-> input: Logitech N48 as /class/input/input0
-> generic-usb 0003:046D:C001.0001: input,hidraw0: USB HID v1.00 Mouse 
-> [Logitech N48] on usb-0000:00:0e.2-1/inpu0
-> usb 1-1: New USB device found, idVendor=046d, idProduct=c001
-> usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=0
-> usb 1-1: Product: N48
-> usb 1-1: Manufacturer: Logitech
-> usb 1-2: new low speed USB device using ohci_hcd and address 3
-> usb 1-2: configuration #1 chosen from 1 choice
-> slab error in cache_alloc_debugcheck_after(): cache `size-512': double 
-> free, or memory outside object was oven
-> Backtrace:
->   [<101a5724>] cache_alloc_debugcheck_after+0xd8/0x200
->   [<101a5cac>] kmem_cache_alloc+0x1a0/0x1e8
->   [<1042e294>] hid_register_report+0x60/0xc4
->   [<1042e5f8>] hid_add_field+0x40/0x1a4
->   [<1042ec40>] hid_parser_main+0x94/0xc4
+From: Adrian Bunk <bunk@kernel.org>
 
-If it's a double free this is probably in the hid layer.
+Make the following needlessly global code static:
 
-I have to say that ion (pa8900) boots just fine with 2.6.28-rc1. I have
-HID support built, but nothing to activate it.
+- iomap.c: struct iomap_ops[]
+- memcpy.c: pa_memcpy()
 
-James
+Signed-off-by: Adrian Bunk <bunk@kernel.org>
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: Matthew Wilcox <matthew@wil.cx>
+Cc: Grant Grundler <grundler@parisc-linux.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
 
+ arch/parisc/lib/iomap.c  |    2 +-
+ arch/parisc/lib/memcpy.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff -puN arch/parisc/lib/iomap.c~parisc-lib-make-code-static arch/parisc/lib/iomap.c
+--- a/arch/parisc/lib/iomap.c~parisc-lib-make-code-static
++++ a/arch/parisc/lib/iomap.c
+@@ -261,7 +261,7 @@ static const struct iomap_ops iomem_ops 
+ 	iomem_write32r,
+ };
+ 
+-const struct iomap_ops *iomap_ops[8] = {
++static const struct iomap_ops *iomap_ops[8] = {
+ 	[0] = &ioport_ops,
+ 	[7] = &iomem_ops
+ };
+diff -puN arch/parisc/lib/memcpy.c~parisc-lib-make-code-static arch/parisc/lib/memcpy.c
+--- a/arch/parisc/lib/memcpy.c~parisc-lib-make-code-static
++++ a/arch/parisc/lib/memcpy.c
+@@ -275,7 +275,7 @@ handle_store_error:
+ 
+ 
+ /* Returns 0 for success, otherwise, returns number of bytes not transferred. */
+-unsigned long pa_memcpy(void *dstp, const void *srcp, unsigned long len)
++static unsigned long pa_memcpy(void *dstp, const void *srcp, unsigned long len)
+ {
+ 	register unsigned long src, dst, t1, t2, t3;
+ 	register unsigned char *pcs, *pcd;
+_
