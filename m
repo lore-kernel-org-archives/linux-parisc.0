@@ -1,183 +1,126 @@
-From: akpm@linux-foundation.org
-Subject: [patch 2/2] drivers/parisc/: make code static
-Date: Wed, 29 Oct 2008 14:23:33 -0700
-Message-ID: <200810292123.m9TLNYWe020679@imap1.linux-foundation.org>
-Cc: matthew@wil.cx, grundler@parisc-linux.org,
-	linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
-	bunk@kernel.org
-To: kyle@mcmartin.ca
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Helge Deller <deller@gmx.de>
+Subject: 2.6.28-rc2: USB/INPUT: slab error in cache_alloc_debugcheck_after(): double free?
+Date: Fri, 31 Oct 2008 00:11:08 +0100
+Message-ID: <200810310011.08618.deller@gmx.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Cc: linux-parisc@vger.kernel.org
+To: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <linux-input-owner@vger.kernel.org>
+List-ID: <linux-input.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Adrian Bunk <bunk@kernel.org>
+I noticed various slab errors with complete kernel crashes with my USB keyboard/mouse on a 32bit parisc machine with both 2.6.28-rc1 and -rc2.
+Kernel 2.6.27 was still OK.
 
-Make the following needlessly global code static:
+Linux kernel bootlog shows:
+---------------
+ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
+ohci_hcd 0000:00:0e.2: OHCI Host Controller
+ohci_hcd 0000:00:0e.2: new USB bus registered, assigned bus number 1
+ohci_hcd 0000:00:0e.2: irq 1, io mem 0xf2007000
+usb usb1: configuration #1 chosen from 1 choice
+hub 1-0:1.0: USB hub found
+hub 1-0:1.0: 3 ports detected
+usb usb1: New USB device found, idVendor=1d6b, idProduct=0001
+usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+usb usb1: Product: OHCI Host Controller
+usb usb1: Manufacturer: Linux 2.6.28-rc2 ohci_hcd
+usb usb1: SerialNumber: 0000:00:0e.2
+uhci_hcd: USB Universal Host Controller Interface driver
 
-- asp.c: asp_init_chip()
-- ccio-dma.c: ccio_io_pdir_entry()
-- dino.c: struct dino_port_ops
-- dino.c: struct dino_bios_ops
-- hppb.c: struct hppb_card_head
-- lasi.c: lasi_led_init()
-- lasi.c: lasi_init_chip()
-- lba_pci.c: struct lba_bios_ops
-- sba_iommu.c: sba_io_pdir_entry()
-- sba_iommu.c: sba_driver_callback()
-- sba_iommu.c: sba_driver_callback()
-- wax.c: wax_init_chip()
 
-Signed-off-by: Adrian Bunk <bunk@kernel.org>
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-Cc: Matthew Wilcox <matthew@wil.cx>
-Cc: Grant Grundler <grundler@parisc-linux.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
+After sucessful bootup (without any USB devices attached)
+I get this when I insert a USB keyboard:
+---------------
+usb 1-1: new low speed USB device using ohci_hcd and address 2
+usb 1-1: configuration #1 chosen from 1 choice
+input: SILITEK USB Keyboard and Mouse as /class/input/input0
+Slab corruption: size-4096 start=8dd9b000, len=4096
+000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+generic-usb 0004:047B:0002.0001: input,hidraw0: USB HID v1.00 Keyboard [SILITEK USB Keyboard and Mouse] on usb-0000:00:0e.2-1/input0
+input: SILITEK USB Keyboard and Mouse as /class/input/input1
+generic-usb 0003:047B:0002.0002: input,hidraw1: USB HID v1.00 Mouse [SILITEK USB Keyboard and Mouse] on usb-0000:00:0e.2-1/input1
+usb 1-1: New USB device found, idVendor=047b, idProduct=0002
+usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+usb 1-1: Product: USB Keyboard and Mouse
+usb 1-1: Manufacturer: SILITEK
 
- drivers/parisc/asp.c       |    3 +--
- drivers/parisc/ccio-dma.c  |    2 +-
- drivers/parisc/dino.c      |    4 ++--
- drivers/parisc/hppb.c      |    2 +-
- drivers/parisc/lasi.c      |    5 ++---
- drivers/parisc/lba_pci.c   |    2 +-
- drivers/parisc/sba_iommu.c |    7 +++----
- drivers/parisc/wax.c       |    3 +--
- 8 files changed, 12 insertions(+), 16 deletions(-)
 
-diff -puN drivers/parisc/asp.c~drivers-parisc-make-code-static drivers/parisc/asp.c
---- a/drivers/parisc/asp.c~drivers-parisc-make-code-static
-+++ a/drivers/parisc/asp.c
-@@ -71,8 +71,7 @@ static void asp_choose_irq(struct parisc
-  */
- #define ASP_INTERRUPT_ADDR 0xf0800000
- 
--int __init
--asp_init_chip(struct parisc_device *dev)
-+static int __init asp_init_chip(struct parisc_device *dev)
- {
- 	struct gsc_irq gsc_irq;
- 	int ret;
-diff -puN drivers/parisc/ccio-dma.c~drivers-parisc-make-code-static drivers/parisc/ccio-dma.c
---- a/drivers/parisc/ccio-dma.c~drivers-parisc-make-code-static
-+++ a/drivers/parisc/ccio-dma.c
-@@ -555,7 +555,7 @@ static u32 hint_lookup[] = {
-  * (Load Coherence Index) instruction.  The 8 bits used for the virtual
-  * index are bits 12:19 of the value returned by LCI.
-  */ 
--void CCIO_INLINE
-+static void CCIO_INLINE
- ccio_io_pdir_entry(u64 *pdir_ptr, space_t sid, unsigned long vba,
- 		   unsigned long hints)
- {
-diff -puN drivers/parisc/dino.c~drivers-parisc-make-code-static drivers/parisc/dino.c
---- a/drivers/parisc/dino.c~drivers-parisc-make-code-static
-+++ a/drivers/parisc/dino.c
-@@ -287,7 +287,7 @@ DINO_PORT_OUT(b,  8, 3)
- DINO_PORT_OUT(w, 16, 2)
- DINO_PORT_OUT(l, 32, 0)
- 
--struct pci_port_ops dino_port_ops = {
-+static struct pci_port_ops dino_port_ops = {
- 	.inb	= dino_in8,
- 	.inw	= dino_in16,
- 	.inl	= dino_in32,
-@@ -690,7 +690,7 @@ dino_fixup_bus(struct pci_bus *bus)
- }
- 
- 
--struct pci_bios_ops dino_bios_ops = {
-+static struct pci_bios_ops dino_bios_ops = {
- 	.init		= dino_bios_init,
- 	.fixup_bus	= dino_fixup_bus
- };
-diff -puN drivers/parisc/hppb.c~drivers-parisc-make-code-static drivers/parisc/hppb.c
---- a/drivers/parisc/hppb.c~drivers-parisc-make-code-static
-+++ a/drivers/parisc/hppb.c
-@@ -29,7 +29,7 @@ struct hppb_card {
- 	struct hppb_card *next;
- };
- 
--struct hppb_card hppb_card_head = {
-+static struct hppb_card hppb_card_head = {
- 	.hpa = 0,
- 	.next = NULL,
- };
-diff -puN drivers/parisc/lasi.c~drivers-parisc-make-code-static drivers/parisc/lasi.c
---- a/drivers/parisc/lasi.c~drivers-parisc-make-code-static
-+++ a/drivers/parisc/lasi.c
-@@ -107,7 +107,7 @@ lasi_init_irq(struct gsc_asic *this_lasi
- 
- #else
- 
--void __init lasi_led_init(unsigned long lasi_hpa)
-+static void __init lasi_led_init(unsigned long lasi_hpa)
- {
- 	unsigned long datareg;
- 
-@@ -163,8 +163,7 @@ static void lasi_power_off(void)
- 	gsc_writel(0x02, datareg);
- }
- 
--int __init
--lasi_init_chip(struct parisc_device *dev)
-+static int __init lasi_init_chip(struct parisc_device *dev)
- {
- 	extern void (*chassis_power_off)(void);
- 	struct gsc_asic *lasi;
-diff -puN drivers/parisc/lba_pci.c~drivers-parisc-make-code-static drivers/parisc/lba_pci.c
---- a/drivers/parisc/lba_pci.c~drivers-parisc-make-code-static
-+++ a/drivers/parisc/lba_pci.c
-@@ -824,7 +824,7 @@ lba_fixup_bus(struct pci_bus *bus)
- }
- 
- 
--struct pci_bios_ops lba_bios_ops = {
-+static struct pci_bios_ops lba_bios_ops = {
- 	.init =		lba_bios_init,
- 	.fixup_bus =	lba_fixup_bus,
- };
-diff -puN drivers/parisc/sba_iommu.c~drivers-parisc-make-code-static drivers/parisc/sba_iommu.c
---- a/drivers/parisc/sba_iommu.c~drivers-parisc-make-code-static
-+++ a/drivers/parisc/sba_iommu.c
-@@ -561,7 +561,7 @@ typedef unsigned long space_t;
-  * IOMMU uses little endian for the pdir.
-  */
- 
--void SBA_INLINE
-+static void SBA_INLINE
- sba_io_pdir_entry(u64 *pdir_ptr, space_t sid, unsigned long vba,
- 		  unsigned long hint)
- {
-@@ -1874,7 +1874,7 @@ static struct parisc_device_id sba_tbl[]
- 	{ 0, }
- };
- 
--int sba_driver_callback(struct parisc_device *);
-+static int sba_driver_callback(struct parisc_device *);
- 
- static struct parisc_driver sba_driver = {
- 	.name =		MODULE_NAME,
-@@ -1887,8 +1887,7 @@ static struct parisc_driver sba_driver =
- ** If so, initialize the chip and tell other partners in crime they
- ** have work to do.
- */
--int
--sba_driver_callback(struct parisc_device *dev)
-+static int sba_driver_callback(struct parisc_device *dev)
- {
- 	struct sba_device *sba_dev;
- 	u32 func_class;
-diff -puN drivers/parisc/wax.c~drivers-parisc-make-code-static drivers/parisc/wax.c
---- a/drivers/parisc/wax.c~drivers-parisc-make-code-static
-+++ a/drivers/parisc/wax.c
-@@ -68,8 +68,7 @@ wax_init_irq(struct gsc_asic *wax)
- //	gsc_writel(0xFFFFFFFF, base+0x2000); /* RS232-B on Wax */
- }
- 
--int __init
--wax_init_chip(struct parisc_device *dev)
-+static int __init wax_init_chip(struct parisc_device *dev)
- {
- 	struct gsc_asic *wax;
- 	struct parisc_device *parent;
-_
+Similiar when I insert a mouse:
+------------------
+usb 1-1: new low speed USB device using ohci_hcd and address 2
+usb 1-1: configuration #1 chosen from 1 choice
+input: Logitech N48 as /class/input/input0
+Slab corruption: shmem_inode_cache start=8bd9daa0, len=640
+Redzone: 0x0/0x9f911029d74e35b.
+Last user: [<00000000>](0x0)
+000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Prev obj: start=8bd9d870, len=640
+Redzone: 0x6b6b6b6b6b6b6b6b/0x0.
+Last user: [<00000000>](0x0)
+000: 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b
+010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+slab error in cache_alloc_debugcheck_after(): cache `shmem_inode_cache': double free, or memory outside objecn
+Backtrace:
+ [<101a4e84>] cache_alloc_debugcheck_after+0xd8/0x200
+ [<101a540c>] kmem_cache_alloc+0x1a0/0x1e8
+ [<101a26e4>] shmem_alloc_inode+0x18/0x34
+ [<101be158>] alloc_inode+0x28/0x238
+ [<101bf204>] new_inode+0x20/0xc0
+ [<101a0eb8>] shmem_get_inode+0x34/0x1ac
+ [<101a1be0>] shmem_symlink+0x60/0x260
+ [<101b6034>] vfs_symlink+0x74/0xc8
+ [<101b6118>] sys_symlinkat+0x90/0xfc
+ [<101190c0>] syscall_exit+0x0/0x28
+
+8bd9da98: redzone 1:0x0, redzone 2:0x9f911029d74e35b
+Slab corruption: size-4096 start=8bd18000, len=4096
+000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+generic-usb 0003:046D:C001.0001: input,hidraw0: USB HID v1.00 Mouse [Logitech N48] on usb-0000:00:0e.2-1/inpu0
+usb 1-1: New USB device found, idVendor=046d, idProduct=c001
+usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+usb 1-1: Product: N48
+usb 1-1: Manufacturer: Logitech
+
+
+On 2.6.28-rc1 I saw e.g. this:
+--------------------
+usbcore: registered new interface driver usbhid
+usbhid: v2.6:USB HID core driver
+usb 1-1: new low speed USB device using ohci_hcd and address 2
+usb 1-1: configuration #1 chosen from 1 choice
+input: Logitech N48 as /class/input/input0
+generic-usb 0003:046D:C001.0001: input,hidraw0: USB HID v1.00 Mouse 
+[Logitech N48] on usb-0000:00:0e.2-1/inpu0
+usb 1-1: New USB device found, idVendor=046d, idProduct=c001
+usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+usb 1-1: Product: N48
+usb 1-1: Manufacturer: Logitech
+usb 1-2: new low speed USB device using ohci_hcd and address 3
+usb 1-2: configuration #1 chosen from 1 choice
+slab error in cache_alloc_debugcheck_after(): cache `size-512': double free, or memory outside object was oven
+Backtrace:
+   [<101a5724>] cache_alloc_debugcheck_after+0xd8/0x200
+   [<101a5cac>] kmem_cache_alloc+0x1a0/0x1e8
+   [<1042e294>] hid_register_report+0x60/0xc4
+   [<1042e5f8>] hid_add_field+0x40/0x1a4
+   [<1042ec40>] hid_parser_main+0x94/0xc4
+
+Helge
