@@ -1,90 +1,29 @@
-From: Jeroen Roovers <jer@gentoo.org>
-Subject: Re: 2.6.28-rc2: USB/INPUT: slab error in
- cache_alloc_debugcheck_after(): double free?
-Date: Fri, 31 Oct 2008 04:45:53 +0100
-Message-ID: <20081031044553.50882e86@epia.jer-c2.orkz.net>
-References: <200810310011.08618.deller@gmx.de>
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: Re: 2.6.28-rc2: USB/INPUT: slab error in cache_alloc_debugcheck_after():
+ double free?
+Date: Fri, 31 Oct 2008 12:55:08 +0100 (CET)
+Message-ID: <alpine.LRH.1.10.0810311254400.7585@twin.jikos.cz>
+References: <200810310011.08618.deller@gmx.de> <20081031044553.50882e86@epia.jer-c2.orkz.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-To: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-parisc@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>
+To: Jeroen Roovers <jer@gentoo.org>
 Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <200810310011.08618.deller@gmx.de>
+In-Reply-To: <20081031044553.50882e86@epia.jer-c2.orkz.net>
 List-ID: <linux-input.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I am seeing the same USB problem but without the SLAB errors - [1] is
-the Gentoo bug report. The kernel boots fine with both USB keyboard and
-mouse detached.
+On Fri, 31 Oct 2008, Jeroen Roovers wrote:
 
+> I am seeing the same USB problem but without the SLAB errors - [1] is
+> the Gentoo bug report. The kernel boots fine with both USB keyboard and
+> mouse detached.
 
-[17179609.760000] usb 1-2: configuration #1 chosen from 1 choice
-[17179609.860000] input: Kensington Kensington USB/PS2 Trackball as
-/class/inpu1
-[17179609.972000] Backtrace:
-[17179609.972000]  [<101daa9c>] sysfs_find_dirent+0x34/0x50
-[17179609.972000]  [<101daad8>] __sysfs_add_one+0x20/0xc0
-[17179609.972000]  [<101dab8c>] sysfs_add_one+0x14/0x50
-[17179609.972000]  [<101db250>] create_dir+0x64/0xcc
-[17179609.972000]  [<101db2e4>] sysfs_create_dir+0x2c/0x5c
-[17179609.972000]  [<102f2cd0>] kobject_add_internal+0xb8/0x1b0
-[17179609.972000]  [<102f326c>] kobject_add+0x38/0x68
-[17179609.972000]  [<1035b2b0>] device_add+0xdc/0x55c
-[17179609.972000]  [<103d6930>] mousedev_create+0x17c/0x1f8
-[17179609.972000]  [<103d7284>] mousedev_connect+0x48/0x138
-[17179609.972000]  [<103d2b50>] input_attach_handler+0x6c/0xac
-[17179609.972000]  [<103d5014>] input_register_device+0x1a4/0x250
-[17179609.972000]  [<103dfe08>] hidinput_connect+0x308/0x3b40
-[17179609.972000]  [<103de5d4>] hid_connect+0x22c/0x2c0
-[17179609.972000]  [<103de740>] hid_device_probe+0xd8/0xfc
-[17179609.972000]  [<1035db94>] driver_probe_device+0xa4/0x198
-[17179609.972000]
-[17179609.972000]
-[17179609.972000] Kernel Fault: Code=26 regs=8f86d0c0 (Addr=00000000)
-[17179609.972000]
-[17179609.972000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-[17179609.972000] PSW: 00000000000001001111111000001111 Not tainted
-[17179609.972000] r00-03  0004fe0f 105a8e50 101daa9c 8ecef000
-[17179609.972000] r04-07  8f8d4d70 fffffff4 8f296f60 8f86cf48
-[17179609.972000] r08-11  8f297ac8 8ec37000 8f293e90 00000008
-[17179609.972000] r12-15  00000006 00000001 00000002 00000003
-[17179609.972000] r16-19  8ec37000 fffeffff fffeff70 00000073
-[17179609.972000] r20-23  00000006 0000000f 000003e0 8f296f60
-[17179609.972000] r24-27  101da714 8f8d4d70 00000000 105a8650
-[17179609.972000] r28-31  8ecef000 156979c9 8f86d0c0 101a0274
-[17179609.972000] sr00-03  00000000 00000000 00000000 0000000c
-[17179609.972000] sr04-07  00000000 00000000 00000000 00000000
-[17179609.972000]
-[17179609.972000] IASQ: 00000000 00000000 IAOQ: 102f6a50 102f6a54
-[17179609.972000]  IIR: 0f40101c    ISR: 00000000  IOR: 00000000
-[17179609.972000]  CPU:        0   CR30: 8f86c000 CR31: 11111111
-[17179609.972000]  ORIG_R28: 0000000f
-[17179609.972000]  IAOQ[0]: strcmp+0x0/0x34
-[17179609.972000]  IAOQ[1]: strcmp+0x4/0x34
-[17179609.972000]  RP(r2): sysfs_find_dirent+0x34/0x50
-[17179609.972000] Backtrace:
-[17179609.972000]  [<101daa9c>] sysfs_find_dirent+0x34/0x50
-[17179609.972000]  [<101daad8>] __sysfs_add_one+0x20/0xc0
-[17179609.972000]  [<101dab8c>] sysfs_add_one+0x14/0x50
-[17179609.972000]  [<101db250>] create_dir+0x64/0xcc
-[17179609.972000]  [<101db2e4>] sysfs_create_dir+0x2c/0x5c
-[17179609.972000]  [<102f2cd0>] kobject_add_internal+0xb8/0x1b0
-[17179609.972000]  [<102f326c>] kobject_add+0x38/0x68
-[17179609.972000]  [<1035b2b0>] device_add+0xdc/0x55c
-[17179609.972000]  [<103d6930>] mousedev_create+0x17c/0x1f8
-[17179609.972000]  [<103d7284>] mousedev_connect+0x48/0x138
-[17179609.972000]  [<103d2b50>] input_attach_handler+0x6c/0xac
-[17179609.972000]  [<103d5014>] input_register_device+0x1a4/0x250
-[17179609.972000]  [<103dfe08>] hidinput_connect+0x308/0x3b40
-[17179609.972000]  [<103de5d4>] hid_connect+0x22c/0x2c0
-[17179609.972000]  [<103de740>] hid_device_probe+0xd8/0xfc
-[17179609.972000]  [<1035db94>] driver_probe_device+0xa4/0x198
-[17179609.972000]
-[17179609.972000] Kernel panic - not syncing: Kernel Fault
+Could you please provide your config? I am still not able to reproduce it 
+here. Thanks.
 
+-- 
+Jiri Kosina
+SUSE Labs
 
-Kind regards,
-     JeR
-
-
-[1] https://bugs.gentoo.org/show_bug.cgi?id=245001
