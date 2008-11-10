@@ -1,32 +1,46 @@
-From: "Luck, Tony" <tony.luck@intel.com>
-Subject: RE: Panic in multiple kernels: IA64 SBA IOMMU: Culprit commit on
- Mar 28, 2008
-Date: Fri, 7 Nov 2008 08:58:28 -0800
-Message-ID: <57C9024A16AD2D4C97DC78E552063EA35C227994@orsmsx505.amr.corp.intel.com>
-References: <490F880E.4000801@cse.unsw.edu.au>
-	<20081106032605J.fujita.tomonori@lab.ntt.co.jp>
-	<49125F21.8010806@cse.unsw.edu.au>
- <20081107125011M.fujita.tomonori@lab.ntt.co.jp>
+From: Domenico Andreoli <cavokz@gmail.com>
+Subject: [PATCH] fix build error on hppa SMP (was Re: Linux 2.6.28-rc4)
+Date: Mon, 10 Nov 2008 16:42:26 +0100
+Message-ID: <20081110154226.GA28675@tilt.dandreoli.com>
+References: <alpine.LFD.2.00.0811091650250.3468@nehalem.linux-foundation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
-To: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>,
-	"shehjart@cse.unsw.edu.au" <shehjart@cse.unsw.edu.au>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org, Rusty Russell <rusty@rustcorp.com.au>
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081107125011M.fujita.tomonori@lab.ntt.co.jp>
+In-Reply-To: <alpine.LFD.2.00.0811091650250.3468@nehalem.linux-foundation.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> Can you check if data corruption doesn't happen during the tests?
+On Sun, Nov 09, 2008 at 04:55:42PM -0800, Linus Torvalds wrote:
+> 
+> Rusty Russell (3):
+>       cpumask: introduce new API, without changing anything
+>       cpumask: new API, v2
+>       cpumask: introduce new API, without changing anything, v3
 
-Very important!!!
+Nothing to change here, go away! :)
 
-> Tony, changing the sba IOMMU driver to return an error instead of
-> panic in the case of allocation failure is fine with you?
+---
+From: Domenico Andreoli <cavok@dandreoli.com>
+Date: Mon, 10 Nov 2008 16:31:07 +0100
+Subject: [PATCH] fix build error on hppa SMP
 
-This is fine ... but we do need to audit the callers to make
-sure that they check for and handle this new error.
+Remove extern declaration of cpu_present_mask.
 
--Tony
+Fixes build error due to new cpumask API (2d3854a37e8b767a51aba38ed6d22817b0631e33).
+
+Signed-off-by: Domenico Andreoli <cavok@dandreoli.com>
+---
+ arch/parisc/include/asm/smp.h |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/arch/parisc/include/asm/smp.h b/arch/parisc/include/asm/smp.h
+index 398cdba..409e698 100644
+--- a/arch/parisc/include/asm/smp.h
++++ b/arch/parisc/include/asm/smp.h
+@@ -44,8 +44,6 @@ extern void arch_send_call_function_ipi(cpumask_t mask);
+  
+ #define PROC_CHANGE_PENALTY	15		/* Schedule penalty */
+ 
+-extern unsigned long cpu_present_mask;
