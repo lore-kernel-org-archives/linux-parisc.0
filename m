@@ -1,46 +1,35 @@
-From: Domenico Andreoli <cavokz@gmail.com>
-Subject: [PATCH] fix build error on hppa SMP (was Re: Linux 2.6.28-rc4)
-Date: Mon, 10 Nov 2008 16:42:26 +0100
-Message-ID: <20081110154226.GA28675@tilt.dandreoli.com>
-References: <alpine.LFD.2.00.0811091650250.3468@nehalem.linux-foundation.org>
+From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Subject: RE: Panic in multiple kernels: IA64 SBA IOMMU: Culprit commit on
+ Mar 28, 2008
+Date: Tue, 11 Nov 2008 15:06:13 +0900
+Message-ID: <20081111150644Q.fujita.tomonori@lab.ntt.co.jp>
+References: <49125F21.8010806@cse.unsw.edu.au>
+	<20081107125011M.fujita.tomonori@lab.ntt.co.jp>
+	<57C9024A16AD2D4C97DC78E552063EA35C227994@orsmsx505.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org, Rusty Russell <rusty@rustcorp.com.au>
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: Text/Plain; charset=us-ascii
+Cc: fujita.tomonori@lab.ntt.co.jp, shehjart@cse.unsw.edu.au,
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org
+To: tony.luck@intel.com
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LFD.2.00.0811091650250.3468@nehalem.linux-foundation.org>
+In-Reply-To: <57C9024A16AD2D4C97DC78E552063EA35C227994@orsmsx505.amr.corp.intel.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Nov 09, 2008 at 04:55:42PM -0800, Linus Torvalds wrote:
+On Fri, 7 Nov 2008 08:58:28 -0800
+"Luck, Tony" <tony.luck@intel.com> wrote:
+
+> > Tony, changing the sba IOMMU driver to return an error instead of
+> > panic in the case of allocation failure is fine with you?
 > 
-> Rusty Russell (3):
->       cpumask: introduce new API, without changing anything
->       cpumask: new API, v2
->       cpumask: introduce new API, without changing anything, v3
+> This is fine ... but we do need to audit the callers to make
+> sure that they check for and handle this new error.
 
-Nothing to change here, go away! :)
+Well, this is the issue discussed in the past several times...
 
----
-From: Domenico Andreoli <cavok@dandreoli.com>
-Date: Mon, 10 Nov 2008 16:31:07 +0100
-Subject: [PATCH] fix build error on hppa SMP
-
-Remove extern declaration of cpu_present_mask.
-
-Fixes build error due to new cpumask API (2d3854a37e8b767a51aba38ed6d22817b0631e33).
-
-Signed-off-by: Domenico Andreoli <cavok@dandreoli.com>
----
- arch/parisc/include/asm/smp.h |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
-
-diff --git a/arch/parisc/include/asm/smp.h b/arch/parisc/include/asm/smp.h
-index 398cdba..409e698 100644
---- a/arch/parisc/include/asm/smp.h
-+++ b/arch/parisc/include/asm/smp.h
-@@ -44,8 +44,6 @@ extern void arch_send_call_function_ipi(cpumask_t mask);
-  
- #define PROC_CHANGE_PENALTY	15		/* Schedule penalty */
- 
--extern unsigned long cpu_present_mask;
+The most of SCSI drivers are fine; they can handle IOMMU mapping
+failure properly or panic. But there are some network drivers that
+don't even check the failure. Fixing these network drivers has been on
+my todo list... But as I said before, we ignore this problem; only
+swiotlb and SBA panic in the case of IOMMU mapping failure.
