@@ -1,35 +1,39 @@
-From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
-Subject: RE: Panic in multiple kernels: IA64 SBA IOMMU: Culprit commit on
- Mar 28, 2008
-Date: Tue, 11 Nov 2008 15:06:13 +0900
-Message-ID: <20081111150644Q.fujita.tomonori@lab.ntt.co.jp>
-References: <49125F21.8010806@cse.unsw.edu.au>
-	<20081107125011M.fujita.tomonori@lab.ntt.co.jp>
-	<57C9024A16AD2D4C97DC78E552063EA35C227994@orsmsx505.amr.corp.intel.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] fix cpumask build breakage on parisc
+Date: Thu, 13 Nov 2008 18:55:54 +0100
+Message-ID: <200811131855.55450.deller@gmx.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: fujita.tomonori@lab.ntt.co.jp, shehjart@cse.unsw.edu.au,
-	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org
-To: tony.luck@intel.com
+Content-Type: text/plain;
+  charset="us-ascii"
+To: linux-kernel@vger.kernel.org,
+	Rusty Russell <rusty@rustcorp.com.au>,
+	akpm@linux-foundation.org, torvalds@linux-foundation.org,
+	Kyle Mc Martin <kyle@hera.kernel.org>,
+	linux-parisc@vge
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <57C9024A16AD2D4C97DC78E552063EA35C227994@orsmsx505.amr.corp.intel.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 7 Nov 2008 08:58:28 -0800
-"Luck, Tony" <tony.luck@intel.com> wrote:
+This commit:
+	2d3854a37e8b767a51aba38ed6d22817b0631e33
+	cpumask: introduce new API, without changing anything
 
-> > Tony, changing the sba IOMMU driver to return an error instead of
-> > panic in the case of allocation failure is fine with you?
-> 
-> This is fine ... but we do need to audit the callers to make
-> sure that they check for and handle this new error.
+introduced a build breakage on parisc.
 
-Well, this is the issue discussed in the past several times...
+This trivial patch fixes it.
 
-The most of SCSI drivers are fine; they can handle IOMMU mapping
-failure properly or panic. But there are some network drivers that
-don't even check the failure. Fixing these network drivers has been on
-my todo list... But as I said before, we ignore this problem; only
-swiotlb and SBA panic in the case of IOMMU mapping failure.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+CC:	Rusty Russell <rusty@rustcorp.com.au>
+CC:	akpm@linux-foundation.org
+CC:	torvalds@linux-foundation.org
+CC:	Kyle Mc Martin <kyle@hera.kernel.org>
+	
+
+--- a/arch/parisc/include/asm/smp.h
++++ b/arch/parisc/include/asm/smp.h
+@@ -44,8 +44,6 @@ extern void arch_send_call_function_ipi(cpumask_t mask);
+  
+ #define PROC_CHANGE_PENALTY	15		/* Schedule penalty */
+ 
+-extern unsigned long cpu_present_mask;
