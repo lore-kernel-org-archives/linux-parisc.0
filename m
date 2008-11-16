@@ -1,39 +1,48 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] fix cpumask build breakage on parisc
-Date: Thu, 13 Nov 2008 18:55:54 +0100
-Message-ID: <200811131855.55450.deller@gmx.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH/resend] parisc: __kernel_time_t is always long
+Date: Sun, 16 Nov 2008 12:04:13 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0811161203140.20437@anakin>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-To: linux-kernel@vger.kernel.org,
-	Rusty Russell <rusty@rustcorp.com.au>,
-	akpm@linux-foundation.org, torvalds@linux-foundation.org,
-	Kyle Mc Martin <kyle@hera.kernel.org>,
-	linux-parisc@vge
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org, trivial@kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This commit:
-	2d3854a37e8b767a51aba38ed6d22817b0631e33
-	cpumask: introduce new API, without changing anything
+__kernel_time_t is always long on PA-RISC, irrespective of CONFIG_64BIT,
+hence move it out of the #ifdef CONFIG_64BIT / #else / #endif block.
 
-introduced a build breakage on parisc.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/parisc/include/asm/posix_types.h |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-This trivial patch fixes it.
-
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-CC:	Rusty Russell <rusty@rustcorp.com.au>
-CC:	akpm@linux-foundation.org
-CC:	torvalds@linux-foundation.org
-CC:	Kyle Mc Martin <kyle@hera.kernel.org>
-	
-
---- a/arch/parisc/include/asm/smp.h
-+++ b/arch/parisc/include/asm/smp.h
-@@ -44,8 +44,6 @@ extern void arch_send_call_function_ipi(cpumask_t mask);
-  
- #define PROC_CHANGE_PENALTY	15		/* Schedule penalty */
+--- a/arch/parisc/include/asm/posix_types.h
++++ b/arch/parisc/include/asm/posix_types.h
+@@ -24,13 +24,12 @@ typedef int			__kernel_daddr_t;
+ typedef unsigned long		__kernel_size_t;
+ typedef long			__kernel_ssize_t;
+ typedef long			__kernel_ptrdiff_t;
+-typedef long			__kernel_time_t;
+ #else
+ typedef unsigned int		__kernel_size_t;
+ typedef int			__kernel_ssize_t;
+ typedef int			__kernel_ptrdiff_t;
+-typedef long			__kernel_time_t;
+ #endif
++typedef long			__kernel_time_t;
+ typedef char *			__kernel_caddr_t;
  
--extern unsigned long cpu_present_mask;
+ typedef unsigned short		__kernel_uid16_t;
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
