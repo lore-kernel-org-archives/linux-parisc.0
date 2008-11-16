@@ -1,48 +1,66 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/resend] parisc: __kernel_time_t is always long
-Date: Sun, 16 Nov 2008 12:04:13 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0811161203140.20437@anakin>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: linux-next: parisc build failure
+Date: Sun, 16 Nov 2008 23:13:42 +1100
+Message-ID: <20081116231342.0cd747bd.sfr@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org, trivial@kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Sun__16_Nov_2008_23_13_42_+1100_n+AZsqsfjkK73wvx"
+Cc: linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Kyle McMartin <kyle@mcmartin.ca>, <linux-parisc@vger.kernel.org>
+Return-path: <linux-next-owner@vger.kernel.org>
+List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-__kernel_time_t is always long on PA-RISC, irrespective of CONFIG_64BIT,
-hence move it out of the #ifdef CONFIG_64BIT / #else / #endif block.
+--Signature=_Sun__16_Nov_2008_23_13_42_+1100_n+AZsqsfjkK73wvx
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/parisc/include/asm/posix_types.h |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Hi Kyle,
 
---- a/arch/parisc/include/asm/posix_types.h
-+++ b/arch/parisc/include/asm/posix_types.h
-@@ -24,13 +24,12 @@ typedef int			__kernel_daddr_t;
- typedef unsigned long		__kernel_size_t;
- typedef long			__kernel_ssize_t;
- typedef long			__kernel_ptrdiff_t;
--typedef long			__kernel_time_t;
- #else
- typedef unsigned int		__kernel_size_t;
- typedef int			__kernel_ssize_t;
- typedef int			__kernel_ptrdiff_t;
--typedef long			__kernel_time_t;
- #endif
-+typedef long			__kernel_time_t;
- typedef char *			__kernel_caddr_t;
- 
- typedef unsigned short		__kernel_uid16_t;
+Today's linux-next build (parisc allmodconfig) failed like this:
 
-Gr{oetje,eeting}s,
+In file included from drivers/serial/mux.c:38:
+include/linux/serial_core.h: In function 'uart_handle_sysrq_char':
+include/linux/serial_core.h:450: error: 'struct uart_port' has no member na=
+med 'sysrq'
+include/linux/serial_core.h:451: error: 'struct uart_port' has no member na=
+med 'sysrq'
+include/linux/serial_core.h:451: error: 'struct uart_port' has no member na=
+med 'sysrq'
+include/linux/serial_core.h:453: error: 'struct uart_port' has no member na=
+med 'sysrq'
+include/linux/serial_core.h:456: error: 'struct uart_port' has no member na=
+med 'sysrq'
+include/linux/serial_core.h:473: error: 'struct uart_port' has no member na=
+med 'sysrq'
+include/linux/serial_core.h:474: error: 'struct uart_port' has no member na=
+med 'sysrq'
+include/linux/serial_core.h:477: error: 'struct uart_port' has no member na=
+med 'sysrq'
 
-						Geert
+This is happening in mainline as well. In fact, this has been happening
+back as far as I have results (Aug 27).  The sysrq element of struct
+uart_port is dependent on CONFIG_SERIAL_CORE_CONSOLE while the references
+failing above are dependent on SUPPORT_SYSRQ which is defined if
+CONFIG_MAGIC_SYSRQ is defined in mux.c.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+--Signature=_Sun__16_Nov_2008_23_13_42_+1100_n+AZsqsfjkK73wvx
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkkgDnYACgkQjjKRsyhoI8zyIwCdF+noH6S5a7Ys3tJ8fInPNI2Q
+0/UAoJQ6t69Tza0sqB8l6PcCoDH7A9gM
+=1jhk
+-----END PGP SIGNATURE-----
+
+--Signature=_Sun__16_Nov_2008_23_13_42_+1100_n+AZsqsfjkK73wvx--
