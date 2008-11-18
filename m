@@ -1,41 +1,92 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH, 2.6.28-rc5] unitialized return value in mm/mlock.c:
- __mlock_vma_pages_range()
-Date: Sun, 16 Nov 2008 15:55:10 -0800 (PST)
-Message-ID: <alpine.LFD.2.00.0811161551540.3468@nehalem.linux-foundation.org>
-References: <200811170030.58246.deller@gmx.de>
+From: Helge Deller <deller@gmx.de>
+Subject: struct uart_port has no member named 'sysrq'   (was: linux-next: parisc build failure)
+Date: Tue, 18 Nov 2008 20:24:24 +0100
+Message-ID: <200811182024.24781.deller@gmx.de>
+References: <20081116231342.0cd747bd.sfr@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-	Kyle Mc Martin <kyle@hera.kernel.org>,
-	linux-parisc@vger.kernel.org, linux-mm <linux-mm@kvack.org>
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain;
+  charset="utf-8"
+Cc: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org,
+	linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-serial@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200811170030.58246.deller@gmx.de>
+In-Reply-To: <20081116231342.0cd747bd.sfr@canb.auug.org.au>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On Sunday 16 November 2008, Stephen Rothwell wrote:
+> Hi Kyle,
+> 
+> Today's linux-next build (parisc allmodconfig) failed like this:
+> 
+> In file included from drivers/serial/mux.c:38:
+> include/linux/serial_core.h: In function 'uart_handle_sysrq_char':
+> include/linux/serial_core.h:450: error: 'struct uart_port' has no member named 'sysrq'
+> include/linux/serial_core.h:451: error: 'struct uart_port' has no member named 'sysrq'
+> include/linux/serial_core.h:451: error: 'struct uart_port' has no member named 'sysrq'
+> include/linux/serial_core.h:453: error: 'struct uart_port' has no member named 'sysrq'
+> include/linux/serial_core.h:456: error: 'struct uart_port' has no member named 'sysrq'
+> include/linux/serial_core.h:473: error: 'struct uart_port' has no member named 'sysrq'
+> include/linux/serial_core.h:474: error: 'struct uart_port' has no member named 'sysrq'
+> include/linux/serial_core.h:477: error: 'struct uart_port' has no member named 'sysrq'
+> 
+> This is happening in mainline as well. In fact, this has been happening
+> back as far as I have results (Aug 27).  The sysrq element of struct
+> uart_port is dependent on CONFIG_SERIAL_CORE_CONSOLE while the references
+> failing above are dependent on SUPPORT_SYSRQ which is defined if
+> CONFIG_MAGIC_SYSRQ is defined in mux.c.
+
+I assume you don't have CONFIG_SERIAL_CORE_CONSOLE set in your config, which is probably why this build failure shows up.
+Looking at other serial drivers, which all seem to have similiar coding like mux.c, I'm wondering that it only shows up on parisc.
+
+Anyway, since I assume we can't make the sysrq element of struct uart_port depended on SUPPORT_SYSRQ (since it depends on each serial driver if it wants to support the sysrq feature and we need to keep the size of struct uart_port constant), I think we need to add an additional check for CONFIG_SERIAL_CORE_CONSOLE to where we already check for SUPPORT_SYSRQ. 
+Proposed patch and RFC below.
+
+-------
+
+[RFC] [PATCH] check for SUPPORT_SYSRQ and CONFIG_SERIAL_CORE_CONSOLE before accessing the "sysrq" member of struct uart_port.
+
+Serial drivers (like mux.c) can #define SUPPORT_SYSRQ to tell the core serial functions that they want to have SYSRQ-support built-in.
+If SUPPORT_SYSRQ is defined, the functions uart_handle_sysrq_char() and uart_handle_break() in include/linux/serial_core.h unconditionally access the "sysrq" member of struct uart_port.
+Since the "sysrq" member of struct uart_port is only compiled into the kernel if CONFIG_SERIAL_CORE_CONSOLE is defined, builds will break if
+SUPPORT_SYSRQ is defined and CONFIG_SERIAL_CORE_CONSOLE is not defined.
+
+This patch works around the problem by checking for SUPPORT_SYSRQ _and_ CONFIG_SERIAL_CORE_CONSOLE before accessing the "sysrq" member of struct uart_port.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
 
 
-On Mon, 17 Nov 2008, Helge Deller wrote:
->
-> Fix an unitialized return value when compiling on parisc (with CONFIG_UNEVICTABLE_LRU=y):
-> 	mm/mlock.c: In function `__mlock_vma_pages_range':
-> 	mm/mlock.c:165: warning: `ret' might be used uninitialized in this function
-
-Looks valid.
-
-Of course, nobody should ever call this with a range that could possibly 
-be empty, so an equally valid approach would be to change the "while" loop 
-to a "do while()", and that would generate better code. But I guess the 
-simple unnecessary initialization is more defensive programming, in that 
-if some other buggy caller does set things up with an empty range, it gets 
-the right result.
-
-Btw, exactly _because_ gcc warnings about uninitialized functions are 
-sometimes bogus (ie due to gcc simply not being able to follow things like 
-conditional initializations where the values are only used if they were 
-initialized), I would ask that people comment on these kinds of issues 
-when they send in patches. 
-
-		Linus
+diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+index 4e4f127..b9d79f1 100644
+--- a/include/linux/serial_core.h
++++ b/include/linux/serial_core.h
+@@ -446,7 +446,7 @@ int uart_resume_port(struct uart_driver *reg, struct uart_port *port);
+ static inline int
+ uart_handle_sysrq_char(struct uart_port *port, unsigned int ch)
+ {
+-#ifdef SUPPORT_SYSRQ
++#if defined(SUPPORT_SYSRQ) && defined(CONFIG_SERIAL_CORE_CONSOLE)
+ 	if (port->sysrq) {
+ 		if (ch && time_before(jiffies, port->sysrq)) {
+ 			handle_sysrq(ch, port->info ? port->info->port.tty : NULL);
+@@ -458,9 +458,6 @@ uart_handle_sysrq_char(struct uart_port *port, unsigned int ch)
+ #endif
+ 	return 0;
+ }
+-#ifndef SUPPORT_SYSRQ
+-#define uart_handle_sysrq_char(port,ch) uart_handle_sysrq_char(port, 0)
+-#endif
+ 
+ /*
+  * We do the SysRQ and SAK checking like this...
+@@ -468,7 +465,7 @@ uart_handle_sysrq_char(struct uart_port *port, unsigned int ch)
+ static inline int uart_handle_break(struct uart_port *port)
+ {
+ 	struct uart_info *info = port->info;
+-#ifdef SUPPORT_SYSRQ
++#if defined(SUPPORT_SYSRQ) && defined(CONFIG_SERIAL_CORE_CONSOLE)
+ 	if (port->cons && port->cons->index == port->line) {
+ 		if (!port->sysrq) {
+ 			port->sysrq = jiffies + HZ*5;
