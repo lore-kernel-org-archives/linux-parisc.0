@@ -1,36 +1,39 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Helge Deller <deller@gmx.de>
 Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
-Date: Wed, 19 Nov 2008 10:12:21 -0500 (EST)
-Message-ID: <20081119151221.AE1294EAE@hiauly1.hia.nrc.ca>
-References: <1227104423.10371.18.camel@localhost.localdomain>
+Date: Wed, 19 Nov 2008 16:47:05 +0100
+Message-ID: <492434F9.4070201@gmx.de>
+References: <49231FD0.9040409@gmx.de> <7d01f9f00811181733q268a7221m256f4845494253b7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: cavokz@gmail.com, deller@gmx.de, linux-parisc@vger.kernel.org
-To: James.Bottomley@HansenPartnership.com (James Bottomley)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Cc: linux-parisc <linux-parisc@vger.kernel.org>
+To: Thibaut VARENE <T-Bone@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1227104423.10371.18.camel@localhost.localdomain> from "James Bottomley" at Nov 19, 2008 11:20:23 pm
+In-Reply-To: <7d01f9f00811181733q268a7221m256f4845494253b7@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > > I'd be really dubious about that.  Our pa8900 ... the most mm unstable
-> > > system we have ... is running -rc5 just fine.  The only warning before
-> > > boot is the usual SMP one.
-> > 
-> > my j5600 is also running fine
-> > 
-> > > Linux ion 2.6.28-rc5 #20 SMP Tue Nov 18 18:16:35 PST 2008 parisc64
-> > 
-> > parisc64 SMP? have you all the cpu online?
+Thibaut VARENE wrote:
+> On Tue, Nov 18, 2008 at 9:04 PM, Helge Deller <deller@gmx.de> wrote:
 > 
-> Yes, all four (two sockets, two cores).
+>> Here ist just one of the latest crashes (c3k, UP, CONFIG_SMP not set,
+>> 2.6.28-rc5):
+>> .....
+>> SuperIO: ACPI at 0x7e0
+>> SuperIO: USB regulator enabled
+>> PDC Stable Storage facility v0.30
+>> Backtrace:
+>>  [<1018b6a4>] __kmalloc+0xa4/0xec
+>>  [<101718f4>] kstrdup+0x38/0x6c
+>>  [<101d9090>] sysfs_new_dirent+0x54/0xf4
+>>  [<101da0dc>] sysfs_do_create_link+0xcc/0x19c
+>>  [<106cd644>] pdc_stable_init+0x1cc/0x2b4
+> 
+> Wild guess since my baby's into this mess: somebody fucked
+> up^W^Wmodified some code in sysfs and didn't care enough about the
+> consequences.
 
-I haven't tried 2.6.28-rc5 but I have tried Kyle's last parisc tree.
-While it boots on SMP PA8800 (Mako), it can't do a full GCC build
-without a SEGV or some kind of file system issue.  There's an
-occasional unexpected SEGV with 2.6.22.19, but otherwise it is stable.
-It can successfully build GCC at -j4 most of the time.
+I'm not sure it's sysfs either.
+This crash happens in sysfs, but other in memory, locking, ...
+It's just random where and when it crashes.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Helge
