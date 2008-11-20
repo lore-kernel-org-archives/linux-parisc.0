@@ -1,115 +1,46 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: fix bug in compat_arch_ptrace
-Date: Thu, 20 Nov 2008 10:54:09 +0100
-Message-ID: <200811201054.09930.deller@gmx.de>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
+Date: Thu, 20 Nov 2008 13:57:53 +0100
+Message-ID: <7d01f9f00811200457v7589d731l787765553574276a@mail.gmail.com>
+References: <49231FD0.9040409@gmx.de>
+	 <1227061902.10371.11.camel@localhost.localdomain>
+	 <20081119091327.GB3270@tilt.dandreoli.com> <49243DF1.2010206@gmx.de>
+	 <492517F2.9060703@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-To: linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-	torvalds@linux-foundation.org,
-	Kyle Mc Martin <kyle@hera.kernel.org>,
-	linux-parisc@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Cc: "James Bottomley" <James.Bottomley@hansenpartnership.com>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: "Helge Deller" <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <492517F2.9060703@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This commit in 2.6.28-rc:
-	81e192d6ce303b6792aa38ff35f41a1a7357f23a
-	parisc: convert to generic compat_sys_ptrace
+On Thu, Nov 20, 2008 at 8:55 AM, Helge Deller <deller@gmx.de> wrote:
 
-introduced a bug which segfaults the parisc 64bit kernel 
-when stracing 32bit applications:
+> 2) To avoid possible cross-compiler bugs I built James's ion-config (with no
+> modifications at all!) on the c3k natively. It booted yesterday nicely
+> without any problems from local disk. Today, I booted the same kernel, again
+> with no modifications or changes at all, just the same kernel which already
+> was on the disk, and it brought up a Slab corruption:
+[snip]
+> My conclusion is:
+> There is some problem somewhere.
+> It does not show up always. Changing some kernel configuration may bring the
+> bug up or it may not.
+> James, I think if you reboot your ion machine a few times or modify some
+> kernel configs, you probably will hit the bug as well.
 
-Kernel Fault: Code=15 regs=00000000bafa42b0 (Addr=00000001baf5ab57)
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00001000000001101111111100001011 Tainted: G        W
-r00-03  000000ff0806ff0b 000000004068edc0 00000000401203f8 00000000fb3e2508
-r04-07  0000000040686dc0 00000000baf5a800 fffffffffffffffc fffffffffb3e2508
-r08-11  00000000baf5a800 000000000004b068 00000000000402b0 0000000000040d68
-r12-15  0000000000042a9c 0000000000040a9c 0000000000040d60 0000000000042e9c
-r16-19  000000000004b060 000000000004b058 0000000000042d9c ffffffffffffffff
-r20-23  000000000800000b 0000000000000000 000000000800000b fffffffffb3e2508
-r24-27  00000000fffffffc 0000000000000003 00000000fffffffc 0000000040686dc0
-r28-31  00000001baf5a7ff 00000000bafa4280 00000000bafa42b0 00000000000001d7
-sr00-03  0000000000fca000 0000000000000000 0000000000000000 0000000000fca000
-sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+Well on that topic, I've seen for a while (at least with 2.6.22.*) a
+similar case where the same unmodified kernel binary would, from time
+to time, fail to boot the machine (stuck with the timer_interrupt
+delayed message). ISTR that happened most frequently on my A500-5X.
+That may be something else, but the point is the symptom that "a given
+kernel behaves differently across reboots" is not something new, if
+that helps...
 
-IASQ: 0000000000000000 0000000000000000 IAOQ: 0000000040120400 0000000040120404
- IIR: 4b9a06b0    ISR: 0000000000000000  IOR: 00000001baf5ab57
- CPU:        0   CR30: 00000000bafa4000 CR31: 00000000d22344e0
- ORIG_R28: 00000000fb3e2248
- IAOQ[0]: compat_arch_ptrace+0xb8/0x160
- IAOQ[1]: compat_arch_ptrace+0xbc/0x160
- RP(r2): compat_arch_ptrace+0xb0/0x160
-Backtrace:
- [<00000000401612ac>] compat_sys_ptrace+0x15c/0x180
- [<0000000040104ef8>] syscall_exit+0x0/0x14
+T-Bone
 
-Problem is, that compat_arch_ptrace() enters with an addr value of type 
-compat_ulong_t and calls translate_usr_offset() to translate the 
-address offset into a struct pt_regs offset like this:
-	addr = translate_usr_offset(addr)
-This means, any return value of translate_usr_offset() is
-stored back as compat_ulong_t type into the addr variable.
-
-But since translate_usr_offset() returns -1 for invalid offsets,
-addr can now get the value 0xffffffff which then fails the next
-return-value sanity check and thus the kernel tries to access 
-invalid memory:
-	if (addr < 0)
-		break;
-
-Fix this bug by modifying translate_usr_offset() to take and return
-values of type compat_ulong_t, and by returning the value 
-"sizeof(struct pt_regs)" as an error indicator.
-Additionally change the sanity check to check for return values
-for >= sizeof(struct pt_regs).
-
-This patch survived my compile and run-tests.
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/arch/parisc/kernel/ptrace.c b/arch/parisc/kernel/ptrace.c
-index 90904f9..927db36 100644
---- a/arch/parisc/kernel/ptrace.c
-+++ b/arch/parisc/kernel/ptrace.c
-@@ -183,10 +183,10 @@ long arch_ptrace(struct task_struct *child, long request, long addr, long data)
-  * being 64 bit in both cases.
-  */
- 
--static long translate_usr_offset(long offset)
-+static compat_ulong_t translate_usr_offset(compat_ulong_t offset)
- {
- 	if (offset < 0)
--		return -1;
-+		return sizeof(struct pt_regs);
- 	else if (offset <= 32*4)	/* gr[0..31] */
- 		return offset * 2 + 4;
- 	else if (offset <= 32*4+32*8)	/* gr[0..31] + fr[0..31] */
-@@ -194,7 +194,7 @@ static long translate_usr_offset(long offset)
- 	else if (offset < sizeof(struct pt_regs)/2 + 32*4)
- 		return offset * 2 + 4 - 32*8;
- 	else
--		return -1;
-+		return sizeof(struct pt_regs);
- }
- 
- long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
-@@ -209,7 +209,7 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
- 		if (addr & (sizeof(compat_uint_t)-1))
- 			break;
- 		addr = translate_usr_offset(addr);
--		if (addr < 0)
-+		if (addr >= sizeof(struct pt_regs))
- 			break;
- 
- 		tmp = *(compat_uint_t *) ((char *) task_regs(child) + addr);
-@@ -236,7 +236,7 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
- 			if (addr & (sizeof(compat_uint_t)-1))
- 				break;
- 			addr = translate_usr_offset(addr);
--			if (addr < 0)
-+			if (addr >= sizeof(struct pt_regs))
- 				break;
- 			if (addr >= PT_FR0 && addr <= PT_FR31 + 4) {
- 				/* Special case, fp regs are 64 bits anyway */
+-- 
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
