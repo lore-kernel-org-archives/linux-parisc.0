@@ -1,46 +1,28 @@
-From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
-Date: Thu, 20 Nov 2008 13:57:53 +0100
-Message-ID: <7d01f9f00811200457v7589d731l787765553574276a@mail.gmail.com>
-References: <49231FD0.9040409@gmx.de>
-	 <1227061902.10371.11.camel@localhost.localdomain>
-	 <20081119091327.GB3270@tilt.dandreoli.com> <49243DF1.2010206@gmx.de>
-	 <492517F2.9060703@gmx.de>
+Date: Thu, 20 Nov 2008 10:14:38 -0500 (EST)
+Message-ID: <20081120151439.1AF714EDF@hiauly1.hia.nrc.ca>
+References: <492517F2.9060703@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: "James Bottomley" <James.Bottomley@hansenpartnership.com>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: "Helge Deller" <deller@gmx.de>
+Content-Type: text/plain; charset=US-ASCII
+Cc: James.Bottomley@HansenPartnership.com, deller@gmx.de,
+	linux-parisc@vger.kernel.org
+To: deller@gmx.de (Helge Deller)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <492517F2.9060703@gmx.de>
+In-Reply-To: <492517F2.9060703@gmx.de> from "Helge Deller" at Nov 20, 2008 08:55:30 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Nov 20, 2008 at 8:55 AM, Helge Deller <deller@gmx.de> wrote:
+> But I continued with testing:
+> 1) I modified James's ion-config for netbooting and built it. Crashed 
+> same way as Dave just reported in another mail (DEBUG_BLOCK_EXT_DEVT is 
+> enabled, you need to specify explicit textual name for "root=" boot option.)
 
-> 2) To avoid possible cross-compiler bugs I built James's ion-config (with no
-> modifications at all!) on the c3k natively. It booted yesterday nicely
-> without any problems from local disk. Today, I booted the same kernel, again
-> with no modifications or changes at all, just the same kernel which already
-> was on the disk, and it brought up a Slab corruption:
-[snip]
-> My conclusion is:
-> There is some problem somewhere.
-> It does not show up always. Changing some kernel configuration may bring the
-> bug up or it may not.
-> James, I think if you reboot your ion machine a few times or modify some
-> kernel configs, you probably will hit the bug as well.
+In my case, the "root=" option was specified in the palo command line,
+and I still got the error.  Tried booting several times and the same error
+occurred each time.
 
-Well on that topic, I've seen for a while (at least with 2.6.22.*) a
-similar case where the same unmodified kernel binary would, from time
-to time, fail to boot the machine (stuck with the timer_interrupt
-delayed message). ISTR that happened most frequently on my A500-5X.
-That may be something else, but the point is the symptom that "a given
-kernel behaves differently across reboots" is not something new, if
-that helps...
-
-T-Bone
-
+Dave
 -- 
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
