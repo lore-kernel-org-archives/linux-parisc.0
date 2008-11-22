@@ -1,81 +1,52 @@
-From: Andrew Morton <akpm@linux-foundation.org>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [PATCH] parisc: fix kernel crash when unwinding a userspace
- process (v2)
-Date: Fri, 21 Nov 2008 14:20:13 -0800
-Message-ID: <20081121142013.f8d59b3f.akpm@linux-foundation.org>
-References: <200811202258.56561.deller@gmx.de>
-	<200811211516.50750.deller@gmx.de>
-	<20081121111705.dc03a465.akpm@linux-foundation.org>
-	<49272F66.1010702@gmx.de>
+	process (v2)
+Date: Fri, 21 Nov 2008 22:53:01 -0700
+Message-ID: <20081122055301.GA12724@colo.lackof.org>
+References: <200811202258.56561.deller@gmx.de> <200811211516.50750.deller@gmx.de> <20081121111705.dc03a465.akpm@linux-foundation.org> <49272F66.1010702@gmx.de> <20081121142013.f8d59b3f.akpm@linux-foundation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org, kyle@hera.kernel.org,
-	randolph@tausq.org, stable@kernel.org
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	kyle@hera.kernel.org, randolph@tausq.org, stable@kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <49272F66.1010702@gmx.de>
+In-Reply-To: <20081121142013.f8d59b3f.akpm@linux-foundation.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 21 Nov 2008 23:00:06 +0100
-Helge Deller <deller@gmx.de> wrote:
+On Fri, Nov 21, 2008 at 02:20:13PM -0800, Andrew Morton wrote:
+...
+> > > Why has a fix for such a severe bug been floating around unmerged for
+> > > such a long time?
 
-> Andrew Morton wrote:
-> > On Fri, 21 Nov 2008 15:16:50 +0100
-> > Helge Deller <deller@gmx.de> wrote:
-> > 
-> >> Any user on existing parisc 32- and 64bit-kernels can easily crash
-> >> the kernel and as such enforce a DSO.
-> >> A simple testcase is available here: 
-> >>         http://gsyprf10.external.hp.com/~deller/crash.tgz
-> >>
-> >> The problem is introduced by the fact, that the handle_interruption()
-> >> crash handler calls the show_regs() function, which in turn tries
-> >> to unwind the stack by calling parisc_show_stack().
-> >> Since the stack contains userspace addresses, a try to unwind 
-> >> the stack is dangerous and useless and leads to the crash.
-> >>
-> >> The fix is trivial: For userspace processes
-> >> a) avoid to unwind the stack, and
-> >> b) avoid to resolve userspace addresses to kernel symbol names.
-> >>
-> >> While touching this code, I converted print_symbol() to %pS 
-> >> printk formats and made parisc_show_stack() static.
-> >>
-> >> An initial patch for this was written by Kyle McMartin back in August:
-> >> http://marc.info/?l=linux-parisc&m=121805168830283&w=2
-> >>
-> >> Compile and run-tested with a 64bit parisc kernel.
-> > 
-> > Why has a fix for such a severe bug been floating around unmerged for
-> > such a long time?
+Three people are listed for parisc-linux in MAINTAINERS.
+My understanding was Kyle would integrate and push patches.
+Willy and I would help by reviewing code, testing and misc crap.
+
+I asked if I should ACK parisc specific patches and was told in general
+I didn't need to. I will start sending "Reviewed By:" when I feel
+I understand what a patch fixes and that it's correct (even if not perfect).
+
+> > I've tried to push it upstream a few times...
 > 
-> I've tried to push it upstream a few times...
+> OK, well I'll merge it next week unless someone stops me.
 
-OK, well I'll merge it next week unless someone stops me.
+I won't stop you. :)
+Based on this posting:
+    http://marc.info/?l=linux-parisc&m=122726233324164&w=2
 
-> >> Patches for -stable series will follow shortly.
-> > 
-> > That shouldn't be needed - I'll cc stable on my copy and the stable
-> > maintainers should see that and pick it up.  The patch applies cleanly
-> > all the way back to 2.6.25.
-> 
-> Although it may apply to the older stable kernels, I'm currently not 
-> sure if this will work then.
-> We added the fixes for PA for the '%pS' vsprintf format pretty late. 
-> This is probably then a patch which needs backporting to stable as well 
-> (if it didn't happened yet):
-> 	commit deac93df26b20cf8438339b5935b5f5643bc30c9
-> 	Author: James Bottomley <James.Bottomley@HansenPartnership.com>
-> 	Date:   Wed Sep 3 20:43:36 2008 -0500
-> 	lib: Correct printk %pF to work on all architectures
+you can add:
+   Review-by: Randolph Chung <randolph@tausq.org>
 
-Oh, OK.  I'll update the stable tag in the patch appropriately.
+I trust Randolph - he used to have commit access to the parisc-linux.org
+CVS tree when we still used one.
 
-> Alternatively, I could write a little more simple patch, which is what I 
->   intended initially.
+And Helge has been great about fixing stuff - much better than the three
+listed maintainers lately.
+Kyle, willy, any objection to adding Helge to the MAINTAINERS list
+for PARISC port?
+I'd rather allow Helge to make a few small mistakes occasionally rather
+than watch his parisc specific patches fall on the floor.
 
-I'd suggest that you send that patch to stable@kernel.org in reply to
-this one when you see it get dropped from -mm.
-
-Unless someone stops me ;)
+thanks,
+grant
