@@ -1,52 +1,36 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [PATCH] parisc: fix kernel crash when unwinding a userspace
-	process (v2)
-Date: Fri, 21 Nov 2008 22:53:01 -0700
-Message-ID: <20081122055301.GA12724@colo.lackof.org>
-References: <200811202258.56561.deller@gmx.de> <200811211516.50750.deller@gmx.de> <20081121111705.dc03a465.akpm@linux-foundation.org> <49272F66.1010702@gmx.de> <20081121142013.f8d59b3f.akpm@linux-foundation.org>
+Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
+Date: Fri, 21 Nov 2008 22:57:54 -0700
+Message-ID: <20081122055754.GB12724@colo.lackof.org>
+References: <20081120035103.E1C62431A@hiauly1.hia.nrc.ca> <20081120165701.52A09431A@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	kyle@hera.kernel.org, randolph@tausq.org, stable@kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>
+Cc: James.Bottomley@HansenPartnership.com, deller@gmx.de,
+	linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081121142013.f8d59b3f.akpm@linux-foundation.org>
+In-Reply-To: <20081120165701.52A09431A@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Nov 21, 2008 at 02:20:13PM -0800, Andrew Morton wrote:
-...
-> > > Why has a fix for such a severe bug been floating around unmerged for
-> > > such a long time?
-
-Three people are listed for parisc-linux in MAINTAINERS.
-My understanding was Kyle would integrate and push patches.
-Willy and I would help by reviewing code, testing and misc crap.
-
-I asked if I should ACK parisc specific patches and was told in general
-I didn't need to. I will start sending "Reviewed By:" when I feel
-I understand what a patch fixes and that it's correct (even if not perfect).
-
-> > I've tried to push it upstream a few times...
+On Thu, Nov 20, 2008 at 11:57:00AM -0500, John David Anglin wrote:
+> > VFS: Cannot open root device "sda3" or unknown-block(0,0)
+> > Please append a correct "root=" boot option; here are the available partitions:
+> > DEBUG_BLOCK_EXT_DEVT is enabled, you need to specify explicit textual name for "root=" boot option.
+> > Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
+> > Rebooting in 5 seconds..
 > 
-> OK, well I'll merge it next week unless someone stops me.
+> I would guess this is because the kernel is in the palo partition.  2.6.27
+> doesn't have this problem...
 
-I won't stop you. :)
-Based on this posting:
-    http://marc.info/?l=linux-parisc&m=122726233324164&w=2
+I'm not seeing this with 2.6.28-rc3 or 2.6.28-rc5.
+But I don't have DEBUG_BLOCK_EXT_DEVT enabled either.
 
-you can add:
-   Review-by: Randolph Chung <randolph@tausq.org>
+The palo partition is just another ext2 filesystem from the kernel
+point of view.
 
-I trust Randolph - he used to have commit access to the parisc-linux.org
-CVS tree when we still used one.
+Maybe the full device pathname (e.g. root=/dev/sda3) is required?
+It fully failed to associate sda3 with a known block device.
 
-And Helge has been great about fixing stuff - much better than the three
-listed maintainers lately.
-Kyle, willy, any objection to adding Helge to the MAINTAINERS list
-for PARISC port?
-I'd rather allow Helge to make a few small mistakes occasionally rather
-than watch his parisc specific patches fall on the floor.
-
-thanks,
+hth,
 grant
