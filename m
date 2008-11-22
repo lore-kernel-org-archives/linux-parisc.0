@@ -1,63 +1,32 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: fix kernel crash when unwinding a userspace	process
- (v2)
-Date: Sat, 22 Nov 2008 21:09:57 +0100
-Message-ID: <49286715.6020805@gmx.de>
-References: <200811202258.56561.deller@gmx.de> <200811211516.50750.deller@gmx.de> <20081121111705.dc03a465.akpm@linux-foundation.org> <49272F66.1010702@gmx.de> <20081121142013.f8d59b3f.akpm@linux-foundation.org> <20081122055301.GA12724@colo.lackof.org> <20081122122208.GE5707@parisc-linux.org> <20081122180152.GC2690@colo.lackof.org>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
+Date: Sat, 22 Nov 2008 16:37:44 -0500
+Message-ID: <20081122213744.GA26202@hiauly1.hia.nrc.ca>
+References: <20081122061448.GD12724@colo.lackof.org> <20081122194814.10E874EDF@hiauly1.hia.nrc.ca>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	linux-parisc@vger.kernel.org, kyle@hera.kernel.org,
-	randolph@tausq.org, stable@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Cc: James.Bottomley@HansenPartnership.com, deller@gmx.de,
+	linux-parisc@vger.kernel.org
 To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081122180152.GC2690@colo.lackof.org>
+In-Reply-To: <20081122194814.10E874EDF@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Grant Grundler wrote:
-> On Sat, Nov 22, 2008 at 05:22:09AM -0700, Matthew Wilcox wrote:
->> On Fri, Nov 21, 2008 at 10:53:01PM -0700, Grant Grundler wrote:
->>> And Helge has been great about fixing stuff - much better than the three
->>> listed maintainers lately.
->>> Kyle, willy, any objection to adding Helge to the MAINTAINERS list
->>> for PARISC port?
->>> I'd rather allow Helge to make a few small mistakes occasionally rather
->>> than watch his parisc specific patches fall on the floor.
->> No objection from me.  I think it's time to remove me from MAINTAINERS
->> as it's probably been six months since I last turned on any of my parisc
->> machines.
-> 
-> Thanks!  We have quorum.
-> Andrew can you please apply this and send to linus?
-> Or should I start acting like a maintainer and send it myself? :)
-> 
-> Willy, I'm not removing you from Cupertino test ring LDAP or any other
-> privileges unless you ask me to. Just note I appreciate all of your past
-> (and future) help with the port and you are always welcome in Mountain View.
-> 
-> thanks,
-> grant
-> 
-> Signed-off-By: Grant Grundler <grundler@parisc-linux.org>
-> Reviewed-by: Matthew Wilcox <matthew@wil.cx>
+On Sat, 22 Nov 2008, John David Anglin wrote:
 
-Acked-by: Helge Deller <deller@gmx.de>
-
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 618c1ef..5b5034c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3294,8 +3294,8 @@ S:	Maintained
->  PARISC ARCHITECTURE
->  P:	Kyle McMartin
->  M:	kyle@mcmartin.ca
-> -P:	Matthew Wilcox
-> -M:	matthew@wil.cx
-> +P:	Helge Deller
-> +M:	deller@gmx.de
->  P:	Grant Grundler
->  M:	grundler@parisc-linux.org
->  L:	linux-parisc@vger.kernel.org
+> Added a couple of printks:
 > 
+> VFS: name="/dev/root", p="cramfs"
+> err=-6
+> VFS: Cannot open root device "sda3" or unknown-block(0,0)
+> Please append a correct "root=" boot option; here are the available partitions:
 
+Boots if I add initrd=1/initrd.img.  Have to say the error message isn't
+very helpful.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
