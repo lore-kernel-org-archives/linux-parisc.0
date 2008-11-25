@@ -1,71 +1,50 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
-Date: Tue, 25 Nov 2008 14:58:50 +0100
-Message-ID: <20081125145850.1a5ddf23.gmsoft@tuxicoman.be>
-References: <20081123165718.0D5A94DCB@hiauly1.hia.nrc.ca>
-	<20081125025421.9745A4FB6@hiauly1.hia.nrc.ca>
-	<119aab440811250533y1a09a396i318dfc057ad0d659@mail.gmail.com>
+From: Kyle McMartin <kyle@infradead.org>
+Subject: Re: [PATCH] parisc: fix kernel crash when unwinding a userspace
+	process
+Date: Tue, 25 Nov 2008 12:03:56 -0500
+Message-ID: <20081125170356.GB30056@bombadil.infradead.org>
+References: <200811202258.56561.deller@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
-	grundler@parisc-linux.org, deller@gmx.de,
-	linux-parisc@vger.kernel.org
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org,
+	Kyle Mc Martin <kyle@hera.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Randolph Chung <randolph@tausq.org>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440811250533y1a09a396i318dfc057ad0d659@mail.gmail.com>
+In-Reply-To: <200811202258.56561.deller@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-Hi Carlos,
-
-It has been happening to me as far back as 2.6.25 IIRC.
-It occurs only on SMP kernels and on various models (K410, L2000).
-
-I've tried to bissect that as well but kernel before 2.6.25 aren't really useable SMP due to the global irq bug or so.
-
-To me that is a bug that as always been there. It is random but some builds almost always fail. Not always at the same place tho.
-
-Cheers,
-  Guy
-
-On Tue, 25 Nov 2008 08:33:24 -0500
-"Carlos O'Donell" <carlos@systemhalted.org> wrote:
-
-> On Mon, Nov 24, 2008 at 9:54 PM, John David Anglin
-> <dave@hiauly1.hia.nrc.ca> wrote:
-> > The segv looks to be in _dl_fixup at 0xf3b8 in /lib/ld.so.1.
+On Thu, Nov 20, 2008 at 10:58:56PM +0100, Helge Deller wrote:
+> Any user on existing parisc 32- and 64bit-kernels can easily crash
+> the kernel and as such enforce a DSO.
+> A simple testcase is available here: 
+> 	http://gsyprf10.external.hp.com/~deller/crash.tgz
 > 
-> The dynamic loader is sensitive to VM bugs, as are several of the
-> glibc tests. Too bad you probably can't run the glibc testsuite on
-> this kernel.
+> The problem is introduced by the fact, that the handle_interruption()
+> crash handler calls the show_regs() function, which in turn tries
+> to unwind the stack by calling parisc_show_stack().
+> Since the stack contains userspace addresses, a try to unwind 
+> the stack is dangerous and useless and leads to the crash.
 > 
-> Given your earlier comments it would seen the segfault is not
-> reproducible and happens often and randomly?
+> The fix is trivial: For userspace processes
+> a) avoid to unwind the stack, and
+> b) avoid to resolve userspace addresses to kernel symbol names.
 > 
-> The _dl_fixup routine is very complicated, and eventually responsible
-> for mapping in a new shared library. This could tickle any number of
-> VM bugs.
+> While touching this code, I converted print_symbol() to %pS 
+> printk formats and made parisc_show_stack() static.
 > 
-> The only way I know how to solve this class of problem is to start
-> bisecting the kernel until it works again and determine what commit
-> made the stability worse.
+> An initial patch for this was written by Kyle McMartin back in August:
+> http://marc.info/?l=linux-parisc&m=121805168830283&w=2
 > 
-> $0.02.
+> Compile and run-tested with a 64bit parisc kernel.
+> Patches for -stable series will follow shortly.
 > 
-> I'm still organizing the new house Kristine and I are renting, and my
-> rack is only partly cabled up at this point. I'll try to get on that
-> ASAP so I can also have a look at the latest kernel.
+> Signed-off-by: Helge Deller <deller@gmx.de>
 > 
-> Cheers,
-> Carlos.
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
+Sorry, I've been sick for the last few days. I see this has already been
+applied, cool.
 
--- 
-Guy Martin
-Gentoo Linux - HPPA port lead
-
+Anyway, acked-by me.
