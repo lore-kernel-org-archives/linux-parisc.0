@@ -1,42 +1,56 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [PATCH] parisc: fix kernel crash when unwinding a userspace
-	process (v2)
-Date: Tue, 25 Nov 2008 21:59:01 -0500
-Message-ID: <20081126025901.GK30056@bombadil.infradead.org>
-References: <200811202258.56561.deller@gmx.de> <200811211516.50750.deller@gmx.de> <20081121111705.dc03a465.akpm@linux-foundation.org> <49272F66.1010702@gmx.de> <20081121142013.f8d59b3f.akpm@linux-foundation.org> <20081122055301.GA12724@colo.lackof.org> <20081125172000.GD30056@bombadil.infradead.org> <20081126024756.GC27315@colo.lackof.org>
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
+Date: Wed, 26 Nov 2008 18:51:43 +0100
+Message-ID: <20081126185143.065841db@tuxicoman.be>
+References: <20081123165718.0D5A94DCB@hiauly1.hia.nrc.ca>
+	<20081125025421.9745A4FB6@hiauly1.hia.nrc.ca>
+	<119aab440811250533y1a09a396i318dfc057ad0d659@mail.gmail.com>
+	<20081125145850.1a5ddf23.gmsoft@tuxicoman.be>
+	<119aab440811250607h5c2afd5cmf72914c3fe125077@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	kyle@hera.kernel.org, randolph@tausq.org, stable@kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
+	grundler@parisc-linux.org, deller@gmx.de,
+	linux-parisc@vger.kernel.org
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081126024756.GC27315@colo.lackof.org>
+In-Reply-To: <119aab440811250607h5c2afd5cmf72914c3fe125077@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Nov 25, 2008 at 07:47:56PM -0700, Grant Grundler wrote:
-> On Tue, Nov 25, 2008 at 12:20:00PM -0500, Kyle McMartin wrote:
-> > On Fri, Nov 21, 2008 at 10:53:01PM -0700, Grant Grundler wrote:
-> > > And Helge has been great about fixing stuff - much better than the three
-> > > listed maintainers lately.
-> > 
-> > You have an awful lot of nerve saying this, considering.
-> 
-> Kyle,
-> For parisc specific files, I've seen more patches from Helge on
-> linux-parisc than anyone else. That's all I meant.  I know I've
-> contributed zero parisc patches in a long time.
-> I'm not out to offend anyone or pick on you specifically.
-> 
-> I routinely review other people's parisc patches, occasionally try to
-> narrow down the latest b0rkage, and will continue with the care and
-> feeding of the public access machines in Cupertino. The "code review"
-> is the only reason I feel like I should continue as a listed maintainer.
-> 
 
-Possibly because I don't send my own to the mailing list unless I feel
-they need review?
+Hi Carlos,
 
-Seriously, I *am* offended and I believe I have every right to be.
+Sure I will. Any particular version you want me to test ?
+
+Also, I was quite lost with the flow of emails about kernel bugs lately.
+What kernel version should I use and which what patch set ?
+
+Cheers,
+ Guy
+
+On Tue, 25 Nov 2008 09:07:42 -0500
+"Carlos O'Donell" <carlos@systemhalted.org> wrote:
+
+> On Tue, Nov 25, 2008 at 8:58 AM, Guy Martin <gmsoft@tuxicoman.be>
+> wrote:
+> > It has been happening to me as far back as 2.6.25 IIRC.
+> > It occurs only on SMP kernels and on various models (K410, L2000).
+> >
+> > I've tried to bissect that as well but kernel before 2.6.25 aren't
+> > really useable SMP due to the global irq bug or so.
+> >
+> > To me that is a bug that as always been there. It is random but
+> > some builds almost always fail. Not always at the same place tho.
+> 
+> Can you build glibc, run the testsuite, and see if anything fails
+> semi-consistently?
+> 
+> Cheers,
+> Carlos.
+
+
+-- 
+Guy Martin
+Gentoo Linux - HPPA port lead
+
