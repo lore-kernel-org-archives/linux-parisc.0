@@ -1,56 +1,80 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
-Date: Wed, 26 Nov 2008 18:51:43 +0100
-Message-ID: <20081126185143.065841db@tuxicoman.be>
-References: <20081123165718.0D5A94DCB@hiauly1.hia.nrc.ca>
-	<20081125025421.9745A4FB6@hiauly1.hia.nrc.ca>
-	<119aab440811250533y1a09a396i318dfc057ad0d659@mail.gmail.com>
-	<20081125145850.1a5ddf23.gmsoft@tuxicoman.be>
-	<119aab440811250607h5c2afd5cmf72914c3fe125077@mail.gmail.com>
+Date: Sun, 30 Nov 2008 15:24:42 -0500 (EST)
+Message-ID: <20081130202443.7B1154FB4@hiauly1.hia.nrc.ca>
+References: <20081126185143.065841db@tuxicoman.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
-	grundler@parisc-linux.org, deller@gmx.de,
+Cc: carlos@systemhalted.org, grundler@parisc-linux.org, deller@gmx.de,
 	linux-parisc@vger.kernel.org
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+To: gmsoft@tuxicoman.be (Guy Martin)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440811250607h5c2afd5cmf72914c3fe125077@mail.gmail.com>
+In-Reply-To: <20081126185143.065841db@tuxicoman.be> from "Guy Martin" at Nov 26, 2008 06:51:43 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Hi,
 
-Hi Carlos,
+I just pulled and built Kyle's parisc-2.6 tree.  It essentially 2.6.28-rc6
+plus four extra patches (three parisc specific).
 
-Sure I will. Any particular version you want me to test ?
+I am seeing these warnings in a 64-bit kernel build:
 
-Also, I was quite lost with the flow of emails about kernel bugs lately.
-What kernel version should I use and which what patch set ?
+drivers/input/keyboard/hilkbd.c: In function 'hil_init_chip':
+drivers/input/keyboard/hilkbd.c:317: warning: format '%08lx' expects type 'long unsigned int', but argument 2 has type 'resource_size_t'
 
-Cheers,
- Guy
+drivers/net/lasi_82596.c: In function 'lan_init_chip':
+drivers/net/lasi_82596.c:164: warning: format '%lx' expects type 'long unsigned 
+int', but argument 3 has type 'resource_size_t'
+drivers/net/lasi_82596.c:169: warning: format '%lx' expects type 'long unsigned 
+int', but argument 2 has type 'resource_size_t'
 
-On Tue, 25 Nov 2008 09:07:42 -0500
-"Carlos O'Donell" <carlos@systemhalted.org> wrote:
+drivers/parisc/ccio-dma.c: In function 'ccio_init_resource':
+drivers/parisc/ccio-dma.c:1403: warning: format '%08lx' expects type 'long unsig
+ned int', but argument 3 has type 'resource_size_t'drivers/parisc/ccio-dma.c:1403: warning: format '%08lx' expects type 'long unsigned int', but argument 4 has type 'resource_size_t'
+drivers/parisc/ccio-dma.c: In function 'ccio_probe':
+drivers/parisc/ccio-dma.c:1554: warning: format '%lx' expects type 'long unsigned int', but argument 3 has type 'resource_size_t'
 
-> On Tue, Nov 25, 2008 at 8:58 AM, Guy Martin <gmsoft@tuxicoman.be>
-> wrote:
-> > It has been happening to me as far back as 2.6.25 IIRC.
-> > It occurs only on SMP kernels and on various models (K410, L2000).
-> >
-> > I've tried to bissect that as well but kernel before 2.6.25 aren't
-> > really useable SMP due to the global irq bug or so.
-> >
-> > To me that is a bug that as always been there. It is random but
-> > some builds almost always fail. Not always at the same place tho.
-> 
-> Can you build glibc, run the testsuite, and see if anything fails
-> semi-consistently?
-> 
-> Cheers,
-> Carlos.
+drivers/parisc/hppb.c: In function 'hppb_probe':
+drivers/parisc/hppb.c:65: warning: format '%x' expects type 'unsigned int', but argument 2 has type 'resource_size_t'
+drivers/parisc/hppb.c:77: warning: format '%08x' expects type 'unsigned int', but argument 3 has type 'resource_size_t'
+drivers/parisc/hppb.c:77: warning: format '%08x' expects type 'unsigned int', but argument 4 has type 'resource_size_t'
 
+drivers/parisc/dino.c:822: warning: format '%lx' expects type 'long unsigned int', but argument 4 has type 'resource_size_t'
+drivers/parisc/dino.c:822: warning: format '%lx' expects type 'long unsigned int', but argument 5 has type 'resource_size_t'
+drivers/parisc/dino.c: In function 'dino_common_init':
+drivers/parisc/dino.c:902: warning: format '%lx' expects type 'long unsigned int', but argument 3 has type 'resource_size_t'
+drivers/parisc/dino.c:902: warning: format '%lx' expects type 'long unsigned int', but argument 4 has type 'resource_size_t'
 
+drivers/parisc/asp.c: In function 'asp_init_chip':
+drivers/parisc/asp.c:85: warning: format '%lx' expects type 'long unsigned int', but argument 4 has type 'resource_size_t'
+
+drivers/parport/parport_gsc.c: In function 'parport_init_chip':
+drivers/parport/parport_gsc.c:356: warning: format '%lx' expects type 'long unsigned int', but argument 2 has type 'resource_size_t'
+
+drivers/serial/8250_gsc.c: In function 'serial_init_chip':
+drivers/serial/8250_gsc.c:44: warning: format '%lx' expects type 'long unsigned 
+int', but argument 2 has type 'resource_size_t'
+
+sound/parisc/harmony.c: In function 'snd_harmony_create':
+sound/parisc/harmony.c:938: warning: format '%lx' expects type 'long unsigned in
+t', but argument 2 has type 'resource_size_t'
+
+'resource_size_t' is defined in linux/types.h:
+
+#ifdef CONFIG_PHYS_ADDR_T_64BIT
+typedef u64 phys_addr_t;
+#else
+typedef u32 phys_addr_t;
+#endif
+
+typedef phys_addr_t resource_size_t;
+
+CONFIG_PHYS_ADDR_T_64BIT is defined in linux/autoconf.h, so I have to think
+it is not being included, resulting in incorrect defines for phys_addr_t.
+Is this what needs to be done?
+
+Dave
 -- 
-Guy Martin
-Gentoo Linux - HPPA port lead
-
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
