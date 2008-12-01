@@ -1,48 +1,97 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] 2.6.28-rc6 update parisc MAINTAINERS
-Date: Mon, 01 Dec 2008 16:59:02 +0100
-Message-ID: <493409C6.6050607@gmx.de>
-References: <200811202258.56561.deller@gmx.de> <200811211516.50750.deller@gmx.de> <20081121111705.dc03a465.akpm@linux-foundation.org> <49272F66.1010702@gmx.de> <20081121142013.f8d59b3f.akpm@linux-foundation.org> <20081122055301.GA12724@colo.lackof.org> <20081122122208.GE5707@parisc-linux.org> <20081122180152.GC2690@colo.lackof.org> <20081201072134.GE17583@colo.lackof.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	linux-parisc@vger.kernel.org, kyle@hera.kernel.org,
-	randolph@tausq.org, stable@kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
+From: akpm@linux-foundation.org
+Subject: [patch 3/3] parisc: use the new byteorder headers
+Date: Mon, 01 Dec 2008 14:28:17 -0800
+Message-ID: <200812012228.mB1MSHev017242@imap1.linux-foundation.org>
+Cc: linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
+	harvey.harrison@gmail.com, willy@debian.org
+To: kyle@mcmartin.ca
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081201072134.GE17583@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Grant Grundler wrote:
-> On Sat, Nov 22, 2008 at 11:01:52AM -0700, Grant Grundler wrote:
->> On Sat, Nov 22, 2008 at 05:22:09AM -0700, Matthew Wilcox wrote:
->>> On Fri, Nov 21, 2008 at 10:53:01PM -0700, Grant Grundler wrote:
->>>> And Helge has been great about fixing stuff - much better than the three
->>>> listed maintainers lately.
->>>> Kyle, willy, any objection to adding Helge to the MAINTAINERS list
->>>> for PARISC port?
->>>> I'd rather allow Helge to make a few small mistakes occasionally rather
->>>> than watch his parisc specific patches fall on the floor.
->>> No objection from me.  I think it's time to remove me from MAINTAINERS
->>> as it's probably been six months since I last turned on any of my parisc
->>> machines.
->> Thanks!  We have quorum.
->> Andrew can you please apply this and send to linus?
->> Or should I start acting like a maintainer and send it myself? :)
->>
->> Willy, I'm not removing you from Cupertino test ring LDAP or any other
->> privileges unless you ask me to. Just note I appreciate all of your past
->> (and future) help with the port and you are always welcome in Mountain View.
-> 
-> Andrew,
-> 
-> Updated version of this patch: I'm removing my own name as well for some of
-> the same reasons as willy. 
+From: Harvey Harrison <harvey.harrison@gmail.com>
 
-Grant, even if you are currently only occasionally fixing bugs or 
-reviewing patches, I think it would still be valuable to keep you listed 
-here as one of the parisc maintainers.
+Signed-off-by: Harvey Harrison <harvey.harrison@gmail.com>
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: Matthew Wilcox <willy@debian.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
 
-Helge
+ arch/parisc/include/asm/byteorder.h |   37 ++++++++------------------
+ 1 file changed, 12 insertions(+), 25 deletions(-)
 
+diff -puN arch/parisc/include/asm/byteorder.h~parisc-use-the-new-byteorder-headers arch/parisc/include/asm/byteorder.h
+--- a/arch/parisc/include/asm/byteorder.h~parisc-use-the-new-byteorder-headers
++++ a/arch/parisc/include/asm/byteorder.h
+@@ -4,9 +4,10 @@
+ #include <asm/types.h>
+ #include <linux/compiler.h>
+ 
+-#ifdef __GNUC__
++#define __BIG_ENDIAN
++#define __SWAB_64_THRU_32__
+ 
+-static __inline__ __attribute_const__ __u16 ___arch__swab16(__u16 x)
++static inline __attribute_const__ __u16 __arch_swab16(__u16 x)
+ {
+ 	__asm__("dep %0, 15, 8, %0\n\t"		/* deposit 00ab -> 0bab */
+ 		"shd %%r0, %0, 8, %0"		/* shift 000000ab -> 00ba */
+@@ -14,8 +15,9 @@ static __inline__ __attribute_const__ __
+ 		: "0" (x));
+ 	return x;
+ }
++#define __arch_swab16 __arch_swab16
+ 
+-static __inline__ __attribute_const__ __u32 ___arch__swab24(__u32 x)
++static inline __attribute_const__ __u32 __arch_swab24(__u32 x)
+ {
+ 	__asm__("shd %0, %0, 8, %0\n\t"		/* shift xabcxabc -> cxab */
+ 		"dep %0, 15, 8, %0\n\t"		/* deposit cxab -> cbab */
+@@ -25,7 +27,7 @@ static __inline__ __attribute_const__ __
+ 	return x;
+ }
+ 
+-static __inline__ __attribute_const__ __u32 ___arch__swab32(__u32 x)
++static inline __attribute_const__ __u32 __arch_swab32(__u32 x)
+ {
+ 	unsigned int temp;
+ 	__asm__("shd %0, %0, 16, %1\n\t"	/* shift abcdabcd -> cdab */
+@@ -35,7 +37,7 @@ static __inline__ __attribute_const__ __
+ 		: "0" (x));
+ 	return x;
+ }
+-
++#define __arch_swab32 __arch_swab32
+ 
+ #if BITS_PER_LONG > 32
+ /*
+@@ -48,7 +50,8 @@ static __inline__ __attribute_const__ __
+ **      HSHR    67452301 -> *6*4*2*0 into %0
+ **      OR      %0 | %1  -> 76543210 into %0 (all done!)
+ */
+-static __inline__ __attribute_const__ __u64 ___arch__swab64(__u64 x) {
++static inline __attribute_const__ __u64 __arch_swab64(__u64 x)
++{
+ 	__u64 temp;
+ 	__asm__("permh,3210 %0, %0\n\t"
+ 		"hshl %0, 8, %1\n\t"
+@@ -58,25 +61,9 @@ static __inline__ __attribute_const__ __
+ 		: "0" (x));
+ 	return x;
+ }
+-#define __arch__swab64(x) ___arch__swab64(x)
+-#define __BYTEORDER_HAS_U64__
+-#elif !defined(__STRICT_ANSI__)
+-static __inline__ __attribute_const__ __u64 ___arch__swab64(__u64 x)
+-{
+-	__u32 t1 = ___arch__swab32((__u32) x);
+-	__u32 t2 = ___arch__swab32((__u32) (x >> 32));
+-	return (((__u64) t1 << 32) | t2);
+-}
+-#define __arch__swab64(x) ___arch__swab64(x)
+-#define __BYTEORDER_HAS_U64__
+-#endif
+-
+-#define __arch__swab16(x) ___arch__swab16(x)
+-#define __arch__swab24(x) ___arch__swab24(x)
+-#define __arch__swab32(x) ___arch__swab32(x)
