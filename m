@@ -1,34 +1,33 @@
-From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git patches] parisc fixes for v2.6.28
-Date: Sun, 30 Nov 2008 21:41:57 +0000
-Message-ID: <20081130214157.GA27136@hera.kernel.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
+Date: Sun, 30 Nov 2008 19:00:12 -2900 (EST)
+Message-ID: <20081201000013.349294DF8@hiauly1.hia.nrc.ca>
+References: <4932FFB7.4040506@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: akpm@linux-foundation.org, linux-parisc@vger.kernel.org
-To: torvalds@linux-foundation.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: gmsoft@tuxicoman.be, carlos@systemhalted.org,
+	grundler@parisc-linux.org, linux-parisc@vger.kernel.org
+To: deller@gmx.de (Helge Deller)
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <4932FFB7.4040506@gmx.de> from "Helge Deller" at Nov 30, 2008 10:03:51 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The following changes since commit ed313489badef16d700f5a3be50e8fd8f8294bc8:
-  Linus Torvalds (1):
-        Merge master.kernel.org:/home/rmk/linux-2.6-arm
+> So, we should convert everything to (unsigned long long).
+> I was planning to send such patches soon, but didn't had time yet.
 
-are available in the git repository at:
+All the warnings are for addresses.  We also need to change the format
+specifier depending on whether addresses are 32 or 64 bits.  For example,
 
-  master.kernel.org:/pub/scm/linux/kernel/git/kyle/parisc-2.6.git master
+hil_init_chip(struct parisc_device *dev)
+{
+        if (!dev->irq) {
+		printk(KERN_WARNING "HIL: IRQ not found for HIL bus at 0x%08lx\n", dev->hpa.start);
 
-Geert Uytterhoeven (1):
-      parisc: __kernel_time_t is always long
+Are there some standard 32 and 64 bit defines for format strings?  Or, do we
+always want 16 hex digits?
 
-Helge Deller (1):
-      parisc: fix kernel crash when unwinding a userspace process
-
-Kay Sievers (1):
-      parisc: struct device - replace bus_id with dev_name(), dev_set_name()
-
- arch/parisc/include/asm/parisc-device.h |    4 +-
- arch/parisc/include/asm/posix_types.h   |    3 +-
- arch/parisc/kernel/drivers.c            |    6 +++-
- arch/parisc/kernel/traps.c              |   43 +++++++++++++++----------------
- 4 files changed, 28 insertions(+), 28 deletions(-)
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
