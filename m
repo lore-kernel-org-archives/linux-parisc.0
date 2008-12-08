@@ -1,30 +1,40 @@
 From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: parisc: fix io accessors for generic byteorder.h
-Date: Sun, 7 Dec 2008 23:58:29 -0500
-Message-ID: <20081208045829.GF9092@bombadil.infradead.org>
-References: <20081208044317.GB9092@bombadil.infradead.org> <1228712159.5998.2.camel@brick>
+Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
+Date: Mon, 8 Dec 2008 00:15:21 -0500
+Message-ID: <20081208051521.GI9092@bombadil.infradead.org>
+References: <4932FFB7.4040506@gmx.de> <20081201000013.349294DF8@hiauly1.hia.nrc.ca> <7d01f9f00812010254s3bf845cr8e2b35fe2dedc125@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
-To: Harvey Harrison <harvey.harrison@gmail.com>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	Helge Deller <deller@gmx.de>, gmsoft@tuxicoman.be,
+	carlos@systemhalted.org, grundler@parisc-linux.org,
+	linux-parisc@vger.kernel.org
+To: Thibaut VARENE <T-Bone@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1228712159.5998.2.camel@brick>
+In-Reply-To: <7d01f9f00812010254s3bf845cr8e2b35fe2dedc125@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Dec 07, 2008 at 08:55:59PM -0800, Harvey Harrison wrote:
-> On Sun, 2008-12-07 at 23:43 -0500, Kyle McMartin wrote:
-> > These were using __fswabX which is marooned in <linux/byteorder/swab.h>
-> > instead we'll just use the __arch_swabX defines from <asm/byteorder.h>
-> > 
+On Mon, Dec 01, 2008 at 11:54:25AM +0100, Thibaut VARENE wrote:
+> On Tue, Dec 2, 2008 at 1:00 AM, John David Anglin
+> <dave@hiauly1.hia.nrc.ca> wrote:
 > 
-> Sorry I missed this usage :-/
+> >
+> > Are there some standard 32 and 64 bit defines for format strings?  Or, do we
+> > always want 16 hex digits?
 > 
-> Any reason not to just use __swab16 __swab32 __swab64?  I'd like to keep
-> the __arch helpers confined to swab.h only.
+> In traps.c we used to do this for the regs dump:
 > 
+> #ifdef __LP64__
+> #define RFMT "%016lx"
+> #else
+> #define RFMT "%08lx"
+> #endif
+> 
+> and then sprintf(p, " " RFMT, (i+j) == 0 ? 0 : regs->gr[i + j]);
+> 
+> I guess a similar trick could do, to some extent?
 
-Not particularly, I believe the idea of using fswabX was to Make Damned
-Sure(tm) that gcc wouldn't eliminate the expression by being too smart
-for its own good. It's probably fine now, though I have half a mind to
-just fold it in.
+The prettiest way to do it would be to add a %p handler for
+resource_size_t args, cheat on the pointing bit, and clean up the
+in-tree users of %llx/ull-casts.
