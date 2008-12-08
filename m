@@ -1,28 +1,30 @@
-From: Harvey Harrison <harvey.harrison@gmail.com>
+From: Kyle McMartin <kyle@infradead.org>
 Subject: Re: parisc: fix io accessors for generic byteorder.h
-Date: Sun, 07 Dec 2008 20:55:59 -0800
-Message-ID: <1228712159.5998.2.camel@brick>
-References: <20081208044317.GB9092@bombadil.infradead.org>
+Date: Sun, 7 Dec 2008 23:58:29 -0500
+Message-ID: <20081208045829.GF9092@bombadil.infradead.org>
+References: <20081208044317.GB9092@bombadil.infradead.org> <1228712159.5998.2.camel@brick>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: text/plain; charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
+To: Harvey Harrison <harvey.harrison@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081208044317.GB9092@bombadil.infradead.org>
+In-Reply-To: <1228712159.5998.2.camel@brick>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 2008-12-07 at 23:43 -0500, Kyle McMartin wrote:
-> These were using __fswabX which is marooned in <linux/byteorder/swab.h>
-> instead we'll just use the __arch_swabX defines from <asm/byteorder.h>
+On Sun, Dec 07, 2008 at 08:55:59PM -0800, Harvey Harrison wrote:
+> On Sun, 2008-12-07 at 23:43 -0500, Kyle McMartin wrote:
+> > These were using __fswabX which is marooned in <linux/byteorder/swab.h>
+> > instead we'll just use the __arch_swabX defines from <asm/byteorder.h>
+> > 
+> 
+> Sorry I missed this usage :-/
+> 
+> Any reason not to just use __swab16 __swab32 __swab64?  I'd like to keep
+> the __arch helpers confined to swab.h only.
 > 
 
-Sorry I missed this usage :-/
-
-Any reason not to just use __swab16 __swab32 __swab64?  I'd like to keep
-the __arch helpers confined to swab.h only.
-
-Cheers,
-
-Harvey
-
+Not particularly, I believe the idea of using fswabX was to Make Damned
+Sure(tm) that gcc wouldn't eliminate the expression by being too smart
+for its own good. It's probably fine now, though I have half a mind to
+just fold it in.
