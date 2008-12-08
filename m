@@ -1,30 +1,34 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: patchwork running on linux-parisc@
-Date: Mon, 8 Dec 2008 07:41:11 -0500
-Message-ID: <119aab440812080441k6d189fb2jdfa33d849364d02d@mail.gmail.com>
-References: <20081208000858.GK28348@bombadil.infradead.org>
-	 <20081208054643.GB2413@colo.lackof.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
+Date: Mon, 8 Dec 2008 09:54:50 -0500 (EST)
+Message-ID: <20081208145451.2116F4EDA@hiauly1.hia.nrc.ca>
+References: <119aab440812080439l12c2feb8u500eeea3ad5bbd20@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "Kyle McMartin" <kyle@infradead.org>, linux-parisc@vger.kernel.org
-To: "Grant Grundler" <grundler@parisc-linux.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: grundler@parisc-linux.org, deller@gmx.de,
+	linux-parisc@vger.kernel.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081208054643.GB2413@colo.lackof.org>
+In-Reply-To: <119aab440812080439l12c2feb8u500eeea3ad5bbd20@mail.gmail.com> from "Carlos O'Donell" at Dec 8, 2008 07:39:55 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Dec 8, 2008 at 12:46 AM, Grant Grundler
-<grundler@parisc-linux.org> wrote:
-> On Sun, Dec 07, 2008 at 07:08:58PM -0500, Kyle McMartin wrote:
->> I've enabled a patchwork installation, hopefully I won't miss any more
->> patches posted on the list now. Please ensure all patches destined for
->> the kernel hit the mailing list, so they get archived by patchwork...
->>
->>       http://patchwork.cabal.ca/project/linux-parisc/list/
->
-> Kyle - this is awesome! Thanks!
+> > So, the code is using the thread register (cr27).  Not sure what syscall
+> > this is.  However, the problem might be TLS releated.
+> 
+> The thread register has always been used to track thread specific
+> information, even in linuxthreads.
+> 
+> The syscall is __NR_futex.
+> 
+> If you can produce a synthetic testcase that calls __NR_futex and
+> crashes the kernel then we'll have something for the kernel hackers to
+> look at?
 
-Really very cool!
+How long have futex's been used on hppa?  I guess we really need to try
+run the glibc testsuite on a new kernel.
 
-Cheers,
-Carlos.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
