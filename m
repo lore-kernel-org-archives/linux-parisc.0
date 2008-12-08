@@ -1,40 +1,49 @@
-From: Kyle McMartin <kyle@infradead.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
-Date: Mon, 8 Dec 2008 11:00:51 -0500
-Message-ID: <20081208160051.GB30783@bombadil.infradead.org>
-References: <20081208153413.GJ9092@bombadil.infradead.org> <20081208155754.DD5184E7A@hiauly1.hia.nrc.ca> <20081208160021.GA30783@bombadil.infradead.org>
+Date: Mon, 8 Dec 2008 17:14:28 -0500
+Message-ID: <119aab440812081414h2145521axb3bc426db9c776be@mail.gmail.com>
+References: <119aab440812080439l12c2feb8u500eeea3ad5bbd20@mail.gmail.com>
+	 <20081208145451.2116F4EDA@hiauly1.hia.nrc.ca>
+	 <119aab440812080702k6ab8c0f4k772f0f0bc9eb2893@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	T-Bone@parisc-linux.org, deller@gmx.de, gmsoft@tuxicoman.be,
-	carlos@systemhalted.org, grundler@parisc-linux.org,
-	linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
+	"Helge Deller" <deller@gmx.de>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	"Grant Grundler" <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081208160021.GA30783@bombadil.infradead.org>
+In-Reply-To: <119aab440812080702k6ab8c0f4k772f0f0bc9eb2893@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Dec 08, 2008 at 11:00:21AM -0500, Kyle McMartin wrote:
-> On Mon, Dec 08, 2008 at 10:57:54AM -0500, John David Anglin wrote:
-> > > sadly %p can't work, since void * doesn't hold resource_size_t with
-> > > CONFIG_RESOURCES_64BIT on 32-bit, since resource_size_t would be ULL,
-> > > which is why the %p handler would work (although you'd either have to
-> > > pass &(resource_size_t) or do a bit of ick around the va_args to snatch
-> > > the correct width instead of just void *).
-> > 
-> > Sigh, you are right.  However, all the warnings apply to addresses,
-> > so I think the type for these addresses is wrong.  I can't really
-> > imagine a 32-bit kernel running with a 64-bit address space would
-> > be useful.
-> > 
-> 
-> Exactly, the config option (in the 64-bit on 32-bit sense) is limited in
-> utility to PAE on x86, where the physical address space is really
-> 36-bit, (and they cheat by using double-sized ptes to cram in a 64-bit
-> address.) Last time I tried to submit a patch to make it automatic in
-> Kconfig it was met with resounding bikeshedding.
-> 
+On Mon, Dec 8, 2008 at 10:02 AM, Carlos O'Donell
+<carlos@systemhalted.org> wrote:
+> On Mon, Dec 8, 2008 at 9:54 AM, John David Anglin
+> <dave@hiauly1.hia.nrc.ca> wrote:
+>>> > So, the code is using the thread register (cr27).  Not sure what syscall
+>>> > this is.  However, the problem might be TLS releated.
+>>>
+>>> The thread register has always been used to track thread specific
+>>> information, even in linuxthreads.
+>>>
+>>> The syscall is __NR_futex.
+>>>
+>>> If you can produce a synthetic testcase that calls __NR_futex and
+>>> crashes the kernel then we'll have something for the kernel hackers to
+>>> look at?
+>>
+>> How long have futex's been used on hppa?  I guess we really need to try
+>> run the glibc testsuite on a new kernel.
+>
+> The futex function has been available almost since futex's first appeared
 
-To reiterate though, I'm not at all adverse to making this option just
-go away on parisc32...
+I realized I didn't answer your question here.
+
+The futex function should only be called when compiling glibc with nptl enabled.
+
+Otherwise nothing in glibc should make futex calls.
+
+Broken futex calls shouldn't crash the kernel.
+
+Cheers,
+Carlos.
