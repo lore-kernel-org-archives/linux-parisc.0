@@ -1,33 +1,32 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
-Date: Mon, 8 Dec 2008 10:23:28 -0500 (EST)
-Message-ID: <20081208152328.E8C514EDA@hiauly1.hia.nrc.ca>
-References: <20081208051521.GI9092@bombadil.infradead.org>
+Date: Mon, 8 Dec 2008 10:30:00 -0500 (EST)
+Message-ID: <20081208153000.C69664F30@hiauly1.hia.nrc.ca>
+References: <119aab440812080702k6ab8c0f4k772f0f0bc9eb2893@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: T-Bone@parisc-linux.org, deller@gmx.de, gmsoft@tuxicoman.be,
-	carlos@systemhalted.org, grundler@parisc-linux.org,
-	linux-parisc@vger.kernel.org
-To: kyle@infradead.org (Kyle McMartin)
+Cc: deller@gmx.de, linux-parisc@vger.kernel.org,
+	grundler@parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081208051521.GI9092@bombadil.infradead.org> from "Kyle McMartin" at Dec 8, 2008 00:15:21 am
+In-Reply-To: <119aab440812080702k6ab8c0f4k772f0f0bc9eb2893@mail.gmail.com> from "Carlos O'Donell" at Dec 8, 2008 10:02:47 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> The prettiest way to do it would be to add a %p handler for
-> resource_size_t args, cheat on the pointing bit, and clean up the
-> in-tree users of %llx/ull-casts.
+> > How long have futex's been used on hppa?  I guess we really need to try
+> > run the glibc testsuite on a new kernel.
+> 
+> The futex function has been available almost since futex's first appeared
+> 
+> The futex API is exported to userspace and can be used by any application.
+> 
+> e.g. man futex
+> ~~~
+> NAME
+>        futex - Fast Userspace Locking system call
 
-I went through the warnings that I saw yesterday implementing Helge's
-%p suggestion.  It's not beautiful but it works.   I'll post tonight.
-
-I only fixed the occurences that popped up in my build.  I'm sure that
-more are lurking.
-
-Feel free to implement %p handler.
-
-I also fixed some other warnings and will post for comment when I separate
-the diffs.
+This is only supposition but a broken futex call might cause the type of
+problems we are seeing.
 
 Dave
 -- 
