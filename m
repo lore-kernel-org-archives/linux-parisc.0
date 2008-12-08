@@ -1,33 +1,40 @@
 From: Kyle McMartin <kyle@hera.kernel.org>
 Subject: [git] parisc: Changes to ref refs/heads/master
-Date: Mon, 8 Dec 2008 02:06:05 GMT
-Message-ID: <200812080206.mB82655g028686@hera.kernel.org>
+Date: Sun, 7 Dec 2008 21:13:55 -0500
+Message-ID: <20081208021355.GP28348@bombadil.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 New commits:
-commit 94b5339dbe820cf874e826c3c9bb62493bb4da7f
-Author: Roel Kluin <roel.kluin@gmail.com>
-Date:   Wed Dec 3 04:16:04 2008 +0000
+commit da8e3b106c259f1ef791d99cb153c172583d9aa7
+Author: Adrian Bunk <bunk@kernel.org>
+Date:   Tue Dec 2 03:28:16 2008 +0000
 
-    parisc: set_time() catch errors
+    parisc: drivers/parisc/: make code static
     
-    set_rtc_time returns negative on error, ret should be signed to catch those
+    Make the following needlessly global code static:
     
-    Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
-    Reviewed-by: Grant Grundler <grundler@parisc-linux.org>
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
-
-commit e4fdb8c6aae569fec4c68c76fc0cdaa23ba9c77d
-Author: Harvey Harrison <harvey.harrison@gmail.com>
-Date:   Tue Dec 2 03:28:17 2008 +0000
-
-    parisc: use the new byteorder headers
+    - asp.c: asp_init_chip()
+    - ccio-dma.c: ccio_io_pdir_entry()
+    - dino.c: struct dino_port_ops
+    - dino.c: struct dino_bios_ops
+    - hppb.c: struct hppb_card_head
+    - lasi.c: lasi_led_init()
+    - lasi.c: lasi_init_chip()
+    - lba_pci.c: struct lba_bios_ops
+    - sba_iommu.c: sba_io_pdir_entry()
+    - sba_iommu.c: sba_driver_callback()
+    - sba_iommu.c: sba_driver_callback()
+    - wax.c: wax_init_chip()
     
-    Signed-off-by: Harvey Harrison <harvey.harrison@gmail.com>
-    Cc: Matthew Wilcox <willy@debian.org>
+    Signed-off-by: Adrian Bunk <bunk@kernel.org>
+    Cc: Matthew Wilcox <matthew@wil.cx>
+    Cc: Grant Grundler <grundler@parisc-linux.org>
     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
     Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+
 
