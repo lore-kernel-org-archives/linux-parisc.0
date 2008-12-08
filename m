@@ -1,50 +1,46 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: parisc: fix io accessors for generic byteorder.h
-Date: Sun, 7 Dec 2008 23:43:17 -0500
-Message-ID: <20081208044317.GB9092@bombadil.infradead.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
+Date: Sun, 7 Dec 2008 23:50:02 -0500 (EST)
+Message-ID: <20081208045003.4CF644E99@hiauly1.hia.nrc.ca>
+References: <119aab440811250533y1a09a396i318dfc057ad0d659@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Harvey Harrison <harvey.harrison@gmail.com>
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: grundler@parisc-linux.org, deller@gmx.de,
+	linux-parisc@vger.kernel.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <119aab440811250533y1a09a396i318dfc057ad0d659@mail.gmail.com> from "Carlos O'Donell" at Nov 25, 2008 08:33:24 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-These were using __fswabX which is marooned in <linux/byteorder/swab.h>
-instead we'll just use the __arch_swabX defines from <asm/byteorder.h>
+> Given your earlier comments it would seen the segfault is not
+> reproducible and happens often and randomly?
 
-Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
----
- arch/parisc/include/asm/io.h |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+I gave 2.6.28-rc7-git5 a try this evening.  Hit the same error.
+While its occurence may be random, the identical fault occurred
+multiple times in a short period of testing.
 
-diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
-index 55ddb18..6943135 100644
---- a/arch/parisc/include/asm/io.h
-+++ b/arch/parisc/include/asm/io.h
-@@ -2,6 +2,7 @@
- #define _ASM_IO_H
- 
- #include <linux/types.h>
-+#include <asm/byteorder.h>
- #include <asm/pgtable.h>
- 
- extern unsigned long parisc_vmerge_boundary;
-@@ -180,11 +181,10 @@ static inline void __raw_writeq(unsigned long long b, volatile void __iomem *add
- 	*(volatile unsigned long long __force *) addr = b;
- }
- 
--/* readb can never be const, so use __fswab instead of le*_to_cpu */
- #define readb(addr) __raw_readb(addr)
--#define readw(addr) __fswab16(__raw_readw(addr))
--#define readl(addr) __fswab32(__raw_readl(addr))
--#define readq(addr) __fswab64(__raw_readq(addr))
-+#define readw(addr) __arch_swab16(__raw_readw(addr))
-+#define readl(addr) __arch_swab32(__raw_readl(addr))
-+#define readq(addr) __arch_swab64(__raw_readq(addr))
- #define writeb(b, addr) __raw_writeb(b, addr)
- #define writew(b, addr) __raw_writew(cpu_to_le16(b), addr)
- #define writel(b, addr) __raw_writel(cpu_to_le32(b), addr)
+I see this bit of code in _dl_fixup:
+
+0x401ed464 <_dl_fixup+172>:	mfctl tr3,r21
+0x401ed468 <_dl_fixup+176>:	ldw -3e0(r21),ret0
+0x401ed46c <_dl_fixup+180>:	cmpib,<> 0,ret0,0x401ed628 <_dl_fixup+624>
+
+and
+
+0x401ed5fc <_dl_fixup+580>:	ldi 1,r24
+0x401ed600 <_dl_fixup+584>:	ldi 0,r23
+0x401ed604 <_dl_fixup+588>:	mfctl tr3,r26
+0x401ed608 <_dl_fixup+592>:	copy r24,r25
+0x401ed60c <_dl_fixup+596>:	ldo -3dc(r26),r26
+0x401ed610 <_dl_fixup+600>:	copy r19,r4
+0x401ed614 <_dl_fixup+604>:	be,l 100(sr2,r0),sr0,r31
+0x401ed618 <_dl_fixup+608>:	ldi d2,r20
+
+So, the code is using the thread register (cr27).  Not sure what syscall
+this is.  However, the problem might be TLS releated.
+
+Dave
 -- 
-1.5.6.5
-
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
