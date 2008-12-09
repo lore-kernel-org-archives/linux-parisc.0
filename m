@@ -1,29 +1,32 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
-Date: Mon, 8 Dec 2008 23:14:21 -0500
-Message-ID: <20081209041421.GG30783@bombadil.infradead.org>
-References: <119aab440811250533y1a09a396i318dfc057ad0d659@mail.gmail.com> <20081208045003.4CF644E99@hiauly1.hia.nrc.ca> <20081208075001.GB28779@colo.lackof.org>
+From: Rusty Russell <rusty@rustcorp.com.au>
+Subject: Re: [PATCH] parisc: remove gratuitous cpu_online_map declaration.
+Date: Wed, 10 Dec 2008 08:36:19 +1030
+Message-ID: <200812100836.20148.rusty@rustcorp.com.au>
+References: <200812041012.41496.rusty@rustcorp.com.au> <20081209035407.GF30783@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	Carlos O'Donell <carlos@systemhalted.org>, deller@gmx.de,
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Cc: Grant Grundler <grundler@parisc-linux.org>,
 	linux-parisc@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: Kyle McMartin <kyle@infradead.org>,
+	Stephen Rothwell <sfr@canb.auug.org.au>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081208075001.GB28779@colo.lackof.org>
+In-Reply-To: <20081209035407.GF30783@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Dec 08, 2008 at 12:50:01AM -0700, Grant Grundler wrote:
-> > So, the code is using the thread register (cr27).  Not sure what syscall
-> > this is.  However, the problem might be TLS releated.
+On Tuesday 09 December 2008 14:24:07 Kyle McMartin wrote:
+> On Thu, Dec 04, 2008 at 10:12:41AM +1030, Rusty Russell wrote:
+> > This is defined in linux/cpumask.h (included in this file already),
+> > and this will break when the definition changes (in a following patch).
+> > 
+> > Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
 > 
-> I have no idea if TLS makes a difference to kernel builds.
-> 
+> Accepted, though it would have been nice if it had either hit all the
+> maintainers, or hit the list too...
 
-I don't think Debian is using NPTL yet due to $issues previously
-discussed...
+OK, I picked one maintainer at semi-random.   I've added you and Willy
+to my annoy-maintainers script.
 
-linuxthreads being broken in newer glibc sounds unsuprisingly though.
-
-regards, Kyle
+Thanks,
+Rusty.
