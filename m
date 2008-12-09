@@ -1,52 +1,29 @@
 From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [PATCH] parisc: remove gratuitous cpu_online_map declaration.
-Date: Mon, 8 Dec 2008 22:54:07 -0500
-Message-ID: <20081209035407.GF30783@bombadil.infradead.org>
-References: <200812041012.41496.rusty@rustcorp.com.au>
+Subject: Re: 2.6.28-rcX in pretty bad shape on parisc
+Date: Mon, 8 Dec 2008 23:14:21 -0500
+Message-ID: <20081209041421.GG30783@bombadil.infradead.org>
+References: <119aab440811250533y1a09a396i318dfc057ad0d659@mail.gmail.com> <20081208045003.4CF644E99@hiauly1.hia.nrc.ca> <20081208075001.GB28779@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	linux-kernel@vger.kernel.org,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	Carlos O'Donell <carlos@systemhalted.org>, deller@gmx.de,
 	linux-parisc@vger.kernel.org
-To: Rusty Russell <rusty@rustcorp.com.au>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200812041012.41496.rusty@rustcorp.com.au>
+In-Reply-To: <20081208075001.GB28779@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Dec 04, 2008 at 10:12:41AM +1030, Rusty Russell wrote:
-> This is defined in linux/cpumask.h (included in this file already),
-> and this will break when the definition changes (in a following patch).
+On Mon, Dec 08, 2008 at 12:50:01AM -0700, Grant Grundler wrote:
+> > So, the code is using the thread register (cr27).  Not sure what syscall
+> > this is.  However, the problem might be TLS releated.
 > 
-> Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+> I have no idea if TLS makes a difference to kernel builds.
+> 
 
-Accepted, though it would have been nice if it had either hit all the
-maintainers, or hit the list too...
+I don't think Debian is using NPTL yet due to $issues previously
+discussed...
 
-cheers, Kyle
+linuxthreads being broken in newer glibc sounds unsuprisingly though.
 
-> ---
->  arch/parisc/include/asm/smp.h |    2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/parisc/include/asm/smp.h b/arch/parisc/include/asm/smp.h
-> --- a/arch/parisc/include/asm/smp.h
-> +++ b/arch/parisc/include/asm/smp.h
-> @@ -15,8 +15,6 @@
->  #include <linux/threads.h>	/* for NR_CPUS */
->  #include <linux/cpumask.h>
->  typedef unsigned long address_t;
-> -
-> -extern cpumask_t cpu_online_map;
->  
->  
->  /*
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
-> 
+regards, Kyle
