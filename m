@@ -1,11 +1,12 @@
 From: Kyle McMartin <kyle@infradead.org>
 Subject: Re: setup_arch/arch_get_boot_command_line changes
-Date: Tue, 9 Dec 2008 17:59:31 -0500
-Message-ID: <20081209225931.GA7015@bombadil.infradead.org>
-References: <200812100850.26728.rusty@rustcorp.com.au>
+Date: Tue, 9 Dec 2008 18:02:14 -0500
+Message-ID: <20081209230214.GB7015@bombadil.infradead.org>
+References: <200812100850.26728.rusty@rustcorp.com.au> <20081209225931.GA7015@bombadil.infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+Cc: Rusty Russell <rusty@rustcorp.com.au>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
 	linux-kernel@vger.kernel.org, dhowells@redhat.com,
 	Richard Henderson <rth@twiddle.net>,
 	Russell King <rmk@arm.linux.org.uk>,
@@ -25,24 +26,16 @@ Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
 	Jeff Dike <jdike@addtoit.com>, Ingo Molnar <mingo@redhat.com>,
 	Chris Zankel <chris@zankel.net>,
 	Linus Torvalds <torvalds@linux-foundation.org>
-To: Rusty Russell <rusty@rustcorp.com.au>
+To: Kyle McMartin <kyle@infradead.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200812100850.26728.rusty@rustcorp.com.au>
+In-Reply-To: <20081209225931.GA7015@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Dec 10, 2008 at 08:50:24AM +1030, Rusty Russell wrote:
-> Rusty Russell (10):
-> <snip>
->       param: move banner printing to top of start_kernel.    
+On Tue, Dec 09, 2008 at 05:59:31PM -0500, Kyle McMartin wrote:
+> Will this not run afoul of lockdep since it will be attempting to take
+> locks before lockdep has initialized?
 > 
 
-Will this not run afoul of lockdep since it will be attempting to take
-locks before lockdep has initialized?
+Ah, printk calls lockdep_off now. Handy.
 
-(as an aside, it would be nice if it came after setup_arch, since on
-some horrible platforms, printk_time needs the fpu turned on for
-(integer) division, but there's no arch hook before the first printk, so
-one needs to hijack the start_kernel entrypoint...)
-
-regards, Kyle
