@@ -1,12 +1,11 @@
-From: Kyle McMartin <kyle@infradead.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: setup_arch/arch_get_boot_command_line changes
-Date: Tue, 9 Dec 2008 18:33:47 -0500
-Message-ID: <20081209233347.GD7015@bombadil.infradead.org>
-References: <200812100850.26728.rusty@rustcorp.com.au> <20081209225931.GA7015@bombadil.infradead.org> <20081209230214.GB7015@bombadil.infradead.org>
+Date: Tue, 9 Dec 2008 15:54:11 -0800 (PST)
+Message-ID: <alpine.LFD.2.00.0812091553250.3340@localhost.localdomain>
+References: <200812100850.26728.rusty@rustcorp.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Rusty Russell <rusty@rustcorp.com.au>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
 	linux-kernel@vger.kernel.org, dhowells@redhat.com,
 	Richard Henderson <rth@twiddle.net>,
 	Russell King <rmk@arm.linux.org.uk>,
@@ -24,22 +23,27 @@ Cc: Rusty Russell <rusty@rustcorp.com.au>,
 	Paul Mundt <lethal@linux-sh.org>,
 	"David S. Miller" <davem@davemloft.net>,
 	Jeff Dike <jdike@addtoit.com>, Ingo Molnar <mingo@redhat.com>,
-	Chris Zankel <chris@zankel.net>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-To: Kyle McMartin <kyle@infradead.org>
+	Chris Zankel <chris@zankel.net>
+To: Rusty Russell <rusty@rustcorp.com.au>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081209230214.GB7015@bombadil.infradead.org>
+In-Reply-To: <200812100850.26728.rusty@rustcorp.com.au>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Dec 09, 2008 at 06:02:14PM -0500, Kyle McMartin wrote:
-> On Tue, Dec 09, 2008 at 05:59:31PM -0500, Kyle McMartin wrote:
-> > Will this not run afoul of lockdep since it will be attempting to take
-> > locks before lockdep has initialized?
-> > 
-> 
-> Ah, printk calls lockdep_off now. Handy.
-> 
 
-Nevermind, this doesn't do what I think it does... Rusty, does this work
-with lockdep enabled?
+
+On Wed, 10 Dec 2008, Rusty Russell wrote:
+>
+> OK, I've folded in all the fixes, thanks.  Git tree is here:
+> 
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/rusty/linux-2.6-boot-params.git
+> 
+> Stephen, please include in linux-next.  Clearly this hits every arch.  I'll
+> try to avoid rebasing unless I've broken some arch horribly.
+
+This looks really invasive, with absolutely zero explanations of what the 
+point of it all is.
+
+What?
+
+		Linus
