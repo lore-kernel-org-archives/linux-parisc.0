@@ -1,57 +1,67 @@
-From: Rusty Russell <rusty@rustcorp.com.au>
-Subject: Re: setup_arch/arch_get_boot_command_line changes
-Date: Wed, 10 Dec 2008 23:14:59 +1030
-Message-ID: <200812102315.01416.rusty@rustcorp.com.au>
-References: <200812100850.26728.rusty@rustcorp.com.au> <20081209225931.GA7015@bombadil.infradead.org>
+From: Kyle McMartin <kyle@infradead.org>
+Subject: Fwd: [PATCH] fix mapping_writably_mapped()
+Date: Wed, 10 Dec 2008 16:46:38 -0500
+Message-ID: <20081210214638.GA28696@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
-	linux-kernel@vger.kernel.org, dhowells@redhat.com,
-	Richard Henderson <rth@twiddle.net>,
-	Russell King <rmk@arm.linux.org.uk>,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>,
-	Bryan Wu <cooloney@kernel.org>,
-	Mikael Starvik <starvik@axis.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Tony Luck <tony.luck@intel.com>,
-	Hirokazu Takata <takata@linux-m32r.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Ungerer <gerg@uclinux.org>,
-	Ralf Baechle <ralf@linux-mips.org>,
-	linux-parisc@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
-	Heiko Carstens <heiko.carstens@de.ibm.com>,
-	Paul Mundt <lethal@linux-sh.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jeff Dike <jdike@addtoit.com>, Ingo Molnar <mingo@redhat.com>,
-	Chris Zankel <chris@zankel.net>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-To: Kyle McMartin <kyle@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081209225931.GA7015@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wednesday 10 December 2008 09:29:31 Kyle McMartin wrote:
-> On Wed, Dec 10, 2008 at 08:50:24AM +1030, Rusty Russell wrote:
-> > Rusty Russell (10):
-> > <snip>
-> >       param: move banner printing to top of start_kernel.    
-> > 
-> 
-> Will this not run afoul of lockdep since it will be attempting to take
-> locks before lockdep has initialized?
+This may explain some of the userspace issues we've been seeing.
 
-Hmm, works for me here.  But then, i386_start_kernel -> reserve_ebda_region
-->printk already, so that banner is *still* not first line.
+----- Forwarded message from Hugh Dickins <hugh@veritas.com> -----
 
-> (as an aside, it would be nice if it came after setup_arch, since on
-> some horrible platforms, printk_time needs the fpu turned on for
-> (integer) division, but there's no arch hook before the first printk, so
-> one needs to hijack the start_kernel entrypoint...)
+Sender: linux-arch-owner@vger.kernel.org
+From: Hugh Dickins <hugh@veritas.com>
+Subject: [PATCH] fix mapping_writably_mapped()
+To: Linus Torvalds <torvalds@linux-foundation.org>
+cc: Andrew Morton <akpm@linux-foundation.org>,
+	Lee Schermerhorn <Lee.Schermerhorn@hp.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	stable@kernel.org
+Date: Wed, 10 Dec 2008 20:48:52 +0000 (GMT)
+Message-ID: <Pine.LNX.4.64.0812102043060.25282@blonde.anvils>
 
-That won't help much, since a failed kernel parameter parse will also call
-printk.  I don't think it's sane to call start_kernel without the
-ability to do integer division!
+Lee Schermerhorn noticed yesterday that I broke the mapping_writably_mapped
+test in 2.6.7!  Bad bad bug, good good find.
 
-Rusty.
+The i_mmap_writable count must be incremented for VM_SHARED (just as
+i_writecount is for VM_DENYWRITE, but while holding the i_mmap_lock)
+when dup_mmap() copies the vma for fork: it has its own more optimal
+version of __vma_link_file(), and I missed this out.  So the count
+was later going down to 0 (dangerous) when one end unmapped, then
+wrapping negative (inefficient) when the other end unmapped.
+
+The only impact on x86 would have been that setting a mandatory lock on
+a file which has at some time been opened O_RDWR and mapped MAP_SHARED
+(but not necessarily PROT_WRITE) across a fork, might fail with -EAGAIN
+when it should succeed, or succeed when it should fail.
+
+But those architectures which rely on flush_dcache_page() to flush
+userspace modifications back into the page before the kernel reads it,
+may in some cases have skipped the flush after such a fork - though any
+repetitive test will soon wrap the count negative, in which case it will
+flush_dcache_page() unnecessarily.
+
+Fix would be a two-liner, but mapping variable added, and comment moved.
+
+Reported-by: Lee Schermerhorn <Lee.Schermerhorn@hp.com>
+Signed-off-by: Hugh Dickins <hugh@veritas.com>
+---
+
+ kernel/fork.c |   15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+--- 2.6.28-rc7/kernel/fork.c	2008-11-15 23:09:30.000000000 +0000
++++ linux/kernel/fork.c	2008-12-10 12:49:13.000000000 +0000
+@@ -315,17 +315,20 @@ static int dup_mmap(struct mm_struct *mm
+ 		file = tmp->vm_file;
+ 		if (file) {
+ 			struct inode *inode = file->f_path.dentry->d_inode;
++			struct address_space *mapping = file->f_mapping;
++
+ 			get_file(file);
+ 			if (tmp->vm_flags & VM_DENYWRITE)
+ 				atomic_dec(&inode->i_writecount);
