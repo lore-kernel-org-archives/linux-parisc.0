@@ -1,27 +1,26 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: dumping pid registers on panic
-Date: Thu, 18 Dec 2008 12:58:29 -0500
-Message-ID: <119aab440812180958y30267cc1id038d1a3fbe7ae73@mail.gmail.com>
-References: <20081218164404.GB8535@bombadil.infradead.org>
+From: Kyle McMartin <kyle@infradead.org>
+Subject: Re: [PATCH] [RFC] fix kernel crash (protection id trap) when
+Date: Thu, 18 Dec 2008 13:28:25 -0500
+Message-ID: <20081218182825.GA1827@bombadil.infradead.org>
+References: <20081218004329.GB30438@bombadil.infradead.org> <20081218030214.5CABB4E99@hiauly1.hia.nrc.ca> <20081218040400.GE30438@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org
-To: "Kyle McMartin" <kyle@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>, deller@gmx.de,
+	linux-parisc@vger.kernel.org
+To: Kyle McMartin <kyle@infradead.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081218164404.GB8535@bombadil.infradead.org>
+In-Reply-To: <20081218040400.GE30438@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Dec 18, 2008 at 11:44 AM, Kyle McMartin <kyle@infradead.org> wrote:
-> +static u32 __get_pid_from_cr(struct pt_regs *regs, int i)
-> +{
-> +#ifdef CONFIG_64BIT
-> +       return (regs->protid[(i&1?i^1:i)>>1] >> (i&1?32:0)) & 0xffffffff;
-> +#else
-> +       return regs->cr[pid_cr[i]];
-> +#endif /*CONFIG_64BIT*/
-> +}
+On Wed, Dec 17, 2008 at 11:04:00PM -0500, Kyle McMartin wrote:
+> > There might be a problem restoring access IDs after a cache purge or
+> > TLB insertion.
+> > 
+> 
+> I honestly have no idea how the protection id registers are loaded... I
+> thought it had something do with with space registers, but I can't
+> remember off the top of my head.
 
-Oh, I see you are too clever for me today. Thanks.
-
-c.
+For future reference, in mmu_context.h. Bloody tricky mtctl() macro
+doesn't take a prefix, just the numeric cr #.
