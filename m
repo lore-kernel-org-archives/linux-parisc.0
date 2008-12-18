@@ -1,39 +1,44 @@
-From: "Helge Deller" <deller@gmx.de>
-Subject: Re: [PATCH] [RFC] fix kernel crash (protection id trap) when compiling
- ruby1.9
-Date: Thu, 18 Dec 2008 14:13:57 +0100
-Message-ID: <20081218131357.260160@gmx.net>
-References: <4949812D.7080608@gmx.de>	
- <119aab440812171746x5c3ec853x87b7f4a6ca12dba@mail.gmail.com>
- <119aab440812171802o4cb2837dt168092caf7c633da@mail.gmail.com>
+From: Kyle McMartin <kyle@infradead.org>
+Subject: Re: [PATCH] [RFC] fix kernel crash (protection id trap) when
+	compiling ruby1.9
+Date: Thu, 18 Dec 2008 10:05:14 -0500
+Message-ID: <20081218150514.GA8535@bombadil.infradead.org>
+References: <4949812D.7080608@gmx.de> <20081218070340.GF30438@bombadil.infradead.org> <20081218130940.137190@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Cc: linux-parisc@vger.kernel.org
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440812171802o4cb2837dt168092caf7c633da@mail.gmail.com>
+In-Reply-To: <20081218130940.137190@gmx.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Wed, Dec 17, 2008 at 8:46 PM, Carlos O'Donell
-> > Can we avoid copying code from do_page_fault and just call
-> do_page_fault?
-=2E..
-> However! I think you should not duplicate code. Please split out this
-> "bit" of code into a function in mm/fault.c and call it from
-> handle_interruption.
+On Thu, Dec 18, 2008 at 02:09:40PM +0100, Helge Deller wrote:
+> -------- Original-Nachricht --------
+> > On Wed, Dec 17, 2008 at 11:46:05PM +0100, Helge Deller wrote:
+> > > The Debian bugzilla has a long thread about kernel crashes when
+> > > compiling ruby1.9 on hppa. This kernel bug led even to discussions if
+> > > hppa should be dropped for lenny.
+> > > See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=478717 for details.
+> > > 
+> > > It's really easy to reproduce the bug, and it generates this backtrace
+> > > (interestingly two backtraces):
+> > 
+> > When does it die? My ruby1.9 is building through to the tests (where
+> > it's hanging without crashing...)
+> 
+> If it does not happen directly for you, just try a few times/cycles, e.g. make, make clean in the build directory.
+> Even killing the hanging miniruby processes can make the kernel die (when my patch wasn't applied). With the patch it stays hanging.
+>
 
-Sure. This patch was just meant to be short and easy understandable for=
- review of the problem itself and without other noise like splitting ou=
-t a function...
+Aside from the testsuite hanging it seems to be building fine for me no
+matter how many times I let it go...
 
-Helge
---=20
-Sensationsangebot verl=E4ngert: GMX FreeDSL - Telefonanschluss + DSL=20
-f=FCr nur 16,37 Euro/mtl.!* http://dsl.gmx.de/?ac=3DOM.AD.PD003K1308T45=
-69a
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+making ruby1.9
+make[1]: Entering directory `/home/kyle/src/ruby1.9-1.9.0.2'
+cc -fno-strict-aliasing -g -g -O2 -O2 -g -Wall -Wno-parentheses  -fPIC
+-L.  -rdynamic -Wl,-export-dynamic   main.o  -lruby1.9 -lpthread -lrt
+-ldl -lcrypt -lm   -o ruby1.9
+make[1]: Leaving directory `/home/kyle/src/ruby1.9-1.9.0.2'
+
+Let me debootstrap on another machine and try it there, sigh.
