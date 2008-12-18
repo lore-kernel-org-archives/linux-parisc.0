@@ -1,44 +1,33 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [PATCH] [RFC] fix kernel crash (protection id trap) when
-	compiling ruby1.9
-Date: Thu, 18 Dec 2008 10:05:14 -0500
-Message-ID: <20081218150514.GA8535@bombadil.infradead.org>
-References: <4949812D.7080608@gmx.de> <20081218070340.GF30438@bombadil.infradead.org> <20081218130940.137190@gmx.net>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [PATCH] [RFC] fix kernel crash (protection id trap) when compiling
+Date: Thu, 18 Dec 2008 10:28:40 -0500 (EST)
+Message-ID: <20081218152841.E85E74F28@hiauly1.hia.nrc.ca>
+References: <20081218131357.260160@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org, carlos@systemhalted.org
+To: deller@gmx.de (Helge Deller)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081218130940.137190@gmx.net>
+In-Reply-To: <20081218131357.260160@gmx.net> from "Helge Deller" at Dec 18, 2008 02:13:57 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Dec 18, 2008 at 02:09:40PM +0100, Helge Deller wrote:
-> -------- Original-Nachricht --------
-> > On Wed, Dec 17, 2008 at 11:46:05PM +0100, Helge Deller wrote:
-> > > The Debian bugzilla has a long thread about kernel crashes when
-> > > compiling ruby1.9 on hppa. This kernel bug led even to discussions if
-> > > hppa should be dropped for lenny.
-> > > See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=478717 for details.
-> > > 
-> > > It's really easy to reproduce the bug, and it generates this backtrace
-> > > (interestingly two backtraces):
-> > 
-> > When does it die? My ruby1.9 is building through to the tests (where
-> > it's hanging without crashing...)
+> > On Wed, Dec 17, 2008 at 8:46 PM, Carlos O'Donell
+> > > Can we avoid copying code from do_page_fault and just call
+> > do_page_fault?
+> ...
+> > However! I think you should not duplicate code. Please split out this
+> > "bit" of code into a function in mm/fault.c and call it from
+> > handle_interruption.
 > 
-> If it does not happen directly for you, just try a few times/cycles, e.g. make, make clean in the build directory.
-> Even killing the hanging miniruby processes can make the kernel die (when my patch wasn't applied). With the patch it stays hanging.
->
+> Sure. This patch was just meant to be short and easy understandable for review of the problem itself and without other noise like splitting out a function...
 
-Aside from the testsuite hanging it seems to be building fine for me no
-matter how many times I let it go...
+>From the documentation, it appears to me that a protection id trap should
+be treated differently from a data TLB miss/data page fault.  The latter can
+potentially be fixed with TLB insertion.  I don't think a protection ID trap
+can be fixed...
 
-making ruby1.9
-make[1]: Entering directory `/home/kyle/src/ruby1.9-1.9.0.2'
-cc -fno-strict-aliasing -g -g -O2 -O2 -g -Wall -Wno-parentheses  -fPIC
--L.  -rdynamic -Wl,-export-dynamic   main.o  -lruby1.9 -lpthread -lrt
--ldl -lcrypt -lm   -o ruby1.9
-make[1]: Leaving directory `/home/kyle/src/ruby1.9-1.9.0.2'
-
-Let me debootstrap on another machine and try it there, sigh.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
