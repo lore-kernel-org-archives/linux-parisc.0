@@ -1,42 +1,32 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [PATCH] [RFC] fix kernel crash (protection id trap) when
-Date: Fri, 19 Dec 2008 10:25:48 -0500
-Message-ID: <119aab440812190725r4e222233r7e3115b1db9ed919@mail.gmail.com>
-References: <20081218004329.GB30438@bombadil.infradead.org>
-	 <20081218030214.5CABB4E99@hiauly1.hia.nrc.ca>
-	 <20081218040400.GE30438@bombadil.infradead.org>
-	 <20081218182825.GA1827@bombadil.infradead.org>
+Date: Fri, 19 Dec 2008 11:13:29 -0500 (EST)
+Message-ID: <20081219161330.04BE04EF8@hiauly1.hia.nrc.ca>
+References: <119aab440812190725r4e222233r7e3115b1db9ed919@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>, deller@gmx.de,
-	linux-parisc@vger.kernel.org
-To: "Kyle McMartin" <kyle@infradead.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: kyle@infradead.org, deller@gmx.de, linux-parisc@vger.kernel.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081218182825.GA1827@bombadil.infradead.org>
+In-Reply-To: <119aab440812190725r4e222233r7e3115b1db9ed919@mail.gmail.com> from "Carlos O'Donell" at Dec 19, 2008 10:25:48 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Dec 18, 2008 at 1:28 PM, Kyle McMartin <kyle@infradead.org> wrote:
-> On Wed, Dec 17, 2008 at 11:04:00PM -0500, Kyle McMartin wrote:
->> > There might be a problem restoring access IDs after a cache purge or
->> > TLB insertion.
->> >
->>
->> I honestly have no idea how the protection id registers are loaded... I
->> thought it had something do with with space registers, but I can't
->> remember off the top of my head.
->
-> For future reference, in mmu_context.h. Bloody tricky mtctl() macro
-> doesn't take a prefix, just the numeric cr #.
+> > For future reference, in mmu_context.h. Bloody tricky mtctl() macro
+> > doesn't take a prefix, just the numeric cr #.
+> 
+> Evil.
 
-Evil.
+If this is a problem with the WD bit, the problem is likely here:
 
-Helge,
+        mtctl(context >> (SPACEID_SHIFT - 1),8);
 
-Can you cleanup your patch and resubmit. I think your patch is a good
-belt-and-suspenders patch. The kernel should not fault on a protection
-id trap taken while writing to a userspace address (even if such a
-scenario indicates a possible bug in the mm context switching code).
+It's possible this might set the WD bit depending on the alignment
+of context and the value of SPACEID_SHIFT on your machine.  If you
+can duplicate, maybe add a BUG_ON.  On hppa64, all structs are passed
+by value, so the alignment of context  may only be BIGGEST_ALIGNMENT.
 
-Cheers,
-Carlos.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
