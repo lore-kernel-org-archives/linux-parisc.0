@@ -1,53 +1,60 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [PATCH] [RFC] fix kernel crash (protection id trap) when
-Date: Sat, 20 Dec 2008 12:07:00 -0500 (EST)
-Message-ID: <20081220170701.1B1DF4EE7@hiauly1.hia.nrc.ca>
-References: <20081219233435.GA25457@bombadil.infradead.org>
+From: Kyle McMartin <kyle@infradead.org>
+Subject: Re: HPMC bus timeout on C3600
+Date: Sat, 20 Dec 2008 17:16:53 -0500
+Message-ID: <20081220221653.GA12880@bombadil.infradead.org>
+References: <20081220133915.4c167e09@bleh.bxl.tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: deller@gmx.de, kyle@infradead.org, linux-parisc@vger.kernel.org
-To: kyle@infradead.org (Kyle McMartin)
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081219233435.GA25457@bombadil.infradead.org> from "Kyle McMartin" at Dec 19, 2008 06:34:35 pm
+In-Reply-To: <20081220133915.4c167e09@bleh.bxl.tuxicoman.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
->  	case 27: 
->  		/* Data memory protection ID trap */
-> +#define HANDLE_KERNEL_PROTECTION_TRAPS
-> +#ifdef HANDLE_KERNEL_PROTECTION_TRAPS
-> +		/* XXX very very evil */
-> +		if (code == 27 && !user_mode(regs)) {
+On Sat, Dec 20, 2008 at 01:39:15PM +0100, Guy Martin wrote:
+> I'm recently running into HPMC bus timeout problem. While this never
+> caused any problem before, I've noticed a few strange things. I've
+> attached the output I get from "pim hpmc" in the PDC.
+> 
+> This BUS timeout occurs after one or two days of idling when I plug a
+> specific card reader in the USB PCI card I plugged in. I think this
+> card reader causes problems because it's being polled every 2-3 seconds.
+> 
+> Nevertheless, looking at the pdc output, it seems that the OS HPMC
+> handler is not kicking off according to the chassis code CBF2 and CBFC.
+> CBF2 : bas OS HPMC len
+> CBFC : OS HPMC br err
+> 
+> I've check GR02 and it points to inw() which makes sens. Nothing
+> interesting there.
+> 
+> The failing device appears to be the built-in NIC according the path
+> provided in the output (10/0/12/0) and the C3600 service manual (figure
+> 5-2).
+> 
+> Even if this look HW pb, I've had a few reports recently about HPMC PCI
+> timeout issues and I have a few doubts.
+> 
+> Now my questions are :
+>  - does this look like an HW or SW problems ?
+>  - why isn't the HPMC handler kicked off ?
+>  - could the HPMC handler recover this ?
+>  - what debug can I enable to get more info about this if applicable ?
+> 
 
-Should a check be added for regs->sr[3] != (unsigned long)current->mm.context?
+"bus timeout" usually means we tried to read an address that doesn't
+respond. that is, nothing on the bus accepted the transaction for it,
+so it timed out and HPMC'd the box.
 
-> +			/* bang the spaceid back into sr3 */
-> +			regs->sr[3] = (unsigned long)current->mm.context;
+what you really need is the IIR, and the address it tried to access
+(both the kernel vaddr which will be in the register, and the "system
+requester address" from the hpmc dump which will be the physical address
+mapped.
 
-I seem to recall that James thought there was a problem with sr3 handling
-a year or two ago.
+not sure why the hpmc handler is getting skipped, that's a little weird.
 
-> +			/* TODO? reprogram %cr8? load_context will get it. */
-> +			/* TODO? thread_struct.faulted count to catch
-> +			 *  taking the same fault on the same insn again?
-
-Is this a general problem with parisc exception support?  The reason
-I ask is it seems possible for an infinite loop to occur when an application
-catches exceptions like bash.  It catches terminating signals so that it
-can write the history file.  When terminate_immediately is zero, the
-signal handler (termsig_sighandler) just records the terminating signal
-and returns.  It doesn't reset the default handler for the signal or
-specify SA_RESETHAND as far as I can tell.
-
-It then appears the kernel restarts the application at the point of the
-exception generating another exception.  This causes the kernel log files
-to fill in short order.
-
-I would say bash's behavior in trying to continue after a SEGV is questionable
-but I also think the kernel shouldn't retry a faulting instruction unless
-there's a chance the fault has been fixed.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+you can try hacking elroy to set softfail mode on that bus, which will
+result in a timeout on the pci bus to return -1 (like what x86 and most
+other architectures do) rather than hang the box, but it really likely
+means a driver bug.
