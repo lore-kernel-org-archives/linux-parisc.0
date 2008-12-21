@@ -1,29 +1,38 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Helge Deller <deller@gmx.de>
 Subject: Re: [PATCH] [RFC] fix kernel crash (protection id trap) when
-Date: Sun, 21 Dec 2008 17:58:36 -0500 (EST)
-Message-ID: <20081221225837.1D1404F19@hiauly1.hia.nrc.ca>
-References: <494EC89A.9000802@gmx.de>
+Date: Sun, 21 Dec 2008 23:59:07 +0100
+Message-ID: <494ECA3B.1030309@gmx.de>
+References: <20081221152017.102C84F19@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: kyle@infradead.org, linux-parisc@vger.kernel.org
-To: deller@gmx.de (Helge Deller)
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Kyle McMartin <kyle@infradead.org>, linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <494EC89A.9000802@gmx.de> from "Helge Deller" at Dec 21, 2008 11:52:10 pm
+In-Reply-To: <20081221152017.102C84F19@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > -	mtsp(space, 3);
-> > +	load_context(space);
-> 
-> I came to the similar conclusion and tried exactly this patch earlier
-> today. It didn't fixed the problem (although I had the feeling that the
-> bug didn't appeared as often then).
+John David Anglin wrote:
+> Having looked at the code a bit, I have come to the conclusion that the
+> problem is not with the sr3 value.  
 
-Ok, then maybe load_context needs to be atomic.  This is a bit tricky
-because we may have to ensure that no tlb misses are triggered (relied
-upon translation) during the update.
+In all debugging I added I could _always_ see that sr3 had the wrong
+values. cr8 and mm->context were always correct.
+Interestingly it was often just a few numbers off in the lower 4 bits,
+e.g. sr3 should have been 0x1a8 but was 0x1a2 (just an example).
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> We have a one-to-one mapping between
+> space register values and protection IDs.  TLB entries get inserted using
+> the space register value for the protection ID (see entry.S).  So, I think
+> we have to have inconsistent values in cr8 and sr3.
+
+Again, only sr3 is wrong. cr8 is correct.
+
+> I think the bug may be in flush_user_cache_page_non_current.  It hijacks
+> sr3 temporarily and I don't think cr8 is updated when this is done.  The
+> switch may need to be atomic.
+
+I tried that as well, e.g. adding local_irq_[en|dis]able didn't worked
+(it crashed IIRC).
+
+Helge
