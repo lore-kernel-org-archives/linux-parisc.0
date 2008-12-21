@@ -1,40 +1,28 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Kyle McMartin <kyle@infradead.org>
 Subject: Re: [PATCH] [RFC] fix kernel crash (protection id trap) when
-Date: Sun, 21 Dec 2008 17:11:11 -0500 (EST)
-Message-ID: <20081221221111.EADEE4F19@hiauly1.hia.nrc.ca>
-References: <20081221213303.GE12880@bombadil.infradead.org>
+Date: Sun, 21 Dec 2008 17:20:05 -0500
+Message-ID: <20081221222005.GB30144@bombadil.infradead.org>
+References: <20081219212906.GG8945@bombadil.infradead.org> <20081221152017.102C84F19@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: kyle@infradead.org, deller@gmx.de, linux-parisc@vger.kernel.org
-To: kyle@infradead.org (Kyle McMartin)
+Content-Type: text/plain; charset=us-ascii
+Cc: Kyle McMartin <kyle@infradead.org>, deller@gmx.de,
+	linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081221213303.GE12880@bombadil.infradead.org> from "Kyle McMartin" at Dec 21, 2008 04:33:03 pm
+In-Reply-To: <20081221152017.102C84F19@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Sun, Dec 21, 2008 at 12:27:42PM -0500, John David Anglin wrote:
-> > > I think the bug may be in flush_user_cache_page_non_current.  It hijacks
-> > > sr3 temporarily and I don't think cr8 is updated when this is done.  The
-> > > switch may need to be atomic.
-> > 
-> > The following might fix the protection ID bug.
-> > 
+On Sun, Dec 21, 2008 at 10:20:16AM -0500, John David Anglin wrote:
+> > Honestly, I can't decide whether to apply this. It really should never
+> > happen in the kernel, since the kernel can guarantee it won't get the
+> > access rights failure (highest privilege level, and can set %sr and
+> > %protid to whatever it wants.)
 > 
-> I'm not convinced... this doesn't explain why we don't see this on
-> 64-bit...
+> I believe this change should be applied because we enable P and the
+> hardware can generate the exception.  Yes, it should never happen, but
+> the coding to prevent this occurring is very subtle.
+> 
 
-Agreed.  However, we do have tlb issues on 64-bit and this is just about
-the only place where sr3 is messed with and cr8 isn't correctly set.
-I'm sure the bug is somewhat timing dependent.
-
-There has to be something else that causes a userspace access
-with inconsistent space and protection IDs.  The cache flush can cause
-non access tlb misses, and there is some difference in tlb hardware,
-but cr8 isn't involved in the tlb miss handling as far as I can see.
-
-I'm running with the patch on 2.6.28-rc8 (SMP) and 2.6.22.19 (UP).
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+If we're going to paper over a bug like this, we might as well just turn
+the P-bit off...
