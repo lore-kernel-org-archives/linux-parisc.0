@@ -1,25 +1,26 @@
-From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git] parisc: Changes to ref refs/heads/master
-Date: Tue, 23 Dec 2008 06:36:47 GMT
-Message-ID: <200812230636.mBN6alsB020758@hera.kernel.org>
-To: linux-parisc@vger.kernel.org
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [PATCH] [RFC] fix kernel crash (protection id trap) when
+Date: Tue, 23 Dec 2008 08:13:08 -0500 (EST)
+Message-ID: <20081223131309.75E944EDD@hiauly1.hia.nrc.ca>
+References: <20081223025421.GF30144@bombadil.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Cc: James.Bottomley@HansenPartnership.com, deller@gmx.de,
+	kyle@infradead.org, linux-parisc@vger.kernel.org
+To: kyle@infradead.org (Kyle McMartin)
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20081223025421.GF30144@bombadil.infradead.org> from "Kyle McMartin" at Dec 22, 2008 09:54:21 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-New commits:
-commit 378fe7c4cc619b561409206605c723c05358edac
-Author: Kyle McMartin <kyle@treachery.i.cabal.ca>
-Date:   Mon Dec 22 21:59:01 2008 -0500
+> just fyi, jejb sleuthed out that it was flush_tlb_mm's non-SMP path
+> (which "flushes" the tlb by allocating a new spaceid) that was causing
+> the problem, and helge verified that it fixes the bug.
 
-    parisc: disable UP-optimized flush_tlb_mm
-    
-    flush_tlb_mm's "optimized" uniprocessor case of allocating a new
-    context for userspace is exposing a race where we can suddely return
-    to a syscall with the protection id and space id out of sync, trapping
-    on the next userspace access.
-    
-    Debugged-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-    Tested-by: Helge Deller <deller@gmx.de>
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+It seems this code can be called from drivers.  Maybe the context
+update needs to be surrounded by task_lock(current)...task_unlock(current).
 
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
