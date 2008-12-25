@@ -1,51 +1,48 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: [PATCH] parisc: disable UP-optimized flush_tlb_mm
-Date: Tue, 23 Dec 2008 08:44:30 -0500
-Message-ID: <20081223134430.GG30144@bombadil.infradead.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: HPMC bus timeout on C3600
+Date: Thu, 25 Dec 2008 01:06:06 -0700
+Message-ID: <20081225080606.GA11032@colo.lackof.org>
+References: <20081220133915.4c167e09@bleh.bxl.tuxicoman.be> <20081220221653.GA12880@bombadil.infradead.org> <20081220222100.GB12880@bombadil.infradead.org> <20081221081206.GC2047@colo.lackof.org> <20081222224023.2488f2ef@tuxicoman.be> <20081222214743.GC30144@bombadil.infradead.org> <20081222234948.776edb1b@tuxicoman.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org, stable@kernel.org, kyle@infradead.org
-To: torvalds@linux-foundation.org
+Cc: Kyle McMartin <kyle@infradead.org>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	linux-parisc@vger.kernel.org
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20081222234948.776edb1b@tuxicoman.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-flush_tlb_mm's "optimized" uniprocessor case of allocating a new
-context for userspace is exposing a race where we can suddely return
-to a syscall with the protection id and space id out of sync, trapping
-on the next userspace access.
+On Mon, Dec 22, 2008 at 11:49:48PM +0100, Guy Martin wrote:
+> The command "dd if=/dev/zero of=/dev/sdc bs=1M" didn't trigger HPMC
+> anymore after a reasonable amount of time.
+> 
+> I then tried a NFS copy from a NFS share to the disk. The kernel did
+> panic with the attached output.
 
-Debugged-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-Tested-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
----
-Linus, Greg, please apply to stable and HEAD, this is a fairly
-important fix for parisc.
+[ 1589.466507] Badness at fs/buffer.c:1186
 
-Thanks,
-	Kyle
+Technically, this isn't a panic. This is a "WARN_ON".
+I didn't see any panic's after that either.
 
- arch/parisc/include/asm/tlbflush.h |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+The file system warning us that the sata disk it was
+talking failed an IO. 
 
-diff --git a/arch/parisc/include/asm/tlbflush.h b/arch/parisc/include/asm/tlbflush.h
-index b72ec66..1f6fd4f 100644
---- a/arch/parisc/include/asm/tlbflush.h
-+++ b/arch/parisc/include/asm/tlbflush.h
-@@ -44,9 +44,12 @@ static inline void flush_tlb_mm(struct mm_struct *mm)
- {
- 	BUG_ON(mm == &init_mm); /* Should never happen */
- 
--#ifdef CONFIG_SMP
-+#if 1 || defined(CONFIG_SMP)
- 	flush_tlb_all();
- #else
-+	/* FIXME: currently broken, causing space id and protection ids
-+	 *  to go out of sync, resulting in faults on userspace accesses.
-+	 */
- 	if (mm) {
- 		if (mm->context != 0)
- 			free_sid(mm->context);
--- 
-1.6.0.4
+However, this is likely to be some other issue with the SATA controller.
+Can you post more details about the config?
+o "lspci -v"
+o hdparm -i /dev/sd<X>
+
+I don't expect I'll know what's wrong, but just want to document the bug.
+
+thanks,
+grant
+
+
+> Hopefully this will be more useful.
+> 
+>   Guy
+> 
+
 
