@@ -1,48 +1,46 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: HPMC bus timeout on C3600
-Date: Thu, 25 Dec 2008 01:06:06 -0700
-Message-ID: <20081225080606.GA11032@colo.lackof.org>
-References: <20081220133915.4c167e09@bleh.bxl.tuxicoman.be> <20081220221653.GA12880@bombadil.infradead.org> <20081220222100.GB12880@bombadil.infradead.org> <20081221081206.GC2047@colo.lackof.org> <20081222224023.2488f2ef@tuxicoman.be> <20081222214743.GC30144@bombadil.infradead.org> <20081222234948.776edb1b@tuxicoman.be>
+From: Julia Lawall <julia@diku.dk>
+Subject: [PATCH 1/7] arch/parisc: Use DEFINE_SPINLOCK
+Date: Thu, 25 Dec 2008 15:33:11 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0812251532430.22039@ask.diku.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@infradead.org>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: Guy Martin <gmsoft@tuxicoman.be>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: kyle@mcmartin.ca, matthew@wil.cx, grundler@parisc-linux.org,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081222234948.776edb1b@tuxicoman.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Dec 22, 2008 at 11:49:48PM +0100, Guy Martin wrote:
-> The command "dd if=/dev/zero of=/dev/sdc bs=1M" didn't trigger HPMC
-> anymore after a reasonable amount of time.
-> 
-> I then tried a NFS copy from a NFS share to the disk. The kernel did
-> panic with the attached output.
+From: Julia Lawall <julia@diku.dk>
 
-[ 1589.466507] Badness at fs/buffer.c:1186
+SPIN_LOCK_UNLOCKED is deprecated.  The following makes the change suggested
+in Documentation/spinlocks.txt
 
-Technically, this isn't a panic. This is a "WARN_ON".
-I didn't see any panic's after that either.
+The semantic patch that makes this change is as follows:
+(http://www.emn.fr/x-info/coccinelle/)
 
-The file system warning us that the sata disk it was
-talking failed an IO. 
+// <smpl>
+@@
+declarer name DEFINE_SPINLOCK;
+identifier xxx_lock;
+@@
 
-However, this is likely to be some other issue with the SATA controller.
-Can you post more details about the config?
-o "lspci -v"
-o hdparm -i /dev/sd<X>
+- spinlock_t xxx_lock = SPIN_LOCK_UNLOCKED;
++ DEFINE_SPINLOCK(xxx_lock);
+// </smpl>
 
-I don't expect I'll know what's wrong, but just want to document the bug.
+Signed-off-by: Julia Lawall <julia@diku.dk>
 
-thanks,
-grant
-
-
-> Hopefully this will be more useful.
-> 
->   Guy
-> 
-
-
+---
+diff -u -p a/arch/parisc/kernel/pdc_cons.c b/arch/parisc/kernel/pdc_cons.c
+--- a/arch/parisc/kernel/pdc_cons.c
++++ b/arch/parisc/kernel/pdc_cons.c
+@@ -52,7 +52,7 @@
+ #include <linux/tty.h>
+ #include <asm/pdc.h>		/* for iodc_call() proto and friends */
+ 
+-static spinlock_t pdc_console_lock = SPIN_LOCK_UNLOCKED;
++static DEFINE_SPINLOCK(pdc_console_lock);
+ 
+ static void pdc_console_write(struct console *co, const char *s, unsigned count)
+ {
