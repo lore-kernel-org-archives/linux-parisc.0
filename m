@@ -1,46 +1,61 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: [PATCH 1/7] arch/parisc: Use DEFINE_SPINLOCK
-Date: Thu, 25 Dec 2008 15:33:11 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0812251532430.22039@ask.diku.dk>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: add uevent helper for parisc bus
+Date: Thu, 25 Dec 2008 16:04:00 +0100
+Message-ID: <200812251604.10227.deller@gmx.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-To: kyle@mcmartin.ca, matthew@wil.cx, grundler@parisc-linux.org,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
+Content-Type: text/plain;
+  charset="us-ascii"
+To: linux-parisc@vger.kernel.org,
+	Kyle Mc Martin <kyle@hera.kernel.org>,
+	Frans Pop <elendil@planet.nl>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Julia Lawall <julia@diku.dk>
-
-SPIN_LOCK_UNLOCKED is deprecated.  The following makes the change suggested
-in Documentation/spinlocks.txt
-
-The semantic patch that makes this change is as follows:
-(http://www.emn.fr/x-info/coccinelle/)
-
-// <smpl>
-@@
-declarer name DEFINE_SPINLOCK;
-identifier xxx_lock;
-@@
-
-- spinlock_t xxx_lock = SPIN_LOCK_UNLOCKED;
-+ DEFINE_SPINLOCK(xxx_lock);
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
-diff -u -p a/arch/parisc/kernel/pdc_cons.c b/arch/parisc/kernel/pdc_cons.c
---- a/arch/parisc/kernel/pdc_cons.c
-+++ b/arch/parisc/kernel/pdc_cons.c
-@@ -52,7 +52,7 @@
- #include <linux/tty.h>
- #include <asm/pdc.h>		/* for iodc_call() proto and friends */
- 
--static spinlock_t pdc_console_lock = SPIN_LOCK_UNLOCKED;
-+static DEFINE_SPINLOCK(pdc_console_lock);
- 
- static void pdc_console_write(struct console *co, const char *s, unsigned count)
- {
+W1BBVENIXSBwYXJpc2M6IGFkZCB1ZXZlbnQgaGVscGVyIGZvciBwYXJpc2MgYnVzCgp1ZGV2IGRl
+dmljZS1kcml2ZXIgYXV0byBkZXRlY3Rpb24gd2FzIGZhaWxpbmcgdG8gd29yayBvbiB0aGUgR1ND
+IGJ1cywgc2luY2UKdWRldiBkaWRuJ3Qga25ldyB3aWNoIGRyaXZlciB0byBsb2FkIGR1ZSB0byBh
+IG1pc3NpbmcgTU9EQUxJQVMgZW52aXJvbm1lbnQKdmFyaWFibGUgZnJvbSBrZXJuZWwuCgpUaGlz
+IHBhdGNoIGZpeGVzIHRoaXMgYnkgYWRkaW5nIHRoZSBNT0RBTElBUyBlbnZpcm9ubWVudCB2YXJp
+YWJsZSB0byB0aGUgCnVldmVudCBrZXJuZWwgbm90aWZpY2F0aW9ucy4KU2luY2UgbW9kYWxpYXNf
+c2hvdygpIGdlbmVyYXRlZCB0aGUgbW9kYWxpYXMgc3RyaW5nIGFscmVhZHksIEkgc3BsaXR0ZWQg
+dGhpcwpvdXQgYW5kIGNyZWF0ZWQgYSBuZXcgc3RhdGljIGZ1bmN0aW9uIG1ha2VfbW9kYWxpYXMo
+KSB3aGljaCBpcyBub3cgdXNlZCBieQptb2RhbGlhc19zaG93KCkgYW5kIHRoZSBuZXcgcGFyaXNj
+X3VldmVudCgpIGZ1bmN0aW9uLgoKVGVzdGVkIG9uIDcxNS82NCBhbmQgYzMwMDAuCgpTaWduZWQt
+b2ZmLWJ5OiBIZWxnZSBEZWxsZXIgPGRlbGxlckBnbXguZGU+CgpkaWZmIC0tZ2l0IGEvYXJjaC9w
+YXJpc2Mva2VybmVsL2RyaXZlcnMuYyBiL2FyY2gvcGFyaXNjL2tlcm5lbC9kcml2ZXJzLmMKaW5k
+ZXggODg0YjdjZS4uOTk0YmNkOSAxMDA2NDQKLS0tIGEvYXJjaC9wYXJpc2Mva2VybmVsL2RyaXZl
+cnMuYworKysgYi9hcmNoL3BhcmlzYy9rZXJuZWwvZHJpdmVycy5jCkBAIC01NDksNiArNTQ5LDM4
+IEBAIHN0YXRpYyBpbnQgcGFyaXNjX2dlbmVyaWNfbWF0Y2goc3RydWN0IGRldmljZSAqZGV2LCBz
+dHJ1Y3QgZGV2aWNlX2RyaXZlciAqZHJ2KQogCXJldHVybiBtYXRjaF9kZXZpY2UodG9fcGFyaXNj
+X2RyaXZlcihkcnYpLCB0b19wYXJpc2NfZGV2aWNlKGRldikpOwogfQogCitzdGF0aWMgc3NpemVf
+dCBtYWtlX21vZGFsaWFzKHN0cnVjdCBkZXZpY2UgKmRldiwgY2hhciAqYnVmKQoreworCWNvbnN0
+IHN0cnVjdCBwYXJpc2NfZGV2aWNlICpwYWRldiA9IHRvX3BhcmlzY19kZXZpY2UoZGV2KTsKKwlj
+b25zdCBzdHJ1Y3QgcGFyaXNjX2RldmljZV9pZCAqaWQgPSAmcGFkZXYtPmlkOworCisJcmV0dXJu
+IHNwcmludGYoYnVmLCAicGFyaXNjOnQlMDJYaHYlMDRYcmV2JTAyWHN2JTA4WFxuIiwKKwkJKHU4
+KWlkLT5od190eXBlLCAodTE2KWlkLT5odmVyc2lvbiwgKHU4KWlkLT5odmVyc2lvbl9yZXYsCisJ
+CSh1MzIpaWQtPnN2ZXJzaW9uKTsKK30KKworc3RhdGljIGludCBwYXJpc2NfdWV2ZW50KHN0cnVj
+dCBkZXZpY2UgKmRldiwgc3RydWN0IGtvYmpfdWV2ZW50X2VudiAqZW52KQoreworCWNvbnN0IHN0
+cnVjdCBwYXJpc2NfZGV2aWNlICpwYWRldjsKKwljaGFyIG1vZGFsaWFzWzQwXTsKKworCWlmICgh
+ZGV2KQorCQlyZXR1cm4gLUVOT0RFVjsKKworCXBhZGV2ID0gdG9fcGFyaXNjX2RldmljZShkZXYp
+OworCWlmICghcGFkZXYpCisJCXJldHVybiAtRU5PREVWOworCisJaWYgKGFkZF91ZXZlbnRfdmFy
+KGVudiwgIlBBUklTQ19OQU1FPSVzIiwgcGFkZXYtPm5hbWUpKQorCQlyZXR1cm4gLUVOT01FTTsK
+KworCW1ha2VfbW9kYWxpYXMoZGV2LCBtb2RhbGlhcyk7CisJaWYgKGFkZF91ZXZlbnRfdmFyKGVu
+diwgIk1PREFMSUFTPSVzIiwgbW9kYWxpYXMpKQorCQlyZXR1cm4gLUVOT01FTTsKKworCXJldHVy
+biAwOworfQorCiAjZGVmaW5lIHBhX2Rldl9hdHRyKG5hbWUsIGZpZWxkLCBmb3JtYXRfc3RyaW5n
+KQkJCQlcCiBzdGF0aWMgc3NpemVfdCBuYW1lIyNfc2hvdyhzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0
+cnVjdCBkZXZpY2VfYXR0cmlidXRlICphdHRyLCBjaGFyICpidWYpCQlcCiB7CQkJCQkJCQkJXApA
+QCAtNTY2LDEyICs1OTgsNyBAQCBwYV9kZXZfYXR0cl9pZChzdmVyc2lvbiwgIjB4JTA1eFxuIik7
+CiAKIHN0YXRpYyBzc2l6ZV90IG1vZGFsaWFzX3Nob3coc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1
+Y3QgZGV2aWNlX2F0dHJpYnV0ZSAqYXR0ciwgY2hhciAqYnVmKQogewotCXN0cnVjdCBwYXJpc2Nf
+ZGV2aWNlICpwYWRldiA9IHRvX3BhcmlzY19kZXZpY2UoZGV2KTsKLQlzdHJ1Y3QgcGFyaXNjX2Rl
+dmljZV9pZCAqaWQgPSAmcGFkZXYtPmlkOwotCi0JcmV0dXJuIHNwcmludGYoYnVmLCAicGFyaXNj
+OnQlMDJYaHYlMDRYcmV2JTAyWHN2JTA4WFxuIiwKLQkJKHU4KWlkLT5od190eXBlLCAodTE2KWlk
+LT5odmVyc2lvbiwgKHU4KWlkLT5odmVyc2lvbl9yZXYsCi0JCSh1MzIpaWQtPnN2ZXJzaW9uKTsK
+KwlyZXR1cm4gbWFrZV9tb2RhbGlhcyhkZXYsIGJ1Zik7CiB9CiAKIHN0YXRpYyBzdHJ1Y3QgZGV2
+aWNlX2F0dHJpYnV0ZSBwYXJpc2NfZGV2aWNlX2F0dHJzW10gPSB7CkBAIC01ODcsNiArNjE0LDcg
+QEAgc3RhdGljIHN0cnVjdCBkZXZpY2VfYXR0cmlidXRlIHBhcmlzY19kZXZpY2VfYXR0cnNbXSA9
+IHsKIHN0cnVjdCBidXNfdHlwZSBwYXJpc2NfYnVzX3R5cGUgPSB7CiAJLm5hbWUgPSAicGFyaXNj
+IiwKIAkubWF0Y2ggPSBwYXJpc2NfZ2VuZXJpY19tYXRjaCwKKwkudWV2ZW50ID0gcGFyaXNjX3Vl
+dmVudCwKIAkuZGV2X2F0dHJzID0gcGFyaXNjX2RldmljZV9hdHRycywKIAkucHJvYmUgPSBwYXJp
+c2NfZHJpdmVyX3Byb2JlLAogCS5yZW1vdmUgPSBwYXJpc2NfZHJpdmVyX3JlbW92ZSwKAAo=
