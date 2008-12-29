@@ -1,45 +1,61 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH 2/2] parisc: fix module loading failure of large modules
-Date: Mon, 29 Dec 2008 18:56:40 +0100
-Message-ID: <49590F58.9040909@gmx.de>
-References: <20081229161446.C91EB4EDA@hiauly1.hia.nrc.ca>
+Subject: [PATCH] parisc: fix module loading failure of large kernel modules
+ (take 2)
+Date: Mon, 29 Dec 2008 21:34:54 +0100
+Message-ID: <4959346E.7060600@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kyle@mcmartin.ca, randolph@tausq.org, jmm@inutil.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	Helge Deller <deller@gmx.de>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: linux-parisc <linux-parisc@vger.kernel.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	Randolph Chung <randolph@tausq.org>,
+	Linus <to
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20081229161446.C91EB4EDA@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-John David Anglin wrote:
-> Hi Helge,
-> 
->> With this patch we now instead append individual PLT stub entries
->> directly at the end of the code sections where the stubs are actually
->> called. This reduces the distance between the PCREL location and the
->> stub entry so that the relocations can be fulfilled.
-> 
-> GCC for PA-RISC assumes that the stubs will be placed before the code
-> section.  This is what HP-UX does.  It's also not possible to compute
-> the distance to the end of a function in GCC due to the way branch
-> shortening is done.  If the distance to the start of the code section
-> is too large, GCC outputs a long call.
+This is the second take of the patch series.
+Changes to previous version:
+- new CONFIG_HAVE_MODULE_SECTION_STUBS config option
+- put stub entries of a code section in front of the section
 
-Interesting. I didn't knew that.
+____________
+The parisc port (esp. the 32bit kernel) currently lacks the ability to
+load large kernel modules like xfs or ipv6. This is a long outstanding
+bug and has already been reported a few times, e.g.:
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=350482,
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=401439,
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=508489
 
-> If you can insert them before the code section where the stubs are
-> called, this will minimize the chance that a pc-relative call will
-> not reach its stub.
+The symptom is like this:
+# modprobe xfs
+FATAL: Error inserting xfs
+(/lib/modules/2.6.26-1-parisc/kernel/fs/xfs/xfs.ko): Invalid module
+format
 
-Yes, good idea.
-I'll change that and send an updated patch.
+In dmesg:
+module xfs relocation of symbol xfs_btree_read_bufs is out of range
+(0x3ffefffe in 17 bits)
 
-> Great patch!
+The reason for the failure is, that the architecture only provides the
+R_PARISC_PCREL17F (for 32bit kernels) and R_PARISC_PCREL22F (for PA2.0
+and 64bit kernels) relocations, which sometimes can't reach the target
+address of the stub entry if the kernel module is too large. Currently
+parisc (like other architectures) creates one big PLT section for all
+stubs at the beginning of the init and core sections.
 
-Thanks!
+The following two patches changes the parisc module loader to put stubs
+for the code sections in front of each section, so that the distance to
+the stubs more easily fits into the available 17/22 bits.
+
+The first patch touches the generic module loader and adds a call to the
+new module_additional_section_size() function to get_offset() if
+CONFIG_HAVE_MODULE_SECTION_STUBS is defined. On parisc this
+function returns the additional bytes for the stub area of a given section.
+
+The second patch implements the parisc-specific changes.
+
+Tested with 32- and 64bit parisc kernels.
 
 Helge
+
