@@ -1,8 +1,9 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: fix module loading failure of large kernel modules
+Subject: [PATCH 1/2] module.c: fix module loading failure of large modules
  (take 2)
-Date: Mon, 29 Dec 2008 21:34:54 +0100
-Message-ID: <4959346E.7060600@gmx.de>
+Date: Mon, 29 Dec 2008 21:43:12 +0100
+Message-ID: <49593660.2010900@gmx.de>
+References: <4959346E.7060600@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 To: linux-parisc <linux-parisc@vger.kernel.org>,
@@ -11,51 +12,84 @@ To: linux-parisc <linux-parisc@vger.kernel.org>,
 	Randolph Chung <randolph@tausq.org>,
 	Linus <to
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <4959346E.7060600@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is the second take of the patch series.
-Changes to previous version:
-- new CONFIG_HAVE_MODULE_SECTION_STUBS config option
-- put stub entries of a code section in front of the section
+[PATCH 1/2] module.c: fix module loading failure of large modules (take 2)
 
-____________
-The parisc port (esp. the 32bit kernel) currently lacks the ability to
-load large kernel modules like xfs or ipv6. This is a long outstanding
-bug and has already been reported a few times, e.g.:
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=350482,
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=401439,
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=508489
+When creating the final layout of a kernel module in memory, allow the
+module loader to reserve some additional memory in front of a given section.
+This is currently only needed for the parisc port which needs to put the
+stub entries there to fulfill the 17/22bit PCREL relocations with large
+kernel modules like xfs.
 
-The symptom is like this:
-# modprobe xfs
-FATAL: Error inserting xfs
-(/lib/modules/2.6.26-1-parisc/kernel/fs/xfs/xfs.ko): Invalid module
-format
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-In dmesg:
-module xfs relocation of symbol xfs_btree_read_bufs is out of range
-(0x3ffefffe in 17 bits)
-
-The reason for the failure is, that the architecture only provides the
-R_PARISC_PCREL17F (for 32bit kernels) and R_PARISC_PCREL22F (for PA2.0
-and 64bit kernels) relocations, which sometimes can't reach the target
-address of the stub entry if the kernel module is too large. Currently
-parisc (like other architectures) creates one big PLT section for all
-stubs at the beginning of the init and core sections.
-
-The following two patches changes the parisc module loader to put stubs
-for the code sections in front of each section, so that the distance to
-the stubs more easily fits into the available 17/22 bits.
-
-The first patch touches the generic module loader and adds a call to the
-new module_additional_section_size() function to get_offset() if
-CONFIG_HAVE_MODULE_SECTION_STUBS is defined. On parisc this
-function returns the additional bytes for the stub area of a given section.
-
-The second patch implements the parisc-specific changes.
-
-Tested with 32- and 64bit parisc kernels.
-
-Helge
-
+diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+index eb10339..65fb34c 100644
+--- a/include/linux/moduleloader.h
++++ b/include/linux/moduleloader.h
+@@ -13,6 +13,9 @@ int module_frob_arch_sections(Elf_Ehdr *hdr,
+ 			      char *secstrings,
+ 			      struct module *mod);
+ 
++unsigned long module_additional_section_size(struct module *mod,
++					     unsigned int section);
++
+ /* Allocator used for allocating struct module, core sections and init
+    sections.  Returns NULL on failure. */
+ void *module_alloc(unsigned long size);
+diff --git a/init/Kconfig b/init/Kconfig
+index f763762..5383815 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -908,6 +908,9 @@ config MODULE_SRCVERSION_ALL
+ 	  the version).  With this option, such a "srcversion" field
+ 	  will be created for all modules.  If unsure, say N.
+ 
++config HAVE_MODULE_SECTION_STUBS
++	bool
++
+ config KMOD
+ 	def_bool y
+ 	help
+diff --git a/kernel/module.c b/kernel/module.c
+index 1f4cc00..4b86308 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -1579,10 +1579,15 @@ static int simplify_symbols(Elf_Shdr *sechdrs,
+ }
+ 
+ /* Update size with this section: return offset. */
+-static long get_offset(unsigned int *size, Elf_Shdr *sechdr)
++static long get_offset(struct module *mod, unsigned int *size,
++		Elf_Shdr *sechdr, unsigned int section)
+ {
+ 	long ret;
+ 
++#ifdef CONFIG_HAVE_MODULE_SECTION_STUBS
++	/* allocate some memory for stubs in front of each section */
++	*size += module_additional_section_size(mod, section);
++#endif
+ 	ret = ALIGN(*size, sechdr->sh_addralign ?: 1);
+ 	*size = ret + sechdr->sh_size;
+ 	return ret;
+@@ -1622,7 +1627,7 @@ static void layout_sections(struct module *mod,
+ 			    || strncmp(secstrings + s->sh_name,
+ 				       ".init", 5) == 0)
+ 				continue;
+-			s->sh_entsize = get_offset(&mod->core_size, s);
++			s->sh_entsize = get_offset(mod, &mod->core_size, s, i);
+ 			DEBUGP("\t%s\n", secstrings + s->sh_name);
+ 		}
+ 		if (m == 0)
+@@ -1640,7 +1645,7 @@ static void layout_sections(struct module *mod,
+ 			    || strncmp(secstrings + s->sh_name,
+ 				       ".init", 5) != 0)
+ 				continue;
+-			s->sh_entsize = (get_offset(&mod->init_size, s)
++			s->sh_entsize = (get_offset(mod, &mod->init_size, s, i)
+ 					 | INIT_OFFSET_MASK);
+ 			DEBUGP("\t%s\n", secstrings + s->sh_name);
+ 		}
