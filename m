@@ -1,9 +1,11 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: fix module loading failure of large kernel modules
-Date: Mon, 29 Dec 2008 15:07:26 +0100
-Message-ID: <4958D99E.4010201@gmx.de>
+Subject: [PATCH 1/2] module.c: fix module loading failure of large modules
+Date: Mon, 29 Dec 2008 15:09:12 +0100
+Message-ID: <4958DA08.1080008@gmx.de>
+References: <4958D99E.4010201@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: multipart/mixed;
+ boundary="------------040105060008050603090205"
 Cc: Helge Deller <deller@gmx.de>
 To: linux-parisc@vger.kernel.org,
 	Linux Kernel Development <linux-kernel@vger.kernel.org>,
@@ -11,44 +13,86 @@ To: linux-parisc@vger.kernel.org,
 	Randolph Chung <randolph@tausq.org>,
 	Moritz Muehlenhoff <jmm@
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <4958D99E.4010201@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The parisc port (esp. the 32bit kernel) currently lacks the ability to
-load large kernel modules like xfs or ipv6. This is a long outstanding
-bug and has already been reported a few times, e.g.:
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=350482,
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=401439,
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=508489
+This is a multi-part message in MIME format.
+--------------040105060008050603090205
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-The symptom is like this:
-# modprobe xfs
-FATAL: Error inserting xfs
-(/lib/modules/2.6.26-1-parisc/kernel/fs/xfs/xfs.ko): Invalid module
-format
+[PATCH 1/2] module.c: fix module loading failure of large modules
 
-In dmesg:
-module xfs relocation of symbol xfs_btree_read_bufs is out of range
-(0x3ffefffe in 17 bits)
+When creating the final layout of a kernel module in memory, allow the
+module loader to reserve some additional memory behind a given section.
+This is currently only needed for the parisc port which needs to put the
+stub entries there to fulfill the 17/22bit PCREL relocations with large
+kernel modules like xfs.
 
-The reason for the failure is, that the architecture only provides the
-R_PARISC_PCREL17F (for 32bit kernels) and R_PARISC_PCREL22F (for PA2.0
-and 64bit kernels) relocations, which sometimes can't reach the target
-address of the stub entry if the kernel module is too large. Currently
-parisc (like other architectures) creates one big PLT section for all
-stubs at the beginning of the init and core sections.
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-The following two patches changes the parisc module loader to put stubs
-in between the code sections instead, so that the distance to the stubs
-more easily fits into the available 17/22 bits.
 
-The first patch touches the generic module loader and adds a call to the
-new module_additional_section_size() function to get_offset() if
-CONFIG_ARCH_WANTS_STUBS_BEHIND_SECTIONS is defined. On parisc this
-function returns the additional bytes for the stub area of a given section.
+--------------040105060008050603090205
+Content-Type: text/plain;
+ name="modules.patch1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="modules.patch1"
 
-The second patch implements the parisc-specific changes.
+diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+index eb10339..65fb34c 100644
+--- a/include/linux/moduleloader.h
++++ b/include/linux/moduleloader.h
+@@ -13,6 +13,9 @@ int module_frob_arch_sections(Elf_Ehdr *hdr,
+ 			      char *secstrings,
+ 			      struct module *mod);
+ 
++unsigned long module_additional_section_size(struct module *mod,
++					     unsigned int section);
++
+ /* Allocator used for allocating struct module, core sections and init
+    sections.  Returns NULL on failure. */
+ void *module_alloc(unsigned long size);
+diff --git a/kernel/module.c b/kernel/module.c
+index 1f4cc00..c7662da 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -1579,12 +1579,16 @@ static int simplify_symbols(Elf_Shdr *sechdrs,
+ }
+ 
+ /* Update size with this section: return offset. */
+-static long get_offset(unsigned int *size, Elf_Shdr *sechdr)
++static long get_offset(struct module *mod, unsigned int *size,
++		Elf_Shdr *sechdr, unsigned int section)
+ {
+ 	long ret;
+ 
+ 	ret = ALIGN(*size, sechdr->sh_addralign ?: 1);
+ 	*size = ret + sechdr->sh_size;
++#ifdef CONFIG_ARCH_WANTS_STUBS_BEHIND_SECTIONS
++	*size += module_additional_section_size(mod, section);
++#endif
+ 	return ret;
+ }
+ 
+@@ -1622,7 +1626,7 @@ static void layout_sections(struct module *mod,
+ 			    || strncmp(secstrings + s->sh_name,
+ 				       ".init", 5) == 0)
+ 				continue;
+-			s->sh_entsize = get_offset(&mod->core_size, s);
++			s->sh_entsize = get_offset(mod, &mod->core_size, s, i);
+ 			DEBUGP("\t%s\n", secstrings + s->sh_name);
+ 		}
+ 		if (m == 0)
+@@ -1640,7 +1644,7 @@ static void layout_sections(struct module *mod,
+ 			    || strncmp(secstrings + s->sh_name,
+ 				       ".init", 5) != 0)
+ 				continue;
+-			s->sh_entsize = (get_offset(&mod->init_size, s)
++			s->sh_entsize = (get_offset(mod, &mod->init_size, s, i)
+ 					 | INIT_OFFSET_MASK);
+ 			DEBUGP("\t%s\n", secstrings + s->sh_name);
+ 		}
 
-Tested with 32- and 64bit parisc kernels.
-
-Helge
+--------------040105060008050603090205--
