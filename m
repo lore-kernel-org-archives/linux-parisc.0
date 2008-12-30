@@ -1,205 +1,115 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] Document LWS ABI.
-Date: Mon, 29 Dec 2008 22:47:38 +0100
-Message-ID: <4959457A.4060709@gmx.de>
-References: <20080716030552.766ED4E77@hiauly1.hia.nrc.ca>
+From: Kyle McMartin <kyle@infradead.org>
+Subject: Re: [PATCH 1/2] module.c: fix module loading failure of large
+	modules (take 2)
+Date: Tue, 30 Dec 2008 13:10:32 -0500
+Message-ID: <20081230181032.GB15235@bombadil.infradead.org>
+References: <4959346E.7060600@gmx.de> <49593660.2010900@gmx.de> <20081230180724.GA15235@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070908010606010208060901"
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	Carlos O'Donell <carlos@systemhalted.org>,
-	linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Cc: Helge Deller <deller@gmx.de>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	Randolph Chung <randolph@tausq.org>,
+	Linus <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	rusty@rustcorp.com.au
+To: Kyle McMartin <kyle@infradead.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080716030552.766ED4E77@hiauly1.hia.nrc.ca>
+In-Reply-To: <20081230180724.GA15235@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------070908010606010208060901
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Ugh, I fail at typing, resending for rusty's benefit.
 
-Carlos, Dave,
-
-This patch hasn't been finally discussed (and merged) yet.
-I've attached the last version of the patch from Carlos, that way it get 
-archived in Kyle's Patchwork as well :-)
-
-My personal opinion is, that we should try to reduce the number of clobbered 
-registers (which is in line with what Dave said below).
-
-Thread is here:
-http://marc.info/?t=121612540800004&r=1&w=2
-
-Helge
-
-John David Anglin wrote:
->> The question is "Are you OK with the existing ABI?" :-)
+On Tue, Dec 30, 2008 at 01:07:24PM -0500, Kyle McMartin wrote:
+> [Adding rusty to CC]
 > 
-> No.  As I understand it, r2 doesn't need to be clobbered because
-> glibc doesn't currently clobber it.  So, using it in the LWS code
-> would cause an ABI break.  That's one register back to userspace.
+> On Mon, Dec 29, 2008 at 09:43:12PM +0100, Helge Deller wrote:
+> > +unsigned long module_additional_section_size(struct module *mod,
+> > +					     unsigned int section);
+> > +
 > 
-> I want to keep r19 and r27 for userspace so the PIC register doesn't
-> have to be saved and restored in the asm (linux-atomic.c is compiled
-> as PIC code).  You can have r29.
+> I think this would be more palatable as
 > 
-> That leaves three free registers for the LWS code: r22, r23 and r29.
-> The LWS ABI has r1, r20-r26 and r28-r31.  Userspace has two call-clobbered
-> registers free across the asm in PIC code, and three in non-PIC code.
-> That's enough to efficiently perform the error comparisons.
-> 
-> The asm would be more efficient if the registers used for lws_mem,
-> lws_old and lws_new were not written to.  This occurs only for the
-> call in the 32-bit runtime with a 64-bit kernel.  As it stands,
-> the lws_mem, lws_old and lws_new arguments get reloaded every time
-> around the EAGAIN loop.  This is the crucial code in the compare
-> and swap:
-> 
->         /* The load and store could fail */
-> 1:      ldw     0(%sr3,%r26), %r28
-> 	sub,<>  %r28, %r25, %r0
-> 2:      stw     %r24, 0(%sr3,%r26)
-> 
-> The sub,<> instruction uses a 32-bit compare/subtract condition, so
-> the clipping of r25 isn't necessary.  Similarly, the stw instruction
-> ignores the most significant 32-bits of r24.  The value in r26 needs
-> clipping but you have three free registers, and it looks like r1 is
-> also free at this point in the code.  You can deposit the least
-> significant 32-bits of r26 into a field of zeros in another register
-> in one instruction.
-> 
-> It looks like lws_compare_and_swap64 and lws_compare_and_swap32 become
-> more or less functionally identical.  The above would become something
-> like:
-> 
-> #ifdef CONFIG_64BIT
-> 	depd,z	%r26,63,32,%r1
-> 1:      ldw     0(%sr3,%r1), %r28
->         sub,<>  %r28, %r25, %r0
-> 2:      stw     %r24, 0(%sr3,%r1)
+> #ifdef HAVE_MODULE_SECTION_STUBS
+> unsigned long module_additional_section_size(struct module *mod,
+> 	unsigned int section);
 > #else
-> 1:      ldw     0(%sr3,%r26), %r28
->         sub,<>  %r28, %r25, %r0
-> 2:      stw     %r24, 0(%sr3,%r26)
+> static inline unsigned long module_additional_section_size(struct module *mod,
+> 	unsigned int section)
+> {
+> 	return 0;
+> }
 > #endif
 > 
-> The argument clipping in the current code would be removed.  As a result,
-> the branch to lws_compare_and_swap can be eliminated in the 64-bit path.
+> and removing the conditional in kernel/module.c, possibly the symbol
+> should be "arch_module_a..." just to make it clear to anyone reading.
 > 
-> It's my impression that the tightness of the loop for the compare/exchange
-> operation is important.
+> Anyway, it's up to rusty.
 > 
-> Dave
-
-
---------------070908010606010208060901
-Content-Type: text/x-patch;
- name="syscall.S.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="syscall.S.diff"
-
-[PARISC] Document LWS ABI and LWS cleanups.
-
-Document the LWS ABI including implementation notes for
-userspace, and comment cleanup.
-
-Remove extraneous .align 16 after lws_lock_start.
-
-Signed-off-by: Carlos O'Donell <carlos@systemhalted.org>
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
-index 69b6eeb..3fc73ad 100644
---- a/arch/parisc/kernel/syscall.S
-+++ b/arch/parisc/kernel/syscall.S
-@@ -365,17 +365,51 @@ tracesys_sigexit:
- 
- 
- 	/*********************************************************
--		Light-weight-syscall code
-+		32/64-bit Light-Weight-Syscall ABI
- 
--		r20 - lws number
--		r26,r25,r24,r23,r22 - Input registers
--		r28 - Function return register
--		r21 - Error code.
-+		* - Indicates a hint for userspace inline asm
-+		implementations.
- 
--		Scracth: Any of the above that aren't being
--		currently used, including r1. 
-+		Syscall number (caller-saves)
-+	        - %r20
-+	        * In asm clobber.
- 
--		Return pointer: r31 (Not usable)
-+		Argument registers (caller-saves)
-+	        - %r26, %r25, %r24, %r23, %r22
-+	        * In asm input.
-+
-+		Return registers (caller-saves)
-+	        - %r28 (return), %r21 (errno)
-+	        * In asm output.
-+
-+		Caller-saves registers
-+	        - %r1, %r27, %r29
-+	        - %r2 (return pointer)
-+	        - %r31 (ble link register)
-+	        * In asm clobber.
-+
-+		Callee-saves registers
-+	        - %r3-%r18
-+	        - %r30 (stack pointer)
-+	        * Not in asm clobber.
-+
-+		If userspace is 32-bit:
-+		Callee-saves registers
-+	        - %r19 (32-bit PIC register)
-+
-+		Differences from 32-bit calling convention:
-+		- Syscall number in %r20
-+		- Additional argument register %r22 (arg4)
-+		- Callee-saves %r19.
-+
-+		If userspace is 64-bit:
-+		Callee-saves registers
-+		- %r27 (64-bit PIC register)
-+
-+		Differences from 64-bit calling convention:
-+		- Syscall number in %r20
-+		- Additional argument register %r22 (arg4)
-+		- Callee-saves %r27.
- 
- 		Error codes returned by entry path:
- 
-@@ -473,7 +507,8 @@ lws_compare_and_swap64:
- 	b,n	lws_compare_and_swap
- #else
- 	/* If we are not a 64-bit kernel, then we don't
--	 * implement having 64-bit input registers
-+	 * have 64-bit input registers, and calling
-+	 * the 64-bit LWS CAS returns ENOSYS.
- 	 */
- 	b,n	lws_exit_nosys
- #endif
-@@ -635,12 +670,15 @@ END(sys_call_table64)
- 	/*
- 		All light-weight-syscall atomic operations 
- 		will use this set of locks 
-+
-+		NOTE: The lws_lock_start symbol must be 
-+		at least 16-byte aligned for safe use
-+		with ldcw.
- 	*/
- 	.section .data
- 	.align	PAGE_SIZE
- ENTRY(lws_lock_start)
- 	/* lws locks */
--	.align 16
- 	.rept 16
- 	/* Keep locks aligned at 16-bytes */
- 	.word 1
-
---------------070908010606010208060901--
+> Rusty, we'd like to get this patch in, so I can merge the dependent
+> parisc-specific patch.
+> 
+> regards, Kyle
+> 
+> >  /* Allocator used for allocating struct module, core sections and init
+> >     sections.  Returns NULL on failure. */
+> >  void *module_alloc(unsigned long size);
+> > diff --git a/init/Kconfig b/init/Kconfig
+> > index f763762..5383815 100644
+> > --- a/init/Kconfig
+> > +++ b/init/Kconfig
+> > @@ -908,6 +908,9 @@ config MODULE_SRCVERSION_ALL
+> >  	  the version).  With this option, such a "srcversion" field
+> >  	  will be created for all modules.  If unsure, say N.
+> >  
+> > +config HAVE_MODULE_SECTION_STUBS
+> > +	bool
+> > +
+> >  config KMOD
+> >  	def_bool y
+> >  	help
+> > diff --git a/kernel/module.c b/kernel/module.c
+> > index 1f4cc00..4b86308 100644
+> > --- a/kernel/module.c
+> > +++ b/kernel/module.c
+> > @@ -1579,10 +1579,15 @@ static int simplify_symbols(Elf_Shdr *sechdrs,
+> >  }
+> >  
+> >  /* Update size with this section: return offset. */
+> > -static long get_offset(unsigned int *size, Elf_Shdr *sechdr)
+> > +static long get_offset(struct module *mod, unsigned int *size,
+> > +		Elf_Shdr *sechdr, unsigned int section)
+> >  {
+> >  	long ret;
+> >  
+> > +#ifdef CONFIG_HAVE_MODULE_SECTION_STUBS
+> > +	/* allocate some memory for stubs in front of each section */
+> > +	*size += module_additional_section_size(mod, section);
+> > +#endif
+> >  	ret = ALIGN(*size, sechdr->sh_addralign ?: 1);
+> >  	*size = ret + sechdr->sh_size;
+> >  	return ret;
+> > @@ -1622,7 +1627,7 @@ static void layout_sections(struct module *mod,
+> >  			    || strncmp(secstrings + s->sh_name,
+> >  				       ".init", 5) == 0)
+> >  				continue;
+> > -			s->sh_entsize = get_offset(&mod->core_size, s);
+> > +			s->sh_entsize = get_offset(mod, &mod->core_size, s, i);
+> >  			DEBUGP("\t%s\n", secstrings + s->sh_name);
+> >  		}
+> >  		if (m == 0)
+> > @@ -1640,7 +1645,7 @@ static void layout_sections(struct module *mod,
+> >  			    || strncmp(secstrings + s->sh_name,
+> >  				       ".init", 5) != 0)
+> >  				continue;
+> > -			s->sh_entsize = (get_offset(&mod->init_size, s)
+> > +			s->sh_entsize = (get_offset(mod, &mod->init_size, s, i)
+> >  					 | INIT_OFFSET_MASK);
+> >  			DEBUGP("\t%s\n", secstrings + s->sh_name);
+> >  		}
+> > 
+> 
