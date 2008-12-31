@@ -1,16 +1,12 @@
-From: Andrew Morton <akpm@linux-foundation.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: [PATCH] parisc: fix module loading failure of large kernel
  modules (take 4)
-Date: Wed, 31 Dec 2008 10:54:25 -0800
-Message-ID: <20081231105425.9ccac21d.akpm@linux-foundation.org>
-References: <4959346E.7060600@gmx.de>
-	<200812310915.41693.rusty@rustcorp.com.au>
-	<495B5806.3080505@gmx.de>
-	<alpine.LFD.2.00.0812310926450.5086@localhost.localdomain>
-	<ada63l0qmba.fsf@cisco.com>
-	<alpine.LFD.2.00.0812310942110.5086@localhost.localdomain>
+Date: Wed, 31 Dec 2008 13:22:53 -0800 (PST)
+Message-ID: <alpine.LFD.2.00.0812311318420.5086@localhost.localdomain>
+References: <4959346E.7060600@gmx.de> <200812310915.41693.rusty@rustcorp.com.au> <495B5806.3080505@gmx.de> <alpine.LFD.2.00.0812310926450.5086@localhost.localdomain> <ada63l0qmba.fsf@cisco.com> <alpine.LFD.2.00.0812310942110.5086@localhost.localdomain>
+ <20081231105425.9ccac21d.akpm@linux-foundation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: Roland Dreier <rdreier@cisco.com>, Ingo Molnar <mingo@elte.hu>,
 	Ian Campbell <ian.campbell@citrix.com>,
 	Jeremy Fitzhardinge <jeremy.fitzhardinge@citrix.com>,
@@ -22,43 +18,26 @@ Cc: Roland Dreier <rdreier@cisco.com>, Ingo Molnar <mingo@elte.hu>,
 	Randolph Chung <randolph@tausq.org>,
 	Sam Ravnborg <sam@ravnborg.org>,
 	John David Anglin <dave@hiauly1.hia.nrc.ca>
-To: Linus Torvalds <torvalds@linux-foundation.org>
+To: Andrew Morton <akpm@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LFD.2.00.0812310942110.5086@localhost.localdomain>
+In-Reply-To: <20081231105425.9ccac21d.akpm@linux-foundation.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 31 Dec 2008 09:47:19 -0800 (PST) Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
+
+On Wed, 31 Dec 2008, Andrew Morton wrote:
 > 
-> > (I just notice this because I saw the warning about swiotlb_alloc_boot()
-> > not being __init but calling __alloc_bootmem_low and so I looked at the
-> > code yesterday)
-> 
-> Lucky us. What's nasty about this is that most developers probably have 
-> updated versions of gcc, and are then surprised when some odd user has 
-> insane behavior that doesn't match the source code - because the compiler 
-> did something unexpected.
+> Adrian claimed that it was gcc-4.1.0 and 4.1.1 only.  He proposed
+> banning them: http://lkml.org/lkml/2008/8/5/444
 
-Adrian claimed that it was gcc-4.1.0 and 4.1.1 only.  He proposed
-banning them: http://lkml.org/lkml/2008/8/5/444
+If it really is just those releases, then yes, considering the number of 
+cases we apparently have, and considering how ugly it is in some cases to 
+move the weak function anywhere else, maybe banning those versions is the 
+proper thing to do.
 
-> I guess I could make a sparse rule for this, but nobody seems to run or 
-> care about sparse anyway. Sad.
+It probably won't hurt very many people - yeah, some people will be forced 
+to upgrade, but I have this memory of early 4.1 having had other bugs 
+anyway, so it's probably a good idea.
 
-No, there are some people who regularly run sparse and fix stuff.  Pending
-things here include:
-
-y:/usr/src/25> grep sparse series 
-input-ads7846c-sparse-lock-annotation.patch
-hugetlb-fix-sparse-warnings.patch
-lib-fix-sparse-shadowed-variable-warning.patch
-lib-proportionsc-trivial-sparse-lock-annotation.patch
-nvidia-fix-sparse-warnings.patch
-viafb-fix-sparse-warnings.patch
-pm3fb-fix-sparse-warning.patch
-neofb-fix-sparse-warnings.patch
-i810-fix-sparse-warnings.patch
-intelfb-fix-sparse-warnings.patch
-
-Which is a good way for it to be used.
+		Linus
