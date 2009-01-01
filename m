@@ -1,58 +1,31 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] parisc: fix module loading failure of large kernel
- modules (take 4)
-Date: Thu, 1 Jan 2009 08:37:32 -0800
-Message-ID: <20090101083732.51694e45.akpm@linux-foundation.org>
-References: <4959346E.7060600@gmx.de>
-	<200812310915.41693.rusty@rustcorp.com.au>
-	<495B5806.3080505@gmx.de>
-	<alpine.LFD.2.00.0812310926450.5086@localhost.localdomain>
-	<ada63l0qmba.fsf@cisco.com>
-	<alpine.LFD.2.00.0812310942110.5086@localhost.localdomain>
-	<20081231105425.9ccac21d.akpm@linux-foundation.org>
-	<alpine.LFD.2.00.0812311318420.5086@localhost.localdomain>
-	<20090101142401.GA25690@elte.hu>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: uid/gid issues on 2.6.26-rc2
+Date: Thu, 1 Jan 2009 11:55:31 -0500 (EST)
+Message-ID: <20090101165532.2F8E04F19@hiauly1.hia.nrc.ca>
+References: <495C9B85.3000009@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Roland Dreier <rdreier@cisco.com>,
-	Ian Campbell <ian.campbell@citrix.com>,
-	Jeremy Fitzhardinge <jeremy.fitzhardinge@citrix.com>,
-	Helge Deller <deller@gmx.de>,
-	Rusty Russell <rusty@rustcorp.com.au>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	Randolph Chung <randolph@tausq.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	stable@kernel.org
-To: Ingo Molnar <mingo@elte.hu>
+Cc: dave.anglin@nrc-cnrc.gc.ca, T-Bone@parisc-linux.org,
+	linux-parisc@vger.kernel.org
+To: deller@gmx.de (Helge Deller)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090101142401.GA25690@elte.hu>
+In-Reply-To: <495C9B85.3000009@gmx.de> from "Helge Deller" at Jan 1, 2009 11:31:33 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 1 Jan 2009 15:24:01 +0100 Ingo Molnar <mingo@elte.hu> wrote:
-
-> * Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> > The failure appears random.  I think the problem occurs shortly after
+> > forking.  It doesn't seem to be present in the 64-bit SMP 2.6.28 test
+> > kernel that I'm testing.
 > 
-> > 
-> > 
-> > On Wed, 31 Dec 2008, Andrew Morton wrote:
-> > > 
-> > > Adrian claimed that it was gcc-4.1.0 and 4.1.1 only.  He proposed
-> > > banning them: http://lkml.org/lkml/2008/8/5/444
-> > 
-> > If it really is just those releases, then yes, considering the number of 
-> > cases we apparently have, and considering how ugly it is in some cases 
-> > to move the weak function anywhere else, maybe banning those versions is 
-> > the proper thing to do.
-> > 
-> > It probably won't hurt very many people - yeah, some people will be 
-> > forced to upgrade, but I have this memory of early 4.1 having had other 
-> > bugs anyway, so it's probably a good idea.
-> 
-> That would be _really_ nice to do IMHO
+> I think your assumption that it is related to fork might be correct.
 
-I wonder if we should do it in -stable too.  Probably yes.
+I tried tracing what happens with sshd when a connection occurs but
+I didn't learn much.  The uid/gid authentication uses compat mode on
+the system where I see this problem.  It seems as if the authentication
+setup is passed across the fork as I don't see any access to /etc/passwd
+or /etc/shadow (password authentication is being used in this case).
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
