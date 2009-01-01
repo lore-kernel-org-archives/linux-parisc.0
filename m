@@ -1,26 +1,29 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Helge Deller <deller@gmx.de>
 Subject: Re: resource_size_t printk woes...
-Date: Thu, 1 Jan 2009 12:14:41 -0500 (EST)
-Message-ID: <20090101171442.5BF174EDA@hiauly1.hia.nrc.ca>
-References: <495CBFCF.3010702@gmx.de>
+Date: Thu, 01 Jan 2009 18:32:16 +0100
+Message-ID: <495CFE20.2000702@gmx.de>
+References: <20090101171442.5BF174EDA@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: kyle@infradead.org, linux-parisc@vger.kernel.org
-To: deller@gmx.de (Helge Deller)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <495CBFCF.3010702@gmx.de> from "Helge Deller" at Jan 1, 2009 02:06:23 pm
+In-Reply-To: <20090101171442.5BF174EDA@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Helge,
+John David Anglin wrote:
+> Hi Helge,
+> 
+> I just want to say that I like Kyle's approach.  There already exists
+> the 'R' modifier for %p.  This outputs a pair of resource_size_t values.
+> We just need a modifier to handle the printing of the start value in
+> a manner similar to that for the 'R' modifier.  So, I think this issue
+> needs another go around.
 
-I just want to say that I like Kyle's approach.  There already exists
-the 'R' modifier for %p.  This outputs a pair of resource_size_t values.
-We just need a modifier to handle the printing of the start value in
-a manner similar to that for the 'R' modifier.  So, I think this issue
-needs another go around.
+Sadly none of the approaches is really nice, as with Kyle's approach we'd
+loose the type-checking of printk.
+But yes, maybe that's the best choice of all bad ones.
+Will you try/come up with a patch to vsprintf.c?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Helge
