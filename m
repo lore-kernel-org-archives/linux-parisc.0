@@ -1,97 +1,53 @@
-From: Ingo Molnar <mingo@elte.hu>
-Subject: [PATCH] kbuild: Remove gcc 4.1.0 quirk from init/main.c
-Date: Fri, 2 Jan 2009 16:21:24 +0100
-Message-ID: <20090102152124.GA19091@elte.hu>
-References: <alpine.LFD.2.00.0812310942110.5086@localhost.localdomain> <20081231.141408.60544902.davem@davemloft.net> <20090102115547.GB3027@elte.hu> <200901021443.58769.bzolnier@gmail.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: resource_size_t printk woes...
+Date: Fri, 2 Jan 2009 11:32:54 -0500 (EST)
+Message-ID: <20090102163255.42E0A4EF0@hiauly1.hia.nrc.ca>
+References: <495DDB0E.9010203@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: David Miller <davem@davemloft.net>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	akpm@linux-foundation.org, rdreier@cisco.com,
-	ian.campbell@citrix.com, jeremy.fitzhardinge@citrix.com,
-	deller@gmx.de, rusty@rustcorp.com.au, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kyle@mcmartin.ca, randolph@tausq.org,
-	sam@ravnborg.org, dave@hiauly1.hia.nrc.ca
-To: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: dave.anglin@nrc-cnrc.gc.ca, kyle@infradead.org,
+	linux-parisc@vger.kernel.org
+To: deller@gmx.de (Helge Deller)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200901021443.58769.bzolnier@gmail.com>
+In-Reply-To: <495DDB0E.9010203@gmx.de> from "Helge Deller" at Jan 2, 2009 10:14:54 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-* Bartlomiej Zolnierkiewicz <bzolnier@gmail.com> wrote:
-
-> On Friday 02 January 2009, Ingo Molnar wrote:
-> > 
-> > * David Miller <davem@davemloft.net> wrote:
-> > 
-> > > From: Linus Torvalds <torvalds@linux-foundation.org>
-> > > Date: Wed, 31 Dec 2008 13:22:53 -0800 (PST)
-> > > 
-> > > > On Wed, 31 Dec 2008, Andrew Morton wrote:
-> > > > > 
-> > > > > Adrian claimed that it was gcc-4.1.0 and 4.1.1 only.  He proposed
-> > > > > banning them: http://lkml.org/lkml/2008/8/5/444
-> > > > 
-> > > > If it really is just those releases, then yes, considering the number 
-> > > > of cases we apparently have, and considering how ugly it is in some 
-> > > > cases to move the weak function anywhere else, maybe banning those 
-> > > > versions is the proper thing to do.
-> > > > 
-> > > > It probably won't hurt very many people - yeah, some people will be 
-> > > > forced to upgrade, but I have this memory of early 4.1 having had 
-> > > > other bugs anyway, so it's probably a good idea.
-> > > 
-> > > I think this is probably the best way to handle this.
-> > 
-> > okay - to move this matter from the discussion-space to the 
-> > solution-space, how about the patch below? (tested on x86 with a 
-> > non-affected compiler version.)
+> Hi Dave,
 > 
-> ...or we can just merge Adrian's patch from June 2008 which also fixes 
-> the issue nicely.
+> telling you to try vanilla 2.6.28 was a stupid idea.
+> I forgot that I had exactly the same problem (slab corruption):
+> http://bugzilla.kernel.org/show_bug.cgi?id=11913
+> when I started the thread 
+> "2.6.28-rcX in pretty bad shape on parisc"
+> here on the list as well.
+> 
+> The solution for me was to use another default config.
+> James posted this one, which started to get everything working for me:
+> http://parisc-linux.org/~jejb/config-2.6.28-rc5-ion
+> Try this one instead (e.g. with Kyle's tree).
+> 
+> I assume something in your .config is different than what is in
+> James' .config. It would be interesting to know what it
+> is. I didn't checked further at that time.
 
-didnt know about that patch, but yeah, sure.
+The config that I have been using is based on James' ion config, plus
+the defaults from running make oldconfig.
 
-> OTOH your patch has an advantage of addressing the problem in the more 
-> appropriate place (include/linux/compiler.h) and from what I see allows 
-> us to remove previous gcc 4.1.0 check from init/main.c?
+I actually was running 2.6.28 before I started experimenting yesterday.
+It had run about three days building gcc without major problems.  As
+noted by Grant, there is usually one unexplained segv (usually in make
+or bash), then the system seems to run reasonably well for an extended
+period.
 
-Good spotting - find followup cleanup patch below.
+If bash segvs, the system goes into an infinite loop of segvs due to the
+way it handles signals, and the fact that the kernel restarts the faulting
+instruction.  This fills the root file system with log messages...
 
-	Ingo
+I'm running a hacked version of bash which exits immediately to avoid this
+problem.
 
-------------------->
->From d23cbaaa342e5555a919a543095d656415a55950 Mon Sep 17 00:00:00 2001
-From: Ingo Molnar <mingo@elte.hu>
-Date: Fri, 2 Jan 2009 16:16:16 +0100
-Subject: [PATCH] kbuild: Remove gcc 4.1.0 quirk from init/main.c
-
-Impact: cleanup
-
-We now have a cleaner check for gcc 4.1.0/4.1.1 trouble in
-include/linux/compiler.h, so remove the 4.1.0 quirk from
-init/main.c.
-
-Reported-by: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@elte.hu>
----
- init/main.c |    9 ---------
- 1 files changed, 0 insertions(+), 9 deletions(-)
-
-diff --git a/init/main.c b/init/main.c
-index 2a7ce0f..5ced153 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -75,15 +75,6 @@
- #include <asm/smp.h>
- #endif
- 
--/*
-- * This is one of the first .c files built. Error out early if we have compiler
-- * trouble.
-- */
--
--#if __GNUC__ == 4 && __GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ == 0
--#warning gcc-4.1.0 is known to miscompile the kernel.  A different compiler version is recommended.
--#endif
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
