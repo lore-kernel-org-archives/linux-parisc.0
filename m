@@ -1,70 +1,55 @@
-From: Ingo Molnar <mingo@elte.hu>
-Subject: [PATCH] Disallow gcc versions 3.{0,1}
-Date: Fri, 2 Jan 2009 18:54:58 +0100
-Message-ID: <20090102175458.GA29512@elte.hu>
-References: <alpine.LFD.2.00.0812310942110.5086@localhost.localdomain> <20081231105425.9ccac21d.akpm@linux-foundation.org> <alpine.LFD.2.00.0812311318420.5086@localhost.localdomain> <20081231.141408.60544902.davem@davemloft.net> <20090102115547.GB3027@elte.hu> <alpine.LFD.2.00.0901020844070.5086@localhost.localdomain> <alpine.LFD.2.00.0901020933370.5086@localhost.localdomain> <20090102174641.GA27287@elte.hu>
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH] kbuild: Disallow GCC 4.1.0 / 4.1.1
+Date: Fri, 2 Jan 2009 18:57:37 +0100
+Message-ID: <20090102175737.GA5818@uranus.ravnborg.org>
+References: <alpine.LFD.2.00.0812310942110.5086@localhost.localdomain> <20081231105425.9ccac21d.akpm@linux-foundation.org> <alpine.LFD.2.00.0812311318420.5086@localhost.localdomain> <20081231.141408.60544902.davem@davemloft.net> <20090102115547.GB3027@elte.hu> <alpine.LFD.2.00.0901020844070.5086@localhost.localdomain> <alpine.LFD.2.00.0901020933370.5086@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: David Miller <davem@davemloft.net>, akpm@linux-foundation.org,
-	rdreier@cisco.com, ian.campbell@citrix.com,
-	jeremy.fitzhardinge@citrix.com, deller@gmx.de,
-	rusty@rustcorp.com.au, linux-parisc@vger.kernel.org,
+Cc: Ingo Molnar <mingo@elte.hu>, David Miller <davem@davemloft.net>,
+	akpm@linux-foundation.org, rdreier@cisco.com,
+	ian.campbell@citrix.com, jeremy.fitzhardinge@citrix.com,
+	deller@gmx.de, rusty@rustcorp.com.au, linux-parisc@vger.kernel.org,
 	linux-kernel@vger.kernel.org, kyle@mcmartin.ca, randolph@tausq.org,
-	sam@ravnborg.org, dave@hiauly1.hia.nrc.ca
+	dave@hiauly1.hia.nrc.ca, Andrew Morton <akpm@linux-foundation.org>
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090102174641.GA27287@elte.hu>
+In-Reply-To: <alpine.LFD.2.00.0901020933370.5086@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-* Ingo Molnar <mingo@elte.hu> wrote:
-
-> > And it all looks more logical too, imho.
+On Fri, Jan 02, 2009 at 09:38:14AM -0800, Linus Torvalds wrote:
 > 
-> yeah, agreed, much cleaner.
 > 
-> The gcc3 check for gcc 3.0 and 3.1 can be pushed into gcc3 as well - not 
-> sure whether you fixed that. (i fixed it in the patch i just sent - but 
-> i didnt notice the gcc5 mess in gcc4.h that you fixed)
+> On Fri, 2 Jan 2009, Linus Torvalds wrote:
+> > 
+> > I think this is wrong.
+> > 
+> > Just move the check into <linux/compiler-gcc4.h>
+> 
+> In fact, looking at that whole mess, I redid it all. It was disgusting how 
+> conditionals in gcc4.h needed to double-check that __GNUC__ really was 4 
+> (rather than something bigger), which largely negated the whole nice clean 
+> compiler version separation.
+> 
+> I pushed out my preferred version, which fixes up the whole thing. The 
+> gcc4 header file now only gets included for __GNUC__ == 4, and when we 
+> ever see a __GNUC__ of 5, it will automatically DTRT and try to include 
+> <linux/compiler-gcc5.h> instead of #4.
+> 
+> And then the check in gcc4.h for 4.1.0 and 4.1.1 is much simplified.  The 
+> two patches I pushed out add functionality, but don't actually add any new 
+> lines (the first simplification patch removes more lines than it adds, and 
+> the second one that adds the __weak bug test adds as mahy lines as the 
+> cleanup removed).
+> 
+> And it all looks more logical too, imho.
 
-ok, i see them now:
+Bugger....
+Now I cannot do cross compile for: alpha, arm, m68k and sparc.
 
- f9d1425: Disallow gcc versions 4.1.{0,1}
- f153b82: Sanitize gcc version header includes
+Not that I actually try to run these beasts but just being able
+to do cross compile has served me well.
 
-agreed, much cleaner.
+Last I looked (only few days ago) crosstool-ng did not support sparc :-(
 
-One small issue - i think this now allows gcc 3.0 and 3.1 again - which we 
-didnt before. Dont we need the patch below - am i missing something?
-
-	Ingo
-
-------------------->
->From 1458f25412a838968e845ec0bc1b18db70cba7cd Mon Sep 17 00:00:00 2001
-From: Ingo Molnar <mingo@elte.hu>
-Date: Fri, 2 Jan 2009 18:53:14 +0100
-Subject: [PATCH] Disallow gcc versions 3.{0,1}
-
-GCC 3.0 and 3.1 are too old to build a working kernel.
-
-Signed-off-by: Ingo Molnar <mingo@elte.hu>
----
- include/linux/compiler-gcc3.h |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
-
-diff --git a/include/linux/compiler-gcc3.h b/include/linux/compiler-gcc3.h
-index 2befe65..8005eff 100644
---- a/include/linux/compiler-gcc3.h
-+++ b/include/linux/compiler-gcc3.h
-@@ -2,6 +2,10 @@
- #error "Please don't include <linux/compiler-gcc3.h> directly, include <linux/compiler.h> instead."
- #endif
- 
-+#if __GNUC_MINOR__ < 2
-+# error Sorry, your compiler is too old - please upgrade it.
-+#endif
-+
- #if __GNUC_MINOR__ >= 3
- # define __used			__attribute__((__used__))
- #else
+	Sam
