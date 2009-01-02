@@ -1,27 +1,37 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: resource_size_t printk woes...
-Date: Fri, 2 Jan 2009 12:50:21 -0700
-Message-ID: <20090102195021.GB1051@colo.lackof.org>
-References: <495DDB0E.9010203@gmx.de> <20090102164303.605D94EF0@hiauly1.hia.nrc.ca>
+From: Willy Tarreau <w@1wt.eu>
+Subject: Re: [PATCH] kbuild: Disallow GCC 4.1.0 / 4.1.1
+Date: Fri, 2 Jan 2009 20:54:17 +0100
+Message-ID: <20090102195417.GB5038@1wt.eu>
+References: <20081231105425.9ccac21d.akpm@linux-foundation.org> <alpine.LFD.2.00.0812311318420.5086@localhost.localdomain> <20081231.141408.60544902.davem@davemloft.net> <20090102115547.GB3027@elte.hu> <alpine.LFD.2.00.0901020844070.5086@localhost.localdomain> <alpine.LFD.2.00.0901020933370.5086@localhost.localdomain> <20090102174641.GA27287@elte.hu> <alpine.LFD.2.00.0901020953280.5086@localhost.localdomain> <20090102180110.GA7425@elte.hu> <alpine.LFD.2.00.0901021004440.5086@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>, dave.anglin@nrc-cnrc.gc.ca,
-	kyle@infradead.org, linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: Ingo Molnar <mingo@elte.hu>, David Miller <davem@davemloft.net>,
+	akpm@linux-foundation.org, rdreier@cisco.com,
+	ian.campbell@citrix.com, jeremy.fitzhardinge@citrix.com,
+	deller@gmx.de, rusty@rustcorp.com.au, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kyle@mcmartin.ca, randolph@tausq.org,
+	sam@ravnborg.org, dave@hiauly1.hia.nrc.ca
+To: Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090102164303.605D94EF0@hiauly1.hia.nrc.ca>
+In-Reply-To: <alpine.LFD.2.00.0901021004440.5086@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Jan 02, 2009 at 11:43:03AM -0500, John David Anglin wrote:
-...
-> On this, there is a problem with config's for my c3000.  2.6.28 builds
-> and boots fine with a config based on Kyle's allegro config.  However,
-> it crashes with thw config that I'd being using.  This is just a guess,
-> but I think IDE support is broken (machine has a cd drive).
+On Fri, Jan 02, 2009 at 10:05:47AM -0800, Linus Torvalds wrote:
+> 
+> 
+> On Fri, 2 Jan 2009, Ingo Molnar wrote:
+> > 
+> > So what i tried to point out that your patch causes a regression here - 
+> > we dont filter out gcc 3.0/3.1 out anymore.
+> 
+> What I tried to tell you was that we don't care - nobody can have it 
+> anyway. If somebody tried to compile the kernel with it, we've already 
+> refused for the last 2+ years. So there are no old users out there. And 
+> there certainly aren't any new ones.
 
-That's posible. Can you look for HPMC PIM dump?
-If so, I can take a look at it.
+Yes some people (including me) still have them and are happy that there
+is a check to prevent accidental builds with an inappropriate compiler.
 
-thanks,
-grant
+Willy
+
