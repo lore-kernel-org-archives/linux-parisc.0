@@ -1,48 +1,63 @@
-From: Ingo Molnar <mingo@elte.hu>
-Subject: Re: [PATCH] kbuild: Disallow GCC 4.1.0 / 4.1.1
-Date: Fri, 2 Jan 2009 19:01:10 +0100
-Message-ID: <20090102180110.GA7425@elte.hu>
-References: <alpine.LFD.2.00.0812310942110.5086@localhost.localdomain> <20081231105425.9ccac21d.akpm@linux-foundation.org> <alpine.LFD.2.00.0812311318420.5086@localhost.localdomain> <20081231.141408.60544902.davem@davemloft.net> <20090102115547.GB3027@elte.hu> <alpine.LFD.2.00.0901020844070.5086@localhost.localdomain> <alpine.LFD.2.00.0901020933370.5086@localhost.localdomain> <20090102174641.GA27287@elte.hu> <alpine.LFD.2.00.0901020953280.5086@localhost.localdomain>
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH] kbuild: Remove gcc 4.1.0 quirk from init/main.c
+Date: Fri, 2 Jan 2009 19:05:59 +0100
+Message-ID: <20090102180559.GA5905@uranus.ravnborg.org>
+References: <alpine.LFD.2.00.0812310942110.5086@localhost.localdomain> <20081231.141408.60544902.davem@davemloft.net> <20090102115547.GB3027@elte.hu> <200901021443.58769.bzolnier@gmail.com> <20090102152124.GA19091@elte.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: David Miller <davem@davemloft.net>, akpm@linux-foundation.org,
-	rdreier@cisco.com, ian.campbell@citrix.com,
-	jeremy.fitzhardinge@citrix.com, deller@gmx.de,
-	rusty@rustcorp.com.au, linux-parisc@vger.kernel.org,
+Cc: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+	David Miller <davem@davemloft.net>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	akpm@linux-foundation.org, rdreier@cisco.com,
+	ian.campbell@citrix.com, jeremy.fitzhardinge@citrix.com,
+	deller@gmx.de, rusty@rustcorp.com.au, linux-parisc@vger.kernel.org,
 	linux-kernel@vger.kernel.org, kyle@mcmartin.ca, randolph@tausq.org,
-	sam@ravnborg.org, dave@hiauly1.hia.nrc.ca
-To: Linus Torvalds <torvalds@linux-foundation.org>
+	dave@hiauly1.hia.nrc.ca
+To: Ingo Molnar <mingo@elte.hu>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LFD.2.00.0901020953280.5086@localhost.localdomain>
+In-Reply-To: <20090102152124.GA19091@elte.hu>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-* Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
+> From d23cbaaa342e5555a919a543095d656415a55950 Mon Sep 17 00:00:00 2001
+> From: Ingo Molnar <mingo@elte.hu>
+> Date: Fri, 2 Jan 2009 16:16:16 +0100
+> Subject: [PATCH] kbuild: Remove gcc 4.1.0 quirk from init/main.c
 > 
+> Impact: cleanup
 > 
-> On Fri, 2 Jan 2009, Ingo Molnar wrote:
-> > 
-> > The gcc3 check for gcc 3.0 and 3.1 can be pushed into gcc3 as well - not 
-> > sure whether you fixed that. (i fixed it in the patch i just sent - but i 
-> > didnt notice the gcc5 mess in gcc4.h that you fixed)
+> We now have a cleaner check for gcc 4.1.0/4.1.1 trouble in
+> include/linux/compiler.h, so remove the 4.1.0 quirk from
+> init/main.c.
 > 
-> I just dropped it. Gcc 3.0 and 3.1 are so old that we simply don't care.
+> Reported-by: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+> Signed-off-by: Ingo Molnar <mingo@elte.hu>
 
-we didnt support it for quite some time. If you look at that ugly version 
-check you replaced:
+This should be applied despite Linus' different approach in compiler.h.
 
- #if __GNUC__ >= 4 && !gcc41_inlining_bug
- # include <linux/compiler-gcc4.h>
- #elif __GNUC__ == 3 && __GNUC_MINOR__ >= 2
- # include <linux/compiler-gcc3.h>
- #else
- # error Sorry, your compiler is too old, too buggy or not recognized.
- #endif
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
 
-it has a hidden 'gcc 3.0 / 3.1 is not supported' condition in it. So what 
-i tried to point out that your patch causes a regression here - we dont 
-filter out gcc 3.0/3.1 out anymore.
-
-	Ingo
+> ---
+>  init/main.c |    9 ---------
+>  1 files changed, 0 insertions(+), 9 deletions(-)
+> 
+> diff --git a/init/main.c b/init/main.c
+> index 2a7ce0f..5ced153 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -75,15 +75,6 @@
+>  #include <asm/smp.h>
+>  #endif
+>  
+> -/*
+> - * This is one of the first .c files built. Error out early if we have compiler
+> - * trouble.
+> - */
+> -
+> -#if __GNUC__ == 4 && __GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ == 0
+> -#warning gcc-4.1.0 is known to miscompile the kernel.  A different compiler version is recommended.
+> -#endif
+> -
+>  static int kernel_init(void *);
+>  
+>  extern void init_IRQ(void);
