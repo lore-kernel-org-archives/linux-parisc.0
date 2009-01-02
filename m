@@ -1,46 +1,62 @@
-From: Al Viro <viro@ZenIV.linux.org.uk>
+From: Detlef Riekenberg <wine.dev@web.de>
 Subject: Re: [PATCH] kbuild: Disallow GCC 4.1.0 / 4.1.1
-Date: Fri, 2 Jan 2009 18:51:48 +0000
-Message-ID: <20090102185148.GI28946@ZenIV.linux.org.uk>
-References: <alpine.LFD.2.00.0812310942110.5086@localhost.localdomain> <20081231105425.9ccac21d.akpm@linux-foundation.org> <alpine.LFD.2.00.0812311318420.5086@localhost.localdomain> <20081231.141408.60544902.davem@davemloft.net> <20090102115547.GB3027@elte.hu> <alpine.LFD.2.00.0901020844070.5086@localhost.localdomain> <alpine.LFD.2.00.0901020933370.5086@localhost.localdomain> <20090102175737.GA5818@uranus.ravnborg.org> <alpine.LFD.2.00.0901021000020.5086@localhost.localdomain>
+Date: Fri, 02 Jan 2009 20:05:44 +0100
+Message-ID: <1230923144.5811.11.camel@p4.lan>
+References: <alpine.LFD.2.00.0812310942110.5086@localhost.localdomain>
+	 <20081231105425.9ccac21d.akpm@linux-foundation.org>
+	 <alpine.LFD.2.00.0812311318420.5086@localhost.localdomain>
+	 <20081231.141408.60544902.davem@davemloft.net>
+	 <20090102115547.GB3027@elte.hu>
+	 <alpine.LFD.2.00.0901020844070.5086@localhost.localdomain>
+	 <alpine.LFD.2.00.0901020933370.5086@localhost.localdomain>
+	 <20090102175737.GA5818@uranus.ravnborg.org>
+	 <20090102182248.GC10072@elte.hu>
+	 <20090102182915.GA6143@uranus.ravnborg.org>
+	 <20090102183353.GF10072@elte.hu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Sam Ravnborg <sam@ravnborg.org>, Ingo Molnar <mingo@elte.hu>,
-	David Miller <davem@davemloft.net>,
-	Andrew Morton <akpm@linux-foundation.org>, rdreier@cisco.com,
-	ian.campbell@citrix.com, jeremy.fitzhardinge@citrix.com,
-	deller@gmx.de, rusty@rustcorp.com.au, linux-parisc@vger.kernel.org,
+Content-Type: text/plain
+Cc: Sam Ravnborg <sam@ravnborg.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	David Miller <davem@davemloft.net>, akpm@linux-foundation.org,
+	rdreier@cisco.com, ian.campbell@citrix.com,
+	jeremy.fitzhardinge@citrix.com, deller@gmx.de,
+	rusty@rustcorp.com.au, linux-parisc@vger.kernel.org,
 	linux-kernel@vger.kernel.org, kyle@mcmartin.ca, randolph@tausq.org,
-	dave@hiauly1.hia.nrc.ca
-To: Linus Torvalds <torvalds@linux-foundation.org>
+	dave@hiauly1.hia.nrc.ca, Dan Kegel <dank@kegel.com>
+To: Ingo Molnar <mingo@elte.hu>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LFD.2.00.0901021000020.5086@localhost.localdomain>
+In-Reply-To: <20090102183353.GF10072@elte.hu>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Jan 02, 2009 at 10:04:27AM -0800, Linus Torvalds wrote:
-> 
-> 
-> On Fri, 2 Jan 2009, Sam Ravnborg wrote:
+* Ingo Molnar wrote:
+> * Sam Ravnborg <sam@ravnborg.org> wrote:
+ 
+> > > what type of cross-build breakage do they cause?
 > > 
-> > Bugger....
-> > Now I cannot do cross compile for: alpha, arm, m68k and sparc.
+> > The default gcc made by demo-alpha with crosstool is version 4.1.0:
 > > 
-> > Not that I actually try to run these beasts but just being able
-> > to do cross compile has served me well.
+> >  /opt/crosstool/gcc-4.1.0-glibc-2.3.6/alpha-unknown-linux-gnu/bin/alpha-unknown-linux-gnu-gcc --version
+> > alpha-unknown-linux-gnu-gcc (GCC) 4.1.0
+> > Copyright (C) 2006 Free Software Foundation, Inc.
+> > This is free software; see the source for copying conditions.  There is NO
+> > warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 > 
-> We _could_ make a "CONFIG_COMPILE_ONLY" check, but wouldn't it be even 
-> nicer to make sure the cross-compiles are something that might actually be 
-> expected to work?
+> ah, ok. I build cross-compilers from scratch, so i have 4.3.3-pre:
 > 
-> I realize that cross-tools tend to lag a bit - the pressure to maintain 
-> them tends to be much lower - but I was sure we had somebody who did a 
-> reasonable cross-compiler toolchain. Is gcc-4.1 really the most modern 
-> thing that is easily available?
+>  phoenix:~/linux/linux> /opt/crossgcc/cross/bin/alpha-linux-gcc -v
+>  [...]
+>  gcc version 4.3.3 20081123 (prerelease) (GCC) 
+> 
+> 	Ingo
 
-FWIW, I'm using 4.3 on all targets at the moment.  See
-git://git.kernel.org/pub/scm/linux/kernel/git/viro/toolchain.git/
-for fedora-based variant of that sucker.  And yes, it does include
-cross-to-sparc; all but sh/sh64, in fact (sh had serious compiler
-breakage around 4.3.0 and backporting from -HEAD was far beyond
-what I considered reasonable at that point).
+I forwarded the thread to Dan Kegel to make him aware, that the used gcc
+version in crosstools makes problems.
+
+
+-- 
+ 
+Bye bye ... Detlef
+
+
+
