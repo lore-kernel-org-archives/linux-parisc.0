@@ -1,46 +1,47 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: HPMC bus timeout on C3600
-Date: Fri, 2 Jan 2009 16:36:05 -0500 (EST)
-Message-ID: <20090102213606.70E194EF0@hiauly1.hia.nrc.ca>
-References: <20090102211844.GC17486@bombadil.infradead.org>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH] kbuild: Disallow GCC 4.1.0 / 4.1.1
+Date: Sat, 03 Jan 2009 09:27:33 +1100
+Message-ID: <1230935253.15389.99.camel@pasglop>
+References: <alpine.LFD.2.00.0812310942110.5086@localhost.localdomain>
+	 <20081231105425.9ccac21d.akpm@linux-foundation.org>
+	 <alpine.LFD.2.00.0812311318420.5086@localhost.localdomain>
+	 <20081231.141408.60544902.davem@davemloft.net>
+	 <20090102115547.GB3027@elte.hu>
+	 <alpine.LFD.2.00.0901020844070.5086@localhost.localdomain>
+	 <alpine.LFD.2.00.0901020933370.5086@localhost.localdomain>
+	 <20090102175737.GA5818@uranus.ravnborg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: kyle@infradead.org, gmsoft@tuxicoman.be, grundler@parisc-linux.org,
-	linux-parisc@vger.kernel.org
-To: kyle@infradead.org (Kyle McMartin)
+Content-Type: text/plain
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Ingo Molnar <mingo@elte.hu>,
+	David Miller <davem@davemloft.net>, akpm@linux-foundation.org,
+	rdreier@cisco.com, ian.campbell@citrix.com,
+	jeremy.fitzhardinge@citrix.com, deller@gmx.de,
+	rusty@rustcorp.com.au, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kyle@mcmartin.ca, randolph@tausq.org,
+	dave@hiauly1.hia.nrc.ca
+To: Sam Ravnborg <sam@ravnborg.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090102211844.GC17486@bombadil.infradead.org> from "Kyle McMartin" at Jan 2, 2009 04:18:44 pm
+In-Reply-To: <20090102175737.GA5818@uranus.ravnborg.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Fri, Jan 02, 2009 at 04:14:12PM -0500, John David Anglin wrote:
-> > > On Fri, Jan 02, 2009 at 09:46:44PM +0100, Guy Martin wrote:
-> > > > OS HPMC handler length needs to be in bytes, not in words.
-> > > > Signed-off-by: Guy Martin <gmsoft@tuxicoman.be>
-> > > > 
-> > > > -	length = os_hpmc_end - os_hpmc;
-> > > > +	length = (os_hpmc_end - os_hpmc) * sizeof(u32);
-> > > >  	ivap[7] = length;
-> > > 
-> > > Ick. I wonder if I screwed that up when I fixed the function descriptor
-> > > breakage...
-> > 
-> > The fix doesn't seem right.  Probably, os_hpmc and os_hpmc_end are
-> > pointing to function descriptors.
-> > 
+
 > 
-> I think we've been over this before ;-)
+> Bugger....
+> Now I cannot do cross compile for: alpha, arm, m68k and sparc.
+> 
+> Not that I actually try to run these beasts but just being able
+> to do cross compile has served me well.
+> 
+> Last I looked (only few days ago) crosstool-ng did not support sparc :-(
 
-Looking at traps.o for a 64-bit build, I see the references are:
+There are also various variants of 4.1.1 around with the fix for
+that inline bug backported (I think that's the case of the compiler
+that ships with the Cell SDK for example).
 
-0000000000000048 R_PARISC_DLTIND21L  os_hpmc_end
-0000000000000050 R_PARISC_DLTIND14R  os_hpmc_end
-0000000000000058 R_PARISC_DLTIND21L  os_hpmc
-000000000000005c R_PARISC_DLTIND14R  os_hpmc
+What a f. mess :-(
 
-Wonder what the DLT is pointing to.
+Cheers,
+Ben.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
