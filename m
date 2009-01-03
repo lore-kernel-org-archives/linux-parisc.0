@@ -1,42 +1,41 @@
-From: Krzysztof Halasa <khc@pm.waw.pl>
-Subject: Re: [PATCH] kbuild: Disallow GCC 4.1.0 / 4.1.1
-Date: Sat, 03 Jan 2009 15:03:21 +0100
-Message-ID: <m38wpssd06.fsf@maximus.localdomain>
-References: <alpine.LFD.2.00.0812310942110.5086@localhost.localdomain>
-	<20081231105425.9ccac21d.akpm@linux-foundation.org>
-	<alpine.LFD.2.00.0812311318420.5086@localhost.localdomain>
-	<20081231.141408.60544902.davem@davemloft.net>
-	<20090102115547.GB3027@elte.hu>
-	<alpine.LFD.2.00.0901020844070.5086@localhost.localdomain>
-	<alpine.LFD.2.00.0901020933370.5086@localhost.localdomain>
-	<20090102175737.GA5818@uranus.ravnborg.org>
-	<alpine.LFD.2.00.0901021000020.5086@localhost.localdomain>
+From: Kyle McMartin <kyle@infradead.org>
+Subject: Re: [PATCH] export length of os_hpmc vector
+Date: Sat, 3 Jan 2009 10:56:42 -0500
+Message-ID: <20090103155642.GH5181@bombadil.infradead.org>
+References: <20090103013540.GG5181@bombadil.infradead.org> <495F2ED1.2000406@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Sam Ravnborg <sam@ravnborg.org>, Ingo Molnar <mingo@elte.hu>,
-	David Miller <davem@davemloft.net>,
-	Andrew Morton <akpm@linux-foundation.org>, rdreier@cisco.com,
-	ian.campbell@citrix.com, jeremy.fitzhardinge@citrix.com,
-	deller@gmx.de, rusty@rustcorp.com.au, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kyle@mcmartin.ca, randolph@tausq.org,
-	dave@hiauly1.hia.nrc.ca
-To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Kyle McMartin <kyle@infradead.org>, linux-parisc@vger.kernel.org,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	gmsoft@tuxicoman.be
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LFD.2.00.0901021000020.5086@localhost.localdomain> (Linus Torvalds's message of "Fri\, 2 Jan 2009 10\:04\:27 -0800 \(PST\)")
+In-Reply-To: <495F2ED1.2000406@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+On Sat, Jan 03, 2009 at 10:24:33AM +0100, Helge Deller wrote:
+> Kyle McMartin wrote:
+> > diff --git a/arch/parisc/kernel/hpmc.S b/arch/parisc/kernel/hpmc.S
+> > index 2cbf13b..5595a2f 100644
+> > --- a/arch/parisc/kernel/hpmc.S
+> > +++ b/arch/parisc/kernel/hpmc.S
+> > @@ -80,6 +80,7 @@ END(hpmc_pim_data)
+> >  
+> >  	.import intr_save, code
+> >  ENTRY(os_hpmc)
+> > +.os_hpmc:
+> 
+> ENTRY(os_hpmc) already expands to
+> os_hpmc:
+> 
+> so you could
+> 
+> > +	.word .os_hpmc_end-.os_hpmc
+> 
+> change this to 
+> 	.word .os_hpmc_end-os_hpmc
+> and drop the local label ".os_hpmc"
+> 
 
-> I realize that cross-tools tend to lag a bit - the pressure to maintain 
-> them tends to be much lower - but I was sure we had somebody who did a 
-> reasonable cross-compiler toolchain. Is gcc-4.1 really the most modern 
-> thing that is easily available?
-
-Not sure about crosstool and other platforms but I'm using gcc 4.3.2+
-for ARM (on x86_64) and building it is straightforward. Just unpack
-binutils, gcc (and optionally glibc); configure; make; make install.
-Prerequisites: kernel headers and minimal glibc installed.
-(Some recent glibc versions require a patch or two).
--- 
-Krzysztof Halasa
+In his previous mail JDA said to use local labels for safety...
