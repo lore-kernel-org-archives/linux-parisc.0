@@ -1,25 +1,42 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: bad code with gcc-4.3 and lzma-utils ?
-Date: Sat, 3 Jan 2009 06:40:07 -0700
-Message-ID: <20090103134006.GW2002@parisc-linux.org>
-References: <200901030745.01638.vapier@gentoo.org>
+From: Krzysztof Halasa <khc@pm.waw.pl>
+Subject: Re: [PATCH] kbuild: Disallow GCC 4.1.0 / 4.1.1
+Date: Sat, 03 Jan 2009 15:03:21 +0100
+Message-ID: <m38wpssd06.fsf@maximus.localdomain>
+References: <alpine.LFD.2.00.0812310942110.5086@localhost.localdomain>
+	<20081231105425.9ccac21d.akpm@linux-foundation.org>
+	<alpine.LFD.2.00.0812311318420.5086@localhost.localdomain>
+	<20081231.141408.60544902.davem@davemloft.net>
+	<20090102115547.GB3027@elte.hu>
+	<alpine.LFD.2.00.0901020844070.5086@localhost.localdomain>
+	<alpine.LFD.2.00.0901020933370.5086@localhost.localdomain>
+	<20090102175737.GA5818@uranus.ravnborg.org>
+	<alpine.LFD.2.00.0901021000020.5086@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: Mike Frysinger <vapier@gentoo.org>
+Cc: Sam Ravnborg <sam@ravnborg.org>, Ingo Molnar <mingo@elte.hu>,
+	David Miller <davem@davemloft.net>,
+	Andrew Morton <akpm@linux-foundation.org>, rdreier@cisco.com,
+	ian.campbell@citrix.com, jeremy.fitzhardinge@citrix.com,
+	deller@gmx.de, rusty@rustcorp.com.au, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kyle@mcmartin.ca, randolph@tausq.org,
+	dave@hiauly1.hia.nrc.ca
+To: Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200901030745.01638.vapier@gentoo.org>
+In-Reply-To: <alpine.LFD.2.00.0901021000020.5086@localhost.localdomain> (Linus Torvalds's message of "Fri\, 2 Jan 2009 10\:04\:27 -0800 \(PST\)")
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Jan 03, 2009 at 07:45:01AM -0500, Mike Frysinger wrote:
-> the kernel logs the fault like so:
-> do_page_fault() pid=15903 command='lzma' type=15 address=0x00000063
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-That's a null pointer dereference ...
+> I realize that cross-tools tend to lag a bit - the pressure to maintain 
+> them tends to be much lower - but I was sure we had somebody who did a 
+> reasonable cross-compiler toolchain. Is gcc-4.1 really the most modern 
+> thing that is easily available?
 
+Not sure about crosstool and other platforms but I'm using gcc 4.3.2+
+for ARM (on x86_64) and building it is straightforward. Just unpack
+binutils, gcc (and optionally glibc); configure; make; make install.
+Prerequisites: kernel headers and minimal glibc installed.
+(Some recent glibc versions require a patch or two).
 -- 
-Matthew Wilcox				Intel Open Source Technology Centre
-"Bill, look, we understand that you're interested in selling us this
-operating system, but compare it to ours.  We can't possibly take such
-a retrograde step."
+Krzysztof Halasa
