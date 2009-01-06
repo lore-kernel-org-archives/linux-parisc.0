@@ -1,61 +1,123 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: bad code with gcc-4.3 and lzma-utils ?
-Date: Tue, 6 Jan 2009 01:16:08 -0500
-Message-ID: <200901060116.09772.vapier@gentoo.org>
-References: <20090106044058.7E85C4F9D@hiauly1.hia.nrc.ca>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: BUG_ON() cleanup
+Date: Tue, 06 Jan 2009 12:57:01 +0100
+Message-ID: <4963470D.1030101@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1694592.DP27eyaurX";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Cc: Guy Martin <gmsoft@tuxicoman.be>, linux-parisc@vger.kernel.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Content-Type: text/plain; charset=ISO-8859-1
+To: Kyle McMartin <kyle@mcmartin.ca>,
+	linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090106044058.7E85C4F9D@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---nextPart1694592.DP27eyaurX
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+- convert a few "if (xx) BUG();" to BUG_ON(xx)
+- remove a few printk()s, as we get a backtrace with BUG_ON() anyway
 
-On Monday 05 January 2009 23:40:57 John David Anglin wrote:
-> > On Sun, 4 Jan 2009 18:42:02 -0500 (EST) John David Anglin wrote:
-> > > Would you please try this.
-> >
-> > It did work too.
->
-> I installed the patch on the gcc trunk (4.4).  However, there are still
-> issues.  The patch didn't fix the -O0 -fdelayed-branch error.  I have
-> traced this to a middle-end bug:
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-thanks a lot for looking into this.  do you plan on adding the patch to the=
-=20
-4.3 branch as well ?
-=2Dmike
+ kernel/cache.c   |    5 +----
+ kernel/pci-dma.c |   22 ++++++----------------
+ mm/init.c        |    6 ++----
+ 3 files changed, 9 insertions(+), 24 deletions(-)
 
---nextPart1694592.DP27eyaurX
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iQIcBAABAgAGBQJJYvcpAAoJEEFjO5/oN/WBo0IP+QHfQBPmboZzFnTHCqg/B4yV
-mJKx+O2hF9yqSPsdDfzcqTY00xrzVDSdpAe82lB2QExQJhyOM3KCoqIN68IPxMXr
-MgP5SXQO/zAb9IwWb6+MchE+pRt6NLvOV0VBmCGpF+5xhj0MTGVuqnYvF7vF7LkE
-EP0V6c2m53MDcIROU16ZQsr5RcxBVNNyAHAmkh29uPH9Kic3lteluWjsKw3mIsHP
-JW/x0wi8+w5f3iSokCXU/5v242uxAt3d9w7oRn1gW5EbzTDFphK+f5/y+ENKX5M3
-hezT2zeoMO/wrFKmWUP1Hrz9LGsZyZiTKkrKvyrYyqoWYJN8M2G6d3HqKlJ6Re5q
-XmiU2Gf2kfCvG6aMnjQwp7wD85zWCqdn8SL+Bsol6kdVO2u1gTqtInj57b1Tu8Ww
-8/p3gFA2ASv61I0w83WiUtSDhccQ9BWcLjSLxE9lwv6LARzXryK1K+RL+xyTMez5
-4dktLMA2PuSTL4FZsZK3O89Zje9MF24+yocUUQzd3iMIlvPMj8cEIRJSYDHIgUZf
-/Jb+OQK7vr/dR1PzET5SOEUVs/rbQjATCzZ5OO5+Ml96UUzqJhXEAsmepG/5t0NR
-1/WIVii82FFYbW0JFG/HW8I/NVyK2lBecp8LdnAFh2NIdL5rM3uTo9DSX2lp4ipQ
-qsPLapkluusELmdUHC2S
-=Es6z
------END PGP SIGNATURE-----
-
---nextPart1694592.DP27eyaurX--
+diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+index 5259d8c..837530e 100644
+--- a/arch/parisc/kernel/cache.c
++++ b/arch/parisc/kernel/cache.c
+@@ -551,10 +551,7 @@ void flush_cache_range(struct vm_area_struct *vma,
+ {
+ 	int sr3;
+ 
+-	if (!vma->vm_mm->context) {
+-		BUG();
+-		return;
+-	}
++	BUG_ON(!vma->vm_mm->context);
+ 
+ 	sr3 = mfsp(3);
+ 	if (vma->vm_mm->context == sr3) {
+diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
+index ccd61b9..7fae3a8 100644
+--- a/arch/parisc/kernel/pci-dma.c
++++ b/arch/parisc/kernel/pci-dma.c
+@@ -447,10 +447,7 @@ static void pa11_dma_free_consistent (struct device *dev, size_t size, void *vad
+ 
+ static dma_addr_t pa11_dma_map_single(struct device *dev, void *addr, size_t size, enum dma_data_direction direction)
+ {
+-	if (direction == DMA_NONE) {
+-		printk(KERN_ERR "pa11_dma_map_single(PCI_DMA_NONE) called by %p\n", __builtin_return_address(0));
+-		BUG();
+-	}
++	BUG_ON(direction == DMA_NONE);
+ 
+ 	flush_kernel_dcache_range((unsigned long) addr, size);
+ 	return virt_to_phys(addr);
+@@ -458,10 +455,7 @@ static dma_addr_t pa11_dma_map_single(struct device *dev, void *addr, size_t siz
+ 
+ static void pa11_dma_unmap_single(struct device *dev, dma_addr_t dma_handle, size_t size, enum dma_data_direction direction)
+ {
+-	if (direction == DMA_NONE) {
+-		printk(KERN_ERR "pa11_dma_unmap_single(PCI_DMA_NONE) called by %p\n", __builtin_return_address(0));
+-		BUG();
+-	}
++	BUG_ON(direction == DMA_NONE);
+ 
+ 	if (direction == DMA_TO_DEVICE)
+ 	    return;
+@@ -480,8 +474,7 @@ static int pa11_dma_map_sg(struct device *dev, struct scatterlist *sglist, int n
+ {
+ 	int i;
+ 
+-	if (direction == DMA_NONE)
+-	    BUG();
++	BUG_ON(direction == DMA_NONE);
+ 
+ 	for (i = 0; i < nents; i++, sglist++ ) {
+ 		unsigned long vaddr = sg_virt_addr(sglist);
+@@ -496,8 +489,7 @@ static void pa11_dma_unmap_sg(struct device *dev, struct scatterlist *sglist, in
+ {
+ 	int i;
+ 
+-	if (direction == DMA_NONE)
+-	    BUG();
++	BUG_ON(direction == DMA_NONE);
+ 
+ 	if (direction == DMA_TO_DEVICE)
+ 	    return;
+@@ -511,16 +503,14 @@ static void pa11_dma_unmap_sg(struct device *dev, struct scatterlist *sglist, in
+ 
+ static void pa11_dma_sync_single_for_cpu(struct device *dev, dma_addr_t dma_handle, unsigned long offset, size_t size, enum dma_data_direction direction)
+ {
+-	if (direction == DMA_NONE)
+-	    BUG();
++	BUG_ON(direction == DMA_NONE);
+ 
+ 	flush_kernel_dcache_range((unsigned long) phys_to_virt(dma_handle) + offset, size);
+ }
+ 
+ static void pa11_dma_sync_single_for_device(struct device *dev, dma_addr_t dma_handle, unsigned long offset, size_t size, enum dma_data_direction direction)
+ {
+-	if (direction == DMA_NONE)
+-	    BUG();
++	BUG_ON(direction == DMA_NONE);
+ 
+ 	flush_kernel_dcache_range((unsigned long) phys_to_virt(dma_handle) + offset, size);
+ }
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 7c155c2..9d704d9 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -304,10 +304,8 @@ static void __init setup_bootmem(void)
+ 	 */
+ 	max_low_pfn = max_pfn;
+ 
+-	if ((bootmap_pfn - bootmap_start_pfn) != bootmap_pages) {
+-		printk(KERN_WARNING "WARNING! bootmap sizing is messed up!\n");
+-		BUG();
+-	}
++	/* bootmap sizing messed up? */
++	BUG_ON((bootmap_pfn - bootmap_start_pfn) != bootmap_pages);
+ 
+ 	/* reserve PAGE0 pdc memory, kernel text/data/bss & bootmap */
+ 
