@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: BUG_ON() cleanup
-Date: Tue, 06 Jan 2009 12:57:01 +0100
-Message-ID: <4963470D.1030101@gmx.de>
+Subject: [PATCH] parisc: blink loadavg LEDs on Oops
+Date: Tue, 06 Jan 2009 14:23:13 +0100
+Message-ID: <49635B41.5060205@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 To: Kyle McMartin <kyle@mcmartin.ca>,
@@ -10,114 +10,57 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-- convert a few "if (xx) BUG();" to BUG_ON(xx)
-- remove a few printk()s, as we get a backtrace with BUG_ON() anyway
+- blink loadavg LEDs only (not all LEDs) twice a second on Oops
+- cancel_rearming_delayed_workqueue() is obsolete, 
+  use cancel_delayed_work_sync() instead
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
- kernel/cache.c   |    5 +----
- kernel/pci-dma.c |   22 ++++++----------------
- mm/init.c        |    6 ++----
- 3 files changed, 9 insertions(+), 24 deletions(-)
-
-
-diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index 5259d8c..837530e 100644
---- a/arch/parisc/kernel/cache.c
-+++ b/arch/parisc/kernel/cache.c
-@@ -551,10 +551,7 @@ void flush_cache_range(struct vm_area_struct *vma,
- {
- 	int sr3;
+diff --git a/drivers/parisc/led.c b/drivers/parisc/led.c
+index f9b1266..0cb4862 100644
+--- a/drivers/parisc/led.c
++++ b/drivers/parisc/led.c
+@@ -3,7 +3,7 @@
+  *
+  *      (c) Copyright 2000 Red Hat Software
+  *      (c) Copyright 2000 Helge Deller <hdeller@redhat.com>
+- *      (c) Copyright 2001-2005 Helge Deller <deller@gmx.de>
++ *      (c) Copyright 2001-2009 Helge Deller <deller@gmx.de>
+  *      (c) Copyright 2001 Randolph Chung <tausq@debian.org>
+  *
+  *      This program is free software; you can redistribute it and/or modify
+@@ -463,9 +463,13 @@ static void led_work_func (struct work_struct *unused)
+ 	if (likely(led_lanrxtx))  currentleds |= led_get_net_activity();
+ 	if (likely(led_diskio))   currentleds |= led_get_diskio_activity();
  
--	if (!vma->vm_mm->context) {
--		BUG();
--		return;
--	}
-+	BUG_ON(!vma->vm_mm->context);
+-	/* blink all LEDs twice a second if we got an Oops (HPMC) */
+-	if (unlikely(oops_in_progress)) 
+-		currentleds = (count_HZ<=(HZ/2)) ? 0 : 0xff;
++	/* blink loadavg LEDs twice per second if we got an Oops (HPMC) */
++	if (unlikely(oops_in_progress)) {
++		if (count_HZ <= (HZ/2))
++			currentleds &= ~(LED4|LED5|LED6|LED7);
++		else
++			currentleds |= (LED4|LED5|LED6|LED7);
++	}
  
- 	sr3 = mfsp(3);
- 	if (vma->vm_mm->context == sr3) {
-diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
-index ccd61b9..7fae3a8 100644
---- a/arch/parisc/kernel/pci-dma.c
-+++ b/arch/parisc/kernel/pci-dma.c
-@@ -447,10 +447,7 @@ static void pa11_dma_free_consistent (struct device *dev, size_t size, void *vad
+ 	if (currentleds != lastleds)
+ 	{
+@@ -511,7 +515,7 @@ static int led_halt(struct notifier_block *nb, unsigned long event, void *buf)
+ 	
+ 	/* Cancel the work item and delete the queue */
+ 	if (led_wq) {
+-		cancel_rearming_delayed_workqueue(led_wq, &led_task);
++		cancel_delayed_work_sync(&led_task);
+ 		destroy_workqueue(led_wq);
+ 		led_wq = NULL;
+ 	}
+@@ -630,7 +634,7 @@ int lcd_print( const char *str )
+ 	
+ 	/* temporarily disable the led work task */
+ 	if (led_wq)
+-		cancel_rearming_delayed_workqueue(led_wq, &led_task);
++		cancel_delayed_work_sync(&led_task);
  
- static dma_addr_t pa11_dma_map_single(struct device *dev, void *addr, size_t size, enum dma_data_direction direction)
- {
--	if (direction == DMA_NONE) {
--		printk(KERN_ERR "pa11_dma_map_single(PCI_DMA_NONE) called by %p\n", __builtin_return_address(0));
--		BUG();
--	}
-+	BUG_ON(direction == DMA_NONE);
- 
- 	flush_kernel_dcache_range((unsigned long) addr, size);
- 	return virt_to_phys(addr);
-@@ -458,10 +455,7 @@ static dma_addr_t pa11_dma_map_single(struct device *dev, void *addr, size_t siz
- 
- static void pa11_dma_unmap_single(struct device *dev, dma_addr_t dma_handle, size_t size, enum dma_data_direction direction)
- {
--	if (direction == DMA_NONE) {
--		printk(KERN_ERR "pa11_dma_unmap_single(PCI_DMA_NONE) called by %p\n", __builtin_return_address(0));
--		BUG();
--	}
-+	BUG_ON(direction == DMA_NONE);
- 
- 	if (direction == DMA_TO_DEVICE)
- 	    return;
-@@ -480,8 +474,7 @@ static int pa11_dma_map_sg(struct device *dev, struct scatterlist *sglist, int n
- {
- 	int i;
- 
--	if (direction == DMA_NONE)
--	    BUG();
-+	BUG_ON(direction == DMA_NONE);
- 
- 	for (i = 0; i < nents; i++, sglist++ ) {
- 		unsigned long vaddr = sg_virt_addr(sglist);
-@@ -496,8 +489,7 @@ static void pa11_dma_unmap_sg(struct device *dev, struct scatterlist *sglist, in
- {
- 	int i;
- 
--	if (direction == DMA_NONE)
--	    BUG();
-+	BUG_ON(direction == DMA_NONE);
- 
- 	if (direction == DMA_TO_DEVICE)
- 	    return;
-@@ -511,16 +503,14 @@ static void pa11_dma_unmap_sg(struct device *dev, struct scatterlist *sglist, in
- 
- static void pa11_dma_sync_single_for_cpu(struct device *dev, dma_addr_t dma_handle, unsigned long offset, size_t size, enum dma_data_direction direction)
- {
--	if (direction == DMA_NONE)
--	    BUG();
-+	BUG_ON(direction == DMA_NONE);
- 
- 	flush_kernel_dcache_range((unsigned long) phys_to_virt(dma_handle) + offset, size);
- }
- 
- static void pa11_dma_sync_single_for_device(struct device *dev, dma_addr_t dma_handle, unsigned long offset, size_t size, enum dma_data_direction direction)
- {
--	if (direction == DMA_NONE)
--	    BUG();
-+	BUG_ON(direction == DMA_NONE);
- 
- 	flush_kernel_dcache_range((unsigned long) phys_to_virt(dma_handle) + offset, size);
- }
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 7c155c2..9d704d9 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -304,10 +304,8 @@ static void __init setup_bootmem(void)
- 	 */
- 	max_low_pfn = max_pfn;
- 
--	if ((bootmap_pfn - bootmap_start_pfn) != bootmap_pages) {
--		printk(KERN_WARNING "WARNING! bootmap sizing is messed up!\n");
--		BUG();
--	}
-+	/* bootmap sizing messed up? */
-+	BUG_ON((bootmap_pfn - bootmap_start_pfn) != bootmap_pages);
- 
- 	/* reserve PAGE0 pdc memory, kernel text/data/bss & bootmap */
- 
+ 	/* copy display string to buffer for procfs */
+ 	strlcpy(lcd_text, str, sizeof(lcd_text));
