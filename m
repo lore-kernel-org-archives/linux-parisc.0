@@ -1,29 +1,46 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: blink loadavg LEDs on Oops
-Date: Tue, 06 Jan 2009 16:44:14 +0100
-Message-ID: <49637C4E.20107@gmx.de>
-References: <49635B41.5060205@gmx.de> <7d01f9f00901060728w2001ed38v15c305d1472cb66@mail.gmail.com> <49637B5E.7010103@gmx.de>
+Subject: Re: [PATCH] parisc: BUG_ON() cleanup
+Date: Tue, 06 Jan 2009 17:09:55 +0100
+Message-ID: <49638253.6000807@gmx.de>
+References: <4963470D.1030101@gmx.de> <1231255233.7090.5.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: Kyle McMartin <kyle@mcmartin.ca>,
 	linux-parisc <linux-parisc@vger.kernel.org>
-To: Thibaut VARENE <varenet@parisc-linux.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <49637B5E.7010103@gmx.de>
+In-Reply-To: <1231255233.7090.5.camel@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Helge Deller wrote:
-> Thibaut VARENE wrote:
->> On Tue, Jan 6, 2009 at 2:23 PM, Helge Deller <deller@gmx.de> wrote:
->>> - blink loadavg LEDs only (not all LEDs) twice a second on Oops
->> Just out of curiosity, why wouldn't you want to have all leds blinking
->> on something as serious as an Oops? I kind of liked to clearly see
->> when something went wrong...
+James Bottomley wrote:
+> On Tue, 2009-01-06 at 12:57 +0100, Helge Deller wrote:
+>> - convert a few "if (xx) BUG();" to BUG_ON(xx)
 > 
-> Yeah, valid question.
+> This is fine
 > 
-> While doing some bugfixing on the HIL drivers I noticed that suddenly
-> all LEDs were lit on the 715/64. It was strange, as I still was using...
+>> - remove a few printk()s, as we get a backtrace with BUG_ON() anyway
+> 
+> This is less helpful.  Each of the printks explains why the bug
+> triggers.  In theory you can work this out from the BUG_ON line number,
+> but *only* if your source files match those of the reporter, which isn't
+> the case in an annoyingly large number of bug reports ... speaking as
+> someone who seems to get to diagnose large numbers of bugs, it makes my
+> life harder.
 
-I meant: The LEDs were blinking twice per second, not full-time on.
+I fully understand your point.
+
+Regarding arch/parisc/kernel/pci-dma.c:
+- each of the pa11_dma_map_* functions where I removed the printks only had
+  one BUG() anyway. Should be easy to find it in backtraces.
+- a few of the pa11_dma_map_* functions have printks, the others don't. I just
+  made it consistent.
+
+Regarding arch/parisc/mm/init.c:
+- setup_bootmem() is a huge function. I agree that keeping this printk would
+  make sense.
+
+So, would you be OK with the patch if I drop the init.c change and keep the
+pci-dma.c changes?
+
+Helge
