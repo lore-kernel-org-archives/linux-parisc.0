@@ -1,66 +1,52 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [PATCH] parisc: BUG_ON() cleanup
-Date: Tue, 6 Jan 2009 11:49:50 -0500
-Message-ID: <200901061149.52015.vapier@gentoo.org>
-References: <4963470D.1030101@gmx.de> <1231255233.7090.5.camel@localhost.localdomain>
+From: "Thibaut VARENE" <varenet@parisc-linux.org>
+Subject: Re: [PATCH] parisc: blink loadavg LEDs on Oops
+Date: Wed, 7 Jan 2009 12:38:39 +0100
+Message-ID: <7d01f9f00901070338m4da2f915m707df8588a134dca@mail.gmail.com>
+References: <49635B41.5060205@gmx.de>
+	 <7d01f9f00901060728w2001ed38v15c305d1472cb66@mail.gmail.com>
+	 <49637B5E.7010103@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart4317700.lEa5kqJW2W";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Cc: Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
-	"linux-parisc" <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "Kyle McMartin" <kyle@mcmartin.ca>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: "Helge Deller" <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1231255233.7090.5.camel@localhost.localdomain>
+In-Reply-To: <49637B5E.7010103@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---nextPart4317700.lEa5kqJW2W
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Tue, Jan 6, 2009 at 4:40 PM, Helge Deller <deller@gmx.de> wrote:
 
-On Tuesday 06 January 2009 10:20:33 James Bottomley wrote:
-> On Tue, 2009-01-06 at 12:57 +0100, Helge Deller wrote:
-> > - convert a few "if (xx) BUG();" to BUG_ON(xx)
+> Yeah, valid question.
+....
 >
-> This is fine
->
-> > - remove a few printk()s, as we get a backtrace with BUG_ON() anyway
->
-> This is less helpful.  Each of the printks explains why the bug
-> triggers.  In theory you can work this out from the BUG_ON line number,
-> but *only* if your source files match those of the reporter, which isn't
-> the case in an annoyingly large number of bug reports ... speaking as
-> someone who seems to get to diagnose large numbers of bugs, it makes my
-> life harder.
+> So, whenever the kernel hits such a WARNING(), all LEDs will blink.
+> Now after my patch, the 4 LEDs on the left side blink (they are currently
+> not used anyway), while Heartbeat, disk-IO and LAN in/out still work
+> as usual. So, you will notice the 4 LEDs at once as well, but in addition
+> you still have the possibility to see if LAN goes in/out (e.g. if you ping
+> the machine) or if the heartbeat still works (and so your machine should
+> still be reachable).
 
-i think those comments go beyond parisc.  perhaps we should add a=20
-BUG_ON_ANNOTATED() that includes another printk ?
-=2Dmike
+The thing is that you have a machine with more than 4 LEDs. I have
+B180/B132s which have only 4 leds. Thus I won't notice anything when
+an Oops occurs. If you really don't want to have the old behaviour
+(which, again, I really found nice), how about having the heartbeat
+LED fixed when an oops occurs.
 
---nextPart4317700.lEa5kqJW2W
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+Even better, a way to "reset" the state of the leds through /proc
+would solve both problems: an oops occurs, all/some leds flash/remain
+lit, you (try to) login, figure out the oops wasn't so serious, echo
+something > /proc/pdc/led and the LEDs start blinking normally again.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
+Anyway, the key point here is that not all machines without LCD have
+more than 4 LEDs ;)
 
-iQIcBAABAgAGBQJJY4uvAAoJEEFjO5/oN/WByS4QAIGklW0qV8qmjZ3Y7wvU3YEe
-/6MLHCImOecjKwJSZioNIGSiC7X4YAfgXsSmj+MU0/t0qhM+eOFoLbit6lPfr83c
-yWTxCeSLJJjx5pXb15YboUxLbWbnF3AKKCstGDU73/706eZM4H64nT48oawwjTa5
-FtyZxyiLPKcyo/8vHcp63X4t4yMlFCirwtvI4jPtTvs/spz4aBSJ/B9JRTz5ARm5
-uWnWk3Cq3GR/HK8vhbcyTvvqvYGK52HNr+ZHfdN+amwTFTBFNXbbCe2UfiMlEn9W
-wDWI1ZY5fEB/I1JBdZ9IVNVEQC2XW67IkzM/KLaqqbdTx3TOV0pkmJO2Vf8amnno
-cqDApr89HrHicGUQwUpbqUxOtA/Y6qBUju6OyG5ZyuMXIhUY4aW90L2KMO/+j6lW
-ePVPUw98mJbj4whlxPdvP62U1j8CgNnEh6HcfVouEjghcH5UvqmGAjn9BsExbIjA
-QpvSnyinZUzLxCwaAUQLjowY38N9F/6YhXLxr4NVRYvZELw7c1s7Ycv11sjspB7V
-NUjzgCeYYE0iiDRDMwAb5vQMPCgEOLrHKCi2NJTQyC99rrojnNBq7Up3vFi/z8rX
-BljjAQlFELEn4v1DaJeuLHGn093Cr+tadinXmx30VsKYv45cD6+dNU9vPifH2MN6
-XkZ4WScz627v1/fdZiGt
-=dHDY
------END PGP SIGNATURE-----
+Thoughts?
 
---nextPart4317700.lEa5kqJW2W--
+Cheers,
+T-Bone
+
+-- 
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
