@@ -1,26 +1,147 @@
-From: Meelis Roos <mroos@linux.ee>
-Subject: Re: RCU detected CPU 0 stall & timer_interrupt(CPU 0): delayed!
-Date: Fri, 9 Jan 2009 19:12:58 +0200 (EET)
-Message-ID: <Pine.SOC.4.64.0901091910330.14526@math.ut.ee>
-References: <Pine.SOC.4.64.0901091632240.14526@math.ut.ee>
+From: Harvey Harrison <harvey.harrison@gmail.com>
+Subject: [PATCH] parisc: introduce asm/swab.h
+Date: Fri, 09 Jan 2009 12:42:54 -0800
+Message-ID: <1231533774.5663.2.camel@brick>
+References: <20090109160340.GA12065@hera.kernel.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Kyle McMartin <kyle@hera.kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <Pine.SOC.4.64.0901091632240.14526@math.ut.ee>
+In-Reply-To: <20090109160340.GA12065@hera.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> I tried stock 2.6.28 on a parisc64 machine (L1000). 2.6.27 worked fine 
-> (except 2 bootup warnings that are known here as I was told). I turned 
-> on some debugging options for the current kernel, among them RCU stall 
-> detection, and it triggered quite some. In spite of the warnings, the 
-> computer seems to work fine. But I'm writing here because this might 
-> interest somebody.
+Fix for the linux/byteorder.h removal.
 
-Turned off RCU stall detection and now the messages are gon as expected, 
-everything works fine. This is the same as 2.6.27 without the RCU stall 
-check.
+Signed-off-by: Harvey Harrison <harvey.harrison@gmail.com>
+---
+Linus, please apply after doing the parisc pull.  cris is the only
+arch still outstanding.
 
--- 
-Meelis Roos (mroos@linux.ee)
+Done with git diff -M -B
+
+Harvey
+
+ arch/parisc/include/asm/Kbuild                  |    1 +
+ arch/parisc/include/asm/byteorder.h             |   76 ++--------------------
+ arch/parisc/include/asm/{byteorder.h => swab.h} |    9 +--
+ 3 files changed, 11 insertions(+), 75 deletions(-)
+
+diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
+index f88b252..2121d99 100644
+--- a/arch/parisc/include/asm/Kbuild
++++ b/arch/parisc/include/asm/Kbuild
+@@ -1,3 +1,4 @@
+ include include/asm-generic/Kbuild.asm
+ 
+ unifdef-y += pdc.h
++unifdef-y += swab.h
+diff --git a/arch/parisc/include/asm/byteorder.h b/arch/parisc/include/asm/byteorder.h
+dissimilarity index 94%
+index 83095c5..da66029 100644
+--- a/arch/parisc/include/asm/byteorder.h
++++ b/arch/parisc/include/asm/byteorder.h
+@@ -1,69 +1,7 @@
+-#ifndef _PARISC_BYTEORDER_H
+-#define _PARISC_BYTEORDER_H
+-
+-#include <asm/types.h>
+-#include <linux/compiler.h>
+-
+-#define __BIG_ENDIAN
+-#define __SWAB_64_THRU_32__
+-
+-static inline __attribute_const__ __u16 __arch_swab16(__u16 x)
+-{
+-	__asm__("dep %0, 15, 8, %0\n\t"		/* deposit 00ab -> 0bab */
+-		"shd %%r0, %0, 8, %0"		/* shift 000000ab -> 00ba */
+-		: "=r" (x)
+-		: "0" (x));
+-	return x;
+-}
+-#define __arch_swab16 __arch_swab16
+-
+-static inline __attribute_const__ __u32 __arch_swab24(__u32 x)
+-{
+-	__asm__("shd %0, %0, 8, %0\n\t"		/* shift xabcxabc -> cxab */
+-		"dep %0, 15, 8, %0\n\t"		/* deposit cxab -> cbab */
+-		"shd %%r0, %0, 8, %0"		/* shift 0000cbab -> 0cba */
+-		: "=r" (x)
+-		: "0" (x));
+-	return x;
+-}
+-
+-static inline __attribute_const__ __u32 __arch_swab32(__u32 x)
+-{
+-	unsigned int temp;
+-	__asm__("shd %0, %0, 16, %1\n\t"	/* shift abcdabcd -> cdab */
+-		"dep %1, 15, 8, %1\n\t"		/* deposit cdab -> cbab */
+-		"shd %0, %1, 8, %0"		/* shift abcdcbab -> dcba */
+-		: "=r" (x), "=&r" (temp)
+-		: "0" (x));
+-	return x;
+-}
+-#define __arch_swab32 __arch_swab32
+-
+-#if BITS_PER_LONG > 32
+-/*
+-** From "PA-RISC 2.0 Architecture", HP Professional Books.
+-** See Appendix I page 8 , "Endian Byte Swapping".
+-**
+-** Pretty cool algorithm: (* == zero'd bits)
+-**      PERMH   01234567 -> 67452301 into %0
+-**      HSHL    67452301 -> 7*5*3*1* into %1
+-**      HSHR    67452301 -> *6*4*2*0 into %0
+-**      OR      %0 | %1  -> 76543210 into %0 (all done!)
+-*/
+-static inline __attribute_const__ __u64 __arch_swab64(__u64 x)
+-{
+-	__u64 temp;
+-	__asm__("permh,3210 %0, %0\n\t"
+-		"hshl %0, 8, %1\n\t"
+-		"hshr,u %0, 8, %0\n\t"
+-		"or %1, %0, %0"
+-		: "=r" (x), "=&r" (temp)
+-		: "0" (x));
+-	return x;
+-}
+-#define __arch_swab64 __arch_swab64
+-#endif /* BITS_PER_LONG > 32 */
+-
+-#include <linux/byteorder.h>
+-
+-#endif /* _PARISC_BYTEORDER_H */
++#ifndef _PARISC_BYTEORDER_H
++#define _PARISC_BYTEORDER_H
++
++#include <asm/swab.h>
++#include <linux/byteorder/big_endian.h>
++
++#endif /* _PARISC_BYTEORDER_H */
+diff --git a/arch/parisc/include/asm/byteorder.h b/arch/parisc/include/asm/swab.h
+similarity index 92%
+rename from arch/parisc/include/asm/byteorder.h
+rename to arch/parisc/include/asm/swab.h
+index 83095c5..3ff16c5 100644
+--- a/arch/parisc/include/asm/byteorder.h
++++ b/arch/parisc/include/asm/swab.h
+@@ -1,10 +1,9 @@
+-#ifndef _PARISC_BYTEORDER_H
+-#define _PARISC_BYTEORDER_H
++#ifndef _PARISC_SWAB_H
++#define _PARISC_SWAB_H
+ 
+ #include <asm/types.h>
+ #include <linux/compiler.h>
+ 
+-#define __BIG_ENDIAN
+ #define __SWAB_64_THRU_32__
+ 
+ static inline __attribute_const__ __u16 __arch_swab16(__u16 x)
+@@ -64,6 +63,4 @@ static inline __attribute_const__ __u64 __arch_swab64(__u64 x)
+ #define __arch_swab64 __arch_swab64
+ #endif /* BITS_PER_LONG > 32 */
+ 
+-#include <linux/byteorder.h>
