@@ -1,83 +1,26 @@
-From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git patches] parisc patches for v2.6.29
-Date: Fri, 9 Jan 2009 16:03:40 +0000
-Message-ID: <20090109160340.GA12065@hera.kernel.org>
+From: Meelis Roos <mroos@linux.ee>
+Subject: Re: RCU detected CPU 0 stall & timer_interrupt(CPU 0): delayed!
+Date: Fri, 9 Jan 2009 19:12:58 +0200 (EET)
+Message-ID: <Pine.SOC.4.64.0901091910330.14526@math.ut.ee>
+References: <Pine.SOC.4.64.0901091632240.14526@math.ut.ee>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: torvalds@linux-foundation.org
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752737AbZAIQEX@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <Pine.SOC.4.64.0901091632240.14526@math.ut.ee>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The following changes since commit fe0bdec68b77020281dc814805edfe594ae89e0f:
-  Linus Torvalds (1):
-        Merge branch 'audit.b61' of git://git.kernel.org/.../viro/audit-current
+> I tried stock 2.6.28 on a parisc64 machine (L1000). 2.6.27 worked fine 
+> (except 2 bootup warnings that are known here as I was told). I turned 
+> on some debugging options for the current kernel, among them RCU stall 
+> detection, and it triggered quite some. In spite of the warnings, the 
+> computer seems to work fine. But I'm writing here because this might 
+> interest somebody.
 
-are available in the git repository at:
+Turned off RCU stall detection and now the messages are gon as expected, 
+everything works fine. This is the same as 2.6.27 without the RCU stall 
+check.
 
-  /pub/scm/linux/kernel/git/kyle/parisc-2.6.git master
-
-Adrian Bunk (2):
-      parisc: lib/: make code static
-      parisc: drivers/parisc/: make code static
-
-FUJITA Tomonori (1):
-      parisc: remove dead BIO_VMERGE_BOUNDARY and BIO_VMERGE_MAX_SIZE definitions
-
-Harvey Harrison (1):
-      parisc: use the new byteorder headers
-
-Helge Deller (4):
-      parisc: fix GFP_KERNEL use while atomic in unwinder
-      parisc: trivial fixes
-      parisc: Replace NR_CPUS in parisc code
-      parisc: add uevent helper for parisc bus
-
-Julia Lawall (1):
-      parisc: Use DEFINE_SPINLOCK
-
-Kyle McMartin (7):
-      parisc: use leX_to_cpu in place of __fswabX
-      parisc: factor out sid to protid conversion
-      parisc: fix braino in commit adding __space_to_prot
-      parisc: quiet palo not-found message from "which"
-      parisc: fix ipv6 checksum
-      parisc: fix kernel crash (protection id trap) when compiling ruby1.9
-      parisc: export length of os_hpmc vector
-
-Roel Kluin (1):
-      parisc: set_time() catch errors
-
- arch/parisc/Makefile                  |    2 +-
- arch/parisc/include/asm/byteorder.h   |   37 ++++++------------
- arch/parisc/include/asm/checksum.h    |    2 +-
- arch/parisc/include/asm/io.h          |   12 +----
- arch/parisc/include/asm/mmu_context.h |   13 ++++--
- arch/parisc/include/asm/processor.h   |    4 +-
- arch/parisc/include/asm/uaccess.h     |    2 +
- arch/parisc/kernel/drivers.c          |   40 ++++++++++++++++---
- arch/parisc/kernel/hpmc.S             |    8 +++-
- arch/parisc/kernel/irq.c              |   11 +++--
- arch/parisc/kernel/pdc_cons.c         |    2 +-
- arch/parisc/kernel/perf.c             |    4 +-
- arch/parisc/kernel/processor.c        |   68 +++++++++++++++++----------------
- arch/parisc/kernel/setup.c            |   11 +----
- arch/parisc/kernel/smp.c              |   32 +++++++--------
- arch/parisc/kernel/time.c             |    4 +-
- arch/parisc/kernel/topology.c         |    4 +-
- arch/parisc/kernel/traps.c            |    9 +++-
- arch/parisc/kernel/unwind.c           |    2 +-
- arch/parisc/lib/iomap.c               |    2 +-
- arch/parisc/lib/memcpy.c              |    2 +-
- arch/parisc/mm/fault.c                |   58 +++++++++++++++-------------
- drivers/parisc/asp.c                  |    3 +-
- drivers/parisc/ccio-dma.c             |    4 +-
- drivers/parisc/dino.c                 |    4 +-
- drivers/parisc/hppb.c                 |    2 +-
- drivers/parisc/lasi.c                 |    5 +-
- drivers/parisc/lba_pci.c              |    2 +-
- drivers/parisc/sba_iommu.c            |    9 +---
- drivers/parisc/wax.c                  |    3 +-
- drivers/rtc/rtc-parisc.c              |    3 +-
- 31 files changed, 191 insertions(+), 173 deletions(-)
+-- 
+Meelis Roos (mroos@linux.ee)
