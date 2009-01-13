@@ -1,24 +1,68 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [PATCH] remove klist iterators
-Date: Tue, 13 Jan 2009 16:35:54 -0500
-Message-ID: <20090113213554.GF25103@bombadil.infradead.org>
-References: <1231549026.3235.84.camel@localhost.localdomain> <496CFF77.8090101@gmx.de> <20090113205816.GC25103@bombadil.infradead.org> <1231881671.21012.2.camel@localhost.localdomain>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] fix early_serial_setup() regression
+Date: Tue, 13 Jan 2009 22:51:07 +0100
+Message-ID: <496D0CCB.1020706@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@infradead.org>, Helge Deller <deller@gmx.de>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org
+To: David Daney <ddaney@caviumnetworks.com>,
+	Tomaso Paoletti <tpaoletti@caviumnetworks.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>,
+	Linus Torvald
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1231881671.21012.2.camel@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Jan 13, 2009 at 03:21:11PM -0600, James Bottomley wrote:
-> So you think I'd send an untested and uncompiled patch to the list?  ...
-> Hey, I strongly resemble that allegation!
-> 
-> The quicksilver AGP will need testing on a c8000 system, I think.
-> 
+commit b430428a188e8a434325e251d0704af4b88b4711,
+	"8250: Don't clobber spinlocks."
+introduced a regression on the parisc architecture, which
+broke the handover to the serial port at boottime.
 
-I'm sure every user will be horribly upset if it breaks. Oh wait. It's
-just me. ;-)
+early_serial_setup() was changed to only copy a subset of the
+uart_port fields, and sadly the "type" and "line" fields
+were forgotten and thus the serial port was not initialized
+and could not be used for a handover.
+This patch fixes this by copying the missing fields.
+
+As this change to early_serial_setup() doesn't need an 
+initialized spinlock in the uart_port struct any longer, we
+can drop the spinlock initialization in the superio driver.
+
+CC: David Daney <ddaney@caviumnetworks.com>
+CC: Tomaso Paoletti <tpaoletti@caviumnetworks.com>
+CC: Andrew Morton <akpm@linux-foundation.org>
+CC: Alan Cox <alan@lxorguk.ukuu.org.uk>
+CC: Linus Torvalds <torvalds@linux-foundation.org>
+CC: Kyle McMartin <kyle@mcmartin.ca>
+CC: linux-parisc@vger.kernel.org
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+
+diff --git a/drivers/serial/8250.c b/drivers/serial/8250.c
+index 1889a63..0d934bf 100644
+--- a/drivers/serial/8250.c
++++ b/drivers/serial/8250.c
+@@ -2839,6 +2839,8 @@ int __init early_serial_setup(struct uart_port *port)
+ 	p->flags        = port->flags;
+ 	p->mapbase      = port->mapbase;
+ 	p->private_data = port->private_data;
++	p->type		= port->type;
++	p->line		= port->line;
+ 
+ 	set_io_from_upio(p);
+ 	if (port->serial_in)
+diff --git a/drivers/parisc/superio.c b/drivers/parisc/superio.c
+index 1e93c83..4fa3bb2 100644
+--- a/drivers/parisc/superio.c
++++ b/drivers/parisc/superio.c
+@@ -405,7 +405,6 @@ static void __init superio_serial_init(void)
+ 	serial_port.type	= PORT_16550A;
+ 	serial_port.uartclk	= 115200*16;
+ 	serial_port.fifosize	= 16;
+-	spin_lock_init(&serial_port.lock);
+ 
+ 	/* serial port #1 */
+ 	serial_port.iobase	= sio_dev.sp1_base;
+
