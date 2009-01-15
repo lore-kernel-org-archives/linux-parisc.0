@@ -1,30 +1,33 @@
 From: dann frazier <dannf@hp.com>
-Subject: [PATCH 0/9] rtc-parisc cleanup
-Date: Thu, 15 Jan 2009 16:46:47 -0700
-Message-ID: <cover.1231983598.git.dannf@hp.com>
+Subject: [PATCH 1/9] Add a missing include for linux/rtc.h
+Date: Thu, 15 Jan 2009 16:46:48 -0700
+Message-ID: <5bda6a81bf9fa4a3b60253bca73ef629a6ccc629.1231983599.git.dannf@hp.com>
+References: <cover.1231983598.git.dannf@hp.com>
 Cc: lkml@vger.kernel.org, kyle@mcmartin.ca, dann frazier <dannf@hp.com>
 To: linux-parisc@vger.kernel.org, rtc-linux@googlegroups.com
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <cover.1231983598.git.dannf@hp.com>
+In-Reply-To: <cover.1231983598.git.dannf@hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I recently submitted an rtc-efi driver having used rtc-parisc as a
-template. I received several suggestions from Alessandro Zummo and
-Andrew Morton that also apply to rtc-parisc. This series merges the
-relevant changes back into the rtc-parisc driver.
+Signed-off-by: dann frazier <dannf@hp.com>
+---
+ drivers/rtc/rtc-parisc.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-dann frazier (9):
-  Add a missing include for linux/rtc.h
-  Remove redundant locking
-  remove struct parisc_rtc
-  Use rtc_valid_tm() in parisc_get_time
-  Use platform_driver_probe
-  declare rtc_parisc_dev as static
-  remove unnecessary ret variable
-  remove a couple unnecessary variables
-  rename p pointer to rtc
-
- arch/parisc/kernel/time.c |    7 +----
- drivers/rtc/rtc-parisc.c  |   56 ++++++++++++---------------------------------
- 2 files changed, 17 insertions(+), 46 deletions(-)
+diff --git a/drivers/rtc/rtc-parisc.c b/drivers/rtc/rtc-parisc.c
+index c6bfa6f..319bb5d 100644
+--- a/drivers/rtc/rtc-parisc.c
++++ b/drivers/rtc/rtc-parisc.c
+@@ -7,6 +7,7 @@
+ #include <linux/module.h>
+ #include <linux/time.h>
+ #include <linux/platform_device.h>
++#include <linux/rtc.h>
+ 
+ #include <asm/rtc.h>
+ 
+-- 
+1.5.6.5
 
