@@ -1,54 +1,36 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [PATCH] Remove needless flush_dcache_page call
-Date: Fri, 16 Jan 2009 10:34:29 -0700
-Message-ID: <20090116173429.GA5628@colo.lackof.org>
-References: <20090116052804.GA18737@barrios-desktop> <20090116053338.GC31013@parisc-linux.org> <20090116055119.GA6515@barrios-desktop> <20090116055927.GA22810@wotan.suse.de> <20090116060124.GG31013@parisc-linux.org> <20090116073413.GC22810@wotan.suse.de> <1232116101.3224.14.camel@localhost.localdomain>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [rtc-linux] [PATCH 0/9] rtc-parisc cleanup
+Date: Fri, 16 Jan 2009 12:47:30 -0800
+Message-ID: <20090116124730.7a870434.akpm@linux-foundation.org>
+References: <cover.1231983598.git.dannf@hp.com>
+	<20090116010633.60c3b87d@i1501.lan.towertech.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Nick Piggin <npiggin@suse.de>, Matthew Wilcox <matthew@wil.cx>,
-	linux-parisc@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: rtc-linux@googlegroups.com, dannf@hp.com,
+	linux-parisc@vger.kernel.org, lkml@vger.kernel.org,
+	kyle@mcmartin.ca
+To: Alessandro Zummo <alessandro.zummo@towertech.it>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1232116101.3224.14.camel@localhost.localdomain>
+In-Reply-To: <20090116010633.60c3b87d@i1501.lan.towertech.it>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Jan 16, 2009 at 09:28:21AM -0500, James Bottomley wrote:
-...`
-> They can be taken as checked luggage ... however, what Matthew means is
-> that by being in Vancouver he's already in transit to Australia.
-> However, we can give you access to the several remote test rings we
-> have, either Cupertino (send ssh key to Rick Jones <raj@netperf.org> or
-> Thiabut Var??ne <varenet@parisc-linux.org>)
+On Fri, 16 Jan 2009 01:06:33 +0100
+Alessandro Zummo <alessandro.zummo@towertech.it> wrote:
 
-Rick just gets me physical access when we have time to mess with the rack.
+> On Thu, 15 Jan 2009 16:46:47 -0700
+> dann frazier <dannf@hp.com> wrote:
+> 
+> > I recently submitted an rtc-efi driver having used rtc-parisc as a
+> > template. I received several suggestions from Alessandro Zummo and
+> > Andrew Morton that also apply to rtc-parisc. This series merges the
+> > relevant changes back into the rtc-parisc driver.
+> 
+>  Acked-by: Alessandro Zummo <a.zummo@towertech.it>
+> 
+>  on the whole series. Thank you Dann!
+> 
 
-Kyle is correct that Nick still has a login to Cupertino ring though he
-might need one of us to update his .ssh/authorized keys:
-grundler@lp1000r:~$ finger nick
-Login: npiggin                          Name: Nick Piggin
-Directory: /home/npiggin                Shell: /bin/bash
-Office Phone: +xx x xxxx xxxx
-Last login Wed Aug  3 22:35 2005 (PDT) on pts/5 from 203-173-7-11.dyn.iinet.net.au
-No mail.
-No Plan.
+I don't have a copy of these patches anywhere.
 
-IIRC, i gave him access to a "beefier" ia64 machine at the time (and those are
-all still there too).
-
-> I thought we also had a wiki page listing all the machines, but I can't
-> find it.
-
-    http://www.parisc-linux.org/cluster.html
-
-I've intentionally left it unlinked from the main page.
-
-
-> They all use the HP Guardian Service Processor console, which
-> gives you remote console, power and all the other good things you need.
-
-And most of the parisc machines are in a sorry state right now.
-I'll update the web page with current state.
-
-hth,
-grant
+Whoever cc'ed "lkml@vger.kernel.org", please slap thyself!
