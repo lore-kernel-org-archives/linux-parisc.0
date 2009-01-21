@@ -1,30 +1,48 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: commit mail stuff
-Date: Wed, 21 Jan 2009 19:53:11 +0100
-Message-ID: <49776F17.9010006@gmx.de>
-References: <20090121143130.GC27998@bombadil.infradead.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: Confusion in usr/include/asm-generic/fcntl.h
+Date: Wed, 21 Jan 2009 15:25:22 -0700
+Message-ID: <20090121222522.GB15211@colo.lackof.org>
+References: <1232496257.3123.19.camel@localhost.localdomain> <20090120.161626.93641145.davem@davemloft.net> <200901210124.26118.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: David Miller <davem@davemloft.net>, jaswinder@kernel.org,
+	mingo@elte.hu, x86@kernel.org, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090121143130.GC27998@bombadil.infradead.org>
+In-Reply-To: <200901210124.26118.arnd@arndb.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Kyle McMartin wrote:
-> Dunno why it's broken, but this stuff is in git. 
+On Wed, Jan 21, 2009 at 01:24:25AM +0100, Arnd Bergmann wrote:
+...
+> > This file needs to test for 64-bit'ness using some non-CONFIG_*
+> > test.  And the standard built-in CPP macros which can be used
+> > to check for that are different on every platform.
+> 
+> I think we should simply define a macro for use in the kernel, e.g. in
+> <asm/types.h>. There already is a BITS_PER_LONG macro in there, maybe
+> we can add an exported __BITS_PER_LONG there that checks for the right
+> macro on each architecture.
 
-What is broken? Booting? Build?
+I'm pretty sure __LP64__ is the standard compiler defined macro
+for 64-bit builds on most architectures.
 
-> Let me know if I missed anything.
+> On parisc, there is a major confusion in this area, at some point, all
+> checks for __LP64__ got replaced with CONFIG_64BIT there. While I have
+> not understood what the problem with __LP64__ was,
 
-- The maintainers update patch
+IIRC, the problem with __LP64__ is it wasn't visible to the CONFIG
+tool chains and dependencies. I believe that's fixed now and parisc
+could deprecate use of CONFIG_64BIT if there is a strong preference
+for __LP64__.
 
-- Still needs discussion/patches: Userspace headers cleanup in arch/parisc/include/asm/
+> the check for
+> CONFIG_64BIT on parisc user space looks very wrong.
 
-Didn't checked yet:
-- http://patchwork.cabal.ca/patch/83/ ?
-- the rtc patches from dann ?
+This shouldn't be exported to user space. Is that what you meant?
+PA-RISC user space can currently only be 32-bit anyway.
+So a 64-bit kernel will have to take that into consideration.
 
-Helge
+thanks,
+grant
