@@ -1,50 +1,45 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: use constants instead of numbers in assembly
-Date: Sun, 18 Jan 2009 19:30:18 +0100
-Message-ID: <4973753A.3000707@gmx.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: Confusion in usr/include/asm-generic/fcntl.h
+Date: Wed, 21 Jan 2009 01:24:25 +0100
+Message-ID: <200901210124.26118.arnd@arndb.de>
+References: <1232496257.3123.19.camel@localhost.localdomain> <20090120.161626.93641145.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: linux-parisc <linux-parisc@vger.kernel.org>,
-	Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Cc: jaswinder@kernel.org, mingo@elte.hu, x86@kernel.org,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+To: David Miller <davem@davemloft.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090120.161626.93641145.davem@davemloft.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-A few small fixups:
-* _PAGE_SIZE_ENCODING_DEFAULT is wrong here, as one might assume that
-  it's possible to define the page size that way. This is wrong. Use 0 instead.
-* use constants instead of hardcoded numerical values in depi and extru
-  while building the PFN out of the pte entry
-* use SHRREG instead of extru (iitlba expects the PFN at bits {7..26})
+On Wednesday 21 January 2009, David Miller wrote:
+> From: Jaswinder Singh Rajput <jaswinder@kernel.org>
+> Date: Wed, 21 Jan 2009 05:34:17 +0530
+> 
+> > usr/include/asm-generic/fcntl.h is giving 2 'make headers_check' warnings:
+> >  usr/include/asm-generic/fcntl.h:127: leaks CONFIG_64BIT to userspace where it is not valid
+> >  usr/include/asm-generic/fcntl.h:149: leaks CONFIG_64BIT to userspace where it is not valid
+> > 
+> > usr/include/asm-generic/fcntl.h:
+> ...
+> > #ifndef CONFIG_64BIT will always be true for userspace. So what is the use of #ifndef CONFIG_64BIT ?
+> 
+> Good catch.
+> 
+> This file needs to test for 64-bit'ness using some non-CONFIG_*
+> test.  And the standard built-in CPP macros which can be used
+> to check for that are different on every platform.
 
-Still wondering why we can use the same register (pte) as extru source
-and target register, but it seems to work on PA1.1 and PA2.0...
+I think we should simply define a macro for use in the kernel, e.g. in
+<asm/types.h>. There already is a BITS_PER_LONG macro in there, maybe
+we can add an exported __BITS_PER_LONG there that checks for the right
+macro on each architecture.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+On parisc, there is a major confusion in this area, at some point, all
+checks for __LP64__ got replaced with CONFIG_64BIT there. While I have
+not understood what the problem with __LP64__ was, the check for
+CONFIG_64BIT on parisc user space looks very wrong.
 
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index d1fa4ed..19d5749 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -563,8 +563,8 @@
- 
- 	/* Get rid of prot bits and convert to page addr for iitlba */
- 
--	depi		_PAGE_SIZE_ENCODING_DEFAULT,31,ASM_PFN_PTE_SHIFT,\pte
--	extru		\pte,24,25,\pte
-+	depi		0,31,ASM_PFN_PTE_SHIFT,\pte
-+	SHRREG		\pte,(ASM_PFN_PTE_SHIFT-(31-26)),\pte
- 	.endm
- 
- 	/* This is for ILP32 PA2.0 only.  The TLB insertion needs
-@@ -1337,8 +1337,8 @@ nadtlb_check_flush_11:
- 
- 	/* Get rid of prot bits and convert to page addr for idtlba */
- 
--	depi		0,31,12,pte
--	extru		pte,24,25,pte
-+	depi		0,31,ASM_PFN_PTE_SHIFT,pte
-+	SHRREG		pte,(ASM_PFN_PTE_SHIFT-(31-26)),pte
- 
- 	mfsp		%sr1,t0  /* Save sr1 so we can use it in tlb inserts */
- 	mtsp		spc,%sr1
+	Arnd <><
