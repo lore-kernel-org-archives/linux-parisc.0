@@ -1,61 +1,30 @@
-From: Greg KH <greg@kroah.com>
+From: Kyle McMartin <kyle@infradead.org>
 Subject: Re: [PATCH] parisc: don't touch driver core internals
-Date: Wed, 28 Jan 2009 09:35:57 -0800
-Message-ID: <20090128173557.GA7583@kroah.com>
-References: <20090127010733.GA21660@kroah.com> <1233163519.3236.82.camel@localhost.localdomain>
+Date: Wed, 28 Jan 2009 12:41:22 -0500
+Message-ID: <20090128174122.GB9492@bombadil.infradead.org>
+References: <20090127010733.GA21660@kroah.com> <1233163519.3236.82.camel@localhost.localdomain> <20090128173557.GA7583@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
 	Matthew Wilcox <matthew@wil.cx>,
 	Grant Grundler <grundler@parisc-linux.org>,
 	Kay Sievers <kay.sievers@vrfy.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Greg KH <greg@kroah.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1233163519.3236.82.camel@localhost.localdomain>
+In-Reply-To: <20090128173557.GA7583@kroah.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Jan 28, 2009 at 11:25:19AM -0600, James Bottomley wrote:
-> On Mon, 2009-01-26 at 17:07 -0800, Greg KH wrote:
-> > From: Greg Kroah-Hartman <gregkh@suse.de>
-> > 
-> > It isn't wise to use the struct device klists on their own, as their
-> > implementation has a tendancy to change at times.  Instead, use the
-> > functions created for iterating over lists of devices, as it handles all
-> > of the dirty klist work for you automatically.
-> > 
-> > This is needed as the driver core is changing how klists are stored in
-> > struct device in the near future.
-> > 
-> > Cc: Kyle McMartin <kyle@mcmartin.ca>
-> > Cc: Matthew Wilcox <matthew@wil.cx>
-> > Cc: Grant Grundler <grundler@parisc-linux.org>
-> > Cc: Kay Sievers <kay.sievers@vrfy.org>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
-> > 
-> > ---
-> > 
-> > I can keep this in my driver-core tree, where is it required in order
-> > for parisc to build properly.  Or you all can take this now, in your
-> > tree, whatever is easier for you.
-> > 
-> >  drivers/char/agp/parisc-agp.c |   24 ++++++---------
-> >  drivers/parisc/gsc.c          |   40 +++++++++++++++-----------
-> >  drivers/parisc/sba_iommu.c    |   64 ++++++++++++++++++++++++------------------
-> >  3 files changed, 71 insertions(+), 57 deletions(-)
+On Wed, Jan 28, 2009 at 09:35:57AM -0800, Greg KH wrote:
+> I wrote that?  heh, I forgot all about that...
 > 
-> Actually, we already have such a patch here:
+> Yeah, that looks fine to me.
 > 
-> http://marc.info/?l=linux-parisc&m=123154903507114
-> 
-> The approaches look identical.
 
-Author: Greg Kroah-Hartman <gregkh@suse.de>  ???
+If you and Pat hadn't converted struct device to use klists we
+wouldn't be in this mess... ;-)
 
-I wrote that?  heh, I forgot all about that...
+Ack... My tree or yours, greg? I've already got James' patch I believe.
 
-Yeah, that looks fine to me.
-
-thanks,
-
-greg k-h
+cheers, Kyle
