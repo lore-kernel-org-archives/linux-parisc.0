@@ -1,86 +1,100 @@
 From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: parisc: expose 32/64-bit capabilities in cpuinfo
-Date: Fri, 30 Jan 2009 10:09:40 -0500
-Message-ID: <20090130150940.GB28304@bombadil.infradead.org>
-References: <20090130010350.GH7367@riva.ucam.org>
+Subject: Re: [PATCH] PARISC: fix wrong assumption about bus->self
+Date: Fri, 30 Jan 2009 10:10:17 -0500
+Message-ID: <20090130151017.GC28304@bombadil.infradead.org>
+References: <20090129053055.GA11718@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: Colin Watson <cjwatson@canonical.com>
+Cc: kyle@mcmartin.ca, linux-parisc@vger.kernel.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090130010350.GH7367@riva.ucam.org>
+In-Reply-To: <20090129053055.GA11718@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Jan 30, 2009 at 01:03:50AM +0000, Colin Watson wrote:
-> Also, this is against the Ubuntu 2.6.28 kernel tree since that's what I
-> had handy and I was a bit tight on disk space to slurp down another
-> tree. Sorry if it's skewed in any relevant way; I'll be happy to adjust
-> if necessary.
+On Wed, Jan 28, 2009 at 10:30:55PM -0700, Grant Grundler wrote:
+> Kenji Kaneshige <kaneshige.kenji@jp.fujitsu.com> posted a patch series
+> to linux-pci to fix a wrong assumption about pci_bus->self==NULL for
+> all PCI host bus controllers. While PARISC platforms to not behave
+> this way, I prefer to have the code consistent across architectures.
+> The following patch replaces pci_bus->self with pci_bus->parent when
+> used as a test to check for "root bus controller".
+> 
+> Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
+> ---
+> Kyle, AFAIK, this isn't urgent for parisc and can wait for 2.6.30.
+> Not unless you or jejb feel strongly it should go in at around the
+> same time as the patches from Kenji-san go in.
 > 
 
-No big deal, this code doesn't change often.
+Looks fairly unlikely to introduce any issues, applied.
 
-> Thanks in advance!
-> 
-> Signed-off-by: Colin Watson <cjwatson@canonical.com>
-> 
-
-Looks good to me, applied.
+Thanks Grant.
 
 cheers, Kyle
 
-> diff --git a/arch/parisc/include/asm/pdc.h b/arch/parisc/include/asm/pdc.h
-> index c584b00..01e8063 100644
-> --- a/arch/parisc/include/asm/pdc.h
-> +++ b/arch/parisc/include/asm/pdc.h
-> @@ -49,6 +49,8 @@
->  #define PDC_MODEL_CPU_ID	6	/* returns cpu-id (only newer machines!) */
->  #define PDC_MODEL_CAPABILITIES	7	/* returns OS32/OS64-flags	*/
->  /* Values for PDC_MODEL_CAPABILITIES non-equivalent virtual aliasing support */
-> +#define  PDC_MODEL_OS64			(1 << 0)
-> +#define  PDC_MODEL_OS32			(1 << 1)
->  #define  PDC_MODEL_IOPDIR_FDC		(1 << 2)
->  #define  PDC_MODEL_NVA_MASK		(3 << 4)
->  #define  PDC_MODEL_NVA_SUPPORTED	(0 << 4)
-> diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
-> index 03f26bd..cf118ef 100644
-> --- a/arch/parisc/kernel/firmware.c
-> +++ b/arch/parisc/kernel/firmware.c
-> @@ -527,7 +527,11 @@ int pdc_model_capabilities(unsigned long *capabilities)
->          pdc_result[0] = 0; /* preset zero (call may not be implemented!) */
->          retval = mem_pdc_call(PDC_MODEL, PDC_MODEL_CAPABILITIES, __pa(pdc_result), 0);
->          convert_to_wide(pdc_result);
-> -        *capabilities = pdc_result[0];
-> +        if (retval == PDC_OK) {
-> +                *capabilities = pdc_result[0];
-> +        } else {
-> +                *capabilities = PDC_MODEL_OS32;
-> +        }
->          spin_unlock_irqrestore(&pdc_lock, flags);
+> diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+> index d539d9d..f79266c 100644
+> --- a/drivers/parisc/dino.c
+> +++ b/drivers/parisc/dino.c
+> @@ -587,7 +587,7 @@ dino_fixup_bus(struct pci_bus *bus)
+>  			bus->resource[i+1] = &res[i];
+>  		}
 >  
->          return retval;
-> diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
-> index 370086f..4b54479 100644
-> --- a/arch/parisc/kernel/processor.c
-> +++ b/arch/parisc/kernel/processor.c
-> @@ -362,6 +362,13 @@ show_cpuinfo (struct seq_file *m, void *v)
->  				 boot_cpu_data.cpu_hz / 1000000,
->  				 boot_cpu_data.cpu_hz % 1000000  );
+> -	} else if(bus->self) {
+> +	} else if (bus->parent) {
+>  		int i;
 >  
-> +		seq_printf(m, "capabilities\t:");
-> +		if (boot_cpu_data.pdc.capabilities & PDC_MODEL_OS32)
-> +			seq_printf(m, " os32");
-> +		if (boot_cpu_data.pdc.capabilities & PDC_MODEL_OS64)
-> +			seq_printf(m, " os64");
-> +		seq_printf(m, "\n");
-> +
->  		seq_printf(m, "model\t\t: %s\n"
->  				"model name\t: %s\n",
->  				 boot_cpu_data.pdc.sys_model_name,
-> 
-> -- 
-> Colin Watson                                    [cjwatson@canonical.com]
+>  		pci_read_bridge_bases(bus);
+> diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
+> index 0797659..1cdfdea 100644
+> --- a/drivers/parisc/iosapic.c
+> +++ b/drivers/parisc/iosapic.c
+> @@ -487,7 +487,7 @@ iosapic_xlate_pin(struct iosapic_info *isi, struct pci_dev *pcidev)
+>  	}
+>  
+>  	/* Check if pcidev behind a PPB */
+> -	if (NULL != pcidev->bus->self) {
+> +	if (pcidev->bus->parent) {
+>  		/* Convert pcidev INTR_PIN into something we
+>  		** can lookup in the IRT.
+>  		*/
+> @@ -523,10 +523,9 @@ iosapic_xlate_pin(struct iosapic_info *isi, struct pci_dev *pcidev)
+>  #endif /* PCI_BRIDGE_FUNCS */
+>  
+>  		/*
+> -		** Locate the host slot the PPB nearest the Host bus
+> -		** adapter.
+> -		*/
+> -		while (NULL != p->parent->self)
+> +		 * Locate the host slot of the PPB.
+> +		 */
+> +		while (p->parent->parent)
+>  			p = p->parent;
+>  
+>  		intr_slot = PCI_SLOT(p->self->devfn);
+> diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+> index d8233de..59fbbf1 100644
+> --- a/drivers/parisc/lba_pci.c
+> +++ b/drivers/parisc/lba_pci.c
+> @@ -644,7 +644,7 @@ lba_fixup_bus(struct pci_bus *bus)
+>  	** Properly Setup MMIO resources for this bus.
+>  	** pci_alloc_primary_bus() mangles this.
+>  	*/
+> -	if (bus->self) {
+> +	if (bus->parent) {
+>  		int i;
+>  		/* PCI-PCI Bridge */
+>  		pci_read_bridge_bases(bus);
+> @@ -802,7 +802,7 @@ lba_fixup_bus(struct pci_bus *bus)
+>  ** Can't fixup here anyway....garr...
+>  */
+>  	if (fbb_enable) {
+> -		if (bus->self) {
+> +		if (bus->parent) {
+>  			u8 control;
+>  			/* enable on PPB */
+>  			(void) pci_read_config_byte(bus->self, PCI_BRIDGE_CONTROL, &control);
 > --
 > To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
 > the body of a message to majordomo@vger.kernel.org
