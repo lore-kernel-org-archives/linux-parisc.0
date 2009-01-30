@@ -1,88 +1,90 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [PATCH] PARISC: fix wrong assumption about bus->self
-Date: Wed, 28 Jan 2009 22:30:55 -0700
-Message-ID: <20090129053055.GA11718@colo.lackof.org>
+From: Colin Watson <cjwatson@canonical.com>
+Subject: parisc: expose 32/64-bit capabilities in cpuinfo
+Date: Fri, 30 Jan 2009 01:03:50 +0000
+Message-ID: <20090130010350.GH7367@riva.ucam.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: kyle@mcmartin.ca
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+It'd be rather useful for debian-installer if we could get hold of
+accurate firmware information on whether only 32-bit kernels are
+supported, only 64-bit kernels, or both; this would allow us to present
+an accurate menu of kernel packages if more than one is available,
+rather than the user having to guess. This patch attempts to expose it
+in cpuinfo.
 
-Kenji Kaneshige <kaneshige.kenji@jp.fujitsu.com> posted a patch series
-to linux-pci to fix a wrong assumption about pci_bus->self==NULL for
-all PCI host bus controllers. While PARISC platforms to not behave
-this way, I prefer to have the code consistent across architectures.
-The following patch replaces pci_bus->self with pci_bus->parent when
-used as a test to check for "root bus controller".
+I adjusted pdc_model_capabilities to cope with a potential
+PDC_INVALID_ARG return as the firmware manual instructs, by assuming
+32-bit only. This may be the wrong place for it.
 
-Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
----
-Kyle, AFAIK, this isn't urgent for parisc and can wait for 2.6.30.
-Not unless you or jejb feel strongly it should go in at around the
-same time as the patches from Kenji-san go in.
+I made up user-visible capability names by total fiat and for the moment
+ignored the other bits that may appear in the capabilities word.
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index d539d9d..f79266c 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -587,7 +587,7 @@ dino_fixup_bus(struct pci_bus *bus)
- 			bus->resource[i+1] = &res[i];
- 		}
+I have no PA-RISC machine myself to test on, and no PA experience
+either, so I rather hope that somebody will kind-heartedly take this and
+fix it up if needed. I ran it past Dann Frazier on IRC and he said
+"looks good to me", but I think without testing.
+
+Also, this is against the Ubuntu 2.6.28 kernel tree since that's what I
+had handy and I was a bit tight on disk space to slurp down another
+tree. Sorry if it's skewed in any relevant way; I'll be happy to adjust
+if necessary.
+
+Thanks in advance!
+
+Signed-off-by: Colin Watson <cjwatson@canonical.com>
+
+diff --git a/arch/parisc/include/asm/pdc.h b/arch/parisc/include/asm/pdc.h
+index c584b00..01e8063 100644
+--- a/arch/parisc/include/asm/pdc.h
++++ b/arch/parisc/include/asm/pdc.h
+@@ -49,6 +49,8 @@
+ #define PDC_MODEL_CPU_ID	6	/* returns cpu-id (only newer machines!) */
+ #define PDC_MODEL_CAPABILITIES	7	/* returns OS32/OS64-flags	*/
+ /* Values for PDC_MODEL_CAPABILITIES non-equivalent virtual aliasing support */
++#define  PDC_MODEL_OS64			(1 << 0)
++#define  PDC_MODEL_OS32			(1 << 1)
+ #define  PDC_MODEL_IOPDIR_FDC		(1 << 2)
+ #define  PDC_MODEL_NVA_MASK		(3 << 4)
+ #define  PDC_MODEL_NVA_SUPPORTED	(0 << 4)
+diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
+index 03f26bd..cf118ef 100644
+--- a/arch/parisc/kernel/firmware.c
++++ b/arch/parisc/kernel/firmware.c
+@@ -527,7 +527,11 @@ int pdc_model_capabilities(unsigned long *capabilities)
+         pdc_result[0] = 0; /* preset zero (call may not be implemented!) */
+         retval = mem_pdc_call(PDC_MODEL, PDC_MODEL_CAPABILITIES, __pa(pdc_result), 0);
+         convert_to_wide(pdc_result);
+-        *capabilities = pdc_result[0];
++        if (retval == PDC_OK) {
++                *capabilities = pdc_result[0];
++        } else {
++                *capabilities = PDC_MODEL_OS32;
++        }
+         spin_unlock_irqrestore(&pdc_lock, flags);
  
--	} else if(bus->self) {
-+	} else if (bus->parent) {
- 		int i;
+         return retval;
+diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
+index 370086f..4b54479 100644
+--- a/arch/parisc/kernel/processor.c
++++ b/arch/parisc/kernel/processor.c
+@@ -362,6 +362,13 @@ show_cpuinfo (struct seq_file *m, void *v)
+ 				 boot_cpu_data.cpu_hz / 1000000,
+ 				 boot_cpu_data.cpu_hz % 1000000  );
  
- 		pci_read_bridge_bases(bus);
-diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
-index 0797659..1cdfdea 100644
---- a/drivers/parisc/iosapic.c
-+++ b/drivers/parisc/iosapic.c
-@@ -487,7 +487,7 @@ iosapic_xlate_pin(struct iosapic_info *isi, struct pci_dev *pcidev)
- 	}
- 
- 	/* Check if pcidev behind a PPB */
--	if (NULL != pcidev->bus->self) {
-+	if (pcidev->bus->parent) {
- 		/* Convert pcidev INTR_PIN into something we
- 		** can lookup in the IRT.
- 		*/
-@@ -523,10 +523,9 @@ iosapic_xlate_pin(struct iosapic_info *isi, struct pci_dev *pcidev)
- #endif /* PCI_BRIDGE_FUNCS */
- 
- 		/*
--		** Locate the host slot the PPB nearest the Host bus
--		** adapter.
--		*/
--		while (NULL != p->parent->self)
-+		 * Locate the host slot of the PPB.
-+		 */
-+		while (p->parent->parent)
- 			p = p->parent;
- 
- 		intr_slot = PCI_SLOT(p->self->devfn);
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index d8233de..59fbbf1 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -644,7 +644,7 @@ lba_fixup_bus(struct pci_bus *bus)
- 	** Properly Setup MMIO resources for this bus.
- 	** pci_alloc_primary_bus() mangles this.
- 	*/
--	if (bus->self) {
-+	if (bus->parent) {
- 		int i;
- 		/* PCI-PCI Bridge */
- 		pci_read_bridge_bases(bus);
-@@ -802,7 +802,7 @@ lba_fixup_bus(struct pci_bus *bus)
- ** Can't fixup here anyway....garr...
- */
- 	if (fbb_enable) {
--		if (bus->self) {
-+		if (bus->parent) {
- 			u8 control;
- 			/* enable on PPB */
- 			(void) pci_read_config_byte(bus->self, PCI_BRIDGE_CONTROL, &control);
++		seq_printf(m, "capabilities\t:");
++		if (boot_cpu_data.pdc.capabilities & PDC_MODEL_OS32)
++			seq_printf(m, " os32");
++		if (boot_cpu_data.pdc.capabilities & PDC_MODEL_OS64)
++			seq_printf(m, " os64");
++		seq_printf(m, "\n");
++
+ 		seq_printf(m, "model\t\t: %s\n"
+ 				"model name\t: %s\n",
+ 				 boot_cpu_data.pdc.sys_model_name,
+
+-- 
+Colin Watson                                    [cjwatson@canonical.com]
