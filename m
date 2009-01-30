@@ -1,42 +1,71 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [PATCH] parisc: don't touch driver core internals
-Date: Fri, 30 Jan 2009 10:10:59 -0500
-Message-ID: <20090130151059.GD28304@bombadil.infradead.org>
-References: <20090127010733.GA21660@kroah.com> <1233163519.3236.82.camel@localhost.localdomain> <20090128173557.GA7583@kroah.com> <20090128174122.GB9492@bombadil.infradead.org> <20090128175823.GA13517@kroah.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: commit mail stuff
+Date: Fri, 30 Jan 2009 21:27:50 +0100
+Message-ID: <498362C6.5060309@gmx.de>
+References: <20090121143130.GC27998@bombadil.infradead.org> <7d01f9f00901220323u2898ae25hf149c65956fc2a4e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@infradead.org>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
-	Matthew Wilcox <matthew@wil.cx>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	Kay Sievers <kay.sievers@vrfy.org>
-To: Greg KH <greg@kroah.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-parisc@vger.kernel.org
+To: Thibaut VARENE <varenet@parisc-linux.org>,
+	Kyle McMartin <kyle@infradead.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090128175823.GA13517@kroah.com>
+In-Reply-To: <7d01f9f00901220323u2898ae25hf149c65956fc2a4e@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Jan 28, 2009 at 09:58:23AM -0800, Greg KH wrote:
-> On Wed, Jan 28, 2009 at 12:41:22PM -0500, Kyle McMartin wrote:
-> > On Wed, Jan 28, 2009 at 09:35:57AM -0800, Greg KH wrote:
-> > > I wrote that?  heh, I forgot all about that...
-> > > 
-> > > Yeah, that looks fine to me.
-> > > 
-> > 
-> > If you and Pat hadn't converted struct device to use klists we
-> > wouldn't be in this mess... ;-)
+Thibaut VARENE wrote:
+> On Wed, Jan 21, 2009 at 3:31 PM, Kyle McMartin <kyle@infradead.org> wrote:
 > 
-> Well, you could have used the helper functions then...
+>> commit 1890e15142aa1318bb9775c4ea021aa022c506dc
+>> Author: Helge Deller <deller@gmx.de>
+>> Date:   Tue Jan 6 14:23:13 2009 +0100
+>>
+>>    parisc: blink loadavg LEDs on Oops
+>>
 > 
-> > Ack... My tree or yours, greg? I've already got James' patch I believe.
-> 
-> If you want to take it, I have no objection.  Let me know which is
-> easier for you.
-> 
+> I thought we agreed this was a bad idea and that this patch should be
+> left aside?
+> Helge?
 
-Ok, I've already got James' patch in my tree, I'll push it all along
-tonight.
+Yes, that was an idea.
+But we can easily detect which kind of machine it is, and then
+either blink all LEDs or just the loadavg. LEDs. The patch below
+does this and should be then fine for you?
 
-cheers, Kyle
+Kyle, could you apply the patch below as well?
+
+Helge
+------------------------------------------------------------
+parisc: blink all or loadavg. LEDs on Oops depending on machine type.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/drivers/parisc/led.c b/drivers/parisc/led.c
+index 6d8753e..d6026d4 100644
+--- a/drivers/parisc/led.c
++++ b/drivers/parisc/led.c
+@@ -463,12 +463,19 @@ static void led_work_func (struct work_struct *unused)
+ 	if (likely(led_lanrxtx))  currentleds |= led_get_net_activity();
+ 	if (likely(led_diskio))   currentleds |= led_get_diskio_activity();
+ 
+-	/* blink loadavg LEDs twice per second if we got an Oops (HPMC) */
++	/* blink LEDs if we got an Oops (HPMC) */
+ 	if (unlikely(oops_in_progress)) {
+-		if (count_HZ <= (HZ/2))
+-			currentleds &= ~(LED4|LED5|LED6|LED7);
+-		else
+-			currentleds |= (LED4|LED5|LED6|LED7);
++		if (boot_cpu_data.cpu_type >= pcxl2) {
++			/* newer machines don't have loadavg. LEDs, so we
++			 * let all LEDs blink twice per second instead */
++			currentleds = (count_HZ <= (HZ/2)) ? 0 : 0xff;
++		} else {
++			/* old machines: blink loadavg. LEDs twice per second */
++			if (count_HZ <= (HZ/2))
++				currentleds &= ~(LED4|LED5|LED6|LED7);
++			else
++				currentleds |= (LED4|LED5|LED6|LED7);
++		}
+ 	}
+ 
+ 	if (currentleds != lastleds)
