@@ -1,37 +1,57 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: define SRCARCH=parisc for parisc64 builds
-Date: Mon, 02 Feb 2009 00:24:01 +0100
-Message-ID: <49862F11.5000808@gmx.de>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: linux-next: manual merge of the driver-core tree with the parisc
+ tree
+Date: Mon, 2 Feb 2009 11:11:12 +1100
+Message-ID: <20090202111112.731a6816.sfr@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Mon__2_Feb_2009_11_11_12_+1100_pcXEMcFbV884Psp3"
+Cc: linux-next@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	<linux-parisc@vger.kernel.org>
+To: Greg KH <greg@kroah.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The parisc64 target (HP PARISC, 64bit kernel) is similar to the sparc64 or 
-m68knommu targets, as it shares all sources for 32- and 64-bit in one single
-source path which is arch/parisc/.
-This patch now allows one to use ARCH=parisc64 and just directly build the
-64bit kernel without creating symlinks in arch/ and include/asm-* manually
-the same way as it's done for sparc64 and m68knommu.
+--Signature=_Mon__2_Feb_2009_11_11_12_+1100_pcXEMcFbV884Psp3
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Hi Greg,
 
-diff --git a/Makefile b/Makefile
-index cf9e20d..3582985 100644
---- a/Makefile
-+++ b/Makefile
-@@ -210,6 +210,11 @@ ifeq ($(ARCH),sparc64)
-        SRCARCH := sparc
- endif
- 
-+# Additional ARCH settings for parisc
-+ifeq ($(ARCH),parisc64)
-+       SRCARCH := parisc
-+endif
-+
- # Where to locate arch specific headers
- hdr-arch  := $(SRCARCH)
- 
+Today's linux-next merge of the driver-core tree got conflicts in
+drivers/char/agp/parisc-agp.c, drivers/parisc/gsc.c and
+drivers/parisc/sba_iommu.c between commit
+a130bf34da4b64d7b289e2358530ef5d4ab27efd ("parisc: remove klist
+iterators") from the parisc tree and commit
+135bd8a5aeed90af407aeeede9587ee99c5606b2 ("parisc: don't touch driver
+core internals") from the driver-core tree.
+
+These two commits seem to be trying to do similar things.  I have used
+the versions from the parisc tree.  Greg, I guess you need to check to
+see if you agree and if so, then just remove the driver-core tree patch.
+
+James, Kyle, the one thing I took from Greg's patch was the removal of
+the include of linux/klist.h from drivers/char/agp/parisc-agp.c.
+
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
+
+--Signature=_Mon__2_Feb_2009_11_11_12_+1100_pcXEMcFbV884Psp3
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkmGOiAACgkQjjKRsyhoI8y+ZQCgmGPHKUWwqOS4PTvxlBZ2lQas
+mIIAoKYG7R55xEjY0whVYY57v6UddUCu
+=NxWT
+-----END PGP SIGNATURE-----
+
+--Signature=_Mon__2_Feb_2009_11_11_12_+1100_pcXEMcFbV884Psp3--
