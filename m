@@ -1,44 +1,61 @@
-From: Greg KH <greg@kroah.com>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
 Subject: Re: linux-next: manual merge of the driver-core tree with the
-	parisc tree
-Date: Sun, 1 Feb 2009 20:41:44 -0800
-Message-ID: <20090202044144.GA12243@kroah.com>
+ parisc tree
+Date: Mon, 2 Feb 2009 16:04:20 +1100
+Message-ID: <20090202160420.30aa4f2c.sfr@canb.auug.org.au>
 References: <20090202111112.731a6816.sfr@canb.auug.org.au>
+	<20090202044144.GA12243@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Mon__2_Feb_2009_16_04_20_+1100_lzHQUrKvGq3nqvLF"
 Cc: linux-next@vger.kernel.org,
 	James Bottomley <James.Bottomley@HansenPartnership.com>,
 	Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Greg KH <greg@kroah.com>
 Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <20090202111112.731a6816.sfr@canb.auug.org.au>
+In-Reply-To: <20090202044144.GA12243@kroah.com>
 List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Feb 02, 2009 at 11:11:12AM +1100, Stephen Rothwell wrote:
-> Hi Greg,
-> 
-> Today's linux-next merge of the driver-core tree got conflicts in
-> drivers/char/agp/parisc-agp.c, drivers/parisc/gsc.c and
-> drivers/parisc/sba_iommu.c between commit
-> a130bf34da4b64d7b289e2358530ef5d4ab27efd ("parisc: remove klist
-> iterators") from the parisc tree and commit
-> 135bd8a5aeed90af407aeeede9587ee99c5606b2 ("parisc: don't touch driver
-> core internals") from the driver-core tree.
-> 
-> These two commits seem to be trying to do similar things.  I have used
-> the versions from the parisc tree.  Greg, I guess you need to check to
-> see if you agree and if so, then just remove the driver-core tree patch.
+--Signature=_Mon__2_Feb_2009_16_04_20_+1100_lzHQUrKvGq3nqvLF
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, the parisc version is fine.
+Hi Greg,
 
-> James, Kyle, the one thing I took from Greg's patch was the removal of
-> the include of linux/klist.h from drivers/char/agp/parisc-agp.c.
+On Sun, 1 Feb 2009 20:41:44 -0800 Greg KH <greg@kroah.com> wrote:
+>
+> > These two commits seem to be trying to do similar things.  I have used
+> > the versions from the parisc tree.  Greg, I guess you need to check to
+> > see if you agree and if so, then just remove the driver-core tree patch.
+>=20
+> Yes, the parisc version is fine.
+>=20
+> > James, Kyle, the one thing I took from Greg's patch was the removal of
+> > the include of linux/klist.h from drivers/char/agp/parisc-agp.c.
+>=20
+> That would be good as well.
+>=20
+> I'll fix up my tree tomorrow.
 
-That would be good as well.
+Thanks for checking.
 
-I'll fix up my tree tomorrow.
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
 
-thanks,
+--Signature=_Mon__2_Feb_2009_16_04_20_+1100_lzHQUrKvGq3nqvLF
+Content-Type: application/pgp-signature
 
-greg k-h
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkmGftQACgkQjjKRsyhoI8wljQCfYTBDcyNv9YpzP8F8fKowrT7P
+wFAAoKPOPYEmsL8jRu8Mq7R7M26tPHf4
+=zCXY
+-----END PGP SIGNATURE-----
+
+--Signature=_Mon__2_Feb_2009_16_04_20_+1100_lzHQUrKvGq3nqvLF--
