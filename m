@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: allow to build with 16k default kernel page size
-Date: Thu, 05 Feb 2009 00:06:00 +0100
-Message-ID: <498A1F58.60701@gmx.de>
+Subject: [PATCH] parisc: add LATENCYTOP_SUPPORT and CONFIG_STACKTRACE_SUPPORT
+Date: Fri, 06 Feb 2009 21:50:39 +0100
+Message-ID: <498CA29F.10907@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 To: Kyle McMartin <kyle@mcmartin.ca>,
@@ -10,69 +10,107 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Introduce new convert_for_tlb_insert20 macro and use it to replace assembler
-statements with hardcoded constants.
-This change allows the parisc64 kernel to boot with 16kb default kernel page size, 
-aka CONFIG_PARISC_PAGE_SIZE_16KB=y.
-
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index 0f7ff93..4e9dd15 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -505,6 +505,18 @@
- 	STREG		\pte,0(\ptep)
- 	.endm
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index aacf11d..4866e2f 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -75,6 +75,9 @@ config GENERIC_HARDIRQS
+ config GENERIC_IRQ_PROBE
+ 	def_bool y
  
-+	/* bitshift difference between a PFN (based on kernel's PAGE_SIZE)
-+	 * to a CPU TLB 4k PFN (4k => 12 bits to shift) */
-+	#define PAGE_ADD_SHIFT  (PAGE_SHIFT-12)
++config HAVE_LATENCYTOP_SUPPORT
++        def_bool y
 +
-+	/* Drop prot bits and convert to page addr for iitlbt and idtlbt */
-+	.macro		convert_for_tlb_insert20 pte
-+	extrd,u		\pte,(63-ASM_PFN_PTE_SHIFT)+(63-58)+PAGE_ADD_SHIFT,\
-+				64-PAGE_SHIFT-PAGE_ADD_SHIFT,\pte
-+	depdi		_PAGE_SIZE_ENCODING_DEFAULT,63,\
-+				(63-58)+PAGE_ADD_SHIFT,\pte
-+	.endm
+ config IRQ_PER_CPU
+ 	bool
+ 	default y
+@@ -83,6 +86,9 @@ config IRQ_PER_CPU
+ config PM
+ 	bool
+ 
++config STACKTRACE_SUPPORT
++	def_bool y
 +
- 	/* Convert the pte and prot to tlb insertion values.  How
- 	 * this happens is quite subtle, read below */
- 	.macro		make_insert_tlb	spc,pte,prot
-@@ -544,8 +556,7 @@
- 	depi		1,12,1,\prot
+ config ISA_DMA_API
+ 	bool
  
- 	/* Drop prot bits and convert to page addr for iitlbt and idtlbt */
--	extrd,u		\pte,(63-ASM_PFN_PTE_SHIFT)+(63-58),64-PAGE_SHIFT,\pte
--	depdi		_PAGE_SIZE_ENCODING_DEFAULT,63,63-58,\pte
-+	convert_for_tlb_insert20 \pte
- 	.endm
- 
- 	/* Identical macro to make_insert_tlb above, except it
-@@ -1244,10 +1255,9 @@ nadtlb_check_flush_20w:
- 	depdi,z         7,7,3,prot
- 	depdi           1,10,1,prot
- 
--	/* Get rid of prot bits and convert to page addr for idtlbt */
-+	/* Drop prot bits from pte and convert to page addr for idtlbt */
-+	convert_for_tlb_insert20 pte
- 
--	depdi		0,63,12,pte
--	extrd,u         pte,56,52,pte
- 	idtlbt          pte,prot
- 
- 	rfir
-@@ -1403,10 +1413,9 @@ nadtlb_check_flush_20:
- 	depdi,z         7,7,3,prot
- 	depdi           1,10,1,prot
- 
--	/* Get rid of prot bits and convert to page addr for idtlbt */
-+	/* Drop prot bits from pte and convert to page addr for idtlbt */
-+	convert_for_tlb_insert20 pte
- 
--	depdi		0,63,12,pte
--	extrd,u         pte,56,32,pte
- 	idtlbt          pte,prot
- 
- 	rfir
+diff --git a/arch/parisc/kernel/Makefile b/arch/parisc/kernel/Makefile
+index 016d3fc..a7ba8cd 100644
+--- a/arch/parisc/kernel/Makefile
++++ b/arch/parisc/kernel/Makefile
+@@ -16,5 +16,6 @@ obj-$(CONFIG_PA11)	+= pci-dma.o
+ obj-$(CONFIG_PCI)	+= pci.o
+ obj-$(CONFIG_MODULES)	+= module.o
+ obj-$(CONFIG_64BIT)	+= binfmt_elf32.o sys_parisc32.o signal32.o
++obj-$(CONFIG_STACKTRACE)+= stacktrace.o
+ # only supported for PCX-W/U in 64-bit mode at the moment
+ obj-$(CONFIG_64BIT)	+= perf.o perf_asm.o
+diff -up ./arch/parisc/kernel/stacktrace.c.org ./arch/parisc/kernel/stacktrace.c
+--- a/arch/parisc/kernel/stacktrace.c.org	2009-02-06 21:40:33.000000000 +0100
++++ b/arch/parisc/kernel/stacktrace.c	2009-02-06 21:45:16.000000000 +0100
+@@ -0,0 +1,63 @@
++/*
++ * Stack trace management functions
++ *
++ *  Copyright (C) 2009 Helge Deller <deller@gmx.de>
++ *  based on arch/x86/kernel/stacktrace.c by Ingo Molnar <mingo@redhat.com>
++ *  and parisc unwind functions by Randolph Chung <tausq@debian.org>
++ *
++ *  TODO: Userspace stacktrace (CONFIG_USER_STACKTRACE_SUPPORT)
++ */
++#include <linux/module.h>
++#include <linux/stacktrace.h>
++
++#include <asm/unwind.h>
++
++static void dump_trace(struct task_struct *task, struct stack_trace *trace)
++{
++	struct unwind_frame_info info;
++
++	/* initialize unwind info */
++	if (task == current) {
++		unsigned long sp;
++		struct pt_regs r;
++HERE:
++		asm volatile ("copy %%r30, %0" : "=r"(sp));
++		memset(&r, 0, sizeof(struct pt_regs));
++		r.iaoq[0] = (unsigned long)&&HERE;
++		r.gr[2] = (unsigned long)__builtin_return_address(0);
++		r.gr[30] = sp;
++		unwind_frame_init(&info, task, &r);
++	} else {
++		unwind_frame_init_from_blocked_task(&info, task);
++	}
++
++	/* unwind stack and save entries in stack_trace struct */
++	trace->nr_entries = 0;
++	while (trace->nr_entries < trace->max_entries) {
++		if (unwind_once(&info) < 0 || info.ip == 0)
++			break;
++
++		if (__kernel_text_address(info.ip))
++			trace->entries[trace->nr_entries++] = info.ip;
++	}
++}
++
++
++/*
++ * Save stack-backtrace addresses into a stack_trace buffer.
++ */
++void save_stack_trace(struct stack_trace *trace)
++{
++	dump_trace(current, trace);
++	if (trace->nr_entries < trace->max_entries)
++		trace->entries[trace->nr_entries++] = ULONG_MAX;
++}
++EXPORT_SYMBOL_GPL(save_stack_trace);
++
++void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
++{
++	dump_trace(tsk, trace);
++	if (trace->nr_entries < trace->max_entries)
++		trace->entries[trace->nr_entries++] = ULONG_MAX;
++}
++EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
