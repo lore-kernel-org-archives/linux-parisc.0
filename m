@@ -1,46 +1,78 @@
-From: Helge Deller <deller@gmx.de>
-Subject: FUNCTION_TRACER and parisc kernel
-Date: Sat, 07 Feb 2009 02:19:04 +0100
-Message-ID: <498CE188.60308@gmx.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: FUNCTION_TRACER and parisc kernel
+Date: Fri, 6 Feb 2009 22:25:22 -0500 (EST)
+Message-ID: <20090207032523.06F704EF8@hiauly1.hia.nrc.ca>
+References: <498CE188.60308@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: Carlos O'Donell <carlos@systemhalted.org>,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: carlos@systemhalted.org, linux-parisc@vger.kernel.org
+To: deller@gmx.de (Helge Deller)
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <498CE188.60308@gmx.de> from "Helge Deller" at Feb 7, 2009 02:19:04 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Carlos, Dave & parisc-linux mailing list,
+> Hi Carlos, Dave & parisc-linux mailing list,
+> 
+> I just started looking into implementing function tracer functionality 
+> into the parisc kernel (http://cateee.net/lkddb/web-lkddb/FUNCTION_TRACER.html).
+> 
+> While doing so, I noticed that gcc issues lots of warnings like this one:
+>   CC      arch/parisc/lib/iomap.o
+> cc1: warning: -ffunction-sections disabled; it makes profiling impossible
+> 
+> So it seems that this statement in arch/parisc/Makefile:
+> # Without this, "ld -r" results in .text sections that are too big
+> # (> 0x40000) for branches to reach stubs.
+> cflags-y        += -ffunction-sections
+> 
+> breaks with the -pg compile option which is needed for function tracing.
+> 
+> Some searching with google brought up this thread:
+> http://gcc.gnu.org/ml/gcc-help/2008-11/msg00128.html
+> and esp. this answer:
+> http://gcc.gnu.org/ml/gcc-help/2008-11/msg00141.html
 
-I just started looking into implementing function tracer functionality 
-into the parisc kernel (http://cateee.net/lkddb/web-lkddb/FUNCTION_TRACER.html).
+Hmmm, we killed named section support on the HP-UX SOM port several years
+ago because it wasn't very useful.  Jeff did it...  So, at this time, only
+Solaris is an issue.  Of course, changing the code in toplev.c affects all
+targets.  So, a change to remove this would have to go into 4.5 quite
+early.
 
-While doing so, I noticed that gcc issues lots of warnings like this one:
-  CC      arch/parisc/lib/iomap.o
-cc1: warning: -ffunction-sections disabled; it makes profiling impossible
+There was some work on the profiling implementation for both HP-UX and
+Linux after the removal of named section support on HP-UX, so the label
+issue may not be a problem.  Remove the code disabling function sections
+when -pg is specified and see what happens.
 
-So it seems that this statement in arch/parisc/Makefile:
-# Without this, "ld -r" results in .text sections that are too big
-# (> 0x40000) for branches to reach stubs.
-cflags-y        += -ffunction-sections
+[I have thought it would be useful to have named sections for dwarf2
+debug support on HP-UX.  However, this is not useful for normal code.
+I have a patch somewhere to do this, but gdb needs work which I've
+never got around to.  So, I might bring named section support back
+in a limited way.]
 
-breaks with the -pg compile option which is needed for function tracing.
+Regarding .text sections that are too big, see this thread:
+http://sourceware.org/ml/binutils/2009-02/msg00061.html
 
-Some searching with google brought up this thread:
-http://gcc.gnu.org/ml/gcc-help/2008-11/msg00128.html
-and esp. this answer:
-http://gcc.gnu.org/ml/gcc-help/2008-11/msg00141.html
+It seems that it should be possible to do more fine grained stub
+sections.  At this time, it's not fully clear where the problem
+lies.  GCC may need to start a new .text section before each function,
+or maybe the .text sections are getting merged.
 
-Or this thread:
-http://osdir.com/ml/linux.debian.ports.hppa/2005-06/msg00045.html
+Recently, I got pushed to look a bit at GNU ld.  It turns out there is no
+long branch stub support in it at all.  As a result, it can't assemble
+large applications like cc1plus.  It can just barely link cc1.  It
+might have trouble with a large linux kernel.  I added a check recently
+to generate an error if a branch target is out of range.  There's
+a possibility that the current code for stub management in elf32-hppa.c
+can be modified for hppa64 without too much work.
 
-Since it's late I felt too tired to look deeply into glibc and gcc myself and
-just thought I should ask here: Do you see any chance that -pg and -ffunction-sections
-could work together on hppa/linux?
+I don't know about the "ld -r" problem but I suspect we have to stop
+.text sections from getting merged in partial links.  The other possiblity
+would be to add long branch stubs for calls to undefined symbols.  The
+latter approach would complicate final links.
 
-Helge
-
-PS: I assume my latest patches to fix loading of xfs modules only worked
-because we compile the kernel with -ffunction-sections by default. Disabling
--ffunction-sections will then probably bring back the module loading bug... :-(
+Regards,
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
