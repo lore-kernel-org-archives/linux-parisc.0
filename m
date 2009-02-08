@@ -1,7 +1,7 @@
-From: Kyle McMartin <kyle@infradead.org>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: Re: Hacking SuperDome
-Date: Sat, 7 Feb 2009 23:30:32 -0500
-Message-ID: <20090208043032.GA11398@bombadil.infradead.org>
+Date: Sun, 8 Feb 2009 04:33:07 -0700
+Message-ID: <20090208113307.GE31509@parisc-linux.org>
 References: <20090207142906.GA8553@alpha.franken.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -12,25 +12,28 @@ In-Reply-To: <20090207142906.GA8553@alpha.franken.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Oh, I'm jealous now. :)
-
 On Sat, Feb 07, 2009 at 03:29:06PM +0100, Thomas Bogendoerfer wrote:
-> +#if 0
->         int ret;
+> The bigger partition produces following boot log:
+[...]
+> sym0: <895> rev 0x2 at pci 0000:18:00.0 irq 67
+> sym0: No NVRAM, ID 7, Fast-40, LVD, parity checking
+> sym0: SCSI BUS has been reset.
+> scsi0 : sym-2.2.3
+> scsi 0:0:0:0: ABORT operation started
+> scsi 0:0:0:0: ABORT operation timed-out.
+> scsi 0:0:0:0: DEVICE RESET operation started
 > 
->         ret = mem_pdc_call(PDC_MODEL, PDC_MODEL_CAPABILITIES,
->                 __pa(pdc_result), 0);
->         convert_to_wide(pdc_result);
->         if (pdc_result[0] != NARROW_FIRMWARE)
-> +#endif
+> After that it hangs...
 
-Yeah, this won't work on Superdome, which has no 32-bit firmware. At
-this point in boot, we've got parisc_narrow_firmware set, which will
-go kaboom.
+Generally, this means that interrupts are broken; sym2 didn't get an
+interrupt saying the command completed.
 
-We can fix this pretty easily, palo knows if it was started with 64-bit
-firmware, we can just bring this into the kernel. I'll hack a patch for
-palo this weekend, but you might as well continue just using what you've
-got until then.
+Looking through the rest of the log, I don't see any information
+pertaining to interrupt setup.  I forget whether we have debug related
+to interrupts, but I bet we do ...
 
-regards, Kyle
+-- 
+Matthew Wilcox				Intel Open Source Technology Centre
+"Bill, look, we understand that you're interested in selling us this
+operating system, but compare it to ours.  We can't possibly take such
+a retrograde step."
