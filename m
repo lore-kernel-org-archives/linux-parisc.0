@@ -1,50 +1,32 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: tsbogend@alpha.franken.de (Thomas Bogendoerfer)
 Subject: Re: Hacking SuperDome
-Date: Wed, 11 Feb 2009 00:23:12 -0700
-Message-ID: <20090211072312.GA19531@colo.lackof.org>
-References: <20090207142906.GA8553@alpha.franken.de>
+Date: Wed, 11 Feb 2009 11:00:52 +0100
+Message-ID: <20090211100052.GA6371@alpha.franken.de>
+References: <20090207142906.GA8553@alpha.franken.de> <20090211072312.GA19531@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: linux-parisc@vger.kernel.org
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090207142906.GA8553@alpha.franken.de>
+In-Reply-To: <20090211072312.GA19531@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Feb 07, 2009 at 03:29:06PM +0100, Thomas Bogendoerfer wrote:
-> Hi,
+On Wed, Feb 11, 2009 at 12:23:12AM -0700, Grant Grundler wrote:
+> > First guess would be some PCI setup issues... Any hints ?
 > 
-> thanks to Madze, I've now access to a HP Superdome;-)
+> Look for HPMC's. The console can't keep up with the kernel in general.
+> When an HPMC occurs, some of the output can get stranded.
 
-Wow...that's so cool...I didn't this would happen. :)
+never saw an HPMC, but I'm sure it's because lots of output gets lost...
 
-> The bigger partition produces following boot log:
-...
+I've done some hacking yesterday and it looks like the basic
+problem is, that REO isn't handled properly. As a start it would
+be good to know, if the used IOC_IKE_OFFSET in sba_iommu.c is really
+correct...
 
-> The smaller partion hangs even earlier:
-> 
-> HARD Booted.
-> palo ipl 1.14 root@duet Sat Apr  8 16:08:16 EDT 2006
-> 
-> Boot image contains:
->     0/vmlinux64 6484269 bytes @ 0xa000
-...
-> SBA found REO rev 2 at 0xfffffff888000000
-> Elroy version TR4.0 (0x5) found at 0xfffffff884000000
-> 
-> 
-> First guess would be some PCI setup issues... Any hints ?
+Thomas.
 
-Look for HPMC's. The console can't keep up with the kernel in general.
-When an HPMC occurs, some of the output can get stranded.
-
-I would add "initcall_debug=1" to boot parameters. See kernel/main.c.
-Possible add a mdelay(100) after each initcall.
-
-Since Tulip configured properly, I'm going to assume PCI resources
-were properly assigned and all PCI Busses enumerated. PCI support
-shouldn't be any different than for other PAT PDC machines.
-
-hth,
-grant
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                                [ RFC1925, 2.3 ]
