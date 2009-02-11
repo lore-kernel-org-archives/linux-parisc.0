@@ -1,58 +1,50 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [PATCH] parisc: add ftrace (function and graph tracer) functionality
-Date: Tue, 10 Feb 2009 21:43:08 -0500 (EST)
-Message-ID: <20090211024309.D97334FA9@hiauly1.hia.nrc.ca>
-References: <4991E9E3.2040404@gmx.de>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: Hacking SuperDome
+Date: Wed, 11 Feb 2009 00:23:12 -0700
+Message-ID: <20090211072312.GA19531@colo.lackof.org>
+References: <20090207142906.GA8553@alpha.franken.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org, kyle@mcmartin.ca
-To: deller@gmx.de (Helge Deller)
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4991E9E3.2040404@gmx.de> from "Helge Deller" at Feb 10, 2009 09:56:03 pm
+In-Reply-To: <20090207142906.GA8553@alpha.franken.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> John David Anglin wrote:
-> >> It will currently only work with 64bit kernels, because the gcc options -pg
-> >> and -ffunction-sections can't be enabled at the same time and -ffunction-sections
-> >> is still needed to be able to link 32bit kernels.
-> > 
-> > I have done some testing.  As far as I can tell, -pg works with
-> > -ffunction-sections on hppa-unknown-linux-gnu and hppa64-hp-hpux11.
+On Sat, Feb 07, 2009 at 03:29:06PM +0100, Thomas Bogendoerfer wrote:
+> Hi,
 > 
-> That's great!
-> Which gcc version did you tested?
+> thanks to Madze, I've now access to a HP Superdome;-)
 
-4.4.0.
+Wow...that's so cool...I didn't this would happen. :)
 
-> For me, (cross-compiler) hppa-linux-gcc 3.3.4 didn't linked without -ffunction-sections.
+> The bigger partition produces following boot log:
+...
 
-There's been quite a few change since 3.3.4.  In principle, -ffunction-sections
-shouldn't be needed to compile and link the kernel although it may produce
-better code.  Long calls should be generated automatically if a pc-relative
-branch can't reach the stub table.  As I said, ld -r is not supposed to merge
-.text sections.
+> The smaller partion hangs even earlier:
+> 
+> HARD Booted.
+> palo ipl 1.14 root@duet Sat Apr  8 16:08:16 EDT 2006
+> 
+> Boot image contains:
+>     0/vmlinux64 6484269 bytes @ 0xa000
+...
+> SBA found REO rev 2 at 0xfffffff888000000
+> Elroy version TR4.0 (0x5) found at 0xfffffff884000000
+> 
+> 
+> First guess would be some PCI setup issues... Any hints ?
 
-If I remember correctly from some previous discussions, 3.3.4 is too
-old.  There was a bug in the handling of weak functions affecting kernel
-builds.
+Look for HPMC's. The console can't keep up with the kernel in general.
+When an HPMC occurs, some of the output can get stranded.
 
-Currently, the only supported GCC branches are 4.3 and 4.4.  The 4.2
-branch will be closed soon and no further releases will be done with
-this branch.  4.4 will be forked when the number of P1 bugs reaches
-zero.  From my standpoint, it would be best to test with 4.3 or 4.4.
-I think the major linux vendors are using 4.3 for their current
-releases.
+I would add "initcall_debug=1" to boot parameters. See kernel/main.c.
+Possible add a mdelay(100) after each initcall.
 
-> Did you tested modules (on 32bit) as well, e.g. the xfs module which had the
-> relocation problems?
+Since Tulip configured properly, I'm going to assume PCI resources
+were properly assigned and all PCI Busses enumerated. PCI support
+shouldn't be any different than for other PAT PDC machines.
 
-No, I just did a build and check of gcc, and tested a testsuite program
-to see that it ran correctly with -pg and -ffunctions-sections (i.e., I
-ran gprof using the gmon.out).  I also visually inspected the generated
-assembly code.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+hth,
+grant
