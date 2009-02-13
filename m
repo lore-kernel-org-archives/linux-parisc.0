@@ -1,45 +1,56 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: simplify sys_clone()
-Date: Fri, 13 Feb 2009 23:58:29 +0100
-Message-ID: <4995FB15.6060008@gmx.de>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [RFC] pthread/signal problems on hppa (ruby1.9 problems)
+Date: Fri, 13 Feb 2009 18:31:23 -0500
+Message-ID: <119aab440902131531t54d759e6lb17b1aaedb7b5986@mail.gmail.com>
+References: <4994C239.8010009@gmx.de>
+	 <20090213163516.GB4559@bombadil.infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-To: Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
+Cc: Helge Deller <deller@gmx.de>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	dann frazier <dannf@dannf.org>,
+	Lucas Nussbaum <lucas@lucas-nussbaum.net>
+To: Kyle McMartin <kyle@infradead.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090213163516.GB4559@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-No need to test clone_flags here and set parent_tidptr and child_tidptr
-accordingly. The same check will be done in do_fork() and copy_process() anyway.
+On Fri, Feb 13, 2009 at 11:35 AM, Kyle McMartin <kyle@infradead.org> wrote:
+> On Fri, Feb 13, 2009 at 01:43:37AM +0100, Helge Deller wrote:
+>> child_stack=0x804b904, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 30263
+>
+>> and here with hppa:
+>> child_stack=0x804b904, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_SYSVSEM) = 30272
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+CLONE_THREAD informs the kernel of the *type* of POSIX signal
+semantics to apply.
 
-diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-index b80e02a..ad585fd 100644
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -231,8 +231,8 @@ sys_clone(unsigned long clone_flags, unsigned long usp,
- 	   
- 	   However, these last 3 args are only examined
- 	   if the proper flags are set. */
--	int __user *child_tidptr;
--	int __user *parent_tidptr;
-+	int __user *parent_tidptr = (int __user *)regs->gr[24];
-+	int __user *child_tidptr  = (int __user *)regs->gr[22];
- 
- 	/* usp must be word aligned.  This also prevents users from
- 	 * passing in the value 1 (which is the signal for a special
-@@ -243,16 +243,6 @@ sys_clone(unsigned long clone_flags, unsigned long usp,
- 	if (usp == 0)
- 	  usp = regs->gr[30];
- 
--	if (clone_flags & CLONE_PARENT_SETTID)
--	  parent_tidptr = (int __user *)regs->gr[24];
--	else
--	  parent_tidptr = NULL;
--	
--	if (clone_flags & (CLONE_CHILD_SETTID | CLONE_CHILD_CLEARTID))
--	  child_tidptr = (int __user *)regs->gr[22];
--	else
--	  child_tidptr = NULL;
+In glibc CLONE_SIGNAL expands to CLONE_SIGHAND | CLONE_THREAD, so
+watch out for that when reading the code.
+
+Unfortunately linuxthreads can't cope with CLONE_THREAD being enabled.
+For example if you enable CLONE_THREAD then getpid() in those threads
+will no
+longer return a unique value per thread, but the thread group ID.
+
+> Somewhat preturbed by this. This appears to be the flags set by the
+> respective nptl and linuxthreads code paths. I thought Dann Frazier
+> said that NPTL hadn't helped? Perhaps we still have bugs in our NPTL
+> code... :/
+
+CLONE_THREAD is always on in NPTL. I know of no targets that override
+ARCH_CLONE in glibc to remove CLONE_THREAD from the flag list.
+
+That is not to say that the bug might be different in NPTL.
+
+> (See CLONE_SIGNAL in nptl/$mumble.c, versus the annotate of the file
+>  you've patched in linuxthreads...)
+>
+> Would be curious to see what happens on linuxthreads-i386...
+
+I would bet that it also locks up.
+
+Cheers,
+Carlos.
