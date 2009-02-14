@@ -1,56 +1,93 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [RFC] pthread/signal problems on hppa (ruby1.9 problems)
-Date: Fri, 13 Feb 2009 18:31:23 -0500
-Message-ID: <119aab440902131531t54d759e6lb17b1aaedb7b5986@mail.gmail.com>
-References: <4994C239.8010009@gmx.de>
-	 <20090213163516.GB4559@bombadil.infradead.org>
+From: Kyle McMartin <kyle@infradead.org>
+Subject: [PATCH] parisc: fixup cpu_check_affinity for const cpumask *dest
+Date: Sat, 14 Feb 2009 03:22:19 -0500
+Message-ID: <20090214082219.GA17304@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Helge Deller <deller@gmx.de>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	dann frazier <dannf@dannf.org>,
-	Lucas Nussbaum <lucas@lucas-nussbaum.net>
-To: Kyle McMartin <kyle@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: grundler@parisc-linux.org, rusty@rustcorp.com.au
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090213163516.GB4559@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Feb 13, 2009 at 11:35 AM, Kyle McMartin <kyle@infradead.org> wrote:
-> On Fri, Feb 13, 2009 at 01:43:37AM +0100, Helge Deller wrote:
->> child_stack=0x804b904, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM) = 30263
->
->> and here with hppa:
->> child_stack=0x804b904, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_SYSVSEM) = 30272
+Noticed a new build warning... poking at it a bit, and lo' and behold
+it was a patch that never hit the list or my email...
 
-CLONE_THREAD informs the kernel of the *type* of POSIX signal
-semantics to apply.
+Anyway, this preserves the intent of the original code, which was for
+the first cpu set in the mask to be saved in *dest, so it could be
+used to program the IRT entry.
 
-In glibc CLONE_SIGNAL expands to CLONE_SIGHAND | CLONE_THREAD, so
-watch out for that when reading the code.
+Personally, I find the idea of changing irq_desc directly in the iosapic
+code fairly distasteful, but there's not really a choice.
 
-Unfortunately linuxthreads can't cope with CLONE_THREAD being enabled.
-For example if you enable CLONE_THREAD then getpid() in those threads
-will no
-longer return a unique value per thread, but the thread group ID.
-
-> Somewhat preturbed by this. This appears to be the flags set by the
-> respective nptl and linuxthreads code paths. I thought Dann Frazier
-> said that NPTL hadn't helped? Perhaps we still have bugs in our NPTL
-> code... :/
-
-CLONE_THREAD is always on in NPTL. I know of no targets that override
-ARCH_CLONE in glibc to remove CLONE_THREAD from the flag list.
-
-That is not to say that the bug might be different in NPTL.
-
-> (See CLONE_SIGNAL in nptl/$mumble.c, versus the annotate of the file
->  you've patched in linuxthreads...)
->
-> Would be curious to see what happens on linuxthreads-i386...
-
-I would bet that it also locks up.
-
-Cheers,
-Carlos.
+diff --git a/arch/parisc/include/asm/irq.h b/arch/parisc/include/asm/irq.h
+index 399c819..dfa26b6 100644
+--- a/arch/parisc/include/asm/irq.h
++++ b/arch/parisc/include/asm/irq.h
+@@ -49,7 +49,7 @@ extern unsigned long txn_alloc_addr(unsigned int);
+ extern unsigned long txn_affinity_addr(unsigned int irq, int cpu);
+ 
+ extern int cpu_claim_irq(unsigned int irq, struct irq_chip *, void *);
+-extern int cpu_check_affinity(unsigned int irq, cpumask_t *dest);
++extern int cpu_check_affinity(unsigned int irq, const struct cpumask *dest);
+ 
+ /* soft power switch support (power.c) */
+ extern struct tasklet_struct power_tasklet;
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index ac2c822..0454080 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -112,7 +112,7 @@ void cpu_end_irq(unsigned int irq)
+ }
+ 
+ #ifdef CONFIG_SMP
+-int cpu_check_affinity(unsigned int irq, cpumask_t *dest)
++int cpu_check_affinity(unsigned int irq, const struct cpumask *dest)
+ {
+ 	int cpu_dest;
+ 
+@@ -126,17 +126,19 @@ int cpu_check_affinity(unsigned int irq, cpumask_t *dest)
+ 
+ 	/* whatever mask they set, we just allow one CPU */
+ 	cpu_dest = first_cpu(*dest);
+-	*dest = cpumask_of_cpu(cpu_dest);
+ 
+-	return 0;
++	return cpu_dest;
+ }
+ 
+ static void cpu_set_affinity_irq(unsigned int irq, const struct cpumask *dest)
+ {
+-	if (cpu_check_affinity(irq, dest))
++	int cpu_dest;
++
++	cpu_dest = cpu_check_affinity(irq, dest);
++	if (cpu_dest < 0)
+ 		return;
+ 
+-	irq_desc[irq].affinity = *dest;
++	irq_desc[irq].affinity = cpumask_of_cpu(cpu_dest);
+ }
+ #endif
+ 
+diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
+index 1cdfdea..501aaf1 100644
+--- a/drivers/parisc/iosapic.c
++++ b/drivers/parisc/iosapic.c
+@@ -708,11 +708,14 @@ static void iosapic_set_affinity_irq(unsigned int irq,
+ 	struct vector_info *vi = iosapic_get_vector(irq);
+ 	u32 d0, d1, dummy_d0;
+ 	unsigned long flags;
++	int dest_cpu;
+ 
+-	if (cpu_check_affinity(irq, dest))
++	dest_cpu = cpu_check_affinity(irq, dest);
++	if (dest_cpu < 0)
+ 		return;
+ 
+-	vi->txn_addr = txn_affinity_addr(irq, cpumask_first(dest));
++	irq_desc[irq].affinity = cpumask_of_cpu(dest_cpu);
++	vi->txn_addr = txn_affinity_addr(irq, dest_cpu);
+ 
+ 	spin_lock_irqsave(&iosapic_lock, flags);
+ 	/* d1 contains the destination CPU, so only want to set that
