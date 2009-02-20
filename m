@@ -1,13 +1,9 @@
 From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Subject: [PATCH/RFC 4/5] powerpc: Enable rtc-generic, and kill rtc-ppc
-Date: Fri, 20 Feb 2009 16:46:48 +0100
-Message-ID: <1235144809-32468-5-git-send-email-Geert.Uytterhoeven@sonycom.com>
+Subject: [PATCH/RFC 2/5] pa-risc: Rename rtc-parisc to rtc-generic
+Date: Fri, 20 Feb 2009 16:46:46 +0100
+Message-ID: <1235144809-32468-3-git-send-email-Geert.Uytterhoeven@sonycom.com>
 References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
  <1235144809-32468-2-git-send-email-Geert.Uytterhoeven@sonycom.com>
- <1235144809-32468-3-git-send-email-Geert.Uytterhoeven@sonycom.com>
- <1235144809-32468-4-git-send-email-Geert.Uytterhoeven@sonycom.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
 Cc: rtc-linux@googlegroups.com, Kyle McMartin <kyle@mcmartin.ca>,
 	David Woodhouse <dwmw2@infradead.org>,
 	Richard Zidlicky <rz@linux-m68k.org>,
@@ -15,174 +11,349 @@ Cc: rtc-linux@googlegroups.com, Kyle McMartin <kyle@mcmartin.ca>,
 	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 To: Alessandro Zummo <a.zummo@towertech.it>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1235144809-32468-4-git-send-email-Geert.Uytterhoeven@sonycom.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1235144809-32468-2-git-send-email-Geert.Uytterhoeven@sonycom.com>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Create the "rtc-generic" platform device if ppc_md.get_rtc_time is set.
-Kill rtc-ppc, as rtc-generic offers the same functionality in a more ge=
-neric
-way.
+The rtc-parisc driver is not PA-RISC specific at all, as it uses the existing
+generic RTC infrastructure ([gs]et_rtc_time()).
+Rename the driver from rtc-parisc to rtc-generic, and make it depend on the new
+Kconfig symbol ARCH_HAS_GENERIC_RTC.
 
 Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 ---
- arch/powerpc/Kconfig       |    4 ++
- arch/powerpc/kernel/time.c |   22 ++++++++++++++
- drivers/rtc/Kconfig        |    8 -----
- drivers/rtc/Makefile       |    1 -
- drivers/rtc/rtc-ppc.c      |   69 ------------------------------------=
---------
- 5 files changed, 26 insertions(+), 78 deletions(-)
- delete mode 100644 drivers/rtc/rtc-ppc.c
+ arch/parisc/Kconfig       |    6 ++-
+ arch/parisc/kernel/time.c |    6 +-
+ drivers/rtc/Kconfig       |   10 ++--
+ drivers/rtc/Makefile      |    2 +-
+ drivers/rtc/rtc-generic.c |  113 +++++++++++++++++++++++++++++++++++++++++++++
+ drivers/rtc/rtc-parisc.c  |  113 ---------------------------------------------
+ 6 files changed, 127 insertions(+), 123 deletions(-)
+ create mode 100644 drivers/rtc/rtc-generic.c
+ delete mode 100644 drivers/rtc/rtc-parisc.c
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 40b7981..82e47b0 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -85,6 +85,10 @@ config ARCH_HAS_ILOG2_U64
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index aacf11d..cacb3a1 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -10,7 +10,7 @@ config PARISC
+ 	select HAVE_IDE
+ 	select HAVE_OPROFILE
+ 	select RTC_CLASS
+-	select RTC_DRV_PARISC
++	select RTC_DRV_GENERIC
+ 	select INIT_ALL_POSSIBLE
+ 	help
+ 	  The PA-RISC microprocessor is designed by Hewlett-Packard and used
+@@ -43,6 +43,10 @@ config ARCH_HAS_ILOG2_U64
  	bool
- 	default y if 64BIT
-=20
+ 	default n
+ 
 +config ARCH_HAS_GENERIC_RTC
 +	bool
 +	default y
 +
- config GENERIC_HWEIGHT
+ config GENERIC_FIND_NEXT_BIT
  	bool
  	default y
-diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
-index c956403..616c7d3 100644
---- a/arch/powerpc/kernel/time.c
-+++ b/arch/powerpc/kernel/time.c
-@@ -1127,3 +1127,25 @@ void div128_by_32(u64 dividend_high, u64 dividen=
-d_low,
- 	dr->result_low  =3D ((u64)y << 32) + z;
-=20
+diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
+index 9d46c43..849f460 100644
+--- a/arch/parisc/kernel/time.c
++++ b/arch/parisc/kernel/time.c
+@@ -216,8 +216,8 @@ void __init start_cpu_itimer(void)
+ 	per_cpu(cpu_data, cpu).it_value = next_tick;
  }
+ 
+-struct platform_device rtc_parisc_dev = {
+-	.name = "rtc-parisc",
++static struct platform_device rtc_generic_dev = {
++	.name = "rtc-generic",
+ 	.id = -1,
+ };
+ 
+@@ -225,7 +225,7 @@ static int __init rtc_init(void)
+ {
+ 	int ret;
+ 
+-	ret = platform_device_register(&rtc_parisc_dev);
++	ret = platform_device_register(&rtc_generic_dev);
+ 	if (ret < 0)
+ 		printk(KERN_ERR "unable to register rtc device...\n");
+ 
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index 81450fb..3e58182 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -677,12 +677,12 @@ config RTC_DRV_RS5C313
+ 	help
+ 	  If you say yes here you get support for the Ricoh RS5C313 RTC chips.
+ 
+-config RTC_DRV_PARISC
+-	tristate "PA-RISC firmware RTC support"
+-	depends on PARISC
++config RTC_DRV_GENERIC
++	tristate "Generic RTC support"
++	depends on ARCH_HAS_GENERIC_RTC
+ 	help
+-	  Say Y or M here to enable RTC support on PA-RISC systems using
+-	  firmware calls. If you do not know what you are doing, you should
++	  Say Y or M here to enable RTC support on systems using the generic
++	  RTC abstraction. If you do not know what you are doing, you should
+ 	  just say Y.
+ 
+ config RTC_DRV_PPC
+diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
+index 0e697aa..9c18a01 100644
+--- a/drivers/rtc/Makefile
++++ b/drivers/rtc/Makefile
+@@ -55,7 +55,7 @@ obj-$(CONFIG_RTC_DRV_PCF8563)	+= rtc-pcf8563.o
+ obj-$(CONFIG_RTC_DRV_PCF8583)	+= rtc-pcf8583.o
+ obj-$(CONFIG_RTC_DRV_PL030)	+= rtc-pl030.o
+ obj-$(CONFIG_RTC_DRV_PL031)	+= rtc-pl031.o
+-obj-$(CONFIG_RTC_DRV_PARISC)	+= rtc-parisc.o
++obj-$(CONFIG_RTC_DRV_GENERIC)	+= rtc-generic.o
+ obj-$(CONFIG_RTC_DRV_PPC)	+= rtc-ppc.o
+ obj-$(CONFIG_RTC_DRV_PXA)	+= rtc-pxa.o
+ obj-$(CONFIG_RTC_DRV_R9701)	+= rtc-r9701.o
+diff --git a/drivers/rtc/rtc-generic.c b/drivers/rtc/rtc-generic.c
+new file mode 100644
+index 0000000..b744c7d
+--- /dev/null
++++ b/drivers/rtc/rtc-generic.c
+@@ -0,0 +1,113 @@
++/* rtc-generic: RTC driver using the generic RTC abstraction
++ *
++ * Copyright (C) 2008 Kyle McMartin <kyle@mcmartin.ca>
++ */
 +
-+static struct platform_device rtc_generic_dev =3D {
-+	.name =3D "rtc-generic",
-+	.id =3D -1,
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/time.h>
++#include <linux/platform_device.h>
++
++#include <asm/rtc.h>
++
++/* as simple as can be, and no simpler. */
++struct generic_rtc {
++	struct rtc_device *rtc;
++	spinlock_t lock;
 +};
 +
-+static int __init rtc_init(void)
++static int generic_get_time(struct device *dev, struct rtc_time *tm)
 +{
-+	int ret;
++	struct generic_rtc *p = dev_get_drvdata(dev);
++	unsigned long flags, ret;
 +
-+	if (!ppc_md.get_rtc_time)
-+		return -ENODEV;
++	spin_lock_irqsave(&p->lock, flags);
++	ret = get_rtc_time(tm);
++	spin_unlock_irqrestore(&p->lock, flags);
 +
-+	ret =3D platform_device_register(&rtc_generic_dev);
-+	if (ret < 0)
-+		pr_err("Unable to register rtc device...\n");
++	if (ret & RTC_BATT_BAD)
++		return -EOPNOTSUPP;
 +
-+	/* not necessarily an error */
 +	return 0;
 +}
 +
-+module_init(rtc_init);
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 3e58182..9964a72 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -685,14 +685,6 @@ config RTC_DRV_GENERIC
- 	  RTC abstraction. If you do not know what you are doing, you should
- 	  just say Y.
-=20
--config RTC_DRV_PPC
--       tristate "PowerPC machine dependent RTC support"
--       depends on PPC
--       help
--	 The PowerPC kernel has machine-specific functions for accessing
--	 the RTC. This exposes that functionality through the generic RTC
--	 class.
--
- config RTC_DRV_PXA
-        tristate "PXA27x/PXA3xx"
-        depends on ARCH_PXA
-diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
-index 9c18a01..bd209a5 100644
---- a/drivers/rtc/Makefile
-+++ b/drivers/rtc/Makefile
-@@ -56,7 +56,6 @@ obj-$(CONFIG_RTC_DRV_PCF8583)	+=3D rtc-pcf8583.o
- obj-$(CONFIG_RTC_DRV_PL030)	+=3D rtc-pl030.o
- obj-$(CONFIG_RTC_DRV_PL031)	+=3D rtc-pl031.o
- obj-$(CONFIG_RTC_DRV_GENERIC)	+=3D rtc-generic.o
--obj-$(CONFIG_RTC_DRV_PPC)	+=3D rtc-ppc.o
- obj-$(CONFIG_RTC_DRV_PXA)	+=3D rtc-pxa.o
- obj-$(CONFIG_RTC_DRV_R9701)	+=3D rtc-r9701.o
- obj-$(CONFIG_RTC_DRV_RS5C313)	+=3D rtc-rs5c313.o
-diff --git a/drivers/rtc/rtc-ppc.c b/drivers/rtc/rtc-ppc.c
++static int generic_set_time(struct device *dev, struct rtc_time *tm)
++{
++	struct generic_rtc *p = dev_get_drvdata(dev);
++	unsigned long flags;
++	int ret;
++
++	spin_lock_irqsave(&p->lock, flags);
++	ret = set_rtc_time(tm);
++	spin_unlock_irqrestore(&p->lock, flags);
++
++	if (ret < 0)
++		return -EOPNOTSUPP;
++
++	return 0;
++}
++
++static const struct rtc_class_ops generic_rtc_ops = {
++	.read_time = generic_get_time,
++	.set_time = generic_set_time,
++};
++
++static int __devinit generic_rtc_probe(struct platform_device *dev)
++{
++	struct generic_rtc *p;
++
++	p = kzalloc(sizeof (*p), GFP_KERNEL);
++	if (!p)
++		return -ENOMEM;
++
++	spin_lock_init(&p->lock);
++
++	p->rtc = rtc_device_register("rtc-generic", &dev->dev,
++				     &generic_rtc_ops, THIS_MODULE);
++	if (IS_ERR(p->rtc)) {
++		int err = PTR_ERR(p->rtc);
++		kfree(p);
++		return err;
++	}
++
++	platform_set_drvdata(dev, p);
++
++	return 0;
++}
++
++static int __devexit generic_rtc_remove(struct platform_device *dev)
++{
++	struct generic_rtc *p = platform_get_drvdata(dev);
++
++	rtc_device_unregister(p->rtc);
++	kfree(p);
++
++	return 0;
++}
++
++static struct platform_driver generic_rtc_driver = {
++	.driver = {
++		.name = "rtc-generic",
++		.owner = THIS_MODULE,
++	},
++	.probe = generic_rtc_probe,
++	.remove = __devexit_p(generic_rtc_remove),
++};
++
++static int __init generic_rtc_init(void)
++{
++	return platform_driver_register(&generic_rtc_driver);
++}
++
++static void __exit generic_rtc_fini(void)
++{
++	platform_driver_unregister(&generic_rtc_driver);
++}
++
++module_init(generic_rtc_init);
++module_exit(generic_rtc_fini);
++
++MODULE_AUTHOR("Kyle McMartin <kyle@mcmartin.ca>");
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Generic RTC driver");
++MODULE_ALIAS("platform:rtc-generic");
+diff --git a/drivers/rtc/rtc-parisc.c b/drivers/rtc/rtc-parisc.c
 deleted file mode 100644
-index c8e97e2..0000000
---- a/drivers/rtc/rtc-ppc.c
+index 28fb7d3..0000000
+--- a/drivers/rtc/rtc-parisc.c
 +++ /dev/null
-@@ -1,69 +0,0 @@
--/*
-- * RTC driver for ppc_md RTC functions
+@@ -1,113 +0,0 @@
+-/* rtc-parisc: RTC for HP PA-RISC firmware
 - *
-- * =C2=A9 2007 Red Hat, Inc.
-- *
-- * Author: David Woodhouse <dwmw2@infradead.org>
-- *
-- * This program is free software; you can redistribute it and/or modif=
-y
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
+- * Copyright (C) 2008 Kyle McMartin <kyle@mcmartin.ca>
 - */
 -
--
+-#include <linux/kernel.h>
 -#include <linux/module.h>
--#include <linux/err.h>
--#include <linux/rtc.h>
+-#include <linux/time.h>
 -#include <linux/platform_device.h>
--#include <asm/machdep.h>
 -
--static int ppc_rtc_read_time(struct device *dev, struct rtc_time *tm)
--{
--	ppc_md.get_rtc_time(tm);
--	return 0;
--}
+-#include <asm/rtc.h>
 -
--static int ppc_rtc_set_time(struct device *dev, struct rtc_time *tm)
--{
--	return ppc_md.set_rtc_time(tm);
--}
--
--static const struct rtc_class_ops ppc_rtc_ops =3D {
--	.set_time =3D ppc_rtc_set_time,
--	.read_time =3D ppc_rtc_read_time,
+-/* as simple as can be, and no simpler. */
+-struct parisc_rtc {
+-	struct rtc_device *rtc;
+-	spinlock_t lock;
 -};
 -
--static struct rtc_device *rtc;
--static struct platform_device *ppc_rtc_pdev;
--
--static int __init ppc_rtc_init(void)
+-static int parisc_get_time(struct device *dev, struct rtc_time *tm)
 -{
--	if (!ppc_md.get_rtc_time || !ppc_md.set_rtc_time)
--		return -ENODEV;
+-	struct parisc_rtc *p = dev_get_drvdata(dev);
+-	unsigned long flags, ret;
 -
--	ppc_rtc_pdev =3D platform_device_register_simple("ppc-rtc", 0, NULL, =
-0);
--	if (IS_ERR(ppc_rtc_pdev))
--		return PTR_ERR(ppc_rtc_pdev);
+-	spin_lock_irqsave(&p->lock, flags);
+-	ret = get_rtc_time(tm);
+-	spin_unlock_irqrestore(&p->lock, flags);
 -
--	rtc =3D rtc_device_register("ppc_md", &ppc_rtc_pdev->dev,
--				  &ppc_rtc_ops, THIS_MODULE);
--	if (IS_ERR(rtc)) {
--		platform_device_unregister(ppc_rtc_pdev);
--		return PTR_ERR(rtc);
--	}
+-	if (ret & RTC_BATT_BAD)
+-		return -EOPNOTSUPP;
 -
 -	return 0;
 -}
 -
--static void __exit ppc_rtc_exit(void)
+-static int parisc_set_time(struct device *dev, struct rtc_time *tm)
 -{
--	rtc_device_unregister(rtc);
--	platform_device_unregister(ppc_rtc_pdev);
+-	struct parisc_rtc *p = dev_get_drvdata(dev);
+-	unsigned long flags;
+-	int ret;
+-
+-	spin_lock_irqsave(&p->lock, flags);
+-	ret = set_rtc_time(tm);
+-	spin_unlock_irqrestore(&p->lock, flags);
+-
+-	if (ret < 0)
+-		return -EOPNOTSUPP;
+-
+-	return 0;
 -}
 -
--module_init(ppc_rtc_init);
--module_exit(ppc_rtc_exit);
+-static const struct rtc_class_ops parisc_rtc_ops = {
+-	.read_time = parisc_get_time,
+-	.set_time = parisc_set_time,
+-};
+-
+-static int __devinit parisc_rtc_probe(struct platform_device *dev)
+-{
+-	struct parisc_rtc *p;
+-
+-	p = kzalloc(sizeof (*p), GFP_KERNEL);
+-	if (!p)
+-		return -ENOMEM;
+-
+-	spin_lock_init(&p->lock);
+-
+-	p->rtc = rtc_device_register("rtc-parisc", &dev->dev, &parisc_rtc_ops,
+-					THIS_MODULE);
+-	if (IS_ERR(p->rtc)) {
+-		int err = PTR_ERR(p->rtc);
+-		kfree(p);
+-		return err;
+-	}
+-
+-	platform_set_drvdata(dev, p);
+-
+-	return 0;
+-}
+-
+-static int __devexit parisc_rtc_remove(struct platform_device *dev)
+-{
+-	struct parisc_rtc *p = platform_get_drvdata(dev);
+-
+-	rtc_device_unregister(p->rtc);
+-	kfree(p);
+-
+-	return 0;
+-}
+-
+-static struct platform_driver parisc_rtc_driver = {
+-	.driver = {
+-		.name = "rtc-parisc",
+-		.owner = THIS_MODULE,
+-	},
+-	.probe = parisc_rtc_probe,
+-	.remove = __devexit_p(parisc_rtc_remove),
+-};
+-
+-static int __init parisc_rtc_init(void)
+-{
+-	return platform_driver_register(&parisc_rtc_driver);
+-}
+-
+-static void __exit parisc_rtc_fini(void)
+-{
+-	platform_driver_unregister(&parisc_rtc_driver);
+-}
+-
+-module_init(parisc_rtc_init);
+-module_exit(parisc_rtc_fini);
+-
+-MODULE_AUTHOR("Kyle McMartin <kyle@mcmartin.ca>");
+-MODULE_LICENSE("GPL");
+-MODULE_DESCRIPTION("HP PA-RISC RTC driver");
+-MODULE_ALIAS("platform:rtc-parisc");
+-- 
+1.6.0.4
+
