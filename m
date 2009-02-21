@@ -1,62 +1,34 @@
-From: Alessandro Zummo <alessandro.zummo@towertech.it>
-Subject: Re: [rtc-linux] [PATCH/RFC 0/5] Generic RTC class driver
-Date: Fri, 20 Feb 2009 17:04:54 +0100
-Message-ID: <20090220170454.04382e9e@i1501.lan.towertech.it>
-References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: HPPA transition from linuxthreads to nptl.
+Date: Sat, 21 Feb 2009 09:06:28 -0500
+Message-ID: <119aab440902210606y4d7995cbu65f4ed1d7a660104@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: Geert.Uytterhoeven@sonycom.com, Kyle McMartin <kyle@mcmartin.ca>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Richard Zidlicky <rz@linux-m68k.org>,
-	linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org,
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-To: rtc-linux@googlegroups.com
+Content-Type: text/plain; charset=ISO-8859-1
+To: Debian HPPA Port List <debian-hppa@lists.debian.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 20 Feb 2009 16:46:44 +0100
-Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com> wrote:
+debian-hppa, linux-parisc,
 
-> Fortunately there already exists a generic RTC class driver: "rtc-parisc".
-> Despite it's name, it's platform-independent, as it's build on top of the RTC
-> abstraction used by "genrtc".
-> 
-> This patch series
->   - adds a missing module alias to rtc-parisc,
->   - renames rtc-parisc to rtc-generic,
->   - converts the architectures that currently have CONFIG_GEN_RTC enabled in
->     their defconfig (m68k, parisc, powerpc) to rtc-generic,
->   - removes the obsolete rtc-ppc driver,
->   - removes the old genrtc driver.
->   
-> Note that genrtc may be used on other archictectures as well: at least alpha
-> has the required infrastructure ([gs]et_rtc_time()). The Kconfig rules allow
-> genrtc to be enabled on several others (cris, h8300, mn10300, um, x86, xtensa).
-> 
-> Furthermore genrtc and rtc-generic are not 100% userspace compatible:
->   - /dev/rtc provided by genrtc uses a misc character device (10:135),
->   - /dev/rtc provided by rtc-generic uses a dynamic character device.
+I've been working on the linuxthreads to nptl transition over
+the past week and I have had promising results. I managed
+to debug several critical issues, and no blockers remain in
+the implementation of compat symbols to fix the ABI transition.
 
- Hello,
+This implementation is the first ports target to attempt to
+override symbols in the nptl add-on, and as such the initial
+implementation has a lot of code duplication which I hope
+to reduce via future patches to libc proper. There were aslo
+several stumbling blocks in being the first.
 
-   my opinion on this kind of stuff is that I want to avoid the layering
- of implementations under the rtc subsystem. I'd rather prefer that each
- rtc device had its own driver. 
- 
-  I've made error in the past, by accepting such kind of drivers, and
- would like to avoid that it happens again.
+At present I have an initial implementation complete, along
+with a testsuite to prove the implementation is correct.
+Currently I am debugging the testsuite, because some of
+the expected tests are not passing.
 
-  Regarding the user space, the assumption that a device has
- a fixed major:minor number should be dropped as well.
+I will keep the list updated on my progress.
 
--- 
-
- Best regards,
-
- Alessandro Zummo,
-  Tower Technologies - Torino, Italy
-
-  http://www.towertech.it
-
+Cheers,
+Carlos.
