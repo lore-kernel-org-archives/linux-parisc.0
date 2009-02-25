@@ -1,55 +1,78 @@
-From: Brad Boyer <flar@allandria.com>
-Subject: Re: [rtc-linux] Re: [PATCH/RFC 0/5] Generic RTC class driver
-Date: Tue, 24 Feb 2009 17:14:26 -0800
-Message-ID: <20090225011426.GB9362@cynthia.pants.nu>
-References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	<20090220170454.04382e9e@i1501.lan.towertech.it>
-	<alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be>
-	<20090223160506.04e347c7@i1501.lan.towertech.it>
-	<alpine.LRH.2.00.0902241848500.544@vixen.sonytel.be>
-	<20090224193708.5f8be86c@i1501.lan.towertech.it>
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [rtc-linux] [PATCH/RFC 0/5] Generic RTC class driver
+Date: Wed, 25 Feb 2009 10:54:33 +0100 (CET)
+Message-ID: <alpine.LRH.2.00.0902251051370.4063@vixen.sonytel.be>
+References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <20090220170454.04382e9e@i1501.lan.towertech.it> <alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be> <1235511327.18632.73.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: Richard Zidlicky <rz@linux-m68k.org>, rtc-linux@googlegroups.com,
-	linux-parisc@vger.kernel.org, David@ozlabs.org,
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Cc: Alessandro Zummo <alessandro.zummo@towertech.it>,
+	rtc-linux@googlegroups.com, Richard Zidlicky <rz@linux-m68k.org>,
+	linux-parisc@vger.kernel.org,
 	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	Kyle McMartin <kyle@mcmartin.ca>,
+	David@ozlabs.org, Kyle McMartin <kyle@mcmartin.ca>,
 	Linux/PPC Development <linuxppc-dev@ozlabs.org>,
 	Linux/m68k <linux-m68k@lists.linux-m68k.org>,
-	Geert.Uytterhoeven@sonycom.com, Woodhouse <dwmw2@infradead.org>
-To: Alessandro Zummo <alessandro.zummo@towertech.it>
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
-In-Reply-To: <20090224193708.5f8be86c@i1501.lan.towertech.it>
-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.ozlabs.org>
-List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1235511327.18632.73.camel@macbook.infradead.org>
+List-ID: <linux-m68k.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Feb 24, 2009 at 07:37:08PM +0100, Alessandro Zummo wrote:
-> On Tue, 24 Feb 2009 18:56:03 +0100 (CET)
-> Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com> wrote:
-> > Converting all (ca. 20?) ppc and m68k RTC support code into individual RTC
-> > class drivers would add ca. 100+ lines of code for each individual driver.
-> 
->  How different are all of those boards? It's simply a matter
->  of parameters and offsets? can we group them somehow?
+On Wed, 25 Feb 2009, David Woodhouse wrote:
+> On Mon, 2009-02-23 at 13:34 +0100, Geert Uytterhoeven wrote:
+> > >    my opinion on this kind of stuff is that I want to avoid the l=
+ayering
+> > >  of implementations under the rtc subsystem. I'd rather prefer th=
+at each
+> > >  rtc device had its own driver.=20
+> > > =20
+> > >   I've made error in the past, by accepting such kind of drivers,=
+ and
+> > >  would like to avoid that it happens again.
+> >=20
+> > So you want us to kill the ppc_md.[gs]et_rtc_time() [ppc], mach_hwc=
+lk() [m68k],
+> > mach_gettod() [m68knommu] (and probably a few other) abstractions, =
+and move all
+> > RTC code out of arch/ into seperate drivers under drivers/rtc/ inst=
+ead?
+>=20
+> That's the ideal... although did we get NTP sync working again yet?
+>=20
+> The rtc-ppc driver was intended as a short-term workaround so that we
+> can enable the generic RTC class (which was required for PA Semi
+> Electra, iirc), and still have stuff work on other platforms.
 
-I imagine we could cut down the numbers somewhat with clever code sharing,
-but it's still going to be a fairly large number. I don't know all the
-embedded boards, but just with all the Macintosh models there are at
-least three and maybe four drastically different methods of RTC access,
-and all of them are directly tied to some chip that does something else
-completely unrelated. For one of them we don't even have a driver at the
-moment.  They also are all custom chips that wouldn't be used anywhere
-else. The other thing we need to keep in mind is that if we do it right
-we can share drivers across m68k and powerpc in some cases.  I imagine
-some of the embedded powerpc boards are using chips that are common in
-other architectures as well.
+Sure. The only differences between your rtc-ppc driver and rtc-parisc w=
+ere:
+  - rtc-ppc uses the PPC RTC abstraction (ppc_md.[gs]et_rtc_time()),
+    while rtc-parisc uses the genrtc abstraction layer ([gs]et_rtc_time=
+()),
+    which is shared by several architectures,
+  - rtc-ppc has the platform device built-in in the driver, while rtc-p=
+arisc
+    relies on the creation of the platform device in platform code.
 
-	Brad Boyer
-	flar@allandria.com
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Bel=
+gium
+
+Phone:    +32 (0)2 700 8453
+=46ax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+=46ortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
