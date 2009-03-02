@@ -1,56 +1,79 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: can't compile kernel for parisc
-Date: Sat, 28 Feb 2009 11:17:18 -0500 (EST)
-Message-ID: <20090228161719.40D0D4E9A@hiauly1.hia.nrc.ca>
-References: <a4423d670902270955j5562dd4bkce8142e0a89750f9@mail.gmail.com>
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [rtc-linux] Re: [PATCH/RFC 0/5] Generic RTC class driver
+Date: Mon, 2 Mar 2009 10:54:14 +0100 (CET)
+Message-ID: <alpine.LRH.2.00.0903021051040.25117@vixen.sonytel.be>
+References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<20090220170454.04382e9e@i1501.lan.towertech.it>
+	<alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be>
+	<1235511327.18632.73.camel@macbook.infradead.org>
+	<20090224231154.60ba18d6@i1501.lan.towertech.it>
+	<1235514727.18632.93.camel@macbook.infradead.org>
+	<alpine.LRH.2.00.0902251059110.4063@vixen.sonytel.be>
+	<20090225111836.621412c1@i1501.lan.towertech.it>
+	<20090227185514.GA1071@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: carlos@systemhalted.org, linux-parisc@vger.kernel.org
-To: a.beregalov@gmail.com (Alexander Beregalov)
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <a4423d670902270955j5562dd4bkce8142e0a89750f9@mail.gmail.com> from "Alexander Beregalov" at Feb 27, 2009 08:55:28 pm
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>,
+	Alessandro Zummo <alessandro.zummo@towertech.it>,
+	rtc-linux@googlegroups.com, linux-parisc@vger.kernel.org, David@ozlabs.org,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	Linux/PPC Development <linuxppc-dev@ozlabs.org>,
+	David Woodhouse <dwmw2@infradead.org>
+To: Richard Zidlicky <rz@linux-m68k.org>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
+In-Reply-To: <20090227185514.GA1071@linux-m68k.org>
+List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.ozlabs.org>
+List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
 
-> (no debugging symbols found)
-> /usr/bin/ld:
-> Program received signal SIGSEGV, Segmentation fault.
-> 0x4080f404 in strlen () from /lib/libc.so.6
-> (gdb) backtrace
-> #0  0x4080f404 in strlen () from /lib/libc.so.6
-> #1  0x407d5428 in vfprintf () from /lib/libc.so.6
-> #2  0x407d1304 in ?? () from /lib/libc.so.6
-> #3  0x407d18b0 in vfprintf () from /lib/libc.so.6
-> #4  0x4088359c in __vfprintf_chk () from /lib/libc.so.6
-> #5  0x4040cdc8 in _bfd_default_error_handler () from
-> /usr/lib/binutils/hppa2.0-unknown-linux-gnu/2.18/libbfd-2.18.so
-> #6  0x40432034 in ?? () from
-> /usr/lib/binutils/hppa2.0-unknown-linux-gnu/2.18/libbfd-2.18.so
-> #7  0x40452f58 in bfd_elf_final_link () from
-> /usr/lib/binutils/hppa2.0-unknown-linux-gnu/2.18/libbfd-2.18.so
-> #8  0x4042e764 in ?? () from
-> /usr/lib/binutils/hppa2.0-unknown-linux-gnu/2.18/libbfd-2.18.so
-> #9  0x00029f3c in ?? ()
-> #10 0x000295c8 in main ()
-> 
-> Glibc is  2.9_p20081201, I will try older version.
-
-Assuming you have the glibc debug libraries, try the same backtrace
-with LD_LIBRARY_PATH set to /usr/lib/debug.  Try to determine
-if a bad pointer has been passed from _bfd_default_error_handler.
-This seems likely.
-
-binutils has likely been miscompiled, or your kernel build has
-exposed a problem in binutils.  We may be not handling a relocation
-correctly during the final link.
-
-If you can, would you build CVS binutils with debugging.  Disable
-building shared libraries so we don't use libbfd-2.18.so.  Install
-it somewhere.  Replace your current versions of as and ld.  Then
-redo the kernel build.  If the same error occurs, we will have a
-version that can be debugged.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+T24gRnJpLCAyNyBGZWIgMjAwOSwgUmljaGFyZCBaaWRsaWNreSB3cm90ZToKPiBPbiBXZWQsIEZl
+YiAyNSwgMjAwOSBhdCAxMToxODozNkFNICswMTAwLCBBbGVzc2FuZHJvIFp1bW1vIHdyb3RlOgo+
+ID4gT24gV2VkLCAyNSBGZWIgMjAwOSAxMTowMDoxMyArMDEwMCAoQ0VUKQo+ID4gR2VlcnQgVXl0
+dGVyaG9ldmVuIDxHZWVydC5VeXR0ZXJob2V2ZW5Ac29ueWNvbS5jb20+IHdyb3RlOgo+ID4gCj4g
+PiA+IEkgZGlkbid0IGtub3cgTlRQIHdhcyBicm9rZW4gd2l0aCBSVEMgY2xhc3MgZHJpdmVycz8K
+PiA+ID4gCj4gPiA+IFNvIHdlIHNob3VsZCBhY3R1YWxseSBrZWVwIG9uIHVzaW5nIGdlbnJ0YyBp
+bnN0ZWFkIG9mIHJ0Yy1wcGMvcnRjLWdlbmVyaWMgZm9yCj4gPiA+IG5vdz8gOy0pCj4gPiAKPiA+
+ICBicm9rZW4gaGVyZSBtZWFucyB0aGF0IHRoZSBrZXJuZWwgd29uJ3Qgc2F2ZSB0aGUgdGltZSB0
+byB0aGUgaGFyZHdhcmUKPiA+ICBydGMgZXZlcnkgMTEgbWludXRlcyBhcyBpdCB1c2VkIHRvIGRv
+LiBub3JtYWwgTlRQIG9wZXJhdGlvbnMgYXJlIHVuYWZmZWN0ZWQuCj4gCj4gc2VlbXMgbGlrZSBz
+byBmYXIgcHBjIGlzIHRoZSBvbmx5IGFyY2hpdGVjdHVyZSBhdHRlbXB0aW5nIHRvIGltcGxlbWVu
+dCBpdAo+IGNvcnJlY3RseSwgYWxsIG90aGVycyBlaXRoZXIgaGF2ZSBpdCB1bmltcGxlbWVudGVk
+IG9yIHVzZSB0aGUgYnJva2VuCj4gYnkgZGVzaWduIHNldF9ydGNfbW1zcyBtZXRob2QuIAo+IEFs
+c28gbm90ZSB0aGF0IGluIG1vc3QgY2FzZXMgaHdjbG9jayBoYXMgbXVjaCBiZXR0ZXIgcG9zc2li
+aWxpdGllcwo+IHRvIGRvIGEgZ29vZCBqb2IuCj4gCj4gUmVnYXJkaW5nIGdlbnJ0YyB2cyBydGMt
+cHBjL3J0Yy1nZW5lcmljIGl0IGlzIHdvcnRoIG5vdGluZyB0aGF0IGdlbnJ0Ywo+IHByb3ZpZGVz
+IFJUQ19VSUUgZW11bGF0aW9uIHdoaWNoIGlzIG9mIHNvbWUgdXNlIGZvciBleG90aWMgcHJvZ3Jh
+bXMgbGlrZSAKPiAiY2hyb255Ii4KPiBBZmFpY3MgdGhpcyBpcyBhbHNvIHRoZSBvbmx5IHNpdHVh
+dGlvbiB3aXRob3V0IGEgZ29vZCB1c2Vyc3BhY2Ugd29ya2Fyb3VuZCAKPiBhbmQgY2hyb255IG5l
+dmVyIHdvcmtlZCB3ZWxsIGZvciBtZSBzbyBJIGhhdmUgbm90aGluZyBhZ2FpbnN0IGp1bmtpbmcg
+dGhlIAo+IGNvZGUuCgpXaGF0IGFib3V0IENPTkZJR19SVENfSU5URl9ERVZfVUlFX0VNVUwgZm9y
+IFJUQyBjbGFzcyBkZXZpY2VzPwoKPiBSZWdhcmRpbmcgYSBwb3NzaWJsZSByZW9yZ2FuaXNhdGlv
+biBmcm9tIHRoZSBnZW5lcmljIHRvIGFsbCBzZXBhcmF0ZSBkcml2ZXJzCj4gSSBhZ3JlZSB0aGF0
+IHRoZSBoYWJpdCBvZiBwdXR0aW5nIHJ0Yy1jaGlwIHNwZWNpZmljIGNvZGUgaW4gYXNtLWdlbmVy
+aWMgaXMgCj4gY29uZnVzaW5nIGF0IGJlc3QuIAo+IEluIG1hbnkgY2FzZXMgc3VjaCBjb2RlIG1p
+Z2h0IGJlIGJldHRlciBwbGFjZWQgaW4gZHJpdmVycy9ydGMgb3IgCj4gaW5jbHVkZS9saW51eC9y
+dGMvY2hpcG5hbWUuCj4gCj4gSW1obyB0aGlzIGRvZXMgbm90IHByZWNsdWRlIHRoZSBwb3NzaWJp
+bGl0eSB0byB1c2UgYSBnZW5lcmljIGZyYW1ld29yay4gV2hpbGUKPiB0aGVyZSBjZXJ0YWlubHkg
+YXJlIHZhbGlkIHJlYXNvbnMgdG8gaGF2ZSBzZXBhcmF0ZSBkcml2ZXJzIGluIHNvbWUgY2FzZXMg
+Cj4gSSBkbyBub3Qgc2VlIG11Y2ggdmFsdWUgaW4gcmV3cml0aW5nIGV2ZXJ5dGhpbmcgYXMgc2Vw
+YXJhdGUgZHJpdmVycyB3aGVyZSAKPiB0aGUgZ2VuZXJpYyBmcmFtZXdvcmsgd29ya3Mgd2VsbC4K
+CkluZGVlZC4gWW91IGNhbiBoYXZlIGEgd29ya2luZyBSVEMgY2xhc3MgZHJpdmVyIGZvciBsb3Rz
+IG9mIGhhcmR3YXJlIGJ5IGp1c3QKd3JpdGluZyBjYS4gMTAwIGxpbmVzIG9mIGNvZGUgb24gdG9w
+IG9mIHRoZSBnZW5lcmljIGZyYW1ld29yay4KCldpdGgga2luZCByZWdhcmRzLAoKR2VlcnQgVXl0
+dGVyaG9ldmVuClNvZnR3YXJlIEFyY2hpdGVjdAoKU29ueSBUZWNoc29mdCBDZW50cmUgRXVyb3Bl
+ClRoZSBDb3Jwb3JhdGUgVmlsbGFnZSDCtyBEYSBWaW5jaWxhYW4gNy1EMSDCtyBCLTE5MzUgWmF2
+ZW50ZW0gwrcgQmVsZ2l1bQoKUGhvbmU6ICAgICszMiAoMCkyIDcwMCA4NDUzCkZheDogICAgICAr
+MzIgKDApMiA3MDAgODYyMgpFLW1haWw6ICAgR2VlcnQuVXl0dGVyaG9ldmVuQHNvbnljb20uY29t
+CkludGVybmV0OiBodHRwOi8vd3d3LnNvbnktZXVyb3BlLmNvbS8KCkEgZGl2aXNpb24gb2YgU29u
+eSBFdXJvcGUgKEJlbGdpdW0pIE4uVi4KVkFUIEJFIDA0MTMuODI1LjE2MCDCtyBSUFIgQnJ1c3Nl
+bHMKRm9ydGlzIMK3IEJJQyBHRUJBQkVCQiDCtyBJQkFOIEJFNDEyOTMwMzc2ODAwMTAKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXhwcGMtZGV2IG1h
+aWxpbmcgbGlzdApMaW51eHBwYy1kZXZAb3psYWJzLm9yZwpodHRwczovL296bGFicy5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eHBwYy1kZXY=
