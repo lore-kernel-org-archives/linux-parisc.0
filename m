@@ -1,45 +1,136 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: can't compile kernel for parisc
-Date: Mon, 2 Mar 2009 13:28:33 -0500 (EST)
-Message-ID: <20090302182834.0BBBB4EE8@hiauly1.hia.nrc.ca>
-References: <20090302181719.8CB8F4ED1@hiauly1.hia.nrc.ca>
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [rtc-linux] Re: [PATCH/RFC 0/5] Generic RTC class driver
+Date: Tue, 3 Mar 2009 11:41:23 +0100 (CET)
+Message-ID: <alpine.LRH.2.00.0903031121280.31985@vixen.sonytel.be>
+References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<20090220170454.04382e9e@i1501.lan.towertech.it>
+	<alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be>
+	<1235511327.18632.73.camel@macbook.infradead.org>
+	<20090224231154.60ba18d6@i1501.lan.towertech.it>
+	<1235514727.18632.93.camel@macbook.infradead.org>
+	<alpine.LRH.2.00.0902251059110.4063@vixen.sonytel.be>
+	<20090225111836.621412c1@i1501.lan.towertech.it>
+	<20090227185514.GA1071@linux-m68k.org>
+	<alpine.LRH.2.00.0903021051040.25117@vixen.sonytel.be>
+	<20090302110310.35af50ea@i1501.lan.towertech.it>
+	<alpine.LRH.2.00.0903021116450.25117@vixen.sonytel.be>
+	<20090302120950.0d35e06c@i1501.lan.towertech.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: a.beregalov@gmail.com, carlos@systemhalted.org,
-	linux-parisc@vger.kernel.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090302181719.8CB8F4ED1@hiauly1.hia.nrc.ca> from "John David Anglin" at Mar 2, 2009 01:17:18 pm
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-15"
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>,
+	Richard Zidlicky <rz@linux-m68k.org>, rtc-linux@googlegroups.com,
+	linux-parisc@vger.kernel.org,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	Linux/PPC Development <linuxppc-dev@ozlabs.org>,
+	David Woodhouse <dwmw2@infradead.org>
+To: Alessandro Zummo <alessandro.zummo@towertech.it>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
+In-Reply-To: <20090302120950.0d35e06c@i1501.lan.towertech.it>
+List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.ozlabs.org>
+List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
 
-> > > Either hsh->target_section->owner or hsh->bh_root.string is NULL. =C2=A0C=
-> > ould
-> > > you put a break on this line and print the struct hsh in gdb?
-> > 
-> > bfd/elf32-hppa.c:
-> > 3568   /* Make sure we can reach the stub.  */
-> > 3569   if (max_branch_offset !=3D 0
-> > 3570       && value + addend + max_branch_offset >=3D 2*max_branch_offset)
-> > 3571     {
+On Mon, 2 Mar 2009, Alessandro Zummo wrote:
+> On Mon, 2 Mar 2009 11:28:01 +0100 (CET)
+> Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com> wrote:
+> > So I can solve my problem (autoloading the RTC driver on PS3 by udev) by
+> > converting the old genrtc driver into a platform device driver and crea=
+ting
+> > platform devices where appropriate.
+> =
 
-Another thought -- add one or more BFD_ASSERTs before the call.
-For example,
+>  yes. btw, if you are building a kernel specific for the PS3, I would
+>  compile the rtc driver statically, otherwise it won't be available
+>  early on boot.
+>  =
 
-	       BFD_ASSERT (hsh->bh_root.string);
+> > However, this doesn't solve the distro's problem: as the old RTC framew=
+ork
+> > depends on RTC_LIB=3Dn, you cannot have both old and new RTC drivers in=
+ your
+> > (single) distro kernel. That's why dmwm2 created drivers/rtc/rtc-ppc.c:=
+ Fedora
+> > had to support machines with both old and new RTC drivers. As all of th=
+e old
+> > drivers are actually behind the ppc_md.[sg]et_rtc_time() abstraction, t=
+his was
+> > very easy.
+> =
 
-> > 3572       (*_bfd_error_handler)
-> > 3573         (_("%B(%A+0x%lx): cannot reach %s, recompile with
-> > -ffunction-sections"),
-> > 3574          input_bfd,
-> > 3575          input_section,
-> > 3576          offset,
-> > 3577          hsh->bh_root.string);
-> > 3578       bfd_set_error (bfd_error_bad_value);
-> > 3579       return bfd_reloc_notsupported;
-> > 3580     }
+>  ok, generic kernel. you will have to load the modules on initrd. no, sad=
+ly you
+>  can't have both of them. you might stick with the old interface or
+>  convert them all. =
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> =
+
+> > Hence it's all or nothing, and we have to convert all of them.
+> > =
+
+> > drivers/rtc/rtc-generic.c would allow to have a working system without =
+old
+> > RTC drivers, until all low-level code has been converted to individual =
+RTC
+> > drivers.
+> =
+
+>  I know but I have enough experience to foresee that once a generic over =
+generic
+>  framework is in place it's very hard to get rid of it because people
+>  will have no incentives.
+
+I know.
+
+>  If you really need rtc-generic you can keep using it even if it's =
+
+>  not in the kernel, distributions often have their specific
+>  set of kernel patches.
+
+rtc-generic is already in the kernel, it's just called rtc-parisc ;-)
+
+>  But I'd strongly suggest to plan and execute a conversion process.
+
+So would you accept a patch series that:
+  1. Adds the missing module aliases to rtc-parisc (which is a bugfix),
+  2. Moves the platform device creation out of rtc-ppc and into arch-specif=
+ic
+     code (which is also a bugfix),
+  3. Consolidates rtc-parisc and rtc-ppc into rtc-generic (which is a clean=
+up),
+  4. Makes rtc-generic dependent on PARISC, PPC, and M68K (the existing
+     [sg]et_rtc_time() users):
+       a. without introducing ARCH_HAS_GENERIC_RTC,
+       b. with a big fat warning in the Kconfig comment not relaxing the
+          dependencies, as it's supposed to go away.
+  4. Converts the PS3 RTC support into a separate driver, called rtc-ps3
+     (as a bonus ;-)
+
+? If yes, I'll cook it up.
+
+Other RTC platform support can be converted into separate drivers later.
+
+Thanks!
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
