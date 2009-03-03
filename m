@@ -1,76 +1,33 @@
-From: Alessandro Zummo <alessandro.zummo@towertech.it>
-Subject: Re: [rtc-linux] Re: [PATCH/RFC 0/5] Generic RTC class driver
-Date: Tue, 3 Mar 2009 14:53:45 +0100
-Message-ID: <20090303145345.3751a471@i1501.lan.towertech.it>
-References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	<20090220170454.04382e9e@i1501.lan.towertech.it>
-	<alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be>
-	<1235511327.18632.73.camel@macbook.infradead.org>
-	<20090224231154.60ba18d6@i1501.lan.towertech.it>
-	<1235514727.18632.93.camel@macbook.infradead.org>
-	<alpine.LRH.2.00.0902251059110.4063@vixen.sonytel.be>
-	<20090225111836.621412c1@i1501.lan.towertech.it>
-	<20090227185514.GA1071@linux-m68k.org>
-	<alpine.LRH.2.00.0903021051040.25117@vixen.sonytel.be>
-	<20090302110310.35af50ea@i1501.lan.towertech.it>
-	<alpine.LRH.2.00.0903021116450.25117@vixen.sonytel.be>
-	<20090302120950.0d35e06c@i1501.lan.towertech.it>
-	<alpine.LRH.2.00.0903031121280.31985@vixen.sonytel.be>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: can't compile kernel for parisc
+Date: Tue, 3 Mar 2009 11:33:47 -0500 (EST)
+Message-ID: <20090303163348.422E34E9A@hiauly1.hia.nrc.ca>
+References: <a4423d670903030457k20f2e975ya567e9d3b1a5a3ab@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: Geert.Uytterhoeven@sonycom.com,
-	Richard Zidlicky <rz@linux-m68k.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-parisc@vger.kernel.org,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	Linux/PPC Development <linuxppc-dev@ozlabs.org>,
-	Linux/m68k <linux-m68k@vger.kernel.org>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To: rtc-linux@googlegroups.com
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.00.0903031121280.31985@vixen.sonytel.be>
-List-ID: <linux-m68k.vger.kernel.org>
+Cc: carlos@systemhalted.org, linux-parisc@vger.kernel.org
+To: a.beregalov@gmail.com (Alexander Beregalov)
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <a4423d670903030457k20f2e975ya567e9d3b1a5a3ab@mail.gmail.com> from "Alexander Beregalov" at Mar 3, 2009 03:57:21 pm
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 3 Mar 2009 11:41:23 +0100 (CET)
-Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com> wrote:
-
-> rtc-generic is already in the kernel, it's just called rtc-parisc ;-)
-
- Really? I never saw it :)
-
-> >  But I'd strongly suggest to plan and execute a conversion process.
+> (gdb) print hsh->bh_root.string
+> $1 =3D 0x13919a8 "000000b2_b2:46+4068"
 > 
-> So would you accept a patch series that:
->   1. Adds the missing module aliases to rtc-parisc (which is a bugfix),
->   2. Moves the platform device creation out of rtc-ppc and into arch-specific
->      code (which is also a bugfix),
->   3. Consolidates rtc-parisc and rtc-ppc into rtc-generic (which is a cleanup),
->   4. Makes rtc-generic dependent on PARISC, PPC, and M68K (the existing
->      [sg]et_rtc_time() users):
->        a. without introducing ARCH_HAS_GENERIC_RTC,
->        b. with a big fat warning in the Kconfig comment not relaxing the
->           dependencies, as it's supposed to go away.
->   4. Converts the PS3 RTC support into a separate driver, called rtc-ps3
->      (as a bonus ;-)
+> (gdb) print input_section
+> $2 =3D (asection *) 0x105770
 > 
-> ? If yes, I'll cook it up.
+> Hm, they are not NULL.
 > 
-> Other RTC platform support can be converted into separate drivers later.
+> ld segfaults on the next line again.
 
- Seems reasonable. But please add a list of users of rtc-generic and information
- about their respective rtc hardware along with some general planning about
- which future driver would cover which users.
+Ok, I think we need to look deeper (i.e., _bfd_default_error_handler
+in bfd.c).  We might get this problem is _bfd_error_program_name is
+corrupt.  Try stepping through _bfd_default_error_handler.
 
- And let's hope this is a beginning :)
-
+Thanks,
+Dave
 -- 
-
- Best regards,
-
- Alessandro Zummo,
-  Tower Technologies - Torino, Italy
-
-  http://www.towertech.it
-
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
