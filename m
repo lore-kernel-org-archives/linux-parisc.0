@@ -1,51 +1,96 @@
 From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Subject: Re: [rtc-linux] Re: [PATCH/RFC 0/5] Generic RTC class driver
-Date: Wed, 4 Mar 2009 13:51:32 +0100 (CET)
-Message-ID: <alpine.LRH.2.00.0903041350540.4953@vixen.sonytel.be>
-References: <20090224231154.60ba18d6@i1501.lan.towertech.it> <1235514727.18632.93.camel@macbook.infradead.org> <alpine.LRH.2.00.0902251059110.4063@vixen.sonytel.be> <20090225111836.621412c1@i1501.lan.towertech.it> <20090227185514.GA1071@linux-m68k.org>
- <alpine.LRH.2.00.0903021051040.25117@vixen.sonytel.be> <20090302110310.35af50ea@i1501.lan.towertech.it> <alpine.LRH.2.00.0903021116450.25117@vixen.sonytel.be> <20090302120950.0d35e06c@i1501.lan.towertech.it> <alpine.LRH.2.00.0903031121280.31985@vixen.sonytel.be>
- <20090303190609.GB6907@linux-sh.org> <alpine.LRH.2.00.0903040920240.2416@vixen.sonytel.be> <20090304134705.7d9bbe5c@i1501.lan.towertech.it>
+Subject: [PATCH 0/7] Generic RTC class driver
+Date: Mon,  9 Mar 2009 14:26:16 +0100
+Message-ID: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-15
-Cc: rtc-linux@googlegroups.com, Paul Mundt <lethal@linux-sh.org>,
-	Linux/m68k <linux-m68k@vger.kernel.org>,
-	Richard Zidlicky <rz@linux-m68k.org>,
-	linux-parisc@vger.kernel.org,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	Linux/PPC Development <linuxppc-dev@ozlabs.org>,
-	David Woodhouse <dwmw2@infradead.org>
-To: Alessandro Zummo <alessandro.zummo@towertech.it>
+Content-Type: text/plain; charset=utf-8
+Cc: rtc-linux@googlegroups.com, linux-parisc@vger.kernel.org,
+	linuxppc-dev@ozlabs.org, linux-m68k@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>,
+	Dann Frazier <dannf@dannf.org>
+To: Alessandro Zummo <alessandro.zummo@towertech.it>,
+	Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20090304134705.7d9bbe5c@i1501.lan.towertech.it>
 List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 4 Mar 2009, Alessandro Zummo wrote:
-> On Wed, 4 Mar 2009 09:26:29 +0100 (CET)
-> Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com> wrote:
->=20
-> > Thanks Paul, I wasn't aware of that thread!
-> >=20
-> > Yes, this is almost the same. The only part I don't agree with is t=
-he move of
-> > the creation of the platform device from arch-specific code to rtc-=
-firmware.c,
-> > as this makes autoloading the driver more difficult.
->=20
->  and it's also against a proper implementation of the device/driver m=
-odel.
->=20
-> > Seems like everybody but the RTC maintainer has an interest in havi=
-ng an RTC
-> > class driver on top of [gs]et_rtc_time()... ;-)
->=20
->  That's because everyone is lazy :)=20
->=20
->  Seriously, if you want to handle it in the way we wrote
->  in the previous emails, it's ok for me.
 
-OK, I will do so. Thanks!
+        Hi Alessandro et al,
+
+This patch series:
+  1. Adds the missing module alias to rtc-parisc (which is a bugfix), a=
+nd
+     performs a few cleanups,
+  2. Moves the platform device creation out of rtc-ppc and into arch-sp=
+ecific
+     code (which is also a bugfix),
+  3. Consolidates rtc-parisc and rtc-ppc into rtc-generic (which is a c=
+leanup),
+  4. Hooks up rtc-generic on m68k (it's been using [sg]et_rtc_time() si=
+nce
+     ages),
+  5. Makes rtc-generic dependent on PARISC, PPC, and M68K (the existing
+     [sg]et_rtc_time() users):
+       a. without introducing ARCH_HAS_GENERIC_RTC,
+       b. with a big fat warning in the Kconfig comment discouraging pe=
+ople
+          from relaxing the dependencies.
+  6. Converts the PS3 RTC support into a separate driver, called rtc-ps=
+3
+     (as a bonus ;-)
+
+To reduce code churn, the order and number of the actual patches slight=
+ly
+differs:
+  [1] parisc: rtc: get_rtc_time() returns unsigned int
+  [2] parisc: rtc: platform_driver_probe() fixups
+  [3] parisc: rtc: Add missing module alias
+  [4] parisc: rtc: Rename rtc-parisc to rtc-generic
+  [5] m68k: Hook up rtc-generic
+  [6] powerpc: Hook up rtc-generic, and kill rtc-ppc
+  [7] powerpc/ps3: Add rtc-ps3
+
+ a/drivers/rtc/rtc-parisc.c              |   85 -----------------------=
+--
+ b/arch/m68k/include/asm/rtc.h           |    7 +-
+ b/arch/m68k/kernel/time.c               |   18 +++++
+ b/arch/parisc/Kconfig                   |    2=20
+ b/arch/parisc/kernel/time.c             |    6 -
+ b/arch/powerpc/include/asm/ps3.h        |    3=20
+ b/arch/powerpc/kernel/time.c            |   16 ++++
+ b/arch/powerpc/platforms/ps3/os-area.c  |    2=20
+ b/arch/powerpc/platforms/ps3/platform.h |    2=20
+ b/arch/powerpc/platforms/ps3/setup.c    |    2=20
+ b/arch/powerpc/platforms/ps3/time.c     |   26 +++----
+ b/drivers/rtc/Kconfig                   |   10 +--
+ b/drivers/rtc/Makefile                  |    2=20
+ b/drivers/rtc/rtc-generic.c             |   84 +++++++++++++++++++++++=
+++
+ b/drivers/rtc/rtc-parisc.c              |    5 -
+ b/drivers/rtc/rtc-ps3.c                 |  106 +++++++++++++++++++++++=
+++++++++-
+ drivers/rtc/Kconfig                     |   22 +++---
+ drivers/rtc/Makefile                    |    2=20
+ drivers/rtc/rtc-parisc.c                |    6 -
+ drivers/rtc/rtc-ppc.c                   |   70 ---------------------
+ 20 files changed, 271 insertions(+), 205 deletions(-)
+
+These patches are relative to the "rtc-parisc" branch of Kyle's PA-RISC=
+ git
+repository, which already contains some cleanups for the rtc-parisc dri=
+ver by
+Dann, which already have been ack'ed by Alessandro:
+
+http://git.kernel.org/?p=3Dlinux/kernel/git/kyle/parisc-2.6.git;a=3Dsho=
+rtlog;h=3Drtc-parisc
+
+Paul: Feel free to add your SuperH support.
+
+I suppose the easiest way for this to go in is through Kyle's PA-RISC t=
+ree, as
+he already has the preceding patches? Can I have your acks, please?
+
+Thanks!
 
 With kind regards,
 
@@ -53,8 +98,8 @@ Geert Uytterhoeven
 Software Architect
 
 Sony Techsoft Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Bel=
-gium
+The Corporate Village =C2=B7 Da Vincilaan 7-D1 =C2=B7 B-1935 Zaventem =C2=
+=B7 Belgium
 
 Phone:    +32 (0)2 700 8453
 =46ax:      +32 (0)2 700 8622
@@ -62,8 +107,8 @@ E-mail:   Geert.Uytterhoeven@sonycom.com
 Internet: http://www.sony-europe.com/
 
 A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-=46ortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
+VAT BE 0413.825.160 =C2=B7 RPR Brussels
+=46ortis =C2=B7 BIC GEBABEBB =C2=B7 IBAN BE41293037680010
 --
 To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
 n
