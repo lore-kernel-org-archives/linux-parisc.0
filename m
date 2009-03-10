@@ -1,81 +1,76 @@
-From: Stoyan Gaydarov <stoyboyker@gmail.com>
-Subject: [PATCH 17/25] [parisc] BUG to BUG_ON changes
-Date: Tue, 10 Mar 2009 00:10:42 -0500
-Message-ID: <1236661850-8237-18-git-send-email-stoyboyker@gmail.com>
-References: <1236661850-8237-1-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-2-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-3-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-4-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-5-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-6-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-7-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-8-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-9-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-10-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-11-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-12-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-13-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-14-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-15-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-16-git-send-email-stoyboyker@gmail.com>
- <1236661850-8237-17-git-send-email-stoyboyker@gmail.com>
-Cc: Stoyan Gaydarov <stoyboyker@gmail.com>, kyle@mcmartin.ca,
-	matthew@wil.cx, grundler@parisc-linux.org,
-	linux-parisc@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1236661850-8237-17-git-send-email-stoyboyker@gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [PATCH 7/7] powerpc/ps3: Add rtc-ps3
+Date: Tue, 10 Mar 2009 10:21:14 +0100 (CET)
+Message-ID: <alpine.LRH.2.00.0903101015470.24318@vixen.sonytel.be>
+References: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-2-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-3-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-4-git-send-email-Geert.Uytterhoeven@sonycom.com>
+ <1236605183-22718-5-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-6-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-7-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-8-git-send-email-Geert.Uytterhoeven@sonycom.com>
+ <49B5618E.9050501@am.sony.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Cc: Alessandro Zummo <alessandro.zummo@towertech.it>,
+	Kyle McMartin <kyle@mcmartin.ca>, rtc-linux@googlegroups.com,
+	linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org,
+	linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Paul Mundt <lethal@linux-sh.org>,
+	Dann Frazier <dannf@dannf.org>
+To: Geoff Levand <geoffrey.levand@am.sony.com>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754382AbZCJJVc@vger.kernel.org>
+In-Reply-To: <49B5618E.9050501@am.sony.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Stoyan Gaydarov <stoyboyker@gmail.com>
----
- arch/parisc/kernel/pci-dma.c |   12 ++++--------
- 1 files changed, 4 insertions(+), 8 deletions(-)
+On Mon, 9 Mar 2009, Geoff Levand wrote:
+> On 03/09/2009 06:26 AM, Geert Uytterhoeven wrote:
+> > Create a real RTC driver for PS3, and unhook the deprecated
+> > ppc_md.[gs]et_rtc_time.
+>=20
+> >  8 files changed, 132 insertions(+), 18 deletions(-)
+>=20
+> Sorry, I hadn't been following the discussion closely, but
+> could you explain why we are going from a generic framework
+> where we hook in our platform specific part to a totally
+> independent driver that has such an increase in code size.
 
-diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
-index df47895..2587563 100644
---- a/arch/parisc/kernel/pci-dma.c
-+++ b/arch/parisc/kernel/pci-dma.c
-@@ -480,8 +480,7 @@ static int pa11_dma_map_sg(struct device *dev, struct scatterlist *sglist, int n
- {
- 	int i;
- 
--	if (direction == DMA_NONE)
--	    BUG();
-+	BUG_ON(direction == DMA_NONE);
- 
- 	for (i = 0; i < nents; i++, sglist++ ) {
- 		unsigned long vaddr = sg_virt_addr(sglist);
-@@ -496,8 +495,7 @@ static void pa11_dma_unmap_sg(struct device *dev, struct scatterlist *sglist, in
- {
- 	int i;
- 
--	if (direction == DMA_NONE)
--	    BUG();
-+	BUG_ON(direction == DMA_NONE);
- 
- 	if (direction == DMA_TO_DEVICE)
- 	    return;
-@@ -511,16 +509,14 @@ static void pa11_dma_unmap_sg(struct device *dev, struct scatterlist *sglist, in
- 
- static void pa11_dma_sync_single_for_cpu(struct device *dev, dma_addr_t dma_handle, unsigned long offset, size_t size, enum dma_data_direction direction)
- {
--	if (direction == DMA_NONE)
--	    BUG();
-+	BUG_ON(direction == DMA_NONE);
- 
- 	flush_kernel_dcache_range((unsigned long) phys_to_virt(dma_handle) + offset, size);
- }
- 
- static void pa11_dma_sync_single_for_device(struct device *dev, dma_addr_t dma_handle, unsigned long offset, size_t size, enum dma_data_direction direction)
- {
--	if (direction == DMA_NONE)
--	    BUG();
-+	BUG_ON(direction == DMA_NONE);
- 
- 	flush_kernel_dcache_range((unsigned long) phys_to_virt(dma_handle) + offset, size);
- }
--- 
-1.6.1.3
+Alessandro prefers not to have generic RTC drivers on top of some other
+abstraction, but wants platform/chip-specific drivers under drivers/rtc=
+/
+instead. The goal is to convert all RTC drivers buried in platform code
+to separate RTC drivers.
 
+(Alessandro, please correct me if I'm wrong)
+
+> Why couldn't you fix the generic part so that udev could
+> load it automatically?
+
+BTW, I also fixed the generic part, which is now called rtc-generic and
+autoloaded (patch 4).
+
+> I much prefer to have this code in the platform support
+> code as it was.  It is much more effort (a pain) to maintain
+> a separate driver were I have to cater to a subsystem's
+> maintainer, and with this rtc it seems everyone who was
+> using the generic PPC driver will need to do the same.
+
+They can keep on using rtc-generic for now (patch 6).
+
+If you do not want rtc-ps3, you can nak it, and keep on using rtc-gener=
+ic :-)
+But please consider before doing that...
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Bel=
+gium
+
+Phone:    +32 (0)2 700 8453
+=46ax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+=46ortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
