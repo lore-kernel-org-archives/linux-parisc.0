@@ -1,58 +1,81 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [rtc-linux] Re: [PATCH 7/7] powerpc/ps3: Add rtc-ps3
-Date: Mon, 09 Mar 2009 12:18:42 -0700
-Message-ID: <1236626322.8307.9.camel@localhost>
-References: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-2-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-3-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-4-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-5-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-6-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-7-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-8-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <20090309151216.17f13862@i1501.lan.towertech.it>
-	 <49B55A21.2010801@am.sony.com>
-	 <20090309194307.154f3e95@i1501.lan.towertech.it>
-	 <49B568D0.5000901@am.sony.com>
-Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Alessandro Zummo <alessandro.zummo@towertech.it>,
-	rtc-linux@googlegroups.com, Geert.Uytterhoeven@sonycom.com,
-	Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org,
-	linuxppc-dev@ozlabs.org, linux-m68k@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>,
-	Dann Frazier <dannf@dannf.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-To: Geoff Levand <geoffrey.levand@am.sony.com>
+From: Stoyan Gaydarov <stoyboyker@gmail.com>
+Subject: [PATCH 17/25] [parisc] BUG to BUG_ON changes
+Date: Tue, 10 Mar 2009 00:10:42 -0500
+Message-ID: <1236661850-8237-18-git-send-email-stoyboyker@gmail.com>
+References: <1236661850-8237-1-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-2-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-3-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-4-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-5-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-6-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-7-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-8-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-9-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-10-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-11-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-12-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-13-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-14-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-15-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-16-git-send-email-stoyboyker@gmail.com>
+ <1236661850-8237-17-git-send-email-stoyboyker@gmail.com>
+Cc: Stoyan Gaydarov <stoyboyker@gmail.com>, kyle@mcmartin.ca,
+	matthew@wil.cx, grundler@parisc-linux.org,
+	linux-parisc@vger.kernel.org
+To: linux-kernel@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <49B568D0.5000901@am.sony.com>
+In-Reply-To: <1236661850-8237-17-git-send-email-stoyboyker@gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2009-03-09 at 12:06 -0700, Geoff Levand wrote:
-> There was some work by Joe Perches to list the files a maintainer is
-> responsible for into the MAINTAINERS file.  I think that would give
-> you what you want, a way to automatically get the maintainer of a
-> file.
-> 
-> Joe, could you let us know the status of that work?
+Signed-off-by: Stoyan Gaydarov <stoyboyker@gmail.com>
+---
+ arch/parisc/kernel/pci-dma.c |   12 ++++--------
+ 1 files changed, 4 insertions(+), 8 deletions(-)
 
-I think it works fine, and is an acceptable
-approach to finding a maintainer for either a
-patch or a specific file.
-
-The changes I've posted are probably not suitable
-for merging by anyone other than Linus as
-MAINTAINERS is the most heavily modified file
-in the kernel tree.
-
-I've submitted it several times after merging it
-with the latest kernel without response from Linus.
-
-I'd merge and submit it again if it could be accepted.
-
-If someone would propose a mechanism that would
-improve the possibility to get it merged, I'd
-also appreciate that.
+diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
+index df47895..2587563 100644
+--- a/arch/parisc/kernel/pci-dma.c
++++ b/arch/parisc/kernel/pci-dma.c
+@@ -480,8 +480,7 @@ static int pa11_dma_map_sg(struct device *dev, struct scatterlist *sglist, int n
+ {
+ 	int i;
+ 
+-	if (direction == DMA_NONE)
+-	    BUG();
++	BUG_ON(direction == DMA_NONE);
+ 
+ 	for (i = 0; i < nents; i++, sglist++ ) {
+ 		unsigned long vaddr = sg_virt_addr(sglist);
+@@ -496,8 +495,7 @@ static void pa11_dma_unmap_sg(struct device *dev, struct scatterlist *sglist, in
+ {
+ 	int i;
+ 
+-	if (direction == DMA_NONE)
+-	    BUG();
++	BUG_ON(direction == DMA_NONE);
+ 
+ 	if (direction == DMA_TO_DEVICE)
+ 	    return;
+@@ -511,16 +509,14 @@ static void pa11_dma_unmap_sg(struct device *dev, struct scatterlist *sglist, in
+ 
+ static void pa11_dma_sync_single_for_cpu(struct device *dev, dma_addr_t dma_handle, unsigned long offset, size_t size, enum dma_data_direction direction)
+ {
+-	if (direction == DMA_NONE)
+-	    BUG();
++	BUG_ON(direction == DMA_NONE);
+ 
+ 	flush_kernel_dcache_range((unsigned long) phys_to_virt(dma_handle) + offset, size);
+ }
+ 
+ static void pa11_dma_sync_single_for_device(struct device *dev, dma_addr_t dma_handle, unsigned long offset, size_t size, enum dma_data_direction direction)
+ {
+-	if (direction == DMA_NONE)
+-	    BUG();
++	BUG_ON(direction == DMA_NONE);
+ 
+ 	flush_kernel_dcache_range((unsigned long) phys_to_virt(dma_handle) + offset, size);
+ }
+-- 
+1.6.1.3
 
