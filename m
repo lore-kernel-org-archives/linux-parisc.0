@@ -1,48 +1,26 @@
 From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [PATCH 0/7] Generic RTC class driver
-Date: Fri, 13 Mar 2009 00:25:43 -0400
-Message-ID: <20090313042543.GA3907@bombadil.infradead.org>
-References: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <alpine.LRH.2.00.0903111134270.1040@vixen.sonytel.be> <20090311154505.GB5448@bombadil.infradead.org> <alpine.LRH.2.00.0903111825040.1040@vixen.sonytel.be>
+Subject: Re: [PATCH 17/25] [parisc] BUG to BUG_ON changes
+Date: Fri, 13 Mar 2009 00:51:18 -0400
+Message-ID: <20090313045118.GB3907@bombadil.infradead.org>
+References: <1236661850-8237-9-git-send-email-stoyboyker@gmail.com> <1236661850-8237-10-git-send-email-stoyboyker@gmail.com> <1236661850-8237-11-git-send-email-stoyboyker@gmail.com> <1236661850-8237-12-git-send-email-stoyboyker@gmail.com> <1236661850-8237-13-git-send-email-stoyboyker@gmail.com> <1236661850-8237-14-git-send-email-stoyboyker@gmail.com> <1236661850-8237-15-git-send-email-stoyboyker@gmail.com> <1236661850-8237-16-git-send-email-stoyboyker@gmail.com> <1236661850-8237-17-git-send-email-stoyboyker@gmail.com> <1236661850-8237-18-git-send-email-stoyboyker@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@infradead.org>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	Alessandro Zummo <alessandro.zummo@towertech.it>,
-	linux-m68k@vger.kernel.org, rtc-linux@googlegroups.com,
-	linux-parisc@vger.kernel.org,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	Linux/PPC Development <linuxppc-dev@ozlabs.org>,
-	Paul Mundt <lethal@linux-sh.org>,
-	Dann Frazier <dannf@dannf.org>
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: linux-kernel@vger.kernel.org, kyle@mcmartin.ca, matthew@wil.cx,
+	grundler@parisc-linux.org, linux-parisc@vger.kernel.org
+To: Stoyan Gaydarov <stoyboyker@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.00.0903111825040.1040@vixen.sonytel.be>
+In-Reply-To: <1236661850-8237-18-git-send-email-stoyboyker@gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Mar 11, 2009 at 06:26:12PM +0100, Geert Uytterhoeven wrote:
-> 	Hi Kyle,
-> 
-> On Wed, 11 Mar 2009, Kyle McMartin wrote:
-> > On Wed, Mar 11, 2009 at 11:36:02AM +0100, Geert Uytterhoeven wrote:
-> > > Is it OK for you to take it through your PA-RISC tree?
-> > > If yes, I can resend the patch series with the collected acks.
-> > 
-> > That's fine with me, just hit me up with a git tree address and I'll
-> > suck it all into the rtc-parisc tree?
-> 
-> I put it up at:
-> 
-> master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-rtc-generic.git
-> 
-> The master branch should be a descendant of your rtc-parisc branch.
-> 
-> Thanks!
+On Tue, Mar 10, 2009 at 12:10:42AM -0500, Stoyan Gaydarov wrote:
+> Signed-off-by: Stoyan Gaydarov <stoyboyker@gmail.com>
 >
 
-Great, thanks Geert!
+Hi Stoyan,
 
-I've pulled it and pushed it back out, I'll submit it when the merge
-window opens.
+Thanks for sending this, but Helge Deller has already submitted
+a similar patch queued for 2.6.30.
 
-cheers, Kyle
+Thanks,
+	Kyle
