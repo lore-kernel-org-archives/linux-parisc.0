@@ -1,26 +1,29 @@
 From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [PATCH 17/25] [parisc] BUG to BUG_ON changes
-Date: Fri, 13 Mar 2009 00:51:18 -0400
-Message-ID: <20090313045118.GB3907@bombadil.infradead.org>
-References: <1236661850-8237-9-git-send-email-stoyboyker@gmail.com> <1236661850-8237-10-git-send-email-stoyboyker@gmail.com> <1236661850-8237-11-git-send-email-stoyboyker@gmail.com> <1236661850-8237-12-git-send-email-stoyboyker@gmail.com> <1236661850-8237-13-git-send-email-stoyboyker@gmail.com> <1236661850-8237-14-git-send-email-stoyboyker@gmail.com> <1236661850-8237-15-git-send-email-stoyboyker@gmail.com> <1236661850-8237-16-git-send-email-stoyboyker@gmail.com> <1236661850-8237-17-git-send-email-stoyboyker@gmail.com> <1236661850-8237-18-git-send-email-stoyboyker@gmail.com>
+Subject: Re: [PATCH] parisc: define SRCARCH=parisc for parisc64 builds
+Date: Fri, 13 Mar 2009 00:55:37 -0400
+Message-ID: <20090313045537.GC3907@bombadil.infradead.org>
+References: <49862F11.5000808@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-kernel@vger.kernel.org, kyle@mcmartin.ca, matthew@wil.cx,
-	grundler@parisc-linux.org, linux-parisc@vger.kernel.org
-To: Stoyan Gaydarov <stoyboyker@gmail.com>
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1236661850-8237-18-git-send-email-stoyboyker@gmail.com>
+In-Reply-To: <49862F11.5000808@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Mar 10, 2009 at 12:10:42AM -0500, Stoyan Gaydarov wrote:
-> Signed-off-by: Stoyan Gaydarov <stoyboyker@gmail.com>
->
+On Mon, Feb 02, 2009 at 12:24:01AM +0100, Helge Deller wrote:
+> The parisc64 target (HP PARISC, 64bit kernel) is similar to the sparc64 or 
+> m68knommu targets, as it shares all sources for 32- and 64-bit in one single
+> source path which is arch/parisc/.
+> This patch now allows one to use ARCH=parisc64 and just directly build the
+> 64bit kernel without creating symlinks in arch/ and include/asm-* manually
+> the same way as it's done for sparc64 and m68knommu.
+> 
 
-Hi Stoyan,
+I'm going to drop this patch, powerpc and mips don't do it, and
+'parisc64' hasn't been valid as $ARCH since v2.3 or something equally
+ancient, so I can't see any point in it.
 
-Thanks for sending this, but Helge Deller has already submitted
-a similar patch queued for 2.6.30.
-
-Thanks,
-	Kyle
+regards, Kyle
