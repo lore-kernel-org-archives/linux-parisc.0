@@ -1,7 +1,7 @@
 From: Kyle McMartin <kyle@infradead.org>
 Subject: Re: [PATCH] parisc: define SRCARCH=parisc for parisc64 builds
-Date: Sat, 14 Mar 2009 17:27:03 -0400
-Message-ID: <20090314212703.GC3167@bombadil.infradead.org>
+Date: Sat, 14 Mar 2009 17:27:41 -0400
+Message-ID: <20090314212741.GD3167@bombadil.infradead.org>
 References: <49862F11.5000808@gmx.de> <20090313045537.GC3907@bombadil.infradead.org> <49BC17CA.9020004@gmx.de> <20090314204922.GA3167@bombadil.infradead.org> <49BC19F0.1080405@gmx.de> <20090314210607.GB3167@bombadil.infradead.org> <49BC20D0.8070405@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -21,5 +21,8 @@ On Sat, Mar 14, 2009 at 10:25:36PM +0100, Helge Deller wrote:
 > sorry.
 > 
 
-heh, dude, not your fault. I guess you've just been at this
-a lot longer than I have. :)
+on second thought, if it makes your life measurably easier, i rescind
+my nak and will merge the patch.
+
+let me know,
+	kyle
