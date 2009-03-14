@@ -1,33 +1,38 @@
-From: Helge Deller <deller@gmx.de>
+From: Kyle McMartin <kyle@infradead.org>
 Subject: Re: [PATCH] parisc: define SRCARCH=parisc for parisc64 builds
-Date: Sat, 14 Mar 2009 21:56:16 +0100
-Message-ID: <49BC19F0.1080405@gmx.de>
-References: <49862F11.5000808@gmx.de> <20090313045537.GC3907@bombadil.infradead.org> <49BC17CA.9020004@gmx.de> <20090314204922.GA3167@bombadil.infradead.org>
+Date: Sat, 14 Mar 2009 17:06:07 -0400
+Message-ID: <20090314210607.GB3167@bombadil.infradead.org>
+References: <49862F11.5000808@gmx.de> <20090313045537.GC3907@bombadil.infradead.org> <49BC17CA.9020004@gmx.de> <20090314204922.GA3167@bombadil.infradead.org> <49BC19F0.1080405@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Kyle McMartin <kyle@mcmartin.ca>,
+Content-Type: text/plain; charset=iso-8859-1
+Cc: Kyle McMartin <kyle@infradead.org>,
 	linux-parisc <linux-parisc@vger.kernel.org>
-To: Kyle McMartin <kyle@infradead.org>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090314204922.GA3167@bombadil.infradead.org>
+In-Reply-To: <49BC19F0.1080405@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Kyle McMartin wrote:
-> On Sat, Mar 14, 2009 at 09:47:06PM +0100, Helge Deller wrote:
->>> and 'parisc64' hasn't been valid as $ARCH since v2.3 or something e=
-qually
->>> ancient, so I can't see any point in it.
->> =C4h ?
->> And how do you build a 64bit parisc kernel then ?
->>
+On Sat, Mar 14, 2009 at 09:56:16PM +0100, Helge Deller wrote:
+> Kyle McMartin wrote:
+> > On Sat, Mar 14, 2009 at 09:47:06PM +0100, Helge Deller wrote:
+> >>> and 'parisc64' hasn't been valid as $ARCH since v2.3 or something=
+ equally
+> >>> ancient, so I can't see any point in it.
+> >> =C4h ?
+> >> And how do you build a 64bit parisc kernel then ?
+> >>
+> >=20
+> > CONFIG_64BIT
 >=20
-> CONFIG_64BIT
+> No, this does not work with a cleanly checked-out tree.
+> Just remove the arch/parisc64 link which you created manually.
+>=20
 
-No, this does not work with a cleanly checked-out tree.
-Just remove the arch/parisc64 link which you created manually.
+It's simple, set CONFIG_64BIT, and just call it 'parisc' like
+everyone else has done for years now.
 
-Helge
+regards, Kyle
 --
 To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
  in
