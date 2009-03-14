@@ -1,28 +1,36 @@
 From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [PATCH] parisc: define SRCARCH=parisc for parisc64 builds
-Date: Sat, 14 Mar 2009 17:27:41 -0400
-Message-ID: <20090314212741.GD3167@bombadil.infradead.org>
-References: <49862F11.5000808@gmx.de> <20090313045537.GC3907@bombadil.infradead.org> <49BC17CA.9020004@gmx.de> <20090314204922.GA3167@bombadil.infradead.org> <49BC19F0.1080405@gmx.de> <20090314210607.GB3167@bombadil.infradead.org> <49BC20D0.8070405@gmx.de>
+Subject: [PATCH] parisc: sba_iommu: fix build bug when CONFIG_PARISC_AGP=y
+Date: Sat, 14 Mar 2009 19:40:59 -0400
+Message-ID: <20090314234059.GE3167@bombadil.infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@infradead.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+To: torvalds@linux-foundation.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <49BC20D0.8070405@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Mar 14, 2009 at 10:25:36PM +0100, Helge Deller wrote:
-> 
-> Everyone besides me it seems :-)
-> 
-> Shame on me ... seems you are right.
-> sorry.
-> 
+From: Kyle McMartin <kyle@mcmartin.ca>
 
-on second thought, if it makes your life measurably easier, i rescind
-my nak and will merge the patch.
+  CC      drivers/parisc/sba_iommu.o
+drivers/parisc/sba_iommu.c:1373: error: expected identifier or '('
+before '}' token
+make[2]: *** [drivers/parisc/sba_iommu.o] Error 1
+make[1]: *** [drivers/parisc] Error 2
+make: *** [drivers] Error 2
 
-let me know,
-	kyle
+Don't know how this has gone missed for so long... clearly I need
+to do builds on my C8000 more often.
+
+Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+---
+diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
+index 6aad854..e5999c4 100644
+--- a/drivers/parisc/sba_iommu.c
++++ b/drivers/parisc/sba_iommu.c
+@@ -1367,9 +1367,7 @@ sba_ioc_init_pluto(struct parisc_device *sba, struct ioc *ioc, int ioc_num)
+ 		ioc->pdir_size /= 2;
+ 		ioc->pdir_base[PDIR_INDEX(iova_space_size/2)] = SBA_AGPGART_COOKIE;
+ 	}
+-}
+ #endif /*SBA_AGP_SUPPORT*/
