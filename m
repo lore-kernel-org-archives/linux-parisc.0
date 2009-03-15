@@ -1,32 +1,33 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: Possible accelerated X on PA-RISC with kernel modesetting --
-	anyone investigating?
-Date: Sat, 14 Mar 2009 22:03:01 -0400
-Message-ID: <20090315020301.GG3167@bombadil.infradead.org>
-References: <b4198de60903141802p14f3d7f8ra33ba382ae6b8d85@mail.gmail.com> <20090315014621.GF3167@bombadil.infradead.org>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] parisc: define SRCARCH=parisc for parisc64 builds
+Date: Sun, 15 Mar 2009 11:08:00 +0100
+Message-ID: <49BCD380.6030309@gmx.de>
+References: <49862F11.5000808@gmx.de> <20090313045537.GC3907@bombadil.infradead.org> <49BC17CA.9020004@gmx.de> <20090314204922.GA3167@bombadil.infradead.org> <49BC19F0.1080405@gmx.de> <20090314210607.GB3167@bombadil.infradead.org> <49BC20D0.8070405@gmx.de> <20090314212741.GD3167@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: Matt Turner <mattst88@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc <linux-parisc@vger.kernel.org>
+To: Kyle McMartin <kyle@infradead.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090315014621.GF3167@bombadil.infradead.org>
+In-Reply-To: <20090314212741.GD3167@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Mar 14, 2009 at 09:46:21PM -0400, Kyle McMartin wrote:
-> I don't know if the newer cards can do DAC, but if they can, then we
-> could at least use the distributed GMMIO (greater-than-4GB mmio)
-> range to map a wide swath to every rope, which /would/ work.
+Kyle McMartin wrote:
+> On Sat, Mar 14, 2009 at 10:25:36PM +0100, Helge Deller wrote:
+>> Everyone besides me it seems :-)
+>>
+>> Shame on me ... seems you are right.
+>> sorry.
+>>
 > 
-> (My C8000 won't boot with a PCI r500 card in it, it fails during PDC
->  init, sadly. I think it was a X1300 or something.)
+> on second thought, if it makes your life measurably easier, i rescind
+> my nak and will merge the patch.
 > 
+> let me know,
+> 	kyle
 
-Ah, more stuff I remembered. Pluto's GMMIO_DIST_BASE register has useful
-features that let it clip the top 32-bits of the transaction address
-off, so you can give each rope a full 4GB mmio space and a bit to turn
-off the port-IO space from each range, reclaiming another 64MB for each
-rope.
+Thanks for the offer, Kyle.
+But I think I can easily change my scripts, so it's not necessary.
 
-I should pick up another couple models of PCI r[56]00 to try in the
-C8000... not sure why the firmware choked on the old r500.
+Helge
+
