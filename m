@@ -1,37 +1,44 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: hpmc on rp3440 with 2.6.29-rc5
-Date: Mon, 16 Mar 2009 20:56:24 -0400
-Message-ID: <20090317005624.GE4282@bombadil.infradead.org>
-References: <20090317004802.22B564E9D@hiauly1.hia.nrc.ca> <20090317005147.GD4282@bombadil.infradead.org>
+Date: Mon, 16 Mar 2009 21:18:14 -0400 (EDT)
+Message-ID: <20090317011815.B63EE4E9D@hiauly1.hia.nrc.ca>
+References: <20090317005624.GE4282@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: text/plain; charset=US-ASCII
+Cc: kyle@mcmartin.ca, linux-parisc@vger.kernel.org
+To: kyle@mcmartin.ca (Kyle McMartin)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090317005147.GD4282@bombadil.infradead.org>
+In-Reply-To: <20090317005624.GE4282@bombadil.infradead.org> from "Kyle McMartin" at Mar 16, 2009 08:56:24 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Mar 16, 2009 at 08:51:47PM -0400, Kyle McMartin wrote:
-> > In the info below, I only included relevant data.  No hpmc data was
-> > recorded for processors 2 and 3.  Unfortunately, I lost the console output
-> > for the crash if any.
-> > 
-> > This is with a SMP 64-bit kernel.  I still have it and the config file.
-> > 
-> > I'm not the greatest at interpreting chassis codes.  It's not at all clear
-> > to me what went wrong.
-> >
-> 
-> Good catch, looks like we're missing a compat handler for msgctl. I'll
-> add one and hopefully this will go away. :)
-> 
+> Woah. Really good catch, we're missing compat handlers for virtually all
+> the ipc functions!
 
-Woah. Really good catch, we're missing compat handlers for virtually all
-the ipc functions!
+Is there some way to do an audit as to what else might be missing?
 
-I'll fix this up ASAP.
+The reason I ask is that I tried linus 2.6.29-rc8 on my c3750 Saturday.
+There's still a problem with user and group access by sshd.  There may
+be a load dependence.  I have only seen this with 32-bit kernels.  It's
+not present in 2.6.22.
 
-Thanks!
-	Kyle
+Other common problems are occasional timeouts in the GCC testsuite
+by some programs that shouldn't timeout.  There are also occasional
+timeouts in pthread related applications but that's likely a glibc
+issue.
+
+I also see truncated output from some tests that generate a lot of
+output.  This seems worse with 32-bit kernels.  There are a couple of
+tests in the binutils gas testsuite that trigger this all the time.
+I would think this has something to do with exit and pipe sizes.
+
+The last two problems have been around for a long time.
+
+> I'll fix this up ASAP.
+
+Fantastic!
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
