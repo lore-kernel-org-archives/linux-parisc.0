@@ -1,36 +1,25 @@
-From: Alexander Beregalov <a.beregalov@gmail.com>
-Subject: [PATCH next 2/2] PARISC: iosapic: fix build breakage
-Date: Fri, 20 Mar 2009 13:00:11 +0300
-Message-ID: <20090320100011.GB26020@orion>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: can't compile kernel for parisc
+Date: Fri, 20 Mar 2009 15:40:18 -0600
+Message-ID: <20090320214018.GA12273@colo.lackof.org>
+References: <a4423d670903030457k20f2e975ya567e9d3b1a5a3ab@mail.gmail.com> <20090303163348.422E34E9A@hiauly1.hia.nrc.ca> <a4423d670903180455u20ead146k919426a1fb7276c6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: kyle@mcmartin.ca, linux-parisc@vger.kernel.org,
-	linux-next@vger.kernel.org
-Return-path: <linux-next-owner@vger.kernel.org>
-List-ID: <linux-next.vger.kernel.org>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	carlos@systemhalted.org, linux-parisc@vger.kernel.org
+To: Alexander Beregalov <a.beregalov@gmail.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <a4423d670903180455u20ead146k919426a1fb7276c6@mail.gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-drivers/parisc/iosapic.c:717: error: incompatible types in assignment
+On Wed, Mar 18, 2009 at 02:55:13PM +0300, Alexander Beregalov wrote:
+> ld: arch/parisc/kernel/built-in.o(.text+0xc84): cannot handle
+> R_PARISC_PCREL12F for .text
 
-irq_desc::affinity was changed from cpumask_t to cpumask_var_t in
-7f7ace0cda (cpumask: update irq_desc to use cpumask_var_t)
+Alexander,
+can you post the .config file used for this build?
+It would be the easiest way for someone else to reproduce the problem.
 
-Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
----
-
- drivers/parisc/iosapic.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
-index 501aaf1..73348c4 100644
---- a/drivers/parisc/iosapic.c
-+++ b/drivers/parisc/iosapic.c
-@@ -714,7 +714,7 @@ static void iosapic_set_affinity_irq(unsigned int irq,
- 	if (dest_cpu < 0)
- 		return;
- 
--	irq_desc[irq].affinity = cpumask_of_cpu(dest_cpu);
-+	cpumask_copy(irq_desc[irq].affinity, cpumask_of(dest_cpu));
- 	vi->txn_addr = txn_affinity_addr(irq, dest_cpu);
- 
- 	spin_lock_irqsave(&iosapic_lock, flags);
+thanks,
+grant
