@@ -1,22 +1,33 @@
-From: Meelis Roos <mroos@linux.ee>
-Subject: compile failure with LEDs
-Date: Wed, 1 Apr 2009 11:07:27 +0300 (EEST)
-Message-ID: <Pine.SOC.4.64.0904011105510.26377@math.ut.ee>
+From: Alexander Beregalov <a.beregalov@gmail.com>
+Subject: [PATCH next] parisc: asm/pdc.h should include asm/page.h
+Date: Wed, 1 Apr 2009 13:44:08 +0400
+Message-ID: <a4423d670904010244q1cfbce88qaa635d8e4070db07@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+To: "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+	linux-parisc@vger.kernel.org, kyle@mcmartin.ca
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-FYI - todays 2.6.29+git:
+Fixes this build error:
+arch/parisc/kernel/pdc_cons.c:117: error: '__PAGE_OFFSET' undeclared
+(first use in this function)
 
-  CC      drivers/parisc/led.o
-drivers/parisc/led.c: In function 'led_create_procfs':
-drivers/parisc/led.c:246: error: 'struct proc_dir_entry' has no member named 'owner'
-drivers/parisc/led.c:252: error: 'struct proc_dir_entry' has no member named 'owner'
-drivers/parisc/led.c:261: error: 'struct proc_dir_entry' has no member named 'owner'
-make[3]: *** [drivers/parisc/led.o] Error 1
+Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
+---
 
--- 
-Meelis Roos (mroos@linux.ee)
+ arch/parisc/include/asm/pdc.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/parisc/include/asm/pdc.h b/arch/parisc/include/asm/pdc.h
+index a26e98d..fde8045 100644
+--- a/arch/parisc/include/asm/pdc.h
++++ b/arch/parisc/include/asm/pdc.h
+@@ -340,6 +340,7 @@
+ #if !defined(__ASSEMBLY__)
+
+ #include <linux/types.h>
++#include <asm/page.h>
+
+ #ifdef __KERNEL__
