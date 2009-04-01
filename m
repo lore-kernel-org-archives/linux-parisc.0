@@ -1,50 +1,41 @@
-From: Alexander Beregalov <a.beregalov@gmail.com>
-Subject: Re: kernel/traps.c PARISC_BUG_BREAK_INSN undeclared
-Date: Wed, 1 Apr 2009 20:42:31 +0400
-Message-ID: <a4423d670904010942w1144327cm1ac3688b5122a397@mail.gmail.com>
-References: <a4423d670903250702k2e5d803jb2caf9f9752f1e0a@mail.gmail.com>
-	 <20090325140909.GF19208@bombadil.infradead.org>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: linux-next: manual merge of the tracing tree with the parisc
+	tree
+Date: Wed, 1 Apr 2009 13:50:34 -0400
+Message-ID: <20090401175033.GE1443@bombadil.infradead.org>
+References: <20090401113740.7f425e02.sfr@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: text/plain; charset=us-ascii
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-next@vger.kernel.org,
+	Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
+	linux-parisc@vger.kernel.org,
+	Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
+	Steven Rostedt <srostedt@redhat.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090325140909.GF19208@bombadil.infradead.org>
+In-Reply-To: <20090401113740.7f425e02.sfr@canb.auug.org.au>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-2009/3/25 Kyle McMartin <kyle@mcmartin.ca>:
-> On Wed, Mar 25, 2009 at 05:02:21PM +0300, Alexander Beregalov wrote:
->> arch/parisc/kernel/traps.c: In function 'handle_break':
->> arch/parisc/kernel/traps.c:321: error: 'PARISC_BUG_BREAK_INSN'
->> undeclared (first use in this function)
->>
->> # CONFIG_BUG is not set
->> CONFIG_EMBEDDED=3Dy
->>
->> Is it a reasonable config?
+On Wed, Apr 01, 2009 at 11:37:40AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the tracing tree got a conflict in
+> arch/parisc/include/asm/ftrace.h between commit
+> d75f054a2cf0614ff63d534ff21ca8eaab41e713 ("parisc: add ftrace (function
+> and graph tracer) functionality") from the parisc tree and commit
+> c79a61f55773d2519fd0525bf58385f7d20752d3 ("tracing: make CALLER_ADDRx
+> overwriteable") from the tracing tree.
+> 
+> The former adds a non-trivial version of the file, so I used that.
 >
-> imho, no.
->
-> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-> index aacf11d..efac22a 100644
-> --- a/arch/parisc/Kconfig
-> +++ b/arch/parisc/Kconfig
-> @@ -12,6 +12,7 @@ config PARISC
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0select RTC_CLASS
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0select RTC_DRV_PARISC
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0select INIT_ALL_POSSIBLE
-> + =C2=A0 =C2=A0 =C2=A0 select BUG
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0help
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0The PA-RISC microprocessor is desig=
-ned by Hewlett-Packard and used
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0in many of their workstations & ser=
-vers (HP9000 700 and 800 series,
->
-It still fails.
-Could you please add it to your branch.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+Thanks Stephen,
+
+What's the optimal way to sort out multiple branches in this tree?
+Apparently Andrew is cross with me because the rtc-parisc branch didn't
+get picked up... Should I put a list of branches in my kernel.org
+public_html or something?
+
+r, Kyle
