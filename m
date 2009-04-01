@@ -1,41 +1,26 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: linux-next: manual merge of the tracing tree with the parisc
-	tree
-Date: Wed, 1 Apr 2009 13:50:34 -0400
-Message-ID: <20090401175033.GE1443@bombadil.infradead.org>
-References: <20090401113740.7f425e02.sfr@canb.auug.org.au>
+Subject: Re: [PATCH next] parisc: asm/pdc.h should include asm/page.h
+Date: Wed, 1 Apr 2009 19:30:01 -0400
+Message-ID: <20090401233001.GF1443@bombadil.infradead.org>
+References: <a4423d670904010244q1cfbce88qaa635d8e4070db07@mail.gmail.com> <20090401150115.GA1443@bombadil.infradead.org> <a4423d670904010806j7de7b311yb3137e8b73ad12f2@mail.gmail.com> <20090401150956.GB1443@bombadil.infradead.org> <a4423d670904010843r76c3a4faxd2841387772be89@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-	"H. Peter Anvin" <hpa@zytor.com>, linux-next@vger.kernel.org,
-	Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc@vger.kernel.org,
-	Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
-	Steven Rostedt <srostedt@redhat.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+	"linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+	linux-parisc@vger.kernel.org
+To: Alexander Beregalov <a.beregalov@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090401113740.7f425e02.sfr@canb.auug.org.au>
+In-Reply-To: <a4423d670904010843r76c3a4faxd2841387772be89@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Apr 01, 2009 at 11:37:40AM +1100, Stephen Rothwell wrote:
-> Hi all,
+On Wed, Apr 01, 2009 at 07:43:40PM +0400, Alexander Beregalov wrote:
+> From: Alexander Beregalov <a.beregalov@gmail.com>
+> Subject: [PATCH] parisc: asm/pdc.h should include asm/page.h
 > 
-> Today's linux-next merge of the tracing tree got a conflict in
-> arch/parisc/include/asm/ftrace.h between commit
-> d75f054a2cf0614ff63d534ff21ca8eaab41e713 ("parisc: add ftrace (function
-> and graph tracer) functionality") from the parisc tree and commit
-> c79a61f55773d2519fd0525bf58385f7d20752d3 ("tracing: make CALLER_ADDRx
-> overwriteable") from the tracing tree.
+> Fixes this build error:
+> arch/parisc/kernel/pdc_cons.c:117: error: '__PAGE_OFFSET' undeclared
 > 
-> The former adds a non-trivial version of the file, so I used that.
->
+> Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
 
-Thanks Stephen,
-
-What's the optimal way to sort out multiple branches in this tree?
-Apparently Andrew is cross with me because the rtc-parisc branch didn't
-get picked up... Should I put a list of branches in my kernel.org
-public_html or something?
-
-r, Kyle
+Thanks, applied.
