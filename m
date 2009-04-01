@@ -1,34 +1,43 @@
-From: Alexander Beregalov <a.beregalov@gmail.com>
-Subject: Re: compile failure with LEDs
-Date: Wed, 1 Apr 2009 13:46:14 +0400
-Message-ID: <a4423d670904010246h4c95d10p3cc10e2771819351@mail.gmail.com>
-References: <Pine.SOC.4.64.0904011105510.26377@math.ut.ee>
+From: Ingo Molnar <mingo@elte.hu>
+Subject: Re: linux-next: manual merge of the tracing tree with the parisc
+	tree
+Date: Wed, 1 Apr 2009 13:05:12 +0200
+Message-ID: <20090401110512.GB15442@elte.hu>
+References: <20090401113740.7f425e02.sfr@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-parisc@vger.kernel.org
-To: Meelis Roos <mroos@linux.ee>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <Pine.SOC.4.64.0904011105510.26377@math.ut.ee>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-next@vger.kernel.org,
+	Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
+	linux-parisc@vger.kernel.org,
+	Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
+	Steven Rostedt <srostedt@redhat.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20090401113740.7f425e02.sfr@canb.auug.org.au>
+List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-2009/4/1 Meelis Roos <mroos@linux.ee>:
-> FYI - todays 2.6.29+git:
->
-> =C2=A0CC =C2=A0 =C2=A0 =C2=A0drivers/parisc/led.o
-> drivers/parisc/led.c: In function 'led_create_procfs':
-> drivers/parisc/led.c:246: error: 'struct proc_dir_entry' has no membe=
-r named 'owner'
-> drivers/parisc/led.c:252: error: 'struct proc_dir_entry' has no membe=
-r named 'owner'
-> drivers/parisc/led.c:261: error: 'struct proc_dir_entry' has no membe=
-r named 'owner'
-> make[3]: *** [drivers/parisc/led.o] Error 1
 
-http://patchwork.cabal.ca/patch/544/
-this patch should fix it
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+* Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+
+> Hi all,
+> 
+> Today's linux-next merge of the tracing tree got a conflict in
+> arch/parisc/include/asm/ftrace.h between commit
+> d75f054a2cf0614ff63d534ff21ca8eaab41e713 ("parisc: add ftrace (function
+> and graph tracer) functionality") from the parisc tree and commit
+> c79a61f55773d2519fd0525bf58385f7d20752d3 ("tracing: make CALLER_ADDRx
+> overwriteable") from the tracing tree.
+> 
+> The former adds a non-trivial version of the file, so I used that.
+
+You need to be careful, the two trees likely cannot be combined like 
+that, ftrace will likely stop working on parisc because you combine 
+old-parisc with new-ftrace.
+
+If the two trees are integrated without forward-porting the parisc 
+ftrace port to the new facilities, then it's safer to do a trivial 
+patch that disables the ftrace bits on parisc.
+
+	Ingo
