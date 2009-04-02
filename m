@@ -1,22 +1,21 @@
-From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git] parisc: Changes to ref refs/heads/master
-Date: Thu, 2 Apr 2009 00:20:32 GMT
-Message-ID: <200904020020.n320KWsK013000@hera.kernel.org>
-To: linux-parisc@vger.kernel.org
+From: Alexander Beregalov <a.beregalov@gmail.com>
+Subject: Re: [git] parisc: Changes to ref refs/heads/master
+Date: Thu, 2 Apr 2009 04:20:49 +0400
+Message-ID: <a4423d670904011720y52fbcd29j1831b669d751818a@mail.gmail.com>
+References: <200904020013.n320DrDU010176@hera.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-parisc@vger.kernel.org
+To: Kyle McMartin <kyle@hera.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <200904020013.n320DrDU010176@hera.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-New commits:
-commit d845e1fbf2d48f6556fbfae7ec04adf67ab14bca
-Author: Alexander Beregalov <a.beregalov@gmail.com>
-Date:   Wed Apr 1 15:43:40 2009 +0000
+2009/4/2 Kyle McMartin <kyle@hera.kernel.org>:
+> New commits:
 
-    parisc: asm/pdc.h should include asm/page.h
-    
-    Fixes this build error:
-    arch/parisc/kernel/pdc_cons.c:117: error: '__PAGE_OFFSET' undeclared
-    
-    Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+Thanks Kyle.
 
+Do you have objections against patch
+http://patchwork.kernel.org/patch/13039/ ?
