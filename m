@@ -1,62 +1,57 @@
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Subject: Re: [PATCH 0/7] Generic RTC class driver
-Date: Thu, 2 Apr 2009 11:42:02 +0200 (CEST)
-Message-ID: <alpine.LRH.2.00.0904021141080.30882@vixen.sonytel.be>
-References: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <alpine.LRH.2.00.0903111134270.1040@vixen.sonytel.be> <20090311154505.GB5448@bombadil.infradead.org> <alpine.LRH.2.00.0903111825040.1040@vixen.sonytel.be>
- <20090313042543.GA3907@bombadil.infradead.org>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: linux-next: manual merge of the tracing tree with the parisc
+ tree
+Date: Thu, 2 Apr 2009 22:32:05 +1100
+Message-ID: <20090402223205.e4ab7b5e.sfr@canb.auug.org.au>
+References: <20090401113740.7f425e02.sfr@canb.auug.org.au>
+	<20090401175033.GE1443@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-15
-Cc: Kyle McMartin <kyle@mcmartin.ca>,
-	Alessandro Zummo <alessandro.zummo@towertech.it>,
-	linux-m68k@vger.kernel.org, rtc-linux@googlegroups.com,
-	linux-parisc@vger.kernel.org,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	Linux/PPC Development <linuxppc-dev@ozlabs.org>,
-	Paul Mundt <lethal@linux-sh.org>,
-	Dann Frazier <dannf@dannf.org>
-To: Kyle McMartin <kyle@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20090313042543.GA3907@bombadil.infradead.org>
-List-ID: <linux-m68k.vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Thu__2_Apr_2009_22_32_05_+1100_2NUtc5aSpAuDlQ3X"
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-next@vger.kernel.org,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
+	Steven Rostedt <srostedt@redhat.com>
+To: Kyle McMartin <kyle@mcmartin.ca>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090401175033.GE1443@bombadil.infradead.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 13 Mar 2009, Kyle McMartin wrote:
-> On Wed, Mar 11, 2009 at 06:26:12PM +0100, Geert Uytterhoeven wrote:
-> > On Wed, 11 Mar 2009, Kyle McMartin wrote:
-> > > On Wed, Mar 11, 2009 at 11:36:02AM +0100, Geert Uytterhoeven wrot=
-e:
-> > > > Is it OK for you to take it through your PA-RISC tree?
-> > > > If yes, I can resend the patch series with the collected acks.
-> > >=20
-> I've pulled it and pushed it back out, I'll submit it when the merge
-> window opens.
+--Signature=_Thu__2_Apr_2009_22_32_05_+1100_2NUtc5aSpAuDlQ3X
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Apparently the first half went it through akpm. Will you take care of t=
-he
-remaining commits?
+Hi Kyle,
 
-Thanks!
+On Wed, 1 Apr 2009 13:50:34 -0400 Kyle McMartin <kyle@mcmartin.ca> wrote:
+>
+> What's the optimal way to sort out multiple branches in this tree?
+> Apparently Andrew is cross with me because the rtc-parisc branch didn't
+> get picked up... Should I put a list of branches in my kernel.org
+> public_html or something?
 
-With kind regards,
+I am not quite sure what you are getting at.  If you have multiple trees
+(or branches in a tree), I can merge them separately into linux-next -
+just tell me what they are.
 
-Geert Uytterhoeven
-Software Architect
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
 
-Sony Techsoft Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Bel=
-gium
+--Signature=_Thu__2_Apr_2009_22_32_05_+1100_2NUtc5aSpAuDlQ3X
+Content-Type: application/pgp-signature
 
-Phone:    +32 (0)2 700 8453
-=46ax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
 
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-=46ortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
---
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+iEYEARECAAYFAknUojUACgkQjjKRsyhoI8zwHgCfTdTu/1h6PlIRXB8+pM2yZBzK
+abIAnjcaTyZitVf5k+FUUMScxEF4TqXN
+=1KP7
+-----END PGP SIGNATURE-----
+
+--Signature=_Thu__2_Apr_2009_22_32_05_+1100_2NUtc5aSpAuDlQ3X--
