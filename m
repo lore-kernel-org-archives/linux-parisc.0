@@ -1,46 +1,44 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: linux-next: manual merge of the tracing tree with the parisc
-	tree
-Date: Thu, 02 Apr 2009 13:54:43 +0000
-Message-ID: <1238680483.3383.7.camel@mulgrave.int.hansenpartnership.com>
-References: <20090401113740.7f425e02.sfr@canb.auug.org.au>
-	 <20090401175033.GE1443@bombadil.infradead.org>
-	 <20090402223205.e4ab7b5e.sfr@canb.auug.org.au>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [PATCH 0/7] Generic RTC class driver
+Date: Thu, 2 Apr 2009 09:56:40 -0400
+Message-ID: <20090402135640.GA14159@bombadil.infradead.org>
+References: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <alpine.LRH.2.00.0903111134270.1040@vixen.sonytel.be> <20090311154505.GB5448@bombadil.infradead.org> <alpine.LRH.2.00.0903111825040.1040@vixen.sonytel.be> <20090313042543.GA3907@bombadil.infradead.org> <alpine.LRH.2.00.0904021141080.30882@vixen.sonytel.be>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Kyle McMartin <kyle@mcmartin.ca>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-	linux-next@vger.kernel.org, Helge Deller <deller@gmx.de>,
+Content-Type: text/plain; charset=us-ascii
+Cc: Kyle McMartin <kyle@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	Alessandro Zummo <alessandro.zummo@towertech.it>,
+	linux-m68k@vger.kernel.org, rtc-linux@googlegroups.com,
 	linux-parisc@vger.kernel.org,
-	Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
-	Steven Rostedt <srostedt@redhat.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090402223205.e4ab7b5e.sfr@canb.auug.org.au>
-List-ID: <linux-parisc.vger.kernel.org>
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	Linux/PPC Development <linuxppc-dev@ozlabs.org>,
+	Paul Mundt <lethal@linux-sh.org>,
+	Dann Frazier <dannf@dannf.org>
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <alpine.LRH.2.00.0904021141080.30882@vixen.sonytel.be>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2009-04-02 at 22:32 +1100, Stephen Rothwell wrote:
-> Hi Kyle,
+On Thu, Apr 02, 2009 at 11:42:02AM +0200, Geert Uytterhoeven wrote:
+> On Fri, 13 Mar 2009, Kyle McMartin wrote:
+> > On Wed, Mar 11, 2009 at 06:26:12PM +0100, Geert Uytterhoeven wrote:
+> > > On Wed, 11 Mar 2009, Kyle McMartin wrote:
+> > > > On Wed, Mar 11, 2009 at 11:36:02AM +0100, Geert Uytterhoeven wrote:
+> > > > > Is it OK for you to take it through your PA-RISC tree?
+> > > > > If yes, I can resend the patch series with the collected acks.
+> > > > 
+> > I've pulled it and pushed it back out, I'll submit it when the merge
+> > window opens.
 > 
-> On Wed, 1 Apr 2009 13:50:34 -0400 Kyle McMartin <kyle@mcmartin.ca> wrote:
-> >
-> > What's the optimal way to sort out multiple branches in this tree?
-> > Apparently Andrew is cross with me because the rtc-parisc branch didn't
-> > get picked up... Should I put a list of branches in my kernel.org
-> > public_html or something?
+> Apparently the first half went it through akpm. Will you take care of the
+> remaining commits?
 > 
-> I am not quite sure what you are getting at.  If you have multiple trees
-> (or branches in a tree), I can merge them separately into linux-next -
-> just tell me what they are.
 
-Actually, the traditional way for a multi branch tree (something like
-Jens' Block tree) which contains all manner of branches, some of which
-are experimental and shouldn't be in linux-next, is to have a next
-branch into which you manually merge all branches that should be
-included.
+Yup, I updated the rtc-parisc branch last night, I'll push it along to
+Linus this morning.
 
-James
+Thanks again, Geert.
 
-
+cheers, Kyle
