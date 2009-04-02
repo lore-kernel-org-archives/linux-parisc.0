@@ -1,34 +1,41 @@
-From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git] parisc: Changes to ref refs/heads/master
-Date: Thu, 2 Apr 2009 04:16:47 GMT
-Message-ID: <200904020416.n324Glbx000977@hera.kernel.org>
-To: linux-parisc@vger.kernel.org
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: hpmc on rp3440 with 2.6.29-rc5
+Date: Thu, 2 Apr 2009 00:33:16 -0400
+Message-ID: <20090402043316.GA13794@bombadil.infradead.org>
+References: <20090317004802.22B564E9D@hiauly1.hia.nrc.ca> <20090317005147.GD4282@bombadil.infradead.org> <20090317005624.GE4282@bombadil.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	linux-parisc@vger.kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090317005624.GE4282@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-New commits:
-commit b609308e1415efebdf79ebd553f4dd47b0ff2722
-Author: Kyle McMartin <kyle@mcmartin.ca>
-Date:   Sun Mar 15 16:49:55 2009 -0400
+On Mon, Mar 16, 2009 at 08:56:24PM -0400, Kyle McMartin wrote:
+> On Mon, Mar 16, 2009 at 08:51:47PM -0400, Kyle McMartin wrote:
+> > > In the info below, I only included relevant data.  No hpmc data was
+> > > recorded for processors 2 and 3.  Unfortunately, I lost the console output
+> > > for the crash if any.
+> > > 
+> > > This is with a SMP 64-bit kernel.  I still have it and the config file.
+> > > 
+> > > I'm not the greatest at interpreting chassis codes.  It's not at all clear
+> > > to me what went wrong.
+> > >
+> > 
+> > Good catch, looks like we're missing a compat handler for msgctl. I'll
+> > add one and hopefully this will go away. :)
+> > 
+> 
+> Woah. Really good catch, we're missing compat handlers for virtually all
+> the ipc functions!
+> 
+> I'll fix this up ASAP.
+> 
 
-    parisc: move dereference_function_descriptor to process.c
-    
-    Commit deac93df26b20cf8438339b5935b5f5643bc30c9 fixed up printing
-    of %pF on parisc, but added the dereference_function_descriptor
-    prototype to module.c... this isn't a particularly wise idea as
-    module.c might not always be compiled.
-    
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+This was nastier than I've anticipated, since we do ipc differently from
+everyone else... I should have a patch ready in the morning.
 
-commit bf589a349b9a41ea202ddb8115b18f543b944bfd
-Author: Kyle McMartin <kyle@mcmartin.ca>
-Date:   Sun Mar 15 16:44:25 2009 -0400
-
-    parisc: Move kernel Elf_Fdesc define to <asm/elf.h>
-    
-    elf.h probably won't be exported to userspace, but play it safe
-    and cram it in a #ifdef __KERNEL__ guard.
-    
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
-
+cheers, Kyle
