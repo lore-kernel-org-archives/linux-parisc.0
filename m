@@ -1,67 +1,65 @@
 From: Kyle McMartin <kyle@hera.kernel.org>
 Subject: [git] parisc: Changes to ref refs/heads/master
-Date: Thu, 2 Apr 2009 01:34:58 GMT
-Message-ID: <200904020134.n321Yw2A008380@hera.kernel.org>
+Date: Thu, 2 Apr 2009 01:43:48 GMT
+Message-ID: <200904020143.n321hmK4011043@hera.kernel.org>
 To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 New commits:
-commit 91400ac365da35b18036b46bdda27ddbcee4a663
-Author: Helge Deller <deller@gmx.de>
-Date:   Wed Feb 18 22:12:21 2009 +0000
-
-    parisc: fix "make tar-pkg"
-    
-    Signed-off-by: Helge Deller <deller@gmx.de>
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
-
-commit c18b4608958ff42ce9a1a55b0a6f40b714f47286
-Author: Alexander Beregalov <a.beregalov@gmail.com>
-Date:   Thu Mar 19 10:54:07 2009 +0000
-
-    parisc: drivers: fix warnings
-    
-    ccio-dma.c:456: warning: overflow in implicit constant conversion
-    ccio-dma.c:459: warning: overflow in implicit constant conversion
-    ccio-dma.c:1032: warning: unused variable 'j'
-    ccio-dma.c:1031: warning: unused variable 'max'
-    ccio-dma.c:1031: warning: unused variable 'min'
-    ccio-dma.c:1031: warning: unused variable 'avg'
-    ccio-dma.c:1403: warning: format '%08lx' expects type 'long unsigned int', but argument 3 has type 'resource_size_t'
-    ccio-dma.c:1403: warning: format '%08lx' expects type 'long unsigned int', but argument 4 has type 'resource_size_t'
-    ccio-dma.c:1554: warning: format '%lx' expects type 'long unsigned int', but argument 3 has type 'resource_size_t'
-    dino.c:822: warning: format '%lx' expects type 'long unsigned int', but argument 4 has type 'resource_size_t'
-    dino.c:822: warning: format '%lx' expects type 'long unsigned int', but argument 5 has type 'resource_size_t'
-    dino.c:902: warning: format '%lx' expects type 'long unsigned int', but argument 3 has type 'resource_size_t'
-    dino.c:902: warning: format '%lx' expects type 'long unsigned int', but argument 4 has type 'resource_size_t'
-    asp.c:84: warning: format '%lx' expects type 'long unsigned int', but argument 4 has type 'resource_size_t'
-    eisa.c:317: warning: format '%08lx' expects type 'long unsigned int', but argument 3 has type 'resource_size_t'
-    eisa_enumerator.c:101: warning: format '%lx' expects type 'long unsigned int', but argument 2 has type 'resource_size_t'
-    eisa_enumerator.c:101: warning: format '%lx' expects type 'long unsigned int', but argument 3 has type 'resource_size_t'
-    eisa_enumerator.c:191: warning: format '%lx' expects type 'long unsigned int', but argument 2 has type 'resource_size_t'
-    eisa_enumerator.c:191: warning: format '%lx' expects type 'long unsigned int', but argument 3 has type 'resource_size_t'
-    
-    Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
-
-commit f67d3c83f3f1e6523325628434bf19e5166b39b3
+commit 7cec2ef4a298605b010f1c80041de884e777ea67
+Merge: 91400ac365da35b18036b46bdda27ddbcee4a663 9bc181d8d7cb6462de0c315e364780ad275f7c57
 Author: Kyle McMartin <kyle@mcmartin.ca>
-Date:   Wed Mar 25 14:09:10 2009 +0000
+Date:   Thu Apr 2 01:43:14 2009 +0000
 
-    parisc: select BUG always
+    Merge branch 'rusty-cpumask-parisc' into parisc
+
+commit 9bc181d8d7cb6462de0c315e364780ad275f7c57
+Author: Rusty Russell <rusty@rustcorp.com.au>
+Date:   Mon Mar 16 14:19:38 2009 +1030
+
+    cpumask: Use accessors code.: parisc
     
-    On Wed, Mar 25, 2009 at 05:02:21PM +0300, Alexander Beregalov wrote:
-    > arch/parisc/kernel/traps.c:321: error: 'PARISC_BUG_BREAK_INSN'
-    > undeclared (first use in this function)
-    >
-    > # CONFIG_BUG is not set
-    > CONFIG_EMBEDDED=y
-    >
-    > Is it a reasonable config?
+    Impact: use new API
     
-    imho, no.
+    Use the accessors rather than frobbing bits directly.  Most of this is
+    in arch code I haven't even compiled, but it is mostly straightforward.
     
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+    Signed-off-by: Mike Travis <travis@sgi.com>
+
+commit bd071e1a371d31db243edc4714ff9e8d1ea1309e
+Author: Rusty Russell <rusty@rustcorp.com.au>
+Date:   Mon Mar 16 14:19:37 2009 +1030
+
+    cpumask: prepare for iterators to only go to nr_cpu_ids/nr_cpumask_bits.: parisc
+    
+    Impact: cleanup, futureproof
+    
+    In fact, all cpumask ops will only be valid (in general) for bit
+    numbers < nr_cpu_ids.  So use that instead of NR_CPUS in various
+    places.
+    
+    This is always safe: no cpu number can be >= nr_cpu_ids, and
+    nr_cpu_ids is initialized to NR_CPUS at boot.
+    
+    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+    Signed-off-by: Mike Travis <travis@sgi.com>
+    Acked-by: Ingo Molnar <mingo@elte.hu>
+
+commit 91887a362984324e254473e92820758c8e658f78
+Author: Rusty Russell <rusty@rustcorp.com.au>
+Date:   Mon Mar 16 14:19:37 2009 +1030
+
+    cpumask: arch_send_call_function_ipi_mask: parisc
+    
+    We're weaning the core code off handing cpumask's around on-stack.
+    This introduces arch_send_call_function_ipi_mask(), and by defining
+    it, the old arch_send_call_function_ipi is defined by the core code.
+    
+    We also take the chance to change send_IPI_mask() and use the new
+    for_each_cpu() iterator.
+    
+    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
 
