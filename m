@@ -1,41 +1,62 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: hpmc on rp3440 with 2.6.29-rc5
-Date: Thu, 2 Apr 2009 00:33:16 -0400
-Message-ID: <20090402043316.GA13794@bombadil.infradead.org>
-References: <20090317004802.22B564E9D@hiauly1.hia.nrc.ca> <20090317005147.GD4282@bombadil.infradead.org> <20090317005624.GE4282@bombadil.infradead.org>
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [PATCH 0/7] Generic RTC class driver
+Date: Thu, 2 Apr 2009 11:42:02 +0200 (CEST)
+Message-ID: <alpine.LRH.2.00.0904021141080.30882@vixen.sonytel.be>
+References: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <alpine.LRH.2.00.0903111134270.1040@vixen.sonytel.be> <20090311154505.GB5448@bombadil.infradead.org> <alpine.LRH.2.00.0903111825040.1040@vixen.sonytel.be>
+ <20090313042543.GA3907@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090317005624.GE4282@bombadil.infradead.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+	Alessandro Zummo <alessandro.zummo@towertech.it>,
+	linux-m68k@vger.kernel.org, rtc-linux@googlegroups.com,
+	linux-parisc@vger.kernel.org,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	Linux/PPC Development <linuxppc-dev@ozlabs.org>,
+	Paul Mundt <lethal@linux-sh.org>,
+	Dann Frazier <dannf@dannf.org>
+To: Kyle McMartin <kyle@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <20090313042543.GA3907@bombadil.infradead.org>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Mar 16, 2009 at 08:56:24PM -0400, Kyle McMartin wrote:
-> On Mon, Mar 16, 2009 at 08:51:47PM -0400, Kyle McMartin wrote:
-> > > In the info below, I only included relevant data.  No hpmc data was
-> > > recorded for processors 2 and 3.  Unfortunately, I lost the console output
-> > > for the crash if any.
-> > > 
-> > > This is with a SMP 64-bit kernel.  I still have it and the config file.
-> > > 
-> > > I'm not the greatest at interpreting chassis codes.  It's not at all clear
-> > > to me what went wrong.
-> > >
-> > 
-> > Good catch, looks like we're missing a compat handler for msgctl. I'll
-> > add one and hopefully this will go away. :)
-> > 
-> 
-> Woah. Really good catch, we're missing compat handlers for virtually all
-> the ipc functions!
-> 
-> I'll fix this up ASAP.
-> 
+On Fri, 13 Mar 2009, Kyle McMartin wrote:
+> On Wed, Mar 11, 2009 at 06:26:12PM +0100, Geert Uytterhoeven wrote:
+> > On Wed, 11 Mar 2009, Kyle McMartin wrote:
+> > > On Wed, Mar 11, 2009 at 11:36:02AM +0100, Geert Uytterhoeven wrot=
+e:
+> > > > Is it OK for you to take it through your PA-RISC tree?
+> > > > If yes, I can resend the patch series with the collected acks.
+> > >=20
+> I've pulled it and pushed it back out, I'll submit it when the merge
+> window opens.
 
-This was nastier than I've anticipated, since we do ipc differently from
-everyone else... I should have a patch ready in the morning.
+Apparently the first half went it through akpm. Will you take care of t=
+he
+remaining commits?
 
-cheers, Kyle
+Thanks!
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Bel=
+gium
+
+Phone:    +32 (0)2 700 8453
+=46ax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+=46ortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
