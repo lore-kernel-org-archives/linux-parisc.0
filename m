@@ -1,7 +1,7 @@
 From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git] parisc: Changes to ref refs/heads/master
-Date: Thu, 2 Apr 2009 01:43:48 GMT
-Message-ID: <200904020143.n321hmK4011043@hera.kernel.org>
+Subject: [git] parisc: Changes to ref refs/heads/parisc
+Date: Thu, 2 Apr 2009 01:43:54 GMT
+Message-ID: <200904020143.n321hsRs011078@hera.kernel.org>
 To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
