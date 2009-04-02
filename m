@@ -1,65 +1,45 @@
-From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git] parisc: Changes to ref refs/heads/parisc
-Date: Thu, 2 Apr 2009 01:43:54 GMT
-Message-ID: <200904020143.n321hsRs011078@hera.kernel.org>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: parisc: fix build when ARCH_HAS_KMAP
+Date: Wed, 1 Apr 2009 22:42:21 -0400
+Message-ID: <20090402024221.GJ1443@bombadil.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-New commits:
-commit 7cec2ef4a298605b010f1c80041de884e777ea67
-Merge: 91400ac365da35b18036b46bdda27ddbcee4a663 9bc181d8d7cb6462de0c315e364780ad275f7c57
-Author: Kyle McMartin <kyle@mcmartin.ca>
-Date:   Thu Apr 2 01:43:14 2009 +0000
+From: Kyle McMartin <kyle@mcmartin.ca>
 
-    Merge branch 'rusty-cpumask-parisc' into parisc
+When we build for PA8X00, we define ARCH_HAS_KMAP, which results in
+the kmap_types.h include in highmem.h getting skipped...
 
-commit 9bc181d8d7cb6462de0c315e364780ad275f7c57
-Author: Rusty Russell <rusty@rustcorp.com.au>
-Date:   Mon Mar 16 14:19:38 2009 +1030
+In file included from include/linux/pagemap.h:10,
+                 from include/linux/mempolicy.h:62,
+                 from init/main.c:52:
+include/linux/highmem.h:196: warning: 'enum km_type' declared inside parameter list
+include/linux/highmem.h:196: warning: its scope is only this definition or declaration, which is probably not what you want
+include/linux/highmem.h:196: error: parameter 1 ('type') has incomplete type
 
-    cpumask: Use accessors code.: parisc
-    
-    Impact: use new API
-    
-    Use the accessors rather than frobbing bits directly.  Most of this is
-    in arch code I haven't even compiled, but it is mostly straightforward.
-    
-    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
-    Signed-off-by: Mike Travis <travis@sgi.com>
+Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+---
+ arch/parisc/include/asm/cacheflush.h |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-commit bd071e1a371d31db243edc4714ff9e8d1ea1309e
-Author: Rusty Russell <rusty@rustcorp.com.au>
-Date:   Mon Mar 16 14:19:37 2009 +1030
-
-    cpumask: prepare for iterators to only go to nr_cpu_ids/nr_cpumask_bits.: parisc
-    
-    Impact: cleanup, futureproof
-    
-    In fact, all cpumask ops will only be valid (in general) for bit
-    numbers < nr_cpu_ids.  So use that instead of NR_CPUS in various
-    places.
-    
-    This is always safe: no cpu number can be >= nr_cpu_ids, and
-    nr_cpu_ids is initialized to NR_CPUS at boot.
-    
-    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
-    Signed-off-by: Mike Travis <travis@sgi.com>
-    Acked-by: Ingo Molnar <mingo@elte.hu>
-
-commit 91887a362984324e254473e92820758c8e658f78
-Author: Rusty Russell <rusty@rustcorp.com.au>
-Date:   Mon Mar 16 14:19:37 2009 +1030
-
-    cpumask: arch_send_call_function_ipi_mask: parisc
-    
-    We're weaning the core code off handing cpumask's around on-stack.
-    This introduces arch_send_call_function_ipi_mask(), and by defining
-    it, the old arch_send_call_function_ipi is defined by the core code.
-    
-    We also take the chance to change send_IPI_mask() and use the new
-    for_each_cpu() iterator.
-    
-    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+diff --git a/arch/parisc/include/asm/cacheflush.h b/arch/parisc/include/asm/cacheflush.h
+index b7ca6dc..7243951 100644
+--- a/arch/parisc/include/asm/cacheflush.h
++++ b/arch/parisc/include/asm/cacheflush.h
+@@ -97,6 +97,9 @@ void mark_rodata_ro(void);
+ 
+ #ifdef CONFIG_PA8X00
+ /* Only pa8800, pa8900 needs this */
++
++#include <asm/kmap_types.h>
++
+ #define ARCH_HAS_KMAP
+ 
+ void kunmap_parisc(void *addr);
+-- 
+1.6.1.1
 
