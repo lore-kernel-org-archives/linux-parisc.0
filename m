@@ -1,23 +1,27 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH] stifb: should depend on STI_CONSOLE
-Date: Fri, 3 Apr 2009 13:59:24 -0400
-Message-ID: <20090403175924.GL14159@bombadil.infradead.org>
-References: <20090403133332.GA29437@orion>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [PATCH] parisc: remove CVS keywords
+Date: Fri, 3 Apr 2009 12:00:04 -0600
+Message-ID: <20090403180004.GD8014@parisc-linux.org>
+References: <20090403014922.GA28891@orion> <20090403175849.GJ14159@bombadil.infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: kyle@mcmartin.ca, linux-parisc@vger.kernel.org
-To: Alexander Beregalov <a.beregalov@gmail.com>
+Cc: Alexander Beregalov <a.beregalov@gmail.com>,
+	linux-parisc@vger.kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090403133332.GA29437@orion>
+In-Reply-To: <20090403175849.GJ14159@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Apr 03, 2009 at 05:33:32PM +0400, Alexander Beregalov wrote:
-> Fix this build error when CONFIG_STI_CONSOLE is not set
-> drivers/video/stifb.c:1337: undefined reference to `sti_get_rom'
-> 
-> Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
+On Fri, Apr 03, 2009 at 01:58:49PM -0400, Kyle McMartin wrote:
+> I don't feel comfortable removing these for hysterical raisins, unless
+> people on the list ack this. (Just like I wouldn't remove the "sorry
+> about the wall" comment... :)
 
-Applied to fixes branch.
+I appreciate that ;-)
 
-Thanks, Kyle
+-- 
+Matthew Wilcox				Intel Open Source Technology Centre
+"Bill, look, we understand that you're interested in selling us this
+operating system, but compare it to ours.  We can't possibly take such
+a retrograde step."
