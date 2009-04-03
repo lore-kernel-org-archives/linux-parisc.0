@@ -1,72 +1,149 @@
-From: Alexander Beregalov <a.beregalov@gmail.com>
-Subject: Re: can't compile kernel for parisc
-Date: Fri, 3 Apr 2009 17:57:38 +0400
-Message-ID: <a4423d670904030657r4ba8b472x285d8dc2ded160f8@mail.gmail.com>
-References: <a4423d670903180455u20ead146k919426a1fb7276c6@mail.gmail.com>
-	 <20090318140026.7F06C4FA9@hiauly1.hia.nrc.ca>
-	 <20090402155504.GD14159@bombadil.infradead.org>
+From: Ingo Molnar <mingo@elte.hu>
+Subject: Re: linux-next: manual merge of the tracing tree with the parisc
+	tree
+Date: Fri, 3 Apr 2009 16:15:01 +0200
+Message-ID: <20090403141501.GE8875@elte.hu>
+References: <20090401113740.7f425e02.sfr@canb.auug.org.au> <20090401175033.GE1443@bombadil.infradead.org> <20090402223205.e4ab7b5e.sfr@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	carlos@systemhalted.org, linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090402155504.GD14159@bombadil.infradead.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-next@vger.kernel.org,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
+	Steven Rostedt <srostedt@redhat.com>,
+	linux-kernel@vger.kernel.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20090402223205.e4ab7b5e.sfr@canb.auug.org.au>
+List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-2009/4/2 Kyle McMartin <kyle@mcmartin.ca>:
-> On Wed, Mar 18, 2009 at 10:00:26AM -0400, John David Anglin wrote:
->> > ld: arch/parisc/kernel/built-in.o(.text+0xc84): cannot reach
->> > 000000b2_b2:46+4068, recompile with -ffunction-sections
->> > ld: arch/parisc/kernel/built-in.o(.text+0xc84): cannot handle
->> > R_PARISC_PCREL12F for .text
->> >
->>
->> -ffunction-sections won't work because GCC doesn't generate calls
->> with instructions that would use a R_PARISC_PCREL12F relocation.
->> This is some kind of conditional branch. =C2=A0Probably, it's in som=
-e
->> kernel assembly code.
->>
->> You need to use nm, objdump and/or readelf to determine which file
->> contributing to built-in.o contains the branch. =C2=A0I looked in on=
-e of
->> my builds and didn't see this relocation.
->>
->
-> This is... somewhat special. I've never seen this either. Possibly I
-> should install a Gentoo machine so I can reproduce with their toolcha=
-in?
->
-> objdump -dr arch/parisc/kernel/built-in.o | grep PCREL12F should tell
-> you where the problem is. I agree with JDA, judging by the fact that
-> it's the kernel/built-in.o, I would guess it's assembler as well.
-Thanks.
-now I have
 
-ld: drivers/built-in.o(.devinit.text+0x3f520): cannot reach
-00002ea1_memcpy+0, recompile with -ffunction-sections
-ld: drivers/built-in.o(.devinit.text+0x3f520): cannot handle
-R_PARISC_PCREL17F for memcpy
+* Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
+> Hi Kyle,
+> 
+> On Wed, 1 Apr 2009 13:50:34 -0400 Kyle McMartin <kyle@mcmartin.ca> wrote:
+> >
+> > What's the optimal way to sort out multiple branches in this 
+> > tree? Apparently Andrew is cross with me because the rtc-parisc 
+> > branch didn't get picked up... Should I put a list of branches 
+> > in my kernel.org public_html or something?
+> 
+> I am not quite sure what you are getting at.  If you have multiple 
+> trees (or branches in a tree), I can merge them separately into 
+> linux-next - just tell me what they are.
 
-0003f044 <niu_get_invariants>:
-<..>
-0003f0ac <.L1724>:
-<..>
-3f510:       40 bc 01 b0     ldb d8(r5),ret0
-3f514:       37 9c 00 02     ldo 1(ret0),ret0
-3f518:       60 bc 01 b0     stb ret0,d8(r5)
-3f51c:       40 b8 01 e8     ldb f4(r5),r24
-3f520:       e8 40 00 00     b,l 3f528 <.L1724+0x47c>,rp
-                   3f520: R_PARISC_PCREL17F        memcpy
-3f524:       34 ba 02 88     ldo 144(r5),r26
-3f528:       e8 5f 04 25     b,l 3e740 <niu_get_and_validate_port>,rp
-3f52c:       08 12 02 5a     copy r18,r26
-3f530:       c8 7c ae c4     movb,<> ret0,r3,40c98 <.L1884+0x5c>
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+One solution, when there are lots of branches, is what we use in the 
+-tip tree to auto-integrate the auto-*-next output branches.
+
+It works like this:
+
+For each output auto-*-next tree (there's 19 at the moment) there's 
+a special file under the tip:tip/.tip/auto-branches/ directory.
+
+Say the auto-tracing-next tree is represented via a list of topic 
+branches in .tip/auto-branches/auto-tracing-next:
+
+    tracing/core
+    tracing/urgent
+    tracing/ftrace
+    tracing/mmiotrace
+    tracing/sysprof
+    tracing/nmisafe
+    tracing/stack-tracer
+    tracing/fastboot
+    tracing/markers
+    tracing/ring-buffer
+    tracing/pipe
+    tracing/tracepoints
+    tracing/core-v2
+    tracing/fastboot-v2
+    tracing/core-v3
+    tracing/function-return-tracer
+    tracing/branch-tracer
+    
+    # dont know yet:
+    # tracing/dump-tracer
+    
+    tracing/options
+    tracing/profiling
+    tracing/power-tracer
+    tracing/powerpc
+
+    # broken right now:
+    # tracing/hw-branch-tracing
+
+    tracing/function-graph-tracer
+    tracing/blktrace
+    tracing/graph-tracer
+    tracing/docs
+    tracing/kmemtrace
+    tracing/kmemtrace2
+    tracing/printk
+    tracing/doc
+    tracing/syscalls
+    tracing/syscalls
+    tracing/filters
+    tracing/tasks
+    tracing/kprobes
+    tracing/hw-breakpoints
+    tracing/blktrace-v2
+    tracing/kmemtrace-v2
+
+When things are quiet and there are no known regressions, i type:
+
+  tip-integrate auto-tracing-next
+
+and soon afterwards a new tree comes out. I dont have to do any 
+manual integration, it's all automated, including the cached 
+resolution of conflicts. If a new conflict comes up i get a shell 
+prompt, fix the conflict, commit it and the integration continues.
+
+If i'm happy with the end result i push it out.
+
+As you can see it above, branches can be annotated and commented 
+out. For example this branch:
+
+    # broken right now:
+    #tracing/hw-branch-tracing
+
+was causing boot crashes so we excluded it from the 
+auto-tracing-next output and linux-next wont crash due to these 
+known and under-development problems.
+
+Another branch:
+
+    # dont know yet:
+    # tracing/dump-tracer
+
+Is holding commits i'm not sure we want to push upstream yet, so we 
+dont push it into linux-next. (linux-next is meant for items that 
+are intended for the next cycle.)
+
+There's a similar list of topics for the other integration trees:
+
+ auto-core-next         auto-latest                     auto-stackprotector-next
+ auto-cpus4096-next     auto-oprofile-next              auto-timers-next
+ auto-fastboot-next     auto-perfcounters-next          auto-tracing-next
+ auto-generic-ipi-next  auto-rt-next                    auto-warnings-next
+ auto-genirq-next       auto-safe-poison-pointers-next  auto-x86-next
+ auto-iommu-next        auto-sched-next
+ auto-kmemcheck-next    auto-sparseirq-next
+
+Over 100 topic branches are active typically just before the merge 
+window - they go down to below 10 after the merge window. So there's 
+a constant ebb and flow in topic activity.
+
+We also have a "tip-integrate-all" script that runs through all the 
+-next branches and integrates them.
+
+These tools can be found under the -tip:.tip/bin/ directory - 
+there's currently 68 utility scripts there currently, to solve 
+various probems all around integration tree maintenance, problems 
+which are often not solved by the base Git toolset adequately.
+
+Hope this helps,
+
+	Ingo
