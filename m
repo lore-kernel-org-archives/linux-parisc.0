@@ -1,49 +1,44 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [PATCH] parisc: remove CVS keywords
-Date: Sat, 4 Apr 2009 13:14:27 -0600
-Message-ID: <20090404191426.GA13748@parisc-linux.org>
-References: <20090403014922.GA28891@orion> <20090403175849.GJ14159@bombadil.infradead.org> <20090404060958.GA1116@lackof.org>
+From: Bastian Blank <waldi@debian.org>
+Subject: [PATCH] Remove casts from atomic macros
+Date: Sat, 4 Apr 2009 22:54:26 +0200
+Message-ID: <20090404205426.GA27225@wavehammer.waldi.eu.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@mcmartin.ca>,
-	Alexander Beregalov <a.beregalov@gmail.com>,
-	linux-parisc@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
+Content-Type: text/plain; charset=utf-8
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090404060958.GA1116@lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Apr 04, 2009 at 12:09:58AM -0600, Grant Grundler wrote:
-> On Fri, Apr 03, 2009 at 01:58:49PM -0400, Kyle McMartin wrote:
-> > On Fri, Apr 03, 2009 at 05:49:22AM +0400, Alexander Beregalov wrote:
-> > > 
-> > > Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
-> > 
-> > I don't feel comfortable removing these for hysterical raisins, unless
-> > people on the list ack this.
-> 
-> I don't mind them being removed. The history is preserved else
-> where for whoever wants to look.  Please add my
-> 	Ack-by: Grant Grundler <grundler@parisc-linux.org>
-> 
-> to whatever parts of this patch you care to accept.
+The atomic operations on parisc are defined as macros. The macros
+includes casts which disallows the use of some syntax elements and
+produces error like this:
 
-I'm comfortable with removing the $Id$ tags too.  Generally these have
-been in copy-and-pasted files; we weren't relying on them for anything.
+net/phonet/pep.c: In function 'pipe_rcv_status':
+net/phonet/pep.c:262: error: lvalue required as left operand of assignment
 
-Acked-by: Matthew Wilcox <willy@linux.intel.com>
+The patch removes this superfluous casts.
 
-> > (Just like I wouldn't remove the "sorry
-> > about the wall" comment... :)
-> 
-> Sorry, I've no clue about this one...what's the story? :)
+Signed-off-by: Bastian Blank <waldi@debian.org>
 
-Find the file it's in ... look at the history ... you'll get it
-eventually ;-)  You'll probably have to go back to the 2.2 tree though.
-
--- 
-Matthew Wilcox				Intel Open Source Technology Centre
-"Bill, look, we understand that you're interested in selling us this
-operating system, but compare it to ours.  We can't possibly take such
-a retrograde step."
+diff --git a/arch/parisc/include/asm/atomic.h b/arch/parisc/include/asm/atomic.h
+index edbfe25..43e101b 100644
+--- a/arch/parisc/include/asm/atomic.h
++++ b/arch/parisc/include/asm/atomic.h
+@@ -222,13 +222,13 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
+ 
+ #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
+ 
+-#define atomic_add(i,v)	((void)(__atomic_add_return( ((int)i),(v))))
+-#define atomic_sub(i,v)	((void)(__atomic_add_return(-((int)i),(v))))
++#define atomic_add(i,v)	((void)(__atomic_add_return( (i),(v))))
++#define atomic_sub(i,v)	((void)(__atomic_add_return(-(i),(v))))
+ #define atomic_inc(v)	((void)(__atomic_add_return(   1,(v))))
+ #define atomic_dec(v)	((void)(__atomic_add_return(  -1,(v))))
+ 
+-#define atomic_add_return(i,v)	(__atomic_add_return( ((int)i),(v)))
+-#define atomic_sub_return(i,v)	(__atomic_add_return(-((int)i),(v)))
++#define atomic_add_return(i,v)	(__atomic_add_return( (i),(v)))
++#define atomic_sub_return(i,v)	(__atomic_add_return(-(i),(v)))
+ #define atomic_inc_return(v)	(__atomic_add_return(   1,(v)))
+ #define atomic_dec_return(v)	(__atomic_add_return(  -1,(v)))
+ 
