@@ -1,45 +1,49 @@
-From: Thibaut VARENE <varenet@parisc-linux.org>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: Re: [PATCH] parisc: remove CVS keywords
-Date: Sat, 4 Apr 2009 17:38:34 +0200
-Message-ID: <7d01f9f00904040838q12533d0r772ef22b10a35b23@mail.gmail.com>
-References: <20090403014922.GA28891@orion>
-	 <20090403175849.GJ14159@bombadil.infradead.org>
+Date: Sat, 4 Apr 2009 13:14:27 -0600
+Message-ID: <20090404191426.GA13748@parisc-linux.org>
+References: <20090403014922.GA28891@orion> <20090403175849.GJ14159@bombadil.infradead.org> <20090404060958.GA1116@lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Alexander Beregalov <a.beregalov@gmail.com>,
+Content-Type: text/plain; charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+	Alexander Beregalov <a.beregalov@gmail.com>,
 	linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090403175849.GJ14159@bombadil.infradead.org>
+In-Reply-To: <20090404060958.GA1116@lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Apr 3, 2009 at 7:58 PM, Kyle McMartin <kyle@mcmartin.ca> wrote:
-> On Fri, Apr 03, 2009 at 05:49:22AM +0400, Alexander Beregalov wrote:
->>
->> Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
->
-> I don't feel comfortable removing these for hysterical raisins, unless
-> people on the list ack this.
+On Sat, Apr 04, 2009 at 12:09:58AM -0600, Grant Grundler wrote:
+> On Fri, Apr 03, 2009 at 01:58:49PM -0400, Kyle McMartin wrote:
+> > On Fri, Apr 03, 2009 at 05:49:22AM +0400, Alexander Beregalov wrote:
+> > > 
+> > > Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
+> > 
+> > I don't feel comfortable removing these for hysterical raisins, unless
+> > people on the list ack this.
+> 
+> I don't mind them being removed. The history is preserved else
+> where for whoever wants to look.  Please add my
+> 	Ack-by: Grant Grundler <grundler@parisc-linux.org>
+> 
+> to whatever parts of this patch you care to accept.
 
-Well I clearly have no say regarding those specific files, but it
-seems to me like these CVS Id tags are completely meaningless, anyway
-you want to look at them. They barely refer to the last person having
-touched these files in our *CVS* tree, which hasn't been touched in
-ice ages...
+I'm comfortable with removing the $Id$ tags too.  Generally these have
+been in copy-and-pasted files; we weren't relying on them for anything.
 
-Copyright information is stored elsewhere, and historical trivia can
-still be found in said CVS tree.
+Acked-by: Matthew Wilcox <willy@linux.intel.com>
 
-Plus, I may be wrong but ISTR back in the days when we were still
-using CVS that these very tags were frowned upon as they were the
-source of merge conflicts (I'm pretty sure there were some emails
-about that years ago, though I can't seem to find them online).
+> > (Just like I wouldn't remove the "sorry
+> > about the wall" comment... :)
+> 
+> Sorry, I've no clue about this one...what's the story? :)
 
-HTH
-
-T-Bone
+Find the file it's in ... look at the history ... you'll get it
+eventually ;-)  You'll probably have to go back to the 2.2 tree though.
 
 -- 
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+Matthew Wilcox				Intel Open Source Technology Centre
+"Bill, look, we understand that you're interested in selling us this
+operating system, but compare it to ours.  We can't possibly take such
+a retrograde step."
