@@ -1,30 +1,30 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH] parisc: remove CVS keywords
-Date: Sat, 4 Apr 2009 22:49:02 -0400
-Message-ID: <20090405024902.GA17936@bombadil.infradead.org>
-References: <20090403014922.GA28891@orion> <20090403175849.GJ14159@bombadil.infradead.org> <20090404060958.GA1116@lackof.org> <20090404191426.GA13748@parisc-linux.org>
+Subject: Re: [PATCH] Remove casts from atomic macros
+Date: Sat, 4 Apr 2009 22:56:58 -0400
+Message-ID: <20090405025658.GB17936@bombadil.infradead.org>
+References: <20090404205426.GA27225@wavehammer.waldi.eu.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	Alexander Beregalov <a.beregalov@gmail.com>,
-	linux-parisc@vger.kernel.org
-To: Matthew Wilcox <matthew@wil.cx>
+To: Bastian Blank <waldi@debian.org>, linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090404191426.GA13748@parisc-linux.org>
+In-Reply-To: <20090404205426.GA27225@wavehammer.waldi.eu.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Apr 04, 2009 at 01:14:27PM -0600, Matthew Wilcox wrote:
-> I'm comfortable with removing the $Id$ tags too.  Generally these have
-> been in copy-and-pasted files; we weren't relying on them for anything.
+On Sat, Apr 04, 2009 at 10:54:26PM +0200, Bastian Blank wrote:
+> The atomic operations on parisc are defined as macros. The macros
+> includes casts which disallows the use of some syntax elements and
+> produces error like this:
 > 
-> Acked-by: Matthew Wilcox <willy@linux.intel.com>
+> net/phonet/pep.c: In function 'pipe_rcv_status':
+> net/phonet/pep.c:262: error: lvalue required as left operand of assignment
+> 
+> The patch removes this superfluous casts.
+> 
+> Signed-off-by: Bastian Blank <waldi@debian.org>
 > 
 
-Yeah, looks like cvs.parisc-linux.org had -ko set for *ages* anyway,
-so they're even stale wrt cvs.
-
-nuked.
+Applied. Thanks.
+(Man that phonet thing is stupid code though...)
 
 cheers, Kyle
