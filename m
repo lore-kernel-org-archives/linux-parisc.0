@@ -1,44 +1,30 @@
-From: Bastian Blank <waldi@debian.org>
-Subject: [PATCH] Remove casts from atomic macros
-Date: Sat, 4 Apr 2009 22:54:26 +0200
-Message-ID: <20090404205426.GA27225@wavehammer.waldi.eu.org>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [PATCH] parisc: remove CVS keywords
+Date: Sat, 4 Apr 2009 22:49:02 -0400
+Message-ID: <20090405024902.GA17936@bombadil.infradead.org>
+References: <20090403014922.GA28891@orion> <20090403175849.GJ14159@bombadil.infradead.org> <20090404060958.GA1116@lackof.org> <20090404191426.GA13748@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	Alexander Beregalov <a.beregalov@gmail.com>,
+	linux-parisc@vger.kernel.org
+To: Matthew Wilcox <matthew@wil.cx>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090404191426.GA13748@parisc-linux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The atomic operations on parisc are defined as macros. The macros
-includes casts which disallows the use of some syntax elements and
-produces error like this:
+On Sat, Apr 04, 2009 at 01:14:27PM -0600, Matthew Wilcox wrote:
+> I'm comfortable with removing the $Id$ tags too.  Generally these have
+> been in copy-and-pasted files; we weren't relying on them for anything.
+> 
+> Acked-by: Matthew Wilcox <willy@linux.intel.com>
+> 
 
-net/phonet/pep.c: In function 'pipe_rcv_status':
-net/phonet/pep.c:262: error: lvalue required as left operand of assignment
+Yeah, looks like cvs.parisc-linux.org had -ko set for *ages* anyway,
+so they're even stale wrt cvs.
 
-The patch removes this superfluous casts.
+nuked.
 
-Signed-off-by: Bastian Blank <waldi@debian.org>
-
-diff --git a/arch/parisc/include/asm/atomic.h b/arch/parisc/include/asm/atomic.h
-index edbfe25..43e101b 100644
---- a/arch/parisc/include/asm/atomic.h
-+++ b/arch/parisc/include/asm/atomic.h
-@@ -222,13 +222,13 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
- 
- #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
- 
--#define atomic_add(i,v)	((void)(__atomic_add_return( ((int)i),(v))))
--#define atomic_sub(i,v)	((void)(__atomic_add_return(-((int)i),(v))))
-+#define atomic_add(i,v)	((void)(__atomic_add_return( (i),(v))))
-+#define atomic_sub(i,v)	((void)(__atomic_add_return(-(i),(v))))
- #define atomic_inc(v)	((void)(__atomic_add_return(   1,(v))))
- #define atomic_dec(v)	((void)(__atomic_add_return(  -1,(v))))
- 
--#define atomic_add_return(i,v)	(__atomic_add_return( ((int)i),(v)))
--#define atomic_sub_return(i,v)	(__atomic_add_return(-((int)i),(v)))
-+#define atomic_add_return(i,v)	(__atomic_add_return( (i),(v)))
-+#define atomic_sub_return(i,v)	(__atomic_add_return(-(i),(v)))
- #define atomic_inc_return(v)	(__atomic_add_return(   1,(v)))
- #define atomic_dec_return(v)	(__atomic_add_return(  -1,(v)))
- 
+cheers, Kyle
