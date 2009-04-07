@@ -1,7 +1,7 @@
-From: "Amy England" <lehman84@centresolutions.com>
-Subject: Now you can get it up before anyone does!
-Date: Mon, 6 Apr 2009 18:15:30 -0500
-Message-ID: <20090406181530.5090701@centresolutions.com>
+From: "Solomon Vickers" <clouserm@ontelecoms.com>
+Subject: Unbridled pleasure of pounding deeper
+Date: Tue, 7 Apr 2009 21:07:13 +0100
+Message-ID: <20090407210713.8090706@ontelecoms.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 To: linux-parisc@vger.kernel.org
@@ -9,5 +9,5 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Barak and McCane killed http://sxl.gooddrugsite.at/
+Low prices-more bargains http://cii.cykduhdao.com/
 
