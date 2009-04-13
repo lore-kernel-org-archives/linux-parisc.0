@@ -1,34 +1,65 @@
-From: David Miller <davem@davemloft.net>
+From: "Michael Chan" <mchan@broadcom.com>
 Subject: Re: [PATCH] tg3: fix big endian MAC address collection failure
-Date: Mon, 13 Apr 2009 14:44:18 -0700 (PDT)
-Message-ID: <20090413.144418.242388332.davem@davemloft.net>
+Date: Mon, 13 Apr 2009 15:17:39 -0700
+Message-ID: <1239661059.9237.4.camel@HP1>
 References: <1239636594.3278.31.camel@mulgrave.int.hansenpartnership.com>
-	<20090413.143211.214694858.davem@davemloft.net>
-	<1239658951.3278.104.camel@mulgrave.int.hansenpartnership.com>
+ <20090413.143211.214694858.davem@davemloft.net>
+ <1239658951.3278.104.camel@mulgrave.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
-	mcarlson@broadcom.com, mchan@broadcom.com
-To: James.Bottomley@HansenPartnership.com
-Return-path: <linux-parisc-owner@vger.kernel.org>
+Content-Type: text/plain
+Cc: "David Miller" <davem@davemloft.net>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+	"Matthew Carlson" <mcarlson@broadcom.com>
+To: "James Bottomley" <James.Bottomley@HansenPartnership.com>
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1239658951.3278.104.camel@mulgrave.int.hansenpartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Date: Mon, 13 Apr 2009 21:42:31 +0000
 
-> Actually, hang on ... I fat fingered the list address first time around
-> and we've been replying on the wrong list.
+On Mon, 2009-04-13 at 14:42 -0700, James Bottomley wrote:
+
+> ---
+> On Mon, 2009-04-13 at 11:37 -0700, Matt Carlson wrote:
+> > But that is exactly what the code is doing.  tg3_nvram_read_be32() will
+> > return the data in bytestream format.  A memcpy() should be all that is
+> > needed to transport the data to a different memory location.
 > 
-> Michael apparently has the code working for sparc and we're all a bit
-> stumped why it doesn't work on parisc since they should follow identical
-> code paths.
-> 
-> This is the latest state of play:
+> But not the one you've done.  cpu_to_be32 is a nop pass through on our
+> architecture, so tg3_nvram_read_be32 is equivalent to tg3_nvram_read on
+> our architecture (i.e. identical to the code that was doing the read in
+> 2.6.29).  However, the memcpy is the wrong way around for us.  If you
+> look at an example, the original code said
 
-Too late, I already pushed out to my net-2.6 tree on kernel.org
+The old tg3_nvram_read() had a swab32() after the readl().  The new
+tg3_nvram_read() no longer has the swab32().  There were too many layers
+of swapping in the old code and that's why Matt wanted to clean it up.
 
-You'll need to send me any fixups relative to this patch.
+James, can do dump out the nvram content on the parisc?
+
+ethtool -e eth0 length 0x90
 
 Thanks.
+
+> 
+> dev_addr[0] = hi >> 16;
+> dev_addr[1] = hi >> 24
+> 
+> So MSB-1 and MSB.  However, on a BE machine these are at offset one and
+> zero from the start of the word.  The replacement memcopy is:
+> 
+> memcpy(&dev->dev_addr[0], ((char *)&hi) + 2, 2)
+> 
+> i.e. offset 3 and 4, which actually copies LSB-1 and LSB into there.
+> You can follow similar logic to show that the lo copy is wrong too.
+> 
+> Perhaps the fix is just to put the tg3_nvram_read() back as well as the
+> original by loads?
+> ---
+> 
+> James
+> 
+> 
+> 
+
+
