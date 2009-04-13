@@ -1,79 +1,29 @@
-From: "Matt Carlson" <mcarlson@broadcom.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: [PATCH] tg3: fix big endian MAC address collection failure
-Date: Mon, 13 Apr 2009 11:00:52 -0700
-Message-ID: <20090413180052.GB11076@xw6200.broadcom.net>
-References: <1239636110.3278.29.camel@mulgrave.int.hansenpartnership.com>
+Date: Mon, 13 Apr 2009 14:04:26 -0400
+Message-ID: <20090413180426.GE6072@bombadil.infradead.org>
+References: <1239636110.3278.29.camel@mulgrave.int.hansenpartnership.com> <20090413180052.GB11076@xw6200.broadcom.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
-Cc: "linux-netdev@vger.kernel.org" <linux-netdev@vger.kernel.org>,
-	"Parisc List" <linux-parisc@vger.kernel.org>,
-	"Matthew Carlson" <mcarlson@broadcom.com>,
-	"Michael Chan" <mchan@broadcom.com>
-To: "James Bottomley" <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	"linux-netdev@vger.kernel.org" <linux-netdev@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Michael Chan <mchan@broadcom.com>
+To: Matt Carlson <mcarlson@broadcom.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1239636110.3278.29.camel@mulgrave.int.hansenpartnership.com>
+In-Reply-To: <20090413180052.GB11076@xw6200.broadcom.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi James.  I'd like to think about this some more before we apply it.  I
-investigated this problem using a 5703 on a SPARC Ultra 10, and all my
-assumptions checked out.  I don't dispute that you and Robin are having
-a problem.  I just don't understand where the root cause of the problem
-is yet.  Stay tuned.
-
-On Mon, Apr 13, 2009 at 08:21:50AM -0700, James Bottomley wrote:
-> We noticed on parisc that our broadcoms all swapped MAC addresses going
-> from 2.6.29 to 2.6.30-rc1:
-> 
-> Apr 11 07:48:24 ion kernel: eth0: Tigon3 [partno(BCM95700A6) rev 0105] (PCI:66MHz:64-bit) MAC address 00:30:6e:4b:15:59
-> Apr 13 07:34:34 ion kernel: eth0: Tigon3 [partno(BCM95700A6) rev 0105] (PCI:66MHz:64-bit) MAC address 00:00:59:15:4b:6e
-> 
-> The problem patch is:
-> 
-> commit 6d348f2c1e0bb1cf7a494b51fc921095ead3f6ae
-> Author: Matt Carlson <mcarlson@broadcom.com>
-> Date:   Wed Feb 25 14:25:52 2009 +0000
-> 
->     tg3: Eliminate tg3_nvram_read_swab()
-> 
-> With the root cause being the use of memcpy to set the mac address:
-> 
->    memcpy(&dev->dev_addr[0], ((char *)&hi) + 2, 2);
->    memcpy(&dev->dev_addr[2], (char *)&lo, sizeof(lo));
-> 
-> This might work on little endian machines, but it can't on big endian
-> ones.  You have to use the original setting mechanism to be correct on
-> all architectures.
-> 
-> The attached patch fixes parisc.
-> 
-> Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-> 
-> ---
-> 
-> diff --git a/drivers/net/tg3.c b/drivers/net/tg3.c
-> index 6a736dd..7a837c4 100644
-> --- a/drivers/net/tg3.c
-> +++ b/drivers/net/tg3.c
-> @@ -12443,8 +12443,13 @@ static int __devinit tg3_get_device_address(struct tg3 *tp)
->  		/* Next, try NVRAM. */
->  		if (!tg3_nvram_read_be32(tp, mac_offset + 0, &hi) &&
->  		    !tg3_nvram_read_be32(tp, mac_offset + 4, &lo)) {
-> -			memcpy(&dev->dev_addr[0], ((char *)&hi) + 2, 2);
-> -			memcpy(&dev->dev_addr[2], (char *)&lo, sizeof(lo));
-> +			dev->dev_addr[0] = ((hi >> 16) & 0xff);
-> +			dev->dev_addr[1] = ((hi >> 24) & 0xff);
-> +			dev->dev_addr[2] = ((lo >>  0) & 0xff);
-> +			dev->dev_addr[3] = ((lo >>  8) & 0xff);
-> +			dev->dev_addr[4] = ((lo >> 16) & 0xff);
-> +			dev->dev_addr[5] = ((lo >> 24) & 0xff);
-> +
->  		}
->  		/* Finally just fetch it out of the MAC control regs. */
->  		else {
-> 
-> 
-> 
+On Mon, Apr 13, 2009 at 11:00:52AM -0700, Matt Carlson wrote:
+> Hi James.  I'd like to think about this some more before we apply it.  I
+> investigated this problem using a 5703 on a SPARC Ultra 10, and all my
+> assumptions checked out.  I don't dispute that you and Robin are having
+> a problem.  I just don't understand where the root cause of the problem
+> is yet.  Stay tuned.
 > 
 
+Did your card in the sparc have an openfirmware ROM? If so, it probably
+used the ofw tree to obtain parameters instead of the card nvram...
+
+regards, Kyle
