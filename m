@@ -1,16 +1,18 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
 Subject: [PATCH] tg3: fix big endian MAC address collection failure
-Date: Mon, 13 Apr 2009 15:21:50 +0000
-Message-ID: <1239636110.3278.29.camel@mulgrave.int.hansenpartnership.com>
+Date: Mon, 13 Apr 2009 15:29:54 +0000
+Message-ID: <1239636594.3278.31.camel@mulgrave.int.hansenpartnership.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Cc: Parisc List <linux-parisc@vger.kernel.org>,
 	Matt Carlson <mcarlson@broadcom.com>,
 	Michael Chan <mchan@broadcom.com>
-To: linux-netdev@vger.kernel.org
+To: netdev@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
+
+[sorry for repost; wrong netdev address first time around]
 
 We noticed on parisc that our broadcoms all swapped MAC addresses going
 from 2.6.29 to 2.6.30-rc1:
