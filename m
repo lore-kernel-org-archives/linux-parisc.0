@@ -1,55 +1,48 @@
-From: "Michael Chan" <mchan@broadcom.com>
-Subject: Re: [PATCH] tg3: fix big endian MAC address collection failure
-Date: Mon, 13 Apr 2009 21:11:18 -0700
-Message-ID: <C27F8246C663564A84BB7AB343977242177D75A052@IRVEXCHCCR01.corp.ad.broadcom.com>
-References: <1239681085.3278.122.camel@mulgrave.int.hansenpartnership.com>
+From: Wei Yongjun <yjwei@cn.fujitsu.com>
+Subject: [PATCH] parisc: fix the parameters of call to parport_pc_probe_port()
+Date: Tue, 14 Apr 2009 14:01:37 +0800
+Message-ID: <49E426C1.50706@cn.fujitsu.com>
+References: <aea82416ed6c6805412a2631fe8a8be6420c5c9d.1239687192.git.tony@bakeyournoodle.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
-Cc: "David Miller" <davem@davemloft.net>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
-To: "'James Bottomley'" <James.Bottomley@HansenPartnership.com>,
-	"Matthew Carlson" <mcarlson@broadcom.com>
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1239681085.3278.122.camel@mulgrave.int.hansenpartnership.com>
+Content-Type: text/plain; charset=GB2312
+Cc: Matthew Wilcox <matthew@wil.cx>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, Wei Yongjun <yjwei@cn.fujitsu.com>
+To: Kyle McMartin <kyle@mcmartin.ca>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <aea82416ed6c6805412a2631fe8a8be6420c5c9d.1239687192.git.tony@bakeyournoodle.com>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-James Bottomley wrote:
+commit 51dcdfec6a274afc1c6fce180d582add9ff512c0 (parport: Use the PCI
+IRQ if offered) parport_pc_probe_port() gained an irqflags arg. This
+break parisc. This patch make parisc fallback to the old behaviour,
+that is using "0" for irqflags.
 
-> On Mon, 2009-04-13 at 18:25 -0700, Matt Carlson wrote:
-> > On Mon, Apr 13, 2009 at 03:32:14PM -0700, James Bottomley wrote:
-> > >
-> > > ion:~# ethtool -e eth0 length 0x90
-> > > Address         Data
-> > > ----------      ----
-> > > 0x00000000      0xaa
-> > > 0x00000001      0x55
-> > > 0x00000002      0x99
-> > > 0x00000003      0x66
-> >
-> > Michael noticed that your NVRAM signature is byteswapped in
-> NVRAM. (!)
-> > That also explains why the driver is trying to obtain the
-> MAC address
-> > through NVRAM, rather than getting it from shared memory.
-> The device's
-> > bootcode is not working correctly.
->
-> Um, well, this is a parisc:  the device's boot code won't be
-> working at
-> all (parisc doesn't have open firmware boot).  The values
-> might be laid
-> down by the platform IODC, but usually for add in cards, they're the
-> default initialise values the card comes up with.
->
+No test.
 
-Matt was referring to MIPS code that runs inside the MIPS core inside
-the TG3 chip.  The code is loaded from NVRAM and will start running
-after chip reset.  But I don't agree with Matt that the swapped NVRAM
-values were caused by bad MIPS code programmed in the NVRAM.
+Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
+---
+ drivers/parisc/superio.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-I agree with DaveM that this appears to be a driver big-endian problem
-when reading the NVRAM.  Can you run the same ethtool -e on 2.6.29 to
-confirm?  Thanks.
+diff --git a/drivers/parisc/superio.c b/drivers/parisc/superio.c
+index 4fa3bb2..f6727e2 100644
+--- a/drivers/parisc/superio.c
++++ b/drivers/parisc/superio.c
+@@ -434,7 +434,8 @@ static void __init superio_parport_init(void)
+ 			0 /*base_hi*/,
+ 			PAR_IRQ, 
+ 			PARPORT_DMA_NONE /* dma */,
+-			NULL /*struct pci_dev* */) )
++			NULL /*struct pci_dev* */,
++			0))
+ 
+ 		printk(KERN_WARNING PFX "Probing parallel port failed.\n");
+ #endif	/* CONFIG_PARPORT_PC */
+-- 
+1.5.3.8
+
+
+
 
