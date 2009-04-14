@@ -1,27 +1,216 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH] parisc: fix the parameters of call to
-	parport_pc_probe_port()
-Date: Tue, 14 Apr 2009 10:13:20 -0400
-Message-ID: <20090414141320.GB30359@bombadil.infradead.org>
-References: <aea82416ed6c6805412a2631fe8a8be6420c5c9d.1239687192.git.tony@bakeyournoodle.com> <49E426C1.50706@cn.fujitsu.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH] tg3: fix big endian MAC address collection failure
+Date: Tue, 14 Apr 2009 15:26:29 +0000
+Message-ID: <1239722789.3357.39.camel@mulgrave.int.hansenpartnership.com>
+References: <C27F8246C663564A84BB7AB343977242177D75A052@IRVEXCHCCR01.corp.ad.broadcom.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@mcmartin.ca>, Matthew Wilcox <matthew@wil.cx>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: Wei Yongjun <yjwei@cn.fujitsu.com>
+Content-Type: text/plain
+Cc: Matthew Carlson <mcarlson@broadcom.com>,
+	David Miller <davem@davemloft.net>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
+To: Michael Chan <mchan@broadcom.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <49E426C1.50706@cn.fujitsu.com>
+In-Reply-To: <C27F8246C663564A84BB7AB343977242177D75A052@IRVEXCHCCR01.corp.ad.broadcom.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Apr 14, 2009 at 02:01:37PM +0800, Wei Yongjun wrote:
-> commit 51dcdfec6a274afc1c6fce180d582add9ff512c0 (parport: Use the PCI
-> IRQ if offered) parport_pc_probe_port() gained an irqflags arg. This
-> break parisc. This patch make parisc fallback to the old behaviour,
-> that is using "0" for irqflags.
+On Mon, 2009-04-13 at 21:11 -0700, Michael Chan wrote:
+> James Bottomley wrote:
 > 
-> No test.
+> > On Mon, 2009-04-13 at 18:25 -0700, Matt Carlson wrote:
+> > > On Mon, Apr 13, 2009 at 03:32:14PM -0700, James Bottomley wrote:
+> > > >
+> > > > ion:~# ethtool -e eth0 length 0x90
+> > > > Address         Data
+> > > > ----------      ----
+> > > > 0x00000000      0xaa
+> > > > 0x00000001      0x55
+> > > > 0x00000002      0x99
+> > > > 0x00000003      0x66
+> > >
+> > > Michael noticed that your NVRAM signature is byteswapped in
+> > NVRAM. (!)
+> > > That also explains why the driver is trying to obtain the
+> > MAC address
+> > > through NVRAM, rather than getting it from shared memory.
+> > The device's
+> > > bootcode is not working correctly.
+> >
+> > Um, well, this is a parisc:  the device's boot code won't be
+> > working at
+> > all (parisc doesn't have open firmware boot).  The values
+> > might be laid
+> > down by the platform IODC, but usually for add in cards, they're the
+> > default initialise values the card comes up with.
+> >
 > 
+> Matt was referring to MIPS code that runs inside the MIPS core inside
+> the TG3 chip.  The code is loaded from NVRAM and will start running
+> after chip reset.  But I don't agree with Matt that the swapped NVRAM
+> values were caused by bad MIPS code programmed in the NVRAM.
 
-Looks good, thanks, applied.
+Um, yes, me too ... if the boot process doesn't involve the platform,
+there's no reason the values would get swapped (unless we're accessing
+them wrongly).
+
+> I agree with DaveM that this appears to be a driver big-endian problem
+> when reading the NVRAM.  Can you run the same ethtool -e on 2.6.29 to
+> confirm?  Thanks.
+
+Sure (just had to rebuild a 2.6.29 kernel):
+
+ion:~# ethtool -e eth0 length 0x90
+Address         Data
+----------      ----
+0x00000000      0x66
+0x00000001      0x99
+0x00000002      0x55
+0x00000003      0xaa
+0x00000004      0x08
+0x00000005      0x00
+0x00000006      0x00
+0x00000007      0x00
+0x00000008      0x00
+0x00000009      0x00
+0x0000000a      0x02
+0x0000000b      0x29
+0x0000000c      0x00
+0x0000000d      0x00
+0x0000000e      0x02
+0x0000000f      0x00
+0x00000010      0x9b
+0x00000011      0x82
+0x00000012      0x3c
+0x00000013      0xc5
+0x00000014      0x00
+0x00000015      0x00
+0x00000016      0x00
+0x00000017      0x00
+0x00000018      0x00
+0x00000019      0x00
+0x0000001a      0x00
+0x0000001b      0x00
+0x0000001c      0x00
+0x0000001d      0x00
+0x0000001e      0x00
+0x0000001f      0x00
+0x00000020      0x00
+0x00000021      0x00
+0x00000022      0x00
+0x00000023      0x00
+0x00000024      0x00
+0x00000025      0x00
+0x00000026      0x00
+0x00000027      0x00
+0x00000028      0x00
+0x00000029      0x00
+0x0000002a      0x00
+0x0000002b      0x00
+0x0000002c      0x00
+0x0000002d      0x00
+0x0000002e      0x00
+0x0000002f      0x00
+0x00000030      0x00
+0x00000031      0x00
+0x00000032      0x00
+0x00000033      0x00
+0x00000034      0x00
+0x00000035      0x00
+0x00000036      0x00
+0x00000037      0x00
+0x00000038      0x00
+0x00000039      0x00
+0x0000003a      0x00
+0x0000003b      0x00
+0x0000003c      0x00
+0x0000003d      0x00
+0x0000003e      0x00
+0x0000003f      0x00
+0x00000040      0x00
+0x00000041      0x00
+0x00000042      0x00
+0x00000043      0x00
+0x00000044      0x00
+0x00000045      0x00
+0x00000046      0x00
+0x00000047      0x00
+0x00000048      0x00
+0x00000049      0x00
+0x0000004a      0x00
+0x0000004b      0x00
+0x0000004c      0x00
+0x0000004d      0x00
+0x0000004e      0x00
+0x0000004f      0x00
+0x00000050      0x00
+0x00000051      0x00
+0x00000052      0x00
+0x00000053      0x00
+0x00000054      0x00
+0x00000055      0x00
+0x00000056      0x00
+0x00000057      0x00
+0x00000058      0x00
+0x00000059      0x00
+0x0000005a      0x00
+0x0000005b      0x00
+0x0000005c      0x00
+0x0000005d      0x00
+0x0000005e      0x00
+0x0000005f      0x00
+0x00000060      0x00
+0x00000061      0x00
+0x00000062      0x00
+0x00000063      0x00
+0x00000064      0x00
+0x00000065      0x00
+0x00000066      0x00
+0x00000067      0x00
+0x00000068      0x00
+0x00000069      0x00
+0x0000006a      0x00
+0x0000006b      0x00
+0x0000006c      0x00
+0x0000006d      0x00
+0x0000006e      0x00
+0x0000006f      0x00
+0x00000070      0x00
+0x00000071      0x00
+0x00000072      0x00
+0x00000073      0x00
+0x00000074      0x43
+0x00000075      0x00
+0x00000076      0x00
+0x00000077      0x8c
+0x00000078      0x00
+0x00000079      0x20
+0x0000007a      0x61
+0x0000007b      0x10
+0x0000007c      0x00
+0x0000007d      0x00
+0x0000007e      0x00
+0x0000007f      0x30
+0x00000080      0x6e
+0x00000081      0x4b
+0x00000082      0x15
+0x00000083      0x59
+0x00000084      0x42
+0x00000085      0x43
+0x00000086      0x4d
+0x00000087      0x39
+0x00000088      0x35
+0x00000089      0x37
+0x0000008a      0x30
+0x0000008b      0x30
+0x0000008c      0x41
+0x0000008d      0x36
+0x0000008e      0x00
+0x0000008f      0x00
+
+So that's byteswapped from the 2.6.30 output ... confirming your theory,
+I think.
+
+James
+
+
