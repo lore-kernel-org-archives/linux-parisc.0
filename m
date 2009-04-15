@@ -1,68 +1,69 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: 2.6.30-rc1: parisc: system hangs on boot at __schedule()
-Date: Wed, 15 Apr 2009 15:06:03 +0000
-Message-ID: <1239807963.3371.17.camel@mulgrave.int.hansenpartnership.com>
-References: <a4423d670904080603w50face2fl87cd16bd7967cb5d@mail.gmail.com>
-	 <20090408220921.GF7372@bombadil.infradead.org>
-	 <a4423d670904090146w2937bf15le2afb5dfad718f0e@mail.gmail.com>
-	 <20090409144611.GH7372@bombadil.infradead.org>
-	 <a4423d670904150549s48b844a7iba097acaf875b992@mail.gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] ide-cd: fix kernel crash on hppa regression
+Date: Thu, 16 Apr 2009 00:45:31 +0200
+Message-ID: <49E6638B.8090700@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Kernel Testers List <kernel-testers@vger.kernel.org>,
-	linux-scsi@vger.kernel.org
-To: Alexander Beregalov <a.beregalov@gmail.com>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754119AbZDOPGW@vger.kernel.org>
-In-Reply-To: <a4423d670904150549s48b844a7iba097acaf875b992@mail.gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+To: Linus <torvalds@linux-foundation.org>,
+	Borislav Petkov <petkovbb@googlemail.com>,
+	Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	linux-parisc <linu
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2009-04-15 at 16:49 +0400, Alexander Beregalov wrote:
-> 2009/4/9 Kyle McMartin <kyle@mcmartin.ca>:
-> > On Thu, Apr 09, 2009 at 12:46:15PM +0400, Alexander Beregalov wrote:
-> >> 2009/4/9 Kyle McMartin <kyle@mcmartin.ca>:
-> >> > On Wed, Apr 08, 2009 at 05:03:04PM +0400, Alexander Beregalov wrote:
-> >> >> Hi
-> >> >>
-> >> >> Machine is HP j6000.
-> >> >> CPU(s): 2 x PA8700 (PCX-W2) at 750.000000 MHz
-> >> >>
-> >> >> gcc version 4.3.3 (Gentoo 4.3.3-r2 p1.1, pie-10.1.5)
-> >> >>
-> >> >>
-> >> >> Machine hangs before starting rc scripts, but SysRq and C-A-Del work.
-> >> >>
-> >> >> All tasks are at __schedule+0x268/0x7bc:
-> >> >>
-> >> >
-> >> > .config?
-> >>
-> >> Sorry, attached.
-> >
-> > Thanks, I swapped disks into my j6700 and will try to reproduce.
-> 
-> It seems the problem is the same as mentioned here:
-> http://marc.info/?l=linux-kernel&m=123920746830420&w=2
-> 
-> The patch  fixes the issue.
-> 
-> James?
-> The same problem on two of my hosts: x86_64 with LSI SAS MegaRAID
-> and parisc with SYM53C8XX_2
+With 2.6.30-rc2 I face a kernel crash on the 32bit hppa architecture 
+due to ide-cd when udev creates the device nodes at startup:
 
-Well, I can tell you why I don't see the problem:  My parisc system has
-modular SCSI, so it doesn't really test out the async system that well
-(it was designed more for monolithic kernels).
+Kernel Fault: Code=26 regs=8ed34c40 (Addr=00000024)
+IASQ: 00000000 00000000 IAOQ: 1034b5ac 1034b5b0
+ IIR: 4ab30048    ISR: 00000000  IOR: 00000024
+ CPU:        0   CR30: 8ed34000 CR31: ffff55ff
+ ORIG_R28: 00000000
+ IAOQ[0]: ide_complete_rq+0x2c/0x70
+ IAOQ[1]: ide_complete_rq+0x30/0x70
+ RP(r2): cdrom_newpc_intr+0x178/0x46c
+Backtrace:
+ [<1035c608>] cdrom_newpc_intr+0x178/0x46c
+ [<1034c494>] ide_intr+0x1b0/0x214
+ [<1016d284>] handle_IRQ_event+0x70/0x150
+ [<1016d4b0>] __do_IRQ+0x14c/0x1cc
+ [<102f7864>] superio_interrupt+0x88/0xbc
+ [<1016d284>] handle_IRQ_event+0x70/0x150
+ [<1016d4b0>] __do_IRQ+0x14c/0x1cc
+ [<10112efc>] do_cpu_irq_mask+0x9c/0xd0
+ [<10116068>] intr_return+0x0/0x4
 
-On the specific patch in the email, it seems reasonable, but I think it
-might interfere with the sd probe async calls, so what you might end up
-losing a rache where the host fully scanned, but the sd driver not
-attached.
+This crash seems to happen due to an uninitialized variable "rc".
+The compiler even warns about that:
+  CC      drivers/ide/ide-cd.o                                                         
+/mnt/sda4/home/cvs/parisc/git-kernel/linus-linux-2.6/drivers/ide/ide-cd.c: In function `cdrom_newpc_intr':
+/mnt/sda4/home/cvs/parisc/git-kernel/linus-linux-2.6/drivers/ide/ide-cd.c:612: warning: `rc' might be used uninitialized in this function
 
-The root cause of the problem is that we now have two different async
-mechanisms in SCSI: our original one for host scanning and the new one
-for sd attachment.
+After applying the trivial patch below, which just initializes 
+the variable to zero, the kernel doesn't crash any longer:
 
-James
+Starting the hotplug events dispatcher: udevd.
+Synthesizing the initial hotplug events...
+hda: command error: status=0x51 { DriveReady SeekComplete Error }
+hda: command error: error=0x54 <3>{ AbortedCommand LastFailedSense=0x05 }
+ide: failed opcode was: unknown
+done.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+
+diff --git a/drivers/ide/ide-cd.c b/drivers/ide/ide-cd.c
+index 3aec19d..3d4e099 100644
+--- a/drivers/ide/ide-cd.c
++++ b/drivers/ide/ide-cd.c
+@@ -609,7 +609,7 @@ static ide_startstop_t cdrom_newpc_intr(ide_drive_t *drive)
+ 	struct request *rq = hwif->rq;
+ 	ide_expiry_t *expiry = NULL;
+ 	int dma_error = 0, dma, thislen, uptodate = 0;
+-	int write = (rq_data_dir(rq) == WRITE) ? 1 : 0, rc, nsectors;
++	int write = (rq_data_dir(rq) == WRITE) ? 1 : 0, rc = 0, nsectors;
+ 	int sense = blk_sense_request(rq);
+ 	unsigned int timeout;
+ 	u16 len;
