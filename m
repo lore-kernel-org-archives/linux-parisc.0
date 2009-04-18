@@ -1,66 +1,143 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] ide-cd: fix kernel crash on hppa regression
-Date: Fri, 17 Apr 2009 09:15:27 +0200
-Message-ID: <49E82C8F.5060202@gmx.de>
-References: <49E6638B.8090700@gmx.de> <20090416063735.GA21742@liondog.tnic> <49E7945E.7030508@gmx.de> <20090417065344.GC6806@liondog.tnic>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [PATCH] tg3: fix big endian MAC address collection failure
+Date: Sat, 18 Apr 2009 17:00:16 -0600
+Message-ID: <20090418230015.GA32177@lackof.org>
+References: <1239636110.3278.29.camel@mulgrave.int.hansenpartnership.com> <20090413180052.GB11076@xw6200.broadcom.net> <1239646516.3278.57.camel@mulgrave.int.hansenpartnership.com> <20090413183725.GC11109@xw6200.broadcom.net> <1239655698.3278.83.camel@mulgrave.int.hansenpartnership.com> <20090414011710.GA11615@xw6200.broadcom.net> <20090414153911.GA22011@lackof.org> <20090414190232.GA12600@xw6200.broadcom.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Linus <torvalds@linux-foundation.org>,
-	Borislav Petkov <petkovbb@googlemail.com>,
-	Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	"Rafael J. Wysocki" <rjw@sisk.pl>
-To: petkovbb@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	"linux-netdev@vger.kernel.org" <linux-netdev@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Michael Chan <mchan@broadcom.com>
+To: Matt Carlson <mcarlson@broadcom.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090417065344.GC6806@liondog.tnic>
+In-Reply-To: <20090414190232.GA12600@xw6200.broadcom.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Borislav Petkov wrote:
-> Hi,
-> 
-> On Thu, Apr 16, 2009 at 10:26:06PM +0200, Helge Deller wrote:
-> 
-> [..]
-> 
->> I tried to build a kernel with CONFIG_DEBUG_INFO.
->> There are two problem with that, because I'm cross-compiling:
->> a) I don't have a cross-gdb (but I could use addr2line instead though)
->> b) the resulting kernel is becoming too big and won't link/boot:ina
->> ...
->>   SYSMAP  System.map
->>   SYSMAP  .tmp_System.map
->> /sbin/palo -f /mnt/sda4/home/cvs/parisc/git-kernel/linus-linux-2.6-32bit/palo.conf
->> palo version 1.14 deller@p100 Fri Jul 28 22:55:11 CEST 2006
->> ELF32 executable
->> ipl: addr 2048 size 36864 entry 0x0
->>  ko 0x0 ksz 0 k64o 0x0 k64sz 0 rdo 0 rdsz 0
->> <>
->> Your 32-bit-kernel is too big for your F0 partition
->> make[3]: *** [palo] Error 2
->>
->> I could now just try to look into the assembly by hand and try
->> to find which line produces the problem. But reading hppa assembly code
->> for such a big function is not very easy though.
-> 
-> Thanks a lot for trying, I appreciate it. However, I think I have an easier idea
-> I could try here first and maybe we won't need the hppa assembly exercise :).
+This is settled already I think...just following up to complete
+the conversation. Was "Out of Office" this past week.
 
-Great, thanks!
-If you want me to test something, just let me know.
-
->> BTW, even with my patch ATAPI CDROM accesses don't work with the current kernel...
+On Tue, Apr 14, 2009 at 12:02:32PM -0700, Matt Carlson wrote:
+...
+> > > tg3_nvram_read() returns a 32-bit word of NVRAM data, swapped according to
+> > > the byteswapping rules for all register accesses.
+> > 
+> > Lets review that calling order I found in 2.6.29-rc8:
+> > 	tg3_nvram_read -> tr32 -> tg3_read32 -> readl -> swab
+> > 
+> > o The swab is actually in tg3_nvram_read.
 > 
-> What do you mean by that, please elaborate?
+> Right.
+> 
+> > o one should be able to get rid of indirect function call in tr32.
+> 
+> Well, there are situations where the read operation needs to be done
+> using a different method.  So that the reader could concentrate on the
+> higher-level algorthm, we hide the implementation details of the read
+> through a function pointer.
 
-I meant:
-a) Without my patch the kernel did crash (see backtrace in original mail)
-b) with my patch the kernel booted to login prompt, but I got those messages on the console:
- hda: command error: status=0x51 { DriveReady SeekComplete Error }
- hda: command error: error=0x54 <3>{ AbortedCommand LastFailedSense=0x05 }
- ide: failed opcode was: unknown
-Nevertheless, mounting a cdrom in the drive didn't suceeded with same/similiar messages, but
-this could even be because of the parisc superio driver...
+I agree with "why" (problems demand it) but think "how" (implementation)
+could be better. Indirect function calls are usually the next most
+"expensive" operation after cache misses because they are not predictable
+to the CPU (data dependency). I don't know as much about the compiler
+behavior with respect to indirect function calls but expect the compiler
+can't optimize well either.  So I usually prefer to only see indirect
+function calls for "public" APIs and not internal functions.
 
-Helge
+So what are alternatives?
+1) Embedding the choice in tr32() is the first obvious one. is use
+   a switch statement and call the respective functions. The compiler
+   can inline all the functions into one block since they are
+   only being called from one place. Net cost is an extra branch.
+
+2) Not as good as (1), but redefine tr32() to be a macro that is
+   an indirect function call.  Maybe that's already happening via
+   compiler inlining and I'm being obtuse. 
+
+(1) would make code path explicit to HW/SW and work roughly the same
+on all architectures.
+
+
+> > >  On big endian machines,
+> > > the data returned will be exactly as it would have been in NVRAM.  On
+> > > little endian machines, the data will be swapped when compared to a raw
+> > > read of the NVRAM.
+> > 
+> > Is this referring to the returned value from readl() or from tg3_nvram_read()?
+> 
+> It is referring to the value from readl().
+
+Ok - than I hope it's clear the original assertion is not correct.
+
+> 
+> > The readl() return value will be the same in both LE and BE architectures.
+> > readl() adjusts for endianess.
+> > __raw_readl() does not.
+> >
+> > > To bring the data back to a bytestream format on LE
+> > > systems, a swap is needed. 
+> > 
+> > For the above code path, if swap is needed on LE, it's also needed on BE.
+> 
+> Well, the 32-bit _value_ will be the same on architectures of either endianness.
+> But our goal is to deal with the data as a bytestream.
+
+Ok. This makes sense. But then maybe use __raw_read in this particular case?
+Is it possible to read the bytes one at a time?
+
+>  Consequently a > swap is needed.
+> 
+> For example, reading offset 0x0 of NVRAM (for legacy NVRAM formats)
+> readl will always produce a value of 0x669955aa.  On LE machines, this 32-bit
+> value will be laid out as :
+> 
+>   i             i + 3
+>   |               |
+>   V               V
+> ---------------------
+> | aa | 55 | 99 | 66 |
+> ---------------------
+> 
+> On BE machines, the byte ordering is obviously reversed.  To do a
+> memcpy, the bytes must be in the BE format.
+
+memcpy() doesn't care which "order" bytes are in.
+It treats the source/dest memory regions as byte streams as well.
+
+> 
+> > > After that, a memcpy should be all that is
+> > > required to extract the MAC address.
+> > > 
+> > > Code that operates on data in a bytestream format will necessarily look
+> > > different than code that operates on data as a 32-bit native endian
+> > > quantity.  The code changes can look a bit drastic and are easily
+> > > culpable at first glance.
+> > 
+> > This is true for code paths that deal with DMA data. It's not true
+> > for readl() or writel() since those are already taking care of
+> > the endianess.
+> 
+> Again, think bytestream.
+
+The data is not a byte stream (yet) since we used readl() to retrieve
+the value. Use cpu_to_le32() to convert what was originally an LE byte
+stream back to a LE byte stream.
+
+Using either __raw_read() or readb() would have avoided this confusion.
+
+
+> > I'll stop here since most of the discussion is based on not knowing
+> > that readl() takes care of endianess.
+> 
+> Yes.  I think the discussion will be resolved once we distinguish
+> between operating on the data as a value and operating on the data as a
+> bytestream.
+
+Personally, it's easier for me compare "CPU register data" (aka "value")
+vs "data in Memory" (which is inherently a byte stream). The CPU is the
+one that is imposing an endianness to multi-byte data in memory.
+
+thanks,
+grant
