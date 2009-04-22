@@ -1,81 +1,73 @@
-From: "Matt Carlson" <mcarlson@broadcom.com>
-Subject: Re: [PATCH] tg3: fix big endian MAC address collection failure
-Date: Mon, 20 Apr 2009 13:46:16 -0700
-Message-ID: <20090420204616.GA7243@xw6200.broadcom.net>
-References: <20090418230015.GA32177@lackof.org>
- <C27F8246C663564A84BB7AB343977242177D75A059@IRVEXCHCCR01.corp.ad.broadcom.com>
- <20090419223201.GA22926@lackof.org>
+From: Borislav Petkov <petkovbb@googlemail.com>
+Subject: Re: [PATCH] ide-cd: fix kernel crash on hppa regression
+Date: Wed, 22 Apr 2009 08:10:46 +0200
+Message-ID: <20090422061046.GA22451@liondog.tnic>
+References: <49E6638B.8090700@gmx.de>
+Reply-To: petkovbb@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
-Cc: "Michael Chan" <mchan@broadcom.com>,
-	"Matthew Carlson" <mcarlson@broadcom.com>,
-	"James Bottomley" <James.Bottomley@HansenPartnership.com>,
-	"linux-netdev@vger.kernel.org" <linux-netdev@vger.kernel.org>,
-	"Parisc List" <linux-parisc@vger.kernel.org>
-To: "Grant Grundler" <grundler@parisc-linux.org>
+Content-Type: text/plain; charset=utf-8
+Cc: Linus <torvalds@linux-foundation.org>,
+	Borislav Petkov <petkovbb@googlemail.com>,
+	Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	"Rafael J. Wysocki" <rjw@sisk.pl>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090419223201.GA22926@lackof.org>
+In-Reply-To: <49E6638B.8090700@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Apr 19, 2009 at 03:32:02PM -0700, Grant Grundler wrote:
-> > > The data is not a byte stream (yet) since we used readl() to retrieve
-> > > the value. Use cpu_to_le32() to convert what was originally an LE byte
-> > > stream back to a LE byte stream.
-> > >
-> > > Using either __raw_read() or readb() would have avoided this
-> > > confusion.
-> > 
-> > It's a 32-bit so we cannot use readb().  I don't think the chip will decode
-> > the byte enables.
+Hi,
+
+On Thu, Apr 16, 2009 at 12:45:31AM +0200, Helge Deller wrote:
+> With 2.6.30-rc2 I face a kernel crash on the 32bit hppa architecture 
+> due to ide-cd when udev creates the device nodes at startup:
 > 
-> Ok. Thanks for clarifying.
+> Kernel Fault: Code=26 regs=8ed34c40 (Addr=00000024)
+> IASQ: 00000000 00000000 IAOQ: 1034b5ac 1034b5b0
+>  IIR: 4ab30048    ISR: 00000000  IOR: 00000024
+>  CPU:        0   CR30: 8ed34000 CR31: ffff55ff
+>  ORIG_R28: 00000000
+>  IAOQ[0]: ide_complete_rq+0x2c/0x70
+>  IAOQ[1]: ide_complete_rq+0x30/0x70
+>  RP(r2): cdrom_newpc_intr+0x178/0x46c
+> Backtrace:
+>  [<1035c608>] cdrom_newpc_intr+0x178/0x46c
+>  [<1034c494>] ide_intr+0x1b0/0x214
+>  [<1016d284>] handle_IRQ_event+0x70/0x150
+>  [<1016d4b0>] __do_IRQ+0x14c/0x1cc
+>  [<102f7864>] superio_interrupt+0x88/0xbc
+>  [<1016d284>] handle_IRQ_event+0x70/0x150
+>  [<1016d4b0>] __do_IRQ+0x14c/0x1cc
+>  [<10112efc>] do_cpu_irq_mask+0x9c/0xd0
+>  [<10116068>] intr_return+0x0/0x4
 > 
-> > I don't like to use __raw_read() because it does not have
-> > the same memory barrier as regular readl().
+> This crash seems to happen due to an uninitialized variable "rc".
+> The compiler even warns about that:
+>   CC      drivers/ide/ide-cd.o                                                         
+> /mnt/sda4/home/cvs/parisc/git-kernel/linus-linux-2.6/drivers/ide/ide-cd.c: In function `cdrom_newpc_intr':
+> /mnt/sda4/home/cvs/parisc/git-kernel/linus-linux-2.6/drivers/ide/ide-cd.c:612: warning: `rc' might be used uninitialized in this function
 > 
-> I don't think the memory barrier is necessary in the "get" case.
-> wmb() is probably needed in the "set" case.
+> After applying the trivial patch below, which just initializes 
+> the variable to zero, the kernel doesn't crash any longer:
 > 
-> I was thinking that avoiding several byte swaps would make the code
-> more maintainable and one wmb() could be explained with a comment.
-> Remember, we are having this conversation because the MAC address
-> was incorrectly ordered on BE machine. Seems that a "load from NVRAM"
-> and "Store to HostMem" preserves the byte stream order in the same
-> way memcpy would. And would be heck of a lot easier to understand.
+> Starting the hotplug events dispatcher: udevd.
+> Synthesizing the initial hotplug events...
+> hda: command error: status=0x51 { DriveReady SeekComplete Error }
+> hda: command error: error=0x54 <3>{ AbortedCommand LastFailedSense=0x05 }
+> ide: failed opcode was: unknown
+> done.
+> 
+> Signed-off-by: Helge Deller <deller@gmx.de>
+Acked-by: Borislav Petkov <petkovbb@gmail.com>
 
-While we could reduce some of the byte swaps, I'm not sure this
-problem will be any easier to grok for that effort.
+The original fix was correct. Helge, sorry for the delay but I wanted to
+make sure that this wasn't caused by recent rewrite in another area of
+ide-cd, thanks.
 
-The confusion in this case stems from the fact that the SEEPROM
-interface deals with data in LE format.  This fact violates rule that
-the chip always deals with its data in BE format.
+Bart, please apply.
 
-We can move the discussion so that we are instead talking about values
-as they appear on the bus, but then that just means we need to
-highlight that this data comes across the bus in BE format, when every
-other value (including the flash interface data) comes across in
-LE format.  IOW, no matter where we choose to couch the discussion,
-we will still have to somehow convey that the behaviors are backwards
-of every other chip access.
-
-The approach you are proposing here hides the problem in the behavioural
-differences between __raw_read() and readl().  The problem with this is
-that someone at some point in the future wants to make the same
-conversion / optimization to the flash interface.  That person will then
-be confronted with this exact same problem.
-
-If we really want to make the code more maintainable, I might try
-giving the EEPROM it's own "read as value" and "read as bytestream"
-functions instead.  This would effectively hide the difference behind
-an API.  The intentions would (still) be clear and we would avoid the
-pointless byteswap in tg3_nvram_read_using_eeprom() and swapback in
-tg3_nvram_read_be32() when attempting to read the data as a bytestream.
-Swapping the readl() for __raw_read() then becomes an exercise in
-optimization, and we could apply it equally to the flash interface.
-
-The problem with this proposal is that we'd still have the ugly
-swap32(be32_to_cpu(data)) wart in tg3_nvram_write_block_using_eeprom().
-I'm not sure how I'd want to make that prettier.
-
+-- 
+Regards/Gruss,
+    Boris.
