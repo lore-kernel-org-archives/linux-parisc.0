@@ -1,83 +1,65 @@
-From: Tim Abbott <tabbott@MIT.EDU>
-Subject: [PATCH v2 0/6] macros for section name cleanup
-Date: Thu, 30 Apr 2009 15:54:07 -0400
-Message-ID: <1241121253-32341-1-git-send-email-tabbott@mit.edu>
-Cc: Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-	Anders Kaseorg <andersk@mit.edu>,
-	Waseem Daher <wdaher@mit.edu>,
-	Denys Vlasenko <vda.linux@googlemail.com>,
-	Jeff Arnold <jbarnold@mit.edu>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Bryan Wu <cooloney@kernel.org>,
-	Chris Zankel <chris@zankel.net>,
-	Cyrill Gorcunov <gorcunov@openvz.org>,
-	David Howells <dhowells@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>, dev-etrax@axis.com,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Ungerer <gerg@uclinux.org>,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>,
-	Heiko Carstens <heiko.carstens@de.ibm.com>,
-	Helge Deller <deller@gmx.de>,
-	Hirokazu Takata <takata@linux-m32r.org>,
-	"H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-	Jeff Dike <jdike@addtoit.com>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] fix ldcw inline assembler
+Date: Thu, 30 Apr 2009 23:39:45 +0200
+Message-ID: <49FA1AA1.3060104@gmx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+To: linux-parisc <linux-parisc@vger.kernel.org>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
 	Kyle McMartin <kyle@mcmartin.ca>,
-	Linus Torvalds <
-To: Sam Ravnborg <sam@ravnborg.org>
-Return-path: <linux-mips-bounce@linux-mips.org>
-Errors-to: linux-mips-bounce@linux-mips.org
+	Thibaut VARENE <varenet@debian.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-(this patch series differs from v1 only in the CC list; some of the
-architecture lists I sent the previous one to are moderated against
-non-members; all replies should go to this version).
+This "fix ldcw assembler" patch below is really an old one now, but sadly it never got applied.
 
-Here are the architecture-independent macro definitions needed for
-to clean up the kernel's section names.  The overall diffstat from
-this section name cleanup project is:
+I just tried it again. Without this patch I always see login-problems when ssh-ing into
+my parisc box. The very first time sshd just drops the connection (Connection closed by remote host).
+With this patch I didn't faced this problem again.
 
- 96 files changed, 261 insertions(+), 503 deletions(-)
+I'm wondering, if not other userspace problems suddenly go away then as well,
+e.g. the uid/gid issues others are seeing:
+http://marc.info/?l=linux-parisc&m=121114269417948&w=2
 
-The decrease results from removing a lot of redundancy in the linker
-scripts.
+Kyle, please apply.
 
-The long-term goal here is to add support for building the kernel with
--ffunction-sections -fdata-sections.  This requires renaming all the
-magic section names in the kernel of the form .text.foo, .data.foo,
-.bss.foo, and .rodata.foo to not have collisions with sections
-generated for code like:
+Helge
 
-static int nosave = 0; /* -fdata-sections places in .data.nosave */
-static void head(); /* -ffunction-sections places in .text.head */
+-------- Original Message --------
+Subject: [PATCH] ldcw inline assembler patch
+From: Dave Anglin
 
-Sam Ravnborg proposed that rather than just renaming all the sections
-outright, we should start by first getting more control over the
-section names used in the kernel so that we can later rename sections
-without touching too many files.  These patch series implement that
-cleanup.  Later, there will be another patch series to actually rename
-the sections.
+There are two reasons to expose the memory *a in the asm:
 
-I'm hoping we can get just these macro definitions into 2.6.30 so that
-the arch maintainers don't have to grab the macro definitions for
-their trees while reviewing the patches for 2.6.31.
+1) To prevent the compiler from discarding a preceeding write to *a, and
+2) to prevent it from caching *a in a register over the asm.
 
-Shortly, I'm going to send one patch series for each of the
-architectures updating those architectures to use these new macros
-(and otherwise cleaning up section names on those architectures).
+The change has had a few days testing with a SMP build of 2.6.22.19
+running on a rp3440.
 
-	-Tim Abbott
+This patch is about the correctness of the __ldcw() macro itself. 
+The use of the macro should be confined to small inline functions 
+to try to limit the effect of clobbering memory on GCC's optimization 
+of loads and stores.
 
-Tim Abbott (6):
-  Add new macros for page-aligned data and bss sections.
-  Add new NOSAVE_DATA linker script macro.
-  Add new CACHELINE_ALIGNED_DATA linker script macro.
-  Add new INIT_TASK_DATA() linker script macro.
-  Add new READ_MOSTLY_DATA(align) linker script macro.
-  Add support for __read_mostly to linux/cache.h
+Signed-off-by: Dave Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Signed-off-by: Helge Deller <deller@gmx.de>
 
- include/asm-generic/vmlinux.lds.h |   27 +++++++++++++++++++++++++++
- include/linux/cache.h             |    6 ++++++
- include/linux/init_task.h         |    3 +++
- include/linux/linkage.h           |    9 +++++++++
- 4 files changed, 45 insertions(+), 0 deletions(-)
+diff --git a/arch/parisc/include/asm/system.h b/arch/parisc/include/asm/system.h
+index ee80c92..d91357b 100644
+--- a/arch/parisc/include/asm/system.h
++++ b/arch/parisc/include/asm/system.h
+@@ -168,8 +168,8 @@ static inline void set_eiem(unsigned long val)
+ /* LDCW, the only atomic read-write operation PA-RISC has. *sigh*.  */
+ #define __ldcw(a) ({						\
+ 	unsigned __ret;						\
+-	__asm__ __volatile__(__LDCW " 0(%1),%0"			\
+-		: "=r" (__ret) : "r" (a));			\
++	__asm__ __volatile__(__LDCW " 0(%2),%0"			\
++		: "=r" (__ret), "+m" (*(a)) : "r" (a));		\
+ 	__ret;							\
+ })
+ 
+	
+
