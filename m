@@ -1,40 +1,56 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [PATCH] fix ldcw inline assembler
-Date: Thu, 30 Apr 2009 21:47:13 -2800 (EDT)
-Message-ID: <20090501014714.7804E4FC4@hiauly1.hia.nrc.ca>
-References: <20090430222703.GB18899@bombadil.infradead.org>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH 6/7] parisc: add parameter to read_cr16()]
+Date: Fri, 01 May 2009 00:43:46 +0200
+Message-ID: <49FA29A2.9040701@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: deller@gmx.de, linux-parisc@vger.kernel.org, kyle@mcmartin.ca,
-	varenet@debian.org
-To: kyle@mcmartin.ca (Kyle McMartin)
+Content-Type: text/plain; charset=UTF-8
+To: linux-parisc <linux-parisc@vger.kernel.org>,
+	Kyle McMartin <kyle@mcmartin.ca>, Coly Li <coly.li@suse.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090430222703.GB18899@bombadil.infradead.org> from "Kyle McMartin" at Apr 30, 2009 06:27:03 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Thu, Apr 30, 2009 at 11:39:45PM +0200, Helge Deller wrote:
-> > This "fix ldcw assembler" patch below is really an old one now, but sadly it never got applied.
-> > 
-> > I just tried it again. Without this patch I always see login-problems when ssh-ing into
-> > my parisc box. The very first time sshd just drops the connection (Connection closed by remote host).
-> > With this patch I didn't faced this problem again.
-> > 
-> > I'm wondering, if not other userspace problems suddenly go away then as well,
-> > e.g. the uid/gid issues others are seeing:
-> > http://marc.info/?l=linux-parisc&m=121114269417948&w=2
-> > 
-> > Kyle, please apply.
-> > 
-> 
-> gotcha.
+Forwarded to parisc mailing list (and patchwork).
+Patch is good.
 
-Kyle, can you try and push it into 2.6.30?  It fixes a major security hole.
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-I've tried it with 2.6.30-rc4 on my c3750 and agree with Helge that it
-fixes the ssh bug that I had on this machine.
+-------- Original Message --------
+Subject: [PATCH 6/7] parisc: add parameter to read_cr16()
+Date: Thu, 23 Apr 2009 03:06:22 +0800
+From: Coly Li <coly.li@suse.de>
+Reply-To: coly.li@suse.de
+Organization: SuSE Labs
+To: LKML <linux-kernel@vger.kernel.org>
+CC: Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@elte.hu>
 
-Dave
+This patch modifies parameter of au1x_counter1_read() from 'void' to 'struct
+clocksource *cs', which fixes compile warning for incompatible parameter type.
+
+Signed-off-by: Coly Li <coly.li@suse.de>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Ingo Molnar <mingo@elte.hu>
+---
+ arch/parisc/kernel/time.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
+index d4dd056..d97d07f 100644
+--- a/arch/parisc/kernel/time.c
++++ b/arch/parisc/kernel/time.c
+@@ -173,7 +173,7 @@ EXPORT_SYMBOL(profile_pc);
+
+ /* clock source code */
+
+-static cycle_t read_cr16(void)
++static cycle_t read_cr16(struct clocksource *cs)
+ {
+ 	return get_cycles();
+ }
+
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Coly Li
+SuSE Labs
+
+
+
