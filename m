@@ -1,29 +1,73 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [PATCH] fix ldcw inline assembler
-Date: Fri, 1 May 2009 18:55:00 -0400 (EDT)
-Message-ID: <20090501225500.7F7134FB2@hiauly1.hia.nrc.ca>
-References: <20090501223940.GA10501@bombadil.infradead.org>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: [PATCH v2 1/6] Add new macros for page-aligned data and bss sections.
+Date: Sat, 02 May 2009 01:02:12 +0200
+Message-ID: <m2tz44o2a3.fsf@igel.home>
+References: <1241121253-32341-1-git-send-email-tabbott@mit.edu>
+	<1241121253-32341-2-git-send-email-tabbott@mit.edu>
+	<20090501091848.GB18326@uranus.ravnborg.org>
+	<alpine.DEB.1.10.0905010951100.3955@vinegar-pot.mit.edu>
+	<49FB2449.1010301@zytor.com>
+	<20090501171717.GA26401@uranus.ravnborg.org>
+	<49FB2EDC.9050300@zytor.com>
+	<20090501174457.GA26559@uranus.ravnborg.org>
+	<49FB35C4.6060107@zytor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: James.Bottomley@HansenPartnership.com, kyle@mcmartin.ca,
-	dave.anglin@nrc-cnrc.gc.ca, carlos@systemhalted.org, deller@gmx.de,
-	linux-parisc@vger.kernel.org, varenet@debian.org
-To: kyle@mcmartin.ca (Kyle McMartin)
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090501223940.GA10501@bombadil.infradead.org> from "Kyle McMartin" at May 1, 2009 06:39:40 pm
+Content-Type: text/plain; charset=us-ascii
+Cc: Sam Ravnborg <sam@ravnborg.org>, linux-mips@linux-mips.org,
+	linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	Denys Vlasenko <vda.linux@googlemail.com>,
+	Tim Abbott <tabbott@MIT.EDU>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>,
+	Greg Ungerer <gerg@uclinux.org>, sparclinux@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-s390@vger.kernel.org,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Russell King <rmk+kernel@arm.linux.org.uk>,
+	user-mode-linux-devel@lists.sourceforge.net,
+	microblaze-uclinux@itee.uq.edu.au, Jeff Dike <jdike@addtoit.com>,
+	Jeff Arnold <jbarnold@MIT.EDU>, dev-etrax@axis.com,
+	Mikael Starvik <starvik@axis.com>
+To: "H. Peter Anvin" <hpa@zytor.com>
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <49FB35C4.6060107@zytor.com> (H. Peter Anvin's message of "Fri,
+	01 May 2009 10:47:48 -0700")
+Errors-to: linux-mips-bounce@linux-mips.org
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-> I guess... I don't understand the gcc clobber semantics on asm()
-> anymore, I'm just thinking of that stupid bug with ip_fast_csum we saw
-> on parisc a few years ago...
+"H. Peter Anvin" <hpa@zytor.com> writes:
 
-These are in fact subtle and complex.  There were two or three bugs
-that appeared in the transition to 4.4.0 as a result of the change
-to the new register allocator.  In paricular, using clobbers of hard
-registers in call patterns caused a number of problems.
+> Sam Ravnborg wrote:
+>>>
+>>> What's wrong with @?
+>> arm does not support it :-(
+>> I recall it denote a comment in arm assembler.
+>> 
+>> I could do some magic to detect the ARM case but I'm reluctant to do so.
+>> I could also ignore the arm issue for now as it is not used by arm,
+>> but that strikes me as the wrong approach.
+>> 
+>
+> If we really have to use different tokens, I would say:
+>
+> #ifdef __ARM__
+> # define _PROGBITS %progbits	/* or whatever */
+> # define _NOBITS   %nobits
+> #else
+> # define _PROGBITS @progbits
+> # define _NOBITS   @nobits
+> #endif
 
-Dave
+GAS has always supported both '@' and '%', so '%' can be used
+everywhere.
+
+Andreas.
+
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
