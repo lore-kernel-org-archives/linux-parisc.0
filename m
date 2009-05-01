@@ -1,56 +1,85 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH 6/7] parisc: add parameter to read_cr16()]
-Date: Fri, 01 May 2009 00:43:46 +0200
-Message-ID: <49FA29A2.9040701@gmx.de>
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH v2 0/6] macros for section name cleanup
+Date: Fri, 1 May 2009 11:04:56 +0200
+Message-ID: <20090501090455.GA18326@uranus.ravnborg.org>
+References: <1241121253-32341-1-git-send-email-tabbott@mit.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-To: linux-parisc <linux-parisc@vger.kernel.org>,
-	Kyle McMartin <kyle@mcmartin.ca>, Coly Li <coly.li@suse.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+	Anders Kaseorg <andersk@mit.edu>,
+	Waseem Daher <wdaher@mit.edu>,
+	Denys Vlasenko <vda.linux@googlemail.com>,
+	Jeff Arnold <jbarnold@mit.edu>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Bryan Wu <cooloney@kernel.org>,
+	Chris Zankel <chris@zankel.net>,
+	Cyrill Gorcunov <gorcunov@openvz.org>,
+	David Howells <dhowells@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>, dev-etrax@axis.com,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Ungerer <gerg@uclinux.org>,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	Helge Deller <deller@gmx.de>,
+	Hirokazu Takata <takata@linux-m32r.org>,
+	"H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+	Jeff Dike <jdike@addtoit.com>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	Linus Torvalds <
+To: Tim Abbott <tabbott@MIT.EDU>
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <1241121253-32341-1-git-send-email-tabbott@mit.edu>
+Errors-to: linux-mips-bounce@linux-mips.org
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-Forwarded to parisc mailing list (and patchwork).
-Patch is good.
+On Thu, Apr 30, 2009 at 03:54:07PM -0400, Tim Abbott wrote:
+> (this patch series differs from v1 only in the CC list; some of the
+> architecture lists I sent the previous one to are moderated against
+> non-members; all replies should go to this version).
+> 
+> Here are the architecture-independent macro definitions needed for
+> to clean up the kernel's section names.  The overall diffstat from
+> this section name cleanup project is:
+> 
+>  96 files changed, 261 insertions(+), 503 deletions(-)
+> 
+> The decrease results from removing a lot of redundancy in the linker
+> scripts.
+> 
+> The long-term goal here is to add support for building the kernel with
+> -ffunction-sections -fdata-sections.  This requires renaming all the
+> magic section names in the kernel of the form .text.foo, .data.foo,
+> .bss.foo, and .rodata.foo to not have collisions with sections
+> generated for code like:
+> 
+> static int nosave = 0; /* -fdata-sections places in .data.nosave */
+> static void head(); /* -ffunction-sections places in .text.head */
+> 
+> Sam Ravnborg proposed that rather than just renaming all the sections
+> outright, we should start by first getting more control over the
+> section names used in the kernel so that we can later rename sections
+> without touching too many files.  These patch series implement that
+> cleanup.  Later, there will be another patch series to actually rename
+> the sections.
+> 
+> I'm hoping we can get just these macro definitions into 2.6.30 so that
+> the arch maintainers don't have to grab the macro definitions for
+> their trees while reviewing the patches for 2.6.31.
+> 
+> Shortly, I'm going to send one patch series for each of the
+> architectures updating those architectures to use these new macros
+> (and otherwise cleaning up section names on those architectures).
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Hi Tim.
 
--------- Original Message --------
-Subject: [PATCH 6/7] parisc: add parameter to read_cr16()
-Date: Thu, 23 Apr 2009 03:06:22 +0800
-From: Coly Li <coly.li@suse.de>
-Reply-To: coly.li@suse.de
-Organization: SuSE Labs
-To: LKML <linux-kernel@vger.kernel.org>
-CC: Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@elte.hu>
+We agreed to get the common stuff and one architecture done before
+proceeding with the rest.
+Please stick to that plan so we avoid patch-bombing lkml + maintainers.
 
-This patch modifies parameter of au1x_counter1_read() from 'void' to 'struct
-clocksource *cs', which fixes compile warning for incompatible parameter type.
+When we have this ready it will be a simple one-patch-per-arch to cover
+the rest.
 
-Signed-off-by: Coly Li <coly.li@suse.de>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Ingo Molnar <mingo@elte.hu>
----
- arch/parisc/kernel/time.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+I will comment on your common patches for now.
 
-diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
-index d4dd056..d97d07f 100644
---- a/arch/parisc/kernel/time.c
-+++ b/arch/parisc/kernel/time.c
-@@ -173,7 +173,7 @@ EXPORT_SYMBOL(profile_pc);
-
- /* clock source code */
-
--static cycle_t read_cr16(void)
-+static cycle_t read_cr16(struct clocksource *cs)
- {
- 	return get_cycles();
- }
-
--- 
-Coly Li
-SuSE Labs
-
-
-
+	Sam
