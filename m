@@ -1,25 +1,18 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [PATCH] fix ldcw inline assembler
-Date: Fri, 01 May 2009 22:03:12 +0000
-Message-ID: <1241215392.3302.43.camel@mulgrave.int.hansenpartnership.com>
-References: <49FA1AA1.3060104@gmx.de>
-	 <119aab440905011118lbc3bcectfd5862477c2598a8@mail.gmail.com>
-	 <20090501213717.GA19522@hiauly1.hia.nrc.ca>
-	 <20090501214632.GD18899@bombadil.infradead.org>
+Date: Fri, 1 May 2009 18:05:59 -0400 (EDT)
+Message-ID: <20090501220600.9E2DB4FC3@hiauly1.hia.nrc.ca>
+References: <20090501214632.GD18899@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	Carlos O'Donell <carlos@systemhalted.org>,
-	Helge Deller <deller@gmx.de>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	Thibaut VARENE <varenet@debian.org>
-To: Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: text/plain; charset=US-ASCII
+Cc: dave.anglin@nrc-cnrc.gc.ca, carlos@systemhalted.org, deller@gmx.de,
+	linux-parisc@vger.kernel.org, kyle@mcmartin.ca, varenet@debian.org
+To: kyle@mcmartin.ca (Kyle McMartin)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090501214632.GD18899@bombadil.infradead.org>
+In-Reply-To: <20090501214632.GD18899@bombadil.infradead.org> from "Kyle McMartin" at May 1, 2009 05:46:33 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2009-05-01 at 17:46 -0400, Kyle McMartin wrote:
 > On Fri, May 01, 2009 at 05:37:18PM -0400, John David Anglin wrote:
 > > On Fri, 01 May 2009, Carlos O'Donell wrote:
 > > 
@@ -45,16 +38,9 @@ On Fri, 2009-05-01 at 17:46 -0400, Kyle McMartin wrote:
 > I, er, don't think we do, not for the spinlock primitives at least, as
 > far as I can tell...
 
-Yes we do ... look in asm/spinlock.h
+Ok, I'm going to see if the "memory" clobber improves life.
 
-it's all the mb(); statements that are scattered through our _raw_spin_
-ops
-
-The original problem was that the spinlocks were compile barrier leaky
-and caused infrequent but hard to debug issues on smp.  The barriers are
-likely overkill (since we have two in each) but at least they prevent
-problems.
-
-James
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
