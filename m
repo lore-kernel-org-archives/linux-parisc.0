@@ -1,43 +1,59 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [PATCH] fix ldcw inline assembler
-Date: Fri, 1 May 2009 13:14:08 -0400 (EDT)
-Message-ID: <20090501171409.601AF4E9F@hiauly1.hia.nrc.ca>
-References: <20090501014714.7804E4FC4@hiauly1.hia.nrc.ca>
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH v2 1/6] Add new macros for page-aligned data and bss sections.
+Date: Fri, 1 May 2009 19:17:17 +0200
+Message-ID: <20090501171717.GA26401@uranus.ravnborg.org>
+References: <1241121253-32341-1-git-send-email-tabbott@mit.edu> <1241121253-32341-2-git-send-email-tabbott@mit.edu> <20090501091848.GB18326@uranus.ravnborg.org> <alpine.DEB.1.10.0905010951100.3955@vinegar-pot.mit.edu> <49FB2449.1010301@zytor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: kyle@mcmartin.ca, deller@gmx.de, linux-parisc@vger.kernel.org,
-	varenet@debian.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090501014714.7804E4FC4@hiauly1.hia.nrc.ca> from "John David Anglin" at Apr 30, 2009 09:47:13 pm
+Content-Type: text/plain; charset=us-ascii
+Cc: Tim Abbott <tabbott@MIT.EDU>,
+	Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+	Anders Kaseorg <andersk@MIT.EDU>,
+	Waseem Daher <wdaher@MIT.EDU>,
+	Denys Vlasenko <vda.linux@googlemail.com>,
+	Jeff Arnold <jbarnold@MIT.EDU>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Bryan Wu <cooloney@kernel.org>,
+	Chris Zankel <chris@zankel.net>,
+	Cyrill Gorcunov <gorcunov@openvz.org>,
+	David Howells <dhowells@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>, dev-etrax@axis.com,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Ungerer <gerg@uclinux.org>,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	Helge Deller <deller@gmx.de>,
+	Hirokazu Takata <takata@linux-m32r.org>,
+	Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	Linus Torvalds <torv
+To: "H. Peter Anvin" <hpa@zytor.com>
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <49FB2449.1010301@zytor.com>
+Errors-to: linux-mips-bounce@linux-mips.org
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-> > On Thu, Apr 30, 2009 at 11:39:45PM +0200, Helge Deller wrote:
-> > > This "fix ldcw assembler" patch below is really an old one now, but sadly it never got applied.
-> > > 
-> > > I just tried it again. Without this patch I always see login-problems when ssh-ing into
-> > > my parisc box. The very first time sshd just drops the connection (Connection closed by remote host).
-> > > With this patch I didn't faced this problem again.
-> > > 
-> > > I'm wondering, if not other userspace problems suddenly go away then as well,
-> > > e.g. the uid/gid issues others are seeing:
-> > > http://marc.info/?l=linux-parisc&m=121114269417948&w=2
-> > > 
-> > > Kyle, please apply.
-> > > 
+On Fri, May 01, 2009 at 09:33:13AM -0700, H. Peter Anvin wrote:
+> Tim Abbott wrote:
+> > On Fri, 1 May 2009, Sam Ravnborg wrote:
 > > 
-> > gotcha.
+> >> On Thu, Apr 30, 2009 at 03:54:08PM -0400, Tim Abbott wrote:
+> >>> +#define __PAGE_ALIGNED_DATA	.section ".data.page_aligned", "aw", @progbits
+> >>> +#define __PAGE_ALIGNED_BSS	.section ".bss.page_aligned", "aw", @nobits
+> >> It is my understanding that the linker will automatically
+> >> assume nobits for section names starting with .bss and likewise
+> >> progbits for section names starting with .data - so we can leave them out?
+> > 
+> > I believe that is correct.
+> > 
 > 
-> Kyle, can you try and push it into 2.6.30?  It fixes a major security hole.
+> ... but that doesn't mean it's the right thing to do.
 > 
-> I've tried it with 2.6.30-rc4 on my c3750 and agree with Helge that it
-> fixes the ssh bug that I had on this machine.
+> It's better to be fully explicit when macroizing this kind of stuff.
+> This is part of why macroizing it is good: it means we end up with *one*
+> place that determines this stuff, not some magic heuristics in the linker.
 
-Sorry, I should not have pushed for 2.6.30.  The ssh bug is still present
-on my c3750.
+Do you know if we can use % in place of @?
+I could see that gas supports both - at least in trunk in cvs.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+	Sam
