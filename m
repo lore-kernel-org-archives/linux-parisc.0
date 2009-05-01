@@ -1,66 +1,60 @@
-From: "Edgar E. Iglesias" <edgar.iglesias@gmail.com>
-Subject: Re: [microblaze-uclinux] Re: [PATCH 6/6] Add support for
-	__read_mostly to linux/cache.h
-Date: Fri, 1 May 2009 23:47:13 +0200
-Message-ID: <20090501214713.GB12724@laped.iglesias.mooo.com>
-References: <1241119956-31453-1-git-send-email-tabbott@mit.edu> <1241119956-31453-2-git-send-email-tabbott@mit.edu> <1241119956-31453-3-git-send-email-tabbott@mit.edu> <1241119956-31453-4-git-send-email-tabbott@mit.edu> <1241119956-31453-5-git-send-email-tabbott@mit.edu> <1241119956-31453-6-git-send-email-tabbott@mit.edu> <1241119956-31453-7-git-send-email-tabbott@mit.edu> <20090501094407.GD18326@uranus.ravnborg.org> <alpine.DEB.1.10.0905010948140.18324@qirst.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH] fix ldcw inline assembler
+Date: Fri, 01 May 2009 22:03:12 +0000
+Message-ID: <1241215392.3302.43.camel@mulgrave.int.hansenpartnership.com>
+References: <49FA1AA1.3060104@gmx.de>
+	 <119aab440905011118lbc3bcectfd5862477c2598a8@mail.gmail.com>
+	 <20090501213717.GA19522@hiauly1.hia.nrc.ca>
+	 <20090501214632.GD18899@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Sam Ravnborg <sam@ravnborg.org>, Tim Abbott <tabbott@MIT.EDU>,
-	Anders Kaseorg <andersk@MIT.EDU>,
-	Waseem Daher <wdaher@MIT.EDU>,
-	Denys Vlasenko <vda.linux@googlemail.com>,
-	Jeff Arnold <jbarnold@MIT.EDU>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Bryan Wu <cooloney@kernel.org>,
-	Chris Zankel <chris@zankel.net>,
-	Cyrill Gorcunov <gorcunov@openvz.org>,
-	David Howells <dhowells@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>, dev-etrax@axis.com,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Ungerer <gerg@uclinux.org>,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>,
-	Heiko Carstens <heiko.carstens@de.ibm.com>,
+Content-Type: text/plain
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	Carlos O'Donell <carlos@systemhalted.org>,
 	Helge Deller <deller@gmx.de>,
-	Hirokazu Takata <takata@linux-m32r.org>,
-	"H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-	Jeff Dike <jdike@addtoit.com>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	Linus Torva
-To: Christoph Lameter <cl@linux.com>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <alpine.DEB.1.10.0905010948140.18324@qirst.com>
-Errors-to: linux-mips-bounce@linux-mips.org
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	Thibaut VARENE <varenet@debian.org>
+To: Kyle McMartin <kyle@mcmartin.ca>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090501214632.GD18899@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Fri, May 01, 2009 at 09:52:18AM -0400, Christoph Lameter wrote:
-> On Fri, 1 May 2009, Sam Ravnborg wrote:
+On Fri, 2009-05-01 at 17:46 -0400, Kyle McMartin wrote:
+> On Fri, May 01, 2009 at 05:37:18PM -0400, John David Anglin wrote:
+> > On Fri, 01 May 2009, Carlos O'Donell wrote:
+> > 
+> > > Historical note...
+> > > 
+> > > We clobber all of memory in userspace, like this:
+> > > ~~~
+> > > #define __ldcw(a) \
+> > > ({                                                                      \
+> > >   unsigned int __ret;                                                   \
+> > >   __asm__ __volatile__("ldcw 0(%1),%0"                                  \
+> > >                        : "=r" (__ret) : "r" (a) : "memory");            \
+> > >   __ret;                                                                \
+> > > })
+> > > ~~~
+> > > I wonder if I should change that to match the kernel?
+> > 
+> > The above is perfectly safe.  I believe the kernel provides a memory
+> > barrier when necessary.  There's a discussion somewhere in the mail
+> > archives.
+> > 
 > 
-> > Are there any specific reason why we do not support read_mostly on all
-> > architectures?
-> 
-> Not that I know of.
-> 
-> > read_mostly is about grouping rarely written data together
-> > so what is needed is to introduce this section in the remaining
-> > archtectures.
-> >
-> > Christoph - git log says you did the inital implmentation.
-> > Do you agree?
-> 
-> Yes.
-> 
-> There is some concern that __read_mostly is needlessly applied to
-> numerous variables that are not used in hot code paths. This may make
-> __read_mostly ineffective and actually increase the cache footprint of a
-> function since global variables are no longer in the same cacheline. If
-> such a function is called and the caches are cold then two cacheline
-> fetches have to be done instead of one.
+> I, er, don't think we do, not for the spinlock primitives at least, as
+> far as I can tell...
 
-FWIW I think that's a valid concern. Also, I think one can question the
-value of __read_mostly for write-through caches, given the mentioned
-concern it probably makes things worse for those. IMO there should be
-a way to turn it off for arch's that know it's no good for them.
+Yes we do ... look in asm/spinlock.h
 
-Cheers
+it's all the mb(); statements that are scattered through our _raw_spin_
+ops
+
+The original problem was that the spinlocks were compile barrier leaky
+and caused infrequent but hard to debug issues on smp.  The barriers are
+likely overkill (since we have two in each) but at least they prevent
+problems.
+
+James
+
+
