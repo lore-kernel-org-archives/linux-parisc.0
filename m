@@ -1,57 +1,46 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH 0/5] section name cleanup for parisc
-Date: Sat, 2 May 2009 10:19:53 -0400
-Message-ID: <20090502141953.GC28342@bombadil.infradead.org>
-References: <1241135719-9286-1-git-send-email-tabbott@mit.edu>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH 3/5] parisc: use new macros for .data.init_task.
+Date: Sat, 02 May 2009 18:16:38 +0200
+Message-ID: <49FC71E6.4000100@gmx.de>
+References: <1241135719-9286-1-git-send-email-tabbott@mit.edu> <1241135719-9286-2-git-send-email-tabbott@mit.edu> <1241135719-9286-3-git-send-email-tabbott@mit.edu> <1241135719-9286-4-git-send-email-tabbott@mit.edu> <49FBD681.9080605@gmx.de> <20090502141308.GA28342@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Sam Ravnborg <sam@ravnborg.org>,
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Tim Abbott <tabbott@MIT.EDU>, Sam Ravnborg <sam@ravnborg.org>,
 	Linux kernel mailing list <linux-kernel@vger.kernel.org>,
 	Anders Kaseorg <andersk@mit.edu>,
 	Waseem Daher <wdaher@mit.edu>,
 	Denys Vlasenko <vda.linux@googlemail.com>,
-	Jeff Arnold <jbarnold@mit.edu>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	linux-parisc@vger.kernel.org
-To: Tim Abbott <tabbott@MIT.EDU>
+	Jeff Arnold <jbarnold@mit.edu>, linux-parisc@vger.kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1241135719-9286-1-git-send-email-tabbott@mit.edu>
+In-Reply-To: <20090502141308.GA28342@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Apr 30, 2009 at 07:55:14PM -0400, Tim Abbott wrote:
-> This patch series cleans up the section names on the parisc
-> architecture.  It requires the architecture-independent macro
-> definitions from this patch series:
+Kyle McMartin wrote:
+> On Sat, May 02, 2009 at 07:13:37AM +0200, Helge Deller wrote:
+>> I think this patch is wrong, although it is theoretically correct.
+>>
+>> IIRC, gcc on hppa is not able to provide an alignment >= 8k, which is
+>> why we have done the 16k alignment inside the linker script.
+>> So, I think this change will prevent the parisc kernel to boot up.
+>> Needs testing.
+>>
 > 
-> <http://www.spinics.net/lists/mips/msg33499.html>
-> 
-> The long-term goal here is to add support for building the kernel with
-> -ffunction-sections -fdata-sections.  This requires renaming all the
-> magic section names in the kernel of the form .text.foo, .data.foo,
-> .bss.foo, and .rodata.foo to not have collisions with sections
-> generated for code like:
-> 
-> static int nosave = 0; /* -fdata-sections places in .data.nosave */
-> static void head(); /* -ffunction-sections places in .text.head */
-> 
-> Note that these patches have not been boot-tested (aside from testing
-> the analogous changes on x86), since I don't have access to the
-> appropriate hardware.
-> 
-> 	-Tim Abbott
-> 
-> 
-> Tim Abbott (5):
->   parisc: use NOSAVE_DATA macro for .data.nosave section.
->   parisc: use new macro for .data.cacheline_aligned section.
->   parisc: use new macros for .data.init_task.
->   parisc: use new macro for .data.read_mostly section.
->   parisc: convert to new generic read_mostly support.
-> 
+> I think you're confusing this with the 8-byte maximum alignment from
+> kmalloc and on-stack that prevents us from just using a 16-byte aligned
+> word as a lock on pa1.1?
 
-Not sure what the easiest way to merge these will be... I'll apply them
-to a section-cleanup branch in the parisc git tree until the
-architecture independent portions are upstream.
+No, I was not confusing it with the 8byte-alignment.
 
-regards, Kyle
+I really meant that a > 8k alignment was not possible.
+I tried exactly the same stuff once and failed.
+I think the restriction came from hpux compatibility or some old gas...
+
+Anyway, I just tried some assembly and it seems to work.
+
+> The patch I trimmed from this mail looks correct to me.
+
+If you apply it and it boots OK for you, I'm fine.
+
+Helge
