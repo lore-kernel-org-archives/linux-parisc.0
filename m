@@ -1,50 +1,44 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: Fixed strace [ was Re: ls -l is broken ]
-Date: Sat, 2 May 2009 19:43:48 -0400
-Message-ID: <20090502234348.GE28342@bombadil.infradead.org>
-References: <20080417075357.GB23641@phobos.i.cabal.ca> <20090502223459.BC8924EE8@hiauly1.hia.nrc.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: Kernel Panic during init with 2.6.29-gb609308 (fresh clone of git
+Date: Sat, 2 May 2009 20:48:46 -0400 (EDT)
+Message-ID: <20090503004846.9BBCD4FC6@hiauly1.hia.nrc.ca>
+References: <no.id>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@mcmartin.ca>, matthew@wil.cx,
-	linux-parisc@vger.kernel.org, debian-hppa@lists.debian.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Content-Type: text/plain; charset=US-ASCII
+Cc: T-Bone@parisc-linux.org, linux-parisc@vger.kernel.org
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090502223459.BC8924EE8@hiauly1.hia.nrc.ca>
+In-Reply-To: <no.id> from "John David Anglin" at May 2, 2009 05:30:49 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, May 02, 2009 at 06:34:59PM -0400, John David Anglin wrote:
-> Hi Kyle,
-> 
-> > On Sun, Apr 06, 2008 at 07:09:59PM -0400, John David Anglin wrote:
-> > > > If you strace it, what syscall returns -EOPNOTSUPP?
-> > > 
-> > > strace is broken and quits before the relevant syscall.  Think I
-> > > mentioned this before is a different context.
-> > > 
-> > 
-> > Fixed & updated strace available at
-> > http://people.debian.org/~kyle/strace/
-> 
-> strace is either broken again or debian didn't pick up your fix.  The link
-> to your updated version is broken.
-> 
-> This happens when tracing sshd during a connection attempt with -f option:
-> 
-> strace -f -p 2390
-> Process 2390 attached - interrupt to quit
-> _newselect(7, [3 4], NULL, NULL, NULL
-> ...
-> [pid  5627] open("/etc/selinux/config", O_RDONLY|O_LARGEFILE) = -1 ENOENT (No such file or directory)
-> upeek: ptrace(PTRACE_PEEKUSER,5627,4294967292,0): Input/output error
-> Process 5627 detached
-> <... _newselect resumed> )              = 1 (in [6])
-> 
-> Trying to figure out why sshd sometimes does wierd stuff.
-> 
+> You might try building with the 4.1 branch.  I have had more luck
+> with it.
 
-I'll take a look, the strace link is broken because sadly the debian
-people didn't migrate the entirety of the people machine when they
-brought in a new one.
+I tried building 2.6.22.19 with debian 4.3.  Boot fails here:
 
-regards, Kyle
+md: raid0 personality registered for level 0
+md: raid1 personality registered for level 1
+TCP cubic registered
+NET: Registered protocol family 1
+NET: Registered protocol family 17
+Freeing unused kernel memory: <0>------------[ cut here ]------------
+Badness at 000000004011e44c [verbose debug info unavailable]
+Backtrace:
+Backtrace:
+ [<00000000401128c0>] dump_stack+0x18/0x28
+
+Have to hit 'RS' twice.  The first time there is a hpmc in the memory test:
+
+#  Location|Alert| Encoded Field    |  Data Field    |   Keyword / Timestamp
+-------------------------------------------------------------------------------
+52951  SFW  0   0  0x030010D500E00000 0000000000000000 CPU_STOP
+52950  SFW  0   2  0x438010EF00E01B50 00000000FFFFFFFF MEM_UNEXPECTED_HPMC
+                                                      03 May 2009 00:35:26
+52949  SFW  0   0  0x160000C400E00000 0000000280000000 MEM_INIT
+52948  SFW  0   0  0x370000FB00E00000 000000F000004002 MEM_WARN_INIT_ONLY
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
