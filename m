@@ -1,124 +1,101 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Random memory corruption with 64-bit SMP 2.6.30-rc4
-Date: Sun, 3 May 2009 14:25:53 -0400
-Message-ID: <20090503182553.GA1579@hiauly1.hia.nrc.ca>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH 3/5] parisc: use new macros for .data.init_task.
+Date: Sun, 03 May 2009 21:37:38 +0200
+Message-ID: <49FDF282.7010207@gmx.de>
+References: <1241135719-9286-1-git-send-email-tabbott@mit.edu> <1241135719-9286-2-git-send-email-tabbott@mit.edu> <1241135719-9286-3-git-send-email-tabbott@mit.edu> <1241135719-9286-4-git-send-email-tabbott@mit.edu> <49FBD681.9080605@gmx.de> <20090502221006.GA4309@uranus.ravnborg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Tim Abbott <tabbott@MIT.EDU>,
+	Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+	Anders Kaseorg <andersk@mit.edu>,
+	Waseem Daher <wdaher@mit.edu>,
+	Denys Vlasenko <vda.linux@googlemail.com>,
+	Jeff Arnold <jbarnold@mit.edu>,
+	Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
+To: Sam Ravnborg <sam@ravnborg.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756421AbZECTh4@vger.kernel.org>
+In-Reply-To: <20090502221006.GA4309@uranus.ravnborg.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I'm not able to build gcc with 2.6.30-rc4.  Builds don't usually get
-beyond stage1.  A variety of applications generate SEGVs, the most common
-one being /bin/sh (bash).  I looked at one that seemed reasonably easy
-to understand.  Quite a few of the SEGVs occur running _dl_fixup.
+Sam Ravnborg wrote:
+> On Sat, May 02, 2009 at 07:13:37AM +0200, Helge Deller wrote:
+>> Tim Abbott wrote:
+>>> .data.init_task should not need a separate output section; this change
+>>> moves it into the .data section.
+>>>
+>>> Signed-off-by: Tim Abbott <tabbott@mit.edu>
+>>> Cc: Kyle McMartin <kyle@mcmartin.ca>
+>>> Cc: Helge Deller <deller@gmx.de>
+>>> Cc: linux-parisc@vger.kernel.org
+>>
+>> I think this patch is wrong, although it is theoretically correct.
+>>
+>> IIRC, gcc on hppa is not able to provide an alignment >= 8k, which is
+>> why we have done the 16k alignment inside the linker script.
+>> So, I think this change will prevent the parisc kernel to boot up.
+>> Needs testing.
+> 
+> The patch does not do much...
+> 
+>> Helge
+>>
+>>> ---
+>>>  arch/parisc/kernel/init_task.c   |    2 +-
+>>>  arch/parisc/kernel/vmlinux.lds.S |   10 ++--------
+>>>  2 files changed, 3 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/arch/parisc/kernel/init_task.c b/arch/parisc/kernel/init_task.c
+>>> index 1e25a45..8ee17ea 100644
+>>> --- a/arch/parisc/kernel/init_task.c
+>>> +++ b/arch/parisc/kernel/init_task.c
+>>> @@ -48,7 +48,7 @@ EXPORT_SYMBOL(init_mm);
+>>>   * "init_task" linker map entry..
+>>>   */
+>>>  union thread_union init_thread_union
+>>> -	__attribute__((aligned(128))) __attribute__((__section__(".data.init_task"))) =
+>>> +	__attribute__((aligned(128))) __init_task_data =
+>>>  		{ INIT_THREAD_INFO(init_task) };
+> This is a simple replacement with a nicer way to say "this belongs to
+> the .data.init_task section - no functional difference.
+> 
+> 
+>>>  
+>>>  #if PT_NLEVELS == 3
+>>> diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
+>>> index b5936c9..c8a528d 100644
+>>> --- a/arch/parisc/kernel/vmlinux.lds.S
+>>> +++ b/arch/parisc/kernel/vmlinux.lds.S
+>>> @@ -103,6 +103,8 @@ SECTIONS
+>>>  	. = ALIGN(L1_CACHE_BYTES);
+>>>  	/* Data */
+>>>  	.data : {
+>>> +		/* assembler code expects init_task to be 16k aligned */
+>>> +		INIT_TASK_DATA(16384)
+>>>  		NOSAVE_DATA
+>>>  		CACHELINE_ALIGNED_DATA(L1_CACHE_BYTES)
+>>>  		DATA_DATA
+>>> @@ -133,14 +135,6 @@ SECTIONS
+>>>  	}
+>>>  	__bss_stop = .;
+>>>  
+>>> -
+>>> -	/* assembler code expects init_task to be 16k aligned */
+>>> -	. = ALIGN(16384);
+>>> -	/* init_task */
+>>> -	.data.init_task : {
+>>> -		*(.data.init_task)
+>>> -	}
+>>> -
+> This part moves away from a specific output section to including this in the
+> .data output section - with the _same_ alignmnet.
+> So the only issue here is that we move init_task before NOSAVE_DATA etc.
+> 
+> I do not see why you think this changes alignmnet?
 
-dave@mx3210:~/gnu/gcc/objdir/prev-gcc$ /usr/bin/gdb -c core /bin/bash
-GNU gdb 6.8-debian
-Copyright (C) 2008 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
-and "show warranty" for details.
-This GDB was configured as "hppa-linux-gnu"...
-(no debugging symbols found)
+Ugh. Of course you are correct. It doesn't change anything.
+Patch is OK for me.
+I missed the 16384 in INIT_TASK_DATA(16384).
 
-warning: core file may not match specified executable file.
-Reading symbols from /lib/libncurses.so.5...(no debugging symbols found)...done.
-Loaded symbols for /lib/libncurses.so.5
-Reading symbols from /lib/libdl.so.2...Reading symbols from /usr/lib/debug/lib/libdl-2.9.so...done.
-done.
-Loaded symbols for /lib/libdl.so.2
-Reading symbols from /lib/libc.so.6...Reading symbols from /usr/lib/debug/lib/libc-2.9.so...done.
-done.
-Loaded symbols for /lib/libc.so.6
-Reading symbols from /lib/ld.so.1...Reading symbols from /usr/lib/debug/lib/ld-2.9.so...done.
-done.
-Loaded symbols for /lib/ld.so.1
-
-Core was generated by `/bin/sh -c echo unprotoize|sed 's,y,y,''.
-Program terminated with signal 11, Segmentation fault.
-[New process 6109]
-#0  do_lookup_x (new_hash=2090198464, old_hash=0xc00a1b08, ref=0x159a0,
-    result=0xc00a1b18, scope=0x40421b3c, i=0, flags=1, skip=0x0)
-    at do-lookup.h:73
-73      do-lookup.h: No such file or directory.
-	in do-lookup.h
-Function "fancy_abort" not defined.
-Make breakpoint pending on future shared library load? (y or [n]) [answered N; input not from terminal]
-Breakpoint 1 at 0x41c84
-Breakpoint 2 at 0x406c52cc: file exit.c, line 39. (2 locations)
-Breakpoint 3 at 0x406c3a14: file abort.c, line 55.
-
-(gdb) disass 0x4040906c 0x4040908c
-Dump of assembler code from 0x4040906c to 0x4040908c:
-0x4040906c <do_lookup_x+356>:   cmpib,=,n 0,r25,0x40408fe4 <do_lookup_x+220>
-0x40409070 <do_lookup_x+360>:   ldo 1(r3),r3
-0x40409074 <do_lookup_x+364>:   ldw 38(r22),ret0
-0x40409078 <do_lookup_x+368>:   ldw 34(r22),r20
-0x4040907c <do_lookup_x+372>:   ldw 4(ret0),r16
-0x40409080 <do_lookup_x+376>:   ldw 4(r20),ret0
-0x40409084 <do_lookup_x+380>:   stw ret0,-9c(sp)
-0x40409088 <do_lookup_x+384>:   ldw 184(r22),r20
-End of assembler dump.
-
-(gdb) bt
-#0  do_lookup_x (new_hash=2090198464, old_hash=0xc00a1b08, ref=0x159a0,
-    result=0xc00a1b18, scope=0x40421b3c, i=0, flags=1, skip=0x0)
-    at do-lookup.h:73
-#1  0x4040944c in _dl_lookup_symbol_x (undef_name=0x1ac6d "dup2",
-    undef_map=0x404219e0, ref=0xc00a1a48, symbol_scope=0x40421b98,
-    version=0x40001440, type_class=1, flags=1, skip_map=0x0) at dl-lookup.c:340
-#2  0x4040d340 in _dl_fixup (l=0x404219e0, reloc_offset=<value optimized out>)
-    at dl-runtime.c:108
-#3  0x40413a48 in _dl_runtime_resolve () from /lib/ld.so.1
-#4  0x00036260 in ?? ()
-#5  0x00039d14 in ?? ()
-#6  0x000373b8 in execute_command_internal ()
-#7  0x00036bfc in ?? ()
-#8  0x000382a4 in execute_command_internal ()
-#9  0x00073a68 in parse_and_execute ()
-#10 0x00025a1c in ?? ()
-#11 0x000269a8 in main ()
-
-(gdb) p/x $ret0
-$1 = 0x0
-(gdb) p/x $r20
-$2 = 0x0
-(gdb) p/x $r22
-$3 = 0x404219e0
-(gdb) p/x 0x404219e0 + 0x34
-$4 = 0x40421a14
-(gdb) x/64x 0x404219e0
-0x404219e0:     0x00000000      0x4041a448      0x000ca0f0      0x40000bf0
-0x404219f0:     0x00000000      0x404219e0      0x00000000      0x40421cb4
-0x40421a00:     0x00000000      0x000ca100      0x000ca150      0x000ca140
-0x40421a10:     0x000ca118      0x000ca120      0x000ca128      0x000ca168
-0x40421a20:     0x000ca170      0x000ca178      0x000ca130      0x000ca138
-0x40421a30:     0x000ca108      0x000ca110      0x00000000      0x00000000
-0x40421a40:     0x00000000      0x00000000      0x00000000      0x00000000
-0x40421a50:     0x000ca158      0x000ca148      0x00000000      0x000ca160
-0x40421a60:     0x00000000      0x00000000      0x00000000      0x00000000
-0x40421a70:     0x00000000      0x00000000      0x00000000      0x00000000
-0x40421a80:     0x00000000      0x00000000      0x000ca188      0x000ca180
-0x40421a90:     0x00000000      0x00000000      0x00000000      0x00000000
-0x40421aa0:     0x00000000      0x00000000      0x00000000      0x00000000
-0x40421ab0:     0x00000000      0x00000000      0x00000000      0x00000000
-0x40421ac0:     0x00000000      0x000ca190      0x00000000      0x00000000
-0x40421ad0:     0x00000000      0x00000000      0x00000000      0x00000000
-
-So, the values in $r20 and $ret0 are not consistent with the values in
-memory pointed to by $r22.  I looked at the assembler code for do_lookup_x
-and as far as I can tell, there is no way to avoid the path through
-do_lookup_x+364.  Further, $rp is consistent with do_lookup_x being
-called at its normal entry position.  So, either memory or $r22 is
-corrupt in the core dump.
-
-The values like 0x000ca... probably are from bash.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Thanks,
+Helge
