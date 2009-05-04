@@ -1,63 +1,51 @@
-From: Dirk Van Hertem <dirk.vanhertem@ieee.org>
-Subject: Re: random freezes B2000 running debian hppa lenny
-Date: Mon, 04 May 2009 01:07:06 +0200
-Message-ID: <49FE239A.2000807@ieee.org>
-References: <49FB108B.9030803@ieee.org> <20090503112554.GB6617@lackof.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: Random memory corruption with 64-bit SMP 2.6.30-rc4
+Date: Mon, 4 May 2009 12:45:47 -0400
+Message-ID: <119aab440905040945s3148cb76sf525be6dbd3e9049@mail.gmail.com>
+References: <20090503182553.GA1579@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Cc: linux-parisc@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090503112554.GB6617@lackof.org>
+In-Reply-To: <20090503182553.GA1579@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello Grant,
+On Sun, May 3, 2009 at 2:25 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+> I'm not able to build gcc with 2.6.30-rc4. =A0Builds don't usually ge=
+t
+> beyond stage1. =A0A variety of applications generate SEGVs, the most =
+common
+> one being /bin/sh (bash). =A0I looked at one that seemed reasonably e=
+asy
+> to understand. =A0Quite a few of the SEGVs occur running _dl_fixup.
 
-Thanks for the reply.
+That is odd, but certainly a place where I would expect memory
+corruption to bite you, since if you resolve the wrong address you
+will likely crash.
 
-Grant Grundler wrote:
-[Dirk's problems with HP and promise card removed]
->> So, my questions:
->> * Is this sata promise card the fault?
-> 
-> Likely, yes.
-> 
->> * on the web, the errors on the display seemed to indicate hardware
->> problems, but any insight on that?
-> 
-> HW caught the error. Unless this happens w/o Promise care present,
-> I'm not inclined to believe this is a HW problem.
+> So, the values in $r20 and $ret0 are not consistent with the values i=
+n
+> memory pointed to by $r22. =A0I looked at the assembler code for do_l=
+ookup_x
+> and as far as I can tell, there is no way to avoid the path through
+> do_lookup_x+364. =A0Further, $rp is consistent with do_lookup_x being
+> called at its normal entry position. =A0So, either memory or $r22 is
+> corrupt in the core dump.
 
-I am now running it without the promise card, I'll keep you informed
-whether it blocks or not (I'll run a small program on it to give it some
-cpu load, as the mdadm raid stuff also gave it quite some cpu load and
-it still may be a HW fault).
+Could you run the entire build with LD_BIND_NOW=3D1 set? Does it crash
+anywhere else?
 
-> 
->> * Best ways to solve this?
-> 
-> Capture "ser pim" output (aka PIM dump).
+> The values like 0x000ca... probably are from bash.
 
-If that doesn't kill the machine in a day or so, I'll make sure I'll get
-some output from the serial console with the promise card attached. My
-VT220 seems to have died recently (do you happen to know what a black
-screen and blinking "hold screen" and "lock" lights mean on a real VT220?).
+Yes, the application would be at a low address.
 
-In case I don't get the VT220 working, I'll make sure I'll connect using
-minicom (if I just find that nullmodem cable and the adapter of that old
-laptop with serial port :P).
-
-Thanks for the help!
-
-Dirk
-
-ps: I could put my sata disks in an old i386 of course, but I like the
-hp parisc better...
-
-
--- 
-Dirk Van Hertem                       Dirk.VanHertem@esat.kuleuven.be
-Electrical Engineering Department  http://www.esat.kuleuven.be/electa
-K.U. Leuven, ESAT-ELECTA                         tel: +32-16-32.18.95
-10, Kasteelpark Arenberg, B-3001 Heverlee        fax: +32-16-32.19.85
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
