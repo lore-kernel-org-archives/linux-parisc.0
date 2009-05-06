@@ -1,40 +1,52 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: Random memory corruption with 64-bit SMP 2.6.30-rc4
-Date: Tue, 5 May 2009 21:51:35 -0400 (EDT)
-Message-ID: <20090506015136.A36034FAF@hiauly1.hia.nrc.ca>
-References: <49FFEA3A.4080902@gmx.de>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: Fixed strace [ was Re: ls -l is broken ]
+Date: Wed, 6 May 2009 12:04:42 -0400
+Message-ID: <20090506160442.GE3094@bombadil.infradead.org>
+References: <20090505191845.GD3094@bombadil.infradead.org> <20090505194658.07D074EDA@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: carlos@systemhalted.org, dave.anglin@nrc-cnrc.gc.ca,
-	linux-parisc@vger.kernel.org
-To: deller@gmx.de (Helge Deller)
+Content-Type: text/plain; charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>, matthew@wil.cx,
+	linux-parisc@vger.kernel.org, debian-hppa@lists.debian.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <49FFEA3A.4080902@gmx.de> from "Helge Deller" at May 5, 2009 09:26:50 am
+In-Reply-To: <20090505194658.07D074EDA@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> Could it be, that always r21 and r22 are involved?
-> Maybe we don't restore them correctly after some syscalls like fork / getpwnam...?
-> Esp. the comment for r21-r22 in arch/parisc/kernel/entry.S:1708 seems interesting:
+On Tue, May 05, 2009 at 03:46:57PM -0400, John David Anglin wrote:
+> > On Tue, May 05, 2009 at 03:09:50PM -0400, John David Anglin wrote:
+> > > Probably, the cast should be to int.  __canonicalize_funcptr_for_compare
+> > > isn't used in the 64-bit runtime.
+> > > 
+> > > Still, I'm not sure why this fixed the problem as
+> > > __canonicalize_funcptr_for_compare checks for -1.
+> > > 
+> > 
+> > If we cast both sides to int, then we don't generate a call there...
 > 
->         /* Register saving semantics for system calls:
+> That will certainly fix the problem but I'd really like to know
+> why we get a segv.  I suspect we are not handling a deferred function
+> pointer correctly.
 > 
->            %r1             clobbered by system call macro in userspace
->            %r2             saved in PT_REGS by gateway page
->            %r3  - %r18     preserved by C code (saved by signal code)
->            %r19 - %r20     saved in PT_REGS by gateway page
->            %r21 - %r22     non-standard syscall args
->                            stored in kernel stack by gateway page
 
-This is only true for r21 and r22 with a 32-bit kernel (see syscall.S:176).
-However, the argument locations might get mixed up if one wasn't careful.
-The getpwent bug occurs with both 32 and 64-bit kernels on the c3750.
+At a guess, you're probably right, the faulting insn is a load:
 
-I guess I should test a UP kernel on the rp3440.  I have never seen
-the getpwent bug on the rp3440.  I don't see the memory corruption
-on the c3750 (gcc builds without problems using 2.6.30-rc4).
+0x0002b3a8 <__canonicalize_funcptr_for_compare+48>:	bb,>= r26,1e,0x2b394 <__canonicalize_funcptr_for_compare+28>
+0x0002b3ac <__canonicalize_funcptr_for_compare+52>:	copy r26,r3
+0x0002b3b0 <__canonicalize_funcptr_for_compare+56>:	addil L%800,dp,r1
+0x0002b3b4 <__canonicalize_funcptr_for_compare+60>:	ldw 294(r1),ret1
+0x0002b3b8 <__canonicalize_funcptr_for_compare+64>:	depwi 0,31,2,r3
+0x0002b3bc <__canonicalize_funcptr_for_compare+68>:	ldw 0(r3),r26
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+god knows I can't recall how DEP*I work, but I guess this is clearing
+the bottom two bits of %r3 if bit 31 is set in %r26?
+
+(gdb) p/x $r3 
+$3 = 0x407d2f18
+(gdb) p/x $r26
+$4 = 0x407d2f1a
+
+This looks like the sigaction handler, (it appears __canon..._compare
+detects -1 already.)
+
+regards, Kyle
