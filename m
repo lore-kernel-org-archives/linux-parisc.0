@@ -1,36 +1,76 @@
-From: Rowland Hook <rjhook70@gmail.com>
-Subject: From Martins D.Legacy
-Date: Fri, 5 Jun 2009 13:35:59 -0700
-Message-ID: <73e2b0650906051335u7fbb0886x64d3f6216e0c30b3__44681.8154225641$1244234189$gmane$org@mail.gmail.com>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: HPPA and Squeeze
+Date: Sat, 6 Jun 2009 12:36:01 -0600
+Message-ID: <20090606183600.GA425@lackof.org>
+References: <20090602140734.GC26721@mx0.halon.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Cc: HPPA porters <debian-hppa@lists.debian.org>,
+	admin@debian-ports.org, linux-parisc@vger.kernel.org
+To: Neil McGovern <neilm@debian.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090602140734.GC26721@mx0.halon.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-My name is Martines Legacy
++linux-parisc (hppa kernel, compiler and !debian tech forum)
 
-I am an American soldier serving in the military with the army's 3rd
-infantry division.with a need for assistance, I have summed up courage
-to contact you. I found your contact in address on  journal. I got a
-huge fund of Forty Million United States Dollars, (US$40,000,000)
-.This money is among the various currencies which was discovered in
-barrels at a farm-house near one of  Saddam Hussein old palaces in
-Tikrit-Iraq during a rescue operation. I and Sgt James.Howie where the
-first to discover this fund. We concluded and took part of this money
-which is ($40,000.000.00) and shared between us before informing
-anybody about it. This was quite an illegal even last week a roadside
-bomb killed my brother in-law. Find the story on
-web-address below:  http://news.bbc.co.uk/2/hi/middle_east/2988455.stm?
-If  you will do this with good faith and you assure me that my
-percentage will be safe in your care until I complete my service
-here,then I shall agree with You. This is no stolen money, and there
-is no danger involved. We will share upon this ratio: I will take 50%
-and you will take 30%. and 20% shall be given to charity organisation
-which you shall takecare of this offer after a sucessfull transaction,
-We will discuss this in details.
+Neil,
+thanks for the summary. I know this is an unpleasant business in general.
 
-Thanks
-Sgt.Martines Legacy
-Email: proger34@yahoo.com
+On Tue, Jun 02, 2009 at 03:07:35PM +0100, Neil McGovern wrote:
+> Hi,
+> 
+> As mentioned previously[0], the release team haven't been happy with the
+> state of the HPPA port in Debian. After the release team meeting[1], it
+> has been decided that unfortunatly HPPA will not be supported for
+> Squeeze. This was after careful consideration, and wasn't an easy
+> decision.
+> 
+> This means that ftpmasters will be asked to remove HPPA from testing and
+> unstable from the 30th June. It is suggested that HPPA porters may wish
+> to consider using debian-ports.org if they wish to continue with the
+> port.
+> 
+> Regards,
+> Neil McGovern
+> 
+> [0] http://lists.debian.org/debian-release/2009/04/msg00299.html
+
+Carlos O'Donnell asked some questions in response to [0] and I never
+saw any response.  Can an attendee of the above meeting please reply
+this email from Carlos?
+    http://lists.debian.org/debian-release/2009/04/msg00303.html
+
+I also never got a response to my offer here:
+    http://lists.debian.org/debian-release/2009/04/msg00339.html
+
+
+And my response again to this question posted in [0]:
+> * The machines that host the buildds still seem to have a very
+> unreliable kernel. Is there any update on this?
+
+Quite a few serious hppa specific bugs have been fixed upstream over
+the past 6 months. This is worth revisiting.
+
+Is upstream stable enough for a buildd?  I don't know since I'm not aware
+of any attempts to run a buildd with those kernels.
+
+Is the answer to that question still germane?
+If so, I'm willing to setup a local buildd and try it. But I will need
+more time and some commitment that if it works, hppa remain in testing
+release (that's all I personally care about - I don't care about "stable"
+releases.)
+
+
+> [1] http://lists.debian.org/debian-project/2009/05/msg00080.html
+
+Can we have the minutes for this meeting?
+
+Also, I'd like to ask HPPA debs be kept in "testing" staging area,
+just never promoted when the release is cut.  This will let people
+continue using HPPA without having to suffer with the !hppa breakage
+that lives in unstable.
+
+thanks,
+grant
