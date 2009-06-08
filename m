@@ -1,59 +1,100 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] fix irq compile bugs in arch/parisc/kernel/irq.c
-Date: Sat, 06 Jun 2009 23:54:28 +0200
-Message-ID: <4A2AE594.9050306@gmx.de>
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [RFC] remove dead code from sys_parisc32.c
+Date: Mon, 8 Jun 2009 09:37:27 +0200
+Message-ID: <20090608073727.GA19976@lst.de>
+References: <20080817024151.GA24129@lst.de> <20081105140810.GA5411@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20081105140810.GA5411@lst.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Fix miscompilation in arch/parisc/kernel/irq.c:
-/mnt/sda4/home/cvs/parisc/git-kernel/linus-linux-2.6/arch/parisc/kernel/irq.c:123: warning: passing arg 1 of `cpumask_setall' from incompatible pointer type
-/mnt/sda4/home/cvs/parisc/git-kernel/linus-linux-2.6/arch/parisc/kernel/irq.c:141: warning: passing arg 1 of `cpumask_copy' from incompatible pointer type
-/mnt/sda4/home/cvs/parisc/git-kernel/linus-linux-2.6/arch/parisc/kernel/irq.c:300: warning: passing arg 1 of `cpumask_copy' from incompatible pointer type
-/mnt/sda4/home/cvs/parisc/git-kernel/linus-linux-2.6/arch/parisc/kernel/irq.c:357: warning: passing arg 2 of `cpumask_copy' from incompatible pointer type
+ping?
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index 4ea4229..570a335 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -120,7 +120,7 @@ int cpu_check_affinity(unsigned int irq, const struct cpumask *dest)
- 	if (CHECK_IRQ_PER_CPU(irq)) {
- 		/* Bad linux design decision.  The mask has already
- 		 * been set; we must reset it */
--		cpumask_setall(&irq_desc[irq].affinity);
-+		cpumask_setall(irq_desc[irq].affinity);
- 		return -EINVAL;
- 	}
- 
-@@ -138,7 +138,7 @@ static void cpu_set_affinity_irq(unsigned int irq, const struct cpumask *dest)
- 	if (cpu_dest < 0)
- 		return;
- 
--	cpumask_copy(&irq_desc[irq].affinity, dest);
-+	cpumask_copy(irq_desc[irq].affinity, dest);
- }
- #endif
- 
-@@ -297,7 +297,7 @@ int txn_alloc_irq(unsigned int bits_wide)
- unsigned long txn_affinity_addr(unsigned int irq, int cpu)
- {
- #ifdef CONFIG_SMP
--	cpumask_copy(&irq_desc[irq].affinity, cpumask_of(cpu));
-+	cpumask_copy(irq_desc[irq].affinity, cpumask_of(cpu));
- #endif
- 
- 	return per_cpu(cpu_data, cpu).txn_addr;
-@@ -354,7 +354,7 @@ void do_cpu_irq_mask(struct pt_regs *regs)
- 	irq = eirr_to_irq(eirr_val);
- 
- #ifdef CONFIG_SMP
--	cpumask_copy(&dest, &irq_desc[irq].affinity);
-+	cpumask_copy(&dest, irq_desc[irq].affinity);
- 	if (CHECK_IRQ_PER_CPU(irq_desc[irq].status) &&
- 	    !cpu_isset(smp_processor_id(), dest)) {
- 		int cpu = first_cpu(dest);
+On Wed, Nov 05, 2008 at 03:08:10PM +0100, Christoph Hellwig wrote:
+> Anyone wants to pick this one up?
+> 
+> On Sun, Aug 17, 2008 at 04:41:51AM +0200, Christoph Hellwig wrote:
+> > Unless I'm totally missing something get_fd_set32/set_fd_set32 are
+> > completely unused.
+> > 
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > 
+> > Index: linux-2.6/arch/parisc/kernel/sys_parisc32.c
+> > ===================================================================
+> > --- linux-2.6.orig/arch/parisc/kernel/sys_parisc32.c	2008-08-16 23:40:26.000000000 -0300
+> > +++ linux-2.6/arch/parisc/kernel/sys_parisc32.c	2008-08-16 23:40:46.000000000 -0300
+> > @@ -284,68 +284,6 @@ int cp_compat_stat(struct kstat *stat, s
+> >  	return err;
+> >  }
+> >  
+> > -/*** copied from mips64 ***/
+> > -/*
+> > - * Ooo, nasty.  We need here to frob 32-bit unsigned longs to
+> > - * 64-bit unsigned longs.
+> > - */
+> > -
+> > -static inline int
+> > -get_fd_set32(unsigned long n, u32 *ufdset, unsigned long *fdset)
+> > -{
+> > -	n = (n + 8*sizeof(u32) - 1) / (8*sizeof(u32));
+> > -	if (ufdset) {
+> > -		unsigned long odd;
+> > -
+> > -		if (!access_ok(VERIFY_WRITE, ufdset, n*sizeof(u32)))
+> > -			return -EFAULT;
+> > -
+> > -		odd = n & 1UL;
+> > -		n &= ~1UL;
+> > -		while (n) {
+> > -			unsigned long h, l;
+> > -			__get_user(l, ufdset);
+> > -			__get_user(h, ufdset+1);
+> > -			ufdset += 2;
+> > -			*fdset++ = h << 32 | l;
+> > -			n -= 2;
+> > -		}
+> > -		if (odd)
+> > -			__get_user(*fdset, ufdset);
+> > -	} else {
+> > -		/* Tricky, must clear full unsigned long in the
+> > -		 * kernel fdset at the end, this makes sure that
+> > -		 * actually happens.
+> > -		 */
+> > -		memset(fdset, 0, ((n + 1) & ~1)*sizeof(u32));
+> > -	}
+> > -	return 0;
+> > -}
+> > -
+> > -static inline void
+> > -set_fd_set32(unsigned long n, u32 *ufdset, unsigned long *fdset)
+> > -{
+> > -	unsigned long odd;
+> > -	n = (n + 8*sizeof(u32) - 1) / (8*sizeof(u32));
+> > -
+> > -	if (!ufdset)
+> > -		return;
+> > -
+> > -	odd = n & 1UL;
+> > -	n &= ~1UL;
+> > -	while (n) {
+> > -		unsigned long h, l;
+> > -		l = *fdset++;
+> > -		h = l >> 32;
+> > -		__put_user(l, ufdset);
+> > -		__put_user(h, ufdset+1);
+> > -		ufdset += 2;
+> > -		n -= 2;
+> > -	}
+> > -	if (odd)
+> > -		__put_user(*fdset, ufdset);
+> > -}
+> > -
+> >  struct msgbuf32 {
+> >      int mtype;
+> >      char mtext[1];
+> ---end quoted text---
+---end quoted text---
