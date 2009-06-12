@@ -1,134 +1,114 @@
-From: akpm@linux-foundation.org
-Subject: [patch 1/1] parisc: remove obsolete hw_interrupt_type
-Date: Wed, 10 Jun 2009 12:56:04 -0700
-Message-ID: <200906101956.n5AJu4gQ009106@imap1.linux-foundation.org>
-Cc: linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
-	tglx@linutronix.de
-To: kyle@mcmartin.ca
+From: Luk Claes <luk@debian.org>
+Subject: Re: HPPA and Squeeze
+Date: Fri, 12 Jun 2009 08:49:26 +0200
+Message-ID: <4A31FA76.20103@debian.org>
+References: <20090602140734.GC26721@mx0.halon.org.uk> <20090606183600.GA425@lackof.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Debian Release <debian-release@lists.debian.org>,
+	admin@debian-ports.org, linux-parisc@vger.kernel.org
+To: HPPA porters <debian-hppa@lists.debian.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090606183600.GA425@lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Grant Grundler wrote:
+> +linux-parisc (hppa kernel, compiler and !debian tech forum)
+> 
+> Neil,
+> thanks for the summary. I know this is an unpleasant business in general.
+> 
+> On Tue, Jun 02, 2009 at 03:07:35PM +0100, Neil McGovern wrote:
+>> Hi,
+>>
+>> As mentioned previously[0], the release team haven't been happy with the
+>> state of the HPPA port in Debian. After the release team meeting[1], it
+>> has been decided that unfortunatly HPPA will not be supported for
+>> Squeeze. This was after careful consideration, and wasn't an easy
+>> decision.
+>>
+>> This means that ftpmasters will be asked to remove HPPA from testing and
+>> unstable from the 30th June. It is suggested that HPPA porters may wish
+>> to consider using debian-ports.org if they wish to continue with the
+>> port.
+>>
+>> Regards,
+>> Neil McGovern
+>>
+>> [0] http://lists.debian.org/debian-release/2009/04/msg00299.html
+> 
+> Carlos O'Donnell asked some questions in response to [0] and I never
+> saw any response.  Can an attendee of the above meeting please reply
+> this email from Carlos?
+>
+>     http://lists.debian.org/debian-release/2009/04/msg00303.html
 
-The defines and typedefs (hw_interrupt_type, no_irq_type, irq_desc_t) have
-been kept around for migration reasons.  After more than two years it's
-time to remove them finally.
+Note that it's wrong to assume we will come with the answers. It's an
+extra bad feeling we get that even the people that do respond when there
+is a request regarding hppa porters don't know what the issues are...
 
-This patch cleans up one of the remaining users.  When all such patches
-hit mainline we can remove the defines and typedefs finally.
+> I also never got a response to my offer here:
+>     http://lists.debian.org/debian-release/2009/04/msg00339.html
 
-Impact: cleanup
+There was some discussion with DSA and they didn't seem willing to take
+the offer as it would be very restricted regarding access and control
+(too strongly firewalled if I remember correctly) for our
+administrators. It's rather strange that you did not get any feedback in
+that regard.
 
-Convert the last remaining users to struct irq_chip and remove the
-define.
+> And my response again to this question posted in [0]:
+>> * The machines that host the buildds still seem to have a very
+>> unreliable kernel. Is there any update on this?
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Kyle McMartin <kyle@mcmartin.ca>
+It looks like the amount of random crashes has decreased and the amount
+of random segfaults has increased, though does not look promising after
+more than 2 years already of random issues like this.
 
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
+> Is upstream stable enough for a buildd?  I don't know since I'm not aware
+> of any attempts to run a buildd with those kernels.
 
- arch/parisc/kernel/irq.c |    2 +-
- drivers/parisc/dino.c    |    2 +-
- drivers/parisc/eisa.c    |    2 +-
- drivers/parisc/gsc.c     |    4 ++--
- drivers/parisc/gsc.h     |    2 +-
- drivers/parisc/iosapic.c |    2 +-
- drivers/parisc/superio.c |    2 +-
- 7 files changed, 8 insertions(+), 8 deletions(-)
+Rather recent kernels have been tried and like said above seem to behave
+better, but still very much subpar.
 
-diff -puN arch/parisc/kernel/irq.c~parisc-remove-obsolete-hw_interrupt_type arch/parisc/kernel/irq.c
---- a/arch/parisc/kernel/irq.c~parisc-remove-obsolete-hw_interrupt_type
-+++ a/arch/parisc/kernel/irq.c
-@@ -144,7 +144,7 @@ static int cpu_set_affinity_irq(unsigned
- }
- #endif
- 
--static struct hw_interrupt_type cpu_interrupt_type = {
-+static struct irq_chip cpu_interrupt_type = {
- 	.typename	= "CPU",
- 	.startup	= cpu_startup_irq,
- 	.shutdown	= cpu_disable_irq,
-diff -puN drivers/parisc/dino.c~parisc-remove-obsolete-hw_interrupt_type drivers/parisc/dino.c
---- a/drivers/parisc/dino.c~parisc-remove-obsolete-hw_interrupt_type
-+++ a/drivers/parisc/dino.c
-@@ -353,7 +353,7 @@ static unsigned int dino_startup_irq(uns
- 	return 0;
- }
- 
--static struct hw_interrupt_type dino_interrupt_type = {
-+static struct irq_chip dino_interrupt_type = {
- 	.typename	= "GSC-PCI",
- 	.startup	= dino_startup_irq,
- 	.shutdown	= dino_disable_irq,
-diff -puN drivers/parisc/eisa.c~parisc-remove-obsolete-hw_interrupt_type drivers/parisc/eisa.c
---- a/drivers/parisc/eisa.c~parisc-remove-obsolete-hw_interrupt_type
-+++ a/drivers/parisc/eisa.c
-@@ -188,7 +188,7 @@ static unsigned int eisa_startup_irq(uns
- 	return 0;
- }
- 
--static struct hw_interrupt_type eisa_interrupt_type = {
-+static struct irq_chip eisa_interrupt_type = {
- 	.typename =	"EISA",
- 	.startup =	eisa_startup_irq,
- 	.shutdown =	eisa_disable_irq,
-diff -puN drivers/parisc/gsc.c~parisc-remove-obsolete-hw_interrupt_type drivers/parisc/gsc.c
---- a/drivers/parisc/gsc.c~parisc-remove-obsolete-hw_interrupt_type
-+++ a/drivers/parisc/gsc.c
-@@ -148,7 +148,7 @@ static unsigned int gsc_asic_startup_irq
- 	return 0;
- }
- 
--static struct hw_interrupt_type gsc_asic_interrupt_type = {
-+static struct irq_chip gsc_asic_interrupt_type = {
- 	.typename =	"GSC-ASIC",
- 	.startup =	gsc_asic_startup_irq,
- 	.shutdown =	gsc_asic_disable_irq,
-@@ -158,7 +158,7 @@ static struct hw_interrupt_type gsc_asic
- 	.end =		no_end_irq,
- };
- 
--int gsc_assign_irq(struct hw_interrupt_type *type, void *data)
-+int gsc_assign_irq(struct irq_chip *type, void *data)
- {
- 	static int irq = GSC_IRQ_BASE;
- 	struct irq_desc *desc;
-diff -puN drivers/parisc/gsc.h~parisc-remove-obsolete-hw_interrupt_type drivers/parisc/gsc.h
---- a/drivers/parisc/gsc.h~parisc-remove-obsolete-hw_interrupt_type
-+++ a/drivers/parisc/gsc.h
-@@ -38,7 +38,7 @@ struct gsc_asic {
- int gsc_common_setup(struct parisc_device *parent, struct gsc_asic *gsc_asic);
- int gsc_alloc_irq(struct gsc_irq *dev);			/* dev needs an irq */
- int gsc_claim_irq(struct gsc_irq *dev, int irq);	/* dev needs this irq */
--int gsc_assign_irq(struct hw_interrupt_type *type, void *data);
-+int gsc_assign_irq(struct irq_chip *type, void *data);
- int gsc_find_local_irq(unsigned int irq, int *global_irq, int limit);
- void gsc_fixup_irqs(struct parisc_device *parent, void *ctrl,
- 		void (*choose)(struct parisc_device *child, void *ctrl));
-diff -puN drivers/parisc/iosapic.c~parisc-remove-obsolete-hw_interrupt_type drivers/parisc/iosapic.c
---- a/drivers/parisc/iosapic.c~parisc-remove-obsolete-hw_interrupt_type
-+++ a/drivers/parisc/iosapic.c
-@@ -729,7 +729,7 @@ static int iosapic_set_affinity_irq(unsi
- }
- #endif
- 
--static struct hw_interrupt_type iosapic_interrupt_type = {
-+static struct irq_chip iosapic_interrupt_type = {
- 	.typename =	"IO-SAPIC-level",
- 	.startup =	iosapic_startup_irq,
- 	.shutdown =	iosapic_disable_irq,
-diff -puN drivers/parisc/superio.c~parisc-remove-obsolete-hw_interrupt_type drivers/parisc/superio.c
---- a/drivers/parisc/superio.c~parisc-remove-obsolete-hw_interrupt_type
-+++ a/drivers/parisc/superio.c
-@@ -325,7 +325,7 @@ static unsigned int superio_startup_irq(
- 	return 0;
- }
- 
--static struct hw_interrupt_type superio_interrupt_type = {
-+static struct irq_chip superio_interrupt_type = {
- 	.typename =	SUPERIO,
- 	.startup =	superio_startup_irq,
- 	.shutdown =	superio_disable_irq,
-_
+> Is the answer to that question still germane?
+> If so, I'm willing to setup a local buildd and try it. But I will need
+> more time and some commitment that if it works, hppa remain in testing
+> release (that's all I personally care about - I don't care about "stable"
+> releases.)
+
+That's not how it works. testing is the preparation for the next stable
+release, so staying in testing means fixing any important outstanding
+porting issue and most importantly the random crashes and segfaults,
+actively making sure there are no important issues with the hppa port
+within Debian and committing to support the next stable release.
+
+> Can we have the minutes for this meeting?
+
+No, I didn't even get the chance myself to read them. A summary of the
+minutes will be posted as usual in the next 'Bits from the Release Team'
+though.
+
+> Also, I'd like to ask HPPA debs be kept in "testing" staging area,
+> just never promoted when the release is cut.  This will let people
+> continue using HPPA without having to suffer with the !hppa breakage
+> that lives in unstable.
+
+This will get DSA, maintainers, release team and others keep being
+frustrated that hppa issues are making their work harder and will only
+be tolerated if there will finally be a clear commitment from the hppa
+porters to deal with any present and future important porting issue in a
+reasonable time frame.
+
+The main problem we have with hppa is that important porter issues are
+not dealt with in a reasonable time frame. The random crashes and
+segfaults are lasting for years already!
+
+Note that we do *NOT* intend to drop hppa from unstable, it being
+mentioned at all was an unfortunate sign of the deep frustration of some...
+
+Cheers
+
+Luk
+
+Debian Release Manager
