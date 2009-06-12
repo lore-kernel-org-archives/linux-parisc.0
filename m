@@ -1,114 +1,96 @@
-From: Luk Claes <luk@debian.org>
+From: Bart Schelstraete <bart@schelstraete.org>
 Subject: Re: HPPA and Squeeze
-Date: Fri, 12 Jun 2009 08:49:26 +0200
-Message-ID: <4A31FA76.20103@debian.org>
-References: <20090602140734.GC26721@mx0.halon.org.uk> <20090606183600.GA425@lackof.org>
+Date: Fri, 12 Jun 2009 09:53:23 +0200
+Message-ID: <9905faa50906120053u3f58af9fubac865a921ff4eaa@mail.gmail.com>
+References: <20090602140734.GC26721@mx0.halon.org.uk>
+	 <20090606183600.GA425@lackof.org> <4A31FA76.20103@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Debian Release <debian-release@lists.debian.org>,
-	admin@debian-ports.org, linux-parisc@vger.kernel.org
-To: HPPA porters <debian-hppa@lists.debian.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090606183600.GA425@lackof.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: multipart/alternative; boundary=001636c5bf1cbd5a3b046c220024
+Cc: HPPA porters <debian-hppa@lists.debian.org>,
+	Debian Release <debian-release@lists.debian.org>, admin@debian-ports.org,
+	linux-parisc@vger.kernel.org
+To: Luk Claes <luk@debian.org>
+Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
+In-Reply-To: <4A31FA76.20103@debian.org>
+Resent-Message-ID: <Awq8lIBAPdO.A.4mB.EmgMKB@liszt>
 List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-Grant Grundler wrote:
-> +linux-parisc (hppa kernel, compiler and !debian tech forum)
-> 
-> Neil,
-> thanks for the summary. I know this is an unpleasant business in general.
-> 
-> On Tue, Jun 02, 2009 at 03:07:35PM +0100, Neil McGovern wrote:
->> Hi,
->>
->> As mentioned previously[0], the release team haven't been happy with the
->> state of the HPPA port in Debian. After the release team meeting[1], it
->> has been decided that unfortunatly HPPA will not be supported for
->> Squeeze. This was after careful consideration, and wasn't an easy
->> decision.
->>
->> This means that ftpmasters will be asked to remove HPPA from testing and
->> unstable from the 30th June. It is suggested that HPPA porters may wish
->> to consider using debian-ports.org if they wish to continue with the
->> port.
->>
->> Regards,
->> Neil McGovern
->>
->> [0] http://lists.debian.org/debian-release/2009/04/msg00299.html
-> 
-> Carlos O'Donnell asked some questions in response to [0] and I never
-> saw any response.  Can an attendee of the above meeting please reply
-> this email from Carlos?
+--001636c5bf1cbd5a3b046c220024
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+Hello all,
+
+Everybody is talking about the 'random crashes' and 'segfaults' in the HPPA
+version.
+Over here I'm using the hppa on a small HP-UX workstation, and that has an
+uptime of 542 days!.
+So it's not that unstable.
+I even need to say that I had a lot more crashes with the x86 version then
+with the hppa version.
+
+
+Just to say that I'm personally not so unhappy with deb hppa, and that not
+everything is bad.
+
+
+B
+
+On Fri, Jun 12, 2009 at 8:49 AM, Luk Claes <luk@debian.org> wrote:
+
 >
->     http://lists.debian.org/debian-release/2009/04/msg00303.html
+> The main problem we have with hppa is that important porter issues are
+> not dealt with in a reasonable time frame. The random crashes and
+> segfaults are lasting for years already!
+>
+> Note that we do *NOT* intend to drop hppa from unstable, it being
+> mentioned at all was an unfortunate sign of the deep frustration of some...
+>
+>
+-- 
+Schelstraete Bart
+http://www.schelstraete.org
+bart@schelstraete.org
+Sent from Brussels, Brx, Belgium
+Mae West <http://www.brainyquote.com/quotes/authors/m/mae_west.html>  - "I
+like restraint, if it doesn't go too far."
 
-Note that it's wrong to assume we will come with the answers. It's an
-extra bad feeling we get that even the people that do respond when there
-is a request regarding hppa porters don't know what the issues are...
+--001636c5bf1cbd5a3b046c220024
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> I also never got a response to my offer here:
->     http://lists.debian.org/debian-release/2009/04/msg00339.html
+Hello all,<br><br>Everybody is talking about the &#39;random crashes&#39; a=
+nd &#39;segfaults&#39; in the HPPA version.<br>Over here I&#39;m using the =
+hppa on a small HP-UX workstation, and that has an uptime of 542 days!.<br>
+So it&#39;s not that unstable. <br>I even need to say that I had a lot more=
+ crashes with the x86 version then with the hppa version.<br><br><br>Just t=
+o say that I&#39;m personally not so unhappy with deb hppa, and that not ev=
+erything is bad.<br>
+<br><br>B<br><br><div class=3D"gmail_quote">On Fri, Jun 12, 2009 at 8:49 AM=
+, Luk Claes <span dir=3D"ltr">&lt;<a href=3D"mailto:luk@debian.org">luk@deb=
+ian.org</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D=
+"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padd=
+ing-left: 1ex;">
+<br>
+The main problem we have with hppa is that important porter issues are<br>
+not dealt with in a reasonable time frame. The random crashes and<br>
+segfaults are lasting for years already!<br>
+<br>
+Note that we do *NOT* intend to drop hppa from unstable, it being<br>
+mentioned at all was an unfortunate sign of the deep frustration of some...=
+<br>
+<br>
+</blockquote></div><br>-- <br>Schelstraete Bart<br><a href=3D"http://www.sc=
+helstraete.org">http://www.schelstraete.org</a><br><a href=3D"mailto:bart@s=
+chelstraete.org">bart@schelstraete.org</a><br>Sent from Brussels, Brx, Belg=
+ium<br>
+<a href=3D"http://www.brainyquote.com/quotes/authors/m/mae_west.html" targe=
+t=3D"_blank">Mae West</a> =A0- &quot;I like restraint, if it doesn&#39;t go=
+ too far.&quot;
 
-There was some discussion with DSA and they didn't seem willing to take
-the offer as it would be very restricted regarding access and control
-(too strongly firewalled if I remember correctly) for our
-administrators. It's rather strange that you did not get any feedback in
-that regard.
-
-> And my response again to this question posted in [0]:
->> * The machines that host the buildds still seem to have a very
->> unreliable kernel. Is there any update on this?
-
-It looks like the amount of random crashes has decreased and the amount
-of random segfaults has increased, though does not look promising after
-more than 2 years already of random issues like this.
-
-> Is upstream stable enough for a buildd?  I don't know since I'm not aware
-> of any attempts to run a buildd with those kernels.
-
-Rather recent kernels have been tried and like said above seem to behave
-better, but still very much subpar.
-
-> Is the answer to that question still germane?
-> If so, I'm willing to setup a local buildd and try it. But I will need
-> more time and some commitment that if it works, hppa remain in testing
-> release (that's all I personally care about - I don't care about "stable"
-> releases.)
-
-That's not how it works. testing is the preparation for the next stable
-release, so staying in testing means fixing any important outstanding
-porting issue and most importantly the random crashes and segfaults,
-actively making sure there are no important issues with the hppa port
-within Debian and committing to support the next stable release.
-
-> Can we have the minutes for this meeting?
-
-No, I didn't even get the chance myself to read them. A summary of the
-minutes will be posted as usual in the next 'Bits from the Release Team'
-though.
-
-> Also, I'd like to ask HPPA debs be kept in "testing" staging area,
-> just never promoted when the release is cut.  This will let people
-> continue using HPPA without having to suffer with the !hppa breakage
-> that lives in unstable.
-
-This will get DSA, maintainers, release team and others keep being
-frustrated that hppa issues are making their work harder and will only
-be tolerated if there will finally be a clear commitment from the hppa
-porters to deal with any present and future important porting issue in a
-reasonable time frame.
-
-The main problem we have with hppa is that important porter issues are
-not dealt with in a reasonable time frame. The random crashes and
-segfaults are lasting for years already!
-
-Note that we do *NOT* intend to drop hppa from unstable, it being
-mentioned at all was an unfortunate sign of the deep frustration of some...
-
-Cheers
-
-Luk
-
-Debian Release Manager
+--001636c5bf1cbd5a3b046c220024--
