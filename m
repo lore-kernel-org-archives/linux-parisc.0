@@ -1,45 +1,33 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: HPPA and Squeeze
-Date: Mon, 15 Jun 2009 19:32:00 +0200
-Message-ID: <4A368590.4000008@gmx.de>
-References: <20090602140734.GC26721@mx0.halon.org.uk> <20090606183600.GA425@lackof.org> <20090608212606.GC19894@halon.org.uk> <20090615162656.GA2690@lackof.org>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [RFC] remove dead code from sys_parisc32.c
+Date: Mon, 15 Jun 2009 18:51:18 -0400
+Message-ID: <20090615225118.GD13153@bombadil.infradead.org>
+References: <20090608073727.GA19976@lst.de> <20090608141752.7E16F4FC4@hiauly1.hia.nrc.ca> <20090608142039.GA3806@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: Neil McGovern <maulkin@halon.org.uk>,
-	HPPA porters <debian-hppa@lists.debian.org>,
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
 	linux-parisc@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: Christoph Hellwig <hch@lst.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090615162656.GA2690@lackof.org>
+In-Reply-To: <20090608142039.GA3806@lst.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 06/15/2009 06:26 PM, Grant Grundler wrote:
-> On Mon, Jun 08, 2009 at 10:26:06PM +0100, Neil McGovern wrote:
->> Firstly, thanks for your mail, apologies that I haven't replied sooner,
->> we've had EU and local elections, so I've been busy runnign around with
->> leaflets, knocking on doors, kissing babies etc. like any politician. No
->> expenses though...
->
-> No problem.
->
->> On Sat, Jun 06, 2009 at 12:36:01PM -0600, Grant Grundler wrote:
->>> Carlos O'Donnell asked some questions in response to [0] and I never
->>> saw any response.  Can an attendee of the above meeting please reply
->>> this email from Carlos?
->>>      http://lists.debian.org/debian-release/2009/04/msg00303.html
->>>
->> I'm not sure what replies you'd like... there's certainly been some
->> follow ups to that mail.
->
-> The following questions haven't been answered in that thread:
-> 1) Is there a list of different porting efforts?
-> 2) What is considered proper java support? GCJ?
->
-> I've commented on the kernel side and it's looking better.
-> I don't know the status of the HPPA installer.
+On Mon, Jun 08, 2009 at 04:20:39PM +0200, Christoph Hellwig wrote:
+> On Mon, Jun 08, 2009 at 10:17:51AM -0400, John David Anglin wrote:
+> > > On Wed, Nov 05, 2008 at 03:08:10PM +0100, Christoph Hellwig wrote:
+> > > > Anyone wants to pick this one up?
+> > > > 
+> > > > On Sun, Aug 17, 2008 at 04:41:51AM +0200, Christoph Hellwig wrote:
+> > > > > Unless I'm totally missing something get_fd_set32/set_fd_set32 are
+> > > > > completely unused.
+> > 
+> > In theory, they were removed in 2004 by this proposed change:
+> > http://lkml.org/lkml/2004/4/17/37
+> 
+> The users were removed, the helpers stayed.  Kyle promised to put the
+> patch to remove them in last year, but somehow the patch got lost a
+> couple of times :)
+> 
 
-The HPPA installer should be OK:
-http://www.mail-archive.com/debian-hppa@lists.debian.org/msg06298.html
-
-Helge
+Yeah yeah, I suck. :) I'll send it along tonight.
