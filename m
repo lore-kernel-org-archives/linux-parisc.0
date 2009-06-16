@@ -1,45 +1,34 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH 56/64] parisc: remove driver_data direct access of
-	struct device
-Date: Tue, 16 Jun 2009 13:24:18 -0400
-Message-ID: <20090616172418.GB15952@bombadil.infradead.org>
-References: <20090616051351.GA23627@kroah.com> <1245131213-24168-56-git-send-email-gregkh@suse.de> <20090616151524.GA15952@bombadil.infradead.org> <20090616162524.GF26879@suse.de>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: HPPA and Squeeze
+Date: Tue, 16 Jun 2009 21:08:37 +0200
+Message-ID: <4A37EDB5.2020400@gmx.de>
+References: <20090602140734.GC26721@mx0.halon.org.uk> <20090606183600.GA425@lackof.org> <4A31FA76.20103@debian.org> <20090615173102.GC2690@lackof.org> <20090616062531.GA17957@xanadu.blop.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@mcmartin.ca>, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>
-To: Greg KH <gregkh@suse.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090616162524.GF26879@suse.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+ HPPA porters <debian-hppa@lists.debian.org>,
+ Debian Release <debian-release@lists.debian.org>,
+ admin@debian-ports.org, linux-parisc@vger.kernel.org
+To: Lucas Nussbaum <lucas@lucas-nussbaum.net>,
+ Carlos O'Donell <carlos@systemhalted.org>
+Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
+In-Reply-To: <20090616062531.GA17957@xanadu.blop.info>
+Resent-Message-ID: <J-mIOvCa3BN.A.vYC.L3-NKB@liszt>
 List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Tue, Jun 16, 2009 at 09:25:24AM -0700, Greg KH wrote:
-> On Tue, Jun 16, 2009 at 11:15:24AM -0400, Kyle McMartin wrote:
-> > On Mon, Jun 15, 2009 at 10:46:45PM -0700, Greg Kroah-Hartman wrote:
-> > > In the near future, the driver core is going to not allow direct access
-> > > to the driver_data pointer in struct device.  Instead, the functions
-> > > dev_get_drvdata() and dev_set_drvdata() should be used.  These functions
-> > > have been around since the beginning, so are backwards compatible with
-> > > all older kernel versions.
-> > > 
-> > > Cc: linux-parisc@vger.kernel.org
-> > > Cc: Helge Deller <deller@gmx.de>
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
-> > 
-> > Acked-by: Kyle McMartin <kyle@mcmartin.ca>
-> > 
-> > Do you want to push it along with the rest of them, or would you like me
-> > to apply it?
-> 
-> This was sent a while ago, and is going to Linus right now.  So if you
-> want to also add it to your tree, so that it is sure to not get lost,
-> that is fine with me :)
-> 
+On 06/16/2009 08:25 AM, Lucas Nussbaum wrote:
+> On 15/06/09 at 11:31 -0600, Grant Grundler wrote:
+> PS: if you want an HPPA-specific issue to play with,
+> http://experimental.debian.net/fetch.php?&pkg=ruby1.9&ver=1.9.0.1-5&arch=hppa&stamp=1213563978&file=log&as=raw
+> might be a good candidate.
 
-Ah, it probably already was, but I've been so busy in the last month or
-two that I missed sending anything after .30-rc$early. (I only asked
-because Linus wasn't on the CC so I figured it was out for review
-again, or something.)
+In reality it's not (any longer) a hppa specific bug. It's a bug in ruby.
+Ruby just relies on NPTL specific behaviour of threads and as such plays mad on LinuxThreads, which we still have active on hppa.
+The good thing is, that the NPTL switch-over was started by Carlos, so I expect that this should be fixed when NPTL hits unstable...
 
-cheers, Kyle
+Helge
