@@ -1,41 +1,74 @@
-From: Aurelien Jarno <aurelien@aurel32.net>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: HPPA and Squeeze
-Date: Tue, 16 Jun 2009 21:13:17 +0200
-Message-ID: <20090616191317.GG25535@hall.aurel32.net>
-References: <20090602140734.GC26721@mx0.halon.org.uk> <20090606183600.GA425@lackof.org> <4A31FA76.20103@debian.org> <20090615173102.GC2690@lackof.org> <20090616062531.GA17957@xanadu.blop.info> <4A37EDB5.2020400@gmx.de>
+Date: Tue, 16 Jun 2009 14:50:27 -0600
+Message-ID: <20090616205027.GB25380@lackof.org>
+References: <20090602140734.GC26721@mx0.halon.org.uk> <20090606183600.GA425@lackof.org> <4A31FA76.20103@debian.org> <20090615173102.GC2690@lackof.org> <20090616062531.GA17957@xanadu.blop.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Cc: Lucas Nussbaum <lucas@lucas-nussbaum.net>, Helge Deller <deller@gmx.de>,
-	Grant Grundler <grundler@parisc-linux.org>,
+Content-Type: text/plain; charset=us-ascii
+Cc: Grant Grundler <grundler@parisc-linux.org>,
 	HPPA porters <debian-hppa@lists.debian.org>,
 	Debian Release <debian-release@lists.debian.org>,
 	admin@debian-ports.org, linux-parisc@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>
-Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
-In-Reply-To: <4A37EDB5.2020400@gmx.de>
-Resent-Message-ID: <IBDO7OydSyL.A.HDD.b7-NKB@liszt>
+To: Lucas Nussbaum <lucas@lucas-nussbaum.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090616062531.GA17957@xanadu.blop.info>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Tue, Jun 16, 2009 at 09:08:37PM +0200, Helge Deller wrote:
-> On 06/16/2009 08:25 AM, Lucas Nussbaum wrote:
->> On 15/06/09 at 11:31 -0600, Grant Grundler wrote:
->> PS: if you want an HPPA-specific issue to play with,
->> http://experimental.debian.net/fetch.php?&pkg=ruby1.9&ver=1.9.0.1-5&arch=hppa&stamp=1213563978&file=log&as=raw
->> might be a good candidate.
->
-> In reality it's not (any longer) a hppa specific bug. It's a bug in ruby.
-> Ruby just relies on NPTL specific behaviour of threads and as such plays mad on LinuxThreads, which we still have active on hppa.
-> The good thing is, that the NPTL switch-over was started by Carlos, so I expect that this should be fixed when NPTL hits unstable...
->
+On Tue, Jun 16, 2009 at 08:25:31AM +0200, Lucas Nussbaum wrote:
+...
+> > BTW, that firewall was reviewed and approved by Lamont (a pretty well
+> > known DD and buildd maintainer).
+> > 
+> > Thibaut Varene (who is a DD) has offered to host HPPA buildd machines
+> > as well but hasn't heard any response to that offer either.
+> 
+> (Stepping in ; I had some HPPA-related issues in one of my packages -
+> ruby1.9 - so this is based on my experience with that problems)
+> 
+> I think that your email summarizes the problem quite well: there are
+> several people willing to offer buildd hosting, help after someone else
+> has investigated the issues, etc.
+> What debian-hppa currently lacks is someone that is willing to
+> proactively detect issues (looking at packages that failed to build, for
+> example), investigate them, and fix them. This can be done cooperating
+> with the package maintainers, but the HPPA side should take the lead.
 
-BTW, Carlos, could you please send me the latest version of your
-patches, so that we can actually do the switch with version 2.10?
+Yup - this is definitely true. debian-hppa needed alot of prodding to
+look at buildd failures.
 
--- 
-Aurelien Jarno	                        GPG: 1024D/F1BCDB73
-aurelien@aurel32.net                 http://www.aurel32.net
+> The fact that HPPA people are asking the release team "what are the
+> problems you are talking about?" clearly shows that this is broken: the
+> HPPA people should be knowing more than the release team about HPPA
+> issues.
+
+Generalizing one person's response (mine) to represent the group is wrong.
+
+However I agree the release team has no one who cares about HPPA involved.
+And yes, it's up to the release team to track bugs and determine
+the viability of a release based on outstanding bugs.
+
+As I said before, I'm ok with NOT having a "stable" HPPA release.
+If someone disagrees, then they need to participate in the release
+team and help debian-hppa focus on critical buildd failures. ie generate
+the nag mail listing the HPPA-specific issues that need to be resolved.
+
+
+> PS: if you want an HPPA-specific issue to play with,
+> http://experimental.debian.net/fetch.php?&pkg=ruby1.9&ver=1.9.0.1-5&arch=hppa&stamp=1213563978&file=log&as=raw
+> might be a good candidate.
+
+This did take a long time to resolve. Helge described the root cause
+(ruby did not support LinuxThreads implementation correctly) and
+resolution plan (migrate HPPA to NTPL).
+
+No phase of this problem sounds trivial to debug or resolve.
+Based on this, I can argue the HPPA response is reasonable even
+if is unsatisfactory and frustrating to you (as package maintainer).
+
+Do you have another HPPA specific issue?
+Or maybe just remind the list how to find those issues?
+(Teach a man to fish...)
+
+thanks,
+grant
