@@ -1,29 +1,40 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: HPPA and Squeeze
-Date: Tue, 16 Jun 2009 22:37:32 -0400 (EDT)
-Message-ID: <20090617023733.51ABF4FC4@hiauly1.hia.nrc.ca>
-References: <4A2EB3E6.9080302@gmx.de>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [PATCH] fix parisc runtime hangs wrt pa_tlb_lock
+Date: Tue, 16 Jun 2009 22:55:29 -0400
+Message-ID: <20090617025529.GA19032@bombadil.infradead.org>
+References: <20090528015037.3417E4FEA@hiauly1.hia.nrc.ca> <4A2ADEC9.2090403@gmx.de> <4A35741F.6000107@gmx.de> <20090614232046.GA14028@hiauly1.hia.nrc.ca> <4A3805E4.4080305@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: nospam@vuorela.dk, maulkin@halon.org.uk,
-	linux-parisc@vger.kernel.org, debian-hppa@lists.debian.org
-To: deller@gmx.de (Helge Deller)
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4A2EB3E6.9080302@gmx.de> from "Helge Deller" at Jun 9, 2009 09:11:34 pm
+In-Reply-To: <4A3805E4.4080305@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> Again, kernel bugs are sometimes hard to find.
-> I still think that http://patchwork.kernel.org/patch/28458/ may fix a few.
-> The only outstanding bug I still know of is that we sometimes face uid/gid issues.
-> This still needs analysis.
+On Tue, Jun 16, 2009 at 10:51:48PM +0200, Helge Deller wrote:
+> On 06/15/2009 01:20 AM, John David Anglin wrote:
+>> I am convinced that interrupts need to be disabled on SMP kernels to
+>> prevent deadlock.  On UP kernels, I am not convinced that anything bad
+>> happens if we do a tlb purge while handling an interrupt since we don't
+>> have to worry about preventing bus conflicts.  The UP code can't
+>> deadlock.  I'm thinking that we can stay with disabling preemption.
+>
+> Dave is right and it took me long to understand his point...
+> I continued testing and we can simply just disable preemption for UP
+> kernels and use an irq-safe spinlock for SMP kernels.
+>
+> Below is the latest and greatest patch which fixes this bug.
+> Run-tested onUP kernels and compile-tested on SMP kernels.
+>
 
-Helge suggested yesterday that the uid/gid issue might be a bug in nscd.
-I installed 2.6.30 last night and disabled nscd.  I have now run for more
-than a day without this issue appearing.  The machine did a full GCC build
-and check taking about 24 hours.
+Ugh, I'd really prefer it if we just took the irq disable and enable hit
+on UP by making the codepaths the same... Is that ok with you or?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Kyle
+
+> Kyle, it would be nice if you could apply it as soon as possible.
+> The bug is existing since a long time, so it might make sense to backport
+> it to older kernels as well...
+>
