@@ -1,47 +1,50 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: HPPA and Squeeze
-Date: Wed, 17 Jun 2009 07:14:01 -0400
-Message-ID: <119aab440906170414q1111608yd57633756427e62a@mail.gmail.com>
-References: <20090602140734.GC26721@mx0.halon.org.uk>
-	 <20090606183600.GA425@lackof.org> <4A31FA76.20103@debian.org>
-	 <20090615173102.GC2690@lackof.org>
-	 <20090616062531.GA17957@xanadu.blop.info> <4A37EDB5.2020400@gmx.de>
-	 <20090616191317.GG25535@hall.aurel32.net>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH 2/9] percpu: use dynamic percpu allocator as the
+ default percpu allocator
+Date: Wed, 17 Jun 2009 08:40:59 -0400
+Message-ID: <1245242459.4503.4.camel@mulgrave.site>
+References: <1245210060-24344-1-git-send-email-tj@kernel.org>
+	 <1245210060-24344-3-git-send-email-tj@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Lucas Nussbaum <lucas@lucas-nussbaum.net>, Helge Deller <deller@gmx.de>,
-	Grant Grundler <grundler@parisc-linux.org>, HPPA porters <debian-hppa@lists.debian.org>,
-	Debian Release <debian-release@lists.debian.org>, admin@debian-ports.org,
-	linux-parisc@vger.kernel.org
-To: Aurelien Jarno <aurelien@aurel32.net>
-Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
-In-Reply-To: <20090616191317.GG25535@hall.aurel32.net>
-Resent-Message-ID: <AbuVhEPet_L.A.WT.KANOKB@liszt>
+Content-Type: text/plain
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+	linux-arch@vger.kernel.org, mingo@elte.hu, kyle@mcmartin.ca,
+	cl@linux-foundation.org, Jesper.Nilsson@axis.com,
+	benh@kernel.crashing.org, paulmck@linux.vnet.ibm.com,
+	Paul Mundt <lethal@linux-sh.org>,
+	Russell King <rmk@arm.linux.org.uk>,
+	Mikael Starvik <starvik@axis.com>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	Bryan Wu <cooloney@kernel.org>,
+	Matthew Wilcox <matthew@wil.cx>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	Hirokazu Takata <takata@linux-m32r.org>,
+	Richard Henderson <rth@twiddle.net>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: Tejun Heo <tj@kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1245210060-24344-3-git-send-email-tj@kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Tue, Jun 16, 2009 at 3:13 PM, Aurelien Jarno<aurelien@aurel32.net> wrote:
-> On Tue, Jun 16, 2009 at 09:08:37PM +0200, Helge Deller wrote:
->> On 06/16/2009 08:25 AM, Lucas Nussbaum wrote:
->>> On 15/06/09 at 11:31 -0600, Grant Grundler wrote:
->>> PS: if you want an HPPA-specific issue to play with,
->>> http://experimental.debian.net/fetch.php?&pkg=ruby1.9&ver=1.9.0.1-5&arch=hppa&stamp=1213563978&file=log&as=raw
->>> might be a good candidate.
->>
->> In reality it's not (any longer) a hppa specific bug. It's a bug in ruby.
->> Ruby just relies on NPTL specific behaviour of threads and as such plays mad on LinuxThreads, which we still have active on hppa.
->> The good thing is, that the NPTL switch-over was started by Carlos, so I expect that this should be fixed when NPTL hits unstable...
->>
->
-> BTW, Carlos, could you please send me the latest version of your
-> patches, so that we can actually do the switch with version 2.10?
+On Wed, 2009-06-17 at 12:40 +0900, Tejun Heo wrote:
+> 
+> The following architectures are affected by this change.
+> 
+> * sh
+> * arm
+> * cris
+> * mips
+> * sparc(32)
+> * blackfin
+> * avr32
+> * parisc (broken, under investigation)
 
-I'm in the middle of a build-test cycle with glibc/glibc-ports git
-head. I'll send you the patches before the end of today.
+I haven't seen anything of this on the parisc list ... what's the
+problem?  and do you need systems or any other help to fix it?
 
-Cheers,
-Carlos.
+James
+
+
