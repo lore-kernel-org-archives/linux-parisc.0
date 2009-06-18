@@ -1,10 +1,11 @@
-From: Randolph Chung <randolph@tausq.org>
+From: Thibaut VARENE <varenet@debian.org>
 Subject: Re: HPPA and Squeeze
-Date: Thu, 18 Jun 2009 17:40:28 +0800
-Message-ID: <4A3A0B8C.9070104@tausq.org>
-References: <20090618013510.0484B4FE2@hiauly1.hia.nrc.ca> <4A39DFAA.30803@debian.org>
+Date: Thu, 18 Jun 2009 12:16:19 +0200
+Message-ID: <7d01f9f00906180316t1ec13cb2h435d77fefd3cc3d7@mail.gmail.com>
+References: <20090618013510.0484B4FE2@hiauly1.hia.nrc.ca>
+	 <4A39DFAA.30803@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
 	debian-hppa@lists.debian.org, debian-release@lists.debian.org,
 	linux-parisc@vger.kernel.org
@@ -14,35 +15,58 @@ In-Reply-To: <4A39DFAA.30803@debian.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Luk,
+On Thu, Jun 18, 2009 at 8:33 AM, Luk Claes<luk@debian.org> wrote:
+> John David Anglin wrote:
+>>> Grant Grundler schrieb:
+>>>> On Fri, Jun 12, 2009 at 08:49:26AM +0200, Luk Claes wrote:
+>>>>> Grant Grundler wrote:
+>
+>> I can understand the desire to trim architectures. =C2=A0However, it=
+'s clear
+>> the current decision was based on some misinformation, and an unclea=
+r
+>> rational.
+>
 > There is no desire to trim working architectures.
 >
 > It's very easy to tell there is nothing wrong when you don't have to
-> deal with unreliable build daemons, endless discussions but no visible
+> deal with unreliable build daemons, endless discussions but no visibl=
+e
 > progress (except for java support) and complaints from DSA, package
 > maintainers and others.
->   
-If you looked at https://buildd.debian.org/stats/graph-big.png  I think 
-it is obvious hppa is not *that* broken. hppa is >95% built. That is not 
-that bad. Of course, it can be better, but if you looked at this with a 
-historical perspective the port is really in a pretty good shape.
 
-If you looked at the status of the toolchain posted to the 
-gcc-testresults page: http://gcc.gnu.org/ml/gcc-testresults/2009-06/  
-you can see that hppa is one of the better architectures out there. Our 
-results are on par with (if not better than) other supported architectures.
+I'm sorry, but this thread is now over 2 weeks old and we yet have to
+see a *rationale* motivating the current decision. Not some claims
+about bugs (which we still haven't been pointed at, except for the
+ruby one, which we addressed already) affecting the buildds (and that
+only you experience). Speaking of which, I'm not aware of any problem
+affecting lafayette...
 
-IMHO hppa contributed a lot to getting Debian packages (and upstream) 
-properly fixed to build properly across many other architectures and 
-making it easier for new architectures to get incorporated into Debian. 
-It's unfortunate that parisc is no longer a commercially popular 
-platform, but why should not affect whether Debian supports it?
+We have given you tangible elements and have answered each and every
+questions that have been raised in this thread. The release team, on
+the other hand, failed to answer the single question we've been
+asking: what's the rationale for dropping parisc?
 
-It's obvious from the recent exchange that there are still people on the 
-hppa team (and other Debian maintainers) that are willing to work on 
-this architecture to make things better. Also by many metrics it is 
-still very much a working architecture. It's really a shame that 
-Debian's considering dropping support for HPPA in Squeeze. Please 
-reconsider.
+I joined Debian many years ago because it seemed to me that it had
+proper ethics, in particular because decisions were taken
+transparently, and were properly - and openly - discussed before
+anything final was settled. I too have invested time and money into
+the project. I'm extremely disappointed with the handling of the issue
+at stake here.
 
-randolph
+Again, I would like to see a comprehensive rationale for this
+decision, so that we can at least try to address the problems at hands
+and hope for re-inclusion after squeeze. BTW, can you clarify whether
+that would be an option?
+
+Cheers,
+T-Bone
+
+--=20
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
