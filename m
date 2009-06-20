@@ -1,34 +1,36 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: HPPA and Squeeze
-Date: Sat, 20 Jun 2009 19:25:45 -0400 (EDT)
-Message-ID: <20090620232546.162BC4EF8@hiauly1.hia.nrc.ca>
-References: <20090620230751.GC853@lackof.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH][linux-2.6] Fix gcc 4.4 warning in lba_pci.c
+Date: Sat, 20 Jun 2009 18:26:15 -0500
+Message-ID: <1245540375.31688.2.camel@mulgrave.site>
+References: <20090620224613.GB853@lackof.org>
+	 <20090620231151.GA21477@lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: grundler@parisc-linux.org, kurt@roeckx.be, luk@debian.org,
-	debian-hppa@lists.debian.org, linux-parisc@vger.kernel.org,
-	debian-release@lists.debian.org
-To: grundler@parisc-linux.org (Grant Grundler)
+Content-Type: text/plain
+Cc: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	linux-parisc@vger.kernel.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090620230751.GC853@lackof.org> from "Grant Grundler" at Jun 20, 2009 05:07:51 pm
+In-Reply-To: <20090620231151.GA21477@lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > I've pretty much localized the problem.  It's a GCC middle-end bug.
-> > The problem is in passing a complex double from a thunk.  The hppa
-> > specification says that values larger than 64 bits are passed by
-> > reference in the 32-bit runtime.  However, the value is in a pair
-> > of registers and not copied to memory.  This doesn't happen in calls
-> > from normal functions because the value gets copied to a stack slot.
+On Sat, 2009-06-20 at 17:11 -0600, Grant Grundler wrote:
+> On Sat, Jun 20, 2009 at 04:46:13PM -0600, Grant Grundler wrote:
+> > gcc 4.4 warns about:
+> > drivers/parisc/lba_pci.c: In function 'lba_pat_resources':
+> > drivers/parisc/lba_pci.c:1099: warning: the frame size of 8280 bytes is larger than 4096 bytes
+> > 
+> > The problem is we declare two large structures on the stack. They don't need
+> > to be on the stack since they are only used during LBA initialization (which
+> > is serialized). Moving to be "static".
 > 
-> I'm slightly confused about "stack slot". Could the "pass by reference"
-> refer to the address in the stack?
+> Take 2. Per Kyle's request (offlist), use kzalloc instead since it's not
+> ever used again after boot.
 
-The reference can refer to a location on the stack (region allocated
-for locals).  However, values larger than 64 bits can't be passed in the
-argument slots.
+Um, wouldn't one of the points of using kzalloc over a static allocation
+be to free the memory again after we've finished using it?  Otherwise we
+leek a page for every lba.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+James
+
+
