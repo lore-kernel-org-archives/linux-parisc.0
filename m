@@ -1,47 +1,47 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [PATCH][linux-2.6] Fix gcc 4.4 warning in lba_pci.c
-Date: Sat, 20 Jun 2009 16:46:13 -0600
-Message-ID: <20090620224613.GB853@lackof.org>
+Subject: Re: HPPA and Squeeze
+Date: Sat, 20 Jun 2009 17:07:51 -0600
+Message-ID: <20090620230751.GC853@lackof.org>
+References: <20090620215719.GA853@lackof.org> <20090620222521.93CB44EF8@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>
+Cc: Grant Grundler <grundler@parisc-linux.org>, kurt@roeckx.be,
+	luk@debian.org, debian-hppa@lists.debian.org,
+	linux-parisc@vger.kernel.org, debian-release@lists.debian.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090620222521.93CB44EF8@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-gcc 4.4 warns about:
-drivers/parisc/lba_pci.c: In function 'lba_pat_resources':
-drivers/parisc/lba_pci.c:1099: warning: the frame size of 8280 bytes is larger than 4096 bytes
+On Sat, Jun 20, 2009 at 06:25:20PM -0400, John David Anglin wrote:
+> > > I've never been able to file any (non-automated) bug report in
+> > > 5 minutes.  And if you don't even have direct access to the
+> > > hardware it takes longer.
+> > 
+> > I agree. I'm trying to build netgen here too and if the ICE is easy to
+> > reproduce, can make that available to danglin and add to the bugreport.  
+> 
+> There's no problem reproducing the ICE.
 
-The problem is we declare two large structures on the stack. They don't need
-to be on the stack since they are only used during LBA initialization (which
-is serialized). Moving to be "static".
+Indeed...already failed for me.
 
-Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
----
+> I've pretty much localized the problem.  It's a GCC middle-end bug.
+> The problem is in passing a complex double from a thunk.  The hppa
+> specification says that values larger than 64 bits are passed by
+> reference in the 32-bit runtime.  However, the value is in a pair
+> of registers and not copied to memory.  This doesn't happen in calls
+> from normal functions because the value gets copied to a stack slot.
 
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index 59fbbf1..7535cb3 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -980,13 +980,17 @@ static void
- lba_pat_resources(struct parisc_device *pa_dev, struct lba_device *lba_dev)
- {
- 	unsigned long bytecnt;
--	pdc_pat_cell_mod_maddr_block_t pa_pdc_cell;	/* PA_VIEW */
--	pdc_pat_cell_mod_maddr_block_t io_pdc_cell;	/* IO_VIEW */
- 	long io_count;
- 	long status;	/* PDC return status */
- 	long pa_count;
- 	int i;
- 
-+	/* We don't need additional locking around the use of pdc_pat_cell
-+	**  since init time PDC device discovery is already serialized.
-+	*/
-+	static pdc_pat_cell_mod_maddr_block_t pa_pdc_cell;	/* PA_VIEW */
-+	static pdc_pat_cell_mod_maddr_block_t io_pdc_cell;	/* IO_VIEW */
-+
- 	/* return cell module (IO view) */
- 	status = pdc_pat_cell_module(&bytecnt, pa_dev->pcell_loc, pa_dev->mod_index,
- 				PA_VIEW, & pa_pdc_cell);
+I'm slightly confused about "stack slot". Could the "pass by reference"
+refer to the address in the stack?
+
+Anyway, thanks for quickly tracking this down.
+
+grant
+
+> 
+> Dave
+> -- 
+> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+> National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
