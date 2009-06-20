@@ -1,33 +1,30 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: HPPA and Squeeze
-Date: Sat, 20 Jun 2009 18:25:20 -0400 (EDT)
-Message-ID: <20090620222521.93CB44EF8@hiauly1.hia.nrc.ca>
-References: <20090620215719.GA853@lackof.org>
+Date: Sat, 20 Jun 2009 18:44:39 -0400 (EDT)
+Message-ID: <20090620224440.203144EF8@hiauly1.hia.nrc.ca>
+References: <20090619154324.GA26579@durotan.0x539.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: kurt@roeckx.be, luk@debian.org, debian-hppa@lists.debian.org,
+Cc: debian-hppa@lists.debian.org, kurt@roeckx.be,
 	linux-parisc@vger.kernel.org, debian-release@lists.debian.org
-To: grundler@parisc-linux.org (Grant Grundler)
+To: pkern@debian.org (Philipp Kern)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090620215719.GA853@lackof.org> from "Grant Grundler" at Jun 20, 2009 03:57:19 pm
+In-Reply-To: <20090619154324.GA26579@durotan.0x539.de> from "Philipp Kern" at Jun 19, 2009 05:43:24 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > I've never been able to file any (non-automated) bug report in
-> > 5 minutes.  And if you don't even have direct access to the
-> > hardware it takes longer.
+> On Fri, Jun 19, 2009 at 05:15:26PM +0200, Kurt Roeckx wrote:
+> > Here is a list of packages that failed to build because of instability
+> > on the buildds today:
+> > package     | buildd   | error
+> > qgit        | penalosa | make: *** [install] Segmentation fault
+> > acpica-unix | peri     | make: *** [install] Segmentation fault
 > 
-> I agree. I'm trying to build netgen here too and if the ICE is easy to
-> reproduce, can make that available to danglin and add to the bugreport.  
+> I had those random segfaults in make on paer too, until we switched to the
+> UP kernel, at least from what I saw.
 
-There's no problem reproducing the ICE.
-
-I've pretty much localized the problem.  It's a GCC middle-end bug.
-The problem is in passing a complex double from a thunk.  The hppa
-specification says that values larger than 64 bits are passed by
-reference in the 32-bit runtime.  However, the value is in a pair
-of registers and not copied to memory.  This doesn't happen in calls
-from normal functions because the value gets copied to a stack slot.
+Based on my experience with building GCC, a recent UP kernel (e.g., 2.6.30)
+will avoid the random segfault problem.
 
 Dave
 -- 
