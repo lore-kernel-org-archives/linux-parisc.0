@@ -1,49 +1,46 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: Segfault in __c_f_f_c during strace of nptl application.
-Date: Sun, 21 Jun 2009 17:37:23 -0400
-Message-ID: <119aab440906211437y60ad647ax6ec4d1d9890fe997@mail.gmail.com>
-References: <119aab440906211301sf3b549dtd2a29839e86d4bfe@mail.gmail.com>
-	 <20090621202129.69B214F19@hiauly1.hia.nrc.ca>
+Date: Sun, 21 Jun 2009 18:18:21 -0400 (EDT)
+Message-ID: <20090621221822.1E9414FC5@hiauly1.hia.nrc.ca>
+References: <119aab440906211437y60ad647ax6ec4d1d9890fe997@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090621202129.69B214F19@hiauly1.hia.nrc.ca>
+In-Reply-To: <119aab440906211437y60ad647ax6ec4d1d9890fe997@mail.gmail.com> from "Carlos O'Donell" at Jun 21, 2009 05:37:23 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Jun 21, 2009 at 4:21 PM, John David
-Anglin<dave@hiauly1.hia.nrc.ca> wrote:
->> Sorry, this turns out not to be correct, after tracing the assembly
->> completely (including loads in delayed branches) it looks like the
->> location read from the pid through ptrace might be wrong. I'll have =
-to
->> keep debugging this.
->
-> Delayed branches are a nasty invention. =A0I am testing a patch to
-> fix a problem that appeared last week.
+> There is an on-and-off-again bug in glibc's vfprintf.c implementation
+> that causes DBR to miscompile that file, but it comes and goes
+> depending on the gcc version. I filed a bug once, but because I
+> couldn't produce a reduced testcase Pinski closed it. If I see it
+> again I'll try again to produce a reduced testcase.
 
-Interesting.
+That one is a reorg bug.  There have been some fixes in that area.  If
+you can reproduce with 4.3 or later, I will look at it.  Don't worry
+about reproducing a testcase.  Just attached the entire preprocessed
+source (compressed if necessary).  You can reopen old bug.
 
-> When a conditional branch with an unfilled delay slot is followed
-> by an asm, bad things may end up in the delay slot. =A0Even worse,
-> the branch may branch into the delay slot. =A0GCC has no idea what's
-> in an asm. =A0So, I'm trying to add a nop in the delay slot when a
-> conditional branch is followed by an asm.
+In PR40468, the generated assembler code looked like this:
 
-There is an on-and-off-again bug in glibc's vfprintf.c implementation
-that causes DBR to miscompile that file, but it comes and goes
-depending on the gcc version. I filed a bug once, but because I
-couldn't produce a reduced testcase Pinski closed it. If I see it
-again I'll try again to produce a reduced testcase.
+0x000104e4 <f+56>:      cmpb,<>,n ret0,r19,0x104e8 <f+60>
+0x000104e8 <f+60>:      b,l 0x104a8 <ff>,rp
+0x000104ec <f+64>:      ldi 1,r26
 
-How's 4.4 on hppa?
+I don't really understand how the hardware handles the above, but
+the b,l didn't correctly update rp, and ff returned to f.  I would
+have thought the instruction sequence would go:
 
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+f+56, f+60 nullified, f+60, f+64, ff, ..., f+68.
+
+> How's 4.4 on hppa?
+
+Probably as good as any other version (few bugs fixed, a few new
+ones).  It has better error checking, but that may be annoying.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
