@@ -1,80 +1,107 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: Petr Salinger <Petr.Salinger@seznam.cz>
 Subject: Re: HPPA linux compat wrappers
-Date: Mon, 22 Jun 2009 08:05:11 -0400
-Message-ID: <119aab440906220505l26bda054r4280165627332473@mail.gmail.com>
+Date: Mon, 22 Jun 2009 15:29:02 +0200 (CEST)
+Message-ID: <Pine.LNX.4.62.0906221506540.2390@sci.felk.cvut.cz>
 References: <Pine.LNX.4.62.0906221117370.2390@sci.felk.cvut.cz>
+ <119aab440906220505l26bda054r4280165627332473@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: debian-hppa@lists.debian.org, linux-parisc@vger.kernel.org
-To: Petr Salinger <Petr.Salinger@seznam.cz>
-Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
-In-Reply-To: <Pine.LNX.4.62.0906221117370.2390@sci.felk.cvut.cz>
-Resent-Message-ID: <5NELBav06uC.A.YzG.FO3PKB@liszt>
+Content-Type: MULTIPART/MIXED; BOUNDARY="546530387-537495902-1245677342=:2390"
+Cc: debian-hppa@lists.debian.org
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <119aab440906220505l26bda054r4280165627332473@mail.gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Mon, Jun 22, 2009 at 6:51 AM, Petr Salinger<Petr.Salinger@seznam.cz> wro=
-te:
->> However, the usability testing in a chroot + vnc is showing that some
->> applications are segfaulting. I've been looking into this today.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--546530387-537495902-1245677342=:2390
+Content-Type: TEXT/PLAIN; charset=iso-8859-2; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+>> I still think there should be support for mixed ABI calls.
+>> See also thread http://lists.debian.org/debian-hppa/2008/09/msg00018.htm=
+l
 >
-> I still think there should be support for mixed ABI calls.
-> See also thread http://lists.debian.org/debian-hppa/2008/09/msg00018.html
+> It sounds like a good feature, but my time is restricted so I
+> implemented the simplest interface possible that I could prove worked.
+> If you have ample free time I suggest you post a version of the patch
+> with your enhancements. I'd be more than willing to test your patches.
 
-It sounds like a good feature, but my time is restricted so I
-implemented the simplest interface possible that I could prove worked.
-If you have ample free time I suggest you post a version of the patch
-with your enhancements. I'd be more than willing to test your patches.
+I have to admin I will not write the code, I only propose the idea.
 
-> The question is why have been sizeof(pthread_cond_t)
-> expanded from 48 bytes under linuxthreads into
-> 64 bytes under NPTL. I do not see a reson for it.
-> IMHO, it might significantly break compatibility.
+1) put "__lt_compat" field in a place where originally is LT initializer.
 
-This is technically a mistake, the new NPTL structure should be 48
-bytes as well. I'll fix that in my sources.
+--- sysdeps/unix/sysv/linux/hppa/nptl/bits/pthreadtypes.h
++++ sysdeps/unix/sysv/linux/hppa/nptl/bits/pthreadtypes.h.compat=20
+@@ -70,6 +70,7 @@ pthread_mutex_t
+      /* KIND must stay at this position in the structure to maintain
+         binary compatibility.  */
+      int __kind;
++    int __lt_compat;
+      unsigned int __nusers;
+      __extension__ union
+      {
+@@ -95,10 +96,11 @@ pthread_cond_t
+    struct
+    {
+      int __lock;
+-    unsigned int __futex;
++    int __lt_compat;
+      __extension__ unsigned long long int __total_seq;
+      __extension__ unsigned long long int __wakeup_seq;
+      __extension__ unsigned long long int __woken_seq;
++    unsigned int __futex;
+      void *__mutex;
+      unsigned int __nwaiters;
+      unsigned int __broadcast_seq;
+@@ -130,6 +132,9 @@ pthread_rwlock_t
+    struct
+    {
+      int __lock;
++    int __lt_compat;
++    int __hppa_pad1;
++    int __hppa_pad2;
+      unsigned int __nr_readers;
+      unsigned int __readers_wakeup;
+      unsigned int __writer_wakeup;
 
-However, it doesn't break compatibility in the current patches, only
-in your scheme of mixed ABI support.
+2) create hppa specific pthread.h with just altered initializers (more zero=
+es)
 
-> The current NPTL implementation zeroes all the fields at the begining,
-> doesn't it ?
+3) At the begin of each affected function
 
-Which implementation? The compat code? No, it uses the ldcw spinlock
-to protect structure accesses.
+>> =A0if (v->__lt_compat)
+>> =A0{
+>> =A0 =A0 lock_global_pt_lock();
+>> =A0 =A0 if (v->__lt_compat)
+>> =A0 =A0 {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0zero_the_same_fields_as_NPTL_but_lt_compa=
+t_field();
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0barrier();
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0v->__lt_compat =3D 0;
+>> =A0 =A0 };
+>> =A0 =A0 unlock_global_pt_lock();
+>> =A0};
 
-> So at the begin of each affected function will be (asm coded ?)
+This just atomically converts linuxthreads initialized variable into NPTL=
+=20
+initialized variable.
+
+>> For the new NPTL layout the zeroing code will not be taken,
+>> therefore almost no overhead.
+>> There might be a congestion on global_pt_lock, but I do not believe,
+>> there are many static initilized mutexes in any real program.
+>> There will be no need for allocation any new structures.
 >
-> =A0if (v->__lt_compat)
-> =A0{
-> =A0 =A0 lock_global_pt_lock();
-> =A0 =A0 if (v->__lt_compat)
-> =A0 =A0 {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0zero_all_but_lt_compat_field();
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0barrier();
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0v->__lt_compat =3D 0;
-> =A0 =A0 };
-> =A0 =A0 unlock_global_pt_lock();
-> =A0};
->
-> For the new NPTL layout the zeroing code will not be taken,
-> therefore almost no overhead.
-> There might be a congestion on global_pt_lock, but I do not believe,
-> there are many static initilized mutexes in any real program.
-> There will be no need for allocation any new structures.
+> There are tons of statically initialized mutexs, gnome and gdk are
+> full of them as an example.
 
-There are tons of statically initialized mutexs, gnome and gdk are
-full of them as an example.
+Hopefully not many will try to lock global_pt_lock in the same time.
+Also rebuild against NPTL enabled libc-dev lowers the number
+of possible linuxthreads initialized variables.
 
-> The drawback is hppa specific pthread.h or need to convince Uli
-> to add unused zeroed field into affected structures globally.
+Petr
 
-That is no longer a drawback, most machines these days need to copy
-core header files and modify.
-
-Cheers,
-Carlos.
+--546530387-537495902-1245677342=:2390--
