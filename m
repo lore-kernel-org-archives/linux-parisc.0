@@ -1,39 +1,133 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [PATCH][linux-2.6] Fix gcc 4.4 warning in lba_pci.c
-Date: Tue, 23 Jun 2009 07:39:37 -0400
-Message-ID: <119aab440906230439k6a145ddfwd7f44f742260b93d@mail.gmail.com>
-References: <20090620232927.GA21560@lackof.org>
-	 <20090621000635.6824C4FC6@hiauly1.hia.nrc.ca>
-	 <20090623063121.GA10963@lackof.org>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [PATCH] misplaced parenthesis?
+Date: Tue, 23 Jun 2009 22:53:26 +0800
+Message-ID: <1e3eba760906230753l4e14a025y6bc07a753999483e@mail.gmail.com>
+References: <4A0DC131.8020606@gmail.com> <4A0E3D95.5090404@tausq.org>
+	 <b4198de60905152248t63514a4fmfa71f3a72d80770e@mail.gmail.com>
+	 <4A10BD1A.3060208@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	James.Bottomley@hansenpartnership.com, kyle@mcmartin.ca,
-	deller@gmx.de, linux-parisc@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: Roel Kluin <roel.kluin@gmail.com>, kyle@mcmartin.ca,
+	linux-parisc@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090623063121.GA10963@lackof.org>
+In-Reply-To: <4A10BD1A.3060208@tausq.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Jun 23, 2009 at 2:31 AM, Grant
-Grundler<grundler@parisc-linux.org> wrote:
-> On Sat, Jun 20, 2009 at 08:06:34PM -0400, John David Anglin wrote:
->> > In the meantime...if someone can explain this error I could build and test:
->> > fs/nfs/nfsroot.c:400: error: __setup_str_nfs_root_setup causes a section type conflict
->> >
->> > something to do with __setup(nfs_root_setup) but it's not obvious to me what.
+Here's an updated patch:
+
+Reported-by: Roel Kluin <roel.kluin@gmail.com>
+Signed-off-by: Randolph Chung <tausq@parisc-linux.org>
+
+diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
+index 2d68431..827e535 100644
+--- a/arch/parisc/lib/memcpy.c
++++ b/arch/parisc/lib/memcpy.c
+@@ -405,7 +405,7 @@ byte_copy:
+
+ unaligned_copy:
+        /* possibly we are aligned on a word, but not on a double... */
+-       if (likely(t1 & (sizeof(unsigned int)-1)) =3D=3D 0) {
++       if (likely((t1 & (sizeof(unsigned int)-1)) =3D=3D 0)) {
+                t2 =3D src & (sizeof(unsigned int) - 1);
+
+                if (unlikely(t2 !=3D 0)) {
+
+
+On Mon, May 18, 2009 at 9:42 AM, Randolph Chung<randolph@tausq.org> wro=
+te:
+> The wrong version of course produces different code....
+>
+> the original and the corrected one may produce different code dependi=
+ng on
+> how the compiler schedules things.
+>
+> randolph
+>
+> Matt Turner wrote:
 >>
->> Google says see:
->> http://lkml.org/lkml/2009/5/26/329
+>> Does gcc produce different code for the three variations?
+>>
+>> Matt
+>>
+>> On Sat, May 16, 2009 at 12:14 AM, Randolph Chung <randolph@tausq.org=
 >
-> Thank you...removing the __initconst added by this change:
-> -static match_table_t __initconst tokens = {
-> +static const match_table_t tokens __initconst = {
+>> wrote:
+>>
+>>>
+>>> This is a bit confusingly written, but your patch does not appear t=
+o be
+>>> correct.
+>>>
+>>> =3D=3D has higher precedence than &, so you are basically changing =
+it to:
+>>> if (likely(t1 & 1))
+>>>
+>>> it really should be
+>>>
+>>> - =A0 =A0 =A0 if (likely(t1 & (sizeof(unsigned int)-1)) =3D=3D 0) {
+>>> + =A0 =A0 =A0 if (likely((t1 & (sizeof(unsigned int)-1)) =3D=3D 0))=
+ {
+>>>
+>>> randolph
+>>>
+>>>
+>>> Roel Kluin wrote:
+>>>
+>>>>
+>>>> Fix misplaced parenthesis.
+>>>>
+>>>> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+>>>> ---
+>>>> I think this is what was intended? Note that this patch may affect
+>>>> profiling.
+>>>>
+>>>> diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
+>>>> index bbda909..30207b0 100644
+>>>> --- a/arch/parisc/lib/memcpy.c
+>>>> +++ b/arch/parisc/lib/memcpy.c
+>>>> @@ -405,7 +405,7 @@ byte_copy:
+>>>> =A0unaligned_copy:
+>>>> =A0 =A0 =A0 /* possibly we are aligned on a word, but not on a dou=
+ble... */
+>>>> - =A0 =A0 =A0 if (likely(t1 & (sizeof(unsigned int)-1)) =3D=3D 0) =
+{
+>>>> + =A0 =A0 =A0 if (likely(t1 & (sizeof(unsigned int)-1) =3D=3D 0)) =
+{
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 t2 =3D src & (sizeof(unsigned int) - 1=
+);
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (unlikely(t2 !=3D 0)) {
+>>>> --
+>>>> To unsubscribe from this list: send the line "unsubscribe linux-pa=
+risc"
+>>>> in
+>>>> the body of a message to majordomo@vger.kernel.org
+>>>> More majordomo info at =A0http://vger.kernel.org/majordomo-info.ht=
+ml
+>>>>
+>>>>
+>>>
+>>> --
+>>> To unsubscribe from this list: send the line "unsubscribe linux-par=
+isc"
+>>> in
+>>> the body of a message to majordomo@vger.kernel.org
+>>> More majordomo info at =A0http://vger.kernel.org/majordomo-info.htm=
+l
+>>>
+>>>
+>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe linux-pari=
+sc" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>>
 >
-> allows me to build. Is no one else building with NFSROOT enabled?
-
-I boot directly from disk on both my test machines (a500, c3k).
-
-Cheers,
-Carlos.
+>
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
