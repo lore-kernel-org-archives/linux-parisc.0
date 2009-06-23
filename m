@@ -1,133 +1,87 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: [PATCH] misplaced parenthesis?
-Date: Tue, 23 Jun 2009 22:53:26 +0800
-Message-ID: <1e3eba760906230753l4e14a025y6bc07a753999483e@mail.gmail.com>
-References: <4A0DC131.8020606@gmail.com> <4A0E3D95.5090404@tausq.org>
-	 <b4198de60905152248t63514a4fmfa71f3a72d80770e@mail.gmail.com>
-	 <4A10BD1A.3060208@tausq.org>
+From: Kyle McMartin <kyle@hera.kernel.org>
+Subject: what's in parisc-2.6.git
+Date: Tue, 23 Jun 2009 16:15:16 +0000
+Message-ID: <20090623161516.GA12499@hera.kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: Roel Kluin <roel.kluin@gmail.com>, kyle@mcmartin.ca,
-	linux-parisc@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4A10BD1A.3060208@tausq.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Here's an updated patch:
+commit mail seems to be broken again for some reason...
 
-Reported-by: Roel Kluin <roel.kluin@gmail.com>
-Signed-off-by: Randolph Chung <tausq@parisc-linux.org>
+The following changes since commit d888a4c76c51092993643f8992bf55b3c28da483:
+  Linus Torvalds (1):
+        Merge branch 'for-linus' of git://git.kernel.org/.../vapier/blackfin
 
-diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
-index 2d68431..827e535 100644
---- a/arch/parisc/lib/memcpy.c
-+++ b/arch/parisc/lib/memcpy.c
-@@ -405,7 +405,7 @@ byte_copy:
+are available in the git repository at:
 
- unaligned_copy:
-        /* possibly we are aligned on a word, but not on a double... */
--       if (likely(t1 & (sizeof(unsigned int)-1)) =3D=3D 0) {
-+       if (likely((t1 & (sizeof(unsigned int)-1)) =3D=3D 0)) {
-                t2 =3D src & (sizeof(unsigned int) - 1);
+  /pub/scm/linux/kernel/git/kyle/parisc-2.6.git parisc
 
-                if (unlikely(t2 !=3D 0)) {
+Alexander Beregalov (4):
+      parisc: stifb: should depend on STI_CONSOLE
+      parisc: ccio-dma: fix build failure without procfs
+      parisc: remove CVS keywords
+      parisc: decode_exc.c should include kernel.h
 
+Bastian Blank (1):
+      parisc: Remove casts from atomic macros
 
-On Mon, May 18, 2009 at 9:42 AM, Randolph Chung<randolph@tausq.org> wro=
-te:
-> The wrong version of course produces different code....
->
-> the original and the corrected one may produce different code dependi=
-ng on
-> how the compiler schedules things.
->
-> randolph
->
-> Matt Turner wrote:
->>
->> Does gcc produce different code for the three variations?
->>
->> Matt
->>
->> On Sat, May 16, 2009 at 12:14 AM, Randolph Chung <randolph@tausq.org=
->
->> wrote:
->>
->>>
->>> This is a bit confusingly written, but your patch does not appear t=
-o be
->>> correct.
->>>
->>> =3D=3D has higher precedence than &, so you are basically changing =
-it to:
->>> if (likely(t1 & 1))
->>>
->>> it really should be
->>>
->>> - =A0 =A0 =A0 if (likely(t1 & (sizeof(unsigned int)-1)) =3D=3D 0) {
->>> + =A0 =A0 =A0 if (likely((t1 & (sizeof(unsigned int)-1)) =3D=3D 0))=
- {
->>>
->>> randolph
->>>
->>>
->>> Roel Kluin wrote:
->>>
->>>>
->>>> Fix misplaced parenthesis.
->>>>
->>>> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
->>>> ---
->>>> I think this is what was intended? Note that this patch may affect
->>>> profiling.
->>>>
->>>> diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
->>>> index bbda909..30207b0 100644
->>>> --- a/arch/parisc/lib/memcpy.c
->>>> +++ b/arch/parisc/lib/memcpy.c
->>>> @@ -405,7 +405,7 @@ byte_copy:
->>>> =A0unaligned_copy:
->>>> =A0 =A0 =A0 /* possibly we are aligned on a word, but not on a dou=
-ble... */
->>>> - =A0 =A0 =A0 if (likely(t1 & (sizeof(unsigned int)-1)) =3D=3D 0) =
-{
->>>> + =A0 =A0 =A0 if (likely(t1 & (sizeof(unsigned int)-1) =3D=3D 0)) =
-{
->>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 t2 =3D src & (sizeof(unsigned int) - 1=
-);
->>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (unlikely(t2 !=3D 0)) {
->>>> --
->>>> To unsubscribe from this list: send the line "unsubscribe linux-pa=
-risc"
->>>> in
->>>> the body of a message to majordomo@vger.kernel.org
->>>> More majordomo info at =A0http://vger.kernel.org/majordomo-info.ht=
-ml
->>>>
->>>>
->>>
->>> --
->>> To unsubscribe from this list: send the line "unsubscribe linux-par=
-isc"
->>> in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at =A0http://vger.kernel.org/majordomo-info.htm=
-l
->>>
->>>
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-pari=
-sc" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->>
->
->
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Christoph Hellwig (1):
+      parisc: remove dead code from sys_parisc32.c
+
+Coly Li (1):
+      parisc: add parameter to read_cr16()
+
+Grant Grundler (3):
+      parisc: advertise PCI devs after "assign_resources"
+      parisc: Fix gcc 4.4 warning in lba_pci.c
+      parisc: fix "delay!" timer handling
+
+Helge Deller (3):
+      parisc: fix ldcw inline assembler
+      parisc: fix irq compile bugs in arch/parisc/kernel/irq.c
+      parisc: ensure broadcast tlb purge runs single threaded
+
+Kyle McMartin (4):
+      parisc: wire up preadv/pwritev syscalls
+      parisc: kill WARN in free_initmem when DEBUG_KERNEL
+      parisc: wire up rt_tgsigqueueinfo
+      parisc: fix compile warning in mm/init.c
+
+Randolph Chung (1):
+      parisc: fix mismatched parenthesis in memcpy.c
+
+Thomas Gleixner (1):
+      parisc: remove obsolete hw_interrupt_type
+
+ arch/parisc/include/asm/atomic.h   |    8 ++--
+ arch/parisc/include/asm/dma.h      |    3 +-
+ arch/parisc/include/asm/system.h   |    4 +-
+ arch/parisc/include/asm/tlbflush.h |   14 +++---
+ arch/parisc/include/asm/unistd.h   |    5 ++-
+ arch/parisc/kernel/cache.c         |   26 ++++++----
+ arch/parisc/kernel/irq.c           |   10 ++--
+ arch/parisc/kernel/pci-dma.c       |   12 +++--
+ arch/parisc/kernel/pci.c           |    3 +-
+ arch/parisc/kernel/processor.c     |    3 +-
+ arch/parisc/kernel/setup.c         |    3 +-
+ arch/parisc/kernel/sys_parisc32.c  |   62 ------------------------
+ arch/parisc/kernel/syscall_table.S |    3 +
+ arch/parisc/kernel/time.c          |   90 +++++++++++++++++++++--------------
+ arch/parisc/lib/checksum.c         |    2 -
+ arch/parisc/lib/memcpy.c           |    2 +-
+ arch/parisc/math-emu/decode_exc.c  |    2 +-
+ arch/parisc/mm/fault.c             |    3 +-
+ arch/parisc/mm/init.c              |   29 ++++--------
+ drivers/parisc/ccio-dma.c          |    7 ++-
+ drivers/parisc/dino.c              |   12 ++--
+ drivers/parisc/eisa.c              |    2 +-
+ drivers/parisc/gsc.c               |    4 +-
+ drivers/parisc/gsc.h               |    2 +-
+ drivers/parisc/iosapic.c           |    2 +-
+ drivers/parisc/lba_pci.c           |   41 +++++++++++------
+ drivers/parisc/superio.c           |    2 +-
+ drivers/video/Kconfig              |    2 +
+ 28 files changed, 164 insertions(+), 194 deletions(-)
