@@ -1,32 +1,39 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: what's in parisc-2.6.git
-Date: Tue, 23 Jun 2009 20:41:29 -0400
-Message-ID: <20090624004129.GB3101@bombadil.infradead.org>
-References: <20090623161516.GA12499@hera.kernel.org> <20090624002921.2D5544EDA@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+From: Kyle McMartin <kyle@hera.kernel.org>
+Subject: [git] parisc: Changes to ref refs/heads/parisc
+Date: Wed, 24 Jun 2009 01:39:57 GMT
+Message-ID: <200906240139.n5O1dvSH013997@hera.kernel.org>
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090624002921.2D5544EDA@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Jun 23, 2009 at 08:29:20PM -0400, John David Anglin wrote:
-> > The following changes since commit d888a4c76c51092993643f8992bf55b3c28da483:
-> >   Linus Torvalds (1):
-> >         Merge branch 'for-linus' of git://git.kernel.org/.../vapier/blackfin
-> > 
-> > are available in the git repository at:
-> 
-> Thanks for bring this up to date.
-> 
-> What the status of the changes in the parisc-2.6.29 branch?  The sba_iommu
-> fix seems obvious.
+New commits:
+commit dafba938247a83a3df0fb74f5b002199fb78a467
+Author: Kyle McMartin <kyle@shortfin.cabal.ca>
+Date:   Tue Jun 23 21:38:49 2009 -0400
 
-I think those have all been merged already, except the sysvipc stuff,
-but I haven't had the cycles to look into those recently. The two top
-patches effecting sysvipc are bogus though and will break 'ipcs' and
-various userspace bits.
+    perf: wire up sys_perf_counter_open
+    
+    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
 
-regards, Kyle
+commit b3808c0a514ff39298a1f1d17e45e0e224c47a95
+Author: Kyle McMartin <kyle@shortfin.cabal.ca>
+Date:   Tue Jun 23 21:32:18 2009 -0400
+
+    parisc: add task_pt_regs macro
+    
+    needed for perf_counters.
+    
+    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+
+commit 9a76595b135d99c3132403929f1a5ea0575c65c4
+Author: Kyle McMartin <kyle@shortfin.cabal.ca>
+Date:   Tue Jun 23 20:22:06 2009 -0400
+
+    parisc: wire sys_perf_counter_open to sys_ni_syscall
+    
+    Reserves a syscall slot for it, until it gets a proper compat
+    wrapper it's pretty useless though.
+    
+    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+
