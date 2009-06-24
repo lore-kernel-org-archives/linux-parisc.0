@@ -1,39 +1,30 @@
-From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git] parisc: Changes to ref refs/heads/parisc
-Date: Wed, 24 Jun 2009 01:39:57 GMT
-Message-ID: <200906240139.n5O1dvSH013997@hera.kernel.org>
-To: linux-parisc@vger.kernel.org
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [PATCH][linux-2.6] Fix gcc 4.4 warning in lba_pci.c
+Date: Tue, 23 Jun 2009 23:31:46 -0600
+Message-ID: <20090624053146.GA29485@lackof.org>
+References: <20090620232927.GA21560@lackof.org> <20090621000635.6824C4FC6@hiauly1.hia.nrc.ca> <20090623063121.GA10963@lackof.org> <119aab440906230439k6a145ddfwd7f44f742260b93d@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	James.Bottomley@hansenpartnership.com, kyle@mcmartin.ca,
+	deller@gmx.de, linux-parisc@vger.kernel.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <119aab440906230439k6a145ddfwd7f44f742260b93d@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-New commits:
-commit dafba938247a83a3df0fb74f5b002199fb78a467
-Author: Kyle McMartin <kyle@shortfin.cabal.ca>
-Date:   Tue Jun 23 21:38:49 2009 -0400
+On Tue, Jun 23, 2009 at 07:39:37AM -0400, Carlos O'Donell wrote:
+> On Tue, Jun 23, 2009 at 2:31 AM, Grant
+...
+> > allows me to build. Is no one else building with NFSROOT enabled?
+> 
+> I boot directly from disk on both my test machines (a500, c3k).
 
-    perf: wire up sys_perf_counter_open
-    
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+Me too in general...but I still have that enabled since the
+Cupertino test ring have multiple machines and it's quite easy
+to test with NFS root.
 
-commit b3808c0a514ff39298a1f1d17e45e0e224c47a95
-Author: Kyle McMartin <kyle@shortfin.cabal.ca>
-Date:   Tue Jun 23 21:32:18 2009 -0400
-
-    parisc: add task_pt_regs macro
-    
-    needed for perf_counters.
-    
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
-
-commit 9a76595b135d99c3132403929f1a5ea0575c65c4
-Author: Kyle McMartin <kyle@shortfin.cabal.ca>
-Date:   Tue Jun 23 20:22:06 2009 -0400
-
-    parisc: wire sys_perf_counter_open to sys_ni_syscall
-    
-    Reserves a syscall slot for it, until it gets a proper compat
-    wrapper it's pretty useless though.
-    
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
-
+thanks,
+grant
