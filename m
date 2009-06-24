@@ -1,33 +1,39 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [PATCH][linux-2.6] Fix gcc 4.4 warning in lba_pci.c
-Date: Wed, 24 Jun 2009 09:47:23 -0400 (EDT)
-Message-ID: <20090624134724.3874F4FC5@hiauly1.hia.nrc.ca>
-References: <20090624053146.GA29485@lackof.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [PATCH] zalon: fix oops on attach failure
+Date: Wed, 24 Jun 2009 19:55:22 +0000
+Message-ID: <1245873322.4022.385.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: carlos@systemhalted.org, grundler@parisc-linux.org,
-	James.Bottomley@hansenpartnership.com, kyle@mcmartin.ca,
-	deller@gmx.de, linux-parisc@vger.kernel.org
-To: grundler@parisc-linux.org (Grant Grundler)
+Content-Type: text/plain
+To: linux-scsi <linux-scsi@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090624053146.GA29485@lackof.org> from "Grant Grundler" at Jun 23, 2009 11:31:46 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Tue, Jun 23, 2009 at 07:39:37AM -0400, Carlos O'Donell wrote:
-> > On Tue, Jun 23, 2009 at 2:31 AM, Grant
-> ...
-> > > allows me to build. Is no one else building with NFSROOT enabled?
-> > 
-> > I boot directly from disk on both my test machines (a500, c3k).
-> 
-> Me too in general...but I still have that enabled since the
-> Cupertino test ring have multiple machines and it's quite easy
-> to test with NFS root.
+I recently discovered on my zalon that if the attachment fails because
+of a bus misconfiguration (I scrapped my HVD array, so the card is now
+unterminated) then the system oopses.  The reason is that if
+ncr_attach() returns NULL (signalling failure) that NULL is passed by
+the goto failed straight into ncr_detach() which oopses.
 
-I'm using this for embedded development (no hard drive).
+The fix is just to return -ENODEV in this case.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+James
+
+---
+
+diff --git a/drivers/scsi/zalon.c b/drivers/scsi/zalon.c
+index 97f3158..27e84e4 100644
+--- a/drivers/scsi/zalon.c
++++ b/drivers/scsi/zalon.c
+@@ -134,7 +134,7 @@ zalon_probe(struct parisc_device *dev)
+ 
+ 	host = ncr_attach(&zalon7xx_template, unit, &device);
+ 	if (!host)
+-		goto fail;
++		return -ENODEV;
+ 
+ 	if (request_irq(dev->irq, ncr53c8xx_intr, IRQF_SHARED, "zalon", host)) {
+ 	  dev_printk(KERN_ERR, &dev->dev, "irq problem with %d, detaching\n ",
+
+
