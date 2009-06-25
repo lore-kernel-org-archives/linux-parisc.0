@@ -1,72 +1,82 @@
-From: Matthias Klose <doko@debian.org>
-Subject: Re: HPPA and Squeeze
-Date: Thu, 25 Jun 2009 01:32:09 +0200
-Message-ID: <4A42B779.9030704@debian.org>
-References: <20090602140734.GC26721@mx0.halon.org.uk> <20090606183600.GA425@lackof.org> <4A31FA76.20103@debian.org> <20090615173102.GC2690@lackof.org> <4A39823C.8070104@debian.org> <4A39DEB6.2080803@debian.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [PATCH 1/2] parisc: processor.c, fix bloated stack frame
+Date: Thu, 25 Jun 2009 00:16:26 -0600
+Message-ID: <20090625061626.GA18519@lackof.org>
+References: <1245777507-14997-1-git-send-email-kyle@mcmartin.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: HPPA porters <debian-hppa@lists.debian.org>,
-	Debian Release <debian-release@lists.debian.org>,
-	linux-parisc@vger.kernel.org, debian-gcc@list.debian.org,
-	debian-sparc@lists.debian.org, debian-mips@lists.debian.org
-To: Luk Claes <luk@debian.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4A39DEB6.2080803@debian.org>
+In-Reply-To: <1245777507-14997-1-git-send-email-kyle@mcmartin.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Luk Claes schrieb:
-> Matthias Klose wrote:
->> Grant Grundler schrieb:
->>> On Fri, Jun 12, 2009 at 08:49:26AM +0200, Luk Claes wrote:
->>>> Grant Grundler wrote:
+On Tue, Jun 23, 2009 at 01:18:26PM -0400, Kyle McMartin wrote:
+> From: Kyle McMartin <kyle@shortfin.cabal.ca>
 > 
->>>>> On Tue, Jun 02, 2009 at 03:07:35PM +0100, Neil McGovern wrote:
+> The pa_pdc_cell struct can be kmalloc'd, so do that instead.
 > 
->>>>>     http://lists.debian.org/debian-release/2009/04/msg00303.html
->>>> Note that it's wrong to assume we will come with the answers.
->>> I was expecting a summary of specific issues from an organization
->>> that claims to operate transperently.  The hand waving is easy. But
->>> doesn't resolve problems and doesn't meet my expectation of an "open"
->>> organization that I've donated money, time, and materials to.
->> +1. dropping hppa as a release architecture was not communicated by the release
->> team at all.  I did spend some time to get gcj / default-jdk working on hppa,
->> and some money (buying a new disk for a hppa machine) to help this port.  The
->> time and the money could have spent better, if d-r would have better
->> communicated about their intent.
+> Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+> ---
+>  arch/parisc/kernel/processor.c |   16 +++++++++++-----
+>  1 files changed, 11 insertions(+), 5 deletions(-)
 > 
-> There are issues with the hppa port where the release team considered
-> dropping it since 2005 communicated to the porter list...
+> diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
+> index 1ca69a8..c8fb61e 100644
+> --- a/arch/parisc/kernel/processor.c
+> +++ b/arch/parisc/kernel/processor.c
+> @@ -120,22 +120,28 @@ static int __cpuinit processor_probe(struct parisc_device *dev)
+>  	if (is_pdc_pat()) {
+>  		ulong status;
+>  		unsigned long bytecnt;
+> -	        pdc_pat_cell_mod_maddr_block_t pa_pdc_cell;
+> +	        pdc_pat_cell_mod_maddr_block_t *pa_pdc_cell;
+>  #undef USE_PAT_CPUID
+>  #ifdef USE_PAT_CPUID
+>  		struct pdc_pat_cpu_num cpu_info;
+>  #endif
+>  
+> +		pa_pdc_cell = kmalloc(sizeof (*pa_pdc_cell), GFP_KERNEL);
+> +		if (!pa_pdc_cell)
+> +			panic("couldn't allocate memory for PDC_PAT_CELL!");
+
+Even though we are never going to hit this panic, could this be coded
+so processor_probe just fails for that PDC device?
+
+ie printk and return 1 like some of the code right above it does.
+
+I really dislike adding panic() calls if they are easy to avoid.
+
+The rest looks fine to me.
+
+thanks
+grant
+
+> +
+>  		status = pdc_pat_cell_module(&bytecnt, dev->pcell_loc,
+> -			dev->mod_index, PA_VIEW, &pa_pdc_cell);
+> +			dev->mod_index, PA_VIEW, pa_pdc_cell);
+>  
+>  		BUG_ON(PDC_OK != status);
+>  
+>  		/* verify it's the same as what do_pat_inventory() found */
+> -		BUG_ON(dev->mod_info != pa_pdc_cell.mod_info);
+> -		BUG_ON(dev->pmod_loc != pa_pdc_cell.mod_location);
+> +		BUG_ON(dev->mod_info != pa_pdc_cell->mod_info);
+> +		BUG_ON(dev->pmod_loc != pa_pdc_cell->mod_location);
+> +
+> +		txn_addr = pa_pdc_cell->mod[0];   /* id_eid for IO sapic */
+>  
+> -		txn_addr = pa_pdc_cell.mod[0];   /* id_eid for IO sapic */
+> +		kfree(pa_pdc_cell);
+>  
+>  #ifdef USE_PAT_CPUID
+>  /* We need contiguous numbers for cpuid. Firmware's notion
+> -- 
+> 1.6.3.1
 > 
->> hppa is not in a good shape, but there are other architectures which are not
->> better (sparc, mips*) from a toolchain point of view. what about these?
-> 
-> I'm not aware of current toolchain issues on sparc and the issues on
-> mips* still seem to be manageable, no?
-
-sparc-biarch defaulting to 32bit isn't supported by upstream; there are requests
-to move to v9 optimization by default, which requires some work in the compiler.
-I don't plan to update this for upcoming GCC versions, and there's no interest
-by upstream to help with this kind of setup. You can't buy v8 software for years
-now, but afaik all our machines run 64bit kernels. Maybe it's time to
-acknowledge this, remove sparc from the list of release architectures and go on
-with sparc64?
-
-there are currently binutils issues outstanding, reported upstream. plus the
-non-availability of developer machines seems to be an issue. Sadly we don't have
-the mips support for squeeze as we had for lenny.
-
->> there are issues pointed out and not addressed like the -dev / -headers packages
->>  built as binary independent packages just to save disk space, which have an
->> impact on "slow" architectures, and which are not addressed by the release team.
->> would the release team mind addressing these real issues, or should we drop
->> "slow" architectures as well?
-> 
-> Well, this Packages issue is clearly a responsability from the FTP Team
-> and the Release Team would indeed be very happy to have that resolved.
-
-So it seems to be ok to ignore an issue, if you can work around it? Fine, then
-I'll build all compiler front ends from one source again.
-
-  Matthias
-
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
