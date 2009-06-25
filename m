@@ -1,82 +1,45 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [PATCH 1/2] parisc: processor.c, fix bloated stack frame
-Date: Thu, 25 Jun 2009 00:16:26 -0600
-Message-ID: <20090625061626.GA18519@lackof.org>
-References: <1245777507-14997-1-git-send-email-kyle@mcmartin.ca>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] misplaced parenthesis?
+Date: Thu, 25 Jun 2009 13:29:25 -0700
+Message-ID: <20090625132925.982bc72d.akpm@linux-foundation.org>
+References: <4A0DC131.8020606@gmail.com>
+	<4A0E3D95.5090404@tausq.org>
+	<b4198de60905152248t63514a4fmfa71f3a72d80770e@mail.gmail.com>
+	<4A10BD1A.3060208@tausq.org>
+	<1e3eba760906230753l4e14a025y6bc07a753999483e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: text/plain; charset=US-ASCII
+Cc: roel.kluin@gmail.com, kyle@mcmartin.ca,
+	linux-parisc@vger.kernel.org
+To: Randolph Chung <randolph@tausq.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1245777507-14997-1-git-send-email-kyle@mcmartin.ca>
+In-Reply-To: <1e3eba760906230753l4e14a025y6bc07a753999483e@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Jun 23, 2009 at 01:18:26PM -0400, Kyle McMartin wrote:
-> From: Kyle McMartin <kyle@shortfin.cabal.ca>
+On Tue, 23 Jun 2009 22:53:26 +0800
+Randolph Chung <randolph@tausq.org> wrote:
+
+> Here's an updated patch:
 > 
-> The pa_pdc_cell struct can be kmalloc'd, so do that instead.
+> Reported-by: Roel Kluin <roel.kluin@gmail.com>
+> Signed-off-by: Randolph Chung <tausq@parisc-linux.org>
 > 
-> Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
-> ---
->  arch/parisc/kernel/processor.c |   16 +++++++++++-----
->  1 files changed, 11 insertions(+), 5 deletions(-)
+> diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
+> index 2d68431..827e535 100644
+> --- a/arch/parisc/lib/memcpy.c
+> +++ b/arch/parisc/lib/memcpy.c
+> @@ -405,7 +405,7 @@ byte_copy:
 > 
-> diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
-> index 1ca69a8..c8fb61e 100644
-> --- a/arch/parisc/kernel/processor.c
-> +++ b/arch/parisc/kernel/processor.c
-> @@ -120,22 +120,28 @@ static int __cpuinit processor_probe(struct parisc_device *dev)
->  	if (is_pdc_pat()) {
->  		ulong status;
->  		unsigned long bytecnt;
-> -	        pdc_pat_cell_mod_maddr_block_t pa_pdc_cell;
-> +	        pdc_pat_cell_mod_maddr_block_t *pa_pdc_cell;
->  #undef USE_PAT_CPUID
->  #ifdef USE_PAT_CPUID
->  		struct pdc_pat_cpu_num cpu_info;
->  #endif
->  
-> +		pa_pdc_cell = kmalloc(sizeof (*pa_pdc_cell), GFP_KERNEL);
-> +		if (!pa_pdc_cell)
-> +			panic("couldn't allocate memory for PDC_PAT_CELL!");
-
-Even though we are never going to hit this panic, could this be coded
-so processor_probe just fails for that PDC device?
-
-ie printk and return 1 like some of the code right above it does.
-
-I really dislike adding panic() calls if they are easy to avoid.
-
-The rest looks fine to me.
-
-thanks
-grant
-
-> +
->  		status = pdc_pat_cell_module(&bytecnt, dev->pcell_loc,
-> -			dev->mod_index, PA_VIEW, &pa_pdc_cell);
-> +			dev->mod_index, PA_VIEW, pa_pdc_cell);
->  
->  		BUG_ON(PDC_OK != status);
->  
->  		/* verify it's the same as what do_pat_inventory() found */
-> -		BUG_ON(dev->mod_info != pa_pdc_cell.mod_info);
-> -		BUG_ON(dev->pmod_loc != pa_pdc_cell.mod_location);
-> +		BUG_ON(dev->mod_info != pa_pdc_cell->mod_info);
-> +		BUG_ON(dev->pmod_loc != pa_pdc_cell->mod_location);
-> +
-> +		txn_addr = pa_pdc_cell->mod[0];   /* id_eid for IO sapic */
->  
-> -		txn_addr = pa_pdc_cell.mod[0];   /* id_eid for IO sapic */
-> +		kfree(pa_pdc_cell);
->  
->  #ifdef USE_PAT_CPUID
->  /* We need contiguous numbers for cpuid. Firmware's notion
-> -- 
-> 1.6.3.1
+>  unaligned_copy:
+>         /* possibly we are aligned on a word, but not on a double... */
+> -       if (likely(t1 & (sizeof(unsigned int)-1)) == 0) {
+> +       if (likely((t1 & (sizeof(unsigned int)-1)) == 0)) {
+>                 t2 = src & (sizeof(unsigned int) - 1);
 > 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>                 if (unlikely(t2 != 0)) {
+> 
+
+I think I'll delete this email.  If someone has a patch which they
+think should be applied, please resend it with a changelog.
+
