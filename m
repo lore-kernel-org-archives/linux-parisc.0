@@ -1,29 +1,141 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Jeroen Roovers <jer@gentoo.org>
 Subject: Re: 2.6.31-rc1: parisc: multiple PCI BAR collisions
-Date: Fri, 26 Jun 2009 14:37:40 +0000
-Message-ID: <1246027060.3925.18.camel@mulgrave.site>
+Date: Fri, 26 Jun 2009 17:08:23 +0200
+Message-ID: <20090626170823.0a8730b7@epia.jer-c2.orkz.net>
 References: <a4423d670906260158q15080049ue516c3d454f4afbf@mail.gmail.com>
+	<1246027060.3925.18.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: linux-parisc@vger.kernel.org,
+Content-Type: multipart/mixed; boundary="MP_/1SPIe_0Bl6eF9ghXbW4nEUd"
+Cc: Alexander Beregalov <a.beregalov@gmail.com>,
+	linux-parisc@vger.kernel.org,
 	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To: Alexander Beregalov <a.beregalov@gmail.com>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <a4423d670906260158q15080049ue516c3d454f4afbf@mail.gmail.com>
+In-Reply-To: <1246027060.3925.18.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2009-06-26 at 12:58 +0400, Alexander Beregalov wrote:
-> Hardware is HP j6000.
-> It cannot initialize many PCI devices (sym53c8xx, tulip, STI,
-> usb(onci)) and cannot boot (no root device).
-> Messages like this:
-> sym53c8xx 0:0:0f.0: device not available because of BAR 1 [0xf4005000
-> - 0xf40053ff] collisions.
+--MP_/1SPIe_0Bl6eF9ghXbW4nEUd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-This tends to indicate a problem with resource parenting ... could you
-post the full boot output?  That might indicate why.
+On Fri, 26 Jun 2009 14:37:40 +0000
+James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
 
-James
+> On Fri, 2009-06-26 at 12:58 +0400, Alexander Beregalov wrote:
+> > Hardware is HP j6000.
+> > It cannot initialize many PCI devices (sym53c8xx, tulip, STI,
+> > usb(onci)) and cannot boot (no root device).
+> > Messages like this:
+> > sym53c8xx 0:0:0f.0: device not available because of BAR 1
+> > [0xf4005000
+> > - 0xf40053ff] collisions.
+> 
+> This tends to indicate a problem with resource parenting ... could you
+> post the full boot output?  That might indicate why.
+
+Here goes.
 
 
+Kind regards,
+     jer
+--MP_/1SPIe_0Bl6eF9ghXbW4nEUd
+Content-Type: application/x-bzip
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=minicom.cap.bz2
+
+QlpoOTFBWSZTWZQFDQIADah/gH77oKB67///////+r////5gFh97777732FdDL6DooH2nuvpxe24
+Td2Z2wKU3233WiUfO3ezQ9PkDvsD6PkAKUoWz5AfT4ShCAE0YICek0mNBGptDImI9U/UmDTU9QyB
+mpoPU02oGgRoAlPJKaeENT01PU9QHpB6nqGgAAAAaAAAaaaETSepMRTQ9TynlAA9QAAaAAAAAAGm
+QSnpSCapsNSntJkPUnqPUbUDEA0ZGhoAAGgNADTTQaakNNJGnpPUG1GgNBo0aaNNGg00yA0ZANMQ
+0aBoBIkCBNATIaTIwSTbKnqntE2TVM9JNpqfqnqaejI0IZqbUaGjp7WjaAgbQk2kDGhdsIFB9pCB
+dTGws0pSCLTRVoUBZLUkZEFrvpEBq7LN6fJoq0rjBDLiWddcjHdT5ft2ip+DAdHA5baHqXi077QX
+VOCIqF+vQ49Cw8vl6xbM9K8+0rPNhc3Yfnv6ZWAo0j1DqtkfH/EXh8studPwALJkYmdOP8xhwG2s
+qskjXswVT4dUnHwb86J4fTUr/+T4HRj/txVS9ZDQ0jue3LAvxpv3VzK4sqylzJnebdhu45O5/OUN
+Pfy6R12lqiij1EM27dptVAkj8ECO5pCR16dnC4Km3XAiSrL+spPQ9909s9UzRwPLJ5PfR5lhuydl
+giBVVG1WzivE7ZvR6n4qIIZiAMt12tyPYoQbGLDZmlrjNbWIfueksxyQcS1yP/lJSSrToN/vx0Jp
+Yr98lPVM2NfLTvyofLA06fXdkF+MUIb/D5zxKFxKxpU7FFiZPLXdpw53bZ5+RS65PYBaokX6sx14
+QGX94zOf8mn+6pY87ClWkuObxyUzF9Gf5beTRbD+ZygEuV6fZcqwREpgyJ4ul4Pjwi+ah/rOly15
+7ujAS6N5g7uWdfOO0DfKZ7WV4DfUdy8N1nmIE8IRqHh35R4oQMzC5QWQRfnqpP1TGSWqJ2lamRsO
+p1OlbVruqGb65iw4JombnIIqKCYKZub+2YHZvkd5+qB0ZN8r5yq0y2dXnhHEauOuX8vhH1C0zWul
+ZtAKEFHtxOYXfzUvlt+NsiXxL9uqWW4oaN1MSy472n9WWaqCReZp1gp5VOHqV3fuoxPTza6Nd1PC
+W+B0bmEs3aB/O4OyQe2VquQ5bnBnXgX/moVEevLd9FD+nzHg5BVq4fVnEtE8OS3XZJ2hEwdm926i
+6nQ72RffGcztMaJoVVMFZURl+tk4GbIhEQ9f6TctyrDG8t2bDNHLbkO1pxPuKrCg8uPCYkCnH40Q
+kkl7VWxbpU/WbQMkFBh8ma685Bokzf0iiy20+KtautmtV3NNNXTx5OfguiQfEPj6YoiFBw+6jt4M
+ZqdVOvhpsc/PR6EROx/ZOhFLsr13+EtmMmjVKRRxBtluop00OXS7kJQNdJxml9q40eI5mfWTIZuF
+1MDhpbKttaIk5xcoMiJP4mLZNq+bKyTcDDXXyEnv+bU8gqW4cdlHH6Rd0p4EWYkmSbAXi5u3iaiT
+DLfRsxswgP2+HTaRRSn1QyLTCfgqa8hPLBBCI0WZ+ZTv470ABqNogX1Iivgh1yCABSIsjjO/IaJ1
+iLsnj6iSWu7KLTciJPwbJY+mDOaMAsqmSC7Ioie4lQ2X9efzYSc/XXOhRp7HJ8kJao9nbnLt10+u
+hr5isptsNDY2xlMx2cHEuy/GSOrZb2OND80ZVHPk8aBcRs5+qePdHRZyknaGguxjwkSB5yYSV1UA
+wcaDFG8p37vFukBT3ksnooyHRycEt75UTu3hfyZDvd2Btu0s4wVymsVEsVE+VUGtZEQ+F/QGdF8k
+fjz7ok6J20bpPRNntGrtk9G7dmOXyhRqokLcs/RlfY1UKJZweOQciXxuzWYz3lsros+L6Vyt6q7f
+hFYpfRTMWK6BUcpDqQNQCiCqge0/Y4/JQcPEw6ppFJFETs63DS1roi6p3/OdzjPf3Rh9G3pIZ1UO
+ISTf39i8npe3NINCx07rZqePwYcMYT7qq5Y5EFytkBHCgjallLxszGZaK55tbdtXVsSKKUGFpFnG
+OnOYlzJXO0EJ0FTOKNUmnN5rOUpnFJNI5QiKEbO8pyhE1daKJFSJqZu9qGYi0dWMLTF73xRiIve8
+Te1G80ataZIeqUyrRazwppWmUJItVqFH5vNOzzN6uKqmuHl6ZHj6oWWzpa48T2r5Dovg95y97yAS
+UPqGtlWxyQe658bWdt2zyc8iY1BErkah87UkA11Gh341ZaDXLYlZU+Y/CvlSfCv39kfqGgJ5cBZC
+9KSUcSIkm0yLaRR5zUHFituiTmzlYYJVVVaN0MGjjVV8vRzRIS52AksrrRdp4zIJOUTxggzL7ixt
+0d+EsCeeGW/YxoFkZ5J1cnESiTbdEWs2UtNxaLWfdvjaHAAFxmnbGul8DUOQgXBCcpAl0QkEkUk6
+cuUHLJIu6dncp0QikncApOxRDpEpEoIFIJJ3LimqwneRqCAJJdmE2oY0z3AiSASgKsrnljKlQZdA
+7kEaGeyrOeQhy0xhhQWtMsmMtWOtYib2CByMUISwQagfIUgoBy+88KcXmhUDTIdEcBsF78kgXjRe
+UNcwW1hsViwI02kXdFAPO0kJ/dAgrT2NVhskraCIbEpN+FS66tdVW6+BsVqyBY/fnKKtqC4GrNHT
+fGcZCalUREVERFVVVURZRVzH9fW3uE497Cjiu22rgtnbT4vQthyTrttEubEYxUERFeTwXHdFEA3A
++WnVtDClJDPwPNOjmmDU08532iqS+aX/HTcuvVZB/S/nLdlu2ZS3QbZEu7G5yDneilQwQy+kuSlN
+jRkJu+Nt5bqV7nc+iqbuNpyelCUQ+ocLuysQgY5DQExCcy7ajrEN/oss84lDVxxdU/74GkzjRS33
+ohDjictiMVFSPnJ0jO/LEu8q2W/I8WOjWEdjMBO6R4zALqCI2sJXQuc3PDC7ph0YW42ZcvFDLN8w
+Iaz8FI3gTJc4TsOLmfbad/G4fMnUbZg1DgSwssoexhlhNV4F0BwYhom+DMgHFRFOUYYpV8mcRd5h
+pcpltSqhTEQoCbbaikEPwRr50572gqu/oUaVcguVcJZNxZeS6u91VWeBbZl0cKS1P7A1lBSGBnds
+cQ1Z8tF+/1gjbY2CLwE6MOk5SMswBLMKmZPvkY/E31SnAgmLENytCBwAS61d2NiOLRFxeNGphV48
+1UnQuGy9u9m0tMZpmIGKwoA2dJTR9goByggBWrZw4igUSU6aXlGdnBuA1jCHMcXwi4jSEUJGQlQh
+e90pJ5CQF4RcJHJo6CkW5lEdEq+XsaVFB5eGDHwxXUVOwGfHQDevR7nmk63VDJ5GisjBWU0Uwa9j
+uSEuWAQqkD6NIrTmrhbhTpjckncqEqAlk1bHkxFje1XewdcrxfrUiIBw4mCoQPGTAEduGAoWAESw
+SYxiQu0I6YEwHJUSkUgvHKNTiM4AUPolFF4KVsjMGUHzrAnrfLHc5DeF5llaJIzga66S6GHEsShA
+JSdM6QLxEUJoJPq4E1HxsYMoxFDfVqrSiCkF+hR09YNICSaTtS2Xs8ijs0In2hwTme9VRtq0FBEa
+VTOMXxSGVixipjkmIM2q6zkFRmEycp7PQzw/Ivf8JHMe3cj3Rhf9LvGTakMEOnpmQMGCVEBRQHby
+hSpMFHqZPqWAY7tlA4BC0PBxoLd+HXZx8G7G4w1Y8E2LnDk5pJF5kROx1uQHijFHF+hAuzFEwRfY
+y0Gh922Xgix5fWjsZ/8xshGtHZwkZOIv/9MxpFLJvD+mhN6w5/CuyBv2zeQ/aXF057TV0N0SiyBq
+r1Bw03gEF7iHlfDe+6us2nYRGNd+AqKKUSCDQFhtxEQ7lPs72YUS73JaoXqWS/Q7IPSQGRL179NV
+CDogwKwBTRCDez6tHH3Mv/spGEhp+4dFj8niYmDD9qlKhVajTK5jJUN+CHxujQSPDBx+Bcm2EUEP
+hMk44gsL7nAm1M8dYMulfpHM9maIGszQxgaHmQoeb0SsYNWRhy+3wMiWLpMhSjtqhXiNOiy7UtiZ
+6W4BwlKmtQ18rVnqYg4Zmskoath1kx9UIJ1DRb1xn/KascVQIctHPeSFk8WGks4uOYcTD0c0jGIF
+QmkVyr53AhhiDVaNA4mCQmTg5HIHxUJJMho73c6F5Rf7Y3+RD7X6WjX6XnI2cpF8yOxhzA0j/xpE
++UaLjRNE2I6za3L+s/1tKZ3qEuLOTr+PZMz641iEIwhJB1s+Br9Hi0jljEIR96PvkCmybcNQjupG
+ypBUVEiMkkqKkbrSqWlqwxIc+WbY0MCsMZViSiyXoWkUq5LkBskootkI2VElQk9zQr1Oh6/N/RmE
+XAKvNtC1ONmmvB4GBxjB7wnt3HK0VF+ow+20NoYDPalNkmMwHrIhF6tx9oj+H1Q+/BPdnqoiyOpw
+AoM54zNFJJW+f2NqHmBfbqUgs423aFW8ckMo4mDIzA+IykJXERFvqlmFM1wzwXJ0vCzxALZxLWpD
+lezTOdowGB4TgvokL1M4lDddUwQU1GLdSlJBa5btiISutt1QrmF+EtX34ycEAVT+fONw87QUrnDS
+MJkclVMHED8V6/niQAlIf0s/O0fpKHW8SfIObSIjJ87XP8kdPoojXuD+7hPO33Fep80jE+7XvG3r
+HsR4fmXfVjLkIzG0xMYcivM9TGsSoG0n3dySxTzrPHAUm7whDQeQOdQLIQ0czPEGSed+ODx1xVjc
+5whUZGzGxnhV5ZC+0t7cojwYSgLK1nKNI6EDmQo72QzlCT7eExxALBZ2Rv0pr+GvhgZakUZeBU5J
+KDAmtSRM3lEJTDNTtOXURdEdDSDdroquCJXFyeTwudEVGA/YosYkvukABciXbgTLB6ERQeiBQAM1
+V51s8MLl74BYW5RTB70MC+iDq8K2veHdpki9cyX8XLnauNdRZIaxlAf2mEeOlwS9152bkX0r/rdf
+o2VrvhtxDOMbWb6WjhagWYFnJXOh6EidJ8F65XmWnkb17fZiIvQxrYsr5lVcKbFFIP5mOkXHT6mm
+YLTqfkAaqjKnvuUiQBES9dkH6GqYMG6lqGyN4tg6NQ6uDOI+ShIJUiSTHmlXUwFtNye5El7PtbbY
+q6zA5X9jG20tOJPunNYuWtgHjxM6j5S61OO6RHMxyTcubPdhlzTuEIrqKgWtbDGREQhQWBuvseEU
+iHMSUcIAJMttok7iZpyqbY/hSPivgQH0YXt6EdLMU0LejAD4L0rmJUXvRSfrmQ2000fF7JTZKzlo
+y51eDYCjg39c5pI/L+KJdvPK42UVGhtL8jA8ko3d3t7Au9ikh2wXw3JI6pZ5zbyZNbA/E2x2QNuE
+FZSIEM2K4wmEz7LBAmWIJkvTuJlZ1rfI0KWqySedJBIUI1rbKjxZDO/wSE2relYI723MqFvLaSDX
+ooaKQK7l4BEMCW2SDyiVw47p9IM6k0Ql0CS3kHVokIQrtmaZZ4fM+QYsPJr5phP5W2oNhlzIbQ2D
+Q0xoc0aKavVv9nLReUjjJY7yI44ZFQaPjmxx38wIjmNlIG10CaJ7QwIHCaQSzyCiON+70ePL44+f
+B06KvduSEGjpizK2BxZX7upsSUNaKGOcjTJUFDDqAO7eO4TKsEucuAVaKRFLyFLG1LVReNYoubcb
+65LHN0vtfLf1rzvJEyqLrrlgL+8epDaHMYUVWW1MI8tvqu3QBjlk8tuzjVF5gc8NttwfOOucebaC
+uuKH8R6Jwvha8yyhHz8DX/i5jRjoDMSywqBme7IRJV1xeV+ugi+kGpNDYNouGPq6iUxhlH11RzMZ
+TU/NniT06IDC+JENEhpJyV8oCUyAvk2WLgXmnVEppL9Myvt8Iq0A2jbgX6ScqQIs5vIvdTEAupb0
+zFoHkXogrFmkFxdKbBF7ZTOhQK1BURSAVqJWCvLo7r3HxuNHVWRJJdrwJWgyN9kWLzbJQMXLejL8
+5XJ98R8blnC8doC+f/KDvxi5HqzSDUiQnpa9K2apQ8IUa8qhIQI7/h7GGOOBVrKotCY3h9Gi/k17
+9LiITEyDWZUw7JZS2XnPDKMzZDQDj8cJisWaPN3WFLgjxYah8Fiw/wNb6O+XIhii0vK0J2RhjSba
+OPyzP0UFAMOVwv6Npbl69hmTBd2fVgx6buFZYVJdEvFhn3wgX41aADLUru8x4bMCyWjyxrywFlPj
+5pCmYEK+plIG0O56qKtjbRqObhytRegjqpCIqjoZvQWNLQDbSDFpUcopzdkjz+W8w9XqvFgI3xlI
+gYn1WOjZUWDQtVBBZJU2yV2yEWRhauyYtbRsCEHOXdl1dMaTJcjANCVdQxKXhbI36jJyRXzLM5/+
+Y+59PAvRjPAOkDUjXt2JBJyDWwbHZJqBg53VMW6RRGrZ058ulDRqvHVDkzTXgam+c+/XeaemTOJU
+fEEYi1W6+keuhIZkBA7ciCeZ4AHeDUEdGN+uwDqG1lhrrmgpK8o8GwTSxJ4slaNNohIKkpfFUHQm
+iox3cCsx2grEPi/IKgI6woC56izcZOeWu9125NO4Zhh+ekocerd4FhI3S7gaUJTBFu2mBZmaAaHI
+EJI5JDzcjOHOTOO5e7QZUqUTGqYZSde/WguLVIU3E5EskryheIrMpeUd8EaIpQWA0gaHdo3CL8Nu
+IZG5lxJKgofld9EYtxlbW3GflsUGyNUqBEzHAVkWwprc5rhSpjCDYNFgaI3yyyyUv2F/sIirRpDF
+KDEzbaJY45GJb/vn2NuXfPtO0MTxZf450+r4daSMi6F75LI/c4OKVPDaQaluWzbcgp2bUcniTudt
+yXQi8PEi8XmfFHQNBewG7DYj6SyA3tVYE0w9fSErgtOgiqdQMjDgg8Xl5hnuQ+pAEVRO5QRPVCEF
+mJpgpBMriZm9HTv34BXltFZSPg2TpNppxUJGxqSWjYGhW7aGBQ6RmgRX5VtQPADsiTQaE1xE/xdy
+RThQkJQFDQI=
+
+--MP_/1SPIe_0Bl6eF9ghXbW4nEUd--
