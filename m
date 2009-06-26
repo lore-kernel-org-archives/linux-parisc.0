@@ -1,38 +1,67 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: Re: 2.6.31-rc1: parisc: multiple PCI BAR collisions
-Date: Fri, 26 Jun 2009 11:03:04 -0600
-Message-ID: <20090626170304.GA20871@lackof.org>
-References: <a4423d670906260158q15080049ue516c3d454f4afbf@mail.gmail.com>
+Date: Fri, 26 Jun 2009 11:44:18 -0600
+Message-ID: <20090626174418.GX19977@parisc-linux.org>
+References: <a4423d670906260158q15080049ue516c3d454f4afbf@mail.gmail.com> <20090626170304.GA20871@lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org,
+Cc: Alexander Beregalov <a.beregalov@gmail.com>,
+	linux-parisc@vger.kernel.org,
 	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To: Alexander Beregalov <a.beregalov@gmail.com>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <a4423d670906260158q15080049ue516c3d454f4afbf@mail.gmail.com>
+In-Reply-To: <20090626170304.GA20871@lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Jun 26, 2009 at 12:58:22PM +0400, Alexander Beregalov wrote:
-> Hi
+On Fri, Jun 26, 2009 at 11:03:04AM -0600, Grant Grundler wrote:
+> On Fri, Jun 26, 2009 at 12:58:22PM +0400, Alexander Beregalov wrote:
+> > Hi
+> > 
+> > Hardware is HP j6000.
+> > It cannot initialize many PCI devices (sym53c8xx, tulip, STI,
+> > usb(onci)) and cannot boot (no root device).
+> > Messages like this:
+> > sym53c8xx 0:0:0f.0: device not available because of BAR 1 [0xf4005000
+> > - 0xf40053ff] collisions.
 > 
-> Hardware is HP j6000.
-> It cannot initialize many PCI devices (sym53c8xx, tulip, STI,
-> usb(onci)) and cannot boot (no root device).
-> Messages like this:
-> sym53c8xx 0:0:0f.0: device not available because of BAR 1 [0xf4005000
-> - 0xf40053ff] collisions.
+> I'm pretty sure this is a problem of the root bus resources not getting
+> setup correctly. I'm not clear on what's wrong. jejb and willy are looking
+> at it now as well.
 
-Yup - I found that out yesterday too. Console output is here:
-http://iou.parisc-linux.org/~grundler/console/j6000-2.6.30-parisc_2.6_parenting_failed-01
-http://iou.parisc-linux.org/~grundler/console/j6000-2.6.30-parisc_2.6_parenting_failed-02
+This patch fixes it for me.
 
-but in an IRC conversation it' clear I only dumped the "elmmio" and not
-the regular "lmmio" resource request. Need to dump both.
+----
 
-I'm pretty sure this is a problem of the root bus resources not getting
-setup correctly. I'm not clear on what's wrong. jejb and willy are looking
-at it now as well.
+Fix PCI resource allocation on non-PAT SBA machines
 
-thanks,
-grant
+We weren't marking the resources as memory resources, so they weren't
+being found by pci_claim_resource().
+
+Signed-off-by: Matthew Wilcox <willy@linux.intel.com>
+Reviewed-by: Grant Grundler <grundler@parisc-linux.org>
+
+diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
+index d46dd57..123d8fe 100644
+--- a/drivers/parisc/sba_iommu.c
++++ b/drivers/parisc/sba_iommu.c
+@@ -2057,6 +2057,7 @@ void sba_directed_lmmio(struct parisc_device *pci_hba, struct resource *r)
+ 		r->start = (base & ~1UL) | PCI_F_EXTEND;
+ 		size = ~ READ_REG32(reg + LMMIO_DIRECT0_MASK);
+ 		r->end = r->start + size;
++		r->flags = IORESOURCE_MEM;
+ 	}
+ }
+ 
+@@ -2093,4 +2094,5 @@ void sba_distributed_lmmio(struct parisc_device *pci_hba, struct resource *r )
+ 	size = (~READ_REG32(sba->sba_hpa + LMMIO_DIST_MASK)) / ROPES_PER_IOC;
+ 	r->start += rope * (size + 1);	/* adjust base for this rope */
+ 	r->end = r->start + size;
++	r->flags = IORESOURCE_MEM;
+ }
+
+-- 
+Matthew Wilcox				Intel Open Source Technology Centre
+"Bill, look, we understand that you're interested in selling us this
+operating system, but compare it to ours.  We can't possibly take such
+a retrograde step."
