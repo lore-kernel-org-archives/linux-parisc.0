@@ -1,35 +1,29 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: 2.6.31-rc1: parisc: multiple PCI BAR collisions
-Date: Fri, 26 Jun 2009 16:16:02 -0400
-Message-ID: <20090626201602.GA9862@bombadil.infradead.org>
-References: <a4423d670906260158q15080049ue516c3d454f4afbf@mail.gmail.com> <20090626170304.GA20871@lackof.org> <20090626174418.GX19977@parisc-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	Alexander Beregalov <a.beregalov@gmail.com>,
-	linux-parisc@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To: Matthew Wilcox <matthew@wil.cx>
+From: Kyle McMartin <kyle@hera.kernel.org>
+Subject: [git] parisc: Changes to ref refs/heads/parisc
+Date: Thu, 2 Jul 2009 03:48:35 GMT
+Message-ID: <200907020348.n623mZPe026720@hera.kernel.org>
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090626174418.GX19977@parisc-linux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Jun 26, 2009 at 11:44:18AM -0600, Matthew Wilcox wrote:
-> > > Hardware is HP j6000.
-> > > It cannot initialize many PCI devices (sym53c8xx, tulip, STI,
-> > > usb(onci)) and cannot boot (no root device).
-> > > Messages like this:
-> > > sym53c8xx 0:0:0f.0: device not available because of BAR 1 [0xf4005000
-> > > - 0xf40053ff] collisions.
-> > 
-> > I'm pretty sure this is a problem of the root bus resources not getting
-> > setup correctly. I'm not clear on what's wrong. jejb and willy are looking
-> > at it now as well.
-> 
-> This patch fixes it for me.
-> 
+New commits:
+commit 89ff26af79bd7ba93e5d98aa194527e55839e64a
+Author: Alexander Beregalov <a.beregalov@gmail.com>
+Date:   Thu Apr 16 14:45:59 2009 +0000
 
-obviously correct, applied and pushed out.
+    parisc: superio: fix build breakage
+    
+    Usage of parport_pc_probe_port was changed in 28783eb52
+    (parport: Fix various uses of parport_pc).
+    
+    It introduced this build error:
+    drivers/parisc/superio.c: In function 'superio_parport_init':
+    drivers/parisc/superio.c:437: error: too few arguments to function
+    				'parport_pc_probe_port'
+    
+    Fix it.
+    
+    Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
+    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
 
-thanks, kyle
