@@ -1,64 +1,52 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: HPPA and Squeeze
-Date: Sun, 5 Jul 2009 21:43:20 -0400 (EDT)
-Message-ID: <20090706014321.E91A45146@hiauly1.hia.nrc.ca>
-References: <1246842383.4158.22.camel@mulgrave.site>
+Date: Sun, 5 Jul 2009 22:25:04 -0400 (EDT)
+Message-ID: <20090706022506.D3E405146@hiauly1.hia.nrc.ca>
+References: <119aab440907051659p5d3cb93dk1034ce053034d192@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: carlos@systemhalted.org, deller@gmx.de, kurt@roeckx.be,
-	pkern@debian.org, debian-hppa@lists.debian.org,
-	linux-parisc@vger.kernel.org, debian-release@lists.debian.org,
-	kyle@mcmartin.ca
-To: James.Bottomley@HansenPartnership.com (James Bottomley)
+Cc: deller@gmx.de, kurt@roeckx.be, pkern@debian.org,
+	debian-hppa@lists.debian.org, linux-parisc@vger.kernel.org,
+	debian-release@lists.debian.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1246842383.4158.22.camel@mulgrave.site> from "James Bottomley" at Jul 5, 2009 08:06:23 pm
+In-Reply-To: <119aab440907051659p5d3cb93dk1034ce053034d192@mail.gmail.com> from "Carlos O'Donell" at Jul 5, 2009 07:59:59 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Sun, 2009-07-05 at 20:17 -0400, John David Anglin wrote:
-> > > > The info data is near the end of the mapped segment. =A0The l_info field
-> > > > is initialized by elf_get_dynamic_info from the dynamic data mapped
-> > > > at l->ld.
-> > > 
-> > > Why do you think this is wrong?
-> > 
-> > I don't know about the specifics.  My supposition is that we may not
-> > be copying the entire segment depending on where the map is placed.
+> On Sun, Jul 5, 2009 at 1:19 PM, John David
+> Anglin<dave@hiauly1.hia.nrc.ca> wrote:
+> > Carlos, what do you think?
 > 
-> Who is supposed to copy the segment?  The user or the kernel?
+> I think the dynamic linker is always the first to touch the mmap'd
+> file and therefore the most likely to fail if something is wrong in
+> our VM layer.
 
-As far as I can tell, the kernel is responsible for mapping the segment.
-Then, elf_get_dynamic_info processes the mapped data to generate the
-l_info field in the link map.
+>From the core dump, this is the data supposed processed by
+elf_get_dynamic_info:
 
-The kernel has control over where the segment is mapped.  In as much
-as the dependencies for /bin/sh are processed many times in a GCC
-build, I have to think the problem relates to the placement or a
-random problem with mmap.  There is a small possibility that the
-processing of the data by elf_get_dynamic_info has a problem.
+(gdb) x/64x l->l_ld
+0x4029e5fc <.LC11+4>:	0x00000001	0x00000167	0x00000001	0x00000171
+0x4029e60c <.LC11+20>:	0x0000000e	0x00000179	0x0000000c	0x00000c9c
+0x4029e61c <.LC11+36>:	0x0000000d	0x000020bc	0x00000019	0x00003590
+0x4029e62c <.LC11+52>:	0x0000001b	0x00000004	0x00000004	0x00002168
+0x4029e63c <.LC11+68>:	0x6ffffef5	0x00000134	0x00000005	0x0000047c
+0x4029e64c <.LC11+84>:	0x00000006	0x000001ec	0x0000000a	0x000001c8
+0x4029e65c <.LC11+100>:	0x0000000b	0x00000010	0x00000003	0x000037fc
+0x4029e66c <.LC11+116>:	0x00000002	0x0000015c	0x00000014	0x00000007
+0x4029e67c <.LC11+132>:	0x00000017	0x00000b40	0x00000007	0x000007b0
+0x4029e68c <.LC11+148>:	0x00000008	0x00000390	0x00000009	0x0000000c
+0x4029e69c <.LC11+164>:	0x6ffffffc	0x00000698	0x6ffffffd	0x00000006
 
-> > > > I seem to recall that the kernel mmap implementation on hppa is somewhat
-> > > > unique.
-> > > 
-> > > I don't recall anything, Kyle?
-> > 
-> > This came up with respect to the GCC PCH implementation for parisc.  See
-> > comments in host-hpux.h.  At the moment, we do have a PCH related bug.
-> > See PR 39355.  While I know the problem is present in the PCH file, I
-> > haven't been able to figure out how wrong data gets in the file.
-> 
-> Do you have a bugzilla reference so we can take a look ... also, is this
-> likely a tool chain problem or a kernel one?  If it's a kernel one could
-> someone provide a description of what they think is going wrong?
+(gdb) p l->l_ld[9]
+$15 = {d_tag = 5, d_un = {d_val = 1148, d_ptr = 1148}}
+(gdb) p/x 1148
+$16 = 0x47c
 
-The bugzilla reference is <http://gcc.gnu.org/bugzilla/show_bug.cgi?id=39355>.
-
-Many of my comments in the PR are wrong.  See comment #47.  At this time,
-I know that the data in the PCH file are wrong but I don't know why.  In
-any case, I should not have mentioned the PCH bug.  It's probably a tool
-chain bug.  The main point of the comment was that the hppa mmap implementation
-differs from other implementations (MAP_PRIVATE is not reliable).  So, there
-may be other issues.
+The numbers seem to match that printed by readelf.  So, maybe Carlos
+is right and this is a VM issue.  Is it possible the code saw different
+data (e.g., the mmap operation was not complete before the mmap call
+returned)?
 
 Dave
 -- 
