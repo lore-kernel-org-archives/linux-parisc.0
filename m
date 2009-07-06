@@ -1,26 +1,33 @@
-From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git] parisc: Changes to ref refs/heads/tracehook
-Date: Mon, 6 Jul 2009 21:30:43 GMT
-Message-ID: <200907062130.n66LUhGb022678@hera.kernel.org>
-To: linux-parisc@vger.kernel.org
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: HPPA and Squeeze
+Date: Mon, 6 Jul 2009 17:43:15 -0400
+Message-ID: <20090706214315.GA3826@bombadil.infradead.org>
+References: <119aab440907060936x7051933fgfde585df640ca1b1@mail.gmail.com> <20090706184539.5A76D4FE0@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Carlos O'Donell <carlos@systemhalted.org>, randolph@tausq.org,
+	James.Bottomley@hansenpartnership.com, deller@gmx.de,
+	kurt@roeckx.be, pkern@debian.org, debian-hppa@lists.debian.org,
+	linux-parisc@vger.kernel.org, debian-release@lists.debian.org,
+	kyle@mcmartin.ca
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090706184539.5A76D4FE0@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-New commits:
-commit 1bfad82af3452a5ba38fddae5b8bdd0689bffbb2
-Author: Kyle McMartin <kyle@phobos.i.jkkm.org>
-Date:   Mon Jul 6 17:28:53 2009 -0400
+On Mon, Jul 06, 2009 at 02:45:37PM -0400, John David Anglin wrote:
+> I have to think that this has something to do with the machine
+> being a rp3440 (large memory and cache).  I have never seen this
+> on my c3750 with 32-bit UP kernel.  Also, this was with a 64-bit
+> UP kernel.
+> 
 
-    parisc: first pass of new-style ptrace for parisc
-    
-    This is going to be super nasty to gdb if we ever try to wire up
-    PTRACE_(GET|SET){,FP}REGS since the format is different between
-    coredump and pt_regs.
-    
-    Hopefully this maintains the coredump ABI. Let's test and see.
-    (This commit will get squashed later, once I fix the build several
-    times over I suspect.)
-    
-    Definitely-not-signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+If I remember correctly, there's still some issues with the L2 cache on
+pa8800 that we haven't quite bothered to work out yet, since it's "good
+enough" for now. James probably knows more. It would be interesting to
+see if you could reproduce it with a UP 64-bit kernel on your C3750 to
+discount the L2 problems.
+
+regards, Kyle
 
