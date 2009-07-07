@@ -1,75 +1,40 @@
 From: Helge Deller <deller@gmx.de>
 Subject: Re: parisc: unwind tables and backtraces broken?
-Date: Tue, 07 Jul 2009 20:01:46 +0200
-Message-ID: <4A538D8A.70002@gmx.de>
-References: <4A527397.7060306@gmx.de> <4A52B98E.2070708@tausq.org>
+Date: Tue, 07 Jul 2009 20:02:43 +0200
+Message-ID: <4A538DC3.5070107@gmx.de>
+References: <20090707005018.C697F4FE0@hiauly1.hia.nrc.ca>	 <4A52BBE2.7020507@tausq.org>	 <20090707044214.GB3826@bombadil.infradead.org> <119aab440907070707u5cbf0de7j60fb80cef470f216@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: linux-parisc <linux-parisc@vger.kernel.org>,
-	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	Carlos O'Donell <carlos@systemhalted.org>
-To: Randolph Chung <randolph@tausq.org>
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+	Randolph Chung <randolph@tausq.org>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	linux-parisc@vger.kernel.org, dave.anglin@nrc-cnrc.gc.ca
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4A52B98E.2070708@tausq.org>
+In-Reply-To: <119aab440907070707u5cbf0de7j60fb80cef470f216@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 07/07/2009 04:57 AM, Randolph Chung wrote:
-> Helge,
+On 07/07/2009 04:07 PM, Carlos O'Donell wrote:
+> On Tue, Jul 7, 2009 at 12:42 AM, Kyle McMartin<kyle@mcmartin.ca>  wrote:
+>> indeed, it very briefly had a dwarf unwinder, but linus turned it off
+>> again because it turned out to generate worse backtraces than just
+>> chunking through stack frames with frame pointers enabled did. although,
+>> there is talk of it growing one again now.
 >
->> but the unwind table when running the kernel with the attached patch
->> (see below) shows:
->> ...
->> unwind_init: start = 0x105fb3c0, end = 0x10634f30, entries = 14775
->> unwind 1: 100ff900 - 100ffa80, len=385
->> unwind 2: 100ffa84 - 100ffad4, len=81
->> unwind 3: 100ffad8 - 100ffb2c, len=85
->> unwind 4: 100ffb30 - 100ffbc8, len=153
->> unwind 5: 100ffbcc - 100ffc38, len=109
->> unwind 6: 100ffc3c - 100ffc9c, len=97
->> unwind 7: 100ffca0 - 100ffd00, len=97
->> unwind 8: 100ffd04 - 100ffd64, len=97
->> unwind 9: 100ffd68 - 100ffdc8, len=97
->> unwind 10: 100ffdcc - 100ffdec, len=33
->>
->> From this table I don't even understand the values of the very first
->> entry (unwind 1: 100ff900 - 100ffa80).
->> This does not resolve to any entry in the assembly.
-> I am a little fuzzy on the details, but the numbers printed above are
-> what is stored in the unwind table. This does not correspond with the
-> actual address in memory, which is adjusted by an offset. In the case of
-> kernel symbols, this offset is KERNEL_START (this is a parameter passed
-> to unwind_table_init()
+> It will definitely need to grow a dwarf2 unwinder.
+>
+> Any sane ABI should drop the hard frame pointer requirement in order
+> to get better code generation. For example on ARM under the EABI there
+> is no hard fp, you get that register back for other uses and it
+> simplifies prologue and epilogues. If you need an offset from the fp
+> the compiler synthesizes it for you, and reuses it appropriately after
+> the use is dead.
+>
+> I thought bfd, and therefore readelf and objdump could read parisc
+> unwind info, if so, then what do those tools say about this broken
+> unwind info?
 
-The addresses given above already got the offset added. They are wrong
-nevertheless.
-
->> My assumption:
->> When the linker creates the long-distance jump table, it does not adjusts
->> the values in the unwind table.
-> this used to work.....
-
-Yes.
-Interestingly, this problem showed up to me now since I updated my 32- and
-64bit crosscompilers to 4.3.3 (and binutils of course).
-I used (on 32bit) the gcc-3.3 before and this one doesn't exibited the
-problem of buggy unwind tables (with the existing/same kernel source code).
-
->> Second, when the linker discards attribute-weak functions,
->> it doesn't deletes/adjusts the unwind table entries of the deleted
->> functions either.
-> can you try this with a userspace program? gdb uses this same unwind
-> information to do backtraces. if the unwind info is wrong gdb will be
-> very broken.
-
-I'll try, but I assume userspace is ok. If it wouldn't be, Dave probably
-won't be able to debug the other userspace issues (the segv-thread on debian's
-buildds).
-  
-> On the other hand, the kernel does use a more complex linker script so
-> it is possible that some options in the linker script is triggering some
-> bug.
-
-Yes, maybe. But again, I think gcc-3.3 (and the old binutils) could handle this gracefully.
+Any hint what I should do to give you the input you need?
 
 Helge
