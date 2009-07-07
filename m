@@ -1,45 +1,42 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: parisc: unwind tables and backtraces broken?
-Date: Tue, 7 Jul 2009 16:36:14 -0400
-Message-ID: <119aab440907071336y707c18f7pf442349c2e232fa7@mail.gmail.com>
-References: <4A538D8A.70002@gmx.de>
-	 <20090707183311.6B5AA4FB2@hiauly1.hia.nrc.ca>
+Subject: Re: HPPA and Squeeze
+Date: Tue, 7 Jul 2009 16:42:17 -0400
+Message-ID: <119aab440907071342l1a936c47n62d8f332d8ecf5d4@mail.gmail.com>
+References: <1246975877.4522.9.camel@mulgrave.site>
+	 <20090707162158.26D514FB2@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Helge Deller <deller@gmx.de>, randolph@tausq.org,
-	linux-parisc@vger.kernel.org, dave.anglin@nrc-cnrc.gc.ca
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+	kyle@mcmartin.ca, randolph@tausq.org, deller@gmx.de,
+	kurt@roeckx.be, pkern@debian.org, debian-hppa@lists.debian.org,
+	linux-parisc@vger.kernel.org, debian-release@lists.debian.org
 To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090707183311.6B5AA4FB2@hiauly1.hia.nrc.ca>
+In-Reply-To: <20090707162158.26D514FB2@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Jul 7, 2009 at 2:33 PM, John David
+On Tue, Jul 7, 2009 at 12:21 PM, John David
 Anglin<dave@hiauly1.hia.nrc.ca> wrote:
->> Interestingly, this problem showed up to me now since I updated my 3=
-2- and
->> 64bit crosscompilers to 4.3.3 (and binutils of course).
->> I used (on 32bit) the gcc-3.3 before and this one doesn't exibited t=
-he
->> problem of buggy unwind tables (with the existing/same kernel source=
- code).
+>> So if I characterise the problem you think you're seeing: on mmap of=
+ a
+>> file at a memory location to be determined by the kernel, a sequenti=
+al
+>> set of reads of the mapped location eventually turns up a zero where
+>> there should be data? =A0Yes, it does sound like a caching issue.
 >
-> GCC doesn't know anything about PA-RISC unwind info. =A0It's generate=
-d by the
-> assembler from assembler directives. =A0So, I think it's unlikely tha=
-t the
-> problem is in GCC.
+> Yes. =A0The loop is terminated by a null tag:
 >
-> Your comments about dead-code elimination by the linker make me wonde=
-r
-> if that isn't the problem.
+> =A0while (dyn->d_tag !=3D DT_NULL)
+> =A0 =A0 =A0{
+> =A0 =A0 =A0 =A0 ...
+> =A0 =A0 =A0}
+>
+> However, the core dump doesn't show a null tag before the STRTAB tag
+> that caused the segmentation fault.
 
-Helge,
-
-Are you compiling with --gc-sections? Try without?
-
-I've seen at least one problem in the past on another target where
-garbage collection would not correctly update debug information.
+Do you mean "after" the STRTAB tag? I assume the library on-disk has a
+DT_NULL, otherwise it would always fail.
 
 Cheers,
 Carlos.
