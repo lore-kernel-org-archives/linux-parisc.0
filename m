@@ -1,42 +1,69 @@
-From: Jaswinder Singh Rajput <jaswinder@kernel.org>
-Subject: [PATCH 26/44] includecheck fix: drivers/parisc, ccio-dma.c
-Date: Wed, 08 Jul 2009 20:57:20 +0530
-Message-ID: <1247066840.4382.74.camel@ht.satnam>
-References: <1247063308.4382.12.camel@ht.satnam>
+From: Artem Alimarine <artem.alimarine@stromasys.com>
+Subject: Wierd code in Entry.S
+Date: Thu, 09 Jul 2009 15:11:19 +0200
+Message-ID: <4A55EC77.4040402@stromasys.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-To: kyle@mcmartin.ca, deller@gmx.de, linux-parisc@vger.kernel.org,
-	Sam Ravnborg <sam@ravnborg.org>,
-	LKML <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed;
+ boundary="------------010104060302060209050802"
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1247063308.4382.12.camel@ht.satnam>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+This is a multi-part message in MIME format.
+--------------010104060302060209050802
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-fix the following 'make includecheck' warning:
+Hi guys,
 
-  drivers/parisc/ccio-dma.c: linux/proc_fs.h is included more than once.
+I am new to PARISC and to this forum. I have a small question. There is 
+an instruction in entry.S that I do not understand. It is in the the 
+macro make_insert_tlb
 
-Signed-off-by: Jaswinder Singh Rajput <jaswinderrajput@gmail.com>
----
- drivers/parisc/ccio-dma.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+Kernel 2.6.26.2:
 
-diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-index 0f0e0b9..a45b0c0 100644
---- a/drivers/parisc/ccio-dma.c
-+++ b/drivers/parisc/ccio-dma.c
-@@ -70,7 +70,6 @@
- #undef CCIO_COLLECT_STATS
- #endif
- 
--#include <linux/proc_fs.h>
- #include <asm/runway.h>		/* for proc_runway_root */
- 
- #ifdef DEBUG_CCIO_INIT
--- 
-1.6.0.6
-
+ 537        /* Enforce uncacheable pages.
+ 538         * This should ONLY be use for MMIO on PA 2.0 machines.
+ 539         * Memory/DMA is cache coherent on all PA2.0 machines we 
+support
+ 540         * (that means T-class is NOT supported) and the memory 
+controllers
+ 541         * on most of those machines only handles cache transactions.
+ 542         */
+ 543        extrd,u,*=      \pte,_PAGE_NO_CACHE_BIT+32,1,%r0
+ 544        depi            1,12,1,\prot
 
 
+The DEPI instruction on a 64-bit machine sets bit 44=32+12,
+whereas we use the value as the argument to IDTLBT, which expects bit 12 
+to be used instead. Does it mean that the U-bit is never set and the 
+authorization id gets corrupted???
+
+Is it a bug or my misunderstanding of the code???
+
+Best regards,
+Artem
+
+--------------010104060302060209050802
+Content-Type: text/x-vcard; charset=utf-8;
+ name="artem_alimarine.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="artem_alimarine.vcf"
+
+begin:vcard
+fn:dr. Artem Alimarine
+n:Alimarine;Artem
+org:STROMASYS SA
+adr:;;De Zaale 11;Eindhoven;;5612AJ;The Netherlands
+email;internet:artem.alimarine@stromasys.com
+title:Software Architect
+tel;work:+31-40-2390863
+tel;fax:+31-40-2390800
+x-mozilla-html:FALSE
+version:2.1
+end:vcard
+
+
+--------------010104060302060209050802--
