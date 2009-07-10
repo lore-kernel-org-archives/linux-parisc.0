@@ -1,54 +1,59 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Artem Alimarine <artem.alimarine@stromasys.com>
 Subject: Re: Wierd code in Entry.S
-Date: Fri, 10 Jul 2009 11:18:21 -0500
-Message-ID: <1247242701.3936.28.camel@mulgrave.site>
-References: <20090710155559.CFAA44FC4@hiauly1.hia.nrc.ca>
+Date: Fri, 10 Jul 2009 18:25:22 +0200
+Message-ID: <4A576B72.6030302@stromasys.com>
+References: <20090710001506.A2C43507E@hiauly1.hia.nrc.ca> <1247241171.3936.18.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	artem.alimarine@stromasys.com, linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Content-Type: multipart/mixed;
+ boundary="------------070700030005030602040806"
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	linux-parisc@vger.kernel.org
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090710155559.CFAA44FC4@hiauly1.hia.nrc.ca>
+In-Reply-To: <1247241171.3936.18.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2009-07-10 at 11:55 -0400, John David Anglin wrote:
-> > But I'm still wondering what the effect of this bug will be.
-> > The first order (not setting U-bit) should only affect ZX1 (pa8800/pa8900)
-> > machines. Those have uncacheable IO space between 2GB-4GB physical address.
-> > My guess is the machines should HPMC since the CPU would attempt to access
-> > those ranges as a cacheline read/write instead of sub-cacheline transactions.
-> 
-> I think the depdi change may fix the random memory corruption that
-> I have been complaining about.  My rp3440 has got through a full build
-> of GCC with 2.6.30.1.  Previous two attempts failed with segmentation
-> faults in the dynamic loader, one of which I reported on.  It will
-> take a few more builds to be sure.  Your comment would explain why I
-> don't see this on c3750.  Could this affect PA8700?
+This is a multi-part message in MIME format.
+--------------070700030005030602040806
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-In theory it would affect every box running a 64 bit kernel.  We
-actually set PAGE_NO_CACHE on ioremaps(), so it's spreading out from the
-PCI device space.
+Hi,
+> Yes, looks like we've got a set of cockups in this file.  Apparently gas
+> is evaluating depi as the macro DEPI, which seems to be correct for
+> every other case in the file I've looked at except this one
+What I saw is that in the end DEPDI opcode with bit 44 is generated for 
+than instruction.
 
-> I installed the change on my rp3440, c3750 and gsyprf11 last night.
-> At some point, I need to test the change with an SMP build on the rp3440.
+The macro make_insert_tlb is used with PA2.0 and thus with IDTLBT and 
+make_insert_tlb_11 with PA1.1 and thus with IDTLBP. It would probably be 
+enough to change DEPI into DEPDI in the 2.0 variant. I do not know 
+whether there are more similar cases.
 
-rp3440 is a pa88/8900 system?  We have ion in the test ring at
-cupertino, it's a 4 CPU pa8900 ... I've been keeping it up to date with
-debian testing.
+Best regards,
+Artem
 
-> There is one other issue that I see on the rp3440 which I don't see
-> on the c3750 or gsyprf11.  I get occassional testsuite timeouts during
-> compilation on compilations that shouldn't timeout.  I had always
-> thought this to be a tcl/expect issue, but now I think this is likely
-> a kernel issue.  I need to change the timeout value in the testsuite
-> to something big so I can see what's happening.
+--------------070700030005030602040806
+Content-Type: text/x-vcard; charset=utf-8;
+ name="artem_alimarine.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="artem_alimarine.vcf"
 
-It sounds a bit like another caching issue ... perhaps a cached value
-for a spinlock or futex making the thread thing the lock is held against
-it when it isn't?
+begin:vcard
+fn:dr. Artem Alimarine
+n:Alimarine;Artem
+org:STROMASYS SA
+adr:;;De Zaale 11;Eindhoven;;5612AJ;The Netherlands
+email;internet:artem.alimarine@stromasys.com
+title:Software Architect
+tel;work:+31-40-2390863
+tel;fax:+31-40-2390800
+x-mozilla-html:FALSE
+version:2.1
+end:vcard
 
-James
 
-
+--------------070700030005030602040806--
