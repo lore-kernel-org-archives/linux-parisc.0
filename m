@@ -1,39 +1,64 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 Subject: Re: Wierd code in Entry.S
-Date: Wed, 15 Jul 2009 00:40:46 -0600
-Message-ID: <20090715064046.GB26739@lackof.org>
-References: <20090709225511.GE10979@lackof.org> <20090710001506.A2C43507E@hiauly1.hia.nrc.ca> <20090710153620.GB28778@lackof.org> <4A576837.70501@stromasys.com>
+Date: Wed, 15 Jul 2009 08:41:30 -0400
+Message-ID: <1247661690.4236.10.camel@mulgrave.site>
+References: <20090710155559.CFAA44FC4@hiauly1.hia.nrc.ca>
+	 <1247242701.3936.28.camel@mulgrave.site>
+	 <20090715063800.GA26739@lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	linux-parisc@vger.kernel.org
-To: Artem Alimarine <artem.alimarine@stromasys.com>
+Content-Type: text/plain
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	artem.alimarine@stromasys.com, linux-parisc@vger.kernel.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4A576837.70501@stromasys.com>
+In-Reply-To: <20090715063800.GA26739@lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Jul 10, 2009 at 06:11:35PM +0200, Artem Alimarine wrote:
-> Hi Grant,
->
-> Bit 44 falls into the access_id area. So, access id get corrupted. As  
-> far as I understand we should get interrupt 18 (access check trap) on  
-> such TLB  entries. However we do not. The bug can go unnoticed when the  
-> access id is smaller than 31 bits. The PA2.0 manual says in the IDTLBT  
-> description: If smaller than 31-bit access IDs are implemented, only the  
-> appropriate number of the
-> rightmost bits of GR[r]{32..62} are stored in the TLB. Obviously, bit 44  
-> is not among the stored bits.
+On Wed, 2009-07-15 at 00:38 -0600, Grant Grundler wrote:
+> On Fri, Jul 10, 2009 at 11:18:21AM -0500, James Bottomley wrote:
+> > On Fri, 2009-07-10 at 11:55 -0400, John David Anglin wrote:
+> ...
+> > > Your comment would explain why I
+> > > don't see this on c3750.  Could this affect PA8700?
+> > 
+> > In theory it would affect every box running a 64 bit kernel.
+> 
+> Yes, regarding corrupting bit-44 but not U-bit.
+> 
+> IIRC, only pa880 and pa8900 pay attention to the U-bit.
+> I thought all the previous CPUs ignored U-bit.
 
-Ok - thanks for looking that up. CPU specific ERS would contain the
-details that describe access ID implementations.
+Um, no, almost all pa chips use it ... it's the way we make coherent
+memory on the very old 710 and similar systems: use an ordinary kmalloc
+and turn off caching in the map.  The 715 class systems with the oldest
+pa chips don't respect the U bit ... these are the ones we have to pull
+the driver cache flushing tricks on to get them working.
 
-> Actually, I have no idea on how many bits are used by the hardware.  
-> Myself I have rp2470.
+We also use the U bit for ioremaps.
 
-Yeah, that's Astro/Elroy and not ZX1. So should not be affected
-by the U-bit being mis-set.
+> > We
+> > actually set PAGE_NO_CACHE on ioremaps(), so it's spreading out from the
+> > PCI device space.
+> 
+> Yes - but only ZX1 chipset (e.g. rp3440 and C8000) uses IO space that
+> is outside of F-space. F-space is hardwired to be uncachable by the CPU.
 
-thanks,
-grant
+OK, so we don't really use the concept of F-Space in the linux kernel
+virtual memory map on parisc linux.  What we do is map the whole of
+memory into the virtual address space, but none of the I/O space.  the
+readX/writeX macros actually go via absolute accesses.  Because the
+kernel virtual addresses are offset mapped from the absolute addresses,
+we do get a hole in the virtual map corresponding to F-Space (simply
+because there's no accessible memory there) but we're actually able to
+fill that hole later with virtual mappings if we choose.  The net result
+is that I/O devices aren't mapped into the kernel at all until we call
+ioremap.  If a device uses readX/writeX only, it never actually gets an
+appearance in our virtual space because we simply use absolute accesses
+to get the data to and from the device.  If it really needs a remapped
+area, we use ioremap, then it does appear in our virtual map, and we set
+the U bit on the mapping.
+
+James
+
+
