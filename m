@@ -1,7 +1,7 @@
-From: "Rudolf Mcghee" <dr.raiden@paris.otis.com>
-Subject: For sure, you will feel more pleasure after of a short course of enhancing.
-Date: Wed, 15 Jul 2009 13:18:12 -0600
-Message-ID: <20090715131812.5040305@paris.otis.com>
+From: "Leonard Garcia" <camberwell@lgs.de>
+Subject: Loose kilos easily.
+Date: Thu, 16 Jul 2009 09:15:32 +0530
+Message-ID: <20090716091532.8000705@lgs.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 To: linux-parisc@vger.kernel.org
@@ -9,5 +9,5 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Cures fast and effective! http://qjlxe.ryapudux.cn/
+New xxx experinece! http://qsgf.djojoyih.cn/
 
