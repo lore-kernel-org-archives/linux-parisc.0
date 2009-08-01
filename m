@@ -1,115 +1,56 @@
-From: Frans Pop <elendil@planet.nl>
-Subject: Re: Bug#539378: [hppa]: fails to load nfs module: Global =?utf-8?q?Offset=09Table?=
-Date: Sat, 1 Aug 2009 10:08:58 +0200
-Message-ID: <200908011009.00725.elendil@planet.nl>
-References: <119aab440907311413s2e5ef1ebl690fff1bc4f0daea@mail.gmail.com> <20090731233828.GF26333@bombadil.infradead.org> <4A73821A.4020506@gmx.de>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: Bug#539378: [hppa]: fails to load nfs module: Global Offset
+	Table
+Date: Sat, 1 Aug 2009 09:53:20 -0400
+Message-ID: <20090801135319.GA13949@hiauly1.hia.nrc.ca>
+References: <4A73821A.4020506@gmx.de> <20090801003740.8BBDE5160@hiauly1.hia.nrc.ca> <119aab440907311851t502a208bh34b21b3f732e3e09@mail.gmail.com>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_cg/cK5bZA3H+kDJ"
-Cc: Kyle McMartin <kyle@mcmartin.ca>,
-	Carlos O'Donell <carlos@systemhalted.org>,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+Content-Type: text/plain; charset=iso-8859-1
+Cc: Helge Deller <deller@gmx.de>, kyle@mcmartin.ca, elendil@planet.nl,
 	539378@bugs.debian.org, debian-hppa@lists.debian.org,
-	linux-parisc@vger.kernel.org, randolph@tausq.org
-To: Helge Deller <deller@gmx.de>
+	linux-parisc@vger.kernel.org, randolph@tausq.org,
+	submit@bugs.debian.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4A73821A.4020506@gmx.de>
+In-Reply-To: <119aab440907311851t502a208bh34b21b3f732e3e09@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Boundary-00=_cg/cK5bZA3H+kDJ
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Fri, 31 Jul 2009, Carlos O'Donell wrote:
 
-tags 539378 patch
-thanks
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 if (d <=3D 15)
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 stub->insns[0] |=3D reas=
+semble_14(d);
+> >
+> > reassemble_14 is wrong for ldd format 3. =A0Need format 5 and im5 i=
+nsertion.
+>=20
+> This is using reassemble_14 for ldd format 5, which is correct.
 
-On Saturday 01 August 2009, Helge Deller wrote:
-> Kyle, you beat me.
-> Attached is my patch ....
->
-> Tested and works.
+Huh?  Format 5 has a five bit immediate and it's not compatible with
+reassemble_14.  The value is actually being stuffed into a format 3 ldd
+pattern (i.e., format 3 is being used for displacements 0 and 8).
 
-Works for me too. Cool.
+If format 3 is going to be used for short displacements, then use
+reassemble_16a as it is the inverse to the assemble_16a operation
+described in the arch.  Using reassemble_14 with ldd is confusing.
 
-Your patch contained a few whitespace errors and, because of that, one 
-unnecessary change. Attached a version with those cleaned up.
+As you pointed out, the arch shows using format 5 for short displacemen=
+ts.
+It's unclear whether there is a performance or functional difference as=
+ide
+from the behavior of space selection.  There may be no requirement for
+hardware to implement short displacements using format 3.
 
-Thanks,
-FJP
-
-
---Boundary-00=_cg/cK5bZA3H+kDJ
-Content-Type: text/x-diff;
-  charset="utf-8";
-  name="got.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
-	filename="got.patch"
-
-parisc: module.c - fix GOT table overflow with large kernel modules on 64 bit kernels
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
-index ef5caf2..d291bf9 100644
---- a/arch/parisc/kernel/module.c
-+++ b/arch/parisc/kernel/module.c
-@@ -86,8 +86,12 @@
-  * the bottom of the table, which has a maximum signed displacement of
-  * 0x3fff; however, since we're only going forward, this becomes
-  * 0x1fff, and thus, since each GOT entry is 8 bytes long we can have
-- * at most 1023 entries */
--#define MAX_GOTS	1023
-+ * at most 1023 entries.
-+ * To overcome this 14bit displacement with some kernel modules, we'll
-+ * use instead the unusal 16bit displacement method (see reassemble_16a)
-+ * which gives us a maximum positive displacement of 0x7fff, and as such
-+ * allows us to allocate up to 4095 GOT entries. */
-+#define MAX_GOTS	4095
- 
- /* three functions to determine where in the module core
-  * or init pieces the location is */
-@@ -151,6 +155,16 @@ static inline int reassemble_14(int as14)
- 		((as14 & 0x2000) >> 13));
- }
- 
-+static inline int reassemble_16a(int as16)
-+{
-+	int s, t;
-+
-+	/* Unusual 16-bit encoding, for wide mode only. */
-+	t = (as16 << 1) & 0xffff;
-+	s = (as16 & 0x8000);
-+	return (t ^ s ^ (s >> 1)) | (s >> 15);
-+}
-+
- static inline int reassemble_17(int as17)
- {
- 	return (((as17 & 0x10000) >> 16) |
-@@ -407,6 +421,7 @@ static Elf_Addr get_stub(struct module *me, unsigned long value, long addend,
- 	enum elf_stub_type stub_type, Elf_Addr loc0, unsigned int targetsec)
- {
- 	struct stub_entry *stub;
-+	int d;
- 
- 	/* initialize stub_offset to point in front of the section */
- 	if (!me->arch.section[targetsec].stub_offset) {
-@@ -465,7 +480,12 @@ static Elf_Addr get_stub(struct module *me, unsigned long value, long addend,
- 		stub->insns[2] = 0xe820d000;	/* bve (%r1)		*/
- 		stub->insns[3] = 0x537b0030;	/* ldd 18(%dp),%dp	*/
- 
--		stub->insns[0] |= reassemble_14(get_got(me, value, addend) & 0x3fff);
-+		d = get_got(me, value, addend);
-+		if (d <= 15)
-+			stub->insns[0] |= reassemble_14(d);
-+		else
-+			stub->insns[0] |= reassemble_16a(d);
-+
- 		break;
- 	case ELF_STUB_MILLI:
- 		stub->insns[0] = 0x20200000;	/* ldil 0,%r1		*/
-
---Boundary-00=_cg/cK5bZA3H+kDJ--
+Dave
+--=20
+J. David Anglin                                  dave.anglin@nrc-cnrc.g=
+c.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 9=
+52-6602)
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
