@@ -1,49 +1,40 @@
-From: Thibaut VARENE <varenet@parisc-linux.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 Subject: Re: [PATCH] kobject: Read buffer overflow
-Date: Sun, 2 Aug 2009 12:24:34 +0200
-Message-ID: <7d01f9f00908020324r227382aal1d63512ded018b17@mail.gmail.com>
+Date: Sun, 02 Aug 2009 23:33:47 +0000
+Message-ID: <1249256027.3922.218.camel@mulgrave.site>
 References: <4A754814.50506@gmail.com>
-	 <7d01f9f00908020306s273eec60u8e50692c0f839828@mail.gmail.com>
-	 <20090802101635.GA3711@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Roel Kluin <roel.kluin@gmail.com>, kyle@mcmartin.ca, deller@gmx.de,
-	linux-parisc@vger.kernel.org,
+Content-Type: text/plain
+Cc: kyle@mcmartin.ca, deller@gmx.de, linux-parisc@vger.kernel.org,
 	Andrew Morton <akpm@linux-foundation.org>
-To: Matthew Wilcox <matthew@wil.cx>
+To: Roel Kluin <roel.kluin@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090802101635.GA3711@parisc-linux.org>
+In-Reply-To: <4A754814.50506@gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Aug 2, 2009 at 12:16 PM, Matthew Wilcox<matthew@wil.cx> wrote:
-> On Sun, Aug 02, 2009 at 12:06:59PM +0200, Thibaut VARENE wrote:
->> On Sun, Aug 2, 2009 at 10:02 AM, Roel Kluin<roel.kluin@gmail.com> wr=
-ote:
->> > Check whether index is within bounds before testing the element.
->>
->> The change is correct but:
->> - There are other places in the code with that construct. Even thoug=
-h
->> they wouldn't trigger an overflow, why not fixing them too?
->> - Keep the likely: we are more likely to run out of data in the laye=
-rs
->> than to exhaust the counter (which is why no overflow was ever
->> triggered, I believe ;-)
->
-> No, lose the likely. =C2=A0It's a for-loop; gcc will do the right thi=
-ng.
+On Sun, 2009-08-02 at 10:02 +0200, Roel Kluin wrote:
+> Check whether index is within bounds before testing the element.
+> 
+> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+> ---
+> This also removes the likely, should it be kept?
+> 
+> diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
+> index f9f9a5f..13a64bc 100644
+> --- a/drivers/parisc/pdc_stable.c
+> +++ b/drivers/parisc/pdc_stable.c
+> @@ -370,7 +370,7 @@ pdcspath_layer_read(struct pdcspath_entry *entry, char *buf)
+>  	if (!i)	/* entry is not ready */
+>  		return -ENODATA;
+>  	
+> -	for (i = 0; devpath->layers[i] && (likely(i < 6)); i++)
+> +	for (i = 0; i < 6 && devpath->layers[i]; i++)
 
-I stand corrected then. ;-)
-Thanks willy.
+Since all patterns like this (swapping the order of conditions with no
+side effects in a for loop condition) are basically trivial, shouldn't
+they be going via Jiri Kosina (trivial tree)?  
 
-T-Bone
+James
 
---=20
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
