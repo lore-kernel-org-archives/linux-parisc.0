@@ -1,26 +1,32 @@
-From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git] parisc: Changes to ref refs/heads/next
-Date: Tue, 4 Aug 2009 15:23:43 GMT
-Message-ID: <200908041523.n74FNhdm027043@hera.kernel.org>
-To: linux-parisc@vger.kernel.org
+From: Julia Lawall <julia@diku.dk>
+Subject: question about arch/parisc/kernel/module.c
+Date: Tue, 4 Aug 2009 21:43:57 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0908042140280.3737@ask.diku.dk>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: kyle@mcmartin.ca, deller@gmx.de, linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-New commits:
-commit bb55a9147268749577b262490eb539e4eb173b2b
-Merge: 88d1e1f0c7c0c009cd4f57a4d0e16b3f8b1af401 7209a334ff1154987aa3a74f1bb595d44bb0b9b2
-Author: Kyle McMartin <kyle@phobos.i.jkkm.org>
-Date:   Tue Aug 4 11:23:18 2009 -0400
+The file arch/parisc/kernel/module.c in the function module_finalize 
+contains the following code:
 
-    Merge branch 'ptrace' into next
+	for (i = 1; i < hdr->e_shnum; i++) {
+                if(sechdrs[i].sh_type == SHT_SYMTAB
+                   && (sechdrs[i].sh_type & SHF_ALLOC)) {
+	                int strindex = sechdrs[i].sh_link;
+			/* FIXME: AWFUL HACK
+	                 * The cast is to drop the const from
+                         * the sechdrs pointer */
+                        symhdr = (Elf_Shdr *)&sechdrs[i];
+                        strtab = (char *)sechdrs[strindex].sh_addr;
+	                break;
+	        }
+        }
 
-commit 88d1e1f0c7c0c009cd4f57a4d0e16b3f8b1af401
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Tue Aug 4 16:54:41 2009 +0200
+The third line, (sechdrs[i].sh_type & SHF_ALLOC), loos suspicious, because 
+actually SHT_SYMTAB and SHF_ALLOC have the same value.  Should the third 
+line be (sechdrs[i].sh_flags & SHF_ALLOC) instead?
 
-    parisc: convert to asm-generic/hardirq.h
-    
-    Signed-off-by: Christoph Hellwig <hch@lst.de>
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
-
+julia
