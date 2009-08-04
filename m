@@ -1,37 +1,33 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: [PATCH] arch/parisc: correct use of SHF_ALLOC
-Date: Tue, 4 Aug 2009 22:27:07 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0908042226231.3737@ask.diku.dk>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [PATCH] parisc: add me to Maintainers
+Date: Tue, 04 Aug 2009 23:59:55 +0000
+Message-ID: <1249430395.3939.49.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-To: Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
+Content-Type: text/plain
+To: Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Julia Lawall <julia@diku.dk>
+It has been suggested that given my proficiency with less popular
+architectures, I should be officially listed as willing to see to the
+care and feeding of this one.
 
-SHF_ALLOC is suitable for testing against the sh_flags field, not the
-sh_type field.
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
+Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
 
 ---
- arch/parisc/kernel/module.c         |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
-index ef5caf2..c904817 100644
---- a/arch/parisc/kernel/module.c
-+++ b/arch/parisc/kernel/module.c
-@@ -853,7 +853,7 @@ int module_finalize(const Elf_Ehdr *hdr,
- 	 * ourselves */
- 	for (i = 1; i < hdr->e_shnum; i++) {
- 		if(sechdrs[i].sh_type == SHT_SYMTAB
--		   && (sechdrs[i].sh_type & SHF_ALLOC)) {
-+		   && (sechdrs[i].sh_flags & SHF_ALLOC)) {
- 			int strindex = sechdrs[i].sh_link;
- 			/* FIXME: AWFUL HACK
- 			 * The cast is to drop the const from
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b1114cf..9c0f456 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3863,6 +3863,7 @@ F:	drivers/block/paride/
+ PARISC ARCHITECTURE
+ M:	Kyle McMartin <kyle@mcmartin.ca>
+ M:	Helge Deller <deller@gmx.de>
++M:	"James E.J. Bottomley" <jejb@parisc-linux.org>
+ L:	linux-parisc@vger.kernel.org
+ W:	http://www.parisc-linux.org/
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kyle/parisc-2.6.git
+
+
