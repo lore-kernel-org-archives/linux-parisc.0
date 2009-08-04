@@ -1,41 +1,37 @@
 From: Julia Lawall <julia@diku.dk>
-Subject: Re: question about arch/parisc/kernel/module.c
-Date: Tue, 4 Aug 2009 21:58:22 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0908042158100.3737@ask.diku.dk>
-References: <Pine.LNX.4.64.0908042140280.3737@ask.diku.dk>
- <20090804195116.GM28572@bombadil.infradead.org>
+Subject: [PATCH] arch/parisc: correct use of SHF_ALLOC
+Date: Tue, 4 Aug 2009 22:27:07 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0908042226231.3737@ask.diku.dk>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: deller@gmx.de, linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+To: Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090804195116.GM28572@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 4 Aug 2009, Kyle McMartin wrote:
+From: Julia Lawall <julia@diku.dk>
 
-> On Tue, Aug 04, 2009 at 09:43:57PM +0200, Julia Lawall wrote:
-> > 	for (i = 1; i < hdr->e_shnum; i++) {
-> >                 if(sechdrs[i].sh_type == SHT_SYMTAB
-> >                    && (sechdrs[i].sh_type & SHF_ALLOC)) {
-> > 	                int strindex = sechdrs[i].sh_link;
-> > 			/* FIXME: AWFUL HACK
-> > 	                 * The cast is to drop the const from
-> >                          * the sechdrs pointer */
-> >                         symhdr = (Elf_Shdr *)&sechdrs[i];
-> >                         strtab = (char *)sechdrs[strindex].sh_addr;
-> > 	                break;
-> > 	        }
-> >         }
-> > 
-> > The third line, (sechdrs[i].sh_type & SHF_ALLOC), loos suspicious, because 
-> > actually SHT_SYMTAB and SHF_ALLOC have the same value.  Should the third 
-> > line be (sechdrs[i].sh_flags & SHF_ALLOC) instead?
-> > 
-> 
-> Yup, you're quite right. Could you submit a patch, please?
+SHF_ALLOC is suitable for testing against the sh_flags field, not the
+sh_type field.
 
-Yes, I will do that shortly.
+Signed-off-by: Julia Lawall <julia@diku.dk>
 
-julia
+---
+ arch/parisc/kernel/module.c         |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
+index ef5caf2..c904817 100644
+--- a/arch/parisc/kernel/module.c
++++ b/arch/parisc/kernel/module.c
+@@ -853,7 +853,7 @@ int module_finalize(const Elf_Ehdr *hdr,
+ 	 * ourselves */
+ 	for (i = 1; i < hdr->e_shnum; i++) {
+ 		if(sechdrs[i].sh_type == SHT_SYMTAB
+-		   && (sechdrs[i].sh_type & SHF_ALLOC)) {
++		   && (sechdrs[i].sh_flags & SHF_ALLOC)) {
+ 			int strindex = sechdrs[i].sh_link;
+ 			/* FIXME: AWFUL HACK
+ 			 * The cast is to drop the const from
