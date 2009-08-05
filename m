@@ -1,23 +1,28 @@
-From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git] parisc: Changes to ref refs/heads/fixes
-Date: Wed, 5 Aug 2009 00:45:37 GMT
-Message-ID: <200908050045.n750jbwB006667@hera.kernel.org>
-To: linux-parisc@vger.kernel.org
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [PATCH] parisc: add me to Maintainers
+Date: Wed, 5 Aug 2009 10:29:35 -0400
+Message-ID: <119aab440908050729s7c0c42e7yafb26b70e2c6eea9@mail.gmail.com>
+References: <1249430395.3939.49.camel@mulgrave.site>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Parisc List <linux-parisc@vger.kernel.org>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1249430395.3939.49.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Rebased ref, commits from common ancestor:
-commit 4b5273681a72dbf5ece64d0ae1e85d54722012fe
-Author: James Bottomley <James.Bottomley@HansenPartnership.com>
-Date:   Tue Aug 4 23:59:55 2009 +0000
+On Tue, Aug 4, 2009 at 7:59 PM, James
+Bottomley<James.Bottomley@hansenpartnership.com> wrote:
+> It has been suggested that given my proficiency with less popular
+> architectures, I should be officially listed as willing to see to the
+> care and feeding of this one.
 
-    parisc: add me to Maintainers
-    
-    It has been suggested that given my proficiency with less popular
-    architectures, I should be officially listed as willing to see to the
-    care and feeding of this one.
-    
-    Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+Thanks James!
 
+Your help with the VM subsystem has been invaluable.
+
+Given a clear test case you certainly do your magic! :-)
+
+Cheers,
+Carlos.
