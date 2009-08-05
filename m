@@ -1,63 +1,25 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc-isa-eeprom: Fix loff_t usage
-Date: Wed, 05 Aug 2009 20:38:55 +0200
-Message-ID: <4A79D1BF.5020305@gmx.de>
-References: <200907210058.44737.mb@bu3sch.de>
+From: Meelis Roos <mroos@linux.ee>
+Subject: Re: HPPA hang with PCI SERR or PARITY enabling
+Date: Wed, 5 Aug 2009 22:42:34 +0300 (EEST)
+Message-ID: <Pine.SOC.4.64.0908052241550.4076@math.ut.ee>
+References: <20090615134519.6EE824FC5@hiauly1.hia.nrc.ca>
+ <Pine.SOC.4.64.0907302054100.20870@math.ut.ee> <4A724818.4080909@tausq.org>
+ <Pine.SOC.4.64.0907310923520.710@math.ut.ee> <20090805174507.GB11458@lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: kyle@mcmartin.ca, linux-parisc@vger.kernel.org
-To: Michael Buesch <mb@bu3sch.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Randolph Chung <randolph@tausq.org>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	linux-parisc@vger.kernel.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200907210058.44737.mb@bu3sch.de>
+In-Reply-To: <20090805174507.GB11458@lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 07/21/2009 12:58 AM, Michael Buesch wrote:
-> loff_t is a signed type. If userspace passes a negative ppos, the "count"
-> range check is weakened. "count"s bigger than HPEE_MAX_LENGTH will pass the check.
-> Also, if ppos is negative, the readb(eisa_eeprom_addr + *ppos) will poke in random
-> memory.
->
-> Signed-off-by: Michael Buesch<mb@bu3sch.de>
-> Cc: stable@kernel.org
+> It would be helpful to know if 2.6.30.x kernels (from unstable)
+> show the same problem.
 
-Thanks!
+Will test.
 
-Applied and pushed upstream.
-
-Helge
-
-
-> Patch is untested due to lack of hardware.
->
-> ---
->   drivers/parisc/eisa_eeprom.c |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> --- linux-2.6.orig/drivers/parisc/eisa_eeprom.c
-> +++ linux-2.6/drivers/parisc/eisa_eeprom.c
-> @@ -48,21 +48,21 @@ static loff_t eisa_eeprom_llseek(struct
->   	return (offset>= 0&&  offset<  HPEE_MAX_LENGTH) ? (file->f_pos = offset) : -EINVAL;
->   }
->
->   static ssize_t eisa_eeprom_read(struct file * file,
->   			      char __user *buf, size_t count, loff_t *ppos )
->   {
->   	unsigned char *tmp;
->   	ssize_t ret;
->   	int i;
->   	
-> -	if (*ppos>= HPEE_MAX_LENGTH)
-> +	if (*ppos<  0 || *ppos>= HPEE_MAX_LENGTH)
->   		return 0;
->   	
->   	count = *ppos + count<  HPEE_MAX_LENGTH ? count : HPEE_MAX_LENGTH - *ppos;
->   	tmp = kmalloc(count, GFP_KERNEL);
->   	if (tmp) {
->   		for (i = 0; i<  count; i++)
->   			tmp[i] = readb(eisa_eeprom_addr+(*ppos)++);
->
->   		if (copy_to_user (buf, tmp, count))
->   			ret = -EFAULT;
->
-
+-- 
+Meelis Roos (mroos@linux.ee)
