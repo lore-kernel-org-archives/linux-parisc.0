@@ -1,26 +1,45 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH] arch/parisc: correct use of SHF_ALLOC
-Date: Wed, 5 Aug 2009 10:57:13 -0400
-Message-ID: <20090805145713.GP28572@bombadil.infradead.org>
-References: <Pine.LNX.4.64.0908042226231.3737@ask.diku.dk>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [PATCH] [11/19] HWPOISON: Refactor truncate to allow direct
+	truncating of page v2
+Date: Wed, 5 Aug 2009 09:00:39 -0600
+Message-ID: <20090805150038.GL3711@parisc-linux.org>
+References: <200908051136.682859934@firstfloor.org> <20090805093638.D3754B15D8@basil.firstfloor.org> <20090805102008.GB17190@wotan.suse.de> <20090805134607.GH11385@basil.fritz.box> <20090805140145.GB28563@wotan.suse.de> <20090805141001.GJ11385@basil.fritz.box> <20090805141642.GB23992@wotan.suse.de> <20090805144112.GM11385@basil.fritz.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-To: Julia Lawall <julia@diku.dk>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0908042226231.3737@ask.diku.dk>
-List-ID: <linux-parisc.vger.kernel.org>
+Cc: Nick Piggin <npiggin@suse.de>, akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	fengguang.wu@intel.com, hidehiro.kawai.ez@hitachi.com,
+	linux-arch@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Andi Kleen <andi@firstfloor.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20090805144112.GM11385@basil.fritz.box>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Aug 04, 2009 at 10:27:07PM +0200, Julia Lawall wrote:
-> From: Julia Lawall <julia@diku.dk>
+On Wed, Aug 05, 2009 at 04:41:12PM +0200, Andi Kleen wrote:
+> > One question I had for the others (Andrew? other mm guys?) what is the
+> > feelings of merging this feature? Leaving aside exact implementation
+> > and just considering the high level design and cost/benefit. Last time
+> > there were some people objecting, so I wonder the situation now? So
+> > does anybody need more convincing? :)
 > 
-> SHF_ALLOC is suitable for testing against the sh_flags field, not the
-> sh_type field.
+> The main objection last time was that it was a bit too late in the 
+> release schedule.
 > 
-> Signed-off-by: Julia Lawall <julia@diku.dk>
+> I can't remember anyone really questioning the basic feature itself.
 > 
+> > Also I will just cc linux-arch. It would be interesting to know whether
+> > powerpc, ia64, or s390 or others would be interested to use this feature?
+> 
+> ia64 is interested (but no code so far) I talked to DaveM and he seems to be 
+> interested for sparc too.  I would expect other server architectures to 
+> eventually use it as they get around to writing the necessary architecture 
+> specific glue.
 
-Thanks Julia, applied.
+parisc could certainly implement this.  Don't know if there's interest.
+
+-- 
+Matthew Wilcox				Intel Open Source Technology Centre
+"Bill, look, we understand that you're interested in selling us this
+operating system, but compare it to ours.  We can't possibly take such
+a retrograde step."
