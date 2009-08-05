@@ -1,23 +1,26 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH] parisc: add me to Maintainers
-Date: Wed, 5 Aug 2009 10:56:59 -0400
-Message-ID: <20090805145659.GO28572@bombadil.infradead.org>
-References: <1249430395.3939.49.camel@mulgrave.site>
+Subject: Re: [PATCH] arch/parisc: correct use of SHF_ALLOC
+Date: Wed, 5 Aug 2009 10:57:13 -0400
+Message-ID: <20090805145713.GP28572@bombadil.infradead.org>
+References: <Pine.LNX.4.64.0908042226231.3737@ask.diku.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+To: Julia Lawall <julia@diku.dk>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1249430395.3939.49.camel@mulgrave.site>
+In-Reply-To: <Pine.LNX.4.64.0908042226231.3737@ask.diku.dk>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Aug 04, 2009 at 11:59:55PM +0000, James Bottomley wrote:
-> It has been suggested that given my proficiency with less popular
-> architectures, I should be officially listed as willing to see to the
-> care and feeding of this one.
+On Tue, Aug 04, 2009 at 10:27:07PM +0200, Julia Lawall wrote:
+> From: Julia Lawall <julia@diku.dk>
 > 
-> Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
->
+> SHF_ALLOC is suitable for testing against the sh_flags field, not the
+> sh_type field.
+> 
+> Signed-off-by: Julia Lawall <julia@diku.dk>
+> 
 
-Thanks. Applied.
+Thanks Julia, applied.
