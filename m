@@ -1,40 +1,45 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: hppa64 gcc ICE building linux-2.6.31-rc5
-Date: Wed, 12 Aug 2009 15:34:56 -0600
-Message-ID: <20090812213456.GD13142@lackof.org>
+From: Linus Walleij <linus.ml.walleij@gmail.com>
+Subject: Re: ab3100_core.c fails to build w/ gcc-4.3.3 on hppa
+Date: Sat, 15 Aug 2009 16:36:28 +0200
+Message-ID: <63386a3d0908150736ke9bfb14j3a885fef848bafbb@mail.gmail.com>
+References: <20090811154038.GA10371@ldl.fc.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: linux-parisc@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: dann frazier <dannf@debian.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090811154038.GA10371@ldl.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Carlos, Dave,
-Just got this after updating gsyprf11 and trying to build
-linux-2.6.31-rc5 using .config provided by dannf.
+2009/8/11 dann frazier <dannf@debian.org>:
 
-grundler <534>uname -a
-Linux gsyprf11 2.6.22.19 #5 SMP Tue Aug 4 17:16:18 PDT 2009 parisc64 GNU/Linux
-grundler <535>make 
-...
-  CC [M]  fs/xfs/xfs_iomap.o
-fs/xfs/xfs_iomap.c: In function 'xfs_iomap_write_delay':
-fs/xfs/xfs_iomap.c:648: error: insn does not satisfy its constraints:
-(insn 331 99 103 12 fs/xfs/xfs_iomap.c:599 (set (reg:QI 60 SAR)
-        (mem/c:QI (plus:DI (reg/f:DI 30 %r30)
-                (const_int -273 [0xfffffffffffffeef])) [0 %sfp+191 S1 A128])) 101 {*pa.md:3318} (nil))
-fs/xfs/xfs_iomap.c:648: internal compiler error: in reload_cse_simplify_operands, at postreload.c:396
-Please submit a full bug report,
-with preprocessed source if appropriate.
-See <http://gcc.gnu.org/bugs.html> for instructions.
-make[2]: *** [fs/xfs/xfs_iomap.o] Error 1
-make[1]: *** [fs/xfs] Error 2
-make: *** [fs] Error 2
+> hey,
+> =A0While testing a 2.6.31-rc5-based snapshot of the Debian kernel
+> builds, I hit this build failure:
+>
+> /home/dannf/linux-2.6-2.6.31~rc5/debian/build/source_hppa_none/driver=
+s/mfd/ab3100-core.c:563:
+> warning: initialization from incompatible pointer type
 
-I'll not touch the source tree on gsyprf11:/usr/src/linux-2.6 until either
-of you can look at it. (No hurry...just letting you know where to look).
+I think I have fixed this problem atleast.
 
-thanks,
-grant
+> /home/dannf/linux-2.6-2.6.31~rc5/debian/build/source_hppa_none/driver=
+s/mfd/ab3100-core.c:647:
+> error: ab3100_init_settings causes a section type conflict
+
+Still wandering in darkness about this one :-(
+The init_settings are __initdata and the function using it is __init,
+I don't get it...
+
+> Same source/compiler seems to build fine on other archs.
+
+Never saw it anywhere else. Is there something special in the parisc li=
+nkfile?
+
+Linus Walleij
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
