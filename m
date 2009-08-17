@@ -1,56 +1,78 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: hppa64 gcc ICE building linux-2.6.31-rc5
-Date: Sat, 15 Aug 2009 18:49:00 -0400 (EDT)
-Message-ID: <20090815224901.DE9874CFD@hiauly1.hia.nrc.ca>
-References: <20090812213456.GD13142@lackof.org>
+From: Helge Deller <deller@gmx.de>
+Subject: kernel segv with 2.6.31-rc6 ?
+Date: Mon, 17 Aug 2009 23:31:57 +0200
+Message-ID: <4A89CC4D.5040801@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: carlos@systemhalted.org, linux-parisc@vger.kernel.org
-To: grundler@parisc-linux.org (Grant Grundler)
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090812213456.GD13142@lackof.org> from "Grant Grundler" at Aug 12, 2009 03:34:56 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Grant,
+anyone else seeing this with 2.6.31-rc6 ?
 
-Can you try again switching the alternative 4.4?  I think it currently
-points to 4.2.  There are significant changes in this area in 4.3 and 4.4.
+<...system boots up...>
+Waiting for /dev to be fully populated...
+  
+sysfs: cannot create duplicate filename '/module/ac97_bus/sections/.text'
+------------[ cut here ]------------
+Badness at fs/sysfs/dir.c:487
+  
+      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001000000000000001111 Not tainted
+r00-03  0004000f 10669bd0 10204ff8 7ce58340
+r04-07  7efcd000 ffffffef 7f881d74 7efcd000
+r08-11  0008746c 00000000 7f1c6400 0008441c
+r12-15  00000019 00084332 105a96c8 00000124
+r16-19  0000fff1 00000017 00084abc ffffffff
+r20-23  7eeff080 00000060 102f5898 10330dec
+r24-27  ffffffff 0000000e 10669c04 10656670
+r28-31  00000050 00000190 7ce583c0 10123988
+sr00-03  00000000 00000000 00000000 00000008
+sr04-07  00000000 00000000 00000000 00000000
+  
+IASQ: 00000000 00000000 IAOQ: 10204ff8 10204ffc
+  IIR: 03ffe01f    ISR: 00000000  IOR: 00000000
+  CPU:        0   CR30: 7ce58000 CR31: 11111111
+  ORIG_R28: 00000001
+  IAOQ[0]: sysfs_add_one+0xb8/0xd0
+  IAOQ[1]: sysfs_add_one+0xbc/0xd0
+  RP(r2): sysfs_add_one+0xb8/0xd0
+Backtrace:
+  [<102045b8>] sysfs_add_file_mode+0x60/0xc4
+  [<1020748c>] internal_create_group+0xf0/0x1d8
+  
+Backtrace:
+  [<1016f0f0>] load_module+0x10e8/0x1294
+  
 
-The GCC 4.2 tree  is dead.
-
-Dave
-
-> Carlos, Dave,
-> Just got this after updating gsyprf11 and trying to build
-> linux-2.6.31-rc5 using .config provided by dannf.
-> 
-> grundler <534>uname -a
-> Linux gsyprf11 2.6.22.19 #5 SMP Tue Aug 4 17:16:18 PDT 2009 parisc64 GNU/Linux
-> grundler <535>make 
-> ...
->   CC [M]  fs/xfs/xfs_iomap.o
-> fs/xfs/xfs_iomap.c: In function 'xfs_iomap_write_delay':
-> fs/xfs/xfs_iomap.c:648: error: insn does not satisfy its constraints:
-> (insn 331 99 103 12 fs/xfs/xfs_iomap.c:599 (set (reg:QI 60 SAR)
->         (mem/c:QI (plus:DI (reg/f:DI 30 %r30)
->                 (const_int -273 [0xfffffffffffffeef])) [0 %sfp+191 S1 A128])) 101 {*pa.md:3318} (nil))
-> fs/xfs/xfs_iomap.c:648: internal compiler error: in reload_cse_simplify_operands, at postreload.c:396
-> Please submit a full bug report,
-> with preprocessed source if appropriate.
-> See <http://gcc.gnu.org/bugs.html> for instructions.
-> make[2]: *** [fs/xfs/xfs_iomap.o] Error 1
-> make[1]: *** [fs/xfs] Error 2
-> make: *** [fs] Error 2
-> 
-> I'll not touch the source tree on gsyprf11:/usr/src/linux-2.6 until either
-> of you can look at it. (No hurry...just letting you know where to look).
-> 
-> thanks,
-> grant
-> 
-
-
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Kernel Fault: Code=26 regs=7ce58200 (Addr=00000030)
+  
+      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001100000000000001111 Tainted: G        W
+r00-03  0006000f 7ce58200 1016f0f0 7ce58140
+r04-07  00084444 00000019 00087424 7eddb660
+r08-11  00084000 00000001 7f1c66a4 0008441c
+r12-15  00000019 00084332 105a96c8 00000124
+r16-19  0000fff1 00000017 00084abc 00000000
+r20-23  00000000 1016d3e0 7eddb668 00000124
+r24-27  105a96cc 00000000 7eddb660 10656670
+r28-31  00000000 00000001 7ce58200 00000000
+sr00-03  00000000 00000000 00000000 00000008
+sr04-07  00000000 00000000 00000000 00000000
+  
+IASQ: 00000000 00000000 IAOQ: 1016f130 1016f134
+  IIR: 4b940060    ISR: 00000000  IOR: 00000030
+  CPU:        0   CR30: 7ce58000 CR31: 11111111
+  ORIG_R28: 00084332
+  IAOQ[0]: load_module+0x1128/0x1294
+  IAOQ[1]: load_module+0x112c/0x1294
+  RP(r2): load_module+0x10e8/0x1294
+Backtrace:
+  [<1016f0f0>] load_module+0x10e8/0x1294
+  
+Kernel panic - not syncing: Kernel Fault
+Backtrace:
+  [<1011ac28>] show_stack+0x18/0x28
+  [<1013f3a0>] vprintk+0x19c/0x430
+  
