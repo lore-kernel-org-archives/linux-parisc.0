@@ -1,71 +1,44 @@
-From: Roland McGrath <roland@redhat.com>
-Subject: Re: kernel segv with 2.6.31-rc6 ?
-Date: Wed, 19 Aug 2009 11:10:41 -0700 (PDT)
-Message-ID: <20090819181041.7215E4730F@magilla.sf.frob.com>
-References: <4A89CC4D.5040801@gmx.de>
-	<1250549376.7858.96.camel@mulgrave.site>
-	<200908181248.52572.rusty@rustcorp.com.au>
-	<20090818050637.4C3E74730F@magilla.sf.frob.com>
-	<1250640565.15079.3.camel@mulgrave.site>
-	<20090819001424.4C1144730F@magilla.sf.frob.com>
-	<1250643261.18426.8.camel@mulgrave.site>
-	<20090819013124.7539E4730F@magilla.sf.frob.com>
-	<1250645916.18426.12.camel@mulgrave.site>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: PATCH [2.6.31-rc6] fix warning in traps.c line 535
+Date: Wed, 19 Aug 2009 13:04:10 -0600
+Message-ID: <20090819190410.GB24471@lackof.org>
+References: <20090817234554.GD26336@lackof.org> <20090818174518.6E0EA4CFD@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Rusty Russell <rusty@rustcorp.com.au>,
-	Helge Deller <deller@gmx.de>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752429AbZHSSKy@vger.kernel.org>
-In-Reply-To: James Bottomley's message of  Tuesday, 18 August 2009 19:38:36 -0600 <1250645916.18426.12.camel@mulgrave.site>
-List-ID: <linux-kernel.vger.kernel.org>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	linux-parisc@vger.kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090818174518.6E0EA4CFD@hiauly1.hia.nrc.ca>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> Using ET_DYN would have made our life easier when trying to code the
-> kernel module loader as well.  The basic problem is, of course, that
-> this is simple on an x86, so it didn't matter that much for the initial
-> implementation.  It just becomes less simple on anything else.
+On Tue, Aug 18, 2009 at 01:45:17PM -0400, John David Anglin wrote:
+...
+> There's one new parisc warning that I noticed:
+> 
+>  CC      arch/parisc/kernel/traps.o
+> arch/parisc/kernel/traps.c: In function 'handle_interruption':
+> arch/parisc/kernel/traps.c:535:18: warning: operation on 'regs->iasq[0]' may be
+> undefined
+> 
+> Looks like a typo.
 
-There are generic ways that ET_DYN is better for all, too.  
-A little birdie told me it was all the fault of mips.
-Anyway, water under the bridge.
+Yes - Line 535 should use both [0] and [1].
 
-> Well, since they're still making parisc machines, I assume you mean
-> further back than when the production lines knocked off today?
+Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
+----
 
-I'm pretty sure you knew what I meant.
-
-> So that leaves us stuck with the current implementation and still
-> needing a solution for the duplicate section names?
-
-Something like that.  Your fix makes module loading work again, so we
-could just let /sys/module/*/{sections,notes}/ be missing on parisc
-and see how long it takes anybody to complain, assuming you talk Rusty
-out of his preference to change those error cases to refuse to load
-the module.  OTOH, you said earlier that it was only some mistake that
-produced multiple same-named sections to begin with, so you could just
-try to fix that and then forget about it.
-
-Finally, we could decide to really support the general case including
-duplicate section names in these features.  That's really not very
-hard to do, if we just completely change the interfaces for those
-features.  e.g. instead of a /sys/module/*/sections directory, it
-could just be a single file that contains lines of:
-
-SHNDX 0xADDR NAME
-
-For /sys/module/*/notes, no consumer really cares about the section
-distinctions at all.  It would be easy enough just to have a single
-pseudo-file that delivers all note sections concatenated together.
-(In practice, there is usually only one note section at most anyway.)
-
-Of course, such changes would be a new incompatible change to the
-userland sysfs ABI, require compatibility concerns, etc.  It seems
-unlikely anyone really wants to bother with all that.  It would be
-more natural presentation of the info IMHO, but it hardly matters.
-
-
-Thanks,
-Roland
+diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
+index 528f0ff..8b58bf0 100644
+--- a/arch/parisc/kernel/traps.c
++++ b/arch/parisc/kernel/traps.c
+@@ -532,7 +532,7 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
+ 	  	/* Kill the user process later */
+ 	  	regs->iaoq[0] = 0 | 3;
+ 		regs->iaoq[1] = regs->iaoq[0] + 4;
+-	 	regs->iasq[0] = regs->iasq[0] = regs->sr[7];
++	 	regs->iasq[0] = regs->iasq[1] = regs->sr[7];
+ 		regs->gr[0] &= ~PSW_B;
+ 		return;
+ 	}
