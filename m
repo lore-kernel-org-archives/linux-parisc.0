@@ -1,31 +1,41 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: kernel segv with 2.6.31-rc6 ?
-Date: Thu, 20 Aug 2009 20:03:04 -0400 (EDT)
-Message-ID: <20090821000304.AEDE64E09@hiauly1.hia.nrc.ca>
-References: <20090820232357.934474730F@magilla.sf.frob.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Reproducible random python crash.
+Date: Fri, 21 Aug 2009 10:59:18 -0400
+Message-ID: <119aab440908210759g5cdc0f8dwbf1fed9554b3a836@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: James.Bottomley@HansenPartnership.com, deller@gmx.de,
-	rusty@rustcorp.com.au, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dave.anglin@nrc.ca
-To: roland@redhat.com (Roland McGrath)
+Content-Type: text/plain; charset=ISO-8859-1
+To: linux-parisc <linux-parisc@vger.kernel.org>,
+	Debian HPPA Port List <debian-hppa@lists.debian.org>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	John David Anglin <dave.ang
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090820232357.934474730F@magilla.sf.frob.com> from "Roland McGrath" at Aug 20, 2009 04:23:57 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> arch/parisc/Makefile:
-> 
-> 	# Without this, "ld -r" results in .text sections that are too big
-> 	# (> 0x40000) for branches to reach stubs.
-> 	ifndef CONFIG_FUNCTION_TRACER
-> 	  cflags-y	+= -ffunction-sections
-> 	endif
+Kyle, Helge, John, James,
 
-Thus, the .text.* sections must be coming from .S files, or possibly
-from dwarf2 debug output.
+Could I get each of you to follow this recipe and tell me if python
+crashes or hangs randomly during the execution of the last step?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Recipe:
+mkdir -p ~/python-test
+cd ~/python-test
+apt-get update
+apt-get build-dep xmms2
+apt-get source xmms2
+cd xmms2_0.6DrMattDestruction
+./waf configure --nocache --prefix=/usr --with-mandir=/usr/share/man
+--with-perl-archdir=/usr/lib/perl5 --with-perl-binary=/usr/bin/perl
+--with-ruby-archdir=/usr/lib/ruby/1.8/hppa-linux
+--with-ruby-libdir=/usr/lib/ruby/1.8 --without-optionals=python
+--without-plugins=mac
+
+Running the last step on a 2.6.26-1-parisc64-smp kernel results in
+random behaviour ranging from sigsegv, sigill, sigtrap, and a hang.
+Given that each of you might run it on a different kernel, I was
+hoping to see if the behaviour is the same across different kernels.
+
+Thanks!
+
+Cheers,
+Carlos.
