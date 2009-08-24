@@ -1,26 +1,27 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: Reproducible random python crash.
-Date: Sun, 23 Aug 2009 17:21:15 -0400 (EDT)
-Message-ID: <20090823212115.E00014E7A@hiauly1.hia.nrc.ca>
-References: <no.id>
+Date: Mon, 24 Aug 2009 10:01:17 -0400 (EDT)
+Message-ID: <20090824140118.349324E09@hiauly1.hia.nrc.ca>
+References: <119aab440908240347g6ac30876x7ef9106717c3360b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: carlos@systemhalted.org, linux-parisc@vger.kernel.org,
-	debian-hppa@lists.debian.org,
+Cc: linux-parisc@vger.kernel.org, debian-hppa@lists.debian.org,
 	James.Bottomley@hansenpartnership.com, dave.anglin@nrc-cnrc.gc.ca,
 	deller@gmx.de, kyle@mcmartin.ca
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <no.id> from "John David Anglin" at Aug 23, 2009 04:52:21 pm
+In-Reply-To: <119aab440908240347g6ac30876x7ef9106717c3360b@mail.gmail.com> from "Carlos O'Donell" at Aug 24, 2009 06:47:36 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> I booted 2.6.30.5 from gsyprf11 because I had one random segv and
-> one command hang while running the GCC testsuite.  I suspect that some
-> hangs are due to dropped signals.  I'm tempted to try the sequence
-> with 2.6.22.19.
+> Any idea what might be the cause?
 
-SMP 2.6.22.19 also fails with random segvs and hangs.
+No.  I looked at two core dumps briefly.  In the first, it looked
+like the PIC register value was corrupt causing a transfer to page
+0.  In the second, there wasn't any backtrace info (both pc and rp
+were 0).   Unfortunately, this doesn't say much.
+
+It would be fantastic if you could narrow this down.
 
 Dave
 -- 
