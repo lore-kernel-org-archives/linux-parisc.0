@@ -1,8 +1,8 @@
 From: Rusty Russell <rusty@rustcorp.com.au>
 Subject: Re: kernel segv with 2.6.31-rc6 ?
-Date: Tue, 25 Aug 2009 17:07:01 +0930
-Message-ID: <200908251707.01610.rusty@rustcorp.com.au>
-References: <4A89CC4D.5040801@gmx.de> <20090818050637.4C3E74730F@magilla.sf.frob.com> <1250640565.15079.3.camel@mulgrave.site>
+Date: Tue, 25 Aug 2009 17:29:32 +0930
+Message-ID: <200908251729.32855.rusty@rustcorp.com.au>
+References: <4A89CC4D.5040801@gmx.de> <20090819013124.7539E4730F@magilla.sf.frob.com> <1250645916.18426.12.camel@mulgrave.site>
 Mime-Version: 1.0
 Content-Type: Text/Plain;
   charset="iso-8859-15"
@@ -11,22 +11,58 @@ Cc: Roland McGrath <roland@redhat.com>, Helge Deller <deller@gmx.de>,
 	"linux-kernel" <linux-kernel@vger.kernel.org>
 To: James Bottomley <James.Bottomley@hansenpartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1250640565.15079.3.camel@mulgrave.site>
+In-Reply-To: <1250645916.18426.12.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 19 Aug 2009 09:39:24 am James Bottomley wrote:
-> Even with the duplicate name, though, the module should be perfectly
-> loadable.
+On Wed, 19 Aug 2009 11:08:36 am James Bottomley wrote:
+> On Tue, 2009-08-18 at 18:31 -0700, Roland McGrath wrote:
+> > > Actually, I think we do; the module loader is a runtime linker, after
+> > > all.  [...]
+> > 
+> > Indeed you do.  I've just read some of the parts of ld that normally
+> > address this issue for HPPA.  They don't run for ld -r.  So this is just
+> > another fine example of the lunacy of the ET_REL .ko madness that would be
+> > naturally avoided by a sensible tweaked ET_DYN scheme.
+> 
+> Using ET_DYN would have made our life easier when trying to code the
+> kernel module loader as well.  The basic problem is, of course, that
+> this is simple on an x86, so it didn't matter that much for the initial
+> implementation.  It just becomes less simple on anything else.
 
-In a perfect world, yes, but there are places which assume they'll be
-unique and I always thought that reasonable.
+Actually, x86 was one of the archs which fucked us.  Richard Henderson and
+I *had* this, but ld -shared without -fPIC helpfully tells you "you're doing
+it wrong" on x86-64.
 
-Front of my mind is /sys/module/<MODNAME/sections/ which has one file
-per section.
+There were other issues, ISTR MIPS was a showstopper.  Google finds the
+following summary I wrote when this stuff was fresher:
 
-Let's figure out how it happened tho; I'd rather fail cleanly than break
-subtly and horribly later...
+http://lkml.org/lkml/2003/1/12/271 :
 
-Thanks,
+	While ET_DYN modules are a reasonably serious win for ia64 (and
+	probably hppa) (ie. -300 lines or so), they're a minor win for alpha
+	and ppc64 (-100 lines or so), and no real change for arm, i386, ppc,
+	sparc, and sparc64.  It's a lose for x86_64 (toolchain fixes, unless
+	they want to use -fPIC for modules), mips and mips64 (major toolchain
+	fixes, unless they want to use -fPIC for modules and stop using r28
+	for current inside modules).
+
+> >   But that battle was
+> > lost way, way back in the long, long ago, so long ago they were probably
+> > even still making HPPA machines then.
+
+This isn't quite true; userspace should handle ET_DYN fine (at least, it
+was supposed to).
+
+So you could change any arch to use that, but it's a fair refactor if we leave
+some archs behind.
+
+If anyone's really interested, I can dig out the bits I have...
+
+> So that leaves us stuck with the current implementation and still
+> needing a solution for the duplicate section names?
+
+If this is not a "don't do that" bug, we could try hacking around it in
+parisc's module_arch_frob_sections?
+
 Rusty.
