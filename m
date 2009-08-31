@@ -1,18 +1,18 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: Petr Salinger <Petr.Salinger@seznam.cz>
 Subject: Re: hppa nptl switch
-Date: Mon, 31 Aug 2009 01:01:39 -0400
-Message-ID: <119aab440908302201s35719b5fh3f7d7b1e870c445f@mail.gmail.com>
+Date: Mon, 31 Aug 2009 10:16:44 +0200 (CEST)
+Message-ID: <Pine.LNX.4.62.0908310926590.9856@sci.felk.cvut.cz>
 References: <Pine.LNX.4.62.0908181940440.7856@sci.felk.cvut.cz>
-	 <119aab440908181851i174315c6lebacea921046bbb0@mail.gmail.com>
-	 <20090819124816.GC2517@hall.aurel32.net>
+ <119aab440908181851i174315c6lebacea921046bbb0@mail.gmail.com>
+ <20090819124816.GC2517@hall.aurel32.net> <119aab440908302201s35719b5fh3f7d7b1e870c445f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Petr Salinger <Petr.Salinger@seznam.cz>, debian-hppa@lists.debian.org,
-	debian-glibc@lists.debian.org, linux-parisc <linux-parisc@vger.kernel.org>
-To: Aurelien Jarno <aurelien@aurel32.net>
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: debian-hppa@lists.debian.org, debian-glibc@lists.debian.org,
+        linux-parisc <linux-parisc@vger.kernel.org>
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
-In-Reply-To: <20090819124816.GC2517@hall.aurel32.net>
-Resent-Message-ID: <DoTxQcqJZwI.A.DZH.Kl1mKB@liszt>
+In-Reply-To: <119aab440908302201s35719b5fh3f7d7b1e870c445f@mail.gmail.com>
+Resent-Message-ID: <gHmLP6o1C9H.A.emF.8O4mKB@liszt>
 List-Id: linux-parisc.vger.kernel.org
 List-Id: <debian-hppa.lists.debian.org>
 List-Post: <mailto:debian-hppa@lists.debian.org>
@@ -20,43 +20,40 @@ List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
 List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
 List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Wed, Aug 19, 2009 at 8:48 AM, Aurelien Jarno<aurelien@aurel32.net> wrote:
-> [Changing debian-bsd to debian-glibc, probably more appropriate to
-> discuss about the internal glibc code ;-)]
->> > may I ask you for status of hppa nptl switch ?
+Hi.
 
-Petr, Aurelian,
+> I spent the last two days rewriting the pthread structure layouts for
+> hppa's nptl implementation.
 
-I spent the last two days rewriting the pthread structure layouts for
-hppa's nptl implementation.
+It looks very nice and promising now, thanks.
 
-Thanks to Petr's insight, I was able to restructure both
-pthread_mutex_t, and pthread_rwlock_t to be 100% ABI compatible with
-Linuxthreads.
+> I was able to restructure both pthread_mutex_t, and pthread_rwlock_t to 
+> be 100% ABI compatible with Linuxthreads.
 
-In the case of pthread_cond_t, the structure grew so much, that I had
-to use some of the old lock words (non-zero initialized words) for new
-fields, and this meant that all of the pthread_cond_* functions will
-quickly test and zero pthread_cond_t before use. The new NPTL
-PTHREAD_COND_INITIALIZER uses the fast-path in the code, thus as
-applications are rebuilt they will run faster.
+Strictly speaking, currently they are not,
+they are only 100% backward compatible.
+But only step away, they could be 100% compatible.
+Just the new NPTL initializers should initilize
+the four ones as previously in LT.
+In practice it shouldn't be problem at all.
+Debian should make sure that binary/library compiled
+against NPTL-hppa-glibc will require NPTL-hppa-glibc
+by proper Depends: line like "libc6 (>= 2.10)".
 
-The prototype patch in testing is here:
-http://www.parisc-linux.org/~carlos/2009-08-31-glibc-ports-hppa-nptl.diff
+> The prototype patch in testing is here:
+> http://www.parisc-linux.org/~carlos/2009-08-31-glibc-ports-hppa-nptl.diff
 
-This patch is not the final version, I need to remove the
-old_pthread_cond_* functions, and cleanup the pthread_cond_* functions
-to use the same version number. At the end of the day I'm not going to
-version any of the functions, because technically they will be ABI
-compatible. I will however, surround the checking code with some
-version checks so it can be removed in the future (or generate a
-warning).
+It is not possible to use "#include_next <pthread.h>" in
+sysdeps/unix/sysv/linux/hppa/nptl/pthread.h, as this file
+is installed in libc6-dev for general use.
+The proper way would be to convince Mr. Drepper to split
+<pthread.h> into <pthread.h> and <bits/pthreadinit.h>.
+Good luck with it.
 
-Please note that the new code *will* support partial upgrades for
-debian, since this is a 100% ABI compatible change.
+The pthread_cond_init.c should call cond_compat_clear()
+instead of cond_compat_check_and_clear() or may be just
+"cond->__data.__initializer = 0"
 
-I will report back over the next few days on the status of testing the
-new patch.
+Thanks for all your work.
 
-Cheers,
-Carlos.
+Petr
