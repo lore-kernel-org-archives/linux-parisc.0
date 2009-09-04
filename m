@@ -1,56 +1,53 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: linux-next: manual merge of the security-testing tree with the
- parisc tree
-Date: Thu, 3 Sep 2009 15:46:36 +1000
-Message-ID: <20090903154636.e70c50da.sfr@canb.auug.org.au>
+From: Artem Alimarine <artem.alimarine@stromasys.com>
+Subject: Re: unaligned accesses in apply_relocate_add
+Date: Sat, 05 Sep 2009 00:37:07 +0200
+Message-ID: <4AA19693.4040500@stromasys.com>
+References: <4A94F439.6010301@stromasys.com> <20090826131749.GE19494@bombadil.infradead.org> <4A954990.7070007@stromasys.com> <20090828184201.GA14548@lackof.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Thu__3_Sep_2009_15_46_36_+1000_Ohoksu82jTWe4ByM"
-Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
-	David Howells <dhowells@redhat.com>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	<linux-parisc@vger.kernel.org>
-To: James Morris <jmorris@namei.org>
+Content-Type: multipart/mixed;
+ boundary="------------020602070900010603040000"
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090828184201.GA14548@lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Signature=_Thu__3_Sep_2009_15_46_36_+1000_Ohoksu82jTWe4ByM
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is a multi-part message in MIME format.
+--------------020602070900010603040000
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi James,
 
-Today's linux-next merge of the security-testing tree got conflicts in
-arch/parisc/include/asm/thread_info.h, arch/parisc/kernel/entry.S and
-arch/parisc/kernel/signal.c between commit 9f4259771faf1ffd99888796d925adae=
-4c93630b ("parisc: add TIF_NOTIFY_RESUME and use tracehook_notify_resume") =
-from the parisc tree and
-commits d0420c83f39f79afb82010c2d2cafd150eef651b ("KEYS: Extend
-TIF_NOTIFY_RESUME to (almost) all architectures [try #6]") and
-ee18d64c1f632043a02e6f5ba5e045bb26a5465f ("KEYS: Add a keyctl to install
-a process's session keyring on its parent [try #6]") from the
-security-testing tree.
+> You might also look at Aries PA-RISC emulator (on ia64):
+>     http://www.princeton.edu/~rblee/ELE572Papers/PARISCtoIA64.htm
+>   
+Thanks for the reference. There is also a HPPA version of QEMU. Unlike 
+them we emulate the whole system hardware. At this moment it is an 
+rp24xx system including the ASTRO/ELROY stuff and the NCR SCSI 
+controller. We will also add a DE500 ethernet. This means that you can 
+install Linux from an ISO image in the emulator like you normally 
+install your system from a CD. The goal is to run MPE eventually. Our 
+emulator runs on PC x64 in Windows (shame on me).
 
-Overlapping changes.  I fixed it up (using the parisc versions and adding
-the extra change from the latter security-testing patch) and can carry
-the fixes as necessary.
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
+--------------020602070900010603040000
+Content-Type: text/x-vcard; charset=utf-8;
+ name="artem_alimarine.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="artem_alimarine.vcf"
 
---Signature=_Thu__3_Sep_2009_15_46_36_+1000_Ohoksu82jTWe4ByM
-Content-Type: application/pgp-signature
+begin:vcard
+fn:dr. Artem Alimarine
+n:Alimarine;Artem
+org:STROMASYS SA
+adr:;;De Zaale 11;Eindhoven;;5612AJ;The Netherlands
+email;internet:artem.alimarine@stromasys.com
+title:Software Architect
+tel;work:+31-40-2390863
+tel;fax:+31-40-2390800
+x-mozilla-html:FALSE
+version:2.1
+end:vcard
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
 
-iEYEARECAAYFAkqfWDwACgkQjjKRsyhoI8xO1wCguPqeZiR4YX5YW6vaTcxVS0fD
-Lz0AoKP3cYPaaA+nRb9uo7KiUZ/pPJO7
-=8v1y
------END PGP SIGNATURE-----
-
---Signature=_Thu__3_Sep_2009_15_46_36_+1000_Ohoksu82jTWe4ByM--
+--------------020602070900010603040000--
