@@ -1,53 +1,158 @@
-From: Artem Alimarine <artem.alimarine@stromasys.com>
-Subject: Re: unaligned accesses in apply_relocate_add
-Date: Sat, 05 Sep 2009 00:37:07 +0200
-Message-ID: <4AA19693.4040500@stromasys.com>
-References: <4A94F439.6010301@stromasys.com> <20090826131749.GE19494@bombadil.infradead.org> <4A954990.7070007@stromasys.com> <20090828184201.GA14548@lackof.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020602070900010603040000"
-To: linux-parisc@vger.kernel.org
+From: Tim Abbott <tabbott@ksplice.com>
+Subject: [PATCH 1/2] parisc: Clean up linker script using new linker script macros.
+Date: Sun,  6 Sep 2009 23:09:41 -0400
+Message-ID: <1252292982-12969-1-git-send-email-tabbott@ksplice.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>, Tim Abbott <tabbott@ksplice.com>,
+	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	linux-parisc@vger.kernel.org
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090828184201.GA14548@lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------020602070900010603040000
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+This patch has the (likely harmless) side effect of moving
+.data.init_task inside the _edata.
 
+It also changes the alignment of .data.init_task from 16384 to
+THREAD_SIZE, which can in some configurations be larger than 16384.  I
+believe that this change fixes a potential bug on those
+configurations.
 
-> You might also look at Aries PA-RISC emulator (on ia64):
->     http://www.princeton.edu/~rblee/ELE572Papers/PARISCtoIA64.htm
->   
-Thanks for the reference. There is also a HPPA version of QEMU. Unlike 
-them we emulate the whole system hardware. At this moment it is an 
-rp24xx system including the ASTRO/ELROY stuff and the NCR SCSI 
-controller. We will also add a DE500 ethernet. This means that you can 
-install Linux from an ISO image in the emulator like you normally 
-install your system from a CD. The goal is to run MPE eventually. Our 
-emulator runs on PC x64 in Windows (shame on me).
+Signed-off-by: Tim Abbott <tabbott@ksplice.com>
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+Cc: Sam Ravnborg <sam@ravnborg.org>
+---
+ arch/parisc/kernel/vmlinux.lds.S |   79 ++------------------------------------
+ 1 files changed, 4 insertions(+), 75 deletions(-)
 
---------------020602070900010603040000
-Content-Type: text/x-vcard; charset=utf-8;
- name="artem_alimarine.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="artem_alimarine.vcf"
+diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
+index fd2cc4f..b2916d8 100644
+--- a/arch/parisc/kernel/vmlinux.lds.S
++++ b/arch/parisc/kernel/vmlinux.lds.S
+@@ -77,13 +77,7 @@ SECTIONS
+ 	 */
+ 	. = ALIGN(PAGE_SIZE);
+ 	data_start = .;
+-	. = ALIGN(16);
+-	/* Exception table */
+-	__ex_table : {
+-		__start___ex_table = .;
+-		*(__ex_table)
+-		__stop___ex_table = .;
+-	}
++	EXCEPTION_TABLE(16)
+ 
+ 	NOTES
+ 
+@@ -94,23 +88,8 @@ SECTIONS
+ 		__stop___unwind = .;
+ 	}
+ 
+-	/* rarely changed data like cpu maps */
+-	. = ALIGN(16);
+-	.data.read_mostly : {
+-		*(.data.read_mostly)
+-	}
+-
+-	. = ALIGN(L1_CACHE_BYTES);
+ 	/* Data */
+-	.data : {
+-		DATA_DATA
+-		CONSTRUCTORS
+-	}
+-
+-	. = ALIGN(L1_CACHE_BYTES);
+-	.data.cacheline_aligned : {
+-		*(.data.cacheline_aligned)
+-	}
++	RW_DATA_SECTION(L1_CACHE_BYTES, PAGE_SIZE, THREAD_SIZE)
+ 
+ 	/* PA-RISC locks requires 16-byte alignment */
+ 	. = ALIGN(16);
+@@ -118,17 +97,6 @@ SECTIONS
+ 		*(.data.lock_aligned)
+ 	}
+ 
+-	/* nosave data is really only used for software suspend...it's here
+-	 * just in case we ever implement it
+-	 */
+-	. = ALIGN(PAGE_SIZE);
+-	__nosave_begin = .;
+-	.data_nosave : {
+-		*(.data.nosave)
+-	}
+-	. = ALIGN(PAGE_SIZE);
+-	__nosave_end = .;
+-
+ 	/* End of data section */
+ 	_edata = .;
+ 
+@@ -147,14 +115,6 @@ SECTIONS
+ 	}
+ 	__bss_stop = .;
+ 
+-
+-	/* assembler code expects init_task to be 16k aligned */
+-	. = ALIGN(16384);
+-	/* init_task */
+-	.data.init_task : {
+-		*(.data.init_task)
+-	}
+-
+ #ifdef CONFIG_64BIT
+ 	. = ALIGN(16);
+ 	/* Linkage tables */
+@@ -172,31 +132,8 @@ SECTIONS
+ 	/* reserve space for interrupt stack by aligning __init* to 16k */
+ 	. = ALIGN(16384);
+ 	__init_begin = .;
+-	.init.text : { 
+-		_sinittext = .;
+-		INIT_TEXT
+-		_einittext = .;
+-	}
+-	.init.data : {
+-		INIT_DATA
+-	}
+-	. = ALIGN(16);
+-	.init.setup : {
+-		__setup_start = .;
+-		*(.init.setup)
+-		__setup_end = .;
+-	}
+-	.initcall.init : {
+-		__initcall_start = .;
+-		INITCALLS
+-		__initcall_end = .;
+-	}
+-	.con_initcall.init : {
+-		__con_initcall_start = .;
+-		*(.con_initcall.init)
+-		__con_initcall_end = .;
+-	}
+-	SECURITY_INIT
++	INIT_TEXT_SECTION(16384)
++	INIT_DATA_SECTION(16)
+ 
+ 	/* alternate instruction replacement.  This is a mechanism x86 uses
+ 	 * to detect the CPU type and replace generic instruction sequences
+@@ -222,14 +159,6 @@ SECTIONS
+ 	.exit.data : {
+ 		EXIT_DATA
+ 	}
+-#ifdef CONFIG_BLK_DEV_INITRD
+-	. = ALIGN(PAGE_SIZE);
+-	.init.ramfs : {
+-		__initramfs_start = .;
+-		*(.init.ramfs)
+-		__initramfs_end = .;
+-	}
+-#endif
+ 
+ 	PERCPU(PAGE_SIZE)
+ 	. = ALIGN(PAGE_SIZE);
+-- 
+1.6.3.3
 
-begin:vcard
-fn:dr. Artem Alimarine
-n:Alimarine;Artem
-org:STROMASYS SA
-adr:;;De Zaale 11;Eindhoven;;5612AJ;The Netherlands
-email;internet:artem.alimarine@stromasys.com
-title:Software Architect
-tel;work:+31-40-2390863
-tel;fax:+31-40-2390800
-x-mozilla-html:FALSE
-version:2.1
-end:vcard
-
-
---------------020602070900010603040000--
