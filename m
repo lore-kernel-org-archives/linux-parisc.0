@@ -1,58 +1,36 @@
-From: James Bottomley <James.Bottomley@suse.de>
-Subject: xfs failure on parisc (and presumably other VI cache systems)
- caused by I/O to vmalloc/vmap areas
-Date: Tue, 08 Sep 2009 13:27:49 -0500
-Message-ID: <1252434469.13003.3.camel@mulgrave.site>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: Transition hppa from linuxthreads to nptl is ready to proceed.
+Date: Tue, 8 Sep 2009 14:35:17 -0400
+Message-ID: <119aab440909081135n76898ac8o49adcb9d221da5fa@mail.gmail.com>
+References: <119aab440909071454s7923b95atce6f5f5a7e5b469d@mail.gmail.com>
+	 <200909081357.37995.vapier@gentoo.org>
+	 <119aab440909081104s206d64dbxba7ef011839b2822@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Christoph Hellwig <hch@lst.de>
-To: Parisc List <linux-parisc@vger.kernel.org>,
-	Linux Filesystem Mailing List <linux-fsdevel@vger.kernel.org>,
-	linux-arch@vger.kernel.org
-Return-path: <linux-arch-owner@vger.kernel.org>
-List-ID: <linux-arch.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Debian HPPA Port List <debian-hppa@lists.debian.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	Aurelien Jarno <aurelien@aurel32.net>,
+	Petr Salinger <Petr.Salinger@seznam.cz>,
+	Grant Grundler <grundler@parisc-linux.org>
+To: Mike Frysinger <vapier@gentoo.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <119aab440909081104s206d64dbxba7ef011839b2822@mail.gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This bug was observed on parisc, but I would expect it to affect all
-architectures with virtually indexed caches.
+On Tue, Sep 8, 2009 at 2:04 PM, Carlos O'Donell<carlos@systemhalted.org> wrote:
+> git push -v
+> Pushing to git://sourceware.org/git/glibc-ports.git
+> fatal: The remote end hung up unexpectedly
 
-The inception of this problem is the changes we made to block and SCSI
-to eliminate the special case path for kernel buffers.  This change
-forced every I/O to go via the full scatter gather processing.  In this
-way we thought we'd removed the restrictions about using vmalloc/vmap
-areas for I/O from the kernel. XFS acually took advantage of this, hence
-the problems.
+Oh gosh this was lame, I kept checking out "git://" urls when I meant
+to checkout the "ssh://" url.
 
-Actually, if you look at the implementation of blk_rq_map_kern(), it
-still won't accept vmalloc pages on most architectures because
-virt_to_page() assumes an offset mapped page ... x86 actually has a bug
-on for the vmalloc case if you enable DEBUG_VIRTUAL).  The only reason
-xfs gets away with this is because it builds the vmalloc'd bio manually,
-essentially open coding blk_rq_map_kern().
+Checking out the "ssh://" url (for which I have keys to sourceware)
+allowed me to checkin the patches.
 
-The problem comes because by the time we get to map scatter gather
-lists, all we have is the page, we've lost the virtual address.  There's
-a macro: sg_virt() which claims to recover the virtual address, but all
-it really does is provide the offset map of the page physical address.
-This means that sg_virt() returns a different address from the one the
-page was actually used by if it's in a vmalloc/vmap area (because we
-remapped the page within the kernel virtual address space).  This means
-that for virtually indexed caches, we end up flushing the wrong page
-alias ... and hence corrupting data because we do DMA with a possibly
-dirty cache line set above the page.
+Checked in here:
+http://sourceware.org/git/?p=glibc-ports.git;a=commit;h=be0f2008ac41c83db39d1d1112c0392dbb8b18e9
 
-The generic fix is simple:  flush the potentially dirty page along the
-correct cache alias before feeding it into the block routines and losing
-the alias address information.
-
-The slight problem is that we don't have an API to handle this ...
-flush_kernel_dcache_page() would be the correct one except that it only
-takes a page as the argument, not the virtual address.  So, I propose as
-part of this change to introduce a new API:  flush_kernel_dcache_addr()
-which performs exactly the same as flush_kernel_dcache_page except that
-it flushes through the provided virtual address (whether offset mapped
-or mapped via vmalloc/vmap).
-
-I'll send out the patch series as a reply to this email.
-
-James
+Cheers,
+Carlos.
