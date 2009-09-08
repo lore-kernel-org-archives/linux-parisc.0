@@ -1,77 +1,58 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: Transition hppa from linuxthreads to nptl is ready to proceed.
-Date: Tue, 8 Sep 2009 14:04:17 -0400
-Message-ID: <119aab440909081104s206d64dbxba7ef011839b2822@mail.gmail.com>
-References: <119aab440909071454s7923b95atce6f5f5a7e5b469d@mail.gmail.com>
-	 <200909081357.37995.vapier@gentoo.org>
+From: James Bottomley <James.Bottomley@suse.de>
+Subject: xfs failure on parisc (and presumably other VI cache systems)
+ caused by I/O to vmalloc/vmap areas
+Date: Tue, 08 Sep 2009 13:27:49 -0500
+Message-ID: <1252434469.13003.3.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Debian HPPA Port List <debian-hppa@lists.debian.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	Aurelien Jarno <aurelien@aurel32.net>,
-	Petr Salinger <Petr.Salinger@seznam.cz>,
-	Grant Grundler <grundler@parisc-linux.org>
-To: Mike Frysinger <vapier@gentoo.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200909081357.37995.vapier@gentoo.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain
+Cc: Christoph Hellwig <hch@lst.de>
+To: Parisc List <linux-parisc@vger.kernel.org>,
+	Linux Filesystem Mailing List <linux-fsdevel@vger.kernel.org>,
+	linux-arch@vger.kernel.org
+Return-path: <linux-arch-owner@vger.kernel.org>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Sep 8, 2009 at 1:57 PM, Mike Frysinger<vapier@gentoo.org> wrote=
-:
-> On Monday 07 September 2009 17:54:01 Carlos O'Donell wrote:
->> The following patches implement version 2 of the NPTL upgrade for
->> hppa. This second version is a rewrite of internal pthread structure=
-s
->> and is 100% ABI backwards compatible. All old applications will run
->> with the new glibc, including during partial upgrades.
->>
->> I have tested the following patches with eglibc_2.10.1-0exp1, the
->> testing has included the standard glibc regression testing, simulati=
-on
->> of partial upgrades, and heavy chroot testing with Xnest, and severa=
-l
->> large multithreaded UI applications (evince, xchat, nautilus,
->> gnome-session etc). All tests succeeded.
->>
->> * Please add the following patch to the hppa set of patches:
->> http://www.parisc-linux.org/~carlos/debian-final_glibc-ports-hppa-np=
-tl.diff
->
-> any reason for not pushing this (and all the other hppa patches) to t=
-he glibc
-> ports tree ? =A0it isnt like you'll be breaking anything that isnt al=
-ready
-> broken, and it'll make it easier for people to play with mainline gli=
-bc.
+This bug was observed on parisc, but I would expect it to affect all
+architectures with virtually indexed caches.
 
-It would have been upstream *before* the email went out, but my git-fu
-is incredibly weak.
+The inception of this problem is the changes we made to block and SCSI
+to eliminate the special case path for kernel buffers.  This change
+forced every I/O to go via the full scatter gather processing.  In this
+way we thought we'd removed the restrictions about using vmalloc/vmap
+areas for I/O from the kernel. XFS acually took advantage of this, hence
+the problems.
 
-I've been talking to Roland about my problems with pushing upstream
-(and the accidental branch I created on glibc.git).
+Actually, if you look at the implementation of blk_rq_map_kern(), it
+still won't accept vmalloc pages on most architectures because
+virt_to_page() assumes an offset mapped page ... x86 actually has a bug
+on for the vmalloc case if you enable DEBUG_VIRTUAL).  The only reason
+xfs gets away with this is because it builds the vmalloc'd bio manually,
+essentially open coding blk_rq_map_kern().
 
-git push -v
-Pushing to git://sourceware.org/git/glibc-ports.git
-fatal: The remote end hung up unexpectedly
+The problem comes because by the time we get to map scatter gather
+lists, all we have is the page, we've lost the virtual address.  There's
+a macro: sg_virt() which claims to recover the virtual address, but all
+it really does is provide the offset map of the page physical address.
+This means that sg_virt() returns a different address from the one the
+page was actually used by if it's in a vmalloc/vmap area (because we
+remapped the page within the kernel virtual address space).  This means
+that for virtually indexed caches, we end up flushing the wrong page
+alias ... and hence corrupting data because we do DMA with a possibly
+dirty cache line set above the page.
 
-git remote show origin
-* remote origin
-  URL: git://sourceware.org/git/glibc-ports.git
-  HEAD branch: master
-=2E..
-  Local branch configured for 'git pull':
-    master merges with remote master
-  Local ref configured for 'git push':
-    master pushes to master (fast forwardable)
+The generic fix is simple:  flush the potentially dirty page along the
+correct cache alias before feeding it into the block routines and losing
+the alias address information.
 
-I don't know what's wrong here. AFAICT it should just work, I've been
-using `git pull --rebase` to keep my repo updated.
+The slight problem is that we don't have an API to handle this ...
+flush_kernel_dcache_page() would be the correct one except that it only
+takes a page as the argument, not the virtual address.  So, I propose as
+part of this change to introduce a new API:  flush_kernel_dcache_addr()
+which performs exactly the same as flush_kernel_dcache_page except that
+it flushes through the provided virtual address (whether offset mapped
+or mapped via vmalloc/vmap).
 
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I'll send out the patch series as a reply to this email.
+
+James
