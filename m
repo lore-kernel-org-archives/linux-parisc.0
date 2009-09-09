@@ -1,59 +1,61 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH 1/5] mm: add coherence API for DMA to vmalloc/vmap areas
-Date: Wed, 09 Sep 2009 09:34:38 -0500
-Message-ID: <1252506878.3918.32.camel@mulgrave.site>
-References: <1252434469.13003.3.camel@mulgrave.site>
-	 <20090908190031.GF6538@flint.arm.linux.org.uk>
-	 <1252437112.13003.39.camel@mulgrave.site>
-	 <20090908201619.GG6538@flint.arm.linux.org.uk>
-	 <1252442352.13003.132.camel@mulgrave.site>
-	 <20090908213910.GH6538@flint.arm.linux.org.uk>
-	 <1252466070.13003.365.camel@mulgrave.site>
-	 <1252466226.13003.367.camel@mulgrave.site>
-	 <1252466601.13003.374.camel@mulgrave.site>
-	 <20090909033532.GD23049@linux-sh.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: Segfault in __c_f_f_c during strace of nptl application.
+Date: Wed, 9 Sep 2009 10:39:30 -0400
+Message-ID: <119aab440909090739s1f7af068s65bb4d389b626a4d@mail.gmail.com>
+References: <119aab440906202327x7093bd81q93f3914fcf6c2c70@mail.gmail.com>
+	 <20090621152031.04E4B4F19@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Russell King <rmk@arm.linux.org.uk>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Linux Filesystem Mailing List <linux-fsdevel@vger.kernel.org>,
-	linux-arch@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-To: Paul Mundt <lethal@linux-sh.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090909033532.GD23049@linux-sh.org>
+In-Reply-To: <20090621152031.04E4B4F19@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2009-09-09 at 12:35 +0900, Paul Mundt wrote:
-> And here I thought it was a new gcc construct along the lines of
-> inline-if-so-inclined.. :-)
+On Sun, Jun 21, 2009 at 11:20 AM, John David
+Anglin<dave@hiauly1.hia.nrc.ca> wrote:
+> Looking at my email archive, I see the real cause involves kernel mem=
+ory
+> maps:
+>
+> =A0> > > On Wed, May 06, 2009 at 01:39:49PM -0400, John David Anglin =
+wrote:
+> =A0> > > > > The tombstone is:
+> =A0> > > > >
+> =A0> > > > > do_page_fault() pid=3D10205 command=3D'strace' type=3D15=
+ address=3D0x407d2f18
+> =A0> > > > > vm_start =3D 0x4068d000, vm_end =3D 0x4068f000
+> =A0> > > >
+> =A0> > > > So, the pointer passed to __canonicalize_funcptr_for_compa=
+re is outside
+> =A0> > > > the vm range.
 
-Actually, I missed the fact that sh also sets
-ARCH_HAS_FLUSH_KERNEL_DCACHE_PAGE, so you'll need implementations of
-these functions too.  Does this look right?
+The strace problem is a compiler flaw.
 
-James
+This is the problem:
+* Strace examines the applications syscall.
+* Strace extracts, via PTRACE, application addresses, addresses that
+don't exist in the strace address space (and should not exist).
+* Strace compares extracted address to a constant SIG_ERR.
+* Compiler generates a call to __c_f_f_c, which dereference the
+extracted address and strace faults.
 
----
+Strace and the application have completely different address spaces,
+and __c_f_f_c can't assume that an address is in the current address
+space.
 
-diff --git a/arch/sh/include/asm/cacheflush.h b/arch/sh/include/asm/cacheflush.h
-index 4c5462d..db06611 100644
---- a/arch/sh/include/asm/cacheflush.h
-+++ b/arch/sh/include/asm/cacheflush.h
-@@ -48,6 +48,14 @@ static inline void flush_kernel_dcache_page(struct page *page)
- {
- 	flush_dcache_page(page);
- }
-+static inline void flush_kernel_dcache_addr(void *addr)
-+{
-+	__flush_invalidate_region(addr, PAGE_SIZE);
-+}
-+static inline void invalidate_kernel_dcache_addr(void *addr)
-+{
-+	__flush_invalidate_region(addr, PAGE_SIZE);
-+}
- 
- #if defined(CONFIG_CPU_SH4) && !defined(CONFIG_CACHE_OFF)
- extern void copy_to_user_page(struct vm_area_struct *vma,
+The solution is to detect that a comparison between two pointers is a
+comparison between pointer and small constant, and avoid calling
+__c_f_f_c for both.
 
+The workaround is to cast both long. I tested this and it works. I'll
+submit this to debian as the fix.
 
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
