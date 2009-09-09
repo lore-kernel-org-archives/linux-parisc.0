@@ -1,92 +1,59 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Problem with sysrq-t in 2.6.31-rc5?
-Date: Wed, 9 Sep 2009 10:13:44 -0400
-Message-ID: <119aab440909090713o5631666ck607fd2c52555da1f@mail.gmail.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH 1/5] mm: add coherence API for DMA to vmalloc/vmap areas
+Date: Wed, 09 Sep 2009 09:34:38 -0500
+Message-ID: <1252506878.3918.32.camel@mulgrave.site>
+References: <1252434469.13003.3.camel@mulgrave.site>
+	 <20090908190031.GF6538@flint.arm.linux.org.uk>
+	 <1252437112.13003.39.camel@mulgrave.site>
+	 <20090908201619.GG6538@flint.arm.linux.org.uk>
+	 <1252442352.13003.132.camel@mulgrave.site>
+	 <20090908213910.GH6538@flint.arm.linux.org.uk>
+	 <1252466070.13003.365.camel@mulgrave.site>
+	 <1252466226.13003.367.camel@mulgrave.site>
+	 <1252466601.13003.374.camel@mulgrave.site>
+	 <20090909033532.GD23049@linux-sh.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: text/plain
+Cc: Russell King <rmk@arm.linux.org.uk>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Linux Filesystem Mailing List <linux-fsdevel@vger.kernel.org>,
+	linux-arch@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+To: Paul Mundt <lethal@linux-sh.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090909033532.GD23049@linux-sh.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-While attempting a sysrq-t on 2.6.31-rc5, I got the following panic.
+On Wed, 2009-09-09 at 12:35 +0900, Paul Mundt wrote:
+> And here I thought it was a new gcc construct along the lines of
+> inline-if-so-inclined.. :-)
 
-Has anyone seen this before?
-~~~
-SysRq : Show State
-  task                        PC stack   pid father
-init          S 0000000040103568     0     1      0 0x00000010
-Backtrace:
- [<0000000040115dec>] schedule+0x324/0x938
- [<0000000040175654>] hrtimer_try_to_cancel+0x2c/0xd0
-Backtrace:
- [<0000000040290e94>] memcpy+0x2c/0x40
+Actually, I missed the fact that sh also sets
+ARCH_HAS_FLUSH_KERNEL_DCACHE_PAGE, so you'll need implementations of
+these functions too.  Does this look right?
 
+James
 
-Bad Address (null pointer deref?): Code=15 regs=00000000405a53c0
-(Addr=c00007ff9f85cb90)
+---
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00001000000001101111111100001110 Not tainted
-r00-03  000000ff0806ff0e 00000000405f8c80 0000000000000010 00000000405a4e78
-r04-07  000000006fc00000 000000006bc23fd9 0000000000000003 00000000405f8480
-r08-11  0000000000000080 0000000073c00008 00000000405253f8 000000000800000e
-r12-15  00000000404d9048 000000000800000f 0000000000000002 0000000000000004
-r16-19  00000000405a49e9 00000000405a49e8 000000009dc6e9e0 000000004011d370
-r20-23  ffffffffffffff60 0000000040175628 00000000ffffff60 000000004047de04
-r24-27  00000000401755f8 0000000000000000 0000000040175654 00000000405ebc80
-r28-31  ffffffff9f85cb90 0000000037de0000 00000000405a53c0 ffffffff9f85cba0
-sr00-03  00000000001f6800 0000000000000000 0000000000000000 00000000001f6800
-sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-
-IASQ: 0000000000000000 0000000000000000 IAOQ: 0000000040127054 0000000040127058
- IIR: 0f8010df    ISR: 000000003ffff800  IOR: c00007ff9f85cb90
- CPU:        0   CR30: 00000000405a4000 CR31: ffdfffffffffffff
- ORIG_R28: 00000000405ebc80
- IAOQ[0]: unwind_once+0x2d4/0x450
- IAOQ[1]: unwind_once+0x2d8/0x450
- RP(r2): 0x10
-Backtrace:
- [<0000000040290e94>] memcpy+0x2c/0x40
-
-Kernel panic - not syncing: Bad Address (null pointer deref?)
-Backtrace:
-Backtrace:
- [<00000000402fdf64>] uart_console_write+0x5c/0xc0
+diff --git a/arch/sh/include/asm/cacheflush.h b/arch/sh/include/asm/cacheflush.h
+index 4c5462d..db06611 100644
+--- a/arch/sh/include/asm/cacheflush.h
++++ b/arch/sh/include/asm/cacheflush.h
+@@ -48,6 +48,14 @@ static inline void flush_kernel_dcache_page(struct page *page)
+ {
+ 	flush_dcache_page(page);
+ }
++static inline void flush_kernel_dcache_addr(void *addr)
++{
++	__flush_invalidate_region(addr, PAGE_SIZE);
++}
++static inline void invalidate_kernel_dcache_addr(void *addr)
++{
++	__flush_invalidate_region(addr, PAGE_SIZE);
++}
+ 
+ #if defined(CONFIG_CPU_SH4) && !defined(CONFIG_CACHE_OFF)
+ extern void copy_to_user_page(struct vm_area_struct *vma,
 
 
-Bad Address (null pointer deref?): Code=15 regs=00000000405a6390
-(Addr=c00007ff405a6240)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00001000000001001111111100001110 Not tainted
-r00-03  000000ff0804ff0e 00000000405f8c80 0000000000000010 00000000405a5e48
-r04-07  000000006fc00000 000000006bc23fd9 0000000000000001 00000000405f8480
-r08-11  0000000000000350 0000000073c00008 000000000000000f 000000000800000e
-r12-15  00000000404d9048 000000000800000f 0000000000000002 0000000000000004
-r16-19  00000000405a53c0 00000000405a49e8 000000009dc6e9e0 000000004011d370
-r20-23  ffffffffffffff70 000000004011c424 00000000ffffff70 00000000404793b4
-r24-27  000000004011c370 0000000000000000 000000004011c9fc 00000000405ebc80
-r28-31  ffffffff405a6240 0000000037de0000 00000000405a6390 ffffffff405a6250
-sr00-03  00000000001f6800 0000000000000000 0000000000000000 00000000001f6800
-sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-
-IASQ: 0000000000000000 0000000000000000 IAOQ: 0000000040127054 0000000040127058
- IIR: 0f8010df    ISR: 000000003ffff800  IOR: c00007ff405a6240
- CPU:        0   CR30: 00000000405a4000 CR31: ffdfffffffffffff
- ORIG_R28: 00000000405ebc80
- IAOQ[0]: unwind_once+0x2d4/0x450
- IAOQ[1]: unwind_once+0x2d8/0x450
- RP(r2): 0x10
-Backtrace:
- [<00000000402fdf64>] uart_console_write+0x5c/0xc0
-
-Kernel panic - not syncing: Bad Address (null pointer deref?)
-Backtrace:
-Backtrace:
- [<00000000401154c8>] printk+0x40/0x50
- [<000000004011c8f4>] do_show_stack+0x7c/0xe8
-~~~
-
-Cheers,
-Carlos.
