@@ -1,31 +1,75 @@
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 6/6] xfs: fix xfs to work with Virtually Indexed
-	architectures
-Date: Wed, 9 Sep 2009 13:55:41 -0400
-Message-ID: <20090909175541.GA9766@infradead.org>
-References: <1252511536-22066-1-git-send-email-James.Bottomley@suse.de> <1252511536-22066-2-git-send-email-James.Bottomley@suse.de> <1252511536-22066-3-git-send-email-James.Bottomley@suse.de> <1252511536-22066-4-git-send-email-James.Bottomley@suse.de> <1252511536-22066-5-git-send-email-James.Bottomley@suse.de> <1252511536-22066-6-git-send-email-James.Bottomley@suse.de> <1252511536-22066-7-git-send-email-James.Bottomley@suse.de>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: [PATCH] hppa: Avoid manipulating function pointers from a traced
+	process.
+Date: Wed, 9 Sep 2009 14:13:19 -0400
+Message-ID: <119aab440909091113jc5dc5f0m33f3be60bdd13eb5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-parisc@vger.kernel.org, Russell King <rmk@arm.linux.org.uk>,
-	Christoph Hellwig <hch@lst.de>,
-	Paul Mundt <lethal@linux-sh.org>
-To: James Bottomley <James.Bottomley@suse.de>
+Content-Type: multipart/mixed; boundary=00032555a196a54927047329090b
+To: strace-devel@lists.sourceforge.net,
+	linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1252511536-22066-7-git-send-email-James.Bottomley@suse.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Sep 09, 2009 at 10:52:16AM -0500, James Bottomley wrote:
-> xfs_buf.c includes what is essentially a hand rolled version of
-> blk_rq_map_kern().  In order to work properly with the vmalloc buffers
-> that xfs uses, this hand rolled routine must also implement the flushing
-> API for vmap/vmalloc areas.
+--00032555a196a54927047329090b
+Content-Type: text/plain; charset=ISO-8859-1
 
-It's not really a handcrafted version of blk_rq_map_kern because it
-can add discontinuous into a single bio.
+Architectures using function pointers, like hppa, may need to
+manipulate the function pointer to compute the result of a comparison.
+However, the SA_HANDLER function pointer exists only in the address
+space of the traced process, and can't be manipulated by strace. In
+order to prevent the compiler from generating code to manipulate
+SA_HANDLER we cast the function pointers to long.
 
-The patches look fine to (not pretty but fine :)), and I'll make sure
-they get added once those two helpers made it, probably augmented by
-a comment explaining what's going on here.
+Please apply.
 
+Cheers,
+Carlos.
+~~~
+Fix function pointer comparison for hppa.
+
+* signal.c (sys_sigaction): Cast function pointers to long.
+(sys_rt_sigaction): Cast function pointers to long.
+
+--00032555a196a54927047329090b
+Content-Type: text/x-diff; charset=US-ASCII; name="2009-09-09-strace.diff"
+Content-Disposition: attachment; filename="2009-09-09-strace.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fzedyzzx1
+
+ZGlmZiAtLWdpdCBhL3NpZ25hbC5jIGIvc2lnbmFsLmMKaW5kZXggNzY1MDRmNi4uN2NlNDgwOSAx
+MDA2NDQKLS0tIGEvc2lnbmFsLmMKKysrIGIvc2lnbmFsLmMKQEAgLTExMjEsMTEgKzExMjEsMTkg
+QEAgc3RydWN0IHRjYiAqdGNwOwogCWVsc2UgaWYgKHVtb3ZlKHRjcCwgYWRkciwgJnNhKSA8IDAp
+CiAJCXRwcmludGYoInsuLi59Iik7CiAJZWxzZSB7Ci0JCWlmIChzYS5TQV9IQU5ETEVSID09IFNJ
+R19FUlIpCisJCS8qIEFyY2hpdGVjdHVyZXMgdXNpbmcgZnVuY3Rpb24gcG9pbnRlcnMsIGxpa2UK
+KwkJICogaHBwYSwgbWF5IG5lZWQgdG8gbWFuaXB1bGF0ZSB0aGUgZnVuY3Rpb24gcG9pbnRlcgor
+CQkgKiB0byBjb21wdXRlIHRoZSByZXN1bHQgb2YgYSBjb21wYXJpc29uLiBIb3dldmVyLAorCQkg
+KiB0aGUgU0FfSEFORExFUiBmdW5jdGlvbiBwb2ludGVyIGV4aXN0cyBvbmx5IGluIAorCQkgKiB0
+aGUgYWRkcmVzcyBzcGFjZSBvZiB0aGUgdHJhY2VkIHByb2Nlc3MsIGFuZCBjYW4ndAorCQkgKiBi
+ZSBtYW5pcHVsYXRlZCBieSBzdHJhY2UuIEluIG9yZGVyIHRvIHByZXZlbnQgdGhlIAorCQkgKiBj
+b21waWxlciBmcm9tIGdlbmVyYXRpbmcgY29kZSB0byBtYW5pcHVsYXRlIAorCQkgKiBTQV9IQU5E
+TEVSIHdlIGNhc3QgdGhlIGZ1bmN0aW9uIHBvaW50ZXJzIHRvIGxvbmcuICovCisJCWlmICgobG9u
+ZylzYS5TQV9IQU5ETEVSID09IChsb25nKVNJR19FUlIpCiAJCQl0cHJpbnRmKCJ7U0lHX0VSUiwg
+Iik7Ci0JCWVsc2UgaWYgKHNhLlNBX0hBTkRMRVIgPT0gU0lHX0RGTCkKKwkJZWxzZSBpZiAoKGxv
+bmcpc2EuU0FfSEFORExFUiA9PSAobG9uZylTSUdfREZMKQogCQkJdHByaW50Zigie1NJR19ERkws
+ICIpOwotCQllbHNlIGlmIChzYS5TQV9IQU5ETEVSID09IFNJR19JR04pIHsKKwkJZWxzZSBpZiAo
+KGxvbmcpc2EuU0FfSEFORExFUiA9PSAobG9uZylTSUdfSUdOKSB7CiAjaWZuZGVmIFVTRV9QUk9D
+RlMKIAkJCWlmICh0Y3AtPnVfYXJnWzBdID09IFNJR1RSQVApIHsKIAkJCQl0Y3AtPmZsYWdzIHw9
+IFRDQl9TSUdUUkFQUEVEOwpAQCAtMTkzMSwxMiArMTkzOSwxOSBAQCBzeXNfcnRfc2lnYWN0aW9u
+KHN0cnVjdCB0Y2IgKnRjcCkKIAkJdHByaW50Zigiey4uLn0iKTsKIAkJZ290byBhZnRlcl9zYTsK
+IAl9Ci0KLQlpZiAoc2EuX19zYV9oYW5kbGVyID09IFNJR19FUlIpCisJLyogQXJjaGl0ZWN0dXJl
+cyB1c2luZyBmdW5jdGlvbiBwb2ludGVycywgbGlrZQorCSAqIGhwcGEsIG1heSBuZWVkIHRvIG1h
+bmlwdWxhdGUgdGhlIGZ1bmN0aW9uIHBvaW50ZXIKKwkgKiB0byBjb21wdXRlIHRoZSByZXN1bHQg
+b2YgYSBjb21wYXJpc29uLiBIb3dldmVyLAorCSAqIHRoZSBTQV9IQU5ETEVSIGZ1bmN0aW9uIHBv
+aW50ZXIgZXhpc3RzIG9ubHkgaW4gCisJICogdGhlIGFkZHJlc3Mgc3BhY2Ugb2YgdGhlIHRyYWNl
+ZCBwcm9jZXNzLCBhbmQgY2FuJ3QKKwkgKiBiZSBtYW5pcHVsYXRlZCBieSBzdHJhY2UuIEluIG9y
+ZGVyIHRvIHByZXZlbnQgdGhlIAorCSAqIGNvbXBpbGVyIGZyb20gZ2VuZXJhdGluZyBjb2RlIHRv
+IG1hbmlwdWxhdGUgCisJICogU0FfSEFORExFUiB3ZSBjYXN0IHRoZSBmdW5jdGlvbiBwb2ludGVy
+cyB0byBsb25nLiAqLworCWlmICgobG9uZylzYS5fX3NhX2hhbmRsZXIgPT0gKGxvbmcpU0lHX0VS
+UikKIAkJdHByaW50Zigie1NJR19FUlIsICIpOwotCWVsc2UgaWYgKHNhLl9fc2FfaGFuZGxlciA9
+PSBTSUdfREZMKQorCWVsc2UgaWYgKChsb25nKXNhLl9fc2FfaGFuZGxlciA9PSAobG9uZylTSUdf
+REZMKQogCQl0cHJpbnRmKCJ7U0lHX0RGTCwgIik7Ci0JZWxzZSBpZiAoc2EuX19zYV9oYW5kbGVy
+ID09IFNJR19JR04pCisJZWxzZSBpZiAoKGxvbmcpc2EuX19zYV9oYW5kbGVyID09IChsb25nKVNJ
+R19JR04pCiAJCXRwcmludGYoIntTSUdfSUdOLCAiKTsKIAllbHNlCiAJCXRwcmludGYoInslI2x4
+LCAiLCAobG9uZykgc2EuX19zYV9oYW5kbGVyKTsK
+--00032555a196a54927047329090b--
