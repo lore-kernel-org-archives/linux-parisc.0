@@ -1,29 +1,68 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: Segfault in __c_f_f_c during strace of nptl application.
-Date: Wed, 9 Sep 2009 11:24:43 -0400
-Message-ID: <119aab440909090824n55dff67sb32c0d3468a19d25@mail.gmail.com>
-References: <119aab440909090739s1f7af068s65bb4d389b626a4d@mail.gmail.com>
-	 <20090909151650.551584FC6@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090909151650.551584FC6@hiauly1.hia.nrc.ca>
-List-ID: <linux-parisc.vger.kernel.org>
+From: James Bottomley <James.Bottomley@suse.de>
+Subject: [PATCH 6/6] xfs: fix xfs to work with Virtually Indexed architectures
+Date: Wed,  9 Sep 2009 10:52:16 -0500
+Message-ID: <1252511536-22066-7-git-send-email-James.Bottomley@suse.de>
+References: <1252511536-22066-1-git-send-email-James.Bottomley@suse.de>
+ <1252511536-22066-2-git-send-email-James.Bottomley@suse.de>
+ <1252511536-22066-3-git-send-email-James.Bottomley@suse.de>
+ <1252511536-22066-4-git-send-email-James.Bottomley@suse.de>
+ <1252511536-22066-5-git-send-email-James.Bottomley@suse.de>
+ <1252511536-22066-6-git-send-email-James.Bottomley@suse.de>
+Cc: Russell King <rmk@arm.linux.org.uk>,
+	Christoph Hellwig <hch@lst.de>,
+	Paul Mundt <lethal@linux-sh.org>,
+	James Bottomley <James.Bottomley@suse.de>
+To: linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-parisc@vger.kernel.org
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <1252511536-22066-6-git-send-email-James.Bottomley@suse.de>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Sep 9, 2009 at 11:16 AM, John David
-Anglin<dave@hiauly1.hia.nrc.ca> wrote:
->> The workaround is to cast both long. I tested this and it works. I'll
->> submit this to debian as the fix.
->
-> This is simplest fix.
+xfs_buf.c includes what is essentially a hand rolled version of
+blk_rq_map_kern().  In order to work properly with the vmalloc buffers
+that xfs uses, this hand rolled routine must also implement the flushing
+API for vmap/vmalloc areas.
 
-Yes, it would appear that strace/gdb (applications that ptrace
-addresses from another process) are most likely applications to suffer
-from this problem, and it may be easier to work around the problem
-there instead of in the compiler.
+Signed-off-by: James Bottomley <James.Bottomley@suse.de>
+---
+ fs/xfs/linux-2.6/xfs_buf.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
 
-Cheers,
-Carlos.
+diff --git a/fs/xfs/linux-2.6/xfs_buf.c b/fs/xfs/linux-2.6/xfs_buf.c
+index 965df12..62ae977 100644
+--- a/fs/xfs/linux-2.6/xfs_buf.c
++++ b/fs/xfs/linux-2.6/xfs_buf.c
+@@ -1138,6 +1138,10 @@ xfs_buf_bio_end_io(
+ 	do {
+ 		struct page	*page = bvec->bv_page;
+ 
++		if (is_vmalloc_addr(bp->b_addr))
++			invalidate_kernel_dcache_addr(bp->b_addr +
++						      bvec->bv_offset);
++
+ 		ASSERT(!PagePrivate(page));
+ 		if (unlikely(bp->b_error)) {
+ 			if (bp->b_flags & XBF_READ)
+@@ -1202,6 +1206,9 @@ _xfs_buf_ioapply(
+ 		bio->bi_end_io = xfs_buf_bio_end_io;
+ 		bio->bi_private = bp;
+ 
++		if (is_vmalloc_addr(bp->b_addr))
++			flush_kernel_dcache_addr(bp->b_addr);
++
+ 		bio_add_page(bio, bp->b_pages[0], PAGE_CACHE_SIZE, 0);
+ 		size = 0;
+ 
+@@ -1228,6 +1235,9 @@ next_chunk:
+ 		if (nbytes > size)
+ 			nbytes = size;
+ 
++		if (is_vmalloc_addr(bp->b_addr))
++			flush_kernel_dcache_addr(bp->b_addr + PAGE_SIZE*map_i);
++
+ 		rbytes = bio_add_page(bio, bp->b_pages[map_i], nbytes, offset);
+ 		if (rbytes < nbytes)
+ 			break;
+-- 
+1.6.3.3
