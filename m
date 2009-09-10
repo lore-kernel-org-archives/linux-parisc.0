@@ -1,75 +1,27 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: [PATCH] hppa: Avoid manipulating function pointers from a traced
-	process.
-Date: Wed, 9 Sep 2009 14:13:19 -0400
-Message-ID: <119aab440909091113jc5dc5f0m33f3be60bdd13eb5@mail.gmail.com>
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: Re: [PATCH 1/5] mm: add coherence API for DMA to vmalloc/vmap areas
+Date: Thu, 10 Sep 2009 09:24:09 +0900
+Message-ID: <20090910002409.GB23674@linux-sh.org>
+References: <20090908190031.GF6538@flint.arm.linux.org.uk> <1252437112.13003.39.camel@mulgrave.site> <20090908201619.GG6538@flint.arm.linux.org.uk> <1252442352.13003.132.camel@mulgrave.site> <20090908213910.GH6538@flint.arm.linux.org.uk> <1252466070.13003.365.camel@mulgrave.site> <1252466226.13003.367.camel@mulgrave.site> <1252466601.13003.374.camel@mulgrave.site> <20090909033532.GD23049@linux-sh.org> <1252506878.3918.32.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=00032555a196a54927047329090b
-To: strace-devel@lists.sourceforge.net,
-	linux-parisc <linux-parisc@vger.kernel.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Russell King <rmk@arm.linux.org.uk>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Linux Filesystem Mailing List <linux-fsdevel@vger.kernel.org>,
+	linux-arch@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <1252506878.3918.32.camel@mulgrave.site>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---00032555a196a54927047329090b
-Content-Type: text/plain; charset=ISO-8859-1
-
-Architectures using function pointers, like hppa, may need to
-manipulate the function pointer to compute the result of a comparison.
-However, the SA_HANDLER function pointer exists only in the address
-space of the traced process, and can't be manipulated by strace. In
-order to prevent the compiler from generating code to manipulate
-SA_HANDLER we cast the function pointers to long.
-
-Please apply.
-
-Cheers,
-Carlos.
-~~~
-Fix function pointer comparison for hppa.
-
-* signal.c (sys_sigaction): Cast function pointers to long.
-(sys_rt_sigaction): Cast function pointers to long.
-
---00032555a196a54927047329090b
-Content-Type: text/x-diff; charset=US-ASCII; name="2009-09-09-strace.diff"
-Content-Disposition: attachment; filename="2009-09-09-strace.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fzedyzzx1
-
-ZGlmZiAtLWdpdCBhL3NpZ25hbC5jIGIvc2lnbmFsLmMKaW5kZXggNzY1MDRmNi4uN2NlNDgwOSAx
-MDA2NDQKLS0tIGEvc2lnbmFsLmMKKysrIGIvc2lnbmFsLmMKQEAgLTExMjEsMTEgKzExMjEsMTkg
-QEAgc3RydWN0IHRjYiAqdGNwOwogCWVsc2UgaWYgKHVtb3ZlKHRjcCwgYWRkciwgJnNhKSA8IDAp
-CiAJCXRwcmludGYoInsuLi59Iik7CiAJZWxzZSB7Ci0JCWlmIChzYS5TQV9IQU5ETEVSID09IFNJ
-R19FUlIpCisJCS8qIEFyY2hpdGVjdHVyZXMgdXNpbmcgZnVuY3Rpb24gcG9pbnRlcnMsIGxpa2UK
-KwkJICogaHBwYSwgbWF5IG5lZWQgdG8gbWFuaXB1bGF0ZSB0aGUgZnVuY3Rpb24gcG9pbnRlcgor
-CQkgKiB0byBjb21wdXRlIHRoZSByZXN1bHQgb2YgYSBjb21wYXJpc29uLiBIb3dldmVyLAorCQkg
-KiB0aGUgU0FfSEFORExFUiBmdW5jdGlvbiBwb2ludGVyIGV4aXN0cyBvbmx5IGluIAorCQkgKiB0
-aGUgYWRkcmVzcyBzcGFjZSBvZiB0aGUgdHJhY2VkIHByb2Nlc3MsIGFuZCBjYW4ndAorCQkgKiBi
-ZSBtYW5pcHVsYXRlZCBieSBzdHJhY2UuIEluIG9yZGVyIHRvIHByZXZlbnQgdGhlIAorCQkgKiBj
-b21waWxlciBmcm9tIGdlbmVyYXRpbmcgY29kZSB0byBtYW5pcHVsYXRlIAorCQkgKiBTQV9IQU5E
-TEVSIHdlIGNhc3QgdGhlIGZ1bmN0aW9uIHBvaW50ZXJzIHRvIGxvbmcuICovCisJCWlmICgobG9u
-ZylzYS5TQV9IQU5ETEVSID09IChsb25nKVNJR19FUlIpCiAJCQl0cHJpbnRmKCJ7U0lHX0VSUiwg
-Iik7Ci0JCWVsc2UgaWYgKHNhLlNBX0hBTkRMRVIgPT0gU0lHX0RGTCkKKwkJZWxzZSBpZiAoKGxv
-bmcpc2EuU0FfSEFORExFUiA9PSAobG9uZylTSUdfREZMKQogCQkJdHByaW50Zigie1NJR19ERkws
-ICIpOwotCQllbHNlIGlmIChzYS5TQV9IQU5ETEVSID09IFNJR19JR04pIHsKKwkJZWxzZSBpZiAo
-KGxvbmcpc2EuU0FfSEFORExFUiA9PSAobG9uZylTSUdfSUdOKSB7CiAjaWZuZGVmIFVTRV9QUk9D
-RlMKIAkJCWlmICh0Y3AtPnVfYXJnWzBdID09IFNJR1RSQVApIHsKIAkJCQl0Y3AtPmZsYWdzIHw9
-IFRDQl9TSUdUUkFQUEVEOwpAQCAtMTkzMSwxMiArMTkzOSwxOSBAQCBzeXNfcnRfc2lnYWN0aW9u
-KHN0cnVjdCB0Y2IgKnRjcCkKIAkJdHByaW50Zigiey4uLn0iKTsKIAkJZ290byBhZnRlcl9zYTsK
-IAl9Ci0KLQlpZiAoc2EuX19zYV9oYW5kbGVyID09IFNJR19FUlIpCisJLyogQXJjaGl0ZWN0dXJl
-cyB1c2luZyBmdW5jdGlvbiBwb2ludGVycywgbGlrZQorCSAqIGhwcGEsIG1heSBuZWVkIHRvIG1h
-bmlwdWxhdGUgdGhlIGZ1bmN0aW9uIHBvaW50ZXIKKwkgKiB0byBjb21wdXRlIHRoZSByZXN1bHQg
-b2YgYSBjb21wYXJpc29uLiBIb3dldmVyLAorCSAqIHRoZSBTQV9IQU5ETEVSIGZ1bmN0aW9uIHBv
-aW50ZXIgZXhpc3RzIG9ubHkgaW4gCisJICogdGhlIGFkZHJlc3Mgc3BhY2Ugb2YgdGhlIHRyYWNl
-ZCBwcm9jZXNzLCBhbmQgY2FuJ3QKKwkgKiBiZSBtYW5pcHVsYXRlZCBieSBzdHJhY2UuIEluIG9y
-ZGVyIHRvIHByZXZlbnQgdGhlIAorCSAqIGNvbXBpbGVyIGZyb20gZ2VuZXJhdGluZyBjb2RlIHRv
-IG1hbmlwdWxhdGUgCisJICogU0FfSEFORExFUiB3ZSBjYXN0IHRoZSBmdW5jdGlvbiBwb2ludGVy
-cyB0byBsb25nLiAqLworCWlmICgobG9uZylzYS5fX3NhX2hhbmRsZXIgPT0gKGxvbmcpU0lHX0VS
-UikKIAkJdHByaW50Zigie1NJR19FUlIsICIpOwotCWVsc2UgaWYgKHNhLl9fc2FfaGFuZGxlciA9
-PSBTSUdfREZMKQorCWVsc2UgaWYgKChsb25nKXNhLl9fc2FfaGFuZGxlciA9PSAobG9uZylTSUdf
-REZMKQogCQl0cHJpbnRmKCJ7U0lHX0RGTCwgIik7Ci0JZWxzZSBpZiAoc2EuX19zYV9oYW5kbGVy
-ID09IFNJR19JR04pCisJZWxzZSBpZiAoKGxvbmcpc2EuX19zYV9oYW5kbGVyID09IChsb25nKVNJ
-R19JR04pCiAJCXRwcmludGYoIntTSUdfSUdOLCAiKTsKIAllbHNlCiAJCXRwcmludGYoInslI2x4
-LCAiLCAobG9uZykgc2EuX19zYV9oYW5kbGVyKTsK
---00032555a196a54927047329090b--
+On Wed, Sep 09, 2009 at 09:34:38AM -0500, James Bottomley wrote:
+> On Wed, 2009-09-09 at 12:35 +0900, Paul Mundt wrote:
+> > And here I thought it was a new gcc construct along the lines of
+> > inline-if-so-inclined.. :-)
+> 
+> Actually, I missed the fact that sh also sets
+> ARCH_HAS_FLUSH_KERNEL_DCACHE_PAGE, so you'll need implementations of
+> these functions too.  Does this look right?
+> 
+Yes, I was planning on just wiring it up later, but this looks correct.
