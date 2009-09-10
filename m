@@ -1,39 +1,82 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: Segfault in __c_f_f_c during strace of nptl application.
-Date: Thu, 10 Sep 2009 12:03:48 -0400
-Message-ID: <119aab440909100903u2f25b7f0i73e979ce37c0ff5a@mail.gmail.com>
-References: <119aab440909090824n55dff67sb32c0d3468a19d25@mail.gmail.com>
-	 <20090910011010.3103E4CFD@hiauly1.hia.nrc.ca>
+From: David Daney <ddaney@caviumnetworks.com>
+Subject: [PATCH 00/10] Add support for GCC's __builtin_unreachable() and use
+ it in BUG.
+Date: Thu, 10 Sep 2009 16:54:41 -0700
+Message-ID: <4AA991C1.1050800@caviumnetworks.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20090910011010.3103E4CFD@hiauly1.hia.nrc.ca>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+	ralf@linux-mips.org, linux-mips@linux-mips.org,
+	Martin Schwidefsky <schwidefsky@de.ibm.com>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	linux390@de.ibm.com, linux-s390@vger.kernel.org,
+	David Howells <dhowells@redhat.com>,
+	Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
+	linux-am33-list@redhat.com, Kyle McMartin <kyle@mcmartin.ca>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Paul Mackerras <paulus@samba.org>, linuxppc-dev@ozlabs.org,
+	Richard Henderson <rth@twiddle.net>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	linux-alpha@vger.kernel.org,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>,
+	Mike Frysinger <vapier@gentoo.org>,
+	uclinux-dist-devel@blackfin.uclinux.org
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Return-path: <linux-alpha-owner@vger.kernel.org>
+List-ID: <linux-alpha.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Sep 9, 2009 at 9:10 PM, John David
-Anglin<dave@hiauly1.hia.nrc.ca> wrote:
->> On Wed, Sep 9, 2009 at 11:16 AM, John David
->> Anglin<dave@hiauly1.hia.nrc.ca> wrote:
->> >> The workaround is to cast both long. I tested this and it works. I'll
->> >> submit this to debian as the fix.
->> >
->> > This is simplest fix.
->>
->> Yes, it would appear that strace/gdb (applications that ptrace
->> addresses from another process) are most likely applications to suffer
->> from this problem, and it may be easier to work around the problem
->> there instead of in the compiler.
->
-> Actually, it probably would not be too hard to disable canonicalization
-> with a compiler option.
+Starting with version 4.5, GCC has a new built-in function called
+__builtin_unreachable().  The function tells the compiler that control
+flow will never reach that point.  Currently we trick the compiler by
+putting in for(;;); but this has the disadvantage that extra code is
+emitted for an endless loop.  For an i386 kernel using
+__builtin_unreachable() results in an allyesconfig that is nearly 4000
+bytes smaller.
 
-No, it's not neccessary. This way I simply have to audit the incorrect
-comparisons of a inferior's function pointer to a constant. If I were
-to disable canonicalization I'd have to audit the entire compilation
-unit to prove I haven't broken any valid function pointer comparisons.
+This patch set adds support to compiler.h creating a
+new macro usable in the kernel called unreachable().  If the compiler
+lacks __builtin_unreachable(), it just expands to for(;;).
 
-Cheers,
-Carlos.
+The x86 and MIPS patches I actually tested with a GCC-4.5 snapshot.
+Lacking the ability to test the rest of the architectures, I just did
+what seemed right without even trying to compile the kernel.
+
+01/10 adds the compiler.h support, the rest of the patches retrofit
+the various architecture BUG macros to use it instead of for(;;) or
+while(1) loops.
+
+I will reply with the 10 patches.
+
+The architecture specific patches I will send to a smaller set of
+people.
+
+David Daney (10):
+   Add support for GCC-4.5's __builtin_unreachable() to compiler.h
+   x86: Convert BUG() to use unreachable()
+   MIPS: Convert BUG() to use unreachable()
+   s390: Convert BUG() to use unreachable()
+   mn10300: Convert BUG() to use unreachable()
+   parisc: Convert BUG() to use unreachable()
+   powerpc: Convert BUG() to use unreachable()
+   alpha: Convert BUG() to use unreachable()
+   avr32: Convert BUG() to use unreachable()
+   blackfin: Convert BUG() to use unreachable()
+
+  arch/alpha/include/asm/bug.h    |    2 +-
+  arch/avr32/include/asm/bug.h    |    2 +-
+  arch/blackfin/include/asm/bug.h |    2 +-
+  arch/mips/include/asm/bug.h     |    4 +---
+  arch/mn10300/include/asm/bug.h  |    3 ++-
+  arch/parisc/include/asm/bug.h   |    4 ++--
+  arch/powerpc/include/asm/bug.h  |    2 +-
+  arch/s390/include/asm/bug.h     |    2 +-
+  arch/x86/include/asm/bug.h      |    4 ++--
+  include/linux/compiler-gcc4.h   |   14 ++++++++++++++
+  include/linux/compiler.h        |    5 +++++
+  11 files changed, 31 insertions(+), 13 deletions(-)
+
