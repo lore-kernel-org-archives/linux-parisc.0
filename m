@@ -1,49 +1,49 @@
-From: David Daney <ddaney@caviumnetworks.com>
-Subject: Re: [PATCH 01/10] Add support for GCC-4.5's __builtin_unreachable()
- to compiler.h
-Date: Fri, 11 Sep 2009 08:58:28 -0700
-Message-ID: <4AAA73A4.9010601@caviumnetworks.com>
-References: <4AA991C1.1050800@caviumnetworks.com> <1252627011-2933-1-git-send-email-ddaney@caviumnetworks.com> <200909111633.00665.mb@bu3sch.de>
+From: James Bottomley <James.Bottomley@suse.de>
+Subject: Re: [PATCH 0/6] fix xfs by making I/O to vmap/vmalloc areas work
+Date: Fri, 11 Sep 2009 21:37:03 +0000
+Message-ID: <1252705023.13282.66.camel@mulgrave.site>
+References: <1252511536-22066-1-git-send-email-James.Bottomley@suse.de>
+	 <20090910061422.GA31781@console-pimps.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: linuxppc-dev@lists.ozlabs.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux-mips@linux-mips.org,
-	Heiko Carstens <heiko.carstens@de.ibm.com>,
-	linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>,
-	"H. Peter Anvin" <hpa@zytor.com>, linux-s390@vger.kernel.org,
-	linux-am33-list@redhat.com, Helge Deller <deller@gmx.de>,
-	x86@kernel.org, Ingo Molnar <mingo@redhat.com>,
-	Mike Frysinger <vapier@gentoo.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	uclinux-dist-devel@blackfin.uclinux.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Richard Henderson <rth@twiddle.net>,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ralf@linux-mips.org, Kyle McMartin <kyle@mcmartin.ca>,
-	linux-alpha@vger.kernel.org,
-	Martin Schwidefsky <schwidefsky@de.ibm.com>,
-	linux390@de.ibm.com,
-	Koichi Yasutake <yasutake.koichi@jp.pana
-To: Michael Buesch <mb@bu3sch.de>
+Content-Type: text/plain
+Cc: linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-parisc@vger.kernel.org, Russell King <rmk@arm.linux.org.uk>,
+	Christoph Hellwig <hch@lst.de>,
+	Paul Mundt <lethal@linux-sh.org>
+To: Matt Fleming <matt@console-pimps.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200909111633.00665.mb@bu3sch.de>
+In-Reply-To: <20090910061422.GA31781@console-pimps.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Michael Buesch wrote:
-> On Friday 11 September 2009 01:56:42 David Daney wrote:
->> +/* Unreachable code */
->> +#ifndef unreachable
->> +# define unreachable() do { for (;;) ; } while (0)
->> +#endif
+On Thu, 2009-09-10 at 07:14 +0100, Matt Fleming wrote:
+> On Wed, Sep 09, 2009 at 10:52:10AM -0500, James Bottomley wrote:
+> > Here's version two of the patch set.  It actually compiles on both x86
+> > and parisc.  I could do with someone to test it on arm and sh.
+> > 
+> > The key test is how xfs behaves.  What I did to recreate the problem
+> > on parisc was simply create an 8GB xfs filesystem, use cp -a to pump
+> > about a GB of data into it from my git trees, then unmount and run
+> > xfs_check.  Before the patches, xfs_check reports the whole fs to be
+> > corrupt.  After the patches it reports everything to be OK.
+> > 
+> > James
+> > 
 > 
-> # define unreachable() do { } while (1)
-> 
-> ? :)
+> I'm seeing some corruption with these patches on SH and a 4GB XFS
+> filesystem. However, I am currently seeing other cache aliasing issues
+> on this board anyway. I'll do some more analysis tonight, unless Paul
+> can prove it's just my setup being weird again.
 
-Clearly I was not thinking clearly when I wrote that part.  RTH noted 
-the same thing.  I will fix it.
+Did some debug checking, and it turns out that the invalidation logic is
+bogus (the bio parameters get updated before the request completes).  Of
+course, we wouldn't see this on parisc because we don't require
+invalidation ....
 
-Thanks,
-David Daney
+I'll try to fix and then repost.
+
+Thanks for testing.
+
+James
+
+
