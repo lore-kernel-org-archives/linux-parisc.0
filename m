@@ -1,80 +1,48 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 01/10] Add support for GCC-4.5's __builtin_unreachable()
-	to compiler.h
-Date: Sat, 12 Sep 2009 09:22:43 +0200
-Message-ID: <10f740e80909120022m72ad5ea7t692fba93cd3114e9@mail.gmail.com>
-References: <4AA991C1.1050800@caviumnetworks.com>
-	 <1252627011-2933-1-git-send-email-ddaney@caviumnetworks.com>
-	 <200909111633.00665.mb@bu3sch.de>
-	 <4AAA73A4.9010601@caviumnetworks.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: Segfault in __c_f_f_c during strace of nptl application.
+Date: Sun, 13 Sep 2009 16:56:20 -0400
+Message-ID: <119aab440909131356n70ab22b5ge428c3e68c79dfa6@mail.gmail.com>
+References: <119aab440909100903u2f25b7f0i73e979ce37c0ff5a@mail.gmail.com>
+	 <20090911225732.DF5604E0B@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Michael Buesch <mb@bu3sch.de>, linuxppc-dev@lists.ozlabs.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux-mips@linux-mips.org,
-	Heiko Carstens <heiko.carstens@de.ibm.com>,
-	linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>,
-	"H. Peter Anvin" <hpa@zytor.com>, linux-s390@vger.kernel.org,
-	linux-am33-list@redhat.com, Helge Deller <deller@gmx.de>,
-	x86@kernel.org, Ingo Molnar <mingo@redhat.com>,
-	Mike Frysinger <vapier@gentoo.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	uclinux-dist-devel@blackfin.uclinux.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Richard Henderson <rth@twiddle.net>,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ralf@linux-mips.org, Kyle McMartin <kyle@mcmartin.ca>,
-	linux-alpha@vger.kernel.org,
-	Martin Schwidefsky <schwidefsky@de.ibm.com>,
-	linux390@de.ibm.com,
-	Koichi Y
-To: David Daney <ddaney@caviumnetworks.com>
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <4AAA73A4.9010601@caviumnetworks.com>
-List-ID: <linux-alpha.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20090911225732.DF5604E0B@hiauly1.hia.nrc.ca>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Sep 11, 2009 at 17:58, David Daney<ddaney@caviumnetworks.com> w=
-rote:
-> Michael Buesch wrote:
->>
->> On Friday 11 September 2009 01:56:42 David Daney wrote:
->>>
->>> +/* Unreachable code */
->>> +#ifndef unreachable
->>> +# define unreachable() do { for (;;) ; } while (0)
->>> +#endif
->>
->> # define unreachable() do { } while (1)
->>
->> ? :)
+On Fri, Sep 11, 2009 at 6:57 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+>> No, it's not neccessary. This way I simply have to audit the incorre=
+ct
+>> comparisons of a inferior's function pointer to a constant. If I wer=
+e
+>> to disable canonicalization I'd have to audit the entire compilation
+>> unit to prove I haven't broken any valid function pointer comparison=
+s.
 >
-> Clearly I was not thinking clearly when I wrote that part. =C2=A0RTH =
-noted the
-> same thing. =C2=A0I will fix it.
+> I'm thinking we have OPD support with recent binutils, so the
+> above shouldn't be necessary. =A0Wasn't that something you added?
 
-However, people are so used to seeing the `do { } while (0)' idiom,
-that they might miss
-there's a `1' here, not a `0'.
+I did the work, yes, I rewrote the PLABEL support to include adding
+OPD's in the executable (instead of pointing the local PLABEL relocs
+at the relevant PLT entry). However, with the start of my Masters I
+didn't have time to clean it up, and check it into binutils. This is
+*certainly* on my list, we need some work in binutils, but *right now*
+I'm working on resurrecting strace which seems to be completely
+broken. Fixing the function descriptor problem is only the first step,
+after that strace still fails with an invalid upeek generated from
+hppa-specific code. I'm working on it right now (today actually).
 
-So perhaps it's better to use plain `for (;;)' for infinite loops?
+AFAICT "strace" *is* our "defense against the dark arts" if you catch
+my harry potter reference :-)
 
-Gr{oetje,eeting}s,
-
-						Geert
-
+Cheers,
+Carlos.
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe linux-alpha" =
-in
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
 the body of a message to majordomo@vger.kernel.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
