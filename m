@@ -1,48 +1,39 @@
-From: David Daney <ddaney@caviumnetworks.com>
-Subject: [PATCH 06/11] parisc: Convert BUG() to use unreachable()
-Date: Mon, 14 Sep 2009 14:55:35 -0700
-Message-ID: <1252965340-31735-6-git-send-email-ddaney@caviumnetworks.com>
-References: <4AAEBAC2.1050905@caviumnetworks.com>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	David Daney <ddaney@caviumnetworks.com>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	linux-parisc@vger.kernel.org
-To: torvalds@linux-foundation.org, akpm@linux-foundation.org
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <4AAEBAC2.1050905@caviumnetworks.com>
-List-ID: <linux-arch.vger.kernel.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Working debian package for strace 4.5.18-1
+Date: Thu, 17 Sep 2009 11:51:22 -0400
+Message-ID: <119aab440909170851w4f6759e5t9eb402da2814e8da@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+To: Debian HPPA Port List <debian-hppa@lists.debian.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
+Resent-Message-ID: <lycjdElouzC.A.FyB.KslsKB@liszt>
 List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-Use the new unreachable() macro instead of for(;;);
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Signed-off-by: David Daney <ddaney@caviumnetworks.com>
-CC: Kyle McMartin <kyle@mcmartin.ca>
-CC: Helge Deller <deller@gmx.de>
-CC: linux-parisc@vger.kernel.org
----
- arch/parisc/include/asm/bug.h |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Currently the debian strace on hppa is completely broken.
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=546619
 
-diff --git a/arch/parisc/include/asm/bug.h b/arch/parisc/include/asm/bug.h
-index 8cfc553..75e46c5 100644
---- a/arch/parisc/include/asm/bug.h
-+++ b/arch/parisc/include/asm/bug.h
-@@ -32,14 +32,14 @@
- 			     "\t.popsection"				\
- 			     : : "i" (__FILE__), "i" (__LINE__),	\
- 			     "i" (0), "i" (sizeof(struct bug_entry)) ); \
--		for(;;) ;						\
-+		unreachable();						\
- 	} while(0)
- 
- #else
- #define BUG()								\
- 	do {								\
- 		asm volatile(PARISC_BUG_BREAK_ASM : : );		\
--		for(;;) ;						\
-+		unreachable();						\
- 	} while(0)
- #endif
- 
--- 
-1.6.2.5
+As a workaround I'm making available a working debian strace package here:
+http://www.parisc-linux.org/~carlos/strace_4.5.18-1_hppa.deb
+md5sum: cdcb1c423792fb11a73fd36c26e559a7
+
+Feel free to use this strace package if you need a working strace.
+
+Cheers,
+Carlos.
+debian-hppa porter.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkqyWhgACgkQKfjkZWeIll+QpACgnU2ja/ELGjqET2Aa87xIXh+P
+VeEAn3cx3kA5pblAZBZOzmaCZ3udu2q4
+=gJQB
+-----END PGP SIGNATURE-----
