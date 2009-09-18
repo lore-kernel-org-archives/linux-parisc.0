@@ -1,87 +1,62 @@
-From: James Bottomley <James.Bottomley@suse.de>
-Subject: [PATCH 6/6] xfs: fix xfs to work with Virtually Indexed architectures
-Date: Thu, 17 Sep 2009 18:07:01 -0500
-Message-ID: <1253228821-4700-7-git-send-email-James.Bottomley@suse.de>
-References: <1253228821-4700-1-git-send-email-James.Bottomley@suse.de>
- <1253228821-4700-2-git-send-email-James.Bottomley@suse.de>
- <1253228821-4700-3-git-send-email-James.Bottomley@suse.de>
- <1253228821-4700-4-git-send-email-James.Bottomley@suse.de>
- <1253228821-4700-5-git-send-email-James.Bottomley@suse.de>
- <1253228821-4700-6-git-send-email-James.Bottomley@suse.de>
-Cc: Russell King <rmk@arm.linux.org.uk>,
-	Christoph Hellwig <hch@lst.de>,
-	Paul Mundt <lethal@linux-sh.org>,
-	James Bottomley <jejb@external.hp.com>,
-	James Bottomley <James.Bottomley@suse.de>
-To: linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-parisc@vger.kernel.org
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <1253228821-4700-6-git-send-email-James.Bottomley@suse.de>
-List-ID: <linux-arch.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Eric B Munson <ebmunson@us.ibm.com>
+Subject: [PATCH 7/7] Add MAP_HUGETLB flag to mips mman.h
+Date: Fri, 18 Sep 2009 06:21:53 -0600
+Message-ID: <2cf4dc5ff484753493263c5aa3fdd21ca62aa9bf.1253272709.git.ebmunson@us.ibm.com>
+References: <cover.1253272709.git.ebmunson@us.ibm.com>
+ <653aa659fd7970f7428f4eb41fa10693064e4daf.1253272709.git.ebmunson@us.ibm.com>
+ <08251014d2eb30e9016bab16404133f5c13beacf.1253272709.git.ebmunson@us.ibm.com>
+ <462331ca14e2ed47b20b047342e73b92559e1c5b.1253272709.git.ebmunson@us.ibm.com>
+ <be5687cbd44413416009466357c1ded6418cc163.1253272709.git.ebmunson@us.ibm.com>
+ <d8e315b04749f73765e61eb7e4cbbaed2b946dfd.1253272709.git.ebmunson@us.ibm.com>
+ <309744fd80915ce157aa90dbb807101f61b1f334.1253272709.git.ebmunson@us.ibm.com>
+Cc: rdunlap@xenotime.net, michael@ellerman.id.au, ralf@linux-mips.org,
+        wli@holomorphy.com, mel@csn.ul.ie, dhowells@redhat.com, arnd@arndb.de,
+        fengguang.wu@intel.com, shuber2@gmail.com, hugh.dickins@tiscali.co.uk,
+        zohar@us.ibm.com, hugh@veritas.com, mtk.manpages@gmail.com,
+        chris@zankel.net, linux-man@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-mips@linux-mips.org,
+        linux-parisc@vger.kernel.org, linux-arch@vger.kernel.org,
+        Eric B Munson <ebmunson@us.ibm.com>
+To: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <309744fd80915ce157aa90dbb807101f61b1f334.1253272709.git.ebmunson@us.ibm.com>
+In-Reply-To: <cover.1253272709.git.ebmunson@us.ibm.com>
+List-ID: <linux-parisc.vger.kernel.org>
 
-From: James Bottomley <jejb@external.hp.com>
+Even though mips does not support huge pages this flag needs to
+be defined here to keep the compiler happy.  This is because
+mips does not make use of mman-common.h, so any flags defined
+there and used in common code need to be added to mips's mman.h
+manually.
 
-xfs_buf.c includes what is essentially a hand rolled version of
-blk_rq_map_kern().  In order to work properly with the vmalloc buffers
-that xfs uses, this hand rolled routine must also implement the flushing
-API for vmap/vmalloc areas.
-
-Signed-off-by: James Bottomley <James.Bottomley@suse.de>
+Signed-off-by: Eric B Munson <ebmunson@us.ibm.com>
 ---
- fs/xfs/linux-2.6/xfs_buf.c |   20 ++++++++++++++++++++
- 1 files changed, 20 insertions(+), 0 deletions(-)
+ arch/mips/include/asm/mman.h |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
-diff --git a/fs/xfs/linux-2.6/xfs_buf.c b/fs/xfs/linux-2.6/xfs_buf.c
-index 965df12..320a6e4 100644
---- a/fs/xfs/linux-2.6/xfs_buf.c
-+++ b/fs/xfs/linux-2.6/xfs_buf.c
-@@ -1132,12 +1132,26 @@ xfs_buf_bio_end_io(
- 	xfs_buf_t		*bp = (xfs_buf_t *)bio->bi_private;
- 	unsigned int		blocksize = bp->b_target->bt_bsize;
- 	struct bio_vec		*bvec = bio->bi_io_vec + bio->bi_vcnt - 1;
-+	void			*vaddr = NULL;
-+	int			i;
+diff --git a/arch/mips/include/asm/mman.h b/arch/mips/include/asm/mman.h
+index e4d6f1f..c4f29da 100644
+--- a/arch/mips/include/asm/mman.h
++++ b/arch/mips/include/asm/mman.h
+@@ -46,6 +46,12 @@
+ #define MAP_LOCKED	0x8000		/* pages are locked */
+ #define MAP_POPULATE	0x10000		/* populate (prefault) pagetables */
+ #define MAP_NONBLOCK	0x20000		/* do not block on IO */
++/*
++ * This flag is included even though huge pages are not supported because
++ * the flag is defined in mman-common.h and used in common vm code but
++ * mman-common.h is not included here
++ */
++#define MAP_HUGETLB	0x080000
  
- 	xfs_buf_ioerror(bp, -error);
- 
-+	if (is_vmalloc_addr(bp->b_addr))
-+		for (i = 0; i < bp->b_page_count; i++)
-+			if (bvec->bv_page == bp->b_pages[i]) {
-+				vaddr = bp->b_addr + i*PAGE_SIZE;
-+				break;
-+			}
-+
- 	do {
- 		struct page	*page = bvec->bv_page;
- 
-+		if (is_vmalloc_addr(bp->b_addr)) {
-+			invalidate_kernel_dcache_addr(vaddr);
-+			vaddr -= PAGE_SIZE;
-+		}
-+
- 		ASSERT(!PagePrivate(page));
- 		if (unlikely(bp->b_error)) {
- 			if (bp->b_flags & XBF_READ)
-@@ -1202,6 +1216,9 @@ _xfs_buf_ioapply(
- 		bio->bi_end_io = xfs_buf_bio_end_io;
- 		bio->bi_private = bp;
- 
-+		if (is_vmalloc_addr(bp->b_addr))
-+			flush_kernel_dcache_addr(bp->b_addr);
-+
- 		bio_add_page(bio, bp->b_pages[0], PAGE_CACHE_SIZE, 0);
- 		size = 0;
- 
-@@ -1228,6 +1245,9 @@ next_chunk:
- 		if (nbytes > size)
- 			nbytes = size;
- 
-+		if (is_vmalloc_addr(bp->b_addr))
-+			flush_kernel_dcache_addr(bp->b_addr + PAGE_SIZE*map_i);
-+
- 		rbytes = bio_add_page(bio, bp->b_pages[map_i], nbytes, offset);
- 		if (rbytes < nbytes)
- 			break;
+ /*
+  * Flags for msync
 -- 
-1.6.3.3
+1.6.3.2
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
