@@ -1,25 +1,31 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH] PARISC: includecheck fix: signal.c
-Date: Wed, 23 Sep 2009 15:54:25 -0400
-Message-ID: <20090923195424.GH11961@bombadil.infradead.org>
-References: <1253626532.3784.17.camel@ht.satnam>
+Subject: Re: [PATCH 09/13] parisc: Remove useless altinstructions code
+	copied from x86.
+Date: Wed, 23 Sep 2009 15:55:40 -0400
+Message-ID: <20090923195540.GI11961@bombadil.infradead.org>
+References: <1253629347-23119-1-git-send-email-tabbott@ksplice.com> <1253629347-23119-10-git-send-email-tabbott@ksplice.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>
-To: Jaswinder Singh Rajput <jaswinder@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
+	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	linux-parisc@vger.kernel.org
+To: Tim Abbott <tabbott@ksplice.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1253626532.3784.17.camel@ht.satnam>
+In-Reply-To: <1253629347-23119-10-git-send-email-tabbott@ksplice.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Sep 22, 2009 at 07:05:32PM +0530, Jaswinder Singh Rajput wrote:
-> 
-> fix the following 'make includecheck' warning:
-> 
->   arch/parisc/kernel/signal.c: linux/compat.h is included more than once.
-> 
-> Signed-off-by: Jaswinder Singh Rajput <jaswinderrajput@gmail.com>
+On Tue, Sep 22, 2009 at 10:22:23AM -0400, Tim Abbott wrote:
+> Signed-off-by: Tim Abbott <tabbott@ksplice.com>
+> Cc: Kyle McMartin <kyle@mcmartin.ca>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: linux-parisc@vger.kernel.org
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
 
-Applied, thanks.
+Heh, I had a patch to use this, but I guess I never finished it, (to nop
+out some cache flushes and syncs on coherent architectures in the iommu
+code.) I'll add a hunk to bring it back if/when I ever submit that
+change.
+
+cheers, Kyle
