@@ -1,31 +1,49 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH 09/13] parisc: Remove useless altinstructions code
-	copied from x86.
-Date: Wed, 23 Sep 2009 15:55:40 -0400
-Message-ID: <20090923195540.GI11961@bombadil.infradead.org>
-References: <1253629347-23119-1-git-send-email-tabbott@ksplice.com> <1253629347-23119-10-git-send-email-tabbott@ksplice.com>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH 00/10] Add support for GCC's __builtin_unreachable()
+	and use it in BUG.
+Date: Thu, 24 Sep 2009 13:37:13 +1000
+Message-ID: <1253763433.7103.391.camel@pasglop>
+References: <4AA991C1.1050800@caviumnetworks.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	linux-parisc@vger.kernel.org
-To: Tim Abbott <tabbott@ksplice.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1253629347-23119-10-git-send-email-tabbott@ksplice.com>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mips@linux-mips.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
+	linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-s390@vger.kernel.org,
+	linux-am33-list@redhat.com, Helge Deller <deller@gmx.de>,
+	x86@kernel.org, Ingo Molnar <mingo@redhat.com>,
+	Mike Frysinger <vapier@gentoo.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	uclinux-dist-devel@blackfin.uclinux.org,
+	Thomas Gleixner <tglx@linutronix.de>, Richard Henderson <rth@twiddle.net>,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>,
+	linux-parisc@vger.kernel.org, ralf@linux-mips.org,
+	Kyle McMartin <kyle@mcmartin.ca>, linux-alpha@vger.kernel.org,
+	Martin Schwidefsky <schwidefsky@de.ibm.com>, linux390@de.ibm.com,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>
+To: David Daney <ddaney@caviumnetworks.com>
+Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <4AA991C1.1050800@caviumnetworks.com>
+List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
 
-On Tue, Sep 22, 2009 at 10:22:23AM -0400, Tim Abbott wrote:
-> Signed-off-by: Tim Abbott <tabbott@ksplice.com>
-> Cc: Kyle McMartin <kyle@mcmartin.ca>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: linux-parisc@vger.kernel.org
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+On Thu, 2009-09-10 at 16:54 -0700, David Daney wrote:
+> Starting with version 4.5, GCC has a new built-in function called
+> __builtin_unreachable().  The function tells the compiler that control
+> flow will never reach that point.  Currently we trick the compiler by
+> putting in for(;;); but this has the disadvantage that extra code is
+> emitted for an endless loop.  For an i386 kernel using
+> __builtin_unreachable() results in an allyesconfig that is nearly 4000
+> bytes smaller.
 
-Heh, I had a patch to use this, but I guess I never finished it, (to nop
-out some cache flushes and syncs on coherent architectures in the iommu
-code.) I'll add a hunk to bring it back if/when I ever submit that
-change.
+For the powerpc part:
 
-cheers, Kyle
+Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
