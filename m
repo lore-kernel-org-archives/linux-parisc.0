@@ -1,49 +1,161 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH 00/10] Add support for GCC's __builtin_unreachable()
-	and use it in BUG.
-Date: Thu, 24 Sep 2009 13:37:13 +1000
-Message-ID: <1253763433.7103.391.camel@pasglop>
-References: <4AA991C1.1050800@caviumnetworks.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-mips@linux-mips.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-	linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>,
-	"H. Peter Anvin" <hpa@zytor.com>, linux-s390@vger.kernel.org,
-	linux-am33-list@redhat.com, Helge Deller <deller@gmx.de>,
-	x86@kernel.org, Ingo Molnar <mingo@redhat.com>,
-	Mike Frysinger <vapier@gentoo.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	uclinux-dist-devel@blackfin.uclinux.org,
-	Thomas Gleixner <tglx@linutronix.de>, Richard Henderson <rth@twiddle.net>,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>,
-	linux-parisc@vger.kernel.org, ralf@linux-mips.org,
-	Kyle McMartin <kyle@mcmartin.ca>, linux-alpha@vger.kernel.org,
-	Martin Schwidefsky <schwidefsky@de.ibm.com>, linux390@de.ibm.com,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-To: David Daney <ddaney@caviumnetworks.com>
-Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <4AA991C1.1050800@caviumnetworks.com>
-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
+From: Tim Abbott <tabbott@ksplice.com>
+Subject: [PATCH v2 02/11] parisc: Clean up linker script using new linker script macros.
+Date: Thu, 24 Sep 2009 10:36:17 -0400
+Message-ID: <1253802986-8132-3-git-send-email-tabbott@ksplice.com>
+References: <1253802986-8132-1-git-send-email-tabbott@ksplice.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Tim Abbott <tabbott@ksplice.com>,
+	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	linux-parisc@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752876AbZIXOhI@vger.kernel.org>
+In-Reply-To: <1253802986-8132-1-git-send-email-tabbott@ksplice.com>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2009-09-10 at 16:54 -0700, David Daney wrote:
-> Starting with version 4.5, GCC has a new built-in function called
-> __builtin_unreachable().  The function tells the compiler that control
-> flow will never reach that point.  Currently we trick the compiler by
-> putting in for(;;); but this has the disadvantage that extra code is
-> emitted for an endless loop.  For an i386 kernel using
-> __builtin_unreachable() results in an allyesconfig that is nearly 4000
-> bytes smaller.
+This patch has the (likely harmless) side effect of moving
+.data.init_task inside the _edata.
 
-For the powerpc part:
+It also changes the alignment of .data.init_task from 16384 to
+THREAD_SIZE, which can in some configurations be larger than 16384.  I
+believe that this change fixes a potential bug on those
+configurations.
 
-Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Signed-off-by: Tim Abbott <tabbott@ksplice.com>
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
+---
+ arch/parisc/kernel/vmlinux.lds.S |   79 ++------------------------------------
+ 1 files changed, 4 insertions(+), 75 deletions(-)
+
+diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
+index aea1784..3fd66d9 100644
+--- a/arch/parisc/kernel/vmlinux.lds.S
++++ b/arch/parisc/kernel/vmlinux.lds.S
+@@ -77,13 +77,7 @@ SECTIONS
+ 	 */
+ 	. = ALIGN(PAGE_SIZE);
+ 	data_start = .;
+-	. = ALIGN(16);
+-	/* Exception table */
+-	__ex_table : {
+-		__start___ex_table = .;
+-		*(__ex_table)
+-		__stop___ex_table = .;
+-	}
++	EXCEPTION_TABLE(16)
+ 
+ 	NOTES
+ 
+@@ -94,23 +88,8 @@ SECTIONS
+ 		__stop___unwind = .;
+ 	}
+ 
+-	/* rarely changed data like cpu maps */
+-	. = ALIGN(16);
+-	.data.read_mostly : {
+-		*(.data.read_mostly)
+-	}
+-
+-	. = ALIGN(L1_CACHE_BYTES);
+ 	/* Data */
+-	.data : {
+-		DATA_DATA
+-		CONSTRUCTORS
+-	}
+-
+-	. = ALIGN(L1_CACHE_BYTES);
+-	.data.cacheline_aligned : {
+-		*(.data.cacheline_aligned)
+-	}
++	RW_DATA_SECTION(L1_CACHE_BYTES, PAGE_SIZE, THREAD_SIZE)
+ 
+ 	/* PA-RISC locks requires 16-byte alignment */
+ 	. = ALIGN(16);
+@@ -118,17 +97,6 @@ SECTIONS
+ 		*(.data.lock_aligned)
+ 	}
+ 
+-	/* nosave data is really only used for software suspend...it's here
+-	 * just in case we ever implement it
+-	 */
+-	. = ALIGN(PAGE_SIZE);
+-	__nosave_begin = .;
+-	.data_nosave : {
+-		*(.data.nosave)
+-	}
+-	. = ALIGN(PAGE_SIZE);
+-	__nosave_end = .;
+-
+ 	/* End of data section */
+ 	_edata = .;
+ 
+@@ -147,14 +115,6 @@ SECTIONS
+ 	}
+ 	__bss_stop = .;
+ 
+-
+-	/* assembler code expects init_task to be 16k aligned */
+-	. = ALIGN(16384);
+-	/* init_task */
+-	.data.init_task : {
+-		*(.data.init_task)
+-	}
+-
+ #ifdef CONFIG_64BIT
+ 	. = ALIGN(16);
+ 	/* Linkage tables */
+@@ -172,31 +132,8 @@ SECTIONS
+ 	/* reserve space for interrupt stack by aligning __init* to 16k */
+ 	. = ALIGN(16384);
+ 	__init_begin = .;
+-	.init.text : { 
+-		_sinittext = .;
+-		INIT_TEXT
+-		_einittext = .;
+-	}
+-	.init.data : {
+-		INIT_DATA
+-	}
+-	. = ALIGN(16);
+-	.init.setup : {
+-		__setup_start = .;
+-		*(.init.setup)
+-		__setup_end = .;
+-	}
+-	.initcall.init : {
+-		__initcall_start = .;
+-		INITCALLS
+-		__initcall_end = .;
+-	}
+-	.con_initcall.init : {
+-		__con_initcall_start = .;
+-		*(.con_initcall.init)
+-		__con_initcall_end = .;
+-	}
+-	SECURITY_INIT
++	INIT_TEXT_SECTION(16384)
++	INIT_DATA_SECTION(16)
+ 
+ 	/* alternate instruction replacement.  This is a mechanism x86 uses
+ 	 * to detect the CPU type and replace generic instruction sequences
+@@ -222,14 +159,6 @@ SECTIONS
+ 	.exit.data : {
+ 		EXIT_DATA
+ 	}
+-#ifdef CONFIG_BLK_DEV_INITRD
+-	. = ALIGN(PAGE_SIZE);
+-	.init.ramfs : {
+-		__initramfs_start = .;
+-		*(.init.ramfs)
+-		__initramfs_end = .;
+-	}
+-#endif
+ 
+ 	PERCPU(PAGE_SIZE)
+ 	. = ALIGN(PAGE_SIZE);
+-- 
+1.6.3.3
