@@ -1,57 +1,57 @@
-From: Tim Abbott <tabbott@ksplice.com>
-Subject: [PATCH v2 03/11] parisc: Remove useless altinstructions code copied from x86.
-Date: Thu, 24 Sep 2009 10:36:18 -0400
-Message-ID: <1253802986-8132-4-git-send-email-tabbott@ksplice.com>
-References: <1253802986-8132-1-git-send-email-tabbott@ksplice.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Tim Abbott <tabbott@ksplice.com>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	linux-parisc@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [PATCH] arch/parisc: correct use of SHF_ALLOC
+Date: Sun, 27 Sep 2009 14:21:50 -0400
+Message-ID: <20090927182149.GA23464@hiauly1.hia.nrc.ca>
+References: <Pine.LNX.4.64.0908042226231.3737@ask.diku.dk>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+To: Julia Lawall <julia@diku.dk>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1253802986-8132-1-git-send-email-tabbott@ksplice.com>
+In-Reply-To: <Pine.LNX.4.64.0908042226231.3737@ask.diku.dk>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Tim Abbott <tabbott@ksplice.com>
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
----
- arch/parisc/kernel/vmlinux.lds.S |   25 -------------------------
- 1 files changed, 0 insertions(+), 25 deletions(-)
+Hi Kyle,
 
-diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
-index 3fd66d9..775be27 100644
---- a/arch/parisc/kernel/vmlinux.lds.S
-+++ b/arch/parisc/kernel/vmlinux.lds.S
-@@ -135,31 +135,6 @@ SECTIONS
- 	INIT_TEXT_SECTION(16384)
- 	INIT_DATA_SECTION(16)
- 
--	/* alternate instruction replacement.  This is a mechanism x86 uses
--	 * to detect the CPU type and replace generic instruction sequences
--	 * with CPU specific ones.  We don't currently do this in PA, but
--	 * it seems like a good idea...
--	 */
--	. = ALIGN(4);
--	.altinstructions : {
--		__alt_instructions = .;
--		*(.altinstructions)
--		__alt_instructions_end = .; 
--	} 
--	.altinstr_replacement : {
--		*(.altinstr_replacement)
--	} 
--
--	/* .exit.text is discard at runtime, not link time, to deal with references
--	 *  from .altinstructions and .eh_frame
--	 */
--	.exit.text : {
--		EXIT_TEXT
--	}
--	.exit.data : {
--		EXIT_DATA
--	}
+I noticed today that this change is not in 2.6.31.1.
+
+Dave
+
+On Tue, 04 Aug 2009, Julia Lawall wrote:
+
+> From: Julia Lawall <julia@diku.dk>
+> 
+> SHF_ALLOC is suitable for testing against the sh_flags field, not the
+> sh_type field.
+> 
+> Signed-off-by: Julia Lawall <julia@diku.dk>
+> 
+> ---
+>  arch/parisc/kernel/module.c         |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
+> index ef5caf2..c904817 100644
+> --- a/arch/parisc/kernel/module.c
+> +++ b/arch/parisc/kernel/module.c
+> @@ -853,7 +853,7 @@ int module_finalize(const Elf_Ehdr *hdr,
+>  	 * ourselves */
+>  	for (i = 1; i < hdr->e_shnum; i++) {
+>  		if(sechdrs[i].sh_type == SHT_SYMTAB
+> -		   && (sechdrs[i].sh_type & SHF_ALLOC)) {
+> +		   && (sechdrs[i].sh_flags & SHF_ALLOC)) {
+>  			int strindex = sechdrs[i].sh_link;
+>  			/* FIXME: AWFUL HACK
+>  			 * The cast is to drop the const from
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
