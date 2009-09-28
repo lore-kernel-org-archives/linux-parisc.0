@@ -1,28 +1,35 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH 06/10] parisc: Convert BUG() to use unreachable()
-Date: Sun, 27 Sep 2009 23:20:19 -0400
-Message-ID: <20090928032019.GJ11961@bombadil.infradead.org>
-References: <4AA991C1.1050800@caviumnetworks.com> <1252627011-2933-6-git-send-email-ddaney@caviumnetworks.com>
+Subject: Re: agp: parisc-agp.c - use correct page_mask function
+Date: Sun, 27 Sep 2009 23:24:16 -0400
+Message-ID: <20090928032416.GL11961@bombadil.infradead.org>
+References: <4ABFD560.9080302@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux-kernel@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: David Daney <ddaney@caviumnetworks.com>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752873AbZI1DUW@vger.kernel.org>
-In-Reply-To: <1252627011-2933-6-git-send-email-ddaney@caviumnetworks.com>
-List-ID: <linux-kernel.vger.kernel.org>
+Cc: David Woodhouse <David.Woodhouse@intel.com>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	David Airlie <airlied@linux.ie>
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <4ABFD560.9080302@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Sep 10, 2009 at 04:56:47PM -0700, David Daney wrote:
-> Use the new unreachable() macro instead of for(;;);
-> 
-> Signed-off-by: David Daney <ddaney@caviumnetworks.com>
-> CC: Kyle McMartin <kyle@mcmartin.ca>
-> CC: Helge Deller <deller@gmx.de>
-> CC: linux-parisc@vger.kernel.org
+On Sun, Sep 27, 2009 at 11:13:04PM +0200, Helge Deller wrote:
+> This commit:
+>
+> Commit 2a4ceb6d3e6a566cb4a9dc8f974177f031d27cd7
+> Author: David Woodhouse <David.Woodhouse@intel.com>
+> Date:   Mon Jul 27 10:27:29 2009 +0100
+>     agp: Switch mask_memory() method to take address argument again, not page
+>
+> broke the parisc AGP driver (again). This patch fixes it.
+>
+> Signed-off-by: Helge Deller <deller@gmx.de>
+>
 
-Since the dependent part of this patch seems to have missed the merge
-window, I guess we'll sit on this until next round?
+Acked-by: Kyle McMartin <kyle@mcmartin.ca>
 
---Kyle
+airlied, please apply.
+
+Thanks, Kyle
