@@ -1,30 +1,24 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH] parisc: rename parisc's vmalloc_start to
-	parisc_vmalloc_start
-Date: Sun, 27 Sep 2009 23:28:06 -0400
-Message-ID: <20090928032806.GM11961@bombadil.infradead.org>
-References: <4ABFD97F.7020004@gmx.de>
+Subject: Re: [PATCH] arch/parisc: correct use of SHF_ALLOC
+Date: Sun, 27 Sep 2009 23:29:56 -0400
+Message-ID: <20090928032956.GN11961@bombadil.infradead.org>
+References: <Pine.LNX.4.64.0908042226231.3737@ask.diku.dk> <20090927182149.GA23464@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4ABFD97F.7020004@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Cc: Julia Lawall <julia@diku.dk>, Helge Deller <deller@gmx.de>,
+	Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752936AbZI1D36@vger.kernel.org>
+In-Reply-To: <20090927182149.GA23464@hiauly1.hia.nrc.ca>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Sep 27, 2009 at 11:30:39PM +0200, Helge Deller wrote:
-> building kernel 2.6.32(pre), gives this compiler warning:
-> /linus-linux-2.6/mm/vmalloc.c: In function 'pcpu_get_vm_areas':
-> /linus-linux-2.6/mm/vmalloc.c:2104: warning: 'vmalloc_start' is used uninitialized in this function
->
-> The reason is, that the code in mm/vmalloc defines a local variable called
-> vmalloc_start, which is already defined as global variable in parisc's code.
->
-> To avoid this kind of problems in future, I suggest to rename the parisc variable
-> to parisc_vmalloc_start.
->
-> Signed-off-by: Helge Deller <deller@gmx.de>
+On Sun, Sep 27, 2009 at 02:21:50PM -0400, John David Anglin wrote:
+> Hi Kyle,
+> 
+> I noticed today that this change is not in 2.6.31.1.
+> 
 
-applied.
+Dunno what happened... I must have updated patchwork and missed it in a
+rebase locally.
