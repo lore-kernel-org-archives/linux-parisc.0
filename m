@@ -1,28 +1,72 @@
 From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git] parisc: Changes to ref refs/heads/fixes
-Date: Mon, 28 Sep 2009 04:26:18 GMT
-Message-ID: <200909280426.n8S4QIGu013447@hera.kernel.org>
+Subject: What's in parisc-2.6.git
+Date: Mon, 28 Sep 2009 16:25:22 +0000
+Message-ID: <20090928162522.GA22368@hera.kernel.org>
+Reply-To: kyle@mcmartin.ca
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-kernel@vger.kernel.org, deller@gmx.de
 To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Rebased ref, commits from common ancestor:
-commit 8cf06fc9bd660c28afea4115fd91a2cc4978eb54
-Author: Helge Deller <deller@gmx.de>
-Date:   Mon Sep 28 00:39:47 2009 +0200
+Rebased on top of v2.6.32-rc1, fixed tracehook. Seems to build alright
+on my pa8800 in a few different configs. Is anything missing?
 
-    parisc: Fix linker script breakage.
-    
-    Signed-off-by: Helge Deller <deller@gmx.de>
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+regards, Kyle
 
-commit 9609bfec6d869bc0d82ccfb909d5e72b7002d813
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Tue Aug 4 14:54:41 2009 +0200
+The following changes since commit 17d857be649a21ca90008c6dc425d849fa83db5c:
+  Linus Torvalds (1):
+        Linux 2.6.32-rc1
 
-    parisc: convert to asm-generic/hardirq.h
-    
-    Signed-off-by: Christoph Hellwig <hch@lst.de>
-    Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+are available in the git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/kyle/parisc-2.6.git parisc
+
+Christoph Hellwig (1):
+      parisc: convert to asm-generic/hardirq.h
+
+Helge Deller (2):
+      parisc: rename parisc's vmalloc_start to parisc_vmalloc_start
+      parisc: Fix linker script breakage.
+
+James Bottomley (1):
+      parisc: add me to Maintainers
+
+Jaswinder Singh Rajput (1):
+      parisc: includecheck fix: signal.c
+
+Julia Lawall (1):
+      parisc: correct use of SHF_ALLOC
+
+Kyle McMartin (7):
+      parisc: tracehook_report_syscall
+      parisc: tracehook_signal_handler
+      parisc: add missing TI_TASK macro in syscall.S
+      parisc: split syscall_trace into two halves
+      parisc: stop using task->ptrace for {single,block}step flags
+      parisc: add skeleton syscall.h
+      parisc: HAVE_ARCH_TRACEHOOK
+
+Tim Abbott (1):
+      parisc: Make THREAD_SIZE available to assembly files and linker scripts.
+
+ MAINTAINERS                           |    1 +
+ arch/parisc/Kconfig                   |    1 +
+ arch/parisc/include/asm/fixmap.h      |    4 +-
+ arch/parisc/include/asm/hardirq.h     |   20 +---------------
+ arch/parisc/include/asm/ptrace.h      |    5 +++-
+ arch/parisc/include/asm/syscall.h     |   40 +++++++++++++++++++++++++++++++
+ arch/parisc/include/asm/thread_info.h |   14 +++++++----
+ arch/parisc/kernel/asm-offsets.c      |    4 +-
+ arch/parisc/kernel/entry.S            |   21 ++++++++--------
+ arch/parisc/kernel/irq.c              |    5 ----
+ arch/parisc/kernel/module.c           |    2 +-
+ arch/parisc/kernel/ptrace.c           |   42 ++++++++++++++++----------------
+ arch/parisc/kernel/signal.c           |    5 +++-
+ arch/parisc/kernel/syscall.S          |   22 +++++++++++------
+ arch/parisc/kernel/vmlinux.lds.S      |   10 ++++++++
+ arch/parisc/mm/init.c                 |   11 ++++----
+ 16 files changed, 127 insertions(+), 80 deletions(-)
+ create mode 100644 arch/parisc/include/asm/syscall.h
