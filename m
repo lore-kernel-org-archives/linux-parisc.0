@@ -1,48 +1,33 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: linux-next: manual merge of the parisc tree with Linus' tree
-Date: Sat, 10 Oct 2009 12:23:01 +1100
-Message-ID: <20091010122301.620a98a7.sfr@canb.auug.org.au>
-References: <20091009112158.7d37ed23.sfr@canb.auug.org.au>
-	<20091009183914.GG11702@bombadil.infradead.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Sat__10_Oct_2009_12_23_01_+1100_F8z1B7MgUfStaTLB"
-Cc: linux-parisc@vger.kernel.org, linux-next@vger.kernel.org,
-	linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>
-To: Kyle McMartin <kyle@mcmartin.ca>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1761574AbZJJBXo@vger.kernel.org>
-In-Reply-To: <20091009183914.GG11702@bombadil.infradead.org>
-List-ID: <linux-kernel.vger.kernel.org>
+From: Huang Weiyi <weiyi.huang@gmail.com>
+Subject: [PATCH] parisc: remove duplicated #include
+Date: Sat, 10 Oct 2009 14:56:45 +0800
+Message-ID: <1255157805-1840-1-git-send-email-weiyi.huang@gmail.com>
+Cc: linux-parisc@vger.kernel.org, Huang Weiyi <weiyi.huang@gmail.com>
+To: kyle@mcmartin.ca
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Signature=_Sat__10_Oct_2009_12_23_01_+1100_F8z1B7MgUfStaTLB
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Remove duplicated #include('s) in
+  arch/parisc/kernel/signal.c
 
-Hi Kyle,
+Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
+---
+ arch/parisc/kernel/signal.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-On Fri, 9 Oct 2009 14:39:14 -0400 Kyle McMartin <kyle@mcmartin.ca> wrote:
->
-> Sorry, forgot to push out a new #next. Should be sorted now.
+diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
+index e8467e4..fb37ac5 100644
+--- a/arch/parisc/kernel/signal.c
++++ b/arch/parisc/kernel/signal.c
+@@ -26,7 +26,6 @@
+ #include <linux/stddef.h>
+ #include <linux/compat.h>
+ #include <linux/elf.h>
+-#include <linux/tracehook.h>
+ #include <asm/ucontext.h>
+ #include <asm/rt_sigframe.h>
+ #include <asm/uaccess.h>
+-- 
+1.6.1.3
 
-No worries, thanks.
-
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
-
---Signature=_Sat__10_Oct_2009_12_23_01_+1100_F8z1B7MgUfStaTLB
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAkrP4fUACgkQjjKRsyhoI8xh1QCfSBU/CwNHttMRpAKL5pd0/FMQ
-WY0AoKdfzJT2wZSFOOwtrr6eVhbGicg0
-=3eoc
------END PGP SIGNATURE-----
-
---Signature=_Sat__10_Oct_2009_12_23_01_+1100_F8z1B7MgUfStaTLB--
