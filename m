@@ -1,75 +1,73 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: poll(), illegal instruction and crash on smp kernel
-Date: Thu, 15 Oct 2009 11:48:51 -0400
-Message-ID: <119aab440910150848y1fe3464bq30b4ae1bb44d23ac@mail.gmail.com>
-References: <4AD649BC.3080905@gmx.de>
+From: Julia Lawall <julia@diku.dk>
+Subject: [PATCH 3/14] sound/parisc: Move dereference after NULL test
+Date: Sat, 17 Oct 2009 08:33:47 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0910170833240.9213@ask.diku.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc <linux-parisc@vger.kernel.org>,
-	John David Anglin <dave.anglin@nrc.ca>,
-	Kyle McMartin <kyle@mcmartin.ca>
-To: Helge Deller <deller@gmx.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Kyle McMartin <kyle@mcmartin.ca>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.de>, linux-parisc@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.or
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4AD649BC.3080905@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Oct 14, 2009 at 5:59 PM, Helge Deller <deller@gmx.de> wrote:
-> Program received signal SIGILL, Illegal instruction.
-> [Switching to Thread 0x8001 (LWP 22707)]
-> 0x405e06fc in poll () from /lib/libc.so.6
-> (gdb) bt
-> #0 =A00x405e06fc in poll () from /lib/libc.so.6
-> #1 =A00x41bb45a0 in __pthread_manager () from /lib/libpthread.so.0
-> #2 =A00x41bb4e4c in __pthread_manager_event () from /lib/libpthread.s=
-o.0
-> #3 =A00x405eb340 in clone () from /lib/libc.so.6
-> #4 =A00x00000010 in ?? ()
-> #5 =A00x00000010 in ?? ()
-> Backtrace stopped: previous frame identical to this frame (corrupt st=
-ack?)
-> (gdb)
+From: Julia Lawall <julia@diku.dk>
 
-If this happens again please provide the /proc/$PID/maps, it's
-invaluable to mapping that libc address to an instruction.
+If the NULL test on h is needed in snd_harmony_mixer_init, then the
+dereference should be after the NULL test.
 
-> dmesg shows:
->
-> [557116.676000] User Fault on Kernel Space pid=3D22910 command=3D'kon=
-queror'
+Actually, there is a sequence of calls: snd_harmony_create, then
+snd_harmony_pcm_init, and then snd_harmony_mixer_init.  snd_harmony_create
+initializes h, but may indeed leave it as NULL.  There was no NULL test at
+the beginning of snd_harmony_pcm_init, so I have added one.  The NULL test
+in snd_harmony_mixer_init is then not necessary, but in case the ordering
+of the calls changes, I have left it, and moved the dereference after it.
 
-That's correct we tried to read kernel space.
+A simplified version of the semantic match that detects this problem is as
+follows (http://coccinelle.lip6.fr/):
 
-build-tools/disasm says the faulting instruction is:
-   0:   40 51 bc c8     ldb 1e64(sr2,rp),r17
+// <smpl>
+@match exists@
+expression x, E;
+identifier fld;
+@@
 
-I would have expect a SIGSEGV for that (trying to read from kernel
-space sr2) instruction, but perhaps we deliver SIGILL in that case.
+* x->fld
+  ... when != \(x = E\|&x\)
+* x == NULL
+// </smpl>
 
-> [557116.676000] IASQ: 00001283 00001283 IAOQ: 0070a703 0070a707
-> [557116.676000] =A0IIR: 4051bcc8 =A0 =A0ISR: 00000000 =A0IOR: 405e254=
-3
-> [557116.676000] =A0CPU: =A0 =A0 =A0 =A01 =A0 CR30: 8fed4000 CR31: fff=
-fffff
-> [557116.676000] =A0ORIG_R28: 00000000
-> [557116.676000] =A0IAOQ[0]: 0070a703
-> [557116.676000] =A0IAOQ[1]: 0070a707
-> [557116.676000] =A0RP(r2): 405e06df
->
-> Does this sound familiar to anybody here?
-> Does this backtrace help?
+Signed-off-by: Julia Lawall <julia@diku.dk>
 
-No idea, but the instruction "4051bcc8" (see IIR in dump) doesn't
-exist in libc.so.6 for 2.9-27. Something corrupted memory, and it
-corrupted a read-only .text mapping. The only thing that can do that
-is the kernel.
+---
+ sound/parisc/harmony.c              |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
-This is pretty much 100% a kernel bug?
-
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/parisc/harmony.c b/sound/parisc/harmony.c
+index e924492..f47f9e2 100644
+--- a/sound/parisc/harmony.c
++++ b/sound/parisc/harmony.c
+@@ -624,6 +624,9 @@ snd_harmony_pcm_init(struct snd_harmony *h)
+ 	struct snd_pcm *pcm;
+ 	int err;
+ 
++	if (snd_BUG_ON(!h))
++		return -EINVAL;
++
+ 	harmony_disable_interrupts(h);
+ 	
+    	err = snd_pcm_new(h->card, "harmony", 0, 1, 1, &pcm);
+@@ -865,11 +868,12 @@ snd_harmony_mixer_reset(struct snd_harmony *h)
+ static int __devinit
+ snd_harmony_mixer_init(struct snd_harmony *h)
+ {
+-	struct snd_card *card = h->card;
++	struct snd_card *card;
+ 	int idx, err;
+ 
+ 	if (snd_BUG_ON(!h))
+ 		return -EINVAL;
++	card = h->card;
+ 	strcpy(card->mixername, "Harmony Gain control interface");
+ 
+ 	for (idx = 0; idx < HARMONY_CONTROLS; idx++) {
