@@ -1,76 +1,60 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: add CALLER_ADDR{0-6} macros
-Date: Sun, 25 Oct 2009 22:48:36 +0100
-Message-ID: <20091025214836.GA15038@p100.box>
+Subject: Out of order unwind entry warning
+Date: Mon, 26 Oct 2009 23:21:20 +0100
+Message-ID: <4AE620E0.9040809@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
-	Randolph Chung <tausq@debian.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: linux-parisc <linux-parisc@vger.kernel.org>,
+	Carlos O'Donell <carlos@systemhalted.org>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	Randolph Chung <randolph@tausq.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+I started to look into the problem why we get the
+> WARNING: Out of order unwind entry!
+warning messages at kernel bootup in dmesg.
 
+It's related to a binutils/linker bug, that ld does not correctly
+removes unlink information for unused weak symbols, which have been
+replaced by their non-weak ones.
 
-diff --git a/arch/parisc/include/asm/ftrace.h b/arch/parisc/include/asm/ftrace.h
-index 2fa05dd..72c0faf 100644
---- a/arch/parisc/include/asm/ftrace.h
-+++ b/arch/parisc/include/asm/ftrace.h
-@@ -20,6 +20,20 @@ struct ftrace_ret_stack {
-  * Defined in entry.S
-  */
- extern void return_to_handler(void);
-+
-+
-+extern unsigned long return_address(unsigned int);
-+
-+#define HAVE_ARCH_CALLER_ADDR
-+
-+#define CALLER_ADDR0 ((unsigned long)__builtin_return_address(0))
-+#define CALLER_ADDR1 return_address(1)
-+#define CALLER_ADDR2 return_address(2)
-+#define CALLER_ADDR3 return_address(3)
-+#define CALLER_ADDR4 return_address(4)
-+#define CALLER_ADDR5 return_address(5)
-+#define CALLER_ADDR6 return_address(6)
-+
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _ASM_PARISC_FTRACE_H */
-diff --git a/arch/parisc/kernel/unwind.c b/arch/parisc/kernel/unwind.c
-index 69dad5a..6c631bf 100644
---- a/arch/parisc/kernel/unwind.c
-+++ b/arch/parisc/kernel/unwind.c
-@@ -417,3 +429,31 @@ int unwind_to_user(struct unwind_frame_info *info)
- 
- 	return ret;
- }
-+
-+unsigned long return_address(unsigned int level)
-+{
-+	struct unwind_frame_info info;
-+	struct pt_regs r;
-+	unsigned long sp;
-+
-+	/* initialize unwind info */
-+	asm volatile ("copy %%r30, %0" : "=r"(sp));
-+	memset(&r, 0, sizeof(struct pt_regs));
-+	r.iaoq[0] = (unsigned long) current_text_addr();
-+	r.gr[2] = (unsigned long) __builtin_return_address(0);
-+	r.gr[30] = sp;
-+	unwind_frame_init(&info, current, &r);
-+
-+	/* unwind stack */
-+	++level;
-+	do {
-+		if (unwind_once(&info) < 0 || info.ip == 0)
-+			return 0;
-+		if (!__kernel_text_address(info.ip)) {
-+			return 0;
-+		}
-+	} while (info.ip && level--);
-+
-+	return info.ip;
-+}
-+
+In my kernel I could track it down to 2 symbols:
+- arch_mod_section_prepend()  from kernel/module.c, and
+- save_stack_trace_tsk().
+
+Here is the extract of the readelf output on vmlinux:
+...
+<inb>: [0x1011fbd4-0x1011fc48]
+         Entry_GR=1 Save_SP Save_RP Total_frame_size=8
+<arch_mod_section_prepend>: [0x1011fc4c-0x1011fc74]
+         Entry_GR=1 Save_SP Total_frame_size=8
+<arch_mod_section_prepend>: [0x1011fc4c-0x10167cf4]
+         Entry_GR=1 Save_SP Total_frame_size=8
+<module_arch_cleanup>: [0x1011fc78-0x1011fcb8]
+         Entry_GR=2 Save_SP Save_RP Total_frame_size=8
+...
+
+same for "save_stack_trace_tsk":
+
+<dump_trace>: [0x10120834-0x10120950]
+         Entry_GR=7 Save_SP Save_RP Total_frame_size=80
+<save_stack_trace_tsk>: [0x10120954-0x101209a4]
+         Entry_GR=2 Save_SP Save_RP Total_frame_size=8
+<save_stack_trace_tsk>: [0x10120954-0x1015c7a8]
+         Entry_GR=2 Save_SP Save_RP Total_frame_size=8
+<save_stack_trace>: [0x101209a8-0x10120a04]
+         Entry_GR=2 Save_SP Save_RP Total_frame_size=8
+
+as you can see, both functions (weak and non-weak) are in the
+unwind section, although the functions were only linked
+once each into the vmlinux binary.
+
+That said, maybe someone of you with binutils/ld knowledge have
+some idea or hint how to fix this (aka drop the weak entry completely
+from the unwind section) ?
+If not, I'll continue to dig into the binutils sources (although
+this takes time, as I'm just starting with this)...
+
+Helge
