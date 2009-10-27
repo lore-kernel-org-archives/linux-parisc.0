@@ -1,33 +1,62 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: Out of order unwind entry warning
-Date: Mon, 26 Oct 2009 22:24:51 -0400
-Message-ID: <20091027022451.GT11702@bombadil.infradead.org>
-References: <4AE620E0.9040809@gmx.de> <20091026234125.GS11702@bombadil.infradead.org> <4AE651DF.1060009@tausq.org>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [PATCH] parisc: add CALLER_ADDR{0-6} macros
+Date: Tue, 27 Oct 2009 12:49:49 +0800
+Message-ID: <4AE67BED.8040705@tausq.org>
+References: <20091025214836.GA15038@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	Carlos O'Donell <carlos@systemhalted.org>,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>
-To: Randolph Chung <randolph@tausq.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4AE651DF.1060009@tausq.org>
+In-Reply-To: <20091025214836.GA15038@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Oct 27, 2009 at 09:50:23AM +0800, Randolph Chung wrote:
->> Looks like you did some good sleuthing... Although... I notice that
->> ia64 doesn't seem to bother to do this sanity check on the unwind table.
->>
->> tausq, should we just drop it in ours too? I can't see any evidence ia64
->> does anything differently in bfd that would circumvent this kind of
->> issue.
->
-> IIRC we do a binary search for the unwind entry. If the entries are not  
-> sorted, the binary search will give wrong results.
->
+Helge,
 
-Indeed, would be interesting to add this sanity check to ia64 and see
-what happens.
+> +unsigned long return_address(unsigned int level)
+> +{
+> +	struct unwind_frame_info info;
+> +	struct pt_regs r;
+> +	unsigned long sp;
+> +
+> +	/* initialize unwind info */
+> +	asm volatile ("copy %%r30, %0" : "=r"(sp));
+> +	memset(&r, 0, sizeof(struct pt_regs));
+> +	r.iaoq[0] = (unsigned long) current_text_addr();
+> +	r.gr[2] = (unsigned long) __builtin_return_address(0);
+> +	r.gr[30] = sp;
+> +	unwind_frame_init(&info, current, &r);
+> +
+> +	/* unwind stack */
+> +	++level;
+> +	do {
+> +		if (unwind_once(&info) < 0 || info.ip == 0)
+> +			return 0;
+> +		if (!__kernel_text_address(info.ip)) {
+> +			return 0;
+> +		}
+> +	} while (info.ip && level--);
+> +
+> +	return info.ip;
+> +}
+> +
 
-regards, Kyle
+Can you show an objdump of this function once it is compiled? I suspect 
+the stack pointer initialization here is not reliable.
+
+Ideally unwind_frame_init is called with the frame address in gr[30]. 
+With a big struct like pt_regs on the stack, the sp initialization might 
+be quite far from the actual frame address.
+
+The unwind_once() code uses like heuristics to try to recover from 
+inaccurate stack pointers (by aligning and stepping the frame 64 bytes 
+at a time) but that is really a brute force guess.
+
+I realize I used a similar construct in traps.c, but even there I think 
+it doesn't work reliably.
+
+Maybe somebody else on the list (Dave? :) can suggest a better way to do 
+this.
+
+randolph
