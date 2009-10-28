@@ -1,79 +1,45 @@
 From: Helge Deller <deller@gmx.de>
 Subject: Re: Out of order unwind entry warning
-Date: Wed, 28 Oct 2009 22:42:20 +0100
-Message-ID: <4AE8BABC.80108@gmx.de>
-References: <20091027231909.74AEF4E0B@hiauly1.hia.nrc.ca>
+Date: Wed, 28 Oct 2009 23:00:03 +0100
+Message-ID: <4AE8BEE3.1040706@gmx.de>
+References: <20091027231909.74AEF4E0B@hiauly1.hia.nrc.ca> <4AE8BABC.80108@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Cc: linux-parisc@vger.kernel.org, carlos@systemhalted.org,
 	randolph@tausq.org
 To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20091027231909.74AEF4E0B@hiauly1.hia.nrc.ca>
+In-Reply-To: <4AE8BABC.80108@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 10/28/2009 12:19 AM, John David Anglin wrote:
->>
->> I started to look into the problem why we get the
->>> WARNING: Out of order unwind entry!
->> warning messages at kernel bootup in dmesg.
->>
->> It's related to a binutils/linker bug, that ld does not correctly
->> removes unlink information for unused weak symbols, which have been
->> replaced by their non-weak ones.
->>
->> In my kernel I could track it down to 2 symbols:
->> - arch_mod_section_prepend()  from kernel/module.c, and
->> - save_stack_trace_tsk().
->>
->> Here is the extract of the readelf output on vmlinux:
->> ...
->> <inb>: [0x1011fbd4-0x1011fc48]
->>           Entry_GR=1 Save_SP Save_RP Total_frame_size=8
->> <arch_mod_section_prepend>: [0x1011fc4c-0x1011fc74]
->>           Entry_GR=1 Save_SP Total_frame_size=8
->> <arch_mod_section_prepend>: [0x1011fc4c-0x10167cf4]
->>           Entry_GR=1 Save_SP Total_frame_size=8
->> <module_arch_cleanup>: [0x1011fc78-0x1011fcb8]
->>           Entry_GR=2 Save_SP Save_RP Total_frame_size=8
->> ...
->
-> It might be useful to know the actual location arch_mod_section_prepend
-> and whether it follows inb in its .o.  From my understanding of things,
-> it shouldn't be necessary to remove the unwind info for unused weak
-> symbols if they aren't garbage collected.  A simple testcase would
-> be helpful.
+Hi Dave,
 
-arch_mod_section_prepend() is here:
-* arch/parisc/kernel/module.c  - non-weak function
-* kernel/module.c - weak function
+> On 10/28/2009 12:19 AM, John David Anglin wrote:
+>> From my understanding of things, it shouldn't be necessary to remove the
+>>unwind info for unused weak  symbols if they aren't garbage collected.
 
-inb() is not defined in arch/parisc/kernel/module.c.
-But during kernel build, all object files in arch/parisc/kernel/*.o are
-linked together into arch/parisc/kernel/built-in.o:
+What do you mean with "garbage collected" ?  "dropped from the executable" ?
+AFAICS, the weak function was completely dropped from the vmlinux file.
 
-Running readelf: "hppa-linux-readelf -u arch/parisc/kernel/built-in.o" gives:
-...
-<inb>: [0x0-0xe8]
-         Entry_GR=1 Save_SP Save_RP Total_frame_size=8
-<arch_mod_section_prepend>: [0x0-0x50]
-         Entry_GR=1 Save_SP Total_frame_size=8
-<module_arch_cleanup>: [0x0-0x80]
-         Entry_GR=2 Save_SP Save_RP Total_frame_size=8
+Some more info:
+The unwind function in the parisc linux kernel walks the (sorted!) unwind list.
+If one entry is wrong this can lead to incorrect unwinding.
 
-So, yes, the non-weak arch_mod_section_prepend() function follows the inb()
-function in the object file (and in the final vmlinux file as well).
+In this case:
 
->> <arch_mod_section_prepend>: [0x1011fc4c-0x1011fc74]
->>           Entry_GR=1 Save_SP Total_frame_size=8
->> <arch_mod_section_prepend>: [0x1011fc4c-0x10167cf4]
->>           Entry_GR=1 Save_SP Total_frame_size=8
+<arch_mod_section_prepend>: [0x1011fc4c-0x1011fc74]   - non-weak function
+           Entry_GR=1 Save_SP Total_frame_size=8
+<arch_mod_section_prepend>: [0x1011fc4c-0x10167cf4]  - weak function
+           Entry_GR=1 Save_SP Total_frame_size=8
+<module_arch_cleanup>: [0x1011fc78-0x1011fcb8]
+           Entry_GR=2 Save_SP Save_RP Total_frame_size=8
 
-The first entry is the non-weak one.
-The second entry is the remaining part of the weak (dropped) function.
-It seems only the start address was changed to the start address of the non-weak
-function, while the end address has been kept unchanged.
-[0x1011fc4c-0x10167cf4] would mean, that the weak function would be 295KB in size...?
+I see a those options:
+a) drop the second (weak) unwind info entry
+b) for the weak function, use the same start- and end-addresses as the non-weak entry.
+
+Option b) would probably need some adjustments to the existing parisc
+specific unwind function.
 
 Helge
