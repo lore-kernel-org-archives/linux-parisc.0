@@ -1,26 +1,28 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: Out of order unwind entry warning
-Date: Mon, 2 Nov 2009 18:23:23 -0500 (EST)
-Message-ID: <20091102232324.AAFFF4E38@hiauly1.hia.nrc.ca>
-References: <4AEF6294.5000705@gmx.de>
+From: Marek Denis <marek@octogan.net>
+Subject: hanging kernel - HPMC problem
+Date: Tue, 03 Nov 2009 11:07:09 +0100
+Message-ID: <4AF000CD.1010007@octogan.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org,
-	carlos@systemhalted.org, randolph@tausq.org
-To: deller@gmx.de (Helge Deller)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4AEF6294.5000705@gmx.de> from "Helge Deller" at Nov 2, 2009 11:52:04 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On 11/02/2009 11:20 PM, Helge Deller wrote:
-> sadly I answered too early....
-> With 64bit kernel I get those unwind warnings again with nearly all kernel modules now:
-> WARNING: Out of order unwind entry! 0000000000d4ad40 and 0000000000d4ad50
+Hello all,
 
-What's readelf say?
+I am encountering probably quite typical problem with my PA-RISC server. 
+Unfortunately, I couldn't find any solution on google.
+I am trying to configure kernel on HPPA machine with old PA8000 (with 
+300MHz clock) processor.
+I managed to install Debian lenny on that machine, configured most of 
+the services, owever while trying to recompile the kernel I alwas get 
+HPMC bus timeout during the boot. Generic kernel works perfectly, would 
+you give me any hints where should I look for a mistake?
+I suppose this is only kernel configuration issue.
+Here is the .config file that didn't work:
+http://pastebin.com/f45530dd7
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+I would appreciate any help
+
+Marek Denis
