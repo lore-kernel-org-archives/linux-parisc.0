@@ -1,36 +1,35 @@
-From: Helge Deller <deller@gmx.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: Out of order unwind entry warning
-Date: Tue, 03 Nov 2009 22:10:37 +0100
-Message-ID: <4AF09C4D.5030600@gmx.de>
-References: <20091102232324.AAFFF4E38@hiauly1.hia.nrc.ca>
+Date: Tue, 3 Nov 2009 16:36:02 -0500 (EST)
+Message-ID: <20091103213603.9576D4FB2@hiauly1.hia.nrc.ca>
+References: <4AF09C4D.5030600@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org,
 	carlos@systemhalted.org, randolph@tausq.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: deller@gmx.de (Helge Deller)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20091102232324.AAFFF4E38@hiauly1.hia.nrc.ca>
+In-Reply-To: <4AF09C4D.5030600@gmx.de> from "Helge Deller" at Nov 3, 2009 10:10:37 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 11/03/2009 12:23 AM, John David Anglin wrote:
->> On 11/02/2009 11:20 PM, Helge Deller wrote:
->> sadly I answered too early....
->> With 64bit kernel I get those unwind warnings again with nearly all kernel modules now:
->> WARNING: Out of order unwind entry! 0000000000d4ad40 and 0000000000d4ad50
->
-> What's readelf say?
+> Unwind section '.PARISC.unwind' at offset 0x11c contains 3 entries:
+> 
+> <libcrc32c_mod_fini>: [0x0-0x2c]
+>          Entry_GR=1 Save_SP Save_RP Total_frame_size=8
+> <libcrc32c_mod_init>: [0x0-0x44]
+>          Entry_GR=1 Save_SP Save_RP Total_frame_size=8
+> <crc32c>: [0x0-0x6c]
+>          Entry_GR=2 Save_SP Save_RP Total_frame_size=8
 
-"modprobe libcrc32c" gives in dmesg:
-WARNING: Out of order unwind entry! 0020d0e8 and 0020d0f8
+What do you see for '.rela.PARISC.unwind'?
 
-[deller@p100 linus-linux-2.6-32bit]$ /opt/cross-hppa-4.4.neu/bin/hppa-linux-readelf -u lib/libcrc32c.ko
+I suspect that this is a problem in handling the R_PARISC_SEGREL32
+relocations is the kernel loader.  The above would be fine if
+libcrc32c_mod_fini and libcRc32c_mod_init are in different sections
+(.exit.text and .inti.text).
 
-Unwind section '.PARISC.unwind' at offset 0x11c contains 3 entries:
-
-<libcrc32c_mod_fini>: [0x0-0x2c]
-         Entry_GR=1 Save_SP Save_RP Total_frame_size=8
-<libcrc32c_mod_init>: [0x0-0x44]
-         Entry_GR=1 Save_SP Save_RP Total_frame_size=8
-<crc32c>: [0x0-0x6c]
-         Entry_GR=2 Save_SP Save_RP Total_frame_size=8
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
