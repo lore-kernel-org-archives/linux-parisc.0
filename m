@@ -1,61 +1,36 @@
 From: Helge Deller <deller@gmx.de>
-Subject: pci 0000:01:04.0: BAR 0: no parent found for of device
-Date: Tue, 03 Nov 2009 22:00:39 +0100
-Message-ID: <4AF099F7.10903@gmx.de>
+Subject: Re: Out of order unwind entry warning
+Date: Tue, 03 Nov 2009 22:10:37 +0100
+Message-ID: <4AF09C4D.5030600@gmx.de>
+References: <20091102232324.AAFFF4E38@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: Matthew Wilcox <matthew@wil.cx>,
-	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
-To: linux-parisc <linux-parisc@vger.kernel.org>
+Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org,
+	carlos@systemhalted.org, randolph@tausq.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20091102232324.AAFFF4E38@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi all,
+On 11/03/2009 12:23 AM, John David Anglin wrote:
+>> On 11/02/2009 11:20 PM, Helge Deller wrote:
+>> sadly I answered too early....
+>> With 64bit kernel I get those unwind warnings again with nearly all kernel modules now:
+>> WARNING: Out of order unwind entry! 0000000000d4ad40 and 0000000000d4ad50
+>
+> What's readelf say?
 
-Something broke the stifb graphics driver in 2.6.32-rc5 (Linus' current head).
-Somehow it seems, that the PCI subsystem does not activate this PCI slot:
+"modprobe libcrc32c" gives in dmesg:
+WARNING: Out of order unwind entry! 0020d0e8 and 0020d0f8
 
-Linux version 2.6.32-rc5-32bit (deller@p100) (gcc version 4.4.1 (GCC) ) #157 Tue Nov 3 21:49:24 CET 2009
-...
-Searching for devices...
-Found devices:
-1. Astro BC Runway Port at 0xfed00000 [10] { 12, 0x0, 0x582, 0x0000b }
-2. Elroy PCI Bridge at 0xfed30000 [10/0] { 13, 0x0, 0x782, 0x0000a }
-3. Elroy PCI Bridge at 0xfed32000 [10/1] { 13, 0x0, 0x782, 0x0000a }
-4. Elroy PCI Bridge at 0xfed38000 [10/4] { 13, 0x0, 0x782, 0x0000a }
-5. Elroy PCI Bridge at 0xfed3c000 [10/6] { 13, 0x0, 0x782, 0x0000a }
-6. Allegro W2 at 0xfffa0000 [32] { 0, 0x0, 0x5dc, 0x00004 }
-7. Memory at 0xfed10200 [49] { 1, 0x0, 0x09c, 0x00009 }
-CPU(s): 1 x PA8700 (PCX-W2) at 750.000000 MHz
-Setting cache flush threshold to 780 (1 CPUs online)
-SBA found Astro 2.1 at 0xfed00000
-Elroy version TR4.0 (0x5) found at 0xfed30000
-PCI: Enabled native mode for NS87415 (pif=0x8f)
-Elroy version TR4.0 (0x5) found at 0xfed32000
-pci 0000:01:04.0: BAR 0: no parent found for of device [0xfa000000-0xfbffffff]
-			^^^  HERE
-...
-STI GSC/PCI core graphics driver Version 0.9a
-sti 0000:01:04.0: device not available because of BAR 0 [0xfa000000-0xfbffffff] collisions
-sti 0000:01:04.0: Cannot enable PCI device
-			^^^ HERE
-sti: probe of 0000:01:04.0 failed with error -22
-STI PCI graphic ROM found at f3800000 (2048 kB), fb at f6000000 (32 MB)
-     id 35acda30-9a02587, conforms to spec rev. 8.0d
-     graphics card name: A1262A
-sticon: Initializing STI text console.
-Console: switching to colour STI console 128x48
-stifb: 'A1262A' (id: 0x35acda30) not supported.
-Linux agpgart interface v0.103
-....
+[deller@p100 linus-linux-2.6-32bit]$ /opt/cross-hppa-4.4.neu/bin/hppa-linux-readelf -u lib/libcrc32c.ko
 
-Hopefully someone of you has an idea what caused this change?
+Unwind section '.PARISC.unwind' at offset 0x11c contains 3 entries:
 
-lspci reports:
-01:04.0 Display controller: Hewlett-Packard Company A4977A Visualize EG (rev 03)
-         Flags: 66MHz, medium devsel
-         Memory at fa000000 (32-bit, non-prefetchable) [size=32M]
-         Expansion ROM at f2400000 [disabled] [size=64K]
-
-Helge
+<libcrc32c_mod_fini>: [0x0-0x2c]
+         Entry_GR=1 Save_SP Save_RP Total_frame_size=8
+<libcrc32c_mod_init>: [0x0-0x44]
+         Entry_GR=1 Save_SP Save_RP Total_frame_size=8
+<crc32c>: [0x0-0x6c]
+         Entry_GR=2 Save_SP Save_RP Total_frame_size=8
