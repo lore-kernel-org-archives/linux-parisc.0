@@ -1,58 +1,99 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 10/16] parisc: Replace old style lock init
-Date: Fri, 06 Nov 2009 22:41:51 -0000
-Message-ID: <20091106223806.803538964@linutronix.de>
-References: <20091106223547.784916750@linutronix.de>
-Cc: Ingo Molnar <mingo@elte.hu>, Peter Zijlstra <peterz@infradead.org>,
-	Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
-To: LKML <linux-kernel@vger.kernel.org>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: Out of order unwind entry warning
+Date: Sat, 7 Nov 2009 00:07:42 +0100
+Message-ID: <20091106230742.GA16061@p100.box>
+References: <4AF0A8FB.2000504@gmx.de> <20091104005737.0E4674FB2@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20091104005737.0E4674FB2@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-SPIN_LOCK_UNLOCKED is deprecated. Init the per cpu locks at runtime
-instead.
+Hi Dave,
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-Cc: linux-parisc@vger.kernel.org
----
- arch/parisc/kernel/smp.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+* John David Anglin <dave@hiauly1.hia.nrc.ca>:
+> > >> Relocation section '.rela.PARISC.unwind' at offset 0x9b8 contains 6 entries:
+> > >>    Offset     Info    Type            Sym.Value  Sym. Name + Addend
+> > >> 00000000  00000231 R_PARISC_SEGREL32 00000000   .exit.text + 0
+> > >> 00000004  00000231 R_PARISC_SEGREL32 00000000   .exit.text + 2c
+> > >> 00000010  00000331 R_PARISC_SEGREL32 00000000   .init.text + 0
+> > >> 00000014  00000331 R_PARISC_SEGREL32 00000000   .init.text + 44
+> > >> 00000020  00000431 R_PARISC_SEGREL32 00000000   .text.crc32c + 0
+> > >> 00000024  00000431 R_PARISC_SEGREL32 00000000   .text.crc32c + 6c
+> > >
+> > > That's exactly what I expected.  There's no overlap.  The module
+> > > loader needs to sort the unwind entries after doing the relocations.
 
-Index: linux-2.6/arch/parisc/kernel/smp.c
-===================================================================
---- linux-2.6.orig/arch/parisc/kernel/smp.c
-+++ linux-2.6/arch/parisc/kernel/smp.c
-@@ -60,8 +60,6 @@ static int smp_debug_lvl = 0;
- #define smp_debug(lvl, ...)	do { } while(0)
- #endif /* DEBUG_SMP */
+You were right here.
+
+> > It's already sorting the entries, 
+
+and I was to some degree wrong :-)
+
+The parisc module loader as written by Randolph was sorting the
+unwind entries. But I submitted a wrong patch which replaced the
+hand-written sort() by the kernel provided sort() function:
+http://patchwork.kernel.org/patch/56528/
+Due to a bug in the patch a wrong amount of unwind entries were
+calculated and as such the sort() function didn't sorted all unwind entries.
+
+Below is an updated patch. With this one, all your binutils changes
+work nicely with 32- and 64-bit kernels and modules.
+
+Kyle, I see you applied my original patch into your "next" tree already:
+http://git.kernel.org/?p=linux/kernel/git/kyle/parisc-2.6.git;a=commit;h=b8d46862d910c3be7c28c627204da968c174aa9a
+
+Do you want me to send you a new patch against your "next" tree instead?
+
+
+> > If we change this, don't we require a binutils update then at the same time from the users?
+> 
+> Don't think fixing the offsets requires a binutils update.  However, the
+> change to using section offsets may have made the problem worse.  The binutils
+> update only corrected the issue with overloaded symbols.
+
+Yes, a binutils update will just fix user's "out-of-order-unwind-entry"
+warnings.
+
+Thanks!
+
+Helge
+
+
+
+
+PATCH: parisc: use sort() instead of home-made implementation (v2)
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+
+diff --git a/arch/parisc/kernel/unwind.c b/arch/parisc/kernel/unwind.c
+index 69dad5a..9dbefa8 100644
+--- a/arch/parisc/kernel/unwind.c
++++ b/arch/parisc/kernel/unwind.c
+@@ -13,6 +13,7 @@
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+ #include <linux/kallsyms.h>
++#include <linux/sort.h>
  
--DEFINE_SPINLOCK(smp_lock);
--
- volatile struct task_struct *smp_init_current_idle_task;
+ #include <asm/uaccess.h>
+ #include <asm/assembly.h>
+@@ -115,24 +116,18 @@ unwind_table_init(struct unwind_table *table, const char *name,
+ 	}
+ }
  
- /* track which CPU is booting */
-@@ -69,7 +67,7 @@ static volatile int cpu_now_booting __cp
- 
- static int parisc_max_cpus __cpuinitdata = 1;
- 
--DEFINE_PER_CPU(spinlock_t, ipi_lock) = SPIN_LOCK_UNLOCKED;
-+static DEFINE_PER_CPU(spinlock_t, ipi_lock);
- 
- enum ipi_message_type {
- 	IPI_NOP=0,
-@@ -438,6 +436,11 @@ void __init smp_prepare_boot_cpu(void)
- */
- void __init smp_prepare_cpus(unsigned int max_cpus)
++static int cmp_unwind_table_entry(const void *a, const void *b)
++{
++	return ((const struct unwind_table_entry *)a)->region_start
++	     - ((const struct unwind_table_entry *)b)->region_start;
++}
++
+ static void
+ unwind_table_sort(struct unwind_table_entry *start,
+ 		  struct unwind_table_entry *finish)
  {
-+	int cpu;
-+
-+	for_each_possible_cpu(cpu)
-+		spin_lock_init(&per_cpu(ipi_lock, cpu));
-+
- 	init_cpu_present(cpumask_of(0));
- 
- 	parisc_max_cpus = max_cpus;
-
-
+-	struct unwind_table_entry el, *p, *q;
