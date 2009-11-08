@@ -1,39 +1,82 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch 10/16] parisc: Replace old style lock init
-Date: Sun, 8 Nov 2009 17:11:52 +0100 (CET)
-Message-ID: <alpine.LFD.2.00.0911081710560.2725@localhost.localdomain>
-References: <20091106223547.784916750@linutronix.de> <20091106223806.803538964@linutronix.de> <20091108050614.GB28962@bombadil.infradead.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [dm-devel] [PATCH v4 00/12] introduce
+ skip_spaces(), reducing code size plus some clean-ups
+Date: Sun, 08 Nov 2009 10:05:03 -0600
+Message-ID: <1257696303.4184.8.camel@mulgrave.site>
+References: <cover.1257602781.git.andre.goddard@gmail.com>
+Reply-To: Linux filesystem caching discussion list <linux-cachefs@redhat.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@elte.hu>,
-	Peter Zijlstra <peterz@infradead.org>,
-	linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20091108050614.GB28962@bombadil.infradead.org>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: Pavel Roskin <proski@gnu.org>,
+	Stefan Haberland <stefan.haberland@de.ibm.com>,
+	Jan Kara <jack@suse.cz>, linux-cachefs@redhat.com,
+	Mike Snitzer <snitzer@redhat.com>, Neil Brown <neilb@suse.de>,
+	Frederic Weisbecker <fweisbec@gmail.com>,
+	Jens Axboe <jens.axboe@oracle.com>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	"James E . J . Bottomley" <jejb@parisc-linux.org>,
+	ibm-acpi-devel@lists.sourceforge.net, Chr,
+	Julia Lawall <julia@diku.dk>, "H . Peter Anvin" <hpa@zytor.com>,
+	Daire Byrne <Daire.Byrne@framestore.com>,
+	Alasdair G Kergon <agk@redhat.com>, Greg Banks <gnb@melbourne.sgi.com>,
+	Stefan Weinhuber <wein@de.ibm.com>,
+	Eric Sandeen <sandeen@redhat.com>, Adam Belay <abelay@mit.edu>,
+	netfilter-devel@vger.kernel.org, Helge Deller <deller@gmx.de>,
+	x86@kernel.org, James Morris <jmorris@namei.org>,
+	Takashi Iwai <tiwai@suse.de>, Ingo Molnar <mingo@redhat.com>,
+	Alan Cox <alan@l
+To: device-mapper development <dm-devel@redhat.com>
+Return-path: <linux-cachefs-bounces@redhat.com>
+In-Reply-To: <cover.1257602781.git.andre.goddard@gmail.com>
+List-Id: Linux filesystem caching discussion list <linux-cachefs.redhat.com>
+List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/linux-cachefs>,
+	<mailto:linux-cachefs-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://www.redhat.com/archives/linux-cachefs>
+List-Post: <mailto:linux-cachefs@redhat.com>
+List-Help: <mailto:linux-cachefs-request@redhat.com?subject=help>
+List-Subscribe: <https://www.redhat.com/mailman/listinfo/linux-cachefs>,
+	<mailto:linux-cachefs-request@redhat.com?subject=subscribe>
+Errors-To: linux-cachefs-bounces@redhat.com
 
-On Sun, 8 Nov 2009, Kyle McMartin wrote:
+On Sat, 2009-11-07 at 13:16 -0200, Andr=C3=A9 Goddard Rosa wrote:
+> This patch reduces lib.a code size by 173 bytes on my Core 2 with gcc 4=
+.4.1
+> even considering that it exports a newly defined function skip_spaces()
+> to drivers:
+>    text    data     bss     dec     hex filename                       =
+   =20
+>   64867     840     592   66299   102fb (TOTALS-lib.a-before)
+>   64954     584     588   66126   1024e (TOTALS-lib.a-after)
+> and implements some code tidy up.
+>=20
+> Besides reducing lib.a size, it converts many in-tree drivers to use th=
+e
+> newly defined function, which makes another small reduction on kernel s=
+ize
+> overall when those drivers are used.
 
-> On Fri, Nov 06, 2009 at 10:41:51PM -0000, Thomas Gleixner wrote:
-> > SPIN_LOCK_UNLOCKED is deprecated. Init the per cpu locks at runtime
-> > instead.
-> > 
-> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Kyle McMartin <kyle@mcmartin.ca>
-> > Cc: linux-parisc@vger.kernel.org
-> 
-> applied with one nit.
-> 
-> >  
-> > -DEFINE_SPINLOCK(smp_lock);
-> > -
-> 
-> You forgot to mention this was unused. :) Confused me for a while.
+Before we embark on something as massive as this, could we take a step
+back.  I agree that if I were coming up with the strstip() interface
+today I probably wouldn't have given it two overloaded uses.
 
-Gah. Wanted to add it to the changelog, but slipped from my mind.
+However, I think the function, in spite of this minor issue, is very
+usable.  I still don't understand why people thought adding a
+__must_check, which is what damaged one of the overloaded uses, is a
+good idea.
 
-Sorry for the confusion,
+Assuming there's a good answer to the above:
 
-	tglx
+> + * skip_spaces - Removes leading whitespace from @s.
+> + * @s: The string to be stripped.
+> + *
+> + * Returns a pointer to the first non-whitespace character in @s.
+> + */
+> +const char *skip_spaces(const char *str)
+
+I don't think const return is a good idea because most functions will be
+manipulating the string and using pointers that won't be const, so this
+will generate a ton of 'initialization discards qualifiers from pointer
+target type' ... so that leads to the question of whether this patch
+series was actually compiled ...
+
+James
