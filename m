@@ -1,54 +1,39 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: [PATCH v4 10/12] string: factorize skip_spaces
- and export it to be generally available
-Date: Sun, 8 Nov 2009 16:50:00 +0000
-Message-ID: <20091108165000.374714cb@lxorguk.ukuu.org.uk>
-References: <cover.1257602781.git.andre.goddard@gmail.com>
-	<c7d3b02b5e28eaa54a5360d57dfd177c44320187.1257602781.git.andre.goddard@gmail.com>
-Reply-To: Linux filesystem caching discussion list <linux-cachefs@redhat.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: gcj port to hppa...
+Date: Sun, 8 Nov 2009 13:40:51 -0500 (EST)
+Message-ID: <20091108184052.43E3A4E38@hiauly1.hia.nrc.ca>
+References: <119aab440911071348t16198843q37757d25dc6a4691@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-14
-Cc: Andreas Dilger <adilger@sun.com>, Mike Snitzer <snitzer@redhat.com>,
-	Takashi Iwai <tiwai@suse.de>, Kysela <perex@perex.cz>, Jan,
-	Stefan Weinhuber <wein@de.ibm.com>,
-	Eric Sandeen <sandeen@redhat.com>, "James E .
-	J . Bottomley" <jejb@parisc-linux.org>, linux-cachefs@redhat.com,
-	WANG Cong <wangcong@zeuux.org>, Len Brown <len.brown@intel.com>,
-	Trond Myklebust <Trond.Myklebust@netapp.com>,
-	Rusty Russell <rusty@rustcorp.com.au>, netfilter@vger.kernel.org,
-	Al Viro <viro@zeniv.linux.org.uk>, Thomas Gleixner <tglx@linutronix.de>,
-	Engelhardt <jengelh@medozas.de>,
-	Bjorn Helgaas <bjorn.helgaas@hp.com>, =?ISO-8859-14?B?QW5k?=, "Martin K .
-	Petersen" <martin.petersen@oracle.com>, linux-kernel@vger.kernel.org,
-	Stoyan Gaydarov <stoyboyker@gmail.com>, Kyle McMartin <kyle@mcmartin.ca>,
-	netfilter-devel@vger.kernel.org, Joe Perches <joe@perches.com>,
-	Andrew Morton <akpm@linux-foundation.org
-To: =?ISO-8859-14?B?QW5kcuk=?= Goddard Rosa <andre.goddard@gmail.com>
-Return-path: <linux-cachefs-bounces@redhat.com>
-In-Reply-To: <c7d3b02b5e28eaa54a5360d57dfd177c44320187.1257602781.git.andre.goddard@gmail.com>
-List-Id: Linux filesystem caching discussion list <linux-cachefs.redhat.com>
-List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/linux-cachefs>,
-	<mailto:linux-cachefs-request@redhat.com?subject=unsubscribe>
-List-Archive: <https://www.redhat.com/archives/linux-cachefs>
-List-Post: <mailto:linux-cachefs@redhat.com>
-List-Help: <mailto:linux-cachefs-request@redhat.com?subject=help>
-List-Subscribe: <https://www.redhat.com/mailman/listinfo/linux-cachefs>,
-	<mailto:linux-cachefs-request@redhat.com?subject=subscribe>
-Errors-To: linux-cachefs-bounces@redhat.com
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org, debian-hppa@lists.debian.org,
+	dave.anglin@nrc-cnrc.gc.ca
+To: carlos@systemhalted.org (Carlos O'Donell)
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <119aab440911071348t16198843q37757d25dc6a4691@mail.gmail.com> from "Carlos O'Donell" at Nov 7, 2009 04:48:42 pm
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Sat,  7 Nov 2009 13:16:18 -0200
-Andr=E9 Goddard Rosa <andre.goddard@gmail.com> wrote:
+> The gcj port to hppa uses a locking implementation
+> (libjava/sysdeps/pa/locks.h) which is not signal safe.
 
-> On the following sentence:
->     while (*s && isspace(*s))
->         s++;
+Yes.  Is this the gcj problem that you were seeing with nptl?
 
-Looks fine but for one thing: it's actually shorter inline than moved
-into /lib so at the very least it should be a header inline not a
-function call.
+> The assembly can be interrupted by a signal which if it calls
+> compare_and_swap again will deadlock. However, I can't tell if this
+> will ever happen.
+> 
+> The fix for this is to port the lock implementation to use the
+> light-weight in-kernel compare-and-swap, which is thread-safe and
+> signal-safe. However, this is only available for Linux.
 
-Second minor comment. Although it never made it into the final ANSI C,
-the proposed name (and the one used in a lot of other non Linux code for
-this) is stpblk().
+I would say the linux implementation should uses the gcc atomic builtins.
+They are based on the kernel compare-and-swap.
 
-Alan
+> Does locks.h also need to work for HPUX?
+
+Yes.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
