@@ -1,43 +1,31 @@
-From: Stephen Hemminger <shemminger@vyatta.com>
-Subject: [PATCH 05/10] parisc: use RCU to find network device
-Date: Tue, 10 Nov 2009 09:54:51 -0800
-Message-ID: <20091110175647.480041042@vyatta.com>
-References: <20091110175446.280423729@vyatta.com>
-Cc: netdev@vger.kernel.org, linux-parisc@vger.kernel.org
-To: David Miller <davem@davemloft.net>,
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Subject: Re: [PATCH 05/10] parisc: use RCU to find network device
+Date: Tue, 10 Nov 2009 19:26:05 +0100
+Message-ID: <4AF9B03D.3010409@gmail.com>
+References: <20091110175446.280423729@vyatta.com> <20091110175647.480041042@vyatta.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Miller <davem@davemloft.net>,
 	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	Alexander Beregalov <a.beregalov@gmail.com>
+	Alexander Beregalov <a.beregalov@gmail.com>,
+	netdev@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Stephen Hemminger <shemminger@vyatta.com>
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20091110175647.480041042@vyatta.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Another place where RCU can be used instead of read_lock(&dev_base_lock)
-This is by inspection, don't have platform or cross-build environment
-to validate.
+Stephen Hemminger a =E9crit :
+> Another place where RCU can be used instead of read_lock(&dev_base_lo=
+ck)
+> This is by inspection, don't have platform or cross-build environment
+> to validate.
+>=20
+> Signed-off-by: Stephen Hemminger <shemminger@vyatta.com>
+>=20
 
-Signed-off-by: Stephen Hemminger <shemminger@vyatta.com>
+Duplicate of previously posted patch...
+
+http://article.gmane.org/gmane.linux.network/143072
 
 
---- a/drivers/parisc/led.c	2009-11-09 22:19:07.223480872 -0800
-+++ b/drivers/parisc/led.c	2009-11-10 09:28:38.279438787 -0800
-@@ -354,9 +354,8 @@ static __inline__ int led_get_net_activi
- 	
- 	/* we are running as a workqueue task, so locking dev_base 
- 	 * for reading should be OK */
--	read_lock(&dev_base_lock);
- 	rcu_read_lock();
--	for_each_netdev(&init_net, dev) {
-+	for_each_netdev_rcu(&init_net, dev) {
- 	    const struct net_device_stats *stats;
- 	    struct in_device *in_dev = __in_dev_get_rcu(dev);
- 	    if (!in_dev || !in_dev->ifa_list)
-@@ -368,7 +367,6 @@ static __inline__ int led_get_net_activi
- 	    tx_total += stats->tx_packets;
- 	}
- 	rcu_read_unlock();
--	read_unlock(&dev_base_lock);
- 
- 	retval = 0;
- 
-
--- 
 
