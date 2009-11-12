@@ -1,88 +1,113 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: Problem with early startup in dynamic linker.
-Date: Wed, 11 Nov 2009 11:41:12 -0500 (EST)
-Message-ID: <20091111164114.01AE3515C@hiauly1.hia.nrc.ca>
+Date: Thu, 12 Nov 2009 12:40:08 -0500
+Message-ID: <119aab440911120940h49107d53oad1e0dc8f91f797c@mail.gmail.com>
 References: <119aab440911110634oe4a8eb2m8ff519055e7fbdf5@mail.gmail.com>
+	 <20091111164114.01AE3515C@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: dave.anglin@nrc-cnrc.gc.ca, libc-ports@sourceware.org,
+	hongjiu.lu@intel.com, linux-parisc <linux-parisc@vger.kernel.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440911110634oe4a8eb2m8ff519055e7fbdf5@mail.gmail.com> from "Carlos O'Donell" at Nov 11, 2009 09:34:17 am
+In-Reply-To: <20091111164114.01AE3515C@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> John,
-> 
-> I need your help crafting some assembly for the early startup of the
-> dynamic linker.
-> 
-> During early startup we need to do some work *before* the GOT is relocated.
-> 
-> This means that static local variable accesses are handled via a
-> special wrapper e.g.
-> ~~~
->   struct local *l;
-> 
->   ELF_MACHINE_LOAD_ADDRESS (l, local);
-> 
->  retry:
->   root = l->root;
-> ~~~
-> Where local is a static local variable defined at the top of the C file.
-> 
-> Previously I had implemented ELF_MACHINE_LOAD_ADDRESS like this:
-> ~~~
-> #define ELF_MACHINE_LOAD_ADDRESS(var, symbol)           \
->   asm ("        addil LT'" #symbol ", %%r19\n"          \
->        "        ldw RT'" #symbol "(%%sr0,%%r1), %0\n"   \
->       : "=&r" (var) : : "r1" );
-> ~~~
-> 
-> As you will notice the LT'/RT' pair will generate an access through
-> the GOT for this variable e.g.
-> ~~~
->   ELF_MACHINE_LOAD_ADDRESS (l, local);
->    18b30:       2a 60 10 00     addil L%800,r19,r1
->    18b34:       48 26 00 00     ldw 0(r1),r6
-> ~~~
-> 
-> This appears to have worked because in previous builds the GOT
-> relocations required for this access were processed *before* the
-> access.
-> 
-> How do I load the address of a static local variable without using the GOT?
-> 
-> I use the following for computing the location of _DYNAMIC:
-> ~~~
->   Elf32_Addr dynamic;
-> 
->   asm (
-> "       b,l     1f,%0\n"
-> "       depi    0,31,2,%0\n"
-> "1:     addil   L'_DYNAMIC - ($PIC_pcrel$0 - 8),%0\n"
-> "       ldo     R'_DYNAMIC - ($PIC_pcrel$0 - 12)(%%r1),%0\n"
->    : "=r" (dynamic) : : "r1");
-> ~~~
-> 
-> Can I use this sequence to find the address of a static local variable?
+On Wed, Nov 11, 2009 at 11:41 AM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+>> Can I use this sequence to find the address of a static local variab=
+le?
+>
+> This will work if the local variable is in the same segment as
+> the code. =A0It may work generally because I believe there is a fixed
+> relationship between the code and data segments on linux (this isn't
+> true on hpux). =A0The issue is whether the data is readonly or needs
+> to be writeable.
 
-This will work if the local variable is in the same segment as
-the code.  It may work generally because I believe there is a fixed
-relationship between the code and data segments on linux (this isn't
-true on hpux).  The issue is whether the data is readonly or needs
-to be writeable.
+CC'ing libc-ports in case anyone knows what might be wrong.
 
-> Is there a more optimal sequence?
+CC'ing Lu, who might have a suggestion (and is familiar with the code).=
+ Hi Lu!
 
-In PA 2.0, the b,l/depi instructions can be replaced by the mfia
-instruction.  This saves one instruction.  If you just need to load
-a byte, etc, the ldo can be replaced by a ldb, ldh, ldw or ldd
-instruction.  If the data is close, the addil isn't needed.  Otherwise,
-there isn't much else that can be done to make the sequence more
-optimal.
+There is code in dl-fptr.c which is called during relocation
+processing and before rtld is fully relocated.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+The code in dl-fptr.c looks like this:
+~~~
+static struct local
+  {
+    struct fdesc_table *root;
+    struct fdesc *free_list;
+    unsigned int npages;                /* # of pages to allocate */
+    /* the next to members MUST be consecutive! */
+    struct fdesc_table boot_table;
+    struct fdesc boot_fdescs[1024];
+  }
+local =3D
+  {
+    .root =3D &local.boot_table,
+    .npages =3D 2,
+    .boot_table =3D
+      {
+        .len =3D sizeof (local.boot_fdescs) / sizeof (local.boot_fdescs=
+[0]),
+        .first_unused =3D 0
+      }
+  };
+~~~
+
+The ".root =3D &local.boot_table," assignment causes this relocation to
+be emitted:
+~~~
+000219d8  00000101 R_PARISC_DIR32    000024b0   .text + 1f534
+~~~
+
+This is because the address of local + 12 is not known until .text has
+been relocated.
+
+However, this appears to mean that ALL DIR32 relocs have to be
+processed before the above code can be called "safely relocated" and
+before any PLABEL32 (official procedure descriptor relocations) relocs
+can be processed since they use this code.
+
+A trunk build shows a crash in the dynamic loader trying to access
+l->root. The value of local.root is the unrelocated address (as
+computed by the linker and placed at link time into .data).
+
+Is the solution to sort the dynamic relocations and process all DIR32
+relocs first?
+
+The alternative is this:
+~~~
+ local =3D
+   {
+-    .root =3D &local.boot_table,
++    /* Address of .boot_table is not known until runtime.  */
++    .root =3D 0,
+     .npages =3D 2,
+     .boot_table =3D
+       {
+@@ -103,6 +105,10 @@ make_fdesc (ElfW(Addr) ip, ElfW(Addr) gp)
+   struct local *l;
+
+   ELF_MACHINE_LOAD_ADDRESS (l, local);
++  /* Initialize root once.  */
++  if (l->root =3D=3D 0)
++    l->root =3D &l->boot_table;
+~~~
+This removes the relocation against local.
+
+This fixes the dynamic linker segmentation fault in early startup
+while trying to relocate a PLABEL32 reloc before all of the DIR32
+relocs.
+
+Are the changes to dl-fptr.c the right solution?
+
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
