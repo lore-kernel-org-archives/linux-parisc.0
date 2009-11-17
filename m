@@ -1,46 +1,44 @@
 From: James Bottomley <James.Bottomley@suse.de>
-Subject: [PATCH 1/6] mm: add coherence API for DMA to vmalloc/vmap areas
-Date: Tue, 17 Nov 2009 11:03:47 -0600
-Message-ID: <1258477432-2513-2-git-send-email-James.Bottomley@suse.de>
+Subject: [PATCH 2/6] parisc: add mm API for DMA to vmalloc/vmap areas
+Date: Tue, 17 Nov 2009 11:03:48 -0600
+Message-ID: <1258477432-2513-3-git-send-email-James.Bottomley@suse.de>
 References: <1258477432-2513-1-git-send-email-James.Bottomley@suse.de>
+ <1258477432-2513-2-git-send-email-James.Bottomley@suse.de>
 Cc: James Bottomley <James.Bottomley@suse.de>
 To: linux-arch@vger.kernel.org, linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1258477432-2513-1-git-send-email-James.Bottomley@suse.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <1258477432-2513-2-git-send-email-James.Bottomley@suse.de>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Virtually Indexed architectures (which don't do automatic alias
-resolution in their caches), we have to flush via the correct
-virtual address to prepare pages for DMA.  On some architectures
-(like arm) we cannot prevent the CPU from doing data movein along
-the alias (and thus giving stale read data), so we not only have to
-introduce a flush API to push dirty cache lines out, but also an invalidate
-API to kill inconsistent cache lines that may have moved in before
-DMA changed the data
+We already have an API to flush a kernel page along an alias
+address, so use it.  The TLB purge prevents the CPU from doing
+speculative moveins on the flushed address, so we don't need to
+implement and invalidate.
 
 Signed-off-by: James Bottomley <James.Bottomley@suse.de>
 ---
- include/linux/highmem.h |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+ arch/parisc/include/asm/cacheflush.h |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
 
-diff --git a/include/linux/highmem.h b/include/linux/highmem.h
-index 211ff44..eb99c70 100644
---- a/include/linux/highmem.h
-+++ b/include/linux/highmem.h
-@@ -17,6 +17,12 @@ static inline void flush_anon_page(struct vm_area_struct *vma, struct page *page
- static inline void flush_kernel_dcache_page(struct page *page)
+diff --git a/arch/parisc/include/asm/cacheflush.h b/arch/parisc/include/asm/cacheflush.h
+index 7243951..2536a00 100644
+--- a/arch/parisc/include/asm/cacheflush.h
++++ b/arch/parisc/include/asm/cacheflush.h
+@@ -90,6 +90,14 @@ static inline void flush_kernel_dcache_page(struct page *page)
  {
+ 	flush_kernel_dcache_page_addr(page_address(page));
  }
-+static inline void flush_kernel_dcache_addr(void *vaddr)
++static inline void flush_kernel_dcache_addr(void *addr)
 +{
++	flush_kernel_dcache_page_addr(addr);
 +}
-+static inline void invalidate_kernel_dcache_addr(void *vaddr)
++static inline void invalidate_kernel_dcache_addr(void *addr)
 +{
++	/* nop .. the flush prevents move in until the page is touched */
 +}
- #endif
  
- #include <asm/kmap_types.h>
+ #ifdef CONFIG_DEBUG_RODATA
+ void mark_rodata_ro(void);
 -- 
 1.6.3.3
-
