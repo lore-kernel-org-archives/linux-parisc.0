@@ -1,116 +1,31 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 07/13] parisc: Fixup last users of irq_chip->typename
-Date: Tue, 17 Nov 2009 22:50:59 -0000
-Message-ID: <20091117224916.604120310@linutronix.de>
-References: <20091117224852.846805939@linutronix.de>
-Cc: Ingo Molnar <mingo@elte.hu>, Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc@vger.kernel.org
-To: LKML <linux-kernel@vger.kernel.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Subject: Re: [PATCH 5/6] block: permit I/O to vmalloc/vmap kernel pages
+Date: Wed, 18 Nov 2009 19:10:53 +0900
+Message-ID: <20091118191031Q.fujita.tomonori@lab.ntt.co.jp>
+References: <1258477432-2513-4-git-send-email-James.Bottomley@suse.de>
+	<1258477432-2513-5-git-send-email-James.Bottomley@suse.de>
+	<1258477432-2513-6-git-send-email-James.Bottomley@suse.de>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Cc: linux-arch@vger.kernel.org, linux-parisc@vger.kernel.org
+To: James.Bottomley@suse.de
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <1258477432-2513-6-git-send-email-James.Bottomley@suse.de>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The typename member of struct irq_chip was kept for migration purposes
-and is obsolete since more than 2 years. Fix up the leftovers.
+On Tue, 17 Nov 2009 11:03:51 -0600
+James Bottomley <James.Bottomley@suse.de> wrote:
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-Cc: linux-parisc@vger.kernel.org
----
- arch/parisc/kernel/irq.c |    4 ++--
- drivers/parisc/dino.c    |    2 +-
- drivers/parisc/eisa.c    |    2 +-
- drivers/parisc/gsc.c     |    2 +-
- drivers/parisc/iosapic.c |    2 +-
- drivers/parisc/superio.c |    2 +-
- 6 files changed, 7 insertions(+), 7 deletions(-)
+> This updates bio_map_kern() to check for pages in the vmalloc address
+> range and call the new kernel flushing APIs if the are.  This should
+> allow any kernel user to pass a vmalloc/vmap area to block.
+>
+> Signed-off-by: James Bottomley <James.Bottomley@suse.de>
+> ---
+>  fs/bio.c |   20 ++++++++++++++++++--
+>  1 files changed, 18 insertions(+), 2 deletions(-)
 
-Index: linux-2.6/arch/parisc/kernel/irq.c
-===================================================================
---- linux-2.6.orig/arch/parisc/kernel/irq.c
-+++ linux-2.6/arch/parisc/kernel/irq.c
-@@ -145,7 +145,7 @@ static int cpu_set_affinity_irq(unsigned
- #endif
- 
- static struct irq_chip cpu_interrupt_type = {
--	.typename	= "CPU",
-+	.name		= "CPU",
- 	.startup	= cpu_startup_irq,
- 	.shutdown	= cpu_disable_irq,
- 	.enable		= cpu_enable_irq,
-@@ -192,7 +192,7 @@ int show_interrupts(struct seq_file *p, 
- 		seq_printf(p, "%10u ", kstat_irqs(i));
- #endif
- 
--		seq_printf(p, " %14s", irq_desc[i].chip->typename);
-+		seq_printf(p, " %14s", irq_desc[i].chip->name);
- #ifndef PARISC_IRQ_CR16_COUNTS
- 		seq_printf(p, "  %s", action->name);
- 
-Index: linux-2.6/drivers/parisc/dino.c
-===================================================================
---- linux-2.6.orig/drivers/parisc/dino.c
-+++ linux-2.6/drivers/parisc/dino.c
-@@ -354,7 +354,7 @@ static unsigned int dino_startup_irq(uns
- }
- 
- static struct irq_chip dino_interrupt_type = {
--	.typename	= "GSC-PCI",
-+	.name		= "GSC-PCI",
- 	.startup	= dino_startup_irq,
- 	.shutdown	= dino_disable_irq,
- 	.enable		= dino_enable_irq, 
-Index: linux-2.6/drivers/parisc/eisa.c
-===================================================================
---- linux-2.6.orig/drivers/parisc/eisa.c
-+++ linux-2.6/drivers/parisc/eisa.c
-@@ -189,7 +189,7 @@ static unsigned int eisa_startup_irq(uns
- }
- 
- static struct irq_chip eisa_interrupt_type = {
--	.typename =	"EISA",
-+	.name	 =	"EISA",
- 	.startup =	eisa_startup_irq,
- 	.shutdown =	eisa_disable_irq,
- 	.enable =	eisa_enable_irq,
-Index: linux-2.6/drivers/parisc/gsc.c
-===================================================================
---- linux-2.6.orig/drivers/parisc/gsc.c
-+++ linux-2.6/drivers/parisc/gsc.c
-@@ -149,7 +149,7 @@ static unsigned int gsc_asic_startup_irq
- }
- 
- static struct irq_chip gsc_asic_interrupt_type = {
--	.typename =	"GSC-ASIC",
-+	.name	 =	"GSC-ASIC",
- 	.startup =	gsc_asic_startup_irq,
- 	.shutdown =	gsc_asic_disable_irq,
- 	.enable =	gsc_asic_enable_irq,
-Index: linux-2.6/drivers/parisc/iosapic.c
-===================================================================
---- linux-2.6.orig/drivers/parisc/iosapic.c
-+++ linux-2.6/drivers/parisc/iosapic.c
-@@ -730,7 +730,7 @@ static int iosapic_set_affinity_irq(unsi
- #endif
- 
- static struct irq_chip iosapic_interrupt_type = {
--	.typename =	"IO-SAPIC-level",
-+	.name	 =	"IO-SAPIC-level",
- 	.startup =	iosapic_startup_irq,
- 	.shutdown =	iosapic_disable_irq,
- 	.enable =	iosapic_enable_irq,
-Index: linux-2.6/drivers/parisc/superio.c
-===================================================================
---- linux-2.6.orig/drivers/parisc/superio.c
-+++ linux-2.6/drivers/parisc/superio.c
-@@ -326,7 +326,7 @@ static unsigned int superio_startup_irq(
- }
- 
- static struct irq_chip superio_interrupt_type = {
--	.typename =	SUPERIO,
-+	.name	 =	SUPERIO,
- 	.startup =	superio_startup_irq,
- 	.shutdown =	superio_disable_irq,
- 	.enable =	superio_enable_irq,
+Do we need this?
 
-
+Buffers that xfs_buf.c passes to block doesn't go to bio_map_kern()?
