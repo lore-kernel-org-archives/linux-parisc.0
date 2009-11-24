@@ -1,58 +1,48 @@
-From: Boaz Harrosh <bharrosh-C4P08NqkoRlBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCHSET 0-5] remove unneeded nfsd #includes
-Date: Tue, 24 Nov 2009 19:58:15 +0200
-Message-ID: <4B0C1EB7.50508@panasas.com>
+From: Boaz Harrosh <bharrosh@panasas.com>
+Subject: [PATCH 1/5] parsic: remove unused nfsd #includes
+Date: Tue, 24 Nov 2009 19:59:54 +0200
+Message-ID: <4B0C1F1A.8070605@panasas.com>
+References: <4B0C1EB7.50508@panasas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-To: "J. Bruce Fields" <bfields-vtMw8L3fJ9vSiEDVxGk4TQ@public.gmane.org>,
-	Linux Kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	linux-parisc <linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	sparclinux <sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+To: "J. Bruce Fields" <bfields@citi.umich.edu>,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	sparclinux <sparclinux@vger.kernel.org>,
 	linux-s
-Return-path: <linux-nfs-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-List-ID: <linux-nfs.vger.kernel.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S933815AbZKXSBY@vger.kernel.org>
+In-Reply-To: <4B0C1EB7.50508@panasas.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Some arch files had unneeded #includes directives from linux/nfsd/*.
-Some vfs files had unneeded #includes directives from linux/nfsd/*.
 
-In an effort to move some of the now public nfsd headers to the source
-directory, submitted a cleanup.
+Some unused includes removed.
 
-I have cross compiled sparc64 and s390, parsic needs testing. Please ARCH
-people sends ACKs, or take these patches through your trees.
+This patch is in an effort to cleanup nfsd headers and move
+private definitions to source directory.
 
-patches:
-[PATCH 1/5] parsic: remove unused nfsd #includes
-	Some kind soul, please compile with this patch? compile
-	is all that's needed.
+Signed-off-by: Boaz Harrosh <bharrosh@panasas.com>
+---
+ arch/parisc/kernel/sys_parisc32.c |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
 
-[PATCH 2/5] sparc: remove unused nfsd #includes
-[PATCH 3/5] s390: remove unused nfsd #includes
-	These two were cross compiled. Should we submit them through
-	nfsd tree or the ARCH trees?
-
-[PATCH 4/5] vfs: nfsctl.c unused nfsd #includes
-[PATCH 5/5] lockd: Remove unused nfsd headers #includes
-	Can these patches go through the nfsd tree?
-	Who's ACKs should we collect? Andrew?
-
-Bruce Hi
-With this set applied, the only nfsd files used publicly are:
-	const.h	export.h nfsfh.h stats.h syscall.h
-
-These files can be moved to source folder:
-	cache.h  debug.h  nfsd.h  state.h xdr3.h  xdr4.h  xdr.h
-
-Why is debug.h exported from Kernel? (include/linux/nfsd/Kbuild)
-
-So just to see how this move might look like see last patch:
-[RFC] nfsd: Move private headers to source directory
-	This patch was compiled, as well, on x86(32/64), sparc64, s390
-
-Thanks
-Boaz
---
-To unsubscribe from this list: send the line "unsubscribe linux-nfs" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/arch/parisc/kernel/sys_parisc32.c b/arch/parisc/kernel/sys_parisc32.c
+index 561388b..4a8ca63 100644
+--- a/arch/parisc/kernel/sys_parisc32.c
++++ b/arch/parisc/kernel/sys_parisc32.c
+@@ -26,13 +26,7 @@
+ #include <linux/shm.h>
+ #include <linux/slab.h>
+ #include <linux/uio.h>
+-#include <linux/nfs_fs.h>
+ #include <linux/ncp_fs.h>
+-#include <linux/sunrpc/svc.h>
+-#include <linux/nfsd/nfsd.h>
+-#include <linux/nfsd/cache.h>
+-#include <linux/nfsd/xdr.h>
+-#include <linux/nfsd/syscall.h>
+ #include <linux/poll.h>
+ #include <linux/personality.h>
+ #include <linux/stat.h>
+-- 
+1.6.5.2
