@@ -1,8 +1,8 @@
 From: "J. Bruce Fields" <bfields-vtMw8L3fJ9vSiEDVxGk4TQ@public.gmane.org>
-Subject: Re: [PATCH 4/5] lockd: Remove unused nfsd headers #includes
-Date: Wed, 25 Nov 2009 15:10:11 -0500
-Message-ID: <20091125201011.GG32502@fieldses.org>
-References: <4B0C1EB7.50508@panasas.com> <4B0C1FE0.8040105@panasas.com>
+Subject: Re: [PATCH 5/5] vfs: nfsctl.c unused nfsd #includes
+Date: Wed, 25 Nov 2009 15:13:15 -0500
+Message-ID: <20091125201315.GH32502@fieldses.org>
+References: <4B0C1EB7.50508@panasas.com> <4B0C201C.4040400@panasas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: Linux Kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
@@ -14,54 +14,42 @@ Cc: Linux Kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
 	Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>
 To: Boaz Harrosh <bharrosh-C4P08NqkoRlBDgjK7y7TUQ@public.gmane.org>
 Return-path: <linux-nfs-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <4B0C1FE0.8040105-C4P08NqkoRlBDgjK7y7TUQ@public.gmane.org>
+In-Reply-To: <4B0C201C.4040400-C4P08NqkoRlBDgjK7y7TUQ@public.gmane.org>
 List-ID: <linux-nfs.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Nov 24, 2009 at 08:03:12PM +0200, Boaz Harrosh wrote:
+On Tue, Nov 24, 2009 at 08:04:12PM +0200, Boaz Harrosh wrote:
 > 
-> In what history where these ever needed? Well not
-> any more.
+> Only linux/nfsd/syscall.h is actually used. Remove the
+> other nfsd #includes, so they can be moved to source
+> directory.
 
-Applied, thanks.--b.
+I guess I'll take this one too.
+
+The arch-specific ones I'm assuming are someone else's problem unless I
+hear otherwise.
+
+--b.
 
 > 
 > Signed-off-by: Boaz Harrosh <bharrosh-C4P08NqkoRlBDgjK7y7TUQ@public.gmane.org>
 > ---
->  fs/lockd/svc4proc.c |    4 ----
->  fs/lockd/svcproc.c  |    4 ----
->  2 files changed, 0 insertions(+), 8 deletions(-)
+>  fs/nfsctl.c |    2 --
+>  1 files changed, 0 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/lockd/svc4proc.c b/fs/lockd/svc4proc.c
-> index bd173a6..a7966ee 100644
-> --- a/fs/lockd/svc4proc.c
-> +++ b/fs/lockd/svc4proc.c
-> @@ -11,10 +11,6 @@
->  #include <linux/time.h>
->  #include <linux/slab.h>
->  #include <linux/smp_lock.h>
-> -#include <linux/in.h>
+> diff --git a/fs/nfsctl.c b/fs/nfsctl.c
+> index 8f9a205..d3854d9 100644
+> --- a/fs/nfsctl.c
+> +++ b/fs/nfsctl.c
+> @@ -7,8 +7,6 @@
+>  #include <linux/types.h>
+>  #include <linux/file.h>
+>  #include <linux/fs.h>
 > -#include <linux/sunrpc/svc.h>
-> -#include <linux/sunrpc/clnt.h>
 > -#include <linux/nfsd/nfsd.h>
->  #include <linux/lockd/lockd.h>
->  #include <linux/lockd/share.h>
->  
-> diff --git a/fs/lockd/svcproc.c b/fs/lockd/svcproc.c
-> index e1d28dd..56c9519 100644
-> --- a/fs/lockd/svcproc.c
-> +++ b/fs/lockd/svcproc.c
-> @@ -11,10 +11,6 @@
->  #include <linux/time.h>
->  #include <linux/slab.h>
->  #include <linux/smp_lock.h>
-> -#include <linux/in.h>
-> -#include <linux/sunrpc/svc.h>
-> -#include <linux/sunrpc/clnt.h>
-> -#include <linux/nfsd/nfsd.h>
->  #include <linux/lockd/lockd.h>
->  #include <linux/lockd/share.h>
->  
+>  #include <linux/nfsd/syscall.h>
+>  #include <linux/cred.h>
+>  #include <linux/sched.h>
 > -- 
 > 1.6.5.2
 > 
