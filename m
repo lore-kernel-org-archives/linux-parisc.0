@@ -1,94 +1,125 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH 1/5] parsic: remove unused nfsd #includes
-Date: Thu, 26 Nov 2009 22:47:53 +0100
-Message-ID: <4B0EF789.8060805@gmx.de>
-References: <4B0C1EB7.50508@panasas.com> <4B0C1F1A.8070605@panasas.com> <4B0E94D4.5090800@panasas.com>
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: [PATCH] parisc: convert /proc/pdc/{lcd,led} to seq_file
+Date: Fri, 27 Nov 2009 09:51:12 +0300
+Message-ID: <20091127065112.GC26327@x200.malnet.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Cc: "J. Bruce Fields" <bfields@citi.umich.edu>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Linux Kernel <linux-kernel@vger.kernel.org>,
-	sparclinux <sparclinux@vger.kernel.org>,
-	linux-s390 <linux-s390@vger.kernel.org>,
-	NFS list <linux-nfs@vger.kernel.org>,
-	pNFS Mailing List <pnfs@linux-nfs.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-To: Boaz Harrosh <bharrosh@panasas.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: akpm@linux-foundation.org, linux-parisc@vger.kernel.org
+To: kyle@mcmartin.ca
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4B0E94D4.5090800@panasas.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 11/26/2009 03:46 PM, Boaz Harrosh wrote:
-> On 11/24/2009 11:27 PM, Grant Grundler wrote:
->> On Tue, Nov 24, 2009 at 07:58:15PM +0200, Boaz Harrosh wrote:
->>> Some arch files had unneeded #includes directives from linux/nfsd/*.
->>> Some vfs files had unneeded #includes directives from linux/nfsd/*.
->> ...
->>> patches:
->>> [PATCH 1/5] parsic: remove unused nfsd #includes
->>> 	Some kind soul, please compile with this patch? compile
->>> 	is all that's needed.
->>
->> Boaz,
->> linux-2.6 compiles for parisc with this patch. Please add:
->>      Tested-by: Grant Grundler<grundler@parisc-linux.org>
->>
->> thanks,
->> grant
->>
->
-> CCing registered parsic maintainers. Could we please get an ACK on
-> this patch, and cary this through the nfsd tree?
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
-Sure.
+ drivers/parisc/led.c |   59 +++++++++++++++++++++++++--------------------------
+ 1 file changed, 29 insertions(+), 30 deletions(-)
 
-Acked-by: Helge Deller <deller@gmx.de>
-
-Helge
-
-
->
-> Thanks
-> Boaz
->
-> On 11/24/2009 07:59 PM, Boaz Harrosh wrote:
->>
->> Some unused includes removed.
->>
->> This patch is in an effort to cleanup nfsd headers and move
->> private definitions to source directory.
->>
->> Signed-off-by: Boaz Harrosh<bharrosh@panasas.com>
->> ---
->>   arch/parisc/kernel/sys_parisc32.c |    6 ------
->>   1 files changed, 0 insertions(+), 6 deletions(-)
->>
->> diff --git a/arch/parisc/kernel/sys_parisc32.c b/arch/parisc/kernel/sys_parisc32.c
->> index 561388b..4a8ca63 100644
->> --- a/arch/parisc/kernel/sys_parisc32.c
->> +++ b/arch/parisc/kernel/sys_parisc32.c
->> @@ -26,13 +26,7 @@
->>   #include<linux/shm.h>
->>   #include<linux/slab.h>
->>   #include<linux/uio.h>
->> -#include<linux/nfs_fs.h>
->>   #include<linux/ncp_fs.h>
->> -#include<linux/sunrpc/svc.h>
->> -#include<linux/nfsd/nfsd.h>
->> -#include<linux/nfsd/cache.h>
->> -#include<linux/nfsd/xdr.h>
->> -#include<linux/nfsd/syscall.h>
->>   #include<linux/poll.h>
->>   #include<linux/personality.h>
->>   #include<linux/stat.h>
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
-
+--- a/drivers/parisc/led.c
++++ b/drivers/parisc/led.c
+@@ -38,6 +38,7 @@
+ #include <linux/kernel_stat.h>
+ #include <linux/reboot.h>
+ #include <linux/proc_fs.h>
++#include <linux/seq_file.h>
+ #include <linux/ctype.h>
+ #include <linux/blkdev.h>
+ #include <linux/workqueue.h>
+@@ -147,41 +148,34 @@ device_initcall(start_task);
+ static void (*led_func_ptr) (unsigned char) __read_mostly;
+ 
+ #ifdef CONFIG_PROC_FS
+-static int led_proc_read(char *page, char **start, off_t off, int count, 
+-	int *eof, void *data)
++static int led_proc_show(struct seq_file *m, void *v)
+ {
+-	char *out = page;
+-	int len;
+-
+-	switch ((long)data)
++	switch ((long)m->private)
+ 	{
+ 	case LED_NOLCD:
+-		out += sprintf(out, "Heartbeat: %d\n", led_heartbeat);
+-		out += sprintf(out, "Disk IO: %d\n", led_diskio);
+-		out += sprintf(out, "LAN Rx/Tx: %d\n", led_lanrxtx);
++		seq_printf(m, "Heartbeat: %d\n", led_heartbeat);
++		seq_printf(m, "Disk IO: %d\n", led_diskio);
++		seq_printf(m, "LAN Rx/Tx: %d\n", led_lanrxtx);
+ 		break;
+ 	case LED_HASLCD:
+-		out += sprintf(out, "%s\n", lcd_text);
++		seq_printf(m, "%s\n", lcd_text);
+ 		break;
+ 	default:
+-		*eof = 1;
+ 		return 0;
+ 	}
++	return 0;
++}
+ 
+-	len = out - page - off;
+-	if (len < count) {
+-		*eof = 1;
+-		if (len <= 0) return 0;
+-	} else {
+-		len = count;
+-	}
+-	*start = page + off;
+-	return len;
++static int led_proc_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, led_proc_show, PDE(inode)->data);
+ }
+ 
+-static int led_proc_write(struct file *file, const char *buf, 
+-	unsigned long count, void *data)
++
++static ssize_t led_proc_write(struct file *file, const char *buf,
++	size_t count, loff_t *pos)
+ {
++	void *data = PDE(file->f_path.dentry->d_inode)->data;
+ 	char *cur, lbuf[count + 1];
+ 	int d;
+ 
+@@ -234,6 +228,15 @@ parse_error:
+ 	return -EINVAL;
+ }
+ 
++static const struct file_operations led_proc_fops = {
++	.owner		= THIS_MODULE,
++	.open		= led_proc_open,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++	.release	= single_release,
++	.write		= led_proc_write,
++};
++
+ static int __init led_create_procfs(void)
+ {
+ 	struct proc_dir_entry *proc_pdc_root = NULL;
+@@ -243,19 +246,15 @@ static int __init led_create_procfs(void)
+ 
+ 	proc_pdc_root = proc_mkdir("pdc", 0);
+ 	if (!proc_pdc_root) return -1;
+-	ent = create_proc_entry("led", S_IFREG|S_IRUGO|S_IWUSR, proc_pdc_root);
++	ent = proc_create_data("led", S_IRUGO|S_IWUSR, proc_pdc_root,
++				&led_proc_fops, (void *)LED_NOLCD); /* LED */
+ 	if (!ent) return -1;
+-	ent->data = (void *)LED_NOLCD; /* LED */
+-	ent->read_proc = led_proc_read;
+-	ent->write_proc = led_proc_write;
+ 
+ 	if (led_type == LED_HASLCD)
+ 	{
+-		ent = create_proc_entry("lcd", S_IFREG|S_IRUGO|S_IWUSR, proc_pdc_root);
++		ent = proc_create_data("lcd", S_IRUGO|S_IWUSR, proc_pdc_root,
++					&led_proc_fops, (void *)LED_HASLCD); /* LCD */
+ 		if (!ent) return -1;
+-		ent->data = (void *)LED_HASLCD; /* LCD */
+-		ent->read_proc = led_proc_read;
+-		ent->write_proc = led_proc_write;
+ 	}
+ 
+ 	return 0;
