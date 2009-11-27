@@ -1,125 +1,87 @@
-From: Alexey Dobriyan <adobriyan@gmail.com>
-Subject: [PATCH] parisc: convert /proc/pdc/{lcd,led} to seq_file
-Date: Fri, 27 Nov 2009 09:51:12 +0300
-Message-ID: <20091127065112.GC26327@x200.malnet.ru>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: kernel segv with 2.6.31-rc6 ?
+Date: Fri, 27 Nov 2009 23:11:57 +0100
+Message-ID: <20091127221156.GA5334@p100.box>
+References: <4A89CC4D.5040801@gmx.de> <20090818050637.4C3E74730F@magilla.sf.frob.com> <1250640565.15079.3.camel@mulgrave.site> <200908251707.01610.rusty@rustcorp.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: akpm@linux-foundation.org, linux-parisc@vger.kernel.org
-To: kyle@mcmartin.ca
+To: Rusty Russell <rusty@rustcorp.com.au>,
+	linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	roland@redhat.com, dave
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <200908251707.01610.rusty@rustcorp.com.au>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+* Rusty Russell <rusty@rustcorp.com.au>:
+> On Wed, 19 Aug 2009 09:39:24 am James Bottomley wrote:
+> > Even with the duplicate name, though, the module should be perfectly
+> > loadable.
+> 
+> In a perfect world, yes, but there are places which assume they'll be
+> unique and I always thought that reasonable.
+> 
+> Front of my mind is /sys/module/<MODNAME/sections/ which has one file
+> per section.
 
- drivers/parisc/led.c |   59 +++++++++++++++++++++++++--------------------------
- 1 file changed, 29 insertions(+), 30 deletions(-)
+I just noticed, that on parisc the duplicate sections do have a
+size of "0 bytes". Objdump shows that:
 
---- a/drivers/parisc/led.c
-+++ b/drivers/parisc/led.c
-@@ -38,6 +38,7 @@
- #include <linux/kernel_stat.h>
- #include <linux/reboot.h>
- #include <linux/proc_fs.h>
-+#include <linux/seq_file.h>
- #include <linux/ctype.h>
- #include <linux/blkdev.h>
- #include <linux/workqueue.h>
-@@ -147,41 +148,34 @@ device_initcall(start_task);
- static void (*led_func_ptr) (unsigned char) __read_mostly;
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  1 .text         00000000  00000000  00000000  00000058  2**0     
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE            
+  5 .text         00000000  00000000  00000000  000000d4  2**0       
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE    
+
+> Let's figure out how it happened tho; I'd rather fail cleanly than break
+> subtly and horribly later...
+
+
+Since the sections are empty anyway, I don't see any reason
+why those section names need to be exported via sysfs.
+
+Let's just drop them, which works for parisc (and should for any
+other architecture too).
+
+A patch is attached to
+http://bugzilla.kernel.org/show_bug.cgi?id=14703
+
+and here:
+
+
+[PATCH] modules: don't export section names of empty sections via sysfs
+
+This patch fixes a "Badness at fs/sysfs/dir.c:487" warning on parisc, where
+duplicate section names in kernel modules are common.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+CC: rusty@rustcorp.com.au
+CC: James.Bottomley@HansenPartnership.com
+CC: roland@redhat.com
+CC: dave@hiauly1.hia.nrc.ca
+
+diff --git a/kernel/module.c b/kernel/module.c
+index 8b7d880..5842a71 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -1187,7 +1187,8 @@ static void add_sect_attrs(struct module *mod, unsigned int nsect,
  
- #ifdef CONFIG_PROC_FS
--static int led_proc_read(char *page, char **start, off_t off, int count, 
--	int *eof, void *data)
-+static int led_proc_show(struct seq_file *m, void *v)
- {
--	char *out = page;
--	int len;
--
--	switch ((long)data)
-+	switch ((long)m->private)
- 	{
- 	case LED_NOLCD:
--		out += sprintf(out, "Heartbeat: %d\n", led_heartbeat);
--		out += sprintf(out, "Disk IO: %d\n", led_diskio);
--		out += sprintf(out, "LAN Rx/Tx: %d\n", led_lanrxtx);
-+		seq_printf(m, "Heartbeat: %d\n", led_heartbeat);
-+		seq_printf(m, "Disk IO: %d\n", led_diskio);
-+		seq_printf(m, "LAN Rx/Tx: %d\n", led_lanrxtx);
- 		break;
- 	case LED_HASLCD:
--		out += sprintf(out, "%s\n", lcd_text);
-+		seq_printf(m, "%s\n", lcd_text);
- 		break;
- 	default:
--		*eof = 1;
- 		return 0;
- 	}
-+	return 0;
-+}
- 
--	len = out - page - off;
--	if (len < count) {
--		*eof = 1;
--		if (len <= 0) return 0;
--	} else {
--		len = count;
--	}
--	*start = page + off;
--	return len;
-+static int led_proc_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, led_proc_show, PDE(inode)->data);
- }
- 
--static int led_proc_write(struct file *file, const char *buf, 
--	unsigned long count, void *data)
-+
-+static ssize_t led_proc_write(struct file *file, const char *buf,
-+	size_t count, loff_t *pos)
- {
-+	void *data = PDE(file->f_path.dentry->d_inode)->data;
- 	char *cur, lbuf[count + 1];
- 	int d;
- 
-@@ -234,6 +228,15 @@ parse_error:
- 	return -EINVAL;
- }
- 
-+static const struct file_operations led_proc_fops = {
-+	.owner		= THIS_MODULE,
-+	.open		= led_proc_open,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
-+	.write		= led_proc_write,
-+};
-+
- static int __init led_create_procfs(void)
- {
- 	struct proc_dir_entry *proc_pdc_root = NULL;
-@@ -243,19 +246,15 @@ static int __init led_create_procfs(void)
- 
- 	proc_pdc_root = proc_mkdir("pdc", 0);
- 	if (!proc_pdc_root) return -1;
--	ent = create_proc_entry("led", S_IFREG|S_IRUGO|S_IWUSR, proc_pdc_root);
-+	ent = proc_create_data("led", S_IRUGO|S_IWUSR, proc_pdc_root,
-+				&led_proc_fops, (void *)LED_NOLCD); /* LED */
- 	if (!ent) return -1;
--	ent->data = (void *)LED_NOLCD; /* LED */
--	ent->read_proc = led_proc_read;
--	ent->write_proc = led_proc_write;
- 
- 	if (led_type == LED_HASLCD)
- 	{
--		ent = create_proc_entry("lcd", S_IFREG|S_IRUGO|S_IWUSR, proc_pdc_root);
-+		ent = proc_create_data("lcd", S_IRUGO|S_IWUSR, proc_pdc_root,
-+					&led_proc_fops, (void *)LED_HASLCD); /* LCD */
- 		if (!ent) return -1;
--		ent->data = (void *)LED_HASLCD; /* LCD */
--		ent->read_proc = led_proc_read;
--		ent->write_proc = led_proc_write;
- 	}
- 
- 	return 0;
+ 	/* Count loaded sections and allocate structures */
+ 	for (i = 0; i < nsect; i++)
+-		if (sechdrs[i].sh_flags & SHF_ALLOC)
++		if (sechdrs[i].sh_flags & SHF_ALLOC
++		    && sechdrs[i].sh_size)
+ 			nloaded++;
+ 	size[0] = ALIGN(sizeof(*sect_attrs)
+ 			+ nloaded * sizeof(sect_attrs->attrs[0]),
+@@ -1207,6 +1208,8 @@ static void add_sect_attrs(struct module *mod, unsigned int nsect,
+ 	for (i = 0; i < nsect; i++) {
+ 		if (! (sechdrs[i].sh_flags & SHF_ALLOC))
+ 			continue;
++		if (!sechdrs[i].sh_size)
++			continue;
+ 		sattr->address = sechdrs[i].sh_addr;
+ 		sattr->name = kstrdup(secstrings + sechdrs[i].sh_name,
+ 					GFP_KERNEL);
