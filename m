@@ -1,47 +1,53 @@
-From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [PATCH] parisc: fix unwind with recent gcc versions
-Date: Sat, 28 Nov 2009 20:33:11 +0000
-Message-ID: <20091128203311.GA24165@hera.kernel.org>
-Reply-To: kyle@mcmartin.ca
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [PATCH] parisc: convert /proc/pdc/{lcd,led} to seq_file
+Date: Sat, 28 Nov 2009 22:17:52 -0700
+Message-ID: <20091129051752.GA14332@lackof.org>
+References: <20091127065112.GC26327@x200.malnet.ru> <20091128061354.GA21113@lackof.org> <20091128092509.GA4375@x200.malnet.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: deller@gmx.de, linux-parisc@vger.kernel.org
-To: torvalds@linux-foundation.org
+Cc: Grant Grundler <grundler@parisc-linux.org>, kyle@mcmartin.ca,
+	akpm@linux-foundation.org, linux-parisc@vger.kernel.org
+To: Alexey Dobriyan <adobriyan@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20091128092509.GA4375@x200.malnet.ru>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Helge Deller <deller@gmx.de>
+On Sat, Nov 28, 2009 at 12:25:09PM +0300, Alexey Dobriyan wrote:
+> On Fri, Nov 27, 2009 at 11:13:54PM -0700, Grant Grundler wrote:
+> > On Fri, Nov 27, 2009 at 09:51:12AM +0300, Alexey Dobriyan wrote:
+> > > Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> > 
+> > No commit comment?
+> 
+> No, subject says it's all.
 
-kernel unwinding is broken with gcc >= 4.x. Part of the problem is, that
-binutils seems sensible where the unwind information is stored.
+The subject line says what the patch does, not why you wrote the patch.
+Your comments below are an example of what I was looking for.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
----
- arch/parisc/kernel/unwind.c      |    2 +-
- arch/parisc/kernel/vmlinux.lds.S |    6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> > > -	ent = create_proc_entry("led", S_IFREG|S_IRUGO|S_IWUSR, proc_pdc_root);
+> > > +	ent = proc_create_data("led", S_IRUGO|S_IWUSR, proc_pdc_root,
+> > > +				&led_proc_fops, (void *)LED_NOLCD); /* LED */
+> > 
+> > Documentation/filesystems/seq_file.txt says to use create_proc_entry().
+> > I couldn't find any documentation on proc_create_data().
+> > Is this really the preferred API?
+> 
+> Yes, it's slightly less racy than create_proc_entry().
+> create_proc_entry() is going to be removed in fact.
 
-diff --git a/arch/parisc/kernel/unwind.c b/arch/parisc/kernel/unwind.c
-index 69dad5a..a36799e 100644
---- a/arch/parisc/kernel/unwind.c
-+++ b/arch/parisc/kernel/unwind.c
-@@ -28,7 +28,7 @@
- #define dbg(x...)
- #endif
- 
--#define KERNEL_START (KERNEL_BINARY_TEXT_START - 0x1000)
-+#define KERNEL_START (KERNEL_BINARY_TEXT_START)
- 
- extern struct unwind_table_entry __start___unwind[];
- extern struct unwind_table_entry __stop___unwind[];
-diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
-index fda4baa..9dab4a4 100644
---- a/arch/parisc/kernel/vmlinux.lds.S
-+++ b/arch/parisc/kernel/vmlinux.lds.S
-@@ -78,9 +78,6 @@ SECTIONS
- 	 */
- 	. = ALIGN(PAGE_SIZE);
- 	data_start = .;
--	EXCEPTION_TABLE(16)
+Ok. Please add a sentence about which race you are worried about.
+This isn't to discuss the race - it's just informative to explain
+why there is a plan to replace the API. I'm willing to go along with
+that.
+
+Are you removing create_proc_entry() ? Is this patch part of a grand plan?
+(All good things to include in a commit comment)
+
+Also updating Documentation/filesystems/seq_file.txt would be very
+helpful given you understand why proc_create_data() should replace
+create_proc_entry().
+
+thanks!
+grant
