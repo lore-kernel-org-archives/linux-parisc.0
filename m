@@ -1,40 +1,78 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: Changes to fcntl.h and F_* numbers?
-Date: Sun, 29 Nov 2009 20:55:41 +0100
-Message-ID: <4B12D1BD.90602@gmx.de>
-References: <119aab440911181222v79ad775ena36a4140e80847e3@mail.gmail.com>	 <20091119032220.GG28962@bombadil.infradead.org>	 <119aab440911190900t62122ed8m987c55821ca64062@mail.gmail.com>	 <1258651414.6363.12.camel@mulgrave.site>	 <119aab440911201457j1727576blde3c62569f927711@mail.gmail.com>	 <4B10509D.3020400@gmx.de> <119aab440911291017h1704a159j61421323b8099a3@mail.gmail.com>
+Subject: Re: [PATCH] parisc: fix unwind with recent gcc versions
+Date: Sun, 29 Nov 2009 21:23:10 +0100
+Message-ID: <4B12D82E.9020103@gmx.de>
+References: <20091128203311.GA24165@hera.kernel.org> <alpine.LFD.2.00.0911290929110.3684@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Carlos O'Donell <carlos@systemhalted.org>
+Cc: kyle@mcmartin.ca, linux-parisc@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440911291017h1704a159j61421323b8099a3@mail.gmail.com>
+In-Reply-To: <alpine.LFD.2.00.0911290929110.3684@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 11/29/2009 07:17 PM, Carlos O'Donell wrote:
-> On Fri, Nov 27, 2009 at 5:20 PM, Helge Deller<deller@gmx.de>  wrote:
->> Hi Carlos,
+On 11/29/2009 06:34 PM, Linus Torvalds wrote:
+> On Sat, 28 Nov 2009, Kyle McMartin wrote:
 >>
->> FWIW, Stephen's patch has been applied to mainline (2.6.32-rc8) in the
->> meantime...
+>> From: Helge Deller<deller@gmx.de>
+>>
+>> kernel unwinding is broken with gcc>= 4.x. Part of the problem is, that
+>> binutils seems sensible where the unwind information is stored.
 >
-> Thanks Helge. Could you do some sleuthing for me? Were the F_SETOWN_EX
-> and F_GETOWN_EX ever in any released kernel?
+> The commentary doesn't seem to make much sense to me. Do you mean
+> "sensitive" rather than "sensible"? And is it an actual binutils bug, or
+> what?
 
-Those were added by this commit:
+Yes, sorry, I meant "sensitive".
 
-commit ba0a6c9f6fceed11c6a99e8326f0477fe383e6b5
-Author: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Date:   Wed Sep 23 15:57:03 2009 -0700
-     fcntl: add F_[SG]ETOWN_EX
+It's a combination of lots of things. Newer gcc, with newer binutils and
+all latest changes to our parisc arch/parisc/kernel/vmlinux.lds.S linker
+script, e.g.:
 
-Linux kernel 2.6.31 was tagged:
-Date:   Wed Sep 9 15:13:59 2009 -0700
-(according to the git-log of the top Makefile)
+commit ab635e7d499f23a5791e69e2ebbc9a40c9983d89
+Author: Tim Abbott <tabbott@ksplice.com>
+Date:   Thu Sep 24 10:36:18 2009 -0400
+     parisc: Remove useless altinstructions code copied from x86.
 
-So I don't think they were ever in any released kernel.
+commit 57a8e1161e1a944823542138e61dd8f38fd9b9e8
+Author: Tim Abbott <tabbott@ksplice.com>
+Date:   Thu Sep 24 10:36:17 2009 -0400
+     parisc: Clean up linker script using new linker script macros.
+
+commit 023bf6f1b8bf58dc4da7f0dc1cf4787b0d5297c1
+Author: Tejun Heo <tj@kernel.org>
+Date:   Thu Jul 9 11:27:40 2009 +0900
+     linker script: unify usage of discard definition
+
+commit 405d967dc70002991f8fc35c20e0d3cbc7614f63
+Author: Tejun Heo <tj@kernel.org>
+Date:   Wed Jun 24 15:13:38 2009 +0900
+     linker script: throw away .discard section
+
+All those patches (which are basically OK), triggers a new
+layout location for our unwind tables and as such broke
+our existing unwinding.
+
+My patch basically just gets it right again.
+
+> Also, are the PARISC people 100% sure that you really want unwinding in
+> the first place?
+
+No, but it's the only and best thing we have available right now.
+There have been discussions about other options like dwarf and similiar though:
+http://marc.info/?l=linux-parisc&m=124694174008515&w=2
+
+>We got rid of it as being terminally broken on x86,
+> because tools and asm always got it wrong, and special things like irq
+> frames etc continually broke it in the most annoying ways possible (ie
+> WARN_ON() statements became fatal oopses due to unwind errors etc).
+> Having a tentative and unreliable stack trace is generally better than
+> a totally broken one.
+
+Yes we had oopses as well. Current code tries hard to not unwind outside
+of the kernel text segment. This fixed most issues and in the past weeks
+I didn't faced any other problems with unwinding (which doesn't mean there
+aren't any other problems left).
 
 Helge
