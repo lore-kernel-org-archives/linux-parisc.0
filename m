@@ -1,53 +1,37 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [PATCH] parisc: convert /proc/pdc/{lcd,led} to seq_file
-Date: Sat, 28 Nov 2009 22:17:52 -0700
-Message-ID: <20091129051752.GA14332@lackof.org>
-References: <20091127065112.GC26327@x200.malnet.ru> <20091128061354.GA21113@lackof.org> <20091128092509.GA4375@x200.malnet.ru>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] parisc: fix unwind with recent gcc versions
+Date: Sun, 29 Nov 2009 09:34:45 -0800 (PST)
+Message-ID: <alpine.LFD.2.00.0911290929110.3684@localhost.localdomain>
+References: <20091128203311.GA24165@hera.kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>, kyle@mcmartin.ca,
-	akpm@linux-foundation.org, linux-parisc@vger.kernel.org
-To: Alexey Dobriyan <adobriyan@gmail.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: deller@gmx.de, linux-parisc@vger.kernel.org
+To: kyle@mcmartin.ca
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20091128092509.GA4375@x200.malnet.ru>
+In-Reply-To: <20091128203311.GA24165@hera.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Nov 28, 2009 at 12:25:09PM +0300, Alexey Dobriyan wrote:
-> On Fri, Nov 27, 2009 at 11:13:54PM -0700, Grant Grundler wrote:
-> > On Fri, Nov 27, 2009 at 09:51:12AM +0300, Alexey Dobriyan wrote:
-> > > Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> > 
-> > No commit comment?
+
+
+On Sat, 28 Nov 2009, Kyle McMartin wrote:
+>
+> From: Helge Deller <deller@gmx.de>
 > 
-> No, subject says it's all.
+> kernel unwinding is broken with gcc >= 4.x. Part of the problem is, that
+> binutils seems sensible where the unwind information is stored.
 
-The subject line says what the patch does, not why you wrote the patch.
-Your comments below are an example of what I was looking for.
+The commentary doesn't seem to make much sense to me. Do you mean 
+"sensitive" rather than "sensible"? And is it an actual binutils bug, or 
+what?
 
-> 
-> > > -	ent = create_proc_entry("led", S_IFREG|S_IRUGO|S_IWUSR, proc_pdc_root);
-> > > +	ent = proc_create_data("led", S_IRUGO|S_IWUSR, proc_pdc_root,
-> > > +				&led_proc_fops, (void *)LED_NOLCD); /* LED */
-> > 
-> > Documentation/filesystems/seq_file.txt says to use create_proc_entry().
-> > I couldn't find any documentation on proc_create_data().
-> > Is this really the preferred API?
-> 
-> Yes, it's slightly less racy than create_proc_entry().
-> create_proc_entry() is going to be removed in fact.
+Also, are the PARISC people 100% sure that you really want unwinding in 
+the first place? We got rid of it as being terminally broken on x86, 
+because tools and asm always got it wrong, and special things like irq 
+frames etc continually broke it in the most annoying ways possible (ie 
+WARN_ON() statements became fatal oopses due to unwind errors etc).
 
-Ok. Please add a sentence about which race you are worried about.
-This isn't to discuss the race - it's just informative to explain
-why there is a plan to replace the API. I'm willing to go along with
-that.
+Having a tentative and unreliable stack trace is generally better than 
+a totally broken one.
 
-Are you removing create_proc_entry() ? Is this patch part of a grand plan?
-(All good things to include in a commit comment)
-
-Also updating Documentation/filesystems/seq_file.txt would be very
-helpful given you understand why proc_create_data() should replace
-create_proc_entry().
-
-thanks!
-grant
+		Linus
