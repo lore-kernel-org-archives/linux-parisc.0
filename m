@@ -1,40 +1,58 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH] parisc: fix unwind with recent gcc versions
-Date: Mon, 30 Nov 2009 09:14:15 -0500
-Message-ID: <1259590455.2560.7.camel@mulgrave.site>
-References: <20091128203311.GA24165@hera.kernel.org>
-	 <alpine.LFD.2.00.0911290929110.3684@localhost.localdomain>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] parisc: convert /proc/pdc/{lcd,led} to seq_file
+Date: Tue, 1 Dec 2009 14:07:46 -0800
+Message-ID: <20091201140746.8d0e740e.akpm@linux-foundation.org>
+References: <20091127065112.GC26327@x200.malnet.ru>
+	<20091128061354.GA21113@lackof.org>
+	<20091128092509.GA4375@x200.malnet.ru>
+	<20091129051752.GA14332@lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: kyle@mcmartin.ca, deller@gmx.de, linux-parisc@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Alexey Dobriyan <adobriyan@gmail.com>, kyle@mcmartin.ca,
+	linux-parisc@vger.kernel.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LFD.2.00.0911290929110.3684@localhost.localdomain>
+In-Reply-To: <20091129051752.GA14332@lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 2009-11-29 at 09:34 -0800, Linus Torvalds wrote:
-> Also, are the PARISC people 100% sure that you really want unwinding in 
-> the first place? We got rid of it as being terminally broken on x86, 
-> because tools and asm always got it wrong, and special things like irq 
-> frames etc continually broke it in the most annoying ways possible (ie 
-> WARN_ON() statements became fatal oopses due to unwind errors etc).
+On Sat, 28 Nov 2009 22:17:52 -0700
+Grant Grundler <grundler@parisc-linux.org> wrote:
+
+> > Yes, it's slightly less racy than create_proc_entry().
+> > create_proc_entry() is going to be removed in fact.
 > 
-> Having a tentative and unreliable stack trace is generally better than 
-> a totally broken one.
+> Ok. Please add a sentence about which race you are worried about.
+> This isn't to discuss the race - it's just informative to explain
+> why there is a plan to replace the API. I'm willing to go along with
+> that.
+> 
+> Are you removing create_proc_entry() ? Is this patch part of a grand plan?
+> (All good things to include in a commit comment)
+> 
+> Also updating Documentation/filesystems/seq_file.txt would be very
+> helpful given you understand why proc_create_data() should replace
+> create_proc_entry().
 
-Being a risc system, we don't have a lot of choice.  returns on parisc
-are conventionally jump through register two, so without unwind
-information we have no idea where in the stack frame (or even if)
-they're stored.  Our other problem is that our stack frames have a
-predefined size which often doesn't get fully filled, so the stack gets
-gummed up with a lot of cruft from previous calls; thus even if we just
-trawl it for relevant addresses, we get a lot of bogus information.
+yeah.  I didn't even know that this was the reason and I've been
+applying the patches like crazy.  Heaven knows what a random developer
+of a remote subsystem is supposed to make of such a patch.  Probably he
+just assumes that someone else knows what's going on.
 
-Look at it this way:  our unwind information has to be correct otherwise
-the debugger would continually fail on the platform, so the tool chain
-has an incentive to get it right.
-
-James
+Alexey, please, don't do this.
 
 
+Please send me some boilerplate text which I can paste into
+
+thinkpad_acpi-convert-to-seq_file.patch
+asus_acpi-convert-to-seq_file.patch
+toshiba_acpi-convert-to-seq_file.patch
+arm-convert-proc-cpu-aligment-to-seq_file.patch
+proc_fops-convert-drivers-isdn-to-seq_file.patch
+proc_fops-convert-drivers-isdn-to-seq_file-fix.patch
+mpt-fusion-convert-to-seq_file.patch
+pnpbios-convert-to-seq_file.patch
+uml-convert-to-seq_file-proc_fops.patch
+alpha-convert-srm-code-to-seq_file.patch
+parisc-convert-proc-pdc-lcdled-to-seq_file.patch
+via-pmu-convert-to-proc_fops-seq_file.patch
