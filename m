@@ -1,50 +1,95 @@
-From: "J. Bruce Fields" <bfields-vtMw8L3fJ9vSiEDVxGk4TQ@public.gmane.org>
-Subject: Re: [PATCH 4/5] lockd: Remove unused nfsd headers #includes
-Date: Thu, 3 Dec 2009 12:27:28 -0500
-Message-ID: <20091203172728.GF1393@fieldses.org>
-References: <4B0C1EB7.50508@panasas.com> <4B0C1FE0.8040105@panasas.com> <20091125201011.GG32502@fieldses.org> <20091125202323.GJ32502@fieldses.org> <4B0E76F5.1030006@panasas.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: make hangs reading pipe
+Date: Thu, 3 Dec 2009 21:02:05 -0500
+Message-ID: <119aab440912031802u72b7c679uf8cfa47d8c77f27f@mail.gmail.com>
+References: <20091203011435.5401D4FA3@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Linux Kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	linux-parisc <linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	sparclinux <sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	linux-s390 <linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	NFS list <linux-nfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	pNFS Mailing List <pnfs-6DNke4IJHB0gsBAKwltoeQ@public.gmane.org>,
-	Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>
-To: Boaz Harrosh <bharrosh-C4P08NqkoRlBDgjK7y7TUQ@public.gmane.org>
-Return-path: <linux-nfs-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <4B0E76F5.1030006-C4P08NqkoRlBDgjK7y7TUQ@public.gmane.org>
-List-ID: <linux-nfs.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20091203011435.5401D4FA3@hiauly1.hia.nrc.ca>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Nov 26, 2009 at 02:39:17PM +0200, Boaz Harrosh wrote:
-> On 11/25/2009 10:23 PM, J. Bruce Fields wrote:
-> > On Wed, Nov 25, 2009 at 03:10:11PM -0500, J. Bruce Fields wrote:
-> >> On Tue, Nov 24, 2009 at 08:03:12PM +0200, Boaz Harrosh wrote:
-> >>>
-> >>> In what history where these ever needed? Well not
-> >>> any more.
-> >>
-> >> Applied, thanks.--b.
-> > 
-> > Um, I said that before I actually tried to compile it....  OK, dropping
-> > for now (assuming I'm missing some earlier patch).
-> > 
-> > --b.
-> > 
-> 
-> OK, I didn't realize it but, yes I have these on top of the previous 6
-> so it makes sense.
-> 
-> I have posted the previous 6 rebased on your new current tree, have you seen
-> it? All the patches are the same but [5/6] which has a "version 3". Do I need
-> to re post?
+On Wed, Dec 2, 2009 at 8:14 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+> (gdb) bt
+> #0 =A00x4098607c in read () from /lib/libc.so.6
+> #1 =A00x0001eb6c in ?? ()
+> #2 =A00x0001ec4c in ?? ()
+> #3 =A00x00021af0 in main ()
+> (gdb) disass 0x4098606c 0x4098608c
+> Dump of assembler code from 0x4098606c to 0x4098608c:
+> 0x4098606c <read+24>: =A0 cmpib,<>,n 0,ret0,0x409860a0 <read+76>
+> 0x40986070 <read+28>: =A0 copy r19,r3
+> 0x40986074 <read+32>: =A0 be,l 100(sr2,r0),sr0,r31
+> 0x40986078 <read+36>: =A0 ldi 3,r20
 
-Apologies, yes, would you mind reposting?
+Those last two instructions are the "read" syscall. The process is
+just waiting for the kernel to deliver data, but it never came. The PC
+points to 0x4098607c, which is where the process will *return* after
+the read syscall completes.
 
---b.
+When you see a "be,l 100" it's a syscall, when you see a "be,l b0"
+it's a light-weight-syscall.
+
+> 0x4098607c <read+40>: =A0 ldi -1000,r1
+> 0x40986080 <read+44>: =A0 cmpb,>>=3D,n r1,ret0,0x40986100 <read+172>
+> 0x40986084 <read+48>: =A0 copy r3,r19
+> 0x40986088 <read+52>: =A0 b,l 0x409a7c38,rp
+> End of assembler dump.
+
+You need to use sysrq-t to determine why the other side of the pipe is =
+stuck.
+
+> dave@hiauly6:/proc/4506$ cat status
+> Name: =A0 make
+> State: =A0S (sleeping)
+
+Sleeping is normal, it's blocked waiting for the read to complete.
+
+> lr-x------ 1 dave dave 64 Nov 29 11:00 3 -> pipe:[23677]
+> lr-x------ 1 dave dave 64 Nov 29 11:00 7 -> pipe:[23678]
+>
+> Processes 23677 and 23678 are non existant.
+
+Those are the kernel inode numbers for the anonymous pipe. You need to
+look for the other pid which is writing to the pipe of the same inode.
+
+If the process on the other side of the pipe dies shouldn't the fd's
+get closed and then make's read on the pipe should return with partial
+data followed by EOF?
+
+> In the current hang, I see:
+>
+> dave@hiauly6:/proc/23324/fd$ ls -l
+> total 0
+> l-wx------ 1 dave dave 64 Dec =A02 19:49 0 -> /dev/null
+> l-wx------ 1 dave dave 64 Dec =A02 19:49 1 -> /home/dave/gnu/gcc-4.5/=
+objdir/build.log
+> l-wx------ 1 dave dave 64 Dec =A02 19:49 2 -> /home/dave/gnu/gcc-4.5/=
+objdir/build.log
+> lr-x------ 1 dave dave 64 Dec =A02 19:49 3 -> pipe:[1383769]
+> lr-x------ 1 dave dave 64 Dec =A02 19:49 6 -> /home/dave/gnu/gcc-4.5/=
+gcc-4.5
+> lr-x------ 1 dave dave 64 Dec =A02 19:49 7 -> pipe:[1383770]
+>
+> Not sure what the pipe numbers mean...
+
+Each anonymous pipe gets an inode number in the pipefs filesystem,
+which you can't see or mount.
+
+> The current hang could be debugged more if anybody has further ideas.
+> Any thoughts?
+
+Yes, it's not make's fault, it's waiting for the read to complete.
+What is the process on the other side of the pipe?
+
+Cheers,
+Carlos.
 --
-To unsubscribe from this list: send the line "unsubscribe linux-nfs" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
