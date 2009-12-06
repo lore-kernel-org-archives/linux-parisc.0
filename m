@@ -1,70 +1,232 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Scheduling parent to run before vforked child calls exec or exit...
-Date: Sun, 6 Dec 2009 12:56:57 -0500
-Message-ID: <119aab440912060956m29182481qa0c85fe27e6c92d4@mail.gmail.com>
+Subject: vfork test case.
+Date: Sun, 6 Dec 2009 16:19:13 -0500
+Message-ID: <119aab440912061319y5b863203ve5dc3dc568a6ccec@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: multipart/mixed; boundary=0015174795727e380d047a15e4c8
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Kyle,
+--0015174795727e380d047a15e4c8
+Content-Type: text/plain; charset=ISO-8859-1
 
-On Linux when a parent process calls vfork, the child process must run
-without interruption by the parent until it executes exit or one of
-the exec family functions. The parent process must be suspended until
-the child calls exit or one of the execve family of functions.
+Kyle, James,
 
-While debugging an emacs failure I was able to reliable cause a
-situation where the parent process was not suspended and the following
-happened:
+I have constructed a vfork test case which shows some of the problems
+I have using vfork reliably. This fails every time on my PA8700 system
+running 2.6.32-rc6. It appears as though r28 (ret0) in the parent is
+being corrupted.
 
-* Parent vfork's child
-* Child starts.
-* Parent is erroneously scheduled and calls close.
-* Child attempts an ioctl on a file and sets errno to ENOTTY.
-* Parent is scheduled again and checks the errno for close, which has
-been clobbered by the child, and reports a failure.
-* Parent kills child and exits with error ENOTTY.
+The intent of the testcase is to do the following:
+(a) vfork
+(b) Launch "ls -l" in the vfork'd child.
+(c) Print some information in the parent.
 
-Strictly according to POSIX the child should not have attempted an
-ioctl, but on linux we expect the parent to be suspended and never see
-an inconsistent memory state.
+~~~ vfork.c
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
 
-An strace of the parent process shows:
+int main (void)
+{
+  pid_t child;
+  char *cmd[] = { "ls", "-l", (char *)0 };
+  char *env[] = { "HOME=/tmp", (char *)0 };
+
+  child = vfork();
+
+  if (child == 0)
+    {
+      execve("/bin/ls", cmd, env);
+    }
+  else
+    {
+      printf("child != 0\n");
+    }
+
+  printf("child is 0x%x\n", (unsigned int)child);
+
+  return 0;
+}
 ~~~
-vfork(Process 24156 attached (waiting for parent)
-Process 24156 resumed (parent 24155 ready)
-)                                 = 24156
-[pid 24156] close(4 <unfinished ...>
-[pid 24155] close(5 <unfinished ...>
-[pid 24156] <... close resumed> )       = 0
-[pid 24155] <... close resumed> )       = 0
-[pid 24155] close(3)                    = 0
-[pid 24155] read(4,  <unfinished ...>
-[pid 24156] setsid()                    = 24156
-[pid 24156] setpgid(0, 0)               = -1 EPERM (Operation not permitted)
+Compile this test case twice:
+gcc -O1 -g -o vfork-O1 vfork.c
+gcc -O0 -g -o vfork-O0 vfork.c
+
+When run on x86, the following are the results:
+~~~ vfork-O1
+child != 0
+child is 0x34e3
+total 4824848
+-rw-r--r--  1 carlos carlos      25135 Sep  2 10:41
+"${BuildArtifactFileName}.map"
+... [snip]
 ~~~
-This indicates to me that 24155 and 24156 are being scheduled
-concurrently, along with the failure that is only possible due to
-interleaved execution. The child got to run a close(), and so did the
-parent, the parent even started a read() before it was blocked and the
-child continued.
+~~~ vfork-O0
+child != 0
+child is 0x3515
+total 4824880
+-rw-r--r--  1 carlos carlos      25135 Sep  2 10:41
+"${BuildArtifactFileName}.map"
+~~~
 
-This type of scheduling error could cause serious problems randomly in
-every process that calls vfork. The more a child does before execve
-the larger the window for the parent to be clobbered by the child.
+This x86 runs are correct.
 
-How does the generic kernel infrastructure determine not to schedule
-the parent of a vfork?
+However, on hppa compiling with gcc version 4.3.4 (Debian 4.3.4-6) I
+get the following:
+~~~ vfork-O1
+./vfork-O1
+child is 0x40552aac
+carlos@firin:~/fsrc$ total 284
+drwxr-xr-x  8 carlos carlos  4096 Jul 14  2005 binutils-old-work
+... [snip]
+~~~
 
-I've been reading through our arch/parisc/kernel/process.c and
-kernel/sched.c without any success yet.
+The return from vfork is corrupted in the parent.
 
-A quick hack to convince me that this is the situation would help. I'm
-running your 2.6.32-rc6.
+This gets worse at -O0.
+
+~~~ vfork-O0
+child is 0x405551a0
+Illegal instruction
+carlos@firin:~/fsrc$ total 284
+drwxr-xr-x  8 carlos carlos  4096 Jul 14  2005 binutils-old-work
+... [snip file list]
+~~~
+The kernel says:
+vfork-O0 (pid 16313): Illegal instruction (code 8) at 000000004054ec77
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001101111111100001111 Not tainted
+r00-03  000000ff0006ff0f 00000000c06be968 000000004054ec70 00000000405551a4
+r04-07  0000000040552aac 0000000000011b8a 0000000040553aac 00000000000f8c48
+r08-11  00000000000f8a48 0000000000000000 00000000000c0000 00000000000f5808
+r12-15  00000000000e8404 00000000000e8408 00000000ffffffff 0000000000000000
+r16-19  0000000000000000 00000000000e6c40 00000000000e3fbc 00000000401f07c0
+r20-23  0000000000000000 0000000040001900 00000000401e65f4 0000000000000000
+r24-27  fffffffffffffff5 0000000000000000 00000000c06be42c 0000000000011b50
+r28-31  0000000000000000 0000000000000000 0000000040552aac 000000004043d053
+sr00-03  00000000053b5800 0000000000000000 0000000000000000 00000000053b5800
+sr04-07  00000000053b5800 00000000053b5800 00000000053b5800 00000000053b5800
+
+      VZOUICununcqcqcqcqcqcrmunTDVZOUI
+FPSR: 00000000000000000000000000000000
+FPER1: 00000000
+fr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+fr04-07  0000000040197fac 00000000405628cc 000000004060b9a0 4040000000000000
+fr08-11  00000000401fd7ac 0000000000000000 000000009f81ebb8 000000009f8403e0
+fr12-15  0000000000000002 000000009f81ebb0 000000009f81ebc0 000000004060b9a0
+fr16-19  0000000000000002 000000009f80eac0 0000000040552b48 00000000f000022c
+fr20-23  0000000040657140 00000000404e32f8 0000000000000700 00001c8c00000000
+fr24-27  0000000000000000 000000004011c8ac 0000000040652ca0 fffffffffffff000
+fr28-31  0000000000000000 ffffffffffffff9c 00000000401d4a68 0000000000000000
+
+IASQ: 00000000053b5800 00000000053b5800 IAOQ: 000000004054ec77 000000004054ec7b
+ IIR: 0015e5b6    ISR: 0000000000000000  IOR: 0000000000000000
+ CPU:        0   CR30: 00000000458a8000 CR31: ffffffffffffffff
+ ORIG_R28: 0000000000000000
+ IAOQ[0]: 000000004054ec77
+ IAOQ[1]: 000000004054ec7b
+ RP(r2): 000000004054ec70
+~~~
+
+However, when running the -O1 version under ptrace, it works:
+~~~
+strace -o strace.log -ff ./vfork-O1
+child != 0
+child is 0x40b7
+total 340
+drwxr-xr-x  8 carlos carlos  4096 Jul 14  2005 binutils-old-work
+... [snip]
+~~~
+
+This indicates to me that the kernel is corrupting the parent process
+after vfork, and the testcase shows it. I have reviewed the assembly
+generated by the compiler and I can't show that anything is wrong.
+
+To remove the C library from the loop I attach a complete vfork
+implementation as used by glibc.
+
+You can compile the test case using:
+gcc -O1 -g -o vfork-O1 vfork.c pt-vfork.s
+
+This will call the vfork in pt-vfork.s and allow you to adjust the
+instructions stream up to and including removing the vfork system call
+e.g. ble 0x100(%sr2,%r0).
+
+For example I use "iitlbp %r0,(%sr0, %r0)" to force a fault in either
+the parent or the child.
+
+Please note that this pt-vfork.s isn't exactly as used in glibc, I
+have expanded the return sequence for both child and parent so you can
+cause a fault in one the other or both independently.
+
+In summary:
+* Test case works on x86.
+* Test case fails on hppa.
+* Test case works on hppa under strace.
+
+What are we doing wrong and where is the bug?
 
 Cheers,
 Carlos.
+
+--0015174795727e380d047a15e4c8
+Content-Type: application/octet-stream; name="pt-vfork.s"
+Content-Disposition: attachment; filename="pt-vfork.s"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g2wb63d90
+
+IyAxICIuLi9wb3J0cy9zeXNkZXBzL3VuaXgvc3lzdi9saW51eC9ocHBhL25wdGwvcHQtdmZvcmsu
+UyIKIyAxICI8YnVpbHQtaW4+IgojIDEgIjxjb21tYW5kLWxpbmU+IgojIDEgIi4vLi4vaW5jbHVk
+ZS9saWJjLXN5bWJvbHMuaCIgMQojIDU0ICIuLy4uL2luY2x1ZGUvbGliYy1zeW1ib2xzLmgiCiMg
+MSAiL2hvbWUvY2FybG9zL2ZzcmMvZ2xpYmMtd29yay9idWlsZHMvZ2xpYmMvY29uZmlnLmgiIDEK
+IyA1NSAiLi8uLi9pbmNsdWRlL2xpYmMtc3ltYm9scy5oIiAyCiMgODIzICIuLy4uL2luY2x1ZGUv
+bGliYy1zeW1ib2xzLmgiCiMgMSAiLi4vc3lzZGVwcy93b3Jkc2l6ZS0zMi9zeW1ib2wtaGFja3Mu
+aCIgMQojIDgyNCAiLi8uLi9pbmNsdWRlL2xpYmMtc3ltYm9scy5oIiAyCiMgMSAiPGNvbW1hbmQt
+bGluZT4iIDIKIyAxICIuLi9wb3J0cy9zeXNkZXBzL3VuaXgvc3lzdi9saW51eC9ocHBhL25wdGwv
+cHQtdmZvcmsuUyIKIyAxOSAiLi4vcG9ydHMvc3lzZGVwcy91bml4L3N5c3YvbGludXgvaHBwYS9u
+cHRsL3B0LXZmb3JrLlMiCiMgMSAiLi4vcG9ydHMvc3lzZGVwcy91bml4L3N5c3YvbGludXgvaHBw
+YS9zeXNkZXAuaCIgMQojIDIzICIuLi9wb3J0cy9zeXNkZXBzL3VuaXgvc3lzdi9saW51eC9ocHBh
+L3N5c2RlcC5oIgojIDEgIi91c3IvaW5jbHVkZS9hc20vdW5pc3RkLmgiIDEgMyA0CiMgMjQgIi4u
+L3BvcnRzL3N5c2RlcHMvdW5peC9zeXN2L2xpbnV4L2hwcGEvc3lzZGVwLmgiIDIKIyAxICIuLi9z
+eXNkZXBzL2dlbmVyaWMvc3lzZGVwLmgiIDEKIyAyNSAiLi4vcG9ydHMvc3lzZGVwcy91bml4L3N5
+c3YvbGludXgvaHBwYS9zeXNkZXAuaCIgMgojIDEgIi4uL3N5c2RlcHMvdW5peC9zeXN2L2xpbnV4
+L3N5cy9zeXNjYWxsLmgiIDEKIyAyNiAiLi4vcG9ydHMvc3lzZGVwcy91bml4L3N5c3YvbGludXgv
+aHBwYS9zeXNkZXAuaCIgMgojIDIwICIuLi9wb3J0cy9zeXNkZXBzL3VuaXgvc3lzdi9saW51eC9o
+cHBhL25wdGwvcHQtdmZvcmsuUyIgMgoKIyAxICIuLi9wb3J0cy9zeXNkZXBzL3VuaXgvc3lzdi9s
+aW51eC9ocHBhL2JpdHMvZXJybm8uaCIgMQojIDI1ICIuLi9wb3J0cy9zeXNkZXBzL3VuaXgvc3lz
+di9saW51eC9ocHBhL2JpdHMvZXJybm8uaCIKIyAxICIvdXNyL2luY2x1ZGUvbGludXgvZXJybm8u
+aCIgMSAzIDQKCgoKIyAxICIvdXNyL2luY2x1ZGUvYXNtL2Vycm5vLmgiIDEgMyA0CgoKCiMgMSAi
+L3Vzci9pbmNsdWRlL2FzbS1nZW5lcmljL2Vycm5vLWJhc2UuaCIgMSAzIDQKIyA1ICIvdXNyL2lu
+Y2x1ZGUvYXNtL2Vycm5vLmgiIDIgMyA0CiMgNSAiL3Vzci9pbmNsdWRlL2xpbnV4L2Vycm5vLmgi
+IDIgMyA0CiMgMjYgIi4uL3BvcnRzL3N5c2RlcHMvdW5peC9zeXN2L2xpbnV4L2hwcGEvYml0cy9l
+cnJuby5oIiAyCiMgMjIgIi4uL3BvcnRzL3N5c2RlcHMvdW5peC9zeXN2L2xpbnV4L2hwcGEvbnB0
+bC9wdC12Zm9yay5TIiAyCiMgMSAiL2hvbWUvY2FybG9zL2ZzcmMvZ2xpYmMtd29yay9idWlsZHMv
+Z2xpYmMvdGNiLW9mZnNldHMuaCIgMQojIDIzICIuLi9wb3J0cy9zeXNkZXBzL3VuaXgvc3lzdi9s
+aW51eC9ocHBhL25wdGwvcHQtdmZvcmsuUyIgMgojIDUyICIuLi9wb3J0cy9zeXNkZXBzL3VuaXgv
+c3lzdi9saW51eC9ocHBhL25wdGwvcHQtdmZvcmsuUyIKLnRleHQgISAKLmFsaWduIDQgISAKLmV4
+cG9ydCBfX3Zmb3JrICEgCi50eXBlIF9fdmZvcmssQGZ1bmN0aW9uICEgCl9fdmZvcms6ICEgCi5Q
+Uk9DICEgCi5DQUxMSU5GTyBGUkFNRT02NCxDQUxMUyxTQVZFX1JQLEVOVFJZX0dSPTMgISAKLkVO
+VFJZICEgISAKIHN0dyAlcnAsIC0yMCglc3IwLCVzcCkgIQoKIHN0d20gJXIzLCA2NCglc3ApCiBz
+dHcgJXNwLCAtNCglc3ApCiBzdHcgJXIxOSwgLTMyKCVzcCkKCgoKIGNvcHkgJXIxOSwgJXIyNQoK
+CgogbWZjdGwgJWNyMjcsICVyMjYgISAKIGxkdyAtMTA0NCglcjI2KSwlcjEgISAKIHN1YiAlcjAs
+JXIxLCVyMSAhIAogc3R3ICVyMSwtMTA0NCglcjI2KSAhCgoKIGJsZSAweDEwMCglc3IyLCVyMCkK
+IGxkaSAoMCArIDExMyksJXIyMAoKCiBjbXBiLD0sbiAlcjAsJXJldDAsLkx0aHJlYWRfc3RhcnQg
+ISAKIG1mY3RsICVjcjI3LCAlcjI2ICEgCiBsZHcgLTEwNDQoJXIyNiksJXIxICEgCiBzdWIgJXIw
+LCVyMSwlcjEgISAKIHN0dyAlcjEsLTEwNDQoJXIyNikgISAKCiBsZGkgLTQwOTYsJXIxCiBjb21j
+bHIsPj49ICVyMSwlcmV0MCwlcjAKIGIsbiAuTGVycm9yCgogLyogaWl0bGJwICVyMCwoJXNyMCwg
+JXIwKSAqLwogbGR3IC04NCglc3ApLCAlcnAKIGJ2ICVyMCglcnApCiBsZHdtIC02NCglc3ApLCAl
+cjMKCi5MdGhyZWFkX3N0YXJ0OiAhCgogbGRpIC00MDk2LCVyMQogY29tY2xyLD4+PSAlcjEsJXJl
+dDAsJXIwCiBiLG4gLkxlcnJvcgoKIGxkdyAtODQoJXNwKSwgJXJwCiBidiAlcjAoJXJwKQogbGR3
+bSAtNjQoJXNwKSwgJXIzCgouTGVycm9yOgogc3ViICVyMCwlcmV0MCwlcjMKIC5pbXBvcnQgX19l
+cnJub19sb2NhdGlvbixjb2RlICEgISAKIGJsIF9fZXJybm9fbG9jYXRpb24sJXJwICEKCiBjb3B5
+ICVyMjUsICVyMTkKCiBzdHcgJXIzLCAwKCVyZXQwKQogbGR3IC04NCglc3ApLCAlcnAKIGJ2ICVy
+MCglcnApCiBsZHdtIC02NCglc3ApLCAlcjMKLkVYSVQgISAuUFJPQ0VORCAhIC5zaXplIF9fdmZv
+cmssIC4tX192Zm9yayAhCgoud2VhayB2Zm9yayAhIHZmb3JrID0gX192Zm9yawo=
+--0015174795727e380d047a15e4c8--
