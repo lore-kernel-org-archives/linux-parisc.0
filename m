@@ -1,58 +1,42 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: can't find a register in class 'R1_REGS' while reloading 'asm'
-Date: Mon, 7 Dec 2009 22:01:14 -0500
-Message-ID: <20091208030114.GA12872@hiauly1.hia.nrc.ca>
-References: <20091207223548.GA4515@raptus.dandreoli.com> <20091208012627.1D22C4FE3@hiauly1.hia.nrc.ca>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: Domenico Andreoli <cavokz@gmail.com>
+Subject: Re: my usual problem with 64bit kernel
+Date: Thu, 10 Dec 2009 00:50:38 +0100
+Message-ID: <20091209235038.GA12806@raptus.dandreoli.com>
+References: <20091204172838.GA4551@raptus.dandreoli.com>
+ <4B1959E2.1030700@gmx.de>
+ <20091205083511.GA6559@raptus.dandreoli.com>
+ <20091207234404.GA5083@raptus.dandreoli.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="AqsLC8rIMeq19msA"
-Cc: linux-parisc@vger.kernel.org
-To: Domenico Andreoli <cavokz@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20091208012627.1D22C4FE3@hiauly1.hia.nrc.ca>
+In-Reply-To: <20091207234404.GA5083@raptus.dandreoli.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On Tue, Dec 08, 2009 at 12:44:04AM +0100, Domenico Andreoli wrote:
+> On Sat, Dec 05, 2009 at 09:35:11AM +0100, Domenico Andreoli wrote:
+> > On Fri, Dec 04, 2009 at 07:50:10PM +0100, Helge Deller wrote:
+> > 
+> > > I just want to make sure, that you have more or less a correct kernel
+> > > configuration setup (.config)....
+> > 
+> > there is at least a configuration glitch which makes my kernel hang
+> > and the debian one continue in degraded mode. i attached also the
+> > configuration, just in case i forgot something important.
+> 
+> i found the configuration glitch, it is CONFIG_DEBUG_MUTEXES. if it is
+> set, 64bit hangs right after "Releasing cpu 1 now, hpa=...", otherwise
+> the 64bit boot continues with a "SMP: CPU:1 is stuck."
 
---AqsLC8rIMeq19msA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+i was wrong, it's again CONFIG_DEBUG_SPINLOCK. if it is set, the
+boot hangs.
 
-On Mon, 07 Dec 2009, John David Anglin wrote:
+i passed the last few days building kernels...
 
-> > is anybody able to reproduce it? configuration is attached.
+cheers,
+Domenico
 
-With your config, I get the same error.
-
-I have attached a potential work around.  The basic idea is to force
-'a' to a specific register to avoid the spill problem in reload.
-It may be a bit risky to use 'r20' but there don't appear to be
-any real calls in __raw_spin_is_locked.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-
---AqsLC8rIMeq19msA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="spinlock.h.d"
-
-diff --git a/arch/parisc/include/asm/spinlock.h b/arch/parisc/include/asm/spinlock.h
-index fae03e1..ce87e4b 100644
---- a/arch/parisc/include/asm/spinlock.h
-+++ b/arch/parisc/include/asm/spinlock.h
-@@ -18,10 +18,9 @@ static inline int __raw_spin_is_locked(raw_spinlock_t *x)
- static inline void __raw_spin_lock_flags(raw_spinlock_t *x,
- 					 unsigned long flags)
- {
--	volatile unsigned int *a;
-+	volatile register unsigned int *a asm ("r20") = __ldcw_align(x);
- 
- 	mb();
--	a = __ldcw_align(x);
- 	while (__ldcw(a) == 0)
- 		while (*a == 0)
- 			if (flags & PSW_SM_I) {
-
---AqsLC8rIMeq19msA--
+-----[ Domenico Andreoli, aka cavok
+ --[ http://www.dandreoli.com/gpgkey.asc
+   ---[ 3A0F 2F80 F79C 678A 8936  4FEE 0677 9033 A20E BC50
