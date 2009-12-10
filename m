@@ -1,40 +1,44 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: my usual problem with 64bit kernel
-Date: Thu, 10 Dec 2009 12:08:46 -0500
-Message-ID: <20091210170846.GA28962@bombadil.infradead.org>
-References: <20091204172838.GA4551@raptus.dandreoli.com> <4B1959E2.1030700@gmx.de> <20091205083511.GA6559@raptus.dandreoli.com> <20091207234404.GA5083@raptus.dandreoli.com> <20091209235038.GA12806@raptus.dandreoli.com>
+From: David Daney <ddaney@caviumnetworks.com>
+Subject: [PATCH 0/5] More unreachable() conversions.
+Date: Thu, 10 Dec 2009 09:25:00 -0800
+Message-ID: <4B212EEC.3060808@caviumnetworks.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-arch@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	David Howells <dhowells@redhat.com>,
+	Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
+	linux-am33-list@redhat.com, Kyle McMartin <kyle@mcm
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20091209235038.GA12806@raptus.dandreoli.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Dec 10, 2009 at 12:50:38AM +0100, Domenico Andreoli wrote:
-> On Tue, Dec 08, 2009 at 12:44:04AM +0100, Domenico Andreoli wrote:
-> > On Sat, Dec 05, 2009 at 09:35:11AM +0100, Domenico Andreoli wrote:
-> > > On Fri, Dec 04, 2009 at 07:50:10PM +0100, Helge Deller wrote:
-> > > 
-> > > > I just want to make sure, that you have more or less a correct kernel
-> > > > configuration setup (.config)....
-> > > 
-> > > there is at least a configuration glitch which makes my kernel hang
-> > > and the debian one continue in degraded mode. i attached also the
-> > > configuration, just in case i forgot something important.
-> > 
-> > i found the configuration glitch, it is CONFIG_DEBUG_MUTEXES. if it is
-> > set, 64bit hangs right after "Releasing cpu 1 now, hpa=...", otherwise
-> > the 64bit boot continues with a "SMP: CPU:1 is stuck."
-> 
-> i was wrong, it's again CONFIG_DEBUG_SPINLOCK. if it is set, the
-> boot hangs.
-> 
-> i passed the last few days building kernels...
-> 
+Back in commit 38938c879eb0c39edf85d5164aa0cffe2874304c the new macro
+unreachable() was added.  We can use it in BUG instead of a variety of
+ad hoc endless loops.
 
-So CONFIG_DEBUG_SPINLOCK causes hangs, with it unset, everything is
-fine? Interesting. Sounds like initialization issues. I'll take a look
-soon.
+This patch set consists of the patches from the original set that were
+never Acked-by anyone.  Although they are completely untested, they
+seem plausible.
 
-r, Kyle
+I don't plan on pushing these things out any more, so if you
+like them please merge them via your architecture trees.
+
+I will reply with the 5 patches.
+
+David Daney (5):
+   mn10300: Convert BUG() to use unreachable()
+   parisc: Convert BUG() to use unreachable()
+   powerpc: Convert BUG() to use unreachable()
+   alpha: Convert BUG() to use unreachable()
+   blackfin: Convert BUG() to use unreachable()
+
+  arch/alpha/include/asm/bug.h    |    3 ++-
+  arch/blackfin/include/asm/bug.h |    2 +-
+  arch/mn10300/include/asm/bug.h  |    3 ++-
+  arch/parisc/include/asm/bug.h   |    4 ++--
+  arch/powerpc/include/asm/bug.h  |    2 +-
+  5 files changed, 8 insertions(+), 6 deletions(-)
+
