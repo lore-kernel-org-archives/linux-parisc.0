@@ -1,49 +1,56 @@
-From: David Daney <ddaney@caviumnetworks.com>
-Subject: [PATCH 2/5] parisc: Convert BUG() to use unreachable()
-Date: Thu, 10 Dec 2009 09:28:18 -0800
-Message-ID: <1260466101-17545-2-git-send-email-ddaney@caviumnetworks.com>
-References: <4B212EEC.3060808@caviumnetworks.com>
-Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org,
-	David Daney <ddaney@caviumnetworks.com>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	linux-parisc@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+From: Domenico Andreoli <cavokz@gmail.com>
+Subject: Re: my usual problem with 64bit kernel
+Date: Thu, 10 Dec 2009 19:42:02 +0100
+Message-ID: <b40acdb70912101042k351d33b2ndac99a162969dfb4@mail.gmail.com>
+References: <20091204172838.GA4551@raptus.dandreoli.com>
+	 <4B1959E2.1030700@gmx.de> <20091205083511.GA6559@raptus.dandreoli.com>
+	 <20091207234404.GA5083@raptus.dandreoli.com>
+	 <20091209235038.GA12806@raptus.dandreoli.com>
+	 <20091210170846.GA28962@bombadil.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4B212EEC.3060808@caviumnetworks.com>
+In-Reply-To: <20091210170846.GA28962@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Use the new unreachable() macro instead of for(;;);
+On Thu, Dec 10, 2009 at 6:08 PM, Kyle McMartin <kyle@mcmartin.ca> wrote:
+> On Thu, Dec 10, 2009 at 12:50:38AM +0100, Domenico Andreoli wrote:
+>> On Tue, Dec 08, 2009 at 12:44:04AM +0100, Domenico Andreoli wrote:
+>> > On Sat, Dec 05, 2009 at 09:35:11AM +0100, Domenico Andreoli wrote:
+>> > > On Fri, Dec 04, 2009 at 07:50:10PM +0100, Helge Deller wrote:
+>> > >
+>> > > > I just want to make sure, that you have more or less a correct kernel
+>> > > > configuration setup (.config)....
+>> > >
+>> > > there is at least a configuration glitch which makes my kernel hang
+>> > > and the debian one continue in degraded mode. i attached also the
+>> > > configuration, just in case i forgot something important.
+>> >
+>> > i found the configuration glitch, it is CONFIG_DEBUG_MUTEXES. if it is
+>> > set, 64bit hangs right after "Releasing cpu 1 now, hpa=...", otherwise
+>> > the 64bit boot continues with a "SMP: CPU:1 is stuck."
+>>
+>> i was wrong, it's again CONFIG_DEBUG_SPINLOCK. if it is set, the
+>> boot hangs.
+>>
+>> i passed the last few days building kernels...
+>>
+>
+> So CONFIG_DEBUG_SPINLOCK causes hangs, with it unset, everything is
+> fine? Interesting. Sounds like initialization issues. I'll take a look soon.
 
-Signed-off-by: David Daney <ddaney@caviumnetworks.com>
-CC: Kyle McMartin <kyle@mcmartin.ca>
-CC: Helge Deller <deller@gmx.de>
-CC: linux-parisc@vger.kernel.org
----
- arch/parisc/include/asm/bug.h |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+no exactly, with CONFIG_DEBUG_SPINLOCK unset kernel boots but still with
+1 CPU and the "SMP: CPU:1 is stuck." message, this at 64bit.
 
-diff --git a/arch/parisc/include/asm/bug.h b/arch/parisc/include/asm/bug.h
-index 8cfc553..75e46c5 100644
---- a/arch/parisc/include/asm/bug.h
-+++ b/arch/parisc/include/asm/bug.h
-@@ -32,14 +32,14 @@
- 			     "\t.popsection"				\
- 			     : : "i" (__FILE__), "i" (__LINE__),	\
- 			     "i" (0), "i" (sizeof(struct bug_entry)) ); \
--		for(;;) ;						\
-+		unreachable();						\
- 	} while(0)
- 
- #else
- #define BUG()								\
- 	do {								\
- 		asm volatile(PARISC_BUG_BREAK_ASM : : );		\
--		for(;;) ;						\
-+		unreachable();						\
- 	} while(0)
- #endif
- 
--- 
-1.6.2.5
+at 32bit and CONFIG_DEBUG_SPINLOCK unset (both gcc 4.3 & 4.4) i get
+the build error i reported in another thread. with CONFIG_DEBUG_SPINLOCK
+set kernel builds and runs nicely.
 
+regards,
+Domenico
+
+-----[ Domenico Andreoli, aka cavok
+ --[ http://www.dandreoli.com/gpgkey.asc
+   ---[ 3A0F 2F80 F79C 678A 8936  4FEE 0677 9033 A20E BC50
