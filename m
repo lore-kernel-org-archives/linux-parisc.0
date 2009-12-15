@@ -1,68 +1,52 @@
-From: Domenico Andreoli <cavokz@gmail.com>
-Subject: Re: my usual problem with 64bit kernel
-Date: Tue, 15 Dec 2009 21:25:47 +0100
-Message-ID: <20091215202547.GA18193@raptus.dandreoli.com>
-References: <20091204172838.GA4551@raptus.dandreoli.com>
- <4B1959E2.1030700@gmx.de>
- <20091205083511.GA6559@raptus.dandreoli.com>
- <20091207234404.GA5083@raptus.dandreoli.com>
- <20091209235038.GA12806@raptus.dandreoli.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: Erlang VM immediately exits on hppa: execve() fails
+Date: Tue, 15 Dec 2009 16:49:07 -0500
+Message-ID: <119aab440912151349n130fa7a4w49acf3be253d3cde@mail.gmail.com>
+References: <f60b7eb60912142352i4b97caafg7a53b24aea12befd@mail.gmail.com>
+	 <119aab440912150811x3527dfa1g6e260c0822ab9c02@mail.gmail.com>
+	 <f60b7eb60912151124u255498ffob9cb422cc730268f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: debian-hppa@lists.debian.org, linux-parisc@vger.kernel.org,
+	kyle@mcmartin.ca
+To: Sergei Golovan <sgolovan@nes.ru>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20091209235038.GA12806@raptus.dandreoli.com>
+In-Reply-To: <f60b7eb60912151124u255498ffob9cb422cc730268f@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Dec 10, 2009 at 12:50:38AM +0100, Domenico Andreoli wrote:
-> On Tue, Dec 08, 2009 at 12:44:04AM +0100, Domenico Andreoli wrote:
-> > On Sat, Dec 05, 2009 at 09:35:11AM +0100, Domenico Andreoli wrote:
-> > > On Fri, Dec 04, 2009 at 07:50:10PM +0100, Helge Deller wrote:
-> > > 
-> > > > I just want to make sure, that you have more or less a correct kernel
-> > > > configuration setup (.config)....
-> > > 
-> > > there is at least a configuration glitch which makes my kernel hang
-> > > and the debian one continue in degraded mode. i attached also the
-> > > configuration, just in case i forgot something important.
-> > 
-> > i found the configuration glitch, it is CONFIG_DEBUG_MUTEXES. if it is
-> > set, 64bit hangs right after "Releasing cpu 1 now, hpa=...", otherwise
-> > the 64bit boot continues with a "SMP: CPU:1 is stuck."
-> 
-> i was wrong, it's again CONFIG_DEBUG_SPINLOCK. if it is set, the
-> boot hangs.
+On Tue, Dec 15, 2009 at 2:24 PM, Sergei Golovan <sgolovan@nes.ru> wrote=
+:
+> On Tue, Dec 15, 2009 at 7:11 PM, =A0<carlos@systemhalted.org> wrote:
+>> On Tue, Dec 15, 2009 at 2:52 AM, Sergei Golovan <sgolovan@nes.ru> wr=
+ote:
+>>> After the recent changes in hppa architecture Erlang virtual machin=
+e
+>>> fails to start (which leads to several FTBFS bugs in particular:
+>>> #559628, #559962, #559004).
+>>>
+>>> The problem is that after vfork(), execve() fails to start a child
+>>> process. It sets errno to EMFILE. If I run erl under strace, it wor=
+ks
+>>> fine. Is it a bug in glibc, or in Erlang itself?
+>>>
+>>> I'm giving a small excerpt from erts/emulator/sys/unix/sys.c file
+>>> where the failed execve(), the rest could be found in erlang
+>>> 12.b.2.1-1 sources.
+>>
+>> Are you certain that execve() fails to start a child process?
+>
+> Yes, after I've inserted some debug printf() right after execve() it
+> was reached.
 
-i bisected something, commit 44048d700bcbfaf4bcca6e2e0a73d89d01ec0878
-breaks my SMP parisc64. before it, kernel boots with 2 CPUs
-(as did 2.6.22). after it, it hangs at "Releasing cpu 1 now,
-hpa=fffffffffffa2000" but CONFIG_DEBUG_SPINLOCK is _not_ set, the
-opposite i reported in this thread at 64bit and consistently with
-current 2.6.32 at 32bit.
+Yes, you are definitely right, I hadn't thought to try that.
 
-i'm pretty confused by the whole thing but i'm sure about this bisection,
-i double-checked it. here is the diff.
+I will test an instrumented kernel tonight to see what the problem is.
 
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -749,23 +749,6 @@ int move_freepages_block(struct zone *zone, struct page *page, int migratetype)
-        return move_freepages(zone, start_page, end_page, migratetype);
- }
- 
--/* Return the page with the lowest PFN in the list */
--static struct page *min_page(struct list_head *list)
--{
--       unsigned long min_pfn = -1UL;
--       struct page *min_page = NULL, *page;;
--
--       list_for_each_entry(page, list, lru) {
--               unsigned long pfn = page_to_pfn(page);
--               if (pfn < min_pfn) {
--                       min_pfn = pfn;
--                       min_page = page;
--               }
--       }
--
--       return min_page;
--}
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
