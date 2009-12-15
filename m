@@ -1,52 +1,30 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: Erlang VM immediately exits on hppa: execve() fails
-Date: Tue, 15 Dec 2009 16:49:07 -0500
-Message-ID: <119aab440912151349n130fa7a4w49acf3be253d3cde@mail.gmail.com>
-References: <f60b7eb60912142352i4b97caafg7a53b24aea12befd@mail.gmail.com>
-	 <119aab440912150811x3527dfa1g6e260c0822ab9c02@mail.gmail.com>
-	 <f60b7eb60912151124u255498ffob9cb422cc730268f@mail.gmail.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: vfork test case.
+Date: Tue, 15 Dec 2009 17:21:17 -0500 (EST)
+Message-ID: <20091215222119.E6CD84ED7@hiauly1.hia.nrc.ca>
+References: <119aab440912061319y5b863203ve5dc3dc568a6ccec@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: debian-hppa@lists.debian.org, linux-parisc@vger.kernel.org,
-	kyle@mcmartin.ca
-To: Sergei Golovan <sgolovan@nes.ru>
+Content-Type: text/plain; charset=US-ASCII
+Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org,
+	kyle@mcmartin.ca, James.Bottomley@hansenpartnership.com
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <f60b7eb60912151124u255498ffob9cb422cc730268f@mail.gmail.com>
+In-Reply-To: <119aab440912061319y5b863203ve5dc3dc568a6ccec@mail.gmail.com> from "Carlos O'Donell" at Dec 6, 2009 04:19:13 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Dec 15, 2009 at 2:24 PM, Sergei Golovan <sgolovan@nes.ru> wrote=
-:
-> On Tue, Dec 15, 2009 at 7:11 PM, =A0<carlos@systemhalted.org> wrote:
->> On Tue, Dec 15, 2009 at 2:52 AM, Sergei Golovan <sgolovan@nes.ru> wr=
-ote:
->>> After the recent changes in hppa architecture Erlang virtual machin=
-e
->>> fails to start (which leads to several FTBFS bugs in particular:
->>> #559628, #559962, #559004).
->>>
->>> The problem is that after vfork(), execve() fails to start a child
->>> process. It sets errno to EMFILE. If I run erl under strace, it wor=
-ks
->>> fine. Is it a bug in glibc, or in Erlang itself?
->>>
->>> I'm giving a small excerpt from erts/emulator/sys/unix/sys.c file
->>> where the failed execve(), the rest could be found in erlang
->>> 12.b.2.1-1 sources.
->>
->> Are you certain that execve() fails to start a child process?
->
-> Yes, after I've inserted some debug printf() right after execve() it
-> was reached.
+> I have constructed a vfork test case which shows some of the problems
+> I have using vfork reliably. This fails every time on my PA8700 system
+> running 2.6.32-rc6. It appears as though r28 (ret0) in the parent is
+> being corrupted.
 
-Yes, you are definitely right, I hadn't thought to try that.
+The test doesn't fail on two of my builds:
+Linux mx3210 2.6.31.7 #5 Wed Dec 9 22:49:53 EST 2009 parisc64
+Linux hiauly6 2.6.31.7 #18 Wed Dec 9 21:34:36 EST 2009 parisc
 
-I will test an instrumented kernel tonight to see what the problem is.
+Are you running a SMP config?
 
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
