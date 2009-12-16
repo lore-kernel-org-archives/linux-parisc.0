@@ -1,34 +1,61 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: my usual problem with 64bit kernel
-Date: Tue, 15 Dec 2009 23:21:51 -0500 (EST)
-Message-ID: <20091216042152.93A0B4ED7@hiauly1.hia.nrc.ca>
-References: <20091216033704.GI28962@bombadil.infradead.org>
+From: Kyle McMartin <kyle@hera.kernel.org>
+Subject: [git patches] parisc pull request for 2.6.33
+Date: Wed, 16 Dec 2009 04:27:38 +0000
+Message-ID: <20091216042738.GA9104@hera.kernel.org>
+Reply-To: kyle@mcmartin.ca
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org
-To: kyle@mcmartin.ca (Kyle McMartin)
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: torvalds@linux-foundation.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20091216033704.GI28962@bombadil.infradead.org> from "Kyle McMartin" at Dec 15, 2009 10:37:04 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Tue, Dec 15, 2009 at 09:25:47PM +0100, Domenico Andreoli wrote:
-> > (as did 2.6.22). after it, it hangs at "Releasing cpu 1 now,
-> > hpa=fffffffffffa2000" but CONFIG_DEBUG_SPINLOCK is _not_ set, the
-> > opposite i reported in this thread at 64bit and consistently with
-> > current 2.6.32 at 32bit.
-> > 
-> > i'm pretty confused by the whole thing but i'm sure about this bisection,
-> > i double-checked it. here is the diff.
-> > 
-> 
-> thanks for bisecting it. i'll take a look unless you beat me to it.
+Hi Linus,
 
-The removal of this change caused similar problems on a couple of
-other targets.  It's a bit strange since this change was only installed
-for a brief time.
+Mostly just compile and bug fixes this release, with a clean up from
+Alexey to use seq_file, plus some ftrace stuff from Helge.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Thanks!
+	Kyle
+
+The following changes since commit 8bea8672edfca7ec5f661cafb218f1205863b343:
+  Stephen Rothwell (1):
+        mfd: compile fix for twl4030 renaming
+
+are available in the git repository at:
+
+  /pub/scm/linux/kernel/git/kyle/parisc-2.6.git next
+
+Alexey Dobriyan (1):
+      parisc: convert /proc/pdc/{lcd,led} to seq_file
+
+David Daney (1):
+      parisc: Convert BUG() to use unreachable()
+
+Helge Deller (3):
+      parisc: remove unused IRQSTAT_SIRQ_PEND and IRQSTAT_SZ defines
+      parisc: add CALLER_ADDR{0-6} macros
+      parisc: use sort() instead of home-made implementation (v2)
+
+Huang Weiyi (1):
+      parisc: remove duplicated #include
+
+Thomas Gleixner (2):
+      parisc: Replace old style lock init in smp.c
+      parisc: Fixup last users of irq_chip->typename
+
+ arch/parisc/include/asm/bug.h    |    4 +-
+ arch/parisc/include/asm/ftrace.h |   14 +++++++++
+ arch/parisc/kernel/asm-offsets.c |    3 --
+ arch/parisc/kernel/irq.c         |    4 +-
+ arch/parisc/kernel/signal.c      |    1 -
+ arch/parisc/kernel/smp.c         |    9 ++++--
+ arch/parisc/kernel/unwind.c      |   50 +++++++++++++++++++++++---------
+ drivers/parisc/dino.c            |    2 +-
+ drivers/parisc/eisa.c            |    2 +-
+ drivers/parisc/gsc.c             |    2 +-
+ drivers/parisc/iosapic.c         |    2 +-
+ drivers/parisc/led.c             |   59 ++++++++++++++++++-------------------
+ drivers/parisc/superio.c         |    2 +-
+ 13 files changed, 94 insertions(+), 60 deletions(-)
