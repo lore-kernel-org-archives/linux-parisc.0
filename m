@@ -1,24 +1,30 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: my usual problem with 64bit kernel
-Date: Tue, 15 Dec 2009 22:37:04 -0500
-Message-ID: <20091216033704.GI28962@bombadil.infradead.org>
-References: <20091204172838.GA4551@raptus.dandreoli.com> <4B1959E2.1030700@gmx.de> <20091205083511.GA6559@raptus.dandreoli.com> <20091207234404.GA5083@raptus.dandreoli.com> <20091209235038.GA12806@raptus.dandreoli.com> <20091215202547.GA18193@raptus.dandreoli.com>
+Subject: Re: can't find a register in class 'R1_REGS' while reloading 'asm'
+Date: Tue, 15 Dec 2009 22:37:28 -0500
+Message-ID: <20091216033728.GJ28962@bombadil.infradead.org>
+References: <20091207223548.GA4515@raptus.dandreoli.com> <20091208012627.1D22C4FE3@hiauly1.hia.nrc.ca> <20091208030114.GA12872@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+Cc: Domenico Andreoli <cavokz@gmail.com>, linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20091215202547.GA18193@raptus.dandreoli.com>
+In-Reply-To: <20091208030114.GA12872@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Dec 15, 2009 at 09:25:47PM +0100, Domenico Andreoli wrote:
-> (as did 2.6.22). after it, it hangs at "Releasing cpu 1 now,
-> hpa=fffffffffffa2000" but CONFIG_DEBUG_SPINLOCK is _not_ set, the
-> opposite i reported in this thread at 64bit and consistently with
-> current 2.6.32 at 32bit.
+On Mon, Dec 07, 2009 at 10:01:14PM -0500, John David Anglin wrote:
+> On Mon, 07 Dec 2009, John David Anglin wrote:
 > 
-> i'm pretty confused by the whole thing but i'm sure about this bisection,
-> i double-checked it. here is the diff.
+> > > is anybody able to reproduce it? configuration is attached.
+> 
+> With your config, I get the same error.
+> 
+> I have attached a potential work around.  The basic idea is to force
+> 'a' to a specific register to avoid the spill problem in reload.
+> It may be a bit risky to use 'r20' but there don't appear to be
+> any real calls in __raw_spin_is_locked.
 > 
 
-thanks for bisecting it. i'll take a look unless you beat me to it.
+Do you want this patch applied to 2.6.32-rc1, John?
+
+regards, Kyle
