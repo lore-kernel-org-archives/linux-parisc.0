@@ -1,30 +1,24 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: vfork test case.
-Date: Tue, 15 Dec 2009 17:21:17 -0500 (EST)
-Message-ID: <20091215222119.E6CD84ED7@hiauly1.hia.nrc.ca>
-References: <119aab440912061319y5b863203ve5dc3dc568a6ccec@mail.gmail.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: my usual problem with 64bit kernel
+Date: Tue, 15 Dec 2009 22:37:04 -0500
+Message-ID: <20091216033704.GI28962@bombadil.infradead.org>
+References: <20091204172838.GA4551@raptus.dandreoli.com> <4B1959E2.1030700@gmx.de> <20091205083511.GA6559@raptus.dandreoli.com> <20091207234404.GA5083@raptus.dandreoli.com> <20091209235038.GA12806@raptus.dandreoli.com> <20091215202547.GA18193@raptus.dandreoli.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org,
-	kyle@mcmartin.ca, James.Bottomley@hansenpartnership.com
-To: carlos@systemhalted.org (Carlos O'Donell)
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440912061319y5b863203ve5dc3dc568a6ccec@mail.gmail.com> from "Carlos O'Donell" at Dec 6, 2009 04:19:13 pm
+In-Reply-To: <20091215202547.GA18193@raptus.dandreoli.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> I have constructed a vfork test case which shows some of the problems
-> I have using vfork reliably. This fails every time on my PA8700 system
-> running 2.6.32-rc6. It appears as though r28 (ret0) in the parent is
-> being corrupted.
+On Tue, Dec 15, 2009 at 09:25:47PM +0100, Domenico Andreoli wrote:
+> (as did 2.6.22). after it, it hangs at "Releasing cpu 1 now,
+> hpa=fffffffffffa2000" but CONFIG_DEBUG_SPINLOCK is _not_ set, the
+> opposite i reported in this thread at 64bit and consistently with
+> current 2.6.32 at 32bit.
+> 
+> i'm pretty confused by the whole thing but i'm sure about this bisection,
+> i double-checked it. here is the diff.
+> 
 
-The test doesn't fail on two of my builds:
-Linux mx3210 2.6.31.7 #5 Wed Dec 9 22:49:53 EST 2009 parisc64
-Linux hiauly6 2.6.31.7 #18 Wed Dec 9 21:34:36 EST 2009 parisc
-
-Are you running a SMP config?
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+thanks for bisecting it. i'll take a look unless you beat me to it.
