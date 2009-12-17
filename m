@@ -1,79 +1,76 @@
-From: dann frazier <dannf@dannf.org>
-Subject: Re: vfork test case.
-Date: Thu, 17 Dec 2009 09:45:16 -0700
-Message-ID: <20091217164516.GD10487@lackof.org>
-References: <4B294F8B.1070700@gmx.de> <20091216213505.DE6EE537C@hiauly1.hia.nrc.ca> <119aab440912170624p58d6f19fk9e6feaab11f6f1a3@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [git patches] xfs and block fixes for virtually indexed arches
+Date: Thu, 17 Dec 2009 08:46:33 -0800 (PST)
+Message-ID: <alpine.LFD.2.00.0912170839550.15740@localhost.localdomain>
+References: <20091216043618.GB9104@hera.kernel.org> <20091217132256.GO28962@bombadil.infradead.org> <alpine.LFD.2.00.0912170811130.15740@localhost.localdomain> <20091217163036.GE2123@thunk.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	Helge Deller <deller@gmx.de>, dave.anglin@nrc-cnrc.gc.ca,
-	linux-parisc@vger.kernel.org, kyle@mcmartin.ca,
-	James.Bottomley@hansenpartnership.com
-To: Carlos O'Donell <carlos@systemhalted.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	James.Bottomley@suse.de, hch@infradead.org,
+	linux-arch@vger.kernel.org, Jens Axboe <jens.axboe@oracle.com>
+To: tytso@mit.edu
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440912170624p58d6f19fk9e6feaab11f6f1a3@mail.gmail.com>
+In-Reply-To: <20091217163036.GE2123@thunk.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Dec 17, 2009 at 09:24:05AM -0500, Carlos O'Donell wrote:
-> On Wed, Dec 16, 2009 at 4:35 PM, John David Anglin
-> <dave@hiauly1.hia.nrc.ca> wrote:
-> >> On 12/15/2009 11:21 PM, John David Anglin wrote:
-> >> >> I have constructed a vfork test case which shows some of the problems
-> >> >> I have using vfork reliably. This fails every time on my PA8700 system
-> >> >> running 2.6.32-rc6. It appears as though r28 (ret0) in the parent is
-> >> >> being corrupted.
-> >> >
-> >> > The test doesn't fail on two of my builds:
-> >> > Linux mx3210 2.6.31.7 #5 Wed Dec 9 22:49:53 EST 2009 parisc64
-> >> > Linux hiauly6 2.6.31.7 #18 Wed Dec 9 21:34:36 EST 2009 parisc
-> >>
-> >> I did tested your testcase on my c3000 too but it didn't failed for me either.
-> >> This was on some 2.6.32-rc candidate.
-> >
-> > I think it must be because Carlos is building SMP kernels.
+
+
+On Thu, 17 Dec 2009, tytso@mit.edu wrote:
 > 
-> Yes, I'm trying to shake out some SMP bugs.
-> 
-> Dan, you said that the emacs32 failure went away when you upgraded to
-> 2.6.32 stable on the buildds. Are they running SMP kernels?
+> That's because apparently the iSCSI and DMA blocks assume that they
+> have Real Pages (tm) passed to block I/O requests, and apparently XFS
+> ran into problems when sending vmalloc'ed pages.  I don't know if this
+> is a problem if we pass the bio layer addresses coming from the SLAB
+> allocator, but oral tradition seems to indicate this is problematic,
+> although no one has given me the full chapter and verse explanation
+> about why this is so.
 
-Nope. When I initially took over these buildds I tried SMP kernels and
-found them to be far less stable, so we're sticking w/ UP.
+kmalloc() memory should be ok. It's backed by "real pages". Doing the DMA 
+translations for such pages is trivial and fundamental.
 
-That means that some emacs23 build attempts may have been on SMP, but
-most were not. Kernel versions should be available in the build logs.
-smp kernels should all have 'smp' in their uname output.
+In contrast, vmalloc is pure and utter unadulterated CRAP. The pages 
+may be contiguous virtually, but it makes no difference for the block 
+layer, that has to be able to do IO by DMA anyway, so it has to look up 
+the page translations in the page tables etc crazy sh*t.
 
-> Could you try the vfork test case there?
+So passing vmalloc'ed page addresses around to something that will 
+eventually do a non-CPU-virtual thing on them is fundamentally insane. The 
+vmalloc space is about CPU virtual addresses. Such concepts simpyl do not 
+-exist- for some random block device.
 
-dannf@penalosa:/tmp$ cat /proc/version
-Linux version 2.6.32-trunk-parisc64 (Debian 2.6.32-1) (waldi@debian.org) (gcc version 4.3.4 (GCC) ) #1 Tue Dec 8 04:07:32 UTC 2009
-dannf@penalosa:/tmp$ gcc -O1 -g -o vfork-01 vfork.c
-dannf@penalosa:/tmp$ gcc -O0 -g -o vfork-00 vfork.c
-dannf@penalosa:/tmp$ ./vfork-01
-child != 0
-child is 0x10c8
-dannf@penalosa:/tmp$ total 28
--rwxr-xr-x 1 dannf Debian  9333 Dec 17 16:41 vfork-00
--rwxr-xr-x 1 dannf Debian 10383 Dec 17 16:40 vfork-01
--rw-r--r-- 1 dannf Debian   380 Dec 17 16:40 vfork.c
+> Now that I see Linus's complaint, I'm wondering if the issue is really
+> about kernel virtual addresses (i.e., coming from vmalloc), and not a
+> requirement for Real Pages (i.e., coming from the SLAB allocator as
+> opposed to get_free_page).  And can this be documented someplace?  I
+> tried looking at the bio documentation, and couldn't find anything
+> definitive on the subject.
 
-dannf@penalosa:/tmp$ ./vfork-00 
-child != 0
-child is 0x1101
-dannf@penalosa:/tmp$ total 28
--rwxr-xr-x 1 dannf Debian  9333 Dec 17 16:41 vfork-00
--rwxr-xr-x 1 dannf Debian 10383 Dec 17 16:40 vfork-01
--rw-r--r-- 1 dannf Debian   380 Dec 17 16:40 vfork.c
+The whole "vmalloc is special" has always been true. If you want to 
+treat vmalloc as normal memory, you need to look up the pages yourself. We 
+have helpers for that (including helpers that populate vmalloc space from 
+a page array to begin with - so you can _start_ from some array of pages 
+and then lay them out virtually if you want to have a convenient CPU 
+access to the array).
 
-> Test case is here:
-> http://article.gmane.org/gmane.linux.ports.parisc/2403
-> 
-> Cheers,
-> Carlos.
-> 
+And this whole "vmalloc is about CPU virtual addresses" is so obviously 
+and fundamentally true that I don't understand how anybody can ever be 
+confused about it. The "v" in vmalloc is for "virtual" as in virtual 
+memory.
 
--- 
-dann frazier
+Think of it like virtual user addresses. Does anybody really expect to be 
+able to pass a random user address to the BIO layer?
 
+And if you do, I would suggest that you get out of kernel programming 
+pronto. You're a danger to society, and have a lukewarm IQ. I don't want 
+you touching kernel code.
+
+And no, I do _not_ want the BIO layer having to walk page tables. Not for 
+vmalloc space, not for user virtual addresses.
+
+(And don't tell me it already does. Maybe somebody sneaked it in past me, 
+without me ever noticing. That wouldn't be an excuse, that would be just 
+sad. Jesus wept)
+
+			Linus
