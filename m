@@ -1,44 +1,79 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: vfork test case.
-Date: Thu, 17 Dec 2009 16:59:28 -0500
-Message-ID: <119aab440912171359k2fff19feya6e1eb2b3e81c0ac@mail.gmail.com>
-References: <119aab440912061319y5b863203ve5dc3dc568a6ccec@mail.gmail.com>
-	 <200912172240.22252.b.gunreben@web.de>
+From: James Bottomley <James.Bottomley@suse.de>
+Subject: Re: [git patches] xfs and block fixes for virtually indexed arches
+Date: Fri, 18 Dec 2009 00:57:00 +0100
+Message-ID: <1261094220.2752.27.camel@mulgrave.site>
+References: <20091216043618.GB9104@hera.kernel.org>
+	 <20091217132256.GO28962@bombadil.infradead.org>
+	 <alpine.LFD.2.00.0912170811130.15740@localhost.localdomain>
+	 <20091217163036.GE2123@thunk.org>
+	 <alpine.LFD.2.00.0912170839550.15740@localhost.localdomain>
+	 <20091217173957.GG2123@thunk.org>
+	 <alpine.LFD.2.00.0912170950330.15740@localhost.localdomain>
+	 <20091217193648.GI4489@kernel.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc <linux-parisc@vger.kernel.org>
-To: Berthold Gunreben <b.gunreben@web.de>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, tytso@mit.edu,
+	Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	hch@infradead.org, linux-arch@vger.kernel.org
+To: Jens Axboe <jens.axboe@oracle.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200912172240.22252.b.gunreben@web.de>
+In-Reply-To: <20091217193648.GI4489@kernel.dk>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Dec 17, 2009 at 4:40 PM, Berthold Gunreben <b.gunreben@web.de> wrote:
-> Hi Carlos,
->
-> On Sunday 06 December 2009 22:19:13 Carlos O'Donell wrote:
->> Kyle, James,
->>
->> I have constructed a vfork test case which shows some of the problems
->> I have using vfork reliably. This fails every time on my PA8700 system
->> running 2.6.32-rc6. It appears as though r28 (ret0) in the parent is
->> being corrupted.
->
-> this reminds me of a problem with vfork that I encountered some years ago. The
-> problem as described in
-> http://sourceware.org/ml/libc-alpha/2003-02/msg00042.html
-> was fixed for many architectures, but not for hppa as far as I remember. See
-> also
-> http://sourceware.org/ml/libc-hacker/2003-02/msg00015.html
->
-> I have no idea if this is related, but thought it won't hurt to mention this.
+On Thu, 2009-12-17 at 20:36 +0100, Jens Axboe wrote:
+> On Thu, Dec 17 2009, Linus Torvalds wrote:
+> > 
+> > 
+> > On Thu, 17 Dec 2009, tytso@mit.edu wrote:
+> > > 
+> > > Sure, but there's some rumors/oral traditions going around that some
+> > > block devices want bio address which are page aligned, because they
+> > > want to play some kind of refcounting game,
+> > 
+> > Yeah, you might be right at that.
+> > 
+> > > And it's Weird Shit(tm) (aka iSCSI, AoE) type drivers, that most of us 
+> > > don't have access to, so just because it works Just Fine on SATA doesn't 
+> > > mean anything.
+> > > 
+> > > And none of this is documented anywhere, which is frustrating as hell.
+> > > Just rumors that "if you do this, AoE/iSCSI will corrupt your file
+> > > systems".
+> > 
+> > ACK. Jens? 
+> 
+> I've heard those rumours too, and I don't even know if they are true.
+> Who has a pointer to such a bug report and/or issue? The block layer
+> itself doesn't not have any such requirements, and the only places where
+> we play page games is for bio's that were explicitly mapped with pages
+> by itself (like mapping user data).o
 
-That has to do with the assembly not checking the pthread function
-lookup table to determine if it should call vfork or pthread's vfork.
+OK, so what happened is that prior to the map single fix
 
-In my test case there are no pthread functions calls.
+commit df46b9a44ceb5af2ea2351ce8e28ae7bd840b00f
+Author: Mike Christie  <michaelc@cs.wisc.edu>
+Date:   Mon Jun 20 14:04:44 2005 +0200
 
-Thanks for the pointer, the fix you point out is no longer needed in nptl.
+    [PATCH] Add blk_rq_map_kern()
 
-Cheers,
-Carlos.
+
+bio could only accept user space buffers, so we had a special path for
+kernel allocated buffers.  That commit unified the path (with a separate
+block API) so we could now submit kmalloc'd buffers via block APIs.
+
+So the rule now is we can accept any user mapped area via
+blk_rq_map_user and any kmalloc'd area via blk_rq_map_kern().  We might
+not be able to do a stack area (depending on how the arch maps the
+stack) and we definitely cannot do a vmalloc'd area.
+
+So it sounds like we only need a blk_rq_map_vmalloc() using the same
+techniques as the patch set and we're good to go.
+
+> We fix driver crap like that, we don't work around it. It's a BUG.
+
+James
+
+
+
