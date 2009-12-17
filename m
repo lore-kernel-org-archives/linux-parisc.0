@@ -1,50 +1,40 @@
-From: Jens Axboe <jens.axboe@oracle.com>
-Subject: Re: [git patches] xfs and block fixes for virtually indexed arches
-Date: Thu, 17 Dec 2009 20:36:48 +0100
-Message-ID: <20091217193648.GI4489@kernel.dk>
-References: <20091216043618.GB9104@hera.kernel.org> <20091217132256.GO28962@bombadil.infradead.org> <alpine.LFD.2.00.0912170811130.15740@localhost.localdomain> <20091217163036.GE2123@thunk.org> <alpine.LFD.2.00.0912170839550.15740@localhost.localdomain> <20091217173957.GG2123@thunk.org> <alpine.LFD.2.00.0912170950330.15740@localhost.localdomain>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: vfork test case.
+Date: Thu, 17 Dec 2009 15:39:02 -0500
+Message-ID: <119aab440912171239hf2ecc6fq86795f100a1e3fbc@mail.gmail.com>
+References: <20091216213505.DE6EE537C@hiauly1.hia.nrc.ca>
+	 <4B2A82AA.10907@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: tytso@mit.edu, Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	James.Bottomley@suse.de, hch@infradead.org,
-	linux-arch@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LFD.2.00.0912170950330.15740@localhost.localdomain>
+In-Reply-To: <4B2A82AA.10907@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Dec 17 2009, Linus Torvalds wrote:
-> 
-> 
-> On Thu, 17 Dec 2009, tytso@mit.edu wrote:
-> > 
-> > Sure, but there's some rumors/oral traditions going around that some
-> > block devices want bio address which are page aligned, because they
-> > want to play some kind of refcounting game,
-> 
-> Yeah, you might be right at that.
-> 
-> > And it's Weird Shit(tm) (aka iSCSI, AoE) type drivers, that most of us 
-> > don't have access to, so just because it works Just Fine on SATA doesn't 
-> > mean anything.
-> > 
-> > And none of this is documented anywhere, which is frustrating as hell.
-> > Just rumors that "if you do this, AoE/iSCSI will corrupt your file
-> > systems".
-> 
-> ACK. Jens? 
+On Thu, Dec 17, 2009 at 2:12 PM, Helge Deller <deller@gmx.de> wrote:
+> I couldn't reproduce on my SMP box either (but it's PA8500 instead of
+> PA8700):
+> cpu =A0 =A0 =A0 =A0 =A0 =A0 : PA8500 (PCX-W)
+> model =A0 =A0 =A0 =A0 =A0 : 9000/785/J5000
+> Linux ls3017 2.6.32-32bit #79 SMP Thu Dec 3 14:04:53 CET 2009 parisc
+> GNU/Linux
 
-I've heard those rumours too, and I don't even know if they are true.
-Who has a pointer to such a bug report and/or issue? The block layer
-itself doesn't not have any such requirements, and the only places where
-we play page games is for bio's that were explicitly mapped with pages
-by itself (like mapping user data).o
+Thanks Helge. This was a 64-bit box with SMP. It's possible part of
+the 64-bit kernel is being incorrectly compiled.
 
-We fix driver crap like that, we don't work around it. It's a BUG.
+I am not yet able to boot 2.6.32.
 
--- 
-Jens Axboe
+I'm getting problems in the initrd while waiting for /dev/sda1 to
+appear, but it never does.
 
+Once I resolve that I will see if the testcase works with 2.6.32.
+
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
