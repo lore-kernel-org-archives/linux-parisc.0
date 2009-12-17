@@ -1,40 +1,35 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: Berthold Gunreben <b.gunreben@web.de>
 Subject: Re: vfork test case.
-Date: Thu, 17 Dec 2009 15:39:02 -0500
-Message-ID: <119aab440912171239hf2ecc6fq86795f100a1e3fbc@mail.gmail.com>
-References: <20091216213505.DE6EE537C@hiauly1.hia.nrc.ca>
-	 <4B2A82AA.10907@gmx.de>
+Date: Thu, 17 Dec 2009 22:40:22 +0100
+Message-ID: <200912172240.22252.b.gunreben@web.de>
+References: <119aab440912061319y5b863203ve5dc3dc568a6ccec@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+Content-Type: Text/Plain;
+  charset="utf-8"
+To: "linux-parisc" <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4B2A82AA.10907@gmx.de>
+In-Reply-To: <119aab440912061319y5b863203ve5dc3dc568a6ccec@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Dec 17, 2009 at 2:12 PM, Helge Deller <deller@gmx.de> wrote:
-> I couldn't reproduce on my SMP box either (but it's PA8500 instead of
-> PA8700):
-> cpu =A0 =A0 =A0 =A0 =A0 =A0 : PA8500 (PCX-W)
-> model =A0 =A0 =A0 =A0 =A0 : 9000/785/J5000
-> Linux ls3017 2.6.32-32bit #79 SMP Thu Dec 3 14:04:53 CET 2009 parisc
-> GNU/Linux
+Hi Carlos,
 
-Thanks Helge. This was a 64-bit box with SMP. It's possible part of
-the 64-bit kernel is being incorrectly compiled.
+On Sunday 06 December 2009 22:19:13 Carlos O'Donell wrote:
+> Kyle, James,
+> 
+> I have constructed a vfork test case which shows some of the problems
+> I have using vfork reliably. This fails every time on my PA8700 system
+> running 2.6.32-rc6. It appears as though r28 (ret0) in the parent is
+> being corrupted.
 
-I am not yet able to boot 2.6.32.
+this reminds me of a problem with vfork that I encountered some years ago. The 
+problem as described in 
+http://sourceware.org/ml/libc-alpha/2003-02/msg00042.html
+was fixed for many architectures, but not for hppa as far as I remember. See 
+also 
+http://sourceware.org/ml/libc-hacker/2003-02/msg00015.html
 
-I'm getting problems in the initrd while waiting for /dev/sda1 to
-appear, but it never does.
+I have no idea if this is related, but thought it won't hurt to mention this.
 
-Once I resolve that I will see if the testcase works with 2.6.32.
+Berthold
 
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
