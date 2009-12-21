@@ -1,57 +1,60 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: vfork test case.
-Date: Sat, 19 Dec 2009 13:44:41 -0700
-Message-ID: <20091219204441.GB7952@lackof.org>
-References: <20091216213505.DE6EE537C@hiauly1.hia.nrc.ca> <4B2A82AA.10907@gmx.de> <119aab440912171239hf2ecc6fq86795f100a1e3fbc@mail.gmail.com>
+From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Subject: Re: [git patches] xfs and block fixes for virtually indexed arches
+Date: Mon, 21 Dec 2009 17:53:00 +0900
+Message-ID: <20091221175137I.fujita.tomonori@lab.ntt.co.jp>
+References: <20091217173957.GG2123@thunk.org>
+	<20091218091901J.fujita.tomonori@lab.ntt.co.jp>
+	<20091218141731.GH2123@thunk.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440912171239hf2ecc6fq86795f100a1e3fbc@mail.gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: Text/Plain; charset=us-ascii
+Cc: fujita.tomonori@lab.ntt.co.jp, torvalds@linux-foundation.org,
+	kyle@mcmartin.ca, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, James.Bottomley@suse.de,
+	hch@infradead.org, linux-arch@vger.kernel.org,
+	jens.axboe@oracle.com
+To: tytso@mit.edu
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20091218141731.GH2123@thunk.org>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Dec 17, 2009 at 03:39:02PM -0500, Carlos O'Donell wrote:
-> On Thu, Dec 17, 2009 at 2:12 PM, Helge Deller <deller@gmx.de> wrote:
-> > I couldn't reproduce on my SMP box either (but it's PA8500 instead =
-of
-> > PA8700):
-> > cpu =A0 =A0 =A0 =A0 =A0 =A0 : PA8500 (PCX-W)
-> > model =A0 =A0 =A0 =A0 =A0 : 9000/785/J5000
-> > Linux ls3017 2.6.32-32bit #79 SMP Thu Dec 3 14:04:53 CET 2009 paris=
-c
-> > GNU/Linux
->=20
-> Thanks Helge. This was a 64-bit box with SMP. It's possible part of
-> the 64-bit kernel is being incorrectly compiled.
->=20
-> I am not yet able to boot 2.6.32.
->=20
-> I'm getting problems in the initrd while waiting for /dev/sda1 to
-> appear, but it never does.
+On Fri, 18 Dec 2009 09:17:32 -0500
+tytso@mit.edu wrote:
 
-hrm..there is a module option to force SCSI Async scan to complete
-before calling into user space. Perhaps that is the problem?
+> On Fri, Dec 18, 2009 at 09:21:30AM +0900, FUJITA Tomonori wrote:
+> > 
+> > iSCSI initiator driver should work with kmalloc'ed memory.
+> > 
+> > The reason why iSCSI didn't work with kmalloc'ed memory is that it
+> > uses sendpage (which needs refcountable pages). We added a workaround
+> > to not use sendpage with kmalloc'ed memory (it would be great if we
+> > remove the workaround though).
+> 
+> Well, with a patch that I plan to be pushing that we have general
+> agreement that it is a block device driver BUG not to accept
+> kmalloc'ed/SLAB allocated memory, is one where ext4 will use
+> kmalloc'ed/slab allocated memory on occasion when it needs to make
+> shadow copy of buffers for journalling purposes AND when the fs block
+> size is smaller than the page size.  (i.e., no more allocating a 16k
+> page when the fs block size is 4k).  So this won't happen all the
+> time; even if the case of a 16k Itanium system with 4k blocks, the
+> bulk of the data won't be sent via kmalloc'ed memory --- just some
+> critical metadata block and some data blocks that need to be escaped
+> when being written into the journal.
 
-=46WIW, I've been moving all machine to "mount by Label" or UUID.
+Actually, ext3 (jbd) sent kmalloc'ed buffer to the block layer for
+frozen data. xfs also used kmalloc'ed buffer. Neither do now (so, as
+you said above, jbd wastes some memory when the block size is not
+equal to page size, I think).
 
-cheers,
-grant
 
+> I do think we need to document that block device drivers are
+> _expected_ to be able to handle kmalloc'ed memory,
 
->=20
-> Once I resolve that I will see if the testcase works with 2.6.32.
->=20
-> Cheers,
-> Carlos.
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-paris=
-c" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Agreed.
+
+Note that network block drivers (iSCSI, drbd, something else?) doesn't
+play with page ref-counting. They want to use sendpage. The network
+layer (sendpage) can't handle non-ref-counted pages. The best solution
+for fs and network block drivers might be modifying sendpage to handle
+such pages.
