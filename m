@@ -1,47 +1,40 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: futex wait failure
-Date: Tue, 22 Dec 2009 17:05:13 -0500 (EST)
-Message-ID: <20091222220513.E436C4EA9@hiauly1.hia.nrc.ca>
-References: <119aab440912221230x1011a218sec9c5a1a07e85800@mail.gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: wire up sys_recvmmsg
+Date: Tue, 22 Dec 2009 23:50:33 +0100
+Message-ID: <20091222225033.GA6996@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440912221230x1011a218sec9c5a1a07e85800@mail.gmail.com> from "Carlos O'Donell" at Dec 22, 2009 03:30:59 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> I think we need to step back from the edge and ask ourselves what
-> Tcl_WaitForEvent() is trying to do with the locks.
-> 
-> Do you know?
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-In unix/tclUnixNotify.c:
-
-#ifdef TCL_THREADS
-    /*
-     * Place this thread on the list of interested threads, signal the
-     * notifier thread, and wait for a response or a timeout.
-     */
-
-    Tcl_MutexLock(&notifierMutex);
-    ...
-#endif
-
-    ...
-
-#ifdef TCL_THREADS
-    Tcl_MutexUnlock(&notifierMutex);
-#endif /* TCL_THREADS */
-    return 0;
-}
-
-There may be a timed wait while holding the lock.  Something is broken
-in the tcl/expect handling of timed waits as there were a couple of
-compile timeouts for compilations that shouldn't have timed out.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+diff --git a/arch/parisc/include/asm/unistd.h b/arch/parisc/include/asm/unistd.h
+index cda1583..ee63634 100644
+--- a/arch/parisc/include/asm/unistd.h
++++ b/arch/parisc/include/asm/unistd.h
+@@ -811,8 +811,9 @@
+ #define __NR_pwritev		(__NR_Linux + 316)
+ #define __NR_rt_tgsigqueueinfo	(__NR_Linux + 317)
+ #define __NR_perf_event_open	(__NR_Linux + 318)
++#define __NR_recvmmsg		(__NR_Linux + 319)
+ 
+-#define __NR_Linux_syscalls	(__NR_perf_event_open + 1)
++#define __NR_Linux_syscalls	(__NR_recvmmsg + 1)
+ 
+ 
+ #define __IGNORE_select		/* newselect */
+diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
+index 01c4fcf..a0c54cf 100644
+--- a/arch/parisc/kernel/syscall_table.S
++++ b/arch/parisc/kernel/syscall_table.S
+@@ -417,6 +417,7 @@
+ 	ENTRY_COMP(pwritev)
+ 	ENTRY_COMP(rt_tgsigqueueinfo)
+ 	ENTRY_SAME(perf_event_open)
++	ENTRY_COMP(recvmmsg)
+ 
+ 	/* Nothing yet */
+ 
