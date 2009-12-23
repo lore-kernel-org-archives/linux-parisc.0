@@ -1,76 +1,60 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: futex wait failure
-Date: Wed, 23 Dec 2009 09:56:24 -0500
-Message-ID: <119aab440912230656h73081d97wadf1e58a4a598338@mail.gmail.com>
+Date: Wed, 23 Dec 2009 10:01:32 -0500
+Message-ID: <119aab440912230701g6656be6fsdaf5383d2ff02363@mail.gmail.com>
 References: <119aab440912221230x1011a218sec9c5a1a07e85800@mail.gmail.com>
-	 <20091222212950.8E5F74EA9@hiauly1.hia.nrc.ca>
+	 <20091222220513.E436C4EA9@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Cc: linux-parisc@vger.kernel.org
 To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20091222212950.8E5F74EA9@hiauly1.hia.nrc.ca>
+In-Reply-To: <20091222220513.E436C4EA9@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Dec 22, 2009 at 4:29 PM, John David Anglin
+On Tue, Dec 22, 2009 at 5:05 PM, John David Anglin
 <dave@hiauly1.hia.nrc.ca> wrote:
-> It would seem to me we have deadlock. =A0Two threads trying to lock
-> the same mutex. =A0One should win... =A0It may be the mutex was left
-> locked by some other thread.
-
-Yes, it was left locked by thread #2, which then tried to acquire it
-again. See below.
-
-> This is the mutex:
->
-> (gdb) p *mutex
-> $1 =3D {__data =3D {__lock =3D 2, __count =3D 0, __owner =3D 18093, _=
-_kind =3D 0,
-> =A0 =A0__compat_padding =3D {0, 0, 0, 0}, __nusers =3D 1, {__spins =3D=
- 0, __list =3D {
-> =A0 =A0__next =3D 0x0}}, __reserved1 =3D 0, __reserved2 =3D 0},
-> =A0 =A0__size =3D "\000\000\000\002\000\000\000\000\000\000F\255", '\=
-000' <repeats 23 times>, "\001", '\000' <repeats 11 times>, __align =3D=
- 2}
-
-The __nusers field indicates that one user, namely __owner tid 18093
-has already taken the lock.
-
-The mutex owner is thread #2 in your example (tid shown in your backtra=
-ce).
-
-Thread #2 is also trying to lock the mutex again and is deadlocked.
-
-The mutex is the default __kind of PTHREAD_MUTEX_TIMED_NP, but that
-doesn't mean it's timed, only that it supports a timed lock, if you
-call it using pthread_mutex_lock it will lock just like any other
-mutex.
-
-The lock value is 2, which indicates a private lock. Your backtrace
-indicates you have called __lll_lock_wait_private, which is correct
-for this case.
-
-Under what conditions would thread #2 have a chance to try take it's
-own lock again?
-
-> It's hard to see what's happening because I don't seem to be able to
-> single step the threads.
-
-Yeah, there are some gdb/ptrace issues I need to sort out for the
-newly minted nptl support.
-
->>
 >> I think we need to step back from the edge and ask ourselves what
 >> Tcl_WaitForEvent() is trying to do with the locks.
 >>
 >> Do you know?
 >
-> No. =A0Note thread 2 called pthread_mutex_lock from a different locat=
-ion.
+> In unix/tclUnixNotify.c:
+>
+> #ifdef TCL_THREADS
+> =A0 =A0/*
+> =A0 =A0 * Place this thread on the list of interested threads, signal=
+ the
+> =A0 =A0 * notifier thread, and wait for a response or a timeout.
+> =A0 =A0 */
 
-We need to determine under what conditions thread #2 would be able to
-take the lock again and deadlock.
+There will never be a timeout if you call pthread_mutex_lock as the
+underlying operation. So this comment is a bit odd?
+
+> =A0 =A0Tcl_MutexLock(&notifierMutex);
+> =A0 =A0...
+> #endif
+>
+> =A0 =A0...
+>
+> #ifdef TCL_THREADS
+> =A0 =A0Tcl_MutexUnlock(&notifierMutex);
+> #endif /* TCL_THREADS */
+> =A0 =A0return 0;
+> }
+>
+> There may be a timed wait while holding the lock. =A0Something is bro=
+ken
+> in the tcl/expect handling of timed waits as there were a couple of
+> compile timeouts for compilations that shouldn't have timed out.
+
+There is no timed wait possible, you have called pthread_mutex_lock,
+instead of pthread_mutex_timedlock.
+
+What are Tcl's expectations here? It looks like we are stuck in
+libtcl.so for both threads, which are trying to access this event
+queue.
 
 Cheers,
 Carlos.
