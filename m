@@ -1,46 +1,100 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Subject: Re: futex wait failure
-Date: Wed, 23 Dec 2009 15:46:39 -0500
-Message-ID: <119aab440912231246m3a9f34d8j184e16b7f37dfd11@mail.gmail.com>
-References: <119aab440912221230x1011a218sec9c5a1a07e85800@mail.gmail.com>
-	 <20091222220513.E436C4EA9@hiauly1.hia.nrc.ca>
-	 <119aab440912230701g6656be6fsdaf5383d2ff02363@mail.gmail.com>
-	 <20091223161504.GA13299@hiauly1.hia.nrc.ca>
-	 <20091223164828.GA13631@hiauly1.hia.nrc.ca>
-	 <20091223203956.GA14732@hiauly1.hia.nrc.ca>
-	 <119aab440912231245u5f1b88d3j54e11ad6a6e8953c@mail.gmail.com>
+Date: Wed, 23 Dec 2009 15:57:52 -0500
+Message-ID: <20091223205751.GA14837@hiauly1.hia.nrc.ca>
+References: <119aab440912221230x1011a218sec9c5a1a07e85800@mail.gmail.com> <20091222220513.E436C4EA9@hiauly1.hia.nrc.ca> <119aab440912230701g6656be6fsdaf5383d2ff02363@mail.gmail.com> <20091223161504.GA13299@hiauly1.hia.nrc.ca> <119aab440912231236i21d932a8x78a991eb019610f2@mail.gmail.com>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Content-Type: text/plain; charset=iso-8859-1
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	linux-parisc@vger.kernel.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440912231245u5f1b88d3j54e11ad6a6e8953c@mail.gmail.com>
+In-Reply-To: <119aab440912231236i21d932a8x78a991eb019610f2@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Dec 23, 2009 at 3:45 PM, Carlos O'Donell
-<carlos@systemhalted.org> wrote:
-> On Wed, Dec 23, 2009 at 3:39 PM, John David Anglin
+On Wed, 23 Dec 2009, Carlos O'Donell wrote:
+
+> On Wed, Dec 23, 2009 at 11:15 AM, John David Anglin
 > <dave@hiauly1.hia.nrc.ca> wrote:
->> The deadlock occurs at the third call to Tcl_MutexLock in NotifierTh=
-readProc
->> (tclUnixNotfy.c:997). =A0This is in a while(1) loop, so I have to th=
-ink
->> the previous call to Tcl_MutexUnlock failed, possibly because of a c=
-all
->> to Tcl_ConditionNotify.
->
-> You might get a better idea if you run this under strace and look at
-> the futex syscalls being made. You won't see the locks since the fast
-> path is through the light-weight-syscall compare-and-swap, but you
-> will see the unlocks, and you can count them.
+> >> There will never be a timeout if you call pthread_mutex_lock as th=
+e
+> >> underlying operation. So this comment is a bit odd?
+> >
+> > The wait is done by Tcl_ConditionWait. =A0It uses =A0pthread_cond_w=
+ait
+> > if timePtr is NULL, otherwise it uses
+> > pthread_cond_timedwait(pcondPtr, pmutexPtr, &ptime). =A0Do these wo=
+rk
+> > holding a lock? =A0Any chance that these try to take a lock?
+>=20
+> When you call pthread_cond_timedwait you must be holding pmutexPtr.
+>=20
+> The call to pthread_cond_timedwait atomically release mutex and cause
+> the calling thread to sleep on the condition variable cond; atomicall=
+y
+> here means "atomically with respect to access by another thread to
+> the mutex and then the condition variable". Once awoken by a broadcas=
+t,
+> it retakes the mutex pmutexPtr.
+>=20
+> The glibc implementation with futexes reads pretty much exactly like
+> the description here:
+> http://www.opengroup.org/onlinepubs/000095399/functions/pthread_cond_=
+timedwait.html
+>=20
+> > It sems like bad coding to do a wait holding a lock. =A0In any case=
+,
+> > I don't think this is the problem.
+>=20
+> You shouldn't be holding a lock while waiting. The call to
+> pthread_cond_timedwait
+> should have released the mutex before sleeping.
 
-Sorry, let me be clearer here. The *first* lock is through the fast
-path of the lws CAS operation. All subsequent locks take the form of a
-futex wait. All subsequent unlocks are a futex wake.
+No, the manpage for pthread_cond_wait and pthread_cond_timedwait
+indicates that these calls atomically unlock the mutex, so the implemen=
+tation
+appears correct.  Before returning to the calling thread, they relock
+the mutex.  So, the mutex shouldn't be held while the thread is
+sleeping.
 
-Cheers,
-Carlos.
+>=20
+> > As you noted, the lock is held by the other thread. =A0The return p=
+c is
+> > beyond Tcl_WaitForEvent. =A0The only users of the notifierMutex mut=
+ex
+> > are in tclUnixNotfy.c. =A0The only interesting thing done holding t=
+he
+> > notifierMutex mutex in code after Tcl_WaitForEvent is to call
+> > Tcl_ConditionNotify. =A0It calls pthread_cond_broadcast if the cond=
+ition
+> > pointer isn't NULL.
+> > Could this deadlock? =A0It's hard to see how it could since the mut=
+ex
+> > doesn't seem to be involved.
+>=20
+> It shouldn't deadlock.
+>=20
+> Is this a UP kernel?
+
+Yes.  This has now happened twice in one testsuite run.
+
+> Perhaps what I'm not clear about here, is which mutex is the one that
+> we are stuck on?
+
+notifierMutex.  It controls all activities in tclUnixNotfy.c.
+
+> Are we stuck on the mutex we want to pass to pthread_cond_timedwait?
+
+Yes.
+
+Dave
+--=20
+J. David Anglin                                  dave.anglin@nrc-cnrc.g=
+c.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 9=
+52-6602)
 --
 To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
  in
