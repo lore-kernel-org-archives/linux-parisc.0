@@ -1,51 +1,47 @@
-From: James Bottomley <James.Bottomley@suse.de>
-Subject: [PATCHv2 2/5] parisc: add mm API for DMA to vmalloc/vmap areas
-Date: Wed, 23 Dec 2009 15:22:22 -0600
-Message-ID: <1261603345-2494-3-git-send-email-James.Bottomley@suse.de>
-References: <1261603345-2494-1-git-send-email-James.Bottomley@suse.de>
- <1261603345-2494-2-git-send-email-James.Bottomley@suse.de>
-Cc: linux-parisc@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-	Russell King <rmk@arm.linux.org.uk>,
-	Paul Mundt <lethal@linux-sh.org>,
-	James Bottomley <James.Bottomley@suse.de>
-To: linux-arch@vger.kernel.org
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <1261603345-2494-2-git-send-email-James.Bottomley@suse.de>
-List-ID: <linux-arch.vger.kernel.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: futex wait failure
+Date: Wed, 23 Dec 2009 16:48:25 -0500
+Message-ID: <119aab440912231348y3731ce2bge2a41cf998d573f7@mail.gmail.com>
+References: <119aab440912221230x1011a218sec9c5a1a07e85800@mail.gmail.com>
+	 <20091222220513.E436C4EA9@hiauly1.hia.nrc.ca>
+	 <119aab440912230701g6656be6fsdaf5383d2ff02363@mail.gmail.com>
+	 <20091223161504.GA13299@hiauly1.hia.nrc.ca>
+	 <20091223164828.GA13631@hiauly1.hia.nrc.ca>
+	 <20091223203956.GA14732@hiauly1.hia.nrc.ca>
+	 <119aab440912231245u5f1b88d3j54e11ad6a6e8953c@mail.gmail.com>
+	 <20091223210807.GB14837@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20091223210807.GB14837@hiauly1.hia.nrc.ca>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-We already have an API to flush a kernel page along an alias
-address, so use it.  The TLB purge prevents the CPU from doing
-speculative moveins on the flushed address, so we don't need to
-implement and invalidate.
+On Wed, Dec 23, 2009 at 4:08 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+>> You might get a better idea if you run this under strace and look at
+>> the futex syscalls being made. You won't see the locks since the fas=
+t
+>> path is through the light-weight-syscall compare-and-swap, but you
+>> will see the unlocks, and you can count them.
+>
+> I would guess that the notifierMutex is locked/unlocked millions of
+> time in a typical GCC testsuite run. =A0So, the problem won't be easy
+> to duplicate manually.
 
-Signed-off-by: James Bottomley <James.Bottomley@suse.de>
----
- arch/parisc/include/asm/cacheflush.h |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
+You would be surprised how easy it is to duplicate some of these
+problems. We need to write a small skeleton application that does
+something similar to the notification done by tcl and uses
+pthread_cond_timedwait. Setup main to run forever signaling the child
+which does something and then goes back to waiting. Eventually this
+should lock up like it does in tcl.
 
-diff --git a/arch/parisc/include/asm/cacheflush.h b/arch/parisc/include/asm/cacheflush.h
-index 7a73b61..4772777 100644
---- a/arch/parisc/include/asm/cacheflush.h
-+++ b/arch/parisc/include/asm/cacheflush.h
-@@ -38,6 +38,18 @@ void flush_cache_mm(struct mm_struct *mm);
- 
- #define flush_kernel_dcache_range(start,size) \
- 	flush_kernel_dcache_range_asm((start), (start)+(size));
-+/* vmap range flushes and invalidates.  Architecturally, we don't need
-+ * the invalidate, because the CPU should refuse to speculate once an
-+ * area has been flushed, so invalidate is left empty */
-+static inline void flush_kernel_vmap_range(void *vaddr, int size)
-+{
-+	unsigned long start = (unsigned long)vaddr;
-+
-+	flush_kernel_dcache_range_asm(start, start + size);
-+}
-+static inline void invalidate_kernel_vmap_range(void *vaddr, int size)
-+{
-+}
- 
- #define flush_cache_vmap(start, end)		flush_cache_all()
- #define flush_cache_vunmap(start, end)		flush_cache_all()
--- 
-1.6.5
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
