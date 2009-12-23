@@ -1,41 +1,41 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: futex wait failure
-Date: Wed, 23 Dec 2009 15:39:57 -0500
-Message-ID: <20091223203956.GA14732@hiauly1.hia.nrc.ca>
-References: <119aab440912221230x1011a218sec9c5a1a07e85800@mail.gmail.com> <20091222220513.E436C4EA9@hiauly1.hia.nrc.ca> <119aab440912230701g6656be6fsdaf5383d2ff02363@mail.gmail.com> <20091223161504.GA13299@hiauly1.hia.nrc.ca> <20091223164828.GA13631@hiauly1.hia.nrc.ca>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Date: Wed, 23 Dec 2009 15:45:22 -0500
+Message-ID: <119aab440912231245u5f1b88d3j54e11ad6a6e8953c@mail.gmail.com>
+References: <119aab440912221230x1011a218sec9c5a1a07e85800@mail.gmail.com>
+	 <20091222220513.E436C4EA9@hiauly1.hia.nrc.ca>
+	 <119aab440912230701g6656be6fsdaf5383d2ff02363@mail.gmail.com>
+	 <20091223161504.GA13299@hiauly1.hia.nrc.ca>
+	 <20091223164828.GA13631@hiauly1.hia.nrc.ca>
+	 <20091223203956.GA14732@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: linux-parisc@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20091223164828.GA13631@hiauly1.hia.nrc.ca>
+In-Reply-To: <20091223203956.GA14732@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 23 Dec 2009, John David Anglin wrote:
+On Wed, Dec 23, 2009 at 3:39 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+> The deadlock occurs at the third call to Tcl_MutexLock in NotifierThr=
+eadProc
+> (tclUnixNotfy.c:997). =A0This is in a while(1) loop, so I have to thi=
+nk
+> the previous call to Tcl_MutexUnlock failed, possibly because of a ca=
+ll
+> to Tcl_ConditionNotify.
 
-> On Wed, 23 Dec 2009, John David Anglin wrote:
-> 
-> > As you noted, the lock is held by the other thread.  The return pc is
-> > beyond Tcl_WaitForEvent.  The only users of the notifierMutex mutex
-> > are in tclUnixNotfy.c.  The only interesting thing done holding the
-> > notifierMutex mutex in code after Tcl_WaitForEvent is to call
-> > Tcl_ConditionNotify.  It calls pthread_cond_broadcast if the condition
-> > pointer isn't NULL.
-> > 
-> > Could this deadlock?  It's hard to see how it could since the mutex
-> > doesn't seem to be involved.
-> 
-> Actually, I see that the mutex and futex are part of the pthread_cond_t
-> type, so pthread_cond_broadcast could deadlock if not implemented properly.
+You might get a better idea if you run this under strace and look at
+the futex syscalls being made. You won't see the locks since the fast
+path is through the light-weight-syscall compare-and-swap, but you
+will see the unlocks, and you can count them.
 
-The deadlock occurs at the third call to Tcl_MutexLock in NotifierThreadProc
-(tclUnixNotfy.c:997).  This is in a while(1) loop, so I have to think
-the previous call to Tcl_MutexUnlock failed, possibly because of a call
-to Tcl_ConditionNotify.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
