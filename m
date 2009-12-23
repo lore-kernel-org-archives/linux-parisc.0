@@ -1,74 +1,81 @@
-From: john stultz <johnstul@us.ibm.com>
-Subject: [RFC][PATCH 12/14] Convert parisc to read/update_persistent_clock
-Date: Tue, 22 Dec 2009 20:14:03 -0800
-Message-ID: <1261541643.3508.74.camel@localhost.localdomain>
-References: <1261540762.3508.61.camel@localhost.localdomain>
-	 <1261540826.3508.62.camel@localhost.localdomain>
-	 <1261540902.3508.63.camel@localhost.localdomain>
-	 <1261540988.3508.64.camel@localhost.localdomain>
-	 <1261541054.3508.65.camel@localhost.localdomain>
-	 <1261541130.3508.66.camel@localhost.localdomain>
-	 <1261541188.3508.67.camel@localhost.localdomain>
-	 <1261541286.3508.69.camel@localhost.localdomain>
-	 <1261541342.3508.70.camel@localhost.localdomain>
-	 <1261541415.3508.71.camel@localhost.localdomain>
-	 <1261541491.3508.72.camel@localhost.localdomain>
-	 <1261541567.3508.73.camel@localhost.localdomain>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: futex wait failure
+Date: Wed, 23 Dec 2009 09:56:24 -0500
+Message-ID: <119aab440912230656h73081d97wadf1e58a4a598338@mail.gmail.com>
+References: <119aab440912221230x1011a218sec9c5a1a07e85800@mail.gmail.com>
+	 <20091222212950.8E5F74EA9@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1261541567.3508.73.camel@localhost.localdomain>
+In-Reply-To: <20091222212950.8E5F74EA9@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch converts the parisc architecture to use the generic
-read_persistent_clock and update_persistent_clock interfaces, reducing
-the amount of arch specific code we have to maintain, and allowing for
-further cleanups in the future.
+On Tue, Dec 22, 2009 at 4:29 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+> It would seem to me we have deadlock. =A0Two threads trying to lock
+> the same mutex. =A0One should win... =A0It may be the mutex was left
+> locked by some other thread.
 
-I have not built or tested this patch, so help from arch maintainers
-would be appreciated.
+Yes, it was left locked by thread #2, which then tried to acquire it
+again. See below.
 
-Signed-off-by: John Stultz <johnstul@us.ibm.com>
----
- time.c |   29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+> This is the mutex:
+>
+> (gdb) p *mutex
+> $1 =3D {__data =3D {__lock =3D 2, __count =3D 0, __owner =3D 18093, _=
+_kind =3D 0,
+> =A0 =A0__compat_padding =3D {0, 0, 0, 0}, __nusers =3D 1, {__spins =3D=
+ 0, __list =3D {
+> =A0 =A0__next =3D 0x0}}, __reserved1 =3D 0, __reserved2 =3D 0},
+> =A0 =A0__size =3D "\000\000\000\002\000\000\000\000\000\000F\255", '\=
+000' <repeats 23 times>, "\001", '\000' <repeats 11 times>, __align =3D=
+ 2}
 
-Index: gettimeoffset/arch/parisc/kernel/time.c
-===================================================================
---- gettimeoffset.orig/arch/parisc/kernel/time.c	2009-12-22 18:50:55.000000000 -0800
-+++ gettimeoffset/arch/parisc/kernel/time.c	2009-12-22 18:51:06.000000000 -0800
-@@ -250,9 +250,21 @@ static int __init rtc_init(void)
- }
- module_init(rtc_init);
- 
--void __init time_init(void)
-+void read_persistent_clock(struct timespec *ts)
- {
- 	static struct pdc_tod tod_data;
-+	if (pdc_tod_read(&tod_data) == 0) {
-+		ts->tv_sec = tod_data.tod_sec;
-+		ts->tv_nsec = tod_data.tod_usec * 1000;
-+	} else {
-+		printk(KERN_ERR "Error reading tod clock\n");
-+	        ts->tv_sec = 0;
-+		ts->tv_nsec = 0;
-+	}
-+}
-+
-+void __init time_init(void)
-+{
- 	unsigned long current_cr16_khz;
- 
- 	clocktick = (100 * PAGE0->mem_10msec) / HZ;
-@@ -264,19 +276,4 @@ void __init time_init(void)
- 	clocksource_cr16.mult = clocksource_khz2mult(current_cr16_khz,
- 						clocksource_cr16.shift);
- 	clocksource_register(&clocksource_cr16);
--
--	if (pdc_tod_read(&tod_data) == 0) {
--		unsigned long flags;
+The __nusers field indicates that one user, namely __owner tid 18093
+has already taken the lock.
+
+The mutex owner is thread #2 in your example (tid shown in your backtra=
+ce).
+
+Thread #2 is also trying to lock the mutex again and is deadlocked.
+
+The mutex is the default __kind of PTHREAD_MUTEX_TIMED_NP, but that
+doesn't mean it's timed, only that it supports a timed lock, if you
+call it using pthread_mutex_lock it will lock just like any other
+mutex.
+
+The lock value is 2, which indicates a private lock. Your backtrace
+indicates you have called __lll_lock_wait_private, which is correct
+for this case.
+
+Under what conditions would thread #2 have a chance to try take it's
+own lock again?
+
+> It's hard to see what's happening because I don't seem to be able to
+> single step the threads.
+
+Yeah, there are some gdb/ptrace issues I need to sort out for the
+newly minted nptl support.
+
+>>
+>> I think we need to step back from the edge and ask ourselves what
+>> Tcl_WaitForEvent() is trying to do with the locks.
+>>
+>> Do you know?
+>
+> No. =A0Note thread 2 called pthread_mutex_lock from a different locat=
+ion.
+
+We need to determine under what conditions thread #2 would be able to
+take the lock again and deadlock.
+
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
