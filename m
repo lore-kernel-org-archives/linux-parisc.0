@@ -1,38 +1,36 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: No drives come online in 2.6.32?
-Date: Thu, 24 Dec 2009 00:40:54 -0500
-Message-ID: <119aab440912232140x6f61ce12r9e9448ae690489a2@mail.gmail.com>
-References: <119aab440912231819x621898d2lf2b58a3e27b86047@mail.gmail.com>
+From: Matt Fleming <matt@console-pimps.org>
+Subject: Re: [PATCHv2 1/5] mm: add coherence API for DMA to vmalloc/vmap
+	areas
+Date: Thu, 24 Dec 2009 10:08:53 +0000
+Message-ID: <20091224100853.GA3165@console-pimps.org>
+References: <1261603345-2494-1-git-send-email-James.Bottomley@suse.de> <1261603345-2494-2-git-send-email-James.Bottomley@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: linux-parisc <linux-parisc@vger.kernel.org>,
-	Matthew Wilcox <matthew@wil.cx>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-arch@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Christoph Hellwig <hch@lst.de>,
+	Russell King <rmk@arm.linux.org.uk>,
+	Paul Mundt <lethal@linux-sh.org>
+To: James Bottomley <James.Bottomley@suse.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440912231819x621898d2lf2b58a3e27b86047@mail.gmail.com>
+In-Reply-To: <1261603345-2494-2-git-send-email-James.Bottomley@suse.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Dec 23, 2009 at 9:19 PM, Carlos O'Donell
-<carlos@systemhalted.org> wrote:
-> When booting 2.6.32, my scsi drives don't come online, all I see during boot is:
-> ~~~
-> sym53c8xx 0000:00:01.0: enabling device (0000 -> 0003)
-> sym53c8xx 0000:00:01.0: enabling SERR and PARITY (0003 -> 0143)
-> sym53c8xx 0000:00:01.1: enabling device (0000 -> 0003)
-> sym53c8xx 0000:00:01.1: enabling SERR and PARITY (0003 -> 0143)
-> sym53c8xx 0000:00:02.0: enabling device (0000 -> 0003)
-> sym53c8xx 0000:00:02.0: enabling SERR and PARITY (0003 -> 0143)
-> sym53c8xx 0000:00:02.1: enabling device (0146 -> 0147)
-> ~~~
-> When booting 2.6.32-rc6 the drives come online right away after they
-> are enabled.
->
-> No amount of waiting helps.
->
-> Any clues?
+On Wed, Dec 23, 2009 at 03:22:21PM -0600, James Bottomley wrote:
+> +
+> +  void flush_kernel_vmap_range(void *vaddr, int size)
+> +       flushes the kernel cache for a given virtual address range in
+> +       the vmap area.  This API makes sure that and data the kernel
 
-I've started bisecting the commits between 2.6.32-rc6 and 2.6.32 to
-see what broke this for my setup.
+  	      	   	       	   	      	^^^ code and data?
 
-Cheers,
-Carlos.
+> +  void invalidate_kernel_vmap_range(void *vaddr, int size)
+> +       invalidates the kernel cache for a given virtual address range
+> +       in the vmap area.  This API is designed to make sure that while
+> +       I/O went on to an address range in the vmap area, the processor
+> +       didn't speculate cache reads and thus make the cache over the
+> +       virtual address stale.
+> +
+
+Could this sentence be reworked a little? I find the "over the virtual
+address" part a little difficult to parse.
