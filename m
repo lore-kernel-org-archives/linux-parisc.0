@@ -1,24 +1,31 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: futex wait failure
-Date: Wed, 23 Dec 2009 17:18:55 -0500 (EST)
-Message-ID: <20091223221856.3E76F4E77@hiauly1.hia.nrc.ca>
-References: <no.id>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: No drives come online in 2.6.32?
+Date: Wed, 23 Dec 2009 21:19:19 -0500
+Message-ID: <119aab440912231819x621898d2lf2b58a3e27b86047@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: carlos@systemhalted.org, dave.anglin@nrc-cnrc.gc.ca,
-	linux-parisc@vger.kernel.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Content-Type: text/plain; charset=ISO-8859-1
+To: linux-parisc <linux-parisc@vger.kernel.org>,
+	Matthew Wilcox <matthew@wil.cx>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <no.id> from "John David Anglin" at Dec 23, 2009 05:10:33 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> I have noticed that the notifierMutex mutex is initialized to all
-> zeros (i.e., it's declared static).  Is this ok with our nptl implementation?
+When booting 2.6.32, my scsi drives don't come online, all I see during boot is:
+~~~
+sym53c8xx 0000:00:01.0: enabling device (0000 -> 0003)
+sym53c8xx 0000:00:01.0: enabling SERR and PARITY (0003 -> 0143)
+sym53c8xx 0000:00:01.1: enabling device (0000 -> 0003)
+sym53c8xx 0000:00:01.1: enabling SERR and PARITY (0003 -> 0143)
+sym53c8xx 0000:00:02.0: enabling device (0000 -> 0003)
+sym53c8xx 0000:00:02.0: enabling SERR and PARITY (0003 -> 0143)
+sym53c8xx 0000:00:02.1: enabling device (0146 -> 0147)
+~~~
+When booting 2.6.32-rc6 the drives come online right away after they
+are enabled.
 
-Forget this, it's done in Tcl_MutexLock.
+No amount of waiting helps.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Any clues?
+
+Cheers,
+Carlos.
