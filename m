@@ -1,59 +1,37 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCHv2 1/5] mm: add coherence API for DMA to vmalloc/vmap
- areas
-Date: Sun, 27 Dec 2009 09:37:30 -0600
-Message-ID: <1261928250.2697.9.camel@mulgrave.site>
-References: <1261603345-2494-1-git-send-email-James.Bottomley@suse.de>
-	 <1261603345-2494-2-git-send-email-James.Bottomley@suse.de>
-	 <20091224100853.GA3165@console-pimps.org>
-	 <20091224123913.GD5335@parisc-linux.org>
+From: Roel Kluin <roel.kluin@gmail.com>
+Subject: Re: [PATCH] parisc: test off by one in sgl_frem() and dbl_frem()
+Date: Sun, 27 Dec 2009 22:11:06 +0100
+Message-ID: <4B37CD6A.2000506@gmail.com>
+References: <4B375F68.80301@gmail.com> <1261927804.2697.4.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Matt Fleming <matt@console-pimps.org>, linux-arch@vger.kernel.org,
-	linux-parisc@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-	Russell King <rmk@arm.linux.org.uk>,
-	Paul Mundt <lethal@linux-sh.org>
-To: Matthew Wilcox <matthew@wil.cx>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <20091224123913.GD5335@parisc-linux.org>
-List-ID: <linux-arch.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	linux-parisc@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1261927804.2697.4.camel@mulgrave.site>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2009-12-24 at 05:39 -0700, Matthew Wilcox wrote:
-> On Thu, Dec 24, 2009 at 10:08:53AM +0000, Matt Fleming wrote:
-> > On Wed, Dec 23, 2009 at 03:22:21PM -0600, James Bottomley wrote:
-> > > +
-> > > +  void flush_kernel_vmap_range(void *vaddr, int size)
-> > > +       flushes the kernel cache for a given virtual address range in
-> > > +       the vmap area.  This API makes sure that and data the kernel
-> > 
-> >   	      	   	       	   	      	^^^ code and data?
+Op 27-12-09 16:30, James Bottomley schreef:
+> On Sun, 2009-12-27 at 14:21 +0100, Roel Kluin wrote:
+>> With `while (stepcount-- > 0)' stepcount reaches -1 after the loop.
 > 
-> I'd guess it's a typo for 'any data'.
-> 
-> > > +  void invalidate_kernel_vmap_range(void *vaddr, int size)
-> > > +       invalidates the kernel cache for a given virtual address range
-> > > +       in the vmap area.  This API is designed to make sure that while
-> > > +       I/O went on to an address range in the vmap area, the processor
-> > > +       didn't speculate cache reads and thus make the cache over the
-> > > +       virtual address stale.
-> > > +
-> > 
-> > Could this sentence be reworked a little? I find the "over the virtual
-> > address" part a little difficult to parse.
-> 
-> How about:
-> 
-> invalidates the processor cache for a given virtual address range
-> in the vmap area.  This API addresses the problem that the processor
-> may have performed speculative reads into its cache of the vmapped
-> area while I/O was occurring to the underlying physical pages.
+> This is true, but seems to be by design
 
-So better, I think is
+>> -	if (stepcount > 0 || Sgl_iszero(opnd1)) {
+>> +	if (stepcount >= 0 || Sgl_iszero(opnd1)) {
 
-invalidates the cache for a given virtual address range in the vmap area
-which prevents the processor from making the cache stale by
-speculatively reading data while the I/O was occurring to the physical
-pages.
+> 
+> Your patch does nothing to the actual execution flow (Sgl_iszero is true
+> if stepcount == 0) ... what's the point of applying it?
+> 
+> James
 
-James
+Ok, please ignore and thanks (also to Dave) for review.
+
+Roel
