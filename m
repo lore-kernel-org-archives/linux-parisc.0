@@ -1,64 +1,123 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH] parisc: test off by one in sgl_frem() and dbl_frem()
-Date: Sun, 27 Dec 2009 09:30:04 -0600
-Message-ID: <1261927804.2697.4.camel@mulgrave.site>
-References: <4B375F68.80301@gmail.com>
+Subject: Re: [PATCHv2 5/5] xfs: fix xfs to work with Virtually Indexed
+ architectures
+Date: Sun, 27 Dec 2009 09:32:03 -0600
+Message-ID: <1261927923.2697.5.camel@mulgrave.site>
+References: <1261603345-2494-1-git-send-email-James.Bottomley@suse.de>
+	 <1261603345-2494-2-git-send-email-James.Bottomley@suse.de>
+	 <1261603345-2494-3-git-send-email-James.Bottomley@suse.de>
+	 <1261603345-2494-4-git-send-email-James.Bottomley@suse.de>
+	 <1261603345-2494-5-git-send-email-James.Bottomley@suse.de>
+	 <1261603345-2494-6-git-send-email-James.Bottomley@suse.de>
+	 <20091224110314.GA21653@lst.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Cc: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>
-To: Roel Kluin <roel.kluin@gmail.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4B375F68.80301@gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Cc: linux-arch@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Russell King <rmk@arm.linux.org.uk>,
+	Paul Mundt <lethal@linux-sh.org>
+To: Christoph Hellwig <hch@lst.de>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20091224110314.GA21653@lst.de>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 2009-12-27 at 14:21 +0100, Roel Kluin wrote:
-> With `while (stepcount-- > 0)' stepcount reaches -1 after the loop.
-
-This is true, but seems to be by design
-
-> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
-> ---
->  arch/parisc/math-emu/dfrem.c |    2 +-
->  arch/parisc/math-emu/sfrem.c |    2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+On Thu, 2009-12-24 at 12:03 +0100, Christoph Hellwig wrote:
+> On Wed, Dec 23, 2009 at 03:22:25PM -0600, James Bottomley wrote:
+> > xfs_buf.c includes what is essentially a hand rolled version of
+> > blk_rq_map_kern().  In order to work properly with the vmalloc buffers
+> > that xfs uses, this hand rolled routine must also implement the flushing
+> > API for vmap/vmalloc areas.
+> > 
+> > Signed-off-by: James Bottomley <James.Bottomley@suse.de>
 > 
-> Unless I am missing something?
-> 
-> diff --git a/arch/parisc/math-emu/dfrem.c b/arch/parisc/math-emu/dfrem.c
-> index b983785..3283445 100644
-> --- a/arch/parisc/math-emu/dfrem.c
-> +++ b/arch/parisc/math-emu/dfrem.c
-> @@ -234,7 +234,7 @@ dbl_frem (dbl_floating_point * srcptr1, dbl_floating_point * srcptr2,
->  		Dbl_subtract(opnd1p1,opnd1p2,opnd2p1,opnd2p2,opnd1p1,opnd1p2);
->  		roundup = TRUE;
->  	}
-> -	if (stepcount > 0 || Dbl_iszero(opnd1p1,opnd1p2)) {
-> +	if (stepcount >= 0 || Dbl_iszero(opnd1p1,opnd1p2)) {
->  		/* division is exact, remainder is zero */
->  		Dbl_setzero_exponentmantissa(resultp1,resultp2);
->  		Dbl_copytoptr(resultp1,resultp2,dstptr);
-> diff --git a/arch/parisc/math-emu/sfrem.c b/arch/parisc/math-emu/sfrem.c
-> index 3a1b7a3..ad87832 100644
-> --- a/arch/parisc/math-emu/sfrem.c
-> +++ b/arch/parisc/math-emu/sfrem.c
-> @@ -229,7 +229,7 @@ sgl_frem (sgl_floating_point * srcptr1, sgl_floating_point * srcptr2,
->  		Sgl_subtract(opnd1,opnd2,opnd1);
->  		roundup = TRUE;
->  	}
-> -	if (stepcount > 0 || Sgl_iszero(opnd1)) {
-> +	if (stepcount >= 0 || Sgl_iszero(opnd1)) {
->  		/* division is exact, remainder is zero */
->  		Sgl_setzero_exponentmantissa(result);
->  		*dstptr = result;
+> Looks good except some minor style issues.  Fix in the version below
+> which also adds a helper to calculate the length of the vmap area
+> instead of calculating it twice.
 
-Your patch does nothing to the actual execution flow (Sgl_iszero is true
-if stepcount == 0) ... what's the point of applying it?
+Sure ... I nearly did that ... but then there's a lot of stuff like that
+repeated in the code.
+
+I'll also add the optimisation that the invalidation is unnecessary in
+the write case.
 
 James
 
 
+> ---
+> 
+> From: James Bottomley <James.Bottomley@suse.de>
+> Subject: [PATCHv2 5/5] xfs: fix xfs to work with Virtually Indexed architectures
+> 
+> xfs_buf.c includes what is essentially a hand rolled version of
+> blk_rq_map_kern().  In order to work properly with the vmalloc buffers
+> that xfs uses, this hand rolled routine must also implement the flushing
+> API for vmap/vmalloc areas.
+> 
+> Signed-off-by: James Bottomley <James.Bottomley@suse.de>
+> 
+> Index: linux-2.6/fs/xfs/linux-2.6/xfs_buf.c
+> ===================================================================
+> --- linux-2.6.orig/fs/xfs/linux-2.6/xfs_buf.c	2009-12-17 08:05:53.962275389 +0100
+> +++ linux-2.6/fs/xfs/linux-2.6/xfs_buf.c	2009-12-24 11:59:02.031073134 +0100
+> @@ -76,6 +76,27 @@ struct workqueue_struct *xfsconvertd_wor
+>  #define xfs_buf_deallocate(bp) \
+>  	kmem_zone_free(xfs_buf_zone, (bp));
+>  
+> +static inline int
+> +xfs_buf_is_vmapped(
+> +	struct xfs_buf	*bp)
+> +{
+> +	/*
+> +	 * Return true if the buffer is vmapped.
+> +	 *
+> +	 * The XBF_MAPPED flag is set if the buffer should be mapped, but the
+> +	 * code is clever enough to know it doesn't have to map a single page,
+> +	 * so the check has to be both for XBF_MAPPED and bp->b_page_count > 1.
+> +	 */
+> +	return (bp->b_flags & XBF_MAPPED) && bp->b_page_count > 1;
+> +}
+> +
+> +static inline int
+> +xfs_buf_vmap_len(
+> +	struct xfs_buf	*bp)
+> +{
+> +	return (bp->b_page_count * PAGE_SIZE) - bp->b_offset;
+> +}
+> +
+>  /*
+>   *	Page Region interfaces.
+>   *
+> @@ -314,7 +335,7 @@ xfs_buf_free(
+>  	if (bp->b_flags & (_XBF_PAGE_CACHE|_XBF_PAGES)) {
+>  		uint		i;
+>  
+> -		if ((bp->b_flags & XBF_MAPPED) && (bp->b_page_count > 1))
+> +		if (xfs_buf_is_vmapped(bp))
+>  			free_address(bp->b_addr - bp->b_offset);
+>  
+>  		for (i = 0; i < bp->b_page_count; i++) {
+> @@ -1107,6 +1128,9 @@ xfs_buf_bio_end_io(
+>  
+>  	xfs_buf_ioerror(bp, -error);
+>  
+> +	if (!error && xfs_buf_is_vmapped(bp))
+> +		invalidate_kernel_vmap_range(bp->b_addr, xfs_buf_vmap_len(bp));
+> +
+>  	do {
+>  		struct page	*page = bvec->bv_page;
+>  
+> @@ -1216,6 +1240,10 @@ next_chunk:
+>  
+>  submit_io:
+>  	if (likely(bio->bi_size)) {
+> +		if (xfs_buf_is_vmapped(bp)) {
+> +			flush_kernel_vmap_range(bp->b_addr,
+> +						xfs_buf_vmap_len(bp));
+> +		}
+>  		submit_bio(rw, bio);
+>  		if (size)
+>  			goto next_chunk;
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-arch" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
