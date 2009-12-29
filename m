@@ -1,95 +1,50 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+From: Helge Deller <deller@gmx.de>
 Subject: Re: futex wait failure
-Date: Mon, 28 Dec 2009 13:59:17 -0500
-Message-ID: <20091228185916.GA13912@hiauly1.hia.nrc.ca>
-References: <20091223221856.3E76F4E77@hiauly1.hia.nrc.ca> <119aab440912231822m4b2a9c30ja5e17404210e7e50@mail.gmail.com>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Date: Tue, 29 Dec 2009 14:47:53 +0100
+Message-ID: <4B3A0889.7030701@gmx.de>
+References: <20091223221856.3E76F4E77@hiauly1.hia.nrc.ca> <119aab440912231822m4b2a9c30ja5e17404210e7e50@mail.gmail.com> <20091228185916.GA13912@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="VbJkn9YxBvnuCH5J"
-Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	Carlos O'Donell <carlos@systemhalted.org>,
+	linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440912231822m4b2a9c30ja5e17404210e7e50@mail.gmail.com>
+In-Reply-To: <20091228185916.GA13912@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On 12/28/2009 07:59 PM, John David Anglin wrote:
+> On Wed, 23 Dec 2009, Carlos O'Donell wrote:
+>
+>> We are just like every other architecture... with the exception that
+>> we currently have more bugs :-)
+>
+> I have been looking at the lws implementation.  I've attached a patch
+> with a couple of tweaks:
 
---VbJkn9YxBvnuCH5J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The patch looks good.
 
-On Wed, 23 Dec 2009, Carlos O'Donell wrote:
+> 1) I changed the unconditional branch at the entry point to a gate.
+> Didn't think it was a good idea to execute code at user priveledge.
 
-> We are just like every other architecture... with the exception that
-> we currently have more bugs :-)
+Can you explain that?
+The branch might get interrupted, before the process get privileged?
 
-I have been looking at the lws implementation.  I've attached a patch
-with a couple of tweaks:
+> This seems to have improved things (got through a complete testsuite
+> run on gsyprf11 without a deadlock).
 
-1) I changed the unconditional branch at the entry point to a gate.
-Didn't think it was a good idea to execute code at user priveledge.
-This seems to have improved things (got through a complete testsuite
-run on gsyprf11 without a deadlock).  However, I hit a slightly
-different lockup on c3750.
+Good. I'll test too.
 
-2) Change return space register to sr7.  sr3 is not set correctly
-if the entry number is invalid.
+>However, I hit a slightly different lockup on c3750.
 
-Have nasty suspicion that sr3 is getting hit...
+Any info?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> 2) Change return space register to sr7.  sr3 is not set correctly
+> if the entry number is invalid.
 
---VbJkn9YxBvnuCH5J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="syscall.S.d.1"
+Yep.
 
---- a/arch/parisc/kernel/syscall.S
-+++ b/arch/parisc/kernel/syscall.S
-@@ -47,18 +47,17 @@ ENTRY(linux_gateway_page)
- 	KILL_INSN
- 	.endr
- 
--	/* ADDRESS 0xb0 to 0xb4, lws uses 1 insns for entry */
-+	/* ADDRESS 0xb0 to 0xb8, lws uses two insns for entry */
- 	/* Light-weight-syscall entry must always be located at 0xb0 */
- 	/* WARNING: Keep this number updated with table size changes */
- #define __NR_lws_entries (2)
- 
- lws_entry:
--	/* Unconditional branch to lws_start, located on the 
--	   same gateway page */
--	b,n	lws_start
-+	gate	lws_start, %r0		/* increase privilege */
-+	depi	3, 31, 2, %r31		/* Ensure we return into user mode. */
- 
--	/* Fill from 0xb4 to 0xe0 */
--	.rept 11
-+	/* Fill from 0xb8 to 0xe0 */
-+	.rept 10
- 	KILL_INSN
- 	.endr
- 
-@@ -423,9 +422,6 @@ tracesys_sigexit:
- 
- 	*********************************************************/
- lws_start:
--	/* Gate and ensure we return to userspace */
--	gate	.+8, %r0
--	depi	3, 31, 2, %r31	/* Ensure we return to userspace */
- 
- #ifdef CONFIG_64BIT
- 	/* FIXME: If we are a 64-bit kernel just
-@@ -473,7 +469,7 @@ lws_exit:
- 	/* now reset the lowest bit of sp if it was set */
- 	xor	%r30,%r1,%r30
- #endif
--	be,n	0(%sr3, %r31)
-+	be,n	0(%sr7, %r31)
- 
- 
- 	
+> Have nasty suspicion that sr3 is getting hit...
 
---VbJkn9YxBvnuCH5J--
+Helge
