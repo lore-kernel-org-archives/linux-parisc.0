@@ -1,50 +1,58 @@
-From: Helge Deller <deller@gmx.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: futex wait failure
-Date: Tue, 29 Dec 2009 14:47:53 +0100
-Message-ID: <4B3A0889.7030701@gmx.de>
-References: <20091223221856.3E76F4E77@hiauly1.hia.nrc.ca> <119aab440912231822m4b2a9c30ja5e17404210e7e50@mail.gmail.com> <20091228185916.GA13912@hiauly1.hia.nrc.ca>
+Date: Tue, 29 Dec 2009 10:00:26 -0500 (EST)
+Message-ID: <20091229150027.317D74FEF@hiauly1.hia.nrc.ca>
+References: <4B3A0889.7030701@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	Carlos O'Donell <carlos@systemhalted.org>,
+Content-Type: text/plain; charset=US-ASCII
+Cc: dave.anglin@nrc-cnrc.gc.ca, carlos@systemhalted.org,
 	linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+To: deller@gmx.de (Helge Deller)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20091228185916.GA13912@hiauly1.hia.nrc.ca>
+In-Reply-To: <4B3A0889.7030701@gmx.de> from "Helge Deller" at Dec 29, 2009 02:47:53 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 12/28/2009 07:59 PM, John David Anglin wrote:
-> On Wed, 23 Dec 2009, Carlos O'Donell wrote:
->
->> We are just like every other architecture... with the exception that
->> we currently have more bugs :-)
->
-> I have been looking at the lws implementation.  I've attached a patch
-> with a couple of tweaks:
+> The patch looks good.
+> 
+> > 1) I changed the unconditional branch at the entry point to a gate.
+> > Didn't think it was a good idea to execute code at user priveledge.
+> 
+> Can you explain that?
 
-The patch looks good.
+Not really, except that we gate immediately in the other code paths.
+The gateway page is special in that processes are not supposed to get
+scheduled off the page.
 
-> 1) I changed the unconditional branch at the entry point to a gate.
-> Didn't think it was a good idea to execute code at user priveledge.
+> The branch might get interrupted, before the process get privileged?
 
-Can you explain that?
-The branch might get interrupted, before the process get privileged?
+That was the concern.  At worst, an unnecessary branch is eliminated.
+It's clear that this doesn't fix the futex deadlock, but the timing of
+the lws lock code has changed resulting in slightly different symptoms.
 
-> This seems to have improved things (got through a complete testsuite
-> run on gsyprf11 without a deadlock).
+> > This seems to have improved things (got through a complete testsuite
+> > run on gsyprf11 without a deadlock).
+> 
+> Good. I'll test too.
+> 
+> >However, I hit a slightly different lockup on c3750.
+> 
+> Any info?
 
-Good. I'll test too.
+No, I restarted a new GCC build on this machine.  As with the previous
+case on gsyprf11, thread 2 in expect seemed confused about its holding
+the lock.  I've got a new hang on gsyprf11 to look at.
 
->However, I hit a slightly different lockup on c3750.
+In my build last night on the c3750, expect dropped core in the GCC
+testsuite.  Otherwise, it completed the GCC build and check.  I'll
+look a bit at the core dump today.
 
-Any info?
+On my rp3440 (UP kernel), I had several segmentation faults in /bin/sh
+building GCC with 2.6.32.2.  For some reason, 2.6.31.9 is better.  I
+haven't tried expect 5.44.1.14-5 on it.  It currently using expect-tcl8.3
+which avoids the pthread issue.
 
-> 2) Change return space register to sr7.  sr3 is not set correctly
-> if the entry number is invalid.
-
-Yep.
-
-> Have nasty suspicion that sr3 is getting hit...
-
-Helge
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
