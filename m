@@ -1,41 +1,164 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: futex wait failure
-Date: Thu, 31 Dec 2009 20:11:18 +0100
-Message-ID: <4B3CF756.7050702@gmx.de>
-References: <20091223221856.3E76F4E77@hiauly1.hia.nrc.ca>	 <119aab440912231822m4b2a9c30ja5e17404210e7e50@mail.gmail.com>	 <20091228185916.GA13912@hiauly1.hia.nrc.ca> <4B3A0889.7030701@gmx.de> <119aab440912311014j276d8c29mc8d8b59c7c5cafd1@mail.gmail.com>
+From: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
+Subject: Re: regression: crash from 'ls /sys/modules/wl1251_spi/notes'
+Date: Thu, 31 Dec 2009 22:15:08 +0100
+Message-ID: <4B3D145C.2080106@gmx.de>
+References: <87k4w4wux9.fsf@purkki.valot.fi> <1262188157.2749.21.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	linux-parisc@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440912311014j276d8c29mc8d8b59c7c5cafd1@mail.gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Cc: Kalle Valo <kalle.valo-X3B1VOXEql0@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	rusty-8n+1lVoiYb80n/F98K4Iww@public.gmane.org, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org,
+	roland-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, dave-EkG3shUHCYFzGrcipJNh9bDks+cytr/Z@public.gmane.org,
+	Parisc List <linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+To: James Bottomley <James.Bottomley-d9PhHud1JfjCXq6kfMZ53/egYHeGw8Jk@public.gmane.org>,
+	ben-/+tVBieCtBitmTQ+vhA3Yw@public.gmane.org, tbm-R+vWnYXSFMfQT0dZR+AlfA@public.gmane.org
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1262188157.2749.21.camel-0iu6Cu4xQGLYCGPCin2YbQ@public.gmane.org>
+List-ID: <linux-wireless.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 12/31/2009 07:14 PM, Carlos O'Donell wrote:
-> On Tue, Dec 29, 2009 at 8:47 AM, Helge Deller<deller@gmx.de>  wrote:
->>> 2) Change return space register to sr7.  sr3 is not set correctly
->>> if the entry number is invalid.
->>
->> Yep.
->>
->>> Have nasty suspicion that sr3 is getting hit...
+On 12/30/2009 04:49 PM, James Bottomley wrote:
+> A better, and more comprehensive patch would be to try not to count the
+> empty text sections when we're building the notes section (and actually
+> anywhere else in the file).  This patch actually relies on the fact that
+> if sh_size is zero for the text section it should be for the
+> corresponding notes section.  If that doesn't work, we'd actually have
+> to do the matching in the construction piece.
 >
-> Is the thought here that we take an interrupt, and sr3 is not
-> guaranteed saved/restored, while sr7 is guaranteed?
+> Can you try it to see if it works for you?  If it doesn't, I'll try
+> matching notes to text.  It works fine on parisc, but as we don't have a
+> notes section, that's not saying much ...
 >
-> I don't see anything wrong with moving the gate earlier (unless
-> someone can come up with a case where an LWS may not want to gate).
+> Thanks,
 >
-> It has the benefit of making the fast path 1 instruction shorter,
-> however I don't see that it makes the implementation more correct.
+> James
 
-I tested the patch and the testcase in
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=561203
-still segfaults.
 
-Nevertheless, I think Dave's patch should be applied...
+Ben Hutchings already sent a similar patch.
+See: http://patchwork.kernel.org/patch/68925/
+
+IMHO James patch below seems better since it
+checks if a section will be allocated at a few more
+places...
 
 Helge
+
+
+> ---
+>
+> diff --git a/kernel/module.c b/kernel/module.c
+> index e96b8ed..957f912 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -132,6 +132,11 @@ void __module_put_and_exit(struct module *mod, long code)
+>   }
+>   EXPORT_SYMBOL(__module_put_and_exit);
+>
+> +static inline int section_allocated(Elf_Shdr hdr)
+> +{
+> +	return (hdr.sh_flags&  SHF_ALLOC)&&  hdr.sh_size != 0;
+> +}
+> +
+>   /* Find a module section: 0 means not found. */
+>   static unsigned int find_sec(Elf_Ehdr *hdr,
+>   			     Elf_Shdr *sechdrs,
+> @@ -142,7 +147,7 @@ static unsigned int find_sec(Elf_Ehdr *hdr,
+>
+>   	for (i = 1; i<  hdr->e_shnum; i++)
+>   		/* Alloc bit cleared means "ignore it." */
+> -		if ((sechdrs[i].sh_flags&  SHF_ALLOC)
+> +		if (section_allocated(sechdrs[i])
+>   		&&  strcmp(secstrings+sechdrs[i].sh_name, name) == 0)
+>   			return i;
+>   	return 0;
+> @@ -1051,8 +1056,7 @@ static void add_sect_attrs(struct module *mod, unsigned int nsect,
+>
+>   	/* Count loaded sections and allocate structures */
+>   	for (i = 0; i<  nsect; i++)
+> -		if (sechdrs[i].sh_flags&  SHF_ALLOC
+> -		&&  sechdrs[i].sh_size)
+> +		if (section_allocated(sechdrs[i]))
+>   			nloaded++;
+>   	size[0] = ALIGN(sizeof(*sect_attrs)
+>   			+ nloaded * sizeof(sect_attrs->attrs[0]),
+> @@ -1070,9 +1074,7 @@ static void add_sect_attrs(struct module *mod, unsigned int nsect,
+>   	sattr =&sect_attrs->attrs[0];
+>   	gattr =&sect_attrs->grp.attrs[0];
+>   	for (i = 0; i<  nsect; i++) {
+> -		if (! (sechdrs[i].sh_flags&  SHF_ALLOC))
+> -			continue;
+> -		if (!sechdrs[i].sh_size)
+> +		if (!section_allocated(sechdrs[i]))
+>   			continue;
+>   		sattr->address = sechdrs[i].sh_addr;
+>   		sattr->name = kstrdup(secstrings + sechdrs[i].sh_name,
+> @@ -1156,7 +1158,7 @@ static void add_notes_attrs(struct module *mod, unsigned int nsect,
+>   	/* Count notes sections and allocate structures.  */
+>   	notes = 0;
+>   	for (i = 0; i<  nsect; i++)
+> -		if ((sechdrs[i].sh_flags&  SHF_ALLOC)&&
+> +		if (section_allocated(sechdrs[i])&&
+>   		(sechdrs[i].sh_type == SHT_NOTE))
+>   			++notes;
+>
+> @@ -1172,7 +1174,7 @@ static void add_notes_attrs(struct module *mod, unsigned int nsect,
+>   	notes_attrs->notes = notes;
+>   	nattr =&notes_attrs->attrs[0];
+>   	for (loaded = i = 0; i<  nsect; ++i) {
+> -		if (!(sechdrs[i].sh_flags&  SHF_ALLOC))
+> +		if (!section_allocated(sechdrs[i]))
+>   			continue;
+>   		if (sechdrs[i].sh_type == SHT_NOTE) {
+>   			nattr->attr.name = mod->sect_attrs->attrs[loaded].name;
+> @@ -1720,7 +1722,7 @@ static char elf_type(const Elf_Sym *sym,
+>   		return '?';
+>   	if (sechdrs[sym->st_shndx].sh_flags&  SHF_EXECINSTR)
+>   		return 't';
+> -	if (sechdrs[sym->st_shndx].sh_flags&  SHF_ALLOC
+> +	if (section_allocated(sechdrs[sym->st_shndx])
+>   	&&  sechdrs[sym->st_shndx].sh_type != SHT_NOBITS) {
+>   		if (!(sechdrs[sym->st_shndx].sh_flags&  SHF_WRITE))
+>   			return 'r';
+> @@ -1751,7 +1753,7 @@ static bool is_core_symbol(const Elf_Sym *src, const Elf_Shdr *sechdrs,
+>   		return false;
+>
+>   	sec = sechdrs + src->st_shndx;
+> -	if (!(sec->sh_flags&  SHF_ALLOC)
+> +	if (!section_allocated(*sec)
+>   #ifndef CONFIG_KALLSYMS_ALL
+>   	    || !(sec->sh_flags&  SHF_EXECINSTR)
+>   #endif
+> @@ -1913,7 +1915,7 @@ static void kmemleak_load_module(struct module *mod, Elf_Ehdr *hdr,
+>   	kmemleak_scan_area(mod, sizeof(struct module), GFP_KERNEL);
+>
+>   	for (i = 1; i<  hdr->e_shnum; i++) {
+> -		if (!(sechdrs[i].sh_flags&  SHF_ALLOC))
+> +		if (!section_allocated(sechdrs[i]))
+>   			continue;
+>   		if (strncmp(secstrings + sechdrs[i].sh_name, ".data", 5) != 0
+>   		&&  strncmp(secstrings + sechdrs[i].sh_name, ".bss", 4) != 0)
+> @@ -2139,7 +2141,7 @@ static noinline struct module *load_module(void __user *umod,
+>   	for (i = 0; i<  hdr->e_shnum; i++) {
+>   		void *dest;
+>
+> -		if (!(sechdrs[i].sh_flags&  SHF_ALLOC))
+> +		if (!section_allocated(sechdrs[i]))
+>   			continue;
+>
+>   		if (sechdrs[i].sh_entsize&  INIT_OFFSET_MASK)
+> @@ -2287,7 +2289,7 @@ static noinline struct module *load_module(void __user *umod,
+>   			continue;
+>
+>   		/* Don't bother with non-allocated sections */
+> -		if (!(sechdrs[info].sh_flags&  SHF_ALLOC))
+> +		if (!section_allocated(sechdrs[info]))
+>   			continue;
+>
+>   		if (sechdrs[i].sh_type == SHT_REL)
+>
+>
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
