@@ -1,62 +1,42 @@
-From: Kalle Valo <kalle.valo@iki.fi>
-Subject: Re: regression: crash from 'ls /sys/modules/wl1251_spi/notes'
-Date: Wed, 30 Dec 2009 19:20:26 +0200
-Message-ID: <87d41wwf8l.fsf@purkki.valot.fi>
-References: <87k4w4wux9.fsf@purkki.valot.fi>
-	<1262188157.2749.21.camel@mulgrave.site>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: futex wait failure
+Date: Thu, 31 Dec 2009 13:14:27 -0500
+Message-ID: <119aab440912311014j276d8c29mc8d8b59c7c5cafd1@mail.gmail.com>
+References: <20091223221856.3E76F4E77@hiauly1.hia.nrc.ca>
+	 <119aab440912231822m4b2a9c30ja5e17404210e7e50@mail.gmail.com>
+	 <20091228185916.GA13912@hiauly1.hia.nrc.ca> <4B3A0889.7030701@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-	linux-omap@vger.kernel.org, Helge Deller <deller@gmx.de>,
-	rusty@rustcorp.com.au, akpm@linux-foundation.org,
-	roland@redhat.com, dave@hiauly1.hia.nrc.ca,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1262188157.2749.21.camel@mulgrave.site> (James Bottomley's message of "Wed\, 30 Dec 2009 09\:49\:17 -0600")
+In-Reply-To: <4B3A0889.7030701@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-James Bottomley <James.Bottomley@HansenPartnership.com> writes:
-
-> On Wed, 2009-12-30 at 13:41 +0200, Kalle Valo wrote:
+On Tue, Dec 29, 2009 at 8:47 AM, Helge Deller <deller@gmx.de> wrote:
+>> 2) Change return space register to sr7. =A0sr3 is not set correctly
+>> if the entry number is invalid.
 >
->> Also removing wl1251_spi causes a crash. The reason for this is that a
->> sysfs file with a null string as name is trying to be removed from the
->> notes directory.
+> Yep.
 >
-> Yes, this is because the notes sections describe the text sections.
-> When we ignore an empty text section, we'd need to ignore its
-> corresponding notes section.
->
-> The reason we didn't see this on parisc is because our compiler doesn't
-> actually produce any notes sections.
+>> Have nasty suspicion that sr3 is getting hit...
 
-Also on omap not all modules can reproduce the problem. For example
-cfg80211, mac80211 and wl1251 modules work just fine, but with
-wl1251_spi I see the problem everytime.
+Is the thought here that we take an interrupt, and sr3 is not
+guaranteed saved/restored, while sr7 is guaranteed?
 
-> A better, and more comprehensive patch would be to try not to count the
-> empty text sections when we're building the notes section (and actually
-> anywhere else in the file).  This patch actually relies on the fact that
-> if sh_size is zero for the text section it should be for the
-> corresponding notes section.  If that doesn't work, we'd actually have
-> to do the matching in the construction piece.
->
-> Can you try it to see if it works for you?  If it doesn't, I'll try
-> matching notes to text.  It works fine on parisc, but as we don't have a
-> notes section, that's not saying much ...
+I don't see anything wrong with moving the gate earlier (unless
+someone can come up with a case where an LWS may not want to gate).
 
-Thanks. I tested the patch on my setup, this time on top of Linus'
-tree (commit 6b7b284). And the patch fixes the issue, I can't
-reproduce the problem at all, both 'rmmod wl1251_spi' and ls work
-without any problems. So here's my tested-by:
+It has the benefit of making the fast path 1 instruction shorter,
+however I don't see that it makes the implementation more correct.
 
-Tested-by: Kalle Valo <kalle.valo@iki.fi>
-
-Also please consider sending the fix to stable.
-
-Thank you for fixing this so fast.
-
--- 
-Kalle Valo
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
