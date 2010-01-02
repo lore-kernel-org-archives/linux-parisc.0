@@ -1,45 +1,54 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: regression: crash from 'ls /sys/modules/wl1251_spi/notes'
-Date: Sat, 02 Jan 2010 10:34:22 -0600
-Message-ID: <1262450062.2741.4.camel@mulgrave.site>
-References: <87k4w4wux9.fsf@purkki.valot.fi>
-	 <1262188157.2749.21.camel@mulgrave.site>
-	 <2375c9f90912311908r667966e1m919430c40cd9c571@mail.gmail.com>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCHv2 1/5] mm: add coherence API for DMA to vmalloc/vmap
+ areas
+Date: Sun, 03 Jan 2010 08:27:58 +1100
+Message-ID: <1262467678.2173.244.camel@pasglop>
+References: <1261603345-2494-1-git-send-email-James.Bottomley@suse.de>
+	 <1261603345-2494-2-git-send-email-James.Bottomley@suse.de>
+	 <20091224100853.GA3165@console-pimps.org>
+	 <20091224123913.GD5335@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Kalle Valo <kalle.valo@iki.fi>, linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-omap@vger.kernel.org,
-	Helge Deller <deller@gmx.de>, rusty@rustcorp.com.au,
-	akpm@linux-foundation.org, roland@redhat.com,
-	dave@hiauly1.hia.nrc.ca, Parisc List <linux-parisc@vger.kernel.org>
-To: =?ISO-8859-1?Q?Am=E9rico?= Wang <xiyou.wangcong@gmail.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <2375c9f90912311908r667966e1m919430c40cd9c571@mail.gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Matt Fleming <matt@console-pimps.org>,
+	James Bottomley <James.Bottomley@suse.de>,
+	linux-arch@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Christoph Hellwig <hch@lst.de>,
+	Russell King <rmk@arm.linux.org.uk>,
+	Paul Mundt <lethal@linux-sh.org>
+To: Matthew Wilcox <matthew@wil.cx>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20091224123913.GD5335@parisc-linux.org>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2010-01-01 at 11:08 +0800, Am=C3=A9rico Wang wrote:
-> This patch looks fine for me, except that I don't think it's necessar=
-y
-> to introduce an inline function for that...
+On Thu, 2009-12-24 at 05:39 -0700, Matthew Wilcox wrote:
+> 
+> invalidates the processor cache for a given virtual address range
+> in the vmap area.  This API addresses the problem that the processor
+> may have performed speculative reads into its cache of the vmapped
+> area while I/O was occurring to the underlying physical pages.
+> 
+> Signed-off-by: Matthew Wilcox <willy@linux.intel.com>
 
-Actually, I really think we do.  The whole reason we got into this mess
-in the first place is that it wasn't obvious from the code that if we
-altered the loadability of sections, there were a ton of dependent
-places we also had to update.  Putting all that knowledge into a single
-inline makes the same mistake impossible to make because there's now
-only one place to go to adjust the loadability of sections, and it
-automatically takes care of all the dependencies.
+Interestingly, our DMA APIs in this regard are sub-optimal as they
+should provide 3 hooks, not 2.
 
-> Reviewed-by: WANG Cong <xiyou.wangcong@gmail.com>
+Flush is good for ensuring dirty lines have been pushed out before an
+outgoing DMA.
 
-Thanks,
+But for incoming DMA it would be nice to properly split the 2 calls that
+may be needed on some archs, one before, one after the transfer. Sure,
+invalidate twice will "work" but the f will also be sub-optimal on some
+platforms depending on whether the platform is known to be able or not
+to speculatively load cache lines etc...
 
-James
+Maybe just a "before" vs. "after" argument ?
 
+Also, the proposal goes contrary to most of our DMA APIs which don't
+actually expose the details of invalidate vs. flush but instead expose
+the direction of the transfer (both lack the above subtlety though).
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thoughts ?
+
+Cheers,
+Ben.
