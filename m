@@ -1,31 +1,138 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: futex wait failure
-Date: Tue, 5 Jan 2010 17:27:34 -0500 (EST)
-Message-ID: <20100105222734.E8A8C4EB5@hiauly1.hia.nrc.ca>
-References: <4B4254C5.3050302@gmx.de>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: regression: crash from 'ls /sys/modules/wl1251_spi/notes'
+Date: Tue, 5 Jan 2010 17:15:50 -0800
+Message-ID: <20100105171550.8aef9b15.akpm@linux-foundation.org>
+References: <87k4w4wux9.fsf@purkki.valot.fi>
+	<1262188157.2749.21.camel@mulgrave.site>
+	<4B3D145C.2080106@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: dave.anglin@nrc-cnrc.gc.ca, carlos@systemhalted.org,
-	linux-parisc@vger.kernel.org
-To: deller@gmx.de (Helge Deller)
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	ben@decadent.org.uk, tbm@cyrius.com,
+	Kalle Valo <kalle.valo@iki.fi>, linux-kernel@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linux-omap@vger.kernel.org,
+	rusty@rustcorp.com.au, roland@redhat.com, dave@hiauly1.hia.nrc.ca,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4B4254C5.3050302@gmx.de> from "Helge Deller" at Jan 4, 2010 09:51:17 pm
+In-Reply-To: <4B3D145C.2080106@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> clone(Process 1684 attached (waiting for parent)
-> Process 1684 resumed (parent 1683 ready)
-> child_stack=0x4076d040, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40f6c4e8, tls=0x40f6c900, child_tidptr=0x40f6c4e8) = 1684
+On Thu, 31 Dec 2009 22:15:08 +0100
+Helge Deller <deller@gmx.de> wrote:
 
-I noticed the tidptr for the fork may not be correct:
+> On 12/30/2009 04:49 PM, James Bottomley wrote:
+> > A better, and more comprehensive patch would be to try not to count the
+> > empty text sections when we're building the notes section (and actually
+> > anywhere else in the file).  This patch actually relies on the fact that
+> > if sh_size is zero for the text section it should be for the
+> > corresponding notes section.  If that doesn't work, we'd actually have
+> > to do the matching in the construction piece.
+> >
+> > Can you try it to see if it works for you?  If it doesn't, I'll try
+> > matching notes to text.  It works fine on parisc, but as we don't have a
+> > notes section, that's not saying much ...
+> >
+> > Thanks,
+> >
+> > James
+> 
+> 
+> Ben Hutchings already sent a similar patch.
+> See: http://patchwork.kernel.org/patch/68925/
+> 
+> IMHO James patch below seems better since it
+> checks if a section will be allocated at a few more
+> places...
+> 
 
-clone(child_stack=0x40e87040, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x416864e8, tls=0x41686900, child_tidptr=0x416864e8) = 31613
-clone(child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x40002028) = 31614
+Ben's patch (which is below) is currently in linux-next, via a Rusty
+tree.  It is marked for -stable backporting.
 
-I would have thought the value should have been the same as that in the
-clone from the pthread_create call.
+If James's patch is preferable then there's an opportunity to do the
+swap if we move promptly.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+
+
+commit 9e9b48a89ed43c73d7355ff999b8e87b0628e1cd
+Author:     Ben Hutchings <ben@decadent.org.uk>
+AuthorDate: Sat Dec 19 14:43:01 2009 +0000
+Commit:     Stephen Rothwell <sfr@canb.auug.org.au>
+CommitDate: Tue Jan 5 08:44:50 2010 +1100
+
+    modules: Skip empty sections when exporting section notes
+    
+    Commit 35dead4 "modules: don't export section names of empty sections
+    via sysfs" changed the set of sections that have attributes, but did
+    not change the iteration over these attributes in add_notes_attrs().
+    This can lead to add_notes_attrs() creating attributes with the wrong
+    names or with null name pointers.
+    
+    Introduce a sect_empty() function and use it in both add_sect_attrs()
+    and add_notes_attrs().
+    
+    Reported-by: Martin Michlmayr <tbm@cyrius.com>
+    Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+    Tested-by: Martin Michlmayr <tbm@cyrius.com>
+    Cc: stable@kernel.org
+    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+
+diff --git a/kernel/module.c b/kernel/module.c
+index e96b8ed..f82386b 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -1010,6 +1010,12 @@ static const struct kernel_symbol *resolve_symbol(Elf_Shdr *sechdrs,
+  * J. Corbet <corbet@lwn.net>
+  */
+ #if defined(CONFIG_KALLSYMS) && defined(CONFIG_SYSFS)
++
++static inline bool sect_empty(const Elf_Shdr *sect)
++{
++	return !(sect->sh_flags & SHF_ALLOC) || sect->sh_size == 0;
++}
++
+ struct module_sect_attr
+ {
+ 	struct module_attribute mattr;
+@@ -1051,8 +1057,7 @@ static void add_sect_attrs(struct module *mod, unsigned int nsect,
+ 
+ 	/* Count loaded sections and allocate structures */
+ 	for (i = 0; i < nsect; i++)
+-		if (sechdrs[i].sh_flags & SHF_ALLOC
+-		    && sechdrs[i].sh_size)
++		if (!sect_empty(&sechdrs[i]))
+ 			nloaded++;
+ 	size[0] = ALIGN(sizeof(*sect_attrs)
+ 			+ nloaded * sizeof(sect_attrs->attrs[0]),
+@@ -1070,9 +1075,7 @@ static void add_sect_attrs(struct module *mod, unsigned int nsect,
+ 	sattr = &sect_attrs->attrs[0];
+ 	gattr = &sect_attrs->grp.attrs[0];
+ 	for (i = 0; i < nsect; i++) {
+-		if (! (sechdrs[i].sh_flags & SHF_ALLOC))
+-			continue;
+-		if (!sechdrs[i].sh_size)
++		if (sect_empty(&sechdrs[i]))
+ 			continue;
+ 		sattr->address = sechdrs[i].sh_addr;
+ 		sattr->name = kstrdup(secstrings + sechdrs[i].sh_name,
+@@ -1156,7 +1159,7 @@ static void add_notes_attrs(struct module *mod, unsigned int nsect,
+ 	/* Count notes sections and allocate structures.  */
+ 	notes = 0;
+ 	for (i = 0; i < nsect; i++)
+-		if ((sechdrs[i].sh_flags & SHF_ALLOC) &&
++		if (!sect_empty(&sechdrs[i]) &&
+ 		    (sechdrs[i].sh_type == SHT_NOTE))
+ 			++notes;
+ 
+@@ -1172,7 +1175,7 @@ static void add_notes_attrs(struct module *mod, unsigned int nsect,
+ 	notes_attrs->notes = notes;
+ 	nattr = &notes_attrs->attrs[0];
+ 	for (loaded = i = 0; i < nsect; ++i) {
+-		if (!(sechdrs[i].sh_flags & SHF_ALLOC))
++		if (sect_empty(&sechdrs[i]))
+ 			continue;
+ 		if (sechdrs[i].sh_type == SHT_NOTE) {
+ 			nattr->attr.name = mod->sect_attrs->attrs[loaded].name;
+
