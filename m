@@ -1,44 +1,40 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: futex wait failure
-Date: Fri, 8 Jan 2010 17:31:52 -0500 (EST)
-Message-ID: <20100108223153.1263B4EF4@hiauly1.hia.nrc.ca>
-References: <119aab441001081344i7eb3c3f3s9c22eeaecf4d0e1a@mail.gmail.com>
+Date: Fri, 8 Jan 2010 17:33:36 -0500
+Message-ID: <20100108223336.GI19179@bombadil.infradead.org>
+References: <20100108215625.GH19179@bombadil.infradead.org> <20100108222858.D6CBA5160@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: deller@gmx.de, dave.anglin@nrc-cnrc.gc.ca,
+Content-Type: text/plain; charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>, carlos@systemhalted.org,
+	deller@gmx.de, dave.anglin@nrc-cnrc.gc.ca,
 	linux-parisc@vger.kernel.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab441001081344i7eb3c3f3s9c22eeaecf4d0e1a@mail.gmail.com> from "Carlos O'Donell" at Jan 8, 2010 04:44:51 pm
+In-Reply-To: <20100108222858.D6CBA5160@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Fri, Jan 8, 2010 at 4:44 PM, Carlos O'Donell <carlos@systemhalted.org> w=
-> rote:
-> > On Fri, Jan 8, 2010 at 4:18 PM, Helge Deller <deller@gmx.de> wrote:
-> >>> I now think this probably is a glibc bug. =A0The kernel uses this value
-> >>> when the CLONE_PARENT_SETTID flag is passed.
-> >>
-> >>
-> >> Maybe we have a futex problem in glibc on hppa?
-> >> In glibc nptl/pthread_mutex_trylock.c we check the return value of a fut=
-> ex
-> >> syscall against EWOULDBLOCK.
-> >> Since on parisc - in contrast to all other architectures - we have
-> >> EWOULDBLOCK!=3DEAGAIN, we maybe missed a check?
-> >
-> > That's a bug. There are several kernel paths that could return EAGAIN
-> > *or* EWOULDBLOCK via the FUTEX_TRYLOCK_PI futex operation.
-
-Hacking glibc to check for both does not fix the testcase ;(
-
-> > However, I think Dave is on to something with the
+On Fri, Jan 08, 2010 at 05:28:58PM -0500, John David Anglin wrote:
+> > On Fri, Jan 08, 2010 at 04:44:51PM -0500, Carlos O'Donell wrote:
+> > > >
+> > > > However, I think Dave is on to something with the
+> > > 
+> > > ...kernel issue.
+> > > 
+> > > We might have *several* outstanding bugs :-)
+> > > 
+> > 
+> > Hrm. We discussed this on IRC a while ago, I can't remember what we
+> > decided was the best approach... there's probably many many dragons
+> > here.
+> > 
+> > I wonder what would break if we set any EAGAIN returns to EWOULDBLOCK in
+> > the exit path.
 > 
-> ...kernel issue.
-> 
-> We might have *several* outstanding bugs :-)
+> That seems reversed.  x86_64 translates the system's EWOULDBLOCK error
+> into EAGAIN in sysdeps/unix/x86_64/sysdep.S.  However, don't know if this
+> impacts the futex and sem_wait checks.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Yeah, you're right.
+
+regards, Kyle
