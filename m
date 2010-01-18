@@ -1,65 +1,66 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: futex wait failure
-Date: Sun, 17 Jan 2010 00:17:38 +0100
-Message-ID: <4B524912.4070204@gmx.de>
-References: <20100108163756.48BDE5183@hiauly1.hia.nrc.ca>	 <4B47A130.8060603@gmx.de> <119aab441001081344j38000314p1931df34149eabd3@mail.gmail.com>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: fs/compat_ioctl.c:1651:2: error: bit-field '<anonymous>' width not
+	an integer constant
+Date: Mon, 18 Jan 2010 00:31:48 -0700
+Message-ID: <20100118073148.GE28448@lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab441001081344j38000314p1931df34149eabd3@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 01/08/2010 10:44 PM, Carlos O'Donell wrote:
-> On Fri, Jan 8, 2010 at 4:18 PM, Helge Deller<deller@gmx.de>  wrote:
->>> I now think this probably is a glibc bug.  The kernel uses this value
->>> when the CLONE_PARENT_SETTID flag is passed.
->>
->>
->> Maybe we have a futex problem in glibc on hppa?
->> In glibc nptl/pthread_mutex_trylock.c we check the return value of a futex
->> syscall against EWOULDBLOCK.
->> Since on parisc - in contrast to all other architectures - we have
->> EWOULDBLOCK!=EAGAIN, we maybe missed a check?
->
-> That's a bug. [...]
+Is this a known problem?
 
-Carlos,  Dave,
+I'm getting this error on linus' kernel tree build:
+fs/compat_ioctl.c:1651:2: error: bit-field '<anonymous>' width not an integer constant
 
-I'm wondering if we have another bug in glibc...?
+The offending code is:
+1646 static int compat_ioctl_check_table(unsigned int xcmd)
+1647 {
+1648         int i;
+1649         const int max = ARRAY_SIZE(ioctl_pointer) - 1;
+1650 
+1651         BUILD_BUG_ON(max >= (1 << 16));
 
-When running strace, I noticed that a thread which returns with "return 0",
-exits the process on hppa with exit(0):
-[pid  1875] write(1, "Thread OK.\n", 11) = 11
-[pid  1875] exit(0)
 
-On my x86_64 I see:
-[pid  8154] write(1, "Thread OK.\n", 11) = 11
-[pid  8154] _exit(0)                    =
+This "looks" right to me. Everything is a constant other than "max".
+Since max is declared "const", I *expect* max to behave like a constant.
 
-In ports/sysdeps/unix/sysv/linux/hppa/clone.S (line 170) I do see:
-         /* The call to _exit needs saved r19.  */
-         bl      _exit, %rp
-         copy    %ret0, %arg0
 
-This coding seems to indicate that we call _exit(), but we aren't (as
-you see above in the strace).
-So I'm wondering if the "bl _exit,%rp" needs changing.
-Something with HIDDEN_JUMPTARGET(_exit) or similar, so that
-_exit() instead of exit() is called?
+I used "make V=1" to get the command than used that to preprocess the code:
 
-Actually I did tested this with the minifail test program, and changed
-thread_run() to call _exit(0) at the end instead of "return 0":
-void* thread_run(void* arg) {
-	...
-/*	return (void *)&status;  */
-         _exit(0);
-}
-With strace I then suddenly got exit_group() which seems more correct:
-[pid  1910] write(1, "Thread OK.\n", 11) = 11
-[pid  1910] exit_group(0)               = ?
+hppa64-linux-gnu-gcc -Wp,-MD,fs/.compat_ioctl.o.d  -nostdinc -isystem /home/dave/opt/gnu64/gcc-4.5.0/lib/gcc/hppa64-linux-gnu/4.5.0/include -I/usr/src/linux-2.6/arch/parisc/include -Iinclude  -include include/generated/autoconf.h -D__KERNEL__ -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -Os -pipe -mno-space-regs -mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=2.0 -mschedule=8000 -Wframe-larger-than=2048 -fno-stack-protector -fomit-frame-pointer -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-dwarf2-cfi-asm -fconserve-stack   -D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(compat_ioctl)"  -D"KBUILD_MODNAME=KBUILD_STR(c
+ ompat_ioctl)"  -E -o fs/.tmp_compat_ioctl.P fs/compat_ioctl.c
 
-Helge
+and I believe the same code in fs/.tmp_compat_ioctl.P is:
+
+static int compat_ioctl_check_table(unsigned int xcmd)
+{
+ int i;
+ const int max = (sizeof(ioctl_pointer) / sizeof((ioctl_pointer)[0]) + (sizeof(struct { int:-!!(__builtin_types_compatible_p(typeof(ioctl_pointer), typeof(&ioctl_pointer[0]))); }))) - 1;
+
+ ((void)(sizeof(struct { int:-!!(max >= (1 << 16)); })));
+
+
+I can't make sense of this since I have no clue what "int:-!!" means.
+
+
+BTW, I also looked in include/linux/kernel.h:
+
+/* Force a compilation error if condition is true */
+#define BUILD_BUG_ON(condition) ((void)BUILD_BUG_ON_ZERO(condition))
+
+...
+/* Force a compilation error if condition is true, but also produce a
+   result (of value 0 and type size_t), so the expression can be used
+   e.g. in a structure initializer (or where-ever else comma expressions
+   aren't permitted). */
+#define BUILD_BUG_ON_ZERO(e) (sizeof(struct { int:-!!(e); }))
+#define BUILD_BUG_ON_NULL(e) ((void *)sizeof(struct { int:-!!(e); }))
+
+Source this comes from is gsyprf11:/usr/src/linux-2.6 and I just did
+a git pull. Please let me know if I just got unlucky and should pull again.
+
+hth,
+grant
