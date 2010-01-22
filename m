@@ -1,44 +1,85 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: futex wait failure
-Date: Mon, 18 Jan 2010 15:49:43 -0500
-Message-ID: <119aab441001181249v596d90e2ibb0e0815ea5fe009@mail.gmail.com>
-References: <4B524912.4070204@gmx.de>
-	 <20100118204459.B95514EF1@hiauly1.hia.nrc.ca>
+From: Will Newton <will.newton@gmail.com>
+Subject: [PATCH] exec: Use a define for maximum process stack size in
+	STACK_GROWSUP case.
+Date: Fri, 22 Jan 2010 13:57:58 +0000
+Message-ID: <87a5b0801001220557s3a62742n369741a5d0e3ef94@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Helge Deller <deller@gmx.de>, dave.anglin@nrc-cnrc.gc.ca,
+Content-Type: multipart/mixed; boundary=00032555a3420b4f6e047dc13560
+To: Linux Kernel list <linux-kernel@vger.kernel.org>,
 	linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100118204459.B95514EF1@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jan 18, 2010 at 3:44 PM, John David Anglin
-<dave@hiauly1.hia.nrc.ca> wrote:
->> Actually I did tested this with the minifail test program, and chang=
-ed
->> thread_run() to call _exit(0) at the end instead of "return 0":
->> void* thread_run(void* arg) {
->> =A0 =A0 =A0 ...
->> /* =A0 =A0return (void *)&status; =A0*/
->> =A0 =A0 =A0 =A0 =A0_exit(0);
->> }
->> With strace I then suddenly got exit_group() which seems more correc=
-t:
->> [pid =A01910] write(1, "Thread OK.\n", 11) =3D 11
->> [pid =A01910] exit_group(0) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =3D ?
->
-> The child of the fork should exit using _exit(0). =A0Otherwise, it me=
-sses
-> with the file descriptors of the parent.
+--00032555a3420b4f6e047dc13560
+Content-Type: text/plain; charset=ISO-8859-1
 
-Thanks for verifying this. I'm looking into this.
+Create a new define for the maximum allowed process stack size for
+STACK_GROWSUP architectures. This allows the value to be overridden in
+architecture specific code where necessary.
 
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Will Newton <will.newton@gmail.com>
+---
+
+The only in-tree architecture this affects is parisc. I don't have a
+parisc box here to test with, but I have tested this change on an
+out-of-tree Linux port with STACK_GROWSUP set.
+
+ fs/exec.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/fs/exec.c b/fs/exec.c
+index 632b02e..d37a626 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -573,10 +573,13 @@ int setup_arg_pages(struct linux_binprm *bprm,
+ 	unsigned long stack_base;
+
+ #ifdef CONFIG_STACK_GROWSUP
+-	/* Limit stack size to 1GB */
++	/* Limit stack size to 1GB by default. */
++#ifndef STACK_MAX_SIZE
++#define STACK_MAX_SIZE (1 << 30)
++#endif
+ 	stack_base = current->signal->rlim[RLIMIT_STACK].rlim_max;
+-	if (stack_base > (1 << 30))
+-		stack_base = 1 << 30;
++	if (stack_base > STACK_MAX_SIZE)
++		stack_base = STACK_MAX_SIZE;
+
+ 	/* Make sure we didn't let the argument array grow too large. */
+ 	if (vma->vm_end - vma->vm_start > stack_base)
+-- 
+1.5.5.2
+
+--00032555a3420b4f6e047dc13560
+Content-Type: application/octet-stream;
+	name="0001-exec-Use-a-define-for-maximum-process-stack-size-in.patch"
+Content-Disposition: attachment;
+	filename="0001-exec-Use-a-define-for-maximum-process-stack-size-in.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g4r1aq4f0
+
+RnJvbSBlYjQ0YTQ0MTg0ZTQyZWQyYWZiMGQxZTg5OGI2Y2IzZjY4M2JjY2NmIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBXaWxsIE5ld3RvbiA8d2lsbC5uZXd0b25AZ21haWwuY29tPgpE
+YXRlOiBGcmksIDIyIEphbiAyMDEwIDEzOjUxOjMxICswMDAwClN1YmplY3Q6IFtQQVRDSF0gZXhl
+YzogVXNlIGEgZGVmaW5lIGZvciBtYXhpbXVtIHByb2Nlc3Mgc3RhY2sgc2l6ZSBpbiBTVEFDS19H
+Uk9XU1VQIGNhc2UuCgpDcmVhdGUgYSBuZXcgZGVmaW5lIGZvciB0aGUgbWF4aW11bSBhbGxvd2Vk
+IHByb2Nlc3Mgc3RhY2sgc2l6ZSBmb3IKU1RBQ0tfR1JPV1NVUCBhcmNoaXRlY3R1cmVzLiBUaGlz
+IGFsbG93cyB0aGUgdmFsdWUgdG8gYmUgb3ZlcnJpZGRlbiBpbgphcmNoaXRlY3R1cmUgc3BlY2lm
+aWMgY29kZSB3aGVyZSBuZWNlc3NhcnkuCgpTaWduZWQtb2ZmLWJ5OiBXaWxsIE5ld3RvbiA8d2ls
+bC5uZXd0b25AZ21haWwuY29tPgotLS0KIGZzL2V4ZWMuYyB8ICAgIDkgKysrKysrLS0tCiAxIGZp
+bGVzIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQg
+YS9mcy9leGVjLmMgYi9mcy9leGVjLmMKaW5kZXggNjMyYjAyZS4uZDM3YTYyNiAxMDA2NDQKLS0t
+IGEvZnMvZXhlYy5jCisrKyBiL2ZzL2V4ZWMuYwpAQCAtNTczLDEwICs1NzMsMTMgQEAgaW50IHNl
+dHVwX2FyZ19wYWdlcyhzdHJ1Y3QgbGludXhfYmlucHJtICpicHJtLAogCXVuc2lnbmVkIGxvbmcg
+c3RhY2tfYmFzZTsKIAogI2lmZGVmIENPTkZJR19TVEFDS19HUk9XU1VQCi0JLyogTGltaXQgc3Rh
+Y2sgc2l6ZSB0byAxR0IgKi8KKwkvKiBMaW1pdCBzdGFjayBzaXplIHRvIDFHQiBieSBkZWZhdWx0
+LiAqLworI2lmbmRlZiBTVEFDS19NQVhfU0laRQorI2RlZmluZSBTVEFDS19NQVhfU0laRSAoMSA8
+PCAzMCkKKyNlbmRpZgogCXN0YWNrX2Jhc2UgPSBjdXJyZW50LT5zaWduYWwtPnJsaW1bUkxJTUlU
+X1NUQUNLXS5ybGltX21heDsKLQlpZiAoc3RhY2tfYmFzZSA+ICgxIDw8IDMwKSkKLQkJc3RhY2tf
+YmFzZSA9IDEgPDwgMzA7CisJaWYgKHN0YWNrX2Jhc2UgPiBTVEFDS19NQVhfU0laRSkKKwkJc3Rh
+Y2tfYmFzZSA9IFNUQUNLX01BWF9TSVpFOwogCiAJLyogTWFrZSBzdXJlIHdlIGRpZG4ndCBsZXQg
+dGhlIGFyZ3VtZW50IGFycmF5IGdyb3cgdG9vIGxhcmdlLiAqLwogCWlmICh2bWEtPnZtX2VuZCAt
+IHZtYS0+dm1fc3RhcnQgPiBzdGFja19iYXNlKQotLSAKMS41LjUuMgoK
+--00032555a3420b4f6e047dc13560--
