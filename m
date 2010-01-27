@@ -1,85 +1,112 @@
-From: Will Newton <will.newton@gmail.com>
-Subject: [PATCH] exec: Use a define for maximum process stack size in
-	STACK_GROWSUP case.
-Date: Fri, 22 Jan 2010 13:57:58 +0000
-Message-ID: <87a5b0801001220557s3a62742n369741a5d0e3ef94@mail.gmail.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Segmentation fault in __libc_start_main with -static
+Date: Wed, 27 Jan 2010 12:06:24 -0500 (EST)
+Message-ID: <20100127170625.0E6F54EA9@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=00032555a3420b4f6e047dc13560
-To: Linux Kernel list <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: carlos@systemhalted.org
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---00032555a3420b4f6e047dc13560
-Content-Type: text/plain; charset=ISO-8859-1
+In trying to debug a new gcc testsuite failure, I tried to link the
+application with -static to simplify debugging.  It turns out we have
+a couple of problems in linking threaded applications with -static.
 
-Create a new define for the maximum allowed process stack size for
-STACK_GROWSUP architectures. This allows the value to be overridden in
-architecture specific code where necessary.
+The first problem is the linker does change r19 to dp for various TLS
+relocations using the global pointer.  I've attached a patch below
+to which I think fixes this problem.
 
-Signed-off-by: Will Newton <will.newton@gmail.com>
----
+The second issue is the handling of the symbol __nptl_threads.
+We get a segmentation fault at startup here:
 
-The only in-tree architecture this affects is parisc. I don't have a
-parisc box here to test with, but I have tested this change on an
-out-of-tree Linux port with STACK_GROWSUP set.
+0x000223bc <__libc_start_main+600>:     addil L%0,r0,r1
+0x000223c0 <__libc_start_main+604>:     ldo 0(r1),r3
+0x000223c4 <__libc_start_main+608>:     ldw 0(r3),rp
 
- fs/exec.c |    9 ++++++---
- 1 files changed, 6 insertions(+), 3 deletions(-)
+The relocations are:
 
-diff --git a/fs/exec.c b/fs/exec.c
-index 632b02e..d37a626 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -573,10 +573,13 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	unsigned long stack_base;
+00000258 R_PARISC_DPREL21L  __nptl_nthreads
+0000025c R_PARISC_DPREL14R  __nptl_nthreads
 
- #ifdef CONFIG_STACK_GROWSUP
--	/* Limit stack size to 1GB */
-+	/* Limit stack size to 1GB by default. */
-+#ifndef STACK_MAX_SIZE
-+#define STACK_MAX_SIZE (1 << 30)
-+#endif
- 	stack_base = current->signal->rlim[RLIMIT_STACK].rlim_max;
--	if (stack_base > (1 << 30))
--		stack_base = 1 << 30;
-+	if (stack_base > STACK_MAX_SIZE)
-+		stack_base = STACK_MAX_SIZE;
+The original code:
 
- 	/* Make sure we didn't let the argument array grow too large. */
- 	if (vma->vm_end - vma->vm_start > stack_base)
+ 258:   2b 60 00 00     addil L%0,dp,r1
+ 25c:   34 23 00 00     ldo 0(r1),r3
+ 260:   0c 60 10 82     ldw 0(r3),rp
+
+__nptl_nthreads is undefined weak:
+
+         w __nptl_nthreads
+
+The original code gets munged in elf32-hppa.c:
+
+    /* For all the DP relative relocations, we need to examine the symbol's
+       section.  If it has no section or if it's a code section, then
+       "data pointer relative" makes no sense.  In that case we don't
+       adjust the "value", and for 21 bit addil instructions, we change the
+       source addend register from %dp to %r0.  This situation commonly
+       arises for undefined weak symbols and when a variable's "constness"
+       is declared differently from the way the variable is defined.  For
+       instance: "extern int foo" with foo defined as "const int foo".  */
+      if (sym_sec == NULL || (sym_sec->flags & SEC_CODE) != 0)
+	{
+	  if ((insn & ((0x3f << 26) | (0x1f << 21)))
+	      == (((int) OP_ADDIL << 26) | (27 << 21)))
+	    {
+	      insn &= ~ (0x1f << 21);
+	    }
+	  /* Now try to make things easy for the dynamic linker.  */
+
+	  break;
+        }
+
+We either need to define __nptl_nthreads or check if its address is
+NULL.
+
+Dave
 -- 
-1.5.5.2
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 
---00032555a3420b4f6e047dc13560
-Content-Type: application/octet-stream;
-	name="0001-exec-Use-a-define-for-maximum-process-stack-size-in.patch"
-Content-Disposition: attachment;
-	filename="0001-exec-Use-a-define-for-maximum-process-stack-size-in.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g4r1aq4f0
-
-RnJvbSBlYjQ0YTQ0MTg0ZTQyZWQyYWZiMGQxZTg5OGI2Y2IzZjY4M2JjY2NmIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBXaWxsIE5ld3RvbiA8d2lsbC5uZXd0b25AZ21haWwuY29tPgpE
-YXRlOiBGcmksIDIyIEphbiAyMDEwIDEzOjUxOjMxICswMDAwClN1YmplY3Q6IFtQQVRDSF0gZXhl
-YzogVXNlIGEgZGVmaW5lIGZvciBtYXhpbXVtIHByb2Nlc3Mgc3RhY2sgc2l6ZSBpbiBTVEFDS19H
-Uk9XU1VQIGNhc2UuCgpDcmVhdGUgYSBuZXcgZGVmaW5lIGZvciB0aGUgbWF4aW11bSBhbGxvd2Vk
-IHByb2Nlc3Mgc3RhY2sgc2l6ZSBmb3IKU1RBQ0tfR1JPV1NVUCBhcmNoaXRlY3R1cmVzLiBUaGlz
-IGFsbG93cyB0aGUgdmFsdWUgdG8gYmUgb3ZlcnJpZGRlbiBpbgphcmNoaXRlY3R1cmUgc3BlY2lm
-aWMgY29kZSB3aGVyZSBuZWNlc3NhcnkuCgpTaWduZWQtb2ZmLWJ5OiBXaWxsIE5ld3RvbiA8d2ls
-bC5uZXd0b25AZ21haWwuY29tPgotLS0KIGZzL2V4ZWMuYyB8ICAgIDkgKysrKysrLS0tCiAxIGZp
-bGVzIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQg
-YS9mcy9leGVjLmMgYi9mcy9leGVjLmMKaW5kZXggNjMyYjAyZS4uZDM3YTYyNiAxMDA2NDQKLS0t
-IGEvZnMvZXhlYy5jCisrKyBiL2ZzL2V4ZWMuYwpAQCAtNTczLDEwICs1NzMsMTMgQEAgaW50IHNl
-dHVwX2FyZ19wYWdlcyhzdHJ1Y3QgbGludXhfYmlucHJtICpicHJtLAogCXVuc2lnbmVkIGxvbmcg
-c3RhY2tfYmFzZTsKIAogI2lmZGVmIENPTkZJR19TVEFDS19HUk9XU1VQCi0JLyogTGltaXQgc3Rh
-Y2sgc2l6ZSB0byAxR0IgKi8KKwkvKiBMaW1pdCBzdGFjayBzaXplIHRvIDFHQiBieSBkZWZhdWx0
-LiAqLworI2lmbmRlZiBTVEFDS19NQVhfU0laRQorI2RlZmluZSBTVEFDS19NQVhfU0laRSAoMSA8
-PCAzMCkKKyNlbmRpZgogCXN0YWNrX2Jhc2UgPSBjdXJyZW50LT5zaWduYWwtPnJsaW1bUkxJTUlU
-X1NUQUNLXS5ybGltX21heDsKLQlpZiAoc3RhY2tfYmFzZSA+ICgxIDw8IDMwKSkKLQkJc3RhY2tf
-YmFzZSA9IDEgPDwgMzA7CisJaWYgKHN0YWNrX2Jhc2UgPiBTVEFDS19NQVhfU0laRSkKKwkJc3Rh
-Y2tfYmFzZSA9IFNUQUNLX01BWF9TSVpFOwogCiAJLyogTWFrZSBzdXJlIHdlIGRpZG4ndCBsZXQg
-dGhlIGFyZ3VtZW50IGFycmF5IGdyb3cgdG9vIGxhcmdlLiAqLwogCWlmICh2bWEtPnZtX2VuZCAt
-IHZtYS0+dm1fc3RhcnQgPiBzdGFja19iYXNlKQotLSAKMS41LjUuMgoK
---00032555a3420b4f6e047dc13560--
+Index: elf32-hppa.c
+===================================================================
+RCS file: /cvs/src/src/bfd/elf32-hppa.c,v
+retrieving revision 1.169
+diff -u -3 -p -r1.169 elf32-hppa.c
+--- elf32-hppa.c	8 Nov 2009 20:47:24 -0000	1.169
++++ elf32-hppa.c	26 Jan 2010 02:52:02 -0000
+@@ -3388,12 +3388,19 @@ final_link_relocate (asection *input_sec
+     case R_PARISC_DPREL21L:
+     case R_PARISC_DPREL14R:
+     case R_PARISC_DPREL14F:
++    case R_PARISC_TLS_GD21L:
++    case R_PARISC_TLS_LDM21L:
++    case R_PARISC_TLS_IE21L:
+       /* Convert instructions that use the linkage table pointer (r19) to
+ 	 instructions that use the global data pointer (dp).  This is the
+ 	 most efficient way of using PIC code in an incomplete executable,
+ 	 but the user must follow the standard runtime conventions for
+ 	 accessing data for this to work.  */
+-      if (orig_r_type == R_PARISC_DLTIND21L)
++      if (orig_r_type == R_PARISC_DLTIND21L
++	  || (!info->shared
++	      && (r_type == R_PARISC_TLS_GD21L
++		  || r_type == R_PARISC_TLS_LDM21L
++		  || r_type == R_PARISC_TLS_IE21L)))
+ 	{
+ 	  /* Convert addil instructions if the original reloc was a
+ 	     DLTIND21L.  GCC sometimes uses a register other than r19 for
+@@ -3444,11 +3451,8 @@ final_link_relocate (asection *input_sec
+     case R_PARISC_DLTIND21L:
+     case R_PARISC_DLTIND14R:
+     case R_PARISC_DLTIND14F:
+-    case R_PARISC_TLS_GD21L:
+     case R_PARISC_TLS_GD14R:
+-    case R_PARISC_TLS_LDM21L:
+     case R_PARISC_TLS_LDM14R:
+-    case R_PARISC_TLS_IE21L:
+     case R_PARISC_TLS_IE14R:
+       value -= elf_gp (input_section->output_section->owner);
+       break;
