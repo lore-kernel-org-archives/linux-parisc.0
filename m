@@ -1,48 +1,36 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: Segmentation fault in __libc_start_main with -static
-Date: Sun, 31 Jan 2010 13:03:17 -0500
-Message-ID: <119aab441001311003j480f6e4u741ae15df2899b32@mail.gmail.com>
-References: <119aab441001310852u687139b3rf711997e4e2e4b83@mail.gmail.com>
-	 <20100131171307.E17D85145@hiauly1.hia.nrc.ca>
+Date: Sun, 31 Jan 2010 13:52:50 -0500 (EST)
+Message-ID: <20100131185251.1A9305145@hiauly1.hia.nrc.ca>
+References: <119aab441001311003j480f6e4u741ae15df2899b32@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100131171307.E17D85145@hiauly1.hia.nrc.ca>
+In-Reply-To: <119aab441001311003j480f6e4u741ae15df2899b32@mail.gmail.com> from "Carlos O'Donell" at Jan 31, 2010 01:03:17 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Jan 31, 2010 at 12:13 PM, John David Anglin
-<dave@hiauly1.hia.nrc.ca> wrote:
->> We define it like this:
->> glibc-ports/sysdeps/hppa/libgcc_s.h
->> /* Name of libgcc_s library provided by gcc. =A0*/
->> #define LIBGCC_S_SO "libgcc_s.so.4"
->>
->> If you bump the version number you need to tell me, and then we
->> coordinate with debian to release a new libgcc_s.so, followed by an
->> updated glibc.
->
-> Ugh! =A0This means that the change in unwind behavior (signal frames)
-> would need to be backported to all active GCC versions. =A0libgcj wou=
-ld
-> also need fixing. =A0In principle, the whole application base would
-> need recompilation to update to the new glibc version.
+> Could you explain the change in more detail?
 
-Could you explain the change in more detail?
+The change is to set fs->signal_frame = 1 in signal frames in
+pa32_fallback_frame_state.  This affects the determination as to whether
+the IP is before or after the first not yet fully executed instruction
+in a frame.  This feature was added in 2006 by Jakub Jelinek, but
+pa32_fallback_frame_state was not changed.
 
-You should only have to rebuild the whole application base if you
-break the unwind ABI.
+This fixes unwinding in Ada (corner case).  It probably fixes corner
+causes for other languages.  However, it breaks a number of Java testcases.
+The problem is compensated for in the definition used for MAKE_THROW_FRAME
+in libjava/include/pa-signal.h and hppa-signal.h.
 
-> I guess the minimal impact is to accept that the change in unwind
-> behavior will break a few programs. =A0The java exception support
-> compensated for the bug. =A0I'll back out the version bump.
+The Ada testcase that exposed this problem is new for 4.5.
 
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I'd hoped to bump the libgcc_s version so as to not break existing
+applications, but that appears impossible.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
