@@ -1,85 +1,32 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: Questions about hppa *context functions.
-Date: Sun, 31 Jan 2010 18:47:24 -0500
-Message-ID: <119aab441001311547o7d605b1dqab7908d0d3077ddc@mail.gmail.com>
-References: <119aab441001310825x6fa7254u85c00dc1b0588950@mail.gmail.com>
-	 <119aab441001311215p6c13d7a7tcee4747393b1efbe@mail.gmail.com>
-	 <4B65EC6F.9020205@gmx.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: futex wait failure
+Date: Sun, 31 Jan 2010 19:26:12 +73900 (EST)
+Message-ID: <20100201002612.F0A754EA9@hiauly1.hia.nrc.ca>
+References: <4B65F2AD.3060408@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc <linux-parisc@vger.kernel.org>,
-	libc-ports@sourceware.org
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=US-ASCII
+Cc: carlos@systemhalted.org, dave.anglin@nrc-cnrc.gc.ca,
+	linux-parisc@vger.kernel.org
+To: deller@gmx.de (Helge Deller)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4B65EC6F.9020205@gmx.de>
+In-Reply-To: <4B65F2AD.3060408@gmx.de> from "Helge Deller" at Jan 31, 2010 10:14:21 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Jan 31, 2010 at 3:47 PM, Helge Deller <deller@gmx.de> wrote:
-> Carlos,
->
-> thanks a lot for your work!
->
-> First of all, if it works, I'm fine with it.
->
-> One minor question:
-> I'm used to test sizeof long instead of sizeof int to check for 32/64=
-bit.
-> You changed it to "(sizeof(unsigned int) =3D=3D 8)".
-> I always thought a long is usually the type of a register, while an i=
-nt can
-> be anything.
+> >> Actually I did tested this with the minifail test program, and changed
+> >> thread_run() to call _exit(0) at the end instead of "return 0":
+> >> void* thread_run(void* arg) {
+> >>         ...
+> >> /*      return (void *)&status;  */
+> >>         _exit(0);
+> >> }
+> >> With strace I then suddenly got exit_group() which seems more correct:
+> >> [pid  1910] write(1, "Thread OK.\n", 11) = 11
+> >> [pid  1910] exit_group(0)               = ?
 
-You are correct, this code is wrong. Since hppa64 is LP64, and hppa32
-is ILP32, the only way to tell the difference between the two is by
-using "sizeof(unsigned long)" or "sizeof(void *)", the two types which
-differ between the ABIs.
+Did this fix minifail?
 
->> 1. Why limit the number of input arguments to 8?
->
-> I didn't had real reasons.
-> At some point I read that software usually should not rely on the fac=
-t that
-> the
-> *context funtions =A0can handle more than 4 arguments. To be on the s=
-afe side,
-> software
-> should better hand over a pointer to a struct in one of the first 4
-> arguments.
-> But with your patch, which extends it for parisc to more than 8 argum=
-ents,
-> it's even better :-)
-
-OK, perfect, the new implementation should handle as many arguments as
-you have stack space.
-
->> 2. It doesn't appear that the current implementation transfers
->> ucp->uc_stack.ss_sp to the stack pointer when makecontext() is calle=
-d.
->
-> You seem to have fixed this in your patch.
-
-Yes, I did fix this, I was just curious if you considered this in the
-initial implementation?
-
->> 3. POSIX says that all the arguments must be of type int, but in a
->> comment you write "XXX: This implementation only handles integer
->> arguments."
->> Is there any reason this comment should stay there?
->
-> Yep. Just drop it.
-
-Thanks.
-
-> Again, I didn't tested you patch, but just by looking at it, it seems=
- OK.
-
-Thanks.
-
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
