@@ -1,53 +1,92 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: Segmentation fault in __libc_start_main with -static
-Date: Sun, 31 Jan 2010 14:15:06 -0500
-Message-ID: <119aab441001311115i75dc4cdcl195dedd55b5c63d9@mail.gmail.com>
-References: <119aab441001311003j480f6e4u741ae15df2899b32@mail.gmail.com>
-	 <20100131185251.1A9305145@hiauly1.hia.nrc.ca>
+Subject: Re: Questions about hppa *context functions.
+Date: Sun, 31 Jan 2010 15:15:37 -0500
+Message-ID: <119aab441001311215p6c13d7a7tcee4747393b1efbe@mail.gmail.com>
+References: <119aab441001310825x6fa7254u85c00dc1b0588950@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Content-Type: multipart/mixed; boundary=0016e6dab18e3017ea047e7b8875
+To: Helge Deller <deller@gmx.de>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	libc-ports@sourceware.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100131185251.1A9305145@hiauly1.hia.nrc.ca>
+In-Reply-To: <119aab441001310825x6fa7254u85c00dc1b0588950@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Jan 31, 2010 at 1:52 PM, John David Anglin
-<dave@hiauly1.hia.nrc.ca> wrote:
->> Could you explain the change in more detail?
->
-> The change is to set fs->signal_frame =3D 1 in signal frames in
-> pa32_fallback_frame_state. =A0This affects the determination as to wh=
-ether
-> the IP is before or after the first not yet fully executed instructio=
-n
-> in a frame. =A0This feature was added in 2006 by Jakub Jelinek, but
-> pa32_fallback_frame_state was not changed.
+--0016e6dab18e3017ea047e7b8875
+Content-Type: text/plain; charset=ISO-8859-1
 
-OK.
-
-> This fixes unwinding in Ada (corner case). =A0It probably fixes corne=
-r
-> causes for other languages. =A0However, it breaks a number of Java te=
-stcases.
-> The problem is compensated for in the definition used for MAKE_THROW_=
-=46RAME
-> in libjava/include/pa-signal.h and hppa-signal.h.
+On Sun, Jan 31, 2010 at 11:25 AM, Carlos O'Donell
+<carlos@systemhalted.org> wrote:
+> Helge,
 >
-> The Ada testcase that exposed this problem is new for 4.5.
+> On December 15th, 2009 an additional *context test was added to glibc,
+> see stdlib/tst-makecontext3.c.
 >
-> I'd hoped to bump the libgcc_s version so as to not break existing
-> applications, but that appears impossible.
+> This test fails on hppa with:
+> ~~~
+> makecontext: does not know how to handle more than 8 arguments
+> ~~~
 
-No, unfortunately the implementation of pthread_cancel() needs to use
-the unwinder, and that means glibc assumes that the latest libgcc_s.so
-can always unwind old code using some sort of fallback.
+New patch attached with additional changes:
+* Align the incoming stack to 64-bytes.
+* Adjust for frame.
+* Adjust saved stack pointer.
+
+The following patch allows the new test to pass for the 32-bit runtime.
+
+I can't guarantee this works for a 64-bit runtime.
+
+Helge, can you comment on the attached patch?
 
 Cheers,
 Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--0016e6dab18e3017ea047e7b8875
+Content-Type: application/octet-stream; name="makecontext.diff"
+Content-Disposition: attachment; filename="makecontext.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g549txk81
+
+ZGlmZiAtLWdpdCBhL3N5c2RlcHMvdW5peC9zeXN2L2xpbnV4L2hwcGEvbWFrZWNvbnRleHQuYyBi
+L3N5c2RlcHMvdW5peC9zeXN2L2xpbnV4L2hwcGEvbWFrZWNvbnRleHQuYwppbmRleCA2OWExODEz
+Li5hODRhYmU3IDEwMDY0NAotLS0gYS9zeXNkZXBzL3VuaXgvc3lzdi9saW51eC9ocHBhL21ha2Vj
+b250ZXh0LmMKKysrIGIvc3lzZGVwcy91bml4L3N5c3YvbGludXgvaHBwYS9tYWtlY29udGV4dC5j
+CkBAIC0yNSw3ICsyNSw5IEBACiAjaW5jbHVkZSA8c3lzZGVwLmg+CiAjaW5jbHVkZSA8dWNvbnRl
+eHQuaD4KIAotLyogWFhYOiBUaGlzIGltcGxlbWVudGF0aW9uIG9ubHkgaGFuZGxlcyBpbnRlZ2Vy
+IGFyZ3VtZW50cy4gICovCisvKiBQT1NJWCBvbmx5IHN1cHBvcnRzIGludGVnZXIgYXJndW1lbnRz
+LiAgKi8KKyNkZWZpbmUgU1RBQ0tfQUxJR04gNjQKKyNkZWZpbmUgRlJBTUVfU0laRSA4CiAKIHZv
+aWQKIF9fbWFrZWNvbnRleHQgKHVjb250ZXh0X3QgKnVjcCwgdm9pZCAoKmZ1bmMpICh2b2lkKSwg
+aW50IGFyZ2MsIC4uLikKQEAgLTM0LDE1ICszNiwxMCBAQCBfX21ha2Vjb250ZXh0ICh1Y29udGV4
+dF90ICp1Y3AsIHZvaWQgKCpmdW5jKSAodm9pZCksIGludCBhcmdjLCAuLi4pCiAgIHZhX2xpc3Qg
+YXA7CiAgIGludCBpOwogCi0gIGlmIChhcmdjID4gOCkKLSAgICB7Ci0gICAgICBmcHJpbnRmIChz
+dGRlcnIsIF8oIlwKLW1ha2Vjb250ZXh0OiBkb2VzIG5vdCBrbm93IGhvdyB0byBoYW5kbGUgbW9y
+ZSB0aGFuIDggYXJndW1lbnRzXG4iKSk7Ci0gICAgICBleGl0ICgtMSk7Ci0gICAgfQotCi0gIC8q
+IEdldCBzdGFjayBwb2ludGVyLiAgKi8KLSAgc3AgPSAodW5zaWduZWQgaW50ICopIHVjcC0+dWNf
+c3RhY2suc3Nfc3A7CisgIC8qIEdldCBzdGFjayBwb2ludGVyICg2NC1ieXRlIGFsaWduZWQpLiAg
+Ki8KKyAgc3AgPSAodW5zaWduZWQgaW50ICopKCgoKHVuc2lnbmVkIGludCkgdWNwLT51Y19zdGFj
+ay5zc19zcCkgCisJCQkgKyBGUkFNRV9TSVpFICsgYXJnYyArIFNUQUNLX0FMSUdOKSAKKwkJICAg
+ICAgICAmIH4oU1RBQ0tfQUxJR04gLSAxKSk7CiAKICAgLyogU3RvcmUgYWRkcmVzcyB0byBqdW1w
+IHRvLiAgKi8KICAgdWNwLT51Y19tY29udGV4dC5zY19nclsyXSA9ICh1bnNpZ25lZCBsb25nKSBm
+dW5jOwpAQCAtNTAsMjkgKzQ3LDI3IEBAIG1ha2Vjb250ZXh0OiBkb2VzIG5vdCBrbm93IGhvdyB0
+byBoYW5kbGUgbW9yZSB0aGFuIDggYXJndW1lbnRzXG4iKSk7CiAgIHZhX3N0YXJ0IChhcCwgYXJn
+Yyk7CiAgIC8qIEhhbmRsZSBhcmd1bWVudHMuICAqLwogICBmb3IgKGkgPSAwOyBpIDwgYXJnYzsg
+KytpKQotICAgIHN3aXRjaCAoaSkKLSAgICAgIHsKLSAgICAgIGNhc2UgMDoKLSAgICAgIGNhc2Ug
+MToKLSAgICAgIGNhc2UgMjoKLSAgICAgIGNhc2UgMzoKLSAgICAgIAl1Y3AtPnVjX21jb250ZXh0
+LnNjX2dyWzI2LWldID0gdmFfYXJnIChhcCwgaW50KTsKLQlicmVhazsKLSAgICAgIGNhc2UgNDoK
+LSAgICAgIGNhc2UgNToKLSAgICAgIGNhc2UgNjoKLSAgICAgIGNhc2UgNzoKLQlpZiAoc2l6ZW9m
+KHVuc2lnbmVkIGxvbmcpID09IDQpIHsKLQkJLyogMzJiaXQ6IHB1dCBhcmc3LWFyZzQgb24gc3Rh
+Y2suICAqLwotCQlzcFs3LWldID0gdmFfYXJnIChhcCwgaW50KTsKLQl9IGVsc2UgewotCQkvKiA2
+NGJpdDogcjE5LXIyMiBhcmUgYXJnNy1hcmc0LiAgKi8KLQkJdWNwLT51Y19tY29udGV4dC5zY19n
+clsyMis0LWldID0gdmFfYXJnIChhcCwgaW50KTsKKyAgICB7CisgICAgICBpZiAoaSA8IDQpCisJ
+eworCSAgdWNwLT51Y19tY29udGV4dC5zY19nclsyNi1pXSA9IHZhX2FyZyAoYXAsIGludCk7CisJ
+ICBjb250aW51ZTsKIAl9Ci0JYnJlYWs7Ci0gICAgICB9Ci0gIHZhX2VuZCAoYXApOwogCisgICAg
+ICBpZiAoKGkgPCA4KSAmJiAoc2l6ZW9mKHVuc2lnbmVkIGludCkgPT0gOCkpCisJeworCSAgLyog
+NjRiaXQ6IHIxOS1yMjIgYXJlIGFyZzctYXJnNC4gICovCisJICB1Y3AtPnVjX21jb250ZXh0LnNj
+X2dyWzIyKzQtaV0gPSB2YV9hcmcgKGFwLCBpbnQpOworCSAgY29udGludWU7CisJfSAKKworICAg
+ICAgLyogQWxsIG90aGVyIGFyZ3VtZW50cyBnbyBvbiB0aGUgc3RhY2suICAqLworICAgICAgc3Bb
+LTEgKiAoRlJBTUVfU0laRSArIDEgKyBpKV0gPSB2YV9hcmcgKGFwLCBpbnQpOworICAgIH0KKyAg
+dmFfZW5kIChhcCk7IAorCisgIC8qIEFkanVzdCB0aGUgc3RhY2sgcG9pbnRlciB0byBsYXN0IHVz
+ZWQgYXJndW1lbnQuICAqLworICB1Y3AtPnVjX21jb250ZXh0LnNjX2dyWzMwXSA9ICh1bnNpZ25l
+ZCBpbnQpIHNwOwogfQogCiAK
+--0016e6dab18e3017ea047e7b8875--
