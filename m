@@ -1,59 +1,85 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: futex wait failure
-Date: Sun, 31 Jan 2010 22:14:21 +0100
-Message-ID: <4B65F2AD.3060408@gmx.de>
-References: <20100108163756.48BDE5183@hiauly1.hia.nrc.ca>	 <4B47A130.8060603@gmx.de>	 <119aab441001081344j38000314p1931df34149eabd3@mail.gmail.com>	 <4B524912.4070204@gmx.de> <119aab441001290953r74009887x7be7173bfad95d1e@mail.gmail.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: Questions about hppa *context functions.
+Date: Sun, 31 Jan 2010 18:47:24 -0500
+Message-ID: <119aab441001311547o7d605b1dqab7908d0d3077ddc@mail.gmail.com>
+References: <119aab441001310825x6fa7254u85c00dc1b0588950@mail.gmail.com>
+	 <119aab441001311215p6c13d7a7tcee4747393b1efbe@mail.gmail.com>
+	 <4B65EC6F.9020205@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc <linux-parisc@vger.kernel.org>,
+	libc-ports@sourceware.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab441001290953r74009887x7be7173bfad95d1e@mail.gmail.com>
+In-Reply-To: <4B65EC6F.9020205@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 01/29/2010 06:53 PM, Carlos O'Donell wrote:
-> On Sat, Jan 16, 2010 at 6:17 PM, Helge Deller<deller@gmx.de>  wrote:
->> This coding seems to indicate that we call _exit(), but we aren't (as
->> you see above in the strace).
->> So I'm wondering if the "bl _exit,%rp" needs changing.
->> Something with HIDDEN_JUMPTARGET(_exit) or similar, so that
->> _exit() instead of exit() is called?
->>
->> Actually I did tested this with the minifail test program, and changed
->> thread_run() to call _exit(0) at the end instead of "return 0":
->> void* thread_run(void* arg) {
->>         ...
->> /*      return (void *)&status;  */
->>         _exit(0);
->> }
->> With strace I then suddenly got exit_group() which seems more correct:
->> [pid  1910] write(1, "Thread OK.\n", 11) = 11
->> [pid  1910] exit_group(0)               = ?
+On Sun, Jan 31, 2010 at 3:47 PM, Helge Deller <deller@gmx.de> wrote:
+> Carlos,
 >
-> I agree with this analysis. I'm testing a change which uses
-> HIDDEN_JUMPTARGET(). I will tell you how it goes.
+> thanks a lot for your work!
+>
+> First of all, if it works, I'm fine with it.
+>
+> One minor question:
+> I'm used to test sizeof long instead of sizeof int to check for 32/64=
+bit.
+> You changed it to "(sizeof(unsigned int) =3D=3D 8)".
+> I always thought a long is usually the type of a register, while an i=
+nt can
+> be anything.
 
-I think I tested it once, and it doesn't help.
-Threads are started by calling start_thread(), and I think we need changes there, e.g. (untested):
+You are correct, this code is wrong. Since hppa64 is LP64, and hppa32
+is ILP32, the only way to tell the difference between the two is by
+using "sizeof(unsigned long)" or "sizeof(void *)", the two types which
+differ between the ABIs.
 
-diff -up ./nptl/pthread_create.c.org ./nptl/pthread_create.c
---- ./nptl/pthread_create.c.org 2010-01-17 20:54:19.000000000 +0100
-+++ ./nptl/pthread_create.c     2010-01-17 20:56:24.000000000 +0100
-@@ -316,7 +316,7 @@ start_thread (void *arg)
-       is no thread left.  */
-    if (__builtin_expect (atomic_decrement_and_test (&__nptl_nthreads), 0))
-      /* This was the last thread.  */
--    exit (0);
-+    _exit (0);
-                                                                                                                                            
-    /* Report the death of the thread if this is wanted.  */
-    if (__builtin_expect (pd->report_events, 0))
-  
+>> 1. Why limit the number of input arguments to 8?
+>
+> I didn't had real reasons.
+> At some point I read that software usually should not rely on the fac=
+t that
+> the
+> *context funtions =A0can handle more than 4 arguments. To be on the s=
+afe side,
+> software
+> should better hand over a pointer to a struct in one of the first 4
+> arguments.
+> But with your patch, which extends it for parisc to more than 8 argum=
+ents,
+> it's even better :-)
 
-> Calling exit_group is important for threads.
+OK, perfect, the new implementation should handle as many arguments as
+you have stack space.
 
-Yep.
+>> 2. It doesn't appear that the current implementation transfers
+>> ucp->uc_stack.ss_sp to the stack pointer when makecontext() is calle=
+d.
+>
+> You seem to have fixed this in your patch.
 
-Helge
+Yes, I did fix this, I was just curious if you considered this in the
+initial implementation?
+
+>> 3. POSIX says that all the arguments must be of type int, but in a
+>> comment you write "XXX: This implementation only handles integer
+>> arguments."
+>> Is there any reason this comment should stay there?
+>
+> Yep. Just drop it.
+
+Thanks.
+
+> Again, I didn't tested you patch, but just by looking at it, it seems=
+ OK.
+
+Thanks.
+
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
