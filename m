@@ -1,82 +1,191 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: sys_accept4, SOCK_CLOEXEC, misc, bonghits, and others...
-Date: Mon, 1 Feb 2010 09:11:23 -0500
-Message-ID: <119aab441002010611y8977762k3ce0a827b503d3f8@mail.gmail.com>
-References: <20091226182050.GH11593@bombadil.infradead.org>
-	 <20100201135427.GA24051@bombadil.infradead.org>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: futex wait failure
+Date: Mon, 1 Feb 2010 10:47:10 -0500
+Message-ID: <20100201154709.GA27256@hiauly1.hia.nrc.ca>
+References: <4B65F2AD.3060408@gmx.de> <20100201002612.F0A754EA9@hiauly1.hia.nrc.ca> <119aab441002010458g25373efex418886aca95ff4bd@mail.gmail.com>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="9jxsPFA5p3P2qPhR"
+Cc: Helge Deller <deller@gmx.de>, dave.anglin@nrc-cnrc.gc.ca,
+	linux-parisc@vger.kernel.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100201135427.GA24051@bombadil.infradead.org>
+In-Reply-To: <119aab441002010458g25373efex418886aca95ff4bd@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Feb 1, 2010 at 8:54 AM, Kyle McMartin <kyle@mcmartin.ca> wrote:
-> ping?
 
-Thanks for the ping.
+--9jxsPFA5p3P2qPhR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> On Sat, Dec 26, 2009 at 01:20:50PM -0500, Kyle McMartin wrote:
->> So I wired up sys_accept4 over lunch today... it works ok in general=
-,
->> and takes arguments such that it doesn't need a wrapper (yay.)
->>
->> Problem. O_CLOEXEC is special on parisc because of the HPUX gunk whi=
-ch
->> makes everything miserable. The value in glibc is one bit off the va=
-lue
->> in the kernel, and kaboom. No worky syscall.
->>
->> Carlos, patch included below, tested with test_accept4.c, from Ulric=
-h's
->> commit adding this syscall, modified (fixed) version of the test cas=
-e
->> is attached to this email unless I'm a muppet and forgot.
->>
->> Happy hacking^WHolidays, Kyle
->>
->> diff --git a/ChangeLog.hppa b/ChangeLog.hppa
->> index 24a152e..4ce4cc7 100644
->> --- a/ChangeLog.hppa
->> +++ b/ChangeLog.hppa
->> @@ -1,3 +1,7 @@
->> +2009-12-26 =A0Kyle McMartin =A0 <kyle@redhat.com>
->> + =A0 =A0 * sysdeps/unix/sysv/linux/hppa/bits/socket.h: Fix value of
->> + =A0 =A0 SOCK_CLOEXEC to match O_CLOEXEC.
->> +
->> =A02009-11-25 =A0Carlos O'Donell =A0<carlos@codesourcery.com>
->>
->> =A0 =A0 =A0 * sysdeps/unix/sysv/linux/hppa/nptl/bits/pthreadtypes.h:
->> diff --git a/sysdeps/unix/sysv/linux/hppa/bits/socket.h b/sysdeps/un=
-ix/sysv/linux/hppa/bits/socket.h
->> index ac6e81b..d552d85 100644
->> --- a/sysdeps/unix/sysv/linux/hppa/bits/socket.h
->> +++ b/sysdeps/unix/sysv/linux/hppa/bits/socket.h
->> @@ -62,7 +62,7 @@ enum __socket_type
->> =A0 =A0/* Flags to be ORed into the type parameter of socket and soc=
-ketpair and
->> =A0 =A0 =A0 used for the flags parameter of paccept. =A0*/
->>
->> - =A0SOCK_CLOEXEC =3D 02000000, =A0 /* Atomically set close-on-exec =
-flag for the
->> + =A0SOCK_CLOEXEC =3D 01000000, =A0 /* Atomically set close-on-exec =
-flag for the
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0n=
-ew descriptor(s). =A0*/
->> =A0#define SOCK_CLOEXEC SOCK_CLOEXEC
->> =A0#undef SOCK_NONBLOCK
+On Mon, 01 Feb 2010, Carlos O'Donell wrote:
 
-IIUC SOCK_CLOEXEC only works in 2.6.27 or higher with accept4?
+> Do you have a copy of minifail I can run as a contained test case?
 
-In which case, since accept4 has never existed before, it's OK to
-change this value?
+I've attached two versions -- the original and a simpler revised version.
 
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+The revised version shows that this is a clone/fork problem.  If the
+parent waits for the child thread to set run before forking, the test
+doesn't fail.  If the static definition of run is changed to 1, the
+test fails.  I had added some loops at one time to show that this isn't
+an exit issue. 
+
+This is not to say that Helge isn't right about threads incorrectly using
+exit.
+
+The failure is always the stack of the child thread is overwritten with
+zeros.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+--9jxsPFA5p3P2qPhR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="minifail.cpp"
+
+#include <QtCore/QCoreApplication>
+#include <QtCore/QThread>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+class MyThread : public QThread
+{
+	void run();
+};
+
+void MyThread::run() {
+	printf("Thread OK.\n");
+}
+
+int qt_test(int argc, char** argv) {
+	QCoreApplication app(argc, argv);
+
+	MyThread thread;
+	thread.start();
+
+	int p[2];
+	char buf;
+	pipe(p);
+
+	switch (fork()) {
+		case -1:
+			perror("fork() failed");
+		case 0:
+			printf("Child OK.\n");
+			write(p[1], "\0", 1);
+			exit(0);
+		default:
+			break;
+		
+	}
+	close(p[1]);
+	read(p[0], &buf, 1);
+	thread.wait();
+	return 0;
+}
+
+void* thread_run(void* arg) {
+	printf("Thread OK.\n");
+}
+
+int pure_test() {
+	pthread_t thread;
+	pthread_create(&thread, NULL, thread_run, NULL);
+
+	int p[2];
+	char buf;
+	pipe(p);
+
+	switch (fork()) {
+		case -1:
+			perror("fork() failed");
+		case 0:
+			close(p[0]);
+			printf("Child OK.\n");
+			write(p[1], "\0", 1);
+			exit(0);
+		default:
+			break;
+		
+	}
+	
+	close(p[1]);
+	read(p[0], &buf, 1);
+	pthread_join(thread, NULL);
+	return 0;
+}
+
+int main(int argc, char** argv) {
+	if (argc == 2) {
+		if (!strcmp("qt", argv[1])) {
+			return qt_test(argc, argv);
+		}
+	}
+	return pure_test();
+}
+
+--9jxsPFA5p3P2qPhR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="minifail6.cpp"
+
+#include <pthread.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+/*
+  http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=561203
+
+  clone(child_stack=0x4088d040, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4108c4e8, tls=0x4108c900, child_tidptr=0x4108c4e8) = 14819
+[pid 14819] set_robust_list(0x4108c4f0, 0xc) = 0
+[pid 14818] clone(child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x40002028) = 14820
+
+ g++  minifail.cpp -o minifail -O0 -pthread -g
+
+ i=0; while true; do i=$(($i+1)); echo Run $i; ./minifail; done;
+
+ */
+
+static volatile int run;
+
+void* thread_run(void* arg) {
+	static long status;
+	int i;
+        
+	run = 1;
+	pthread_yield();
+	for (i = 10000000; i; i--)
+	   continue;
+	write(1,"Thread OK.\n",11);
+	return (void *)&status;
+}
+
+int pure_test() {
+	pthread_t thread;
+	pthread_create(&thread, NULL, thread_run, NULL);
+
+	while (!run)
+	  continue;
+	switch (fork()) {
+		case -1:
+			perror("fork() failed");
+		case 0:
+			write(1,"Child OK.\n",10);
+			_exit(0);
+		default:
+			break;
+		
+	}
+	pthread_join(thread, NULL);
+	return 0;
+}
+
+int main(int argc, char** argv) {
+	return pure_test();
+}
+
+--9jxsPFA5p3P2qPhR--
