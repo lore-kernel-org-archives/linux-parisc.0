@@ -1,40 +1,32 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: futex wait failure
-Date: Mon, 1 Feb 2010 16:36:22 -0500
-Message-ID: <119aab441002011336u676bdef4oaf3b891a94916949@mail.gmail.com>
-References: <4B67252A.2000501@gmx.de>
-	 <20100201191141.EE51F4EA9@hiauly1.hia.nrc.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: sys_accept4, SOCK_CLOEXEC, misc, bonghits, and others...
+Date: Mon, 1 Feb 2010 16:38:33 -0500
+Message-ID: <20100201213833.GE24051@bombadil.infradead.org>
+References: <20091226182050.GH11593@bombadil.infradead.org> <20100201135427.GA24051@bombadil.infradead.org> <119aab441002010611y8977762k3ce0a827b503d3f8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Helge Deller <deller@gmx.de>, dave.anglin@nrc-cnrc.gc.ca,
-	linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Content-Type: text/plain; charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100201191141.EE51F4EA9@hiauly1.hia.nrc.ca>
+In-Reply-To: <119aab441002010611y8977762k3ce0a827b503d3f8@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Feb 1, 2010 at 2:11 PM, John David Anglin
-<dave@hiauly1.hia.nrc.ca> wrote:
->>
->> No, sadly it didn't fixed it.
->
-> I tend to think clone/fork syscalls need to be guarded to ensure a st=
-able
-> configuration while the syscall executes. =A0It may be the problem ar=
-ises
-> because we use clone for fork. =A0Do any other targets do this?
+On Mon, Feb 01, 2010 at 09:11:23AM -0500, Carlos O'Donell wrote:
+> IIUC SOCK_CLOEXEC only works in 2.6.27 or higher with accept4?
+> 
+> In which case, since accept4 has never existed before, it's OK to
+> change this value?
+> 
 
-All targets call nptl/sysdeps/unix/sysv/linux/fork.c, which calls
-ARCH_FORK, which is implemented using clone() for *all* targets.
+Well, it's never worked either, so I assume it's safe to change. The
+main problem is glibc keeping a parallel copy of the system headers
+instead of using the sanitized ones, since this means anything which
+correctly used those headers has the right value.
 
-In fact, owing to the POSIX atfork requirements, it's very difficult
-to implement fork properly without using Linux clone.
+(Basically... any userspace program compiled against the old glibc will
+need to be rebuilt, but if we change it won't be any more broken than
+they already have been.)
 
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+regards, Kyle
