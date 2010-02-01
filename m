@@ -1,106 +1,40 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: add strict copy size checks (v2)
-Date: Mon, 1 Feb 2010 20:56:33 +0100
-Message-ID: <20100201195633.GA14680@p100.box>
-References: <20091222225649.GA7050@p100.box>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: futex wait failure
+Date: Mon, 1 Feb 2010 16:36:22 -0500
+Message-ID: <119aab441002011336u676bdef4oaf3b891a94916949@mail.gmail.com>
+References: <4B67252A.2000501@gmx.de>
+	 <20100201191141.EE51F4EA9@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Helge Deller <deller@gmx.de>, dave.anglin@nrc-cnrc.gc.ca,
+	linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20091222225649.GA7050@p100.box>
+In-Reply-To: <20100201191141.EE51F4EA9@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Add CONFIG_DEBUG_STRICT_USER_COPY_CHECKS, copied from the x86
-implementation. Tested with 32 and 64bit kernel.
+On Mon, Feb 1, 2010 at 2:11 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+>>
+>> No, sadly it didn't fixed it.
+>
+> I tend to think clone/fork syscalls need to be guarded to ensure a st=
+able
+> configuration while the syscall executes. =A0It may be the problem ar=
+ises
+> because we use clone for fork. =A0Do any other targets do this?
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+All targets call nptl/sysdeps/unix/sysv/linux/fork.c, which calls
+ARCH_FORK, which is implemented using clone() for *all* targets.
 
-diff --git a/arch/parisc/Kconfig.debug b/arch/parisc/Kconfig.debug
-index bc989e5..7305ac8 100644
---- a/arch/parisc/Kconfig.debug
-+++ b/arch/parisc/Kconfig.debug
-@@ -12,4 +12,18 @@ config DEBUG_RODATA
-          portion of the kernel code won't be covered by a TLB anymore.
-          If in doubt, say "N".
- 
-+config DEBUG_STRICT_USER_COPY_CHECKS
-+	bool "Strict copy size checks"
-+	depends on DEBUG_KERNEL && !TRACE_BRANCH_PROFILING
-+	---help---
-+	  Enabling this option turns a certain set of sanity checks for user
-+	  copy operations into compile time failures.
-+
-+	  The copy_from_user() etc checks are there to help test if there
-+	  are sufficient security checks on the length argument of
-+	  the copy operation, by having gcc prove that the argument is
-+	  within bounds.
-+
-+	  If unsure, or if you run an older (pre 4.4) gcc, say N.
-+
- endmenu
-diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
-index 7cf799d..ff4cf9d 100644
---- a/arch/parisc/include/asm/uaccess.h
-+++ b/arch/parisc/include/asm/uaccess.h
-@@ -7,6 +7,7 @@
- #include <asm/page.h>
- #include <asm/system.h>
- #include <asm/cache.h>
-+#include <asm/errno.h>
- #include <asm-generic/uaccess-unaligned.h>
- 
- #define VERIFY_READ 0
-@@ -234,13 +235,35 @@ extern long lstrnlen_user(const char __user *,long);
- 
- unsigned long copy_to_user(void __user *dst, const void *src, unsigned long len);
- #define __copy_to_user copy_to_user
--unsigned long copy_from_user(void *dst, const void __user *src, unsigned long len);
--#define __copy_from_user copy_from_user
-+unsigned long __copy_from_user(void *dst, const void __user *src, unsigned long len);
- unsigned long copy_in_user(void __user *dst, const void __user *src, unsigned long len);
- #define __copy_in_user copy_in_user
- #define __copy_to_user_inatomic __copy_to_user
- #define __copy_from_user_inatomic __copy_from_user
- 
-+extern void copy_from_user_overflow(void)
-+#ifdef CONFIG_DEBUG_STRICT_USER_COPY_CHECKS
-+        __compiletime_error("copy_from_user() buffer size is not provably correct")
-+#else
-+        __compiletime_warning("copy_from_user() buffer size is not provably correct")
-+#endif
-+;
-+
-+static inline unsigned long __must_check copy_from_user(void *to,
-+                                          const void __user *from,
-+                                          unsigned long n)
-+{
-+        int sz = __compiletime_object_size(to);
-+        int ret = -EFAULT;
-+
-+        if (likely(sz == -1 || !__builtin_constant_p(n) || sz >= n))
-+                ret = __copy_from_user(to, from, n);
-+        else
-+                copy_from_user_overflow();
-+
-+        return ret;
-+}
-+
- struct pt_regs;
- int fixup_exception(struct pt_regs *regs);
- 
-diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
-index abf41f4..1dbca5c 100644
---- a/arch/parisc/lib/memcpy.c
-+++ b/arch/parisc/lib/memcpy.c
-@@ -475,7 +475,8 @@ unsigned long copy_to_user(void __user *dst, const void *src, unsigned long len)
- 	return pa_memcpy((void __force *)dst, src, len);
- }
- 
--unsigned long copy_from_user(void *dst, const void __user *src, unsigned long len)
-+EXPORT_SYMBOL(__copy_from_user);
-+unsigned long __copy_from_user(void *dst, const void __user *src, unsigned long len)
- {
- 	mtsp(get_user_space(), 1);
- 	mtsp(get_kernel_space(), 2);
+In fact, owing to the POSIX atfork requirements, it's very difficult
+to implement fork properly without using Linux clone.
+
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
