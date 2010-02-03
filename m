@@ -1,54 +1,30 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: futex wait failure
-Date: Tue, 2 Feb 2010 22:44:21 -0500
-Message-ID: <20100203034420.GA8520@hiauly1.hia.nrc.ca>
-References: <20100108211733.852134EF4@hiauly1.hia.nrc.ca> <4B689634.8060408@gmx.de>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: jennifer kohne <janifer.khone@btinternet.com>
+Subject: Donation to Haiti.
+Date: Wed, 3 Feb 2010 11:00:20 +0000 (GMT)
+Message-ID: <449545.63432.qm@web87010.mail.ird.yahoo.com>
+Reply-To: jennifakohne@yahoo.co.jp
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Carlos O'Donell <carlos@systemhalted.org>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=utf-8
+To: undisclosed recipients:;
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4B689634.8060408@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 02 Feb 2010, Helge Deller wrote:
+Donation to Haiti.
+ 
+I have a proposal for you,this however is not  mandatory nor will I in any manner compel you to honor against your will. Your profile pushed me to send you this mail,
+ I am Mrs Jennifer Kohne. from Kuwait. I am married to Mr. Jean Kohne who worked with Kuwait embassy i Ivory Coast for nine years before he died in the year 2006. We were married for eleven years without a child. He died after a brief illness that lasted for only four days. 
+ 
+ Since his death I decided not to remarry or get a child outside my matrimonial home which. When my late husband was alive he deposited the sum of US$3.8million dollars in a Bank here in Abidjan Cote d'Ivoire. Presently, this money is still in bank. Recently, my Doctor told me that I would not last for the next Eight months due to cancer problem. 
+ 
+The one that disturbs me most is my stroke sickness. Having known my condition I decided to donate this fund to a charity organization that will utilize this money the way I am going to instruct herein. I want to donate this fund to Haiti toward recoery efforts.
+ 
+ I took this decision because I don't have any child that will inherit this money. This is why I am taking this decision, And I don't need any telephone communication in this regard because of my health,
+ 
+ As soon as I receive your reply I shall give you the contact of the Bank here in  Abidjan Cote d'Ivoire. I will also issue you an authority  letter that will prove you the present beneficiary of this fund. I want you and the organization to always pray for me. 
+ 
+Any  delay in your reply will give me room in sourcing  of another organization or good person for this same  purpose. Please assure me that you will act accordingly as I Stated herein. Hoping to receive your reply. 
+ 
+Thank Yours 
+Mrs Jennifer Kohne
 
-> I wonder if we have some problems with the LWS code path in the kernel
-> regarding atomic locking with futexes?
->
-> In arch/parisc/kernel/syscall.S we use a lock table called lws_lock_start[]
-> to guard the LWS code against other competing userspace processes.
-> I wonder if this really enough, esp. since we do implement futex syscalls
-> (e.g. clone/exit calls uses futex functions to change userspace values
-> because of CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID).
->
-> Do we maybe need to protect the LWS code path with the same locking table 
-> as the
-> generic kernel? Atomicity of futexes writing to userspace are not in sync
-> with the locking of the LWS/lws_lock_start[] code.
->
-> I tried to come up with a patch for that which I attached here, but sadly
-> it hangs as soon as the init process is started on a 64bit/SMP kernel.
-> So either my thinking here is stupid, or I do have a stupid coding bug.
->
-> Furthermore, the coding for futex_atomic_op_inuser() in
-> arch/parisc/include/asm/futex.h seems to miss real functionality.
-> I didn't looked closer into this though.
-
-While locking may be a problem, it is not the main reason the minifail
-program fails.  The program fails on my c3750 with a 32-bit UP kernel.
-There is no locking in this kernel.  The LWS code relies on the scheduler
-for atomicity.
-
-I tried disabling interrupts around the crucial three instructions but
-it didn't help.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
