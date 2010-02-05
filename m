@@ -1,27 +1,48 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: futex wait failure
-Date: Wed, 3 Feb 2010 17:44:33 -0500
-Message-ID: <119aab441002031444p74b28041v4e630d433457113e@mail.gmail.com>
-References: <20100108211733.852134EF4@hiauly1.hia.nrc.ca>
-	 <4B689634.8060408@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4B689634.8060408@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+From: James Bottomley <James.Bottomley@suse.de>
+Subject: [PATCHv3 0/5] fix xfs by making I/O to vmap/vmalloc areas work
+Date: Fri,  5 Feb 2010 09:50:52 -0600
+Message-ID: <1265385057-2575-1-git-send-email-James.Bottomley@suse.de>
+Cc: linux-parisc@vger.kernel.org, rmk@arm.linux.org.uk,
+	lethal@linux-sh.org, torvalds@linux-foundation.org, hch@lst.de,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+To: linux-arch@vger.kernel.org
+Return-path: <linux-arch-owner@vger.kernel.org>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Feb 2, 2010 at 4:16 PM, Helge Deller <deller@gmx.de> wrote:
-> Furthermore, the coding for futex_atomic_op_inuser() in
-> arch/parisc/include/asm/futex.h seems to miss real functionality.
-> I didn't looked closer into this though.
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 
-I have a fix for futex_atomic_op_inuser(), but it needs more testing.
+This is essentially a small tidy up from the previous series.  I
+thought about the Ben H additions, but since power doesn't seem to
+need this, they seemed a bit moot (we can expand the API when an
+actual user comes along).
 
-Cheers,
-Carlos.
+The patch series adds a flush/invalidate_kernel_vmap_range() API that
+drivers using vmap/vmalloc areas must use before sending tohse areas
+for I/O.  This makes it crystal clear that coherence on these areas is
+the responsibility of the driver alone.  Fortunately xfs is the only
+thing in the kernel actually doing I/O to vmap areas.
+
+Sin ce xfs is completely broken on most VIPT architectures without
+this, I'd like to submit it as a bug fix for 2.6.33.  Unfortunately,
+we actually have some parisc xfs users whose data is curently at
+severe risk.
+
+James
+
+---
+
+James Bottomley (5):
+  mm: add coherence API for DMA to vmalloc/vmap areas
+  parisc: add mm API for DMA to vmalloc/vmap areas
+  arm: add mm API for DMA to vmalloc/vmap areas
+  sh: add mm API for DMA to vmalloc/vmap areas
+  xfs: fix xfs to work with Virtually Indexed architectures
+
+ Documentation/cachetlb.txt           |   24 ++++++++++++++++++++++++
+ arch/arm/include/asm/cacheflush.h    |   10 ++++++++++
+ arch/parisc/include/asm/cacheflush.h |   12 ++++++++++++
+ arch/sh/include/asm/cacheflush.h     |    8 ++++++++
+ fs/xfs/linux-2.6/xfs_buf.c           |   30 +++++++++++++++++++++++++++++-
+ include/linux/highmem.h              |    6 ++++++
+ 6 files changed, 89 insertions(+), 1 deletions(-)
