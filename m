@@ -1,54 +1,26 @@
-From: Frans Pop <elendil@planet.nl>
-Subject: Re: [PATCH 00/16] remove trailing spaces in messages
-Date: Sat, 6 Feb 2010 21:57:42 +0100
-Message-ID: <201002062157.44357.elendil@planet.nl>
-References: <201002061844.45212.elendil@planet.nl>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [PATCH 07/16] parisc: remove trailing space in messages
+Date: Sat, 6 Feb 2010 18:53:42 -0500
+Message-ID: <20100206235342.GO24051@bombadil.infradead.org>
+References: <201002061844.45212.elendil@planet.nl> <1265478443-31072-7-git-send-email-elendil@planet.nl>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <201002061844.45212.elendil@planet.nl>
-List-ID: <linux-alpha.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>
+To: Frans Pop <elendil@planet.nl>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1265478443-31072-7-git-send-email-elendil@planet.nl>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Resending the patch cover letter for vger only as it didn't reach there for 
-some reason (# recipients maybe?).
+On Sat, Feb 06, 2010 at 06:47:14PM +0100, Frans Pop wrote:
+> Signed-off-by: Frans Pop <elendil@planet.nl>
+> Cc: linux-parisc@vger.kernel.org
+> Cc: Kyle McMartin <kyle@mcmartin.ca>
+> Cc: Helge Deller <deller@gmx.de>
 
-+++++++++++
-This is a first series of patches to remove trailing spaces in messages. 
-Patches cover arch-specific code plus one fix for PM and one in 
-Documentation. Depending on how this series is received I'll continue
-with other parts of the kernel.
+I'll apply this.
 
-Benefits are:
-- general cleanup and consistency
-- minor reduction in kernel size and user's log file size
-- reduced annoyance for people writing logcheck rules
+Thanks Frans.
 
-The patch for m68k has been rebased against linux-next; all other
-patches apply against both mainline and -next (as of 5-2).
-
-Shortstat:
- 74 files changed, 135 insertions(+), 136 deletions(-)
-
-Frans Pop (16):
-      alpha: remove trailing spaces in messages
-      arm: remove trailing spaces in messages
-      ia64: remove trailing space in messages
-      m68k: remove trailing space in messages
-      microblaze: remove trailing space in messages
-      mips: remove trailing space in messages
-      parisc: remove trailing space in messages
-      s390: remove trailing space in messages
-      sparc: remove trailing space in messages
-      x86: remove trailing space in messages
-      blackfin: remove trailing space in messages
-      cris/trivial: remove trailing space in message
-      powerpc: remove trailing space in messages
-      um: remove trailing space in messages
-      PM: remove trailing space in message
-      trivial: remove trailing space in spidev test program
+regards, Kyle
