@@ -1,30 +1,31 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCHv3 0/5] fix xfs by making I/O to vmap/vmalloc areas work
-Date: Sat, 6 Feb 2010 19:26:38 -0500
-Message-ID: <20100207002638.GQ24051@bombadil.infradead.org>
-References: <1265385057-2575-1-git-send-email-James.Bottomley@suse.de> <20100205160640.GA24344@lst.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: can't find a register in class 'R1_REGS' while reloading 'asm'
+Date: Sun, 7 Feb 2010 22:20:34 -0500 (EST)
+Message-ID: <20100208032035.645A14EF1@hiauly1.hia.nrc.ca>
+References: <20100207002335.GP24051@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: James Bottomley <James.Bottomley@suse.de>,
-	linux-arch@vger.kernel.org, linux-parisc@vger.kernel.org,
-	rmk@arm.linux.org.uk, lethal@linux-sh.org,
-	torvalds@linux-foundation.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset=US-ASCII
+Cc: dave.anglin@nrc-cnrc.gc.ca, cavokz@gmail.com,
+	linux-parisc@vger.kernel.org
+To: kyle@mcmartin.ca (Kyle McMartin)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100205160640.GA24344@lst.de>
+In-Reply-To: <20100207002335.GP24051@bombadil.infradead.org> from "Kyle McMartin" at Feb 6, 2010 07:23:35 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Feb 05, 2010 at 05:06:40PM +0100, Christoph Hellwig wrote:
-> > From: James Bottomley <James.Bottomley@HansenPartnership.com>
-> > 
+> On Mon, Dec 07, 2009 at 10:01:14PM -0500, John David Anglin wrote:
+> > -	volatile unsigned int *a;
+> > +	volatile register unsigned int *a asm ("r20") = __ldcw_align(x);
+> >  
 > 
-> Agreed.  There's also a lot of ARM users popping up with this recently,
-> while others worked around it using local flushing hacks previously.
-> 
+> I'm reticent about moving the assignment around the mb(), should I edit
+> this to return the assignment and apply, or apply as is?
 
-Thanks, I've applied these to parisc/next to give them a shakedown in
-linux-next.
+I don't believe the __ldcw_align operation involves a memory read or
+write.  It's just adjusting a pointer.  Thus moving it past the mb()
+shouldn't matter.  That said, I been wrong before...
 
-regards, Kyle.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
