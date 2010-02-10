@@ -1,7 +1,7 @@
-From: Michael Neuling <mneuling@au1.ibm.com>
+From: Michael Neuling <mikey@neuling.org>
 Subject: Re: [PATCH] Restrict initial stack space expansion to rlimit
-Date: Wed, 10 Feb 2010 16:30:16 +1100
-Message-ID: <16993.1265779816@neuling.org>
+Date: Wed, 10 Feb 2010 16:31:07 +1100
+Message-ID: <17323.1265779867@neuling.org>
 References: <10733.1265752289@neuling.org> <4B71E13C.2050905@gmx.de> <20100210141016.4D18.A69D9226@jp.fujitsu.com>
 Cc: Helge Deller <deller@gmx.de>,
 	Andrew Morton <akpm@linux-foundation.org>,
