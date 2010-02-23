@@ -1,53 +1,63 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: PCI patch breaks boot on rp2470 (2xPA8700)
-Date: Tue, 23 Feb 2010 07:56:23 -0500
-Message-ID: <119aab441002230456v12891012y85ca6ffc3ba8c0b5@mail.gmail.com>
-References: <119aab441002221525m4595b37w875891cd8f95e633@mail.gmail.com>
-	 <da824cf31002221654if698808i88709293223b5cd3@mail.gmail.com>
-	 <20100223014958.GI16620@ihatethathostname.lab.bos.redhat.com>
+From: tip-bot for Roland McGrath <roland@redhat.com>
+Subject: [tip:x86/ptrace] parisc: Disable CONFIG_HAVE_ARCH_TRACEHOOK
+Date: Tue, 23 Feb 2010 18:36:43 GMT
+Message-ID: <tip-5e6dbc260704ce4d22fc9664f517f0bb6748feaa@git.kernel.org>
+References: <20100222183707.8749D64C@magilla.sf.frob.com>
+Reply-To: mingo@redhat.com, hpa@zytor.com, linux-kernel@vger.kernel.org,
+	  roland@redhat.com, jejb@parisc-linux.org, tglx@linutronix.de,
+	  linux-parisc@vger.kernel.org, deller@gmx.de, kyle@mcmartin.ca
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Grant Grundler <grundler@google.com>,
-	Kyle McMartin <kyle@redhat.com>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	Matthew Wilcox <matthew@wil.cx>
-To: Kyle McMartin <kmcmartin@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-kernel@vger.kernel.org, hpa@zytor.com, mingo@redhat.com,
+	roland@redhat.com, jejb@parisc-linux.org,
+	linux-parisc@vger.kernel.org, tglx@linutronix.de, deller@gmx.de,
+	kyle@mcmartin.ca
+To: linux-tip-commits@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100223014958.GI16620@ihatethathostname.lab.bos.redhat.com>
+In-Reply-To: <20100222183707.8749D64C@magilla.sf.frob.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Feb 22, 2010 at 8:49 PM, Kyle McMartin <kmcmartin@redhat.com> w=
-rote:
-> On Mon, Feb 22, 2010 at 04:54:33PM -0800, Grant Grundler wrote:
->> In any case, your patch looks good to me. Please add:
->> =A0 =A0Reviewed-by: Grant Grundler <grundler@google.com>
+Commit-ID:  5e6dbc260704ce4d22fc9664f517f0bb6748feaa
+Gitweb:     http://git.kernel.org/tip/5e6dbc260704ce4d22fc9664f517f0bb6748feaa
+Author:     Roland McGrath <roland@redhat.com>
+AuthorDate: Mon, 22 Feb 2010 10:37:07 -0800
+Committer:  H. Peter Anvin <hpa@zytor.com>
+CommitDate: Tue, 23 Feb 2010 10:34:41 -0800
+
+parisc: Disable CONFIG_HAVE_ARCH_TRACEHOOK
+
+> FYI, this commit broke tip:master on PARISC (other architectures are fine):
 >
-> Your analysis looks correct to me, based on a quick grep.
+>  kernel/built-in.o: In function `ptrace_request':
+>  (.text.ptrace_request+0x2cc): undefined reference to `task_user_regset_view'
 
-I agree. Thanks Grant.
+This means that parisc failed to meet the documented requirements for
+setting CONFIG_HAVE_ARCH_TRACEHOOK, but set it anyway.  If arch folks don't
+follow the specs, it defeats the whole purpose of having clear statements
+of requirements for arch code.
 
-I booted a broken kernel and it reports:
-~~~
-PCI: CLS 0 bytes, default 64
-~~~
-Which is exactly the case mentioned here:
-http://patchwork.kernel.org/patch/69755/
+Until parisc finishes up its requirements, disable CONFIG_HAVE_ARCH_TRACEHOOK.
 
-> Applied, thanks Carlos.
+Signed-off-by: H. Peter Anvin <hpa@zytor.com>
+LKML-Reference: <20100222183707.8749D64C@magilla.sf.frob.com>
+Cc: <linux-parisc@vger.kernel.org>
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: Helge Deller <deller@gmx.de>
+Cc: James E.J. Bottomley <jejb@parisc-linux.org>
+---
+ arch/parisc/Kconfig |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-You're welcome!
-
-I'm building directly from here:
-git://git.kernel.org/pub/scm/linux/kernel/git/kyle/parisc-2.6.git
-
-Is this correct? My assumption is that you keep this branch up to date
-as you pull/test for parisc?
-
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 524d935..f388dc6 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -18,7 +18,6 @@ config PARISC
+ 	select BUG
+ 	select HAVE_PERF_EVENTS
+ 	select GENERIC_ATOMIC64 if !64BIT
+-	select HAVE_ARCH_TRACEHOOK
+ 	help
+ 	  The PA-RISC microprocessor is designed by Hewlett-Packard and used
+ 	  in many of their workstations & servers (HP9000 700 and 800 series,
