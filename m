@@ -1,28 +1,67 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: PCI patch breaks boot on rp2470 (2xPA8700)
-Date: Tue, 23 Feb 2010 23:22:35 -0500
-Message-ID: <20100224042235.GC21734@bombadil.infradead.org>
-References: <119aab441002221525m4595b37w875891cd8f95e633@mail.gmail.com> <da824cf31002221654if698808i88709293223b5cd3@mail.gmail.com> <20100223014958.GI16620@ihatethathostname.lab.bos.redhat.com> <119aab441002230456v12891012y85ca6ffc3ba8c0b5@mail.gmail.com> <20100224005841.GL16620@ihatethathostname.lab.bos.redhat.com> <119aab441002231932l2c09e37bt2965a7d9304f39d9@mail.gmail.com>
+From: Kyle McMartin <kyle@hera.kernel.org>
+Subject: [git patches] boot fix for 2.6.33 for parisc
+Date: Wed, 24 Feb 2010 17:36:23 +0000
+Message-ID: <20100224173623.GA21614@hera.kernel.org>
+Reply-To: kyle@mcmartin.ca
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@google.com>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	Matthew Wilcox <matthew@wil.cx>
-To: Carlos O'Donell <carlos@systemhalted.org>
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: torvalds@linux-foundation.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab441002231932l2c09e37bt2965a7d9304f39d9@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Feb 23, 2010 at 10:32:34PM -0500, Carlos O'Donell wrote:
-> Sorry Kyle, I hope you didn't think I was impling that you were slow
-> to update. You're doing a great job. I'm just a toolchain dude, my
-> happy day involves a kernel that doesn't eat my filesystem. I'm have
-> fun fixing the userspace bits.
-> 
-
-I didn't mean it like that at all, I just plan on sending it immediately
-to Linus for 2.6.33, so I wanted to make sure it built on a bunch of
-different configs.
+Hi Linus, please pull the following change for parisc to fix and issue
+which prevents Linux from booting. (Short summary: PCI CLS was being set
+from the default by the PCI layer *after* fixups, which meant sym2
+fixups had an unset PCI CLS, which meant we couldn't find the root
+disk.)
 
 regards, Kyle
+
+The following changes since commit 75ef7cdda2daa35be9e070ac8e5258759ac03d06:
+  Linus Torvalds (1):
+        Merge git://git.kernel.org/.../davem/net-2.6
+
+are available in the git repository at:
+
+  master.kernel.org:/pub/scm/linux/kernel/git/kyle/parisc-2.6.git urgent
+
+Carlos O'Donell (1):
+      parisc: Set PCI CLS early in boot.
+
+ arch/parisc/kernel/pci.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/arch/parisc/kernel/pci.c b/arch/parisc/kernel/pci.c
+index f7064ab..9e74bfe 100644
+--- a/arch/parisc/kernel/pci.c
++++ b/arch/parisc/kernel/pci.c
+@@ -18,7 +18,6 @@
+ 
+ #include <asm/io.h>
+ #include <asm/system.h>
+-#include <asm/cache.h>		/* for L1_CACHE_BYTES */
+ #include <asm/superio.h>
+ 
+ #define DEBUG_RESOURCES 0
+@@ -123,6 +122,10 @@ static int __init pcibios_init(void)
+ 	} else {
+ 		printk(KERN_WARNING "pci_bios != NULL but init() is!\n");
+ 	}
++
++	/* Set the CLS for PCI as early as possible. */
++	pci_cache_line_size = pci_dfl_cache_line_size;
++
+ 	return 0;
+ }
+ 
+@@ -171,7 +174,7 @@ void pcibios_set_master(struct pci_dev *dev)
+ 	** upper byte is PCI_LATENCY_TIMER.
+ 	*/
+ 	pci_write_config_word(dev, PCI_CACHE_LINE_SIZE,
+-				(0x80 << 8) | (L1_CACHE_BYTES / sizeof(u32)));
++			      (0x80 << 8) | pci_cache_line_size);
+ }
+ 
+ 
