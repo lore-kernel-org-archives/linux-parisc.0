@@ -1,57 +1,67 @@
-From: Thibaut VARENE <T-Bone@parisc-linux.org>
-Subject: Re: [PATCH 32/66] arch/parisc/include/asm/parport.h: Checkpatch
-	cleanup
-Date: Sat, 27 Feb 2010 23:18:18 +0100
-Message-ID: <7d01f9f01002271418j185821a3h447c89a43406254d@mail.gmail.com>
-References: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
-	 <1267289508-31031-33-git-send-email-andrea.gelmini@gelma.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-kernel@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
-	Helge Deller <deller@gmx.de>,
+From: Akinobu Mita <akinobu.mita@gmail.com>
+Subject: [PATCH] parisc: use __ratelimit
+Date: Sun, 28 Feb 2010 19:58:15 +0900
+Message-ID: <1267354697-6456-3-git-send-email-akinobu.mita@gmail.com>
+References: <1267354697-6456-1-git-send-email-akinobu.mita@gmail.com>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>,
+	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	linux-parisc@vger.kernel.org
-To: Andrea Gelmini <andrea.gelmini@gelma.net>
+To: linux-kernel@vger.kernel.org
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1267289508-31031-33-git-send-email-andrea.gelmini@gelma.net>
+In-Reply-To: <1267354697-6456-1-git-send-email-akinobu.mita@gmail.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Feb 27, 2010 at 5:51 PM, Andrea Gelmini
-<andrea.gelmini@gelma.net> wrote:
-> arch/parisc/include/asm/parport.h:1: ERROR: trailing whitespace
-> arch/parisc/include/asm/parport.h:11: WARNING: space prohibited betwe=
-en function name and open parenthesis '('
->
-> Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
-> ---
-> =C2=A0arch/parisc/include/asm/parport.h | =C2=A0 =C2=A05 ++---
-> =C2=A01 files changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/parisc/include/asm/parport.h b/arch/parisc/include/=
-asm/parport.h
-> index 00d9cc3..5cbf98b 100644
-> --- a/arch/parisc/include/asm/parport.h
-> +++ b/arch/parisc/include/asm/parport.h
+Replace open-coded rate limiting logic with __ratelimit().
 
-> @@ -8,8 +8,7 @@
-> =C2=A0#define _ASM_PARPORT_H 1
->
->
-> -static int __devinit parport_pc_find_nonpci_ports (int autoirq, int =
-autodma)
-> -{
-> +static int __devinit parport_pc_find_nonpci_ports (int autoirq, int =
-autodma) {
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: Helge Deller <deller@gmx.de>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: linux-parisc@vger.kernel.org
+---
+ arch/parisc/kernel/unaligned.c |   14 ++++----------
+ 1 files changed, 4 insertions(+), 10 deletions(-)
 
-This looks very much in contradiction with CodingStyle, since
-parport_pc_find_nonpci_ports() is a function, and it's not a fix for
-the quoted "WARNING". I'm guessing this wasn't intended the way it is.
-
-HTH
-
-T-Bone
-
---=20
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+diff --git a/arch/parisc/kernel/unaligned.c b/arch/parisc/kernel/unaligned.c
+index e6f4b7a..92d977b 100644
+--- a/arch/parisc/kernel/unaligned.c
++++ b/arch/parisc/kernel/unaligned.c
+@@ -25,6 +25,7 @@
+ #include <linux/module.h>
+ #include <linux/sched.h>
+ #include <linux/signal.h>
++#include <linux/ratelimit.h>
+ #include <asm/uaccess.h>
+ 
+ /* #define DEBUG_UNALIGNED 1 */
+@@ -446,8 +447,7 @@ static int emulate_std(struct pt_regs *regs, int frreg, int flop)
+ 
+ void handle_unaligned(struct pt_regs *regs)
+ {
+-	static unsigned long unaligned_count = 0;
+-	static unsigned long last_time = 0;
++	static DEFINE_RATELIMIT_STATE(ratelimit, 5 * HZ, 5);
+ 	unsigned long newbase = R1(regs->iir)?regs->gr[R1(regs->iir)]:0;
+ 	int modify = 0;
+ 	int ret = ERR_NOTHANDLED;
+@@ -460,14 +460,8 @@ void handle_unaligned(struct pt_regs *regs)
+ 			goto force_sigbus;
+ 		}
+ 
+-		if (unaligned_count > 5 &&
+-				time_after(jiffies, last_time + 5 * HZ)) {
+-			unaligned_count = 0;
+-			last_time = jiffies;
+-		}
+-
+-		if (!(current->thread.flags & PARISC_UAC_NOPRINT) 
+-		    && ++unaligned_count < 5) {
++		if (!(current->thread.flags & PARISC_UAC_NOPRINT) &&
++			__ratelimit(&ratelimit)) {
+ 			char buf[256];
+ 			sprintf(buf, "%s(%d): unaligned access to 0x" RFMT " at ip=0x" RFMT "\n",
+ 				current->comm, task_pid_nr(current), regs->ior, regs->iaoq[0]);
+-- 
+1.6.0.6
