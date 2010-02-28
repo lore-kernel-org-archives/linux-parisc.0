@@ -1,67 +1,34 @@
-From: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: [PATCH] parisc: use __ratelimit
-Date: Sun, 28 Feb 2010 19:58:15 +0900
-Message-ID: <1267354697-6456-3-git-send-email-akinobu.mita@gmail.com>
-References: <1267354697-6456-1-git-send-email-akinobu.mita@gmail.com>
-Cc: Akinobu Mita <akinobu.mita@gmail.com>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+From: Andrea Gelmini <andrea.gelmini@gelma.net>
+Subject: Re: [PATCH 32/66] arch/parisc/include/asm/parport.h: Checkpatch
+	cleanup
+Date: Sun, 28 Feb 2010 14:54:26 +0100
+Message-ID: <9cdbb57f1002280554u2f06ce7g86cfef6eeb3abc0d@mail.gmail.com>
+References: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
+	 <1267289508-31031-33-git-send-email-andrea.gelmini@gelma.net>
+	 <7d01f9f01002271418j185821a3h447c89a43406254d@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-kernel@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
+	Helge Deller <deller@gmx.de>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	linux-parisc@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1267354697-6456-1-git-send-email-akinobu.mita@gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
+To: Thibaut VARENE <T-Bone@parisc-linux.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <7d01f9f01002271418j185821a3h447c89a43406254d@mail.gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Replace open-coded rate limiting logic with __ratelimit().
+2010/2/27 Thibaut VARENE <T-Bone@parisc-linux.org>:
 
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-Cc: Helge Deller <deller@gmx.de>
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: linux-parisc@vger.kernel.org
----
- arch/parisc/kernel/unaligned.c |   14 ++++----------
- 1 files changed, 4 insertions(+), 10 deletions(-)
+Hi Thubaut,
+   thanks a lot for you answer.
 
-diff --git a/arch/parisc/kernel/unaligned.c b/arch/parisc/kernel/unaligned.c
-index e6f4b7a..92d977b 100644
---- a/arch/parisc/kernel/unaligned.c
-+++ b/arch/parisc/kernel/unaligned.c
-@@ -25,6 +25,7 @@
- #include <linux/module.h>
- #include <linux/sched.h>
- #include <linux/signal.h>
-+#include <linux/ratelimit.h>
- #include <asm/uaccess.h>
- 
- /* #define DEBUG_UNALIGNED 1 */
-@@ -446,8 +447,7 @@ static int emulate_std(struct pt_regs *regs, int frreg, int flop)
- 
- void handle_unaligned(struct pt_regs *regs)
- {
--	static unsigned long unaligned_count = 0;
--	static unsigned long last_time = 0;
-+	static DEFINE_RATELIMIT_STATE(ratelimit, 5 * HZ, 5);
- 	unsigned long newbase = R1(regs->iir)?regs->gr[R1(regs->iir)]:0;
- 	int modify = 0;
- 	int ret = ERR_NOTHANDLED;
-@@ -460,14 +460,8 @@ void handle_unaligned(struct pt_regs *regs)
- 			goto force_sigbus;
- 		}
- 
--		if (unaligned_count > 5 &&
--				time_after(jiffies, last_time + 5 * HZ)) {
--			unaligned_count = 0;
--			last_time = jiffies;
--		}
--
--		if (!(current->thread.flags & PARISC_UAC_NOPRINT) 
--		    && ++unaligned_count < 5) {
-+		if (!(current->thread.flags & PARISC_UAC_NOPRINT) &&
-+			__ratelimit(&ratelimit)) {
- 			char buf[256];
- 			sprintf(buf, "%s(%d): unaligned access to 0x" RFMT " at ip=0x" RFMT "\n",
- 				current->comm, task_pid_nr(current), regs->ior, regs->iaoq[0]);
--- 
-1.6.0.6
+> This looks very much in contradiction with CodingStyle, since
+> parport_pc_find_nonpci_ports() is a function, and it's not a fix for
+> the quoted "WARNING". I'm guessing this wasn't intended the way it is.
+
+My fault. I'll look at checkpatch.pl regexp to resolve false positive
+(I've found a few other regressions).
+
+Thanks again,
+Andrea
