@@ -1,34 +1,24 @@
-From: Andrea Gelmini <andrea.gelmini@gelma.net>
-Subject: Re: [PATCH 32/66] arch/parisc/include/asm/parport.h: Checkpatch
-	cleanup
-Date: Sun, 28 Feb 2010 14:54:26 +0100
-Message-ID: <9cdbb57f1002280554u2f06ce7g86cfef6eeb3abc0d@mail.gmail.com>
-References: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
-	 <1267289508-31031-33-git-send-email-andrea.gelmini@gelma.net>
-	 <7d01f9f01002271418j185821a3h447c89a43406254d@mail.gmail.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [PATCH] parisc: use __ratelimit
+Date: Mon, 1 Mar 2010 18:54:07 -0500
+Message-ID: <20100301235407.GC12443@bombadil.infradead.org>
+References: <1267354697-6456-1-git-send-email-akinobu.mita@gmail.com> <1267354697-6456-3-git-send-email-akinobu.mita@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Cc: linux-kernel@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
 	Helge Deller <deller@gmx.de>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	linux-parisc@vger.kernel.org
-To: Thibaut VARENE <T-Bone@parisc-linux.org>
+To: Akinobu Mita <akinobu.mita@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <7d01f9f01002271418j185821a3h447c89a43406254d@mail.gmail.com>
+In-Reply-To: <1267354697-6456-3-git-send-email-akinobu.mita@gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-2010/2/27 Thibaut VARENE <T-Bone@parisc-linux.org>:
+On Sun, Feb 28, 2010 at 07:58:15PM +0900, Akinobu Mita wrote:
+> Replace open-coded rate limiting logic with __ratelimit().
+> 
 
-Hi Thubaut,
-   thanks a lot for you answer.
+Thanks, I'll apply this.
 
-> This looks very much in contradiction with CodingStyle, since
-> parport_pc_find_nonpci_ports() is a function, and it's not a fix for
-> the quoted "WARNING". I'm guessing this wasn't intended the way it is.
-
-My fault. I'll look at checkpatch.pl regexp to resolve false positive
-(I've found a few other regressions).
-
-Thanks again,
-Andrea
+regards, Kyle
