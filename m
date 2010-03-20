@@ -1,270 +1,350 @@
-From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: Re: [PATCH] Cosmetic:Partially remove deprecated __initcall() and
- change to
-Date: Fri, 19 Mar 2010 16:24:28 -0700
-Message-ID: <4BA407AC.5030506@gmail.com>
-References: <1269028291-9103-1-git-send-email-justinmattock@gmail.com> <4BA40115.2000509@xenotime.net>
+From: Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH 2/4] panic: Allow taint flag for warnings to be changed
+ from TAINT_WARN
+Date: Sat, 20 Mar 2010 23:05:40 +0000
+Message-ID: <1269126340.18314.115.camel@localhost>
+References: <1269126097.18314.111.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: trivial@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-audit@redhat.com, uclinux-dist-devel@blackfin.uclinux.org,
-        linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org,
-        linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
-        linux-s390@vger.kernel.org, selinux@tycho.nsa.gov,
-        sparclinux@vger.kernel.org, x86@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To: Randy Dunlap <rdunlap@xenotime.net>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <4BA40115.2000509@xenotime.net>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-oxeb4NvHNjpzIl0POm0M"
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-pci@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org
+To: Jesse Barnes <jbarnes@virtuousgeek.org>
+Return-path: <linux-pci-owner@vger.kernel.org>
+In-Reply-To: <1269126097.18314.111.camel@localhost>
+List-ID: <linux-pci.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On 03/19/2010 03:56 PM, Randy Dunlap wrote:
-> On 03/19/10 12:51, Justin P. Mattock wrote:
->> After doing some things on a small issue,
->> I noticed through web surfing, that there were patches
->> submitted pertaining that __initcall is deprecated,
->> and device_initcall should be used.
->
-> Where was this discussion?  Do you have any pointers to it?
->
 
-The best info on this is scripts/checkpatch.pl
-line #2664
+--=-oxeb4NvHNjpzIl0POm0M
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-when I found this I just did a quick search of __initcall
-(which gives hits here and there)
-https://patchwork.kernel.org/patch/23344/
-(also found others at around 2008 or so)
+WARN() is used in some places to report firmware or hardware bugs that
+are then worked-around.  These bugs do not affect the stability of the
+kernel and should not set the usual TAINT_WARN flag.  To allow for
+this, add WARN_TAINT() and WARN_TAINT_ONCE() macros that take a taint
+flag as argument.
 
-> I don't see any mention of __initcall being deprecated in
-> Linus' mainline git tree, or in linux-next, or in mmotm.
-> Where are those patches?
->
+Architectures that implement warnings using trap instructions instead
+of calls to warn_slowpath_*() must now implement __WARN_TAINT(taint)
+instead of __WARN().
 
-I don't know(I'm out of the social pipeline when it comes to Linux news, 
-and updates)..
-like in the explanation part of the patch
-I was looking into something else, then ran into this,
-so as a break(from what I was originally doing)
-decided to do this and submit.
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+---
+The architecture-specific changes here are untested and need to be
+reviewed by architecture maintainers.
 
->
->> So as a change of subject(since what I was looking at
->> was frustrating me),I decided to grep the whole tree
->> and make the change(partially).
->>
->> Currently I'm running this patch on my system, kernel compiles
->> without any errors or warnings.(thought there would be a speed increase
->> but didn't see much(if any)).
->
-> No, __initcall(x) is just a shorthand version of typing
-> device_initcall(x).  They do the same thing.
->
+Ben.
 
-yep, that's what I found out as well(reason for the cosmetic
-in the subject line).
+ arch/parisc/include/asm/bug.h  |    8 ++++----
+ arch/powerpc/include/asm/bug.h |    6 +++---
+ arch/s390/include/asm/bug.h    |    8 ++++----
+ arch/sh/include/asm/bug.h      |    4 ++--
+ include/asm-generic/bug.h      |   34 ++++++++++++++++++++++++++++++++--
+ kernel/panic.c                 |   24 ++++++++++++++++++++----
+ lib/bug.c                      |    2 +-
+ 7 files changed, 66 insertions(+), 20 deletions(-)
 
->> Biggest problem I have though is testing this on other hardware types
->> (I only have a macbook,and an iMac).
->> So please if you have the access to other arch/hardware types please
->> test.
->>
->> Now what I mean by partially is the __initcall function is still
->> there, so(if any) userspace apps/libs depend on this it's there
->> so they dont break and/or any other subsystem, that needs time
->> to make the changes.
->
-> The only thing that might be affected is building out-of-tree drivers,
-> but those are easy to fix.
->
+diff --git a/arch/parisc/include/asm/bug.h b/arch/parisc/include/asm/bug.h
+index 75e46c5..72cfdb0 100644
+--- a/arch/parisc/include/asm/bug.h
++++ b/arch/parisc/include/asm/bug.h
+@@ -44,7 +44,7 @@
+ #endif
+=20
+ #ifdef CONFIG_DEBUG_BUGVERBOSE
+-#define __WARN()							\
++#define __WARN_TAINT(taint)						\
+ 	do {								\
+ 		asm volatile("\n"					\
+ 			     "1:\t" PARISC_BUG_BREAK_ASM "\n"		\
+@@ -54,11 +54,11 @@
+ 			     "\t.org 2b+%c3\n"				\
+ 			     "\t.popsection"				\
+ 			     : : "i" (__FILE__), "i" (__LINE__),	\
+-			     "i" (BUGFLAG_WARNING),			\
++			     "i" (BUGFLAG_TAINT(taint)), 		\
+ 			     "i" (sizeof(struct bug_entry)) );		\
+ 	} while(0)
+ #else
+-#define __WARN()							\
++#define __WARN_TAINT(taint)						\
+ 	do {								\
+ 		asm volatile("\n"					\
+ 			     "1:\t" PARISC_BUG_BREAK_ASM "\n"		\
+@@ -67,7 +67,7 @@
+ 			     "\t.short %c0\n"				\
+ 			     "\t.org 2b+%c1\n"				\
+ 			     "\t.popsection"				\
+-			     : : "i" (BUGFLAG_WARNING),			\
++			     : : "i" (BUGFLAG_TAINT(taint)),		\
+ 			     "i" (sizeof(struct bug_entry)) );		\
+ 	} while(0)
+ #endif
+diff --git a/arch/powerpc/include/asm/bug.h b/arch/powerpc/include/asm/bug.=
+h
+index 2c15212..065c590 100644
+--- a/arch/powerpc/include/asm/bug.h
++++ b/arch/powerpc/include/asm/bug.h
+@@ -85,12 +85,12 @@
+ 	}							\
+ } while (0)
+=20
+-#define __WARN() do {						\
++#define __WARN_TAINT(taint) do {				\
+ 	__asm__ __volatile__(					\
+ 		"1:	twi 31,0,0\n"				\
+ 		_EMIT_BUG_ENTRY					\
+ 		: : "i" (__FILE__), "i" (__LINE__),		\
+-		  "i" (BUGFLAG_WARNING),			\
++		  "i" (BUGFLAG_TAINT(taint)),			\
+ 		  "i" (sizeof(struct bug_entry)));		\
+ } while (0)
+=20
+@@ -104,7 +104,7 @@
+ 		"1:	"PPC_TLNEI"	%4,0\n"			\
+ 		_EMIT_BUG_ENTRY					\
+ 		: : "i" (__FILE__), "i" (__LINE__),		\
+-		  "i" (BUGFLAG_WARNING),			\
++		  "i" (BUGFLAG_TAINT(TAINT_WARN)),		\
+ 		  "i" (sizeof(struct bug_entry)),		\
+ 		  "r" (__ret_warn_on));				\
+ 	}							\
+diff --git a/arch/s390/include/asm/bug.h b/arch/s390/include/asm/bug.h
+index 9beeb9d..bf90d1f 100644
+--- a/arch/s390/include/asm/bug.h
++++ b/arch/s390/include/asm/bug.h
+@@ -46,18 +46,18 @@
+ 	unreachable();					\
+ } while (0)
+=20
+-#define __WARN() do {					\
+-	__EMIT_BUG(BUGFLAG_WARNING);			\
++#define __WARN_TAINT(taint) do {			\
++	__EMIT_BUG(BUGFLAG_TAINT(taint));		\
+ } while (0)
+=20
+ #define WARN_ON(x) ({					\
+ 	int __ret_warn_on =3D !!(x);			\
+ 	if (__builtin_constant_p(__ret_warn_on)) {	\
+ 		if (__ret_warn_on)			\
+-			__EMIT_BUG(BUGFLAG_WARNING);	\
++			__WARN();			\
+ 	} else {					\
+ 		if (unlikely(__ret_warn_on))		\
+-			__EMIT_BUG(BUGFLAG_WARNING);	\
++			__WARN();			\
+ 	}						\
+ 	unlikely(__ret_warn_on);			\
+ })
+diff --git a/arch/sh/include/asm/bug.h b/arch/sh/include/asm/bug.h
+index d02c01b..6323f86 100644
+--- a/arch/sh/include/asm/bug.h
++++ b/arch/sh/include/asm/bug.h
+@@ -48,7 +48,7 @@ do {							\
+ 		   "i" (sizeof(struct bug_entry)));	\
+ } while (0)
+=20
+-#define __WARN()					\
++#define __WARN_TAINT(taint)				\
+ do {							\
+ 	__asm__ __volatile__ (				\
+ 		"1:\t.short %O0\n"			\
+@@ -57,7 +57,7 @@ do {							\
+ 		 : "n" (TRAPA_BUG_OPCODE),		\
+ 		   "i" (__FILE__),			\
+ 		   "i" (__LINE__),			\
+-		   "i" (BUGFLAG_WARNING),		\
++		   "i" (BUGFLAG_TAINT(taint)),		\
+ 		   "i" (sizeof(struct bug_entry)));	\
+ } while (0)
+=20
+diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
+index 18c435d..c2c9ba0 100644
+--- a/include/asm-generic/bug.h
++++ b/include/asm-generic/bug.h
+@@ -25,7 +25,10 @@ struct bug_entry {
+ };
+ #endif		/* __ASSEMBLY__ */
+=20
+-#define BUGFLAG_WARNING	(1<<0)
++#define BUGFLAG_WARNING		(1 << 0)
++#define BUGFLAG_TAINT(taint)	(BUGFLAG_WARNING | ((taint) << 8))
++#define BUG_GET_TAINT(bug)	((bug)->flags >> 8)
++
+ #endif	/* CONFIG_GENERIC_BUG */
+=20
+ /*
+@@ -56,17 +59,25 @@ struct bug_entry {
+  * appear at runtime.  Use the versions with printk format strings
+  * to provide better diagnostics.
+  */
+-#ifndef __WARN
++#ifndef __WARN_TAINT
+ #ifndef __ASSEMBLY__
+ extern void warn_slowpath_fmt(const char *file, const int line,
+ 		const char *fmt, ...) __attribute__((format(printf, 3, 4)));
++extern void warn_slowpath_fmt_taint(const char *file, const int line,
++				    unsigned taint, const char *fmt, ...)
++	__attribute__((format(printf, 4, 5)));
+ extern void warn_slowpath_null(const char *file, const int line);
+ #define WANT_WARN_ON_SLOWPATH
+ #endif
+ #define __WARN()		warn_slowpath_null(__FILE__, __LINE__)
+ #define __WARN_printf(arg...)	warn_slowpath_fmt(__FILE__, __LINE__, arg)
++#define __WARN_printf_taint(taint, arg...)				\
++	warn_slowpath_fmt_taint(__FILE__, __LINE__, taint, arg)
+ #else
++#define __WARN()		__WARN_TAINT(TAINT_WARN)
+ #define __WARN_printf(arg...)	do { printk(arg); __WARN(); } while (0)
++#define __WARN_printf_taint(taint, arg...)				\
++	do { printk(arg); __WARN_TAINT(taint); } while (0)
+ #endif
+=20
+ #ifndef WARN_ON
+@@ -87,6 +98,13 @@ extern void warn_slowpath_null(const char *file, const i=
+nt line);
+ })
+ #endif
+=20
++#define WARN_TAINT(condition, taint, format...) ({			\
++	int __ret_warn_on =3D !!(condition);				\
++	if (unlikely(__ret_warn_on))					\
++		__WARN_printf_taint(taint, format);			\
++	unlikely(__ret_warn_on);					\
++})
++
+ #else /* !CONFIG_BUG */
+ #ifndef HAVE_ARCH_BUG
+ #define BUG() do {} while(0)
+@@ -110,6 +128,8 @@ extern void warn_slowpath_null(const char *file, const =
+int line);
+ })
+ #endif
+=20
++#define WARN_TAINT(condition, taint, format...) WARN_ON(condition)
++
+ #endif
+=20
+ #define WARN_ON_ONCE(condition)	({				\
+@@ -132,6 +152,16 @@ extern void warn_slowpath_null(const char *file, const=
+ int line);
+ 	unlikely(__ret_warn_once);				\
+ })
+=20
++#define WARN_TAINT_ONCE(condition, taint, format...)	({	\
++	static bool __warned;					\
++	int __ret_warn_once =3D !!(condition);			\
++								\
++	if (unlikely(__ret_warn_once))				\
++		if (WARN_TAINT(!__warned, taint, format))	\
++			__warned =3D true;			\
++	unlikely(__ret_warn_once);				\
++})
++
+ #define WARN_ON_RATELIMIT(condition, state)			\
+ 		WARN_ON((condition) && __ratelimit(state))
+=20
+diff --git a/kernel/panic.c b/kernel/panic.c
+index 13d966b..8b821bc 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -365,7 +365,8 @@ struct slowpath_args {
+ 	va_list args;
+ };
+=20
+-static void warn_slowpath_common(const char *file, int line, void *caller,=
+ struct slowpath_args *args)
++static void warn_slowpath_common(const char *file, int line, void *caller,
++				 unsigned taint, struct slowpath_args *args)
+ {
+ 	const char *board;
+=20
+@@ -381,7 +382,7 @@ static void warn_slowpath_common(const char *file, int =
+line, void *caller, struc
+ 	print_modules();
+ 	dump_stack();
+ 	print_oops_end_marker();
+-	add_taint(TAINT_WARN);
++	add_taint(taint);
+ }
+=20
+ void warn_slowpath_fmt(const char *file, int line, const char *fmt, ...)
+@@ -390,14 +391,29 @@ void warn_slowpath_fmt(const char *file, int line, co=
+nst char *fmt, ...)
+=20
+ 	args.fmt =3D fmt;
+ 	va_start(args.args, fmt);
+-	warn_slowpath_common(file, line, __builtin_return_address(0), &args);
++	warn_slowpath_common(file, line, __builtin_return_address(0),
++			     TAINT_WARN, &args);
+ 	va_end(args.args);
+ }
+ EXPORT_SYMBOL(warn_slowpath_fmt);
+=20
++void warn_slowpath_fmt_taint(const char *file, int line,
++			     unsigned taint, const char *fmt, ...)
++{
++	struct slowpath_args args;
++
++	args.fmt =3D fmt;
++	va_start(args.args, fmt);
++	warn_slowpath_common(file, line, __builtin_return_address(0),
++			     taint, &args);
++	va_end(args.args);
++}
++EXPORT_SYMBOL(warn_slowpath_fmt_taint);
++
+ void warn_slowpath_null(const char *file, int line)
+ {
+-	warn_slowpath_common(file, line, __builtin_return_address(0), NULL);
++	warn_slowpath_common(file, line, __builtin_return_address(0),
++			     TAINT_WARN, NULL);
+ }
+ EXPORT_SYMBOL(warn_slowpath_null);
+ #endif
+diff --git a/lib/bug.c b/lib/bug.c
+index 300e41a..f13daf4 100644
+--- a/lib/bug.c
++++ b/lib/bug.c
+@@ -165,7 +165,7 @@ enum bug_trap_type report_bug(unsigned long bugaddr, st=
+ruct pt_regs *regs)
+ 			       (void *)bugaddr);
+=20
+ 		show_regs(regs);
+-		add_taint(TAINT_WARN);
++		add_taint(BUG_GET_TAINT(bug));
+ 		return BUG_TRAP_TYPE_WARN;
+ 	}
+=20
+--=20
+1.7.0
 
-alright..main concern is making sure things don't break in the 
-kernel(even though things do).
 
-I can have a go at the header files, submit
-then if it's something people agree they want to do, then they
-can go from there(if not it's fine as well).
 
->> Note:
->> the remaining files that still have __initcall in them are:
->> (according to grep)
->>
->> arch/um/include/shared/init.h
->> include/linux/init.h
->> scripts/checkpatch.pl
->>
->> either I or somebody else, can change this(although a bit
->> concerned about breaking things).
->>
->> Signed-off-by: Justin P. Mattock<justinmattock@gmail.com>
->> ---
->>   Documentation/DocBook/kernel-hacking.tmpl    |    4 ++--
->>   Documentation/cpu-freq/cpu-drivers.txt       |    2 +-
->>   Documentation/kbuild/makefiles.txt           |    2 +-
->>   arch/arm/mach-at91/leds.c                    |    2 +-
->>   arch/arm/mach-clps711x/p720t.c               |    2 +-
->>   arch/arm/mach-ebsa110/leds.c                 |    2 +-
->>   arch/arm/mach-footbridge/cats-hw.c           |    2 +-
->>   arch/arm/mach-footbridge/ebsa285-leds.c      |    2 +-
->>   arch/arm/mach-footbridge/netwinder-hw.c      |    2 +-
->>   arch/arm/mach-footbridge/netwinder-leds.c    |    2 +-
->>   arch/arm/mach-ks8695/leds.c                  |    2 +-
->>   arch/arm/mach-omap1/leds.c                   |    2 +-
->>   arch/arm/mach-omap1/pm.c                     |    2 +-
->>   arch/arm/mach-orion5x/db88f5281-setup.c      |    2 +-
->>   arch/arm/mach-orion5x/rd88f5182-setup.c      |    2 +-
->>   arch/arm/mach-pxa/generic.c                  |    2 +-
->>   arch/arm/mach-pxa/pxa25x.c                   |    2 +-
->>   arch/arm/mach-shark/leds.c                   |    2 +-
->>   arch/blackfin/kernel/bfin_gpio.c             |    2 +-
->>   arch/blackfin/mach-common/pm.c               |    2 +-
->>   arch/cris/arch-v10/kernel/debugport.c        |    2 +-
->>   arch/cris/arch-v10/kernel/fasttimer.c        |    2 +-
->>   arch/cris/arch-v10/mm/init.c                 |    2 +-
->>   arch/cris/arch-v32/kernel/fasttimer.c        |    2 +-
->>   arch/cris/arch-v32/kernel/pinmux.c           |    2 +-
->>   arch/cris/arch-v32/kernel/signal.c           |    2 +-
->>   arch/cris/arch-v32/mach-a3/io.c              |    2 +-
->>   arch/cris/arch-v32/mach-a3/pinmux.c          |    2 +-
->>   arch/cris/arch-v32/mach-fs/io.c              |    2 +-
->>   arch/cris/arch-v32/mach-fs/pinmux.c          |    2 +-
->>   arch/cris/kernel/profile.c                   |    2 +-
->>   arch/cris/kernel/time.c                      |    2 +-
->>   arch/cris/kernel/traps.c                     |    2 +-
->>   arch/frv/kernel/gdb-stub.c                   |    2 +-
->>   arch/frv/kernel/pm-mb93093.c                 |    2 +-
->>   arch/frv/kernel/pm.c                         |    2 +-
->>   arch/frv/kernel/sysctl.c                     |    2 +-
->>   arch/h8300/kernel/gpio.c                     |    2 +-
->>   arch/ia64/hp/sim/simeth.c                    |    2 +-
->>   arch/ia64/hp/sim/simserial.c                 |    2 +-
->>   arch/ia64/kernel/audit.c                     |    2 +-
->>   arch/ia64/kernel/crash.c                     |    2 +-
->>   arch/ia64/kernel/cyclone.c                   |    2 +-
->>   arch/ia64/kernel/perfmon.c                   |    2 +-
->>   arch/ia64/kernel/setup.c                     |    2 +-
->>   arch/ia64/kernel/uncached.c                  |    2 +-
->>   arch/ia64/kernel/unwind.c                    |    2 +-
->>   arch/ia64/mm/init.c                          |    2 +-
->>   arch/mips/Makefile                           |    2 +-
->>   arch/mips/kernel/unaligned.c                 |    2 +-
->>   arch/mips/lasat/sysctl.c                     |    2 +-
->>   arch/mips/math-emu/cp1emu.c                  |    2 +-
->>   arch/mips/nxp/pnx8550/common/proc.c          |    2 +-
->>   arch/mips/sibyte/sb1250/bus_watcher.c        |    2 +-
->>   arch/mn10300/kernel/gdb-stub.c               |    2 +-
->>   arch/mn10300/kernel/mn10300-serial.c         |    2 +-
->>   arch/mn10300/kernel/profile.c                |    2 +-
->>   arch/parisc/kernel/pci-dma.c                 |    2 +-
->>   arch/parisc/kernel/pdc_chassis.c             |    2 +-
->>   arch/powerpc/kernel/audit.c                  |    2 +-
->>   arch/powerpc/kernel/idle.c                   |    2 +-
->>   arch/powerpc/kernel/irq.c                    |    2 +-
->>   arch/powerpc/kernel/proc_powerpc.c           |    2 +-
->>   arch/powerpc/kernel/prom.c                   |    4 ++--
->>   arch/powerpc/kernel/rtas-proc.c              |    2 +-
->>   arch/powerpc/kernel/rtasd.c                  |    2 +-
->>   arch/powerpc/kernel/sysfs.c                  |    2 +-
->>   arch/powerpc/kernel/tau_6xx.c                |    2 +-
->>   arch/powerpc/kernel/vio.c                    |    2 +-
->>   arch/powerpc/platforms/iseries/lpevents.c    |    2 +-
->>   arch/powerpc/platforms/iseries/mf.c          |    2 +-
->>   arch/powerpc/platforms/iseries/proc.c        |    2 +-
->>   arch/powerpc/platforms/iseries/viopath.c     |    2 +-
->>   arch/powerpc/platforms/pseries/eeh.c         |    2 +-
->>   arch/powerpc/platforms/pseries/hvCall_inst.c |    2 +-
->>   arch/powerpc/platforms/pseries/power.c       |    2 +-
->>   arch/powerpc/platforms/pseries/ras.c         |    2 +-
->>   arch/powerpc/platforms/pseries/reconfig.c    |    2 +-
->>   arch/powerpc/xmon/xmon.c                     |    2 +-
->>   arch/s390/appldata/appldata_base.c           |    2 +-
->>   arch/s390/kernel/audit.c                     |    2 +-
->>   arch/s390/kernel/compat_exec_domain.c        |    2 +-
->>   arch/s390/kernel/ipl.c                       |    2 +-
->>   arch/s390/kernel/topology.c                  |    2 +-
->>   arch/sh/boards/board-edosk7760.c             |    2 +-
->>   arch/sh/boards/board-sh7785lcr.c             |    2 +-
->>   arch/sh/boards/mach-cayman/setup.c           |    2 +-
->>   arch/sh/boards/mach-landisk/setup.c          |    2 +-
->>   arch/sh/boards/mach-r2d/setup.c              |    2 +-
->>   arch/sh/boards/mach-sdk7786/setup.c          |    2 +-
->>   arch/sh/boards/mach-se/7206/setup.c          |    2 +-
->>   arch/sh/boards/mach-se/7751/setup.c          |    2 +-
->>   arch/sh/boards/mach-sh03/setup.c             |    2 +-
->>   arch/sh/kernel/traps_64.c                    |    2 +-
->>   arch/sparc/kernel/apc.c                      |    2 +-
->>   arch/sparc/kernel/audit.c                    |    2 +-
->>   arch/sparc/kernel/mdesc.c                    |    2 +-
->>   arch/sparc/kernel/pmc.c                      |    2 +-
->>   arch/um/drivers/mconsole_kern.c              |    8 ++++----
->>   arch/um/drivers/net_kern.c                   |    2 +-
->>   arch/um/drivers/stderr_console.c             |    2 +-
->>   arch/um/drivers/ubd_kern.c                   |    4 ++--
->>   arch/um/kernel/exitcode.c                    |    2 +-
->>   arch/um/kernel/physmem.c                     |    2 +-
->>   arch/um/os-Linux/aio.c                       |    4 ++--
->>   arch/um/os-Linux/skas/mem.c                  |    2 +-
->>   arch/um/os-Linux/skas/process.c              |    2 +-
->>   arch/um/os-Linux/umid.c                      |    2 +-
->>   arch/um/sys-i386/tls.c                       |    2 +-
->>   arch/x86/kernel/audit_64.c                   |    2 +-
->>   arch/x86/kernel/tlb_uv.c                     |    4 ++--
->>   arch/x86/kernel/vsyscall_64.c                |    4 ++--
->>   arch/x86/mm/dump_pagetables.c                |    2 +-
->>   arch/x86/vdso/vdso32-setup.c                 |    4 ++--
->>   arch/x86/vdso/vma.c                          |    2 +-
->>   arch/xtensa/platforms/iss/console.c          |    2 +-
->>   drivers/net/arm/am79c961a.c                  |    2 +-
->>   drivers/net/hamradio/baycom_epp.c            |    1 +
->>   drivers/net/hamradio/baycom_par.c            |    1 +
->>   drivers/net/hamradio/baycom_ser_fdx.c        |    1 +
->>   drivers/net/hamradio/baycom_ser_hdx.c        |    1 +
->>   drivers/s390/char/sclp_cmd.c                 |    2 +-
->>   drivers/s390/char/sclp_config.c              |    2 +-
->>   drivers/s390/char/sclp_cpi_sys.c             |    2 +-
->>   drivers/s390/char/sclp_vt220.c               |    2 +-
->>   drivers/s390/cio/blacklist.c                 |    2 +-
->>   drivers/staging/rtl8192u/ieee80211/api.c     |    2 +-
->>   fs/aio.c                                     |    2 +-
->>   fs/compat_ioctl.c                            |    2 +-
->>   ipc/ipc_sysctl.c                             |    2 +-
->>   ipc/mqueue.c                                 |    2 +-
->>   ipc/util.c                                   |    2 +-
->>   kernel/audit.c                               |    2 +-
->>   kernel/audit_tree.c                          |    2 +-
->>   kernel/dma.c                                 |    2 +-
->>   kernel/futex.c                               |    2 +-
->>   kernel/lockdep_proc.c                        |    2 +-
->>   kernel/pid_namespace.c                       |    2 +-
->>   kernel/posix-cpu-timers.c                    |    2 +-
->>   kernel/posix-timers.c                        |    2 +-
->>   kernel/resource.c                            |    2 +-
->>   kernel/sched_debug.c                         |    2 +-
->>   kernel/time/timer_list.c                     |    2 +-
->>   kernel/time/timer_stats.c                    |    2 +-
->>   kernel/tracepoint.c                          |    2 +-
->>   kernel/utsname_sysctl.c                      |    2 +-
->>   lib/audit.c                                  |    2 +-
->>   lib/debugobjects.c                           |    2 +-
->>   mm/bounce.c                                  |    2 +-
->>   mm/memory.c                                  |    2 +-
->>   mm/mm_init.c                                 |    2 +-
->>   mm/slab.c                                    |    2 +-
->>   mm/slub.c                                    |    2 +-
->>   mm/swapfile.c                                |    2 +-
->>   net/ipv4/syncookies.c                        |    2 +-
->>   net/ipv4/sysctl_net_ipv4.c                   |    2 +-
->>   security/keys/proc.c                         |    2 +-
->>   security/selinux/hooks.c                     |    2 +-
->>   security/selinux/netif.c                     |    2 +-
->>   security/selinux/netlink.c                   |    2 +-
->>   security/selinux/netnode.c                   |    2 +-
->>   security/selinux/netport.c                   |    2 +-
->>   security/selinux/selinuxfs.c                 |    2 +-
->>   security/selinux/ss/services.c               |    2 +-
->>   security/smack/smackfs.c                     |    2 +-
->>   sound/last.c                                 |    2 +-
->>   166 files changed, 176 insertions(+), 172 deletions(-)
->
->
+
+--=-oxeb4NvHNjpzIl0POm0M
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQIVAwUAS6VUwue/yOyVhhEJAQJWrxAAjaQMiaV6XGUrV2kASfy82U3+z9Yyu2ZC
+DaIIeQuTln99GUvfatWCxJuLJ/N7iub72+k5UioheHd0F7v3j/YwM7b68UPq4xYM
+yZ1Fv7yKhItwEIX9YEgcNvPB/My+RMIi6LgwVQgv7Ey/hF8Pt81lYIYbcWyq5aO0
+70Nwjh1YOTFWB7A3+B9rRnsgK9uzoBRk1E3iJHw4I52aisuq7ohHCDOkxpCcwpqm
+4G5M+PmICToKp3mlQLG5WNiZ8EQzJ2tkI2NmaKEuLikcD9+h3fsuVgxNVNcfNknG
+c6EcIPp3xSmhjWskjaB1+g7vrn2fmT0hNNzrSfoQDFNb8ikIkPqRSzmxpd+QGy4q
+UJAQpF0VTjz57MlpAQbDgOicKNkbKbGNPDR9clo6x0bzdcpcXxCPDhr01KVGhyP5
+UzckoQVtTyhol+OZWm5wgh4PvWNWfuriT8s1vrXg9Af981o2Kbgg8o8EoE68EKc8
+1LoNvQ4WptvIKp+ZqqKKsLyqEWwYiK4RdxSWyG5Eg6hkO/EpP/O2hbz+n5K370E/
+GvM30DQuucK593NdR5Y6SMMa9fWOixzmGVmwjdHvITy3RMKseF+msfuHroC9OcUG
+poUKjLL19CRhxXHOAcXTTXwmT8EqUirXZx21LPuiyVyasNlGv49JOJ1pDQiFA1qX
+EJqfY1uABH0=
+=CzPe
+-----END PGP SIGNATURE-----
+
+--=-oxeb4NvHNjpzIl0POm0M--
