@@ -1,126 +1,65 @@
-From: "Justin P. mattock" <justinmattock@gmail.com>
-Subject: Re: [PATCH] Cosmetic:Partially remove deprecated __initcall() and
- change to
-Date: Sun, 21 Mar 2010 18:04:08 -0700
-Message-ID: <4BA6C208.6010000@gmail.com>
-References: <1269028291-9103-1-git-send-email-justinmattock@gmail.com> <4BA40115.2000509@xenotime.net> <4BA407AC.5030506@gmail.com> <4BA6BAF3.10603@xenotime.net>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: futex wait failure
+Date: Mon, 22 Mar 2010 10:26:17 -0400
+Message-ID: <119aab441003220726q68e2ff6cwfce105f5cf068ab8@mail.gmail.com>
+References: <20100307171207.GA22856@hiauly1.hia.nrc.ca>
+	 <20100307203230.CAC964E77@hiauly1.hia.nrc.ca>
+	 <20100311032049.GA14312@hiauly1.hia.nrc.ca>
+	 <20100311135418.GA22698@bombadil.infradead.org>
+	 <20100311224044.GA18789@hiauly1.hia.nrc.ca>
+	 <20100313020647.GA26384@hiauly1.hia.nrc.ca>
+	 <20100315011024.GA7309@hiauly1.hia.nrc.ca>
+	 <119aab441003160449n11cf5272qb9d15fa97625dd7d@mail.gmail.com>
+	 <20100321181935.GA19525@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: trivial@kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-audit@redhat.com, uclinux-dist-devel@blackfin.uclinux.org,
-	linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org,
-	linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
-	linux-s390@vger.kernel.org, selinux@tycho.nsa.gov,
-	sparclinux@vger.kernel.org, x86@kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-To: Randy Dunlap <rdunlap@xenotime.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4BA6BAF3.10603@xenotime.net>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Kyle McMartin <kyle@mcmartin.ca>, deller@gmx.de,
+	linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20100321181935.GA19525@hiauly1.hia.nrc.ca>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 03/21/2010 05:33 PM, Randy Dunlap wrote:
-> On 03/19/10 16:24, Justin P. Mattock wrote:
->> On 03/19/2010 03:56 PM, Randy Dunlap wrote:
->>> On 03/19/10 12:51, Justin P. Mattock wrote:
->>>> After doing some things on a small issue,
->>>> I noticed through web surfing, that there were patches
->>>> submitted pertaining that __initcall is deprecated,
->>>> and device_initcall should be used.
->>>
->>> Where was this discussion?  Do you have any pointers to it?
->>>
->>
->> The best info on this is scripts/checkpatch.pl
->> line #2664
->>
->> when I found this I just did a quick search of __initcall
->> (which gives hits here and there)
->> https://patchwork.kernel.org/patch/23344/
->> (also found others at around 2008 or so)
+On Sun, Mar 21, 2010 at 2:19 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+> I added an illegal instruction abort to the child. =A0In this case,
+> the thread_run loop counter was 48085 when the page was copied and
+> the before value was zero.
 >
-> Thanks.  IMO there should be something in the kernel source tree
-> that says explicitly that __initcall is deprecated and should be
-> replaced by using<whatever should be used>.  That's missing.
+> One thought that has crossed my mind is that the memory pages allocat=
+ed
+> for the stack region used by the thread are somehow getting interchan=
+ged
+> between parent and child by the fork operation. =A0This happens fairl=
+y
+> late as both the parent and thread are executing post fork at the tim=
+e
+> this happens. =A0Possibly, this is part of the bug.
 >
-
-agree..
-
-I should of searched the source tree for something
-that says deprecated and so forth before doing anything(the 
-checkpatch.pl was something I noticed down the line but doesn't say 
-deprecated(say's explicitly).
-
-
+> I have looked at entry.S and pacache.S quite a bit and it's not obvio=
+us
+> how this could happen, although I must admit to not fully understandi=
+ng
+> the tmp alias code. =A0I tend to think the bug is in the core mm code=
+=2E
 >
->>> I don't see any mention of __initcall being deprecated in
->>> Linus' mainline git tree, or in linux-next, or in mmotm.
->>> Where are those patches?
->>>
->>
->> I don't know(I'm out of the social pipeline when it comes to Linux news,
->> and updates)..
->> like in the explanation part of the patch
->> I was looking into something else, then ran into this,
->> so as a break(from what I was originally doing)
->> decided to do this and submit.
->>
->>>
->>>> So as a change of subject(since what I was looking at
->>>> was frustrating me),I decided to grep the whole tree
->>>> and make the change(partially).
->>>>
->>>> Currently I'm running this patch on my system, kernel compiles
->>>> without any errors or warnings.(thought there would be a speed increase
->>>> but didn't see much(if any)).
->>>
->>> No, __initcall(x) is just a shorthand version of typing
->>> device_initcall(x).  They do the same thing.
->>>
->>
->> yep, that's what I found out as well(reason for the cosmetic
->> in the subject line).
->>
->>>> Biggest problem I have though is testing this on other hardware types
->>>> (I only have a macbook,and an iMac).
->>>> So please if you have the access to other arch/hardware types please
->>>> test.
->>>>
->>>> Now what I mean by partially is the __initcall function is still
->>>> there, so(if any) userspace apps/libs depend on this it's there
->>>> so they dont break and/or any other subsystem, that needs time
->>>> to make the changes.
->>>
->>> The only thing that might be affected is building out-of-tree drivers,
->>> but those are easy to fix.
->>>
->>
->> alright..main concern is making sure things don't break in the
->> kernel(even though things do).
->>
->> I can have a go at the header files, submit
->> then if it's something people agree they want to do, then they
->> can go from there(if not it's fine as well).
->>
->>>> Note:
->>>> the remaining files that still have __initcall in them are:
->>>> (according to grep)
->>>>
->>>> arch/um/include/shared/init.h
->>>> include/linux/init.h
->>>> scripts/checkpatch.pl
->>>>
->>>> either I or somebody else, can change this(although a bit
->>>> concerned about breaking things).
->>>>
->>>> Signed-off-by: Justin P. Mattock<justinmattock@gmail.com>
->>>> ---
->
->
+> I see a few cleanups to entry.S. =A0We didn't kill the misnamed macro=
+s
+> (DEP, DEPI and EXTR) for example. =A0But I don't think these are the =
+problem.
 
+Dave,
 
-In any case I'll leave this to you guys to decide.
-The patch is in cyberspace now, so if/when this ever
-is decided it's there(patch), then can be used then.
+Thank you for another test case. I agree, I also think the bug is in
+the core mm code, which I am also trying to review and understand. I
+haven't been able to make much progress in this area though. I'll keep
+you updated when I spot something I think is wrong.
 
-Justin P. Mattock
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
