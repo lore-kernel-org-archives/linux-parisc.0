@@ -1,77 +1,111 @@
-From: Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: [PATCH 2/4] panic: Allow taint flag for warnings to be changed
- from TAINT_WARN
-Date: Sun, 21 Mar 2010 19:25:21 +0000
-Message-ID: <1269199521.18314.220.camel@localhost>
-References: <1269126097.18314.111.camel@localhost>
-	 <1269126340.18314.115.camel@localhost>  <87y6hlebik.fsf@basil.nowhere.org>
+From: Randy Dunlap <rdunlap@xenotime.net>
+Subject: Re: [PATCH] Cosmetic:Partially remove deprecated __initcall() and
+ change to
+Date: Sun, 21 Mar 2010 17:33:55 -0700
+Message-ID: <4BA6BAF3.10603@xenotime.net>
+References: <1269028291-9103-1-git-send-email-justinmattock@gmail.com> <4BA40115.2000509@xenotime.net> <4BA407AC.5030506@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-aTG0+FBLZ4wAKesqS+5r"
-Cc: Jesse Barnes <jbarnes@virtuousgeek.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org
-To: Andi Kleen <andi@firstfloor.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <87y6hlebik.fsf@basil.nowhere.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: trivial@kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-audit@redhat.com, uclinux-dist-devel@blackfin.uclinux.org,
+	linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org,
+	linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
+	linux-s390@vger.kernel.org, selinux@tycho.nsa.gov,
+	sparclinux@vger.kernel.org, x86@kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+To: "Justin P. Mattock" <justinmattock@gmail.com>
+Return-path: <linux-ia64-owner@vger.kernel.org>
+In-Reply-To: <4BA407AC.5030506@gmail.com>
+List-ID: <linux-ia64.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On 03/19/10 16:24, Justin P. Mattock wrote:
+> On 03/19/2010 03:56 PM, Randy Dunlap wrote:
+>> On 03/19/10 12:51, Justin P. Mattock wrote:
+>>> After doing some things on a small issue,
+>>> I noticed through web surfing, that there were patches
+>>> submitted pertaining that __initcall is deprecated,
+>>> and device_initcall should be used.
+>>
+>> Where was this discussion?  Do you have any pointers to it?
+>>
+> 
+> The best info on this is scripts/checkpatch.pl
+> line #2664
+> 
+> when I found this I just did a quick search of __initcall
+> (which gives hits here and there)
+> https://patchwork.kernel.org/patch/23344/
+> (also found others at around 2008 or so)
 
---=-aTG0+FBLZ4wAKesqS+5r
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Thanks.  IMO there should be something in the kernel source tree
+that says explicitly that __initcall is deprecated and should be
+replaced by using <whatever should be used>.  That's missing.
 
-On Sun, 2010-03-21 at 20:10 +0100, Andi Kleen wrote:
-> Ben Hutchings <ben@decadent.org.uk> writes:
->=20
-> > WARN() is used in some places to report firmware or hardware bugs that
-> > are then worked-around.  These bugs do not affect the stability of the
-> > kernel and should not set the usual TAINT_WARN flag.  To allow for
-> > this, add WARN_TAINT() and WARN_TAINT_ONCE() macros that take a taint
-> > flag as argument.
-> >
-> > Architectures that implement warnings using trap instructions instead
-> > of calls to warn_slowpath_*() must now implement __WARN_TAINT(taint)
-> > instead of __WARN().
->=20
-> I guess this should enforce that at least some taint flag is set?
-> (e.g. with a BUILD_BUG_ON)
 
-I'm being a bit sloppy with the wording here.  The TAINT_* macros are
-actually bit numbers, not flags.  I could define a TAINT_MAX and add:
+>> I don't see any mention of __initcall being deprecated in
+>> Linus' mainline git tree, or in linux-next, or in mmotm.
+>> Where are those patches?
+>>
+> 
+> I don't know(I'm out of the social pipeline when it comes to Linux news,
+> and updates)..
+> like in the explanation part of the patch
+> I was looking into something else, then ran into this,
+> so as a break(from what I was originally doing)
+> decided to do this and submit.
+> 
+>>
+>>> So as a change of subject(since what I was looking at
+>>> was frustrating me),I decided to grep the whole tree
+>>> and make the change(partially).
+>>>
+>>> Currently I'm running this patch on my system, kernel compiles
+>>> without any errors or warnings.(thought there would be a speed increase
+>>> but didn't see much(if any)).
+>>
+>> No, __initcall(x) is just a shorthand version of typing
+>> device_initcall(x).  They do the same thing.
+>>
+> 
+> yep, that's what I found out as well(reason for the cosmetic
+> in the subject line).
+> 
+>>> Biggest problem I have though is testing this on other hardware types
+>>> (I only have a macbook,and an iMac).
+>>> So please if you have the access to other arch/hardware types please
+>>> test.
+>>>
+>>> Now what I mean by partially is the __initcall function is still
+>>> there, so(if any) userspace apps/libs depend on this it's there
+>>> so they dont break and/or any other subsystem, that needs time
+>>> to make the changes.
+>>
+>> The only thing that might be affected is building out-of-tree drivers,
+>> but those are easy to fix.
+>>
+> 
+> alright..main concern is making sure things don't break in the
+> kernel(even though things do).
+> 
+> I can have a go at the header files, submit
+> then if it's something people agree they want to do, then they
+> can go from there(if not it's fine as well).
+> 
+>>> Note:
+>>> the remaining files that still have __initcall in them are:
+>>> (according to grep)
+>>>
+>>> arch/um/include/shared/init.h
+>>> include/linux/init.h
+>>> scripts/checkpatch.pl
+>>>
+>>> either I or somebody else, can change this(although a bit
+>>> concerned about breaking things).
+>>>
+>>> Signed-off-by: Justin P. Mattock<justinmattock@gmail.com>
+>>> ---
 
-	BUILD_BUG_ON(taint < 0 || taint > TAINT_MAX);
 
-Not sure that that's really worth doing though.
-
-Ben.
-
---=20
-Ben Hutchings
-If you seem to know what you are doing, you'll be given more to do.
-
---=-aTG0+FBLZ4wAKesqS+5r
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIVAwUAS6Zym+e/yOyVhhEJAQIoiA/+PtVtlFPVa6k50dvxo4ESDxteBVZfWXQZ
-eu2QKBNWV9+YyonKYEkmD+HykXOT9+c8P5KthlGXPKiwTAbR1BE8tkaKOvI6WGUo
-kK00Ie8kyIel99IKPaOsxSHQmda6pybUv+shIlx5zd1Ep9b9kDNflILNVLB8Xb/G
-py0gRfbX1Oru49CAk5vHnCV3PpnmhdG9U94Y+agCdqXRlFGUHcRDeCkbHXxvmdBJ
-eSTXqrD9YXwuJCk/vuJc+Zz1oxaKGu5RCK3ztRBD2afF41NB1KOy+zCv/hTEPHLl
-OoKeV9vQG8wVtFGe5nDXTy2tGnZZI9O3W/jssnfzcyDf/DPX164fiQwMHSDfP0lB
-Vzqtl/9/xOi8jZ7pDLz/4QtZfMr8/25cmWzuzazuqQTHKa5Gvl1On0LEA9e7uXqN
-5u9VVK0sYNS2+zyM+JveFarY7+PMpeOZL1xeudD/fBDau9tUHkRywwlFt3HzVKDn
-wwIuNWASR2taYgEGUT0ULyaM6judARKvHpwg8ger3WFc1l1r3jb6CgGoyqxWuOCA
-OA7x9706CSvkFZ8ZKufUDqbORXtQWaGltGcGEvhOW6VygnW5oSivaYQ5OFAVPZOg
-eVqjJMaR7lwW8geSX8fA2ht/h+u6SbtQmyOPsTdGXQmwXZhsiD5zhNDSVYusWNFw
-WTzNxKHMvxU=
-=2sqx
------END PGP SIGNATURE-----
-
---=-aTG0+FBLZ4wAKesqS+5r--
+-- 
+~Randy
