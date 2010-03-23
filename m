@@ -1,102 +1,69 @@
-From: Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: [PATCH 2/4] panic: Allow taint flag for warnings to be changed
- from TAINT_WARN
-Date: Tue, 23 Mar 2010 13:23:00 +0000
-Message-ID: <1269350580.18314.260.camel@localhost>
-References: <1269126097.18314.111.camel@localhost>
-	 <1269126340.18314.115.camel@localhost>
-	 <20100323074546.GK13417@linux-sh.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: futex wait failure
+Date: Tue, 23 Mar 2010 17:32:11 -0400
+Message-ID: <119aab441003231432nefa1848u86a9313fc1e45a5f@mail.gmail.com>
+References: <20100307171207.GA22856@hiauly1.hia.nrc.ca>
+	 <20100307203230.CAC964E77@hiauly1.hia.nrc.ca>
+	 <20100311032049.GA14312@hiauly1.hia.nrc.ca>
+	 <20100311135418.GA22698@bombadil.infradead.org>
+	 <20100311224044.GA18789@hiauly1.hia.nrc.ca>
+	 <20100313020647.GA26384@hiauly1.hia.nrc.ca>
+	 <20100315011024.GA7309@hiauly1.hia.nrc.ca>
+	 <119aab441003160449n11cf5272qb9d15fa97625dd7d@mail.gmail.com>
+	 <20100321181935.GA19525@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-JxBzKjEiI/A3c1PVSdDJ"
-Cc: Jesse Barnes <jbarnes@virtuousgeek.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org
-To: Paul Mundt <lethal@linux-sh.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20100323074546.GK13417@linux-sh.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Kyle McMartin <kyle@mcmartin.ca>, deller@gmx.de,
+	linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20100321181935.GA19525@hiauly1.hia.nrc.ca>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On Sun, Mar 21, 2010 at 2:19 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+> One thought that has crossed my mind is that the memory pages allocat=
+ed
+> for the stack region used by the thread are somehow getting interchan=
+ged
+> between parent and child by the fork operation. =A0This happens fairl=
+y
+> late as both the parent and thread are executing post fork at the tim=
+e
+> this happens. =A0Possibly, this is part of the bug.
+>
+> I have looked at entry.S and pacache.S quite a bit and it's not obvio=
+us
+> how this could happen, although I must admit to not fully understandi=
+ng
+> the tmp alias code. =A0I tend to think the bug is in the core mm code=
+=2E
+>
+> I see a few cleanups to entry.S. =A0We didn't kill the misnamed macro=
+s
+> (DEP, DEPI and EXTR) for example. =A0But I don't think these are the =
+problem.
 
---=-JxBzKjEiI/A3c1PVSdDJ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+I can't get minifail2 to fail, how are you choosing which stack
+address to watch for corruption?
 
-On Tue, 2010-03-23 at 16:45 +0900, Paul Mundt wrote:
-> On Sat, Mar 20, 2010 at 11:05:40PM +0000, Ben Hutchings wrote:
-> > WARN() is used in some places to report firmware or hardware bugs that
-> > are then worked-around.  These bugs do not affect the stability of the
-> > kernel and should not set the usual TAINT_WARN flag.  To allow for
-> > this, add WARN_TAINT() and WARN_TAINT_ONCE() macros that take a taint
-> > flag as argument.
-> >=20
-> > Architectures that implement warnings using trap instructions instead
-> > of calls to warn_slowpath_*() must now implement __WARN_TAINT(taint)
-> > instead of __WARN().
-> >=20
-> > Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-> > ---
-> > The architecture-specific changes here are untested and need to be
-> > reviewed by architecture maintainers.
-> >=20
-> I'm a bit confused about how this is supposed to work, the TAINT_xxx
-> values are bit positions presently from 0 to 10, while BUGFLAG_xxx are
-> ranged from 0 up. You've set up BUGFLAG_TAINT() to that the TAINT_xxx
-> value is shifted up 8 bits but neglected the fact that the trap type is
-> 16-bits on most (all?) of the platforms using trap-based BUG handling.
->=20
-> If the 'taint' in question is just the TAINT_xxx value by itself and will
-> never be a bitmap then that's fine, but there's certainly not enough room
-> to pass the bitmap in on top of the bugflag otherwise (I don't know if
-> this is your intention or not though).
+Are you looking at the child's new stack created by mmap?
 
-Yes, the taint value must be a bit number not a flag.  Sloppy wording on
-my part.
+Are you looking at the parent's stack?
 
-> Also note that some platforms (like SH) implement additional bugflags, so
-> we at least want to keep the lower byte available for architecture
-> private use.
+I found one bug in the hppa vfork() function call, which in the case
+of error, would fail to propagate the error correctly. Fixing that and
+will check it in. It doesn't account for the vfork/execve problems
+though, since in this case vfork completes but execve crashes.
 
-I noticed, that's why I started at 8 not 1.
+I also have some patches for asm-offsets.c, and entry.S to comment
+some of the code better. I'll send those to Kyle after cleanup.
 
-> Having said that, the current patch does work for me, although I'm a bit
-> nervous about someone thinking it's ok to pass in a taint bitmap here.
-
-We can maybe use BUILD_BUG_ON() here as the taint bit is already
-required to be a compile-time constant.
-
-Ben.
-
-> Tested-by: Paul Mundt <lethal@linux-sh.org>
->=20
-
---=20
-Ben Hutchings
-Any smoothly functioning technology is indistinguishable from a rigged demo=
-.
-
---=-JxBzKjEiI/A3c1PVSdDJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIVAwUAS6jAsue/yOyVhhEJAQKuLRAAo8lRcJIYqpklZT6Ct5UkFmnwQBWniN/J
-O8B6FmzAV8e44xkctJegxtmxMBQETjVOmcR6YC0KtzZXQ1VRSzF7kNaQ1i4V5uXn
-aBSXf82IxdIs7h9wDWqOH2uXtrheLeEhKTvTyGKEzGsc0t28l2cMUocxsjlFU8VW
-oAenqoHUbJAkPvpC1fP8bT42C9rxm5AcO/py0pyqtC+gPaOs/J+606IClqlE4bXi
-ZHltMfpoFzBWQLJ7ZB7Aeu1vwFozybSfeoz9/p54BjMhcRcmQTaTSBUfKeyC5EsS
-Q8GbKYFtIwKhdnLJ9QNfuiO+0u3/G3dkPHRWVJdivNpplncsrYYTDlKJV+ivRtV1
-6xuJVjIONPh5VwEHkqEbYfEdqf9WFHvUbDWOxeMjQ82vuzObFDgR97oIFcwu5X+e
-Qbl8XVnRQtk3BhblMnfrDBuwYuudgqMaiuTwYSmQWAoJpL5ftwQRXXYszFrHWVkA
-wMVUL9V+Cke4xkvxt0szxBo7y20Je+6OnOj/u3G04cK2f2gdAG7yWXm1x6K5jxjc
-OIVB/hzMuLLT3oW9h/gy3OT617X8wz5W83oqH8jcxsBG34QmpWuCYvhXFWF1DkAg
-vbxLwPzg4JYcxLjpsJ5ZGuREyf+DQVGu323BV9IdR/JHUahaI73bZ1/L9jo7VKSw
-IPYASs3GZ2M=
-=xrOe
------END PGP SIGNATURE-----
-
---=-JxBzKjEiI/A3c1PVSdDJ--
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
