@@ -1,69 +1,43 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: futex wait failure
-Date: Tue, 23 Mar 2010 17:32:11 -0400
-Message-ID: <119aab441003231432nefa1848u86a9313fc1e45a5f@mail.gmail.com>
-References: <20100307171207.GA22856@hiauly1.hia.nrc.ca>
-	 <20100307203230.CAC964E77@hiauly1.hia.nrc.ca>
-	 <20100311032049.GA14312@hiauly1.hia.nrc.ca>
-	 <20100311135418.GA22698@bombadil.infradead.org>
-	 <20100311224044.GA18789@hiauly1.hia.nrc.ca>
-	 <20100313020647.GA26384@hiauly1.hia.nrc.ca>
-	 <20100315011024.GA7309@hiauly1.hia.nrc.ca>
-	 <119aab441003160449n11cf5272qb9d15fa97625dd7d@mail.gmail.com>
-	 <20100321181935.GA19525@hiauly1.hia.nrc.ca>
+Subject: Incorrect execve_wrapper macro?
+Date: Tue, 23 Mar 2010 18:03:29 -0400
+Message-ID: <119aab441003231503v345dfacar374e2c06b88769ac@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Kyle McMartin <kyle@mcmartin.ca>, deller@gmx.de,
-	linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+To: linux-parisc <linux-parisc@vger.kernel.org>,
+	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100321181935.GA19525@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Mar 21, 2010 at 2:19 PM, John David Anglin
-<dave@hiauly1.hia.nrc.ca> wrote:
-> One thought that has crossed my mind is that the memory pages allocat=
-ed
-> for the stack region used by the thread are somehow getting interchan=
-ged
-> between parent and child by the fork operation. =A0This happens fairl=
-y
-> late as both the parent and thread are executing post fork at the tim=
-e
-> this happens. =A0Possibly, this is part of the bug.
->
-> I have looked at entry.S and pacache.S quite a bit and it's not obvio=
-us
-> how this could happen, although I must admit to not fully understandi=
-ng
-> the tmp alias code. =A0I tend to think the bug is in the core mm code=
-=2E
->
-> I see a few cleanups to entry.S. =A0We didn't kill the misnamed macro=
-s
-> (DEP, DEPI and EXTR) for example. =A0But I don't think these are the =
-problem.
+Kyle,
 
-I can't get minifail2 to fail, how are you choosing which stack
-address to watch for corruption?
+The execve_wrapper macro loads thread->task like this:
+LDREG   TI_TASK-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r1
 
-Are you looking at the child's new stack created by mmap?
+This assumes that at the point the macro is called that there is only
+THREAD_SZ_ALGN+FRAME_SIZE between %r30 and the starting value of %r30
+(cr30).
 
-Are you looking at the parent's stack?
+However, in the syscall entry path I see (syscall.S):
+ldo     THREAD_SZ_ALGN+FRAME_SIZE(%r30),%r30  /* set up kernel stack */
+...
+STREGM  %r1,FRAME_SIZE(%r30)            /* save r1 (usp) here for now */
 
-I found one bug in the hppa vfork() function call, which in the case
-of error, would fail to propagate the error correctly. Fixing that and
-will check it in. It doesn't account for the vfork/execve problems
-though, since in this case vfork completes but execve crashes.
+Which means that between %r30 and the start there is actually
+THREAD_SZ_ALGN+2*FRAME_SIZE.
 
-I also have some patches for asm-offsets.c, and entry.S to comment
-some of the code better. I'll send those to Kyle after cleanup.
+I believe that these should match, so that when we return we can
+restore some of the things we saved.
+e.g. execve_wrapper should read:
+LDREG   TI_TASK-THREAD_SZ_ALGN-FRAME_SIZE-FRAME_SIZE(%r30),%r1
+
+or heaven forbid the easier to read:
+
+mfctl   %cr30,%r1                       /* get task ptr in %r1 */
+LDREG   TI_TASK(%r1),%r1
+
+Comments?
 
 Cheers,
 Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
