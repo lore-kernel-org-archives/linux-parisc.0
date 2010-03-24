@@ -1,44 +1,54 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: Incorrect execve_wrapper macro?
-Date: Tue, 23 Mar 2010 20:45:03 -0400 (EDT)
-Message-ID: <20100324004504.6020F4EF4@hiauly1.hia.nrc.ca>
-References: <119aab441003231503v345dfacar374e2c06b88769ac@mail.gmail.com>
+From: Michael Ellerman <michael@ellerman.id.au>
+Subject: Re: [PATCH 2/4] panic: Allow taint flag for warnings to be changed
+ from TAINT_WARN
+Date: Wed, 24 Mar 2010 22:11:15 +1100
+Message-ID: <1269429075.2500.5.camel@concordia>
+References: <1269126097.18314.111.camel@localhost>
+	 <1269126340.18314.115.camel@localhost>
+Reply-To: michael@ellerman.id.au
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org, kyle@mcmartin.ca, deller@gmx.de
-To: carlos@systemhalted.org (Carlos O'Donell)
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab441003231503v345dfacar374e2c06b88769ac@mail.gmail.com> from "Carlos O'Donell" at Mar 23, 2010 06:03:29 pm
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-SQzw8iyBB5lB+1zvqHUK"
+Cc: Jesse Barnes <jbarnes@virtuousgeek.org>,
+	linux-s390@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-sh@vger.kernel.org, linux-pci@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>, linuxppc-dev@ozlabs.org,
+	David Woodhouse <dwmw2@infradead.org>
+To: Ben Hutchings <ben@decadent.org.uk>
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <1269126340.18314.115.camel@localhost>
+List-ID: <linux-sh.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> The execve_wrapper macro loads thread->task like this:
-> LDREG   TI_TASK-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r1
-> 
-> This assumes that at the point the macro is called that there is only
-> THREAD_SZ_ALGN+FRAME_SIZE between %r30 and the starting value of %r30
-> (cr30).
-> 
-> However, in the syscall entry path I see (syscall.S):
-> ldo     THREAD_SZ_ALGN+FRAME_SIZE(%r30),%r30  /* set up kernel stack */
-> ...
-> STREGM  %r1,FRAME_SIZE(%r30)            /* save r1 (usp) here for now */
-> 
-> Which means that between %r30 and the start there is actually
-> THREAD_SZ_ALGN+2*FRAME_SIZE.
 
-This is wrong as there is a compensating LDREGM:
+--=-SQzw8iyBB5lB+1zvqHUK
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-        LDREGM  -FRAME_SIZE(%r30), %r2          /* get users sp back */
+On Sat, 2010-03-20 at 23:05 +0000, Ben Hutchings wrote:
+> WARN() is used in some places to report firmware or hardware bugs that
+> are then worked-around.  These bugs do not affect the stability of the
+> kernel and should not set the usual TAINT_WARN flag.  To allow for
+> this, add WARN_TAINT() and WARN_TAINT_ONCE() macros that take a taint
+> flag as argument.
+..
+> The architecture-specific changes here are untested and need to be
+> reviewed by architecture maintainers.
 
-> or heaven forbid the easier to read:
-> 
-> mfctl   %cr30,%r1                       /* get task ptr in %r1 */
-> LDREG   TI_TASK(%r1),%r1
+I'm not one of them, but this at least builds on powerpc FWIW.
 
-The above looks safer...
+cheers
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+--=-SQzw8iyBB5lB+1zvqHUK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEABECAAYFAkup80wACgkQdSjSd0sB4dIztACgqdsQgORNZPCSzn7hLuXW0Lxs
+CgMAn3Q8KMC7wAK7ce/Z3AZ9SQ+1QrUy
+=p3xA
+-----END PGP SIGNATURE-----
+
+--=-SQzw8iyBB5lB+1zvqHUK--
+
