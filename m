@@ -1,54 +1,65 @@
-From: Michael Ellerman <michael@ellerman.id.au>
-Subject: Re: [PATCH 2/4] panic: Allow taint flag for warnings to be changed
- from TAINT_WARN
-Date: Wed, 24 Mar 2010 22:11:15 +1100
-Message-ID: <1269429075.2500.5.camel@concordia>
-References: <1269126097.18314.111.camel@localhost>
-	 <1269126340.18314.115.camel@localhost>
-Reply-To: michael@ellerman.id.au
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: Incorrect execve_wrapper macro?
+Date: Wed, 24 Mar 2010 08:49:21 -0400
+Message-ID: <119aab441003240549n7adc8fa5q32762d9b71987bad@mail.gmail.com>
+References: <119aab441003231503v345dfacar374e2c06b88769ac@mail.gmail.com>
+	 <20100324004504.6020F4EF4@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-SQzw8iyBB5lB+1zvqHUK"
-Cc: Jesse Barnes <jbarnes@virtuousgeek.org>,
-	linux-s390@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-pci@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>, linuxppc-dev@ozlabs.org,
-	David Woodhouse <dwmw2@infradead.org>
-To: Ben Hutchings <ben@decadent.org.uk>
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <1269126340.18314.115.camel@localhost>
-List-ID: <linux-sh.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org, kyle@mcmartin.ca, deller@gmx.de
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20100324004504.6020F4EF4@hiauly1.hia.nrc.ca>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On Tue, Mar 23, 2010 at 8:45 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+>> The execve_wrapper macro loads thread->task like this:
+>> LDREG =A0 TI_TASK-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r1
+>>
+>> This assumes that at the point the macro is called that there is onl=
+y
+>> THREAD_SZ_ALGN+FRAME_SIZE between %r30 and the starting value of %r3=
+0
+>> (cr30).
+>>
+>> However, in the syscall entry path I see (syscall.S):
+>> ldo =A0 =A0 THREAD_SZ_ALGN+FRAME_SIZE(%r30),%r30 =A0/* set up kernel=
+ stack */
+>> ...
+>> STREGM =A0%r1,FRAME_SIZE(%r30) =A0 =A0 =A0 =A0 =A0 =A0/* save r1 (us=
+p) here for now */
+>>
+>> Which means that between %r30 and the start there is actually
+>> THREAD_SZ_ALGN+2*FRAME_SIZE.
+>
+> This is wrong as there is a compensating LDREGM:
+>
+> =A0 =A0 =A0 =A0LDREGM =A0-FRAME_SIZE(%r30), %r2 =A0 =A0 =A0 =A0 =A0/*=
+ get users sp back */
 
---=-SQzw8iyBB5lB+1zvqHUK
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Thanks, I missed the `M` and thought it was just loading from a negativ=
+e offset.
 
-On Sat, 2010-03-20 at 23:05 +0000, Ben Hutchings wrote:
-> WARN() is used in some places to report firmware or hardware bugs that
-> are then worked-around.  These bugs do not affect the stability of the
-> kernel and should not set the usual TAINT_WARN flag.  To allow for
-> this, add WARN_TAINT() and WARN_TAINT_ONCE() macros that take a taint
-> flag as argument.
-..
-> The architecture-specific changes here are untested and need to be
-> reviewed by architecture maintainers.
+>> or heaven forbid the easier to read:
+>>
+>> mfctl =A0 %cr30,%r1 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* g=
+et task ptr in %r1 */
+>> LDREG =A0 TI_TASK(%r1),%r1
+>
+> The above looks safer...
 
-I'm not one of them, but this at least builds on powerpc FWIW.
+It is, but a little bit slower, does it matter?
 
-cheers
+This change would make execve_wrapper independent of r30's value.
 
---=-SQzw8iyBB5lB+1zvqHUK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+I think for now I'll just document the requirement.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAkup80wACgkQdSjSd0sB4dIztACgqdsQgORNZPCSzn7hLuXW0Lxs
-CgMAn3Q8KMC7wAK7ce/Z3AZ9SQ+1QrUy
-=p3xA
------END PGP SIGNATURE-----
-
---=-SQzw8iyBB5lB+1zvqHUK--
-
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
