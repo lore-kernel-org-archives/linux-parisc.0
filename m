@@ -1,65 +1,94 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: Incorrect execve_wrapper macro?
-Date: Wed, 24 Mar 2010 08:49:21 -0400
-Message-ID: <119aab441003240549n7adc8fa5q32762d9b71987bad@mail.gmail.com>
-References: <119aab441003231503v345dfacar374e2c06b88769ac@mail.gmail.com>
-	 <20100324004504.6020F4EF4@hiauly1.hia.nrc.ca>
+Subject: Question about execve.
+Date: Sat, 27 Mar 2010 23:26:19 -0400
+Message-ID: <119aab441003272026o55db5202sd345df270f3b0e1f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org, kyle@mcmartin.ca, deller@gmx.de
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Content-Type: multipart/mixed; boundary=0015174780f2b9f65f0482d3f51f
+To: Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
+	linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100324004504.6020F4EF4@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Mar 23, 2010 at 8:45 PM, John David Anglin
-<dave@hiauly1.hia.nrc.ca> wrote:
->> The execve_wrapper macro loads thread->task like this:
->> LDREG =A0 TI_TASK-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r1
->>
->> This assumes that at the point the macro is called that there is onl=
-y
->> THREAD_SZ_ALGN+FRAME_SIZE between %r30 and the starting value of %r3=
-0
->> (cr30).
->>
->> However, in the syscall entry path I see (syscall.S):
->> ldo =A0 =A0 THREAD_SZ_ALGN+FRAME_SIZE(%r30),%r30 =A0/* set up kernel=
- stack */
->> ...
->> STREGM =A0%r1,FRAME_SIZE(%r30) =A0 =A0 =A0 =A0 =A0 =A0/* save r1 (us=
-p) here for now */
->>
->> Which means that between %r30 and the start there is actually
->> THREAD_SZ_ALGN+2*FRAME_SIZE.
->
-> This is wrong as there is a compensating LDREGM:
->
-> =A0 =A0 =A0 =A0LDREGM =A0-FRAME_SIZE(%r30), %r2 =A0 =A0 =A0 =A0 =A0/*=
- get users sp back */
+--0015174780f2b9f65f0482d3f51f
+Content-Type: text/plain; charset=ISO-8859-1
 
-Thanks, I missed the `M` and thought it was just loading from a negativ=
-e offset.
+Helge,
 
->> or heaven forbid the easier to read:
->>
->> mfctl =A0 %cr30,%r1 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* g=
-et task ptr in %r1 */
->> LDREG =A0 TI_TASK(%r1),%r1
->
-> The above looks safer...
+On PARISC I'm seeing the following reproducible behvaiour:
 
-It is, but a little bit slower, does it matter?
+* Parent calls vfork()
+* Child of vfork() calls execve()
+* Child returns from execve() and starts corrupting parent state
+eventually leading to a segmentation fault.
+* New process (as a result of execve) runs to completion.
 
-This change would make execve_wrapper independent of r30's value.
+What code in the Linux kernel prevents the child, which calls
+execve(), from returning?
 
-I think for now I'll just document the requirement.
+Test case attached.
 
 Cheers,
 Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--0015174780f2b9f65f0482d3f51f
+Content-Type: application/x-sh; name="build.sh"
+Content-Disposition: attachment; filename="build.sh"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g7bae9zk0
+
+Z2NjIC1nMyAtTzAgLW8gdmZvcmsgdmZvcmsuYyBwdC12Zm9yay5TCg==
+--0015174780f2b9f65f0482d3f51f
+Content-Type: application/octet-stream; name="pt-vfork.S"
+Content-Disposition: attachment; filename="pt-vfork.S"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g7baef6n1
+
+LnRleHQgISAKLmFsaWduIDQgISAKLmV4cG9ydCBfX3Zmb3JrICEgCi50eXBlIF9fdmZvcmssQGZ1
+bmN0aW9uICEgCl9fdmZvcms6ICEgCi5QUk9DICEgCi5DQUxMSU5GTyBGUkFNRT02NCxDQUxMUyxT
+QVZFX1JQLEVOVFJZX0dSPTMgISAKLkVOVFJZICEgISAKIC8qIFNhdmUgcmV0dXJuIHBvaW50ZXIu
+ICovCiBzdHcgJXJwLCAtMjAoJXNyMCwlc3ApICEKCiAvKiBHZXQgNjQgYnl0ZXMgb24gdGhlIHN0
+YWNrLCBzYXZlIHNwLCBhbmQgUElDIHJlZ2lzdGVyLiAqLwogc3R3bSAlcjMsIDY0KCVzcCkKIHN0
+dyAlc3AsIC00KCVzcCkKIHN0dyAlcjE5LCAtMzIoJXNwKQoKIC8qIFNhdmUvcmVzdG9yZSBQSUMg
+cmVnaXN0ZXIgYXJvdW5kIHN5c2NhbGwuICovCiBjb3B5ICVyMTksICVyMjUKCiAvKiBMb2FkIHRo
+cmVhZCByZWdpc3Rlci4gKi8KIG1mY3RsICVjcjI3LCAlcjI2ICEgCiAvKiBMb2FkIGNhY2hlZCBw
+YXJlbnQgUElELiAqLwogbGR3IC0xMDQ0KCVyMjYpLCVyMSAhIAogLyogTmVnYXRlIGl0LCBzdWNo
+IHRoYXQgdGhlIGNoaWxkIHJ1bnMgd2l0aAogICAgYSBuZWdhdGl2ZSBQSUQgYW5kIG5vIGZ1bmN0
+aW9ucyB3b3JrIHVudGlsCiAgICB0aGUgZXhlY3ZlLiAqLwogc3ViICVyMCwlcjEsJXIxICEgCiAv
+KiBTdG9yZSBpdCBiYWNrLiAqLwogc3R3ICVyMSwtMTA0NCglcjI2KSAhCgogLyogQ2FsbCB2Zm9y
+ay4gKi8KIGJsZSAweDEwMCglc3IyLCVyMCkKIGxkaSAoMCArIDExMyksJXIyMCAKCiAvKiBJZiB0
+aGlzIGlzIHRoZSBjaGlsZCBqdW1wIHRvIHRocmVhZF9zdGFydCAqLwogY21wYiw9LG4gJXIwLCVy
+ZXQwLC5MdGhyZWFkX3N0YXJ0ICEgCgogLyogVGhpcyBpcyB0aGUgcGFyZW50LiAqLwogLyogTG9h
+ZCB0aHJlYWQgcmVnaXN0ZXIuICovCiBtZmN0bCAlY3IyNywgJXIyNiAhIAogLyogTG9hZCBjYWNo
+ZWQgcGFyZW50IFBJRCAqLwogbGR3IC0xMDQ0KCVyMjYpLCVyMSAhIAogLyogTmVnYXRlIGl0IChy
+ZXN0b3JpbmcgaXQpICovCiBzdWIgJXIwLCVyMSwlcjEgISAKIC8qIFNhdmUgaXQgYmFjay4gKi8K
+IHN0dyAlcjEsLTEwNDQoJXIyNikgISAKCiBsZGkgLTQwOTYsJXIxCiAvKiBVbnNpZ25lZCBjb21w
+cmUgPSBXYXMgcmV0MCBiZXR3ZWVuIC0xIGFuZCAtNDA5Ni4gKi8KIGNvbWNsciw+Pj0gJXIxLCVy
+ZXQwLCVyMAogYixuIC5MZXJyb3IKCi5MdGhyZWFkX3N0YXJ0OiAhCgogLyogTG9hZCByZXR1cm4g
+cG9pbnRlciBhbmQgcmVzdG9yZSBzdGFjay4gKi8KIGxkdyAtODQoJXNwKSwgJXJwCiBidiAlcjAo
+JXJwKQogbGR3bSAtNjQoJXNwKSwgJXIzCgouTGVycm9yOgogLyogTmVnYXRlIGVycm9yIGNvZGUu
+ICovCiBzdWIgJXIwLCVyZXQwLCVyMwogLmltcG9ydCBfX2Vycm5vX2xvY2F0aW9uLGNvZGUgISAh
+IAogLyogR2V0IGFkZHJlc3Mgb2YgZXJybm8uICovCiBibCBfX2Vycm5vX2xvY2F0aW9uLCVycCAh
+CgogY29weSAlcjI1LCAlcjE5CiAvKiBTYXZlIGVycm5vLiAqLwogc3R3ICVyMywgMCglcmV0MCkK
+IC8qIHZmb3JrIHJldHVybnMgLTEgb24gZXJyb3IuICovCiBsZGkgLTEsICVyZXQwCiAvKiBSZXR1
+cm4uICovCiBsZHcgLTg0KCVzcCksICVycAogYnYgJXIwKCVycCkKIGxkd20gLTY0KCVzcCksICVy
+MwouRVhJVCAhIC5QUk9DRU5EICEgLnNpemUgX192Zm9yaywgLi1fX3Zmb3JrICEKCi53ZWFrIHZm
+b3JrICEgdmZvcmsgPSBfX3Zmb3JrCg==
+--0015174780f2b9f65f0482d3f51f
+Content-Type: text/x-csrc; charset=US-ASCII; name="vfork.c"
+Content-Disposition: attachment; filename="vfork.c"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g7baehk82
+
+I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPGVycm5vLmg+
+CiNpbmNsdWRlIDx1bmlzdGQuaD4KCiNkZWZpbmUgQ0FMTF9FWElUIDAKCmludCBtYWluICh2b2lk
+KQp7CiAgcGlkX3QgY2hpbGQ7CiAgY2hhciAqY21kW10gPSB7ICJiYXNoIiwgIi1jIiwgImVjaG8g
+SW4gY2hpbGQgJCQ7IiwgKGNoYXIgKikwIH07CiAgY2hhciAqZW52W10gPSB7ICJIT01FPS90bXAi
+LCAoY2hhciAqKTAgfTsKICBpbnQgcmV0OwoKICBjaGlsZCA9IHZmb3JrKCk7CgogIGlmIChjaGls
+ZCA9PSAwKQogICAgewogICAgICByZXQgPSBleGVjdmUoIi9iaW4vYmFzaCIsIGNtZCwgZW52KTsK
+ICAgICAgcHJpbnRmICgicmV0ID0gJWRcbiIsIHJldCk7CiNpZiBDQUxMX0VYSVQgPT0gMQogICAg
+ICBfZXhpdCgxKTsKI2VuZGlmCiAgICB9CiAgZWxzZQogICAgewogICAgICBwcmludGYoImNoaWxk
+ICE9IDBcbiIpOwogICAgfQoKICBwcmludGYoInBhcmVudCBpcyAlZFxuIiwgKHVuc2lnbmVkIGlu
+dClnZXRwaWQoKSk7CiAgcHJpbnRmKCJjaGlsZCBpcyAlZFxuIiwgKHVuc2lnbmVkIGludCljaGls
+ZCk7CgogIHJldHVybiAwOwp9Cg==
+--0015174780f2b9f65f0482d3f51f--
