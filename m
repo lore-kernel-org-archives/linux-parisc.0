@@ -1,103 +1,187 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: Question about execve.
-Date: Sun, 28 Mar 2010 14:00:38 -0400
-Message-ID: <20100328180038.GA3732@hiauly1.hia.nrc.ca>
-References: <119aab441003272026o55db5202sd345df270f3b0e1f@mail.gmail.com> <20100328154241.GA2782@hiauly1.hia.nrc.ca> <119aab441003281026u3705723fj9446637943451a4e@mail.gmail.com>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Date: Sun, 28 Mar 2010 14:20:25 -0400
+Message-ID: <119aab441003281120y5de6174ey97a1a91b2eb0141a@mail.gmail.com>
+References: <20100328154241.GA2782@hiauly1.hia.nrc.ca>
+	 <20100328173251.B46255145@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+Content-Type: text/plain; charset=ISO-8859-1
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>,
 	Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
 	linux-parisc <linux-parisc@vger.kernel.org>
-To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab441003281026u3705723fj9446637943451a4e@mail.gmail.com>
+In-Reply-To: <20100328173251.B46255145@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 28 Mar 2010, Carlos O'Donell wrote:
+On Sun, Mar 28, 2010 at 1:32 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+>> I tried the vfork.c test case on my c3750 with 32-bit kernel. =A0It
+>> didn't segv in a limited number of runs. =A0However, I did notice th=
+at
+>> getpid() is broken after vfork().
+>
+> The vfork (clone) syscall corrupts (i.e., inserts wrong value)
+> the parent tid. =A0In the following, I disabled the printf's and
+> execve call in Carlos's testcase. =A0The child just does _exit().
 
-> Broken how?
+The vfork syscall goes through process.c (sys_vfork) which doesn't
+tell the kernel about the parent_tidptr, or child_tidptr (passes NULL
+for both).
 
-See other mail.
+The kernel shouldn't be touching the parent tid pointer at all.
 
-> A small note about getpid():
-> 
-> Since the parent and child share the same memory space, the parent
-> temporarily negates the cached PID value just before the vfork. Only
-> the parent, after the vfork, restores the cached PID. This is on
-> purpose to prevent any functions like PID-related functions from
-> working in the child() during the window bewteen vfork and execve.
+The vfork wrapper in glibc *does* negate the cached PID value, such
+that the child doesn't see a valid PID value until after execve
+completes.
 
-Ok, it might be glibc that's broken (i.e., it doesn't restore correct
-dave).
+> The fast path through getpid is:
+>
+> Dump of assembler code for function getpid:
+> 0x0001ad2c <getpid+0>: =A0stw rp,-14(sp)
+> 0x0001ad30 <getpid+4>: =A0mfctl tr3,r20
+> 0x0001ad34 <getpid+8>: =A0ldw -414(r20),r19
+> 0x0001ad38 <getpid+12>: cmpib,>=3D 0,r19,0x1ad48 <getpid+28>
+> 0x0001ad3c <getpid+16>: copy r19,ret0
+> 0x0001ad40 <getpid+20>: ldw -14(sp),rp
+> 0x0001ad44 <getpid+24>: bv,n r0(rp)
+>
+> Breakpoint 3, 0x0001ad34 in getpid ()
+> (gdb) del 2
+> (gdb) p/x $r20
+> $6 =3D 0x9a480
+>
+> Breakpoint 4, main () at vfork.c:17
+> 17 =A0 =A0 =A0 =A0child =3D vfork();
+> (gdb) x/x 0x9a480 - 0x414
+> 0x9a06c: =A0 =A0 =A0 =A00x00000000
+> (gdb) c
+> Continuing.
 
-> The printf call in the child path is ABSOLUTELY wrong, but I wanted to
-> see what the return was. You could equally well insert:
-> 
-> #define ABORT_INSTRUCTION asm ("iitlbp %r0,(%sr0, %r0)")
+This is the PID of the parent, not the TID. They are actually two
+different fields.
 
-Tried that and it didn't trigger.
+nptl/descr.h
+~~~
+  /* Thread ID - which is also a 'is this thread descriptor (and
+     therefore stack) used' flag.  */
+  pid_t tid;
 
-> > My guess would be that the parent is not blocked leading to corruption.
-> 
-> What I see is that the child is returning from the kernel execve, and
-> continuing to execute.
+  /* Process ID - thread group ID in kernel speak.  */
+  pid_t pid;
+~~~
 
-Hmmm, I'm not seeing that, but I do have the patch installed that
-reloads %r16 after calling schedule.  %r16 isn't clobbered by the
-call but I believe %cr30 can change.  As a result, we may run a task
-with the wrong registers with the current code.
+The PID of all the threads in a process group is the same.
 
-See <http://article.gmane.org/gmane.linux.ports.parisc/2687>.
+Each thread has a unique TID, which is
 
-> If I use ABORT_INSTRUCTION in the child right after the execve I see this:
+During the vfork the parent does this:
+~~~
+ /* Load thread register. */
+ mfctl %cr27, %r26 !
+ /* Load cached parent PID. */
+ ldw -1044(%r26),%r1 !
+ /* Negate it, such that the child runs with
+    a negative PID and no functions work until
+    the execve. */
+ sub %r0,%r1,%r1 !
+ /* Store it back. */
+ stw %r1,-1044(%r26) !
+~~~
 
-Already tried this.
+> Breakpoint 3, 0x0001ad34 in getpid ()
+> (gdb) x/x 0x9a480 - 0x414
+> 0x9a06c: =A0 =A0 =A0 =A00x10101364
 
-> carlos@firin:~/fsrc/vforkfailure/test$ ./vfork
-> Illegal instruction
-> carlos@firin:~/fsrc/vforkfailure/test$ In child 28734
-> 
-> This makes *no* sense.
-> 
-> What I don't understand is this:
-> 
-> * vfork'd child shares memory space with parent, therefore space id
-> has to be the same?
+I don't see how this is the negative of 0x0, it should just be 0x0. I
+wonder what changed it.
 
-Sounds right.
+> Breakpoint 4, main () at vfork.c:17
+> 17 =A0 =A0 =A0 =A0child =3D vfork();
+> (gdb) x/64x 0x9a040
+> 0x9a040: =A0 =A0 =A0 =A00x00000000 =A0 =A0 =A00x00000000 =A0 =A0 =A00=
+x00000000 =A0 =A0 =A00x00000000
+> 0x9a050: =A0 =A0 =A0 =A00x00000000 =A0 =A0 =A00x00000000 =A0 =A0 =A00=
+x00000000 =A0 =A0 =A00x00000000
+> 0x9a060: =A0 =A0 =A0 =A00x00000000 =A0 =A0 =A00x00000000 =A0 =A0 =A00=
+x00000000 =A0 =A0 =A00x00000000
+> 0x9a070: =A0 =A0 =A0 =A00x00000000 =A0 =A0 =A00x00000000 =A0 =A0 =A00=
+x00000000 =A0 =A0 =A00x00000000
+> 0x9a080: =A0 =A0 =A0 =A00xc0521150 =A0 =A0 =A00x00000000 =A0 =A0 =A00=
+x00000000 =A0 =A0 =A00x00000000
+>
+> Breakpoint 3, 0x0001ad34 in getpid ()
+> (gdb) x/64x 0x9a040
+> 0x9a040: =A0 =A0 =A0 =A00x00000000 =A0 =A0 =A00x00000000 =A0 =A0 =A00=
+x00000000 =A0 =A0 =A00x00000000
+> 0x9a050: =A0 =A0 =A0 =A00x00000000 =A0 =A0 =A00x00000000 =A0 =A0 =A00=
+x00000000 =A0 =A0 =A00x00000000
+> 0x9a060: =A0 =A0 =A0 =A00x00000000 =A0 =A0 =A00x00000000 =A0 =A0 =A00=
+x00000000 =A0 =A0 =A00x10101364
+> 0x9a070: =A0 =A0 =A0 =A00x00000000 =A0 =A0 =A00x00000000 =A0 =A0 =A00=
+x00000000 =A0 =A0 =A00x00000000
+> 0x9a080: =A0 =A0 =A0 =A00xc03ae150 =A0 =A0 =A00x00000000 =A0 =A0 =A00=
+x00000000 =A0 =A0 =A00x00000000
+>
+> So, the only location changed by vfork is the parent tid.
 
-> * Does execve give the process a new space id or does it simply
-> overwrite the entire process image?
-> 
-> So I had the test case try to exec a binary that just calls ABORT_INSTRUCTION.
-> 
-> What I noticed is the following:
-> 
-> carlos@firin:~/fsrc/vforkfailure/test$ ./vfork
-> parent sr3 is 0x3428000
-> Illegal instruction
-> 
-> There are 2 entries in dmesg:
-> vfork (pid 28964): Illegal instruction (code 8) at 00000000000106a7
-> main (pid 28965): Illegal instruction (code 8) at 00000000000104af
-> 
-> * The child returning from execve has the same space id as the parent
-> e.g. 0x3418000
-> * The process run via the execve has a different space id e.g. 0x3418800
+s/tid/pid/g.
 
-That's what I would have expected for execve.
+> dave@hiauly6:~$ strace ./vfork
+> execve("./vfork", ["./vfork"], [/* 16 vars */]) =3D 0
+> newuname({sys=3D"Linux", node=3D"hiauly6", ...}) =3D 0
+> brk(0) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0=3D 0x9a000
+> brk(0x9acb4) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=3D=
+ 0x9acb4
+> brk(0xbbcb4) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=3D=
+ 0xbbcb4
+> brk(0xbc000) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=3D=
+ 0xbc000
+> clone(child_stack=3D0, flags=3DCLONE_CHILD_CLEARTID|CLONE_CHILD_SETTI=
+D|SIGCHLD, child_tidptr=3D0x9a068) =3D 6212
+> fstat64(0x1, 0xc0258a08) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=3D 0
+> mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,=
+ 0) =3D 0x40000000
+> write(1, "parent is 269488996\n", 20parent is 269488996
+> ) =A0 =3D 20
+> exit_group(0) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =3D=
+ ?
+>
+> (gdb) p/x 269488996
+> $1 =3D 0x10101364
+>
+> I believe this is the "getpid" implementation:
+>
+> static inline __attribute__((always_inline)) pid_t
+> really_getpid (pid_t oldval)
+> {
+> =A0if (__builtin_expect (oldval =3D=3D 0, 1))
+> =A0 =A0{
+> =A0 =A0 =A0pid_t selftid =3D THREAD_GETMEM (THREAD_SELF, tid);
+> =A0 =A0 =A0if (__builtin_expect (selftid !=3D 0, 1))
+> =A0 =A0 =A0 =A0return selftid;
+> =A0 =A0 }
+>
+> =A0INTERNAL_SYSCALL_DECL (err);
+> =A0pid_t result =3D INTERNAL_SYSCALL (getpid, err, 0);
+>
+> =A0/* We do not set the PID field in the TID here since we might be
+> =A0 =A0 called from a signal handler while the thread executes fork. =
+=A0*/
+> =A0if (oldval =3D=3D 0)
+> =A0 =A0THREAD_SETMEM (THREAD_SELF, tid, result);
+> =A0return result;
+> }
+>
+> As a side issue, gdb can't single step over mfctl instruction ;(
 
-> What is supposed to stop the child, which called execve, from
-> returning to the parent?
+We'll fix gdb next :-)
 
-It's only supposed to happen if there is an error in the execve call.
-I think our task scheduling is broken ;(
-
-Could you try my change and see if it helps?
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
