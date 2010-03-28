@@ -1,94 +1,45 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Question about execve.
-Date: Sat, 27 Mar 2010 23:26:19 -0400
-Message-ID: <119aab441003272026o55db5202sd345df270f3b0e1f@mail.gmail.com>
+Subject: Error case in execve_wrapper?
+Date: Sat, 27 Mar 2010 23:49:39 -0400
+Message-ID: <119aab441003272049i3e554cb8i8dbfd13219865173@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0015174780f2b9f65f0482d3f51f
-To: Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+To: linux-parisc <linux-parisc@vger.kernel.org>,
+	Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---0015174780f2b9f65f0482d3f51f
-Content-Type: text/plain; charset=ISO-8859-1
-
 Helge,
 
-On PARISC I'm seeing the following reproducible behvaiour:
+In arch/parisc/kernel/entry.S (execve_wrapper) we have this code:
 
-* Parent calls vfork()
-* Child of vfork() calls execve()
-* Child returns from execve() and starts corrupting parent state
-eventually leading to a segmentation fault.
-* New process (as a result of execve) runs to completion.
+        BL \execve,%r2
+        copy %r1,%arg0
 
-What code in the Linux kernel prevents the child, which calls
-execve(), from returning?
+        ldo -FRAME_SIZE(%r30),%r30
+        LDREG -RP_OFFSET(%r30),%r2
 
-Test case attached.
+        /* If exec succeeded we need to load the args */
+
+        ldo -1024(%r0),%r1
+        cmpb,>>= %r28,%r1,error_\execve
+        copy %r2,%r19
+
+error_\execve:
+        bv %r0(%r19)
+        nop
+        .endm
+
+Why does this wrapper check the result of execve?
+
+The cmpb has no nullification, therefore it always copies the return
+pointer into r19, and we branch back to the syscall return path. IMO
+checking the result of the syscall is not useful, since everything
+should already be setup such that the normal restore process returns
+to the newly exec'd process.
+
+Comments?
 
 Cheers,
 Carlos.
-
---0015174780f2b9f65f0482d3f51f
-Content-Type: application/x-sh; name="build.sh"
-Content-Disposition: attachment; filename="build.sh"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g7bae9zk0
-
-Z2NjIC1nMyAtTzAgLW8gdmZvcmsgdmZvcmsuYyBwdC12Zm9yay5TCg==
---0015174780f2b9f65f0482d3f51f
-Content-Type: application/octet-stream; name="pt-vfork.S"
-Content-Disposition: attachment; filename="pt-vfork.S"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g7baef6n1
-
-LnRleHQgISAKLmFsaWduIDQgISAKLmV4cG9ydCBfX3Zmb3JrICEgCi50eXBlIF9fdmZvcmssQGZ1
-bmN0aW9uICEgCl9fdmZvcms6ICEgCi5QUk9DICEgCi5DQUxMSU5GTyBGUkFNRT02NCxDQUxMUyxT
-QVZFX1JQLEVOVFJZX0dSPTMgISAKLkVOVFJZICEgISAKIC8qIFNhdmUgcmV0dXJuIHBvaW50ZXIu
-ICovCiBzdHcgJXJwLCAtMjAoJXNyMCwlc3ApICEKCiAvKiBHZXQgNjQgYnl0ZXMgb24gdGhlIHN0
-YWNrLCBzYXZlIHNwLCBhbmQgUElDIHJlZ2lzdGVyLiAqLwogc3R3bSAlcjMsIDY0KCVzcCkKIHN0
-dyAlc3AsIC00KCVzcCkKIHN0dyAlcjE5LCAtMzIoJXNwKQoKIC8qIFNhdmUvcmVzdG9yZSBQSUMg
-cmVnaXN0ZXIgYXJvdW5kIHN5c2NhbGwuICovCiBjb3B5ICVyMTksICVyMjUKCiAvKiBMb2FkIHRo
-cmVhZCByZWdpc3Rlci4gKi8KIG1mY3RsICVjcjI3LCAlcjI2ICEgCiAvKiBMb2FkIGNhY2hlZCBw
-YXJlbnQgUElELiAqLwogbGR3IC0xMDQ0KCVyMjYpLCVyMSAhIAogLyogTmVnYXRlIGl0LCBzdWNo
-IHRoYXQgdGhlIGNoaWxkIHJ1bnMgd2l0aAogICAgYSBuZWdhdGl2ZSBQSUQgYW5kIG5vIGZ1bmN0
-aW9ucyB3b3JrIHVudGlsCiAgICB0aGUgZXhlY3ZlLiAqLwogc3ViICVyMCwlcjEsJXIxICEgCiAv
-KiBTdG9yZSBpdCBiYWNrLiAqLwogc3R3ICVyMSwtMTA0NCglcjI2KSAhCgogLyogQ2FsbCB2Zm9y
-ay4gKi8KIGJsZSAweDEwMCglc3IyLCVyMCkKIGxkaSAoMCArIDExMyksJXIyMCAKCiAvKiBJZiB0
-aGlzIGlzIHRoZSBjaGlsZCBqdW1wIHRvIHRocmVhZF9zdGFydCAqLwogY21wYiw9LG4gJXIwLCVy
-ZXQwLC5MdGhyZWFkX3N0YXJ0ICEgCgogLyogVGhpcyBpcyB0aGUgcGFyZW50LiAqLwogLyogTG9h
-ZCB0aHJlYWQgcmVnaXN0ZXIuICovCiBtZmN0bCAlY3IyNywgJXIyNiAhIAogLyogTG9hZCBjYWNo
-ZWQgcGFyZW50IFBJRCAqLwogbGR3IC0xMDQ0KCVyMjYpLCVyMSAhIAogLyogTmVnYXRlIGl0IChy
-ZXN0b3JpbmcgaXQpICovCiBzdWIgJXIwLCVyMSwlcjEgISAKIC8qIFNhdmUgaXQgYmFjay4gKi8K
-IHN0dyAlcjEsLTEwNDQoJXIyNikgISAKCiBsZGkgLTQwOTYsJXIxCiAvKiBVbnNpZ25lZCBjb21w
-cmUgPSBXYXMgcmV0MCBiZXR3ZWVuIC0xIGFuZCAtNDA5Ni4gKi8KIGNvbWNsciw+Pj0gJXIxLCVy
-ZXQwLCVyMAogYixuIC5MZXJyb3IKCi5MdGhyZWFkX3N0YXJ0OiAhCgogLyogTG9hZCByZXR1cm4g
-cG9pbnRlciBhbmQgcmVzdG9yZSBzdGFjay4gKi8KIGxkdyAtODQoJXNwKSwgJXJwCiBidiAlcjAo
-JXJwKQogbGR3bSAtNjQoJXNwKSwgJXIzCgouTGVycm9yOgogLyogTmVnYXRlIGVycm9yIGNvZGUu
-ICovCiBzdWIgJXIwLCVyZXQwLCVyMwogLmltcG9ydCBfX2Vycm5vX2xvY2F0aW9uLGNvZGUgISAh
-IAogLyogR2V0IGFkZHJlc3Mgb2YgZXJybm8uICovCiBibCBfX2Vycm5vX2xvY2F0aW9uLCVycCAh
-CgogY29weSAlcjI1LCAlcjE5CiAvKiBTYXZlIGVycm5vLiAqLwogc3R3ICVyMywgMCglcmV0MCkK
-IC8qIHZmb3JrIHJldHVybnMgLTEgb24gZXJyb3IuICovCiBsZGkgLTEsICVyZXQwCiAvKiBSZXR1
-cm4uICovCiBsZHcgLTg0KCVzcCksICVycAogYnYgJXIwKCVycCkKIGxkd20gLTY0KCVzcCksICVy
-MwouRVhJVCAhIC5QUk9DRU5EICEgLnNpemUgX192Zm9yaywgLi1fX3Zmb3JrICEKCi53ZWFrIHZm
-b3JrICEgdmZvcmsgPSBfX3Zmb3JrCg==
---0015174780f2b9f65f0482d3f51f
-Content-Type: text/x-csrc; charset=US-ASCII; name="vfork.c"
-Content-Disposition: attachment; filename="vfork.c"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g7baehk82
-
-I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPGVycm5vLmg+
-CiNpbmNsdWRlIDx1bmlzdGQuaD4KCiNkZWZpbmUgQ0FMTF9FWElUIDAKCmludCBtYWluICh2b2lk
-KQp7CiAgcGlkX3QgY2hpbGQ7CiAgY2hhciAqY21kW10gPSB7ICJiYXNoIiwgIi1jIiwgImVjaG8g
-SW4gY2hpbGQgJCQ7IiwgKGNoYXIgKikwIH07CiAgY2hhciAqZW52W10gPSB7ICJIT01FPS90bXAi
-LCAoY2hhciAqKTAgfTsKICBpbnQgcmV0OwoKICBjaGlsZCA9IHZmb3JrKCk7CgogIGlmIChjaGls
-ZCA9PSAwKQogICAgewogICAgICByZXQgPSBleGVjdmUoIi9iaW4vYmFzaCIsIGNtZCwgZW52KTsK
-ICAgICAgcHJpbnRmICgicmV0ID0gJWRcbiIsIHJldCk7CiNpZiBDQUxMX0VYSVQgPT0gMQogICAg
-ICBfZXhpdCgxKTsKI2VuZGlmCiAgICB9CiAgZWxzZQogICAgewogICAgICBwcmludGYoImNoaWxk
-ICE9IDBcbiIpOwogICAgfQoKICBwcmludGYoInBhcmVudCBpcyAlZFxuIiwgKHVuc2lnbmVkIGlu
-dClnZXRwaWQoKSk7CiAgcHJpbnRmKCJjaGlsZCBpcyAlZFxuIiwgKHVuc2lnbmVkIGludCljaGls
-ZCk7CgogIHJldHVybiAwOwp9Cg==
---0015174780f2b9f65f0482d3f51f--
