@@ -1,36 +1,46 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: Question about execve.
-Date: Sun, 28 Mar 2010 15:07:00 -0400 (EDT)
-Message-ID: <20100328190701.20C0C516B@hiauly1.hia.nrc.ca>
-References: <20100328180038.GA3732@hiauly1.hia.nrc.ca>
+Date: Sun, 28 Mar 2010 15:31:46 -0400 (EDT)
+Message-ID: <20100328193147.015054E77@hiauly1.hia.nrc.ca>
+References: <20100328190701.20C0C516B@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: carlos@systemhalted.org, deller@gmx.de, kyle@mcmartin.ca,
-	linux-parisc@vger.kernel.org
-To: dave.anglin@nrc-cnrc.gc.ca
+Cc: dave.anglin@nrc-cnrc.gc.ca, carlos@systemhalted.org, deller@gmx.de,
+	kyle@mcmartin.ca, linux-parisc@vger.kernel.org
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100328180038.GA3732@hiauly1.hia.nrc.ca> from "John David Anglin" at Mar 28, 2010 02:00:38 pm
+In-Reply-To: <20100328190701.20C0C516B@hiauly1.hia.nrc.ca> from "John David Anglin" at Mar 28, 2010 03:07:00 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > A small note about getpid():
-> > 
-> > Since the parent and child share the same memory space, the parent
-> > temporarily negates the cached PID value just before the vfork. Only
-> > the parent, after the vfork, restores the cached PID. This is on
-> > purpose to prevent any functions like PID-related functions from
-> > working in the child() during the window bewteen vfork and execve.
+> The bad value is stored here:
 > 
-> Ok, it might be glibc that's broken (i.e., it doesn't restore correct
-> dave).
+> 0x0003f578 <fork+700>:	ldil L%7b800,r26
+> 0x0003f57c <fork+704>:	b,l 0x35d74 <_IO_list_unlock>,rp
+> 0x0003f580 <fork+708>:	stw r19,-414(r6)
+> (gdb) p/x $r19
+> $2 = 0x10101364
 
-The bad value is stored here:
+%r19 is clobbered by the clone syscall:
 
-0x0003f578 <fork+700>:	ldil L%7b800,r26
-0x0003f57c <fork+704>:	b,l 0x35d74 <_IO_list_unlock>,rp
-0x0003f580 <fork+708>:	stw r19,-414(r6)
+(gdb) disass 0x0003f44c 0x0003f458
+Dump of assembler code from 0x3f44c to 0x3f458:
+0x0003f44c <fork+400>:	be,l 100(sr2,r0),sr0,r31
+0x0003f450 <fork+404>:	ldi 78,r20
+0x0003f454 <fork+408>:	nop
+
+Breakpoint 5, 0x0003f44c in fork ()
 (gdb) p/x $r19
-$2 = 0x10101364
+$6 = 0x0
+
+Breakpoint 4, 0x0003f454 in fork ()
+(gdb) p/x $r19
+$7 = 0x10101364
+
+Same value for %r19 is returned for both parent and child.
+
+This is using application linked with -static (i.e., libc.a).  Probably,
+shared lib is different.
 
 Dave
 -- 
