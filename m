@@ -1,48 +1,105 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: Question about execve.
-Date: Mon, 29 Mar 2010 10:02:58 -0400
-Message-ID: <20100329140257.GA9394@hiauly1.hia.nrc.ca>
-References: <119aab441003281404y7bc37dddw14db435b85704b4f@mail.gmail.com> <20100328212110.03F224E77@hiauly1.hia.nrc.ca> <119aab441003281612j6bf4d910g52f94490824cfd81@mail.gmail.com> <20100328235937.GA5806@hiauly1.hia.nrc.ca> <119aab441003281724h78186fbwa415f7ac046269e2@mail.gmail.com> <20100329023854.GA6633@hiauly1.hia.nrc.ca> <119aab441003290511p6ca7904dxdfc7def8e0777662@mail.gmail.com>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: CAS (lws_compare_and_swap32)
+Date: Mon, 29 Mar 2010 15:31:55 -0400
+Message-ID: <119aab441003291231j320e6637g87c201f75ee61faf@mail.gmail.com>
+References: <4BB0B2C8.8000302@fsij.org>
+	 <119aab441003290913x6cb925b9v66b44a14c31393cb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Carlos O'Donell <carlos@systemhalted.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: debian-hppa@lists.debian.org,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>
+To: NIIBE Yutaka <gniibe@fsij.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab441003290511p6ca7904dxdfc7def8e0777662@mail.gmail.com>
+In-Reply-To: <119aab441003290913x6cb925b9v66b44a14c31393cb@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 29 Mar 2010, Carlos O'Donell wrote:
+On Mon, Mar 29, 2010 at 12:13 PM, Carlos O'Donell
+<carlos@systemhalted.org> wrote:
+> 2010/3/29 NIIBE Yutaka <gniibe@fsij.org>:
+>> I am currently investigating FTBFS of gauche (a scheme interpreter) =
+on
+>> hppa. =A0My knowledge of hppa is quite limited, though. =A0I am not =
+on
+>> this list. =A0Please send Cc: to me.
+>>
+>> I have a question of CAS implementation. =A0I assume uni processor
+>> system.
+>>
+>> I am looking at:
+>> =A0 =A0 =A0 =A0linux-source-2.6.30/arch/parisc/kernel/syscall.S
+>>
+>> ----------------
+>> =A0 =A0 =A0 =A0/*
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0prev =3D *addr;
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if ( prev =3D=3D old )
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*addr =3D new;
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return prev;
+>> =A0 =A0 =A0 =A0*/
+>> [...]
+>> cas_action:
+>> [...]
+>> =A0 =A0 =A0 =A0/* The load and store could fail */
+>> 1: =A0 =A0 =A0ldw =A0 =A0 0(%sr3,%r26), %r28
+>> =A0 =A0 =A0 =A0sub,<> =A0%r28, %r25, %r0
+>> 2: =A0 =A0 =A0stw =A0 =A0 %r24, 0(%sr3,%r26)
+>> ----------------
+>>
+>> Suppose that <addr> points to copy-on-write memory. =A0At the label =
+2,
+>> storing data to <addr> will invoke memory trap and it will go to
+>> do_page_fault() to get new memory. =A0In this scenario, is there a
+>> possibility for the process to be scheduled off?
+>>
+>> Call chain in question is:
+>> =A0 =A0 =A0 =A0do_page_fault()
+>> =A0 =A0 =A0 =A0 =A0->..-> do_wp_page()
+>> =A0 =A0 =A0 =A0 =A0 =A0->..-> __alloc_pages_internal() with GFP_HIGH=
+USER_MOVABLE
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0->..> schedule()
+>>
+>> linux/gfp.h has the definition:
+>> #define GFP_HIGHUSER_MOVABLE =A0 =A0(__GFP_WAIT | __GFP_IO | __GFP_F=
+S | \
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __GF=
+P_HARDWALL | __GFP_HIGHMEM | \
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __GF=
+P_MOVABLE)
+>
+> I wrote the LWS CAS implementation.
+>
+> At the time I wrote it I tried to verify that the process calling the
+> CAS could never sleep, since this would make it non-atomic.
+>
+> There are checks in entry.S to prevent return code-paths from
+> scheduling or delivering signals if the process was executing on the
+> gateway page.
+>
+> If we are certain that the above could happen, then a possible soluti=
+on is:
+> * Enable locks for SMP and UP.
+> * If lock is taken for your addresss, return to userspace with EAGAIN=
+=2E
+> * Userspace yields on EAGAIN and then tries again (we can't use
+> FUTEX_WAIT/FUTEX_WAKE on a global process unique variable because LWS
+> CAS is expected to work on shmem).
+>
+> Do we really think the above can happen?
 
-> > I got a kernel to boot which shouldn't clobber r19. =A0Turned out t=
-o
-> > be a typo. =A0This uses PT_SR4 for the kernel return for the child.
-> > Will test with gcc build.
-> >
-> > Will try again using the pad0 field later.
->=20
-> Sorry, what turned out to be a typo?
+I have CC'd the linux-parisc kernel list.
 
-I used PT_SR4 instead of TASK_PT_SR4 in child_return ;(
+Kyle,
 
-> I guess any static binary that calls fork/vfork/clone is susceptible
-> to corruption of r19 in this way.
->=20
-> I don't know how much that effects userspace, since most is shared,
-> *however* the dynamic linker is technically a static binary :-)
+Do you think the above scenario is possible?
 
-The change may not fix much, but there's no technical reason that
-the kernel needs to clobber r19.
+When trying to LWS CAS on a page that is COW, the copy process could
+sleep, and thus CAS is non-atomic.
 
-Dave
---=20
-J. David Anglin                                  dave.anglin@nrc-cnrc.g=
-c.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 9=
-52-6602)
+What do you think about the solution I propose?
+
+Cheers,
+Carlos.
 --
 To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
  in
