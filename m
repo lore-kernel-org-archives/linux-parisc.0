@@ -1,37 +1,33 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: Question about execve.
-Date: Wed, 31 Mar 2010 09:55:14 -0400
-Message-ID: <s2w119aab441003310655va434ab3bm6a0d71df6d7182c0@mail.gmail.com>
-References: <119aab441003281404y7bc37dddw14db435b85704b4f@mail.gmail.com>
-	 <20100328212110.03F224E77@hiauly1.hia.nrc.ca>
-	 <119aab441003281612j6bf4d910g52f94490824cfd81@mail.gmail.com>
-	 <20100328235937.GA5806@hiauly1.hia.nrc.ca>
-	 <119aab441003281724h78186fbwa415f7ac046269e2@mail.gmail.com>
-	 <20100329023854.GA6633@hiauly1.hia.nrc.ca>
-	 <119aab441003290511p6ca7904dxdfc7def8e0777662@mail.gmail.com>
-	 <20100329140257.GA9394@hiauly1.hia.nrc.ca>
+Subject: FSF GDB 7.1.50 from CVS head works better than GDB in Debian
+	unstable.
+Date: Wed, 31 Mar 2010 10:53:08 -0400
+Message-ID: <o2p119aab441003310753ma764ec4do48e1cbf4afe569d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+To: linux-parisc <linux-parisc@vger.kernel.org>,
+	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100329140257.GA9394@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Mar 29, 2010 at 10:02 AM, John David Anglin
-<dave@hiauly1.hia.nrc.ca> wrote:
-> The change may not fix much, but there's no technical reason that
-> the kernel needs to clobber r19.
+Dave,
 
-Rebuilt 2.10.2-6 here with r19 save for all cases.
+The FSF GDB 7.1.50 from CVS head performs much better than the default
+GDB in Debian unstable.
 
-http://www.parisc-linux.org/~carlos/saver19/
+I highly recommend building it from source and using it for debugging.
 
-Two regressions during build, but they appear unrelated.
+It also has the new `=>` PC pointer when you dissassemble...
 
-Could you test this in a chroot and tell me if it works for you?
+   0x413deed4 <+220>:   cmpb,= ret0,ret1,0x413def44 <_dl_make_fptr+332>
+   0x413deed8 <+224>:   shladd,l rp,3,r5,rp
+=> 0x413deedc <+228>:   ldw 8(r5),ret1
+   0x413deee0 <+232>:   ldw 4(r5),ret0
+   0x413deee4 <+236>:   cmpb,<<= ret0,ret1,0x413deffc <_dl_make_fptr+516>
+   0x413deee8 <+240>:   ldo 1(ret1),rp
+
+Which is handy.
 
 Cheers,
 Carlos.
