@@ -1,124 +1,82 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: parisc: Use of align_frame provides stack frame.
-Date: Wed, 31 Mar 2010 20:58:21 -0400
-Message-ID: <20100401005820.GA27145@hiauly1.hia.nrc.ca>
-References: <p2k119aab441003311342q9e17c174u617cb75a1a4b9dc@mail.gmail.com> <20100331210901.A34455183@hiauly1.hia.nrc.ca> <v2x119aab441003311446h652aff9az2e568910a1854829@mail.gmail.com>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: NIIBE Yutaka <gniibe@fsij.org>
+Subject: Re: CAS (lws_compare_and_swap32)
+Date: Thu, 01 Apr 2010 10:16:58 +0900
+Message-ID: <4BB3F40A.7020401@fsij.org>
+References: <4BB0B2C8.8000302@fsij.org>	 <119aab441003290913x6cb925b9v66b44a14c31393cb@mail.gmail.com>	 <119aab441003291231j320e6637g87c201f75ee61faf@mail.gmail.com>	 <20100329200705.GE20286@bombadil.infradead.org> <119aab441003301338o1d0582f3wdbf82681f88ed671@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org, kyle@mcmartin.ca
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Kyle McMartin <kyle@mcmartin.ca>, debian-hppa@lists.debian.org,
+ linux-parisc <linux-parisc@vger.kernel.org>,
+ Helge Deller <deller@gmx.de>
 To: Carlos O'Donell <carlos@systemhalted.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <v2x119aab441003311446h652aff9az2e568910a1854829@mail.gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
+In-Reply-To: <119aab441003301338o1d0582f3wdbf82681f88ed671@mail.gmail.com>
+Resent-Message-ID: <ysV0iHBiNpM.A.aQF.Uf_sLB@liszt>
 List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Wed, 31 Mar 2010, Carlos O'Donell wrote:
+Hi all, thanks for your attention.
 
-> On Wed, Mar 31, 2010 at 5:09 PM, John David Anglin
-> <dave@hiauly1.hia.nrc.ca> wrote:
-> >> Any assembly constant generated with the use of
-> >> align_frame includes size for a full stack frame.
-> >
-> > Does this fix fork?
-> 
-> Which fork breakage are you talking about? The vfork/execve problem I'm seeing?
+Carlos O'Donell wrote:
+> On UP you have a problem:
+> * Thread A enters LWS CAS (no lock on UP)
+> * Thread A writes to CAS address causing COW
+> * Thread A sleeps.
+> * Thread A completes COW, but finishes time slice before the write is restarted.
+> * Thread B enters LWS CAS (no lock on UP)
+> * Thread B writes to CAS address, and finishes time slice.
+> * Thread A writes to CAS address and clobbers B's value.
 
-There seem to be a lot of them...
+I thought like that:
+(condition like a young process, or a process after fork
+which occurs COW)
+* Thread A enters LWS CAS (no lock on UP)
+* Thread A writes to CAS address causing COW
+* Thread A sleeps for new memory.
+  Kernel process scheduling:
+    Thread A sleeps
+    -> swapper wakes up and got new memory, then sleep
+    -> Thread B wakes up
+* Thread B enters LWS CAS (no lock on UP)
+* Thread B writes to CAS address, causing COW, this time we have memory.
+  Writes completes, and finishes time slice.
+  Kernel process scheduling like that:
+    Thread B sleeps -> Thread A wakes up
+* Thread A writes to CAS address and clobbers B's value.
 
-I have been looking at another one today.  There were three instances
-today running the gcc testsuite.  It seems the parent dies exiting from
-fork, returning to location 0.
+Today, I have a next question.  Is there any cache alias problem here?
+Should we invalidate the cache line before "load" and flush the cache
+line after "store"?
 
-0x405a378c <fork+700>:  copy r9,ret0
-0x405a3790 <fork+704>:  ldw -14(r3),rp
-0x405a3794 <fork+708>:  ldw 10(r3),r10
-0x405a3798 <fork+712>:  ldw 14(r3),r9
-0x405a379c <fork+716>:  ldw 18(r3),r8
-0x405a37a0 <fork+720>:  ldw 1c(r3),r7
-0x405a37a4 <fork+724>:  ldw 20(r3),r6
-0x405a37a8 <fork+728>:  ldw 24(r3),r5
-0x405a37ac <fork+732>:  ldw 28(r3),r4
-0x405a37b0 <fork+736>:  ldo 40(r3),sp
-0x405a37b4 <fork+740>:  bv r0(rp)
-0x405a37b8 <fork+744>:  ldw,mb -40(sp),(gdb) x/x $sp
-0xfe001a40:     0xfe0018cc
-(gdb) x/16x $sp
-0xfe001a40:     0xfe0018cc      0x000e9408      0xffffffff      0x000e6c54
-0xfe001a50:     0x00000000      0x00000000      0x00104d88      0x000c36f4
-0xfe001a60:     0x00000001      0x00000000      0xfe00194c      0x000e9560
-0xfe001a70:     0x4092c000      0x00000000      0x00000001      0xf4000000
-(gdb) x/16x $sp - 0x20
-0xfe001a20:     0x000e9410      0x000e9408      0x0004771b      0x0004e727
-0xfe001a30:     0x00000000      0x00000000      0x000fed68      0x000fedc8
-0xfe001a40:     0xfe0018cc      0x000e9408      0xffffffff      0x000e6c54
-0xfe001a50:     0x00000000      0x00000000      0x00104d88      0x000c36f4
-(gdb) info reg
-flags          0x4ff0f  327439
-r1             0x0      0
-rp             0x0      0
-r3             0xfe0018cc       4261419212
-r4             0xfe00194c       4261419340
-r5             0x0      0
-r6             0x1      1
-r7             0xc36f4  800500
-r8             0x104d88 1068424
-r9             0x0      0
-r10            0x0      0
-(gdb) p/x $ret0
-$3 = 0x2776
+I am testing on paer.debian.org.  It says D-cache is wribe back,
+and that's my concern.
 
-Registers ret0 and rp seem corrupt.  Registers r3 through r10 contain
-the same values as the stack.  The rp value on the stack is 0x0004e727.
+--------------------------
+Welcome to paer.debian.org, the Debian hppa porterbox
 
-(gdb) disass 0x0004e700 0x0004e734
-Dump of assembler code from 0x4e700 to 0x4e734:
-0x0004e700 <make_child+128>:    cmpib,>= 0,r26,0x4e714 <make_child+148>
-0x0004e704 <make_child+132>:    ldil L%c3000,r7
-0x0004e708 <make_child+136>:    b,l 0x62c1c <sync_buffered_stream>,rp
-0x0004e70c <make_child+140>:    nop
-0x0004e710 <make_child+144>:    ldil L%c3000,r7
-0x0004e714 <make_child+148>:    ldi 1,r6
-0x0004e718 <make_child+152>:    ldo 6f4(r7),r7
-0x0004e71c <make_child+156>:    b,l 0x34d60,rp
-0x0004e720 <make_child+160>:    nop
-0x0004e724 <make_child+164>:    movb,>= ret0,r3,0x4e930 <make_child+688>
-0x0004e728 <make_child+168>:    addil L%6800,dp,r1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-I believe from looking at the bash code that the call at <make_child+156>
-is to fork().
+Last login: Wed Mar 31 02:31:27 2010 from 150.82.175.29
+gniibe@paer:~$ cat /proc/cpuinfo
+processor	: 0
+cpu family	: PA-RISC 2.0
+cpu		: PA8700 (PCX-W2)
+cpu MHz		: 750.000000
+capabilities	: os64
+model		: 9000/800/A500-7X
+model name	: Crescendo 750 W2
+hversion	: 0x00005e30
+sversion	: 0x00000491
+I-cache		: 768 KB
+D-cache		: 1536 KB (WB, direct mapped)
+ITLB entries	: 240
+DTLB entries	: 240 - shared with ITLB
+bogomips	: 1495.04
+software id	: 822930640
 
-So, the $64 question is how did ret0 and rp get corrupted?
-
-> 
-> The patch is simply additional comments. It fixes my constant
-> confusion that *_SZ_ALGN constants also includes a size for a frame.
-> 
-> I have several "Clenaup/Add documentation" patches in my tree which I
-> will push out as I review our *.S files. There were some tricky
-> assembly instructions that I didn't know what they did, so I added
-> comments, that sort of stuff e.g. or,=,n
-> 
-> I'm still at a loss to explain how the kernel prevents a process,
-> which has just called execve, from returning to the callers memory
-> range.
-> 
-> My suspicion is this:
-> * Parent calls vfork()
-> * Child calls execve(), which uses start_thread to setup pt_regs.
-> * Child returns from execve() via syscall_exit and does *not* restore
-> space registers from pt_regs.
-> * Child returns to parent's memory space and starts clobbering things.
-> * Timer tick goes off and switch_to fixes child's space registers and
-> PC values and child executes correctly.
-> * Parent continues executing with some minor corruption.
-> 
-> The window exists between the child's return and the next tick, during
-> that time the child runs free corrupting the parent.
-
-I'll think about it.
-
-Dave
+--------------------------
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
