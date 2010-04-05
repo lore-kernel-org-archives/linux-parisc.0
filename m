@@ -1,156 +1,333 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: threads and fork on machine with VIPT-WB cache
-Date: Mon, 05 Apr 2010 11:18:38 -0500
-Message-ID: <1270484318.2790.38.camel@mulgrave.site>
-References: <20100405025154.DE1D55160@hiauly1.hia.nrc.ca>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH 1/4] panic: Allow warnings to set different taint flags
+Date: Mon, 05 Apr 2010 23:38:30 +0200
+Message-ID: <4BBA5856.6090705@gmx.de>
+References: <1270319696.12516.321.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: NIIBE Yutaka <gniibe@fsij.org>, linux-parisc@vger.kernel.org,
-	pkg-gauche-devel@lists.alioth.debian.org, 561203@bugs.debian.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Content-Type: text/plain; charset=UTF-8
+Cc: Jesse Barnes <jbarnes@virtuousgeek.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	Paul Mundt <lethal@linux-sh.org>
+To: Ben Hutchings <ben@decadent.org.uk>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100405025154.DE1D55160@hiauly1.hia.nrc.ca>
+In-Reply-To: <1270319696.12516.321.camel@localhost>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 2010-04-04 at 22:51 -0400, John David Anglin wrote:
-> > Thanks a lot for the discussion.
-> > 
-> > James Bottomley wrote:
-> > > So your theory is that the data the kernel sees doing the page copy can
-> > > be stale because of dirty cache lines in userspace (which is certainly
-> > > possible in the ordinary way)?
-> > 
-> > Yes.
-> > 
-> > > By design that shouldn't happen: the idea behind COW breaking is
-> > > that before it breaks, the page is read only ... this means that
-> > > processes can have clean cache copies of it, but never dirty cache
-> > > copies (because writes are forbidden).
-> > 
-> > That must be design, I agree.
-> > 
-> > To keep this condition (no dirty cache for COW page), we need to flush
-> > cache before ptep_set_wrprotect.  That's my point.
-> > 
-> > Please look at the code path:
-> >    (kernel/fork.c)
-> >    do_fork -> copy_process -> copy_mm -> dup_mm -> dup_mmap ->
-> >    (mm/memory.c)
-> >    copy_page_range -> copy_p*d_range -> copy_one_pte -> ptep_set_wrprotect
-> > 
-> > The function flush_cache_dup_mm is called from dup_mmap, that's enough
-> > for a case of a process with single thread.
-> > I think that:
-> > We need to flush cache before ptep_set_wrprotect for a process with
-> > multiple threads.  Other threads may change memory after a thread
-> > invokes do_fork and before calling ptep_set_wrprotect.  Specifically,
-> > a process may sleep at pte_alloc function to get a page.
+On 04/03/2010 08:34 PM, Ben Hutchings wrote:
+> WARN() is used in some places to report firmware or hardware bugs that
+> are then worked-around.  These bugs do not affect the stability of the
+> kernel and should not set the flag for TAINT_WARN.  To allow for this,
+> add WARN_TAINT() and WARN_TAINT_ONCE() macros that take a taint number
+> as argument.
 > 
-> I agree.  It is interesting that in the case of the Debian bug that
-> a thread of the parent process causes the COW break and thereby corrupts
-> its own memory.  As far as I can tell, the fork'd child never writes
-> to the memory that causes the fault.
+> Architectures that implement warnings using trap instructions instead
+> of calls to warn_slowpath_*() now implement __WARN_TAINT(taint)
+> instead of __WARN().
 > 
-> My testing indicates that your suggested change fixes the Debian
-> bug.  I've attached below my latest test version.  This seems to fix
-> the bug on both SMP and UP kernels.
+> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+
+Builds and works on the parisc architecture.
+Acked-by: Helge Deller <deller@gmx.de>
+
+
+> ---
+> Changes since the previous version:
+> - Added note to Documentation/oops-tracing.txt
+> - Changed the commit message to distinguish taint numbers from taint
+>   flags
+> - Removed 'must' from last sentence of commit message; this patch
+>   converts all mainline architectures
 > 
-> However, it doesn't fix all page/cache related issues on parisc
-> SMP kernels that I commonly see.
+> Ben.
 > 
-> My first inclination after even before reading your analysis was
-> to assume that copy_user_page was broken (i.e, that even if a
-> processor cache was dirty when the COW page was write protected,
-> it should be possible to do the flush before the page is copied).
-> However, this didn't seem to work...  Possibly, there are issues
-> with aliased addresses.
+>  Documentation/oops-tracing.txt |    1 +
+>  arch/parisc/include/asm/bug.h  |    8 ++++----
+>  arch/powerpc/include/asm/bug.h |    6 +++---
+>  arch/s390/include/asm/bug.h    |    8 ++++----
+>  arch/sh/include/asm/bug.h      |    4 ++--
+>  include/asm-generic/bug.h      |   34 ++++++++++++++++++++++++++++++++--
+>  kernel/panic.c                 |   24 ++++++++++++++++++++----
+>  lib/bug.c                      |    2 +-
+>  8 files changed, 67 insertions(+), 20 deletions(-)
 > 
-> I note that sparc flushes the entire cache and purges the entire
-> tlb in kmap_atomic/kunmap_atomic for highmem.  Although the breakage
-> that I see is not limited to PA8800/PA8900, I'm not convinced
-> that we maintain coherency that is required for these processors
-> in copy_user_page when we have multiple threads.
-> 
-> As a side note, kmap_atomic/kunmap_atomic seem to lack calls to
-> pagefault_disable()/pagefault_enable() on PA8800.
-> 
-> Dave
-> -- 
-> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-> National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-> 
-> diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
-> index a27d2e2..b140d5c 100644
-> --- a/arch/parisc/include/asm/pgtable.h
-> +++ b/arch/parisc/include/asm/pgtable.h
-> @@ -14,6 +14,7 @@
->  #include <linux/bitops.h>
->  #include <asm/processor.h>
->  #include <asm/cache.h>
-> +extern void flush_cache_page(struct vm_area_struct *vma, unsigned long vmaddr, unsigned long pfn);
+> diff --git a/Documentation/oops-tracing.txt b/Documentation/oops-tracing.txt
+> index c10c022..069fab3 100644
+> --- a/Documentation/oops-tracing.txt
+> +++ b/Documentation/oops-tracing.txt
+> @@ -256,6 +256,7 @@ characters, each representing a particular tainted value.
+>    9: 'A' if the ACPI table has been overridden.
+>  
+>   10: 'W' if a warning has previously been issued by the kernel.
+> +     (Though some warnings may set more specific taint flags.)
+>  
+>   11: 'C' if a staging driver has been loaded.
+>  
+> diff --git a/arch/parisc/include/asm/bug.h b/arch/parisc/include/asm/bug.h
+> index 75e46c5..72cfdb0 100644
+> --- a/arch/parisc/include/asm/bug.h
+> +++ b/arch/parisc/include/asm/bug.h
+> @@ -44,7 +44,7 @@
+>  #endif
+>  
+>  #ifdef CONFIG_DEBUG_BUGVERBOSE
+> -#define __WARN()							\
+> +#define __WARN_TAINT(taint)						\
+>  	do {								\
+>  		asm volatile("\n"					\
+>  			     "1:\t" PARISC_BUG_BREAK_ASM "\n"		\
+> @@ -54,11 +54,11 @@
+>  			     "\t.org 2b+%c3\n"				\
+>  			     "\t.popsection"				\
+>  			     : : "i" (__FILE__), "i" (__LINE__),	\
+> -			     "i" (BUGFLAG_WARNING),			\
+> +			     "i" (BUGFLAG_TAINT(taint)), 		\
+>  			     "i" (sizeof(struct bug_entry)) );		\
+>  	} while(0)
+>  #else
+> -#define __WARN()							\
+> +#define __WARN_TAINT(taint)						\
+>  	do {								\
+>  		asm volatile("\n"					\
+>  			     "1:\t" PARISC_BUG_BREAK_ASM "\n"		\
+> @@ -67,7 +67,7 @@
+>  			     "\t.short %c0\n"				\
+>  			     "\t.org 2b+%c1\n"				\
+>  			     "\t.popsection"				\
+> -			     : : "i" (BUGFLAG_WARNING),			\
+> +			     : : "i" (BUGFLAG_TAINT(taint)),		\
+>  			     "i" (sizeof(struct bug_entry)) );		\
+>  	} while(0)
+>  #endif
+> diff --git a/arch/powerpc/include/asm/bug.h b/arch/powerpc/include/asm/bug.h
+> index 2c15212..065c590 100644
+> --- a/arch/powerpc/include/asm/bug.h
+> +++ b/arch/powerpc/include/asm/bug.h
+> @@ -85,12 +85,12 @@
+>  	}							\
+>  } while (0)
+>  
+> -#define __WARN() do {						\
+> +#define __WARN_TAINT(taint) do {				\
+>  	__asm__ __volatile__(					\
+>  		"1:	twi 31,0,0\n"				\
+>  		_EMIT_BUG_ENTRY					\
+>  		: : "i" (__FILE__), "i" (__LINE__),		\
+> -		  "i" (BUGFLAG_WARNING),			\
+> +		  "i" (BUGFLAG_TAINT(taint)),			\
+>  		  "i" (sizeof(struct bug_entry)));		\
+>  } while (0)
+>  
+> @@ -104,7 +104,7 @@
+>  		"1:	"PPC_TLNEI"	%4,0\n"			\
+>  		_EMIT_BUG_ENTRY					\
+>  		: : "i" (__FILE__), "i" (__LINE__),		\
+> -		  "i" (BUGFLAG_WARNING),			\
+> +		  "i" (BUGFLAG_TAINT(TAINT_WARN)),		\
+>  		  "i" (sizeof(struct bug_entry)),		\
+>  		  "r" (__ret_warn_on));				\
+>  	}							\
+> diff --git a/arch/s390/include/asm/bug.h b/arch/s390/include/asm/bug.h
+> index 9beeb9d..bf90d1f 100644
+> --- a/arch/s390/include/asm/bug.h
+> +++ b/arch/s390/include/asm/bug.h
+> @@ -46,18 +46,18 @@
+>  	unreachable();					\
+>  } while (0)
+>  
+> -#define __WARN() do {					\
+> -	__EMIT_BUG(BUGFLAG_WARNING);			\
+> +#define __WARN_TAINT(taint) do {			\
+> +	__EMIT_BUG(BUGFLAG_TAINT(taint));		\
+>  } while (0)
+>  
+>  #define WARN_ON(x) ({					\
+>  	int __ret_warn_on = !!(x);			\
+>  	if (__builtin_constant_p(__ret_warn_on)) {	\
+>  		if (__ret_warn_on)			\
+> -			__EMIT_BUG(BUGFLAG_WARNING);	\
+> +			__WARN();			\
+>  	} else {					\
+>  		if (unlikely(__ret_warn_on))		\
+> -			__EMIT_BUG(BUGFLAG_WARNING);	\
+> +			__WARN();			\
+>  	}						\
+>  	unlikely(__ret_warn_on);			\
+>  })
+> diff --git a/arch/sh/include/asm/bug.h b/arch/sh/include/asm/bug.h
+> index d02c01b..6323f86 100644
+> --- a/arch/sh/include/asm/bug.h
+> +++ b/arch/sh/include/asm/bug.h
+> @@ -48,7 +48,7 @@ do {							\
+>  		   "i" (sizeof(struct bug_entry)));	\
+>  } while (0)
+>  
+> -#define __WARN()					\
+> +#define __WARN_TAINT(taint)				\
+>  do {							\
+>  	__asm__ __volatile__ (				\
+>  		"1:\t.short %O0\n"			\
+> @@ -57,7 +57,7 @@ do {							\
+>  		 : "n" (TRAPA_BUG_OPCODE),		\
+>  		   "i" (__FILE__),			\
+>  		   "i" (__LINE__),			\
+> -		   "i" (BUGFLAG_WARNING),		\
+> +		   "i" (BUGFLAG_TAINT(taint)),		\
+>  		   "i" (sizeof(struct bug_entry)));	\
+>  } while (0)
+>  
+> diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
+> index 18c435d..c2c9ba0 100644
+> --- a/include/asm-generic/bug.h
+> +++ b/include/asm-generic/bug.h
+> @@ -25,7 +25,10 @@ struct bug_entry {
+>  };
+>  #endif		/* __ASSEMBLY__ */
+>  
+> -#define BUGFLAG_WARNING	(1<<0)
+> +#define BUGFLAG_WARNING		(1 << 0)
+> +#define BUGFLAG_TAINT(taint)	(BUGFLAG_WARNING | ((taint) << 8))
+> +#define BUG_GET_TAINT(bug)	((bug)->flags >> 8)
+> +
+>  #endif	/* CONFIG_GENERIC_BUG */
 >  
 >  /*
->   * kern_addr_valid(ADDR) tests if ADDR is pointing to valid kernel
-> @@ -456,17 +457,22 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm, unsigned long addr,
->  	return old_pte;
->  }
->  
-> -static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
-> +static inline void ptep_set_wrprotect(struct vm_area_struct *vma, struct mm_struct *mm, unsigned long addr, pte_t *ptep)
->  {
->  #ifdef CONFIG_SMP
->  	unsigned long new, old;
-> +#endif
-> +	pte_t old_pte = *ptep;
-> +
-> +	if (atomic_read(&mm->mm_users) > 1)
-
-Just to verify there's nothing this is hiding, can you make this 
-
-	if (pte_dirty(old_pte))
-
-and reverify?  The if clause should only trip on the case where the
-parent has dirtied the line between flush and now.
-
-> +		flush_cache_page(vma, addr, pte_pfn(old_pte));
->  
-> +#ifdef CONFIG_SMP
->  	do {
->  		old = pte_val(*ptep);
->  		new = pte_val(pte_wrprotect(__pte (old)));
->  	} while (cmpxchg((unsigned long *) ptep, old, new) != old);
->  #else
-> -	pte_t old_pte = *ptep;
->  	set_pte_at(mm, addr, ptep, pte_wrprotect(old_pte));
+> @@ -56,17 +59,25 @@ struct bug_entry {
+>   * appear at runtime.  Use the versions with printk format strings
+>   * to provide better diagnostics.
+>   */
+> -#ifndef __WARN
+> +#ifndef __WARN_TAINT
+>  #ifndef __ASSEMBLY__
+>  extern void warn_slowpath_fmt(const char *file, const int line,
+>  		const char *fmt, ...) __attribute__((format(printf, 3, 4)));
+> +extern void warn_slowpath_fmt_taint(const char *file, const int line,
+> +				    unsigned taint, const char *fmt, ...)
+> +	__attribute__((format(printf, 4, 5)));
+>  extern void warn_slowpath_null(const char *file, const int line);
+>  #define WANT_WARN_ON_SLOWPATH
 >  #endif
+>  #define __WARN()		warn_slowpath_null(__FILE__, __LINE__)
+>  #define __WARN_printf(arg...)	warn_slowpath_fmt(__FILE__, __LINE__, arg)
+> +#define __WARN_printf_taint(taint, arg...)				\
+> +	warn_slowpath_fmt_taint(__FILE__, __LINE__, taint, arg)
+>  #else
+> +#define __WARN()		__WARN_TAINT(TAINT_WARN)
+>  #define __WARN_printf(arg...)	do { printk(arg); __WARN(); } while (0)
+> +#define __WARN_printf_taint(taint, arg...)				\
+> +	do { printk(arg); __WARN_TAINT(taint); } while (0)
+>  #endif
+>  
+>  #ifndef WARN_ON
+> @@ -87,6 +98,13 @@ extern void warn_slowpath_null(const char *file, const int line);
+>  })
+>  #endif
+>  
+> +#define WARN_TAINT(condition, taint, format...) ({			\
+> +	int __ret_warn_on = !!(condition);				\
+> +	if (unlikely(__ret_warn_on))					\
+> +		__WARN_printf_taint(taint, format);			\
+> +	unlikely(__ret_warn_on);					\
+> +})
+> +
+>  #else /* !CONFIG_BUG */
+>  #ifndef HAVE_ARCH_BUG
+>  #define BUG() do {} while(0)
+> @@ -110,6 +128,8 @@ extern void warn_slowpath_null(const char *file, const int line);
+>  })
+>  #endif
+>  
+> +#define WARN_TAINT(condition, taint, format...) WARN_ON(condition)
+> +
+>  #endif
+>  
+>  #define WARN_ON_ONCE(condition)	({				\
+> @@ -132,6 +152,16 @@ extern void warn_slowpath_null(const char *file, const int line);
+>  	unlikely(__ret_warn_once);				\
+>  })
+>  
+> +#define WARN_TAINT_ONCE(condition, taint, format...)	({	\
+> +	static bool __warned;					\
+> +	int __ret_warn_once = !!(condition);			\
+> +								\
+> +	if (unlikely(__ret_warn_once))				\
+> +		if (WARN_TAINT(!__warned, taint, format))	\
+> +			__warned = true;			\
+> +	unlikely(__ret_warn_once);				\
+> +})
+> +
+>  #define WARN_ON_RATELIMIT(condition, state)			\
+>  		WARN_ON((condition) && __ratelimit(state))
+>  
+> diff --git a/kernel/panic.c b/kernel/panic.c
+> index 13d966b..8b821bc 100644
+> --- a/kernel/panic.c
+> +++ b/kernel/panic.c
+> @@ -365,7 +365,8 @@ struct slowpath_args {
+>  	va_list args;
+>  };
+>  
+> -static void warn_slowpath_common(const char *file, int line, void *caller, struct slowpath_args *args)
+> +static void warn_slowpath_common(const char *file, int line, void *caller,
+> +				 unsigned taint, struct slowpath_args *args)
+>  {
+>  	const char *board;
+>  
+> @@ -381,7 +382,7 @@ static void warn_slowpath_common(const char *file, int line, void *caller, struc
+>  	print_modules();
+>  	dump_stack();
+>  	print_oops_end_marker();
+> -	add_taint(TAINT_WARN);
+> +	add_taint(taint);
 >  }
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 09e4b1b..21c2916 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -616,7 +616,7 @@ copy_one_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
->  	 * in the parent and the child
->  	 */
->  	if (is_cow_mapping(vm_flags)) {
-> -		ptep_set_wrprotect(src_mm, addr, src_pte);
-> +		ptep_set_wrprotect(vma, src_mm, addr, src_pte);
-
-So this is going to be a hard sell because of the arch churn. There are,
-however, three ways to do it with the original signature.
-
-     1. implement copy_user_highpage ... this allows us to copy through
-        the child's page cache (which is coherent with the parent's
-        before the cow) and thus pick up any cache changes without a
-        flush
-     2. use the mm identically to flush_user_cache_page_noncurrent.  The
-        only reason that needs the vma is for the icache check ... but
-        that shouldn't happen here (if the parent is actually doing a
-        self modifying exec region, it needs to manage coherency
-        itself).
-     3. Flush in kmap ... this is something that's been worrying me
-        since the flamewars over kmap for pio.
-
-James
-
+>  
+>  void warn_slowpath_fmt(const char *file, int line, const char *fmt, ...)
+> @@ -390,14 +391,29 @@ void warn_slowpath_fmt(const char *file, int line, const char *fmt, ...)
+>  
+>  	args.fmt = fmt;
+>  	va_start(args.args, fmt);
+> -	warn_slowpath_common(file, line, __builtin_return_address(0), &args);
+> +	warn_slowpath_common(file, line, __builtin_return_address(0),
+> +			     TAINT_WARN, &args);
+>  	va_end(args.args);
+>  }
+>  EXPORT_SYMBOL(warn_slowpath_fmt);
+>  
+> +void warn_slowpath_fmt_taint(const char *file, int line,
+> +			     unsigned taint, const char *fmt, ...)
+> +{
+> +	struct slowpath_args args;
+> +
+> +	args.fmt = fmt;
+> +	va_start(args.args, fmt);
+> +	warn_slowpath_common(file, line, __builtin_return_address(0),
+> +			     taint, &args);
+> +	va_end(args.args);
+> +}
+> +EXPORT_SYMBOL(warn_slowpath_fmt_taint);
+> +
+>  void warn_slowpath_null(const char *file, int line)
+>  {
+> -	warn_slowpath_common(file, line, __builtin_return_address(0), NULL);
+> +	warn_slowpath_common(file, line, __builtin_return_address(0),
+> +			     TAINT_WARN, NULL);
+>  }
+>  EXPORT_SYMBOL(warn_slowpath_null);
+>  #endif
+> diff --git a/lib/bug.c b/lib/bug.c
+> index 300e41a..f13daf4 100644
+> --- a/lib/bug.c
+> +++ b/lib/bug.c
+> @@ -165,7 +165,7 @@ enum bug_trap_type report_bug(unsigned long bugaddr, struct pt_regs *regs)
+>  			       (void *)bugaddr);
+>  
+>  		show_regs(regs);
+> -		add_taint(TAINT_WARN);
+> +		add_taint(BUG_GET_TAINT(bug));
+>  		return BUG_TRAP_TYPE_WARN;
+>  	}
+>  
 
