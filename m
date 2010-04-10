@@ -1,41 +1,48 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Subject: Re: threads and fork on machine with VIPT-WB cache
-Date: Sat, 10 Apr 2010 17:56:54 -0400 (EDT)
-Message-ID: <20100410215655.7B5CF513F@hiauly1.hia.nrc.ca>
-References: <4BC0E3AD.4050802@gmx.de>
+Date: Sat, 10 Apr 2010 18:53:56 -0400
+Message-ID: <20100410225355.GA2812@hiauly1.hia.nrc.ca>
+References: <20100408215453.GA18445@hiauly1.hia.nrc.ca> <20100408224446.96F294FA3@hiauly1.hia.nrc.ca> <x2p119aab441004090714v107c8fc1s9ca94066871a3e8b@mail.gmail.com> <20100409151330.GA23889@hiauly1.hia.nrc.ca> <4BC0E3AD.4050802@gmx.de>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: dave.anglin@nrc-cnrc.gc.ca, carlos@systemhalted.org,
-	gniibe@fsij.org, linux-parisc@vger.kernel.org
-To: deller@gmx.de (Helge Deller)
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	Carlos O'Donell <carlos@systemhalted.org>, gniibe@fsij.org,
+	linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4BC0E3AD.4050802@gmx.de> from "Helge Deller" at Apr 10, 2010 10:46:37 pm
+In-Reply-To: <4BC0E3AD.4050802@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On 04/09/2010 05:13 PM, John David Anglin wrote:
-> > On Fri, 09 Apr 2010, Carlos O'Donell wrote:
-> >> For example, are the futex fixes anywhere for Kyle to pickup?
-> > 
-> > The futex fixes are Helge's and were posted to the list on Wed,
-> > 03 Feb 2010 23:03:49 +0100 along with Helge's minifail3.c.
-> 
-> Yes, but there is still a bug in the patch I sent, and it's still in Dave's big
-> patchset. See below...
-> 
-> --- a/arch/parisc/include/asm/atomic.h
-> +++ b/arch/parisc/include/asm/atomic.h
->  #else
->  #  define _atomic_spin_lock_irqsave(l,f) do { local_irq_save(f); } while (0)
->  #  define _atomic_spin_unlock_irqrestore(l,f) do { local_irq_restore(f); } while (0)
-> +#  define _atomic_spin_lock_irqsave_user(l,f) _atomic_spin_lock_irqsave(l,f)
-> +#  define _atomic_spin_unlock_irqrestore_user(l,f) _atomic_spin_lock_irqsave_user(l,f)
-> 
-> atomic_spin_lock_irqsave_user() is wrong.
-> It needs to be:
-> ->  atomic_spin_lock_irqsave_user(l,f) _atomic_spin_lock_irqsave_user(l,f)
+On Sat, 10 Apr 2010, Helge Deller wrote:
 
-Huh?  I see the following line is wrong...
+> Nevertheless, on my B2000 (32bit, SMP, 2.6.32.2 kernel) I still do see the minifail bug.
+> The only difference seems to be, that the minifail3 program doesn't get stuck any
+> more. It still crashes though from time to time...
+
+There are some issues with your minifail3.c testcase.  The fork'd child
+shouldn't do any I/O and it should exit using _exit(0).  Otherwise, it
+can corrupt the I/O structures of the parent.  I'm not sure that this
+is the issue on your B2000, but it's worth a try.
+
+The testcase when modified as above doesn't crash on my c3750 (32bit, UP,
+2.6.32.2 kernel).
+
+I found in debugging this testcase that the crash was always associated
+with the stack region for thread_run.  I put a big loop in thread_run.
+The index for the loop when compiled at -O0 is constantly being saved
+and restored on the stack.  I found that crashes occured after many
+iterations of the loop.  Nothing else was going on.
+
+The COW discussion convinced me that cache flushing was the problem.
+The fork (clone) syscall causes the stack region used by thread_run
+to become COW'd.  When thread_run is scheduled, the loop caused an
+instant COW break and stack corruption.  The state of the stack region
+generally returned to its state before the fork.
+
+If the above doesn't fix the testcase on your B2000, there must be
+some difference and other PA8000 machines.
 
 Dave
 -- 
