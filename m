@@ -1,50 +1,91 @@
 From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: threads and fork on machine with VIPT-WB cache
-Date: Sat, 10 Apr 2010 18:53:56 -0400
-Message-ID: <20100410225355.GA2812@hiauly1.hia.nrc.ca>
-References: <20100408215453.GA18445@hiauly1.hia.nrc.ca> <20100408224446.96F294FA3@hiauly1.hia.nrc.ca> <x2p119aab441004090714v107c8fc1s9ca94066871a3e8b@mail.gmail.com> <20100409151330.GA23889@hiauly1.hia.nrc.ca> <4BC0E3AD.4050802@gmx.de>
+Subject: [PATCH] Call pagefault_disable/pagefault_enable in
+	kmap_atomic/kunmap_atomic
+Date: Sun, 11 Apr 2010 12:36:14 -0400
+Message-ID: <20100411163613.GA7365@hiauly1.hia.nrc.ca>
+References: <20100408215453.GA18445@hiauly1.hia.nrc.ca> <20100408224446.96F294FA3@hiauly1.hia.nrc.ca> <x2p119aab441004090714v107c8fc1s9ca94066871a3e8b@mail.gmail.com> <20100409151330.GA23889@hiauly1.hia.nrc.ca>
 Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	Carlos O'Donell <carlos@systemhalted.org>, gniibe@fsij.org,
+Content-Type: multipart/mixed; boundary="EVF5PPMfhYS0aIcm"
+Cc: dave.anglin@nrc-cnrc.gc.ca, deller@gmx.de, gniibe@fsij.org,
 	linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4BC0E3AD.4050802@gmx.de>
+In-Reply-To: <20100409151330.GA23889@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, 10 Apr 2010, Helge Deller wrote:
 
-> Nevertheless, on my B2000 (32bit, SMP, 2.6.32.2 kernel) I still do see the minifail bug.
-> The only difference seems to be, that the minifail3 program doesn't get stuck any
-> more. It still crashes though from time to time...
+--EVF5PPMfhYS0aIcm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-There are some issues with your minifail3.c testcase.  The fork'd child
-shouldn't do any I/O and it should exit using _exit(0).  Otherwise, it
-can corrupt the I/O structures of the parent.  I'm not sure that this
-is the issue on your B2000, but it's worth a try.
+On Fri, 09 Apr 2010, John David Anglin wrote:
 
-The testcase when modified as above doesn't crash on my c3750 (32bit, UP,
-2.6.32.2 kernel).
+> On Fri, 09 Apr 2010, Carlos O'Donell wrote:
+> 
+> > We need to start splitting up your giant "stability" patch into
+> > manageable chunks.
 
-I found in debugging this testcase that the crash was always associated
-with the stack region for thread_run.  I put a big loop in thread_run.
-The index for the loop when compiled at -O0 is constantly being saved
-and restored on the stack.  I found that crashes occured after many
-iterations of the loop.  Nothing else was going on.
+Here's the first chunk.
 
-The COW discussion convinced me that cache flushing was the problem.
-The fork (clone) syscall causes the stack region used by thread_run
-to become COW'd.  When thread_run is scheduled, the loop caused an
-instant COW break and stack corruption.  The state of the stack region
-generally returned to its state before the fork.
+Based on the generic implementation of kmap_atomic and kunmap_atomic,
+we should call pagefault_disable and pagefault_enable in our PA8000
+implementation.
 
-If the above doesn't fix the testcase on your B2000, there must be
-some difference and other PA8000 machines.
+The define for kmap_atomic_prot was also missing, and I updated
+kmap_atomic_pfn to use the generic implementation because of the
+change to kmap_atomic.
+
+I believe that this change is needed to fix the fork copy-on-write
+bug.
+
+Signed-off-by: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 
 Dave
 -- 
 J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
 National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+--EVF5PPMfhYS0aIcm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="cacheflush.h.d"
+
+diff --git a/arch/parisc/include/asm/cacheflush.h b/arch/parisc/include/asm/cacheflush.h
+index 7a73b61..ab87176 100644
+--- a/arch/parisc/include/asm/cacheflush.h
++++ b/arch/parisc/include/asm/cacheflush.h
+@@ -2,6 +2,7 @@
+ #define _PARISC_CACHEFLUSH_H
+ 
+ #include <linux/mm.h>
++#include <linux/uaccess.h>
+ 
+ /* The usual comment is "Caches aren't brain-dead on the <architecture>".
+  * Unfortunately, that doesn't apply to PA-RISC. */
+@@ -113,11 +114,20 @@ static inline void *kmap(struct page *page)
+ 
+ #define kunmap(page)			kunmap_parisc(page_address(page))
+ 
+-#define kmap_atomic(page, idx)		page_address(page)
++static inline void *kmap_atomic(struct page *page, enum km_type idx)
++{
++	pagefault_disable();
++	return page_address(page);
++}
+ 
+-#define kunmap_atomic(addr, idx)	kunmap_parisc(addr)
++static inline void kunmap_atomic(void *addr, enum km_type idx)
++{
++	kunmap_parisc(addr);
++	pagefault_enable();
++}
+ 
+-#define kmap_atomic_pfn(pfn, idx)	page_address(pfn_to_page(pfn))
++#define kmap_atomic_prot(page, idx, prot)	kmap_atomic(page, idx)
++#define kmap_atomic_pfn(pfn, idx)	kmap_atomic(pfn_to_page(pfn), (idx))
+ #define kmap_atomic_to_page(ptr)	virt_to_page(ptr)
+ #endif
+ 
+
+--EVF5PPMfhYS0aIcm--
