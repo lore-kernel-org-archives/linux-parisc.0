@@ -1,28 +1,21 @@
-From: David Rientjes <rientjes@google.com>
-Subject: Re: [patch 10/14] parisc: invoke oom-killer from page fault
-Date: Thu, 22 Apr 2010 13:56:26 -0700 (PDT)
-Message-ID: <alpine.DEB.2.00.1004221356150.25350@chino.kir.corp.google.com>
-References: <20100422160613.723698029@suse.de> <20100422161224.322033236@suse.de>
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: C8000 serial port
+Date: Fri, 23 Apr 2010 12:27:01 +0200
+Message-ID: <20100423122701.259de41e@borg.bxl.tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-arch@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>
-To: npiggin@suse.de
+Content-Type: text/plain; charset=US-ASCII
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100422161224.322033236@suse.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 23 Apr 2010, npiggin@suse.de wrote:
 
-> As explained in commit 1c0fe6e3bd, we want to call the architecture independent
-> oom killer when getting an unexplained OOM from handle_mm_fault, rather than
-> simply killing current.
-> 
-> Cc: linux-parisc@vger.kernel.org
-> Cc: Kyle McMartin <kyle@mcmartin.ca>
-> Cc: linux-arch@vger.kernel.org
-> Signed-off-by: Nick Piggin <npiggin@suse.de>
+Hi team,
 
-Acked-by: David Rientjes <rientjes@google.com>
+I recently bought a C8000 and I just can't get the serial ports to
+work. What modules should be used ? The normal 8250 modules don't work.
+
+I'm currently running 2.6.33.2.
+
+Cheers,
+  Guy
