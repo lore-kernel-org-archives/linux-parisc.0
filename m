@@ -1,59 +1,29 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: Longstanding bug in our IRQ code (irqbalance HPMCs parisc SMP
-	machines)
-Date: Sat, 24 Apr 2010 09:13:49 -0600
-Message-ID: <20100424151349.GB25138@lackof.org>
-References: <0D9994D5-4794-401B-8DE9-9DEA73D62B05@parisc-linux.org> <20100424143617.GD24562@lackof.org> <3E26349A-5670-4643-926D-24C04E75084C@parisc-linux.org>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: C8000 serial port
+Date: Sat, 24 Apr 2010 11:47:46 -0400
+Message-ID: <20100424154745.GP12768@bombadil.infradead.org>
+References: <20100423122701.259de41e@borg.bxl.tuxicoman.be> <20100424144411.GA25138@lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: Thibaut =?iso-8859-1?Q?VAR=C8NE?= <T-Bone@parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Guy Martin <gmsoft@tuxicoman.be>, linux-parisc@vger.kernel.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <3E26349A-5670-4643-926D-24C04E75084C@parisc-linux.org>
+In-Reply-To: <20100424144411.GA25138@lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Apr 24, 2010 at 04:44:27PM +0200, Thibaut VAR=C8NE wrote:
-=2E..
-> I'm not sure, it's been a very long time since I last tracked down th=
-is=20
-> bug. Maybe I'm remembering it wrong.
-> FWIW, no MSI on this machine (L1000) and PCI card (sym53c896).
+On Sat, Apr 24, 2010 at 08:44:11AM -0600, Grant Grundler wrote:
+> On Fri, Apr 23, 2010 at 12:27:01PM +0200, Guy Martin wrote:
+> > 
+> > Hi team,
+> > 
+> > I recently bought a C8000 and I just can't get the serial ports to
+> > work. What modules should be used ? The normal 8250 modules don't work.
+> 
+> When we did original bring up C8000, we had to use an add-on PCI serial
+> card to get console with linux. I don't recall where the built-in
+> serial is attached but thought we had it working at some point. Maybe not.
+> 
 
-Ok - true. We don't support MSI AFAIK.
-That means whatever is going wrong, is happening in the IO SAPIC.
-
->
->>> Now, I'm quite convinced that irqbalance could be one of the (major=
-?)
->>> cause of instability of the parisc autobuilders. AFAIU, they've =20
->>> decided
->>> to disable it on their setup, maybe the situation will improve ther=
-e.
->>> Still, irqbalance is only the messenger, and I'm wondering whether =
-=20
->>> that
->>> apparent bug in our IRQ code could also be responsible for other =20
->>> issues
->>> we're still having.
->>
->> Sounds like it. Though the HPMCs are clearly different than the PTE =
-=20
->> issues
->> that jda/carlos are seeing.
->
-> True, but I remember Debian staff complaining about random unexplaine=
-d =20
-> hangs, I wouldn't be too surprised if this came into play...
-
-Yes, especially given the fact the "hangs" generally means
-the "machine suddenly stopped responding".
-
-cheers,
-grant
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I don't remember, but I'm pretty sure it works. I'll plug it in an look
+next chance I get.
