@@ -1,60 +1,31 @@
-From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <T-Bone@parisc-linux.org>
-Subject: PTE/TLB issues (was Re: Longstanding bug in our IRQ code (irqbalance HPMCs parisc SMP machines))
-Date: Sat, 24 Apr 2010 18:44:08 +0200
-Message-ID: <B43928AA-D2D6-4E1E-91A8-34BAF099F1C8@parisc-linux.org>
-References: <20100424154824.C924E5160@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed	delsp=yes
-Cc: linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [patch 10/14] parisc: invoke oom-killer from page fault
+Date: Mon, 26 Apr 2010 11:00:43 -0400
+Message-ID: <20100426150042.GR12768@bombadil.infradead.org>
+References: <20100422160613.723698029@suse.de> <20100422161224.322033236@suse.de> <alpine.DEB.2.00.1004221356150.25350@chino.kir.corp.google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: npiggin@suse.de, linux-arch@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>
+To: David Rientjes <rientjes@google.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100424154824.C924E5160@hiauly1.hia.nrc.ca>
+In-Reply-To: <alpine.DEB.2.00.1004221356150.25350@chino.kir.corp.google.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Le 24 avr. 10 =E0 17:48, John David Anglin a =E9crit :
+On Thu, Apr 22, 2010 at 01:56:26PM -0700, David Rientjes wrote:
+> On Fri, 23 Apr 2010, npiggin@suse.de wrote:
+> 
+> > As explained in commit 1c0fe6e3bd, we want to call the architecture independent
+> > oom killer when getting an unexplained OOM from handle_mm_fault, rather than
+> > simply killing current.
+> > 
+> > Cc: linux-parisc@vger.kernel.org
+> > Cc: Kyle McMartin <kyle@mcmartin.ca>
+> > Cc: linux-arch@vger.kernel.org
+> > Signed-off-by: Nick Piggin <npiggin@suse.de>
+> 
+> Acked-by: David Rientjes <rientjes@google.com>
 
->>> Sounds like it. Though the HPMCs are clearly different than the PTE
->>> issues
->>> that jda/carlos are seeing.
->>
->> True, but I remember Debian staff complaining about random =20
->> unexplained
->> hangs, I wouldn't be too surprised if this came into play...
->
-> I have been looking at the PTE/TLB code for the last couple of weeks.
-> I now believe that the majority of the random hangs, segvs at program
-> startup are related to problems with the PTE/TLB code.
-
-
-[snip]
-
-Thanks for this detailed explanation. I've quoted your remarks to this =
-=20
-wiki page (as a reference point):
-http://wiki.parisc-linux.org/KnownIssues#head-fc724f5d1b9a93f4b531a05fc=
-1aab3314dde8c87
-
-People, feel free to make sure everything there is as accurate as it =20
-can be, btw... Also taking the opportunity to point at the "SMP perf / =
-=20
-cache issue" paragraph there... Might be related.
-
-I've also added a link to the irqbalance bug on that same page.
-
-=46WIW, the hangs I was referring to are those that kill the machine =20
-without any output. Hopefully PTE/TLB issues are a bit more verbose? ;-=
-)
-
-HTH
-
---=20
-Thibaut VAR=C8NE
-http://www.parisc-linux.org/~varenet/
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks, applied.
