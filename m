@@ -1,31 +1,24 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [patch 10/14] parisc: invoke oom-killer from page fault
-Date: Mon, 26 Apr 2010 11:00:43 -0400
-Message-ID: <20100426150042.GR12768@bombadil.infradead.org>
-References: <20100422160613.723698029@suse.de> <20100422161224.322033236@suse.de> <alpine.DEB.2.00.1004221356150.25350@chino.kir.corp.google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: npiggin@suse.de, linux-arch@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>
-To: David Rientjes <rientjes@google.com>
+From: "Alyssa balled" <jenifferknowles@email.tlcevision.com>
+Subject: mass mailing lists
+Date: Mon, 26 Apr 2010 22:35:45 -0400
+Message-ID: <201004262235796.SM04224@endothermic>
+Reply-To: jenifferknowles@email.tlcevision.com
+To: counsellingtraining@tccr.org.uk, rawrrimmaduck@gmail.com,
+	wsmjdnov@afkintto.com, -uk-request@freelists.org,
+	ykxwpq@hotmail.com
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1004221356150.25350@chino.kir.corp.google.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Apr 22, 2010 at 01:56:26PM -0700, David Rientjes wrote:
-> On Fri, 23 Apr 2010, npiggin@suse.de wrote:
-> 
-> > As explained in commit 1c0fe6e3bd, we want to call the architecture independent
-> > oom killer when getting an unexplained OOM from handle_mm_fault, rather than
-> > simply killing current.
-> > 
-> > Cc: linux-parisc@vger.kernel.org
-> > Cc: Kyle McMartin <kyle@mcmartin.ca>
-> > Cc: linux-arch@vger.kernel.org
-> > Signed-off-by: Nick Piggin <npiggin@suse.de>
-> 
-> Acked-by: David Rientjes <rientjes@google.com>
+To get additional details, samples and counts for our USA contact data please
+email me at this address successtools@gmx.com
 
-Thanks, applied.
+we have lots of different lists in many fields and this week is the time to buy with lowered list prices.
+  
+
+
+
+
+to adjust your subscription status email to 
+
+normal time.
