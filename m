@@ -1,33 +1,39 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Thibaut VARENE <T-Bone@parisc-linux.org>
 Subject: Re: Patch for segfaults in minifail tests
-Date: Fri, 30 Apr 2010 16:13:44 -0500
-Message-ID: <1272662024.2844.44.camel@mulgrave.site>
+Date: Sat, 1 May 2010 20:29:09 +0200
+Message-ID: <o2n7d01f9f01005011129ye53a95acq164ca882aa8792ef@mail.gmail.com>
 References: <1272651697.2844.39.camel@mulgrave.site>
-	 <20100430211136.GA11644@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Content-Type: text/plain; charset=UTF-8
+To: linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100430211136.GA11644@hiauly1.hia.nrc.ca>
+In-Reply-To: <1272651697.2844.39.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2010-04-30 at 17:11 -0400, John David Anglin wrote:
-> On Fri, 30 Apr 2010, James Bottomley wrote:
-> 
-> > It's the essential patch we need to fix up our kmapping.  Right at the
-> > moment kmap of a page with a dirty cache line in userspace sees stale
-> > data and kunmap of a page the kernel has modified will see likewise.
-> 
-> Did you try using the version of copy_user_page_asm that uses
-> equivalent aliasing?   There is an issue with needing cache flushing
-> noted in pgtable.h, but if this works it may be less of a hammer.
+On Fri, Apr 30, 2010 at 8:21 PM, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+> T-bone is keeping a web page with all the failing tests on now:
+>
+> http://wiki.parisc-linux.org/TestCases
 
-Not yet.  I want to isolate the root cause first before I start adding
-optimisations.  Although the optimisation is a fairly safe one, since
-it's used by a lot of other architectures.
+About this: I've had to blaze through hundreds of emails to get this
+data together. TBH it's been quite hard to figure which testcase
+related to which bug and which patch. I'm not absolutely sure that my
+segmentation is right (all the futex/fork/vfork/etc threads seem to
+deal with the same kind of problems). I'm also not entirely certain
+that I haven't listed bugs that are now fixed. I may also have
+overlooked mails containing non-obvious testcases.
 
-James
+What I'm trying to say is that this page is useless without your
+feedback. I'd especially need people to, short of updating it
+themselves (^-^), tell me what can be added/removed/improved. Given a
+Message-ID, I can do the dirty work ;-)
 
+Comments are welcome, I hope this will be anyhow helpful.
 
+T-Bone
+
+-- 
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
