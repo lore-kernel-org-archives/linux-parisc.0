@@ -1,199 +1,40 @@
-From: Helge Deller <deller@gmx.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: Patch for segfaults in minifail tests
-Date: Sun, 02 May 2010 00:25:26 +0200
-Message-ID: <4BDCAA56.4010905@gmx.de>
-References: <1272651697.2844.39.camel@mulgrave.site>
+Date: Sat, 1 May 2010 19:13:54 -0400 (EDT)
+Message-ID: <20100501231355.851335057@hiauly1.hia.nrc.ca>
+References: <4BDCAA56.4010905@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------010404060101030008000604"
-Cc: linux-parisc@vger.kernel.org,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	T-Bone@parisc-linux.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: James.Bottomley@HansenPartnership.com,
+	linux-parisc@vger.kernel.org, T-Bone@parisc-linux.org
+To: deller@gmx.de (Helge Deller)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1272651697.2844.39.camel@mulgrave.site>
+In-Reply-To: <4BDCAA56.4010905@gmx.de> from "Helge Deller" at May 2, 2010 00:25:26 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------010404060101030008000604
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Hi Helge,
 
-On 04/30/2010 08:21 PM, James Bottomley wrote:
-> T-bone is keeping a web page with all the failing tests on now:
+> I tried your patch on top of a 2.6.33.2 kernel (SMP, 32bit, PA8500 (PCX-W) CPU).
+> I still do see all the page faults as before. They even seem to trigger 
+> faster than with a few of Dave's patches.
 > 
-> http://wiki.parisc-linux.org/TestCases
-> 
-> The patch below is what I've found fixes the minifail6 case, but it
-> doesn't seem to fully fix the minifail one (although the frequency goes
-> down).
-> 
-> It's the essential patch we need to fix up our kmapping.  Right at the
-> moment kmap of a page with a dirty cache line in userspace sees stale
-> data and kunmap of a page the kernel has modified will see likewise.
+> I usually run this command
+> 	i=0; while true; do i=$(($i+1)); echo Run $i; ./minifail_dave; done;
+> in a few screen sessions in parallel.
 
-Hi James,
+The reason running multiple screens in parallel exposes further problems
+is the implementation of ptep_set_wrprotect is broken.  It simply sets the
+write protect bit in the pte and doesn't purge the existing translation.
+So, the parent continues to merrily write to the write protected page until
+the TLB entry is purged and reloaded.  More processes make it more likely the
+entry will be replaced and trigger a COW break.
 
-I tried your patch on top of a 2.6.33.2 kernel (SMP, 32bit, PA8500 (PCX-W) CPU).
-I still do see all the page faults as before. They even seem to trigger 
-faster than with a few of Dave's patches.
+This is why my versions of the minifail test which monitor the stack region
+used by the thread don't cause a COW break immediately after the fork.  When
+compiled at -O0, the loop index is constantly being stored to the stack.
 
-I usually run this command
-	i=0; while true; do i=$(($i+1)); echo Run $i; ./minifail_dave; done;
-in a few screen sessions in parallel.
-
-Thibeaut: I've attached the testcase (I called it minifail_dave, since it
-was changed by Dave). Maybe you can attach it to your website if it's not
-yet there...?
-
-Helge
------------------
-
-do_page_fault() pid=4325 command='minifail_dave' type=6 address=0x00000003
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001111 Not tainted
-r00-03  0004ff0f 1055e000 403390d7 c03613c0
-r04-07  4034b5f4 00000007 4034bdf4 00000000
-r08-11  4034be64 00000000 c03613ca 0000001c
-r12-15  4034be60 4034c7f8 00000000 c0361448
-r16-19  4034c0b0 c0361448 40349270 00000000
-r20-23  00000000 00000000 00000000 00000000
-r24-27  fffffff5 ffffffd3 4034c0b0 00011dac
-r28-31  00000000 4034c0b0 c03614c0 403390d7
-sr00-03  00001111 0000111c 00000000 00001111
-sr04-07  00001111 00001111 00001111 00001111
-
-      VZOUICununcqcqcqcqcqcrmunTDVZOUI
-FPSR: 00000000000000000000000000000000
-FPER1: 00000000
-fr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-fr04-07  8f828e808edb4080 000000001011be24 107495b01078db64 0000000000000000
-fr08-11  8f844240107b8000 0000000800000000 8edb40808f828e80 8f8422b81056115c
-fr12-15  107495b010803280 1056115c1011be24 00000002ffffff9c fffff00000000000
-fr16-19  8f84428010802840 8f828edc8f828ec0 8f828e8000000000 8f81bea88f844208
-fr20-23  8f8442088f844210 8f844208101dc9f4 0000000000000090 00001c9800000000
-fr24-27  3ff0000000000000 3fe0000000000000 412e848000000000 00000000001e8480
-fr28-31  000004000000007a 000000101016bee8 0000000f106ff040 106e3b3810802894
-
-IASQ: 00001111 00001111 IAOQ: 00000003 00000007
- IIR: 43ffff80    ISR: 00001111  IOR: 40000bd0
- CPU:        0   CR30: 8d9f8000 CR31: ffffffff
- ORIG_R28: 00000000
- IAOQ[0]: 00000003
- IAOQ[1]: 00000007
- RP(r2): 403390d7
-pagealloc: memory corruption
-88140040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-88140050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-88140060: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-88140070: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-88140080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-88140090: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-881400a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-881400b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-Backtrace:
- [<1011ecb0>] show_stack+0x18/0x28
- [<10117b94>] dump_stack+0x1c/0x2c
- [<101c6270>] kernel_map_pages+0x2a0/0x2b8
- [<1019eb24>] get_page_from_freelist+0x3e4/0x5f4
- [<1019ee68>] __alloc_pages_nodemask+0x134/0x610
- [<101b1d6c>] do_wp_page+0x260/0xa00
- [<101b3ac0>] handle_mm_fault+0x4cc/0x784
- [<1011d844>] do_page_fault+0x1f8/0x2fc
- [<1011f4ec>] handle_interruption+0xec/0x730
- [<10103078>] intr_check_sig+0x0/0x34
-
-
-do_page_fault() pid=7143 command='minifail_dave' type=6 address=0x00000003
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001111 Not tainted
-r00-03  0004ff0f 1055e000 403390d7 bffaa3c0
-r04-07  4034b5f4 00000007 4034bdf4 00000000
-r08-11  4034be64 00000000 bffaa3ca 0000001c
-r12-15  4034be60 4034c7f8 00000000 bffaa448
-r16-19  4034c0b0 bffaa448 40349270 00000000
-r20-23  00000000 00000000 00000000 00000000
-r24-27  fffffff5 ffffffd3 4034c0b0 00011dac
-r28-31  00000000 4034c0b0 bffaa4c0 403390d7
-sr00-03  00001c1b 00000000 00000000 00001c1b
-sr04-07  00001c1b 00001c1b 00001c1b 00001c1b
-
-      VZOUICununcqcqcqcqcqcrmunTDVZOUI
-FPSR: 00000000000000000000000000000000
-FPER1: 00000000
-fr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-fr04-07  8f828e808edb4080 000000001011be24 107495b01078db64 0000000000000000
-fr08-11  8f844240107b8000 0000000800000000 8edb40808f828e80 8f8422b81056115c
-fr12-15  107495b010803280 1056115c1011be24 00000002ffffff9c fffff00000000000
-fr16-19  8f84428010802840 8f828edc8f828ec0 8f828e8000000000 8f81bea88f844208
-fr20-23  8f8442088f844210 8f844208101dc9f4 0000000000000090 00001c9800000000
-fr24-27  3ff0000000000000 3fe0000000000000 412e848000000000 00000000001e8480
-fr28-31  000004000000007a 000000101016bee8 0000000f106ff040 106e3b3810802894
-
-IASQ: 00001c1b 00001c1b IAOQ: 00000003 00000007
- IIR: 43ffff80    ISR: 00001c1b  IOR: 40000bd0
- CPU:        1   CR30: 86860000 CR31: ffffffff
- ORIG_R28: 00000000
- IAOQ[0]: 00000003
- IAOQ[1]: 00000007
- RP(r2): 403390d7
-
-do_page_fault() pid=9873 command='minifail_dave' type=6 address=0x00000003
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001111 Not tainted
-r00-03  0004ff0f 1055e000 403390d7 c06e53c0
-r04-07  4034b5f4 00000007 4034bdf4 00000000
-r08-11  4034be64 00000000 c06e53ca 0000001c
-r12-15  4034be60 4034c7f8 00000000 c06e5448
-r16-19  4034c0b0 c06e5448 40349270 00000000
-r20-23  00000000 00000000 00000000 00000000
-r24-27  fffffff5 ffffffd3 4034c0b0 00011dac
-r28-31  00000000 4034c0b0 c06e54c0 403390d7
-sr00-03  000026c7 00000000 00000000 000026c7
-sr04-07  000026c7 000026c7 000026c7 000026c7
-
-      VZOUICununcqcqcqcqcqcrmunTDVZOUI
-FPSR: 00000000000000000000000000000000
-FPER1: 00000000
-fr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-fr04-07  8f828e808edb4080 000000001011be24 107495b01078db64 0000000000000000
-fr08-11  8f844240107b8000 0000000800000000 8edb40808f828e80 8f8422b81056115c
-fr12-15  107495b010803280 1056115c1011be24 00000002ffffff9c fffff00000000000
-fr16-19  8f84428010802840 8f828edc8f828ec0 8f828e8000000000 8f81bea88f844208
-fr20-23  8f8442088f844210 8f844208101dc9f4 0000000000000090 00001c9800000000
-fr24-27  3ff0000000000000 3fe0000000000000 412e848000000000 00000000001e8480
-fr28-31  000004000000007a 000000101016bee8 0000000f106ff040 106e3b3810802894
-
-IASQ: 000026c7 000026c7 IAOQ: 00000003 00000007
- IIR: 43ffff80    ISR: 000026c7  IOR: 40000bd0
- CPU:        0   CR30: 8dadc000 CR31: ffffffff
- ORIG_R28: 00000000
- IAOQ[0]: 00000003
- IAOQ[1]: 00000007
- RP(r2): 403390d7
-
-
---------------010404060101030008000604
-Content-Type: text/plain;
- name="minifail_dave.cpp"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="minifail_dave.cpp"
-
-I2luY2x1ZGUgPHB0aHJlYWQuaD4NCiNpbmNsdWRlIDx1bmlzdGQuaD4NCiNpbmNsdWRlIDxz
-dGRpby5oPg0KI2luY2x1ZGUgPHN0ZGxpYi5oPg0KDQovKg0KIGcrKyAgbWluaWZhaWxfZGF2
-ZS5jcHAgLW8gbWluaWZhaWxfZGF2ZSAtTzAgLXB0aHJlYWQgLWcNCg0KIGk9MDsgd2hpbGUg
-dHJ1ZTsgZG8gaT0kKCgkaSsxKSk7IGVjaG8gUnVuICRpOyAuL21pbmlmYWlsX2RhdmU7IGRv
-bmU7DQogKi8NCnZvaWQqIHRocmVhZF9ydW4odm9pZCogYXJnKSB7DQoJd3JpdGUoMSwiVGhy
-ZWFkIE9LLlxuIiwxMSk7DQp9DQoNCmludCBwdXJlX3Rlc3QoKSB7DQoJcHRocmVhZF90IHRo
-cmVhZDsNCglwdGhyZWFkX2NyZWF0ZSgmdGhyZWFkLCBOVUxMLCB0aHJlYWRfcnVuLCBOVUxM
-KTsNCg0KCXN3aXRjaCAoZm9yaygpKSB7DQoJCWNhc2UgLTE6DQoJCQlwZXJyb3IoImZvcmso
-KSBmYWlsZWQiKTsNCgkJY2FzZSAwOg0KCQkJd3JpdGUoMSwiQ2hpbGQgT0suXG4iLDEwKTsN
-CgkJCV9leGl0KDApOw0KCQlkZWZhdWx0Og0KCQkJYnJlYWs7DQoJCQ0KCX0NCgkNCglwdGhy
-ZWFkX2pvaW4odGhyZWFkLCBOVUxMKTsNCglyZXR1cm4gMDsNCn0NCg0KaW50IG1haW4oaW50
-IGFyZ2MsIGNoYXIqKiBhcmd2KSB7DQoJcmV0dXJuIHB1cmVfdGVzdCgpOw0KfQ0KDQo=
---------------010404060101030008000604--
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
