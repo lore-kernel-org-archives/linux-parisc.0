@@ -1,39 +1,52 @@
 From: Thibaut VARENE <T-Bone@parisc-linux.org>
-Subject: Re: Patch for segfaults in minifail tests
-Date: Sat, 1 May 2010 20:29:09 +0200
-Message-ID: <o2n7d01f9f01005011129ye53a95acq164ca882aa8792ef@mail.gmail.com>
-References: <1272651697.2844.39.camel@mulgrave.site>
+Subject: Re: threads and fork on machine with VIPT-WB cache
+Date: Sat, 1 May 2010 20:34:13 +0200
+Message-ID: <k2y7d01f9f01005011134p72082b2bh5fe41d61d9e16aa1@mail.gmail.com>
+References: <20100412214118.46D925160@hiauly1.hia.nrc.ca> <20100413115501.307040@gmx.net>
+	<20100419162653.GA106@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-To: linux-parisc <linux-parisc@vger.kernel.org>
+Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	gniibe@fsij.org, carlos@systemhalted.org
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1272651697.2844.39.camel@mulgrave.site>
+In-Reply-To: <20100419162653.GA106@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Apr 30, 2010 at 8:21 PM, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> T-bone is keeping a web page with all the failing tests on now:
+On Mon, Apr 19, 2010 at 6:26 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+> Hi Helge,
 >
-> http://wiki.parisc-linux.org/TestCases
+> On Tue, 13 Apr 2010, Helge Deller wrote:
+>
+>> Still crashes.
+>
+> Can you you try the patch below? =C2=A0The change to cacheflush.h is =
+the same
+> as before.
 
-About this: I've had to blaze through hundreds of emails to get this
-data together. TBH it's been quite hard to figure which testcase
-related to which bug and which patch. I'm not absolutely sure that my
-segmentation is right (all the futex/fork/vfork/etc threads seem to
-deal with the same kind of problems). I'm also not entirely certain
-that I haven't listed bugs that are now fixed. I may also have
-overlooked mails containing non-obvious testcases.
+=46or the records, while setting up the wiki's TestCases page, it
+noticed that the initial large patch that you sent (see
+https://patchwork.kernel.org/patch/91525/ ) contained bits that
+weren't part of the split chunks you sent afterwards.
 
-What I'm trying to say is that this page is useless without your
-feedback. I'd especially need people to, short of updating it
-themselves (^-^), tell me what can be added/removed/improved. Given a
-Message-ID, I can do the dirty work ;-)
+This patch (pte.d.2) seems to update some of those chunks and also
+contains bits that weren't either part of them.
 
-Comments are welcome, I hope this will be anyhow helpful.
+That being said so that we do not loose track of potentially useful
+code. Though maybe kyle has all of this sorted out already and I'm
+just unable to figure it out myself ;-)
+
+HTH
 
 T-Bone
 
--- 
+--=20
 Thibaut VARENE
 http://www.parisc-linux.org/~varenet/
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
