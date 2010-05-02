@@ -1,61 +1,49 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: Patch for segfaults in minifail tests
-Date: Sun, 02 May 2010 10:19:50 +0200
-Message-ID: <4BDD35A6.1010600@gmx.de>
-References: <1272651697.2844.39.camel@mulgrave.site> <4BDCAA56.4010905@gmx.de> <B8D9B6DC-617D-45F0-806A-C73EB630CFFE@parisc-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	linux-parisc@vger.kernel.org,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>
-To: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <T-Bone@parisc-linux.org>
+From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <T-Bone@parisc-linux.org>
+Subject: Re: threads and fork on machine with VIPT-WB cache
+Date: Sun, 2 May 2010 12:53:37 +0200
+Message-ID: <B68FAE03-5BDE-4CE2-9AEA-42FECA2FD6CD@parisc-linux.org>
+References: <20100501201715.44ABB515D@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed	delsp=yes
+Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <B8D9B6DC-617D-45F0-806A-C73EB630CFFE@parisc-linux.org>
+In-Reply-To: <20100501201715.44ABB515D@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 05/02/2010 01:40 AM, Thibaut VAR=C8NE wrote:
-> Le 2 mai 10 =E0 00:25, Helge Deller a =E9crit :
->=20
->> Thibeaut: I've attached the testcase (I called it minifail_dave, sin=
-ce it
->> was changed by Dave). Maybe you can attach it to your website if it'=
-s not
->> yet there...?
->=20
->=20
-> Err, please, you're not making this easy for me.
->=20
-> I've put on the website all the testcases I found in the emails, so i=
-f
-> dave already posted it, chances are it's already there.
->=20
-> Could you please check the page and see if the testcase you're using =
-is
-> there? I tried to keep it simple by:
-> a) keeping the original name (whenever available)
-> b) linking to the corresponding message
+Le 1 mai 10 =E0 22:17, John David Anglin a =E9crit :
+>
+> Regarding the wiki, it's a useful summary.  However, #561203 (minifai=
+l
+> bug) is not a "Futex wait failure".  We may have futex bugs, but I'm =
+=20
+> not
+> aware of a testcase.  The minifail bug is a "Threads and fork" proble=
+m
+> arising from cache corruption.  Mainly, copy_user_page is broken when
+> copying memory shared by more than one process.  There are also issue=
+s
+> in PTE/TLB management on SMP systems.  Probably, the vfork/execve bug
+> is caused by the same problem.
 
-Sorry Thibaut,
 
-Thanks so much for putting all this stuff into the Wiki!
-It's very useful to everybody, and of course I did already yesterday lo=
-oked=20
-if this minifail test program was in the list. I didn't found it.
+Many thanks for the feedback. The reason why I initially put the =20
+minifail bug under "Futex wait failure" was because I found it =20
+discussed under such a thread ;-)
 
-So, it would be great if you could add it.
+I've merged this section under "Threads & fork", and have quoted your =20
+summary at the top of the section.
 
-In principle you could replace the minifail3 testcase by this one.
-And, I think this should be the major testcase which should work in the
-end, since it's the one which doesn't has any tweaks. It should just
-run without segfaults out of the box if we fixed the problem.
+HTH
 
-> If I'm the only one actually using that webpage, it's totally pointle=
-ss...
+T-Bone
 
-You are not. I have looked at it already quite much!
+--=20
+Thibaut VAR=C8NE
+http://www.parisc-linux.org/~varenet/
 
-Helge
 --
 To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
  in
