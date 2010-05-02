@@ -1,49 +1,61 @@
-From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <T-Bone@parisc-linux.org>
+From: Helge Deller <deller@gmx.de>
 Subject: Re: Patch for segfaults in minifail tests
-Date: Sun, 2 May 2010 01:40:17 +0200
-Message-ID: <B8D9B6DC-617D-45F0-806A-C73EB630CFFE@parisc-linux.org>
-References: <1272651697.2844.39.camel@mulgrave.site> <4BDCAA56.4010905@gmx.de>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed	delsp=yes
+Date: Sun, 02 May 2010 10:19:50 +0200
+Message-ID: <4BDD35A6.1010600@gmx.de>
+References: <1272651697.2844.39.camel@mulgrave.site> <4BDCAA56.4010905@gmx.de> <B8D9B6DC-617D-45F0-806A-C73EB630CFFE@parisc-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
 	linux-parisc@vger.kernel.org,
 	John David Anglin <dave@hiauly1.hia.nrc.ca>
-To: Helge Deller <deller@gmx.de>
+To: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <T-Bone@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4BDCAA56.4010905@gmx.de>
+In-Reply-To: <B8D9B6DC-617D-45F0-806A-C73EB630CFFE@parisc-linux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Le 2 mai 10 =E0 00:25, Helge Deller a =E9crit :
+On 05/02/2010 01:40 AM, Thibaut VAR=C8NE wrote:
+> Le 2 mai 10 =E0 00:25, Helge Deller a =E9crit :
+>=20
+>> Thibeaut: I've attached the testcase (I called it minifail_dave, sin=
+ce it
+>> was changed by Dave). Maybe you can attach it to your website if it'=
+s not
+>> yet there...?
+>=20
+>=20
+> Err, please, you're not making this easy for me.
+>=20
+> I've put on the website all the testcases I found in the emails, so i=
+f
+> dave already posted it, chances are it's already there.
+>=20
+> Could you please check the page and see if the testcase you're using =
+is
+> there? I tried to keep it simple by:
+> a) keeping the original name (whenever available)
+> b) linking to the corresponding message
 
-> Thibeaut: I've attached the testcase (I called it minifail_dave, =20
-> since it
-> was changed by Dave). Maybe you can attach it to your website if =20
-> it's not
-> yet there...?
+Sorry Thibaut,
 
+Thanks so much for putting all this stuff into the Wiki!
+It's very useful to everybody, and of course I did already yesterday lo=
+oked=20
+if this minifail test program was in the list. I didn't found it.
 
-Err, please, you're not making this easy for me.
+So, it would be great if you could add it.
 
-I've put on the website all the testcases I found in the emails, so if =
-=20
-dave already posted it, chances are it's already there.
+In principle you could replace the minifail3 testcase by this one.
+And, I think this should be the major testcase which should work in the
+end, since it's the one which doesn't has any tweaks. It should just
+run without segfaults out of the box if we fixed the problem.
 
-Could you please check the page and see if the testcase you're using =20
-is there? I tried to keep it simple by:
-a) keeping the original name (whenever available)
-b) linking to the corresponding message
+> If I'm the only one actually using that webpage, it's totally pointle=
+ss...
 
-If I'm the only one actually using that webpage, it's totally =20
-pointless...
+You are not. I have looked at it already quite much!
 
-HTH
-
---=20
-Thibaut VAR=C8NE
-http://www.parisc-linux.org/~varenet/
-
+Helge
 --
 To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
  in
