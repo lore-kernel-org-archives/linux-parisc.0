@@ -1,102 +1,100 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: SIGFPE trapping on HPPA
-Date: Mon, 03 May 2010 22:44:21 +0200
-Message-ID: <4BDF35A5.5010309@gmx.de>
-References: <A087547A-1917-414F-90E6-D7DB11646174@free.fr> <F7561409-C8B6-4557-8346-7CF6B123863E@free.fr> <119aab440912140706o7aaa9bf6q1c53568e00ea6291@mail.gmail.com> <658D8AB1-4B32-4862-9938-503E3AC45FD9@free.fr>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: Patch for segfaults in minifail tests
+Date: Mon, 3 May 2010 17:54:30 -0400
+Message-ID: <20100503215429.GA168@hiauly1.hia.nrc.ca>
+References: <20100501231355.851335057@hiauly1.hia.nrc.ca> <1272757191.4570.97.camel@mulgrave.site>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: debian-hppa@lists.debian.org, 559406@bugs.debian.org
-To: Thibaut Paumard <mlotpot.news@free.fr>
+Content-Type: text/plain; charset=us-ascii
+Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	T-Bone@parisc-linux.org
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <658D8AB1-4B32-4862-9938-503E3AC45FD9@free.fr>
+In-Reply-To: <1272757191.4570.97.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 12/14/2009 11:08 PM, Thibaut Paumard wrote:
-> Le 14 d=E9c. 09 =E0 16:06, Carlos O'Donell a =E9crit :
-> Attached is a rather small testcase.
->=20
-> Compile with
->   gcc -lm -o fputest fputest.c
->=20
-> Run with
->   ./fputest
-> or with any succession of 'i's and 'f's, e.g.
->   ./fputest iffifi
->=20
-> The expected behaviour (checked on i386) is that for each f or i lett=
-er,
-> a line is output, for instance
->      $ ./fputest iffi
->      Triggering integer SIGFPE: 1/0=3D(SIGFPE trapped)0
->      Triggering floating SIGFPE: 1./0.=3D(SIGFPE trapped)0.000000
->      Triggering floating SIGFPE: 1./0.=3D(SIGFPE trapped)0.000000
->      Triggering integer SIGFPE: 1/0=3D(SIGFPE trapped)0
->      $ echo $?
->      0
->=20
-> All the SIGFPEs should be trapped and the program should exit gracefu=
-lly
-> (check $?).
->=20
-> Under HPPA, the integer SIGFPEs are trapped but the floating-point
-> SIGFPEs are not:
->      $ ./fputest iffi
->      Triggering integer SIGFPE: 1/0=3D(SIGFPE trapped)0
->      Triggering floating SIGFPE: 1./0.=3DFloating point exception
->      $ echo $?
->      136
+On Sat, 01 May 2010, James Bottomley wrote:
 
+> On Sat, 2010-05-01 at 19:13 -0400, John David Anglin wrote:
+> > Hi Helge,
+> > 
+> > > I tried your patch on top of a 2.6.33.2 kernel (SMP, 32bit, PA8500 (PCX-W) CPU).
+> > > I still do see all the page faults as before. They even seem to trigger 
+> > > faster than with a few of Dave's patches.
+> > > 
+> > > I usually run this command
+> > > 	i=0; while true; do i=$(($i+1)); echo Run $i; ./minifail_dave; done;
+> > > in a few screen sessions in parallel.
+> > 
+> > The reason running multiple screens in parallel exposes further problems
+> > is the implementation of ptep_set_wrprotect is broken.  It simply sets the
+> > write protect bit in the pte and doesn't purge the existing translation.
+> > So, the parent continues to merrily write to the write protected page until
+> > the TLB entry is purged and reloaded.  More processes make it more likely the
+> > entry will be replaced and trigger a COW break.
+> > 
+> > This is why my versions of the minifail test which monitor the stack region
+> > used by the thread don't cause a COW break immediately after the fork.  When
+> > compiled at -O0, the loop index is constantly being stored to the stack.
+> 
+> Actually, no, this explanation isn't correct.
 
-The problem in this test case is, that a signal handler is called
-when SIGFPE happens. Then glibc uses a trampoline handler to call the
-signal handler, in which it touches the floating point registers again
-and finally gets another SIGFPE. In this case, the program just ends
-(since the original signal handler already trapped).
-Involved glibc function is _dl_runtime_resolve() at=20
-ports/sysdeps/hppa/dl-trampoline.S:73
+I stand by the observation that COW breaks do not happen when expected,
+or consistently with the minifail testcase.
 
-The solution is simple.
-Just clear the exception register in arch/parisc/math-emu/decode_exc.c
-in the linux kernel before sending the SIGFPE signal to user space.
+> The way linux works.  You can see roughly how this works in
+> copy_page_range() where we prepare the COW.  If it's going to be a COW
+> range, we call mmu notifiers before and after the pte settings.  The
+> after mmu notifier is supposed to flush the TLB.   Linux always does
+> memory operations in the form
+> 
+> prepare();
+> do_something_with_the_ptes()
+> activate()
 
-Patch attached.
+That is certainly consistent with the existing code in pgtable.h.
+The ptes can only be handled in this manner if there is a different
+page table for each process.  I couldn't find the notifier hooks...
+include/asm-generic/pgtable.h contains flush implementations which
+do the TLB flush for several pte operations.  However, there is no
+generic implementation of ptep_set_wrprotect as far as I can tell.
 
-While at this, I think we need to clear the exception registers for
-the other cases like OVERFLOWEXCEPTION and INEXACTEXCEPTION at least
-as well (see arch/parisc/math-emu/decode_exc.c, line 286 ff).
+In the minifail testcase, we have three processes: "parent", "thread"
+and "child".  Parent and thread have the same space id.  Child has
+a different space id and therefore a different global virtual address
+range.  All processes reference the same physical memory.
 
-Helge
+The ptes for parent and thread have to be consistent since the idtlbt
+instruction will remove one or more entries whose virtual address ranges
+overlap the virtual address range of the new translation.  Parisc
+cpus have a relatively small translation lookaside buffer; so when
+many processes are running, it is easy to lose an entry.  If we lose
+entries, a page could randomly alternate from being write protected
+to not write protected.
 
-Patch:
--------------------------
-[PATCH] parisc: clear floating point exception flag on SIGFPE signal
+As far as I can tell, copy_one_pte only write protects the mms for
+the parent (src_pte) and the child (pte).  The pte of thread is not
+write protected.  As far as I can tell, we don't purge TLBs on
+context switches, so it would appear that we have to have a consistent
+set of ptes for all processes with the same space id.
 
-Clear the floating point exception flag before returning to
-user space. This is needed, else the libc trampoline handler
-may hit the same SIGFPE again while building up a trampoline
-to a signal handler.
+Originally, I had assumed that parent and thread had the same page
+directory.  In that case, one has to handle race conditions in setting
+and updating ptes.  My rp3440 is more stable when I try to force
+insertion of the write protect bit.  However, there are still some faults
+that look like cache corruption when I push the system load up.
 
-=46ixes debian bug #559406.
+> It's only after the activate() through the mmu notifiers that we're
+> supposed to be consistent.
+> 
+> Now the outstanding question is whether we're correctly hooked into the
+> post mmu update notifier ... but I suspect we are (sorry, heading to a
+> plane for boston, will try to check this next week).
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Hope you spot something.
 
-diff --git a/arch/parisc/math-emu/decode_exc.c b/arch/parisc/math-emu/d=
-ecode_exc.c
-index 3ca1c61..27a7492 100644
---- a/arch/parisc/math-emu/decode_exc.c
-+++ b/arch/parisc/math-emu/decode_exc.c
-@@ -342,6 +342,7 @@ decode_fpu(unsigned int Fpu_register[], unsigned in=
-t trap_counts[])
- 		return SIGNALCODE(SIGFPE, FPE_FLTINV);
- 	  case DIVISIONBYZEROEXCEPTION:
- 		update_trap_counts(Fpu_register, aflags, bflags, trap_counts);
-+		Clear_excp_register(exception_index);
- 	  	return SIGNALCODE(SIGFPE, FPE_FLTDIV);
- 	  case INEXACTEXCEPTION:
- 		update_trap_counts(Fpu_register, aflags, bflags, trap_counts);
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
