@@ -1,40 +1,41 @@
-From: wzt.wzt@gmail.com
-Subject: [PATCH] Parisc: Check kmalloc return value before use the buffer in ccio-dma.c
-Date: Thu, 6 May 2010 10:42:08 +0800
-Message-ID: <20100506024208.GB15956@localhost.localdomain>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [PATCH] Parisc: Check kmalloc return value before use the
+	buffer in ccio-dma.c
+Date: Thu, 6 May 2010 00:03:31 -0400
+Message-ID: <20100506040331.GC4902@bombadil.infradead.org>
+References: <20100506024208.GB15956@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org, kyle@mcmartin.ca, deller@gmx.de,
-	jejb@parisc-linux.org
-To: linux-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	kyle@mcmartin.ca, deller@gmx.de, jejb@parisc-linux.org
+To: wzt.wzt@gmail.com
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20100506024208.GB15956@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Check kmalloc return value before use the buffer.
+On Thu, May 06, 2010 at 10:42:08AM +0800, wzt.wzt@gmail.com wrote:
+> +	if (!name) {
+> +		printk(KERN_ERR "%s() failed to get enough memory\n", __func__);
+> +		return ;
+> +	}
+> +
+>  	snprintf(name, 14, "GSC Bus [%d/]", ioc->hw_path);
 
-Signed-off-by: Zhitong Wang <zhitong.wangzt@alibaba-inc.com>
+This code can't fail, since the failure case won't be handled by the
+probe function, and will continue along without properly initializing
+the resources and will fail later. While we could add proper error
+handling, if these functions are called, the ccio IOMMU exists on the
+machine, and without it, we can't do any DMA (amongst other things.)
+So in that case, if this kmalloc fails (which it really shouldn't...)
+we're pretty much screwed.
 
----
- drivers/parisc/ccio-dma.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+We can change it to GFP_ATOMIC|__GFP_NOFAIL so it will retry infinitely,
+or we can panic in the error path with a nice error message so the users
+knows why his machine isn't going to work.
 
-diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-index f511e70..f465417 100644
---- a/drivers/parisc/ccio-dma.c
-+++ b/drivers/parisc/ccio-dma.c
-@@ -1407,6 +1407,11 @@ static void __init ccio_init_resources(struct ioc *ioc)
- 	struct resource *res = ioc->mmio_region;
- 	char *name = kmalloc(14, GFP_KERNEL);
- 
-+	if (!name) {
-+		printk(KERN_ERR "%s() failed to get enough memory\n", __func__);
-+		return ;
-+	}
-+
- 	snprintf(name, 14, "GSC Bus [%d/]", ioc->hw_path);
- 
- 	ccio_init_resource(res, name, &ioc->ioc_regs->io_io_low);
--- 
-1.6.5.3
+I suggest the latter since you'll have the test to squelch gcc warnings
+and such.
+
+regards, Kyle
 
