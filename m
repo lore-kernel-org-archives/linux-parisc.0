@@ -1,32 +1,43 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH] Parisc: Check kmalloc return value before use the
-	buffer in ccio-dma.c
-Date: Thu, 6 May 2010 16:08:54 -0400
-Message-ID: <20100506200854.GG4902@bombadil.infradead.org>
-References: <20100506024208.GB15956@localhost.localdomain> <20100506040331.GC4902@bombadil.infradead.org> <20100506105948.GV6747@parisc-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@mcmartin.ca>, wzt.wzt@gmail.com,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	deller@gmx.de, jejb@parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <T-Bone@parisc-linux.org>
+Subject: Weird sys readings during ghc run
+Date: Thu, 6 May 2010 23:49:02 +0200
+Message-ID: <00E6F5C7-BD87-4BD0-8E6F-C80D8E427DAA@parisc-linux.org>
+References: <w2p7d01f9f01005060541jca558889j5e9ef1e4eccf675a@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100506105948.GV6747@parisc-linux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, May 06, 2010 at 04:59:48AM -0600, Matthew Wilcox wrote:
-> On Thu, May 06, 2010 at 12:03:31AM -0400, Kyle McMartin wrote:
-> > We can change it to GFP_ATOMIC|__GFP_NOFAIL so it will retry infinitely,
-> > or we can panic in the error path with a nice error message so the users
-> > knows why his machine isn't going to work.
-> 
-> If we can't initialise the IOMMU, can we even get a panic message out to
-> the user?
-> 
+Hi pa-ckers
 
-Excellent question! I'm not sure. IODC console will still be working up
-until it gets bonked, so early_console is probably still functional up
-until that point.
+Sometimes a few graphs tell a lot more than words, here's what has
+been recently observed on lafayette.d.o, one of the hppa Debian
+autobuilders.
 
---Kyle
+http://imagebin.ca/view/uhqcMQ.html
+http://imagebin.ca/view/kGT08zc.html
+http://imagebin.ca/view/r61bGE0X.html
+
+The beginning of the (seemingly) abnormal sys usage, and very high IPI
+rate coincides with:
+
+PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+14042 buildd    20   0  337m 311m  20m R   99  7.7 138:46.37 ghc
+
+It looks like (but maybe I'm just paranoid) ghc is doing some nasty  
+things...
+
+Lafayette is running 2.6.32-3-parisc64-smp, and this apparently
+happened during the build of haskell-src-exts_1.8.2-3
+
+The build got eventually killed with ghc still running, see:
+https://buildd.debian.org/fetch.cgi?&pkg=haskell-src-exts&ver=1.8.2-3&arch=hppa&stamp=1273149256&file=log
+
+HTH
+
+-- 
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
+
