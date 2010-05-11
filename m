@@ -1,51 +1,76 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: threads and fork on machine with VIPT-WB cache
-Date: Mon, 10 May 2010 17:07:12 -0400
-Message-ID: <20100510210711.GA15723@hiauly1.hia.nrc.ca>
-References: <20100412214118.46D925160@hiauly1.hia.nrc.ca> <20100413115501.307040@gmx.net> <20100419162653.GA106@hiauly1.hia.nrc.ca> <4BCDEB6E.1060408@gmx.de> <20100509124339.GA6797@hiauly1.hia.nrc.ca> <20100510095632.173760@gmx.net> <20100510145648.GA13452@hiauly1.hia.nrc.ca> <4BE85C82.4080202@gmx.de>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: MAGARETH WILLIAMS <amadeus1@base.be>
+Subject: I WILL SEND YOU FURTHER DETAILS
+Date: Tue, 11 May 2010 13:11:00 +0200
+Message-ID: <96318d2a361a605be0d176d3364c4dab__30839.5997075879$1273579335$gmane$org@base.be>
+Reply-To: <bc101707bc@yahoo.co.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	carlos@systemhalted.org, gniibe@fsij.org,
-	linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=UTF-8
+To: undisclosed-recipients:;
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4BE85C82.4080202@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 10 May 2010, Helge Deller wrote:
 
-> On 05/10/2010 04:56 PM, John David Anglin wrote:
-> > Yes, just after sending, I noticed gcc testsuite and minifail were
-> > broken on gsyprf11.  [...]
-> > 
-> > The attached works better on gsyprf11.  I haven't tested it on anything
-> > else.
-> 
-> Hi Dave,
-> 
-> Ugh... :-(
-> At boot I get:
-> ...
-> INIT: Entering runlevel: 2
-> 
-> Starting enhanced syslogd: rsyslogd.
-> 
-> Starting system message bus: dbuseth0: Setting full-duplex based on MII#1 link partner capability of 41e1.
-> 
-> Starting OpenBSD Secure Shell server: sshd
 
-I'll do a little more testing tonight.  In testing, I have had a
-couple of boot failures on gsyprf11 starting iptables.  Haven't
-seen any hpmc's starting sshd.
+Dearest,
 
-If you find the location of the hpmc is in code modified by change,
-that would be useful information.  Possibly, there is an issue with
-the pdtlb,l instruction.
+I am Ms Magareth Williams,now undergoing medical treatment for cancer i=
+n
+Malaysia. Before I took ill, I was the, Principal Assurance manager of =
+BNP
+Paribas Private Bank.I am getting in touch with you regarding the estat=
+e of
+one Mr. Goudie  and an investment placed under my management 7 years ag=
+o.=20
+He instructed that we liquidate the principal sum (18,350,000.00 Millio=
+n
+United State Dollars) because he needed to make an urgent investment th=
+at
+requires cash payment in Europe. We got in touch with his nominated
+financial institution  in Europe, who agreed to receive this money for =
+a
+fee and make cash available to Mr. Goudie  for his business operations.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+To my surprise, the corresponding bank in Europe got in touch with us l=
+ast
+year that nobody has come forward to claim the money and it has reached=
+ the
+threshold for the bank to declare it to the government as unclaimed
+deposit. On further enquiry, I found that, Mr. Goudie  was involved in =
+an
+accident in Mainland China and that he died intestate. Because he has n=
+o
+next of kin all his assets in Europe are about to go to the government.=
+ I
+write you to makes you  to stand as his next of kin and surviving heir =
+to
+his assets and the beneficiary of the deposit valued 18,350,000.00 Mill=
+ion
+United State Dollars
+
+My condition has become hopeless, my Doctor recently told me that my
+cancer has spread and that I have a few months to live. Having known th=
+e
+hopelessness of my health condition, and the urgency to act, I am
+compelled to seek your assistance to get this money out by standing as =
+the
+beneficiary and using part of these funds to help the poor and sick peo=
+ple
+in society. I have exclusive access to Mr. Goudie=E2=80=99s file and al=
+l his
+investment record.  I hope you are somebody that can be trusted.
+
+If we can be of one accord, we should act swiftly on this. If you are
+interested in this deal, kindly get back to me quickly with your full
+details and I will proceed to give you full modalities on how this can =
+be
+acheived.
+
+I await your response
+
+Ms Magareth Williams
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
