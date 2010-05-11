@@ -1,76 +1,43 @@
-From: MAGARETH WILLIAMS <amadeus1@base.be>
-Subject: I WILL SEND YOU FURTHER DETAILS
-Date: Tue, 11 May 2010 13:11:00 +0200
-Message-ID: <96318d2a361a605be0d176d3364c4dab__30839.5997075879$1273579335$gmane$org@base.be>
-Reply-To: <bc101707bc@yahoo.co.jp>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: threads and fork on machine with VIPT-WB cache
+Date: Tue, 11 May 2010 12:37:01 -0400
+Message-ID: <20100511163700.GA20368@hiauly1.hia.nrc.ca>
+References: <20100412214118.46D925160@hiauly1.hia.nrc.ca> <20100413115501.307040@gmx.net> <20100419162653.GA106@hiauly1.hia.nrc.ca> <4BCDEB6E.1060408@gmx.de> <20100509124339.GA6797@hiauly1.hia.nrc.ca> <20100510095632.173760@gmx.net> <20100510145648.GA13452@hiauly1.hia.nrc.ca> <4BE85C82.4080202@gmx.de> <20100510210711.GA15723@hiauly1.hia.nrc.ca>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-To: undisclosed-recipients:;
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	carlos@systemhalted.org, gniibe@fsij.org,
+	linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20100510210711.GA15723@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On Mon, 10 May 2010, John David Anglin wrote:
 
+> I'll do a little more testing tonight.  In testing, I have had a
+> couple of boot failures on gsyprf11 starting iptables.  Haven't
+> seen any hpmc's starting sshd.
 
-Dearest,
+It appears James' kmap change is needed on PA8800 (rp3440) for cache
+coherency.  I see segmentation faults in sh with just the flush in
+ptep_set_wrprotect.  I haven't had a chance to test whether the flush
+in ptep_set_wrprotect is needed to fix minifail on this machine.
+However, a GCC build completed successfully with the kmap change and
+without the ptep_set_wrprotect flush.
 
-I am Ms Magareth Williams,now undergoing medical treatment for cancer i=
-n
-Malaysia. Before I took ill, I was the, Principal Assurance manager of =
-BNP
-Paribas Private Bank.I am getting in touch with you regarding the estat=
-e of
-one Mr. Goudie  and an investment placed under my management 7 years ag=
-o.=20
-He instructed that we liquidate the principal sum (18,350,000.00 Millio=
-n
-United State Dollars) because he needed to make an urgent investment th=
-at
-requires cash payment in Europe. We got in touch with his nominated
-financial institution  in Europe, who agreed to receive this money for =
-a
-fee and make cash available to Mr. Goudie  for his business operations.
+On gsyprf11 (PA8700), James' kmap change doesn't fix minifail and we need
+the cache flush in ptep_set_wrprotect to fix minifail.  The kmap change
+causes general instability by itself.
 
-To my surprise, the corresponding bank in Europe got in touch with us l=
-ast
-year that nobody has come forward to claim the money and it has reached=
- the
-threshold for the bank to declare it to the government as unclaimed
-deposit. On further enquiry, I found that, Mr. Goudie  was involved in =
-an
-accident in Mainland China and that he died intestate. Because he has n=
-o
-next of kin all his assets in Europe are about to go to the government.=
- I
-write you to makes you  to stand as his next of kin and surviving heir =
-to
-his assets and the beneficiary of the deposit valued 18,350,000.00 Mill=
-ion
-United State Dollars
+Thus, it appears necessary to merge the two approaches and treat PA8700
+and PA8800 differently.
 
-My condition has become hopeless, my Doctor recently told me that my
-cancer has spread and that I have a few months to live. Having known th=
-e
-hopelessness of my health condition, and the urgency to act, I am
-compelled to seek your assistance to get this money out by standing as =
-the
-beneficiary and using part of these funds to help the poor and sick peo=
-ple
-in society. I have exclusive access to Mr. Goudie=E2=80=99s file and al=
-l his
-investment record.  I hope you are somebody that can be trusted.
+I think we are really killing performance with the cache flushing...
 
-If we can be of one accord, we should act swiftly on this. If you are
-interested in this deal, kindly get back to me quickly with your full
-details and I will proceed to give you full modalities on how this can =
-be
-acheived.
-
-I await your response
-
-Ms Magareth Williams
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
