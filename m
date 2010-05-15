@@ -1,94 +1,50 @@
 From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: futex.c and EWOULDBLOCK vs. EAGAIN patch
-Date: Sat, 15 May 2010 16:54:33 -0600
-Message-ID: <20100515225433.GC7587@lackof.org>
-References: <4BE86174.1080008@gmx.de> <20100514192015.GB14840@lackof.org> <AANLkTil6dX7fq-1R0pyjp5XHLyuQyGwcuB1Q9FG8gqGS@mail.gmail.com>
+Date: Sat, 15 May 2010 16:59:52 -0600
+Message-ID: <20100515225952.GD7587@lackof.org>
+References: <4BE86174.1080008@gmx.de> <20100514192015.GB14840@lackof.org> <AANLkTil6dX7fq-1R0pyjp5XHLyuQyGwcuB1Q9FG8gqGS@mail.gmail.com> <20100515172749.GE6764@bombadil.infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>,
+Cc: Carlos O'Donell <carlos@systemhalted.org>,
+	Grant Grundler <grundler@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>,
 	linux-parisc <linux-parisc@vger.kernel.org>,
 	John David Anglin <dave@hiauly1.hia.nrc.ca>
-To: Carlos O'Donell <carlos@systemhalted.org>
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <AANLkTil6dX7fq-1R0pyjp5XHLyuQyGwcuB1Q9FG8gqGS@mail.gmail.com>
+In-Reply-To: <20100515172749.GE6764@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, May 15, 2010 at 07:24:54AM -0400, Carlos O'Donell wrote:
-> On Fri, May 14, 2010 at 3:20 PM, Grant Grundler
-> <grundler@parisc-linux.org> wrote:
-> > On Mon, May 10, 2010 at 09:41:40PM +0200, Helge Deller wrote:
-> >> Since PARISC is the only Linux architecture which has different values
-> >> for EAGAIN and EWOULDBLOCK, we are running in various issues.
-> >>
-> >> One of them is, that e.g. glibc checks for EAGAIN instead of EWOULDBLOCK
-> >> (and vise versa) in nptl/pthread_mutex_trylock.c. This doesn't hurt
-> >> other architectures, but it hurts parisc.
-> >>
-> >> I was planning to send the patch below to linux kernel mailing list.
-> >> But before I do it, I would like to get feedback from the kernel
-> >> hackers here on the list.
-> >>
-> >> What do you think?
-> >
-> > Do it.
-> > We kept them distinct to enable support for HPUX binaries.
-> > This is never going to happen.
-> 
-> Grant, does this mean you endorse purging the kernel of all uses of
-> EWOULDBLOCK (with the exception of the header file used by userspace)?
-> 
-> FWIW I think this is the right approach.
+On Sat, May 15, 2010 at 01:27:49PM -0400, Kyle McMartin wrote:
+> It's a two instruction penalty(*) in the kernel syscall return path, just
+> do it there. I've got a box at Red Hat with all the source to the whole
+> damn world on it we run greps against to look for dumb stuff like memcpy
+> bugs.
 
-Yes, I would. Any approach to eliminate the difference is fine with me.
+Why look for it? Just change the kernel to not ever return one of them.
 
-BTW, "purging" here just means redefining to EAGAIN so the original
-value that we've been using would no longer be used anywhere.
+>  I'll toss a grep for EAGAIN and not EWOULDBLOCK and vice versa and
+> see how much stuff might b0rk.
 
-> 
-> >> Is this patch useful?
-> >
-> > Yes.
-> >
-> >> Or will people just call me an idiot if I ask if this patch could be applied?
-> >> If you think it's useful, maybe another patch description would be more appropriate?
-> >
-> > Could we just equate like other arcthitectures so the kernel only ever
-> > returns one of those and not both?
-> 
-> There are ABI issues that I would like to discuss before you send your
-> patch upstream.
-> 
-> Once you change the kernel EWOULDBLOCK to be equal to EAGAIN, you have
-> broken the ABI.
-> 
-> A kernel syscall that used to return EWOULDBLOCK, now returns EAGAIN.
-> 
-> An application that checked only for EWOULDBLOCK might fail now that
-> EAGAIN is being returned.
-> 
-> Is this a concern? I don't think it is. The POSIX standard, in all
-> cases I could find, says the functions return "EAGAIN or EWOULDBLOCK",
-> meaning that a conforming program must check for both.
+Please do...I'd be curious to see which programs might be affected and
+if we care.
 
-I totally understand it would break the existing API. But having them
-different has it's own set of problems since some applications do not
-check for both.
+> We discussed this a couple years ago, and it ended up being a complete
+> rats nest of error returns that needed fixing.
+> 
+> regards, Kyle.
+> 
+> *: CMPI,N(=), LDI, maybe a third since I don't remember how sign
+> extension works off the top of my head.
 
-> The alternative to Helge's patch is a glibc patch to check the return
-> of *every* syscall and convert EWOULDBLOCK to EAGAIN. This approach
-> has a cost to our syscall fast path. Therefore I am not as inclined to
-> follow this approach.
+Mispredicted branches cost something like 20-25 cycles. I forgot now but I
+do know they aren't cheap.
 
-Agreed. Just equate them in the kernel and we don't have to change any
-other kernel code and I see no reason for glibc to trap them either.
-Yes, there will be some minor fallout...but now we can saw we are compliant
-with every other linux architecture in this regard.
+I'd rather not add more hacks for this they are unlikely to ever
+be removed again. I'd rather have status quo than add some hack
+to the syscall return path.
 
 thanks,
 grant
 
-> 
-> Cheers,
-> Carlos.
