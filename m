@@ -1,29 +1,36 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: threads and fork on machine with VIPT-WB cache
-Date: Sat, 22 May 2010 13:25:00 -0400
-Message-ID: <20100522172459.GA27249@hiauly1.hia.nrc.ca>
-References: <20100511212628.59FFD505C@hiauly1.hia.nrc.ca> <4BE9CEF6.7010203@gmx.de> <20100515210251.GA16614@hiauly1.hia.nrc.ca> <4BF053EA.8090503@gmx.de>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Date: Sun, 23 May 2010 09:11:45 -0400
+Message-ID: <AANLkTimpMvS2ysPxInUZuLNtA-8r5W_3aYhXnv6pZAVd@mail.gmail.com>
+References: <20100511212628.59FFD505C@hiauly1.hia.nrc.ca>
+	 <4BE9CEF6.7010203@gmx.de> <20100515210251.GA16614@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	carlos@systemhalted.org, gniibe@fsij.org,
-	linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4BF053EA.8090503@gmx.de>
+In-Reply-To: <20100515210251.GA16614@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 16 May 2010, Helge Deller wrote:
+On Sat, May 15, 2010 at 5:02 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+> I haven't seen any abnormal segfaults with the attached change on
+> my rp3440 and gsyprf11. =A0Need to flush in pte_wrprotect for minifai=
+l,
+> and to flush in copy_user_page to fix occasional segfaults in sh.
+> The flushes in kmap/kunmap weren't sufficient.
+>
+> Still experimenting to see if number of flushes can be reduced, etc.
 
-> I wish could report success as well....
-> But I still do see segfaults (although they seem to happen not as often as before).
+Applying your patch to 2.6.33, I had 2 hunk rejects.
 
-For reference, see this discussion:
-http://readlist.com/lists/vger.kernel.org/linux-kernel/54/270861.html
+I fixed up the rejects, but I was curious, what is your patch based on?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
