@@ -1,47 +1,38 @@
-From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git patches] bugfixes for parisc for 2.6.35
-Date: Sun, 30 May 2010 09:59:19 +0000
-Message-ID: <20100530095919.GA30169@hera.kernel.org>
-Reply-To: kyle@mcmartin.ca
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: akpm@linux-foundation.org, linux-parisc@vger.kernel.org
-To: torvalds@linux-foundation.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH 14/21] drivers/parisc/iosapic.c: Remove unnecessary kzalloc cast
+Date: Mon, 31 May 2010 20:23:16 -0700
+Message-ID: <ba7d48df75ca37c39b0e519921c116a617e71db7.1275360951.git.joe@perches.com>
+References: <cover.1275360951.git.joe@perches.com>
+Cc: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	linux-parisc@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1275360951.git.joe@perches.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus, just bug fixes this release, doesn't touch anything outside of
-arch/parisc.
- --Kyle
+Convert kzalloc to kcalloc
 
-The following changes since commit e40152ee1e1c7a63f4777791863215e3faa37a86:
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/parisc/iosapic.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-  Linus 2.6.34 (2010-05-16 14:17:36 -0700)
-
-are available in the git repository at:
-  hera.kernel.org:/pub/scm/linux/kernel/git/kyle/parisc-2.6.git fixes
-
-Carlos O'Donell (1):
-      parisc: Use of align_frame provides stack frame.
-
-Helge Deller (1):
-      parisc: clear floating point exception flag on SIGFPE signal
-
-John David Anglin (5):
-      parisc: Avoid interruption in critical region in entry.S
-      parisc: Delete unnecessary nop's in entry.S
-      parisc: LWS fixes for syscall.S
-      parisc: Remove unnecessary macros from entry.S
-      parisc: Call pagefault_disable/pagefault_enable in kmap_atomic/kunmap_atomic
-
-Nick Piggin (1):
-      parisc: invoke oom-killer from page fault
-
- arch/parisc/include/asm/cacheflush.h |   16 ++++++++--
- arch/parisc/kernel/asm-offsets.c     |   15 +++++++--
- arch/parisc/kernel/entry.S           |   52 ++++++---------------------------
- arch/parisc/kernel/syscall.S         |   32 ++++++---------------
- arch/parisc/math-emu/decode_exc.c    |    1 +
- arch/parisc/mm/fault.c               |    7 ++--
- 6 files changed, 47 insertions(+), 76 deletions(-)
+diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
+index c768367..3e6f56c 100644
+--- a/drivers/parisc/iosapic.c
++++ b/drivers/parisc/iosapic.c
+@@ -891,8 +891,8 @@ void *iosapic_register(unsigned long hpa)
+ 	isi->isi_version = iosapic_rd_version(isi);
+ 	isi->isi_num_vectors = IOSAPIC_IRDT_MAX_ENTRY(isi->isi_version) + 1;
+ 
+-	vip = isi->isi_vector = (struct vector_info *)
+-		kzalloc(sizeof(struct vector_info) * isi->isi_num_vectors, GFP_KERNEL);
++	vip = isi->isi_vector = kcalloc(isi->isi_num_vectors,
++					sizeof(struct vector_info), GFP_KERNEL);
+ 	if (vip == NULL) {
+ 		kfree(isi);
+ 		return NULL;
+-- 
+1.7.0.3.311.g6a6955
