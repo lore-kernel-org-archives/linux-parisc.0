@@ -1,24 +1,24 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: hardware
-Date: Fri, 4 Jun 2010 07:32:00 -0400
-Message-ID: <20100604113159.GB20317@bombadil.infradead.org>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: 2.6.35-rc1 and RCU
+Date: Fri, 04 Jun 2010 13:39:42 +0200
+Message-ID: <4C08E5FE.80905@gmx.de>
+References: <20100604094405.GM28492@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20100604094405.GM28492@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I've got a load of hardware I don't really anticipate energizing again
-that anyone who is doing work on Linux is welcome to... I'll make a
-list, but I have random bits of everything parisc related (PCI
-storage/network/misc, memory, disks, arrays, etc.)
+On 06/04/2010 11:44 AM, Kyle McMartin wrote:
+> Did anyone else see a hang on 2.6.35-rc1 just after RCU initializes?
 
-I'm willing to itemize it and offer to ship it for the cost of postage,
-so if any of you want some of it (or machines) make a list of what you
-need and I'll sift through boxes and let you know what I've got.
+Yes, I did see this as well.
 
-(Mostly J6XXX class machine bits and A500 bits probably a couple earlier
-models as well.)
+Helge
 
---Kyle
+> If not, I'll debug it this weekend or when I get back to Canada...
+> 2.6.34+the merged series booted (and continues) to boot fine, so I
+> suspect it's not something we did.
