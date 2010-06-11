@@ -1,46 +1,37 @@
-From: dann frazier <dannf@debian.org>
-Subject: Re: Bug#561203: threads and fork on machine with VIPT-WB cache
-Date: Mon, 7 Jun 2010 17:33:17 -0600
-Message-ID: <20100607233317.GC26452@lackof.org>
-References: <20100408224446.96F294FA3@hiauly1.hia.nrc.ca> <20100602171600.GA5566@hiauly1.hia.nrc.ca> <20100602175616.GA23219@lackof.org> <201006031150.15725.modestas@vainius.eu> <4C0850CB.20703@fsij.org> <20100604052106.GC15860@lackof.org> <AANLkTiklDMpVgeJp54qcNvMcUp2Ns5lkEpwHxWOnLD8Y@mail.gmail.com> <20100607171136.GA14186@lackof.org> <9EC4BDAF-7E7D-4EC8-80C3-D755A57D03C8@debian.org>
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: Re: gcc-4.5 -fdelayed-branch strikes back
+Date: Fri, 11 Jun 2010 19:45:16 +0200
+Message-ID: <20100611194516.496c2ddf@zombie>
+References: <20100604181712.43456ddb@borg.bxl.tuxicoman.be>
+	<20100604193229.473BB515D@hiauly1.hia.nrc.ca>
+	<20100605115808.0ff33504@borg.bxl.tuxicoman.be>
+	<20100607232907.GA10176@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Cc: linux-parisc@vger.kernel.org
-To: Thibaut =?iso-8859-1?Q?VAR=C8NE?= <varenet@debian.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: dave@hiauly1.hia.nrc.ca, linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <9EC4BDAF-7E7D-4EC8-80C3-D755A57D03C8@debian.org>
+In-Reply-To: <20100607232907.GA10176@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jun 07, 2010 at 08:27:44PM +0200, Thibaut VAR=C8NE wrote:
-> Le 7 juin 10 =E0 19:11, dann frazier a =E9crit :
->
->> btw, I thought it would be useful to edit that page and tag each pat=
-ch
->> with its status in Debian (in-official-kernel, installed-on-buildds,
->> etc), but the page appears to be immutable.
->
->
-> The wiki can only be edited by registered (and approved) users (we ha=
-d a=20
-> lot of defacing), see [1] for details.
->
-> Please register, I'd be happy to approve your account ;-)
 
-ah, ok. My username is DannFrazier
+Hi Dave,
 
-> Cheers,
-> T-Bone
->
-> [1] http://wiki.parisc-linux.org/WikiAccessPolicy
+> I haven't had a chance to try the your stripped down gengenrtl.c
+> but there is definitely a problem compiling the 4.5 branch with
+> 4.4 using STAGE1_CFLAGS="-O".  This didn't occur with 4.3.  I get
+> an ICE in stage1 configuration of libgcc with 4.4.  At this point,
+> I don't know the cause but this is bad as it indicates a major
+> bug with 4.4 on hppa.  -fno-reorder-blocks didn't help.
+
+I'm able to reproduce the same behavior with gcc-4.5 trying to build
+itself. Can you try with -fno-delayed-branch ?
+I think -freorder-blocks is just a way to trigger the issue with -O1.
+
+The test case should make things pretty easy to repro. But if you need
+some more details let me know.
 
 
-
---=20
-dann frazier
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Cheers,
+  Guy
