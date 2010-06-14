@@ -1,51 +1,60 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH 4/5] parisc: Remove *(.text.*) pattern from the linker
- script
-Date: Mon, 14 Jun 2010 10:20:59 -0500
-Message-ID: <1276528859.5374.29.camel@mulgrave.site>
-References: <1276519112-11649-1-git-send-email-matt@console-pimps.org>
-	 <1276519112-11649-4-git-send-email-matt@console-pimps.org>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: [PATCH] parisc: pass through '\t' to early (iodc) console
+Date: Mon, 14 Jun 2010 12:02:27 -0400
+Message-ID: <20100614160227.GK20317@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-arch@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
-	linux-kernel@vger.kernel.org,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: Matt Fleming <matt@console-pimps.org>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <1276519112-11649-4-git-send-email-matt@console-pimps.org>
-List-ID: <linux-arch.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2010-06-14 at 13:38 +0100, Matt Fleming wrote:
-> From: Matt Fleming <matthew.fleming@imgtec.com>
-> 
-> Drop the pattern from the linker script because the pattern is now
-> provided by TEXT_TEXT.
-> 
-> Signed-off-by: Matt Fleming <matthew.fleming@imgtec.com>
-> ---
->  arch/parisc/kernel/vmlinux.lds.S |    1 -
->  1 files changed, 0 insertions(+), 1 deletions(-)
-> 
-> diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
-> index d64a6bb..6784e39 100644
-> --- a/arch/parisc/kernel/vmlinux.lds.S
-> +++ b/arch/parisc/kernel/vmlinux.lds.S
-> @@ -61,7 +61,6 @@ SECTIONS
->  		*(.text.sys_exit)
->  		*(.text.do_sigaltstack)
->  		*(.text.do_fork)
-> -		*(.text.*)
->  		*(.fixup)
->  		*(.lock.text)		/* out-of-line lock text */
->  		*(.gnu.warning)
+The firmware handles '\t' internally, so stop trying to emulate it
+(which, incidentally, had a bug in it.)
 
+Fixes a really weird hang at bootup in rcu_bootup_announce, which,
+as far as I can tell, is the first printk in the core kernel to use
+a tab as the first character.
 
-This would destroy all of the named parisc text ordering we do above the
-removed line because now you'd have swept up all the function sections
-before we get to them, won't it?
+Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
+---
+ arch/parisc/kernel/firmware.c |   12 ++----------
+ 1 files changed, 2 insertions(+), 10 deletions(-)
 
-The ordering is an execution speed up on 32 bit systems because our
-relative jump is so short.
+diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
+index 4c247e0..df971fa 100644
+--- a/arch/parisc/kernel/firmware.c
++++ b/arch/parisc/kernel/firmware.c
+@@ -1123,7 +1123,6 @@ static char __attribute__((aligned(64))) iodc_dbuf[4096];
+  */
+ int pdc_iodc_print(const unsigned char *str, unsigned count)
+ {
+-	static int posx;        /* for simple TAB-Simulation... */
+ 	unsigned int i;
+ 	unsigned long flags;
+ 
+@@ -1133,19 +1132,12 @@ int pdc_iodc_print(const unsigned char *str, unsigned count)
+ 			iodc_dbuf[i+0] = '\r';
+ 			iodc_dbuf[i+1] = '\n';
+ 			i += 2;
+-			posx = 0;
+ 			goto print;
+-		case '\t':
+-			while (posx & 7) {
+-				iodc_dbuf[i] = ' ';
+-				i++, posx++;
+-			}
+-			break;
+ 		case '\b':	/* BS */
+-			posx -= 2;
++			i--; /* overwrite last */
+ 		default:
+ 			iodc_dbuf[i] = str[i];
+-			i++, posx++;
++			i++;
+ 			break;
+ 		}
+ 	}
+-- 
+1.7.0.1
 
-James
