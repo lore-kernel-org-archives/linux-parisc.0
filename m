@@ -1,34 +1,51 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: 2.6.35-rc1 and RCU
-Date: Mon, 14 Jun 2010 09:47:15 -0400
-Message-ID: <20100614134715.GI20317@bombadil.infradead.org>
-References: <20100604094405.GM28492@bombadil.infradead.org> <4C08E5FE.80905@gmx.de> <20100604155033.GC20317@bombadil.infradead.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH 4/5] parisc: Remove *(.text.*) pattern from the linker
+ script
+Date: Mon, 14 Jun 2010 10:20:59 -0500
+Message-ID: <1276528859.5374.29.camel@mulgrave.site>
+References: <1276519112-11649-1-git-send-email-matt@console-pimps.org>
+	 <1276519112-11649-4-git-send-email-matt@console-pimps.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100604155033.GC20317@bombadil.infradead.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-arch@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
+	linux-kernel@vger.kernel.org,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: Matt Fleming <matt@console-pimps.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <1276519112-11649-4-git-send-email-matt@console-pimps.org>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Jun 04, 2010 at 11:50:33AM -0400, Kyle McMartin wrote:
-> On Fri, Jun 04, 2010 at 01:39:42PM +0200, Helge Deller wrote:
-> > On 06/04/2010 11:44 AM, Kyle McMartin wrote:
-> > > Did anyone else see a hang on 2.6.35-rc1 just after RCU initializes?
-> > 
-> > Yes, I did see this as well.
-> > 
+On Mon, 2010-06-14 at 13:38 +0100, Matt Fleming wrote:
+> From: Matt Fleming <matthew.fleming@imgtec.com>
 > 
-> Cool, next time I reboot I'll see if initcall_debug helps.
->
+> Drop the pattern from the linker script because the pattern is now
+> provided by TEXT_TEXT.
+> 
+> Signed-off-by: Matt Fleming <matthew.fleming@imgtec.com>
+> ---
+>  arch/parisc/kernel/vmlinux.lds.S |    1 -
+>  1 files changed, 0 insertions(+), 1 deletions(-)
+> 
+> diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
+> index d64a6bb..6784e39 100644
+> --- a/arch/parisc/kernel/vmlinux.lds.S
+> +++ b/arch/parisc/kernel/vmlinux.lds.S
+> @@ -61,7 +61,6 @@ SECTIONS
+>  		*(.text.sys_exit)
+>  		*(.text.do_sigaltstack)
+>  		*(.text.do_fork)
+> -		*(.text.*)
+>  		*(.fixup)
+>  		*(.lock.text)		/* out-of-line lock text */
+>  		*(.gnu.warning)
 
-I debugged this further, it appears to be a code generation bug...
 
-if kernel/rcutree_plugin.h::rcu_bootup_announce_oddness is not called,
-we don't hang.
+This would destroy all of the named parisc text ordering we do above the
+removed line because now you'd have swept up all the function sections
+before we get to them, won't it?
 
-But it's just a bunch of #ifdef'd printks, so I'm not sure how that
-could be going wrong.
+The ordering is an execution speed up on 32 bit systems because our
+relative jump is so short.
 
-More debugging to come.
+James
