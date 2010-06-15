@@ -1,85 +1,25 @@
-From: Tim Abbott <tabbott@ksplice.com>
-Subject: Re: [PATCH 1/5] vmlinux.lds.h: Include *(.text.*) in TEXT_TEXT
-Date: Mon, 14 Jun 2010 22:52:08 -0400 (EDT)
-Message-ID: <alpine.DEB.1.10.1006142245560.1248@dr-wily.mit.edu>
-References: <1276519112-11649-1-git-send-email-matt@console-pimps.org>  <alpine.DEB.1.10.1006141014360.1432@dr-wily.mit.edu>  <87y6ehxvby.fsf@linux-g6p1.site>  <alpine.DEB.1.10.1006141534490.1248@dr-wily.mit.edu> <1276557299.5374.847.camel@mulgrave.site>
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: Re: [PATCH] parisc: add tty driver to PDC console
+Date: Tue, 15 Jun 2010 13:34:10 +0200
+Message-ID: <20100615133410.044ea5b1@borg.bxl.tuxicoman.be>
+References: <20100614192441.245da011@zombie>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Matt Fleming <matt@console-pimps.org>, linux-arch@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-	Sam Ravnborg <sam@ravnborg.org>, Michal Marek <mmarek@suse.cz>,
-	Denys Vlasenko <vda.linux@googlemail.com>,
-	linux-parisc@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=US-ASCII
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1276557299.5374.847.camel@mulgrave.site>
+In-Reply-To: <20100614192441.245da011@zombie>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 14 Jun 2010, James Bottomley wrote:
+On Mon, 14 Jun 2010 19:24:41 +0200
+Guy Martin <gmsoft@tuxicoman.be> wrote:
 
-> On Mon, 2010-06-14 at 18:21 -0400, Tim Abbott wrote:
-> > On Mon, 14 Jun 2010, Matt Fleming wrote:
-> > 
-> > > Do these special kernel sections include things like the parisc
-> > > .text.do_softirq, .text.sys_exit, etc? James raised a good objection to
-> > > the parisc patch of this series. I'm guessing most people saw it already
-> > > but I'll paste it here for reference,
-> > > 
-> > >     This would destroy all of the named parisc text ordering we do above the
-> > >     removed line because now you'd have swept up all the function sections
-> > >     before we get to them, won't it?
-> > > 
-> > >     The ordering is an execution speed up on 32 bit systems because our
-> > >     relative jump is so short.
-> > > 
-> > > Will you changes handle this OK?
-> > 
-> > I think I addressed this in my reply to James just now, but to be super 
-> > clear, this -ffunction-sections plan involves renaming .text.do_softirq to 
-> > .text..do_softirq (etc.) first.
 > 
-> OK, so that doesn't make a lot of sense to me; I suspect because you
-> don't understand what parisc is doing.  These aren't names of linux
-> special sections ... they're names of function sections.  For
-> efficiency, we take specific hot functions and place them together in
-> the linker script so the jumps between them are small enough to be coded
-> as relative on the 32 bit architecture.  It's really just a more
-> efficient way of laying out the binary.
+> 
+> This patch adds a tty driver to the PDC console. It allows the use
+> of ports not supported by linux as a console (e.g. serial port on
+> C3600).
 
-Yeah, I'd forgotten parisc was doing -ffunction-sections, now I understand 
-what you're talking about.  What I'd recommend is just moving the 
-.text.do_softirq and friends like in the hunk below -- I believe that 
-should achieve the same performance goals, and should have no conflict 
-with adding a wildcard for -ffunction-sections generated sections to 
-TEXT_TEXT.
+Err, I meant the C8000.
 
-	-Tim Abbott
-
-diff --git a/arch/parisc/kernel/vmlinux.lds.S 
-b/arch/parisc/kernel/vmlinux.lds.S
-index d64a6bb..ad0d3d3 100644
---- a/arch/parisc/kernel/vmlinux.lds.S
-+++ b/arch/parisc/kernel/vmlinux.lds.S
-@@ -52,15 +52,15 @@ SECTIONS
-        _text = .;              /* Text and read-only data */
-        .text ALIGN(16) : {
-                HEAD_TEXT
-+               *(.text.do_softirq)
-+               *(.text.sys_exit)
-+               *(.text.do_sigaltstack)
-+               *(.text.do_fork)
-                TEXT_TEXT
-                SCHED_TEXT
-                LOCK_TEXT
-                KPROBES_TEXT
-                IRQENTRY_TEXT
--               *(.text.do_softirq)
--               *(.text.sys_exit)
--               *(.text.do_sigaltstack)
--               *(.text.do_fork)
-                *(.text.*)
-                *(.fixup)
-                *(.lock.text)           /* out-of-line lock text */
-
-
+  Guy
