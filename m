@@ -1,74 +1,63 @@
-From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
-Subject: Re: bnx2 fails to compile on parisc because of missing
- get_dma_ops()
-Date: Thu, 17 Jun 2010 23:50:36 +0900
-Message-ID: <20100617234855R.fujita.tomonori@lab.ntt.co.jp>
-References: <1276780336.2789.6.camel@mulgrave.site>
-	<C27F8246C663564A84BB7AB3439772421B79CBCA21@IRVEXCHCCR01.corp.ad.broadcom.com>
-	<20100617230435J.fujita.tomonori@lab.ntt.co.jp>
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: Re: bnx2 fails to compile on parisc because of missing get_dma_ops()
+Date: Fri, 18 Jun 2010 00:30:51 +0900
+Message-ID: <20100617153051.GB8964@linux-sh.org>
+References: <C27F8246C663564A84BB7AB3439772421B79CBCA1E@IRVEXCHCCR01.corp.ad.broadcom.com> <20100617211946A.fujita.tomonori@lab.ntt.co.jp> <20100617.073653.193708702.davem@davemloft.net> <20100617234520S.fujita.tomonori@lab.ntt.co.jp>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: JBottomley@novell.com, vapier@gentoo.org, netdev@vger.kernel.org,
+Content-Type: text/plain; charset=us-ascii
+Cc: davem@davemloft.net, mchan@broadcom.com, vapier@gentoo.org,
+	JBottomley@novell.com, netdev@vger.kernel.org,
 	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: mchan@broadcom.com
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20100617230435J.fujita.tomonori@lab.ntt.co.jp>
-List-ID: <linux-kernel.vger.kernel.org>
+To: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20100617234520S.fujita.tomonori@lab.ntt.co.jp>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Oops, some typos.
-
-On Thu, 17 Jun 2010 23:05:59 +0900
-FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp> wrote:
-
-> On Thu, 17 Jun 2010 06:30:39 -0700
-> "Michael Chan" <mchan@broadcom.com> wrote:
+On Thu, Jun 17, 2010 at 11:50:35PM +0900, FUJITA Tomonori wrote:
+> On Thu, 17 Jun 2010 07:36:53 -0700 (PDT)
+> David Miller <davem@davemloft.net> wrote:
 > 
-> > James Bottomley wrote:
+> > From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+> > Date: Thu, 17 Jun 2010 21:21:13 +0900
 > > 
-> > > On Thu, 2010-06-17 at 05:54 -0700, Michael Chan wrote:
-> > > > This prefetch improves performance noticeably when the driver is
-> > > > handling incoming 64-byte packets at a sustained rate.
-> > >
-> > > So why not do it unconditionally?  The worst that can happen
-> > > is that you
-> > > pull in a stale cache line which will get cleaned in the
-> > > dma_sync, thus
-> > > slightly degrading performance on incoherent architectures.
+> > > On Wed, 16 Jun 2010 23:24:44 -0700
+> > > "Michael Chan" <mchan@broadcom.com> wrote:
+> > > 
+> > >> David, why is dma_is_consistent() always returning 1 on sparc?  The
+> > >> streaming DMA is not consistent.
+> > > 
+> > > I think that there are some confusion about dma_is_consistent(). Some
+> > > architectures think that dma_is_consistent() is supposed to return 1
+> > > if they can allocate coherent memory (note that some architectures
+> > > can't allocate coherent memory).
 > > 
-> > The original patch was an unconditional prefetch.  There was
-> > some discussion that it might not be correct if the DMA wasn't
-> > sync'ed yet on some archs.  If the concensus is that it is ok to
-> > do so, that would be the simplest solution.
+> > Right, and that's why it's defined this way.
+> > 
+> > If the desired meaning is different, just me know and I'll fix the
+> > sparc definition.
 > 
-> As James said, it just adds useless prefetch on incoherent
-> architectures. sync_single_for_cpu is called later so we can see the
-> correct data. One useless prefetch is unlikely to lead performance
-> drop.
+> I think that there are some other architectures do the same. We need
+> to make sure that all the architectures define dma_is_consistent() in
+> the same meaning if drivers need it. However, I'm not sure we really
+> need dma_is_consistent(). There is only one user of it (and I think we
+> could remove it).
 > 
-> You might prefer this v2.
-> 
-> =
-> From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
-> Subject: [PATCH v2] bnx2: fix dma_get_ops compilation breakage
-> 
-> This removes dma_get_ops() prefetch optimization in bnx2.
-> 
-> bnx2 uses dma_get_ops() to see if dma_sync_single_for_cpu() is
-> noop. bnx2 does prefetch if it's noop.
-> 
-> But dma_get_ops() isn't available on all the architectures (only the
-> architectures that uses dma_map_ops struct have it). Using
-> dma_get_ops() in drivers leads to compilation breakage on many
-> archtectures.
+> In the bnx2 case, we can simply prefetch on all the archs (or just
+> remove the optimization).
 
-s/archtectures/architectures/
+I think its worthwhile keeping, especially since the consistency can vary
+on a per struct device level. If there's a benefit with these sorts of
+prefetch micro-optimizations in drivers when it doesn't cost us that much
+to provide the hint, I don't really see the harm. If dma_is_consistent()
+is suddenly supposed to take on other meanings, or it's supposed to mean
+something entirely different, then this is something we should deal with
+separately.
 
-> This patch removes dma_get_ops() and changes bnx2 to do prefetch on
-> all the architectures. This adds useless prefetch on incoherent
-                                                       ~~~~~~~~~~
-                                             s/incoherent/non-coherent/
-(thanks to Alan)
+I don't see any harm in letting drivers know whether we can support
+consistent DMA allocs for a given struct device or not though, even if
+the micro-optimization is marginal at best.
 
-> architectures but this is harmless. It is also unlikely to cause the
-> performance drop.
+At least I've conditionalized the definition on SH, and it seems other
+archictures have done so too. It's not clear what we'd gain from throwing
+that away as long as they're generally in agreement on what it means.
