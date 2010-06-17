@@ -1,40 +1,51 @@
-From: "Michael Chan" <mchan@broadcom.com>
+From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
 Subject: Re: bnx2 fails to compile on parisc because of missing
  get_dma_ops()
-Date: Wed, 16 Jun 2010 23:24:44 -0700
-Message-ID: <C27F8246C663564A84BB7AB3439772421B79CBCA1E@IRVEXCHCCR01.corp.ad.broadcom.com>
-References: <C27F8246C663564A84BB7AB3439772421B79CBCA1D@IRVEXCHCCR01.corp.ad.broadcom.com>
+Date: Thu, 17 Jun 2010 21:13:42 +0900
+Message-ID: <20100617210358A.fujita.tomonori@lab.ntt.co.jp>
+References: <1276737229.2847.853.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
-Cc: "'Mike Frysinger'" <vapier@gentoo.org>,
-	"James Bottomley" <JBottomley@novell.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"FUJITA Tomonori" <fujita.tomonori@lab.ntt.co.jp>
-To: "'davem@davemloft.net'" <davem@davemloft.net>,
-	"'Paul Mundt'" <lethal@linux-sh.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <C27F8246C663564A84BB7AB3439772421B79CBCA1D@IRVEXCHCCR01.corp.ad.broadcom.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: Text/Plain; charset=us-ascii
+Cc: netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, fujita.tomonori@lab.ntt.co.jp,
+	mchan@broadcom.com
+To: JBottomley@Novell.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1276737229.2847.853.camel@mulgrave.site>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Michael Chan wrote:
->
-> Paul Mundt wrote:
->
-> > If you want to have a micro-optimization for the consistent DMA
-> > case, you can check dma_is_consistent(), which is part of the API and
-> > will be variable on certain platform configurations (ie, some may be
-> > consistent with PCI but not on other busses, etc.)
-> >
-> >
->
-> Thanks for the tip.  I didn't know about the dma_is_consistent() API.
-> I'll use this to fix it then.
->
+On Wed, 16 Jun 2010 20:13:49 -0500
+James Bottomley <JBottomley@Novell.com> wrote:
 
-David, why is dma_is_consistent() always returning 1 on sparc?  The
-streaming DMA is not consistent.
+> I'm not quite sure whose fault this one is.
+> 
+> However, this code in bnx2.c:
+> 
+> 		if (!get_dma_ops(&pdev->dev)->sync_single_for_cpu) {
+> 			next_rx_buf =
+> 				&rxr->rx_buf_ring[
+> 					RX_RING_IDX(NEXT_RX_BD(sw_cons))];
+> 			prefetch(next_rx_buf->desc);
+> 		}
+> 
+> Looks remarkably fragile: what exactly is it trying to do?
+> 
+> The commit that causes the problem:
+> 
+> commit a33fa66bcf365ffe5b79d1ae1d3582cc261ae56e
+> Author: Michael Chan <mchan@broadcom.com>
+> Date:   Thu May 6 08:58:13 2010 +0000
+> 
+>     bnx2: Add prefetches to rx path.
+> 
+> Looks fairly innocuous by the description.
+> 
+> Should parisc have a get_dma_ops()?  We don't need one because our dma
+> ops are per platform not per bus.
 
+Shouldn't. Only the architectures that use
+include/dma-generic/dma-mapping.common.h need to have get_dma_ops().
+
+Using include/dma-generic/dma-mapping.common.h for parisc is not a bad
+idea though.
