@@ -1,63 +1,62 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH 1/5] vmlinux.lds.h: Include *(.text.*) in TEXT_TEXT
-Date: Thu, 17 Jun 2010 15:38:24 -0500
-Message-ID: <1276807104.7398.315.camel@mulgrave.site>
-References: <1276519112-11649-1-git-send-email-matt@console-pimps.org>
-	 <alpine.DEB.1.10.1006141014360.1432@dr-wily.mit.edu>
-	 <87y6ehxvby.fsf@linux-g6p1.site> <1276545951.5374.260.camel@mulgrave.site>
-	 <alpine.DEB.1.10.1006141608550.1248@dr-wily.mit.edu>
-	 <1276556919.5374.822.camel@mulgrave.site>
-	 <alpine.DEB.1.10.1006142039250.1248@dr-wily.mit.edu>
-	 <1276724403.2847.453.camel@mulgrave.site>
-	 <AANLkTikgzvZvb30QhSMs_GQ6MCawl0V6GzixnDYfqmzg@mail.gmail.com>
-	 <1276804567.7398.264.camel@mulgrave.site>
-	 <AANLkTink485wn-EaLibaD3Xh7X5RwXM06d6jx3GijD40@mail.gmail.com>
+Subject: [RFC] fix the relative jump problem on large modules
+Date: Fri, 18 Jun 2010 10:03:27 -0500
+Message-ID: <1276873407.2850.35.camel@mulgrave.site>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Cc: Tim Abbott <tabbott@ksplice.com>,
-	Matt Fleming <matt@console-pimps.org>,
-	linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-	linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-	Michal Marek <mmarek@suse.cz>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: Denys Vlasenko <vda.linux@googlemail.com>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <AANLkTink485wn-EaLibaD3Xh7X5RwXM06d6jx3GijD40@mail.gmail.com>
-List-ID: <linux-arch.vger.kernel.org>
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2010-06-17 at 22:19 +0200, Denys Vlasenko wrote:
-> >> This is doable in asm, yes. For .bss, we need to not forget about
-> >> @nobits too: section .bss.foo,"aw",@nobits
-> >
-> > That's only for bss ... we have about a handful of such statements and
-> > they always use the assembler .bss directive (which doesn't need flags).
-> >
-> >> > Actually, as I said, that would be .data-
-> 
-> You are right, in assembly we can specify needed attributes.
-> 
-> I am more concerned about C:
-> 
-> arch/x86/include/asm/cache.h:
-> #define __read_mostly __attribute__((__section__(".data..read_mostly")))
-> 
-> If we change it to
-> 
-> #define __read_mostly __attribute__((__section__(".data-read_mostly")))
-> 
-> What makes this section have correct attributes?
+Part of this arguing with ksplice about their plan for
+-ffunction-sections and -fdata-sections got me thinking about how we do
+modules.  Right at the moment we have one section for every function in
+a module, which leads to a massive amount of relocation overhead in the
+in-kernel module loader.  Plus for some modules (ipv6, I believe), we
+lack the relative jumps to get out of the function because we only put
+the stubs after all the text sections.
 
-The fact that we specify it correctly in the sectional gather in the
-linker scripts.  i.e. we should have a (NOLOAD) type for the
-gathered .bss section ... although currently we don't.
+The way to fix all of this, I think, is to make the real linker do more
+work.  It should be beneficial to us because the linker *should* be able
+to rearrange the sections to get the maximum number of jumps satisfiable
+relatively.
 
-The point (for the third time) is that if our linker scripts specify the
-sections and attributes absolutely (and correctly) it doesn't matter
-what random attributes the .o files pick up.  It's only if we miss a
-specifier that the linker tries to work it out from the input sections.
+I've tested that this works on pa8800 systems, but I'd really like
+someone to try a failing module on a 32 bit platform (since 64 bits has
+22 bit relative jumps, all the modules actually work).  You can see some
+of the savings in the scsi_mod.ko
 
-That's how we make postfix or any other type of "nonstandard" section
-name work.
+Before: 325 sections, 6366 relocation symbols
+After: 23 sections, 5244 relocation symbols
 
 James
+
+---
+
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index 55cca1d..ab88f11 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -21,6 +21,7 @@ KBUILD_DEFCONFIG := default_defconfig
+ 
+ NM		= sh $(srctree)/arch/parisc/nm
+ CHECKFLAGS	+= -D__hppa__=1
++LDFLAGS_MODULE	+= -T $(srctree)/arch/parisc/kernel/module.lds
+ 
+ MACHINE		:= $(shell uname -m)
+ ifeq ($(MACHINE),parisc*)
+diff --git a/arch/parisc/kernel/module.lds b/arch/parisc/kernel/module.lds
+new file mode 100644
+index 0000000..42ee3eb
+--- /dev/null
++++ b/arch/parisc/kernel/module.lds
+@@ -0,0 +1,6 @@
++SECTIONS {
++	.text : {
++		/* Gather all function sections */
++		*(.text.*)
++	}
++}
+
+
