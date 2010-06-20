@@ -1,41 +1,37 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: vfork test case.
-Date: Sun, 20 Jun 2010 00:28:14 -0400 (EDT)
-Message-ID: <20100620042814.ECC205160@hiauly1.hia.nrc.ca>
-References: <119aab440912061319y5b863203ve5dc3dc568a6ccec@mail.gmail.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [RFC] fix the relative jump problem on large modules
+Date: Sun, 20 Jun 2010 08:55:28 -0500
+Message-ID: <1277042128.5242.2.camel@mulgrave.site>
+References: <20100619232128.6010C5160@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org,
-	kyle@mcmartin.ca, James.Bottomley@hansenpartnership.com
-To: carlos@systemhalted.org (Carlos O'Donell)
+Content-Type: text/plain; charset="UTF-8"
+Cc: deller@gmx.de, linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440912061319y5b863203ve5dc3dc568a6ccec@mail.gmail.com> from "Carlos O'Donell" at Dec 6, 2009 04:19:13 pm
+In-Reply-To: <20100619232128.6010C5160@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Carlos,
+On Sat, 2010-06-19 at 19:21 -0400, John David Anglin wrote:
+> > The theory was that the linker should do the right thing and not emit a
+> > relocation that can't reach the boundary of the text segment (i.e. it
+> > should embed a stub between the sections as it combines them).  I'll
+> > have to fire up a 32 bit compile and see exactly what it thinks it's
+> > doing ... I've got a nasty feeling it expects us to be able to stub
+> > either at the beginning or the end, which the in-kernel loader doesn't.
+> 
+> See ld --stub-group-size=N option.
 
-> I have constructed a vfork test case which shows some of the problems
-> I have using vfork reliably. This fails every time on my PA8700 system
-> running 2.6.32-rc6. It appears as though r28 (ret0) in the parent is
-> being corrupted.
+I was assuming that was the default, like on arm, I take it it's not?
 
-It seems the vfork implementation has changed in 2.11.1 from
-using clone to the vfork syscall.  I tried to build gdb head
-today, but it dies at startup due to a problem with vfork.  This
-is potentially also an issue with gcc as it uses the same
-libiberty code.
+>   GCC assumes stub sections are at
+> the beginning and that the linker can insert stubs between input sections.
+> Merging text sections is likely to cause problems.
 
-I filed a sourceware bug, but closed it when I realized that
-this is a glibc/kernel bug:
-http://sourceware.org/bugzilla/show_bug.cgi?id=11730
+Well, the theory was that ld was capable of more intelligent section
+layout decisions than the in-kernel linker.  If you're saying that's not
+true, then there's probably not much point to doing this.
 
-After spending some time looking at this, I realized that __vfork
-is broken.  It should not allocate a frame as the child may clobber
-the parent's frame when it does a call, etc.  A frame should only
-be allocated and popped around the call to the syscall error handler.
+James
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
