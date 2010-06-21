@@ -1,51 +1,45 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [RFC] fix the relative jump problem on large modules
-Date: Sun, 20 Jun 2010 10:35:09 -0400
-Message-ID: <20100620143508.GA27920@hiauly1.hia.nrc.ca>
-References: <20100619232128.6010C5160@hiauly1.hia.nrc.ca> <1277042128.5242.2.camel@mulgrave.site>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] lasi82596: fix netdev_mc_count conversion
+Date: Mon, 21 Jun 2010 13:50:50 -0700 (PDT)
+Message-ID: <20100621.135050.48492866.davem@davemloft.net>
+References: <20100619223524.GA6018@p100.box>
+	<20100619224139.GA6158@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: deller@gmx.de, linux-parisc@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: Text/Plain; charset=us-ascii
+Cc: linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	linux-parisc@vger.kernel.org, kyle@mcmartin.ca, jpirko@redhat.com,
+	netdev@vger.kernel.org
+To: deller@gmx.de
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1277042128.5242.2.camel@mulgrave.site>
+In-Reply-To: <20100619224139.GA6158@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 20 Jun 2010, James Bottomley wrote:
+From: Helge Deller <deller@gmx.de>
+Date: Sun, 20 Jun 2010 00:41:39 +0200
 
-> On Sat, 2010-06-19 at 19:21 -0400, John David Anglin wrote:
-> > > The theory was that the linker should do the right thing and not emit a
-> > > relocation that can't reach the boundary of the text segment (i.e. it
-> > > should embed a stub between the sections as it combines them).  I'll
-> > > have to fire up a 32 bit compile and see exactly what it thinks it's
-> > > doing ... I've got a nasty feeling it expects us to be able to stub
-> > > either at the beginning or the end, which the in-kernel loader doesn't.
-> > 
-> > See ld --stub-group-size=N option.
+> Fix commit 4cd24eaf0 (net: use netdev_mc_count and netdev_mc_empty when
+> appropriate)
 > 
-> I was assuming that was the default, like on arm, I take it it's not?
+> Signed-off-by: Helge Deller <deller@gmx.de>
 
-The default N value stubs at the beginning or end.  A negative value
-puts stubs before the input section.  There's a default value for N
-which matches the value in gcc which came from hpux.
+Applied, please CC: netdev@vger.kernel.org when posting networking
+patches in the future, thanks.
 
-I believe that arm originally followed the parisc approach.  Possibly,
-their current implementation should be looked at.
-
-> >   GCC assumes stub sections are at
-> > the beginning and that the linker can insert stubs between input sections.
-> > Merging text sections is likely to cause problems.
+> CC: Linus Torvalds <torvalds@linux-foundation.org>
+> CC: Kyle McMartin <kyle@mcmartin.ca>
+> CC: "David S. Miller" <davem@davemloft.net>
+> CC: Jiri Pirko <jpirko@redhat.com>
 > 
-> Well, the theory was that ld was capable of more intelligent section
-> layout decisions than the in-kernel linker.  If you're saying that's not
-> true, then there's probably not much point to doing this.
-
-I'm not sure it's more intelligent.  The code for generating stub groups
-is quite old now.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> --- a/drivers/net/lib82596.c
+> +++ b/drivers/net/lib82596.c
+> @@ -1343,7 +1343,7 @@ static void set_multicast_list(struct net_device *dev)
+>  	DEB(DEB_MULTI,
+>  	    printk(KERN_DEBUG
+>  		   "%s: set multicast list, %d entries, promisc %s, allmulti %s\n",
+> -		   dev->name, dev->mc_count,
+> +		   dev->name, netdev_mc_count(dev),
+>  		   dev->flags & IFF_PROMISC ? "ON" : "OFF",
+>  		   dev->flags & IFF_ALLMULTI ? "ON" : "OFF"));
+>  
+> 
