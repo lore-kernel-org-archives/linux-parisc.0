@@ -1,52 +1,39 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: vfork test case.
-Date: Tue, 22 Jun 2010 12:26:50 -0400 (EDT)
-Message-ID: <20100622162651.E4CA1505C@hiauly1.hia.nrc.ca>
-References: <AANLkTilfnhsd5mWmO_qJeCv0XmZ6IYKw6Il19No3_wnF@mail.gmail.com>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: bnx2 fails to compile on parisc because of missing
+	get_dma_ops()
+Date: Tue, 22 Jun 2010 11:14:45 -0600
+Message-ID: <20100622171445.GB8644@lackof.org>
+References: <20100617.073653.193708702.davem@davemloft.net> <20100617234520S.fujita.tomonori@lab.ntt.co.jp> <20100617153051.GB8964@linux-sh.org> <20100622152823R.fujita.tomonori@lab.ntt.co.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org,
-	kyle@mcmartin.ca, James.Bottomley@hansenpartnership.com
-To: carlos@systemhalted.org (Carlos O'Donell)
+Content-Type: text/plain; charset=us-ascii
+Cc: lethal@linux-sh.org, davem@davemloft.net, mchan@broadcom.com,
+	vapier@gentoo.org, JBottomley@novell.com, netdev@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <AANLkTilfnhsd5mWmO_qJeCv0XmZ6IYKw6Il19No3_wnF@mail.gmail.com> from "Carlos O'Donell" at Jun 22, 2010 11:17:44 am
+In-Reply-To: <20100622152823R.fujita.tomonori@lab.ntt.co.jp>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> vfork ->
->   vfork syscall (pt-vfork.S)
+On Tue, Jun 22, 2010 at 03:30:08PM +0900, FUJITA Tomonori wrote:
+...
+> > I don't see any harm in letting drivers know whether we can support
+> > consistent DMA allocs for a given struct device or not though, even if
+> > the micro-optimization is marginal at best.
 > 
-> This has not changed in 2.11.1.
+> I'm happier with exporting less DMA APIs to drivers because looks like
+> new original ways to use the APIs wrongly can be always invented.
 
-I just assumed that a change must have occurred because of the behavior
-of pex_unix_exec_child in libiberty/pex-unix.c.  I didn't investigate
-history.
+Agree.
 
-> Could you please elaborate on the change that you believe occurred in 2.11.=
-> 1?
-> 
-> > I filed a sourceware bug, but closed it when I realized that
-> > this is a glibc/kernel bug:
-> > http://sourceware.org/bugzilla/show_bug.cgi?id=3D11730
-> >
-> > After spending some time looking at this, I realized that __vfork
-> > is broken. =A0It should not allocate a frame as the child may clobber
-> > the parent's frame when it does a call, etc. =A0A frame should only
-> > be allocated and popped around the call to the syscall error handler.
-> 
-> Oh dear, yes I see. After the child returns from vfork, it calls exec,
-> clobbering the vfork frame that the parent must still unwind from. Is
-> that what you mean?
+...
+> There are architectures that need to turn off the CPU cache for
+> coherent memory, I can't find none of them that see if an address is
+> coherent or not in dma_is_consistent().
 
-Yes.  Actually, pex_unix_exec_child may call dup2 and close as well.
-In my gdb build, the parent's return address in the frame is clobbered
-resulting in pex_child_error being called by the parent.
+parisc "knows" primarily based on chipset and then checks CPU model.
+We hook in the correct dma_ops early in boot before any device drivers
+are probed.
 
-I looked at the hpux implementation and it doesn't create a frame.
-Of course, the vfork syscall then must not clobber the return address,
-etc.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+hth,
+grant
