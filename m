@@ -1,71 +1,69 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: vfork test case.
-Date: Tue, 22 Jun 2010 11:17:44 -0400
-Message-ID: <AANLkTilfnhsd5mWmO_qJeCv0XmZ6IYKw6Il19No3_wnF@mail.gmail.com>
+Date: Tue, 22 Jun 2010 11:39:31 -0400
+Message-ID: <AANLkTinFBc9524WWuwrRvuBQGY0OCqjPIZ_t9A7esb-B@mail.gmail.com>
 References: <119aab440912061319y5b863203ve5dc3dc568a6ccec@mail.gmail.com>
 	<20100620042814.ECC205160@hiauly1.hia.nrc.ca>
+	<AANLkTilfnhsd5mWmO_qJeCv0XmZ6IYKw6Il19No3_wnF@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org,
 	kyle@mcmartin.ca, James.Bottomley@hansenpartnership.com
 To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100620042814.ECC205160@hiauly1.hia.nrc.ca>
+In-Reply-To: <AANLkTilfnhsd5mWmO_qJeCv0XmZ6IYKw6Il19No3_wnF@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Jun 20, 2010 at 12:28 AM, John David Anglin
-<dave@hiauly1.hia.nrc.ca> wrote:
-> Carlos,
->
->> I have constructed a vfork test case which shows some of the problem=
-s
->> I have using vfork reliably. This fails every time on my PA8700 syst=
-em
->> running 2.6.32-rc6. It appears as though r28 (ret0) in the parent is
->> being corrupted.
->
-> It seems the vfork implementation has changed in 2.11.1 from
-> using clone to the vfork syscall. =A0I tried to build gdb head
-> today, but it dies at startup due to a problem with vfork. =A0This
-> is potentially also an issue with gcc as it uses the same
-> libiberty code.
+On Tue, Jun 22, 2010 at 11:17 AM, Carlos O'Donell
+<carlos@systemhalted.org> wrote:
+> Oh dear, yes I see. After the child returns from vfork, it calls exec,
+> clobbering the vfork frame that the parent must still unwind from. Is
+> that what you mean?
 
-On hppa calling vfork in a non-multithreaded environment does the follo=
-wing:
+Is this a complete fix?
 
-vfork [vfork.c] ->
-  __fork (__libc_fork) [nptl/fork.c, linux/fork.c] ->
-    ARCH_FORK (clone syscall) []
+diff --git a/sysdeps/unix/sysv/linux/hppa/nptl/pt-vfork.S
+b/sysdeps/unix/sysv/linux/hppa/nptl/pt-vfork.S
+index 83a70b7..3c685cb 100644
+--- a/sysdeps/unix/sysv/linux/hppa/nptl/pt-vfork.S
++++ b/sysdeps/unix/sysv/linux/hppa/nptl/pt-vfork.S
+@@ -50,10 +50,9 @@
 
-On hppa in a multithreaded environment (linked against libpthread.so)
-vfork does the following:
+        /* r26, r25, r24, r23 are free since vfork has no arguments */
+ ENTRY(__vfork)
+-       /* Prologue */
+-       stwm    %r3, 64(%sp)
+-       stw     %sp, -4(%sp)
+-       stw     %r19, -32(%sp)
++       /* We must not create a frame, otherwise when the child unwinds
++          to call exec it will clobber the same frame that the parent
++          needs to unwind.  */
 
-vfork ->
-  vfork syscall (pt-vfork.S)
+        /* Save the PIC register. */
+ #ifdef PIC
+@@ -76,11 +75,16 @@ ENTRY(__vfork)
+        b,n     .Lerror
 
-This has not changed in 2.11.1.
+        /* Return, no need to restore the PIC register. */
+-       ldw     -84(%sp), %rp
+-       bv      %r0(%rp)
+-       ldwm    -64(%sp), %r3
++       ldw     -20(%sp), %rp
++       bv,n    %r0(%rp)
 
-Could you please elaborate on the change that you believe occurred in 2=
-=2E11.1?
+ .Lerror:
++       /* Now we need a stack to record the error. We are assured
++          that there is no child now, so it's safe to create
++          a frame.  */
++       stwm    %r3, 64(%sp)
++       stw     %sp, -4(%sp)
++
+        sub     %r0,%ret0,%r3
+        SYSCALL_ERROR_HANDLER
+        /* Restore the PIC register (in delay slot) on error */
 
-> I filed a sourceware bug, but closed it when I realized that
-> this is a glibc/kernel bug:
-> http://sourceware.org/bugzilla/show_bug.cgi?id=3D11730
->
-> After spending some time looking at this, I realized that __vfork
-> is broken. =A0It should not allocate a frame as the child may clobber
-> the parent's frame when it does a call, etc. =A0A frame should only
-> be allocated and popped around the call to the syscall error handler.
-
-Oh dear, yes I see. After the child returns from vfork, it calls exec,
-clobbering the vfork frame that the parent must still unwind from. Is
-that what you mean?
+I'm building/testing this and I will tell you how it goes.
 
 Cheers,
 Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
