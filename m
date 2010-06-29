@@ -1,414 +1,343 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: gcc-4.5 -fdelayed-branch strikes back
-Date: Sun, 27 Jun 2010 18:20:45 -0400
-Message-ID: <20100627222044.GA14627@hiauly1.hia.nrc.ca>
-References: <20100604181712.43456ddb@borg.bxl.tuxicoman.be> <20100604193229.473BB515D@hiauly1.hia.nrc.ca> <20100605115808.0ff33504@borg.bxl.tuxicoman.be> <20100607232907.GA10176@hiauly1.hia.nrc.ca> <20100611194516.496c2ddf@zombie> <20100613192447.GA14692@hiauly1.hia.nrc.ca> <20100627154804.1de3b212@borg.bxl.tuxicoman.be>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: kernel 2.6.32-5-parisc64 doesn't boot
+Date: Mon, 28 Jun 2010 23:22:57 -0600
+Message-ID: <20100629052257.GB20908@lackof.org>
+References: <4C219FF7.7030601@logix.net.nz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	linux-parisc@vger.kernel.org
-To: Guy Martin <gmsoft@tuxicoman.be>
+Cc: debian-hppa@lists.debian.org, linux-parisc@vger.kernel.org
+To: Michal Ludvig <mludvig@logix.net.nz>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100627154804.1de3b212@borg.bxl.tuxicoman.be>
+In-Reply-To: <4C219FF7.7030601@logix.net.nz>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Guy,
++linux-parisc (seems like a known kernel issue)
 
-I have not been able to reproduce your problem.  Originally, there
-was a problem bootstrapping with
+On Wed, Jun 23, 2010 at 05:47:35PM +1200, Michal Ludvig wrote:
+> Hi all,
+> 
+> After recent dist-upgrade in Squeeze my HP9000 RP3410 no longer boots. I
+> can still boot the previous linux-image 2.6.32-3-parisc64 but the new
+> 2.6.32-5-parisc64 never finished booting. It looks like it reboots
+> during USB enumeration or somewhere there:
 
-make -j2 LDFLAGS="-Wl,-O1" STAGE1_CFLAGS="-g3 -O2" BOOT_CFLAGS="-g -O2 -pipe -march=2.0" bootstrap-lean &&
+Hi Michal,
+I strongly suspect it's the same problem we saw on the C3xxx workstations.
+Here's the comment in drivers/parisc/sba_iommu.c:
 
-but even that went away.  I have built gcc-4.6 (head) and gcc-4.5 (branch)
-from svn sources numerous times without problems.  My current bootstrap
-compiler is: gcc version 4.4.4 (Debian 4.4.4-5).
+        if (!is_pdc_pat()) {
+                /* Shutdown the USB controller on Astro-based workstations.
+                ** Once we reprogram the IOMMU, the next DMA performed by
+                ** USB will HPMC the box. USB is only enabled if a
+                ** keyboard is present and found.
+                **
+                ** With serial console, j6k v5.0 firmware says:
+                **   mem_kbd hpa 0xfee003f8 sba 0x0 pad 0x0 cl_class 0x7
+                **
+                ** FIXME: Using GFX+USB console at power up but direct
+                **      linux to serial console is still broken.
+                **      USB could generate DMA so we must reset USB.
+                **      The proper sequence would be:
+                **      o block console output
+                **      o reset USB device
+                **      o reprogram serial port
+                **      o unblock console output
+                */
+                if (PAGE0->mem_kbd.cl_class == CL_KEYBD) {
+                        pdc_io_reset_devices();
+                }
 
-In general, delayed branch issues are not target specific as the
-majority of the implementation is in reorg.  However, parisc is very
-sensitive to reorg bugs.
-
-There have been a few changes to the parisc port in the last month.
-The most likely change to have an effect on parisc-linux is the change
-to kill -freorder-blocks-and-partition.  I think it unlikely that this
-affects bootstrap.  It's possible a change to the common code has
-changed things.
-
-More information is needed regarding the nature of the fault, where
-it is, and how to reproduce (e.g., can it be reproduced with x86 cross).
-If it really is a delayed branch issue, this needs to be a gcc PR.
-
-Dave
-
-On Sun, 27 Jun 2010, Guy Martin wrote:
-
-> 
-> Hi Dave,
-> 
-> What commit/version were you using exactly for your tests ?
-> 
-> I've setup a debian chroot on both my c3600 and c8000 and I'm able to
-> reproduce with the latest experimental gcc :
-> gcc version 4.5.1 20100527 (prerelease) (Debian 4.5.0-4) 
-> 
-> On my gentoo systems, the compiler used to build gcc didn't seem to
-> make a difference, I've tried 4.2.4, 4.3.3 and 4.4.3, every gcc-4.5
-> compiled with those failed the same way.
-> 
-> I've reattached the test case since I removed the dependency to
-> libiberty.h.
-> 
-> Regards,
->   Guy
-> 
-> On Sun, 13 Jun 2010 15:24:47 -0400
-> John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
-> 
-> > On Fri, 11 Jun 2010, Guy Martin wrote:
-> > 
-> > Hi Guy,
-> > 
-> > > The test case should make things pretty easy to repro. But if you
-> > > need some more details let me know.
-> > 
-> > I wasn't able to get your testcase to fail with my last build of
-> > 4.5.1. It used 4.3.3 for the bootstrap compiler.  I'm fairly certain
-> > 4.5 is being miscompliled in stage1 when 4.4 is used as the bootstap
-> > compiler.
-> > 
-> > Dave
-> 
-
-> /* Generate code to allocate RTL structures.
->    Copyright (C) 1997, 1998, 1999, 2000, 2002, 2003, 2004, 2007
->    Free Software Foundation, Inc.
-> 
-> This file is part of GCC.
-> 
-> GCC is free software; you can redistribute it and/or modify it under
-> the terms of the GNU General Public License as published by the Free
-> Software Foundation; either version 3, or (at your option) any later
-> version.
-> 
-> GCC is distributed in the hope that it will be useful, but WITHOUT ANY
-> WARRANTY; without even the implied warranty of MERCHANTABILITY or
-> FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-> for more details.
-> 
-> You should have received a copy of the GNU General Public License
-> along with GCC; see the file COPYING3.  If not see
-> <http://www.gnu.org/licenses/>.  */
-> 
-> 
-> #include <string.h>
-> #include <stdio.h>
-> #define gcc_unreachable() __builtin_unreachable()
-> 
-> struct rtx_definition
-> {
->   const char *const enumname, *const name, *const format;
-> };
-> 
-> /* rtl.def needs CONST_DOUBLE_FORMAT, but we don't care what
->    CONST_DOUBLE_FORMAT is because we're not going to be generating
->    anything for CONST_DOUBLE anyway.  */
-> #define CONST_DOUBLE_FORMAT ""
-> 
-> #define DEF_RTL_EXPR(ENUM, NAME, FORMAT, CLASS) { #ENUM, NAME, FORMAT },
-> 
->  const struct rtx_definition defs[] =
-> {
-> DEF_RTL_EXPR(UNKNOWN, "UnKnown", "*", RTX_EXTRA)
-> DEF_RTL_EXPR(VALUE, "value", "0", RTX_OBJ)
-> DEF_RTL_EXPR(DEBUG_EXPR, "debug_expr", "0", RTX_OBJ)
-> DEF_RTL_EXPR(EXPR_LIST, "expr_list", "ee", RTX_EXTRA)
-> DEF_RTL_EXPR(INSN_LIST, "insn_list", "ue", RTX_EXTRA)
-> DEF_RTL_EXPR(SEQUENCE, "sequence", "E", RTX_EXTRA)
-> DEF_RTL_EXPR(ADDRESS, "address", "e", RTX_MATCH)
-> DEF_RTL_EXPR(DEBUG_INSN, "debug_insn", "iuuBieie", RTX_INSN)
-> DEF_RTL_EXPR(INSN, "insn", "iuuBieie", RTX_INSN)
-> DEF_RTL_EXPR(JUMP_INSN, "jump_insn", "iuuBieie0", RTX_INSN)
-> DEF_RTL_EXPR(CALL_INSN, "call_insn", "iuuBieiee", RTX_INSN)
-> DEF_RTL_EXPR(BARRIER, "barrier", "iuu00000", RTX_EXTRA)
-> DEF_RTL_EXPR(CODE_LABEL, "code_label", "iuuB00is", RTX_EXTRA)
-> DEF_RTL_EXPR(NOTE, "note", "iuuB0ni", RTX_EXTRA)
-> DEF_RTL_EXPR(COND_EXEC, "cond_exec", "ee", RTX_EXTRA)
-> DEF_RTL_EXPR(PARALLEL, "parallel", "E", RTX_EXTRA)
-> DEF_RTL_EXPR(ASM_INPUT, "asm_input", "si", RTX_EXTRA)
-> DEF_RTL_EXPR(ASM_OPERANDS, "asm_operands", "ssiEEEi", RTX_EXTRA)
-> DEF_RTL_EXPR(UNSPEC, "unspec", "Ei", RTX_EXTRA)
-> DEF_RTL_EXPR(UNSPEC_VOLATILE, "unspec_volatile", "Ei", RTX_EXTRA)
-> DEF_RTL_EXPR(ADDR_VEC, "addr_vec", "E", RTX_EXTRA)
-> DEF_RTL_EXPR(ADDR_DIFF_VEC, "addr_diff_vec", "eEee0", RTX_EXTRA)
-> DEF_RTL_EXPR(PREFETCH, "prefetch", "eee", RTX_EXTRA)
-> DEF_RTL_EXPR(SET, "set", "ee", RTX_EXTRA)
-> DEF_RTL_EXPR(USE, "use", "e", RTX_EXTRA)
-> DEF_RTL_EXPR(CLOBBER, "clobber", "e", RTX_EXTRA)
-> DEF_RTL_EXPR(CALL, "call", "ee", RTX_EXTRA)
-> DEF_RTL_EXPR(RETURN, "return", "", RTX_EXTRA)
-> DEF_RTL_EXPR(EH_RETURN, "eh_return", "", RTX_EXTRA)
-> DEF_RTL_EXPR(TRAP_IF, "trap_if", "ee", RTX_EXTRA)
-> DEF_RTL_EXPR(CONST_INT, "const_int", "w", RTX_CONST_OBJ)
-> DEF_RTL_EXPR(CONST_FIXED, "const_fixed", "www", RTX_CONST_OBJ)
-> DEF_RTL_EXPR(CONST_DOUBLE, "const_double", CONST_DOUBLE_FORMAT, RTX_CONST_OBJ)
-> DEF_RTL_EXPR(CONST_VECTOR, "const_vector", "E", RTX_CONST_OBJ)
-> DEF_RTL_EXPR(CONST_STRING, "const_string", "s", RTX_OBJ)
-> DEF_RTL_EXPR(CONST, "const", "e", RTX_CONST_OBJ)
-> DEF_RTL_EXPR(PC, "pc", "", RTX_OBJ)
-> DEF_RTL_EXPR(REG, "reg", "i00", RTX_OBJ)
-> DEF_RTL_EXPR(SCRATCH, "scratch", "0", RTX_OBJ)
-> DEF_RTL_EXPR(SUBREG, "subreg", "ei", RTX_EXTRA)
-> DEF_RTL_EXPR(STRICT_LOW_PART, "strict_low_part", "e", RTX_EXTRA)
-> DEF_RTL_EXPR(CONCAT, "concat", "ee", RTX_OBJ)
-> DEF_RTL_EXPR(CONCATN, "concatn", "E", RTX_OBJ)
-> DEF_RTL_EXPR(MEM, "mem", "e0", RTX_OBJ)
-> DEF_RTL_EXPR(LABEL_REF, "label_ref", "u", RTX_CONST_OBJ)
-> DEF_RTL_EXPR(SYMBOL_REF, "symbol_ref", "s00", RTX_CONST_OBJ)
-> DEF_RTL_EXPR(CC0, "cc0", "", RTX_OBJ)
-> DEF_RTL_EXPR(IF_THEN_ELSE, "if_then_else", "eee", RTX_TERNARY)
-> DEF_RTL_EXPR(COMPARE, "compare", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(PLUS, "plus", "ee", RTX_COMM_ARITH)
-> DEF_RTL_EXPR(MINUS, "minus", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(NEG, "neg", "e", RTX_UNARY)
-> DEF_RTL_EXPR(MULT, "mult", "ee", RTX_COMM_ARITH)
-> DEF_RTL_EXPR(SS_MULT, "ss_mult", "ee", RTX_COMM_ARITH)
-> DEF_RTL_EXPR(US_MULT, "us_mult", "ee", RTX_COMM_ARITH)
-> DEF_RTL_EXPR(DIV, "div", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(SS_DIV, "ss_div", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(US_DIV, "us_div", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(MOD, "mod", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(UDIV, "udiv", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(UMOD, "umod", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(AND, "and", "ee", RTX_COMM_ARITH)
-> DEF_RTL_EXPR(IOR, "ior", "ee", RTX_COMM_ARITH)
-> DEF_RTL_EXPR(XOR, "xor", "ee", RTX_COMM_ARITH)
-> DEF_RTL_EXPR(NOT, "not", "e", RTX_UNARY)
-> DEF_RTL_EXPR(ASHIFT, "ashift", "ee", RTX_BIN_ARITH) /* shift left */
-> DEF_RTL_EXPR(ROTATE, "rotate", "ee", RTX_BIN_ARITH) /* rotate left */
-> DEF_RTL_EXPR(ASHIFTRT, "ashiftrt", "ee", RTX_BIN_ARITH) /* arithmetic shift right */
-> DEF_RTL_EXPR(LSHIFTRT, "lshiftrt", "ee", RTX_BIN_ARITH) /* logical shift right */
-> DEF_RTL_EXPR(ROTATERT, "rotatert", "ee", RTX_BIN_ARITH) /* rotate right */
-> DEF_RTL_EXPR(SMIN, "smin", "ee", RTX_COMM_ARITH)
-> DEF_RTL_EXPR(SMAX, "smax", "ee", RTX_COMM_ARITH)
-> DEF_RTL_EXPR(UMIN, "umin", "ee", RTX_COMM_ARITH)
-> DEF_RTL_EXPR(UMAX, "umax", "ee", RTX_COMM_ARITH)
-> DEF_RTL_EXPR(PRE_DEC, "pre_dec", "e", RTX_AUTOINC)
-> DEF_RTL_EXPR(PRE_INC, "pre_inc", "e", RTX_AUTOINC)
-> DEF_RTL_EXPR(POST_DEC, "post_dec", "e", RTX_AUTOINC)
-> DEF_RTL_EXPR(POST_INC, "post_inc", "e", RTX_AUTOINC)
-> DEF_RTL_EXPR(PRE_MODIFY, "pre_modify", "ee", RTX_AUTOINC)
-> DEF_RTL_EXPR(POST_MODIFY, "post_modify", "ee", RTX_AUTOINC)
-> DEF_RTL_EXPR(NE, "ne", "ee", RTX_COMM_COMPARE)
-> DEF_RTL_EXPR(EQ, "eq", "ee", RTX_COMM_COMPARE)
-> DEF_RTL_EXPR(GE, "ge", "ee", RTX_COMPARE)
-> DEF_RTL_EXPR(GT, "gt", "ee", RTX_COMPARE)
-> DEF_RTL_EXPR(LE, "le", "ee", RTX_COMPARE)
-> DEF_RTL_EXPR(LT, "lt", "ee", RTX_COMPARE)
-> DEF_RTL_EXPR(GEU, "geu", "ee", RTX_COMPARE)
-> DEF_RTL_EXPR(GTU, "gtu", "ee", RTX_COMPARE)
-> DEF_RTL_EXPR(LEU, "leu", "ee", RTX_COMPARE)
-> DEF_RTL_EXPR(LTU, "ltu", "ee", RTX_COMPARE)
-> DEF_RTL_EXPR(UNORDERED, "unordered", "ee", RTX_COMM_COMPARE)
-> DEF_RTL_EXPR(ORDERED, "ordered", "ee", RTX_COMM_COMPARE)
-> DEF_RTL_EXPR(UNEQ, "uneq", "ee", RTX_COMM_COMPARE)
-> DEF_RTL_EXPR(UNGE, "unge", "ee", RTX_COMPARE)
-> DEF_RTL_EXPR(UNGT, "ungt", "ee", RTX_COMPARE)
-> DEF_RTL_EXPR(UNLE, "unle", "ee", RTX_COMPARE)
-> DEF_RTL_EXPR(UNLT, "unlt", "ee", RTX_COMPARE)
-> DEF_RTL_EXPR(LTGT, "ltgt", "ee", RTX_COMM_COMPARE)
-> DEF_RTL_EXPR(SIGN_EXTEND, "sign_extend", "e", RTX_UNARY)
-> DEF_RTL_EXPR(ZERO_EXTEND, "zero_extend", "e", RTX_UNARY)
-> DEF_RTL_EXPR(TRUNCATE, "truncate", "e", RTX_UNARY)
-> DEF_RTL_EXPR(FLOAT_EXTEND, "float_extend", "e", RTX_UNARY)
-> DEF_RTL_EXPR(FLOAT_TRUNCATE, "float_truncate", "e", RTX_UNARY)
-> DEF_RTL_EXPR(FLOAT, "float", "e", RTX_UNARY)
-> DEF_RTL_EXPR(FIX, "fix", "e", RTX_UNARY)
-> DEF_RTL_EXPR(UNSIGNED_FLOAT, "unsigned_float", "e", RTX_UNARY)
-> DEF_RTL_EXPR(UNSIGNED_FIX, "unsigned_fix", "e", RTX_UNARY)
-> DEF_RTL_EXPR(FRACT_CONVERT, "fract_convert", "e", RTX_UNARY)
-> DEF_RTL_EXPR(UNSIGNED_FRACT_CONVERT, "unsigned_fract_convert", "e", RTX_UNARY)
-> DEF_RTL_EXPR(SAT_FRACT, "sat_fract", "e", RTX_UNARY)
-> DEF_RTL_EXPR(UNSIGNED_SAT_FRACT, "unsigned_sat_fract", "e", RTX_UNARY)
-> DEF_RTL_EXPR(ABS, "abs", "e", RTX_UNARY)
-> DEF_RTL_EXPR(SQRT, "sqrt", "e", RTX_UNARY)
-> DEF_RTL_EXPR(BSWAP, "bswap", "e", RTX_UNARY)
-> DEF_RTL_EXPR(FFS, "ffs", "e", RTX_UNARY)
-> DEF_RTL_EXPR(CLZ, "clz", "e", RTX_UNARY)
-> DEF_RTL_EXPR(CTZ, "ctz", "e", RTX_UNARY)
-> DEF_RTL_EXPR(POPCOUNT, "popcount", "e", RTX_UNARY)
-> DEF_RTL_EXPR(PARITY, "parity", "e", RTX_UNARY)
-> DEF_RTL_EXPR(SIGN_EXTRACT, "sign_extract", "eee", RTX_BITFIELD_OPS)
-> DEF_RTL_EXPR(ZERO_EXTRACT, "zero_extract", "eee", RTX_BITFIELD_OPS)
-> DEF_RTL_EXPR(HIGH, "high", "e", RTX_CONST_OBJ)
-> DEF_RTL_EXPR(LO_SUM, "lo_sum", "ee", RTX_OBJ)
-> DEF_RTL_EXPR(VEC_MERGE, "vec_merge", "eee", RTX_TERNARY)
-> DEF_RTL_EXPR(VEC_SELECT, "vec_select", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(VEC_CONCAT, "vec_concat", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(VEC_DUPLICATE, "vec_duplicate", "e", RTX_UNARY)
-> DEF_RTL_EXPR(SS_PLUS, "ss_plus", "ee", RTX_COMM_ARITH)
-> DEF_RTL_EXPR(US_PLUS, "us_plus", "ee", RTX_COMM_ARITH)
-> DEF_RTL_EXPR(SS_MINUS, "ss_minus", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(SS_NEG, "ss_neg", "e", RTX_UNARY)
-> DEF_RTL_EXPR(US_NEG, "us_neg", "e", RTX_UNARY)
-> DEF_RTL_EXPR(SS_ABS, "ss_abs", "e", RTX_UNARY)
-> DEF_RTL_EXPR(SS_ASHIFT, "ss_ashift", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(US_ASHIFT, "us_ashift", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(US_MINUS, "us_minus", "ee", RTX_BIN_ARITH)
-> DEF_RTL_EXPR(SS_TRUNCATE, "ss_truncate", "e", RTX_UNARY)
-> DEF_RTL_EXPR(US_TRUNCATE, "us_truncate", "e", RTX_UNARY)
-> DEF_RTL_EXPR(VAR_LOCATION, "var_location", "tei", RTX_EXTRA)
-> };
-> #define ARRAY_SIZE(a) (sizeof (a) / sizeof ((a)[0]))
-> #define NUM_RTX_CODE ARRAY_SIZE(defs)
-> 
->  const char *formats[NUM_RTX_CODE];
-> 
->  const char *type_from_format	(int);
->  const char *accessor_from_format	(int);
->  int special_format		(const char *);
->  void find_formats		(void);
->  void gendecl			(const char *);
-> 
-> 
->  const char *
-> type_from_format (int c)
-> {
->   switch (c)
->     {
->     case 'i':
->       return "int ";
-> 
->     case 'w':
->       return "HOST_WIDE_INT ";
-> 
->     case 's':
->       return "const char *";
-> 
->     case 'e':  case 'u':
->       return "rtx ";
-> 
->     case 'E':
->       return "rtvec ";
->     case 'b':
->       return "struct bitmap_head_def *";  /* bitmap - typedef not available */
->     case 't':
->       return "union tree_node *";  /* tree - typedef not available */
->     case 'B':
->       return "struct basic_block_def *";  /* basic block - typedef not available */
->     default:
->       gcc_unreachable ();
->     }
-> }
-> 
-> /* Decode a format letter into the proper accessor function.  */
-> 
->  const char *
-> accessor_from_format (int c)
-> {
->   switch (c)
->     {
->     case 'i':
->       return "XINT";
-> 
->     case 'w':
->       return "XWINT";
-> 
->     case 's':
->       return "XSTR";
-> 
->     case 'e':  case 'u':
->       return "XEXP";
-> 
->     case 'E':
->       return "XVEC";
-> 
->     case 'b':
->       return "XBITMAP";
-> 
->     case 't':
->       return "XTREE";
-> 
->     case 'B':
->       return "XBBDEF";
-> 
->     default:
->       gcc_unreachable ();
->     }
-> }
-> 
-> 
-> /* Place a list of all format specifiers we use into the array FORMAT.  */
-> 
->  void
-> find_formats (void)
-> {
->   unsigned int i;
-> 
->   for (i = 0; i < NUM_RTX_CODE; i++)
->     {
->       const char **f;
-> 
->      if (strchr (defs[i].format, '*') != 0 || strchr (defs[i].format, 'V') != 0 || strchr (defs[i].format, 'S') != 0 || strchr (defs[i].format, 'n') != 0)
->        continue;
-> 
->       for (f = formats; *f; f++)
-> 	if (! strcmp (*f, defs[i].format))
-> 	  break;
-> 
->       if (*f == 0)
-> 	*f = defs[i].format;
->     }
-> }
-> 
-> /* Write the declarations for the routine to allocate RTL with FORMAT.  */
-> 
->  void
-> gendecl (const char *format)
-> {
->   const char *p;
->   int i, pos;
-> 
->   printf ("extern rtx gen_rtx_fmt_%s_stat\t (RTX_CODE, ", format);
->   printf ("enum machine_mode mode");
-> 
->   /* Write each parameter that is needed and start a new line when the line
->      would overflow.  */
->   for (p = format, i = 0, pos = 75; *p != 0; p++)
->     if (*p != '0')
->       {
-> 	int ourlen = strlen (type_from_format (*p)) + 6 + (i > 9);
-> 
-> 	printf (",");
-> 	if (pos + ourlen > 76)
-> 	  printf ("\n\t\t\t\t      "), pos = 39;
-> 
-> 	printf (" %sarg%d", type_from_format (*p), i++);
-> 	pos += ourlen;
->       }
-> }
-> 
-> 
-> 
-> /* This is the main program.  We accept only one argument, "-h", which
->    says we are writing the genrtl.h file.  Otherwise we are writing the
->    genrtl.c file.  */
-> 
-> int
-> main (int argc, char **argv)
-> {
->   find_formats ();
-> 
->   const char **fmt;
-> 
-> 
->   for (fmt = formats; *fmt; ++fmt)
->     gendecl (*fmt);
-> 
->   return 0;
-> }
+        }
 
 
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Could you try to make this code "unconditional"?
+(remove !is_pdc_pat() test)
+
+If someone have better ideas on how to handle this...
+I can build kernels and test on a J6000.
+
+thanks,
+grant
+
+> 
+> ------------------------------------
+> 
+> Booting...
+> Boot IO Dependent Code (IODC) revision 1
+> 
+> 
+> HARD Booted.
+> palo ipl 1.14 root@penalosa Wed Oct  8 15:04:37 UTC 2008
+> Skipping extended partition 6 - beyond reach of IPL
+> 
+> Partition Start(MB) End(MB) Id Type
+> 1               1      31   f0 Palo
+> 2              32     156   83 ext2
+> 5             157   33408   83 ext2
+> 
+> PALO(F0) partition contains:
+>     0/vmlinux64 6833698 bytes @ 0x48000
+> 
+> 
+> Command line for kernel: 'root=/dev/sdb5 HOME=/ console=ttyS1
+> palo_kernel=2/vmlinux'
+> Selected kernel: /vmlinux from partition 2
+> Selected ramdisk: /initrd.img from partition 2
+> ELF64 executable
+> Entry 00100000 first 00100000 n 2
+> Segment 0 load 00100000 size 4673536 mediaptr 0x1000
+> Segment 1 load 005ea730 size 743376 mediaptr 0x476730
+> Loading ramdisk 11788317 bytes @ 3f4b0000...
+> Branching to kernel entry point 0x00100000.  If this is the last
+> message you see, you may need to switch your console.  This is
+> a common symptom -- search the FAQ and mailing list at parisc-linux.org
+> 
+> [    0.000000] Initializing cgroup subsys cpuset
+> [    0.000000] Initializing cgroup subsys cpu
+> [    0.000000] Linux version 2.6.32-5-parisc64 (Debian 2.6.32-15)
+> (ben@decadent.org.uk) (gcc version 4.3.5 (GCC) ) #1 Tue Jun 1 12:13:09
+> UTC 2010
+> [    0.000000] unwind_init: start = 0x40494000, end = 0x404c1e60,
+> entries = 11750
+> [    0.000000] WARNING: Out of order unwind entry! 0000000040495990 and
+> 00000000404959a0
+> [    0.000000] WARNING: Out of order unwind entry! 00000000404959a0 and
+> 00000000404959b0
+> [    0.000000] FP[0] enabled: Rev 1 Model 20
+> [    0.000000] The 64-bit Kernel has started...
+> [    0.000000] bootconsole [ttyB0] enabled
+> [    0.000000] Initialized PDC Console for debugging.
+> [    0.000000] Determining PDC firmware type: 64 bit PAT.
+> [    0.000000] model 00008860 00000491 00000000 00000002
+> 3e3ffb8ecde69d7c 100000f0 00000008 000000b2 000000b2
+> [    0.000000] vers  00000302
+> [    0.000000] CPUID vers 20 rev 5 (0x00000285)
+> [    0.000000] capabilities 0x35
+> [    0.000000] model 9000/800/rp3410
+> [    0.000000] parisc_cache_init: Only equivalent aliasing supported!
+> [    0.000000] Memory Ranges:
+> [    0.000000]  0) Start 0x0000000000000000 End 0x000000003fffffff Size
+>   1024 MB
+> [    0.000000]  1) Start 0x0000004040000000 End 0x00000040ffdfffff Size
+>   3070 MB
+> [    0.000000] Total Memory: 4094 MB
+> [    0.000000] initrd: 7f4b0000-7ffee01d
+> [    0.000000] initrd: reserving 3f4b0000-3ffee01d (mem_max ffe00000)
+> [    0.000000] Built 2 zonelists in Zone order, mobility grouping on.
+> Total pages: 1033735
+> [    0.000000] Kernel command line: root=/dev/sdb5 HOME=/ console=ttyS1
+> palo_kernel=2/vmlinux
+> [    0.000000] PID hash table entries: 4096 (order: 3, 32768 bytes)
+> [    0.000000] Dentry cache hash table entries: 524288 (order: 10,
+> 4194304 bytes)
+> [    0.000000] Inode-cache hash table entries: 262144 (order: 9, 2097152
+> bytes)
+> [    0.000000] Memory: 4102144k/4192256k available (2996k kernel code,
+> 89144k reserved, 1519k data, 272k init)
+> [    0.000000] virtual kernel memory layout:
+> [    0.000000]     vmalloc : 0x0000000000008000 - 0x000000003f000000
+> (1007 MB)
+> [    0.000000]     memory  : 0x0000000040000000 - 0x000000413fe00000
+> (266238 MB)
+> [    0.000000]       .init : 0x000000004065c000 - 0x00000000406a0000   (
+> 272 kB)
+> [    0.000000]       .data : 0x00000000403ed080 - 0x0000000040568de0
+> (1519 kB)
+> [    0.000000]       .text : 0x0000000040100000 - 0x00000000403ed080
+> (2996 kB)
+> [    0.000000] SLUB: Genslabs=13, HWalign=64, Order=0-3, MinObjects=0,
+> CPUs=1, Nodes=8
+> [    0.000000] Hierarchical RCU implementation.
+> [    0.000000] NR_IRQS:128
+> [    0.000000] Console: colour dummy device 160x64
+> [    0.012000] Calibrating delay loop... 1597.44 BogoMIPS (lpj=3194880)
+> [    0.108000] Security Framework initialized
+> [    0.108000] SELinux:  Disabled at boot.
+> [    0.108000] Mount-cache hash table entries: 256
+> [    0.108000] Initializing cgroup subsys ns
+> [    0.108000] Initializing cgroup subsys cpuacct
+> [    0.112000] Initializing cgroup subsys devices
+> [    0.116000] Initializing cgroup subsys freezer
+> [    0.120000] Initializing cgroup subsys net_cls
+> [    0.120000] devtmpfs: initialized
+> [    0.128000] regulator: core version 0.5
+> [    0.128000] NET: Registered protocol family 16
+> [    0.132000] EISA bus registered
+> [    0.136000] Searching for devices...
+> [    0.356000] Found devices:
+> [    0.356000] 1. Storm Peak Slow DC- at 0xfffffffffe780000 [128] { 0,
+> 0x0, 0x886, 0x00004 }
+> [    0.356000] 2. Everest Mako Memory at 0xfffffffffed08000 [8] { 1,
+> 0x0, 0x0af, 0x00009 }
+> [    0.356000] 3. Pluto BC McKinley Port at 0xfffffffffed00000 [0] { 12,
+> 0x0, 0x880, 0x0000c }
+> [    0.364000] 4. Mercury PCI Bridge at 0xfffffffffed20000 [0/0] { 13,
+> 0x0, 0x783, 0x0000a }
+> [    0.372000] 5. Mercury PCI Bridge at 0xfffffffffed22000 [0/1] { 13,
+> 0x0, 0x783, 0x0000a }
+> [    0.376000] 6. Mercury PCI Bridge at 0xfffffffffed24000 [0/2] { 13,
+> 0x0, 0x783, 0x0000a }
+> [    0.384000] 7. Mercury PCI Bridge at 0xfffffffffed26000 [0/3] { 13,
+> 0x0, 0x783, 0x0000a }
+> [    0.392000] 8. Mercury PCI Bridge at 0xfffffffffed28000 [0/4] { 13,
+> 0x0, 0x783, 0x0000a }
+> [    0.392000] 9. Mercury PCI Bridge at 0xfffffffffed2c000 [0/6] { 13,
+> 0x0, 0x783, 0x0000a }
+> [    0.400000] 10. Mercury PCI Bridge at 0xfffffffffed2e000 [0/7] { 13,
+> 0x0, 0x783, 0x0000a }
+> [    0.408000] 11. BMC IPMI Mgmt Ctlr at 0xfffffff0f05b0000 [16] { 15,
+> 0x0, 0x004, 0x000c0 }
+> [    0.412000] Enabling PDC_PAT chassis codes support v0.05
+> [    1.268000] CPU(s): 1 x PA8800 (Mako) at 800.024500 MHz
+> [    1.272000] Setting cache flush threshold to 135cec0 (1 CPUs online)
+> [    1.324000] SBA found Pluto 2.3 at 0xfffffffffed00000
+> [    1.384000] Mercury version TR3.2 (0x32) found at 0xfffffffffed20000
+> [    1.420000] pci 0000:00:01.0: PME# supported from D0 D1 D2 D3hot
+> [    1.420000] pci 0000:00:01.0: PME# disabled
+> [    1.420000] pci 0000:00:01.1: PME# supported from D0 D1 D2 D3hot
+> [    1.420000] pci 0000:00:01.1: PME# disabled
+> [    1.432000] pci 0000:00:01.2: PME# supported from D0 D1 D2 D3hot
+> [    1.432000] pci 0000:00:01.2: PME# disabled
+> [    1.448000] Mercury version TR3.2 (0x32) found at 0xfffffffffed22000
+> [    1.484000] pci 0000:20:02.0: PME# supported from D3hot D3cold
+> [    1.488000] pci 0000:20:02.0: PME# disabled
+> [    1.492000] Mercury version TR3.2 (0x32) found at 0xfffffffffed24000
+> [    1.536000] Mercury version TR3.2 (0x32) found at 0xfffffffffed26000
+> [    1.584000] Mercury version TR3.2 (0x32) found at 0xfffffffffed28000
+> [    1.632000] Mercury version TR3.2 (0x32) found at 0xfffffffffed2c000
+> [    1.680000] Mercury version TR3.2 (0x32) found at 0xfffffffffed2e000
+> [    1.720000] LBA: Truncating lmmio_space
+> [fffffffff0000000/fffffffffecffffe] to [fffffffff0000000,fffffffffe77ffff]
+> [    1.724000] powersw: Soft power switch support not available.
+> [    1.728000] bio: create slab <bio-0> at 0
+> [    1.728000] vgaarb: device added:
+> PCI:0000:e0:02.0,decodes=io+mem,owns=io+mem,locks=none
+> [    1.728000] vgaarb: loaded
+> [    1.736000] Switching to clocksource cr16
+> [    1.736000] NET: Registered protocol family 2
+> [    1.736000] IP route cache hash table entries: 131072 (order: 8,
+> 1048576 bytes)
+> [    1.744000] TCP established hash table entries: 262144 (order: 10,
+> 4194304 bytes)
+> [    1.756000] TCP bind hash table entries: 65536 (order: 7, 524288 bytes)
+> [    1.760000] TCP: Hash tables configured (established 262144 bind 65536)
+> [    1.760000] TCP reno registered
+> [    1.764000] NET: Registered protocol family 1
+> [    1.788000] Unpacking initramfs...
+> [    2.532000] Freeing initrd memory: 11512k freed
+> [    2.536000] Chassis warnings not supported.
+> [    2.536000] Performance monitoring counters enabled for Storm Peak
+> Slow DC-
+> [    2.536000] audit: initializing netlink socket (disabled)
+> [    2.540000] type=2000 audit(1277259537.537:1): initialized
+> [    2.552000] VFS: Disk quotas dquot_6.5.2
+> [    2.552000] Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
+> [    2.560000] msgmni has been set to 8036
+> [    2.560000] alg: No test for stdrng (krng)
+> [    2.560000] Block layer SCSI generic (bsg) driver version 0.4 loaded
+> (major 253)
+> [    2.564000] io scheduler noop registered
+> [    2.564000] io scheduler anticipatory registered
+> [    2.572000] io scheduler deadline registered
+> [    2.572000] io scheduler cfq registered (default)
+> [    2.584000] PDC Stable Storage facility v0.30
+> [    2.672000] STI GSC/PCI core graphics driver Version 0.9a
+> [    2.676000] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+> [    2.684000] 0000:e0:01.0: ttyS0 at MMIO 0xfffffffff4051000 (irq = 74)
+> is a 16450
+> [    2.692000] 0000:e0:01.1: ttyS1 at MMIO 0xfffffffff4050000 (irq = 74)
+> is a 16550A
+> [    2.692000] console [ttyS1] enabled, bootconsole disabled
+> [    2.692000] console [ttyS1] enabled, bootconsole disabled
+> [    2.696000] 0000:e0:01.1: ttyS2 at MMIO 0xfffffffff4050010 (irq = 74)
+> is a 16550A
+> [    2.704000] 0000:e0:01.1: ttyS3 at MMIO 0xfffffffff4050038 (irq = 74)
+> is a 16550A
+> [    2.712000] mice: PS/2 mouse device common for all mice
+> [    2.712000] rtc-generic rtc-generic: rtc core: registered rtc-generic
+> as rtc0
+> [    2.720000] TCP cubic registered
+> [    2.720000] NET: Registered protocol family 17
+> [    2.724000] registered taskstats version 1
+> [    2.740000] rtc-generic rtc-generic: setting system clock to
+> 2010-06-23 02:18:58 UTC (1277259538)
+> [    2.916000] Freeing unused kernel memory: 272k freed
+> Loading, please wait...
+> [    3.580000] udev: starting version 157
+> [    4.492000] SCSI subsystem initialized
+> [    4.692000] usbcore: registered new interface driver usbfs
+> [    4.692000] usbcore: registered new interface driver hub
+> [    4.692000] usbcore: registered new device driver usb
+> [    4.940000] tg3.c:v3.102 (September 1, 2009)
+> [    5.016000] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+> [    5.044000] ehci_hcd 0000:00:01.2: EHCI Host Controller
+> [    5.064000] ehci_hcd 0000:00:01.2: new USB bus registered, assigned
+> bus number 1
+> [    5.088000] ehci_hcd 0000:00:01.2: Enabling legacy PCI PM
+> [    5.112000] ehci_hcd 0000:00:01.2: irq 67, io mem 0xffffffff80000000
+> [    5.128000] ehci_hcd 0000:00:01.2: USB 2.0 started, EHCI 0.95
+> [    5.128000] usb usb1: New USB device found, idVendor=1d6b, idProduct=0002
+> [    5.128000] usb usb1: New USB device strings: Mfr=3, Product=2,
+> SerialNumber=1
+> [    5.136000] usb usb1: Product: EHCI Host Controller
+> [    5.136000] usb usb1: Manufacturer: Linux 2.6.32-5-parisc64 ehci_hcd
+> [    5.144000] usb usb1: SerialNumber: 0000:00:01.2
+> [    5.196000] usb usb1: configuration #1 chosen from 1 choice
+> [    5.196000] hub 1-0:1.0: USB hub found
+> [    5.196000] hub 1-0:1.0: 5 ports detected
+> 
+> 
+> 
+> Firmware Version  46.34
+> 
+> Duplex Console IO Dependent Code (IODC) revision 1
+> 
+> 
+> 
+> Firmware Version  46.34
+> 
+> Duplex Console IO Dependent Code (IODC) revision 1
+> ------------------------------------------------------------------------------
+>    (c) Copyright 1995-2004, Hewlett-Packard Company, All rights reserved
+> ------------------------------------------------------------------------------
+> 
+>   Processor   Speed            State           CoProcessor State  Cache Size
+>   Number                                       State              Inst
+>   Data
+>   ---------  --------   ---------------------  -----------------
+> ------------
+>       0      800  MHz   Active                 Functional
+> 33554432 33554432
+>       1      800  MHz   Stopped:Deconfigured   Unknown            0 0
+> 
+>   Central Bus Speed (in MHz)  :        200
+>   Available Memory            :    4194304  KB
+>   Good Memory Required        : Not initialized. Defaults to 32 MB.
+> 
+>    Primary boot path:    0/1/1/0.1
+>    Alternate boot path:  0/1/1/0.0
+>    Console path:         0/7/1/1.0
+>    Keyboard path:        0/0/4/0.0
+> 
+> 
+> Processor is booting from the first available device.
+> 
+> To discontinue, press any key within 10 seconds.
+> 
+> Boot terminated.
+> 
+> ------------------------------------
+> 
+> It kept trying and failing/rebooting at the same point a couple of times.
+> 
+> Do you need any other information? I'm now back on 2.6.32-3 but am keen
+> to run any test kernels.
+> 
+> Michal
+> 
+> 
+> -- 
+> To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+> with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+> Archive: http://lists.debian.org/4C219FF7.7030601@logix.net.nz
