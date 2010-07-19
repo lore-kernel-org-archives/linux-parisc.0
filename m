@@ -1,7 +1,7 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: Fwd: [PATCH] parisc: pass through '\t' to early (iodc) console
-Date: Sun, 18 Jul 2010 21:14:37 -0400 (EDT)
-Message-ID: <20100719011437.C832C4D1C@hiauly1.hia.nrc.ca>
+Date: Sun, 18 Jul 2010 21:47:30 -0400 (EDT)
+Message-ID: <20100719014731.9F3614CF6@hiauly1.hia.nrc.ca>
 References: <20100719010725.GN10884@bombadil.infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -14,7 +14,7 @@ List-Id: linux-parisc.vger.kernel.org
 
 > This should fix the hang, JDA.
 
-Thanks Kyle, I'll give it a try.
+Fixes boot.
 
 Dave
 -- 
