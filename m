@@ -1,38 +1,30 @@
-From: David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH 2/4] module linker script: coalesce function and data sections
-Date: Thu, 29 Jul 2010 10:09:57 +0100
-Message-ID: <30881.1280394597@redhat.com>
-References: <201007290324.36745.vda.linux@googlemail.com> <1280360876-2571-3-git-send-email-vda.linux@googlemail.com> <1280360876-2571-1-git-send-email-vda.linux@googlemail.com> <29025.1280363105@redhat.com>
-Cc: dhowells@redhat.com, Michal Marek <mmarek@suse.cz>,
-	linux-kbuild <linux-kbuild@vger.kernel.org>,
-	linux-arch@vger.kernel.org,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	lkml <linux-kernel@vger.kernel.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Tim Abbott <tabbott@ksplice.com>,
-	Tim Bird <tim.bird@am.sony.com>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Matt Fleming <matt@console-pimps.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Anders Kaseorg <andersk@mit.edu>,
-	Andi Kleen <andi@firstfloor.org>,
-	Stephen Rothwell <sfr@canb.auug.org.au>
-To: Denys Vlasenko <vda.linux@googlemail.com>
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: Re: [PATCH] parisc: add tty driver to PDC console
+Date: Fri, 30 Jul 2010 16:30:08 +0200
+Message-ID: <20100730163008.64c9de58@borg.bxl.tuxicoman.be>
+References: <20100614192441.245da011@zombie>
+	<20100615133410.044ea5b1@borg.bxl.tuxicoman.be>
+	<20100615113553.GP20317@bombadil.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <201007290324.36745.vda.linux@googlemail.com>
+In-Reply-To: <20100615113553.GP20317@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Denys Vlasenko <vda.linux@googlemail.com> wrote:
+On Tue, 15 Jun 2010 07:35:53 -0400
+Kyle McMartin <kyle@mcmartin.ca> wrote:
 
-> linker groups all similarly-named input sections into one output section
-> with the same name, if the name does not match any rule in the linker
-> script.
-> 
-> Basically, it should work as if there is a rule:
-> 
-> .sbss    0 : AT(0) { *(.sbss) }
 
-Okay, thanks.
+> I figured... I'll take a look at it over the weekend. (Also, I'll see
+> if I can dig up the radeonfb hacks.)
 
-David
+
+Any luck ? :)
+
+Is it still possible to get this in 2.6.35 ?
+
+Cheers,
+  Guy
