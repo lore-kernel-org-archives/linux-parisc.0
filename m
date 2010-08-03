@@ -1,60 +1,66 @@
-From: Michal Marek <mmarek@suse.cz>
-Subject: Re: [PATCH 2/4] module linker script: coalesce function and data
- sections
-Date: Tue, 03 Aug 2010 15:47:26 +0200
-Message-ID: <4C581DEE.8080205@suse.cz>
-References: <1280360876-2571-1-git-send-email-vda.linux@googlemail.com> <1280360876-2571-3-git-send-email-vda.linux@googlemail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
-Cc: linux-kbuild <linux-kbuild@vger.kernel.org>,
-	linux-arch@vger.kernel.org,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	lkml <linux-kernel@vger.kernel.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Tim Abbott <tabbott@ksplice.com>,
-	Tim Bird <tim.bird@am.sony.com>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Matt Fleming <matt@console-pimps.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Anders Kaseorg <andersk@mit.edu>,
-	Andi Kleen <andi@firstfloor.org>,
-	Stephen Rothwell <sfr@canb.auug.org.au>
-To: Denys Vlasenko <vda.linux@googlemail.com>
+From: Kulikov Vasiliy <segooon@gmail.com>
+Subject: [PATCH 07/11] parisc: superio: do not use PCI resources before pci_enable_device()
+Date: Tue,  3 Aug 2010 19:44:13 +0400
+Message-ID: <1280850253-6128-1-git-send-email-segooon@gmail.com>
+Cc: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Frans Pop <elendil@planet.nl>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: kernel-janitors@vger.kernel.org
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1280360876-2571-3-git-send-email-vda.linux@googlemail.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 29.7.2010 01:47, Denys Vlasenko wrote:
->  SECTIONS {
-> +
-> +	/* Coalesce sections produced by gcc -ffunction-sections */
-> +	.text   0 : AT(0) { *(.text .text.[A-Za-z0-9_$^]*) }
-> +
-> +	/* Coalesce sections produced by gcc -fdata-sections */
-> +	.rodata 0 : AT(0) { *(.rodata .rodata.[A-Za-z0-9_$^]*) }
-> +	.data   0 : AT(0) { *(.data .data.[A-Za-z0-9_$^]*) }
-> +	.bss    0 : AT(0) { *(.bss .bss.[A-Za-z0-9_$^]*) }
-> +
->  	/DISCARD/ : { *(.discard) }
->  }
+IRQ and resource[] may not have correct values until
+after PCI hotplug setup occurs at pci_enable_device() time.
 
-I'm now getting
+The semantic match that finds this problem is as follows:
 
-ld:/home/mmarek/linux-2.6/scripts/module-common.lds:23: ignoring invalid
-character `^' in script
-ld:/home/mmarek/linux-2.6/scripts/module-common.lds:26: ignoring invalid
-character `^' in script
-ld:/home/mmarek/linux-2.6/scripts/module-common.lds:27: ignoring invalid
-character `^' in script
-ld:/home/mmarek/linux-2.6/scripts/module-common.lds:28: ignoring invalid
-character `^' in script
+// <smpl>
+@@
+identifier x;
+identifier request ~= "pci_request.*|pci_resource.*";
+@@
 
-when linking modules and a similar warning when linking vmlinux (caused
-by the next patch in series). I tried writing the carets as \^, but that
-doesn't help at all...
+(
+* x->irq
+|
+* x->resource
+|
+* request(x, ...)
+)
+ ...
+*pci_enable_device(x)
+// </smpl>
 
-$ ld --version
-GNU ld (GNU Binutils; openSUSE Factory) 2.20.0.20100122-7
+Signed-off-by: Kulikov Vasiliy <segooon@gmail.com>
+---
+ drivers/parisc/superio.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-Michal
+diff --git a/drivers/parisc/superio.c b/drivers/parisc/superio.c
+index f7806d8..c8a36a2 100644
+--- a/drivers/parisc/superio.c
++++ b/drivers/parisc/superio.c
+@@ -169,8 +169,6 @@ superio_init(struct pci_dev *pcidev)
+ 	/* ...then properly fixup the USB to point at suckyio PIC */
+ 	sio->usb_pdev->irq = superio_fixup_irq(sio->usb_pdev);
+ 
+-	printk(KERN_INFO PFX "Found NS87560 Legacy I/O device at %s (IRQ %i)\n",
+-	       pci_name(pdev), pdev->irq);
+ 
+ 	pci_read_config_dword (pdev, SIO_SP1BAR, &sio->sp1_base);
+ 	sio->sp1_base &= ~1;
+@@ -204,6 +202,9 @@ superio_init(struct pci_dev *pcidev)
+ 	ret = pci_enable_device(pdev);
+ 	BUG_ON(ret < 0);	/* not too much we can do about this... */
+ 
++	printk(KERN_INFO PFX "Found NS87560 Legacy I/O device at %s (IRQ %i)\n",
++	       pci_name(pdev), pdev->irq);
++
+ 	/*
+ 	 * Next project is programming the onboard interrupt controllers.
+ 	 * PDC hasn't done this for us, since it's using polled I/O.
+-- 
+1.7.0.4
