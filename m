@@ -1,68 +1,60 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [Security] [PATCH] bug in led_proc_write()
-Date: Tue, 3 Aug 2010 09:31:30 -0400
-Message-ID: <20100803133130.GU10884@bombadil.infradead.org>
-References: <52a11dc3cc92b1e13c028304d9a7beaa@81.11.193.46>
- <20100710170458.96dc8a65.akpm@linux-foundation.org>
- <20100802204641.GA2907@p100.box>
+From: Michal Marek <mmarek@suse.cz>
+Subject: Re: [PATCH 2/4] module linker script: coalesce function and data
+ sections
+Date: Tue, 03 Aug 2010 15:47:26 +0200
+Message-ID: <4C581DEE.8080205@suse.cz>
+References: <1280360876-2571-1-git-send-email-vda.linux@googlemail.com> <1280360876-2571-3-git-send-email-vda.linux@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>,
-	Ilja <ilja@netric.org>, security@kernel.org,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20100802204641.GA2907@p100.box>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-2
+Cc: linux-kbuild <linux-kbuild@vger.kernel.org>,
+	linux-arch@vger.kernel.org,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	lkml <linux-kernel@vger.kernel.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Tim Abbott <tabbott@ksplice.com>,
+	Tim Bird <tim.bird@am.sony.com>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Matt Fleming <matt@console-pimps.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Anders Kaseorg <andersk@mit.edu>,
+	Andi Kleen <andi@firstfloor.org>,
+	Stephen Rothwell <sfr@canb.auug.org.au>
+To: Denys Vlasenko <vda.linux@googlemail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1280360876-2571-3-git-send-email-vda.linux@googlemail.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Aug 02, 2010 at 10:46:41PM +0200, Helge Deller wrote:
-> Kyle, please apply to the parisc git tree.
-> 
+On 29.7.2010 01:47, Denys Vlasenko wrote:
+>  SECTIONS {
+> +
+> +	/* Coalesce sections produced by gcc -ffunction-sections */
+> +	.text   0 : AT(0) { *(.text .text.[A-Za-z0-9_$^]*) }
+> +
+> +	/* Coalesce sections produced by gcc -fdata-sections */
+> +	.rodata 0 : AT(0) { *(.rodata .rodata.[A-Za-z0-9_$^]*) }
+> +	.data   0 : AT(0) { *(.data .data.[A-Za-z0-9_$^]*) }
+> +	.bss    0 : AT(0) { *(.bss .bss.[A-Za-z0-9_$^]*) }
+> +
+>  	/DISCARD/ : { *(.discard) }
+>  }
 
-Please send this straight to Linus with my
-Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
+I'm now getting
 
-I don't want to accidentally mis-place it again this summer.
+ld:/home/mmarek/linux-2.6/scripts/module-common.lds:23: ignoring invalid
+character `^' in script
+ld:/home/mmarek/linux-2.6/scripts/module-common.lds:26: ignoring invalid
+character `^' in script
+ld:/home/mmarek/linux-2.6/scripts/module-common.lds:27: ignoring invalid
+character `^' in script
+ld:/home/mmarek/linux-2.6/scripts/module-common.lds:28: ignoring invalid
+character `^' in script
 
---Kyle
+when linking modules and a similar warning when linking vmlinux (caused
+by the next patch in series). I tried writing the carets as \^, but that
+doesn't help at all...
 
-> Helge
-> 
-> -----------
-> [PARISC] led.c - fix potential stack overflow in led_proc_write()
-> 
-> avoid potential stack overflow by correctly checking count parameter
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> 
-> 
-> diff --git a/drivers/parisc/led.c b/drivers/parisc/led.c
-> index 188bc84..d02be78 100644
-> --- a/drivers/parisc/led.c
-> +++ b/drivers/parisc/led.c
-> @@ -176,16 +176,18 @@ static ssize_t led_proc_write(struct file *file, const char *buf,
->  	size_t count, loff_t *pos)
->  {
->  	void *data = PDE(file->f_path.dentry->d_inode)->data;
-> -	char *cur, lbuf[count + 1];
-> +	char *cur, lbuf[32];
->  	int d;
->  
->  	if (!capable(CAP_SYS_ADMIN))
->  		return -EACCES;
->  
-> -	memset(lbuf, 0, count + 1);
-> +	if (count >= sizeof(lbuf))
-> +		count = sizeof(lbuf)-1;
->  
->  	if (copy_from_user(lbuf, buf, count))
->  		return -EFAULT;
-> +	lbuf[count] = 0;
->  
->  	cur = lbuf;
->  
-> 
-> 
-> 
+$ ld --version
+GNU ld (GNU Binutils; openSUSE Factory) 2.20.0.20100122-7
+
+Michal
