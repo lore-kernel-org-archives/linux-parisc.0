@@ -1,96 +1,180 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: [alerts@alerts.hp.com: HP SUPPORT ALERT: Change to Patch services
-	effective September 18, 2010 ? Action required]
-Date: Wed, 18 Aug 2010 21:33:47 -0400
-Message-ID: <20100819013346.GA9194@hiauly1.hia.nrc.ca>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: [PATCHv2 2/1] Consolidate CONFIG_DEBUG_STRICT_USER_COPY_CHECKS
+Date: Wed, 18 Aug 2010 19:28:18 -0700
+Message-ID: <1282184898-30599-1-git-send-email-sboyd@codeaurora.org>
+References: <201008181428.45029.arnd@arndb.de>
+Cc: linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+	x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Arjan van de Ven <arjan@linux.intel.com>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	Helge Deller <deller@gmx.de>
+To: linux-arch@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <201008181428.45029.arnd@arndb.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I have forwarded this message to the list because I believe that
-this change by HP  will impact my support of GCC and binutils on parisc
-particularly for hpux.  However, I have always felt that hpux testing
-provided an important validation for linux.  For many years (since
-at least 1990), patches were available without a support agreement.
+The help text for this config is duplicated across the x86,
+parisc, s390, and arm Kconfig.debug files. Arnd Bergman noted
+that the help text was slightly misleading and should be fixed to
+state that enabling this option isn't a problem when using pre 4.4
+gcc.
 
-Comments?
+To simplify the rewording, consolidate the text into
+lib/Kconfig.debug and modify it there to be more explicit about
+when you should say N to this config.
 
-Dave
+Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: x86@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: Arjan van de Ven <arjan@linux.intel.com>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: Helge Deller <deller@gmx.de>
+---
 
------ Forwarded message from Hewlett-Packard <alerts@alerts.hp.com> -----
+This depends on a patch sent to the arm mailing list adding
+CONFIG_DEBUG_STRICT_USER_COPY_CHECKS to ARM.
 
-X-Original-To: dave@hiauly1.hia.nrc.ca
-Delivered-To: dave@hiauly1.hia.nrc.ca
-DomainKey-Signature: q=dns; a=rsa-sha1; c=nofws;
-	s=v1; d=alerts.hp.com;
-	h=DKIM-Signature:Received:Date:From:Reply-to:To:Message-ID:Subject:Error
-	s-to:MIME-Version:Content-Type:Content-Transfer-Encoding:X-eid:X-pid;
-	b=UqkwsjUwmbAsDEb1OIyh7COGPOoPxiL+eknlEyEpqi05YRFzmWR/NPo2ssijart2
-	TZKuQrr0Za7ab8bUC6pLb6FmKkc6UNfIsYYfmhRVwrWAeHcpr3lZaMTaRdFEdCDK
-DKIM-Signature: v=1; a=rsa-sha1; d=alerts.hp.com; s=v1; c=simple/simple;
-	q=dns/txt; i=@alerts.hp.com; t=1282176352;
-	h=From;
-	bh=J4WWdbvzMvOuIlvE2jpCeKsNZnY=;
-	b=keCtDMGR2quWsLdM8KKtY9T22lgQHre7SwaBy0p+1P1uInu/q+DALCxBas9bRsGC
-	MgHD4jrRKdCWTQ9SRxXMKep04fovt9bWDHTJo8PCcm0qzGG8J7sUHw10qKwjJQYl;
-Date: Wed, 18 Aug 2010 17:05:52 -0700 (PDT)
-From: Hewlett-Packard <alerts@alerts.hp.com>
-Reply-to: alerts@alerts.hp.com
-To: dave@hiauly1.hia.nrc.ca
-Subject: HP SUPPORT ALERT: Change to Patch services effective September 18,
-	2010 ? Action required
-Errors-to: alerts@alerts.hp.com
-X-eid: 2.5.3KT.2ZR.xxGiM.ExY8wI..T..3U3g.CYJMESZ0
-X-pid: 909546
+LKML: http://lkml.org/lkml/2010/8/17/535
 
-Important note: As of September 17 (or shortly thereafter), HP
-will institute a change in the way that Patch services are accessed.
-Beginning at that time, Patch access will be through the ITRC support
-portal. You need to have a valid ITRC user ID and password and will
-now also need an active HP support agreement that includes Software
-Updates linked to your ITRC profile to access Patch content and
-services. We urge you to review your current support coverage now to
-ensure you have valid coverage and can maintain uninterrupted access
-to Patch. To obtain support coverage, please contact your local HP
-office or representative or visit the link below to
-access HP via Chat or phone.
-http://alerts.hp.com/r?2.1.3KT.2ZR.xxGiM.ExY8wI..T.Unbs.3U3g.bW89MQ%5f%5fDNRYFTT0 
+ arch/arm/Kconfig.debug    |   15 ++-------------
+ arch/parisc/Kconfig.debug |   15 ++-------------
+ arch/s390/Kconfig.debug   |   14 ++------------
+ arch/x86/Kconfig.debug    |   15 ++-------------
+ lib/Kconfig.debug         |   16 ++++++++++++++++
+ 5 files changed, 24 insertions(+), 51 deletions(-)
 
-For more information, please read the FAQs here:
-http://alerts.hp.com/r?2.1.3KT.2ZR.xxGiM.ExY8wI..T.Unbu.3U3g.bW89MQ%5f%5fDNYMFTV0
-
-_____________________________________________________________________
-
-HP is committed to protecting your privacy. Your information will not 
-be shared outside HP unless you give your consent. You can choose 
-whether HP may communicate directly with you. For more information 
-please see the HP Privacy Statement.
-http://alerts.hp.com/r?2.1.3KT.2ZR.xxGiM.ExY8wI..T.Unbw.3U3g.bW89MQ%5f%5fDNfAFTX0
-
-As a valued contact or customer of HP, you are receiving this 
-eNewsletter with information that we believe will be relevant to you. 
-But if you do not wish to receive this communication in the future, 
-please click below to unsubscribe.
-http://alerts.hp.com/r?2.1.3KT.2ZR.xxGiM.ExY8wI..T.Unby.3U3g.bW89MQ%5f%5fDOFUFTZ0
-
-? 1994-2010 Hewlett-Packard Company. All rights reserved. All 
-product and company names referenced herein are trademarks of their 
-respective owners. THIS DOCUMENT IS PROVIDED FOR INFORMATIONAL 
-PURPOSES ONLY. INFORMATION PROVIDED IN THIS DOCUMENT IS PROVIDED AS 
-IS WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED. This 
-document may be copied provided all text is included and copies 
-contain HP's copyright notice and any other notices provided herein. 
-Any pricing information provided in this newsletter represents 
-estimated resale pricing. Actual reseller prices may vary. 
-
-
-
------ End forwarded message -----
-
+diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
+index 64e33b8..326c7f1 100644
+--- a/arch/arm/Kconfig.debug
++++ b/arch/arm/Kconfig.debug
+@@ -128,18 +128,7 @@ config DEBUG_S3C_UART
+ 	  The uncompressor code port configuration is now handled
+ 	  by CONFIG_S3C_LOWLEVEL_UART_PORT.
+ 
+-config DEBUG_STRICT_USER_COPY_CHECKS
+-	bool "Strict user copy size checks"
+-	depends on DEBUG_KERNEL && !TRACE_BRANCH_PROFILING
+-	help
+-	  Enabling this option turns a certain set of sanity checks for user
+-	  copy operations into compile time errors.
+-
+-	  The copy_from_user() etc checks are there to help test if there
+-	  are sufficient security checks on the length argument of
+-	  the copy operation, by having gcc prove that the argument is
+-	  within bounds.
+-
+-	  If unsure, or if you run an older (pre 4.4) gcc, say N.
++config ARCH_HAS_DEBUG_STRICT_USER_COPY_CHECKS
++	def_bool y
+ 
+ endmenu
+diff --git a/arch/parisc/Kconfig.debug b/arch/parisc/Kconfig.debug
+index 7305ac8..b13e8d0 100644
+--- a/arch/parisc/Kconfig.debug
++++ b/arch/parisc/Kconfig.debug
+@@ -12,18 +12,7 @@ config DEBUG_RODATA
+          portion of the kernel code won't be covered by a TLB anymore.
+          If in doubt, say "N".
+ 
+-config DEBUG_STRICT_USER_COPY_CHECKS
+-	bool "Strict copy size checks"
+-	depends on DEBUG_KERNEL && !TRACE_BRANCH_PROFILING
+-	---help---
+-	  Enabling this option turns a certain set of sanity checks for user
+-	  copy operations into compile time failures.
+-
+-	  The copy_from_user() etc checks are there to help test if there
+-	  are sufficient security checks on the length argument of
+-	  the copy operation, by having gcc prove that the argument is
+-	  within bounds.
+-
+-	  If unsure, or if you run an older (pre 4.4) gcc, say N.
++config ARCH_HAS_DEBUG_STRICT_USER_COPY_CHECKS
++	def_bool y
+ 
+ endmenu
+diff --git a/arch/s390/Kconfig.debug b/arch/s390/Kconfig.debug
+index 45e0c61..6df8e30 100644
+--- a/arch/s390/Kconfig.debug
++++ b/arch/s390/Kconfig.debug
+@@ -6,17 +6,7 @@ config TRACE_IRQFLAGS_SUPPORT
+ 
+ source "lib/Kconfig.debug"
+ 
+-config DEBUG_STRICT_USER_COPY_CHECKS
+-	bool "Strict user copy size checks"
+-	---help---
+-	  Enabling this option turns a certain set of sanity checks for user
+-	  copy operations into compile time warnings.
+-
+-	  The copy_from_user() etc checks are there to help test if there
+-	  are sufficient security checks on the length argument of
+-	  the copy operation, by having gcc prove that the argument is
+-	  within bounds.
+-
+-	  If unsure, or if you run an older (pre 4.4) gcc, say N.
++config ARCH_HAS_DEBUG_STRICT_USER_COPY_CHECKS
++	def_bool y
+ 
+ endmenu
+diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
+index 7508508..d24afa3 100644
+--- a/arch/x86/Kconfig.debug
++++ b/arch/x86/Kconfig.debug
+@@ -285,18 +285,7 @@ config OPTIMIZE_INLINING
+ 
+ 	  If unsure, say N.
+ 
+-config DEBUG_STRICT_USER_COPY_CHECKS
+-	bool "Strict copy size checks"
+-	depends on DEBUG_KERNEL && !TRACE_BRANCH_PROFILING
+-	---help---
+-	  Enabling this option turns a certain set of sanity checks for user
+-	  copy operations into compile time failures.
+-
+-	  The copy_from_user() etc checks are there to help test if there
+-	  are sufficient security checks on the length argument of
+-	  the copy operation, by having gcc prove that the argument is
+-	  within bounds.
+-
+-	  If unsure, or if you run an older (pre 4.4) gcc, say N.
++config ARCH_HAS_DEBUG_STRICT_USER_COPY_CHECKS
++	def_bool y
+ 
+ endmenu
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 9e06b7f..bbb1ac5 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1013,6 +1013,22 @@ config SYSCTL_SYSCALL_CHECK
+ 	  to properly maintain and use. This enables checks that help
+ 	  you to keep things correct.
+ 
++config DEBUG_STRICT_USER_COPY_CHECKS
++	bool "Strict user copy size checks"
++	depends on ARCH_HAS_DEBUG_STRICT_USER_COPY_CHECKS
++	depends on DEBUG_KERNEL && !TRACE_BRANCH_PROFILING
++	help
++	  Enabling this option turns a certain set of sanity checks for user
++	  copy operations into compile time warnings/errors.
++
++	  The copy_from_user() etc checks are there to help test if there
++	  are sufficient security checks on the length argument of
++	  the copy operation, by having gcc prove that the argument is
++	  within bounds.
++
++	  If unsure, or if you run an older (pre 4.4) gcc where this option
++	  is a no-op, say N.
++
+ source mm/Kconfig.debug
+ source kernel/trace/Kconfig
+ 
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+
