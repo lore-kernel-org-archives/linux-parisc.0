@@ -1,133 +1,96 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH - not final!] parisc: fix shmctl(SHM_INFO) breakage on 64bit
- kernel
-Date: Fri, 13 Aug 2010 22:49:46 +0200
-Message-ID: <20100813204946.GA9437@p100.box>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: [alerts@alerts.hp.com: HP SUPPORT ALERT: Change to Patch services
+	effective September 18, 2010 ? Action required]
+Date: Wed, 18 Aug 2010 21:33:47 -0400
+Message-ID: <20100819013346.GA9194@hiauly1.hia.nrc.ca>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I noticed, that shmctl(SHM_INFO) is broken when running on a 64bit
-kernel (with 32bit userspace).
-I assume we need to enable the IPC compat layer, at least for some
-functions.
+I have forwarded this message to the list because I believe that
+this change by HP  will impact my support of GCC and binutils on parisc
+particularly for hpux.  However, I have always felt that hpux testing
+provided an important validation for linux.  For many years (since
+at least 1990), patches were available without a support agreement.
 
-Below is a preliminary patch - the compat_XXX structures are probably
-wrong and need changing. I think I copied them from a little-endian
-architecture, while I better should have checked with a big-endian one.
-So, please DO NOT apply yet.
+Comments?
 
-And, we need to check the other ipc_compat functions as well...
+Dave
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+----- Forwarded message from Hewlett-Packard <alerts@alerts.hp.com> -----
+
+X-Original-To: dave@hiauly1.hia.nrc.ca
+Delivered-To: dave@hiauly1.hia.nrc.ca
+DomainKey-Signature: q=dns; a=rsa-sha1; c=nofws;
+	s=v1; d=alerts.hp.com;
+	h=DKIM-Signature:Received:Date:From:Reply-to:To:Message-ID:Subject:Error
+	s-to:MIME-Version:Content-Type:Content-Transfer-Encoding:X-eid:X-pid;
+	b=UqkwsjUwmbAsDEb1OIyh7COGPOoPxiL+eknlEyEpqi05YRFzmWR/NPo2ssijart2
+	TZKuQrr0Za7ab8bUC6pLb6FmKkc6UNfIsYYfmhRVwrWAeHcpr3lZaMTaRdFEdCDK
+DKIM-Signature: v=1; a=rsa-sha1; d=alerts.hp.com; s=v1; c=simple/simple;
+	q=dns/txt; i=@alerts.hp.com; t=1282176352;
+	h=From;
+	bh=J4WWdbvzMvOuIlvE2jpCeKsNZnY=;
+	b=keCtDMGR2quWsLdM8KKtY9T22lgQHre7SwaBy0p+1P1uInu/q+DALCxBas9bRsGC
+	MgHD4jrRKdCWTQ9SRxXMKep04fovt9bWDHTJo8PCcm0qzGG8J7sUHw10qKwjJQYl;
+Date: Wed, 18 Aug 2010 17:05:52 -0700 (PDT)
+From: Hewlett-Packard <alerts@alerts.hp.com>
+Reply-to: alerts@alerts.hp.com
+To: dave@hiauly1.hia.nrc.ca
+Subject: HP SUPPORT ALERT: Change to Patch services effective September 18,
+	2010 ? Action required
+Errors-to: alerts@alerts.hp.com
+X-eid: 2.5.3KT.2ZR.xxGiM.ExY8wI..T..3U3g.CYJMESZ0
+X-pid: 909546
+
+Important note: As of September 17 (or shortly thereafter), HP
+will institute a change in the way that Patch services are accessed.
+Beginning at that time, Patch access will be through the ITRC support
+portal. You need to have a valid ITRC user ID and password and will
+now also need an active HP support agreement that includes Software
+Updates linked to your ITRC profile to access Patch content and
+services. We urge you to review your current support coverage now to
+ensure you have valid coverage and can maintain uninterrupted access
+to Patch. To obtain support coverage, please contact your local HP
+office or representative or visit the link below to
+access HP via Chat or phone.
+http://alerts.hp.com/r?2.1.3KT.2ZR.xxGiM.ExY8wI..T.Unbs.3U3g.bW89MQ%5f%5fDNRYFTT0 
+
+For more information, please read the FAQs here:
+http://alerts.hp.com/r?2.1.3KT.2ZR.xxGiM.ExY8wI..T.Unbu.3U3g.bW89MQ%5f%5fDNYMFTV0
+
+_____________________________________________________________________
+
+HP is committed to protecting your privacy. Your information will not 
+be shared outside HP unless you give your consent. You can choose 
+whether HP may communicate directly with you. For more information 
+please see the HP Privacy Statement.
+http://alerts.hp.com/r?2.1.3KT.2ZR.xxGiM.ExY8wI..T.Unbw.3U3g.bW89MQ%5f%5fDNfAFTX0
+
+As a valued contact or customer of HP, you are receiving this 
+eNewsletter with information that we believe will be relevant to you. 
+But if you do not wish to receive this communication in the future, 
+please click below to unsubscribe.
+http://alerts.hp.com/r?2.1.3KT.2ZR.xxGiM.ExY8wI..T.Unby.3U3g.bW89MQ%5f%5fDOFUFTZ0
+
+? 1994-2010 Hewlett-Packard Company. All rights reserved. All 
+product and company names referenced herein are trademarks of their 
+respective owners. THIS DOCUMENT IS PROVIDED FOR INFORMATIONAL 
+PURPOSES ONLY. INFORMATION PROVIDED IN THIS DOCUMENT IS PROVIDED AS 
+IS WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED. This 
+document may be copied provided all text is included and copies 
+contain HP's copyright notice and any other notices provided herein. 
+Any pricing information provided in this newsletter represents 
+estimated resale pricing. Actual reseller prices may vary. 
 
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 05a366a..e2fe95c 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -289,6 +289,10 @@ menu "Executable file formats"
- 
- source "fs/Kconfig.binfmt"
- 
-+config SYSVIPC_COMPAT
-+	def_bool y
-+	depends on COMPAT && SYSVIPC
-+
- endmenu
- 
- source "net/Kconfig"
-diff --git a/arch/parisc/include/asm/compat.h b/arch/parisc/include/asm/compat.h
-index 02b77ba..bbbe256 100644
---- a/arch/parisc/include/asm/compat.h
-+++ b/arch/parisc/include/asm/compat.h
-@@ -29,6 +29,7 @@ typedef u16	compat_ipc_pid_t;
- typedef s32	compat_daddr_t;
- typedef u32	compat_caddr_t;
- typedef s32	compat_timer_t;
-+typedef s32	compat_key_t;
- 
- typedef s32	compat_int_t;
- typedef s32	compat_long_t;
-@@ -129,6 +130,65 @@ typedef u32		compat_sigset_word;
- #define COMPAT_OFF_T_MAX	0x7fffffff
- #define COMPAT_LOFF_T_MAX	0x7fffffffffffffffL
- 
-+
-+struct compat_ipc64_perm {
-+	compat_key_t key;
-+	__compat_uid32_t uid;
-+	__compat_gid32_t gid;
-+	__compat_uid32_t cuid;
-+	__compat_gid32_t cgid;
-+	unsigned short mode;
-+	unsigned short __pad1;
-+	unsigned short seq;
-+	unsigned short __pad2;
-+	compat_ulong_t unused1;
-+	compat_ulong_t unused2;
-+};
-+
-+struct compat_semid64_ds {
-+	struct compat_ipc64_perm sem_perm;
-+	compat_time_t  sem_otime;
-+	compat_ulong_t __unused1;
-+	compat_time_t  sem_ctime;
-+	compat_ulong_t __unused2;
-+	compat_ulong_t sem_nsems;
-+	compat_ulong_t __unused3;
-+	compat_ulong_t __unused4;
-+};
-+
-+struct compat_msqid64_ds {
-+	struct compat_ipc64_perm msg_perm;
-+	compat_time_t  msg_stime;
-+	compat_ulong_t __unused1;
-+	compat_time_t  msg_rtime;
-+	compat_ulong_t __unused2;
-+	compat_time_t  msg_ctime;
-+	compat_ulong_t __unused3;
-+	compat_ulong_t msg_cbytes;
-+	compat_ulong_t msg_qnum;
-+	compat_ulong_t msg_qbytes;
-+	compat_pid_t   msg_lspid;
-+	compat_pid_t   msg_lrpid;
-+	compat_ulong_t __unused4;
-+	compat_ulong_t __unused5;
-+};
-+
-+struct compat_shmid64_ds {
-+	struct compat_ipc64_perm shm_perm;
-+	compat_size_t  shm_segsz;
-+	compat_time_t  shm_atime;
-+	compat_ulong_t __unused1;
-+	compat_time_t  shm_dtime;
-+	compat_ulong_t __unused2;
-+	compat_time_t  shm_ctime;
-+	compat_ulong_t __unused3;
-+	compat_pid_t   shm_cpid;
-+	compat_pid_t   shm_lpid;
-+	compat_ulong_t shm_nattch;
-+	compat_ulong_t __unused4;
-+	compat_ulong_t __unused5;
-+};
-+
- /*
-  * A pointer passed in from user mode. This should not
-  * be used for syscall parameters, just declare them
-diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-index 3d52c97..5293c90 100644
---- a/arch/parisc/kernel/syscall_table.S
-+++ b/arch/parisc/kernel/syscall_table.S
-@@ -293,7 +293,7 @@
- 	ENTRY_SAME(shmat)
- 	ENTRY_SAME(shmdt)
- 	ENTRY_SAME(shmget)
--	ENTRY_SAME(shmctl)		/* 195 */
-+	ENTRY_COMP(shmctl)		/* 195 */
- 	ENTRY_SAME(ni_syscall)		/* streams1 */
- 	ENTRY_SAME(ni_syscall)		/* streams2 */
- 	ENTRY_SAME(lstat64)
+
+----- End forwarded message -----
+
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
