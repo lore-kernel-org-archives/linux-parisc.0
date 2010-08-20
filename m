@@ -1,58 +1,78 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [alerts@alerts.hp.com: HP SUPPORT ALERT: Change to Patch
-	services effective September 18, 2010 ? Action required]
-Date: Thu, 19 Aug 2010 14:06:13 -0400
-Message-ID: <20100819180612.GA13795@hiauly1.hia.nrc.ca>
-References: <20100819013346.GA9194@hiauly1.hia.nrc.ca> <AANLkTinXgNz7cjNV1oiw+Niy78pMyeCYtaxvqNM-fM0R@mail.gmail.com> <20100819170030.GA13537@hiauly1.hia.nrc.ca> <AANLkTikEn-E4bUD4bgbNLNtQYfdN9kuwQ+pCmff5hEtc@mail.gmail.com>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	linux-parisc@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+From: "Luck, Tony" <tony.luck@intel.com>
+Subject: [RFC - PATCH] leave guard page for upwardly growing stacks too
+Date: Fri, 20 Aug 2010 10:56:47 -0700
+Message-ID: <4c6ec1df290705bb68@agluck-desktop.sc.intel.com>
+Cc: linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	"Kyle McMartin" <kyle@mcmartin.ca>, "Helge Deller" <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	"Matthew Wilcox" <willy@linux.intel.com>
+To: linux-kernel@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <AANLkTikEn-E4bUD4bgbNLNtQYfdN9kuwQ+pCmff5hEtc@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 19 Aug 2010, Carlos O'Donell wrote:
+In commit 320b2b8de12698082609ebbc1a17165727f4c893
+   mm: keep a guard page below a grow-down stack segment
 
-> I see your point, and I understand that HP-UX support has helped the
-> Linux support.
+we prevented stacks from growing downwards into other vma areas.
+But some arhictectures (ia64 and pa-risc) have stacks that
+grow upwards. Provide the same protection for them.
 
-Definitely.  The change will make it more difficult for open source
-developers to support HP-UX.  That's my underlying reason for the post.
+Signed-off-by: Tony Luc <tony.luck@intel.com>
 
-Within the GCC community, HP-UX support is viewed as more important
-than Linux.  Adacore supports a few mission critical applications
-on HP-UX (ATC, I believe).  Recently, patch levels came up regarding
-one of my bug fixes (libc changes).
+---
 
-> If all you need is an FTP server, can't you talk to your HP contacts
-> and set something up to start holding patches?
+Pointed out to me by Matthew Wilcox.
 
-I believe that there are copyright issues.  Sadly, my contacts at HP
-are now reduced to one.  So, I'm not very hopeful.
+DANGER, DANGER - NOT TESTED on pa-risc yet DO NOT APPLY WITHOUT AN ACK FROM PA-RISC LAND!
 
-At some point, it won't be worthwhile continuing to support parisc
-and ia64 within GCC and binutils.  I would judge it takes 500 to a
-1000 hours a year to support GCC.  Recently, two GCC bugs appeared
-which involved mis-compilation of the compiler.  These are very hard
-to track down.  One is still not fixed although the cause of the
-bug is known (fwprop).  It breaks hppa64 builds.  I think it could
-affect 32-bit as well, and it is likely present in older versions.
+Are there any other architectures with upward growing stacks?
 
-Regarding rp3440 firmware, I noticed recently that the pdc firmware
-wasn't testing memory correctly and it was disabling DIMMs.  This would
-cause restart failures.  So, I updated the firmware to the latest version.
-The system seems stable again running a UP kernel.  Haven't had a chance
-to test SMP yet.  I suspect that the firmware may have been responsible
-for some cache corruption.
-
-On a positive front, squeeze with kde seem to be largely working on my
-c3750.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+diff --git a/mm/memory.c b/mm/memory.c
+index b6e5fd2..9dcef72 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2760,21 +2760,35 @@ out_release:
+ }
+ 
+ /*
+- * This is like a special single-page "expand_downwards()",
+- * except we must first make sure that 'address-PAGE_SIZE'
++ * This is like a special single-page "expand_{down|up}wards()",
++ * except we must first make sure that 'address{-|+}PAGE_SIZE'
+  * doesn't hit another vma.
+  *
+  * The "find_vma()" will do the right thing even if we wrap
+  */
+ static inline int check_stack_guard_page(struct vm_area_struct *vma, unsigned long address)
+ {
+-	address &= PAGE_MASK;
+-	if ((vma->vm_flags & VM_GROWSDOWN) && address == vma->vm_start) {
+-		address -= PAGE_SIZE;
+-		if (find_vma(vma->vm_mm, address) != vma)
+-			return -ENOMEM;
++	struct vm_area_struct *v;
++
++	if (vma->vm_flags & VM_GROWSDOWN) {
++		address &= PAGE_MASK;
++		if (address == vma->vm_start) {
++			address -= PAGE_SIZE;
++			if (find_vma(vma->vm_mm, address) != vma)
++				return -ENOMEM;
+ 
+-		expand_stack(vma, address);
++			expand_stack(vma, address);
++		}
++	} else if (vma->vm_flags & VM_GROWSUP) {
++		address = PAGE_ALIGN(address + 1);
++		if (address == vma->vm_end) {
++			address += PAGE_SIZE;
++			if ((v = find_vma(vma->vm_mm, address)) &&
++				v->vm_start <= address) {
++				return -ENOMEM;
++			}
++			expand_upwards(vma, address);
++		}
+ 	}
+ 	return 0;
+ }
