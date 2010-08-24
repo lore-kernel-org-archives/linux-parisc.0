@@ -1,36 +1,53 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH v2] guard page for stacks that grow upwards
-Date: Tue, 24 Aug 2010 20:32:48 +0000
-Message-ID: <1282681968.2993.109.camel@mulgrave.site>
-References: <4c7413025613b269c@agluck-desktop.sc.intel.com>
-	 <AANLkTinMbTu6H9m70sapfpGHC4secUsaUqZKkg_=CWA6@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: "Luck, Tony" <tony.luck@intel.com>, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-ia64@vger.kernel.org,
-	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	Kyle McMartin <kyle@parisc-linux.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <AANLkTinMbTu6H9m70sapfpGHC4secUsaUqZKkg_=CWA6@mail.gmail.com>
-List-ID: <linux-ia64.vger.kernel.org>
+From: "Luck, Tony" <tony.luck@intel.com>
+Subject: [PATCH] hide guard page for stacks that grow upwards
+Date: Tue, 24 Aug 2010 15:03:02 -0700
+Message-ID: <4c74419664798b8c9@agluck-desktop.sc.intel.com>
+Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-ia64@vger.kernel.org
+To: "Linus Torvalds" <torvalds@linux-foundation.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2010-08-24 at 13:19 -0700, Linus Torvalds wrote:
-> On Tue, Aug 24, 2010 at 11:44 AM, Luck, Tony <tony.luck@intel.com> wrote:
-> >
-> > Built, booted & tested on ia64
-> > Built for x86_64 (but not booted or tested)
-> > pa-risc - untested
-> 
-> Ok, applied. I do think we could do the "VM_GROWSDOWN = 0" trick for
-> PA-RISC  (so that the code for the growsdown case would be compiled
-> away there), but that definitely needs somebody who actually cares
-> specifically about PA-RISC.
+pa-risc and ia64 have stacks that grow upwards. Don't
+show the guard page on upward growing vma in /proc/$$/maps
 
-I can try it ... I was just getting ready to try the -rc2 kernel on our
-cupertino test ring anyway.
+Signed-off-by: Tony Luck <tony.luck@intel.com>
 
-James
+---
 
+This looks useful too ... but I can't see where the code is that
+made vm_start be PAGE_SIZE lower to begin with. I'd expect to have
+to make a matching change to make vm_end PAGE_SIZE higher for the
+VM_GROWSUP areas.
 
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index 439fc1f..ef262f6 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -210,7 +210,7 @@ static void show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
+ 	int flags = vma->vm_flags;
+ 	unsigned long ino = 0;
+ 	unsigned long long pgoff = 0;
+-	unsigned long start;
++	unsigned long start, end;
+ 	dev_t dev = 0;
+ 	int len;
+ 
+@@ -223,12 +223,15 @@ static void show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
+ 
+ 	/* We don't show the stack guard page in /proc/maps */
+ 	start = vma->vm_start;
++	end = vma->vm_end;
+ 	if (vma->vm_flags & VM_GROWSDOWN)
+ 		start += PAGE_SIZE;
++	if (vma->vm_flags & VM_GROWSUP)
++		end -= PAGE_SIZE;
+ 
+ 	seq_printf(m, "%08lx-%08lx %c%c%c%c %08llx %02x:%02x %lu %n",
+ 			start,
+-			vma->vm_end,
++			end,
+ 			flags & VM_READ ? 'r' : '-',
+ 			flags & VM_WRITE ? 'w' : '-',
+ 			flags & VM_EXEC ? 'x' : '-',
