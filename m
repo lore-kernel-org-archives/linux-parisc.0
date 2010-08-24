@@ -1,26 +1,113 @@
-From: MICROSOFT AWARD <antonio.sardideletto@fastwebnet.it>
-Subject: Esteemed Winner
-Date: Sun, 22 Aug 2010 19:09:29 +0200 (CEST)
-Message-ID: <17972803.461461282496969116.JavaMail.defaultUser__1426.04459911144$1282497095$gmane$org@defaultHost>
-Reply-To: mukcashonlineoffic@w.cn
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-To: unlisted-recipients:; (no To-header on input)
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: "Luck, Tony" <tony.luck@intel.com>
+Subject: [PATCH] guard page for stacks that grow upwards
+Date: Tue, 24 Aug 2010 09:31:41 -0700
+Message-ID: <4c73f3ed34663af90@agluck-desktop.sc.intel.com>
+Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-ia64@vger.kernel.org
+To: "Linus Torvalds" <torvalds@linux-foundation.org>
+Return-path: <linux-ia64-owner@vger.kernel.org>
+List-ID: <linux-ia64.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+pa-risc and ia64 have stacks that grow upwards. Check that
+they do not run into other mappings.
 
+Signed-off-by: Tony Luck <tony.luck@intel.com>
 
-Your email address has won =C2=A3980,000.00 GBP, get back to us via ema=
-il,with your F
-ull Name,Address,Telephone,Occupation,Country.
+---
 
-Contact For Award Recipient
-Dr.Arnold Griffin.
+Updated to match the new code - still not tested on pa-risc.
+The #ifdefs are ugly - suggestions welcome on how to make
+the code prettier.
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 709f672..089d135 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1330,7 +1330,7 @@ unsigned long ra_submit(struct file_ra_state *ra,
+ 
+ /* Do stack extension */
+ extern int expand_stack(struct vm_area_struct *vma, unsigned long address);
+-#ifdef CONFIG_IA64
++#if defined(CONFIG_STACK_GROWSUP) || defined(CONFIG_IA64)
+ extern int expand_upwards(struct vm_area_struct *vma, unsigned long address);
+ #endif
+ extern int expand_stack_downwards(struct vm_area_struct *vma,
+diff --git a/mm/memory.c b/mm/memory.c
+index 2ed2267..5127b1c 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2760,29 +2760,43 @@ out_release:
+ }
+ 
+ /*
+- * This is like a special single-page "expand_downwards()",
+- * except we must first make sure that 'address-PAGE_SIZE'
++ * This is like a special single-page "expand_{down|up}wards()",
++ * except we must first make sure that 'address{-|+}PAGE_SIZE'
+  * doesn't hit another vma.
+- *
+- * The "find_vma()" will do the right thing even if we wrap
+  */
+ static inline int check_stack_guard_page(struct vm_area_struct *vma, unsigned long address)
+ {
+-	address &= PAGE_MASK;
+-	if ((vma->vm_flags & VM_GROWSDOWN) && address == vma->vm_start) {
+-		struct vm_area_struct *prev = vma->vm_prev;
++	if (vma->vm_flags & VM_GROWSDOWN) {
++		address &= PAGE_MASK;
++		if (address == vma->vm_start) {
++			struct vm_area_struct *prev = vma->vm_prev;
+ 
+-		/*
+-		 * Is there a mapping abutting this one below?
+-		 *
+-		 * That's only ok if it's the same stack mapping
+-		 * that has gotten split..
+-		 */
+-		if (prev && prev->vm_end == address)
+-			return prev->vm_flags & VM_GROWSDOWN ? 0 : -ENOMEM;
++			/*
++			 * Is there a mapping abutting this one below?
++			 *
++			 * That's only ok if it's the same stack mapping
++			 * that has gotten split..
++			 */
++			if (prev && prev->vm_end == address)
++				return prev->vm_flags & VM_GROWSDOWN ? 0 : -ENOMEM;
+ 
+-		expand_stack(vma, address - PAGE_SIZE);
++			expand_stack(vma, address - PAGE_SIZE);
++		}
++	}
++#if defined(CONFIG_STACK_GROWSUP) || defined(CONFIG_IA64)
++	else if (vma->vm_flags & VM_GROWSUP) {
++		address = PAGE_ALIGN(address + 1);
++		if (address == vma->vm_end) {
++			struct vm_area_struct *next = vma->vm_next;
++
++			/* As VM_GROWSDOWN but s/below/above/ */
++			if (next && next->vm_start == address)
++				return next->vm_flags & VM_GROWSUP ? 0 : -ENOMEM;
++
++			expand_upwards(vma, address);
++		}
+ 	}
++#endif
+ 	return 0;
+ }
+ 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 331e51a..6128dc8 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1716,9 +1716,6 @@ static int acct_stack_growth(struct vm_area_struct *vma, unsigned long size, uns
+  * PA-RISC uses this for its stack; IA64 for its Register Backing Store.
+  * vma is the last one with address > vma->vm_end.  Have to extend vma.
+  */
+-#ifndef CONFIG_IA64
+-static
+-#endif
+ int expand_upwards(struct vm_area_struct *vma, unsigned long address)
+ {
+ 	int error;
