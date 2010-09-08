@@ -1,56 +1,100 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH 03/14] arch/parisc: Removing undead ifdef CONFIG_PA20
-Date: Wed, 8 Sep 2010 17:18:35 -0400
-Message-ID: <20100908211835.GG24791@bombadil.infradead.org>
-References: <cover.1283782698.git.qy03fugy@stud.informatik.uni-erlangen.de>
- <27caeba6c5aeb0e5fffb339479ad1c87a1ec7ca3.1283782701.git.qy03fugy@stud.informatik.uni-erlangen.de>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [RFC trollpatch 1/1] genirq: Remove the fits all and nothing
+ __do_IRQ() code
+Date: Wed, 8 Sep 2010 23:35:05 +0200 (CEST)
+Message-ID: <alpine.LFD.2.00.1009082333350.2477@localhost6.localdomain6>
+References: <20100908152036.643594727@linutronix.de>  <1283971919.11763.35.camel@mulgrave.site>  <alpine.LFD.2.00.1009082056210.2477@localhost6.localdomain6> <1283978124.11763.80.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Akinobu Mita <akinobu.mita@gmail.com>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	vamos-dev@i4.informatik.uni-erlangen.de
-To: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <27caeba6c5aeb0e5fffb339479ad1c87a1ec7ca3.1283782701.git.qy03fugy@stud.informatik.uni-erlangen.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Ingo Molnar <mingo@elte.hu>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	linux-alpha@vger.kernel.org, linux-cris-kernel@axis.com,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>,
+	Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Hirokazu Takata <takata@linux-m32r.org>,
+	Greg Ungerer <gerg@uclinux.org>, Jeff Dike <jdike@addtoit.com>,
+	linux-parisc@vger.kernel.org, Chris Zankel <chris@zankel.net>,
+	linux-arch@vger.kernel.org
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <1283978124.11763.80.camel@mulgrave.site>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Sep 06, 2010 at 04:36:06PM +0200, Christian Dietrich wrote:
-> The CONFIG_PA20 ifdef isn't necessary at this point, because it is
-> checked in an outer ifdef level already and has no effect here.
+On Wed, 8 Sep 2010, James Bottomley wrote:
+> On Wed, 2010-09-08 at 21:34 +0200, Thomas Gleixner wrote:
+> > On Wed, 8 Sep 2010, James Bottomley wrote:
+> > > On Wed, 2010-09-08 at 18:14 +0000, Thomas Gleixner wrote:
+> > > > plain text document attachment (genirq-troll-patch.patch)
+> > > > __do_IRQ() has been deprecated after a two years migration phase in
+> > > > commit 0e57aa1. Since then another 18 month have gone by.
+> > > > 
+> > > > So here's the status three and a half years after the flow based
+> > > > infrastructure was merged:
+> > > > 
+> > > >  The following architectures are fully converted to the new flow
+> > > >  handler code:
+> > > > 
+> > > >   arm, avr32, blackfin, frv, microblaze, mips, mn10300, powerpc, score, sh,
+> > > >   sparc 64bit, tile, x86, xtensa
+> > > > 
+> > > >   (avr32 and xtensa should set CONFIG_GENERIC_HARDIRQS_NO__DO_IRQ
+> > > >   though)
+> > > > 
+> > > >  The following architectures are not using the generic interrupt
+> > > >  infrastructure at all and are therefor unaffected:
+> > > > 
+> > > >   s390, m68k, sparc 32bit
+> > > > 
+> > > >  The following architectures are still using __do_IRQ():
+> > > > 
+> > > >   alpha, cris, ia64, h8300, m32r, m68knommu, parisc, um
+> > > > 
+> > > > So now the question arises what to do with __do_IRQ().
+> > > > 
+> > > > Removing it would be the right thing, but that'll break 8 archs, so
+> > > > it's probably not considered a good idea, though for most of them the
+> > > > conversion should be reasonably trivial.
+> > > > 
+> > > > I'm happy to move that code into kernel/irq/cruft.c forever if there
+> > > > is no way to get the remaining users converted in the forseeable
+> > > > future. It looks like they can cope with the annoying build warning
+> > > > nicely.
+> > > 
+> > > Well, if you're going to deprecate something that 8 architectures rely
+> > > on, it would be nice to tell people ... or even just linux-arch ... most
+> > 
+> > It's been told people. The deprecation patch was on LKMl (I don't
+> > remember whether I sent it to linux-arch),
 > 
+> You didn't ... I checked.
+> 
+> >  but there were a bunch of
+> > related patches to clean out the old irq related cruft which were sent
+> > to linux-arch and also hit the parisc tree. There is an entry in
+> > feature-removal-schedule.txt for 18 month now.
+> > 
+> > > of us do read that.  I've actually never noticed the warning the commit
+> > > activated in any of my parisc compiles for some reason.
+> > 
+> > CONFIG_ENABLE_WARN_DEPRECATED=y perhaps ?
+> >
+> > I'm really tired of your whining when you did not get a personalized
+> > taylored to your needs info.
+> 
+> So you send out deliberate flame bait and then suffer humour failure at
+> an ironic reply?
 
-Looks good, applied, thanks.
--- Kyle
+Darn, I missed the ironic tag.
 
-> Signed-off-by: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
-> ---
->  arch/parisc/kernel/unaligned.c |    3 ---
->  1 files changed, 0 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/parisc/kernel/unaligned.c b/arch/parisc/kernel/unaligned.c
-> index 92d977b..234e368 100644
-> --- a/arch/parisc/kernel/unaligned.c
-> +++ b/arch/parisc/kernel/unaligned.c
-> @@ -619,15 +619,12 @@ void handle_unaligned(struct pt_regs *regs)
->  		flop=1;
->  		ret = emulate_std(regs, R2(regs->iir),1);
->  		break;
-> -
-> -#ifdef CONFIG_PA20
->  	case OPCODE_LDD_L:
->  		ret = emulate_ldd(regs, R2(regs->iir),0);
->  		break;
->  	case OPCODE_STD_L:
->  		ret = emulate_std(regs, R2(regs->iir),0);
->  		break;
-> -#endif
->  	}
->  #endif
->  	switch (regs->iir & OPCODE3_MASK)
-> -- 
-> 1.7.0.4
-> 
-> 
+I added you to the "beware-of-british-irony" filter of my .procmailrc
+to avoid that in the future.
+
+Thanks,
+
+	tglx
