@@ -1,42 +1,45 @@
-From: "Luck, Tony" <tony.luck@intel.com>
-Subject: RE: [RFC trollpatch 1/1] genirq: Remove the fits all and nothing
- __do_IRQ() code
-Date: Wed, 8 Sep 2010 13:36:24 -0700
-Message-ID: <987664A83D2D224EAE907B061CE93D53015DB0FB80@orsmsx505.amr.corp.intel.com>
-References: <20100908152036.643594727@linutronix.de>
- <20100908185824.GD24791@bombadil.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ingo Molnar <mingo@elte.hu>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	"linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-	"linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>,
-	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Hirokazu Takata <takata@linux-m32r.org>,
-	Greg Ungerer <gerg@uclinux.org>, Jeff Dike <jdike@addtoit.com>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	Chris Zankel <chris@zankel.net>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-To: Kyle McMartin <kyle@mcmartin.ca>,
-	Thomas Gleixner <tglx@linutronix.de>
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <20100908185824.GD24791@bombadil.infradead.org>
-List-ID: <linux-alpha.vger.kernel.org>
+From: Nikitas Angelinas <nikitasangelinas@gmail.com>
+Subject: [PATCH 2/8] arch/parisc/include/asm: use ARRAY_SIZE macro in mmzone.h
+Date: Wed,  8 Sep 2010 22:11:13 +0100
+Message-ID: <1283980273-4880-1-git-send-email-nikitasangelinas@gmail.com>
+References: <1283979457-4649-1-git-send-email-nikitasangelinas@gmail.com>
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Nikitas Angelinas <nikitasangelinas@gmail.com>
+To: kyle@mcmartin.ca, deller@gmx.de, jejb@parisc-linux.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1283979457-4649-1-git-send-email-nikitasangelinas@gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> Thanks Thomas for the reminder, I'll poke at fixing parisc this week,
-> and maybe try to fix ia64 and alpha too as penance for forgetting about
-> this for so long.
+Replace sizeof(pfnnid_map) / sizeof(pfnnid_map[0]) with
+ARRAY_SIZE(pfnnid_map) in mmzone.h
 
-I'll be happy to see ia64 converted ... I did look at it once a long
-time ago, but couldn't work out what I had to do to replace do_IRQ.
-If Kyle figures out the patch, I'll test.  If not, then some pointers
-would be helpful.
+Signed-off-by: Nikitas Angelinas <nikitasangelinas@gmail.com>
+---
+ arch/parisc/include/asm/mmzone.h |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
--Tony
+diff --git a/arch/parisc/include/asm/mmzone.h b/arch/parisc/include/asm/mmzone.h
+index 9608d2c..85b23b6 100644
+--- a/arch/parisc/include/asm/mmzone.h
++++ b/arch/parisc/include/asm/mmzone.h
+@@ -3,6 +3,8 @@
+ 
+ #ifdef CONFIG_DISCONTIGMEM
+ 
++#include <linux/kernel.h>
++
+ #define MAX_PHYSMEM_RANGES 8 /* Fix the size for now (current known max is 3) */
+ extern int npmem_ranges;
+ 
+@@ -51,7 +53,7 @@ static inline int pfn_to_nid(unsigned long pfn)
+ 		return 0;
+ 
+ 	i = pfn >> PFNNID_SHIFT;
+-	BUG_ON(i >= sizeof(pfnnid_map) / sizeof(pfnnid_map[0]));
++	BUG_ON(i >= ARRAY_SIZE(pfnnid_map));
+ 	r = pfnnid_map[i];
+ 	BUG_ON(r == 0xff);
+ 
+-- 
+1.7.2.3
