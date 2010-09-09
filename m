@@ -1,69 +1,34 @@
-From: "Dialup Jon Norstog" <thursday@allidaho.com>
-Subject: RE: [RFC trollpatch 1/1] genirq: Remove the fits all and nothing __do_IRQ() code
-Date: Thu, 9 Sep 2010 07:44:36 -0600
-Message-ID: <20100909134113.M84121@allidaho.com>
-References: <20100908152036.643594727@linutronix.de> <4BEA3FF3CAA35E408EA55C7BE2E61D05583CE93218@xmail3.se.axis.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [PATCH] parisc: add tty driver to PDC console
+Date: Thu, 9 Sep 2010 11:35:20 -0400
+Message-ID: <20100909153520.GI24791@bombadil.infradead.org>
+References: <20100614192441.245da011@zombie>
+ <20100615133410.044ea5b1@borg.bxl.tuxicoman.be>
+ <20100615113553.GP20317@bombadil.infradead.org>
+ <20100730163008.64c9de58@borg.bxl.tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset=iso-8859-1
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ingo Molnar <mingo@elte.hu>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	"linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-	linux-cris-kernel <linux-cris-kernel@axis.com>,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>,
-	Tony Luck <tony.luck@intel.com>,
-	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Hirokazu Takata <takata@linux-m32r.org>,
-	Greg Ungerer <gerg@uclinux.org>, Jeff Dike <jdike@addtoit.com>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	Chris Zankel <chris@zankel.net>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-To: Mikael Starvik <mikael.starvik@axis.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Jesper Nilsson <jespern@axis.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4BEA3FF3CAA35E408EA55C7BE2E61D05583CE93218@xmail3.se.axis.com>
+In-Reply-To: <20100730163008.64c9de58@borg.bxl.tuxicoman.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-
-
----------- Original Message -----------
-From: Mikael Starvik <mikael.starvik@axis.com>
-To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-k 
->  The following architectures are still using __do_IRQ():
+On Fri, Jul 30, 2010 at 04:30:08PM +0200, Guy Martin wrote:
+> On Tue, 15 Jun 2010 07:35:53 -0400
+> Kyle McMartin <kyle@mcmartin.ca> wrote:
 > 
->   alpha, cris, ia64, h8300, m32r, m68knommu, parisc, um
 > 
-> So now the question arises what to do with __do_IRQ().
+> > I figured... I'll take a look at it over the weekend. (Also, I'll see
+> > if I can dig up the radeonfb hacks.)
 > 
-> Removing it would be the right thing, but that'll break 8 archs, so
-> it's probably not considered a good idea, though for most of them the
-> conversion should be reasonably trivial.
 > 
-> I'm happy to move that code into kernel/irq/cruft.c forever if there
-> is no way to get the remaining users converted in the forseeable
-> future. It looks like they can cope with the annoying build warning
-> nicely.
+> Any luck ? :)
 > 
-> Either that or moving everything what breaks into staging/arch/* and
-> hand it over to GregKH :)
+> Is it still possible to get this in 2.6.35 ?
 > 
-> Thoughts ?
- 
 
-To the lists:
+Ugh, sorry about that, I'll poke Linus about this on the weekend.
 
-My thought is, put something in the readme - like Jay Estabrook's note in the
-current Alpha Core build.  At least so those of us who get wierd msgs during a
-kernel build can know what they are all about.
-
-TIA
-
-jn
+--Kyle
