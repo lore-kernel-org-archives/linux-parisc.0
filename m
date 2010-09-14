@@ -1,43 +1,58 @@
-From: Phil Carmody <ext-phil.2.carmody@nokia.com>
-Subject: [PATCH 1/1] PARISC: unwind - optimise linked-list searches for modules
-Date: Fri, 10 Sep 2010 13:47:59 +0300
-Message-ID: <1284115679-23928-1-git-send-email-ext-phil.2.carmody@nokia.com>
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: kyle@mcmartin.ca, deller@gmx.de, jejb@parisc-linux.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 08/18] parisc: remove big kernel lock
+Date: Tue, 14 Sep 2010 21:34:59 +0200
+Message-ID: <1284492909-7147-9-git-send-email-arnd@arndb.de>
+References: <1284492909-7147-1-git-send-email-arnd@arndb.de>
+Cc: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	linux-parisc@vger.kernel.org
+To: arnd@arndb.de
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1284492909-7147-1-git-send-email-arnd@arndb.de>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Having many dozens of modules, the searches down the linked
-list of sections would dominate the lookup time, dwarfing
-any savings from the binary search within the section.
+The parisc version of the perf code is sufficiently
+protected by its own spinlock, no need to use the BKL.
 
-A simple move-to-front optimisation exploits the commonality
-of the code paths taken, and in simple real-world tests
-on other architectures reduced the number of steps in the
-search to barely more than 1.
-
-Signed-off-by: Phil Carmody <ext-phil.2.carmody@nokia.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: Helge Deller <deller@gmx.de>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: linux-parisc@vger.kernel.org
 ---
- arch/parisc/kernel/unwind.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+ arch/parisc/kernel/perf.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
 
-diff --git a/arch/parisc/kernel/unwind.c b/arch/parisc/kernel/unwind.c
-index d58eac1..76ed62e 100644
---- a/arch/parisc/kernel/unwind.c
-+++ b/arch/parisc/kernel/unwind.c
-@@ -80,8 +80,11 @@ find_unwind_entry(unsigned long addr)
- 			if (addr >= table->start && 
- 			    addr <= table->end)
- 				e = find_unwind_entry_in_table(table, addr);
--			if (e)
-+			if (e) {
-+				/* Move-to-front to exploit common traces */
-+				list_move(&table->list, &unwind_tables);
- 				break;
-+			}
- 		}
+diff --git a/arch/parisc/kernel/perf.c b/arch/parisc/kernel/perf.c
+index f9f6783..ba0c053 100644
+--- a/arch/parisc/kernel/perf.c
++++ b/arch/parisc/kernel/perf.c
+@@ -46,7 +46,6 @@
+ #include <linux/init.h>
+ #include <linux/proc_fs.h>
+ #include <linux/miscdevice.h>
+-#include <linux/smp_lock.h>
+ #include <linux/spinlock.h>
  
- 	return e;
+ #include <asm/uaccess.h>
+@@ -261,16 +260,13 @@ printk("Preparing to start counters\n");
+  */
+ static int perf_open(struct inode *inode, struct file *file)
+ {
+-	lock_kernel();
+ 	spin_lock(&perf_lock);
+ 	if (perf_enabled) {
+ 		spin_unlock(&perf_lock);
+-		unlock_kernel();
+ 		return -EBUSY;
+ 	}
+ 	perf_enabled = 1;
+  	spin_unlock(&perf_lock);
+-	unlock_kernel();
+ 
+ 	return 0;
+ }
 -- 
-1.5.6.5
+1.7.1
+
