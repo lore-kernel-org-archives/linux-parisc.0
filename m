@@ -1,31 +1,21 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH 08/18] parisc: remove big kernel lock
-Date: Tue, 14 Sep 2010 21:14:05 -0400
-Message-ID: <20100915011405.GM24791@bombadil.infradead.org>
-References: <1284492909-7147-1-git-send-email-arnd@arndb.de>
- <1284492909-7147-9-git-send-email-arnd@arndb.de>
+From: Anbu Elancheziyan <anbu@drexel.edu>
+Subject: PA-RISC system up for adoption
+Date: Thu, 16 Sep 2010 12:22:27 -0400
+Message-ID: <273f7e108de6d44d02ab3e417eeeae9b@coe.drexel.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset=UTF-8
+To: <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1284492909-7147-9-git-send-email-arnd@arndb.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Sep 14, 2010 at 09:34:59PM +0200, Arnd Bergmann wrote:
-> The parisc version of the perf code is sufficiently
-> protected by its own spinlock, no need to use the BKL.
-> 
+Hi everyone,
 
-I'd rather just remove the file entirely, as it doesn't work, probably
-will never work, and all the relevant people who could have made it work
-have left HP and so no longer have access to the documentation. I'll
-commit a patch removing it from the kernel for the next merge window.
+I have an HP PA-RISC C110 A4200A 9000 system that I'd like to donate.
+Sorry, I don't have the specs but it already had debian on it (has HDD,
+video and ethernet). I'm located in Philadelphia, USA and would like to
+know if someone interested could pick it up. Unfortunately, I can't
+deliver. I'd like to see it being used rather than recycled.
 
-Nice work Arnd, it's great to see the BKL finally gasping its last
-breaths. :)
-
---Kyle
+Thanks!
+Anbu.
