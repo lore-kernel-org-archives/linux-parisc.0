@@ -1,102 +1,92 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [RFC trollpatch 1/1] genirq: Remove the fits all and nothing
- __do_IRQ() code
-Date: Wed, 29 Sep 2010 22:41:03 -0400
-Message-ID: <20100930024103.GB2604@bombadil.infradead.org>
-References: <20100908152036.643594727@linutronix.de>
- <20100930012641.GA2604@bombadil.infradead.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH/RFC] input: hil_mlc - Fix hil_mlc_serio_id file2alias
+ failure
+Date: Tue, 12 Oct 2010 21:17:49 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1010122111270.6491@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ingo Molnar <mingo@elte.hu>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	linux-alpha@vger.kernel.org, linux-cris-kernel@axis.com,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>,
-	Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Hirokazu Takata <takata@linux-m32r.org>,
-	Greg Ungerer <gerg@uclinux.org>, Jeff Dike <jdike@addtoit.com>,
-	linux-parisc@vger.kernel.org, Chris Zankel <chris@zankel.net>,
-	linux-arch@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <20100930012641.GA2604@bombadil.infradead.org>
-List-ID: <linux-alpha.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-next@vger.kernel.org, linux-input@vger.kernel.org,
+	Linux/m68k <linux-m68k@lists.linux-m68k.org>,
+	linux-parisc@vger.kernel.org
+To: Dzianis Kahanovich <mahatma@eu.by>, Dmitry Torokhov <dtor@mail.ru>,
+	Helge Deller <deller@gmx.de>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Sep 29, 2010 at 09:26:41PM -0400, Kyle McMartin wrote:
-> I'd appreciate a second pair of eyes, and if it's ok, I'll clean it up
-> and submit it.
-> 
+Commit e288bf7c346360ac9dafbc1b6d7b6b1a82b51616 ("Input: HIL keyboard and
+serio - add missing MODULE_DEVICE_TABLE()") caused the following build
+failure on m68k/allmodconfig:
 
-Let's do h8300 while we're at it, since that also /looks/ trivial...
-(probably famous last words.)
+FATAL: drivers/input/serio/hil_mlc: struct serio_device_id is not terminated with a NULL entry!
 
-No idea if it's edge or level or what, but given the handlers that would
-be called in the __do_IRQ patch, handle_edge_irq seems most sensible.
+hil_mlc_serio_id is not an array, but a single struct serio_device_id entry.
+Fix the build by converting it into an array, and adding a NULL entry.
 
-Executive summary: kill implied .ack = NULL, rename enable to unmask,
-kill empty .end since dummy_irq_chip.end will suit us fine. Kill some
-unneeded irq_desc initializers that are also implicit...
-
-Again, if someone could build/boot/whatever test this, that would be
-fantastic, and I'll add their Tested-by and submit.
-
---kyle
-
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- irq.c |   16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+Build failure in linux-next:
+http://kisskb.ellerman.id.au/kisskb/buildresult/3385851/
 
-diff --git a/arch/h8300/kernel/irq.c b/arch/h8300/kernel/irq.c
-index c25dc2c..acdbc07 100644
---- a/arch/h8300/kernel/irq.c
-+++ b/arch/h8300/kernel/irq.c
-@@ -50,10 +50,6 @@ static void h8300_disable_irq(unsigned int irq)
- 		IER_REGS &= ~(1 << (irq - EXT_IRQ0));
+I'm not sure this is the right fix, as hil_mlc_serio_id is a catch-all ID.
+Perhaps the MODULE_DEVICE_TABLE() should just be removed again instead?
+
+ drivers/input/serio/hil_mlc.c |   18 +++++++++++-------
+ 1 files changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/input/serio/hil_mlc.c b/drivers/input/serio/hil_mlc.c
+index cc8e01f..43904db 100644
+--- a/drivers/input/serio/hil_mlc.c
++++ b/drivers/input/serio/hil_mlc.c
+@@ -897,11 +897,15 @@ static void hil_mlc_serio_close(struct serio *serio)
+ 	/* TODO wake up interruptable */
  }
  
--static void h8300_end_irq(unsigned int irq)
--{
--}
--
- static unsigned int h8300_startup_irq(unsigned int irq)
- {
- 	if (is_ext_irq(irq))
-@@ -75,10 +71,9 @@ struct irq_chip h8300irq_chip = {
- 	.name		= "H8300-INTC",
- 	.startup	= h8300_startup_irq,
- 	.shutdown	= h8300_shutdown_irq,
--	.enable		= h8300_enable_irq,
-+	.unmask		= h8300_enable_irq,
-+	.mask		= h8300_disable_irq,
- 	.disable	= h8300_disable_irq,
--	.ack		= NULL,
--	.end		= h8300_end_irq,
+-static const struct serio_device_id hil_mlc_serio_id = {
+-	.type = SERIO_HIL_MLC,
+-	.proto = SERIO_HIL,
+-	.extra = SERIO_ANY,
+-	.id = SERIO_ANY,
++static const struct serio_device_id hil_mlc_serio_ids[] = {
++	{
++	    /* There's only one ID, which is a catch-all */
++	    .type = SERIO_HIL_MLC,
++	    .proto = SERIO_HIL,
++	    .extra = SERIO_ANY,
++	    .id = SERIO_ANY,
++	},
++	{ 0 }
  };
  
- #if defined(CONFIG_RAMKERNEL)
-@@ -161,17 +156,14 @@ void __init init_IRQ(void)
- 	setup_vector();
- 
- 	for (c = 0; c < NR_IRQS; c++) {
--		irq_desc[c].status = IRQ_DISABLED;
--		irq_desc[c].action = NULL;
--		irq_desc[c].depth = 1;
--		irq_desc[c].chip = &h8300irq_chip;
-+		set_irq_chip_and_handler(c, &h8300_irq_chip, handle_edge_irq);
- 	}
+ int hil_mlc_register(hil_mlc *mlc)
+@@ -934,7 +938,7 @@ int hil_mlc_register(hil_mlc *mlc)
+ 		mlc->serio[i] = mlc_serio;
+ 		snprintf(mlc_serio->name, sizeof(mlc_serio->name)-1, "HIL_SERIO%d", i);
+ 		snprintf(mlc_serio->phys, sizeof(mlc_serio->phys)-1, "HIL%d", i);
+-		mlc_serio->id			= hil_mlc_serio_id;
++		mlc_serio->id			= hil_mlc_serio_ids[0];
+ 		mlc_serio->id.id		= i; /* HIL port no. */
+ 		mlc_serio->write		= hil_mlc_serio_write;
+ 		mlc_serio->open			= hil_mlc_serio_open;
+@@ -1011,7 +1015,7 @@ static void __exit hil_mlc_exit(void)
  }
  
- asmlinkage void do_IRQ(int irq)
- {
- 	irq_enter();
--	__do_IRQ(irq);
-+	generic_handle_irq(irq);
- 	irq_exit();
- }
  
+-MODULE_DEVICE_TABLE(serio, hil_mlc_serio_id);
++MODULE_DEVICE_TABLE(serio, hil_mlc_serio_ids);
+ 
+ module_init(hil_mlc_init);
+ module_exit(hil_mlc_exit);
+-- 
+1.7.0.4
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
