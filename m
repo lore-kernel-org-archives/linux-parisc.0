@@ -1,35 +1,33 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: [RFT] irq changes (was Re: [git] parisc: Changes to ref
- refs/heads/parisc)
-Date: Thu, 14 Oct 2010 11:39:32 -0400
-Message-ID: <20101014153931.GI24144@bombadil.infradead.org>
-References: <201010140531.o9E5VRYK010123@hera.kernel.org>
+Subject: Re: [PATCH/RFC] input: hil_mlc - Fix hil_mlc_serio_id file2alias
+ failure
+Date: Thu, 14 Oct 2010 11:43:04 -0400
+Message-ID: <20101014154304.GJ24144@bombadil.infradead.org>
+References: <alpine.DEB.2.00.1010122111270.6491@ayla.of.borg>
+ <20101013065602.GA7014@core.coreip.homeip.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <201010140531.o9E5VRYK010123@hera.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Dzianis Kahanovich <mahatma@eu.by>,
+	Helge Deller <deller@gmx.de>, linux-next@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	Linux/m68k <linux-m68k@lists.linux-m68k.org>,
+	linux-parisc@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <20101013065602.GA7014@core.coreip.homeip.net>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Oct 14, 2010 at 05:31:27AM +0000, Kyle McMartin wrote:
-> commit 7da1272547ebe96982a42292dfc833457708f4da
-> Author: Kyle McMartin <kyle@dreadnought.i.jkkm.org>
-> Date:   Thu Oct 14 01:02:23 2010 -0400
+On Tue, Oct 12, 2010 at 11:56:02PM -0700, Dmitry Torokhov wrote:
+> Gah, that original patch was incorrect, I should not have applied it at
+> all... The serio_device_id in question is for serio port that is being
+> created by the driver and thus of course should not be used in
+> MODULE_DEVICE_TABLE().
 > 
->     parisc: kill __do_IRQ
->     
->     Signed-off-by: Kyle McMartin <kyle@redhat.com>
+> I'll drop it from my 'next' queue.
 > 
 
-So, I've killed our __do_IRQ calls... Could people please test this
-branch on a variety of machines? I've split up the changes so there's
-logical separation between converting the CPU interrupts, and the
-sub-interrupt sources (Superio, dino, etc.) so if your device fails
-to interrupt, you can just git revert that bit and test the CPU
-conversion while I fix it up.
-
-I *think* everything should be ok though, I've tested it on a500/rp3440
-class machines with iosapic, but not on anything older.
+Cool, thansk Dmitry!
 
 --Kyle
