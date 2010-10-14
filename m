@@ -1,7 +1,7 @@
 From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git] parisc: Changes to ref refs/heads/next
-Date: Thu, 14 Oct 2010 05:31:13 +0000
-Message-ID: <201010140531.o9E5VDRD010056@hera.kernel.org>
+Subject: [git] parisc: Changes to ref refs/heads/parisc
+Date: Thu, 14 Oct 2010 05:31:27 +0000
+Message-ID: <201010140531.o9E5VRYK010123@hera.kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org
