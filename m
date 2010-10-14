@@ -1,7 +1,7 @@
 From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git] parisc: Changes to ref refs/heads/parisc
-Date: Thu, 14 Oct 2010 05:24:57 +0000
-Message-ID: <201010140524.o9E5Ovo1001233@hera.kernel.org>
+Subject: [git] parisc: Changes to ref refs/heads/next
+Date: Thu, 14 Oct 2010 05:31:13 +0000
+Message-ID: <201010140531.o9E5VDRD010056@hera.kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org
@@ -10,7 +10,7 @@ List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 Rebased ref, commits from common ancestor:
-commit 051d044fcbbd363c6896d2a364bdbd5b2559bab7
+commit 7da1272547ebe96982a42292dfc833457708f4da
 Author: Kyle McMartin <kyle@dreadnought.i.jkkm.org>
 Date:   Thu Oct 14 01:02:23 2010 -0400
 
@@ -18,7 +18,7 @@ Date:   Thu Oct 14 01:02:23 2010 -0400
     
     Signed-off-by: Kyle McMartin <kyle@redhat.com>
 
-commit 5912de5b24d683c9259264bf417f3e89bc49d95b
+commit 8ed5c00d7c166f505eb2e8ff47748bfa73824130
 Author: Kyle McMartin <kyle@dreadnought.i.jkkm.org>
 Date:   Thu Oct 14 01:00:51 2010 -0400
 
@@ -26,7 +26,7 @@ Date:   Thu Oct 14 01:00:51 2010 -0400
     
     Signed-off-by: Kyle McMartin <kyle@redhat.com>
 
-commit 81fc1dc038973832eef253457836a205009a4fd4
+commit 7998b3bd156478c35de685f90d4d0dda57916c60
 Author: Kyle McMartin <kyle@dreadnought.i.jkkm.org>
 Date:   Thu Oct 14 00:58:53 2010 -0400
 
@@ -34,7 +34,7 @@ Date:   Thu Oct 14 00:58:53 2010 -0400
     
     Signed-off-by: Kyle McMartin <kyle@redhat.com>
 
-commit 19a6c0da8c9b415f4029198548de1a8d99d1dd54
+commit 14ff626a64f1c6848b303254be00b1b2ff33a655
 Author: Kyle McMartin <kyle@dreadnought.i.jkkm.org>
 Date:   Thu Oct 14 00:53:17 2010 -0400
 
@@ -46,7 +46,7 @@ Date:   Thu Oct 14 00:53:17 2010 -0400
     
     Signed-off-by: Kyle McMartin <kyle@redhat.com>
 
-commit 77c7d196f53a55133bb1b45d1fdb311035a9a9e8
+commit f3d4605977f9f30993c670a85f75d8f3853144c5
 Author: Kyle McMartin <kyle@dreadnought.i.jkkm.org>
 Date:   Thu Oct 14 00:38:27 2010 -0400
 
@@ -57,7 +57,7 @@ Date:   Thu Oct 14 00:38:27 2010 -0400
     
     Signed-off-by: Kyle McMartin <kyle@redhat.com>
 
-commit 88da47ae5dc9def0213e9403355b20a71dae0b08
+commit 4d4f681dc43a06167763ec698f5de4f2b3119ad6
 Author: Kyle McMartin <kyle@dreadnought.i.jkkm.org>
 Date:   Thu Oct 14 00:12:23 2010 -0400
 
@@ -68,7 +68,7 @@ Date:   Thu Oct 14 00:12:23 2010 -0400
     
     Signed-off-by: Kyle McMartin <kyle@redhat.com>
 
-commit 274106f4ed5a118c12e005b79713101ff927ee01
+commit ba20085c20f1c9e8af546dea6ad0efa421bdef32
 Author: Kyle McMartin <kyle@dreadnought.i.jkkm.org>
 Date:   Wed Oct 13 21:00:55 2010 -0400
 
