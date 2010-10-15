@@ -1,33 +1,43 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH/RFC] input: hil_mlc - Fix hil_mlc_serio_id file2alias
- failure
-Date: Thu, 14 Oct 2010 11:43:04 -0400
-Message-ID: <20101014154304.GJ24144@bombadil.infradead.org>
-References: <alpine.DEB.2.00.1010122111270.6491@ayla.of.borg>
- <20101013065602.GA7014@core.coreip.homeip.net>
+From: Helge Deller <helge.deller@steuerkanzlei-deller.de>
+Subject: Re: [RFT] irq changes (was Re: [git] parisc: Changes to ref refs/heads/parisc)
+Date: Fri, 15 Oct 2010 21:51:58 +0200
+Message-ID: <4CB8B0DE.1070606@steuerkanzlei-deller.de>
+References: <201010140531.o9E5VRYK010123@hera.kernel.org> <20101014153931.GI24144@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Dzianis Kahanovich <mahatma@eu.by>,
-	Helge Deller <deller@gmx.de>, linux-next@vger.kernel.org,
-	linux-input@vger.kernel.org,
-	Linux/m68k <linux-m68k@lists.linux-m68k.org>,
-	linux-parisc@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20101013065602.GA7014@core.coreip.homeip.net>
-List-ID: <linux-m68k.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: linux-parisc@vger.kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20101014153931.GI24144@bombadil.infradead.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Oct 12, 2010 at 11:56:02PM -0700, Dmitry Torokhov wrote:
-> Gah, that original patch was incorrect, I should not have applied it at
-> all... The serio_device_id in question is for serio port that is being
-> created by the driver and thus of course should not be used in
-> MODULE_DEVICE_TABLE().
-> 
-> I'll drop it from my 'next' queue.
-> 
+  On 10/14/2010 05:39 PM, Kyle McMartin wrote:
+> On Thu, Oct 14, 2010 at 05:31:27AM +0000, Kyle McMartin wrote:
+>> commit 7da1272547ebe96982a42292dfc833457708f4da
+>> Author: Kyle McMartin<kyle@dreadnought.i.jkkm.org>
+>> Date:   Thu Oct 14 01:02:23 2010 -0400
+>>
+>>      parisc: kill __do_IRQ
+>>
+>>      Signed-off-by: Kyle McMartin<kyle@redhat.com>
+>>
+> So, I've killed our __do_IRQ calls... Could people please test this
+> branch on a variety of machines? I've split up the changes so there's
+> logical separation between converting the CPU interrupts, and the
+> sub-interrupt sources (Superio, dino, etc.) so if your device fails
+> to interrupt, you can just git revert that bit and test the CPU
+> conversion while I fix it up.
+>
+> I *think* everything should be ok though, I've tested it on a500/rp3440
+> class machines with iosapic, but not on anything older.
 
-Cool, thansk Dmitry!
+c3000 is ok too. But I think it has iosapic as well.
+I will try if I can connect the 715/64 and b160L, but I'm not sure if I 
+find time to do it this weekend...
 
---Kyle
+BTW, fanotify* isn't wired up yet:
+<stdin>:1526:2: warning: #warning syscall fanotify_init not implemented
+<stdin>:1530:2: warning: #warning syscall fanotify_mark not implemented
+
+Helge
