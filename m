@@ -1,122 +1,27 @@
-From: Michal Ludvig <mludvig@logix.net.nz>
-Subject: scsi_wait_scan doesn't wait
-Date: Tue, 19 Oct 2010 16:27:43 +1300
-Message-ID: <4CBD102F.2040705@logix.net.nz>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: scsi_wait_scan doesn't wait
+Date: Tue, 19 Oct 2010 19:04:06 -0400
+Message-ID: <AANLkTi=qHF8D9BZVnQK5_jo+kNLSLcTQ4OuAy3PHpU_b@mail.gmail.com>
+References: <4CBD102F.2040705@logix.net.nz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org
+To: Michal Ludvig <mludvig@logix.net.nz>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <4CBD102F.2040705@logix.net.nz>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
- Hi there,
+On Mon, Oct 18, 2010 at 11:27 PM, Michal Ludvig <mludvig@logix.net.nz> wrote:
+> I'm having a problem with 2.6.36-rc8+ on HP PARISC machine (HP 9000
+> RP3410) where I intend to wait for SCSI enumeration during boot before
+> LVM2 kicks in and attempts to activate the root volume. I modprobe
+> scsi_wait_scan in the initramdisk before lvm2 script is run. However the
+> modprobe doesn't wait. I'm on Debian testing, fwiw.
 
-I'm having a problem with 2.6.36-rc8+ on HP PARISC machine (HP 9000
-RP3410) where I intend to wait for SCSI enumeration during boot before
-LVM2 kicks in and attempts to activate the root volume. I modprobe
-scsi_wait_scan in the initramdisk before lvm2 script is run. However the
-modprobe doesn't wait. I'm on Debian testing, fwiw.
+If you're interested in helping, the best thing you could do is back
+up to a kernel that works and then try to track down what commit broke
+the wait scan. It's a bit tedious, but fairly easy.
 
-[...]
-[    2.368000] Freeing unused kernel memory: 252k freed
-Loading, please wait...
-[    3.028000] udev: starting version 160
-[    4.104000] SCSI subsystem initialized
-[    4.592000] sym0: <1010-66> rev 0x1 at pci 0000:20:01.0 irq 69
-[    4.668000] sym0: No NVRAM, ID 7, Fast-80, LVD, parity checking
-[    4.700000] sym0: SCSI BUS has been reset.
-[    4.708000] scsi0 : sym-2.2.3
-[    4.868000] sym1: <1010-66> rev 0x1 at pci 0000:20:01.1 irq 70
-[    4.868000] sym1: No NVRAM, ID 7, Fast-80, LVD, parity checking
-[    4.904000] sym1: SCSI BUS has been reset.
-[    4.908000] scsi1 : sym-2.2.3
-[    5.068000] sym2: <1010-66> rev 0x1 at pci 0000:80:01.0 irq 72
-[    5.072000] sym2: No NVRAM, ID 7, Fast-80, LVD, parity checking
-[    5.108000] sym2: SCSI BUS has been reset.
-[    5.112000] scsi2 : sym-2.2.3
-[    5.276000] sym3: <1010-66> rev 0x1 at pci 0000:80:01.1 irq 73
-[    5.276000] sym3: No NVRAM, ID 7, Fast-80, LVD, parity checking
-[    5.312000] sym3: SCSI BUS has been reset.
-[    5.316000] scsi3 : sym-2.2.3
-Begin: Loading essential drivers ... done.
-Begin: Running /scripts/init-premount ... SCSI: Waiting to settle...
-
-######### here comes modprobe scsi_wait_scan #########
-
-SCSI: done
-done.
-Begin: Mounting root file system ... Begin: Running /scripts/local-top
-... [    6.496000] device-mapper: uevent: version 1.0.3
-[    6.496000] device-mapper: ioctl: 4.18.0-ioctl (2010-06-29)
-initialised: dm-devel@redhat.com
-  Volume group "lethal" not found
-  Skipping volume group lethal
-Unable to find LVM volume lethal/root
-done.
-Begin: Waiting for root file system ... [    7.728000] scsi 0:0:0:0:
-Direct-Access     HP 36.4G ST336754LC       HPC2 PQ: 0 ANSI: 3
-[    7.728000] scsi target0:0:0: tagged command queuing enabled, command
-queue depth 16.
-[    7.728000] scsi target0:0:0: Beginning Domain Validation
-[    7.740000] scsi target0:0:0: FAST-80 WIDE SCSI 160.0 MB/s DT (12.5
-ns, offset 31)
-[    7.748000] scsi target0:0:0: Ending Domain Validation
-[    7.752000] scsi 0:0:1:0: Direct-Access     HP 36.4G MAS3367NC
- HPC3 PQ: 0 ANSI: 3
-[    7.752000] scsi target0:0:1: tagged command queuing enabled, command
-queue depth 16.
-[    7.760000] scsi target0:0:1: Beginning Domain Validation
-[    7.764000] scsi target0:0:1: FAST-80 WIDE SCSI 160.0 MB/s DT (12.5
-ns, offset 31)
-[    7.772000] scsi target0:0:1: Ending Domain Validation
-[   11.864000] sd 0:0:0:0: [sda] 71132960 512-byte logical blocks: (36.4
-GB/33.9 GiB)
-[   11.864000] sd 0:0:1:0: [sdb] 71132960 512-byte logical blocks: (36.4
-GB/33.9 GiB)
-[   11.868000] sd 0:0:0:0: [sda] Write Protect is off
-[   11.892000] sd 0:0:1:0: [sdb] Write Protect is off
-[   11.900000] sd 0:0:0:0: [sda] Write cache: enabled, read cache:
-enabled, supports DPO and FUA
-[   11.900000] sd 0:0:1:0: [sdb] Write cache: enabled, read cache:
-enabled, supports DPO and FUA
-[   11.924000]  sda: unknown partition table
-[   11.940000]  sdb: sdb1 sdb2 sdb3
-[   11.944000] sd 0:0:0:0: [sda] Attached SCSI disk
-[   11.964000] sd 0:0:1:0: [sdb] Attached SCSI disk
-done.
-Gave up waiting for root device.  Common problems:
- - Boot args (cat /proc/cmdline)
-   - Check rootdelay= (did the system wait long enough?)
-   - Check root= (did the system wait for the right device?)
- - Missing modules (cat /proc/modules; ls /dev)
-ALERT!  /dev/mapper/lethal-root does not exist.  Dropping to a shell!
-
-Apparently /dev/sda and /dev/sdb were discovered long after
-scsi_wait_scan was loaded.
-
-Here are the relevant modules:
-[...]
-ext3                  203543  2
-jbd                    63990  1 ext3
-dm_mod                112954  9
-scsi_wait_scan           983  0
-zalon7xx               38131  0
-lasi700                 2427  0
-53c700                 39777  1 lasi700
-hilkbd                  5901  0
-sd_mod                 49383  3
-crc_t10dif              1564  1 sd_mod
-sym53c8xx             104303  2
-scsi_transport_spi     34731  3 zalon7xx,53c700,sym53c8xx
-scsi_mod              193802  7
-libata,zalon7xx,lasi700,53c700,sd_mod,sym53c8xx,scsi_transport_spi
-
-When I unset CONFIG_SCSI_SCAN_ASYNC it works just fine and all the disks
-are found in time for LVM.
-
-Is that a bug in the SCSI driver? Or am I doing something wrong? It's
-not a recent regression, at least 2.6.35 behaves the same on that machine.
-
-Thanks!
-
-Michal
+Cheers,
+Carlos.
