@@ -1,40 +1,56 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: scsi_wait_scan doesn't wait
-Date: Thu, 21 Oct 2010 21:22:10 +0200
-Message-ID: <4CC092E2.4090900@gmx.de>
-References: <4CBD102F.2040705@logix.net.nz> <AANLkTi=qHF8D9BZVnQK5_jo+kNLSLcTQ4OuAy3PHpU_b@mail.gmail.com> <4CC003BB.6080900@logix.net.nz>
+From: Kyle McMartin <kyle@hera.kernel.org>
+Subject: [git] parisc: Changes to ref refs/heads/next
+Date: Fri, 22 Oct 2010 01:05:16 +0000
+Message-ID: <201010220105.o9M15Ghv016986@hera.kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Cc: Carlos O'Donell <carlos@systemhalted.org>,
-	linux-parisc@vger.kernel.org
-To: Michal Ludvig <mludvig@logix.net.nz>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4CC003BB.6080900@logix.net.nz>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-  On 10/21/2010 11:11 AM, Michal Ludvig wrote:
->  On 10/20/2010 12:04 PM, Carlos O'Donell wrote:
->> On Mon, Oct 18, 2010 at 11:27 PM, Michal 
->> Ludvig<mludvig@logix.net.nz>  wrote:
->>> I'm having a problem with 2.6.36-rc8+ on HP PARISC machine (HP 9000
->>> RP3410) where I intend to wait for SCSI enumeration during boot before
->>> LVM2 kicks in and attempts to activate the root volume. I modprobe
->>> scsi_wait_scan in the initramdisk before lvm2 script is run. However 
->>> the
->>> modprobe doesn't wait. I'm on Debian testing, fwiw.
->> If you're interested in helping, the best thing you could do is back
->> up to a kernel that works and then try to track down what commit broke
->> the wait scan. It's a bit tedious, but fairly easy.
-> Yeah, I know. However a kernel rebuild takes nearly 2 hours on that 
-> machine so it may be a couple of months before I find the commit ;-) 
-> I'll see if I can come up with an automated process for that.
+New commits:
+commit 338e4fab3d41aa14264e10ce505a7c908633cdad
+Author: Julia Lawall <julia@diku.dk>
+Date:   Wed Oct 20 15:55:45 2010 -0700
 
-Hi Michal,
+    drivers/char/agp/parisc-agp.c: eliminate memory leak
+    
+    alloc_pci_dev allocates some memory, so that memory should be freed before
+    leaving the function in an error case.
+    
+    A simplified version of the semantic match that finds this problem is:
+    (http://coccinelle.lip6.fr/)
+    
+    // <smpl>
+    @r exists@
+    local idexpression x;
+    expression E;
+    identifier f1;
+    iterator I;
+    @@
+    
+    x = alloc_pci_dev(...);
+    <... when != x
+         when != true (x == NULL || ...)
+         when != if (...) { <+...x...+> }
+         when != I (...) { <+...x...+> }
+    (
+     x == NULL
+    |
+     x == E
+    |
+     x->f1
+    )
+    ...>
+    * return ...;
+    // </smpl>
+    
+    Signed-off-by: Julia Lawall <julia@diku.dk>
+    Dan Carpenter <error27@gmail.com>
+    Dave Airlie <airlied@linux.ie>
+    Cc: Helge Deller <deller@gmx.de>
+    Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+    Signed-off-by: Kyle McMartin <kyle@redhat.com>
 
-I'd propose that you use a cross-compiler (i686 to hppa) instead.
-Then you can TFTP-boot the built kernel from your PC.
-This is what I do, and it speeds up everything a lot and it's not too 
-hard to set it up.
-
-Helge
