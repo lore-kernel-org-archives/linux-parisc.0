@@ -1,66 +1,46 @@
-From: Matt Turner <mattst88@gmail.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: C8000 cpu upgrade problem
-Date: Sat, 23 Oct 2010 11:25:45 -0400
-Message-ID: <AANLkTimhs8gyJOwh4eB9M8S3NHNO5KBm_DJZDc=3+=w6@mail.gmail.com>
+Date: Sat, 23 Oct 2010 11:47:17 -0400 (EDT)
+Message-ID: <20101023154718.9C2344D30@hiauly1.hia.nrc.ca>
 References: <alpine.DEB.1.10.1010221555220.3134@artax.karlin.mff.cuni.cz>
- <AANLkTi=YJJgP-tDhh2g6D8d8BkKa-ENoJankd-ZMV+i2@mail.gmail.com>
- <alpine.DEB.1.10.1010231118350.23687@artax.karlin.mff.cuni.cz> <AANLkTikD5cvJdAxUg7zj0ySM9z6fThE-9H9txVpNC9Ez@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	linux-parisc@vger.kernel.org
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org
+To: mikulas@artax.karlin.mff.cuni.cz (Mikulas Patocka)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <AANLkTikD5cvJdAxUg7zj0ySM9z6fThE-9H9txVpNC9Ez@mail.gmail.com>
+In-Reply-To: <alpine.DEB.1.10.1010221555220.3134@artax.karlin.mff.cuni.cz> from "Mikulas Patocka" at Oct 22, 2010 04:07:17 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Oct 23, 2010 at 7:22 AM, Carlos O'Donell
-<carlos@systemhalted.org> wrote:
-> On Sat, Oct 23, 2010 at 5:21 AM, Mikulas Patocka
-> <mikulas@artax.karlin.mff.cuni.cz> wrote:
->> On Fri, 22 Oct 2010, Carlos O'Donell wrote:
->>> AFAIK you can't add a second CPU without an HP technician enabling the
->>> firmware for a second CPU.
->>>
->>> The same goes for enabling additional PCI slots.
->>>
->>> Cheers,
->>> Carlos.
->>
->> And is there some hack that enables it?
->>
->> It looks quite dishonest to me when the machine is advertised as capable
->> of two dual-core CPUs, 32GB RAM, 4 PCI-X slots ... and you get this
->> advertised capability only if you buy expensive support contract :-(
->
-> I know of no hack.
->
-> It is not dishonest, the original purchase contract for the machine
-> probably said "1 active CPU slot" and "1 active PCI-X slot."
->
-> Cheers,
-> Carlos.
+> I have a C8000 workstation with one PA8800 900MHz CPU (the motherboard has 
+> two sockets), I installed Linux via serial console on it and it seems to 
+> be running quite fine (I had to plug a PCI serial card because Linux 
+> doesn't recognize the on-board serial ports or videocard).
+> 
+> When I inserted anober PA8800 900MHz CPU (taken from another workstation) 
+> to the second socket on the motherboard, the boot firmware writes a 
+> warning "Too many CPUs for this system.", drops into the boot menu and 
+> refuses to load an operating system.
 
-It _is_ dishonest, and deceptive at that. When was the last time you
-bought a multisocket system and couldn't add a second processor
-because you needed a support contract? I've never encountered such a
-thing and I've got multisocket x86, Alpha, and SPARC systems.
+It looks like it should be possible to add a second processor.  See
+Technical Reference Guide HP workstation c8000, Document Part Number:
+5969-3188.
 
-This whole license-to-use-hardware thing is bullshit. Mikulas bought
-the hardware, and thus he should be able to use it. I'm struggling to
-find any information about this problem online. I can't even find
-anyone else who has reported that adding a second CPU doesn't just
-work.
+Did you install second CPU power module?
 
-Are we absolutely sure you've got to jump through some licensing
-bullshit to enable the CPU? Maybe it's just a missed setting in PDC?
+> Do you have some idea how to solve it? I.e. switch something in the 
+> firmware, load new firmware (I have FW 2.13 BMC 02.32), or get some tool 
+> from HP that can allow the second processor on this workstation?
 
-> The same goes for enabling additional PCI slots.
+I don't have any specific knowledge about the c8000.  It appears CPUs
+are configured in the BCH configuration menu with the CPUconfig command.
+Based on my experience with rp3440, you have to do a hard reboot
+after configuring a CPU.  If a CPU gets deconfigured or it doesn't appear
+when you type CPUconfig, there is probably a hardware problem.
 
-You've got to be kidding me.
+2.13 seems to be latest firmware.
 
-I'd been planning to grab a cheap C8000 and help Linux/PARISC. But no.
-I'll never use hardware like this on principle.
-
-Matt
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
