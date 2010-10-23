@@ -1,36 +1,58 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
 Subject: Re: False advertising (was: C8000 cpu upgrade problem)
-Date: Sat, 23 Oct 2010 17:50:07 -0400 (EDT)
-Message-ID: <20101023215008.37BC94D30@hiauly1.hia.nrc.ca>
-References: <1287865777.3003.31.camel@mulgrave.site>
+Date: Sun, 24 Oct 2010 01:45:07 +0200 (CEST)
+Message-ID: <alpine.DEB.1.10.1010240126270.14391@artax.karlin.mff.cuni.cz>
+References: <alpine.DEB.1.10.1010221555220.3134@artax.karlin.mff.cuni.cz> <AANLkTi=YJJgP-tDhh2g6D8d8BkKa-ENoJankd-ZMV+i2@mail.gmail.com> <alpine.DEB.1.10.1010231118350.23687@artax.karlin.mff.cuni.cz> <AANLkTikD5cvJdAxUg7zj0ySM9z6fThE-9H9txVpNC9Ez@mail.gmail.com>
+ <alpine.DEB.1.10.1010231620190.12135@artax.karlin.mff.cuni.cz> <1287853058.3003.18.camel@mulgrave.site> <alpine.DEB.1.10.1010231954040.26539@artax.karlin.mff.cuni.cz> <20101023194212.GA23609@hiauly1.hia.nrc.ca>
+ <20101023195814.GP8332@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: dave.anglin@nrc-cnrc.gc.ca, mikulas@artax.karlin.mff.cuni.cz,
-	carlos@systemhalted.org, linux-parisc@vger.kernel.org
-To: James.Bottomley@HansenPartnership.com (James Bottomley)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Carlos O'Donell <carlos@systemhalted.org>,
+	linux-parisc@vger.kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1287865777.3003.31.camel@mulgrave.site> from "James Bottomley" at Oct 23, 2010 03:29:37 pm
+In-Reply-To: <20101023195814.GP8332@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > James, what kind of firmware update is needed?
+
+
+On Sat, 23 Oct 2010, Kyle McMartin wrote:
+
+> On Sat, Oct 23, 2010 at 03:42:13PM -0400, John David Anglin wrote:
+> > Most don't have any affiliation with HP.  I have been on this list a
+> > long time, and don't believe this issue has been discussed before,
+> > although the kernel maintainers may be aware of it.
 > 
-> I have no idea ... I'm only deducing this from what had to be done to
-> ion to make it a 4-way.  We had similar upgrades to some of the A180s as
-> well.  It is unusual for a workstation class system, but the "too many
-> CPUs" message seems definitive.  Perhaps the firmware is essentially the
-> same as a server class and it's inheriting this behaviour.
+> I honestly didn't know about it... I mean, I knew that HP did similar
+> things on IA-64 where new cpus could be 'purchased' and spun up with no
+> downtime.
 
-I agree the message appears definitive, but my impression from searching
-the internet and the technical reference is that the c8000 doesn't require
-firmware upgrades like the servers to add a processor module.
+I suppose that that IA-64 booted with spare CPUs but didn't use them. My 
+C8000 doesn't boot with two CPUs at all. It drops into PDC prompt, saying 
+the warning about too many CPUs, and the "BO" command refuses to boot, 
+asking the user to review the warnings.
 
-I see that various suppliers are selling processor upgrade modules
-(AB630A : 900 MHz 32 MB L2) for c8000.  There are warnings that speed
-and cache must match.  Some c8000s were sold without L2 cache, but
-I don't see any processor modules without cache for sale.
+> But I didn't realize the C8000 had such limitations (mine is
+> an early prototype so there was no possibility for upgrade and I never
+> bothered.)
+>
+> Hopefully on Monday someone from HP who's still around may be able to
+> provide the tool since any support contracts are probably expired given
+> they haven't been sold since 2006...
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+It would be nice if they provided the tool and cleared the false 
+advertising problem.
+
+I'm quite afraid that a single HP engineer can't release them. More 
+likely, someone higher up the corporate command chain declared that the 
+tools are "proprietary" and didn't realize that such restriction really 
+makes the product deviate from advertised capabilities.
+
+> We should add a note to the faq about this.
+> 
+> --Kyle
+
+Mikulas
