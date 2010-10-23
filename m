@@ -1,100 +1,53 @@
 From: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
-Subject: Re: False advertising (was: C8000 cpu upgrade problem)
-Date: Sat, 23 Oct 2010 20:20:45 +0200 (CEST)
-Message-ID: <alpine.DEB.1.10.1010231954040.26539@artax.karlin.mff.cuni.cz>
-References: <alpine.DEB.1.10.1010221555220.3134@artax.karlin.mff.cuni.cz>  <AANLkTi=YJJgP-tDhh2g6D8d8BkKa-ENoJankd-ZMV+i2@mail.gmail.com>  <alpine.DEB.1.10.1010231118350.23687@artax.karlin.mff.cuni.cz>  <AANLkTikD5cvJdAxUg7zj0ySM9z6fThE-9H9txVpNC9Ez@mail.gmail.com>
-  <alpine.DEB.1.10.1010231620190.12135@artax.karlin.mff.cuni.cz> <1287853058.3003.18.camel@mulgrave.site>
+Subject: Re: C8000 cpu upgrade problem
+Date: Sat, 23 Oct 2010 20:33:08 +0200 (CEST)
+Message-ID: <alpine.DEB.1.10.1010232025080.26539@artax.karlin.mff.cuni.cz>
+References: <20101023181110.9CE914E7B@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Carlos O'Donell <carlos@systemhalted.org>,
-	linux-parisc@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1287853058.3003.18.camel@mulgrave.site>
+In-Reply-To: <20101023181110.9CE914E7B@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > It looks like false advertising to me. It is immoral (and in many 
-> > countries illegal) to advertise the product having some capabilities and 
-> > then selling the product not having the capabilities. Purchase contract is 
-> > irelevant, what is relevant are the public statements about the product 
-> > and the real status of the product.
-> 
-> It's fairly standard for the enterprise space:  Both HP and IBM actually
-> sell boxes fully loaded but disable unpaid for capabilities in the
-> firmware (i.e. sell you a 2-cpu box that really contains 4 cpus so they
-> then sell a firmware upgrade as two extra cpus); enterprise users
-> actually like the convenience of not having to haul away and replace the
-> box.
 
-This is a different case. You can't accuse a contractor if you order two 
-CPUs and get four :)
 
-> > HP claims that c8000 workstation is extendible to two processors. Such 
-> > claims are implicit (feature lists, listing up to two dual core 1.1GHz 
-> > processors) and explicit (citing 
-> > http://www.hp.com/workstations/white_papers/docs/hp_workstation_c8000_po.pdf 
-> > "Robust expansion capabilities, including two processor sockets and four 
-> > disk bays, let you grow and configure the system as needed").
-> 
-> My garage is extensible too ... but I'd still have to pay a builder to
-> build the extension.
+On Sat, 23 Oct 2010, John David Anglin wrote:
 
-... or you can build the garage extension yourself. Obviously, you lose 
-guaranty if you do, but you can still do it.
-
-If I take the analogy with a garage ... the garage builder puts a sensor 
-in your garage that measures how big the garage is (and it is deliberately 
-welded hard so that it's hard to remove). When you extend the garage, the 
-sensor notices the nonstandard size and locks the garage door so that you 
-can't use the garage.
-
-> > HP sells a computer that it claims to be c8000 and that the user cannot 
-> > expand to two processors, contrary to the claims in the whitepaper.
-> 
-> The whitepaper only claims they are extensible (which they are) it
-> doesn't claim the user can do the extension (because they can't).
-
-It says "lets YOU grow and configure the system as needed". There is that 
-pronoun "YOU".
-
-> > These claims really deceive users, both me and the person who sold me the 
-> > CPU were deceived by them.
+> > > In the section on replacing the system board, it says to use the ss_update
+> > > utility in the BCH Service menu to reset the serial number.  Is the MFG
+> > > menu accessible?  There may be some hidden commands to setup config.
 > > 
-> > Anyone living in the US and wanting to file a complain to FTC about these 
-> > computers falsely advertised as expandable? :)
+> > There is a service menu, but no mfg menu and no ss_update command.
+> > 
+> > Interesting ... "mfg" gives "ERROR: Unsupported command" while any other 
+> > bad commands gives "ERROR: Unknown command".
+> > 
+> > So there is something magic abouth that "mfg" menu, but it's inaccessible.
 > 
-> The FTC would take the view that it's standard industry practise and
-> that you didn't do due diligence ... 
-
-I'm interested ... does HP anywhere in its materials mention the firmware 
-locks? They are not even in the technical guide in the section that 
-mentions adding a CPU.
-
-So if I should perform due diligence where should I find out about the 
-locks?
-
-I don't even know which locks are in my machine --- I added 1GB memory and 
-a 32-bit PCI serial card and it worked ... how can I find what else can or 
-can't I add?
-
-For example: Can I replace the 0.9GHz CPU with a faster 1.1GHz? 
-(obviously, it is needed to know it before purchasing the CPU)
-
-> However, why don't you try what we usually do?  That's ask HP nicely 
-> (via someone in their linux department) for the firmware upgrade; it's 
-> mostly worked in the past ... assuming you haven't antagonised them too 
-> much by calling them liars and cheats, that is ...
+> The mfg menu was shown in an online document about setting up the c8000.
 > 
-> James
+> I would guess that ss_update command and mfg menu disappear after
+> the unit has been configured.  Probably, the configuration data needs
+> to be erased/reset to restore the menu.  Possibly, reflashing the
+> bch firmware would do it, or maybe there is a ODE command to reset
+> the config.
+> 
+> You might try downloading the firmware update.  At least for the
+> rp3440, one burns an ODE CD.  Then, one boots the CD and uses various
+> ODE commands to flash the firmware.  There was definitely a lot
+> more stuff on the CD than just the utilities to flash the firmware.
+> Of course, one mistake and you brick the system.  It would probably
+> take HP specific JTAG tools to recover.
+> 
+> Dave
 
-That's why I asked here ... without accussing anyone of lying first ... 
-assuming that there are Linux hackers on this list, they have thorough 
-knowledge of the hardware and they'll say something like "run this command 
-in PDC" or "flip byte at that address in nvram to that value and unlock 
-it".
+I found some HPUX binary, as a firmware upgrade for C8000, that I didn't 
+run (it says it upgrades to the same version that I have).
 
-But it seems that people on this list don't know about those HP locks too 
-:-(
+I'm quite scared to run rp3440 CD on an unsupported system. But I'll try 
+anyway.
 
 Mikulas
