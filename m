@@ -1,39 +1,41 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: C8000 cpu upgrade problem
-Date: Sat, 23 Oct 2010 23:43:15 -0400
-Message-ID: <20101024034314.GQ8332@bombadil.infradead.org>
-References: <20101024020337.725094D30@hiauly1.hia.nrc.ca>
- <alpine.DEB.1.10.1010240432390.30241@artax.karlin.mff.cuni.cz>
+Date: Sun, 24 Oct 2010 00:01:19 -0400 (EDT)
+Message-ID: <20101024040120.5DB054D30@hiauly1.hia.nrc.ca>
+References: <alpine.DEB.1.10.1010240432390.30241@artax.karlin.mff.cuni.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	linux-parisc@vger.kernel.org
-To: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org
+To: mikulas@artax.karlin.mff.cuni.cz (Mikulas Patocka)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.1.10.1010240432390.30241@artax.karlin.mff.cuni.cz>
+In-Reply-To: <alpine.DEB.1.10.1010240432390.30241@artax.karlin.mff.cuni.cz> from "Mikulas Patocka" at Oct 24, 2010 05:03:25 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Oct 24, 2010 at 05:03:25AM +0200, Mikulas Patocka wrote:
-> I tried to measure the cache size, sequential memory read showed cutoff at 
-> 700kB and no cutoff at 32MB. It shows 1.7GB/s below 700kB and 612MB/s 
-> above. Latency measurements (chasing pointer chain) showed drastic cutoff 
-> at 700kB (from 3ns to 300ns) and no cutoff at 32MB.
-> 
 > It may be that the lack of L2 cache is the reason why the CPUs don't 
 > support multiprocessing ... I may buy two better CPUs, if I had actually 
 > guarantee that the machine isn't locked (I don't want to waste more money 
 > just to find out that the firmware lock doesn't go away).
-> 
 
-FWIW, I'd recommend running in non-SMP mode on pa8800/8900 anyway, as
-our cache flushing is a bit... suboptimal right now (doing whole cache
-flushes on fork and such.) Which, coupled with the gigantic caches on
-those cpus which must be flushed just tanks performance.
+Are you sure the part numbers for the two processor modules that you
+have are the same?  Parts with cache seem much more common.  There
+also seem to be quite a few obsolete parts.
 
-I've been working on cleaning up jejb's patchset from back in the
-bitkeeper days to properly do deferred flushing, but time is constantly
-against me (sigh, I don't think I've even powered on my C8000 in a few
-years now... explains why I didn't catch your e1000 issue there. :)
+It might be Linux would work better without the L2 cache.  There are
+are some cache coherency issues that haven't been resolved in SMP.
+These problems are aggrevated by the L2 cache which takes a long
+time to flush.
 
---Kyle
+It's just not clear that your machine is locked.  The c8000 model
+name doesn't change depending on number of processors.  If you search
+on rp3410 processor upgrade, you will find that a processor update
+license is needed to go from one to two processor.  This is clear
+in the documentation.  I couldn't find anything similar for c8000.
+Indeed, there are many indications that an after-market processor
+update is possible for it.
+
+Good luck,
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
