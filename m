@@ -1,67 +1,59 @@
-From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <T-Bone@parisc-linux.org>
-Subject: Re: False advertising (was: C8000 cpu upgrade problem)
-Date: Sun, 24 Oct 2010 13:36:48 +0200
-Message-ID: <68B3C27A-CB60-4F84-A8E2-DB37D7110438@parisc-linux.org>
-References: <alpine.DEB.1.10.1010221555220.3134@artax.karlin.mff.cuni.cz> <AANLkTi=YJJgP-tDhh2g6D8d8BkKa-ENoJankd-ZMV+i2@mail.gmail.com> <alpine.DEB.1.10.1010231118350.23687@artax.karlin.mff.cuni.cz> <AANLkTikD5cvJdAxUg7zj0ySM9z6fThE-9H9txVpNC9Ez@mail.gmail.com> <alpine.DEB.1.10.1010231620190.12135@artax.karlin.mff.cuni.cz> <1287853058.3003.18.camel@mulgrave.site> <AANLkTimSda7Ki+uUW-hgkxhMhjeP7R5N3wkHb-hTyb4L@mail.gmail.com> <7FB655BE-108B-4FF6-888A-249C29064838@parisc-linux.org> <alpine.DEB.1.10.1010240504560.30241@artax.karlin.mff.cuni.cz>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed	delsp=yes
+From: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Subject: Re: C8000 cpu upgrade problem
+Date: Tue, 26 Oct 2010 04:04:16 +0200 (CEST)
+Message-ID: <alpine.DEB.1.10.1010260401420.6982@artax.karlin.mff.cuni.cz>
+References: <20101024040120.5DB054D30@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-parisc@vger.kernel.org
-To: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.1.10.1010240504560.30241@artax.karlin.mff.cuni.cz>
+In-Reply-To: <20101024040120.5DB054D30@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Le 24 oct. 10 =E0 05:18, Mikulas Patocka a =E9crit :
-> On Sun, 24 Oct 2010, Thibaut VAR?NE wrote:
+On Sun, 24 Oct 2010, John David Anglin wrote:
 
->> James rightfully pointed out that the best way to solve this issue =20
->> would be to
->> kindly ring a bell within HP and try to work this out on a one-on-=20
->> one basis,
->> hopefully avoiding calling names. HP has a history of being =20
->> relatively helpful
->> with that sort of matters, I'd expect this to turn for the best.
->
-> I think that asking employees to do illegal things (or things against
-> corporate rules) isn't a viable way to go.
+> > It may be that the lack of L2 cache is the reason why the CPUs don't 
+> > support multiprocessing ... I may buy two better CPUs, if I had actually 
+> > guarantee that the machine isn't locked (I don't want to waste more money 
+> > just to find out that the firmware lock doesn't go away).
+> 
+> Are you sure the part numbers for the two processor modules that you
+> have are the same?  Parts with cache seem much more common.  There
+> also seem to be quite a few obsolete parts.
 
-I'm not suggesting anything like that.
+They are the same (I posted the version numbers written by PDC). But as 
+you noted, the versions without L2 cache may not be smp aware.
 
-> Once (a long time ago, on a totally different project) I got an =20
-> offer for
-> some internal code from an employee, who thought that it could =20
-> improve my
-> open source work. I refused it because I don't want to get into =20
-> unneeded
-> trouble. If I accepted it, I'd have to be careful to not ever disclos=
-e
-> implicitly or explicitly that I saw the code.
+> It might be Linux would work better without the L2 cache.
 
+What is the exact problem with L2 cache? Is it virtually indexed too?
 
-WTH? Clearly accessing HP's intellectual property and asking for a one-=
-=20
-time unique unlock password for phased out hardware are two very =20
-different things, I'm sure you can undertand that.
+> There are are some cache coherency issues that haven't been resolved in 
+> SMP.
 
-=46WIW, rereading your emails, it looks like your CPU model doesn't =20
-indeed support dual-processor configuration. Try asking for help on =20
-HP's support forums. Competent people are generally around and might =20
-be able to answer your questions.
+What exactly do you mean?
 
-Regarding speed upgrade, I don't know whether your machine would be =20
-locked down or not. On server systems, changing CPUs for faster ones =20
-generally requires Model Name change (and thus entering MFG mode, =20
-etc), but as JDA pointed out, this may not be the case for workstations=
-=2E
+> These problems are aggrevated by the L2 cache which takes a long 
+> time to flush.
+> 
+> It's just not clear that your machine is locked.  The c8000 model
+> name doesn't change depending on number of processors.  If you search
+> on rp3410 processor upgrade, you will find that a processor update
+> license is needed to go from one to two processor.  This is clear
+> in the documentation.  I couldn't find anything similar for c8000.
+> Indeed, there are many indications that an after-market processor
+> update is possible for it.
 
---=20
-Thibaut VAR=C8NE
-http://www.parisc-linux.org/~varenet/
+I don't know. Before I buy two CPUs to get a quad-core system, I'd like to 
+make sure it isn't locked. Can the lock be detected somehow?
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Mikulas
+
+> Good luck,
+> Dave
+> -- 
+> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+> National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> 
