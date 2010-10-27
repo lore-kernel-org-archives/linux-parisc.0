@@ -1,142 +1,64 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: sym53c8xx_2 data corruption
-Date: Wed, 27 Oct 2010 11:37:16 -0500
-Message-ID: <1288197436.6886.3.camel@mulgrave.site>
-References: <20101027012932.3CB6E4FB4@hiauly1.hia.nrc.ca>
-	 <1288155041.19649.354.camel@mulgrave.site>
-	 <alpine.DEB.1.10.1010271059230.31946@artax.karlin.mff.cuni.cz>
-	 <1288190807.4692.30.camel@mulgrave.site>
-	 <alpine.DEB.1.10.1010271803010.18202@artax.karlin.mff.cuni.cz>
+From: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Subject: Re: PA caches (was: C8000 cpu upgrade problem)
+Date: Wed, 27 Oct 2010 18:50:47 +0200 (CEST)
+Message-ID: <alpine.DEB.1.10.1010271837040.18202@artax.karlin.mff.cuni.cz>
+References: <20101027012932.3CB6E4FB4@hiauly1.hia.nrc.ca>  <1288155041.19649.354.camel@mulgrave.site>  <alpine.DEB.1.10.1010270957110.31946@artax.karlin.mff.cuni.cz>  <1288188465.4692.0.camel@mulgrave.site>  <alpine.DEB.1.10.1010271820320.18202@artax.karlin.mff.cuni.cz>
+ <1288197324.6886.2.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-parisc@vger.kernel.org, linux-scsi@vger.kernel.org,
-	matthew@wil.cx
-To: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.1.10.1010271803010.18202@artax.karlin.mff.cuni.cz>
-List-ID: <linux-scsi.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>, kyle@mcmartin.ca,
+	linux-parisc@vger.kernel.org
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1288197324.6886.2.camel@mulgrave.site>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2010-10-27 at 18:19 +0200, Mikulas Patocka wrote:
-> 
-> On Wed, 27 Oct 2010, James Bottomley wrote:
-> 
-> > On Wed, 2010-10-27 at 11:04 +0200, Mikulas Patocka wrote:
-> > > Hi
-> > > 
-> > > I sent this about twice to linux-scsi and got no reseponse, neither from 
-> > > conference nor from Matthew. So I'm sending it here, James, you are the 
-> > > maintainer of SCSI, could you please look at the patch and incorporate it 
-> > > to the kernel in this cycle?
-> > > 
-> > > The problem is that if the disk returns QUEUE FULL, the requests are 
-> > > aborted with DID_SOFT_ERROR (rather than DID_REQUEUE), which results in 
-> > > too few retries and premature errors. The errors happen mostly on writes, 
-> > > resulting in data corruption.
-> > > 
-> > > Mikulas
-> > > 
-> > > ---
-> > > 
-> > > sym53c8xx_2: Set DID_REQUEUE return code when aborting squeue.
-> > > 
-> > > When the controller encounters an error (including QUEUE FULL or BUSY status),
-> > > it aborts all not yet submitted requests in the function
-> > > sym_dequeue_from_squeue.
-> > > 
-> > > This function aborts them with DID_SOFT_ERROR.
-> > > 
-> > > If the disk has a full tag queue, the request that caused the overflow is
-> > > aborted with QUEUE FULL status (and the scsi midlayer properly retries it
-> > > until it is accepted by the disk), but other requests are aborted with
-> > > DID_SOFT_ERROR --- for them, the midlayer does just a few retries and then
-> > > signals the error up to sd.
-> > > 
-> > > The result is that disk returning QUEUE FULL causes request failures.
-> > > 
-> > > The error was reproduced on 53c895 with COMPAQ BD03685A24 disk (rebranded
-> > > ST336607LC) with command queue 48 or 64 tags. The disk has 64 tags, but
-> > > under some access patterns it return QUEUE FULL when there are less than
-> > > 64 pending tags. The SCSI specification allows returning QUEUE FULL
-> > > anytime and it is up to the host to retry.
+> > Why is Kyle than suggesting that I am lucky because I have no L2 cache 
+> > (and therefore, Linux runs faster)?
 > > 
-> > So the description isn't really complete.  the function is
-> > dequeue_from_squeue which is used to requeue all unissued scbs when the
-> > sequencer is restarted.  This doesn't just affect QUEUE_FULL, it affects
-> > everything.  As long as the pushback is done before the status is
-> > returned (which it looks like it is), I think the patch after fixing
-> > looks fine.
-> >
-> > The problem isn't the actual command which returns queue full ... it's
-> > that the sequencer accepts and queues a pile of commands and then
-> > returns all of them on the first queue full ... that means that deeply
-> > queued commands in the sequencer issue queue can get returned >5 times
-> > on multiple QUEUE_FULL conditions which would cause a failure.
-> 
-> Sure, that's how I understood it from the code and debug prints. You can 
-> add this to the description.
-> 
-> That QUEUE_FULL command is actually retired fine, the following commands 
-> are problematic.
-> 
-> > > Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-> > > 
-> > > ---
-> > >  drivers/scsi/sym53c8xx_2/sym_hipd.c |    4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > > 
-> > > Index: linux-2.6.36-rc5-fast/drivers/scsi/sym53c8xx_2/sym_hipd.c
-> > > ===================================================================
-> > > --- linux-2.6.36-rc5-fast.orig/drivers/scsi/sym53c8xx_2/sym_hipd.c	2010-09-27 10:25:59.000000000 +0200
-> > > +++ linux-2.6.36-rc5-fast/drivers/scsi/sym53c8xx_2/sym_hipd.c	2010-09-27 10:26:27.000000000 +0200
-> > > @@ -3000,7 +3000,11 @@ sym_dequeue_from_squeue(struct sym_hcb *
-> > >  		if ((target == -1 || cp->target == target) &&
-> > >  		    (lun    == -1 || cp->lun    == lun)    &&
-> > >  		    (task   == -1 || cp->tag    == task)) {
-> > > +#ifdef SYM_OPT_HANDLE_DEVICE_QUEUEING
-> > >  			sym_set_cam_status(cp->cmd, DID_SOFT_ERROR);
-> > > +#else
-> > > +			sym_set_cam_status(cp->cmd, DID_REQUEUE);
-> > > +#endif
+> > Why are people talking here about flushing 32MB or 64MB L2 on fork()?
 > > 
-> > So the ifdef is definitely wrong.  SYM_OPT_HANDLE_DEVICE_QUEUEING is a
-> > leftover from when the driver did explicit internal queueing. Just make
-> > this do DID_REQUEUE and I *think* everything will be OK.
+> > Or is it that you need to flush only L1 cache but the architecture forces 
+> > flush of both caches?
 > 
-> When I tried to enable SYM_OPT_HANDLE_DEVICE_QUEUEING, it didn't work, it 
-> crashed on something --- it is leftover from some other operating system 
-> that didn't handle requeuing in the midlayer.
+> There's only a couple of flush instructions: fic and fdc ... they have
+> to flush all caches.  We did argue the toss on this with the HP
+> processor people since aliasing, which is primarily where we need
+> flushes for control, only occurs in the L1 cache.  However, they pointed
+> out that if they made fic and fdc L1 specific, we'd have no control over
+> DMA type ops which have to reach physical memory.
 > 
-> When looking at the other parts of code that handles this driver-internal 
-> requeueing, it expects DID_SOFT_ERROR there. But it doesn't matter, that 
-> code is useless for Linux and broken anyway.
+> > I'd still like to see if someone with PA8800 or PA8900 with L2 ran that 
+> > shared memory experiment to actually *prove* that L2 is physically indexed 
+> > and that the L1 equivalency modulus is 4MB. I.e. not rely on what you 
+> > heard somewhere, but rely on what you see.
 > 
-> > There's a danger in that DID_REQUEUE will requeue forever, so this
-> > working depends on the original failing command being returned with the
-> > correct code (which I think it is, but more eyes looking at this would
-> > be helpful).
-> 
-> Requeuing forever is dangerous anyway, a device returning QUEUE_FULL 
-> constantly could deadlock the system. Question: is it better to risk a 
-> deadlock with a broken device or to risk a false timeout under high load? 
-> --- I don't know --- maybe there are valid cases where the device is 
-> returning QUEUE_FULL for long time (some raid reconfiguration?) ... do you 
-> know about them?
-> 
-> Anyway, if sym_dequeue_from_squeue was called from some other error that 
-> causes limited retry or command abort, I think it is still valid to use 
-> DID_REQUEUE for the following commands --- it can't deadlock with 
-> DID_REQUEUE, because on that error, the first command is aborted or has 
-> its retry count decremented --- so the first command must be eventually 
-> completed, and the second command (which was being retried with 
-> DID_REQUEUE) becomes the first --- and once it's first, it cannot loop 
-> forever. So with induction you can prove that every command completes in 
-> finite time.
+> We already did all of that years ago just trying to make the pa8x00
 
-As long as we see the QUEUE_FULL return, there's no danger.  The mid
-layer has a timeout beyond which it won't allow a QUEUE_FULL return to
-be retried.
+If it is really proved, OK.
 
-James
+So, the CPU takes a hash of bits some bits up to 4MB and uses them to 
+calculate an index into 4-way not-power-of-two-sized L1 cache?
 
+> chips work with linux ... they didn't for about 18 months.
+> 
+> James
 
+Unfortunatelly, I still get some userspace crashes on SMP, I already found 
+one reproducible crash (running "make install" on gcc-4.5.1). The crash 
+happens with some probability, but the probability is high enough so that 
+it's reproducible.
+
+Do you have some idea where cache flushing is missing so that I could try 
+if it fixes my case?
+
+BTW. if you flush cache on kmap, I think it couldn't work in multithreaded 
+environment at all --- i.e. the program has "int a, b;" both variables 
+share the cacheline, one thread is accessing "a" via kmap and the other 
+thread writes to b directly, for example "b = 5". Then, cache flushing 
+won't help and one of the variables will be trashed. You need kmap address 
+to be congruent with the linear address. But I think it's not reason for 
+my crash because neither gmake nor bash (that crashes) is multithreaded.
+
+Mikulas
