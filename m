@@ -1,80 +1,69 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [PATCH] parisc: fix compile failure with kmap_atomic changes
-Date: Thu, 28 Oct 2010 10:14:41 -0500
-Message-ID: <1288278881.3043.31.camel@mulgrave.site>
+Subject: Re: PA caches (was: C8000 cpu upgrade problem)
+Date: Thu, 28 Oct 2010 11:55:12 -0500
+Message-ID: <1288284912.3043.151.camel@mulgrave.site>
+References: <20101028060439.5FA924CFC@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: mikulas@artax.karlin.mff.cuni.cz, kyle@mcmartin.ca,
+	linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20101028060439.5FA924CFC@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This commit:
+On Thu, 2010-10-28 at 02:04 -0400, John David Anglin wrote:
+> > > BTW. if you flush cache on kmap, I think it couldn't work in multithreaded 
+> > > environment at all --- i.e. the program has "int a, b;" both variables 
+> > > share the cacheline, one thread is accessing "a" via kmap and the other 
+> > > thread writes to b directly, for example "b = 5". Then, cache flushing 
+> > > won't help and one of the variables will be trashed. You need kmap address 
+> > > to be congruent with the linear address. But I think it's not reason for 
+> > > my crash because neither gmake nor bash (that crashes) is multithreaded.
+> 
+> Agree.
+> 
+> > That statement assumes the threads share a data structure but are not
+> > congruent ... which certainly isn't true for userspace.  Our only
+> > incongruency which gives rise to aliasing is between the kernel and user
+> > address spaces and we don't do data sharing between the two without
+> > pretty severe accessor restrictions.
+> 
+> My sense is the above isn't correct.  Even if userspace is congruent,
+> it would seem to me that another thread could dirty the cache line after
+> kmap does its flush.  The design of the Linux memory management system
+> might prevent this from happening, but it's not obvious.
 
-commit 3e4d3af501cccdc8a8cca41bdbe57d54ad7e7e73
-Author: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Date:   Tue Oct 26 14:21:51 2010 -0700
+Look at it this way:  it only happens if the kernel and userspace share
+a data structure, which they never do.  If they did, it wouldn't just
+show up on parisc, it would be seen on every risc system (since they're
+almost all VIPT).
 
-    mm: stack based kmap_atomic()
+A far more dangerous form of cache line induced incoherence is actually
+DMA.  If you DMA into a line which the kernel also touches
+simultaneously, only one modification will survive.  Again we fix this
+with a similar ownership model: either the kernel uses the region or the
+device driver.
 
-overlooked the fact that parisc uses kmap as a coherence mechanism, so
-even though we have no highmem, we do need to supply our own versions of
-kmap (and atomic).  This patch converts the parisc kmap to the form
-which is needed to keep it compiling (it's a simple prototype and name
-change).
+>   That's why
+> I thought the kernel should use also use congruent mappings.
 
-Signed-off-by: James Bottomley <James.Bottomley@suse.de>
-Acked-by: Kyle McMartin <kyle@redhat.com>
-
----
-
-Linus, could you apply this directly?  Kyle already has the parisc tree
-in progress and peterz (whom I thought would push this) is currently
-over the Atlantic.
-
-Thanks,
+That would be ideal, but unfortunately memory in the kernel is currently
+at fixed mappings (the physical to virtual offset is fixed).  If we
+could get all mappings congruent, we'd actually be operating the pa88/89
+processors within spec instead of having to pull kmap tricks.  Ralf has
+some strange mips system that needs full congruency as well ... it's
+just I don't think he's managed to get it working yet.
 
 James
 
-
-
-diff --git a/arch/parisc/include/asm/cacheflush.h b/arch/parisc/include/asm/cacheflush.h
-index dba11ae..f388a85 100644
---- a/arch/parisc/include/asm/cacheflush.h
-+++ b/arch/parisc/include/asm/cacheflush.h
-@@ -126,20 +126,20 @@ static inline void *kmap(struct page *page)
- 
- #define kunmap(page)			kunmap_parisc(page_address(page))
- 
--static inline void *kmap_atomic(struct page *page, enum km_type idx)
-+static inline void *__kmap_atomic(struct page *page)
- {
- 	pagefault_disable();
- 	return page_address(page);
- }
- 
--static inline void kunmap_atomic_notypecheck(void *addr, enum km_type idx)
-+static inline void __kunmap_atomic(void *addr)
- {
- 	kunmap_parisc(addr);
- 	pagefault_enable();
- }
- 
--#define kmap_atomic_prot(page, idx, prot)	kmap_atomic(page, idx)
--#define kmap_atomic_pfn(pfn, idx)	kmap_atomic(pfn_to_page(pfn), (idx))
-+#define kmap_atomic_prot(page, prot)	kmap_atomic(page)
-+#define kmap_atomic_pfn(pfn)	kmap_atomic(pfn_to_page(pfn))
- #define kmap_atomic_to_page(ptr)	virt_to_page(ptr)
- #endif
- 
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-arch" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> My 32-bit UP c3750 is fully stable.  It has run for months and I don't
+> see any wierd segmentation faults in userspace doing gcc builds.  On
+> the otherhand, the testcases on the wiki crash with high probabiity.
+> So, I think we are dealing with two different, but possibly related
+> issues.  One is a MP issue.  The other is a clone/fork race.
+> 
+> Dave
 
 
