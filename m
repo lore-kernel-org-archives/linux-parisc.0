@@ -1,70 +1,38 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: [git patches] parisc changes for 2.6.37-rc1
-Date: Thu, 28 Oct 2010 10:10:34 -0400
-Message-ID: <20101028141034.GX8332@bombadil.infradead.org>
+Subject: Re: [PATCH] parisc: fix compile failure with kmap_atomic changes
+Date: Thu, 28 Oct 2010 10:16:16 -0400
+Message-ID: <20101028141616.GY8332@bombadil.infradead.org>
+References: <1288204547.6886.23.camel@mulgrave.site>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org, kyle@mcmartin.ca
-To: torvalds@linux-foundation.org
+Cc: linux-mm <linux-mm@kvack.org>,
+	linux-arch <linux-arch@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1288204547.6886.23.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The following changes since commit 0acc1b2afb6ded060b7d6b1b5e6ac8a00ec47547:
+On Wed, Oct 27, 2010 at 01:35:47PM -0500, James Bottomley wrote:
+> Author: Peter Zijlstra <a.p.zijlstra@chello.nl>
+> Date:   Tue Oct 26 14:21:51 2010 -0700
+> 
+>     mm: stack based kmap_atomic()
+> 
+> overlooked the fact that parisc uses kmap as a coherence mechanism, so
+> even though we have no highmem, we do need to supply our own versions of
+> kmap (and atomic).  This patch converts the parisc kmap to the form
+> which is needed to keep it compiling (it's a simple prototype and name
+> change).
+> 
+> Signed-off-by: James Bottomley <James.Bottomley@suse.de>
 
-  Merge branch 'kvm-updates/2.6.36' of git://git.kernel.org/pub/scm/virt/kvm/kvm (2010-10-12 09:16:01 -0700)
+Signed-off-by: Kyle McMartin <kyle@redhat.com>
 
-are available in the git repository at:
+Care to send it straight to Linus? I didn't want to rebase my tree to
+pull in the fix and risk his wrath...
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kyle/parisc-2.6.git next
-
-Christian Dietrich (1):
-      arch/parisc: Removing undead ifdef CONFIG_PA20
-
-FUJITA Tomonori (1):
-      parisc: remove homegrown L1_CACHE_ALIGN macro
-
-Guy Martin (1):
-      parisc: add tty driver to PDC console
-
-Joe Perches (1):
-      drivers/parisc/iosapic.c: Remove unnecessary kzalloc cast
-
-Julia Lawall (1):
-      drivers/char/agp/parisc-agp.c: eliminate memory leak
-
-Kyle McMartin (9):
-      parisc: squelch warning when using dev_get_stats
-      parisc: add prlimit64 syscall
-      parisc: lay groundwork for killing __do_IRQ
-      parisc: convert cpu interrupts to proper flow handlers
-      parisc: convert iosapic interrupts to proper flow handlers
-      parisc: convert suckyio interrupts to flow handlers
-      parisc: convert gsc and dino pci interrupts to flow handlers
-      parisc: convert eisa interrupts to flow handlers
-      parisc: kill __do_IRQ
-
-Phil Carmody (1):
-      parisc: unwind - optimise linked-list searches for modules
-
-matt mooney (1):
-      parisc: change to new flag variable
-
- arch/parisc/Kconfig                |    4 +
- arch/parisc/include/asm/cache.h    |    2 -
- arch/parisc/include/asm/irq.h      |    2 +-
- arch/parisc/include/asm/unistd.h   |    3 +-
- arch/parisc/kernel/irq.c           |   41 +++++------
- arch/parisc/kernel/pdc_cons.c      |  141 ++++++++++++++++++++++++++++++++++--
- arch/parisc/kernel/syscall_table.S |    1 +
- arch/parisc/kernel/unaligned.c     |    3 -
- arch/parisc/kernel/unwind.c        |    5 +-
- arch/parisc/math-emu/Makefile      |    2 +-
- drivers/char/agp/parisc-agp.c      |    4 +
- drivers/parisc/dino.c              |   29 +++-----
- drivers/parisc/eisa.c              |   29 +++-----
- drivers/parisc/gsc.c               |   36 +++------
- drivers/parisc/iosapic.c           |   56 +++-----------
- drivers/parisc/led.c               |    6 +-
- drivers/parisc/superio.c           |   25 ++-----
- 17 files changed, 222 insertions(+), 167 deletions(-)
+Thanks,
+--Kyle
