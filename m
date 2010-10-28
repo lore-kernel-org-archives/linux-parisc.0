@@ -1,37 +1,31 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: sym53c8xx_2 data corruption
-Date: Wed, 27 Oct 2010 23:59:22 -0600
-Message-ID: <20101028055922.GE32200@lackof.org>
-References: <20101027012932.3CB6E4FB4@hiauly1.hia.nrc.ca> <1288155041.19649.354.camel@mulgrave.site> <alpine.DEB.1.10.1010271059230.31946@artax.karlin.mff.cuni.cz> <1288190807.4692.30.camel@mulgrave.site> <alpine.DEB.1.10.1010271803010.18202@artax.karlin.mff.cuni.cz>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH] parisc: fix compile failure with kmap_atomic changes
+Date: Thu, 28 Oct 2010 09:03:49 -0500
+Message-ID: <1288274629.3043.1.camel@mulgrave.site>
+References: <20101028051807.539484D30@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	linux-parisc@vger.kernel.org, linux-scsi@vger.kernel.org,
-	matthew@wil.cx
-To: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.1.10.1010271803010.18202@artax.karlin.mff.cuni.cz>
-List-ID: <linux-scsi.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-mm@kvack.org, linux-arch@vger.kernel.org,
+ linux-parisc@vger.kernel.org, peterz@infradead.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <20101028051807.539484D30@hiauly1.hia.nrc.ca>
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Oct 27, 2010 at 06:19:32PM +0200, Mikulas Patocka wrote:
-...
-> Requeuing forever is dangerous anyway, a device returning QUEUE_FULL 
-> constantly could deadlock the system. Question: is it better to risk a 
-> deadlock with a broken device or to risk a false timeout under high load? 
-> --- I don't know --- maybe there are valid cases where the device is 
-> returning QUEUE_FULL for long time (some raid reconfiguration?) ... do you 
-> know about them?
+On Thu, 2010-10-28 at 01:18 -0400, John David Anglin wrote:
+> Signed-off-by: John David Anglin  <dave.anglin@nrc-cnrc.gc.ca>
+> 
+> Sent effectively the same change to parisc-linux list months ago...
 
-This was a problem in multi-initiator SCSI systems and I'm guessing also
-an issue for FC SAN. Multiple hosts "compete" for filling the device's
-available command slots. If all hosts used available queue_depth
-(say 32 commands) and device only supported 64 commands at a time,
-then the 65th command from host #3 might get QUEUEFULL status back.
+You did?  Why didn't you send it to Peter?  When I grumbled at him on
+IRC for breaking parisc (as well as quite a few other 64 bit
+architectures in mainline) he had no idea there was a problem.
 
-I'm not sure what the difference is to BUSY status. Wikipedia
-suggests "QUEUE_FULL" is a hint that the device is already
-processing commands from the same initiator.
+James
 
-hth,
-grant
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
