@@ -1,40 +1,27 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [PATCH] parisc: fix compile failure with kmap_atomic changes
-Date: Thu, 28 Oct 2010 12:39:40 -0500
-Message-ID: <1288287580.3043.159.camel@mulgrave.site>
-References: <20101028171302.5D8944CFC@hiauly1.hia.nrc.ca>
+Date: Thu, 28 Oct 2010 14:11:38 -0400 (EDT)
+Message-ID: <20101028181139.558BE4D30@hiauly1.hia.nrc.ca>
+References: <1288287580.3043.159.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Cc: linux-mm@kvack.org, linux-arch@vger.kernel.org,
 	linux-parisc@vger.kernel.org, peterz@infradead.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <20101028171302.5D8944CFC@hiauly1.hia.nrc.ca>
-List-ID: <linux-arch.vger.kernel.org>
+To: James.Bottomley@HansenPartnership.com (James Bottomley)
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1288287580.3043.159.camel@mulgrave.site> from "James Bottomley" at Oct 28, 2010 12:39:40 pm
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2010-10-28 at 13:13 -0400, John David Anglin wrote:
-> > On Thu, 2010-10-28 at 01:18 -0400, John David Anglin wrote:
-> > > Signed-off-by: John David Anglin  <dave.anglin@nrc-cnrc.gc.ca>
-> > > 
-> > > Sent effectively the same change to parisc-linux list months ago...
-> > 
-> > You did?  Why didn't you send it to Peter?  When I grumbled at him on
-> > IRC for breaking parisc (as well as quite a few other 64 bit
-> > architectures in mainline) he had no idea there was a problem.
-> 
-> For example, it is in the diff recently posted here:
-> http://permalink.gmane.org/gmane.linux.ports.parisc/3173
-> This diff is from last May.
+> The specific problem is that kmap_atomic no longer takes the index
+> argument because Peter moved it to a stack based implementation.  All
+> our kmap_atomic primitives in asm/cacheflush.h still have the extra
+> index argument which causes a compile failure.
 
-Um, so that doesn't fix the compile failure.
+Sorry, missed that.  The issue I was trying to address was the lack of
+calls to pagefault_disable() and pagefault_enable().
 
-The specific problem is that kmap_atomic no longer takes the index
-argument because Peter moved it to a stack based implementation.  All
-our kmap_atomic primitives in asm/cacheflush.h still have the extra
-index argument which causes a compile failure.
-
-To fix it, I had to run through a bunch of renames and extra argument
-removals.
-
-James
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
