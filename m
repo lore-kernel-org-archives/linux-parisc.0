@@ -1,78 +1,110 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [PATCH] parisc: fix compile failure with kmap_atomic changes
-Date: Thu, 28 Oct 2010 01:18:06 -0400 (EDT)
-Message-ID: <20101028051807.539484D30@hiauly1.hia.nrc.ca>
-References: <1288204547.6886.23.camel@mulgrave.site>
+Subject: Re: PA caches (was: C8000 cpu upgrade problem)
+Date: Thu, 28 Oct 2010 02:04:37 -0400 (EDT)
+Message-ID: <20101028060439.5FA924CFC@hiauly1.hia.nrc.ca>
+References: <1288199246.6886.9.camel@mulgrave.site>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-mm@kvack.org, linux-arch@vger.kernel.org,
-	linux-parisc@vger.kernel.org, peterz@infradead.org
+Cc: mikulas@artax.karlin.mff.cuni.cz, kyle@mcmartin.ca,
+	linux-parisc@vger.kernel.org
 To: James.Bottomley@HansenPartnership.com (James Bottomley)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1288204547.6886.23.camel@mulgrave.site> from "James Bottomley" at Oct 27, 2010 01:35:47 pm
+In-Reply-To: <1288199246.6886.9.camel@mulgrave.site> from "James Bottomley" at Oct 27, 2010 12:07:26 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: John David Anglin  <dave.anglin@nrc-cnrc.gc.ca>
+> On Wed, 2010-10-27 at 18:50 +0200, Mikulas Patocka wrote:
+> > > > Why is Kyle than suggesting that I am lucky because I have no L2 cache 
+> > > > (and therefore, Linux runs faster)?
+> > > > 
+> > > > Why are people talking here about flushing 32MB or 64MB L2 on fork()?
+> > > > 
+> > > > Or is it that you need to flush only L1 cache but the architecture forces 
+> > > > flush of both caches?
+> > > 
+> > > There's only a couple of flush instructions: fic and fdc ... they have
+> > > to flush all caches.  We did argue the toss on this with the HP
+> > > processor people since aliasing, which is primarily where we need
+> > > flushes for control, only occurs in the L1 cache.  However, they pointed
+> > > out that if they made fic and fdc L1 specific, we'd have no control over
+> > > DMA type ops which have to reach physical memory.
+> > > 
+> > > > I'd still like to see if someone with PA8800 or PA8900 with L2 ran that 
+> > > > shared memory experiment to actually *prove* that L2 is physically indexed 
+> > > > and that the L1 equivalency modulus is 4MB. I.e. not rely on what you 
+> > > > heard somewhere, but rely on what you see.
+> > > 
+> > > We already did all of that years ago just trying to make the pa8x00
+> > 
+> > If it is really proved, OK.
+> > 
+> > So, the CPU takes a hash of bits some bits up to 4MB and uses them to 
+> > calculate an index into 4-way not-power-of-two-sized L1 cache?
+> > 
+> > > chips work with linux ... they didn't for about 18 months.
+> > > 
+> > > James
+> > 
+> > Unfortunatelly, I still get some userspace crashes on SMP, I already found 
+> > one reproducible crash (running "make install" on gcc-4.5.1). The crash 
+> > happens with some probability, but the probability is high enough so that 
+> > it's reproducible.
+> > 
+> > Do you have some idea where cache flushing is missing so that I could try 
+> > if it fixes my case?
 
-Sent effectively the same change to parisc-linux list months ago...
+I also see random userspace segmentation faults on SMP.  This is not
+restricted to PA8800/PA8900 processors, although it is less frequent
+on earlier processors.  The probability of completing a full GCC build
+on a SMP system is relatively low.
 
-> This commit:
-> 
-> commit 3e4d3af501cccdc8a8cca41bdbe57d54ad7e7e73
-> Author: Peter Zijlstra <a.p.zijlstra@chello.nl>
-> Date:   Tue Oct 26 14:21:51 2010 -0700
-> 
->     mm: stack based kmap_atomic()
-> 
-> overlooked the fact that parisc uses kmap as a coherence mechanism, so
-> even though we have no highmem, we do need to supply our own versions of
-> kmap (and atomic).  This patch converts the parisc kmap to the form
-> which is needed to keep it compiling (it's a simple prototype and name
-> change).
-> 
-> Signed-off-by: James Bottomley <James.Bottomley@suse.de>
-> 
-> ---
-> 
-> diff --git a/arch/parisc/include/asm/cacheflush.h b/arch/parisc/include/asm/cacheflush.h
-> index dba11ae..f388a85 100644
-> --- a/arch/parisc/include/asm/cacheflush.h
-> +++ b/arch/parisc/include/asm/cacheflush.h
-> @@ -126,20 +126,20 @@ static inline void *kmap(struct page *page)
->  
->  #define kunmap(page)			kunmap_parisc(page_address(page))
->  
-> -static inline void *kmap_atomic(struct page *page, enum km_type idx)
-> +static inline void *__kmap_atomic(struct page *page)
->  {
->  	pagefault_disable();
->  	return page_address(page);
->  }
->  
-> -static inline void kunmap_atomic_notypecheck(void *addr, enum km_type idx)
-> +static inline void __kunmap_atomic(void *addr)
->  {
->  	kunmap_parisc(addr);
->  	pagefault_enable();
->  }
->  
-> -#define kmap_atomic_prot(page, idx, prot)	kmap_atomic(page, idx)
-> -#define kmap_atomic_pfn(pfn, idx)	kmap_atomic(pfn_to_page(pfn), (idx))
-> +#define kmap_atomic_prot(page, prot)	kmap_atomic(page)
-> +#define kmap_atomic_pfn(pfn)	kmap_atomic(pfn_to_page(pfn))
->  #define kmap_atomic_to_page(ptr)	virt_to_page(ptr)
->  #endif
->  
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+Some kernels (e.g., 2.6.19) have been better than others but the reason
+is unknown.
 
+> This is what we know
+> 
+> http://wiki.parisc-linux.org/TestCases
 
+The wiki certainly has a number of testcases that fail with high probability.
+The testcases all involve multiple threads and near simultaneous execution
+of a clone and a fork.  The parent forks after the clone.  The segvs always
+occur in the thread created by the clone syscall.  The stack created for
+the thread is corrupted by the fork.  It is allocated by a mmap call.
+If the fork is delayed, the segvs don't occur.
+
+However, I'm totally convinced there are more problems than the one above.
+They are just harder to reproduce.  In general, GCC builds don't involve
+multithreaded applications.
+
+> > BTW. if you flush cache on kmap, I think it couldn't work in multithreaded 
+> > environment at all --- i.e. the program has "int a, b;" both variables 
+> > share the cacheline, one thread is accessing "a" via kmap and the other 
+> > thread writes to b directly, for example "b = 5". Then, cache flushing 
+> > won't help and one of the variables will be trashed. You need kmap address 
+> > to be congruent with the linear address. But I think it's not reason for 
+> > my crash because neither gmake nor bash (that crashes) is multithreaded.
+
+Agree.
+
+> That statement assumes the threads share a data structure but are not
+> congruent ... which certainly isn't true for userspace.  Our only
+> incongruency which gives rise to aliasing is between the kernel and user
+> address spaces and we don't do data sharing between the two without
+> pretty severe accessor restrictions.
+
+My sense is the above isn't correct.  Even if userspace is congruent,
+it would seem to me that another thread could dirty the cache line after
+kmap does its flush.  The design of the Linux memory management system
+might prevent this from happening, but it's not obvious.  That's why
+I thought the kernel should use also use congruent mappings.
+
+My 32-bit UP c3750 is fully stable.  It has run for months and I don't
+see any wierd segmentation faults in userspace doing gcc builds.  On
+the otherhand, the testcases on the wiki crash with high probabiity.
+So, I think we are dealing with two different, but possibly related
+issues.  One is a MP issue.  The other is a clone/fork race.
+
+Dave
 -- 
 J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
 National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
