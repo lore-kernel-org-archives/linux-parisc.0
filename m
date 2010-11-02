@@ -1,56 +1,82 @@
 From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: HPMC in lba_pat_out8 on rp3440
-Date: Mon, 1 Nov 2010 23:00:01 -0600
-Message-ID: <20101102050001.GA14166@lackof.org>
-References: <20101031174018.GA26539@hiauly1.hia.nrc.ca> <20101031180214.GA7501@hiauly1.hia.nrc.ca>
+Date: Mon, 1 Nov 2010 23:32:24 -0600
+Message-ID: <20101102053224.GB14166@lackof.org>
+References: <20101031174018.GA26539@hiauly1.hia.nrc.ca> <20101031180214.GA7501@hiauly1.hia.nrc.ca> <20101031194623.GA8288@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: linux-parisc@vger.kernel.org
 To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20101031180214.GA7501@hiauly1.hia.nrc.ca>
+In-Reply-To: <20101031194623.GA8288@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Oct 31, 2010 at 02:02:15PM -0400, John David Anglin wrote:
+On Sun, Oct 31, 2010 at 03:46:26PM -0400, John David Anglin wrote:
 > On Sun, 31 Oct 2010, John David Anglin wrote:
 > 
-> > Attached hpmc dumps.  It appears that struct pci_hba_data *l is
-> > causes the hpmc.  Maybe defining some of the DEBUG_LBA* macros
-> > would provide more info.
+> > On Sun, 31 Oct 2010, John David Anglin wrote:
+> > 
+> > > Attached hpmc dumps.  It appears that struct pci_hba_data *l is
+> > > causes the hpmc.  Maybe defining some of the DEBUG_LBA* macros
+> > > would provide more info.
 > 
-> The PCI component errors seem USB related:
+> Attached console output with debug macros enabled.  Also, attached
+> new hpmc dump as this one seems different.
 
-Hi Dave!
-I wonder if this is same problem that we saw on the Astro platforms:
-Firmware left USB active while we reprogram the IOMMU.
+This is definitely a different problem.
+This one is easy to explain.
 
-See "sba_hw_init() in drivers/parisc/sba_iommu.c.
-Off hand, I don't know what the details to fix this would be.
-The outline given in the comments sound right.
 
-cheers,
+> [    0.000000] Linux version 2.6.36+ (dave@mx3210) (gcc version 4.3.5 (GCC) ) #4 SMP Sun Oct 31 14:51:20 EDT 2010
+...
+> [    0.000000] Determining PDC firmware type: 64 bit PAT.
+...
+> [    0.256000] Found devices:
+...
+> [    0.324000] 13. Mercury PCI Bridge at 0xfffffffffed2e000 [0/7] { 13, 0x0, 0x783, 0x0000a }
+...
+> [    4.800000] Mercury version TR3.2 (0x32) found at 0xfffffffffed2e000
+...
+> [    4.852000] mercury_cfg_read(0+ 0) -> 0xffffffff
+> [    4.852000] mercury_cfg_read(800+ 0) -> 0x1290103c
+
+http://pci-ids.ucw.cz/read/PC/103c
+Auxiliary Diva Serial Port
+
+...
+> [    4.892000] mercury_cfg_read(800+ 4) -> 0x146
+> [    4.892000] mercury_cfg_write(800+ 4) <- 0x144 (c)
+> [    4.896000] mercury_cfg_read(800+10) -> 0x0
+> [    4.896000] mercury_cfg_write(800+10) <- 0xffffffff (c)
+> [    4.904000] mercury_cfg_read(800+10) -> 0x0
+> [    4.904000] mercury_cfg_write(800+10) <- 0x0 (c)
+> [    4.904000] mercury_cfg_write(800+ 4) <- 0x146 (c)
+
+Size BAR 0 (offset 0x10)
+
+...
+> [    5.124000] mercury_cfg_read(900+ 0) -> 0x1048103c
+
+Diva Serial [GSP] Multiport UART
+> [    5.124000] mercury_cfg_read(900+ e) -> 0x80
+> [    5.124000] mercury_cfg_read(900+ 6) -> 0x290
+> [    5.128000] mercury_cfg_read(900+34) -> 0x48
+> [    5.128000] mercury_cfg_read(900+48) -> 0x1
+> [    5.136000] mercury_cfg_read(900+49) -> 0x0
+> [    5.136000] mercury_cfg_read(900+ 8) -> 0x7000203
+> [    5.144000] mercury_cfg_read(900+ 6) -> 0x290
+> [    5.144000] mercury_cfg_read(900+34) -> 0x48
+> [    5.152000] mercury_cfg_read(900+48) -> 0x1
+> [    5.152000] mercury_cfg_read(900+49) -> 0x0
+> [    5.152000] mercury_cfg_read(900+3d) -> 0x1
+> [    5.160000] mercury_cfg_read(900+3c) -> 0x0
+> [    5.160000] mercury_cfg_read(900+ 4) -> 0x142
+> [    5.164000] mercury_cfg_write(900+ 4) <- 0x140 (c)
+
+You just shot yourself in the foot. :)
+IIRC we just disabled MMIO in order to size the BAR.
+So any accesses to that register will cause an HPMC.
+
+hth,
 grant
-
-
-> 
-> dave@mx3210:~/linux/linux-2.6.36.y/drivers/parisc$ lspci -nn
-> 00:01.0 USB Controller [0c03]: NEC Corporation USB [1033:0035] (rev 41)
-> 00:01.1 USB Controller [0c03]: NEC Corporation USB [1033:0035] (rev 41)
-> 00:01.2 USB Controller [0c03]: NEC Corporation USB 2.0 [1033:00e0] (rev 02)
-> 00:02.0 IDE interface [0101]: Silicon Image, Inc. SiI 0649 Ultra ATA/100 PCI to ATA Host Controller [1095:0649] (rev 02)
-> 20:01.0 SCSI storage controller [0100]: LSI Logic / Symbios Logic 53c1010 66MHz  Ultra3 SCSI Adapter [1000:0021] (rev 01)
-> 20:01.1 SCSI storage controller [0100]: LSI Logic / Symbios Logic 53c1010 66MHz  Ultra3 SCSI Adapter [1000:0021] (rev 01)
-> 20:02.0 Ethernet controller [0200]: Broadcom Corporation NetXtreme BCM5701 Gigabit Ethernet [14e4:1645] (rev 15)
-> e0:01.0 Communication controller [0780]: Hewlett-Packard Company Auxiliary Diva Serial Port [103c:1290] (rev 01)
-> e0:01.1 Serial controller [0700]: Hewlett-Packard Company Diva Serial [GSP] Multiport UART [103c:1048] (rev 03)
-> e0:02.0 VGA compatible controller [0300]: ATI Technologies Inc Radeon RV100 QY [Radeon 7000/VE] [1002:5159]
-> 
-> Dave
-> -- 
-> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-> National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
