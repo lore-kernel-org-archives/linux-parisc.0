@@ -1,56 +1,43 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: Threads and fork on VIPT-WB machines
-Date: Thu, 04 Nov 2010 14:25:52 -0400
-Message-ID: <1288895152.10970.7.camel@mulgrave.site>
-References: <AANLkTi=AaKrGn2oXypohLcCiAUfWx8mtofJz_+-awwix@mail.gmail.com>
+From: Jiri Slaby <jirislaby@gmail.com>
+Subject: Re: [PATCH v2 2/5] parisc: cleanup console handling
+Date: Thu, 04 Nov 2010 23:02:51 +0100
+Message-ID: <4CD32D8B.2080709@gmail.com>
+References: <1288884024-23873-1-git-send-email-jslaby@suse.cz> <1288884024-23873-2-git-send-email-jslaby@suse.cz> <20101104172613.GK8332@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-parisc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-To: "Amir G." <amir73il@users.sourceforge.net>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Jiri Slaby <jslaby@suse.cz>,
+	Andrew Morton <akpm@linux-foundation.org>, werner@suse.de,
+	alan@lxorguk.ukuu.org.uk, gregkh@suse.de,
+	linux-kernel@vger.kernel.org, Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	linux-parisc@vger.kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <AANLkTi=AaKrGn2oXypohLcCiAUfWx8mtofJz_+-awwix@mail.gmail.com>
+In-Reply-To: <20101104172613.GK8332@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2010-11-04 at 13:02 -0500, Amir G. wrote:
-> Hi,
+On 11/04/2010 06:26 PM, Kyle McMartin wrote:
+> On Thu, Nov 04, 2010 at 04:20:21PM +0100, Jiri Slaby wrote:
+>> * use newly added for_each_console for iterating consoles
+>> * add proper console locking
+>> * do not initialize tmp twice
+>> * no need to declare console_drivers, it's already done in console.h
+>>
+>> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+>> Cc: Kyle McMartin <kyle@mcmartin.ca>
+>> Cc: Helge Deller <deller@gmx.de>
+>> Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+>> Cc: linux-parisc@vger.kernel.org
 > 
-> We are seeing corruption of parent stack after fork of a multi-threaded process.
-> Something that resembles this reported bug:
+> This looks fine...
+> Acked-by: Kyle McMartin <kyle@mcmartin.ca>
 > 
-> http://wiki.parisc-linux.org/TestCases#head-b2a1d5999b1b7cbc6878005693440f9e2960e895
-> 
-> We have been seeing this bug on and off for the past year. very hard
-> to reproduce it.
-> 
-> The only thing is... we are running our kernel (2.6.32) on ARM,
-> so I am thinking this problem may be either a generic kernel problem
-> or common to PA-RISC and ARM.
-> I don't see anywhere that this problem was ever solved.
-> 
-> Anyway, I am sitting at Arnd's presentation in LPC at the moment (good talk).
-> If any of you guys are present, please let me know so we can discuss
-> the issue face to face.
+> I assume that since it depends on 1/5 you'd prefer to merge it with the
+> rest?
 
-OK, so just to summarise the rather hurried discussion for those not
-present:  I'd always assumed that this problem is parisc specific
-because no other vipt architecture saw it.  However it is possible it's
-some I/D incoherency issue within the generic kernel itself ... it's
-just a lot rarer on other architectures.  If you see it on arm, this
-would confirm that view.  The main difference between PA and other VIPT
-architectures is that our equivalency modulus for aliasing is much
-bigger (we have a 4MB stride).
+Yeah, I would like to, with ACKs from relevant people.
 
-So what I'll do is have a look into this again.  I recently successfully
-resurrected the tmpalias flushing patches (these eliminate the
-possibility that it's some kind of TLB handling error because they allow
-cache flushes without a corresponding TLB entry), but I'll look at our
-generic paths again ... my greatest suspicions would be the
-handle_mm_fault() path.
-
-But basically, the summary is that we see the issue but have never
-solved it.
-
-James
-
-
+thanks,
+-- 
+js
