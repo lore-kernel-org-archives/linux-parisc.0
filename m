@@ -1,39 +1,34 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH v2 2/5] parisc: cleanup console handling
-Date: Thu, 4 Nov 2010 13:26:13 -0400
-Message-ID: <20101104172613.GK8332@bombadil.infradead.org>
-References: <1288884024-23873-1-git-send-email-jslaby@suse.cz>
- <1288884024-23873-2-git-send-email-jslaby@suse.cz>
+From: "Amir G." <amir73il@users.sourceforge.net>
+Subject: Threads and fork on VIPT-WB machines
+Date: Thu, 4 Nov 2010 13:02:53 -0500
+Message-ID: <AANLkTi=AaKrGn2oXypohLcCiAUfWx8mtofJz_+-awwix@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Andrew Morton <akpm@linux-foundation.org>, werner@suse.de,
-	alan@lxorguk.ukuu.org.uk, gregkh@suse.de,
-	linux-kernel@vger.kernel.org, jirislaby@gmail.com,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: Jiri Slaby <jslaby@suse.cz>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1288884024-23873-2-git-send-email-jslaby@suse.cz>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Nov 04, 2010 at 04:20:21PM +0100, Jiri Slaby wrote:
-> * use newly added for_each_console for iterating consoles
-> * add proper console locking
-> * do not initialize tmp twice
-> * no need to declare console_drivers, it's already done in console.h
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Kyle McMartin <kyle@mcmartin.ca>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-> Cc: linux-parisc@vger.kernel.org
+Hi,
 
-This looks fine...
-Acked-by: Kyle McMartin <kyle@mcmartin.ca>
+We are seeing corruption of parent stack after fork of a multi-threaded process.
+Something that resembles this reported bug:
 
-I assume that since it depends on 1/5 you'd prefer to merge it with the
-rest?
+http://wiki.parisc-linux.org/TestCases#head-b2a1d5999b1b7cbc6878005693440f9e2960e895
 
---Kyle
+We have been seeing this bug on and off for the past year. very hard
+to reproduce it.
+
+The only thing is... we are running our kernel (2.6.32) on ARM,
+so I am thinking this problem may be either a generic kernel problem
+or common to PA-RISC and ARM.
+I don't see anywhere that this problem was ever solved.
+
+Anyway, I am sitting at Arnd's presentation in LPC at the moment (good talk).
+If any of you guys are present, please let me know so we can discuss
+the issue face to face.
+
+Thanks,
+Amir.
