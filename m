@@ -1,15 +1,16 @@
 From: Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 2/3] parisc: cleanup console handling
-Date: Wed,  3 Nov 2010 16:28:33 +0100
-Message-ID: <1288798114-23206-2-git-send-email-jslaby@suse.cz>
-References: <1288798114-23206-1-git-send-email-jslaby@suse.cz>
-Cc: linux-kernel@vger.kernel.org, jirislaby@gmail.com,
+Subject: [PATCH v2 2/5] parisc: cleanup console handling
+Date: Thu,  4 Nov 2010 16:20:21 +0100
+Message-ID: <1288884024-23873-2-git-send-email-jslaby@suse.cz>
+References: <1288884024-23873-1-git-send-email-jslaby@suse.cz>
+Cc: werner@suse.de, alan@lxorguk.ukuu.org.uk, gregkh@suse.de,
+	linux-kernel@vger.kernel.org, jirislaby@gmail.com,
 	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	linux-parisc@vger.kernel.org
 To: Andrew Morton <akpm@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1288798114-23206-1-git-send-email-jslaby@suse.cz>
+In-Reply-To: <1288884024-23873-1-git-send-email-jslaby@suse.cz>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
