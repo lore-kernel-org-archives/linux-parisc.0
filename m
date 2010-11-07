@@ -1,47 +1,65 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: can't find a register in class 'R1_REGS' while reloading 'asm'
-Date: Sun, 7 Nov 2010 13:48:46 -0500 (EST)
-Message-ID: <20101107184847.51F9F4E1C@hiauly1.hia.nrc.ca>
-References: <20101107175042.627060c2@zombie>
+Subject: Re: HPMC in lba_pat_out8 on rp3440
+Date: Sun, 7 Nov 2010 14:31:56 -0500 (EST)
+Message-ID: <20101107193156.F14EF4E1C@hiauly1.hia.nrc.ca>
+References: <20101104153507.GA7198@lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: kyle@mcmartin.ca, dave.anglin@nrc-cnrc.gc.ca, cavokz@gmail.com,
+Cc: dave.anglin@nrc-cnrc.gc.ca, grundler@parisc-linux.org,
 	linux-parisc@vger.kernel.org
-To: gmsoft@tuxicoman.be (Guy Martin)
+To: grundler@parisc-linux.org (Grant Grundler)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20101107175042.627060c2@zombie> from "Guy Martin" at Nov 7, 2010 05:50:42 pm
+In-Reply-To: <20101104153507.GA7198@lackof.org> from "Grant Grundler" at Nov 4, 2010 09:35:08 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Not really.  The register allocator is shooting itself in the foot.
-4.5/4.6 may be better but I think the work around should be applied
-to resolve the problem.
+> Sorry...I had written the questions while going through the email
+> and then forgot to delete them when I finished reading everything.
 
+No problem.
+
+> In short, I'm skeptical this is a problem in lba_pci code.
+> Much more likely to be a driver issue or possibly HW issue.
+> I was pointing at the configs that booted on ion/ioz only to
+> help rule out driver or HW issues. Feel free to use ion for
+> testing this.
+
+I agree.  I think the hpmc in the lba_pci code and the hpmc with
+LBA debug messages enabled are likely related.  Do you have any idea
+how the code could avoid shooting itself in the foot?
+
+Do you think there is a SMP race in setting up the PCI bus.  I was
+thinking of trying an identical UP build.  I believe that all processors
+are enabled at the time the hpmc occurs.
+
+While there might be a hardware problem, the machine consistently boots
+2.6.26-2-parisc64-smp without problems.  Until I lost the hard drive,
+it was also running a 2.6.34 kernel.  The debian kernels tend to have
+everything but the kitchen sink enabled.  I may have an older version
+of this config still around.
+
+I did update all the firmware on the machine a couple of months
+ago.  This definitely helped with various memory corruption issues
+that were occuring at boot time.  I believe that HP listed the
+patch as critical.  Anyway, there's a chance that this changed
+some of PDC responses.
+
+> Also, if there are any add-on PCI cards in the machine, consider
+> removing them.
+
+I will take a look in the machine when I get back from Costa Rica
+at the end of the week.  I think there may be one or two scsi
+controllers.  There is also a radion card in it somewhere.
+
+Thanks for you help in trying to narrow this down,
 Dave
 
-> Any update on this ?
-> 
-> I'm still running into the issue with gcc 4.4.4 and linux 2.6.37-rc1.
-> 
-> Regards,
->   Guy
-> 
-> On Sun, 7 Feb 2010 22:20:34 -0500 (EST)
-> "John David Anglin" <dave@hiauly1.hia.nrc.ca> wrote:
-> 
-> > > On Mon, Dec 07, 2009 at 10:01:14PM -0500, John David Anglin wrote:
-> > > > -	volatile unsigned int *a;
-> > > > +	volatile register unsigned int *a asm ("r20") =
-> > > > __ldcw_align(x); 
-> > > 
-> > > I'm reticent about moving the assignment around the mb(), should I
-> > > edit this to return the assignment and apply, or apply as is?
-> > 
-> > I don't believe the __ldcw_align operation involves a memory read or
-> > write.  It's just adjusting a pointer.  Thus moving it past the mb()
-> > shouldn't matter.  That said, I been wrong before...
-> > 
-> > Dave
+> thanks,
+> grant
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 > 
 
 
