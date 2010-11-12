@@ -1,62 +1,75 @@
-From: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCH 00/14] Use printf extension %pR for struct resource
-Date: Fri, 12 Nov 2010 13:37:50 -0800
-Message-ID: <cover.1289597644.git.joe@perches.com>
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org,
-	linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org,
-	netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-To: Jiri Kosina <trivial-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-List-ID: <linux-usb.vger.kernel.org>
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH 10/14] drivers/parisc: Use printf extension %pR for struct resource
+Date: Fri, 12 Nov 2010 13:38:00 -0800
+Message-ID: <4b2cfc9a82fa77a23a76db463e100b1a7016beee.1289597644.git.joe@perches.com>
+References: <cover.1289597644.git.joe@perches.com>
+Cc: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Jiri Kosina <trivial@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1289597644.git.joe@perches.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Yet more trivia...
+Using %pR standardizes the struct resource output.
 
-Joe Perches (14):
-  arch/frv: Use printf extension %pR for struct resource
-  arch/mips: Use printf extension %pR for struct resource
-  arch/powerpc: Use printf extension %pR for struct resource
-  drivers/dma/ppc4xx: Use printf extension %pR for struct resource
-  drivers/infiniband: Use printf extension %pR for struct resource
-  drivers/mfd: Use printf extension %pR for struct resource
-  drivers/mtd/maps: Use printf extension %pR for struct resource
-  drivers/mtd/nand: Use printf extension %pR for struct resource
-  drivers/net/can/sja1000: Use printf extension %pR for struct resource
-  drivers/parisc: Use printf extension %pR for struct resource
-  drivers/rapidio: Use printf extension %pR for struct resource
-  drivers/uwb: Use printf extension %pR for struct resource
-  drivers/video: Use printf extension %pR for struct resource
-  sound/ppc: Use printf extension %pR for struct resource
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/parisc/dino.c |   13 +++++--------
+ drivers/parisc/hppb.c |    6 ++----
+ 2 files changed, 7 insertions(+), 12 deletions(-)
 
- arch/frv/mb93090-mb00/pci-vdk.c               |    8 ++------
- arch/mips/txx9/generic/pci.c                  |    7 ++-----
- arch/powerpc/kernel/pci_64.c                  |    3 +--
- arch/powerpc/sysdev/tsi108_dev.c              |    8 ++++----
- drivers/dma/ppc4xx/adma.c                     |    5 ++---
- drivers/infiniband/hw/ipath/ipath_driver.c    |    5 ++---
- drivers/mfd/sm501.c                           |    7 ++-----
- drivers/mtd/maps/amd76xrom.c                  |    7 ++-----
- drivers/mtd/maps/ck804xrom.c                  |    7 ++-----
- drivers/mtd/maps/esb2rom.c                    |    9 +++------
- drivers/mtd/maps/ichxrom.c                    |    9 +++------
- drivers/mtd/maps/physmap_of.c                 |    4 +---
- drivers/mtd/maps/scx200_docflash.c            |    5 ++---
- drivers/mtd/nand/pasemi_nand.c                |    2 +-
- drivers/net/can/sja1000/sja1000_of_platform.c |    8 ++------
- drivers/parisc/dino.c                         |   13 +++++--------
- drivers/parisc/hppb.c                         |    6 ++----
- drivers/rapidio/rio.c                         |    4 ++--
- drivers/uwb/umc-dev.c                         |    7 ++-----
- drivers/video/platinumfb.c                    |    8 ++------
- sound/ppc/pmac.c                              |   12 ++++--------
- 21 files changed, 48 insertions(+), 96 deletions(-)
-
+diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+index d9f5148..d30a809 100644
+--- a/drivers/parisc/dino.c
++++ b/drivers/parisc/dino.c
+@@ -599,15 +599,13 @@ dino_fixup_bus(struct pci_bus *bus)
+ 				
+ 			}
+ 					
+-			DBG("DEBUG %s assigning %d [0x%lx,0x%lx]\n",
++			DBG("DEBUG %s assigning %d [%pR]\n",
+ 			    dev_name(&bus->self->dev), i,
+-			    bus->self->resource[i].start,
+-			    bus->self->resource[i].end);
++			    &bus->self->resource[i]);
+ 			WARN_ON(pci_assign_resource(bus->self, i));
+-			DBG("DEBUG %s after assign %d [0x%lx,0x%lx]\n",
++			DBG("DEBUG %s after assign %d [%pR]\n",
+ 			    dev_name(&bus->self->dev), i,
+-			    bus->self->resource[i].start,
+-			    bus->self->resource[i].end);
++			    &bus->self->resource[i]);
+ 		}
+ 	}
+ 
+@@ -809,8 +807,7 @@ dino_bridge_init(struct dino_device *dino_dev, const char *name)
+ 		result = ccio_request_resource(dino_dev->hba.dev, &res[i]);
+ 		if (result < 0) {
+ 			printk(KERN_ERR "%s: failed to claim PCI Bus address "
+-			       "space %d (0x%lx-0x%lx)!\n", name, i,
+-			       (unsigned long)res[i].start, (unsigned long)res[i].end);
++			       "space %d (%pR)!\n", name, i, &res[i]);
+ 			return result;
+ 		}
+ 	}
+diff --git a/drivers/parisc/hppb.c b/drivers/parisc/hppb.c
+index 815db17..898208e 100644
+--- a/drivers/parisc/hppb.c
++++ b/drivers/parisc/hppb.c
+@@ -74,10 +74,8 @@ static int hppb_probe(struct parisc_device *dev)
+ 
+ 	status = ccio_request_resource(dev, &card->mmio_region);
+ 	if(status < 0) {
+-		printk(KERN_ERR "%s: failed to claim HP-PB "
+-			"bus space (0x%08llx, 0x%08llx)\n",
+-			__FILE__, (unsigned long long) card->mmio_region.start,
+-			(unsigned long long) card->mmio_region.end);
++		printk(KERN_ERR "%s: failed to claim HP-PB bus space (%pR)\n",
++			__FILE__, &card->mmio_region);
+ 	}
+ 
+         return 0;
 -- 
 1.7.3.1.g432b3.dirty
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
