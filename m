@@ -1,33 +1,62 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: instruction cache flushing issues
-Date: Fri, 12 Nov 2010 11:14:25 -0600
-Message-ID: <1289582065.3015.47.camel@mulgrave.site>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-To: Parisc List <linux-parisc@vger.kernel.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
+Subject: [PATCH 00/14] Use printf extension %pR for struct resource
+Date: Fri, 12 Nov 2010 13:37:50 -0800
+Message-ID: <cover.1289597644.git.joe@perches.com>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org,
+	linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org,
+	netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+To: Jiri Kosina <trivial-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-ID: <linux-usb.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-While looking at all the other problems surrounding our coherency
-issues:
+Yet more trivia...
 
-http://wiki.parisc-linux.org/TestCases
+Joe Perches (14):
+  arch/frv: Use printf extension %pR for struct resource
+  arch/mips: Use printf extension %pR for struct resource
+  arch/powerpc: Use printf extension %pR for struct resource
+  drivers/dma/ppc4xx: Use printf extension %pR for struct resource
+  drivers/infiniband: Use printf extension %pR for struct resource
+  drivers/mfd: Use printf extension %pR for struct resource
+  drivers/mtd/maps: Use printf extension %pR for struct resource
+  drivers/mtd/nand: Use printf extension %pR for struct resource
+  drivers/net/can/sja1000: Use printf extension %pR for struct resource
+  drivers/parisc: Use printf extension %pR for struct resource
+  drivers/rapidio: Use printf extension %pR for struct resource
+  drivers/uwb: Use printf extension %pR for struct resource
+  drivers/video: Use printf extension %pR for struct resource
+  sound/ppc: Use printf extension %pR for struct resource
 
-I noticed that we have no nullifier naitlb (non access instruction tlb
-miss interruption) handler (we do in the nadtlb handler).  What this
-means is that an icache flush to any area always pulls in the tlb entry
-(or generates a page fault).  Can anyone remember why we do this?  I
-suspect it's because for data, we don't want to prefetch if we have no
-TLB entry and the effect on flushing is just incidental.
+ arch/frv/mb93090-mb00/pci-vdk.c               |    8 ++------
+ arch/mips/txx9/generic/pci.c                  |    7 ++-----
+ arch/powerpc/kernel/pci_64.c                  |    3 +--
+ arch/powerpc/sysdev/tsi108_dev.c              |    8 ++++----
+ drivers/dma/ppc4xx/adma.c                     |    5 ++---
+ drivers/infiniband/hw/ipath/ipath_driver.c    |    5 ++---
+ drivers/mfd/sm501.c                           |    7 ++-----
+ drivers/mtd/maps/amd76xrom.c                  |    7 ++-----
+ drivers/mtd/maps/ck804xrom.c                  |    7 ++-----
+ drivers/mtd/maps/esb2rom.c                    |    9 +++------
+ drivers/mtd/maps/ichxrom.c                    |    9 +++------
+ drivers/mtd/maps/physmap_of.c                 |    4 +---
+ drivers/mtd/maps/scx200_docflash.c            |    5 ++---
+ drivers/mtd/nand/pasemi_nand.c                |    2 +-
+ drivers/net/can/sja1000/sja1000_of_platform.c |    8 ++------
+ drivers/parisc/dino.c                         |   13 +++++--------
+ drivers/parisc/hppb.c                         |    6 ++----
+ drivers/rapidio/rio.c                         |    4 ++--
+ drivers/uwb/umc-dev.c                         |    7 ++-----
+ drivers/video/platinumfb.c                    |    8 ++------
+ sound/ppc/pmac.c                              |   12 ++++--------
+ 21 files changed, 48 insertions(+), 96 deletions(-)
 
-What I don't like about this behaviour is that if we flush a user
-instruction page, we actually cause a TLB entry to be placed there
-(where none might have existed before).  This, in turn, causes the CPU
-to think it's allowed to do cache movein.  Premature movein (say because
-we flush before the data is present) could be one cause of our apparent
-icache problems in threading.
+-- 
+1.7.3.1.g432b3.dirty
 
-James
-
-
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
