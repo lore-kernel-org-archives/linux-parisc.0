@@ -1,75 +1,49 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 10/14] drivers/parisc: Use printf extension %pR for struct resource
-Date: Fri, 12 Nov 2010 13:38:00 -0800
-Message-ID: <4b2cfc9a82fa77a23a76db463e100b1a7016beee.1289597644.git.joe@perches.com>
-References: <cover.1289597644.git.joe@perches.com>
-Cc: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: Jiri Kosina <trivial@kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1289597644.git.joe@perches.com>
-List-ID: <linux-kernel.vger.kernel.org>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [RFT] irq changes (was Re: [git] parisc: Changes to ref refs/heads/parisc)
+Date: Sun, 14 Nov 2010 21:59:59 +0100
+Message-ID: <4CE04DCF.7040306@gmx.de>
+References: <201010140531.o9E5VRYK010123@hera.kernel.org> <20101014153931.GI24144@bombadil.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: linux-parisc@vger.kernel.org
+To: Kyle McMartin <kyle@mcmartin.ca>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20101014153931.GI24144@bombadil.infradead.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Using %pR standardizes the struct resource output.
+On 10/14/2010 05:39 PM, Kyle McMartin wrote:
+> On Thu, Oct 14, 2010 at 05:31:27AM +0000, Kyle McMartin wrote:
+>> commit 7da1272547ebe96982a42292dfc833457708f4da
+>> Author: Kyle McMartin<kyle@dreadnought.i.jkkm.org>
+>> Date:   Thu Oct 14 01:02:23 2010 -0400
+>>
+>>      parisc: kill __do_IRQ
+>>
+>>      Signed-off-by: Kyle McMartin<kyle@redhat.com>
+>>
+> So, I've killed our __do_IRQ calls... Could people please test this
+> branch on a variety of machines? I've split up the changes so there's
+> logical separation between converting the CPU interrupts, and the
+> sub-interrupt sources (Superio, dino, etc.) so if your device fails
+> to interrupt, you can just git revert that bit and test the CPU
+> conversion while I fix it up.
+>
+> I *think* everything should be ok though, I've tested it on a500/rp3440
+> class machines with iosapic, but not on anything older.
+Hi Kyle,
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/parisc/dino.c |   13 +++++--------
- drivers/parisc/hppb.c |    6 ++----
- 2 files changed, 7 insertions(+), 12 deletions(-)
+I just got again a chance to boot up my b160L and 715/64 machines.
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index d9f5148..d30a809 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -599,15 +599,13 @@ dino_fixup_bus(struct pci_bus *bus)
- 				
- 			}
- 					
--			DBG("DEBUG %s assigning %d [0x%lx,0x%lx]\n",
-+			DBG("DEBUG %s assigning %d [%pR]\n",
- 			    dev_name(&bus->self->dev), i,
--			    bus->self->resource[i].start,
--			    bus->self->resource[i].end);
-+			    &bus->self->resource[i]);
- 			WARN_ON(pci_assign_resource(bus->self, i));
--			DBG("DEBUG %s after assign %d [0x%lx,0x%lx]\n",
-+			DBG("DEBUG %s after assign %d [%pR]\n",
- 			    dev_name(&bus->self->dev), i,
--			    bus->self->resource[i].start,
--			    bus->self->resource[i].end);
-+			    &bus->self->resource[i]);
- 		}
- 	}
- 
-@@ -809,8 +807,7 @@ dino_bridge_init(struct dino_device *dino_dev, const char *name)
- 		result = ccio_request_resource(dino_dev->hba.dev, &res[i]);
- 		if (result < 0) {
- 			printk(KERN_ERR "%s: failed to claim PCI Bus address "
--			       "space %d (0x%lx-0x%lx)!\n", name, i,
--			       (unsigned long)res[i].start, (unsigned long)res[i].end);
-+			       "space %d (%pR)!\n", name, i, &res[i]);
- 			return result;
- 		}
- 	}
-diff --git a/drivers/parisc/hppb.c b/drivers/parisc/hppb.c
-index 815db17..898208e 100644
---- a/drivers/parisc/hppb.c
-+++ b/drivers/parisc/hppb.c
-@@ -74,10 +74,8 @@ static int hppb_probe(struct parisc_device *dev)
- 
- 	status = ccio_request_resource(dev, &card->mmio_region);
- 	if(status < 0) {
--		printk(KERN_ERR "%s: failed to claim HP-PB "
--			"bus space (0x%08llx, 0x%08llx)\n",
--			__FILE__, (unsigned long long) card->mmio_region.start,
--			(unsigned long long) card->mmio_region.end);
-+		printk(KERN_ERR "%s: failed to claim HP-PB bus space (%pR)\n",
-+			__FILE__, &card->mmio_region);
- 	}
- 
-         return 0;
--- 
-1.7.3.1.g432b3.dirty
+Both broke due to the IRQ changes. I did reverted all of your IRQ 
+patches (based on current Linus head branch) and now they boot again.
+Basically they just hang during the SCSI initialization (timeouts while 
+detectings discs).
+
+So, there is something wrong for Lasi/GSC and Dino busses....
+
+Any idea?
+
+Helge
+
+
