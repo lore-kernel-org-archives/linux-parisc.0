@@ -1,27 +1,36 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: HPMC in lba_pat_out8 on rp3440
-Date: Sun, 14 Nov 2010 21:14:12 -0500
-Message-ID: <20101115021412.GA14945@hiauly1.hia.nrc.ca>
-References: <20101104153507.GA7198@lackof.org> <20101107193156.F14EF4E1C@hiauly1.hia.nrc.ca> <20101110033527.GA24762@hiauly1.hia.nrc.ca> <20101114234212.GA20422@hiauly1.hia.nrc.ca>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [RFT] irq changes (was Re: [git] parisc: Changes to ref
+ refs/heads/parisc)
+Date: Mon, 15 Nov 2010 14:56:06 -0500
+Message-ID: <20101115195606.GA8332@bombadil.infradead.org>
+References: <201010140531.o9E5VRYK010123@hera.kernel.org>
+ <20101014153931.GI24144@bombadil.infradead.org>
+ <4CE04DCF.7040306@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
+Cc: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20101114234212.GA20422@hiauly1.hia.nrc.ca>
+In-Reply-To: <4CE04DCF.7040306@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 14 Nov 2010, John David Anglin wrote:
+On Sun, Nov 14, 2010 at 09:59:59PM +0100, Helge Deller wrote:
+> 
+> I just got again a chance to boot up my b160L and 715/64 machines.
+> 
+> Both broke due to the IRQ changes. I did reverted all of your IRQ
+> patches (based on current Linus head branch) and now they boot
+> again.
+> Basically they just hang during the SCSI initialization (timeouts
+> while detectings discs).
+> 
+> So, there is something wrong for Lasi/GSC and Dino busses....
+> 
+> Any idea?
+>
 
-> However, the system didn't fully boot.  There was another unaligned
-> load in a ipv6 module.  I caught this because I still have the following
-> BUG_ON in unaligned.c:
+No, but I'll take a look, it's probably something simple and stupid that
+I missed. :/
 
-System boots 2.6.36+ without ipv6 module.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+--Kyle
