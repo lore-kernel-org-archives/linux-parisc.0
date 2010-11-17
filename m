@@ -1,56 +1,55 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 Subject: Re: HPMC in lba_pat_out8 on rp3440
-Date: Wed, 17 Nov 2010 10:33:03 -0500
-Message-ID: <20101117153303.GG22651@bombadil.infradead.org>
-References: <20101117054210.GD27930@lackof.org>
- <20101117143809.1F8A14DA1@hiauly1.hia.nrc.ca>
+Date: Wed, 17 Nov 2010 09:38:57 -0600
+Message-ID: <1290008337.4736.14.camel@mulgrave.site>
+References: <20101104153507.GA7198@lackof.org>
+	 <20101107193156.F14EF4E1C@hiauly1.hia.nrc.ca>
+	 <20101110033527.GA24762@hiauly1.hia.nrc.ca>
+	 <20101114234212.GA20422@hiauly1.hia.nrc.ca>
+	 <20101117022140.GA2110@hiauly1.hia.nrc.ca>
+	 <20101117052218.GB27930@lackof.org>
+	 <20101117052642.GF22651@bombadil.infradead.org>
+	 <20101117054210.GD27930@lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>, kyle@mcmartin.ca,
-	dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	linux-parisc@vger.kernel.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20101117143809.1F8A14DA1@hiauly1.hia.nrc.ca>
+In-Reply-To: <20101117054210.GD27930@lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Nov 17, 2010 at 09:38:08AM -0500, John David Anglin wrote:
-> I also agree that the kernel shouldn't fix unaligned accesses occuring
-> in the kernel.  It allows for sloppy coding and the fixup can be a
-> major performance hit on strict alignment machines like sparc and hppa.
+On Tue, 2010-11-16 at 22:42 -0700, Grant Grundler wrote:
+> On Wed, Nov 17, 2010 at 12:26:42AM -0500, Kyle McMartin wrote:
+> > On Tue, Nov 16, 2010 at 10:22:18PM -0700, Grant Grundler wrote:
+> > > I agree. The kernel is expected to emulate/handle unaligned loads/stores.
+> > > 
+> > > I thought we had all that misaligned access handlers working years ago and
+> > > somewhere probably have a user space program to test it. Oh...ldd won't be
+> > > user space since we don't have a PA2.0 64-bit user space. LDD support
+> > > can't be as well tested.
+> > > 
+> > > On that note, can you try a 32-bit kernel? (SMP maybe)
+> > > 
+> > 
+> > We really shouldn't be fixing up unaligned access in the kernel, since
+> > we can just fix the code... If ipv6 is causing them, there must be some
+> > missing define that's getting defaulted to something un-padded,
+> > otherwise sparc wouldn't work at all (it definitely does /not/ fix
+> > unalignd accesses, period.)
 > 
-> It would appear handle_unaligned can't always fixup kernel accesses.
-> At least, emulate_ldd causes a hpmc attempting to fixup the ldd in
-> init_page_buffers.  This may be because this is a wrong code error
-> and the address is in someway invalid.  Maybe more address checking
-> is needed.
-> 
+> I agree but thought davem refused patches to use get/put_unaligned macros
+> in networking code. Searching for "davem ulog put_unaligned" shows him
+> accepting such patches. So this is clearly the right path to pursue.
 
-I'll take a look at emulate_ldd. It's entirely possible that it's broken
-and we just haven't noticed because we would so rarely hit one in
-userspace. (The only PA2.0 code I know of was the code Thibaut wrote to
-do ffmpeg in pa2.0 asm. I imagine something like that wouldn't take
-unaligned traps if performance was desired... ;-)
+DaveM's argument is that these are exceptions in packet handling rather
+than the norm.  As you know, using unaligned on parisc (and sparc) does
+byte loads, which is horrifically inefficient in a critical network
+path.  So it's faster to process the exceptions periodically than
+penalise the fast path.
 
-> The unaligned access in __tcp_v6_send_check seems to be caused by
-> saddr being misaligned.  It's possible daddr is also misaligned.
-> I was going to add a BUG_ON or two to try and get more info.  Don't
-> know if emulate_ldd can fix this access.
-> 
-> In the case of ipv4, it's possible to pad/start packets in a manner
-> to make it easier to access the ip header.  Don't know about ipv6.
-> This may be what Kyle is suggesting.
-> 
+James
 
-Right, I'll take a look at what other arches do and get back to you.
 
-No arch should be taking unaligned traps in the packet recv path, as
-that would just add unimaginable amounts of overhead...
-
---Kyle
-
-> Dave
-> -- 
-> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-> National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-> 
