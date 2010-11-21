@@ -1,40 +1,45 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [RFT] irq changes (was Re: [git] parisc: Changes to ref
- refs/heads/parisc)
-Date: Sat, 20 Nov 2010 19:25:31 -0500
-Message-ID: <20101121002531.GL22651@bombadil.infradead.org>
-References: <201010140531.o9E5VRYK010123@hera.kernel.org>
- <20101014153931.GI24144@bombadil.infradead.org>
- <4CE04DCF.7040306@gmx.de>
- <20101115195606.GA8332@bombadil.infradead.org>
- <4CE8453C.5020106@gmx.de>
- <1290290759.3000.10.camel@mulgrave.site>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: HPMC in lba_pat_out8 on rp3440
+Date: Sun, 21 Nov 2010 10:38:29 -0500
+Message-ID: <20101121153828.GA24339@hiauly1.hia.nrc.ca>
+References: <20101117052218.GB27930@lackof.org> <20101117160319.984F14DA1@hiauly1.hia.nrc.ca> <20101120210120.GA20947@hiauly1.hia.nrc.ca>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>, Kyle McMartin <kyle@mcmartin.ca>,
-	linux-parisc@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1290290759.3000.10.camel@mulgrave.site>
+In-Reply-To: <20101120210120.GA20947@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Nov 20, 2010 at 04:05:59PM -0600, James Bottomley wrote:
-> commit ba20085c20f1c9e8af546dea6ad0efa421bdef32
-> Author: Kyle McMartin <kyle@dreadnought.i.jkkm.org>
-> Date:   Wed Oct 13 21:00:55 2010 -0400
+On Sat, 20 Nov 2010, John David Anglin wrote:
+
+> On Wed, 17 Nov 2010, John David Anglin wrote:
 > 
->     parisc: lay groundwork for killing __do_IRQ
-> 
-> But I haven't found the fix yet ... the commit looks to be an equivalent
-> transformation.
-> 
+> > > On that note, can you try a 32-bit kernel? (SMP maybe)
+> > 
+> > rp3440 doesn't support a 32-bit kernel.  I don't have a 32-bit SMP
+> > machine.  I did try a UP 2.6.36 kernel on my c3750.  It crashed doing
+> > its first gcc build.  Don't know why.  My 2.6.34.7 build is stable.
 
-The only obvious thing that jumps out is that... no, set_irq_chip
-doesn't look to be doing anything awry.
+I'm seeing messages like the following with 32-bit 2.6.36:
 
-But it must be something between what a 'raw' irq_desc looks like, and
-what the helpers initialize them to.
+Nov 20 16:43:29 hiauly6 kernel: vgaarb: this pci device is not a vga device
+Nov 20 17:03:50 hiauly6 kernel: swap_free: Bad swap offset entry 00100009
+Nov 20 17:03:54 hiauly6 last message repeated 119 times
+Nov 20 17:12:48 hiauly6 kernel: swap_free: Bad swap offset entry 00100009
+Nov 20 17:13:11 hiauly6 last message repeated 871 times
+Nov 20 17:19:39 hiauly6 kernel: swap_free: Bad swap offset entry 00100009
+Nov 20 17:19:49 hiauly6 last message repeated 462 times
+Nov 20 17:21:41 hiauly6 last message repeated 113 times
+Nov 20 17:22:42 hiauly6 last message repeated 692 times
+Nov 20 17:22:45 hiauly6 last message repeated 32 times
+Nov 20 17:25:42 hiauly6 kernel: swap_free: Bad swap offset entry 00100009
 
---Kyle
+System hung when I tried shutdown -r.
 
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
