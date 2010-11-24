@@ -1,40 +1,26 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: HPMC in lba_pat_out8 on rp3440
-Date: Mon, 22 Nov 2010 19:51:35 -0500
-Message-ID: <20101123005134.GA3515@hiauly1.hia.nrc.ca>
-References: <20101117052218.GB27930@lackof.org> <20101117160319.984F14DA1@hiauly1.hia.nrc.ca> <20101120210120.GA20947@hiauly1.hia.nrc.ca> <20101121153828.GA24339@hiauly1.hia.nrc.ca>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [RFT] irq changes (was Re: [git] parisc: Changes to ref
+ refs/heads/parisc)
+Date: Wed, 24 Nov 2010 06:56:42 -0500
+Message-ID: <20101124115642.GB22651@bombadil.infradead.org>
+References: <201010140531.o9E5VRYK010123@hera.kernel.org>
+ <20101014153931.GI24144@bombadil.infradead.org>
+ <4CE04DCF.7040306@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
+Cc: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20101121153828.GA24339@hiauly1.hia.nrc.ca>
+In-Reply-To: <4CE04DCF.7040306@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 21 Nov 2010, John David Anglin wrote:
-
-> On Sat, 20 Nov 2010, John David Anglin wrote:
+On Sun, Nov 14, 2010 at 09:59:59PM +0100, Helge Deller wrote:
+> I just got again a chance to boot up my b160L and 715/64 machines.
 > 
-> > On Wed, 17 Nov 2010, John David Anglin wrote:
-> > 
-> > > > On that note, can you try a 32-bit kernel? (SMP maybe)
-> > > 
-> > > rp3440 doesn't support a 32-bit kernel.  I don't have a 32-bit SMP
-> > > machine.  I did try a UP 2.6.36 kernel on my c3750.  It crashed doing
-> > > its first gcc build.  Don't know why.  My 2.6.34.7 build is stable.
-> 
-> I'm seeing messages like the following with 32-bit 2.6.36:
-> 
-> Nov 20 16:43:29 hiauly6 kernel: vgaarb: this pci device is not a vga device
-> Nov 20 17:03:50 hiauly6 kernel: swap_free: Bad swap offset entry 00100009
 
-The "Bad swap offset entry" is definitely a 2.6.36 regression.  This
-doesn't happen with 2.6.34.7 or 2.6.35.8 with essentially identical
-configs.  It seems 32-bit specific.
+I got my 712 hooked up (sadly my B180 has lost its hard disk and RTC,
+but I can netboot it if I need to...) and I'll poke at this this
+afternoon.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
