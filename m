@@ -1,26 +1,29 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [RFT] irq changes (was Re: [git] parisc: Changes to ref
- refs/heads/parisc)
-Date: Wed, 24 Nov 2010 06:56:42 -0500
-Message-ID: <20101124115642.GB22651@bombadil.infradead.org>
-References: <201010140531.o9E5VRYK010123@hera.kernel.org>
- <20101014153931.GI24144@bombadil.infradead.org>
- <4CE04DCF.7040306@gmx.de>
+Subject: Re: [PATCH] parisc : KittyHawk LCD fix
+Date: Thu, 25 Nov 2010 13:17:57 -0500
+Message-ID: <20101125181757.GJ22651@bombadil.infradead.org>
+References: <20101106172429.5c3d1568@borg.bxl.tuxicoman.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4CE04DCF.7040306@gmx.de>
+In-Reply-To: <20101106172429.5c3d1568@borg.bxl.tuxicoman.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Nov 14, 2010 at 09:59:59PM +0100, Helge Deller wrote:
-> I just got again a chance to boot up my b160L and 715/64 machines.
+On Sat, Nov 06, 2010 at 05:24:29PM +0100, Guy Martin wrote:
 > 
+> K class aka KittyHawk don't have LED support on their LCD. Installing
+> HP-UX confirmed this. The current led_wq fills the LCD with black
+> characters each time it runs.
+> 
+> The patch prevents the led_wq workqueue and its proc entry to be
+> created for KittyHawk machines.
+> 
+> It also increase min_cmd_delay as currently, one character out of two
+> is lost when a string is sent to the LCD.
+> 
+> Signed-off-by: Guy Martin <gmsoft@tuxicoman.be>
 
-I got my 712 hooked up (sadly my B180 has lost its hard disk and RTC,
-but I can netboot it if I need to...) and I'll poke at this this
-afternoon.
-
-
+Applied, thanks Guy.
