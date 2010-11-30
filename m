@@ -1,33 +1,139 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [RFT] irq changes (was Re: [git] parisc: Changes to ref
- refs/heads/parisc)
-Date: Mon, 29 Nov 2010 08:19:24 -0500
-Message-ID: <20101129131924.GG15818@bombadil.infradead.org>
-References: <201010140531.o9E5VRYK010123@hera.kernel.org>
- <20101014153931.GI24144@bombadil.infradead.org>
- <4CE04DCF.7040306@gmx.de>
- <20101124115642.GB22651@bombadil.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH] BMC support for PARISC machines
+Date: Tue, 30 Nov 2010 23:25:35 +0100 (CET)
+Message-ID: <20101130222535.909F81D4BD@solo.franken.de>
+Cc: minyard@acm.org
+To: openipmi-developer@lists.sourceforge.net,
+	linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20101124115642.GB22651@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Nov 24, 2010 at 06:56:42AM -0500, Kyle McMartin wrote:
-> On Sun, Nov 14, 2010 at 09:59:59PM +0100, Helge Deller wrote:
-> > I just got again a chance to boot up my b160L and 715/64 machines.
-> > 
-> 
-> I got my 712 hooked up (sadly my B180 has lost its hard disk and RTC,
-> but I can netboot it if I need to...) and I'll poke at this this
-> afternoon.
-> 
+The last line of PARISC machines (C8000, RP34x0, etc.) have a BMC for
+controlling temperature, fan speed and other stuff. The BMC is connected
+via a special bus and listed in the firmware device tree. This change
+adds support for these BMCs to the IPMI driver.
 
-Haven't had a chance to debug this entirely yet, well, I wrote a patch
-to do proper chained handlers and got my B180 reinstalled... Will let
-you know tonight.
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
 
---Kyle
+ drivers/char/ipmi/ipmi_si_intf.c |   78 ++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 78 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
+index 035da9e..1599a45 100644
+--- a/drivers/char/ipmi/ipmi_si_intf.c
++++ b/drivers/char/ipmi/ipmi_si_intf.c
+@@ -71,6 +71,11 @@
+ #include <linux/of_platform.h>
+ #endif
+ 
++#ifdef CONFIG_PARISC
++#include <asm/hardware.h>	/* for register_parisc_driver() stuff */
++#include <asm/parisc-device.h>
++#endif
++
+ #define PFX "ipmi_si: "
+ 
+ /* Measure times between events in the driver. */
+@@ -311,6 +316,9 @@ static int pnp_registered;
+ #ifdef CONFIG_PPC_OF
+ static int of_registered;
+ #endif
++#ifdef CONFIG_PARISC
++static int parisc_registered;
++#endif
+ 
+ static unsigned int kipmid_max_busy_us[SI_MAX_PARMS];
+ static int num_max_busy_us;
+@@ -2648,6 +2656,64 @@ static struct of_platform_driver ipmi_of_platform_driver = {
+ };
+ #endif /* CONFIG_PPC_OF */
+ 
++#ifdef CONFIG_PARISC
++static int __devinit ipmi_parisc_probe(struct parisc_device *dev)
++{
++	struct smi_info *info;
++
++	info = kzalloc(sizeof(*info), GFP_KERNEL);
++
++	if (!info) {
++		dev_err(&dev->dev,
++			"could not allocate memory for PARISC probe\n");
++		return -ENOMEM;
++	}
++
++	info->si_type		= SI_KCS;
++	info->addr_source	= SI_DEVICETREE;
++	info->io_setup		= mem_setup;
++	info->io.addr_type	= IPMI_MEM_ADDR_SPACE;
++	info->io.addr_data	= dev->hpa.start;
++	info->io.regsize	= 1;
++	info->io.regspacing	= 1;
++	info->io.regshift	= 0;
++	info->irq		= 0; /* no interrup */
++	info->irq_setup		= NULL;
++	info->dev		= &dev->dev;
++
++	dev_dbg(&dev->dev, "addr 0x%lx regsize %d spacing %d irq %d\n",
++		info->io.addr_data, info->io.regsize, info->io.regspacing,
++		info->irq);
++
++	dev_set_drvdata(&dev->dev, info);
++
++	if (add_smi(info)) {
++		kfree(info);
++		return -EBUSY;
++	}
++
++	return 0;
++}
++
++static int __devexit ipmi_parisc_remove(struct parisc_device *dev)
++{
++	cleanup_one_si(dev_get_drvdata(&dev->dev));
++	return 0;
++}
++
++static struct parisc_device_id ipmi_parisc_tbl[] = {
++	{ HPHW_MC, HVERSION_REV_ANY_ID, 0x004, 0xC0 },
++	{ 0, }
++};
++
++static struct parisc_driver ipmi_parisc_driver = {
++	.name =		"ipmi",
++	.id_table =	ipmi_parisc_tbl,
++	.probe =	ipmi_parisc_probe,
++	.remove =	ipmi_parisc_remove,
++};
++#endif /* CONFIG_PARISC */
++
+ static int wait_for_msg_done(struct smi_info *smi_info)
+ {
+ 	enum si_sm_result     smi_result;
+@@ -3385,6 +3451,13 @@ static int __devinit init_ipmi_si(void)
+ 	of_registered = 1;
+ #endif
+ 
++#ifdef CONFIG_PARISC
++	register_parisc_driver(&ipmi_parisc_driver);
++	parisc_registered = 1;
++	/* poking PC IO addresses will crash machine, don't do it */
++	si_trydefaults = 0;
++#endif
++
+ 	/* We prefer devices with interrupts, but in the case of a machine
+ 	   with multiple BMCs we assume that there will be several instances
+ 	   of a given type so if we succeed in registering a type then also
+@@ -3444,6 +3517,11 @@ static int __devinit init_ipmi_si(void)
+ 		if (of_registered)
+ 			of_unregister_platform_driver(&ipmi_of_platform_driver);
+ #endif
++
++#ifdef CONFIG_PARISC
++		if (parisc_registered)
++			unregister_parisc_driver(&ipmi_parisc_driver);
++#endif
+ 		driver_unregister(&ipmi_driver.driver);
+ 		printk(KERN_WARNING PFX
+ 		       "Unable to find any System Interface(s)\n");
