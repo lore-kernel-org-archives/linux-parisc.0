@@ -1,150 +1,95 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [PATCH] parisc: convert the rest of the irq handlers to
- simple/percpu
-Date: Thu, 02 Dec 2010 20:01:05 -0600
-Message-ID: <1291341665.25796.2.camel@mulgrave.site>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] parisc : Fix GSC PS/2 driver name for keyboard and mouse
+Date: Fri, 03 Dec 2010 22:25:37 +0100
+Message-ID: <4CF96051.60008@gmx.de>
+References: <20101102162308.6dbe1cbf@borg.bxl.tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-To: Parisc List <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: linux-parisc@vger.kernel.org
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20101102162308.6dbe1cbf@borg.bxl.tuxicoman.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The generic conversion eliminates the spurious no_ack and no_end
-routines, converts all the cascaded handlers to handle_simple_irq() and
-makes iosapic use a modified handle_percpu_irq() to become the same as
-the CPU irq's.  This isn't an essential change, but it eliminates the
-mask/unmask overhead of handle_level_irq().
+On 11/02/2010 04:23 PM, Guy Martin wrote:
+> Fix kernel warnings caused by the driver name of GSC PS/2 containing '/'.
+>
+> The following warnings are observed on a K410 system :
+>
+> [   10.700000] name 'GSC PS/2 keyboard'
+> [   10.732000] ------------[ cut here ]------------
+> [   10.772000] WARNING: at fs/proc/generic.c:323
+> [   10.828000] Modules linked in:
+> [   10.916000]
+> [   10.916000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> [   10.936000] PSW: 00000000000001000000000000001111 Not tainted
+> [   10.992000] r00-03  0004000f 104fe3e0 10201ea0 00000000
+> [   11.060000] r04-07  4fc405c8 00000006 4fc405c8 4fc40694
+> [   11.124000] r08-11  4fc40708 10438aa0 00000001 1043bfc8
+> [   11.184000] r12-15  104ff2a0 104ff2a0 4fc38634 104ff2a0
+> [   11.248000] r16-19  f0001570 10479af0 f000006c 1044fe50
+> [   11.308000] r20-23  00000000 00000028 104cd858 00000000
+> [   11.372000] r24-27  ffffffff 0000000e 1044fe10 1043bbe0
+> [   11.436000] r28-31  0000002b 00000078 4fc40800 0000000d
+> [   11.496000] sr00-03  00000000 00000000 00000000 00000000
+> [   11.560000] sr04-07  00000000 00000000 00000000 00000000
+> [   11.624000]
+> [   11.688000] IASQ: 00000000 00000000 IAOQ: 10201ea0 10201ea4
+> [   11.704000]  IIR: 03ffe01f    ISR: 00000000  IOR: 0000000d
+> [   11.772000]  CPU:        0   CR30: 4fc40000 CR31: f01043b0
+> [   11.836000]  ORIG_R28: 4fc40940
+> [   11.904000]  IAOQ[0]: __xlate_proc_name+0x90/0xd0
+> [   11.940000]  IAOQ[1]: __xlate_proc_name+0x94/0xd0
+> [   11.996000]  RP(r2): __xlate_proc_name+0x90/0xd0
+> [   12.052000] Backtrace:
+> [   12.108000]  [<10257790>] vsnprintf+0x290/0x4f4
+> [   12.136000]
+> [   12.188000] ---[ end trace 91bf6ece17e322dd ]---
+> [   12.208000] serio: GSC PS/2 keyboard port at 0x0001c000 irq 19 @ 10:12:7
+> [   12.264000] name 'GSC PS/2 mouse'
+> [   12.344000] ------------[ cut here ]------------
+> [   12.384000] WARNING: at fs/proc/generic.c:323
+> [   12.436000] Modules linked in:
+> [   12.524000]
+> [   12.528000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> [   12.544000] PSW: 00000000000001000000000000001111 Tainted: G        W
+> [   12.600000] r00-03  0004000f 104fe3e0 10201ea0 00000000
+> [   12.680000] r04-07  4fc405c8 00000006 4fc405c8 4fc40694
+> [   12.740000] r08-11  4fc40708 10438aa0 00000001 1043bfc8
+> [   12.804000] r12-15  104ff2a0 104ff2a0 4fc38634 104ff2a0
+> [   12.868000] r16-19  f0001570 10479af0 f000006c 1044fe50
+> [   12.928000] r20-23  00000000 00000025 104cd858 00000000
+> [   12.992000] r24-27  ffffffff 0000000e 1044fe10 1043bbe0
+> [   13.056000] r28-31  00000028 00000078 4fc40800 0000000d
+> [   13.116000] sr00-03  00000000 00000000 00000000 00000000
+> [   13.180000] sr04-07  00000000 00000000 00000000 00000000
+> [   13.244000]
+> [   13.308000] IASQ: 00000000 00000000 IAOQ: 10201ea0 10201ea4
+> [   13.324000]  IIR: 03ffe01f    ISR: 00000000  IOR: 0000000d
+> [   13.392000]  CPU:        0   CR30: 4fc40000 CR31: f01043b0
+> [   13.456000]  ORIG_R28: 4fc40940
+> [   13.524000]  IAOQ[0]: __xlate_proc_name+0x90/0xd0
+> [   13.560000]  IAOQ[1]: __xlate_proc_name+0x94/0xd0
+> [   13.616000]  RP(r2): __xlate_proc_name+0x90/0xd0
+> [   13.672000] Backtrace:
+> [   13.728000]  [<10257790>] vsnprintf+0x290/0x4f4
+> [   13.756000]
+> [   13.808000] ---[ end trace 91bf6ece17e322de ]---
+> [   13.828000] serio: GSC PS/2 mouse port at 0x00020100 irq 19 @ 10:12:8
+>
+>
+> Signed-off-by: Guy Martin<gmsoft@tuxicoman.be>
 
-Signed-off-by: James Bottomley <James.Bottomley@suse.de>
+Hi Guy,
 
----
+can you please send this patch to  Dmitry Torokhov 
+<dmitry.torokhov@gmail.com> and
+linux-input@vger.kernel.org to (hopefully) get it included into 2.6.37 ?
+I think this is an important patch...
 
-Tested on raven and pa8800
+You may add an
+Acked-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index 5024f64..ca0730b 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -75,9 +75,6 @@ static void cpu_unmask_irq(unsigned int irq)
- 	smp_send_all_nop();
- }
- 
--void no_ack_irq(unsigned int irq) { }
--void no_end_irq(unsigned int irq) { }
--
- void cpu_ack_irq(unsigned int irq)
- {
- 	unsigned long mask = EIEM_MASK(irq);
-@@ -241,7 +238,7 @@ int cpu_claim_irq(unsigned int irq, struct irq_chip *type, void *data)
- 
- 	/* for iosapic interrupts */
- 	if (type) {
--		set_irq_chip_and_handler(irq, type, handle_level_irq);
-+		set_irq_chip_and_handler(irq, type, handle_percpu_irq);
- 		set_irq_chip_data(irq, data);
- 		cpu_unmask_irq(irq);
- 	}
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index d9f5148..9383063 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -349,7 +349,6 @@ static struct irq_chip dino_interrupt_type = {
- 	.name	= "GSC-PCI",
- 	.unmask	= dino_unmask_irq,
- 	.mask	= dino_mask_irq,
--	.ack	= no_ack_irq,
- };
- 
- 
-diff --git a/drivers/parisc/eisa.c b/drivers/parisc/eisa.c
-index 1211974..e860038 100644
---- a/drivers/parisc/eisa.c
-+++ b/drivers/parisc/eisa.c
-@@ -186,7 +186,6 @@ static struct irq_chip eisa_interrupt_type = {
- 	.name	=	"EISA",
- 	.unmask	=	eisa_unmask_irq,
- 	.mask	=	eisa_mask_irq,
--	.ack	=	no_ack_irq,
- };
- 
- static irqreturn_t eisa_irq(int wax_irq, void *intr_dev)
-@@ -340,7 +339,7 @@ static int __init eisa_probe(struct parisc_device *dev)
- 	setup_irq(2, &irq2_action);
- 	for (i = 0; i < 16; i++) {
- 		set_irq_chip_and_handler(i, &eisa_interrupt_type,
--			handle_level_irq);
-+					 handle_simple_irq);
- 	}
- 	
- 	EISA_bus = 1;
-diff --git a/drivers/parisc/gsc.c b/drivers/parisc/gsc.c
-index e605298..772b193 100644
---- a/drivers/parisc/gsc.c
-+++ b/drivers/parisc/gsc.c
-@@ -143,7 +143,6 @@ static struct irq_chip gsc_asic_interrupt_type = {
- 	.name	=	"GSC-ASIC",
- 	.unmask	=	gsc_asic_unmask_irq,
- 	.mask	=	gsc_asic_mask_irq,
--	.ack	=	no_ack_irq,
- };
- 
- int gsc_assign_irq(struct irq_chip *type, void *data)
-@@ -153,7 +152,7 @@ int gsc_assign_irq(struct irq_chip *type, void *data)
- 	if (irq > GSC_IRQ_MAX)
- 		return NO_IRQ;
- 
--	set_irq_chip_and_handler(irq, type, handle_level_irq);
-+	set_irq_chip_and_handler(irq, type, handle_simple_irq);
- 	set_irq_chip_data(irq, data);
- 
- 	return irq++;
-diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
-index a3120a0..0327894 100644
---- a/drivers/parisc/iosapic.c
-+++ b/drivers/parisc/iosapic.c
-@@ -669,6 +669,13 @@ printk("\n");
- 	DBG(KERN_DEBUG "enable_irq(%d): eoi(%p, 0x%x)\n", irq,
- 			vi->eoi_addr, vi->eoi_data);
- 	iosapic_eoi(vi->eoi_addr, vi->eoi_data);
-+}
-+
-+static void iosapic_eoi_irq(unsigned int irq)
-+{
-+	struct vector_info *vi = get_irq_chip_data(irq);
-+
-+	iosapic_eoi(vi->eoi_addr, vi->eoi_data);
- 	cpu_eoi_irq(irq);
- }
- 
-@@ -705,6 +712,7 @@ static struct irq_chip iosapic_interrupt_type = {
- 	.unmask	=	iosapic_unmask_irq,
- 	.mask	=	iosapic_mask_irq,
- 	.ack	=	cpu_ack_irq,
-+	.eoi	=	iosapic_eoi_irq,
- #ifdef CONFIG_SMP
- 	.set_affinity =	iosapic_set_affinity_irq,
- #endif
-diff --git a/drivers/parisc/superio.c b/drivers/parisc/superio.c
-index 0846daf..2824153 100644
---- a/drivers/parisc/superio.c
-+++ b/drivers/parisc/superio.c
-@@ -323,7 +323,6 @@ static struct irq_chip superio_interrupt_type = {
- 	.name	=	SUPERIO,
- 	.unmask	=	superio_unmask_irq,
- 	.mask	=	superio_mask_irq,
--	.ack =		no_ack_irq,
- };
- 
- #ifdef DEBUG_SUPERIO_INIT
-@@ -354,7 +353,7 @@ int superio_fixup_irq(struct pci_dev *pcidev)
- #endif
- 
- 	for (i = 0; i < 16; i++) {
--		set_irq_chip_and_handler(i, &superio_interrupt_type, handle_level_irq);
-+		set_irq_chip_and_handler(i, &superio_interrupt_type, handle_simple_irq);
- 	}
- 
- 	/*
-
+Helge
 
