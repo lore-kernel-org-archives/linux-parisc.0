@@ -1,38 +1,51 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH] parisc: convert the rest of the irq handlers to
- simple/percpu
-Date: Fri, 03 Dec 2010 16:40:58 -0600
-Message-ID: <1291416058.2881.294.camel@mulgrave.site>
-References: <1291341665.25796.2.camel@mulgrave.site>
-	 <4CF960D5.9000700@gmx.de>
+From: Kyle McMartin <kyle@hera.kernel.org>
+Subject: [git pull request] parisc fixes for 2.6.37
+Date: Sun, 5 Dec 2010 00:47:10 +0000
+Message-ID: <20101205004710.GA10250@hera.kernel.org>
+Reply-To: kyle@mcmartin.ca
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org
+To: torvalds@linux-foundation.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4CF960D5.9000700@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2010-12-03 at 22:27 +0100, Helge Deller wrote:
-> On 12/03/2010 03:01 AM, James Bottomley wrote:
-> > The generic conversion eliminates the spurious no_ack and no_end
-> > routines, converts all the cascaded handlers to handle_simple_irq() and
-> > makes iosapic use a modified handle_percpu_irq() to become the same as
-> > the CPU irq's.  This isn't an essential change, but it eliminates the
-> > mask/unmask overhead of handle_level_irq().
-> >
-> > Signed-off-by: James Bottomley<James.Bottomley@suse.de>
-> Nice patches James! (although I only reply to this one)
-> 
-> They work for me on 715/64, B160L and c3000.
-> Can you or Kyle send those patches upstream for 2.6.37?
+Hi Linus,
 
-Sure, although kyle was also going to post a different patch, I
-think ... we only need the one liner upstream to make everything work.
-The rest is just a conversion to more simplistic handlers which can wait
-for the merge window.
+Please pull the following bug fixes for parisc. Contents are entirely
+bug fixes (two for the do_IRQ removal earlier this release) and a signal
+patch to remove redundant initializing of a union pointed out by Randy.
 
-James
+regards, Kyle
 
+---
 
+The following changes since commit bcb38ceb225f5d5b2198a2755277cd441ed1e82b:
+
+  Revert "debug_locks: set oops_in_progress if we will log messages." (2010-11-29 15:18:28 -0800)
+
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/kyle/parisc-2.6.git fixes
+
+Guy Martin (2):
+      parisc: KittyHawk LCD fix
+      parisc: Fix GSC PS/2 driver name for keyboard and mouse
+
+James Bottomley (2):
+      parisc: fix dino/gsc interrupts
+      parisc: convert the rest of the irq handlers to simple/percpu
+
+Kyle McMartin (1):
+      parisc: remove redundant initialization in sigsegv path of sys_rt_sigreturn
+
+ arch/parisc/kernel/irq.c     |    7 ++-----
+ arch/parisc/kernel/signal.c  |    9 +--------
+ drivers/input/serio/gscps2.c |    2 +-
+ drivers/parisc/dino.c        |    1 -
+ drivers/parisc/eisa.c        |    3 +--
+ drivers/parisc/gsc.c         |    3 +--
+ drivers/parisc/iosapic.c     |    8 ++++++++
+ drivers/parisc/led.c         |   17 +++++++++++++----
+ drivers/parisc/superio.c     |    3 +--
+ 9 files changed, 28 insertions(+), 25 deletions(-)
