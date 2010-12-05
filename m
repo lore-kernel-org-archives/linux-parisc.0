@@ -1,51 +1,76 @@
-From: Kyle McMartin <kyle@hera.kernel.org>
-Subject: [git pull request] parisc fixes for 2.6.37
-Date: Sun, 5 Dec 2010 00:47:10 +0000
-Message-ID: <20101205004710.GA10250@hera.kernel.org>
-Reply-To: kyle@mcmartin.ca
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: Re: [PATCH] e1000: Allow the driver to be used on PA RISC C8000
+ workstation
+Date: Sun, 5 Dec 2010 18:04:26 +0100
+Message-ID: <20101205180426.72ce3265@borg.bxl.tuxicoman.be>
+References: <alpine.DEB.1.10.1010240417160.30241@artax.karlin.mff.cuni.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: torvalds@linux-foundation.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+	linux-parisc@vger.kernel.org,
+	Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+To: e1000-devel@lists.sourceforge.net
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.1.10.1010240417160.30241@artax.karlin.mff.cuni.cz>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+Hi all,
 
-Please pull the following bug fixes for parisc. Contents are entirely
-bug fixes (two for the do_IRQ removal earlier this release) and a signal
-patch to remove redundant initializing of a union pointed out by Randy.
+I can confirm that I've seen the very same on multiple C8000
+workstation too.
 
-regards, Kyle
+Can someone please apply this patch ?
 
----
+Tested-by: Guy Martin <gmsoft@tuxicoman.be>
 
-The following changes since commit bcb38ceb225f5d5b2198a2755277cd441ed1e82b:
+Thanks,
+  Guy
 
-  Revert "debug_locks: set oops_in_progress if we will log messages." (2010-11-29 15:18:28 -0800)
+On Sun, 24 Oct 2010 04:28:59 +0200 (CEST)
+Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz> wrote:
 
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/kyle/parisc-2.6.git fixes
+> Hi
+> 
+> This is my first patch for my PA RISC C8000 machine: allow to use the 
+> onboard NIC.
+> 
+> Mikulas
+> 
+> ---
+> 
+> Allow the driver to be used on PA RISC C8000 workstation
+> 
+> Search on the internet shows that the checksum field in the EEPROM on
+> HPPA is really not a checksum but a signature (different users
+> including me found the same mismatching checksum 0x16d6, despite
+> their MAC addresses and EEPROM content being different).
+> 
+> So I allow 0x16d6 (the last word read) as the matching checksum on
+> hppa.
+> 
+> Signed-off-by: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+> 
+> Index: linux-2.6.36-rc8/drivers/net/e1000/e1000_hw.c
+> ===================================================================
+> --- linux-2.6.36-rc8.orig/drivers/net/e1000/e1000_hw.c
+> 2010-10-24 04:01:03.000000000 +0200 +++
+> linux-2.6.36-rc8/drivers/net/e1000/e1000_hw.c	2010-10-24
+> 04:25:22.000000000 +0200 @@ -3840,6 +3840,12 @@ s32
+> e1000_validate_eeprom_checksum(struc checksum += eeprom_data; }
+>  
+> +#ifdef __hppa__
+> +	/* This seems to be a signature and not a checksum on HP
+> c8000 */
+> +	if (eeprom_data == 0x16d6)
+> +		return E1000_SUCCESS;
+> +#endif
+> +
+>  	if (checksum == (u16) EEPROM_SUM)
+>  		return E1000_SUCCESS;
+>  	else {
+> --
+> To unsubscribe from this list: send the line "unsubscribe
+> linux-parisc" in the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-Guy Martin (2):
-      parisc: KittyHawk LCD fix
-      parisc: Fix GSC PS/2 driver name for keyboard and mouse
-
-James Bottomley (2):
-      parisc: fix dino/gsc interrupts
-      parisc: convert the rest of the irq handlers to simple/percpu
-
-Kyle McMartin (1):
-      parisc: remove redundant initialization in sigsegv path of sys_rt_sigreturn
-
- arch/parisc/kernel/irq.c     |    7 ++-----
- arch/parisc/kernel/signal.c  |    9 +--------
- drivers/input/serio/gscps2.c |    2 +-
- drivers/parisc/dino.c        |    1 -
- drivers/parisc/eisa.c        |    3 +--
- drivers/parisc/gsc.c         |    3 +--
- drivers/parisc/iosapic.c     |    8 ++++++++
- drivers/parisc/led.c         |   17 +++++++++++++----
- drivers/parisc/superio.c     |    3 +--
- 9 files changed, 28 insertions(+), 25 deletions(-)
