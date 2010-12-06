@@ -1,34 +1,27 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: [PATCH] MAINTAINERS: decrease Kyle's house temperature a few degrees
-Date: Mon, 6 Dec 2010 11:49:45 -0500
-Message-ID: <20101206164945.GR25668@bombadil.infradead.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: parisc tree maintainer
+Date: Mon, 6 Dec 2010 13:30:40 -0500 (EST)
+Message-ID: <20101206183040.C87914E6A@hiauly1.hia.nrc.ca>
+References: <20101206164310.GQ25668@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: James.Bottomley@HansenPartnership.com, deller@gmx.de,
+	torvalds@linux-foundation.org, linux-parisc@vger.kernel.org
+To: kyle@mcmartin.ca (Kyle McMartin)
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20101206164310.GQ25668@bombadil.infradead.org> from "Kyle McMartin" at Dec 6, 2010 11:43:10 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-It's about time I turned off some of these space heaters and joined the
-21st century...
+Hi Kyle,
 
-Signed-off-by: Kyle McMartin <kyle@mcmartin.ca>
----
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1a1c27b..d9bd3a1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4505,13 +4505,11 @@ F:	Documentation/blockdev/paride.txt
- F:	drivers/block/paride/
- 
- PARISC ARCHITECTURE
--M:	Kyle McMartin <kyle@mcmartin.ca>
- M:	Helge Deller <deller@gmx.de>
- M:	"James E.J. Bottomley" <jejb@parisc-linux.org>
- L:	linux-parisc@vger.kernel.org
- W:	http://www.parisc-linux.org/
- Q:	http://patchwork.kernel.org/project/linux-parisc/list/
--T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kyle/parisc-2.6.git
- S:	Maintained
- F:	arch/parisc/
- F:	drivers/parisc/
+> I'm getting a bit bored of maintaining the parisc trees and such... Do
+> either of you want to take over? If you do, please reply so that Linus
+> knows that the next pull request will come from you instead of me.
+
+Thanks for all your work in maintaining the parisc tree.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
