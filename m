@@ -1,32 +1,32 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: parisc tree maintainer
-Date: Mon, 06 Dec 2010 23:26:17 +0100
-Message-ID: <4CFD6309.2000202@gmx.de>
-References: <20101206164310.GQ25668@bombadil.infradead.org> <1291672391.7021.33.camel@mulgrave.site>
+From: "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
+Subject: RE: [PATCH] e1000: Allow the driver to be used on PA RISC C8000
+ workstation
+Date: Tue, 7 Dec 2010 05:48:55 -0800
+Message-ID: <A78C6259B11833419567082E2DC0C25601D8A9CA5E@orsmsx508.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Cc: Kyle McMartin <kyle@mcmartin.ca>, torvalds@linux-foundation.org,
-	linux-parisc@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset="utf-8"
+Cc: "'e1000-devel@lists.sourceforge.net'"
+	<e1000-devel@lists.sourceforge.net>,
+	"'mikulas@artax.karlin.mff.cuni.cz'"
+	<mikulas@artax.karlin.mff.cuni.cz>,
+	"'linux-parisc@vger.kernel.org'" <linux-parisc@vger.kernel.org>
+To: "'kyle@mcmartin.ca'" <kyle@mcmartin.ca>,
+	"'gmsoft@tuxicoman.be'" <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1291672391.7021.33.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 12/06/2010 10:53 PM, James Bottomley wrote:
-> On Mon, 2010-12-06 at 11:43 -0500, Kyle McMartin wrote:
->> I'm getting a bit bored of maintaining the parisc trees and such... Do
->> either of you want to take over? If you do, please reply so that Linus
->> knows that the next pull request will come from you instead of me.
-> I suppose I can ... it's not a high volume tree, fortunately.  Thanks
-> for doing it this long ... although I've got to say, I think continuing
-> would be good practise for you.
-
-James, thanks for taking that job!
-Since our second baby (that time a son) was born just yesterday, I don't 
-think I will have much time during the next few weeks at least :-)
-
-Kyle, thanks a lot for all your work up to now.
-I hope your interest for parisc will come back again at some point ;-)
-
-Helge
+SSB3aWxsIGFkZCBpdCB0byBteSB0cmVlL3F1ZXVlLgoKQ2hlZXIsCkplZmYKDQoNCiAtLS0tLU9y
+aWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogCUt5bGUgTWNNYXJ0aW4gW21haWx0bzpreWxlQG1j
+bWFydGluLmNhXQ0KU2VudDoJTW9uZGF5LCBEZWNlbWJlciAwNiwgMjAxMCAwODoxMiBBTSBVUyBN
+b3VudGFpbiBTdGFuZGFyZCBUaW1lDQpUbzoJR3V5IE1hcnRpbg0KQ2M6CWUxMDAwLWRldmVsQGxp
+c3RzLnNvdXJjZWZvcmdlLm5ldDsgTWlrdWxhcyBQYXRvY2thOyBsaW51eC1wYXJpc2NAdmdlci5r
+ZXJuZWwub3JnOyBLaXJzaGVyLCBKZWZmcmV5IFQNClN1YmplY3Q6CVJlOiBbUEFUQ0hdIGUxMDAw
+OiBBbGxvdyB0aGUgZHJpdmVyIHRvIGJlIHVzZWQgb24gUEEgUklTQyBDODAwMCB3b3Jrc3RhdGlv
+bg0KDQpPbiBTdW4sIERlYyAwNSwgMjAxMCBhdCAwNjowNDoyNlBNICswMTAwLCBHdXkgTWFydGlu
+IHdyb3RlOg0KPiBIaSBhbGwsDQo+IA0KPiBJIGNhbiBjb25maXJtIHRoYXQgSSd2ZSBzZWVuIHRo
+ZSB2ZXJ5IHNhbWUgb24gbXVsdGlwbGUgQzgwMDANCj4gd29ya3N0YXRpb24gdG9vLg0KPiANCj4g
+Q2FuIHNvbWVvbmUgcGxlYXNlIGFwcGx5IHRoaXMgcGF0Y2ggPw0KPiANCj4gVGVzdGVkLWJ5OiBH
+dXkgTWFydGluIDxnbXNvZnRAdHV4aWNvbWFuLmJlPg0KPiANCg0KSXQgc2hvdWxkIGJlIHNlbnQg
+dmlhIG5ldGRldkAgc28gdGhhdCBEYXZlTSBjYW4gcGljayBpdCB1cCBpZiB0aGUgZTEwMDANCmZv
+bGtzIGRvIG5vdC4uLg0KDQotLUt5bGUNCg==
