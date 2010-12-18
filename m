@@ -1,55 +1,35 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 2/5] parisc: lba_pci: Use vsprintf extension %pR for struct resource
-Date: Mon, 13 Dec 2010 13:42:19 -0800
-Message-ID: <681d00d0482c5c1e030c88e3e3522b9ca90bd871.1292276119.git.joe@perches.com>
-References: <cover.1292276119.git.joe@perches.com>
-Cc: Randy Dunlap <randy.dunlap@oracle.com>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1292276119.git.joe@perches.com>
-List-ID: <linux-kernel.vger.kernel.org>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: PA caches (was: C8000 cpu upgrade problem)
+Date: Sat, 18 Dec 2010 15:13:21 -0500
+Message-ID: <20101218201320.GA11202@hiauly1.hia.nrc.ca>
+References: <20101024020337.725094D30@hiauly1.hia.nrc.ca> <alpine.DEB.1.10.1010240432390.30241@artax.karlin.mff.cuni.cz> <20101024034314.GQ8332@bombadil.infradead.org> <alpine.DEB.1.10.1010260404260.6982@artax.karlin.mff.cuni.cz>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org
+To: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.1.10.1010260404260.6982@artax.karlin.mff.cuni.cz>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/parisc/lba_pci.c |   13 +++++--------
- 1 files changed, 5 insertions(+), 8 deletions(-)
+On Tue, 26 Oct 2010, Mikulas Patocka wrote:
 
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index 3aeb327..b1b6644 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -749,24 +749,21 @@ lba_fixup_bus(struct pci_bus *bus)
- 				continue;
- 
- 			if (res->flags & IORESOURCE_IO) {
--				DBG("lba_fixup_bus() I/O Ports [%lx/%lx] -> ",
--					res->start, res->end);
-+				DBG("lba_fixup_bus() I/O Ports [%pR] -> ", res);
- 				res->start |= lba_portbase;
- 				res->end   |= lba_portbase;
--				DBG("[%lx/%lx]\n", res->start, res->end);
-+				DBG("[%pR]\n", res);
- 			} else if (res->flags & IORESOURCE_MEM) {
- 				/*
- 				** Convert PCI (IO_VIEW) addresses to
- 				** processor (PA_VIEW) addresses
- 				 */
--				DBG("lba_fixup_bus() MMIO [%lx/%lx] -> ",
--					res->start, res->end);
-+				DBG("lba_fixup_bus() MMIO [%pR] -> ", res);
- 				res->start = PCI_HOST_ADDR(HBA_DATA(ldev), res->start);
- 				res->end   = PCI_HOST_ADDR(HBA_DATA(ldev), res->end);
--				DBG("[%lx/%lx]\n", res->start, res->end);
-+				DBG("[%pR]\n", res);
- 			} else {
--				DBG("lba_fixup_bus() WTF? 0x%lx [%lx/%lx] XXX",
--					res->flags, res->start, res->end);
-+				DBG("lba_fixup_bus() WTF? [%pR] XXX", res);
- 			}
- 
- 			/*
+> > our cache flushing is a bit... suboptimal right now (doing whole cache
+> > flushes on fork and such.)
+> 
+> What is exactly the problem there? Could you describe it or refer to some 
+> document that describes it? Why do you need to flush on fork?
+
+Discussed here:
+http://lkml.org/lkml/2003/12/15/244
+
+Flush should not be needed according to Lamont.
+
+However COW handling is broken.  See minifail bug on wiki:
+http://wiki.parisc-linux.org/TestCases
+
+Dave
 -- 
-1.7.3.3.398.g0b0cd.dirty
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
