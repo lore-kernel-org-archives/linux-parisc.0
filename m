@@ -1,54 +1,31 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: parisc: flush pages through tmpalias space
-Date: Wed, 22 Dec 2010 19:07:12 -0500
-Message-ID: <AANLkTimoaw7HAqJTjejHf52Qw0zdtGJZK6bWbzgfLLU6@mail.gmail.com>
-References: <1293034931.3019.8.camel@mulgrave.site>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: 2.6.36 regression : swap support broken
+Date: Wed, 22 Dec 2010 21:19:41 -0500
+Message-ID: <20101223021941.GA3924@hiauly1.hia.nrc.ca>
+References: <20101212193856.15f93ea4@borg.bxl.tuxicoman.be>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org, eike-kernel@sf-tec.de
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1293034931.3019.8.camel@mulgrave.site>
+In-Reply-To: <20101212193856.15f93ea4@borg.bxl.tuxicoman.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Dec 22, 2010 at 11:22 AM, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> The kernel has an 8M tmpailas space (originally designed for copying
-> and clearing pages but now only used for clearing). =A0The idea is
-> to place zeros into the cache above a physical page rather than into
-> the physical page and flush the cache, because often the zeros end up
-> being replaced quickly anyway.
->
-> We can also use the tmpalias space for flushing a page. =A0The differ=
-ence
-> here is that we have to do tmpalias processing in the non access data=
- and
-> instruction traps. =A0The principle is the same: as long as we know t=
-he physical
-> address and have a virtual address congruent to the real one, the flu=
-sh will
-> be effective.
->
-> In order to use the tmpalias space, the icache miss path has to be en=
-hanced to
-> check for the alias region to make the fic instruction effective.
+On Sun, 12 Dec 2010, Guy Martin wrote:
 
-James,
+> Recently, swap got broken. When it has to be used, the kernel issue the
+> following line numerous times :
+> swap_free: Bad swap offset entry 00100009
 
-Given that you are currently maintaining the parisc tree, do you have
-a public branch that we can pull from to test things?
+The incorrect handling of conditional branches followed by an (empty) asm
+is now fixed in the gcc tree on all active branches (4.3 through to head).
 
-I've normally been using:
-git://git.kernel.org/pub/scm/linux/kernel/git/kyle/parisc-2.6.git
+The 4.2 branch is closed.  So, I wouldn't recommend using it or any earlier
+branch of gcc for kernel builds.
 
-I would like to test this patch, and the next one you posted, and I
-was wondering if you have them on a public branch.
-
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
