@@ -1,38 +1,43 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: parisc: flush pages through tmpalias space
-Date: Wed, 22 Dec 2010 22:04:52 -0500
-Message-ID: <20101223030451.GA4080@hiauly1.hia.nrc.ca>
-References: <1293034931.3019.8.camel@mulgrave.site>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Resurrecting my C3000.
+Date: Thu, 23 Dec 2010 12:26:56 -0500
+Message-ID: <AANLkTinFSs6z35AcsAWZ8AuvvPgSDwj8G6Xt4uhOY1XV@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=ISO-8859-1
+To: linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1293034931.3019.8.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 22 Dec 2010, James Bottomley wrote:
+Team,
 
-> The kernel has an 8M tmpailas space (originally designed for copying
-> and clearing pages but now only used for clearing).  The idea is
-> to place zeros into the cache above a physical page rather than into
-> the physical page and flush the cache, because often the zeros end up
-> being replaced quickly anyway.
-> 
-> We can also use the tmpalias space for flushing a page.  The difference
-> here is that we have to do tmpalias processing in the non access data and
-> instruction traps.  The principle is the same: as long as we know the physical
-> address and have a virtual address congruent to the real one, the flush will
-> be effective.
-> 
-> In order to use the tmpalias space, the icache miss path has to be enhanced to
-> check for the alias region to make the fic instruction effective.
+I wanted to resurrect my C3000 for some 32-bit kernel testing.
 
-Very cool. "dependent" is misspelled in a couple places.  Will test.
+I booted it up, but it didn't work, the LCD displayed:
+~~~
+INI 8890: IO BD
+Early Super init
+~~~
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+I don't see anything on the connected serial port #1 (9600 8N1).
+
+I took all the PCI cards out (LSI scsi, 3 VIS-EG PCI), cleaned it,
+added some thermal paste to the cpu, and reseated the memory.
+
+Same issue, but sometimes I get  "OFF 00FF:" on the LCD, which isn't a
+valid Code for that Ostat.
+
+The workstation reference manual for the C3000 has this to say:
+Ostat: INI
+Code: 8890
+FRU: IO BD
+Message: early Super init
+Description: Initializing Super-I/O for early RS-232 output.
+
+Technically one must re-seat or replace the failing FRU, but I don't
+know what FRU "IO BD" is? The motherboard? :-(
+
+Any ideas?
+
+Cheers,
+Carlos.
