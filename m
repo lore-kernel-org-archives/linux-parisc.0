@@ -1,53 +1,38 @@
 From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: PA-RISC 2.0 add/sub carry/borrow bug
-Date: Mon, 27 Dec 2010 12:20:27 -0500
-Message-ID: <20101227172026.GA25187@hiauly1.hia.nrc.ca>
+Subject: Re: parisc: flush pages through tmpalias space
+Date: Tue, 28 Dec 2010 23:23:47 -0500
+Message-ID: <20101229042346.GA973@hiauly1.hia.nrc.ca>
+References: <1293034931.3019.8.camel@mulgrave.site>
 Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+Cc: Parisc List <linux-parisc@vger.kernel.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1293034931.3019.8.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Yesterday, after updating binutils to head, I hit an assembler error
-assembling code from checksum.h:
+On Wed, 22 Dec 2010, James Bottomley wrote:
 
- "      add,dc          %%r20, %0, %0\n"
+> +		if (old_addr == 0 || (old_addr & (SHMLBA - 1)) != (addr & (SHMLBA - 1))) {
+> +			__flush_cache_page(mpnt, addr, page_to_phys(page));
+> +			if (old_addr)
+> +				printk(KERN_ERR "INEQUIVALENT ALIASES 0x%lx and 0x%lx in file %s\n", old_addr, addr, mpnt->vm_file ? mpnt->vm_file->f_path.dentry->d_name.name : "(null)");
+> +			old_addr = addr;
+>  		}
 
-It turns out that that gas was previously mis-assembling
+I'm seeing the above kernel error on shutdown:
 
-	add		%r1,%r2,%r3
+Dec 26 12:30:56 mx3210 kernel: INEQUIVALENT ALIASES 0x13000 and 0x14000 in file killall5
+Dec 26 12:30:56 mx3210 kernel: INEQUIVALENT ALIASES 0x40122000 and 0x40121000 in file ld-2.11.2.so
+Dec 26 12:30:57 mx3210 kernel: INEQUIVALENT ALIASES 0x402a7000 and 0x402a6000 in file libc-2.11.2.so
 
-when generating PA 2.0 code.  It seems the overflow (d bit) was
-incorrectly being set, indicating that a 64-bit signed overflow
-was needed.  In fact, 32-bit signed overflow is the default unless
-there is a "dc" completor or a 64-bit condition.
-
-A patch was applied to fix the above.  However, it broke the handling
-of "add,dc".  It also didn't fix sub.
-
-It seems that the gas bug was hiding some code generation issues in
-gcc.  The code in the linux kernel where I noticed this is also broken.
-The linux change is untested.
-
-Until gcc is fixed, binutils head can't be used ;(
+This is with 2.6.36.2 and your two patches on a SMP kernel.  I've also seen
+these messages with a similar UP build in the gcc guality tests.  These
+check debug info with gdb.
 
 Dave
 -- 
 J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
 National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-
-diff --git a/arch/parisc/include/asm/checksum.h b/arch/parisc/include/asm/checksum.h
-index c84b2fc..3efcc33 100644
---- a/arch/parisc/include/asm/checksum.h
-+++ b/arch/parisc/include/asm/checksum.h
-@@ -140,7 +140,7 @@ static __inline__ __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
- "	ldd,ma		8(%1), %%r19\n"	/* get 1st saddr word */
- "	ldd,ma		8(%2), %%r20\n"	/* get 1st daddr word */
- "	add		%8, %3, %3\n"/* add 16-bit proto + len */
--"	add		%%r19, %0, %0\n"
-+"	add,*		%%r19, %0, %0\n"
- "	ldd,ma		8(%1), %%r21\n"	/* 2cd saddr */
- "	ldd,ma		8(%2), %%r22\n"	/* 2cd daddr */
- "	add,dc		%%r20, %0, %0\n"
