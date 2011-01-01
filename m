@@ -1,30 +1,45 @@
-From: WESTERN UNION <info@westy.org>
-Subject: Process your first payment of $ 5,000 USD
-Date: Fri, 31 Dec 2010 14:12:34 +0100
-Message-ID: <20101231141234.143434yrdd7xwpmq@webmail.ausl.bologna.it>
-Reply-To: wupayoff5@hotmail.com
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: parisc: flush pages through tmpalias space
+Date: Sat, 1 Jan 2011 13:31:08 -0500
+Message-ID: <20110101183108.GA19035@hiauly1.hia.nrc.ca>
+References: <1293034931.3019.8.camel@mulgrave.site> <20101229042346.GA973@hiauly1.hia.nrc.ca> <1293634281.2803.4.camel@fuzzy> <20101230155640.GA7058@hiauly1.hia.nrc.ca> <20101230160944.GA7360@hiauly1.hia.nrc.ca>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8;
- DelSp="Yes";
- format="flowed"
-To: undisclosed-recipients:;
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20101230160944.GA7360@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On Thu, 30 Dec 2010, John David Anglin wrote:
 
+> On Thu, 30 Dec 2010, John David Anglin wrote:
+> 
+> > Attached is an application that triggers similar errors:
 
-I wish to inform you that we have Process your first payment of $  
-5,000 USD.To track payment use www.westernunion.com before going to  
-pick  it up Sender Name: James Mark, MTCN 020-484-1459,This funds was  
-given to you by the United Nations With Ecowas to support individial  
-due to the worldwide economy meltdown,your email was luckly picked  
-among other.we are mandated to send you the total sum of 150,000USD  
-through Western Union.send name, address, phone number for more  
-information To email wupayoff2@rocketmail.com
+Here is a simpler testcase:
 
-Regards
-Pastor Cole Jefferson.
+int main ()
+{
+  asm ("stw %r0,0(%r0)"); /* Generate null pointer exception */
+  return 0;
+}
 
+With the above, I get the following INEQUIVALENT ALIASES messages:
 
+Jan  1 10:23:19 gsyprf11 kernel: [135942.140000] INEQUIVALENT ALIASES 0x406b1000 and 0x406b0000 in file libc-2.11.2.so
+Jan  1 10:23:19 gsyprf11 kernel: [135942.224000] INEQUIVALENT ALIASES 0x406b1000 and 0x406b0000 in file libc-2.11.2.so
+
+Running with strace, I see the following mmap call:
+
+mmap(0x406b1000, 28672, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x158000) = 0x406b1000
+
+This is from glibc.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
