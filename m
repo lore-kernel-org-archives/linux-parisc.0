@@ -1,45 +1,66 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: James Bottomley <James.Bottomley-d9PhHud1JfjCXq6kfMZ53/egYHeGw8Jk@public.gmane.org>
 Subject: Re: still nfs problems [Was: Linux 2.6.37-rc8]
-Date: Wed, 5 Jan 2011 11:18:14 -0800
-Message-ID: <AANLkTi=VZUxNFd7n-qwf5aiOeK5rkk8qBmo+kOpgg7up@mail.gmail.com>
+Date: Wed, 05 Jan 2011 13:36:09 -0600
+Message-ID: <1294256169.16957.18.camel@mulgrave.site>
 References: <1294254337.16957.13.camel@mulgrave.site>
+	 <AANLkTi=VZUxNFd7n-qwf5aiOeK5rkk8qBmo+kOpgg7up@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
-	Trond Myklebust <Trond.Myklebust@netapp.com>,
-	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	=?ISO-8859-1?Q?Uwe_Kleine=2DK=F6nig?=
-	<u.kleine-koenig@pengutronix.de>,
-	Marc Kleine-Budde <m.kleine-budde@pengutronix.de>,
-	linux-arm-kernel@lists.infradead.org,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	linux-arch@vger.kernel.org
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <1294254337.16957.13.camel@mulgrave.site>
-List-ID: <linux-arch.vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>,
+	Trond Myklebust <Trond.Myklebust-HgOvQuBEEgTQT0dZR+AlfA@public.gmane.org>,
+	linux-nfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>,
+	Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=
+	<u.kleine-koenig-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>,
+	Marc Kleine-Budde <m.kleine-budde-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>,
+	linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org,
+	Parisc List <linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+	linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Linus Torvalds <torvalds-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>
+Return-path: <linux-nfs-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <AANLkTi=VZUxNFd7n-qwf5aiOeK5rkk8qBmo+kOpgg7up-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-ID: <linux-nfs.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Jan 5, 2011 at 11:05 AM, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> I think the solution for the kernel direct mapping problem is to take
-> the expected flushes and invalidates into kmap/kunmap[_atomic].
+On Wed, 2011-01-05 at 11:18 -0800, Linus Torvalds wrote:
+> On Wed, Jan 5, 2011 at 11:05 AM, James Bottomley
+> <James.Bottomley-JuX6DAaQMKPCXq6kfMZ53/egYHeGw8Jk@public.gmane.org> wrote:
+> >
+> > I think the solution for the kernel direct mapping problem is to take
+> > the expected flushes and invalidates into kmap/kunmap[_atomic].
+> 
+> No, we really can't do that. Most of the time, the kmap() is the only
+> way we access the page anyway, so flushing things would just be
+> stupid. Why waste time and energy on doing something pointless?
 
-No, we really can't do that. Most of the time, the kmap() is the only
-way we access the page anyway, so flushing things would just be
-stupid. Why waste time and energy on doing something pointless?
+It's hardly pointless.  The kmap sets up an inequivalent alias in the
+cache.  When you write to the kmap region, you dirty the CPU caches for
+that alias.  If you tear down the mapping without flushing, the CPU will
+write out the cache lines at its leisure.  If you access the line via
+the other mapping *before* the CPU does writeout, you see stale data.
 
-In fact, kmap() here is a total non-issue. It's not the kmap() that
-introduces any virtual aliases, and never has been. It's the
-"vm_map_ram()" that is the problem. Unlike the kmap(), that really
-_does_ introduce a virtual alias, and is a problem for any virtual
-cache.
+When the kernel dirties a kmap region, it always has to flush somehow
+before kunmap.  One of the problems here is that that flush isn't in the
+NFS code.
 
-So don't blame kmap(). It's innocent and irrelevant - the bug could
-happen entirely without it (think a 64-bit address space that doesn't
-even _have_ kmap, but has software that mixes vm_map_ram() with
-non-mapped accesses).
+> In fact, kmap() here is a total non-issue. It's not the kmap() that
+> introduces any virtual aliases, and never has been. It's the
+> "vm_map_ram()" that is the problem. Unlike the kmap(), that really
+> _does_ introduce a virtual alias, and is a problem for any virtual
+> cache.
+> 
+> So don't blame kmap(). It's innocent and irrelevant - the bug could
+> happen entirely without it (think a 64-bit address space that doesn't
+> even _have_ kmap, but has software that mixes vm_map_ram() with
+> non-mapped accesses).
 
-                           Linus
+I didn't say it was kmap's entire problem ... I just said, can't we
+simplify some of this by consolidating the flushing into the interfaces.
+
+James
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-nfs" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
