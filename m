@@ -1,76 +1,68 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: parisc: flush pages through tmpalias space
-Date: Tue, 4 Jan 2011 22:49:23 -0500
-Message-ID: <20110105034922.GA4120@hiauly1.hia.nrc.ca>
-References: <1293034931.3019.8.camel@mulgrave.site> <20101229042346.GA973@hiauly1.hia.nrc.ca> <1293634281.2803.4.camel@fuzzy> <20101230155640.GA7058@hiauly1.hia.nrc.ca> <20101230160944.GA7360@hiauly1.hia.nrc.ca> <20110101183108.GA19035@hiauly1.hia.nrc.ca>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: NFS broken in latest 2.6.37-rcX
+Date: Wed, 05 Jan 2011 11:36:01 -0600
+Message-ID: <1294248961.15356.30.camel@mulgrave.site>
+References: <20101222223410.3a5f44c3@zombie>
+	 <AANLkTinp3LaW_h91E+44=_-anambaJwja3BFCfG60fUz@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Guy Martin <gmsoft@tuxicoman.be>, linux-parisc@vger.kernel.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110101183108.GA19035@hiauly1.hia.nrc.ca>
+In-Reply-To: <AANLkTinp3LaW_h91E+44=_-anambaJwja3BFCfG60fUz@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, 01 Jan 2011, John David Anglin wrote:
-
-> On Thu, 30 Dec 2010, John David Anglin wrote:
+On Wed, 2010-12-22 at 16:53 -0500, Carlos O'Donell wrote:
+> On Wed, Dec 22, 2010 at 4:34 PM, Guy Martin <gmsoft@tuxicoman.be> wrote:
+> > It seems that NFS got broken recently.
+> > I've bisected this to babddc72a9468884ce1a23db3c3d54b0afa299f0.
+> >
+> > Both NFS version 2 and 3 are affected. I haven't tested NFS 4.
+> >
+> > I've been able to reproduce with both 32bit and 64bit kernels using
+> > gcc-4.5.1 with the fix for PR46915 included.
+> >
+> > To reproduce, simply mount an NFS share and try to list the files with
+> > ls.
+> >
+> > When listing the directory, the code seem to be looping in the commit I
+> > mentioned. The network traffic goes high and you always see the same
+> > packets flowing.
+> >
+> > In current HEAD, the behavior is slightly different. The process uses
+> > 100% and either you get a kernel panic or if you are lucky, you get
+> > something like "memory exhausted".
+> >
+> >
+> > I'm not sure how to troubleshoot this further.
+> >
+> > Any idea ?
 > 
-> > On Thu, 30 Dec 2010, John David Anglin wrote:
-> > 
-> > > Attached is an application that triggers similar errors:
+> You need to understand the failure mode.
 > 
-> Here is a simpler testcase:
+> I would do two things:
 > 
-> int main ()
-> {
->   asm ("stw %r0,0(%r0)"); /* Generate null pointer exception */
->   return 0;
-> }
+> (a) Revert the patch on HEAD and see if it works. This is usually
+> convincing proof that something is broken and the patch interacts
+> badly with our arch.
 > 
-> With the above, I get the following INEQUIVALENT ALIASES messages:
+> (c) Put printfs in the code to see where it's looping and under what
+> conditions.
 > 
-> Jan  1 10:23:19 gsyprf11 kernel: [135942.140000] INEQUIVALENT ALIASES 0x406b1000 and 0x406b0000 in file libc-2.11.2.so
-> Jan  1 10:23:19 gsyprf11 kernel: [135942.224000] INEQUIVALENT ALIASES 0x406b1000 and 0x406b0000 in file libc-2.11.2.so
+> Once you have a better grasp of the failure mode you can contact the
+> author of the patch and tell them about the breakage, CC linux-parisc,
+> and ask for help.
+> 
+> That would be me plan of attack.
 
-This is what I see in the tasks maps file in /proc:
+Arm ran into this as well
 
-00010000-00011000 r-xp 00000000 08:30 6613687                            /home2/dave/inequiv/xxx1
-00011000-00012000 rwxp 00000000 08:30 6613687                            /home2/dave/inequiv/xxx1
-40000000-40005000 rw-p 00000000 00:00 0 
-4002b000-4004b000 r-xp 00000000 08:03 2502157                            /lib/ld-2.11.2.so
-4004b000-4004f000 rwxp 0001f000 08:03 2502157                            /lib/ld-2.11.2.so
-4004f000-40050000 rwxp 00000000 00:00 0 
-40138000-40291000 r-xp 00000000 08:03 2502172                            /lib/libc-2.11.2.so
-40291000-40298000 rwxp 00158000 08:03 2502172                            /lib/libc-2.11.2.so
-40298000-4029a000 rwxp 00000000 00:00 0 
-fe09b000-fe0be000 rwxp 00000000 00:00 0                                  [stack]
+http://marc.info/?t=129372938100002
 
-As can be seen, there are duplicate maps with different protections for xxx1,
-etc.  So, it's clear why we have the inequivalent aliases.  The map can
-be accessed by the application (probably just for lines in the cache).
-I have seen some discussions that even a read may lead to cache corruption.
+It looks to be an inequivalent aliasing problem caused by  writes via
+the kernel direct mapping, and reads via vmalloc space.
 
-These inequivalent maps are coming from glibc:
+James
 
-dave@gsyprf11:~/inequiv$ strace /lib/ld-2.11.2.so ./xxx1
-execve("/lib/ld-2.11.2.so", ["/lib/ld-2.11.2.so", "./xxx1"], [/* 17 vars */]) = 0
-brk(0)                                  = 0x4119a000
-open("./xxx1", O_RDONLY)                = 3
-read(3, "\177ELF\1\2\1\3\0\0\0\0\0\0\0\0\0\2\0\17\0\0\0\1\0\1\3T\0\0\0004"..., 512) = 512
-fstat64(3, {st_mode=0, st_size=4380866642020, ...}) = 0
-getcwd("/home2/dave/inequiv", 128)      = 20
-mmap(0x10000, 4096, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0x10000
-mmap(0x11000, 4096, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0x11000
-...
 
-Carlos what do you think?  arch_get_unmapped_area() accepts MAP_FIXED
-requests even if it would violate cache aliasing constraints.  I don't
-understand the purpose of the region at 0x11000.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
