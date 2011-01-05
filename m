@@ -1,87 +1,59 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 Subject: Re: NFS broken in latest 2.6.37-rcX
-Date: Wed, 5 Jan 2011 19:31:05 +0100
-Message-ID: <20110105193105.0e3b0fec@borg.bxl.tuxicoman.be>
+Date: Wed, 05 Jan 2011 12:47:26 -0600
+Message-ID: <1294253246.16957.7.camel@mulgrave.site>
 References: <20101222223410.3a5f44c3@zombie>
-	<AANLkTinp3LaW_h91E+44=_-anambaJwja3BFCfG60fUz@mail.gmail.com>
-	<1294248961.15356.30.camel@mulgrave.site>
+	 <AANLkTinp3LaW_h91E+44=_-anambaJwja3BFCfG60fUz@mail.gmail.com>
+	 <1294248961.15356.30.camel@mulgrave.site>
+	 <20110105193105.0e3b0fec@borg.bxl.tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
 Cc: Carlos O'Donell <carlos@systemhalted.org>,
 	linux-parisc@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1294248961.15356.30.camel@mulgrave.site>
+In-Reply-To: <20110105193105.0e3b0fec@borg.bxl.tuxicoman.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-James,
-
-Thanks for pointing me to the thread.
-
-I reached similar conclusion as well. After adding lots of printk, I
-could see that the page where the skb buff is copied is not or
-partially updated when being read by xdr_page_filler.
-
-Cheers,
-  Guy
-
-On Wed, 05 Jan 2011 11:36:01 -0600
-James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
-
-> On Wed, 2010-12-22 at 16:53 -0500, Carlos O'Donell wrote:
-> > On Wed, Dec 22, 2010 at 4:34 PM, Guy Martin <gmsoft@tuxicoman.be>
-> > wrote:
-> > > It seems that NFS got broken recently.
-> > > I've bisected this to babddc72a9468884ce1a23db3c3d54b0afa299f0.
-> > >
-> > > Both NFS version 2 and 3 are affected. I haven't tested NFS 4.
-> > >
-> > > I've been able to reproduce with both 32bit and 64bit kernels
-> > > using gcc-4.5.1 with the fix for PR46915 included.
-> > >
-> > > To reproduce, simply mount an NFS share and try to list the files
-> > > with ls.
-> > >
-> > > When listing the directory, the code seem to be looping in the
-> > > commit I mentioned. The network traffic goes high and you always
-> > > see the same packets flowing.
-> > >
-> > > In current HEAD, the behavior is slightly different. The process
-> > > uses 100% and either you get a kernel panic or if you are lucky,
-> > > you get something like "memory exhausted".
-> > >
-> > >
-> > > I'm not sure how to troubleshoot this further.
-> > >
-> > > Any idea ?
-> > 
-> > You need to understand the failure mode.
-> > 
-> > I would do two things:
-> > 
-> > (a) Revert the patch on HEAD and see if it works. This is usually
-> > convincing proof that something is broken and the patch interacts
-> > badly with our arch.
-> > 
-> > (c) Put printfs in the code to see where it's looping and under what
-> > conditions.
-> > 
-> > Once you have a better grasp of the failure mode you can contact the
-> > author of the patch and tell them about the breakage, CC
-> > linux-parisc, and ask for help.
-> > 
-> > That would be me plan of attack.
+On Wed, 2011-01-05 at 19:31 +0100, Guy Martin wrote:
+> James,
 > 
-> Arm ran into this as well
+> Thanks for pointing me to the thread.
 > 
-> http://marc.info/?t=129372938100002
-> 
-> It looks to be an inequivalent aliasing problem caused by  writes via
-> the kernel direct mapping, and reads via vmalloc space.
-> 
-> James
-> 
-> 
+> I reached similar conclusion as well. After adding lots of printk, I
+> could see that the page where the skb buff is copied is not or
+> partially updated when being read by xdr_page_filler.
+
+So does this fix it?
+
+James
+
+---
+
+diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
+index 996dd89..37d7347 100644
+--- a/fs/nfs/dir.c
++++ b/fs/nfs/dir.c
+@@ -1783,6 +1783,7 @@ static int nfs_symlink(struct inode *dir, struct dentry *dentry, const char *sym
+ 	memcpy(kaddr, symname, pathlen);
+ 	if (pathlen < PAGE_SIZE)
+ 		memset(kaddr + pathlen, 0, PAGE_SIZE - pathlen);
++	flush_kernel_dcache_page(page);
+ 	kunmap_atomic(kaddr, KM_USER0);
+ 
+ 	error = NFS_PROTO(dir)->symlink(dir, dentry, page, pathlen, &attr);
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 4435e5e..9a6bfea 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -205,6 +205,7 @@ static void nfs4_setup_readdir(u64 cookie, __be32 *verifier, struct dentry *dent
+ 
+ 	readdir->pgbase = (char *)p - (char *)start;
+ 	readdir->count -= readdir->pgbase;
++	flush_kernel_dcache_page(*readdir->pages);
+ 	kunmap_atomic(start, KM_USER0);
+ }
+ 
+
 
