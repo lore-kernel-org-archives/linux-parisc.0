@@ -1,83 +1,40 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: still nfs problems [Was: Linux 2.6.37-rc8]
-Date: Thu, 06 Jan 2011 15:07:58 -0600
-Message-ID: <1294348078.22825.346.camel@mulgrave.site>
-References: <20110105200008.GJ8638@n2100.arm.linux.org.uk>
-	 <1294259637.16957.25.camel@mulgrave.site>
-	 <AANLkTimzzBsdtWcZtP5E_CH1hUZugGMoaHOiMdQJf764@mail.gmail.com>
-	 <20110105210448.GM8638@n2100.arm.linux.org.uk>
-	 <AANLkTi=EXXBTW7oWHq3D+PHsx=thF1CpkRjn0ax2p5rm@mail.gmail.com>
-	 <1294262208.2952.4.camel@heimdal.trondhjem.org>
-	 <AANLkTi=3Gu-rz=-OdNtUXn4qw60Df6=YePnzvB=s-+Ov@mail.gmail.com>
-	 <1294268808.2952.18.camel@heimdal.trondhjem.org>
-	 <1294270104.16957.73.camel@mulgrave.site>
-	 <1294335614.22825.154.camel@mulgrave.site>
-	 <20110106180530.GI31708@n2100.arm.linux.org.uk>
-	 <1294337670.22825.199.camel@mulgrave.site>
-	 <1294338341.22825.216.camel@mulgrave.site>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Trond Myklebust <Trond.Myklebust@netapp.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=
-	<u.kleine-koenig@pengutronix.de>,
-	Marc Kleine-Budde <m.kleine-budde@pengutronix.de>,
-	linux-arm-kernel@lists.infradead.org,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	linux-arch@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+From: Greg Kroah-Hartman <gregkh@suse.de>
+Subject: [PATCH 12/36] parisc: cleanup console handling
+Date: Thu,  6 Jan 2011 14:23:01 -0800
+Message-ID: <1294352605-31906-12-git-send-email-gregkh@suse.de>
+References: <20110106215404.GA30624@kroah.com>
+Cc: Jiri Slaby <jslaby@suse.cz>, Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, Greg Kroah-Hartman <gregkh@suse.de>
+To: linux-kernel@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1294338341.22825.216.camel@mulgrave.site>
+In-Reply-To: <20110106215404.GA30624@kroah.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2011-01-06 at 12:25 -0600, James Bottomley wrote:
-> OK, so thinking about this, it seems that the only danger is actually
-> what NFS is doing: reading cache pages via a vmap.  In that case, since
-> the requirement is to invalidate the vmap range to prepare for read, we
-> could have invalidate_kernel_vmap_range loop over the underlying pages
-> and flush them through the kernel alias if the architecture specific
-> flag indicates their contents might be dirty.
-> 
-> The loop adds expense that is probably largely unnecessary to
-> invalidate_kernel_vmap_range() but the alternative is adding to the API
-> proliferation with something that only flushes the kernel pages if the
-> arch specific flag says they're dirty.
+From: Jiri Slaby <jslaby@suse.cz>
 
-This is what I think the arm patch would look like (example only: I
-can't compile it).  Is something like this too expensive? the loop can't
-be optimised away because of the need to check the pages (and
-vmalloc_to_page is a three level page table lookup).
+* use newly added for_each_console for iterating consoles
+* add proper console locking
+* do not initialize tmp twice
+* no need to declare console_drivers, it's already done in console.h
 
-James
-
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Acked-by: Kyle McMartin <kyle@mcmartin.ca>
+Cc: Helge Deller <deller@gmx.de>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: linux-parisc@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 ---
+ arch/parisc/kernel/pdc_cons.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/include/asm/cacheflush.h b/arch/arm/include/asm/cacheflush.h
-index 3acd8fa..34469ca 100644
---- a/arch/arm/include/asm/cacheflush.h
-+++ b/arch/arm/include/asm/cacheflush.h
-@@ -414,8 +414,17 @@ static inline void flush_kernel_vmap_range(void *addr, int size)
- }
- static inline void invalidate_kernel_vmap_range(void *addr, int size)
- {
--	if ((cache_is_vivt() || cache_is_vipt_aliasing()))
--	  __cpuc_flush_dcache_area(addr, (size_t)size);
-+	if ((cache_is_vivt() || cache_is_vipt_aliasing())) {
-+		void *cursor = addr;
-+
-+		for ( ; cursor < addr + size; cursor += PAGE_SIZE) {
-+			struct page *page = vmalloc_to_page(cursor);
-+
-+			if (!test_and_set_bit(PG_dcache_clean, &page->flags))
-+				__flush_dcache_page(page_mapping(page), page);
-+		}
-+		__cpuc_flush_dcache_area(addr, (size_t)size);
-+	}
- }
+diff --git a/arch/parisc/kernel/pdc_cons.c b/arch/parisc/kernel/pdc_cons.c
+index 66d1f17..11bdd68 100644
+--- a/arch/parisc/kernel/pdc_cons.c
++++ b/arch/parisc/kernel/pdc_cons.c
+@@ -92,8 +92,6 @@ static int pdc_console_setup(struct console *co, char *options)
  
- #define ARCH_HAS_FLUSH_ANON_PAGE
-
-
+ static struct timer_list pdc_console_timer;
+ 
+-extern struct console * console_drivers;
