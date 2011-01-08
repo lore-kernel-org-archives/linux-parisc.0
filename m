@@ -1,7 +1,7 @@
-From: Trond Myklebust <Trond.Myklebust-HgOvQuBEEgTQT0dZR+AlfA@public.gmane.org>
+From: Trond Myklebust <Trond.Myklebust@netapp.com>
 Subject: Re: still nfs problems [Was: Linux 2.6.37-rc8]
-Date: Sat, 08 Jan 2011 11:49:44 -0500
-Message-ID: <1294505384.4181.14.camel@heimdal.trondhjem.org>
+Date: Sat, 08 Jan 2011 18:15:51 -0500
+Message-ID: <1294528551.4181.19.camel@heimdal.trondhjem.org>
 References: <20110105210448.GM8638@n2100.arm.linux.org.uk>
 	 <AANLkTi=EXXBTW7oWHq3D+PHsx=thF1CpkRjn0ax2p5rm@mail.gmail.com>
 	 <1294262208.2952.4.camel@heimdal.trondhjem.org>
@@ -14,49 +14,54 @@ References: <20110105210448.GM8638@n2100.arm.linux.org.uk>
 	 <1294426405.2929.23.camel@heimdal.trondhjem.org>
 	 <20110107190229.GX31708@n2100.arm.linux.org.uk>
 	 <1294427467.4895.66.camel@mulgrave.site>
+	 <1294505384.4181.14.camel@heimdal.trondhjem.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Cc: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>,
-	Linus Torvalds <torvalds-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>,
-	linux-nfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>,
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
 	Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=
-	<u.kleine-koenig-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>,
-	Marc Kleine-Budde <m.kleine-budde-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>,
-	linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org,
-	Parisc List <linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: James Bottomley <James.Bottomley-d9PhHud1JfjCXq6kfMZ53/egYHeGw8Jk@public.gmane.org>
-Return-path: <linux-nfs-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1294427467.4895.66.camel-0iu6Cu4xQGLYCGPCin2YbQ@public.gmane.org>
-List-ID: <linux-nfs.vger.kernel.org>
+	<u.kleine-koenig@pengutronix.de>,
+	Marc Kleine-Budde <m.kleine-budde@pengutronix.de>,
+	linux-arm-kernel@lists.infradead.org,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	linux-arch@vger.kernel.org
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1294505384.4181.14.camel@heimdal.trondhjem.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2011-01-07 at 13:11 -0600, James Bottomley wrote: 
-> On the other hand, the xdr routines, since they take the pages anyway,
-> could use a scatterlist approach to writing through the kernel mapping
-> instead of using vmap ... we have all the machinery for this in
-> lib/scatterlist.c ... it's not designed for this case, since it's
-> designed to allow arbitrary linear reads and writes on a block
-> scatterlist, but the principle is the same ... it looks like it would be
-> rather a big patch, though ... 
+On Sat, 2011-01-08 at 11:49 -0500, Trond Myklebust wrote: 
+> On Fri, 2011-01-07 at 13:11 -0600, James Bottomley wrote: 
+> > On the other hand, the xdr routines, since they take the pages anyway,
+> > could use a scatterlist approach to writing through the kernel mapping
+> > instead of using vmap ... we have all the machinery for this in
+> > lib/scatterlist.c ... it's not designed for this case, since it's
+> > designed to allow arbitrary linear reads and writes on a block
+> > scatterlist, but the principle is the same ... it looks like it would be
+> > rather a big patch, though ... 
+> 
+> The following alternative seems to work for me, but has only been
+> lightly tested so far. It's a bit large for a stable patch, but not too
+> ungainly.
+> 
+> It modifies xdr_stream, adding the ability to iterate through page data.
+> To avoid kmap()/kunmap(), it does require that pages be allocated in
+> lowmem, but since the only use case here is when using page arrays as
+> temporary buffers, that seems like an acceptable compromise.
 
-The following alternative seems to work for me, but has only been
-lightly tested so far. It's a bit large for a stable patch, but not too
-ungainly.
-
-It modifies xdr_stream, adding the ability to iterate through page data.
-To avoid kmap()/kunmap(), it does require that pages be allocated in
-lowmem, but since the only use case here is when using page arrays as
-temporary buffers, that seems like an acceptable compromise.
+...and here is an update which makes the whole process transparent to
+the decoder. It basically teaches xdr_inline_decode() how to switch
+buffers when it hits the end of the current iovec and/or page.
 
 Cheers
   Trond
-
---------------------------------------------------------------------------------- 
->From f87f13e3198ec536c1b9cfe19ad47df4fb922382 Mon Sep 17 00:00:00 2001
-From: Trond Myklebust <Trond.Myklebust-HgOvQuBEEgTQT0dZR+AlfA@public.gmane.org>
-Date: Fri, 7 Jan 2011 18:51:33 -0500
+----------------------------------------------------------------------------------- 
+>From 8b2e60cef5c65eef41ab61286f62dec6bfb1ac27 Mon Sep 17 00:00:00 2001
+From: Trond Myklebust <Trond.Myklebust@netapp.com>
+Date: Sat, 8 Jan 2011 17:45:38 -0500
 Subject: [PATCH] NFS: Don't use vm_map_ram() in readdir
 
 vm_map_ram() is not available on NOMMU platforms, and causes trouble
@@ -68,18 +73,18 @@ for the case when we are not crossing a page boundary, but to copy
 the data into a linear scratch buffer when we are accessing data
 that spans page boundaries.
 
-Signed-off-by: Trond Myklebust <Trond.Myklebust-HgOvQuBEEgTQT0dZR+AlfA@public.gmane.org>
+Signed-off-by: Trond Myklebust <Trond.Myklebust@netapp.com>
 ---
- fs/nfs/dir.c               |   45 ++++++++---------
+ fs/nfs/dir.c               |   44 ++++++-------
  fs/nfs/nfs2xdr.c           |    6 --
  fs/nfs/nfs3xdr.c           |    6 --
  fs/nfs/nfs4xdr.c           |    6 --
  include/linux/sunrpc/xdr.h |    4 +-
- net/sunrpc/xdr.c           |  115 ++++++++++++++++++++++++++++++++++++--------
- 6 files changed, 120 insertions(+), 62 deletions(-)
+ net/sunrpc/xdr.c           |  155 +++++++++++++++++++++++++++++++++++---------
+ 6 files changed, 148 insertions(+), 73 deletions(-)
 
 diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
-index 996dd89..ad9e5e0 100644
+index 996dd89..0108cf4 100644
 --- a/fs/nfs/dir.c
 +++ b/fs/nfs/dir.c
 @@ -33,7 +33,6 @@
@@ -90,7 +95,7 @@ index 996dd89..ad9e5e0 100644
  #include <linux/kmemleak.h>
  
  #include "delegation.h"
-@@ -459,25 +458,27 @@ out:
+@@ -459,25 +458,26 @@ out:
  /* Perform conversion from xdr to cache array */
  static
  int nfs_readdir_page_filler(nfs_readdir_descriptor_t *desc, struct nfs_entry *entry,
@@ -106,9 +111,9 @@ index 996dd89..ad9e5e0 100644
 +		.buflen = buflen,
 +		.len = buflen,
 +	};
++	struct page *scratch;
  	struct nfs_cache_array *array;
  	unsigned int count = 0;
-+	struct page *scratch;
  	int status;
  
 -	buf.head->iov_base = xdr_page;
@@ -126,11 +131,10 @@ index 996dd89..ad9e5e0 100644
  
 +	xdr_init_decode(&stream, &buf, NULL);
 +	xdr_set_scratch_buffer(&stream, page_address(scratch), PAGE_SIZE);
-+	xdr_enter_page(&stream, buflen);
  
  	do {
  		status = xdr_decode(desc, entry, &stream);
-@@ -506,6 +507,8 @@ int nfs_readdir_page_filler(nfs_readdir_descriptor_t *desc, struct nfs_entry *en
+@@ -506,6 +506,8 @@ int nfs_readdir_page_filler(nfs_readdir_descriptor_t *desc, struct nfs_entry *en
  		} else
  			status = PTR_ERR(array);
  	}
@@ -139,7 +143,7 @@ index 996dd89..ad9e5e0 100644
  	return status;
  }
  
-@@ -521,7 +524,6 @@ static
+@@ -521,7 +523,6 @@ static
  void nfs_readdir_free_large_page(void *ptr, struct page **pages,
  		unsigned int npages)
  {
@@ -147,7 +151,7 @@ index 996dd89..ad9e5e0 100644
  	nfs_readdir_free_pagearray(pages, npages);
  }
  
-@@ -530,9 +532,8 @@ void nfs_readdir_free_large_page(void *ptr, struct page **pages,
+@@ -530,9 +531,8 @@ void nfs_readdir_free_large_page(void *ptr, struct page **pages,
   * to nfs_readdir_free_large_page
   */
  static
@@ -158,7 +162,7 @@ index 996dd89..ad9e5e0 100644
  	unsigned int i;
  
  	for (i = 0; i < npages; i++) {
-@@ -541,13 +542,11 @@ void *nfs_readdir_large_page(struct page **pages, unsigned int npages)
+@@ -541,13 +541,11 @@ void *nfs_readdir_large_page(struct page **pages, unsigned int npages)
  			goto out_freepages;
  		pages[i] = page;
  	}
@@ -174,7 +178,7 @@ index 996dd89..ad9e5e0 100644
  }
  
  static
-@@ -577,8 +576,8 @@ int nfs_readdir_xdr_to_array(nfs_readdir_descriptor_t *desc, struct page *page,
+@@ -577,8 +575,8 @@ int nfs_readdir_xdr_to_array(nfs_readdir_descriptor_t *desc, struct page *page,
  	memset(array, 0, sizeof(struct nfs_cache_array));
  	array->eof_index = -1;
  
@@ -185,7 +189,7 @@ index 996dd89..ad9e5e0 100644
  		goto out_release_array;
  	do {
  		unsigned int pglen;
-@@ -587,7 +586,7 @@ int nfs_readdir_xdr_to_array(nfs_readdir_descriptor_t *desc, struct page *page,
+@@ -587,7 +585,7 @@ int nfs_readdir_xdr_to_array(nfs_readdir_descriptor_t *desc, struct page *page,
  		if (status < 0)
  			break;
  		pglen = status;
@@ -268,43 +272,25 @@ index 498ab93..7783c68 100644
  extern void xdr_read_pages(struct xdr_stream *xdr, unsigned int len);
  extern void xdr_enter_page(struct xdr_stream *xdr, unsigned int len);
 diff --git a/net/sunrpc/xdr.c b/net/sunrpc/xdr.c
-index cd9e841..cff0974 100644
+index cd9e841..679cd67 100644
 --- a/net/sunrpc/xdr.c
 +++ b/net/sunrpc/xdr.c
-@@ -569,29 +569,112 @@ void xdr_init_decode(struct xdr_stream *xdr, struct xdr_buf *buf, __be32 *p)
- 	xdr->iov = iov;
- 	xdr->p = p;
- 	xdr->end = (__be32 *)((char *)iov->iov_base + len);
-+	xdr->page_ptr = NULL;
-+	xdr->scratch.iov_base = NULL;
-+	xdr->scratch.iov_len = 0;
+@@ -552,6 +552,74 @@ void xdr_write_pages(struct xdr_stream *xdr, struct page **pages, unsigned int b
  }
- EXPORT_SYMBOL_GPL(xdr_init_decode);
+ EXPORT_SYMBOL_GPL(xdr_write_pages);
  
- /**
-- * xdr_inline_peek - Allow read-ahead in the XDR data stream
-+ * xdr_set_scratch_buffer - Attach a scratch buffer for decoding data.
-  * @xdr: pointer to xdr_stream struct
-- * @nbytes: number of bytes of data to decode
-+ * @buf: pointer to an empty buffer
-+ * @buflen: size of 'buf'
-  *
-- * Check if the input buffer is long enough to enable us to decode
-- * 'nbytes' more bytes of data starting at the current position.
-- * If so return the current pointer without updating the current
-- * pointer position.
-+ * The scratch buffer is used when decoding from an array of pages.
-+ * If an xdr_inline_decode() call spans across page boundaries, then
-+ * we copy the data into the scratch buffer in order to allow linear
-+ * access.
-  */
--__be32 * xdr_inline_peek(struct xdr_stream *xdr, size_t nbytes)
-+void xdr_set_scratch_buffer(struct xdr_stream *xdr, void *buf, size_t buflen)
++static void xdr_set_iov(struct xdr_stream *xdr, struct kvec *iov,
++		__be32 *p, unsigned int len)
 +{
-+	xdr->scratch.iov_base = buf;
-+	xdr->scratch.iov_len = buflen;
++	if (len > iov->iov_len)
++		len = iov->iov_len;
++	if (p == NULL)
++		p = (__be32*)iov->iov_base;
++	xdr->p = p;
++	xdr->end = (__be32*)(iov->iov_base + len);
++	xdr->iov = iov;
++	xdr->page_ptr = NULL;
 +}
-+EXPORT_SYMBOL_GPL(xdr_set_scratch_buffer);
 +
 +static int xdr_set_page_base(struct xdr_stream *xdr,
 +		unsigned int base, unsigned int len)
@@ -319,7 +305,6 @@ index cd9e841..cff0974 100644
 +	if (base >= maxlen)
 +		return -EINVAL;
 +	maxlen -= base;
-+
 +	if (len > maxlen)
 +		len = maxlen;
 +
@@ -336,19 +321,68 @@ index cd9e841..cff0974 100644
 +	if (pgend > PAGE_SIZE)
 +		pgend = PAGE_SIZE;
 +	xdr->end = (__be32*)(kaddr + pgend);
++	xdr->iov = NULL;
 +	return 0;
 +}
 +
-+static int xdr_set_next_page(struct xdr_stream *xdr)
++static void xdr_set_next_page(struct xdr_stream *xdr)
 +{
 +	unsigned int newbase;
 +
 +	newbase = (1 + xdr->page_ptr - xdr->buf->pages) << PAGE_SHIFT;
 +	newbase -= xdr->buf->page_base;
 +
-+	return xdr_set_page_base(xdr, newbase, PAGE_SIZE);
++	if (xdr_set_page_base(xdr, newbase, PAGE_SIZE) < 0)
++		xdr_set_iov(xdr, xdr->buf->tail, NULL, xdr->buf->len);
 +}
 +
++static bool xdr_set_next_buffer(struct xdr_stream *xdr)
++{
++	if (xdr->page_ptr != NULL)
++		xdr_set_next_page(xdr);
++	else if (xdr->iov == xdr->buf->head) {
++		if (xdr_set_page_base(xdr, 0, PAGE_SIZE) < 0)
++			xdr_set_iov(xdr, xdr->buf->tail, NULL, xdr->buf->len);
++	}
++	return xdr->p != xdr->end;
++}
++
+ /**
+  * xdr_init_decode - Initialize an xdr_stream for decoding data.
+  * @xdr: pointer to xdr_stream struct
+@@ -560,41 +628,67 @@ EXPORT_SYMBOL_GPL(xdr_write_pages);
+  */
+ void xdr_init_decode(struct xdr_stream *xdr, struct xdr_buf *buf, __be32 *p)
+ {
+-	struct kvec *iov = buf->head;
+-	unsigned int len = iov->iov_len;
+-
+-	if (len > buf->len)
+-		len = buf->len;
+ 	xdr->buf = buf;
+-	xdr->iov = iov;
+-	xdr->p = p;
+-	xdr->end = (__be32 *)((char *)iov->iov_base + len);
++	xdr->scratch.iov_base = NULL;
++	xdr->scratch.iov_len = 0;
++	if (buf->head[0].iov_len != 0)
++		xdr_set_iov(xdr, buf->head, p, buf->len);
++	else if (buf->page_len != 0)
++		xdr_set_page_base(xdr, 0, buf->len);
+ }
+ EXPORT_SYMBOL_GPL(xdr_init_decode);
+ 
+-/**
+- * xdr_inline_peek - Allow read-ahead in the XDR data stream
+- * @xdr: pointer to xdr_stream struct
+- * @nbytes: number of bytes of data to decode
+- *
+- * Check if the input buffer is long enough to enable us to decode
+- * 'nbytes' more bytes of data starting at the current position.
+- * If so return the current pointer without updating the current
+- * pointer position.
+- */
+-__be32 * xdr_inline_peek(struct xdr_stream *xdr, size_t nbytes)
 +static __be32 * __xdr_inline_decode(struct xdr_stream *xdr, size_t nbytes)
  {
  	__be32 *p = xdr->p;
@@ -360,28 +394,38 @@ index cd9e841..cff0974 100644
  	return p;
  }
 -EXPORT_SYMBOL_GPL(xdr_inline_peek);
-+
-+static __be32 *xdr_page_inline_decode(struct xdr_stream *xdr, size_t nbytes)
+ 
+ /**
+- * xdr_inline_decode - Retrieve non-page XDR data to decode
++ * xdr_set_scratch_buffer - Attach a scratch buffer for decoding data.
++ * @xdr: pointer to xdr_stream struct
++ * @buf: pointer to an empty buffer
++ * @buflen: size of 'buf'
++ *
++ * The scratch buffer is used when decoding from an array of pages.
++ * If an xdr_inline_decode() call spans across page boundaries, then
++ * we copy the data into the scratch buffer in order to allow linear
++ * access.
++ */
++void xdr_set_scratch_buffer(struct xdr_stream *xdr, void *buf, size_t buflen)
 +{
-+	size_t cplen;
-+	void *cpdest;
++	xdr->scratch.iov_base = buf;
++	xdr->scratch.iov_len = buflen;
++}
++EXPORT_SYMBOL_GPL(xdr_set_scratch_buffer);
++
++static __be32 *xdr_copy_to_scratch(struct xdr_stream *xdr, size_t nbytes)
++{
 +	__be32 *p;
-+
-+	if (xdr->p == xdr->end && xdr_set_next_page(xdr) < 0)
-+		return NULL;
-+
-+	p = __xdr_inline_decode(xdr, nbytes);
-+	if (p != NULL)
-+		return p;
++	void *cpdest = xdr->scratch.iov_base;
++	size_t cplen = (char *)xdr->end - (char *)xdr->p;
 +
 +	if (nbytes > xdr->scratch.iov_len)
 +		return NULL;
-+	cplen = (char *)xdr->end - (char *)xdr->p;
-+	cpdest = xdr->scratch.iov_base;
 +	memcpy(cpdest, xdr->p, cplen);
 +	cpdest += cplen;
 +	nbytes -= cplen;
-+	if (xdr_set_next_page(xdr) < 0)
++	if (!xdr_set_next_buffer(xdr))
 +		return NULL;
 +	p = __xdr_inline_decode(xdr, nbytes);
 +	if (p == NULL)
@@ -389,27 +433,35 @@ index cd9e841..cff0974 100644
 +	memcpy(cpdest, p, nbytes);
 +	return xdr->scratch.iov_base;
 +}
- 
- /**
-  * xdr_inline_decode - Retrieve non-page XDR data to decode
-@@ -605,13 +688,9 @@ EXPORT_SYMBOL_GPL(xdr_inline_peek);
++
++/**
++ * xdr_inline_decode - Retrieve XDR data to decode
+  * @xdr: pointer to xdr_stream struct
+  * @nbytes: number of bytes of data to decode
+  *
+@@ -605,13 +699,16 @@ EXPORT_SYMBOL_GPL(xdr_inline_peek);
   */
  __be32 * xdr_inline_decode(struct xdr_stream *xdr, size_t nbytes)
  {
 -	__be32 *p = xdr->p;
 -	__be32 *q = p + XDR_QUADLEN(nbytes);
--
++	__be32 *p;
+ 
 -	if (unlikely(q > xdr->end || q < p))
--		return NULL;
++	if (nbytes == 0)
++		return xdr->p;
++	if (xdr->p == xdr->end && !xdr_set_next_buffer(xdr))
+ 		return NULL;
 -	xdr->p = q;
 -	return p;
-+	if (xdr->page_ptr == NULL)
-+		return __xdr_inline_decode(xdr, nbytes);
-+	return xdr_page_inline_decode(xdr, nbytes);
++	p = __xdr_inline_decode(xdr, nbytes);
++	if (p != NULL)
++		return p;
++	return xdr_copy_to_scratch(xdr, nbytes);
  }
  EXPORT_SYMBOL_GPL(xdr_inline_decode);
  
-@@ -671,16 +750,12 @@ EXPORT_SYMBOL_GPL(xdr_read_pages);
+@@ -671,16 +768,12 @@ EXPORT_SYMBOL_GPL(xdr_read_pages);
   */
  void xdr_enter_page(struct xdr_stream *xdr, unsigned int len)
  {
@@ -437,10 +489,5 @@ Trond Myklebust
 Linux NFS client maintainer
 
 NetApp
-Trond.Myklebust-HgOvQuBEEgTQT0dZR+AlfA@public.gmane.org
+Trond.Myklebust@netapp.com
 www.netapp.com
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-nfs" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
