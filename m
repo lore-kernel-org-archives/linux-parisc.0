@@ -1,336 +1,520 @@
-From: Meelis Roos <mroos@linux.ee>
-Subject: IRQ handler type mismatches
-Date: Mon, 10 Jan 2011 10:28:49 +0200 (EET)
-Message-ID: <alpine.SOC.1.00.1101101025340.27086@math.ut.ee>
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
+	<u.kleine-koenig-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: still nfs problems [Was: Linux 2.6.37-rc8]
+Date: Mon, 10 Jan 2011 11:50:19 +0100
+Message-ID: <20110110105019.GC24920@pengutronix.de>
+References: <1294268808.2952.18.camel@heimdal.trondhjem.org>
+ <1294270104.16957.73.camel@mulgrave.site>
+ <1294335614.22825.154.camel@mulgrave.site>
+ <1294336054.2905.1.camel@heimdal.trondhjem.org>
+ <AANLkTimusF4KCJ4vHPn+T1dUiKxapXaT0QTtFvh8Ykdd@mail.gmail.com>
+ <1294426405.2929.23.camel@heimdal.trondhjem.org>
+ <20110107190229.GX31708@n2100.arm.linux.org.uk>
+ <1294427467.4895.66.camel@mulgrave.site>
+ <1294505384.4181.14.camel@heimdal.trondhjem.org>
+ <1294528551.4181.19.camel@heimdal.trondhjem.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-To: linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=iso-8859-1
+Cc: James Bottomley <James.Bottomley-d9PhHud1JfjCXq6kfMZ53/egYHeGw8Jk@public.gmane.org>,
+	Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>,
+	Linus Torvalds <torvalds-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>,
+	linux-nfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>,
+	Marc Kleine-Budde <m.kleine-budde-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>,
+	linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org,
+	Parisc List <linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+	linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Trond Myklebust <Trond.Myklebust-HgOvQuBEEgTQT0dZR+AlfA@public.gmane.org>
+Return-path: <linux-nfs-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1294528551.4181.19.camel-rJ7iovZKK19ZJLDQqaL3InhyD016LWXt@public.gmane.org>
+List-ID: <linux-nfs.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello,
+Hi Trond,
 
-I'm tring 2.6.37 and 2.6.37+git on SMP L1000 64-bit. I'm getting IRQ 
-handler type mismatch for IRQs 64 and 65 on bootup. 2.6.37 crashed 
-aptitude (maybe unrelated), 2.6.37+git as of 2011-01-09 has worked fine 
-on two tries.
+On Sat, Jan 08, 2011 at 06:15:51PM -0500, Trond Myklebust wrote:
+> ---------------------------------------------------------------------=
+--------------=20
+It would be great if you could add a "8<" in the line above next time.
+Then git-am -c does the right thing (at least I think so).
 
-Full dmesg:
-[    0.000000] Linux version 2.6.37-03737-g0c21e3a (mroos@hernes) (gcc version 4.4.5 (GCC) ) #1 SMP Sun Jan 9 18:47:10 EET 2011
-[    0.000000] unwind_init: start = 0x4050f000, end = 0x4053cef0, entries = 11759
-[    0.000000] WARNING: Out of order unwind entry! 0000000040510720 and 0000000040510730
-[    0.000000] WARNING: Out of order unwind entry! 0000000040510730 and 0000000040510740
-[    0.000000] WARNING: Out of order unwind entry! 0000000040511330 and 0000000040511340
-[    0.000000] WARNING: Out of order unwind entry! 0000000040511340 and 0000000040511350
-[    0.000000] FP[0] enabled: Rev 1 Model 16
-[    0.000000] The 64-bit Kernel has started...
-[    0.000000] bootconsole [ttyB0] enabled
-[    0.000000] Initialized PDC Console for debugging.
-[    0.000000] Determining PDC firmware type: 64 bit PAT.
-[    0.000000] model 00005c90 00000491 00000000 00000002 2353fbcb 100000f0 00000008 000000b2 000000b2
-[    0.000000] vers  00000203
-[    0.000000] CPUID vers 17 rev 8 (0x00000228)
-[    0.000000] capabilities 0x1
-[    0.000000] model 9000/800/L1000-44
-[    0.000000] Total Memory: 3072 MB
-[    0.000000] On node 0 totalpages: 786432
-[    0.000000] free_area_init_node: node 0, pgdat 40554700, node_mem_map 40c25000
-[    0.000000]   Normal zone: 10752 pages used for memmap
-[    0.000000]   Normal zone: 0 pages reserved
-[    0.000000]   Normal zone: 775680 pages, LIFO batch:31
-[    0.000000] PERCPU: Embedded 10 pages/cpu @0000000043650000 s12032 r8192 d20736 u40960
-[    0.000000] pcpu-alloc: s12032 r8192 d20736 u40960 alloc=10*4096
-[    0.000000] pcpu-alloc: [0] 0 [0] 1 [0] 2 [0] 3 [0] 4 [0] 5 [0] 6 [0] 7 
-[    0.000000] SMP: bootstrap CPU ID is 0
-[    0.000000] Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 775680
-[    0.000000] Kernel command line: root=/dev/sda5 HOME=/ console=ttyS0 TERM=vt102 palo_kernel=2/vmlinux-2.6.37-03737-g0c21e3a
-[    0.000000] PID hash table entries: 4096 (order: 3, 32768 bytes)
-[    0.000000] Dentry cache hash table entries: 524288 (order: 10, 4194304 bytes)
-[    0.000000] Inode-cache hash table entries: 262144 (order: 9, 2097152 bytes)
-[    0.000000] Memory: 3083708k/3145728k available (3503k kernel code, 62020k reserved, 1476k data, 172k init)
-[    0.000000] virtual kernel memory layout:
-[    0.000000]     vmalloc : 0x0000000000008000 - 0x000000003f000000   (1007 MB)
-[    0.000000]     memory  : 0x0000000040000000 - 0x0000000100000000   (3072 MB)
-[    0.000000]       .init : 0x00000000406d4000 - 0x00000000406ff000   ( 172 kB)
-[    0.000000]       .data : 0x000000004046bf10 - 0x00000000405dd200   (1476 kB)
-[    0.000000]       .text : 0x0000000040100000 - 0x000000004046bf10   (3503 kB)
-[    0.000000] SLUB: Genslabs=11, HWalign=64, Order=0-3, MinObjects=0, CPUs=8, Nodes=8
-[    0.000000] Hierarchical RCU implementation.
-[    0.000000] 	RCU-based detection of stalled CPUs is disabled.
-[    0.000000] NR_IRQS:128
-[    0.000000] Console: colour dummy device 160x64
-[    0.130000] Calibrating delay loop... 878.18 BogoMIPS (lpj=4390912)
-[    0.400000] pid_max: default: 32768 minimum: 301
-[    0.400000] Mount-cache hash table entries: 256
-[    0.430000] Brought up 1 CPUs
-[    0.440000] NET: Registered protocol family 16
-[    0.440000] Searching for devices...
-[    0.910000] Found devices:
-[    0.910000] 1. Rhapsody DC- 440 at 0xfffffffffffa0000 [160] { 0, 0x0, 0x5c9, 0x00004 }
-[    0.920000] 2. Rhapsody DC- 440 at 0xfffffffffffa6000 [166] { 0, 0x0, 0x5c9, 0x00004 }
-[    0.920000] 3. Memory at 0xfffffffffed08000 [8] { 1, 0x0, 0x095, 0x00009 }
-[    0.930000] 4. Astro BC Runway Port at 0xfffffffffed00000 [0] { 12, 0x0, 0x582, 0x0000b }
-[    0.940000] 5. Elroy PCI Bridge at 0xfffffffffed30000 [0/0] { 13, 0x0, 0x782, 0x0000a }
-[    0.990000] 6. Elroy PCI Bridge at 0xfffffffffed32000 [0/1] { 13, 0x0, 0x782, 0x0000a }
-[    1.000000] 7. Elroy PCI Bridge at 0xfffffffffed34000 [0/2] { 13, 0x0, 0x782, 0x0000a }
-[    1.000000] 8. Elroy PCI Bridge at 0xfffffffffed36000 [0/3] { 13, 0x0, 0x782, 0x0000a }
-[    1.010000] 9. Elroy PCI Bridge at 0xfffffffffed38000 [0/4] { 13, 0x0, 0x782, 0x0000a }
-[    1.020000] 10. Elroy PCI Bridge at 0xfffffffffed3a000 [0/5] { 13, 0x0, 0x782, 0x0000a }
-[    1.410000] 11. Elroy PCI Bridge at 0xfffffffffed3c000 [0/6] { 13, 0x0, 0x782, 0x0000a }
-[    1.420000] 12. Elroy PCI Bridge at 0xfffffffffed3e000 [0/7] { 13, 0x0, 0x782, 0x0000a }
-[    1.430000] Enabling PDC_PAT chassis codes support v0.05
-[    1.760000] Releasing cpu 1 now, hpa=fffffffffffa6000
-[    1.770000] FP[1] enabled: Rev 1 Model 16
-[    1.780000] IRQ handler type mismatch for IRQ 64
-[    1.780000] current handler: timer
-[    1.790000] Backtrace:
-[    1.790000]  [<000000004011ed24>] show_stack+0x14/0x20
-[    1.810000]  [<00000000401174a8>] dump_stack+0x18/0x28
-[    1.810000]  [<0000000040196cd0>] __setup_irq+0x4d0/0x500
-[    1.820000]  [<0000000040196d40>] setup_irq+0x40/0x58
-[    1.820000]  [<00000000406d7378>] init_IRQ+0xa8/0x130
-[    1.830000]  [<00000000406d87c4>] smp_callin+0x144/0x1a8
-[    1.830000]  [<00000000402011e4>] d_rehash+0x4c/0x60
-[    1.860000]  [<00000000401f9330>] do_path_lookup+0xa0/0x140
-[    1.860000]  [<00000000401fa72c>] do_filp_open+0x17c/0x780
-[    1.870000]  [<0000000040142b78>] enqueue_task+0x60/0x88
-[    1.870000]  [<000000004011b5f0>] _raw_spin_unlock_irqrestore+0x18/0x30
-[    1.880000]  [<000000004014965c>] finish_task_switch+0x4c/0x150
-[    1.880000]  [<000000004014b564>] schedule_tail+0x54/0x160
-[    1.910000]  [<000000004010347c>] ret_from_kernel_thread+0x24/0x40
-[    1.910000] 
-[    1.910000] IRQ handler type mismatch for IRQ 65
-[    1.920000] current handler: IPI
-[    1.920000] Backtrace:
-[    1.920000]  [<000000004011ed24>] show_stack+0x14/0x20
-[    1.930000]  [<00000000401174a8>] dump_stack+0x18/0x28
-[    1.930000]  [<0000000040196cd0>] __setup_irq+0x4d0/0x500
-[    1.940000]  [<0000000040196d40>] setup_irq+0x40/0x58
-[    1.940000]  [<00000000406d73b4>] init_IRQ+0xe4/0x130
-[    1.960000]  [<00000000406d87c4>] smp_callin+0x144/0x1a8
-[    1.970000]  [<00000000402011e4>] d_rehash+0x4c/0x60
-[    1.970000]  [<00000000401f9330>] do_path_lookup+0xa0/0x140
-[    1.980000]  [<00000000401fa72c>] do_filp_open+0x17c/0x780
-[    1.980000]  [<0000000040142b78>] enqueue_task+0x60/0x88
-[    1.990000]  [<000000004011b5f0>] _raw_spin_unlock_irqrestore+0x18/0x30
-[    1.990000]  [<000000004014965c>] finish_task_switch+0x4c/0x150
-[    2.030000]  [<000000004014b564>] schedule_tail+0x54/0x160
-[    2.030000]  [<000000004010347c>] ret_from_kernel_thread+0x24/0x40
-[    2.040000] 
-[    2.130000] CPU(s): 2 x PA8500 (PCX-W) at 440.000000 MHz
-[    2.130000] Whole cache flush 333647 cycles, flushing 6287360 bytes 1074964 cycles
-[    2.130000] Setting cache flush threshold to 100000 (2 CPUs online)
-[    2.190000] SBA found Astro 2.1 at 0xfffffffffed00000
-[    2.200000] Elroy version TR4.0 (0x5) found at 0xfffffffffed30000
-[    2.230000] pci 0000:00:00.0: [1011:0019] type 0 class 0x000200
-[    2.230000] pci 0000:00:00.0: reg 10: [io  0x0000-0x007f]
-[    2.230000] pci 0000:00:00.0: reg 14: [mem 0x00000000-0x000003ff]
-[    2.230000] pci 0000:00:00.0: reg 30: [mem 0x00000000-0x0003ffff pref]
-[    2.230000] pci 0000:00:01.0: [1000:000b] type 0 class 0x000100
-[    2.230000] pci 0000:00:01.0: reg 10: [io  0x0000-0x00ff]
-[    2.230000] pci 0000:00:01.0: reg 14: [mem 0x00000000-0x000003ff 64bit]
-[    2.230000] pci 0000:00:01.0: reg 1c: [mem 0x00000000-0x00001fff 64bit]
-[    2.230000] pci 0000:00:01.0: supports D1 D2
-[    2.230000] pci 0000:00:01.1: [1000:000b] type 0 class 0x000100
-[    2.230000] pci 0000:00:01.1: reg 10: [io  0x0000-0x00ff]
-[    2.230000] pci 0000:00:01.1: reg 14: [mem 0xf8020000-0xf80203ff 64bit]
-[    2.230000] pci 0000:00:01.1: reg 1c: [mem 0xf8040000-0xf8041fff 64bit]
-[    2.230000] pci 0000:00:01.1: supports D1 D2
-[    2.230000] pci 0000:00:02.0: [1000:000f] type 0 class 0x000100
-[    2.230000] pci 0000:00:02.0: reg 10: [io  0x0000-0x00ff]
-[    2.230000] pci 0000:00:02.0: reg 14: [mem 0x00000000-0x000000ff]
-[    2.230000] pci 0000:00:02.0: reg 18: [mem 0x00000000-0x00000fff]
-[    2.230000] pci 0000:00:02.1: [1000:000f] type 0 class 0x000100
-[    2.230000] pci 0000:00:02.1: reg 10: [io  0x0000-0x00ff]
-[    2.230000] pci 0000:00:02.1: reg 14: [mem 0x00000000-0x000000ff]
-[    2.230000] pci 0000:00:02.1: reg 18: [mem 0x00000000-0x00000fff]
-[    2.240000] pci 0000:00:04.0: [103c:1048] type 0 class 0x000700
-[    2.240000] pci 0000:00:04.0: reg 10: [mem 0xf8000000-0xf8000fff]
-[    2.240000] pci 0000:00:04.0: reg 14: [io  0x0000-0x003f]
-[    2.240000] pci 0000:00:05.0: [103c:1048] type 0 class 0x000700
-[    2.240000] pci 0000:00:05.0: reg 10: [mem 0x00000000-0x00000fff]
-[    2.240000] pci 0000:00:05.0: reg 14: [io  0x0000-0x003f]
-[    2.240000] pci 0000:00:00.0: BAR 6: assigned [mem 0xfffffffff8080000-0xfffffffff80bffff pref]
-[    2.300000] pci 0000:00:01.0: BAR 3: assigned [mem 0xfffffffff8002000-0xfffffffff8003fff 64bit]
-[    2.440000] pci 0000:00:01.0: BAR 3: set to [mem 0xfffffffff8002000-0xfffffffff8003fff 64bit] (PCI address [0xf8002000-0xf8003fff])
-[    2.460000] pci 0000:00:02.0: BAR 2: assigned [mem 0xfffffffff8001000-0xfffffffff8001fff]
-[    2.460000] pci 0000:00:02.0: BAR 2: set to [mem 0xfffffffff8001000-0xfffffffff8001fff] (PCI address [0xf8001000-0xf8001fff])
-[    2.730000] pci 0000:00:02.1: BAR 2: assigned [mem 0xfffffffff8004000-0xfffffffff8004fff]
-[    2.860000] pci 0000:00:02.1: BAR 2: set to [mem 0xfffffffff8004000-0xfffffffff8004fff] (PCI address [0xf8004000-0xf8004fff])
-[    3.000000] pci 0000:00:05.0: BAR 0: assigned [mem 0xfffffffff8005000-0xfffffffff8005fff]
-[    3.140000] pci 0000:00:05.0: BAR 0: set to [mem 0xfffffffff8005000-0xfffffffff8005fff] (PCI address [0xf8005000-0xf8005fff])
-[    3.290000] pci 0000:00:00.0: BAR 1: assigned [mem 0xfffffffff8006000-0xfffffffff80063ff]
-[    3.420000] pci 0000:00:00.0: BAR 1: set to [mem 0xfffffffff8006000-0xfffffffff80063ff] (PCI address [0xf8006000-0xf80063ff])
-[    3.440000] pci 0000:00:01.0: BAR 1: assigned [mem 0xfffffffff8007000-0xfffffffff80073ff 64bit]
-[    3.450000] pci 0000:00:01.0: BAR 1: set to [mem 0xfffffffff8007000-0xfffffffff80073ff 64bit] (PCI address [0xf8007000-0xf80073ff])
-[    3.710000] pci 0000:00:01.0: BAR 0: assigned [io  0x0100-0x01ff]
-[    3.720000] pci 0000:00:01.0: BAR 0: set to [io  0x0100-0x01ff] (PCI address [0x100-0x1ff])
-[    3.990000] pci 0000:00:01.1: BAR 0: assigned [io  0x0200-0x02ff]
-[    4.000000] pci 0000:00:01.1: BAR 0: set to [io  0x0200-0x02ff] (PCI address [0x200-0x2ff])
-[    4.130000] pci 0000:00:02.0: BAR 0: assigned [io  0x0300-0x03ff]
-[    4.140000] pci 0000:00:02.0: BAR 0: set to [io  0x0300-0x03ff] (PCI address [0x300-0x3ff])
-[    4.270000] pci 0000:00:02.0: BAR 1: assigned [mem 0xfffffffff8008000-0xfffffffff80080ff]
-[    4.280000] pci 0000:00:02.0: BAR 1: set to [mem 0xfffffffff8008000-0xfffffffff80080ff] (PCI address [0xf8008000-0xf80080ff])
-[    4.560000] pci 0000:00:02.1: BAR 0: assigned [io  0x0400-0x04ff]
-[    4.560000] pci 0000:00:02.1: BAR 0: set to [io  0x0400-0x04ff] (PCI address [0x400-0x4ff])
-[    4.840000] pci 0000:00:02.1: BAR 1: assigned [mem 0xfffffffff8009000-0xfffffffff80090ff]
-[    4.850000] pci 0000:00:02.1: BAR 1: set to [mem 0xfffffffff8009000-0xfffffffff80090ff] (PCI address [0xf8009000-0xf80090ff])
-[    4.980000] pci 0000:00:00.0: BAR 0: assigned [io  0x0080-0x00ff]
-[    4.980000] pci 0000:00:00.0: BAR 0: set to [io  0x0080-0x00ff] (PCI address [0x80-0xff])
-[    5.260000] pci 0000:00:04.0: BAR 1: assigned [io  0x0040-0x007f]
-[    5.260000] pci 0000:00:04.0: BAR 1: set to [io  0x0040-0x007f] (PCI address [0x40-0x7f])
-[    5.270000] pci 0000:00:05.0: BAR 1: assigned [io  0x0500-0x053f]
-[    5.540000] pci 0000:00:05.0: BAR 1: set to [io  0x0500-0x053f] (PCI address [0x500-0x53f])
-[    5.560000] Elroy version TR4.0 (0x5) found at 0xfffffffffed32000
-[    5.700000] Elroy version TR4.0 (0x5) found at 0xfffffffffed34000
-[    5.700000] NOTICE: Enabling PCI Arbitration
-[    5.730000] Elroy version TR4.0 (0x5) found at 0xfffffffffed36000
-[    5.840000] pci 0000:18:00.0: [1011:0019] type 0 class 0x000200
-[    5.840000] pci 0000:18:00.0: reg 10: [io  0xdc139c00-0xdc139c7f]
-[    5.840000] pci 0000:18:00.0: reg 14: [mem 0xd053f800-0xd053fbff]
-[    5.840000] pci 0000:18:00.0: reg 30: [mem 0xcefc0000-0xceffffff pref]
-[    5.840000] pci 0000:18:00.0: no compatible bridge window for [io  0xdc139c00-0xdc139c7f]
-[    5.960000] pci 0000:18:00.0: no compatible bridge window for [mem 0xffffffffd053f800-0xffffffffd053fbff]
-[    5.970000] pci 0000:18:00.0: no compatible bridge window for [mem 0xffffffffcefc0000-0xffffffffceffffff pref]
-[    6.100000] pci 0000:18:00.0: BAR 6: assigned [mem 0xfffffffff9800000-0xfffffffff983ffff pref]
-[    6.240000] pci 0000:18:00.0: BAR 1: assigned [mem 0xfffffffff9840000-0xfffffffff98403ff]
-[    6.380000] pci 0000:18:00.0: BAR 1: set to [mem 0xfffffffff9840000-0xfffffffff98403ff] (PCI address [0xf9840000-0xf98403ff])
-[    6.530000] pci 0000:18:00.0: BAR 0: assigned [io  0x30000-0x3007f]
-[    6.530000] pci 0000:18:00.0: BAR 0: set to [io  0x30000-0x3007f] (PCI address [0x0-0x7f])
-[    6.540000] Elroy version TR4.0 (0x5) found at 0xfffffffffed38000
-[    6.810000] NOTICE: Enabling PCI Arbitration
-[    6.830000] Elroy version TR4.0 (0x5) found at 0xfffffffffed3a000
-[    6.840000] NOTICE: Enabling PCI Arbitration
-[    6.860000] Elroy version TR4.0 (0x5) found at 0xfffffffffed3c000
-[    6.940000] NOTICE: Enabling PCI Arbitration
-[    6.970000] Elroy version TR4.0 (0x5) found at 0xfffffffffed3e000
-[    6.970000] NOTICE: Enabling PCI Arbitration
-[    7.000000] powersw: Soft power switch support not available.
-[    7.090000] bio: create slab <bio-0> at 0
-[    7.220000] vgaarb: loaded
-[    7.230000] SCSI subsystem initialized
-[    7.260000] NET: Registered protocol family 2
-[    7.270000] IP route cache hash table entries: 131072 (order: 8, 1048576 bytes)
-[    7.370000] TCP established hash table entries: 262144 (order: 10, 4194304 bytes)
-[    7.530000] TCP bind hash table entries: 65536 (order: 9, 2097152 bytes)
-[    7.540000] TCP: Hash tables configured (established 262144 bind 65536)
-[    7.650000] TCP reno registered
-[    7.660000] UDP hash table entries: 2048 (order: 5, 196608 bytes)
-[    7.790000] UDP-Lite hash table entries: 2048 (order: 5, 196608 bytes)
-[    7.800000] NET: Registered protocol family 1
-[    7.930000] PCI: CLS 64 bytes
-[    7.930000] Chassis warnings not supported.
-[    7.940000] Performance monitoring counters enabled for Rhapsody DC- 440
-[    8.100000] VFS: Disk quotas dquot_6.5.2
-[    8.100000] Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
-[    8.210000] msgmni has been set to 6022
-[    8.220000] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 253)
-[    8.230000] io scheduler noop registered
-[    8.350000] io scheduler cfq registered (default)
-[    8.370000] PDC Stable Storage facility v0.30
-[    9.180000] STI GSC/PCI core graphics driver Version 0.9a
-[    9.180000] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
-[    9.200000] serial 0000:00:04.0: enabling device (0146 -> 0147)
-[    9.230000] 0000:00:04.0: ttyS0 at MMIO 0xfffffffff8000000 (irq = 70) is a 16550A
-[    9.240000] console [ttyS0] enabled, bootconsole disabled
-[    9.280000] 0000:00:04.0: ttyS1 at MMIO 0xfffffffff8000008 (irq = 70) is a 16550A
-[    9.320000] 0000:00:04.0: ttyS2 at MMIO 0xfffffffff8000010 (irq = 70) is a 16550A
-[    9.330000] serial 0000:00:05.0: enabling device (0000 -> 0003)
-[    9.340000] serial 0000:00:05.0: enabling SERR and PARITY (0003 -> 0143)
-[    9.380000] 0000:00:05.0: ttyS3 at MMIO 0xfffffffff8005000 (irq = 71) is a 16550A
-[    9.420000] Couldn't register serial port 0000:00:05.0: -28
-[    9.560000] sym53c8xx 0000:00:01.0: enabling device (0000 -> 0003)
-[    9.570000] sym53c8xx 0000:00:01.0: enabling SERR and PARITY (0003 -> 0143)
-[    9.770000] sym0: <896> rev 0x5 at pci 0000:00:01.0 irq 67
-[    9.780000] sym0: PA-RISC Firmware, ID 7, Fast-40, LVD, parity checking
-[    9.850000] sym0: SCSI BUS has been reset.
-[    9.860000] scsi0 : sym-2.2.3
-[    9.860000] sym53c8xx 0000:00:01.1: enabling device (0146 -> 0147)
-[   10.050000] sym1: <896> rev 0x5 at pci 0000:00:01.1 irq 68
-[   10.060000] sym1: PA-RISC Firmware, ID 7, Fast-40, SE, parity checking
-[   10.130000] sym1: SCSI BUS has been reset.
-[   10.130000] scsi1 : sym-2.2.3
-[   10.130000] sym1: SCSI BUS mode change from SE to SE.
-[   10.130000] sym1: SCSI BUS has been reset.
-[   10.280000] sym53c8xx 0000:00:02.0: enabling device (0000 -> 0003)
-[   10.410000] sym53c8xx 0000:00:02.0: enabling SERR and PARITY (0003 -> 0143)
-[   10.620000] sym2: <875> rev 0x14 at pci 0000:00:02.0 irq 68
-[   10.710000] sym2: PA-RISC Firmware, ID 7, Fast-20, SE, parity checking
-[   10.720000] sym2: SCSI BUS has been reset.
-[   10.720000] scsi2 : sym-2.2.3
-[   10.730000] sym53c8xx 0000:00:02.1: enabling device (0000 -> 0003)
-[   10.830000] sym53c8xx 0000:00:02.1: enabling SERR and PARITY (0003 -> 0143)
-[   10.910000] sym3: <875> rev 0x14 at pci 0000:00:02.1 irq 69
-[   11.060000] sym3: PA-RISC Firmware, ID 7, Fast-20, SE, parity checking
-[   11.120000] sym3: SCSI BUS has been reset.
-[   11.120000] scsi3 : sym-2.2.3
-[   11.130000] mousedev: PS/2 mouse device common for all mice
-[   11.250000] rtc-generic rtc-generic: rtc core: registered rtc-generic as rtc0
-[   11.270000] TCP cubic registered
-[   11.390000] NET: Registered protocol family 17
-[   11.400000] Registering the dns_resolver key type
-[   11.530000] scsi: waiting for bus probes to complete ...
-[   13.190000] scsi 1:0:0:0: Direct-Access     SEAGATE  ST136403LC       HP01 PQ: 0 ANSI: 2
-[   13.200000] scsi target1:0:0: tagged command queuing enabled, command queue depth 16.
-[   13.220000] scsi target1:0:0: Beginning Domain Validation
-[   13.240000] scsi target1:0:0: FAST-20 WIDE SCSI 40.0 MB/s ST (50 ns, offset 15)
-[   13.250000] scsi target1:0:0: Domain Validation skipping write tests
-[   13.260000] scsi target1:0:0: Ending Domain Validation
-[   13.760000] scsi 2:0:0:0: Direct-Access     SEAGATE  ST136403LC       HP01 PQ: 0 ANSI: 2
-[   13.760000] scsi target2:0:0: tagged command queuing enabled, command queue depth 16.
-[   13.770000] scsi target2:0:0: Beginning Domain Validation
-[   13.810000] scsi target2:0:0: FAST-20 WIDE SCSI 40.0 MB/s ST (50 ns, offset 15)
-[   13.820000] scsi target2:0:0: Domain Validation skipping write tests
-[   13.820000] scsi target2:0:0: Ending Domain Validation
-[   14.770000] scsi 3:0:2:0: CD-ROM            HP       DVD-ROM 304      2.00 PQ: 0 ANSI: 2
-[   14.780000] scsi target3:0:2: Beginning Domain Validation
-[   14.800000] scsi target3:0:2: FAST-20 SCSI 20.0 MB/s ST (50 ns, offset 16)
-[   14.810000] scsi target3:0:2: Domain Validation skipping write tests
-[   14.820000] scsi target3:0:2: Ending Domain Validation
-[   17.480000] sd 1:0:0:0: [sda] 71132960 512-byte logical blocks: (36.4 GB/33.9 GiB)
-[   17.490000] sd 1:0:0:0: [sda] Write Protect is off
-[   17.510000] sd 1:0:0:0: [sda] Mode Sense: 9f 00 10 08
-[   17.510000] sd 1:0:0:0: [sda] Write cache: disabled, read cache: enabled, supports DPO and FUA
-[   17.550000]  sda: sda1 sda2 sda3 < sda5 sda6 >
-[   17.570000] sd 1:0:0:0: [sda] Attached SCSI disk
-[   17.980000] sd 2:0:0:0: [sdb] 71132960 512-byte logical blocks: (36.4 GB/33.9 GiB)
-[   17.990000] sd 2:0:0:0: [sdb] Write Protect is off
-[   18.010000] sd 2:0:0:0: [sdb] Mode Sense: 9f 00 10 08
-[   18.010000] sd 2:0:0:0: [sdb] Write cache: disabled, read cache: enabled, supports DPO and FUA
-[   18.060000]  sdb: sdb1 sdb2 sdb3 < sdb5 sdb6 >
-[   18.070000] sd 2:0:0:0: [sdb] Attached SCSI disk
-[   18.380000] rtc-generic rtc-generic: setting system clock to 2011-01-10 07:50:23 UTC (1294645823)
-[   18.470000] EXT4-fs (sda5): mounted filesystem with ordered data mode. Opts: (null)
-[   18.480000] VFS: Mounted root (ext4 filesystem) readonly on device 8:5.
-[   18.500000] Freeing unused kernel memory: 172k freed
-[   18.500000] Write protecting the kernel read-only data: 652k
-[   21.030000] Linux Tulip driver version 1.1.15-NAPI (Feb 27, 2007)
-[   21.040000] tulip 0000:00:00.0: enabling device (0140 -> 0143)
-[   21.060000] tulip0: no phy info, aborting mtable build
-[   21.070000] tulip0:  MII transceiver #1 config 1000 status 782d advertising 01e1
-[   21.090000] net eth0: Digital DS21142/43 Tulip rev 65 at MMIO 0xfffffffff8006000, 00:10:83:fe:9c:b0, IRQ 66
-[   21.100000] tulip 0000:18:00.0: enabling device (0000 -> 0003)
-[   21.110000] tulip 0000:18:00.0: enabling SERR and PARITY (0003 -> 0143)
-[   21.140000] tulip1: EEPROM default media type Autosense
-[   21.150000] tulip1: Index #0 - Media MII (#11) described by a 21142 MII PHY (3) block
-[   21.170000] tulip1:  MII transceiver #1 config 3100 status 7849 advertising 0101
-[   21.180000] tulip1:  Advertising 01e1 on PHY 1, previously advertising 0101
-[   21.190000] net eth1: Digital DS21142/43 Tulip rev 65 at MMIO 0xfffffffff9840000, 00:10:83:fb:99:c0, IRQ 72
-[   21.650000] sr0: scsi3-mmc drive: 0x/0x cd/rw xa/form2 cdda tray
-[   21.650000] cdrom: Uniform CD-ROM driver Revision: 3.20
-[   21.670000] sr 3:0:2:0: Attached scsi CD-ROM sr0
-[   21.800000] sd 1:0:0:0: Attached scsi generic sg0 type 0
-[   21.810000] sd 2:0:0:0: Attached scsi generic sg1 type 0
-[   21.820000] sr 3:0:2:0: Attached scsi generic sg2 type 5
-[   23.760000] Adding 1350652k swap on /dev/sda6.  Priority:-1 extents:1 across:1350652k 
-[   23.820000] EXT4-fs (sda5): re-mounted. Opts: (null)
-[   24.360000] EXT4-fs (sda5): re-mounted. Opts: errors=remount-ro
-[   24.810000] loop: module loaded
-[   31.060000] net eth0: Setting full-duplex based on MII#1 link partner capability of 45e1
-[   31.360000] NET: Registered protocol family 10
-[   31.370000] lo: Disabled Privacy Extensions
-[   31.660000] sshd (924): /proc/924/oom_adj is deprecated, please use /proc/924/oom_score_adj instead.
+> From 8b2e60cef5c65eef41ab61286f62dec6bfb1ac27 Mon Sep 17 00:00:00 200=
+1
+> From: Trond Myklebust <Trond.Myklebust-HgOvQuBEEgTQT0dZR+AlfA@public.gmane.org>
+> Date: Sat, 8 Jan 2011 17:45:38 -0500
+> Subject: [PATCH] NFS: Don't use vm_map_ram() in readdir
+>=20
+> vm_map_ram() is not available on NOMMU platforms, and causes trouble
+> on incoherrent architectures such as ARM when we access the page data
+> through both the direct and the virtual mapping.
+>=20
+> The alternative is to use the direct mapping to access page data
+> for the case when we are not crossing a page boundary, but to copy
+> the data into a linear scratch buffer when we are accessing data
+> that spans page boundaries.
+>=20
+> Signed-off-by: Trond Myklebust <Trond.Myklebust-HgOvQuBEEgTQT0dZR+AlfA@public.gmane.org>
+Tested-by: Uwe Kleine-K=F6nig <u.kleine-koenig-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 
--- 
-Meelis Roos (mroos@linux.ee)
+on tx28.
+
+Thanks
+Uwe
+
+> ---
+>  fs/nfs/dir.c               |   44 ++++++-------
+>  fs/nfs/nfs2xdr.c           |    6 --
+>  fs/nfs/nfs3xdr.c           |    6 --
+>  fs/nfs/nfs4xdr.c           |    6 --
+>  include/linux/sunrpc/xdr.h |    4 +-
+>  net/sunrpc/xdr.c           |  155 ++++++++++++++++++++++++++++++++++=
++---------
+>  6 files changed, 148 insertions(+), 73 deletions(-)
+>=20
+> diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
+> index 996dd89..0108cf4 100644
+> --- a/fs/nfs/dir.c
+> +++ b/fs/nfs/dir.c
+> @@ -33,7 +33,6 @@
+>  #include <linux/namei.h>
+>  #include <linux/mount.h>
+>  #include <linux/sched.h>
+> -#include <linux/vmalloc.h>
+>  #include <linux/kmemleak.h>
+> =20
+>  #include "delegation.h"
+> @@ -459,25 +458,26 @@ out:
+>  /* Perform conversion from xdr to cache array */
+>  static
+>  int nfs_readdir_page_filler(nfs_readdir_descriptor_t *desc, struct n=
+fs_entry *entry,
+> -				void *xdr_page, struct page *page, unsigned int buflen)
+> +				struct page **xdr_pages, struct page *page, unsigned int buflen)
+>  {
+>  	struct xdr_stream stream;
+> -	struct xdr_buf buf;
+> -	__be32 *ptr =3D xdr_page;
+> +	struct xdr_buf buf =3D {
+> +		.pages =3D xdr_pages,
+> +		.page_len =3D buflen,
+> +		.buflen =3D buflen,
+> +		.len =3D buflen,
+> +	};
+> +	struct page *scratch;
+>  	struct nfs_cache_array *array;
+>  	unsigned int count =3D 0;
+>  	int status;
+> =20
+> -	buf.head->iov_base =3D xdr_page;
+> -	buf.head->iov_len =3D buflen;
+> -	buf.tail->iov_len =3D 0;
+> -	buf.page_base =3D 0;
+> -	buf.page_len =3D 0;
+> -	buf.buflen =3D buf.head->iov_len;
+> -	buf.len =3D buf.head->iov_len;
+> -
+> -	xdr_init_decode(&stream, &buf, ptr);
+> +	scratch =3D alloc_page(GFP_KERNEL);
+> +	if (scratch =3D=3D NULL)
+> +		return -ENOMEM;
+> =20
+> +	xdr_init_decode(&stream, &buf, NULL);
+> +	xdr_set_scratch_buffer(&stream, page_address(scratch), PAGE_SIZE);
+> =20
+>  	do {
+>  		status =3D xdr_decode(desc, entry, &stream);
+> @@ -506,6 +506,8 @@ int nfs_readdir_page_filler(nfs_readdir_descripto=
+r_t *desc, struct nfs_entry *en
+>  		} else
+>  			status =3D PTR_ERR(array);
+>  	}
+> +
+> +	put_page(scratch);
+>  	return status;
+>  }
+> =20
+> @@ -521,7 +523,6 @@ static
+>  void nfs_readdir_free_large_page(void *ptr, struct page **pages,
+>  		unsigned int npages)
+>  {
+> -	vm_unmap_ram(ptr, npages);
+>  	nfs_readdir_free_pagearray(pages, npages);
+>  }
+> =20
+> @@ -530,9 +531,8 @@ void nfs_readdir_free_large_page(void *ptr, struc=
+t page **pages,
+>   * to nfs_readdir_free_large_page
+>   */
+>  static
+> -void *nfs_readdir_large_page(struct page **pages, unsigned int npage=
+s)
+> +int nfs_readdir_large_page(struct page **pages, unsigned int npages)
+>  {
+> -	void *ptr;
+>  	unsigned int i;
+> =20
+>  	for (i =3D 0; i < npages; i++) {
+> @@ -541,13 +541,11 @@ void *nfs_readdir_large_page(struct page **page=
+s, unsigned int npages)
+>  			goto out_freepages;
+>  		pages[i] =3D page;
+>  	}
+> +	return 0;
+> =20
+> -	ptr =3D vm_map_ram(pages, npages, 0, PAGE_KERNEL);
+> -	if (!IS_ERR_OR_NULL(ptr))
+> -		return ptr;
+>  out_freepages:
+>  	nfs_readdir_free_pagearray(pages, i);
+> -	return NULL;
+> +	return -ENOMEM;
+>  }
+> =20
+>  static
+> @@ -577,8 +575,8 @@ int nfs_readdir_xdr_to_array(nfs_readdir_descript=
+or_t *desc, struct page *page,
+>  	memset(array, 0, sizeof(struct nfs_cache_array));
+>  	array->eof_index =3D -1;
+> =20
+> -	pages_ptr =3D nfs_readdir_large_page(pages, array_size);
+> -	if (!pages_ptr)
+> +	status =3D nfs_readdir_large_page(pages, array_size);
+> +	if (status < 0)
+>  		goto out_release_array;
+>  	do {
+>  		unsigned int pglen;
+> @@ -587,7 +585,7 @@ int nfs_readdir_xdr_to_array(nfs_readdir_descript=
+or_t *desc, struct page *page,
+>  		if (status < 0)
+>  			break;
+>  		pglen =3D status;
+> -		status =3D nfs_readdir_page_filler(desc, &entry, pages_ptr, page, =
+pglen);
+> +		status =3D nfs_readdir_page_filler(desc, &entry, pages, page, pgle=
+n);
+>  		if (status < 0) {
+>  			if (status =3D=3D -ENOSPC)
+>  				status =3D 0;
+> diff --git a/fs/nfs/nfs2xdr.c b/fs/nfs/nfs2xdr.c
+> index 5914a19..b382a1b 100644
+> --- a/fs/nfs/nfs2xdr.c
+> +++ b/fs/nfs/nfs2xdr.c
+> @@ -487,12 +487,6 @@ nfs_decode_dirent(struct xdr_stream *xdr, struct=
+ nfs_entry *entry, struct nfs_se
+> =20
+>  	entry->d_type =3D DT_UNKNOWN;
+> =20
+> -	p =3D xdr_inline_peek(xdr, 8);
+> -	if (p !=3D NULL)
+> -		entry->eof =3D !p[0] && p[1];
+> -	else
+> -		entry->eof =3D 0;
+> -
+>  	return p;
+> =20
+>  out_overflow:
+> diff --git a/fs/nfs/nfs3xdr.c b/fs/nfs/nfs3xdr.c
+> index f6cc60f..ba91236 100644
+> --- a/fs/nfs/nfs3xdr.c
+> +++ b/fs/nfs/nfs3xdr.c
+> @@ -647,12 +647,6 @@ nfs3_decode_dirent(struct xdr_stream *xdr, struc=
+t nfs_entry *entry, struct nfs_s
+>  			memset((u8*)(entry->fh), 0, sizeof(*entry->fh));
+>  	}
+> =20
+> -	p =3D xdr_inline_peek(xdr, 8);
+> -	if (p !=3D NULL)
+> -		entry->eof =3D !p[0] && p[1];
+> -	else
+> -		entry->eof =3D 0;
+> -
+>  	return p;
+> =20
+>  out_overflow:
+> diff --git a/fs/nfs/nfs4xdr.c b/fs/nfs/nfs4xdr.c
+> index 9f1826b..0662a98 100644
+> --- a/fs/nfs/nfs4xdr.c
+> +++ b/fs/nfs/nfs4xdr.c
+> @@ -6215,12 +6215,6 @@ __be32 *nfs4_decode_dirent(struct xdr_stream *=
+xdr, struct nfs_entry *entry,
+>  	if (verify_attr_len(xdr, p, len) < 0)
+>  		goto out_overflow;
+> =20
+> -	p =3D xdr_inline_peek(xdr, 8);
+> -	if (p !=3D NULL)
+> -		entry->eof =3D !p[0] && p[1];
+> -	else
+> -		entry->eof =3D 0;
+> -
+>  	return p;
+> =20
+>  out_overflow:
+> diff --git a/include/linux/sunrpc/xdr.h b/include/linux/sunrpc/xdr.h
+> index 498ab93..7783c68 100644
+> --- a/include/linux/sunrpc/xdr.h
+> +++ b/include/linux/sunrpc/xdr.h
+> @@ -201,6 +201,8 @@ struct xdr_stream {
+> =20
+>  	__be32 *end;		/* end of available buffer space */
+>  	struct kvec *iov;	/* pointer to the current kvec */
+> +	struct kvec scratch;	/* Scratch buffer */
+> +	struct page **page_ptr;	/* pointer to the current page */
+>  };
+> =20
+>  extern void xdr_init_encode(struct xdr_stream *xdr, struct xdr_buf *=
+buf, __be32 *p);
+> @@ -208,7 +210,7 @@ extern __be32 *xdr_reserve_space(struct xdr_strea=
+m *xdr, size_t nbytes);
+>  extern void xdr_write_pages(struct xdr_stream *xdr, struct page **pa=
+ges,
+>  		unsigned int base, unsigned int len);
+>  extern void xdr_init_decode(struct xdr_stream *xdr, struct xdr_buf *=
+buf, __be32 *p);
+> -extern __be32 *xdr_inline_peek(struct xdr_stream *xdr, size_t nbytes=
+);
+> +extern void xdr_set_scratch_buffer(struct xdr_stream *xdr, void *buf=
+, size_t buflen);
+>  extern __be32 *xdr_inline_decode(struct xdr_stream *xdr, size_t nbyt=
+es);
+>  extern void xdr_read_pages(struct xdr_stream *xdr, unsigned int len)=
+;
+>  extern void xdr_enter_page(struct xdr_stream *xdr, unsigned int len)=
+;
+> diff --git a/net/sunrpc/xdr.c b/net/sunrpc/xdr.c
+> index cd9e841..679cd67 100644
+> --- a/net/sunrpc/xdr.c
+> +++ b/net/sunrpc/xdr.c
+> @@ -552,6 +552,74 @@ void xdr_write_pages(struct xdr_stream *xdr, str=
+uct page **pages, unsigned int b
+>  }
+>  EXPORT_SYMBOL_GPL(xdr_write_pages);
+> =20
+> +static void xdr_set_iov(struct xdr_stream *xdr, struct kvec *iov,
+> +		__be32 *p, unsigned int len)
+> +{
+> +	if (len > iov->iov_len)
+> +		len =3D iov->iov_len;
+> +	if (p =3D=3D NULL)
+> +		p =3D (__be32*)iov->iov_base;
+> +	xdr->p =3D p;
+> +	xdr->end =3D (__be32*)(iov->iov_base + len);
+> +	xdr->iov =3D iov;
+> +	xdr->page_ptr =3D NULL;
+> +}
+> +
+> +static int xdr_set_page_base(struct xdr_stream *xdr,
+> +		unsigned int base, unsigned int len)
+> +{
+> +	unsigned int pgnr;
+> +	unsigned int maxlen;
+> +	unsigned int pgoff;
+> +	unsigned int pgend;
+> +	void *kaddr;
+> +
+> +	maxlen =3D xdr->buf->page_len;
+> +	if (base >=3D maxlen)
+> +		return -EINVAL;
+> +	maxlen -=3D base;
+> +	if (len > maxlen)
+> +		len =3D maxlen;
+> +
+> +	base +=3D xdr->buf->page_base;
+> +
+> +	pgnr =3D base >> PAGE_SHIFT;
+> +	xdr->page_ptr =3D &xdr->buf->pages[pgnr];
+> +	kaddr =3D page_address(*xdr->page_ptr);
+> +
+> +	pgoff =3D base & ~PAGE_MASK;
+> +	xdr->p =3D (__be32*)(kaddr + pgoff);
+> +
+> +	pgend =3D pgoff + len;
+> +	if (pgend > PAGE_SIZE)
+> +		pgend =3D PAGE_SIZE;
+> +	xdr->end =3D (__be32*)(kaddr + pgend);
+> +	xdr->iov =3D NULL;
+> +	return 0;
+> +}
+> +
+> +static void xdr_set_next_page(struct xdr_stream *xdr)
+> +{
+> +	unsigned int newbase;
+> +
+> +	newbase =3D (1 + xdr->page_ptr - xdr->buf->pages) << PAGE_SHIFT;
+> +	newbase -=3D xdr->buf->page_base;
+> +
+> +	if (xdr_set_page_base(xdr, newbase, PAGE_SIZE) < 0)
+> +		xdr_set_iov(xdr, xdr->buf->tail, NULL, xdr->buf->len);
+> +}
+> +
+> +static bool xdr_set_next_buffer(struct xdr_stream *xdr)
+> +{
+> +	if (xdr->page_ptr !=3D NULL)
+> +		xdr_set_next_page(xdr);
+> +	else if (xdr->iov =3D=3D xdr->buf->head) {
+> +		if (xdr_set_page_base(xdr, 0, PAGE_SIZE) < 0)
+> +			xdr_set_iov(xdr, xdr->buf->tail, NULL, xdr->buf->len);
+> +	}
+> +	return xdr->p !=3D xdr->end;
+> +}
+> +
+>  /**
+>   * xdr_init_decode - Initialize an xdr_stream for decoding data.
+>   * @xdr: pointer to xdr_stream struct
+> @@ -560,41 +628,67 @@ EXPORT_SYMBOL_GPL(xdr_write_pages);
+>   */
+>  void xdr_init_decode(struct xdr_stream *xdr, struct xdr_buf *buf, __=
+be32 *p)
+>  {
+> -	struct kvec *iov =3D buf->head;
+> -	unsigned int len =3D iov->iov_len;
+> -
+> -	if (len > buf->len)
+> -		len =3D buf->len;
+>  	xdr->buf =3D buf;
+> -	xdr->iov =3D iov;
+> -	xdr->p =3D p;
+> -	xdr->end =3D (__be32 *)((char *)iov->iov_base + len);
+> +	xdr->scratch.iov_base =3D NULL;
+> +	xdr->scratch.iov_len =3D 0;
+> +	if (buf->head[0].iov_len !=3D 0)
+> +		xdr_set_iov(xdr, buf->head, p, buf->len);
+> +	else if (buf->page_len !=3D 0)
+> +		xdr_set_page_base(xdr, 0, buf->len);
+>  }
+>  EXPORT_SYMBOL_GPL(xdr_init_decode);
+> =20
+> -/**
+> - * xdr_inline_peek - Allow read-ahead in the XDR data stream
+> - * @xdr: pointer to xdr_stream struct
+> - * @nbytes: number of bytes of data to decode
+> - *
+> - * Check if the input buffer is long enough to enable us to decode
+> - * 'nbytes' more bytes of data starting at the current position.
+> - * If so return the current pointer without updating the current
+> - * pointer position.
+> - */
+> -__be32 * xdr_inline_peek(struct xdr_stream *xdr, size_t nbytes)
+> +static __be32 * __xdr_inline_decode(struct xdr_stream *xdr, size_t n=
+bytes)
+>  {
+>  	__be32 *p =3D xdr->p;
+>  	__be32 *q =3D p + XDR_QUADLEN(nbytes);
+> =20
+>  	if (unlikely(q > xdr->end || q < p))
+>  		return NULL;
+> +	xdr->p =3D q;
+>  	return p;
+>  }
+> -EXPORT_SYMBOL_GPL(xdr_inline_peek);
+> =20
+>  /**
+> - * xdr_inline_decode - Retrieve non-page XDR data to decode
+> + * xdr_set_scratch_buffer - Attach a scratch buffer for decoding dat=
+a.
+> + * @xdr: pointer to xdr_stream struct
+> + * @buf: pointer to an empty buffer
+> + * @buflen: size of 'buf'
+> + *
+> + * The scratch buffer is used when decoding from an array of pages.
+> + * If an xdr_inline_decode() call spans across page boundaries, then
+> + * we copy the data into the scratch buffer in order to allow linear
+> + * access.
+> + */
+> +void xdr_set_scratch_buffer(struct xdr_stream *xdr, void *buf, size_=
+t buflen)
+> +{
+> +	xdr->scratch.iov_base =3D buf;
+> +	xdr->scratch.iov_len =3D buflen;
+> +}
+> +EXPORT_SYMBOL_GPL(xdr_set_scratch_buffer);
+> +
+> +static __be32 *xdr_copy_to_scratch(struct xdr_stream *xdr, size_t nb=
+ytes)
+> +{
+> +	__be32 *p;
+> +	void *cpdest =3D xdr->scratch.iov_base;
+> +	size_t cplen =3D (char *)xdr->end - (char *)xdr->p;
+> +
+> +	if (nbytes > xdr->scratch.iov_len)
+> +		return NULL;
+> +	memcpy(cpdest, xdr->p, cplen);
+> +	cpdest +=3D cplen;
+> +	nbytes -=3D cplen;
+> +	if (!xdr_set_next_buffer(xdr))
+> +		return NULL;
+> +	p =3D __xdr_inline_decode(xdr, nbytes);
+> +	if (p =3D=3D NULL)
+> +		return NULL;
+> +	memcpy(cpdest, p, nbytes);
+> +	return xdr->scratch.iov_base;
+> +}
+> +
+> +/**
+> + * xdr_inline_decode - Retrieve XDR data to decode
+>   * @xdr: pointer to xdr_stream struct
+>   * @nbytes: number of bytes of data to decode
+>   *
+> @@ -605,13 +699,16 @@ EXPORT_SYMBOL_GPL(xdr_inline_peek);
+>   */
+>  __be32 * xdr_inline_decode(struct xdr_stream *xdr, size_t nbytes)
+>  {
+> -	__be32 *p =3D xdr->p;
+> -	__be32 *q =3D p + XDR_QUADLEN(nbytes);
+> +	__be32 *p;
+> =20
+> -	if (unlikely(q > xdr->end || q < p))
+> +	if (nbytes =3D=3D 0)
+> +		return xdr->p;
+> +	if (xdr->p =3D=3D xdr->end && !xdr_set_next_buffer(xdr))
+>  		return NULL;
+> -	xdr->p =3D q;
+> -	return p;
+> +	p =3D __xdr_inline_decode(xdr, nbytes);
+> +	if (p !=3D NULL)
+> +		return p;
+> +	return xdr_copy_to_scratch(xdr, nbytes);
+>  }
+>  EXPORT_SYMBOL_GPL(xdr_inline_decode);
+> =20
+> @@ -671,16 +768,12 @@ EXPORT_SYMBOL_GPL(xdr_read_pages);
+>   */
+>  void xdr_enter_page(struct xdr_stream *xdr, unsigned int len)
+>  {
+> -	char * kaddr =3D page_address(xdr->buf->pages[0]);
+>  	xdr_read_pages(xdr, len);
+>  	/*
+>  	 * Position current pointer at beginning of tail, and
+>  	 * set remaining message length.
+>  	 */
+> -	if (len > PAGE_CACHE_SIZE - xdr->buf->page_base)
+> -		len =3D PAGE_CACHE_SIZE - xdr->buf->page_base;
+> -	xdr->p =3D (__be32 *)(kaddr + xdr->buf->page_base);
+> -	xdr->end =3D (__be32 *)((char *)xdr->p + len);
+> +	xdr_set_page_base(xdr, 0, len);
+>  }
+>  EXPORT_SYMBOL_GPL(xdr_enter_page);
+> =20
+> --=20
+> 1.7.3.4
+>=20
+>=20
+>=20
+> --=20
+> Trond Myklebust
+> Linux NFS client maintainer
+>=20
+> NetApp
+> Trond.Myklebust-HgOvQuBEEgTQT0dZR+AlfA@public.gmane.org
+> www.netapp.com
+>=20
+>=20
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig        =
+    |
+Industrial Linux Solutions                 | http://www.pengutronix.de/=
+  |
+--
+To unsubscribe from this list: send the line "unsubscribe linux-nfs" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
