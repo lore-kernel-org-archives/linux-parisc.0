@@ -1,42 +1,57 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: WARNING: Out of order unwind entry!
-Date: Mon, 10 Jan 2011 09:40:07 -0500 (EST)
-Message-ID: <20110110144008.B31784DF2@hiauly1.hia.nrc.ca>
-References: <alpine.SOC.1.00.1101101019020.27086@math.ut.ee>
+From: Trond Myklebust <Trond.Myklebust@netapp.com>
+Subject: Re: still nfs problems [Was: Linux 2.6.37-rc8]
+Date: Mon, 10 Jan 2011 11:25:34 -0500
+Message-ID: <1294676734.3349.10.camel@heimdal.trondhjem.org>
+References: <1294268808.2952.18.camel@heimdal.trondhjem.org>
+	 <1294270104.16957.73.camel@mulgrave.site>
+	 <1294335614.22825.154.camel@mulgrave.site>
+	 <1294336054.2905.1.camel@heimdal.trondhjem.org>
+	 <AANLkTimusF4KCJ4vHPn+T1dUiKxapXaT0QTtFvh8Ykdd@mail.gmail.com>
+	 <1294426405.2929.23.camel@heimdal.trondhjem.org>
+	 <20110107190229.GX31708@n2100.arm.linux.org.uk>
+	 <1294427467.4895.66.camel@mulgrave.site>
+	 <1294505384.4181.14.camel@heimdal.trondhjem.org>
+	 <1294528551.4181.19.camel@heimdal.trondhjem.org>
+	 <20110110105019.GC24920@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org
-To: mroos@linux.ee (Meelis Roos)
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.SOC.1.00.1101101019020.27086@math.ut.ee> from "Meelis Roos" at Jan 10, 2011 10:25:31 am
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Marc Kleine-Budde <m.kleine-budde@pengutronix.de>,
+	linux-arm-kernel@lists.infradead.org,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	linux-arch@vger.kernel.org
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=
+	<u.kleine-koenig@pengutronix.de>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20110110105019.GC24920@pengutronix.de>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> I'm trying the newest kernel (2.6.37+git) on 64-bit parisc after a long 
-> pause. The good news is that PCI resource allocatrion problem with tulip 
-> (that was biting me at about 2.6.30-31 timeframe) has been fixed.
-> 
-> Generally it seems to run good but I get a couple of warnings in dmesg. 
-> The first is a bunch of warnings about out of order unwind entries:
-> 
-> [    0.000000] unwind_init: start = 0x4050f000, end = 0x4053cef0, entries = 11759
-> [    0.000000] WARNING: Out of order unwind entry! 0000000040510720 and 0000000040510730
-> [    0.000000] WARNING: Out of order unwind entry! 0000000040510730 and 0000000040510740
-> [    0.000000] WARNING: Out of order unwind entry! 0000000040511330 and 0000000040511340
-> [    0.000000] WARNING: Out of order unwind entry! 0000000040511340 and 0000000040511350
-> 
-> Is this report any good or should I provide vmlinux or some other debug 
-> output? Or if it is known anyway then please just ignore my report.
+On Mon, 2011-01-10 at 11:50 +0100, Uwe Kleine-K=C3=B6nig wrote:=20
+> Hi Trond,
+>=20
+> On Sat, Jan 08, 2011 at 06:15:51PM -0500, Trond Myklebust wrote:
+> > -------------------------------------------------------------------=
+----------------=20
+> It would be great if you could add a "8<" in the line above next time=
+=2E
+> Then git-am -c does the right thing (at least I think so).
 
-This should be fixed by a combination of kernel and binutils fixes.
-Look back in the archives for details.
+Sorry. I wasn't aware of that particular idiom. So something like
 
-The binutils version currently in debian unstable isn't new enough.
-If you build your own, you have to make sure GCC uses it.  Currently,
-debian configures their 64-bit hppa compiler builds with --with-as=...
-So, you may also want to rebuild GCC.
+8<------------------------------------------------------------
+=46rom: Trond Myklebust <Trond.Myklebust@netapp.com>
+Subject: .....
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+--=20
+Trond Myklebust
+Linux NFS client maintainer
+
+NetApp
+Trond.Myklebust@netapp.com
+www.netapp.com
