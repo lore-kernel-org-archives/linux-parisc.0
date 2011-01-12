@@ -1,70 +1,50 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: parisc: flush pages through tmpalias space
-Date: Mon, 10 Jan 2011 17:18:09 -0500
-Message-ID: <20110110221809.GA4396@hiauly1.hia.nrc.ca>
-References: <1293034931.3019.8.camel@mulgrave.site> <20110109215207.GA29305@hiauly1.hia.nrc.ca> <1294692282.6706.959.camel@mulgrave.site>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: Alex Vladimirovich <porebrik@junkemail.ru>
+Subject: HP c8000 failure
+Date: Wed, 12 Jan 2011 14:26:56 +0300
+Message-ID: <BLU0-SMTP20449831E77AE6C75F0A2DBBFF10@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1294692282.6706.959.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 10 Jan 2011, James Bottomley wrote:
+Hello PA-RISC Linux list!
 
-> > Since I began testing this change, I have started seeing problems with the
-> > console input on gsyprf11 and my rp3440.  If I HUP getty, the console works
-> > for awhile and then stops working again.  Suspect the "INEQIVALENT ALIAS"
-> > messages somehow kill the console.  I get a lot of these doing make check
-> > for GCC from the tests that intentionally generate a segv to test exception
-> > support.
-> 
-> In theory, the patch is actually stricter than our original flushing
-> support because it eliminates the ineffective flushes and detects
-> inequvalent aliases (and flushes all inequivalent addresses).
+Please reply back to me using <artem.falcon(at)gmail.com> address
+instead, since porebrik@junkemail.ru is my junk mailbox for various
+mail lists, and it's overflooded.
 
-It might be that I only became aware of the console issue while
-testing your patch.  Probably, I should retest without the patch.
-It might just have to do with console messages and not cache flushing.
+Is any technitian there who has some experience with failing c8000s?
+I got oppressive "System Firmware Hang" according to diagnostic LEDs
+on
+rear panel.
+Things that i already tried as well (and sorry for my english):
+(not in right order, i've tried some of steps dozen of times):
+1) Removed all the periphery (PCI cards, video card, HDDs);
+2) Attached to serial port and used "COM Port Toolkit" software
+to try send some values and sequences, but no replies from machine.
+Settings were set following manual
+(BCM led on the board blinks which means the BCM itself works);
+3) Removed and swapped processors, swapped VRMs, tried to boot machine
+with only 1 processor installed;
+4) Checked the voltage of "CMOS" battery without and under the load,
+removed it and installed back;
+5) Removed additional memory, saved only two sticks;
+6) Installed video card again, attached to it, attached USB keyboard,
+same symptoms.
+Can somebody suggest something else before i'll put this board into
+trash
+bin and try to get a new one?
+Maybe someone knows the placement of firmware eeprom? Can he dump
+raw contents from his chip?
+Since there are many of c8000 geeks there, maybe any know any of
+HP engineers/technitians?
+Maybe some of you or they know some "magic" sequences or steps
+which can be done before i will call this board a "brick" totally.
 
-The stricter flushing would definitely appear to be an improvement
-and indeed the messages have been useful in locating inequivalent
-aliases.
+I also seen that there is Xilinx Spartan PLD chip on the board,
+for what is it used for? Because it's known as relatively costly
+solution for the vendor.
 
-As I have found, we have inequivalent aliases for almost every executable
-when the boundary between text and data isn't exactly on a page boundary.
-I would think this would be an issue for all machines with a VIPT
-architecture, so I'm surprised that it hasn't come up before.
-
-I'm a bit worried about the ordering of the flushes on processors that
-don't support inequivalent aliases.  It would appear we generally flush
-the text page first with the current code.
-
-I can still cause random segvs on rp3440 if I use make -j4 or higher
-building GCC ;(
-
-> > I have also had at least one console related HPMC.  Analysis is attached.
-> > I don't fully understand the actual cause of the HPMC (buffer overrun?).
-> > The kernel was built with GCC 4.5.3.  The faulting instruction appears
-> > to have the base and index interchanged, although this shouldn't affect
-> > linux.  I thought this issue was fixed as a fair bit of work on this was
-> > done in the middle-end.
-> > 
-> > I have to say that gsyprf11 running a SMP kernel built with 4.5.3 is
-> > more stable with your change than it has been for a long time.
-> 
-> So I'm not sure what to make of this ... any memory fault shouldn't
-> result in a HPMC ... I probably need to decode the HPMC to see what its
-> saying ... I'll get around to that on the Weekend, hopefully.
-
-That would be great.  I don't have the documentation needed to decode
-HPMCs.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Thanks for any help!
