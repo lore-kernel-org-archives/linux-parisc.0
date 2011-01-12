@@ -1,7 +1,7 @@
 From: Alex Vladimirovich <porebrik@junkemail.ru>
 Subject: HP c8000 failure
-Date: Wed, 12 Jan 2011 14:26:56 +0300
-Message-ID: <BLU0-SMTP20449831E77AE6C75F0A2DBBFF10@phx.gbl>
+Date: Wed, 12 Jan 2011 14:24:58 +0300
+Message-ID: <BLU0-SMTP169B6095EAFE7CEE0840F4FBFF10@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 To: linux-parisc@vger.kernel.org
@@ -10,11 +10,6 @@ List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 Hello PA-RISC Linux list!
-
-Please reply back to me using <artem.falcon(at)gmail.com> address
-instead, since porebrik@junkemail.ru is my junk mailbox for various
-mail lists, and it's overflooded.
-
 Is any technitian there who has some experience with failing c8000s?
 I got oppressive "System Firmware Hang" according to diagnostic LEDs
 on
