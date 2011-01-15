@@ -1,34 +1,36 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Git kernel trees for parisc
-Date: Sat, 15 Jan 2011 09:21:24 -0600
-Message-ID: <1295104884.5973.10.camel@mulgrave.site>
+Subject: Change in parisc tree source for Linux Next
+Date: Sat, 15 Jan 2011 09:35:31 -0600
+Message-ID: <1295105731.5973.25.camel@mulgrave.site>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-To: Parisc List <linux-parisc@vger.kernel.org>
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-OK, I finally got them put together.  I'll try to use a more standard
-workflow (like kyle did) ... this, unfortunately means that none of my
-standard scripts worked, so I had to redo them all.
+Hi Stephen,
 
-The current tree is here:
+We've had a change of maintainer over at parisc and a consequent tree
+change.  Could you replace
 
-http://git.kernel.org/?p=linux/kernel/git/jejb/parisc-2.6.git
+git://git.kernel.org/pub/scm/linux/kernel/git/kyle/parisc-2.6.git#next
 
-All branches are stored as topic ones with <topic> as the head and
-<topic>-base as the base.  The current set of topics are
+with
 
-fixes - long lived topic branch for various fixes
-for-next - topic for pulling into linux-next
-tmpalias-flush - the current set of tmpalias flush patches.
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/parisc-2.6.git#for-next
 
-In addition, the patches and changelogs which comprise each topic will
-be available here:
+as the parisc tree for inclusion in linux next.
 
-http://www.kernel.org/pub/linux/kernel/people/jejb/parisc-2.6-<topic>.diff
-http://www.kernel.org/pub/linux/kernel/people/jejb/parisc-2.6-<topic>.changelog
+Hopefully, there won't be any issues with it, but if there are, please
+send them directly to the parisc list (we have multiple maintainers, so
+one of us will see and sort it out).
+
+Parisc List <linux-parisc@vger.kernel.org>
+
+Thanks,
 
 James
 
