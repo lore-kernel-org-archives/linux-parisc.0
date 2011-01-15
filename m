@@ -1,42 +1,35 @@
-From: Randy Dunlap <rdunlap@xenotime.net>
-Subject: Re: compile failure on hppa64: pte_mkwrite
-Date: Fri, 14 Jan 2011 15:15:59 -0800
-Message-ID: <4D30D92F.20106@xenotime.net>
-References: <alpine.SOC.1.00.1101150057210.8462@math.ut.ee>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Git kernel trees for parisc
+Date: Sat, 15 Jan 2011 09:21:24 -0600
+Message-ID: <1295104884.5973.10.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org,
-	Linux Kernel list <linux-kernel@vger.kernel.org>
-To: Meelis Roos <mroos@linux.ee>
+Content-Type: text/plain; charset="UTF-8"
+To: Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.SOC.1.00.1101150057210.8462@math.ut.ee>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 01/14/11 14:59, Meelis Roos wrote:
-> Tried todays 2.6.37+git on hppa64 and it fail to compile:
-> 
->   CC      arch/parisc/kernel/asm-offsets.s
-> In file included from /home/mroos/linux-2.6/arch/parisc/include/asm/pgtable.h:13,
->                  from arch/parisc/kernel/asm-offsets.c:37:
-> include/linux/mm.h: In function 'maybe_mkwrite':
-> include/linux/mm.h:482: error: implicit declaration of function 'pte_mkwrite'
-> include/linux/mm.h:482: error: incompatible types when assigning to type 'pte_t' from type 'int'
-> In file included from arch/parisc/kernel/asm-offsets.c:37:
-> /home/mroos/linux-2.6/arch/parisc/include/asm/pgtable.h: At top level:
-> /home/mroos/linux-2.6/arch/parisc/include/asm/pgtable.h:338: error: conflicting types for 'pte_mkwrite'
-> include/linux/mm.h:482: note: previous implicit declaration of 'pte_mkwrite' was here
-> make[1]: *** [arch/parisc/kernel/asm-offsets.s] Error 1
-> make: *** [prepare0] Error 2
-> 
-> It seems pte_mkwrite is referenced in mm.h but not defined anywhere in 
-> include directory.
-> 
+OK, I finally got them put together.  I'll try to use a more standard
+workflow (like kyle did) ... this, unfortunately means that none of my
+standard scripts worked, so I had to redo them all.
 
-James posted a patch:
+The current tree is here:
 
-http://marc.info/?l=linux-parisc&m=129504371532124&w=2
+http://git.kernel.org/?p=linux/kernel/git/jejb/parisc-2.6.git
 
--- 
-~Randy
-*** Remember to use Documentation/SubmitChecklist when testing your code ***
+All branches are stored as topic ones with <topic> as the head and
+<topic>-base as the base.  The current set of topics are
+
+fixes - long lived topic branch for various fixes
+for-next - topic for pulling into linux-next
+tmpalias-flush - the current set of tmpalias flush patches.
+
+In addition, the patches and changelogs which comprise each topic will
+be available here:
+
+http://www.kernel.org/pub/linux/kernel/people/jejb/parisc-2.6-<topic>.diff
+http://www.kernel.org/pub/linux/kernel/people/jejb/parisc-2.6-<topic>.changelog
+
+James
+
+
