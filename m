@@ -1,58 +1,60 @@
-From: Domenico Andreoli <cavokz@gmail.com>
-Subject: Re: parisc tree maintainer
-Date: Sat, 15 Jan 2011 19:32:09 +0100
-Message-ID: <AANLkTimwVDT6tL1=-7-753kJsmh9rt5JcOg5N-JxR9Tn@mail.gmail.com>
-References: <20101206164310.GQ25668@bombadil.infradead.org>
-	<1291672391.7021.33.camel@mulgrave.site>
-	<4CFD6309.2000202@gmx.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH] sched: provide scheduler_ipi() callback in response to
+        smp_send_reschedule()
+Date: Mon, 17 Jan 2011 11:26:37 +0000
+Message-ID: <20110117112637.GA18599@n2100.arm.linux.org.uk>
+References: <1295262433.30950.53.camel@laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	torvalds@linux-foundation.org, linux-parisc@vger.kernel.org,
-	Helge Deller <deller@gmx.de>
-To: Kyle McMartin <kyle@mcmartin.ca>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4CFD6309.2000202@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+Cc: Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Mike Frysinger <vapier@gentoo.org>,
+        Mikael Starvik <starvik@axis.com>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Hirokazu Takata <takata@linux-m32r.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        David Howells <dhowells@redhat.com>,
+        Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
+        Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        lin
+To: Peter Zijlstra <peterz@infradead.org>
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <1295262433.30950.53.camel@laptop>
+Errors-to: linux-mips-bounce@linux-mips.org
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Dec 6, 2010 at 11:26 PM, Helge Deller <deller@gmx.de> wrote:
-> On 12/06/2010 10:53 PM, James Bottomley wrote:
->>
->> On Mon, 2010-12-06 at 11:43 -0500, Kyle McMartin wrote:
->>>
->>> I'm getting a bit bored of maintaining the parisc trees and such...=
- Do
->>> either of you want to take over? If you do, please reply so that Li=
-nus
->>> knows that the next pull request will come from you instead of me.
+On Mon, Jan 17, 2011 at 12:07:13PM +0100, Peter Zijlstra wrote:
+> diff --git a/arch/alpha/kernel/smp.c b/arch/alpha/kernel/smp.c
+> index 42aa078..c4a570b 100644
+> --- a/arch/alpha/kernel/smp.c
+> +++ b/arch/alpha/kernel/smp.c
+> @@ -587,6 +587,7 @@ handle_ipi(struct pt_regs *regs)
+>  		case IPI_RESCHEDULE:
+>  			/* Reschedule callback.  Everything to be done
+>  			   is done by the interrupt return path.  */
+> +			scheduler_ipi();
+>  			break;
+>  
+>  		case IPI_CALL_FUNC:
+> diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+> index 9066473..ffde790 100644
+> --- a/arch/arm/kernel/smp.c
+> +++ b/arch/arm/kernel/smp.c
+> @@ -579,6 +579,7 @@ asmlinkage void __exception do_IPI(struct pt_regs *regs)
+>  				 * nothing more to do - eveything is
+>  				 * done on the interrupt return path
+>  				 */
+> +				scheduler_ipi();
 
-Thank you Kyle, we will call you only for interesting tasks ;)
+Maybe remove the comment "everything is done on the interrupt return path"
+as with this function call, that is no longer the case.
 
->> I suppose I can ... it's not a high volume tree, fortunately. =A0Tha=
-nks
->> for doing it this long ... although I've got to say, I think continu=
-ing
->> would be good practise for you.
->
-> James, thanks for taking that job!
-> Since our second baby (that time a son) was born just yesterday, I do=
-n't
-> think I will have much time during the next few weeks at least :-)
-
-I don't do anything but run my j5600 in the secret, trying recent
-trees and building some Debian packages. For what I can, I'm
-available.
-
-Thank you all.
-
-Domenico
-
------[ Domenico Andreoli, aka cavok
-=A0--[ http://www.dandreoli.com/gpgkey.asc
-=A0=A0 ---[ 3A0F 2F80 F79C 678A 8936=A0 4FEE 0677 9033 A20E BC50
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Looks like the same is true for Alpha as well?
