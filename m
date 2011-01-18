@@ -1,49 +1,94 @@
-From: Peter Zijlstra <peterz-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>
-Subject: Re: [PATCH] sched: provide scheduler_ipi()
- callback in response to smp_send_reschedule()
-Date: Mon, 17 Jan 2011 21:43:03 +0100
-Message-ID: <1295296983.30950.369.camel@laptop>
-References: <1295262433.30950.53.camel@laptop>
-	<1295296310.2148.29.camel@pasglop>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [GIT PULL] parisc fixes for 2.6.38-rc1
+Date: Tue, 18 Jan 2011 11:35:48 -0600
+Message-ID: <1295372148.9752.174.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-m32r-ja-rQhvJZKUsGBRYuoOT4C5/9i2O/JbrIOy@public.gmane.org, linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org,
-        linux-m32r-rQhvJZKUsGBRYuoOT4C5/9i2O/JbrIOy@public.gmane.org, linux-ia64-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-        linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Heiko Carstens <heiko.carstens-tA70FqPdS9bQT0dZR+AlfA@public.gmane.org>,
-        Howells <dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Paul Mackerras <paulus-eUNUBHrolfbYtjvyW6yDsg@public.gmane.org>,
-        "H. Peter
-	Anvin" <hpa-YMNOUZJC4hwAvxtiuMwx3w@public.gmane.org>, sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-        Linux-Arch <linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-        Jesper Nilsson <jesper.nilsson-VrBV9hrLPhE@public.gmane.org>, Mikael-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org,
-        Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Takata <takata-TMSiXQfHlQjsTix1lMzHGQ@public.gmane.org>,
-        x86-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, "James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
-        virtualization-qjLDD68F18O7TbgM5vRIOg@public.gmane.org, Ingo Molnar <mingo-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>,
-        xen-devel-GuqFBffKawuULHF6PoxzQEEOCMrvLtNR@public.gmane.org, Chris-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org,
-        Matt Turner <mattst88-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
-        uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org,
-        Fen
-To: Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>
-Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
-In-Reply-To: <1295296310.2148.29.camel@pasglop>
-List-Id: <uclinux-dist-devel.blackfin.uclinux.org>
-List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
-	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
-List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
-List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
-List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
-	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
-Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2011-01-18 at 07:31 +1100, Benjamin Herrenschmidt wrote:
-> 
-> Beware of false positive, I've used "fake" reschedule IPIs in the past
-> for other things (like kicking a CPU out of sleep state for unrelated
-> reasons). Nothing that I know that is upstream today but some of that
-> might come back. I'd like to avoid having to add an atomic to know if
-> it's a real reschedule, will the scheduler be smart enough to not bother
-> with false positives ? 
+This is just a couple of minor parisc specific fixes.  One for a console
+line wrap issue and the other for the transparent hugepages compile
+failure.  We've run these through our usual build and boot checks.
 
-Yes it can deal with that, some will be for reschedules, some will be
-for ttwu tail ends and x86 too uses this ipi for a few random other
-things like kicking kvm out of guest context..
+The patches are here:
+
+master.kernel.org:/pub/scm/linux/kernel/git/jejb/parisc-2.6.git#fixes
+
+The short changelog is:
+
+Guy Martin (1):
+      parisc : Remove broken line wrapping handling pdc_iodc_print()
+
+James Bottomley (1):
+      parisc: fix compile breakage caused by inlining maybe_mkwrite
+
+And the diffstat:
+
+ arch/parisc/include/asm/pgtable.h |    4 +++-
+ arch/parisc/kernel/firmware.c     |   13 +------------
+ 2 files changed, 4 insertions(+), 13 deletions(-)
+
+Full diffs are below.
+
+James
+
+---
+
+diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
+index 865f37a..6f1f65d 100644
+--- a/arch/parisc/include/asm/pgtable.h
++++ b/arch/parisc/include/asm/pgtable.h
+@@ -10,11 +10,13 @@
+  * we simulate an x86-style page table for the linux mm code
+  */
+ 
+-#include <linux/mm.h>		/* for vm_area_struct */
+ #include <linux/bitops.h>
++#include <linux/spinlock.h>
+ #include <asm/processor.h>
+ #include <asm/cache.h>
+ 
++struct vm_area_struct;
++
+ /*
+  * kern_addr_valid(ADDR) tests if ADDR is pointing to valid kernel
+  * memory.  For the return value to be meaningful, ADDR must be >=
+diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
+index df971fa..4896ed0 100644
+--- a/arch/parisc/kernel/firmware.c
++++ b/arch/parisc/kernel/firmware.c
+@@ -1126,15 +1126,13 @@ int pdc_iodc_print(const unsigned char *str, unsigned count)
+ 	unsigned int i;
+ 	unsigned long flags;
+ 
+-	for (i = 0; i < count && i < 79;) {
++	for (i = 0; i < count;) {
+ 		switch(str[i]) {
+ 		case '\n':
+ 			iodc_dbuf[i+0] = '\r';
+ 			iodc_dbuf[i+1] = '\n';
+ 			i += 2;
+ 			goto print;
+-		case '\b':	/* BS */
+-			i--; /* overwrite last */
+ 		default:
+ 			iodc_dbuf[i] = str[i];
+ 			i++;
+@@ -1142,15 +1140,6 @@ int pdc_iodc_print(const unsigned char *str, unsigned count)
+ 		}
+ 	}
+ 
+-	/* if we're at the end of line, and not already inserting a newline,
+-	 * insert one anyway. iodc console doesn't claim to support >79 char
+-	 * lines. don't account for this in the return value.
+-	 */
+-	if (i == 79 && iodc_dbuf[i-1] != '\n') {
+-		iodc_dbuf[i+0] = '\r';
+-		iodc_dbuf[i+1] = '\n';
+-	}
