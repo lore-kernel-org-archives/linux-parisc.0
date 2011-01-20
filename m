@@ -1,94 +1,60 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [GIT PULL] parisc fixes for 2.6.38-rc1
-Date: Tue, 18 Jan 2011 11:35:48 -0600
-Message-ID: <1295372148.9752.174.camel@mulgrave.site>
+From: Greg KH <gregkh@suse.de>
+Subject: Re: [PATCH] change acquire/release_console_sem() to
+	console_lock/unlock()
+Date: Thu, 20 Jan 2011 08:34:48 -0800
+Message-ID: <20110120163448.GA30588@suse.de>
+References: <1295539104-13210-1-git-send-email-torbenh@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: xen-devel@lists.xensource.com, Kees Cook <kees.cook@canonical.com>,
+        linux-fbdev@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        James Hogan <james@albanarts.com>, David Airlie <airlied@linux.ie>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Jesse Barnes <jbarnes@virtuousgeek.org>,
+        James Morris <jmorris@namei.org>,
+        Grant Likely <grant.likely@secretlab.ca>,
+        Paul Mackerras <paulus@samba.org>, linux-parisc@vger.kernel.org,
+        Magnus Damm <damm@opensource.se>, Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>, devel@driverdev.osuosl.org,
+        Guy Martin <gmsoft@tuxicoman.be>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Jeremy Fitzhardinge <jeremy.fitzhardinge@citrix.com>,
+        Russell King <linux@arm.linux.org.uk>, Thomas Gleixner <tglx@tglx.de>,
+        Wu
+To: Torben Hohn <torbenh@gmx.de>
+Return-path: <virtualization-bounces@lists.linux-foundation.org>
+In-Reply-To: <1295539104-13210-1-git-send-email-torbenh@gmx.de>
+List-Id: Linux virtualization <virtualization.lists.linux-foundation.org>
+List-Unsubscribe: <https://lists.linux-foundation.org/mailman/listinfo/virtualization>,
+	<mailto:virtualization-request@lists.linux-foundation.org?subject=unsubscribe>
+List-Archive: <http://lists.linux-foundation.org/pipermail/virtualization>
+List-Post: <mailto:virtualization@lists.linux-foundation.org>
+List-Help: <mailto:virtualization-request@lists.linux-foundation.org?subject=help>
+List-Subscribe: <https://lists.linux-foundation.org/mailman/listinfo/virtualization>,
+	<mailto:virtualization-request@lists.linux-foundation.org?subject=subscribe>
+Errors-To: virtualization-bounces@lists.linux-foundation.org
 
-This is just a couple of minor parisc specific fixes.  One for a console
-line wrap issue and the other for the transparent hugepages compile
-failure.  We've run these through our usual build and boot checks.
+On Thu, Jan 20, 2011 at 04:58:13PM +0100, Torben Hohn wrote:
+> the -rt patches change the console_semaphore to console_mutex.
+> so a quite large chunk of the patches changes all
+> acquire/release_console_sem() to acquire/release_console_mutex()
 
-The patches are here:
+Why not just change the functionality of the existing function to be a
+mutex in the rt patches, instead of having to rename it everywhere?
 
-master.kernel.org:/pub/scm/linux/kernel/git/jejb/parisc-2.6.git#fixes
+> this commit makes things use more neutral function names
+> which dont make implications about the underlying lock.
+> 
+> the only real change is the return value of console_trylock
+> which is inverted from try_acquire_console_sem()
+> 
+> Signed-off-by: Torben Hohn <torbenh@gmx.de>
+> CC: Thomas Gleixner <tglx@tglx.de>
 
-The short changelog is:
+I don't mind this rename, but is it really going to help anything out?
+What's the odds of the -rt portion of this patch ever making it to
+mainline?
 
-Guy Martin (1):
-      parisc : Remove broken line wrapping handling pdc_iodc_print()
+thanks,
 
-James Bottomley (1):
-      parisc: fix compile breakage caused by inlining maybe_mkwrite
-
-And the diffstat:
-
- arch/parisc/include/asm/pgtable.h |    4 +++-
- arch/parisc/kernel/firmware.c     |   13 +------------
- 2 files changed, 4 insertions(+), 13 deletions(-)
-
-Full diffs are below.
-
-James
-
----
-
-diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
-index 865f37a..6f1f65d 100644
---- a/arch/parisc/include/asm/pgtable.h
-+++ b/arch/parisc/include/asm/pgtable.h
-@@ -10,11 +10,13 @@
-  * we simulate an x86-style page table for the linux mm code
-  */
- 
--#include <linux/mm.h>		/* for vm_area_struct */
- #include <linux/bitops.h>
-+#include <linux/spinlock.h>
- #include <asm/processor.h>
- #include <asm/cache.h>
- 
-+struct vm_area_struct;
-+
- /*
-  * kern_addr_valid(ADDR) tests if ADDR is pointing to valid kernel
-  * memory.  For the return value to be meaningful, ADDR must be >=
-diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
-index df971fa..4896ed0 100644
---- a/arch/parisc/kernel/firmware.c
-+++ b/arch/parisc/kernel/firmware.c
-@@ -1126,15 +1126,13 @@ int pdc_iodc_print(const unsigned char *str, unsigned count)
- 	unsigned int i;
- 	unsigned long flags;
- 
--	for (i = 0; i < count && i < 79;) {
-+	for (i = 0; i < count;) {
- 		switch(str[i]) {
- 		case '\n':
- 			iodc_dbuf[i+0] = '\r';
- 			iodc_dbuf[i+1] = '\n';
- 			i += 2;
- 			goto print;
--		case '\b':	/* BS */
--			i--; /* overwrite last */
- 		default:
- 			iodc_dbuf[i] = str[i];
- 			i++;
-@@ -1142,15 +1140,6 @@ int pdc_iodc_print(const unsigned char *str, unsigned count)
- 		}
- 	}
- 
--	/* if we're at the end of line, and not already inserting a newline,
--	 * insert one anyway. iodc console doesn't claim to support >79 char
--	 * lines. don't account for this in the return value.
--	 */
--	if (i == 79 && iodc_dbuf[i-1] != '\n') {
--		iodc_dbuf[i+0] = '\r';
--		iodc_dbuf[i+1] = '\n';
--	}
+greg k-h
