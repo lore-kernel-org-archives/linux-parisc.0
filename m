@@ -1,31 +1,33 @@
 From: Andrew Morton <akpm@linux-foundation.org>
 Subject: Re: [PATCH] change acquire/release_console_sem() to
 	console_lock/unlock()
-Date: Thu, 20 Jan 2011 12:35:07 -0800
-Message-ID: <20110120123507.ac89c034.akpm@linux-foundation.org>
+Date: Fri, 21 Jan 2011 00:23:23 -0800
+Message-ID: <20110121002323.e9cbf9ae.akpm@linux-foundation.org>
 References: <1295539104-13210-1-git-send-email-torbenh@gmx.de>
 	<20110120163448.GA30588@suse.de> <20110120165502.GA10832@siel.b>
+	<20110120123507.ac89c034.akpm@linux-foundation.org>
+	<AANLkTinN2+pNGk1hwrcMhH5qDNZK=Egrw7P6c-cdJTmH@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Cc: xen-devel@lists.xensource.com, Kees Cook <kees.cook@canonical.com>,
-        linux-fbdev@vger.kernel.org,
-        Mark Brown <broonie@opensource.wolfsonmicro.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
+Cc: linux-fbdev@vger.kernel.org, Greg KH <gregkh@suse.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
         James Hogan <james@albanarts.com>, David Airlie <airlied@linux.ie>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>, linux-omap@vger.kernel.org,
         Jesse Barnes <jbarnes@virtuousgeek.org>,
-        James Morris <jmorris@namei.org>,
-        Grant Likely <grant.likely@secretlab.ca>,
-        Paul Mackerras <paulus@samba.org>, linux-parisc@vger.kernel.org,
-        Magnus Damm <damm@opensource.se>, Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>, devel@driverdev.osuosl.org,
-        Guy Martin <gmsoft@tuxicoman.be>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Jeremy Fitzhardinge <jeremy.fitzhardinge@citrix.com>,
-        Russell King <l
-To: torbenh <torbenh@gmx.de>
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paul Mackerras <paulus@samba.org>, Liam Girdwood <lrg@slimlogic.co.uk>,
+        Kyle McMartin <kyle@mcmartin.ca>, Jiri Slaby <jslaby@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Caglar Akyuz <caglar@bilkon-kontrol.com.tr>,
+        devel@driverdev.osuosl.org,
+        Alberto Panizzo <maramaopercheseimorto@gmail.com>,
+        Phil Edworthy <phil.edworthy@renesas.com>,
+        xen-devel@lists.xensource.com, Russell King <linux@arm.linux.org.uk>,
+        Kuninor
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Return-path: <virtualization-bounces@lists.linux-foundation.org>
-In-Reply-To: <20110120165502.GA10832@siel.b>
+In-Reply-To: <AANLkTinN2+pNGk1hwrcMhH5qDNZK=Egrw7P6c-cdJTmH@mail.gmail.com>
 List-Id: Linux virtualization <virtualization.lists.linux-foundation.org>
 List-Unsubscribe: <https://lists.linux-foundation.org/mailman/listinfo/virtualization>,
 	<mailto:virtualization-request@lists.linux-foundation.org?subject=unsubscribe>
@@ -36,40 +38,55 @@ List-Subscribe: <https://lists.linux-foundation.org/mailman/listinfo/virtualizat
 	<mailto:virtualization-request@lists.linux-foundation.org?subject=subscribe>
 Errors-To: virtualization-bounces@lists.linux-foundation.org
 
-On Thu, 20 Jan 2011 17:55:02 +0100
-torbenh <torbenh@gmx.de> wrote:
+On Fri, 21 Jan 2011 09:10:06 +0100 Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-> On Thu, Jan 20, 2011 at 08:34:48AM -0800, Greg KH wrote:
-> > On Thu, Jan 20, 2011 at 04:58:13PM +0100, Torben Hohn wrote:
-> > > the -rt patches change the console_semaphore to console_mutex.
-> > > so a quite large chunk of the patches changes all
-> > > acquire/release_console_sem() to acquire/release_console_mutex()
-> > 
-> > Why not just change the functionality of the existing function to be a
-> > mutex in the rt patches, instead of having to rename it everywhere?
+> include/linux/mutex.h:
 > 
-> i hope that Thomas already did this in his upcoming -rt series.
+> /*
+>  * NOTE: mutex_trylock() follows the spin_trylock() convention,
+>  *       not the down_trylock() convention!
+>  *
+>  * Returns 1 if the mutex has been acquired successfully, and 0 on contention.
+>  */
+> extern int mutex_trylock(struct mutex *lock);
 > 
-> > 
-> > > this commit makes things use more neutral function names
-> > > which dont make implications about the underlying lock.
-> > > 
-> > > the only real change is the return value of console_trylock
-> > > which is inverted from try_acquire_console_sem()
-> > > 
-> > > Signed-off-by: Torben Hohn <torbenh@gmx.de>
-> > > CC: Thomas Gleixner <tglx@tglx.de>
-> > 
-> > I don't mind this rename, but is it really going to help anything out?
-> > What's the odds of the -rt portion of this patch ever making it to
-> > mainline?
+> So that's why the return value was inverted (when treating it as a boolean).
+> I can understand that.
 > 
-> the -rt portion only changes the semaphore to a mutex.
-> since the console_sem is used with mutex semantics, i dont see any
-> reason, not to merge that portion too. 
+> However:
 > 
-> i am just trying to shrink the -rt patch to make it more maintanable :)
+> +/**
+> + * console_trylock - try to lock the console system for exclusive use.
+> + *
+> + * Tried to acquire a lock which guarantees that the caller has
+> + * exclusive access to the console system and the console_drivers list.
+> + *
+> + * returns -1 on success, and 0 on failure to acquire the lock.
+> + */
+> +int console_trylock(void)
 > 
+> So this one returns -1 on success, not 1? Why?
 
-Yeah, I think it's a better name and if we can indeed switch that
-semaphore to a mutex then that's a good thing to do.
+Yup.  All callers just test for non-zero, so...
+
+--- a/kernel/printk.c~change-acquire-release_console_sem-to-console_lock-unlock-fix-2
++++ a/kernel/printk.c
+@@ -1058,7 +1058,7 @@ EXPORT_SYMBOL(console_lock);
+  * Tried to acquire a lock which guarantees that the caller has
+  * exclusive access to the console system and the console_drivers list.
+  *
+- * returns -1 on success, and 0 on failure to acquire the lock.
++ * returns 1 on success, and 0 on failure to acquire the lock.
+  */
+ int console_trylock(void)
+ {
+@@ -1070,7 +1070,7 @@ int console_trylock(void)
+ 	}
+ 	console_locked = 1;
+ 	console_may_schedule = 0;
+-	return -1;
++	return 1;
+ }
+ EXPORT_SYMBOL(console_trylock);
+ 
+_
