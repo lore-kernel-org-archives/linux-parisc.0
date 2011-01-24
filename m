@@ -1,90 +1,121 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] change acquire/release_console_sem() to
-	console_lock/unlock()
-Date: Fri, 21 Jan 2011 09:10:06 +0100
-Message-ID: <AANLkTinN2+pNGk1hwrcMhH5qDNZK=Egrw7P6c-cdJTmH@mail.gmail.com>
-References: <1295539104-13210-1-git-send-email-torbenh@gmx.de>
-	<20110120163448.GA30588@suse.de> <20110120165502.GA10832@siel.b>
-	<20110120123507.ac89c034.akpm@linux-foundation.org>
+From: Ralf Baechle <ralf-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org>
+Subject: Re: [PATCH] sched: provide scheduler_ipi()
+ callback in response to smp_send_reschedule()
+Date: Tue, 25 Jan 2011 00:03:26 +0100
+Message-ID: <20110124230326.GA9121@linux-mips.org>
+References: <1295262433.30950.53.camel@laptop>
+	<20110117112637.GA18599@n2100.arm.linux.org.uk>
+	<1295263884.30950.54.camel@laptop>
+	<1295264509.30950.59.camel@laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: linux-fbdev@vger.kernel.org, Greg KH <gregkh@suse.de>,
-	Lars-Peter Clausen <lars@metafoo.de>, James Hogan <james@albanarts.com>,
-	David Airlie <airlied@linux.ie>, Daniel Vetter <daniel.vetter@ffwll.ch>,
-	linux-omap@vger.kernel.org, Jesse Barnes <jbarnes@virtuousgeek.org>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	"David S. Miller" <davem@davemloft.net>, Paul Mackerras <paulus@samba.org>,
-	Liam Girdwood <lrg@slimlogic.co.uk>,
-	Kyle McMartin <kyle@mcmartin.ca>, Jiri Slaby <jslaby@suse.cz>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Caglar Akyuz <caglar@bilkon-kontrol.com.tr>, devel@driverdev.osuosl.org,
-	Alberto Panizzo <maramaopercheseimorto@gmail.com>,
-	Phil Edworthy <phil.edworthy@renesas.com>, xen-devel@lists.xensource.com,
-	Russell King <linux@arm.linux.org.uk>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	Wu Zhangjin <wuzhangjin@gmail.com>,
-	Florian Tobias Schandi
-To: Andrew Morton <akpm@linux-foundation.org>
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20110120123507.ac89c034.akpm@linux-foundation.org>
-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, linux-ia64-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+        linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+        Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>,
+        "H. Peter Anvin" <hpa-YMNOUZJC4hwAvxtiuMwx3w@public.gmane.org>,
+        Heiko Carstens <heiko.carstens-tA70FqPdS9bQT0dZR+AlfA@public.gmane.org>,
+        David Howells <dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Paul Mackerras <paulus-eUNUBHrolfbYtjvyW6yDsg@public.gmane.org>,
+        Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>, sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+        Linux-Arch <linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+        Jesper Nilsson <jesper.nilsson-VrBV9hrLPhE@public.gmane.org>,
+        Jeremy Fitzhardinge <jeremy.fitzhardinge-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>,
+        Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>,
+        Hirokazu Takata <takata-TMSiXQfHlQjsTix1lMzHGQ@public.gmane.org>, x86-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org,
+        "James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
+        virtualization-qjLDD68F18O7TbgM5vRIOg@public.gmane.org, Ingo Molnar <mingo-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>,
+        Matt Turner <mattst88-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Fenghua Yu <fenghua.yu@int
+To: Peter Zijlstra <peterz-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>,
+        David Daney <ddaney-M3mlKVOIwJVv6pq1l3V1OdBPR1lH4CV8@public.gmane.org>
+Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+In-Reply-To: <1295264509.30950.59.camel@laptop>
+List-Id: <uclinux-dist-devel.blackfin.uclinux.org>
+List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
+List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
+Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
 
-T24gVGh1LCBKYW4gMjAsIDIwMTEgYXQgMjE6MzUsIEFuZHJldyBNb3J0b24gPGFrcG1AbGludXgt
-Zm91bmRhdGlvbi5vcmc+IHdyb3RlOgo+IE9uIFRodSwgMjAgSmFuIDIwMTEgMTc6NTU6MDIgKzAx
-MDAKPiB0b3JiZW5oIDx0b3JiZW5oQGdteC5kZT4gd3JvdGU6Cj4KPj4gT24gVGh1LCBKYW4gMjAs
-IDIwMTEgYXQgMDg6MzQ6NDhBTSAtMDgwMCwgR3JlZyBLSCB3cm90ZToKPj4gPiBPbiBUaHUsIEph
-biAyMCwgMjAxMSBhdCAwNDo1ODoxM1BNICswMTAwLCBUb3JiZW4gSG9obiB3cm90ZToKPj4gPiA+
-IHRoZSAtcnQgcGF0Y2hlcyBjaGFuZ2UgdGhlIGNvbnNvbGVfc2VtYXBob3JlIHRvIGNvbnNvbGVf
-bXV0ZXguCj4+ID4gPiBzbyBhIHF1aXRlIGxhcmdlIGNodW5rIG9mIHRoZSBwYXRjaGVzIGNoYW5n
-ZXMgYWxsCj4+ID4gPiBhY3F1aXJlL3JlbGVhc2VfY29uc29sZV9zZW0oKSB0byBhY3F1aXJlL3Jl
-bGVhc2VfY29uc29sZV9tdXRleCgpCj4+ID4KPj4gPiBXaHkgbm90IGp1c3QgY2hhbmdlIHRoZSBm
-dW5jdGlvbmFsaXR5IG9mIHRoZSBleGlzdGluZyBmdW5jdGlvbiB0byBiZSBhCj4+ID4gbXV0ZXgg
-aW4gdGhlIHJ0IHBhdGNoZXMsIGluc3RlYWQgb2YgaGF2aW5nIHRvIHJlbmFtZSBpdCBldmVyeXdo
-ZXJlPwo+Pgo+PiBpIGhvcGUgdGhhdCBUaG9tYXMgYWxyZWFkeSBkaWQgdGhpcyBpbiBoaXMgdXBj
-b21pbmcgLXJ0IHNlcmllcy4KPj4KPj4gPgo+PiA+ID4gdGhpcyBjb21taXQgbWFrZXMgdGhpbmdz
-IHVzZSBtb3JlIG5ldXRyYWwgZnVuY3Rpb24gbmFtZXMKPj4gPiA+IHdoaWNoIGRvbnQgbWFrZSBp
-bXBsaWNhdGlvbnMgYWJvdXQgdGhlIHVuZGVybHlpbmcgbG9jay4KPj4gPiA+Cj4+ID4gPiB0aGUg
-b25seSByZWFsIGNoYW5nZSBpcyB0aGUgcmV0dXJuIHZhbHVlIG9mIGNvbnNvbGVfdHJ5bG9jawo+
-PiA+ID4gd2hpY2ggaXMgaW52ZXJ0ZWQgZnJvbSB0cnlfYWNxdWlyZV9jb25zb2xlX3NlbSgpCj4+
-ID4gPgo+PiA+ID4gU2lnbmVkLW9mZi1ieTogVG9yYmVuIEhvaG4gPHRvcmJlbmhAZ214LmRlPgo+
-PiA+ID4gQ0M6IFRob21hcyBHbGVpeG5lciA8dGdseEB0Z2x4LmRlPgo+PiA+Cj4+ID4gSSBkb24n
-dCBtaW5kIHRoaXMgcmVuYW1lLCBidXQgaXMgaXQgcmVhbGx5IGdvaW5nIHRvIGhlbHAgYW55dGhp
-bmcgb3V0Pwo+PiA+IFdoYXQncyB0aGUgb2RkcyBvZiB0aGUgLXJ0IHBvcnRpb24gb2YgdGhpcyBw
-YXRjaCBldmVyIG1ha2luZyBpdCB0bwo+PiA+IG1haW5saW5lPwo+Pgo+PiB0aGUgLXJ0IHBvcnRp
-b24gb25seSBjaGFuZ2VzIHRoZSBzZW1hcGhvcmUgdG8gYSBtdXRleC4KPj4gc2luY2UgdGhlIGNv
-bnNvbGVfc2VtIGlzIHVzZWQgd2l0aCBtdXRleCBzZW1hbnRpY3MsIGkgZG9udCBzZWUgYW55Cj4+
-IHJlYXNvbiwgbm90IHRvIG1lcmdlIHRoYXQgcG9ydGlvbiB0b28uCj4+Cj4+IGkgYW0ganVzdCB0
-cnlpbmcgdG8gc2hyaW5rIHRoZSAtcnQgcGF0Y2ggdG8gbWFrZSBpdCBtb3JlIG1haW50YW5hYmxl
-IDopCj4+Cj4KPiBZZWFoLCBJIHRoaW5rIGl0J3MgYSBiZXR0ZXIgbmFtZSBhbmQgaWYgd2UgY2Fu
-IGluZGVlZCBzd2l0Y2ggdGhhdAo+IHNlbWFwaG9yZSB0byBhIG11dGV4IHRoZW4gdGhhdCdzIGEg
-Z29vZCB0aGluZyB0byBkby4KCmluY2x1ZGUvbGludXgvbXV0ZXguaDoKCi8qCiAqIE5PVEU6IG11
-dGV4X3RyeWxvY2soKSBmb2xsb3dzIHRoZSBzcGluX3RyeWxvY2soKSBjb252ZW50aW9uLAogKiAg
-ICAgICBub3QgdGhlIGRvd25fdHJ5bG9jaygpIGNvbnZlbnRpb24hCiAqCiAqIFJldHVybnMgMSBp
-ZiB0aGUgbXV0ZXggaGFzIGJlZW4gYWNxdWlyZWQgc3VjY2Vzc2Z1bGx5LCBhbmQgMCBvbiBjb250
-ZW50aW9uLgogKi8KZXh0ZXJuIGludCBtdXRleF90cnlsb2NrKHN0cnVjdCBtdXRleCAqbG9jayk7
-CgpTbyB0aGF0J3Mgd2h5IHRoZSByZXR1cm4gdmFsdWUgd2FzIGludmVydGVkICh3aGVuIHRyZWF0
-aW5nIGl0IGFzIGEgYm9vbGVhbikuCkkgY2FuIHVuZGVyc3RhbmQgdGhhdC4KCkhvd2V2ZXI6Cgor
-LyoqCisgKiBjb25zb2xlX3RyeWxvY2sgLSB0cnkgdG8gbG9jayB0aGUgY29uc29sZSBzeXN0ZW0g
-Zm9yIGV4Y2x1c2l2ZSB1c2UuCisgKgorICogVHJpZWQgdG8gYWNxdWlyZSBhIGxvY2sgd2hpY2gg
-Z3VhcmFudGVlcyB0aGF0IHRoZSBjYWxsZXIgaGFzCisgKiBleGNsdXNpdmUgYWNjZXNzIHRvIHRo
-ZSBjb25zb2xlIHN5c3RlbSBhbmQgdGhlIGNvbnNvbGVfZHJpdmVycyBsaXN0LgorICoKKyAqIHJl
-dHVybnMgLTEgb24gc3VjY2VzcywgYW5kIDAgb24gZmFpbHVyZSB0byBhY3F1aXJlIHRoZSBsb2Nr
-LgorICovCitpbnQgY29uc29sZV90cnlsb2NrKHZvaWQpCgpTbyB0aGlzIG9uZSByZXR1cm5zIC0x
-IG9uIHN1Y2Nlc3MsIG5vdCAxPyBXaHk/CgpHcntvZXRqZSxlZXRpbmd9cywKCsKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIEdlZXJ0CgotLQpHZWVydCBVeXR0ZXJob2V2ZW4gLS0g
-VGhlcmUncyBsb3RzIG9mIExpbnV4IGJleW9uZCBpYTMyIC0tIGdlZXJ0QGxpbnV4LW02OGsub3Jn
-CgpJbiBwZXJzb25hbCBjb252ZXJzYXRpb25zIHdpdGggdGVjaG5pY2FsIHBlb3BsZSwgSSBjYWxs
-IG15c2VsZiBhIGhhY2tlci4gQnV0CndoZW4gSSdtIHRhbGtpbmcgdG8gam91cm5hbGlzdHMgSSBq
-dXN0IHNheSAicHJvZ3JhbW1lciIgb3Igc29tZXRoaW5nIGxpa2UgdGhhdC4KwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqDCoCDCoMKgIC0tIExpbnVzIFRvcnZhbGRzCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4cHBjLWRl
-diBtYWlsaW5nIGxpc3QKTGludXhwcGMtZGV2QGxpc3RzLm96bGFicy5vcmcKaHR0cHM6Ly9saXN0
-cy5vemxhYnMub3JnL2xpc3RpbmZvL2xpbnV4cHBjLWRldg==
+On Mon, Jan 17, 2011 at 12:41:49PM +0100, Peter Zijlstra wrote:
+
+> I visited existing smp_send_reschedule() implementations and tried to
+> add a call to scheduler_ipi() in their handler part, but esp. for MIPS
+> I'm not quite sure I actually got all of them.
+
+No, you didn't.  Here are a few more for you to fold into the existing patch.
+
+  Ralf
+
+Signed-off-by: Ralf Baechle <ralf-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org>
+
+ arch/mips/cavium-octeon/smp.c       |    2 ++
+ arch/mips/mti-malta/malta-int.c     |    2 ++
+ arch/mips/pmc-sierra/yosemite/smp.c |    4 ++++
+ arch/mips/sgi-ip27/ip27-irq.c       |    2 ++
+ 4 files changed, 10 insertions(+), 0 deletions(-)
+
+diff --git a/arch/mips/cavium-octeon/smp.c b/arch/mips/cavium-octeon/smp.c
+index 391cefe..170684a 100644
+--- a/arch/mips/cavium-octeon/smp.c
++++ b/arch/mips/cavium-octeon/smp.c
+@@ -44,6 +44,8 @@ static irqreturn_t mailbox_interrupt(int irq, void *dev_id)
+ 
+ 	if (action & SMP_CALL_FUNCTION)
+ 		smp_call_function_interrupt();
++	if (action & SMP_RESCHEDULE_YOURSELF)
++		scheduler_ipi();
+ 
+ 	/* Check if we've been told to flush the icache */
+ 	if (action & SMP_ICACHE_FLUSH)
+diff --git a/arch/mips/mti-malta/malta-int.c b/arch/mips/mti-malta/malta-int.c
+index b79b24a..fc7571f 100644
+--- a/arch/mips/mti-malta/malta-int.c
++++ b/arch/mips/mti-malta/malta-int.c
+@@ -309,6 +309,8 @@ static void ipi_call_dispatch(void)
+ 
+ static irqreturn_t ipi_resched_interrupt(int irq, void *dev_id)
+ {
++	scheduler_ipi();
++
+ 	return IRQ_HANDLED;
+ }
+ 
+diff --git a/arch/mips/pmc-sierra/yosemite/smp.c b/arch/mips/pmc-sierra/yosemite/smp.c
+index efc9e88..2608752 100644
+--- a/arch/mips/pmc-sierra/yosemite/smp.c
++++ b/arch/mips/pmc-sierra/yosemite/smp.c
+@@ -55,6 +55,8 @@ void titan_mailbox_irq(void)
+ 
+ 		if (status & 0x2)
+ 			smp_call_function_interrupt();
++		if (status & 0x4)
++			scheduler_ipi();
+ 		break;
+ 
+ 	case 1:
+@@ -63,6 +65,8 @@ void titan_mailbox_irq(void)
+ 
+ 		if (status & 0x2)
+ 			smp_call_function_interrupt();
++		if (status & 0x4)
++			scheduler_ipi();
+ 		break;
+ 	}
+ }
+diff --git a/arch/mips/sgi-ip27/ip27-irq.c b/arch/mips/sgi-ip27/ip27-irq.c
+index 6a123ea..81d6548 100644
+--- a/arch/mips/sgi-ip27/ip27-irq.c
++++ b/arch/mips/sgi-ip27/ip27-irq.c
+@@ -147,8 +147,10 @@ static void ip27_do_irq_mask0(void)
+ #ifdef CONFIG_SMP
+ 	if (pend0 & (1UL << CPU_RESCHED_A_IRQ)) {
+ 		LOCAL_HUB_CLR_INTR(CPU_RESCHED_A_IRQ);
++		scheduler_ipi();
+ 	} else if (pend0 & (1UL << CPU_RESCHED_B_IRQ)) {
+ 		LOCAL_HUB_CLR_INTR(CPU_RESCHED_B_IRQ);
++		scheduler_ipi();
+ 	} else if (pend0 & (1UL << CPU_CALL_A_IRQ)) {
+ 		LOCAL_HUB_CLR_INTR(CPU_CALL_A_IRQ);
+ 		smp_call_function_interrupt();
