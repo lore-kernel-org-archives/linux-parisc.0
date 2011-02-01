@@ -1,62 +1,35 @@
-From: Meelis Roos <mroos@linux.ee>
-Subject: 2.6.38-rc3 regression on parisc: segfaults
-Date: Wed, 2 Feb 2011 00:00:13 +0200 (EET)
-Message-ID: <alpine.SOC.1.00.1102012342200.25944@math.ut.ee>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: 2.6.38-rc3 regression on parisc: segfaults
+Date: Tue, 01 Feb 2011 16:12:40 -0600
+Message-ID: <1296598360.18277.11.camel@mulgrave.site>
+References: <alpine.SOC.1.00.1102012342200.25944@math.ut.ee>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-To: linux-parisc@vger.kernel.org,
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-parisc@vger.kernel.org,
 	Linux Kernel list <linux-kernel@vger.kernel.org>
+To: Meelis Roos <mroos@linux.ee>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <alpine.SOC.1.00.1102012342200.25944@math.ut.ee>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I have been testing devel kernels on SMP L1000 successfully until 
-2.6.38-rc2-00324-g70d1f36 included. The testing means booting the new 
-kernel and running aptitude to update to current debian unstable.
+On Wed, 2011-02-02 at 00:00 +0200, Meelis Roos wrote:
+> I have been testing devel kernels on SMP L1000 successfully until 
+> 2.6.38-rc2-00324-g70d1f36 included. The testing means booting the new 
+> kernel and running aptitude to update to current debian unstable.
+> 
+> Now I tried 2.6.38-rc3 and got a crash from aptitude on 2 out of 2 
+> tries. Maybe aptitude was broken inbetween but it looks like a kernel 
+> bug. Retried 2.6.38-rc2-00324-g70d1f36 and that seemed to work fine so 
+> it's more likely a kernel problem.
+> 
+> What additional information can I provide?
 
-Now I tried 2.6.38-rc3 and got a crash from aptitude on 2 out of 2 
-tries. Maybe aptitude was broken inbetween but it looks like a kernel 
-bug. Retried 2.6.38-rc2-00324-g70d1f36 and that seemed to work fine so 
-it's more likely a kernel problem.
+Probably a bisection, if you could.  There have been no parisc patches
+between -rc2 and -rc3, so it's coming from outside the architecture.
 
-What additional information can I provide?
+Thanks,
 
-[   74.590000]
-[   74.590000] do_page_fault() pid=979 command='aptitude' type=15 address=0x0000002d
-[   74.590000]
-[   74.590000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-[   74.590000] PSW: 00000000000001001111111100001111 Not tainted
-[   74.590000] r00-03  000000ff0004ff0f 000000004027b5ac 00000000405df23b 000000004067e884
-[   74.590000] r04-07  000000004067c860 000000004067e6d0 000000004067e880 00000000c014b7d0
-[   74.590000] r08-11  0000000000000001 0000000000000001 000000004067c860 0000000041b082c8
-[   74.590000] r12-15  000000004067e730 000000004067e6d0 000000004067c860 000000004067c860
-[   74.590000] r16-19  000000004067c860 000000004067e060 0000000000000000 000000004067c860
-[   74.590000] r20-23  0000000000000229 0000000000000000 0000000000000000 0000000000000000
-[   74.590000] r24-27  fffffffffffffff5 ffffffffffffffd3 000000004067e730 00000000004227a4
-[   74.590000] r28-31  000000000000002d 0000000000000000 00000000c014b8c0 00000000402688db
-[   74.590000] sr00-03  0000000000228800 0000000000228800 0000000000000000 0000000000228800
-[   74.590000] sr04-07  0000000000228800 0000000000228800 0000000000228800 0000000000228800
-[   74.590000]
-[   74.590000]       VZOUICununcqcqcqcqcqcrmunTDVZOUI
-[   74.590000] FPSR: 00001000001000100010000000000000
-[   74.590000] FPER1: 00000000
-[   74.590000] fr00-03  0822200000000000 0000000000000000 0000000000000000 0000000000000000
-[   74.590000] fr04-07  0000000a00000000 0000000000000000 0000000000000000 0000000000000000
-[   74.590000] fr08-11  0000000000000000 00000000406cf120 00000000401563e8 00000000404c59d8
-[   74.590000] fr12-15  000000000804000f 000000000800000f 00000000401563e8 00000000ffc60460
-[   74.590000] fr16-19  00000000406cf120 0000000040639d54 0000000000000046 0000000040599294
-[   74.590000] fr20-23  00000000ffc60348 00000000406dd920 0000000000000038 4038000000000000
-[   74.590000] fr24-27  0000000000000000 0000000000000000 3ff0000000000000 412e848c00000000
-[   74.590000] fr28-31  0000000040599250 00000000ffc60357 00000000ffc60357 00000000405dfba8
-[   74.590000]
-[   74.590000] IASQ: 0000000000228800 0000000000228800 IAOQ: 00000000405df25b 00000000405df25f
-[   74.590000]  IIR: 0f80108b    ISR: 0000000000228800  IOR: 000000000000002d
-[   74.590000]  CPU:        0   CR30: 00000000fe050000 CR31: 0000000000008020
-[   74.590000]  ORIG_R28: 0000000000000080
-[   74.590000]  IAOQ[0]: 00000000405df25b
-[   74.590000]  IAOQ[1]: 00000000405df25f
-[   74.590000]  RP(r2): 00000000405df23b
+James
 
 
--- 
-Meelis Roos (mroos@linux.ee)
