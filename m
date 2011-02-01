@@ -1,81 +1,62 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: Need to start dismantling Cupertino PA-RISC Linux
-Date: Thu, 27 Jan 2011 21:38:27 -0500
-Message-ID: <20110128023827.GA27517@hiauly1.hia.nrc.ca>
-References: <20100622231714.GE8644@lackof.org> <20100623003317.B9F974E77@hiauly1.hia.nrc.ca> <20100623003615.GG20317@bombadil.infradead.org> <20110124040815.GB10768@parisc-linux.org> <20110124150813.GI27353@bombadil.infradead.org>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: Meelis Roos <mroos@linux.ee>
+Subject: 2.6.38-rc3 regression on parisc: segfaults
+Date: Wed, 2 Feb 2011 00:00:13 +0200 (EET)
+Message-ID: <alpine.SOC.1.00.1102012342200.25944@math.ut.ee>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: linux-parisc@vger.kernel.org,
+	Linux Kernel list <linux-kernel@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110124150813.GI27353@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 24 Jan 2011, Kyle McMartin wrote:
+I have been testing devel kernels on SMP L1000 successfully until 
+2.6.38-rc2-00324-g70d1f36 included. The testing means booting the new 
+kernel and running aptitude to update to current debian unstable.
 
-> On Sun, Jan 23, 2011 at 09:08:15PM -0700, Grant Grundler wrote:
-> > On Tue, Jun 22, 2010 at 08:36:15PM -0400, Kyle McMartin wrote:
-> > > On Tue, Jun 22, 2010 at 08:33:16PM -0400, John David Anglin wrote:
-> > > > I have used up all the spare drives that Grant provided me servicing
-> > > > the RS11 and the disk array on hiauly2.  I know Kyle has a spare RS11
-> > > > and maybe parts.  Probably, some spare parts for the above would be
-> > > > useful but I don't have a huge amount of free time to debug hardware
-> > > > issues at the moment.
-> > > > 
-> > > 
-> > > You're welcome to whatever hardware I have here in Ottawa. I'll try to
-> > > make a list when I get back to Canada in a few weeks.
-> > 
-> > Kyle,
-> > In case this HW is still laying around, can you generate a HW list please?
-> > 
-> 
-> C3750
-> J6700
-> RP3440 (quad 1GHz)
-> RX2600 (from Martin Hicks, probably WOS's)
-> ZX6000
-> Bigmama (destined for the scrap heap, has bogus PAL fw that doesn't
-> support new PAL cache flush.)
-> 712
-> 715
-> B180
-> Various A500
-> C8000
-> 
-> I only really want to keep the C8000, I think, but maybe I'll look and
-> see if there's a production one on Ebay. I'm going to talk to various
-> people about hosting the RP3440 maybe, but if JDA wants it, he's welcome
-> to it. I need to move on to new projects. :/ (I have some newer Sun and
-> SGI gear that might need some love someday if I can get the time.)
+Now I tried 2.6.38-rc3 and got a crash from aptitude on 2 out of 2 
+tries. Maybe aptitude was broken inbetween but it looks like a kernel 
+bug. Retried 2.6.38-rc2-00324-g70d1f36 and that seemed to work fine so 
+it's more likely a kernel problem.
 
-Kyle has more than enough stuff here in Ottawa to keep GCC support
-going, and to help with further kernel development.  A few WD drives
-would be useful if there are any still around.
+What additional information can I provide?
 
-I'm thinking the rp3440 running hpux 11.31 would be very useful as a
-comparison base.  If that could be arranged, it would be great.  A
-issue came up this week where a 11.31 had a different behavior from
-11.11 and 11.23.
+[   74.590000]
+[   74.590000] do_page_fault() pid=979 command='aptitude' type=15 address=0x0000002d
+[   74.590000]
+[   74.590000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+[   74.590000] PSW: 00000000000001001111111100001111 Not tainted
+[   74.590000] r00-03  000000ff0004ff0f 000000004027b5ac 00000000405df23b 000000004067e884
+[   74.590000] r04-07  000000004067c860 000000004067e6d0 000000004067e880 00000000c014b7d0
+[   74.590000] r08-11  0000000000000001 0000000000000001 000000004067c860 0000000041b082c8
+[   74.590000] r12-15  000000004067e730 000000004067e6d0 000000004067c860 000000004067c860
+[   74.590000] r16-19  000000004067c860 000000004067e060 0000000000000000 000000004067c860
+[   74.590000] r20-23  0000000000000229 0000000000000000 0000000000000000 0000000000000000
+[   74.590000] r24-27  fffffffffffffff5 ffffffffffffffd3 000000004067e730 00000000004227a4
+[   74.590000] r28-31  000000000000002d 0000000000000000 00000000c014b8c0 00000000402688db
+[   74.590000] sr00-03  0000000000228800 0000000000228800 0000000000000000 0000000000228800
+[   74.590000] sr04-07  0000000000228800 0000000000228800 0000000000228800 0000000000228800
+[   74.590000]
+[   74.590000]       VZOUICununcqcqcqcqcqcrmunTDVZOUI
+[   74.590000] FPSR: 00001000001000100010000000000000
+[   74.590000] FPER1: 00000000
+[   74.590000] fr00-03  0822200000000000 0000000000000000 0000000000000000 0000000000000000
+[   74.590000] fr04-07  0000000a00000000 0000000000000000 0000000000000000 0000000000000000
+[   74.590000] fr08-11  0000000000000000 00000000406cf120 00000000401563e8 00000000404c59d8
+[   74.590000] fr12-15  000000000804000f 000000000800000f 00000000401563e8 00000000ffc60460
+[   74.590000] fr16-19  00000000406cf120 0000000040639d54 0000000000000046 0000000040599294
+[   74.590000] fr20-23  00000000ffc60348 00000000406dd920 0000000000000038 4038000000000000
+[   74.590000] fr24-27  0000000000000000 0000000000000000 3ff0000000000000 412e848c00000000
+[   74.590000] fr28-31  0000000040599250 00000000ffc60357 00000000ffc60357 00000000405dfba8
+[   74.590000]
+[   74.590000] IASQ: 0000000000228800 0000000000228800 IAOQ: 00000000405df25b 00000000405df25f
+[   74.590000]  IIR: 0f80108b    ISR: 0000000000228800  IOR: 000000000000002d
+[   74.590000]  CPU:        0   CR30: 00000000fe050000 CR31: 0000000000008020
+[   74.590000]  ORIG_R28: 0000000000000080
+[   74.590000]  IAOQ[0]: 00000000405df25b
+[   74.590000]  IAOQ[1]: 00000000405df25f
+[   74.590000]  RP(r2): 00000000405df23b
 
-Currently, I'm seeing improved stability on my rp3440 running SMP.
-James' last patch to improve vmap flush/invalidate seems to be a
-a very important change.  Comparing it versus the current code in
-update_mmu_cache, it seems we should limit the flush to when
-pfn_valid(page_to_pfn(page)) && page_mapping(page) is true.
-This seems to have further improved stability and I actually got
-through a full GCC build with make -j4 build.  This was something
-of a build record, but running the testsuite is still painfully slow.
 
-I'm continuing to test, but I'm hopeful that we are finally gaining
-an understanding of the cache issues and the random segvs that result
-from cache corruption.  This will make a broader range of machines
-usable.
-
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Meelis Roos (mroos@linux.ee)
