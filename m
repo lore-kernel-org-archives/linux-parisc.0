@@ -1,72 +1,77 @@
 From: Meelis Roos <mroos@linux.ee>
 Subject: Re: 2.6.38-rc3 regression on parisc: segfaults
-Date: Fri, 4 Feb 2011 00:36:32 +0200 (EET)
-Message-ID: <alpine.SOC.1.00.1102040018390.16704@math.ut.ee>
-References: <alpine.SOC.1.00.1102012342200.25944@math.ut.ee> <1296598360.18277.11.camel@mulgrave.site>
+Date: Fri, 4 Feb 2011 12:11:55 +0200 (EET)
+Message-ID: <alpine.SOC.1.00.1102041150390.8218@math.ut.ee>
+References: <20110203022420.A73F54E7B@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Cc: linux-parisc@vger.kernel.org,
-	Linux Kernel list <linux-kernel@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1296598360.18277.11.camel@mulgrave.site>
+In-Reply-To: <20110203022420.A73F54E7B@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > I have been testing devel kernels on SMP L1000 successfully until=20
-> > 2.6.38-rc2-00324-g70d1f36 included. The testing means booting the n=
-ew=20
-> > kernel and running aptitude to update to current debian unstable.
-> >=20
-> > Now I tried 2.6.38-rc3 and got a crash from aptitude on 2 out of 2=20
-> > tries. Maybe aptitude was broken inbetween but it looks like a kern=
-el=20
-> > bug. Retried 2.6.38-rc2-00324-g70d1f36 and that seemed to work fine=
- so=20
-> > it's more likely a kernel problem.
-> >=20
-> > What additional information can I provide?
->=20
-> Probably a bisection, if you could.  There have been no parisc patche=
-s
-> between -rc2 and -rc3, so it's coming from outside the architecture.
+> If aptitude fails consistently, it should be possible to debug or
+> isolate to a particular kernel change.  Usually, SMP segvs don't
+> provide much information as to the cause of the problem.  strace
+> output and a gdb backtrace would be useful.
 
-The result is strange :(
+strace works but does not tell much to me:
 
-6b28405395f7ec492ea69f541cc774adcb9e00ca is the first bad commit
-commit 6b28405395f7ec492ea69f541cc774adcb9e00ca
-Author: Axel K=C3=B6llhofer <AxelKoellhofer@web.de>
-Date:   Sat Jan 22 14:33:50 2011 -0600
+2349  _newselect(1, [0], NULL, NULL, {0, 0}) = 0 (Timeout)
+2349  rt_sigaction(SIGTSTP, {0x40664bea, [RT_1 RT_4 RT_5 RT_7 RT_11 RT_12 RT_15 RT_16 RT_18 RT_26], SA_RESTART}, NULL, 8) = 0
+2349  futex(0x458e0858, FUTEX_WAKE_OP_PRIVATE, 1, 1, 0x458e0850, {FUTEX_OP_SET, 0, FUTEX_OP_CMP_GT, 1}) = -1 ENOSYS (Function not implemented)
+2349  futex(0x458e0858, FUTEX_WAKE_PRIVATE, 1 <unfinished ...>
+2363  <... futex resumed> )             = 0
+2363  futex(0x458e0850, FUTEX_WAIT_PRIVATE, 2, NULL <unfinished ...>
+2349  <... futex resumed> )             = 1
+2349  futex(0x458e0850, FUTEX_WAKE_PRIVATE, 1 <unfinished ...>
+2363  <... futex resumed> )             = 0
+2363  futex(0x458e0850, FUTEX_WAKE_PRIVATE, 1) = 0
+2363  futex(0x458e0820, FUTEX_WAIT_PRIVATE, 2, NULL <unfinished ...>
+2349  <... futex resumed> )             = 1
+2349  futex(0x458e0820, FUTEX_WAKE_PRIVATE, 1 <unfinished ...>
+2363  <... futex resumed> )             = 0
+2363  futex(0x458e0820, FUTEX_WAKE_PRIVATE, 1) = 0
+2363  rename("/var/lib/apt/lists/partial/ftp.ee.debian.org_debian_dists_unstable_main_source_Sources.diff_2011-02-02-0207.41.decomp", "/var/lib/apt/lists/ftp.ee.debian.org_debian_dists_unstable_main_source_Sources.ed") = 0
+2363  stat64("/usr/lib/apt/methods/rred", {st_mode=0, st_size=0, ...}) = 0
+2363  pipe([26, 28])                    = 0
+2363  pipe([30, 31])                    = 0
+2363  fcntl64(26, F_SETFD, FD_CLOEXEC)  = 0
+2363  fcntl64(28, F_SETFD, FD_CLOEXEC)  = 0
+2363  fcntl64(30, F_SETFD, FD_CLOEXEC)  = 0
+2363  fcntl64(31, F_SETFD, FD_CLOEXEC)  = 0
+2363  clone( <unfinished ...>
+2349  <... futex resumed> )             = 1
+2363  <... clone resumed> child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x460df4a8) = 2372
+2349  --- SIGSEGV (Segmentation fault) @ 0 (0) ---
+2372  rt_sigaction(SIGPIPE, {SIG_DFL, [], SA_RESTART},  <unfinished ...>
+2349  write(1, "\33[56;1H\33[34h\33[?25h", 18 <unfinished ...>
 
-    staging: r8712u: Add new device IDs
+Something futex-related. Full log temprarilty available at 
+http://www.cs.ut.ee/~mroos/aptitude-strace.txt
 
-    This patch adds several new device ids to the r8712u staging driver=
-=2E
-    The new ids were retrieved from latest vendor driver (v2.6.6.0.2010=
-1111)
-    downloadable from www.realtek.com.tw
+gdb does not seem to work well:
 
-    Signed-off-by: Axel Koellhofer <AxelKoellhofer@web.de>
-    Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
-    Cc: Stable <stable@kernel.org> [2.6.37]
-    Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+root@hernes:~# gdb aptitude
+GNU gdb (GDB) 7.2-debian
+Copyright (C) 2010 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later 
+<http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "hppa-linux-gnu".
+For bug reporting instructions, please see:<http://www.gnu.org/software/gdb/bugs/>...
+Reading symbols from /usr/bin/aptitude...(no debugging symbols found)...done.
+(gdb) run
+Starting program: /usr/bin/aptitude
+[Thread debugging using libthread_db enabled]
+warning: Can't attach LWP 1075813436: No such process
+/tmp/buildd/gdb-7.2/gdb/linux-thread-db.c:392: internal-error: thread_get_info_callback: Assertion `inout->thread_info != NULL' failed.
+A problem internal to GDB has been detected,
+further debugging may prove unreliable.
 
-:040000 040000 185c3d2c1e98cc99009bfb772ed0779410784110 f5aa903931116f2=
-8f803003f594fec3b2a29a6f6 M      drivers
-
-Seems absolutely unrelated - I do not have staging enabled so so no=20
-CONFIG_R8712U either.
-
-The "bad" bisects were clearly bad and failed quicky during aptitude=20
-list update but the good ones might have needed more stress... or it is=
-=20
-some alignment-like problem. Will try again starting from these bad=20
-bisects to narrow it down, and stress seemingly good ones better.
-
---=20
+-- 
 Meelis Roos (mroos@linux.ee)
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
