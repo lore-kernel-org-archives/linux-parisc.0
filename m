@@ -1,55 +1,30 @@
-From: Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] sched: provide scheduler_ipi() callback in response to
- smp_send_reschedule()
-Date: Mon, 07 Feb 2011 14:54:19 +0100
-Message-ID: <1297086859.13327.16.camel@laptop>
-References: <1295262433.30950.53.camel@laptop>
-         <1297034792.14982.10.camel@pasglop>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [patch 0/8] parisc: Convert to new irq_chip functions
+Date: Mon, 07 Feb 2011 10:02:15 -0600
+Message-ID: <1297094535.8577.3.camel@mulgrave.site>
+References: <20110206204411.109238550@linutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Cc: Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Mike Frysinger <vapier@gentoo.org>,
-        Mikael Starvik <starvik@axis.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Hirokazu Takata <takata@linux-m32r.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        David Howells <dhowells@redhat.com>,
-        Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
-        Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        linux390@de.ibm
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <1297034792.14982.10.camel@pasglop>
-Errors-to: linux-mips-bounce@linux-mips.org
+Cc: linux-parisc@vger.kernel.org, Kyle McMartin <kyle@redhat.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20110206204411.109238550@linutronix.de>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2011-02-07 at 10:26 +1100, Benjamin Herrenschmidt wrote:
-> You missed:
-> 
-> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> index 9813605..467d122 100644
-> --- a/arch/powerpc/kernel/smp.c
-> +++ b/arch/powerpc/kernel/smp.c
-> @@ -98,6 +98,7 @@ void smp_message_recv(int msg)
->                 break;
->         case PPC_MSG_RESCHEDULE:
->                 /* we notice need_resched on exit */
-> +               scheduler_ipi();
->                 break;
->         case PPC_MSG_CALL_FUNC_SINGLE:
->                 generic_smp_call_function_single_interrupt();
-> 
-> Fold that in and add:
-> 
-> Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+On Sun, 2011-02-06 at 20:45 +0000, Thomas Gleixner wrote:
+> The following series converts parisc to the new irq_chip functions and
+> sets GENERIC_HARDIRQS_NO_DEPRECATED. Compile tested only.
 
-Thanks Ben!
+You don't really need one patch per file in the irq function changes do
+you? ... unless you're being rechristened Joe Perches ...
+
+I can't get the last patch to apply ... it looks like there are lots of
+other Kconfig changes besides the one liner it does; what's missing?
+
+Thanks,
+
+James
+
+
