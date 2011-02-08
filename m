@@ -1,52 +1,90 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [patch 0/8] parisc: Convert to new irq_chip functions
-Date: Tue, 08 Feb 2011 11:45:38 -0600
-Message-ID: <1297187138.3088.82.camel@mulgrave.site>
-References: <20110206204411.109238550@linutronix.de>
-	 <1297094535.8577.3.camel@mulgrave.site>
-	 <alpine.LFD.2.00.1102071744590.31804@localhost6.localdomain6>
-	 <1297100168.8577.42.camel@mulgrave.site>
-	 <alpine.LFD.2.00.1102071924150.31804@localhost6.localdomain6>
-	 <1297113986.8577.92.camel@mulgrave.site>
-	 <1297125136.8577.113.camel@mulgrave.site>
-	 <alpine.LFD.2.00.1102081518420.31804@localhost6.localdomain6>
-	 <alpine.LFD.2.00.1102081536080.31804@localhost6.localdomain6>
-	 <1297183997.3088.72.camel@mulgrave.site>
-	 <alpine.LFD.2.00.1102081841180.31804@localhost6.localdomain6>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [PATCH] parisc: Improve dcache flush on PA8800/PA8900
+Date: Tue, 8 Feb 2011 13:45:08 -0500 (EST)
+Message-ID: <20110208184509.2E2C74ED8@hiauly1.hia.nrc.ca>
+References: <1297186150.3088.81.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-parisc@vger.kernel.org, Kyle McMartin <kyle@redhat.com>
-To: Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset=US-ASCII
+Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
+To: James.Bottomley@HansenPartnership.com (James Bottomley)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LFD.2.00.1102081841180.31804@localhost6.localdomain6>
+In-Reply-To: <1297186150.3088.81.camel@mulgrave.site> from "James Bottomley" at Feb 8, 2011 11:29:09 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2011-02-08 at 18:42 +0100, Thomas Gleixner wrote:
-> On Tue, 8 Feb 2011, James Bottomley wrote:
-> > On Tue, 2011-02-08 at 15:37 +0100, Thomas Gleixner wrote:
-> > > Gah. You set it indirect via IRQF_PERCPU with setup/request_irq.
-> > > 
-> > > Staring too long into that code makes my brain fuzzy.
-> > 
-> > Yes ... know the feeling over the years trying to keep up with the
-> > various irq schemes.  Got to say, it's a lot easier now: The way parisc
-> > chips accept interrupts is essentially MSI.  Trying to live in the old
-> > world modelled on the x86 PIC wasn't fun.
-> > 
-> > So did you want me to roll all the fixes together and apply them, or is
-> > there something else that needs to happen?
+> > The change includes James' invalidate_kernel_vmap_range patch which
+> > as of last night, doesn't seem to be in linux-next..
 > 
-> All yours. You might want to split out the CHECK... bugfix first.
+> doing this makes it a bit harder to see what you're changing.  It also
+> can't possibly affect your testing, because it's an edge case for xfs
+> journals currently.
 
-Good idea ... you authorise me to do the split and add your
-signed-off-by?
+I'll pull that part out and retest.
 
-> There will be some minor follow up changes, but they depend on code
-> which I'm going to push soon.
+> > 1) Changed spin_lock_irq to spin_lock in flush_dcache_mmap_lock because
+> >    the former causes a problem with timer interrupts.
+> 
+> This looks reasonable ... architectures which don't use the lock do
+> this.  Unfortunately, flush_dcache_page can be called from interrupt
+> context, so our only choices are to eliminate the lock or to use it in
+> an interrupt safe manner.  If we use a non interrupt safe lock, it will
+> cause a deadlock eventually.
 
-OK ... we'll wait for those.  I'll plan this for the next merge window.
+I see occassional slow timer interrupt messages and I suspect the expect
+timeouts that I see during the GCC testsuite are also caused by disabling
+interrupts for too long.  I also encountered situations in the GCC
+build where certain applications (gnat1) would run much longer than
+normal (seemed like scheduling was broken).  At the smae time, xntpd
+seemed to be consuming more cycles than normal.
 
-James
+Arm has some checks in __flush_dcache_aliase that may eliminate some
+flushes and reduce the time interrupts are disabled in flush_dcache_page,
+but I don't trust the VM_MAYSHARE one.
 
+> > 3) Added a higher level lock to flush_dcache_page as I found in testing
+> >    that the user mappings appeared to change while the code iterated
+> >    over the user mappings.  Updated comment to better reflect the
+> >    current status WRT inequivalent aliases.  Only updated old_addr
+> >    for shared mappings.  This was simply to suppress the number of
+> >    "INEQUIVALENT" messages.  As noted previously, too many causes the
+> >    console getty process to stop working.  I think it may be possible
+> >    to further optimize this loop.
+> 
+> So this is a big problem.  The flush_dcache_mmap_lock/unlock is supposed
+> to be our protection against this.  If that's not working the generic
+> code is broken.  But I'm not clear what you think is changing.  The lock
+> protects the mapping prio tree ... that can't change as we iterate
+> otherwise we'll walk off a stale entry and go boom.  The actual status
+> of the mappings is allowed to change.
 
+Specifically, what led me to assume that there was an issue with the
+code as is was various "INEQUIVALENT" messages with a difference between
+old_addr and addr of 0x150000.  This is the only difference other
+than +/- 0x1000 that I have seen.  The GCC libmudflap testsuite triggers
+a number of these odd messages.  Here's some samples.
+
+Feb  6 04:50:56 mx3210 kernel: INEQUIVALENT ALIASES 0x4014b000 and 0x4014a000 in file ld-2.11.2.so
+Feb  6 04:50:56 mx3210 kernel: INEQUIVALENT ALIASES 0x406b8000 and 0x40568000 in file libc-2.11.2.so
+Feb  6 04:50:56 mx3210 kernel: INEQUIVALENT ALIASES 0x406b9000 and 0x40569000 in file libc-2.11.2.so
+Feb  6 04:50:56 mx3210 kernel: INEQUIVALENT ALIASES 0x406ba000 and 0x4056a000 in file libc-2.11.2.so
+Feb  6 04:50:56 mx3210 kernel: INEQUIVALENT ALIASES 0x406bb000 and 0x4056b000 in file libc-2.11.2.so
+Feb  6 04:50:56 mx3210 kernel: INEQUIVALENT ALIASES 0x406bc000 and 0x4056c000 in file libc-2.11.2.so
+Feb  6 04:50:56 mx3210 kernel: INEQUIVALENT ALIASES 0x406bd000 and 0x4056d000 in file libc-2.11.2.so
+Feb  6 04:50:56 mx3210 kernel: INEQUIVALENT ALIASES 0x406be000 and 0x4056e000 in file libc-2.11.2.so
+Feb  6 04:50:56 mx3210 kernel: INEQUIVALENT ALIASES 0x406bf000 and 0x4056f000 in file libc-2.11.2.so
+Feb  6 04:50:56 mx3210 kernel: INEQUIVALENT ALIASES 0x406c1000 and 0x406c0000 in file libc-2.11.2.so
+
+The messages occur because there is a core dump when the test is run is
+run by the expect/dejagnu framework.  I think all the messages above
+were generated by a single core dump.  The test doesn't fail when I compile
+and run manually.  From the above, I had the sense that the addresses
+were changing while the loop while it was being iterated.  With the extra
+lock, I haven't seen this. 
+
+Possibly, the answer is to disable interrupts at the &mapping->i_mmap_lock
+lock, and skip VMAs if they are not in current mm.  What do you think?
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
