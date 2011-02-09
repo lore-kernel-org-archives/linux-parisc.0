@@ -1,51 +1,71 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch 0/8] parisc: Convert to new irq_chip functions
-Date: Tue, 8 Feb 2011 22:59:22 +0100 (CET)
-Message-ID: <alpine.LFD.2.00.1102082257470.31804@localhost6.localdomain6>
-References: <20110206204411.109238550@linutronix.de>  <1297094535.8577.3.camel@mulgrave.site>  <alpine.LFD.2.00.1102071744590.31804@localhost6.localdomain6>  <1297100168.8577.42.camel@mulgrave.site>  <alpine.LFD.2.00.1102071924150.31804@localhost6.localdomain6>
-  <1297113986.8577.92.camel@mulgrave.site>  <1297125136.8577.113.camel@mulgrave.site>  <alpine.LFD.2.00.1102081518420.31804@localhost6.localdomain6>  <alpine.LFD.2.00.1102081536080.31804@localhost6.localdomain6>  <1297183997.3088.72.camel@mulgrave.site>
- <alpine.LFD.2.00.1102081841180.31804@localhost6.localdomain6> <1297187138.3088.82.camel@mulgrave.site>
+From: Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>
+Subject: Re: [PATCH] sched: provide scheduler_ipi()
+ callback in response to smp_send_reschedule()
+Date: Wed, 09 Feb 2011 17:14:14 +1100
+Message-ID: <1297232054.14982.346.camel@pasglop>
+References: <1295262433.30950.53.camel@laptop>
+	<1297034792.14982.10.camel@pasglop> <1297086859.13327.16.camel@laptop>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org, Kyle McMartin <kyle@redhat.com>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1297187138.3088.82.camel@mulgrave.site>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-m32r-ja-rQhvJZKUsGBRYuoOT4C5/9i2O/JbrIOy@public.gmane.org, linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org,
+        linux-m32r-rQhvJZKUsGBRYuoOT4C5/9i2O/JbrIOy@public.gmane.org, linux-ia64-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+        linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Heiko Carstens <heiko.carstens-tA70FqPdS9bQT0dZR+AlfA@public.gmane.org>,
+        Howells <dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Paul Mackerras <paulus-eUNUBHrolfbYtjvyW6yDsg@public.gmane.org>,
+        "H. Peter
+	Anvin" <hpa-YMNOUZJC4hwAvxtiuMwx3w@public.gmane.org>, sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+        Linux-Arch <linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+        Jesper Nilsson <jesper.nilsson-VrBV9hrLPhE@public.gmane.org>, Mikael-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org,
+        Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Takata <takata-TMSiXQfHlQjsTix1lMzHGQ@public.gmane.org>,
+        x86-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, "James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
+        virtualization-qjLDD68F18O7TbgM5vRIOg@public.gmane.org, Ingo Molnar <mingo-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>,
+        xen-devel-GuqFBffKawuULHF6PoxzQEEOCMrvLtNR@public.gmane.org, Chris-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org,
+        Matt Turner <mattst88-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
+        uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org,
+        Fen
+To: Peter Zijlstra <peterz-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>
+Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+In-Reply-To: <1297086859.13327.16.camel@laptop>
+List-Id: <uclinux-dist-devel.blackfin.uclinux.org>
+List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
+List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
+Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
 
-On Tue, 8 Feb 2011, James Bottomley wrote:
-
-> On Tue, 2011-02-08 at 18:42 +0100, Thomas Gleixner wrote:
-> > On Tue, 8 Feb 2011, James Bottomley wrote:
-> > > On Tue, 2011-02-08 at 15:37 +0100, Thomas Gleixner wrote:
-> > > > Gah. You set it indirect via IRQF_PERCPU with setup/request_irq.
-> > > > 
-> > > > Staring too long into that code makes my brain fuzzy.
-> > > 
-> > > Yes ... know the feeling over the years trying to keep up with the
-> > > various irq schemes.  Got to say, it's a lot easier now: The way parisc
-> > > chips accept interrupts is essentially MSI.  Trying to live in the old
-> > > world modelled on the x86 PIC wasn't fun.
-> > > 
-> > > So did you want me to roll all the fixes together and apply them, or is
-> > > there something else that needs to happen?
+On Mon, 2011-02-07 at 14:54 +0100, Peter Zijlstra wrote:
+> On Mon, 2011-02-07 at 10:26 +1100, Benjamin Herrenschmidt wrote:
+> > You missed:
 > > 
-> > All yours. You might want to split out the CHECK... bugfix first.
+> > diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+> > index 9813605..467d122 100644
+> > --- a/arch/powerpc/kernel/smp.c
+> > +++ b/arch/powerpc/kernel/smp.c
+> > @@ -98,6 +98,7 @@ void smp_message_recv(int msg)
+> >                 break;
+> >         case PPC_MSG_RESCHEDULE:
+> >                 /* we notice need_resched on exit */
+> > +               scheduler_ipi();
+> >                 break;
+> >         case PPC_MSG_CALL_FUNC_SINGLE:
+> >                 generic_smp_call_function_single_interrupt();
+> > 
+> > Fold that in and add:
+> > 
+> > Acked-by: Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>
 > 
-> Good idea ... you authorise me to do the split and add your
-> signed-off-by?
+> Thanks Ben!
 
-Yup.
- 
-> > There will be some minor follow up changes, but they depend on code
-> > which I'm going to push soon.
-> 
-> OK ... we'll wait for those.  I'll plan this for the next merge window.
+BTW. I we lurking at some of our CPU hotplug code and I think I cannot
+totally guarantee that this won't be called on an offline CPU. If that's
+a problem, you may want to add a test for that.
 
-Push the current lot out. The minor changes will probably come after
-all the stuff hit linus tree in the 39 merge window.
+IE. The call function IPIs are normally not going to be sent to an
+offlined CPU, and stop_machine should be a good enough fence here, but
+we do abuse reschedule for a number of things (including in some case
+to wake up a sleeping CPU that was pseudo-offlined :-)
 
-Thanks,
-
-	tglx
+Cheers,
+Ben.
