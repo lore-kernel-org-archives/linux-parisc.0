@@ -1,32 +1,90 @@
-From: Paul Compaore <paulcompaore12@gmail.com>
-Subject: Dear Friend,
-Date: Sat, 12 Feb 2011 17:27:20 +0900 (KST)
-Message-ID: <852544.32046.qm@web70806.mail.kr3.yahoo.com>
-Reply-To: paulcompaore14@gmail.com
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [PATCH] parisc: Improve dcache flush on PA8800/PA8900
+Date: Sat, 12 Feb 2011 11:18:46 -0500
+Message-ID: <20110212161846.GA24076@hiauly1.hia.nrc.ca>
+References: <20110210170033.4317E4ED8@hiauly1.hia.nrc.ca> <20110210200044.203164E01@hiauly1.hia.nrc.ca>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-To: undisclosed recipients:;
+Content-Type: text/plain; charset=us-ascii
+To: James.Bottomley@HansenPartnership.com, dave.anglin@nrc-cnrc.gc.ca,
+	linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20110210200044.203164E01@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On Thu, 10 Feb 2011, John David Anglin wrote:
 
-Dear Friend,
+> > The usual case would be just one address to flush.  Would it be too
+> > much overhead to do a prescan to determine if there are inequivalent
+> > aliases before doing any flushes?  I think I'll try this.
+> 
+> Testing the following.  Dropped debug message.
 
-I am Mr.Paul Compaore; I am in charge of auditing section in Banque Internationale Du Burkina (BIB). I need your urgent assistance to transfer the sum of ($11.3 million to your account. I will send you full details on how the business will be executed and also note that you will receive 50% of the above mentioned amount if you agree to assist me execute this business transaction. If you are interested and capable to handle this business transaction, come up with the information's shown below:- 
+Although I didn't see any slow timer messages, I still had a number of
+GCC testsuite timeouts.  I didn't see these timeouts with interrupts
+disabled.  So, I plan to see if read write locks can be used without
+disabling interrupts.
 
-1). Your full name: 
-2). Your contact cell phone number: 
-3). Your age: 
-4). Your sex: 
-5). Your occupations: 
-6). Your country and city:
+In any case, I believe it is useful to proceed with the parts of the
+change where there is agreement.  Note that the change to update_mmu_cache
+is more than a optimization when parisc_requires_coherency is true as
+the code no longer flushes when the pfn is not valid.
 
-As soon as possible all these information's is submitted to me immediately i will send you full details of this business transaction on the receipt of your response.Reply to my private email: paulcompaore14@gmail.com
+As noted, I'm seeing much improved stability on my rp3440 with this change.
 
-Thanks.
-Mr Paul Compaore
+Signed-off-by: John David Anglin  <dave.anglin@nrc-cnrc.gc.ca>
 
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 
-
-      
+diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+index 3f11331..e57c3e8 100644
+--- a/arch/parisc/kernel/cache.c
++++ b/arch/parisc/kernel/cache.c
+@@ -75,14 +75,16 @@ EXPORT_SYMBOL(flush_cache_all_local);
+ void
+ update_mmu_cache(struct vm_area_struct *vma, unsigned long address, pte_t *ptep)
+ {
+-	struct page *page = pte_page(*ptep);
++        unsigned long pfn = pte_pfn(*ptep);
++        struct page *page;
+ 
+-	if (pfn_valid(page_to_pfn(page)) && page_mapping(page) &&
+-	    test_bit(PG_dcache_dirty, &page->flags)) {
++        if (!pfn_valid(pfn))
++                return;
+ 
+-		flush_kernel_dcache_page(page);
+-		clear_bit(PG_dcache_dirty, &page->flags);
+-	} else if (parisc_requires_coherency())
++        page = pfn_to_page(pfn);
++
++        if (test_and_clear_bit(PG_dcache_dirty, &page->flags)
++	    || parisc_requires_coherency())
+ 		flush_kernel_dcache_page(page);
+ }
+ 
+diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
+index c9b9322..f0cb56e 100644
+--- a/arch/parisc/kernel/sys_parisc.c
++++ b/arch/parisc/kernel/sys_parisc.c
+@@ -92,11 +92,12 @@ unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr,
+ {
+ 	if (len > TASK_SIZE)
+ 		return -ENOMEM;
+-	/* Might want to check for cache aliasing issues for MAP_FIXED case
+-	 * like ARM or MIPS ??? --BenH.
+-	 */
+-	if (flags & MAP_FIXED)
++	if (flags & MAP_FIXED) {
++		if ((flags & MAP_SHARED) &&
++		    (addr - (pgoff << PAGE_SHIFT)) & (SHMLBA - 1))
++			return -EINVAL;
+ 		return addr;
++	}
+ 	if (!addr)
+ 		addr = TASK_UNMAPPED_BASE;
+ 
