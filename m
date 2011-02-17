@@ -1,38 +1,46 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [PATCH] parisc: Improve dcache flush on PA8800/PA8900
-Date: Tue, 15 Feb 2011 12:09:23 -0500 (EST)
-Message-ID: <20110215170923.994FA4E42@hiauly1.hia.nrc.ca>
-References: <1297789090.3015.31.camel@mulgrave.site>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: binutils change break glibc build
+Date: Wed, 16 Feb 2011 19:30:33 -0500
+Message-ID: <20110217003032.GA26155@hiauly1.hia.nrc.ca>
+References: <20110210170033.4317E4ED8@hiauly1.hia.nrc.ca> <20110210200044.203164E01@hiauly1.hia.nrc.ca> <20110212161846.GA24076@hiauly1.hia.nrc.ca> <20110213193934.GA28834@hiauly1.hia.nrc.ca> <20110215015852.GA6615@hiauly1.hia.nrc.ca> <AANLkTimZntmJQ5msVr56=V7P8pYGXizpVGinZYrvBsSt@mail.gmail.com>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: dave.anglin@nrc-cnrc.gc.ca, carlos@systemhalted.org,
-	linux-parisc@vger.kernel.org
-To: James.Bottomley@HansenPartnership.com (James Bottomley)
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	James.Bottomley@hansenpartnership.com, linux-parisc@vger.kernel.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1297789090.3015.31.camel@mulgrave.site> from "James Bottomley" at Feb 15, 2011 10:58:10 am
+In-Reply-To: <AANLkTimZntmJQ5msVr56=V7P8pYGXizpVGinZYrvBsSt@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> There was a prink in the inequivalent alias detector that printed
-> task->comm (that's the process name) if you add it back it will give
-> more information.
+Hi Carlos,
 
-Will add and rerun GCC testsuite.
+I would like to apply the following binutils change to align data
+segments to a page boundary.  However, it breaks building glibc.
+Problem occurs in call_init trying to run constructors for new
+libc.so.6.
 
-> > >From a kernel perspective, we need to avoid multiple maps of the same
-> > memory page with inequivalent virtual addresses (i.e., the maps must
-> > start at the same address & 0x3fffff).
-> 
-> If I understand what you've done: you already patched the kernel to
-> force MAP_FIXED onto this boundary.  If that's the case, the actual
-> problem must be an offset mapping; meaning something maps a region and
-> then maps a subregion of it.  I've got to guess this is the dynamic
-> loader.
-
-This only occurs for MAP_FIXED and MAP_SHARED.  MAP_FIXED alone
-still maps at the address specified by the application.
+Any thoughts?
 
 Dave
 -- 
 J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
 National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+Index: emulparams/hppalinux.sh
+===================================================================
+RCS file: /cvs/src/src/ld/emulparams/hppalinux.sh,v
+retrieving revision 1.14
+diff -u -3 -p -r1.14 hppalinux.sh
+--- emulparams/hppalinux.sh	22 Oct 2008 05:20:44 -0000	1.14
++++ emulparams/hppalinux.sh	15 Feb 2011 14:30:24 -0000
+@@ -8,6 +8,8 @@ NO_REL_RELOCS=yes
+ TEXT_START_ADDR=0x10000
+ TARGET_PAGE_SIZE=0x10000
+ MAXPAGESIZE="CONSTANT (MAXPAGESIZE)"
++DATA_ADDR="ALIGN(${MAXPAGESIZE})"
++SHLIB_DATA_ADDR="ALIGN(${MAXPAGESIZE})"
+ ARCH=hppa
+ MACHINE=hppa1.1    # We use 1.1 specific features.
+ NOP=0x08000240
