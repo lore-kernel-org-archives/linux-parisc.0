@@ -1,32 +1,40 @@
-From: Matt Turner <mattst88@gmail.com>
-Subject: Re: GCC 4.5 regression
-Date: Fri, 18 Feb 2011 01:28:20 +0000
-Message-ID: <AANLkTinte7Msj3ZJBGH8bQ2_PYud76vOh0ojQb9etwT7@mail.gmail.com>
-References: <20110217201523.2da3b41a@zombie>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: binutils change break glibc build
+Date: Thu, 17 Feb 2011 22:29:01 -0500
+Message-ID: <20110218032901.GA3729@hiauly1.hia.nrc.ca>
+References: <20110217010912.GA26425@hiauly1.hia.nrc.ca> <20110217011712.4B48651C3@hiauly1.hia.nrc.ca> <20110217041325.GA8857@hiauly1.hia.nrc.ca>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org
-To: Guy Martin <gmsoft@tuxicoman.be>
+Content-Type: text/plain; charset=us-ascii
+Cc: carlos@systemhalted.org, James.Bottomley@hansenpartnership.com,
+	linux-parisc@vger.kernel.org
+To: dave.anglin@nrc-cnrc.gc.ca
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110217201523.2da3b41a@zombie>
+In-Reply-To: <20110217041325.GA8857@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Feb 17, 2011 at 7:15 PM, Guy Martin <gmsoft@tuxicoman.be> wrote:
-> I've attached a reduced test case. The program is supposed to
-> segfault because of a stack overflow. However, with 4.5, it just hangs.
-> It seems that 4.5 simply over-optimize the function and replaces it
-> with a single jump.
+On Wed, 16 Feb 2011, John David Anglin wrote:
 
-http://bugs.gentoo.org/show_bug.cgi?id=340923
+> > > It's probably not a glibc issue:
+> > > 
+> > > /home2/dave/debian/glibc/eglibc-2.11.2/build-tree/hppa-libc/libc.so.6:     file 
+> > > format elf32-hppa-linux
+> > > 
+> > > Contents of section .init_array:
+> > >  159008 ffffffff 0015bee2 00000000           ............    
+> > 
+> > Hmmm, there is no .init_array section in the installed libc.  So, maybe
+> > it's not the patch.
 
-It's known and fixed. It's not a gcc regression, nor is it
-HPPA-specific (didn't you try to confirm that it was HPPA-specific? :)
+This is a binutils bug introduced by merging .ctors into .init_array.
+That's where the ffffffff and 00000000 values come from.  They actual
+mark the limits of the .ctors list.
 
-The reason you're hitting it is that you've keyworded gcc-4.5.2, but
-aren't running a full ~hppa system. vapier doesn't seem to acknowledge
-that this is a reasonable, sensible, or even common configuration.
+It can be avoided by building binutils with --disable-initfini-array.
+This is not exactly obvious...
 
-Anyway, false alarm.
-
-Matt
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
