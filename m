@@ -1,11 +1,10 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+From: Matt Turner <mattst88@gmail.com>
 Subject: Re: GCC 4.5 regression
-Date: Thu, 17 Feb 2011 14:48:07 -0500
-Message-ID: <20110217194806.GA18632@hiauly1.hia.nrc.ca>
+Date: Fri, 18 Feb 2011 01:28:20 +0000
+Message-ID: <AANLkTinte7Msj3ZJBGH8bQ2_PYud76vOh0ojQb9etwT7@mail.gmail.com>
 References: <20110217201523.2da3b41a@zombie>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: linux-parisc@vger.kernel.org
 To: Guy Martin <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
@@ -13,32 +12,21 @@ In-Reply-To: <20110217201523.2da3b41a@zombie>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 17 Feb 2011, Guy Martin wrote:
-
-> I've spotted this regression while testing gcc 4.5.2.
-> It hangs while doing one of the configure test of diffutils.
-> 
+On Thu, Feb 17, 2011 at 7:15 PM, Guy Martin <gmsoft@tuxicoman.be> wrote:
 > I've attached a reduced test case. The program is supposed to
 > segfault because of a stack overflow. However, with 4.5, it just hangs.
 > It seems that 4.5 simply over-optimize the function and replaces it
 > with a single jump.
-> 
-> Should I open a PR ?
 
-My sense is the test is wrong and the optimization is correct.
+http://bugs.gentoo.org/show_bug.cgi?id=340923
 
-Optimizations such as this are done at the tree and rtl level.
-For the most part, backends do not perform loop optimizations.
-So, if you think the generated code is incorrect based on the
-C standard, then a PR should be opened.
+It's known and fixed. It's not a gcc regression, nor is it
+HPPA-specific (didn't you try to confirm that it was HPPA-specific? :)
 
-There are quite a few '-f' options that affect optimization behavior.
-So, you may be able to disable loop optimizations and restore the
-previous behavior.
+The reason you're hitting it is that you've keyworded gcc-4.5.2, but
+aren't running a full ~hppa system. vapier doesn't seem to acknowledge
+that this is a reasonable, sensible, or even common configuration.
 
-There may be a newer autoconf test available.
+Anyway, false alarm.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Matt
