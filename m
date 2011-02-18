@@ -1,46 +1,39 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: binutils change break glibc build
-Date: Fri, 18 Feb 2011 00:32:36 -0500
-Message-ID: <AANLkTikL=ANnoEE6=orNbqkinW4-pEngWKh6UkBLWx5v@mail.gmail.com>
-References: <20110210170033.4317E4ED8@hiauly1.hia.nrc.ca> <20110210200044.203164E01@hiauly1.hia.nrc.ca>
- <20110212161846.GA24076@hiauly1.hia.nrc.ca> <20110213193934.GA28834@hiauly1.hia.nrc.ca>
- <20110215015852.GA6615@hiauly1.hia.nrc.ca> <AANLkTimZntmJQ5msVr56=V7P8pYGXizpVGinZYrvBsSt@mail.gmail.com>
- <20110217003032.GA26155@hiauly1.hia.nrc.ca> <20110217010912.GA26425@hiauly1.hia.nrc.ca>
+Subject: Re: GCC 4.5 regression
+Date: Fri, 18 Feb 2011 00:37:08 -0500
+Message-ID: <AANLkTimxw1_eK7v_tdKQa5nMw=d02jBdKnNOdUVe8oV_@mail.gmail.com>
+References: <20110217201523.2da3b41a@zombie> <AANLkTinte7Msj3ZJBGH8bQ2_PYud76vOh0ojQb9etwT7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	"Carlos O'Donell" <carlos@systemhalted.org>,
-	James.Bottomley@hansenpartnership.com, linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Cc: Guy Martin <gmsoft@tuxicoman.be>, linux-parisc@vger.kernel.org
+To: Matt Turner <mattst88@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110217010912.GA26425@hiauly1.hia.nrc.ca>
+In-Reply-To: <AANLkTinte7Msj3ZJBGH8bQ2_PYud76vOh0ojQb9etwT7@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Feb 16, 2011 at 8:09 PM, John David Anglin wrote:
-> On Wed, 16 Feb 2011, John David Anglin wrote:
->> I would like to apply the following binutils change to align data
->> segments to a page boundary. =A0However, it breaks building glibc.
->> Problem occurs in call_init trying to run constructors for new
->> libc.so.6.
+On Thu, Feb 17, 2011 at 8:28 PM, Matt Turner wrote:
+> On Thu, Feb 17, 2011 at 7:15 PM, Guy Martin wrote:
+>> I've attached a reduced test case. The program is supposed to
+>> segfault because of a stack overflow. However, with 4.5, it just hangs.
+>> It seems that 4.5 simply over-optimize the function and replaces it
+>> with a single jump.
 >
-> It's probably not a glibc issue:
+> http://bugs.gentoo.org/show_bug.cgi?id=340923
 >
-> /home2/dave/debian/glibc/eglibc-2.11.2/build-tree/hppa-libc/libc.so.6=
-: =A0 =A0 file
-> format elf32-hppa-linux
+> It's known and fixed. It's not a gcc regression, nor is it
+> HPPA-specific (didn't you try to confirm that it was HPPA-specific? :)
 >
-> Contents of section .init_array:
-> =A0159008 ffffffff 0015bee2 00000000 =A0 =A0 =A0 =A0 =A0 ............
+> The reason you're hitting it is that you've keyworded gcc-4.5.2, but
+> aren't running a full ~hppa system. vapier doesn't seem to acknowledge
+> that this is a reasonable, sensible, or even common configuration.
 
-glibc-2.12 and earlier (and perhaps 2.12.[12] too) are known to be
-miscompiled by binutils versions newer than 2.21.50.xxx.  the issue
-has been fixed in glibc-2.13 though ...
-
-http://bugs.gentoo.org/351177
+that's because it is not.  there's a difference between running brand
+new bleeding edge versions of the toolchain on a stable system all the
+time and running them for the stabilization process.  inevitably every
+gcc/glibc/kernel header upgrade in ~arch breaks a shit ton of stable
+packages (and even unstable packages), the vast majority of which will
+be fixed by those packages stabilizing a new version as natural
+progression by the time the toolchain versions have settled for
+stabilization.
 -mike
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
