@@ -1,48 +1,43 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: Re: GCC 4.5 regression
-Date: Fri, 18 Feb 2011 16:17:02 +0100
-Message-ID: <20110218161702.225fc031@borg.bxl.tuxicoman.be>
-References: <20110217201523.2da3b41a@zombie>
-	<AANLkTinte7Msj3ZJBGH8bQ2_PYud76vOh0ojQb9etwT7@mail.gmail.com>
-	<AANLkTimxw1_eK7v_tdKQa5nMw=d02jBdKnNOdUVe8oV_@mail.gmail.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: binutils change break glibc build
+Date: Fri, 18 Feb 2011 10:28:22 -0500
+Message-ID: <AANLkTi=BekT-21PcsG_==PkvjiLcwsi14x3dA+wEFxrA@mail.gmail.com>
+References: <AANLkTikL=ANnoEE6=orNbqkinW4-pEngWKh6UkBLWx5v@mail.gmail.com>
+	<20110218143901.B1ADB4E51@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: Matt Turner <mattst88@gmail.com>, linux-parisc@vger.kernel.org
-To: Mike Frysinger <vapier@gentoo.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Mike Frysinger <vapier@gentoo.org>, dave.anglin@nrc-cnrc.gc.ca,
+	James.Bottomley@hansenpartnership.com, linux-parisc@vger.kernel.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimxw1_eK7v_tdKQa5nMw=d02jBdKnNOdUVe8oV_@mail.gmail.com>
+In-Reply-To: <20110218143901.B1ADB4E51@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > http://bugs.gentoo.org/show_bug.cgi?id=340923
-> >
-> > It's known and fixed. It's not a gcc regression, nor is it
-> > HPPA-specific (didn't you try to confirm that it was
-> > HPPA-specific? :)
-
-My mistake. I hardly come accross non-hppa specific bugs :)
-
-> >
-> > The reason you're hitting it is that you've keyworded gcc-4.5.2, but
-> > aren't running a full ~hppa system. vapier doesn't seem to
-> > acknowledge that this is a reasonable, sensible, or even common
-> > configuration.
+On Fri, Feb 18, 2011 at 9:39 AM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+> Binutils should not merge the special function pointers used to mark
+> the start and end of the .ctors/.dtors lists. =A0This could be tested
+> for in libc, but this is inefficient. =A0On architectures that use
+> function descriptors, function pointer comparisons are messy. =A0Do
+> we want to call the infamous cffc in the dynamic loader? =A0Casts of
+> function pointers to integer types are implementation defined and
+> pointer sizes can vary. =A0So, the simple hack could break.
 >
-> that's because it is not.  there's a difference between running brand
-> new bleeding edge versions of the toolchain on a stable system all the
-> time and running them for the stabilization process.  inevitably every
-> gcc/glibc/kernel header upgrade in ~arch breaks a shit ton of stable
-> packages (and even unstable packages), the vast majority of which will
-> be fixed by those packages stabilizing a new version as natural
-> progression by the time the toolchain versions have settled for
-> stabilization.
-> -mike
+> In my opinion, binutils should be fixed to work with old glibc
+> versions. =A0There is a work around in my binutils PR.
 
-Kinda makes sens but it's probably not the right list to
-discuss.
+I would like __cffc to eventually go away. It's only required because
+of the incorrectly implemented PLABEL support in binutils. A PLABEL in
+the executable should not be resolved to a PLT entry, it should remain
+a relocation for the dynamic loader to resolve. Once that's fixed,
+eventually __cffc will go away. That's a project that is only agenda
+after some glibc cleanup.
 
-In any case, thanks everybody for the feedback. I'm quite happy this is
-not a gcc issue !
-
-  Guy
-
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
