@@ -1,33 +1,28 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: binutils change break glibc build
-Date: Tue, 22 Feb 2011 11:27:00 -0500
-Message-ID: <20110222162700.GA7636@hiauly1.hia.nrc.ca>
-References: <20110210200044.203164E01@hiauly1.hia.nrc.ca> <20110212161846.GA24076@hiauly1.hia.nrc.ca> <20110213193934.GA28834@hiauly1.hia.nrc.ca> <20110215015852.GA6615@hiauly1.hia.nrc.ca> <AANLkTimZntmJQ5msVr56=V7P8pYGXizpVGinZYrvBsSt@mail.gmail.com> <20110217003032.GA26155@hiauly1.hia.nrc.ca> <20110218184030.GA15510@hiauly1.hia.nrc.ca> <AANLkTimD=2ESSMormpZ+coo40GyLDYGeNPrwvdYVM61G@mail.gmail.com> <20110222001355.GA21523@hiauly1.hia.nrc.ca> <AANLkTi=noWe9hcpQotdCXz-K2kQL935Ha8rR6f1Lwt-h@mail.gmail.com>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: COW break issue. Where is the patch ?
+Date: Tue, 22 Feb 2011 18:24:53 +0100
+Message-ID: <20110222182453.1d9f33da@borg.bxl.tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	James.Bottomley@hansenpartnership.com, linux-parisc@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: "Carlos O'Donell" <carlos@systemhalted.org>
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <AANLkTi=noWe9hcpQotdCXz-K2kQL935Ha8rR6f1Lwt-h@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 22 Feb 2011, Carlos O'Donell wrote:
 
-> Excellent, does that mean that glibc does not create inequivalent
-> aliases with all of its tom-foolery with mmap?
 
-It's hard to say for sure.  The kernel message only occurs when a
-data cache flush is needed for a specific page.  Typically, that's
-when a segv or abort occurs.
+Hi all,
 
-I believe that we are still doing full cache flushes on exec, exit
-and fork.  I tried recently to kill the flush on fork but the kernel
-tried to kill init.  This needs more study.
+I'm running into some python test failures which I believe is caused by
+the COW break issue and I'd like to test the patch out.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+I've been trying to look through all the mail threads but I can't find
+it.
+
+Can someone let me know where the patch is and possibly send it
+upstream ?
+
+
+Thanks,
+  Guy
