@@ -1,36 +1,40 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [parisc] [PATCH] timer_interrupt: Fix "SLOW!" warning on rp3440
-Date: Sat, 12 Mar 2011 14:59:52 -0600
-Message-ID: <1299963592.5366.26.camel@mulgrave.site>
-References: <20110312170831.GA15698@hiauly1.hia.nrc.ca>
+From: Meelis Roos <mroos@linux.ee>
+Subject: compile failure: pacache.S and .size
+Date: Sun, 13 Mar 2011 00:08:25 +0200 (EET)
+Message-ID: <alpine.SOC.1.00.1103130004110.6027@math.ut.ee>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110312170831.GA15698@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, 2011-03-12 at 12:08 -0500, John David Anglin wrote:
-> The attached change fixes the "SLOW!" timer_interrupt warning that I
-> occassionally see on my rp3440 (800 MHz).  We need to avoid using the
-> expensive div/mul method.  I have seen instances where it takes more
-> than 0x7000 cycles.
+This is todays 2.6.38-rc8+git on hppa64 with
+(GNU Binutils for Debian) 2.21.0.20110302. Have not tried to build an 
+earlier kernel with this binutils so I do not knwo if this is a 
+regression but it looks more like a problem found by new binutils.
 
-> Signed-off-by: John David Anglin  <dave.anglin@nrc-cnrc.gc.ca>
-> 
-> Dave
+  AS      arch/parisc/kernel/pacache.o
+arch/parisc/kernel/pacache.S: Assembler messages:
+arch/parisc/kernel/pacache.S:1071: Error: .size expression does not evaluate to a constant
 
-Your change implies that more than 2^6 == 64 ticks (that's over half a
-second) can have elapsed between two calls to timer_interrupt().  That
-looks like an awfully large lacuna, and is like the cause of whatever
-problem you're seeing rather than the use of divide.  Parisc even has
-the DS instruction that would seem to make division not so expensive.
+pacache.S line 1071 ends procedure disable_sr_hashing_asm and does seem 
+to do it in normal way and without typos.
 
-How much more expensive is div than mul?  because if it's a lot more, we
-can use a logarithmic iteration to do the division.
+        .procend
+ENDPROC(disable_sr_hashing_asm)
 
-James
+        .end
 
+This preprocesses to
 
+ .procend
+.size disable_sr_hashing_asm, .-disable_sr_hashing_asm
+
+ .end
+
+and this seems fully normal to me. Other functions assemble fine here 
+but the last one in file.
+
+-- 
+Meelis Roos (mroos@linux.ee)
