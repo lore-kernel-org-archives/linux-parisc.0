@@ -1,16 +1,20 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Subject: Re: compile failure: pacache.S and .size
-Date: Sat, 12 Mar 2011 20:28:48 -0500 (EST)
-Message-ID: <20110313012849.D1A3A5014@hiauly1.hia.nrc.ca>
-References: <alpine.SOC.1.00.1103130235020.7773@math.ut.ee>
+Date: Sat, 12 Mar 2011 23:10:47 -0500
+Message-ID: <20110313041046.GA19769@hiauly1.hia.nrc.ca>
+References: <alpine.SOC.1.00.1103130004110.6027@math.ut.ee> <20110313000323.GA17493@hiauly1.hia.nrc.ca> <alpine.SOC.1.00.1103130235020.7773@math.ut.ee>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: dave.anglin@nrc-cnrc.gc.ca, linux-parisc@vger.kernel.org
-To: mroos@linux.ee (Meelis Roos)
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	linux-parisc@vger.kernel.org
+To: Meelis Roos <mroos@linux.ee>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.SOC.1.00.1103130235020.7773@math.ut.ee> from "Meelis Roos" at Mar 13, 2011 02:38:07 am
+In-Reply-To: <alpine.SOC.1.00.1103130235020.7773@math.ut.ee>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
+
+On Sun, 13 Mar 2011, Meelis Roos wrote:
 
 > > > This preprocesses to
 > > > 
@@ -28,13 +32,13 @@ List-Id: linux-parisc.vger.kernel.org
 > idea about binutils difference. However, I do not have the old binutils 
 > package easyly availbale right now so I can not test that today.
 
-I have not seen the problem with 2.21.51.20110218.  .size is handled
-by generic code.  I find it hard to believe that .-disable_sr_hashing_asm
-doesn't evaluate to a constant.  GCC always outputs a similar directive.
-It would seem like almost every assembly would be broken if the problem
-was with binutils.
+You are correct, there is a new error message for .size
+http://sourceware.org/bugzilla/show_bug.cgi?id=12519
+and the change was applied to the 2.21 branch.
 
-Could you send preprocessed assembler file?
+The message was introduced because you can't size a function across
+two sections.  It's not obvious why this is happening here.  So, I think
+a binutils bug should be filed with preprocessed assembler.
 
 Dave
 -- 
