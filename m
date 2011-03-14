@@ -1,36 +1,86 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: "add,dc" problem with new binutils in csum_ipv6_magic asm
-Date: Mon, 14 Mar 2011 09:22:24 -0400 (EDT)
-Message-ID: <20110314132225.5A57D4FDC@hiauly1.hia.nrc.ca>
-References: <alpine.SOC.1.00.1103141024040.3640@math.ut.ee>
+From: Prasad Joshi <prasadjoshi124@gmail.com>
+Subject: [RFC][PATCH v2 12/23] (parisc) __vmalloc: add gfp flags variant of
+ pte and pmd allocation
+Date: Mon, 14 Mar 2011 17:50:49 +0000
+Message-ID: <AANLkTin94oVyZ0-6sm5aRi-Xb+2tsNXQ2J+DbyDOMqZB__11774.2446637296$1300125062$gmane$org@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org
-To: mroos@linux.ee (Meelis Roos)
+Content-Type: text/plain; charset=ISO-8859-1
+To: Prasad Joshi <prasadjoshi124@gmail.com>,
+	Anand Mitra <mitra@kqinfotech.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-arch@v
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.SOC.1.00.1103141024040.3640@math.ut.ee> from "Meelis Roos" at Mar 14, 2011 10:29:03 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> While trying to compile 2.6.38-rc8-00065 on hppa64 with new binutils 
-> 2.21.0.20110302 I hit a problem with inline asm in 64-bit variant of 
-> csum_ipv6_magic() with first network driver that used it:
-> 
->   CC [M]  drivers/net/atl1c/atl1c_main.o                    
-> drivers/net/atl1c/atl1c_main.c:2543: warning: 'atl1c_resume' defined but not used
-> {standard input}: Assembler messages:
-> {standard input}:4996: Error: Invalid Add Condition: dc
-> {standard input}:4997: Error: Invalid Add Condition: dc
-> {standard input}:4998: Error: Invalid Add Condition: dc
-> {standard input}:4999: Error: Invalid Add Condition: dc
+__vmalloc: propagating GFP allocation flag.
 
-Yuck!  I hadn't realized that the change that caused this was backported
-to 2.21.  The change fixed something that wasn't really a problem and
-broke dc and db.
+- adds functions to allow caller to pass the GFP flag for memory allocation
+- helps in fixing the Bug 30702 (__vmalloc(GFP_NOFS) can callback
+		  file system evict_inode).
 
-This is fixed on binutils head.  Can you use it?
+Signed-off-by: Anand Mitra <mitra@kqinfotech.com>
+Signed-off-by: Prasad Joshi <prasadjoshi124@gmail.com>
+---
+Chnagelog:
+arch/parisc/include/asm/pgalloc.h |   21 ++++++++++++++++-----
+1 files changed, 16 insertions(+), 5 deletions(-)
+---
+diff --git a/arch/parisc/include/asm/pgalloc.h
+b/arch/parisc/include/asm/pgalloc.h
+index fc987a1..0284a43 100644
+--- a/arch/parisc/include/asm/pgalloc.h
++++ b/arch/parisc/include/asm/pgalloc.h
+@@ -61,15 +61,20 @@ static inline void pgd_populate(struct mm_struct
+*mm, pgd_t *pgd, pmd_t *pmd)
+ 		        (__u32)(__pa((unsigned long)pmd) >> PxD_VALUE_SHIFT));
+ }
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+-static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
++static inline pmd_t *
++__pmd_alloc_one(struct mm_struct *mm, unsigned long address, gfp_t gfp_mask)
+ {
+-	pmd_t *pmd = (pmd_t *)__get_free_pages(GFP_KERNEL|__GFP_REPEAT,
+-					       PMD_ORDER);
++	pmd_t *pmd = (pmd_t *)__get_free_pages(gfp_mask, PMD_ORDER);
+ 	if (pmd)
+ 		memset(pmd, 0, PAGE_SIZE<<PMD_ORDER);
+ 	return pmd;
+ }
+
++static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
++{
++	return __pmd_alloc_one(mm, address, GFP_KERNEL | __GFP_REPEAT);
++}
++
+ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+ {
+ #ifdef CONFIG_64BIT
+@@ -90,6 +95,7 @@ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+  * inside the pgd, so has no extra memory associated with it.
+  */
+
++#define __pmd_alloc_one(mm, addr, mask)		({ BUG(); ((pmd_t *)2); })
+ #define pmd_alloc_one(mm, addr)		({ BUG(); ((pmd_t *)2); })
+ #define pmd_free(mm, x)			do { } while (0)
+ #define pgd_populate(mm, pmd, pte)	BUG()
+@@ -127,10 +133,15 @@ pte_alloc_one(struct mm_struct *mm, unsigned long address)
+ }
+
+ static inline pte_t *
++__pte_alloc_one_kernel(struct mm_struct *mm, unsigned long addr,
+gfp_t gfp_mask)
++{
++	return (pte_t *)__get_free_page(gfp_mask | __GFP_ZERO);
++}
++
++static inline pte_t *
+ pte_alloc_one_kernel(struct mm_struct *mm, unsigned long addr)
+ {
+-	pte_t *pte = (pte_t *)__get_free_page(GFP_KERNEL|__GFP_REPEAT|__GFP_ZERO);
+-	return pte;
++	return __pte_alloc_one_kernel(mm, addr, GFP_KERNEL | __GFP_REPEAT);
+ }
+
+ static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
