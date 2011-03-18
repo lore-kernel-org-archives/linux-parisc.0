@@ -1,75 +1,93 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: [E1000-devel] [PATCH] e1000: Allow the driver to be used on PA RISC C8000 workstation
-Date: Fri, 18 Mar 2011 17:39:57 +0100
-Message-ID: <1538517.jd8kKEpd3f@donald.sf-tec.de>
-References: <A78C6259B11833419567082E2DC0C25601D8A9CA5E@orsmsx508.amr.corp.intel.com> <20110228144006.2adb4fdd@borg.bxl.tuxicoman.be> <AANLkTinga9dW9+4TQzE+f6Tt4kAEiXaprZjv+U+-a5Mq@mail.gmail.com>
+From: Prasad Joshi <prasadjoshi124@gmail.com>
+Subject: [RFC][PATCH v3 00/22] __vmalloc: Propagating GFP allocation flag
+ inside __vmalloc()
+Date: Fri, 18 Mar 2011 19:41:35 +0000
+Message-ID: <20110318194135.GA4746@prasad-kvm>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart14791965.uzAOj4C0tq"; micalg="pgp-sha1"; protocol="application/pgp-signature"
-Cc: Guy Martin <gmsoft@tuxicoman.be>,
-	"Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-	"kyle@mcmartin.ca" <kyle@mcmartin.ca>,
-	"e1000-devel@lists.sourceforge.net"
-	<e1000-devel@lists.sourceforge.net>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"mikulas@artax.karlin.mff.cuni.cz" <mikulas@artax.karlin.mff.cuni.cz>
-To: Jesse Brandeburg <jesse.brandeburg@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: chris@zankel.net, x86@kernel.org, jdike@addtoit.com, tj@kernel.org,
+	cmetcalf@tilera.com, linux-sh@vger.kernel.org,
+	liqin.chen@sunplusct.com, lennox.wu@gmail.com,
+	schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
+	linux390@de.ibm.com, benh@kernel.crashing.org, paulus@samba.org,
+	linuxppc-dev@lists.ozlabs.org, kyle@mcmartin.ca, deller@gmx.de,
+	jejb@parisc-linux.org, linux-parisc@vger.kernel.org,
+	dhowells@redhat.com, yasutake.koichi@jp.panasonic.com,
+	linux-am33-list@redhat.com, ralf@linux-mips.org,
+	linux-mips@linux-mips.org, monstr@monstr.eu,
+	microblaze-uclinux@itee.uq.edu.au, geert@linux-m68k.org,
+	zippel@linux-m68k.org, sammy@sammy.net,
+	linux-m68k@lists.linux-m68k.org, takata@linux-m32r.org,
+	linux-m32r@ml.linux-m32r.org, tony.luck@intel.com,
+	fenghua.yu@intel.com, linux-ia64@vger.kernel.org, starvik@axis.com,
+	jesper.nilsson@axis.com, linux-cris-kernel@axis.com,
+	hans-christ
+To: akpm@linux-foundation.org, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	prasadjoshi124@gmail.com, mitra@kqinfotech.com
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <AANLkTinga9dW9+4TQzE+f6Tt4kAEiXaprZjv+U+-a5Mq@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+A filesystem might run into a problem while calling __vmalloc(GFP_NOFS)
+inside a lock.
 
---nextPart14791965.uzAOj4C0tq
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="ISO-8859-1"
+It is expected than __vmalloc when called with GFP_NOFS should not
+callback the filesystem code even incase of the increased memory
+pressure. But the problem is that even if we pass this flag, __vmalloc
+itself allocates memory with GFP_KERNEL.
 
-Am Mittwoch, 2. M=E4rz 2011, 21:19:24 schrieb Jesse Brandeburg:
-> On Mon, Feb 28, 2011 at 5:40 AM, Guy Martin <gmsoft@tuxicoman.be> wro=
-te:
-> > Hi Jeff,
-> >=20
-> > Any luck getting this into mainline ?
->=20
-> Hi Guy, sorry for the delay,
-> We haven't been able to get our contacts in HP to give us a decent
-> response so far, we are following up with them to see whats up.  We
-> have not lost the patch and are still tracking it internally.
->=20
-> Give us a couple more weeks if that is okay and we should be able to
-> settle this by then.
+Using GFP_KERNEL allocations may go into the memory reclaim path and try
+to free memory by calling file system evict_inode function. Which might
+lead into deadlock.
 
-Hi all,
+For further details
+http://marc.info/?l=linux-mm&m=128942194520631&w=4
+https://bugzilla.kernel.org/show_bug.cgi?id=30702
 
-I wonder what exactly you are waiting for? This is a sanity check that =
-we=20
-disable, so no working systems could get broken by this. And every sing=
-le=20
-C8000 seems to be affected by this and is working fine with that patch.=
- So maybe=20
-people at HP might have a clue _why_ this is screwed, but until then I =
-don't=20
-see any point in waiting.
+The patch passes the gfp allocation flag all the way down to those
+allocating functions.
 
-So please just add my tested-by and push this upstream soon. Since this=
- is=20
-basically a hardware quirk I would like to get this into stable also so=
- we may=20
-run vanilla 2.6.38.1 or something like that on C8000.
-
-Tested-by: Rolf Eike Beer <eike-kernel@sf-tec.de>
-
-Eike
---nextPart14791965.uzAOj4C0tq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.15 (GNU/Linux)
-
-iEYEABECAAYFAk2DiuMACgkQXKSJPmm5/E6KrgCgjcD4MOjbeKcyxK0vNxGPJDbV
-jtkAnjTl7bKsvdtQd/hOxFLPnEUafWIe
-=50sL
------END PGP SIGNATURE-----
-
---nextPart14791965.uzAOj4C0tq--
+ arch/arm/include/asm/pgalloc.h           |   11 +++++-
+ arch/avr32/include/asm/pgalloc.h         |    8 ++++-
+ arch/cris/include/asm/pgalloc.h          |   10 ++++-
+ arch/frv/include/asm/pgalloc.h           |    3 ++
+ arch/frv/include/asm/pgtable.h           |    1 +
+ arch/frv/mm/pgalloc.c                    |    9 ++++-
+ arch/ia64/include/asm/pgalloc.h          |   24 +++++++++++--
+ arch/m32r/include/asm/pgalloc.h          |   11 ++++--
+ arch/m68k/include/asm/motorola_pgalloc.h |   20 +++++++++--
+ arch/m68k/include/asm/sun3_pgalloc.h     |   14 ++++++--
+ arch/m68k/mm/memory.c                    |    9 ++++-
+ arch/microblaze/include/asm/pgalloc.h    |    3 ++
+ arch/microblaze/mm/pgtable.c             |   13 +++++--
+ arch/mips/include/asm/pgalloc.h          |   22 ++++++++----
+ arch/mn10300/include/asm/pgalloc.h       |    2 +
+ arch/mn10300/mm/pgtable.c                |   10 ++++-
+ arch/parisc/include/asm/pgalloc.h        |   21 ++++++++---
+ arch/powerpc/include/asm/pgalloc-32.h    |    2 +
+ arch/powerpc/include/asm/pgalloc-64.h    |   27 +++++++++++---
+ arch/powerpc/mm/pgtable_32.c             |   10 ++++-
+ arch/s390/include/asm/pgalloc.h          |   30 +++++++++++++---
+ arch/s390/mm/pgtable.c                   |   22 +++++++++---
+ arch/score/include/asm/pgalloc.h         |   13 ++++---
+ arch/sh/include/asm/pgalloc.h            |    8 ++++-
+ arch/sh/mm/pgtable.c                     |    8 ++++-
+ arch/sparc/include/asm/pgalloc_32.h      |    5 +++
+ arch/sparc/include/asm/pgalloc_64.h      |   17 ++++++++-
+ arch/tile/include/asm/pgalloc.h          |   13 ++++++-
+ arch/tile/mm/pgtable.c                   |   10 ++++-
+ arch/um/include/asm/pgalloc.h            |    1 +
+ arch/um/kernel/mem.c                     |   21 ++++++++---
+ arch/x86/include/asm/pgalloc.h           |   17 ++++++++-
+ arch/x86/mm/pgtable.c                    |    8 ++++-
+ arch/xtensa/include/asm/pgalloc.h        |    9 ++++-
+ arch/xtensa/mm/pgtable.c                 |   11 +++++-
+ include/asm-generic/4level-fixup.h       |    8 +++-
+ include/asm-generic/pgtable-nopmd.h      |    3 +-
+ include/asm-generic/pgtable-nopud.h      |    1 +
+ include/linux/mm.h                       |   40 ++++++++++++++++-----
+ mm/memory.c                              |   14 ++++---
+ mm/vmalloc.c                             |   57 ++++++++++++++++++++----------
+ 41 files changed, 427 insertions(+), 119 deletions(-)
 
