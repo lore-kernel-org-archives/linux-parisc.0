@@ -1,39 +1,75 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: "add,dc" problem with new binutils in csum_ipv6_magic asm
-Date: Mon, 14 Mar 2011 18:32:52 -0400
-Message-ID: <20110314223252.GA28338@hiauly1.hia.nrc.ca>
-References: <alpine.SOC.1.00.1103141024040.3640@math.ut.ee>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Subject: Re: [E1000-devel] [PATCH] e1000: Allow the driver to be used on PA RISC C8000 workstation
+Date: Fri, 18 Mar 2011 17:39:57 +0100
+Message-ID: <1538517.jd8kKEpd3f@donald.sf-tec.de>
+References: <A78C6259B11833419567082E2DC0C25601D8A9CA5E@orsmsx508.amr.corp.intel.com> <20110228144006.2adb4fdd@borg.bxl.tuxicoman.be> <AANLkTinga9dW9+4TQzE+f6Tt4kAEiXaprZjv+U+-a5Mq@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: Meelis Roos <mroos@linux.ee>
+Content-Type: multipart/signed; boundary="nextPart14791965.uzAOj4C0tq"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Cc: Guy Martin <gmsoft@tuxicoman.be>,
+	"Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+	"kyle@mcmartin.ca" <kyle@mcmartin.ca>,
+	"e1000-devel@lists.sourceforge.net"
+	<e1000-devel@lists.sourceforge.net>,
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+	"mikulas@artax.karlin.mff.cuni.cz" <mikulas@artax.karlin.mff.cuni.cz>
+To: Jesse Brandeburg <jesse.brandeburg@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.SOC.1.00.1103141024040.3640@math.ut.ee>
+In-Reply-To: <AANLkTinga9dW9+4TQzE+f6Tt4kAEiXaprZjv+U+-a5Mq@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 14 Mar 2011, Meelis Roos wrote:
 
-> While trying to compile 2.6.38-rc8-00065 on hppa64 with new binutils 
-> 2.21.0.20110302 I hit a problem with inline asm in 64-bit variant of 
-> csum_ipv6_magic() with first network driver that used it:
-> 
->   CC [M]  drivers/net/atl1c/atl1c_main.o                    
-> drivers/net/atl1c/atl1c_main.c:2543: warning: 'atl1c_resume' defined but not used
-> {standard input}: Assembler messages:
-> {standard input}:4996: Error: Invalid Add Condition: dc
-> {standard input}:4997: Error: Invalid Add Condition: dc
-> {standard input}:4998: Error: Invalid Add Condition: dc
-> {standard input}:4999: Error: Invalid Add Condition: dc
-> make[3]: *** [drivers/net/atl1c/atl1c_main.o] Error 1
-> 
-> arch/parisc/include/asm/checksum.h has the corresponding inline asm - it 
-> seems that add,dc is not accepted by the new binutils.
+--nextPart14791965.uzAOj4C0tq
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="ISO-8859-1"
 
-I backported the fix from binutils mainline.
+Am Mittwoch, 2. M=E4rz 2011, 21:19:24 schrieb Jesse Brandeburg:
+> On Mon, Feb 28, 2011 at 5:40 AM, Guy Martin <gmsoft@tuxicoman.be> wro=
+te:
+> > Hi Jeff,
+> >=20
+> > Any luck getting this into mainline ?
+>=20
+> Hi Guy, sorry for the delay,
+> We haven't been able to get our contacts in HP to give us a decent
+> response so far, we are following up with them to see whats up.  We
+> have not lost the patch and are still tracking it internally.
+>=20
+> Give us a couple more weeks if that is okay and we should be able to
+> settle this by then.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Hi all,
+
+I wonder what exactly you are waiting for? This is a sanity check that =
+we=20
+disable, so no working systems could get broken by this. And every sing=
+le=20
+C8000 seems to be affected by this and is working fine with that patch.=
+ So maybe=20
+people at HP might have a clue _why_ this is screwed, but until then I =
+don't=20
+see any point in waiting.
+
+So please just add my tested-by and push this upstream soon. Since this=
+ is=20
+basically a hardware quirk I would like to get this into stable also so=
+ we may=20
+run vanilla 2.6.38.1 or something like that on C8000.
+
+Tested-by: Rolf Eike Beer <eike-kernel@sf-tec.de>
+
+Eike
+--nextPart14791965.uzAOj4C0tq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.15 (GNU/Linux)
+
+iEYEABECAAYFAk2DiuMACgkQXKSJPmm5/E6KrgCgjcD4MOjbeKcyxK0vNxGPJDbV
+jtkAnjTl7bKsvdtQd/hOxFLPnEUafWIe
+=50sL
+-----END PGP SIGNATURE-----
+
+--nextPart14791965.uzAOj4C0tq--
+
