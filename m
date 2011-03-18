@@ -1,93 +1,107 @@
 From: Prasad Joshi <prasadjoshi124@gmail.com>
-Subject: [RFC][PATCH v3 00/22] __vmalloc: Propagating GFP allocation flag
- inside __vmalloc()
-Date: Fri, 18 Mar 2011 19:41:35 +0000
-Message-ID: <20110318194135.GA4746@prasad-kvm>
+Subject: Re: [RFC][PATCH v3 11/22] mm, parisc: add gfp flags variant of pmd
+ and pte allocations
+Date: Fri, 18 Mar 2011 19:59:26 +0000
+Message-ID: <20110318195926.GL4746@prasad-kvm>
+References: <20110318194341.GB4746@prasad-kvm>
+ <20110318194600.GC4746@prasad-kvm>
+ <20110318194740.GD4746@prasad-kvm>
+ <20110318194929.GE4746@prasad-kvm>
+ <20110318195035.GF4746@prasad-kvm>
+ <20110318195141.GG4746@prasad-kvm>
+ <20110318195307.GH4746@prasad-kvm>
+ <20110318195507.GI4746@prasad-kvm>
+ <20110318195643.GJ4746@prasad-kvm>
+ <20110318195754.GK4746@prasad-kvm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: chris@zankel.net, x86@kernel.org, jdike@addtoit.com, tj@kernel.org,
-	cmetcalf@tilera.com, linux-sh@vger.kernel.org,
-	liqin.chen@sunplusct.com, lennox.wu@gmail.com,
-	schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
-	linux390@de.ibm.com, benh@kernel.crashing.org, paulus@samba.org,
-	linuxppc-dev@lists.ozlabs.org, kyle@mcmartin.ca, deller@gmx.de,
-	jejb@parisc-linux.org, linux-parisc@vger.kernel.org,
-	dhowells@redhat.com, yasutake.koichi@jp.panasonic.com,
-	linux-am33-list@redhat.com, ralf@linux-mips.org,
-	linux-mips@linux-mips.org, monstr@monstr.eu,
-	microblaze-uclinux@itee.uq.edu.au, geert@linux-m68k.org,
-	zippel@linux-m68k.org, sammy@sammy.net,
-	linux-m68k@lists.linux-m68k.org, takata@linux-m32r.org,
-	linux-m32r@ml.linux-m32r.org, tony.luck@intel.com,
-	fenghua.yu@intel.com, linux-ia64@vger.kernel.org, starvik@axis.com,
-	jesper.nilsson@axis.com, linux-cris-kernel@axis.com,
-	hans-christ
-To: akpm@linux-foundation.org, linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+To: kyle@mcmartin.ca, deller@gmx.de, jejb@parisc-linux.org,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
 	prasadjoshi124@gmail.com, mitra@kqinfotech.com
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20110318195754.GK4746@prasad-kvm>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-A filesystem might run into a problem while calling __vmalloc(GFP_NOFS)
-inside a lock.
 
-It is expected than __vmalloc when called with GFP_NOFS should not
-callback the filesystem code even incase of the increased memory
-pressure. But the problem is that even if we pass this flag, __vmalloc
-itself allocates memory with GFP_KERNEL.
+- Added __pte_alloc_one_kernel() function to allocate zeroed page using
+   passed allocation flag. The function pte_alloc_one_kernel() is changed to
+   call __pte_alloc_one_kernel() passing GFP_KERNEL | __GFP_REPEAT allocation
+   flags.
 
-Using GFP_KERNEL allocations may go into the memory reclaim path and try
-to free memory by calling file system evict_inode function. Which might
-lead into deadlock.
+2-level page table support
+- Added macro __pmd_alloc_one which is same as pmd_alloc_one, but has an extra
+  argument to pass gfp_t
 
-For further details
-http://marc.info/?l=linux-mm&m=128942194520631&w=4
-https://bugzilla.kernel.org/show_bug.cgi?id=30702
+3-level page table support
+- Added function __pmd_alloc_one() to allocate pages using allocation flag.
+  The allocation flag is argument to the function.
 
-The patch passes the gfp allocation flag all the way down to those
-allocating functions.
+- The function pmd_alloc_one() is changed to call __pmd_alloc_one(), passing
+  GFP_KERNEL | __GFP_REPEAT allocation flags.
 
- arch/arm/include/asm/pgalloc.h           |   11 +++++-
- arch/avr32/include/asm/pgalloc.h         |    8 ++++-
- arch/cris/include/asm/pgalloc.h          |   10 ++++-
- arch/frv/include/asm/pgalloc.h           |    3 ++
- arch/frv/include/asm/pgtable.h           |    1 +
- arch/frv/mm/pgalloc.c                    |    9 ++++-
- arch/ia64/include/asm/pgalloc.h          |   24 +++++++++++--
- arch/m32r/include/asm/pgalloc.h          |   11 ++++--
- arch/m68k/include/asm/motorola_pgalloc.h |   20 +++++++++--
- arch/m68k/include/asm/sun3_pgalloc.h     |   14 ++++++--
- arch/m68k/mm/memory.c                    |    9 ++++-
- arch/microblaze/include/asm/pgalloc.h    |    3 ++
- arch/microblaze/mm/pgtable.c             |   13 +++++--
- arch/mips/include/asm/pgalloc.h          |   22 ++++++++----
- arch/mn10300/include/asm/pgalloc.h       |    2 +
- arch/mn10300/mm/pgtable.c                |   10 ++++-
- arch/parisc/include/asm/pgalloc.h        |   21 ++++++++---
- arch/powerpc/include/asm/pgalloc-32.h    |    2 +
- arch/powerpc/include/asm/pgalloc-64.h    |   27 +++++++++++---
- arch/powerpc/mm/pgtable_32.c             |   10 ++++-
- arch/s390/include/asm/pgalloc.h          |   30 +++++++++++++---
- arch/s390/mm/pgtable.c                   |   22 +++++++++---
- arch/score/include/asm/pgalloc.h         |   13 ++++---
- arch/sh/include/asm/pgalloc.h            |    8 ++++-
- arch/sh/mm/pgtable.c                     |    8 ++++-
- arch/sparc/include/asm/pgalloc_32.h      |    5 +++
- arch/sparc/include/asm/pgalloc_64.h      |   17 ++++++++-
- arch/tile/include/asm/pgalloc.h          |   13 ++++++-
- arch/tile/mm/pgtable.c                   |   10 ++++-
- arch/um/include/asm/pgalloc.h            |    1 +
- arch/um/kernel/mem.c                     |   21 ++++++++---
- arch/x86/include/asm/pgalloc.h           |   17 ++++++++-
- arch/x86/mm/pgtable.c                    |    8 ++++-
- arch/xtensa/include/asm/pgalloc.h        |    9 ++++-
- arch/xtensa/mm/pgtable.c                 |   11 +++++-
- include/asm-generic/4level-fixup.h       |    8 +++-
- include/asm-generic/pgtable-nopmd.h      |    3 +-
- include/asm-generic/pgtable-nopud.h      |    1 +
- include/linux/mm.h                       |   40 ++++++++++++++++-----
- mm/memory.c                              |   14 ++++---
- mm/vmalloc.c                             |   57 ++++++++++++++++++++----------
- 41 files changed, 427 insertions(+), 119 deletions(-)
+- All these changes help in fixing the Bug 30702
+
+Signed-off-by: Prasad Joshi <prasadjoshi124@gmail.com>
+Signed-off-by: Anand Mitra <mitra@kqinfotech.com>
+---
+ arch/parisc/include/asm/pgalloc.h |   21 ++++++++++++++++-----
+ 1 files changed, 16 insertions(+), 5 deletions(-)
+
+diff --git a/arch/parisc/include/asm/pgalloc.h b/arch/parisc/include/asm/pgalloc.h
+index fc987a1..0284a43 100644
+--- a/arch/parisc/include/asm/pgalloc.h
++++ b/arch/parisc/include/asm/pgalloc.h
+@@ -61,15 +61,20 @@ static inline void pgd_populate(struct mm_struct *mm, pgd_t *pgd, pmd_t *pmd)
+ 		        (__u32)(__pa((unsigned long)pmd) >> PxD_VALUE_SHIFT));
+ }
+ 
+-static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
++static inline pmd_t *
++__pmd_alloc_one(struct mm_struct *mm, unsigned long address, gfp_t gfp_mask)
+ {
+-	pmd_t *pmd = (pmd_t *)__get_free_pages(GFP_KERNEL|__GFP_REPEAT,
+-					       PMD_ORDER);
++	pmd_t *pmd = (pmd_t *)__get_free_pages(gfp_mask, PMD_ORDER);
+ 	if (pmd)
+ 		memset(pmd, 0, PAGE_SIZE<<PMD_ORDER);
+ 	return pmd;
+ }
+ 
++static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
++{
++	return __pmd_alloc_one(mm, address, GFP_KERNEL | __GFP_REPEAT);
++}
++
+ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+ {
+ #ifdef CONFIG_64BIT
+@@ -90,6 +95,7 @@ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+  * inside the pgd, so has no extra memory associated with it.
+  */
+ 
++#define __pmd_alloc_one(mm, addr, mask)		({ BUG(); ((pmd_t *)2); })
+ #define pmd_alloc_one(mm, addr)		({ BUG(); ((pmd_t *)2); })
+ #define pmd_free(mm, x)			do { } while (0)
+ #define pgd_populate(mm, pmd, pte)	BUG()
+@@ -127,10 +133,15 @@ pte_alloc_one(struct mm_struct *mm, unsigned long address)
+ }
+ 
+ static inline pte_t *
++__pte_alloc_one_kernel(struct mm_struct *mm, unsigned long addr, gfp_t gfp_mask)
++{
++	return (pte_t *)__get_free_page(gfp_mask | __GFP_ZERO);
++}
++
++static inline pte_t *
+ pte_alloc_one_kernel(struct mm_struct *mm, unsigned long addr)
+ {
+-	pte_t *pte = (pte_t *)__get_free_page(GFP_KERNEL|__GFP_REPEAT|__GFP_ZERO);
+-	return pte;
++	return __pte_alloc_one_kernel(mm, addr, GFP_KERNEL | __GFP_REPEAT);
+ }
+ 
+ static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+-- 
+1.7.0.4
 
