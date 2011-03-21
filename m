@@ -1,53 +1,29 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: compile failure: pacache.S and .size
-Date: Sun, 20 Mar 2011 18:20:26 -0400
-Message-ID: <20110320222026.GA25697@hiauly1.hia.nrc.ca>
-References: <alpine.SOC.1.00.1103130004110.6027@math.ut.ee> <20110313000323.GA17493@hiauly1.hia.nrc.ca> <alpine.SOC.1.00.1103130235020.7773@math.ut.ee> <20110313041046.GA19769@hiauly1.hia.nrc.ca> <alpine.SOC.1.00.1103132139410.24035@math.ut.ee>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: linux-next boot failure
+Date: Mon, 21 Mar 2011 11:37:29 -0500
+Message-ID: <1300725449.10634.23.camel@mulgrave.site>
+References: <20110320201614.GA25287@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	linux-parisc@vger.kernel.org
-To: Meelis Roos <mroos@linux.ee>
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.SOC.1.00.1103132139410.24035@math.ut.ee>
+In-Reply-To: <20110320201614.GA25287@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 13 Mar 2011, Meelis Roos wrote:
+On Sun, 2011-03-20 at 16:16 -0400, John David Anglin wrote:
+> The current linux-next tree fails to boot on parisc.  I have seen
+> the same panic on two different systems.  2.6.38-rc5-next-20110218
+> is ok.  2.6.38-rc8-next-20110311 failed to boot.  The backtrace is
+> the same in all cases.
 
-> diff --git a/arch/parisc/kernel/pacache.S b/arch/parisc/kernel/pacache.S
-> index 09b77b2..f3d7da6 100644
-> --- a/arch/parisc/kernel/pacache.S
-> +++ b/arch/parisc/kernel/pacache.S
-> @@ -842,11 +842,10 @@ ENTRY(flush_alias_page)
->  	.exit
->  
->  	.procend
-> +ENDPROC(flush_alias_page)
->  #endif
->  
-> -	.export flush_user_dcache_range_asm
-> -
-> -flush_user_dcache_range_asm:
-> +ENTRY(flush_user_dcache_range_asm)
->  	.proc
->  	.callinfo NO_CALLS
->  	.entry
-> @@ -865,7 +864,7 @@ flush_user_dcache_range_asm:
->  	.exit
->  
->  	.procend
-> -ENDPROC(flush_alias_page)
-> +ENDPROC(flush_user_dcache_range_asm)
->  
->  ENTRY(flush_kernel_dcache_range_asm)
->  	.proc
+I don't see this in get head as of this morning, so it's likely in an
+unmerged branch.  If you can find it, I might be able to have the
+culprit fix it before it does get merged.
 
-Suggest officially submitting above change.  It corrects obvious
-problems with pacache.S.
+James
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+P.S. I also try not to run -next around the merge window, because it
+gets very unstable (all the rules violators trying to get a last fix in)
+
