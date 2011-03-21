@@ -1,57 +1,32 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [GIT PULL] parisc updates for the 2.6.38 merge window
-Date: Mon, 21 Mar 2011 11:45:54 -0500
-Message-ID: <1300725954.10634.28.camel@mulgrave.site>
+From: Meelis Roos <mroos@linux.ee>
+Subject: [PARISC] fix pacache .size with new binutils
+Date: Mon, 21 Mar 2011 22:18:56 +0200 (EET)
+Message-ID: <alpine.SOC.1.00.1103212212040.27981@math.ut.ee>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-There are two major changes in this: one is our full conversion to the
-generic IRQ handlers thanks to tglx and the other is switching us to use
-tmpalias flushing (a change which means that our coherency no-longer
-relies on the mechanics of page tables being present).  We still have
-quite a lot of work to do, but the change to tmpalias flushing is at
-last allowing us to track down some of the very infrequent coherency
-issues on the platform.
+Currently, 2.6.38 compile fails on parisc64 because binutils complains 
+that .size expression does not evaluate to a constant. The problem is 
+confusion between flush_alias_page and flush_user_dcache_range_asm.
 
-The patch is available here:
+This patch fixes pacache.s compilation by adding ENDPROC to flush_alias 
+page and ENTRY and correct ENDPROC to flush_user_dcache_range_asm.
 
-master.kernel.org:/pub/scm/linux/kernel/git/jejb/parisc-2.6.git#for-linus
+Signed-off-by: Meelis Roos <mroos@linux.ee>
 
-The short changelog is:
-
-James Bottomley (3):
-      [PARISC] fix vmap flush/invalidate
-      eliminate special FLUSH flag from page table
-      parisc: flush pages through tmpalias space
-
-Thomas Gleixner (2):
-      [PARISC] Convert to new irq_chip functions
-      [PARISC] fix per-cpu flag problem in the cpu affinity checkers
-
-And the diffstat
-
- arch/parisc/Kconfig                  |    1 +
- arch/parisc/include/asm/cacheflush.h |   31 +++--
- arch/parisc/include/asm/irq.h        |   13 +--
- arch/parisc/include/asm/pgtable.h    |   14 +--
- arch/parisc/kernel/cache.c           |  109 +++-------------
- arch/parisc/kernel/entry.S           |  217 +++++++++++++++++-------------
- arch/parisc/kernel/irq.c             |   64 +++++----
- arch/parisc/kernel/pacache.S         |  245 +++++++++++++++-------------------
- drivers/parisc/dino.c                |   22 ++--
- drivers/parisc/eisa.c                |   12 +-
- drivers/parisc/gsc.c                 |   22 ++--
- drivers/parisc/iosapic.c             |   40 +++---
- drivers/parisc/superio.c             |   12 +-
- 13 files changed, 375 insertions(+), 427 deletions(-)
-
-James
-
-
+diff --git a/arch/parisc/kernel/pacache.S b/arch/parisc/kernel/pacache.S
+index 09b77b2..f3d7da6 100644
+--- a/arch/parisc/kernel/pacache.S
++++ b/arch/parisc/kernel/pacache.S
+@@ -842,11 +842,10 @@ ENTRY(flush_alias_page)
+ 	.exit
+ 
+ 	.procend
++ENDPROC(flush_alias_page)
+ #endif
+ 
+-	.export flush_user_dcache_range_asm
