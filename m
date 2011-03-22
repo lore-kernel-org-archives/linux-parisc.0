@@ -1,38 +1,29 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [PARISC] fix pacache .size with new binutils
-Date: Mon, 21 Mar 2011 15:51:59 -0500
-Message-ID: <1300740719.10634.44.camel@mulgrave.site>
-References: <alpine.SOC.1.00.1103212212040.27981@math.ut.ee>
-	 <1300739513.10634.39.camel@mulgrave.site>
-	 <alpine.SOC.1.00.1103212247170.27981@math.ut.ee>
+Date: Mon, 21 Mar 2011 21:21:05 -0400 (EDT)
+Message-ID: <20110322012106.273DD4FC9@hiauly1.hia.nrc.ca>
+References: <1300739513.10634.39.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-parisc@vger.kernel.org
-To: Meelis Roos <mroos@linux.ee>
+Content-Type: text/plain; charset=US-ASCII
+Cc: mroos@linux.ee, linux-parisc@vger.kernel.org
+To: James.Bottomley@HansenPartnership.com (James Bottomley)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.SOC.1.00.1103212247170.27981@math.ut.ee>
+In-Reply-To: <1300739513.10634.39.camel@mulgrave.site> from "James Bottomley" at Mar 21, 2011 03:31:53 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2011-03-21 at 22:49 +0200, Meelis Roos wrote:
-> > This won't apply because of upstream changes to the file
-> > (flush_alias_page got removed) ... does the problem even still exist
-> > upstream?
-> 
-> By the way, the new code compiles with warnings:
-> 
->   CC      arch/parisc/kernel/cache.o
-> arch/parisc/kernel/cache.c: In function 'flush_dcache_page':
-> arch/parisc/kernel/cache.c:310: warning: pointer type mismatch in conditional expression
-> arch/parisc/kernel/cache.c:310: warning: format '%s' expects type 'char *', but argument 4 has type 'void * const'
-> 
-> Is it just a lacking cast in printk argument?
+> This won't apply because of upstream changes to the file
+> (flush_alias_page got removed) ... does the problem even still exist
+> upstream?
 
-It's a reminder to me to dump the code.  However, we still don't have
-agreement on the dump, and the alias warning is useful to people who are
-working on the binutils update.
+The problem still exists on various longterm branches and I guess
+the 2.6.38 stable branch.  Is it worth fixing these?
 
-James
+I have to say that 2.6.38 without the tmpalias patch is seriously
+broken on PA8800.  I tried two GCC builds and they both died with
+segvs very early in the build.
 
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
