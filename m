@@ -1,61 +1,54 @@
-From: James Bottomley <James.Bottomley@suse.de>
-Subject: [PATCH] fix compile breakage caused by linux/smp.h header
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] fix compile breakage caused by linux/smp.h header
  definition problem
-Date: Wed, 23 Mar 2011 10:11:58 -0500
-Message-ID: <1300893119.15899.15.camel@mulgrave.site>
+Date: Wed, 23 Mar 2011 10:50:31 -0700
+Message-ID: <20110323105031.8967ff2f.akpm@linux-foundation.org>
+References: <1300893119.15899.15.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Andrew Morton <akpm@linux-foundation.org>,
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Amerigo Wang <amwang@redhat.com>,
 	Parisc List <linux-parisc@vger.kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
+To: James Bottomley <James.Bottomley@suse.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1300893119.15899.15.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The problem is this:
+On Wed, 23 Mar 2011 10:11:58 -0500 James Bottomley <James.Bottomley@suse.de> wrote:
 
-  CC      arch/parisc/kernel/asm-offsets.s
-In file included from include/linux/sched.h:71,
-                 from arch/parisc/kernel/asm-offsets.c:31:
-include/linux/smp.h:117: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'setup_nr_cpu_ids'
-include/linux/smp.h:118: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'smp_init'
-  HOSTLD  scripts/mod/modpost
-make[1]: *** [arch/parisc/kernel/asm-offsets.s] Error 1
+> The problem is this:
+> 
+>   CC      arch/parisc/kernel/asm-offsets.s
+> In file included from include/linux/sched.h:71,
+>                  from arch/parisc/kernel/asm-offsets.c:31:
+> include/linux/smp.h:117: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'setup_nr_cpu_ids'
+> include/linux/smp.h:118: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'smp_init'
+>   HOSTLD  scripts/mod/modpost
+> make[1]: *** [arch/parisc/kernel/asm-offsets.s] Error 1
+> 
+> It's caused by two __init attributes on function prototypes,
 
-It's caused by two __init attributes on function prototypes, which
-shouldn't be there (__init should only mark functions not prototypes).
-This was introduced by
+Heiko sent a patch for this which adds the #include.
 
-commit 34db18a054c600b6f81787165669dc572fe4de25
-Author: Amerigo Wang <amwang@redhat.com>
-Date:   Tue Mar 22 16:34:06 2011 -0700
+> which
+> shouldn't be there (__init should only mark functions not prototypes).
 
-    smp: move smp setup functions to kernel/smp.c
+Nope.  We've had build failures in the past (on arm) where the
+assembler generated a short-addressed branch to a function in the
+"same" section but the linker discovered that it was too far away,
+because the target landed in a different section.
 
-Removing the spurious __init attributes fixes this
+By correctly marking the target as __init, the compiler says "ah,
+that's far away" and generates the long-form branch addressing.
 
-Signed-off-by: James Bottomley <James.Bottomley@suse.de>
+I think it only happened once, and it's obviously hard to hit, because
+many such prototypes of __init functions are missing the __init tag.
 
----
+And as the sections are laid out contiguously (true?), that kernel must
+have been real close to having the same linkage error for branches
+_within_ the main .text segment.
 
-We didn't pick this up in our -next compiles, presumably because the
-patch moved rather fast from -next to mainline?
-
-diff --git a/include/linux/smp.h b/include/linux/smp.h
-index 48159dd..04d6e0d 100644
---- a/include/linux/smp.h
-+++ b/include/linux/smp.h
-@@ -114,8 +114,8 @@ int on_each_cpu(smp_call_func_t func, void *info, int wait);
- void smp_prepare_boot_cpu(void);
- 
- extern unsigned int setup_max_cpus;
--extern void __init setup_nr_cpu_ids(void);
--extern void __init smp_init(void);
-+extern void setup_nr_cpu_ids(void);
-+extern void smp_init(void);
- 
- #else /* !SMP */
- 
-
+So it's all a bit fishy and marginal, but adding the __init increases
+the chances of keeping Russell happy.
 
