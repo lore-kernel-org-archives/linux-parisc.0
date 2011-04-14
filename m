@@ -1,13 +1,41 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [PATCH] parisc: only make executable areas executable
-Date: Thu, 14 Apr 2011 15:53:18 -0500
-Message-ID: <1302814399.9800.10.camel@mulgrave.site>
+Subject: Re: [PATCH] parisc: only make executable areas executable
+Date: Thu, 14 Apr 2011 18:25:21 -0500
+Message-ID: <1302823521.9800.16.camel@mulgrave.site>
+References: <1302814399.9800.10.camel@mulgrave.site>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 To: Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1302814399.9800.10.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
+
+On Thu, 2011-04-14 at 15:53 -0500, James Bottomley wrote:
+> Currently parisc has the whole kernel marked as RWX, meaning any
+> kernel page at all is eligible to be executed.  This can cause a
+> theoretical problem on systems with combined I/D TLB because the act
+> of referencing a page causes a TLB insertion with an executable bit.
+> This TLB entry may be used by the CPU as the basis for speculating the
+> page into the I-Cache.  If this speculated page is subsequently used
+> for a user process, there is the possibility we will get a stale
+> I-cache line picked up as the binary executes.
+> 
+> As a point of good practise, only mark actual kernel text pages as
+> executable.  The same has to be done for init_text pages, but they're
+> converted to data pages (and the I-Cache flushed) when the init memory
+> is released.
+
+Just sent this off, then realised (or rather found out why gdb no longer
+traces binaries) that special casing the gateway page means that it
+isn't executable via the gateway page, so here's the correct patch
+
+James
+
+---
+
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [PATCH] parisc: only make executable areas executable
 
 Currently parisc has the whole kernel marked as RWX, meaning any
 kernel page at all is eligible to be executed.  This can cause a
@@ -18,14 +46,10 @@ page into the I-Cache.  If this speculated page is subsequently used
 for a user process, there is the possibility we will get a stale
 I-cache line picked up as the binary executes.
 
-As a point of good practise, only mark actual kernel text pages as
+As a point of good practice, only mark actual kernel text pages as
 executable.  The same has to be done for init_text pages, but they're
 converted to data pages (and the I-Cache flushed) when the init memory
 is released.
-
-James
-
----
 
 diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
 index 5d7b8ce..22dadeb 100644
@@ -127,10 +151,10 @@ index 8f1e4ef..bf6a43a 100644
  	/* we have to discard exit text and such at runtime, not link time */
  	.exit.text :
 diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index b7ed8d7..c555175 100644
+index b7ed8d7..7e6b465 100644
 --- a/arch/parisc/mm/init.c
 +++ b/arch/parisc/mm/init.c
-@@ -369,24 +369,159 @@ static void __init setup_bootmem(void)
+@@ -369,24 +369,158 @@ static void __init setup_bootmem(void)
  	request_resource(&sysram_resources[0], &pdcdata_resource);
  }
  
@@ -223,8 +247,7 @@ index b7ed8d7..c555175 100644
 +				if (force)
 +					pte =  __mk_pte(address, pgprot);
 +				else if (core_kernel_text(vaddr) &&
-+					 address != fv_addr &&
-+					 address != gw_addr)
++					 address != fv_addr)
 +					pte = __mk_pte(address, PAGE_KERNEL_EXEC);
 +				else
 +#if defined(CONFIG_PARISC_PAGE_SIZE_4KB)
@@ -296,7 +319,7 @@ index b7ed8d7..c555175 100644
  	for (addr = init_begin; addr < init_end; addr += PAGE_SIZE) {
  		ClearPageReserved(virt_to_page(addr));
  		init_page_count(virt_to_page(addr));
-@@ -616,114 +751,6 @@ void show_mem(unsigned int filter)
+@@ -616,114 +750,6 @@ void show_mem(unsigned int filter)
  #endif
  }
  
@@ -411,7 +434,7 @@ index b7ed8d7..c555175 100644
  /*
   * pagetable_init() sets up the page tables
   *
-@@ -748,14 +775,14 @@ static void __init pagetable_init(void)
+@@ -748,14 +774,14 @@ static void __init pagetable_init(void)
  		size = pmem_ranges[range].pages << PAGE_SHIFT;
  
  		map_pages((unsigned long)__va(start_paddr), start_paddr,
@@ -428,7 +451,7 @@ index b7ed8d7..c555175 100644
  	}
  #endif
  
-@@ -780,7 +807,7 @@ static void __init gateway_init(void)
+@@ -780,7 +806,7 @@ static void __init gateway_init(void)
  	 */
  
  	map_pages(linux_gateway_page_addr, __pa(&linux_gateway_page),
