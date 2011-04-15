@@ -1,7 +1,7 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [PATCH 2/4] parisc: wire up clock_adjtime syscall
-Date: Fri, 15 Apr 2011 08:55:45 -0700
-Message-ID: <1302882947-3739-3-git-send-email-James.Bottomley@HansenPartnership.com>
+Subject: [PATCH 4/4] parisc: wire up syncfs syscall
+Date: Fri, 15 Apr 2011 08:55:47 -0700
+Message-ID: <1302882947-3739-5-git-send-email-James.Bottomley@HansenPartnership.com>
 References: <1302882947-3739-1-git-send-email-James.Bottomley@HansenPartnership.com>
 Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
 To: Parisc List <linux-parisc@vger.kernel.org>
@@ -17,29 +17,29 @@ Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
  2 files changed, 3 insertions(+), 1 deletions(-)
 
 diff --git a/arch/parisc/include/asm/unistd.h b/arch/parisc/include/asm/unistd.h
-index 09f62a6..9af5fab 100644
+index 4266e44..9cbc2c3 100644
 --- a/arch/parisc/include/asm/unistd.h
 +++ b/arch/parisc/include/asm/unistd.h
-@@ -816,8 +816,9 @@
- #define __NR_prlimit64		(__NR_Linux + 321)
- #define __NR_fanotify_init	(__NR_Linux + 322)
- #define __NR_fanotify_mark	(__NR_Linux + 323)
-+#define __NR_clock_adjtime	(__NR_Linux + 324)
+@@ -819,8 +819,9 @@
+ #define __NR_clock_adjtime	(__NR_Linux + 324)
+ #define __NR_name_to_handle_at	(__NR_Linux + 325)
+ #define __NR_open_by_handle_at	(__NR_Linux + 326)
++#define __NR_syncfs		(__NR_Linux + 327)
  
--#define __NR_Linux_syscalls	(__NR_fanotify_mark + 1)
-+#define __NR_Linux_syscalls	(__NR_clock_adjtime + 1)
+-#define __NR_Linux_syscalls	(__NR_open_by_handle_at + 1)
++#define __NR_Linux_syscalls	(__NR_syncfs + 1)
  
  
  #define __IGNORE_select		/* newselect */
 diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-index c5b01e8..473bf41 100644
+index b5d2982..a5b02ce 100644
 --- a/arch/parisc/kernel/syscall_table.S
 +++ b/arch/parisc/kernel/syscall_table.S
-@@ -422,6 +422,7 @@
- 	ENTRY_SAME(prlimit64)
- 	ENTRY_SAME(fanotify_init)
- 	ENTRY_COMP(fanotify_mark)
-+	ENTRY_COMP(clock_adjtime)
+@@ -425,6 +425,7 @@
+ 	ENTRY_COMP(clock_adjtime)
+ 	ENTRY_SAME(name_to_handle_at)	/* 325 */
+ 	ENTRY_COMP(open_by_handle_at)
++	ENTRY_SAME(syncfs)
  
  	/* Nothing yet */
  
