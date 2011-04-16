@@ -1,27 +1,23 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Notes about the latest cache patches
-Date: Fri, 15 Apr 2011 12:41:50 -0500
-Message-ID: <1302889310.7706.8.camel@mulgrave.site>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Debian bug 622997
+Date: Sat, 16 Apr 2011 14:07:55 -0400
+Message-ID: <20110416180754.GA18022@hiauly1.hia.nrc.ca>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-To: Parisc List <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: 622997@bugs.debian.org
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The one that seems to make the most difference to me is not having the
-kernel memory cache pages be marked executable.  This cures an
-intermittent segfault I was seeing with git on the pa8800.
+I posted this debian bug report because the most recent debian
+SMP kernel build fails to boot on my rp3440:
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=622997
 
-Also note that if you apply only the speculative read prevention patch,
-you'll find the incidences of segfaults and cache nasties get worse (at
-least they do on ion) mainly because the aggressive TLB purging leaves
-the cache hardware with fewer lines to speculate, so it tends to be more
-aggressive about speculating them ... leading to more incidences.
+I don't think debian kernels have worked since lenny.
 
-I find that the combination of the two patches cures all the segfaults
-I've been seeing in normal compiles and git operations.
-
-James
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
