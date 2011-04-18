@@ -1,29 +1,42 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: Debian bug 622997
-Date: Sun, 17 Apr 2011 21:51:55 -0600
-Message-ID: <20110418035155.GA26613@parisc-linux.org>
-References: <20110417151147.326EC4FCB@hiauly1.hia.nrc.ca> <1303053807.2583.1.camel@mulgrave.site> <1303068487.2583.7.camel@mulgrave.site> <20110418012519.GA25505@hiauly1.hia.nrc.ca>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [PATCH 0/2] fix libata-sff and pata_cmd64x to not crash on boot on
+ parisc
+Date: Mon, 18 Apr 2011 13:42:27 -0500
+Message-ID: <1303152147.7167.12.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	linux-parisc@vger.kernel.org, 622997@bugs.debian.org
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Parisc List <linux-parisc@vger.kernel.org>
+To: linux-ide <linux-ide@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110418012519.GA25505@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Apr 17, 2011 at 09:25:19PM -0400, John David Anglin wrote:
-...
-> Confirm that removing this module restores boot.
-> 
-> This is excellent detective work.  If I might ask, how did you trace
-> the module loads and successful inits?
+currently libata-sff is completely ignoring the enabled/disabled status
+of the interfaces.  This is a real problem on parisc because if you
+touch a non responding memory area (i.e. a disabled interface) you crash
+the box.
 
-Dave,
-Besides hacking in printk's, often "initcall_debug" kernel parameter is enough
-narrow down which module is hanging or crashing the system.
+Fix this up by restoring the enablebits logic to the pata_cmd64x driver.
+To do this, libata-sff has to be modified not to probe both ports if we
+don't have them.  This is done by reintroducing IDE_HFLAG_SINGLE flag as
+ATA_HOST_SFF_SINGLE_PORT which drivers can use to condition libata-sff
+port probing.
 
-hth,
-grant
+James
+
+---
+
+James Bottomley (2):
+  libata-sff: remove hardcoded requirement for two ports
+  pata_cmd64x: fix crash on boot with disabled secondary port
+
+ drivers/ata/libata-sff.c  |   75 ++++++++++++++++++++++++++++++++------------
+ drivers/ata/pata_cmd64x.c |   22 +++++++++++--
+ include/linux/libata.h    |    1 +
+ 3 files changed, 74 insertions(+), 24 deletions(-)
+
+-- 
+1.7.4.1
+
+
 
