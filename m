@@ -1,40 +1,40 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH 0/2] fix libata-sff and pata_cmd64x to not crash on
- boot on parisc
-Date: Tue, 19 Apr 2011 08:54:38 -0500
-Message-ID: <1303221278.3171.9.camel@mulgrave.site>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: [PATCH 0/2] fix libata-sff and pata_cmd64x to not crash on boot
+ on parisc
+Date: Tue, 19 Apr 2011 15:36:15 +0100
+Message-ID: <20110419153615.07733111@lxorguk.ukuu.org.uk>
 References: <1303152147.7167.12.camel@mulgrave.site>
-	 <20110418205203.56bbdb14@lxorguk.ukuu.org.uk>
-	 <1303159802.7167.30.camel@mulgrave.site>
-	 <20110418222017.4e77fe05@lxorguk.ukuu.org.uk>
+	<20110418205203.56bbdb14@lxorguk.ukuu.org.uk>
+	<1303159802.7167.30.camel@mulgrave.site>
+	<20110418222017.4e77fe05@lxorguk.ukuu.org.uk>
+	<1303221278.3171.9.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Cc: linux-ide <linux-ide@vger.kernel.org>,
 	Parisc List <linux-parisc@vger.kernel.org>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110418222017.4e77fe05@lxorguk.ukuu.org.uk>
+In-Reply-To: <1303221278.3171.9.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2011-04-18 at 22:20 +0100, Alan Cox wrote:
-> We can detect the Mobility electronics split bridges at least (and I
-> suspect they are the only 'common' CMD64x hot plug device indeed possibly
-> the only one) because the parent bridge of the CMD64x will have a PCI
-> vendor id of 0x14f2 and a device id 0x0001, 0x0002, or 0x0120.
+> If not, what about just a legacy check on X86, so hedge with
+> 
+> if (legacy || !CONFIG_X86)
+> 
+> (or even just dump the legacy check, since you think everything is fine
+> on x86 today?)
 
-Trying to wire in a bridge blacklist looks a bit dicey ... unless you're
-sure this is (and will always be) the only bridge?  How should this
-wiring be done? most of the bridge checks just see if the bridge is in
-the system rather than walking up the device tree; is that OK?
+Well in theory you can plug a cardbus one into a non x86 assuming the
+firmware doesn't explode in protest anyway !
 
-If not, what about just a legacy check on X86, so hedge with
+I don't think the bridge walk is particularly tricky - it will always be
+the direct parent bridge
 
-if (legacy || !CONFIG_X86)
+So it's a matter of
 
-(or even just dump the legacy check, since you think everything is fine
-on x86 today?)
+	struct pci_dev *bridge = dev->bus->self;
+	if (bridge && bridge->vendor == 0x14f2)
 
-James
-
+Alan
 
