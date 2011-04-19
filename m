@@ -1,137 +1,79 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to
- expand_upwards
-Date: Tue, 19 Apr 2011 14:49:40 -0500
-Message-ID: <1303242580.11237.10.camel@mulgrave.site>
-References: <20110415135144.GE8828@tiehlicka.suse.cz>
-	 <alpine.LSU.2.00.1104171952040.22679@sister.anvils>
-	 <20110418100131.GD8925@tiehlicka.suse.cz>
-	 <20110418135637.5baac204.akpm@linux-foundation.org>
-	 <20110419111004.GE21689@tiehlicka.suse.cz>
-	 <1303228009.3171.18.camel@mulgrave.site>
-	 <BANLkTimYrD_Sby_u-fPSwn-RJJyEVavU5w@mail.gmail.com>
-	 <1303233088.3171.26.camel@mulgrave.site>
-	 <alpine.DEB.2.00.1104191213120.17888@router.home>
-	 <1303235306.3171.33.camel@mulgrave.site>
-	 <alpine.DEB.2.00.1104191254300.19358@router.home>
-	 <1303237217.3171.39.camel@mulgrave.site>
-	 <alpine.DEB.2.00.1104191325470.19358@router.home>
+From: Sergei Shtylyov <sshtylyov@mvista.com>
+Subject: Re: [PATCH 2/2] pata_cmd64x: fix crash on boot with disabled secondary
+ port
+Date: Wed, 20 Apr 2011 00:48:11 +0400
+Message-ID: <4DADF50B.2040101@ru.mvista.com>
+References: <1303152147.7167.12.camel@mulgrave.site> <1303152323.7167.16.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Pekka Enberg <penberg@kernel.org>, Michal Hocko <mhocko@suse.cz>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org, David Rientjes <rientjes@google.com>
-To: Christoph Lameter <cl@linux.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Cc: linux-ide <linux-ide@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1104191325470.19358@router.home>
+In-Reply-To: <1303152323.7167.16.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2011-04-19 at 13:35 -0500, Christoph Lameter wrote:
-> On Tue, 19 Apr 2011, James Bottomley wrote:
-> 
-> > > }
-> > >
-> > > How in the world did you get a zone setup in node 1 with a !NUMA config?
-> >
-> > I told you ... I forced an allocation into the first discontiguous
-> > region.  That will return 1 for page_to_nid().
-> 
-> How? The kernel has no concept of a node 1 without CONFIG_NUMA and so you
-> cannot tell the page allocator to allocate from node 1.
+Hello.
 
-Yes, it does, as I explained in the email.
+On 18-04-2011 22:45, James Bottomley wrote:
 
-> zone_to_nid is used as a fallback mechanism for page_to_nid() and as shown
-> will always return 0 for !NUMA configs.
-> 
-> page_to_nid(x) == zone_to_nid(page_zone(x)) must hold true. It is not
-> here.
-> 
-> > > The problem seems to be that the kernel seems to allow a
-> > > definition of a page_to_nid() function that returns non zero in the !NUMA
-> > > case.
-> >
-> > This is called reality, yes.
-> 
-> There you have the bug. Fix that and things will work fine.
+> On non-x86 systems, probing a port which is listed as disabled can
+> cause an immediate crash.  Fix the driver not to do this by porting
+> the enablebits check from the IDE driver and setting the
+> ATA_HOST_SFF_SINGLE_PORT flag if only the primary is enabled.
 
-Why don't yout file the bug against reality? I'm not sure I have enough
-credibility ...
-
-> > right, that's what I told you: slub is broken because it's making a
-> > wrong assumption.  Look in asm-generic/memory_model.h it shows how the
-> > page_to_nid() is used in finding the pfn array.  DISCONTIGMEM uses some
-> > of the numa properties (including assigning zones to the discontiguous
-> > regions).
-> 
-> Bitrotted code?
-
-Don't be silly: alpha, ia64, m32r, m68k, mips, parisc, tile and even x86
-all use the discontigmem memory model in some configurations.
-
->  If it uses numa properties then it must use a zone field
-> in struct zone. So DISCONTIGMEM seems to require CONFIG_NUMA.
-
-No ... you're giving me back your assumptions.  They're not based on
-what the kernel does.  CONFIG_NUMA may or may not be defined with
-CONFIG_DISCONTIGMEM.
-
-Of all the above, only x86 always had NUMA with DISCONTIGMEM.
-
-> > > If you think that is broken then we have brokenness all over the kernel
-> > > whenever we determine the node from a page and use that to do a lookup.
-> >
-> > Not really.  The rest of the kernel uses the proper macros.  in
-> > DISCONTIGMEM but !NUMA configs, the numa macros expand correctly.
-> > You've cut across that with all the CONFIG_NUMA checks in slub.
-> 
-> What are "the proper macros"? AFAICT page_to_nid() is the proper way to
-> access the node of a page. If page_to_nid() returns 1 then you have a zone
-> that the kernel knows of as being in node 0 having a page on a different
-> node.
-
-Well it depends what you want.  If you only want the actual NUMA node,
-then pfn_to_nid() probably isn't what you want, because in a
-DISCONTIGMEM model, there may be multiple nids per actual numa node.
-
-> We can likely force page_to_nid to ignore the node information that have
-> been erroneously placed there but this looks like something deeper is
-> wrong here. The node field in struct page is not only used for the Linux
-> support of a NUMA node but also for blocks of memory. Those should be
-> separate things.
-
-Look, it's not wrong, it's by design.  The assumption that non-numa
-systems don't use nodes is the wrong one.
-
+> Signed-off-by: James Bottomley<James.Bottomley@HansenPartnership.com>
 > ---
->  include/linux/mm.h |    4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> Index: linux-2.6/include/linux/mm.h
-> ===================================================================
-> --- linux-2.6.orig/include/linux/mm.h	2011-04-19 13:20:20.092521248 -0500
-> +++ linux-2.6/include/linux/mm.h	2011-04-19 13:21:05.962521196 -0500
-> @@ -665,6 +665,7 @@ static inline int zone_to_nid(struct zon
->  #endif
->  }
-> 
-> +#ifdef CONFIG_NUMA
->  #ifdef NODE_NOT_IN_PAGE_FLAGS
->  extern int page_to_nid(struct page *page);
->  #else
-> @@ -673,6 +674,9 @@ static inline int page_to_nid(struct pag
->  	return (page->flags >> NODES_PGSHIFT) & NODES_MASK;
->  }
->  #endif
-> +#else
-> +#define page_to_nid(x) 0
-> +#endif
+>   drivers/ata/pata_cmd64x.c |   22 +++++++++++++++++++---
+>   1 files changed, 19 insertions(+), 3 deletions(-)
 
-Don't be silly ... that breaks asm-generic/memory_model.h
+> diff --git a/drivers/ata/pata_cmd64x.c b/drivers/ata/pata_cmd64x.c
+> index 905ff76..aa71a13 100644
+> --- a/drivers/ata/pata_cmd64x.c
+> +++ b/drivers/ata/pata_cmd64x.c
+> @@ -41,6 +41,9 @@
+>   enum {
+>   	CFR 		= 0x50,
+>   		CFR_INTR_CH0  = 0x04,
+> +	ENPORT		= 0x51,
 
-James
+    The register is actually called CNTRL.
+    BTW, the PCI-649 specification is available at:
+http://gkernel.sourceforge.net/specs/sii/SiI649-DS-0066.pdf.bz2
 
+> +		ENPORT_PRIMARY   = 0x04,
+> +		ENPORT_SECONDARY = 0x08,
+>   	CMDTIM 		= 0x52,
+>   	ARTTIM0 	= 0x53,
+>   	DRWTIM0 	= 0x54,
+> @@ -329,8 +332,8 @@ static int cmd64x_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
+>   		}
+>   	};
+>   	const struct ata_port_info *ppi[] = {&cmd_info[id->driver_data], NULL };
+> -	u8 mrdmode;
+> -	int rc;
+> +	u8 mrdmode, reg;
+> +	int rc, hflags = 0;
+>
+>   	rc = pcim_enable_device(pdev);
+>   	if (rc)
+> @@ -354,6 +357,19 @@ static int cmd64x_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
+>   	mrdmode |= 0x02;	/* Memory read line enable */
+>   	pci_write_config_byte(pdev, MRDMODE, mrdmode);
+>
+> +	/* check for enabled ports */
+> +	pci_read_config_byte(pdev, ENPORT, &reg);
+> +	/* the cm643 primary port is always enabled */
+> +	if (id->driver_data != 0&&  !(reg&  ENPORT_PRIMARY)) {
+
+    That's not quite correct. The original PCI0646 didn't have the primary 
+channel enable bit as well as PCI0643; only PCI0646U+ had the bit in question.
+
+> +		dev_printk(KERN_ERR, &pdev->dev, "Primary port is disabled; detaching\n");
+> +		return -ENODEV;
+
+    Why? It's perfectly valid to have only secondary port enabled.
+
+WBR, Sergei
 
