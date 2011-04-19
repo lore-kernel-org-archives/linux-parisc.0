@@ -1,43 +1,42 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: [PATCH 0/2] fix libata-sff and pata_cmd64x to not crash on boot
- on parisc
-Date: Tue, 19 Apr 2011 22:28:38 +0100
-Message-ID: <20110419222838.6a6f36aa@lxorguk.ukuu.org.uk>
-References: <1303152147.7167.12.camel@mulgrave.site>
-	<20110418205203.56bbdb14@lxorguk.ukuu.org.uk>
-	<1303159802.7167.30.camel@mulgrave.site>
-	<20110418222017.4e77fe05@lxorguk.ukuu.org.uk>
-	<4DADF798.6010705@ru.mvista.com>
-	<20110419221900.67528a07@lxorguk.ukuu.org.uk>
-	<4DADFD2E.9070809@ru.mvista.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: slub: fix panic with DISCONTIGMEM
+Date: Tue, 19 Apr 2011 16:29:36 -0500
+Message-ID: <1303248576.11237.23.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	linux-ide <linux-ide@vger.kernel.org>,
+Content-Type: text/plain; charset="UTF-8"
+Cc: Christoph Lameter <cl@linux.com>
+To: linux-arch@vger.kernel.org, linux-mm@vger.kernel.org,
 	Parisc List <linux-parisc@vger.kernel.org>
-To: Sergei Shtylyov <sshtylyov@mvista.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4DADFD2E.9070809@ru.mvista.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 20 Apr 2011 01:22:54 +0400
-Sergei Shtylyov <sshtylyov@mvista.com> wrote:
+Slub makes assumptions about page_to_nid() which are violated by
+DISCONTIGMEM and !NUMA.  This violation results in a panic because
+page_to_nid() can be non-zero for pages in the discontiguous ranges and
+this leads to a null return by get_node().  The assertion by the
+maintainer is that DISCONTIGMEM should only be allowed when NUMA is also
+defined.  However, at least six architectures: alpha, ia64, m32r, m68k,
+mips, parisc violate this.  The panic is a regression against slab, so
+just mark slub broken in the problem configuration to prevent users
+reporting these panics.
 
-> On 20-04-2011 1:19, Alan Cox wrote:
-> 
-> >>> We can detect the Mobility electronics split bridges at least (and I
-> >>> suspect they are the only 'common' CMD64x hot plug device indeed possibly
-> >>> the only one) because the parent bridge of the CMD64x will have a PCI
-> >>> vendor id of 0x14f2 and a device id 0x0001, 0x0002, or 0x0120.
-> 
-> >>      What's the issue with these brodges anyway? Why the enable bits are not
-> >> valid for them?
-> 
-> > Good question. I'd assumed because they are hotplugged and so no firmware
-> > gets to set the bits properly ?
-> 
->     The bits are strapped off the pins JP3/JP4.
+Cc: stable@kernel.org
+Signed-off-by: James Bottomley <James.Bottomley@suse.de>
 
-Beats me then. Whatever - its easy enough to work around and avoid
-exploding parisc and sparc so it definitely wants sorting
+---
+
+diff --git a/init/Kconfig b/init/Kconfig
+index 56240e7..a7ad8fb 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1226,6 +1226,7 @@ config SLAB
+ 	  per cpu and per node queues.
+ 
+ config SLUB
++	depends on BROKEN || NUMA || !DISCONTIGMEM
+ 	bool "SLUB (Unqueued Allocator)"
+ 	help
+ 	   SLUB is a slab allocator that minimizes cache line usage
+
+
