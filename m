@@ -1,207 +1,40 @@
-From: Michal Hocko <mhocko@suse.cz>
-Subject: [PATCH v3] mm: make expand_downwards symmetrical to expand_upwards
-Date: Tue, 19 Apr 2011 13:10:04 +0200
-Message-ID: <20110419111004.GE21689@tiehlicka.suse.cz>
-References: <20110415135144.GE8828@tiehlicka.suse.cz>
- <alpine.LSU.2.00.1104171952040.22679@sister.anvils>
- <20110418100131.GD8925@tiehlicka.suse.cz>
- <20110418135637.5baac204.akpm@linux-foundation.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH 0/2] fix libata-sff and pata_cmd64x to not crash on
+ boot on parisc
+Date: Tue, 19 Apr 2011 08:54:38 -0500
+Message-ID: <1303221278.3171.9.camel@mulgrave.site>
+References: <1303152147.7167.12.camel@mulgrave.site>
+	 <20110418205203.56bbdb14@lxorguk.ukuu.org.uk>
+	 <1303159802.7167.30.camel@mulgrave.site>
+	 <20110418222017.4e77fe05@lxorguk.ukuu.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-	LKML <linux-kernel@vger.kernel.org>, linux-parisc@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <20110418135637.5baac204.akpm@linux-foundation.org>
-List-ID: <linux-mm.kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-ide <linux-ide@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20110418222017.4e77fe05@lxorguk.ukuu.org.uk>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Mon 18-04-11 13:56:37, Andrew Morton wrote:
-> On Mon, 18 Apr 2011 12:01:31 +0200
-> Michal Hocko <mhocko@suse.cz> wrote:
-> 
-> > Currently we have expand_upwards exported while expand_downwards is
-> > accessible only via expand_stack or expand_stack_downwards.
-> > 
-> > check_stack_guard_page is a nice example of the asymmetry. It uses
-> > expand_stack for VM_GROWSDOWN while expand_upwards is called for
-> > VM_GROWSUP case.
-> > 
-> > Let's clean this up by exporting both functions and make those name
-> > consistent. Let's use expand_stack_{upwards,downwards} so that we are
-> > explicit about stack manipulation in the name. expand_stack_downwards
-> > has to be defined for both CONFIG_STACK_GROWS{UP,DOWN} because
-> > get_arg_page calls the downwards version in the early process
-> > initialization phase for growsup configuration.
-> 
-> Has this patch been tested on any stack-grows-upwards architecture?
+On Mon, 2011-04-18 at 22:20 +0100, Alan Cox wrote:
+> We can detect the Mobility electronics split bridges at least (and I
+> suspect they are the only 'common' CMD64x hot plug device indeed possibly
+> the only one) because the parent bridge of the CMD64x will have a PCI
+> vendor id of 0x14f2 and a device id 0x0001, 0x0002, or 0x0120.
 
-The only one I can find in the tree is parisc and I do not have access
-to any such machine. Maybe someone on the list (CCed) can help with
-testing the patch bellow? Nevertheless, the patch doesn't change growsup
-case. It just renames functions and exports growsdown.
+Trying to wire in a bridge blacklist looks a bit dicey ... unless you're
+sure this is (and will always be) the only bridge?  How should this
+wiring be done? most of the bridge checks just see if the bridge is in
+the system rather than walking up the device tree; is that OK?
 
-IA64 which grows upwards only for registers still needs a fix because of
-the rename, though. I'm sorry, I must have missed it in the grep output
-before. No other arch specific code uses expand_{down,up}wards directly.
+If not, what about just a legacy check on X86, so hedge with
 
-Changes since v2
- - fix compilation error on ia64
-Changes since v1
- - fixed expand_downwards case for CONFIG_STACK_GROWSUP in get_arg_page.
- - rename expand_{downwards,upwards} -> expand_stack_{downwards,upwards}
---- 
->From 091cf27fe9fad875bc7f6cdbb8206c617b06fc7b Mon Sep 17 00:00:00 2001
-From: Michal Hocko <mhocko@suse.cz>
-Date: Fri, 15 Apr 2011 14:56:26 +0200
-Subject: [PATCH] mm: make expand_downwards symmetrical to expand_upwards
+if (legacy || !CONFIG_X86)
 
-Currently we have expand_upwards exported while expand_downwards is
-accessible only via expand_stack or expand_stack_downwards.
+(or even just dump the legacy check, since you think everything is fine
+on x86 today?)
 
-check_stack_guard_page is a nice example of the asymmetry. It uses
-expand_stack for VM_GROWSDOWN while expand_upwards is called for
-VM_GROWSUP case.
+James
 
-Let's clean this up by exporting both functions and make those name
-consistent. Let's use expand_stack_{upwards,downwards} so that we are
-explicit about stack manipulation in the name. expand_stack_downwards
-has to be defined for both CONFIG_STACK_GROWS{UP,DOWN} because
-get_arg_page calls the downwards version in the early process
-initialization phase for growsup configuration.
 
-Signed-off-by: Michal Hocko <mhocko@suse.cz>
----
- arch/ia64/mm/fault.c |    2 +-
- include/linux/mm.h   |   13 ++++++++-----
- mm/memory.c          |    4 ++--
- mm/mmap.c            |   13 ++++---------
- 4 files changed, 15 insertions(+), 17 deletions(-)
-
-diff --git a/arch/ia64/mm/fault.c b/arch/ia64/mm/fault.c
-index 0799fea..aebff8a 100644
---- a/arch/ia64/mm/fault.c
-+++ b/arch/ia64/mm/fault.c
-@@ -197,7 +197,7 @@ ia64_do_page_fault (unsigned long address, unsigned long isr, struct pt_regs *re
- 		 */
- 		if (address > vma->vm_end + PAGE_SIZE - sizeof(long))
- 			goto bad_area;
--		if (expand_upwards(vma, address))
-+		if (expand_stack_upwards(vma, address))
- 			goto bad_area;
- 	}
- 	goto good_area;
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 692dbae..17f9b86 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1494,15 +1494,18 @@ unsigned long ra_submit(struct file_ra_state *ra,
- 			struct address_space *mapping,
- 			struct file *filp);
- 
--/* Do stack extension */
-+/* Generic expand stack which grows the stack according to GROWS{UP,DOWN} */
- extern int expand_stack(struct vm_area_struct *vma, unsigned long address);
-+
-+/* CONFIG_STACK_GROWSUP still needs to to grow downwards at some places */
-+extern int expand_stack_downwards(struct vm_area_struct *vma,
-+		unsigned long address);
- #if VM_GROWSUP
--extern int expand_upwards(struct vm_area_struct *vma, unsigned long address);
-+extern int expand_stack_upwards(struct vm_area_struct *vma,
-+		unsigned long address);
- #else
--  #define expand_upwards(vma, address) do { } while (0)
-+  #define expand_stack_upwards(vma, address) do { } while (0)
- #endif
--extern int expand_stack_downwards(struct vm_area_struct *vma,
--				  unsigned long address);
- 
- /* Look up the first VMA which satisfies  addr < vm_end,  NULL if none. */
- extern struct vm_area_struct * find_vma(struct mm_struct * mm, unsigned long addr);
-diff --git a/mm/memory.c b/mm/memory.c
-index ce22a25..ba5b4d8 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2969,7 +2969,7 @@ static inline int check_stack_guard_page(struct vm_area_struct *vma, unsigned lo
- 		if (prev && prev->vm_end == address)
- 			return prev->vm_flags & VM_GROWSDOWN ? 0 : -ENOMEM;
- 
--		expand_stack(vma, address - PAGE_SIZE);
-+		expand_stack_downwards(vma, address - PAGE_SIZE);
- 	}
- 	if ((vma->vm_flags & VM_GROWSUP) && address + PAGE_SIZE == vma->vm_end) {
- 		struct vm_area_struct *next = vma->vm_next;
-@@ -2978,7 +2978,7 @@ static inline int check_stack_guard_page(struct vm_area_struct *vma, unsigned lo
- 		if (next && next->vm_start == address + PAGE_SIZE)
- 			return next->vm_flags & VM_GROWSUP ? 0 : -ENOMEM;
- 
--		expand_upwards(vma, address + PAGE_SIZE);
-+		expand_stack_upwards(vma, address + PAGE_SIZE);
- 	}
- 	return 0;
- }
-diff --git a/mm/mmap.c b/mm/mmap.c
-index e27e0cf..29c68b0 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1731,7 +1731,7 @@ static int acct_stack_growth(struct vm_area_struct *vma, unsigned long size, uns
-  * PA-RISC uses this for its stack; IA64 for its Register Backing Store.
-  * vma is the last one with address > vma->vm_end.  Have to extend vma.
-  */
--int expand_upwards(struct vm_area_struct *vma, unsigned long address)
-+int expand_stack_upwards(struct vm_area_struct *vma, unsigned long address)
- {
- 	int error;
- 
-@@ -1782,7 +1782,7 @@ int expand_upwards(struct vm_area_struct *vma, unsigned long address)
- /*
-  * vma is the first one with address < vma->vm_start.  Have to extend vma.
-  */
--static int expand_downwards(struct vm_area_struct *vma,
-+int expand_stack_downwards(struct vm_area_struct *vma,
- 				   unsigned long address)
- {
- 	int error;
-@@ -1829,15 +1829,10 @@ static int expand_downwards(struct vm_area_struct *vma,
- 	return error;
- }
- 
--int expand_stack_downwards(struct vm_area_struct *vma, unsigned long address)
--{
--	return expand_downwards(vma, address);
--}
--
- #ifdef CONFIG_STACK_GROWSUP
- int expand_stack(struct vm_area_struct *vma, unsigned long address)
- {
--	return expand_upwards(vma, address);
-+	return expand_stack_upwards(vma, address);
- }
- 
- struct vm_area_struct *
-@@ -1859,7 +1854,7 @@ find_extend_vma(struct mm_struct *mm, unsigned long addr)
- #else
- int expand_stack(struct vm_area_struct *vma, unsigned long address)
- {
--	return expand_downwards(vma, address);
-+	return expand_stack_downwards(vma, address);
- }
- 
- struct vm_area_struct *
--- 
-1.7.4.1
-
--- 
-Michal Hocko
-SUSE Labs
-SUSE LINUX s.r.o.
-Lihovarska 1060/12
-190 00 Praha 9    
-Czech Republic
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Fight unfair telecom internet charges in Canada: sign http://stopthemeter.ca/
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
