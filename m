@@ -1,46 +1,54 @@
 From: Christoph Lameter <cl@linux.com>
-Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to
- expand_upwards
-Date: Wed, 20 Apr 2011 08:50:15 -0500 (CDT)
-Message-ID: <alpine.DEB.2.00.1104200847240.8634@router.home>
-References: <20110420102314.4604.A69D9226@jp.fujitsu.com> <1303267733.11237.42.camel@mulgrave.site> <20110420115804.461E.A69D9226@jp.fujitsu.com>
+Subject: Re: slub: fix panic with DISCONTIGMEM
+Date: Wed, 20 Apr 2011 08:54:23 -0500 (CDT)
+Message-ID: <alpine.DEB.2.00.1104200853150.8634@router.home>
+References: <1303248576.11237.23.camel@mulgrave.site> <BANLkTinyvO78OnKZGW3jB_N6uao0tppnAw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-  Pekka Enberg <penberg@kernel.org>, Michal Hocko <mhocko@suse.cz>,
-  Andrew Morton <akpm@linux-foundation.org>, Hugh Dickins <hughd@google.com>,
-  linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-  linux-parisc@vger.kernel.org, David Rientjes <rientjes@google.com>,
-  Tejun Heo <tj@kernel.org>
-To: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <20110420115804.461E.A69D9226@jp.fujitsu.com>
-List-ID: <linux-mm.kvack.org>
+Content-Type: MULTIPART/MIXED; BOUNDARY="-1463811839-557332752-1303307665=:8634"
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+	linux-arch@vger.kernel.org, linux-mm@vger.kernel.org,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Thorsten Glaser <tg@mirbsd.de>,
+	Michael Schmitz <schmitzmic@googlemail.com>,
+	Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <BANLkTinyvO78OnKZGW3jB_N6uao0tppnAw@mail.gmail.com>
+List-ID: <linux-arch.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 20 Apr 2011, KOSAKI Motohiro wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> >                  from arch/parisc/kernel/asm-offsets.c:31:
-> > include/linux/topology.h: In function 'numa_node_id':
-> > include/linux/topology.h:255: error: implicit declaration of function 'cpu_to_node'
+---1463811839-557332752-1303307665=:8634
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+On Wed, 20 Apr 2011, Geert Uytterhoeven wrote:
+
+> On Tue, Apr 19, 2011 at 23:29, James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
+> > Slub makes assumptions about page_to_nid() which are violated by
+> > DISCONTIGMEM and !NUMA. =C2=A0This violation results in a panic because
+> > page_to_nid() can be non-zero for pages in the discontiguous ranges and
+> > this leads to a null return by get_node(). =C2=A0The assertion by the
+> > maintainer is that DISCONTIGMEM should only be allowed when NUMA is als=
+o
+> > defined. =C2=A0However, at least six architectures: alpha, ia64, m32r, =
+m68k,
+> > mips, parisc violate this. =C2=A0The panic is a regression against slab=
+, so
+> > just mark slub broken in the problem configuration to prevent users
+> > reporting these panics.
 >
-> Sorry about that. I'll see more carefully the code later. Probably long
-> time discontig-mem uninterest made multiple level breakage. Grr. ;-)
+> How does the problem manifest itself? We're having a problem on m68k, whi=
+ch
+> seems to go away when switching from SLUB to SLAB, or when reverting a co=
+mmit
+> in [2] (probably this was never reported upstream).
 
-True. Someone needs to go through discontig and make it work right with a
-!NUMA configuration. Many pieces of the core code assume that there will
-be no node on a !NUMA config today. I guess that was different in ages
-past.
+The NULL pointer dereference is typical. If SLUB breaks in this way then
+other things are also not functioning in the core.
 
-Maybe we should make DISCONTIG broken under !NUMA until that time?
-
-Tejon was working on getting rid of DISCONTIG. SPARSEMEM is the favored
-alternative today. So we could potentially change the arches to use SPARSE
-configs in the !NUMA case.
-
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Fight unfair telecom internet charges in Canada: sign http://stopthemeter.ca/
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+Guess you are also using DISCONTIG in !NUMA?
+---1463811839-557332752-1303307665=:8634--
