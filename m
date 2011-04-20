@@ -1,42 +1,65 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH 0/2] fix libata-sff and pata_cmd64x to not crash on
- boot on parisc
-Date: Wed, 20 Apr 2011 09:28:18 -0500
-Message-ID: <1303309698.2587.10.camel@mulgrave.site>
-References: <1303152147.7167.12.camel@mulgrave.site>
-	 <20110418205203.56bbdb14@lxorguk.ukuu.org.uk>
-	 <1303159802.7167.30.camel@mulgrave.site>
-	 <20110418222017.4e77fe05@lxorguk.ukuu.org.uk>
-	 <4DADF798.6010705@ru.mvista.com>
-	 <20110419221900.67528a07@lxorguk.ukuu.org.uk>
-	 <4DADFD2E.9070809@ru.mvista.com>
-	 <20110419222838.6a6f36aa@lxorguk.ukuu.org.uk>
-	 <1303254709.11237.34.camel@mulgrave.site>  <4DAEAF9A.1020704@ru.mvista.com>
+From: Christoph Lameter <cl@linux.com>
+Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to
+ expand_upwards
+Date: Wed, 20 Apr 2011 09:50:40 -0500 (CDT)
+Message-ID: <alpine.DEB.2.00.1104200943580.9266@router.home>
+References: <20110420102314.4604.A69D9226@jp.fujitsu.com>  <BANLkTi=mxWwLPEnB+rGg29b06xNUD0XvsA@mail.gmail.com>  <20110420161615.462D.A69D9226@jp.fujitsu.com>  <BANLkTimfpY3gq8oY6bPDajBW7JN6Hp+A0A@mail.gmail.com>  <20110420112020.GA31296@parisc-linux.org>
+ <BANLkTim+m-v-4k17HUSOYSbmNFDtJTgD6g@mail.gmail.com> <1303308938.2587.8.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
-	linux-ide <linux-ide@vger.kernel.org>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: Sergei Shtylyov <sshtylyov@mvista.com>
-Return-path: <linux-ide-owner@vger.kernel.org>
-In-Reply-To: <4DAEAF9A.1020704@ru.mvista.com>
-List-ID: <linux-ide.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Pekka Enberg <penberg@kernel.org>, Matthew Wilcox <matthew@wil.cx>,
+  KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
+  Michal Hocko <mhocko@suse.cz>, Andrew Morton <akpm@linux-foundation.org>,
+  Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+  LKML <linux-kernel@vger.kernel.org>, linux-parisc@vger.kernel.org,
+  David Rientjes <rientjes@google.com>, Ingo Molnar <mingo@elte.hu>,
+  x86 maintainers <x86@kernel.org>, linux-arch@vger.kernel.org,
+  Mel Gorman <mel@csn.ul.ie>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <1303308938.2587.8.camel@mulgrave.site>
+List-ID: <linux-mm.kvack.org>
 
-On Wed, 2011-04-20 at 14:04 +0400, Sergei Shtylyov wrote:
+On Wed, 20 Apr 2011, James Bottomley wrote:
 
-> > +		dev_printk(KERN_NOTICE, &pdev->dev, "Mobility Bridge detected, ignoring CNTRL port enable/disable\n");
-> > +	/* 643 and 646 no UDMA, primary port always enabled */
-> > +	if (port_ok && id->driver_data > 1 &&  !(reg & CNTRL_PRIMARY)) {
-> 
->     PCI0646U and later revisions on PCI0646 do have the primary port enable 
-> bit. The same about UltraDMA -- PCI0646U2 has it. Look at what cmd64x does in 
-> cmd64x_init_one()...
+>      1. We can look at what imposing NUMA on the DISCONTIGMEM archs
+>         would do ... the embedded ones are going to be hardest hit, but
+>         if it's not too much extra code, it might be palatable.
+>      2. The other is that we can audit mm to look at all the node
+>         assumptions in the non-numa case.  My suspicion is that
+>         accidentally or otherwise, it mostly works for the normal case,
+>         so there might not be much needed to pull it back to working
+>         properly for DISCONTIGMEM.
 
-Where?  All I see in drivers/ide/cmd64x.c is that it only ignores the
-primary for the id->driver_data == 0 case, which is what I originally
-coded.
+The older code may work. SLAB f.e. does not call page_to_nid() in the
+!NUMA case but keeps special metadata structures around in each slab page
+that records the node used for allocation. The problem is with new code
+added/revised in the last 5 years or so that uses page_to_nid() and
+allocates only a single structure for !NUMA. There are also VM_BUG_ONs in
+the page allocator that should trigger if page_to_nid() returns strange
+values. I wonder why that never occurred.
 
-James
+>      3. Finally we could look at deprecating DISCONTIGMEM in favour
+of >         SPARSEMEM, but we'd still need to fix -stable for that case.
+>         Especially as it will take time to convert all the architectures
 
+The fix needed is to mark DISCONTIGMEM without NUMA as broken for now. We
+need an audit of the core VM before removing that or making it contingent
+on the configurations of various VM subsystems.
 
+> I'm certainly with Matthew: DISCONTIGMEM is supposed to be a lightweight
+> framework which allows machines with split physical memory ranges to
+> work.  That's a very common case nowadays.  Numa is supposed to be a
+> heavyweight framework to preserve node locality for non-uniform memory
+> access boxes (which none of the DISCONTIGMEM && !NUMA systems are).
+
+Well yes but we have SPARSE for that today. DISCONTIG with multiple per
+pgdat structures in a !NUMA case is just weird and unexpected for many who
+have done VM coding in the last years.
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Fight unfair telecom internet charges in Canada: sign http://stopthemeter.ca/
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
