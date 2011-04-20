@@ -1,156 +1,85 @@
-From: Sergei Shtylyov <sshtylyov@mvista.com>
-Subject: Re: [PATCH 0/2] fix libata-sff and pata_cmd64x to not crash on boot
- on parisc
-Date: Wed, 20 Apr 2011 18:54:41 +0400
-Message-ID: <4DAEF3B1.6020304@ru.mvista.com>
-References: <1303152147.7167.12.camel@mulgrave.site>	 <20110418205203.56bbdb14@lxorguk.ukuu.org.uk>	 <1303159802.7167.30.camel@mulgrave.site>	 <20110418222017.4e77fe05@lxorguk.ukuu.org.uk>	 <4DADF798.6010705@ru.mvista.com>	 <20110419221900.67528a07@lxorguk.ukuu.org.uk>	 <4DADFD2E.9070809@ru.mvista.com>	 <20110419222838.6a6f36aa@lxorguk.ukuu.org.uk>	 <1303254709.11237.34.camel@mulgrave.site>  <4DAEAF9A.1020704@ru.mvista.com> <1303309698.2587.10.camel@mulgrave.site>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to
+ expand_upwards
+Date: Wed, 20 Apr 2011 10:02:59 -0500
+Message-ID: <1303311779.2587.19.camel@mulgrave.site>
+References: <20110420102314.4604.A69D9226@jp.fujitsu.com>
+	 <BANLkTi=mxWwLPEnB+rGg29b06xNUD0XvsA@mail.gmail.com>
+	 <20110420161615.462D.A69D9226@jp.fujitsu.com>
+	 <BANLkTimfpY3gq8oY6bPDajBW7JN6Hp+A0A@mail.gmail.com>
+	 <20110420112020.GA31296@parisc-linux.org>
+	 <BANLkTim+m-v-4k17HUSOYSbmNFDtJTgD6g@mail.gmail.com>
+	 <1303308938.2587.8.camel@mulgrave.site>
+	 <alpine.DEB.2.00.1104200943580.9266@router.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Cc: Sergei Shtylyov <sshtylyov@mvista.com>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>,
-	linux-ide <linux-ide@vger.kernel.org>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Pekka Enberg <penberg@kernel.org>, Matthew Wilcox <matthew@wil.cx>,
+	KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
+	Michal Hocko <mhocko@suse.cz>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org, David Rientjes <rientjes@google.com>,
+	Ingo Molnar <mingo@elte.hu>, x86 maintainers <x86@kernel.org>,
+	linux-arch@vger.kernel.org, Mel Gorman <mel@csn.ul.ie>
+To: Christoph Lameter <cl@linux.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1303309698.2587.10.camel@mulgrave.site>
+In-Reply-To: <alpine.DEB.2.00.1104200943580.9266@router.home>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello.
+On Wed, 2011-04-20 at 09:50 -0500, Christoph Lameter wrote:
+> On Wed, 20 Apr 2011, James Bottomley wrote:
+> 
+> >      1. We can look at what imposing NUMA on the DISCONTIGMEM archs
+> >         would do ... the embedded ones are going to be hardest hit, but
+> >         if it's not too much extra code, it might be palatable.
+> >      2. The other is that we can audit mm to look at all the node
+> >         assumptions in the non-numa case.  My suspicion is that
+> >         accidentally or otherwise, it mostly works for the normal case,
+> >         so there might not be much needed to pull it back to working
+> >         properly for DISCONTIGMEM.
+> 
+> The older code may work. SLAB f.e. does not call page_to_nid() in the
+> !NUMA case but keeps special metadata structures around in each slab page
+> that records the node used for allocation. The problem is with new code
+> added/revised in the last 5 years or so that uses page_to_nid() and
+> allocates only a single structure for !NUMA. There are also VM_BUG_ONs in
+> the page allocator that should trigger if page_to_nid() returns strange
+> values. I wonder why that never occurred.
 
-On 20-04-2011 18:28, James Bottomley wrote:
+Actually, I think slab got changed when discontigmem was added ...
+that's why it all works OK.
 
->>> +		dev_printk(KERN_NOTICE,&pdev->dev, "Mobility Bridge detected, ig=
-noring CNTRL port enable/disable\n");
->>> +	/* 643 and 646 no UDMA, primary port always enabled */
->>> +	if (port_ok&&  id->driver_data>  1&&   !(reg&  CNTRL_PRIMARY)) {
+> >      3. Finally we could look at deprecating DISCONTIGMEM in favour
+> of >         SPARSEMEM, but we'd still need to fix -stable for that case.
+> >         Especially as it will take time to convert all the architectures
+> 
+> The fix needed is to mark DISCONTIGMEM without NUMA as broken for now. We
+> need an audit of the core VM before removing that or making it contingent
+> on the configurations of various VM subsystems.
 
-    This should probably be:
+Don't be stupid ... that would cause six architectures to get marked
+broken.
 
-	if (port_ok && !(id->driver_data =3D=3D 0 || id->driver_data =3D=3D 1 =
-&&
-	    pdev->revision < 3) && !(reg & CNTRL_PRIMARY)) {
+> > I'm certainly with Matthew: DISCONTIGMEM is supposed to be a lightweight
+> > framework which allows machines with split physical memory ranges to
+> > work.  That's a very common case nowadays.  Numa is supposed to be a
+> > heavyweight framework to preserve node locality for non-uniform memory
+> > access boxes (which none of the DISCONTIGMEM && !NUMA systems are).
+> 
+> Well yes but we have SPARSE for that today. DISCONTIG with multiple per
+> pgdat structures in a !NUMA case is just weird and unexpected for many who
+> have done VM coding in the last years.
 
->>      PCI0646U and later revisions on PCI0646 do have the primary por=
-t enable
->> bit. The same about UltraDMA -- PCI0646U2 has it. Look at what cmd64=
-x does in
->> cmd64x_init_one()...
+Look, I'm not really interested in who understands what.  The fact is we
+have six architectures with the possibility for DISCONTIGMEM && !NUMA,
+so that's the case we need to fix in -stable.
 
-> Where?  All I see in drivers/ide/cmd64x.c is that it only ignores the
-> primary for the id->driver_data =3D=3D 0 case, which is what I origin=
-ally
-> coded.
+They oops with SLUB, as far as I can tell, there are still no oops
+reports with SLAB.  The simplest -stable fix seems to be to mark SLUB
+broken on DISCONTIGMEM && !NUMA.
 
-    Hm, are we looking at the same driver?
+James
 
-static const struct ide_port_info cmd64x_chipsets[] __devinitdata =3D {
-	{	/* 0: CMD643 */
-		.name		=3D DRV_NAME,
-		.init_chipset	=3D init_chipset_cmd64x,
-		.enablebits	=3D {{0x00,0x00,0x00}, {0x51,0x08,0x08}},
-		.port_ops	=3D &cmd64x_port_ops,
-		.host_flags	=3D IDE_HFLAG_CLEAR_SIMPLEX |
-				  IDE_HFLAG_ABUSE_PREFETCH |
-				  IDE_HFLAG_SERIALIZE,
-		.pio_mask	=3D ATA_PIO5,
-		.mwdma_mask	=3D ATA_MWDMA2,
-		.udma_mask	=3D 0x00, /* no udma */
-	},
-	{	/* 1: CMD646 */
-		.name		=3D DRV_NAME,
-		.init_chipset	=3D init_chipset_cmd64x,
-		.enablebits	=3D {{0x51,0x04,0x04}, {0x51,0x08,0x08}},
-		.port_ops	=3D &cmd648_port_ops,
-		.host_flags	=3D IDE_HFLAG_ABUSE_PREFETCH |
-				  IDE_HFLAG_SERIALIZE,
-		.pio_mask	=3D ATA_PIO5,
-		.mwdma_mask	=3D ATA_MWDMA2,
-		.udma_mask	=3D ATA_UDMA2,
-	},
-	{	/* 2: CMD648 */
-		.name		=3D DRV_NAME,
-		.init_chipset	=3D init_chipset_cmd64x,
-		.enablebits	=3D {{0x51,0x04,0x04}, {0x51,0x08,0x08}},
-		.port_ops	=3D &cmd648_port_ops,
-		.host_flags	=3D IDE_HFLAG_ABUSE_PREFETCH,
-		.pio_mask	=3D ATA_PIO5,
-		.mwdma_mask	=3D ATA_MWDMA2,
-		.udma_mask	=3D ATA_UDMA4,
-	},
-	{	/* 3: CMD649 */
-		.name		=3D DRV_NAME,
-		.init_chipset	=3D init_chipset_cmd64x,
-		.enablebits	=3D {{0x51,0x04,0x04}, {0x51,0x08,0x08}},
-		.port_ops	=3D &cmd648_port_ops,
-		.host_flags	=3D IDE_HFLAG_ABUSE_PREFETCH,
-		.pio_mask	=3D ATA_PIO5,
-		.mwdma_mask	=3D ATA_MWDMA2,
-		.udma_mask	=3D ATA_UDMA5,
-	}
-};
 
-static int __devinit cmd64x_init_one(struct pci_dev *dev, const struct=20
-pci_device_id *id)
-{
-	struct ide_port_info d;
-	u8 idx =3D id->driver_data;
-
-	d =3D cmd64x_chipsets[idx];
-
-	if (idx =3D=3D 1) {
-		/*
-		 * UltraDMA only supported on PCI646U and PCI646U2, which
-		 * correspond to revisions 0x03, 0x05 and 0x07 respectively.
-		 * Actually, although the CMD tech support people won't
-		 * tell me the details, the 0x03 revision cannot support
-		 * UDMA correctly without hardware modifications, and even
-		 * then it only works with Quantum disks due to some
-		 * hold time assumptions in the 646U part which are fixed
-		 * in the 646U2.
-		 *
-		 * So we only do UltraDMA on revision 0x05 and 0x07 chipsets.
-		 */
-		if (dev->revision < 5) {
-			d.udma_mask =3D 0x00;
-			/*
-			 * The original PCI0646 didn't have the primary
-			 * channel enable bit, it appeared starting with
-			 * PCI0646U (i.e. revision ID 3).
-			 */
-			if (dev->revision < 3) {
-				d.enablebits[0].reg =3D 0;
-				d.port_ops =3D &cmd64x_port_ops;
-				if (dev->revision =3D=3D 1)
-					d.dma_ops =3D &cmd646_rev1_dma_ops;
-			}
-		}
-	}
-
-	return ide_pci_init_one(dev, &d, NULL);
-}
-
-static const struct pci_device_id cmd64x_pci_tbl[] =3D {
-	{ PCI_VDEVICE(CMD, PCI_DEVICE_ID_CMD_643), 0 },
-	{ PCI_VDEVICE(CMD, PCI_DEVICE_ID_CMD_646), 1 },
-	{ PCI_VDEVICE(CMD, PCI_DEVICE_ID_CMD_648), 2 },
-	{ PCI_VDEVICE(CMD, PCI_DEVICE_ID_CMD_649), 3 },
-	{ 0, },
-};
-MODULE_DEVICE_TABLE(pci, cmd64x_pci_tbl);
-
-    "=C3=AFdx =3D=3D 1" corresponds to PCI0646. See this "dev->revision=
- < 3" check=20
-(this is true for the original PCI0646), where it then zeroes the 'reg'=
- field=20
-of 'enablebits' to disable its checking?
-
-> James
-
-WBR, Sergei
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
