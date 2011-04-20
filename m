@@ -1,54 +1,46 @@
 From: Christoph Lameter <cl@linux.com>
-Subject: Re: slub: fix panic with DISCONTIGMEM
-Date: Wed, 20 Apr 2011 08:54:23 -0500 (CDT)
-Message-ID: <alpine.DEB.2.00.1104200853150.8634@router.home>
-References: <1303248576.11237.23.camel@mulgrave.site> <BANLkTinyvO78OnKZGW3jB_N6uao0tppnAw@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to
+ expand_upwards
+Date: Wed, 20 Apr 2011 08:58:10 -0500 (CDT)
+Message-ID: <alpine.DEB.2.00.1104200855050.8634@router.home>
+References: <20110420102314.4604.A69D9226@jp.fujitsu.com> <BANLkTi=mxWwLPEnB+rGg29b06xNUD0XvsA@mail.gmail.com> <20110420161615.462D.A69D9226@jp.fujitsu.com> <BANLkTimfpY3gq8oY6bPDajBW7JN6Hp+A0A@mail.gmail.com> <20110420112020.GA31296@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-1463811839-557332752-1303307665=:8634"
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	linux-arch@vger.kernel.org, linux-mm@vger.kernel.org,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Thorsten Glaser <tg@mirbsd.de>,
-	Michael Schmitz <schmitzmic@googlemail.com>,
-	Linux/m68k <linux-m68k@vger.kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <BANLkTinyvO78OnKZGW3jB_N6uao0tppnAw@mail.gmail.com>
-List-ID: <linux-arch.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Pekka Enberg <penberg@kernel.org>,
+	KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Michal Hocko <mhocko@suse.cz>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org, David Rientjes <rientjes@google.com>,
+	Ingo Molnar <mingo@elte.hu>, x86 maintainers <x86@kernel.org>,
+	Mel Gorman <mel@csn.ul.ie>
+To: Matthew Wilcox <matthew@wil.cx>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20110420112020.GA31296@parisc-linux.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Wed, 20 Apr 2011, Matthew Wilcox wrote:
 
----1463811839-557332752-1303307665=:8634
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
-On Wed, 20 Apr 2011, Geert Uytterhoeven wrote:
-
-> On Tue, Apr 19, 2011 at 23:29, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > Slub makes assumptions about page_to_nid() which are violated by
-> > DISCONTIGMEM and !NUMA. =C2=A0This violation results in a panic because
-> > page_to_nid() can be non-zero for pages in the discontiguous ranges and
-> > this leads to a null return by get_node(). =C2=A0The assertion by the
-> > maintainer is that DISCONTIGMEM should only be allowed when NUMA is als=
-o
-> > defined. =C2=A0However, at least six architectures: alpha, ia64, m32r, =
-m68k,
-> > mips, parisc violate this. =C2=A0The panic is a regression against slab=
-, so
-> > just mark slub broken in the problem configuration to prevent users
-> > reporting these panics.
+> On Wed, Apr 20, 2011 at 10:34:23AM +0300, Pekka Enberg wrote:
+> > That part makes me think the best option is to make parisc do
+> > CONFIG_NUMA as well regardless of the historical intent was.
 >
-> How does the problem manifest itself? We're having a problem on m68k, whi=
-ch
-> seems to go away when switching from SLUB to SLAB, or when reverting a co=
-mmit
-> in [2] (probably this was never reported upstream).
+> But it's not just parisc.  It's six other architectures as well, some
+> of which aren't even SMP.  Does !SMP && NUMA make any kind of sense?
 
-The NULL pointer dereference is typical. If SLUB breaks in this way then
-other things are also not functioning in the core.
+Of course not.
 
-Guess you are also using DISCONTIG in !NUMA?
----1463811839-557332752-1303307665=:8634--
+> I think really, this is just a giant horrible misunderstanding on the part
+> of the MM people.  There's no reason why an ARM chip with 16MB of memory
+> at 0 and 16MB of memory at 1GB should be saddled with all the NUMA gunk.
+
+DISCONTIG has fallen out of favor in the last years. SPARSEMEM has largely
+replaced it. ARM uses that and does not suffer from these issue.
+
+No one considered the issues of having a !NUMA configuration with
+nodes (which DISCONTIG seems to create) when developing core code in the
+last years. The implicit assumption has always been that page_to_nid(x)
+etc is always zero on a !NUMA configuration.
