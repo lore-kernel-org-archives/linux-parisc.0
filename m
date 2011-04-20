@@ -1,41 +1,42 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to
- expand_upwards
-Date: Wed, 20 Apr 2011 13:09:55 -0500
-Message-ID: <1303322995.2587.42.camel@mulgrave.site>
-References: <20110420161615.462D.A69D9226@jp.fujitsu.com>
-	 <BANLkTimfpY3gq8oY6bPDajBW7JN6Hp+A0A@mail.gmail.com>
-	 <20110420174027.4631.A69D9226@jp.fujitsu.com>
-	 <1303317178.2587.30.camel@mulgrave.site>
-	 <alpine.DEB.2.00.1104201149520.12154@router.home>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: Notes about the latest cache patches
+Date: Wed, 20 Apr 2011 14:15:46 -0400
+Message-ID: <20110420181546.GA12862@hiauly1.hia.nrc.ca>
+References: <1302889310.7706.8.camel@mulgrave.site> <20110420141703.GA11761@hiauly1.hia.nrc.ca>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
-	Pekka Enberg <penberg@kernel.org>,
-	Michal Hocko <mhocko@suse.cz>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org, David Rientjes <rientjes@google.com>,
-	Ingo Molnar <mingo@elte.hu>, x86 maintainers <x86@kernel.org>
-To: Christoph Lameter <cl@linux.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: Parisc List <linux-parisc@vger.kernel.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1104201149520.12154@router.home>
+In-Reply-To: <20110420141703.GA11761@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2011-04-20 at 11:50 -0500, Christoph Lameter wrote:
-> > I'm afraid it doesn't boot (it's another slub crash):
-> 
-> Is there any simulator available that we can use to run a parisc boot?
+On Wed, 20 Apr 2011, John David Anglin wrote:
 
-I don't think we have a simulator.  However, if you send a ssh key to
+> Assists Check                = 0x00ed7800
 
-T-Bone@parisc-linux.org
+> Check Summary                = 0x8400000000800000
 
-He can loan you remote access to one of the systems that ESIEE in France
-hosts for us.  (he's expecting you).
+Seems to be an assist check.  Reported something similar in 2009.
+The arch talks about an architecturally defined loop for the fice
+instruction (SFU?).  Maybe this is a hardware problem.
 
-James
+The error log contained the following:
 
+82    SFW  0  *7  0xE880035C00E00910 00000000401011C4 ERR_CHECK_HPMC
+                                                      20 Apr 2011 11:57:22
+83    SFW  1  *7  0xE880035C01E00930 0000000040126638 ERR_CHECK_HPMC
+						      20 Apr 2011 11:57:22
+84    SFW  0   2  0x57800F7300E00950 8400000000800000 ERR_CPU_CHECK_SUMMARY
+						      20 Apr 2011 11:57:22
+85    SFW  1   2  0x57800F7301E00970 8400000000800000 ERR_CPU_CHECK_SUMMARY
+						      20 Apr 2011 11:57:22
+86    SFW  1   2  0x5680100B01E00990 0000000000000194 MC_OS_HPMC_LEN_ERR
+						      20 Apr 2011 11:57:22
 
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
