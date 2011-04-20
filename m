@@ -1,86 +1,92 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: slub: fix panic with DISCONTIGMEM
-Date: Wed, 20 Apr 2011 09:48:43 +0200
-Message-ID: <BANLkTinyvO78OnKZGW3jB_N6uao0tppnAw@mail.gmail.com>
-References: <1303248576.11237.23.camel@mulgrave.site>
+From: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to expand_upwards
+Date: Wed, 20 Apr 2011 17:40:25 +0900 (JST)
+Message-ID: <20110420174027.4631.A69D9226@jp.fujitsu.com>
+References: <20110420161615.462D.A69D9226@jp.fujitsu.com> <BANLkTimfpY3gq8oY6bPDajBW7JN6Hp+A0A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-arch@vger.kernel.org, linux-mm@vger.kernel.org,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Christoph Lameter <cl@linux.com>,
-	Thorsten Glaser <tg@mirbsd.de>,
-	Michael Schmitz <schmitzmic@googlemail.com>,
-	"Linux/m68k" <linux-m68k@vger.kernel.org>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: kosaki.motohiro@jp.fujitsu.com, Christoph Lameter <cl@linux.com>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Michal Hocko <mhocko@suse.cz>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org, David Rientjes <rientjes@google.com>,
+	Ingo Molnar <mingo@elte.hu>, x86 maintainers <x86@kernel.org>
+To: Pekka Enberg <penberg@kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1303248576.11237.23.camel@mulgrave.site>
+In-Reply-To: <BANLkTimfpY3gq8oY6bPDajBW7JN6Hp+A0A@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Apr 19, 2011 at 23:29, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> Slub makes assumptions about page_to_nid() which are violated by
-> DISCONTIGMEM and !NUMA. =C2=A0This violation results in a panic becau=
-se
-> page_to_nid() can be non-zero for pages in the discontiguous ranges a=
-nd
-> this leads to a null return by get_node(). =C2=A0The assertion by the
-> maintainer is that DISCONTIGMEM should only be allowed when NUMA is a=
-lso
-> defined. =C2=A0However, at least six architectures: alpha, ia64, m32r=
-, m68k,
-> mips, parisc violate this. =C2=A0The panic is a regression against sl=
-ab, so
-> just mark slub broken in the problem configuration to prevent users
-> reporting these panics.
+> > btw, x86 don't have an issue. Probably it's a reason why this issue=
+ was neglected
+> > long time.
+> >
+> > arch/x86/Kconfig
+> > -------------------------------------
+> > config ARCH_DISCONTIGMEM_ENABLE
+> > =A0 =A0 =A0 =A0def_bool y
+> > =A0 =A0 =A0 =A0depends on NUMA && X86_32
+>=20
+> That part makes me think the best option is to make parisc do
+> CONFIG_NUMA as well regardless of the historical intent was.
+>=20
+>                         Pekka
 
-How does the problem manifest itself? We're having a problem on m68k, w=
-hich
-seems to go away when switching from SLUB to SLAB, or when reverting a =
-commit
-in [2] (probably this was never reported upstream).
+This?
 
-References:
-[1] http://www.mail-archive.com/linux-m68k@vger.kernel.org/msg02812.htm=
-l
-[2] http://www.spinics.net/lists/linux-m68k/msg03401.html
+compile test only.
 
-> Cc: stable@kernel.org
-> Signed-off-by: James Bottomley <James.Bottomley@suse.de>
->
-> ---
->
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 56240e7..a7ad8fb 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1226,6 +1226,7 @@ config SLAB
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0per cpu and per node queues.
->
-> =C2=A0config SLUB
-> + =C2=A0 =C2=A0 =C2=A0 depends on BROKEN || NUMA || !DISCONTIGMEM
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0bool "SLUB (Unqueued Allocator)"
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0help
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 SLUB is a slab allocator that mini=
-mizes cache line usage
+---
+ arch/parisc/Kconfig            |    7 +++++++
+ include/asm-generic/topology.h |    4 ----
+ include/linux/topology.h       |    2 +-
+ 3 files changed, 8 insertions(+), 5 deletions(-)
 
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 69ff049..0bf9ae8 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -229,6 +229,12 @@ config HOTPLUG_CPU
+ 	default y if SMP
+ 	select HOTPLUG
+=20
++config NUMA
++	bool "NUMA support"
++	help
++	  Say Y to compile the kernel to support NUMA (Non-Uniform Memory
++	  Access).
++
+ config ARCH_SELECT_MEMORY_MODEL
+ 	def_bool y
+ 	depends on 64BIT
+@@ -236,6 +242,7 @@ config ARCH_SELECT_MEMORY_MODEL
+ config ARCH_DISCONTIGMEM_ENABLE
+ 	def_bool y
+ 	depends on 64BIT
++	depends on NUMA
+=20
+ config ARCH_FLATMEM_ENABLE
+ 	def_bool y
+diff --git a/include/asm-generic/topology.h b/include/asm-generic/topol=
+ogy.h
+index fc824e2..932567b 100644
+--- a/include/asm-generic/topology.h
++++ b/include/asm-generic/topology.h
+@@ -27,8 +27,6 @@
+ #ifndef _ASM_GENERIC_TOPOLOGY_H
+ #define _ASM_GENERIC_TOPOLOGY_H
+=20
+-#ifndef	CONFIG_NUMA
+-
+ /* Other architectures wishing to use this simple topology API should =
+fill
+    in the below functions as appropriate in their own <asm/topology.h>=
+ file. */
+ #ifndef cpu_to_node
+@@ -60,8 +58,6 @@
+ 				 cpumask_of_node(pcibus_to_node(bus)))
+ #endif
+=20
+-#endif	/* CONFIG_NUMA */
