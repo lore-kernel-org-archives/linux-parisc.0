@@ -1,67 +1,49 @@
-From: David Rientjes <rientjes@google.com>
-Subject: [patch] parisc: set memory ranges in N_NORMAL_MEMORY when onlined
-Date: Wed, 20 Apr 2011 19:27:13 -0700 (PDT)
-Message-ID: <alpine.DEB.2.00.1104201926300.15661@chino.kir.corp.google.com>
-References: <20110420161615.462D.A69D9226@jp.fujitsu.com> <BANLkTimfpY3gq8oY6bPDajBW7JN6Hp+A0A@mail.gmail.com> <20110420174027.4631.A69D9226@jp.fujitsu.com> <1303317178.2587.30.camel@mulgrave.site>
- <alpine.DEB.2.00.1104201410350.31768@chino.kir.corp.google.com>
+From: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to expand_upwards
+Date: Thu, 21 Apr 2011 22:03:25 +0900 (JST)
+Message-ID: <20110421220351.9180.A69D9226@jp.fujitsu.com>
+References: <1303317178.2587.30.camel@mulgrave.site> <alpine.DEB.2.00.1104201410350.31768@chino.kir.corp.google.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	James Bottomley <jejb@parisc-linux.org>
+Content-Type: text/plain; charset="US-ASCII"
+Cc: kosaki.motohiro@jp.fujitsu.com,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	Christoph Lameter <cl@linux.com>,
+	Michal Hocko <mhocko@suse.cz>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
+	x86 maintainers <x86@kernel.org>
+To: David Rientjes <rientjes@google.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <alpine.DEB.2.00.1104201410350.31768@chino.kir.corp.google.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-When a DISCONTIGMEM memory range is brought online as a NUMA node, it 
-also needs to have its bet set in N_NORMAL_MEMORY.  This is necessary for 
-generic kernel code that utilizes N_NORMAL_MEMORY as a subset of N_ONLINE 
-for memory savings.
+> diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+> --- a/arch/parisc/mm/init.c
+> +++ b/arch/parisc/mm/init.c
+> @@ -266,8 +266,10 @@ static void __init setup_bootmem(void)
+>  	}
+>  	memset(pfnnid_map, 0xff, sizeof(pfnnid_map));
+>  
+> -	for (i = 0; i < npmem_ranges; i++)
+> +	for (i = 0; i < npmem_ranges; i++) {
+> +		node_set_state(i, N_NORMAL_MEMORY);
+>  		node_set_online(i);
+> +	}
+>  #endif
 
-These types of hacks can hopefully be removed once DISCONTIGMEM is either 
-removed or abstracted away from CONFIG_NUMA.
 
-Fixes a panic in the slub code which only initializes structures for 
-N_NORMAL_MEMORY to save memory:
+I'm surprised this one. If arch code doesn't initialized N_NORMAL_MEMORY,
+(or N_HIGH_MEMORY. N_HIGH_MEMORY == N_NORMAL_MEMORY if CONFIG_HIGHMEM=n)
+kswapd is created only at node0. wow.
 
-	Backtrace:
-	 [<000000004021c938>] add_partial+0x28/0x98
-	 [<000000004021faa0>] __slab_free+0x1d0/0x1d8
-	 [<000000004021fd04>] kmem_cache_free+0xc4/0x128
-	 [<000000004033bf9c>] ida_get_new_above+0x21c/0x2c0
-	 [<00000000402a8980>] sysfs_new_dirent+0xd0/0x238
-	 [<00000000402a974c>] create_dir+0x5c/0x168
-	 [<00000000402a9ab0>] sysfs_create_dir+0x98/0x128
-	 [<000000004033d6c4>] kobject_add_internal+0x114/0x258
-	 [<000000004033d9ac>] kobject_add_varg+0x7c/0xa0
-	 [<000000004033df20>] kobject_add+0x50/0x90
-	 [<000000004033dfb4>] kobject_create_and_add+0x54/0xc8
-	 [<00000000407862a0>] cgroup_init+0x138/0x1f0
-	 [<000000004077ce50>] start_kernel+0x5a0/0x840
-	 [<000000004011fa3c>] start_parisc+0xa4/0xb8
-	 [<00000000404bb034>] packet_ioctl+0x16c/0x208
-	 [<000000004049ac30>] ip_mroute_setsockopt+0x260/0xf20
+The initialization must be necessary even if !NUMA, I think. ;-)
+Probably we should have revisit all arch code when commit 9422ffba4a 
+(Memoryless nodes: No need for kswapd) was introduced, at least.
 
-Tested-by: James Bottomley <James.Bottomley@hansenpartnership.com>
-Signed-off-by: David Rientjes <rientjes@google.com>
----
- arch/parisc/mm/init.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+Thank you David. and I'm sad this multi level unforunate mismatch....
 
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -266,8 +266,10 @@ static void __init setup_bootmem(void)
- 	}
- 	memset(pfnnid_map, 0xff, sizeof(pfnnid_map));
- 
--	for (i = 0; i < npmem_ranges; i++)
-+	for (i = 0; i < npmem_ranges; i++) {
-+		node_set_state(i, N_NORMAL_MEMORY);
- 		node_set_online(i);
-+	}
- #endif
- 
- 	/*
+
