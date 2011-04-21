@@ -1,51 +1,36 @@
-From: Dave Hansen <dave@linux.vnet.ibm.com>
+From: David Rientjes <rientjes@google.com>
 Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to
  expand_upwards
-Date: Thu, 21 Apr 2011 11:45:37 -0700
-Message-ID: <1303411537.9048.3583.camel@nimitz>
-References: <1303337718.2587.51.camel@mulgrave.site>
-	 <alpine.DEB.2.00.1104201530430.13948@chino.kir.corp.google.com>
-	 <20110421221712.9184.A69D9226@jp.fujitsu.com>
-	 <1303403847.4025.11.camel@mulgrave.site>
-	 <alpine.DEB.2.00.1104211328000.5741@router.home>
+Date: Thu, 21 Apr 2011 12:33:46 -0700 (PDT)
+Message-ID: <alpine.DEB.2.00.1104211230030.5829@chino.kir.corp.google.com>
+References: <1303337718.2587.51.camel@mulgrave.site> <alpine.DEB.2.00.1104201530430.13948@chino.kir.corp.google.com> <20110421221712.9184.A69D9226@jp.fujitsu.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
-	David Rientjes <rientjes@google.com>,
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
 	Pekka Enberg <penberg@kernel.org>,
+	Christoph Lameter <cl@linux.com>,
 	Michal Hocko <mhocko@suse.cz>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-parisc@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
-	x86 maintainers <x86@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Mel Gorman <mel@csn.ul.ie>
-To: Christoph Lameter <cl@linux.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1104211328000.5741@router.home>
-List-ID: <linux-parisc.vger.kernel.org>
+	x86 maintainers <x86@kernel.org>
+To: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20110421221712.9184.A69D9226@jp.fujitsu.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2011-04-21 at 13:33 -0500, Christoph Lameter wrote:
-> http://www.linux-mips.org/archives/linux-mips/2008-08/msg00154.html
+On Thu, 21 Apr 2011, KOSAKI Motohiro wrote:
+
+> ia64 and mips have CONFIG_ARCH_POPULATES_NODE_MAP and it initialize
+> N_NORMAL_MEMORY automatically if my understand is correct.
+> (plz see free_area_init_nodes)
 > 
-> http://mytechkorner.blogspot.com/2010/12/sparsemem.html
-> 
-> Dave Hansen, Mel: Can you provide us with some help? (Its Easter and so
-> the europeans may be off for awhile) 
 
-Yup, for sure.  It's also interesting how much code ppc64 removed when
-they did this:
+ia64 doesn't enable CONFIG_HIGHMEM, so it never gets set via this generic 
+code; mips also doesn't enable it for all configs even for 32-bit.
 
-http://lists.ozlabs.org/pipermail/linuxppc64-dev/2005-November/006646.html
-
-Please cc me on patches.  Or, if nobody else was planning on doing it, I
-can take a stab at doing SPARSEMEM on one of the arches.  I won't be
-able to _run_ it outside of qemu, but it might be quicker than someone
-starting from scratch.
-
-Was it really just m68k and parisc that need immediate attention?
-
--- Dave
-
+So we'll either want to take check_for_regular_memory() out from under 
+CONFIG_HIGHMEM and do it for all configs or teach slub to use 
+N_HIGH_MEMORY rather than N_NORMAL_MEMORY.
