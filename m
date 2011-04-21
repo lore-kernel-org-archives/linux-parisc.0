@@ -1,90 +1,42 @@
 From: David Rientjes <rientjes@google.com>
-Subject: [patch] parisc: enable CONFIG_NUMA for DISCONTIGMEM and fix build
- errors
-Date: Thu, 21 Apr 2011 14:31:29 -0700 (PDT)
-Message-ID: <alpine.DEB.2.00.1104211430280.20201@chino.kir.corp.google.com>
+Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to
+ expand_upwards
+Date: Thu, 21 Apr 2011 14:34:00 -0700 (PDT)
+Message-ID: <alpine.DEB.2.00.1104211431500.20201@chino.kir.corp.google.com>
 References: <1303317178.2587.30.camel@mulgrave.site> <alpine.DEB.2.00.1104201410350.31768@chino.kir.corp.google.com> <20110421220351.9180.A69D9226@jp.fujitsu.com> <alpine.DEB.2.00.1104211237250.5829@chino.kir.corp.google.com> <alpine.DEB.2.00.1104211500170.5741@router.home>
- <alpine.DEB.2.00.1104211411540.20201@chino.kir.corp.google.com>
+ <alpine.DEB.2.00.1104211411540.20201@chino.kir.corp.google.com> <1303421088.4025.52.camel@mulgrave.site>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
+Cc: Christoph Lameter <cl@linux.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-To: Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	James Bottomley <jejb@parisc-linux.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1104211411540.20201@chino.kir.corp.google.com>
-List-ID: <linux-kernel.vger.kernel.org>
+	KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	Michal Hocko <mhocko@suse.cz>, Hugh Dickins <hughd@google.com>,
+	linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
+	x86 maintainers <x86@kernel.org>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1303421088.4025.52.camel@mulgrave.site>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+On Thu, 21 Apr 2011, James Bottomley wrote:
 
-CONFIG_DISCONTIGMEM requires CONFIG_NUMA because it represents its memory 
-regions as individual nodes that lack remote proximity, hence it already 
-has a default CONFIG_NODES_SHIFT of 3.
+> >  - parisc: James has already queued "parisc: set memory ranges in 
+> >    N_NORMAL_MEMORY when onlined" for 2.6.39, so all he needs now is 
+> >    to merge a hybrid of the Kconfig changes requiring CONFIG_NUMA for 
+> >    CONFIG_DISCONTIGMEM from KOSAKI-san and myself which also fix the 
+> >    compile issues,
+> 
+> Not quite: if we go this route, we need to sort out our CPU scheduling
+> problem as well ... as I said, I don't think we've got all the necessary
+> numa machinery in place yet.
+> 
 
-This configuration causes build errors, however, so fix them as well.
+Ok, it seems like there're two options for this release cycle:
 
-This was first realized when CONFIG_DISCONTIGMEM was used with 
-CONFIG_SLUB which depends heavily on CONFIG_NUMA being enabled or 
-disabled to support these memory regions.
+ (1) merge the patch that enables CONFIG_NUMA for DISCONTIGMEM but only 
+     do so if CONFIG_SLUB is enabled to avoid the build error, or
 
-A long-term fix is to separate the memory region abstraction required for 
-DISCONTIGMEM away from NUMA and then build NUMA on top of it with 
-proximity domains.
-
-[rientjes@google.com: implicitly enable NUMA for DISCONTIGMEM, changelog]
-Signed-off-by: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
-Signed-off-by: David Rientjes <rientjes@google.com>
----
- arch/parisc/Kconfig            |    3 +++
- include/asm-generic/topology.h |    4 ----
- include/linux/topology.h       |    2 +-
- 3 files changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -244,6 +244,9 @@ config ARCH_DISCONTIGMEM_DEFAULT
- 	def_bool y
- 	depends on ARCH_DISCONTIGMEM_ENABLE
- 
-+config NUMA
-+	def_bool ARCH_DISCONTIGMEM_ENABLE
-+
- config NODES_SHIFT
- 	int
- 	default "3"
-diff --git a/include/asm-generic/topology.h b/include/asm-generic/topology.h
---- a/include/asm-generic/topology.h
-+++ b/include/asm-generic/topology.h
-@@ -27,8 +27,6 @@
- #ifndef _ASM_GENERIC_TOPOLOGY_H
- #define _ASM_GENERIC_TOPOLOGY_H
- 
--#ifndef	CONFIG_NUMA
--
- /* Other architectures wishing to use this simple topology API should fill
-    in the below functions as appropriate in their own <asm/topology.h> file. */
- #ifndef cpu_to_node
-@@ -60,8 +58,6 @@
- 				 cpumask_of_node(pcibus_to_node(bus)))
- #endif
- 
--#endif	/* CONFIG_NUMA */
--
- #if !defined(CONFIG_NUMA) || !defined(CONFIG_HAVE_MEMORYLESS_NODES)
- 
- #ifndef set_numa_mem
-diff --git a/include/linux/topology.h b/include/linux/topology.h
---- a/include/linux/topology.h
-+++ b/include/linux/topology.h
-@@ -209,7 +209,7 @@ int arch_update_cpu_topology(void);
- 
- #ifdef CONFIG_NUMA
- #ifndef SD_NODE_INIT
--#error Please define an appropriate SD_NODE_INIT in include/asm/topology.h!!!
-+#define SD_NODE_INIT SD_ALLNODES_INIT
- #endif
- 
- #endif /* CONFIG_NUMA */
+ (2) disallow CONFIG_SLUB for parisc with DISCONTIGMEM.
