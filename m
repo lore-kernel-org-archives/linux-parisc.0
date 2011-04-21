@@ -1,53 +1,36 @@
-From: Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to
- expand_upwards
-Date: Thu, 21 Apr 2011 15:32:48 +0200
-Message-ID: <20110421133248.GD31724@htj.dyndns.org>
-References: <20110420102314.4604.A69D9226@jp.fujitsu.com>
- <1303267733.11237.42.camel@mulgrave.site>
- <20110420115804.461E.A69D9226@jp.fujitsu.com>
- <alpine.DEB.2.00.1104200847240.8634@router.home>
+From: Jeff Garzik <jeff@garzik.org>
+Subject: Re: [PATCH 0/2] fix libata-sff and pata_cmd64x to not crash on boot
+ on parisc
+Date: Thu, 21 Apr 2011 10:24:09 -0400
+Message-ID: <4DB03E09.7030100@garzik.org>
+References: <1303152147.7167.12.camel@mulgrave.site> <20110418205203.56bbdb14@lxorguk.ukuu.org.uk> <1303159802.7167.30.camel@mulgrave.site> <20110418222017.4e77fe05@lxorguk.ukuu.org.uk> <4DADF798.6010705@ru.mvista.com> <20110419221900.67528a07@lxorguk.ukuu.org.uk> <4DADFD2E.9070809@ru.mvista.com> <20110419222838.6a6f36aa@lxorguk.ukuu.org.uk> <1303254709.11237.34.camel@mulgrave.site> <4DAEAF9A.1020704@ru.mvista.com> <20110420145616.GB31296@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: Sergei Shtylyov <sshtylyov@mvista.com>,
 	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Pekka Enberg <penberg@kernel.org>,
-	Michal Hocko <mhocko@suse.cz>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org, David Rientjes <rientjes@google.com>
-To: Christoph Lameter <cl@linux.com>
+	Alan Cox <alan@lxorguk.ukuu.org.uk>,
+	linux-ide <linux-ide@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: Matthew Wilcox <matthew@wil.cx>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1104200847240.8634@router.home>
+In-Reply-To: <20110420145616.GB31296@parisc-linux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hey,
+On 04/20/2011 10:56 AM, Matthew Wilcox wrote:
+> On Wed, Apr 20, 2011 at 02:04:10PM +0400, Sergei Shtylyov wrote:
+>>> +#define PCI_VENDOR_ID_MOBILITY_ELECTRONICS	0x14f2
+>>> +
+>>
+>>     The current trend seems to be to only define vendor/device IDs where
+>> they are used and not in pci_ids.h...
+>
+> Device IDs, yes.  Vendor IDs should always go to the pci_ids.h file, since
+> they're likely to be used in multiple places.
 
-On Wed, Apr 20, 2011 at 08:50:15AM -0500, Christoph Lameter wrote:
-> Tejon was working on getting rid of DISCONTIG. SPARSEMEM is the favored
-> alternative today. So we could potentially change the arches to use SPARSE
-> configs in the !NUMA case.
+Correct; that's the current libata policy.
 
-Well, the thing is that sparsemem w/ vmemmap is definitely better than
-discontigmem on x86-64; however, on x86-32, vmemmap can't be used due
-to address space shortage and there are some minor disadvantages to
-sparsemem compared to discontigmem.
+	Jeff
 
-IIRC, the biggest was losing a bit of granuality in memsections and
-possibly wasting slightly more memory on the page array.  Both didn't
-seem critical to me but given that the actual amount of code needed
-for discontigmem in arch code was fairly small (although the amount of
-added complexity for auditing/testing can be much higher) I didn't
-feel sure about dropping discontigmem and thus the patchset to drop
-discontigmem was posted as RFC, to which nobody commented.
 
-  http://thread.gmane.org/gmane.linux.kernel/1121321
 
-What do you guys think?
-
-Thanks.
-
--- 
-tejun
