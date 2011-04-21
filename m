@@ -1,102 +1,45 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
 Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to
  expand_upwards
-Date: Thu, 21 Apr 2011 11:06:36 -0500
-Message-ID: <1303401997.4025.8.camel@mulgrave.site>
-References: <20110420102314.4604.A69D9226@jp.fujitsu.com>
-	 <BANLkTi=mxWwLPEnB+rGg29b06xNUD0XvsA@mail.gmail.com>
-	 <20110420161615.462D.A69D9226@jp.fujitsu.com>
-	 <BANLkTimfpY3gq8oY6bPDajBW7JN6Hp+A0A@mail.gmail.com>
-	 <20110420112020.GA31296@parisc-linux.org>
-	 <BANLkTim+m-v-4k17HUSOYSbmNFDtJTgD6g@mail.gmail.com>
-	 <1303308938.2587.8.camel@mulgrave.site>
-	 <alpine.DEB.2.00.1104200943580.9266@router.home>
-	 <1303311779.2587.19.camel@mulgrave.site>
-	 <alpine.DEB.2.00.1104201018360.9266@router.home>
-	 <alpine.DEB.2.00.1104201437180.31768@chino.kir.corp.google.com>
+Date: Thu, 21 Apr 2011 11:37:27 -0500
+Message-ID: <1303403847.4025.11.camel@mulgrave.site>
+References: <1303337718.2587.51.camel@mulgrave.site>
+	 <alpine.DEB.2.00.1104201530430.13948@chino.kir.corp.google.com>
+	 <20110421221712.9184.A69D9226@jp.fujitsu.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Cc: Christoph Lameter <cl@linux.com>,
+Cc: David Rientjes <rientjes@google.com>,
 	Pekka Enberg <penberg@kernel.org>,
-	Matthew Wilcox <matthew@wil.cx>,
-	KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
+	Christoph Lameter <cl@linux.com>,
 	Michal Hocko <mhocko@suse.cz>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-parisc@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
-	x86 maintainers <x86@kernel.org>, linux-arch@vger.kernel.org,
-	Mel Gorman <mel@csn.ul.ie>
-To: David Rientjes <rientjes@google.com>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1104201437180.31768@chino.kir.corp.google.com>
-List-ID: <linux-arch.vger.kernel.org>
+	x86 maintainers <x86@kernel.org>
+To: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20110421221712.9184.A69D9226@jp.fujitsu.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2011-04-20 at 14:42 -0700, David Rientjes wrote:
-> On Wed, 20 Apr 2011, Christoph Lameter wrote:
+On Thu, 2011-04-21 at 22:16 +0900, KOSAKI Motohiro wrote:
+> > This should fix the remaining architectures so they can use CONFIG_SLUB, 
+> > but I hope it can be tested by the individual arch maintainers like you 
+> > did for parisc.
 > 
-> > There is barely any testing going on at all of this since we have had this
-> > issue for more than 5 years and have not noticed it. The absence of bug
-> > reports therefore proves nothing. Code inspection of the VM shows
-> > that this is an issue that arises in multiple subsystems and that we have
-> > VM_BUG_ONs in the page allocator that should trigger for these situations.
-> > 
-> > Usage of DISCONTIGMEM and !NUMA is not safe and should be flagged as such.
-> > 
+> ia64 and mips have CONFIG_ARCH_POPULATES_NODE_MAP and it initialize
+> N_NORMAL_MEMORY automatically if my understand is correct.
+> (plz see free_area_init_nodes)
 > 
-> We don't actually have any bug reports in front of us that show anything 
-> else in the VM other than slub has issues with this configuration, so 
-> marking them as broken is probably premature.  The parisc config that 
-> triggered this debugging enables CONFIG_SLAB by default, so it probably 
-> has gone unnoticed just because nobody other than James has actually tried 
-> it on hppa64.
-> 
-> Let's see if KOSAKI-san's fixes to Kconfig (even though I'd prefer the 
-> simpler and implicit "config NUMA def_bool ARCH_DISCONTIGMEM_ENABLE" over 
-> his config NUMA) and my fix to parisc to set the bit in N_NORMAL_MEMORY 
-> so that CONFIG_SLUB initializes kmem_cache_node correctly works and then 
-> address issues in the core VM as they arise.  Presumably someone has been 
-> running DISCONTIGMEM on hppa64 in the past five years without issues with 
-> defconfig, so the issue here may just be slub.
+> I guess alpha and m32r have no active developrs. only m68k seems to be need
+> fix and we have a chance to get a review... 
 
-Actually, we can fix slub.  As far as all my memory hammer tests go, the
-one liner below is the actual fix (it just forces slub get_node() to
-return the zero node always on !NUMA).  That, as far as a code
-inspection goes, seems to make SLUB as good as SLAB ... as long as
-no-one uses hugepages or VM DEBUG, which, I think we've demonstrated, is
-the case for all the current DISCONTIGMEM users.
-
-I think either the above or just marking slub broken in DISCONTIGMEM & !
-NUMA is sufficient for stable.  The fix is getting urgent, because
-debian (which is what most of our users are running) has made SLUB the
-default allocator, which is why we're now starting to run into these
-panic reports.
-
-The set memory range fix looks good for a backport too ... at least the
-page cache is now no-longer reluctant to use my upper 1GB ...
-
-I worry a bit more about backporting the selection of NUMA as a -stable
-fix because it's a larger change (and requires changes to all the
-architectures, since NUMA is an arch local Kconfig variable)
+Actually, it's not quite a fix yet, I'm afraid.  I've just been
+investigating why my main 4 way box got slower with kernel builds:
+Apparently userspace processes are now all stuck on CPU0, so we're
+obviously tripping over some NUMA scheduling stuff that's missing.
 
 James
 
-----
 
-diff --git a/mm/slub.c b/mm/slub.c
-index 94d2a33..243bd9c 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -235,7 +235,11 @@ int slab_is_available(void)
- 
- static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int node)
- {
-+#ifdef CONFIG_NUMA
- 	return s->node[node];
-+#else
-+	return s->node[0];
-+#endif
- }
- 
- /* Verify that a pointer has an address that is valid within a slab page */
