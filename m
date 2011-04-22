@@ -1,20 +1,22 @@
-From: Pekka Enberg <penberg@kernel.org>
-Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to expand_upwards
-Date: Fri, 22 Apr 2011 11:02:10 +0300
-Message-ID: <BANLkTi=JGeWiFm-9H-2vHDsU1v7ykDt1UA@mail.gmail.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to
+ expand_upwards
+Date: Fri, 22 Apr 2011 08:49:54 -0500
+Message-ID: <1303480195.2590.2.camel@mulgrave.site>
 References: <1303317178.2587.30.camel@mulgrave.site>
-	<alpine.DEB.2.00.1104201410350.31768@chino.kir.corp.google.com>
-	<20110421220351.9180.A69D9226@jp.fujitsu.com>
-	<alpine.DEB.2.00.1104211237250.5829@chino.kir.corp.google.com>
-	<alpine.DEB.2.00.1104211500170.5741@router.home>
-	<alpine.DEB.2.00.1104211411540.20201@chino.kir.corp.google.com>
-	<1303421088.4025.52.camel@mulgrave.site>
-	<alpine.DEB.2.00.1104211431500.20201@chino.kir.corp.google.com>
-	<1303422566.4025.56.camel@mulgrave.site>
-	<alpine.DEB.2.00.1104211505320.20201@chino.kir.corp.google.com>
+	 <alpine.DEB.2.00.1104201410350.31768@chino.kir.corp.google.com>
+	 <20110421220351.9180.A69D9226@jp.fujitsu.com>
+	 <alpine.DEB.2.00.1104211237250.5829@chino.kir.corp.google.com>
+	 <alpine.DEB.2.00.1104211500170.5741@router.home>
+	 <alpine.DEB.2.00.1104211411540.20201@chino.kir.corp.google.com>
+	 <1303421088.4025.52.camel@mulgrave.site>
+	 <alpine.DEB.2.00.1104211431500.20201@chino.kir.corp.google.com>
+	 <1303422566.4025.56.camel@mulgrave.site>
+	 <alpine.DEB.2.00.1104211505320.20201@chino.kir.corp.google.com>
+	 <BANLkTi=JGeWiFm-9H-2vHDsU1v7ykDt1UA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+Content-Type: text/plain; charset="UTF-8"
+Cc: David Rientjes <rientjes@google.com>,
 	Christoph Lameter <cl@linux.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
@@ -22,47 +24,50 @@ Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
 	linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
 	linux-parisc@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
 	x86 maintainers <x86@kernel.org>
-To: David Rientjes <rientjes@google.com>
+To: Pekka Enberg <penberg@kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1104211505320.20201@chino.kir.corp.google.com>
+In-Reply-To: <BANLkTi=JGeWiFm-9H-2vHDsU1v7ykDt1UA@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Apr 22, 2011 at 1:12 AM, David Rientjes <rientjes@google.com> w=
-rote:
->> > diff --git a/init/Kconfig b/init/Kconfig
->> > index 56240e7..a7ad8fb 100644
->> > --- a/init/Kconfig
->> > +++ b/init/Kconfig
->> > @@ -1226,6 +1226,7 @@ config SLAB
->> > =A0 =A0 =A0 =A0 =A0 per cpu and per node queues.
->> >
->> > =A0config SLUB
->> > + =A0 =A0 =A0 depends on BROKEN || NUMA || !DISCONTIGMEM
->> > =A0 =A0 =A0 =A0 bool "SLUB (Unqueued Allocator)"
->> > =A0 =A0 =A0 =A0 help
->> > =A0 =A0 =A0 =A0 =A0 =A0SLUB is a slab allocator that minimizes cac=
-he line usage
->>
->>
->> I already sent it to linux-arch and there's been no dissent; there h=
-ave
->> been a few "will that fix my slub bug?" type of responses.
->
-> I was concerned about tile because it actually got all this right by =
-using
-> N_NORMAL_MEMORY appropriately and it uses slub by default, but it alw=
-ays
-> enables NUMA at the moment so this won't impact it.
->
-> Acked-by: David Rientjes <rientjes@google.com>
+On Fri, 2011-04-22 at 11:02 +0300, Pekka Enberg wrote:
+> On Fri, Apr 22, 2011 at 1:12 AM, David Rientjes <rientjes@google.com> wrote:
+> >> > diff --git a/init/Kconfig b/init/Kconfig
+> >> > index 56240e7..a7ad8fb 100644
+> >> > --- a/init/Kconfig
+> >> > +++ b/init/Kconfig
+> >> > @@ -1226,6 +1226,7 @@ config SLAB
+> >> >           per cpu and per node queues.
+> >> >
+> >> >  config SLUB
+> >> > +       depends on BROKEN || NUMA || !DISCONTIGMEM
+> >> >         bool "SLUB (Unqueued Allocator)"
+> >> >         help
+> >> >            SLUB is a slab allocator that minimizes cache line usage
+> >>
+> >>
+> >> I already sent it to linux-arch and there's been no dissent; there have
+> >> been a few "will that fix my slub bug?" type of responses.
+> >
+> > I was concerned about tile because it actually got all this right by using
+> > N_NORMAL_MEMORY appropriately and it uses slub by default, but it always
+> > enables NUMA at the moment so this won't impact it.
+> >
+> > Acked-by: David Rientjes <rientjes@google.com>
+> 
+> I'm OK with this Kconfig patch. Can someone send a proper patch with
+> signoffs and such? Do we want to tag this for -stable too?
 
-I'm OK with this Kconfig patch. Can someone send a proper patch with
-signoffs and such? Do we want to tag this for -stable too?
+I already did here:
 
-                         Pekka
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+http://marc.info/?l=linux-arch&m=130324857801976
+
+I got the wrong linux-mm email address, though (I thought you were on
+vger).
+
+I've got a parisc specific patch already for this (also for stable), so
+I can just queue this alongside if everyone's OK with that?
+
+James
+
+
