@@ -1,46 +1,68 @@
-From: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+From: Pekka Enberg <penberg@kernel.org>
 Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to expand_upwards
-Date: Fri, 22 Apr 2011 09:34:25 +0900 (JST)
-Message-ID: <20110422093406.FA56.A69D9226@jp.fujitsu.com>
-References: <20110421221712.9184.A69D9226@jp.fujitsu.com> <alpine.DEB.2.00.1104211230030.5829@chino.kir.corp.google.com>
+Date: Fri, 22 Apr 2011 11:02:10 +0300
+Message-ID: <BANLkTi=JGeWiFm-9H-2vHDsU1v7ykDt1UA@mail.gmail.com>
+References: <1303317178.2587.30.camel@mulgrave.site>
+	<alpine.DEB.2.00.1104201410350.31768@chino.kir.corp.google.com>
+	<20110421220351.9180.A69D9226@jp.fujitsu.com>
+	<alpine.DEB.2.00.1104211237250.5829@chino.kir.corp.google.com>
+	<alpine.DEB.2.00.1104211500170.5741@router.home>
+	<alpine.DEB.2.00.1104211411540.20201@chino.kir.corp.google.com>
+	<1303421088.4025.52.camel@mulgrave.site>
+	<alpine.DEB.2.00.1104211431500.20201@chino.kir.corp.google.com>
+	<1303422566.4025.56.camel@mulgrave.site>
+	<alpine.DEB.2.00.1104211505320.20201@chino.kir.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Cc: kosaki.motohiro@jp.fujitsu.com,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Pekka Enberg <penberg@kernel.org>,
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
 	Christoph Lameter <cl@linux.com>,
-	Michal Hocko <mhocko@suse.cz>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-	LKML <linux-kernel@vger.kernel.org>,
+	KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
+	Michal Hocko <mhocko@suse.cz>, Hugh Dickins <hughd@google.com>,
+	linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
 	linux-parisc@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
 	x86 maintainers <x86@kernel.org>
 To: David Rientjes <rientjes@google.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1104211230030.5829@chino.kir.corp.google.com>
+In-Reply-To: <alpine.DEB.2.00.1104211505320.20201@chino.kir.corp.google.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Thu, 21 Apr 2011, KOSAKI Motohiro wrote:
-> 
-> > ia64 and mips have CONFIG_ARCH_POPULATES_NODE_MAP and it initialize
-> > N_NORMAL_MEMORY automatically if my understand is correct.
-> > (plz see free_area_init_nodes)
-> > 
-> 
-> ia64 doesn't enable CONFIG_HIGHMEM, so it never gets set via this generic 
-> code; mips also doesn't enable it for all configs even for 32-bit.
-> 
-> So we'll either want to take check_for_regular_memory() out from under 
-> CONFIG_HIGHMEM and do it for all configs or teach slub to use 
-> N_HIGH_MEMORY rather than N_NORMAL_MEMORY.
+On Fri, Apr 22, 2011 at 1:12 AM, David Rientjes <rientjes@google.com> w=
+rote:
+>> > diff --git a/init/Kconfig b/init/Kconfig
+>> > index 56240e7..a7ad8fb 100644
+>> > --- a/init/Kconfig
+>> > +++ b/init/Kconfig
+>> > @@ -1226,6 +1226,7 @@ config SLAB
+>> > =A0 =A0 =A0 =A0 =A0 per cpu and per node queues.
+>> >
+>> > =A0config SLUB
+>> > + =A0 =A0 =A0 depends on BROKEN || NUMA || !DISCONTIGMEM
+>> > =A0 =A0 =A0 =A0 bool "SLUB (Unqueued Allocator)"
+>> > =A0 =A0 =A0 =A0 help
+>> > =A0 =A0 =A0 =A0 =A0 =A0SLUB is a slab allocator that minimizes cac=
+he line usage
+>>
+>>
+>> I already sent it to linux-arch and there's been no dissent; there h=
+ave
+>> been a few "will that fix my slub bug?" type of responses.
+>
+> I was concerned about tile because it actually got all this right by =
+using
+> N_NORMAL_MEMORY appropriately and it uses slub by default, but it alw=
+ays
+> enables NUMA at the moment so this won't impact it.
+>
+> Acked-by: David Rientjes <rientjes@google.com>
 
-Hey, I already told this thing.
+I'm OK with this Kconfig patch. Can someone send a proper patch with
+signoffs and such? Do we want to tag this for -stable too?
 
-If CONFIG_HIGHMEM=n, N_HIGH_MEMORY and N_NORMAL_MEMORY are share the
-same value. then, 
-	node_set_state(nid, N_HIGH_MEMORY) in free_area_init_nodes()
-
-mean set both N_HIGH_MEMORY and N_NORMAL_MEMORY.
-
-
+                         Pekka
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
