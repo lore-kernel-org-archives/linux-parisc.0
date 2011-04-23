@@ -1,47 +1,99 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH v3] mm: make expand_downwards symmetrical to
- expand_upwards
-Date: Fri, 22 Apr 2011 16:33:05 -0500
-Message-ID: <1303507985.2590.47.camel@mulgrave.site>
-References: <1303337718.2587.51.camel@mulgrave.site>
-	 <alpine.DEB.2.00.1104201530430.13948@chino.kir.corp.google.com>
-	 <20110421221712.9184.A69D9226@jp.fujitsu.com>
-	 <1303403847.4025.11.camel@mulgrave.site>
-	 <alpine.DEB.2.00.1104211328000.5741@router.home>
-	 <1303411537.9048.3583.camel@nimitz>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: slub: fix panic with DISCONTIGMEM
+Date: Sat, 23 Apr 2011 13:27:56 +1200
+Message-ID: <BANLkTimw1LNmz7DA1zn=Re-gLJ8_i0znZw@mail.gmail.com>
+References: <1303248576.11237.23.camel@mulgrave.site>
+	<BANLkTinyvO78OnKZGW3jB_N6uao0tppnAw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Christoph Lameter <cl@linux.com>,
-	KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
-	David Rientjes <rientjes@google.com>,
-	Pekka Enberg <penberg@kernel.org>,
-	Michal Hocko <mhocko@suse.cz>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
-	x86 maintainers <x86@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Mel Gorman <mel@csn.ul.ie>
-To: Dave Hansen <dave@linux.vnet.ibm.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1303411537.9048.3583.camel@nimitz>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+	linux-arch@vger.kernel.org, linux-mm@vger.kernel.org,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Christoph Lameter <cl@linux.com>,
+	Thorsten Glaser <tg@mirbsd.de>,
+	"Linux/m68k" <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <BANLkTinyvO78OnKZGW3jB_N6uao0tppnAw@mail.gmail.com>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2011-04-21 at 11:45 -0700, Dave Hansen wrote:
-> On Thu, 2011-04-21 at 13:33 -0500, Christoph Lameter wrote:
-> > http://www.linux-mips.org/archives/linux-mips/2008-08/msg00154.html
-> > 
+The problem was indeed never reported upstream but it does in fact
+manifest as a null pointer dereference, and happens in a discontiguous
+memory context on m68k. I'm uncertain as to whether I had tracked the
+exact source of the null pointer, I need to check my notes on this.
 
-By the way, this reference is actively wrong for parisc (having just
-debugged the problem).  The basic issue is that until we start paging,
-we have the kernel and some memory beyond it barely covered with the pg0
-page table set up in head.S  On our systems, that extends out to 16MB.
-SPARSEMEM is much more bootmem resource greedy than DISCONTIGMEM, so if
-we actually call sparse_init() before we have the page tables set up, we
-fall off the end of our 16MB mapping and go boom.  For us, therefore, we
-can't call sparse_init() until we have our proper page tables in place.
+Reverting the commit in question makes SLUB behave as though NUMA was
+defined, so this all checks out.
 
-James
+Apologies for not escalating this beyond m68k, and thanks to Geert for
+spotting the connection.
+
+Cheers,
+
+  Michael
 
 
+On Wed, Apr 20, 2011 at 7:48 PM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Tue, Apr 19, 2011 at 23:29, James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
+>> Slub makes assumptions about page_to_nid() which are violated by
+>> DISCONTIGMEM and !NUMA. =A0This violation results in a panic because
+>> page_to_nid() can be non-zero for pages in the discontiguous ranges =
+and
+>> this leads to a null return by get_node(). =A0The assertion by the
+>> maintainer is that DISCONTIGMEM should only be allowed when NUMA is =
+also
+>> defined. =A0However, at least six architectures: alpha, ia64, m32r, =
+m68k,
+>> mips, parisc violate this. =A0The panic is a regression against slab=
+, so
+>> just mark slub broken in the problem configuration to prevent users
+>> reporting these panics.
+>
+> How does the problem manifest itself? We're having a problem on m68k,=
+ which
+> seems to go away when switching from SLUB to SLAB, or when reverting =
+a commit
+> in [2] (probably this was never reported upstream).
+>
+> References:
+> [1] http://www.mail-archive.com/linux-m68k@vger.kernel.org/msg02812.h=
+tml
+> [2] http://www.spinics.net/lists/linux-m68k/msg03401.html
+>
+>> Cc: stable@kernel.org
+>> Signed-off-by: James Bottomley <James.Bottomley@suse.de>
+>>
+>> ---
+>>
+>> diff --git a/init/Kconfig b/init/Kconfig
+>> index 56240e7..a7ad8fb 100644
+>> --- a/init/Kconfig
+>> +++ b/init/Kconfig
+>> @@ -1226,6 +1226,7 @@ config SLAB
+>> =A0 =A0 =A0 =A0 =A0per cpu and per node queues.
+>>
+>> =A0config SLUB
+>> + =A0 =A0 =A0 depends on BROKEN || NUMA || !DISCONTIGMEM
+>> =A0 =A0 =A0 =A0bool "SLUB (Unqueued Allocator)"
+>> =A0 =A0 =A0 =A0help
+>> =A0 =A0 =A0 =A0 =A0 SLUB is a slab allocator that minimizes cache li=
+ne usage
+>
+> Gr{oetje,eeting}s,
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linu=
+x-m68k.org
+>
+> In personal conversations with technical people, I call myself a hack=
+er. But
+> when I'm talking to journalists I just say "programmer" or something =
+like that.
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=A0 =A0=A0 -- =
+Linus Torvalds
+>
