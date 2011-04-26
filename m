@@ -1,55 +1,76 @@
-From: James Bottomley <James.Bottomley@suse.de>
-Subject: [PATCH 0/2] libata-sff: prevent irq descriptions for dummy ports
-Date: Sun, 24 Apr 2011 14:31:33 -0500
-Message-ID: <1303673493.5231.13.camel@mulgrave.site>
-References: <1303673315.5231.9.camel@mulgrave.site>
+From: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+Subject: Re: [PATCH] convert parisc to sparsemem (was Re: [PATCH v3] mm: make expand_downwards symmetrical to expand_upwards)
+Date: Tue, 26 Apr 2011 09:32:13 +0900 (JST)
+Message-ID: <20110426093328.F33D.A69D9226@jp.fujitsu.com>
+References: <1303507985.2590.47.camel@mulgrave.site> <1303583657.4116.11.camel@mulgrave.site>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>,
-	Sergei Shtylyov <sshtylyov@mvista.com>
-To: linux-ide <linux-ide@vger.kernel.org>
+Cc: kosaki.motohiro@jp.fujitsu.com,
+	Dave Hansen <dave@linux.vnet.ibm.com>,
+	Christoph Lameter <cl@linux.com>,
+	David Rientjes <rientjes@google.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	Michal Hocko <mhocko@suse.cz>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
+	x86 maintainers <x86@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Mel Gorman <mel@csn.ul.ie>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1303673315.5231.9.camel@mulgrave.site>
+In-Reply-To: <1303583657.4116.11.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a cosmetic change to prevent libata-sff adding irq
-descriptions to dummy ports, since the information, while largely
-unused, is erroneous.
+Hi James,
 
-Signed-off-by: James Bottomley <James.Bottomley@suse.de>
----
- drivers/ata/libata-sff.c |    9 +++++++--
- 1 files changed, 7 insertions(+), 2 deletions(-)
+ % make CROSS_COMPILE=hppa64-linux- ARCH=parisc
+  CHK     include/linux/version.h
+  CHK     include/generated/utsrelease.h
+  CC      arch/parisc/kernel/asm-offsets.s
+In file included from include/linux/topology.h:32:0,
+                 from include/linux/sched.h:78,
+                 from arch/parisc/kernel/asm-offsets.c:31:
+include/linux/mmzone.h:916:27: fatal error: asm/sparsemem.h: No such file or directory
 
-diff --git a/drivers/ata/libata-sff.c b/drivers/ata/libata-sff.c
-index f8380ce..b1b926c 100644
---- a/drivers/ata/libata-sff.c
-+++ b/drivers/ata/libata-sff.c
-@@ -2447,13 +2447,18 @@ int ata_pci_sff_activate_host(struct ata_host *host,
- 		return -ENOMEM;
- 
- 	if (!legacy_mode && pdev->irq) {
-+		int i;
-+
- 		rc = devm_request_irq(dev, pdev->irq, irq_handler,
- 				      IRQF_SHARED, drv_name, host);
- 		if (rc)
- 			goto out;
- 
--		ata_port_desc(host->ports[0], "irq %d", pdev->irq);
--		ata_port_desc(host->ports[1], "irq %d", pdev->irq);
-+		for (i = 0; i < 2; i++) {
-+			if (ata_port_is_dummy(host->ports[i]))
-+				continue;
-+			ata_port_desc(host->ports[i], "irq %d", pdev->irq);
-+		}
- 	} else if (legacy_mode) {
- 		if (!ata_port_is_dummy(host->ports[0])) {
- 			rc = devm_request_irq(dev, ATA_PRIMARY_IRQ(pdev),
--- 
-1.7.4.1
+Parhaps, you forgot to quilt add?
+
+
+> This is the preliminary conversion.  It's very nasty on parisc because
+> the memory allocation isn't symmetric anymore: under DISCONTIGMEM, we
+> push all memory into bootmem and then let free_all_bootmem() do the
+> magic for us; now we have to do separate initialisations for ranges
+> because SPARSEMEM can't do multi-range boot memory. It's also got the
+> horrible hack that I only use the first found range for bootmem.  I'm
+> not sure if this is correct (it won't be if the first found range can be
+> under about 50MB because we'll run out of bootmem during boot) ... we
+> might have to sort the ranges and use the larges, but that will involve
+> us in even more hackery around the bootmem reservations code.
+> 
+> The boot sequence got a few seconds slower because now all of the loops
+> over our pfn ranges actually have to skip through the holes (which takes
+> time for 64GB).
+> 
+> All in all, I've not been very impressed with SPARSEMEM over
+> DISCONTIGMEM.  It seems to have a lot of rough edges (necessitating
+> exception code) which DISCONTIGMEM just copes with.
+> 
+> And before you say the code is smaller, that's because I converted us to
+> generic show_mem().
+
+Cool! I hoped to remove arch specific show_mem() long time.
+
+
+And, nitpick comment.
+
+Could you please use #ifdef CONFIG_FLAGMEM instead #ifndef CONFIG_SPARSEMEM?
+MM gyes parse '#ifndef CONFIG_SPARSEMEM' as valid-both-flatmem-and-discontigmem.
+but this code isn't.
+
+If my quick grep is correct, all of your #ifndef SPARSEMEM can be converted
+#ifdef FALTMEM.
+
 
 
 
