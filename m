@@ -1,69 +1,73 @@
-From: Dave Hansen <dave@linux.vnet.ibm.com>
-Subject: Re: [PATCH] convert parisc to sparsemem (was Re: [PATCH v3] mm:
- make expand_downwards symmetrical to expand_upwards)
-Date: Wed, 27 Apr 2011 09:36:29 -0700
-Message-ID: <1303922189.9516.33.camel@nimitz>
-References: <1303337718.2587.51.camel@mulgrave.site>
-	 <alpine.DEB.2.00.1104201530430.13948@chino.kir.corp.google.com>
-	 <20110421221712.9184.A69D9226@jp.fujitsu.com>
-	 <1303403847.4025.11.camel@mulgrave.site>
-	 <alpine.DEB.2.00.1104211328000.5741@router.home>
-	 <1303411537.9048.3583.camel@nimitz>
-	 <1303507985.2590.47.camel@mulgrave.site>
-	 <1303583657.4116.11.camel@mulgrave.site>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [GIT PULL] parisc fixes for 2.6.39-rc5
+Date: Wed, 27 Apr 2011 15:18:38 -0500
+Message-ID: <1303935518.2583.27.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: Christoph Lameter <cl@linux.com>,
-	KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
-	David Rientjes <rientjes@google.com>,
-	Pekka Enberg <penberg@kernel.org>,
-	Michal Hocko <mhocko@suse.cz>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
-	x86 maintainers <x86@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Mel Gorman <mel@csn.ul.ie>, Andy Whitcroft <apw@shadowen.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1303583657.4116.11.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, 2011-04-23 at 13:34 -0500, James Bottomley wrote: 
-> This is the preliminary conversion.  It's very nasty on parisc because
-> the memory allocation isn't symmetric anymore: under DISCONTIGMEM, we
-> push all memory into bootmem and then let free_all_bootmem() do the
-> magic for us;
+These two fixes contain the agreed fix for our slub panic (agreed with
+the mm folks that we'll define SLUB broken in the !NUMA && DISCONTIGMEM
+case, which should fix m86k as well) and another buglet that turned up
+examining the parisc discontigmem code.
 
-Urg, that's unfortunate.  I bet we could fairly easily teach the bootmem
-allocator to allow a couple of bootmem_data's to hang off of an
-individual pgdat.  Put each pmem_ranges in one of those instead of a
-pgdat.  That would at least help with the bitmap size explosion and
-extra loops.
+The patches are here:
 
-> now we have to do separate initialisations for ranges
-> because SPARSEMEM can't do multi-range boot memory. It's also got the
-> horrible hack that I only use the first found range for bootmem.  I'm
-> not sure if this is correct (it won't be if the first found range can be
-> under about 50MB because we'll run out of bootmem during boot) ... we
-> might have to sort the ranges and use the larges, but that will involve
-> us in even more hackery around the bootmem reservations code.
-> 
-> The boot sequence got a few seconds slower because now all of the loops
-> over our pfn ranges actually have to skip through the holes (which takes
-> time for 64GB).
+master.kernel.org:/pub/scm/linux/kernel/git/jejb/parisc-2.6.git#fixes
 
-Which iterations were these, btw?  All of the ones I saw the patch touch
-seemed to be running over just a single pmem_range.
+The short changelog is:
 
-> All in all, I've not been very impressed with SPARSEMEM over
-> DISCONTIGMEM.  It seems to have a lot of rough edges (necessitating
-> exception code) which DISCONTIGMEM just copes with.
+David Rientjes (1):
+      [PARISC] set memory ranges in N_NORMAL_MEMORY when onlined
 
-We definitely need to look at extending it to cover bootmem-time a bit.
-Is that even worth it these days with the no-bootmem bits around?
+James Bottomley (1):
+      [PARISC] slub: fix panic with DISCONTIGMEM
 
--- Dave
+The diffstat is:
+
+ arch/parisc/mm/init.c |    4 +++-
+ init/Kconfig          |    1 +
+ 2 files changed, 4 insertions(+), 1 deletions(-)
+
+And the full diff are below.
+
+James
+
+---
+
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index b7ed8d7..b1d1262 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -266,8 +266,10 @@ static void __init setup_bootmem(void)
+ 	}
+ 	memset(pfnnid_map, 0xff, sizeof(pfnnid_map));
+ 
+-	for (i = 0; i < npmem_ranges; i++)
++	for (i = 0; i < npmem_ranges; i++) {
++		node_set_state(i, N_NORMAL_MEMORY);
+ 		node_set_online(i);
++	}
+ #endif
+ 
+ 	/*
+diff --git a/init/Kconfig b/init/Kconfig
+index 56240e7..a7ad8fb 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1226,6 +1226,7 @@ config SLAB
+ 	  per cpu and per node queues.
+ 
+ config SLUB
++	depends on BROKEN || NUMA || !DISCONTIGMEM
+ 	bool "SLUB (Unqueued Allocator)"
+ 	help
+ 	   SLUB is a slab allocator that minimizes cache line usage
 
 
