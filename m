@@ -1,13 +1,20 @@
-From: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
-Subject: Re: [PATCH] convert parisc to sparsemem (was Re: [PATCH v3] mm: make expand_downwards symmetrical to expand_upwards)
-Date: Tue, 26 Apr 2011 09:32:13 +0900 (JST)
-Message-ID: <20110426093328.F33D.A69D9226@jp.fujitsu.com>
-References: <1303507985.2590.47.camel@mulgrave.site> <1303583657.4116.11.camel@mulgrave.site>
+From: Dave Hansen <dave@linux.vnet.ibm.com>
+Subject: Re: [PATCH] convert parisc to sparsemem (was Re: [PATCH v3] mm:
+ make expand_downwards symmetrical to expand_upwards)
+Date: Wed, 27 Apr 2011 09:36:29 -0700
+Message-ID: <1303922189.9516.33.camel@nimitz>
+References: <1303337718.2587.51.camel@mulgrave.site>
+	 <alpine.DEB.2.00.1104201530430.13948@chino.kir.corp.google.com>
+	 <20110421221712.9184.A69D9226@jp.fujitsu.com>
+	 <1303403847.4025.11.camel@mulgrave.site>
+	 <alpine.DEB.2.00.1104211328000.5741@router.home>
+	 <1303411537.9048.3583.camel@nimitz>
+	 <1303507985.2590.47.camel@mulgrave.site>
+	 <1303583657.4116.11.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: kosaki.motohiro@jp.fujitsu.com,
-	Dave Hansen <dave@linux.vnet.ibm.com>,
-	Christoph Lameter <cl@linux.com>,
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: Christoph Lameter <cl@linux.com>,
+	KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>,
 	David Rientjes <rientjes@google.com>,
 	Pekka Enberg <penberg@kernel.org>,
 	Michal Hocko <mhocko@suse.cz>,
@@ -16,31 +23,26 @@ Cc: kosaki.motohiro@jp.fujitsu.com,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-parisc@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
 	x86 maintainers <x86@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Mel Gorman <mel@csn.ul.ie>
+	Mel Gorman <mel@csn.ul.ie>, Andy Whitcroft <apw@shadowen.org>
 To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <1303583657.4116.11.camel@mulgrave.site>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi James,
-
- % make CROSS_COMPILE=hppa64-linux- ARCH=parisc
-  CHK     include/linux/version.h
-  CHK     include/generated/utsrelease.h
-  CC      arch/parisc/kernel/asm-offsets.s
-In file included from include/linux/topology.h:32:0,
-                 from include/linux/sched.h:78,
-                 from arch/parisc/kernel/asm-offsets.c:31:
-include/linux/mmzone.h:916:27: fatal error: asm/sparsemem.h: No such file or directory
-
-Parhaps, you forgot to quilt add?
-
-
+On Sat, 2011-04-23 at 13:34 -0500, James Bottomley wrote: 
 > This is the preliminary conversion.  It's very nasty on parisc because
 > the memory allocation isn't symmetric anymore: under DISCONTIGMEM, we
 > push all memory into bootmem and then let free_all_bootmem() do the
-> magic for us; now we have to do separate initialisations for ranges
+> magic for us;
+
+Urg, that's unfortunate.  I bet we could fairly easily teach the bootmem
+allocator to allow a couple of bootmem_data's to hang off of an
+individual pgdat.  Put each pmem_ranges in one of those instead of a
+pgdat.  That would at least help with the bitmap size explosion and
+extra loops.
+
+> now we have to do separate initialisations for ranges
 > because SPARSEMEM can't do multi-range boot memory. It's also got the
 > horrible hack that I only use the first found range for bootmem.  I'm
 > not sure if this is correct (it won't be if the first found range can be
@@ -51,26 +53,17 @@ Parhaps, you forgot to quilt add?
 > The boot sequence got a few seconds slower because now all of the loops
 > over our pfn ranges actually have to skip through the holes (which takes
 > time for 64GB).
-> 
+
+Which iterations were these, btw?  All of the ones I saw the patch touch
+seemed to be running over just a single pmem_range.
+
 > All in all, I've not been very impressed with SPARSEMEM over
 > DISCONTIGMEM.  It seems to have a lot of rough edges (necessitating
 > exception code) which DISCONTIGMEM just copes with.
-> 
-> And before you say the code is smaller, that's because I converted us to
-> generic show_mem().
 
-Cool! I hoped to remove arch specific show_mem() long time.
+We definitely need to look at extending it to cover bootmem-time a bit.
+Is that even worth it these days with the no-bootmem bits around?
 
-
-And, nitpick comment.
-
-Could you please use #ifdef CONFIG_FLAGMEM instead #ifndef CONFIG_SPARSEMEM?
-MM gyes parse '#ifndef CONFIG_SPARSEMEM' as valid-both-flatmem-and-discontigmem.
-but this code isn't.
-
-If my quick grep is correct, all of your #ifndef SPARSEMEM can be converted
-#ifdef FALTMEM.
-
-
+-- Dave
 
 
