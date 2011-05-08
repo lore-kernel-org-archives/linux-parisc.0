@@ -1,77 +1,94 @@
-From: Sven Eckelmann <sven@narfation.org>
-Subject: Re: [PATCH] atomic: add *_dec_not_zero
-Date: Sun, 8 May 2011 11:33:48 +0200
-Message-ID: <201105081133.50824.sven@narfation.org>
-References: <1304458235-28473-1-git-send-email-sven@narfation.org> <20110508092403.GB27807@n2100.arm.linux.org.uk>
+From: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Subject: [PATCH] Don't mlock guardpage if the stack is growing up
+Date: Sun, 8 May 2011 20:55:56 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1677856.Ey88dTAy4V";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha512
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-mips@linux-mips.org, linux-m32r@ml.linux-m32r.org,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-cris-kernel@axis.com, linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org, x86@kernel.org,
-	Chris Metcalf <cmetcalf@tilera.com>,
-	David Howells <dhowells@redhat.com>,
-	linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com,
-	linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org,
-	uclinux-dist-devel@blackfin.uclinux.org,
-	linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-To: "Russell King - ARM Linux" <linux@arm.linux.org.uk>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20110508092403.GB27807@n2100.arm.linux.org.uk>
-List-ID: <linux-ia64.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Hugh Dickins <hughd@google.com>, Oleg Nesterov <oleg@redhat.com>
+To: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---nextPart1677856.Ey88dTAy4V
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Don't mlock guardpage if the stack is growing up
 
-Russell King - ARM Linux wrote:
-[...]
-> Do we need atomic_dec_not_zero() et.al. in every arch header - is there no
-> generic header which it could be added to?
+Linux kernel excludes guard page when performing mlock on a VMA with 
+down-growing stack. However, some architectures have up-growing stack and 
+locking the guard page should be excluded in this case too.
 
-Mike Frysinger already tried to answer it in=20
-<BANLkTimctgbto3dsnJ3d3r7NggS0KF9_Sw@mail.gmail.com>:
-> that's what asm-generic is for.  if the arch isnt using it, it's
-> either because the arch needs to convert to it, or they're using SMP
-> and asm-generic doesnt yet support that for atomic.h.
->
-> for example, the Blackfin port only needed updating for the SMP case.
-> in the non-SMP case, we're getting the def from asm-generic/atomic.h.
-> -mike
+This patch fixes lvm2 on PA-RISC (and possibly other architectures with 
+up-growing stack). lvm2 calculates the number of used pages when locking 
+and when unlocking and reports an internal error if the numbers mismatch. 
+On PA-RISC, the kernel would incorrectly attempt to mlock the stack guard 
+page, this causes allocation of one more page and internal error in lvm2.
 
-=46eel free to change that but I just followed the style used by all other=
-=20
-macros and will not redesign the complete atomic*.h idea.
+Signed-off-by: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
 
-thanks,
-	Sven
+---
+ include/linux/mm.h |    6 ++++++
+ mm/memory.c        |   21 ++++++++++++---------
+ 2 files changed, 18 insertions(+), 9 deletions(-)
 
---nextPart1677856.Ey88dTAy4V
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABCgAGBQJNxmN9AAoJEF2HCgfBJntGmosP/0BjDtvk4ZKsL9hhonb8gZ4t
-/2/hY6jeQ3Mg30Z1v6+PIZDun17qML5ODBcTB72oJs1LujHyEgNKKtfQ9stYgAm3
-79B2UAH5LYVzZzd2j5nMWemGYChUXl5v5N/hOFOp04ImC7DU27fwadcuO+q47vnS
-kKvrnccIFc0qUpnGwZ+1rqHIp9Rs3AQHjvyxaUDIuMs8ZWurYkS+e5SMini7qUpe
-QvsTQVZhyuNtemvZUzrWUcftMVPNXxTHwwV5aALBswX4SPreBJWX33b8j+NIHeFU
-hmwZ7/RzuDCyIzUFmeeXj/f0RCbWv5XkhQmNaCGFBdatgLRd2fnDOXzkuOeUPtBi
-SX2jkxoXSMGwEtl2mzOW8JhvcGrG1+oMw9j/BqdQyaQe0rRnuFg962eRUs1RvibI
-bej/DRfMexoXhlw7EIN9JGoniuMAW88Ws4RB79HuPURy6Ax1cr87ELH/Oj5ZvlOc
-+whWNM9JuDFamC9E4zaenxqf0jd3mlvCAMaljh66J7qECJF9xWd5eJyet7CE7/hp
-kE6iUT6Zf93Na9NImeTTeGK16LW1KqLkP8QyI+HUGO7A5wj/QvubGPBO0deHsp8G
-YkQBcQwZMSft69hsW2Ke1btpJv/ScGxeVuplmMNrlDa1hAqjm+aHo6+xxTS5Mp72
-p5S21fQTeEf4fOJsQubR
-=ICmm
------END PGP SIGNATURE-----
-
---nextPart1677856.Ey88dTAy4V--
+Index: linux-2.6.39-rc6-fast/include/linux/mm.h
+===================================================================
+--- linux-2.6.39-rc6-fast.orig/include/linux/mm.h	2011-05-07 05:59:51.000000000 +0200
++++ linux-2.6.39-rc6-fast/include/linux/mm.h	2011-05-07 05:59:52.000000000 +0200
+@@ -1016,6 +1016,12 @@ static inline int vma_stack_continue(str
+ 	return vma && (vma->vm_end == addr) && (vma->vm_flags & VM_GROWSDOWN);
+ }
+ 
++/* Is the vma a continuation of the stack vma below it? */
++static inline int vma_stack_growsup_continue(struct vm_area_struct *vma, unsigned long addr)
++{
++	return vma && (vma->vm_start == addr) && (vma->vm_flags & VM_GROWSUP);
++}
++
+ extern unsigned long move_page_tables(struct vm_area_struct *vma,
+ 		unsigned long old_addr, struct vm_area_struct *new_vma,
+ 		unsigned long new_addr, unsigned long len);
+Index: linux-2.6.39-rc6-fast/mm/memory.c
+===================================================================
+--- linux-2.6.39-rc6-fast.orig/mm/memory.c	2011-05-07 05:59:51.000000000 +0200
++++ linux-2.6.39-rc6-fast/mm/memory.c	2011-05-07 05:59:52.000000000 +0200
+@@ -1412,9 +1412,12 @@ no_page_table:
+ 
+ static inline int stack_guard_page(struct vm_area_struct *vma, unsigned long addr)
+ {
+-	return (vma->vm_flags & VM_GROWSDOWN) &&
++	return ((vma->vm_flags & VM_GROWSDOWN) &&
+ 		(vma->vm_start == addr) &&
+-		!vma_stack_continue(vma->vm_prev, addr);
++		!vma_stack_continue(vma->vm_prev, addr)) ||
++	       ((vma->vm_flags & VM_GROWSUP) &&
++		(vma->vm_end == addr + PAGE_SIZE) &&
++		!vma_stack_growsup_continue(vma->vm_next, addr + PAGE_SIZE));
+ }
+ 
+ /**
+@@ -1551,18 +1554,18 @@ int __get_user_pages(struct task_struct 
+ 			continue;
+ 		}
+ 
+-		/*
+-		 * If we don't actually want the page itself,
+-		 * and it's the stack guard page, just skip it.
+-		 */
+-		if (!pages && stack_guard_page(vma, start))
+-			goto next_page;
+-
+ 		do {
+ 			struct page *page;
+ 			unsigned int foll_flags = gup_flags;
+ 
+ 			/*
++			 * If we don't actually want the page itself,
++			 * and it's the stack guard page, just skip it.
++			 */
++			if (!pages && stack_guard_page(vma, start))
++				goto next_page;
++
++			/*
+ 			 * If we have a pending SIGKILL, don't keep faulting
+ 			 * pages and potentially allocating memory.
+ 			 */
