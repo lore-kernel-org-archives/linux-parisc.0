@@ -1,13 +1,12 @@
-From: Hugh Dickins <hughd@google.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: [PATCH] Don't mlock guardpage if the stack is growing up
-Date: Sun, 8 May 2011 13:12:01 -0700 (PDT)
-Message-ID: <alpine.LSU.2.00.1105081303540.16151@sister.anvils>
+Date: Sun, 8 May 2011 14:47:33 -0700
+Message-ID: <BANLkTikEpaRZK3X4YReeQAwgcv3HAGUwSw@mail.gmail.com>
 References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Michel Lespinasse <walken@google.com>,
+	Hugh Dickins <hughd@google.com>,
 	Oleg Nesterov <oleg@redhat.com>
 To: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
 Return-path: <linux-parisc-owner@vger.kernel.org>
@@ -15,98 +14,68 @@ In-Reply-To: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 8 May 2011, Mikulas Patocka wrote:
+On Sun, May 8, 2011 at 11:55 AM, Mikulas Patocka
+<mikulas@artax.karlin.mff.cuni.cz> wrote:
+>
+> This patch fixes lvm2 on PA-RISC (and possibly other architectures wi=
+th
+> up-growing stack). lvm2 calculates the number of used pages when lock=
+ing
+> and when unlocking and reports an internal error if the numbers misma=
+tch.
 
-> Don't mlock guardpage if the stack is growing up
-> 
-> Linux kernel excludes guard page when performing mlock on a VMA with 
-> down-growing stack. However, some architectures have up-growing stack and 
-> locking the guard page should be excluded in this case too.
-> 
-> This patch fixes lvm2 on PA-RISC (and possibly other architectures with 
-> up-growing stack). lvm2 calculates the number of used pages when locking 
-> and when unlocking and reports an internal error if the numbers mismatch. 
-> On PA-RISC, the kernel would incorrectly attempt to mlock the stack guard 
-> page, this causes allocation of one more page and internal error in lvm2.
-> 
-> Signed-off-by: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+This patch won't apply on current kernels (including stable) because
+of commit a1fde08c74e9 that changed the test of "pages" to instead
+just test "flags & FOLL_MLOCK".
 
-Interesting, I'd convinced myself that the growsup case was safe,
-because of how we always approach the vma from its bottom end.
+That should be trivial to fix up.
 
-I've added Michel to the Cc, he's the one with the best grasp here.
+However, I really don't much like this complex test:
 
-Could you point us to where lvm2 is making these calculations?
-I don't understand quite what it's doing.
+> =A0static inline int stack_guard_page(struct vm_area_struct *vma, uns=
+igned long addr)
+> =A0{
+> - =A0 =A0 =A0 return (vma->vm_flags & VM_GROWSDOWN) &&
+> + =A0 =A0 =A0 return ((vma->vm_flags & VM_GROWSDOWN) &&
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(vma->vm_start =3D=3D addr) &&
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 !vma_stack_continue(vma->vm_prev, addr)=
+;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 !vma_stack_continue(vma->vm_prev, addr)=
+) ||
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0((vma->vm_flags & VM_GROWSUP) &&
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 (vma->vm_end =3D=3D addr + PAGE_SIZE) &=
+&
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 !vma_stack_growsup_continue(vma->vm_nex=
+t, addr + PAGE_SIZE));
+> =A0}
 
-Thanks,
-Hugh
+in that format. It gets really hard to read, and I think you'd be
+better off writing it as two helper functions (or macros) for the two
+cases, and then have
 
-> 
-> ---
->  include/linux/mm.h |    6 ++++++
->  mm/memory.c        |   21 ++++++++++++---------
->  2 files changed, 18 insertions(+), 9 deletions(-)
-> 
-> Index: linux-2.6.39-rc6-fast/include/linux/mm.h
-> ===================================================================
-> --- linux-2.6.39-rc6-fast.orig/include/linux/mm.h	2011-05-07 05:59:51.000000000 +0200
-> +++ linux-2.6.39-rc6-fast/include/linux/mm.h	2011-05-07 05:59:52.000000000 +0200
-> @@ -1016,6 +1016,12 @@ static inline int vma_stack_continue(str
->  	return vma && (vma->vm_end == addr) && (vma->vm_flags & VM_GROWSDOWN);
->  }
->  
-> +/* Is the vma a continuation of the stack vma below it? */
-> +static inline int vma_stack_growsup_continue(struct vm_area_struct *vma, unsigned long addr)
-> +{
-> +	return vma && (vma->vm_start == addr) && (vma->vm_flags & VM_GROWSUP);
-> +}
-> +
->  extern unsigned long move_page_tables(struct vm_area_struct *vma,
->  		unsigned long old_addr, struct vm_area_struct *new_vma,
->  		unsigned long new_addr, unsigned long len);
-> Index: linux-2.6.39-rc6-fast/mm/memory.c
-> ===================================================================
-> --- linux-2.6.39-rc6-fast.orig/mm/memory.c	2011-05-07 05:59:51.000000000 +0200
-> +++ linux-2.6.39-rc6-fast/mm/memory.c	2011-05-07 05:59:52.000000000 +0200
-> @@ -1412,9 +1412,12 @@ no_page_table:
->  
->  static inline int stack_guard_page(struct vm_area_struct *vma, unsigned long addr)
->  {
-> -	return (vma->vm_flags & VM_GROWSDOWN) &&
-> +	return ((vma->vm_flags & VM_GROWSDOWN) &&
->  		(vma->vm_start == addr) &&
-> -		!vma_stack_continue(vma->vm_prev, addr);
-> +		!vma_stack_continue(vma->vm_prev, addr)) ||
-> +	       ((vma->vm_flags & VM_GROWSUP) &&
-> +		(vma->vm_end == addr + PAGE_SIZE) &&
-> +		!vma_stack_growsup_continue(vma->vm_next, addr + PAGE_SIZE));
->  }
->  
->  /**
-> @@ -1551,18 +1554,18 @@ int __get_user_pages(struct task_struct 
->  			continue;
->  		}
->  
-> -		/*
-> -		 * If we don't actually want the page itself,
-> -		 * and it's the stack guard page, just skip it.
-> -		 */
-> -		if (!pages && stack_guard_page(vma, start))
-> -			goto next_page;
-> -
->  		do {
->  			struct page *page;
->  			unsigned int foll_flags = gup_flags;
->  
->  			/*
-> +			 * If we don't actually want the page itself,
-> +			 * and it's the stack guard page, just skip it.
-> +			 */
-> +			if (!pages && stack_guard_page(vma, start))
-> +				goto next_page;
-> +
-> +			/*
->  			 * If we have a pending SIGKILL, don't keep faulting
->  			 * pages and potentially allocating memory.
->  			 */
+  static inline int stack_guard_page(struct vm_area_struct *vma,
+unsigned long addr)
+  {
+    return stack_guard_page_growsdown(vma, addr) ||
+      stack_guard_page_growsup(vma, addr);
+  }
+
+I'd also like to verify that it doesn't actually generate any extra
+code for the common case (iirc VM_GROWSUP is 0 for the architectures
+that don't need it, and so the compiler shouldn't generate any extra
+code, but I'd like that mentioned and verified explicitly).
+
+Hmm?
+
+Other than that it looks ok to me.
+
+That said, could we please fix LVM to not do that crazy sh*t in the
+first place? The STACK_GROWSUP case is never going to have a lot of
+testing, this is just sad.
+
+                   Linus
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
