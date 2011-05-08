@@ -1,81 +1,77 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] Don't mlock guardpage if the stack is growing up
-Date: Sun, 8 May 2011 14:47:33 -0700
-Message-ID: <BANLkTikEpaRZK3X4YReeQAwgcv3HAGUwSw@mail.gmail.com>
-References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz>
+From: Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>
+Subject: Re: [PATCH] atomic: add *_dec_not_zero
+Date: Mon, 09 May 2011 08:15:39 +1000
+Message-ID: <1304892939.2513.503.camel@pasglop>
+References: <1304458235-28473-1-git-send-email-sven@narfation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Hugh Dickins <hughd@google.com>,
-	Oleg Nesterov <oleg@redhat.com>
-To: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org,
+        linux-m68k-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-m32r-rQhvJZKUsGBRYuoOT4C5/9i2O/JbrIOy@public.gmane.org,
+        linux-ia64-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-cris-kernel-VrBV9hrLPhE@public.gmane.org,
+        linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+        linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+        Chris Metcalf <cmetcalf-kv+TWInifGbQT0dZR+AlfA@public.gmane.org>,
+        David Howells <dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, linux-am33-list-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org,
+        linux-alpha-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+        uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, x86-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org,
+        linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Sven Eckelmann <sven-KaDOiPu9UxWEi8DpZVb4nw@public.gmane.org>
+Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+In-Reply-To: <1304458235-28473-1-git-send-email-sven-KaDOiPu9UxWEi8DpZVb4nw@public.gmane.org>
+List-Id: <uclinux-dist-devel.blackfin.uclinux.org>
+List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
+List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
+Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
 
-On Sun, May 8, 2011 at 11:55 AM, Mikulas Patocka
-<mikulas@artax.karlin.mff.cuni.cz> wrote:
->
-> This patch fixes lvm2 on PA-RISC (and possibly other architectures wi=
-th
-> up-growing stack). lvm2 calculates the number of used pages when lock=
-ing
-> and when unlocking and reports an internal error if the numbers misma=
-tch.
+On Tue, 2011-05-03 at 23:30 +0200, Sven Eckelmann wrote:
+> Introduce an *_dec_not_zero operation.  Make this a special case of
+> *_add_unless because batman-adv uses atomic_dec_not_zero in different
+> places like re-broadcast queue or aggregation queue management. There
+> are other non-final patches which may also want to use this macro.
 
-This patch won't apply on current kernels (including stable) because
-of commit a1fde08c74e9 that changed the test of "pages" to instead
-just test "flags & FOLL_MLOCK".
+For arch/powerpc:
 
-That should be trivial to fix up.
+Acked-by: Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>
 
-However, I really don't much like this complex test:
+(Sorry for catching up late)
 
-> =A0static inline int stack_guard_page(struct vm_area_struct *vma, uns=
-igned long addr)
-> =A0{
-> - =A0 =A0 =A0 return (vma->vm_flags & VM_GROWSDOWN) &&
-> + =A0 =A0 =A0 return ((vma->vm_flags & VM_GROWSDOWN) &&
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(vma->vm_start =3D=3D addr) &&
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 !vma_stack_continue(vma->vm_prev, addr)=
-;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 !vma_stack_continue(vma->vm_prev, addr)=
-) ||
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0((vma->vm_flags & VM_GROWSUP) &&
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 (vma->vm_end =3D=3D addr + PAGE_SIZE) &=
-&
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 !vma_stack_growsup_continue(vma->vm_nex=
-t, addr + PAGE_SIZE));
-> =A0}
+Cheers,
+Ben.
 
-in that format. It gets really hard to read, and I think you'd be
-better off writing it as two helper functions (or macros) for the two
-cases, and then have
-
-  static inline int stack_guard_page(struct vm_area_struct *vma,
-unsigned long addr)
-  {
-    return stack_guard_page_growsdown(vma, addr) ||
-      stack_guard_page_growsup(vma, addr);
-  }
-
-I'd also like to verify that it doesn't actually generate any extra
-code for the common case (iirc VM_GROWSUP is 0 for the architectures
-that don't need it, and so the compiler shouldn't generate any extra
-code, but I'd like that mentioned and verified explicitly).
-
-Hmm?
-
-Other than that it looks ok to me.
-
-That said, could we please fix LVM to not do that crazy sh*t in the
-first place? The STACK_GROWSUP case is never going to have a lot of
-testing, this is just sad.
-
-                   Linus
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> diff --git a/arch/powerpc/include/asm/atomic.h b/arch/powerpc/include/asm/atomic.h
+> index b8f152e..906f49a 100644
+> --- a/arch/powerpc/include/asm/atomic.h
+> +++ b/arch/powerpc/include/asm/atomic.h
+> @@ -213,6 +213,7 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
+>  }
+>  
+>  #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
+> +#define atomic_dec_not_zero(v) atomic_add_unless((v), -1, 0)
+>  
+>  #define atomic_sub_and_test(a, v)	(atomic_sub_return((a), (v)) == 0)
+>  #define atomic_dec_and_test(v)		(atomic_dec_return((v)) == 0)
+> @@ -469,6 +470,7 @@ static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
+>  }
+>  
+>  #define atomic64_inc_not_zero(v) atomic64_add_unless((v), 1, 0)
+> +#define atomic64_dec_not_zero(v) atomic64_add_unless((v), -1, 0)
+>  
+>  #else  /* __powerpc64__ */
+>  #include <asm-generic/atomic64.h>
+> diff --git a/arch/powerpc/include/asm/local.h b/arch/powerpc/include/asm/local.h
+> index c2410af..3d4c58a 100644
+> --- a/arch/powerpc/include/asm/local.h
+> +++ b/arch/powerpc/include/asm/local.h
+> @@ -134,6 +134,7 @@ static __inline__ int local_add_unless(local_t *l, long a, long u)
+>  }
+>  
+>  #define local_inc_not_zero(l) local_add_unless((l), 1, 0)
+> +#define local_dec_not_zero(l) local_add_unless((l), -1, 0)
+>  
+>  #define local_sub_and_test(a, l)	(local_sub_return((a), (l)) == 0)
+>  #define local_dec_and_test(l)		(local_dec_return((l)) == 0)
