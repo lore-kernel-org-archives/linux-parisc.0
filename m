@@ -1,75 +1,37 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Alasdair G Kergon <agk@redhat.com>
 Subject: Re: [PATCH] Don't mlock guardpage if the stack is growing up
-Date: Mon, 9 May 2011 08:57:56 -0700
-Message-ID: <BANLkTinCUQSjjif3op3H_9HDm5Eu-o+Luw@mail.gmail.com>
-References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz>
- <alpine.LSU.2.00.1105081303540.16151@sister.anvils> <alpine.DEB.2.00.1105091307570.32299@artax.karlin.mff.cuni.cz>
+Date: Mon, 9 May 2011 22:08:41 +0100
+Message-ID: <20110509210841.GB9253@agk-dp.fab.redhat.com>
+References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz> <BANLkTikEpaRZK3X4YReeQAwgcv3HAGUwSw@mail.gmail.com> <alpine.DEB.2.00.1105091246550.32299@artax.karlin.mff.cuni.cz> <4DC7D37F.9040308@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	Michel Lespinasse <walken@google.com>,
-	Oleg Nesterov <oleg@redhat.com>
-To: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Content-Type: text/plain; charset=us-ascii
+To: Zdenek Kabelac <zkabelac@redhat.com>,
+	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vg
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1105091307570.32299@artax.karlin.mff.cuni.cz>
+In-Reply-To: <4DC7D37F.9040308@redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, May 9, 2011 at 4:12 AM, Mikulas Patocka
-<mikulas@artax.karlin.mff.cuni.cz> wrote:
->
-> See ./lib/mm/memlock.c in LVM2. It reads /proc/self/maps, parses the file
-> and locks each map with mlock, except for glibc locale file.
+On Mon, May 09, 2011 at 01:43:59PM +0200, Zdenek Kabelac wrote:
+> Dne 9.5.2011 13:01, Mikulas Patocka napsal(a):
+> > So, when LVM used mlockall, it consumed >100MB memory and it caused 
+> > out-of-memory problems in system installers.
 
-Hmm. One thing that strikes me is this problem also implies that the
-/proc/self/maps file is wrong for the GROWSUP case, isn't it?
+The way glibc and some distros have implemented locales makes mlockall()
+quite useless for many purposes now in practice IMHO.  We discussed the
+options at the time and wrote the extra code to implement the only
+solution we were offered.
 
-So I think we should not just apply your lock fix, but then *also*
-apply something like this:
+(1) There was no possibility of some distros not using a single locale
+database (reasons: optimisation and packaging convenience);
+(2) there was no possibility of glibc providing a mechanism to unmap the
+locale database (if you reset your locale to the default glibc will not
+unmap the file and indeed doesn't rule out doing something similar with
+other files in future - these are glibc internals and it's none of our
+business).
 
-    diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-    index 2e7addfd9803..080980880c7f 100644
-    --- a/fs/proc/task_mmu.c
-    +++ b/fs/proc/task_mmu.c
-    @@ -214,7 +214,7 @@ static void show_map_vma(struct seq_file *m,
-struct vm_area_struct *vma)
-     	int flags = vma->vm_flags;
-     	unsigned long ino = 0;
-     	unsigned long long pgoff = 0;
-    -	unsigned long start;
-    +	unsigned long start, end;
-     	dev_t dev = 0;
-     	int len;
+Alasdair
 
-    @@ -227,13 +227,16 @@ static void show_map_vma(struct seq_file *m,
-struct vm_area_struct *vma)
 
-     	/* We don't show the stack guard page in /proc/maps */
-     	start = vma->vm_start;
-    -	if (vma->vm_flags & VM_GROWSDOWN)
-    -		if (!vma_stack_continue(vma->vm_prev, vma->vm_start))
-    -			start += PAGE_SIZE;
-    +	if (stack_guard_page_growsdown(vma, start))
-    +		start += PAGE_SIZE;
-    +	end = vma->vm_end;
-    +	if (stack_guard_page_growsup(vma, end))
-    +		end -= PAGE_SIZE;
-    +
-
-     	seq_printf(m, "%08lx-%08lx %c%c%c%c %08llx %02x:%02x %lu %n",
-     			start,
-    -			vma->vm_end,
-    +			end,
-     			flags & VM_READ ? 'r' : '-',
-     			flags & VM_WRITE ? 'w' : '-',
-     			flags & VM_EXEC ? 'x' : '-',
-
-NOTE! The above actually assumes that your
-"stack_guard_page_growsup()" has been changed to actually take the
-"next page" value, which I think makes more sense (ie it's the "end of
-stack", the same way "stack_guard_page_growsdown()" address is).
-
-Hmm? I don't have any growsup machine to test with, can you do that?
-
-                        Linus
