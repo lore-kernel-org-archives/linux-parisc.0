@@ -1,47 +1,45 @@
-From: Matthew Wilcox <matthew@wil.cx>
+From: Tony Luck <tony.luck@gmail.com>
 Subject: Re: [PATCH] Don't mlock guardpage if the stack is growing up
-Date: Mon, 9 May 2011 16:45:11 -0600
-Message-ID: <20110509224511.GC15227@parisc-linux.org>
-References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz> <BANLkTikEpaRZK3X4YReeQAwgcv3HAGUwSw@mail.gmail.com> <alpine.DEB.2.00.1105091246550.32299@artax.karlin.mff.cuni.cz> <4DC7D37F.9040308@redhat.com>
+Date: Mon, 9 May 2011 15:53:33 -0700
+Message-ID: <BANLkTi=DCKmN_BafFckKHOMfjWpVLQPDFA@mail.gmail.com>
+References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz>
+	<alpine.LSU.2.00.1105081303540.16151@sister.anvils>
+	<alpine.DEB.2.00.1105091307570.32299@artax.karlin.mff.cuni.cz>
+	<BANLkTinCUQSjjif3op3H_9HDm5Eu-o+Luw@mail.gmail.com>
+	<BANLkTim3kKJkisZK1mOgKhsEEs7FzZmyXA@mail.gmail.com>
+	<1304979549.4865.56.camel@mulgrave.site>
+	<BANLkTim7ATRyJ2NvoCj4Sv=7CLizKMd_WA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Hugh Dickins <hughd@google.com>,
-	Oleg Nesterov <oleg@redhat.com>, agk@redhat.com
-To: Zdenek Kabelac <zkabelac@redhat.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	Michel Lespinasse <walken@google.com>,
+	Oleg Nesterov <oleg@redhat.com>, linux-ia64@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4DC7D37F.9040308@redhat.com>
+In-Reply-To: <BANLkTim7ATRyJ2NvoCj4Sv=7CLizKMd_WA@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, May 09, 2011 at 01:43:59PM +0200, Zdenek Kabelac wrote:
-> > Why it doesn't use mlockall()? Because glibc maps all locales to the 
-> > process. Glibc packs all locales to a 100MB file and maps that file to 
-> > every process. Even if the process uses just one locale, glibc maps all.
-> > 
-> > So, when LVM used mlockall, it consumed >100MB memory and it caused 
-> > out-of-memory problems in system installers.
-> > 
-> > So, alternate way of locking was added to LVM --- read all maps and lock 
-> > them, except for the glibc locale file.
-> > 
-> > The real fix would be to fix glibc not to map 100MB to every process.
-> 
-> I should add here probably few words.
-> 
-> Glibc knows few more ways around - so it could work only with one locale file
-> per language, or even without using mmap and allocating them in memory.
-> Depends on the distribution usually - Fedora decided to combine all locales
-> into one huge file (>100MB) - Ubuntu/Debian mmaps each locales individually
-> (usually ~MB)
+On Mon, May 9, 2011 at 3:31 PM, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> With current kernels, I think the stack expands by one page during the
+> mlockall (for STACK_GROWSUP), with the patch it shouldn't.
 
-Sounds to me like glibc should introduce an mlockmost() call that does all
-the work for you ...
+Tried this on ia64 (with a mod because the upward growing stack isn't
+blessed with
+the [stack] annotation, only the downward growing stack gets that honour).
 
--- 
-Matthew Wilcox				Intel Open Source Technology Centre
-"Bill, look, we understand that you're interested in selling us this
-operating system, but compare it to ours.  We can't possibly take such
-a retrograde step."
+ia64 builds, boots, and processes can still grow stacks (both of them).  The
+patched kernel doesn't change the size of the upwardly growing stack across
+the mlockall().
+
+-Tony
+
+P.S. while we could start both stacks on the same page and have the grow
+away from the start point, ia64 actually starts them out a fair distance apart
+and lets them run into each other (if you have enough memory to let them
+grow that far, and if ulimit -s doesn't stop them earlier)
