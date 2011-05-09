@@ -1,45 +1,54 @@
-From: Tony Luck <tony.luck@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: [PATCH] Don't mlock guardpage if the stack is growing up
-Date: Mon, 9 May 2011 15:53:33 -0700
-Message-ID: <BANLkTi=DCKmN_BafFckKHOMfjWpVLQPDFA@mail.gmail.com>
+Date: Mon, 9 May 2011 15:56:11 -0700
+Message-ID: <BANLkTikz-sGiy2NdzQMPzCWF64cVF-DZ7w@mail.gmail.com>
 References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz>
-	<alpine.LSU.2.00.1105081303540.16151@sister.anvils>
-	<alpine.DEB.2.00.1105091307570.32299@artax.karlin.mff.cuni.cz>
-	<BANLkTinCUQSjjif3op3H_9HDm5Eu-o+Luw@mail.gmail.com>
-	<BANLkTim3kKJkisZK1mOgKhsEEs7FzZmyXA@mail.gmail.com>
-	<1304979549.4865.56.camel@mulgrave.site>
-	<BANLkTim7ATRyJ2NvoCj4Sv=7CLizKMd_WA@mail.gmail.com>
+ <BANLkTikEpaRZK3X4YReeQAwgcv3HAGUwSw@mail.gmail.com> <alpine.DEB.2.00.1105091246550.32299@artax.karlin.mff.cuni.cz>
+ <4DC7D37F.9040308@redhat.com> <20110509224511.GC15227@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+Cc: Zdenek Kabelac <zkabelac@redhat.com>,
 	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	Michel Lespinasse <walken@google.com>,
-	Oleg Nesterov <oleg@redhat.com>, linux-ia64@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Hugh Dickins <hughd@google.com>,
+	Oleg Nesterov <oleg@redhat.com>, agk@redhat.com
+To: Matthew Wilcox <matthew@wil.cx>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BANLkTim7ATRyJ2NvoCj4Sv=7CLizKMd_WA@mail.gmail.com>
+In-Reply-To: <20110509224511.GC15227@parisc-linux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, May 9, 2011 at 3:31 PM, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> With current kernels, I think the stack expands by one page during the
-> mlockall (for STACK_GROWSUP), with the patch it shouldn't.
+On Mon, May 9, 2011 at 3:45 PM, Matthew Wilcox <matthew@wil.cx> wrote:
+>
+> Sounds to me like glibc should introduce an mlockmost() call that does all
+> the work for you ...
 
-Tried this on ia64 (with a mod because the upward growing stack isn't
-blessed with
-the [stack] annotation, only the downward growing stack gets that honour).
+That sounds like the worst of all worlds. Nobody will use it, now
+there's two places to break, and how do you describe what you don't
+want mlocked?
 
-ia64 builds, boots, and processes can still grow stacks (both of them).  The
-patched kernel doesn't change the size of the upwardly growing stack across
-the mlockall().
+I dunno. There are so few applications that use mlock at *all* that I
+wonder if it's even worth worrying about. And this one case we've
+hopefully now fixed anyway.
 
--Tony
+But if people really want to fix mlockall(), I'd suggest some way of
+just marking certain mappings as "sparse mappings", and then we can
+just teach mlockall to not lock them. And then glibc could just mark
+its locale archive that way - and maybe others would mark other
+mappings.
 
-P.S. while we could start both stacks on the same page and have the grow
-away from the start point, ia64 actually starts them out a fair distance apart
-and lets them run into each other (if you have enough memory to let them
-grow that far, and if ulimit -s doesn't stop them earlier)
+We could still make such a "sparse mapping" act as locked for the
+actual pages that are mapped into it - so it would have some kind of
+real semantics. You could do a "mlockall(..)" on the process, and then
+touch the sparse pages you know you want, and they'd be guaranteed to
+be mapped after that.
+
+We might even have a "mlockall(MCL_SPARSE)" flag that does that for
+everything - basically guarantee that "whatever is mapped in now will
+remain mapped in, but I won't bother paging it in just because you ask
+me to do a mlockall".
+
+So there are sane semantics for the concept, and it would be easy to
+do in the kernel. Whether it's worth doing, I dunno.
+
+                    Linus
