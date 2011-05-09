@@ -1,56 +1,47 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: Re: [PATCH] Don't mlock guardpage if the stack is growing up
-Date: Mon, 9 May 2011 15:31:42 -0700
-Message-ID: <BANLkTim7ATRyJ2NvoCj4Sv=7CLizKMd_WA@mail.gmail.com>
-References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz>
- <alpine.LSU.2.00.1105081303540.16151@sister.anvils> <alpine.DEB.2.00.1105091307570.32299@artax.karlin.mff.cuni.cz>
- <BANLkTinCUQSjjif3op3H_9HDm5Eu-o+Luw@mail.gmail.com> <BANLkTim3kKJkisZK1mOgKhsEEs7FzZmyXA@mail.gmail.com>
- <1304979549.4865.56.camel@mulgrave.site>
+Date: Mon, 9 May 2011 16:45:11 -0600
+Message-ID: <20110509224511.GC15227@parisc-linux.org>
+References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz> <BANLkTikEpaRZK3X4YReeQAwgcv3HAGUwSw@mail.gmail.com> <alpine.DEB.2.00.1105091246550.32299@artax.karlin.mff.cuni.cz> <4DC7D37F.9040308@redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=002354477dba8c26c904a2df68c4
+Content-Type: text/plain; charset=us-ascii
 Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	Tony Luck <tony.luck@intel.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	Michel Lespinasse <walken@google.com>,
-	Oleg Nesterov <oleg@redhat.com>, linux-ia64@vger.kernel.org
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <1304979549.4865.56.camel@mulgrave.site>
-List-ID: <linux-ia64.vger.kernel.org>
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Hugh Dickins <hughd@google.com>,
+	Oleg Nesterov <oleg@redhat.com>, agk@redhat.com
+To: Zdenek Kabelac <zkabelac@redhat.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <4DC7D37F.9040308@redhat.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---002354477dba8c26c904a2df68c4
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Mon, May 09, 2011 at 01:43:59PM +0200, Zdenek Kabelac wrote:
+> > Why it doesn't use mlockall()? Because glibc maps all locales to the 
+> > process. Glibc packs all locales to a 100MB file and maps that file to 
+> > every process. Even if the process uses just one locale, glibc maps all.
+> > 
+> > So, when LVM used mlockall, it consumed >100MB memory and it caused 
+> > out-of-memory problems in system installers.
+> > 
+> > So, alternate way of locking was added to LVM --- read all maps and lock 
+> > them, except for the glibc locale file.
+> > 
+> > The real fix would be to fix glibc not to map 100MB to every process.
+> 
+> I should add here probably few words.
+> 
+> Glibc knows few more ways around - so it could work only with one locale file
+> per language, or even without using mmap and allocating them in memory.
+> Depends on the distribution usually - Fedora decided to combine all locales
+> into one huge file (>100MB) - Ubuntu/Debian mmaps each locales individually
+> (usually ~MB)
 
-On Mon, May 9, 2011 at 3:19 PM, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> So I can test the patch, if you tell me how. =A0I don't use lvm2, so it
-> would have to be a simple test case.
+Sounds to me like glibc should introduce an mlockmost() call that does all
+the work for you ...
 
-Something like the attached. Run it as root (it needs root just for
-the mlockall), and see whether the stack it shows changes.
-
-With current kernels, I think the stack expands by one page during the
-mlockall (for STACK_GROWSUP), with the patch it shouldn't.
-
-                   Linus
-
---002354477dba8c26c904a2df68c4
-Content-Type: text/x-csrc; charset=US-ASCII; name="t.c"
-Content-Disposition: attachment; filename="t.c"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gnhzk71z0
-
-I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdHJpbmcuaD4KI2luY2x1ZGUgPHN5cy9tbWFu
-Lmg+CgpzdGF0aWMgdm9pZCBzaG93X3N0YWNrKHZvaWQpCnsKCUZJTEUgKm1hcDsKCWNoYXIgYnVm
-WzEwMDBdOwoKCW1hcCA9IGZvcGVuKCIvcHJvYy9zZWxmL21hcHMiLCAiciIpOwoJaWYgKCFtYXAp
-CgkJcmV0dXJuOwoKCXdoaWxlIChmZ2V0cyhidWYsIDEwMDAsIG1hcCkpIHsKCQlpZiAoIXN0cnN0
-cihidWYsICJbc3RhY2tdIikpCgkJCWNvbnRpbnVlOwoJCWZwdXRzKGJ1Ziwgc3Rkb3V0KTsKCX0K
-CglmY2xvc2UobWFwKTsKfQoKaW50IG1haW4odm9pZCkKewoJc2hvd19zdGFjaygpOwoJbWxvY2th
-bGwoTUNMX0NVUlJFTlQgfCBNQ0xfRlVUVVJFKTsKCXNob3dfc3RhY2soKTsKCXJldHVybiAwOwp9
-Cg==
---002354477dba8c26c904a2df68c4--
+-- 
+Matthew Wilcox				Intel Open Source Technology Centre
+"Bill, look, we understand that you're interested in selling us this
+operating system, but compare it to ours.  We can't possibly take such
+a retrograde step."
