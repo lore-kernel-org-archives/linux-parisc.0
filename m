@@ -1,59 +1,34 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Alasdair G Kergon <agk@redhat.com>
 Subject: Re: [PATCH] Don't mlock guardpage if the stack is growing up
-Date: Mon, 09 May 2011 23:12:53 -0500
-Message-ID: <1305000773.4865.62.camel@mulgrave.site>
-References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz>
-	 <alpine.LSU.2.00.1105081303540.16151@sister.anvils>
-	 <alpine.DEB.2.00.1105091307570.32299@artax.karlin.mff.cuni.cz>
-	 <BANLkTinCUQSjjif3op3H_9HDm5Eu-o+Luw@mail.gmail.com>
-	 <BANLkTim3kKJkisZK1mOgKhsEEs7FzZmyXA@mail.gmail.com>
-	 <1304979549.4865.56.camel@mulgrave.site>
-	 <BANLkTim7ATRyJ2NvoCj4Sv=7CLizKMd_WA@mail.gmail.com>
-	 <BANLkTi=DCKmN_BafFckKHOMfjWpVLQPDFA@mail.gmail.com>
-	 <BANLkTikkA5H2D23u23FV0cTcL2bAT8BKWQ@mail.gmail.com>
-	 <BANLkTikLJPCc5ffobAb5uhdryRqjGhpVAQ@mail.gmail.com>
-	 <BANLkTiksgtgviJGmq925OtLNU4QynVLVtg@mail.gmail.com>
-	 <BANLkTikUyUpa9-ZZBquHW4xSCEj8W8TgnA@mail.gmail.com>
+Date: Tue, 10 May 2011 23:57:00 +0100
+Message-ID: <20110510225659.GE9253@agk-dp.fab.redhat.com>
+References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz> <BANLkTikEpaRZK3X4YReeQAwgcv3HAGUwSw@mail.gmail.com> <alpine.DEB.2.00.1105091246550.32299@artax.karlin.mff.cuni.cz> <4DC7D37F.9040308@redhat.com> <20110509224511.GC15227@parisc-linux.org> <BANLkTikz-sGiy2NdzQMPzCWF64cVF-DZ7w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Tony Luck <tony.luck@gmail.com>,
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	Matthew Wilcox <matthew@wil.cx>,
+	Zdenek Kabelac <zkabelac@redhat.com>,
 	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	Michel Lespinasse <walken@google.com>,
-	Oleg Nesterov <oleg@redhat.com>, linux-ia64@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
+	linux-kerne
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BANLkTikUyUpa9-ZZBquHW4xSCEj8W8TgnA@mail.gmail.com>
+In-Reply-To: <BANLkTikz-sGiy2NdzQMPzCWF64cVF-DZ7w@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2011-05-09 at 16:25 -0700, Linus Torvalds wrote:
-> On Mon, May 9, 2011 at 4:17 PM, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > Ok, I'll consider it tested. I'll commit it with Mikulas as author,
-> > but note that I edited it so he won't get the blame if there's some
-> > problem.
-> 
-> Oh, and I marked it for stable too, although I don't know if any
-> distribution really cares about parisc or ia64. And I'm not sure that
-> ia64 even saw the lvm2 failure case - I'd have expected to hear about
-> it if it actually happens there.
+On Mon, May 09, 2011 at 03:56:11PM -0700, Linus Torvalds wrote:
+> So there are sane semantics for the concept, and it would be easy to
+> do in the kernel. Whether it's worth doing, I dunno.
+ 
+At this point we have a workaround that seems to work for us.  I find it
+ugly and it has needed some tweaking already but we can cope.
 
-Well, it's a done deal, but here's the proof on parisc too:
+If others find similar problems to ours and start replicating the logic
+we're using, then that would be the time to give serious thought to a
+clean 'sparse' extension.  (Maybe marking individual mappings as MAP_SPARSE
+and adding a MCL_NO_SPARSE option to ignore them sounds most promising to me.)
 
-Before:
+(What other software packages make use of mlockall() and under what
+circumstances?)
 
-c0266000-c0289000 rwxp 00000000 00:00 0                                  [stack]
-c0266000-c0a66000 rwxp 00000000 00:00 0                                  [stack]
-
-After:
-
-bffee000-c0010000 rwxp 00000000 00:00 0                                  [stack]
-bffee000-c0010000 rwxp 00000000 00:00 0                                  [stack]
-
-James
-
+Alasdair
 
