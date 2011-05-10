@@ -1,38 +1,50 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] Don't mlock guardpage if the stack is growing up
-Date: Mon, 9 May 2011 16:25:23 -0700
-Message-ID: <BANLkTikUyUpa9-ZZBquHW4xSCEj8W8TgnA@mail.gmail.com>
-References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz>
- <alpine.LSU.2.00.1105081303540.16151@sister.anvils> <alpine.DEB.2.00.1105091307570.32299@artax.karlin.mff.cuni.cz>
- <BANLkTinCUQSjjif3op3H_9HDm5Eu-o+Luw@mail.gmail.com> <BANLkTim3kKJkisZK1mOgKhsEEs7FzZmyXA@mail.gmail.com>
- <1304979549.4865.56.camel@mulgrave.site> <BANLkTim7ATRyJ2NvoCj4Sv=7CLizKMd_WA@mail.gmail.com>
- <BANLkTi=DCKmN_BafFckKHOMfjWpVLQPDFA@mail.gmail.com> <BANLkTikkA5H2D23u23FV0cTcL2bAT8BKWQ@mail.gmail.com>
- <BANLkTikLJPCc5ffobAb5uhdryRqjGhpVAQ@mail.gmail.com> <BANLkTiksgtgviJGmq925OtLNU4QynVLVtg@mail.gmail.com>
+From: Hugh Dickins <hughd@google.com>
+Subject: [PATCH] vm: fix vm_pgoff wrap in upward expansion
+Date: Mon, 9 May 2011 17:44:42 -0700 (PDT)
+Message-ID: <alpine.LSU.2.00.1105091739140.7047@sister.anvils>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	Michel Lespinasse <walken@google.com>,
-	Oleg Nesterov <oleg@redhat.com>, linux-ia64@vger.kernel.org
-To: Tony Luck <tony.luck@gmail.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Robert Swiecki <robert@swiecki.net>, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-parisc@vger.kernel.org,
+	linux-ia64@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BANLkTiksgtgviJGmq925OtLNU4QynVLVtg@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, May 9, 2011 at 4:17 PM, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Ok, I'll consider it tested. I'll commit it with Mikulas as author,
-> but note that I edited it so he won't get the blame if there's some
-> problem.
+Commit a626ca6a6564 ("vm: fix vm_pgoff wrap in stack expansion") fixed
+the case of an expanding mapping causing vm_pgoff wrapping when you had
+downward stack expansion.  But there was another case where IA64 and
+PA-RISC expand mappings: upward expansion.
 
-Oh, and I marked it for stable too, although I don't know if any
-distribution really cares about parisc or ia64. And I'm not sure that
-ia64 even saw the lvm2 failure case - I'd have expected to hear about
-it if it actually happens there.
+This fixes that case too.
 
-                       Linus
+Signed-off-by: Hugh Dickins <hughd@google.com.>
+Cc: stable@kernel.org
+---
+On April 12th you asked "Guys, can you think of any other thing
+that might expand a mapping?": this is the only one I thought of.
+
+ mm/mmap.c |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+--- 2.6.39-rc6/mm/mmap.c	2011-05-04 12:10:31.477543104 -0700
++++ linux/mm/mmap.c	2011-05-09 17:16:34.251725877 -0700
+@@ -1767,10 +1767,13 @@ int expand_upwards(struct vm_area_struct
+ 		size = address - vma->vm_start;
+ 		grow = (address - vma->vm_end) >> PAGE_SHIFT;
+ 
+-		error = acct_stack_growth(vma, size, grow);
+-		if (!error) {
+-			vma->vm_end = address;
+-			perf_event_mmap(vma);
++		error = -ENOMEM;
++		if (vma->vm_pgoff + (size >> PAGE_SHIFT) >= vma->vm_pgoff) {
++			error = acct_stack_growth(vma, size, grow);
++			if (!error) {
++				vma->vm_end = address;
++				perf_event_mmap(vma);
++			}
+ 		}
+ 	}
+ 	vma_unlock_anon_vma(vma);
