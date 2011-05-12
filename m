@@ -1,39 +1,38 @@
-From: Milan Broz <mbroz@redhat.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: [PATCH] Don't mlock guardpage if the stack is growing up
-Date: Wed, 11 May 2011 10:42:45 +0200
-Message-ID: <4DCA4C05.4030803__14393.7158784412$1305129799$gmane$org@redhat.com>
-References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz> <BANLkTikEpaRZK3X4YReeQAwgcv3HAGUwSw@mail.gmail.com> <alpine.DEB.2.00.1105091246550.32299@artax.karlin.mff.cuni.cz> <4DC7D37F.9040308@redhat.com> <20110509224511.GC15227@parisc-linux.org> <BANLkTikz-sGiy2NdzQMPzCWF64cVF-DZ7w@mail.gmail.com> <20110510225659.GE9253@agk-dp.fab.redhat.com>
+Date: Wed, 11 May 2011 19:12:57 -0700
+Message-ID: <BANLkTi=4raxPiRzBH=b44=SLsAujhx2xUw@mail.gmail.com>
+References: <alpine.DEB.2.00.1105082045250.15552@artax.karlin.mff.cuni.cz>
+ <BANLkTikEpaRZK3X4YReeQAwgcv3HAGUwSw@mail.gmail.com> <alpine.DEB.2.00.1105091246550.32299@artax.karlin.mff.cuni.cz>
+ <4DC7D37F.9040308@redhat.com> <20110509224511.GC15227@parisc-linux.org>
+ <BANLkTikz-sGiy2NdzQMPzCWF64cVF-DZ7w@mail.gmail.com> <20110510225659.GE9253@agk-dp.fab.redhat.com>
+ <4DCA4C05.4030803@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-To: Alasdair G Kergon <agk@redhat.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
+Cc: Alasdair G Kergon <agk@redhat.com>,
 	Matthew Wilcox <matthew@wil.cx>,
 	Zdenek Kabelac <zkabelac@redhat.com>,
-	Mikulas Patocka <mikulas@ar
+	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Hugh Dickins <hughd@google.com>,
+	Oleg Nesterov <oleg@redhat.com>
+To: Milan Broz <mbroz@redhat.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110510225659.GE9253@agk-dp.fab.redhat.com>
+In-Reply-To: <4DCA4C05.4030803@redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 05/11/2011 12:57 AM, Alasdair G Kergon wrote:
-> (What other software packages make use of mlockall() and under what
-> circumstances?)
+On Wed, May 11, 2011 at 1:42 AM, Milan Broz <mbroz@redhat.com> wrote:
+>
+> Another one is cryptsetup [..]
 
-Another one is cryptsetup for commands which manipulate with keys
-in memory.
-(Users of libcryptetup library are not forced to lock memory, it is optional
-call. But cryptsetup itself as libcryptsetup library user always locks memory.)
+Quite frankly, all security-related uses should always be happy about
+a "MCL_SPARSE" model, since there is no point in ever bringing in
+pages that haven't been used. The whole (and only) point of
+mlock[all]() for them is the "avoid to push to disk" issue.
 
-And I am not happy with mlockall() as well but the lvm2 workaround
-is quite complicated.
+I do wonder if we really should ever do the page-in at all. We might
+simply be better off always just saying "we'll lock pages you've
+touched, that's it".
 
-Basically it wants to lock memory with explicitly allocated keys
-(this can be rewritten to use specific locked page though) but it
-also need to lock various libdevmapper buffers when issuing dmcrypt
-cfg ioctl (mapping table and messages contains key). So that's why
-mlockall(MCL_CURRENT|MCL_FUTURE) was the simplest way (and no problems
-reported yet).
-(No that it is perfect but better than nothing... Of course
-more important is to wipe memory with keys after use.)
-
-Milan
+                       Linus
