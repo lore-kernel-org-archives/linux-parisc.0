@@ -1,49 +1,39 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH 0/2] fix libata-sff and pata_cmd64x to not crash on
- boot on parisc
-Date: Fri, 13 May 2011 12:01:58 -0500
-Message-ID: <1305306118.2611.62.camel@mulgrave.site>
-References: <1303673315.5231.9.camel@mulgrave.site>
+From: Jeff Garzik <jeff@garzik.org>
+Subject: Re: [PATCH 0/2] fix libata-sff and pata_cmd64x to not crash on boot
+ on parisc
+Date: Sat, 14 May 2011 15:01:31 -0400
+Message-ID: <4DCED18B.1070801@garzik.org>
+References: <1303673315.5231.9.camel@mulgrave.site> <1305306118.2611.62.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Cc: linux-ide <linux-ide@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>,
 	Alan Cox <alan@lxorguk.ukuu.org.uk>,
 	Sergei Shtylyov <sshtylyov@mvista.com>
-To: linux-ide <linux-ide@vger.kernel.org>
-Return-path: <linux-ide-owner@vger.kernel.org>
-In-Reply-To: <1303673315.5231.9.camel@mulgrave.site>
-List-ID: <linux-ide.vger.kernel.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1305306118.2611.62.camel@mulgrave.site>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 2011-04-24 at 14:28 -0500, James Bottomley wrote:
-> currently libata-sff is completely ignoring the enabled/disabled status
-> of the interfaces.  This is a real problem on parisc because if you
-> touch a non responding memory area (i.e. a disabled interface) you crash
-> the box.
-> 
-> Fix by checking the CNTRL bits to see if the port is enabled before
-> trying to poke it.
+On 05/13/2011 01:01 PM, James Bottomley wrote:
+> On Sun, 2011-04-24 at 14:28 -0500, James Bottomley wrote:
+>> currently libata-sff is completely ignoring the enabled/disabled status
+>> of the interfaces.  This is a real problem on parisc because if you
+>> touch a non responding memory area (i.e. a disabled interface) you crash
+>> the box.
+>>
+>> Fix by checking the CNTRL bits to see if the port is enabled before
+>> trying to poke it.
+>
+> Ping on this.
+>
+> Since 1/2 is an essential fix to prevent a boot panic on parisc, I can
+> just take them through the parisc tree.
 
-Ping on this.
+It's in libata-dev.git#upstream and #NEXT (linux-next) at present.
 
-Since 1/2 is an essential fix to prevent a boot panic on parisc, I can
-just take them through the parisc tree.
+	Jeff
 
-James
-
-
-> James
-> 
-> ---
-> 
-> James Bottomley (2):
->   pata_cm64x: fix boot crash on parisc
->   libata-sff: prevent irq descriptions for dummy ports
-> 
->  drivers/ata/libata-sff.c  |    9 +++++++--
->  drivers/ata/pata_cmd64x.c |   42 ++++++++++++++++++++++++++++++++++++++----
->  include/linux/pci_ids.h   |    2 ++
->  3 files changed, 47 insertions(+), 6 deletions(-)
-> 
 
 
