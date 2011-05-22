@@ -1,31 +1,60 @@
-From: James Bottomley <James.bottomley@HansenPartnership.com>
-Subject: Re: [GIT PULL] parisc updates for the 2.6.38 merge window
-Date: Sun, 22 May 2011 22:01:33 +0400
-Message-ID: <d83c7f87-dab0-4faa-8141-8cf5b324705f@email.android.com>
-References: <1306048045.4092.3.camel@mulgrave.site> <20110522175845.GA15218@hiauly1.hia.nrc.ca>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Subject: Re: [stable] PA-RISC: compile error in include/net/dst.h
+Date: Mon, 23 May 2011 00:29:26 +0200
+Message-ID: <2254093.9oQvKLogfV@donald.sf-tec.de>
+References: <2612811.b2htuyZy9x@donald.sf-tec.de> <20110522143222.GB14556@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110522175845.GA15218@hiauly1.hia.nrc.ca>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: multipart/signed; boundary="nextPart1739995.G2MFWqQSJG"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>, stable@kernel.org,
+	netdev@vger.kernel.org
+To: Greg KH <greg@kroah.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20110522143222.GB14556@kroah.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 
+--nextPart1739995.G2MFWqQSJG
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
+Am Sonntag, 22. Mai 2011, 07:32:22 schrieb Greg KH:
+> On Sun, May 22, 2011 at 10:15:19AM +0200, Rolf Eike Beer wrote:
+> >                  from include/net/ipv6.h:16,
+> >                  from include/linux/sunrpc/clnt.h:25,
+> >                  from include/linux/nfs_fs.h:50,
+> > 
+> >                  from init/do_mounts.c:20:
+> > include/net/dst.h: In function 'dst_hold':
+> > include/net/dst.h:238:2: error: size of unnamed array is negative
+> > In file included from include/linux/nfs_fs.h:59:0,
+> > 
+> >                  from init/do_mounts.c:20:
+> > include/linux/mempool.h: In function 'mempool_create_kmalloc_pool':
+> > include/linux/mempool.h:58:10: warning: cast to pointer from integer of
+> > different size
+> > 
+> > This is both in 2.6.38.6 and 2.6.39, but is not in 2.6.38.4 when
+> > compiling for my C8000.
+> 
+> Could you bisect it down to the patch that causes the problem in
+> 2.6.38.6?
 
->For 2.6.38?
+I will try if I find time in the next days. Until now I can only confirm that 
+2.6.38.5 builds fine.
 
-Yes well as you and several others noticed I forgot to forward port the pull template.
+Eike	
+--nextPart1739995.G2MFWqQSJG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
 
-Sorry
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.15 (GNU/Linux)
 
-James
--- 
-Sent from my Android phone with K-9 Mail. Please excuse my brevity and top posting.
+iEYEABECAAYFAk3ZjkwACgkQXKSJPmm5/E4SegCgpCW43wAsqm8Yf1A3pOknddrb
+1TgAoJIbSXrBWcDU5eSchkHEmZG6bqkt
+=HtkC
+-----END PGP SIGNATURE-----
+
+--nextPart1739995.G2MFWqQSJG--
