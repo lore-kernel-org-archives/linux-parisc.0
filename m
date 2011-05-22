@@ -1,83 +1,54 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: Testing Linux 2.6.39-rc's on rp3440
-Date: Mon, 16 May 2011 19:44:50 -0400
-Message-ID: <20110516234450.GA19484@hiauly1.hia.nrc.ca>
-References: <20110514173357.GA8138@hiauly1.hia.nrc.ca> <20110515151820.GA12449@hiauly1.hia.nrc.ca>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [GIT PULL] parisc updates for the 2.6.38 merge window
+Date: Sun, 22 May 2011 11:07:25 +0400
+Message-ID: <1306048045.4092.3.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110515151820.GA12449@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I noticed one further thing about these hpmcs.  There seems to be
-a relationship between the exception address recorded in cr21 and
-the address used in the faulting instruction.  I have seen this in
-at least four hpmcs, including the lba_pat_out8 one posted previously
-to the list.  Here is one from yesterday:
+There are is one major fix in this: hopefully a final end to some of the
+segfault issues on the platform caused by aggressive icache speculation.
+Also, all of the currently missing syscalls on the platform are wired up
 
------------------  Processor 1 HPMC Information - PDC Version: 46.34  ------ 
+The patch is available here:
 
-Timestamp =   Sun May  15 18:52:36 GMT 2011    (20:11:05:15:18:52:36)
+master.kernel.org:/pub/scm/linux/kernel/git/jejb/parisc-2.6.git#for-linus
 
-HPMC Chassis Codes
+The short changelog is:
 
-       Chassis Code        Extension
-       ------------        ---------
-       0xe800035c00e00000 0x00000000403140c0
-       0x57000f7300e00000 0x8040004000000000
-       0x5600100b00e00000 0x0000000000000194
-       0x5600106400e00000 0xfffffff0f0436fc0
+James Bottomley (6):
+      [PARISC] wire up syncfs syscall
+      [PARISC] wire up the fhandle syscalls
+      [PARISC] wire up clock_adjtime syscall
+      [PARISC] wire up fanotify syscalls
+      [PARISC] prevent speculative re-read on cache flush
+      [PARISC] only make executable areas executable
+
+Meelis Roos (1):
+      [PARISC] fix pacache .size with new binutils
+
+And the diffstat:
+
+ arch/parisc/include/asm/cacheflush.h |    5 +-
+ arch/parisc/include/asm/pgtable.h    |    9 +-
+ arch/parisc/include/asm/unistd.h     |    8 +-
+ arch/parisc/kernel/cache.c           |   13 ++-
+ arch/parisc/kernel/entry.S           |    3 +
+ arch/parisc/kernel/head.S            |    5 +-
+ arch/parisc/kernel/module.c          |   10 ++-
+ arch/parisc/kernel/pacache.S         |    6 +-
+ arch/parisc/kernel/sys_parisc32.c    |    8 +
+ arch/parisc/kernel/syscall_table.S   |    6 +
+ arch/parisc/kernel/vmlinux.lds.S     |    1 +
+ arch/parisc/mm/init.c                |  260 +++++++++++++++++++---------------
+ 12 files changed, 205 insertions(+), 129 deletions(-)
+
+James
 
 
-General Registers 0 - 31
-00-03  0000000000000000  0000000040622080  00000000403189b0  00000000405c64b0
-04-07  0000000040614080  0000000000000000  00000000404e8100  000000007f1048d0
-08-11  0000000000000001  0000000000000100  000000007f0b1020  0000000000200200
-12-15  000000004062e880  0000000040622080  000000007f0b1420  000000007f0b1820
-16-19  000000007f0b1c20  0000000000000001  0000000040622080  000000007f1047f8
-20-23  ffe0000000000000  ffffffffffffffff  000000004058d110  8000000000000000
-24-27  0000000100028109  0000000000000001  00000000405c64b0  0000000040614080
-28-31  0000000004082001  000000007f104970  000000007f1049a0  0000000004082000
-
-Control Registers 0 - 31
-00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
-04-07  0000000000000000  0000000000000000  0000000000000000  0000000000000000
-08-11  0000000000000da6  0000000000000000  00000000000000c0  000000000000003f
-12-15  0000000000000000  0000000000000000  0000000000103000  ffe0000000000000
-16-19  000000d398385ff0  0000000000000000  00000000403140c0  000000000f80001c
-20-23  00000000a607ffd0  0000000014082001  000000ff0804ff0f  0000000000000000
-24-27  0000000000573000  000000003c11e000  ffffffffffffffff  0000000040002f80
-28-31  0000000040002140  ffffffffffffffff  000000007f104000  ffffffffffffffff
-
-Space Registers 0 - 7
-00-03  0000000000369800  0000000000000000  0000000000000000  0000000000369800
-04-07  0000000000000000  0000000000000000  0000000000000000  0000000000000000
-
-IIA Space (back entry)       = 0x0000000000000000
-IIA Offset (back entry)      = 0x00000000403140c4
-
-Processor 1 was executing ldb in mem_serial_in:
-
-00000000403140a8 <mem_serial_in>:
-    403140a8:   43 5c 00 a2     ldb 51(r26),ret0
-    403140ac:   53 5f 00 20     ldd 10(r26),r31
-    403140b0:   01 7c 18 c0     mtsarcm ret0
-    403140b4:   d7 99 00 00     depw,z r25,sar,32,ret0
-    403140b8:   db 9c 0f e0     extrd,s ret0,63,32,ret0
-    403140bc:   0b 9f 0a 1c     add,l r31,ret0,ret0
-=>  403140c0:   0f 80 00 1c     ldb r0(ret0),ret0
-    403140c4:   e8 40 d0 00     bve (rp)
-    403140c8:   db 9c 0b f8     extrd,u ret0,63,8,ret0
-    403140cc:   00 00 00 00     break 0,0
-
-Note the address in $ret0 and the value in $cr21.  I'm thinking
-some form of cache aliasing may be the cause.  The fault appears
-related to an io space access.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
