@@ -1,24 +1,31 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+From: James Bottomley <James.bottomley@HansenPartnership.com>
 Subject: Re: [GIT PULL] parisc updates for the 2.6.38 merge window
-Date: Sun, 22 May 2011 13:58:45 -0400
-Message-ID: <20110522175845.GA15218@hiauly1.hia.nrc.ca>
-References: <1306048045.4092.3.camel@mulgrave.site>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Date: Sun, 22 May 2011 22:01:33 +0400
+Message-ID: <d83c7f87-dab0-4faa-8141-8cf5b324705f@email.android.com>
+References: <1306048045.4092.3.camel@mulgrave.site> <20110522175845.GA15218@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+ charset=UTF-8
 Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
 	Parisc List <linux-parisc@vger.kernel.org>,
 	linux-kernel <linux-kernel@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1306048045.4092.3.camel@mulgrave.site>
+In-Reply-To: <20110522175845.GA15218@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-For 2.6.38?
 
-Dave
+
+John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
+
+>For 2.6.38?
+
+Yes well as you and several others noticed I forgot to forward port the pull template.
+
+Sorry
+
+James
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Sent from my Android phone with K-9 Mail. Please excuse my brevity and top posting.
