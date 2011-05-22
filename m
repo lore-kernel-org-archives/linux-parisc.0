@@ -1,54 +1,52 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [GIT PULL] parisc updates for the 2.6.38 merge window
-Date: Sun, 22 May 2011 11:07:25 +0400
-Message-ID: <1306048045.4092.3.camel@mulgrave.site>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Subject: PA-RISC: compile error in include/net/dst.h
+Date: Sun, 22 May 2011 10:15:19 +0200
+Message-ID: <2612811.b2htuyZy9x@donald.sf-tec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: multipart/signed; boundary="nextPart2353673.HFIKzf23yx"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, stable@kernel.org
+To: Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-There are is one major fix in this: hopefully a final end to some of the
-segfault issues on the platform caused by aggressive icache speculation.
-Also, all of the currently missing syscalls on the platform are wired up
 
-The patch is available here:
+--nextPart2353673.HFIKzf23yx
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-master.kernel.org:/pub/scm/linux/kernel/git/jejb/parisc-2.6.git#for-linus
+                 from include/net/ipv6.h:16,
+                 from include/linux/sunrpc/clnt.h:25,
+                 from include/linux/nfs_fs.h:50,
+                 from init/do_mounts.c:20:
+include/net/dst.h: In function 'dst_hold':
+include/net/dst.h:238:2: error: size of unnamed array is negative
+In file included from include/linux/nfs_fs.h:59:0,
+                 from init/do_mounts.c:20:
+include/linux/mempool.h: In function 'mempool_create_kmalloc_pool':
+include/linux/mempool.h:58:10: warning: cast to pointer from integer of 
+different size
 
-The short changelog is:
+This is both in 2.6.38.6 and 2.6.39, but is not in 2.6.38.4 when compiling for 
+my C8000.
 
-James Bottomley (6):
-      [PARISC] wire up syncfs syscall
-      [PARISC] wire up the fhandle syscalls
-      [PARISC] wire up clock_adjtime syscall
-      [PARISC] wire up fanotify syscalls
-      [PARISC] prevent speculative re-read on cache flush
-      [PARISC] only make executable areas executable
+pioneer src #  hppa64-unknown-linux-gnu-gcc --version
+hppa64-unknown-linux-gnu-gcc (Gentoo 4.5.2 p1.1) 4.5.2
 
-Meelis Roos (1):
-      [PARISC] fix pacache .size with new binutils
+Greetings,
 
-And the diffstat:
+Eike
+--nextPart2353673.HFIKzf23yx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
 
- arch/parisc/include/asm/cacheflush.h |    5 +-
- arch/parisc/include/asm/pgtable.h    |    9 +-
- arch/parisc/include/asm/unistd.h     |    8 +-
- arch/parisc/kernel/cache.c           |   13 ++-
- arch/parisc/kernel/entry.S           |    3 +
- arch/parisc/kernel/head.S            |    5 +-
- arch/parisc/kernel/module.c          |   10 ++-
- arch/parisc/kernel/pacache.S         |    6 +-
- arch/parisc/kernel/sys_parisc32.c    |    8 +
- arch/parisc/kernel/syscall_table.S   |    6 +
- arch/parisc/kernel/vmlinux.lds.S     |    1 +
- arch/parisc/mm/init.c                |  260 +++++++++++++++++++---------------
- 12 files changed, 205 insertions(+), 129 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.15 (GNU/Linux)
 
-James
+iEYEABECAAYFAk3Yxh4ACgkQXKSJPmm5/E6F1wCfdSZOu5ooYpMwgMhXpkeTT5Rk
+qVUAn0+WeORQaglK0soXo7T61Cyrg2uU
+=ur5h
+-----END PGP SIGNATURE-----
 
+--nextPart2353673.HFIKzf23yx--
 
