@@ -1,60 +1,35 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: [stable] PA-RISC: compile error in include/net/dst.h
-Date: Mon, 23 May 2011 00:29:26 +0200
-Message-ID: <2254093.9oQvKLogfV@donald.sf-tec.de>
-References: <2612811.b2htuyZy9x@donald.sf-tec.de> <20110522143222.GB14556@kroah.com>
+From: Jeroen Roovers <jer@gentoo.org>
+Subject: [PATCH] Do not set CROSS_COMPILE but let CONFIG_CROSS_COMPILE
+ handle it all.
+Date: Tue, 24 May 2011 19:47:01 +0200
+Message-ID: <20110524194701.6a4c1bd4@epia.jer-c2.orkz.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1739995.G2MFWqQSJG"; micalg="pgp-sha1"; protocol="application/pgp-signature"
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>, stable@kernel.org,
-	netdev@vger.kernel.org
-To: Greg KH <greg@kroah.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20110522143222.GB14556@kroah.com>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Do not set CROSS_COMPILE but let CONFIG_CROSS_COMPILE handle it all.
+The problem this fixes manifests itself when you try to build a 64-bit kernel
+on a distro which does not provide hppa$(WIDTH)-linux-gnu- but perhaps
+hppa$(WIDTH)-unknown-linux-gnu- instead, like Gentoo Linux.
 
---nextPart1739995.G2MFWqQSJG
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Signed-off-by: Jeroen Roovers <jer@gentoo.org>
+---
 
-Am Sonntag, 22. Mai 2011, 07:32:22 schrieb Greg KH:
-> On Sun, May 22, 2011 at 10:15:19AM +0200, Rolf Eike Beer wrote:
-> >                  from include/net/ipv6.h:16,
-> >                  from include/linux/sunrpc/clnt.h:25,
-> >                  from include/linux/nfs_fs.h:50,
-> > 
-> >                  from init/do_mounts.c:20:
-> > include/net/dst.h: In function 'dst_hold':
-> > include/net/dst.h:238:2: error: size of unnamed array is negative
-> > In file included from include/linux/nfs_fs.h:59:0,
-> > 
-> >                  from init/do_mounts.c:20:
-> > include/linux/mempool.h: In function 'mempool_create_kmalloc_pool':
-> > include/linux/mempool.h:58:10: warning: cast to pointer from integer of
-> > different size
-> > 
-> > This is both in 2.6.38.6 and 2.6.39, but is not in 2.6.38.4 when
-> > compiling for my C8000.
-> 
-> Could you bisect it down to the patch that causes the problem in
-> 2.6.38.6?
-
-I will try if I find time in the next days. Until now I can only confirm that 
-2.6.38.5 builds fine.
-
-Eike	
---nextPart1739995.G2MFWqQSJG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.15 (GNU/Linux)
-
-iEYEABECAAYFAk3ZjkwACgkQXKSJPmm5/E4SegCgpCW43wAsqm8Yf1A3pOknddrb
-1TgAoJIbSXrBWcDU5eSchkHEmZG6bqkt
-=HtkC
------END PGP SIGNATURE-----
-
---nextPart1739995.G2MFWqQSJG--
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -31,16 +31,10 @@
+ UTS_MACHINE	:= parisc64
+ CHECKFLAGS	+= -D__LP64__=1 -m64
+ WIDTH		:= 64
+-CROSS_COMPILE	:= hppa64-linux-gnu-
+ else # 32-bit
+ WIDTH		:=
+ endif
+ 
+-# attempt to help out folks who are cross-compiling
+-ifeq ($(NATIVE),1)
+-CROSS_COMPILE	:= hppa$(WIDTH)-linux-
+-endif
