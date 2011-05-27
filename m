@@ -1,50 +1,54 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [PATCH] Do not set CROSS_COMPILE but let CONFIG_CROSS_COMPILE handle it all.
-Date: Thu, 26 May 2011 01:16:53 -0400
-Message-ID: <201105260116.54553.vapier@gentoo.org>
-References: <20110524194701.6a4c1bd4@epia.jer-c2.orkz.net>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: debian hppa
+Date: Fri, 27 May 2011 12:24:54 -0400
+Message-ID: <20110527162453.GA10333@hiauly1.hia.nrc.ca>
+References: <20110525211710.GA1562@hiauly1.hia.nrc.ca> <BANLkTikFc1Euw-c+qiUaUznMg7b_1a+4Hg@mail.gmail.com> <20110525234205.GB2556@dannf.org> <20110526012304.GB1912@hiauly1.hia.nrc.ca> <20110526144610.GC2556@dannf.org> <20110526152900.GA5200@hiauly1.hia.nrc.ca> <20110526160951.GA19134@dannf.org> <BANLkTimmzyQWPD0BribiDgM7W6yvOJwUJA@mail.gmail.com> <20110527145656.GB21744@dannf.org> <BANLkTi=BODRACq5N1XBrN+JovNjE2VTibQ@mail.gmail.com>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1344693.ElK78927Ga";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Cc: linux-parisc@vger.kernel.org
-To: Jeroen Roovers <jer@gentoo.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: dann frazier <dannf@dannf.org>,
+	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	linux-parisc@vger.kernel.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110524194701.6a4c1bd4@epia.jer-c2.orkz.net>
+In-Reply-To: <BANLkTi=BODRACq5N1XBrN+JovNjE2VTibQ@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---nextPart1344693.ElK78927Ga
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+On Fri, 27 May 2011, Carlos O'Donell wrote:
 
-also, since this is a parisc-specific patch, i'd suggest a summary that=20
-reflects that.  perhaps something like:
-parisc: do not always override CROSS_COMPILE
-=2Dmike
+> On Fri, May 27, 2011 at 10:56 AM, dann frazier <dannf@dannf.org> wrote:
+> > Probably. debian-ports is the only other option I know of - but it
+> > means we need people to step up and do random bits of release work
+> > (keeping a working installer, etc). I also think we'd need to have
+> > some notion of a "stable" release - I don't think an unstable-only
+> > release is very useful outside of a developer's basement, and not
+> > something I'd want to host our infrastructure systems on.
+> >
+> > Since I don't see that happening, yes, Gentoo.
+> >
+> 
+> We need like 3-4 more people on the project to properly support
+> debian-ports for hppa. I don't think that type of support is going to
+> materialize any time soon.
 
---nextPart1344693.ElK78927Ga
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+It's unclear whether any volunteer support for hppa remains within
+"debian".  I added the parisc-linux list to the cc list to make people
+aware of the situation.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
+Aside from the issue about releases, the buildd process is stuck
+due to unresolved dependencies.  Maybe it should be shutdown to
+preserve state.
 
-iQIcBAABAgAGBQJN3eJGAAoJEEFjO5/oN/WBLfsQANOQj+kTcEM2UpFSLmk4VQQ8
-gVh6kDg/bUQZSqinHDbM2xyD87Ar7pvXstfOJzQAbk2lUnEJsuWhplbTylD3bGTB
-r3+BnSsv2ojhVuvtU6wM+VaprFuV8QHpd0QQrN/tvjxZ2aRZeiXFdzAT8b3MgBft
-enI25btWQKiB8GY+YZWU2gEelYOZFrCOcQMh1B2tmzmwAz1+bDgnwX3vW6XgZapm
-d7RyEFyA9ppda2LyidDSpY9utVzYdzU1BvvECHrX1j65IuNshKtUWpkY0yNjmCvu
-RJ8/rRwCR9P5Muh0JF5JJAw2+hGWheeTouPy5rLi/vsYpYQVoQsCu/b2f5eEin81
-rs8wRTghknjUnGwGns7DTJgIqtlBRrZjY3A/IdfvHWWzVHWnSM2xFl19BWqMLnhI
-LvkaR6GG2GM1h8sQWtcxpAMiJ37YxVFJeQeYPmID79olXKLBN1SJQpVBv4KueHVE
-weDWNzSInmbUAfmeJnkNsJmpeboN+3sOptxYYSQVcXOnl6nuqdP3EyTQfxwqsUya
-ISQGUp/I5M9P6LNHbuNTRzlDxuHcmlC/gFqu3134+ZGylB6+qjY+r7cddgacltct
-f/OK+e2ffJKryBFyKfGamc4knY62RaHb1UWdbHIeqpvdhb51i/SUb3LBHCBdczxe
-6cgl3cUBcAFIi/httQS0
-=XG3M
------END PGP SIGNATURE-----
+> Therefore I think Gentoo is probably the best option for the community.
+> 
+> I don't care how we achieve a sustainable distribution for hppa, only
+> that we continue to provide value to our user community.
 
---nextPart1344693.ElK78927Ga--
+There is some hppa work still being done in Gentoo, so I tend to agree
+but I have no direct experience with it.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
