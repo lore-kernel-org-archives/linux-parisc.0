@@ -1,78 +1,93 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: eglibc_2.13-5 on hppa
-Date: Tue, 7 Jun 2011 21:33:09 -0400
-Message-ID: <20110608013308.GA15282@hiauly1.hia.nrc.ca>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: eglibc_2.13-5 on hppa
+Date: Wed, 8 Jun 2011 09:21:44 -0400
+Message-ID: <BANLkTi=iXdMa2Vmv6-S2TPZCTp-S-G5z7Q@mail.gmail.com>
+References: <20110608013308.GA15282@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20110608013308.GA15282@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-What's the status of glibc?  In the testsuite, I seeing various
-tests hang.  For example,
+On Tue, Jun 7, 2011 at 9:33 PM, John David Anglin
+<dave@hiauly1.hia.nrc.ca> wrote:
+> What's the status of glibc? =A0In the testsuite, I seeing various
+> tests hang. =A0For example,
 
-dave      2301  0.0  0.2  32912 25916 ?        S    13:31   0:03 apt-get --compile source libc6
-dave      2458  0.0  0.0  32912  5112 ?        S    13:31   0:00  \_ apt-get --compile source libc6
-dave      2817  0.0  0.0   1968   596 ?        S    13:32   0:00      \_ sh -c cd eglibc-2.13 && dpkg-buildpackage -b -uc
-dave      2820  0.0  0.0   9164  5764 ?        S    13:32   0:00          \_ /usr/bin/perl /usr/bin/dpkg-buildpackage -b -uc
-dave      3206  0.0  0.0   3836  1208 ?        S    13:32   0:02              \_ /usr/bin/make -f debian/rules build
-dave     27678  0.0  0.0   4484  1396 ?        S    17:52   0:00                  \_ /bin/bash -e -c set -e ; \?if [ -n "" ]; then \?  echo "Tests have been disabled via DEB_BUILD_OPTIONS." | tee bu
-dave     27689  0.0  0.0   2184   896 ?        S    17:52   0:00                      \_ /usr/bin/make -C build-tree/hppa-libc -k check
-dave     27692  0.0  0.0   1968   596 ?        S    17:52   0:00                      |   \_ /bin/sh -c /usr/bin/make -r PARALLELMFLAGS="" CVSOPTS="" -C /home/dave/debian/glibc/eglibc-2.13 objdir=`p
-dave     27695  0.0  0.0   4752  3320 ?        S    17:52   0:04                      |       \_ /usr/bin/make -r PARALLELMFLAGS= CVSOPTS= -C /home/dave/debian/glibc/eglibc-2.13 objdir=/home/dave/de
-dave       301  1.5  0.0   5680  4288 ?        S    20:35   0:15                      |           \_ /usr/bin/make subdir=rt -C rt ..=../ tests
-dave      8664  0.0  0.0   2956  1156 ?        S    20:49   0:00                      |               \_ /bin/bash -c GCONV_PATH=/home/dave/debian/glibc/eglibc-2.13/build-tree/hppa-libc/iconvdata LC
-dave      8666  0.0  0.0   1920   396 ?        S    20:49   0:00                      |                   \_ /home/dave/debian/glibc/eglibc-2.13/build-tree/hppa-libc/elf/ld.so.1 --library-path /home
-dave      8667  100  0.0  34836   588 ?        Sl   20:49   2:09                      |                       \_ /home/dave/debian/glibc/eglibc-2.13/build-tree/hppa-libc/elf/ld.so.1 --library-path /
-dave     27690  0.0  0.0   3376   616 ?        S    17:52   0:01                      \_ tee build-tree/log-test-hppa-linux-gnu-libc
+AFAIK glibc 2.14 is stable and just released, but has some testsuite fa=
+ilures.
 
-dave@mx3210:~/debian/glibc$ strace -p 8667
-Process 8667 attached - interrupt to quit
-futex(0x143d8, FUTEX_WAIT_PRIVATE, 3, NULL^C <unfinished ...>
-Process 8667 detached
-dave@mx3210:~/debian/glibc$ gdb /home/dave/debian/glibc/eglibc-2.13/build-tree/hppa-libc/elf/ld.so.1 8667
-GNU gdb (GDB) 7.2-debian
-Copyright (C) 2010 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
-and "show warranty" for details.
-This GDB was configured as "hppa-linux-gnu".
-For bug reporting instructions, please see:
-<http://www.gnu.org/software/gdb/bugs/>...
-Reading symbols from /home/dave/debian/glibc/eglibc-2.13/build-tree/hppa-libc/elf/ld.so.1...done.
-Attaching to program: /home/dave/debian/glibc/eglibc-2.13/build-tree/hppa-libc/elf/ld.so.1, process 8667
-Reading symbols from /home/dave/debian/glibc/eglibc-2.13/build-tree/hppa-libc/rt/librt.so.1...done.
-Loaded symbols for /home/dave/debian/glibc/eglibc-2.13/build-tree/hppa-libc/rt/librt.so.1
-Reading symbols from /home/dave/debian/glibc/eglibc-2.13/build-tree/hppa-libc/nptl/libpthread.so.0...done.
+glibc 2.15 is in development and I'll be looking at it next week.
 
-warning: Unable to find libthread_db matching inferior's thread library, thread debugging will not be available.
-Loaded symbols for /home/dave/debian/glibc/eglibc-2.13/build-tree/hppa-libc/nptl/libpthread.so.0
-Reading symbols from /home/dave/debian/glibc/eglibc-2.13/build-tree/hppa-libc/libc.so.6...done.
+> dave =A0 =A0 =A02301 =A00.0 =A00.2 =A032912 25916 ? =A0 =A0 =A0 =A0S =
+=A0 =A013:31 =A0 0:03 apt-get --compile source libc6
+> dave =A0 =A0 =A02458 =A00.0 =A00.0 =A032912 =A05112 ? =A0 =A0 =A0 =A0=
+S =A0 =A013:31 =A0 0:00 =A0\_ apt-get --compile source libc6
+> dave =A0 =A0 =A02817 =A00.0 =A00.0 =A0 1968 =A0 596 ? =A0 =A0 =A0 =A0=
+S =A0 =A013:32 =A0 0:00 =A0 =A0 =A0\_ sh -c cd eglibc-2.13 && dpkg-buil=
+dpackage -b -uc
+> dave =A0 =A0 =A02820 =A00.0 =A00.0 =A0 9164 =A05764 ? =A0 =A0 =A0 =A0=
+S =A0 =A013:32 =A0 0:00 =A0 =A0 =A0 =A0 =A0\_ /usr/bin/perl /usr/bin/dp=
+kg-buildpackage -b -uc
+> dave =A0 =A0 =A03206 =A00.0 =A00.0 =A0 3836 =A01208 ? =A0 =A0 =A0 =A0=
+S =A0 =A013:32 =A0 0:02 =A0 =A0 =A0 =A0 =A0 =A0 =A0\_ /usr/bin/make -f =
+debian/rules build
+> dave =A0 =A0 27678 =A00.0 =A00.0 =A0 4484 =A01396 ? =A0 =A0 =A0 =A0S =
+=A0 =A017:52 =A0 0:00 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0\_ /bin/bash -=
+e -c set -e ; \?if [ -n "" ]; then \? =A0echo "Tests have been disabled=
+ via DEB_BUILD_OPTIONS." | tee bu
+> dave =A0 =A0 27689 =A00.0 =A00.0 =A0 2184 =A0 896 ? =A0 =A0 =A0 =A0S =
+=A0 =A017:52 =A0 0:00 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0\_ /us=
+r/bin/make -C build-tree/hppa-libc -k check
+> dave =A0 =A0 27692 =A00.0 =A00.0 =A0 1968 =A0 596 ? =A0 =A0 =A0 =A0S =
+=A0 =A017:52 =A0 0:00 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 =
+\_ /bin/sh -c /usr/bin/make -r PARALLELMFLAGS=3D"" CVSOPTS=3D"" -C /hom=
+e/dave/debian/glibc/eglibc-2.13 objdir=3D`p
+> dave =A0 =A0 27695 =A00.0 =A00.0 =A0 4752 =A03320 ? =A0 =A0 =A0 =A0S =
+=A0 =A017:52 =A0 0:04 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 =
+=A0 =A0 \_ /usr/bin/make -r PARALLELMFLAGS=3D CVSOPTS=3D -C /home/dave/=
+debian/glibc/eglibc-2.13 objdir=3D/home/dave/de
+> dave =A0 =A0 =A0 301 =A01.5 =A00.0 =A0 5680 =A04288 ? =A0 =A0 =A0 =A0=
+S =A0 =A020:35 =A0 0:15 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0=
+ =A0 =A0 =A0 =A0 \_ /usr/bin/make subdir=3Drt -C rt ..=3D../ tests
+> dave =A0 =A0 =A08664 =A00.0 =A00.0 =A0 2956 =A01156 ? =A0 =A0 =A0 =A0=
+S =A0 =A020:49 =A0 0:00 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0=
+ =A0 =A0 =A0 =A0 =A0 =A0 \_ /bin/bash -c GCONV_PATH=3D/home/dave/debian=
+/glibc/eglibc-2.13/build-tree/hppa-libc/iconvdata LC
+> dave =A0 =A0 =A08666 =A00.0 =A00.0 =A0 1920 =A0 396 ? =A0 =A0 =A0 =A0=
+S =A0 =A020:49 =A0 0:00 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0=
+ =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 \_ /home/dave/debian/glibc/eglibc-2.13=
+/build-tree/hppa-libc/elf/ld.so.1 --library-path /home
+> dave =A0 =A0 =A08667 =A0100 =A00.0 =A034836 =A0 588 ? =A0 =A0 =A0 =A0=
+Sl =A0 20:49 =A0 2:09 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 \_ /home/dave/debian/glibc/egli=
+bc-2.13/build-tree/hppa-libc/elf/ld.so.1 --library-path /
+> dave =A0 =A0 27690 =A00.0 =A00.0 =A0 3376 =A0 616 ? =A0 =A0 =A0 =A0S =
+=A0 =A017:52 =A0 0:01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0\_ tee=
+ build-tree/log-test-hppa-linux-gnu-libc
 
-warning: Unable to find libthread_db matching inferior's thread library, thread debugging will not be available.
-Loaded symbols for /home/dave/debian/glibc/eglibc-2.13/build-tree/hppa-libc/libc.so.6
-Loaded symbols for /home/dave/debian/glibc/eglibc-2.13/build-tree/hppa-libc/elf/ld.so.1
-0x40099b28 in __pthread_cond_wait_internal (cond=0x143d0, mutex=0x143a0) at ../nptl/pthread_cond_wait.c:153
-153	      lll_futex_wait (&cond->__data.__futex, futex_val, pshared);
-(gdb) x/x 0x143d8
-0x143d8:	0x00000003
-(gdb) p pshared
-$1 = 0
-(gdb) info threads
-* 1 process 8667  0x40099b28 in __pthread_cond_wait_internal (cond=0x143d0, mutex=0x143a0) at ../nptl/pthread_cond_wait.c:153
-(gdb) bt
-#0  0x40099b28 in __pthread_cond_wait_internal (cond=0x143d0, mutex=0x143a0) at ../nptl/pthread_cond_wait.c:153
-#1  0x40099ee4 in __pthread_cond_wait (cond=0x143d0, mutex=0x143a0) at ../ports/sysdeps/unix/sysv/linux/hppa/nptl/pthread_cond_wait.c:34
+I never see any testsuite hangs on my a500 (vanilla 2.6.33).
 
-The "l" in the ps faux output indicates a multi-threaded process using
-CLONE_THREAD, but gdb only sees one thread.
+I have a pile of free time next week and I hope to dedicate some time
+to cleaning up the glibc testsuite.
 
-Thoughts?
+> Thoughts?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Yes, the "warning: Unable to find libthread_db matching inferior's
+thread library, thread debugging will not be available." means you
+can't debug threads until you preload the new libc's
+libthread_db.so.1.
+
+You must always use the libthread_db.so.1 that matches your threading l=
+ibrary.
+
+Cheers,
+Carlos.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
