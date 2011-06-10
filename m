@@ -1,28 +1,61 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: Stuck gnat1 processes
-Date: Fri, 10 Jun 2011 06:37:19 -0600
-Message-ID: <20110610123719.GD29089@parisc-linux.org>
-References: <20110610013034.GA5353@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110610013034.GA5353@hiauly1.hia.nrc.ca>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Mathias Krause <minipli@googlemail.com>
+Subject: [PATCH] parisc, exec: remove redundant set_fs(USER_DS)
+Date: Fri, 10 Jun 2011 15:10:16 +0200
+Message-ID: <1307711416-14119-1-git-send-email-minipli@googlemail.com>
+References: <BANLkTinv1teZEHMK0qymaVdcxPOErpqSyg@mail.gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Mathias Krause <minipli@googlemail.com>,
+	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <BANLkTinv1teZEHMK0qymaVdcxPOErpqSyg@mail.gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Jun 09, 2011 at 09:30:35PM -0400, John David Anglin wrote:
-> As far as I can tell, all are stuck in the kernel.  Gdb can't step
-> the code, nor do breaks on the next instruction ever get hit.  This
-> may have something to do with the fact that the instruction is trying
-> to read from text (C switch statement).
+The address limit is already set in flush_old_exec() so those calls to
+set_fs(USER_DS) are redundant.
 
-sysrq-l will show a backtrace for all CPUs.  That might be helpful in
-diagnosing this problem.
+Signed-off-by: Mathias Krause <minipli@googlemail.com>
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: Helge Deller <deller@gmx.de>
+---
+ arch/parisc/include/asm/processor.h |    2 --
+ arch/parisc/kernel/process.c        |    1 -
+ 2 files changed, 0 insertions(+), 3 deletions(-)
 
+diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
+index 9ce66e9..7213ec9 100644
+--- a/arch/parisc/include/asm/processor.h
++++ b/arch/parisc/include/asm/processor.h
+@@ -196,7 +196,6 @@ typedef unsigned int elf_caddr_t;
+ 	/* offset pc for priv. level */			\
+ 	pc |= 3;					\
+ 							\
+-	set_fs(USER_DS);				\
+ 	regs->iasq[0] = spaceid;			\
+ 	regs->iasq[1] = spaceid;			\
+ 	regs->iaoq[0] = pc;				\
+@@ -299,7 +298,6 @@ on downward growing arches, it looks like this:
+ 	elf_addr_t pc = (elf_addr_t)new_pc | 3;		\
+ 	elf_caddr_t *argv = (elf_caddr_t *)bprm->exec + 1;	\
+ 							\
+-	set_fs(USER_DS);				\
+ 	regs->iasq[0] = spaceid;			\
+ 	regs->iasq[1] = spaceid;			\
+ 	regs->iaoq[0] = pc;				\
+diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+index 4b4b918..62c60b8 100644
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -192,7 +192,6 @@ void flush_thread(void)
+ 	/* Only needs to handle fpu stuff or perf monitors.
+ 	** REVISIT: several arches implement a "lazy fpu state".
+ 	*/
+-	set_fs(USER_DS);
+ }
+ 
+ void release_thread(struct task_struct *dead_task)
 -- 
-Matthew Wilcox				Intel Open Source Technology Centre
-"Bill, look, we understand that you're interested in selling us this
-operating system, but compare it to ours.  We can't possibly take such
-a retrograde step."
+1.5.6.5
