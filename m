@@ -1,41 +1,46 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Subject: Re: Stuck gnat1 processes
-Date: Thu, 9 Jun 2011 22:21:34 -0400
-Message-ID: <BANLkTim57hUshC5Uaeojn9nzCxy23UE=Xg@mail.gmail.com>
-References: <20110610013034.GA5353@hiauly1.hia.nrc.ca>
+Date: Thu, 9 Jun 2011 23:01:35 -0400
+Message-ID: <20110610030134.GA7699@hiauly1.hia.nrc.ca>
+References: <20110610013034.GA5353@hiauly1.hia.nrc.ca> <BANLkTim57hUshC5Uaeojn9nzCxy23UE=Xg@mail.gmail.com>
+Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	linux-parisc@vger.kernel.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110610013034.GA5353@hiauly1.hia.nrc.ca>
+In-Reply-To: <BANLkTim57hUshC5Uaeojn9nzCxy23UE=Xg@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Jun 9, 2011 at 9:30 PM, John David Anglin
-<dave@hiauly1.hia.nrc.ca> wrote:
-> Here is another wierd bug -- four gnat1 process stuck at exactly the
-> same location making zero forward progress. =A0I have seen this a num=
-ber
-> of times, so I thought it would be useful to report.
->
-> As far as I can tell, all are stuck in the kernel. =A0Gdb can't step
-> the code, nor do breaks on the next instruction ever get hit. =A0This
-> may have something to do with the fact that the instruction is trying
-> to read from text (C switch statement).
->
-> This is with 2.6.39.1 with James' last two, but I have also seen this
-> without the patches. =A0Machine is rp3440.
+On Thu, 09 Jun 2011, Carlos O'Donell wrote:
 
-This looks like a combination of multiple bugs, the process is
-probably dead, or not running, which is why gdb can't do anything with
-it. I'm surprised the ptrace API isn't returning some more diagnostics
-about the stuck process.
+> This looks like a combination of multiple bugs, the process is
+> probably dead, or not running, which is why gdb can't do anything with
+> it. I'm surprised the ptrace API isn't returning some more diagnostics
+> about the stuck process.
 
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Why do you think the processes are dead or not running?  Top thinks
+they are running at 100% CPU.  The general system responsiveness
+seemed like full load.
+
+The backtraces indicated that a diagnostic report was in process of
+being output.  The $r19 register appears to point to the expected location.
+Possibly, there is a space register mixup but gdb doesn't show them
+correctly.  I think x/x $r19 worked ok.
+
+There is no indication that the processes are waiting for anything.
+
+Gnat1 would normally do a compilation and exit.  I don't believe it
+is multithreaded.
+
+Strace showed nothing.  Gdb always attached at the same location.
+
+It was possible to kill the processes, and then make terminated when
+the last process was killed.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
