@@ -1,31 +1,33 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Guenter Roeck <guenter.roeck@ericsson.com>
 Subject: Re: [RFC,PATCH] Cleanup PC parallel port Kconfig
-Date: Wed, 15 Jun 2011 13:24:24 +0200
-Message-ID: <BANLkTimMLDb6LL0HZv8XtHt=zvyE7eybyg@mail.gmail.com>
+Date: Wed, 15 Jun 2011 07:36:34 -0700
+Message-ID: <20110615143634.GA12757@ericsson.com>
 References: <20110614190850.GA13526@linux-mips.org>
-	<201106142333.16203.arnd@arndb.de> <4DF83577.6040903@zytor.com>
-	<201106151146.13320.arnd@arndb.de>
+	<4DF7C3CA.9050902@zytor.com>
+	<20110614223404.GA30057@linux-mips.org>
+	<4DF8329C.7000904@zytor.com>
+	<20110615083437.GA32624@linux-mips.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: linux-mips@linux-mips.org, linux-m68k@vger.kernel.org,
-	linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
+Content-Type: text/plain; charset="us-ascii"
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
+	"linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>,
+	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+	"linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
 	Chen Liqin <liqin.chen@sunplusct.com>, Paul Mackerras <paulus@samba.org>,
-	"H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
-	Guan Xuetao <gxt@mprc.pku.edu.cn>,
-	Lennox Wu <lennox.wu@gmail.com>, linux-arch@vger.kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+	Guan Xuetao <gxt@mprc.pku.edu.cn>, Lennox Wu <lennox.wu@gmail.com>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
 	Jesper Nilsson <jesper.nilsson@axis.com>,
 	Russell King <linux@arm.linux.org.uk>,
 	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Helge Deller <deller@gmx.de>, x86@kernel.org,
+	Helge Deller <deller@gmx.de>, "x86@kernel.org" <x86@kernel.org>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Ingo Molnar <mingo@redhat.com>, Matt Turner <mattst88@gmail.com>,
-	Fenghua Yu <fenghua.yu@intel.com>, microblaze-uclinux@itee.uq.edu.au,
-	Chris Metcalf <cmetcalf@tilera.com>, Mikael Starvik <starvik@axis.com>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infrade
-To: Arnd Bergmann <arnd@arndb.de>
+	Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68
+To: Ralf Baechle <ralf@linux-mips.org>
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <201106151146.13320.arnd@arndb.de>
+In-Reply-To: <20110615083437.GA32624@linux-mips.org>
 List-Id: <linux-arm-kernel.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
 	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
@@ -36,26 +38,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 
-T24gV2VkLCBKdW4gMTUsIDIwMTEgYXQgMTE6NDYsIEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIu
-ZGU+IHdyb3RlOgo+ICogSW4gY2FzZSBvZiBmbG9wcGllcywgdGhlICJzb2x1dGlvbiIgd2FzIHRv
-IHdyaXRlIGEgZHJpdmVyIGZvciBldmVyeSBwbGF0Zm9ybSB0aGF0Cj4gwqBkb2Vzbid0IGhhdmUg
-UElPLCBzaW5jZSB0aGV5IHRlbmQgdG8gaGF2ZSBvdGhlciBkaWZmZXJlbmNlcy4gVGhlIGFtaWZs
-b3AgYW5kCj4gwqBhdGFmbG9wIGRyaXZlcnMgYXJlIG5vdCBldmVuIHVzZSByZWFkYigpLCB0aGV5
-IGp1c3QgZGVyZWZlbmNlIHZvbGF0aWxlIHBvaW50ZXJzCj4gwqB0byBkbyBNTUlPLiBJIGRvdWJ0
-IHdlIGNhbiBmaW5kIHZvbHVudGVlcnMgdG8gY2xlYW4gdGhhdCB1cC4KCkFtaWZsb3AgZHJpdmVz
-IHRoZSBBbWlnYSBmbG9wcHkgY29udHJvbGxlciwgd2hpY2ggaXMgY29tcGxldGVseQpkaWZmZXJl
-bnQgZnJvbSB0aGUKUEMtc3R5bGUgZmxvcHB5IGNvbnRyb2xsZXIuCkF0YWZsb3AgZHJpdmVzIHRo
-ZSBBdGFyaSBmbG9wcHkgY29udHJvbGxlciwgd2hpY2ggc2VlbXMgdG8gYmUgYSBXRDE3NzIgYW5k
-IG5vdApyZWxhdGVkIHRvIFBDLXN0eWxlIGZsb3BweSBjb250cm9sbGVycyBuZWl0aGVyLgoKU28g
-bm9uZSBvZiB0aGVtIGRyaXZlIFBDLXN0eWxlIGhhcmR3YXJlLCBhbmQgYm90aCBwcmVkYXRlIHRo
-ZSBnZW5lcmljIHJlYWRiKCkKaW5mcmFzdHJ1Y3R1cmUuCgpHcntvZXRqZSxlZXRpbmd9cywKCsKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIEdlZXJ0CgotLQpHZWVydCBVeXR0ZXJo
-b2V2ZW4gLS0gVGhlcmUncyBsb3RzIG9mIExpbnV4IGJleW9uZCBpYTMyIC0tIGdlZXJ0QGxpbnV4
-LW02OGsub3JnCgpJbiBwZXJzb25hbCBjb252ZXJzYXRpb25zIHdpdGggdGVjaG5pY2FsIHBlb3Bs
-ZSwgSSBjYWxsIG15c2VsZiBhIGhhY2tlci4gQnV0CndoZW4gSSdtIHRhbGtpbmcgdG8gam91cm5h
-bGlzdHMgSSBqdXN0IHNheSAicHJvZ3JhbW1lciIgb3Igc29tZXRoaW5nIGxpa2UgdGhhdC4KwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqDCoCDCoMKgIC0tIExpbnVzIFRv
-cnZhbGRzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwps
-aW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlzdApsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1hcm0ta2VybmVsCg==
+On Wed, Jun 15, 2011 at 04:34:37AM -0400, Ralf Baechle wrote:
+> On Tue, Jun 14, 2011 at 09:18:36PM -0700, H. Peter Anvin wrote:
+> 
+> > On 06/14/2011 03:34 PM, Ralf Baechle wrote:
+> > > 
+> > > There is no point in offering to build something that couldn't possibly be
+> > > used.  It just makes the kernel harder to configure and inflates the test
+> > > matrix for no good reason.
+> > > 
+> > 
+> > I see... that's why a bunch of devices that only exist on ARM and MIPS
+> > SoCs are offered on x86 platforms?
+> 
+> Well, if you notice one of those, yell.  Or send patches.  Most of those
+> have been fixed.
+> 
+I think he was being sarcastic, and wanted to say that it should be that way.
+
+Guenter
