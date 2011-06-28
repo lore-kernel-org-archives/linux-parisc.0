@@ -1,93 +1,127 @@
-From: Matt Turner <mattst88@gmail.com>
-Subject: Re: [PATCH] e1000: Allow the driver to be used on PA
- RISC C8000 workstation
-Date: Mon, 27 Jun 2011 15:33:43 -0400
-Message-ID: <BANLkTimbhOpp624KKU0dEE63mkAC1SDMAg@mail.gmail.com>
-References: <A78C6259B11833419567082E2DC0C25601D8A9CA5E@orsmsx508.amr.corp.intel.com>
-	<1538517.jd8kKEpd3f@donald.sf-tec.de>
-	<2567734.3Tpd1BeV4a@donald.sf-tec.de>
-	<1793556.1X3EUabhs6@donald.sf-tec.de>
+From: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Subject: [PATCH] fix backtrace on PA-RISC
+Date: Wed, 29 Jun 2011 00:48:19 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1106290043170.32272@artax.karlin.mff.cuni.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Cc: "kyle@mcmartin.ca" <kyle@mcmartin.ca>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"e1000-devel@lists.sourceforge.net" <e1000-devel@lists.sourceforge.net>,
-	netdev@vger.kernel.org, Guy Martin <gmsoft@tuxicoman.be>,
-	"mikulas@artax.karlin.mff.cuni.cz" <mikulas@artax.karlin.mff.cuni.cz>
-To: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Return-path: <e1000-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1793556.1X3EUabhs6@donald.sf-tec.de>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/e1000-devel>,
-	<mailto:e1000-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=e1000-devel>
-List-Post: <mailto:e1000-devel@lists.sourceforge.net>
-List-Help: <mailto:e1000-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/e1000-devel>,
-	<mailto:e1000-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: e1000-devel-bounces@lists.sourceforge.net
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jun 27, 2011 at 2:42 PM, Rolf Eike Beer <eike-kernel@sf-tec.de> wro=
-te:
-> Rolf Eike Beer wrote:
->> Am Freitag, 18. M=E4rz 2011, 17:39:57 schrieb Rolf Eike Beer:
->> > Am Mittwoch, 2. M=E4rz 2011, 21:19:24 schrieb Jesse Brandeburg:
->> > > On Mon, Feb 28, 2011 at 5:40 AM, Guy Martin <gmsoft@tuxicoman.be> wr=
-ote:
->> > > > Hi Jeff,
->> > > >
->> > > > Any luck getting this into mainline ?
->> > >
->> > > Hi Guy, sorry for the delay,
->> > > We haven't been able to get our contacts in HP to give us a decent
->> > > response so far, we are following up with them to see whats up. =A0We
->> > > have not lost the patch and are still tracking it internally.
->> > >
->> > > Give us a couple more weeks if that is okay and we should be able to
->> > > settle this by then.
->> >
->> > I wonder what exactly you are waiting for? This is a sanity check that
->> > we
->> > disable, so no working systems could get broken by this. And every
->> > single
->> > C8000 seems to be affected by this and is working fine with that patch.
->> > So maybe people at HP might have a clue _why_ this is screwed, but
->> > until then I don't see any point in waiting.
->> >
->> > So please just add my tested-by and push this upstream soon. Since this
->> > is basically a hardware quirk I would like to get this into stable also
->> > so we may run vanilla 2.6.38.1 or something like that on C8000.
->> >
->> > Tested-by: Rolf Eike Beer <eike-kernel@sf-tec.de>
->>
->> For the netdev folks: it's this patch we are talking about
->>
->> http://www.spinics.net/lists/linux-parisc/msg03091.html
->>
->> I would love to see that someone finally picks this up and pushes this
->> upstream, CC stable. This is absolutely annoying as it breaks every time
->> anyone touches the kernel on one of this machines.
->>
->> Jeff, David, James: can you please make a decision of who takes this and
->> then just do it?
->
-> Ping?
+Hi
 
-Ping indeed. Waiting as if HP is going to say "yes, we fucked that up.
-Go ahead with the patch." is silly.
+This patch fixes frame unwind on PA-RISC.
 
----------------------------------------------------------------------------=
+Prior to the patch, stack backtraces often caused crashes and this 
+resulted in recursive page faults.
+
+Mikulas
+
 ---
-All of the data generated in your IT infrastructure is seriously valuable.
-Why? It contains a definitive record of application performance, security =
 
-threats, fraudulent activity, and more. Splunk takes this data and makes =
+This patch fixes backtrace on PA-RISC
 
-sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-d2d-c2
-_______________________________________________
-E1000-devel mailing list
-E1000-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/e1000-devel
-To learn more about Intel&#174; Ethernet, visit http://communities.intel.co=
-m/community/wired
+There were several problems:
+
+1) The code that decodes instructions handles instructions that subtract
+from the stack pointer incorrectly. If the instruction subtracts the number X
+from the stack pointer the code increases the frame size by (0x100000000-X).
+This results in invalid accesses to memory and recursive page faults.
+
+2) Becuase gcc reorders blocks, handling instructions that subtract from the
+frame pointer is incorrect. For example, this function
+"int f(int a)
+{
+	if (__builtin_expect(a, 1))
+		return a;
+	g();
+	return a;
+}"
+is compiled in such a way, that the code that decreases the stack pointer for
+the first "return a" is placed before the code for "g" call. If we recognize
+this decrement, we mistakenly believe that the frame size for the "g" call
+is zero.
+
+To fix problems 1) and 2), the patch doesn't recognize instructions that
+decrease the stack pointer at all. To further safeguard the unwind code
+against nonsense values, we don't allow frame size larger than
+Total_frame_size.
+
+3) The backtrace is not locked. If stack dump races with module unload,
+invalid table can be accessed.
+
+This patch adds a spinlock when processing module tables.
+
+Note, that for correct backtrace, you need recent binutils.
+Binutils 2.18 from Debian 5 produce garbage unwind tables.
+Binutils 2.21 work better (it sometimes forgets function frames, but at 
+least it doesn't generate garbage).
+
+Signed-off-by: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+
+---
+ arch/parisc/kernel/unwind.c |   22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
+
+Index: linux-2.6.39-fast/arch/parisc/kernel/unwind.c
+===================================================================
+--- linux-2.6.39-fast.orig/arch/parisc/kernel/unwind.c	2011-06-28 18:15:14.000000000 +0200
++++ linux-2.6.39-fast/arch/parisc/kernel/unwind.c	2011-06-29 00:24:43.000000000 +0200
+@@ -75,7 +75,10 @@ find_unwind_entry(unsigned long addr)
+ 	if (addr >= kernel_unwind_table.start && 
+ 	    addr <= kernel_unwind_table.end)
+ 		e = find_unwind_entry_in_table(&kernel_unwind_table, addr);
+-	else 
++	else {
++		unsigned long flags;
++
++		spin_lock_irqsave(&unwind_lock, flags);
+ 		list_for_each_entry(table, &unwind_tables, list) {
+ 			if (addr >= table->start && 
+ 			    addr <= table->end)
+@@ -86,6 +89,8 @@ find_unwind_entry(unsigned long addr)
+ 				break;
+ 			}
+ 		}
++		spin_unlock_irqrestore(&unwind_lock, flags);
++	}
+ 
+ 	return e;
+ }
+@@ -305,18 +310,16 @@ static void unwind_frame_regs(struct unw
+ 
+ 			insn = *(unsigned int *)npc;
+ 
+-			if ((insn & 0xffffc000) == 0x37de0000 ||
+-			    (insn & 0xffe00000) == 0x6fc00000) {
++			if ((insn & 0xffffc001) == 0x37de0000 ||
++			    (insn & 0xffe00001) == 0x6fc00000) {
+ 				/* ldo X(sp), sp, or stwm X,D(sp) */
+-				frame_size += (insn & 0x1 ? -1 << 13 : 0) | 
+-					((insn & 0x3fff) >> 1);
++				frame_size += (insn & 0x3fff) >> 1;
+ 				dbg("analyzing func @ %lx, insn=%08x @ "
+ 				    "%lx, frame_size = %ld\n", info->ip,
+ 				    insn, npc, frame_size);
+-			} else if ((insn & 0xffe00008) == 0x73c00008) {
++			} else if ((insn & 0xffe00009) == 0x73c00008) {
+ 				/* std,ma X,D(sp) */
+-				frame_size += (insn & 0x1 ? -1 << 13 : 0) | 
+-					(((insn >> 4) & 0x3ff) << 3);
++				frame_size += ((insn >> 4) & 0x3ff) << 3;
+ 				dbg("analyzing func @ %lx, insn=%08x @ "
+ 				    "%lx, frame_size = %ld\n", info->ip,
+ 				    insn, npc, frame_size);
+@@ -335,6 +338,9 @@ static void unwind_frame_regs(struct unw
+ 			}
+ 		}
+ 
++		if (frame_size > e->Total_frame_size << 3)
++			frame_size = e->Total_frame_size << 3;
++
+ 		if (!unwind_special(info, e->region_start, frame_size)) {
+ 			info->prev_sp = info->sp - frame_size;
+ 			if (e->Millicode)
