@@ -1,16 +1,18 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+From: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
 Subject: Re: [PATCH] fix backtrace on PA-RISC
-Date: Tue, 28 Jun 2011 21:25:44 -0400
-Message-ID: <20110629012544.GA9039@hiauly1.hia.nrc.ca>
-References: <alpine.DEB.2.00.1106290043170.32272@artax.karlin.mff.cuni.cz>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Date: Wed, 29 Jun 2011 16:24:17 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1106291537330.30885@artax.karlin.mff.cuni.cz>
+References: <20110629005931.23E974EDA@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: jejb@parisc-linux.org, linux-parisc@vger.kernel.org
-To: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20110629005931.23E974EDA@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
+
+
 
 On Tue, 28 Jun 2011, John David Anglin wrote:
 
@@ -32,30 +34,106 @@ On Tue, 28 Jun 2011, John David Anglin wrote:
 > used for ldo.  In non wide mode and for stwm, extract_14 needs
 > to be used.  extract_14 is a simple 14-bit extraction followed 
 > low sign extension.
-> 
+
+Such large frame size is disallowed in the kernel anyway.
+
+BTW. gcc doesn't use these 16-bit offsets.
+
 > I believe the problem with the original code is that it doesn't
 > handle wide mode (64-bit kernels) for ldo.
 
-Here are the sign extension routines from binutils:
+64-bit ldo is the same as 32-bit ldo if the offset is in <-0x2000;0x1fff>.
 
-static inline int
-sign_extend (int x, int len)
+> >  				dbg("analyzing func @ %lx, insn=%08x @ "
+> >  				    "%lx, frame_size = %ld\n", info->ip,
+> >  				    insn, npc, frame_size);
+> > -			} else if ((insn & 0xffe00008) == 0x73c00008) {
+> > +			} else if ((insn & 0xffe00009) == 0x73c00008) {
+> >  				/* std,ma X,D(sp) */
+> > -				frame_size += (insn & 0x1 ? -1 << 13 : 0) | 
+> > -					(((insn >> 4) & 0x3ff) << 3);
+> > +				frame_size += ((insn >> 4) & 0x3ff) << 3;
+> 
+> I believe the original code is correct for this case.
+
+If insn & 0x1 is true, the code, it does
+frame_size += (unsigned)((int)-1 | (unsigned)(((insn >> 4) & 0x3ff) << 3))
+
+Due to unsigned->long conversion, it doesn't decrease frame_size, but it 
+adds 0x100000000-X to it. The result is a crash.
+
+
+See this:
+void g(void);
+
+int f(int a)
 {
-  int signbit = (1 << (len - 1));
-  int mask = (signbit << 1) - 1;
-  return ((x & mask) ^ signbit) - signbit;
+        if (__builtin_expect(a, 1))
+                return a;
+        g();
+        return a;
 }
 
-static inline int
-low_sign_extend (int x, int len)
-{
-  return (x >> 1) - ((x & 1) << (len - 1));
-}
+If we optimize it with -O2, it gets translated into
+f:
+        .PROC
+        .CALLINFO FRAME=144,CALLS,SAVE_RP,ENTRY_GR=3
+        .ENTRY
+        std %r2,-16(%r30)
+        ldo 144(%r30),%r30
+        extrd,s %r26,63,32,%r28
+        cmpb,*= %r0,%r28,.L4
+        std %r4,-128(%r30)
+.L2:
+        ldd -160(%r30),%r2
+        ldd -128(%r30),%r4
+        bve (%r2)
+        ldo -144(%r30),%r30
+.L4:
+        ldo -48(%r30),%r29
+        b,l g,%r2
+        std %r28,-136(%r30)
+        b .L2
+        ldd -136(%r30),%r28
+        .EXIT
+        .PROCEND
+        .size   f, .-f
 
-It probably doesn't matter too much but they are written in a manner
-to avoid conditional tests.
+Now, if we are getting stack trace from "g" function, the code scanner 
+sees both
+        ldo 144(%r30),%r30
+        ldo -144(%r30),%r30
+Correct processing would mean to build a jump graph, but it's better to 
+just ignore instructions that decrease the frame pointer.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> >  				dbg("analyzing func @ %lx, insn=%08x @ "
+> >  				    "%lx, frame_size = %ld\n", info->ip,
+> >  				    insn, npc, frame_size);
+> > @@ -335,6 +338,9 @@ static void unwind_frame_regs(struct unw
+> >  			}
+> >  		}
+> >  
+> > +		if (frame_size > e->Total_frame_size << 3)
+> > +			frame_size = e->Total_frame_size << 3;
+> > +
+> 
+> ??? I don't believe this should happen in frames with a fixed size.
+> The code probably doesn't handle cases where alloca is used.  The
+> are some flags for this in the unwind data.
+
+It's just a safeguard to not crash if we load something incorrect.
+
+> >  		if (!unwind_special(info, e->region_start, frame_size)) {
+> >  			info->prev_sp = info->sp - frame_size;
+> >  			if (e->Millicode)
+> > --
+> > To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> > the body of a message to majordomo@vger.kernel.org
+> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+Mikulas
+
+> -- 
+> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+> National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> 
