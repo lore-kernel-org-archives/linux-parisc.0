@@ -1,49 +1,48 @@
 From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [PATCH] fix backtrace on PA-RISC
-Date: Wed, 29 Jun 2011 12:45:25 -0400
-Message-ID: <20110629164524.GA11776@hiauly1.hia.nrc.ca>
-References: <20110629005931.23E974EDA@hiauly1.hia.nrc.ca> <alpine.DEB.2.00.1106291537330.30885@artax.karlin.mff.cuni.cz> <alpine.DEB.2.00.1106291643090.6496@artax.karlin.mff.cuni.cz>
+Subject: Re: debian hppa
+Date: Wed, 29 Jun 2011 15:33:47 -0400
+Message-ID: <20110629193346.GA12729@hiauly1.hia.nrc.ca>
+References: <20110527213516.GH21744@dannf.org> <20110527233738.0B95D4FCB@hiauly1.hia.nrc.ca> <BANLkTi=maOnkCLD9aU=JDYL9257EkpHxnQ@mail.gmail.com> <20110601021049.GB3984@hiauly1.hia.nrc.ca> <20110602213549.GA21839@parisc-linux.org>
 Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: jejb@parisc-linux.org, linux-parisc@vger.kernel.org
-To: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	Thibaut VARENE <T-Bone@parisc-linux.org>,
+	dann frazier <dannf@dannf.org>, carlos@systemhalted.org,
+	linux-parisc@vger.kernel.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1106291643090.6496@artax.karlin.mff.cuni.cz>
+In-Reply-To: <20110602213549.GA21839@parisc-linux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 29 Jun 2011, Mikulas Patocka wrote:
+Hi Grant,
 
-> > Now, if we are getting stack trace from "g" function, the code scanner 
-> > sees both
-> >         ldo 144(%r30),%r30
-> >         ldo -144(%r30),%r30
-> 
-> No, it actually stops when frame_size == (e->Total_frame_size << 3)
-> 
-> But I still don't understand the purpose of decoding those stack pointer 
-> decrement instruction. Due to bug in the code, every such stack pointer 
-> decrement adds 0x100000000 to the frame size and causes a crash.
+On Thu, 02 Jun 2011, Grant Grundler wrote:
 
-Understand.  The purpose of decoding the stack pointer adjustments
-probably was to handle the case where the .callinfo frame size information
-is missing or wrong.  This is probably a remnant from when binutils was
-generating incorrect unwind data...
+> As discussed off list a few months ago, HW salvaged from the Cupertino
+> Test Ring should be headed your way in the near future.
 
-Thus, you are correct that the negative adjustments should be ignored.
-In large frames, I believe that the adjustment is done in more than
-one instruction.
+I learned Monday that NRC wasn't going renew to my guest appointment.
+There have been problems with some other appointments at HIA.
 
-It is quite unlikely that the pc in a backtrace will occur before
-the positive adjustment or after the negative adjustment.
+NRC has a new President and major changes are occuring within the
+organization.  Guest Worker appointments now have to be approved by
+NRC legal and a VP, so they are much more difficult and visible.
+It seems to take months for an appointment to be processed.  There
+are concerns about liability, IP, etc.
 
-If the above is a problem, it probably would be fairly simple to
-check whether the pc lies between the entry point and the positive
-adjustment.  Similarly, for the negative adjustment.  In both cases,
-the adjustments have to be in the same code basic block as the
-entry/return.
+It's still not clear whether I end now or at the end of December.
+I plan to take home the rp3440 and c3750 at NRC.  That's about all
+that I can fit in my office at home.  I might fit another server
+with internal drives on top of the rp3440, but that's about it.
 
+I can continue some Linux GCC support from home, but there is no room
+anymore for HP-UX.
+
+If HP hasn't shipped the Cup stuff, probably the matter should be reviewed.
+
+Regards,
 Dave
 -- 
 J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
