@@ -1,49 +1,28 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: debian hppa
-Date: Wed, 29 Jun 2011 15:33:47 -0400
-Message-ID: <20110629193346.GA12729@hiauly1.hia.nrc.ca>
-References: <20110527213516.GH21744@dannf.org> <20110527233738.0B95D4FCB@hiauly1.hia.nrc.ca> <BANLkTi=maOnkCLD9aU=JDYL9257EkpHxnQ@mail.gmail.com> <20110601021049.GB3984@hiauly1.hia.nrc.ca> <20110602213549.GA21839@parisc-linux.org>
-Reply-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+From: "PROF.MAURICE IWU" <iwumaurice900@sify.com>
+Subject: Equity Business Investment
+Date: Thu, 30 Jun 2011 19:08:00 +0200
+Message-ID: <EXCHANGE03QLVpSlSt7000005f7__42702.7540085421$1309453728$gmane$org@exchange03.2besource.com>
+Reply-To: <profmauriceiwu2221@yahoo.co.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	Thibaut VARENE <T-Bone@parisc-linux.org>,
-	dann frazier <dannf@dannf.org>, carlos@systemhalted.org,
-	linux-parisc@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
+Content-Type: text/plain;
+	charset="Windows-1251"
+To: unlisted-recipients:; (no To-header on input)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110602213549.GA21839@parisc-linux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Grant,
+Equity Business Investment
+>From Prof. Maurice Iwu 
 
-On Thu, 02 Jun 2011, Grant Grundler wrote:
+Dear Friend,
 
-> As discussed off list a few months ago, HW salvaged from the Cupertino
-> Test Ring should be headed your way in the near future.
+I am Prof. Maurice M. Iwu, Former Chairman Independent Electoral Commission 
+(INEC).Currently, I am on compulsory terminal leave presently in UK , 
+leading up to my final retirement from public service.
 
-I learned Monday that NRC wasn't going renew to my guest appointment.
-There have been problems with some other appointments at HIA.
+I am seeking your partnership in a mutual benefit project involving 
+investing into your company and secondly on properties and to be precise Estate Development or any other profitable venture of your great idea for our mutual benefit of Equity Market Investment.,
 
-NRC has a new President and major changes are occuring within the
-organization.  Guest Worker appointments now have to be approved by
-NRC legal and a VP, so they are much more difficult and visible.
-It seems to take months for an appointment to be processed.  There
-are concerns about liability, IP, etc.
-
-It's still not clear whether I end now or at the end of December.
-I plan to take home the rp3440 and c3750 at NRC.  That's about all
-that I can fit in my office at home.  I might fit another server
-with internal drives on top of the rp3440, but that's about it.
-
-I can continue some Linux GCC support from home, but there is no room
-anymore for HP-UX.
-
-If HP hasn't shipped the Cup stuff, probably the matter should be reviewed.
-
-Regards,
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Sincerely,
+Prof. Maurice M.Iwu.
+{INEC.}
