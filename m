@@ -1,95 +1,29 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: tst-cputimer1 and tst-timer4
-Date: Sun, 3 Jul 2011 19:22:05 -0400
-Message-ID: <BLU0-SMTP9158F203DF2B6A1AD1D9A4975D0@phx.gbl>
-References: <CADZpyizeDz0mRxLU3-Scx37DZ4jYMtKBjQn6_ZfxMyjhsT6Lkg@mail.gmail.com>
+From: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Subject: Re: debian hppa
+Date: Sun, 3 Jul 2011 19:27:43 -0400
+Message-ID: <E064F028-D154-46FA-BC59-32C937371087@nrc-cnrc.gc.ca>
+References: <20110527213516.GH21744@dannf.org> <20110527233738.0B95D4FCB@hiauly1.hia.nrc.ca> <BANLkTi=maOnkCLD9aU=JDYL9257EkpHxnQ@mail.gmail.com> <20110601021049.GB3984@hiauly1.hia.nrc.ca> <20110602213549.GA21839@parisc-linux.org> <20110629193346.GA12729@hiauly1.hia.nrc.ca> <20110703004336.GD20434@parisc-linux.org> <7C0BBECE-2ED2-49B0-8371-569191EF3028@nrc-cnrc.gc.ca> <CB8EF4AD-D637-4B4E-9BFB-18A7EFD66834@mac.com>
 Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: linux-parisc <linux-parisc@vger.kernel.org>,
-	John David Anglin <dave.anglin@nrc.ca>
-To: Carlos O'Donell <carlos@systemhalted.org>
+Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	Thibaut VARENE <T-Bone@parisc-linux.org>,
+	dann frazier <dannf@dannf.org>, <carlos@systemhalted.org>,
+	<linux-parisc@vger.kernel.org>
+To: rick jones <perfgeek@mac.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CADZpyizeDz0mRxLU3-Scx37DZ4jYMtKBjQn6_ZfxMyjhsT6Lkg@mail.gmail.com>
+In-Reply-To: <CB8EF4AD-D637-4B4E-9BFB-18A7EFD66834@mac.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Carlos,
 
- From what I see below, you have learned a lot about the failure.   
-There's probably an operation
-in the kernel that isn't hooked up although one would tend to think  
-most of this should be generic.
+On 3-Jul-11, at 11:33 AM, rick jones wrote:
 
-we went canoeing today,
+> I've been letting myself get distracted by "the day job" wrt getting  
+> equipment shipped to Canada :( But am still willing to give it a go  
+> if there is still a destination.
+
+Let's hold off a bit until I get a response from the VP.  Possibly, I  
+could share stuff with Carlos
+if NRC doesn't work out.
+
 Dave
-
-On 3-Jul-11, at 1:16 PM, Carlos O'Donell wrote:
-
-> Dave,
->
-> Instrumenting tst-cputimer1 yields:
-> ~~
-> carlos@firin:~/fsrc/glibc-work/tests/tst-cputimer1$ ./tst-cputimer1
-> clock_gettime returned timespec = { 0, 40000000 }
-> clock_getres returned timespec = { 0, 1 }
-> timer_helper_thread: creating thread...
->
-> timer_segev_thread: tid 1329
-> timer_helper_thread: creating thread...
-> ~~~
->
-> The first thread starts, the second thread doesn't.
->
-> You expressed some worry over this failure:
-> ~~~
-> 1309709905.557733 futex(0xc043e2c8, FUTEX_WAKE_PRIVATE, 1) = 0
-> 1309709905.557733 futex(0xc043e2c8,
-> FUTEX_WAIT_BITSET_PRIVATE|FUTEX_CLOCK_REALTIME, 1, NULL, 0) = -1
-> EINVAL (Invalid argument)
-> ~~~
-> This is part of nptl/npt-init.c where the threading system is trying
-> to determine, at runtime, certain functionality.
-> The first test is to determine if private futexes e.g.
-> FUTEX_PRIVATE_FLAG are available, and they are.
-> The second test is to determine if FUTEX_CLOCK_REALTIME is available,
-> and it is, the test looks only for ENOSYS on return.
->
-> The first thread has a futex operation fail completely:
-> ~~~
-> [pid  8589] 1309709905.789735 clone(Process 8590 attached
-> child_stack=0x40e65040,
-> flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD| 
-> CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID,
-> parent_tidptr=0x416644e8, tls=0x41664900, child_tidptr=0x416644e8) =
-> 8590
-> [pid  8590] 1309709905.789735 set_robust_list(0x416644f0, 0xc  
-> <unfinished ...>
-> [pid  8589] 1309709905.789735 rt_sigtimedwait([RTMIN],   
-> <unfinished ...>
-> [pid  8590] 1309709905.789735 <... set_robust_list resumed> ) = 0
-> [pid  8590] 1309709905.789735 gettid()  = 8590
-> [pid  8590] 1309709905.789735 rt_sigprocmask(SIG_SETMASK, [], NULL,  
-> 8) = 0
-> [pid  8590] 1309709905.789735 clock_gettime(0xfffffffa /* CLOCK_???
-> */, {0, 252000000}) = 0
-> [pid  8590] 1309709905.789735 futex(0x14548, FUTEX_WAKE_OP_PRIVATE, 1,
-> 1, 0x14540, {FUTEX_OP_SET, 0, FUTEX_OP_CMP_GT, 1}) = -1 ENOSYS
-> (Function not implemented)
-> ~~~
-> This is a worrisome problem, that's a feature that's expected to work
-> and doesn't.
->
-> It's part of the internal NPTL thread handling, I don't know
-> specifically which futext it is, but it's important :-)
->
-> This needs fixing. I'll look into that next.
->
-> Cheers,
-> Carlos.
->
-
---
-John David Anglin	dave.anglin@bell.net
-
-
-
