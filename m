@@ -1,46 +1,64 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: Inequivalent aliases when stracing tst-cputimer1.
-Date: Mon, 4 Jul 2011 11:17:32 -0400
-Message-ID: <CADZpyixokUw9EP_sZgTBbDY6PLEr389vkw5vxUppAUyFoZS0Pg@mail.gmail.com>
-References: <CADZpyixbjoptakCZrdF2_X3twOMtr=Jsh__Dx3A_98=D_XZneA@mail.gmail.com>
-	<BLU0-SMTP9794777FA894A72C335DF0975C0@phx.gbl>
-	<BLU0-SMTP414C3D96581B1FAED8EE23975C0@phx.gbl>
+Subject: Re: tst-cputimer1 and tst-timer4
+Date: Mon, 4 Jul 2011 11:21:52 -0400
+Message-ID: <CADZpyiwjD2kMPoh9rm1KL_+mYm72nPz8ERHcSuHODkD31qncuQ@mail.gmail.com>
+References: <CADZpyizeDz0mRxLU3-Scx37DZ4jYMtKBjQn6_ZfxMyjhsT6Lkg@mail.gmail.com>
+	<BLU0-SMTP9158F203DF2B6A1AD1D9A4975D0@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
+Cc: linux-parisc <linux-parisc@vger.kernel.org>,
+	John David Anglin <dave.anglin@nrc.ca>
 To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP414C3D96581B1FAED8EE23975C0@phx.gbl>
+In-Reply-To: <BLU0-SMTP9158F203DF2B6A1AD1D9A4975D0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jul 4, 2011 at 10:21 AM, John David Anglin <dave.anglin@bell.ne=
-t> wrote:
-> On 7/4/2011 9:28 AM, John David Anglin wrote:
->>
->> On 7/3/2011 10:39 PM, Carlos O'Donell wrote:
->>>
->>> This is a binutils head, building glibc head, with gcc 4.4.4. You n=
-eed to
->>> update binutils to get new linker (actually, it's the default linke=
-r script
->>> that's changed).
->>> The new linker script starts the data section on a page boundary.
+On Sun, Jul 3, 2011 at 7:22 PM, John David Anglin <dave.anglin@bell.net=
+> wrote:
+> Hi Carlos,
 >
-> Depending on how GCC is configured, it may or may not use your binuti=
-ls head
-> linker. =A0gcc -v should show
-> what's going on.
+> From what I see below, you have learned a lot about the failure. =A0T=
+here's
+> probably an operation
+> in the kernel that isn't hooked up although one would tend to think m=
+ost of
+> this should be generic.
 
-You are correct, that was my mistake. I had rebuilt this particular
-test without using binutils head, once I rebuilt with the newer linker
-script, the two load segments have the correct alignment and the
-application no longer exhibits these inequivalent aliases under
-strace.
+OK, fixed the kernel. We were still using the no-op futex
+implementation I checked in 5 years ago :-(
 
-Thanks, that's one problem fixed.
+=46ixing the kernel doesn't fix the testcase but instrumenting glibc
+further reveals the cause of the failure:
+~~~
+carlos@firin:~/fsrc/glibc-work/tests/tst-cputimer1$ ./tst-cputimer1
+do_clone: ARCH_CLONE...
+
+clock_gettime returned timespec =3D { 0, 40000000 }
+clock_getres returned timespec =3D { 0, 1 }
+do_clone: ARCH_CLONE...
+
+timer_helper_thread: creating thread...
+
+do_clone: ARCH_CLONE...
+
+timer_helper_thread: pthread_create ret 0
+timer_segev_thread: tid 20077
+timer_helper_thread: creating thread...
+
+pthread_create: ALLOCATE_STACK failed.
+
+timer_helper_thread: pthread_create ret 22
+~~~
+
+The second threads stack fails to allocate.
+
+I don't know why, the stack allocation on hppa is tricky because of
+S_G_U and the placement of stack guards.
+
+Why it would fail for one thread and not the other is odd.
+
+I'll keep digging.
 
 Cheers,
 Carlos.
