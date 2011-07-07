@@ -1,32 +1,39 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Sort output dynamic relocations.
-Date: Thu, 07 Jul 2011 13:44:14 -0400
-Message-ID: <4E15F06E.8040601@bell.net>
-References: <CADZpyiyS2m9cc=RuUg+DOc3xfEMFOAfdYWwFLbjDTUmgqtnDsQ@mail.gmail.com>
+From: Thibaut VARENE <T-Bone@parisc-linux.org>
+Subject: Re: debian hppa
+Date: Thu, 7 Jul 2011 19:51:03 +0200
+Message-ID: <CA+DQjFj_cob8xKHsUU194=n-CzjSCwR9Qn6xY5BjKrw2=oou+Q@mail.gmail.com>
+References: <20110527213516.GH21744@dannf.org> <20110527233738.0B95D4FCB@hiauly1.hia.nrc.ca>
+ <BANLkTi=maOnkCLD9aU=JDYL9257EkpHxnQ@mail.gmail.com> <20110601021049.GB3984@hiauly1.hia.nrc.ca>
+ <BANLkTin2DhKC_ss6UsCPYxmTR-UD=GY0uw@mail.gmail.com> <E1F45BBE-F922-4E1C-9DEC-FAF4BF4B4E26@nrc-cnrc.gc.ca>
+ <CA+DQjFgygVS0YQ_zUfQG=BkTb_zrSN+yYxGyTU6ufC-PV7dBxA@mail.gmail.com> <4E15DBEB.9040703@bell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: John David Anglin <dave.anglin@nrc.ca>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Carlos O'Donell <carlos@systemhalted.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	dann frazier <dannf@dannf.org>, carlos@systemhalted.org,
+	linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CADZpyiyS2m9cc=RuUg+DOc3xfEMFOAfdYWwFLbjDTUmgqtnDsQ@mail.gmail.com>
+In-Reply-To: <4E15DBEB.9040703@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 7/7/2011 11:29 AM, Carlos O'Donell wrote:
-> Dave,
->
-> FYI.
->
-> PA should be sorting relocations in .rlea.dyn such that realtive
-> relocations (DIR32) are listed first before opd relocs (PLABEL32).
-I imagine that this shouldn't be too hard to implement.
-> This is required for the dynamic linker in glibc to operate correctly.
+On Thu, Jul 7, 2011 at 6:16 PM, John David Anglin <dave.anglin@bell.net=
+> wrote:
 
-Is this related to the initfini_array issue?
 
-Dave
+> The kernel on the rp3440 needs updating. =C2=A02.6.22.19 is not stabl=
+e under
+> load. =C2=A0To do this,
+> remote access to the console would be needed. =C2=A0Many bugs have be=
+en fixed
 
--- 
-John David Anglin    dave.anglin@bell.net
+Carlos has access to the ESIEE cluster already. I can set you up as
+well, I just need a ssh pubkey and a preferred login.
 
+HTH
+T-Bone
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
