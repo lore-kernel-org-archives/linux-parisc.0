@@ -1,71 +1,75 @@
-From: Aurelien Jarno <aurel32@debian.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: debian hppa
-Date: Thu, 7 Jul 2011 23:59:07 +0200
-Message-ID: <20110707215907.GA1837@hall.aurel32.net>
+Date: Thu, 7 Jul 2011 19:02:28 -0400
+Message-ID: <CADZpyiwaKjhqWJ0kGh4kV1BZSa02=OGVPYeHxQA9iD8LVnkEqQ@mail.gmail.com>
 References: <20110527213516.GH21744@dannf.org>
- <20110527233738.0B95D4FCB@hiauly1.hia.nrc.ca>
- <BANLkTi=maOnkCLD9aU=JDYL9257EkpHxnQ@mail.gmail.com>
- <20110601021049.GB3984@hiauly1.hia.nrc.ca>
- <BANLkTin2DhKC_ss6UsCPYxmTR-UD=GY0uw@mail.gmail.com>
- <E1F45BBE-F922-4E1C-9DEC-FAF4BF4B4E26@nrc-cnrc.gc.ca>
- <CA+DQjFgygVS0YQ_zUfQG=BkTb_zrSN+yYxGyTU6ufC-PV7dBxA@mail.gmail.com>
- <CADZpyiy8O_tsm=41fNCbC_nPq77RdsEfD=UahR_yxtdm7P7u0A@mail.gmail.com>
+	<20110527233738.0B95D4FCB@hiauly1.hia.nrc.ca>
+	<BANLkTi=maOnkCLD9aU=JDYL9257EkpHxnQ@mail.gmail.com>
+	<20110601021049.GB3984@hiauly1.hia.nrc.ca>
+	<BANLkTin2DhKC_ss6UsCPYxmTR-UD=GY0uw@mail.gmail.com>
+	<E1F45BBE-F922-4E1C-9DEC-FAF4BF4B4E26@nrc-cnrc.gc.ca>
+	<CA+DQjFgygVS0YQ_zUfQG=BkTb_zrSN+yYxGyTU6ufC-PV7dBxA@mail.gmail.com>
+	<CADZpyiy8O_tsm=41fNCbC_nPq77RdsEfD=UahR_yxtdm7P7u0A@mail.gmail.com>
+	<20110707215907.GA1837@hall.aurel32.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: Thibaut VARENE <T-Bone@parisc-linux.org>,
 	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
 	dann frazier <dannf@dannf.org>, linux-parisc@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+To: Aurelien Jarno <aurel32@debian.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CADZpyiy8O_tsm=41fNCbC_nPq77RdsEfD=UahR_yxtdm7P7u0A@mail.gmail.com>
+In-Reply-To: <20110707215907.GA1837@hall.aurel32.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Jul 07, 2011 at 12:03:48PM -0400, Carlos O'Donell wrote:
-> On Thu, Jul 7, 2011 at 11:49 AM, Thibaut VARENE <T-Bone@parisc-linux.=
-org> wrote:
-> > I have no problem with this, the only "active" user of the rp3440 i=
-s
-> > Aur=E9lien, so I suppose it wouldn't be a problem. Yet, my understa=
-nding
-> > is that the rp3440 is extremely slow at building anything (much slo=
-wer
-> > than my other machines, it seems) because of the cache flush issues=
-=2E
-> > AIUI that's why Debian stuck to J6700 for buildds, because those
-> > machines were a lot faster.
-> >
-> > Other than that, the rp3440 currently runs unstable with 2.6.22.19,=
- so
-> > I suppose a complete reinstall would be in order, and I'm not sure =
-I
-> > have time to deal with that just yet. I'd be happy to provide remot=
-e
-> > access to the machine though, if someone steps up. FWIW, the only
-> > machine I have left running lenny is a J5000, 2x440MHz PA8500,
-> > previously used as an autobuilder for debian-multimedia.org.
->=20
-> I can do the install and help monitor the box.
->=20
-> Aurelien,
->=20
-> Exactly what do we need installed for debian-ports?
->=20
+On Thu, Jul 7, 2011 at 5:59 PM, Aurelien Jarno <aurel32@debian.org> wro=
+te:
+> All the list of things to provide for debian-ports are available from=
+ my
+> previous post back in April:
+>
+> =A0http://lists.debian.org/debian-hppa/2011/04/msg00026.html
+>
+> Please note that the first point is not relevant anymore given that I
+> have done the import myself:
+>
+> =A0http://lists.debian.org/debian-hppa/2011/05/msg00002.html
 
-All the list of things to provide for debian-ports are available from m=
-y
-previous post back in April:
+- A place/way to fetch all the .deb that have to be import with the
+  corresponding .changes.
 
-  http://lists.debian.org/debian-hppa/2011/04/msg00026.html
+This is done.
 
-Please note that the first point is not relevant anymore given that I
-have done the import myself:
+- List of persons who need to have access to the wanna-build interface.
+  If some of them are not DD, please also provide mail/login/ssh key.
 
-  http://lists.debian.org/debian-hppa/2011/05/msg00002.html
+I would like to have access to the wanna-build interface.
 
---=20
-Aurelien Jarno	                        GPG: 1024D/F1BCDB73
-aurelien@aurel32.net                 http://www.aurel32.net
+I will have Dann Frazier send you my mail/login/ssh key as a signed ema=
+il.
+
+- List of persons who should be able to upload packages to the archive
+  with the corresponding GPG keys (that should include buildds
+  maintainers).
+
+I will have Dann Frazier send you my GPG key in the same signed email.
+
+- List of emails to be used as a contact point for alpha/hppa buildds
+  and alpha/hppa related things.
+
+In the email from Dann.
+
+- List of buildds with their IP, SSH key and mail address.
+
+What do you want installed on the buildds?
+
+I've setup a buildd before, but the truth is that I had to crib the
+information from various sources.
+
+Is there actually a guide for this available anywhere?
+
+Cheers,
+Carlos.
 --
 To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
  in
