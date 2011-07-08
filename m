@@ -1,40 +1,33 @@
-From: Thibaut VARENE <varenet@parisc-linux.org>
+From: Thibaut VARENE <varenet@debian.org>
 Subject: Re: Status of hppa on debian-ports.
-Date: Sat, 9 Jul 2011 00:21:22 +0200
-Message-ID: <CA+DQjFigFMHXAuxHk=tPTThF4xBwv6ae9bQq2nY6KfHJo7y+ow@mail.gmail.com>
-References: <4E17689B.2090604@systemhalted.org> <201107081654.33542.vapier@gentoo.org>
- <201107081730.44289.vapier@gentoo.org>
+Date: Sat, 9 Jul 2011 00:22:41 +0200
+Message-ID: <CA+DQjFjBHKh4tt7TFNbz1tzWoDzN7sy2u9c=ONRgWXcgbTWDxQ@mail.gmail.com>
+References: <4E17689B.2090604@systemhalted.org> <4E1771C2.1090405@bell.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Cc: "Carlos O'Donell" <carlos@systemhalted.org>,
 	linux-parisc <linux-parisc@vger.kernel.org>,
 	debian-hppa@lists.debian.org, Aurelien Jarno <aurel32@debian.org>
-To: Mike Frysinger <vapier@gentoo.org>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <201107081730.44289.vapier@gentoo.org>
+In-Reply-To: <4E1771C2.1090405@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Jul 8, 2011 at 11:30 PM, Mike Frysinger <vapier@gentoo.org> wro=
-te:
-> On Friday, July 08, 2011 16:54:32 Mike Frysinger wrote:
->> On Friday, July 08, 2011 16:29:15 Carlos O'Donell wrote:
->> > The current status of hppa on debian-ports is available here:
->> >
->> > http://wiki.parisc-linux.org/Debian_Ports
+On Fri, Jul 8, 2011 at 11:08 PM, John David Anglin <dave.anglin@bell.ne=
+t> wrote:
+> On 7/8/2011 4:29 PM, Carlos O'Donell wrote:
 >>
->> the page is apparently marked immutable, otherwise i'd fix the typo:
->> =C2=A0 =C2=A0 =C2=A0 Not a debian developers.
+>> The current status of hppa on debian-ports is available here:
+>>
+>> http://wiki.parisc-linux.org/Debian_Ports
 >
-> or maybe it's just my new account as all pages seem to be immutable .=
-=2E.
-> -mike
+> We need contacts for the buildds machines. =C2=A0These need to be loc=
+al to
+> the machine unless remote console access is available.
 
-What's your username? As explained here:
-http://wiki.parisc-linux.org/WikiAccessPolicy
-
-Someone already on the wiki needs to add you to the ACL.
-
+There's a MP on the rp3440, fwiw.
+HTH
 
 --=20
 Thibaut VARENE
