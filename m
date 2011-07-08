@@ -1,58 +1,56 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: Status of hppa on debian-ports.
-Date: Fri, 8 Jul 2011 17:30:43 -0400
-Message-ID: <201107081730.44289.vapier@gentoo.org>
-References: <4E17689B.2090604@systemhalted.org> <201107081654.33542.vapier@gentoo.org>
+Subject: Re: [PATCH 2.6.39-rc3] parsic: Fix futex support
+Date: Fri, 8 Jul 2011 17:42:48 -0400
+Message-ID: <201107081742.48874.vapier@gentoo.org>
+References: <4E177624.1030500@systemhalted.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed;
-  boundary="nextPart2741972.veqqtVjuV1";
+  boundary="nextPart2610934.feHPynU4ZZ";
   protocol="application/pgp-signature";
   micalg=pgp-sha1
-Cc: "linux-parisc" <linux-parisc@vger.kernel.org>,
-	debian-hppa@lists.debian.org, Aurelien Jarno <aurel32@debian.org>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+	"linux-parisc" <linux-parisc@vger.kernel.org>
 To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <201107081654.33542.vapier@gentoo.org>
+In-Reply-To: <4E177624.1030500@systemhalted.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---nextPart2741972.veqqtVjuV1
+--nextPart2610934.feHPynU4ZZ
 Content-Type: Text/Plain;
-  charset="utf-8"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-On Friday, July 08, 2011 16:54:32 Mike Frysinger wrote:
-> On Friday, July 08, 2011 16:29:15 Carlos O'Donell wrote:
-> > The current status of hppa on debian-ports is available here:
-> >=20
-> > http://wiki.parisc-linux.org/Debian_Ports
->=20
-> the page is apparently marked immutable, otherwise i'd fix the typo:
-> 	Not a debian developers.
+On Friday, July 08, 2011 17:27:00 Carlos O'Donell wrote:
+> Implements futex op support and makes futex cmpxchg atomic.
+> Tested on 64-bit SMP kernel running on 2 x PA8700s.
 
-or maybe it's just my new account as all pages seem to be immutable ...
+seems like all the changes to this func are arch-independent and could be=20
+placed into asm-generic/futex.h.  the current parisc futex.h looks like a c=
+opy=20
+of the asm-generic one ...
 =2Dmike
 
---nextPart2741972.veqqtVjuV1
+--nextPart2610934.feHPynU4ZZ
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.17 (GNU/Linux)
 
-iQIcBAABAgAGBQJOF3cEAAoJEEFjO5/oN/WBKR4P/0lYyBBjR6eIETo+CEDgie6W
-4LhAnAx7uLuG5CxNjAf9FGTHb4GixAJ894JJj5+nsZmRf4jRj/ReLxrW40FACMiX
-S/coDty0uqXZyBjhNqvLecbKNdXdj+UXFc9KKUFpxUS4Wm83jPoZM0KHPzqDUTcD
-hYxlBwVN1E/K9KthBZ/QMliLhNYIX8lOHv9ZeQ8zxo1yIiOvqm5J86jPmdjmDEHZ
-tAUQFmkx2FGIAo5q5n4y4XudqzYwUD+SCTYKQQgQpCsDjhA8j1y1HksfZTelgWLc
-rirP9B9BrZslOdb0Xz1fCZ1LuQul414z4k7oshZ/PNl5oQPJiWnuArjI9tG98xUo
-YRSfwptCZOLQNAWr8wTmbooQ0t69tqSyuCuzsvZQ7SfdQsGQhLsIy9/UJ7K6tCgx
-xwdqz/ln5yM4i46l7mv85p+oLYd7xaDLdPF+96tYr3qm2wr+oLxXABHLs19wGhY/
-YvmKOSnWdD+6ReTdJh9OEfszgLXXxfnHlcImKrrlNXLr7eCUyR5Y5unDJsJbE0r9
-ZRZJg0nfv3lkJJcfnMIO7gHiq0jp8Pmtzg5MUHxJL/Oc2pOFGhrs0fh5dFdK0Lwd
-j7u2ADF1sEKgH4rAZ8XLe5QAFgcbbAbfVQrYV9ONJEqv6KvmQlbooyVXbwCoCQFo
-5K4UIrqssp8LGopgEEQU
-=frhd
+iQIcBAABAgAGBQJOF3nYAAoJEEFjO5/oN/WB+DsP/AqxW+Vh+SnjXU5Qq9/Hnz7t
+IXGNA5NSvqexXFsb5tyV2urxel9TidyaJS4zaAdZ5zj3uooT5ES6LDJQer7E5KGa
+BcslBiOMQnT1R0RvftIQ+OFm0L+Fusw459H9RgoM3m0dehX3a7pxSemS5G+ypN7U
+/cZpv6Haxb1Sb3aI6Q53Kdx8LoJsfjtBkQHii0b4q9ceT9N6VtR8S63B4GqbtFIp
+Nd3DPIAUQURITLCyzvuxok4z8wHu8E3xVGSE0TE5iabRj/OoepNHAS+NSWM3o061
+IDwIGddRtsIZgh5AJZJ8sI7zapIfcP56TO+ZRXrlyNkAoyK3sWXVmdWCQS+ovnoG
+RqM33ZAf16fbZXSOPjLsEpb47WtPaoRgEgK96/yUlxRFXFbrA594I79bCdhMlhdc
+X3ydQliQIhD+y1zRvbXodQ49NEb1avhhVQMbKjKz6ylo+P6JCPWCbhdAz4VgedO7
+zfLGT8QROwia3SYLcslPEyXtAyuaB4nMq5sqUJxICTD4MrJhxjFlPSGnKqBuugVg
+oChI/IbZI2Ic7dLAHC+hPi3yccj5RbaPqoxdli9XCik8PPygn2eUdnF7lyxlXf+z
+b/Jd7YTxoCD5Mcj48l4RJfc7/0+8sJHODkm2xCyW+mQN0drdwqxrZSNCOWlH7qKK
+niEjO/XXeOJo2qSU8cKz
+=OM53
 -----END PGP SIGNATURE-----
 
---nextPart2741972.veqqtVjuV1--
+--nextPart2610934.feHPynU4ZZ--
