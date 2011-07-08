@@ -1,133 +1,58 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: [PATCH 2.6.39-rc3] parsic: Fix futex support
-Date: Fri, 08 Jul 2011 17:27:00 -0400
-Message-ID: <4E177624.1030500@systemhalted.org>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: Status of hppa on debian-ports.
+Date: Fri, 8 Jul 2011 17:30:43 -0400
+Message-ID: <201107081730.44289.vapier@gentoo.org>
+References: <4E17689B.2090604@systemhalted.org> <201107081654.33542.vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: multipart/signed;
+  boundary="nextPart2741972.veqqtVjuV1";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Cc: "linux-parisc" <linux-parisc@vger.kernel.org>,
+	debian-hppa@lists.debian.org, Aurelien Jarno <aurel32@debian.org>
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <201107081654.33542.vapier@gentoo.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Implements futex op support and makes futex cmpxchg atomic.
-Tested on 64-bit SMP kernel running on 2 x PA8700s.
+--nextPart2741972.veqqtVjuV1
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Carlos O'Donell <carlos@systemhalted.org>
----
- futex.h |   64 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 59 insertions(+), 5 deletions(-)
+On Friday, July 08, 2011 16:54:32 Mike Frysinger wrote:
+> On Friday, July 08, 2011 16:29:15 Carlos O'Donell wrote:
+> > The current status of hppa on debian-ports is available here:
+> >=20
+> > http://wiki.parisc-linux.org/Debian_Ports
+>=20
+> the page is apparently marked immutable, otherwise i'd fix the typo:
+> 	Not a debian developers.
 
-diff --git a/arch/parisc/include/asm/futex.h b/arch/parisc/include/asm/futex.h
-index 67a33cc..94f2f4d 100644
---- a/arch/parisc/include/asm/futex.h
-+++ b/arch/parisc/include/asm/futex.h
-@@ -5,11 +5,14 @@
- 
- #include <linux/futex.h>
- #include <linux/uaccess.h>
-+#include <asm/atomic.h>
- #include <asm/errno.h>
- 
- static inline int
- futex_atomic_op_inuser (int encoded_op, u32 __user *uaddr)
- {
-+	unsigned long int flags;
-+	u32 val;
- 	int op = (encoded_op >> 28) & 7;
- 	int cmp = (encoded_op >> 24) & 15;
- 	int oparg = (encoded_op << 8) >> 20;
-@@ -23,16 +26,53 @@ futex_atomic_op_inuser (int encoded_op, u32 __user *uaddr)
- 
- 	pagefault_disable();
- 
-+	_atomic_spin_lock_irqsave (uaddr, flags);
-+
- 	switch (op) {
- 	case FUTEX_OP_SET:
-+		/* *(int *)UADDR2 = OPARG; */
-+		ret = get_user (oldval, uaddr);
-+		if (!ret)
-+			ret = put_user (oparg, uaddr);
-+		break;
- 	case FUTEX_OP_ADD:
-+		/* *(int *)UADDR2 += OPARG; */
-+		ret = get_user (oldval, uaddr);
-+		if (!ret) {
-+			val = oldval + oparg;
-+			ret = put_user (val, uaddr);
-+		}
-+		break;
- 	case FUTEX_OP_OR:
-+		/* *(int *)UADDR2 |= OPARG; */
-+		ret = get_user (oldval, uaddr);
-+		if (!ret) {
-+			val = oldval | oparg;
-+			ret = put_user (val, uaddr);
-+		}
-+		break;
- 	case FUTEX_OP_ANDN:
-+		/* *(int *)UADDR2 &= ~OPARG; */
-+		ret = get_user (oldval, uaddr);
-+		if (!ret) {
-+			val = oldval & ~oparg;
-+			ret = put_user (val, uaddr);
-+		}
-+		break;
- 	case FUTEX_OP_XOR:
-+		/* *(int *)UADDR2 ^= OPARG; */
-+		ret = get_user (oldval, uaddr);
-+		if (!ret) {
-+			val = oldval ^ oparg;
-+			ret = put_user (val, uaddr);
-+		}
-+		break;
- 	default:
- 		ret = -ENOSYS;
- 	}
- 
-+	_atomic_spin_unlock_irqrestore (uaddr, flags);
-+
- 	pagefault_enable();
- 
- 	if (!ret) {
-@@ -54,7 +94,9 @@ static inline int
- futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
- 			      u32 oldval, u32 newval)
- {
-+	int ret;
- 	u32 val;
-+	unsigned long flags;
- 
- 	/* futex.c wants to do a cmpxchg_inatomic on kernel NULL, which is
- 	 * our gateway page, and causes no end of trouble...
-@@ -65,12 +107,24 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
- 	if (!access_ok(VERIFY_WRITE, uaddr, sizeof(u32)))
- 		return -EFAULT;
- 
--	if (get_user(val, uaddr))
--		return -EFAULT;
--	if (val == oldval && put_user(newval, uaddr))
--		return -EFAULT;
-+	/* HPPA has no cmpxchg in hardware and therefore the 
-+	 * best we can do here is use an array of locks. The
-+	 * lock selected is based on a hash of the userspace
-+	 * address. This should scale to a couple of CPUs.
-+	 */
-+
-+	_atomic_spin_lock_irqsave (uaddr, flags);
-+
-+	ret = get_user(val, uaddr);
-+
-+	if (!ret && val == oldval)
-+		ret = put_user (newval, uaddr);
-+
- 	*uval = val;
--	return 0;
-+
-+	_atomic_spin_unlock_irqrestore (uaddr, flags);
-+
-+	return ret;
- }
- 
- #endif /*__KERNEL__*/
+or maybe it's just my new account as all pages seem to be immutable ...
+=2Dmike
+
+--nextPart2741972.veqqtVjuV1
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJOF3cEAAoJEEFjO5/oN/WBKR4P/0lYyBBjR6eIETo+CEDgie6W
+4LhAnAx7uLuG5CxNjAf9FGTHb4GixAJ894JJj5+nsZmRf4jRj/ReLxrW40FACMiX
+S/coDty0uqXZyBjhNqvLecbKNdXdj+UXFc9KKUFpxUS4Wm83jPoZM0KHPzqDUTcD
+hYxlBwVN1E/K9KthBZ/QMliLhNYIX8lOHv9ZeQ8zxo1yIiOvqm5J86jPmdjmDEHZ
+tAUQFmkx2FGIAo5q5n4y4XudqzYwUD+SCTYKQQgQpCsDjhA8j1y1HksfZTelgWLc
+rirP9B9BrZslOdb0Xz1fCZ1LuQul414z4k7oshZ/PNl5oQPJiWnuArjI9tG98xUo
+YRSfwptCZOLQNAWr8wTmbooQ0t69tqSyuCuzsvZQ7SfdQsGQhLsIy9/UJ7K6tCgx
+xwdqz/ln5yM4i46l7mv85p+oLYd7xaDLdPF+96tYr3qm2wr+oLxXABHLs19wGhY/
+YvmKOSnWdD+6ReTdJh9OEfszgLXXxfnHlcImKrrlNXLr7eCUyR5Y5unDJsJbE0r9
+ZRZJg0nfv3lkJJcfnMIO7gHiq0jp8Pmtzg5MUHxJL/Oc2pOFGhrs0fh5dFdK0Lwd
+j7u2ADF1sEKgH4rAZ8XLe5QAFgcbbAbfVQrYV9ONJEqv6KvmQlbooyVXbwCoCQFo
+5K4UIrqssp8LGopgEEQU
+=frhd
+-----END PGP SIGNATURE-----
+
+--nextPart2741972.veqqtVjuV1--
