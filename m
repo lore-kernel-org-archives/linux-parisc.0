@@ -1,30 +1,46 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: Re: [PATCH 2.6.39-rc3] parsic: Fix futex support
-Date: Fri, 08 Jul 2011 18:13:02 -0400
-Message-ID: <4E1780EE.1010405@systemhalted.org>
-References: <4E177624.1030500@systemhalted.org> <201107081742.48874.vapier@gentoo.org>
+From: Thibaut VARENE <varenet@parisc-linux.org>
+Subject: Re: Status of hppa on debian-ports.
+Date: Sat, 9 Jul 2011 00:21:22 +0200
+Message-ID: <CA+DQjFigFMHXAuxHk=tPTThF4xBwv6ae9bQq2nY6KfHJo7y+ow@mail.gmail.com>
+References: <4E17689B.2090604@systemhalted.org> <201107081654.33542.vapier@gentoo.org>
+ <201107081730.44289.vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: "Carlos O'Donell" <carlos@systemhalted.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	debian-hppa@lists.debian.org, Aurelien Jarno <aurel32@debian.org>
 To: Mike Frysinger <vapier@gentoo.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <201107081742.48874.vapier@gentoo.org>
+In-Reply-To: <201107081730.44289.vapier@gentoo.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 7/8/2011 5:42 PM, Mike Frysinger wrote:
-> On Friday, July 08, 2011 17:27:00 Carlos O'Donell wrote:
->> Implements futex op support and makes futex cmpxchg atomic.
->> Tested on 64-bit SMP kernel running on 2 x PA8700s.
-> 
-> seems like all the changes to this func are arch-independent and could be 
-> placed into asm-generic/futex.h.  the current parisc futex.h looks like a copy 
-> of the asm-generic one ...
+On Fri, Jul 8, 2011 at 11:30 PM, Mike Frysinger <vapier@gentoo.org> wro=
+te:
+> On Friday, July 08, 2011 16:54:32 Mike Frysinger wrote:
+>> On Friday, July 08, 2011 16:29:15 Carlos O'Donell wrote:
+>> > The current status of hppa on debian-ports is available here:
+>> >
+>> > http://wiki.parisc-linux.org/Debian_Ports
+>>
+>> the page is apparently marked immutable, otherwise i'd fix the typo:
+>> =C2=A0 =C2=A0 =C2=A0 Not a debian developers.
+>
+> or maybe it's just my new account as all pages seem to be immutable .=
+=2E.
 > -mike
 
-That's true. I didn't want to rock the boat on this one until
-I hammered out all the userspace testing.
+What's your username? As explained here:
+http://wiki.parisc-linux.org/WikiAccessPolicy
 
-Cheers,
-Carlos.
+Someone already on the wiki needs to add you to the ACL.
+
+
+--=20
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
