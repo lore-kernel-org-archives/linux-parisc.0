@@ -1,42 +1,54 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: Status of hppa on debian-ports.
-Date: Sat, 9 Jul 2011 05:16:58 -0400
-Message-ID: <CAJaTeTrw9OqyiR3DorQAc4SmBRwfsyaZ7C=c4hzdhy50ShX9Kg@mail.gmail.com>
-References: <4E17689B.2090604@systemhalted.org> <201107081654.33542.vapier@gentoo.org>
- <201107081730.44289.vapier@gentoo.org> <CA+DQjFigFMHXAuxHk=tPTThF4xBwv6ae9bQq2nY6KfHJo7y+ow@mail.gmail.com>
- <CAJaTeTpJBRz_9Fpg9N+tDfDxB-yWEs4dTmh4yW1Uz50N+34qiQ@mail.gmail.com> <CA+DQjFgSd9uOLX+kvu=haqbaGdFwHa-faLNx1wA=3fs3DxeE9Q@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "Carlos O'Donell" <carlos@systemhalted.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	debian-hppa@lists.debian.org, Aurelien Jarno <aurel32@debian.org>
-To: Thibaut VARENE <varenet@parisc-linux.org>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: Sort output dynamic relocations.
+Date: Sat, 9 Jul 2011 11:08:12 -0400
+Message-ID: <6957FCF8-0667-4DEF-8134-EACB33D47A13@bell.net>
+References: <CADZpyiyS2m9cc=RuUg+DOc3xfEMFOAfdYWwFLbjDTUmgqtnDsQ@mail.gmail.com> <4E15F06E.8040601@bell.net> <CADZpyixAMSZaNY_cU09MEz+bbH4yUvyGxcmZxbiAqJU4hK-7WQ@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
+Cc: John David Anglin <dave.anglin@nrc.ca>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CA+DQjFgSd9uOLX+kvu=haqbaGdFwHa-faLNx1wA=3fs3DxeE9Q@mail.gmail.com>
+In-Reply-To: <CADZpyixAMSZaNY_cU09MEz+bbH4yUvyGxcmZxbiAqJU4hK-7WQ@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Jul 9, 2011 at 05:07, Thibaut VARENE wrote:
-> On Sat, Jul 9, 2011 at 8:32 AM, Mike Frysinger wrote:
->> On Fri, Jul 8, 2011 at 18:21, Thibaut VARENE wrote:
->>> What's your username?
->>
->> it said to use first/last name, so i'm MikeFrysinger
->
-> Added.
 
-thanks
+On 7-Jul-11, at 7:13 PM, Carlos O'Donell wrote:
 
->>> As explained here:
->>> http://wiki.parisc-linux.org/WikiAccessPolicy
+> On Thu, Jul 7, 2011 at 1:44 PM, John David Anglin <dave.anglin@bell.net 
+> > wrote:
+>> On 7/7/2011 11:29 AM, Carlos O'Donell wrote:
 >>>
->>> Someone already on the wiki needs to add you to the ACL.
+>>> Dave,
+>>>
+>>> FYI.
+>>>
+>>> PA should be sorting relocations in .rlea.dyn such that realtive
+>>> relocations (DIR32) are listed first before opd relocs (PLABEL32).
 >>
->> is there really a spam problem to not open it up to registered users ?
->
-> No. The WikiAccessPolicy page is full of lies and this system is only
-> there to annoy people...
-> :-/
+>> I imagine that this shouldn't be too hard to implement.
 
-ah, well i hope the source of these lies is punished severely ;x
--mike
+
+As far as I can tell, most targets don't sort dynamic relocations.   
+The exceptions
+that I see are mips and score.  Doing this will increase link time, so  
+I tend to think
+it should be avoided if possible.  Isn't the dynamic loader a special  
+case?
+
+Have you tried the ld "-z combreloc" option to see if that works?  It  
+combines
+reloc sections and sorts them.
+
+If "-z combreloc" doesn't produce the right order, then we will need  
+something
+similar to elf_hppa_sort_unwind().  elfxx-mips.c has a compare function
+sort_dynamic_relocs.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
