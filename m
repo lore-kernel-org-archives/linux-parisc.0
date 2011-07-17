@@ -1,50 +1,112 @@
-From: Sergei Shtylyov <sshtylyov@mvista.com>
-Subject: Re: [PATCH 0/2] fix libata-sff and pata_cmd64x to not crash on boot
- on parisc
-Date: Fri, 15 Jul 2011 19:45:56 +0400
-Message-ID: <4E2060B4.3090300@ru.mvista.com>
-References: <1303673315.5231.9.camel@mulgrave.site> <1305306118.2611.62.camel@mulgrave.site> <4DCED18B.1070801@garzik.org>
+From: Aurelien Jarno <aurel32@debian.org>
+Subject: Re: debian hppa
+Date: Mon, 18 Jul 2011 00:03:02 +0200
+Message-ID: <20110717220302.GA30333@hall.aurel32.net>
+References: <20110527213516.GH21744@dannf.org>
+ <20110527233738.0B95D4FCB@hiauly1.hia.nrc.ca>
+ <BANLkTi=maOnkCLD9aU=JDYL9257EkpHxnQ@mail.gmail.com>
+ <20110601021049.GB3984@hiauly1.hia.nrc.ca>
+ <BANLkTin2DhKC_ss6UsCPYxmTR-UD=GY0uw@mail.gmail.com>
+ <E1F45BBE-F922-4E1C-9DEC-FAF4BF4B4E26@nrc-cnrc.gc.ca>
+ <CA+DQjFgygVS0YQ_zUfQG=BkTb_zrSN+yYxGyTU6ufC-PV7dBxA@mail.gmail.com>
+ <CADZpyiy8O_tsm=41fNCbC_nPq77RdsEfD=UahR_yxtdm7P7u0A@mail.gmail.com>
+ <20110707215907.GA1837@hall.aurel32.net>
+ <CADZpyiwaKjhqWJ0kGh4kV1BZSa02=OGVPYeHxQA9iD8LVnkEqQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	linux-ide <linux-ide@vger.kernel.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>,
-	Sergei Shtylyov <sshtylyov@mvista.com>
-To: Jeff Garzik <jeff@garzik.org>
-Return-path: <linux-ide-owner@vger.kernel.org>
-In-Reply-To: <4DCED18B.1070801@garzik.org>
-List-ID: <linux-ide.vger.kernel.org>
+Content-Type: text/plain; charset=iso-8859-15
+Cc: Thibaut VARENE <T-Bone@parisc-linux.org>,
+	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	dann frazier <dannf@dannf.org>, linux-parisc@vger.kernel.org
+To: Carlos O'Donell <carlos@systemhalted.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <CADZpyiwaKjhqWJ0kGh4kV1BZSa02=OGVPYeHxQA9iD8LVnkEqQ@mail.gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello.
+On Thu, Jul 07, 2011 at 07:02:28PM -0400, Carlos O'Donell wrote:
+> On Thu, Jul 7, 2011 at 5:59 PM, Aurelien Jarno <aurel32@debian.org> w=
+rote:
+> > All the list of things to provide for debian-ports are available fr=
+om my
+> > previous post back in April:
+> >
+> > =A0http://lists.debian.org/debian-hppa/2011/04/msg00026.html
+> >
+> > Please note that the first point is not relevant anymore given that=
+ I
+> > have done the import myself:
+> >
+> > =A0http://lists.debian.org/debian-hppa/2011/05/msg00002.html
+>=20
+> - A place/way to fetch all the .deb that have to be import with the
+>   corresponding .changes.
+>=20
+> This is done.
+>=20
+> - List of persons who need to have access to the wanna-build interfac=
+e.
+>   If some of them are not DD, please also provide mail/login/ssh key.
+>=20
+> I would like to have access to the wanna-build interface.
+>=20
+> I will have Dann Frazier send you my mail/login/ssh key as a signed e=
+mail.
 
-Jeff Garzik wrote:
+Ok, will create that when I get the mail.
 
->> On Sun, 2011-04-24 at 14:28 -0500, James Bottomley wrote:
->>> currently libata-sff is completely ignoring the enabled/disabled status
->>> of the interfaces.  This is a real problem on parisc because if you
->>> touch a non responding memory area (i.e. a disabled interface) you crash
->>> the box.
+> - List of persons who should be able to upload packages to the archiv=
+e
+>   with the corresponding GPG keys (that should include buildds
+>   maintainers).
+>=20
+> I will have Dann Frazier send you my GPG key in the same signed email=
+=2E
 
->>> Fix by checking the CNTRL bits to see if the port is enabled before
->>> trying to poke it.
+Ditto.
 
->> Ping on this.
+> - List of emails to be used as a contact point for alpha/hppa buildds
+>   and alpha/hppa related things.
+>=20
+> In the email from Dann.
 
->> Since 1/2 is an essential fix to prevent a boot panic on parisc, I can
->> just take them through the parisc tree.
+Ditto.
+=20
+> - List of buildds with their IP, SSH key and mail address.
+>=20
+> What do you want installed on the buildds?
 
-> It's in libata-dev.git#upstream and #NEXT (linux-next) at present.
+I personally don't really want to get anything installed. But to be
+useful a buildd needs to be able to connect to the wanna-build db, send
+the build logs, receive signed build logs by mail and upload packages.
 
-    I'm wondering about the other drivers that check the channel enable bits in 
-their prereset() methods. James has shown that such code would still crash on 
-such platforms as PARISC (I suspect many more platfroms which don't silently 
-ignore the target aborts in the PCI space like x86 does). I think all such 
-drivers should be converted to the early port disable detection scheme used in 
-the pata_cmd64x driver (an some others)...
+> I've setup a buildd before, but the truth is that I had to crib the
+> information from various sources.
+>=20
+> Is there actually a guide for this available anywhere?
+>=20
 
->     Jeff
+You can use the setup guide from [1]. Basically you should change=20
+debian.org by debian-ports.org and use the following sources.list
+(or any of the corresponding mirrors [2]):
 
-WBR, Sergei
+  deb http://ftp.debian-ports.org/debian sid main
+  deb http://ftp.debian-ports.org/debian unreleased main
+  deb-src http://ftp.debian.org/debian/ unstable main
 
+  deb http://incoming.debian-ports.org/buildd unstable main
+  deb-src http://incoming.debian-ports.org/buildd unstable main
+
+Cheers,
+Aurelien
+ =20
+[1] https://buildd.debian.org/docs/
+[2] http://www.debian-ports.org/mirrors
+
+--=20
+Aurelien Jarno	                        GPG: 1024D/F1BCDB73
+aurelien@aurel32.net                 http://www.aurel32.net
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
