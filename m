@@ -1,39 +1,78 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: ramoops: fix compile failure on parisc
-Date: Fri, 29 Jul 2011 17:11:32 +0400
-Message-ID: <1311945092.8190.34.camel@mulgrave>
+Subject: sungem: fix compile failure caused by trivial #include
+ consolidation
+Date: Fri, 29 Jul 2011 18:08:44 +0400
+Message-ID: <1311948524.8190.39.camel@mulgrave>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Cc: linux-kernel <linux-kernel@vger.kernel.org>,
 	Parisc List <linux-parisc@vger.kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Marco Stornelli <marco.stornelli@gmail.com>
+To: David Miller <davem@davemloft.net>,
+	Vitaliy Ivanov <vitalivanov@gmail.com>,
+	Jiri Kosina <jkosina@suse.cz>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-drivers/char/ramoops.c: In function 'ramoops_init':
-drivers/char/ramoops.c:221: error: implicit declaration of function 'IS_ERR'
-drivers/char/ramoops.c:222: error: implicit declaration of function 'PTR_ERR'
+This patch:
 
-If it actually builds on other platforms, it's probably getting
-linux/err.h via some other #include.
+commit e44ba033c5654dbfda53461c9b1f7dd9bd1d198f
+Author: Vitaliy Ivanov <vitalivanov@gmail.com>
+Date:   Mon Jun 20 16:08:07 2011 +0200
+
+    treewide: remove duplicate includes
+
+Causes this compile failure on parisc:
+
+  CC [M]  drivers/net/sungem.o
+drivers/net/sungem.c:49:22: error: asm/prom.h: No such file or directory
+make[2]: *** [drivers/net/sungem.o] Error 1
+
+Only Sparc and PPC actually have the asm/prom.h include, so you can't
+consolidate it outside of the ifdefs.
 
 Signed-off-by: James Bottomley <JBottomley@Parallels.com>
 
 ---
 
-diff --git a/drivers/char/ramoops.c b/drivers/char/ramoops.c
-index bd9b94b..fca0c51 100644
---- a/drivers/char/ramoops.c
-+++ b/drivers/char/ramoops.c
-@@ -22,6 +22,7 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+This really shouldn't be happening with a trivial patch, since it's an
+obviously non-trivial transformation ... I assume the duplicate include
+checker isn't taking #ifdefs into account?
+
+James
+
+commit e44ba033c5654dbfda53461c9b1f7dd9bd1d198f
+Author: Vitaliy Ivanov <vitalivanov@gmail.com>
+Date:   Mon Jun 20 16:08:07 2011 +0200
+
+    treewide: remove duplicate includes
+    
+    Many stupid corrections of duplicated includes based on the output of
+    scripts/checkincludes.pl.
+    
+    Signed-off-by: Vitaliy Ivanov <vitalivanov@gmail.com>
+    Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+
+diff --git a/drivers/net/sungem.c b/drivers/net/sungem.c
+index ab59300..70f018d 100644
+--- a/drivers/net/sungem.c
++++ b/drivers/net/sungem.c
+@@ -66,15 +66,14 @@
+ #include <asm/byteorder.h>
+ #include <asm/uaccess.h>
+ #include <asm/irq.h>
++#include <asm/prom.h>
  
- #include <linux/kernel.h>
-+#include <linux/err.h>
- #include <linux/module.h>
- #include <linux/kmsg_dump.h>
- #include <linux/time.h>
+ #ifdef CONFIG_SPARC
+ #include <asm/idprom.h>
+-#include <asm/prom.h>
+ #endif
+ 
+ #ifdef CONFIG_PPC_PMAC
+ #include <asm/pci-bridge.h>
+-#include <asm/prom.h>
+ #include <asm/machdep.h>
+ #include <asm/pmac_feature.h>
+ #endif
 
 
