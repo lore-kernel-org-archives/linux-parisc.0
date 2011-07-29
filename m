@@ -1,66 +1,45 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: sungem: fix compile failure caused by trivial #include
- consolidation
-Date: Fri, 29 Jul 2011 18:22:37 +0400
-Message-ID: <1311949357.8190.40.camel@mulgrave>
-References: <1311948524.8190.39.camel@mulgrave>
-	 <alpine.LNX.2.00.1107291611030.7300@pobox.suse.cz>
-	 <20110729.071710.1864654661956416171.davem@davemloft.net>
+Subject: [PATCH] wire up sysmmsg syscall
+Date: Fri, 29 Jul 2011 18:37:02 +0400
+Message-ID: <1311950222.8190.43.camel@mulgrave>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Cc: jkosina@suse.cz, vitalivanov@gmail.com,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20110729.071710.1864654661956416171.davem@davemloft.net>
-List-ID: <linux-kernel.vger.kernel.org>
+To: Parisc List <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2011-07-29 at 07:17 -0700, David Miller wrote:
-> From: Jiri Kosina <jkosina@suse.cz>
-> Date: Fri, 29 Jul 2011 16:11:54 +0200 (CEST)
-> 
-> > On Fri, 29 Jul 2011, James Bottomley wrote:
-> > 
-> >> This patch:
-> >> 
-> >> commit e44ba033c5654dbfda53461c9b1f7dd9bd1d198f
-> >> Author: Vitaliy Ivanov <vitalivanov@gmail.com>
-> >> Date:   Mon Jun 20 16:08:07 2011 +0200
-> >> 
-> >>     treewide: remove duplicate includes
-> >> 
-> >> Causes this compile failure on parisc:
-> >> 
-> >>   CC [M]  drivers/net/sungem.o
-> >> drivers/net/sungem.c:49:22: error: asm/prom.h: No such file or directory
-> >> make[2]: *** [drivers/net/sungem.o] Error 1
-> >> 
-> >> Only Sparc and PPC actually have the asm/prom.h include, so you can't
-> >> consolidate it outside of the ifdefs.
-> >> 
-> >> Signed-off-by: James Bottomley <JBottomley@Parallels.com>
-> >> 
-> >> ---
-> >> 
-> >> This really shouldn't be happening with a trivial patch, since it's an
-> >> obviously non-trivial transformation ... I assume the duplicate include
-> >> checker isn't taking #ifdefs into account?
-> > 
-> > Ah, right. I am afraid this was simply overlooked. David, do you want me 
-> > to take this, or will you fix that up in your tree? (I am fine either 
-> > way).
-> 
-> Take what, although James signed off he seemd to simply repost your
-> patch again rather than a fix, unless I'm reading it wrong :-)
+Signed-off-by: James Bottomley <JBottomley@Parallels.com>
 
-Oh, yes ... I applied it with patch -R, since I was finding the bit to
-revert. Sorry,
+---
 
-James
+diff --git a/arch/parisc/include/asm/unistd.h b/arch/parisc/include/asm/unistd.h
+index 3392de3..276df1c 100644
+--- a/arch/parisc/include/asm/unistd.h
++++ b/arch/parisc/include/asm/unistd.h
+@@ -821,8 +821,10 @@
+ #define __NR_open_by_handle_at	(__NR_Linux + 326)
+ #define __NR_syncfs		(__NR_Linux + 327)
+ #define __NR_setns		(__NR_Linux + 328)
++#define __NR_setns		(__NR_Linux + 328)
++#define __NR_sendmmsg		(__NR_Linux + 329)
+ 
+-#define __NR_Linux_syscalls	(__NR_setns + 1)
++#define __NR_Linux_syscalls	(__NR_sendmmsg + 1)
+ 
+ 
+ #define __IGNORE_select		/* newselect */
+diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
+index 34a4f5a..e66366f 100644
+--- a/arch/parisc/kernel/syscall_table.S
++++ b/arch/parisc/kernel/syscall_table.S
+@@ -427,6 +427,7 @@
+ 	ENTRY_COMP(open_by_handle_at)
+ 	ENTRY_SAME(syncfs)
+ 	ENTRY_SAME(setns)
++	ENTRY_COMP(sendmmsg)
+ 
+ 	/* Nothing yet */
+ 
 
-> But yeah once there is a fix please push it.
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
