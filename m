@@ -1,44 +1,32 @@
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCHv4 01/11] atomic: add *_dec_not_zero
-Date: Tue, 2 Aug 2011 10:58:14 +0100
-Message-ID: <20110802095814.GA22947@linux-mips.org>
-References: <1311760070-21532-1-git-send-email-sven@narfation.org>
+From: Jeroen Roovers <jer@gentoo.org>
+Subject: RFC: lsparisc without libsysfs
+Date: Thu, 4 Aug 2011 17:32:25 +0200
+Message-ID: <20110804173225.6082676c@epia.jer-c2.orkz.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org,
-	linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Heiko Carstens <heiko.carstens@de.ibm.com>,
-	Randy Dunlap <rdunlap@xenotime.net>,
-	Paul Mackerras <paulus@samba.org>, Helge Deller <deller@gmx.de>,
-	sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-s390@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
-	user-mode-linux-devel@lists.sourceforge.net,
-	Richard Weinberger <richard@nod.at>,
-	Hirokazu Takata <takata@linux-m32r.org>, x86@kernel.org,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Ingo Molnar <mingo@redhat.com>, Matt Turner <mattst88@gmail.com>,
-	Fenghua Yu <fenghua.yu@intel.com>, Arnd Bergmann <arnd@arndb.de>,
-	Jeff Dike <jdike@addtoit.com>, Chris Metcalf <cmetcalf@tilera.com>,
-	linux-m32r@ml.linux-m32r
-To: Sven Eckelmann <sven@narfation.org>
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1311760070-21532-1-git-send-email-sven@narfation.org>
-List-Id: <linux-arm-kernel.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset=US-ASCII
+To: linux-parisc <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Jul 27, 2011 at 11:47:40AM +0200, Sven Eckelmann wrote:
+     Hello there,
 
-For MIPS:
 
-Acked-by: Ralf Baechle <ralf@linux-mips.org>
+lsparisc currently uses libsysfs to find PARISC specific devices in
+the sysfs tree.
 
-  Ralf
+The Gentoo Linux Project wants to drop sysfsutils[1], including
+libsysfs, since it was last updated in 2006 and is purportedly broken
+(even though lsparisc still works fine).
+
+Similar utilities, like lsscsi[2] and cpufrequtils[3], stopped using
+libsysfs a long time ago and search the sysfs tree in other ways.
+
+
+Regards,
+     jer
+
+
+[1] https://bugs.gentoo.org/show_bug.cgi?id=377695
+[2] http://sg.danny.cz/scsi/lsscsi.html
+[3] http://www.kernel.org/pub/linux/utils/kernel/cpufreq/cpufrequtils.html
