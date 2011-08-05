@@ -1,211 +1,87 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [GIT PULL] parisc fixes for 3.0
-Date: Thu, 04 Aug 2011 10:52:37 -0500
-Message-ID: <1312473157.3034.50.camel@mulgrave>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCH 2.6.39-rc3] parsic: Fix futex support
+Date: Fri, 5 Aug 2011 17:44:03 -0400
+Message-ID: <BLU0-SMTP8613717861B7E5D22BB762973C0@phx.gbl>
+References: <4E177624.1030500@systemhalted.org> <201107081742.48874.vapier@gentoo.org> <4E1780EE.1010405@systemhalted.org> <BLU0-SMTP8777233F78FA13F6037090974E0@phx.gbl> <CADZpyixCFm7YUfihEJs+eR+gyUcw+S_ty+v4w2bK2s0jMFwUQg@mail.gmail.com> <2F6A03B7-0729-4774-AD1F-5D3C571DE51D@bell.net>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: "Carlos O'Donell" <carlos@systemhalted.org>,
+	Mike Frysinger <vapier@gentoo.org>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <2F6A03B7-0729-4774-AD1F-5D3C571DE51D@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is basically three bug fixes that turned up recently (one wire up
-of a syscall, a futex fix and an atomic problem with variable size)
 
-The patches are here:
+On 24-Jul-11, at 4:30 PM, John David Anglin wrote:
 
-master.kernel.org:/pub/scm/linux/kernel/git/jejb/parisc-2.6.git#fixes
+>
+> On 24-Jul-11, at 2:42 PM, Carlos O'Donell wrote:
+>
+>> On Fri, Jul 22, 2011 at 5:51 PM, John David Anglin <dave.anglin@bell.net 
+>> > wrote:
+>>> Do you have a userspace patch?  There was the thread stack  
+>>> allocation bug
+>>> and possibly futex related issues.
+>>
+>> I do have a userspace patch, what would you like the patch against?
+>
+> The current version is unstable or 2.11.2-10.
 
-The short changelog is:
 
-Carlos O'Donell (1):
-      [PARISC] Fix futex support
+I think we need a patch against the current unstable version (2.13-13).
 
-James Bottomley (1):
-      [PARISC] wire up sendmmsg syscall
+I have been trying to fix the HPMCs caused by flush_cache_range.  I  
+have modified it to
+use flush_cache_page.  This didn't fix the HPMCs, so I added a check  
+for inequivalent
+aliases along the lines as that in flush_dcache_page.  Without that,  
+I'm seeing warnings
+like the following:
 
-John David Anglin (1):
-      [PARISC] fix return type of __atomic64_add_return
+INEQUIVALENT ALIASES 0x40095000 and 0x40096000 in file pam_deny.so
+INEQUIVALENT ALIASES 0x40096000 and 0x40095000 in file pam_deny.so
+INEQUIVALENT ALIASES 0x40095000 and 0x40096000 in file pam_deny.so
+INEQUIVALENT ALIASES 0x40096000 and 0x40095000 in file pam_deny.so
+INEQUIVALENT ALIASES 0x40095000 and 0x40096000 in file pam_deny.so
+INEQUIVALENT ALIASES 0x40092000 and 0x40093000 in file pam_permit.so
+INEQUIVALENT ALIASES 0x40093000 and 0x40092000 in file pam_permit.so
+INEQUIVALENT ALIASES 0x40092000 and 0x40093000 in file pam_permit.so
+INEQUIVALENT ALIASES 0x40093000 and 0x40092000 in file pam_permit.so
+INEQUIVALENT ALIASES 0x40092000 and 0x40093000 in file pam_permit.so
+INEQUIVALENT ALIASES 0x40707000 and 0x40708000 in file pam_env.so
+INEQUIVALENT ALIASES 0x4008b000 and 0x4008c000 in file pam_limits.so
 
-The diffstat is:
+I tried rebuilding pam from source but the only version I could find  
+is 1.1.3-2.  It has
+a dependency on multiarch-support.  While it builds, it won't install.
+multiarch-support appears to be provided by eglibc 2.13.
 
- arch/parisc/include/asm/atomic.h   |    4 +-
- arch/parisc/include/asm/futex.h    |   66 ++++++++++++++++++++++++++++++++---
- arch/parisc/include/asm/unistd.h   |    3 +-
- arch/parisc/kernel/syscall_table.S |    1 +
- 4 files changed, 65 insertions(+), 9 deletions(-)
+I'm hoping this is the cause of the HPMCs as the messages appear  
+somewhat randomly.
 
-And the full diff is attached below.
+Another issue that I saw in debugging flush_cache_range is that it is  
+sometimes
+called with "64-bit" ranges.  There are no pte's and probably no page  
+table for these
+flushes.  Here's an example:
 
-James
+vm_start 0xfb0e9000, vm_end 0x7fff1001000
+start 0x7fff0fff000, end 0x7fff1001000, cr25 0x3c376000
+sr0 0x0, sr1 0x0, sr2 0x0, sr3 0x800
+sr4 0x0, sr5 0x0, sr6 0x0, sr7 0x0
 
----
+The first call and some occasional subsequent calls have this wierd  
+range.
 
-diff --git a/arch/parisc/include/asm/atomic.h b/arch/parisc/include/asm/atomic.h
-index f819559..26fd114 100644
---- a/arch/parisc/include/asm/atomic.h
-+++ b/arch/parisc/include/asm/atomic.h
-@@ -259,10 +259,10 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
- 
- #define ATOMIC64_INIT(i) ((atomic64_t) { (i) })
- 
--static __inline__ int
-+static __inline__ s64
- __atomic64_add_return(s64 i, atomic64_t *v)
- {
--	int ret;
-+	s64 ret;
- 	unsigned long flags;
- 	_atomic_spin_lock_irqsave(v, flags);
- 
-diff --git a/arch/parisc/include/asm/futex.h b/arch/parisc/include/asm/futex.h
-index 67a33cc..2388bdb 100644
---- a/arch/parisc/include/asm/futex.h
-+++ b/arch/parisc/include/asm/futex.h
-@@ -5,11 +5,14 @@
- 
- #include <linux/futex.h>
- #include <linux/uaccess.h>
-+#include <asm/atomic.h>
- #include <asm/errno.h>
- 
- static inline int
- futex_atomic_op_inuser (int encoded_op, u32 __user *uaddr)
- {
-+	unsigned long int flags;
-+	u32 val;
- 	int op = (encoded_op >> 28) & 7;
- 	int cmp = (encoded_op >> 24) & 15;
- 	int oparg = (encoded_op << 8) >> 20;
-@@ -18,21 +21,58 @@ futex_atomic_op_inuser (int encoded_op, u32 __user *uaddr)
- 	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
- 		oparg = 1 << oparg;
- 
--	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(u32)))
-+	if (!access_ok(VERIFY_WRITE, uaddr, sizeof(*uaddr)))
- 		return -EFAULT;
- 
- 	pagefault_disable();
- 
-+	_atomic_spin_lock_irqsave(uaddr, flags);
-+
- 	switch (op) {
- 	case FUTEX_OP_SET:
-+		/* *(int *)UADDR2 = OPARG; */
-+		ret = get_user(oldval, uaddr);
-+		if (!ret)
-+			ret = put_user(oparg, uaddr);
-+		break;
- 	case FUTEX_OP_ADD:
-+		/* *(int *)UADDR2 += OPARG; */
-+		ret = get_user(oldval, uaddr);
-+		if (!ret) {
-+			val = oldval + oparg;
-+			ret = put_user(val, uaddr);
-+		}
-+		break;
- 	case FUTEX_OP_OR:
-+		/* *(int *)UADDR2 |= OPARG; */
-+		ret = get_user(oldval, uaddr);
-+		if (!ret) {
-+			val = oldval | oparg;
-+			ret = put_user(val, uaddr);
-+		}
-+		break;
- 	case FUTEX_OP_ANDN:
-+		/* *(int *)UADDR2 &= ~OPARG; */
-+		ret = get_user(oldval, uaddr);
-+		if (!ret) {
-+			val = oldval & ~oparg;
-+			ret = put_user(val, uaddr);
-+		}
-+		break;
- 	case FUTEX_OP_XOR:
-+		/* *(int *)UADDR2 ^= OPARG; */
-+		ret = get_user(oldval, uaddr);
-+		if (!ret) {
-+			val = oldval ^ oparg;
-+			ret = put_user(val, uaddr);
-+		}
-+		break;
- 	default:
- 		ret = -ENOSYS;
- 	}
- 
-+	_atomic_spin_unlock_irqrestore(uaddr, flags);
-+
- 	pagefault_enable();
- 
- 	if (!ret) {
-@@ -54,7 +94,9 @@ static inline int
- futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
- 			      u32 oldval, u32 newval)
- {
-+	int ret;
- 	u32 val;
-+	unsigned long flags;
- 
- 	/* futex.c wants to do a cmpxchg_inatomic on kernel NULL, which is
- 	 * our gateway page, and causes no end of trouble...
-@@ -65,12 +107,24 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
- 	if (!access_ok(VERIFY_WRITE, uaddr, sizeof(u32)))
- 		return -EFAULT;
- 
--	if (get_user(val, uaddr))
--		return -EFAULT;
--	if (val == oldval && put_user(newval, uaddr))
--		return -EFAULT;
-+	/* HPPA has no cmpxchg in hardware and therefore the
-+	 * best we can do here is use an array of locks. The
-+	 * lock selected is based on a hash of the userspace
-+	 * address. This should scale to a couple of CPUs.
-+	 */
-+
-+	_atomic_spin_lock_irqsave(uaddr, flags);
-+
-+	ret = get_user(val, uaddr);
-+
-+	if (!ret && val == oldval)
-+		ret = put_user(newval, uaddr);
-+
- 	*uval = val;
--	return 0;
-+
-+	_atomic_spin_unlock_irqrestore(uaddr, flags);
-+
-+	return ret;
- }
- 
- #endif /*__KERNEL__*/
-diff --git a/arch/parisc/include/asm/unistd.h b/arch/parisc/include/asm/unistd.h
-index 3392de3..d61de64 100644
---- a/arch/parisc/include/asm/unistd.h
-+++ b/arch/parisc/include/asm/unistd.h
-@@ -821,8 +821,9 @@
- #define __NR_open_by_handle_at	(__NR_Linux + 326)
- #define __NR_syncfs		(__NR_Linux + 327)
- #define __NR_setns		(__NR_Linux + 328)
-+#define __NR_sendmmsg		(__NR_Linux + 329)
- 
--#define __NR_Linux_syscalls	(__NR_setns + 1)
-+#define __NR_Linux_syscalls	(__NR_sendmmsg + 1)
- 
- 
- #define __IGNORE_select		/* newselect */
-diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-index 34a4f5a..e66366f 100644
---- a/arch/parisc/kernel/syscall_table.S
-+++ b/arch/parisc/kernel/syscall_table.S
-@@ -427,6 +427,7 @@
- 	ENTRY_COMP(open_by_handle_at)
- 	ENTRY_SAME(syncfs)
- 	ENTRY_SAME(setns)
-+	ENTRY_COMP(sendmmsg)
- 
- 	/* Nothing yet */
- 
+I am currently building 2.13 and will see what needs fixing.
+
+Dave
+
+--
+John David Anglin	dave.anglin@bell.net
 
 
