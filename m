@@ -1,105 +1,67 @@
-From: Rolf Eike Beer <eike@sf-mail.de>
-Subject: [PATCH] hppa: fix whitespace errors in arch/parisc/kernel/traps.c
-Date: Fri, 19 Aug 2011 20:10:53 +0200
-Message-ID: <201108192010.54015.eike@sf-mail.de>
+From: "Rolf Eike Beer" <eike@sf-mail.de>
+Subject: Link error in CMake for HPPA1.1, wrong result for HPPA 2.0
+Date: Thu, 25 Aug 2011 12:37:31 +0200
+Message-ID: <99a9e4b224dc9020d16d0a33fea6096f.squirrel@webmail.sf-mail.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 To: "linux-parisc" <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Things like " \t" and whitespace at end of line. I'm leaving all the other
-coding style errors here alone.
+First something to the machine: C3600 running Gentoo.
 
-Signed-off-by: Rolf Eike Beer <eike-kernel@sf-tec.de>
----
- arch/parisc/kernel/traps.c |   24 ++++++++++++------------
- 1 files changed, 12 insertions(+), 12 deletions(-)
+Kernel: 2.6.38.4
+Glibc: 2.12.2
+Binutils: 2.21.1
+Gcc: 4.5.3
 
-diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index f19e660..2a1ba2b 100644
---- a/arch/parisc/kernel/traps.c
-+++ b/arch/parisc/kernel/traps.c
-@@ -529,10 +529,10 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- 	 */
- 	if (((unsigned long)regs->iaoq[0] & 3) &&
- 	    ((unsigned long)regs->iasq[0] != (unsigned long)regs->sr[7])) { 
--	  	/* Kill the user process later */
--	  	regs->iaoq[0] = 0 | 3;
-+		/* Kill the user process later */
-+		regs->iaoq[0] = 0 | 3;
- 		regs->iaoq[1] = regs->iaoq[0] + 4;
--	 	regs->iasq[0] = regs->iasq[1] = regs->sr[7];
-+		regs->iasq[0] = regs->iasq[1] = regs->sr[7];
- 		regs->gr[0] &= ~PSW_B;
- 		return;
- 	}
-@@ -548,8 +548,8 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- 		
- 		/* set up a new led state on systems shipped with a LED State panel */
- 		pdc_chassis_send_status(PDC_CHASSIS_DIRECT_HPMC);
--		    
--	    	parisc_terminate("High Priority Machine Check (HPMC)",
-+
-+		parisc_terminate("High Priority Machine Check (HPMC)",
- 				regs, code, 0);
- 		/* NOT REACHED */
- 		
-@@ -591,13 +591,13 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- 		/* Break instruction trap */
- 		handle_break(regs);
- 		return;
--	
-+
- 	case 10:
- 		/* Privileged operation trap */
- 		die_if_kernel("Privileged operation", regs, code);
- 		si.si_code = ILL_PRVOPC;
- 		goto give_sigill;
--	
-+
- 	case 11:
- 		/* Privileged register trap */
- 		if ((regs->iir & 0xffdfffe0) == 0x034008a0) {
-@@ -641,7 +641,7 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- 		if(user_mode(regs)){
- 			si.si_signo = SIGFPE;
- 			/* Set to zero, and let the userspace app figure it out from
--		   	   the insn pointed to by si_addr */
-+			   the insn pointed to by si_addr */
- 			si.si_code = 0;
- 			si.si_addr = (void __user *) regs->iaoq[0];
- 			force_sig_info(SIGFPE, &si, current);
-@@ -655,7 +655,7 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- 		die_if_kernel("Floating point exception", regs, 0); /* quiet */
- 		handle_fpe(regs);
- 		return;
--		
-+
- 	case 15:
- 		/* Data TLB miss fault/Data page fault */
- 		/* Fall through */
-@@ -667,15 +667,15 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- 	case 17:
- 		/* Non-access data TLB miss fault/Non-access data page fault */
- 		/* FIXME: 
--		 	 Still need to add slow path emulation code here!
--		         If the insn used a non-shadow register, then the tlb
-+			 Still need to add slow path emulation code here!
-+			 If the insn used a non-shadow register, then the tlb
- 			 handlers could not have their side-effect (e.g. probe
- 			 writing to a target register) emulated since rfir would
- 			 erase the changes to said register. Instead we have to
- 			 setup everything, call this function we are in, and emulate
- 			 by hand. Technically we need to emulate:
- 			 fdc,fdce,pdc,"fic,4f",prober,probeir,probew, probeiw
--		*/			  
-+		*/
- 		fault_address = regs->ior;
- 		fault_space = regs->isr;
- 		break;
--- 
-1.7.6
+I tried to compile CMake, branch next, revision
+60b6b190cb569a18b6cf415d85ff59fa120a1035. The exact version isn't really
+important as I remember that problem for quite a while, it's just for
+reference.
 
+I have a working version of CMake 2.8.4 installed, no idea with which
+compiler that was built (I updated gcc every now and then as they became
+stable on Gentoo). Binutils used to build that CMake was very likely
+2.20.1.
+
+If I just use "cmake /path/to/cmake/source/ && make" I get this result:
+
+Linking CXX executable ../bin/ccmake
+/usr/lib/gcc/hppa2.0-unknown-linux-gnu/4.5.3/../../../../hppa2.0-unknown-linux-gnu/bin/ld:
+libCMakeLib.a(cmGlobalGenerator.cxx.o)(.text._ZNSt8_Rb_treeIN5cmsys6StringESt4pairIKS1_iESt10_Select1stIS4_ESt4lessIS1_ESaIS4_EE16_M_insert_uniqueERKS4_[std::_Rb_tree<cmsys::String,
+std::pair<cmsys::String const, int>,
+std::_Select1st<std::pair<cmsys::String const, int> >,
+std::less<cmsys::String>, std::allocator<std::pair<cmsys::String const,
+int> > >::_M_insert_unique(std::pair<cmsys::String const, int>
+const&)]+0xbc): cannot reach
+00004abb__ZNSt8_Rb_treeIN5cmsys6StringESt4pairIKS1_iESt10_Select1stIS4_ESt4lessIS1_ESaIS4_EE8_S_rightEPSt18_Rb_tree_node_base+0,
+recompile with -ffunction-sections
+/usr/lib/gcc/hppa2.0-unknown-linux-gnu/4.5.3/../../../../hppa2.0-unknown-linux-gnu/bin/ld:
+libCMakeLib.a(cmGlobalGenerator.cxx.o)(.text._ZNSt8_Rb_treeIN5cmsys6StringESt4pairIKS1_iESt10_Select1stIS4_ESt4lessIS1_ESaIS4_EE16_M_insert_uniqueERKS4_[std::_Rb_tree<cmsys::String,
+std::pair<cmsys::String const, int>,
+std::_Select1st<std::pair<cmsys::String const, int> >,
+std::less<cmsys::String>, std::allocator<std::pair<cmsys::String const,
+int> > >::_M_insert_unique(std::pair<cmsys::String const, int>
+const&)]+0xbc): cannot handle R_PARISC_PCREL17F for
+std::_Rb_tree<cmsys::String, std::pair<cmsys::String const, int>,
+std::_Select1st<std::pair<cmsys::String const, int> >,
+std::less<cmsys::String>, std::allocator<std::pair<cmsys::String const,
+int> > >::_S_right(std::_Rb_tree_node_base*)
+/usr/lib/gcc/hppa2.0-unknown-linux-gnu/4.5.3/../../../../hppa2.0-unknown-linux-gnu/bin/ld:
+final link failed: Bad value
+collect2: ld returned 1 exit status
+
+If I hack the master CMakeLists.txt to contain
+"ADD_DEFINITIONS(-march=2.0)" at the very beginning everything compiles
+fine. But if I run the compiled cmake it will hang in an endless loop
+somewhere. It does not do any system calls then, but it eats up 100% CPU.
+
+I very much doubt that this is a CMake breakage as CMake has many nightly
+builds and tests on different platforms that work and I see this bug since
+a while (likely months).
+
+Can someone have a look or give some hints?
+
+Eike
