@@ -1,65 +1,80 @@
-From: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
-Subject: Re: Link error in CMake for HPPA1.1, wrong result for HPPA 2.0
-Date: Fri, 26 Aug 2011 10:00:46 +0200
-Message-ID: <b9feb64c39e0d12d4b6740ea0507f58a.squirrel@webmail.sf-mail.de>
-References: <99a9e4b224dc9020d16d0a33fea6096f.squirrel@webmail.sf-mail.de>
-    <4E5656E4.8000102@systemhalted.org>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: linux-next: build failure in Linus' tree
+Date: Mon, 29 Aug 2011 10:44:51 +1000
+Message-ID: <20110829104451.1c777e24ff72823d1e399f12@canb.auug.org.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-To: "linux-parisc" <linux-parisc@vger.kernel.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4E5656E4.8000102@systemhalted.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
+	NeilBrown <neilb@suse.de>, linuxppc-dev@lists.ozlabs.org,
+	linux-parisc@vger.kernel.org,
+	"J. Bruce Fields" <bfields@redhat.com>
+To: Linus <torvalds@linux-foundation.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On 8/25/2011 6:37 AM, Rolf Eike Beer wrote:
->> const&)]+0xbc): cannot reach
->> 00004abb__ZNSt8_Rb_treeIN5cmsys6StringESt4pairIKS1_iESt10_Select1stIS4_ESt4lessIS1_ESaIS4_EE8_S_rightEPSt18_Rb_tree_node_base+0,
->> recompile with -ffunction-sections
->
-> So did you recompile with -ffunction-sections?
->
-> The basic problem is that the linker was unable to insert a jump
-> to the requested function because it was too far away. Some targets
-> like hppa have short branch distances and we use intermediate stub
-> tables to get around that. However, we can't insert stub tables just
-> anywhere, they need to go between sections. Therefore you need to
-> break up this object file.
+Hi Linus,
 
-If I add -ffunction-section then ccmake (and cmake and cpack) build fine,
-but ctest fails:
+After merging the fixes tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-Linking CXX executable ../bin/ctest
-/usr/lib/gcc/hppa2.0-unknown-linux-gnu/4.5.3/../../../../hppa2.0-unknown-linux-gnu/bin/ld:
-libCMakeLib.a(cmMakefile.cxx.o)(.text._ZN10cmMakefile14AddSourceGroupEPKcS1_+0x40):
-cannot reach 00008647__ZNSaIcEC1Ev@@GLIBCXX_3.4+0, recompile with
--ffunction-sections
-/usr/lib/gcc/hppa2.0-unknown-linux-gnu/4.5.3/../../../../hppa2.0-unknown-linux-gnu/bin/ld:
-libCMakeLib.a(cmMakefile.cxx.o)(.text._ZN10cmMakefile14AddSourceGroupEPKcS1_+0x40):
-cannot handle R_PARISC_PCREL17F for
-std::allocator<char>::allocator()@@GLIBCXX_3.4
-/usr/lib/gcc/hppa2.0-unknown-linux-gnu/4.5.3/../../../../hppa2.0-unknown-linux-gnu/bin/ld:
-final link failed: Bad value
-collect2: ld returned 1 exit status
+arch/powerpc/kernel/built-in.o: In function `.sys_call_table':
+(.text+0xbd00): undefined reference to `.sys_nfsservctl'
+arch/powerpc/kernel/built-in.o: In function `.sys_call_table':
+(.text+0xbd08): undefined reference to `.compat_sys_nfsservctl'
 
-This is the same static library that causes problems, but this time on a
-different executable. So I think John is right and there is really a bug
-somewhere.
+Caused by commit f5b940997397 ("All Arch: remove linkage for
+sys_nfsservctl system call") which also missed parisc.
 
-Just for reference, this are the sizes of the binaries that I currently
-have on my system:
+I will apply this patch for today:
 
--rwxr-xr-x 1 root root 3080228 Apr 26 12:51 /usr/bin/ccmake
--rwxr-xr-x 1 root root 3050408 Apr 26 12:51 /usr/bin/cmake
--rwxr-xr-x 1 root root 4092940 Apr 26 12:51 /usr/bin/ctest
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 29 Aug 2011 10:38:57 +1000
+Subject: [PATCH] remove remaining references to nfsservctl
 
-And this is what happens with -ffunction-sections for those that compile:
+These were missed in commit f5b940997397 "All Arch: remove linkage
+for sys_nfsservctl system call" due to them having no sys_ prefix
+(presumably).
 
--rwxr-xr-x 1 buildbot buildbot  9738726 Aug 26 09:15 ccmake
--rwxr-xr-x 1 buildbot buildbot  9608066 Aug 26 09:16 cmake
--rwxr-xr-x 1 buildbot buildbot 10302152 Aug 26 09:16 cpack
+Cc: NeilBrown <neilb@suse.de>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-parisc@vger.kernel.org
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/parisc/kernel/syscall_table.S |    2 +-
+ arch/powerpc/include/asm/systbl.h  |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-I have no idea how big the current results would get as every of the 4
-possible candidates fails to link. libCMakeLib.a is 21149998 bytes.
+diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
+index e66366f..3735abd 100644
+--- a/arch/parisc/kernel/syscall_table.S
++++ b/arch/parisc/kernel/syscall_table.S
+@@ -259,7 +259,7 @@
+ 	ENTRY_SAME(ni_syscall)		/* query_module */
+ 	ENTRY_SAME(poll)
+ 	/* structs contain pointers and an in_addr... */
+-	ENTRY_COMP(nfsservctl)
++	ENTRY_SAME(ni_syscall)		/* was nfsservctl */
+ 	ENTRY_SAME(setresgid)		/* 170 */
+ 	ENTRY_SAME(getresgid)
+ 	ENTRY_SAME(prctl)
+diff --git a/arch/powerpc/include/asm/systbl.h b/arch/powerpc/include/asm/systbl.h
+index f6736b7..fa0d27a 100644
+--- a/arch/powerpc/include/asm/systbl.h
++++ b/arch/powerpc/include/asm/systbl.h
+@@ -171,7 +171,7 @@ SYSCALL_SPU(setresuid)
+ SYSCALL_SPU(getresuid)
+ SYSCALL(ni_syscall)
+ SYSCALL_SPU(poll)
+-COMPAT_SYS(nfsservctl)
++SYSCALL(ni_syscall)
+ SYSCALL_SPU(setresgid)
+ SYSCALL_SPU(getresgid)
+ COMPAT_SYS_SPU(prctl)
+-- 
+1.7.5.4
 
-Eike
+-- 
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
