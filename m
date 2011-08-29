@@ -1,29 +1,47 @@
-From: francis <franciskabore12@gmail.com>
-Subject: REPLY VERY URGENTLY.
-Date: Mon, 29 Aug 2011 17:29:52 +0530 (IST)
-Message-ID: <1314619192.79899.YahooMailClassic@web137908.mail.in.yahoo.com>
-Reply-To: franciskabore.10@gmail.com
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: Link error in CMake for HPPA1.1, wrong result for HPPA 2.0
+Date: Mon, 29 Aug 2011 10:38:01 -0400
+Message-ID: <4E5BA449.5050606@bell.net>
+References: <99a9e4b224dc9020d16d0a33fea6096f.squirrel@webmail.sf-mail.de>    <4E5656E4.8000102@systemhalted.org> <4E566E6D.8060100@bell.net> <da1221fe3aa512ba4b0a139a89dd2e69.squirrel@webmail.sf-mail.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-To: undisclosed recipients:;
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: linux-parisc@vger.kernel.org
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <da1221fe3aa512ba4b0a139a89dd2e69.squirrel@webmail.sf-mail.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On 8/29/2011 4:12 AM, Rolf Eike Beer wrote:
+>> On 8/25/2011 10:06 AM, Carlos O'Donell wrote:
+>>> On 8/25/2011 6:37 AM, Rolf Eike Beer wrote:
+>>>> const&)]+0xbc): cannot reach
+>>>> 00004abb__ZNSt8_Rb_treeIN5cmsys6StringESt4pairIKS1_iESt10_Select1stIS4_ESt4lessIS1_ESaIS4_EE8_S_rightEPSt18_Rb_tree_node_base+0,
+>>>> recompile with -ffunction-sections
+>>> So did you recompile with -ffunction-sections?
+>>>
+>>> The basic problem is that the linker was unable to insert a jump
+>>> to the requested function because it was too far away. Some targets
+>>> like hppa have short branch distances and we use intermediate stub
+>>> tables to get around that. However, we can't insert stub tables just
+>>> anywhere, they need to go between sections. Therefore you need to
+>>> break up this object file.
+>> I think there is a real bug here but nobody has provided a test case.
+>> -ffunction-sections
+>> probably won't help.
+> Confirmed, it is a regression in gcc 4.5. If I build using 4.4.6
+> everything works fine. I'll file a bug report tonight.
+>
+Interesting, there's not much difference in the PA backend for these two 
+versions.
 
-Dear Friend,
+Add me (danglin at gcc.gnu.org) to the CC list on the GCC bug report and 
+I'll try to
+duplicate the problem.
 
-I know that this message will come to you as a surprise. I am the Auditing and Accounting section manager with African Development Bank, Ouagadougou Burkina faso. I Hope that you will not expose or betray this trust and confident that I am about to repose on you for the mutual benefit of our both families.
+Thanks,
+Dave
 
-I need your urgent assistance in transferring the sum of($39.5)million to your account within 10 or 14 banking days. This money has been dormant for years in our Bank without claim.I want the bank to release the money to you as the nearest person to our deceased customer late George small. who died along with his supposed next of kin in an air crash since 31st October 1999.
-
-I don't want the money to go into government treasury as an abandoned fund. So this is the reason why I am contacting you so that the bank can release the money to you as the next of kin to the deceased customer. Please I would like you to keep this proposal as atop secret and delete it if you are not interested.
-
-Upon receipt of your reply, I will give you full details on how the business will be executed and also note that you will have 40% of the above mentioned sum if you agree to handle this business with me.
-
-I am expecting your urgent response as soon as you receive my message.
-
-Best Regard,
-
-Mr Francis Kabore
+-- 
+John David Anglin    dave.anglin@bell.net
 
