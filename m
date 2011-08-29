@@ -1,80 +1,35 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: linux-next: build failure in Linus' tree
-Date: Mon, 29 Aug 2011 10:44:51 +1000
-Message-ID: <20110829104451.1c777e24ff72823d1e399f12@canb.auug.org.au>
+From: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
+Subject: Re: Link error in CMake for HPPA1.1, wrong result for HPPA 2.0
+Date: Mon, 29 Aug 2011 10:12:18 +0200
+Message-ID: <da1221fe3aa512ba4b0a139a89dd2e69.squirrel@webmail.sf-mail.de>
+References: <99a9e4b224dc9020d16d0a33fea6096f.squirrel@webmail.sf-mail.de>
+    <4E5656E4.8000102@systemhalted.org> <4E566E6D.8060100@bell.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
-	NeilBrown <neilb@suse.de>, linuxppc-dev@lists.ozlabs.org,
-	linux-parisc@vger.kernel.org,
-	"J. Bruce Fields" <bfields@redhat.com>
-To: Linus <torvalds@linux-foundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <4E566E6D.8060100@bell.net>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+> On 8/25/2011 10:06 AM, Carlos O'Donell wrote:
+>> On 8/25/2011 6:37 AM, Rolf Eike Beer wrote:
+>>> const&)]+0xbc): cannot reach
+>>> 00004abb__ZNSt8_Rb_treeIN5cmsys6StringESt4pairIKS1_iESt10_Select1stIS4_ESt4lessIS1_ESaIS4_EE8_S_rightEPSt18_Rb_tree_node_base+0,
+>>> recompile with -ffunction-sections
+>> So did you recompile with -ffunction-sections?
+>>
+>> The basic problem is that the linker was unable to insert a jump
+>> to the requested function because it was too far away. Some targets
+>> like hppa have short branch distances and we use intermediate stub
+>> tables to get around that. However, we can't insert stub tables just
+>> anywhere, they need to go between sections. Therefore you need to
+>> break up this object file.
+> I think there is a real bug here but nobody has provided a test case.
+> -ffunction-sections
+> probably won't help.
 
-After merging the fixes tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+Confirmed, it is a regression in gcc 4.5. If I build using 4.4.6
+everything works fine. I'll file a bug report tonight.
 
-arch/powerpc/kernel/built-in.o: In function `.sys_call_table':
-(.text+0xbd00): undefined reference to `.sys_nfsservctl'
-arch/powerpc/kernel/built-in.o: In function `.sys_call_table':
-(.text+0xbd08): undefined reference to `.compat_sys_nfsservctl'
-
-Caused by commit f5b940997397 ("All Arch: remove linkage for
-sys_nfsservctl system call") which also missed parisc.
-
-I will apply this patch for today:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 29 Aug 2011 10:38:57 +1000
-Subject: [PATCH] remove remaining references to nfsservctl
-
-These were missed in commit f5b940997397 "All Arch: remove linkage
-for sys_nfsservctl system call" due to them having no sys_ prefix
-(presumably).
-
-Cc: NeilBrown <neilb@suse.de>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-parisc@vger.kernel.org
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- arch/parisc/kernel/syscall_table.S |    2 +-
- arch/powerpc/include/asm/systbl.h  |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-index e66366f..3735abd 100644
---- a/arch/parisc/kernel/syscall_table.S
-+++ b/arch/parisc/kernel/syscall_table.S
-@@ -259,7 +259,7 @@
- 	ENTRY_SAME(ni_syscall)		/* query_module */
- 	ENTRY_SAME(poll)
- 	/* structs contain pointers and an in_addr... */
--	ENTRY_COMP(nfsservctl)
-+	ENTRY_SAME(ni_syscall)		/* was nfsservctl */
- 	ENTRY_SAME(setresgid)		/* 170 */
- 	ENTRY_SAME(getresgid)
- 	ENTRY_SAME(prctl)
-diff --git a/arch/powerpc/include/asm/systbl.h b/arch/powerpc/include/asm/systbl.h
-index f6736b7..fa0d27a 100644
---- a/arch/powerpc/include/asm/systbl.h
-+++ b/arch/powerpc/include/asm/systbl.h
-@@ -171,7 +171,7 @@ SYSCALL_SPU(setresuid)
- SYSCALL_SPU(getresuid)
- SYSCALL(ni_syscall)
- SYSCALL_SPU(poll)
--COMPAT_SYS(nfsservctl)
-+SYSCALL(ni_syscall)
- SYSCALL_SPU(setresgid)
- SYSCALL_SPU(getresgid)
- COMPAT_SYS_SPU(prctl)
--- 
-1.7.5.4
-
--- 
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
+Eike
