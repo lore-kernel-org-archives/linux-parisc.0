@@ -1,48 +1,86 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: Link error in CMake for HPPA1.1, wrong result for HPPA 2.0
-Date: Mon, 29 Aug 2011 20:31:15 +0200
-Message-ID: <7292253.L43gRO36Hq@donald.sf-tec.de>
-References: <99a9e4b224dc9020d16d0a33fea6096f.squirrel@webmail.sf-mail.de> <da1221fe3aa512ba4b0a139a89dd2e69.squirrel@webmail.sf-mail.de> <4E5BA449.5050606@bell.net>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: linux-next: build failure in Linus' tree
+Date: Tue, 30 Aug 2011 08:32:18 +1000
+Message-ID: <20110830083218.1819a5d73c3a33e5053e8312@canb.auug.org.au>
+References: <20110829104451.1c777e24ff72823d1e399f12@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3382714.Hso3OUhbyo"; micalg="pgp-sha1"; protocol="application/pgp-signature"
-To: linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4E5BA449.5050606@bell.net>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
+	NeilBrown <neilb@suse.de>, linuxppc-dev@lists.ozlabs.org,
+	linux-parisc@vger.kernel.org,
+	"J. Bruce Fields" <bfields@redhat.com>
+To: Linus <torvalds@linux-foundation.org>
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20110829104451.1c777e24ff72823d1e399f12@canb.auug.org.au>
+List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Hi Linus,
 
---nextPart3382714.Hso3OUhbyo
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="ISO-8859-1"
-
-You wrote:
-> On 8/29/2011 4:12 AM, Rolf Eike Beer wrote:
-
-> > Confirmed, it is a regression in gcc 4.5. If I build using 4.4.6
-> > everything works fine. I'll file a bug report tonight.
+On Mon, 29 Aug 2011 10:44:51 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> After merging the fixes tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
 > 
-> Interesting, there's not much difference in the PA backend for these two
-> versions.
+> arch/powerpc/kernel/built-in.o: In function `.sys_call_table':
+> (.text+0xbd00): undefined reference to `.sys_nfsservctl'
+> arch/powerpc/kernel/built-in.o: In function `.sys_call_table':
+> (.text+0xbd08): undefined reference to `.compat_sys_nfsservctl'
 > 
-> Add me (danglin at gcc.gnu.org) to the CC list on the GCC bug report and
-> I'll try to
-> duplicate the problem.
+> Caused by commit f5b940997397 ("All Arch: remove linkage for
+> sys_nfsservctl system call") which also missed parisc.
+> 
+> I will apply this patch for today:
 
-http://gcc.gnu.org/bugzilla/show_bug.cgi?id=50230
+Will you please appply this?  (repeated for ease of inclusion)
 
-Eike
---nextPart3382714.Hso3OUhbyo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 29 Aug 2011 10:38:57 +1000
+Subject: [PATCH] remove remaining references to nfsservctl
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.15 (GNU/Linux)
+These were missed in commit f5b940997397 "All Arch: remove linkage
+for sys_nfsservctl system call" due to them having no sys_ prefix
+(presumably).
 
-iEYEABECAAYFAk5b2vgACgkQXKSJPmm5/E5KHACfQMpa4PThBiyVjTgABDB33xy5
-MZcAn3hdx6YWial8LLoeH6a+G9FhpX32
-=w6Dz
------END PGP SIGNATURE-----
+Cc: NeilBrown <neilb@suse.de>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-parisc@vger.kernel.org
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/parisc/kernel/syscall_table.S |    2 +-
+ arch/powerpc/include/asm/systbl.h  |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---nextPart3382714.Hso3OUhbyo--
+diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
+index e66366f..3735abd 100644
+--- a/arch/parisc/kernel/syscall_table.S
++++ b/arch/parisc/kernel/syscall_table.S
+@@ -259,7 +259,7 @@
+ 	ENTRY_SAME(ni_syscall)		/* query_module */
+ 	ENTRY_SAME(poll)
+ 	/* structs contain pointers and an in_addr... */
+-	ENTRY_COMP(nfsservctl)
++	ENTRY_SAME(ni_syscall)		/* was nfsservctl */
+ 	ENTRY_SAME(setresgid)		/* 170 */
+ 	ENTRY_SAME(getresgid)
+ 	ENTRY_SAME(prctl)
+diff --git a/arch/powerpc/include/asm/systbl.h b/arch/powerpc/include/asm/systbl.h
+index f6736b7..fa0d27a 100644
+--- a/arch/powerpc/include/asm/systbl.h
++++ b/arch/powerpc/include/asm/systbl.h
+@@ -171,7 +171,7 @@ SYSCALL_SPU(setresuid)
+ SYSCALL_SPU(getresuid)
+ SYSCALL(ni_syscall)
+ SYSCALL_SPU(poll)
+-COMPAT_SYS(nfsservctl)
++SYSCALL(ni_syscall)
+ SYSCALL_SPU(setresgid)
+ SYSCALL_SPU(getresgid)
+ COMPAT_SYS_SPU(prctl)
+-- 
+1.7.5.4
 
+-- 
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
