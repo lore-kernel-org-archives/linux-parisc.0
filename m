@@ -1,54 +1,23 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: linux-next: build failure in Linus' tree
-Date: Mon, 29 Aug 2011 15:50:42 -0700
-Message-ID: <1314658242.3078.18.camel@dabdike.int.hansenpartnership.com>
-References: <20110829104451.1c777e24ff72823d1e399f12@canb.auug.org.au>
-	 <20110830083218.1819a5d73c3a33e5053e8312@canb.auug.org.au>
+From: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
+Subject: Re: Boot failure with 3.0.3: swapper (pid 0): Protection id trap
+ (code 7)
+Date: Wed, 31 Aug 2011 11:54:29 +0200
+Message-ID: <a53708ae6c6247c7ce45d4e5b8131ea7.squirrel@webmail.sf-mail.de>
+References: <201108191958.35802.eike-kernel@sf-tec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Linus <torvalds@linux-foundation.org>, linux-next@vger.kernel.org,
-	linux-kernel@vger.kernel.org, NeilBrown <neilb@suse.de>,
-	linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
-	"J. Bruce Fields" <bfields@redhat.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <20110830083218.1819a5d73c3a33e5053e8312@canb.auug.org.au>
-List-ID: <linux-next.vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <201108191958.35802.eike-kernel@sf-tec.de>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2011-08-30 at 08:32 +1000, Stephen Rothwell wrote:
-> Hi Linus,
-> 
-> On Mon, 29 Aug 2011 10:44:51 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > After merging the fixes tree, today's linux-next build (powerpc
-> > ppc64_defconfig) failed like this:
-> > 
-> > arch/powerpc/kernel/built-in.o: In function `.sys_call_table':
-> > (.text+0xbd00): undefined reference to `.sys_nfsservctl'
-> > arch/powerpc/kernel/built-in.o: In function `.sys_call_table':
-> > (.text+0xbd08): undefined reference to `.compat_sys_nfsservctl'
-> > 
-> > Caused by commit f5b940997397 ("All Arch: remove linkage for
-> > sys_nfsservctl system call") which also missed parisc.
-> > 
-> > I will apply this patch for today:
-> 
-> Will you please appply this?  (repeated for ease of inclusion)
-> 
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Mon, 29 Aug 2011 10:38:57 +1000
-> Subject: [PATCH] remove remaining references to nfsservctl
-> 
-> These were missed in commit f5b940997397 "All Arch: remove linkage
-> for sys_nfsservctl system call" due to them having no sys_ prefix
-> (presumably).
-> 
-> Cc: NeilBrown <neilb@suse.de>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-parisc@vger.kernel.org
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> The last kernel I used on this machine was 2.6.38.4. Any hints
+> appreciated.
 
-Thanks for finding this ... definitely acked by me if necessary.
+I updated the machine to 2.6.38.8 (works fine after applying
+b54cd0d5053633373cd3c374aa203024cbf125a0 and reverting
+c3f957a22eca106bd28136943305b390b4337ebf) and 3.0.4, which is still
+broken. Any ideas?
 
-James
+Eike
