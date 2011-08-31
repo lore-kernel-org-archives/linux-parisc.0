@@ -1,26 +1,59 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: Boot failure with 3.0.3: swapper (pid 0): Protection id trap
- (code 7)
-Date: Wed, 31 Aug 2011 12:04:19 -0400
-Message-ID: <20110831160419.GI22818@bombadil.infradead.org>
-References: <201108191958.35802.eike-kernel@sf-tec.de>
- <a53708ae6c6247c7ce45d4e5b8131ea7.squirrel@webmail.sf-mail.de>
- <20110831154820.GH22818@bombadil.infradead.org>
+From: "Dan Pereira" <danp_48@yahoo.com>
+Subject: Build-a-home-based-business-on-Auto-Pilot
+Date: Wed, 31 Aug 2011 05:38:27 -0700 (PDT)
+Message-ID: <201108311238.p7VCcRH3030854@mail3.spagack2.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110831154820.GH22818@bombadil.infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Aug 31, 2011 at 11:48:20AM -0400, Kyle McMartin wrote:
-> Attach .config?
-> 
 
-I suspect bootmem changes have broken somewhere on 32-bit... try
-inserting a few printk between each of the function calls at the start
-of paging_init to try to narrow down exactly where it fails.
 
---Kyle
+Hello Everyone,
+Discover how average people who have never made a cent in the past
+Are now making $1,000+ every month,=20
+With the Potential of making $50,000 a month
+Just "Plug In"... to Your
+Own Fully Automated=20
+  Turn Key...Global Marketing $ystem
+Receive $500-$3,500 Monthly or MORE
+Not MLM...and
+No Selling...
+No Cold Phone Calling.=20
+Complete plug-in-system!
+
+Check-it-Out!
+
+http://trckrs.com/48184/rc1
+
+It=92s surprisingly cool!
+
+Dan and Noel
+
+
+His was a Com.Merical adv.Sent to you by:Dan Pereira, 11383 Golf Road, =
+Turlock, CA 95380
+In compliance with Federal law, should you choose to Un.Subscribe from =
+our network, you may do so using theUn.Subscribe instruction found belo=
+w.  We are fully compliant with CAN-SPAM Act of 2005-Please use the Un.=
+Subscribe link provided:
+
+
+
+
+
+
+
+
+To remove this email address from further mailings click on  the link b=
+elow  while connected to the internet.
+http://www.reliablecontact.com/cgi-bin/maxsponder/maxuseradmin.cgi?func=
+tion=3Dmanualdelete3&email=3Dlinux-parisc*vger.kernel.org&un=3Drichardp=
+ereira
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
