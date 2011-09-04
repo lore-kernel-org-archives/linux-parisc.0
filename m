@@ -1,61 +1,61 @@
-From: "Dan Pereira" <danp_48@yahoo.com>
-Subject: Build-a-home-based-business-on-Auto-Pilot-A Franchise in a Box
-Date: Sat, 3 Sep 2011 05:53:55 -0700 (PDT)
-Message-ID: <201109031253.p83Crtjo021246@mail3.spagack2.com>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Subject: Re: Boot failure with 3.0.3: swapper (pid 0): Protection id trap (code 7)
+Date: Sun, 04 Sep 2011 18:35:24 +0200
+Message-ID: <2800939.FiF5fAcbHF@donald.sf-tec.de>
+References: <201108191958.35802.eike-kernel@sf-tec.de> <BLU0-SMTP59F0DC2CD7C525D1524BA7971A0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Type: multipart/signed; boundary="nextPart1721894.5vEjEeikWo"; micalg="pgp-sha1"; protocol="application/pgp-signature"
 To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <BLU0-SMTP59F0DC2CD7C525D1524BA7971A0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 
+--nextPart1721894.5vEjEeikWo
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="US-ASCII"
 
-Hello Everyone,
+You wrote:
+> On 19-Aug-11, at 1:58 PM, Rolf Eike Beer wrote:
+> > unwind_init: start = 0x10503000, end = 0x1053a640, entries = 14180
+> > WARNING: Out of order unwind entry! 105041f0 and 10504200
+> > WARNING: Out of order unwind entry! 10504200 and 10504210
+> > WARNING: Out of order unwind entry! 10504cf0 and 10504d00
+> > WARNING: Out of order unwind entry! 10504d00 and 10504d10
+> 
+> This is fixed in current binutils.  Current binutils also fixes non
+> equivalent aliasing
+> bug that affects PA8800/PA8900 systems.
 
-Discover how average people who have never made a cent in the past
-Are now making $1,000+ every month,=20
-With the Potential of making $50,000 a month
-Just "Plug In"... to Your
-Own Fully Automated=20
-  Turn Key...Global Marketing $ystem
-Receive $500-$3,500 Monthly or MORE
-Not MLM...and
-No Selling...
-No Cold Phone Calling.=20
-Complete plug-in-system!
+The kernel.org or the GNU version?
 
-Check-it-Out!
+> > IASQ: 00000000 00000000 IAOQ: 1010047c 10100480
+> 
+> IAOQ head provides the location of interruption.  It was a instruction
+> memory
+> protection fault.  Since this is a kernel address, this likely
+> indicates the page
+> tables weren't setup correctly, or the instruction cache wasn't
+> flushed correctly.
+> 
+> I'm thinking it would help to localize the change that introduced the
+> interruption.
 
-http://trckrs.com/48184/rc1
+I'll try to bisect this in the next days.
 
-It=92s surprisingly cool!
+Eike
+--nextPart1721894.5vEjEeikWo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
 
-Dan and Noel
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.15 (GNU/Linux)
 
+iEYEABECAAYFAk5jqNIACgkQXKSJPmm5/E6lfACfbtOTl8FAKMR72VwDc92dSB5I
+/eIAn2RxBGJ4cOvCfR3i0+4Ti+X69r1M
+=YGEg
+-----END PGP SIGNATURE-----
 
-His was a Com.Merical adv.Sent to you by:Dan Pereira, 11383 Golf Road, =
-Turlock, CA 95380
-In compliance with Federal law, should you choose to Un.Subscribe from =
-our network, you may do so using theUn.Subscribe instruction found belo=
-w.  We are fully compliant with CAN-SPAM Act of 2005-Please use the Un.=
-Subscribe link provided:
-Build-a-home-based-business-on-Auto-Pilot
+--nextPart1721894.5vEjEeikWo--
 
-
-
-
-
-
-
-
-To remove this email address from further mailings click on  the link b=
-elow  while connected to the internet.
-http://www.reliablecontact.com/cgi-bin/maxsponder/maxuseradmin.cgi?func=
-tion=3Dmanualdelete3&email=3Dlinux-parisc*vger.kernel.org&un=3Drichardp=
-ereira
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
