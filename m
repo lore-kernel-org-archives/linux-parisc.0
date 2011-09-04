@@ -1,28 +1,46 @@
-From: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
-Subject: Re: Boot failure with 3.0.3: swapper (pid 0): Protection id trap
- (code 7)
-Date: Fri, 2 Sep 2011 12:30:22 +0200
-Message-ID: <65eae6bb26716d64e7f5959302b26fa9.squirrel@webmail.sf-mail.de>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: Boot failure with 3.0.3: swapper (pid 0): Protection id trap (code 7)
+Date: Sat, 3 Sep 2011 21:46:51 -0400
+Message-ID: <BLU0-SMTP59F0DC2CD7C525D1524BA7971A0@phx.gbl>
 References: <201108191958.35802.eike-kernel@sf-tec.de>
-    <a53708ae6c6247c7ce45d4e5b8131ea7.squirrel@webmail.sf-mail.de>
-    <20110831154820.GH22818@bombadil.infradead.org>
-    <20110831160419.GI22818@bombadil.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-To: linux-parisc@vger.kernel.org
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: "linux-parisc" <linux-parisc@vger.kernel.org>
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110831160419.GI22818@bombadil.infradead.org>
+In-Reply-To: <201108191958.35802.eike-kernel@sf-tec.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Wed, Aug 31, 2011 at 11:48:20AM -0400, Kyle McMartin wrote:
->> Attach .config?
->>
->
-> I suspect bootmem changes have broken somewhere on 32-bit... try
-> inserting a few printk between each of the function calls at the start
-> of paging_init to try to narrow down exactly where it fails.
 
-It's flush_cache_all_local() that fails.
+On 19-Aug-11, at 1:58 PM, Rolf Eike Beer wrote:
 
-Eike
+> unwind_init: start = 0x10503000, end = 0x1053a640, entries = 14180
+> WARNING: Out of order unwind entry! 105041f0 and 10504200
+> WARNING: Out of order unwind entry! 10504200 and 10504210
+> WARNING: Out of order unwind entry! 10504cf0 and 10504d00
+> WARNING: Out of order unwind entry! 10504d00 and 10504d10
+
+This is fixed in current binutils.  Current binutils also fixes non  
+equivalent aliasing
+bug that affects PA8800/PA8900 systems.
+
+> IASQ: 00000000 00000000 IAOQ: 1010047c 10100480
+
+
+IAOQ head provides the location of interruption.  It was a instruction  
+memory
+protection fault.  Since this is a kernel address, this likely  
+indicates the page
+tables weren't setup correctly, or the instruction cache wasn't  
+flushed correctly.
+
+I'm thinking it would help to localize the change that introduced the
+interruption.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
