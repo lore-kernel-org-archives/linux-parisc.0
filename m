@@ -1,51 +1,31 @@
-From: "Dan Pereira" <danp_48@yahoo.com>
-Subject: A Franchise in a Box-Have You Send This Yet !
-Date: Mon, 5 Sep 2011 20:35:59 -0700 (PDT)
-Message-ID: <201109060335.p863Zxpx017557@mail3.spagack2.com>
+From: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
+Subject: Re: Boot failure with 3.0.3: swapper (pid 0): Protection id trap
+ (code 7)
+Date: Tue, 6 Sep 2011 09:40:13 +0200
+Message-ID: <74797e028a4c070f42df834f9b0b0079.squirrel@webmail.sf-mail.de>
+References: <201108191958.35802.eike-kernel@sf-tec.de>
+    <a53708ae6c6247c7ce45d4e5b8131ea7.squirrel@webmail.sf-mail.de>
+    <20110831154820.GH22818@bombadil.infradead.org>
+    <20110831160419.GI22818@bombadil.infradead.org>
+    <65eae6bb26716d64e7f5959302b26fa9.squirrel@webmail.sf-mail.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <65eae6bb26716d64e7f5959302b26fa9.squirrel@webmail.sf-mail.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+>> On Wed, Aug 31, 2011 at 11:48:20AM -0400, Kyle McMartin wrote:
+>>> Attach .config?
+>>>
+>>
+>> I suspect bootmem changes have broken somewhere on 32-bit... try
+>> inserting a few printk between each of the function calls at the start
+>> of paging_init to try to narrow down exactly where it fails.
+>
+> It's flush_cache_all_local() that fails.
 
-Hello Everyone,
+2.6.39.4 works.
 
-Just =93Plug In=94.. to Your
-Own Fully Automated
-Turn Key..Global Marketing $ystem
-Receive $3,000-$7,000 Weekly or MORE Not MLM=85and No Selling.
-
-http://trckrs.com/48184/rc8
-
-It=92s surprisingly cool!
-
-Dan
-
-
-
-
-His was a Com.Merical adv.Sent to you by:Dan Pereira, 11383 Golf Road, =
-Turlock, CA 95380In compliance with Federal law, should you choose to U=
-n.Subscribe from our network, you may do so using theUn.Subscribe instr=
-uction found below.  We are fully compliant with CAN-SPAM Act of 2005-P=
-lease use the Un.Subscribe link provided:
-
-
-
-
-
-
-
-
-To remove this email address from further mailings click on  the link b=
-elow  while connected to the internet.
-http://www.reliablecontact.com/cgi-bin/maxsponder/maxuseradmin.cgi?func=
-tion=3Dmanualdelete3&email=3Dlinux-parisc*vger.kernel.org&un=3Drichardp=
-ereira
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Eike
