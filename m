@@ -1,45 +1,51 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Boot failure with 3.0.3: swapper (pid 0): Protection id trap (code 7)
-Date: Sun, 4 Sep 2011 13:59:57 -0400
-Message-ID: <BLU0-SMTP27D6C3B43A570182A039D3971A0@phx.gbl>
-References: <201108191958.35802.eike-kernel@sf-tec.de> <BLU0-SMTP59F0DC2CD7C525D1524BA7971A0@phx.gbl> <2800939.FiF5fAcbHF@donald.sf-tec.de>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed
-Cc: linux-parisc@vger.kernel.org
-To: Rolf Eike Beer <eike-kernel@sf-tec.de>
+From: "Dan Pereira" <danp_48@yahoo.com>
+Subject: A Franchise in a Box-Have You Send This Yet !
+Date: Mon, 5 Sep 2011 20:35:59 -0700 (PDT)
+Message-ID: <201109060335.p863Zxpx017557@mail3.spagack2.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <2800939.FiF5fAcbHF@donald.sf-tec.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 
-On 4-Sep-11, at 12:35 PM, Rolf Eike Beer wrote:
+Hello Everyone,
 
-> You wrote:
->> On 19-Aug-11, at 1:58 PM, Rolf Eike Beer wrote:
->>> unwind_init: start = 0x10503000, end = 0x1053a640, entries = 14180
->>> WARNING: Out of order unwind entry! 105041f0 and 10504200
->>> WARNING: Out of order unwind entry! 10504200 and 10504210
->>> WARNING: Out of order unwind entry! 10504cf0 and 10504d00
->>> WARNING: Out of order unwind entry! 10504d00 and 10504d10
->>
->> This is fixed in current binutils.  Current binutils also fixes non
->> equivalent aliasing
->> bug that affects PA8800/PA8900 systems.
->
-> The kernel.org or the GNU version?
+Just =93Plug In=94.. to Your
+Own Fully Automated
+Turn Key..Global Marketing $ystem
+Receive $3,000-$7,000 Weekly or MORE Not MLM=85and No Selling.
+
+http://trckrs.com/48184/rc8
+
+It=92s surprisingly cool!
+
+Dan
 
 
-I don't recall exactly the kernel version.  Helge made the changes.
-The binutils changes for it are in 2.21 and head.  They were applied
-in the latter part of 2009.
 
-The equivalent aliasing fix is also in 2.21 and head.  However,
-it wasn't in the initial 2.21 release.
 
-Dave
+His was a Com.Merical adv.Sent to you by:Dan Pereira, 11383 Golf Road, =
+Turlock, CA 95380In compliance with Federal law, should you choose to U=
+n.Subscribe from our network, you may do so using theUn.Subscribe instr=
+uction found below.  We are fully compliant with CAN-SPAM Act of 2005-P=
+lease use the Un.Subscribe link provided:
+
+
+
+
+
+
+
+
+To remove this email address from further mailings click on  the link b=
+elow  while connected to the internet.
+http://www.reliablecontact.com/cgi-bin/maxsponder/maxuseradmin.cgi?func=
+tion=3Dmanualdelete3&email=3Dlinux-parisc*vger.kernel.org&un=3Drichardp=
+ereira
 --
-John David Anglin	dave.anglin@bell.net
-
-
-
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
