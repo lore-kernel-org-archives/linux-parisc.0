@@ -1,8 +1,8 @@
 From: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
 Subject: Re: Boot failure with 3.0.3: swapper (pid 0): Protection id trap
  (code 7)
-Date: Tue, 6 Sep 2011 17:06:35 +0200
-Message-ID: <ae3de0fe39e56a022785eab6b105e6c7.squirrel@webmail.sf-mail.de>
+Date: Wed, 7 Sep 2011 10:00:06 +0200
+Message-ID: <bae45ceac5dc55d07fb5ab64243b85bc.squirrel@webmail.sf-mail.de>
 References: <201108191958.35802.eike-kernel@sf-tec.de>
     <a53708ae6c6247c7ce45d4e5b8131ea7.squirrel@webmail.sf-mail.de>
     <20110831154820.GH22818@bombadil.infradead.org>
@@ -38,6 +38,7 @@ List-Id: linux-parisc.vger.kernel.org
 > Rolf, can you revert d7dd2ff11b7fcd425aca5a875983c862d19a67ae and see
 > what happens?
 
-Yes, testing.
+What happens is that the system boots and from a first glance seems to
+work fine.
 
 Eike
