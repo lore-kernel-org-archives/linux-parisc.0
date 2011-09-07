@@ -1,44 +1,57 @@
-From: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
-Subject: Re: Boot failure with 3.0.3: swapper (pid 0): Protection id trap
- (code 7)
-Date: Wed, 7 Sep 2011 10:00:06 +0200
-Message-ID: <bae45ceac5dc55d07fb5ab64243b85bc.squirrel@webmail.sf-mail.de>
-References: <201108191958.35802.eike-kernel@sf-tec.de>
-    <a53708ae6c6247c7ce45d4e5b8131ea7.squirrel@webmail.sf-mail.de>
-    <20110831154820.GH22818@bombadil.infradead.org>
-    <20110831160419.GI22818@bombadil.infradead.org>
-    <65eae6bb26716d64e7f5959302b26fa9.squirrel@webmail.sf-mail.de>
-    <74797e028a4c070f42df834f9b0b0079.squirrel@webmail.sf-mail.de>
-    <20110906134611.GA25825@bombadil.infradead.org>
-    <20110906140029.GB25825@bombadil.infradead.org>
-    <1315318507.6567.2.camel@dabdike.int.hansenpartnership.com>
-    <20110906142025.GC25825@bombadil.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-To: linux-parisc@vger.kernel.org
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: Link error in CMake for HPPA1.1, wrong result for HPPA 2.0
+Date: Wed, 7 Sep 2011 19:35:42 -0400
+Message-ID: <BLU0-SMTP85AE9387481754DD11D7CE971F0@phx.gbl>
+References: <99a9e4b224dc9020d16d0a33fea6096f.squirrel@webmail.sf-mail.de> <da1221fe3aa512ba4b0a139a89dd2e69.squirrel@webmail.sf-mail.de> <4E5BA449.5050606@bell.net> <7292253.L43gRO36Hq@donald.sf-tec.de>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: linux-parisc@vger.kernel.org
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20110906142025.GC25825@bombadil.infradead.org>
+In-Reply-To: <7292253.L43gRO36Hq@donald.sf-tec.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Tue, Sep 06, 2011 at 09:15:07AM -0500, James Bottomley wrote:
->> It's possible that one of the flushing patches is to blame; I just can't
->> see how.  Most likely is
->>
->> commit d7dd2ff11b7fcd425aca5a875983c862d19a67ae
->> Author: James Bottomley <James.Bottomley@HansenPartnership.com>
->> Date:   Thu Apr 14 18:25:21 2011 -0500
->>
->>     [PARISC] only make executable areas executable
->>
->
-> This looks promising, the second commit doesn't touch the flush_*_local,
-> so I think it's probably not a candidate.
->
-> Rolf, can you revert d7dd2ff11b7fcd425aca5a875983c862d19a67ae and see
-> what happens?
 
-What happens is that the system boots and from a first glance seems to
-work fine.
+On 29-Aug-11, at 2:31 PM, Rolf Eike Beer wrote:
 
-Eike
+> You wrote:
+>> On 8/29/2011 4:12 AM, Rolf Eike Beer wrote:
+>
+>>> Confirmed, it is a regression in gcc 4.5. If I build using 4.4.6
+>>> everything works fine. I'll file a bug report tonight.
+>>
+>> Interesting, there's not much difference in the PA backend for  
+>> these two
+>> versions.
+>>
+>> Add me (danglin at gcc.gnu.org) to the CC list on the GCC bug  
+>> report and
+>> I'll try to
+>> duplicate the problem.
+>
+> http://gcc.gnu.org/bugzilla/show_bug.cgi?id=50230
+>
+> Eike
+
+
+The problem appears to be that comdat groups and stubs don't get along
+with each other.  Comdat groups seem to get merged and this can result
+in out of range branches.
+
+Linking with the --unique='.text.*' option avoids the error, but this  
+probably
+breaks comdat and discard support.
+
+For now, I think the best solution (untested) is to configure GCC with  
+the
+--disable-comdat option.
+
+I'm going to file a binutils PR.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
