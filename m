@@ -1,7 +1,7 @@
 From: "Dan Pereira" <danp_48@yahoo.com>
-Subject: Build-a-home-based-business-on-Auto-Pilot-
-Date: Sat, 10 Sep 2011 23:09:33 -0700 (PDT)
-Message-ID: <201109110609.p8B69X58087506@mail3.spagack2.com>
+Subject: A Franchise in a BoxHave You Send This Yet !
+Date: Mon, 12 Sep 2011 22:49:51 -0700 (PDT)
+Message-ID: <201109130549.p8D5npIY031066@mail3.spagack2.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=ISO-8859-1
 To: linux-parisc@vger.kernel.org
@@ -12,34 +12,25 @@ List-Id: linux-parisc.vger.kernel.org
 
 
 Hello Everyone,
+Just =93Plug In=94.. to Your
+Own Fully Automated
+Turn Key..Global Marketing $ystem
+Receive $3,000-$7,000 Weekly or MORE Not MLM=85and No Selling.
 
-Discover how average people who have never made a cent in the past
-Are now making $1,000+ every month,=20
-With the Potential of making $50,000 a month
-Just "Plug In"... to Your
-Own Fully Automated=20
-  Turn Key...Global Marketing $ystem
-Receive $500-$3,500 Monthly or MORE
-Not MLM...and
-No Selling...
-No Cold Phone Calling.=20
-Complete plug-in-system!
-
-Check-it-Out!
-
-http://trckrs.com/48184/rc1
+http://trckrs.com/48184/rc8
 
 It=92s surprisingly cool!
 
-Dan and Noel
+Dan
+
+
 
 
 His was a Com.Merical adv.Sent to you by:Dan Pereira, 11383 Golf Road, =
-Turlock, CA 95380
-In compliance with Federal law, should you choose to Un.Subscribe from =
-our network, you may do so using theUn.Subscribe instruction found belo=
-w.  We are fully compliant with CAN-SPAM Act of 2005-Please use the Un.=
-Subscribe link provided:
+Turlock, CA 95380In compliance with Federal law, should you choose to U=
+n.Subscribe from our network, you may do so using theUn.Subscribe instr=
+uction found below.  We are fully compliant with CAN-SPAM Act of 2005-P=
+lease use the Un.Subscribe link provided:
 
 
 
