@@ -1,43 +1,29 @@
-From: Yong Zhang <yong.zhang0@gmail.com>
-Subject: [PATCH 40/57] dirvers/parisc: irq: Remove IRQF_DISABLED
-Date: Wed, 21 Sep 2011 17:28:41 +0800
-Message-ID: <1316597339-29861-41-git-send-email-yong.zhang0@gmail.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH 40/57] dirvers/parisc: irq: Remove IRQF_DISABLED
+Date: Wed, 21 Sep 2011 14:07:04 +0400
+Message-ID: <1316599624.2966.12.camel@dabdike>
 References: <1316597339-29861-1-git-send-email-yong.zhang0@gmail.com>
-Cc: tglx@linutronix.de, yong.zhang0@gmail.com,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	 <1316597339-29861-41-git-send-email-yong.zhang0@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+	tglx@linutronix.de, Kyle McMartin <kyle@mcmartin.ca>,
+	Helge Deller <deller@gmx.de>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	linux-parisc@vger.kernel.org
-To: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Yong Zhang <yong.zhang0@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1316597339-29861-1-git-send-email-yong.zhang0@gmail.com>
+In-Reply-To: <1316597339-29861-41-git-send-email-yong.zhang0@gmail.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Since commit [c58543c8: genirq: Run irq handlers with interrupts disabled],
-We run all interrupt handlers with interrupts disabled
-and we even check and yell when an interrupt handler
-returns with interrupts enabled (see commit [b738a50a:
-genirq: Warn when handler enables interrupts]).
+Firstly, we don't need 57 patches doing this ... a single one through
+the trivial tree should be sufficient (and it can nuke the flag at the
+same time).
 
-So now this flag is a NOOP and can be removed.
+On Wed, 2011-09-21 at 17:28 +0800, Yong Zhang wrote:
+> Since commit [c58543c8: genirq: Run irq handlers with interrupts disabled],
 
-Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
----
- drivers/parisc/superio.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+um, that's commit e58aa3d2d0cc01ad8d6f7f640a0670433f794922
 
-diff --git a/drivers/parisc/superio.c b/drivers/parisc/superio.c
-index e3b76d4..5e6fd94e 100644
---- a/drivers/parisc/superio.c
-+++ b/drivers/parisc/superio.c
-@@ -274,7 +274,7 @@ superio_init(struct pci_dev *pcidev)
- 	else
- 		printk(KERN_ERR PFX "USB regulator not initialized!\n");
- 
--	if (request_irq(pdev->irq, superio_interrupt, IRQF_DISABLED,
-+	if (request_irq(pdev->irq, superio_interrupt, 0,
- 			SUPERIO, (void *)sio)) {
- 
- 		printk(KERN_ERR PFX "could not get irq\n");
--- 
-1.7.4.1
+James
