@@ -1,17 +1,70 @@
-From: artkearney@eircom.net
-Subject: EMail ID Awarded Nine Hundred And Fifty Thousand British Pounds In
- The Benz Cash Splash
-Date: Wed, 21 Sep 2011 10:09:10 +0100 (IST)
-Message-ID: <1050352.2586.1316596150931.JavaMail.root@webmailbox301.eircom.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-To: unlisted-recipients:; (no To-header on input)
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Yong Zhang <yong.zhang0@gmail.com>
+Subject: [PATCH 14/57] parisc: irq: remove IRQF_DISABLED
+Date: Wed, 21 Sep 2011 17:28:15 +0800
+Message-ID: <1316597339-29861-15-git-send-email-yong.zhang0@gmail.com>
+References: <1316597339-29861-1-git-send-email-yong.zhang0@gmail.com>
+Cc: tglx@linutronix.de, yong.zhang0@gmail.com,
+	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	James Bottomley <James.Bottomley@suse.de>,
+	linux-parisc@vger.kernel.org
+To: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1316597339-29861-1-git-send-email-yong.zhang0@gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Since commit [c58543c8: genirq: Run irq handlers with interrupts disabled],
+We run all interrupt handlers with interrupts disabled
+and we even check and yell when an interrupt handler
+returns with interrupts enabled (see commit [b738a50a:
+genirq: Warn when handler enables interrupts]).
 
+So now this flag is a NOOP and can be removed.
 
-send details Name, Tel, Address, Country.
+Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
+---
+ arch/parisc/include/asm/floppy.h |    4 ++--
+ arch/parisc/kernel/irq.c         |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-
+diff --git a/arch/parisc/include/asm/floppy.h b/arch/parisc/include/asm/floppy.h
+index 4ca69f5..f84ff12 100644
+--- a/arch/parisc/include/asm/floppy.h
++++ b/arch/parisc/include/asm/floppy.h
+@@ -157,10 +157,10 @@ static int fd_request_irq(void)
+ {
+ 	if(can_use_virtual_dma)
+ 		return request_irq(FLOPPY_IRQ, floppy_hardint,
+-				   IRQF_DISABLED, "floppy", NULL);
++				   0, "floppy", NULL);
+ 	else
+ 		return request_irq(FLOPPY_IRQ, floppy_interrupt,
+-				   IRQF_DISABLED, "floppy", NULL);
++				   0, "floppy", NULL);
+ }
+ 
+ static unsigned long dma_mem_alloc(unsigned long size)
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index c0b1aff..420676b 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -379,14 +379,14 @@ void do_cpu_irq_mask(struct pt_regs *regs)
+ static struct irqaction timer_action = {
+ 	.handler = timer_interrupt,
+ 	.name = "timer",
+-	.flags = IRQF_DISABLED | IRQF_TIMER | IRQF_PERCPU | IRQF_IRQPOLL,
++	.flags = IRQF_TIMER | IRQF_PERCPU | IRQF_IRQPOLL,
+ };
+ 
+ #ifdef CONFIG_SMP
+ static struct irqaction ipi_action = {
+ 	.handler = ipi_interrupt,
+ 	.name = "IPI",
+-	.flags = IRQF_DISABLED | IRQF_PERCPU,
++	.flags = IRQF_PERCPU,
+ };
+ #endif
+ 
+-- 
+1.7.4.1
