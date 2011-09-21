@@ -1,12 +1,11 @@
 From: Yong Zhang <yong.zhang0@gmail.com>
-Subject: [PATCH 14/57] parisc: irq: remove IRQF_DISABLED
-Date: Wed, 21 Sep 2011 17:28:15 +0800
-Message-ID: <1316597339-29861-15-git-send-email-yong.zhang0@gmail.com>
+Subject: [PATCH 40/57] dirvers/parisc: irq: Remove IRQF_DISABLED
+Date: Wed, 21 Sep 2011 17:28:41 +0800
+Message-ID: <1316597339-29861-41-git-send-email-yong.zhang0@gmail.com>
 References: <1316597339-29861-1-git-send-email-yong.zhang0@gmail.com>
 Cc: tglx@linutronix.de, yong.zhang0@gmail.com,
 	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	James Bottomley <James.Bottomley@suse.de>,
 	linux-parisc@vger.kernel.org
 To: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -24,47 +23,21 @@ So now this flag is a NOOP and can be removed.
 
 Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
 ---
- arch/parisc/include/asm/floppy.h |    4 ++--
- arch/parisc/kernel/irq.c         |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/parisc/superio.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/parisc/include/asm/floppy.h b/arch/parisc/include/asm/floppy.h
-index 4ca69f5..f84ff12 100644
---- a/arch/parisc/include/asm/floppy.h
-+++ b/arch/parisc/include/asm/floppy.h
-@@ -157,10 +157,10 @@ static int fd_request_irq(void)
- {
- 	if(can_use_virtual_dma)
- 		return request_irq(FLOPPY_IRQ, floppy_hardint,
--				   IRQF_DISABLED, "floppy", NULL);
-+				   0, "floppy", NULL);
+diff --git a/drivers/parisc/superio.c b/drivers/parisc/superio.c
+index e3b76d4..5e6fd94e 100644
+--- a/drivers/parisc/superio.c
++++ b/drivers/parisc/superio.c
+@@ -274,7 +274,7 @@ superio_init(struct pci_dev *pcidev)
  	else
- 		return request_irq(FLOPPY_IRQ, floppy_interrupt,
--				   IRQF_DISABLED, "floppy", NULL);
-+				   0, "floppy", NULL);
- }
+ 		printk(KERN_ERR PFX "USB regulator not initialized!\n");
  
- static unsigned long dma_mem_alloc(unsigned long size)
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index c0b1aff..420676b 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -379,14 +379,14 @@ void do_cpu_irq_mask(struct pt_regs *regs)
- static struct irqaction timer_action = {
- 	.handler = timer_interrupt,
- 	.name = "timer",
--	.flags = IRQF_DISABLED | IRQF_TIMER | IRQF_PERCPU | IRQF_IRQPOLL,
-+	.flags = IRQF_TIMER | IRQF_PERCPU | IRQF_IRQPOLL,
- };
+-	if (request_irq(pdev->irq, superio_interrupt, IRQF_DISABLED,
++	if (request_irq(pdev->irq, superio_interrupt, 0,
+ 			SUPERIO, (void *)sio)) {
  
- #ifdef CONFIG_SMP
- static struct irqaction ipi_action = {
- 	.handler = ipi_interrupt,
- 	.name = "IPI",
--	.flags = IRQF_DISABLED | IRQF_PERCPU,
-+	.flags = IRQF_PERCPU,
- };
- #endif
- 
+ 		printk(KERN_ERR PFX "could not get irq\n");
 -- 
 1.7.4.1
