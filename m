@@ -1,60 +1,17 @@
-From: "Dan Pereira" <danp_48@yahoo.com>
-Subject: Build-a-home-based-business-on-Auto-Pilot-
-Date: Tue, 13 Sep 2011 12:16:49 -0700 (PDT)
-Message-ID: <201109131916.p8DJGnYc004402@mail3.spagack2.com>
+From: artkearney@eircom.net
+Subject: EMail ID Awarded Nine Hundred And Fifty Thousand British Pounds In
+ The Benz Cash Splash
+Date: Wed, 21 Sep 2011 09:12:06 +0100 (IST)
+Message-ID: <14650098.1221.1316592726364.JavaMail.root@webmailbox301.eircom.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+To: unlisted-recipients:; (no To-header on input)
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 
 
-Hello Everyone,
-
-Discover how average people who have never made a cent in the past
-Are now making $1,000+ every month,=20
-With the Potential of making $50,000 a month
-Just "Plug In"... to Your
-Own Fully Automated=20
-  Turn Key...Global Marketing $ystem
-Receive $500-$3,500 Monthly or MORE
-Not MLM...and
-No Selling...
-No Cold Phone Calling.=20
-Complete plug-in-system!
-
-Check-it-Out!
-
-http://trckrs.com/48184/rc7
-
-It=92s surprisingly cool!
-
-Dan and Noel
+send details Name, Tel, Address, Country.
 
 
-His was a Com.Merical adv.Sent to you by:Dan Pereira, 11383 Golf Road, =
-Turlock, CA 95380
-In compliance with Federal law, should you choose to Un.Subscribe from =
-our network, you may do so using theUn.Subscribe instruction found belo=
-w.  We are fully compliant with CAN-SPAM Act of 2005-Please use the Un.=
-Subscribe link provided:
-
-
-
-
-
-
-
-
-To remove this email address from further mailings click on  the link b=
-elow  while connected to the internet.
-http://www.reliablecontact.com/cgi-bin/maxsponder/maxuseradmin.cgi?func=
-tion=3Dmanualdelete3&email=3Dlinux-parisc*vger.kernel.org&un=3Drichardp=
-ereira
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
