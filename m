@@ -1,43 +1,148 @@
-From: Yong Zhang <yong.zhang0@gmail.com>
-Subject: [PATCH 40/55] dirvers/parisc: irq: Remove IRQF_DISABLED
-Date: Thu, 22 Sep 2011 16:59:07 +0800
-Message-ID: <1316681962-8217-41-git-send-email-yong.zhang0@gmail.com>
-References: <1316681962-8217-1-git-send-email-yong.zhang0@gmail.com>
-Cc: tglx@linutronix.de, yong.zhang0@gmail.com,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1316681962-8217-1-git-send-email-yong.zhang0@gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
+From: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
+Subject: HPMC running CMake Nightly tests
+Date: Tue, 27 Sep 2011 09:32:37 +0200
+Message-ID: <d21336a9332d91f209ba666bd94f3acd.squirrel@webmail.sf-mail.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Since commit [e58aa3d2: genirq: Run irq handlers with interrupts disabled],
-We run all interrupt handlers with interrupts disabled
-and we even check and yell when an interrupt handler
-returns with interrupts enabled (see commit [b738a50a:
-genirq: Warn when handler enables interrupts]).
+I'm running the CMake tests every night. This is the second time in a row
+that my C3600 did not survive this. Since I was warned I connected a
+serial console.
 
-So now this flag is a NOOP and can be removed.
+The first things are expected crashes from CMake as detecting a crashed
+process is part of the tests. I wonder if these shouldn't be silenced as a
+userspace crash could otherwise too easily be used to flood the logs.
 
-Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
----
- drivers/parisc/superio.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+do_page_fault() pid=16799 command='kwsysTestProces' type=15
+address=0x00000000
 
-diff --git a/drivers/parisc/superio.c b/drivers/parisc/superio.c
-index e3b76d4..5e6fd94e 100644
---- a/drivers/parisc/superio.c
-+++ b/drivers/parisc/superio.c
-@@ -274,7 +274,7 @@ superio_init(struct pci_dev *pcidev)
- 	else
- 		printk(KERN_ERR PFX "USB regulator not initialized!\n");
- 
--	if (request_irq(pdev->irq, superio_interrupt, IRQF_DISABLED,
-+	if (request_irq(pdev->irq, superio_interrupt, 0,
- 			SUPERIO, (void *)sio)) {
- 
- 		printk(KERN_ERR PFX "could not get irq\n");
--- 
-1.7.4.1
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001101111111100001111 Not tainted
+r00-03  0006ff0f 1041b000 00011ee3 fb46f4c0
+r04-07  4072adc0 00000000 fb36b02c 0001cd60
+r08-11  00000000 000e6e20 00000000 00000000
+r12-15  00000000 000e59c0 000e2d24 ffffffff
+r16-19  000e2d14 000e3e20 00000000 4072adc0
+r20-23  1054f020 00000000 406427e4 ffffffff
+r24-27  fffffff5 ffffffd3 4072cd24 0001b0e4
+r28-31  00000000 00000001 fb46f500 4063192b
+sr00-03  00000030 00000017 00000000 00000030
+sr04-07  00000030 00000030 00000030 00000030
+
+      VZOUICununcqcqcqcqcqcrmunTDVZOUI
+FPSR: 00000000000000000000000000000000
+FPER1: 00000000
+fr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+fr04-07  41d3a02318ce6e4c 2800000000000000 0000000190000000 402e000000000000
+fr08-11  000000601be80000 1059900010544330 0000000000000000 105fbd602fc260c8
+fr12-15  41d3a01d2d9ab424 0000008110131d00 105b68001055eca8 1055eca810560cf0
+fr16-19  0004000f1055f000 10131d0000000003 105b48c0105b48f4 000000371055f1e8
+fr20-23  2fc30158105a4800 3b9aca001055f000 000000000000002f 00001c7418c00000
+fr24-27  410b865000000000 3fe0000000000000 412e848000000000 1029341c102c3848
+fr28-31  ffffffff000032a4 1055f1d010544000 0000000100000228 2fc302001011a264
+
+IASQ: 00000030 00000030 IAOQ: 00011ee7 00011eeb
+ IIR: 0f801280    ISR: 00000030  IOR: 00000000
+ CPU:        0   CR30: 2ed5c000 CR31: ffffdffe
+ ORIG_R28: 00000000
+ IAOQ[0]: 00011ee7
+ IAOQ[1]: 00011eeb
+ RP(r2): 00011ee3
+
+do_page_fault() pid=16827 command='kwsysTestProces' type=15
+address=0x00000000
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001101111111100001111 Not tainted
+r00-03  0006ff0f 1041b000 00011ee3 fb2a74c0
+r04-07  4072adc0 00000000 fb61702c 0001cd60
+r08-11  00000000 000e6e20 00000000 00000000
+r12-15  00000000 000e59c0 000e2d24 ffffffff
+r16-19  000e2d14 000e3e20 00000000 4072adc0
+r20-23  1054f020 00000000 406427e4 ffffffff
+r24-27  fffffff5 ffffffd3 4072cd24 0001b0e4
+r28-31  00000000 00000001 fb2a7500 4063192b
+sr00-03  00000032 00000017 00000000 00000032
+sr04-07  00000032 00000032 00000032 00000032
+
+      VZOUICununcqcqcqcqcqcrmunTDVZOUI
+FPSR: 00000000000000000000000000000000
+FPER1: 00000000
+fr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+fr04-07  41d3a02319c7bbbf 2800000000000000 0000000190000000 403e000000000000
+fr08-11  0000005c3e100000 1059900010544330 0000000000000000 105fbd602fc260c8
+fr12-15  41d3a01d2d9ab424 0000008110131d00 105b68001055eca8 1055eca810560cf0
+fr16-19  0004000f1055f000 10131d0000000003 105b48c0105b48f4 000000371055f1e8
+fr20-23  2fc30158105a4800 3b9aca001055f000 000000000000002f 00001c7419c00000
+fr24-27  40fd802000000000 3fe0000000000000 412e848000000000 1029341c102c3848
+fr28-31  ffffffff000032a4 1055f1d010544000 0000000100000228 2fc302001011a264
+
+IASQ: 00000032 00000032 IAOQ: 00011ee7 00011eeb
+ IIR: 0f801280    ISR: 00000032  IOR: 00000000
+ CPU:        0   CR30: 2095c000 CR31: ffffdffe
+ ORIG_R28: 00000000
+ IAOQ[0]: 00011ee7
+ IAOQ[1]: 00011eeb
+ RP(r2): 00011ee3
+
+But then the machine got killed:
+
+Backtrace:
+ [<1030b9ec>] tulip_get_stats+0x34/0x5c
+ [<1038ac20>] dev_get_stats+0x98/0xe8
+ [<102946b4>] led_work_func+0x11c/0x310
+ [<10145204>] process_one_work+0x120/0x3ac
+ [<10147110>] worker_thread+0x174/0x338
+ [<1014b0b4>] kthread+0x9c/0xa4
+ [<10102c5c>] ret_from_kernel_thread+0x1c/0x24
+
+
+High Priority Machine Check (HPMC): Code=1 regs=10551080 (Addr=00000000)
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111100001110 Not tainted
+r00-03  0004ff0e 105bf000 1030b9ec 2fc72000
+r04-07  0000000f 00000000 00000000 00000000
+r08-11  2fc72000 105bf600 2fea4208 7f000000
+r12-15  2fea4210 105ba000 10544000 2fc2f408
+r16-19  1041d1dc f000017c f0000174 2fea4210
+r20-23  0099f055 0099f050 1030b9b8 00000000
+r24-27  2ff57008 2fea4210 0004a040 10544000
+r28-31  0004a040 f68e066d 2fea4400 1038ac20
+sr00-03  00000000 00000000 00000000 00000017
+sr04-07  00000000 00000000 00000000 00000000
+
+IASQ: 00000000 00000000 IAOQ: 10284394 10284398
+ IIR: 0f80109c    ISR: a627ffd0  IOR: 0204a040
+ CPU:        0   CR30: 2fea4000 CR31: ffffdffe
+ ORIG_R28: 00000000
+ IAOQ[0]: ioread32+0xc/0x4c
+ IAOQ[1]: ioread32+0x10/0x4c
+ RP(r2): tulip_get_stats+0x34/0x5c
+Backtrace:
+ [<1030b9ec>] tulip_get_stats+0x34/0x5c
+ [<1038ac20>] dev_get_stats+0x98/0xe8
+ [<102946b4>] led_work_func+0x11c/0x310
+ [<10145204>] process_one_work+0x120/0x3ac
+ [<10147110>] worker_thread+0x174/0x338
+ [<1014b0b4>] kthread+0x9c/0xa4
+ [<10102c5c>] ret_from_kernel_thread+0x1c/0x24
+
+Kernel panic - not syncing: High Priority Machine Check (HPMC)
+Backtrace:
+ [<1010edec>] panic+0x90/0x23c
+ [<101143b8>] parisc_terminate+0xbc/0xd4
+ [<1011458c>] handle_interruption+0x1bc/0x718
+ [<10103078>] intr_check_sig+0x0/0x34
+ [<10284398>] ioread32+0x10/0x4c
+ [<103e8fc0>] bictcp_acked+0x0/0x228
+
+I'm running 3.0.4 with d7dd2ff11b7fcd425aca5a875983c862d19a67ae reverted.
+
+Any hints?
+
+Eike
