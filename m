@@ -1,51 +1,68 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: [PATCH] parisc: futex: Use same lock set as lws calls
-Date: Mon, 17 Oct 2011 11:47:06 -0400
-Message-ID: <CADZpyixDV_OD+YM+u2EMWqY91u_WtGGMM0J3fAofp99q+OWYnA@mail.gmail.com>
-References: <20111009204010.GA22374@hiauly1.hia.nrc.ca>
-	<20111017152358.GA3518@glitch>
+Date: Mon, 17 Oct 2011 14:10:38 -0400
+Message-ID: <4E9C6F9E.5000605@bell.net>
+References: <20111009204010.GA22374@hiauly1.hia.nrc.ca> <20111017152358.GA3518@glitch> <CADZpyixDV_OD+YM+u2EMWqY91u_WtGGMM0J3fAofp99q+OWYnA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	linux-parisc@vger.kernel.org, jejb@parisc-linux.org,
-	kyle@mcmartin.ca, deller@gmx.de, carlos@systemhalted.org,
-	debian-hppa@lists.debian.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: debian-hppa@lists.debian.org,
+	linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20111017152358.GA3518@glitch>
+In-Reply-To: <CADZpyixDV_OD+YM+u2EMWqY91u_WtGGMM0J3fAofp99q+OWYnA@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Oct 17, 2011 at 11:23 AM, Domenico Andreoli <cavokz@gmail.com> =
-wrote:
-> Hi John,
+On 10/17/2011 11:47 AM, Carlos O'Donell wrote:
+> The test-fork1 failure is still unexplained and happens intermittently.
+
+I have built a lot of unstable on my rp3440.  I think this one causes 
+failures in the thread
+testsuites of perl, python2.7 and glib2.0.  These are characterized by 
+tests hanging.
+
+There is another class of failures.  They typically cause my rp3440 to 
+crash due
+to cache corruption.  The GCC libgomp and libatomic-ops testsuite seem 
+to trigger
+this one.  As I have mentioned, it's the libgomp "for" tests that
 >
-> On Sun, Oct 09, 2011 at 04:40:10PM -0400, John David Anglin wrote:
->> In debugging the failure of the glibc tst-cond18 test on parisc, I r=
-ealized
->> that futexes need to use the same locks the lws calls. =A0This fixes=
- all the
->> pthread 'cond' tests. =A0Sadly, there are still problems with thread=
- cancellation.
+> The cancellation issues happen in tst-cancel*.
 >
-> I applied your patch to 3.1-rc9 and tried to build Debian eglibc 2.13=
--21. It
-> passed tst-cond18 but is hanging on tst-fork1. Is it where you see th=
-e thread
-> cancellation issue?
->
-> Thank you for having looked at it.
+> I believe the cancellation issues are toolchain issues and I need to
+> look into them.
+Possibly, this is related to the following bug that I found last week 
+building mpfr-3.1.0:
+http://gcc.gnu.org/bugzilla/show_bug.cgi?id=50691
+A call to __tls_get_addr clobbers first argument of call to mpfr_cache.  
+Don't have a
+fix at the moment, but there is a simple testcase.
 
-The test-fork1 failure is still unexplained and happens intermittently.
+On a different subject, I tried to get udev-172-1 working.  However, 
+this breaks bootstrap
+due to an invalid argument in a call to inotify_init.  It's somewhat 
+timing dependent since
+some kernels will boot if they build enough of /dev before udev messes 
+up.  In any case,
+I believe that Guy Martin posted a patch a year or so ago to correct an 
+inconsistency
+between the glibc and the kernel for some bit definitions.  I'm thinking 
+this may fix the
+udev problem.
 
-The cancellation issues happen in tst-cancel*.
+It appears that this change got lost and didn't make it into the debian 
+glibc patch set.
+Was a consensus reached on how to fix this inconsistency?
 
-I believe the cancellation issues are toolchain issues and I need to
-look into them.
+I plan on seeing if I can resolve the GCC mpfr bug, then I want to 
+rebuild glibc with
+the flag bits fixed.
 
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I also found a GCC ICE compiling udev-172-1 with gcc-4.4.  Gcc-4.5 and 
+gcc-4.6 seem
+ok.
+
+Dave
+
+-- 
+John David Anglin    dave.anglin@bell.net
+
