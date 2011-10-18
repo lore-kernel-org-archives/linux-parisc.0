@@ -1,65 +1,45 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: Boot failure with 3.0.3: swapper (pid 0): Protection id trap
- (code 7)
-Date: Tue, 18 Oct 2011 10:51:48 -0500
-Message-ID: <1318953108.5169.5.camel@dabdike.int.hansenpartnership.com>
-References: <201108191958.35802.eike-kernel@sf-tec.de>
-	 <a53708ae6c6247c7ce45d4e5b8131ea7.squirrel@webmail.sf-mail.de>
-	 <20110831154820.GH22818@bombadil.infradead.org>
-	 <20110831160419.GI22818@bombadil.infradead.org>
-	 <65eae6bb26716d64e7f5959302b26fa9.squirrel@webmail.sf-mail.de>
-	 <74797e028a4c070f42df834f9b0b0079.squirrel@webmail.sf-mail.de>
-	 <20110906134611.GA25825@bombadil.infradead.org>
-	 <20110906140029.GB25825@bombadil.infradead.org>
-	 <1315318507.6567.2.camel@dabdike.int.hansenpartnership.com>
-	 <20110906142025.GC25825@bombadil.infradead.org>
-	 <bae45ceac5dc55d07fb5ab64243b85bc.squirrel@webmail.sf-mail.de>
-	 <98cf8455f773aecf8ae811a810ff7844.squirrel@webmail.sf-mail.de>
-	 <1318426901.3027.6.camel@dabdike.int.hansenpartnership.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [PATCH] parisc: futex: Use same lock set as lws calls
+Date: Tue, 18 Oct 2011 17:22:07 -0400
+Message-ID: <CADZpyixUDF-BjHHSTt4Eb_TFYX5hjBz4cuxUx0Lxc7bjMyDg9g@mail.gmail.com>
+References: <20111009204010.GA22374@hiauly1.hia.nrc.ca>
+	<20111017152358.GA3518@glitch>
+	<CADZpyixDV_OD+YM+u2EMWqY91u_WtGGMM0J3fAofp99q+OWYnA@mail.gmail.com>
+	<4E9C6F9E.5000605@bell.net>
+	<4E9C9643.6030309@systemhalted.org>
+	<4E9C9971.5090806@bell.net>
+	<CADZpyix9K0mfbGdDPMA-+D8vgoyTBtakX0K8JS6viVOvHz8Q3w@mail.gmail.com>
+	<CADZpyizSBKcyt5VW8DsAvpzgOGZoTDpdpny9tEdsUgxJ2JoNNQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-parisc@vger.kernel.org
-To: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: debian-hppa@lists.debian.org,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	Guy Martin <gmsoft@gentoo.org>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1318426901.3027.6.camel@dabdike.int.hansenpartnership.com>
+In-Reply-To: <CADZpyizSBKcyt5VW8DsAvpzgOGZoTDpdpny9tEdsUgxJ2JoNNQ@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2011-10-12 at 08:41 -0500, James Bottomley wrote:
-> On Wed, 2011-10-12 at 09:26 +0200, Rolf Eike Beer wrote:
-> > >> On Tue, Sep 06, 2011 at 09:15:07AM -0500, James Bottomley wrote:
-> > >>> It's possible that one of the flushing patches is to blame; I just
-> > >>> can't
-> > >>> see how.  Most likely is
-> > >>>
-> > >>> commit d7dd2ff11b7fcd425aca5a875983c862d19a67ae
-> > >>> Author: James Bottomley <James.Bottomley@HansenPartnership.com>
-> > >>> Date:   Thu Apr 14 18:25:21 2011 -0500
-> > >>>
-> > >>>     [PARISC] only make executable areas executable
-> > >>>
-> > >>
-> > >> This looks promising, the second commit doesn't touch the flush_*_local,
-> > >> so I think it's probably not a candidate.
-> > >>
-> > >> Rolf, can you revert d7dd2ff11b7fcd425aca5a875983c862d19a67ae and see
-> > >> what happens?
-> > >
-> > > What happens is that the system boots and from a first glance seems to
-> > > work fine.
-> > 
-> > James, are you going to revert that commit? Or am I the only one that is
-> > seeing this?
-> 
-> You're the only one whose seeing this.  It works 32 bit on my C360, so I
-> really need to know why and I don't seem to have a means to debug if
-> it's C3600 only.  If I revert that commit, we start segfaulting again.
+On Mon, Oct 17, 2011 at 11:21 PM, Carlos O'Donell
+<carlos@systemhalted.org> wrote:
+> On Mon, Oct 17, 2011 at 11:01 PM, Carlos O'Donell
+> <carlos@systemhalted.org> wrote:
+>> On Mon, Oct 17, 2011 at 5:09 PM, John David Anglin <dave.anglin@bell.net> wrote:
+>>>> What patch is this? I don't remember it. URL?
+>>>>
+>>> http://www.cygwin.com/ml/libc-ports/2010-08/msg00001.html
+>>
+>> Thanks! I'll poke at this tomorrow.
+> I've just applied this patch and I'll run it through some testing.
 
-Just an update on this, I finally got my J6000 memory problems sorted
-out and booted it with 3.1-rc9 32 bit, and it works fine too (SMP as
-well).  That's the closest thing I have to a C3600 because it's
-Astro/Elroy based, so I've no means at all of reproducing this.
+I've verified it matches what we have in the kernel.
 
-James
+I've verified that a make install-headers puts the right headers in
+the right locations.
 
+If some final testing looks good I'll commit these patches for hppa in
+libc-ports with an an additional Tested-By: for my testing.
 
+Cheers,
+Carlos.
