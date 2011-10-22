@@ -1,49 +1,70 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [PATCH] parisc: futex: Use same lock set as lws calls
-Date: Fri, 21 Oct 2011 14:15:59 -0400
-Message-ID: <CADZpyizJwcEFNLZyhd74wDyFvrgNpD6j+2cRhjR7ZkL0xTWAgA@mail.gmail.com>
-References: <20111009204010.GA22374@hiauly1.hia.nrc.ca>
-	<20111017152358.GA3518@glitch>
-	<CADZpyixDV_OD+YM+u2EMWqY91u_WtGGMM0J3fAofp99q+OWYnA@mail.gmail.com>
-	<4E9C6F9E.5000605@bell.net>
-	<BLU0-SMTP701E485C5A8DBAF113D35E97EB0@phx.gbl>
-	<CADZpyizJx5fHwv5aHqoN-u1D95ph6dw8S+cAHKRS=MR6Y0WaPQ@mail.gmail.com>
-	<4EA1AF18.9010605@bell.net>
-	<4EA1B5C8.7050301@bell.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: debian-hppa@lists.debian.org,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: John David Anglin <dave.anglin@bell.net>
+From: Yong Zhang <yong.zhang0@gmail.com>
+Subject: [PATCH 14/49] parisc: irq: remove IRQF_DISABLED
+Date: Sat, 22 Oct 2011 17:56:26 +0800
+Message-ID: <1319277421-9203-15-git-send-email-yong.zhang0@gmail.com>
+References: <1319277421-9203-1-git-send-email-yong.zhang0@gmail.com>
+Cc: tglx@linutronix.de, Kyle McMartin <kyle@mcmartin.ca>,
+	Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	linux-parisc@vger.kernel.org
+To: linux-kernel@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4EA1B5C8.7050301@bell.net>
+In-Reply-To: <1319277421-9203-1-git-send-email-yong.zhang0@gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Oct 21, 2011 at 2:11 PM, John David Anglin <dave.anglin@bell.ne=
-t> wrote:
-> On 10/21/2011 1:42 PM, John David Anglin wrote:
->>
->> Yes. =A0The issue here is expand_call doesn't appear to be aware tha=
-t
->> loading the
->> address of a __thread variable may require a call. =A0Thus, it just =
-emits an
->> insn to
->> load r26. =A0This load is dead because r26 is reloaded for the call =
-to
->> __tls_get_addr.
->
-> It appears this may be caused by treating TLS symbols as legitimate
-> constants.
+Since commit [e58aa3d2: genirq: Run irq handlers with interrupts disabled],
+We run all interrupt handlers with interrupts disabled
+and we even check and yell when an interrupt handler
+returns with interrupts enabled (see commit [b738a50a:
+genirq: Warn when handler enables interrupts]).
 
-Which they are not in any of the *_DYNAMIC modes, because the dynamic
-linker is involved in their placement.
+So now this flag is a NOOP and can be removed.
 
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
+---
+ arch/parisc/include/asm/floppy.h |    4 ++--
+ arch/parisc/kernel/irq.c         |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/parisc/include/asm/floppy.h b/arch/parisc/include/asm/floppy.h
+index 4ca69f5..f84ff12 100644
+--- a/arch/parisc/include/asm/floppy.h
++++ b/arch/parisc/include/asm/floppy.h
+@@ -157,10 +157,10 @@ static int fd_request_irq(void)
+ {
+ 	if(can_use_virtual_dma)
+ 		return request_irq(FLOPPY_IRQ, floppy_hardint,
+-				   IRQF_DISABLED, "floppy", NULL);
++				   0, "floppy", NULL);
+ 	else
+ 		return request_irq(FLOPPY_IRQ, floppy_interrupt,
+-				   IRQF_DISABLED, "floppy", NULL);
++				   0, "floppy", NULL);
+ }
+ 
+ static unsigned long dma_mem_alloc(unsigned long size)
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index c0b1aff..420676b 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -379,14 +379,14 @@ void do_cpu_irq_mask(struct pt_regs *regs)
+ static struct irqaction timer_action = {
+ 	.handler = timer_interrupt,
+ 	.name = "timer",
+-	.flags = IRQF_DISABLED | IRQF_TIMER | IRQF_PERCPU | IRQF_IRQPOLL,
++	.flags = IRQF_TIMER | IRQF_PERCPU | IRQF_IRQPOLL,
+ };
+ 
+ #ifdef CONFIG_SMP
+ static struct irqaction ipi_action = {
+ 	.handler = ipi_interrupt,
+ 	.name = "IPI",
+-	.flags = IRQF_DISABLED | IRQF_PERCPU,
++	.flags = IRQF_PERCPU,
+ };
+ #endif
+ 
+-- 
+1.7.1
+
