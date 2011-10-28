@@ -1,57 +1,158 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: HPMC on network load (was: HPMC running CMake Nightly tests)
-Date: Wed, 26 Oct 2011 19:54:26 +0200
-Message-ID: <6703531.MgfjS9MWsx@eto>
-References: <d21336a9332d91f209ba666bd94f3acd.squirrel@webmail.sf-mail.de> <1c7b6eb5f6657272fe96ad90b79f215f.squirrel@webmail.sf-mail.de> <20111026161641.GA32419@parisc-linux.org>
+From: Jeroen Roovers <jer@gentoo.org>
+Subject: Re: Boot failure with 3.0.3: swapper (pid 0): Protection id trap
+ (code 7)
+Date: Fri, 28 Oct 2011 17:11:44 +0200
+Message-ID: <20111028171144.701d44b4@epia.jer-c2.orkz.net>
+References: <201108191958.35802.eike-kernel@sf-tec.de>
+	<a53708ae6c6247c7ce45d4e5b8131ea7.squirrel@webmail.sf-mail.de>
+	<20110831154820.GH22818@bombadil.infradead.org>
+	<20110831160419.GI22818@bombadil.infradead.org>
+	<65eae6bb26716d64e7f5959302b26fa9.squirrel@webmail.sf-mail.de>
+	<74797e028a4c070f42df834f9b0b0079.squirrel@webmail.sf-mail.de>
+	<20110906134611.GA25825@bombadil.infradead.org>
+	<20110906140029.GB25825@bombadil.infradead.org>
+	<1315318507.6567.2.camel@dabdike.int.hansenpartnership.com>
+	<20110906142025.GC25825@bombadil.infradead.org>
+	<bae45ceac5dc55d07fb5ab64243b85bc.squirrel@webmail.sf-mail.de>
+	<98cf8455f773aecf8ae811a810ff7844.squirrel@webmail.sf-mail.de>
+	<1318426901.3027.6.camel@dabdike.int.hansenpartnership.com>
+	<b55e3ed923e7722f57b37099a9071f44.squirrel@webmail.sf-mail.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1507812.pheoENBnE0"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Content-Type: multipart/mixed; boundary="MP_/KmZSVdqN1=+EQMzUJBi=yZq"
 To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20111026161641.GA32419@parisc-linux.org>
+In-Reply-To: <b55e3ed923e7722f57b37099a9071f44.squirrel@webmail.sf-mail.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+--MP_/KmZSVdqN1=+EQMzUJBi=yZq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
---nextPart1507812.pheoENBnE0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+On Wed, 26 Oct 2011 15:02:35 +0200
+"Rolf Eike Beer" <eike-kernel@sf-tec.de> wrote:
 
-Grant Grundler write
-
-> > HPMC PIM Analysis Information:
-> > 
-> > Timestamp =
-> > 
-> >   Thu Oct  20 09:05:52 GMT 2011    (20:11:10:20:09:05:52)
-> > 
-> > '9000/785 B,C,J Workstation HPMC PIM Analysis (per-CPU)', rev 0, 1304
-> > bytes:
-> > 
-> > A Data I/O Fetch Timeout occurred while CPU 0 was
-> > requesting information from a device at the path 10/0/12/0 (built-in PCI
-> > device).
+> Ok, I think I found the culprit. This change to the .config makes my
+> machine  boot:
 > 
-> Doing "in io" at the BCH prompt should list all devices including 10/0/12/0
-> Google search is failing to find a posting with that content. :/
+> --- kernel-config-parisc-3.1.0  2011-10-26 14:56:42.418487152 +0200
+> +++ config      2011-10-26 14:56:29.583485965 +0200
+> @@ -16,6 +16,7 @@
+>  CONFIG_NEED_DMA_MAP_STATE=y
+>  CONFIG_NEED_SG_DMA_LENGTH=y
+>  CONFIG_DEFCONFIG_LIST="/lib/modules/$UNAME_RELEASE/.config"
+> +CONFIG_CONSTRUCTORS=y
+>  CONFIG_HAVE_IRQ_WORK=y
+>  CONFIG_IRQ_WORK=y
+> 
+> @@ -114,6 +115,7 @@
+>  #
+>  # GCOV-based kernel profiling
+>  #
+> +CONFIG_GCOV_KERNEL=y
+>  # CONFIG_HAVE_GENERIC_DMA_COHERENT is not set
+>  CONFIG_SLABINFO=y
+>  CONFIG_RT_MUTEXES=y
+> @@ -1524,7 +1528,7 @@
+>  CONFIG_MAGIC_SYSRQ=y
+>  CONFIG_STRIP_ASM_SYMS=y
+>  # CONFIG_UNUSED_SYMBOLS is not set
+> -# CONFIG_DEBUG_FS is not set
+> +CONFIG_DEBUG_FS=y
+>  CONFIG_HEADERS_CHECK=y
+>  # CONFIG_DEBUG_SECTION_MISMATCH is not set
+>  CONFIG_DEBUG_KERNEL=y
 
-IIRC it is the network card.
+Confirmed. Disabling CONFIG_GCOV_KERNEL was the only change I made.
+Kernel boot log attached.
 
-The last time I saw this was during "emerge --sync", which was hours away from 
-the nightly CMake run. Since all traces point at the network card I think this 
-really has nothing to do with CMake or CPU load at all.
 
-Eike
---nextPart1507812.pheoENBnE0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
+Regards,
+     jer
+--MP_/KmZSVdqN1=+EQMzUJBi=yZq
+Content-Type: application/octet-stream; name=gcov_panic
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=gcov_panic
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.16 (GNU/Linux)
+SEFSRCBCb290ZWQuCnBhbG8gaXBsIDEuMTggcG9ydGFnZUBlbG1lciBUaHUgT2N0IDIwIDE3OjIw
+OjI5IENFU1QgMjAxMQoKUGFydGl0aW9uIFN0YXJ0KE1CKSBFbmQoTUIpIElkIFR5cGUKMSAgICAg
+ICAgICAgICAgIDEgICAgICAxNiAgIGYwIFBhbG8KMiAgICAgICAgICAgICAgMTcgICAgIDExMiAg
+IDgzIGV4dDIKMyAgICAgICAgICAgICAxMTMgICAgIDYwMSAgIDgyIHN3YXAKNCAgICAgICAgICAg
+ICA2MDIgICAxNTg2MCAgIDgzIGV4dDIKClBBTE8oRjApIHBhcnRpdGlvbiBjb250YWluczoKICAg
+IDAvdm1saW51eDY0IDc0NTQ3OTggYnl0ZXMgQCAweDQ0MDAwCgoJQ29tbWFuZCBsaW5lIGZvciBr
+ZXJuZWw6ICdyb290PS9kZXYvc2RhNCBjb25zb2xlPXR0eVMwIG5ldGNvbnNvbGU9QDEwLjAuMC4x
+NDAvLEAxMC4wLjAuMTUzLyB2aWRlbz1tYXRyb3hmYjp2ZXNhOjB4MTE3IHJvb3Rmc3R5cGU9ZXh0
+NCBwYWxvX2tlcm5lbD0yL3ZtbGludXgnCglTZWxlY3RlZCBrZXJuZWw6IC92bWxpbnV4IGZyb20g
+cGFydGl0aW9uIDIKCUVMRjMyIGV4ZWN1dGFibGUKCUVudHJ5IDAwMTAwMDAwIGZpcnN0IDAwMTAw
+MDAwIG4gMwoJU2VnbWVudCAwIGxvYWQgMDAxMDAwMDAgc2l6ZSA0MzIxMjgwIG1lZGlhcHRyIDB4
+MTAwMAoJU2VnbWVudCAxIGxvYWQgMDA1NzQwMDAgc2l6ZSAxMTA1OTIgbWVkaWFwdHIgMHg0MjAw
+MDAKCVNlZ21lbnQgMiBsb2FkIDAwNThmMDAwIHNpemUgOTk4NTYgbWVkaWFwdHIgMHg0M2IwMDAK
+CUJyYW5jaGluZyB0byBrZXJuZWwgZW50cnkgcG9pbnQgMHgwMDEwMDAwMC4gIElmIHRoaXMgaXMg
+dGhlIGxhc3QKCW1lc3NhZ2UgeW91IHNlZSwgeW91IG1heSBuZWVkIHRvIHN3aXRjaCB5b3VyIGNv
+bnNvbGUuICBUaGlzIGlzCglhIGNvbW1vbiBzeW1wdG9tIC0tIHNlYXJjaCB0aGUgRkFRIGFuZCBt
+YWlsaW5nIGxpc3QgYXQgcGFyaXNjLWxpbnV4Lm9yZwoKCVsgICAgMC4wMDAwMDBdIEluaXRpYWxp
+emluZyBjZ3JvdXAgc3Vic3lzIGNwdXNldAoJWyAgICAwLjAwMDAwMF0gSW5pdGlhbGl6aW5nIGNn
+cm91cCBzdWJzeXMgY3B1CglbICAgIDAuMDAwMDAwXSBMaW51eCB2ZXJzaW9uIDMuMC42LUplUiAo
+cm9vdEBlbG1lcikgKGdjYyB2ZXJzaW9uIDQuNS4zIChHZW50b28gNC41LjMtcjEgcDEuMCwgcGll
+LTAuNC41KSApICM0IFBSRUVNUFQgVGh1IE9jdCAyNyAxODoyODoyOCBDRVNUIDIwMTEKCVsgICAg
+MC4wMDAwMDBdIHVud2luZF9pbml0OiBzdGFydCA9IDB4MTA0OGQwMDAsIGVuZCA9IDB4MTA0YzFj
+YzAsIGVudHJpZXMgPSAxMzUxNgoJWyAgICAwLjAwMDAwMF0gRlBbMF0gZW5hYmxlZDogUmV2IDEg
+TW9kZWwgMTkKCVsgICAgMC4wMDAwMDBdIFRoZSAzMi1iaXQgS2VybmVsIGhhcyBzdGFydGVkLi4u
+CglbICAgIDAuMDAwMDAwXSBib290Y29uc29sZSBbdHR5QjBdIGVuYWJsZWQKCVsgICAgMC4wMDAw
+MDBdIEluaXRpYWxpemVkIFBEQyBDb25zb2xlIGZvciBkZWJ1Z2dpbmcuCglbICAgIDAuMDAwMDAw
+XSBEZXRlcm1pbmluZyBQREMgZmlybXdhcmUgdHlwZTogU3lzdGVtIE1hcC4KCVsgICAgMC4wMDAw
+MDBdIG1vZGVsIDAwMDA1ZGMwIDAwMDAwNDgxIDAwMDAwMDAwIDAwMDAwMDAyIDc4MTIzZmIyIDEw
+MDAwMGYwIDAwMDAwMDA4IDAwMDAwMGIyIDAwMDAwMGIyCglbICAgIDAuMDAwMDAwXSB2ZXJzICAw
+MDAwMDIwMwoJWyAgICAwLjAwMDAwMF0gQ1BVSUQgdmVycyAxOSByZXYgNyAoMHgwMDAwMDI2NykK
+CVsgICAgMC4wMDAwMDBdIGNhcGFiaWxpdGllcyAweDcKCVsgICAgMC4wMDAwMDBdIG1vZGVsIDkw
+MDAvNzg1L0MzNjUwCglbICAgIDAuMDAwMDAwXSBUb3RhbCBNZW1vcnk6IDIwNDggTUIKCVsgICAg
+MC4wMDAwMDBdIExDRCBkaXNwbGF5IGF0IGYwNWQwMDA4LGYwNWQwMDAwIHJlZ2lzdGVyZWQKCVsg
+ICAgMC4wMDAwMDBdIEJhY2t0cmFjZToKCVsgICAgMC4wMDAwMDBdICBbPDEwNTdiNGM0Pl0gc2V0
+dXBfcGVyX2NwdV9hcmVhcysweGI4LzB4ZGMKCVsgICAgMC4wMDAwMDBdICBbPDEwNTc0NzUwPl0g
+c3RhcnRfa2VybmVsKzB4MTE4LzB4Mzk4CglbICAgIDAuMDAwMDAwXSAgWzwxMDExNDhmYz5dIHN0
+YXJ0X3BhcmlzYysweDRjLzB4NjgKCVsgICAgMC4wMDAwMDBdCglbICAgIDAuMDAwMDAwXQoJWyAg
+ICAwLjAwMDAwMF0gS2VybmVsIEZhdWx0OiBDb2RlPTI2IHJlZ3M9MTA0YzQyNDAgKEFkZHI9MTA1
+OGZlODApCglbICAgIDAuMDAwMDAwXQoJWyAgICAwLjAwMDAwMF0gICAgICBZWnJ2V0VTVEhMTlhC
+Q1ZNY2JjYmNiY2JPR0ZSUVBESQoJWyAgICAwLjAwMDAwMF0gUFNXOiAwMDAwMDAwMDAwMDAwMTAw
+MTExMTExMTEwMDAwMTExMCBOb3QgdGFpbnRlZAoJWyAgICAwLjAwMDAwMF0gcjAwLTAzICAwMDA0
+ZmYwZSAxMDU1YjgwMCAxMDU3YjE5OCAxMTZkMDI0MAoJWyAgICAwLjAwMDAwMF0gcjA0LTA3ICAw
+MDAwMDAwMCAxMTZkMjAwMCAxMTZkYTE4MCAwMDAwMDAwOAoJWyAgICAwLjAwMDAwMF0gcjA4LTEx
+ICAxMTZkYTE4MCAxMTZkYTBjMCAwMDA0MDAwZSAxMDExNDhiNAoJWyAgICAwLjAwMDAwMF0gcjEy
+LTE1ICAwMDAwMDAwMCBmZmZmZmZmZiAwMDAwMDAwMCBmMDQwMDAwNAoJWyAgICAwLjAwMDAwMF0g
+cjE2LTE5ICBmMDAwMDg4NCBmMDAwMDE3YyBmMDAwMDE3NCAxMDU4ZmU4MAoJWyAgICAwLjAwMDAw
+MF0gcjIwLTIzICAwMDAwMDAwMCAxMTZkYTFhYyAwMDAwMDAwMCAwMDAwMDAwMQoJWyAgICAwLjAw
+MDAwMF0gcjI0LTI3ICAwMDAwMDAwMCAwMDAwMDBmZiAxMTZkYTFhOCAxMDRjODAwMAoJWyAgICAw
+LjAwMDAwMF0gcjI4LTMxICAwMDAwMDAwMCAxMDJiNTQzMCAxMDRjNDI0MCAwMDAwMDAwMwoJWyAg
+ICAwLjAwMDAwMF0gc3IwMC0wMyAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAK
+CVsgICAgMC4wMDAwMDBdIHNyMDQtMDcgIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAw
+MDAwCglbICAgIDAuMDAwMDAwXQoJWyAgICAwLjAwMDAwMF0gSUFTUTogMDAwMDAwMDAgMDAwMDAw
+MDAgSUFPUTogMTA1N2IyMjQgMTA1N2IyMjgKCVsgICAgMC4wMDAwMDBdICBJSVI6IDBlNzQxMjgw
+ICAgIElTUjogMDAwMDAwMDAgIElPUjogMTA1OGZlODAKCVsgICAgMC4wMDAwMDBdICBDUFU6ICAg
+ICAgICAwICAgQ1IzMDogMTA0YzQwMDAgQ1IzMTogZmVmZmY3ZmYKCVsgICAgMC4wMDAwMDBdICBP
+UklHX1IyODogMTA0YzQyZDgKCVsgICAgMC4wMDAwMDBdICBJQU9RWzBdOiBwY3B1X3NldHVwX2Zp
+cnN0X2NodW5rKzB4NjMwLzB4ODE4CglbICAgIDAuMDAwMDAwXSAgSUFPUVsxXTogcGNwdV9zZXR1
+cF9maXJzdF9jaHVuaysweDYzNC8weDgxOAoJWyAgICAwLjAwMDAwMF0gIFJQKHIyKTogcGNwdV9z
+ZXR1cF9maXJzdF9jaHVuaysweDVhNC8weDgxOAoJWyAgICAwLjAwMDAwMF0gQmFja3RyYWNlOgoJ
+WyAgICAwLjAwMDAwMF0gIFs8MTA1N2I0YzQ+XSBzZXR1cF9wZXJfY3B1X2FyZWFzKzB4YjgvMHhk
+YwoJWyAgICAwLjAwMDAwMF0gIFs8MTA1NzQ3NTA+XSBzdGFydF9rZXJuZWwrMHgxMTgvMHgzOTgK
+CVsgICAgMC4wMDAwMDBdICBbPDEwMTE0OGZjPl0gc3RhcnRfcGFyaXNjKzB4NGMvMHg2OAoJWyAg
+ICAwLjAwMDAwMF0KCVsgICAgMC4wMDAwMDBdIEtlcm5lbCBwYW5pYyAtIG5vdCBzeW5jaW5nOiBL
+ZXJuZWwgRmF1bHQKCVsgICAgMC4wMDAwMDBdIEJhY2t0cmFjZToKCVsgICAgMC4wMDAwMDBdICBb
+PDEwMTBmOWVjPl0gcGFuaWMrMHhhNC8weDI2OAoJWyAgICAwLjAwMDAwMF0gIFs8MTAxMTUzNWM+
+XSBwYXJpc2NfdGVybWluYXRlKzB4MTAwLzB4MTA0CglbICAgIDAuMDAwMDAwXSAgWzwxMDExNTk3
+MD5dIGhhbmRsZV9pbnRlcnJ1cHRpb24rMHg2MTAvMHg2M2MKCVsgICAgMC4wMDAwMDBdICBbPDEw
+MTA0MDc4Pl0gaW50cl9jaGVja19zaWcrMHgwLzB4MzQKCVsgICAgMC4wMDAwMDBdICBbPDEwMTEw
+MWUwPl0gcHJlZW1wdF9zY2hlZHVsZSsweDQ4LzB4NzgKCVsgICAgMC4wMDAwMDBdICBbPDEwMTM2
+NWQ0Pl0gdnByaW50aysweDQwNC8weDQ1NAoJWyAgICAwLjAwMDAwMF0gIFs8MTAxMTQ4YjQ+XSBz
+dGFydF9wYXJpc2MrMHg0LzB4NjgKCVsgICAgMC4wMDAwMDBdICBbPDEwMTE0OGI0Pl0gc3RhcnRf
+cGFyaXNjKzB4NC8weDY4CglbICAgIDAuMDAwMDAwXSAgWzwxMDExNDhiND5dIHN0YXJ0X3Bhcmlz
+YysweDQvMHg2OAoJWyAgICAwLjAwMDAwMF0gIFs8MTAxMTQ4YjQ+XSBzdGFydF9wYXJpc2MrMHg0
+LzB4NjgKCVsgICAgMC4wMDAwMDBdICBbPDEwMTE0OGI0Pl0gc3RhcnRfcGFyaXNjKzB4NC8weDY4
+CglbICAgIDAuMDAwMDAwXSAgWzwxMDExNDhiND5dIHN0YXJ0X3BhcmlzYysweDQvMHg2OAoJWyAg
+ICAwLjAwMDAwMF0gIFs8MTAxMTQ4YjQ+XSBzdGFydF9wYXJpc2MrMHg0LzB4NjgKCVsgICAgMC4w
+MDAwMDBdICBbPDEwMTE0OGI0Pl0gc3RhcnRfcGFyaXNjKzB4NC8weDY4CglbICAgIDAuMDAwMDAw
+XSAgWzwxMDExNDhiND5dIHN0YXJ0X3BhcmlzYysweDQvMHg2OAoJWyAgICAwLjAwMDAwMF0gIFs8
+MTAxMTQ4YjQ+XSBzdGFydF9wYXJpc2MrMHg0LzB4NjgKCVsgICAgMC4wMDAwMDBdCgo=
 
-iEYEABECAAYFAk6oSVIACgkQXKSJPmm5/E4yPwCeO/4P/dxlK8nDxGd53kSK53SF
-VVUAoIXltHfZANPzSWY1wpr9apdKdRIo
-=xnXw
------END PGP SIGNATURE-----
-
---nextPart1507812.pheoENBnE0--
-
+--MP_/KmZSVdqN1=+EQMzUJBi=yZq--
