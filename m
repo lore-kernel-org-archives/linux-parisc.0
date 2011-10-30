@@ -1,110 +1,46 @@
-From: Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH v3 23/34] parisc/PCI: lba: convert to pci_create_root_bus()
-	for correct root bus resources
-Date: Fri, 28 Oct 2011 16:27:27 -0600
-Message-ID: <20111028222727.30729.43687.stgit@bhelgaas.mtv.corp.google.com>
-References: <20111028222432.30729.8431.stgit@bhelgaas.mtv.corp.google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: linux-arch@vger.kernel.org, linux-parisc@vger.kernel.org
-To: linux-pci@vger.kernel.org
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <20111028222432.30729.8431.stgit@bhelgaas.mtv.corp.google.com>
-List-ID: <linux-arch.vger.kernel.org>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCH] parisc: futex: Use same lock set as lws calls
+Date: Sun, 30 Oct 2011 11:04:40 -0400
+Message-ID: <BLU0-SMTP13C59771871C90183AFBCB97D10@phx.gbl>
+References: <20111009204010.GA22374@hiauly1.hia.nrc.ca> <20111017152358.GA3518@glitch> <CADZpyixDV_OD+YM+u2EMWqY91u_WtGGMM0J3fAofp99q+OWYnA@mail.gmail.com> <4E9C6F9E.5000605@bell.net> <BLU0-SMTP701E485C5A8DBAF113D35E97EB0@phx.gbl> <CADZpyizJx5fHwv5aHqoN-u1D95ph6dw8S+cAHKRS=MR6Y0WaPQ@mail.gmail.com> <4EA1AF18.9010605@bell.net> <4EA1B5C8.7050301@bell.net> <CADZpyizJwcEFNLZyhd74wDyFvrgNpD6j+2cRhjR7ZkL0xTWAgA@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: debian-hppa@lists.debian.org,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: Carlos O'Donell <carlos@systemhalted.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <CADZpyizJwcEFNLZyhd74wDyFvrgNpD6j+2cRhjR7ZkL0xTWAgA@mail.gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Supply root bus resources to pci_create_root_bus() so they're correct
-immediately.  This fixes the problem of "early" and "header" quirks seeing
-incorrect root bus resources.
+On 21-Oct-11, at 2:15 PM, Carlos O'Donell wrote:
 
-CC: linux-parisc@vger.kernel.org
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/parisc/lba_pci.c |   29 +++++++++++++++++------------
- 1 files changed, 17 insertions(+), 12 deletions(-)
+> On Fri, Oct 21, 2011 at 2:11 PM, John David Anglin <dave.anglin@bell.net 
+> > wrote:
+>> On 10/21/2011 1:42 PM, John David Anglin wrote:
+>>>
+>>> Yes.  The issue here is expand_call doesn't appear to be aware that
+>>> loading the
+>>> address of a __thread variable may require a call.  Thus, it just  
+>>> emits an
+>>> insn to
+>>> load r26.  This load is dead because r26 is reloaded for the call to
+>>> __tls_get_addr.
+>>
+>> It appears this may be caused by treating TLS symbols as legitimate
+>> constants.
+>
+> Which they are not in any of the *_DYNAMIC modes, because the dynamic
+> linker is involved in their placement.
 
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index e5dfa25..d5f3d75 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -653,7 +653,7 @@ lba_fixup_bus(struct pci_bus *bus)
- 		}
- 	} else {
- 		/* Host-PCI Bridge */
--		int err, i;
-+		int err;
- 
- 		DBG("lba_fixup_bus() %s [%lx/%lx]/%lx\n",
- 			ldev->hba.io_space.name,
-@@ -669,9 +669,6 @@ lba_fixup_bus(struct pci_bus *bus)
- 			lba_dump_res(&ioport_resource, 2);
- 			BUG();
- 		}
--		/* advertize Host bridge resources to PCI bus */
--		bus->resource[0] = &(ldev->hba.io_space);
--		i = 1;
- 
- 		if (ldev->hba.elmmio_space.start) {
- 			err = request_resource(&iomem_resource,
-@@ -685,8 +682,7 @@ lba_fixup_bus(struct pci_bus *bus)
- 
- 				/* lba_dump_res(&iomem_resource, 2); */
- 				/* BUG(); */
--			} else
--				bus->resource[i++] = &(ldev->hba.elmmio_space);
-+			}
- 		}
- 
- 		if (ldev->hba.lmmio_space.flags) {
-@@ -696,8 +692,7 @@ lba_fixup_bus(struct pci_bus *bus)
- 					"lmmio_space [%lx/%lx]\n",
- 					(long)ldev->hba.lmmio_space.start,
- 					(long)ldev->hba.lmmio_space.end);
--			} else
--				bus->resource[i++] = &(ldev->hba.lmmio_space);
-+			}
- 		}
- 
- #ifdef CONFIG_64BIT
-@@ -712,7 +707,6 @@ lba_fixup_bus(struct pci_bus *bus)
- 				lba_dump_res(&iomem_resource, 2);
- 				BUG();
- 			}
--			bus->resource[i++] = &(ldev->hba.gmmio_space);
- 		}
- #endif
- 
-@@ -1388,6 +1382,7 @@ static int __init
- lba_driver_probe(struct parisc_device *dev)
- {
- 	struct lba_device *lba_dev;
-+	LIST_HEAD(resources);
- 	struct pci_bus *lba_bus;
- 	struct pci_ops *cfg_ops;
- 	u32 func_class;
-@@ -1519,12 +1514,22 @@ lba_driver_probe(struct parisc_device *dev)
- 		lba_dev->hba.lmmio_space.flags = 0;
- 	}
- 
-+	pci_add_resource(&resources, &lba_dev->hba.io_space);
-+	if (lba_dev->hba.elmmio_space.start)
-+		pci_add_resource(&resources, &lba_dev->hba.elmmio_space);
-+	if (lba_dev->hba.lmmio_space.flags)
-+		pci_add_resource(&resources, &lba_dev->hba.lmmio_space);
-+	if (lba_dev->hba.gmmio_space.flags)
-+		pci_add_resource(&resources, &lba_dev->hba.gmmio_space);
-+
- 	dev->dev.platform_data = lba_dev;
- 	lba_bus = lba_dev->hba.hba_bus =
--		pci_create_bus(&dev->dev, lba_dev->hba.bus_num.start,
--			       cfg_ops, NULL);
--	if (!lba_bus)
-+		pci_create_root_bus(&dev->dev, lba_dev->hba.bus_num.start,
-+				    cfg_ops, NULL, &resources);
-+	if (!lba_bus) {
-+		pci_free_resource_list(&resources);
- 		return 0;
-+	}
- 
- 	lba_bus->subordinate = pci_scan_child_bus(lba_bus);
- 
+
+This problem is fixed in the GCC trunk and 4.4, 4.5 and 4.6 branches.   
+libmpfr4-3.1.0
+now passes all tests.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
