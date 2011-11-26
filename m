@@ -1,70 +1,38 @@
-From: Jesper Nilsson <jesper.nilsson@axis.com>
-Subject: Re: [PATCH-RFC 01/10] lib: move GENERIC_IOMAP to lib/Kconfig
-Date: Fri, 25 Nov 2011 09:41:09 +0100
-Message-ID: <20111125084109.GS13937@axis.com>
-References: <cover.1322163031.git.mst@redhat.com> <5aed7b7e1dbc8a50ebd6986245df8054fd05b7cd.1322163031.git.mst@redhat.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="f2QGlHpHGjS2mn6Y"
-Cc: Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Mikael Starvik <starvik@axis.com>,
-        Richard Kuo <rkuo@codeaurora.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Chen Liqin <liqin.chen@sunplusct.com>,
-        Lennox Wu <lennox.wu@gmail.com>,
-        Paul Mundt <lethal@linux-sh.org>,
-        "Da
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <5aed7b7e1dbc8a50ebd6986245df8054fd05b7cd.1322163031.git.mst@redhat.com>
-Errors-to: linux-mips-bounce@linux-mips.org
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: TLB Miss Bug?
+Date: Fri, 25 Nov 2011 20:47:30 -0500
+Message-ID: <BLU0-SMTP4EB77321633599EA38C1897CC0@phx.gbl>
+References: <BLU0-SMTP178D0B9C9992607985308C97CE0@phx.gbl>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: linux-parisc List <linux-parisc@vger.kernel.org>
+To: John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <BLU0-SMTP178D0B9C9992607985308C97CE0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
+
+On 24-Nov-11, at 8:16 AM, John David Anglin wrote:
+
+> So, my theory is there is a bug in the TLB miss handling.  Somehow a  
+> data miss ejects the instruction entry,
+> and we get into a loop inserting I and D TLB entries.  Sometimes the  
+> machine gets out of the loop but it takes
+> hours.
 
 
---f2QGlHpHGjS2mn6Y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The TLB conf is:
 
-On Thu, Nov 24, 2011 at 09:15:42PM +0100, Michael S. Tsirkin wrote:
-> define GENERIC_IOMAP in a central location
-> instead of all architectures. This will be helpful
-> for the follow-up patch which makes it select
-> other configs. Code is also a bit shorter this way.
->=20
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+D-TLB conf: sh 3 page 1 cst 1 aid 0 pad1 0
+I-TLB conf: sh 3 page 1 cst 1 aid 3 pad1 0
 
-For the CRIS part:
+I believe the sh value indicates either pitlb or pdtld may be used  
+(i.e., there is just one shared tlb) on rp3440.
+Thus, the above scenario seems possible.
 
-Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
+Dave
+--
+John David Anglin	dave.anglin@bell.net
 
-/^JN - Jesper Nilsson
---=20
-               Jesper Nilsson -- jesper.nilsson@axis.com
 
---f2QGlHpHGjS2mn6Y
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAk7PVKUACgkQ31LbvUHyf1e75ACePpPqRaa0/hcY5Pc6jHLp11KX
-g3oAn37y5BAjmjOjjeqo5aGJkxBrHR5C
-=GpXx
------END PGP SIGNATURE-----
-
---f2QGlHpHGjS2mn6Y--
