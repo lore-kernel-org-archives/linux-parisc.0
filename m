@@ -1,62 +1,46 @@
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH-RFC 07/10] parisc: switch to GENERIC_PCI_IOMAP
-Date: Tue, 6 Dec 2011 13:06:09 +0200
-Message-ID: <20111206110608.GA10379@redhat.com>
-References: <cover.1322163031.git.mst@redhat.com>
- <9dab609cdf0c22a35f58b0f821a10230a487480d.1322163031.git.mst@redhat.com>
- <20111204104817.GI15464@redhat.com>
- <1323008554.3003.4.camel@dabdike.int.hansenpartnership.com>
- <20111204143000.GB21238@redhat.com>
- <CANEJEGuHpT-SWEbRVN0WXbOSBcbP8HDhFjKjxUfShyV84pqazw@mail.gmail.com>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: [PATCH] parisc: make NO_IRQ 0 as it should be
+Date: Tue, 06 Dec 2011 11:24:33 +0000
+Message-ID: <20111206112412.14035.13990.stgit@bob.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: Grant Grundler <grantgrundler@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+To: linux-parisc@vger.kernel.org, jejb@parisc-linux.org,
+	kyle@mcmartin.ca
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CANEJEGuHpT-SWEbRVN0WXbOSBcbP8HDhFjKjxUfShyV84pqazw@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Dec 05, 2011 at 10:23:17AM -0800, Grant Grundler wrote:
-> On Sun, Dec 4, 2011 at 6:30 AM, Michael S. Tsirkin <mst@redhat.com> wrote:
-> ...
-> > AFAIK, on PCI a resource is either IO or MEM, but never both.
-> > What am I missing?
-> 
-> Yes, a particular PCI BAR (Base Address Register) is either IO or MEM
-> (not both) address space resource.
-> 
-> James is observing many older devices have the same set of registers
-> mapped in both address spaces using two BARs. As you already know,
-> MMIO is "lighter weight" (CPU cost to generate transactions on PCI
-> bus). I think this is orthogonal to the issue you are addressing.
-> 
-> Regarding handling of IO Port space cookies:
-> > -     if (flags & IORESOURCE_IO)
-> > -             return ioport_map(start, len);
-> 
-> I don't know who all the consumers of pci_iomap() are. If user space
-> can somehow call this, it should fail for IO port space "mappings"
-> since unlike x86, parisc has no INB/OUTB instructions. Generating IO
-> Port space requires frobbing PCI Bus controller registers that I don't
-> think we want to expose to user space.
-> 
-> I'm going to assume this is NOT a problem since any code that
-> generates anything that tries to look like an INB/OUTB just won't
-> compile on parisc.  I think removing the parisc specific definition
-> and using the generic one instead looks fine to me.  But I'm not
-> confident enough to offer a formal ACKed-by line. Sorry. :(
-> 
-> cheers,
-> grant
+From: Alan Cox <alan@linux.intel.com>
 
-How about a Tested-by line? I presume you have the hardware to
-try this out? You can also get the patches from my tree:
-git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git linux-next
-or from linux-next.
+PA-RISC doesn't use a real IRQ 0 and James says
 
--- 
-MST
+"To be honest, we don't care very much.  Parisc interrupts are cascading
+and mostly software assigned (except our EIEM which we keep internal).
+We use a base offset at 16 or 64 (depending on GSC presence or not) so
+IRQs 0-15 aren't legal on parisc either (we frob some of the hard coded
+ISA interrupts on the WAX eisa bus).
+
+We use NO_IRQ as an IRQ assignment error return and that's about it (and
+that error shouldn't ever really occur)."
+
+Signed-off-by: Alan Cox <alan@linux.intel.com>
+---
+
+ arch/parisc/include/asm/irq.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+
+diff --git a/arch/parisc/include/asm/irq.h b/arch/parisc/include/asm/irq.h
+index 1073599..fcf6edd 100644
+--- a/arch/parisc/include/asm/irq.h
++++ b/arch/parisc/include/asm/irq.h
+@@ -10,7 +10,7 @@
+ #include <linux/cpumask.h>
+ #include <asm/types.h>
+ 
+-#define NO_IRQ		(-1)
++#define NO_IRQ		0
+ 
+ #ifdef CONFIG_GSC
+ #define GSC_IRQ_BASE	16
+
