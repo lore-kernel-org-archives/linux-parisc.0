@@ -1,65 +1,55 @@
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH-RFC 07/10] parisc: switch to GENERIC_PCI_IOMAP
-Date: Tue, 6 Dec 2011 18:24:34 +0200
-Message-ID: <20111206162434.GB3245@redhat.com>
-References: <cover.1322163031.git.mst@redhat.com>
- <9dab609cdf0c22a35f58b0f821a10230a487480d.1322163031.git.mst@redhat.com>
- <20111204104817.GI15464@redhat.com>
- <1323008554.3003.4.camel@dabdike.int.hansenpartnership.com>
- <20111204143000.GB21238@redhat.com>
- <CANEJEGuHpT-SWEbRVN0WXbOSBcbP8HDhFjKjxUfShyV84pqazw@mail.gmail.com>
- <20111206110608.GA10379@redhat.com>
- <CANEJEGu0SD+z1ZvD05F0TzomZW9Lp-Cok4GL2eBiHQatW4+wPg@mail.gmail.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH] parisc: make NO_IRQ 0 as it should be
+Date: Wed, 07 Dec 2011 11:54:17 -0600
+Message-ID: <1323280457.3021.66.camel@dabdike>
+References: <20111206112412.14035.13990.stgit@bob.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: Grant Grundler <grantgrundler@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-parisc@vger.kernel.org, jejb@parisc-linux.org,
+	kyle@mcmartin.ca
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CANEJEGu0SD+z1ZvD05F0TzomZW9Lp-Cok4GL2eBiHQatW4+wPg@mail.gmail.com>
+In-Reply-To: <20111206112412.14035.13990.stgit@bob.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Dec 06, 2011 at 08:18:43AM -0800, Grant Grundler wrote:
-> On Tue, Dec 6, 2011 at 3:06 AM, Michael S. Tsirkin <mst@redhat.com> w=
-rote:
-> > On Mon, Dec 05, 2011 at 10:23:17AM -0800, Grant Grundler wrote:
-> ...
-> >> I'm going to assume this is NOT a problem since any code that
-> >> generates anything that tries to look like an INB/OUTB just won't
-> >> compile on parisc. =A0I think removing the parisc specific definit=
-ion
-> >> and using the generic one instead looks fine to me. =A0But I'm not
-> >> confident enough to offer a formal ACKed-by line. Sorry. :(
-> >>
-> >> cheers,
-> >> grant
-> >
-> > How about a Tested-by line? I presume you have the hardware to
-> > try this out?
->=20
-> I do have the HW at home to test this...but it's not been powered up
-> in 6+ months. I have to point dpkg at a new repository and update all
-> the SW on the machine. If you don't mind waiting another week, I'll
-> make time to do that later this week (or weekend).
->
-> > You can also get the patches from my tree:
-> > git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git linux-n=
-ext
-> > or from linux-next.
->=20
-> That's easy enough - thanks!
-> grant
+On Tue, 2011-12-06 at 11:24 +0000, Alan Cox wrote:
+> From: Alan Cox <alan@linux.intel.com>
+> 
+> PA-RISC doesn't use a real IRQ 0 and James says
+> 
+> "To be honest, we don't care very much.  Parisc interrupts are cascading
+> and mostly software assigned (except our EIEM which we keep internal).
+> We use a base offset at 16 or 64 (depending on GSC presence or not) so
+> IRQs 0-15 aren't legal on parisc either (we frob some of the hard coded
+> ISA interrupts on the WAX eisa bus).
+> 
+> We use NO_IRQ as an IRQ assignment error return and that's about it (and
+> that error shouldn't ever really occur)."
+> 
+> Signed-off-by: Alan Cox <alan@linux.intel.com>
+> ---
+> 
+>  arch/parisc/include/asm/irq.h |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> 
+> diff --git a/arch/parisc/include/asm/irq.h b/arch/parisc/include/asm/irq.h
+> index 1073599..fcf6edd 100644
+> --- a/arch/parisc/include/asm/irq.h
+> +++ b/arch/parisc/include/asm/irq.h
+> @@ -10,7 +10,7 @@
+>  #include <linux/cpumask.h>
+>  #include <asm/types.h>
+>  
+> -#define NO_IRQ		(-1)
+> +#define NO_IRQ		0
 
-Waiting for 3.4 window to open anyway, so yes that will be nice.
-Thanks!
+Unfortunately, it's not quite as simple as this.  There's one use of
+NO_IRQ as an error return in the EIEM code, which returns the internal
+line number (which run 0-32/64 ... I'll have to fix those before this
+can be done.
 
---=20
-MST
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+James
+
+
