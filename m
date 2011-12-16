@@ -1,51 +1,83 @@
-From: Grant Grundler <grantgrundler@gmail.com>
-Subject: Re: [PATCH-RFC 07/10] parisc: switch to GENERIC_PCI_IOMAP
-Date: Thu, 15 Dec 2011 18:11:26 -0800
-Message-ID: <CANEJEGtRHNpZ2AN5di3joGa2JjgSiBbUjiTVfjkC8p1hE8T6cw@mail.gmail.com>
-References: <cover.1322163031.git.mst@redhat.com>
-	<9dab609cdf0c22a35f58b0f821a10230a487480d.1322163031.git.mst@redhat.com>
-	<20111204104817.GI15464@redhat.com>
-	<1323008554.3003.4.camel@dabdike.int.hansenpartnership.com>
-	<20111204143000.GB21238@redhat.com>
-	<CANEJEGuHpT-SWEbRVN0WXbOSBcbP8HDhFjKjxUfShyV84pqazw@mail.gmail.com>
-	<20111206110608.GA10379@redhat.com>
-	<CANEJEGu0SD+z1ZvD05F0TzomZW9Lp-Cok4GL2eBiHQatW4+wPg@mail.gmail.com>
-	<20111206162434.GB3245@redhat.com>
+From: Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 6/6] parisc/PCI: use list_for_each_entry() for bus->devices
+	traversal
+Date: Fri, 16 Dec 2011 15:32:00 -0700
+Message-ID: <20111216223200.5963.79616.stgit@bhelgaas.mtv.corp.google.com>
+References: <20111216223043.5963.87534.stgit@bhelgaas.mtv.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: "Michael S. Tsirkin" <mst@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Cc: linux-pci@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Jesse Barnes <jbarnes@virtuousgeek.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20111206162434.GB3245@redhat.com>
+In-Reply-To: <20111216223043.5963.87534.stgit@bhelgaas.mtv.corp.google.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Dec 6, 2011 at 8:24 AM, Michael S. Tsirkin <mst@redhat.com> wrote:
-...
->> I do have the HW at home to test this...but it's not been powered up
->> in 6+ months. I have to point dpkg at a new repository and update all
->> the SW on the machine. If you don't mind waiting another week, I'll
->> make time to do that later this week (or weekend).
->>
->> > You can also get the patches from my tree:
->> > git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git linux-next
->> > or from linux-next.
->>
->> That's easy enough - thanks!
->> grant
->
-> Waiting for 3.4 window to open anyway, so yes that will be nice.
+Replace open-coded list traversal with list_for_each_entry().
 
-Michael,
-Just an update that I haven't forgotten your request. I tried to
-update the machine on Monday and the current state of hppa for
-debian-ports is dselect can't resolve dependencies on versions of
-packages because those versions don't exist for hppa. I've just asked
-for help with this on debian-hppa mailing list and will see if we can
-get this machine updated.
+Note that parisc lba_fixup_bus() previously enabled FBB/PERR/SERR
+repeatedly on the same device instead of doing it on all devices on
+the bus.
 
-cheers,
-grant
+CC: linux-parisc@vger.kernel.org
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+---
+ drivers/parisc/dino.c    |    6 ++----
+ drivers/parisc/lba_pci.c |    7 +++----
+ 2 files changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+index 7ff10c1..6f5bf3e 100644
+--- a/drivers/parisc/dino.c
++++ b/drivers/parisc/dino.c
+@@ -478,14 +478,12 @@ dino_card_setup(struct pci_bus *bus, void __iomem *base_addr)
+ 	if (ccio_allocate_resource(dino_dev->hba.dev, res, _8MB,
+ 				F_EXTEND(0xf0000000UL) | _8MB,
+ 				F_EXTEND(0xffffffffUL) &~ _8MB, _8MB) < 0) {
+-		struct list_head *ln, *tmp_ln;
++		struct pci_dev *dev, *tmp;
+ 
+ 		printk(KERN_ERR "Dino: cannot attach bus %s\n",
+ 		       dev_name(bus->bridge));
+ 		/* kill the bus, we can't do anything with it */
+-		list_for_each_safe(ln, tmp_ln, &bus->devices) {
+-			struct pci_dev *dev = pci_dev_b(ln);
+-
++		list_for_each_entry_safe(dev, tmp, &bus->devices, bus_list) {
+ 			list_del(&dev->bus_list);
+ 		}
+ 			
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index d5f3d75..f0b00f8 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -630,7 +630,7 @@ truncate_pat_collision(struct resource *root, struct resource *new)
+ static void
+ lba_fixup_bus(struct pci_bus *bus)
+ {
+-	struct list_head *ln;
++	struct pci_dev *dev;
+ #ifdef FBB_SUPPORT
+ 	u16 status;
+ #endif
+@@ -712,9 +712,8 @@ lba_fixup_bus(struct pci_bus *bus)
+ 
+ 	}
+ 
+-	list_for_each(ln, &bus->devices) {
++	list_for_each_entry(dev, &bus->devices, bus_list) {
+ 		int i;
+-		struct pci_dev *dev = pci_dev_b(ln);
+ 
+ 		DBG("lba_fixup_bus() %s\n", pci_name(dev));
+ 
+@@ -793,7 +792,7 @@ lba_fixup_bus(struct pci_bus *bus)
+ 	}
+ 
+ 	/* Lastly enable FBB/PERR/SERR on all devices too */
+-	list_for_each(ln, &bus->devices) {
++	list_for_each_entry(dev, &bus->devices, bus_list) {
+ 		(void) pci_read_config_word(dev, PCI_COMMAND, &status);
+ 		status |= PCI_COMMAND_PARITY | PCI_COMMAND_SERR | fbb_enable;
+ 		(void) pci_write_config_word(dev, PCI_COMMAND, status);
+
