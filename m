@@ -1,83 +1,122 @@
-From: Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 6/6] parisc/PCI: use list_for_each_entry() for bus->devices
-	traversal
-Date: Fri, 16 Dec 2011 15:32:00 -0700
-Message-ID: <20111216223200.5963.79616.stgit@bhelgaas.mtv.corp.google.com>
-References: <20111216223043.5963.87534.stgit@bhelgaas.mtv.corp.google.com>
+From: "Dr. William Cole" <WilliamCole@yahoo.com>
+Subject: LET US WORK TOGETHER
+Date: Mon, 19 Dec 2011 05:39:57 -0800
+Message-ID: <20111219133946.C42764B008B__11129.3038739406$1324302733$gmane$org@tupu.netikka.net>
+Reply-To: <cole.william2010@yahoo.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: linux-pci@vger.kernel.org, linux-parisc@vger.kernel.org
-To: Jesse Barnes <jbarnes@virtuousgeek.org>
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0026_01C2A9A6.2A89A7C6"
+To: undisclosed-recipients:;
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20111216223043.5963.87534.stgit@bhelgaas.mtv.corp.google.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Replace open-coded list traversal with list_for_each_entry().
+This is a multi-part message in MIME format.
 
-Note that parisc lba_fixup_bus() previously enabled FBB/PERR/SERR
-repeatedly on the same device instead of doing it on all devices on
-the bus.
+------=_NextPart_000_0026_01C2A9A6.2A89A7C6
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: 7bit
 
-CC: linux-parisc@vger.kernel.org
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/parisc/dino.c    |    6 ++----
- drivers/parisc/lba_pci.c |    7 +++----
- 2 files changed, 5 insertions(+), 8 deletions(-)
+To ensure that you get this message
+I have attached a file to this mail. 
+Please ensure you read the attached file
+and reply as soon as possible
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index 7ff10c1..6f5bf3e 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -478,14 +478,12 @@ dino_card_setup(struct pci_bus *bus, void __iomem *base_addr)
- 	if (ccio_allocate_resource(dino_dev->hba.dev, res, _8MB,
- 				F_EXTEND(0xf0000000UL) | _8MB,
- 				F_EXTEND(0xffffffffUL) &~ _8MB, _8MB) < 0) {
--		struct list_head *ln, *tmp_ln;
-+		struct pci_dev *dev, *tmp;
- 
- 		printk(KERN_ERR "Dino: cannot attach bus %s\n",
- 		       dev_name(bus->bridge));
- 		/* kill the bus, we can't do anything with it */
--		list_for_each_safe(ln, tmp_ln, &bus->devices) {
--			struct pci_dev *dev = pci_dev_b(ln);
--
-+		list_for_each_entry_safe(dev, tmp, &bus->devices, bus_list) {
- 			list_del(&dev->bus_list);
- 		}
- 			
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index d5f3d75..f0b00f8 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -630,7 +630,7 @@ truncate_pat_collision(struct resource *root, struct resource *new)
- static void
- lba_fixup_bus(struct pci_bus *bus)
- {
--	struct list_head *ln;
-+	struct pci_dev *dev;
- #ifdef FBB_SUPPORT
- 	u16 status;
- #endif
-@@ -712,9 +712,8 @@ lba_fixup_bus(struct pci_bus *bus)
- 
- 	}
- 
--	list_for_each(ln, &bus->devices) {
-+	list_for_each_entry(dev, &bus->devices, bus_list) {
- 		int i;
--		struct pci_dev *dev = pci_dev_b(ln);
- 
- 		DBG("lba_fixup_bus() %s\n", pci_name(dev));
- 
-@@ -793,7 +792,7 @@ lba_fixup_bus(struct pci_bus *bus)
- 	}
- 
- 	/* Lastly enable FBB/PERR/SERR on all devices too */
--	list_for_each(ln, &bus->devices) {
-+	list_for_each_entry(dev, &bus->devices, bus_list) {
- 		(void) pci_read_config_word(dev, PCI_COMMAND, &status);
- 		status |= PCI_COMMAND_PARITY | PCI_COMMAND_SERR | fbb_enable;
- 		(void) pci_write_config_word(dev, PCI_COMMAND, status);
+------=_NextPart_000_0026_01C2A9A6.2A89A7C6
+Content-Type: application/octet-stream;
+	name="LET US WORK TOGETHER.rtf"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="LET US WORK TOGETHER.rtf"
 
+e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcZGVmbGFuZzEwMzN7XGZv
+bnR0Ymx7XGYwXGZzd2lzc1xmcHJxMlxmY2hhcnNldDAgQ2FsaWJyaTt9e1xm
+MVxmc3dpc3NcZmNoYXJzZXQwIEFyaWFsO319DQp7XGNvbG9ydGJsIDtccmVk
+MFxncmVlbjBcYmx1ZTI1NTt9DQp7XCpcZ2VuZXJhdG9yIE1zZnRlZGl0IDUu
+NDEuMjEuMjUwOTt9XHZpZXdraW5kNFx1YzFccGFyZFxzYTIwMFxzbDI3Nlxz
+bG11bHQxXGJcZjBcZnMyMlxwYXINClxiMCBEZWFyIEZyaWVuZCxccGFyDQpc
+cGFyDQpccGFyDQpccGFyDQpccGFyDQpcYlxwYXINClxiMCBNeSBuYW1lIGlz
+IG5hbWUgaXMgRHIuIFdpbGxpYW0gQ29sZSwgYSBCcml0aXNoIG5hdGlvbmFs
+IGFuZCBhbiBpbnZlc3RtZW50IGNvbnN1bHRhbnQgYXR0YWNoZWQgdG8gdGhl
+IExpYnlhbiBpbnZlc3RtZW50IEF1dGhvcml0eSAoTElBKS5ccGFyDQpccGFy
+DQpccGFyDQpccGFyDQpccGFyDQogSSBzdGFydGVkIHdvcmtpbmcgZm9yIHRo
+ZSBMaWJ5YW4gZ292ZXJubWVudCB1bmRlciB0aGUgbGVhZGVyc2hpcCBvZiBN
+dWFtbWFyIE11aGFtbWFkIGFsLUdhZGRhZmkgc2luY2UgdGhlIGJlZ2lubmlu
+ZyBvZiAyMDAwIGFuZCBoYXZlIGFycmFuZ2VkIHNvIG1hbnkgZGVhbHMgYmV0
+d2VlbiB0aGUgZ292ZXJubWVudCBhbmQgdGhlIGludGVybmF0aW9uYWwgcGFy
+dG5lcnMgYnV0IGR1ZSB0byB0aGUgb25nb2luZyBjcmlzaXMgaW4gdGhlIGNv
+dW50cnkgSSBkZWNpZGVkIHRvIHF1aXQgbXkgam9iIGFuZCByZXR1cm4gdG8g
+bXkgaG9tZSBjb3VudHJ5IEVuZ2xhbmQgYmVjYXVzZSBJIGFtIG5vdCBpbiBz
+dXBwb3J0IG9mIHRoZSBMaWJ5YW4gbGVhZGVyIE11YW1tYXIgTXVoYW1tYWQg
+YWwtR2FkZGFmaSBkdWUgdG8gaGlzIGNyYWNrIGRvd24gb24gdGhlIG9wcG9z
+aXRpb24uIFxwYXINClxwYXINClxwYXINClxwYXINClxwYXINClRoZXJlIGFy
+ZSBzb21lIGZ1bmRzIHdoaWNoIEkgd2FzIGRpcmVjdGVkIHRvIG1vdmUgdG8g
+bmVpZ2hib3JpbmcgR2hhbmEgYXQgdGhlIGJlZ2lubmluZyBvZiB0aGUgdXBy
+aXNpbmcgZm9yIGZ1cnRoZXIgdHJhbnNmZXIgdG8gQ2hpbmEgZm9yIHRoZSBw
+dXJjaGFzZSBvZiBhcm1zIHRvIGJlIHVzZWQgaW4gdGhlIG9uZ29pbmcgd2Fy
+IGluIHRoZSBMaWJ5YS4gXHBhcg0KXHBhcg0KXHBhcg0KXHBhcg0KXHBhcg0K
+VGhlIGZ1bmRzIHdoaWNoIEkgc3VjY2VlZGVkIGluIG1vdmluZyB0aHJvdWdo
+IGEgY2xhbmRlc3RpbmUgYXJyYW5nZW1lbnQgdG8gYSBwcml2YXRlIGZpbmFu
+Y2UgY29tcGFueSBpbiBHaGFuYSBpcyBub3cgZGVwb3NpdGVkIHRoZXJlIHdh
+aXRpbmcgZm9yIG15IGZ1cnRoZXIgaW5zdHJ1Y3Rpb24gZm9yIG9ud2FyZCB0
+cmFuc2ZlciB0byBjaGluYSBmb3IgdGhlIHB1cmNoYXNlIG9mIHRoZSBhcm1z
+IGFuZCBhbW11bml0aW9ucyBmcm9tIGFuIGFybXMgbWFudWZhY3R1cmluZyBj
+b21wYW55IGluIENoaW5hIGJ1dCBJIG5vdyBkZWNpZGVkIHRvIGxlYXZlIHRo
+ZSBjb3VudHJ5IHdpdGggdGhlIHdob2xlIGRvY3VtZW50cyByZWxhdGluZyB0
+byB0aGlzIGZ1bmRzIGFzIHRoZSBMaWJ5YW4gbGVhZGVyIE11aGFtbWFkIGFs
+LUdhZGRhZmkgaGFzIGJlZW4gdG9wcGxlZCBhbmQga2lsbGVkIGJ5IHRoZSBy
+ZWJlbCBzLiBccGFyDQpccGFyDQpccGFyDQpccGFyDQpccGFyDQpJIHNhdyB0
+aGlzIGFzIGFuIG9wcG9ydHVuaXR5IHRvIGRpdmVydCB0aGlzIGZ1bmQgZm9y
+IG91ciBwZXJzb25hbCB1c2Ugc2luY2UgSSBoYXZlIHRoZSB3aG9sZSBkb2N1
+bWVudHMgYmVjYXVzZSB0d28gb2YgbXkgY29sbGVhZ3VlcywgdGhlIGRlZmVu
+c2UgY2hpZWYgQWJ1IEJha3IgWXVuaXMgYW5kIEdoYWRhZmlccnF1b3RlIHMg
+c29uIHdobyBhcmUgYXdhcmUgb2YgdGhpcyBkZXBvc2l0IHdlcmUgYWxsIGtp
+bGxlZCB0aGUgcmViZWwgZm9yY2VzIHRvZ2V0aGVyIHdpdGggR2hhZGFmaSB3
+aGVuIHRoZWlyIGNvbnZveSB3YXMgYXR0YWNoZWQgYnkgTlRPIHdhciBwbGFu
+ZS4gSSBhbSBjdXJyZW50bHkgaW4gbXkgbmF0aXZlIGNvdW50cnkgRW5nbGFu
+ZCB3YWl0aW5nIGZvciBhIHJlbGlhYmxlIHBhcnRuZXIgb24gd2hvc2UgbmFt
+ZSB0aGlzIGZ1bmQgc2hhbGwgYmUgdHJhbnNmZXJyZWQgc2luY2UgSSBhbSBp
+biBwb3NzZXNzaW9uIG9mIGFsbCB0aGUgZG9jdW1lbnRzLlxwYXINClxwYXIN
+ClxwYXINClxwYXINClxwYXINCiBJIHdpbGwgcGVyc29uYWxseSBmYWNpbGl0
+YXRlIHRoZSByZWxlYXNlIG9mIHRoaXMgZnVuZCBhbmQgaGF2ZSBpdCBtb3Zl
+ZCB0byB5b3VyIG5vbWluYXRlZCBhY2NvdW50IGFueXdoZXJlIGFyb3VuZCB0
+aGUgZ2xvYmUuIFxwYXINClxwYXINClxwYXINClxwYXINClxwYXINCkkgd2ls
+bCBiZSBhYmxlIHRvIGRvIHRoaXMgYmVjYXVzZSBJIHdhcyB0aGUgb25lIHRo
+YXQgb3JjaGVzdHJhdGVkIHRoZSBtb3ZlbWVudCBvZiB0aGlzIGZ1bmQgb3V0
+IG9mIExpYnlhIHRvIEdoYW5hIHRoZXJlZm9yZSBpcyBpbiBwb3NzZXNzaW9u
+IG9mIGFsbCB0aGUgcGFwZXJzIHRvIHRoYXQgZWZmZWN0LiBccGFyDQpccGFy
+DQpccGFyDQpccGFyDQpccGFyDQpccGFyDQpccGFyZCBGdXJ0aGVyIGRldGFp
+bHMgc2hhbGwgYmUgZ2l2ZW4gdG8geW91IHVwb24gdGhlIHJlY2VpcHQgb2Yg
+eW91ciBpbnRlcmVzdCB0byB3b3JrIHdpdGggbWUgb24gdGhpcyBwcm9qZWN0
+IHNvIHRoYXQgd2UgY2FuIHN1Y2Nlc3NmdWxseSBtb3ZlIHRoaXMgZnVuZCB0
+byB5b3VyIG5vbWluYXRlZCBhY2NvdW50LlxwYXINClxwYXINClxwYXINClxw
+YXINClxwYXINClxwYXINClxwYXINCiBBbGwgYXJyYW5nZW1lbnQgaGFzIGJl
+ZW4gY29uY2x1ZGVkIGZvciB0aGUgc3VjY2Vzc2Z1bCBjb25jbHVzaW9uIG9m
+IHRoZSByZWxlYXNlL3RyYW5zZmVyIG9mIHRoaXMgZnVuZCBpbiB5b3VyIG5h
+bWUuIFxwYXINClxwYXINClxwYXINClxwYXINClxwYXINClxwYXINCkdvIHRv
+IGh0dHA6Ly9zYWhhcmFyZXBvcnRlcnMuY29tL3ByZXNzLXJlbGVhc2UvbmV3
+LWxlYWtlZC1kb2N1bWVudC1yZXZlYWxzLWhzYmMtaGVsZC0xNGJuLWxpYnlh
+bi1mdW5kcyBccGFyDQpodHRwOi8vd2ViY2FjaGUuZ29vZ2xldXNlcmNvbnRl
+bnQuY29tL3NlYXJjaD9obD1lbiZnc19zbT1zJmdzX3VwbD0xMTYyNTgxbDEx
+NzQ3NDlsMGwxMTc2NjIybDM3bDMxbDFsOGwwbDJsMTE1Mmw0MDk2bDYtMS4z
+bDRsMCZxPWNhY2hlOnNZeGh6RTAxREo4SjpodHRwOi8vd3d3LmJiYy5jby51
+ay9uZXdzL3dvcmxkLWFmcmljYS0xNTM4OTU1MCtiYmMrbmV3cytyZXBvcnRz
+K2RlYXRoK29mK2dhZGRhZmkmY3Q9Y2xuayBccGFyDQpodHRwOi8vd3d3LmJi
+Yy5jby51ay9uZXdzL3dvcmxkLWFmcmljYS0xNTM5MDk4MCAgIGZvciBtb3Jl
+IGRldGFpbHMuXHBhcg0KXHBhcg0KXHBhcg0KXHBhcg0KXHBhcg0KXHBhcg0K
+XHBhcg0KXHBhcg0KUGxlYXNlIHRoaXMgaXMgaGlnaGx5IGNsYXNzaWZpZWQg
+aW5mb3JtYXRpb24gdGhlcmVmb3JlIEkgYWR2aXNlIHRoYXQgeW91IGtlZXAg
+aXQgdG8geW91cnNlbGYuIEkgc2hhbGwgYmUgd2lsbGluZyB0byBtZWV0IHdp
+dGggeW91IGFueXdoZXJlIGluIEV1cm9wZSBvciBwb3NzaWJseSBBZnJpY2Eg
+YnV0IGF0IHRoZSBtb21lbnQgSSBhbSBjdXJyZW50bHkgaW4gbXkgRW5nbGFu
+ZC4gR2V0IGJhY2sgdG8gbWUgb24gdGhpcyBlbWFpbDogXHVsIHcuY29sZTIw
+MDlAaG90bWFpbC5jb21cdWxub25lICBpZiB5b3UgYXJlIGludGVyZXN0ZWQg
+c28gdGhhdCB3ZSBjYW4gcHJvY2VlZC4gIFxwYXINClxwYXINClxwYXINClxw
+YXINClxwYXINClxwYXINCldlIHdpbGwgZGlzY3VzcyB0aGUgc2hhcmluZyBy
+YXRpbyBvbmNlIEkgaGVhciBmcm9tIHlvdSBiZWNhdXNlIHlvdSB3aWxsIHBs
+YXkgYSB2aXRhbCByb2xlIHRvIHRoZSBzdWNjZXNzIG9mIHRoaXMgYnVzaW5l
+c3MuXHBhcg0KUmVnYXJkc1xwYXINCkRyLiBXaWxsaWFtIENvbGVccGFyDQpc
+ZjFcZnMyMFxwYXINCn0NCgA=
+
+------=_NextPart_000_0026_01C2A9A6.2A89A7C6--
