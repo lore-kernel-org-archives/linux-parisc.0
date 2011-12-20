@@ -1,122 +1,46 @@
-From: "Dr. William Cole" <WilliamCole@yahoo.com>
-Subject: LET US WORK TOGETHER
-Date: Mon, 19 Dec 2011 05:39:57 -0800
-Message-ID: <20111219133946.C42764B008B__11129.3038739406$1324302733$gmane$org@tupu.netikka.net>
-Reply-To: <cole.william2010@yahoo.es>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: LWS, futex and pthread problems
+Date: Tue, 20 Dec 2011 09:54:51 -0500
+Message-ID: <4EF0A1BB.1040104@bell.net>
+References: <BLU0-SMTP30032FA977F6BD78D6AF2797A60@phx.gbl> <CADZpyixc_6SZF7ehLTV65eNURmUgmQFvN_vwX6wDKO7RUDDBXQ@mail.gmail.com> <BLU0-SMTP27DC0B7C2C7D265788CE2A97A60@phx.gbl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0026_01C2A9A6.2A89A7C6"
-To: undisclosed-recipients:;
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: linux-parisc <linux-parisc@vger.kernel.org>
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <BLU0-SMTP27DC0B7C2C7D265788CE2A97A60@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a multi-part message in MIME format.
+On 12/18/2011 5:45 PM, John David Anglin wrote:
+> Yes.  R4 is also wrong, so it might be a call has corrupted it and 
+> then the restore
+> corrupts r19.
+>
+> This rings a bell.  In the old clone/fork bug, there was a cache issue 
+> with the stack
+> region created for the thread.  It seemed like it got modified after 
+> the thread started.
+> It must have something to do with the fact that it is allocated by 
+> malloc.
+I believe COW is broken.  If you look at set_pte_at, you will see that 
+the tlb is not
+purged for the address after the need value is stored in the page table, 
+so the write
+protect doesn't take effect immediately.  Thus, a thread can continue 
+writing to a
+protected page without generating a fault.  Unfortunately, this doesn't 
+fix the problem
+by itself (tested this morning).
 
-------=_NextPart_000_0026_01C2A9A6.2A89A7C6
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: 7bit
+I'm thinking that copy_user_page needs to be done through the tmp alias 
+region,
+or the user page needs to be flushed before it is copied.  I'm not sure 
+how to do the
+latter.
 
-To ensure that you get this message
-I have attached a file to this mail. 
-Please ensure you read the attached file
-and reply as soon as possible
+Dave
 
-------=_NextPart_000_0026_01C2A9A6.2A89A7C6
-Content-Type: application/octet-stream;
-	name="LET US WORK TOGETHER.rtf"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="LET US WORK TOGETHER.rtf"
+-- 
+John David Anglin    dave.anglin@bell.net
 
-e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcZGVmbGFuZzEwMzN7XGZv
-bnR0Ymx7XGYwXGZzd2lzc1xmcHJxMlxmY2hhcnNldDAgQ2FsaWJyaTt9e1xm
-MVxmc3dpc3NcZmNoYXJzZXQwIEFyaWFsO319DQp7XGNvbG9ydGJsIDtccmVk
-MFxncmVlbjBcYmx1ZTI1NTt9DQp7XCpcZ2VuZXJhdG9yIE1zZnRlZGl0IDUu
-NDEuMjEuMjUwOTt9XHZpZXdraW5kNFx1YzFccGFyZFxzYTIwMFxzbDI3Nlxz
-bG11bHQxXGJcZjBcZnMyMlxwYXINClxiMCBEZWFyIEZyaWVuZCxccGFyDQpc
-cGFyDQpccGFyDQpccGFyDQpccGFyDQpcYlxwYXINClxiMCBNeSBuYW1lIGlz
-IG5hbWUgaXMgRHIuIFdpbGxpYW0gQ29sZSwgYSBCcml0aXNoIG5hdGlvbmFs
-IGFuZCBhbiBpbnZlc3RtZW50IGNvbnN1bHRhbnQgYXR0YWNoZWQgdG8gdGhl
-IExpYnlhbiBpbnZlc3RtZW50IEF1dGhvcml0eSAoTElBKS5ccGFyDQpccGFy
-DQpccGFyDQpccGFyDQpccGFyDQogSSBzdGFydGVkIHdvcmtpbmcgZm9yIHRo
-ZSBMaWJ5YW4gZ292ZXJubWVudCB1bmRlciB0aGUgbGVhZGVyc2hpcCBvZiBN
-dWFtbWFyIE11aGFtbWFkIGFsLUdhZGRhZmkgc2luY2UgdGhlIGJlZ2lubmlu
-ZyBvZiAyMDAwIGFuZCBoYXZlIGFycmFuZ2VkIHNvIG1hbnkgZGVhbHMgYmV0
-d2VlbiB0aGUgZ292ZXJubWVudCBhbmQgdGhlIGludGVybmF0aW9uYWwgcGFy
-dG5lcnMgYnV0IGR1ZSB0byB0aGUgb25nb2luZyBjcmlzaXMgaW4gdGhlIGNv
-dW50cnkgSSBkZWNpZGVkIHRvIHF1aXQgbXkgam9iIGFuZCByZXR1cm4gdG8g
-bXkgaG9tZSBjb3VudHJ5IEVuZ2xhbmQgYmVjYXVzZSBJIGFtIG5vdCBpbiBz
-dXBwb3J0IG9mIHRoZSBMaWJ5YW4gbGVhZGVyIE11YW1tYXIgTXVoYW1tYWQg
-YWwtR2FkZGFmaSBkdWUgdG8gaGlzIGNyYWNrIGRvd24gb24gdGhlIG9wcG9z
-aXRpb24uIFxwYXINClxwYXINClxwYXINClxwYXINClxwYXINClRoZXJlIGFy
-ZSBzb21lIGZ1bmRzIHdoaWNoIEkgd2FzIGRpcmVjdGVkIHRvIG1vdmUgdG8g
-bmVpZ2hib3JpbmcgR2hhbmEgYXQgdGhlIGJlZ2lubmluZyBvZiB0aGUgdXBy
-aXNpbmcgZm9yIGZ1cnRoZXIgdHJhbnNmZXIgdG8gQ2hpbmEgZm9yIHRoZSBw
-dXJjaGFzZSBvZiBhcm1zIHRvIGJlIHVzZWQgaW4gdGhlIG9uZ29pbmcgd2Fy
-IGluIHRoZSBMaWJ5YS4gXHBhcg0KXHBhcg0KXHBhcg0KXHBhcg0KXHBhcg0K
-VGhlIGZ1bmRzIHdoaWNoIEkgc3VjY2VlZGVkIGluIG1vdmluZyB0aHJvdWdo
-IGEgY2xhbmRlc3RpbmUgYXJyYW5nZW1lbnQgdG8gYSBwcml2YXRlIGZpbmFu
-Y2UgY29tcGFueSBpbiBHaGFuYSBpcyBub3cgZGVwb3NpdGVkIHRoZXJlIHdh
-aXRpbmcgZm9yIG15IGZ1cnRoZXIgaW5zdHJ1Y3Rpb24gZm9yIG9ud2FyZCB0
-cmFuc2ZlciB0byBjaGluYSBmb3IgdGhlIHB1cmNoYXNlIG9mIHRoZSBhcm1z
-IGFuZCBhbW11bml0aW9ucyBmcm9tIGFuIGFybXMgbWFudWZhY3R1cmluZyBj
-b21wYW55IGluIENoaW5hIGJ1dCBJIG5vdyBkZWNpZGVkIHRvIGxlYXZlIHRo
-ZSBjb3VudHJ5IHdpdGggdGhlIHdob2xlIGRvY3VtZW50cyByZWxhdGluZyB0
-byB0aGlzIGZ1bmRzIGFzIHRoZSBMaWJ5YW4gbGVhZGVyIE11aGFtbWFkIGFs
-LUdhZGRhZmkgaGFzIGJlZW4gdG9wcGxlZCBhbmQga2lsbGVkIGJ5IHRoZSBy
-ZWJlbCBzLiBccGFyDQpccGFyDQpccGFyDQpccGFyDQpccGFyDQpJIHNhdyB0
-aGlzIGFzIGFuIG9wcG9ydHVuaXR5IHRvIGRpdmVydCB0aGlzIGZ1bmQgZm9y
-IG91ciBwZXJzb25hbCB1c2Ugc2luY2UgSSBoYXZlIHRoZSB3aG9sZSBkb2N1
-bWVudHMgYmVjYXVzZSB0d28gb2YgbXkgY29sbGVhZ3VlcywgdGhlIGRlZmVu
-c2UgY2hpZWYgQWJ1IEJha3IgWXVuaXMgYW5kIEdoYWRhZmlccnF1b3RlIHMg
-c29uIHdobyBhcmUgYXdhcmUgb2YgdGhpcyBkZXBvc2l0IHdlcmUgYWxsIGtp
-bGxlZCB0aGUgcmViZWwgZm9yY2VzIHRvZ2V0aGVyIHdpdGggR2hhZGFmaSB3
-aGVuIHRoZWlyIGNvbnZveSB3YXMgYXR0YWNoZWQgYnkgTlRPIHdhciBwbGFu
-ZS4gSSBhbSBjdXJyZW50bHkgaW4gbXkgbmF0aXZlIGNvdW50cnkgRW5nbGFu
-ZCB3YWl0aW5nIGZvciBhIHJlbGlhYmxlIHBhcnRuZXIgb24gd2hvc2UgbmFt
-ZSB0aGlzIGZ1bmQgc2hhbGwgYmUgdHJhbnNmZXJyZWQgc2luY2UgSSBhbSBp
-biBwb3NzZXNzaW9uIG9mIGFsbCB0aGUgZG9jdW1lbnRzLlxwYXINClxwYXIN
-ClxwYXINClxwYXINClxwYXINCiBJIHdpbGwgcGVyc29uYWxseSBmYWNpbGl0
-YXRlIHRoZSByZWxlYXNlIG9mIHRoaXMgZnVuZCBhbmQgaGF2ZSBpdCBtb3Zl
-ZCB0byB5b3VyIG5vbWluYXRlZCBhY2NvdW50IGFueXdoZXJlIGFyb3VuZCB0
-aGUgZ2xvYmUuIFxwYXINClxwYXINClxwYXINClxwYXINClxwYXINCkkgd2ls
-bCBiZSBhYmxlIHRvIGRvIHRoaXMgYmVjYXVzZSBJIHdhcyB0aGUgb25lIHRo
-YXQgb3JjaGVzdHJhdGVkIHRoZSBtb3ZlbWVudCBvZiB0aGlzIGZ1bmQgb3V0
-IG9mIExpYnlhIHRvIEdoYW5hIHRoZXJlZm9yZSBpcyBpbiBwb3NzZXNzaW9u
-IG9mIGFsbCB0aGUgcGFwZXJzIHRvIHRoYXQgZWZmZWN0LiBccGFyDQpccGFy
-DQpccGFyDQpccGFyDQpccGFyDQpccGFyDQpccGFyZCBGdXJ0aGVyIGRldGFp
-bHMgc2hhbGwgYmUgZ2l2ZW4gdG8geW91IHVwb24gdGhlIHJlY2VpcHQgb2Yg
-eW91ciBpbnRlcmVzdCB0byB3b3JrIHdpdGggbWUgb24gdGhpcyBwcm9qZWN0
-IHNvIHRoYXQgd2UgY2FuIHN1Y2Nlc3NmdWxseSBtb3ZlIHRoaXMgZnVuZCB0
-byB5b3VyIG5vbWluYXRlZCBhY2NvdW50LlxwYXINClxwYXINClxwYXINClxw
-YXINClxwYXINClxwYXINClxwYXINCiBBbGwgYXJyYW5nZW1lbnQgaGFzIGJl
-ZW4gY29uY2x1ZGVkIGZvciB0aGUgc3VjY2Vzc2Z1bCBjb25jbHVzaW9uIG9m
-IHRoZSByZWxlYXNlL3RyYW5zZmVyIG9mIHRoaXMgZnVuZCBpbiB5b3VyIG5h
-bWUuIFxwYXINClxwYXINClxwYXINClxwYXINClxwYXINClxwYXINCkdvIHRv
-IGh0dHA6Ly9zYWhhcmFyZXBvcnRlcnMuY29tL3ByZXNzLXJlbGVhc2UvbmV3
-LWxlYWtlZC1kb2N1bWVudC1yZXZlYWxzLWhzYmMtaGVsZC0xNGJuLWxpYnlh
-bi1mdW5kcyBccGFyDQpodHRwOi8vd2ViY2FjaGUuZ29vZ2xldXNlcmNvbnRl
-bnQuY29tL3NlYXJjaD9obD1lbiZnc19zbT1zJmdzX3VwbD0xMTYyNTgxbDEx
-NzQ3NDlsMGwxMTc2NjIybDM3bDMxbDFsOGwwbDJsMTE1Mmw0MDk2bDYtMS4z
-bDRsMCZxPWNhY2hlOnNZeGh6RTAxREo4SjpodHRwOi8vd3d3LmJiYy5jby51
-ay9uZXdzL3dvcmxkLWFmcmljYS0xNTM4OTU1MCtiYmMrbmV3cytyZXBvcnRz
-K2RlYXRoK29mK2dhZGRhZmkmY3Q9Y2xuayBccGFyDQpodHRwOi8vd3d3LmJi
-Yy5jby51ay9uZXdzL3dvcmxkLWFmcmljYS0xNTM5MDk4MCAgIGZvciBtb3Jl
-IGRldGFpbHMuXHBhcg0KXHBhcg0KXHBhcg0KXHBhcg0KXHBhcg0KXHBhcg0K
-XHBhcg0KXHBhcg0KUGxlYXNlIHRoaXMgaXMgaGlnaGx5IGNsYXNzaWZpZWQg
-aW5mb3JtYXRpb24gdGhlcmVmb3JlIEkgYWR2aXNlIHRoYXQgeW91IGtlZXAg
-aXQgdG8geW91cnNlbGYuIEkgc2hhbGwgYmUgd2lsbGluZyB0byBtZWV0IHdp
-dGggeW91IGFueXdoZXJlIGluIEV1cm9wZSBvciBwb3NzaWJseSBBZnJpY2Eg
-YnV0IGF0IHRoZSBtb21lbnQgSSBhbSBjdXJyZW50bHkgaW4gbXkgRW5nbGFu
-ZC4gR2V0IGJhY2sgdG8gbWUgb24gdGhpcyBlbWFpbDogXHVsIHcuY29sZTIw
-MDlAaG90bWFpbC5jb21cdWxub25lICBpZiB5b3UgYXJlIGludGVyZXN0ZWQg
-c28gdGhhdCB3ZSBjYW4gcHJvY2VlZC4gIFxwYXINClxwYXINClxwYXINClxw
-YXINClxwYXINClxwYXINCldlIHdpbGwgZGlzY3VzcyB0aGUgc2hhcmluZyBy
-YXRpbyBvbmNlIEkgaGVhciBmcm9tIHlvdSBiZWNhdXNlIHlvdSB3aWxsIHBs
-YXkgYSB2aXRhbCByb2xlIHRvIHRoZSBzdWNjZXNzIG9mIHRoaXMgYnVzaW5l
-c3MuXHBhcg0KUmVnYXJkc1xwYXINCkRyLiBXaWxsaWFtIENvbGVccGFyDQpc
-ZjFcZnMyMFxwYXINCn0NCgA=
-
-------=_NextPart_000_0026_01C2A9A6.2A89A7C6--
