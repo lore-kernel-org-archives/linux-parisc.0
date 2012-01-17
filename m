@@ -1,36 +1,40 @@
-From: James Bottomley <jbottomley@parallels.com>
-Subject: Fix compile breakage with kref.h
-Date: Tue, 17 Jan 2012 21:14:05 +0000
-Message-ID: <1326834845.3020.36.camel@dabdike>
+From: Greg Kroah-Hartman <greg@kroah.com>
+Subject: Re: Fix compile breakage with kref.h
+Date: Tue, 17 Jan 2012 13:26:39 -0800
+Message-ID: <20120117212639.GA17297@kroah.com>
+References: <1326834845.3020.36.camel@dabdike>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
+Content-Type: text/plain; charset=us-ascii
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Greg Kroah-Hartman <greg@kroah.com>
+	Parisc List <linux-parisc@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+To: James Bottomley <jbottomley@parallels.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1326834845.3020.36.camel@dabdike>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-VGhpcyBzZXQgb2YgYnVpbGQgZmFpbHVyZXMganVzdCBzdGFydGVkIGFwcGVhcmluZyBvbiBwYXJp
-c2M6DQoNCkluIGZpbGUgaW5jbHVkZWQgZnJvbSBkcml2ZXJzL2lucHV0L3NlcmlvL3NlcmlvX3Jh
-dy5jOjEyOg0KaW5jbHVkZS9saW51eC9rcmVmLmg6IEluIGZ1bmN0aW9uICdrcmVmX2dldCc6DQpp
-bmNsdWRlL2xpbnV4L2tyZWYuaDo0MDogZXJyb3I6ICdUQUlOVF9XQVJOJyB1bmRlY2xhcmVkIChm
-aXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikNCmluY2x1ZGUvbGludXgva3JlZi5oOjQwOiBlcnJv
-cjogKEVhY2ggdW5kZWNsYXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9ubHkgb25jZQ0KaW5j
-bHVkZS9saW51eC9rcmVmLmg6NDA6IGVycm9yOiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJz
-IGluLikNCmluY2x1ZGUvbGludXgva3JlZi5oOiBJbiBmdW5jdGlvbiAna3JlZl9zdWInOg0KaW5j
-bHVkZS9saW51eC9rcmVmLmg6NjU6IGVycm9yOiAnVEFJTlRfV0FSTicgdW5kZWNsYXJlZCAoZmly
-c3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pDQoNCkl0IGhhcHBlbnMgYmVjYXVzZSBUQUlOVF9XQVJO
-IGlzIGRlZmluZWQgaW4ga2VybmVsLmggYW5kIHRoaXMgcGFydGljdWxhcg0KY29tcGlsZSBkb2Vz
-bid0IHNlZW0gdG8gaW5jbHVkZSBpdCAobm8gaWRlYSB3aHkgaXQncyBqdXN0DQptYW5pZmVzdGlu
-ZyAuLi4gcHJvYmFibHkgc29tZSAjaW5jbHVkZSBmaWxlIHVudGFuZ2xpbmcgZXhwb3NlZCBpdCku
-ICBGaXgNCmJ5IGFkZGluZyAjaW5jbHVkZSA8bGludXgva2VybmVsLmg+IHRvIGxpbnV4L2tyZWYu
-aA0KDQpTaWduZWQtb2ZmLWJ5OiBKYW1lcyBCb3R0b21sZXkgPEpCb3R0b21sZXlAUGFyYWxsZWxz
-LmNvbT4NCg0KLS0tDQoNCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2tyZWYuaCBiL2luY2x1
-ZGUvbGludXgva3JlZi5oDQppbmRleCBhYmMwMTIwLi45YzA3ZGNlIDEwMDY0NA0KLS0tIGEvaW5j
-bHVkZS9saW51eC9rcmVmLmgNCisrKyBiL2luY2x1ZGUvbGludXgva3JlZi5oDQpAQCAtMTcsNiAr
-MTcsNyBAQA0KIA0KICNpbmNsdWRlIDxsaW51eC9idWcuaD4NCiAjaW5jbHVkZSA8bGludXgvYXRv
-bWljLmg+DQorI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5oPg0KIA0KIHN0cnVjdCBrcmVmIHsNCiAJ
-YXRvbWljX3QgcmVmY291bnQ7DQoNCg==
+On Tue, Jan 17, 2012 at 09:14:05PM +0000, James Bottomley wrote:
+> This set of build failures just started appearing on parisc:
+> 
+> In file included from drivers/input/serio/serio_raw.c:12:
+> include/linux/kref.h: In function 'kref_get':
+> include/linux/kref.h:40: error: 'TAINT_WARN' undeclared (first use in this function)
+> include/linux/kref.h:40: error: (Each undeclared identifier is reported only once
+> include/linux/kref.h:40: error: for each function it appears in.)
+> include/linux/kref.h: In function 'kref_sub':
+> include/linux/kref.h:65: error: 'TAINT_WARN' undeclared (first use in this function)
+> 
+> It happens because TAINT_WARN is defined in kernel.h and this particular
+> compile doesn't seem to include it (no idea why it's just
+> manifesting ... probably some #include file untangling exposed it).  Fix
+> by adding #include <linux/kernel.h> to linux/kref.h
+
+Does adding <linux/bug.h> fix it instead?  We are using WARN_ON() here.
+Hm, but that needs kernel.h as well, ugh, what a mess.
+
+> Signed-off-by: James Bottomley <JBottomley@Parallels.com>
+
+Acked-by: Greg Kroah-Hartman <gregkh@suse.de>
+
