@@ -1,26 +1,36 @@
-From: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
-Subject: Re: Boot error using 3.2.1: swapper (pid 1): Illegal instruction
- (code 8)
-Date: Tue, 17 Jan 2012 11:55:57 +0100
-Message-ID: <5b79ed5857aa29388a3eb41663d5700e.squirrel@webmail.sf-mail.de>
-References: <5333929.7Zifozzp4e@devpool02>
-    <1326797664.3020.30.camel@dabdike>
+From: James Bottomley <jbottomley@parallels.com>
+Subject: Fix compile breakage with kref.h
+Date: Tue, 17 Jan 2012 21:14:05 +0000
+Message-ID: <1326834845.3020.36.camel@dabdike>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Greg Kroah-Hartman <greg@kroah.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1326797664.3020.30.camel@dabdike>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Tue, 2012-01-17 at 11:41 +0100, Rolf Eike Beer wrote:
->> Machine is an Apollo 705, previous kernel version was 2.6.28. Any hints
->> appreciated. Config attached.
->
-> Best guess is that your init binary is incompatible with the hardware
-> architecture.  It has to be compiled for PA7000 to work on an Apollo
-> system.
-
-Using the same init with kernel 2.6.28 works fine.
-
-Eike
+VGhpcyBzZXQgb2YgYnVpbGQgZmFpbHVyZXMganVzdCBzdGFydGVkIGFwcGVhcmluZyBvbiBwYXJp
+c2M6DQoNCkluIGZpbGUgaW5jbHVkZWQgZnJvbSBkcml2ZXJzL2lucHV0L3NlcmlvL3NlcmlvX3Jh
+dy5jOjEyOg0KaW5jbHVkZS9saW51eC9rcmVmLmg6IEluIGZ1bmN0aW9uICdrcmVmX2dldCc6DQpp
+bmNsdWRlL2xpbnV4L2tyZWYuaDo0MDogZXJyb3I6ICdUQUlOVF9XQVJOJyB1bmRlY2xhcmVkIChm
+aXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikNCmluY2x1ZGUvbGludXgva3JlZi5oOjQwOiBlcnJv
+cjogKEVhY2ggdW5kZWNsYXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9ubHkgb25jZQ0KaW5j
+bHVkZS9saW51eC9rcmVmLmg6NDA6IGVycm9yOiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJz
+IGluLikNCmluY2x1ZGUvbGludXgva3JlZi5oOiBJbiBmdW5jdGlvbiAna3JlZl9zdWInOg0KaW5j
+bHVkZS9saW51eC9rcmVmLmg6NjU6IGVycm9yOiAnVEFJTlRfV0FSTicgdW5kZWNsYXJlZCAoZmly
+c3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pDQoNCkl0IGhhcHBlbnMgYmVjYXVzZSBUQUlOVF9XQVJO
+IGlzIGRlZmluZWQgaW4ga2VybmVsLmggYW5kIHRoaXMgcGFydGljdWxhcg0KY29tcGlsZSBkb2Vz
+bid0IHNlZW0gdG8gaW5jbHVkZSBpdCAobm8gaWRlYSB3aHkgaXQncyBqdXN0DQptYW5pZmVzdGlu
+ZyAuLi4gcHJvYmFibHkgc29tZSAjaW5jbHVkZSBmaWxlIHVudGFuZ2xpbmcgZXhwb3NlZCBpdCku
+ICBGaXgNCmJ5IGFkZGluZyAjaW5jbHVkZSA8bGludXgva2VybmVsLmg+IHRvIGxpbnV4L2tyZWYu
+aA0KDQpTaWduZWQtb2ZmLWJ5OiBKYW1lcyBCb3R0b21sZXkgPEpCb3R0b21sZXlAUGFyYWxsZWxz
+LmNvbT4NCg0KLS0tDQoNCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2tyZWYuaCBiL2luY2x1
+ZGUvbGludXgva3JlZi5oDQppbmRleCBhYmMwMTIwLi45YzA3ZGNlIDEwMDY0NA0KLS0tIGEvaW5j
+bHVkZS9saW51eC9rcmVmLmgNCisrKyBiL2luY2x1ZGUvbGludXgva3JlZi5oDQpAQCAtMTcsNiAr
+MTcsNyBAQA0KIA0KICNpbmNsdWRlIDxsaW51eC9idWcuaD4NCiAjaW5jbHVkZSA8bGludXgvYXRv
+bWljLmg+DQorI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5oPg0KIA0KIHN0cnVjdCBrcmVmIHsNCiAJ
+YXRvbWljX3QgcmVmY291bnQ7DQoNCg==
