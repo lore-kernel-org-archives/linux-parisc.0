@@ -1,86 +1,56 @@
-From: Kevin Cernekee <cernekee@gmail.com>
-Subject: Re: [PATCH-RFC 06/10] mips: switch to GENERIC_PCI_IOMAP
-Date: Sat, 28 Jan 2012 14:38:10 -0800
-Message-ID: <CAJiQ=7BPzhWWzU3_nDv3j=ZB4f=iOzeyLyd2L0_3UFaMiLujpw@mail.gmail.com>
-References: <cover.1322163031.git.mst@redhat.com>
-        <66457f7750d7d14229fcf8d0b011aba63185a75d.1322163031.git.mst@redhat.com>
+From: Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: c3700 boot failure (protection ID trap)
+Date: Sat, 28 Jan 2012 15:41:49 -0700
+Message-ID: <CAErSpo6P6RMf69mJFkqWkVK4gJN9KqynrOh2bgdNRXzWiyY8ig@mail.gmail.com>
+References: <CAErSpo7ko3Tdkf9Y4jiKCQTgCpcooWnHKJtqXDVpJje3nEXgdw@mail.gmail.com>
+ <3542913.WWkx2jpWZr@donald.sf-tec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Mikael Starvik <starvik@axis.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Richard Kuo <rkuo@codeaurora.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Jonas Bonn <jonas@southpole.se>,
-        Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Chen Liqin <liqin.chen@sunplusct.com>,
-        Lennox Wu <lennox.wu@gmail.com>,
-        Paul Mundt <lethal@linux-sh.org>,
-To: Ralf Baechle <ralf@linux-mips.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <66457f7750d7d14229fcf8d0b011aba63185a75d.1322163031.git.mst@redhat.com>
-Errors-to: linux-mips-bounce@linux-mips.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <3542913.WWkx2jpWZr@donald.sf-tec.de>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Nov 24, 2011 at 12:18 PM, Michael S. Tsirkin <mst@redhat.com> w=
-rote:
-> mips copied pci_iomap from generic code, probably to avoid
-> pulling the rest of iomap.c in. =C2=A0Since that's in
-> a separate file now, we can reuse the common implementation.
+On Sat, Jan 28, 2012 at 9:56 AM, Rolf Eike Beer <eike-kernel@sf-tec.de>=
+ wrote:
+> Bjorn Helgaas wrote:
+>> I'm trying to test some PCI changes on a c3700, but recent kernels
+>> don't seem to work at all. =A074ea15d909b311 (current upstream) and =
+v3.2
+>> both fail as shown below. =A0I'm using c3000_defconfig (attached for
+>> 74ea15d909b311). =A0Should I expect this to work?
+>
+> I don't know about 3.3x, but my C3600 runs using 3.2.1. Which binutil=
+s did you
+> use for building? IIRC there is a bunch of bugs in different versions=
+=2E
 
-[snip]
+This is a Debian 5.0 box:
 
-> - =C2=A0 =C2=A0 =C2=A0 if (flags & IORESOURCE_IO)
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return ioport_map_=
-pci(dev, start, len);
-
-While investigating a new warning on the 3.3-rc1 MIPS build (unused
-static function ioport_map_pci()), I noticed that this patch has shown
-up in Linus' tree as commit eab90291d35438bcebf7c3dc85be66d0f24e3002.
-
-I am not completely clear on the implications it has on mapping PCI I/O=
- regions:
-
-Prior to this change, the MIPS version of pci_iomap() called a
-MIPS-specific function, ioport_map_pci(), which tried to use the PCI
-controller's io_map_base field to determine the base address of the
-PCI I/O space.  It also had a fallback mechanism to deal with the case
-where io_map_base is unset.
-
-Now, in 3.3-rc1, the generic version of pci_iomap() is used instead.
-This code just calls arch/mips/lib/iomap.c:ioport_map() on these
-regions.  ioport_map() falls through to ioport_map_legacy(), which
-always uses mips_io_port_base (not the PCI controller's io_map_base)
-as the base address.  But on MIPS, it is still permissible to use
-different I/O port bases for PCI devices and for legacy (ISA?)
-devices.
-
-Is this new behavior desirable, or are there any supported platforms
-on which adverse effects might be seen?
-
-As for my part, I don't use PCI I/O regions at all - just memory
-regions.  I'm more worried about making sure my tree builds with 0
-warnings.
-
-If we do want to move ahead with the switch to GENERIC_PCI_IOMAP now,
-I have patches to scrap iomap-pci.c entirely and squash the unused
-function warning.
-
-If we still want to support the case where io_map_base !=3D
-mips_io_port_base, maybe it would be better to revert commit eab90291
-for 3.3.
-
-Might also want to take a look at SH since it also appears to have an
-orphaned ioport_map_pci() function.
-
-What are your thoughts?
+c3700:~# gcc -v
+Using built-in specs.
+Target: hppa-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion=3D'Debian
+4.3.2-1.1' --with-bugurl=3Dfile:///usr/share/doc/gcc-4.3/README.Bugs
+--enable-languages=3Dc,c++,fortran,objc,obj-c++ --prefix=3D/usr
+--enable-shared --with-system-zlib --libexecdir=3D/usr/lib
+--without-included-gettext --enable-threads=3Dposix --enable-nls
+--with-gxx-include-dir=3D/usr/include/c++/4.3 --program-suffix=3D-4.3
+--enable-clocale=3Dgnu --enable-libstdcxx-debug --enable-objc-gc
+--enable-mpfr --disable-libssp --enable-checking=3Drelease
+--build=3Dhppa-linux-gnu --host=3Dhppa-linux-gnu --target=3Dhppa-linux-=
+gnu
+Thread model: posix
+gcc version 4.3.2 (Debian 4.3.2-1.1)
+c3700:~# ld -v
+GNU ld (GNU Binutils for Debian) 2.18.0.20080103
+c3700:~# as -v
+GNU assembler version 2.18.0 (hppa-linux-gnu) using BFD version (GNU
+Binutils for Debian) 2.18.0.20080103
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
