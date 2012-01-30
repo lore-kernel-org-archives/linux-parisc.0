@@ -1,53 +1,72 @@
-From: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
-Subject: Re: [PATCH 1/2] parisc: fix compile without CONFIG_PCI
-Date: Mon, 30 Jan 2012 11:13:11 +0100
-Message-ID: <283f1c4300462d6ed70c92f87e6258cb.squirrel@webmail.sf-mail.de>
-References: <6637509.yTD8q5zPsI@eto> <4000012.xgVA85Qcpi@eto>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [PATCH] fix compile break caused by iomap: make IOPORT/PCI mapping
+ functions conditional
+Date: Mon, 30 Jan 2012 10:40:47 -0600
+Message-ID: <1327941647.21193.53.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-To: "linux-parisc List" <linux-parisc@vger.kernel.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4000012.xgVA85Qcpi@eto>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-arch@vger.kernel.org,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Rolf Eike Beer <eike@sf-mail.de>
+To: Randy Dunlap <rdunlap@xenotime.net>,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> From f49bd6e33a3b6f499a6039a5980af21893524e86 Mon Sep 17 00:00:00 2001
-> From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-> Date: Mon, 16 Jan 2012 18:59:29 +0100
-> Subject: [PATCH 1/2] parisc: fix compile without CONFIG_PCI
->
-> This function is already defined as a noop in include/asm-generic/iomap.h.
->
-> Signed-off-by: Rolf Eike Beer <eike-kernel@sf-tec.de>
-> ---
->  arch/parisc/lib/iomap.c |    4 ++++
->  1 files changed, 4 insertions(+), 0 deletions(-)
->
-> diff --git a/arch/parisc/lib/iomap.c b/arch/parisc/lib/iomap.c
-> index fb8e10a..b2b0408 100644
-> --- a/arch/parisc/lib/iomap.c
-> +++ b/arch/parisc/lib/iomap.c
-> @@ -436,12 +436,14 @@ void ioport_unmap(void __iomem *addr)
->  	}
->  }
->
-> +#ifdef CONFIG_PCI
->  void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
->  {
->  	if (!INDIRECT_ADDR(addr)) {
->  		iounmap(addr);
->  	}
->  }
-> +#endif /* CONFIG_PCI */
->
->  EXPORT_SYMBOL(ioread8);
->  EXPORT_SYMBOL(ioread16);
-> @@ -461,4 +463,6 @@ EXPORT_SYMBOL(iowrite16_rep);
->  EXPORT_SYMBOL(iowrite32_rep);
->  EXPORT_SYMBOL(ioport_map);
->  EXPORT_SYMBOL(ioport_unmap);
-> +#ifdef CONFIG_PCI
->  EXPORT_SYMBOL(pci_iounmap);
-> +#endif /* CONFIG_PCI */
+The problem in
 
-James?
+commit fea80311a939a746533a6d7e7c3183729d6a3faf
+Author: Randy Dunlap <rdunlap@xenotime.net>
+Date:   Sun Jul 24 11:39:14 2011 -0700
+
+    iomap: make IOPORT/PCI mapping functions conditional
+
+
+is that if your architecture supplies pci_iomap/pci_iounmap, it expects
+always to supply them.  Adding empty body defitions in the !CONFIG_PCI
+case, which is what this patch does, breaks the parisc compile because
+the functions become doubly defined.  It took us a while to spot this,
+because we don't actually build !CONFIG_PCI very often (only if someone
+is brave enough to test the snake/asp machines).
+
+Since the note in the commit log says this is to fix a
+CONFIG_GENERIC_IOMAP issue (which it does because CONFIG_GENERIC_IOMAP
+supplies pci_iounmap only if CONFIG_PCI is set), there should actually
+have been a condition upon this.  This should make sure no other
+architecture's !CONFIG_PCI compile breaks in the same way as parisc.
+
+The fix had to be updated to take account of the GENERIC_PCI_IOMAP
+separation.
+
+Reported-by: Rolf Eike Beer <eike@sf-mail.de>
+Signed-off-by: James Bottomley <JBottomley@Parallels.com>
+
+---
+
+diff --git a/include/asm-generic/iomap.h b/include/asm-generic/iomap.h
+index 8a3d4fd..6afd7d6 100644
+--- a/include/asm-generic/iomap.h
++++ b/include/asm-generic/iomap.h
+@@ -70,7 +70,7 @@ extern void ioport_unmap(void __iomem *);
+ /* Destroy a virtual mapping cookie for a PCI BAR (memory or IO) */
+ struct pci_dev;
+ extern void pci_iounmap(struct pci_dev *dev, void __iomem *);
+-#else
++#elif defined(CONFIG_GENERIC_IOMAP)
+ struct pci_dev;
+ static inline void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
+ { }
+diff --git a/include/asm-generic/pci_iomap.h b/include/asm-generic/pci_iomap.h
+index 8de4b73..217eb3d 100644
+--- a/include/asm-generic/pci_iomap.h
++++ b/include/asm-generic/pci_iomap.h
+@@ -15,7 +15,7 @@ struct pci_dev;
+ #ifdef CONFIG_PCI
+ /* Create a virtual mapping cookie for a PCI BAR (memory or IO) */
+ extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
+-#else
++#elif defined(CONFIG_GENERIC_PCI_IOMAP)
+ static inline void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max)
+ {
+ 	return NULL;
