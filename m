@@ -1,70 +1,53 @@
-From: Thibaut VARENE <T-Bone@parisc-linux.org>
-Subject: Re: Happy New Year PARISC (take 2)
-Date: Mon, 30 Jan 2012 02:06:44 +0100
-Message-ID: <CA+DQjFhU64FwAR9GBim4vKyEbE8hnzs9aLLVO23cNjfSdEiHEA@mail.gmail.com>
-References: <BLU0-SMTP8506059BFA40F0B7419F2497900@phx.gbl> <CANEJEGv5jOLEywzj52KVsdQHJmXf5GxWDBaJZNnbfnwhYcR23A@mail.gmail.com>
- <BLU0-SMTP31AEFBE4BAA62F2EED77CE97910@phx.gbl> <BLU0-SMTP20DB85B206E6F015C370CE97910@phx.gbl>
- <CADZpyiywh8SL42H9nO=9tMXgiyxL4SfmaX6PcZP5Kwme-Ozxsw@mail.gmail.com>
- <4F031B1A.4010908@bell.net> <1325604740.3185.4.camel@dabdike.int.hansenpartnership.com>
- <4F032C4C.10805@bell.net> <1325608972.3185.8.camel@dabdike.int.hansenpartnership.com>
- <4F034B6B.5020809@bell.net> <BLU0-SMTP5091B64E5E2C07CEDC0D41978C0@phx.gbl> <CA+DQjFiTwKC76Hn-x-s2C9Nc_qkqrRFXv3ji22KGtgMzGOfx0Q@mail.gmail.com>
+From: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
+Subject: Re: [PATCH 1/2] parisc: fix compile without CONFIG_PCI
+Date: Mon, 30 Jan 2012 11:13:11 +0100
+Message-ID: <283f1c4300462d6ed70c92f87e6258cb.squirrel@webmail.sf-mail.de>
+References: <6637509.yTD8q5zPsI@eto> <4000012.xgVA85Qcpi@eto>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-To: linux-parisc List <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+To: "linux-parisc List" <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CA+DQjFiTwKC76Hn-x-s2C9Nc_qkqrRFXv3ji22KGtgMzGOfx0Q@mail.gmail.com>
+In-Reply-To: <4000012.xgVA85Qcpi@eto>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Reposting as vger is anal about mail format...
-
-On Sun, Jan 29, 2012 at 10:45 PM, John David Anglin
-<dave.anglin@bell.net> wrote:
+> From f49bd6e33a3b6f499a6039a5980af21893524e86 Mon Sep 17 00:00:00 2001
+> From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+> Date: Mon, 16 Jan 2012 18:59:29 +0100
+> Subject: [PATCH 1/2] parisc: fix compile without CONFIG_PCI
 >
-> I believe both versions fix the minifail bug and some thread related =
-bugs
-> seen in the perl, python and git testsuites. =C2=A0However, there are=
- still more
-> thread related bugs to fix.
+> This function is already defined as a noop in include/asm-generic/iomap.h.
 >
-> The minifail bug is fixed by the TLB purge added to ptep_set_wrprotec=
-t,
-> and flushing the `from' page in copy_user_page (kmap version). =C2=A0=
-The
-> tmpalias version doesn't need this flush, but the `to' page needs to =
-be
-> flushed. =C2=A0So, both versions have about the same flush requiremen=
-ts.
+> Signed-off-by: Rolf Eike Beer <eike-kernel@sf-tec.de>
+> ---
+>  arch/parisc/lib/iomap.c |    4 ++++
+>  1 files changed, 4 insertions(+), 0 deletions(-)
 >
-> This version fixes the math emulation bug that I reported, but I have
-> another one that I haven't tracked down.
+> diff --git a/arch/parisc/lib/iomap.c b/arch/parisc/lib/iomap.c
+> index fb8e10a..b2b0408 100644
+> --- a/arch/parisc/lib/iomap.c
+> +++ b/arch/parisc/lib/iomap.c
+> @@ -436,12 +436,14 @@ void ioport_unmap(void __iomem *addr)
+>  	}
+>  }
+>
+> +#ifdef CONFIG_PCI
+>  void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
+>  {
+>  	if (!INDIRECT_ADDR(addr)) {
+>  		iounmap(addr);
+>  	}
+>  }
+> +#endif /* CONFIG_PCI */
+>
+>  EXPORT_SYMBOL(ioread8);
+>  EXPORT_SYMBOL(ioread16);
+> @@ -461,4 +463,6 @@ EXPORT_SYMBOL(iowrite16_rep);
+>  EXPORT_SYMBOL(iowrite32_rep);
+>  EXPORT_SYMBOL(ioport_map);
+>  EXPORT_SYMBOL(ioport_unmap);
+> +#ifdef CONFIG_PCI
+>  EXPORT_SYMBOL(pci_iounmap);
+> +#endif /* CONFIG_PCI */
 
-That's awesome news!
-
-If you want write access to the wiki to update e.g. this page
-http://wiki.parisc-linux.org/TestCases=C2=A0I'd be more than happy to a=
-dd
-your account to the ACL.
-
-> It would be great if someone else could test the change on something =
-other
-> than a rp3440. =C2=A0The cache issues are very subtle. =C2=A0If the r=
-esults are positive,
-> I will break up the patch and formally submit it.
-
-Well I have an a500-5x (PA8600) that's doing nothing, but I really
-don't have time to do any kind of testing now or in the near future.
-I'd be happy to provide access to the hardware tho.
-
-HTH
-
-T-Bone
-
---
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+James?
