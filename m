@@ -1,70 +1,70 @@
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH-RFC 06/10] mips: switch to GENERIC_PCI_IOMAP
-Date: Mon, 30 Jan 2012 00:45:07 +0200
-Message-ID: <20120129223339.GA22666@redhat.com>
-References: <cover.1322163031.git.mst@redhat.com>
-	<66457f7750d7d14229fcf8d0b011aba63185a75d.1322163031.git.mst@redhat.com>
-	<CAJiQ=7BPzhWWzU3_nDv3j=ZB4f=iOzeyLyd2L0_3UFaMiLujpw@mail.gmail.com>
+From: Thibaut VARENE <T-Bone@parisc-linux.org>
+Subject: Re: Happy New Year PARISC (take 2)
+Date: Mon, 30 Jan 2012 02:06:44 +0100
+Message-ID: <CA+DQjFhU64FwAR9GBim4vKyEbE8hnzs9aLLVO23cNjfSdEiHEA@mail.gmail.com>
+References: <BLU0-SMTP8506059BFA40F0B7419F2497900@phx.gbl> <CANEJEGv5jOLEywzj52KVsdQHJmXf5GxWDBaJZNnbfnwhYcR23A@mail.gmail.com>
+ <BLU0-SMTP31AEFBE4BAA62F2EED77CE97910@phx.gbl> <BLU0-SMTP20DB85B206E6F015C370CE97910@phx.gbl>
+ <CADZpyiywh8SL42H9nO=9tMXgiyxL4SfmaX6PcZP5Kwme-Ozxsw@mail.gmail.com>
+ <4F031B1A.4010908@bell.net> <1325604740.3185.4.camel@dabdike.int.hansenpartnership.com>
+ <4F032C4C.10805@bell.net> <1325608972.3185.8.camel@dabdike.int.hansenpartnership.com>
+ <4F034B6B.5020809@bell.net> <BLU0-SMTP5091B64E5E2C07CEDC0D41978C0@phx.gbl> <CA+DQjFiTwKC76Hn-x-s2C9Nc_qkqrRFXv3ji22KGtgMzGOfx0Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, linux-mips@linux-mips.org,
-	linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	linux@openrisc.net, linux-pci@vger.kernel.org,
-	Jesse Barnes <jbarnes@virtuousgeek.org>,
-	Kumar Gala <galak@kernel.crashing.org>,
-	Chen Liqin <liqin.chen@sunplusct.com>, Paul Mackerras <paulus@samba.org>,
-	"H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
-	Guan Xuetao <gxt@mprc.pku.edu.cn>, Lennox Wu <lennox.wu@gmail.com>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Russell King <linux@arm.linux.org.uk>,
-	linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>,
-	x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-arch@vger.kernel.org, Arend van Spriel <arend@broadcom.com>,
-To: Kevin Cernekee <cernekee@gmail.com>
-Return-path: <linux-bounces@lists.openrisc.net>
-In-Reply-To: <CAJiQ=7BPzhWWzU3_nDv3j=ZB4f=iOzeyLyd2L0_3UFaMiLujpw@mail.gmail.com>
-List-Id: OpenRISC Linux <linux.lists.openrisc.net>
-List-Unsubscribe: <http://lists.openrisc.net/options/linux>,
-	<mailto:linux-request@lists.openrisc.net?subject=unsubscribe>
-List-Archive: <http://lists.openrisc.net/pipermail/linux>
-List-Post: <mailto:linux@lists.openrisc.net>
-List-Help: <mailto:linux-request@lists.openrisc.net?subject=help>
-List-Subscribe: <http://lists.openrisc.net/listinfo/linux>,
-	<mailto:linux-request@lists.openrisc.net?subject=subscribe>
-Errors-To: linux-bounces@lists.openrisc.net
+Content-Type: text/plain; charset=UTF-8
+To: linux-parisc List <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <CA+DQjFiTwKC76Hn-x-s2C9Nc_qkqrRFXv3ji22KGtgMzGOfx0Q@mail.gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Jan 28, 2012 at 02:38:10PM -0800, Kevin Cernekee wrote:
-> On Thu, Nov 24, 2011 at 12:18 PM, Michael S. Tsirkin <mst@redhat.com> wro=
-te:
-> > mips copied pci_iomap from generic code, probably to avoid
-> > pulling the rest of iomap.c in. =A0Since that's in
-> > a separate file now, we can reuse the common implementation.
-> =
+Reposting as vger is anal about mail format...
 
-> [snip]
-> =
+On Sun, Jan 29, 2012 at 10:45 PM, John David Anglin
+<dave.anglin@bell.net> wrote:
+>
+> I believe both versions fix the minifail bug and some thread related =
+bugs
+> seen in the perl, python and git testsuites. =C2=A0However, there are=
+ still more
+> thread related bugs to fix.
+>
+> The minifail bug is fixed by the TLB purge added to ptep_set_wrprotec=
+t,
+> and flushing the `from' page in copy_user_page (kmap version). =C2=A0=
+The
+> tmpalias version doesn't need this flush, but the `to' page needs to =
+be
+> flushed. =C2=A0So, both versions have about the same flush requiremen=
+ts.
+>
+> This version fixes the math emulation bug that I reported, but I have
+> another one that I haven't tracked down.
 
-> > - =A0 =A0 =A0 if (flags & IORESOURCE_IO)
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ioport_map_pci(dev, start, len);
-> =
+That's awesome news!
 
-> While investigating a new warning on the 3.3-rc1 MIPS build (unused
-> static function ioport_map_pci()), I noticed that this patch has shown
-> up in Linus' tree as commit eab90291d35438bcebf7c3dc85be66d0f24e3002.
-> =
+If you want write access to the wiki to update e.g. this page
+http://wiki.parisc-linux.org/TestCases=C2=A0I'd be more than happy to a=
+dd
+your account to the ACL.
 
-> I am not completely clear on the implications it has on mapping PCI I/O r=
-egions:
+> It would be great if someone else could test the change on something =
+other
+> than a rp3440. =C2=A0The cache issues are very subtle. =C2=A0If the r=
+esults are positive,
+> I will break up the patch and formally submit it.
 
-Yes, my bad, I missed the difference between ioport_map_pci
-and ioport_map for both MIPS and SH.
-I'll post a patch to fix this, which is probably preferable
-to reintroducing the code duplication where it might
-trip us up again.
+Well I have an a500-5x (PA8600) that's doing nothing, but I really
+don't have time to do any kind of testing now or in the near future.
+I'd be happy to provide access to the hardware tho.
 
--- =
+HTH
 
-MST
+T-Bone
+
+--
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
