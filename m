@@ -1,58 +1,60 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH] fix compile break caused by iomap: make IOPORT/PCI
- mapping functions conditional
-Date: Mon, 30 Jan 2012 16:45:22 -0600
-Message-ID: <1327963522.21193.92.camel@dabdike.int.hansenpartnership.com>
-References: <1327941647.21193.53.camel@dabdike.int.hansenpartnership.com>
-	 <1539148.qFWsuy2OOI@eto>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Randy Dunlap <rdunlap@xenotime.net>,
+From: Yinghai Lu <yinghai@kernel.org>
+Subject: [PATCH 08/14] PCI, parisc: Register busn_res for root buses
+Date: Mon, 30 Jan 2012 23:42:46 -0800
+Message-ID: <1327995772-11388-9-git-send-email-yinghai@kernel.org>
+References: <1327995772-11388-1-git-send-email-yinghai@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-arch@vger.kernel.org,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: Rolf Eike Beer <eike-kernel@sf-tec.de>
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>,
+	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	linux-parisc@vger.kernel.org
+To: Jesse Barnes <jbarnes@virtuousgeek.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Tony Luck <tony.luck@intel.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1539148.qFWsuy2OOI@eto>
+In-Reply-To: <1327995772-11388-1-git-send-email-yinghai@kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2012-01-30 at 21:10 +0100, Rolf Eike Beer wrote:
-> Am Montag 30 Januar 2012, 10:40:47 schrieb James Bottomley:
-> > The problem in
-> > 
-> > commit fea80311a939a746533a6d7e7c3183729d6a3faf
-> > Author: Randy Dunlap <rdunlap@xenotime.net>
-> > Date:   Sun Jul 24 11:39:14 2011 -0700
-> > 
-> >     iomap: make IOPORT/PCI mapping functions conditional
-> > 
-> > 
-> > is that if your architecture supplies pci_iomap/pci_iounmap, it expects
-> > always to supply them.  Adding empty body defitions in the !CONFIG_PCI
-> > case, which is what this patch does, breaks the parisc compile because
-> > the functions become doubly defined.  It took us a while to spot this,
-> > because we don't actually build !CONFIG_PCI very often (only if someone
-> > is brave enough to test the snake/asp machines).
-> > 
-> > Since the note in the commit log says this is to fix a
-> > CONFIG_GENERIC_IOMAP issue (which it does because CONFIG_GENERIC_IOMAP
-> > supplies pci_iounmap only if CONFIG_PCI is set), there should actually
-> > have been a condition upon this.  This should make sure no other
-> > architecture's !CONFIG_PCI compile breaks in the same way as parisc.
-> > 
-> > The fix had to be updated to take account of the GENERIC_PCI_IOMAP
-> > separation.
-> 
-> So this means we end up still building the PA-RISC PCI code even if the config 
-> says no PCI. That doesn't really sound consistent to me. I really would have 
-> expected that we do not build any non-void PCI code then.
+Signed-off-by: Yinghai Lu <yinghai@kernel.org>
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+---
+ drivers/parisc/dino.c    |    2 ++
+ drivers/parisc/lba_pci.c |    3 +++
+ 2 files changed, 5 insertions(+), 0 deletions(-)
 
-The first object is to fix the build breakage which likely affects more
-than just parisc. Having a non-stub for the pci functions is just a few
-spurious bytes in a kernel that's megabytes big (and it's what we were
-doing previously).
-
-James
-
+diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+index 7ff10c1..3f2e203 100644
+--- a/drivers/parisc/dino.c
++++ b/drivers/parisc/dino.c
+@@ -1014,7 +1014,9 @@ static int __init dino_probe(struct parisc_device *dev)
+ 		return 0;
+ 	}
+ 
++	pci_bus_insert_busn_res(bus, dino_current_bus, 255);
+ 	bus->subordinate = pci_scan_child_bus(bus);
++	pci_bus_update_busn_res_end(bus, bus->subordinate);
+ 
+ 	/* This code *depends* on scanning being single threaded
+ 	 * if it isn't, this global bus number count will fail
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index d5f3d75..b58bf8b 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -1531,6 +1531,9 @@ lba_driver_probe(struct parisc_device *dev)
+ 		return 0;
+ 	}
+ 
++	pci_bus_insert_busn_res(lba_bus, lba_dev->hba.bus_num.start,
++				lba_dev->hba.bus_num.end);
++
+ 	lba_bus->subordinate = pci_scan_child_bus(lba_bus);
+ 
+ 	/* This is in lieu of calling pci_assign_unassigned_resources() */
+-- 
+1.7.7
 
