@@ -1,60 +1,36 @@
-From: Yinghai Lu <yinghai@kernel.org>
-Subject: [PATCH 08/15] PCI, parisc: Register busn_res for root buses
-Date: Wed,  1 Feb 2012 14:43:55 -0800
-Message-ID: <1328136242-17725-9-git-send-email-yinghai@kernel.org>
-References: <1328136242-17725-1-git-send-email-yinghai@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>,
+From: Cong Wang <xiyou.wangcong@gmail.com>
+Subject: [Patch] parisc: include <linux/prefetch.h> in drivers/parisc/iommu-helpers.h
+Date: Fri,  3 Feb 2012 15:34:16 +0800
+Message-ID: <1328254456-15967-1-git-send-email-xiyou.wangcong@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	WANG Cong <xiyou.wangcong@gmail.com>,
 	linux-parisc@vger.kernel.org
-To: Jesse Barnes <jbarnes@virtuousgeek.org>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Tony Luck <tony.luck@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1328136242-17725-1-git-send-email-yinghai@kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+To: linux-kernel@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Yinghai Lu <yinghai@kernel.org>
+drivers/parisc/iommu-helpers.h:62: error: implicit declaration of function 'prefetchw'
+make[3]: *** [drivers/parisc/sba_iommu.o] Error 1
+
+drivers/parisc/iommu-helpers.h needs to #include <linux/prefetch.h>
+where prefetchw is declared.
+
 Cc: Kyle McMartin <kyle@mcmartin.ca>
 Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
----
- drivers/parisc/dino.c    |    2 ++
- drivers/parisc/lba_pci.c |    3 +++
- 2 files changed, 5 insertions(+), 0 deletions(-)
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index 7ff10c1..3f2e203 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -1014,7 +1014,9 @@ static int __init dino_probe(struct parisc_device *dev)
- 		return 0;
- 	}
- 
-+	pci_bus_insert_busn_res(bus, dino_current_bus, 255);
- 	bus->subordinate = pci_scan_child_bus(bus);
-+	pci_bus_update_busn_res_end(bus, bus->subordinate);
- 
- 	/* This code *depends* on scanning being single threaded
- 	 * if it isn't, this global bus number count will fail
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index d5f3d75..b58bf8b 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -1531,6 +1531,9 @@ lba_driver_probe(struct parisc_device *dev)
- 		return 0;
- 	}
- 
-+	pci_bus_insert_busn_res(lba_bus, lba_dev->hba.bus_num.start,
-+				lba_dev->hba.bus_num.end);
+---
+diff --git a/drivers/parisc/iommu-helpers.h b/drivers/parisc/iommu-helpers.h
+index a9c46cc..460aed9 100644
+--- a/drivers/parisc/iommu-helpers.h
++++ b/drivers/parisc/iommu-helpers.h
+@@ -1,3 +1,5 @@
++#include <linux/prefetch.h>
 +
- 	lba_bus->subordinate = pci_scan_child_bus(lba_bus);
- 
- 	/* This is in lieu of calling pci_assign_unassigned_resources() */
--- 
-1.7.7
+ /**
+  * iommu_fill_pdir - Insert coalesced scatter/gather chunks into the I/O Pdir.
+  * @ioc: The I/O Controller.
