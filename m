@@ -1,36 +1,23 @@
-From: Cong Wang <xiyou.wangcong@gmail.com>
-Subject: [Patch] parisc: include <linux/prefetch.h> in drivers/parisc/iommu-helpers.h
-Date: Fri,  3 Feb 2012 15:34:16 +0800
-Message-ID: <1328254456-15967-1-git-send-email-xiyou.wangcong@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	WANG Cong <xiyou.wangcong@gmail.com>,
-	linux-parisc@vger.kernel.org
-To: linux-kernel@vger.kernel.org
+From: Paul Bame <bame@riverrock.org>
+Subject: parisc-linux.org issue
+Date: Sat, 4 Feb 2012 11:52:16 -0500
+Message-ID: <20120204165216.GA15288@riverrock.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+To: debian-hppa@lists.debian.org, linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-drivers/parisc/iommu-helpers.h:62: error: implicit declaration of function 'prefetchw'
-make[3]: *** [drivers/parisc/sba_iommu.o] Error 1
 
-drivers/parisc/iommu-helpers.h needs to #include <linux/prefetch.h>
-where prefetchw is declared.
+Hey I just got notified that parisc-linux.org has a vulnerable apache
+server.  I did an apt-get upgrade but it didn't upgrade the server,
+and the vulnerability was fixed in lenny's apache2 but not apache "1".
 
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-Cc: Helge Deller <deller@gmx.de>
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
+So one question is whether (and who) to move that server to apache2.
 
----
-diff --git a/drivers/parisc/iommu-helpers.h b/drivers/parisc/iommu-helpers.h
-index a9c46cc..460aed9 100644
---- a/drivers/parisc/iommu-helpers.h
-+++ b/drivers/parisc/iommu-helpers.h
-@@ -1,3 +1,5 @@
-+#include <linux/prefetch.h>
-+
- /**
-  * iommu_fill_pdir - Insert coalesced scatter/gather chunks into the I/O Pdir.
-  * @ioc: The I/O Controller.
+A bigger question is what to do since lenny is at end of life.
+
+And who's watching this machine?
+
+	-p
