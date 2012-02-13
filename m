@@ -1,58 +1,39 @@
-From: John David Anglin <dave.anglin@bell.net>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: decommissioning parisc-linux.org
-Date: Sun, 12 Feb 2012 17:56:18 -0500
-Message-ID: <BLU0-SMTP77B17F57F6130D1C60865A977E0@phx.gbl>
-References: <20120208143347.GB22903@dannf.org> <1329057533.21613.39.camel@dabdike.int.hansenpartnership.com> <1329058172.21613.40.camel@dabdike.int.hansenpartnership.com> <1329076902.21613.52.camel@dabdike.int.hansenpartnership.com> <CADZpyiwQXN0uCq0LqXaJmjBH5-Rxw6GNAsdLpQO7DKnVRe6+_A@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Date: Sun, 12 Feb 2012 21:22:25 -0500
+Message-ID: <CADZpyixzG2wDNdpf4E=TfXcXHYx-KOk1Aug-k7io_dT6ajKBMQ@mail.gmail.com>
+References: <20120208143347.GB22903@dannf.org>
+	<1329057533.21613.39.camel@dabdike.int.hansenpartnership.com>
+	<1329058172.21613.40.camel@dabdike.int.hansenpartnership.com>
+	<1329076902.21613.52.camel@dabdike.int.hansenpartnership.com>
+	<CADZpyiwQXN0uCq0LqXaJmjBH5-Rxw6GNAsdLpQO7DKnVRe6+_A@mail.gmail.com>
+	<BLU0-SMTP77B17F57F6130D1C60865A977E0@phx.gbl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
 	dann frazier <dannf@dannf.org>, linux-parisc@vger.kernel.org,
-	taggart@lackof.org, bame@riverrock.org
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+	taggart@lackof.org, bame@riverrock.org,
+	Thibaut VARENE <T-Bone@parisc-linux.org>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CADZpyiwQXN0uCq0LqXaJmjBH5-Rxw6GNAsdLpQO7DKnVRe6+_A@mail.gmail.com>
+In-Reply-To: <BLU0-SMTP77B17F57F6130D1C60865A977E0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 12-Feb-12, at 5:47 PM, Carlos O'Donell wrote:
+On Sun, Feb 12, 2012 at 5:56 PM, John David Anglin <dave.anglin@bell.ne=
+t> wrote:
+> Fantastic! =A0Deserves a note on PA-RISC news.
 
-> On Sun, Feb 12, 2012 at 3:01 PM, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
->> On Sun, 2012-02-12 at 08:49 -0600, James Bottomley wrote:
->>> On Sun, 2012-02-12 at 08:38 -0600, James Bottomley wrote:
->>>> On Wed, 2012-02-08 at 07:33 -0700, dann frazier wrote:
->>>>> In the meantime, if anyone wants to get the website working on  
->>>>> apache2
->>>>> for the remainder of the system's lifetime, please let me know.
->>>>>
->>>> I can probably do that.  At least the static part, since I run a  
->>>> bunch
->>>> of apache 2 websites on my hosted system.
->>>>
->>>> I've enabled it and put it up ... but it uses some type of server  
->>>> side
->>>> scripting which I need to enable in the apache mods, so it's not
->>>> entirely functional yet.
->>>
->>> OK, done and up.
->>>
->>> it was using SSI ... I haven't seen that for at least 20 years ...
->>
->> I think I'm done.  I've got the three sites
->> {www,ftp,hwdb}.parisc-linux.org up and running.  There aren't any  
->> more,
->> are there (wiki seems to be eisee)?  Could someone also check the  
->> links
->> to see that nothing's broken.
->
-> I did a quick check and everything seems to be working!
->
+OK, I've checked in an update to index.x with a new news entry, however=
+=2E..
 
-Fantastic!  Deserves a note on PA-RISC news.
+I'm not part of the webadmin group and therefore I can't update the web=
+site.
 
-Dave
+Cheers,
+Carlos.
 --
-John David Anglin	dave.anglin@bell.net
-
-
-
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
