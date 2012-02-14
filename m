@@ -1,75 +1,58 @@
-From: Matt Fleming <matt@console-pimps.org>
-Subject: [PATCH 25/40] parisc: Use set_current_blocked() and block_sigmask()
-Date: Tue, 14 Feb 2012 11:40:58 +0000
-Message-ID: <1329219673-28711-26-git-send-email-matt@console-pimps.org>
-References: <1329219673-28711-1-git-send-email-matt@console-pimps.org>
-Cc: Oleg Nesterov <oleg@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org,
-	Matt Fleming <matt.fleming@intel.com>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: linux-arch@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1329219673-28711-1-git-send-email-matt@console-pimps.org>
-List-ID: <linux-kernel.vger.kernel.org>
+From: Thibaut VARENE <T-Bone@parisc-linux.org>
+Subject: Re: decommissioning parisc-linux.org
+Date: Tue, 14 Feb 2012 14:41:46 +0100
+Message-ID: <CA+DQjFj+fhktqADnwv2VhCC8en2yiBAQxzZ0aSrq0F_U8=BTBA@mail.gmail.com>
+References: <20120208143347.GB22903@dannf.org> <1329057533.21613.39.camel@dabdike.int.hansenpartnership.com>
+ <1329058172.21613.40.camel@dabdike.int.hansenpartnership.com>
+ <1329076902.21613.52.camel@dabdike.int.hansenpartnership.com> <CA+DQjFju07GZurXzu_G_Kd2=ndSy4Jm5GhkUUXyrdKWeTjiURw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Cc: dann frazier <dannf@dannf.org>, linux-parisc@vger.kernel.org,
+	taggart@lackof.org, bame@riverrock.org
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <CA+DQjFju07GZurXzu_G_Kd2=ndSy4Jm5GhkUUXyrdKWeTjiURw@mail.gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Matt Fleming <matt.fleming@intel.com>
+On Mon, Feb 13, 2012 at 12:23 PM, Thibaut VARENE
+<T-Bone@parisc-linux.org> wrote:
+> On Sun, Feb 12, 2012 at 9:01 PM, James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
+>> On Sun, 2012-02-12 at 08:49 -0600, James Bottomley wrote:
+>
+>>> > I've enabled it and put it up ... but it uses some type of server=
+ side
+>>> > scripting which I need to enable in the apache mods, so it's not
+>>> > entirely functional yet.
+>>>
+>>> OK, done and up.
+>>>
+>>> it was using SSI ... I haven't seen that for at least 20 years ...
+>>
+>> I think I'm done. =C2=A0I've got the three sites
+>> {www,ftp,hwdb}.parisc-linux.org up and running. =C2=A0There aren't a=
+ny more,
+>> are there (wiki seems to be eisee)? =C2=A0Could someone also check t=
+he links
+>> to see that nothing's broken.
+>
+> Hi James,
+>
+> Thanks for your help! The only thing that seems to be missing is
+> userdir support ("a2enmod userdir" should fix it)
 
-As described in e6fa16ab ("signal: sigprocmask() should do
-retarget_shared_pending()") the modification of current->blocked is
-incorrect as we need to check whether the signal we're about to block
-is pending in the shared queue.
+Just remembered I have admin access to palinux so I took care of
+enabling userdirs. Sorry for not realizing this sooner ;P
 
-Also, use the new helper function introduced in commit 5e6292c0f28f
-("signal: add block_sigmask() for adding sigmask to current->blocked")
-which centralises the code for updating current->blocked after
-successfully delivering a signal and reduces the amount of duplicate
-code across architectures. In the past some architectures got this
-code wrong, so using this helper function should stop that from
-happening again.
+HTH
+T-Bone
 
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-Cc: Helge Deller <deller@gmx.de>
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: linux-parisc@vger.kernel.org
-Signed-off-by: Matt Fleming <matt.fleming@intel.com>
----
- arch/parisc/kernel/signal.c |   12 ++----------
- 1 files changed, 2 insertions(+), 10 deletions(-)
-
-diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
-index 12c1ed3..bd36152 100644
---- a/arch/parisc/kernel/signal.c
-+++ b/arch/parisc/kernel/signal.c
-@@ -131,10 +131,7 @@ sys_rt_sigreturn(struct pt_regs *regs, int in_syscall)
- 	}
- 		
- 	sigdelsetmask(&set, ~_BLOCKABLE);
--	spin_lock_irq(&current->sighand->siglock);
--	current->blocked = set;
--	recalc_sigpending();
--	spin_unlock_irq(&current->sighand->siglock);
-+	set_current_blocked(&set);
- 
- 	/* Good thing we saved the old gr[30], eh? */
- #ifdef CONFIG_64BIT
-@@ -454,12 +451,7 @@ handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
- 	if (!setup_rt_frame(sig, ka, info, oldset, regs, in_syscall))
- 		return 0;
- 
--	spin_lock_irq(&current->sighand->siglock);
--	sigorsets(&current->blocked,&current->blocked,&ka->sa.sa_mask);
--	if (!(ka->sa.sa_flags & SA_NODEFER))
--		sigaddset(&current->blocked,sig);
--	recalc_sigpending();
--	spin_unlock_irq(&current->sighand->siglock);
-+	block_sigmask(ka, sig);
- 
- 	tracehook_signal_handler(sig, info, ka, regs, 
- 		test_thread_flag(TIF_SINGLESTEP) ||
--- 
-1.7.4.4
+--=20
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
