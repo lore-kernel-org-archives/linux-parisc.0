@@ -1,61 +1,46 @@
-From: Yinghai Lu <yinghai@kernel.org>
-Subject: [PATCH 09/23] PCI, parisc: Register busn_res for root buses
-Date: Fri, 24 Feb 2012 02:18:57 -0800
-Message-ID: <1330078751-7299-10-git-send-email-yinghai@kernel.org>
-References: <1330078751-7299-1-git-send-email-yinghai@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	linux-parisc@vger.kernel.org
-To: Jesse Barnes <jbarnes@virtuousgeek.org>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Tony Luck <tony.luck@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1330078751-7299-1-git-send-email-yinghai@kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: [PATCH] parisc: fix longstanding build failure on prefetch
+Date: Sun, 26 Feb 2012 15:51:18 -0500
+Message-ID: <1330289478-12603-1-git-send-email-paul.gortmaker@windriver.com>
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-next@vger.kernel.org, rientjes@google.com,
+	xiyou.wangcong@gmail.com,
+	Paul Gortmaker <paul.gortmaker@windriver.com>
+To: JBottomley@parallels.com, jejb@parisc-linux.org, kyle@mcmartin.ca,
+	deller@gmx.de
+Return-path: <linux-next-owner@vger.kernel.org>
+List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Yinghai Lu <yinghai@kernel.org>
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
----
- drivers/parisc/dino.c    |    2 ++
- drivers/parisc/lba_pci.c |    3 +++
- 2 files changed, 5 insertions(+), 0 deletions(-)
+Upstream commit e66eed651fd18a961f11cda62f3b5286c8cc4f9f
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index 7ff10c1..3f2e203 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -1014,7 +1014,9 @@ static int __init dino_probe(struct parisc_device *dev)
- 		return 0;
- 	}
- 
-+	pci_bus_insert_busn_res(bus, dino_current_bus, 255);
- 	bus->subordinate = pci_scan_child_bus(bus);
-+	pci_bus_update_busn_res_end(bus, bus->subordinate);
- 
- 	/* This code *depends* on scanning being single threaded
- 	 * if it isn't, this global bus number count will fail
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index d5f3d75..b58bf8b 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -1531,6 +1531,9 @@ lba_driver_probe(struct parisc_device *dev)
- 		return 0;
- 	}
- 
-+	pci_bus_insert_busn_res(lba_bus, lba_dev->hba.bus_num.start,
-+				lba_dev->hba.bus_num.end);
+    "list: remove prefetching from regular list iterators"
+
+removed <linux/prefetch.h> from <linux/list.h> very early in the
+v3.0 dev cycle (v2.6.39-2-ge66eed6), thereby causing build failures
+when it exposed the implicit prefetch users in parisc.
+
+Reported-by: David Rientjes <rientjes@google.com>
+Reported-by: WANG Cong <xiyou.wangcong@gmail.com>
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+---
+
+[ The parisc defconfig has been failing to build everywhere since
+  last May!  http://kisskb.ellerman.id.au/kisskb/target/2059/   And this
+  one liner fix https://lkml.org/lkml/2011/10/15/121 was reported last
+  Oct, and again http://www.spinics.net/lists/linux-parisc/msg03945.html
+  in early Feb.  So, now with a clear reasoning in the commit header as
+  to why it fails, can we finally get this in tree please? ]
+
+diff --git a/drivers/parisc/iommu-helpers.h b/drivers/parisc/iommu-helpers.h
+index a9c46cc..8c33491 100644
+--- a/drivers/parisc/iommu-helpers.h
++++ b/drivers/parisc/iommu-helpers.h
+@@ -1,3 +1,5 @@
++#include <linux/prefetch.h>
 +
- 	lba_bus->subordinate = pci_scan_child_bus(lba_bus);
- 
- 	/* This is in lieu of calling pci_assign_unassigned_resources() */
+ /**
+  * iommu_fill_pdir - Insert coalesced scatter/gather chunks into the I/O Pdir.
+  * @ioc: The I/O Controller.
 -- 
-1.7.7
+1.7.9.1
