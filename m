@@ -1,46 +1,61 @@
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH] parisc: fix longstanding build failure on prefetch
-Date: Sun, 26 Feb 2012 15:51:18 -0500
-Message-ID: <1330289478-12603-1-git-send-email-paul.gortmaker@windriver.com>
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-next@vger.kernel.org, rientjes@google.com,
-	xiyou.wangcong@gmail.com,
-	Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: [PATCH] parisc: fix longstanding build failures for !CONFIG_PCI
+Date: Sun, 26 Feb 2012 18:24:37 -0500
+Message-ID: <1330298677-17205-1-git-send-email-paul.gortmaker@windriver.com>
+Cc: linux-parisc@vger.kernel.org, mst@redhat.com,
+	linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+	Paul Gortmaker <paul.gortmaker@windriver.com>,
+	Randy Dunlap <rdunlap@xenotime.net>
 To: JBottomley@parallels.com, jejb@parisc-linux.org, kyle@mcmartin.ca,
 	deller@gmx.de
 Return-path: <linux-next-owner@vger.kernel.org>
 List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Upstream commit e66eed651fd18a961f11cda62f3b5286c8cc4f9f
+Upstream commit fea80311a939a746533a6d7e7c3183729d6a3faf
 
-    "list: remove prefetching from regular list iterators"
+    "iomap: make IOPORT/PCI mapping functions conditional"
 
-removed <linux/prefetch.h> from <linux/list.h> very early in the
-v3.0 dev cycle (v2.6.39-2-ge66eed6), thereby causing build failures
-when it exposed the implicit prefetch users in parisc.
+introduced an arch independent stub for pci_iounmap() but the
+parisc had its own that was unconditionally built.  So builds
+since v3.0-3553-gfea8031 have been failing with:
 
-Reported-by: David Rientjes <rientjes@google.com>
-Reported-by: WANG Cong <xiyou.wangcong@gmail.com>
+arch/parisc/lib/iomap.c:439:6: error: redefinition of 'pci_iounmap'
+include/asm-generic/iomap.h:75:20: note: previous definition of 'pci_iounmap' was here
+
+Making the parisc one specific to CONFIG_PCI fixes the problem.
+
+CC: Randy Dunlap <rdunlap@xenotime.net>
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 ---
 
-[ The parisc defconfig has been failing to build everywhere since
-  last May!  http://kisskb.ellerman.id.au/kisskb/target/2059/   And this
-  one liner fix https://lkml.org/lkml/2011/10/15/121 was reported last
-  Oct, and again http://www.spinics.net/lists/linux-parisc/msg03945.html
-  in early Feb.  So, now with a clear reasoning in the commit header as
-  to why it fails, can we finally get this in tree please? ]
+[This fixes the linux-next builds that have been consistently failing
+ since last July -- http://kisskb.ellerman.id.au/kisskb/target/2069/ ]
 
-diff --git a/drivers/parisc/iommu-helpers.h b/drivers/parisc/iommu-helpers.h
-index a9c46cc..8c33491 100644
---- a/drivers/parisc/iommu-helpers.h
-+++ b/drivers/parisc/iommu-helpers.h
-@@ -1,3 +1,5 @@
-+#include <linux/prefetch.h>
-+
- /**
-  * iommu_fill_pdir - Insert coalesced scatter/gather chunks into the I/O Pdir.
-  * @ioc: The I/O Controller.
+diff --git a/arch/parisc/lib/iomap.c b/arch/parisc/lib/iomap.c
+index fb8e10a..dc0a2c3 100644
+--- a/arch/parisc/lib/iomap.c
++++ b/arch/parisc/lib/iomap.c
+@@ -436,12 +436,15 @@ void ioport_unmap(void __iomem *addr)
+ 	}
+ }
+ 
++#ifdef CONFIG_PCI
+ void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
+ {
+ 	if (!INDIRECT_ADDR(addr)) {
+ 		iounmap(addr);
+ 	}
+ }
++EXPORT_SYMBOL(pci_iounmap);
++#endif
+ 
+ EXPORT_SYMBOL(ioread8);
+ EXPORT_SYMBOL(ioread16);
+@@ -461,4 +464,3 @@ EXPORT_SYMBOL(iowrite16_rep);
+ EXPORT_SYMBOL(iowrite32_rep);
+ EXPORT_SYMBOL(ioport_map);
+ EXPORT_SYMBOL(ioport_unmap);
+-EXPORT_SYMBOL(pci_iounmap);
 -- 
 1.7.9.1
