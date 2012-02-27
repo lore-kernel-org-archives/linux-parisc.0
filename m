@@ -1,50 +1,63 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH] parisc: fix longstanding build failure on prefetch
-Date: Mon, 27 Feb 2012 10:32:51 -0600
-Message-ID: <1330360371.2822.56.camel@dabdike.int.hansenpartnership.com>
-References: <1330289478-12603-1-git-send-email-paul.gortmaker@windriver.com>
-	 <1330356289.2822.45.camel@dabdike.int.hansenpartnership.com>
-	 <4F4BA91D.7090303@windriver.com>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCH] parisc: dont unconditionally override CROSS_COMPILE for
+ 64 bit.
+Date: Mon, 27 Feb 2012 11:45:09 -0500
+Message-ID: <4F4BB315.6060501@bell.net>
+References: <1330298813-17262-1-git-send-email-paul.gortmaker@windriver.com> <4F4B9DD2.6000600@bell.net> <4F4BAF16.9060507@windriver.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: jejb@parisc-linux.org, kyle@mcmartin.ca, deller@gmx.de,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-next@vger.kernel.org, rientjes@google.com,
-	xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: JBottomley@parallels.com, jejb@parisc-linux.org, kyle@mcmartin.ca,
+	deller@gmx.de, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
 To: Paul Gortmaker <paul.gortmaker@windriver.com>
 Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <4F4BA91D.7090303@windriver.com>
+In-Reply-To: <4F4BAF16.9060507@windriver.com>
 List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2012-02-27 at 11:02 -0500, Paul Gortmaker wrote:
-> On 12-02-27 10:24 AM, James Bottomley wrote:
-> > On Sun, 2012-02-26 at 15:51 -0500, Paul Gortmaker wrote:
-> >> Upstream commit e66eed651fd18a961f11cda62f3b5286c8cc4f9f
-> >>
-> >>     "list: remove prefetching from regular list iterators"
-> >>
-> >> removed <linux/prefetch.h> from <linux/list.h> very early in the
-> >> v3.0 dev cycle (v2.6.39-2-ge66eed6), thereby causing build failures
-> >> when it exposed the implicit prefetch users in parisc.
-> > 
-> > I already have this in my internal patch queue:
-> > 
-> > http://marc.info/?l=linux-parisc&m=132825467010662
-> 
-> Is this in a different queue than what is in linux next?
+On 2/27/2012 11:28 AM, Paul Gortmaker wrote:
+> On 12-02-27 10:14 AM, John David Anglin wrote:
+>> >  On 2/26/2012 6:26 PM, Paul Gortmaker wrote:
+>>> >>  Using the 64 bit toolchains from kernel.org[1], one finds that
+>>> >>  you can't build the a500_defconfig, because the Makefile will
+>>> >>  stomp whatever value you have in your env. for CROSS_COMPILE.
+>>> >>
+>>> >>  This shows up since the kernel.org toolchains for parisc-64
+>>> >>  do not have the "-gnu" prefix, and so you run into it always
+>>> >>  saying hppa64-linux-gnu-gcc not found, regardless of the fact
+>>> >>  you've not got "-gnu" put anywhere into CROSS_COMPILE.
+>>> >>
+>>> >>  [1]ftp://ftp.kernel.org/pub/tools/crosstool/files/bin/x86_64/4.5.2/
+>>> >>
+>>> >>  Signed-off-by: Paul Gortmaker<paul.gortmaker@windriver.com>
+>>> >>
+>>> >>  diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+>>> >>  index 55cca1d..cefff6d 100644
+>>> >>  --- a/arch/parisc/Makefile
+>>> >>  +++ b/arch/parisc/Makefile
+>>> >>  @@ -31,7 +31,9 @@ ifdef CONFIG_64BIT
+>>> >>     UTS_MACHINE	:= parisc64
+>>> >>     CHECKFLAGS	+= -D__LP64__=1 -m64
+>>> >>     WIDTH		:= 64
+>>> >>  -CROSS_COMPILE	:= hppa64-linux-gnu-
+>>> >>  +ifndef CROSS_COMPILE
+>>> >>  + CROSS_COMPILE	:= hppa64-linux-gnu-
+>>> >>  +endif
+>>> >>     else # 32-bit
+>>> >>     WIDTH		:=
+>>> >>     endif
+>> >  This change breaks native builds.  So, I assume CROSS_COMPILE must be
+>> >  previously defined.
+> You lost me here.  As in a native 32bit env. doing a build for the
+> 64 bit case is setting CROSS_COMPILE?
+>
+Yes, native hppa is 32 bit .  Building a 64-bit kernel with CONFIG_64BIT 
+causes the
+setting of CROSS_COMPILE and the selection of hppa64-linux-gnu-gcc, etc.
+If CROSS_COMPILE wasn't previously defined, your change wouldn't have have
+affected the 64-bit build.
 
-Yes, sorry ... I hadn't got around to building the parisc tree for the
-current version.  I've done that now.
+Dave
 
-> It would be nice to see such build fixes get into linux-next
-> ASAP, so folks doing multi-arch coverage builds on their work
-> can know if they've introduced a regression.  At the moment,
-> the parisc builds in linux-next have been worthless for over
-> six months, and I'm sure I'm not the 1st one to waste time
-> "re-solving" old bugs like this.
-
-So if you recheck with the next build of linux-next, they should all be
-there (modulo the cross compile patch which is still under discussion).
-
-James
+-- 
+John David Anglin    dave.anglin@bell.net
