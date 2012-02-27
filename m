@@ -1,50 +1,58 @@
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH v2] parisc: dont unconditionally override CROSS_COMPILE for 64 bit.
-Date: Mon, 27 Feb 2012 15:59:19 -0500
-Message-ID: <1330376359-23731-1-git-send-email-paul.gortmaker@windriver.com>
+From: James Bottomley <jbottomley@parallels.com>
+Subject: Re: [PATCH v2] parisc: dont unconditionally override CROSS_COMPILE
+ for 64 bit.
+Date: Mon, 27 Feb 2012 21:41:05 +0000
+Message-ID: <1330378864.2822.92.camel@dabdike.int.hansenpartnership.com>
 References: <1330298813-17262-1-git-send-email-paul.gortmaker@windriver.com>
-Cc: vapier@gentoo.org, dave.anglin@bell.net,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-next@vger.kernel.org,
-	Paul Gortmaker <paul.gortmaker@windriver.com>
-To: JBottomley@parallels.com, jejb@parisc-linux.org, kyle@mcmartin.ca,
-	deller@gmx.de
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1330298813-17262-1-git-send-email-paul.gortmaker@windriver.com>
-List-ID: <linux-kernel.vger.kernel.org>
+	 <1330376359-23731-1-git-send-email-paul.gortmaker@windriver.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Cc: "kyle@mcmartin.ca" <kyle@mcmartin.ca>,
+	"deller@gmx.de" <deller@gmx.de>,
+	"vapier@gentoo.org" <vapier@gentoo.org>,
+	"dave.anglin@bell.net" <dave.anglin@bell.net>,
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-next@vger.kernel.org" <linux-next@vger.kernel.org>
+To: Paul Gortmaker <paul.gortmaker@windriver.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1330376359-23731-1-git-send-email-paul.gortmaker@windriver.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Using the 64 bit toolchains from kernel.org[1], one finds that
-you can't build the a500_defconfig, because the Makefile will
-stomp whatever value you have in your env. for CROSS_COMPILE.
-
-This shows up since the kernel.org toolchains for parisc-64
-do not have the "-gnu" prefix, and so you run into it always
-saying hppa64-linux-gnu-gcc not found, regardless of the fact
-you've not got "-gnu" put anywhere into CROSS_COMPILE.
-
-Since you can set CROSS_COMPILE from the environment and/or set
-it in your .config file, there really is no need for it to be
-poked at by the Makefile at all.  So just delete it.
-
-[1] ftp://ftp.kernel.org/pub/tools/crosstool/files/bin/x86_64/4.5.2/
-
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
----
-
-[v2: no ifdef/endif -- just delete the offending line.]
-
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index 55cca1d..a533367 100644
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -31,7 +31,6 @@ ifdef CONFIG_64BIT
- UTS_MACHINE	:= parisc64
- CHECKFLAGS	+= -D__LP64__=1 -m64
- WIDTH		:= 64
--CROSS_COMPILE	:= hppa64-linux-gnu-
- else # 32-bit
- WIDTH		:=
- endif
--- 
-1.7.9.1
+T24gTW9uLCAyMDEyLTAyLTI3IGF0IDE1OjU5IC0wNTAwLCBQYXVsIEdvcnRtYWtlciB3cm90ZToN
+Cj4gVXNpbmcgdGhlIDY0IGJpdCB0b29sY2hhaW5zIGZyb20ga2VybmVsLm9yZ1sxXSwgb25lIGZp
+bmRzIHRoYXQNCj4geW91IGNhbid0IGJ1aWxkIHRoZSBhNTAwX2RlZmNvbmZpZywgYmVjYXVzZSB0
+aGUgTWFrZWZpbGUgd2lsbA0KPiBzdG9tcCB3aGF0ZXZlciB2YWx1ZSB5b3UgaGF2ZSBpbiB5b3Vy
+IGVudi4gZm9yIENST1NTX0NPTVBJTEUuDQo+IA0KPiBUaGlzIHNob3dzIHVwIHNpbmNlIHRoZSBr
+ZXJuZWwub3JnIHRvb2xjaGFpbnMgZm9yIHBhcmlzYy02NA0KPiBkbyBub3QgaGF2ZSB0aGUgIi1n
+bnUiIHByZWZpeCwgYW5kIHNvIHlvdSBydW4gaW50byBpdCBhbHdheXMNCj4gc2F5aW5nIGhwcGE2
+NC1saW51eC1nbnUtZ2NjIG5vdCBmb3VuZCwgcmVnYXJkbGVzcyBvZiB0aGUgZmFjdA0KPiB5b3Un
+dmUgbm90IGdvdCAiLWdudSIgcHV0IGFueXdoZXJlIGludG8gQ1JPU1NfQ09NUElMRS4NCj4gDQo+
+IFNpbmNlIHlvdSBjYW4gc2V0IENST1NTX0NPTVBJTEUgZnJvbSB0aGUgZW52aXJvbm1lbnQgYW5k
+L29yIHNldA0KPiBpdCBpbiB5b3VyIC5jb25maWcgZmlsZSwgdGhlcmUgcmVhbGx5IGlzIG5vIG5l
+ZWQgZm9yIGl0IHRvIGJlDQo+IHBva2VkIGF0IGJ5IHRoZSBNYWtlZmlsZSBhdCBhbGwuICBTbyBq
+dXN0IGRlbGV0ZSBpdC4NCj4gDQo+IFsxXSBmdHA6Ly9mdHAua2VybmVsLm9yZy9wdWIvdG9vbHMv
+Y3Jvc3N0b29sL2ZpbGVzL2Jpbi94ODZfNjQvNC41LjIvDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBQ
+YXVsIEdvcnRtYWtlciA8cGF1bC5nb3J0bWFrZXJAd2luZHJpdmVyLmNvbT4NCj4gLS0tDQo+IA0K
+PiBbdjI6IG5vIGlmZGVmL2VuZGlmIC0tIGp1c3QgZGVsZXRlIHRoZSBvZmZlbmRpbmcgbGluZS5d
+DQo+IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9wYXJpc2MvTWFrZWZpbGUgYi9hcmNoL3BhcmlzYy9N
+YWtlZmlsZQ0KPiBpbmRleCA1NWNjYTFkLi5hNTMzMzY3IDEwMDY0NA0KPiAtLS0gYS9hcmNoL3Bh
+cmlzYy9NYWtlZmlsZQ0KPiArKysgYi9hcmNoL3BhcmlzYy9NYWtlZmlsZQ0KPiBAQCAtMzEsNyAr
+MzEsNiBAQCBpZmRlZiBDT05GSUdfNjRCSVQNCj4gIFVUU19NQUNISU5FCTo9IHBhcmlzYzY0DQo+
+ICBDSEVDS0ZMQUdTCSs9IC1EX19MUDY0X189MSAtbTY0DQo+ICBXSURUSAkJOj0gNjQNCj4gLUNS
+T1NTX0NPTVBJTEUJOj0gaHBwYTY0LWxpbnV4LWdudS0NCj4gIGVsc2UgIyAzMi1iaXQNCj4gIFdJ
+RFRICQk6PQ0KPiAgZW5kaWYNCg0KV2UgY2FuJ3QgZG8gdGhhdCAuLi4gaXQgY3Jhc2hlcyBhIHN0
+YW5kYXJkIGJ1aWxkIGFsbW9zdCBpbW1lZGlhdGVseQ0KYmVjYXVzZSBpdCBkb2Vzbid0IHBpY2sg
+dGhlIDY0IGJpdCBjb21waWxlciAoYW5kIHdlIGhhdmUgbm8gYmlhcmNoDQpzb2x1dGlvbikuDQoN
+CldlIG5lZWQgbWFrZSBvbiBhIDY0IGJpdCBjb25maWcgdG8gd29yayBvdXQgb2YgdGhlIGJveC4g
+IEl0IGJyZWFrcw0Kd2l0aCA/PSBhcyBKREEgcG9pbnRlZCBvdXQgYmVjYXVzZSBDUk9TU19DT01Q
+SUxFIGlzIGFsd2F5cyBkZWZpbmVkLg0KRG9lcyB0aGlzIHNhdGlzZnkgZXZlcnlvbmU/DQoNCkph
+bWVzDQoNCi0tLQ0KDQpkaWZmIC0tZ2l0IGEvYXJjaC9wYXJpc2MvTWFrZWZpbGUgYi9hcmNoL3Bh
+cmlzYy9NYWtlZmlsZQ0KaW5kZXggNTVjY2ExZC4uMTlhYjdiMiAxMDA2NDQNCi0tLSBhL2FyY2gv
+cGFyaXNjL01ha2VmaWxlDQorKysgYi9hcmNoL3BhcmlzYy9NYWtlZmlsZQ0KQEAgLTMxLDcgKzMx
+LDExIEBAIGlmZGVmIENPTkZJR182NEJJVA0KIFVUU19NQUNISU5FCTo9IHBhcmlzYzY0DQogQ0hF
+Q0tGTEFHUwkrPSAtRF9fTFA2NF9fPTEgLW02NA0KIFdJRFRICQk6PSA2NA0KKw0KKyMgRklYTUU6
+IGlmIG5vIGRlZmF1bHQgc2V0LCBzaG91bGQgcmVhbGx5IHRyeSB0byBsb2NhdGUgZHluYW1pY2Fs
+bHkNCitpZmVxICgkKENST1NTX0NPTVBJTEUpLCkNCiBDUk9TU19DT01QSUxFCTo9IGhwcGE2NC1s
+aW51eC1nbnUtDQorZW5kaWYNCiBlbHNlICMgMzItYml0DQogV0lEVEgJCTo9DQogZW5kaWYNCg0K
