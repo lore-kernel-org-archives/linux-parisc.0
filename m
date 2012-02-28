@@ -1,42 +1,39 @@
 From: Joe Perches <joe@perches.com>
-Subject: [PATCH trivial next 0/9] treewide: Use vsprintf extention %pf
-Date: Tue, 28 Feb 2012 10:49:29 -0800
-Message-ID: <cover.1330454853.git.joe@perches.com>
-Cc: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	microblaze-uclinux@itee.uq.edu.au, linuxppc-dev@lists.ozlabs.org,
-	sparclinux@vger.kernel.org, devel@driverdev.osuosl.org
-To: linux-parisc@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-usb@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Subject: [PATCH trivial next 6/9] parisc: Use vsprintf extention %pf with builtin_return_address
+Date: Tue, 28 Feb 2012 10:49:35 -0800
+Message-ID: <3aaf784d1f3b62a6ede3de47db5921b037c73423.1330454853.git.joe@perches.com>
+References: <cover.1330454853.git.joe@perches.com>
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, Jiri Kosina <trivial@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1330454853.git.joe@perches.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Emit the actual function name when possible
+Emit the function name not the address when possible.
 
-Joe Perches (9):
-  sparc: Use vsprintf extention %pf with builtin_return_address
-  alpha: Use vsprintf extention %pf with builtin_return_address
-  arm: Use vsprintf extention %pf with builtin_return_address
-  microblaze: Use vsprintf extention %pf with builtin_return_address
-  powerpc: Use vsprintf extention %pf with builtin_return_address
-  parisc: Use vsprintf extention %pf with builtin_return_address
-  scsi: Use vsprintf extention %pf with builtin_return_address
-  staging: ramster: Use vsprintf extention %pf with builtin_return_address
-  gadget: Use vsprintf extention %pf with builtin_return_address
+builtin_return_address() gives an address.  When building
+a kernel with CONFIG_KALLSYMS, emit the actual function
+name not the address.
 
- arch/alpha/kernel/pci_iommu.c               |   20 ++++++++++----------
- arch/arm/nwfpe/fpmodule.c                   |    2 +-
- arch/microblaze/mm/pgtable.c                |    2 +-
- arch/powerpc/mm/pgtable_32.c                |    2 +-
- arch/sparc/kernel/ds.c                      |    2 +-
- arch/sparc/mm/srmmu.c                       |    2 +-
- drivers/parisc/superio.c                    |    2 +-
- drivers/scsi/esp_scsi.c                     |    2 +-
- drivers/staging/ramster/cluster/heartbeat.c |    4 ++--
- drivers/usb/gadget/u_serial.c               |    2 +-
- 10 files changed, 20 insertions(+), 20 deletions(-)
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/parisc/superio.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
+diff --git a/drivers/parisc/superio.c b/drivers/parisc/superio.c
+index e3b76d4..5003458 100644
+--- a/drivers/parisc/superio.c
++++ b/drivers/parisc/superio.c
+@@ -348,7 +348,7 @@ int superio_fixup_irq(struct pci_dev *pcidev)
+ 		BUG();
+ 		return -1;
+ 	}
+-	printk("superio_fixup_irq(%s) ven 0x%x dev 0x%x from %p\n",
++	printk("superio_fixup_irq(%s) ven 0x%x dev 0x%x from %pf\n",
+ 		pci_name(pcidev),
+ 		pcidev->vendor, pcidev->device,
+ 		__builtin_return_address(0));
 -- 
 1.7.8.111.gad25c.dirty
-
