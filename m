@@ -1,62 +1,38 @@
-From: Yinghai Lu <yinghai@kernel.org>
-Subject: [PATCH 09/18] PCI, parisc: Register busn_res for root buses
-Date: Mon, 27 Feb 2012 18:10:00 -0800
-Message-ID: <1330395009-29260-10-git-send-email-yinghai@kernel.org>
-References: <1330395009-29260-1-git-send-email-yinghai@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	linux-parisc@vger.kernel.org
-To: Jesse Barnes <jbarnes@virtuousgeek.org>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Tony Luck <tony.luck@intel.com>
+From: James Bottomley <jbottomley@parallels.com>
+Subject: Re: [PATCH v2] parisc: dont unconditionally override CROSS_COMPILE
+ for 64 bit.
+Date: Tue, 28 Feb 2012 03:17:01 +0000
+Message-ID: <1330399020.2822.106.camel@dabdike.int.hansenpartnership.com>
+References: <1330298813-17262-1-git-send-email-paul.gortmaker@windriver.com>
+	 <1330378864.2822.92.camel@dabdike.int.hansenpartnership.com>
+	 <1330380189.2822.95.camel@dabdike.int.hansenpartnership.com>
+	 <201202272004.55187.vapier@gentoo.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
+	"kyle@mcmartin.ca" <kyle@mcmartin.ca>,
+	"deller@gmx.de" <deller@gmx.de>,
+	"dave.anglin@bell.net" <dave.anglin@bell.net>,
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-next@vger.kernel.org" <linux-next@vger.kernel.org>
+To: Mike Frysinger <vapier@gentoo.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1330395009-29260-1-git-send-email-yinghai@kernel.org>
+In-Reply-To: <201202272004.55187.vapier@gentoo.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Yinghai Lu <yinghai@kernel.org>
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
----
- drivers/parisc/dino.c    |    2 ++
- drivers/parisc/lba_pci.c |    3 +++
- 2 files changed, 5 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index 0610e91..ea3f483 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -999,7 +999,9 @@ static int __init dino_probe(struct parisc_device *dev)
- 		return 0;
- 	}
- 
-+	pci_bus_insert_busn_res(bus, dino_current_bus, 255);
- 	bus->subordinate = pci_scan_child_bus(bus);
-+	pci_bus_update_busn_res_end(bus, bus->subordinate);
- 
- 	/* This code *depends* on scanning being single threaded
- 	 * if it isn't, this global bus number count will fail
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index e885764..84fa239 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -1512,6 +1512,9 @@ lba_driver_probe(struct parisc_device *dev)
- 		return 0;
- 	}
- 
-+	pci_bus_insert_busn_res(lba_bus, lba_dev->hba.bus_num.start,
-+				lba_dev->hba.bus_num.end);
-+
- 	lba_bus->subordinate = pci_scan_child_bus(lba_bus);
- 
- 	/* This is in lieu of calling pci_assign_unassigned_resources() */
--- 
-1.7.7
-
+T24gTW9uLCAyMDEyLTAyLTI3IGF0IDIwOjA0IC0wNTAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToN
+Cj4gT24gTW9uZGF5IDI3IEZlYnJ1YXJ5IDIwMTIgMTc6MDM6MTAgSmFtZXMgQm90dG9tbGV5IHdy
+b3RlOg0KPiA+IC0tLSBhL2FyY2gvcGFyaXNjL01ha2VmaWxlDQo+ID4gKysrIGIvYXJjaC9wYXJp
+c2MvTWFrZWZpbGUNCj4gPiANCj4gPiAtQ1JPU1NfQ09NUElMRQk6PSBocHBhNjQtbGludXgtZ251
+LQ0KPiA+ICsNCj4gPiArIyBpZiBubyBkZWZhdWx0IHNldCwgdHJ5IHRvIGZpbmQgdGhlIGNvcnJl
+c3BvbmRpbmcgNjQgYml0IGNvbXBpbGVyDQo+ID4gK2lmZXEgKCQoQ1JPU1NfQ09NUElMRSksKQ0K
+PiA+ICtDUk9TU19DT01QSUxFCTo9ICQoc2hlbGwgJChDQykgLWR1bXBtYWNoaW5lIHwgc2VkIHMv
+aHBwYS1cXFwoLipcXFwpL2hwcGE2NC1cXDEtLykNCj4gPiArZW5kaWYNCj4gDQo+IGZhaWxzIHdo
+ZW4gdXNpbmcgImhwcGEyLjAteHh4Ii4gIHBlcmhhcHM6DQo+IENST1NTX0NPTVBJTEUgPz0gJChz
+aGVsbCAkKENDKSAtZHVtcG1hY2hpbmUgfCBzZWQgJ3MvXmhwcGFbXi1dKi0vaHBwYTY0LS8nKQ0K
+PiANCj4gZG9uJ3QgZXZlbiBuZWVkIHRoZSBpZmVxIGNoZWNrIHRoZW4NCg0KSG93IGlzIHRoYXQg
+ZGlmZmVyZW50IGZyb20gQ2FybG9zJyBzdWdnZXN0aW9uPyAgVGhlIHJlYXNvbiBpdCBkb2Vzbid0
+DQp3b3JrIGlzIHRoZSBzYW1lIC4uLiBDUk9TU19DT01QSUxFIGlzIGRlZmluZWQgdG8gYmUgZW1w
+dHkuDQoNCkphbWVzDQoNCg==
