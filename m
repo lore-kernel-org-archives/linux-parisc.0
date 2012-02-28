@@ -1,70 +1,62 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [PATCH v2] parisc: dont unconditionally override CROSS_COMPILE for 64 bit.
-Date: Mon, 27 Feb 2012 20:04:52 -0500
-Message-ID: <201202272004.55187.vapier@gentoo.org>
-References: <1330298813-17262-1-git-send-email-paul.gortmaker@windriver.com> <1330378864.2822.92.camel@dabdike.int.hansenpartnership.com> <1330380189.2822.95.camel@dabdike.int.hansenpartnership.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1709520.v6gKf0jSzM";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
-	"kyle@mcmartin.ca" <kyle@mcmartin.ca>,
-	"deller@gmx.de" <deller@gmx.de>,
-	"dave.anglin@bell.net" <dave.anglin@bell.net>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-next@vger.kernel.org" <linux-next@vger.kernel.org>
-To: James Bottomley <jbottomley@parallels.com>
+From: Yinghai Lu <yinghai@kernel.org>
+Subject: [PATCH 09/18] PCI, parisc: Register busn_res for root buses
+Date: Mon, 27 Feb 2012 18:10:00 -0800
+Message-ID: <1330395009-29260-10-git-send-email-yinghai@kernel.org>
+References: <1330395009-29260-1-git-send-email-yinghai@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Dominik Brodowski <linux@dominikbrodowski.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>,
+	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	linux-parisc@vger.kernel.org
+To: Jesse Barnes <jbarnes@virtuousgeek.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Tony Luck <tony.luck@intel.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1330380189.2822.95.camel@dabdike.int.hansenpartnership.com>
+In-Reply-To: <1330395009-29260-1-git-send-email-yinghai@kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---nextPart1709520.v6gKf0jSzM
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Yinghai Lu <yinghai@kernel.org>
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+---
+ drivers/parisc/dino.c    |    2 ++
+ drivers/parisc/lba_pci.c |    3 +++
+ 2 files changed, 5 insertions(+), 0 deletions(-)
 
-On Monday 27 February 2012 17:03:10 James Bottomley wrote:
-> --- a/arch/parisc/Makefile
-> +++ b/arch/parisc/Makefile
->=20
-> -CROSS_COMPILE	:=3D hppa64-linux-gnu-
-> +
-> +# if no default set, try to find the corresponding 64 bit compiler
-> +ifeq ($(CROSS_COMPILE),)
-> +CROSS_COMPILE	:=3D $(shell $(CC) -dumpmachine | sed s/hppa-\\\(.*\\\)/hp=
-pa64-\\1-/)
-> +endif
+diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+index 0610e91..ea3f483 100644
+--- a/drivers/parisc/dino.c
++++ b/drivers/parisc/dino.c
+@@ -999,7 +999,9 @@ static int __init dino_probe(struct parisc_device *dev)
+ 		return 0;
+ 	}
+ 
++	pci_bus_insert_busn_res(bus, dino_current_bus, 255);
+ 	bus->subordinate = pci_scan_child_bus(bus);
++	pci_bus_update_busn_res_end(bus, bus->subordinate);
+ 
+ 	/* This code *depends* on scanning being single threaded
+ 	 * if it isn't, this global bus number count will fail
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index e885764..84fa239 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -1512,6 +1512,9 @@ lba_driver_probe(struct parisc_device *dev)
+ 		return 0;
+ 	}
+ 
++	pci_bus_insert_busn_res(lba_bus, lba_dev->hba.bus_num.start,
++				lba_dev->hba.bus_num.end);
++
+ 	lba_bus->subordinate = pci_scan_child_bus(lba_bus);
+ 
+ 	/* This is in lieu of calling pci_assign_unassigned_resources() */
+-- 
+1.7.7
 
-fails when using "hppa2.0-xxx".  perhaps:
-CROSS_COMPILE ?=3D $(shell $(CC) -dumpmachine | sed 's/^hppa[^-]*-/hppa64-/=
-')
-
-don't even need the ifeq check then
-=2Dmike
-
---nextPart1709520.v6gKf0jSzM
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJPTCg2AAoJEEFjO5/oN/WBrVgP/2rbzbuqJmMRAPm7iSzsN6aa
-SMx2jFS44FSt0wq7oh++RwyBTsqxpIqJDvc4Ap9bWCTW5YLlWSXW+B6NkTkTSRiK
-xfGnnP06qT+OlgmaOQbQg+Xunz0S3bY700Nlzm5mJpOxvklf4H+9iUWtGthwz35g
-q10WmGEOKJNwYoVh1YWohj/8eCK9SUUokLlnTnselKdPcxVBY6zGXR/qwXpaIMnx
-cfYbo81GBcq8yiAqZ5ZrjXxg/Nc/jnM/pibTSp9ZKLSHVEUqQlYLH9DPlC6Ko7XV
-/PBrFIVslkW7xbpAuBZO0YJLbmniNYSkNtxlieHJX+PtevdsOx/PWOKfM67csOt4
-Oahj9WT8JzWofcbUmbwYLvhtawXxm5th8fIMzlYR9HysGk5Q8EjqJVceLYmkRR/T
-jzHXEFvkRcHfR9EdOxhajQeTVLNZv5yhfEpt9jDWCt+J0rdd8hNgLdX3kgFg+c71
-CxQPWGMrmiJAsQ9c3kutl+o5rUyFUNeTDoN6iGWdkUofHKyz9SONh7wluMd1Gmk1
-/xx5wH8rl3HBFTSo4fH/TC3sHhm8kFk3vQ+fauASJyFVkij3zHG+5oVT12FtSa2s
-fEzf1e5ivnR2yrdbmMGbdmkSb+F+eDjcoI2vFCFSVNfTaTnBKVXJcGVUUnzJ0zT4
-dIZLSc4mCJnVtFd33Ndy
-=+Bpe
------END PGP SIGNATURE-----
-
---nextPart1709520.v6gKf0jSzM--
