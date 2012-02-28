@@ -1,71 +1,52 @@
-From: Yinghai Lu <yinghai@kernel.org>
-Subject: [PATCH 15/24] PCI, parisc: Register busn_res for root buses
-Date: Tue, 28 Feb 2012 14:07:34 -0800
-Message-ID: <1330466863-28469-16-git-send-email-yinghai@kernel.org>
-References: <1330466863-28469-1-git-send-email-yinghai@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	linux-parisc@vger.kernel.org
-To: Jesse Barnes <jbarnes@virtuousgeek.org>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Tony Luck <tony.luck@intel.com>,
-	David Miller <davem@davemloft.net>, x86 <x86@kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1330466863-28469-1-git-send-email-yinghai@kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+From: Domenico Andreoli <cavokz@gmail.com>
+Subject: Re: Happy New Year PARISC (take 2)
+Date: Tue, 28 Feb 2012 23:56:05 +0100
+Message-ID: <20120228225605.GA24038@glitch>
+References: <BLU0-SMTP31AEFBE4BAA62F2EED77CE97910@phx.gbl>
+ <BLU0-SMTP20DB85B206E6F015C370CE97910@phx.gbl>
+ <CADZpyiywh8SL42H9nO=9tMXgiyxL4SfmaX6PcZP5Kwme-Ozxsw@mail.gmail.com>
+ <4F031B1A.4010908@bell.net>
+ <1325604740.3185.4.camel@dabdike.int.hansenpartnership.com>
+ <4F032C4C.10805@bell.net>
+ <1325608972.3185.8.camel@dabdike.int.hansenpartnership.com>
+ <4F034B6B.5020809@bell.net>
+ <BLU0-SMTP5091B64E5E2C07CEDC0D41978C0@phx.gbl>
+ <4F4CF28A.5050407@bell.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Carlos O'Donell <carlos@systemhalted.org>,
+	Grant Grundler <grantgrundler@gmail.com>,
+	linux-parisc List <linux-parisc@vger.kernel.org>
+To: John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <4F4CF28A.5050407@bell.net>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Yinghai Lu <yinghai@kernel.org>
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
----
- drivers/parisc/dino.c    |    5 +++++
- drivers/parisc/lba_pci.c |    3 +++
- 2 files changed, 8 insertions(+), 0 deletions(-)
+Hi,
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index 0610e91..def94af 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -984,6 +984,10 @@ static int __init dino_probe(struct parisc_device *dev)
- 	if (dino_dev->hba.gmmio_space.flags)
- 		pci_add_resource(&resources, &dino_dev->hba.gmmio_space);
- 
-+	dino_dev->hba.bus_num.start = dino_current_bus;
-+	dino_dev->hba.bus_num.end = 255;
-+	dino_dev->hba.bus_num.flags |= IORESOURCE_BUS;
-+	pci_add_resource(&resources, &dino_dev->hba.bus_num);
- 	/*
- 	** It's not used to avoid chicken/egg problems
- 	** with configuration accessor functions.
-@@ -999,6 +1003,7 @@ static int __init dino_probe(struct parisc_device *dev)
- 		return 0;
- 	}
- 
-+	pci_bus_update_busn_res_end(bus, bus->subordinate);
- 	bus->subordinate = pci_scan_child_bus(bus);
- 
- 	/* This code *depends* on scanning being single threaded
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index e885764..df1e9f9 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -1503,6 +1503,9 @@ lba_driver_probe(struct parisc_device *dev)
- 	if (lba_dev->hba.gmmio_space.flags)
- 		pci_add_resource(&resources, &lba_dev->hba.gmmio_space);
- 
-+	lba_dev->hba.bus_num.flags |= IORESOURCE_BUS;
-+	pci_add_resource(&resources, &lba_dev->hba.bus_num);
-+
- 	dev->dev.platform_data = lba_dev;
- 	lba_bus = lba_dev->hba.hba_bus =
- 		pci_create_root_bus(&dev->dev, lba_dev->hba.bus_num.start,
--- 
-1.7.7
+On Tue, Feb 28, 2012 at 10:28:10AM -0500, John David Anglin wrote:
+>
+> Here is take 3.  Since take 2, I have tried mainly to explore
+> performance issues.
+> 
+> The big difference is a new implementation of flush_cache_mm where I try to
+> avoid the brutal flush of the whole cache.  This drops the full GCC
+> build time at
+> -j4 from about six hours nine minutes to three hours ten minutes on
+> rp3440 (i.e.,
+> almost by a factor two).  Build and check time is still a bit slower
+> than HP-UX.
+> There's probably more to tweak here.
+> 
+> Other changes made little difference (e.g., clear_page_asm).  I also
+> explored
+> the affect of prefetch operations in clear_page_asm and copy_page_asm, but
+> the difference if any was in the noise.
+
+I applied this patch to v3.3-rc5 and then tried to build eglibc 2.13-27,
+unsuccessfully. Do you have any patch for it?
+
+Thanks,
+Domenico
