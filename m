@@ -1,39 +1,72 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH trivial next 6/9] parisc: Use vsprintf extention %pf with builtin_return_address
-Date: Tue, 28 Feb 2012 10:49:35 -0800
-Message-ID: <3aaf784d1f3b62a6ede3de47db5921b037c73423.1330454853.git.joe@perches.com>
-References: <cover.1330454853.git.joe@perches.com>
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, Jiri Kosina <trivial@kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1330454853.git.joe@perches.com>
-List-ID: <linux-kernel.vger.kernel.org>
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH v2] parisc: dont unconditionally override CROSS_COMPILE
+	for 64 bit.
+Date: Tue, 28 Feb 2012 20:54:51 +0100
+Message-ID: <20120228195451.GA3042@merkur.ravnborg.org>
+References: <1330298813-17262-1-git-send-email-paul.gortmaker@windriver.com> <4F4CF3CF.5090605@bell.net> <CANEJEGv2Zgtd8TGOzSNO8opMLQT8RsGRP=m2rBPUBBOJ9f+fKQ@mail.gmail.com> <201202281337.14094.vapier@gentoo.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Grant Grundler <grantgrundler@gmail.com>,
+	John David Anglin <dave.anglin@bell.net>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Paul Gortmaker <paul.gortmaker@windriver.com>,
+	"kyle@mcmartin.ca" <kyle@mcmartin.ca>,
+	"deller@gmx.de" <deller@gmx.de>,
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-next@vger.kernel.org" <linux-next@vger.kernel.org>
+To: Mike Frysinger <vapier@gentoo.org>
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <201202281337.14094.vapier@gentoo.org>
+List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Emit the function name not the address when possible.
+On Tue, Feb 28, 2012 at 01:37:10PM -0500, Mike Frysinger wrote:
+> On Tuesday 28 February 2012 13:22:50 Grant Grundler wrote:
+> > On Tue, Feb 28, 2012 at 7:33 AM, John David Anglin wrote:
+> > > On 2/28/2012 10:21 AM, Mike Frysinger wrote:
+> > >> we've been using hppa2.0 for years.  gnuconfig certainly recognizes it:
+> > >> $ grep hppa /usr/share/gnuconfig/config.**sub
+> > >> 
+> > >>         | h8300 | h8500 | hppa | hppa1.[01] | hppa2.0 | hppa2.0[nw] |
+> > >> 
+> > >> hppa64 \
+> > >> 
+> > >>         | hppa-* | hppa1.[01]-* | hppa2.0-* | hppa2.0[nw]-* | hppa64-* \
+> > >> 
+> > >> and i've seen diff projects key off of the hppa2.0* to enable newer
+> > >> features by
+> > >> default.
+> > > 
+> > > Some of the above are specific to HP-UX, but hppa1.1, hppa2.0, hppa and
+> > > hppa64 are
+> > > valid for Linux based on config.guess.
+> > 
+> > Mike, et al,
+> > I'd suggest NOT using hppa2.0 as a surrogate for 64-bit build. I'd prefer
+> > hppa64 if 64-bit is meant.
+> > 
+> > hppa2.0 can also mean PA2.0 compliant binary compiled using ILP32 model.
+> > right?
+> 
+> i don't think that's what the proposed change does.  James' patch runs $(CC) 
+> to find the active tuple, then replaces the first part with "hppa64" to get a 
+> 64bit toolchain automatically.  but that magic only works when the tuple is 
+> "hppa-xxx" and so will fail when the system is using "hppa2.0-xxx".
+> 
+> short story: the proposed change will additionally support turning "hppa2.0-
+> linux-gnu" into "hppa64-linux-gnu" rather than the existing "only turns hppa-
+> linux-gnu" into "hppa64-linux-gnu".
 
-builtin_return_address() gives an address.  When building
-a kernel with CONFIG_KALLSYMS, emit the actual function
-name not the address.
+There is a small helper:
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/parisc/superio.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+    cc-cross-prefix
 
-diff --git a/drivers/parisc/superio.c b/drivers/parisc/superio.c
-index e3b76d4..5003458 100644
---- a/drivers/parisc/superio.c
-+++ b/drivers/parisc/superio.c
-@@ -348,7 +348,7 @@ int superio_fixup_irq(struct pci_dev *pcidev)
- 		BUG();
- 		return -1;
- 	}
--	printk("superio_fixup_irq(%s) ven 0x%x dev 0x%x from %p\n",
-+	printk("superio_fixup_irq(%s) ven 0x%x dev 0x%x from %pf\n",
- 		pci_name(pcidev),
- 		pcidev->vendor, pcidev->device,
- 		__builtin_return_address(0));
--- 
-1.7.8.111.gad25c.dirty
+Which may be used ifyou have two or mroe candidated for CROSS_COMPILE.
+
+>From mips:
+ CROSS_COMPILE := $(call cc-cross-prefix, $(tool-archpref)-linux-  $(tool-archpref)-linux-gnu-  $(tool-archpref)-unknown-linux-gnu-)
+
+Dunno if this would help parisc in this case..
+
+	Sam
