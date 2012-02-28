@@ -1,72 +1,71 @@
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH v2] parisc: dont unconditionally override CROSS_COMPILE
-	for 64 bit.
-Date: Tue, 28 Feb 2012 20:54:51 +0100
-Message-ID: <20120228195451.GA3042@merkur.ravnborg.org>
-References: <1330298813-17262-1-git-send-email-paul.gortmaker@windriver.com> <4F4CF3CF.5090605@bell.net> <CANEJEGv2Zgtd8TGOzSNO8opMLQT8RsGRP=m2rBPUBBOJ9f+fKQ@mail.gmail.com> <201202281337.14094.vapier@gentoo.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grantgrundler@gmail.com>,
-	John David Anglin <dave.anglin@bell.net>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Paul Gortmaker <paul.gortmaker@windriver.com>,
-	"kyle@mcmartin.ca" <kyle@mcmartin.ca>,
-	"deller@gmx.de" <deller@gmx.de>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-next@vger.kernel.org" <linux-next@vger.kernel.org>
-To: Mike Frysinger <vapier@gentoo.org>
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <201202281337.14094.vapier@gentoo.org>
-List-ID: <linux-next.vger.kernel.org>
+From: Yinghai Lu <yinghai@kernel.org>
+Subject: [PATCH 15/24] PCI, parisc: Register busn_res for root buses
+Date: Tue, 28 Feb 2012 14:07:34 -0800
+Message-ID: <1330466863-28469-16-git-send-email-yinghai@kernel.org>
+References: <1330466863-28469-1-git-send-email-yinghai@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Dominik Brodowski <linux@dominikbrodowski.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>,
+	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
+	linux-parisc@vger.kernel.org
+To: Jesse Barnes <jbarnes@virtuousgeek.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Tony Luck <tony.luck@intel.com>,
+	David Miller <davem@davemloft.net>, x86 <x86@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1330466863-28469-1-git-send-email-yinghai@kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Feb 28, 2012 at 01:37:10PM -0500, Mike Frysinger wrote:
-> On Tuesday 28 February 2012 13:22:50 Grant Grundler wrote:
-> > On Tue, Feb 28, 2012 at 7:33 AM, John David Anglin wrote:
-> > > On 2/28/2012 10:21 AM, Mike Frysinger wrote:
-> > >> we've been using hppa2.0 for years.  gnuconfig certainly recognizes it:
-> > >> $ grep hppa /usr/share/gnuconfig/config.**sub
-> > >> 
-> > >>         | h8300 | h8500 | hppa | hppa1.[01] | hppa2.0 | hppa2.0[nw] |
-> > >> 
-> > >> hppa64 \
-> > >> 
-> > >>         | hppa-* | hppa1.[01]-* | hppa2.0-* | hppa2.0[nw]-* | hppa64-* \
-> > >> 
-> > >> and i've seen diff projects key off of the hppa2.0* to enable newer
-> > >> features by
-> > >> default.
-> > > 
-> > > Some of the above are specific to HP-UX, but hppa1.1, hppa2.0, hppa and
-> > > hppa64 are
-> > > valid for Linux based on config.guess.
-> > 
-> > Mike, et al,
-> > I'd suggest NOT using hppa2.0 as a surrogate for 64-bit build. I'd prefer
-> > hppa64 if 64-bit is meant.
-> > 
-> > hppa2.0 can also mean PA2.0 compliant binary compiled using ILP32 model.
-> > right?
-> 
-> i don't think that's what the proposed change does.  James' patch runs $(CC) 
-> to find the active tuple, then replaces the first part with "hppa64" to get a 
-> 64bit toolchain automatically.  but that magic only works when the tuple is 
-> "hppa-xxx" and so will fail when the system is using "hppa2.0-xxx".
-> 
-> short story: the proposed change will additionally support turning "hppa2.0-
-> linux-gnu" into "hppa64-linux-gnu" rather than the existing "only turns hppa-
-> linux-gnu" into "hppa64-linux-gnu".
+Signed-off-by: Yinghai Lu <yinghai@kernel.org>
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+---
+ drivers/parisc/dino.c    |    5 +++++
+ drivers/parisc/lba_pci.c |    3 +++
+ 2 files changed, 8 insertions(+), 0 deletions(-)
 
-There is a small helper:
-
-    cc-cross-prefix
-
-Which may be used ifyou have two or mroe candidated for CROSS_COMPILE.
-
->From mips:
- CROSS_COMPILE := $(call cc-cross-prefix, $(tool-archpref)-linux-  $(tool-archpref)-linux-gnu-  $(tool-archpref)-unknown-linux-gnu-)
-
-Dunno if this would help parisc in this case..
-
-	Sam
+diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+index 0610e91..def94af 100644
+--- a/drivers/parisc/dino.c
++++ b/drivers/parisc/dino.c
+@@ -984,6 +984,10 @@ static int __init dino_probe(struct parisc_device *dev)
+ 	if (dino_dev->hba.gmmio_space.flags)
+ 		pci_add_resource(&resources, &dino_dev->hba.gmmio_space);
+ 
++	dino_dev->hba.bus_num.start = dino_current_bus;
++	dino_dev->hba.bus_num.end = 255;
++	dino_dev->hba.bus_num.flags |= IORESOURCE_BUS;
++	pci_add_resource(&resources, &dino_dev->hba.bus_num);
+ 	/*
+ 	** It's not used to avoid chicken/egg problems
+ 	** with configuration accessor functions.
+@@ -999,6 +1003,7 @@ static int __init dino_probe(struct parisc_device *dev)
+ 		return 0;
+ 	}
+ 
++	pci_bus_update_busn_res_end(bus, bus->subordinate);
+ 	bus->subordinate = pci_scan_child_bus(bus);
+ 
+ 	/* This code *depends* on scanning being single threaded
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index e885764..df1e9f9 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -1503,6 +1503,9 @@ lba_driver_probe(struct parisc_device *dev)
+ 	if (lba_dev->hba.gmmio_space.flags)
+ 		pci_add_resource(&resources, &lba_dev->hba.gmmio_space);
+ 
++	lba_dev->hba.bus_num.flags |= IORESOURCE_BUS;
++	pci_add_resource(&resources, &lba_dev->hba.bus_num);
++
+ 	dev->dev.platform_data = lba_dev;
+ 	lba_bus = lba_dev->hba.hba_bus =
+ 		pci_create_root_bus(&dev->dev, lba_dev->hba.bus_num.start,
+-- 
+1.7.7
