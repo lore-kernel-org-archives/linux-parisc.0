@@ -1,68 +1,96 @@
-From: Yinghai Lu <yinghai@kernel.org>
-Subject: [PATCH 27/36] PCI, parisc: Register busn_res for root buses
-Date: Wed, 29 Feb 2012 19:00:28 -0800
-Message-ID: <1330570837-26638-28-git-send-email-yinghai@kernel.org>
-References: <1330570837-26638-1-git-send-email-yinghai@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>,
-	Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>,
-	linux-parisc@vger.kernel.org
-To: Jesse Barnes <jbarnes@virtuousgeek.org>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Tony Luck <tony.luck@intel.com>,
-	David Miller <davem@davemloft.net>, x86 <x86@kernel.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [GIT PULL] parisc fixes for 3.3-rc5
+Date: Sat, 03 Mar 2012 17:44:56 -0600
+Message-ID: <1330818296.15243.1.camel@dabdike.int.hansenpartnership.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1330570837-26638-1-git-send-email-yinghai@kernel.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Yinghai Lu <yinghai@kernel.org>
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
----
- drivers/parisc/dino.c    |    5 +++++
- drivers/parisc/lba_pci.c |    3 +++
- 2 files changed, 8 insertions(+), 0 deletions(-)
+This is a set of build fixes to get the cross compiled architecture
+testbeds building again
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index 0610e91..def94af 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -984,6 +984,10 @@ static int __init dino_probe(struct parisc_device *dev)
- 	if (dino_dev->hba.gmmio_space.flags)
- 		pci_add_resource(&resources, &dino_dev->hba.gmmio_space);
- 
-+	dino_dev->hba.bus_num.start = dino_current_bus;
-+	dino_dev->hba.bus_num.end = 255;
-+	dino_dev->hba.bus_num.flags |= IORESOURCE_BUS;
-+	pci_add_resource(&resources, &dino_dev->hba.bus_num);
- 	/*
- 	** It's not used to avoid chicken/egg problems
- 	** with configuration accessor functions.
-@@ -999,6 +1003,7 @@ static int __init dino_probe(struct parisc_device *dev)
- 		return 0;
- 	}
- 
-+	pci_bus_update_busn_res_end(bus, bus->subordinate);
- 	bus->subordinate = pci_scan_child_bus(bus);
- 
- 	/* This code *depends* on scanning being single threaded
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index e885764..df1e9f9 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -1503,6 +1503,9 @@ lba_driver_probe(struct parisc_device *dev)
- 	if (lba_dev->hba.gmmio_space.flags)
- 		pci_add_resource(&resources, &lba_dev->hba.gmmio_space);
- 
-+	lba_dev->hba.bus_num.flags |= IORESOURCE_BUS;
-+	pci_add_resource(&resources, &lba_dev->hba.bus_num);
+The patches are here:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi-rc-fixes-2.6.git parisc-fixes
+
+The short changelog is:
+
+Cong Wang (1):
+      [PARISC] include <linux/prefetch.h> in drivers/parisc/iommu-helpers.h
+
+James Bottomley (2):
+      [PARISC] don't unconditionally override CROSS_COMPILE for 64 bit.
+      [PARISC] fix compile break caused by iomap: make IOPORT/PCI mapping functions conditional
+
+And the diffstat
+
+ arch/parisc/Makefile            |    4 ++++
+ drivers/parisc/iommu-helpers.h  |    2 ++
+ include/asm-generic/iomap.h     |    2 +-
+ include/asm-generic/pci_iomap.h |    2 +-
+ 4 files changed, 8 insertions(+), 2 deletions(-)
+
+With the full diffs below.
+
+James
+
+---
+
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index 55cca1d..19ab7b2 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -31,7 +31,11 @@ ifdef CONFIG_64BIT
+ UTS_MACHINE	:= parisc64
+ CHECKFLAGS	+= -D__LP64__=1 -m64
+ WIDTH		:= 64
 +
- 	dev->dev.platform_data = lba_dev;
- 	lba_bus = lba_dev->hba.hba_bus =
- 		pci_create_root_bus(&dev->dev, lba_dev->hba.bus_num.start,
--- 
-1.7.7
++# FIXME: if no default set, should really try to locate dynamically
++ifeq ($(CROSS_COMPILE),)
+ CROSS_COMPILE	:= hppa64-linux-gnu-
++endif
+ else # 32-bit
+ WIDTH		:=
+ endif
+diff --git a/drivers/parisc/iommu-helpers.h b/drivers/parisc/iommu-helpers.h
+index a9c46cc..8c33491 100644
+--- a/drivers/parisc/iommu-helpers.h
++++ b/drivers/parisc/iommu-helpers.h
+@@ -1,3 +1,5 @@
++#include <linux/prefetch.h>
++
+ /**
+  * iommu_fill_pdir - Insert coalesced scatter/gather chunks into the I/O Pdir.
+  * @ioc: The I/O Controller.
+diff --git a/include/asm-generic/iomap.h b/include/asm-generic/iomap.h
+index 8a3d4fd..6afd7d6 100644
+--- a/include/asm-generic/iomap.h
++++ b/include/asm-generic/iomap.h
+@@ -70,7 +70,7 @@ extern void ioport_unmap(void __iomem *);
+ /* Destroy a virtual mapping cookie for a PCI BAR (memory or IO) */
+ struct pci_dev;
+ extern void pci_iounmap(struct pci_dev *dev, void __iomem *);
+-#else
++#elif defined(CONFIG_GENERIC_IOMAP)
+ struct pci_dev;
+ static inline void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
+ { }
+diff --git a/include/asm-generic/pci_iomap.h b/include/asm-generic/pci_iomap.h
+index e58fcf8..ce37349 100644
+--- a/include/asm-generic/pci_iomap.h
++++ b/include/asm-generic/pci_iomap.h
+@@ -25,7 +25,7 @@ extern void __iomem *__pci_ioport_map(struct pci_dev *dev, unsigned long port,
+ #define __pci_ioport_map(dev, port, nr) ioport_map((port), (nr))
+ #endif
+ 
+-#else
++#elif defined(CONFIG_GENERIC_PCI_IOMAP)
+ static inline void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max)
+ {
+ 	return NULL;
