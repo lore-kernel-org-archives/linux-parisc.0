@@ -1,35 +1,39 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [GIT PULL] parisc fixes for 3.3-rc5
-Date: Sat, 03 Mar 2012 18:31:29 -0600
-Message-ID: <1330821089.15243.4.camel@dabdike.int.hansenpartnership.com>
-References: <1330818296.15243.1.camel@dabdike.int.hansenpartnership.com>
-	 <CA+55aFybqMz-6K9S-tt=vLoinaSsCFHewwLR=orCNNWzW0vs1Q@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: HPPA64: Cannot write to ext4 filesystems with files > 28672 byte
+Date: Sun, 4 Mar 2012 17:14:14 -0500
+Message-ID: <BLU0-SMTP92018283116845C259EC9F97530@phx.gbl>
+References: <51659a45a16b0a5b0ede44e3f3e830dc.squirrel@webmail.sf-mail.de>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: linux-parisc@vger.kernel.org
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CA+55aFybqMz-6K9S-tt=vLoinaSsCFHewwLR=orCNNWzW0vs1Q@mail.gmail.com>
+In-Reply-To: <51659a45a16b0a5b0ede44e3f3e830dc.squirrel@webmail.sf-mail.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, 2012-03-03 at 16:17 -0800, Linus Torvalds wrote:
-> On Sat, Mar 3, 2012 at 3:44 PM, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> >
-> > git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi-rc-fixes-2.6.git parisc-fixes
-> 
-> "fatal: Couldn't find remote ref parisc-fixes"
-> 
-> Forgot to push?
+On 27-Feb-12, at 9:55 AM, Rolf Eike Beer wrote:
 
-Erm, no, forgot to give the URL of the right tree.  Sorry about that,
-try this instead:
+> Recent kernels (>3.x) fail when writing to ext4 filesystems with the
+> message "file too large". The critical size is 28672 byte (7*2^12).  
+> This
+> has been traced down to ext4_max_size() by Tobias Ulmer, which looks  
+> like
+> this:
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/parisc-2.6.git parisc-fixes
 
-James
+Fixed in GCC source trees (> 4.4).  Problem was incorrect shift caused
+by truncation to int.
+
+The following instruction was incorrect:
+
+  50:   d7 9f 12 1d     depdi,z,* -1,sar,3,ret0
+
+The length operand was incorrectly calculated.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
 
 
