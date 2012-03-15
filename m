@@ -1,18 +1,17 @@
 From: David Howells <dhowells@redhat.com>
-Subject: [PATCH 23/35] Disintegrate asm/system.h for PA-RISC [ver #2]
-Date: Mon, 12 Mar 2012 23:39:55 +0000
-Message-ID: <20120312233955.13888.12370.stgit@warthog.procyon.org.uk>
-References: <20120312233602.13888.27659.stgit@warthog.procyon.org.uk>
+Subject: [PATCH 20/38] Disintegrate asm/system.h for PA-RISC [ver #3]
+Date: Thu, 15 Mar 2012 20:58:23 +0000
+Message-ID: <20120315205823.28759.50934.stgit@warthog.procyon.org.uk>
+References: <20120315205514.28759.58969.stgit@warthog.procyon.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org, arnd@arndb.de,
-	David Howells <dhowells@redhat.com>,
+Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	arnd@arndb.de, David Howells <dhowells@redhat.com>,
 	linux-parisc@vger.kernel.org
-To: paul.gortmaker@windriver.com, hpa@zytor.com
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20120312233602.13888.27659.stgit@warthog.procyon.org.uk>
-List-ID: <linux-kernel.vger.kernel.org>
+To: paul.gortmaker@windriver.com
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20120315205514.28759.58969.stgit@warthog.procyon.org.uk>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 Disintegrate asm/system.h for PA-RISC.
