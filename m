@@ -1,91 +1,51 @@
-From: Kautuk Consul <consul.kautuk@gmail.com>
-Subject: [PATCH 18/20] parisc/mm/fault.c: Port OOM changes to do_page_fault
-Date: Tue, 20 Mar 2012 09:26:53 -0400
-Message-ID: <1332250013-3246-1-git-send-email-consul.kautuk@gmail.com>
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Kautuk Consul <consul.kautuk@gmail.com>
-To: <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Subject: Re: [PATCH 0/20] mmu: arch/mm: Port OOM changes to arch page fault handlers.
+Date: Tue, 20 Mar 2012 14:30:49 +0100
+Message-ID: <CAFLxGvwW2XcYSoidZZ0XF_a-pH3SwONqS+hCnpGUecQ__DLa_g@mail.gmail.com>
+References: <CAFPAmTQs9dOpQTaXU=6Or66YU+my_CnPw33TE4h++YArBNa38g@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux@lists.openrisc.net, linux-am33-list@redhat.com,
+	microblaze-uclinux@itee.uq.edu.au, linux-m68k@lists.linux-m68k.org,
+	linux-m32r-ja@ml.linux-m32r.org, linux-ia64@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, linux-cris-kernel@axis.com,
+	linux-sh@vger.kernel.org, linux-parisc@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+To: Kautuk Consul <consul.kautuk@gmail.com>
+Return-path: <linux-ia64-owner@vger.kernel.org>
+In-Reply-To: <CAFPAmTQs9dOpQTaXU=6Or66YU+my_CnPw33TE4h++YArBNa38g@mail.gmail.com>
+List-ID: <linux-ia64.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Commit d065bd810b6deb67d4897a14bfe21f8eb526ba99
-(mm: retry page fault when blocking on disk transfer) and
-commit 37b23e0525d393d48a7d59f870b3bc061a30ccdb
-(x86,mm: make pagefault killable)
+On Tue, Mar 20, 2012 at 2:18 PM, Kautuk Consul <consul.kautuk@gmail.com> wrote:
+> Commit d065bd810b6deb67d4897a14bfe21f8eb526ba99
+> (mm: retry page fault when blocking on disk transfer) and
+> commit 37b23e0525d393d48a7d59f870b3bc061a30ccdb
+> (x86,mm: make pagefault killable)
+>
+> The above commits introduced changes into the x86 pagefault handler
+> for making the page fault handler retryable as well as killable.
+>
+> These changes reduce the mmap_sem hold time, which is crucial
+> during OOM killer invocation.
+>
+> I was facing hang and livelock problems on my ARM and MIPS boards when
+> I invoked OOM by running the stress_32k.c test-case attached to this email.
+>
+> Since both the ARM and MIPS porting chainges were accepted, me and my
+> co-worker decided to take the initiative to port these changes to all other
+> MMU based architectures.
+>
+> Please review and do write back if there is any way I need to
+> improve/rewrite any
+> of these patches.
+>
 
-The above commits introduced changes into the x86 pagefault handler
-for making the page fault handler retryable as well as killable.
+What about arch/um/?
+Does UML not need this change?
 
-These changes reduce the mmap_sem hold time, which is crucial
-during OOM killer invocation.
-
-Port these changes to parisc.
-
-Signed-off-by: Kautuk Consul <consul.kautuk@gmail.com>
----
- arch/parisc/mm/fault.c |   30 +++++++++++++++++++++++++-----
- 1 files changed, 25 insertions(+), 5 deletions(-)
-
-diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index 18162ce..f247a34 100644
---- a/arch/parisc/mm/fault.c
-+++ b/arch/parisc/mm/fault.c
-@@ -175,10 +175,12 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
- 	struct mm_struct *mm = tsk->mm;
- 	unsigned long acc_type;
- 	int fault;
-+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
- 
- 	if (in_atomic() || !mm)
- 		goto no_context;
- 
-+retry:
- 	down_read(&mm->mmap_sem);
- 	vma = find_vma_prev(mm, address, &prev_vma);
- 	if (!vma || address < vma->vm_start)
-@@ -201,7 +203,12 @@ good_area:
- 	 * fault.
- 	 */
- 
--	fault = handle_mm_fault(mm, vma, address, (acc_type & VM_WRITE) ? FAULT_FLAG_WRITE : 0);
-+	fault = handle_mm_fault(mm, vma, address,
-+			flags | ((acc_type & VM_WRITE) ? FAULT_FLAG_WRITE : 0));
-+
-+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
-+		return;
-+
- 	if (unlikely(fault & VM_FAULT_ERROR)) {
- 		/*
- 		 * We hit a shared mapping outside of the file, or some
-@@ -214,10 +221,23 @@ good_area:
- 			goto bad_area;
- 		BUG();
- 	}
--	if (fault & VM_FAULT_MAJOR)
--		current->maj_flt++;
--	else
--		current->min_flt++;
-+	if (flags & FAULT_FLAG_ALLOW_RETRY) {
-+		if (fault & VM_FAULT_MAJOR)
-+			current->maj_flt++;
-+		else
-+			current->min_flt++;
-+		if (fault & VM_FAULT_RETRY) {
-+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
-+
-+			/*
-+			 * No need to up_read(&mm->mmap_sem) as we would
-+			 * have already released it in __lock_page_or_retry
-+			 * in mm/filemap.c.
-+			 */
-+
-+			goto retry;
-+		}
-+	}
- 	up_read(&mm->mmap_sem);
- 	return;
- 
 -- 
-1.7.5.4
-
+Thanks,
+//richard
