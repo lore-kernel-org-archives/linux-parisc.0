@@ -1,38 +1,48 @@
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
-Subject: Re: [PATCH 0/20] mmu: arch/mm: Port OOM changes to arch page fault handlers.
-Date: Tue, 20 Mar 2012 14:36:06 +0100
-Message-ID: <CAFLxGvyVbDndbu_2ZbUBwbrJCq+d4rRZW0ROxTpQxAvetRm=0w@mail.gmail.com>
-References: <CAFPAmTQs9dOpQTaXU=6Or66YU+my_CnPw33TE4h++YArBNa38g@mail.gmail.com>
-	<CAFLxGvwW2XcYSoidZZ0XF_a-pH3SwONqS+hCnpGUecQ__DLa_g@mail.gmail.com>
-	<CAFPAmTSzV9mrkbP68p4PA-0i0o2Hz7JiBY=0A0V_myJEzWubjQ@mail.gmail.com>
+From: Konstantin Khlebnikov <khlebnikov@openvz.org>
+Subject: [PATCH 13/16] mm/parisc: use vm_flags_t for vma flags
+Date: Wed, 21 Mar 2012 10:57:06 +0400
+Message-ID: <20120321065706.13852.68934.stgit@zurg>
+References: <20120321065140.13852.52315.stgit@zurg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux@lists.openrisc.net, linux-am33-list@redhat.com,
-	microblaze-uclinux@itee.uq.edu.au, linux-m68k@lists.linux-m68k.org,
-	linux-m32r-ja@ml.linux-m32r.org, linux-ia64@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, linux-cris-kernel@axis.com,
-	linux-sh@vger.kernel.org, linux-parisc@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-To: Kautuk Consul <consul.kautuk@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Cc: linux-mm@kvack.org, Helge Deller <deller@gmx.de>,
+ linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>
+To: Andrew Morton <akpm@linux-foundation.org>
 Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <CAFPAmTSzV9mrkbP68p4PA-0i0o2Hz7JiBY=0A0V_myJEzWubjQ@mail.gmail.com>
+In-Reply-To: <20120321065140.13852.52315.stgit@zurg>
 List-ID: <linux-mm.kvack.org>
 
-On Tue, Mar 20, 2012 at 2:34 PM, Kautuk Consul <consul.kautuk@gmail.com> wrote:
->>
->> What about arch/um/?
->> Does UML not need this change?
->
-> Oh yes, extremely sorry I accidentally missed that one out.
-> Mind if I send it separately ?
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@openvz.org>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+---
+ arch/parisc/mm/fault.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-No problem.
-handle_page_fault() is the function you want to patch. :)
-
--- 
-Thanks,
-//richard
+diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+index 18162ce..0d3680a 100644
+--- a/arch/parisc/mm/fault.c
++++ b/arch/parisc/mm/fault.c
+@@ -49,7 +49,7 @@ DEFINE_PER_CPU(struct exception_data, exception_data);
+  *   VM_WRITE if write operation
+  *   VM_EXEC  if execute operation
+  */
+-static unsigned long
++static vm_flags_t
+ parisc_acctyp(unsigned long code, unsigned int inst)
+ {
+ 	if (code == 6 || code == 16)
+@@ -173,7 +173,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
+ 	struct vm_area_struct *vma, *prev_vma;
+ 	struct task_struct *tsk = current;
+ 	struct mm_struct *mm = tsk->mm;
+-	unsigned long acc_type;
++	vm_flags_t acc_type;
+ 	int fault;
+ 
+ 	if (in_atomic() || !mm)
 
 --
 To unsubscribe, send a message with 'unsubscribe linux-mm' in
