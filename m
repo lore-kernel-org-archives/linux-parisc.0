@@ -1,38 +1,61 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [GIT PULL] parisc updates for the 3.3+ merge window
-Date: Sat, 31 Mar 2012 08:36:18 +0100
-Message-ID: <1333179378.2994.18.camel@dabdike.sthat4.btopenzone.com>
+From: Kautuk Consul <consul.kautuk@gmail.com>
+Subject: [PATCH 0/19 v2] mmu: arch/mm: Port OOM changes to arch page fault handlers.
+Date: Sat, 31 Mar 2012 07:58:04 -0400
+Message-ID: <CAFPAmTT19hFymnFftLkV1jQjYmJgyk3y4b-kTXO3VP1YCR-_fQ@mail.gmail.com>
+References: <CAFPAmTQs9dOpQTaXU=6Or66YU+my_CnPw33TE4h++YArBNa38g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-kernel@vger.kernel.org
+To: linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux@lists.openrisc.net, linux-am33-list@redhat.com,
+	microblaze-uclinux@itee.uq.edu.au, linux-m68k@lists.linux-m68k.org,
+	linux-m32r-ja@ml.linux-m32r.org, linux-ia64@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, linux-cris-kernel@axis.com,
+	linux-sh@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-mm@kvack.org, linux-arch@vger.kernel.org
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <CAFPAmTQs9dOpQTaXU=6Or66YU+my_CnPw33TE4h++YArBNa38g@mail.gmail.com>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a couple of minor updates (fixing lws futex locking and removing
-some obsolete cpu_*_map calls).
+Commit d065bd810b6deb67d4897a14bfe21f8eb526ba99
+(mm: retry page fault when blocking on disk transfer) and
+commit 37b23e0525d393d48a7d59f870b3bc061a30ccdb
+(x86,mm: make pagefault killable)
 
-The update is available here:
+The above commits introduced changes into the x86 pagefault handler
+for making the page fault handler retryable as well as killable.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/parisc-2.6.git parisc-misc
+These changes reduce the mmap_sem hold time, which is crucial
+during OOM killer invocation.
 
-The short changelog is:
+I was facing hang and livelock problems on my ARM and MIPS boards when
+I invoked OOM by running the stress_32k.c test-case attached to this email.
 
-John David Anglin (1):
-      [PARISC] futex: Use same lock set as lws calls
+Since both the ARM and MIPS porting changes were accepted, me and my
+co-worker decided to take the initiative to port these changes to all other
+MMU based architectures.
 
-Rusty Russell (1):
-      [PARISC] remove references to cpu_*_map.
+This is v2 of this patch set as there were some problems with the v1 of this
+patchset:
+- Whitespace issues as reported by David Miller and Joe Perches
+- In 2 of the patches, the write(or equivalent) local variable has
+been removed from the
+  page fault handler because it is not really needed anymore with the
+advent of the "flags"
+  local variable. Thanks to Geert Uytterhoeven for that.
+- The powerpc patch for this has been removed as this has already been
+done by someone
+  else for powerpc.
 
-And the diffstat:
+At the moment, 8 of these patches have Acked these patches as valid.
+I have included their ACKed-By headers for them in their respective
+arch patches.
 
- arch/parisc/include/asm/futex.h |   31 +++++++++++++++++++++++++++----
- arch/parisc/kernel/smp.c        |    3 +--
- 2 files changed, 28 insertions(+), 6 deletions(-)
+And thanks to Guan Xuetao for actually testing this out on unicore32.
 
-James
+Rest of the arch owners: Please review these patches.
 
-
+Signed-off-by: Mohd. Faris <mohdfarisq2010@gmail.com>
+Signed-off-by: Kautuk Consul <consul.kautuk@gmail.com>
+---
