@@ -1,45 +1,19 @@
-From: Richard Kuo <rkuo@codeaurora.org>
-Subject: Re: [PATCH 1/4] hexagon/CPU hotplug: Add missing call to
- notify_cpu_starting()
-Date: Tue, 3 Apr 2012 16:09:38 -0500
-Message-ID: <20120403210938.GA20952@codeaurora.org>
-References: <20120322112735.17063.21791.stgit@srivatsabhat.in.ibm.com>
- <20120322112805.17063.19393.stgit@srivatsabhat.in.ibm.com>
+From: Kautuk Consul <consul.kautuk@gmail.com>
+Subject: Re: [PATCH 17/19 v2] parisc/mm/fault.c: Port OOM changes to do_page_fault
+Date: Wed, 4 Apr 2012 20:42:08 +0530
+Message-ID: <CAFPAmTSps=FvdS7jyduPbyQOmr45SSY6GWL1kGtTiitZBPQViA@mail.gmail.com>
+References: <1333195588-5490-1-git-send-email-consul.kautuk@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: tglx@linutronix.de, linas@codeaurora.org, mingo@elte.hu,
-	a.p.zijlstra@chello.nl, dhowells@redhat.com,
-	yasutake.koichi@jp.panasonic.com, akpm@linux-foundation.org,
-	benh@kernel.crashing.org, jesper.nilsson@axis.com,
-	cmetcalf@tilera.com, linux@arm.linux.org.uk, jejb@parisc-linux.org,
-	deller@gmx.de, vapier@gentoo.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-am33-list@redhat.com,
-	linux-parisc@vger.kernel.org
-To: "Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>
-Return-path: <linux-hexagon-owner@vger.kernel.org>
-In-Reply-To: <20120322112805.17063.19393.stgit@srivatsabhat.in.ibm.com>
-List-ID: <linux-hexagon.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org
+To: jejb@parisc-linux.org, Helge Deller <deller@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1333195588-5490-1-git-send-email-consul.kautuk@gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Mar 22, 2012 at 04:58:25PM +0530, Srivatsa S. Bhat wrote:
-> The scheduler depends on receiving the CPU_STARTING notification, without
-> which we end up into a lot of trouble. So add the missing call to
-> notify_cpu_starting() in the bringup code.
-> 
-> Signed-off-by: Srivatsa S. Bhat <srivatsa.bhat@linux.vnet.ibm.com>
-> ---
-> 
->  arch/hexagon/kernel/smp.c |    5 +++++
->  1 files changed, 5 insertions(+), 0 deletions(-)
-> 
+Hi,
 
-Tested in my tree; thanks!
+Did anyone get a chance to review this patch ?
 
-
-Acked-by: Richard Kuo <rkuo@codeaurora.org>
-
-
--- 
-
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+This is v2 of this patch set now.
