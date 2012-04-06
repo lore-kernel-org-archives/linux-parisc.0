@@ -1,19 +1,48 @@
-From: Kautuk Consul <consul.kautuk@gmail.com>
-Subject: Re: [PATCH 17/19 v2] parisc/mm/fault.c: Port OOM changes to do_page_fault
-Date: Wed, 4 Apr 2012 20:42:08 +0530
-Message-ID: <CAFPAmTSps=FvdS7jyduPbyQOmr45SSY6GWL1kGtTiitZBPQViA@mail.gmail.com>
-References: <1333195588-5490-1-git-send-email-consul.kautuk@gmail.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [PATCH 25/40] parisc: Use set_current_blocked() and
+ block_sigmask()
+Date: Fri, 6 Apr 2012 10:59:15 -0400
+Message-ID: <20120406145915.GC15318@bombadil.infradead.org>
+References: <1329219673-28711-1-git-send-email-matt@console-pimps.org>
+ <1329219673-28711-26-git-send-email-matt@console-pimps.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org
-To: jejb@parisc-linux.org, Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1333195588-5490-1-git-send-email-consul.kautuk@gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-arch@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	Matt Fleming <matt.fleming@intel.com>,
+	Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	linux-parisc@vger.kernel.org
+To: Matt Fleming <matt@console-pimps.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <1329219673-28711-26-git-send-email-matt@console-pimps.org>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi,
+On Tue, Feb 14, 2012 at 11:40:58AM +0000, Matt Fleming wrote:
+> From: Matt Fleming <matt.fleming@intel.com>
+> 
+> As described in e6fa16ab ("signal: sigprocmask() should do
+> retarget_shared_pending()") the modification of current->blocked is
+> incorrect as we need to check whether the signal we're about to block
+> is pending in the shared queue.
+> 
+> Also, use the new helper function introduced in commit 5e6292c0f28f
+> ("signal: add block_sigmask() for adding sigmask to current->blocked")
+> which centralises the code for updating current->blocked after
+> successfully delivering a signal and reduces the amount of duplicate
+> code across architectures. In the past some architectures got this
+> code wrong, so using this helper function should stop that from
+> happening again.
+> 
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> Cc: Kyle McMartin <kyle@mcmartin.ca>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+> Cc: linux-parisc@vger.kernel.org
+> Signed-off-by: Matt Fleming <matt.fleming@intel.com>
 
-Did anyone get a chance to review this patch ?
+Nice cleanups Matt!
 
-This is v2 of this patch set now.
+Acked-by: Kyle McMartin <kyle@mcmartin.ca>
