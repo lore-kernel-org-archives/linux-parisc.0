@@ -1,76 +1,75 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: [PATCH 2/6] parisc: add missing includes in asm/spinlock.h
-Date: Sat, 21 Apr 2012 20:23:32 +0200
-Message-ID: <2891577.BP83TZWMFp@donald.sf-tec.de>
-References: <3154414.psmJh6J2U2@donald.sf-tec.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-To: linux-parisc@vger.kernel.org
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: Boot failure with 32bit kernel
+Date: Sat, 21 Apr 2012 15:15:10 -0400
+Message-ID: <BLU0-SMTP37FD4247EEDA51AB13F63E97230@phx.gbl>
+References: <20120419102608.1834003e@driller.lan>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: linux-parisc <linux-parisc@vger.kernel.org>
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <3154414.psmJh6J2U2@donald.sf-tec.de>
+In-Reply-To: <20120419102608.1834003e@driller.lan>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This leads to this errors:
+On 19-Apr-12, at 4:26 AM, Guy Martin wrote:
 
-In file included from /home/buildbot/repos/linux/arch/parisc/include/as=
-m/atomic.h:20:0,
-                 from /home/buildbot/repos/linux/include/linux/atomic.h=
-:4,
-                 from /home/buildbot/repos/linux/arch/parisc/include/as=
-m/bitops.h:56,
-                 from /home/buildbot/repos/linux/include/linux/bitops.h=
-:22,
-                 from /home/buildbot/repos/linux/include/linux/kernel.h=
-:19,
-                 from /home/buildbot/repos/linux/include/linux/sched.h:=
-55,
-                 from /home/buildbot/repos/linux/arch/parisc/kernel/asm=
--offsets.c:31:
-/home/buildbot/repos/linux/arch/parisc/include/asm/spinlock.h: In funct=
-ion =E2=80=98arch_spin_is_locked=E2=80=99:
-/home/buildbot/repos/linux/arch/parisc/include/asm/spinlock.h:9:2: erro=
-r: implicit declaration of function =E2=80=98__ldcw_align=E2=80=99 [-We=
-rror=3Dimplicit-function-declaration]
-/home/buildbot/repos/linux/arch/parisc/include/asm/spinlock.h:9:29: war=
-ning: initialization makes pointer from integer without a cast [enabled=
- by default]
-/home/buildbot/repos/linux/arch/parisc/include/asm/spinlock.h: In funct=
-ion =E2=80=98arch_spin_lock_flags=E2=80=99:
-/home/buildbot/repos/linux/arch/parisc/include/asm/spinlock.h:22:2: err=
-or: implicit declaration of function =E2=80=98mb=E2=80=99 [-Werror=3Dim=
-plicit-function-declaration]
-/home/buildbot/repos/linux/arch/parisc/include/asm/spinlock.h:23:4: war=
-ning: assignment makes pointer from integer without a cast [enabled by =
-default]
-/home/buildbot/repos/linux/arch/parisc/include/asm/spinlock.h:24:2: err=
-or: implicit declaration of function =E2=80=98__ldcw=E2=80=99 [-Werror=3D=
-implicit-function-declaration]
+> The same from the non working 3.3.1 one :
+> 10100000 A _text
+> 10100100 T _stext
+> 10100100 T stext
 
-Signed-off-by: Rolf Eike Beer <eike-kernel@sf-tec.de>
----
- arch/parisc/include/asm/spinlock.h |    2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/arch/parisc/include/asm/spinlock.h b/arch/parisc/include/a=
-sm/spinlock.h
-index 804aa28..3516e0b 100644
---- a/arch/parisc/include/asm/spinlock.h
-+++ b/arch/parisc/include/asm/spinlock.h
-@@ -1,6 +1,8 @@
- #ifndef __ASM_SPINLOCK_H
- #define __ASM_SPINLOCK_H
-=20
-+#include <asm/barrier.h>
-+#include <asm/ldcw.h>
- #include <asm/processor.h>
- #include <asm/spinlock_types.h>
-=20
---=20
-1.7.9.2
+It seems to me that _stext should be at the same address as _text.
+_stext/stext are in __HEAD.  It is
 
+./include/linux/init.h:#define __HEAD		.section	".head.text","ax"
+./include/asm-generic/vmlinux.lds.h:#define HEAD_TEXT  *(.head.text)
+
+We have the following in head.S:
+
+         __HEAD
+
+         .align  4
+         .import init_thread_union,data
+         .import fault_vector_20,code    /* IVA parisc 2.0 32 bit */
+#ifndef CONFIG_64BIT
+         .import fault_vector_11,code    /* IVA parisc 1.1 32 bit */
+         .import $global$                /* forward declaration */
+#endif /*!CONFIG_64BIT*/
+         .export _stext,data             /* Kernel want it this way! */
+_stext:
+ENTRY(stext)
+         .proc
+         .callinfo
+
+         /* Make sure sr4-sr7 are set to zero for the kernel address  
+space */
+         mtsp    %r0,%sr4
+
+and the following in vmlinux.lds.S:
+
+SECTIONS
+{
+         . = KERNEL_BINARY_TEXT_START;
+
+         _text = .;              /* Text and read-only data */
+         .text ALIGN(16) : {
+                 HEAD_TEXT
+                 TEXT_TEXT
+
+It would appear the linker has messed up the ALIGN(16), but it
+isn't clear why.  If you look at the kernel with objdump, I would
+expect zeros from 10100000 to 10100100, but maybe something
+else is there.
+
+I don't think this is directly related to the size of the kernel.
+
+I vaguely recall seeing this before.
+
+Dave
 --
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+John David Anglin	dave.anglin@bell.net
+
+
+
