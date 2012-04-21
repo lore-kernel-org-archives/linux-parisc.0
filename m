@@ -1,7 +1,7 @@
 From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: [PATCH 3/6] parisc: add missing forward declarations in asm/hardware.h
-Date: Sat, 21 Apr 2012 20:15:52 +0200
-Message-ID: <8312665.K23lOI3Ldb@donald.sf-tec.de>
+Subject: [PATCH 4/6] parisc: drop include of asm/pdc.h from asm/hardware.h
+Date: Sat, 21 Apr 2012 20:17:43 +0200
+Message-ID: <1908845.8gGWeWu9U7@donald.sf-tec.de>
 References: <3154414.psmJh6J2U2@donald.sf-tec.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -11,68 +11,62 @@ In-Reply-To: <3154414.psmJh6J2U2@donald.sf-tec.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-=46ixes this warnings:
+It seems none of the symbols defined by pdc.h is needed, but it introdu=
+ces an
+include loop causing compile errors:
 
 In file included from /home/buildbot/repos/linux/arch/parisc/include/as=
-m/processor.h:15:0,
-                 from /home/buildbot/repos/linux/arch/parisc/include/as=
-m/spinlock.h:4,
+m/spinlock.h:4:0,
                  from /home/buildbot/repos/linux/arch/parisc/include/as=
 m/atomic.h:20,
                  from /home/buildbot/repos/linux/include/linux/atomic.h=
 :4,
                  from /home/buildbot/repos/linux/arch/parisc/include/as=
-m/bitops.h:11,
+m/bitops.h:56,
                  from /home/buildbot/repos/linux/include/linux/bitops.h=
-:22,
-                 from /home/buildbot/repos/linux/include/linux/kernel.h=
-:19,
-                 from /home/buildbot/repos/linux/include/linux/sched.h:=
-55,
-                 from /home/buildbot/repos/linux/arch/parisc/kernel/asm=
--offsets.c:31:
-/home/buildbot/repos/linux/arch/parisc/include/asm/hardware.h:106:10: w=
-arning: =E2=80=98struct hardware_path=E2=80=99 declared inside paramete=
-r list [enabled by default]
-/home/buildbot/repos/linux/arch/parisc/include/asm/hardware.h:106:10: w=
-arning: its scope is only this definition or declaration, which is prob=
-ably not what you want [enabled by default]
-/home/buildbot/repos/linux/arch/parisc/include/asm/hardware.h:116:59: w=
-arning: =E2=80=98struct hardware_path=E2=80=99 declared inside paramete=
-r list [enabled by default]
-/home/buildbot/repos/linux/arch/parisc/include/asm/hardware.h:118:47: w=
-arning: =E2=80=98struct hardware_path=E2=80=99 declared inside paramete=
-r list [enabled by default]
-/home/buildbot/repos/linux/arch/parisc/include/asm/hardware.h:119:57: w=
-arning: =E2=80=98struct hardware_path=E2=80=99 declared inside paramete=
-r list [enabled by default]
+:35,
+                 from /home/buildbot/repos/linux/include/asm-generic/ge=
+torder.h:7,
+                 from /home/buildbot/repos/linux/arch/parisc/include/as=
+m/page.h:162,
+                 from /home/buildbot/repos/linux/arch/parisc/include/as=
+m/pdc.h:346,
+                 from /home/buildbot/repos/linux/arch/parisc/include/as=
+m/hardware.h:5,
+                 from /home/buildbot/repos/linux/arch/parisc/kernel/har=
+dware.c:30:
+/home/buildbot/repos/linux/arch/parisc/include/asm/processor.h:74:16: e=
+rror: field =E2=80=98cpu_type=E2=80=99 has incomplete type
+/home/buildbot/repos/linux/arch/parisc/include/asm/processor.h:77:20: e=
+rror: field =E2=80=98model=E2=80=99 has incomplete type
+/home/buildbot/repos/linux/arch/parisc/include/asm/processor.h: In func=
+tion =E2=80=98parisc_requires_coherency=E2=80=99:
+/home/buildbot/repos/linux/arch/parisc/include/asm/processor.h:349:36: =
+error: =E2=80=98mako=E2=80=99 undeclared (first use in this function)
+/home/buildbot/repos/linux/arch/parisc/include/asm/processor.h:349:36: =
+note: each undeclared identifier is reported only once for each functio=
+n it appears in
+/home/buildbot/repos/linux/arch/parisc/include/asm/processor.h:350:30: =
+error: =E2=80=98mako2=E2=80=99 undeclared (first use in this function)
 
 Signed-off-by: Rolf Eike Beer <eike-kernel@sf-tec.de>
 ---
- arch/parisc/include/asm/hardware.h |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/parisc/include/asm/hardware.h |    1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/arch/parisc/include/asm/hardware.h b/arch/parisc/include/a=
 sm/hardware.h
-index 4e96268..036e703 100644
+index 036e703..d1d864b 100644
 --- a/arch/parisc/include/asm/hardware.h
 +++ b/arch/parisc/include/asm/hardware.h
-@@ -95,12 +95,14 @@ struct bc_module {
- #define HPHW_MC	       15
- #define HPHW_FAULTY    31
+@@ -2,7 +2,6 @@
+ #define _PARISC_HARDWARE_H
 =20
-+struct parisc_device_id;
+ #include <linux/mod_devicetable.h>
+-#include <asm/pdc.h>
 =20
- /* hardware.c: */
- extern const char *parisc_hardware_description(struct parisc_device_id=
- *id);
- extern enum cpu_type parisc_get_cpu_type(unsigned long hversion);
-=20
- struct pci_dev;
-+struct hardware_path;
-=20
- /* drivers.c: */
- extern struct parisc_device *alloc_pa_dev(unsigned long hpa,
+ #define HWTYPE_ANY_ID		PA_HWTYPE_ANY_ID
+ #define HVERSION_ANY_ID		PA_HVERSION_ANY_ID
 --=20
 1.7.9.2
 
