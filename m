@@ -1,7 +1,7 @@
 From: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Subject: [PATCH 1/6] use linux/bitops.h instead of linux/log2.h to get fls()
 Date: Sat, 21 Apr 2012 20:23:58 +0200
-Message-ID: <3739293.5fPmfJVmA0@donald.sf-tec.de>
+Message-ID: <1335033199.699870__39891.7914172218$1335033267$gmane$org@mail.sf-mail.de>
 References: <3154414.psmJh6J2U2@donald.sf-tec.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,9 +9,9 @@ Cc: linux-kernel <linux-kernel@vger.kernel.org>,
 	David Howells <dhowells@redhat.com>,
 	Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>
 To: linux-parisc@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <3154414.psmJh6J2U2@donald.sf-tec.de>
-List-ID: <linux-kernel.vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 Since d66acc39c7cee323733c8503b9de1821a56dff7e (bitops: Optimise get_order())
@@ -39,3 +39,4 @@ index 65e4468..563114f 100644
   * Runtime evaluation of get_order()
 -- 
 1.7.9.2
+
