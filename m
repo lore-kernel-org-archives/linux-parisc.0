@@ -1,40 +1,51 @@
 From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: Boot failure with 32bit kernel
-Date: Sat, 21 Apr 2012 17:43:38 -0400
-Message-ID: <BLU0-SMTP851712EFA6813BF1C68EB597230@phx.gbl>
-References: <20120419102608.1834003e@driller.lan> <BLU0-SMTP37FD4247EEDA51AB13F63E97230@phx.gbl>
+Date: Sun, 22 Apr 2012 08:20:23 -0400
+Message-ID: <BLU0-SMTP60C76C814A1780515CC0B297200@phx.gbl>
+References: <20120419102608.1834003e@driller.lan>
 Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed
-Cc: Guy Martin <gmsoft@tuxicoman.be>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: John David Anglin <dave.anglin@bell.net>
+Content-Type: multipart/mixed; boundary="Apple-Mail-21-307738125"
+Cc: linux-parisc <linux-parisc@vger.kernel.org>
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP37FD4247EEDA51AB13F63E97230@phx.gbl>
+In-Reply-To: <20120419102608.1834003e@driller.lan>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 21-Apr-12, at 3:15 PM, John David Anglin wrote:
+--Apple-Mail-21-307738125
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Content-Transfer-Encoding: 7bit
 
-> It would appear the linker has messed up the ALIGN(16), but it
-> isn't clear why.  If you look at the kernel with objdump, I would
-> expect zeros from 10100000 to 10100100, but maybe something
-> else is there.
+On 19-Apr-12, at 4:26 AM, Guy Martin wrote:
+
+> Hi all,
 >
-> I don't think this is directly related to the size of the kernel.
+> I compiled a kernel with a few additional features and I was unable to
+> boot it. It seems that if the entry point is not 0x00100000 in  
+> vmlinux,
+> the boot process fails right after "Total Memory: 2048 MB".
+> This is the only common denominator I could find.
+>
+> I've been able to reproduce this with :
+> - C3600 and J5600
+> - kernel 3.2.12 and 3.3.1
+> - gcc 4.5.3
+> - ld 2.21 and 2.22
+> - palo 1.17 and 1.18
 
 
-As usual, I'm wrong ;(
+Could you try the attached patch?  It adjusts the section arrangement so
+that the long branch stubs don't appear at the start of .text.  As a  
+result,
+_stext and stext now are at 10100000.
 
-The problem is kernel size related.
+The problem arises from section merging and a few branch distances
+in the kernel exceeding the PA 2.0 limit.
 
-Disassembly of section .text:
+The patch might not work if the long branch stubs don't work...
 
-10100000 <stext-0x100>:
-10100000:       20 2e b2 02     ldil L%1019d800,r1
-10100004:       e0 20 2c 7a     be,n 63c(sr4,r1)
-...
-
-We have a bunch of long branch stubs at the beginning of the kernel.
+Another approach might be to add -mlong-calls to CFLAGS.  However,
+these calls are less efficient.
 
 Dave
 --
@@ -42,3 +53,35 @@ John David Anglin	dave.anglin@bell.net
 
 
 
+--Apple-Mail-21-307738125
+Content-Disposition: attachment; filename="vmlinux.lds.S.diff.txt"
+Content-Type: text/plain; x-unix-mode=0644; name="vmlinux.lds.S.diff.txt"
+Content-Transfer-Encoding: 7bit
+
+diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
+index fa6f2b8..64a9998 100644
+--- a/arch/parisc/kernel/vmlinux.lds.S
++++ b/arch/parisc/kernel/vmlinux.lds.S
+@@ -50,8 +50,10 @@ SECTIONS
+ 	. = KERNEL_BINARY_TEXT_START;
+ 
+ 	_text = .;		/* Text and read-only data */
+-	.text ALIGN(16) : {
++	.head ALIGN(16) : {
+ 		HEAD_TEXT
++	} = 0
++	.text ALIGN(16) : {
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+ 		LOCK_TEXT
+@@ -65,7 +67,7 @@ SECTIONS
+ 		*(.fixup)
+ 		*(.lock.text)		/* out-of-line lock text */
+ 		*(.gnu.warning)
+-	} = 0
++	}
+ 	/* End of text section */
+ 	_etext = .;
+ 
+
+--Apple-Mail-21-307738125--
