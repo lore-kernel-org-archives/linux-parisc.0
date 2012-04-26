@@ -1,76 +1,47 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: hppa: glibc and gcc 4.6, "error: _rtld_global_ro causes a section
- type conflict"
-Date: Wed, 25 Apr 2012 00:05:46 -0400
-Message-ID: <CADZpyizS_HE4YLvw=ssi2Wi33q_c8L0MRECaUjhC7kKMtg6baQ@mail.gmail.com>
-References: <CADZpyix39LFL7MccuovarhdbpVCO8aSmBMH1hjK+4bn=ZYsXaA@mail.gmail.com>
-	<BLU0-SMTP9C263F5C55BC27550263497260@phx.gbl>
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: Re: Boot failure with 32bit kernel
+Date: Thu, 26 Apr 2012 10:48:25 +0200
+Message-ID: <20120426104825.06b5cec8@driller.lan>
+References: <20120419102608.1834003e@driller.lan>
+	<BLU0-SMTP60C76C814A1780515CC0B297200@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc <linux-parisc@vger.kernel.org>,
-	libc-ports@sourceware.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-parisc <linux-parisc@vger.kernel.org>
 To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP9C263F5C55BC27550263497260@phx.gbl>
+In-Reply-To: <BLU0-SMTP60C76C814A1780515CC0B297200@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Apr 24, 2012 at 7:55 PM, John David Anglin <dave.anglin@bell.ne=
-t> wrote:
-> On 15-Apr-12, at 11:00 AM, Carlos O'Donell wrote:
->
->> When compiling glibc on magnum with gcc-4.6 I get an odd failure abo=
-ut
->> section type conflicts.
->
->
->
-> After discussing the issue with Jakub Jelinek, =A0it appears the bug =
-is caused
-> by placing
-> function labels (plabels) in the constant pool.
+On Sun, 22 Apr 2012 08:20:23 -0400
+John David Anglin <dave.anglin@bell.net> wrote:
+> 
+> Could you try the attached patch?  It adjusts the section arrangement
+> so that the long branch stubs don't appear at the start of .text.  As
+> a result,
+> _stext and stext now are at 10100000.
 
-Interesting.
+Works like a charm. I was able to boot all the kernels I had issue with.
 
-> PA has done this for longer
-> than I can
-> remember, but it doesn't appear necessary. =A0As you know, only ia64 =
-and pa
-> use plabels.
+Tested-by: Guy Martin <gmsoft@tuxicoman.be>
 
-Yes, we both rely on the plabel code in glibc.
+Thanks a lot !
 
-> This causes the setting of default flags for .data.rel.ro which confl=
-ict
-> with those needed
-> for _rtld_global_ro in the dynamic linker. =A0The problem doesn't hav=
-e
-> anything directly
-> to do with the handling of the variable _rtld_global_ro. =A0This was =
-what was
-> confusing
-> me as everything seemed generic.
+  Guy
 
-Me too.
+> 
+> The problem arises from section merging and a few branch distances
+> in the kernel exceeding the PA 2.0 limit.
+> 
+> The patch might not work if the long branch stubs don't work...
+> 
+> Another approach might be to add -mlong-calls to CFLAGS.  However,
+> these calls are less efficient.
+> 
+> Dave
+> --
+> John David Anglin	dave.anglin@bell.net
+> 
+> 
 
-> I am testing a fix. =A0Your testcase compiles successfully with the f=
-ix.
 
-Excellent!
-
-> The issue is incredibly subtle. =A0I would guess it was just a matter=
- of luck
-> that other targets
-> aren't affected given that the code in rtld.c is not exactly exactly =
-kosher
-> from GCC POV.
-
-The dynamic linker isn't exactly kosher :-)
-
-Cheers,
-Carlos.
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
