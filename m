@@ -1,57 +1,33 @@
-From: Jiri Slaby <jslaby@suse.cz>
-Subject: Re: [PATCH] Revert 5dd5bc40f3b6e0ccdaad948dbadc94ad0906cb25
-Date: Sat, 05 May 2012 09:39:38 +0200
-Message-ID: <4FA4D93A.6090103@suse.cz>
-References: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com> <Pine.LNX.4.64.1205042259000.18896@file.rdu.redhat.com>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: [PATCH] Fix compile failure on PA-RISC
+Date: Sat, 5 May 2012 11:58:51 +0100
+Message-ID: <20120505115851.1fecbe50@pyramind.ukuu.org.uk>
+References: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Guy Martin <gmsof@tuxicoman.be>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 To: Mikulas Patocka <mpatocka@redhat.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.1205042259000.18896@file.rdu.redhat.com>
+In-Reply-To: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 05/05/2012 05:04 AM, Mikulas Patocka wrote:
+On Fri, 4 May 2012 22:58:32 -0400 (EDT)
+Mikulas Patocka <mpatocka@redhat.com> wrote:
+
 > Hi
 > 
-> This patch reverts commit 5dd5bc40f3b6e0ccdaad948dbadc94ad0906cb25.
+> This patch fixes compile failure on PA-RISC.
 > 
-> The commit 5dd5bc40f3b6e0ccdaad948dbadc94ad0906cb25 causes system lockup 
-> when pdc is used as a boot console.
-> 
-> The kernel boots, but it locks up when transferring control to userspace 
-> --- the message "INIT: version 2.86 booting" is not printed and the 
-> computer halts. With the patch reverted, the system starts normally on 
-> pdc.
-...
-> --- a/arch/parisc/kernel/pdc_cons.c
-> +++ b/arch/parisc/kernel/pdc_cons.c
-...
-> @@ -104,10 +103,8 @@ static int pdc_console_tty_open(struct tty_struct *tty, struct file *filp)
->  
->  static void pdc_console_tty_close(struct tty_struct *tty, struct file *filp)
->  {
-> -	if (!tty->count) {
-> +	if (!tty->count)
-
-Heh, I cannot find a bug in the patch proper. However this test is and
-always was bogus. Does changing "!tty->count" to "tty->count == 1" help?
-
->  		del_timer_sync(&pdc_console_timer);
-> -		tty_port_tty_set(&tty_port, NULL);
-> -	}
->  }
->  
->  static int pdc_console_tty_write(struct tty_struct *tty, const unsigned char *buf, int count)
-
-regards,
--- 
-js
-suse labs
+> BTW. if the PA-RISC port is uncompilable for all 3.4-rc versions (and 
+> contains two other bugs that prevent it from booting) ... does it mean 
+> that I'm the only one who is using PA-RISC with recent kernel?
 
 
+Probably - and if so would you please get the NO_IRQ define fixed because
+it seems parisc also has no maintainer any more 8)
+
+Alan
