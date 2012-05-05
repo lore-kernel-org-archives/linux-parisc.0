@@ -1,37 +1,60 @@
-From: Helge Deller <deller@gmx.de>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Subject: Re: [PATCH] Fix compile failure on PA-RISC
-Date: Sat, 05 May 2012 23:24:05 +0200
-Message-ID: <4FA59A75.8080402@gmx.de>
-References: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com> <1798237.g4OIBKAx4s@donald.sf-tec.de> <Pine.LNX.4.64.1205051445360.2623@file.rdu.redhat.com> <BLU0-SMTP81AFFA5151451BADCB23B3972D0@phx.gbl>
+Date: Sun, 06 May 2012 00:00:43 +0200
+Message-ID: <4696140.nzSZDxnI1S@donald.sf-tec.de>
+References: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com> <Pine.LNX.4.64.1205051448400.2623@file.rdu.redhat.com> <CA+55aFy2O8KcLC-yGCG2ZRpCpAdZ_T7z-sSme4fMrXG=YNAAhA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: multipart/signed; boundary="nextPart8628527.YMkJWkif5a"; micalg="pgp-sha1"; protocol="application/pgp-signature"
 Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: John David Anglin <dave.anglin@bell.net>
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP81AFFA5151451BADCB23B3972D0@phx.gbl>
+In-Reply-To: <CA+55aFy2O8KcLC-yGCG2ZRpCpAdZ_T7z-sSme4fMrXG=YNAAhA@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 05/05/2012 10:09 PM, John David Anglin wrote:
-> On 5-May-12, at 2:55 PM, Mikulas Patocka wrote:
+
+--nextPart8628527.YMkJWkif5a
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="ISO-8859-1"
+
+Linus Torvalds wrote:
+> On Sat, May 5, 2012 at 11:53 AM, Mikulas Patocka <mpatocka@redhat.com> 
+wrote:
+> > What NO_IRQ problem do you mean? There is
+> > #define NO_IRQ          (-1)
+> > in arch/parisc/include/asm/irq.h.
 > 
->> I acknowledge that your patches work. So send them directly to Linus. I
->> think there is not much maintenance being done on PA-RISC.
+> That's the one he means.
 > 
-> James wrote back in March "I haven't yet actually tried git head on parisc
-> (and I won't be able to until I actually get my machines back [currently being
-> shipped across the atlantic]) but if there's a problem it will show up quickly:
-> parisc actually uses cpu hotplug to boot its secondary cpus."
+> Switching it to zero and testing that things still work would be
+> appreciated.
+> 
+> Much code already knows that NO_IRQ is supposed to be zero, and
+> there's tons of drivers that just do the (correct!) "if (!dev->irq)"
+> kind of thing.
+> 
+> Any architecture that has a non-zero NO_IRQ is basically broken.
+> Always has been.
 
-> Helge resigned due to lack of time.
+The stuff in drivers/parisc/gsc.c doesn't look as if it would survive that 
+change.
 
-I'm still alive and was still reading the mailing list.
-And I'm planning to test some newer kernels very soon again :-)
-So, many thanks from my side to everyone who sent patches in the past
-(incl. Mikulas, Rolf and others).
+Eike
+--nextPart8628527.YMkJWkif5a
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
 
-Helge
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
+
+iEYEABECAAYFAk+loxkACgkQXKSJPmm5/E6KQQCeIUj/xTTc2TaeoMjlB9IRCEXF
+JPsAn0UvZ8cpqwOwRgVbJh+PWpzwwMWB
+=pn4l
+-----END PGP SIGNATURE-----
+
+--nextPart8628527.YMkJWkif5a--
+
