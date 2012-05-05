@@ -1,67 +1,57 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: [PATCH] Fix compile failure on PA-RISC
-Date: Sat, 05 May 2012 08:55:37 +0200
-Message-ID: <1798237.g4OIBKAx4s@donald.sf-tec.de>
-References: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com>
+From: Jiri Slaby <jslaby@suse.cz>
+Subject: Re: [PATCH] Revert 5dd5bc40f3b6e0ccdaad948dbadc94ad0906cb25
+Date: Sat, 05 May 2012 09:39:38 +0200
+Message-ID: <4FA4D93A.6090103@suse.cz>
+References: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com> <Pine.LNX.4.64.1205042259000.18896@file.rdu.redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart22272283.5pjb6P5pYs"; micalg="pgp-sha1"; protocol="application/pgp-signature"
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Guy Martin <gmsof@tuxicoman.be>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 To: Mikulas Patocka <mpatocka@redhat.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com>
+In-Reply-To: <Pine.LNX.4.64.1205042259000.18896@file.rdu.redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
---nextPart22272283.5pjb6P5pYs
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="US-ASCII"
-
-Mikulas Patocka wrote:
+On 05/05/2012 05:04 AM, Mikulas Patocka wrote:
 > Hi
 > 
-> This patch fixes compile failure on PA-RISC.
+> This patch reverts commit 5dd5bc40f3b6e0ccdaad948dbadc94ad0906cb25.
 > 
-> BTW. if the PA-RISC port is uncompilable for all 3.4-rc versions (and
-> contains two other bugs that prevent it from booting) ... does it mean
-> that I'm the only one who is using PA-RISC with recent kernel?
+> The commit 5dd5bc40f3b6e0ccdaad948dbadc94ad0906cb25 causes system lockup 
+> when pdc is used as a boot console.
 > 
-> Mikulas
-> 
-> ---
-> 
-> Fix compile failure on PA-RISC
-> 
-> This patch fixes compile error on PA-RISC.
-> 
-> The problem is this:
-> linux/bitops.h includes asm/bitops.h. Through a chain of dependencies
-> asm/bitops.h includes asm/page.h and asm/page.h needs function fls and
-> others defined in asm/bitops.h and linux/bitops.h --- and these
-> functions are not yet defined because the files linux/bitops.h and
-> asm/bitops.h hasn't been fully processed.
+> The kernel boots, but it locks up when transferring control to userspace 
+> --- the message "INIT: version 2.86 booting" is not printed and the 
+> computer halts. With the patch reverted, the system starts normally on 
+> pdc.
+...
+> --- a/arch/parisc/kernel/pdc_cons.c
+> +++ b/arch/parisc/kernel/pdc_cons.c
+...
+> @@ -104,10 +103,8 @@ static int pdc_console_tty_open(struct tty_struct *tty, struct file *filp)
+>  
+>  static void pdc_console_tty_close(struct tty_struct *tty, struct file *filp)
+>  {
+> -	if (!tty->count) {
+> +	if (!tty->count)
 
-I've posted a set of patches on 2012-04-21 both on linux-kernel and linux-
-parisc, but apart from one ACK I got no reaction.
+Heh, I cannot find a bug in the patch proper. However this test is and
+always was bogus. Does changing "!tty->count" to "tty->count == 1" help?
 
-I did only move the definition of PAGE0 from asm/pdc.h to asm/page.h and fixed 
-another bunch of breakage that was detected while fixing this.
+>  		del_timer_sync(&pdc_console_timer);
+> -		tty_port_tty_set(&tty_port, NULL);
+> -	}
+>  }
+>  
+>  static int pdc_console_tty_write(struct tty_struct *tty, const unsigned char *buf, int count)
 
-Eike
---nextPart22272283.5pjb6P5pYs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
+regards,
+-- 
+js
+suse labs
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iEYEABECAAYFAk+kzvAACgkQXKSJPmm5/E5FBwCgn95gK4TJKMnOv6+0W/xsY5g9
-AJkAoJVfpI39SqRJ+1TMZnNBFIqfRC2t
-=6/Ee
------END PGP SIGNATURE-----
-
---nextPart22272283.5pjb6P5pYs--
 
