@@ -1,38 +1,45 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: [PATCH] Fix compile failure on PA-RISC
-Date: Sat, 5 May 2012 11:55:03 -0700
-Message-ID: <CA+55aFy2O8KcLC-yGCG2ZRpCpAdZ_T7z-sSme4fMrXG=YNAAhA@mail.gmail.com>
-References: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com>
- <20120505115851.1fecbe50@pyramind.ukuu.org.uk> <Pine.LNX.4.64.1205051448400.2623@file.rdu.redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
+Date: Sat, 5 May 2012 16:09:52 -0400
+Message-ID: <BLU0-SMTP81AFFA5151451BADCB23B3972D0@phx.gbl>
+References: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com> <1798237.g4OIBKAx4s@donald.sf-tec.de> <Pine.LNX.4.64.1205051445360.2623@file.rdu.redhat.com>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 To: Mikulas Patocka <mpatocka@redhat.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.1205051448400.2623@file.rdu.redhat.com>
-List-ID: <linux-kernel.vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.1205051445360.2623@file.rdu.redhat.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, May 5, 2012 at 11:53 AM, Mikulas Patocka <mpatocka@redhat.com> =
-wrote:
->
-> What NO_IRQ problem do you mean? There is
-> #define NO_IRQ =A0 =A0 =A0 =A0 =A0(-1)
-> in arch/parisc/include/asm/irq.h.
+On 5-May-12, at 2:55 PM, Mikulas Patocka wrote:
 
-That's the one he means.
+> I acknowledge that your patches work. So send them directly to  
+> Linus. I
+> think there is not much maintenance being done on PA-RISC.
 
-Switching it to zero and testing that things still work would be apprec=
-iated.
+James wrote back in March "I haven't yet actually tried git head on  
+parisc
+(and I won't be able to until I actually get my machines back  
+[currently being
+shipped across the atlantic]) but if there's a problem it will show up  
+quickly:
+parisc actually uses cpu hotplug to boot its secondary cpus."
 
-Much code already knows that NO_IRQ is supposed to be zero, and
-there's tons of drivers that just do the (correct!) "if (!dev->irq)"
-kind of thing.
+Helge resigned due to lack of time.
 
-Any architecture that has a non-zero NO_IRQ is basically broken.
-Always has been.
+This is my understanding as to why there is a maintenance gap.
 
-                    Linus
+For what I have been doing, I only use stable kernels.  I'm currently
+running 3.3.4.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
