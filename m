@@ -1,30 +1,37 @@
-From: Peter Zijlstra <peterz@infradead.org>
-Subject: Re: 5fbd036b552f633abb394a319f7c62a5c86a9cd7 breaks PA-RISC boot
-Date: Sat, 05 May 2012 22:33:26 +0200
-Message-ID: <1336250006.2463.139.camel@laptop>
-References: <Pine.LNX.4.64.1205042305250.18896@file.rdu.redhat.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] Fix compile failure on PA-RISC
+Date: Sat, 05 May 2012 23:24:05 +0200
+Message-ID: <4FA59A75.8080402@gmx.de>
+References: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com> <1798237.g4OIBKAx4s@donald.sf-tec.de> <Pine.LNX.4.64.1205051445360.2623@file.rdu.redhat.com> <BLU0-SMTP81AFFA5151451BADCB23B3972D0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Stepan Moskovchenko <stepanm@codeaurora.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@elte.hu>,
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Mikulas Patocka <mpatocka@redhat.com>,
+	Rolf Eike Beer <eike-kernel@sf-tec.de>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-To: Mikulas Patocka <mpatocka@redhat.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.1205042305250.18896@file.rdu.redhat.com>
-List-ID: <linux-kernel.vger.kernel.org>
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <BLU0-SMTP81AFFA5151451BADCB23B3972D0@phx.gbl>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2012-05-04 at 23:26 -0400, Mikulas Patocka wrote:
-> Your patch 5fbd036b552f633abb394a319f7c62a5c86a9cd7 breaks PA-RISC boot. I 
-> have a dual-core PA-8800. With the patch applied, the kernel crashes with 
-> these messages. The timer structures are apparently corrupted, as the 
-> timer sees a negative amount of delayed cycles: 
+On 05/05/2012 10:09 PM, John David Anglin wrote:
+> On 5-May-12, at 2:55 PM, Mikulas Patocka wrote:
+> 
+>> I acknowledge that your patches work. So send them directly to Linus. I
+>> think there is not much maintenance being done on PA-RISC.
+> 
+> James wrote back in March "I haven't yet actually tried git head on parisc
+> (and I won't be able to until I actually get my machines back [currently being
+> shipped across the atlantic]) but if there's a problem it will show up quickly:
+> parisc actually uses cpu hotplug to boot its secondary cpus."
 
-You'll find:
+> Helge resigned due to lack of time.
 
-  http://marc.info/?l=linux-parisc&m=133241790810604&w=2
+I'm still alive and was still reading the mailing list.
+And I'm planning to test some newer kernels very soon again :-)
+So, many thanks from my side to everyone who sent patches in the past
+(incl. Mikulas, Rolf and others).
 
-will probably fix the issue.
+Helge
