@@ -1,45 +1,30 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] Fix compile failure on PA-RISC
-Date: Sat, 5 May 2012 16:09:52 -0400
-Message-ID: <BLU0-SMTP81AFFA5151451BADCB23B3972D0@phx.gbl>
-References: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com> <1798237.g4OIBKAx4s@donald.sf-tec.de> <Pine.LNX.4.64.1205051445360.2623@file.rdu.redhat.com>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: Re: 5fbd036b552f633abb394a319f7c62a5c86a9cd7 breaks PA-RISC boot
+Date: Sat, 05 May 2012 22:33:26 +0200
+Message-ID: <1336250006.2463.139.camel@laptop>
+References: <Pine.LNX.4.64.1205042305250.18896@file.rdu.redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Cc: Stepan Moskovchenko <stepanm@codeaurora.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@elte.hu>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 To: Mikulas Patocka <mpatocka@redhat.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.1205051445360.2623@file.rdu.redhat.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.1205042305250.18896@file.rdu.redhat.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 5-May-12, at 2:55 PM, Mikulas Patocka wrote:
+On Fri, 2012-05-04 at 23:26 -0400, Mikulas Patocka wrote:
+> Your patch 5fbd036b552f633abb394a319f7c62a5c86a9cd7 breaks PA-RISC boot. I 
+> have a dual-core PA-8800. With the patch applied, the kernel crashes with 
+> these messages. The timer structures are apparently corrupted, as the 
+> timer sees a negative amount of delayed cycles: 
 
-> I acknowledge that your patches work. So send them directly to  
-> Linus. I
-> think there is not much maintenance being done on PA-RISC.
+You'll find:
 
-James wrote back in March "I haven't yet actually tried git head on  
-parisc
-(and I won't be able to until I actually get my machines back  
-[currently being
-shipped across the atlantic]) but if there's a problem it will show up  
-quickly:
-parisc actually uses cpu hotplug to boot its secondary cpus."
+  http://marc.info/?l=linux-parisc&m=133241790810604&w=2
 
-Helge resigned due to lack of time.
-
-This is my understanding as to why there is a maintenance gap.
-
-For what I have been doing, I only use stable kernels.  I'm currently
-running 3.3.4.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+will probably fix the issue.
