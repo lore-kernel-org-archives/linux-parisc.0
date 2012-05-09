@@ -1,45 +1,31 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: Issue booting v2.6.39 .. v3.4-rc6 on hp712/100
-Date: Wed, 09 May 2012 08:53:23 +0200
-Message-ID: <41786065.U2qKzXR3uX@donald.sf-tec.de>
-References: <4FA9975C.5060708@bergerie>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: [PATCH] Fix compile failure on PA-RISC
+Date: Wed, 9 May 2012 13:01:11 +0100
+Message-ID: <20120509130111.458b1660@pyramind.ukuu.org.uk>
+References: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com>
+	<20120505115851.1fecbe50@pyramind.ukuu.org.uk>
+	<Pine.LNX.4.64.1205051448400.2623@file.rdu.redhat.com>
+	<CA+55aFy2O8KcLC-yGCG2ZRpCpAdZ_T7z-sSme4fMrXG=YNAAhA@mail.gmail.com>
+	<Pine.LNX.4.64.1205082259350.16707@file.rdu.redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2319414.k4sKqThIxP"; micalg="pgp-sha1"; protocol="application/pgp-signature"
-Cc: linux-parisc@vger.kernel.org
-To: Vincent <vincent.stehle@laposte.net>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+To: Mikulas Patocka <mpatocka@redhat.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4FA9975C.5060708@bergerie>
+In-Reply-To: <Pine.LNX.4.64.1205082259350.16707@file.rdu.redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+> And what about x86? --- irq 0 is used for timer and there is
+> void __init setup_default_timer_irq(void)
+> {
+>         setup_irq(0, &irq0);
+> }
 
---nextPart2319414.k4sKqThIxP
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="ISO-8859-1"
+That's an internal curio not exposed outside (or at least not in a way
+that matters).
 
-Vincent wrote:
-> Hi parisc folks,
-> 
-> I have noticed that the mainline kernel won't boot any more on my
-> hp712/100, starting with v2.6.39. It panics in
-> flush_instruction_cache_local.
-
-See the mail thread "Boot error using 3.2.1: swapper (pid 1): Illegal 
-instruction (code 8)" I started when I first hit this on my 705. But James 
-doesn't care.
-
-Eike
---nextPart2319414.k4sKqThIxP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iEYEABECAAYFAk+qFGsACgkQXKSJPmm5/E6BiwCfcXYVrmZoJQQel0fDJ8FEos7r
-bcoAn34m63DmZckNtBtlmfG6WdQb9tVx
-=fo0a
------END PGP SIGNATURE-----
-
---nextPart2319414.k4sKqThIxP--
-
+Alan
