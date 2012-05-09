@@ -1,49 +1,46 @@
-From: Grant Grundler <grantgrundler@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: [PATCH] Fix compile failure on PA-RISC
-Date: Wed, 9 May 2012 10:38:30 -0700
-Message-ID: <CAP6odjhVK0PjXQ_vLbK2dWs4CnnxJwmhcDPDV=qLJmxBMBBDJQ@mail.gmail.com>
+Date: Wed, 9 May 2012 10:51:06 -0700
+Message-ID: <CA+55aFwiLp1z+2mzkrFsid1WZQ0TQkcn8F2E6NL_AVR+m1fZ2w@mail.gmail.com>
 References: <Pine.LNX.4.64.1205042250130.18896@file.rdu.redhat.com>
-	<20120505115851.1fecbe50@pyramind.ukuu.org.uk>
-	<Pine.LNX.4.64.1205051448400.2623@file.rdu.redhat.com>
-	<20120506132413.28499956@pyramind.ukuu.org.uk>
+ <20120505115851.1fecbe50@pyramind.ukuu.org.uk> <Pine.LNX.4.64.1205051448400.2623@file.rdu.redhat.com>
+ <CA+55aFy2O8KcLC-yGCG2ZRpCpAdZ_T7z-sSme4fMrXG=YNAAhA@mail.gmail.com> <Pine.LNX.4.64.1205082259350.16707@file.rdu.redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Mikulas Patocka <mpatocka@redhat.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20120506132413.28499956@pyramind.ukuu.org.uk>
+In-Reply-To: <Pine.LNX.4.64.1205082259350.16707@file.rdu.redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, May 6, 2012 at 5:24 AM, Alan Cox <alan@lxorguk.ukuu.org.uk> wro=
-te:
->> What NO_IRQ problem do you mean? There is
->> #define NO_IRQ =A0 =A0 =A0 =A0 =A0(-1)
->> in arch/parisc/include/asm/irq.h.
+On Tue, May 8, 2012 at 8:20 PM, Mikulas Patocka <mpatocka@redhat.com> wrote:
+>>
+>> Switching it to zero and testing that things still work would be appreciated.
 >
-> It should be zero ready for us to get rid of it. Aa far as I can tell
-> pa-risc can just move to 0 without anything breaking. In fact some st=
-uff
-> like serial port polling on 8250 ports will begin to work if it's don=
-e.
+> It works, but there is plenty of interrupt controllers on PC-RISC and I
+> can only test it on C8000 with IO-SAPIC. I don't know if irq 0 is used on
+> some PA-RISC interrupt controller. It would be best if James Bottomley
+> tests it on his set of machines.
 
-Alan,
-Didn't this patch of yours go in?
-    http://www.spinics.net/lists/linux-parisc/msg03894.html
+Heh. It sounds like we have more PA-RISC machines than we have actual users.
 
-And it's amusing to read linus' previous rants on this issue from 2005:
-    http://lkml.indiana.edu/hypermail/linux/kernel/0511.2/1720.html
-    http://lkml.indiana.edu/hypermail/linux/kernel/0511.2/1741.html
-    http://lkml.indiana.edu/hypermail/linux/kernel/0511.2/1845.html
+> And what about x86? --- irq 0 is used for timer and there is
+> void __init setup_default_timer_irq(void)
+> {
+>        setup_irq(0, &irq0);
+> }
+> in arch/x86/kernel/time.c.
 
-cheers,
-grant
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+That's fine. There's no "irq" variable associated with it that people
+can test. No driver will ever see an irq number of zero, no dynamic
+irq code will ever see the zero.
+
+So x86 rules have always been that the way drivers etc test for irq
+existence has always been "irq 0 means no irq". Despite the fact that
+it internally uses irq0 for its own nefarious uses.
+
+                    Linus
