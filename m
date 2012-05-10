@@ -1,80 +1,40 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: [PATCH 3/5] parisc: drop include of asm/pdc.h from asm/hardware.h
-Date: Thu, 10 May 2012 23:03:26 +0200
-Message-ID: <5611809.8T3vflHrKr@donald.sf-tec.de>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 0/5] PA-RISC: fix compile
+Date: Thu, 10 May 2012 15:23:37 -0700
+Message-ID: <CA+55aFwWrkmqFPW=hOPCiNDE9CGXrwk85W7-vt2Aeg5EC1MtJQ@mail.gmail.com>
 References: <4430485.xEvkeJU8MB@donald.sf-tec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	torvalds@linux-foundation.org
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <4430485.xEvkeJU8MB@donald.sf-tec.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-It seems none of the symbols defined by pdc.h is needed, but it introdu=
-ces an
-include loop causing compile errors:
+On Thu, May 10, 2012 at 1:50 PM, Rolf Eike Beer <eike-kernel@sf-tec.de>=
+ wrote:
+>
+> =A0arch/parisc/include/asm/hardware.h | =A0 =A03 ++-
+> =A0arch/parisc/include/asm/page.h =A0 =A0 | =A0 =A06 ++++++
+> =A0arch/parisc/include/asm/pdc.h =A0 =A0 =A0| =A0 =A07 -------
+> =A0arch/parisc/include/asm/pgtable.h =A0| =A0 =A02 ++
+> =A0arch/parisc/include/asm/spinlock.h | =A0 =A02 ++
+> =A0arch/parisc/kernel/pdc_cons.c =A0 =A0 =A0| =A0 =A01 +
+> =A0arch/parisc/kernel/time.c =A0 =A0 =A0 =A0 =A0| =A0 =A01 +
+> =A0drivers/parisc/sba_iommu.c =A0 =A0 =A0 =A0 | =A0 =A01 +
+> =A0drivers/video/console/sticore.c =A0 =A0| =A0 =A02 ++
+> =A0include/asm-generic/getorder.h =A0 =A0 | =A0 =A02 +-
+> =A010 files changed, 18 insertions(+), 9 deletions(-)
 
-In file included from /home/buildbot/repos/linux/arch/parisc/include/as=
-m/spinlock.h:4:0,
-                 from /home/buildbot/repos/linux/arch/parisc/include/as=
-m/atomic.h:20,
-                 from /home/buildbot/repos/linux/include/linux/atomic.h=
-:4,
-                 from /home/buildbot/repos/linux/arch/parisc/include/as=
-m/bitops.h:56,
-                 from /home/buildbot/repos/linux/include/linux/bitops.h=
-:35,
-                 from /home/buildbot/repos/linux/include/asm-generic/ge=
-torder.h:7,
-                 from /home/buildbot/repos/linux/arch/parisc/include/as=
-m/page.h:162,
-                 from /home/buildbot/repos/linux/arch/parisc/include/as=
-m/pdc.h:346,
-                 from /home/buildbot/repos/linux/arch/parisc/include/as=
-m/hardware.h:5,
-                 from /home/buildbot/repos/linux/arch/parisc/kernel/har=
-dware.c:30:
-/home/buildbot/repos/linux/arch/parisc/include/asm/processor.h:74:16: e=
-rror: field =E2=80=98cpu_type=E2=80=99 has incomplete type
-/home/buildbot/repos/linux/arch/parisc/include/asm/processor.h:77:20: e=
-rror: field =E2=80=98model=E2=80=99 has incomplete type
-/home/buildbot/repos/linux/arch/parisc/include/asm/processor.h: In func=
-tion =E2=80=98parisc_requires_coherency=E2=80=99:
-/home/buildbot/repos/linux/arch/parisc/include/asm/processor.h:349:36: =
-error: =E2=80=98mako=E2=80=99 undeclared (first use in this function)
-/home/buildbot/repos/linux/arch/parisc/include/asm/processor.h:349:36: =
-note: each undeclared identifier is reported only once for each functio=
-n it appears in
-/home/buildbot/repos/linux/arch/parisc/include/asm/processor.h:350:30: =
-error: =E2=80=98mako2=E2=80=99 undeclared (first use in this function)
+The diffstat doesn't match the actual patches - there are no getorder.h=
+ changes.
 
-Signed-off-by: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Acked-by: Grant Grundler <grantgrundler@gmail.com>
----
- arch/parisc/include/asm/hardware.h |    1 -
- 1 file changed, 1 deletion(-)
+Hmm?
 
-diff --git a/arch/parisc/include/asm/hardware.h b/arch/parisc/include/a=
-sm/hardware.h
-index 036e703..d1d864b 100644
---- a/arch/parisc/include/asm/hardware.h
-+++ b/arch/parisc/include/asm/hardware.h
-@@ -2,7 +2,6 @@
- #define _PARISC_HARDWARE_H
-=20
- #include <linux/mod_devicetable.h>
--#include <asm/pdc.h>
-=20
- #define HWTYPE_ANY_ID		PA_HWTYPE_ANY_ID
- #define HVERSION_ANY_ID		PA_HVERSION_ANY_ID
---=20
-1.7.9.2
-
-
+                  Linus
 --
 To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
  in
