@@ -1,148 +1,95 @@
-From: Mikulas Patocka <mpatocka@redhat.com>
-Subject: [PATCH 5/5] PA-RISC: fix compile errors
-Date: Wed, 9 May 2012 18:35:14 -0400 (EDT)
-Message-ID: <Pine.LNX.4.64.1205091834240.1272@file.rdu.redhat.com>
-References: <Pine.LNX.4.64.1205091758310.1272@file.rdu.redhat.com>
- <Pine.LNX.4.64.1205091816470.1272@file.rdu.redhat.com>
- <Pine.LNX.4.64.1205091817170.1272@file.rdu.redhat.com>
- <Pine.LNX.4.64.1205091818160.1272@file.rdu.redhat.com>
- <Pine.LNX.4.64.1205091818430.1272@file.rdu.redhat.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>
-To: torvalds@linux-foundation.org
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: Issue booting v2.6.39 .. v3.4-rc6 on hp712/100
+Date: Wed, 9 May 2012 22:03:45 -0400
+Message-ID: <BLU0-SMTP65CF901B170B044925E85897160@phx.gbl>
+References: <4FA9975C.5060708@bergerie> <41786065.U2qKzXR3uX@donald.sf-tec.de> <4FAA9382.7040802@bell.net> <4FAADE2A.9080803@bergerie>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>,
+	linux-parisc@vger.kernel.org
+To: Vincent <vincent.stehle@laposte.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.1205091818430.1272@file.rdu.redhat.com>
+In-Reply-To: <4FAADE2A.9080803@bergerie>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+On 9-May-12, at 5:14 PM, Vincent wrote:
 
-This was defined in asm/pdc.h which needs to include asm/page.h for
-__PAGE_OFFSET. This leads to an include loop so that page.h eventually will
-include pdc.h again. While this is no problem because of header guards, it is
-a problem because some symbols may be undefined. Such an error is this:
+> On 05/09/2012 05:55 PM, John David Anglin wrote:
+>> Attached is an updated version.   It applies against 3.3.4.
+>
+> Thanks. It applies on v3.4-rc6 with no issue. However, it crashes at
+> boot in flush_dcache_page_asm.
 
-In file included from /home/buildbot/repos/linux/include/linux/bitops.h:35:0,
-                 from /home/buildbot/repos/linux/include/asm-generic/getorder.h:7,
-                 from /home/buildbot/repos/linux/arch/parisc/include/asm/page.h:162,
-                 from /home/buildbot/repos/linux/arch/parisc/include/asm/pdc.h:346,
-                 from /home/buildbot/repos/linux/arch/parisc/include/asm/processor.h:16,
-                 from /home/buildbot/repos/linux/arch/parisc/include/asm/spinlock.h:6,
-                 from /home/buildbot/repos/linux/arch/parisc/include/asm/atomic.h:20,
-                 from /home/buildbot/repos/linux/include/linux/atomic.h:4,
-                 from /home/buildbot/repos/linux/include/linux/sysfs.h:20,
-                 from /home/buildbot/repos/linux/include/linux/kobject.h:21,
-                 from /home/buildbot/repos/linux/include/linux/device.h:17,
-                 from /home/buildbot/repos/linux/include/linux/eisa.h:5,
-                 from /home/buildbot/repos/linux/arch/parisc/kernel/pci.c:11:
-/home/buildbot/repos/linux/arch/parisc/include/asm/bitops.h: In function "set_bit":
-/home/buildbot/repos/linux/arch/parisc/include/asm/bitops.h:82:2: error: implicit declaration of function "_atomic_spin_lock_irqsave" [-Werror=implicit-function-declaration]
-/home/buildbot/repos/linux/arch/parisc/include/asm/bitops.h:84:2: error: implicit declaration of function "_atomic_spin_unlock_irqrestore" [-Werror=implicit-function-declaration]
 
-Signed-off-by: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
----
- arch/parisc/include/asm/page.h  |    6 ++++++
- arch/parisc/include/asm/pdc.h   |    7 -------
- arch/parisc/kernel/pdc_cons.c   |    1 +
- arch/parisc/kernel/time.c       |    1 +
- drivers/parisc/sba_iommu.c      |    1 +
- drivers/video/console/sticore.c |    2 ++
- 6 files changed, 11 insertions(+), 7 deletions(-)
+I want to make a general comment.
 
-diff --git a/arch/parisc/include/asm/page.h b/arch/parisc/include/asm/page.h
-index a84cc1f..4e0e7db 100644
---- a/arch/parisc/include/asm/page.h
-+++ b/arch/parisc/include/asm/page.h
-@@ -160,5 +160,11 @@ extern int npmem_ranges;
- 
- #include <asm-generic/memory_model.h>
- #include <asm-generic/getorder.h>
-+#include <asm/pdc.h>
-+
-+#define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
-+
-+/* DEFINITION OF THE ZERO-PAGE (PAG0) */
-+/* based on work by Jason Eckhardt (jason@equator.com) */
- 
- #endif /* _PARISC_PAGE_H */
-diff --git a/arch/parisc/include/asm/pdc.h b/arch/parisc/include/asm/pdc.h
-index 4ca510b..7f0f2d2 100644
---- a/arch/parisc/include/asm/pdc.h
-+++ b/arch/parisc/include/asm/pdc.h
-@@ -343,8 +343,6 @@
- 
- #ifdef __KERNEL__
- 
--#include <asm/page.h> /* for __PAGE_OFFSET */
--
- extern int pdc_type;
- 
- /* Values for pdc_type */
-@@ -677,11 +675,6 @@ static inline char * os_id_to_string(u16 os_id) {
- 
- #endif /* __KERNEL__ */
- 
--#define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
--
--/* DEFINITION OF THE ZERO-PAGE (PAG0) */
--/* based on work by Jason Eckhardt (jason@equator.com) */
--
- /* flags of the device_path */
- #define	PF_AUTOBOOT	0x80
- #define	PF_AUTOSEARCH	0x40
-diff --git a/arch/parisc/kernel/pdc_cons.c b/arch/parisc/kernel/pdc_cons.c
-index 4f00459..9bbd2a5 100644
---- a/arch/parisc/kernel/pdc_cons.c
-+++ b/arch/parisc/kernel/pdc_cons.c
-@@ -50,6 +50,7 @@
- #include <linux/init.h>
- #include <linux/major.h>
- #include <linux/tty.h>
-+#include <asm/page.h>		/* for PAGE0 */
- #include <asm/pdc.h>		/* for iodc_call() proto and friends */
- 
- static DEFINE_SPINLOCK(pdc_console_lock);
-diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
-index 7c07743..70e105d 100644
---- a/arch/parisc/kernel/time.c
-+++ b/arch/parisc/kernel/time.c
-@@ -29,6 +29,7 @@
- #include <asm/uaccess.h>
- #include <asm/io.h>
- #include <asm/irq.h>
-+#include <asm/page.h>
- #include <asm/param.h>
- #include <asm/pdc.h>
- #include <asm/led.h>
-diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-index 8644d53..42cfcd9 100644
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -44,6 +44,7 @@
- #include <asm/ropes.h>
- #include <asm/mckinley.h>	/* for proc_mckinley_root */
- #include <asm/runway.h>		/* for proc_runway_root */
-+#include <asm/page.h>		/* for PAGE0 */
- #include <asm/pdc.h>		/* for PDC_MODEL_* */
- #include <asm/pdcpat.h>		/* for is_pdc_pat() */
- #include <asm/parisc-device.h>
-diff --git a/drivers/video/console/sticore.c b/drivers/video/console/sticore.c
-index 6468a29..39571f9 100644
---- a/drivers/video/console/sticore.c
-+++ b/drivers/video/console/sticore.c
-@@ -22,7 +22,9 @@
- #include <linux/font.h>
- 
- #include <asm/hardware.h>
-+#include <asm/page.h>
- #include <asm/parisc-device.h>
-+#include <asm/pdc.h>
- #include <asm/cacheflush.h>
- #include <asm/grfioctl.h>
- 
+The hp712/100 is an old machine.  There is no longer ANY support for
+parisc open source by HP.  If the parisc user community wants to  
+continue
+to run current open source software, then it will have to work  
+together to
+achieve this goal.
+
+In this case, we need to figure out what is wrong with the tmpalias code
+on the hp712/100.
+
+Debian dropping hppa after the lenny release was a wake up call.  There
+is pressure on other fronts.  See for example the following thread,
+http://gcc.gnu.org/ml/gcc/2012-05/msg00093.html
+
+If accepted, it would mean the end of 32-bit GCC development for parisc,
+and therefore the end of parisc linux and netbsd systems.  More  
+specifically,
+it may be reasonable to drop support for PA 1.1 systems.  So, we need
+to hear why it is important to continue to try to maintain PA 1.1  
+systems.
+
+In general, I have found Debian package maintainers to be supportive
+of bug fixes for parisc.  Most packages still support parisc and build  
+without
+problems but there is some porting work that needs doing.  For example,
+mono has seriously rotted.  Without a viable userspace, there's not much
+point to maintaining the kernel.
+
+I applaud Mikulas for reviewing Rolf Eike's fixes for 3.4 and posting  
+them to the
+linux-kernel list.  Maintainers have personal time issues and can't  
+always be
+available.
+
+I have spent hundreds of hours building packages, working on GCC,
+binutils, glibc and kernel bugs over the past year.  I have pushed fixes
+upstream and back ported them as quickly as possible because it takes
+considerable time before the fixes start to percolate downstream.
+
+I have a project to restart a Debian buildd for parisc and help would be
+appreciated.  The key issue is help in reporting and analyzing package
+bugs. and informing the appropriate maintainers when there are problems.
+
+I posted a number of kernel work in progress patches to the linux-parisc
+list but nobody bothered to test them except for Vincent today.  All I  
+know
+at this point is my rp3440 is much more stable and runs twice as fast as
+it used to with my cache patch.  As such, it can keep up with unstable.
+This took hundreds of kernel builds and considerable long term testing.
+
+The problem with cache bugs is they are difficult.  The parisc  
+architecture
+and the linux requirements for cache routines are inadequately  
+documented.
+So, it has become a trial and error exercise.  This has always been the
+critical problem for parisc-linux and the code in cache.c reflects this.
+
+It is impossible for volunteers to run and maintain a broad range of
+hardware.  So, we need to focus on the hardware that is used and will
+continue to used over the next few years.  If users want support, then
+they need to be willing to help as well.
+
+Regards,
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
 
