@@ -1,36 +1,56 @@
-From: Grant Grundler <grantgrundler@gmail.com>
-Subject: Re: [PATCH 1/5] PA-RISC: fix compile errors
-Date: Thu, 10 May 2012 09:24:21 -0700
-Message-ID: <CAP6odjh99vZvH2+rf1_9syOrnjws=9FQL-rwXuqQy4qMqF4k=w@mail.gmail.com>
-References: <Pine.LNX.4.64.1205091758310.1272@file.rdu.redhat.com>
-	<1975991.XFDT7t2eTm@donald.sf-tec.de>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: Issue booting v2.6.39 .. v3.4-rc6 on hp712/100
+Date: Thu, 10 May 2012 12:32:04 -0400
+Message-ID: <4FABED84.2040401@bell.net>
+References: <4FA9975C.5060708@bergerie> <4FAADE2A.9080803@bergerie> <BLU0-SMTP65CF901B170B044925E85897160@phx.gbl> <2075347.T446pQRFvO@donald.sf-tec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	torvalds@linux-foundation.org, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: Vincent <vincent.stehle@laposte.net>, linux-parisc@vger.kernel.org
 To: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1975991.XFDT7t2eTm@donald.sf-tec.de>
+In-Reply-To: <2075347.T446pQRFvO@donald.sf-tec.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, May 9, 2012 at 11:44 PM, Rolf Eike Beer <eike-kernel@sf-tec.de> wrote:
-> Mikulas Patocka wrote:
->> From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+On 5/10/2012 2:41 AM, Rolf Eike Beer wrote:
+> John David Anglin wrote:
 >
-> Thanks Mikulas for picking this up, but you have lost the patch subjects. I'll
-> resend the whole series tonight.
+>> I posted a number of kernel work in progress patches to the linux-parisc
+>> list but nobody bothered to test them except for Vincent today.  All I
+>> know
+>> at this point is my rp3440 is much more stable and runs twice as fast as
+>> it used to with my cache patch.  As such, it can keep up with unstable.
+>> This took hundreds of kernel builds and considerable long term testing.
+> I have your patch from a while back applied to my C8000 and I have not seen
+> any crashes or other issues yet (since beginning of April). Your futex patches
+> are on this machine for even longer. This of course means only that there is
+> no obvious breakage, I did not run any special testcase for any of those stuff,
+> but at least it doesn't randomly eats my machine.
 >
-> Grant, may I transform your comment on #3 (that's #4/6) on the original series
-> to an Acked-By or Reviewed-By?
-
-Yes - thanks for doing this. :)
-
-cheers,
-grant
-
+> I think Guy Martin has the cache patch running on at least one of his
+> machines.
 >
-> Eike
+> Related note: The #Gentoo-HPPA channel on Freenode has at least some activity
+> every other day, often even daily. The last 3 critical breakages I had (the
+> gcc bug breaking swap, the gcc bug breaking ext4 and the 3.4-rc compile
+> breakage) were first discussed there before posting anywhere. Because of that
+> the initial report e.g. to linux-parisc already had rather good data on what
+> is happening.
+>
+Thanks, it's good to know that there has been some other testing.
+
+Does anyone have a working 32-bit kernel using the tmpalias support?  It 
+would be nice
+to know if the problem is a 32-bit or PA 1.1 issue.
+
+I asked where the crash occurred because PA 2.0 mnemonics are used in 
+the tmpalias
+code.  On the other hand, if the failure occurs on the first flush 
+instruction, the issue is likely
+in the TLB insert code in entry.S.
+
+Dave
+
+-- 
+John David Anglin    dave.anglin@bell.net
+
