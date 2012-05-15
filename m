@@ -1,8 +1,9 @@
 From: "Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>
-Subject: [RESEND PATCH 0/2] arch/CPU hotplug: Add missing CPU Hotplug bits to
- fix nasty issues
-Date: Wed, 16 May 2012 00:31:43 +0530
-Message-ID: <20120515190115.22459.93544.stgit@srivatsabhat>
+Subject: [RESEND PATCH 1/2] parisc/CPU hotplug: Add missing call to
+ notify_cpu_starting()
+Date: Wed, 16 May 2012 00:32:17 +0530
+Message-ID: <20120515190157.22459.91924.stgit@srivatsabhat>
+References: <20120515190115.22459.93544.stgit@srivatsabhat>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Cc: akpm@linux-foundation.org, mingo@kernel.org,
@@ -15,37 +16,48 @@ Cc: akpm@linux-foundation.org, mingo@kernel.org,
 	linux-am33-list@redhat.com
 To: torvalds@linux-foundation.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20120515190115.22459.93544.stgit@srivatsabhat>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Unfortunately, some of the CPU Hotplug code has been duplicated in all of
-the architectures. And in some cases, very poorly (some architectures left
-out some of the important bits), to add to the woes.
+The scheduler depends on receiving the CPU_STARTING notification, without
+which we end up into a lot of trouble. So add the missing call to
+notify_cpu_starting() in the bringup code.
 
-Commit 5fbd036b552f633abb394a319f7c62a5c86a9cd7 (sched: Cleanup cpu_active
-madness) introduced some changes that made the scheduler rely on the
-CPU_STARTING notifier. And hence those architectures which forgot to
-send out the CPU_STARTING notification will almost surely get into trouble.
-(Xen is one example[1]).
+Signed-off-by: Srivatsa S. Bhat <srivatsa.bhat@linux.vnet.ibm.com>
+Acked-and-Tested-by: Mikulas Patocka <mpatocka@redhat.com>
+Acked-and-Tested-by: Tobias Ulmer <tobiasu@tmux.org>
+Tested-by: John David Anglin <dave.anglin@bell.net>
+---
 
-The proper fix would be to pull out these bits into generic CPU Hotplug code.
-But for now, fix this regression by adding the missing bits in the respective
-architectures.
+ arch/parisc/kernel/smp.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
 
-[1].https://lkml.org/lkml/2012/3/20/459
---
- Srivatsa S. Bhat (2):
-      parisc/CPU hotplug: Add missing call to notify_cpu_starting()
-      mn10300/CPU hotplug: Add missing call to notify_cpu_starting()
-
-
-  arch/mn10300/kernel/smp.c |    9 ++++++---
- arch/parisc/kernel/smp.c  |    8 +++++++-
- 2 files changed, 13 insertions(+), 4 deletions(-)
-
-
-
-Thanks,
-Srivatsa S. Bhat
-IBM Linux Technology Center
+diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
+index 0bb1d63..4dc7b79 100644
+--- a/arch/parisc/kernel/smp.c
++++ b/arch/parisc/kernel/smp.c
+@@ -31,6 +31,7 @@
+ #include <linux/delay.h>
+ #include <linux/bitops.h>
+ #include <linux/ftrace.h>
++#include <linux/cpu.h>
+ 
+ #include <linux/atomic.h>
+ #include <asm/current.h>
+@@ -295,8 +296,13 @@ smp_cpu_init(int cpunum)
+ 
+ 		printk(KERN_CRIT "CPU#%d already initialized!\n", cpunum);
+ 		machine_halt();
+-	}  
++	}
++
++	notify_cpu_starting(cpunum);
++
++	ipi_call_lock();
+ 	set_cpu_online(cpunum, true);
++	ipi_call_unlock();
+ 
+ 	/* Initialise the idle task for this CPU */
+ 	atomic_inc(&init_mm.mm_count);
 
