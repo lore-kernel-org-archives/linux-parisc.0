@@ -1,121 +1,51 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: Issue booting v2.6.39 .. v3.4-rc6 on hp712/100
-Date: Tue, 15 May 2012 20:50:50 +0200
-Message-ID: <4FB2A58A.9050706@gmx.de>
-References: <4FA9975C.5060708@bergerie>  <41786065.U2qKzXR3uX@donald.sf-tec.de> <4FAA9382.7040802@bell.net>  <4FAADE2A.9080803@bergerie> <BLU0-SMTP65CF901B170B044925E85897160@phx.gbl>  <4FAEE943.2030203@gmx.de> <BLU0-SMTP93504AF1AF0414C90D1EFB971A0@phx.gbl>  <4FB182F8.2040403@gmx.de> <BLU0-SMTP728EA90F4400504B2AF7A4971A0@phx.gbl>  <1337069366.3005.10.camel@dabdike.lan> <1337073212.3005.12.camel@dabdike.lan> <4FB29F13.5070801@bell.net>
+From: "Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>
+Subject: [RESEND PATCH 0/2] arch/CPU hotplug: Add missing CPU Hotplug bits to
+ fix nasty issues
+Date: Wed, 16 May 2012 00:31:43 +0530
+Message-ID: <20120515190115.22459.93544.stgit@srivatsabhat>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Vincent <vincent.stehle@laposte.net>,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset="utf-8"
+Cc: akpm@linux-foundation.org, mingo@kernel.org,
+	a.p.zijlstra@chello.nl, mpatocka@redhat.com,
+	stepanm@codeaurora.org, tglx@linutronix.de,
+	James.Bottomley@hansenpartnership.com, deller@gmx.de,
+	dhowells@redhat.com, yasutake.koichi@jp.panasonic.com,
+	eike-kernel@sf-tec.de, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, srivatsa.bhat@linux.vnet.ibm.com,
+	linux-am33-list@redhat.com
+To: torvalds@linux-foundation.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4FB29F13.5070801@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 05/15/2012 08:23 PM, John David Anglin wrote:
-> On 5/15/2012 5:13 AM, James Bottomley wrote:
->> On Tue, 2012-05-15 at 09:09 +0100, James Bottomley wrote:
->>> On Mon, 2012-05-14 at 18:38 -0400, John David Anglin wrote:
->>>> On 14-May-12, at 6:11 PM, Helge Deller wrote:
->>>>
->>>>> The B160L and the 715/64 (both 32bit-only PA1.X machines) crashed
->>>>> with the following trace.
->>>>> All logs attached.
->>>>>
->>>>> Any ideas?
->>>> This is exactly the same failure as reported by Vincent.
->>>>
->>>> The most likely problem is the PA 1.1 tmpalias support in entry.S is
->>>> broken.  For example,
->>>> the cache stride that is loaded in flush_dcache_page_asm to register
->>>> r1 is wrong.  Probably,
->>>> the do_alias macro is wrong for PA 1.1.  This is hunk of code that
->>>> should be executed
->>>> when a fdc non access fault occurs.
->>>>
->>>> nadtlb_check_alias_11:
->>>>           do_alias        spc,t0,t1,va,pte,prot,nadtlb_emulate
->>>>
->>>>           idtlba          pte,(va)
->>>>           idtlbp          prot,(va)
->>>>
->>>>           rfir
->>>>           nop
->>>>
->>>> The TLB insert instructions on PA 1.1 have a different format than on
->>>> PA 2.0.  I'm not sure
->>>> how this would corrupt r1.
->>>>
->>>> On the other hand, I had asked Vincent to put a "b,n ." instruction
->>>> just before the fdc loop,
->>>> boot, hit the TOC button, and capture the setup registers for the
->>>> flush operation.  It's possible
->>>> the stride variable has been clobbered.
->>> Actually, I don't think it's that.  I built a PA 1.1 only kernel and
->>> booted it successfully on the C360.  That exercises all the _11 paths,
->>> so I don't think there's a code fault.  I do think there's a non PA1.1
->>> instruction in there somewhere that the C360 wouldn't notice.
->> OK, I think this is the problem.  We have a depd instruction in do_alias
->> which is now in the _11 fault paths.
->>
->> This should be the fix, if someone wants to test it before I can get
->> around to building it.
->>
->> James
->>
->> ---
->>
->> diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
->> index 6f05944..5350342 100644
->> --- a/arch/parisc/kernel/entry.S
->> +++ b/arch/parisc/kernel/entry.S
->> @@ -581,7 +581,11 @@
->>        */
->>       cmpiclr,=    0x01,\tmp,%r0
->>       ldi        (_PAGE_DIRTY|_PAGE_READ|_PAGE_WRITE),\prot
->> +#ifdef CONFIG_64BIT
->>       depd,z        \prot,8,7,\prot
->> +#else
->> +    depw,z        \prot,8,7,\prot
->> +#endif
->>       /*
->>        * OK, it is in the temp alias region, check whether "from" or 
->> "to".
->>        * Check "subtle" note in pacache.S re: r23/r26.
-> Better check that this fix doesn't break 32-bit PA 2.0 as the seven 
-> bit are now being deposited
-> in a different place.
+Unfortunately, some of the CPU Hotplug code has been duplicated in all of
+the architectures. And in some cases, very poorly (some architectures left
+out some of the important bits), to add to the woes.
+
+Commit 5fbd036b552f633abb394a319f7c62a5c86a9cd7 (sched: Cleanup cpu_active
+madness) introduced some changes that made the scheduler rely on the
+CPU_STARTING notifier. And hence those architectures which forgot to
+send out the CPU_STARTING notification will almost surely get into trouble.
+(Xen is one example[1]).
+
+The proper fix would be to pull out these bits into generic CPU Hotplug code.
+But for now, fix this regression by adding the missing bits in the respective
+architectures.
+
+[1].https://lkml.org/lkml/2012/3/20/459
+--
+ Srivatsa S. Bhat (2):
+      parisc/CPU hotplug: Add missing call to notify_cpu_starting()
+      mn10300/CPU hotplug: Add missing call to notify_cpu_starting()
 
 
-James & Dave - good catches!
+  arch/mn10300/kernel/smp.c |    9 ++++++---
+ arch/parisc/kernel/smp.c  |    8 +++++++-
+ 2 files changed, 13 insertions(+), 4 deletions(-)
 
-James patch now let my 715/64 boot, but still crashes on my B160L:
 
-swapper (pid 1): Illegal instruction (code 8)
 
-      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001110000100001111 Not tainted
-r00-03  0004e10f 00000020 101198cc 17c245c0
-r04-07  ffeff000 17ec05f8 007d4000 17e60260
-r08-11  17c5100b fffff000 17e60310 00020000
-r12-15  00000ffc 0000000b 00000000 ffeff000
-r16-19  007d4000 10768020 10000000 17c22db8
-r20-23  17c245c8 108fc000 00000001 00000020
-r24-27  000007d4 0f2fffe0 0000fa80 106e2020
-r28-31  0f2ff000 000074ee 17c24640 000072e6
-sr00-03  00000000 00000001 00000000 00000000
-sr04-07  00000000 00000000 00000000 00000000
-
-IASQ: 00000000 00000000 IAOQ: 1010118c 10101190
-  IIR: 078113e0    ISR: 00000000  IOR: 0f2ff000
-  CPU:        0   CR30: 17c24000 CR31: f0102978
-  ORIG_R28: 17ebbe40
-  IAOQ[0]: flush_icache_page_asm+0x28/0x7c
-  IAOQ[1]: flush_icache_page_asm+0x2c/0x7c
-  RP(r2): flush_cache_page+0x90/0xb0
-Backtrace:
-
+Thanks,
+Srivatsa S. Bhat
+IBM Linux Technology Center
 
