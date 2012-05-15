@@ -1,8 +1,8 @@
 From: "Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>
-Subject: [RESEND PATCH 1/2] parisc/CPU hotplug: Add missing call to
+Subject: [RESEND PATCH 2/2] mn10300/CPU hotplug: Add missing call to
  notify_cpu_starting()
-Date: Wed, 16 May 2012 00:32:17 +0530
-Message-ID: <20120515190157.22459.91924.stgit@srivatsabhat>
+Date: Wed, 16 May 2012 00:32:37 +0530
+Message-ID: <20120515190228.22459.47763.stgit@srivatsabhat>
 References: <20120515190115.22459.93544.stgit@srivatsabhat>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -25,39 +25,45 @@ which we end up into a lot of trouble. So add the missing call to
 notify_cpu_starting() in the bringup code.
 
 Signed-off-by: Srivatsa S. Bhat <srivatsa.bhat@linux.vnet.ibm.com>
-Acked-and-Tested-by: Mikulas Patocka <mpatocka@redhat.com>
-Acked-and-Tested-by: Tobias Ulmer <tobiasu@tmux.org>
-Tested-by: John David Anglin <dave.anglin@bell.net>
 ---
 
- arch/parisc/kernel/smp.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+ arch/mn10300/kernel/smp.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
-index 0bb1d63..4dc7b79 100644
---- a/arch/parisc/kernel/smp.c
-+++ b/arch/parisc/kernel/smp.c
-@@ -31,6 +31,7 @@
- #include <linux/delay.h>
- #include <linux/bitops.h>
- #include <linux/ftrace.h>
+diff --git a/arch/mn10300/kernel/smp.c b/arch/mn10300/kernel/smp.c
+index 910dddf..9cd69ad 100644
+--- a/arch/mn10300/kernel/smp.c
++++ b/arch/mn10300/kernel/smp.c
+@@ -24,6 +24,7 @@
+ #include <linux/sched.h>
+ #include <linux/profile.h>
+ #include <linux/smp.h>
 +#include <linux/cpu.h>
+ #include <asm/tlbflush.h>
+ #include <asm/bitops.h>
+ #include <asm/processor.h>
+@@ -38,7 +39,6 @@
+ #include "internal.h"
  
- #include <linux/atomic.h>
- #include <asm/current.h>
-@@ -295,8 +296,13 @@ smp_cpu_init(int cpunum)
+ #ifdef CONFIG_HOTPLUG_CPU
+-#include <linux/cpu.h>
+ #include <asm/cacheflush.h>
  
- 		printk(KERN_CRIT "CPU#%d already initialized!\n", cpunum);
- 		machine_halt();
--	}  
-+	}
-+
-+	notify_cpu_starting(cpunum);
-+
+ static unsigned long sleep_mode[NR_CPUS];
+@@ -874,10 +874,13 @@ static void __init smp_online(void)
+ 
+ 	cpu = smp_processor_id();
+ 
+-	local_irq_enable();
++	notify_cpu_starting(cpu);
+ 
 +	ipi_call_lock();
- 	set_cpu_online(cpunum, true);
+ 	set_cpu_online(cpu, true);
+-	smp_wmb();
 +	ipi_call_unlock();
++
++	local_irq_enable();
+ }
  
- 	/* Initialise the idle task for this CPU */
- 	atomic_inc(&init_mm.mm_count);
+ /**
 
