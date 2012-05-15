@@ -1,134 +1,101 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Helge Deller <deller@gmx.de>
 Subject: Re: Issue booting v2.6.39 .. v3.4-rc6 on hp712/100
-Date: Tue, 15 May 2012 20:52:48 +0100
-Message-ID: <1337111568.3005.36.camel@dabdike.lan>
-References: <4FA9975C.5060708@bergerie>
-	  <41786065.U2qKzXR3uX@donald.sf-tec.de> <4FAA9382.7040802@bell.net>
-	  <4FAADE2A.9080803@bergerie> <BLU0-SMTP65CF901B170B044925E85897160@phx.gbl>
-	  <4FAEE943.2030203@gmx.de> <BLU0-SMTP93504AF1AF0414C90D1EFB971A0@phx.gbl>
-	  <4FB182F8.2040403@gmx.de> <BLU0-SMTP728EA90F4400504B2AF7A4971A0@phx.gbl>
-	  <1337069366.3005.10.camel@dabdike.lan>
-	 <1337073212.3005.12.camel@dabdike.lan> <4FB29F13.5070801@bell.net>
-	 <4FB2A58A.9050706@gmx.de>
+Date: Tue, 15 May 2012 21:59:45 +0200
+Message-ID: <4FB2B5B1.7000604@gmx.de>
+References: <4FA9975C.5060708@bergerie>  <41786065.U2qKzXR3uX@donald.sf-tec.de> <4FAA9382.7040802@bell.net>  <4FAADE2A.9080803@bergerie> <BLU0-SMTP65CF901B170B044925E85897160@phx.gbl>  <4FAEE943.2030203@gmx.de> <BLU0-SMTP93504AF1AF0414C90D1EFB971A0@phx.gbl>  <4FB182F8.2040403@gmx.de> <BLU0-SMTP728EA90F4400504B2AF7A4971A0@phx.gbl>  <1337069366.3005.10.camel@dabdike.lan> <1337073212.3005.12.camel@dabdike.lan> <4FB29F13.5070801@bell.net> <4FB2A58A.9050706@gmx.de> <4FB2AD78.1020002@bell.net> <4FB2B2A2.2020207@bell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: John David Anglin <dave.anglin@bell.net>,
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
 	Vincent <vincent.stehle@laposte.net>,
 	Rolf Eike Beer <eike-kernel@sf-tec.de>,
 	linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4FB2A58A.9050706@gmx.de>
+In-Reply-To: <4FB2B2A2.2020207@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2012-05-15 at 20:50 +0200, Helge Deller wrote:
-> On 05/15/2012 08:23 PM, John David Anglin wrote:
-> > On 5/15/2012 5:13 AM, James Bottomley wrote:
-> >> On Tue, 2012-05-15 at 09:09 +0100, James Bottomley wrote:
-> >>> On Mon, 2012-05-14 at 18:38 -0400, John David Anglin wrote:
-> >>>> On 14-May-12, at 6:11 PM, Helge Deller wrote:
-> >>>>
-> >>>>> The B160L and the 715/64 (both 32bit-only PA1.X machines) crashed
-> >>>>> with the following trace.
-> >>>>> All logs attached.
-> >>>>>
-> >>>>> Any ideas?
-> >>>> This is exactly the same failure as reported by Vincent.
-> >>>>
-> >>>> The most likely problem is the PA 1.1 tmpalias support in entry.S is
-> >>>> broken.  For example,
-> >>>> the cache stride that is loaded in flush_dcache_page_asm to register
-> >>>> r1 is wrong.  Probably,
-> >>>> the do_alias macro is wrong for PA 1.1.  This is hunk of code that
-> >>>> should be executed
-> >>>> when a fdc non access fault occurs.
-> >>>>
-> >>>> nadtlb_check_alias_11:
-> >>>>           do_alias        spc,t0,t1,va,pte,prot,nadtlb_emulate
-> >>>>
-> >>>>           idtlba          pte,(va)
-> >>>>           idtlbp          prot,(va)
-> >>>>
-> >>>>           rfir
-> >>>>           nop
-> >>>>
-> >>>> The TLB insert instructions on PA 1.1 have a different format than on
-> >>>> PA 2.0.  I'm not sure
-> >>>> how this would corrupt r1.
-> >>>>
-> >>>> On the other hand, I had asked Vincent to put a "b,n ." instruction
-> >>>> just before the fdc loop,
-> >>>> boot, hit the TOC button, and capture the setup registers for the
-> >>>> flush operation.  It's possible
-> >>>> the stride variable has been clobbered.
-> >>> Actually, I don't think it's that.  I built a PA 1.1 only kernel and
-> >>> booted it successfully on the C360.  That exercises all the _11 paths,
-> >>> so I don't think there's a code fault.  I do think there's a non PA1.1
-> >>> instruction in there somewhere that the C360 wouldn't notice.
-> >> OK, I think this is the problem.  We have a depd instruction in do_alias
-> >> which is now in the _11 fault paths.
-> >>
-> >> This should be the fix, if someone wants to test it before I can get
-> >> around to building it.
-> >>
-> >> James
-> >>
-> >> ---
-> >>
-> >> diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-> >> index 6f05944..5350342 100644
-> >> --- a/arch/parisc/kernel/entry.S
-> >> +++ b/arch/parisc/kernel/entry.S
-> >> @@ -581,7 +581,11 @@
-> >>        */
-> >>       cmpiclr,=    0x01,\tmp,%r0
-> >>       ldi        (_PAGE_DIRTY|_PAGE_READ|_PAGE_WRITE),\prot
-> >> +#ifdef CONFIG_64BIT
-> >>       depd,z        \prot,8,7,\prot
-> >> +#else
-> >> +    depw,z        \prot,8,7,\prot
-> >> +#endif
-> >>       /*
-> >>        * OK, it is in the temp alias region, check whether "from" or 
-> >> "to".
-> >>        * Check "subtle" note in pacache.S re: r23/r26.
-> > Better check that this fix doesn't break 32-bit PA 2.0 as the seven 
-> > bit are now being deposited
-> > in a different place.
-> 
-> 
-> James & Dave - good catches!
-> 
-> James patch now let my 715/64 boot, but still crashes on my B160L:
-> 
-> swapper (pid 1): Illegal instruction (code 8)
-> 
->       YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00000000000001001110000100001111 Not tainted
-> r00-03  0004e10f 00000020 101198cc 17c245c0
-> r04-07  ffeff000 17ec05f8 007d4000 17e60260
-> r08-11  17c5100b fffff000 17e60310 00020000
-> r12-15  00000ffc 0000000b 00000000 ffeff000
-> r16-19  007d4000 10768020 10000000 17c22db8
-> r20-23  17c245c8 108fc000 00000001 00000020
-> r24-27  000007d4 0f2fffe0 0000fa80 106e2020
-> r28-31  0f2ff000 000074ee 17c24640 000072e6
-> sr00-03  00000000 00000001 00000000 00000000
-> sr04-07  00000000 00000000 00000000 00000000
-> 
-> IASQ: 00000000 00000000 IAOQ: 1010118c 10101190
->   IIR: 078113e0    ISR: 00000000  IOR: 0f2ff000
->   CPU:        0   CR30: 17c24000 CR31: f0102978
->   ORIG_R28: 17ebbe40
->   IAOQ[0]: flush_icache_page_asm+0x28/0x7c
->   IAOQ[1]: flush_icache_page_asm+0x2c/0x7c
->   RP(r2): flush_cache_page+0x90/0xb0
-> Backtrace:
+On 05/15/2012 09:46 PM, John David Anglin wrote:
+> On 5/15/2012 3:24 PM, John David Anglin wrote:
+>> James patch now let my 715/64 boot, but still crashes on my B160L:
+>>>
+>>> swapper (pid 1): Illegal instruction (code 8)
+>>>
+>>>      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+>>> PSW: 00000000000001001110000100001111 Not tainted
+>>> r00-03  0004e10f 00000020 101198cc 17c245c0
+>>> r04-07  ffeff000 17ec05f8 007d4000 17e60260
+>>> r08-11  17c5100b fffff000 17e60310 00020000
+>>> r12-15  00000ffc 0000000b 00000000 ffeff000
+>>> r16-19  007d4000 10768020 10000000 17c22db8
+>>> r20-23  17c245c8 108fc000 00000001 00000020
+>>> r24-27  000007d4 0f2fffe0 0000fa80 106e2020
+>>> r28-31  0f2ff000 000074ee 17c24640 000072e6
+>>> sr00-03  00000000 00000001 00000000 00000000
+>>> sr04-07  00000000 00000000 00000000 00000000
+>>>
+>>> IASQ: 00000000 00000000 IAOQ: 1010118c 10101190
+>>>  IIR: 078113e0    ISR: 00000000  IOR: 0f2ff000
+>>>  CPU:        0   CR30: 17c24000 CR31: f0102978
+>>>  ORIG_R28: 17ebbe40
+>>>  IAOQ[0]: flush_icache_page_asm+0x28/0x7c
+>>>  IAOQ[1]: flush_icache_page_asm+0x2c/0x7c
+>>>  RP(r2): flush_cache_page+0x90/0xb0
+>>> Backtrace:
+>> This one is in a different place: flush_icache_page_asm.  It has
+>> crashed on the first fic,m instruction.  Again it is an illegal 
+>> instruction.
+>>
+> Looking at the PA 1.1 arch, I see that the space register needs to be
+> explicitly specified on PA 1.1 (format 26).  The implicit (format 24)
+> instruction was added in PA 2.0.
+>
+> Could you try adding %sr0 to the fic instructions?
+no illegal instruction any longer, but "bad address"....
+I changed all to " fic,m           %r1(%sr0,%r28)"
 
-OK, so I assume one (the 715) has a shared D and I TLB and the b160
-doesn't?
 
-James
+
+Freeing unused kernel memory: 320k freed
+Backtrace:
+  [<101198cc>] flush_cache_page+0x90/0xb0
+  [<101b9b84>] do_wp_page+0x1e0/0x7b4
+  [<101bb970>] handle_pte_fault+0x284/0x7c0
+  [<101bbf74>] handle_mm_fault+0xc8/0x120
+  [<10118cc8>] do_page_fault+0x228/0x2d0
+  [<1011a838>] handle_interruption+0x1d4/0x6c4
+  [<10105078>] intr_check_sig+0x0/0x34
+
+
+Bad Address (null pointer deref?): Code=17 regs=17c244c0 (Addr=0f17d000)
+
+      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111100100001111 Not tainted
+r00-03  0004f90f 00000020 101198cc 17c24440
+r04-07  4017d4c4 17ebf498 007cd000 007cdb05
+r08-11  17ebee40 17ec55f4 107eb7c0 10768020
+r12-15  000007cd 17ebee74 000005f4 00050000
+r16-19  17c23098 17c24140 0011849c 17c22db8
+r20-23  0000004b 108fc000 00000000 00000000
+r24-27  000007cd 0f17dfe0 0000f9a0 106e2020
+r28-31  0f17d000 17c23098 17c244c0 6fffffff
+sr00-03  00000800 00000001 00000000 00000001
+sr04-07  00000000 00000000 00000000 00000000
+
+IASQ: 00000000 00000000 IAOQ: 1010118c 10101190
+  IIR: 078102a0    ISR: 00000800  IOR: 0f17d000
+  CPU:        0   CR30: 17c24000 CR31: f0102978
+  ORIG_R28: 17c51000
+  IAOQ[0]: flush_icache_page_asm+0x28/0x7c
+  IAOQ[1]: flush_icache_page_asm+0x2c/0x7c
+  RP(r2): flush_cache_page+0x90/0xb0
+Backtrace:
+  [<101198cc>] flush_cache_page+0x90/0xb0
+  [<101b9b84>] do_wp_page+0x1e0/0x7b4
+  [<101bb970>] handle_pte_fault+0x284/0x7c0
+  [<101bbf74>] handle_mm_fault+0xc8/0x120
+  [<10118cc8>] do_page_fault+0x228/0x2d0
+  [<1011a838>] handle_interruption+0x1d4/0x6c4
+  [<10105078>] intr_check_sig+0x0/0x34
 
 
