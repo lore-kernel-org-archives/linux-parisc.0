@@ -1,49 +1,49 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: Issue booting v2.6.39 .. v3.4-rc6 on hp712/100
-Date: Wed, 16 May 2012 21:07:54 +0200
-Message-ID: <4FB3FB0A.4070208@gmx.de>
-References: <4FA9975C.5060708@bergerie>	 <41786065.U2qKzXR3uX@donald.sf-tec.de> <4FAA9382.7040802@bell.net>	 <4FAADE2A.9080803@bergerie> <BLU0-SMTP65CF901B170B044925E85897160@phx.gbl>	 <4FAEE943.2030203@gmx.de> <BLU0-SMTP93504AF1AF0414C90D1EFB971A0@phx.gbl>	 <4FB182F8.2040403@gmx.de> <BLU0-SMTP728EA90F4400504B2AF7A4971A0@phx.gbl>	 <1337069366.3005.10.camel@dabdike.lan> <1337073212.3005.12.camel@dabdike.lan> <4FB2C411.4020408@bergerie>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: Build regressions/improvements in v3.4-rc7
+Date: Thu, 17 May 2012 09:51:21 +1000
+Message-ID: <1337212281.30558.17.camel@pasglop>
+References: <1337157034-22773-1-git-send-email-geert@linux-m68k.org>
+	 <CAMuHMdUtL4_mv-e-EQAZmNcb9dAT=PXB59i7Vuj2vf8NnaBFzQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	linux-parisc@vger.kernel.org
-To: Vincent <vincent.stehle@laposte.net>
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-kernel@vger.kernel.org,
+	Linuxppc-dev <linuxppc-dev@ozlabs.org>,
+	the arch/x86 maintainers <x86@kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Scott Wood <scottwood@freescale.com>,
+	Kumar Gala <galak@kernel.crashing.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4FB2C411.4020408@bergerie>
+In-Reply-To: <CAMuHMdUtL4_mv-e-EQAZmNcb9dAT=PXB59i7Vuj2vf8NnaBFzQ@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 05/15/2012 11:01 PM, Vincent wrote:
-> On 05/15/2012 11:13 AM, James Bottomley wrote:
-> (..)
->> OK, I think this is the problem.  We have a depd instruction in do_alias
->> which is now in the _11 fault paths.
->>
->> This should be the fix, if someone wants to test it before I can get
->> around to building it.
-> Hi James,
+On Wed, 2012-05-16 at 10:47 +0200, Geert Uytterhoeven wrote:
+> On Wed, May 16, 2012 at 10:30 AM, Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > JFYI, when comparing v3.4-rc7 to v3.4-rc6[3], the summaries are:
+> >  - build errors: +15/-14
+> 
+> 15 regressions:
+>   + arch/powerpc/platforms/512x/mpc512x_shared.c: error: 'enum
+> fsl_diu_monitor_port' declared inside parameter list [-Werror]:  =>
+> 70:9, 84:9, 88:36
+>   + arch/powerpc/platforms/512x/mpc512x_shared.c: error: 'return' with
+> a value, in function returning void [-Werror]:  => 189:2
+>   + arch/powerpc/platforms/512x/mpc512x_shared.c: error: function
+> declaration isn't a prototype [-Werror=strict-prototypes]:  => 69:5,
+> 88:6, 83:6, 187:1
+>   + arch/powerpc/platforms/512x/mpc512x_shared.c: error: its scope is
+> only this definition or declaration, which is probably not what you
+> want [-Werror]:  => 70:9
+>   + drivers/virt/fsl_hypervisor.c: error: 'MSR_GS' undeclared (first
+> use in this function):  => 799:80
 >
-> This makes my hp712 boot now; congrats!
->
-> Works for me with v3.4-rc6 and v3.4-rc7, with the following "patches pile":
->
-> depd patch     (http://www.spinics.net/lists/linux-parisc/msg04169.html)
-> sections patch (http://www.spinics.net/lists/linux-parisc/msg04091.html)
-> cache patch    (http://www.spinics.net/lists/linux-parisc/msg04120.html)
-> v3.4-rc7
-I can confirm that the "sections patch" mentioned above is needed for my 
-B160L as well.
-It probably happens since I build a monolithic kernel with all needed 
-modules built-in.
+> powerpc randconfig
+ 
+Thanks. These are all freescale platforms, the relevant people should be
+already but I've added Scott and Kumar to the CC list just in case.
 
-@James: Any chance to include this patch (or a similar one) into your 
-fixes branch?
-
-BTW, I still have issues with the B160L hanging after starting crond.... 
-looking into it now...
-
-Helge
-
+Cheers,
+Ben.
 
