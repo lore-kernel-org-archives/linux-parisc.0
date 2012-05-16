@@ -1,82 +1,49 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Build regressions/improvements in v3.4-rc7
-Date: Wed, 16 May 2012 17:59:56 +0200
-Message-ID: <CAMuHMdX13f4-3_Oe8bwZAnZpwDSV11Oxdgh--njiNGJ2KLAAww@mail.gmail.com>
-References: <1337157034-22773-1-git-send-email-geert@linux-m68k.org>
-	<CAMuHMdUtL4_mv-e-EQAZmNcb9dAT=PXB59i7Vuj2vf8NnaBFzQ@mail.gmail.com>
-	<1337179563.2985.80.camel@dabdike.int.hansenpartnership.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: Issue booting v2.6.39 .. v3.4-rc6 on hp712/100
+Date: Wed, 16 May 2012 21:07:54 +0200
+Message-ID: <4FB3FB0A.4070208@gmx.de>
+References: <4FA9975C.5060708@bergerie>	 <41786065.U2qKzXR3uX@donald.sf-tec.de> <4FAA9382.7040802@bell.net>	 <4FAADE2A.9080803@bergerie> <BLU0-SMTP65CF901B170B044925E85897160@phx.gbl>	 <4FAEE943.2030203@gmx.de> <BLU0-SMTP93504AF1AF0414C90D1EFB971A0@phx.gbl>	 <4FB182F8.2040403@gmx.de> <BLU0-SMTP728EA90F4400504B2AF7A4971A0@phx.gbl>	 <1337069366.3005.10.camel@dabdike.lan> <1337073212.3005.12.camel@dabdike.lan> <4FB2C411.4020408@bergerie>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-kernel@vger.kernel.org,
-	Linuxppc-dev <linuxppc-dev@ozlabs.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	"the arch/x86 maintainers" <x86@kernel.org>,
-	Dmitry Kasatkin <dmitry.kasatkin@intel.com>,
-	James Morris <jmorris@namei.org>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>,
+	Rolf Eike Beer <eike-kernel@sf-tec.de>,
+	linux-parisc@vger.kernel.org
+To: Vincent <vincent.stehle@laposte.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1337179563.2985.80.camel@dabdike.int.hansenpartnership.com>
+In-Reply-To: <4FB2C411.4020408@bergerie>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, May 16, 2012 at 4:46 PM, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> On Wed, 2012-05-16 at 10:47 +0200, Geert Uytterhoeven wrote:
->> On Wed, May 16, 2012 at 10:30 AM, Geert Uytterhoeven
->> <geert@linux-m68k.org> wrote:
->> =C2=A0 + lib/mpi/generic_mpih-mul1.c: error: inconsistent operand
->> constraints in an 'asm': =C2=A0=3D> 50:70
->> =C2=A0 + lib/mpi/generic_mpih-mul2.c: error: inconsistent operand
->> constraints in an 'asm': =C2=A0=3D> 49:70
->> =C2=A0 + lib/mpi/generic_mpih-mul3.c: error: inconsistent operand
->> constraints in an 'asm': =C2=A0=3D> 49:70
->> =C2=A0 + lib/mpi/mpih-div.c: error: inconsistent operand constraints=
- in an
->> 'asm': =C2=A0=3D> 135:122, 135:371, 97:122, 106:121, 106:370, 97:371
+On 05/15/2012 11:01 PM, Vincent wrote:
+> On 05/15/2012 11:13 AM, James Bottomley wrote:
+> (..)
+>> OK, I think this is the problem.  We have a depd instruction in do_alias
+>> which is now in the _11 fault paths.
 >>
->> parisc-allmodconfig
+>> This should be the fix, if someone wants to test it before I can get
+>> around to building it.
+> Hi James,
 >
-> Wow, lib/mpi/ is a complete horror: it's full of hand crafted asm cod=
-e.
-> The error in this case appears to be that umul_ppm() is implemented a=
-s
-> an xmpyu instruction. =C2=A0That's a floating point instruction. =C2=A0=
-We
-> deliberately compile the kernel with floating point disabled because =
-we
-> don't want to save and restore the floating point register file on ea=
-ch
-> context switch, hence the operand constraints are unsatisfiable.
+> This makes my hp712 boot now; congrats!
+>
+> Works for me with v3.4-rc6 and v3.4-rc7, with the following "patches pile":
+>
+> depd patch     (http://www.spinics.net/lists/linux-parisc/msg04169.html)
+> sections patch (http://www.spinics.net/lists/linux-parisc/msg04091.html)
+> cache patch    (http://www.spinics.net/lists/linux-parisc/msg04120.html)
+> v3.4-rc7
+I can confirm that the "sections patch" mentioned above is needed for my 
+B160L as well.
+It probably happens since I build a monolithic kernel with all needed 
+modules built-in.
 
-It also does fishy things on m68k, cfr. https://lkml.org/lkml/2012/3/11=
-/22
+@James: Any chance to include this patch (or a similar one) into your 
+fixes branch?
 
-> It appears to be completely untested on non-x86 and to have been
-> imported via the security tree ... what are we supposed to do with th=
-is?
-> I thought the general principle was that asm code was really supposed=
- to
-> be confined to the arch directories?
+BTW, I still have issues with the B160L hanging after starting crond.... 
+looking into it now...
 
-Kick it out again, or contain it in staging?
+Helge
 
-Gr{oetje,eeting}s,
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
