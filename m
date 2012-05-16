@@ -1,45 +1,68 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: Issue booting v2.6.39 .. v3.4-rc6 on hp712/100
-Date: Wed, 16 May 2012 15:59:26 +0100
-Message-ID: <1337180366.2985.81.camel@dabdike.int.hansenpartnership.com>
-References: <4FA9975C.5060708@bergerie>
-	  <41786065.U2qKzXR3uX@donald.sf-tec.de> <4FAA9382.7040802@bell.net>
-	  <4FAADE2A.9080803@bergerie> <BLU0-SMTP65CF901B170B044925E85897160@phx.gbl>
-	  <4FAEE943.2030203@gmx.de> <BLU0-SMTP93504AF1AF0414C90D1EFB971A0@phx.gbl>
-	  <4FB182F8.2040403@gmx.de> <BLU0-SMTP728EA90F4400504B2AF7A4971A0@phx.gbl>
-	  <1337069366.3005.10.camel@dabdike.lan>
-	 <1337073212.3005.12.camel@dabdike.lan> <4FB29F13.5070801@bell.net>
-	 <4FB2A58A.9050706@gmx.de> <4FB2AD78.1020002@bell.net>
-	 <4FB2B2A2.2020207@bell.net> <4FB2B5B1.7000604@gmx.de>
-	 <4FB2B71B.7090602@bell.net> <4FB2BC5F.3080905@gmx.de>
-	 <4FB2C129.90307@bell.net>
+From: "Kasatkin, Dmitry" <dmitry.kasatkin@intel.com>
+Subject: Re: Build regressions/improvements in v3.4-rc7
+Date: Wed, 16 May 2012 18:59:33 +0300
+Message-ID: <CALLzPKbEC0zwa0uRiLAkDYkRkL4EM8ZgSEn1DagqhZsT4MXgdQ@mail.gmail.com>
+References: <1337157034-22773-1-git-send-email-geert@linux-m68k.org>
+	<CAMuHMdUtL4_mv-e-EQAZmNcb9dAT=PXB59i7Vuj2vf8NnaBFzQ@mail.gmail.com>
+	<1337179563.2985.80.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Helge Deller <deller@gmx.de>, Vincent <vincent.stehle@laposte.net>,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4FB2C129.90307@bell.net>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-kernel@vger.kernel.org,
+	Linuxppc-dev <linuxppc-dev@ozlabs.org>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	"the arch/x86 maintainers" <x86@kernel.org>,
+	James Morris <jmorris@namei.org>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1337179563.2985.80.camel@dabdike.int.hansenpartnership.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2012-05-15 at 16:48 -0400, John David Anglin wrote:
-> On 5/15/2012 4:28 PM, Helge Deller wrote:
-> > Will you send your patches to Linus as he requested in the other mail?
-> You have the diff for the two PA 1.1 changes.  Suggest you send them.
-> I think these should go to stable as well as soon as it is verified that all
-> targets boot.
-> 
-> I think my cache-2 is more appropriate for linux-next.  There are a number
-> of subtle issues with it.  I am pleased that the users that have tried 
-> it have
-> been generally happy with it.
+On Wed, May 16, 2012 at 5:46 PM, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+> On Wed, 2012-05-16 at 10:47 +0200, Geert Uytterhoeven wrote:
+>> On Wed, May 16, 2012 at 10:30 AM, Geert Uytterhoeven
+>> <geert@linux-m68k.org> wrote:
+>> =C2=A0 + lib/mpi/generic_mpih-mul1.c: error: inconsistent operand
+>> constraints in an 'asm': =C2=A0=3D> 50:70
+>> =C2=A0 + lib/mpi/generic_mpih-mul2.c: error: inconsistent operand
+>> constraints in an 'asm': =C2=A0=3D> 49:70
+>> =C2=A0 + lib/mpi/generic_mpih-mul3.c: error: inconsistent operand
+>> constraints in an 'asm': =C2=A0=3D> 49:70
+>> =C2=A0 + lib/mpi/mpih-div.c: error: inconsistent operand constraints=
+ in an
+>> 'asm': =C2=A0=3D> 135:122, 135:371, 97:122, 106:121, 106:370, 97:371
+>>
+>> parisc-allmodconfig
+>
+> Wow, lib/mpi/ is a complete horror: it's full of hand crafted asm cod=
+e.
+> The error in this case appears to be that umul_ppm() is implemented a=
+s
+> an xmpyu instruction. =C2=A0That's a floating point instruction. =C2=A0=
+We
+> deliberately compile the kernel with floating point disabled because =
+we
+> don't want to save and restore the floating point register file on ea=
+ch
+> context switch, hence the operand constraints are unsatisfiable.
+>
+> It appears to be completely untested on non-x86 and to have been
+> imported via the security tree ... what are we supposed to do with th=
+is?
+> I thought the general principle was that asm code was really supposed=
+ to
+> be confined to the arch directories?
+>
+> James
+>
+>
 
-So to be a patch for the linux kernel, it really needs to be divided up
-into its components.  It looks like cache-2 is a combination of five or
-six separate things, and each one needs a change long.
+Yes.. it is suxx.
+But it is only longlong.h and inherited from gpg..
+And now there is a stuff such as /include/math-emu/soft-fp and
+<stdlib/longlong.h>
+I planned to look to that but now I will start doing it right away.
 
-James
-
-
+- Dmitry
