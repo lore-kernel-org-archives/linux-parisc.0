@@ -1,94 +1,54 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Build regressions/improvements in v3.4-rc7
-Date: Wed, 16 May 2012 10:47:13 +0200
-Message-ID: <CAMuHMdUtL4_mv-e-EQAZmNcb9dAT=PXB59i7Vuj2vf8NnaBFzQ@mail.gmail.com>
-References: <1337157034-22773-1-git-send-email-geert@linux-m68k.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: Issue booting v2.6.39 .. v3.4-rc6 on hp712/100
+Date: Wed, 16 May 2012 10:27:31 +0100
+Message-ID: <1337160451.2985.23.camel@dabdike.int.hansenpartnership.com>
+References: <4FA9975C.5060708@bergerie>
+	 <41786065.U2qKzXR3uX@donald.sf-tec.de> <4FAA9382.7040802@bell.net>
+	 <4FAADE2A.9080803@bergerie> <BLU0-SMTP65CF901B170B044925E85897160@phx.gbl>
+	 <4FAEE943.2030203@gmx.de> <BLU0-SMTP93504AF1AF0414C90D1EFB971A0@phx.gbl>
+	 <4FB182F8.2040403@gmx.de> <BLU0-SMTP728EA90F4400504B2AF7A4971A0@phx.gbl>
+	 <1337069366.3005.10.camel@dabdike.lan>
+	 <1337073212.3005.12.camel@dabdike.lan> <4FB29F13.5070801@bell.net>
+	 <4FB2A58A.9050706@gmx.de> <4FB2AD78.1020002@bell.net>
+	 <4FB2B2A2.2020207@bell.net> <4FB2B5B1.7000604@gmx.de>
+	 <4FB2B71B.7090602@bell.net> <4FB2BC5F.3080905@gmx.de>
+	 <1337153257.2985.3.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Linuxppc-dev <linuxppc-dev@ozlabs.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	"the arch/x86 maintainers" <x86@kernel.org>
-To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: John David Anglin <dave.anglin@bell.net>,
+	Vincent <vincent.stehle@laposte.net>,
+	Rolf Eike Beer <eike-kernel@sf-tec.de>,
+	linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1337157034-22773-1-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1337153257.2985.3.camel@dabdike.int.hansenpartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, May 16, 2012 at 10:30 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> JFYI, when comparing v3.4-rc7 to v3.4-rc6[3], the summaries are:
-> =C2=A0- build errors: +15/-14
+On Wed, 2012-05-16 at 08:27 +0100, James Bottomley wrote:
+> My current attempts to boot a B180 are failing on RCU:
+> 
+> Initializing cgroup subsys cpuacct
+> Initializing cgroup subsys memory
+> Initializing cgroup subsys devices
+> Initializing cgroup subsys freezer
+> devtmpfs: initialized
+> NET: Registered protocol family 16
+> Backtrace:
+>  [<10180fc4>] rcu_process_callbacks+0x20/0x40
+>  [<101330b0>] __do_softirq+0xd8/0x190
+>  [<101331d0>] run_ksoftirqd+0x68/0x118
+>  [<1014a144>] kthread+0xac/0xb4
+>  [<1010305c>] ret_from_kernel_thread+0x1c/0x24
+> 
+> 
+> Kernel Fault: Code=26 regs=2ec3c2c0 (Addr=00000000)
 
-15 regressions:
-  + arch/powerpc/platforms/512x/mpc512x_shared.c: error: 'enum
-fsl_diu_monitor_port' declared inside parameter list [-Werror]:  =3D>
-70:9, 84:9, 88:36
-  + arch/powerpc/platforms/512x/mpc512x_shared.c: error: 'return' with
-a value, in function returning void [-Werror]:  =3D> 189:2
-  + arch/powerpc/platforms/512x/mpc512x_shared.c: error: function
-declaration isn't a prototype [-Werror=3Dstrict-prototypes]:  =3D> 69:5=
-,
-88:6, 83:6, 187:1
-  + arch/powerpc/platforms/512x/mpc512x_shared.c: error: its scope is
-only this definition or declaration, which is probably not what you
-want [-Werror]:  =3D> 70:9
-  + drivers/virt/fsl_hypervisor.c: error: 'MSR_GS' undeclared (first
-use in this function):  =3D> 799:80
+OK, debugged this: it's a prefetch(NULL) in the RCU code.  Apparently on
+the PA7300LC processor, which is what my B180 has, this is actually
+generating a dtlb insertion interruption.  The fix is to nullify the
+prefetch if the address is zero, which I'm testing out now.
 
-powerpc randconfig
+James
 
-  + arch/x86/include/asm/uaccess_32.h: error: call to
-'copy_from_user_overflow' declared with attribute error:
-copy_from_user() buffer size is not provably correct:  =3D> 211:26
 
-error in i386-randconfig, warning in i386-defconfig
-
-  + drivers/ptp/ptp_pch.c: error: implicit declaration of function
-'kfree' [-Werror=3Dimplicit-function-declaration]:  =3D> 576:2
-  + drivers/ptp/ptp_pch.c: error: implicit declaration of function
-'kzalloc' [-Werror=3Dimplicit-function-declaration]:  =3D> 587:2
-
-Patch send.
-
-  + error: "handle_edge_irq" [drivers/gpio/gpio-pch.ko] undefined!:  =3D=
-> N/A
-  + error: "irq_to_desc" [drivers/gpio/gpio-pch.ko] undefined!:  =3D> N=
-/A
-
-=46ixed in the mean time, I guess.
-
-  + error: No rule to make target include/config/auto.conf:  =3D> N/A
-
-x86_64-randconfig
-
-  + lib/mpi/generic_mpih-mul1.c: error: inconsistent operand
-constraints in an 'asm':  =3D> 50:70
-  + lib/mpi/generic_mpih-mul2.c: error: inconsistent operand
-constraints in an 'asm':  =3D> 49:70
-  + lib/mpi/generic_mpih-mul3.c: error: inconsistent operand
-constraints in an 'asm':  =3D> 49:70
-  + lib/mpi/mpih-div.c: error: inconsistent operand constraints in an
-'asm':  =3D> 135:122, 135:371, 97:122, 106:121, 106:370, 97:371
-
-parisc-allmodconfig
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
