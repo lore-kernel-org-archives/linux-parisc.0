@@ -1,69 +1,73 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: Boot failure with 32bit kernel
-Date: Thu, 17 May 2012 08:57:18 +0100
-Message-ID: <1337241438.2926.9.camel@dabdike.int.hansenpartnership.com>
-References: <20120419102608.1834003e@driller.lan>
-	 <BLU0-SMTP60C76C814A1780515CC0B297200@phx.gbl>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] PARISC: fix boot failure on 32-bit systems caused by branch
+ stubs placed before .text
+Date: Thu, 17 May 2012 10:34:34 -0400
+Message-ID: <4FB50C7A.7050409@bell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Guy Martin <gmsoft@tuxicoman.be>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: John David Anglin <dave.anglin@bell.net>
+Content-Type: multipart/mixed;
+ boundary="------------010900040001070703090800"
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Guy Martin <gmsoft@tuxicoman.be>
+To: linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP60C76C814A1780515CC0B297200@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 2012-04-22 at 08:20 -0400, John David Anglin wrote:
-> On 19-Apr-12, at 4:26 AM, Guy Martin wrote:
-> 
-> > Hi all,
-> >
-> > I compiled a kernel with a few additional features and I was unable to
-> > boot it. It seems that if the entry point is not 0x00100000 in  
-> > vmlinux,
-> > the boot process fails right after "Total Memory: 2048 MB".
-> > This is the only common denominator I could find.
-> >
-> > I've been able to reproduce this with :
-> > - C3600 and J5600
-> > - kernel 3.2.12 and 3.3.1
-> > - gcc 4.5.3
-> > - ld 2.21 and 2.22
-> > - palo 1.17 and 1.18
-> 
-> 
-> Could you try the attached patch?  It adjusts the section arrangement so
-> that the long branch stubs don't appear at the start of .text.  As a  
-> result,
-> _stext and stext now are at 10100000.
-> 
-> The problem arises from section merging and a few branch distances
-> in the kernel exceeding the PA 2.0 limit.
-> 
-> The patch might not work if the long branch stubs don't work...
-> 
-> Another approach might be to add -mlong-calls to CFLAGS.  However,
-> these calls are less efficient.
+This is a multi-part message in MIME format.
+--------------010900040001070703090800
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-OK, to add this to the fixes repo, I need a change log and a signoff
-(from Dave).
+In certain configurations, the resulting kernel becomes too large to 
+boot because
+the linker places the long branch stubs for the merged .text section at 
+the very start
+of the image.  As a result, the initial transfer of control jumps to an 
+unexpected
+location.  Fix this by placing the head text in a separate section so 
+the stubs for
+.text are not at the start of the image.
 
-I think the changelog would be:
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
 
----
-fix boot failure on 32 bit caused by out of range branch stubs
-
-In certain configurations, the resulting kernel becomes too large to
-boot because the branch stubs are all placed at the very start of the
-image.  Fix this by placing the branch stubs after the head text so the
-distances are a bit shorter.
----
-
-Is that about right?
-
-Thanks,
-
-James
+-- 
+John David Anglin    dave.anglin@bell.net
 
 
+--------------010900040001070703090800
+Content-Type: text/plain; charset=windows-1252;
+ name="vmlinux.lds.S.diff.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="vmlinux.lds.S.diff.txt"
+
+ arch/parisc/kernel/vmlinux.lds.S |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
+index fa6f2b8..64a9998 100644
+--- a/arch/parisc/kernel/vmlinux.lds.S
++++ b/arch/parisc/kernel/vmlinux.lds.S
+@@ -50,8 +50,10 @@ SECTIONS
+ 	. = KERNEL_BINARY_TEXT_START;
+ 
+ 	_text = .;		/* Text and read-only data */
+-	.text ALIGN(16) : {
++	.head ALIGN(16) : {
+ 		HEAD_TEXT
++	} = 0
++	.text ALIGN(16) : {
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+ 		LOCK_TEXT
+@@ -65,7 +67,7 @@ SECTIONS
+ 		*(.fixup)
+ 		*(.lock.text)		/* out-of-line lock text */
+ 		*(.gnu.warning)
+-	} = 0
++	}
+ 	/* End of text section */
+ 	_etext = .;
+ 
+
+--------------010900040001070703090800--
