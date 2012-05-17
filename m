@@ -1,41 +1,69 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Build regressions/improvements in v3.4-rc7
-Date: Wed, 16 May 2012 20:27:35 -0400
-Message-ID: <BLU0-SMTP3215D3E80BA82F3C6A654197190@phx.gbl>
-References: <1337157034-22773-1-git-send-email-geert@linux-m68k.org> <CAMuHMdUtL4_mv-e-EQAZmNcb9dAT=PXB59i7Vuj2vf8NnaBFzQ@mail.gmail.com> <1337179563.2985.80.camel@dabdike.int.hansenpartnership.com>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-kernel@vger.kernel.org,
-	Linuxppc-dev <linuxppc-dev@ozlabs.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	the arch/x86 maintainers <x86@kernel.org>,
-	Dmitry Kasatkin <dmitry.kasatkin@intel.com>,
-	James Morris <jmorris@namei.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: Boot failure with 32bit kernel
+Date: Thu, 17 May 2012 08:57:18 +0100
+Message-ID: <1337241438.2926.9.camel@dabdike.int.hansenpartnership.com>
+References: <20120419102608.1834003e@driller.lan>
+	 <BLU0-SMTP60C76C814A1780515CC0B297200@phx.gbl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Cc: Guy Martin <gmsoft@tuxicoman.be>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1337179563.2985.80.camel@dabdike.int.hansenpartnership.com>
+In-Reply-To: <BLU0-SMTP60C76C814A1780515CC0B297200@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 16-May-12, at 10:46 AM, James Bottomley wrote:
+On Sun, 2012-04-22 at 08:20 -0400, John David Anglin wrote:
+> On 19-Apr-12, at 4:26 AM, Guy Martin wrote:
+> 
+> > Hi all,
+> >
+> > I compiled a kernel with a few additional features and I was unable to
+> > boot it. It seems that if the entry point is not 0x00100000 in  
+> > vmlinux,
+> > the boot process fails right after "Total Memory: 2048 MB".
+> > This is the only common denominator I could find.
+> >
+> > I've been able to reproduce this with :
+> > - C3600 and J5600
+> > - kernel 3.2.12 and 3.3.1
+> > - gcc 4.5.3
+> > - ld 2.21 and 2.22
+> > - palo 1.17 and 1.18
+> 
+> 
+> Could you try the attached patch?  It adjusts the section arrangement so
+> that the long branch stubs don't appear at the start of .text.  As a  
+> result,
+> _stext and stext now are at 10100000.
+> 
+> The problem arises from section merging and a few branch distances
+> in the kernel exceeding the PA 2.0 limit.
+> 
+> The patch might not work if the long branch stubs don't work...
+> 
+> Another approach might be to add -mlong-calls to CFLAGS.  However,
+> these calls are less efficient.
 
-> Wow, lib/mpi/ is a complete horror: it's full of hand crafted asm  
-> code.
-> The error in this case appears to be that umul_ppm() is implemented as
-> an xmpyu instruction.  That's a floating point instruction.  We
-> deliberately compile the kernel with floating point disabled because  
-> we
-> don't want to save and restore the floating point register file on  
-> each
-> context switch, hence the operand constraints are unsatisfiable.
+OK, to add this to the fixes repo, I need a change log and a signoff
+(from Dave).
 
-I haven't tried this but I think the parisc implementation of umul_ppmm
-can be deleted.  There is a generic version in the file.
+I think the changelog would be:
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
+---
+fix boot failure on 32 bit caused by out of range branch stubs
 
+In certain configurations, the resulting kernel becomes too large to
+boot because the branch stubs are all placed at the very start of the
+image.  Fix this by placing the branch stubs after the head text so the
+distances are a bit shorter.
+---
+
+Is that about right?
+
+Thanks,
+
+James
 
 
