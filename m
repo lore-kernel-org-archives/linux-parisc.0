@@ -1,125 +1,78 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: Issue booting v2.6.39 .. v3.4-rc6 on hp712/100
-Date: Fri, 18 May 2012 09:12:24 +0100
-Message-ID: <1337328744.2938.5.camel@dabdike.int.hansenpartnership.com>
-References: <4FA9975C.5060708@bergerie>
-	  <41786065.U2qKzXR3uX@donald.sf-tec.de> <4FAA9382.7040802@bell.net>
-	  <4FAADE2A.9080803@bergerie> <BLU0-SMTP65CF901B170B044925E85897160@phx.gbl>
-	  <4FAEE943.2030203@gmx.de> <BLU0-SMTP93504AF1AF0414C90D1EFB971A0@phx.gbl>
-	  <4FB182F8.2040403@gmx.de> <BLU0-SMTP728EA90F4400504B2AF7A4971A0@phx.gbl>
-	  <1337069366.3005.10.camel@dabdike.lan>
-	 <1337073212.3005.12.camel@dabdike.lan> <4FB29F13.5070801@bell.net>
-	 <4FB2A58A.9050706@gmx.de> <4FB2AD78.1020002@bell.net>
-	 <4FB2B2A2.2020207@bell.net> <4FB2B5B1.7000604@gmx.de>
-	 <4FB2B71B.7090602@bell.net> <4FB2BC5F.3080905@gmx.de>
-	 <4FB2C129.90307@bell.net> <4FB550F1.7080104@gmx.de>
+From: Al Viro <viro@ZenIV.linux.org.uk>
+Subject: [parisc] double restarts on multiple signal arrivals
+Date: Fri, 18 May 2012 18:58:33 +0100
+Message-ID: <20120518175833.GQ22082@ZenIV.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: John David Anglin <dave.anglin@bell.net>,
-	Vincent <vincent.stehle@laposte.net>,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-arch@vger.kernel.org
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4FB550F1.7080104@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2012-05-17 at 21:26 +0200, Helge Deller wrote:
-> On 05/15/2012 10:48 PM, John David Anglin wrote:
-> > We need to debug why your B160L hangs.  Can you kill whatever hangs
-> > from the console?  Sometimes the application is still in the foreground.
-> 
-> Ok, the B160L problem is gone now.
-> I found the reason for this bug between the chair and the monitor :-)   
-> (it was my fault - sorry .... )
-> 
-> But I think we still have a problem.
-> I'm using 3.4.0-rc7, have pulled all fixes from James "fixes" branch, 
-> and Dave's "vmlinux.lds" patch.
-> 
-> The 32bit machines (715/64 and B160L) boot nicely into userspace.
-> The 64bit machine (C3000) crashes directly when switching to userspace.
-> 
-> Do we still have another problem somewhere?
-> Or is it introduced because of the vmlinux.lds patch?
-> (Reminder: without the vmlinux.lds patch the C3000 hangs directly at 
-> bootup after printing memory information...)
+	Since "[PATCH] PA-RISC assembler cleanups and fixes" back in 2005,
+(commit b6181a0a1999c7d4dd937d7f5234fb62eca68e89 in historical tree),
+we do loop until all pending signals are dealt with.  Which is fine,
+except that now we need to deal with syscall restart logics in all of
+them.
 
-I'm not seeing it on my rp3410 ... I'm going to have to find the J box
-(which I think is closest to your C3000 ... that's an astro system) and
-boot it.
+	What happens if we have r28 containing e.g. -ERESTARTNOINTR
+when we do a syscall?  Note that x86 analog of the code in parisc
+syscall_restart() differs in one respect - the same register is used
+for return value and syscall number.  So once we'd copied ->orig_ax
+to ->ax, that's it - it *can't* be a restart-worthy value anymore,
+since then we would've been in a syscall with negative syscall number
+and ->ax before the assignment would've been -ENOSYS.  I.e. not a
+restart-worthy value, so we wouldn't have hit that regs->ax = regs->orig_ax
+in the first place.
 
-> Helge
-> 
-> VFS: Mounted root (ext3 filesystem) readonly on device 8:3.
-> Freeing unused kernel memory: 316k freed
-> Backtrace:
->   [<10119560>] clear_user_page_asm+0x44/0x6c
->   [<101195dc>] clear_user_page+0x54/0x6c
->   [<101bbaa8>] handle_pte_fault+0x5dc/0x7a8
->   [<101bbd3c>] handle_mm_fault+0xc8/0x120
->   [<101bbffc>] __get_user_pages+0x160/0x3c4
->   [<101bc348>] get_user_pages+0x50/0x60
->   [<101e169c>] get_arg_page+0x64/0xe8
->   [<101e182c>] copy_strings+0x10c/0x248
->   [<101e1990>] copy_strings_kernel+0x28/0x44
->   [<101e328c>] do_execve+0x2a0/0x36c
->   [<10120424>] sys_execve+0x44/0x7c
->   [<10104084>] __execve+0x20/0x34
->   [<10133b9c>] vprintk+0x1d8/0x4f4
->   [<10133ee8>] printk+0x30/0x40
->   [<10118550>] free_initmem+0x154/0x184
->   [<10117cbc>] init_post+0xa0/0xd4
-> 
-> 
-> Kernel Fault: Code=26 regs=8fc30940 (Addr=0f2ff000)
-> 
->       YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00000000000001101111111100001110 Not tainted
-> r00-03  0006ff0e 00000040 10119560 8fc308c0
-> r04-07  106e5820 107d2000 0000000f 10768020
-> r08-11  ffeffff1 8fd00ffc 8f49ce40 00000001
-> r12-15  00000000 00000017 00000001 00000000
-> r16-19  00004400 00000020 00000000 ffffffff
-> r20-23  00000000 00000000 00000001 00000040
-> r24-27  1090aa40 ffeffff1 0000fa40 106e2020
-> r28-31  0f2ff000 0007d882 8fc30940 0007d024
-> sr00-03  00000000 00000000 00000000 00000000
-> sr04-07  00000000 00000000 00000000 00000000
-> 
-> IASQ: 00000000 00000000 IAOQ: 10100eec 10100ef0
->   IIR: 0f801280    ISR: 00000000  IOR: 0f2ff000
->   CPU:        0   CR30: 8fc30000 CR31: de9345e0
->   ORIG_R28: 8f812728
->   IAOQ[0]: __clear_user_page_asm+0x20/0x70
->   IAOQ[1]: __clear_user_page_asm+0x24/0x70
->   RP(r2): clear_user_page_asm+0x44/0x6c
-> Backtrace:
->   [<10119560>] clear_user_page_asm+0x44/0x6c
->   [<101195dc>] clear_user_page+0x54/0x6c
->   [<101bbaa8>] handle_pte_fault+0x5dc/0x7a8
->   [<101bbd3c>] handle_mm_fault+0xc8/0x120
->   [<101bbffc>] __get_user_pages+0x160/0x3c4
->   [<101bc348>] get_user_pages+0x50/0x60
->   [<101e169c>] get_arg_page+0x64/0xe8
->   [<101e182c>] copy_strings+0x10c/0x248
->   [<101e1990>] copy_strings_kernel+0x28/0x44
->   [<101e328c>] do_execve+0x2a0/0x36c
->   [<10120424>] sys_execve+0x44/0x7c
->   [<10104084>] __execve+0x20/0x34
->   [<10133b9c>] vprintk+0x1d8/0x4f4
->   [<10133ee8>] printk+0x30/0x40
->   [<10118550>] free_initmem+0x154/0x184
->   [<10117cbc>] init_post+0xa0/0xd4
-> 
-> Kernel panic - not syncing: Kernel Fault
+	On parisc the counterpart of the above doesn't work; AFAICS,
+we might have whatever we bloody please in r28 when we make a syscall.
+Syscall number goes in r20, arguments are apparently in r26..r21.
+Return value goes into r28.  Incidentally, why do we bother restoring
+r28 on syscall restart at all?  Except for that mess with multiple
+pending signals, the value we have in r28 on syscall entry doesn't
+seem to affect the syscall behaviour...  Some HPUX compat fun?  But
+AFAICS there calling conventions are also such that r28 on entry
+doesn't affect anything...[1]
 
-What this says is something went wrong in the tmpalias space because it
-fell through to the fault path.  How much memory does this system have
-(and what's the layout map)?  It's 64 bit but you're booting it with a
-32 bit kernel ... I'm wondering if there's no space for tmpalias.
+	Another fun question: what prevents syscall restarts on
+rt_sigreturn()?  If original signal had been taken in syscall handler
+we go through syscall_exit and that'll pass 1 as in_syscall to do_signal().
+Are we relying on r28 in saved sigcontext never being restart-worthy,
+seeing that we'd done syscall_restart()?  But that again relies on
+->orig_r28 never containing such values; if it *did* contain one,
+we are really screwed since on the path from rt_sigreturn() we'll have
+->orig_r28 equal to r28 at the end of signal handler (not to mention
+having moved back by twice the required amount - one time when we took
+the original signal, another - now).
 
-James
-
-
+[1] FWIW, on other architectures the situation with restoring registers on
+restarts looks so:
+alpha		r0 (syscall number), r19 (arg4)
+arm		r0 (arg1)
+avr32		r12 (arg1)
+bfin		p0 (syscall number), r0 (arg1)
+c6x		a4 (arg1)
+cris		r10 (arg1)
+frv		gr8 (arg1)
+h8300		er0 (syscall number)
+hexagon		r06 (syscall number), r00 (arg1)
+ia64		nothing
+m32r		r0 (arg1)
+m68k		d0 (syscall number)
+microblaze	nothing
+mips		r2 (syscall number), r7 (arg1)
+mn10300		d0 (syscall number)
+openrisc	r11 (syscall number)
+parisc		r28
+ppc		r3 (arg1)
+s390		r2 (arg1)
+score		r4 (syscall number), r7 (arg1)
+sh		r0 or r9, depending on whether it's sh32 or sh4
+sparc		i0 (arg1)
+tile		r0 (arg1)
+unicore32	r00 (arg1)
+x86		[er]ax (syscall number)
+xtensa		a2 (syscall number)
