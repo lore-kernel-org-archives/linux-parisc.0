@@ -1,112 +1,145 @@
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Subject: Re: [parisc] double restarts on multiple signal arrivals
-Date: Sat, 19 May 2012 14:37:12 +0100
-Message-ID: <20120519133712.GA11514@ZenIV.linux.org.uk>
-References: <20120518175833.GQ22082@ZenIV.linux.org.uk>
- <CAP6odjiS+oH7ajnHcyBJwm9bCTZxDJ7w02JeCuWW_UF3Fm49xw@mail.gmail.com>
- <20120518195610.GV22082@ZenIV.linux.org.uk>
- <CAP6odjgyK3af7yqHAFTTs38SSNM9H49oWiH=a4byp4MerirE0g@mail.gmail.com>
- <CADZpyixTTcNd0GekBg=UeWMf3eR+Casn6r7cLkcfnaH1Mihk=w@mail.gmail.com>
- <20120518222422.GX22082@ZenIV.linux.org.uk>
- <20120519052622.GA20945@ZenIV.linux.org.uk>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [GIT PULL] parisc fixes for 3.3-rc5
+Date: Sat, 19 May 2012 19:51:05 +0100
+Message-ID: <1337453465.2930.6.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grantgrundler@gmail.com>,
-	John David Anglin <dave.anglin@bell.net>,
-	linux-parisc@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-arch@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20120519052622.GA20945@ZenIV.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, May 19, 2012 at 06:26:23AM +0100, Al Viro wrote:
-> diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
-> index 12c1ed3..b4dd2c1 100644
-> --- a/arch/parisc/kernel/signal.c
-> +++ b/arch/parisc/kernel/signal.c
-> @@ -88,6 +88,7 @@ restore_sigcontext(struct sigcontext __user *sc, struct pt_regs *regs)
->  	err |= __copy_from_user(regs->iaoq, sc->sc_iaoq, sizeof(regs->iaoq));
->  	err |= __copy_from_user(regs->iasq, sc->sc_iasq, sizeof(regs->iasq));
->  	err |= __get_user(regs->sar, &sc->sc_sar);
-> +	regs->orig_r28 = 1; /* no restarts for sigreturn */
->  	DBG(2,"restore_sigcontext: iaoq is 0x%#lx / 0x%#lx\n", 
->  			regs->iaoq[0],regs->iaoq[1]);
->  	DBG(2,"restore_sigcontext: r28 is %ld\n", regs->gr[28]);
+This is a set of three bug fixes that gets parisc running again on
+systems with PA1.1 processors.  Two fix regressions introduced in 2.6.39
+and one fixes a prefetch bug that only affects PA7300LC processors.  We
+also have another pending fix to do with the sectional arrangement of
+vmlinux.lds, but there's a query on it during testing on one particular
+system type, so I'll hold off sending it in for now.
 
-... only that part should be done in sys_rt_sigreturn() instead, or we'll miss
-it for 32bit-on-64bit case.
+The patches are here:
 
-diff --git a/arch/parisc/hpux/gate.S b/arch/parisc/hpux/gate.S
-index 38a1c1b..0114688 100644
---- a/arch/parisc/hpux/gate.S
-+++ b/arch/parisc/hpux/gate.S
-@@ -71,7 +71,7 @@ ENTRY(hpux_gateway_page)
- 	STREG	%r26, TASK_PT_GR26(%r1)	 	/* 1st argument */
- 	STREG	%r27, TASK_PT_GR27(%r1)		/* user dp */
- 	STREG   %r28, TASK_PT_GR28(%r1)         /* return value 0 */
--	STREG   %r28, TASK_PT_ORIG_R28(%r1)     /* return value 0 (saved for signals) */
-+	STREG   %r0, TASK_PT_ORIG_R28(%r1)     /* don't prohibit restarts */
- 	STREG   %r29, TASK_PT_GR29(%r1)         /* 8th argument */
- 	STREG	%r31, TASK_PT_GR31(%r1)		/* preserve syscall return ptr */
- 	
-diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
-index 12c1ed3..369b1c4 100644
---- a/arch/parisc/kernel/signal.c
-+++ b/arch/parisc/kernel/signal.c
-@@ -115,6 +115,8 @@ sys_rt_sigreturn(struct pt_regs *regs, int in_syscall)
- 		(usp - sigframe_size);
- 	DBG(2,"sys_rt_sigreturn: frame is %p\n", frame);
- 
-+	regs->orig_r28 = 1; /* no restarts for sigreturn */
-+
- #ifdef CONFIG_64BIT
- 	compat_frame = (struct compat_rt_sigframe __user *)frame;
- 	
-@@ -471,6 +473,9 @@ handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
- static inline void
- syscall_restart(struct pt_regs *regs, struct k_sigaction *ka)
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/parisc-2.6.git parisc-fixes
+
+The short changelog is:
+
+
+James Bottomley (2):
+      [PARISC] fix panic on prefetch(NULL) on PA7300LC
+      [PARISC] fix PA1.1 oops on boot
+
+John David Anglin (1):
+      [PARISC] fix crash in flush_icache_page_asm on PA1.1
+
+
+And the diffstat:
+
+ arch/parisc/include/asm/prefetch.h |    7 ++++++-
+ arch/parisc/kernel/entry.S         |    4 ++++
+ arch/parisc/kernel/pacache.S       |   38 +++++++++++++++++++-----------------
+ 3 files changed, 30 insertions(+), 19 deletions(-)
+
+With the full diff below
+
+James
+
+---
+
+diff --git a/arch/parisc/include/asm/prefetch.h b/arch/parisc/include/asm/prefetch.h
+index c5edc60..1ee7c82 100644
+--- a/arch/parisc/include/asm/prefetch.h
++++ b/arch/parisc/include/asm/prefetch.h
+@@ -21,7 +21,12 @@
+ #define ARCH_HAS_PREFETCH
+ static inline void prefetch(const void *addr)
  {
-+	if (regs->orig_r28)
-+		return;
-+	regs->orig_r28 = 1; /* no more restarts */
- 	/* Check the return code */
- 	switch (regs->gr[28]) {
- 	case -ERESTART_RESTARTBLOCK:
-@@ -493,8 +498,6 @@ syscall_restart(struct pt_regs *regs, struct k_sigaction *ka)
- 		 * we have to do is fiddle the return pointer.
- 		 */
- 		regs->gr[31] -= 8; /* delayed branching */
--		/* Preserve original r28. */
--		regs->gr[28] = regs->orig_r28;
- 		break;
- 	}
+-	__asm__("ldw 0(%0), %%r0" : : "r" (addr));
++	__asm__(
++#ifndef CONFIG_PA20
++		/* Need to avoid prefetch of NULL on PA7300LC */
++		"	extrw,u,= %0,31,32,%%r0\n"
++#endif
++		"	ldw 0(%0), %%r0" : : "r" (addr));
  }
-@@ -502,6 +505,9 @@ syscall_restart(struct pt_regs *regs, struct k_sigaction *ka)
- static inline void
- insert_restart_trampoline(struct pt_regs *regs)
- {
-+	if (regs->orig_r28)
-+		return;
-+	regs->orig_r28 = 1; /* no more restarts */
- 	switch(regs->gr[28]) {
- 	case -ERESTART_RESTARTBLOCK: {
- 		/* Restart the system call - no handlers present */
-@@ -536,9 +542,6 @@ insert_restart_trampoline(struct pt_regs *regs)
- 		flush_user_icache_range(regs->gr[30], regs->gr[30] + 4);
  
- 		regs->gr[31] = regs->gr[30] + 8;
--		/* Preserve original r28. */
--		regs->gr[28] = regs->orig_r28;
--
- 		return;
- 	}
- 	case -ERESTARTNOHAND:
-@@ -550,9 +553,6 @@ insert_restart_trampoline(struct pt_regs *regs)
- 		 * slot of the branch external instruction.
- 		 */
- 		regs->gr[31] -= 8;
--		/* Preserve original r28. */
--		regs->gr[28] = regs->orig_r28;
+ /* LDD is a PA2.0 addition. */
+diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
+index 6f05944..5350342 100644
+--- a/arch/parisc/kernel/entry.S
++++ b/arch/parisc/kernel/entry.S
+@@ -581,7 +581,11 @@
+ 	 */
+ 	cmpiclr,=	0x01,\tmp,%r0
+ 	ldi		(_PAGE_DIRTY|_PAGE_READ|_PAGE_WRITE),\prot
++#ifdef CONFIG_64BIT
+ 	depd,z		\prot,8,7,\prot
++#else
++	depw,z		\prot,8,7,\prot
++#endif
+ 	/*
+ 	 * OK, it is in the temp alias region, check whether "from" or "to".
+ 	 * Check "subtle" note in pacache.S re: r23/r26.
+diff --git a/arch/parisc/kernel/pacache.S b/arch/parisc/kernel/pacache.S
+index 93ff3d9..5d7218a 100644
+--- a/arch/parisc/kernel/pacache.S
++++ b/arch/parisc/kernel/pacache.S
+@@ -692,7 +692,7 @@ ENTRY(flush_icache_page_asm)
+ 
+ 	/* Purge any old translation */
+ 
+-	pitlb		(%sr0,%r28)
++	pitlb		(%sr4,%r28)
+ 
+ 	ldil		L%icache_stride, %r1
+ 	ldw		R%icache_stride(%r1), %r1
+@@ -706,27 +706,29 @@ ENTRY(flush_icache_page_asm)
+ 	sub		%r25, %r1, %r25
+ 
+ 
+-1:      fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
+-	fic,m		%r1(%r28)
++	/* fic only has the type 26 form on PA1.1, requiring an
++	 * explicit space specification, so use %sr4 */
++1:      fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
++	fic,m		%r1(%sr4,%r28)
+ 	cmpb,COND(<<)		%r28, %r25,1b
+-	fic,m		%r1(%r28)
++	fic,m		%r1(%sr4,%r28)
+ 
+ 	sync
+ 	bv		%r0(%r2)
+-	pitlb		(%sr0,%r25)
++	pitlb		(%sr4,%r25)
+ 	.exit
+ 
+ 	.procend
+
+
