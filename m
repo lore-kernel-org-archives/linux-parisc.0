@@ -1,145 +1,69 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [GIT PULL] parisc fixes for 3.3-rc5
-Date: Sat, 19 May 2012 19:51:05 +0100
-Message-ID: <1337453465.2930.6.camel@dabdike.int.hansenpartnership.com>
+From: Al Viro <viro@ZenIV.linux.org.uk>
+Subject: Re: [parisc] double restarts on multiple signal arrivals
+Date: Sun, 20 May 2012 09:40:42 +0100
+Message-ID: <20120520084042.GA25447@ZenIV.linux.org.uk>
+References: <20120518175833.GQ22082@ZenIV.linux.org.uk>
+ <CAP6odjiS+oH7ajnHcyBJwm9bCTZxDJ7w02JeCuWW_UF3Fm49xw@mail.gmail.com>
+ <20120518195610.GV22082@ZenIV.linux.org.uk>
+ <CAP6odjgyK3af7yqHAFTTs38SSNM9H49oWiH=a4byp4MerirE0g@mail.gmail.com>
+ <CADZpyixTTcNd0GekBg=UeWMf3eR+Casn6r7cLkcfnaH1Mihk=w@mail.gmail.com>
+ <20120518222422.GX22082@ZenIV.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Grant Grundler <grantgrundler@gmail.com>,
+	John David Anglin <dave.anglin@bell.net>,
+	linux-parisc@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-arch@vger.kernel.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20120518222422.GX22082@ZenIV.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a set of three bug fixes that gets parisc running again on
-systems with PA1.1 processors.  Two fix regressions introduced in 2.6.39
-and one fixes a prefetch bug that only affects PA7300LC processors.  We
-also have another pending fix to do with the sectional arrangement of
-vmlinux.lds, but there's a query on it during testing on one particular
-system type, so I'll hold off sending it in for now.
+	BTW, after looking through the asm glue there, I've noticed something
+rather odd.  *All* architectures other than parisc have the following thing
+done on syscall entry:
+	* check if we have TIF_SYSCALL_TRACE in flags; bugger off to slow
+path if we do.
+	* there check if we have PT_PTRACED in current->ptrace and if so
+do the standard song and dance with raising SIGTRAP or SIGTRAP | 0x80,
+etc.
 
-The patches are here:
+parisc does that in the opposite order - it goes to slow path if
+current->ptrace & PT_PTRACED is true.  The same actions with raising
+SIGTRAP, etc. are done only if TIF_SYSCALL_TRACE is there as well,
+but by that point we'd already plonked a bunch of registers on the
+stack and we actually stay on the slow path even in absense of SYSCALL_TRACE.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/parisc-2.6.git parisc-fixes
+The thing is, other architectures have a good reason for looking at
+SYSCALL_TRACE first and not bothering with all that fun if it's not set.
+PT_PTRACED is set when the task is being traced; it does *not* imply
+stopping on every syscall entry.  E.g. a perfectly normal situation is
+when in gdb you've said
+break foo.c:69
+cont
+and let the process run until it hits that breakpoint.  It has PT_PTRACED
+all along.  It will be stopped when it gets a signal, including SIGTRAP
+we'll get when it steps on that breakpoint.  But by that time it's very
+likely to have passed through tons of syscalls without stopping on any of
+them.  SYSCALL_TRACE is set *only* when we want the process to stop on the
+next syscall.  That's what strace(1) and friends are using.  So it doesn't
+make sense to get overhead for all processes that have PT_PTRACED;
+SYSCALL_TRACE is less likely, so checking it first is an obvious approach.
 
-The short changelog is:
-
-
-James Bottomley (2):
-      [PARISC] fix panic on prefetch(NULL) on PA7300LC
-      [PARISC] fix PA1.1 oops on boot
-
-John David Anglin (1):
-      [PARISC] fix crash in flush_icache_page_asm on PA1.1
-
-
-And the diffstat:
-
- arch/parisc/include/asm/prefetch.h |    7 ++++++-
- arch/parisc/kernel/entry.S         |    4 ++++
- arch/parisc/kernel/pacache.S       |   38 +++++++++++++++++++-----------------
- 3 files changed, 30 insertions(+), 19 deletions(-)
-
-With the full diff below
-
-James
-
----
-
-diff --git a/arch/parisc/include/asm/prefetch.h b/arch/parisc/include/asm/prefetch.h
-index c5edc60..1ee7c82 100644
---- a/arch/parisc/include/asm/prefetch.h
-+++ b/arch/parisc/include/asm/prefetch.h
-@@ -21,7 +21,12 @@
- #define ARCH_HAS_PREFETCH
- static inline void prefetch(const void *addr)
- {
--	__asm__("ldw 0(%0), %%r0" : : "r" (addr));
-+	__asm__(
-+#ifndef CONFIG_PA20
-+		/* Need to avoid prefetch of NULL on PA7300LC */
-+		"	extrw,u,= %0,31,32,%%r0\n"
-+#endif
-+		"	ldw 0(%0), %%r0" : : "r" (addr));
- }
- 
- /* LDD is a PA2.0 addition. */
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index 6f05944..5350342 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -581,7 +581,11 @@
- 	 */
- 	cmpiclr,=	0x01,\tmp,%r0
- 	ldi		(_PAGE_DIRTY|_PAGE_READ|_PAGE_WRITE),\prot
-+#ifdef CONFIG_64BIT
- 	depd,z		\prot,8,7,\prot
-+#else
-+	depw,z		\prot,8,7,\prot
-+#endif
- 	/*
- 	 * OK, it is in the temp alias region, check whether "from" or "to".
- 	 * Check "subtle" note in pacache.S re: r23/r26.
-diff --git a/arch/parisc/kernel/pacache.S b/arch/parisc/kernel/pacache.S
-index 93ff3d9..5d7218a 100644
---- a/arch/parisc/kernel/pacache.S
-+++ b/arch/parisc/kernel/pacache.S
-@@ -692,7 +692,7 @@ ENTRY(flush_icache_page_asm)
- 
- 	/* Purge any old translation */
- 
--	pitlb		(%sr0,%r28)
-+	pitlb		(%sr4,%r28)
- 
- 	ldil		L%icache_stride, %r1
- 	ldw		R%icache_stride(%r1), %r1
-@@ -706,27 +706,29 @@ ENTRY(flush_icache_page_asm)
- 	sub		%r25, %r1, %r25
- 
- 
--1:      fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
--	fic,m		%r1(%r28)
-+	/* fic only has the type 26 form on PA1.1, requiring an
-+	 * explicit space specification, so use %sr4 */
-+1:      fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r1(%sr4,%r28)
- 	cmpb,COND(<<)		%r28, %r25,1b
--	fic,m		%r1(%r28)
-+	fic,m		%r1(%sr4,%r28)
- 
- 	sync
- 	bv		%r0(%r2)
--	pitlb		(%sr0,%r25)
-+	pitlb		(%sr4,%r25)
- 	.exit
- 
- 	.procend
-
-
+Moreover, checking PT_TRACED first is not even cheaper in the common case
+(i.e. when branch to .Ltracesys is not taken at all).  As it is, parisc does
+        mfctl   %cr30, %r1
+        LDREG   TI_TASK(%r1),%r1
+        ldw     TASK_PTRACE(%r1), %r1
+        bb,<,n  %r1,31,.Ltracesys
+and that's actually an extra dereference compared to
+        mfctl   %cr30, %r1
+        LDREG   TI_FLAGS(%r1),%r1
+        bb,<,n  %r1,31 - TIF_SYSCALL_TRACE,.Ltracesys
+Note that tracehook_report_syscall_entry/tracehook_report_syscall_exit
+are checking PT_PTRACED, so it's not like we needed to change anything
+other than that spot - resulting logics will be equivalent to what we
+have right now.  Looks like a fairly straightforward optimisation...
+Am I missing something subtle and parisc-specific here?
