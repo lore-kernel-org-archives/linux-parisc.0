@@ -1,55 +1,57 @@
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Subject: Re: [parisc] double restarts on multiple signal arrivals
-Date: Sun, 20 May 2012 10:04:44 +0100
-Message-ID: <20120520090444.GA26841@ZenIV.linux.org.uk>
-References: <20120518175833.GQ22082@ZenIV.linux.org.uk>
- <CAP6odjiS+oH7ajnHcyBJwm9bCTZxDJ7w02JeCuWW_UF3Fm49xw@mail.gmail.com>
- <20120518195610.GV22082@ZenIV.linux.org.uk>
- <CAP6odjgyK3af7yqHAFTTs38SSNM9H49oWiH=a4byp4MerirE0g@mail.gmail.com>
- <CADZpyixTTcNd0GekBg=UeWMf3eR+Casn6r7cLkcfnaH1Mihk=w@mail.gmail.com>
- <20120518222422.GX22082@ZenIV.linux.org.uk>
- <20120520084042.GA25447@ZenIV.linux.org.uk>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: Issue booting v2.6.39 .. v3.4-rc6 on hp712/100
+Date: Sun, 20 May 2012 11:01:00 +0100
+Message-ID: <1337508060.2682.13.camel@dabdike.int.hansenpartnership.com>
+References: <4FA9975C.5060708@bergerie>
+	   <41786065.U2qKzXR3uX@donald.sf-tec.de> <4FAA9382.7040802@bell.net>
+	   <4FAADE2A.9080803@bergerie>
+	 <BLU0-SMTP65CF901B170B044925E85897160@phx.gbl>   <4FAEE943.2030203@gmx.de>
+	 <BLU0-SMTP93504AF1AF0414C90D1EFB971A0@phx.gbl>   <4FB182F8.2040403@gmx.de>
+	 <BLU0-SMTP728EA90F4400504B2AF7A4971A0@phx.gbl>
+	   <1337069366.3005.10.camel@dabdike.lan>
+	  <1337073212.3005.12.camel@dabdike.lan> <4FB29F13.5070801@bell.net>
+	  <4FB2A58A.9050706@gmx.de> <4FB2AD78.1020002@bell.net>
+	  <4FB2B2A2.2020207@bell.net> <4FB2B5B1.7000604@gmx.de>
+	  <4FB2B71B.7090602@bell.net> <4FB2BC5F.3080905@gmx.de>
+	  <4FB2C129.90307@bell.net> <4FB550F1.7080104@gmx.de>
+	 <1337328744.2938.5.camel@dabdike.int.hansenpartnership.com>
+	 <4FB6BA76.6010101@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grantgrundler@gmail.com>,
-	John David Anglin <dave.anglin@bell.net>,
-	linux-parisc@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-arch@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: John David Anglin <dave.anglin@bell.net>,
+	Vincent <vincent.stehle@laposte.net>,
+	Rolf Eike Beer <eike-kernel@sf-tec.de>,
+	linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20120520084042.GA25447@ZenIV.linux.org.uk>
+In-Reply-To: <4FB6BA76.6010101@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, May 20, 2012 at 09:40:42AM +0100, Al Viro wrote:
-> Moreover, checking PT_TRACED first is not even cheaper in the common case
-> (i.e. when branch to .Ltracesys is not taken at all).  As it is, parisc does
->         mfctl   %cr30, %r1
->         LDREG   TI_TASK(%r1),%r1
->         ldw     TASK_PTRACE(%r1), %r1
->         bb,<,n  %r1,31,.Ltracesys
-> and that's actually an extra dereference compared to
->         mfctl   %cr30, %r1
->         LDREG   TI_FLAGS(%r1),%r1
->         bb,<,n  %r1,31 - TIF_SYSCALL_TRACE,.Ltracesys
-> Note that tracehook_report_syscall_entry/tracehook_report_syscall_exit
-> are checking PT_PTRACED, so it's not like we needed to change anything
-> other than that spot - resulting logics will be equivalent to what we
-> have right now.  Looks like a fairly straightforward optimisation...
-> Am I missing something subtle and parisc-specific here?
+On Fri, 2012-05-18 at 23:09 +0200, Helge Deller wrote:
+> James, here is the full kernel log. Does this help?
 
-Actually, looks like I am missing something, but it's not particulary subtle.
-SYSCALL_TRACE is needed for do_syscall_trace_enter() to do anything;
-any of SYSCALL_TRACE/SINGLESTEP/BLOCKSTEP is makes do_syscall_trace_leave()
-do things.  So checking one bit in flags is not enough - any of those 3 is
-a reason for taking the slow path.  The point still stands, though -
-	mfctl   %cr30, %r1
-	LDREG   TI_FLAGS(%r1),%r1
-	ldi	(_TIF_SYSCALL_TRACE | _TIF_SINGLESTEP | _TIF_BLOCKSTEP), %r19
-        and,COND(=) %r19, %r1, %r0
-	b,n	.Ltracesys
-would still be no worse on the fast path and would not hit the slow path in
-a lot of cases when the current code does it for no apparent reason.
+Yes and no: it shows clearly we got all the way through the initrd, so
+we've gone through the alias region thousands of times doing flushes.
 
-Comments?
+> Kernel Fault: Code=26 regs=8fc30940 (Addr=0f2ff000)
+> 
+It's an access rights trap, presumably on the alias tlb, since the
+address is definitely in the alias region.  The obvious candidate is the
+protection id deposit in do_alias
+
+	depw,z		\prot,8,7,\prot
+
+but that all checks out fine (you can compare it with
+make_insert_tlb_11). So the page should have read, write and dirty set.
+
+The interesting thing is that the only way to get an access rights trap
+in the kernel is if the protection type is zero and I just can't see how
+do_alias would zero out \prot in a way that functions on your C3000
+(PA2.0) but not on the PA1.1 systems.
+
+Are you sure this is booting the same kernel?
+
+James
+
+
