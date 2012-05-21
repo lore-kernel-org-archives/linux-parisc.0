@@ -1,36 +1,58 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Issue booting v2.6.39 .. v3.4-rc6 on hp712/100
-Date: Sun, 20 May 2012 17:25:50 -0400
-Message-ID: <BLU0-SMTP33779E3F5B5087F47880C2971C0@phx.gbl>
-References: <4FA9975C.5060708@bergerie>     <41786065.U2qKzXR3uX@donald.sf-tec.de> <4FAA9382.7040802@bell.net>     <4FAADE2A.9080803@bergerie>   <BLU0-SMTP65CF901B170B044925E85897160@phx.gbl>   <4FAEE943.2030203@gmx.de>   <BLU0-SMTP93504AF1AF0414C90D1EFB971A0@phx.gbl>   <4FB182F8.2040403@gmx.de>   <BLU0-SMTP728EA90F4400504B2AF7A4971A0@phx.gbl>     <1337069366.3005.10.camel@dabdike.lan>    <1337073212.3005.12.camel@dabdike.lan> <4FB29F13.5070801@bell.net>    <4FB2A58A.9050706@gmx.de> <4FB2AD78.1020002@bell.net>    <4FB2B2A2.2020207@bell.net> <4FB2B5B1.7000604@gmx.de>    <4FB2B71B.7090602@bell.net> <4FB2BC5F.3080905@gmx.de>    <4FB2C129.90307@bell.net> <4FB550F1.7080104@gmx.de>   <1337328744.2938.5.camel@dabdike.int.hansenpartnership.com>   <4FB6BA76.6010101@gmx.de>  <1337508060.2682.13.came
- l@dabdike.int.hansenpartnership.com>  <4FB941EF.4060304@gmx.de> <1337544924.2682.21.camel@dabdike.int.hansenpartnership.com> <4FB95D75.1020705@gmx.de>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Vincent <vincent.stehle@laposte.net>,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+From: Thibaut VARENE <T-Bone@parisc-linux.org>
+Subject: Fwd: Washing of machine owner database
+Date: Mon, 21 May 2012 08:37:15 -0700
+Message-ID: <CA+DQjFj23mRTQnZVb2ikT3qJQ3SCXm9WSxhB3gyFwUD43vdX5Q@mail.gmail.com>
+References: <4FBA4592.6090007@uib.no>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+To: linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4FB95D75.1020705@gmx.de>
+In-Reply-To: <4FBA4592.6090007@uib.no>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 20-May-12, at 5:09 PM, Helge Deller wrote:
+Hi,
 
-> Just to make sure, I just wanted to build the same kernel now for  
-> 64bit...
-> Sadly hppa64-ld crashes for me...
+I just received this email as it seems that hwdb@p-l.o is still an
+alias for me, which prompts the following remarks: I haven't been
+doing any work on the p-l hwdb in the past 5+ years I think so maybe
+that alias could be better used otherwise, and I think that aside
+pruning the stuff that spammers have put there, it might be useful to
+make that website/database read-only... :-)
 
-Please file a bug report ;(
+HTH,
+T-Bone
 
-I haven't tested binutils for some time...
 
-Suggest using 2.22 branch for now.
+---------- Forwarded message ----------
+=46rom: Karl Magnus Kolstoe <karl.kolsto@uib.no>
+Date: Mon, May 21, 2012 at 6:39 AM
+Subject: Washing of machine owner database
+To: hwdb@parisc-linux.org
+Cc: Karl Magnus Kolstoe <karl.kolsto@uib.no>
 
-Dave
+
+Hi,
+
+I had a quick look at the machine database and concluded that you
+might want to wash your database a bit.
+
+Have e.g a look at "Owners of this machine" on this page;
+http://hwdb.parisc-linux.org/view.php?type=3Dmachine&name=3DK100
+
+Just thought I should mention it.
+
+Thanks
 --
-John David Anglin	dave.anglin@bell.net
+Karl Magnus Kolst=C3=B8 - Member of the first RFC 1149 implementation t=
+eam.
 
 
-
+--=20
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
