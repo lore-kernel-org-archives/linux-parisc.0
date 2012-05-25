@@ -1,51 +1,130 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: Fix parisc compile failure after smp: Add task_struct argument
- to __cpu_up()
-Date: Fri, 25 May 2012 14:21:07 +0200 (CEST)
-Message-ID: <alpine.LFD.2.02.1205251420311.3231@ionos>
-References: <1337943565.2932.24.camel@dabdike.int.hansenpartnership.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [PATCH] update parisc to use generic strncpy_from_user()
+Date: Fri, 25 May 2012 14:59:52 +0100
+Message-ID: <1337954392.2932.36.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <jbottomley@parallels.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: David Miller <davem@davemloft.net>
+To: Parisc List <linux-parisc@vger.kernel.org>,
+	linux-arch@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1337943565.2932.24.camel@dabdike.int.hansenpartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 25 May 2012, James Bottomley wrote:
+I'll queue this patch in our git repo.  It seems to work fine for us,
+thanks, Dave!
 
-> commit 8239c25f47d2b318156993b15f33900a86ea5e17 added an argument to our
-> __cpu_up() function, but didn't notice we have an extra definition for
-> this in asm/smp.h resulting in a compile failure.
-> 
-> Fix by removing the extraneous parisc definition of __cpu_up().  While
-> we're at it, remove the duplicated definition of smp_send_reschedule().
+Parisc people, I'm a bit worried about the #include <linux/sched.h> in
+asm/uaccess.h ... I'm sure that's going to lead to complications later.
+It's needed to get the dynamic TASK_SIZE, which expands through the task
+structure to fill in user_addr_max() ... I'm thinking though that the
+top of address space doesn't provide much protection on pa (since our
+stack grows up towards it anyway, so we could just replace that with
+~0UL ... what do people think?
 
-Ooops. Sorry.
+James
 
-> James
-> 
-> ---
-> 
-> diff --git a/arch/parisc/include/asm/smp.h b/arch/parisc/include/asm/smp.h
-> index e8f8037..a5dc906 100644
-> --- a/arch/parisc/include/asm/smp.h
-> +++ b/arch/parisc/include/asm/smp.h
-> @@ -25,7 +25,6 @@ typedef unsigned long address_t;
->  #define cpu_number_map(cpu)	(cpu)
->  #define cpu_logical_map(cpu)	(cpu)
->  
-> -extern void smp_send_reschedule(int cpu);
->  extern void smp_send_all_nop(void);
->  
->  extern void arch_send_call_function_single_ipi(int cpu);
-> @@ -50,6 +49,5 @@ static inline void __cpu_die (unsigned int cpu) {
->    while(1)
->      ;
->  }
-> -extern int __cpu_up (unsigned int cpu);
->  
->  #endif /*  __ASM_SMP_H */
-> 
-> 
+---
+
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index ddb8b24..3ff21b5 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -18,6 +18,7 @@ config PARISC
+ 	select IRQ_PER_CPU
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select GENERIC_SMP_IDLE_THREAD
++	select GENERIC_STRNCPY_FROM_USER
+ 
+ 	help
+ 	  The PA-RISC microprocessor is designed by Hewlett-Packard and used
+diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
+index 9ac0660..d07eb50 100644
+--- a/arch/parisc/include/asm/uaccess.h
++++ b/arch/parisc/include/asm/uaccess.h
+@@ -8,6 +8,7 @@
+ #include <asm/cache.h>
+ #include <asm/errno.h>
+ #include <asm-generic/uaccess-unaligned.h>
++#include <linux/sched.h>
+ 
+ #define VERIFY_READ 0
+ #define VERIFY_WRITE 1
+@@ -218,15 +219,15 @@ struct exception_data {
+ extern unsigned long lcopy_to_user(void __user *, const void *, unsigned long);
+ extern unsigned long lcopy_from_user(void *, const void __user *, unsigned long);
+ extern unsigned long lcopy_in_user(void __user *, const void __user *, unsigned long);
+-extern long lstrncpy_from_user(char *, const char __user *, long);
++extern long strncpy_from_user(char *, const char __user *, long);
+ extern unsigned lclear_user(void __user *,unsigned long);
+ extern long lstrnlen_user(const char __user *,long);
+-
+ /*
+  * Complex access routines -- macros
+  */
++#define user_addr_max() \
++	(segment_eq(get_fs(), KERNEL_DS) ? ~0UL : TASK_SIZE)
+ 
+-#define strncpy_from_user lstrncpy_from_user
+ #define strnlen_user lstrnlen_user
+ #define strlen_user(str) lstrnlen_user(str, 0x7fffffffL)
+ #define clear_user lclear_user
+diff --git a/arch/parisc/kernel/parisc_ksyms.c b/arch/parisc/kernel/parisc_ksyms.c
+index a7bb757..ceec85d 100644
+--- a/arch/parisc/kernel/parisc_ksyms.c
++++ b/arch/parisc/kernel/parisc_ksyms.c
+@@ -44,7 +44,6 @@ EXPORT_SYMBOL(__cmpxchg_u64);
+ #endif
+ 
+ #include <asm/uaccess.h>
+-EXPORT_SYMBOL(lstrncpy_from_user);
+ EXPORT_SYMBOL(lclear_user);
+ EXPORT_SYMBOL(lstrnlen_user);
+ 
+diff --git a/arch/parisc/lib/lusercopy.S b/arch/parisc/lib/lusercopy.S
+index 1bd23cc..6f2d935 100644
+--- a/arch/parisc/lib/lusercopy.S
++++ b/arch/parisc/lib/lusercopy.S
+@@ -61,47 +61,6 @@
+ 	.endm
+ 
+ 	/*
+-	 * long lstrncpy_from_user(char *dst, const char *src, long n)
+-	 *
+-	 * Returns -EFAULT if exception before terminator,
+-	 *         N if the entire buffer filled,
+-	 *         otherwise strlen (i.e. excludes zero byte)
+-	 */
+-
+-ENTRY(lstrncpy_from_user)
+-	.proc
+-	.callinfo NO_CALLS
+-	.entry
+-	comib,=     0,%r24,$lsfu_done
+-	copy        %r24,%r23
+-	get_sr
+-1:      ldbs,ma     1(%sr1,%r25),%r1
+-$lsfu_loop:
+-	stbs,ma     %r1,1(%r26)
+-	comib,=,n   0,%r1,$lsfu_done
+-	addib,<>,n  -1,%r24,$lsfu_loop
+-2:      ldbs,ma     1(%sr1,%r25),%r1
+-$lsfu_done:
+-	sub         %r23,%r24,%r28
+-$lsfu_exit:
+-	bv          %r0(%r2)
+-	nop
+-	.exit
+-ENDPROC(lstrncpy_from_user)
+-
+-	.section .fixup,"ax"
+-3:      fixup_branch $lsfu_exit
+-	ldi         -EFAULT,%r28
+-	.previous
+-
+-	.section __ex_table,"aw"
+-	ASM_ULONG_INSN 1b,3b
+-	ASM_ULONG_INSN 2b,3b
+-	.previous
+-
+-	.procend
