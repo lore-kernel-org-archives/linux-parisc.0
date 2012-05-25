@@ -1,31 +1,51 @@
-From: James Bottomley <jbottomley@parallels.com>
-Subject: Fix parisc compile failure after smp: Add task_struct argument to
- __cpu_up()
-Date: Fri, 25 May 2012 10:59:26 +0000
-Message-ID: <1337943565.2932.24.camel@dabdike.int.hansenpartnership.com>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: Fix parisc compile failure after smp: Add task_struct argument
+ to __cpu_up()
+Date: Fri, 25 May 2012 14:21:07 +0200 (CEST)
+Message-ID: <alpine.LFD.2.02.1205251420311.3231@ionos>
+References: <1337943565.2932.24.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-To: Parisc List <linux-parisc@vger.kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Parisc List <linux-parisc@vger.kernel.org>
+To: James Bottomley <jbottomley@parallels.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1337943565.2932.24.camel@dabdike.int.hansenpartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Y29tbWl0IDgyMzljMjVmNDdkMmIzMTgxNTY5OTNiMTVmMzM5MDBhODZlYTVlMTcgYWRkZWQgYW4g
-YXJndW1lbnQgdG8gb3VyDQpfX2NwdV91cCgpIGZ1bmN0aW9uLCBidXQgZGlkbid0IG5vdGljZSB3
-ZSBoYXZlIGFuIGV4dHJhIGRlZmluaXRpb24gZm9yDQp0aGlzIGluIGFzbS9zbXAuaCByZXN1bHRp
-bmcgaW4gYSBjb21waWxlIGZhaWx1cmUuDQoNCkZpeCBieSByZW1vdmluZyB0aGUgZXh0cmFuZW91
-cyBwYXJpc2MgZGVmaW5pdGlvbiBvZiBfX2NwdV91cCgpLiAgV2hpbGUNCndlJ3JlIGF0IGl0LCBy
-ZW1vdmUgdGhlIGR1cGxpY2F0ZWQgZGVmaW5pdGlvbiBvZiBzbXBfc2VuZF9yZXNjaGVkdWxlKCku
-DQoNCkphbWVzDQoNCi0tLQ0KDQpkaWZmIC0tZ2l0IGEvYXJjaC9wYXJpc2MvaW5jbHVkZS9hc20v
-c21wLmggYi9hcmNoL3BhcmlzYy9pbmNsdWRlL2FzbS9zbXAuaA0KaW5kZXggZThmODAzNy4uYTVk
-YzkwNiAxMDA2NDQNCi0tLSBhL2FyY2gvcGFyaXNjL2luY2x1ZGUvYXNtL3NtcC5oDQorKysgYi9h
-cmNoL3BhcmlzYy9pbmNsdWRlL2FzbS9zbXAuaA0KQEAgLTI1LDcgKzI1LDYgQEAgdHlwZWRlZiB1
-bnNpZ25lZCBsb25nIGFkZHJlc3NfdDsNCiAjZGVmaW5lIGNwdV9udW1iZXJfbWFwKGNwdSkJKGNw
-dSkNCiAjZGVmaW5lIGNwdV9sb2dpY2FsX21hcChjcHUpCShjcHUpDQogDQotZXh0ZXJuIHZvaWQg
-c21wX3NlbmRfcmVzY2hlZHVsZShpbnQgY3B1KTsNCiBleHRlcm4gdm9pZCBzbXBfc2VuZF9hbGxf
-bm9wKHZvaWQpOw0KIA0KIGV4dGVybiB2b2lkIGFyY2hfc2VuZF9jYWxsX2Z1bmN0aW9uX3Npbmds
-ZV9pcGkoaW50IGNwdSk7DQpAQCAtNTAsNiArNDksNSBAQCBzdGF0aWMgaW5saW5lIHZvaWQgX19j
-cHVfZGllICh1bnNpZ25lZCBpbnQgY3B1KSB7DQogICB3aGlsZSgxKQ0KICAgICA7DQogfQ0KLWV4
-dGVybiBpbnQgX19jcHVfdXAgKHVuc2lnbmVkIGludCBjcHUpOw0KIA0KICNlbmRpZiAvKiAgX19B
-U01fU01QX0ggKi8NCg0K
+On Fri, 25 May 2012, James Bottomley wrote:
+
+> commit 8239c25f47d2b318156993b15f33900a86ea5e17 added an argument to our
+> __cpu_up() function, but didn't notice we have an extra definition for
+> this in asm/smp.h resulting in a compile failure.
+> 
+> Fix by removing the extraneous parisc definition of __cpu_up().  While
+> we're at it, remove the duplicated definition of smp_send_reschedule().
+
+Ooops. Sorry.
+
+> James
+> 
+> ---
+> 
+> diff --git a/arch/parisc/include/asm/smp.h b/arch/parisc/include/asm/smp.h
+> index e8f8037..a5dc906 100644
+> --- a/arch/parisc/include/asm/smp.h
+> +++ b/arch/parisc/include/asm/smp.h
+> @@ -25,7 +25,6 @@ typedef unsigned long address_t;
+>  #define cpu_number_map(cpu)	(cpu)
+>  #define cpu_logical_map(cpu)	(cpu)
+>  
+> -extern void smp_send_reschedule(int cpu);
+>  extern void smp_send_all_nop(void);
+>  
+>  extern void arch_send_call_function_single_ipi(int cpu);
+> @@ -50,6 +49,5 @@ static inline void __cpu_die (unsigned int cpu) {
+>    while(1)
+>      ;
+>  }
+> -extern int __cpu_up (unsigned int cpu);
+>  
+>  #endif /*  __ASM_SMP_H */
+> 
+> 
