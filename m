@@ -1,146 +1,37 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [PATCH v2] update parisc to use generic strncpy_from_user()
-Date: Sat, 26 May 2012 09:48:19 +0100
-Message-ID: <1338022099.3087.2.camel@dabdike.int.hansenpartnership.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [PATCH v2] update parisc to use generic strncpy_from_user()
+Date: Mon, 28 May 2012 13:57:09 -0400
+Message-ID: <CADZpyiyZX8QNDzWhpJfQS4YWYh24uG37AZYEP4gW63uqCW+W_A@mail.gmail.com>
+References: <1338022099.3087.2.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: David Miller <davem@davemloft.net>
-To: Parisc List <linux-parisc@vger.kernel.org>,
-	linux-arch@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	linux-arch@vger.kernel.org, David Miller <davem@davemloft.net>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <1338022099.3087.2.camel@dabdike.int.hansenpartnership.com>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I'll queue this patch in our git repo.  It seems to work fine for us,
-thanks, Dave!
+On Sat, May 26, 2012 at 4:48 AM, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+> I'll queue this patch in our git repo. =A0It seems to work fine for u=
+s,
+> thanks, Dave!
+>
+> v2: use test_thread_flag() for max addr determination instead of
+> tsk->thread.task_size
+>
 
-v2: use test_thread_flag() for max addr determination instead of
-tsk->thread.task_size
+Doesn't this seems like wasted instructions on the hot path? I fully
+agree with you that on PA, where the stack grows up, there isn't
+anything to run into up there.
 
-James
+On PA the failure case is still likely going to be one where you copy
+all the way through the stack (which would appear valid to the kernel)
+and fault on the first unmapped page and return -EFAULT.
 
----
+I'd rather see a compile-time constant like you originally suggested.
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index ddb8b24..3ff21b5 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -18,6 +18,7 @@ config PARISC
- 	select IRQ_PER_CPU
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	select GENERIC_SMP_IDLE_THREAD
-+	select GENERIC_STRNCPY_FROM_USER
- 
- 	help
- 	  The PA-RISC microprocessor is designed by Hewlett-Packard and used
-diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
-index 0e8b7b8..1419924 100644
---- a/arch/parisc/include/asm/processor.h
-+++ b/arch/parisc/include/asm/processor.h
-@@ -40,12 +40,16 @@
- #define DEFAULT_TASK_SIZE32	(0xFFF00000UL)
- #define DEFAULT_MAP_BASE32	(0x40000000UL)
- 
-+/* FIXME: remove task_size from current->thread and remove TMP_TASK_SIZE */
- #ifdef CONFIG_64BIT
- #define DEFAULT_TASK_SIZE       (MAX_ADDRESS-0xf000000)
- #define DEFAULT_MAP_BASE        (0x200000000UL)
-+#define TMP_TASK_SIZE		(test_thread_flag(TIF_32BIT) ? \
-+					DEFAULT_TASK_SIZE32 : DEFAULT_TASK_SIZE)
- #else
- #define DEFAULT_TASK_SIZE	DEFAULT_TASK_SIZE32
- #define DEFAULT_MAP_BASE	DEFAULT_MAP_BASE32
-+#define TMP_TASK_SIZE		DEFAULT_TASK_SIZE32
- #endif
- 
- #ifdef __KERNEL__
-diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
-index 9ac0660..95e656b 100644
---- a/arch/parisc/include/asm/uaccess.h
-+++ b/arch/parisc/include/asm/uaccess.h
-@@ -5,6 +5,7 @@
-  * User space memory access functions
-  */
- #include <asm/page.h>
-+#include <asm/pgtable.h>	/* for MAX_ADDRESS */
- #include <asm/cache.h>
- #include <asm/errno.h>
- #include <asm-generic/uaccess-unaligned.h>
-@@ -218,15 +219,15 @@ struct exception_data {
- extern unsigned long lcopy_to_user(void __user *, const void *, unsigned long);
- extern unsigned long lcopy_from_user(void *, const void __user *, unsigned long);
- extern unsigned long lcopy_in_user(void __user *, const void __user *, unsigned long);
--extern long lstrncpy_from_user(char *, const char __user *, long);
-+extern long strncpy_from_user(char *, const char __user *, long);
- extern unsigned lclear_user(void __user *,unsigned long);
- extern long lstrnlen_user(const char __user *,long);
--
- /*
-  * Complex access routines -- macros
-  */
-+#define user_addr_max() \
-+	(segment_eq(get_fs(), USER_DS) ? TMP_TASK_SIZE : ~0UL)
- 
--#define strncpy_from_user lstrncpy_from_user
- #define strnlen_user lstrnlen_user
- #define strlen_user(str) lstrnlen_user(str, 0x7fffffffL)
- #define clear_user lclear_user
-diff --git a/arch/parisc/kernel/parisc_ksyms.c b/arch/parisc/kernel/parisc_ksyms.c
-index a7bb757..ceec85d 100644
---- a/arch/parisc/kernel/parisc_ksyms.c
-+++ b/arch/parisc/kernel/parisc_ksyms.c
-@@ -44,7 +44,6 @@ EXPORT_SYMBOL(__cmpxchg_u64);
- #endif
- 
- #include <asm/uaccess.h>
--EXPORT_SYMBOL(lstrncpy_from_user);
- EXPORT_SYMBOL(lclear_user);
- EXPORT_SYMBOL(lstrnlen_user);
- 
-diff --git a/arch/parisc/lib/lusercopy.S b/arch/parisc/lib/lusercopy.S
-index 1bd23cc..6f2d935 100644
---- a/arch/parisc/lib/lusercopy.S
-+++ b/arch/parisc/lib/lusercopy.S
-@@ -61,47 +61,6 @@
- 	.endm
- 
- 	/*
--	 * long lstrncpy_from_user(char *dst, const char *src, long n)
--	 *
--	 * Returns -EFAULT if exception before terminator,
--	 *         N if the entire buffer filled,
--	 *         otherwise strlen (i.e. excludes zero byte)
--	 */
--
--ENTRY(lstrncpy_from_user)
--	.proc
--	.callinfo NO_CALLS
--	.entry
--	comib,=     0,%r24,$lsfu_done
--	copy        %r24,%r23
--	get_sr
--1:      ldbs,ma     1(%sr1,%r25),%r1
--$lsfu_loop:
--	stbs,ma     %r1,1(%r26)
--	comib,=,n   0,%r1,$lsfu_done
--	addib,<>,n  -1,%r24,$lsfu_loop
--2:      ldbs,ma     1(%sr1,%r25),%r1
--$lsfu_done:
--	sub         %r23,%r24,%r28
--$lsfu_exit:
--	bv          %r0(%r2)
--	nop
--	.exit
--ENDPROC(lstrncpy_from_user)
--
--	.section .fixup,"ax"
--3:      fixup_branch $lsfu_exit
--	ldi         -EFAULT,%r28
--	.previous
--
--	.section __ex_table,"aw"
--	ASM_ULONG_INSN 1b,3b
--	ASM_ULONG_INSN 2b,3b
--	.previous
--
--	.procend
+Cheers,
+Carlos.
