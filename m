@@ -1,41 +1,53 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [PATCH 2/3] fix compile break in use of lib/strncopy_from_user.c
-Date: Tue, 05 Jun 2012 13:53:04 +0900
-Message-ID: <1338871984.5176.10.camel@dabdike>
+Subject: [PATCH 3/3] fix code to find libgcc
+Date: Tue, 05 Jun 2012 13:54:09 +0900
+Message-ID: <1338872049.5176.11.camel@dabdike>
 References: <1338871679.5176.7.camel@dabdike>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Sam Ravnborg <sam@ravnborg.org>
 To: Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <1338871679.5176.7.camel@dabdike>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Linus broke us with
+Sam broke this with
 
-commit 36126f8f2ed8168eb13aa0662b9b9585cba100a9
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat May 26 10:43:17 2012 -0700
+commit 1f2bfbd00e466ff3489b2ca5cc75b1cccd14c123
+Author: Sam Ravnborg <sam@ravnborg.org>
+Date:   Sat May 5 10:18:41 2012 +0200
 
-    word-at-a-time: make the interfaces truly generic
+    kbuild: link of vmlinux moved to a script
 
-By moving functions defined in strncopy_from_user.c into the asm-geneic
-version word-at-a-time.h.  Spark and OpenRisc were fixed to use this, but
-not parisc.  Fix by adding to generic-y in asm/Kbuild
+But we should be deriving the location of libgcc in the same way as all
+the other archs, so fix by adding a LIBGCC variable which is evaluated
+in the makefile
 ---
- arch/parisc/include/asm/Kbuild |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ arch/parisc/Makefile |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
-index 19a434f..4383707 100644
---- a/arch/parisc/include/asm/Kbuild
-+++ b/arch/parisc/include/asm/Kbuild
-@@ -1,3 +1,4 @@
- include include/asm-generic/Kbuild.asm
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index dbc3850..5707f1a 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -21,6 +21,7 @@ KBUILD_DEFCONFIG := default_defconfig
  
- header-y += pdc.h
-+generic-y += word-at-a-time.h
+ NM		= sh $(srctree)/arch/parisc/nm
+ CHECKFLAGS	+= -D__hppa__=1
++LIBGCC		= $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
+ 
+ MACHINE		:= $(shell uname -m)
+ ifeq ($(MACHINE),parisc*)
+@@ -79,7 +80,7 @@ kernel-y			:= mm/ kernel/ math-emu/
+ kernel-$(CONFIG_HPUX)		+= hpux/
+ 
+ core-y	+= $(addprefix arch/parisc/, $(kernel-y))
+-libs-y	+= arch/parisc/lib/ `$(CC) -print-libgcc-file-name`
++libs-y	+= arch/parisc/lib/ $(LIBGCC)
+ 
+ drivers-$(CONFIG_OPROFILE)		+= arch/parisc/oprofile/
+ 
 -- 
 1.7.4.1
 
