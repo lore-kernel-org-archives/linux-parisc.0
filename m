@@ -1,49 +1,41 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [PATCH 1/3] fix missing TAINT_WARN problem
-Date: Tue, 05 Jun 2012 13:52:03 +0900
-Message-ID: <1338871923.5176.9.camel@dabdike>
+Subject: [PATCH 2/3] fix compile break in use of lib/strncopy_from_user.c
+Date: Tue, 05 Jun 2012 13:53:04 +0900
+Message-ID: <1338871984.5176.10.camel@dabdike>
 References: <1338871679.5176.7.camel@dabdike>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
 To: Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <1338871679.5176.7.camel@dabdike>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
->From ad71a7070fd5912420c443b020c6cf796518f3e9 Mon Sep 17 00:00:00 2001
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Date: Sun, 3 Jun 2012 01:49:32 -0700
-Subject: fix missing TAINT_WARN problem
+Linus broke us with
 
-Al viro broke us with
+commit 36126f8f2ed8168eb13aa0662b9b9585cba100a9
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat May 26 10:43:17 2012 -0700
 
-commit edd63a2763bdae0daa4f0a4d4c5d61d1154352a5
-Author: Al Viro <viro@zeniv.linux.org.uk>
-Date:   Fri Apr 27 13:42:45 2012 -0400
+    word-at-a-time: make the interfaces truly generic
 
-    set_restore_sigmask() is never called without SIGPENDING (and never should be)
-
-Although it's pretty much our fault since parisc's asm/bug.h uses
-BUGWARN_TAINT but doesn't include the file that defines it.  Fix that.
+By moving functions defined in strncopy_from_user.c into the asm-geneic
+version word-at-a-time.h.  Spark and OpenRisc were fixed to use this, but
+not parisc.  Fix by adding to generic-y in asm/Kbuild
 ---
- arch/parisc/include/asm/bug.h |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ arch/parisc/include/asm/Kbuild |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/arch/parisc/include/asm/bug.h b/arch/parisc/include/asm/bug.h
-index 72cfdb0..62a3333 100644
---- a/arch/parisc/include/asm/bug.h
-+++ b/arch/parisc/include/asm/bug.h
-@@ -1,6 +1,8 @@
- #ifndef _PARISC_BUG_H
- #define _PARISC_BUG_H
+diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
+index 19a434f..4383707 100644
+--- a/arch/parisc/include/asm/Kbuild
++++ b/arch/parisc/include/asm/Kbuild
+@@ -1,3 +1,4 @@
+ include include/asm-generic/Kbuild.asm
  
-+#include <linux/kernel.h>	/* for BUGFLAG_TAINT */
-+
- /*
-  * Tell the user there is some problem.
-  * The offending file and line are encoded in the __bug_table section.
+ header-y += pdc.h
++generic-y += word-at-a-time.h
 -- 
 1.7.4.1
 
