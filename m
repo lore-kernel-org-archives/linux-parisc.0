@@ -1,35 +1,76 @@
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH 3/3] fix code to find libgcc
-Date: Tue, 5 Jun 2012 08:55:11 +0200
-Message-ID: <20120605065511.GA29003@merkur.ravnborg.org>
-References: <1338871679.5176.7.camel@dabdike> <1338872049.5176.11.camel@dabdike>
+From: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
+Subject: 3.4.1 fails to boot on Apollo 705 in paging_init
+Date: Wed, 6 Jun 2012 14:55:40 +0200
+Message-ID: <e69c1188b0a31ea587fa1faaeb72c712.squirrel@webmail.sf-mail.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=US-ASCII
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1338872049.5176.11.camel@dabdike>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Jun 05, 2012 at 01:54:09PM +0900, James Bottomley wrote:
-> Sam broke this with
-Soory!
-> 
-> commit 1f2bfbd00e466ff3489b2ca5cc75b1cccd14c123
-> Author: Sam Ravnborg <sam@ravnborg.org>
-> Date:   Sat May 5 10:18:41 2012 +0200
-> 
->     kbuild: link of vmlinux moved to a script
-> 
-> But we should be deriving the location of libgcc in the same way as all
-> the other archs, so fix by adding a LIBGCC variable which is evaluated
-> in the makefile
-It actually took me some time to realise why the formar approach was wrong.
-It is still morning here..
+Linux version 3.4.1 (root@voyager) (gcc version 4.5.3 (Gentoo 4.5.3-r2
+p1.5, pie-0.4.7) ) #1 Wed Jun 6 14:15:43 CEST 2012
+unwind_init: start = 0x1044e000, end = 0x1047faf0, entries = 12719
+FP[0] enabled: Rev 3 Model 0
+The 32-bit Kernel has started...
+bootconsole [ttyB0] enabled
+Initialized PDC Console for debugging.
+Determining PDC firmware type: Snake.
+model 00003020 00000481 00000000 00000000 77aac223 ffffffff 00000004
+0000000d 00000000
+vers  00000003
+model 9000/705
+Total Memory: 64 MB
+      _______________________________
+     < Your System ate a SPARC! Gah! >
+      -------------------------------
+             \   ^__^
+                 (__)\       )\/\
+                  U  ||----w |
+                     ||     ||
+swapper (pid 0): Protection id trap (code 7)
 
-Thanks for fixing this!
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001000000000000001110 Not tainted
+r00-03  0004000e 0004000e 1050104c 00000000
+r04-07  00000001 104841cc 1048e000 104917b8
+r08-11  104917d4 1048e024 00000000 00100000
+r12-15  00004000 00000000 00537fff 104b58c8
+r16-19  104ec800 00004000 1048e000 0000000e
+r20-23  00000000 00000000 00000000 00000000
+r24-27  00000001 00000000 00000000 1048e000
+r28-31  00000000 00000000 10484280 00000000
+sr00-03  00000000 00000000 00000000 00000000
+sr04-07  00000000 00000000 00000000 00000000
 
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+IASQ: 00000000 00000000 IAOQ: 1010077c 10100780
+ IIR: e840c000    ISR: 00000000  IOR: 1050104c
+ CPU:        0   CR30: 10484000 CR31: 000000e0
+ ORIG_R28: 00000000
+ IAOQ[0]: .L21+0x0/0x8
+ IAOQ[1]: .L21+0x4/0x8
+ RP(r2): paging_init+0x788/0x824
+Backtrace:
+ [<1050104c>] paging_init+0x788/0x824
+ [<10501688>] setup_arch+0x5c/0x88
+ [<104fd8d0>] start_kernel+0x80/0x370
+ [<1010f218>] start_parisc+0x4c/0x68
 
-	Sam
+Backtrace:
+ [<1010f940>] die_if_kernel+0x138/0x1b0
+ [<10110094>] handle_interruption+0x46c/0x614
+ [<10104078>] intr_check_sig+0x0/0x34
+ [<10100780>] .L21+0x4/0x8
+
+---[ end trace 139ce121c98e96c9 ]---
+      _______________________________
+     < Your System ate a SPARC! Gah! >
+      -------------------------------
+             \   ^__^
+                 (__)\       )\/\
+                  U  ||----w |
+                     ||     ||
+swapper (pid 0): Protection id trap (code 7)
+die_if_kernel() recursion detected.
+
