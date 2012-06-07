@@ -1,76 +1,84 @@
-From: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
-Subject: 3.4.1 fails to boot on Apollo 705 in paging_init
-Date: Wed, 6 Jun 2012 14:55:40 +0200
-Message-ID: <e69c1188b0a31ea587fa1faaeb72c712.squirrel@webmail.sf-mail.de>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [GIT PULL] parisc fixes for 3.4-rc1
+Date: Thu, 07 Jun 2012 14:38:13 +0900
+Message-ID: <1339047493.26595.7.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-To: linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Linux version 3.4.1 (root@voyager) (gcc version 4.5.3 (Gentoo 4.5.3-r2
-p1.5, pie-0.4.7) ) #1 Wed Jun 6 14:15:43 CEST 2012
-unwind_init: start = 0x1044e000, end = 0x1047faf0, entries = 12719
-FP[0] enabled: Rev 3 Model 0
-The 32-bit Kernel has started...
-bootconsole [ttyB0] enabled
-Initialized PDC Console for debugging.
-Determining PDC firmware type: Snake.
-model 00003020 00000481 00000000 00000000 77aac223 ffffffff 00000004
-0000000d 00000000
-vers  00000003
-model 9000/705
-Total Memory: 64 MB
-      _______________________________
-     < Your System ate a SPARC! Gah! >
-      -------------------------------
-             \   ^__^
-                 (__)\       )\/\
-                  U  ||----w |
-                     ||     ||
-swapper (pid 0): Protection id trap (code 7)
+This is a set of three bug fixes for minor build breakages that got
+introduced just before 3.4-rc1 was released.
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001000000000000001110 Not tainted
-r00-03  0004000e 0004000e 1050104c 00000000
-r04-07  00000001 104841cc 1048e000 104917b8
-r08-11  104917d4 1048e024 00000000 00100000
-r12-15  00004000 00000000 00537fff 104b58c8
-r16-19  104ec800 00004000 1048e000 0000000e
-r20-23  00000000 00000000 00000000 00000000
-r24-27  00000001 00000000 00000000 1048e000
-r28-31  00000000 00000000 10484280 00000000
-sr00-03  00000000 00000000 00000000 00000000
-sr04-07  00000000 00000000 00000000 00000000
+The patches are here:
 
-IASQ: 00000000 00000000 IAOQ: 1010077c 10100780
- IIR: e840c000    ISR: 00000000  IOR: 1050104c
- CPU:        0   CR30: 10484000 CR31: 000000e0
- ORIG_R28: 00000000
- IAOQ[0]: .L21+0x0/0x8
- IAOQ[1]: .L21+0x4/0x8
- RP(r2): paging_init+0x788/0x824
-Backtrace:
- [<1050104c>] paging_init+0x788/0x824
- [<10501688>] setup_arch+0x5c/0x88
- [<104fd8d0>] start_kernel+0x80/0x370
- [<1010f218>] start_parisc+0x4c/0x68
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/parisc-2.6.git parisc-fixes
 
-Backtrace:
- [<1010f940>] die_if_kernel+0x138/0x1b0
- [<10110094>] handle_interruption+0x46c/0x614
- [<10104078>] intr_check_sig+0x0/0x34
- [<10100780>] .L21+0x4/0x8
+The short changelog is:
 
----[ end trace 139ce121c98e96c9 ]---
-      _______________________________
-     < Your System ate a SPARC! Gah! >
-      -------------------------------
-             \   ^__^
-                 (__)\       )\/\
-                  U  ||----w |
-                     ||     ||
-swapper (pid 0): Protection id trap (code 7)
-die_if_kernel() recursion detected.
+James Bottomley (3):
+      fix code to find libgcc
+      fix compile break in use of lib/strncopy_from_user.c
+      fix missing TAINT_WARN problem
 
+And the diffstat
+
+ arch/parisc/Makefile           |    3 ++-
+ arch/parisc/include/asm/Kbuild |    1 +
+ arch/parisc/include/asm/bug.h  |    2 ++
+ 3 files changed, 5 insertions(+), 1 deletion(-)
+
+Full diff is below.
+
+James
+
+---
+
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index dbc3850..5707f1a 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -21,6 +21,7 @@ KBUILD_DEFCONFIG := default_defconfig
+ 
+ NM		= sh $(srctree)/arch/parisc/nm
+ CHECKFLAGS	+= -D__hppa__=1
++LIBGCC		= $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
+ 
+ MACHINE		:= $(shell uname -m)
+ ifeq ($(MACHINE),parisc*)
+@@ -79,7 +80,7 @@ kernel-y			:= mm/ kernel/ math-emu/
+ kernel-$(CONFIG_HPUX)		+= hpux/
+ 
+ core-y	+= $(addprefix arch/parisc/, $(kernel-y))
+-libs-y	+= arch/parisc/lib/ `$(CC) -print-libgcc-file-name`
++libs-y	+= arch/parisc/lib/ $(LIBGCC)
+ 
+ drivers-$(CONFIG_OPROFILE)		+= arch/parisc/oprofile/
+ 
+diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
+index 19a434f..4383707 100644
+--- a/arch/parisc/include/asm/Kbuild
++++ b/arch/parisc/include/asm/Kbuild
+@@ -1,3 +1,4 @@
+ include include/asm-generic/Kbuild.asm
+ 
+ header-y += pdc.h
++generic-y += word-at-a-time.h
+diff --git a/arch/parisc/include/asm/bug.h b/arch/parisc/include/asm/bug.h
+index 72cfdb0..62a3333 100644
+--- a/arch/parisc/include/asm/bug.h
++++ b/arch/parisc/include/asm/bug.h
+@@ -1,6 +1,8 @@
+ #ifndef _PARISC_BUG_H
+ #define _PARISC_BUG_H
+ 
++#include <linux/kernel.h>	/* for BUGFLAG_TAINT */
++
+ /*
+  * Tell the user there is some problem.
+  * The offending file and line are encoded in the __bug_table section.
