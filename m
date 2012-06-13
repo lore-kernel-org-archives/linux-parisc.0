@@ -1,117 +1,95 @@
-From: Kautuk Consul <consul.kautuk@gmail.com>
-Subject: Re: [PATCH 17/19 v2] parisc/mm/fault.c: Port OOM changes to do_page_fault
-Date: Tue, 12 Jun 2012 21:25:56 +0530
-Message-ID: <CAFPAmTQCRzKDTSTC+sHu4vPUgNYN70XqY4BzgPA_=jxJ4EOVLQ@mail.gmail.com>
-References: <1333195588-5490-1-git-send-email-consul.kautuk@gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: 3.4.1 fails to boot on Apollo 705 in paging_init
+Date: Wed, 13 Jun 2012 23:13:42 +0200
+Message-ID: <4FD90286.5040301@gmx.de>
+References: <e69c1188b0a31ea587fa1faaeb72c712.squirrel@webmail.sf-mail.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Cc: linux-parisc@vger.kernel.org
-To: jejb@parisc-linux.org, Helge Deller <deller@gmx.de>
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1333195588-5490-1-git-send-email-consul.kautuk@gmail.com>
+In-Reply-To: <e69c1188b0a31ea587fa1faaeb72c712.squirrel@webmail.sf-mail.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi,
+Hi Rolf,
 
-Can you please review this patch ?
+Did the machine worked with the old debian kernels?
 
-Many archs have actually accepted this change so I think maybe this is =
-okay. :)
+According to http://hwdb.parisc-linux.org/view.php?type=machine&name=705 
+it has a PA7000 (PCX-S)) CPU, which is PA1.1a generation.
+Probably we still use some assembly which is not supported on PA1.1a yet.
+My "oldest" testmachine was a 715/64 which is PA7100LC aka PA 1.1d 
+generation...
 
-Thanks,
-Kautuk.
+I can try to look into this, but this will take some time since I'll 
+leave for two-week vacation shortly...
 
-On Sat, Mar 31, 2012 at 5:36 PM, Kautuk Consul <consul.kautuk@gmail.com=
-> wrote:
-> Commit d065bd810b6deb67d4897a14bfe21f8eb526ba99
-> (mm: retry page fault when blocking on disk transfer) and
-> commit 37b23e0525d393d48a7d59f870b3bc061a30ccdb
-> (x86,mm: make pagefault killable)
+Helge
+
+On 06/06/2012 02:55 PM, Rolf Eike Beer wrote:
+> Linux version 3.4.1 (root@voyager) (gcc version 4.5.3 (Gentoo 4.5.3-r2
+> p1.5, pie-0.4.7) ) #1 Wed Jun 6 14:15:43 CEST 2012
+> unwind_init: start = 0x1044e000, end = 0x1047faf0, entries = 12719
+> FP[0] enabled: Rev 3 Model 0
+> The 32-bit Kernel has started...
+> bootconsole [ttyB0] enabled
+> Initialized PDC Console for debugging.
+> Determining PDC firmware type: Snake.
+> model 00003020 00000481 00000000 00000000 77aac223 ffffffff 00000004
+> 0000000d 00000000
+> vers  00000003
+> model 9000/705
+> Total Memory: 64 MB
+>        _______________________________
+>       <  Your System ate a SPARC! Gah!>
+>        -------------------------------
+>               \   ^__^
+>                   (__)\       )\/\
+>                    U  ||----w |
+>                       ||     ||
+> swapper (pid 0): Protection id trap (code 7)
 >
-> The above commits introduced changes into the x86 pagefault handler
-> for making the page fault handler retryable as well as killable.
+>       YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> PSW: 00000000000001000000000000001110 Not tainted
+> r00-03  0004000e 0004000e 1050104c 00000000
+> r04-07  00000001 104841cc 1048e000 104917b8
+> r08-11  104917d4 1048e024 00000000 00100000
+> r12-15  00004000 00000000 00537fff 104b58c8
+> r16-19  104ec800 00004000 1048e000 0000000e
+> r20-23  00000000 00000000 00000000 00000000
+> r24-27  00000001 00000000 00000000 1048e000
+> r28-31  00000000 00000000 10484280 00000000
+> sr00-03  00000000 00000000 00000000 00000000
+> sr04-07  00000000 00000000 00000000 00000000
 >
-> These changes reduce the mmap_sem hold time, which is crucial
-> during OOM killer invocation.
+> IASQ: 00000000 00000000 IAOQ: 1010077c 10100780
+>   IIR: e840c000    ISR: 00000000  IOR: 1050104c
+>   CPU:        0   CR30: 10484000 CR31: 000000e0
+>   ORIG_R28: 00000000
+>   IAOQ[0]: .L21+0x0/0x8
+>   IAOQ[1]: .L21+0x4/0x8
+>   RP(r2): paging_init+0x788/0x824
+> Backtrace:
+>   [<1050104c>] paging_init+0x788/0x824
+>   [<10501688>] setup_arch+0x5c/0x88
+>   [<104fd8d0>] start_kernel+0x80/0x370
+>   [<1010f218>] start_parisc+0x4c/0x68
 >
-> Signed-off-by: Kautuk Consul <consul.kautuk@gmail.com>
-> ---
-> =A0arch/parisc/mm/fault.c | =A0 29 ++++++++++++++++++++++++-----
-> =A01 files changed, 24 insertions(+), 5 deletions(-)
+> Backtrace:
+>   [<1010f940>] die_if_kernel+0x138/0x1b0
+>   [<10110094>] handle_interruption+0x46c/0x614
+>   [<10104078>] intr_check_sig+0x0/0x34
+>   [<10100780>] .L21+0x4/0x8
 >
-> diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-> index 18162ce..bd66ed6 100644
-> --- a/arch/parisc/mm/fault.c
-> +++ b/arch/parisc/mm/fault.c
-> @@ -175,10 +175,12 @@ void do_page_fault(struct pt_regs *regs, unsign=
-ed long code,
-> =A0 =A0 =A0 =A0struct mm_struct *mm =3D tsk->mm;
-> =A0 =A0 =A0 =A0unsigned long acc_type;
-> =A0 =A0 =A0 =A0int fault;
-> + =A0 =A0 =A0 unsigned int flags =3D FAULT_FLAG_ALLOW_RETRY | FAULT_F=
-LAG_KILLABLE;
->
-> =A0 =A0 =A0 =A0if (in_atomic() || !mm)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto no_context;
->
-> +retry:
-> =A0 =A0 =A0 =A0down_read(&mm->mmap_sem);
-> =A0 =A0 =A0 =A0vma =3D find_vma_prev(mm, address, &prev_vma);
-> =A0 =A0 =A0 =A0if (!vma || address < vma->vm_start)
-> @@ -201,7 +203,12 @@ good_area:
-> =A0 =A0 =A0 =A0 * fault.
-> =A0 =A0 =A0 =A0 */
->
-> - =A0 =A0 =A0 fault =3D handle_mm_fault(mm, vma, address, (acc_type &=
- VM_WRITE) ? FAULT_FLAG_WRITE : 0);
-> + =A0 =A0 =A0 fault =3D handle_mm_fault(mm, vma, address,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 flags | ((acc_type & VM=
-_WRITE) ? FAULT_FLAG_WRITE : 0));
-> +
-> + =A0 =A0 =A0 if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(cu=
-rrent))
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return;
-> +
-> =A0 =A0 =A0 =A0if (unlikely(fault & VM_FAULT_ERROR)) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/*
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 * We hit a shared mapping outside of =
-the file, or some
-> @@ -214,10 +221,22 @@ good_area:
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto bad_area;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0BUG();
-> =A0 =A0 =A0 =A0}
-> - =A0 =A0 =A0 if (fault & VM_FAULT_MAJOR)
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 current->maj_flt++;
-> - =A0 =A0 =A0 else
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 current->min_flt++;
-> + =A0 =A0 =A0 if (flags & FAULT_FLAG_ALLOW_RETRY) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (fault & VM_FAULT_MAJOR)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 current->maj_flt++;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 else
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 current->min_flt++;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (fault & VM_FAULT_RETRY) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 flags &=3D ~FAULT_FLAG_=
-ALLOW_RETRY;
-> +
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* No need to up_rea=
-d(&mm->mmap_sem) as we would
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* have already relea=
-sed it in __lock_page_or_retry
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* in mm/filemap.c.
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
-> +
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto retry;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> + =A0 =A0 =A0 }
-> =A0 =A0 =A0 =A0up_read(&mm->mmap_sem);
-> =A0 =A0 =A0 =A0return;
->
-> --
-> 1.7.5.4
->
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> ---[ end trace 139ce121c98e96c9 ]---
+>        _______________________________
+>       <  Your System ate a SPARC! Gah!>
+>        -------------------------------
+>               \   ^__^
+>                   (__)\       )\/\
+>                    U  ||----w |
+>                       ||     ||
+> swapper (pid 0): Protection id trap (code 7)
+> die_if_kernel() recursion detected.
+
