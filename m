@@ -1,29 +1,45 @@
-From: "Hon. Kwesi Ahwoi" <ahwoikwesi11@gmail.com>
-Subject: Waiting to hear from you
-Date: Fri, 15 Jun 2012 07:34:39 +0530
-Message-ID: <ac31da55475b40bc366c4a8e9d39ba69.squirrel@mail.tce.edu>
-Reply-To: ahwoi.kwesi@yahoo.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-To: unlisted-recipients:; (no To-header on input)
+From: Tony Luck <tony.luck@intel.com>
+Subject: [PATCH] debug: Do not permit CONFIG_DEBUG_STACK_USAGE=y on IA64 or PARISC
+Date: Wed, 18 Jul 2012 10:35:05 -0700
+Message-ID: <4a613b26cc402fb3ed8130cd07a37e76f4c133ef.1342634029.git.tony.luck@intel.com>
+Cc: Ingo Molnar <mingo@elte.hu>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	linux-ia64@vger.kernel.org, Fengguang Wu <fengguang.wu@intel.com>
+To: linux-kernel@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+The stack_not_used() function in <linux/sched.h> assumes that stacks
+grow downwards. This is not true on IA64 or PARISC, so this function
+would walk off in the wrong direction and into the weeds.
 
+Found on IA64 because of a compilation failure with recursive dependencies
+on IA64_TASKSIZE and IA64_THREAD_INFO_SIZE.
 
+Fixing the code is possible, but should be combined with other
+infrastructure additions to set up the "canary" at the end of the stack.
 
-I have a business for you to handle with me. Should you be interested,
-Kindly contact me via (ahwoi.kwesi@yahoo.com) for more details.
+Reported-by: Fengguang Wu <fengguang.wu@intel.com> (failed allmodconfig build)
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+---
+ lib/Kconfig.debug | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Thanks
-Hon. Kwesi Ahwoi
-+233543146547
-
-
------------------------------------------
-This email was sent using TCEMail Service.
-Thiagarajar College of Engineering
-Madurai-625 015, India
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index ff5bdee..4a18650 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -714,7 +714,7 @@ config STACKTRACE
+ 
+ config DEBUG_STACK_USAGE
+ 	bool "Stack utilization instrumentation"
+-	depends on DEBUG_KERNEL
++	depends on DEBUG_KERNEL && !IA64 && !PARISC
+ 	help
+ 	  Enables the display of the minimum amount of free stack which each
+ 	  task has ever had available in the sysrq-T and sysrq-P debug output.
+-- 
+1.7.10.2.552.gaa3bb87
 
