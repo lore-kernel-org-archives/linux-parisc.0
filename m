@@ -1,45 +1,98 @@
-From: Tony Luck <tony.luck@intel.com>
-Subject: [PATCH] debug: Do not permit CONFIG_DEBUG_STACK_USAGE=y on IA64 or PARISC
-Date: Wed, 18 Jul 2012 10:35:05 -0700
-Message-ID: <4a613b26cc402fb3ed8130cd07a37e76f4c133ef.1342634029.git.tony.luck@intel.com>
-Cc: Ingo Molnar <mingo@elte.hu>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	linux-ia64@vger.kernel.org, Fengguang Wu <fengguang.wu@intel.com>
-To: linux-kernel@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [next:akpm 129/309] net/core/sock.c:274:36: error: initializer
+ element is not constant
+Date: Mon, 23 Jul 2012 12:20:20 +0100
+Message-ID: <1343042420.3027.11.camel@dabdike.int.hansenpartnership.com>
+References: <20120722163058.GB13376@localhost>
+	 <20120723111619.GT9222@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Cc: Fengguang Wu <fengguang.wu@intel.com>,
+	kernel-janitors@vger.kernel.org,
+	Kyle McMartin <kyle@parisc-linux.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: Mel Gorman <mgorman@suse.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120723111619.GT9222@suse.de>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The stack_not_used() function in <linux/sched.h> assumes that stacks
-grow downwards. This is not true on IA64 or PARISC, so this function
-would walk off in the wrong direction and into the weeds.
+[Parisc list cc added]
+On Mon, 2012-07-23 at 12:16 +0100, Mel Gorman wrote:
+> On Mon, Jul 23, 2012 at 12:30:58AM +0800, Fengguang Wu wrote:
+> > Hi Mel,
+> > 
+> > To be frank, I don't quite understand this build failure..
+> > 
+> > tree:   next/akpm akpm
+> > head:   37e2ad4953983527f7bdb6831bf478eedcc84082
+> > commit: 799dc3a908b1df8b766c35aefc24c1b5356aa051 [129/309] netvm: allow skb allocation to use PFMEMALLOC reserves
+> > config: parisc-defconfig (attached as .config)
+> > 
+> > All related error/warning messages:
+> > 
+> > net/core/sock.c:274:36: error: initializer element is not constant
+> > net/core/sock.c:274:36: error: (near initialization for 'memalloc_socks')
+> > net/core/sock.c:274:36: error: initializer element is not constant
+> > 
+> 
+> It looks parisc specific so am adding some parisc because this builds but
+> I am less sure if it is actually correct. If it's correct, it should be
+> appear before the swap-over-nfs patches to avoid bisection problems.
+> I've added some parisc folk for review.
+> 
+> ---8<---
+> parisc: Redefine ATOMIC_INIT and ATOMIC64_INIT like other architectures
+> 
+> The following build error occured during a parisc build with
+> swap-over-NFS patches applied.
+> 
+> net/core/sock.c:274:36: error: initializer element is not constant
+> net/core/sock.c:274:36: error: (near initialization for 'memalloc_socks')
+> net/core/sock.c:274:36: error: initializer element is not constant
+> 
+> It's not obvious but this is due to how ATOMIC_INIT is defined on
+> parisc. It should affect any user of STATIC_KEY_INIT_FALSE on that
+> platform.
+> 
+> This patch makes the definition of ATOMIC_INIT on parisc to look like
+> other arches definition.
+> 
+> Reported-by: Fengguang Wu <fengguang.wu@intel.com>
+> Signed-off-by: Mel Gorman <mgorman@suse.de>
+> ---
+>  arch/parisc/include/asm/atomic.h |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/parisc/include/asm/atomic.h b/arch/parisc/include/asm/atomic.h
+> index 6c6defc..af9cf30 100644
+> --- a/arch/parisc/include/asm/atomic.h
+> +++ b/arch/parisc/include/asm/atomic.h
+> @@ -141,7 +141,7 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
+>  
+>  #define atomic_sub_and_test(i,v)	(atomic_sub_return((i),(v)) == 0)
+>  
+> -#define ATOMIC_INIT(i)	((atomic_t) { (i) })
+> +#define ATOMIC_INIT(i)	{ (i) }
+>  
+>  #define smp_mb__before_atomic_dec()	smp_mb()
+>  #define smp_mb__after_atomic_dec()	smp_mb()
+> @@ -150,7 +150,7 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
+>  
+>  #ifdef CONFIG_64BIT
+>  
+> -#define ATOMIC64_INIT(i) ((atomic64_t) { (i) })
+> +#define ATOMIC64_INIT(i) { (i) }
+>  
+>  static __inline__ s64
+>  __atomic64_add_return(s64 i, atomic64_t *v)
 
-Found on IA64 because of a compilation failure with recursive dependencies
-on IA64_TASKSIZE and IA64_THREAD_INFO_SIZE.
+OK, I don't understand this either ... why would not casting to the
+appropriate type suddenly stop warning about the initialiser being non
+constant.  It looks like some type of gcc bug to me.  Our toolchain
+expert (Dave) hangs out on the parisc list ... he'll want to know your
+gcc -v.
 
-Fixing the code is possible, but should be combined with other
-infrastructure additions to set up the "canary" at the end of the stack.
-
-Reported-by: Fengguang Wu <fengguang.wu@intel.com> (failed allmodconfig build)
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- lib/Kconfig.debug | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index ff5bdee..4a18650 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -714,7 +714,7 @@ config STACKTRACE
- 
- config DEBUG_STACK_USAGE
- 	bool "Stack utilization instrumentation"
--	depends on DEBUG_KERNEL
-+	depends on DEBUG_KERNEL && !IA64 && !PARISC
- 	help
- 	  Enables the display of the minimum amount of free stack which each
- 	  task has ever had available in the sysrq-T and sysrq-P debug output.
--- 
-1.7.10.2.552.gaa3bb87
-
+James
