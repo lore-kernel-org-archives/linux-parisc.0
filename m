@@ -1,98 +1,44 @@
-From: Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH] debug: Do not permit CONFIG_DEBUG_STACK_USAGE=y on IA64
- or PARISC
-Date: Thu, 26 Jul 2012 14:01:22 +0200
-Message-ID: <20120726120122.GA24672@gmail.com>
-References: <4a613b26cc402fb3ed8130cd07a37e76f4c133ef.1342634029.git.tony.luck@intel.com>
- <20120725074501.GB27950@gmail.com>
- <1343203348.3139.16.camel@dabdike>
+From: Tony Luck <tony.luck@gmail.com>
+Subject: Re: [next:akpm 129/309] net/core/sock.c:274:36: error: initializer
+ element is not constant
+Date: Thu, 26 Jul 2012 10:06:41 -0700
+Message-ID: <CA+8MBbJkGN+zGBdD5Hg26wW_6E9L_ufoutn7wj+Y+nhtW7WKWg@mail.gmail.com>
+References: <20120722163058.GB13376@localhost>
+	<20120723111619.GT9222@suse.de>
+	<1343042420.3027.11.camel@dabdike.int.hansenpartnership.com>
+	<20120723114258.GV9222@suse.de>
+	<20120723122905.GA22476@localhost>
+	<BLU0-SMTP2254F8872DDE5FA6035CDE97DD0@phx.gbl>
+	<20120724074844.GA9519@localhost>
+	<BLU0-SMTP6C7CFCFF734FE10A39B6E97DC0@phx.gbl>
+	<1343193053.3139.6.camel@dabdike>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org,
-	Ingo Molnar <mingo@elte.hu>, Helge Deller <deller@gmx.de>,
-	linux-parisc@vger.kernel.org, linux-ia64@vger.kernel.org,
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: John David Anglin <dave.anglin@bell.net>,
 	Fengguang Wu <fengguang.wu@intel.com>,
+	Mel Gorman <mgorman@suse.de>, kernel-janitors@vger.kernel.org,
+	Kyle McMartin <kyle@parisc-linux.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+	LKML <linux-kernel@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1343203348.3139.16.camel@dabdike>
+In-Reply-To: <1343193053.3139.6.camel@dabdike>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On Tue, Jul 24, 2012 at 10:10 PM, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>> Here is the line in sock.i:
+>>
+>> struct static_key memalloc_socks = ((struct static_key) { .enabled =
+>> ((atomic_t) { (0) }) });
+>
+> The above line contains two compound literals.  It also uses a designated
+> initializer to initialize the field enabled.  A compound literal is not a
+> constant expression.
 
-* James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
+Seeing the same thing on ia64 building next-20120726.  Same fix works
+for me ... so I'll steal this whole changelog and attributes.
 
-> On Wed, 2012-07-25 at 09:45 +0200, Ingo Molnar wrote:
-> > * Tony Luck <tony.luck@intel.com> wrote:
-> > 
-> > > The stack_not_used() function in <linux/sched.h> assumes that stacks
-> > > grow downwards. This is not true on IA64 or PARISC, so this function
-> > > would walk off in the wrong direction and into the weeds.
-> > > 
-> > > Found on IA64 because of a compilation failure with recursive dependencies
-> > > on IA64_TASKSIZE and IA64_THREAD_INFO_SIZE.
-> > > 
-> > > Fixing the code is possible, but should be combined with other
-> > > infrastructure additions to set up the "canary" at the end of the stack.
-> > > 
-> > > Reported-by: Fengguang Wu <fengguang.wu@intel.com> (failed allmodconfig build)
-> > > Signed-off-by: Tony Luck <tony.luck@intel.com>
-> > > ---
-> > >  lib/Kconfig.debug | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > > index ff5bdee..4a18650 100644
-> > > --- a/lib/Kconfig.debug
-> > > +++ b/lib/Kconfig.debug
-> > > @@ -714,7 +714,7 @@ config STACKTRACE
-> > >  
-> > >  config DEBUG_STACK_USAGE
-> > >  	bool "Stack utilization instrumentation"
-> > > -	depends on DEBUG_KERNEL
-> > > +	depends on DEBUG_KERNEL && !IA64 && !PARISC
-> > 
-> > The modern way of doing this is by adding an ARCH_SUPPORTS_ 
-> > flag.
-> 
-> That's a bit daft, isn't it? [...]
-
-It's generally more maintainable than a random list of 
-architecture exclusions because every (old or new) architecture 
-can just grep for ARCH_SUPPORTS_ pattern and see whether they 
-support everything that others support.
-
-The above exclusion list of architectures is much harder to find 
-in a structured way.
-
-> [...]  We'd have to add ARCH_SUPPORTS_ flags to about 25 
-> separate architectures just to get it not supported on these 
-> two.
-
-That is one off overhead and it makes things easier to maintain 
-going forward.
-
-Anyway, that's the current upstream technique and it's been in 
-place for years.
-
-> Since the problem is an invalid assumption about how the stack 
-> grows, why not just condition it on that.  We actually have a 
-> config option for this: CONFIG_STACK_GROWSUP.  But for some 
-> reason ia64 doesn't define this, why not, Tony?  It looks 
-> deliberate because you have replaced a lot of
-> 
-> #ifdef CONFIG_STACK_GROWSUP
-> 
-> with
-> 
-> #if defined(CONFIG_STACK_GROWSUP) || defined(CONFIG_IA64)
-> 
-> but not all of them.
-
-Yes, that's another possible solution, assuming that it's really 
-only about the up/down difference.
-
-Thanks,
-
-	Ingo
+-Tony
