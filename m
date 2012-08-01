@@ -1,35 +1,67 @@
-From: "Luck, Tony" <tony.luck@intel.com>
-Subject: RE: [PATCH] debug: Do not permit CONFIG_DEBUG_STACK_USAGE=y on IA64
- or PARISC
-Date: Sat, 28 Jul 2012 21:43:07 +0000
-Message-ID: <3908561D78D1C84285E8C5FCA982C28F193720CE@ORSMSX104.amr.corp.intel.com>
-References: <4a613b26cc402fb3ed8130cd07a37e76f4c133ef.1342634029.git.tony.luck@intel.com>
- <1343463151.3328.4.camel@dabdike.int.hansenpartnership.com>
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH] parisc: fix personality flag check in copy_thread()
+Date: Wed, 1 Aug 2012 21:57:53 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1208012155330.14910@pobox.suse.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Ingo Molnar <mingo@elte.hu>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-	"Wu, Fengguang" <fengguang.wu@intel.com>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <1343463151.3328.4.camel@dabdike.int.hansenpartnership.com>
-List-ID: <linux-ia64.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-PiBJIGFncmVlIHdpdGggdGhpcy4gIE1vc3Qgb2YgaXQgbG9va3MgZWFzaWx5IGZpeGFibGUsIGJ1
-dCBob3cgd291bGQgSQ0KPiBlbmFibGUgdGhlIGZpeCBmb3IgaWE2ND8gIEZvciBQQSBpdCdzIHNp
-bXBsZTogSSdsbCBqdXN0IHVzZQ0KPiBDT05GSUdfU1RBQ0tfR1JPV1NVUCwgYnV0IHRoYXQgd29u
-J3Qgd29yayBmb3IgeW91Lg0KDQppYTY0IGhhcyBhbiB1Z2x5IGNoaWNrZW4gdnMuIGVnZyBidWls
-ZCBkZXBlbmRlbmN5LiBXaGVuIHRyeWluZyB0byBidWlsZCBvdXIgYXNtLW9mZnNldHMuaA0KZmls
-ZSAodG8gZ2V0ICNkZWZpbmUgY29uc3RhbnRzIGZvciB2YXJpb3VzIHN0cnVjdHVyZSBzaXplcyBh
-bmQgb2Zmc2V0cyBpbiBhIGZvcm1hdCB0aGF0IGlzDQp1c2FibGUgaW4gYXNzZW1ibHkgY29kZSkg
-d2UgZ2V0Og0KDQppbmNsdWRlL2xpbnV4L3NjaGVkLmg6MjUzOTogZXJyb3I6ICdJQTY0X1RBU0tf
-U0laRScgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pDQoNCldoaWNoIGlz
-IHNhZCBiZWNhdXNlIElBNjRfVEFTS19TSVpFIGlzIG9uZSBvZiB0aGUgI2RlZmluZXMgdGhhdCBh
-c20tb2Zmc2V0cy5oIGlzIHRyeWluZw0KdG8gcHJvZHVjZS4NCg0KV2hpY2ggaXMgd2h5IEkganVz
-dCB0aHJldyB1cCBteSBoYW5kcyBpbiBkZXNwYWlyIGFuZCBzYWlkICIhSUE2NCIgZm9yIHRoaXMg
-b3B0aW9uLg0KDQotVG9ueQ0K
+Directly comparing task_struct->personality against PER_* is not fully 
+correct, as it doesn't take flags potentially stored in top three bytes 
+into account.
+
+Analogically, directly forcefully setting personality to PER_LINUX32 or
+PER_LINUX discards any flags stored in the top three bytes.
+
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+---
+
+Found accidentally, untested, I don't have the hardware.
+
+ arch/parisc/kernel/process.c    |    2 +-
+ arch/parisc/kernel/sys_parisc.c |    8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+index d4b94b3..2c05a92 100644
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -309,7 +309,7 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
+ 		cregs->ksp = (unsigned long)stack
+ 			+ (pregs->gr[21] & (THREAD_SIZE - 1));
+ 		cregs->gr[30] = usp;
+-		if (p->personality == PER_HPUX) {
++		if (personality(p->personality) == PER_HPUX) {
+ #ifdef CONFIG_HPUX
+ 			cregs->kpc = (unsigned long) &hpux_child_return;
+ #else
+diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
+index c9b9322..f309990 100644
+--- a/arch/parisc/kernel/sys_parisc.c
++++ b/arch/parisc/kernel/sys_parisc.c
+@@ -225,12 +225,12 @@ long parisc_personality(unsigned long personality)
+ 	long err;
+ 
+ 	if (personality(current->personality) == PER_LINUX32
+-	    && personality == PER_LINUX)
+-		personality = PER_LINUX32;
++	    && personality(personality) == PER_LINUX)
++		personality &= ~PER_LINUX | PER_LINUX32;
+ 
+ 	err = sys_personality(personality);
+-	if (err == PER_LINUX32)
+-		err = PER_LINUX;
++	if (personality(err) == PER_LINUX32)
++		err &= ~PER_LINUX32 | PER_LINUX;
+ 
+ 	return err;
+ }
+
+-- 
+Jiri Kosina
+SUSE Labs
