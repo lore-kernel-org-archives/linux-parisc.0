@@ -1,113 +1,92 @@
-From: Jiri Kosina <jkosina@suse.cz>
-Subject: Re: [PATCH v2] parisc: fix personality flag check in copy_thread()
-Date: Thu, 2 Aug 2012 15:33:59 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1208021531540.4820@pobox.suse.cz>
-References: <alpine.LNX.2.00.1208012155330.14910@pobox.suse.cz>   <alpine.LNX.2.00.1208020911300.14910@pobox.suse.cz>  <1343897272.5073.5.camel@dabdike.int.hansenpartnership.com>  <alpine.LNX.2.00.1208021342120.4820@pobox.suse.cz>
- <1343912818.5073.48.camel@dabdike.int.hansenpartnership.com>
+From: Fengguang Wu <fengguang.wu@intel.com>
+Subject: Re: [next:akpm 129/309] net/core/sock.c:274:36: error: initializer
+ element is not constant
+Date: Thu, 2 Aug 2012 23:02:09 +0800
+Message-ID: <20120802150209.GA26601@localhost>
+References: <20120722163058.GB13376@localhost>
+ <20120723111619.GT9222@suse.de>
+ <1343042420.3027.11.camel@dabdike.int.hansenpartnership.com>
+ <20120723114258.GV9222@suse.de>
+ <20120723122905.GA22476@localhost>
+ <BLU0-SMTP2254F8872DDE5FA6035CDE97DD0@phx.gbl>
+ <20120724074844.GA9519@localhost>
+ <BLU0-SMTP6C7CFCFF734FE10A39B6E97DC0@phx.gbl>
+ <1343193053.3139.6.camel@dabdike>
+ <CA+8MBbJkGN+zGBdD5Hg26wW_6E9L_ufoutn7wj+Y+nhtW7WKWg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1343912818.5073.48.camel@dabdike.int.hansenpartnership.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Richard Henderson <rth@twiddle.net>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Tony Luck <tony.luck@gmail.com>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	John David Anglin <dave.anglin@bell.net>,
+	Mel Gorman <mgorman@suse.de>, kernel-janitors@vger.kernel.org,
+	Kyle McMartin <kyle@parisc-linux.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: linux-alpha@vger.kernel.org
+Return-path: <linux-alpha-owner@vger.kernel.org>
+In-Reply-To: <CA+8MBbJkGN+zGBdD5Hg26wW_6E9L_ufoutn7wj+Y+nhtW7WKWg@mail.gmail.com>
+List-ID: <linux-alpha.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2 Aug 2012, James Bottomley wrote:
-
-> > In case of parsic, let's take a process with current->personality == 
-> > PER_LINUX32 callling personality(PER_LINUX | UNAME26). The
-> > 
-> >         if (personality(current->personality) == PER_LINUX32
-> >             && personality == PER_LINUX)
-> >                 personality = PER_LINUX32;
-> > 
-> > would that have no effect, and sys_personality() would be called with 
-> > (PER_LINUX | UNAME26) instead of PER_LINUX32, just because of UNAME26 
-> > being set as well. That doesn't seem really correct. Is it?
+On Thu, Jul 26, 2012 at 10:06:41AM -0700, Tony Luck wrote:
+> On Tue, Jul 24, 2012 at 10:10 PM, James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
+> >> Here is the line in sock.i:
+> >>
+> >> struct static_key memalloc_socks = ((struct static_key) { .enabled =
+> >> ((atomic_t) { (0) }) });
+> >
+> > The above line contains two compound literals.  It also uses a designated
+> > initializer to initialize the field enabled.  A compound literal is not a
+> > constant expression.
 > 
-> Heh, no.  This is a nasty mess.  
+> Seeing the same thing on ia64 building next-20120726.  Same fix works
+> for me ... so I'll steal this whole changelog and attributes.
 
-Indeed.
-
-> Our assumption was that we own the flags ... hence the code.  There are 
-> some flags we can't allow to be set or reset ... but that's only for the 
-> mythical 64 bit userspace, so I suppose we just ignore that for now and 
-> fix it if this ever appears.
->
-> I don't like the hidden assumption that PER_LINUX == 0, but otherwise
-> the code looks fine.
-> 
-> How about 
-> 
-> personality = (personality & ~PER_MASK) | PER_LINUX32;
-> 
-> and
-> 
-> err = (personality & ~PER_MASK) | PER_LINUX;
-
-Agreed, that's a little bit nicer way how to express it (modulo the 
-fact that the last 'personality' in your example should in fact be 'err'). 
-Updated patch below, thanks.
-
-
-
-
-From: Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 2/4] parisc: fix personality flag check in copy_thread()
-
-Directly comparing task_struct->personality against PER_* is not fully
-correct, as it doesn't take flags potentially stored in top three bytes
-into account.
-
-Analogically, directly forcefully setting personality to PER_LINUX32 or
-PER_LINUX discards any flags stored in the top three bytes.
-
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+I got the same error for alpha, the same fix applies.
 ---
-v0->v1: fix the bit ops to reflect the fact that PER_LINUX is actually 0
-v2->v2: express the PER_LINUX==0 fact in the bitops in a more obvious way
+From: Mel Gorman <mgorman@suse.de>
+Subject: [PATCH] [ALPHA] Redefine ATOMIC_INIT and ATOMIC64_INIT to drop the casts
 
- arch/parisc/kernel/process.c    |    2 +-
- arch/parisc/kernel/sys_parisc.c |    8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+The following build error occurred during an alpha build:
 
-diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-index d4b94b3..2c05a92 100644
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -309,7 +309,7 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
- 		cregs->ksp = (unsigned long)stack
- 			+ (pregs->gr[21] & (THREAD_SIZE - 1));
- 		cregs->gr[30] = usp;
--		if (p->personality == PER_HPUX) {
-+		if (personality(p->personality) == PER_HPUX) {
- #ifdef CONFIG_HPUX
- 			cregs->kpc = (unsigned long) &hpux_child_return;
- #else
-diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
-index c9b9322..7f9658e 100644
---- a/arch/parisc/kernel/sys_parisc.c
-+++ b/arch/parisc/kernel/sys_parisc.c
-@@ -225,12 +225,12 @@ long parisc_personality(unsigned long personality)
- 	long err;
- 
- 	if (personality(current->personality) == PER_LINUX32
--	    && personality == PER_LINUX)
--		personality = PER_LINUX32;
-+	    && personality(personality) == PER_LINUX)
-+		personality = (personality & ~PER_MASK) | PER_LINUX32;
- 
- 	err = sys_personality(personality);
--	if (err == PER_LINUX32)
--		err = PER_LINUX;
-+	if (personality(err) == PER_LINUX32)
-+		err = (err & ~PER_MASK) | PER_LINUX;
- 
- 	return err;
- }
+net/core/sock.c:274:36: error: initializer element is not constant
 
--- 
-Jiri Kosina
-SUSE Labs
+Dave Anglin says:
+> Here is the line in sock.i:
+>
+> struct static_key memalloc_socks = ((struct static_key) { .enabled =
+> ((atomic_t) { (0) }) });
+
+The above line contains two compound literals.  It also uses a designated
+initializer to initialize the field enabled.  A compound literal is not a
+constant expression.
+
+The location of the above statement isn't fully clear, but if a compound
+literal occurs outside the body of a function, the initializer list must
+consist of constant expressions.
+
+Reported-by: Fengguang Wu <fengguang.wu@intel.com>
+Signed-off-by: Mel Gorman <mgorman@suse.de>
+Cc: <stable@vger.kernel.org>
+---
+ arch/alpha/include/asm/atomic.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- linux.orig/arch/alpha/include/asm/atomic.h	2012-05-24 19:03:06.000000000 +0800
++++ linux/arch/alpha/include/asm/atomic.h	2012-08-02 23:01:02.243224220 +0800
+@@ -14,8 +14,8 @@
+  */
+ 
+ 
+-#define ATOMIC_INIT(i)		( (atomic_t) { (i) } )
+-#define ATOMIC64_INIT(i)	( (atomic64_t) { (i) } )
++#define ATOMIC_INIT(i)		( { (i) } )
++#define ATOMIC64_INIT(i)	( { (i) } )
+ 
+ #define atomic_read(v)		(*(volatile int *)&(v)->counter)
+ #define atomic64_read(v)	(*(volatile long *)&(v)->counter)
