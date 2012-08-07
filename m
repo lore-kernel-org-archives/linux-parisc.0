@@ -1,92 +1,82 @@
-From: Fengguang Wu <fengguang.wu@intel.com>
-Subject: Re: [next:akpm 129/309] net/core/sock.c:274:36: error: initializer
- element is not constant
-Date: Thu, 2 Aug 2012 23:02:09 +0800
-Message-ID: <20120802150209.GA26601@localhost>
-References: <20120722163058.GB13376@localhost>
- <20120723111619.GT9222@suse.de>
- <1343042420.3027.11.camel@dabdike.int.hansenpartnership.com>
- <20120723114258.GV9222@suse.de>
- <20120723122905.GA22476@localhost>
- <BLU0-SMTP2254F8872DDE5FA6035CDE97DD0@phx.gbl>
- <20120724074844.GA9519@localhost>
- <BLU0-SMTP6C7CFCFF734FE10A39B6E97DC0@phx.gbl>
- <1343193053.3139.6.camel@dabdike>
- <CA+8MBbJkGN+zGBdD5Hg26wW_6E9L_ufoutn7wj+Y+nhtW7WKWg@mail.gmail.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: Re: Linux 3.4-rc7
+Date: Tue, 7 Aug 2012 14:41:39 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.1208071439090.6535@file.rdu.redhat.com>
+References: <CA+55aFzsygnrJwLUPV8Vg4RPmwxXLuY-uo70fBLEZR8+barT5A@mail.gmail.com>
+ <4FB011E7.1000604@linux.vnet.ibm.com> <BLU0-SMTP22F4864AE1F54838C150D797150@phx.gbl>
+ <4FB0197F.6010000@linux.vnet.ibm.com> <BLU0-SMTP85D30AAA2BF2CF07B1039897150@phx.gbl>
+ <BLU0-SMTP4CED805E93EF3D8DA2198971A0@phx.gbl> <Pine.LNX.4.64.1208012054450.6361@file.rdu.redhat.com>
+ <BLU0-SMTP1253492C7F871CBBDAC05297CB0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Richard Henderson <rth@twiddle.net>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	Tony Luck <tony.luck@gmail.com>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	John David Anglin <dave.anglin@bell.net>,
-	Mel Gorman <mgorman@suse.de>, kernel-janitors@vger.kernel.org,
-	Kyle McMartin <kyle@parisc-linux.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: linux-alpha@vger.kernel.org
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <CA+8MBbJkGN+zGBdD5Hg26wW_6E9L_ufoutn7wj+Y+nhtW7WKWg@mail.gmail.com>
-List-ID: <linux-alpha.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: James.Bottomley@hansenpartnership.com,
+	linux-parisc@vger.kernel.org,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <BLU0-SMTP1253492C7F871CBBDAC05297CB0@phx.gbl>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Jul 26, 2012 at 10:06:41AM -0700, Tony Luck wrote:
-> On Tue, Jul 24, 2012 at 10:10 PM, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> >> Here is the line in sock.i:
-> >>
-> >> struct static_key memalloc_socks = ((struct static_key) { .enabled =
-> >> ((atomic_t) { (0) }) });
-> >
-> > The above line contains two compound literals.  It also uses a designated
-> > initializer to initialize the field enabled.  A compound literal is not a
-> > constant expression.
+
+
+On Wed, 1 Aug 2012, John David Anglin wrote:
+
+> On 1-Aug-12, at 9:00 PM, Mikulas Patocka wrote:
 > 
-> Seeing the same thing on ia64 building next-20120726.  Same fix works
-> for me ... so I'll steal this whole changelog and attributes.
+> > 
+> > 
+> > On Sun, 13 May 2012, John David Anglin wrote:
+> > 
+> > > On 13-May-12, at 4:40 PM, John David Anglin wrote:
+> > > 
+> > > > Yes, the revised change fixes the compilation error.  I'll know in a
+> > > > while
+> > > > if
+> > > > my config boots.
+> > > 
+> > > 
+> > > I successfully booted 3.4-rc7 with this change on rp3440 (4 cpu smp).  My
+> > > build also
+> > > included cache and other fixes that are being discussed on the parisc
+> > > list.
+> > > 
+> > > Dave
+> > 
+> > Hi David
+> > 
+> > Can I download a series of your PA-RISC patches somewhere?
+> > 
+> > I applied this http://www.spinics.net/lists/linux-parisc/msg03352.html and
+> > it improved stability for me (I had no gcc crashes since that, only
+> > about two aptitude crashes).
+> > 
+> > How stable is it for you? Do you have some random crashes or not?
+> 
+> 
+> Attached are my latest patch sets for linux-stable 3.4 and 3.5 branches.
+> There is no place to to download them directly.  I added Jiri Kosina's
+> personality fix today to the 3.5 patch set.  Otherwise, they are similar.
+> 
+> In general, stability with 3.4 has been pretty good.  I just started testing
+> 3.5 a couple of days ago.  I went about three weeks without a random
+> crash with 3.4 after I removed Al Viro's restart patch.  It was causing
+> problems with irq handling.
 
-I got the same error for alpha, the same fix applies.
----
-From: Mel Gorman <mgorman@suse.de>
-Subject: [PATCH] [ALPHA] Redefine ATOMIC_INIT and ATOMIC64_INIT to drop the casts
+Which restart patch do you mean?
 
-The following build error occurred during an alpha build:
+> This is on 64-bit rp3440.  I have been using it to build debian unstable
+> and test GCC 4.8.  So, the machine gets a fair bit of exercise.  In the last
+> little while, it has been pretty easy to keep up with the changes in unstable.
+> 
+> Sorry, I haven't had time to submit my changes.  Some of the cache fixes
+> are a bit hard to explain.
+> 
+> Dave
+> --
+> John David Anglin	dave.anglin@bell.net
 
-net/core/sock.c:274:36: error: initializer element is not constant
+Thanks. For me the kernel with the patch works fine - it would be nice to 
+break it up to smaller pieces and submit it.
 
-Dave Anglin says:
-> Here is the line in sock.i:
->
-> struct static_key memalloc_socks = ((struct static_key) { .enabled =
-> ((atomic_t) { (0) }) });
-
-The above line contains two compound literals.  It also uses a designated
-initializer to initialize the field enabled.  A compound literal is not a
-constant expression.
-
-The location of the above statement isn't fully clear, but if a compound
-literal occurs outside the body of a function, the initializer list must
-consist of constant expressions.
-
-Reported-by: Fengguang Wu <fengguang.wu@intel.com>
-Signed-off-by: Mel Gorman <mgorman@suse.de>
-Cc: <stable@vger.kernel.org>
----
- arch/alpha/include/asm/atomic.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- linux.orig/arch/alpha/include/asm/atomic.h	2012-05-24 19:03:06.000000000 +0800
-+++ linux/arch/alpha/include/asm/atomic.h	2012-08-02 23:01:02.243224220 +0800
-@@ -14,8 +14,8 @@
-  */
- 
- 
--#define ATOMIC_INIT(i)		( (atomic_t) { (i) } )
--#define ATOMIC64_INIT(i)	( (atomic64_t) { (i) } )
-+#define ATOMIC_INIT(i)		( { (i) } )
-+#define ATOMIC64_INIT(i)	( { (i) } )
- 
- #define atomic_read(v)		(*(volatile int *)&(v)->counter)
- #define atomic64_read(v)	(*(volatile long *)&(v)->counter)
+Mikulas
