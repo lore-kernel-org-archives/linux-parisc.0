@@ -1,25 +1,101 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Linux 3.4-rc7
-Date: Tue, 07 Aug 2012 15:00:58 -0400
-Message-ID: <502165EA.4070602@bell.net>
-References: <CA+55aFzsygnrJwLUPV8Vg4RPmwxXLuY-uo70fBLEZR8+barT5A@mail.gmail.com> <4FB011E7.1000604@linux.vnet.ibm.com> <BLU0-SMTP22F4864AE1F54838C150D797150@phx.gbl> <4FB0197F.6010000@linux.vnet.ibm.com> <BLU0-SMTP85D30AAA2BF2CF07B1039897150@phx.gbl> <BLU0-SMTP4CED805E93EF3D8DA2198971A0@phx.gbl> <Pine.LNX.4.64.1208012054450.6361@file.rdu.redhat.com> <BLU0-SMTP1253492C7F871CBBDAC05297CB0@phx.gbl> <Pine.LNX.4.64.1208071439090.6535@file.rdu.redhat.com>
+From: Michael Cree <mcree@orcon.net.nz>
+Subject: Re: [next:akpm 129/309] net/core/sock.c:274:36: error: initializer
+ element is not constant
+Date: Sun, 12 Aug 2012 13:33:09 +1200
+Message-ID: <502707D5.7020602@orcon.net.nz>
+References: <20120722163058.GB13376@localhost> <20120723111619.GT9222@suse.de> <1343042420.3027.11.camel@dabdike.int.hansenpartnership.com> <20120723114258.GV9222@suse.de> <20120723122905.GA22476@localhost> <BLU0-SMTP2254F8872DDE5FA6035CDE97DD0@phx.gbl> <20120724074844.GA9519@localhost> <BLU0-SMTP6C7CFCFF734FE10A39B6E97DC0@phx.gbl> <1343193053.3139.6.camel@dabdike> <CA+8MBbJkGN+zGBdD5Hg26wW_6E9L_ufoutn7wj+Y+nhtW7WKWg@mail.gmail.com> <20120802150209.GA26601@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: James.Bottomley@hansenpartnership.com,
-	linux-parisc@vger.kernel.org,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-To: Mikulas Patocka <mpatocka@redhat.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.1208071439090.6535@file.rdu.redhat.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-alpha@vger.kernel.org, Richard Henderson <rth@twiddle.net>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Tony Luck <tony.luck@gmail.com>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	John David Anglin <dave.anglin@bell.net>,
+	Mel Gorman <mgorman@suse.de>, kernel-janitors@vger.kernel.org,
+	Kyle McMartin <kyle@parisc-linux.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: Fengguang Wu <fengguang.wu@intel.com>
+Return-path: <linux-alpha-owner@vger.kernel.org>
+In-Reply-To: <20120802150209.GA26601@localhost>
+List-ID: <linux-alpha.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 8/7/2012 2:41 PM, Mikulas Patocka wrote:
-> Which restart patch do you mean?
-http://www.spinics.net/lists/linux-parisc/msg04229.html
+On 03/08/12 03:02, Fengguang Wu wrote:
+> On Thu, Jul 26, 2012 at 10:06:41AM -0700, Tony Luck wrote:
+>> On Tue, Jul 24, 2012 at 10:10 PM, James Bottomley
+>> <James.Bottomley@hansenpartnership.com> wrote:
+>>>> Here is the line in sock.i:
+>>>>
+>>>> struct static_key memalloc_socks = ((struct static_key) { .enabled =
+>>>> ((atomic_t) { (0) }) });
+>>>
+>>> The above line contains two compound literals.  It also uses a designated
+>>> initializer to initialize the field enabled.  A compound literal is not a
+>>> constant expression.
+>>
+>> Seeing the same thing on ia64 building next-20120726.  Same fix works
+>> for me ... so I'll steal this whole changelog and attributes.
+> 
+> I got the same error for alpha, the same fix applies.
 
-Dave
+Just trying this patch on Alpha against v3.6-rc1 and it leads to new
+compilation errors, namely:
 
--- 
-John David Anglin    dave.anglin@bell.net
+init/init_task.c:12: error: braced-group within expression allowed only
+inside a function
+init/init_task.c:13: error: braced-group within expression allowed only
+inside a function
+init/init_task.c:16: error: braced-group within expression allowed only
+inside a function
+init/init_task.c:16: error: braced-group within expression allowed only
+inside a function
+make[1]: *** [init/init_task.o] Error 1
 
+> ---
+> From: Mel Gorman <mgorman@suse.de>
+> Subject: [PATCH] [ALPHA] Redefine ATOMIC_INIT and ATOMIC64_INIT to drop the casts
+> 
+> The following build error occurred during an alpha build:
+> 
+> net/core/sock.c:274:36: error: initializer element is not constant
+> 
+> Dave Anglin says:
+>> Here is the line in sock.i:
+>>
+>> struct static_key memalloc_socks = ((struct static_key) { .enabled =
+>> ((atomic_t) { (0) }) });
+> 
+> The above line contains two compound literals.  It also uses a designated
+> initializer to initialize the field enabled.  A compound literal is not a
+> constant expression.
+> 
+> The location of the above statement isn't fully clear, but if a compound
+> literal occurs outside the body of a function, the initializer list must
+> consist of constant expressions.
+> 
+> Reported-by: Fengguang Wu <fengguang.wu@intel.com>
+> Signed-off-by: Mel Gorman <mgorman@suse.de>
+> Cc: <stable@vger.kernel.org>
+> ---
+>  arch/alpha/include/asm/atomic.h |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> --- linux.orig/arch/alpha/include/asm/atomic.h	2012-05-24 19:03:06.000000000 +0800
+> +++ linux/arch/alpha/include/asm/atomic.h	2012-08-02 23:01:02.243224220 +0800
+> @@ -14,8 +14,8 @@
+>   */
+>  
+>  
+> -#define ATOMIC_INIT(i)		( (atomic_t) { (i) } )
+> -#define ATOMIC64_INIT(i)	( (atomic64_t) { (i) } )
+> +#define ATOMIC_INIT(i)		( { (i) } )
+> +#define ATOMIC64_INIT(i)	( { (i) } )
+>  
+>  #define atomic_read(v)		(*(volatile int *)&(v)->counter)
+>  #define atomic64_read(v)	(*(volatile long *)&(v)->counter)
+
+Cheers
+Michael.
