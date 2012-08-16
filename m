@@ -1,64 +1,53 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] [ALPHA] Redefine ATOMIC_INIT and ATOMIC64_INIT to drop
- the casts
-Date: Wed, 15 Aug 2012 15:03:28 -0700
-Message-ID: <20120815150328.e1fb3676.akpm@linux-foundation.org>
-References: <1343042420.3027.11.camel@dabdike.int.hansenpartnership.com>
-	<20120723114258.GV9222@suse.de>
-	<20120723122905.GA22476@localhost>
-	<BLU0-SMTP2254F8872DDE5FA6035CDE97DD0@phx.gbl>
-	<20120724074844.GA9519@localhost>
-	<BLU0-SMTP6C7CFCFF734FE10A39B6E97DC0@phx.gbl>
-	<1343193053.3139.6.camel@dabdike>
-	<CA+8MBbJkGN+zGBdD5Hg26wW_6E9L_ufoutn7wj+Y+nhtW7WKWg@mail.gmail.com>
-	<20120802150209.GA26601@localhost>
-	<502707D5.7020602@orcon.net.nz>
-	<20120812021405.GB8442@localhost>
+From: Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 3/6] parisc/PCI: Enable PERR/SERR on all devices
+Date: Thu, 16 Aug 2012 17:26:30 -0600
+Message-ID: <20120816232630.3662.57336.stgit@bhelgaas.mtv.corp.google.com>
+References: <20120816232620.3662.90438.stgit@bhelgaas.mtv.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: Michael Cree <mcree@orcon.net.nz>, linux-alpha@vger.kernel.org,
-	Richard Henderson <rth@twiddle.net>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	Tony Luck <tony.luck@gmail.com>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	John David Anglin <dave.anglin@bell.net>,
-	Mel Gorman <mgorman@suse.de>, kernel-janitors@vger.kernel.org,
-	Kyle McMartin <kyle@parisc-linux.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	David Miller <davem@davemloft.net>
-To: Fengguang Wu <fengguang.wu@intel.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20120812021405.GB8442@localhost>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Cc: linux-parisc@vger.kernel.org
+To: linux-pci@vger.kernel.org
+Return-path: <linux-pci-owner@vger.kernel.org>
+In-Reply-To: <20120816232620.3662.90438.stgit@bhelgaas.mtv.corp.google.com>
+List-ID: <linux-pci.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 12 Aug 2012 10:14:05 +0800
-Fengguang Wu <fengguang.wu@intel.com> wrote:
+Previously, we enabled PERR & SERR for the first device on the bus, but
+left other devices alone.
 
-> From: Mel Gorman <mgorman@suse.de>
-> 
-> The following build error occurred during an alpha build:
-> 
-> net/core/sock.c:274:36: error: initializer element is not constant
-> 
-> Dave Anglin says:
-> > Here is the line in sock.i:
-> >
-> > struct static_key memalloc_socks = ((struct static_key) { .enabled =
-> > ((atomic_t) { (0) }) });
-> 
-> The above line contains two compound literals.  It also uses a designated
-> initializer to initialize the field enabled.  A compound literal is not a
-> constant expression.
-> 
-> The location of the above statement isn't fully clear, but if a compound
-> literal occurs outside the body of a function, the initializer list must
-> consist of constant expressions.
-> 
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Mel Gorman <mgorman@suse.de>
-> Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+CC: linux-parisc@vger.kernel.org
+---
+ drivers/parisc/lba_pci.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-I'll remvoe the Cc:stable from this one - the regression is post-3.5.
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index 4f9cf24..4ce57c9 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -630,6 +630,7 @@ static void
+ lba_fixup_bus(struct pci_bus *bus)
+ {
+ 	struct list_head *ln;
++	struct pci_dev *dev;
+ #ifdef FBB_SUPPORT
+ 	u16 status;
+ #endif
+@@ -712,8 +713,8 @@ lba_fixup_bus(struct pci_bus *bus)
+ 
+ 	list_for_each(ln, &bus->devices) {
+ 		int i;
+-		struct pci_dev *dev = pci_dev_b(ln);
+ 
++		dev = pci_dev_b(ln);
+ 		DBG("lba_fixup_bus() %s\n", pci_name(dev));
+ 
+ 		/* Virtualize Device/Bridge Resources. */
+@@ -771,6 +772,7 @@ lba_fixup_bus(struct pci_bus *bus)
+ 
+ 	/* Lastly enable FBB/PERR/SERR on all devices too */
+ 	list_for_each(ln, &bus->devices) {
++		dev = pci_dev_b(ln);
+ 		(void) pci_read_config_word(dev, PCI_COMMAND, &status);
+ 		status |= PCI_COMMAND_PARITY | PCI_COMMAND_SERR | fbb_enable;
+ 		(void) pci_write_config_word(dev, PCI_COMMAND, status);
