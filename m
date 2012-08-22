@@ -1,70 +1,59 @@
-From: Frederic Weisbecker <fweisbec@gmail.com>
-Subject: [PATCH 08/10] parisc: Add missing RCU idle APIs on idle loop
-Date: Wed, 22 Aug 2012 18:23:46 +0200
-Message-ID: <1345652628-15060-9-git-send-email-fweisbec@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 00/10] rcu: Add missing RCU idle APIs on idle loop
+Date: Wed, 22 Aug 2012 19:18:04 +0200
+Message-ID: <CAMuHMdUt62GsYsPMAPbUWZUtFL=c2VmYFintpDAQmSwQrWriuA@mail.gmail.com>
 References: <1345652628-15060-1-git-send-email-fweisbec@gmail.com>
-Cc: Frederic Weisbecker <fweisbec@gmail.com>,
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	"Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+	Chris Zankel <chris@zankel.net>, "3.2.x.." <stable@kernel.org>,
+	Chen Liqin <liqin.chen@sunplusct.com>,
+	Lennox Wu <lennox.wu@gmail.com>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>,
 	Parisc <linux-parisc@vger.kernel.org>,
-	"3.2.x.." <stable@kernel.org>,
-	"Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-To: LKML <linux-kernel@vger.kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	David Howells <dhowells@redhat.com>,
+	Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
+	m68k <linux-m68k@lists.linux-m68k.org>,
+	Hirokazu Takata <takata@linux-m32r.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Mikael Starvik <starvik@axis.com>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Cris <linux-cris-kernel@axis.com>,
+	Richard Henderson <rth@twiddle.net>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	alpha <linux-alpha@vger.kernel.org>
+To: Frederic Weisbecker <fweisbec@gmail.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <1345652628-15060-1-git-send-email-fweisbec@gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-In the old times, the whole idle task was considered
-as an RCU quiescent state. But as RCU became more and
-more successful overtime, some RCU read side critical
-section have been added even in the code of some
-architectures idle tasks, for tracing for example.
+On Wed, Aug 22, 2012 at 6:23 PM, Frederic Weisbecker <fweisbec@gmail.com> wrote:
+> So this fixes some potential RCU stalls in a bunch of architectures.
+> When rcu_idle_enter()/rcu_idle_exit() became a requirement, we forgot
+> to handle the architectures that don't support CONFIG_NO_HZ.
+>
+> I guess the set should be dispatched into arch maintainer trees.
 
-So nowadays, rcu_idle_enter() and rcu_idle_exit() must
-be called by the architecture to tell RCU about the part
-in the idle loop that doesn't make use of rcu read side
-critical sections, typically the part that puts the CPU
-in low power mode.
+I can take the m68k version, but are you sure you want it this way?
+Each of them must be in mainline before they can enter stable.
 
-This is necessary for RCU to find the quiescent states in
-idle in order to complete grace periods.
+> I'm sorry I haven't built tested everywhere. But the changes are
+> small and need to be at least boot tested anyway.
 
-Add this missing pair of calls in the parisc's idle loop.
+Builds and boots fine on m68k under ARAnyM.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> (for m68k)
 
-Reported-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
-Cc: James E.J. Bottomley <jejb@parisc-linux.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Parisc <linux-parisc@vger.kernel.org>
-Cc: 3.2.x.. <stable@kernel.org>
-Cc: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
----
- arch/parisc/kernel/process.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-index d4b94b3..c54a4db 100644
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -48,6 +48,7 @@
- #include <linux/unistd.h>
- #include <linux/kallsyms.h>
- #include <linux/uaccess.h>
-+#include <linux/rcupdate.h>
- 
- #include <asm/io.h>
- #include <asm/asm-offsets.h>
-@@ -69,8 +70,10 @@ void cpu_idle(void)
- 
- 	/* endless idle loop with no priority at all */
- 	while (1) {
-+		rcu_idle_enter();
- 		while (!need_resched())
- 			barrier();
-+		rcu_idle_exit();
- 		schedule_preempt_disabled();
- 		check_pgt_cache();
- 	}
--- 
-1.7.5.4
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
