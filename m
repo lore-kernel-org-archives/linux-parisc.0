@@ -1,82 +1,86 @@
-From: Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH v2 14/16] parisc/PCI: Use list_for_each_entry() for
-	bus->devices traversal
-Date: Fri, 17 Aug 2012 17:36:56 -0600
-Message-ID: <20120817233656.10973.65389.stgit@bhelgaas.mtv.corp.google.com>
-References: <20120817233100.10973.59521.stgit@bhelgaas.mtv.corp.google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: linux-pcmcia@lists.infradead.org, Yinghai Lu <yinghai@kernel.org>,
-	linux-parisc@vger.kernel.org,
-	Kenji Kaneshige <kaneshige.kenji@jp.fujitsu.com>
-To: linux-pci@vger.kernel.org
-Return-path: <linux-pci-owner@vger.kernel.org>
-In-Reply-To: <20120817233100.10973.59521.stgit@bhelgaas.mtv.corp.google.com>
-List-ID: <linux-pci.vger.kernel.org>
+From: Frederic Weisbecker <fweisbec@gmail.com>
+Subject: [PATCH 00/10] rcu: Add missing RCU idle APIs on idle loop
+Date: Wed, 22 Aug 2012 18:23:38 +0200
+Message-ID: <1345652628-15060-1-git-send-email-fweisbec@gmail.com>
+Cc: Frederic Weisbecker <fweisbec@gmail.com>,
+	"Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+	Chris Zankel <chris@zankel.net>, "3.2.x.." <stable@kernel.org>,
+	Chen Liqin <liqin.chen@sunplusct.com>,
+	Lennox Wu <lennox.wu@gmail.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Parisc <linux-parisc@vger.kernel.org>,
+	David Howells <dhowells@redhat.com>,
+	Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	m68k <linux-m68k@lists.linux-m68k.org>,
+	Hirokazu Takata <takata@linux-m32r.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Mikael Starvik <starvik@axis.com>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Cris <linux-cris-kernel@axis.com>,
+	Richard Henderson <rth@twiddle.net>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	alpha <linux-alpha@vger.kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Replace list_for_each() + pci_dev_b() with the simpler
-list_for_each_entry().
+So this fixes some potential RCU stalls in a bunch of architectures.
+When rcu_idle_enter()/rcu_idle_exit() became a requirement, we forgot
+to handle the architectures that don't support CONFIG_NO_HZ.
 
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-CC: linux-parisc@vger.kernel.org
----
- drivers/parisc/dino.c    |    6 ++----
- drivers/parisc/lba_pci.c |    7 ++-----
- 2 files changed, 4 insertions(+), 9 deletions(-)
+I guess the set should be dispatched into arch maintainer trees.
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index ffddc4f..4581ee0 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -477,14 +477,12 @@ dino_card_setup(struct pci_bus *bus, void __iomem *base_addr)
- 	if (ccio_allocate_resource(dino_dev->hba.dev, res, _8MB,
- 				F_EXTEND(0xf0000000UL) | _8MB,
- 				F_EXTEND(0xffffffffUL) &~ _8MB, _8MB) < 0) {
--		struct list_head *ln, *tmp_ln;
-+		struct pci_dev *dev, *tmp;
- 
- 		printk(KERN_ERR "Dino: cannot attach bus %s\n",
- 		       dev_name(bus->bridge));
- 		/* kill the bus, we can't do anything with it */
--		list_for_each_safe(ln, tmp_ln, &bus->devices) {
--			struct pci_dev *dev = pci_dev_b(ln);
--
-+		list_for_each_entry_safe(dev, tmp, &bus->devices, bus_list) {
- 			list_del(&dev->bus_list);
- 		}
- 			
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index 4ce57c9..fdd63a6 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -629,7 +629,6 @@ truncate_pat_collision(struct resource *root, struct resource *new)
- static void
- lba_fixup_bus(struct pci_bus *bus)
- {
--	struct list_head *ln;
- 	struct pci_dev *dev;
- #ifdef FBB_SUPPORT
- 	u16 status;
-@@ -711,10 +710,9 @@ lba_fixup_bus(struct pci_bus *bus)
- 
- 	}
- 
--	list_for_each(ln, &bus->devices) {
-+	list_for_each_entry(dev, &bus->devices, bus_list) {
- 		int i;
- 
--		dev = pci_dev_b(ln);
- 		DBG("lba_fixup_bus() %s\n", pci_name(dev));
- 
- 		/* Virtualize Device/Bridge Resources. */
-@@ -771,8 +769,7 @@ lba_fixup_bus(struct pci_bus *bus)
- 	}
- 
- 	/* Lastly enable FBB/PERR/SERR on all devices too */
--	list_for_each(ln, &bus->devices) {
--		dev = pci_dev_b(ln);
-+	list_for_each_entry(dev, &bus->devices, bus_list) {
- 		(void) pci_read_config_word(dev, PCI_COMMAND, &status);
- 		status |= PCI_COMMAND_PARITY | PCI_COMMAND_SERR | fbb_enable;
- 		(void) pci_write_config_word(dev, PCI_COMMAND, status);
+I'm sorry I haven't built tested everywhere. But the changes are
+small and need to be at least boot tested anyway.
+
+Also many of these archs use the same kind of idle loop:
+
+void cpu_idle(void)
+{
+        while (1) {
+                rcu_idle_enter();
+                while (!need_resched())
+                        //power saving function()
+                rcu_idle_exit();
+                schedule_preempt_disabled();
+        }
+}
+
+So once the set is merged, I'll probably try to consolidate this with a generic
+simple cpu_idle() that does the above and calls the arch power saving
+function. This will be only for archs that use this simple idle loop
+of course.
+
+Thanks.
+
+Frederic Weisbecker (10):
+  alpha: Add missing RCU idle APIs on idle loop
+  cris: Add missing RCU idle APIs on idle loop
+  frv: Add missing RCU idle APIs on idle loop
+  h8300: Add missing RCU idle APIs on idle loop
+  m32r: Add missing RCU idle APIs on idle loop
+  m68k: Add missing RCU idle APIs on idle loop
+  mn10300: Add missing RCU idle APIs on idle loop
+  parisc: Add missing RCU idle APIs on idle loop
+  score: Add missing RCU idle APIs on idle loop
+  xtensa: Add missing RCU idle APIs on idle loop
+
+ arch/alpha/kernel/process.c   |    6 +++++-
+ arch/cris/kernel/process.c    |    3 +++
+ arch/frv/kernel/process.c     |    3 +++
+ arch/h8300/kernel/process.c   |    3 +++
+ arch/m32r/kernel/process.c    |    3 +++
+ arch/m68k/kernel/process.c    |    3 +++
+ arch/mn10300/kernel/process.c |    3 +++
+ arch/parisc/kernel/process.c  |    3 +++
+ arch/score/kernel/process.c   |    4 +++-
+ arch/xtensa/kernel/process.c  |    3 +++
+ 10 files changed, 32 insertions(+), 2 deletions(-)
+
+-- 
+1.7.5.4
+
