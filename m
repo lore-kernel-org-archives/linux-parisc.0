@@ -1,14 +1,11 @@
 From: Frederic Weisbecker <fweisbec@gmail.com>
-Subject: Re: [PATCH 00/10] rcu: Add missing RCU idle APIs on idle loop
-Date: Thu, 23 Aug 2012 13:02:00 +0200
-Message-ID: <20120823110157.GC18835@somewhere.redhat.com>
-References: <1345652628-15060-1-git-send-email-fweisbec@gmail.com>
- <CAMuHMdUt62GsYsPMAPbUWZUtFL=c2VmYFintpDAQmSwQrWriuA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: LKML <linux-kernel@vger.kernel.org>,
+Subject: [PATCH 00/11] rcu: Add missing RCU idle APIs on idle loop v2
+Date: Thu, 23 Aug 2012 16:58:24 +0200
+Message-ID: <1345733915-20040-1-git-send-email-fweisbec@gmail.com>
+Cc: Frederic Weisbecker <fweisbec@gmail.com>,
 	"Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-	Chris Zankel <chris@zankel.net>, "3.2.x.." <stable@kernel.org>,
+	Chris Zankel <chris@zankel.net>,
+	"3.2.x.." <stable@vger.kernel.org>,
 	Chen Liqin <liqin.chen@sunplusct.com>,
 	Lennox Wu <lennox.wu@gmail.com>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
@@ -16,6 +13,7 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	Parisc <linux-parisc@vger.kernel.org>,
 	David Howells <dhowells@redhat.com>,
 	Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
 	m68k <linux-m68k@lists.linux-m68k.org>,
 	Hirokazu Takata <takata@linux-m32r.org>,
 	Yoshinori Sato <ysato@users.sourceforge.jp>,
@@ -25,49 +23,58 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	Richard Henderson <rth@twiddle.net>,
 	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
 	Matt Turner <mattst88@gmail.com>,
-	alpha <linux-alpha@vger.kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+	alpha <linux-alpha@vger.kernel.org>,
+	Mic
+To: LKML <linux-kernel@vger.kernel.org>
 Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdUt62GsYsPMAPbUWZUtFL=c2VmYFintpDAQmSwQrWriuA@mail.gmail.com>
 List-ID: <linux-alpha.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Aug 22, 2012 at 07:18:04PM +0200, Geert Uytterhoeven wrote:
-> On Wed, Aug 22, 2012 at 6:23 PM, Frederic Weisbecker <fweisbec@gmail.com> wrote:
-> > So this fixes some potential RCU stalls in a bunch of architectures.
-> > When rcu_idle_enter()/rcu_idle_exit() became a requirement, we forgot
-> > to handle the architectures that don't support CONFIG_NO_HZ.
-> >
-> > I guess the set should be dispatched into arch maintainer trees.
-> 
-> I can take the m68k version, but are you sure you want it this way?
-> Each of them must be in mainline before they can enter stable.
+Hi,
 
-Yeah, I was thinking the right route is for these patches to be
-carried by arch maintainer who then push to Linus and then this goes
-to stable.
+Changes since v1:
 
-Is that ok for you?
+- Fixed preempt handling in alpha idle loop
+- added ack from Geert
+- fixed stable email address, sorry :-/
 
-Otherwise I can carry the patches myself. In a tree of my own, or
-Paul's or mmotm. As long as I have your ack.
+This time I built tested everywhere but: h8300 (compiler internal error),
+and mn10300, parisc, score (cross compilers not available in
+ftp://ftp.kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.3/)
+
+For testing, you can pull from:
+
+git://github.com/fweisbec/linux-dynticks.git
+	rcu/idle-fix-v2 
 
 Thanks.
 
-> 
-> > I'm sorry I haven't built tested everywhere. But the changes are
-> > small and need to be at least boot tested anyway.
-> 
-> Builds and boots fine on m68k under ARAnyM.
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> (for m68k)
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Frederic Weisbecker (11):
+  alpha: Fix preemption handling in idle loop
+  alpha: Add missing RCU idle APIs on idle loop
+  cris: Add missing RCU idle APIs on idle loop
+  frv: Add missing RCU idle APIs on idle loop
+  h8300: Add missing RCU idle APIs on idle loop
+  m32r: Add missing RCU idle APIs on idle loop
+  m68k: Add missing RCU idle APIs on idle loop
+  mn10300: Add missing RCU idle APIs on idle loop
+  parisc: Add missing RCU idle APIs on idle loop
+  score: Add missing RCU idle APIs on idle loop
+  xtensa: Add missing RCU idle APIs on idle loop
+
+ arch/alpha/kernel/process.c   |    6 +++++-
+ arch/alpha/kernel/smp.c       |    1 +
+ arch/cris/kernel/process.c    |    3 +++
+ arch/frv/kernel/process.c     |    3 +++
+ arch/h8300/kernel/process.c   |    3 +++
+ arch/m32r/kernel/process.c    |    3 +++
+ arch/m68k/kernel/process.c    |    3 +++
+ arch/mn10300/kernel/process.c |    3 +++
+ arch/parisc/kernel/process.c  |    3 +++
+ arch/score/kernel/process.c   |    4 +++-
+ arch/xtensa/kernel/process.c  |    3 +++
+ 11 files changed, 33 insertions(+), 2 deletions(-)
+
+-- 
+1.7.5.4
+
