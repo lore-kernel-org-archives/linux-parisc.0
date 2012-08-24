@@ -1,79 +1,95 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH 08/10] parisc: Add missing RCU idle APIs on idle loop
-Date: Fri, 24 Aug 2012 09:26:47 -0400
-Message-ID: <50378117.4010601@bell.net>
-References: <1345652628-15060-1-git-send-email-fweisbec@gmail.com> <1345652628-15060-9-git-send-email-fweisbec@gmail.com>
+From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+Subject: Re: [PATCH 00/11] rcu: Add missing RCU idle APIs on idle loop v2
+Date: Fri, 24 Aug 2012 14:26:47 -0700
+Message-ID: <20120824212647.GU2472@linux.vnet.ibm.com>
+References: <1345733915-20040-1-git-send-email-fweisbec@gmail.com>
+Reply-To: paulmck@linux.vnet.ibm.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Cc: LKML <linux-kernel@vger.kernel.org>,
+	Chris Zankel <chris@zankel.net>,
+	"3.2.x.." <stable@vger.kernel.org>,
+	Chen Liqin <liqin.chen@sunplusct.com>,
+	Lennox Wu <lennox.wu@gmail.com>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>,
 	Parisc <linux-parisc@vger.kernel.org>,
-	"3.2.x.." <stable@kernel.org>,
-	"Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+	David Howells <dhowells@redhat.com>,
+	Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	m68k <linux-m68k@lists.linux-m68k.org>,
+	Hirokazu Takata <takata@linux-m32r.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Mikael Starvik <starvik@axis.com>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Cris <linux-cris-kernel@axis.com>,
+	Richard Henderson <rth@twiddle.net>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	alpha <linux-alpha@vger.kernel.org>,
+	Michael Cree <mcree@orcon.net.nz>
 To: Frederic Weisbecker <fweisbec@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1345652628-15060-9-git-send-email-fweisbec@gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1345733915-20040-1-git-send-email-fweisbec@gmail.com>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 8/22/2012 12:23 PM, Frederic Weisbecker wrote:
-> In the old times, the whole idle task was considered
-> as an RCU quiescent state. But as RCU became more and
-> more successful overtime, some RCU read side critical
-> section have been added even in the code of some
-> architectures idle tasks, for tracing for example.
->
-> So nowadays, rcu_idle_enter() and rcu_idle_exit() must
-> be called by the architecture to tell RCU about the part
-> in the idle loop that doesn't make use of rcu read side
-> critical sections, typically the part that puts the CPU
-> in low power mode.
->
-> This is necessary for RCU to find the quiescent states in
-> idle in order to complete grace periods.
->
-> Add this missing pair of calls in the parisc's idle loop.
->
-> Reported-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-> Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
-> Cc: James E.J. Bottomley <jejb@parisc-linux.org>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Parisc <linux-parisc@vger.kernel.org>
-> Cc: 3.2.x.. <stable@kernel.org>
-> Cc: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-> ---
->   arch/parisc/kernel/process.c |    3 +++
->   1 files changed, 3 insertions(+), 0 deletions(-)
->
-> diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-> index d4b94b3..c54a4db 100644
-> --- a/arch/parisc/kernel/process.c
-> +++ b/arch/parisc/kernel/process.c
-> @@ -48,6 +48,7 @@
->   #include <linux/unistd.h>
->   #include <linux/kallsyms.h>
->   #include <linux/uaccess.h>
-> +#include <linux/rcupdate.h>
->   
->   #include <asm/io.h>
->   #include <asm/asm-offsets.h>
-> @@ -69,8 +70,10 @@ void cpu_idle(void)
->   
->   	/* endless idle loop with no priority at all */
->   	while (1) {
-> +		rcu_idle_enter();
->   		while (!need_resched())
->   			barrier();
-> +		rcu_idle_exit();
->   		schedule_preempt_disabled();
->   		check_pgt_cache();
->   	}
+On Thu, Aug 23, 2012 at 04:58:24PM +0200, Frederic Weisbecker wrote:
+> Hi,
+> 
+> Changes since v1:
+> 
+> - Fixed preempt handling in alpha idle loop
+> - added ack from Geert
+> - fixed stable email address, sorry :-/
+> 
+> This time I built tested everywhere but: h8300 (compiler internal error),
+> and mn10300, parisc, score (cross compilers not available in
+> ftp://ftp.kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.3/)
+> 
+> For testing, you can pull from:
+> 
+> git://github.com/fweisbec/linux-dynticks.git
+> 	rcu/idle-fix-v2 
+> 
+> Thanks.
 
-Builds and boots fine on parisc.
-Acked-by: John David Anglin<dave.anglin@bell.net>
+I have queued these on -rcu branch rcu/idle:
 
-Dave
+	git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
 
--- 
-John David Anglin    dave.anglin@bell.net
+This problem has been in place since 3.3, so it is hard to argue that
+it is a regression for this merge window.  I have therefore queued it
+for 3.7.
+
+								Thanx, Paul
+
+> Frederic Weisbecker (11):
+>   alpha: Fix preemption handling in idle loop
+>   alpha: Add missing RCU idle APIs on idle loop
+>   cris: Add missing RCU idle APIs on idle loop
+>   frv: Add missing RCU idle APIs on idle loop
+>   h8300: Add missing RCU idle APIs on idle loop
+>   m32r: Add missing RCU idle APIs on idle loop
+>   m68k: Add missing RCU idle APIs on idle loop
+>   mn10300: Add missing RCU idle APIs on idle loop
+>   parisc: Add missing RCU idle APIs on idle loop
+>   score: Add missing RCU idle APIs on idle loop
+>   xtensa: Add missing RCU idle APIs on idle loop
+> 
+>  arch/alpha/kernel/process.c   |    6 +++++-
+>  arch/alpha/kernel/smp.c       |    1 +
+>  arch/cris/kernel/process.c    |    3 +++
+>  arch/frv/kernel/process.c     |    3 +++
+>  arch/h8300/kernel/process.c   |    3 +++
+>  arch/m32r/kernel/process.c    |    3 +++
+>  arch/m68k/kernel/process.c    |    3 +++
+>  arch/mn10300/kernel/process.c |    3 +++
+>  arch/parisc/kernel/process.c  |    3 +++
+>  arch/score/kernel/process.c   |    4 +++-
+>  arch/xtensa/kernel/process.c  |    3 +++
+>  11 files changed, 33 insertions(+), 2 deletions(-)
+> 
+> -- 
+> 1.7.5.4
+> 
