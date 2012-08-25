@@ -1,12 +1,14 @@
-From: Michael Cree <mcree@orcon.net.nz>
+From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
 Subject: Re: [PATCH 00/11] rcu: Add missing RCU idle APIs on idle loop v2
-Date: Sat, 25 Aug 2012 14:10:17 +1200
-Message-ID: <50383409.7090207@orcon.net.nz>
-References: <1345733915-20040-1-git-send-email-fweisbec@gmail.com>	 <20120824212647.GU2472@linux.vnet.ibm.com> <1345857554.4840.43.camel@deadeye.wl.decadent.org.uk>
+Date: Fri, 24 Aug 2012 20:50:47 -0700
+Message-ID: <20120825035047.GB3436@linux.vnet.ibm.com>
+References: <1345733915-20040-1-git-send-email-fweisbec@gmail.com>
+ <20120824212647.GU2472@linux.vnet.ibm.com>
+ <1345857554.4840.43.camel@deadeye.wl.decadent.org.uk>
+Reply-To: paulmck@linux.vnet.ibm.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: paulmck@linux.vnet.ibm.com,
-	Frederic Weisbecker <fweisbec@gmail.com>,
+Content-Type: text/plain; charset=us-ascii
+Cc: Frederic Weisbecker <fweisbec@gmail.com>,
 	LKML <linux-kernel@vger.kernel.org>,
 	Chris Zankel <chris@zankel.net>,
 	"3.2.x.." <stable@vger.kernel.org>,
@@ -27,46 +29,58 @@ Cc: paulmck@linux.vnet.ibm.com,
 	Richard Henderson <rth@twiddle.net>,
 	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
 	Matt Turner <mattst88@gmail.com>,
-	alpha <linux-alpha@vger.
+	alpha <linux-alpha@vger.kernel.org>,
+	Michael Cree <m
 To: Ben Hutchings <ben@decadent.org.uk>
-Return-path: <linux-parisc-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1345857554.4840.43.camel@deadeye.wl.decadent.org.uk>
-List-ID: <linux-parisc.vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 25/08/12 13:19, Ben Hutchings wrote:
+On Sat, Aug 25, 2012 at 02:19:14AM +0100, Ben Hutchings wrote:
 > On Fri, 2012-08-24 at 14:26 -0700, Paul E. McKenney wrote:
->> On Thu, Aug 23, 2012 at 04:58:24PM +0200, Frederic Weisbecker wrote:
->>> Hi,
->>>
->>> Changes since v1:
->>>
->>> - Fixed preempt handling in alpha idle loop
->>> - added ack from Geert
->>> - fixed stable email address, sorry :-/
->>>
->>> This time I built tested everywhere but: h8300 (compiler internal error),
->>> and mn10300, parisc, score (cross compilers not available in
->>> ftp://ftp.kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.3/)
->>>
->>> For testing, you can pull from:
->>>
->>> git://github.com/fweisbec/linux-dynticks.git
->>> 	rcu/idle-fix-v2 
->>>
->>> Thanks.
->>
->> I have queued these on -rcu branch rcu/idle:
->>
->> 	git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
->>
->> This problem has been in place since 3.3, so it is hard to argue that
->> it is a regression for this merge window.  I have therefore queued it
->> for 3.7.
+> > On Thu, Aug 23, 2012 at 04:58:24PM +0200, Frederic Weisbecker wrote:
+> > > Hi,
+> > > 
+> > > Changes since v1:
+> > > 
+> > > - Fixed preempt handling in alpha idle loop
+> > > - added ack from Geert
+> > > - fixed stable email address, sorry :-/
+> > > 
+> > > This time I built tested everywhere but: h8300 (compiler internal error),
+> > > and mn10300, parisc, score (cross compilers not available in
+> > > ftp://ftp.kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.3/)
+> > > 
+> > > For testing, you can pull from:
+> > > 
+> > > git://github.com/fweisbec/linux-dynticks.git
+> > > 	rcu/idle-fix-v2 
+> > > 
+> > > Thanks.
+> > 
+> > I have queued these on -rcu branch rcu/idle:
+> > 
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+> > 
+> > This problem has been in place since 3.3, so it is hard to argue that
+> > it is a regression for this merge window.  I have therefore queued it
+> > for 3.7.
 > 
 > I don't follow that; I would expect any serious bug fix (serious enough
 > for a stable update) to be acceptable for 3.6 at this point.
-> 
+
+OK, if any of the arch maintainers wishes to submit the patch to 3.6,
+they are free to do so -- just let me know and I will drop the patch from
+my tree.
+
+That said, all this does is cause spurious warnings to be printed, so
+not sure it really qualifies as serious.  But I am happy to leave that
+decision with the individual arch maintainers -- it is their arch,
+after all, so their decision.
+
+							Thanx, Paul
+
 > If the regression occurred in 3.3, then the cc lines should be something
 > like:
 > 
@@ -75,13 +89,6 @@ On 25/08/12 13:19, Ben Hutchings wrote:
 > and not the current:
 > 
 >     Cc: 3.2.x.. <stable@vger.kernel.org>
-
-The Alpha patches fix an even earlier regression resulting in RCU CPU
-stalls on an SMP kernel built for generic Alpha (which includes the
-current Debian 3.2-alpha-smp kernel) and renders the kernel pretty much
-unuseable.  I've only tested the two alpha patches together but maybe
-just the first patch (1/11 alpha: Fix preemption handling in idle loop)
-might be needed to fix the problem in 3.2.   I'll test and let you know.
-
-Cheers
-Michael.
+> 
+> (Note, version annotations should be on the right of the address, not in
+> the 'real name' position on the left.)
