@@ -1,67 +1,79 @@
-From: Tobias Klausmann <klausman@schwarzvogel.de>
-Subject: Re: [PATCH 00/11] rcu: Add missing RCU idle APIs on idle loop v2
-Date: Sun, 26 Aug 2012 11:21:37 +0200
-Message-ID: <20120826092137.GA50543@kaini.schwarzvogel.de>
-References: <1345733915-20040-1-git-send-email-fweisbec@gmail.com>
- <20120824212647.GU2472@linux.vnet.ibm.com>
- <1345857554.4840.43.camel@deadeye.wl.decadent.org.uk>
- <20120825035047.GB3436@linux.vnet.ibm.com>
- <20120825131647.GA1994@somewhere>
- <20120825161806.GD3436@linux.vnet.ibm.com>
- <5039406F.9040604@orcon.net.nz>
- <20120826001233.GH3436@linux.vnet.ibm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Michael Cree <mcree@orcon.net.nz>,
-	Frederic Weisbecker <fweisbec@gmail.com>,
-	Ben Hutchings <ben@decadent.org.uk>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Chris Zankel <chris@zankel.net>,
-	"3.2.x.." <stable@vger.kernel.org>,
-	Chen Liqin <liqin.chen@sunplusct.com>,
-	Lennox Wu <lennox.wu@gmail.com>,
+From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+Subject: [PATCH tip/core/rcu 23/26] parisc: Add missing RCU idle APIs on idle loop
+Date: Thu, 30 Aug 2012 14:05:40 -0700
+Message-ID: <1346360743-3628-23-git-send-email-paulmck@linux.vnet.ibm.com>
+References: <20120830210520.GA2824@linux.vnet.ibm.com>
+ <1346360743-3628-1-git-send-email-paulmck@linux.vnet.ibm.com>
+Cc: mingo@elte.hu, laijs@cn.fujitsu.com, dipankar@in.ibm.com,
+	akpm@linux-foundation.org, mathieu.desnoyers@polymtl.ca,
+	josh@joshtriplett.org, niv@us.ibm.com, tglx@linutronix.de,
+	peterz@infradead.org, rostedt@goodmis.org, Valdis.Kletnieks@vt.edu,
+	dhowells@redhat.com, eric.dumazet@gmail.com, darren@dvhart.com,
+	fweisbec@gmail.com, sbw@mit.edu, patches@linaro.org,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>,
 	Parisc <linux-parisc@vger.kernel.org>,
-	David Howells <dhowells@redhat.com>,
-	Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	m68k <linux-m68k@lists.linux-m68k.org>,
-	Hirokazu Takata <takata@linux-m32r.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Mikael Starvik <starvik@axis.com>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Cris <linux-cris-kernel@axis.com>,
-	Richard Henderson <rth@twiddle.net>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <m
-To: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+	"3.2.x.." <stable@vger.kernel.org>,
+	"Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+To: linux-kernel@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20120826001233.GH3436@linux.vnet.ibm.com>
+In-Reply-To: <1346360743-3628-1-git-send-email-paulmck@linux.vnet.ibm.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi! 
+From: Frederic Weisbecker <fweisbec@gmail.com>
 
-On Sat, 25 Aug 2012, Paul E. McKenney wrote:
-> Both Alpha patches should apply as-is back to 3.3, and should also fix
-> the problem.  Could you please check this on the versions of interest?
+In the old times, the whole idle task was considered
+as an RCU quiescent state. But as RCU became more and
+more successful overtime, some RCU read side critical
+section have been added even in the code of some
+architectures idle tasks, for tracing for example.
 
-I just now tried them on top of 3.3.8 from linux-stable.git.
-While they apply cleanly, I get a compile failure:
+So nowadays, rcu_idle_enter() and rcu_idle_exit() must
+be called by the architecture to tell RCU about the part
+in the idle loop that doesn't make use of rcu read side
+critical sections, typically the part that puts the CPU
+in low power mode.
 
-  CC      arch/alpha/kernel/process.o
-arch/alpha/kernel/process.c: In function 'cpu_idle':
-arch/alpha/kernel/process.c:64: error: implicit declaration of function 'schedule_preempt_disabled'
-make[1]: *** [arch/alpha/kernel/process.o] Error 1
-make: *** [arch/alpha/kernel] Error 2
+This is necessary for RCU to find the quiescent states in
+idle in order to complete grace periods.
 
-AFAICT, schedule_preempt_disabled() was only introduced in 3.4
-and thus needs to be backported for 3.3.
+Add this missing pair of calls in the parisc's idle loop.
 
-Regards,
-Tobias
+Reported-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
+Cc: James E.J. Bottomley <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Parisc <linux-parisc@vger.kernel.org>
+Cc: 3.2.x.. <stable@vger.kernel.org>
+Cc: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+---
+ arch/parisc/kernel/process.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
+diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+index d4b94b3..c54a4db 100644
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -48,6 +48,7 @@
+ #include <linux/unistd.h>
+ #include <linux/kallsyms.h>
+ #include <linux/uaccess.h>
++#include <linux/rcupdate.h>
+ 
+ #include <asm/io.h>
+ #include <asm/asm-offsets.h>
+@@ -69,8 +70,10 @@ void cpu_idle(void)
+ 
+ 	/* endless idle loop with no priority at all */
+ 	while (1) {
++		rcu_idle_enter();
+ 		while (!need_resched())
+ 			barrier();
++		rcu_idle_exit();
+ 		schedule_preempt_disabled();
+ 		check_pgt_cache();
+ 	}
 -- 
-panic("%s: CORRUPTED BTREE OR SOMETHING", __FUNCTION__);
-        linux-2.6.6/fs/xfs/xfs_bmap.c
+1.7.8
+
