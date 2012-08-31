@@ -1,7 +1,7 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [GIT PULL] parisc fixes for 3.4-rc1
-Date: Fri, 31 Aug 2012 09:01:11 -0700
-Message-ID: <1346428871.3512.21.camel@dabdike>
+Subject: [GIT PULL] parisc fixes for 3.6-rc3
+Date: Fri, 31 Aug 2012 09:01:35 -0700
+Message-ID: <1346428895.3512.23.camel@dabdike>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Cc: Parisc List <linux-parisc@vger.kernel.org>,
