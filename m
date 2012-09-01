@@ -1,101 +1,85 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [GIT PULL] parisc fixes for 3.6-rc3
-Date: Fri, 31 Aug 2012 09:01:35 -0700
-Message-ID: <1346428895.3512.23.camel@dabdike>
+From: Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [PATCH tip/core/rcu 23/26] parisc: Add missing RCU idle APIs on
+ idle loop
+Date: Fri, 31 Aug 2012 17:03:15 -0700
+Message-ID: <20120901000315.GU11771@jtriplet-mobl1>
+References: <20120830210520.GA2824@linux.vnet.ibm.com>
+ <1346360743-3628-1-git-send-email-paulmck@linux.vnet.ibm.com>
+ <1346360743-3628-23-git-send-email-paulmck@linux.vnet.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-kernel@vger.kernel.org, mingo@elte.hu, laijs@cn.fujitsu.com,
+	dipankar@in.ibm.com, akpm@linux-foundation.org,
+	mathieu.desnoyers@polymtl.ca, niv@us.ibm.com, tglx@linutronix.de,
+	peterz@infradead.org, rostedt@goodmis.org, Valdis.Kletnieks@vt.edu,
+	dhowells@redhat.com, eric.dumazet@gmail.com, darren@dvhart.com,
+	fweisbec@gmail.com, sbw@mit.edu, patches@linaro.org,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Parisc <linux-parisc@vger.kernel.org>,
+	"3.2.x.." <stable@vger.kernel.org>
+To: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1346360743-3628-23-git-send-email-paulmck@linux.vnet.ibm.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a set of two bug fixes.  One is the ATOMIC problem which is now
-causing a compile failure in certain situations.  The other is
-mishandling of PER_LINUX32 which may also cause user visible effects.
+On Thu, Aug 30, 2012 at 02:05:40PM -0700, Paul E. McKenney wrote:
+> From: Frederic Weisbecker <fweisbec@gmail.com>
+> 
+> In the old times, the whole idle task was considered
+> as an RCU quiescent state. But as RCU became more and
+> more successful overtime, some RCU read side critical
+> section have been added even in the code of some
+> architectures idle tasks, for tracing for example.
+> 
+> So nowadays, rcu_idle_enter() and rcu_idle_exit() must
+> be called by the architecture to tell RCU about the part
+> in the idle loop that doesn't make use of rcu read side
+> critical sections, typically the part that puts the CPU
+> in low power mode.
+> 
+> This is necessary for RCU to find the quiescent states in
+> idle in order to complete grace periods.
+> 
+> Add this missing pair of calls in the parisc's idle loop.
+> 
+> Reported-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+> Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
+> Cc: James E.J. Bottomley <jejb@parisc-linux.org>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: Parisc <linux-parisc@vger.kernel.org>
+> Cc: 3.2.x.. <stable@vger.kernel.org>
+> Cc: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
 
-The patches are here:
+Reviewed-by: Josh Triplett <josh@joshtriplett.org>
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/parisc-2.6.git parisc-fixes
-
-The short changelog is:
-
-Jiri Kosina (1):
-      fix personality flag check in copy_thread()
-
-Mel Gorman (1):
-      Redefine ATOMIC_INIT and ATOMIC64_INIT to drop the casts
-
-And the diffstat:
-
- arch/parisc/include/asm/atomic.h | 4 ++--
- arch/parisc/kernel/process.c     | 2 +-
- arch/parisc/kernel/sys_parisc.c  | 8 ++++----
- 3 files changed, 7 insertions(+), 7 deletions(-)
-
-Full diff below.
-
-James
-
----
-
-diff --git a/arch/parisc/include/asm/atomic.h b/arch/parisc/include/asm/atomic.h
-index 6c6defc..af9cf30 100644
---- a/arch/parisc/include/asm/atomic.h
-+++ b/arch/parisc/include/asm/atomic.h
-@@ -141,7 +141,7 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
- 
- #define atomic_sub_and_test(i,v)	(atomic_sub_return((i),(v)) == 0)
- 
--#define ATOMIC_INIT(i)	((atomic_t) { (i) })
-+#define ATOMIC_INIT(i)	{ (i) }
- 
- #define smp_mb__before_atomic_dec()	smp_mb()
- #define smp_mb__after_atomic_dec()	smp_mb()
-@@ -150,7 +150,7 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
- 
- #ifdef CONFIG_64BIT
- 
--#define ATOMIC64_INIT(i) ((atomic64_t) { (i) })
-+#define ATOMIC64_INIT(i) { (i) }
- 
- static __inline__ s64
- __atomic64_add_return(s64 i, atomic64_t *v)
-diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-index d4b94b3..2c05a92 100644
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -309,7 +309,7 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
- 		cregs->ksp = (unsigned long)stack
- 			+ (pregs->gr[21] & (THREAD_SIZE - 1));
- 		cregs->gr[30] = usp;
--		if (p->personality == PER_HPUX) {
-+		if (personality(p->personality) == PER_HPUX) {
- #ifdef CONFIG_HPUX
- 			cregs->kpc = (unsigned long) &hpux_child_return;
- #else
-diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
-index c9b9322..7426e40 100644
---- a/arch/parisc/kernel/sys_parisc.c
-+++ b/arch/parisc/kernel/sys_parisc.c
-@@ -225,12 +225,12 @@ long parisc_personality(unsigned long personality)
- 	long err;
- 
- 	if (personality(current->personality) == PER_LINUX32
--	    && personality == PER_LINUX)
--		personality = PER_LINUX32;
-+	    && personality(personality) == PER_LINUX)
-+		personality = (personality & ~PER_MASK) | PER_LINUX32;
- 
- 	err = sys_personality(personality);
--	if (err == PER_LINUX32)
--		err = PER_LINUX;
-+	if (personality(err) == PER_LINUX32)
-+		err = (err & ~PER_MASK) | PER_LINUX;
- 
- 	return err;
- }
-
-
+>  arch/parisc/kernel/process.c |    3 +++
+>  1 files changed, 3 insertions(+), 0 deletions(-)
+> 
+> diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+> index d4b94b3..c54a4db 100644
+> --- a/arch/parisc/kernel/process.c
+> +++ b/arch/parisc/kernel/process.c
+> @@ -48,6 +48,7 @@
+>  #include <linux/unistd.h>
+>  #include <linux/kallsyms.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/rcupdate.h>
+>  
+>  #include <asm/io.h>
+>  #include <asm/asm-offsets.h>
+> @@ -69,8 +70,10 @@ void cpu_idle(void)
+>  
+>  	/* endless idle loop with no priority at all */
+>  	while (1) {
+> +		rcu_idle_enter();
+>  		while (!need_resched())
+>  			barrier();
+> +		rcu_idle_exit();
+>  		schedule_preempt_disabled();
+>  		check_pgt_cache();
+>  	}
+> -- 
+> 1.7.8
+> 
