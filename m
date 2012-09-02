@@ -1,85 +1,46 @@
-From: Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH tip/core/rcu 23/26] parisc: Add missing RCU idle APIs on
- idle loop
-Date: Fri, 31 Aug 2012 17:03:15 -0700
-Message-ID: <20120901000315.GU11771@jtriplet-mobl1>
-References: <20120830210520.GA2824@linux.vnet.ibm.com>
- <1346360743-3628-1-git-send-email-paulmck@linux.vnet.ibm.com>
- <1346360743-3628-23-git-send-email-paulmck@linux.vnet.ibm.com>
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: [PATCH] parisc: fix possible memory leak in pat_query_module()
+Date: Sun, 2 Sep 2012 22:23:59 +0800
+Message-ID: <CAPgLHd-Ewsr7vUC9hrwEd-g4+Py2zMJyb+cr3wiu2+cOanYwOA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-kernel@vger.kernel.org, mingo@elte.hu, laijs@cn.fujitsu.com,
-	dipankar@in.ibm.com, akpm@linux-foundation.org,
-	mathieu.desnoyers@polymtl.ca, niv@us.ibm.com, tglx@linutronix.de,
-	peterz@infradead.org, rostedt@goodmis.org, Valdis.Kletnieks@vt.edu,
-	dhowells@redhat.com, eric.dumazet@gmail.com, darren@dvhart.com,
-	fweisbec@gmail.com, sbw@mit.edu, patches@linaro.org,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Parisc <linux-parisc@vger.kernel.org>,
-	"3.2.x.." <stable@vger.kernel.org>
-To: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1346360743-3628-23-git-send-email-paulmck@linux.vnet.ibm.com>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: yongjun_wei@trendmicro.com.cn, linux-parisc@vger.kernel.org
+To: jejb@parisc-linux.org, deller@gmx.de
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Aug 30, 2012 at 02:05:40PM -0700, Paul E. McKenney wrote:
-> From: Frederic Weisbecker <fweisbec@gmail.com>
-> 
-> In the old times, the whole idle task was considered
-> as an RCU quiescent state. But as RCU became more and
-> more successful overtime, some RCU read side critical
-> section have been added even in the code of some
-> architectures idle tasks, for tracing for example.
-> 
-> So nowadays, rcu_idle_enter() and rcu_idle_exit() must
-> be called by the architecture to tell RCU about the part
-> in the idle loop that doesn't make use of rcu read side
-> critical sections, typically the part that puts the CPU
-> in low power mode.
-> 
-> This is necessary for RCU to find the quiescent states in
-> idle in order to complete grace periods.
-> 
-> Add this missing pair of calls in the parisc's idle loop.
-> 
-> Reported-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-> Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
-> Cc: James E.J. Bottomley <jejb@parisc-linux.org>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Parisc <linux-parisc@vger.kernel.org>
-> Cc: 3.2.x.. <stable@vger.kernel.org>
-> Cc: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-Reviewed-by: Josh Triplett <josh@joshtriplett.org>
+pa_pdc_cell has been allocated in this function and so should be
+freed before leaving from the error handling cases.
 
->  arch/parisc/kernel/process.c |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-> index d4b94b3..c54a4db 100644
-> --- a/arch/parisc/kernel/process.c
-> +++ b/arch/parisc/kernel/process.c
-> @@ -48,6 +48,7 @@
->  #include <linux/unistd.h>
->  #include <linux/kallsyms.h>
->  #include <linux/uaccess.h>
-> +#include <linux/rcupdate.h>
->  
->  #include <asm/io.h>
->  #include <asm/asm-offsets.h>
-> @@ -69,8 +70,10 @@ void cpu_idle(void)
->  
->  	/* endless idle loop with no priority at all */
->  	while (1) {
-> +		rcu_idle_enter();
->  		while (!need_resched())
->  			barrier();
-> +		rcu_idle_exit();
->  		schedule_preempt_disabled();
->  		check_pgt_cache();
->  	}
-> -- 
-> 1.7.8
-> 
+spatch with a semantic match is used to found this problem.
+(http://coccinelle.lip6.fr/)
+
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ arch/parisc/kernel/inventory.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/parisc/kernel/inventory.c b/arch/parisc/kernel/inventory.c
+index 08324aa..3295ef4 100644
+--- a/arch/parisc/kernel/inventory.c
++++ b/arch/parisc/kernel/inventory.c
+@@ -186,12 +186,14 @@ pat_query_module(ulong pcell_loc, ulong mod_index)
+ 
+ 	if (status != PDC_OK) {
+ 		/* no more cell modules or error */
++		kfree(pa_pdc_cell);
+ 		return status;
+ 	}
+ 
+ 	temp = pa_pdc_cell->cba;
+ 	dev = alloc_pa_dev(PAT_GET_CBA(temp), &(pa_pdc_cell->mod_path));
+ 	if (!dev) {
++		kfree(pa_pdc_cell);
+ 		return PDC_OK;
+ 	}
+ 
+
+
