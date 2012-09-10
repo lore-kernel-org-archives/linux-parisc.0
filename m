@@ -1,64 +1,77 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: Re: Thread stack allocation
-Date: Mon, 10 Sep 2012 15:02:01 -0400
-Message-ID: <504E3929.1010605@systemhalted.org>
-References: <BLU0-SMTP405E1823EA93DF4FBFC1797AD0@phx.gbl> <BLU0-SMTP91500D9B875298D4CD828597AD0@phx.gbl> <BLU0-SMTP297D308BBF8A72A121C16397AD0@phx.gbl> <504E03AF.2070204@systemhalted.org> <504E0B28.6010406@bell.net>
+From: Frederic Weisbecker <fweisbec@gmail.com>
+Subject: Re: [PATCH 00/11] rcu: Add missing RCU idle APIs on idle loop v2
+Date: Mon, 10 Sep 2012 23:53:01 +0200
+Message-ID: <20120910215244.GD21277@somewhere.redhat.com>
+References: <1345733915-20040-1-git-send-email-fweisbec@gmail.com>
+ <20120824212647.GU2472@linux.vnet.ibm.com>
+ <1345857554.4840.43.camel@deadeye.wl.decadent.org.uk>
+ <20120825035047.GB3436@linux.vnet.ibm.com>
+ <20120825131647.GA1994@somewhere>
+ <20120825161806.GD3436@linux.vnet.ibm.com>
+ <5039406F.9040604@orcon.net.nz>
+ <20120826001233.GH3436@linux.vnet.ibm.com>
+ <20120826092137.GA50543@kaini.schwarzvogel.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=us-ascii
+To: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+	Michael Cree <mcree@orcon.net.nz>,
+	Ben Hutchings <ben@decadent.org.uk>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Chris Zankel <chris@zankel.net>,
+	"3.2.x.." <stable@vger.kernel.org>,
+	Chen Liqin <liqin.chen@sunplusct.com>,
+	Lennox Wu <lennox.wu@gmail.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Parisc <linux-parisc@vger.kernel.org>,
+	David Howells <dhowells@redhat.com>,
+	Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	m68k <linux-m68k@lists.linux-m68k.org>,
+	Hirokazu Takata <takata@linux-m32r.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Mikael Starvik <starvik@axis.com>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Cris <linux-cris-kernel@axis.com>,
+	Richard Henderson <rth@twiddle.net>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Tu
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <504E0B28.6010406@bell.net>
+In-Reply-To: <20120826092137.GA50543@kaini.schwarzvogel.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 9/10/2012 11:45 AM, John David Anglin wrote:
-> On 9/10/2012 11:13 AM, Carlos O'Donell wrote:
->> On 9/9/2012 6:24 PM, John David Anglin wrote:
->>> >On 9-Sep-12, at 4:23 PM, John David Anglin wrote:
->>> >
->>>> >>It seems to me this must be a kernel bug:
->>> >
->>> >Nope, it's a problem with guard page allocation in openjdk.
->>> >It assumes stack grows down.
->> Yes, that's wrong:-)
->>
->> If you allocate your own stacks then glibc can't setup guard
->> pages for you since it violates some POSIX constraints.
-> I need to study the situation in more detail but what I found is openjdk
-> initially allocates a fairly large stack with pthread_attr_setstacksize,
-> then it mucks with this region setting up guard pages, etc.  This goes
-> seriously wrong on parisc and the initial thread is only left with a stack
-> which is 4096 bytes.
+On Sun, Aug 26, 2012 at 11:21:37AM +0200, Tobias Klausmann wrote:
+> Hi! 
 > 
-> I disabled guard pages and the build went a lot further, but died again
-> due to what appears to be another stack related issue.  If this package
-> is to work again, it's going to need significant porting to fix the stack
-> handling.  I think there was a parisc patch at one time but I think it
-> has been removed...
+> On Sat, 25 Aug 2012, Paul E. McKenney wrote:
+> > Both Alpha patches should apply as-is back to 3.3, and should also fix
+> > the problem.  Could you please check this on the versions of interest?
 > 
-> If I understand correctly, we have on parisc a guard region followed
-> by TLS stuff at the top of stack.  I assume that the stack size allocated
-> with pthread_attr_setstacksize is fully available to the user.
+> I just now tried them on top of 3.3.8 from linux-stable.git.
+> While they apply cleanly, I get a compile failure:
+> 
+>   CC      arch/alpha/kernel/process.o
+> arch/alpha/kernel/process.c: In function 'cpu_idle':
+> arch/alpha/kernel/process.c:64: error: implicit declaration of function 'schedule_preempt_disabled'
+> make[1]: *** [arch/alpha/kernel/process.o] Error 1
+> make: *** [arch/alpha/kernel] Error 2
+> 
+> AFAICT, schedule_preempt_disabled() was only introduced in 3.4
+> and thus needs to be backported for 3.3.
 
-No. This is what the glibc bug is about and it's what I'm fixing right now.
+Please try with this instead:
 
-No matter what you do glibc allocates static tls, guard pages, and several
-other things *from* the stack size you set.
+	preempt_enable_no_resched();
+	schedule();
+	preempt_disable();
 
-This is wrong for many reasons, and we're fixing stack size accounting
-upstream. Until the fix is in, which would be ~2.17 timeframe this isn't
-going to get better.
+Thanks.
 
-If you have a small-ish stack, with lots of static tls variables, then you
-loose and need to manually allocate your own stack of the appropriate size
-to hold everything you need (not that there is any API to figure that out)
-and do it all manually.
-
-After the fix goes in the size you request via pthread_attr_setstacksize
-will be the real size you have access to use and proper stack analysis
-tools will be useful again :-)
-
-Cheers,
-Carlos.
-
+> 
+> Regards,
+> Tobias
+> 
+> -- 
+> panic("%s: CORRUPTED BTREE OR SOMETHING", __FUNCTION__);
+>         linux-2.6.6/fs/xfs/xfs_bmap.c
