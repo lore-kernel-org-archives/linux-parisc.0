@@ -1,90 +1,32 @@
-From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Subject: Re: [PATCH 00/10] rcu: Add missing RCU idle APIs on idle loop
-Date: Mon, 17 Sep 2012 13:55:19 -0700
-Message-ID: <20120917205519.GB2467@linux.vnet.ibm.com>
-References: <1345652628-15060-1-git-send-email-fweisbec@gmail.com>
- <CAMuHMdUt62GsYsPMAPbUWZUtFL=c2VmYFintpDAQmSwQrWriuA@mail.gmail.com>
- <20120823110157.GC18835@somewhere.redhat.com>
- <CAMuHMdX5R_7EBGDu00zdy_P3q65BzKJbNeRwFcuwij8eHavTYQ@mail.gmail.com>
- <20120823215052.GC19305@somewhere.redhat.com>
- <CAMuHMdURT2vdF8uGZbMO09iGbLeSaVzwNthKEA1WwOtH6dQN_A@mail.gmail.com>
-Reply-To: paulmck@linux.vnet.ibm.com
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: I have 12GB of RAM but I can only use 1GB?
+Date: Tue, 18 Sep 2012 21:36:20 -0400
+Message-ID: <CAE2sS1i5E9FDB_5aw+mTySEysOjuLjOQn7S_pOL5-EMBOudqPg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Frederic Weisbecker <fweisbec@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Chris Zankel <chris@zankel.net>, "3.2.x.." <stable@kernel.org>,
-	Chen Liqin <liqin.chen@sunplusct.com>,
-	Lennox Wu <lennox.wu@gmail.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Parisc <linux-parisc@vger.kernel.org>,
-	David Howells <dhowells@redhat.com>,
-	Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
-	m68k <linux-m68k@lists.linux-m68k.org>,
-	Hirokazu Takata <takata@linux-m32r.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Mikael Starvik <starvik@axis.com>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Cris <linux-cris-kernel@axis.com>,
-	Richard Henderson <rth@twiddle.net>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	alpha <linux-alpha@vger.kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdURT2vdF8uGZbMO09iGbLeSaVzwNthKEA1WwOtH6dQN_A@mail.gmail.com>
-List-ID: <linux-m68k.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Jej B <James.Bottomley@hansenpartnership.com>
+To: linux-parisc <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Sep 17, 2012 at 10:31:24PM +0200, Geert Uytterhoeven wrote:
-> Hi Frederic, Paul,
-> 
-> On Thu, Aug 23, 2012 at 11:50 PM, Frederic Weisbecker
-> <fweisbec@gmail.com> wrote:
-> > On Thu, Aug 23, 2012 at 10:23:22PM +0200, Geert Uytterhoeven wrote:
-> >> On Thu, Aug 23, 2012 at 1:02 PM, Frederic Weisbecker <fweisbec@gmail.com> wrote:
-> >> > On Wed, Aug 22, 2012 at 07:18:04PM +0200, Geert Uytterhoeven wrote:
-> >> >> On Wed, Aug 22, 2012 at 6:23 PM, Frederic Weisbecker <fweisbec@gmail.com> wrote:
-> >> >> > So this fixes some potential RCU stalls in a bunch of architectures.
-> >> >> > When rcu_idle_enter()/rcu_idle_exit() became a requirement, we forgot
-> >> >> > to handle the architectures that don't support CONFIG_NO_HZ.
-> >> >> >
-> >> >> > I guess the set should be dispatched into arch maintainer trees.
-> >> >>
-> >> >> I can take the m68k version, but are you sure you want it this way?
-> >> >> Each of them must be in mainline before they can enter stable.
-> >> >
-> >> > Yeah, I was thinking the right route is for these patches to be
-> >> > carried by arch maintainer who then push to Linus and then this goes
-> >> > to stable.
-> >> >
-> >> > Is that ok for you?
-> >> >
-> >> > Otherwise I can carry the patches myself. In a tree of my own, or
-> >> > Paul's or mmotm. As long as I have your ack.
-> >>
-> >> I applied your patch to the m68k for-3.6/for-linus branch.
-> >> I'll ask Linus to pull later in the rc cycle (right now I don't have
-> >> anything else
-> >> queued for 3.6).
-> >> Still, I think it's better to just collect acks and send it to Linus
-> >> in one shot,
-> >> so it can go into stable in one shot too.
-> >
-> > Sure I can do that if you prefer.
-> 
-> What's the conclusion on this one? I saw it entered tip.
+Team,
 
-I don't see it at tip/master, but perhaps I am looking at the wrong branch.
+I recently setup my rp3440 in order to get back into more active
+development for hppa.
 
-> I still have it (as the only commit) on my for-3.6 branch, but I don't
-> think m68k
-> is important enough to be the only architecture to have this fix in 3.6 ;-)
+I noticed that in 3.6.0-rc6 I get the following message:
+~~~
+This Machine has more memory ranges than we support!
+Some memory will not be used!
+parisc_cache_init: Only equivalent aliasing supported!
+Total Memory: 1024 MB
+~~~
 
-I got only two acks in addition to yours, plus one Tested-by.  So, no,
-there does not appear to be a large groundswell of support for pushing
-this into 3.6.  If it doesn't go in by some other path, I will be pushing
-it into 3.7.
+Which sucks since I have 12GB of RAM in this box and I want to use all of it.
 
-							Thanx, Paul
+If nobody has run into this problem then I'll just go digging, but I
+thought I'd ask here first.
+
+Cheers,
+Carlos.
