@@ -1,79 +1,254 @@
-From: tip-bot for Frederic Weisbecker <fweisbec@gmail.com>
-Subject: [tip:core/rcu] parisc: Add missing RCU idle APIs on idle loop
-Date: Wed, 26 Sep 2012 22:22:31 -0700
-Message-ID: <tip-fbe752188d5589e7fcbb8e79824e560f77dccc92@git.kernel.org>
-Reply-To: linux-kernel@vger.kernel.org, mingo@kernel.org, hpa@zytor.com,
-	  paulmck@linux.vnet.ibm.com, fweisbec@gmail.com,
-	  jejb@parisc-linux.org, josh@joshtriplett.org, tglx@linutronix.de,
-	  linux-parisc@vger.kernel.org, deller@gmx.de
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: parisc: orphaned asm/compat_signal.h file?
+Date: Fri, 28 Sep 2012 14:43:37 +0100
+Message-ID: <1348839817.2411.19.camel@dabdike.int.hansenpartnership.com>
+References: <CAK1hOcMongS_p5+oiaqE85tEVF8mv+SCm3yb-N=Zqz4Xuz_+WA@mail.gmail.com>
+	 <BLU0-SMTP54F29C73A16BAB0885137A979D0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: hpa@zytor.com, mingo@kernel.org, paulmck@linux.vnet.ibm.com,
-	fweisbec@gmail.com, jejb@parisc-linux.org, josh@joshtriplett.org,
-	tglx@linutronix.de, linux-parisc@vger.kernel.org, deller@gmx.de
-To: linux-tip-commits@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: Denys Vlasenko <vda.linux@googlemail.com>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <BLU0-SMTP54F29C73A16BAB0885137A979D0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Commit-ID:  fbe752188d5589e7fcbb8e79824e560f77dccc92
-Gitweb:     http://git.kernel.org/tip/fbe752188d5589e7fcbb8e79824e560f77dccc92
-Author:     Frederic Weisbecker <fweisbec@gmail.com>
-AuthorDate: Wed, 22 Aug 2012 17:27:34 +0200
-Committer:  Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-CommitDate: Sun, 23 Sep 2012 07:44:49 -0700
+On Tue, 2012-09-25 at 19:23 -0400, John David Anglin wrote:
+> On 24-Sep-12, at 8:39 AM, Denys Vlasenko wrote:
+> 
+> > Maybe it needs to be removed?
+> 
+> Worked for me with 3.5.4.
 
-parisc: Add missing RCU idle APIs on idle loop
+It's probably time to tidy up all of our asm-generic code and use the
+proper infrastructure.  I thought of doing it when the word-at-a-time
+problem arose, but I forgot about it.
 
-In the old times, the whole idle task was considered
-as an RCU quiescent state. But as RCU became more and
-more successful overtime, some RCU read side critical
-section have been added even in the code of some
-architectures idle tasks, for tracing for example.
+James
 
-So nowadays, rcu_idle_enter() and rcu_idle_exit() must
-be called by the architecture to tell RCU about the part
-in the idle loop that doesn't make use of rcu read side
-critical sections, typically the part that puts the CPU
-in low power mode.
-
-This is necessary for RCU to find the quiescent states in
-idle in order to complete grace periods.
-
-Add this missing pair of calls in the parisc's idle loop.
-
-Reported-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
-Cc: James E.J. Bottomley <jejb@parisc-linux.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Parisc <linux-parisc@vger.kernel.org>
-Cc: <stable@vger.kernel.org> # 3.3+
-Signed-off-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-Reviewed-by: Josh Triplett <josh@joshtriplett.org>
 ---
- arch/parisc/kernel/process.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
 
-diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-index 2c05a92..8c6b6b6 100644
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -48,6 +48,7 @@
- #include <linux/unistd.h>
- #include <linux/kallsyms.h>
- #include <linux/uaccess.h>
-+#include <linux/rcupdate.h>
+diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
+index 4383707..7fdde2e 100644
+--- a/arch/parisc/include/asm/Kbuild
++++ b/arch/parisc/include/asm/Kbuild
+@@ -1,4 +1,7 @@
+ include include/asm-generic/Kbuild.asm
  
- #include <asm/io.h>
- #include <asm/asm-offsets.h>
-@@ -69,8 +70,10 @@ void cpu_idle(void)
- 
- 	/* endless idle loop with no priority at all */
- 	while (1) {
-+		rcu_idle_enter();
- 		while (!need_resched())
- 			barrier();
-+		rcu_idle_exit();
- 		schedule_preempt_disabled();
- 		check_pgt_cache();
- 	}
+ header-y += pdc.h
+-generic-y += word-at-a-time.h
++generic-y += word-at-a-time.h auxvec.h user.h cputime.h emergency-restart.h \
++	  segment.h topology.h vga.h device.h percpu.h hw_irq.h mutex.h \
++	  div64.h irq_regs.h kdebug.h kvm_para.h local64.h local.h param.h \
++	  poll.h xor.h
+diff --git a/arch/parisc/include/asm/auxvec.h b/arch/parisc/include/asm/auxvec.h
+deleted file mode 100644
+index 9c3ac4b..0000000
+--- a/arch/parisc/include/asm/auxvec.h
++++ /dev/null
+@@ -1,4 +0,0 @@
+-#ifndef __ASMPARISC_AUXVEC_H
+-#define __ASMPARISC_AUXVEC_H
+-
+-#endif
+diff --git a/arch/parisc/include/asm/compat_signal.h b/arch/parisc/include/asm/compat_signal.h
+deleted file mode 100644
+index 6ad02c3..0000000
+--- a/arch/parisc/include/asm/compat_signal.h
++++ /dev/null
+@@ -1,2 +0,0 @@
+-/* Use generic */
+-#include <asm-generic/compat_signal.h>
+diff --git a/arch/parisc/include/asm/cputime.h b/arch/parisc/include/asm/cputime.h
+deleted file mode 100644
+index dcdf2fb..0000000
+--- a/arch/parisc/include/asm/cputime.h
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#ifndef __PARISC_CPUTIME_H
+-#define __PARISC_CPUTIME_H
+-
+-#include <asm-generic/cputime.h>
+-
+-#endif /* __PARISC_CPUTIME_H */
+diff --git a/arch/parisc/include/asm/device.h b/arch/parisc/include/asm/device.h
+deleted file mode 100644
+index d8f9872..0000000
+--- a/arch/parisc/include/asm/device.h
++++ /dev/null
+@@ -1,7 +0,0 @@
+-/*
+- * Arch specific extensions to struct device
+- *
+- * This file is released under the GPLv2
+- */
+-#include <asm-generic/device.h>
+-
+diff --git a/arch/parisc/include/asm/div64.h b/arch/parisc/include/asm/div64.h
+deleted file mode 100644
+index 6cd978c..0000000
+--- a/arch/parisc/include/asm/div64.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/div64.h>
+diff --git a/arch/parisc/include/asm/emergency-restart.h b/arch/parisc/include/asm/emergency-restart.h
+deleted file mode 100644
+index 108d8c4..0000000
+--- a/arch/parisc/include/asm/emergency-restart.h
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#ifndef _ASM_EMERGENCY_RESTART_H
+-#define _ASM_EMERGENCY_RESTART_H
+-
+-#include <asm-generic/emergency-restart.h>
+-
+-#endif /* _ASM_EMERGENCY_RESTART_H */
+diff --git a/arch/parisc/include/asm/hw_irq.h b/arch/parisc/include/asm/hw_irq.h
+deleted file mode 100644
+index 6707f7d..0000000
+--- a/arch/parisc/include/asm/hw_irq.h
++++ /dev/null
+@@ -1,8 +0,0 @@
+-#ifndef _ASM_HW_IRQ_H
+-#define _ASM_HW_IRQ_H
+-
+-/*
+- *	linux/include/asm/hw_irq.h
+- */
+-
+-#endif
+diff --git a/arch/parisc/include/asm/irq_regs.h b/arch/parisc/include/asm/irq_regs.h
+deleted file mode 100644
+index 3dd9c0b..0000000
+--- a/arch/parisc/include/asm/irq_regs.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/irq_regs.h>
+diff --git a/arch/parisc/include/asm/kdebug.h b/arch/parisc/include/asm/kdebug.h
+deleted file mode 100644
+index 6ece1b0..0000000
+--- a/arch/parisc/include/asm/kdebug.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/kdebug.h>
+diff --git a/arch/parisc/include/asm/kvm_para.h b/arch/parisc/include/asm/kvm_para.h
+deleted file mode 100644
+index 14fab8f..0000000
+--- a/arch/parisc/include/asm/kvm_para.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/kvm_para.h>
+diff --git a/arch/parisc/include/asm/local.h b/arch/parisc/include/asm/local.h
+deleted file mode 100644
+index c11c530..0000000
+--- a/arch/parisc/include/asm/local.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/local.h>
+diff --git a/arch/parisc/include/asm/local64.h b/arch/parisc/include/asm/local64.h
+deleted file mode 100644
+index 36c93b5..0000000
+--- a/arch/parisc/include/asm/local64.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/local64.h>
+diff --git a/arch/parisc/include/asm/mutex.h b/arch/parisc/include/asm/mutex.h
+deleted file mode 100644
+index 458c1f7..0000000
+--- a/arch/parisc/include/asm/mutex.h
++++ /dev/null
+@@ -1,9 +0,0 @@
+-/*
+- * Pull in the generic implementation for the mutex fastpath.
+- *
+- * TODO: implement optimized primitives instead, or leave the generic
+- * implementation in place, or pick the atomic_xchg() based generic
+- * implementation. (see asm-generic/mutex-xchg.h for details)
+- */
+-
+-#include <asm-generic/mutex-dec.h>
+diff --git a/arch/parisc/include/asm/param.h b/arch/parisc/include/asm/param.h
+deleted file mode 100644
+index 965d454..0000000
+--- a/arch/parisc/include/asm/param.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/param.h>
+diff --git a/arch/parisc/include/asm/percpu.h b/arch/parisc/include/asm/percpu.h
+deleted file mode 100644
+index a0dcd19..0000000
+--- a/arch/parisc/include/asm/percpu.h
++++ /dev/null
+@@ -1,7 +0,0 @@
+-#ifndef _PARISC_PERCPU_H
+-#define _PARISC_PERCPU_H
+-
+-#include <asm-generic/percpu.h>
+-
+-#endif 
+-
+diff --git a/arch/parisc/include/asm/poll.h b/arch/parisc/include/asm/poll.h
+deleted file mode 100644
+index c98509d..0000000
+--- a/arch/parisc/include/asm/poll.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/poll.h>
+diff --git a/arch/parisc/include/asm/real.h b/arch/parisc/include/asm/real.h
+deleted file mode 100644
+index 82acb25..0000000
+--- a/arch/parisc/include/asm/real.h
++++ /dev/null
+@@ -1,5 +0,0 @@
+-#ifndef _PARISC_REAL_H
+-#define _PARISC_REAL_H
+-
+-
+-#endif
+diff --git a/arch/parisc/include/asm/segment.h b/arch/parisc/include/asm/segment.h
+deleted file mode 100644
+index 26794dd..0000000
+--- a/arch/parisc/include/asm/segment.h
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#ifndef __PARISC_SEGMENT_H
+-#define __PARISC_SEGMENT_H
+-
+-/* Only here because we have some old header files that expect it.. */
+-
+-#endif
+diff --git a/arch/parisc/include/asm/topology.h b/arch/parisc/include/asm/topology.h
+deleted file mode 100644
+index d8133eb..0000000
+--- a/arch/parisc/include/asm/topology.h
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#ifndef _ASM_PARISC_TOPOLOGY_H
+-#define _ASM_PARISC_TOPOLOGY_H
+-
+-#include <asm-generic/topology.h>
+-
+-#endif /* _ASM_PARISC_TOPOLOGY_H */
+diff --git a/arch/parisc/include/asm/user.h b/arch/parisc/include/asm/user.h
+deleted file mode 100644
+index 8022475..0000000
+--- a/arch/parisc/include/asm/user.h
++++ /dev/null
+@@ -1,5 +0,0 @@
+-/* This file should not exist, but lots of generic code still includes
+-   it. It's a hangover from old a.out days and the traditional core
+-   dump format.  We are ELF-only, and so are our core dumps.  If we
+-   need to support HP/UX core format then we'll do it here
+-   eventually. */
+diff --git a/arch/parisc/include/asm/vga.h b/arch/parisc/include/asm/vga.h
+deleted file mode 100644
+index 171399a..0000000
+--- a/arch/parisc/include/asm/vga.h
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#ifndef __ASM_PARISC_VGA_H__
+-#define __ASM_PARISC_VGA_H__
+-
+-/* nothing */
