@@ -1,46 +1,39 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: what's parisc execve_wrapper doing in the end?
-Date: Thu, 04 Oct 2012 10:30:19 +0100
-Message-ID: <1349343019.2706.3.camel@dabdike.int.hansenpartnership.com>
+Date: Thu, 4 Oct 2012 09:30:16 -0400
+Message-ID: <CAE2sS1jrFOgwt3xRsnDv5uQ7kYx16vy+nEeK5oGpD3Yd-7fVfQ@mail.gmail.com>
 References: <20121004045150.GH23473@ZenIV.linux.org.uk>
+	<20121004051359.GA24664@ZenIV.linux.org.uk>
+	<1349344936.2706.10.camel@dabdike.int.hansenpartnership.com>
+	<20121004122201.GI23473@ZenIV.linux.org.uk>
+	<1349355474.2706.21.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: Al Viro <viro@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Al Viro <viro@zeniv.linux.org.uk>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20121004045150.GH23473@ZenIV.linux.org.uk>
+In-Reply-To: <1349355474.2706.21.camel@dabdike.int.hansenpartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-[parisc list added just in case I get this wrong]
-On Thu, 2012-10-04 at 05:51 +0100, Al Viro wrote:
-> I'm really confused by that one:
->         /* If exec succeeded we need to load the args */
-> 
->         ldo -1024(%r0),%r1
->         cmpb,>>= %r28,%r1,error_\execve
->         copy %r2,%r19
-> 
-> error_\execve:
->         bv %r0(%r19)
-> 
-> Just what is going on there?  That cmpb is non-nullifying, right? 
+On Thu, Oct 4, 2012 at 8:57 AM, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>> Unless I'm missing something really subtle, it looks like HPUX compat had
+>> been very noticably broken since at least 2002.  Comments?
+>
+> I think it probably has.  I don't believe there's anyone left with hpux
+> binaries actually checking it.
 
-Right, it would have to have a ,n to nullify the following instruction,
-so the copy is executed in both branches.
+Was the HPUX support ever completed?
 
-The compare and branch clearly has no effect, so it's a vestige of
-something, I think.
+I had HPUX/Linux dual-boot on one of my systems and I was never able
+to run an HPUX binary correctly.
 
->  So this
-> assignment to %r2 happens whether condition is true or false.  And AFAICS
-> IAOQ_Next is set to error_\execve in both cases.  So what the hell
-> is that comparison for (and the comment about)?  Why not simply return
-> via bv %r0(%r2) and be done with that?  It had been done that way since
-> the initial parisc merge circa 2.4.0-test*...
+Someone with the time and inclination is all that is missing to
+cleanup the rotten HPUX bits.
 
-Right, but no idea what it's a vestige of.
+There is no need to keep any of it around, that's what version control is for.
 
-James
-
-
+Cheers,
+Carlos.
