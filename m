@@ -1,150 +1,115 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: what's parisc execve_wrapper doing in the end?
-Date: Mon, 08 Oct 2012 12:28:27 +0100
-Message-ID: <1349695707.2615.38.camel@dabdike.int.hansenpartnership.com>
-References: <20121004045150.GH23473@ZenIV.linux.org.uk>
-	 <1349343019.2706.3.camel@dabdike.int.hansenpartnership.com>
-	 <1349435268.3638.42.camel@dabdike.int.hansenpartnership.com>
-	 <1349444664.3638.46.camel@dabdike.int.hansenpartnership.com>
-	 <20121005144819.GO23473@ZenIV.linux.org.uk>
-	 <1349448936.3638.64.camel@dabdike.int.hansenpartnership.com>
-	 <20121005230441.GB2616@ZenIV.linux.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: Al Viro <viro@ZenIV.linux.org.uk>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20121005230441.GB2616@ZenIV.linux.org.uk>
-List-ID: <linux-parisc.vger.kernel.org>
+From: David Howells <dhowells@redhat.com>
+Subject: [GIT PULL] Disintegrate UAPI for parisc [ver #2]
+Date: Tue, 09 Oct 2012 10:15:45 +0100
+Message-ID: <21164.1349774145@warthog.procyon.org.uk>
+Cc: dhowells@redhat.com, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+To: jejb@parisc-linux.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, 2012-10-06 at 00:04 +0100, Al Viro wrote:
-> On Fri, Oct 05, 2012 at 03:55:36PM +0100, James Bottomley wrote:
-> > On Fri, 2012-10-05 at 15:48 +0100, Al Viro wrote:
-> > > On Fri, Oct 05, 2012 at 02:44:24PM +0100, James Bottomley wrote:
-> > > > On Fri, 2012-10-05 at 12:07 +0100, James Bottomley wrote:
-> > > > > I tried out the code at
-> > > > > 
-> > > > > git://git.kernel.org/pub/scm/linux/kernel/git/viro/signal.git
-> > > > > experimental-kernel_thread
-> > > > > 
-> > > > > and it gives me this panic on boot.
-> > > > 
-> > > > OK, found the fix:  the idle thread is a kernel thread, but it doesn't
-> > > > come through kernel_thread().  The fix is to check for it (fortunately
-> > > > it has the signal usp == 0).
-> > > 
-> > > Um...  I see, but I really wonder if that's the right fix.  FWIW, sparc
-> > > will have the same problem...  Hell knows.  OTOH, it's a nice way to
-> > > get of implicit interplay between copy_thread() and idle_regs() - note
-> > > that SMP architectures doing default idle_regs() need to be damn careful
-> > > about what they do in their "is that kernel thread" logics; all-zeros
-> > > pt_regs might give varying results on user_mode(regs) tests, etc.
-> > > Might be better to go for
-> > > 	if (p->flags & PF_KTHREAD) {
-> > > 		if (!usp) {
-> > > 			we are starting an idle thread
-> > > 		} else {
-> > > 			we are setting things up for kernel_thread()
-> > > 		}
-> > > 	} else {
-> > > 		we are forking
-> > > 	}
-> > > kind of logics, looking at regs only in the last case.  And to hell with
-> > > (separate and overridable) idle_regs() once everything goes that way...
-> > 
-> > But there's not a lot of point.  forking an idle thread actually doesn't
-> > care about any of the register execution setup because it never really
-> > uses it to execute.  That's why it was safe for us to use the user
-> > thread setup ... I suppose the interior of the kernel thread case could
-> > be conditioned on if (usp).
-> 
-> BTW, speaking of parisc copy_thread()...  Why the hell do we bother
-> with *cregs = *pregs in userland case?  It's a part of task_struct,
-> after all, and we have copied that wholesale in arch_dup_task_struct().
-> 
-> Another thing: why do we bother with
->         STREG   %r30,PT_GR21(%r1)
-> in fork wrapper?  We bloody well know what the offset will be, after all -
-> right in the beginning of that sucker we'd done
->         LDREG   TI_TASK-THREAD_SZ_ALGN-FRAME_SIZE(%r30), %r1
-> so we rely on %r30 having been (unsigned long)current_thread_info() + 
-> THREAD_SZ_ALGN + FRAME_SIZE.  Then we add FRAME_SIZE again.  IOW, the
-> offset is a known constant.  Hell, in child_return you rely on its
-> value...   While we are at it, I'm not sure you need to go through
-> wrapper_exit on the way out in parent - saving cr27 can be done via
-> e.g. r28 instead of r3, at which point you can simply branch to
-> sys_clone() with no work left for wrapper_exit.  *Child* obviously
-> needs to restore these registers, so let it do that in child_return,
-> but why bother in parent?  After all, we are talking about the callee-saved
-> registers, so sys_clone() is going to revert whatever changes it makes
-> to them...
+Can you merge the following branch into the parisc tree please.
 
-It sounds plausible.  I'm checking your branch out now, modulo a couple
-of compile failures:
+This is to complete part of the UAPI disintegration for which the preparatory
+patches were pulled recently.
 
-arch/parisc/kernel/entry.S: Assembler messages:
-arch/parisc/kernel/entry.S:1754: Error: Invalid operands 
+Now that the fixups and the asm-generic chunk have been merged, I've
+regenerated the patches to get rid of those dependencies and to take account of
+any changes made so far in the merge window.  If you have already pulled the
+older version of the branch aimed at you, then please feel free to ignore this
+request.
 
-arch/parisc/kernel/process.c: In function 'copy_thread':
-arch/parisc/kernel/process.c:256: error: 'FRAME_SIZE' undeclared (first use in this function)
-arch/parisc/kernel/process.c:256: error: (Each undeclared identifier is reported only once
-arch/parisc/kernel/process.c:256: error: for each function it appears in.)
-arch/parisc/kernel/process.c:258: error: expected ')' before '{' token
-arch/parisc/kernel/process.c:297: error: expected expression before '}' token
-arch/parisc/kernel/process.c:252: warning: unused variable 'child_return'
-arch/parisc/kernel/process.c:251: warning: unused variable 'ret_from_kernel_thread'
+The following changes since commit 9e2d8656f5e8aa214e66b462680cf86b210b74a8:
 
-Fix up below.
+  Merge branch 'akpm' (Andrew's patch-bomb) (2012-10-09 16:23:15 +0900)
 
-> BTW, TIF_SYSCALL_TRACE and singlestepping are turned off in child, so I don't
-> see any need for child_return to know where the parent had come from - it
-> won't have anything to do in tracesys_exit anyway.
-> 
-> I've folded your fixes and pushed the result; I've added (again, completely
-> untested) optimizations along the lines of the above on top of those, as
-> a separate commit.  Comments?
-
-Even with the patch applied, it's hanging on boot around the first
-kthread spawns.  I'm investigating.
-
-James
-
----
-
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index f253f36..47fb6dd 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -1751,7 +1751,7 @@ ENTRY(sys_vfork_wrapper)
- 	mfctl	%cr27, %r28
- 	STREG	%r28, PT_CR27(%r1)
- 
--	b	sys_vfork,%r2
-+	b	sys_vfork
- 	copy	%r1,%r26
- ENDPROC(sys_vfork_wrapper)
- 
-diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-index 47eba15..61113c3 100644
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -52,6 +52,7 @@
- 
- #include <asm/io.h>
- #include <asm/asm-offsets.h>
-+#include <asm/assembly.h>
- #include <asm/pdc.h>
- #include <asm/pdc_chassis.h>
- #include <asm/pgalloc.h>
-@@ -255,7 +256,7 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
- #endif
- 	cregs->ksp = (unsigned long)stack + THREAD_SZ_ALGN + FRAME_SIZE;
- 
--	if (unlikely((p->flags & PF_KTHREAD)) {
-+	if (unlikely(p->flags & PF_KTHREAD)) {
- 		memset(cregs, 0, sizeof(struct pt_regs));
- 		if (!usp) /* idle thread */
- 			return 0;
+are available in the git repository at:
 
 
+  git://git.infradead.org/users/dhowells/linux-headers.git tags/disintegrate-parisc-20121009
+
+for you to fetch changes up to 7869b46c99d8de719f7543d6ba432a7fcc3c78b3:
+
+  UAPI: (Scripted) Disintegrate arch/parisc/include/asm (2012-10-09 09:47:22 +0100)
+
+----------------------------------------------------------------
+UAPI Disintegration 2012-10-09
+
+----------------------------------------------------------------
+David Howells (1):
+      UAPI: (Scripted) Disintegrate arch/parisc/include/asm
+
+ arch/parisc/include/asm/Kbuild                   |   2 -
+ arch/parisc/include/asm/pdc.h                    | 423 +-----------
+ arch/parisc/include/asm/ptrace.h                 |  46 +-
+ arch/parisc/include/asm/signal.h                 | 113 +--
+ arch/parisc/include/asm/termios.h                |  41 +-
+ arch/parisc/include/asm/unistd.h                 | 835 +---------------------
+ arch/parisc/include/uapi/asm/Kbuild              |  32 +
+ arch/parisc/include/{ => uapi}/asm/auxvec.h      |   0
+ arch/parisc/include/{ => uapi}/asm/bitsperlong.h |   0
+ arch/parisc/include/{ => uapi}/asm/byteorder.h   |   0
+ arch/parisc/include/{ => uapi}/asm/errno.h       |   0
+ arch/parisc/include/{ => uapi}/asm/fcntl.h       |   0
+ arch/parisc/include/{ => uapi}/asm/ioctl.h       |   0
+ arch/parisc/include/{ => uapi}/asm/ioctls.h      |   0
+ arch/parisc/include/{ => uapi}/asm/ipcbuf.h      |   0
+ arch/parisc/include/{ => uapi}/asm/kvm_para.h    |   0
+ arch/parisc/include/{ => uapi}/asm/mman.h        |   0
+ arch/parisc/include/{ => uapi}/asm/msgbuf.h      |   0
+ arch/parisc/include/{ => uapi}/asm/param.h       |   0
+ arch/parisc/include/uapi/asm/pdc.h               | 427 ++++++++++++
+ arch/parisc/include/{ => uapi}/asm/poll.h        |   0
+ arch/parisc/include/{ => uapi}/asm/posix_types.h |   0
+ arch/parisc/include/uapi/asm/ptrace.h            |  47 ++
+ arch/parisc/include/{ => uapi}/asm/resource.h    |   0
+ arch/parisc/include/{ => uapi}/asm/sembuf.h      |   0
+ arch/parisc/include/{ => uapi}/asm/setup.h       |   0
+ arch/parisc/include/{ => uapi}/asm/shmbuf.h      |   0
+ arch/parisc/include/{ => uapi}/asm/sigcontext.h  |   0
+ arch/parisc/include/{ => uapi}/asm/siginfo.h     |   0
+ arch/parisc/include/uapi/asm/signal.h            | 118 ++++
+ arch/parisc/include/{ => uapi}/asm/socket.h      |   0
+ arch/parisc/include/{ => uapi}/asm/sockios.h     |   0
+ arch/parisc/include/{ => uapi}/asm/stat.h        |   0
+ arch/parisc/include/{ => uapi}/asm/statfs.h      |   0
+ arch/parisc/include/{ => uapi}/asm/swab.h        |   0
+ arch/parisc/include/{ => uapi}/asm/termbits.h    |   0
+ arch/parisc/include/uapi/asm/termios.h           |  43 ++
+ arch/parisc/include/{ => uapi}/asm/types.h       |   0
+ arch/parisc/include/uapi/asm/unistd.h            | 837 +++++++++++++++++++++++
+ 39 files changed, 1511 insertions(+), 1453 deletions(-)
+ rename arch/parisc/include/{ => uapi}/asm/auxvec.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/bitsperlong.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/byteorder.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/errno.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/fcntl.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/ioctl.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/ioctls.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/ipcbuf.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/kvm_para.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/mman.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/msgbuf.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/param.h (100%)
+ create mode 100644 arch/parisc/include/uapi/asm/pdc.h
+ rename arch/parisc/include/{ => uapi}/asm/poll.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/posix_types.h (100%)
+ create mode 100644 arch/parisc/include/uapi/asm/ptrace.h
+ rename arch/parisc/include/{ => uapi}/asm/resource.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/sembuf.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/setup.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/shmbuf.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/sigcontext.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/siginfo.h (100%)
+ create mode 100644 arch/parisc/include/uapi/asm/signal.h
+ rename arch/parisc/include/{ => uapi}/asm/socket.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/sockios.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/stat.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/statfs.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/swab.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/termbits.h (100%)
+ create mode 100644 arch/parisc/include/uapi/asm/termios.h
+ rename arch/parisc/include/{ => uapi}/asm/types.h (100%)
+ create mode 100644 arch/parisc/include/uapi/asm/unistd.h
+.
