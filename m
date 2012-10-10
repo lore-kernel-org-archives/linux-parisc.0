@@ -1,51 +1,78 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: parisc-linux.org down?
-Date: Wed, 10 Oct 2012 17:31:18 -0400
-Message-ID: <201210101731.19730.vapier@gentoo.org>
-References: <CAE2sS1g_e6gh-gZhmtA+vjhmEv2cttkoPkpsWSxNhN7RAhT-ww@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart3565976.4M2Ua5BESX";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Cc: "linux-parisc" <linux-parisc@vger.kernel.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAE2sS1g_e6gh-gZhmtA+vjhmEv2cttkoPkpsWSxNhN7RAhT-ww@mail.gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [ 089/122] parisc: Add missing RCU idle APIs on idle loop
+Date: Thu, 11 Oct 2012 07:54:15 +0900
+Message-ID: <20121010225354.064784157@linuxfoundation.org>
+References: <20121010225337.989799482@linuxfoundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	alan@lxorguk.ukuu.org.uk,
+	"Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+	Frederic Weisbecker <fweisbec@gmail.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Parisc <linux-parisc@vger.kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20121010225337.989799482@linuxfoundation.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---nextPart3565976.4M2Ua5BESX
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+3.6-stable review patch.  If anyone has any objections, please let me know.
 
-On Wednesday 10 October 2012 16:14:35 Carlos O'Donell wrote:
-> Is www.parisc-linux.org down for anyone else?
+------------------
 
-yes, i cannot ping it and all connections timeout
--mike
+From: Frederic Weisbecker <fweisbec@gmail.com>
 
---nextPart3565976.4M2Ua5BESX
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+commit fbe752188d5589e7fcbb8e79824e560f77dccc92 upstream.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
+In the old times, the whole idle task was considered
+as an RCU quiescent state. But as RCU became more and
+more successful overtime, some RCU read side critical
+section have been added even in the code of some
+architectures idle tasks, for tracing for example.
 
-iQIcBAABAgAGBQJQdeknAAoJEEFjO5/oN/WBMlYP/1WGZwNRMVRetZcSBLo/wEY0
-oVz8o+xQx7lUVuG9WGSOqIRLjdU3nj2WG3iuqPPyUUyMaqsGDtOfkpW+PLWOKrIo
-/1EEZpu6KfzTmI87nLneOX//3gT1wHJKXy0xoLjSJ22E7GCGoz06gd1nD7IpAU1C
-Lyo+oj+xPBDxdtr38SnWn5Y6AMS7XbDlsIjEZlXqsQLFyHhLZERep9R28LLClnhi
-UxheL4EnaXIB3QsGOfbA1zUy/AEbFnI9Ghi37l/KptLGaZIuP/BzBcv2M/nHKScP
-XVOsSuBafX//8i/U7x+YRMVMWPGbB5kfG6cn2dWk1bE8KpQbsiWwCFFr+GZ9E/Pv
-ngkk5frTOBIfv4nz5b2Q9Tt0cEnD+l+mu4Sb57dlEZUuwiWx9LVbdz//qkd1iePv
-8gPGWJpXwZW2lwTimE75YF49GufsJNblANewg9y9HxzCKAX3gGdDHi6c1FII04Nc
-DtAs2UY5GTpAOdXMGO+WZSmOxgzU+FGnAGMrxTCX8/peiLXU0BEs30IGl3FS9BoC
-YXV1bwaEizlQvLAJ5UFy4xihXtO2tyVdZsbmYr3DCJc5nihZXuW9KeyJ2yPKyb+B
-R4NP+VqnrJlBE6MaZ/HoSvkvdPz/eAndD4rCs8vgFz/a0WhFI6jsHc8a93aKetTx
-9pJCTWfTjeab7I4HhsiD
-=9C9i
------END PGP SIGNATURE-----
+So nowadays, rcu_idle_enter() and rcu_idle_exit() must
+be called by the architecture to tell RCU about the part
+in the idle loop that doesn't make use of rcu read side
+critical sections, typically the part that puts the CPU
+in low power mode.
 
---nextPart3565976.4M2Ua5BESX--
+This is necessary for RCU to find the quiescent states in
+idle in order to complete grace periods.
+
+Add this missing pair of calls in the parisc's idle loop.
+
+Reported-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
+Cc: James E.J. Bottomley <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Parisc <linux-parisc@vger.kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+Reviewed-by: Josh Triplett <josh@joshtriplett.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ arch/parisc/kernel/process.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -48,6 +48,7 @@
+ #include <linux/unistd.h>
+ #include <linux/kallsyms.h>
+ #include <linux/uaccess.h>
++#include <linux/rcupdate.h>
+ 
+ #include <asm/io.h>
+ #include <asm/asm-offsets.h>
+@@ -69,8 +70,10 @@ void cpu_idle(void)
+ 
+ 	/* endless idle loop with no priority at all */
+ 	while (1) {
++		rcu_idle_enter();
+ 		while (!need_resched())
+ 			barrier();
++		rcu_idle_exit();
+ 		schedule_preempt_disabled();
+ 		check_pgt_cache();
+ 	}
