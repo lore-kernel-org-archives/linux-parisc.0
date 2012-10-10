@@ -1,7 +1,7 @@
 From: <gregkh@linuxfoundation.org>
-Subject: Patch "parisc: Add missing RCU idle APIs on idle loop" has been added to the 3.6-stable tree
-Date: Wed, 10 Oct 2012 09:24:48 +0900
-Message-ID: <13498286884028@kroah.org>
+Subject: Patch "parisc: Add missing RCU idle APIs on idle loop" has been added to the 3.4-stable tree
+Date: Wed, 10 Oct 2012 09:25:05 +0900
+Message-ID: <13498287052440@kroah.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ASCII
 Cc: <stable@vger.kernel.org>, <stable-commits@vger.kernel.org>
@@ -17,12 +17,12 @@ This is a note to let you know that I've just added the patch titled
 
     parisc: Add missing RCU idle APIs on idle loop
 
-to the 3.6-stable tree which can be found at:
+to the 3.4-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      parisc-add-missing-rcu-idle-apis-on-idle-loop.patch
-and it can be found in the queue-3.6 subdirectory.
+and it can be found in the queue-3.4 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
@@ -92,13 +92,13 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from fweisbec@gmail.com are
 
-queue-3.6/frv-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/cris-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/m68k-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/alpha-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/h8300-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/parisc-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/m32r-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/score-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/mn10300-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/xtensa-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/frv-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/cris-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/m68k-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/alpha-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/h8300-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/parisc-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/m32r-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/score-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/mn10300-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/xtensa-add-missing-rcu-idle-apis-on-idle-loop.patch
