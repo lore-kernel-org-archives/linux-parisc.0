@@ -1,161 +1,64 @@
-From: David Howells <dhowells@redhat.com>
-Subject: [GIT PULL] Disintegrate UAPI for parisc [ver #3]
-Date: Tue, 16 Oct 2012 21:40:04 +0100
-Message-ID: <5423.1350420004@warthog.procyon.org.uk>
-Cc: dhowells@redhat.com, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-To: jejb@parisc-linux.org
+From: =?utf-8?B?5q+P5aSp5LuFMTDlhYM=?= <admin@shiwuyou.com>
+Subject: =?utf-8?B?MjAxMuaYpeWtozExMeWxiuW5v+S6pOS8muS5sOWutu+8jEIyQuivog==?=
+	=?utf-8?B?55uY5Lmw5a6244CBdGhvbWFzbmV0IOmHh+i0reWVhizmtbflhbM=?=
+	=?utf-8?B?5pWw5o2uLOe+pOWPkei9r+S7tu+8jOWxleS8muS5sOWutiDku4UzMDDlhYMh?=
+Date: Wed, 17 Oct 2012 10:58:37 +0000 (UTC)
+Message-ID: <20191017181843643135@shiwuyou.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+To: <donsbarnwood@gmail.com>, <linux-parisc@vger.kernel.org>,
+	<info@ektaindustries.co.in>, <ohare5948@aol.com>,
+	<info@sanaullah.com>, <suzals3@gmail.com>, <rossbeecher@msn.com>,
+	<deniseschijvenaars@msn.com>, <lilpinkpetals@gmail.com>,
+	<jianle2005@hotmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+MjAxMuaYpeWtozExMeWxiuW5v+S6pOS8muS5sOWutu+8jOa1t+WFs+aVsOaNruaPkOWNlXBpZXJz
+54mI77yMMjAwOC0yMDEy5bm0OeWxiuW5v+S6pOS8muaVsOaNruOAgg0KDQrkuIDlhbExMOS4quWM
+hSjmlbDmja7mmK/lhajooYzkuJrnmoTvvIzlj6/ku6XmjInnhaflhbPplK7or43mj5Dlj5blh7rm
+naXnmoQp77yaIA0KMe+8jDIwMTLmmKXlraMxMTHlsYrlub/kuqTkvJrkubDlrrbnjrDlnLror6Ln
+m5jmlbDmja7lupPmlrDpspzlh7rngonvvIzotoXnuqfmlrDpspzkubDlrrbvvIzmlrDpspzmlbDm
+ja7vvIzlrrnmmJPmiJDljZXvvIEgDQoy77yM6LSt5Lmw5ZCO5Y+v5Lul5YWN6LS55pu05pawMjAx
+Mueni+Wto+W5v+S6pOS8muS5sOWutuaVsOaNruOAguWkqui2heWAvOS6huOAgg0KM++8jDIwMTLm
+nIDmlrDlhajnkIPlsZXkvJrnjrDlnLrkubDlrrblupMo5LiO6LS45Y+R5ZCM5q2lKSzlhbE0NuS4
+h+adoeaVsOaNruOAgiAo5oyJ54Wn6KGM5Lia5YiG57G7KQ0KNO+8jDIwMTEsMjAxMOW5tCwyMDA5
+5bm0LDIwMDjlubQg5pil5a2jK+eni+Wto+W5v+S6pOS8muS5sOWutuWQjeW9le+8jDEwMyAxMDQg
+MTA1IDEwNiAxMDcgMTA4LDEwOSwxMTAg5YWx5YWt5bGKIOWFsTEyMC425LiH5pWw5o2u44CCDQo1
+77yMNDguNjjkuIfmnaHmnIDmlrDkubDlrrbor6Lnm5jvvIzpg73luKbmnIlFbWFpbO+8jOacgOac
+ieS7t+WAvOeahOivouebmOOAgg0KNu+8jDIwMTHmnIDmlrAgQjJCIOiLseaWh+WbvemZheermTYw
+5LiH5bim6IGU57uc5pa55byP6K+i55uYIOacgOacieS7t+WAvOivouebmOS5i+S4gC4NCjfvvIwy
+MDEw5rW35YWz5o+Q5Y2VcGllcnPniYgxMDAw5LiH5pWw5o2uLg0KOO+8jDIwMTHlubTliLDpppnm
+uK/ph4fotK3nmoTlm73lpJblrqLkurrlkI3lvZUo6aaZ5riv6LS45Y+R5bGA5o+Q5L6bKe+8jOi2
+hee6p+mHjeimgeeahOS5sOWutuOAgg0KOe+8jDIwMTHlubTmlrDlop7liqDnmoQt576O5Zu9QjJC
+IHRob21hc25ldCDph4fotK3llYblkI3ljZXjgIINCjEw77yM576k5Y+R6L2v5Lu25a6J6KOF5LiO
+6YOo572y5pyN5Yqh44CCDQoNCui/meS6m+WFqOacie+8jOWFsTEyODDkuIcg5pWw5o2u44CCDQoN
+CiANCuimgeeahOaKk+e0p+iBlOezu1FROiA0NjAxMjI2NDEg5oiW6ICF56uL5Y2z5Zue5aSN6YKu
+566xOiA0NjAxMjI2NDFAcXEuY29tDQropoHnmoTmipPntKfogZTns7tRUTogNDYwMTIyNjQxIOaI
+luiAheeri+WNs+WbnuWkjemCrueusTogNDYwMTIyNjQxQHFxLmNvbQ0K6KaB55qE5oqT57Sn6IGU
+57O7UVE6IDQ2MDEyMjY0MSDmiJbogIXnq4vljbPlm57lpI3pgq7nrrE6IDQ2MDEyMjY0MUBxcS5j
+b20NCg0K6K+a5L+h5Li65pys77yM5aaC5p6c5LiN5L+h5Lu75pys5Lq6LOWPr+S7pei1sOa3mOWu
+neS6pOaYkyzmlLbliLDmlbDmja7pqozor4Ez5aSp5ZCO5YaN5LuY5qy+LOi/meaYr+WvueaCqOac
+gOWlveeahOS/nemanOS6huOAgiANCg0KDQoNCuWwj+aKgOW3p++8miANCuaKijUwMOS4h+S5sOWu
+tue+pOWPkeS7peS4gOmBje+8jOWdh+S8muacieaVsOWNg+S4quWbnuWkjeeahO+8jOi/meS6m+Ww
+seaYr+mdnuW4uOmrmOi0qOmHj+eahOS5sOWutuOAgiANCuS9v+eUqOaIkeS7rOmAgeeahOe+pOWP
+kei9r+S7tu+8jDEtMuWRqOWwseWPr+WujOWFqOWPkeWujOOAgg0KDQoNCg0KDQoNCuW5v+S6pOS8
+muS5sOWutuaMieS6p+WTgeexu+WIq+WIhuexu++8jOWIhuS4uuS7peS4i+WHoOexu++8mg0KMSDl
+ip7lhazorr7lpIcNCjIg57yW57uH5Y+K6Jek6ZOB5bel6Im65ZOBDQozIOeOu+eSgw0KNCDppJDl
+jqjnlKjlhbcNCjUg6L2m6L6GDQo2IOWkp+Wei+acuuaisOWPiuiuvuWkhw0KNyDnlLXlrZDnlLXm
+sJQNCjgg55S15a2Q5raI6LS55ZOBDQo5IOe6uue7hw0KMTAg5pyN6KOFDQoxMSDkuKrkurrmiqTn
+kIYNCjEyIOW3peeoi+acuuaisA0KMTMg5bel5YW3DQoxNCDljJblt6UNCjE1IOiuoeeul+acuuWP
+iumAmuiurw0KMTYg5a625bGF55So5ZOBDQoxNyDlrrblsYXoo4XppbANCjE4IOWutuWFtw0KMTkg
+5a6255So55S15ZmoDQoyMCDlu7rnrZHlj4roo4XppbDmnZDmlpkNCjIxIOiKguaXpeeUqOWTgQ0K
+MjIg56S85ZOB5Y+K6LWg5ZOBDQoyMyDmkanmiZjovaYNCjI0IOaxvei9pumFjeS7tg0KMjUg6aOf
+5ZOBDQoyNiDpmbbnk7cNCjI3IOmTgeefsw0KMjgg546p5YW3DQoyOSDljavmtbQNCjMwIOS6lOmH
+kQ0KMzEg5bCP5Z6L5py65qKwDQozMiDpnosNCjMzIOS8kemXsueUqOWTgQ0KMzQg5Yy755aXDQoz
+NSDmtbTlrqTkuqflk4ENCjM2IOWbreaelw0KMzcg54Wn5piO5Lqn5ZOBDQozOCDpkp/ooajnnLzp
+lZwNCjM5IOiHquihjOi9pg0KNDAg5YyFDQoNCg0K5paw6bKc5pWw5o2uLeaIkOWNleeOh+aegemr
+mA0K5paw6bKc5pWw5o2uLeaIkOWNleeOh+aegemrmA0K5paw6bKc5pWw5o2uLeaIkOWNleeOh+ae
+gemrmA0K5paw6bKc5pWw5o2uLeaIkOWNleeOh+aegemrmA0K5paw6bKc5pWw5o2uLeaIkOWNleeO
+h+aegemrmA0K
 
-Hi James,
 
-I've regenerated the parisc bits on top of your misc branch merged onto
-Linus's master branch.  Below is the revised pull request.
-
-David
----
-Can you merge the following branch into the parisc tree please?
-
-This is to complete part of the UAPI disintegration for which the preparatory
-patches were pulled recently.
-
-Now that the fixups and the asm-generic chunk have been merged, I've
-regenerated the patches to get rid of those dependencies and to take account of
-any changes made so far in the merge window.  If you have already pulled the
-older version of the branch aimed at you, then please feel free to ignore this
-request.
-
-The following changes since commit dd8e8c4a2c902d8350b702e7bc7c2799e5e7e331:
-
-  thermal, cpufreq: Fix build when CPU_FREQ_TABLE isn't configured (2012-10-15 14:00:07 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/users/dhowells/linux-headers.git tags/disintegrate-parisc-20121016
-
-for you to fetch changes up to 70c1674f62026e455c0c821fb7f4baf24d2d1139:
-
-  UAPI: (Scripted) Disintegrate arch/parisc/include/asm (2012-10-16 21:28:05 +0100)
-
-----------------------------------------------------------------
-UAPI Disintegration 2012-10-16
-
-----------------------------------------------------------------
-David Howells (2):
-      Merge branch 'misc' of git://git.kernel.org/.../jejb/parisc-2.6.git/
-      UAPI: (Scripted) Disintegrate arch/parisc/include/asm
-
-James Bottomley (1):
-      [PARISC] asm: redo generic includes
-
- arch/parisc/include/asm/Kbuild                   |   9 +-
- arch/parisc/include/asm/auxvec.h                 |   4 -
- arch/parisc/include/asm/compat_signal.h          |   2 -
- arch/parisc/include/asm/cputime.h                |   6 -
- arch/parisc/include/asm/device.h                 |   7 -
- arch/parisc/include/asm/div64.h                  |   1 -
- arch/parisc/include/asm/emergency-restart.h      |   6 -
- arch/parisc/include/asm/hw_irq.h                 |   8 -
- arch/parisc/include/asm/irq_regs.h               |   1 -
- arch/parisc/include/asm/kdebug.h                 |   1 -
- arch/parisc/include/asm/kvm_para.h               |   1 -
- arch/parisc/include/asm/local.h                  |   1 -
- arch/parisc/include/asm/local64.h                |   1 -
- arch/parisc/include/asm/mutex.h                  |   9 -
- arch/parisc/include/asm/param.h                  |   1 -
- arch/parisc/include/asm/pdc.h                    | 423 +-----------
- arch/parisc/include/asm/percpu.h                 |   7 -
- arch/parisc/include/asm/poll.h                   |   1 -
- arch/parisc/include/asm/ptrace.h                 |  46 +-
- arch/parisc/include/asm/real.h                   |   5 -
- arch/parisc/include/asm/segment.h                |   6 -
- arch/parisc/include/asm/signal.h                 | 113 +--
- arch/parisc/include/asm/termios.h                |  41 +-
- arch/parisc/include/asm/topology.h               |   6 -
- arch/parisc/include/asm/unistd.h                 | 835 +---------------------
- arch/parisc/include/asm/user.h                   |   5 -
- arch/parisc/include/asm/vga.h                    |   6 -
- arch/parisc/include/asm/xor.h                    |   1 -
- arch/parisc/include/uapi/asm/Kbuild              |  28 +
- arch/parisc/include/{ => uapi}/asm/bitsperlong.h |   0
- arch/parisc/include/{ => uapi}/asm/byteorder.h   |   0
- arch/parisc/include/{ => uapi}/asm/errno.h       |   0
- arch/parisc/include/{ => uapi}/asm/fcntl.h       |   0
- arch/parisc/include/{ => uapi}/asm/ioctl.h       |   0
- arch/parisc/include/{ => uapi}/asm/ioctls.h      |   0
- arch/parisc/include/{ => uapi}/asm/ipcbuf.h      |   0
- arch/parisc/include/{ => uapi}/asm/mman.h        |   0
- arch/parisc/include/{ => uapi}/asm/msgbuf.h      |   0
- arch/parisc/include/uapi/asm/pdc.h               | 427 ++++++++++++
- arch/parisc/include/{ => uapi}/asm/posix_types.h |   0
- arch/parisc/include/uapi/asm/ptrace.h            |  47 ++
- arch/parisc/include/{ => uapi}/asm/resource.h    |   0
- arch/parisc/include/{ => uapi}/asm/sembuf.h      |   0
- arch/parisc/include/{ => uapi}/asm/setup.h       |   0
- arch/parisc/include/{ => uapi}/asm/shmbuf.h      |   0
- arch/parisc/include/{ => uapi}/asm/sigcontext.h  |   0
- arch/parisc/include/{ => uapi}/asm/siginfo.h     |   0
- arch/parisc/include/uapi/asm/signal.h            | 118 ++++
- arch/parisc/include/{ => uapi}/asm/socket.h      |   0
- arch/parisc/include/{ => uapi}/asm/sockios.h     |   0
- arch/parisc/include/{ => uapi}/asm/stat.h        |   0
- arch/parisc/include/{ => uapi}/asm/statfs.h      |   0
- arch/parisc/include/{ => uapi}/asm/swab.h        |   0
- arch/parisc/include/{ => uapi}/asm/termbits.h    |   0
- arch/parisc/include/uapi/asm/termios.h           |  43 ++
- arch/parisc/include/{ => uapi}/asm/types.h       |   0
- arch/parisc/include/uapi/asm/unistd.h            | 837 +++++++++++++++++++++++
- 57 files changed, 1511 insertions(+), 1542 deletions(-)
- delete mode 100644 arch/parisc/include/asm/auxvec.h
- delete mode 100644 arch/parisc/include/asm/compat_signal.h
- delete mode 100644 arch/parisc/include/asm/cputime.h
- delete mode 100644 arch/parisc/include/asm/device.h
- delete mode 100644 arch/parisc/include/asm/div64.h
- delete mode 100644 arch/parisc/include/asm/emergency-restart.h
- delete mode 100644 arch/parisc/include/asm/hw_irq.h
- delete mode 100644 arch/parisc/include/asm/irq_regs.h
- delete mode 100644 arch/parisc/include/asm/kdebug.h
- delete mode 100644 arch/parisc/include/asm/kvm_para.h
- delete mode 100644 arch/parisc/include/asm/local.h
- delete mode 100644 arch/parisc/include/asm/local64.h
- delete mode 100644 arch/parisc/include/asm/mutex.h
- delete mode 100644 arch/parisc/include/asm/param.h
- delete mode 100644 arch/parisc/include/asm/percpu.h
- delete mode 100644 arch/parisc/include/asm/poll.h
- delete mode 100644 arch/parisc/include/asm/real.h
- delete mode 100644 arch/parisc/include/asm/segment.h
- delete mode 100644 arch/parisc/include/asm/topology.h
- delete mode 100644 arch/parisc/include/asm/user.h
- delete mode 100644 arch/parisc/include/asm/vga.h
- delete mode 100644 arch/parisc/include/asm/xor.h
- rename arch/parisc/include/{ => uapi}/asm/bitsperlong.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/byteorder.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/errno.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/fcntl.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/ioctl.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/ioctls.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/ipcbuf.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/mman.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/msgbuf.h (100%)
- create mode 100644 arch/parisc/include/uapi/asm/pdc.h
- rename arch/parisc/include/{ => uapi}/asm/posix_types.h (100%)
- create mode 100644 arch/parisc/include/uapi/asm/ptrace.h
- rename arch/parisc/include/{ => uapi}/asm/resource.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/sembuf.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/setup.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/shmbuf.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/sigcontext.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/siginfo.h (100%)
- create mode 100644 arch/parisc/include/uapi/asm/signal.h
- rename arch/parisc/include/{ => uapi}/asm/socket.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/sockios.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/stat.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/statfs.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/swab.h (100%)
- rename arch/parisc/include/{ => uapi}/asm/termbits.h (100%)
- create mode 100644 arch/parisc/include/uapi/asm/termios.h
- rename arch/parisc/include/{ => uapi}/asm/types.h (100%)
- create mode 100644 arch/parisc/include/uapi/asm/unistd.h
