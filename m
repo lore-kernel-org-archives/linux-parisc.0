@@ -1,65 +1,145 @@
-From: Pavel Roskin <proski-mXXj517/zsQ@public.gmane.org>
-Subject: Re: [ath9k-devel] [PATCH net-next 00/21] treewide: Use
- consistent api style for address testing
-Date: Fri, 19 Oct 2012 11:55:17 -0400
-Message-ID: <20121019115517.7b8514a8@mj>
-References: <cover.1350618006.git.joe@perches.com>
-	<1350630254.2293.183.camel@edumazet-glaptop>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [GIT PULL] parisc high code motion changes for 3.7-rc1
+Date: Fri, 19 Oct 2012 10:27:59 -0700
+Message-ID: <1350667679.2511.4.camel@dabdike>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, b.a.t.m.a.n-ZwoEplunGu2X36UT3dwllkB+6BGkLq7r@public.gmane.org,
-	linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, brcm80211-dev-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org,
-	users-poMEt7QlJxcwIE2E9O76wjtx2kNaKg5H@public.gmane.org, linux-sctp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	devel-s9riP+hp16TNLxjTenLetw@public.gmane.org, dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org,
-	linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wimax-BPSAo7wm5JOHVYUYWc+uSQ@public.gmane.org,
-	linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	bridge-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, lvs-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	coreteam-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, b43-dev-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org,
-	cbe-oss-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org,
-	user-mode-linux-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org,
-	devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org,
-	davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	user-mode-linux-user-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org,
-	linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-nfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	l
-To: Eric Dumazet <eric.dumazet-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Return-path: <dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
-In-Reply-To: <1350630254.2293.183.camel@edumazet-glaptop>
-List-Unsubscribe: <http://openvswitch.org/mailman/options/dev>,
-	<mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://openvswitch.org/pipermail/dev>
-List-Post: <mailto:dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
-List-Help: <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=help>
-List-Subscribe: <http://openvswitch.org/mailman/listinfo/dev>,
-	<mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=subscribe>
-Errors-To: dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 19 Oct 2012 09:04:14 +0200
-Eric Dumazet <eric.dumazet-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+This is a couple of high code motion patches (all within arch/parisc)
+I'd like to apply at -rc1 to avoid conflicts with anything else.  One
+moves us on to the generated instead of included asm file model and the
+other is a pull request from David Howells for UAPI disintegration.
 
-> Yes they are some names discrepancies, thats a big deal.
-> 
-> And we have alloc_skb() / kfree_skb() / skb_clone() 
-> 
-> Why not skb_alloc() / skb_free() / skb_clone() ?
-> 
-> Some people actually know current code by name of functions, they dont
-> want to change their mind and having to grep include files and git log
-> to learn the new names of an old function, especially when traveling
-> and using a laptop.
+The patches are here:
 
-I agree.
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/parisc-2.6.git parisc-for-linus
 
-Also, it makes sense to introduce a more consistent name for a function
-when it's improved in some way and the callers need to be adjusted or
-re-checked.
+The short changelog is:
 
-That way, the old name can be phased out as the code is made compatible
-with the new function.
+David Howells (1):
+      UAPI: (Scripted) Disintegrate arch/parisc/include/asm
 
--- 
-Regards,
-Pavel Roskin
+James Bottomley (1):
+      asm: redo generic includes
+
+The diffstat is:
+
+ arch/parisc/include/asm/Kbuild                   |   9 +-
+ arch/parisc/include/asm/auxvec.h                 |   4 -
+ arch/parisc/include/asm/compat_signal.h          |   2 -
+ arch/parisc/include/asm/cputime.h                |   6 -
+ arch/parisc/include/asm/device.h                 |   7 -
+ arch/parisc/include/asm/div64.h                  |   1 -
+ arch/parisc/include/asm/emergency-restart.h      |   6 -
+ arch/parisc/include/asm/hw_irq.h                 |   8 -
+ arch/parisc/include/asm/irq_regs.h               |   1 -
+ arch/parisc/include/asm/kdebug.h                 |   1 -
+ arch/parisc/include/asm/kvm_para.h               |   1 -
+ arch/parisc/include/asm/local.h                  |   1 -
+ arch/parisc/include/asm/local64.h                |   1 -
+ arch/parisc/include/asm/mutex.h                  |   9 -
+ arch/parisc/include/asm/param.h                  |   1 -
+ arch/parisc/include/asm/pdc.h                    | 423 +-----------
+ arch/parisc/include/asm/percpu.h                 |   7 -
+ arch/parisc/include/asm/poll.h                   |   1 -
+ arch/parisc/include/asm/ptrace.h                 |  46 +-
+ arch/parisc/include/asm/real.h                   |   5 -
+ arch/parisc/include/asm/segment.h                |   6 -
+ arch/parisc/include/asm/signal.h                 | 113 +--
+ arch/parisc/include/asm/termios.h                |  41 +-
+ arch/parisc/include/asm/topology.h               |   6 -
+ arch/parisc/include/asm/unistd.h                 | 835 +---------------------
+ arch/parisc/include/asm/user.h                   |   5 -
+ arch/parisc/include/asm/vga.h                    |   6 -
+ arch/parisc/include/asm/xor.h                    |   1 -
+ arch/parisc/include/uapi/asm/Kbuild              |  28 +
+ arch/parisc/include/{ => uapi}/asm/bitsperlong.h |   0
+ arch/parisc/include/{ => uapi}/asm/byteorder.h   |   0
+ arch/parisc/include/{ => uapi}/asm/errno.h       |   0
+ arch/parisc/include/{ => uapi}/asm/fcntl.h       |   0
+ arch/parisc/include/{ => uapi}/asm/ioctl.h       |   0
+ arch/parisc/include/{ => uapi}/asm/ioctls.h      |   0
+ arch/parisc/include/{ => uapi}/asm/ipcbuf.h      |   0
+ arch/parisc/include/{ => uapi}/asm/mman.h        |   0
+ arch/parisc/include/{ => uapi}/asm/msgbuf.h      |   0
+ arch/parisc/include/uapi/asm/pdc.h               | 427 ++++++++++++
+ arch/parisc/include/{ => uapi}/asm/posix_types.h |   0
+ arch/parisc/include/uapi/asm/ptrace.h            |  47 ++
+ arch/parisc/include/{ => uapi}/asm/resource.h    |   0
+ arch/parisc/include/{ => uapi}/asm/sembuf.h      |   0
+ arch/parisc/include/{ => uapi}/asm/setup.h       |   0
+ arch/parisc/include/{ => uapi}/asm/shmbuf.h      |   0
+ arch/parisc/include/{ => uapi}/asm/sigcontext.h  |   0
+ arch/parisc/include/{ => uapi}/asm/siginfo.h     |   0
+ arch/parisc/include/uapi/asm/signal.h            | 118 ++++
+ arch/parisc/include/{ => uapi}/asm/socket.h      |   0
+ arch/parisc/include/{ => uapi}/asm/sockios.h     |   0
+ arch/parisc/include/{ => uapi}/asm/stat.h        |   0
+ arch/parisc/include/{ => uapi}/asm/statfs.h      |   0
+ arch/parisc/include/{ => uapi}/asm/swab.h        |   0
+ arch/parisc/include/{ => uapi}/asm/termbits.h    |   0
+ arch/parisc/include/uapi/asm/termios.h           |  43 ++
+ arch/parisc/include/{ => uapi}/asm/types.h       |   0
+ arch/parisc/include/uapi/asm/unistd.h            | 837 +++++++++++++++++++++++
+ 57 files changed, 1511 insertions(+), 1542 deletions(-)
+ delete mode 100644 arch/parisc/include/asm/auxvec.h
+ delete mode 100644 arch/parisc/include/asm/compat_signal.h
+ delete mode 100644 arch/parisc/include/asm/cputime.h
+ delete mode 100644 arch/parisc/include/asm/device.h
+ delete mode 100644 arch/parisc/include/asm/div64.h
+ delete mode 100644 arch/parisc/include/asm/emergency-restart.h
+ delete mode 100644 arch/parisc/include/asm/hw_irq.h
+ delete mode 100644 arch/parisc/include/asm/irq_regs.h
+ delete mode 100644 arch/parisc/include/asm/kdebug.h
+ delete mode 100644 arch/parisc/include/asm/kvm_para.h
+ delete mode 100644 arch/parisc/include/asm/local.h
+ delete mode 100644 arch/parisc/include/asm/local64.h
+ delete mode 100644 arch/parisc/include/asm/mutex.h
+ delete mode 100644 arch/parisc/include/asm/param.h
+ delete mode 100644 arch/parisc/include/asm/percpu.h
+ delete mode 100644 arch/parisc/include/asm/poll.h
+ delete mode 100644 arch/parisc/include/asm/real.h
+ delete mode 100644 arch/parisc/include/asm/segment.h
+ delete mode 100644 arch/parisc/include/asm/topology.h
+ delete mode 100644 arch/parisc/include/asm/user.h
+ delete mode 100644 arch/parisc/include/asm/vga.h
+ delete mode 100644 arch/parisc/include/asm/xor.h
+ rename arch/parisc/include/{ => uapi}/asm/bitsperlong.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/byteorder.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/errno.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/fcntl.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/ioctl.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/ioctls.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/ipcbuf.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/mman.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/msgbuf.h (100%)
+ create mode 100644 arch/parisc/include/uapi/asm/pdc.h
+ rename arch/parisc/include/{ => uapi}/asm/posix_types.h (100%)
+ create mode 100644 arch/parisc/include/uapi/asm/ptrace.h
+ rename arch/parisc/include/{ => uapi}/asm/resource.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/sembuf.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/setup.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/shmbuf.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/sigcontext.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/siginfo.h (100%)
+ create mode 100644 arch/parisc/include/uapi/asm/signal.h
+ rename arch/parisc/include/{ => uapi}/asm/socket.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/sockios.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/stat.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/statfs.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/swab.h (100%)
+ rename arch/parisc/include/{ => uapi}/asm/termbits.h (100%)
+ create mode 100644 arch/parisc/include/uapi/asm/termios.h
+ rename arch/parisc/include/{ => uapi}/asm/types.h (100%)
+ create mode 100644 arch/parisc/include/uapi/asm/unistd.h
+
+James
+
+
