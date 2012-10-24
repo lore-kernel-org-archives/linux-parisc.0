@@ -1,74 +1,32 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: Machine stuck when userspace 100% busy
-Date: Tue, 23 Oct 2012 17:23:41 +0200
-Message-ID: <d61cea15405ee5eb1687d4321aa108aa@sf-mail.de>
-References: <35fd660c364b9a45770b17a5bd0ecbaf@sf-mail.de>
- <CAE2sS1jmDauox09o6YNin7c4KCdBEt8FuXRadroFxkfAp_ynvQ@mail.gmail.com>
- <0fe1c205e1be1760e357bcfe4f91f593@sf-mail.de>
- <CAE2sS1j6Pg6Hks97NCRNmN40vPvVbfZ+h5Y=s7tETOrT7s_FTA@mail.gmail.com>
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: [jdelvare-staging:i2c-for-linus 9/15]
+ drivers/leds/leds-tca6507.c:179:20: error: field 'gpio' has incomplete type
+Date: Wed, 24 Oct 2012 11:07:06 +0200
+Message-ID: <20121024110706.69282b16@endymion.delvare>
+References: <20121016055829.GA31864@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-To: <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: kernel-janitors@vger.kernel.org,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: Fengguang Wu <fengguang.wu@intel.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAE2sS1j6Pg6Hks97NCRNmN40vPvVbfZ+h5Y=s7tETOrT7s_FTA@mail.gmail.com>
+In-Reply-To: <20121016055829.GA31864@localhost>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Am , schrieb Carlos O'Donell:
-> On Mon, Oct 22, 2012 at 10:07 AM, Rolf Eike Beer 
-> <eike-kernel@sf-tec.de> wrote:
->>> Get on the serial console and see if you can login?
->>
->>
->> Was not possible, but because of something I broke on the other side 
->> of the
->> serial line (i.e. no fault of the C3600).
->>
->>
->>> Then issue a magic-sysrq+t? What's userspace doing?
->>
->>
->> I went down to the machine and it was happily heartbeating as 
->> expected when
->> the kernel still is able to send out ping replies. I pushed the 
->> power button
->> and it shut down cleanly in something like half a minute. Poweron 
->> did work
->> fine.
->>
->> I see in the logs one OOM event during the CMake tests. Afterwards I 
->> see for
->> another 10 minutes some nagios events, so it took a while after the 
->> OOM for
->> the machine to freak out, and things like creating new processes was 
->> no
->> problem until then.
->>
->> I have no deeper insight in what happened later beyond what I 
->> already have
->> written.
->
-> Without more information it's hard to determine what went wrong.
+Hi Fengguang,
 
-Ok, this is the way I can reproduce it:
+On Tue, 16 Oct 2012 13:58:29 +0800, Fengguang Wu wrote:
+> FYI, kernel build failed on
+> 
+> tree:   git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging.git i2c-for-linus
+> head:   c415b303a704e5c5f766fc0404093910c36cc4ab
+> commit: 3ad7ea18ae8c7ddda46b7276e0bda73e707ea9c1 [9/15] i2c-i801: Support SMBus multiplexing on Asus Z8 series
+> config: parisc-allyesconfig # make ARCH=parisc allyesconfig
 
-git clone git://cmake.org/cmake.git
-cd cmake
-git checkout cb4bff9882ecb7dbd674cc9d97ac5cd42248f0dc
-mkdir build
-cd build
-cmake ..
-make
-ctest
+Can you please confirm that this problem is fixed in linux-next now? If
+it is OK I'll send the fix to Linus quickly.
 
-The test RunCMake.ObjectLibrary (208 of 253 for me) will then hang the 
-machine. It will not hang the machine when run on it's own.
-
-Kernel: 3.6.2
-glibc: GNU C Library stable release version 2.14.1, by Roland McGrath 
-et al.
-RAM: 512 MiB
-Swap: 2GiB
-
-Eike
+Thanks,
+-- 
+Jean Delvare
