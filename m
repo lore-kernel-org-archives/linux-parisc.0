@@ -1,46 +1,53 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: [PATCH] HIL: remove one goto
-Date: Wed, 31 Oct 2012 20:24:34 +0100
-Message-ID: <2837529.xgu9k1gmUb@eto>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: possible virtual aliasing issues on parisc ?
+Date: Fri, 02 Nov 2012 09:34:24 +0000
+Message-ID: <1351848864.2439.18.camel@dabdike.int.hansenpartnership.com>
+References: <CANN689E4p3woSkdLavyyPA2gZUmVvOAW4w0R6fo9exRPQDa=JA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-To: linux-parisc@vger.kernel.org, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: Michel Lespinasse <walken@google.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <CANN689E4p3woSkdLavyyPA2gZUmVvOAW4w0R6fo9exRPQDa=JA@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This goto is only used to skip the next instruction, which can easily be done
-without a goto.
+[cc to parisc list]
 
-Signed-off-by: Rolf Eike Beer <eike-kernel@sf-tec.de>
----
- drivers/input/serio/hil_mlc.c |   11 +++++------
- 1 files changed, 5 insertions(+), 6 deletions(-)
+On Thu, 2012-11-01 at 16:45 -0700, Michel Lespinasse wrote:
+> Hi,
+> 
+> I am currently working on a patchset to avoid the brute-force search
+> in arch_get_unmapped_area functions (and also pushes some of it back
+> into generic code). So far I've only sent it as an RFC on linux-mm.
 
-diff --git a/drivers/input/serio/hil_mlc.c b/drivers/input/serio/hil_mlc.c
-index bfd3865..0280167 100644
---- a/drivers/input/serio/hil_mlc.c
-+++ b/drivers/input/serio/hil_mlc.c
-@@ -686,13 +686,12 @@ static int hilse_donode(hil_mlc *mlc)
- 		write_lock_irqsave(&mlc->lock, flags);
- 		pack = node->object.packet;
- 	out:
--		if (mlc->istarted)
--			goto out2;
--		/* Prepare to receive input */
--		if ((node + 1)->act & HILSE_IN)
--			hilse_setup_input(mlc, node + 1);
-+		if (!mlc->istarted) {
-+			/* Prepare to receive input */
-+			if ((node + 1)->act & HILSE_IN)
-+				hilse_setup_input(mlc, node + 1);
-+		}
- 
--	out2:
- 		write_unlock_irqrestore(&mlc->lock, flags);
- 
- 		if (down_trylock(&mlc->osem)) {
--- 
-1.7.7
+Actually, I read linux-mm pretty closely (at least for the cgroups
+stuff), but I must have missed it.  In general, if you need the
+attention of arch maintainers, linux-arch is the right list to cc.
+
+> Looking at the arch/parisc/kernel/sys_parisc.c implementation of
+> get_shared_area(), I do have a concern though. The function basically
+> ignores the pgoff argument, so that if one creates a shared mapping of
+> pages 0-N of a file, and then a separate shared mapping of pages 1-N
+> of that same file, both will have the same cache offset for their
+> starting address.
+> 
+> This looks like this would create obvious aliasing issues. Am I
+> misreading this ? I can't understand how this could work good enough
+> to be undetected, so there must be something I'm missing here ???
+
+No, I think it does.
+
+I also think the pgoff != 0 case is rare, so it doesn't show very often.
+To test this, I booted up with a printk for every pgoff != 0 and it
+didn't trigger, so it's probably not seen in the ordinary course of
+events.
+
+Finally, we have a test for inequvalent aliases in flush_dcache_page, so
+even if we do get the inequivalency, we'll resolve it correctly.
+
+James
 
 
