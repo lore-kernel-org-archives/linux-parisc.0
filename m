@@ -1,70 +1,57 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: possible virtual aliasing issues on parisc ?
-Date: Fri, 02 Nov 2012 12:30:53 +0000
-Message-ID: <1351859453.2439.24.camel@dabdike.int.hansenpartnership.com>
-References: <CANN689E4p3woSkdLavyyPA2gZUmVvOAW4w0R6fo9exRPQDa=JA@mail.gmail.com>
-	 <1351848864.2439.18.camel@dabdike.int.hansenpartnership.com>
-	 <1351854504.2439.20.camel@dabdike.int.hansenpartnership.com>
-	 <CANN689HPeQhYCDcFenTH35iBL8zV7vpHvsQUJQOD=Vz3Z9D3bQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Helge Deller <deller@gmx.de>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: Michel Lespinasse <walken@google.com>
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH 15/16] drivers/parisc/pdc_stable.c: use WARN
+Date: Sat,  3 Nov 2012 11:58:36 +0100
+Message-ID: <1351940317-14812-16-git-send-email-Julia.Lawall@lip6.fr>
+References: <1351940317-14812-1-git-send-email-Julia.Lawall@lip6.fr>
+Cc: kernel-janitors@vger.kernel.org, Helge Deller <deller@gmx.de>,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CANN689HPeQhYCDcFenTH35iBL8zV7vpHvsQUJQOD=Vz3Z9D3bQ@mail.gmail.com>
+In-Reply-To: <1351940317-14812-1-git-send-email-Julia.Lawall@lip6.fr>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2012-11-02 at 04:20 -0700, Michel Lespinasse wrote:
-> On Fri, Nov 2, 2012 at 4:08 AM, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > On Fri, 2012-11-02 at 09:34 +0000, James Bottomley wrote:
-> >> > Looking at the arch/parisc/kernel/sys_parisc.c implementation of
-> >> > get_shared_area(), I do have a concern though. The function basically
-> >> > ignores the pgoff argument, so that if one creates a shared mapping of
-> >> > pages 0-N of a file, and then a separate shared mapping of pages 1-N
-> >> > of that same file, both will have the same cache offset for their
-> >> > starting address.
-> >> >
-> >> > This looks like this would create obvious aliasing issues. Am I
-> >> > misreading this ? I can't understand how this could work good enough
-> >> > to be undetected, so there must be something I'm missing here ???
-> >>
-> >> No, I think it does.
-> >>
-> >> I also think the pgoff != 0 case is rare, so it doesn't show very often.
-> >> To test this, I booted up with a printk for every pgoff != 0 and it
-> >> didn't trigger, so it's probably not seen in the ordinary course of
-> >> events.
-> >
-> > I got it to show: Git uses mmap2 with large page offsets.  However, it
-> > seems to use offsets with a granularity of 16MB which is 4x our aliasing
-> > congruency, so an equivalency problem still wouldn't show up.
-> 
-> All right. Thanks for looking it up - I just wasn't sure if my reading
-> of the code was correct (and, I am surprised this isn't more common :)
+From: Julia Lawall <Julia.Lawall@lip6.fr>
 
-Well, I can fix it like this, but until something actually causes an
-inequivalency, I'll keep it as a low priority bug fix.
+Use WARN rather than printk followed by WARN_ON(1), for conciseness.
 
-James
+A simplified version of the semantic patch that makes this transformation
+is as follows: (http://coccinelle.lip6.fr/)
+
+// <smpl>
+@@
+expression list es;
+@@
+
+-printk(
++WARN(1,
+  es);
+-WARN_ON(1);
+// </smpl>
+
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
+ drivers/parisc/pdc_stable.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
-index 7426e40..f76c108 100644
---- a/arch/parisc/kernel/sys_parisc.c
-+++ b/arch/parisc/kernel/sys_parisc.c
-@@ -73,6 +73,8 @@ static unsigned long get_shared_area(struct address_space *mapping,
- 	struct vm_area_struct *vma;
- 	int offset = mapping ? get_offset(mapping) : 0;
+diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
+index 246a92f..0f54ab6 100644
+--- a/drivers/parisc/pdc_stable.c
++++ b/drivers/parisc/pdc_stable.c
+@@ -212,12 +212,10 @@ pdcspath_store(struct pdcspath_entry *entry)
+ 			entry, devpath, entry->addr);
  
-+	offset = (offset + (pgoff << PAGE_SHIFT)) & 0x3FF000;
-+
- 	addr = DCACHE_ALIGN(addr - offset) + offset;
- 
- 	for (vma = find_vma(current->mm, addr); ; vma = vma->vm_next) {
-
-
+ 	/* addr, devpath and count must be word aligned */
+-	if (pdc_stable_write(entry->addr, devpath, sizeof(*devpath)) != PDC_OK) {
+-		printk(KERN_ERR "%s: an error occurred when writing to PDC.\n"
++	if (pdc_stable_write(entry->addr, devpath, sizeof(*devpath)) != PDC_OK)
++		WARN(1, KERN_ERR "%s: an error occurred when writing to PDC.\n"
+ 				"It is likely that the Stable Storage data has been corrupted.\n"
+ 				"Please check it carefully upon next reboot.\n", __func__);
+-		WARN_ON(1);
+-	}
+ 		
+ 	/* kobject is already registered */
+ 	entry->ready = 2;
 
