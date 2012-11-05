@@ -1,42 +1,38 @@
-From: Michel Lespinasse <walken@google.com>
-Subject: Re: possible virtual aliasing issues on parisc ?
-Date: Sun, 4 Nov 2012 17:54:03 -0800
-Message-ID: <CANN689GfUiECXxCkQUo42OmLfg5yhziQ2YrD+xn7eWzZSWwk_Q@mail.gmail.com>
-References: <CANN689E4p3woSkdLavyyPA2gZUmVvOAW4w0R6fo9exRPQDa=JA@mail.gmail.com>
-	<1351848864.2439.18.camel@dabdike.int.hansenpartnership.com>
-	<1351854504.2439.20.camel@dabdike.int.hansenpartnership.com>
-	<CANN689HPeQhYCDcFenTH35iBL8zV7vpHvsQUJQOD=Vz3Z9D3bQ@mail.gmail.com>
-	<1351859453.2439.24.camel@dabdike.int.hansenpartnership.com>
-	<BLU0-SMTP69F46452FE3E7DDDF6109997640@phx.gbl>
+From: David Sterba <dave@jikos.cz>
+Subject: Re: merging printk and WARN
+Date: Mon, 5 Nov 2012 16:42:32 +0100
+Message-ID: <20121105154232.GL3102@twin.jikos.cz>
+References: <alpine.DEB.2.02.1211042120200.1960@localhost6.localdomain6>
+Reply-To: dave@jikos.cz
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP69F46452FE3E7DDDF6109997640@phx.gbl>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-kernel@vger.kernel.org, airlied@linux.ie,
+	netdev@vger.kernel.org, arnd@arndb.de, joern@logfs.org,
+	chris.mason@fusionio.com, m@bues.ch, jejb@parisc-linux.org,
+	faisal.latif@intel.com, neilb@suse.de, gregkh@linuxfoundation.org,
+	JBottomley@parallels.com, swise@chelsio.com,
+	achim_leubner@adaptec.com, tytso@mit.edu,
+	dri-devel@lists.freedesktop.org, jason.wessel@windriver.com,
+	kgdb-bugreport@lists.sourceforge.net,
+	Prasad Joshi <prasadjoshi.linux@gmail.com>, logfs@logfs.org,
+	linux-btrfs@vger.kernel.org, Helge Deller <deller@gmx.de>,
+	linux-parisc@vger.kernel.org, Roland Dreier <roland@kernel.org>,
+	Sean Hefty <sean.hefty@intel.com>, hal.rosenstock@gmail.com,
+	linux-rdma@vger.kernel.org, linux-raid@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-scsi@vger.kernel.org,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	linux-ext4@vger.kernel.org
+To: Julia Lawall <julia.lawall@lip6.fr>
+Return-path: <linux-ext4-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.02.1211042120200.1960@localhost6.localdomain6>
+List-ID: <linux-ext4.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Nov 4, 2012 at 4:29 PM, John David Anglin <dave.anglin@bell.net> wrote:
-> I have the sense that this may fix
-> http://thread.gmane.org/gmane.linux.ports.parisc/4027/focus=4278
-> as I haven't seen the problem since I added the above change to my
-> patch list.
+On Sun, Nov 04, 2012 at 09:25:53PM +0100, Julia Lawall wrote:
+> It looks like these patches were not a good idea, because in each case the
+> printk provides an error level, and WARN then provides another one.
 
-I don't have parisc machines myself to test on; however if you could
-confirm that this workload does cause arch_get_unmapped_area() to be
-called with (flags & MAP_SHARED) set and (pgoff % 1024) != 0, I think
-this would be a good enough smoking gun to blame the bug on this.
+I think this is not a problem within btrfs at the place where this has
+changed.
 
-Regarding fixes: I'm going to try and send my vma gap finder patchset
-this week for possible integration into andrew's -mm tree. There will
-be one parisc patch in that set which will include the fix for this
-coloring issue. Of course, feel free to apply James's minimal fix
-before then; I am just sending this heads up as we're likely to end up
-with a conflict between both fixes in -next if we go that way :)
-
--- 
-Michel "Walken" Lespinasse
-A program is never fully debugged until the last user dies.
+david
