@@ -1,427 +1,156 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: possible virtual aliasing issues on parisc ?
-Date: Sun, 11 Nov 2012 11:50:14 -0500
-Message-ID: <BLU0-SMTP63B91964718C0B1DCD781E976E0@phx.gbl>
-References: <CANN689E4p3woSkdLavyyPA2gZUmVvOAW4w0R6fo9exRPQDa=JA@mail.gmail.com> <1351848864.2439.18.camel@dabdike.int.hansenpartnership.com> <1351854504.2439.20.camel@dabdike.int.hansenpartnership.com> <CANN689HPeQhYCDcFenTH35iBL8zV7vpHvsQUJQOD=Vz3Z9D3bQ@mail.gmail.com> <1351859453.2439.24.camel@dabdike.int.hansenpartnership.com> <BLU0-SMTP69F46452FE3E7DDDF6109997640@phx.gbl> <CANN689GfUiECXxCkQUo42OmLfg5yhziQ2YrD+xn7eWzZSWwk_Q@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: multipart/mixed; boundary="Apple-Mail-2-683259835"
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH 1/1] arch Kconfig: remove references to IRQ_PER_CPU
+Date: Tue, 13 Nov 2012 11:59:08 +0000
+Message-ID: <1352807948-26920-1-git-send-email-james.hogan@imgtec.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Cc: <uclinux-dist-devel@blackfin.uclinux.org>,
+	<linux-hexagon@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+	<linux-mips@linux-mips.org>, <linux-parisc@vger.kernel.org>,
+	<linuxppc-dev@lists.ozlabs.org>, <linux-sh@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, James Hogan <james.hogan@imgtec.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Mike Frysinger <vapier@gentoo.org>,
+	Richard Kuo <rkuo@codeaurora.org>,
+	Tony Luck <tony.luck@intel.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: Michel Lespinasse <walken@google.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CANN689GfUiECXxCkQUo42OmLfg5yhziQ2YrD+xn7eWzZSWwk_Q@mail.gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Paul Mackerras <paulus@samba.org>,
+	Paul Mundt <lethal@linux-sh.org>
+To: <linux-kernel@vger.kernel.org>
+Return-path: <linux-ia64-owner@vger.kernel.org>
+List-ID: <linux-ia64.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Apple-Mail-2-683259835
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
+The IRQ_PER_CPU Kconfig symbol was removed in the following commit:
 
-On 4-Nov-12, at 8:54 PM, Michel Lespinasse wrote:
+Commit 6a58fb3bad099076f36f0f30f44507bc3275cdb6 ("genirq: Remove
+CONFIG_IRQ_PER_CPU") merged in v2.6.39-rc1.
 
-> On Sun, Nov 4, 2012 at 4:29 PM, John David Anglin <dave.anglin@bell.net 
-> > wrote:
->> I have the sense that this may fix
->> http://thread.gmane.org/gmane.linux.ports.parisc/4027/focus=4278
->> as I haven't seen the problem since I added the above change to my
->> patch list.
->
-> I don't have parisc machines myself to test on; however if you could
-> confirm that this workload does cause arch_get_unmapped_area() to be
-> called with (flags & MAP_SHARED) set and (pgoff % 1024) != 0, I think
-> this would be a good enough smoking gun to blame the bug on this.
+But IRQ_PER_CPU wasn't removed from any of the architecture Kconfig
+files where it was defined or selected. It's completely unused so remove
+the remaining references.
 
-I tried the above but it doesn't trigger.  However, I can still  
-generate the
-problem.  Going back GCC revison 181500, I had a couple of hangs in
-cc1plus.  Attached is the sysrq state for the process.  The system  
-crashed
-almost immediately after I issued did the sysrq.
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Mike Frysinger <vapier@gentoo.org>
+Cc: Richard Kuo <rkuo@codeaurora.org>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Paul Mundt <lethal@linux-sh.org>
+---
+Based on v3.7-rc5.
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
+Compile tested defconfigs for bfin, ia64, mips, parisc, powerpc, sh, but
+not hexagon.
 
+Grepped entire tree to check no references to CONFIG_IRQ_PER_CPU, and
+grepped arch/ for Kconfig files referencing IRQ_PER_CPU.
 
+ arch/blackfin/Kconfig |    1 -
+ arch/hexagon/Kconfig  |    1 -
+ arch/ia64/Kconfig     |    1 -
+ arch/mips/Kconfig     |    1 -
+ arch/parisc/Kconfig   |    1 -
+ arch/powerpc/Kconfig  |    1 -
+ arch/sh/Kconfig       |    3 ---
+ 7 files changed, 0 insertions(+), 9 deletions(-)
 
---Apple-Mail-2-683259835
-Content-Disposition: attachment; filename="sysrq.txt"
-Content-Type: text/plain; x-unix-mode=0644; name="sysrq.txt"
-Content-Transfer-Encoding: 7bit
-
-With GCC revision 181500:
-
-cc1plus         R  running task        0  4623   4621 0x00000010
-Backtrace:
- [<00000000401191f8>] __schedule+0x298/0x608
- [<0000000040119698>] schedule+0x38/0x90
- [<0000000040105074>] intr_return+0x0/0x4
-timer_interrupt(CPU 2): delayed! cycles 9456AFC7 rem DEA47  next/now 16C3418E5311/16C3418068CA
-
-mx3210 login: timer_interrupt(CPU 0): delayed! cycles DFC6D584E rem 13F38E  next/now 16FCCB60DE51/16FCCB4CEAC3
-BUG: soft lockup - CPU#3 stuck for 4282963078s! [cc1plus:4623]
-BUG: soft lockup - CPU#1 stuck for 4282963078s! [swapper/1:0]
-BUG: soft lockup - CPU#2 stuck for 4282963078s! [swapper/2:0]
-Modules linked in:
-Modules linked in:
-Modules linked in:
- nfsv3
- nfsv3
- nfsv3
- nfsd
- nfsd
- exportfs
- exportfs
- nfs_acl
- nfs_acl
- nfsd
- nfs
- exportfs
- lockd
- nfs_acl
- nfs
- sunrpc
- lockd
- ipv6
- sunrpc
- ext2
- nfs
- ext3
- lockd
- mbcache
- sunrpc
- jbd
- ipv6
- ipv6
- ext2
- ext2
- zalon7xx
- ext3
- ext3
- lasi700
- mbcache
- 53c700
- mbcache
- hilkbd
- jbd
- sd_mod
- jbd
- zalon7xx
- zalon7xx
- crc_t10dif
- lasi700
- lasi700
- 53c700
- 53c700
- hilkbd
- sg
- hilkbd
- sr_mod
- sd_mod
- sd_mod
- crc_t10dif
- crc_t10dif
- cdrom
- sg
- sg
- sr_mod
- sr_mod
- sym53c8xx
- cdrom
- cdrom
- sym53c8xx
- sym53c8xx
- pata_cmd64x
- pata_cmd64x
- pata_cmd64x
- scsi_transport_spi
- scsi_transport_spi
- scsi_transport_spi
- libata
- libata
- libata
- tg3
- tg3
- scsi_mod
-
- scsi_mod
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-
-PSW: 00001000000001001111111100001111 Not tainted
- tg3 scsi_mod
-r00-03  000000ff0804ff0f 000000004065cd20 00000000401277a8 000000007f4d81e0
-
-r04-07  000000004064c520 0000000000000002 00000000fffffff0 0000000000000002
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-r08-11  000000f0f0d08440 0200000000000000 000000000804000e 0000000040673554
-PSW: 00001000000001001111111100001111 Not tainted
-r12-15  ffffffffffffffff 7fffffffffffffff ffffffffffffffff ffffffffffffffff
-r16-19  fffffff0f0d00b0c ffffffffffff7fbf ffffffffffffffff 000000000800000e
-r00-03  000000ff0804ff0f 000000004065cd20 00000000401277a8 000000007f4d41e0
-r20-23  0000000002185000 0000000000000001 000000007cf81380 000000000800000e
-r04-07  000000004064c520 0000000000000001 00000000fffffff0 0000000000000001
-r24-27  000000000800000e 000000007f5f8810 0000000042824ba0 000000004064c520
-r08-11  000000f0f0d08440 0100000000000000 000000000804000e 0000000040673554
-r28-31  0000000000000008 000000007f4d81e0 000000007f4d8210 0000000000000001
-r12-15  ffffffffffffff7f bffffffff6ff5ffe ffffffffffffffff ffffffffffffffff
-sr00-03  000000000069a000 000000000069a000 0000000000000000 000000000069a000
-r16-19  fffffff0f0d00b0c fdffdffff6be5ffe fffffffffffffffe 000000000800000e
-sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-r20-23  000000000217b000 000000007f5a23c0 000000007cc7b080 000000000800000e
-
-IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000401277bc 00000000401277c0
-r24-27  000000000800000e 000000007ee0b0b8 000000004281aba0 000000004064c520
-r28-31  000000007f4d4000 000000007f4d41e0 000000007f4d4210 0000000000000001
-sr00-03  0000000000831000 0000000000000000 0000000000000000 0000000000831000
- IIR: 03c008bc    ISR: 00000000406a0bc0  IOR: 0000000000000002
-sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-sr00-03  0000000007e77000 0000000007e77000 0000000000000000 0000000007e77000
-
-sr04-07  0000000007e77000 0000000007e77000 0000000007e77000 0000000007e77000
-IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000401277c0 00000000401277c4
- CPU:        2   CR30: 000000007f4d8000 CR31: ffffffffffffffff
-
- ORIG_R28: 000000007f4d83f0
- IIR: 539c0020    ISR: 00000000406a0bc0  IOR: 0000000000000001
- IAOQ[0]: cpu_idle+0x7c/0xb0
-      VZOUICununcqcqcqcqcqcrmunTDVZOUI
- IAOQ[1]: cpu_idle+0x80/0xb0
- CPU:        1   CR30: 000000007f4d4000 CR31: ffffffffffffffff
- RP(r2): cpu_idle+0x68/0xb0
-FPSR: 00001000000000000000000000000000
- ORIG_R28: 000000007f4d43f0
-FPER1: 00000000
- IAOQ[0]: cpu_idle+0x80/0xb0
-Backtrace:
-fr00-03  0800000000000000 0000000000000000 0000000000000000 0000000000000000
- [<00000000406736f4>] smp_callin+0x1a4/0x1c0
- IAOQ[1]: cpu_idle+0x84/0xb0
-
-fr04-07  000000004064c520 0000000000000000 0000000040540000 4090000000000000
- RP(r2): cpu_idle+0x68/0xb0
-fr08-11  0000000040145b10 0000000000000001 00000000405e39b8 000000004065ad20
-Backtrace:
-fr12-15  0000000000000001 0000000000000006 00000000405e4690 0000000042811bc0
-timer_interrupt(CPU 2): delayed! cycles DFC46740F rem A03B2  next/now 16FCCB5EEBFF/16FCCB54E84D
-fr16-19  000000007f47b038 0000000000000000 0000000000000000 000000000800000f
- [<00000000406736f4>] smp_callin+0x1a4/0x1c0
-fr20-23  0000000000000000 00000000405e39ba 0000000000000054 49ef4e8000400000
-
-fr24-27  4a80000000000000 0000000000000006 000000004054e174 0000000000000001
-fr28-31  00000000405e39b8 000000004064c520 0000000000000028 0000000000000000
-
-IASQ: 0000000007e77000 0000000007e77000 IAOQ: 0000000004017df3 0000000004017df7
- IIR: 0e7c2093    ISR: 0000000007e77000  IOR: 0000000040483000
- CPU:        3   CR30: 0000000044458000 CR31: ffffffffffffffff
- ORIG_R28: 0000000000000000
- IAOQ[0]: 0000000004017df3
- IAOQ[1]: 0000000004017df7
-timer_interrupt(CPU 1): delayed! cycles DFC5623DE rem 2B27FE  next/now 16FCCB80B46A/16FCCB558C6C
- RP(r2): 0000000004017f97
-timer_interrupt(CPU 3): delayed! cycles DF942EF19 rem 46F8  next/now 16FCCB561D0C/16FCCB55D614
-Backtrace:
- [<0000000040128f14>] ipi_interrupt+0x184/0x200
- [<000000004019f734>] handle_irq_event_percpu+0xb4/0x308
- [<00000000401a3f48>] handle_percpu_irq+0xa0/0xd8
- [<000000004019ebb8>] generic_handle_irq+0x40/0x50
- [<00000000401205a4>] do_cpu_irq_mask+0x1ac/0x298
- [<0000000040105074>] intr_return+0x0/0x4
+diff --git a/arch/blackfin/Kconfig b/arch/blackfin/Kconfig
+index b6f3ad5..c709715 100644
+--- a/arch/blackfin/Kconfig
++++ b/arch/blackfin/Kconfig
+@@ -38,7 +38,6 @@ config BLACKFIN
+ 	select HAVE_GENERIC_HARDIRQS
+ 	select GENERIC_ATOMIC64
+ 	select GENERIC_IRQ_PROBE
+-	select IRQ_PER_CPU if SMP
+ 	select USE_GENERIC_SMP_HELPERS if SMP
+ 	select HAVE_NMI_WATCHDOG if NMI_WATCHDOG
+ 	select GENERIC_SMP_IDLE_THREAD
+diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
+index 0744f7d..800dd9c 100644
+--- a/arch/hexagon/Kconfig
++++ b/arch/hexagon/Kconfig
+@@ -12,7 +12,6 @@ config HEXAGON
+ 	# select ARCH_WANT_OPTIONAL_GPIOLIB
+ 	# select ARCH_REQUIRE_GPIOLIB
+ 	# select HAVE_CLK
+-	# select IRQ_PER_CPU
+ 	# select GENERIC_PENDING_IRQ if SMP
+ 	select HAVE_IRQ_WORK
+ 	select GENERIC_ATOMIC64
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index 3279646..00c2e88 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -29,7 +29,6 @@ config IA64
+ 	select ARCH_DISCARD_MEMBLOCK
+ 	select GENERIC_IRQ_PROBE
+ 	select GENERIC_PENDING_IRQ if SMP
+-	select IRQ_PER_CPU
+ 	select GENERIC_IRQ_SHOW
+ 	select ARCH_WANT_OPTIONAL_GPIOLIB
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index dba9390..d47de79 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2197,7 +2197,6 @@ source "mm/Kconfig"
+ config SMP
+ 	bool "Multi-Processing support"
+ 	depends on SYS_SUPPORTS_SMP
+-	select IRQ_PER_CPU
+ 	select USE_GENERIC_SMP_HELPERS
+ 	help
+ 	  This enables support for systems with more than one CPU. If you have
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 11def45..6d37987 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -16,7 +16,6 @@ config PARISC
+ 	select BROKEN_RODATA
+ 	select GENERIC_IRQ_PROBE
+ 	select GENERIC_PCI_IOMAP
+-	select IRQ_PER_CPU
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GENERIC_STRNCPY_FROM_USER
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index a902a5c..721dd7b 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -125,7 +125,6 @@ config PPC
+ 	select HAVE_GENERIC_HARDIRQS
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select SPARSE_IRQ
+-	select IRQ_PER_CPU
+ 	select IRQ_DOMAIN
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_IRQ_SHOW_LEVEL
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index babc2b8..6f799ec 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -91,9 +91,6 @@ config GENERIC_CSUM
+ config GENERIC_HWEIGHT
+ 	def_bool y
+ 
+-config IRQ_PER_CPU
+-	def_bool y
+-
+ config GENERIC_GPIO
+ 	def_bool n
+ 
+-- 
+1.7.7.6
 
 
-Kernel Fault: Code=26 regs=000000007d079130 (Addr=400000000000002f)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00001000000001000000000000001110 Not tainted
-r00-03  000000000804000e 000000000804000e 0000000040128f14 7fffffffffffffff
-r04-07  000000004064c520 0000000000000001 0000000000000000 000000007d079100
-r08-11  0000000000000004 000000004066ad20 0000000000200200 00000000405141d0
-r12-15  fffffffffffffffb 000000004065c520 00000000405141c0 0000000000000002
-r16-19  0000000000000006 000000004062e820 0000000040597f00 0000000000000002
-r20-23  000000000800000e 0000000000000009 000000000800000e 0000000000000000
-r24-27  0000000000000001 0000000000000000 0000000000000000 000000004064c520
-r28-31  7fffffffffffffff 0000000000000000 000000007d079130 0000000000000002
-sr00-03  0000000000705800 0000000000000000 0000000000000000 0000000000705800
-sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-
-IASQ: 0000000000000000 0000000000000000 IAOQ: 0000000040193b48 0000000040193b4c
- IIR: 0c7020dc    ISR: 0000000000000000  IOR: 400000000000002f
- CPU:        2   CR30: 000000007d078000 CR31: ffffffffffffffff
- ORIG_R28: 0000000000000000
- IAOQ[0]: generic_smp_call_function_interrupt+0xf0/0x2e0
- IAOQ[1]: generic_smp_call_function_interrupt+0xf4/0x2e0
- RP(r2): ipi_interrupt+0x184/0x200
-Backtrace:
- [<0000000040128f14>] ipi_interrupt+0x184/0x200
- [<000000004019f734>] handle_irq_event_percpu+0xb4/0x308
- [<00000000401a3f48>] handle_percpu_irq+0xa0/0xd8
- [<000000004019ebb8>] generic_handle_irq+0x40/0x50
- [<00000000401205a4>] do_cpu_irq_mask+0x1ac/0x298
- [<0000000040105074>] intr_return+0x0/0x4
-
-Kernel panic - not syncing: Kernel Fault
-break 0,0: pid=2893 command='nscd'
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00001000000001000000000000001110 Not tainted
-r00-03  000000000804000e 0000000040000000 400000000000002f 0000000040540000
-r04-07  000000004064c520 000000000800000e 0000000000000000 000000000000001a
-r08-11  400000000000002f 000000004066ad20 0000000000200200 00000000405141d0
-r12-15  fffffffffffffffb 000000004065c520 00000000405141c0 0000000000000002
-r16-19  000000007d079130 000000004062e820 0000000040597f00 00000000000001ff
-r20-23  000000000000ea60 0000000000000500 0000000000000001 00000000044598f8
-r24-27  0000000000000000 00000000000003e8 000000007d079618 000000004064c520
-r28-31  ffffffffffffffff 00000000005c1888 000000007d0797a0 0000000000401822
-sr00-03  0000000000705800 0000000000000000 0000000000000000 0000000000705800
-sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-
-IASQ: 0000000000000000 0000000000000000 IAOQ: 000000004012828c 4000000000000033
- IIR: fffffff0f0ffffa4    ISR: 0000000000000041  IOR: 0000000000000000
- CPU:        2   CR30: 000000007d078000 CR31: ffffffffffffffff
- ORIG_R28: ffffffffffffffff
- IAOQ[0]: pdc_chassis_send_status+0x8c/0xf0
- IAOQ[1]: 0x4000000000000033
- RP(r2): 0x400000000000002f
-Backtrace:
- [<00000000402b8078>] vsnprintf+0x198/0x4d0
-
-      _______________________________ 
-     < Your System ate a SPARC! Gah! >
-      ------------------------------- 
-             \   ^__^
-                 (__)\       )\/\
-                  U  ||----w |
-                     ||     ||
-nscd (pid 2893): Illegal instruction (code 8)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00001000000001000000000000001110 Not tainted
-r00-03  000000000804000e 0000000040000000 00000000402b8078 0000000040540000
-r04-07  000000004064c520 000000000800000e 0000000000000000 000000000000001a
-r08-11  400000000000002f 000000004066ad20 0000000000200200 00000000405141d0
-r12-15  fffffffffffffffb 000000004065c520 00000000405141c0 0000000000000002
-r16-19  000000007d079130 000000004062e820 0000000040597f00 00000000000001ff
-r20-23  000000000000ea60 0000000000000500 0000000000000001 00000000044598f8
-r24-27  0000000000000000 00000000000003e8 000000007d079618 000000004064c520
-r28-31  ffffffffffffffff 00000000005c1888 000000007d079720 0000000000401822
-sr00-03  0000000000705800 0000000000000000 0000000000000000 0000000000705800
-sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-
-IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000402b8078 00000000402b807c
- IIR: 00000204    ISR: 0000000000705800  IOR: 0000000000000000
- CPU:        2   CR30: 000000007d078000 CR31: ffffffffffffffff
- ORIG_R28: a0e008c01100b009
- IAOQ[0]: vsnprintf+0x198/0x4d0
- IAOQ[1]: vsnprintf+0x19c/0x4d0
- RP(r2): vsnprintf+0x198/0x4d0
-Backtrace:
-
-Backtrace:
- [<000000004011e458>] dump_stack+0x18/0x28
- [<000000004011eacc>] die_if_kernel+0xfc/0x268
- [<000000004011f4e4>] handle_interruption+0x4b4/0x860
- [<00000000402b8078>] vsnprintf+0x198/0x4d0
-
-      _______________________________ 
-     < Your System ate a SPARC! Gah! >
-      ------------------------------- 
-             \   ^__^
-                 (__)\       )\/\
-                  U  ||----w |
-                     ||     ||
-nscd (pid 2893): Illegal instruction (code 8)
-die_if_kernel() recursion detected.
-timer_interrupt(CPU 0): delayed! cycles 16FCAF57713B rem B4695  next/now 16FCF1E47C50/16FCF1D935BB
-BUG: soft lockup - CPU#0 stuck for 29423s! [swapper/0:0]
-Modules linked in: nfsv3 nfsd exportfs nfs_acl nfs lockd sunrpc ipv6 ext2 ext3 mbcache jbd zalon7xx lasi700 53c700 hilkbd sd_mod crc_t10dif sg sr_mod cdrom sym53c8xx pata_cmd64x scsi_transport_spi libata tg3 scsi_mod
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00001000000001001111111100001111 Tainted: G      D     
-r00-03  000000ff0804ff0f 0000000040669d20 0000000040105074 000000000800000e
-r04-07  000000004064c520 0000000000000002 0000000000000fff 0000000040510930
-r08-11  0000000040514080 000000000000000a 00000000405e46c0 0000000040669d20
-r12-15  000000004066a520 0000000000000000 0000000000200000 000000004065b520
-r16-19  0000000040510ca0 00000000ffffffff 00000000ffffffff 00000000405334f0
-r20-23  0000000042810020 ffffffffffffffff ffe0000000000000 8000000000000000
-r24-27  0000000000000001 0000000040518200 0000000042810ba0 000000004064c520
-r28-31  0000000042811510 0000000040511180 0000000040510fe0 0000000002171000
-sr00-03  0000000000683800 0000000000000000 0000000000000000 0000000000683800
-sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-
-IASQ: 0000000000000000 0000000000000000 IAOQ: 0000000040105078 000000004010507c
- IIR: 03c008a1    ISR: 000000004064c520  IOR: 000000004064c520
- CPU:        0   CR30: 0000000040510000 CR31: e001013408940000
- ORIG_R28: 000000004064c520
- IAOQ[0]: intr_check_resched+0x0/0xc
- IAOQ[1]: intr_check_resched+0x4/0xc
- RP(r2): intr_return+0x0/0x4
-Backtrace:
- [<000000004019f7a0>] handle_irq_event_percpu+0x120/0x308
- [<0000000040105074>] intr_return+0x0/0x4
- [<000000004018767c>] update_wall_time+0x79c/0x880
- [<000000004011ac54>] do_softirq+0x64/0x68
- [<00000000401277bc>] cpu_idle+0x7c/0xb0
-
-timer_interrupt(CPU 0): delayed! cycles 16FCBF1A8A01 rem 1CF290  next/now 16FCFF88BE51/16FCFF6BCBC1
-Backtrace:
- [<0000000040128f14>] ipi_interrupt+0x184/0x200
- [<000000004019f734>] handle_irq_event_percpu+0xb4/0x308
- [<00000000401a3f48>] handle_percpu_irq+0xa0/0xd8
- [<000000004019ebb8>] generic_handle_irq+0x40/0x50
- [<00000000401205a4>] do_cpu_irq_mask+0x1ac/0x298
- [<0000000040105074>] intr_return+0x0/0x4
- [<000000004019f7a0>] handle_irq_event_percpu+0x120/0x308
- [<0000000040105074>] intr_return+0x0/0x4
- [<000000004019f7a0>] handle_irq_event_percpu+0x120/0x308
- [<0000000040105074>] intr_return+0x0/0x4
- [<000000004019f7a0>] handle_irq_event_percpu+0x120/0x308
- [<0000000040105074>] intr_return+0x0/0x4
- [<000000004019f7a0>] handle_irq_event_percpu+0x120/0x308
- [<0000000040105074>] intr_return+0x0/0x4
- [<000000004018767c>] update_wall_time+0x79c/0x880
- [<000000004011ac54>] do_softirq+0x64/0x68
-
-
-Kernel Fault: Code=26 regs=0000000040511e40 (Addr=800000000000002f)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00001000000001000000000000001110 Tainted: G      D     
-r00-03  000000000804000e 000000000804000e 0000000040128f14 bfffffffffffffff
-r04-07  000000004064c520 0000000000000001 0000000000000000 0000000040511e10
-r08-11  0000000000000001 000000004066ad20 0000000000200200 00000000405141d0
-r12-15  fffffffffffffffe 000000004065c520 00000000405141c0 0000000000000000
-r16-19  0000000000000006 000000004062e820 0000000040597f00 0000000000000000
-r20-23  000000000800000e 0000000000000000 000000000800000e 0000000000000000
-r24-27  0000000000000001 0000000000000000 000000004281c480 000000004064c520
-r28-31  bfffffffffffffff 0000000040511e10 0000000040511e40 0000000042810020
-sr00-03  0000000000683800 0000000000000000 0000000000000000 0000000000683800
-sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-
-IASQ: 0000000000000000 0000000000000000 IAOQ: 0000000040193b48 0000000040193b4c
- IIR: 0c7020dc    ISR: 0000000000000000  IOR: 800000000000002f
- CPU:        0   CR30: 0000000040510000 CR31: e001013408940000
- ORIG_R28: 0000000000000000
- IAOQ[0]: generic_smp_call_function_interrupt+0xf0/0x2e0
- IAOQ[1]: generic_smp_call_function_interrupt+0xf4/0x2e0
- RP(r2): ipi_interrupt+0x184/0x200
-Backtrace:
- [<0000000040128f14>] ipi_interrupt+0x184/0x200
- [<000000004019f734>] handle_irq_event_percpu+0xb4/0x308
- [<00000000401a3f48>] handle_percpu_irq+0xa0/0xd8
- [<000000004019ebb8>] generic_handle_irq+0x40/0x50
- [<00000000401205a4>] do_cpu_irq_mask+0x1ac/0x298
- [<0000000040105074>] intr_return+0x0/0x4
- [<000000004019f7a0>] handle_irq_event_percpu+0x120/0x308
- [<0000000040105074>] intr_return+0x0/0x4
- [<000000004019f7a0>] handle_irq_event_percpu+0x120/0x308
- [<0000000040105074>] intr_return+0x0/0x4
- [<000000004019f7a0>] handle_irq_event_percpu+0x120/0x308
- [<0000000040105074>] intr_return+0x0/0x4
- [<000000004019f7a0>] handle_irq_event_percpu+0x120/0x308
- [<0000000040105074>] intr_return+0x0/0x4
- [<000000004018767c>] update_wall_time+0x79c/0x880
- [<000000004011ac54>] do_softirq+0x64/0x68
-
-
---Apple-Mail-2-683259835--
