@@ -1,41 +1,33 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: sigaltstack doesn't round ss.ss_sp as required
-Date: Sun, 25 Nov 2012 16:39:00 -0500
-Message-ID: <BLU0-SMTP91E4227D7FA649C74A9CB397580@phx.gbl>
-References: <BLU0-SMTP216C0F402CA26A39A5EEB197590@phx.gbl>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: multipart/mixed; boundary="Apple-Mail-5--237297514"
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Subject: Re: [PATCH] parisc: sigaltstack doesn't round ss.ss_sp as required
+Date: Sun, 25 Nov 2012 23:07:19 +0100
+Message-ID: <1585369.EaOyvHic2M@eto>
+References: <BLU0-SMTP216C0F402CA26A39A5EEB197590@phx.gbl> <BLU0-SMTP91E4227D7FA649C74A9CB397580@phx.gbl>
+Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart12424661.unelz1emSx"; micalg="pgp-sha1"; protocol="application/pgp-signature"
 Cc: Helge Deller <deller@gmx.de>,
 	Parisc List <linux-parisc@vger.kernel.org>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>
 To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP216C0F402CA26A39A5EEB197590@phx.gbl>
+In-Reply-To: <BLU0-SMTP91E4227D7FA649C74A9CB397580@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Apple-Mail-5--237297514
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
 
-On 24-Nov-12, at 10:05 AM, John David Anglin wrote:
+--nextPart12424661.unelz1emSx
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-> In trying to build the debian libsigsegv2 package, I found that  
-> sigaltstack
-> doesn't round ss.ss_sp.  The tests intentionally pass an unaligned  
-> pointer.
-> This results in the two stack overflow tests failing.
-
-
-The attached patch fixes this issue.
-
-Signed-off-by: John David Anglin <dave.anglin@bell.net>
-
-
---Apple-Mail-5--237297514
-Content-Disposition: attachment; filename="signal.c.d.txt"
-Content-Type: text/plain; x-unix-mode=0644; name="signal.c.d.txt"
-Content-Transfer-Encoding: 7bit
+John David Anglin wrote:
+> On 24-Nov-12, at 10:05 AM, John David Anglin wrote:
+> > In trying to build the debian libsigsegv2 package, I found that
+> > sigaltstack
+> > doesn't round ss.ss_sp.  The tests intentionally pass an unaligned
+> > pointer.
+> > This results in the two stack overflow tests failing.
+> 
+> The attached patch fixes this issue.
 
 diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
 index 594459b..324644d 100644
@@ -54,14 +46,24 @@ index 594459b..324644d 100644
  	DBG(1,"get_sigframe: Returning sp = %#lx\n", (unsigned long)sp);
  	return (void __user *) sp; /* Stacks grow up.  Fun. */
 
---Apple-Mail-5--237297514
-Content-Type: text/plain; charset="US-ASCII"; format=flowed
-Content-Transfer-Encoding: 7bit
+What about something like this (entirely untested, but you'll get the idea):
 
+sp = round_down(current->sas_ss_sp + 64, 64);
 
+Greetings.
 
---
-John David Anglin	dave.anglin@bell.net
+Eike
+--nextPart12424661.unelz1emSx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
 
---Apple-Mail-5--237297514--
+iEYEABECAAYFAlCylpwACgkQXKSJPmm5/E6HjACeLhXyDLuOb9W7ygUHtzGsF8ob
+8ncAn1ZOIVpounOKXa6P0MDD7WSVrMYr
+=E8P9
+-----END PGP SIGNATURE-----
+
+--nextPart12424661.unelz1emSx--
+
