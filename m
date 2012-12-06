@@ -1,61 +1,86 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] parisc: sigaltstack doesn't round ss.ss_sp as required
-Date: Sun, 25 Nov 2012 17:32:43 -0500
-Message-ID: <BLU0-SMTP947B736E2C64AAC471602F97580@phx.gbl>
-References: <BLU0-SMTP216C0F402CA26A39A5EEB197590@phx.gbl> <BLU0-SMTP91E4227D7FA649C74A9CB397580@phx.gbl> <1585369.EaOyvHic2M@eto>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Helge Deller <deller@gmx.de>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>
-To: Rolf Eike Beer <eike-kernel@sf-tec.de>
+From: Bill Pemberton <wfp5p@virginia.edu>
+Subject: [PATCH 07/20] ALSA: parisc/harmony: remove __dev* attributes
+Date: Thu,  6 Dec 2012 12:35:16 -0500
+Message-ID: <1354815329-20221-8-git-send-email-wfp5p@virginia.edu>
+References: <1354815329-20221-1-git-send-email-wfp5p@virginia.edu>
+Cc: tiwai@suse.de, perex@perex.cz, gregkh@linuxfoundation.org,
+	linux-parisc@vger.kernel.org
+To: alsa-devel@alsa-project.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1585369.EaOyvHic2M@eto>
+In-Reply-To: <1354815329-20221-1-git-send-email-wfp5p@virginia.edu>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 25-Nov-12, at 5:07 PM, Rolf Eike Beer wrote:
+CONFIG_HOTPLUG is going away as an option.  As result the __dev*
+markings will be going away.
 
-> John David Anglin wrote:
->> On 24-Nov-12, at 10:05 AM, John David Anglin wrote:
->>> In trying to build the debian libsigsegv2 package, I found that
->>> sigaltstack
->>> doesn't round ss.ss_sp.  The tests intentionally pass an unaligned
->>> pointer.
->>> This results in the two stack overflow tests failing.
->>
->> The attached patch fixes this issue.
->
-> diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
-> index 594459b..324644d 100644
-> --- a/arch/parisc/kernel/signal.c
-> +++ b/arch/parisc/kernel/signal.c
-> @@ -188,8 +188,10 @@ get_sigframe(struct k_sigaction *ka, unsigned  
-> long sp, size_t frame_size)
-> 	DBG(1,"get_sigframe: ka = %#lx, sp = %#lx, frame_size = %#lx\n",
-> 			(unsigned long)ka, sp, frame_size);
-> 	
-> +	/* Align alternate stack and reserve 64 bytes for the signal
-> +	   handler's frame marker.  */
-> 	if ((ka->sa.sa_flags & SA_ONSTACK) != 0 && ! sas_ss_flags(sp))
-> -		sp = current->sas_ss_sp; /* Stacks grow up! */
-> +		sp = (current->sas_ss_sp + 0x7f) & ~0x3f; /* Stacks grow up! */
->
-> 	DBG(1,"get_sigframe: Returning sp = %#lx\n", (unsigned long)sp);
-> 	return (void __user *) sp; /* Stacks grow up.  Fun. */
->
-> What about something like this (entirely untested, but you'll get  
-> the idea):
->
-> sp = round_down(current->sas_ss_sp + 64, 64);
+Remove use of __devinit, __devexit_p, __devinitdata, __devinitconst,
+and __devexit.
 
+Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
+Cc: linux-parisc@vger.kernel.org
+---
+ sound/parisc/harmony.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-We need to round up to ensure a full 64 bytes for frame marker.
-I'll leave it to James to decide if it makes the code clearer.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
+diff --git a/sound/parisc/harmony.c b/sound/parisc/harmony.c
+index f47f9e2..0e66ba4 100644
+--- a/sound/parisc/harmony.c
++++ b/sound/parisc/harmony.c
+@@ -856,7 +856,7 @@ static struct snd_kcontrol_new snd_harmony_controls[] = {
+ 		       HARMONY_GAIN_HE_SHIFT, 1, 0),
+ };
+ 
+-static void __devinit
++static void
+ snd_harmony_mixer_reset(struct snd_harmony *h)
+ {
+ 	harmony_mute(h);
+@@ -865,7 +865,7 @@ snd_harmony_mixer_reset(struct snd_harmony *h)
+ 	harmony_unmute(h);
+ }
+ 
+-static int __devinit
++static int
+ snd_harmony_mixer_init(struct snd_harmony *h)
+ {
+ 	struct snd_card *card;
+@@ -915,7 +915,7 @@ snd_harmony_dev_free(struct snd_device *dev)
+ 	return snd_harmony_free(h);
+ }
+ 
+-static int __devinit
++static int
+ snd_harmony_create(struct snd_card *card, 
+ 		   struct parisc_device *padev, 
+ 		   struct snd_harmony **rchip)
+@@ -972,7 +972,7 @@ free_and_ret:
+ 	return err;
+ }
+ 
+-static int __devinit
++static int
+ snd_harmony_probe(struct parisc_device *padev)
+ {
+ 	int err;
+@@ -1012,7 +1012,7 @@ free_and_ret:
+ 	return err;
+ }
+ 
+-static int __devexit
++static int
+ snd_harmony_remove(struct parisc_device *padev)
+ {
+ 	snd_card_free(parisc_get_drvdata(padev));
+@@ -1024,7 +1024,7 @@ static struct parisc_driver snd_harmony_driver = {
+ 	.name = "harmony",
+ 	.id_table = snd_harmony_devtable,
+ 	.probe = snd_harmony_probe,
+-	.remove = __devexit_p(snd_harmony_remove),
++	.remove = snd_harmony_remove,
+ };
+ 
+ static int __init 
+-- 
+1.8.0.1
 
