@@ -1,115 +1,45 @@
-From: Bill Pemberton <wfp5p@virginia.edu>
-Subject: [PATCH 09/20] ALSA: ad1889: remove __dev* attributes
-Date: Thu,  6 Dec 2012 12:35:18 -0500
-Message-ID: <1354815329-20221-10-git-send-email-wfp5p@virginia.edu>
-References: <1354815329-20221-1-git-send-email-wfp5p@virginia.edu>
-Cc: tiwai@suse.de, perex@perex.cz, gregkh@linuxfoundation.org,
-	Thibaut Varene <T-Bone@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: alsa-devel@alsa-project.org
+From: Al Viro <viro@ZenIV.linux.org.uk>
+Subject: [parisc] ptrace breakage
+Date: Sun, 9 Dec 2012 06:16:14 +0000
+Message-ID: <20121209061614.GE4939@ZenIV.linux.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1354815329-20221-1-git-send-email-wfp5p@virginia.edu>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-CONFIG_HOTPLUG is going away as an option.  As result the __dev*
-markings will be going away.
+	1) PTRACE_SYSCALL doesn't work for 64bit process on parisc64.
+Compat syscall table is used instead of 64bit one.  IMO we should either
+refuse to allow PTRACE_SYSCALL for 64bit processes or duplicate the
+logics choosing the right syscall table into .Ltracesys.
 
-Remove use of __devinit, __devexit_p, __devinitdata, __devinitconst,
-and __devexit.
+	2) if you have let the tracee run with PTRACE_SYSCALL and
+it had stopped, you can use PTRACE_POKEUSR to modify syscall number
+(r20) and arguments 1--4 (r26--r23).  Modifications will have effect.
+However, modifying arguments 5 and 6 (r22 and r21 resp.) works only
+when process (32bit one) runs on 64bit host - on 32bit one it has no
+effect.  AFAICS, the diff below should fix that one.
 
-Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
-Cc: Thibaut Varene <T-Bone@parisc-linux.org>
-Cc: linux-parisc@vger.kernel.org
----
- sound/pci/ad1889.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+	Comments?
 
-diff --git a/sound/pci/ad1889.c b/sound/pci/ad1889.c
-index e672ff4..ad8a311 100644
---- a/sound/pci/ad1889.c
-+++ b/sound/pci/ad1889.c
-@@ -624,7 +624,7 @@ snd_ad1889_interrupt(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
+diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+index 86742df..5e05524 100644
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -309,10 +309,13 @@ tracesys_next:
+ 	LDREG   TASK_PT_GR25(%r1), %r25
+ 	LDREG   TASK_PT_GR24(%r1), %r24
+ 	LDREG   TASK_PT_GR23(%r1), %r23
+-#ifdef CONFIG_64BIT
+ 	LDREG   TASK_PT_GR22(%r1), %r22
+ 	LDREG   TASK_PT_GR21(%r1), %r21
++#ifdef CONFIG_64BIT
+ 	ldo	-16(%r30),%r29			/* Reference param save area */
++#else
++	stw     %r22, -52(%r30)                 /* 5th argument */
++	stw     %r21, -56(%r30)                 /* 6th argument */
+ #endif
  
--static int __devinit
-+static int
- snd_ad1889_pcm_init(struct snd_ad1889 *chip, int device, struct snd_pcm **rpcm)
- {
- 	int err;
-@@ -747,7 +747,7 @@ snd_ad1889_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffe
- 	snd_iprintf(buffer, "Resampler samplerate: %u Hz\n", reg);
- }
- 
--static void __devinit
-+static void
- snd_ad1889_proc_init(struct snd_ad1889 *chip)
- {
- 	struct snd_info_entry *entry;
-@@ -767,7 +767,7 @@ static struct ac97_quirk ac97_quirks[] = {
- 	{ } /* terminator */
- };
- 
--static void __devinit
-+static void
- snd_ad1889_ac97_xinit(struct snd_ad1889 *chip)
- {
- 	u16 reg;
-@@ -805,7 +805,7 @@ snd_ad1889_ac97_free(struct snd_ac97 *ac97)
- 	chip->ac97 = NULL;
- }
- 
--static int __devinit
-+static int
- snd_ad1889_ac97_init(struct snd_ad1889 *chip, const char *quirk_override)
- {
- 	int err;
-@@ -878,7 +878,7 @@ snd_ad1889_dev_free(struct snd_device *device)
- 	return snd_ad1889_free(chip);
- }
- 
--static int __devinit
-+static int
- snd_ad1889_init(struct snd_ad1889 *chip) 
- {
- 	ad1889_writew(chip, AD_DS_CCS, AD_DS_CCS_CLKEN); /* turn on clock */
-@@ -892,7 +892,7 @@ snd_ad1889_init(struct snd_ad1889 *chip)
- 	return 0;
- }
- 
--static int __devinit
-+static int
- snd_ad1889_create(struct snd_card *card,
- 		  struct pci_dev *pci,
- 		  struct snd_ad1889 **rchip)
-@@ -978,7 +978,7 @@ free_and_ret:
- 	return err;
- }
- 
--static int __devinit
-+static int
- snd_ad1889_probe(struct pci_dev *pci,
- 		 const struct pci_device_id *pci_id)
- {
-@@ -1042,7 +1042,7 @@ free_and_ret:
- 	return err;
- }
- 
--static void __devexit
-+static void
- snd_ad1889_remove(struct pci_dev *pci)
- {
- 	snd_card_free(pci_get_drvdata(pci));
-@@ -1059,7 +1059,7 @@ static struct pci_driver ad1889_pci_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_ad1889_ids,
- 	.probe = snd_ad1889_probe,
--	.remove = __devexit_p(snd_ad1889_remove),
-+	.remove = snd_ad1889_remove,
- };
- 
- module_pci_driver(ad1889_pci_driver);
--- 
-1.8.0.1
-
+ 	comiclr,>>=	__NR_Linux_syscalls, %r20, %r0
