@@ -1,60 +1,159 @@
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Subject: Re: [parisc] ptrace breakage
-Date: Sun, 9 Dec 2012 16:44:08 +0000
-Message-ID: <20121209164407.GF4939@ZenIV.linux.org.uk>
-References: <20121209061614.GE4939@ZenIV.linux.org.uk>
- <1355048391.10297.3.camel@dabdike>
+From: <Vineet.Gupta1@synopsys.com>
+Subject: [PATCH] sysctl: convert arch specific unaligned access regulators to generic ones
+Date: Thu, 20 Dec 2012 16:41:38 +0530
+Message-ID: <1356001898-2960-2-git-send-email-vgupta@synopsys.com>
+References: <50D2B75A.3000208@synopsys.com>
+ <1356001898-2960-1-git-send-email-vgupta@synopsys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1355048391.10297.3.camel@dabdike>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain
+Cc: Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+	Tony Luck <tony.luck@intel.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	"Serge Hallyn" <serge.hallyn@canonical.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	"Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+To: <linux-arch@vger.kernel.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <1356001898-2960-1-git-send-email-vgupta@synopsys.com>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Dec 09, 2012 at 10:19:51AM +0000, James Bottomley wrote:
+From: Vineet Gupta <vgupta@synopsys.com>
 
-> > 	2) if you have let the tracee run with PTRACE_SYSCALL and
-> > it had stopped, you can use PTRACE_POKEUSR to modify syscall number
-> > (r20) and arguments 1--4 (r26--r23).  Modifications will have effect.
-> > However, modifying arguments 5 and 6 (r22 and r21 resp.) works only
-> > when process (32bit one) runs on 64bit host - on 32bit one it has no
-> > effect.  AFAICS, the diff below should fix that one.
-> > 
-> > 	Comments?
-> > 
-> > diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
-> > index 86742df..5e05524 100644
-> > --- a/arch/parisc/kernel/syscall.S
-> > +++ b/arch/parisc/kernel/syscall.S
-> > @@ -309,10 +309,13 @@ tracesys_next:
-> >  	LDREG   TASK_PT_GR25(%r1), %r25
-> >  	LDREG   TASK_PT_GR24(%r1), %r24
-> >  	LDREG   TASK_PT_GR23(%r1), %r23
-> > -#ifdef CONFIG_64BIT
-> >  	LDREG   TASK_PT_GR22(%r1), %r22
-> >  	LDREG   TASK_PT_GR21(%r1), %r21
-> > +#ifdef CONFIG_64BIT
-> >  	ldo	-16(%r30),%r29			/* Reference param save area */
-> > +#else
-> > +	stw     %r22, -52(%r30)                 /* 5th argument */
-> > +	stw     %r21, -56(%r30)                 /* 6th argument */
-> >  #endif
-> 
-> I'll defer to the glibc guys on this.  The code before you modified it
-> is correct according to the ABI, but it does look like gate calls are
-> done with 8 args in registers on 32 bit in which case the above would be
-> correct.
+* parisc: /proc/sys/kernel/unaligned-trap => SYSCTL_ARCH_UNALIGN_ALLOW
 
-Er...  What happens on PTRACE_SYSCALL path is that we reload the registers
-clobbered by do_syscall_trace_enter().  Sure, on 32bit we'd already pushed
-the arguments 5 and 6 on stack (originally from r22/r21), so they are not
-clobbered.  However, this reload has a side effect - if whoever's tracing us
-does PTRACE_POKEUSER to modify pt_regs, we end up with changed value reloaded.
-What this patch does is making this behaviour consistent between 32bit and
-64bit hosts.
+* ia64: /proc/sys/kernel/ignore-unaligned-usertrap =>
+					SYSCTL_ARCH_UNALIGN_NO_WARN
 
-BTW, note that if we e.g. end up restarting the syscall, the changes to r22
-and r21 *will* have effect on the second pass on 32bit.  With the current
-kernel.  The registers will be restored from pt_regs on the way out.
+This allows other architectures, specifically ARC to reuse these sysctl
+knobs.
+
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Serge Hallyn <serge.hallyn@canonical.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ arch/ia64/Kconfig   |    1 +
+ arch/parisc/Kconfig |    1 +
+ init/Kconfig        |   16 ++++++++++++++++
+ kernel/sysctl.c     |   16 +++++++++++++---
+ 4 files changed, 31 insertions(+), 3 deletions(-)
+
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index 3279646..5fb1064 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -40,6 +40,7 @@ config IA64
+ 	select ARCH_THREAD_INFO_ALLOCATOR
+ 	select ARCH_CLOCKSOURCE_DATA
+ 	select GENERIC_TIME_VSYSCALL_OLD
++	select SYSCTL_ARCH_UNALIGN_NO_WARN
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select MODULES_USE_ELF_RELA
+ 	default y
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 11def45..7d9de54 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -20,6 +20,7 @@ config PARISC
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GENERIC_STRNCPY_FROM_USER
++	select SYSCTL_ARCH_UNALIGN_ALLOW
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select MODULES_USE_ELF_RELA
+ 
+diff --git a/init/Kconfig b/init/Kconfig
+index 6fdd6e3..de4b184 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1169,6 +1169,22 @@ config SYSCTL_EXCEPTION_TRACE
+ 	help
+ 	  Enable support for /proc/sys/debug/exception-trace.
+ 
++config SYSCTL_ARCH_UNALIGN_NO_WARN
++	bool
++	help
++	  Enable support for /proc/sys/kernel/ignore-unaligned-usertrap
++	  Allows arch to define/use @no_unaligned_warning to possbly warn about
++	  unaligned access emulation going on under the hood.
++	  see arch/ia64/kernel/unaligned.c for reference
++
++config SYSCTL_ARCH_UNALIGN_ALLOW
++	bool
++	help
++	  Enable support for /proc/sys/kernel/unaligned-trap
++	  Allows arches to define/use @unaligned_enabled to runtime toggle
++	  the unaligned access emulation.
++	  see arch/parisc/kernel/unaligned.c for reference
++
+ config KALLSYMS
+ 	 bool "Load all symbols for debugging/ksymoops" if EXPERT
+ 	 default y
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 26f65ea..9c618bf 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -157,14 +157,20 @@ extern int sysctl_tsb_ratio;
+ 
+ #ifdef __hppa__
+ extern int pwrsw_enabled;
+-extern int unaligned_enabled;
+ #endif
+ 
+ #ifdef CONFIG_IA64
+-extern int no_unaligned_warning;
+ extern int unaligned_dump_stack;
+ #endif
+ 
++#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_ALLOW
++extern int unaligned_enabled;
++#endif
++
++#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_NO_WARN
++extern int no_unaligned_warning;
++#endif
++
+ #ifdef CONFIG_PROC_SYSCTL
+ static int proc_do_cad_pid(struct ctl_table *table, int write,
+ 		  void __user *buffer, size_t *lenp, loff_t *ppos);
+@@ -504,6 +510,8 @@ static struct ctl_table kern_table[] = {
+ 	 	.mode		= 0644,
+ 		.proc_handler	= proc_dointvec,
+ 	},
++#endif
++#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_ALLOW
+ 	{
+ 		.procname	= "unaligned-trap",
+ 		.data		= &unaligned_enabled,
+@@ -870,7 +878,7 @@ static struct ctl_table kern_table[] = {
+ 		.proc_handler	= proc_doulongvec_minmax,
+ 	},
+ #endif
+-#ifdef CONFIG_IA64
++#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_NO_WARN
+ 	{
+ 		.procname	= "ignore-unaligned-usertrap",
+ 		.data		= &no_unaligned_warning,
+@@ -878,6 +886,8 @@ static struct ctl_table kern_table[] = {
+ 	 	.mode		= 0644,
+ 		.proc_handler	= proc_dointvec,
+ 	},
++#endif
++#ifdef CONFIG_IA64
+ 	{
+ 		.procname	= "unaligned-dump-stack",
+ 		.data		= &unaligned_dump_stack,
+-- 
+1.7.4.1
