@@ -1,159 +1,94 @@
-From: <Vineet.Gupta1@synopsys.com>
-Subject: [PATCH] sysctl: convert arch specific unaligned access regulators to generic ones
-Date: Thu, 20 Dec 2012 16:41:38 +0530
-Message-ID: <1356001898-2960-2-git-send-email-vgupta@synopsys.com>
-References: <50D2B75A.3000208@synopsys.com>
- <1356001898-2960-1-git-send-email-vgupta@synopsys.com>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Subject: Random crashes when calling git
+Date: Thu, 27 Dec 2012 10:42:32 +0100
+Message-ID: <4882058.deuBGYmI4J@donald.sf-tec.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Vineet Gupta <Vineet.Gupta1@synopsys.com>,
-	Tony Luck <tony.luck@intel.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	"Serge Hallyn" <serge.hallyn@canonical.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	"Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-To: <linux-arch@vger.kernel.org>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <1356001898-2960-1-git-send-email-vgupta@synopsys.com>
-List-ID: <linux-arch.vger.kernel.org>
+Content-Type: multipart/signed; boundary="nextPart1780181.FjbiXn3C97"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
 
-* parisc: /proc/sys/kernel/unaligned-trap => SYSCTL_ARCH_UNALIGN_ALLOW
+--nextPart1780181.FjbiXn3C97
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-* ia64: /proc/sys/kernel/ignore-unaligned-usertrap =>
-					SYSCTL_ARCH_UNALIGN_NO_WARN
+The CMake test suite includes running some git operations. I see the git test 
+failing every some days, e.g. here:
 
-This allows other architectures, specifically ARC to reuse these sysctl
-knobs.
+http://open.cdash.org/testDetails.php?test=164070366&build=2734103
 
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Serge Hallyn <serge.hallyn@canonical.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Cc: linux-ia64@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- arch/ia64/Kconfig   |    1 +
- arch/parisc/Kconfig |    1 +
- init/Kconfig        |   16 ++++++++++++++++
- kernel/sysctl.c     |   16 +++++++++++++---
- 4 files changed, 31 insertions(+), 3 deletions(-)
+The syslog output to this event is this:
 
-diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-index 3279646..5fb1064 100644
---- a/arch/ia64/Kconfig
-+++ b/arch/ia64/Kconfig
-@@ -40,6 +40,7 @@ config IA64
- 	select ARCH_THREAD_INFO_ALLOCATOR
- 	select ARCH_CLOCKSOURCE_DATA
- 	select GENERIC_TIME_VSYSCALL_OLD
-+	select SYSCTL_ARCH_UNALIGN_NO_WARN
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select MODULES_USE_ELF_RELA
- 	default y
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 11def45..7d9de54 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -20,6 +20,7 @@ config PARISC
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	select GENERIC_SMP_IDLE_THREAD
- 	select GENERIC_STRNCPY_FROM_USER
-+	select SYSCTL_ARCH_UNALIGN_ALLOW
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select MODULES_USE_ELF_RELA
- 
-diff --git a/init/Kconfig b/init/Kconfig
-index 6fdd6e3..de4b184 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1169,6 +1169,22 @@ config SYSCTL_EXCEPTION_TRACE
- 	help
- 	  Enable support for /proc/sys/debug/exception-trace.
- 
-+config SYSCTL_ARCH_UNALIGN_NO_WARN
-+	bool
-+	help
-+	  Enable support for /proc/sys/kernel/ignore-unaligned-usertrap
-+	  Allows arch to define/use @no_unaligned_warning to possbly warn about
-+	  unaligned access emulation going on under the hood.
-+	  see arch/ia64/kernel/unaligned.c for reference
-+
-+config SYSCTL_ARCH_UNALIGN_ALLOW
-+	bool
-+	help
-+	  Enable support for /proc/sys/kernel/unaligned-trap
-+	  Allows arches to define/use @unaligned_enabled to runtime toggle
-+	  the unaligned access emulation.
-+	  see arch/parisc/kernel/unaligned.c for reference
-+
- config KALLSYMS
- 	 bool "Load all symbols for debugging/ksymoops" if EXPERT
- 	 default y
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 26f65ea..9c618bf 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -157,14 +157,20 @@ extern int sysctl_tsb_ratio;
- 
- #ifdef __hppa__
- extern int pwrsw_enabled;
--extern int unaligned_enabled;
- #endif
- 
- #ifdef CONFIG_IA64
--extern int no_unaligned_warning;
- extern int unaligned_dump_stack;
- #endif
- 
-+#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_ALLOW
-+extern int unaligned_enabled;
-+#endif
-+
-+#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_NO_WARN
-+extern int no_unaligned_warning;
-+#endif
-+
- #ifdef CONFIG_PROC_SYSCTL
- static int proc_do_cad_pid(struct ctl_table *table, int write,
- 		  void __user *buffer, size_t *lenp, loff_t *ppos);
-@@ -504,6 +510,8 @@ static struct ctl_table kern_table[] = {
- 	 	.mode		= 0644,
- 		.proc_handler	= proc_dointvec,
- 	},
-+#endif
-+#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_ALLOW
- 	{
- 		.procname	= "unaligned-trap",
- 		.data		= &unaligned_enabled,
-@@ -870,7 +878,7 @@ static struct ctl_table kern_table[] = {
- 		.proc_handler	= proc_doulongvec_minmax,
- 	},
- #endif
--#ifdef CONFIG_IA64
-+#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_NO_WARN
- 	{
- 		.procname	= "ignore-unaligned-usertrap",
- 		.data		= &no_unaligned_warning,
-@@ -878,6 +886,8 @@ static struct ctl_table kern_table[] = {
- 	 	.mode		= 0644,
- 		.proc_handler	= proc_dointvec,
- 	},
-+#endif
-+#ifdef CONFIG_IA64
- 	{
- 		.procname	= "unaligned-dump-stack",
- 		.data		= &unaligned_dump_stack,
--- 
-1.7.4.1
+Dec 27 05:14:38 voyager kernel: 
+Dec 27 05:14:38 voyager kernel: do_page_fault() pid=21120 command='git' type=6 
+address=0x00000003
+Dec 27 05:14:38 voyager kernel: 
+Dec 27 05:14:38 voyager kernel: YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+Dec 27 05:14:38 voyager kernel: PSW: 00000000000001000000000000001111 Not 
+tainted
+Dec 27 05:14:38 voyager kernel: r00-03  0004000f 4083bb40 00000000 00000007
+Dec 27 05:14:38 voyager kernel: r04-07  4036e6f8 4103b480 00000000 4083c000
+Dec 27 05:14:38 voyager kernel: r08-11  000000fb 4036b624 403709a4 00000000
+Dec 27 05:14:38 voyager kernel: r12-15  402ffc60 fffff000 00800000 001397ae
+Dec 27 05:14:38 voyager kernel: r16-19  fb217954 fb217964 4083c000 00000000
+Dec 27 05:14:38 voyager kernel: r20-23  00000003 00000054 00000049 4103b900
+Dec 27 05:14:38 voyager kernel: r24-27  0000000e 00123ec2 00000000 001350fc
+Dec 27 05:14:38 voyager kernel: r28-31  00000000 00000002 4083c280 fefefeff
+Dec 27 05:14:38 voyager kernel: sr00-03  0000002c 00000000 00000000 0000002c
+Dec 27 05:14:38 voyager kernel: sr04-07  0000002c 0000002c 0000002c 0000002c
+Dec 27 05:14:38 voyager kernel: 
+Dec 27 05:14:38 voyager kernel: VZOUICununcqcqcqcqcqcrmunTDVZOUI
+Dec 27 05:14:38 voyager kernel: FPSR: 00000000000000000000000000000000
+Dec 27 05:14:38 voyager kernel: FPER1: 00000000
+Dec 27 05:14:38 voyager kernel: fr00-03  0000000000000000 0000000000000000 
+0000000000000000 0000000000000000
+Dec 27 05:14:38 voyager kernel: fr04-07  0000000000000000 7d00000000000000 
+00000004e2000000 4097700000000000
+Dec 27 05:14:38 voyager kernel: fr08-11  0000000000000000 0000000000000000 
+00000004019ff37b 2ecf5011101b4ce8
+Dec 27 05:14:38 voyager kernel: fr12-15  4097700000000000 0000000000000000 
+41d436ef72347f39 0000000050d30cd9
+Dec 27 05:14:38 voyager kernel: fr16-19  0004fe0f105ad000 1012db6800000006 
+0000000000000000 0000000000000031
+Dec 27 05:14:38 voyager kernel: fr20-23  105ad00010605800 000000061060580a 
+0000000000000088 00229d5b00000000
+Dec 27 05:14:38 voyager kernel: fr24-27  0000000000000000 00000000a0b5ed8d 
+00000000000000ff 0000000000000000
+Dec 27 05:14:38 voyager kernel: fr28-31  00000005000203f9 105ad2b810592000 
+105ad2a4000000ff 2f8302001011b974
+Dec 27 05:14:38 voyager kernel: 
+Dec 27 05:14:38 voyager kernel: IASQ: 0000002c 0000002c IAOQ: 00000003 
+00000007
+Dec 27 05:14:38 voyager kernel: IIR: 43ffff80    ISR: 0000002c  IOR: 4103b504
+Dec 27 05:14:38 voyager kernel: CPU:        0   CR30: 2f100000 CR31: ffffffff
+Dec 27 05:14:38 voyager kernel: ORIG_R28: 00000000
+Dec 27 05:14:38 voyager kernel: IAOQ[0]: 00000003
+Dec 27 05:14:38 voyager kernel: IAOQ[1]: 00000007
+Dec 27 05:14:38 voyager kernel: RP(r2): 00000000
+
+Kernel is up to date:
+
+Linux voyager 3.7.1 #1 Thu Dec 20 12:22:22 CET 2012 parisc PA8600 (PCX-W+) 
+9000/785/C3600 GNU/Linux
+
+Glibc is 2.14.1.
+
+Any ideas?
+
+Eike
+--nextPart1780181.FjbiXn3C97
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
+
+iEYEABECAAYFAlDcGBAACgkQXKSJPmm5/E6MSgCghP3V2fo46LCjPwiKSpUxAmd+
+0aAAn0AGojDYv04ZPO22rYWFw10piq2i
+=u6wL
+-----END PGP SIGNATURE-----
+
+--nextPart1780181.FjbiXn3C97--
+
