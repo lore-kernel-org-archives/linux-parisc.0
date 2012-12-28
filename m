@@ -1,44 +1,114 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] parisc: Remove obsolete regs parameter from do_execve() in hpux_execve()
-Date: Fri, 28 Dec 2012 21:28:09 +0100
-Message-ID: <1356726489-27229-1-git-send-email-geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Al Viro <viro@zeniv.linux.org.uk>, linux-parisc@vger.kernel.org
+From: John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Improve ptrace support for gdb single-step
+Date: Fri, 28 Dec 2012 18:18:01 -0500
+Message-ID: <BLU0-SMTP34ED8A5FC4451C5BECF0F6973F0@phx.gbl>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: multipart/mixed; boundary="Apple-Mail-32-472359560"
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>
+To: Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-commit da3d4c5fa56236dd924d77ffc4f982356816b93b ("get rid of pt_regs
-argument of do_execve()") removed the parameter, but forgot to update
-hpux_execve():
+--Apple-Mail-32-472359560
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Content-Transfer-Encoding: 7bit
 
-arch/parisc/hpux/fs.c: In function 'hpux_execve':
-arch/parisc/hpux/fs.c:47:6: error: too many arguments to function 'do_execve'
+Various GCC tests use gdb to simulate a multithreaded application.  Many
+of these tests have been failing on parisc linux.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+GCC does this by using gdb to single-step the application, then gdb is  
+used to
+call other test specific code.  Where this fails is when the  
+application is stepped
+into the delay slot of a taken branch.  This sets the PSW B bit.  When  
+the test
+specific code is executed, this usually clears the PSW B bit.   
+Currently, gdb is
+not allowed to set the B bit.  So, the code falls through what should  
+be a taken
+branch.
+
+The attached patch adds the PSW B bit to the set of bits that gdb is  
+allowed to
+set.  In order to set the B bit, the trace system call must return  
+using an interrupt
+restore.  The patch also modifies this code to use the saved IAOQ  
+values when
+they are saved by a ptrace syscall or interruption.
+
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
 ---
-http://kisskb.ellerman.id.au/kisskb/buildresult/7864854/
 
- arch/parisc/hpux/fs.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
 
-diff --git a/arch/parisc/hpux/fs.c b/arch/parisc/hpux/fs.c
-index a0760b8..838b479 100644
---- a/arch/parisc/hpux/fs.c
-+++ b/arch/parisc/hpux/fs.c
-@@ -43,8 +43,7 @@ int hpux_execve(struct pt_regs *regs)
- 
- 	error = do_execve(filename->name,
- 			  (const char __user *const __user *) regs->gr[25],
--			  (const char __user *const __user *) regs->gr[24],
--			  regs);
-+			  (const char __user *const __user *) regs->gr[24]);
- 
- 	putname(filename);
- 
--- 
-1.7.0.4
 
+--Apple-Mail-32-472359560
+Content-Disposition: attachment; filename="ptrace-gdb.d.txt"
+Content-Type: text/plain; x-unix-mode=0644; name="ptrace-gdb.d.txt"
+Content-Transfer-Encoding: 7bit
+
+diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
+index 18670a0..c19b2b0 100644
+--- a/arch/parisc/kernel/entry.S
++++ b/arch/parisc/kernel/entry.S
+@@ -2064,7 +2057,7 @@ syscall_restore:
+ 
+ 	/* Are we being ptraced? */
+ 	ldw	TASK_FLAGS(%r1),%r19
+-	ldi	(_TIF_SINGLESTEP|_TIF_BLOCKSTEP),%r2
++	ldi	_TIF_SYSCALL_TRACE_MASK,%r2
+ 	and,COND(=)	%r19,%r2,%r0
+ 	b,n	syscall_restore_rfi
+ 
+@@ -2177,15 +2170,23 @@ syscall_restore_rfi:
+ 	/* sr2 should be set to zero for userspace syscalls */
+ 	STREG	%r0,TASK_PT_SR2(%r1)
+ 
+-pt_regs_ok:
+ 	LDREG	TASK_PT_GR31(%r1),%r2
+-	depi	3,31,2,%r2			   /* ensure return to user mode. */
+-	STREG	%r2,TASK_PT_IAOQ0(%r1)
++	depi	3,31,2,%r2		   /* ensure return to user mode. */
++	STREG   %r2,TASK_PT_IAOQ0(%r1)
+ 	ldo	4(%r2),%r2
+ 	STREG	%r2,TASK_PT_IAOQ1(%r1)
++	b	intr_restore
+ 	copy	%r25,%r16
++
++pt_regs_ok:
++	LDREG	TASK_PT_IAOQ0(%r1),%r2
++	depi	3,31,2,%r2		   /* ensure return to user mode. */
++	STREG	%r2,TASK_PT_IAOQ0(%r1)
++	LDREG	TASK_PT_IAOQ1(%r1),%r2
++	depi	3,31,2,%r2
++	STREG	%r2,TASK_PT_IAOQ1(%r1)
+ 	b	intr_restore
+-	nop
++	copy	%r25,%r16
+ 
+ 	.import schedule,code
+ syscall_do_resched:
+diff --git a/arch/parisc/kernel/ptrace.c b/arch/parisc/kernel/ptrace.c
+index 857c2f5..534abd4 100644
+--- a/arch/parisc/kernel/ptrace.c
++++ b/arch/parisc/kernel/ptrace.c
+@@ -26,7 +26,7 @@
+ #include <asm/asm-offsets.h>
+ 
+ /* PSW bits we allow the debugger to modify */
+-#define USER_PSW_BITS	(PSW_N | PSW_V | PSW_CB)
++#define USER_PSW_BITS	(PSW_N | PSW_B | PSW_V | PSW_CB)
+ 
+ /*
+  * Called by kernel/ptrace.c when detaching..
+
+--Apple-Mail-32-472359560
+Content-Type: text/plain; charset="US-ASCII"; format=flowed
+Content-Transfer-Encoding: 7bit
+
+
+
+--
+John David Anglin	dave.anglin@bell.net
+--Apple-Mail-32-472359560--
