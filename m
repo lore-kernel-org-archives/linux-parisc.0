@@ -1,103 +1,29 @@
 From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: [PATCH] parisc: Improve ptrace support for gdb single-step
-Date: Sat, 29 Dec 2012 11:42:06 -0500
-Message-ID: <BLU0-SMTP58FCCC37C2B6CE2B604655973E0@phx.gbl>
-References: <BLU0-SMTP34ED8A5FC4451C5BECF0F6973F0@phx.gbl> <CAE2sS1ikAfRfQQkRqzXU3TLL74BjSyh_euBFcbqcZwQxEE+bqg@mail.gmail.com>
+Date: Sat, 29 Dec 2012 11:56:56 -0500
+Message-ID: <BLU0-SMTP4438777244D9C9D565312E973E0@phx.gbl>
+References: <BLU0-SMTP34ED8A5FC4451C5BECF0F6973F0@phx.gbl> <CAE2sS1ikAfRfQQkRqzXU3TLL74BjSyh_euBFcbqcZwQxEE+bqg@mail.gmail.com> <BLU0-SMTP58FCCC37C2B6CE2B604655973E0@phx.gbl>
 Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: multipart/mixed; boundary="Apple-Mail-59-535004512"
-Cc: jejb@parisc-linux.org, Helge Deller <deller@gmx.de>,
+Content-Type: multipart/mixed; boundary="Apple-Mail-1-535895008"
+Cc: Carlos O'Donell <carlos@systemhalted.org>, jejb@parisc-linux.org,
+	Helge Deller <deller@gmx.de>,
 	linux-parisc <linux-parisc@vger.kernel.org>
-To: Carlos O'Donell <carlos@systemhalted.org>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAE2sS1ikAfRfQQkRqzXU3TLL74BjSyh_euBFcbqcZwQxEE+bqg@mail.gmail.com>
+In-Reply-To: <BLU0-SMTP58FCCC37C2B6CE2B604655973E0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Apple-Mail-59-535004512
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+--Apple-Mail-1-535895008
+Content-Type: text/plain; charset="US-ASCII"; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 29-Dec-12, at 8:31 AM, Carlos O'Donell wrote:
+On 29-Dec-12, at 11:42 AM, John David Anglin wrote:
 
->
-> On Dec 28, 2012 6:18 PM, "John David Anglin" <dave.anglin@bell.net>  
-> wrote:
-> >
-> > Various GCC tests use gdb to simulate a multithreaded  
-> application.  Many
-> > of these tests have been failing on parisc linux.
-> >
-> > GCC does this by using gdb to single-step the application, then  
-> gdb is used to
-> > call other test specific code.  Where this fails is when the  
-> application is stepped
-> > into the delay slot of a taken branch.  This sets the PSW B bit.   
-> When the test
-> > specific code is executed, this usually clears the PSW B bit.   
-> Currently, gdb is
-> > not allowed to set the B bit.  So, the code falls through what  
-> should be a taken
-> > branch.
->
-> How exactly does this trigger? Step into delay slot, then what, call  
-> an inferior function, then resume?
->
-Yes.
+> I have attached a test case and gdb script which show bug.
 
-I have attached a test case and gdb script which show bug.
 
-Compile testcase with something like the following:
-Executing on host: /home/dave/gnu/gcc/objdir/gcc/xgcc -B/home/dave/gnu/ 
-gcc/objdir/gcc/ /home/dave/gnu/gcc/gcc/gcc/testsuite/gcc.dg/simulate- 
-thread/speculative-store-4.c  -fno-diagnostics-show-caret   -O0 -g  -- 
-param allow-store-data-races=0  -lm   -o speculative-store-4.exe
-
-Execute with something like:
-gdb -nx -nw -x /home/dave/gnu/gcc/gcc/gcc/testsuite/gcc.dg/simulate- 
-thread/simulate-thread.gdb ./speculative-store-4.exe
-
-You can see that the gdb script executes inferior functions to  
-simulate thread behavior and to determine
-whether the test is done.
-
-I debugged this by adding extra print and disp statements to the  
-kernel, gdb and the gdb script.
-
-According to the PA 2.0 arch, a non sequential iaoq queue without the  
-B bit being set invokes undefined
-behavior.  Possibly, this should be checked for when the return is  
-setup after pt_regs_ok.  However, I
-think it is ok to let gdb play with the B bit.  See the definition of  
-USER_PSW_MASK in psw.h:
-
-#define USER_PSW_MASK (WIDE_PSW | PSW_T | PSW_N | PSW_X | PSW_B |  
-PSW_V | PSW_CB)
-
-This defines the PSW bits that the user can change using exception  
-support.  Probably, the two sets
-should be the same.
-
-> > The attached patch adds the PSW B bit to the set of bits that gdb  
-> is allowed to
-> > set.  In order to set the B bit, the trace system call must return  
-> using an interrupt
-> > restore.  The patch also modifies this code to use the saved IAOQ  
-> values when
-> > they are saved by a ptrace syscall or interruption.
-> >
-> > Signed-off-by: John David Anglin <dave.anglin@bell.net>
->
-> What testing did you do with patch?
->
-I have been running the change with 3.7.x kernels for a couple of  
-weeks.  I checked that strace still works
-and GCC test results for tests using gdb are now similar to the  
-results on hpux.
-
-I believe gdb still has problems regarding delay slots, PSW bits and  
-inferior function calls.  This mainly shows
-up in the GCC guality tests.  Of course, there are hundreds of FAILs  
-in the gdb testsuite...
+Forgot .h file.
 
 Dave
 --
@@ -105,87 +31,141 @@ John David Anglin	dave.anglin@bell.net
 
 
 
---Apple-Mail-59-535004512
-Content-Disposition: attachment; filename="speculative-store-4.c.txt"
-Content-Type: text/plain; x-unix-mode=0644; name="speculative-store-4.c.txt"
+--Apple-Mail-1-535895008
+Content-Disposition: attachment; filename="simulate-thread.h.txt"
+Content-Type: text/plain; x-unix-mode=0644; name="simulate-thread.h.txt"
 Content-Transfer-Encoding: 7bit
 
-/* { dg-do link } */
-/* { dg-options "--param allow-store-data-races=0" } */
-/* { dg-final { simulate-thread } } */
+int simulate_thread_fini = 0;
 
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "simulate-thread.h"
-
-/* PR 54139 */
-/* Test that speculative stores do not happen for --param
-   allow-store-data-races=0.  */
-
-int g_13=1, insns=1;
-
-__attribute__((noinline))
-void simulate_thread_main()
+void __attribute__((noinline))
+simulate_thread_done ()
 {
-  int l_245;
-
-  /* Since g_13 is unilaterally set positive above, there should be
-     no store to g_13 below.  */
-  for (l_245 = 0; l_245 <= 1; l_245 += 1)
-    for (; g_13 <= 0; g_13 = 1)
-      ;
+  simulate_thread_fini = 1;
 }
 
-int main()
-{
-  simulate_thread_main ();
-  simulate_thread_done ();
-  return 0;
-}
+/* A hostile thread is one which changes a memory location so quickly
+   that another thread may never see the same value again.  This is
+   simulated when simulate_thread_other_thread() is defined to modify
+   a memory location every cycle.
 
-void simulate_thread_other_threads ()
-{
-  ++g_13;
-  ++insns;
-}
+   A process implementing a dependency on this value can run into
+   difficulties with such a hostile thread.  For instance,
+   implementing an add with a compare_and_swap loop goes something
+   like:
 
-int simulate_thread_step_verify ()
-{
-  return 0;
-}
+     expected = *mem;
+   loop:
+     new = expected += value;
+     if (!succeed (expected = compare_and_swap (mem, expected, new)))
+       goto loop;
 
-int simulate_thread_final_verify ()
+   If the content of 'mem' are changed every cycle by
+   simulate_thread_other_thread () this will become an infinite loop
+   since the value *mem will never be 'expected' by the time the
+   compare_and_swap is executed.
+
+   HOSTILE_THREAD_THRESHOLD defines the number of intructions which a
+   program will execute before triggering the hostile thread
+   pause. The pause will last for HOSTILE_THREAD_PAUSE instructions,
+   and then the counter will reset and begin again.  During the pause
+   period, simulate_thread_other_thread will not be called.
+
+   This provides a chance for forward progress to be made and the
+   infinite loop to be avoided.
+
+   If the testcase defines HOSTILE_PAUSE_ERROR, then it will be
+   considered a RUNTIME FAILURE if the hostile pause is triggered.
+   This will allow to test for guaranteed forward progress routines.
+
+   If the default values for HOSTILE_THREAD_THRESHOLD or
+   HOSTILE_THREAD_PAUSE are insufficient, then the testcase may
+   override these by defining the values before including this file.
+
+   Most testcase are intended to run for very short periods of time,
+   so these defaults are considered to be high enough to not trigger
+   on a typical case, but not drag the test time out too much if a
+   hostile condition is interferring.  */
+
+  
+/* Define the threshold instruction count to start pausing the hostile 
+   thread.  To avoid huge potential log files when things are not going well,
+   set this number very low.  If a test specifically requires that the forward
+   progress guarantee is made, this number should be raised by the testcase. */
+#if !defined (HOSTILE_THREAD_THRESHOLD)
+#define HOSTILE_THREAD_THRESHOLD 	50
+#endif
+
+/* Define the length of pause in cycles for the hostile thread to pause to
+   allow forward progress to be made.  If this number is too low, a 
+   compare_and_swap loop may not have time to finish, especially on a
+   128 bit operation. */
+#if !defined (HOSTILE_THREAD_PAUSE)
+#define HOSTILE_THREAD_PAUSE	20
+#endif
+
+/* Define the number of instructions which are allowed to be executed before
+   the testcase is deemed to fail.  This is primarily to avoid huge log files
+   when a testcase goes into an infinte loop.  */
+#if !defined (INSN_COUNT_THRESHOLD)
+#define INSN_COUNT_THRESHOLD	10000
+#endif
+
+void simulate_thread_other_threads (void);
+int simulate_thread_final_verify (void);
+
+static int simulate_thread_hostile_pause = 0;
+
+/* This function wraps simulate_thread_other_threads an monitors for
+   an infinite loop.  If the threshold value HOSTILE_THREAD_THRESHOLD
+   is reached, the other_thread process is paused for
+   HOSTILE_THREAD_PAUSE cycles before resuming, and the counters start
+   again.  */
+int
+simulate_thread_wrapper_other_threads()
 {
-  if (g_13 != insns)
+  static int insn_count = 0;
+  static int hostile_count = 0;
+  static int hostile_pause = 0;
+
+  if (++insn_count >= INSN_COUNT_THRESHOLD)
     {
-      printf("FAIL: g_13 was incorrectly cached\n");
+      printf ("FAIL: Testcase exceeded maximum instruction count threshold\n");
       return 1;
     }
+
+  if (++hostile_count >= HOSTILE_THREAD_THRESHOLD)
+    {
+      if (!simulate_thread_hostile_pause)
+        simulate_thread_hostile_pause = 1;
+
+      /* Count cycles before calling the hostile thread again.  */
+      if (hostile_pause++ < HOSTILE_THREAD_PAUSE)
+	return 0;
+
+      /* Reset the pause counter, as well as the thread counter.  */
+      hostile_pause = 0;
+      hostile_count = 0;
+    }
+  simulate_thread_other_threads ();
   return 0;
 }
 
---Apple-Mail-59-535004512
-Content-Disposition: attachment; filename="simulate-thread.gdb.txt"
-Content-Type: text/plain; x-unix-mode=0644; name="simulate-thread.gdb.txt"
-Content-Transfer-Encoding: 7bit
 
-set height 0
-break simulate_thread_main
-# disp/i $pc
-run
+/* If the test case defines HOSTILE_PAUSE_ERROR, then the test case
+   will fail execution if it had a hostile pause.  */
+int
+simulate_thread_wrapper_final_verify ()
+{
+  int ret = simulate_thread_final_verify ();
+#if defined (HOSTILE_PAUSE_ERROR)
+  if (simulate_thread_hostile_pause)
+    {
+      printf ("FAIL: Forward progress made only by pausing hostile thread\n");
+      ret = ret | 1;    /* 0 indicates proper comnpletion.  */
+    }
+#endif
+  return ret;
+}
 
-set $ret = 0
-while (simulate_thread_fini != 1) && (! $ret)
-  set $ret |= simulate_thread_wrapper_other_threads()
-  stepi
-  set $ret |= simulate_thread_step_verify()
-end
-
-if (! $ret)
-  set $ret |= simulate_thread_wrapper_final_verify()
-end
-continue
-quit $ret
-
---Apple-Mail-59-535004512--
+--Apple-Mail-1-535895008--
