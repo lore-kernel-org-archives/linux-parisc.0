@@ -1,55 +1,51 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: Random crashes when calling git
-Date: Mon, 31 Dec 2012 20:34:39 +0100
-Message-ID: <2694777.CZhKI00lTi@donald.sf-tec.de>
-References: <4882058.deuBGYmI4J@donald.sf-tec.de> <3563905.2dklDXemHT@donald.sf-tec.de> <BLU0-SMTP22C3BF8F11ED2FBDDA8BE6973C0@phx.gbl>
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: [RESEND PATCH] Convert PARISC sysctl to be generic
+Date: Thu, 3 Jan 2013 12:29:47 +0530
+Message-ID: <1357196388-1247-1-git-send-email-vgupta@synopsys.com>
+References: <50D2B75A.3000208@synopsys.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1816499.8kZ2lWlpiZ"; micalg="pgp-sha1"; protocol="application/pgp-signature"
-To: linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP22C3BF8F11ED2FBDDA8BE6973C0@phx.gbl>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain
+Cc: <linux-kernel@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <arnd@arndb.de>,
+	Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <50D2B75A.3000208@synopsys.com>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Hi,
 
---nextPart1816499.8kZ2lWlpiZ
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="ISO-8859-1"
+This came out ARC Port's review by Arnd where he suggested using the existing
+sysctl knobs in parisc and/or ia64 for runtime controlling unaligned access
+emulation.
 
-You wrote:
-> On 31-Dec-12, at 6:03 AM, Rolf Eike Beer wrote:
-> > I've put together the used git executable as well as 4 core dumps at
-> > http://opensource.sf-tec.de/git-crash.tar.bz2
-> > 
-> > It would be nice if you could take a look and tell me if this gives
-> > you
-> > anything.
-> 
-> I looked at the first one:
+Turns out that ARC port needs bit of both.
 
-> I think this is the infamous thread stack corruption bug.  There are
-> numerous discussions about it on the list.
-> 
-> It's just a guess but I believe my kernel patch may help.  Attaching
-> latest
-> version for 3.7.1.
+The common sysctl knobs are now #ifdef based on init/Kconfig options which
+the corresponding arches now select in their Kconfigs.
+No other arch code is touched (although code has not been compile tested).
 
-Thx, I'll have a look when I'm back in the office next week.
+If this patch is ACKable, I would request you to please take this patch
+via your arch tree - to avoid any merge-hassles and other interdependencies
+later.
 
-Until next year,
+P.S. I've deliberately NOT added the new items at the end of arch/*/Kconfig,
+to avoid any merge conflicts going further - anyhow both the ia64/parisc
+Kconfigs are not sorted either.
 
-Eike
---nextPart1816499.8kZ2lWlpiZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
+Thx,
+-Vineet
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
 
-iEYEABECAAYFAlDh6NgACgkQXKSJPmm5/E4brgCbBcU5ju/QcN++SjdV1B3GT+gI
-7lMAoISbyqWsjYddfKB96vp2Hcu10N/l
-=umMU
------END PGP SIGNATURE-----
+Vineet Gupta (1):
+  sysctl: Enable PARISC "unaligned-trap" to be used cross-arch
 
---nextPart1816499.8kZ2lWlpiZ--
+ arch/parisc/Kconfig |    1 +
+ init/Kconfig        |    8 ++++++++
+ kernel/sysctl.c     |    7 ++++++-
+ 3 files changed, 15 insertions(+), 1 deletions(-)
 
+-- 
+1.7.4.1
