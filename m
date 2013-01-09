@@ -1,8 +1,8 @@
 From: Rik van Riel <riel@redhat.com>
-Subject: Re: [PATCH 1/8] mm: use vm_unmapped_area() on parisc architecture
-Date: Wed, 09 Jan 2013 11:56:35 -0500
-Message-ID: <50EDA143.8050400@redhat.com>
-References: <1357694895-520-1-git-send-email-walken@google.com> <1357694895-520-2-git-send-email-walken@google.com>
+Subject: Re: [PATCH 2/8] mm: use vm_unmapped_area() on alpha architecture
+Date: Wed, 09 Jan 2013 12:01:04 -0500
+Message-ID: <50EDA250.5040707@redhat.com>
+References: <1357694895-520-1-git-send-email-walken@google.com> <1357694895-520-3-git-send-email-walken@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -15,11 +15,11 @@ Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org
 To: Michel Lespinasse <walken@google.com>
 Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <1357694895-520-2-git-send-email-walken@google.com>
+In-Reply-To: <1357694895-520-3-git-send-email-walken@google.com>
 List-ID: <linux-mm.kvack.org>
 
 On 01/08/2013 08:28 PM, Michel Lespinasse wrote:
-> Update the parisc arch_get_unmapped_area function to make use of
+> Update the alpha arch_get_unmapped_area function to make use of
 > vm_unmapped_area() instead of implementing a brute force search.
 >
 > Signed-off-by: Michel Lespinasse <walken@google.com>
