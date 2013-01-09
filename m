@@ -1,33 +1,78 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Random crashes when calling git
-Date: Tue, 08 Jan 2013 09:54:06 -0500
-Message-ID: <50EC330E.7040603@bell.net>
-References: <4882058.deuBGYmI4J@donald.sf-tec.de> <BLU0-SMTP552A5EEA5FEF5F4C363ADC97380@phx.gbl> <3563905.2dklDXemHT@donald.sf-tec.de> <BLU0-SMTP22C3BF8F11ED2FBDDA8BE6973C0@phx.gbl> <c1bad8b168dc885f7fe9aafa5712ece5@sf-mail.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Cc: linux-parisc@vger.kernel.org
-To: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <c1bad8b168dc885f7fe9aafa5712ece5@sf-mail.de>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Michel Lespinasse <walken@google.com>
+Subject: [PATCH 0/8] vm_unmapped_area: finish the mission
+Date: Tue,  8 Jan 2013 17:28:07 -0800
+Message-ID: <1357694895-520-1-git-send-email-walken@google.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
+	linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org
+To: Rik van Riel <riel@redhat.com>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Matt Turner <mattst88@gmail.com>,
+	David Howells <dhowells@redhat.com>,
+	Tony Luck <tony.luck@intel.com>
+Return-path: <linux-ia64-owner@vger.kernel.org>
+List-ID: <linux-ia64.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 1/8/2013 9:30 AM, Rolf Eike Beer wrote:
-> I was now able to run the CMake git test for more than a dozen times 
-> in a row without a single failure and also the git testsuite is now in 
-> the range of the 6000 with it's tests, which is far beyond anything it 
-> was able to reach until now. So I think that your patch indeed makes 
-> things better.
-I have have built git several times and run the full testsuite successfully.
->
-> Time to split it up and submit it upstream ;)
->
-Helge has recently setup a new parisc-linux git tree on kernel.org and 
-is going to help with
-pushing patches upstream.  So, there is hope :-)
+These patches, which apply on top of v3.8-rc kernels, are to complete the
+VMA gap finding code I introduced (following Rik's initial proposal) in
+v3.8-rc1.
 
-Dave
+First 5 patches introduce the use of vm_unmapped_area() to replace brute
+force searches on parisc, alpha, frv and ia64 architectures (all relatively
+trivial uses of the vm_unmapped_area() infrastructure)
+
+Next 2 patches do the same as above for the powerpc architecture. This
+change is not as trivial as for the other architectures, because we
+need to account for each address space slice potentially having a
+different page size.
+
+The last patch removes the free_area_cache, which was used by all the
+brute force searches before they got converted to the
+vm_unmapped_area() infrastructure.
+
+I did some basic testing on x86 and powerpc; however the first 5 (simpler)
+patches for parisc, alpha, frv and ia64 architectures are untested.
+
+Michel Lespinasse (8):
+  mm: use vm_unmapped_area() on parisc architecture
+  mm: use vm_unmapped_area() on alpha architecture
+  mm: use vm_unmapped_area() on frv architecture
+  mm: use vm_unmapped_area() on ia64 architecture
+  mm: use vm_unmapped_area() in hugetlbfs on ia64 architecture
+  mm: remove free_area_cache use in powerpc architecture
+  mm: use vm_unmapped_area() on powerpc architecture
+  mm: remove free_area_cache
+
+ arch/alpha/kernel/osf_sys.c              |   20 ++--
+ arch/arm/mm/mmap.c                       |    2 -
+ arch/arm64/mm/mmap.c                     |    2 -
+ arch/frv/mm/elf-fdpic.c                  |   49 +++----
+ arch/ia64/kernel/sys_ia64.c              |   37 ++----
+ arch/ia64/mm/hugetlbpage.c               |   20 ++--
+ arch/mips/mm/mmap.c                      |    2 -
+ arch/parisc/kernel/sys_parisc.c          |   46 +++----
+ arch/powerpc/include/asm/page_64.h       |    3 +-
+ arch/powerpc/mm/hugetlbpage.c            |    2 +-
+ arch/powerpc/mm/mmap_64.c                |    2 -
+ arch/powerpc/mm/slice.c                  |  228 +++++++++++++-----------------
+ arch/powerpc/platforms/cell/spufs/file.c |    2 +-
+ arch/s390/mm/mmap.c                      |    4 -
+ arch/sparc/kernel/sys_sparc_64.c         |    2 -
+ arch/tile/mm/mmap.c                      |    2 -
+ arch/x86/ia32/ia32_aout.c                |    2 -
+ arch/x86/mm/mmap.c                       |    2 -
+ fs/binfmt_aout.c                         |    2 -
+ fs/binfmt_elf.c                          |    2 -
+ include/linux/mm_types.h                 |    3 -
+ include/linux/sched.h                    |    2 -
+ kernel/fork.c                            |    4 -
+ mm/mmap.c                                |   28 ----
+ mm/nommu.c                               |    4 -
+ mm/util.c                                |    1 -
+ 26 files changed, 163 insertions(+), 310 deletions(-)
 
 -- 
-John David Anglin    dave.anglin@bell.net
-
+1.7.7.3
