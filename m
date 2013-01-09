@@ -1,8 +1,8 @@
 From: Rik van Riel <riel@redhat.com>
-Subject: Re: [PATCH 3/8] mm: use vm_unmapped_area() on frv architecture
-Date: Wed, 09 Jan 2013 13:25:44 -0500
-Message-ID: <50EDB628.4030508@redhat.com>
-References: <1357694895-520-1-git-send-email-walken@google.com> <1357694895-520-4-git-send-email-walken@google.com>
+Subject: Re: [PATCH 4/8] mm: use vm_unmapped_area() on ia64 architecture
+Date: Wed, 09 Jan 2013 13:29:47 -0500
+Message-ID: <50EDB71B.4090201@redhat.com>
+References: <1357694895-520-1-git-send-email-walken@google.com> <1357694895-520-5-git-send-email-walken@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -15,11 +15,11 @@ Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org
 To: Michel Lespinasse <walken@google.com>
 Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <1357694895-520-4-git-send-email-walken@google.com>
+In-Reply-To: <1357694895-520-5-git-send-email-walken@google.com>
 List-ID: <linux-mm.kvack.org>
 
 On 01/08/2013 08:28 PM, Michel Lespinasse wrote:
-> Update the frv arch_get_unmapped_area function to make use of
+> Update the ia64 arch_get_unmapped_area function to make use of
 > vm_unmapped_area() instead of implementing a brute force search.
 >
 > Signed-off-by: Michel Lespinasse <walken@google.com>
