@@ -1,55 +1,68 @@
-From: Rik van Riel <riel@redhat.com>
-Subject: Re: [PATCH 7/8] mm: use vm_unmapped_area() on powerpc architecture
-Date: Wed, 09 Jan 2013 16:41:23 -0500
-Message-ID: <50EDE403.4070208@redhat.com>
-References: <1357694895-520-1-git-send-email-walken@google.com> <1357694895-520-8-git-send-email-walken@google.com> <1357697739.4838.30.camel@pasglop> <CANN689EJV_7Q7J4j1ttDxZuqbwD53PAuCHb5DhiE-AVbmNSR7Q@mail.gmail.com> <1357702376.4838.32.camel@pasglop> <20130109112313.GA4905@google.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 8/9] parisc: Provide dma_mmap_coherent() and dma_get_sgtable()
+Date: Sun, 13 Jan 2013 11:44:49 +0100
+Message-ID: <1358073890-3610-8-git-send-email-geert@linux-m68k.org>
+References: <1358073890-3610-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Matt Turner <mattst88@gmail.com>, David Howells <dhowells@redhat.com>,
-        Tony Luck <tony.luck@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org
-To: Michel Lespinasse <walken@google.com>
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <20130109112313.GA4905@google.com>
-List-ID: <linux-mm.kvack.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	linux-parisc@vger.kernel.org
+To: linux-arch@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1358073890-3610-1-git-send-email-geert@linux-m68k.org>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On 01/09/2013 06:23 AM, Michel Lespinasse wrote:
-> On Wed, Jan 09, 2013 at 02:32:56PM +1100, Benjamin Herrenschmidt wrote:
->> Ok. I think at least you can move that construct:
->>
->> +               if (addr < SLICE_LOW_TOP) {
->> +                       slice = GET_LOW_SLICE_INDEX(addr);
->> +                       addr = (slice + 1) << SLICE_LOW_SHIFT;
->> +                       if (!(available.low_slices & (1u << slice)))
->> +                               continue;
->> +               } else {
->> +                       slice = GET_HIGH_SLICE_INDEX(addr);
->> +                       addr = (slice + 1) << SLICE_HIGH_SHIFT;
->> +                       if (!(available.high_slices & (1u << slice)))
->> +                               continue;
->> +               }
->>
->> Into some kind of helper. It will probably compile to the same thing but
->> at least it's more readable and it will avoid a fuckup in the future if
->> somebody changes the algorithm and forgets to update one of the
->> copies :-)
->
-> All right, does the following look more palatable then ?
-> (didn't re-test it, though)
+parisc/allmodconfig:
 
-Looks equivalent. I have also not tested :)
+drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=80=98vb=
+2_dc_mmap=E2=80=99:
+drivers/media/v4l2-core/videobuf2-dma-contig.c:204: error: implicit dec=
+laration of function =E2=80=98dma_mmap_coherent=E2=80=99
+drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=80=98vb=
+2_dc_get_base_sgt=E2=80=99:
+drivers/media/v4l2-core/videobuf2-dma-contig.c:387: error: implicit dec=
+laration of function =E2=80=98dma_get_sgtable=E2=80=99
 
-> Signed-off-by: Michel Lespinasse <walken@google.com>
+=46or architectures using dma_map_ops, dma_mmap_coherent() and
+dma_get_sgtable() are provided in <asm-generic/dma-mapping-common.h>.
 
-Acked-by: Rik van Riel <riel@redhat.com>
+Parisc does not use dma_map_ops, hence it should implement them as inli=
+ne
+stubs using dma_common_mmap() and dma_common_get_sgtable().
 
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: linux-parisc@vger.kernel.org
+---
+ arch/parisc/include/asm/dma-mapping.h |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+diff --git a/arch/parisc/include/asm/dma-mapping.h b/arch/parisc/includ=
+e/asm/dma-mapping.h
+index 467bbd5..1fac0bf 100644
+--- a/arch/parisc/include/asm/dma-mapping.h
++++ b/arch/parisc/include/asm/dma-mapping.h
+@@ -238,4 +238,14 @@ void * sba_get_iommu(struct parisc_device *dev);
+ /* At the moment, we panic on error for IOMMU resource exaustion */
+ #define dma_mapping_error(dev, x)	0
+=20
++/* drivers/base/dma-mapping.c */
++extern int dma_common_mmap(struct device *dev, struct vm_area_struct *=
+vma,
++			   void *cpu_addr, dma_addr_t dma_addr, size_t size);
++extern int dma_common_get_sgtable(struct device *dev, struct sg_table =
+*sgt,
++				  void *cpu_addr, dma_addr_t dma_addr,
++				  size_t size);
++
++#define dma_mmap_coherent(d, v, c, h, s) dma_common_mmap(d, v, c, h, s=
+)
++#define dma_get_sgtable(d, t, v, h, s) dma_common_get_sgtable(d, t, v,=
+ h, s)
++
+ #endif
+--=20
+1.7.0.4
