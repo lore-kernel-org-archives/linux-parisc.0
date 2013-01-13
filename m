@@ -1,142 +1,120 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH 8/9] parisc: Provide dma_mmap_coherent() and
- dma_get_sgtable()
-Date: Sun, 13 Jan 2013 16:37:31 +0000
-Message-ID: <1358095051.2284.3.camel@dabdike.int.hansenpartnership.com>
-References: <1358073890-3610-1-git-send-email-geert@linux-m68k.org>
-	 <1358073890-3610-8-git-send-email-geert@linux-m68k.org>
-	 <1358077001.3065.14.camel@dabdike.int.hansenpartnership.com>
-	 <CAMuHMdVvRmNZS_L8-kYm4VGexD3h=nW4wC266cu7VAxJFx+-oA@mail.gmail.com>
-	 <1358084972.3065.18.camel@dabdike.int.hansenpartnership.com>
-	 <CAMuHMdVETGzkf3nu+AohYN=gUjH3nmodxiLhi0Vrdo=SYKiokA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	linux-parisc@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdVETGzkf3nu+AohYN=gUjH3nmodxiLhi0Vrdo=SYKiokA@mail.gmail.com>
-List-ID: <linux-arch.vger.kernel.org>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Purge existing TLB entries in set_pte_at and ptep_set_wrprotect
+Date: Sun, 13 Jan 2013 16:52:28 -0500
+Message-ID: <BLU0-SMTP6386DBEA3C99F954FD63F7972F0@phx.gbl>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: multipart/mixed; boundary="Apple-Mail-27--297857313"
+Cc: Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>
+To: linux-parisc List <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 2013-01-13 at 15:52 +0100, Geert Uytterhoeven wrote:
-> On Sun, Jan 13, 2013 at 2:49 PM, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > On Sun, 2013-01-13 at 14:12 +0100, Geert Uytterhoeven wrote:
-> >> On Sun, Jan 13, 2013 at 12:36 PM, James Bottomley
-> >> <James.Bottomley@hansenpartnership.com> wrote:
-> >> > On Sun, 2013-01-13 at 11:44 +0100, Geert Uytterhoeven wrote:
-> >> >> parisc/allmodconfig:
-> >> >>
-> >> >> drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=
-=80=98vb2_dc_mmap=E2=80=99:
-> >> >> drivers/media/v4l2-core/videobuf2-dma-contig.c:204: error: impl=
-icit declaration of function =E2=80=98dma_mmap_coherent=E2=80=99
-> >> >> drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=
-=80=98vb2_dc_get_base_sgt=E2=80=99:
-> >> >> drivers/media/v4l2-core/videobuf2-dma-contig.c:387: error: impl=
-icit declaration of function =E2=80=98dma_get_sgtable=E2=80=99
-> >> >>
-> >> >> For architectures using dma_map_ops, dma_mmap_coherent() and
-> >> >> dma_get_sgtable() are provided in <asm-generic/dma-mapping-comm=
-on.h>.
-> >> >>
-> >> >> Parisc does not use dma_map_ops, hence it should implement them=
- as inline
-> >> >> stubs using dma_common_mmap() and dma_common_get_sgtable().
-> >> >>
-> >> >> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> >> >> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> >> >> Cc: linux-parisc@vger.kernel.org
-> >> >> ---
-> >> >>  arch/parisc/include/asm/dma-mapping.h |   10 ++++++++++
-> >> >>  1 files changed, 10 insertions(+), 0 deletions(-)
-> >> >>
-> >> >> diff --git a/arch/parisc/include/asm/dma-mapping.h b/arch/paris=
-c/include/asm/dma-mapping.h
-> >> >> index 467bbd5..1fac0bf 100644
-> >> >> --- a/arch/parisc/include/asm/dma-mapping.h
-> >> >> +++ b/arch/parisc/include/asm/dma-mapping.h
-> >> >> @@ -238,4 +238,14 @@ void * sba_get_iommu(struct parisc_device =
-*dev);
-> >> >>  /* At the moment, we panic on error for IOMMU resource exausti=
-on */
-> >> >>  #define dma_mapping_error(dev, x)    0
-> >> >>
-> >> >> +/* drivers/base/dma-mapping.c */
-> >> >> +extern int dma_common_mmap(struct device *dev, struct vm_area_=
-struct *vma,
-> >> >> +                        void *cpu_addr, dma_addr_t dma_addr, s=
-ize_t size);
-> >> >> +extern int dma_common_get_sgtable(struct device *dev, struct s=
-g_table *sgt,
-> >> >> +                               void *cpu_addr, dma_addr_t dma_=
-addr,
-> >> >> +                               size_t size);
-> >> >> +
-> >> >> +#define dma_mmap_coherent(d, v, c, h, s) dma_common_mmap(d, v,=
- c, h, s)
-> >> >> +#define dma_get_sgtable(d, t, v, h, s) dma_common_get_sgtable(=
-d, t, v, h, s)
-> >> >
-> >> > What is the documentation around these functions?  The name soun=
-ds
-> >> > suspiciously like you want a mapping of a buffer coherent betwee=
-n kernel
-> >> > and user space, which doesn't seem possible for us given the API=
-=2E  We're
-> >> > a VIPT architecture, so the only way we can do this is to have t=
-he
-> >> > actual vma user space address be congruent with cpu_addr.  How d=
-o we do
-> >> > that if the vma and kernel addresses are already fixed?
-> >>
-> >> I was already afraid of this when seeing the "coherent" in the nam=
-ing...
-> >
-> > Afraid of what, that the interface won't actually work for VIPT or =
-that
-> > we need special functions?
->=20
-> That it wouldn't work on parisc.
+--Apple-Mail-27--297857313
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Content-Transfer-Encoding: 7bit
 
-Hmm, so that would seem to be a serious deficiency with the API then.
+This patch goes a long way toward fixing the minifail bug, and it  
+significantly
+improves the stability of SMP machines such as the rp3440.  When write  
+protecting
+a page for COW, we need to purge the existing translation.  Otherwise,  
+the COW
+break doesn't occur as expected.
 
-> > We won't be the only ones: MIPS at least will have this issue.
->=20
-> MIPS uses <asm-generic/dma-mapping-common.h>, BUT has some ugly
-> #ifdefery in sound/core/pcm_native.c:snd_pcm_lib_default_mmap().
->=20
-> BTW, does current ALSA mmap() work on parisc?
+The patch assumes the kernel will flush page when it does copy.
 
-Yes, we used to have the same #ifdeffery, but in the alsa core ... I
-can't remember how we fixed it for our two sound drivers (harmony and
-AD1889).
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
 
-> > But I would like to clear up whether we can actually use this on PA=
- or
-> > not.
-> >
-> >> > In other words, either the interface is unusable by parisc, or t=
-he
-> >> > common code definitely won't work for us.
-> >>
-> >> So you probably want a static inline function that returns -EINVAL=
- for now?
-> >
-> > Yes, that should work (provided the consumers handle the return cod=
-e
-> > correctly).
->=20
-> OK. Let's wait (for Marek's documentation) and see whether we can fix=
- it
-> for real in 3.8, or have to resort to -EINVAL.
 
-The way we could fix this is by altering the kernel CPU address, using =
-a
-kmap area, so we have to change the virtual address by which the kernel
-refers to this page to be coherent with user space, but the API is two
-narrow to allow that, so perhaps we need to redesign how the API works.
+--Apple-Mail-27--297857313
+Content-Disposition: attachment; filename="purge_tlb.d.txt"
+Content-Type: text/plain; x-unix-mode=0644; name="purge_tlb.d.txt"
+Content-Transfer-Encoding: 7bit
 
-James
+diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
+index ee99f23..2c6dedb 100644
+--- a/arch/parisc/include/asm/pgtable.h
++++ b/arch/parisc/include/asm/pgtable.h
+@@ -12,11 +12,10 @@
+ 
+ #include <linux/bitops.h>
+ #include <linux/spinlock.h>
++#include <linux/mm_types.h>
+ #include <asm/processor.h>
+ #include <asm/cache.h>
+ 
+-struct vm_area_struct;
+-
+ /*
+  * kern_addr_valid(ADDR) tests if ADDR is pointing to valid kernel
+  * memory.  For the return value to be meaningful, ADDR must be >=
+@@ -40,7 +39,14 @@ struct vm_area_struct;
+         do{                                                     \
+                 *(pteptr) = (pteval);                           \
+         } while(0)
+-#define set_pte_at(mm,addr,ptep,pteval) set_pte(ptep,pteval)
++
++extern void purge_tlb_entries(struct mm_struct *, unsigned long);
++
++#define set_pte_at(mm,addr,ptep, pteval)                        \
++        do{                                                     \
++                set_pte(ptep,pteval);                           \
++                purge_tlb_entries(mm,addr);                     \
++        } while(0)
+ 
+ #endif /* !__ASSEMBLY__ */
+ 
+@@ -466,6 +472,7 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr,
+ 		old = pte_val(*ptep);
+ 		new = pte_val(pte_wrprotect(__pte (old)));
+ 	} while (cmpxchg((unsigned long *) ptep, old, new) != old);
++	purge_tlb_entries(mm, addr);
+ #else
+ 	pte_t old_pte = *ptep;
+ 	set_pte_at(mm, addr, ptep, pte_wrprotect(old_pte));
+diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+index 48e16dc..467d902 100644
+--- a/arch/parisc/kernel/cache.c
++++ b/arch/parisc/kernel/cache.c
+@@ -419,6 +419,26 @@ void kunmap_parisc(void *addr)
+ EXPORT_SYMBOL(kunmap_parisc);
+ #endif
+ 
++void purge_tlb_entries(struct mm_struct *mm, unsigned long addr)
++{
++	unsigned long flags, sid;
++
++	/* Note: purge_tlb_entries can be called at startup with
++	   no context.  */
++
++	/* Disable preemption while we play with %sr1.  */
++	preempt_disable();
++	sid = mfsp(1);
++	mtsp(mm->context,1);
++	purge_tlb_start(flags);
++	pdtlb(addr);
++	pitlb(addr);
++	purge_tlb_end(flags);
++	mtsp(sid,1);
++	preempt_enable();
++}
++EXPORT_SYMBOL(purge_tlb_entries);
++
+ void __flush_tlb_range(unsigned long sid, unsigned long start,
+ 		       unsigned long end)
+ {
+
+--Apple-Mail-27--297857313
+Content-Type: text/plain; charset="US-ASCII"; format=flowed
+Content-Transfer-Encoding: 7bit
+
+
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+--Apple-Mail-27--297857313--
