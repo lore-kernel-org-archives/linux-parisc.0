@@ -1,12 +1,11 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: [PATCH] parisc: Purge existing TLB entries in
- =?UTF-8?Q?set=5Fpte=5Fat=20and=20ptep=5Fset=5Fwrprotect?=
-Date: Sun, 13 Jan 2013 23:35:49 +0100
-Message-ID: <6d698ab99e1a7e2f2dded89b5dbd836d@sf-mail.de>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH] parisc: Purge existing TLB entries in set_pte_at and
+ ptep_set_wrprotect
+Date: Sun, 13 Jan 2013 22:59:39 +0000
+Message-ID: <1358117979.2284.6.camel@dabdike.int.hansenpartnership.com>
 References: <BLU0-SMTP6386DBEA3C99F954FD63F7972F0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Cc: linux-parisc List <linux-parisc@vger.kernel.org>,
 	Helge Deller <deller@gmx.de>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>
@@ -16,17 +15,31 @@ In-Reply-To: <BLU0-SMTP6386DBEA3C99F954FD63F7972F0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Am 13.01.2013 22:52, schrieb John David Anglin:
-> This patch goes a long way toward fixing the minifail bug, and it  
-> significantly
-> improves the stability of SMP machines such as the rp3440.  When
-> write  protecting
-> a page for COW, we need to purge the existing translation.  
-> Otherwise,  the COW
-> break doesn't occur as expected.
->
-> The patch assumes the kernel will flush page when it does copy.
->
-> Signed-off-by: John David Anglin <dave.anglin@bell.net>
+On Sun, 2013-01-13 at 16:52 -0500, John David Anglin wrote:
 
-CC stable?
+> +void purge_tlb_entries(struct mm_struct *mm, unsigned long addr)
+> +{
+> +       unsigned long flags, sid;
+> +
+> +       /* Note: purge_tlb_entries can be called at startup with
+> +          no context.  */
+> +
+> +       /* Disable preemption while we play with %sr1.  */
+> +       preempt_disable();
+> +       sid = mfsp(1);
+> 
+There's no need at all to save and restore %sr1 is there?  It's defined
+to be a volatile register.  As long as you make sure nothing gets in to
+change its value, you never need to restore the previous one.
+
+James
+> 
+> +       mtsp(mm->context,1);
+> +       purge_tlb_start(flags);
+> +       pdtlb(addr);
+> +       pitlb(addr);
+> +       purge_tlb_end(flags);
+> +       mtsp(sid,1);
+> +       preempt_enable();
+> +}
+
