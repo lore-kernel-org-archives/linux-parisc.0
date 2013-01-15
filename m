@@ -1,55 +1,107 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH] parisc: Purge existing TLB entries in set_pte_at and
- ptep_set_wrprotect - take 2
-Date: Tue, 15 Jan 2013 09:05:19 +0000
-Message-ID: <1358240719.2752.6.camel@dabdike.int.hansenpartnership.com>
-References: <BLU0-SMTP8691FD3EB8749D3303BA57972D0@phx.gbl>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [RESEND PATCH] sysctl: Enable PARISC "unaligned-trap" to be used
+ cross-arch
+Date: Tue, 15 Jan 2013 23:03:14 +0100
+Message-ID: <50F5D222.8070208@gmx.de>
+References: <50D2B75A.3000208@synopsys.com> <1357196388-1247-1-git-send-email-vgupta@synopsys.com> <1357196388-1247-2-git-send-email-vgupta@synopsys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-parisc List <linux-parisc@vger.kernel.org>,
-	Helge Deller <deller@gmx.de>
-To: John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-arch@vger.kernel.org, arnd@arndb.de,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Serge Hallyn <serge.hallyn@canonical.com>
+To: Vineet Gupta <Vineet.Gupta1@synopsys.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP8691FD3EB8749D3303BA57972D0@phx.gbl>
+In-Reply-To: <1357196388-1247-2-git-send-email-vgupta@synopsys.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2013-01-14 at 19:45 -0500, John David Anglin wrote:
-> Attached is new version of patch which no longer saves and restores  
-> %sr1.  Lightly tested with a GCC build
-> and a build of Debian gtk+3.0 package.
+On 01/03/2013 07:59 AM, Vineet Gupta wrote:
+> PARISC defines /proc/sys/kernel/unaligned-trap to runtime toggle
+> unaligned access emulation.
+>
+> The exact mechanics of enablig/disabling are still arch specific, we can
+> make the sysctl usable by other arches.
+>
+> Signed-off-by: Vineet Gupta<vgupta@synopsys.com>
+> Cc: "James E.J. Bottomley"<jejb@parisc-linux.org>
+> Cc: Helge Deller<deller@gmx.de>
+> Cc: "Eric W. Biederman"<ebiederm@xmission.com>
+> Cc: Serge Hallyn<serge.hallyn@canonical.com>
 
-I can merge it with your previous changelog, but for ease of git users,
-the accepted format is
+Acked-by: Helge Deller <deller@gmx.de>
 
-<patch description for git>
+Vineet, as discussed, please push it through the ARC architecture tree...
 
----
+Helge
 
-<Any other details you don't want in git>
-
-git ignores everything after the three dashes on a single line.
-
-So your preamble should be (I also added an explanation of why we think
-the problem is occurring):
-
-This patch goes a long way toward fixing the minifail bug, and
-it  significantly improves the stability of SMP machines such as
-the rp3440.  When write  protecting a page for COW, we need to
-purge the existing translation.  Otherwise, the COW break
-doesn't occur as expected because the TLB may still have a stale entry
-which allows writes.
-
-Signed-off-by: John David Anglin <dave.anglin@bell.net>
-
----
-
-v2: Attached is new version of patch which no longer saves and
-restores  %sr1.  Lightly tested with a GCC build and a build of
-Debian gtk+3.0 package.
-
-James
-
-
-
+> ---
+>   arch/parisc/Kconfig |    1 +
+>   init/Kconfig        |    8 ++++++++
+>   kernel/sysctl.c     |    7 ++++++-
+>   3 files changed, 15 insertions(+), 1 deletions(-)
+>
+> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+> index b77feff..8c76095 100644
+> --- a/arch/parisc/Kconfig
+> +++ b/arch/parisc/Kconfig
+> @@ -20,6 +20,7 @@ config PARISC
+>   	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+>   	select GENERIC_SMP_IDLE_THREAD
+>   	select GENERIC_STRNCPY_FROM_USER
+> +	select SYSCTL_ARCH_UNALIGN_ALLOW
+>   	select HAVE_MOD_ARCH_SPECIFIC
+>   	select MODULES_USE_ELF_RELA
+>   	select CLONE_BACKWARDS
+> diff --git a/init/Kconfig b/init/Kconfig
+> index e188f9f..e64bb18 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1240,6 +1240,14 @@ config SYSCTL_ARCH_UNALIGN_NO_WARN
+>   	  unaligned access emulation going on under the hood.
+>   	  see arch/ia64/kernel/unaligned.c for reference
+>
+> +config SYSCTL_ARCH_UNALIGN_ALLOW
+> +	bool
+> +	help
+> +	  Enable support for /proc/sys/kernel/unaligned-trap
+> +	  Allows arches to define/use @unaligned_enabled to runtime toggle
+> +	  the unaligned access emulation.
+> +	  see arch/parisc/kernel/unaligned.c for reference
+> +
+>   config KALLSYMS
+>   	 bool "Load all symbols for debugging/ksymoops" if EXPERT
+>   	 default y
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 840fd5e..c4cd655 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -157,13 +157,16 @@ extern int sysctl_tsb_ratio;
+>
+>   #ifdef __hppa__
+>   extern int pwrsw_enabled;
+> -extern int unaligned_enabled;
+>   #endif
+>
+>   #ifdef CONFIG_IA64
+>   extern int unaligned_dump_stack;
+>   #endif
+>
+> +#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_ALLOW
+> +extern int unaligned_enabled;
+> +#endif
+> +
+>   #ifdef CONFIG_SYSCTL_ARCH_UNALIGN_NO_WARN
+>   extern int no_unaligned_warning;
+>   #endif
+> @@ -548,6 +551,8 @@ static struct ctl_table kern_table[] = {
+>   	 	.mode		= 0644,
+>   		.proc_handler	= proc_dointvec,
+>   	},
+> +#endif
+> +#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_ALLOW
+>   	{
+>   		.procname	= "unaligned-trap",
+>   		.data		=&unaligned_enabled,
 
