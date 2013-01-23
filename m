@@ -1,49 +1,40 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc fixes for v3.8-rc5
-Date: Tue, 22 Jan 2013 22:11:08 +0100
-Message-ID: <50FF006C.7070803@gmx.de>
+From: dann frazier <dannf@dannf.org>
+Subject: Re: decommissioning parisc-linux.org
+Date: Wed, 23 Jan 2013 14:17:39 -0700
+Message-ID: <20130123211739.GA26674@dannf.org>
+References: <20120208143347.GB22903@dannf.org>
+ <CA+DQjFhKZiuxcoHJYcpDBUJW3xNNTDQhfm=d3trWG3u8DARtXw@mail.gmail.com>
+ <BLU0-SMTP5575D9E1E9A88CEE0BD790977A0@phx.gbl>
+ <20120209175547.GA22332@dannf.org>
+ <BLU0-SMTP8734A5ED7DDBD9EC0C7A7597790@phx.gbl>
+ <20120214180519.GA32602@dannf.org>
+ <CA+DQjFh8qF961ZGqt8yHJu4gPP=ji9Y08hqseRoPQg7637uMQA@mail.gmail.com>
+ <CADZpyiwqn60ChBSO5PJj9AojH2CWQvRgjYM61iRQxryH2wzUnA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: Linus <torvalds@linux-foundation.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+Content-Type: text/plain; charset=us-ascii
+Cc: Thibaut VARENE <T-Bone@parisc-linux.org>,
 	John David Anglin <dave.anglin@bell.net>,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>
+	linux-parisc List <linux-parisc@vger.kernel.org>,
+	taggart@lackof.org, bame@riverrock.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <CADZpyiwqn60ChBSO5PJj9AojH2CWQvRgjYM61iRQxryH2wzUnA@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+On Tue, Feb 14, 2012 at 01:33:48PM -0500, Carlos O'Donell wrote:
+> On Tue, Feb 14, 2012 at 1:31 PM, Thibaut VARENE <T-Bone@parisc-linux.org> wrote:
+> > It looks to me like this burden clearly outweighs the benefits of
+> > being selfhosted, so maybe the right move is to use a supported
+> > architecture for hosting the website? Given the "audience" for
+> > linux-parisc, I don't think it would make a significant difference...
+> 
+> I tend to agree. Use the right tool for the right job.
+> 
+> Fun hacking = HPPA.
+> 
+> Serve the website = x86.
 
-please consider pulling the following 4 patches for 3.8-rc5 which improve
-the stability of the linux kernel on the parisc architecture.
-
-Only parisc arch-specfic files are changed.
-
-Thanks,
-Helge  
-
-
-The following changes since commit d287b8750e47c1702dab0e37ac11012bb751ece0:
-
-  Merge branch 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs (2013-01-07 09:41:20 -0800)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git for-linus
-
-
-----------------------------------------------------------------
-John David Anglin (4):
-      parisc: avoid undefined shift in cnv_float.h
-      parisc: don't claim cpu irqs more than once
-      parisc: improve ptrace support for gdb single-step
-      parisc: sigaltstack doesn't round ss.ss_sp as required
-
- arch/parisc/kernel/entry.S       | 18 +++++++++++++-----
- arch/parisc/kernel/irq.c         |  6 ++++--
- arch/parisc/kernel/ptrace.c      |  2 +-
- arch/parisc/kernel/signal.c      |  4 +++-
- arch/parisc/math-emu/cnv_float.h | 11 +++++------
- 5 files changed, 26 insertions(+), 15 deletions(-)
-
+fyi, the subnet on which palinux (aka parisc-linux.org) is hosted will
+be going away at the end of February. This sounds like a good target
+date for the move :)
