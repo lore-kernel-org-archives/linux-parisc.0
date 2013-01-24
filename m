@@ -1,51 +1,36 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [GIT PULL] parisc fixes for v3.8-rc5
-Date: Thu, 24 Jan 2013 12:52:59 +0100
-Message-ID: <CAMuHMdUHs7dz9M6wjJgyTUOGxueUrN6S9b_a7c_Gnd1KmqQPhw@mail.gmail.com>
-References: <50FF006C.7070803@gmx.de>
-	<CAMuHMdViEAXdm=iYXeejdnxw_Xj_7HF63DcUojwBm-G+UeSeuw@mail.gmail.com>
-	<20130124102756.213380@gmx.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-kernel@vger.kernel.org, dave.anglin@bell.net,
-	jejb@parisc-linux.org, linux-parisc@vger.kernel.org,
-	torvalds@linux-foundation.org
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130124102756.213380@gmx.net>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH 3/8] mm: use vm_unmapped_area() on frv architecture
+Date: Thu, 24 Jan 2013 14:13:10 +0000
+Message-ID: <27625.1359036790@warthog.procyon.org.uk>
+References: <1358990991-21316-4-git-send-email-walken@google.com> <1358990991-21316-1-git-send-email-walken@google.com>
+Cc: dhowells@redhat.com, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org
+To: Michel Lespinasse <walken@google.com>
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <1358990991-21316-4-git-send-email-walken@google.com>
+List-ID: <linux-mm.kvack.org>
 
-Hi Helge,
+Michel Lespinasse <walken@google.com> wrote:
 
-On Thu, Jan 24, 2013 at 11:27 AM, Helge Deller <deller@gmx.de> wrote:
-> From: Geert Uytterhoeven <geert@linux-m68k.org>
->> On Tue, Jan 22, 2013 at 10:11 PM, Helge Deller <deller@gmx.de> wrote:
->> > please consider pulling the following 4 patches for 3.8-rc5 which
->> improve
->> > the stability of the linux kernel on the parisc architecture.
->>
->> I think you forgot https://patchwork.kernel.org/patch/1917351/
->
-> I did not scheduled it as bug fix for 3.8, since the HPUX support is broken in the parisc tree anyway.
+> Update the frv arch_get_unmapped_area function to make use of
+> vm_unmapped_area() instead of implementing a brute force search.
+> 
+> Signed-off-by: Michel Lespinasse <walken@google.com>
+> Acked-by: Rik van Riel <riel@redhat.com>
 
-IC, I didn't know that.
-
-> But I did not forgot your patch either. It's in my local git repository and will go in for kernel 3.9. That's why it's in state "accepted" in patchwork already.
-> I hope that's OK for you?
-
-Sure, it's up to you.
-
-It's just one of the three issues preventing you from having a green
-parisc-allmodconfig build on http://kisskb.ellerman.id.au/kisskb/matrix/.
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Acked-by: David Howells <dhowells@redhat.com>
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
