@@ -1,60 +1,93 @@
-From: dann frazier <dannf@dannf.org>
-Subject: Re: decommissioning parisc-linux.org
-Date: Wed, 23 Jan 2013 16:32:42 -0700
-Message-ID: <20130123233242.GF26674@dannf.org>
-References: <20120208143347.GB22903@dannf.org>
- <CA+DQjFhKZiuxcoHJYcpDBUJW3xNNTDQhfm=d3trWG3u8DARtXw@mail.gmail.com>
- <BLU0-SMTP5575D9E1E9A88CEE0BD790977A0@phx.gbl>
- <20120209175547.GA22332@dannf.org>
- <BLU0-SMTP8734A5ED7DDBD9EC0C7A7597790@phx.gbl>
- <20120214180519.GA32602@dannf.org>
- <CA+DQjFh8qF961ZGqt8yHJu4gPP=ji9Y08hqseRoPQg7637uMQA@mail.gmail.com>
- <CADZpyiwqn60ChBSO5PJj9AojH2CWQvRgjYM61iRQxryH2wzUnA@mail.gmail.com>
- <20130123211739.GA26674@dannf.org>
- <BLU0-SMTP94043E9796BDEDBF8A44B997150@phx.gbl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Carlos O'Donell <carlos@systemhalted.org>,
-	Thibaut VARENE <T-Bone@parisc-linux.org>,
-	linux-parisc List <linux-parisc@vger.kernel.org>,
-	taggart@lackof.org, bame@riverrock.org
-To: John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP94043E9796BDEDBF8A44B997150@phx.gbl>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Michel Lespinasse <walken@google.com>
+Subject: [PATCH 0/8] convert remaining archs to use vm_unmapped_area()
+Date: Wed, 23 Jan 2013 17:29:43 -0800
+Message-ID: <1358990991-21316-1-git-send-email-walken@google.com>
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-parisc@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-ia64@vger.kernel.org
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Paul Mackerras <paulus@samba.org>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Richard Henderson <rth@twiddle.net>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	David Howells <dhowells@redhat.com>,
+	Tony Luck <tony.luck@intel.com>,
+	Fenghua Yu <fenghua.yu@intel.com>
+Return-path: <owner-linux-mm@kvack.org>
+List-ID: <linux-mm.kvack.org>
 
-On Wed, Jan 23, 2013 at 06:14:01PM -0500, John David Anglin wrote:
-> On 23-Jan-13, at 4:17 PM, dann frazier wrote:
-> 
-> >On Tue, Feb 14, 2012 at 01:33:48PM -0500, Carlos O'Donell wrote:
-> >>On Tue, Feb 14, 2012 at 1:31 PM, Thibaut VARENE
-> >><T-Bone@parisc-linux.org> wrote:
-> >>>It looks to me like this burden clearly outweighs the benefits of
-> >>>being selfhosted, so maybe the right move is to use a supported
-> >>>architecture for hosting the website? Given the "audience" for
-> >>>linux-parisc, I don't think it would make a significant
-> >>>difference...
-> >>
-> >>I tend to agree. Use the right tool for the right job.
-> >>
-> >>Fun hacking = HPPA.
-> >>
-> >>Serve the website = x86.
-> >
-> >fyi, the subnet on which palinux (aka parisc-linux.org) is hosted will
-> >be going away at the end of February. This sounds like a good target
-> >date for the move :)
-> 
-> There are a few people who still use the domain for parisc related mail.
-> James Bottomley is the most active.  Hopefully, this will also get moved
-> with the website.
+This is a resend of my "finish the mission" patch series. I need arch
+maintainers to approve so I can push this to andrew's -mm tree.
 
-Yeah, I agree - it just needs somewhere to move to first :)
+These patches, which apply on top of v3.8-rc kernels, are to complete the
+VMA gap finding code I introduced (following Rik's initial proposal) in
+v3.8-rc1.
 
-We can also just point the MX somewhere else, if there's a good
-mail hosting option that doesn't want to host the website.
+First 5 patches introduce the use of vm_unmapped_area() to replace brute
+force searches on parisc, alpha, frv and ia64 architectures (all relatively
+trivial uses of the vm_unmapped_area() infrastructure)
 
-Note that it sounds like HP might be willing to move the system to a
-new DC, re-IP and basically run it till something fails. But that's an
-inevitable eventuality, and at that point it becomes an emergency.
+Next 2 patches do the same as above for the powerpc architecture. This
+change is not as trivial as for the other architectures, because we
+need to account for each address space slice potentially having a
+different page size.
+
+The last patch removes the free_area_cache, which was used by all the
+brute force searches before they got converted to the
+vm_unmapped_area() infrastructure.
+
+I did some basic testing on x86 and powerpc; however the first 5 (simpler)
+patches for parisc, alpha, frv and ia64 architectures are untested.
+
+Michel Lespinasse (8):
+  mm: use vm_unmapped_area() on parisc architecture
+  mm: use vm_unmapped_area() on alpha architecture
+  mm: use vm_unmapped_area() on frv architecture
+  mm: use vm_unmapped_area() on ia64 architecture
+  mm: use vm_unmapped_area() in hugetlbfs on ia64 architecture
+  mm: remove free_area_cache use in powerpc architecture
+  mm: use vm_unmapped_area() on powerpc architecture
+  mm: remove free_area_cache
+
+ arch/alpha/kernel/osf_sys.c              |   20 ++--
+ arch/arm/mm/mmap.c                       |    2 -
+ arch/arm64/mm/mmap.c                     |    2 -
+ arch/frv/mm/elf-fdpic.c                  |   49 +++----
+ arch/ia64/kernel/sys_ia64.c              |   37 ++----
+ arch/ia64/mm/hugetlbpage.c               |   20 ++--
+ arch/mips/mm/mmap.c                      |    2 -
+ arch/parisc/kernel/sys_parisc.c          |   46 +++----
+ arch/powerpc/include/asm/page_64.h       |    3 +-
+ arch/powerpc/mm/hugetlbpage.c            |    2 +-
+ arch/powerpc/mm/mmap_64.c                |    2 -
+ arch/powerpc/mm/slice.c                  |  228 +++++++++++++-----------------
+ arch/powerpc/platforms/cell/spufs/file.c |    2 +-
+ arch/s390/mm/mmap.c                      |    4 -
+ arch/sparc/kernel/sys_sparc_64.c         |    2 -
+ arch/tile/mm/mmap.c                      |    2 -
+ arch/x86/ia32/ia32_aout.c                |    2 -
+ arch/x86/mm/mmap.c                       |    2 -
+ fs/binfmt_aout.c                         |    2 -
+ fs/binfmt_elf.c                          |    2 -
+ include/linux/mm_types.h                 |    3 -
+ include/linux/sched.h                    |    2 -
+ kernel/fork.c                            |    4 -
+ mm/mmap.c                                |   28 ----
+ mm/nommu.c                               |    4 -
+ mm/util.c                                |    1 -
+ 26 files changed, 163 insertions(+), 310 deletions(-)
+
+-- 
+1.7.7.3
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
