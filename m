@@ -1,39 +1,81 @@
-From: Michael Cree <mcree@orcon.net.nz>
-Subject: Re: [PATCH 2/8] mm: use vm_unmapped_area() on alpha architecture
-Date: Fri, 25 Jan 2013 16:49:58 +1300
-Message-ID: <43E02291-8F84-40CD-B429-847E7533EA18@orcon.net.nz>
-References: <1357694895-520-1-git-send-email-walken@google.com> <1357694895-520-3-git-send-email-walken@google.com>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Cc: Rik van Riel <riel@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Matt Turner <mattst88@gmail.com>, David Howells <dhowells@redhat.com>,
-        Tony Luck <tony.luck@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org
-To: Michel Lespinasse <walken@google.com>
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <1357694895-520-3-git-send-email-walken@google.com>
-List-ID: <linux-mm.kvack.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v2 8/9] parisc: Provide dummy dma_mmap_coherent() and dma_get_sgtable()
+Date: Sun, 27 Jan 2013 11:33:27 +0100
+Message-ID: <1359282808-31398-9-git-send-email-geert@linux-m68k.org>
+References: <1359282808-31398-1-git-send-email-geert@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	linux-parisc@vger.kernel.org
+To: linux-arch@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1359282808-31398-1-git-send-email-geert@linux-m68k.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On 9/01/2013, at 2:28 PM, Michel Lespinasse wrote:
-> Update the alpha arch_get_unmapped_area function to make use of
-> vm_unmapped_area() instead of implementing a brute force search.
->
-> Signed-off-by: Michel Lespinasse <walken@google.com>
+parisc/allmodconfig:
 
-'Tis running fine on my alpha.
+drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=80=98vb=
+2_dc_mmap=E2=80=99:
+drivers/media/v4l2-core/videobuf2-dma-contig.c:204: error: implicit dec=
+laration of function =E2=80=98dma_mmap_coherent=E2=80=99
+drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=80=98vb=
+2_dc_get_base_sgt=E2=80=99:
+drivers/media/v4l2-core/videobuf2-dma-contig.c:387: error: implicit dec=
+laration of function =E2=80=98dma_get_sgtable=E2=80=99
 
-Tested-by: Michael Cree <mcree@orcon.net.nz>
+=46or architectures using dma_map_ops, dma_mmap_coherent() and
+dma_get_sgtable() are provided in <asm-generic/dma-mapping-common.h>.
 
-Cheers
-Michael.
+Parisc does not use dma_map_ops, hence it should implement them itself.
+=46or now, use dummy implementations that just return -EINVAL, until th=
+e
+API has been finalized, as it cannot be supported on PA-RISC as-is.
+
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: linux-parisc@vger.kernel.org
+---
+v2: Dummy implementations that just return -EINVAL
+---
+ arch/parisc/include/asm/dma-mapping.h |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
+
+diff --git a/arch/parisc/include/asm/dma-mapping.h b/arch/parisc/includ=
+e/asm/dma-mapping.h
+index 467bbd5..106b395 100644
+--- a/arch/parisc/include/asm/dma-mapping.h
++++ b/arch/parisc/include/asm/dma-mapping.h
+@@ -238,4 +238,19 @@ void * sba_get_iommu(struct parisc_device *dev);
+ /* At the moment, we panic on error for IOMMU resource exaustion */
+ #define dma_mapping_error(dev, x)	0
+=20
++/* This API cannot be supported on PA-RISC */
++static inline int dma_mmap_coherent(struct device *dev,
++				    struct vm_area_struct *vma, void *cpu_addr,
++				    dma_addr_t dma_addr, size_t size)
++{
++	return -EINVAL;
++}
++
++static inline int dma_get_sgtable(struct device *dev, struct sg_table =
+*sgt,
++				  void *cpu_addr, dma_addr_t dma_addr,
++				  size_t size)
++{
++	return -EINVAL;
++}
++
+ #endif
+--=20
+1.7.0.4
 
 --
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
