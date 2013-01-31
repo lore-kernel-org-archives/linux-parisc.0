@@ -1,36 +1,27 @@
-From: "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] parisc: unbreak automounter support on 64-bit kernel
- with 32-bit userspace
-Date: Thu, 31 Jan 2013 13:46:11 -0800
-Message-ID: <510AE623.7000609@zytor.com>
-References: <20130131200110.GA6032@p100.box>  <1359664008.2468.5.camel@dabdike> <510AE21D.2090002@zytor.com> <1359668524.2468.12.camel@dabdike>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: enhance automatic CONFIG_CROSS_COMPILE detection
+Date: Thu, 31 Jan 2013 23:04:12 +0100
+Message-ID: <20130131220412.GA15355@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Ian Kent <raven@themaw.net>,
-	autofs@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1359668524.2468.12.camel@dabdike>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 01/31/2013 01:42 PM, James Bottomley wrote:
-> On Thu, 2013-01-31 at 13:29 -0800, H. Peter Anvin wrote:
->> On 01/31/2013 12:26 PM, James Bottomley wrote:
->>> [adding autofs list and maintainer for their perusal and ack, although
->>> this is an obvious fix to me
->>>
->>> James]
->>
->> The #if list probably should be inverted, and only specific platforms
->> should have unsigned long...
-> 
-> The whitelist is 64 bit only platforms, like ia64, isn't it?  So yes,
-> they're far less numerous.
-> 
+The current Makefile will only choose the hppa64 cross compiler when
+running natively on hppa in a 32bit userspace.
+This patch additionally chooses the correct 32/64 bit hppa compiler even
+when doing real cross compiling to hppa/hppa64 from another architecture.
 
-Correct.  It is basically the 64-bit platforms without any 32-bit
-userspace, like Alpha and IA64.
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-	-hpa
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index 5707f1a..ed9a14c 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -32,11 +32,6 @@ ifdef CONFIG_64BIT
+ UTS_MACHINE	:= parisc64
+ CHECKFLAGS	+= -D__LP64__=1 -m64
+ WIDTH		:= 64
