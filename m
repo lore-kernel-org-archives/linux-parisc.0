@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: fixes and cleanups in page cache flushing (3/4)
-Date: Mon, 4 Feb 2013 00:01:47 +0100
-Message-ID: <20130203230147.GC14573@p100.box>
+Subject: [PATCH] parisc: fixes and cleanups in page cache flushing (4/4)
+Date: Mon, 4 Feb 2013 00:02:49 +0100
+Message-ID: <20130203230249.GD14573@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -13,134 +13,85 @@ List-Id: linux-parisc.vger.kernel.org
 
 Author: John David Anglin <dave.anglin@bell.net>
 
-flush_cache_mm, for the non current case also uses flush_dcache_page_asm
-and flush_icache_page_asm which are TMPALIAS flushes.
-
-For the non current case, the algorithm used by get_ptep is derived from the
-vmalloc_to_page implementation in vmalloc.c.  It is essentially a generic page
-table lookup.  The other alternative was to duplicate the lookup in entry.S.
-The break point for switching to a full cache flush is somewhat arbitrary.  The
-same approach is used in flush_cache_range for non current case.  In a GCC
-build and check, many small programs are executed and this change provided a
-significant performance enhancement, e.g. GCC build time was cut almost in half
-on a rp3440 at j4.  Previously, we always flushed the entire cache.
+CONFIG_PARISC_TMPALIAS enables clear_user_highpage and copy_user_highpage.
+These are essentially alternative implementations of clear_user_page and
+copy_user_page.  They don't have anything to do with x86 high pages, but they
+build on the infrastructure to save a few instructions.  Read the comment in
+clear_user_highpage as it is very important to the implementation.  For this
+reason, there isn't any gain in using the TMPALIAS/highpage approach.
 
 Signed-off-by: John David Anglin <dave.anglin@bell.net>
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-
 diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index b89a85a..bce3b85 100644
+index b89a85a..703ed48 100644
 --- a/arch/parisc/kernel/cache.c
 +++ b/arch/parisc/kernel/cache.c
-@@ -476,8 +476,66 @@ void flush_cache_all(void)
- 	on_each_cpu(cacheflush_h_tmp_function, NULL, 1);
- }
+@@ -529,3 +595,67 @@ flush_cache_page(struct vm_area_struct *vma, unsigned long vmaddr, unsigned long
+ 	__flush_cache_page(vma, vmaddr, page_to_phys(pfn_to_page(pfn)));
  
-+static inline unsigned long mm_total_size(struct mm_struct *mm)
-+{
-+	struct vm_area_struct *vma;
-+	unsigned long usize = 0;
+ }
 +
-+	for (vma = mm->mmap; vma; vma = vma->vm_next)
-+		usize += vma->vm_end - vma->vm_start;
-+	return usize;
++#ifdef CONFIG_PARISC_TMPALIAS
++
++void clear_user_highpage(struct page *page, unsigned long vaddr)
++{
++	void *vto;
++	unsigned long flags;
++
++	/* Clear using TMPALIAS region.  The page doesn't need to
++	   be flushed but the kernel mapping needs to be purged.  */
++
++	vto = kmap_atomic(page, KM_USER0);
++
++	/* The PA-RISC 2.0 Architecture book states on page F-6:
++	   "Before a write-capable translation is enabled, *all*
++	   non-equivalently-aliased translations must be removed
++	   from the page table and purged from the TLB.  (Note
++	   that the caches are not required to be flushed at this
++	   time.)  Before any non-equivalent aliased translation
++	   is re-enabled, the virtual address range for the writeable
++	   page (the entire page) must be flushed from the cache,
++	   and the write-capable translation removed from the page
++	   table and purged from the TLB."  */
++
++	purge_kernel_dcache_page_asm((unsigned long)vto);
++	purge_tlb_start(flags);
++	pdtlb_kernel(vto);
++	purge_tlb_end(flags);
++	preempt_disable();
++	clear_user_page_asm(vto, vaddr);
++	preempt_enable();
++
++	pagefault_enable();		/* kunmap_atomic(addr, KM_USER0); */
 +}
 +
-+static inline pte_t *get_ptep(pgd_t *pgd, unsigned long addr)
++void copy_user_highpage(struct page *to, struct page *from,
++	unsigned long vaddr, struct vm_area_struct *vma)
 +{
-+	pte_t *ptep = NULL;
++	void *vfrom, *vto;
++	unsigned long flags;
 +
-+	if (!pgd_none(*pgd)) {
-+		pud_t *pud = pud_offset(pgd, addr);
-+		if (!pud_none(*pud)) {
-+			pmd_t *pmd = pmd_offset(pud, addr);
-+			if (!pmd_none(*pmd))
-+				ptep = pte_offset_map(pmd, addr);
-+		}
-+	}
-+	return ptep;
++	/* Copy using TMPALIAS region.  This has the advantage
++	   that the `from' page doesn't need to be flushed.  However,
++	   the `to' page must be flushed in copy_user_page_asm since
++	   it can be used to bring in executable code.  */
++
++	vfrom = kmap_atomic(from, KM_USER0);
++	vto = kmap_atomic(to, KM_USER1);
++
++	purge_kernel_dcache_page_asm((unsigned long)vto);
++	purge_tlb_start(flags);
++	pdtlb_kernel(vto);
++	pdtlb_kernel(vfrom);
++	purge_tlb_end(flags);
++	preempt_disable();
++	copy_user_page_asm(vto, vfrom, vaddr);
++	flush_dcache_page_asm(__pa(vto), vaddr);
++	preempt_enable();
++
++	pagefault_enable();		/* kunmap_atomic(addr, KM_USER1); */
++	pagefault_enable();		/* kunmap_atomic(addr, KM_USER0); */
 +}
 +
- void flush_cache_mm(struct mm_struct *mm)
- {
-+	/* Flushing the whole cache on each cpu takes forever on
-+	   rp3440, etc.  So, avoid it if the mm isn't too big.  */
-+	if (mm_total_size(mm) < parisc_cache_flush_threshold) {
-+		struct vm_area_struct *vma;
-+
-+		if (mm->context == mfsp(3)) {
-+			for (vma = mm->mmap; vma; vma = vma->vm_next) {
-+				flush_user_dcache_range_asm(vma->vm_start,
-+					vma->vm_end);
-+				if (vma->vm_flags & VM_EXEC)
-+					flush_user_icache_range_asm(
-+					  vma->vm_start, vma->vm_end);
-+			}
-+		} else {
-+			pgd_t *pgd = mm->pgd;
-+
-+			for (vma = mm->mmap; vma; vma = vma->vm_next) {
-+				unsigned long addr;
-+
-+				for (addr = vma->vm_start; addr < vma->vm_end;
-+				     addr += PAGE_SIZE) {
-+					pte_t *ptep = get_ptep(pgd, addr);
-+					if (ptep != NULL) {
-+						pte_t pte = *ptep;
-+						__flush_cache_page(vma, addr,
-+						  page_to_phys(pte_page(pte)));
-+					}
-+				}
-+			}
-+		}
-+		return;
-+	}
-+
- #ifdef CONFIG_SMP
- 	flush_cache_all();
- #else
-@@ -503,20 +561,36 @@ flush_user_icache_range(unsigned long start, unsigned long end)
- 		flush_instruction_cache();
- }
- 
--
- void flush_cache_range(struct vm_area_struct *vma,
- 		unsigned long start, unsigned long end)
- {
--	int sr3;
--
- 	BUG_ON(!vma->vm_mm->context);
- 
--	sr3 = mfsp(3);
--	if (vma->vm_mm->context == sr3) {
--		flush_user_dcache_range(start,end);
--		flush_user_icache_range(start,end);
-+	if ((end - start) < parisc_cache_flush_threshold) {
-+		if (vma->vm_mm->context == mfsp(3)) {
-+			flush_user_dcache_range_asm(start, end);
-+			if (vma->vm_flags & VM_EXEC)
-+				flush_user_icache_range_asm(start, end);
-+		} else {
-+			unsigned long addr;
-+			pgd_t *pgd = vma->vm_mm->pgd;
-+
-+			for (addr = start & PAGE_MASK; addr < end;
-+			     addr += PAGE_SIZE) {
-+				pte_t *ptep = get_ptep(pgd, addr);
-+				if (ptep != NULL) {
-+					pte_t pte = *ptep;
-+					flush_cache_page(vma,
-+					   addr, pte_pfn(pte));
-+				}
-+			}
-+		}
- 	} else {
-+#ifdef CONFIG_SMP
- 		flush_cache_all();
-+#else
-+		flush_cache_all_local();
-+#endif
- 	}
- }
- 
++#endif /* CONFIG_PARISC_TMPALIAS */
