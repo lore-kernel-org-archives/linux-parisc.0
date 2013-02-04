@@ -1,72 +1,70 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] parisc: fixes and cleanups in page cache flushing (1/4)
-Date: Mon, 04 Feb 2013 13:36:22 -0500
-Message-ID: <510FFFA6.3010100@bell.net>
-References: <20130203225909.GA14573@p100.box> <20130204163743.248510@gmx.net> <510FEBBD.9000207@bell.net> <1486683.rMoLpHzbnF@eto>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] unbreak automounter support on 64-bit kernel with 32-bit
+ userspace (v2)
+Date: Mon, 4 Feb 2013 20:39:52 +0100
+Message-ID: <20130204193952.GA5785@p100.box>
+References: <510AE21D.2090002@zytor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	James.Bottomley@hansenpartnership.com
-To: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Content-Type: text/plain; charset=us-ascii
+To: "H. Peter Anvin" <hpa@zytor.com>, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Rolf Eike Beer <eike-kernel@sf-tec.de>,
+	Ian Kent <raven@themaw.net>, autofs@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1486683.rMoLpHzbnF@eto>
+In-Reply-To: <510AE21D.2090002@zytor.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2/4/2013 12:57 PM, Rolf Eike Beer wrote:
-> John David Anglin wrote:
->> On 2/4/2013 11:37 AM, Helge Deller wrote:
->>>>> Von: Rolf Eike Beer <eike-kernel@sf-tec.de>
->>>>>
->>>>> Helge Deller wrote:
->>>>>> This is the first patch in a series of 4, with which the page cache
->>>>>> flushing of
->>>>>> parisc will gets fixed and enhanced. This even fixes the nasty
->>>>>> "minifail" bug
->>>>>> (http://wiki.parisc-linux.org/TestCases?highlight=%28minifail%29)
->>>>>> which
->>>>>> prevented parisc to stay an official debian port.  Basically the
->>>>>> flush in
->>>>>> copy_user_page together with the TLB patch from commit
->>>>>> 7139bc1579901b53db7e898789e916ee2fb52d78 is what fixes the minifail
->>>>>> bug.
->>>>> Is this series expected to fix the thread related problems I see in the
->>>>> git testsuite?
->>>> I expect so, if not, please let us know!
->>> Ahem... actually:
->>> MAYBE!!!
->>>
->>> The problem is, that you probably will need an updated glibc (and maybe
->>> compiler) as well. Dave has done a lot of work to fix stuff. We have
->>> copied the most important update-packages to ftp.parisc-linux.org. To
->>> update, just make sure the following lines are in your
->>> /etc/apt/source.list file: deb ftp://ftp.de.debian.org/debian-ports
->>> unstable main
->>> deb ftp://ftp.parisc-linux.org/debian-ports/unstable unstable main
->>> deb-src ftp://ftp.de.debian.org/debian unstable main
->>>
->>> Do *not* just update to the packages of debian-ports.org. If you do that
->>> it will render your system unbootable, since the udev-package is broken
->>> and it will not find your discs at startup.
->>>
->>> It's on my todo-list to upload further packages, update the website on how
->>> to update your system, and of course to get a buildd working...
->> Just a note, these packages are for debian systems.  I believe that Eike is
->> running gentoo.  With respect to glibc, Carlos had a set of changes which I
->> submitted to Debian.  The full set was accepted around the -30 unstable
->> release.
->> I think most of these are in gentoo but the matter needs review.
-> Oh Dave, I wanted to write a mail with "apt-get: no such command" or something
-> ;) I have tested your patchset you sent on 2012-12-31 and it fixed my git
-> issues. So it simply boils down to: is everything from that patchset now in
-> Helge's tree?
-Mostly.  I believe there is still some stuff for entry.S and syscall.S 
-that's not in the tree but I haven't
-checked.  All the cache related changes are mow in Helge's tree plus 
-some other changes.
+automount-support is broken on the parisc architecture, because the existing
+#if list does not include a check for defined(__hppa__). The HPPA (parisc)
+architecture is similiar to other 64bit Linux targets where we have to define
+autofs_wqt_t (which is passed back and forth to user space) as int type which
+has a size of 32bit across 32 and 64bit kernels.
 
-Dave
+During the discussion on the mailing list, H. Peter Anvin suggested to invert
+the #if list since only specific platforms (specifically those who do not have
+a 32bit userspace, like IA64 and Alpha) should have autofs_wqt_t as unsigned
+long type.
 
--- 
-John David Anglin    dave.anglin@bell.net
+This suggestion is probably the best way to go, since Arm64 (and maybe others?)
+seems to have a non-working automounter. So in the long run even for other new
+upcoming architectures this inverted check seem to be the best solution, since
+it will not require them to change this #if again (unless they are 64bit only).
 
+Signed-off-by: Helge Deller <deller@gmx.de>
+CC: James Bottomley <James.Bottomley@HansenPartnership.com>
+CC: Catalin Marinas <catalin.marinas@arm.com>
+CC: Rolf Eike Beer <eike-kernel@sf-tec.de>
+CC: H. Peter Anvin <hpa@zytor.com>
+CC: Ian Kent <raven@themaw.net>
+
+
+diff --git a/include/uapi/linux/auto_fs.h b/include/uapi/linux/auto_fs.h
+index 77cdba9..bb991df 100644
+--- a/include/uapi/linux/auto_fs.h
++++ b/include/uapi/linux/auto_fs.h
+@@ -28,25 +28,16 @@
+ #define AUTOFS_MIN_PROTO_VERSION	AUTOFS_PROTO_VERSION
+ 
+ /*
+- * Architectures where both 32- and 64-bit binaries can be executed
+- * on 64-bit kernels need this.  This keeps the structure format
+- * uniform, and makes sure the wait_queue_token isn't too big to be
+- * passed back down to the kernel.
+- *
+- * This assumes that on these architectures:
+- * mode     32 bit    64 bit
+- * -------------------------
+- * int      32 bit    32 bit
+- * long     32 bit    64 bit
+- *
+- * If so, 32-bit user-space code should be backwards compatible.
++ * The wait_queue_token (autofs_wqt_t) is part of a structure which is passed
++ * back to the kernel via ioctl from userspace. On architectures where 32- and
++ * 64-bit userspace binaries can be executed it's important that the size of
++ * autofs_wqt_t stays constant between 32- and 64-bit Linux kernels so that we
++ * do not break the binary ABI interface by changing the structure size.
+  */
