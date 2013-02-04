@@ -1,25 +1,32 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: kernel panic
-Date: Mon, 04 Feb 2013 15:48:39 -0500
-Message-ID: <51101EA7.1030809@bell.net>
-References: <510F87A6.1060002@sap.com> <51101176.1020704@gmx.de>
+From: "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] unbreak automounter support on 64-bit kernel with 32-bit
+ userspace (v2)
+Date: Mon, 04 Feb 2013 13:35:38 -0800
+Message-ID: <511029AA.1060007@zytor.com>
+References: <20130204193952.GA5785@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Rolf Eike Beer <eike-kernel@sf-tec.de>,
+	Ian Kent <raven@themaw.net>, autofs@vger.kernel.org
 To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <51101176.1020704@gmx.de>
+In-Reply-To: <20130204193952.GA5785@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2/4/2013 2:52 PM, Helge Deller wrote:
-> I found this kernel panic on one of my machines.
-> Seems to be signal-related...
-There seem to be two issues.  For the second, can you see any reason
-why the pointer to the lock would be corrupt (i.e., point to NULL).
+On 02/04/2013 11:39 AM, Helge Deller wrote:
+> 
+> This suggestion is probably the best way to go, since Arm64 (and maybe others?)
+> seems to have a non-working automounter. So in the long run even for other new
+> upcoming architectures this inverted check seem to be the best solution, since
+> it will not require them to change this #if again (unless they are 64bit only).
+> 
 
-Dave
+... and even then they will generally work just fine.
 
--- 
-John David Anglin    dave.anglin@bell.net
+	-hpa
 
