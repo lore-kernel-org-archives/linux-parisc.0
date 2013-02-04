@@ -1,63 +1,72 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH RESEND 1/1] arch Kconfig: remove references to
- IRQ_PER_CPU
-Date: Mon, 04 Feb 2013 10:30:17 -0800
-Message-ID: <1360002617.2465.33.camel@dabdike>
-References: <1359972583-17134-1-git-send-email-james.hogan@imgtec.com>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCH] parisc: fixes and cleanups in page cache flushing (1/4)
+Date: Mon, 04 Feb 2013 13:36:22 -0500
+Message-ID: <510FFFA6.3010100@bell.net>
+References: <20130203225909.GA14573@p100.box> <20130204163743.248510@gmx.net> <510FEBBD.9000207@bell.net> <1486683.rMoLpHzbnF@eto>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Cc: linux-kernel@vger.kernel.org,
-	uclinux-dist-devel@blackfin.uclinux.org,
-	linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-	linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-	linux-arch@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-	Mike Frysinger <vapier@gentoo.org>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Ralf Baechle <ralf@linux-mips.org>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Paul Mackerras <paulus@samba.org>,
-	Paul Mundt <lethal@linux-sh.org>
-To: James Hogan <james.hogan@imgtec.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	James.Bottomley@hansenpartnership.com
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1359972583-17134-1-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <1486683.rMoLpHzbnF@eto>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2013-02-04 at 10:09 +0000, James Hogan wrote:
-> The IRQ_PER_CPU Kconfig symbol was removed in the following commit:
-> 
-> Commit 6a58fb3bad099076f36f0f30f44507bc3275cdb6 ("genirq: Remove
-> CONFIG_IRQ_PER_CPU") merged in v2.6.39-rc1.
-> 
-> But IRQ_PER_CPU wasn't removed from any of the architecture Kconfig
-> files where it was defined or selected. It's completely unused so remove
-> the remaining references.
-> 
-> Signed-off-by: James Hogan <james.hogan@imgtec.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Mike Frysinger <vapier@gentoo.org>
-> Cc: Fenghua Yu <fenghua.yu@intel.com>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Paul Mundt <lethal@linux-sh.org>
-> Acked-by: Tony Luck <tony.luck@intel.com>
-> Acked-by: Richard Kuo <rkuo@codeaurora.org>
+On 2/4/2013 12:57 PM, Rolf Eike Beer wrote:
+> John David Anglin wrote:
+>> On 2/4/2013 11:37 AM, Helge Deller wrote:
+>>>>> Von: Rolf Eike Beer <eike-kernel@sf-tec.de>
+>>>>>
+>>>>> Helge Deller wrote:
+>>>>>> This is the first patch in a series of 4, with which the page cache
+>>>>>> flushing of
+>>>>>> parisc will gets fixed and enhanced. This even fixes the nasty
+>>>>>> "minifail" bug
+>>>>>> (http://wiki.parisc-linux.org/TestCases?highlight=%28minifail%29)
+>>>>>> which
+>>>>>> prevented parisc to stay an official debian port.  Basically the
+>>>>>> flush in
+>>>>>> copy_user_page together with the TLB patch from commit
+>>>>>> 7139bc1579901b53db7e898789e916ee2fb52d78 is what fixes the minifail
+>>>>>> bug.
+>>>>> Is this series expected to fix the thread related problems I see in the
+>>>>> git testsuite?
+>>>> I expect so, if not, please let us know!
+>>> Ahem... actually:
+>>> MAYBE!!!
+>>>
+>>> The problem is, that you probably will need an updated glibc (and maybe
+>>> compiler) as well. Dave has done a lot of work to fix stuff. We have
+>>> copied the most important update-packages to ftp.parisc-linux.org. To
+>>> update, just make sure the following lines are in your
+>>> /etc/apt/source.list file: deb ftp://ftp.de.debian.org/debian-ports
+>>> unstable main
+>>> deb ftp://ftp.parisc-linux.org/debian-ports/unstable unstable main
+>>> deb-src ftp://ftp.de.debian.org/debian unstable main
+>>>
+>>> Do *not* just update to the packages of debian-ports.org. If you do that
+>>> it will render your system unbootable, since the udev-package is broken
+>>> and it will not find your discs at startup.
+>>>
+>>> It's on my todo-list to upload further packages, update the website on how
+>>> to update your system, and of course to get a buildd working...
+>> Just a note, these packages are for debian systems.  I believe that Eike is
+>> running gentoo.  With respect to glibc, Carlos had a set of changes which I
+>> submitted to Debian.  The full set was accepted around the -30 unstable
+>> release.
+>> I think most of these are in gentoo but the matter needs review.
+> Oh Dave, I wanted to write a mail with "apt-get: no such command" or something
+> ;) I have tested your patchset you sent on 2012-12-31 and it fixed my git
+> issues. So it simply boils down to: is everything from that patchset now in
+> Helge's tree?
+Mostly.  I believe there is still some stuff for entry.S and syscall.S 
+that's not in the tree but I haven't
+checked.  All the cache related changes are mow in Helge's tree plus 
+some other changes.
 
-For what it's worth ACK, but I don't really think you need it since the
-patch is trivial and obviously correct.
+Dave
 
-> 
-> Does anybody want to pick this patch up?
-
-I see Thomas already has.  Thanks, by the way, for not doing this as one
-patch per architecture ...
-
-James
-
+-- 
+John David Anglin    dave.anglin@bell.net
 
