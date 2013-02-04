@@ -1,70 +1,128 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] unbreak automounter support on 64-bit kernel with 32-bit
- userspace (v2)
-Date: Mon, 4 Feb 2013 20:39:52 +0100
-Message-ID: <20130204193952.GA5785@p100.box>
-References: <510AE21D.2090002@zytor.com>
+Subject: kernel panic
+Date: Mon, 04 Feb 2013 20:52:22 +0100
+Message-ID: <51101176.1020704@gmx.de>
+References: <510F87A6.1060002@sap.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: "H. Peter Anvin" <hpa@zytor.com>, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	Ian Kent <raven@themaw.net>, autofs@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+To: linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <510AE21D.2090002@zytor.com>
+In-Reply-To: <510F87A6.1060002@sap.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-automount-support is broken on the parisc architecture, because the existing
-#if list does not include a check for defined(__hppa__). The HPPA (parisc)
-architecture is similiar to other 64bit Linux targets where we have to define
-autofs_wqt_t (which is passed back and forth to user space) as int type which
-has a size of 32bit across 32 and 64bit kernels.
+I found this kernel panic on one of my machines.
+Seems to be signal-related...
+Helge
 
-During the discussion on the mailing list, H. Peter Anvin suggested to invert
-the #if list since only specific platforms (specifically those who do not have
-a 32bit userspace, like IA64 and Alpha) should have autofs_wqt_t as unsigned
-long type.
+[98879.332000] WARNING: at mm/mmap.c:2657
+[98879.380000] Modules linked in:
+[98879.416000]
+[98879.432000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+[98879.488000] PSW: 00001000000001000000000100001111 Not tainted
+[98879.560000] r00-03  000000000804010f 0000000040a9a1f0 000000004013fcfc 0000000000000000
+[98879.656000] r04-07  0000000040a3f1f0 00000000bd90b300 00000000000001be 00000000acf68770
+[98879.752000] r08-11  0000000000100000 0000000000000001 0000000000020000 0000000000180000
+[98879.848000] r12-15  000000000d800000 0000000040a9b1f0 0000000000800100 0000000000040004
+[98879.944000] r16-19  0000000040a9b9f0 0000000040a571f0 0000000040a571f0 0000000040889500
+[98880.040000] r20-23  000000000007002f 000000000800000e 000000000800000f 00000000401fdb70
+[98880.136000] r24-27  ffffffffffffffe0 fffffffffffffe42 00000000409a9000 0000000040a3f1f0
+[98880.232000] r28-31  0000000000000001 00000000acf68800 00000000acf687a0 0000000001f32000
+[98880.328000] sr00-03  0000000003fec800 0000000000000000 0000000000000000 0000000003fc3800
+[98880.424000] sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+[98880.520000]
+[98880.540000] IASQ: 0000000000000000 0000000000000000 IAOQ: 0000000040200118 000000004020011c
+[98880.640000]  IIR: 03ffe01f    ISR: 0000000000000000  IOR: 0000000000000000
+[98880.720000]  CPU:        0   CR30: 00000000acf68000 CR31: 00000000ffffffff
+[98880.804000]  ORIG_R28: 0000000000000000
+[98880.852000]  IAOQ[0]: exit_mmap+0x240/0x268
+[98880.900000]  IAOQ[1]: exit_mmap+0x244/0x268
+[98880.952000]  RP(r2): mmput+0x10c/0x258
+[98880.996000] Backtrace:
+[98881.024000]  [<000000004013fcfc>] mmput+0x10c/0x258
+[98881.084000]  [<000000004014b9d0>] do_exit+0x680/0xef0
+[98881.144000]  [<000000004014c550>] do_group_exit+0xc0/0x128
+[98881.212000]  [<000000004015c9ec>] get_signal_to_deliver+0x794/0x7f8
+[98881.284000]  [<0000000040124af0>] do_signal+0x68/0xc08
+[98881.348000]  [<00000000401256bc>] do_notify_resume+0x2c/0xd0
+[98881.416000]  [<00000000401050b8>] intr_check_sig+0x34/0x38
+[98881.480000]
+[98881.500000] ---[ end trace 0f7f718b0b117609 ]---
+[98881.556000] BUG: Bad rss-counter state mm:00000000bd90b300 idx:0 val:20
+[98881.636000] BUG: Bad rss-counter state mm:00000000bd90b300 idx:1 val:5
+[98884.412000] BUG: Bad page state in process xxxmake  pfn:6cd9c
+[98884.412000] page:00000000425e1a20 count:-1 mapcount:0 mapping:          (null) index:0x0
+[98884.412000] page flags: 0x0()
+[98884.412000] Modules linked in:
+[98884.412000] Backtrace:
+[98884.412000]  [<000000004011ba04>] dump_stack+0x24/0x30
+[98884.412000]  [<00000000401ce9ac>] bad_page+0x1cc/0x250
+[98884.412000]  [<00000000401cf0ec>] get_page_from_freelist+0x58c/0x7e8
+[98884.412000]  [<00000000401d0460>] __alloc_pages_nodemask+0x198/0xaa8
+[98884.412000]  [<000000004060c02c>] __netdev_alloc_frag+0xc4/0x270
+[98884.412000]  [<000000004061289c>] __netdev_alloc_skb+0x74/0x178
+[98884.412000]  [<00000000405cb01c>] tulip_interrupt+0x4c4/0x18b0
+[98885.164000]
+[98885.164000] Disabling lock debugging due to kernel taint
+[101813.652000] Backtrace:
+[101813.684000]  [<00000000404534f0>] __down_read_trylock+0x40/0xb0
+[101813.756000]  [<00000000401765ec>] down_read_trylock+0x24/0x30
+[101813.824000]  [<0000000040206a5c>] page_lock_anon_vma_read+0x6c/0x258
+[101813.904000]  [<0000000040207054>] page_referenced+0x134/0x3f0
+[101813.972000]  [<00000000401db818>] shrink_active_list+0x400/0x5d8
+[101814.044000]  [<00000000401dd834>] shrink_lruvec+0x5e4/0x718
+[101814.112000]  [<00000000401de934>] kswapd+0x894/0xcf0
+[101814.172000]  [<000000004016f758>] kthread+0x168/0x190
+[101814.236000]  [<0000000040104020>] end_fault_vector+0x20/0xc0
+[101814.304000]  [<00000000401b1828>] handle_irq_event_percpu+0x300/0x360
+[101814.384000]  [<00000000401b6ddc>] handle_percpu_irq+0xd4/0xe8
+[101814.452000]  [<000000004014ee8c>] irq_exit+0x8c/0x98
+[101814.512000]  [<000000004060df14>] skb_free_head+0x64/0x98
+[101814.580000]  [<000000004060e0e8>] skb_release_data+0x1a0/0x1b8
+[101814.648000]  [<000000004060e26c>] __kfree_skb+0x16c/0x180
+[101814.716000]  [<0000000040678158>] tcp_data_queue+0x8e8/0xf80
+[101814.784000]
+[101814.804000]
+[101814.820000] Kernel Fault: Code=26 regs=00000000bf4cc9b0 (Addr=000000000000000c)
+[101814.908000]
+[101814.928000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+[101814.988000] PSW: 00001000000001001111100100001110 Tainted: G    B   W
+[101815.068000] r00-03  000000ff0804f90e 0000000040a2a710 00000000404534f0 0000000000000008
+[101815.164000] r04-07  0000000040a3f1f0 00000000bd6cf2d9 000000000000000c 0000000042200f20
+[101815.260000] r08-11  00000000bf4cc618 0000000000000000 00000000bf4cc288 ffffffffffffffe0
+[101815.360000] r12-15  0000000000000015 00000000408fac80 0000000040a9a9f0 0000000000000001
+[101815.456000] r16-19  0000000040a9a1f0 0000000042200f40 0000000042200f20 0000000000000001
+[101815.552000] r20-23  00000000bf4cc608 0000000000000000 0000000000000000 00000000bf4cc618
+[101815.648000] r24-27  0000000000000000 0000000000000000 000000000000000c 0000000040a3f1f0
+[101815.744000] r28-31  000000000800000f 00000000bf4cc980 00000000bf4cc9b0 00000000bd6cf2d8
+[101815.844000] sr00-03  00000000072bd000 000000000009d800 0000000000000000 00000000072bd000
+[101815.940000] sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+[101816.040000]
+[101816.056000] IASQ: 0000000000000000 0000000000000000 IAOQ: 0000000040117670 0000000040117674
+[101816.160000]  IIR: 0f4015df    ISR: 0000000000000000  IOR: 000000000000000c
+[101816.244000]  CPU:        1   CR30: 00000000bf4cc000 CR31: 00000000ffffffff
+[101816.324000]  ORIG_R28: 0000000040a3f1f0
+[101816.372000]  IAOQ[0]: _raw_spin_lock_irqsave+0x28/0x38
+[101816.436000]  IAOQ[1]: _raw_spin_lock_irqsave+0x2c/0x38
+[101816.496000]  RP(r2): __down_read_trylock+0x40/0xb0
+[101816.556000] Backtrace: 
+[101816.584000]  [<00000000404534f0>] __down_read_trylock+0x40/0xb0
+[101816.656000]  [<00000000401765ec>] down_read_trylock+0x24/0x30
+[101816.728000]  [<0000000040206a5c>] page_lock_anon_vma_read+0x6c/0x258
+[101816.804000]  [<0000000040207054>] page_referenced+0x134/0x3f0
+[101816.876000]  [<00000000401db818>] shrink_active_list+0x400/0x5d8
+[101816.948000]  [<00000000401dd834>] shrink_lruvec+0x5e4/0x718
+[101817.016000]  [<00000000401de934>] kswapd+0x894/0xcf0
+[101817.076000]  [<000000004016f758>] kthread+0x168/0x190
+[101817.136000]  [<0000000040104020>] end_fault_vector+0x20/0xc0
+[101817.208000]  [<00000000401b1828>] handle_irq_event_percpu+0x300/0x360
+[101817.284000]  [<00000000401b6ddc>] handle_percpu_irq+0xd4/0xe8
+[101817.356000]  [<000000004014ee8c>] irq_exit+0x8c/0x98
+[101817.416000]  [<000000004060df14>] skb_free_head+0x64/0x98
+[101817.480000]  [<000000004060e0e8>] skb_release_data+0x1a0/0x1b8
+[101817.552000]  [<000000004060e26c>] __kfree_skb+0x16c/0x180
+[101817.616000]  [<0000000040678158>] tcp_data_queue+0x8e8/0xf80
+[101817.684000]
+[101817.708000] Kernel panic - not syncing: Kernel Fault
 
-This suggestion is probably the best way to go, since Arm64 (and maybe others?)
-seems to have a non-working automounter. So in the long run even for other new
-upcoming architectures this inverted check seem to be the best solution, since
-it will not require them to change this #if again (unless they are 64bit only).
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-CC: James Bottomley <James.Bottomley@HansenPartnership.com>
-CC: Catalin Marinas <catalin.marinas@arm.com>
-CC: Rolf Eike Beer <eike-kernel@sf-tec.de>
-CC: H. Peter Anvin <hpa@zytor.com>
-CC: Ian Kent <raven@themaw.net>
-
-
-diff --git a/include/uapi/linux/auto_fs.h b/include/uapi/linux/auto_fs.h
-index 77cdba9..bb991df 100644
---- a/include/uapi/linux/auto_fs.h
-+++ b/include/uapi/linux/auto_fs.h
-@@ -28,25 +28,16 @@
- #define AUTOFS_MIN_PROTO_VERSION	AUTOFS_PROTO_VERSION
- 
- /*
-- * Architectures where both 32- and 64-bit binaries can be executed
-- * on 64-bit kernels need this.  This keeps the structure format
-- * uniform, and makes sure the wait_queue_token isn't too big to be
-- * passed back down to the kernel.
-- *
-- * This assumes that on these architectures:
-- * mode     32 bit    64 bit
-- * -------------------------
-- * int      32 bit    32 bit
-- * long     32 bit    64 bit
-- *
-- * If so, 32-bit user-space code should be backwards compatible.
-+ * The wait_queue_token (autofs_wqt_t) is part of a structure which is passed
-+ * back to the kernel via ioctl from userspace. On architectures where 32- and
-+ * 64-bit userspace binaries can be executed it's important that the size of
-+ * autofs_wqt_t stays constant between 32- and 64-bit Linux kernels so that we
-+ * do not break the binary ABI interface by changing the structure size.
-  */
