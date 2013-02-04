@@ -1,27 +1,34 @@
-From: Matt Turner <mattst88@gmail.com>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Subject: Re: [PATCH] parisc: fixes and cleanups in page cache flushing (1/4)
-Date: Sun, 3 Feb 2013 22:42:41 -0800
-Message-ID: <CAEdQ38Ee_8v+G0wWmHN5UMqyy0JX_N=D2fMxQB=BZcnJxknmEg@mail.gmail.com>
-References: <20130203225909.GA14573@p100.box> <510EED18.404@gmx.de>
+Date: Mon, 04 Feb 2013 09:35:14 +0100
+Message-ID: <777a626d6eff1b2a6194dcfa6a8ad313@sf-mail.de>
+References: <20130203225909.GA14573@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org,
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Cc: <linux-parisc@vger.kernel.org>,
 	James Bottomley <James.Bottomley@hansenpartnership.com>,
 	John David Anglin <dave.anglin@bell.net>
 To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <510EED18.404@gmx.de>
+In-Reply-To: <20130203225909.GA14573@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Feb 3, 2013 at 3:04 PM, Helge Deller <deller@gmx.de> wrote:
-> Need to mention here:
->
-> Author of this patch series is:
-> Author: John David Anglin <dave.anglin@bell.net>
->
-> When I sent the mail the "Author" tag vanished in the mail header...
->
-> Helge
+Helge Deller wrote:
+> This is the first patch in a series of 4, with which the page cache 
+> flushing of
+> parisc will gets fixed and enhanced. This even fixes the nasty 
+> "minifail" bug
+> (http://wiki.parisc-linux.org/TestCases?highlight=%28minifail%29) 
+> which
+> prevented parisc to stay an official debian port.  Basically the 
+> flush in
+> copy_user_page together with the TLB patch from commit
+> 7139bc1579901b53db7e898789e916ee2fb52d78 is what fixes the minifail 
+> bug.
 
-Send with git send-email. It manages all of this for you.
+Is this series expected to fix the thread related problems I see in the 
+git testsuite?
+
+Eike
