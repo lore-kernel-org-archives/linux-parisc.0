@@ -1,48 +1,48 @@
-From: Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH] unbreak automounter support on 64-bit kernel with
- 32-bit userspace (v2)
-Date: Wed, 6 Feb 2013 17:21:20 +0000
-Message-ID: <20130206172120.GJ26454@arm.com>
-References: <510AE21D.2090002@zytor.com>
- <20130204193952.GA5785@p100.box>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: wire up process_vm_readv, process_vm_writev, kcmp
+ and finit_module syscalls
+Date: Fri, 8 Feb 2013 21:08:25 +0100
+Message-ID: <20130208200825.GA5329@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: "H. Peter Anvin" <hpa@zytor.com>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	Ian Kent <raven@themaw.net>,
-	"autofs@vger.kernel.org" <autofs@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130204193952.GA5785@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Feb 04, 2013 at 07:39:52PM +0000, Helge Deller wrote:
-> automount-support is broken on the parisc architecture, because the existing
-> #if list does not include a check for defined(__hppa__). The HPPA (parisc)
-> architecture is similiar to other 64bit Linux targets where we have to define
-> autofs_wqt_t (which is passed back and forth to user space) as int type which
-> has a size of 32bit across 32 and 64bit kernels.
-> 
-> During the discussion on the mailing list, H. Peter Anvin suggested to invert
-> the #if list since only specific platforms (specifically those who do not have
-> a 32bit userspace, like IA64 and Alpha) should have autofs_wqt_t as unsigned
-> long type.
-> 
-> This suggestion is probably the best way to go, since Arm64 (and maybe others?)
-> seems to have a non-working automounter. So in the long run even for other new
-> upcoming architectures this inverted check seem to be the best solution, since
-> it will not require them to change this #if again (unless they are 64bit only).
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> CC: James Bottomley <James.Bottomley@HansenPartnership.com>
-> CC: Catalin Marinas <catalin.marinas@arm.com>
-> CC: Rolf Eike Beer <eike-kernel@sf-tec.de>
-> CC: H. Peter Anvin <hpa@zytor.com>
-> CC: Ian Kent <raven@themaw.net>
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
+index e178f30..2c8b9bd 100644
+--- a/arch/parisc/include/uapi/asm/unistd.h
++++ b/arch/parisc/include/uapi/asm/unistd.h
+@@ -822,8 +822,12 @@
+ #define __NR_syncfs		(__NR_Linux + 327)
+ #define __NR_setns		(__NR_Linux + 328)
+ #define __NR_sendmmsg		(__NR_Linux + 329)
++#define __NR_process_vm_readv	(__NR_Linux + 330)
++#define __NR_process_vm_writev	(__NR_Linux + 331)
++#define __NR_kcmp		(__NR_Linux + 332)
++#define __NR_finit_module	(__NR_Linux + 333)
+ 
+-#define __NR_Linux_syscalls	(__NR_sendmmsg + 1)
++#define __NR_Linux_syscalls	(__NR_finit_module + 1)
+ 
+ 
+ #define __IGNORE_select		/* newselect */
+diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
+index 54d950b..cf7094c 100644
+--- a/arch/parisc/kernel/syscall_table.S
++++ b/arch/parisc/kernel/syscall_table.S
+@@ -428,6 +428,10 @@
+ 	ENTRY_SAME(syncfs)
+ 	ENTRY_SAME(setns)
+ 	ENTRY_COMP(sendmmsg)
++	ENTRY_COMP(process_vm_readv)	/* 330 */
++	ENTRY_COMP(process_vm_writev)
++	ENTRY_SAME(kcmp)
++	ENTRY_SAME(finit_module)
+ 
+ 	/* Nothing yet */
+ 
