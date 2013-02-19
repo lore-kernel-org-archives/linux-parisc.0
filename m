@@ -1,8 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: fix error return codes for rt_sigaction and
- rt_sigprocmask
-Date: Tue, 19 Feb 2013 21:16:49 +0100
-Message-ID: <20130219201649.GA1639@p100.box>
+Subject: [PATCH] parisc: fix fallocate syscall
+Date: Tue, 19 Feb 2013 21:31:58 +0100
+Message-ID: <20130219203158.GA12965@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -12,56 +11,45 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-commit 38526701a6dd86e1f6bd6f025878f990ecae3c8c
+commit c065e93d5a0fe16e6cfb81d61ab6f5aaee9c25a6
 Author: Helge Deller <deller@gmx.de>
-Date:   Tue Feb 19 21:11:39 2013 +0100
+Date:   Tue Feb 19 21:23:59 2013 +0100
+
+fallocate(off_t) gets redirected by glibc to fallocate64(loff_t) where
+the 64bit loff_t values get splitted into two 32bit (hi/lo) values. This
+patch fixes this syscall for the 32- and 64bit kernel.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/kernel/signal32.c b/arch/parisc/kernel/signal32.c
-index 5dede04..2ddcabb 100644
---- a/arch/parisc/kernel/signal32.c
-+++ b/arch/parisc/kernel/signal32.c
-@@ -65,7 +65,7 @@ put_sigset32(compat_sigset_t __user *up, sigset_t *set, size_t sz)
- {
- 	compat_sigset_t s;
+diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
+index a047b32..54d619d 100644
+--- a/arch/parisc/kernel/sys_parisc.c
++++ b/arch/parisc/kernel/sys_parisc.c
+@@ -213,6 +213,13 @@ asmlinkage long parisc_sync_file_range(int fd,
+ 			(loff_t)hi_nbytes << 32 | lo_nbytes, flags);
+ }
  
--	if (sz != sizeof *set)
-+	if (sz != sizeof(compat_sigset_t))
- 		return -EINVAL;
- 	sigset_64to32(&s, set);
- 
-@@ -78,7 +78,7 @@ get_sigset32(compat_sigset_t __user *up, sigset_t *set, size_t sz)
- 	compat_sigset_t s;
- 	int r;
- 
--	if (sz != sizeof *set)
-+	if (sz != sizeof(compat_sigset_t))
- 		return -EINVAL;
- 
- 	if ((r = copy_from_user(&s, up, sz)) == 0) {
-@@ -94,8 +94,11 @@ int sys32_rt_sigprocmask(int how, compat_sigset_t __user *set, compat_sigset_t _
- 	sigset_t old_set, new_set;
- 	int ret;
- 
--	if (set && get_sigset32(set, &new_set, sigsetsize))
--		return -EFAULT;
-+	if (set) {
-+		ret = get_sigset32(set, &new_set, sigsetsize);
-+		if (ret)
-+			return ret;
-+	}
- 	
- 	KERNEL_SYSCALL(ret, sys_rt_sigprocmask, how, set ? (sigset_t __user *)&new_set : NULL,
- 				 oset ? (sigset_t __user *)&old_set : NULL, sigsetsize);
-@@ -128,6 +131,10 @@ sys32_rt_sigaction(int sig, const struct sigaction32 __user *act, struct sigacti
- 	struct k_sigaction new_sa, old_sa;
- 	int ret = -EINVAL;
- 
-+	/* XXX: Don't preclude handling different sized sigset_t's.  */
-+	if (sigsetsize != sizeof(compat_sigset_t))
-+		return -EINVAL;
++asmlinkage long parisc_fallocate(int fd, int mode, u32 offhi, u32 offlo,
++				u32 lenhi, u32 lenlo)
++{
++        return sys_fallocate(fd, mode, ((u64)offhi << 32) | offlo,
++                             ((u64)lenhi << 32) | lenlo);
++}
 +
- 	if (act) {
- 		if (copy_from_user(&new_sa32.sa, act, sizeof new_sa32.sa))
- 			return -EFAULT;
+ asmlinkage unsigned long sys_alloc_hugepages(int key, unsigned long addr, unsigned long len, int prot, int flag)
+ {
+ 	return -ENOMEM;
+diff --git a/arch/parisc/kernel/sys_parisc32.c b/arch/parisc/kernel/sys_parisc32.c
+index cee60f7..9862944 100644
+--- a/arch/parisc/kernel/sys_parisc32.c
++++ b/arch/parisc/kernel/sys_parisc32.c
+@@ -142,13 +142,6 @@ long sys32_lookup_dcookie(u32 cookie_high, u32 cookie_low, char __user *buf,
+ 				  buf, len);
+ }
+ 
+-asmlinkage long compat_sys_fallocate(int fd, int mode, u32 offhi, u32 offlo,
+-				u32 lenhi, u32 lenlo)
+-{
+-        return sys_fallocate(fd, mode, ((loff_t)offhi << 32) | offlo,
+-                             ((loff_t)lenhi << 32) | lenlo);
+-}
