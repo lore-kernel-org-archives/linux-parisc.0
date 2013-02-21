@@ -1,107 +1,78 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: sendfile and sendfile64 syscall cleanups
-Date: Tue, 19 Feb 2013 23:01:03 +0100
-Message-ID: <20130219220103.GA937@p100.box>
+From: akpm@linux-foundation.org
+Subject: [patch 1/1] mm: use vm_unmapped_area() on parisc architecture
+Date: Thu, 21 Feb 2013 15:12:32 -0800
+Message-ID: <20130221231233.1155D5A4174@corp2gmr1-2.hot.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=ASCII
+Cc: deller@gmx.de, linux-parisc@vger.kernel.org,
+	akpm@linux-foundation.org, walken@google.com, riel@redhat.com
+To: jejb@parisc-linux.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-commit 375e130d5c9809c99afe56d6640b70f3c002e8ac
-Date:   Tue Feb 19 22:55:17 2013 +0100
+From: Michel Lespinasse <walken@google.com>
+Subject: mm: use vm_unmapped_area() on parisc architecture
 
-Utilize the existing compat_sys_sendfile function for 64bit kernel and add
-wrappers for sendfile and sendfile64 to correctly handle the 32/64 bit sign
-extension.
+Update the parisc arch_get_unmapped_area function to make use of
+vm_unmapped_area() instead of implementing a brute force search.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Michel Lespinasse <walken@google.com>
+Acked-by: Rik van Riel <riel@redhat.com>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
 
-diff --git a/arch/parisc/include/asm/unistd.h b/arch/parisc/include/asm/unistd.h
-index f2e390f..74f801e 100644
---- a/arch/parisc/include/asm/unistd.h
-+++ b/arch/parisc/include/asm/unistd.h
-@@ -167,6 +167,7 @@ type name(type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)	\
- #define __ARCH_WANT_SYS_FORK
- #define __ARCH_WANT_SYS_VFORK
- #define __ARCH_WANT_SYS_CLONE
-+#define __ARCH_WANT_COMPAT_SYS_SENDFILE
+ arch/parisc/kernel/sys_parisc.c |   46 +++++++++++-------------------
+ 1 file changed, 17 insertions(+), 29 deletions(-)
+
+diff -puN arch/parisc/kernel/sys_parisc.c~mm-use-vm_unmapped_area-on-parisc-architecture arch/parisc/kernel/sys_parisc.c
+--- a/arch/parisc/kernel/sys_parisc.c~mm-use-vm_unmapped_area-on-parisc-architecture
++++ a/arch/parisc/kernel/sys_parisc.c
+@@ -35,18 +35,15 @@
  
- #endif /* __ASSEMBLY__ */
- 
-diff --git a/arch/parisc/kernel/sys_parisc32.c b/arch/parisc/kernel/sys_parisc32.c
-index 0115eac..eca69bb 100644
---- a/arch/parisc/kernel/sys_parisc32.c
-+++ b/arch/parisc/kernel/sys_parisc32.c
-@@ -60,42 +60,23 @@ asmlinkage long sys32_unimplemented(int r26, int r25, int r24, int r23,
-     return -ENOSYS;
- }
- 
--asmlinkage int sys32_sendfile(int out_fd, int in_fd, compat_off_t __user *offset, s32 count)
-+/* Note: it is necessary to treat out_fd and in_fd as unsigned ints, with the
-+ * corresponding cast to a signed int to insure that the proper conversion
-+ * (sign extension) between the register representation of a signed int (msr in
-+ * 32-bit mode) and the register representation of a signed int (msr in 64-bit
-+ * mode) is performed.
-+ */
-+asmlinkage long sys32_sendfile(u32 out_fd, u32 in_fd,
-+			       compat_off_t __user *offset, compat_size_t count)
+ static unsigned long get_unshared_area(unsigned long addr, unsigned long len)
  {
--        mm_segment_t old_fs = get_fs();
--        int ret;
--        off_t of;
+-	struct vm_area_struct *vma;
++	struct vm_unmapped_area_info info;
+ 
+-	addr = PAGE_ALIGN(addr);
 -
--        if (offset && get_user(of, offset))
--                return -EFAULT;
--
--        set_fs(KERNEL_DS);
--        ret = sys_sendfile(out_fd, in_fd, offset ? (off_t __user *)&of : NULL, count);
--        set_fs(old_fs);
--
--        if (offset && put_user(of, offset))
--                return -EFAULT;
--
--        return ret;
-+	return compat_sys_sendfile((int)out_fd, (int)in_fd, offset, count);
+-	for (vma = find_vma(current->mm, addr); ; vma = vma->vm_next) {
+-		/* At this point:  (!vma || addr < vma->vm_end). */
+-		if (TASK_SIZE - len < addr)
+-			return -ENOMEM;
+-		if (!vma || addr + len <= vma->vm_start)
+-			return addr;
+-		addr = vma->vm_end;
+-	}
++	info.flags = 0;
++	info.length = len;
++	info.low_limit = PAGE_ALIGN(addr);
++	info.high_limit = TASK_SIZE;
++	info.align_mask = 0;
++	info.align_offset = 0;
++	return vm_unmapped_area(&info);
  }
  
--asmlinkage int sys32_sendfile64(int out_fd, int in_fd, compat_loff_t __user *offset, s32 count)
-+asmlinkage long sys32_sendfile64(u32 out_fd, u32 in_fd,
-+				 compat_loff_t __user *offset, compat_size_t count)
+ #define DCACHE_ALIGN(addr) (((addr) + (SHMLBA - 1)) &~ (SHMLBA - 1))
+@@ -63,30 +60,21 @@ static unsigned long get_unshared_area(u
+  */
+ static int get_offset(struct address_space *mapping)
  {
--	mm_segment_t old_fs = get_fs();
--	int ret;
--	loff_t lof;
--	
--	if (offset && get_user(lof, offset))
--		return -EFAULT;
--		
--	set_fs(KERNEL_DS);
--	ret = sys_sendfile64(out_fd, in_fd, offset ? (loff_t __user *)&lof : NULL, count);
--	set_fs(old_fs);
--	
--	if (offset && put_user(lof, offset))
--		return -EFAULT;
--		
--	return ret;
-+	return sys_sendfile64((int)out_fd, (int)in_fd,
-+				(loff_t __user *)offset, count);
+-	int offset = (unsigned long) mapping << (PAGE_SHIFT - 8);
+-	return offset & 0x3FF000;
++	return (unsigned long) mapping >> 8;
  }
  
+ static unsigned long get_shared_area(struct address_space *mapping,
+ 		unsigned long addr, unsigned long len, unsigned long pgoff)
+ {
+-	struct vm_area_struct *vma;
+-	int offset = mapping ? get_offset(mapping) : 0;
+-
+-	offset = (offset + (pgoff << PAGE_SHIFT)) & 0x3FF000;
++	struct vm_unmapped_area_info info;
  
-diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-index 9180719..129fd47 100644
---- a/arch/parisc/kernel/syscall_table.S
-+++ b/arch/parisc/kernel/syscall_table.S
-@@ -304,7 +304,7 @@
- 	ENTRY_SAME(gettid)
- 	ENTRY_OURS(readahead)
- 	ENTRY_SAME(tkill)
--	ENTRY_SAME(sendfile64)
-+	ENTRY_DIFF(sendfile64)
- 	ENTRY_COMP(futex)		/* 210 */
- 	ENTRY_COMP(sched_setaffinity)
- 	ENTRY_COMP(sched_getaffinity)
+-	addr = DCACHE_ALIGN(addr - offset) + offset;
