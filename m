@@ -1,78 +1,117 @@
-From: akpm@linux-foundation.org
-Subject: [patch 1/1] mm: use vm_unmapped_area() on parisc architecture
-Date: Thu, 21 Feb 2013 15:12:32 -0800
-Message-ID: <20130221231233.1155D5A4174@corp2gmr1-2.hot.corp.google.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc updates for 3.9
+Date: Fri, 22 Feb 2013 22:16:15 +0100
+Message-ID: <20130222211615.GA5979@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ASCII
-Cc: deller@gmx.de, linux-parisc@vger.kernel.org,
-	akpm@linux-foundation.org, walken@google.com, riel@redhat.com
-To: jejb@parisc-linux.org
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Michel Lespinasse <walken@google.com>
-Subject: mm: use vm_unmapped_area() on parisc architecture
+Hi Linus,
 
-Update the parisc arch_get_unmapped_area function to make use of
-vm_unmapped_area() instead of implementing a brute force search.
+The following changes since commit 19f949f52599ba7c3f67a5897ac6be14bfcb1200:
 
-Signed-off-by: Michel Lespinasse <walken@google.com>
-Acked-by: Rik van Riel <riel@redhat.com>
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: Helge Deller <deller@gmx.de>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
+  Linux 3.8 (2013-02-18 15:58:34 -0800)
 
- arch/parisc/kernel/sys_parisc.c |   46 +++++++++++-------------------
- 1 file changed, 17 insertions(+), 29 deletions(-)
+are available in the git repository at:
 
-diff -puN arch/parisc/kernel/sys_parisc.c~mm-use-vm_unmapped_area-on-parisc-architecture arch/parisc/kernel/sys_parisc.c
---- a/arch/parisc/kernel/sys_parisc.c~mm-use-vm_unmapped_area-on-parisc-architecture
-+++ a/arch/parisc/kernel/sys_parisc.c
-@@ -35,18 +35,15 @@
- 
- static unsigned long get_unshared_area(unsigned long addr, unsigned long len)
- {
--	struct vm_area_struct *vma;
-+	struct vm_unmapped_area_info info;
- 
--	addr = PAGE_ALIGN(addr);
--
--	for (vma = find_vma(current->mm, addr); ; vma = vma->vm_next) {
--		/* At this point:  (!vma || addr < vma->vm_end). */
--		if (TASK_SIZE - len < addr)
--			return -ENOMEM;
--		if (!vma || addr + len <= vma->vm_start)
--			return addr;
--		addr = vma->vm_end;
--	}
-+	info.flags = 0;
-+	info.length = len;
-+	info.low_limit = PAGE_ALIGN(addr);
-+	info.high_limit = TASK_SIZE;
-+	info.align_mask = 0;
-+	info.align_offset = 0;
-+	return vm_unmapped_area(&info);
- }
- 
- #define DCACHE_ALIGN(addr) (((addr) + (SHMLBA - 1)) &~ (SHMLBA - 1))
-@@ -63,30 +60,21 @@ static unsigned long get_unshared_area(u
-  */
- static int get_offset(struct address_space *mapping)
- {
--	int offset = (unsigned long) mapping << (PAGE_SHIFT - 8);
--	return offset & 0x3FF000;
-+	return (unsigned long) mapping >> 8;
- }
- 
- static unsigned long get_shared_area(struct address_space *mapping,
- 		unsigned long addr, unsigned long len, unsigned long pgoff)
- {
--	struct vm_area_struct *vma;
--	int offset = mapping ? get_offset(mapping) : 0;
--
--	offset = (offset + (pgoff << PAGE_SHIFT)) & 0x3FF000;
-+	struct vm_unmapped_area_info info;
- 
--	addr = DCACHE_ALIGN(addr - offset) + offset;
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.9
+
+for you to fetch changes up to 1dda59b4f3d03fa28d86f3ea235655f0f96aab3e:
+
+  arch/parisc/include/asm: use ARRAY_SIZE macro in mmzone.h (2013-02-20 22:57:49 +0100)
+
+----------------------------------------------------------------
+Al Viro (1):
+      parisc: fix ptrace breakage
+
+Geert Uytterhoeven (1):
+      [PARISC] hpux: Remove obsolete regs parameter from do_execve() in hpux_execve()
+
+Helge Deller (13):
+      Merge tag 'parisc-fixes' of git://git.kernel.org/.../jejb/parisc-2.6 into stable-3.8
+      parisc: enhance automatic CONFIG_CROSS_COMPILE detection
+      parisc: add CONFIG_MLONGCALLS option to enable linkage of huge vmlinux executables
+      parisc: led driver requires CONFIG_VM_EVENT_COUNTERS
+      parisc: wire up process_vm_readv, process_vm_writev, kcmp and finit_module syscalls
+      parisc: fix personality on 32bit kernel
+      parisc: correctly wire up mq_* functions for CONFIG_COMPAT case
+      parisc: convert msgrcv and msgsnd syscalls to use compat layer
+      parisc: fix error return codes for rt_sigaction and rt_sigprocmask
+      parisc: fix fallocate syscall
+      parisc: switch to available compat_sched_rr_get_interval implementation
+      parisc: sendfile and sendfile64 syscall cleanups
+      parisc: remove empty lines and unnecessary #ifdef coding in include/asm/signal.h
+
+Joe Perches (1):
+      drivers/parisc: Use printf extension %pR for struct resource
+
+John David Anglin (10):
+      [PARISC] Purge existing TLB entries in set_pte_at and ptep_set_wrprotect
+      parisc: Fix comment describing setup of access rights in entry.S
+      parisc: fixes and cleanups in page cache flushing (1/4)
+      parisc: fixes and cleanups in page cache flushing (2/4)
+      parisc: fixes and cleanups in page cache flushing (3/4)
+      parisc: fixes and cleanups in page cache flushing (4/4)
+      parisc: disable preemption while flushing D- or I-caches through TMPALIAS region
+      parisc: ensure that mmapped shared pages are aligned at SHMLBA addresses
+      parisc: always detect multiple physical ranges
+      parisc: space register variables need to be in native length (unsigned long)
+
+Julia Lawall (1):
+      drivers/parisc/pdc_stable.c: use WARN
+
+Kautuk Consul (1):
+      parisc/mm/fault.c: Port OOM changes to do_page_fault
+
+Nikitas Angelinas (1):
+      arch/parisc/include/asm: use ARRAY_SIZE macro in mmzone.h
+
+Paul Bolle (1):
+      parisc: remove unused compat_rt_sigframe.h header
+
+Peter Zijlstra (1):
+      parisc: remove IRQF_DISABLED
+
+Wei Yongjun (1):
+      parisc: fix possible memory leak in pat_query_module()
+
+ arch/parisc/Kconfig                          |  21 ++
+ arch/parisc/Makefile                         |  13 +-
+ arch/parisc/hpux/fs.c                        |   3 +-
+ arch/parisc/include/asm/cacheflush.h         |   2 +
+ arch/parisc/include/asm/compat.h             |  61 +++++
+ arch/parisc/include/asm/compat_rt_sigframe.h |  50 ----
+ arch/parisc/include/asm/elf.h                |   2 +-
+ arch/parisc/include/asm/floppy.h             |   4 +-
+ arch/parisc/include/asm/mmzone.h             |   7 +-
+ arch/parisc/include/asm/page.h               |  20 +-
+ arch/parisc/include/asm/pgtable.h            |  13 +-
+ arch/parisc/include/asm/signal.h             |   4 -
+ arch/parisc/include/asm/unistd.h             |   2 +
+ arch/parisc/include/uapi/asm/unistd.h        |   6 +-
+ arch/parisc/kernel/cache.c                   | 221 +++++++++++++++---
+ arch/parisc/kernel/entry.S                   |   4 +-
+ arch/parisc/kernel/inventory.c               |   2 +
+ arch/parisc/kernel/irq.c                     |   4 +-
+ arch/parisc/kernel/pacache.S                 | 335 +++++++++++++++++++++++----
+ arch/parisc/kernel/parisc_ksyms.c            |   5 +-
+ arch/parisc/kernel/signal.c                  |   2 +-
+ arch/parisc/kernel/signal32.c                |  15 +-
+ arch/parisc/kernel/sys_parisc.c              |  16 +-
+ arch/parisc/kernel/sys_parisc32.c            | 122 ++--------
+ arch/parisc/kernel/syscall.S                 |   5 +-
+ arch/parisc/kernel/syscall_table.S           |  27 +--
+ arch/parisc/mm/fault.c                       |  30 ++-
+ drivers/parisc/Kconfig                       |   1 +
+ drivers/parisc/dino.c                        |  13 +-
+ drivers/parisc/hppb.c                        |   6 +-
+ drivers/parisc/pdc_stable.c                  |   6 +-
+ drivers/parisc/superio.c                     |   2 +-
+ 32 files changed, 708 insertions(+), 316 deletions(-)
+ delete mode 100644 arch/parisc/include/asm/compat_rt_sigframe.h
