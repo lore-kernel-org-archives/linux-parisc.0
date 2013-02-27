@@ -1,38 +1,46 @@
-From: "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] Consolidate CONFIG_DEBUG_STRICT_USER_COPY_CHECK
-Date: Wed, 27 Feb 2013 14:19:16 -0800
-Message-ID: <512E8664.3070903@zytor.com>
-References: <1361934016-22630-1-git-send-email-sboyd@codeaurora.org> <201302272032.21014.arnd@arndb.de> <512E6FA9.4060504@codeaurora.org>
+From: Helge Deller <deller@gmx.de>
+Subject: parisc: avoid unitialized variable warning in pa_memcpy()
+Date: Wed, 27 Feb 2013 23:21:15 +0100
+Message-ID: <20130227222115.GA2921@p100.box>
+References: <20130227221137.GA2806@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
-	linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
-	Arjan van de Ven <arjan@linux.intel.com>,
-	Helge Deller <deller@gmx.de>,
-	Heiko Carstens <heiko.carstens@de.ibm.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Chris Metcalf <cmetcalf@tilera.com>
-To: Stephen Boyd <sboyd@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <512E6FA9.4060504@codeaurora.org>
+In-Reply-To: <20130227221137.GA2806@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 02/27/2013 12:42 PM, Stephen Boyd wrote:
->>
->> It's fine to do your patch as a first step though, which would not
->> change the behavior.
-> 
-> A lot of arches seem to not want to enable it because false positives
-> are everywhere. It really depends on how good the compiler is at doing
-> constant propagation and dead code removal.
-> 
+commit eed0220c5b2f33e4da2e9ba207c798c1bdebe500
+Author: Helge Deller <deller@gmx.de>
+Date:   Wed Feb 27 00:06:48 2013 +0100
 
-Although some of the cases I have seen being flagged as "false
-positives" have been real bugs.
+parisc: avoid unitialized variable warning in pa_memcpy()
 
-	-hpa
+Avoid this warning, while still prevent gcc from optimizing away the ex=
+ception code:
+arch/parisc/lib/memcpy.c: In function =E2=80=98pa_memcpy=E2=80=99:
+arch/parisc/lib/memcpy.c:256:2: warning: =E2=80=98dummy=E2=80=99 may be=
+ used uninitialized in this function [-Wuninitialized]
 
+Signed-off-by: Helge Deller <deller@gmx.de>
 
+diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
+index 1dbca5c..a49cc81 100644
+--- a/arch/parisc/lib/memcpy.c
++++ b/arch/parisc/lib/memcpy.c
+@@ -68,7 +68,7 @@
+ DECLARE_PER_CPU(struct exception_data, exception_data);
+=20
+ #define preserve_branch(label)	do {					\
+-	volatile int dummy;						\
++	volatile int dummy =3D 0;						\
+ 	/* The following branch is never taken, it's just here to  */	\
+ 	/* prevent gcc from optimizing away our exception code. */ 	\
+ 	if (unlikely(dummy !=3D dummy))					\
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
