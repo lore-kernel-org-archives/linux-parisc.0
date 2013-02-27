@@ -1,55 +1,43 @@
-From: Arjan van de Ven <arjan@linux.intel.com>
-Subject: Re: [PATCH] Consolidate CONFIG_DEBUG_STRICT_USER_COPY_CHECK
-Date: Wed, 27 Feb 2013 14:56:09 -0800
-Message-ID: <512E8F09.2090003@linux.intel.com>
-References: <1361934016-22630-1-git-send-email-sboyd@codeaurora.org> <201302272032.21014.arnd@arndb.de> <512E6FA9.4060504@codeaurora.org> <512E8664.3070903@zytor.com> <20130228094510.3341017130e4476e046bdd22@canb.auug.org.au>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Subject: Re: parisc: fix compile warnings triggered by atomic_sub(sizeof(),v)
+Date: Thu, 28 Feb 2013 00:09:05 +0100
+Message-ID: <5949791.xCBY7uv0Ms@donald.sf-tec.de>
+References: <20130227221137.GA2806@p100.box> <20130227221552.GA2817@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: "H. Peter Anvin" <hpa@zytor.com>,
-	Stephen Boyd <sboyd@codeaurora.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
-	linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
-	Helge Deller <deller@gmx.de>,
-	Heiko Carstens <heiko.carstens@de.ibm.com>,
-	Chris Metcalf <cmetcalf@tilera.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: multipart/signed; boundary="nextPart3775036.HZBe2hny2s"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Cc: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@hansenpartnership.com>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130228094510.3341017130e4476e046bdd22@canb.auug.org.au>
+In-Reply-To: <20130227221552.GA2817@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2/27/2013 2:45 PM, Stephen Rothwell wrote:
-> Hi all,
->
-> On Wed, 27 Feb 2013 14:19:16 -0800 "H. Peter Anvin" <hpa@zytor.com> wrote:
->>
->> Although some of the cases I have seen being flagged as "false
->> positives" have been real bugs.
->
-> [hijacking the thread :-)]
->
-> I have been getting this warning for a very long time ( which would be an
-> error if CONFIG_DEBUG_STRICT_USER_COPY_CHECK was set):
->
-> i386 defconfig
-> i386-linux-gcc (GCC) 4.6.3
->
-> In file included from arch/x86/include/asm/uaccess.h:537:0,
->                   from include/linux/uaccess.h:5,
->                   from include/linux/highmem.h:8,
->                   from include/linux/pagemap.h:10,
->                   from fs/binfmt_misc.c:27:
-> arch/x86/include/asm/uaccess_32.h: In function 'parse_command.part.2':
-> arch/x86/include/asm/uaccess_32.h:211:26: warning: call to 'copy_from_user_overflow' declared with attribute warning: copy_from_user() buffer size is not provably correct [enabled by default]
->
 
+--nextPart3775036.HZBe2hny2s
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 
-http://gcc.gnu.org/bugzilla/show_bug.cgi?id=35392
+Helge Deller wrote:
 
-the gcc folks finally fixed that one it seems
+> atomic_sub() is defined as
+> and if VAL is of type unsigned int (as returned by sizeof()), negating
+> this value will overflow. Fix this by type-casting VAL to int type:
 
-(but while there are some false positives, esp with older gcc, the majority were real originally.. just those all got fixed)
+Something in the first line of the message seems missing.
 
+Eike
+--nextPart3775036.HZBe2hny2s
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
+
+iEYEABECAAYFAlEukhcACgkQXKSJPmm5/E48uACfTp7yYg2s1WydQFuYZjN41UJT
+wxQAoJ0gZPludkFQGK+yjQFdrB4L03gf
+=01GF
+-----END PGP SIGNATURE-----
+
+--nextPart3775036.HZBe2hny2s--
 
