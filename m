@@ -1,37 +1,38 @@
-From: Helge Deller <deller@gmx.de>
-Subject: parisc: remove unused variable 'compat_val'
-Date: Wed, 27 Feb 2013 23:19:46 +0100
-Message-ID: <20130227221946.GA2896@p100.box>
-References: <20130227221137.GA2806@p100.box>
+From: "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] Consolidate CONFIG_DEBUG_STRICT_USER_COPY_CHECK
+Date: Wed, 27 Feb 2013 14:19:16 -0800
+Message-ID: <512E8664.3070903@zytor.com>
+References: <1361934016-22630-1-git-send-email-sboyd@codeaurora.org> <201302272032.21014.arnd@arndb.de> <512E6FA9.4060504@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
+	linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
+	Arjan van de Ven <arjan@linux.intel.com>,
+	Helge Deller <deller@gmx.de>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Chris Metcalf <cmetcalf@tilera.com>
+To: Stephen Boyd <sboyd@codeaurora.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130227221137.GA2806@p100.box>
+In-Reply-To: <512E6FA9.4060504@codeaurora.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-commit db0c2fcccf9ea3dc30f6e3b910bca7f819fb3a21
-Author: Helge Deller <deller@gmx.de>
-Date:   Wed Feb 27 00:02:31 2013 +0100
+On 02/27/2013 12:42 PM, Stephen Boyd wrote:
+>>
+>> It's fine to do your patch as a first step though, which would not
+>> change the behavior.
+> 
+> A lot of arches seem to not want to enable it because false positives
+> are everywhere. It really depends on how good the compiler is at doing
+> constant propagation and dead code removal.
+> 
 
-parisc: remove unused variable 'compat_val'
+Although some of the cases I have seen being flagged as "false
+positives" have been real bugs.
 
-clean up after commit 6e26aab98ce8a818fb1ec47f8f727a8480a9011b
-(switch to generic sigaltstack)
+	-hpa
 
-Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
-index 98e9e71..940188d 100644
---- a/arch/parisc/kernel/signal.c
-+++ b/arch/parisc/kernel/signal.c
-@@ -242,7 +242,6 @@ setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
- 	unsigned long haddr, sigframe_size;
- 	int err = 0;
- #ifdef CONFIG_64BIT
--	compat_int_t compat_val;
- 	struct compat_rt_sigframe __user * compat_frame;
- 	compat_sigset_t compat_set;
- #endif
