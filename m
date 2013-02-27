@@ -1,8 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: parisc: switch to compat_functions of io_setup, io_getevents and
- io_submit
-Date: Wed, 27 Feb 2013 23:17:13 +0100
-Message-ID: <20130227221713.GA2872@p100.box>
+Subject: parisc: remove unused variable 'compat_val'
+Date: Wed, 27 Feb 2013 23:19:46 +0100
+Message-ID: <20130227221946.GA2896@p100.box>
 References: <20130227221137.GA2806@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -13,29 +12,26 @@ In-Reply-To: <20130227221137.GA2806@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-commit c58c540c25a4ae98e021876cb32afb7794428267
+commit db0c2fcccf9ea3dc30f6e3b910bca7f819fb3a21
 Author: Helge Deller <deller@gmx.de>
-Date:   Wed Feb 27 00:32:10 2013 +0100
+Date:   Wed Feb 27 00:02:31 2013 +0100
 
-parisc: switch to compat_functions of io_setup, io_getevents and io_submit
+parisc: remove unused variable 'compat_val'
+
+clean up after commit 6e26aab98ce8a818fb1ec47f8f727a8480a9011b
+(switch to generic sigaltstack)
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-index fc9cab1..a410b1b 100644
---- a/arch/parisc/kernel/syscall_table.S
-+++ b/arch/parisc/kernel/syscall_table.S
-@@ -310,10 +310,10 @@
- 	ENTRY_COMP(sched_getaffinity)
- 	ENTRY_SAME(ni_syscall)	/* set_thread_area */
- 	ENTRY_SAME(ni_syscall)	/* get_thread_area */
--	ENTRY_SAME(io_setup)		/* 215 */
-+	ENTRY_COMP(io_setup)		/* 215 */
- 	ENTRY_SAME(io_destroy)
--	ENTRY_SAME(io_getevents)
--	ENTRY_SAME(io_submit)
-+	ENTRY_COMP(io_getevents)
-+	ENTRY_COMP(io_submit)
- 	ENTRY_SAME(io_cancel)
- 	ENTRY_SAME(alloc_hugepages)	/* 220 */
- 	ENTRY_SAME(free_hugepages)
+diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
+index 98e9e71..940188d 100644
+--- a/arch/parisc/kernel/signal.c
++++ b/arch/parisc/kernel/signal.c
+@@ -242,7 +242,6 @@ setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
+ 	unsigned long haddr, sigframe_size;
+ 	int err = 0;
+ #ifdef CONFIG_64BIT
+-	compat_int_t compat_val;
+ 	struct compat_rt_sigframe __user * compat_frame;
+ 	compat_sigset_t compat_set;
+ #endif
