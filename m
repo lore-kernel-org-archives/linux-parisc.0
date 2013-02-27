@@ -1,43 +1,51 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: parisc: fix compile warnings triggered by atomic_sub(sizeof(),v)
-Date: Thu, 28 Feb 2013 00:09:05 +0100
-Message-ID: <5949791.xCBY7uv0Ms@donald.sf-tec.de>
-References: <20130227221137.GA2806@p100.box> <20130227221552.GA2817@p100.box>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH] Consolidate CONFIG_DEBUG_STRICT_USER_COPY_CHECK
+Date: Wed, 27 Feb 2013 15:19:28 -0800
+Message-ID: <512E9480.7020306@codeaurora.org>
+References: <1361934016-22630-1-git-send-email-sboyd@codeaurora.org> <201302272032.21014.arnd@arndb.de> <512E6FA9.4060504@codeaurora.org> <512E8664.3070903@zytor.com> <512E8E48.8020007@codeaurora.org> <512E8ECF.1080307@zytor.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3775036.HZBe2hny2s"; micalg="pgp-sha1"; protocol="application/pgp-signature"
-Cc: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@hansenpartnership.com>
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=UTF-8
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, Ingo Molnar <mingo@elte.hu>,
+	linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
+	Arjan van de Ven <arjan@linux.intel.com>,
+	Helge Deller <deller@gmx.de>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Chris Metcalf <cmetcalf@tilera.com>
+To: "H. Peter Anvin" <hpa@zytor.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130227221552.GA2817@p100.box>
+In-Reply-To: <512E8ECF.1080307@zytor.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On 02/27/13 14:55, H. Peter Anvin wrote:
+> On 02/27/2013 02:52 PM, Stephen Boyd wrote:
+>> On 02/27/13 14:19, H. Peter Anvin wrote:
+>>> On 02/27/2013 12:42 PM, Stephen Boyd wrote:
+>>>>> It's fine to do your patch as a first step though, which would not
+>>>>> change the behavior.
+>>>> A lot of arches seem to not want to enable it because false positives
+>>>> are everywhere. It really depends on how good the compiler is at doing
+>>>> constant propagation and dead code removal.
+>>>>
+>>> Although some of the cases I have seen being flagged as "false
+>>> positives" have been real bugs.
+>> There were so many false-positives on x86_64 that Andrew eventually
+>> dropped my patch to add support for this option to the copy_from_user()
+>> function there.
+>>
+> I would probably have taken it, especially if it came with more x86-64
+> to i386 unification.
+>
+> It's an option, though.
 
---nextPart3775036.HZBe2hny2s
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+You acked the patch[1]. Will you pick it up?
 
-Helge Deller wrote:
+[1] https://patchwork.kernel.org/patch/833192/
 
-> atomic_sub() is defined as
-> and if VAL is of type unsigned int (as returned by sizeof()), negating
-> this value will overflow. Fix this by type-casting VAL to int type:
-
-Something in the first line of the message seems missing.
-
-Eike
---nextPart3775036.HZBe2hny2s
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iEYEABECAAYFAlEukhcACgkQXKSJPmm5/E48uACfTp7yYg2s1WydQFuYZjN41UJT
-wxQAoJ0gZPludkFQGK+yjQFdrB4L03gf
-=01GF
------END PGP SIGNATURE-----
-
---nextPart3775036.HZBe2hny2s--
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+hosted by The Linux Foundation
 
