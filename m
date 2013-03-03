@@ -1,60 +1,62 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc updates for v3.9
-Date: Sun, 3 Mar 2013 21:41:49 +0100
-Message-ID: <20130303204149.GA28970@p100.box>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCH] [parisc] do not install modules when installing kernel
+Date: Sun, 3 Mar 2013 16:25:20 -0500
+Message-ID: <BLU0-SMTP686B9725460575E9DE1B0597F90@phx.gbl>
+References: <3763734.hDYRZelWPG@donald.sf-tec.de> <51325617.80102@gmx.de>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>,
+	linux-parisc@vger.kernel.org, James.Bottomley@hansenpartnership.com
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <51325617.80102@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+Hi Helge,
 
-The following changes since commit b0af9cd9aab60ceb17d3ebabb9fdf4ff0a99cf50:
+On 2-Mar-13, at 2:42 PM, Helge Deller wrote:
 
-  Merge tag 'lzo-update-signature-20130226' of git://github.com/markus-oberhumer/linux (2013-02-28 20:45:52 -0800)
+> Applied to my fixes-for-3.9-latest branch at
+> http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git
 
-are available in the git repository at:
+
+I built the above branch yesterday.  We seem to have a regression in  
+behavior.
+My build of perl 5.14.2-18 failed with the following error:
+
+....
+Failed 1 test out of 2039, 99.95% okay.
+         op/sigdispatch.t
+### Since not all tests were successful, you may want to run some of
+### them individually and examine any diagnostic messages they produce.
+### See the INSTALL document's section on "make test".
+### You have a good chance to get more information by running
+###   ./perl harness
+### in the 't' directory since most (>=80%) of the tests succeeded.
+### You may have to set your dynamic library search path,
+### LD_LIBRARY_PATH, to point to the build directory:
+###   setenv LD_LIBRARY_PATH `pwd`; cd t; ./perl harness
+###   LD_LIBRARY_PATH=`pwd`; export LD_LIBRARY_PATH; cd t; ./perl  
+harness
+###   export LD_LIBRARY_PATH=`pwd`; cd t; ./perl harness
+### for csh-style shells, like tcsh; or for traditional/modern
+### Bourne-style shells, like bash, ksh, and zsh, respectively.
+u=18.18  s=28.38  cu=1367.86  cs=974.72  scripts=2039  tests=465774
+make[1]: *** [test] Error 1
+make[1]: Leaving directory `/home/dave/debian/perl/perl-5.14.2'
+make: *** [perl.static] Error 2
+dpkg-buildpackage: error: debian/rules build gave error exit status 2
+Build command 'cd perl-5.14.2 && dpkg-buildpackage -b -uc' failed.
+
+I ran ./perl harness again and the same test failed.  As this looked
+like a kernel issue, I tried the build again with 3.7.6+ and had a  
+successful
+build.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git fixes-for-3.9-latest
 
-for you to fetch changes up to cf8e18ea2f8be26e8f9e44ed677d25f558ca301a:
-
-  parisc: fix redefinition of SET_PERSONALITY (2013-03-02 20:15:28 +0100)
-
-----------------------------------------------------------------
-
-Second round of patches for the parisc architecture for Linux 3.9
-
-The most important fix in this branch is the switch of io_setup,
-io_getevents and io_submit syscalls to use the available compat
-syscalls when running 32bit userspace on 64bit kernel.
-Other than that it's mostly removal of compile warnings.
-
-----------------------------------------------------------------
-Helge Deller (7):
-      parisc: select ARCH_WANT_FRAME_POINTERS
-      parisc: switch to compat_functions of io_setup, io_getevents and io_submit
-      parisc: remove unused variable 'compat_val'
-      parisc: avoid unitialized variable warning in pa_memcpy()
-      parisc: check return value of down_interruptible() in hp_sdc_rtc.c
-      parisc: fix compile warnings triggered by atomic_sub(sizeof(),v)
-      parisc: fix redefinition of SET_PERSONALITY
-
-Rolf Eike Beer (1):
-      parisc: do not install modules when installing kernel
-
- arch/parisc/Kconfig                |  1 +
- arch/parisc/Makefile               |  4 +---
- arch/parisc/include/asm/atomic.h   |  4 ++--
- arch/parisc/kernel/binfmt_elf32.c  |  1 +
- arch/parisc/kernel/signal.c        |  1 -
- arch/parisc/kernel/syscall_table.S |  6 +++---
- arch/parisc/lib/memcpy.c           |  2 +-
- drivers/input/misc/hp_sdc_rtc.c    | 15 ++++++++++++---
- 8 files changed, 21 insertions(+), 13 deletions(-)
