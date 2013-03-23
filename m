@@ -1,41 +1,42 @@
-From: Jeroen Roovers <jer@gentoo.org>
-Subject: Re: PA8800 with 3.9.0-rc1-JeR-10942-g6dbe51c : WARNING: at
- lib/timerqueue.c:74
-Date: Thu, 21 Mar 2013 15:57:04 +0100
-Message-ID: <20130321155704.7aeaf169@marga.jer-c2.orkz.net>
-References: <20130315152226.46ad0993@marga.jer-c2.orkz.net>
-	<BLU0-SMTP3801FFE58A0BCC9C8836A597EE0@phx.gbl>
-	<20130318135831.7c14b6e7@marga.jer-c2.orkz.net>
-	<5148E903.1020105@gmx.de>
-	<20130320182756.7b0e4f5d@marga.jer-c2.orkz.net>
-	<514A183A.7090809@bell.net>
-	<BLU0-SMTP790A969254E562667034B397EB0@phx.gbl>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: Did Squeeze ever make it to HPPA?
+Date: Sat, 23 Mar 2013 23:04:51 +0100
+Message-ID: <514E2703.9000507@gmx.de>
+References: <514C43F3.4040206@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: John David Anglin <dave.anglin@bell.net>,
-	Helge Deller <deller@gmx.de>
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: debian-hppa@lists.debian.org,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: Kurt Fitzner <kurt.fitzner@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP790A969254E562667034B397EB0@phx.gbl>
+In-Reply-To: <514C43F3.4040206@gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 20 Mar 2013 22:02:55 -0400
-John David Anglin <dave.anglin@bell.net> wrote:
+Hi Kurt,
 
-> On 20-Mar-13, at 4:12 PM, John David Anglin wrote:
-> 
-> > On 3/20/2013 1:27 PM, Jeroen Roovers wrote:
-> >> +CONFIG_PREEMPT_NONE=y
-> > Given that CONFIG_PREEMPT is broken, we must be missing at least one
-> > preempt_disable()/preempt_enable() pair.
-> 
-> 
-> You might try the attached change.  My rp3440 booted with  
-> CONFIG_PREEMPT=y
-> and CONFIG_PREEMPT_NONE=y with it.  The fix is just a guess.
+On 03/22/2013 12:43 PM, Kurt Fitzner wrote:
+> I see on the PA-RISC Linux web site a note about Squeeze being worked on
+> for HPPA.  I also see a few old discussions on the subject here.  Did
+> this ever make it past the discussion stage?
 
-That gave me the exact same error.
+Partly...
 
+> Was there an HPPA testing back in Lenny, or just unstable?  What I am
+> looking for, I suppose, is the most "squeeze-like" packages available.
 
-     jer
+- latest before-squeeze unstable packages were moved to debian-ports.org
+- John David Anglin has continued to build current debian "unstable" packages
+- I've provided a download-location at ftp.parisc-linux.org for those.
+
+So, what you need to do is to drop other lines from your /etc/apt/sources.list file, and instead add those two lines:
+
+deb ftp://ftp.de.debian.org/debian-ports unstable main
+deb ftp://ftp.parisc-linux.org/debian-ports/unstable  unstable main
+
+This will bring you up to debian-unstable (which is more like wheezy) for the most important packages.
+If you miss specific packages, please let us know.
+
+Dave and me are still hoping to be able to set up a buildd-server for parisc again.
+
+Helge
