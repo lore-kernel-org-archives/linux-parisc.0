@@ -1,93 +1,146 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Did Squeeze ever make it to HPPA?
-Date: Sat, 23 Mar 2013 18:53:58 -0400
-Message-ID: <BLU0-SMTP73FA3D9E15C0195C11D97097D50@phx.gbl>
-References: <514C43F3.4040206@gmail.com> <514E2703.9000507@gmx.de>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Kurt Fitzner <kurt.fitzner@gmail.com>,
-	debian-hppa@lists.debian.org,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <514E2703.9000507@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Jiang Liu <liuj97@gmail.com>
+Subject: [RFC PATCH v2, part4 26/39] mm/PARISC: prepare for removing num_physpages and simplify mem_init()
+Date: Sun, 24 Mar 2013 15:25:10 +0800
+Message-ID: <1364109934-7851-45-git-send-email-jiang.liu@huawei.com>
+References: <1364109934-7851-1-git-send-email-jiang.liu@huawei.com>
+Cc: Jiang Liu <jiang.liu@huawei.com>,
+	Wen Congyang <wency@cn.fujitsu.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Minchan Kim <minchan@kernel.org>,
+	KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>,
+	Michal Hocko <mhocko@suse.cz>,
+	Jianguo Wu <wujianguo@huawei.com>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-parisc@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>,
+	David Rientjes <rientjes@google.com>
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <1364109934-7851-1-git-send-email-jiang.liu@huawei.com>
+List-ID: <linux-mm.kvack.org>
 
-On 23-Mar-13, at 6:04 PM, Helge Deller wrote:
+Prepare for removing num_physpages and simplify mem_init().
 
-> Hi Kurt,
->
-> On 03/22/2013 12:43 PM, Kurt Fitzner wrote:
->> I see on the PA-RISC Linux web site a note about Squeeze being  
->> worked on
->> for HPPA.  I also see a few old discussions on the subject here.  Did
->> this ever make it past the discussion stage?
->
-> Partly...
->
->> Was there an HPPA testing back in Lenny, or just unstable?  What I am
->> looking for, I suppose, is the most "squeeze-like" packages  
->> available.
->
-> - latest before-squeeze unstable packages were moved to debian- 
-> ports.org
-> - John David Anglin has continued to build current debian "unstable"  
-> packages
-> - I've provided a download-location at ftp.parisc-linux.org for those.
+Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Michal Hocko <mhocko@suse.cz>
+Cc: David Rientjes <rientjes@google.com>
+Cc: linux-parisc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ arch/parisc/mm/init.c |   46 +++-------------------------------------------
+ 1 file changed, 3 insertions(+), 43 deletions(-)
 
-I would really recommend going with the packages at ftp://ftp.parisc-linux.org/debian-ports/unstable
-instead of the squeeze packages on debian-ports.org.  The dependencies  
-are somewhat broken for
-the stuff on debian-ports.org and great care is needed in installing  
-these packages.  For example,
-the udev package on debian-ports is a bootstrap breaker.  It might be  
-that we could fill in the squeeze
-port but it would be a fair bit of work.
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 1fe9d841..f80c175 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -214,7 +214,6 @@ static void __init setup_bootmem(void)
+ 	mem_limit_func();       /* check for "mem=" argument */
+ 
+ 	mem_max = 0;
+-	num_physpages = 0;
+ 	for (i = 0; i < npmem_ranges; i++) {
+ 		unsigned long rsize;
+ 
+@@ -229,10 +228,8 @@ static void __init setup_bootmem(void)
+ 				npmem_ranges = i + 1;
+ 				mem_max = mem_limit;
+ 			}
+-	        num_physpages += pmem_ranges[i].pages;
+ 			break;
+ 		}
+-	    num_physpages += pmem_ranges[i].pages;
+ 		mem_max += rsize;
+ 	}
+ 
+@@ -532,7 +529,7 @@ void free_initmem(void)
+ 	 * pages are no-longer executable */
+ 	flush_icache_range(init_begin, init_end);
+ 	
+-	num_physpages += free_initmem_default(-1);
++	free_initmem_default(-1);
+ 
+ 	/* set up a new led state on systems shipped LED State panel */
+ 	pdc_chassis_send_status(PDC_CHASSIS_DIRECT_BCOMPLETE);
+@@ -580,8 +577,6 @@ unsigned long pcxl_dma_start __read_mostly;
+ 
+ void __init mem_init(void)
+ {
+-	int codesize, reservedpages, datasize, initsize;
+-
+ 	/* Do sanity checks on page table constants */
+ 	BUILD_BUG_ON(PTE_ENTRY_SIZE != sizeof(pte_t));
+ 	BUILD_BUG_ON(PMD_ENTRY_SIZE != sizeof(pmd_t));
+@@ -603,33 +598,6 @@ void __init mem_init(void)
+ 	}
+ #endif
+ 
+-	codesize = (unsigned long)_etext - (unsigned long)_text;
+-	datasize = (unsigned long)_edata - (unsigned long)_etext;
+-	initsize = (unsigned long)__init_end - (unsigned long)__init_begin;
+-
+-	reservedpages = 0;
+-{
+-	unsigned long pfn;
+-#ifdef CONFIG_DISCONTIGMEM
+-	int i;
+-
+-	for (i = 0; i < npmem_ranges; i++) {
+-		for (pfn = node_start_pfn(i); pfn < node_end_pfn(i); pfn++) {
+-			if (PageReserved(pfn_to_page(pfn)))
+-				reservedpages++;
+-		}
+-	}
+-#else /* !CONFIG_DISCONTIGMEM */
+-	for (pfn = 0; pfn < max_pfn; pfn++) {
+-		/*
+-		 * Only count reserved RAM pages
+-		 */
+-		if (PageReserved(pfn_to_page(pfn)))
+-			reservedpages++;
+-	}
+-#endif
+-}
+-
+ #ifdef CONFIG_PA11
+ 	if (hppa_dma_ops == &pcxl_dma_ops) {
+ 		pcxl_dma_start = (unsigned long)SET_MAP_OFFSET(MAP_START);
+@@ -643,15 +611,7 @@ void __init mem_init(void)
+ 	parisc_vmalloc_start = SET_MAP_OFFSET(MAP_START);
+ #endif
+ 
+-	printk(KERN_INFO "Memory: %luk/%luk available (%dk kernel code, %dk reserved, %dk data, %dk init)\n",
+-		nr_free_pages() << (PAGE_SHIFT-10),
+-		num_physpages << (PAGE_SHIFT-10),
+-		codesize >> 10,
+-		reservedpages << (PAGE_SHIFT-10),
+-		datasize >> 10,
+-		initsize >> 10
+-	);
+-
++	mem_init_print_info(NULL);
+ #ifdef CONFIG_DEBUG_KERNEL /* double-sanity-check paranoia */
+ 	printk("virtual kernel memory layout:\n"
+ 	       "    vmalloc : 0x%p - 0x%p   (%4ld MB)\n"
+@@ -1099,6 +1059,6 @@ void flush_tlb_all(void)
+ #ifdef CONFIG_BLK_DEV_INITRD
+ void free_initrd_mem(unsigned long start, unsigned long end)
+ {
+-	num_physpages += free_reserved_area(start, end, -1, "initrd");
++	free_reserved_area(start, end, -1, "initrd");
+ }
+ #endif
+-- 
+1.7.9.5
 
->
-> So, what you need to do is to drop other lines from your /etc/apt/ 
-> sources.list file, and instead add those two lines:
->
-> deb ftp://ftp.de.debian.org/debian-ports unstable main
-> deb ftp://ftp.parisc-linux.org/debian-ports/unstable  unstable main
-
-For unstable sources, add this line:
-
-deb-src http://ftp.debian.org/debian/ unstable main contrib non-free
-
->
-> This will bring you up to debian-unstable (which is more like  
-> wheezy) for the most important packages.
-> If you miss specific packages, please let us know.
-
-I'm wondering if we should capture what we have as it's almost  
-wheezy.  Soon unstable will start to
-diverge for the next release.
-
-You should be aware that I have not built the current kernel package  
-as I we need the latest fixes
-in the kernel.org tree.
-
->
-> Dave and me are still hoping to be able to set up a buildd-server  
-> for parisc again.
-
-Without a buildd-server, it's a bit hard to tell what we are  
-missing...  However, we currently have all
-the major tool chains that have been ported to hppa.  Thus, most stuff  
-can be built from source without
-problems.  However, we have problems with openjdk and other similar  
-packages that don't
-support stack grows up.
-
->
-> Helge
-
-
-Dave
 --
-John David Anglin	dave.anglin@bell.net
-
-
-
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
