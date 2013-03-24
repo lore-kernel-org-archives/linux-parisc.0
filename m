@@ -1,7 +1,7 @@
 From: Jiang Liu <liuj97@gmail.com>
-Subject: [RFC PATCH v2, part4 26/39] mm/PARISC: prepare for removing num_physpages and simplify mem_init()
-Date: Sun, 24 Mar 2013 15:25:10 +0800
-Message-ID: <1364109934-7851-45-git-send-email-jiang.liu@huawei.com>
+Subject: [RFC PATCH v2, part4 27/39] mm/PARISC: prepare for removing num_physpages and simplify mem_init()
+Date: Sun, 24 Mar 2013 15:25:11 +0800
+Message-ID: <1364109934-7851-46-git-send-email-jiang.liu@huawei.com>
 References: <1364109934-7851-1-git-send-email-jiang.liu@huawei.com>
 Cc: Jiang Liu <jiang.liu@huawei.com>,
 	Wen Congyang <wency@cn.fujitsu.com>,
