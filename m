@@ -1,16 +1,21 @@
 From: Jiang Liu <liuj97@gmail.com>
-Subject: [RFC PATCH v2, part4 27/39] mm/PARISC: prepare for removing num_physpages and simplify mem_init()
-Date: Sun, 24 Mar 2013 15:25:11 +0800
-Message-ID: <1364109934-7851-46-git-send-email-jiang.liu@huawei.com>
-References: <1364109934-7851-1-git-send-email-jiang.liu@huawei.com>
+Subject: [PATCH v3, part4 27/39] mm/PARISC: prepare for removing num_physpages and simplify mem_init()
+Date: Tue, 26 Mar 2013 23:54:46 +0800
+Message-ID: <1364313298-17336-28-git-send-email-jiang.liu@huawei.com>
+References: <1364313298-17336-1-git-send-email-jiang.liu@huawei.com>
 Cc: Jiang Liu <jiang.liu@huawei.com>,
 	Wen Congyang <wency@cn.fujitsu.com>,
 	Mel Gorman <mgorman@suse.de>,
 	Minchan Kim <minchan@kernel.org>,
 	KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>,
 	Michal Hocko <mhocko@suse.cz>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+	David Howells <dhowells@redhat.com>,
+	Mark Salter <msalter@redhat.com>,
 	Jianguo Wu <wujianguo@huawei.com>,
 	linux-mm@kvack.org,
+	linux-arch@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>,
@@ -19,7 +24,7 @@ Cc: Jiang Liu <jiang.liu@huawei.com>,
 To: Andrew Morton <akpm@linux-foundation.org>,
 	David Rientjes <rientjes@google.com>
 Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <1364109934-7851-1-git-send-email-jiang.liu@huawei.com>
+In-Reply-To: <1364313298-17336-1-git-send-email-jiang.liu@huawei.com>
 List-ID: <linux-mm.kvack.org>
 
 Prepare for removing num_physpages and simplify mem_init().
@@ -32,6 +37,15 @@ Cc: Michal Hocko <mhocko@suse.cz>
 Cc: David Rientjes <rientjes@google.com>
 Cc: linux-parisc@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
+---
+Hi all,
+	Sorry for my mistake that my previous patch series has been screwed up.
+So I regenerate a third version and also set up a git tree at:
+	git://github.com/jiangliu/linux.git mem_init
+	Any help to review and test are welcomed!
+
+	Regards!
+	Gerry
 ---
  arch/parisc/mm/init.c |   46 +++-------------------------------------------
  1 file changed, 3 insertions(+), 43 deletions(-)
