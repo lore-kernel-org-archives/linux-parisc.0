@@ -1,84 +1,73 @@
-From: Fengguang Wu <fengguang.wu@intel.com>
-Subject: lib/mpi/generic_mpih-mul1.c:50:3: error: inconsistent operand
- constraints in an 'asm'
-Date: Wed, 27 Mar 2013 09:06:56 +0800
-Message-ID: <20130327010656.GB16102@localhost>
-References: <5151d698.hmaj4mi8UziPZgoG%fengguang.wu@intel.com>
+From: Rusty Russell <rusty@rustcorp.com.au>
+Subject: Re: [PATCH] Add non-zero module sections to sysfs
+Date: Fri, 05 Apr 2013 14:30:50 +1030
+Message-ID: <87vc81lj7x.fsf@rustcorp.com.au>
+References: <1364994499-23708-1-git-send-email-sisewank@cip.cs.fau.de> <87mwtf3ya1.fsf@rustcorp.com.au> <515D4A7F.5070102@cip.cs.fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: Dmitry Kasatkin <dmitry.kasatkin@intel.com>
+Cc: Sebastian Wankerl <sisewank@cip.cs.fau.de>,
+	linux-kernel@vger.kernel.org,
+	Philip Kranz <philip.kranz@googlemail.com>,
+	i4passt@lists.informatik.uni-erlangen.de,
+	linux-parisc@vger.kernel.org
+To: Sebastian Wankerl <sisewank@cip.cs.fau.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <5151d698.hmaj4mi8UziPZgoG%fengguang.wu@intel.com>
+In-Reply-To: <515D4A7F.5070102@cip.cs.fau.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Dmitry,
+Sebastian Wankerl <sisewank@cip.cs.fau.de> writes:
+> On 04/04/13 03:00, Rusty Russell wrote:
+>> Sebastian Wankerl <sisewank@cip.cs.fau.de> writes:
+>>> Add non-zero module sections to sysfs on architectures unequal to PARISC.
+>>> KGDB needs all module sections for proper module debugging. Therefore, commit 
+>>> 35dead4235e2b67da7275b4122fed37099c2f462 is revoked except for PARISC
+>>> architecture.
+>> #ifdef CONFIG_PARISC in the middle of kernel/module.c is super-ugly, and
+>> wrong.
+>
+> I don't see why this is wrong. It used to load all sections to sysfs
+> until the patch mentioned. Actually, it is the PARISC build chain which
+> is broken.
 
-FYI, kernel build failed on
+Exactly.  Don't workaround it here, revert it and put the
+duplicate-section-name fixup in parisc where it belongs.
 
-tree:   git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux master
-head:   a12183c62717ac4579319189a00f5883a18dff08
-commit: 5ce3e312ec5c11abce13215be70700778bf601f0 crypto: GnuPG based MPI lib - header files (part 2)
-date:   1 year, 5 months ago
-config: make ARCH=parisc allyesconfig
+Assuming parisc still produces these dup sections: that patch is 4 years
+old now.
 
-All error/warnings:
+Untested:
 
-   In file included from lib/mpi/generic_mpih-mul1.c:30:0:
-   lib/mpi/longlong.h:355:1: warning: function declaration isn't a prototype [-Wstrict-prototypes]
-   lib/mpi/generic_mpih-mul1.c: In function 'mpihelp_mul_1':
->> lib/mpi/generic_mpih-mul1.c:50:3: error: inconsistent operand constraints in an 'asm'
---
-   In file included from lib/mpi/generic_mpih-mul2.c:30:0:
-   lib/mpi/longlong.h:355:1: warning: function declaration isn't a prototype [-Wstrict-prototypes]
-   lib/mpi/generic_mpih-mul2.c: In function 'mpihelp_addmul_1':
->> lib/mpi/generic_mpih-mul2.c:49:3: error: inconsistent operand constraints in an 'asm'
---
-   In file included from lib/mpi/generic_mpih-mul3.c:30:0:
-   lib/mpi/longlong.h:355:1: warning: function declaration isn't a prototype [-Wstrict-prototypes]
-   lib/mpi/generic_mpih-mul3.c: In function 'mpihelp_submul_1':
->> lib/mpi/generic_mpih-mul3.c:49:3: error: inconsistent operand constraints in an 'asm'
---
-   In file included from lib/mpi/mpih-div.c:31:0:
-   lib/mpi/longlong.h:355:1: warning: function declaration isn't a prototype [-Wstrict-prototypes]
-   lib/mpi/mpih-div.c: In function 'mpihelp_mod_1':
->> lib/mpi/mpih-div.c:97:5: error: inconsistent operand constraints in an 'asm'
->> lib/mpi/mpih-div.c:97:5: error: inconsistent operand constraints in an 'asm'
->> lib/mpi/mpih-div.c:106:4: error: inconsistent operand constraints in an 'asm'
->> lib/mpi/mpih-div.c:106:4: error: inconsistent operand constraints in an 'asm'
->> lib/mpi/mpih-div.c:135:5: error: inconsistent operand constraints in an 'asm'
->> lib/mpi/mpih-div.c:135:5: error: inconsistent operand constraints in an 'asm'
+diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
+index 2a625fb..28d32a2 100644
+--- a/arch/parisc/kernel/module.c
++++ b/arch/parisc/kernel/module.c
+@@ -341,6 +341,11 @@ int module_frob_arch_sections(CONST Elf_Ehdr *hdr,
+ 			    ".PARISC.unwind", 14) == 0)
+ 			me->arch.unwind_section = i;
+ 
++		/* we produce multiple, empty .text sections, and kallsyms
++		 * gets upset.  make non-alloc so it doesn't see them. */
++		if (sechdrs[i].sh_size == 0)
++			sechdrs[i].sh_flags &= ~SHF_ALLOC;
++
+ 		if (sechdrs[i].sh_type != SHT_RELA)
+ 			continue;
+ 
+>> My preference would be to fix kgdb.  If the section is empty, what need
+>> does it have to examine it?
+>
+> GDB needs to know all sections of the binary and its addresses.
 
-vim +/asm +50 lib/mpi/generic_mpih-mul1.c
+Why?  Does something refer to this empty section?  Why has noone noticed
+this since 2009?
 
-cdec9cb5 Dmitry Kasatkin 2011-08-31  34  	      mpi_limb_t s2_limb)
-cdec9cb5 Dmitry Kasatkin 2011-08-31  35  {
-cdec9cb5 Dmitry Kasatkin 2011-08-31  36  	mpi_limb_t cy_limb;
-cdec9cb5 Dmitry Kasatkin 2011-08-31  37  	mpi_size_t j;
-cdec9cb5 Dmitry Kasatkin 2011-08-31  38  	mpi_limb_t prod_high, prod_low;
-cdec9cb5 Dmitry Kasatkin 2011-08-31  39  
-cdec9cb5 Dmitry Kasatkin 2011-08-31  40  	/* The loop counter and index J goes from -S1_SIZE to -1.  This way
-cdec9cb5 Dmitry Kasatkin 2011-08-31  41  	 * the loop becomes faster.  */
-cdec9cb5 Dmitry Kasatkin 2011-08-31  42  	j = -s1_size;
-cdec9cb5 Dmitry Kasatkin 2011-08-31  43  
-cdec9cb5 Dmitry Kasatkin 2011-08-31  44  	/* Offset the base pointers to compensate for the negative indices.  */
-cdec9cb5 Dmitry Kasatkin 2011-08-31  45  	s1_ptr -= j;
-cdec9cb5 Dmitry Kasatkin 2011-08-31  46  	res_ptr -= j;
-cdec9cb5 Dmitry Kasatkin 2011-08-31  47  
-cdec9cb5 Dmitry Kasatkin 2011-08-31  48  	cy_limb = 0;
-cdec9cb5 Dmitry Kasatkin 2011-08-31  49  	do {
-cdec9cb5 Dmitry Kasatkin 2011-08-31 @50  		umul_ppmm(prod_high, prod_low, s1_ptr[j], s2_limb);
-cdec9cb5 Dmitry Kasatkin 2011-08-31  51  		prod_low += cy_limb;
-cdec9cb5 Dmitry Kasatkin 2011-08-31  52  		cy_limb = (prod_low < cy_limb ? 1 : 0) + prod_high;
-cdec9cb5 Dmitry Kasatkin 2011-08-31  53  		res_ptr[j] = prod_low;
-cdec9cb5 Dmitry Kasatkin 2011-08-31  54  	} while (++j);
-cdec9cb5 Dmitry Kasatkin 2011-08-31  55  
-cdec9cb5 Dmitry Kasatkin 2011-08-31  56  	return cy_limb;
-cdec9cb5 Dmitry Kasatkin 2011-08-31  57  }
+> It is generally useful to be able to check up all sections of the binary
+> regardless if they are empty or not so one can see the binary's
+> structure.
 
+A zero-length section doesn't change the binary's structure.  You don't
+see non-SHF_ALLOC sections either.
 
-
----
-0-DAY kernel build testing backend              Open Source Technology Center
-http://lists.01.org/mailman/listinfo/kbuild                 Intel Corporation
+Cheers,
+Rusty.
