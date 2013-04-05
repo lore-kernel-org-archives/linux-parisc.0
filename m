@@ -1,64 +1,52 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Sebastian Wankerl <sisewank@cip.cs.fau.de>
 Subject: Re: [PATCH] Add non-zero module sections to sysfs
-Date: Fri, 05 Apr 2013 12:07:15 +0200
-Message-ID: <1365156435.1970.31.camel@dabdike>
-References: <1364994499-23708-1-git-send-email-sisewank@cip.cs.fau.de>
-	 <87mwtf3ya1.fsf@rustcorp.com.au> <515D4A7F.5070102@cip.cs.fau.de>
-	 <87vc81lj7x.fsf@rustcorp.com.au>
+Date: Fri, 05 Apr 2013 11:40:29 +0200
+Message-ID: <515E9C0D.503@cip.cs.fau.de>
+References: <1364994499-23708-1-git-send-email-sisewank@cip.cs.fau.de> <87mwtf3ya1.fsf@rustcorp.com.au> <515D4A7F.5070102@cip.cs.fau.de> <87vc81lj7x.fsf@rustcorp.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Cc: Sebastian Wankerl <sisewank@cip.cs.fau.de>,
-	linux-kernel@vger.kernel.org,
-	Philip Kranz <philip.kranz@googlemail.com>,
-	i4passt@lists.informatik.uni-erlangen.de,
-	linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Philip Kranz <philip.kranz@googlemail.com>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	i4passt@lists.informatik.uni-erlangen.de
 To: Rusty Russell <rusty@rustcorp.com.au>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <87vc81lj7x.fsf@rustcorp.com.au>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2013-04-05 at 14:30 +1030, Rusty Russell wrote:
-> Sebastian Wankerl <sisewank@cip.cs.fau.de> writes:
-> > On 04/04/13 03:00, Rusty Russell wrote:
-> >> Sebastian Wankerl <sisewank@cip.cs.fau.de> writes:
-> >>> Add non-zero module sections to sysfs on architectures unequal to PARISC.
-> >>> KGDB needs all module sections for proper module debugging. Therefore, commit 
-> >>> 35dead4235e2b67da7275b4122fed37099c2f462 is revoked except for PARISC
-> >>> architecture.
-
-Thanks for actually cc'ing us.
-
-> >> #ifdef CONFIG_PARISC in the middle of kernel/module.c is super-ugly, and
-> >> wrong.
-> >
-> > I don't see why this is wrong. It used to load all sections to sysfs
-> > until the patch mentioned. Actually, it is the PARISC build chain which
-> > is broken.
-> 
+On 04/05/13 06:00, Rusty Russell wrote:
 > Exactly.  Don't workaround it here, revert it and put the
 > duplicate-section-name fixup in parisc where it belongs.
-> 
+>
 > Assuming parisc still produces these dup sections: that patch is 4 years
 > old now.
+>
+> Untested:
+>
+> diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
+> index 2a625fb..28d32a2 100644
+> --- a/arch/parisc/kernel/module.c
+> +++ b/arch/parisc/kernel/module.c
+> @@ -341,6 +341,11 @@ int module_frob_arch_sections(CONST Elf_Ehdr *hdr,
+>  			    ".PARISC.unwind", 14) == 0)
+>  			me->arch.unwind_section = i;
+>  
+> +		/* we produce multiple, empty .text sections, and kallsyms
+> +		 * gets upset.  make non-alloc so it doesn't see them. */
+> +		if (sechdrs[i].sh_size == 0)
+> +			sechdrs[i].sh_flags &= ~SHF_ALLOC;
+> +
+>  		if (sechdrs[i].sh_type != SHT_RELA)
+>  			continue;
+We just worked your suggested patch in.
 
-Just so you know: this isn't a parisc specific problem.  Gcc produces
-duplicate section names under various circumstances, but the one that
-bites us is -ffunction-sections.  Note that there are proposals to use
--ffunction-sections on all architectures (so we can garbage collect
-unused functions) in which case you'll induce the bug identified in
-35dead4235e2b67da7275b4122fed37099c2f462 on every architecture
+> Why?  Does something refer to this empty section?  Why has noone noticed
+> this since 2009?
 
-The problem is our assumption that section names be unique.  This
-assumption is wrong.  The ELF spec says (version 1.1 page 1-15): "An
-object file may have more than one section with the same name."  We need
-to fix the kernel not to rely on a bogus assumption ... but we had no
-idea how to do that in a way that preserved the backwards compatibility
-of sections subdirectory.
+GDB wants to know all section with attribute ALLOC, regardless whether
+they are empty or not. Thus, it is useful if all of them appear in sysfs.
+> A zero-length section doesn't change the binary's structure.  You don't
+> see non-SHF_ALLOC sections either.
 
-I admit that 35dead4235e2b67da7275b4122fed37099c2f462 is a hack, but now
-the problem has got attention, can we fix it properly?
-
-James
-
-
+Yes, but they do occupy an index in the section headers of the binary.
+GDB needs to know all of them in the right order.
