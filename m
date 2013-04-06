@@ -1,87 +1,65 @@
-From: Rusty Russell <rusty@rustcorp.com.au>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 Subject: Re: [PATCH] Add non-zero module sections to sysfs
-Date: Sat, 06 Apr 2013 15:22:05 +1030
-Message-ID: <87wqsgjm6i.fsf@rustcorp.com.au>
-References: <1364994499-23708-1-git-send-email-sisewank@cip.cs.fau.de> <87mwtf3ya1.fsf@rustcorp.com.au> <515D4A7F.5070102@cip.cs.fau.de> <87vc81lj7x.fsf@rustcorp.com.au> <1365156435.1970.31.camel@dabdike>
+Date: Sat, 06 Apr 2013 11:52:04 +0100
+Message-ID: <1365245524.4298.14.camel@dabdike.spectrum.wifi>
+References: <1364994499-23708-1-git-send-email-sisewank@cip.cs.fau.de>
+	 <87mwtf3ya1.fsf@rustcorp.com.au> <515D4A7F.5070102@cip.cs.fau.de>
+	 <87vc81lj7x.fsf@rustcorp.com.au> <1365156435.1970.31.camel@dabdike>
+	 <87wqsgjm6i.fsf@rustcorp.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="ISO-8859-15"
 Cc: Sebastian Wankerl <sisewank@cip.cs.fau.de>,
 	linux-kernel@vger.kernel.org,
 	Philip Kranz <philip.kranz@googlemail.com>,
 	i4passt@lists.informatik.uni-erlangen.de,
-	linux-parisc@vger.kernel.org, <corbet@lwn.net> (Jonathan Corbet)
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1365156435.1970.31.camel@dabdike>
-List-ID: <linux-kernel.vger.kernel.org>
+	linux-parisc@vger.kernel.org, corbet@lwn.net
+To: Rusty Russell <rusty@rustcorp.com.au>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <87wqsgjm6i.fsf@rustcorp.com.au>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-James Bottomley <James.Bottomley@HansenPartnership.com> writes:
-> On Fri, 2013-04-05 at 14:30 +1030, Rusty Russell wrote:
->> Sebastian Wankerl <sisewank@cip.cs.fau.de> writes:
->> > On 04/04/13 03:00, Rusty Russell wrote:
->> >> Sebastian Wankerl <sisewank@cip.cs.fau.de> writes:
->> >>> Add non-zero module sections to sysfs on architectures unequal to PARISC.
->> >>> KGDB needs all module sections for proper module debugging. Therefore, commit 
->> >>> 35dead4235e2b67da7275b4122fed37099c2f462 is revoked except for PARISC
->> >>> architecture.
+On Sat, 2013-04-06 at 15:22 +1030, Rusty Russell wrote:
+> > The problem is our assumption that section names be unique.  This
+> > assumption is wrong.  The ELF spec says (version 1.1 page 1-15): "An
+> > object file may have more than one section with the same name."  We need
+> > to fix the kernel not to rely on a bogus assumption ... but we had no
+> > idea how to do that in a way that preserved the backwards compatibility
+> > of sections subdirectory.
+> >
+> > I admit that 35dead4235e2b67da7275b4122fed37099c2f462 is a hack, but now
+> > the problem has got attention, can we fix it properly?
+> 
+> Yep.  The original patch didn't go through me, or we would have had this
+> discussion back then...
 >
-> Thanks for actually cc'ing us.
->
->> >> #ifdef CONFIG_PARISC in the middle of kernel/module.c is super-ugly, and
->> >> wrong.
->> >
->> > I don't see why this is wrong. It used to load all sections to sysfs
->> > until the patch mentioned. Actually, it is the PARISC build chain which
->> > is broken.
->> 
->> Exactly.  Don't workaround it here, revert it and put the
->> duplicate-section-name fixup in parisc where it belongs.
->> 
->> Assuming parisc still produces these dup sections: that patch is 4 years
->> old now.
->
-> Just so you know: this isn't a parisc specific problem.  Gcc produces
-> duplicate section names under various circumstances, but the one that
-> bites us is -ffunction-sections.
+> The use of section names in sysfs goes back to one Mr. Corbet.  Why did
+> he do it that way?  Because gdb's add-symbol-file makes the same
+> assumption.  So if we fixed the sysfs somehow, it still wouldn't be
+> useful, since there's no way to tell gdb :(
+> 
+> The real answer don't use -ffunction-sections on modules: probably not
+> as important as the rest of the kernel.  And the new shiny is
+> -flto anyway.
+> 
+> And that leaves us with a PA-RISC specific issue, for which we should
+> move the fix to PA-RISC.
+> 
+> Thoughts?
 
-*This* is a PA-RISC specific issue.  -ffunction-sections is a different
-problem, which this hack wouldn't help.
+Well, we don't have much of a choice.  Our ELF stub jump on 32 bits is a
+PCREL17.  That means once a module size is over 128k there's a chance we
+might not be able to link it because the jump is too big for the
+instruction.  IPV6 is one such big module today, but I'm sure there are
+others.  The only way I know to fix this is to allow the linker to
+insert stubs between functions, so we only fail at linking if a single
+function is >128k big.  The way to do this is -ffunction-sections,
+unless there's something else we could do (all we really need is a way
+to ensure we can insert ELF stubs every 128k).
 
-> Note that there are proposals to use
-> -ffunction-sections on all architectures (so we can garbage collect
-> unused functions) in which case you'll induce the bug identified in
-> 35dead4235e2b67da7275b4122fed37099c2f462 on every architecture
+We're not the only architecture that has these problems: frv, metag and
+score seem to as well.
 
-Good point, though I note that we seem to have stalled on
--ffunction-sections.  (And I vaguely recall an issue with
--ffunction-sections and using ld -o which would fold duplicate named
-sections back together reducing elimination opportunities).
+James
 
-> The problem is our assumption that section names be unique.  This
-> assumption is wrong.  The ELF spec says (version 1.1 page 1-15): "An
-> object file may have more than one section with the same name."  We need
-> to fix the kernel not to rely on a bogus assumption ... but we had no
-> idea how to do that in a way that preserved the backwards compatibility
-> of sections subdirectory.
->
-> I admit that 35dead4235e2b67da7275b4122fed37099c2f462 is a hack, but now
-> the problem has got attention, can we fix it properly?
 
-Yep.  The original patch didn't go through me, or we would have had this
-discussion back then...
-
-The use of section names in sysfs goes back to one Mr. Corbet.  Why did
-he do it that way?  Because gdb's add-symbol-file makes the same
-assumption.  So if we fixed the sysfs somehow, it still wouldn't be
-useful, since there's no way to tell gdb :(
-
-The real answer don't use -ffunction-sections on modules: probably not
-as important as the rest of the kernel.  And the new shiny is
--flto anyway.
-
-And that leaves us with a PA-RISC specific issue, for which we should
-move the fix to PA-RISC.
-
-Thoughts?
-Rusty.
