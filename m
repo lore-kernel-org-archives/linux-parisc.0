@@ -1,128 +1,36 @@
-From: Jiang Liu <liuj97@gmail.com>
-Subject: [PATCH v4, part3 30/41] mm/PARISC: prepare for removing num_physpages and simplify mem_init()
-Date: Sat,  6 Apr 2013 22:32:29 +0800
-Message-ID: <1365258760-30821-31-git-send-email-jiang.liu@huawei.com>
-References: <1365258760-30821-1-git-send-email-jiang.liu@huawei.com>
-Cc: Jiang Liu <jiang.liu@huawei.com>,
-	David Rientjes <rientjes@google.com>,
-	Wen Congyang <wency@cn.fujitsu.com>,
-	Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
-	KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>,
-	Michal Hocko <mhocko@suse.cz>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-	David Howells <dhowells@redhat.com>,
-	Mark Salter <msalter@redhat.com>,
-	Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org,
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
+From: Philip Kranz <philip.kranz@googlemail.com>
+Subject: Re: [PATCH] Add non-zero module sections to sysfs
+Date: Sat, 6 Apr 2013 12:40:53 +0200
+Message-ID: <20130406104053.GA24710@yoda.lan>
+References: <1364994499-23708-1-git-send-email-sisewank@cip.cs.fau.de> <87mwtf3ya1.fsf@rustcorp.com.au> <515D4A7F.5070102@cip.cs.fau.de> <87vc81lj7x.fsf@rustcorp.com.au> <1365156435.1970.31.camel@dabdike>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Rusty Russell <rusty@rustcorp.com.au>,
+	Sebastian Wankerl <sisewank@cip.cs.fau.de>,
+	linux-kernel@vger.kernel.org,
+	Philip Kranz <philip.kranz@googlemail.com>,
+	i4passt@lists.informatik.uni-erlangen.de,
 	linux-parisc@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1365258760-30821-1-git-send-email-jiang.liu@huawei.com>
+In-Reply-To: <1365156435.1970.31.camel@dabdike>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Prepare for removing num_physpages and simplify mem_init().
+Hello.
 
-Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Michal Hocko <mhocko@suse.cz>
-Cc: David Rientjes <rientjes@google.com>
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- arch/parisc/mm/init.c |   46 +++-------------------------------------------
- 1 file changed, 3 insertions(+), 43 deletions(-)
+On Fri, Apr 05, 2013 at 12:07:15PM +0200, James Bottomley wrote:
+> Just so you know: this isn't a parisc specific problem.  Gcc produces
+> duplicate section names under various circumstances, but the one that
+> bites us is -ffunction-sections.  Note that there are proposals to use
+> -ffunction-sections on all architectures (so we can garbage collect
+> unused functions) in which case you'll induce the bug identified in
+> 35dead4235e2b67da7275b4122fed37099c2f462 on every architecture
 
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 1fe9d841..f80c175 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -214,7 +214,6 @@ static void __init setup_bootmem(void)
- 	mem_limit_func();       /* check for "mem=" argument */
- 
- 	mem_max = 0;
--	num_physpages = 0;
- 	for (i = 0; i < npmem_ranges; i++) {
- 		unsigned long rsize;
- 
-@@ -229,10 +228,8 @@ static void __init setup_bootmem(void)
- 				npmem_ranges = i + 1;
- 				mem_max = mem_limit;
- 			}
--	        num_physpages += pmem_ranges[i].pages;
- 			break;
- 		}
--	    num_physpages += pmem_ranges[i].pages;
- 		mem_max += rsize;
- 	}
- 
-@@ -532,7 +529,7 @@ void free_initmem(void)
- 	 * pages are no-longer executable */
- 	flush_icache_range(init_begin, init_end);
- 	
--	num_physpages += free_initmem_default(-1);
-+	free_initmem_default(-1);
- 
- 	/* set up a new led state on systems shipped LED State panel */
- 	pdc_chassis_send_status(PDC_CHASSIS_DIRECT_BCOMPLETE);
-@@ -580,8 +577,6 @@ unsigned long pcxl_dma_start __read_mostly;
- 
- void __init mem_init(void)
- {
--	int codesize, reservedpages, datasize, initsize;
--
- 	/* Do sanity checks on page table constants */
- 	BUILD_BUG_ON(PTE_ENTRY_SIZE != sizeof(pte_t));
- 	BUILD_BUG_ON(PMD_ENTRY_SIZE != sizeof(pmd_t));
-@@ -603,33 +598,6 @@ void __init mem_init(void)
- 	}
- #endif
- 
--	codesize = (unsigned long)_etext - (unsigned long)_text;
--	datasize = (unsigned long)_edata - (unsigned long)_etext;
--	initsize = (unsigned long)__init_end - (unsigned long)__init_begin;
--
--	reservedpages = 0;
--{
--	unsigned long pfn;
--#ifdef CONFIG_DISCONTIGMEM
--	int i;
--
--	for (i = 0; i < npmem_ranges; i++) {
--		for (pfn = node_start_pfn(i); pfn < node_end_pfn(i); pfn++) {
--			if (PageReserved(pfn_to_page(pfn)))
--				reservedpages++;
--		}
--	}
--#else /* !CONFIG_DISCONTIGMEM */
--	for (pfn = 0; pfn < max_pfn; pfn++) {
--		/*
--		 * Only count reserved RAM pages
--		 */
--		if (PageReserved(pfn_to_page(pfn)))
--			reservedpages++;
--	}
--#endif
--}
--
- #ifdef CONFIG_PA11
- 	if (hppa_dma_ops == &pcxl_dma_ops) {
- 		pcxl_dma_start = (unsigned long)SET_MAP_OFFSET(MAP_START);
-@@ -643,15 +611,7 @@ void __init mem_init(void)
- 	parisc_vmalloc_start = SET_MAP_OFFSET(MAP_START);
- #endif
- 
--	printk(KERN_INFO "Memory: %luk/%luk available (%dk kernel code, %dk reserved, %dk data, %dk init)\n",
--		nr_free_pages() << (PAGE_SHIFT-10),
--		num_physpages << (PAGE_SHIFT-10),
--		codesize >> 10,
--		reservedpages << (PAGE_SHIFT-10),
--		datasize >> 10,
--		initsize >> 10
--	);
+I am not able to produce an object file with duplicate section names
+using gcc on x86. Even with -ffunction-sections, every section gets a
+unique name. Is this architecture-specific behaviour of gcc?
+
+Greetings,
+Philip
+
