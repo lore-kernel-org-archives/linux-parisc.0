@@ -1,52 +1,78 @@
-From: Sebastian Wankerl <sisewank@cip.cs.fau.de>
+From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: [PATCH] Add non-zero module sections to sysfs
-Date: Fri, 05 Apr 2013 11:40:29 +0200
-Message-ID: <515E9C0D.503@cip.cs.fau.de>
-References: <1364994499-23708-1-git-send-email-sisewank@cip.cs.fau.de> <87mwtf3ya1.fsf@rustcorp.com.au> <515D4A7F.5070102@cip.cs.fau.de> <87vc81lj7x.fsf@rustcorp.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Philip Kranz <philip.kranz@googlemail.com>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	i4passt@lists.informatik.uni-erlangen.de
-To: Rusty Russell <rusty@rustcorp.com.au>
+Date: Sat, 6 Apr 2013 11:16:19 -0400
+Message-ID: <BLU0-SMTP23C8D54498C7DFACDF083B97DB0@phx.gbl>
+References: <1364994499-23708-1-git-send-email-sisewank@cip.cs.fau.de> <87mwtf3ya1.fsf@rustcorp.com.au> <515D4A7F.5070102@cip.cs.fau.de> <87vc81lj7x.fsf@rustcorp.com.au> <1365156435.1970.31.camel@dabdike> <87wqsgjm6i.fsf@rustcorp.com.au> <1365245524.4298.14.camel@dabdike.spectrum.wifi>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: Rusty Russell <rusty@rustcorp.com.au>,
+	Sebastian Wankerl <sisewank@cip.cs.fau.de>,
+	linux-kernel@vger.kernel.org,
+	Philip Kranz <philip.kranz@googlemail.com>,
+	i4passt@lists.informatik.uni-erlangen.de,
+	linux-parisc@vger.kernel.org, corbet@lwn.net
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <87vc81lj7x.fsf@rustcorp.com.au>
+In-Reply-To: <1365245524.4298.14.camel@dabdike.spectrum.wifi>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 04/05/13 06:00, Rusty Russell wrote:
-> Exactly.  Don't workaround it here, revert it and put the
-> duplicate-section-name fixup in parisc where it belongs.
->
-> Assuming parisc still produces these dup sections: that patch is 4 years
-> old now.
->
-> Untested:
->
-> diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
-> index 2a625fb..28d32a2 100644
-> --- a/arch/parisc/kernel/module.c
-> +++ b/arch/parisc/kernel/module.c
-> @@ -341,6 +341,11 @@ int module_frob_arch_sections(CONST Elf_Ehdr *hdr,
->  			    ".PARISC.unwind", 14) == 0)
->  			me->arch.unwind_section = i;
->  
-> +		/* we produce multiple, empty .text sections, and kallsyms
-> +		 * gets upset.  make non-alloc so it doesn't see them. */
-> +		if (sechdrs[i].sh_size == 0)
-> +			sechdrs[i].sh_flags &= ~SHF_ALLOC;
-> +
->  		if (sechdrs[i].sh_type != SHT_RELA)
->  			continue;
-We just worked your suggested patch in.
+On 6-Apr-13, at 6:52 AM, James Bottomley wrote:
 
-> Why?  Does something refer to this empty section?  Why has noone noticed
-> this since 2009?
+> On Sat, 2013-04-06 at 15:22 +1030, Rusty Russell wrote:
+>>> The problem is our assumption that section names be unique.  This
+>>> assumption is wrong.  The ELF spec says (version 1.1 page 1-15): "An
+>>> object file may have more than one section with the same name."   
+>>> We need
+>>> to fix the kernel not to rely on a bogus assumption ... but we had  
+>>> no
+>>> idea how to do that in a way that preserved the backwards  
+>>> compatibility
+>>> of sections subdirectory.
+>>>
+>>> I admit that 35dead4235e2b67da7275b4122fed37099c2f462 is a hack,  
+>>> but now
+>>> the problem has got attention, can we fix it properly?
+>>
+>> Yep.  The original patch didn't go through me, or we would have had  
+>> this
+>> discussion back then...
+>>
+>> The use of section names in sysfs goes back to one Mr. Corbet.  Why  
+>> did
+>> he do it that way?  Because gdb's add-symbol-file makes the same
+>> assumption.  So if we fixed the sysfs somehow, it still wouldn't be
+>> useful, since there's no way to tell gdb :(
+>>
+>> The real answer don't use -ffunction-sections on modules: probably  
+>> not
+>> as important as the rest of the kernel.  And the new shiny is
+>> -flto anyway.
+>>
+>> And that leaves us with a PA-RISC specific issue, for which we should
+>> move the fix to PA-RISC.
+>>
+>> Thoughts?
+>
+> Well, we don't have much of a choice.  Our ELF stub jump on 32 bits  
+> is a
+> PCREL17.  That means once a module size is over 128k there's a  
+> chance we
+> might not be able to link it because the jump is too big for the
+> instruction.  IPV6 is one such big module today, but I'm sure there  
+> are
+> others.  The only way I know to fix this is to allow the linker to
+> insert stubs between functions, so we only fail at linking if a single
+> function is >128k big.  The way to do this is -ffunction-sections,
+> unless there's something else we could do (all we really need is a way
+> to ensure we can insert ELF stubs every 128k).
 
-GDB wants to know all section with attribute ALLOC, regardless whether
-they are empty or not. Thus, it is useful if all of them appear in sysfs.
-> A zero-length section doesn't change the binary's structure.  You don't
-> see non-SHF_ALLOC sections either.
+There is now a config work around for this.  See:
+http://www.spinics.net/lists/linux-parisc/msg04521.html
 
-Yes, but they do occupy an index in the section headers of the binary.
-GDB needs to know all of them in the right order.
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
