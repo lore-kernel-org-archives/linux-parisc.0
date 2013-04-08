@@ -1,44 +1,105 @@
-From: "Michael Kerrisk (man-pages)" <mtk.manpages-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] man2 : syscall.2 : document syscall calling conventions
-Date: Mon, 8 Apr 2013 11:18:15 +0200
-Message-ID: <CAKgNAkj0xkP3c9M-KnkdzqUAp7P99hce9jgdY=4eAM_Ad-ogZg@mail.gmail.com>
-References: <1364361092-5948-1-git-send-email-ch0.han@lge.com>
- <201304010632.41520.vapier@gentoo.org> <CAKgNAkgG2kdCC1tyZQkYU7O_nP7RB8VoCmx6eb8FcudU1s6RgA@mail.gmail.com>
- <201304021917.17659.vapier@gentoo.org> <CAKgNAkgODPSWSeA8ZymiAjFBqSAZQMtQe9GW84Y6QHdFEc9S-w@mail.gmail.com>
- <20130407135514.GW12938@bombadil.infradead.org> <1365346609.1992.10.camel@dabdike>
- <20130407151134.GX12938@bombadil.infradead.org>
-Reply-To: mtk.manpages-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: Did Squeeze ever make it to HPPA?
+Date: Mon, 08 Apr 2013 10:31:46 -0400
+Message-ID: <5162D4D2.9010903@bell.net>
+References: <514C43F3.4040206@gmail.com> <514E2703.9000507@gmx.de> <BLU0-SMTP73FA3D9E15C0195C11D97097D50@phx.gbl> <5162AFE8.2070808@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: James Bottomley <James.Bottomley-JuX6DAaQMKPCXq6kfMZ53/egYHeGw8Jk@public.gmane.org>,
-	Mike Frysinger <vapier-aBrp7R+bbdUdnm+yROfE0A@public.gmane.org>,
-	linux-man <linux-man-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	Kyle McMartin <kyle-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>,
-	Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>,
-	"James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
-	linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kyle McMartin <kyle-pfcGkIkfWfAsA/PxXw9srA@public.gmane.org>
-Return-path: <linux-man-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20130407151134.GX12938-PfSpb0PWhxZc2C7mugBRk2EX/6BAtgUQ@public.gmane.org>
-List-ID: <linux-man.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: debian-hppa@lists.debian.org,
+ linux-parisc <linux-parisc@vger.kernel.org>
+To: Kurt Fitzner <kurt.fitzner@gmail.com>
+Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
+In-Reply-To: <5162AFE8.2070808@gmail.com>
+Resent-Message-ID: <ouaRWMX27yL.A.TtG.dltYRB@bendel>
 List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-URL: <http://lists.debian.org/debian-hppa/>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Sun, Apr 7, 2013 at 5:11 PM, Kyle McMartin <kyle-pfcGkIkfWfAsA/PxXw9srA@public.gmane.org> wrote:
-> On Sun, Apr 07, 2013 at 07:56:49AM -0700, James Bottomley wrote:
->> Actually, that's not quite correct.  on 64 bits it's arg1-8 are %r26-%
->> r19 but on 32 the convention is that arg1-arg4 are %r26-%r23 and the
->> rest on stack.  We can also do register pair combining on 32 bits for a
->> 64 bit argument.
+On 4/8/2013 7:54 AM, Kurt Fitzner wrote:
+> On 23/03/2013 7:53 PM, John David Anglin wrote:
+>> I would really recommend going with the packages at
+>> ftp://ftp.parisc-linux.org/debian-ports/unstable
+>> instead of the squeeze packages on debian-ports.org.  The dependencies
+>> are somewhat broken for
+>> the stuff on debian-ports.org and great care is needed in installing
+>> these packages.  For example,
+>> the udev package on debian-ports is a bootstrap breaker.  It might be
+>> that we could fill in the squeeze
+>> port but it would be a fair bit of work.
+> I've spent some time over the last couple weeks trying to work out an
+> upgrade path to the the unstable packages on parisc-linux.org, but am
+> having a very hard time.  Trying to go from Debian 5 directly to a
+> mostly (but not totally) complete post-6 Wheezy without having through
+> intermediary steps seems to be beyond aptitude (or me) to resolve.  I
+> can handle missing packages, but the number of broken packages aptitude
+> says there will be at the end of an upgrade is daunting.  And I've only
+> got one HPPA box which leaves me a little on the chicken side with
+> respects to playing.
 >
-> I guess the confusion is whether you're writing this from the kernel
-> side or the userspace side. The syscall instruction is called with six
-> arg registers, but we fix it on entry to the kernel when we call into C.> --
-> To unsubscribe from this list: send the line "unsubscribe linux-man" in
-> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> I must admit to being less than an expert on Debian's packaging system,
+> mostly because it has always "just worked", but I am wondering if my
+> problems are stemming from the current unstable packages being set as
+> superceding packages that no longer exist in between what I have and them.
+>
+> What I think I really need is a snapshot of what was unstable the day
+> Lenny was officially dropped.  Does this exist anywhere?
+I don't think that exists.  What exists is the snapshot when the 
+unstable hppa packages were
+copied from debian.org to debian-ports.org.  Unfortunately, at that 
+time, there were various
+missing packages.  So, updating would result in many important packages 
+being deleted.
+Further, many packages have common portions that are architecture 
+independent.  However,
+they often are still version dependent.  So, as things evolved, the 
+common parts needed
+for the hppa stuff has disappeared.
 
-Thanks, Kyle.
---
-To unsubscribe from this list: send the line "unsubscribe linux-man" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thus, the only option is to use the packages on 
+ftp://ftp.parisc-linux.org/debian-ports/unstable
+together with what's on debian-ports.org.  In what I upload, I include 
+the common parts from
+debian-ports.org.  So, hopefully, things will not get as inconsistent.
+
+Last week I uploaded many new packages, so the archive is much closer to 
+the unstable for
+other ports (particularly, for packages starting with [a-l]).  I install 
+all packages that I use before
+uploading so I know that at least on my system there are no broken 
+packages (it started as
+a server system).  However, there's likely still a bunch of stuff that 
+needs updating for desktop
+systems.
+
+I haven't tried to do an upgrade directly using 
+ftp://ftp.parisc-linux.org/debian-ports/unstable.  Helge
+Deller has done it.  So, maybe he can comment.  In general, I would do 
+the update as follows:
+
+1) Build and install 3.9-rc5 or later from kernel.org.
+2) Update packages from eglibc source.
+3) Update packages from binutils source.
+4) Install packages from GCC 4.6 and 4.7.
+5) Update packages from perl source.
+6) Update packages from python2.7 source.
+
+This puts you in the position of being able to build missing packages if 
+necessary.
+
+ From there, update selectively.  If any update wants to remove packages 
+that are largely
+unrelated to the update, stop and try to find out why.  Possibly, the 
+packages to be removed
+need updating first.
+
+Would you be willing to post what's missing and broken?  I can try and 
+fill in what's missing.
+
+Dave
+
+-- 
+John David Anglin    dave.anglin@bell.net
