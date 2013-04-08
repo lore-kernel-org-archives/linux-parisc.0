@@ -1,41 +1,43 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] man2 : syscall.2 : document syscall calling conventions
-Date: Sun, 7 Apr 2013 14:48:42 -0400
-Message-ID: <BLU0-SMTP986B123D17DB8B88214F797C40@phx.gbl>
-References: <1364361092-5948-1-git-send-email-ch0.han@lge.com> <CAKgNAkgODPSWSeA8ZymiAjFBqSAZQMtQe9GW84Y6QHdFEc9S-w@mail.gmail.com> <20130407135514.GW12938@bombadil.infradead.org> <201304071439.15297.vapier@gentoo.org>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Kyle McMartin <kyle@mcmartin.ca>,
-	"Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-	"linux-man" <linux-man@vger.kernel.org>,
-	Kyle McMartin <kyle@infradead.org>,
-	Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+From: Rusty Russell <rusty@rustcorp.com.au>
+Subject: Re: [PATCH] Add non-zero module sections to sysfs
+Date: Mon, 08 Apr 2013 13:44:45 +0930
+Message-ID: <878v4tbqve.fsf@rustcorp.com.au>
+References: <1364994499-23708-1-git-send-email-sisewank@cip.cs.fau.de> <87mwtf3ya1.fsf@rustcorp.com.au> <515D4A7F.5070102@cip.cs.fau.de> <87vc81lj7x.fsf@rustcorp.com.au> <1365156435.1970.31.camel@dabdike> <20130406104053.GA24710@yoda.lan>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Sebastian Wankerl <sisewank@cip.cs.fau.de>,
+	linux-kernel@vger.kernel.org,
+	Philip Kranz <philip.kranz@googlemail.com>,
+	i4passt@lists.informatik.uni-erlangen.de,
 	linux-parisc@vger.kernel.org
-To: Mike Frysinger <vapier@gentoo.org>
+To: Philip Kranz <philip.kranz@googlemail.com>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <201304071439.15297.vapier@gentoo.org>
+In-Reply-To: <20130406104053.GA24710@yoda.lan>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 7-Apr-13, at 2:39 PM, Mike Frysinger wrote:
-
-> just to be clear, the only insn you need is:
-> 	ble 0x100(%sr2, %r0);
+Philip Kranz <philip.kranz@googlemail.com> writes:
+> Hello.
 >
-> the kernel docs say sr2 holds the kernel gateway page (so i guess  
-> 0x100 is a
-> known offset into that).  the docs don't mention r0 that i can see,  
-> so i'm
-> guessing it's one of those "always 0" registers ?
+> On Fri, Apr 05, 2013 at 12:07:15PM +0200, James Bottomley wrote:
+>> Just so you know: this isn't a parisc specific problem.  Gcc produces
+>> duplicate section names under various circumstances, but the one that
+>> bites us is -ffunction-sections.  Note that there are proposals to use
+>> -ffunction-sections on all architectures (so we can garbage collect
+>> unused functions) in which case you'll induce the bug identified in
+>> 35dead4235e2b67da7275b4122fed37099c2f462 on every architecture
+>
+> I am not able to produce an object file with duplicate section names
+> using gcc on x86. Even with -ffunction-sections, every section gets a
+> unique name. Is this architecture-specific behaviour of gcc?
 
-Yes.  There is also an entry at offset 0xb0 for light-weight- 
-syscalls.  Currently,
-this implements an atomic CAS operation used for pthread support.
+Good point.  ld -r will collapse them into the same section (since gcc
+produces them they have to have the same section attributes).
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
+You can do it with --unique, but no arch uses that.  PARISC has a
+platform-specific toolchain hack which does that for .text sections.
+(Thanks to Alan Modra for that clue...)
 
-
-
+Thanks,
+Rusty.
