@@ -1,42 +1,116 @@
-From: Kurt Fitzner <kurt.fitzner@gmail.com>
-Subject: Re: Did Squeeze ever make it to HPPA?
-Date: Tue, 09 Apr 2013 10:27:19 -0300
-Message-ID: <51641737.4030008@gmail.com>
-References: <514C43F3.4040206@gmail.com> <514E2703.9000507@gmx.de> <BLU0-SMTP73FA3D9E15C0195C11D97097D50@phx.gbl> <5162AFE8.2070808@gmail.com> <5162D4D2.9010903@bell.net>
+From: David Howells <dhowells@redhat.com>
+Subject: [PATCH 20/26] parisc: Don't use create_proc_read_entry() [RFC]
+Date: Thu, 11 Apr 2013 14:30:17 +0100
+Message-ID: <20130411133017.32763.99586.stgit@warthog.procyon.org.uk>
+References: <20130411132739.32763.82609.stgit@warthog.procyon.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc <linux-parisc@vger.kernel.org>
-To: debian-hppa@lists.debian.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <5162D4D2.9010903@bell.net>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Cc: Helge Deller <deller@gmx.de>, viro@ZenIV.linux.org.uk,
+	linux-parisc@vger.kernel.org,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>
+To: linux-kernel@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20130411132739.32763.82609.stgit@warthog.procyon.org.uk>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 08/04/2013 11:31 AM, John David Anglin wrote:
+Don't use create_proc_read_entry() as that is deprecated, but rather use
+proc_create_data() and seq_file instead.
 
-> 1) Build and install 3.9-rc5 or later from kernel.org.
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+cc: Helge Deller <deller@gmx.de>
+cc: linux-parisc@vger.kernel.org
+---
 
-Is it safe to jump from 2.6.26 to 3.9?  I haven't followed Linux kernel
-development for quite a while, not since my SLS and Slackware days when
-I'd roll my own kernel regularly, but I remember lots of things broke
-when I wasn't careful (libc, anything navigating /proc, etc).
+ arch/parisc/kernel/pdc_chassis.c |   47 +++++++++++++++++++-------------------
+ 1 file changed, 24 insertions(+), 23 deletions(-)
 
-> Would you be willing to post what's missing and broken?  I can try and
-> fill in what's missing.
-
-Your warning about the packages on debian-ports.org had prompted me to
-remove it from my sources, which in turn was making aptitude throw fits
-when asked to calculate any sort of package upgrade.  I have since added
-it back in, and (perhaps in conjunction with the packages you have
-recently added) have been able to upgrade most of my tool chain now
-(gcc, autoconf/make, libtool).
-
-One package I can't seem to upgrade without losing half my system is
-dpkg, which I will need in order to build any recent source packages.
-I'm still trying to work out if there's anything missing, or if it's
-just dependencies that aptitude can't sort out without help.  I may just
-have to strip it down to its debian bolts and go from there.
-
-    Kurt.
-
-
+diff --git a/arch/parisc/kernel/pdc_chassis.c b/arch/parisc/kernel/pdc_chassis.c
+index d47ba1a..8fa314f 100644
+--- a/arch/parisc/kernel/pdc_chassis.c
++++ b/arch/parisc/kernel/pdc_chassis.c
+@@ -30,11 +30,13 @@
+ #endif
+ 
+ #include <linux/init.h>
++#include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/reboot.h>
+ #include <linux/notifier.h>
+ #include <linux/cache.h>
+ #include <linux/proc_fs.h>
++#include <linux/seq_file.h>
+ 
+ #include <asm/pdc_chassis.h>
+ #include <asm/processor.h>
+@@ -244,38 +246,38 @@ int pdc_chassis_send_status(int message)
+ 
+ #ifdef CONFIG_PDC_CHASSIS_WARN
+ #ifdef CONFIG_PROC_FS
+-static int pdc_chassis_warn_pread(char *page, char **start, off_t off,
+-		int count, int *eof, void *data)
++static int pdc_chassis_warn_show(struct seq_file *m, void *v)
+ {
+-	char *out = page;
+-	int len, ret;
+ 	unsigned long warn;
+ 	u32 warnreg;
+ 
+-	ret = pdc_chassis_warn(&warn);
+-	if (ret != PDC_OK)
++	if (pdc_chassis_warn(&warn) != PDC_OK)
+ 		return -EIO;
+ 
+ 	warnreg = (warn & 0xFFFFFFFF);
+ 
+ 	if ((warnreg >> 24) & 0xFF)
+-		out += sprintf(out, "Chassis component failure! (eg fan or PSU): 0x%.2x\n", ((warnreg >> 24) & 0xFF));
+-
+-	out += sprintf(out, "Battery: %s\n", (warnreg & 0x04) ? "Low!" : "OK");
+-	out += sprintf(out, "Temp low: %s\n", (warnreg & 0x02) ? "Exceeded!" : "OK");
+-	out += sprintf(out, "Temp mid: %s\n", (warnreg & 0x01) ? "Exceeded!" : "OK");
+-
+-	len = out - page - off;
+-	if (len < count) {
+-		*eof = 1;
+-		if (len <= 0) return 0;
+-	} else {
+-		len = count;
+-	}
+-	*start = page + off;
+-	return len;
++		seq_printf(m, "Chassis component failure! (eg fan or PSU): 0x%.2x\n",
++			   (warnreg >> 24) & 0xFF);
++
++	seq_printf(m, "Battery: %s\n", (warnreg & 0x04) ? "Low!" : "OK");
++	seq_printf(m, "Temp low: %s\n", (warnreg & 0x02) ? "Exceeded!" : "OK");
++	seq_printf(m, "Temp mid: %s\n", (warnreg & 0x01) ? "Exceeded!" : "OK");
++	return 0;
++}
++
++static int pdc_chassis_warn_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, pdc_chassis_warn_show, NULL);
+ }
+ 
++static const struct file_operations pdc_chassis_warn_fops = {
++	.open		= pdc_chassis_warn_open,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++	.release	= seq_release,
++};
++
+ static int __init pdc_chassis_create_procfs(void)
+ {
+ 	unsigned long test;
+@@ -290,8 +292,7 @@ static int __init pdc_chassis_create_procfs(void)
+ 
+ 	printk(KERN_INFO "Enabling PDC chassis warnings support v%s\n",
+ 			PDC_CHASSIS_VER);
+-	create_proc_read_entry("chassis", 0400, NULL, pdc_chassis_warn_pread,
+-				NULL);
++	proc_create("chassis", 0400, NULL, &pdc_chassis_warn_fops);
+ 	return 0;
+ }
+ 
