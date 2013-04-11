@@ -1,116 +1,81 @@
-From: David Howells <dhowells@redhat.com>
-Subject: [PATCH 20/26] parisc: Don't use create_proc_read_entry() [RFC]
-Date: Thu, 11 Apr 2013 14:30:17 +0100
-Message-ID: <20130411133017.32763.99586.stgit@warthog.procyon.org.uk>
-References: <20130411132739.32763.82609.stgit@warthog.procyon.org.uk>
+From: Philip Kranz <philip.kranz@googlemail.com>
+Subject: Re: [PATCH] Add non-zero module sections to sysfs
+Date: Thu, 11 Apr 2013 16:11:55 +0200
+Message-ID: <20130411141155.GA21480@yoda.lan>
+References: <1364994499-23708-1-git-send-email-sisewank@cip.cs.fau.de> <87mwtf3ya1.fsf@rustcorp.com.au> <515D4A7F.5070102@cip.cs.fau.de> <87vc81lj7x.fsf@rustcorp.com.au> <1365156435.1970.31.camel@dabdike> <20130406104053.GA24710@yoda.lan> <878v4tbqve.fsf@rustcorp.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: Helge Deller <deller@gmx.de>, viro@ZenIV.linux.org.uk,
-	linux-parisc@vger.kernel.org,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>
-To: linux-kernel@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130411132739.32763.82609.stgit@warthog.procyon.org.uk>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Philip Kranz <philip.kranz@googlemail.com>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Sebastian Wankerl <sisewank@cip.cs.fau.de>,
+	linux-kernel@vger.kernel.org,
+	i4passt@lists.informatik.uni-erlangen.de,
+	linux-parisc@vger.kernel.org
+To: Rusty Russell <rusty@rustcorp.com.au>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <878v4tbqve.fsf@rustcorp.com.au>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Don't use create_proc_read_entry() as that is deprecated, but rather use
-proc_create_data() and seq_file instead.
+On Mon, Apr 08, 2013 at 01:44:45PM +0930, Rusty Russell wrote:
+> Philip Kranz <philip.kranz@googlemail.com> writes:
+> > Hello.
+> >
+> > On Fri, Apr 05, 2013 at 12:07:15PM +0200, James Bottomley wrote:
+> >> Just so you know: this isn't a parisc specific problem.  Gcc produces
+> >> duplicate section names under various circumstances, but the one that
+> >> bites us is -ffunction-sections.  Note that there are proposals to use
+> >> -ffunction-sections on all architectures (so we can garbage collect
+> >> unused functions) in which case you'll induce the bug identified in
+> >> 35dead4235e2b67da7275b4122fed37099c2f462 on every architecture
+> >
+> > I am not able to produce an object file with duplicate section names
+> > using gcc on x86. Even with -ffunction-sections, every section gets a
+> > unique name. Is this architecture-specific behaviour of gcc?
+> 
+> Good point.  ld -r will collapse them into the same section (since gcc
+> produces them they have to have the same section attributes).
+> 
+> You can do it with --unique, but no arch uses that.  PARISC has a
+> platform-specific toolchain hack which does that for .text sections.
+> (Thanks to Alan Modra for that clue...)
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-cc: Helge Deller <deller@gmx.de>
-cc: linux-parisc@vger.kernel.org
----
+Just for clarification, as we are currently preparing a patch set that
+depends on this: Would the patch below be an acceptable solution for
+this?
 
- arch/parisc/kernel/pdc_chassis.c |   47 +++++++++++++++++++-------------------
- 1 file changed, 24 insertions(+), 23 deletions(-)
+Thanks,
+Philip
 
-diff --git a/arch/parisc/kernel/pdc_chassis.c b/arch/parisc/kernel/pdc_chassis.c
-index d47ba1a..8fa314f 100644
---- a/arch/parisc/kernel/pdc_chassis.c
-+++ b/arch/parisc/kernel/pdc_chassis.c
-@@ -30,11 +30,13 @@
- #endif
+
+
+diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
+index 2a625fb..1fd4411 100644
+--- a/arch/parisc/kernel/module.c
++++ b/arch/parisc/kernel/module.c
+@@ -341,6 +341,11 @@ int module_frob_arch_sections(CONST Elf_Ehdr *hdr,
+                ".PARISC.unwind", 14) == 0)
+            me->arch.unwind_section = i;
  
- #include <linux/init.h>
-+#include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/reboot.h>
- #include <linux/notifier.h>
- #include <linux/cache.h>
- #include <linux/proc_fs.h>
-+#include <linux/seq_file.h>
++       /* we produce multiple, empty .text sections, and kallsyms
++       * gets upset.  make non-alloc so it doesn't see them. */
++       if (sechdrs[i].sh_size == 0)
++           sechdrs[i].sh_flags &= ~SHF_ALLOC;
++
+        if (sechdrs[i].sh_type != SHT_RELA)
+            continue;
  
- #include <asm/pdc_chassis.h>
- #include <asm/processor.h>
-@@ -244,38 +246,38 @@ int pdc_chassis_send_status(int message)
- 
- #ifdef CONFIG_PDC_CHASSIS_WARN
- #ifdef CONFIG_PROC_FS
--static int pdc_chassis_warn_pread(char *page, char **start, off_t off,
--		int count, int *eof, void *data)
-+static int pdc_chassis_warn_show(struct seq_file *m, void *v)
+diff --git a/kernel/module.c b/kernel/module.c
+index 3c2c72d..42e0d5a 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -1316,7 +1316,7 @@ resolve_symbol_wait(struct module *mod,
+ #ifdef CONFIG_KALLSYMS
+ static inline bool sect_empty(const Elf_Shdr *sect)
  {
--	char *out = page;
--	int len, ret;
- 	unsigned long warn;
- 	u32 warnreg;
- 
--	ret = pdc_chassis_warn(&warn);
--	if (ret != PDC_OK)
-+	if (pdc_chassis_warn(&warn) != PDC_OK)
- 		return -EIO;
- 
- 	warnreg = (warn & 0xFFFFFFFF);
- 
- 	if ((warnreg >> 24) & 0xFF)
--		out += sprintf(out, "Chassis component failure! (eg fan or PSU): 0x%.2x\n", ((warnreg >> 24) & 0xFF));
--
--	out += sprintf(out, "Battery: %s\n", (warnreg & 0x04) ? "Low!" : "OK");
--	out += sprintf(out, "Temp low: %s\n", (warnreg & 0x02) ? "Exceeded!" : "OK");
--	out += sprintf(out, "Temp mid: %s\n", (warnreg & 0x01) ? "Exceeded!" : "OK");
--
--	len = out - page - off;
--	if (len < count) {
--		*eof = 1;
--		if (len <= 0) return 0;
--	} else {
--		len = count;
--	}
--	*start = page + off;
--	return len;
-+		seq_printf(m, "Chassis component failure! (eg fan or PSU): 0x%.2x\n",
-+			   (warnreg >> 24) & 0xFF);
-+
-+	seq_printf(m, "Battery: %s\n", (warnreg & 0x04) ? "Low!" : "OK");
-+	seq_printf(m, "Temp low: %s\n", (warnreg & 0x02) ? "Exceeded!" : "OK");
-+	seq_printf(m, "Temp mid: %s\n", (warnreg & 0x01) ? "Exceeded!" : "OK");
-+	return 0;
-+}
-+
-+static int pdc_chassis_warn_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, pdc_chassis_warn_show, NULL);
+-   return !(sect->sh_flags & SHF_ALLOC) || sect->sh_size == 0;
++   return !(sect->sh_flags & SHF_ALLOC);
  }
  
-+static const struct file_operations pdc_chassis_warn_fops = {
-+	.open		= pdc_chassis_warn_open,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= seq_release,
-+};
-+
- static int __init pdc_chassis_create_procfs(void)
- {
- 	unsigned long test;
-@@ -290,8 +292,7 @@ static int __init pdc_chassis_create_procfs(void)
- 
- 	printk(KERN_INFO "Enabling PDC chassis warnings support v%s\n",
- 			PDC_CHASSIS_VER);
--	create_proc_read_entry("chassis", 0400, NULL, pdc_chassis_warn_pread,
--				NULL);
-+	proc_create("chassis", 0400, NULL, &pdc_chassis_warn_fops);
- 	return 0;
- }
- 
+ struct module_sect_attr
+
