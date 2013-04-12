@@ -1,81 +1,70 @@
-From: Philip Kranz <philip.kranz@googlemail.com>
-Subject: Re: [PATCH] Add non-zero module sections to sysfs
-Date: Thu, 11 Apr 2013 16:11:55 +0200
-Message-ID: <20130411141155.GA21480@yoda.lan>
-References: <1364994499-23708-1-git-send-email-sisewank@cip.cs.fau.de> <87mwtf3ya1.fsf@rustcorp.com.au> <515D4A7F.5070102@cip.cs.fau.de> <87vc81lj7x.fsf@rustcorp.com.au> <1365156435.1970.31.camel@dabdike> <20130406104053.GA24710@yoda.lan> <878v4tbqve.fsf@rustcorp.com.au>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [PATCH] man2 : syscall.2 : document syscall calling conventions
+Date: Thu, 11 Apr 2013 21:55:43 -0400
+Message-ID: <201304112155.46349.vapier@gentoo.org>
+References: <1364361092-5948-1-git-send-email-ch0.han@lge.com> <201304071439.15297.vapier@gentoo.org> <BLU0-SMTP986B123D17DB8B88214F797C40@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Philip Kranz <philip.kranz@googlemail.com>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Sebastian Wankerl <sisewank@cip.cs.fau.de>,
-	linux-kernel@vger.kernel.org,
-	i4passt@lists.informatik.uni-erlangen.de,
+Content-Type: multipart/signed;
+  boundary="nextPart3463933.kiKxh8oLbK";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+	"Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+	"linux-man" <linux-man@vger.kernel.org>,
+	Kyle McMartin <kyle@infradead.org>,
+	Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	linux-parisc@vger.kernel.org
-To: Rusty Russell <rusty@rustcorp.com.au>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <878v4tbqve.fsf@rustcorp.com.au>
+In-Reply-To: <BLU0-SMTP986B123D17DB8B88214F797C40@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Apr 08, 2013 at 01:44:45PM +0930, Rusty Russell wrote:
-> Philip Kranz <philip.kranz@googlemail.com> writes:
-> > Hello.
-> >
-> > On Fri, Apr 05, 2013 at 12:07:15PM +0200, James Bottomley wrote:
-> >> Just so you know: this isn't a parisc specific problem.  Gcc produces
-> >> duplicate section names under various circumstances, but the one that
-> >> bites us is -ffunction-sections.  Note that there are proposals to use
-> >> -ffunction-sections on all architectures (so we can garbage collect
-> >> unused functions) in which case you'll induce the bug identified in
-> >> 35dead4235e2b67da7275b4122fed37099c2f462 on every architecture
-> >
-> > I am not able to produce an object file with duplicate section names
-> > using gcc on x86. Even with -ffunction-sections, every section gets a
-> > unique name. Is this architecture-specific behaviour of gcc?
-> 
-> Good point.  ld -r will collapse them into the same section (since gcc
-> produces them they have to have the same section attributes).
-> 
-> You can do it with --unique, but no arch uses that.  PARISC has a
-> platform-specific toolchain hack which does that for .text sections.
-> (Thanks to Alan Modra for that clue...)
+--nextPart3463933.kiKxh8oLbK
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Just for clarification, as we are currently preparing a patch set that
-depends on this: Would the patch below be an acceptable solution for
-this?
+On Sunday 07 April 2013 14:48:42 John David Anglin wrote:
+> On 7-Apr-13, at 2:39 PM, Mike Frysinger wrote:
+> > just to be clear, the only insn you need is:
+> > 	ble 0x100(%sr2, %r0);
+> >=20
+> > the kernel docs say sr2 holds the kernel gateway page (so i guess
+> > 0x100 is a
+> > known offset into that).  the docs don't mention r0 that i can see,
+> > so i'm
+> > guessing it's one of those "always 0" registers ?
+>=20
+> Yes.  There is also an entry at offset 0xb0 for light-weight-
+> syscalls.  Currently,
+> this implements an atomic CAS operation used for pthread support.
 
-Thanks,
-Philip
+interesting.  sounds like a poor man's vDSO.  i'll document this the new=20
+vdso(7) man page.
+=2Dmike
 
+--nextPart3463933.kiKxh8oLbK
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
 
-diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
-index 2a625fb..1fd4411 100644
---- a/arch/parisc/kernel/module.c
-+++ b/arch/parisc/kernel/module.c
-@@ -341,6 +341,11 @@ int module_frob_arch_sections(CONST Elf_Ehdr *hdr,
-                ".PARISC.unwind", 14) == 0)
-            me->arch.unwind_section = i;
- 
-+       /* we produce multiple, empty .text sections, and kallsyms
-+       * gets upset.  make non-alloc so it doesn't see them. */
-+       if (sechdrs[i].sh_size == 0)
-+           sechdrs[i].sh_flags &= ~SHF_ALLOC;
-+
-        if (sechdrs[i].sh_type != SHT_RELA)
-            continue;
- 
-diff --git a/kernel/module.c b/kernel/module.c
-index 3c2c72d..42e0d5a 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -1316,7 +1316,7 @@ resolve_symbol_wait(struct module *mod,
- #ifdef CONFIG_KALLSYMS
- static inline bool sect_empty(const Elf_Shdr *sect)
- {
--   return !(sect->sh_flags & SHF_ALLOC) || sect->sh_size == 0;
-+   return !(sect->sh_flags & SHF_ALLOC);
- }
- 
- struct module_sect_attr
+iQIcBAABAgAGBQJRZ2miAAoJEEFjO5/oN/WBqCYP/jUXIPu+yVqoSenYutuvGiW7
+eHyiE8eXxjgiLSmy6IgLYxIHQuUNoWpuku+4mLmEEAjU+dLIR2J2cHwSPuKm0I00
+QObDtRDPAekHM3hv1wlNyfE33Kc32LyRtMHhsQZJnfDp5+n+LN7RtxnjTRiq807L
+5+qMxUPIjwrPnHkbR3lPr4BW8F8RO/Tdpi6YWiXn+FyjFAYs7fCFHh/lbciifNBw
+1BBz7L+8wuE06DBsmd2i2xfsHeDuchegcXY0VWyQ8X4sUQY9LQMjQ6nzqCqVrnfv
+ctHj1H8pWIjDRRD1BbDyLuiG06DSXOYUx2JOCwqUjXVdt6hnxqJmyB06hXC0QB3f
+xkooKeLNotlt5PqXwJKd3vZ74HAWT67FdeE9rI9GvvtKYVoyXDJ2e9LH0O3M6ujI
+ZrQCl1TXLAt5FCCGdVke1TEWFLa9W5aZZ9nyBRbHDLwairkvYXT2y3hnu62VHeft
+YHnLxP67qCd/nwd53gH9m5SOYF8otFzK9pNU+f7SDt6pENLTLRriLMn7+E798OhG
+Zomt46Cdsi6mbYY0lIxa+x0tFQj9DoUKFqhe4e582svjWR6VueEg3/5uafxvueNr
+QbcPeOUss5Njq5sELZVUN1Xqfrm3gNeG++u9s3vlGOKAO6/4yk/Cefa48WNrkcV7
+kkneFt/OMHaVEUML46GM
+=MVHR
+-----END PGP SIGNATURE-----
 
+--nextPart3463933.kiKxh8oLbK--
