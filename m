@@ -1,151 +1,73 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] man2 : syscall.2 : document syscall calling conventions
-Date: Fri, 12 Apr 2013 08:17:38 -0400
-Message-ID: <BLU0-SMTP7FE3CEF5EAAC8C6456FEB97C10@phx.gbl>
-References: <1364361092-5948-1-git-send-email-ch0.han@lge.com> <201304112155.46349.vapier@gentoo.org> <BLU0-SMTP62F4273B01E0328ADCD7BE97C10@phx.gbl> <201304112338.56618.vapier@gentoo.org> <1365741912.6982.8.camel@dabdike>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Mike Frysinger <vapier@gentoo.org>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	"Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-	linux-man <linux-man@vger.kernel.org>,
-	Kyle McMartin <kyle@infradead.org>,
-	Helge Deller <deller@gmx.de>,
+From: Jiang Liu <liuj97@gmail.com>
+Subject: [RFC PATCH v1 08/19] mm/PARISC: prepare for killing free_all_bootmem_node()
+Date: Sat, 13 Apr 2013 23:36:28 +0800
+Message-ID: <1365867399-21323-9-git-send-email-jiang.liu@huawei.com>
+References: <1365867399-21323-1-git-send-email-jiang.liu@huawei.com>
+Cc: Jiang Liu <jiang.liu@huawei.com>,
+	David Rientjes <rientjes@google.com>,
+	Wen Congyang <wency@cn.fujitsu.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Minchan Kim <minchan@kernel.org>,
+	KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>,
+	Michal Hocko <mhocko@suse.cz>,
+	David Howells <dhowells@redhat.com>,
+	Mark Salter <msalter@redhat.com>,
+	Jianguo Wu <wujianguo@huawei.com>,
+	linux-mm@kvack.org,
+	linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
 	linux-parisc@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1365741912.6982.8.camel@dabdike>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Yinghai Lu <yinghai@kernel.org>
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <1365867399-21323-1-git-send-email-jiang.liu@huawei.com>
+List-ID: <linux-mm.kvack.org>
 
-On 12-Apr-13, at 12:45 AM, James Bottomley wrote:
+Prepare for killing free_all_bootmem_node() by using
+free_all_bootmem().
 
-> On Thu, 2013-04-11 at 23:38 -0400, Mike Frysinger wrote:
->> On Thursday 11 April 2013 22:34:43 John David Anglin wrote:
->>> On 11-Apr-13, at 9:55 PM, Mike Frysinger wrote:
->>>> On Sunday 07 April 2013 14:48:42 John David Anglin wrote:
->>>>> On 7-Apr-13, at 2:39 PM, Mike Frysinger wrote:
->>>>>> just to be clear, the only insn you need is:
->>>>>>  ble 0x100(%sr2, %r0);
->>>>>>
->>>>>> the kernel docs say sr2 holds the kernel gateway page (so i guess
->>>>>> 0x100 is a
->>>>>> known offset into that).  the docs don't mention r0 that i can  
->>>>>> see,
->>>>>> so i'm
->>>>>> guessing it's one of those "always 0" registers ?
->>>>>
->>>>> Yes.  There is also an entry at offset 0xb0 for light-weight-
->>>>> syscalls.  Currently,
->>>>> this implements an atomic CAS operation used for pthread support.
->>>>
->>>> interesting.  sounds like a poor man's vDSO.  i'll document this  
->>>> the
->>>> new
->>>> vdso(7) man page.
->>>
->>> Not exactly, the code runs on the gateway page which is in kernel  
->>> space.
->>> The main reason for doing the operation in kernel space is to  
->>> prevent
->>> processes from being preempted while executing in the lock  
->>> region.  In
->>> general,
->>> parisc processes are not preempted on the gateway page.  There are
->>> some subtleties regarding fault handling.
->>
->> sure ... the Blackfin arch does a similar thing for providing fast  
->> atomic
->> primitives to userspace since the ISA can't.
->>
->> what do you think of this section for vdso(7) ?  i might have to  
->> split the
->> "real" vdso arches from these others since there's a couple now  
->> (arm, bfin,
->> parisc), and i think there might be more down the line (microblaze).
->
-> I've got to say, I really don't think this can be classified as a  
-> vdso.
-> For a vdso, the kernel exports an ELF object that can be linked
-> dynamically into any elf binary requiring it.  The ELF section
-> information provides full details and so vdso entries can be called by
-> symbol.
->
-> In the parisc gateway page implementation, we have a set of "hidden"
-> primitives which the executable must know how to call (no self
-> description like a vdso).  This mechanism is identical to the original
-> intent of the x86 int <n> instruction (an instruction that traps into
-> the kernel and performs some primitive action but to use it, you  
-> have to
-> know which function corresponds to which value of <n>).
+Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Michal Hocko <mhocko@suse.cz>
+Cc: David Rientjes <rientjes@google.com>
+Cc: linux-parisc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ arch/parisc/mm/init.c |   12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-I agree with James.  There is no ELF object exported to userspace.  The
-content of the gateway page is hidden.  The data structures used for
-the locks are in the kernel itself.  Access is via a special branch  
-instruction
-rather than a break/trap instruction.
-
->
-> James
->
->
->> .SS parisc (hppa) functions
->> .\" See linux/arch/parisc/kernel/syscall.S
->> .\" See linux/Documentation/parisc/registers
->> The parisc port has a code page full of utility functions.
->> Rather than use the normal ELF aux vector approach, it passes the  
->> address of
->> the page to the process via the SR2 register.
->> This is done to match the way HP-UX works.
->>
->> Since it's just a raw page of code, there is no ELF information for  
->> doing
->> symbol lookups or versioning.
->> Simply call into the appropriate offset via the branch instruction,  
->> e.g.:
->> .br
->> ble <offset>(%sr2, %r0)
->> .if t \{\
->> .ft CW
->> \}
->> .TS
->> l l.
->> offset  function
->> _
->> 00b0    lws_entry
->> 00e0    set_thread_pointer
->> 0100    linux_gateway_entry (syscall)
->> 0268    syscall_nosys
->> 0274    tracesys
->> 0324    tracesys_next
->> 0368    tracesys_exit
->> 03a0    tracesys_sigexit
->> 03b8    lws_start
->> 03dc    lws_exit_nosys
->> 03e0    lws_exit
->> 03e4    lws_compare_and_swap64
->> 03e8    lws_compare_and_swap
->> 0404    cas_wouldblock
->> 0410    cas_action
->> .TE
->> .if t \{\
->> .in
->> .ft P
->> \}
->>
->>> There is support in glibc and libgcc for these calls.  The libgcc
->>> implementation
->>> in linux-atomic.c is very similar to that on arm.
->>
->> interesting.  another arch to add :).
->> -mike
->
->
->
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index f80c175..ab76b84 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -585,18 +585,8 @@ void __init mem_init(void)
+ 			> BITS_PER_LONG);
+ 
+ 	high_memory = __va((max_pfn << PAGE_SHIFT));
+-
+-#ifndef CONFIG_DISCONTIGMEM
+-	max_mapnr = page_to_pfn(virt_to_page(high_memory - 1)) + 1;
++	set_max_mapnr(page_to_pfn(virt_to_page(high_memory - 1)) + 1);
+ 	free_all_bootmem();
+-#else
+-	{
+-		int i;
+-
+-		for (i = 0; i < npmem_ranges; i++)
+-			free_all_bootmem_node(NODE_DATA(i));
+-	}
+-#endif
+ 
+ #ifdef CONFIG_PA11
+ 	if (hppa_dma_ops == &pcxl_dma_ops) {
+-- 
+1.7.9.5
 
 --
-John David Anglin	dave.anglin@bell.net
-
-
-
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
