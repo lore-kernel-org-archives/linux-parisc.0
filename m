@@ -1,73 +1,76 @@
-From: Jiang Liu <liuj97@gmail.com>
-Subject: [RFC PATCH v1 08/19] mm/PARISC: prepare for killing free_all_bootmem_node()
-Date: Sat, 13 Apr 2013 23:36:28 +0800
-Message-ID: <1365867399-21323-9-git-send-email-jiang.liu@huawei.com>
-References: <1365867399-21323-1-git-send-email-jiang.liu@huawei.com>
-Cc: Jiang Liu <jiang.liu@huawei.com>,
-	David Rientjes <rientjes@google.com>,
-	Wen Congyang <wency@cn.fujitsu.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Minchan Kim <minchan@kernel.org>,
-	KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>,
-	Michal Hocko <mhocko@suse.cz>,
-	David Howells <dhowells@redhat.com>,
-	Mark Salter <msalter@redhat.com>,
-	Jianguo Wu <wujianguo@huawei.com>,
-	linux-mm@kvack.org,
-	linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	linux-parisc@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Yinghai Lu <yinghai@kernel.org>
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <1365867399-21323-1-git-send-email-jiang.liu@huawei.com>
-List-ID: <linux-mm.kvack.org>
+From: Will Deacon <will.deacon@arm.com>
+Subject: [PATCH] parisc: uaccess: fix compiler warnings caused by __put_user casting
+Date: Wed, 17 Apr 2013 11:06:26 +0100
+Message-ID: <1366193186-24859-1-git-send-email-will.deacon@arm.com>
+Cc: linux-kernel@vger.kernel.org, Will Deacon <will.deacon@arm.com>,
+	Helge Deller <deller@gmx.de>
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-Prepare for killing free_all_bootmem_node() by using
-free_all_bootmem().
+When targetting 32-bit processors, __put_user emits a pair of stw
+instructions for the 8-byte case. If the type of __val is a pointer, the
+marshalling code casts it to the wider integer type of u64, resulting
+in the following compiler warnings:
 
-Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+  kernel/signal.c: In function 'copy_siginfo_to_user':
+  kernel/signal.c:2752:11: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  kernel/signal.c:2752:11: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  [...]
+
+This patch fixes the warnings by removing the marshalling code and using
+the correct output modifiers in the __put_{user,kernel}_asm64 macros
+so that GCC will allocate the right registers without the need to
+extract the two words explicitly.
+
 Cc: Helge Deller <deller@gmx.de>
-Cc: Michal Hocko <mhocko@suse.cz>
-Cc: David Rientjes <rientjes@google.com>
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Will Deacon <will.deacon@arm.com>
 ---
- arch/parisc/mm/init.c |   12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ arch/parisc/include/asm/uaccess.h | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index f80c175..ab76b84 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -585,18 +585,8 @@ void __init mem_init(void)
- 			> BITS_PER_LONG);
+diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
+index 4ba2c93..a95af07 100644
+--- a/arch/parisc/include/asm/uaccess.h
++++ b/arch/parisc/include/asm/uaccess.h
+@@ -181,30 +181,24 @@ struct exception_data {
+ #if !defined(CONFIG_64BIT)
  
- 	high_memory = __va((max_pfn << PAGE_SHIFT));
--
--#ifndef CONFIG_DISCONTIGMEM
--	max_mapnr = page_to_pfn(virt_to_page(high_memory - 1)) + 1;
-+	set_max_mapnr(page_to_pfn(virt_to_page(high_memory - 1)) + 1);
- 	free_all_bootmem();
--#else
--	{
--		int i;
--
--		for (i = 0; i < npmem_ranges; i++)
--			free_all_bootmem_node(NODE_DATA(i));
--	}
--#endif
+ #define __put_kernel_asm64(__val,ptr) do {		    \
+-	u64 __val64 = (u64)(__val);			    \
+-	u32 hi = (__val64) >> 32;			    \
+-	u32 lo = (__val64) & 0xffffffff;		    \
+ 	__asm__ __volatile__ (				    \
+-		"\n1:\tstw %2,0(%1)"			    \
+-		"\n2:\tstw %3,4(%1)\n\t"		    \
++		"\n1:\tstw %R2,0(%1)"			    \
++		"\n2:\tstw %2,4(%1)\n\t"		    \
+ 		ASM_EXCEPTIONTABLE_ENTRY(1b,fixup_put_user_skip_2)\
+ 		ASM_EXCEPTIONTABLE_ENTRY(2b,fixup_put_user_skip_1)\
+ 		: "=r"(__pu_err)                            \
+-		: "r"(ptr), "r"(hi), "r"(lo), "0"(__pu_err) \
++		: "r"(ptr), "r"(__val), "0"(__pu_err) \
+ 		: "r1");				    \
+ } while (0)
  
- #ifdef CONFIG_PA11
- 	if (hppa_dma_ops == &pcxl_dma_ops) {
+ #define __put_user_asm64(__val,ptr) do {	    	    \
+-	u64 __val64 = (u64)(__val);			    \
+-	u32 hi = (__val64) >> 32;			    \
+-	u32 lo = (__val64) & 0xffffffff;		    \
+ 	__asm__ __volatile__ (				    \
+-		"\n1:\tstw %2,0(%%sr3,%1)"		    \
+-		"\n2:\tstw %3,4(%%sr3,%1)\n\t"		    \
++		"\n1:\tstw %R2,0(%%sr3,%1)"		    \
++		"\n2:\tstw %2,4(%%sr3,%1)\n\t"		    \
+ 		ASM_EXCEPTIONTABLE_ENTRY(1b,fixup_put_user_skip_2)\
+ 		ASM_EXCEPTIONTABLE_ENTRY(2b,fixup_put_user_skip_1)\
+ 		: "=r"(__pu_err)                            \
+-		: "r"(ptr), "r"(hi), "r"(lo), "0"(__pu_err) \
++		: "r"(ptr), "r"(__val), "0"(__pu_err) \
+ 		: "r1");				    \
+ } while (0)
+ 
 -- 
-1.7.9.5
+1.8.0
 
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
