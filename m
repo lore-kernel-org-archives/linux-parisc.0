@@ -1,37 +1,56 @@
-From: "Keven Miller \(3k\)" <kevenm@3kranger.com>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Subject: Re: PARISC Linux website and status update
-Date: Fri, 19 Apr 2013 15:24:40 -0600
-Message-ID: <8E87A4B8BE7C4D65B4F15E979070F962@RANGER1>
+Date: Fri, 19 Apr 2013 23:55:59 +0200
+Message-ID: <13691126.u1dAREQ1nW@donald.sf-tec.de>
 References: <5171B347.6070600@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-1";
-	reply-type=original
-Cc: "John David Anglin" <dave.anglin@bell.net>
-To: <debian-hppa@lists.debian.org>,
-	"linux-parisc" <linux-parisc@vger.kernel.org>
+Content-Type: multipart/signed; boundary="nextPart1562331.tJ2A3IyiDI"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Cc: linux-parisc <linux-parisc@vger.kernel.org>
+To: debian-hppa@lists.debian.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <5171B347.6070600@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Just wanted to pipe up and let you all know someone else follows this hppa 
-thread,
-having installed Lenny 5.0 onto an A500 box sometime ago.
-(I made dvds from the iso files).
 
-I am clueless about kernel programming, but wanted a device driver.
+--nextPart1562331.tJ2A3IyiDI
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="ISO-8859-1"
 
-Thus finding a couple tutorials, I created sample drivers, and the one I 
-needed.
-Finally finished with rebuilding the kernel - with some vague-to-me examples
-of needed commands.
+Helge Deller wrote:
+> Hello everyone,
+> 
+> During the last few days I've invested some time in updating our
+> * main website at http://www.parisc-linux.org (including news-updates and
+> favicon) and the * Wiki at http://wiki.parisc-linux.org
+> 
+> As such, we now have some more current documentation about
+> * http://wiki.parisc-linux.org/Debian_Ports_Installation  - How to install
+> from Debian-Ports * http://wiki.parisc-linux.org/Debian_Ports - Status
+> about (technical) migration to Debian-Ports, and *
+> http://wiki.parisc-linux.org/TODO - current status and TODOs regarding
+> infrastructure, debian packages and kernel development.
+> 
+> Feedback and corrections are very much welcome.
+> Volunteers to help are even more welcome :-)
 
-Just a C programmer at heart, having been thrust into C++, Java, Cobol, 
-Transact,
-and a few other languages.
+While I understand your focus on Debian, on an official port website I would 
+think that other supported distros should at least be mentioned. And it's not 
+that hard, as there is only one distro at all that has HPPA support in their 
+official tree at all ;)
 
-Keven Miller       www.3kranger.com
-kevenm@3kranger.com
+Eike
+--nextPart1562331.tJ2A3IyiDI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
+
+iEYEABECAAYFAlFxvY8ACgkQXKSJPmm5/E75swCgnp8zS5Kv2COizZ8XxsukjDBC
+IL8An0IYi13GDJJS1u7TXklNCxKwY0v2
+=mREs
+-----END PGP SIGNATURE-----
+
+--nextPart1562331.tJ2A3IyiDI--
 
