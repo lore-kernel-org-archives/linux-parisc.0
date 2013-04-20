@@ -1,30 +1,115 @@
-From: Paolo Borsa <samvise@hobbiton.it>
-Subject: is a 64 bit linux kernel possible?
-Date: Sat, 20 Apr 2013 19:50:00 +0200
-Message-ID: <CAOU17uOgmenAJU+tqLo7npM7eRTQwBUGv=cc0rq7ZrZZA9rjyQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: linux-parisc <linux-parisc@vger.kernel.org>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] PARISC: provide __ucmpdi2
+Date: Sat, 20 Apr 2013 15:41:06 -0400
+Message-ID: <BLU0-SMTP16CB97A849149145EF5FC997C90@phx.gbl>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: multipart/mixed; boundary="Apple-Mail-7--514873447"
+Cc: Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>
+To: linux-parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi, I have an HP C3750 with 875Mhz PA8700+ cpu. I'm currently running
-debian lenny with kernel 2.6.26 32 bit. I am trying to compile and run
-the last linux kernel, 3.8.7, compiled with 64 bit kernel flag
-enabled. The compilation succeed, and with file vmlinux I get:
-vmlinux: ELF 64-bit MSB executable, PA-RISC 2.0 (LP64) version 1
-(GNU/Linux), statically linked, not stripped
+--Apple-Mail-7--514873447
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Content-Transfer-Encoding: 7bit
 
-after copying it to /boot partition and rebooted the machine, I
-instructed palo to load this new kernel. Unfortunately it doesn't
-work, I have a serial console and the last message I see is palo
-saying "If this is the last message you see, you may need to switch to
-your console...."
-On the lcd display of the c3750 I see "bus error". Eventually I had to
-do an hard reset and come back to the previous kernel.
-I don't know if the problem is because the machine doesn't support 64
-bit kernel (although I think it should) or because there's some
-misconfiguration in the linux kernel.
-Has anybody had a similar experience?
-Thanks
+Provide __ucmpdi2 to resolve undefined references in 32 bit builds.
+
+The Debian experimental linux source package (3.8.5-1) build fails  
+with the following errors:
+...
+MODPOST 2016 modules
+ERROR: "__ucmpdi2" [fs/btrfs/btrfs.ko] undefined!
+ERROR: "__ucmpdi2" [drivers/md/dm-verity.ko] undefined!
+
+The attached patch resolves this problem.  It is based on the s390  
+implementation
+of ucmpdi2.c.
+
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+---
+
+
+
+
+--Apple-Mail-7--514873447
+Content-Disposition: attachment; filename="ucmpdi2.diff.txt"
+Content-Type: text/plain; x-unix-mode=0644; name="ucmpdi2.diff.txt"
+Content-Transfer-Encoding: 7bit
+
+diff --git a/arch/parisc/kernel/parisc_ksyms.c b/arch/parisc/kernel/parisc_ksyms.c
+index 6795dc6..568b2c6 100644
+--- a/arch/parisc/kernel/parisc_ksyms.c
++++ b/arch/parisc/kernel/parisc_ksyms.c
+@@ -120,11 +120,13 @@ extern void __ashrdi3(void);
+ extern void __ashldi3(void);
+ extern void __lshrdi3(void);
+ extern void __muldi3(void);
++extern void __ucmpdi2(void);
+ 
+ EXPORT_SYMBOL(__ashrdi3);
+ EXPORT_SYMBOL(__ashldi3);
+ EXPORT_SYMBOL(__lshrdi3);
+ EXPORT_SYMBOL(__muldi3);
++EXPORT_SYMBOL(__ucmpdi2);
+ 
+ asmlinkage void * __canonicalize_funcptr_for_compare(void *);
+ EXPORT_SYMBOL(__canonicalize_funcptr_for_compare);
+diff --git a/arch/parisc/lib/Makefile b/arch/parisc/lib/Makefile
+index 5f2e690..5651536 100644
+--- a/arch/parisc/lib/Makefile
++++ b/arch/parisc/lib/Makefile
+@@ -2,6 +2,7 @@
+ # Makefile for parisc-specific library files
+ #
+ 
+-lib-y	:= lusercopy.o bitops.o checksum.o io.o memset.o fixup.o memcpy.o
++lib-y	:= lusercopy.o bitops.o checksum.o io.o memset.o fixup.o memcpy.o \
++	   ucmpdi2.o
+ 
+ obj-y	:= iomap.o
+--- /dev/null	2013-04-18 22:44:06.316000000 -0400
++++ linux/arch/parisc/lib/ucmpdi2.c	2013-04-20 10:50:01.000000000 -0400
+@@ -0,0 +1,25 @@
++#include <linux/module.h>
++
++union ull_union {
++	unsigned long long ull;
++	struct {
++		unsigned int high;
++		unsigned int low;
++	} ui;
++};
++
++int __ucmpdi2(unsigned long long a, unsigned long long b)
++{
++	union ull_union au = {.ull = a};
++	union ull_union bu = {.ull = b};
++
++	if (au.ui.high < bu.ui.high)
++		return 0;
++	else if (au.ui.high > bu.ui.high)
++		return 2;
++	if (au.ui.low < bu.ui.low)
++		return 0;
++	else if (au.ui.low > bu.ui.low)
++		return 2;
++	return 1;
++}
+
+--Apple-Mail-7--514873447
+Content-Type: text/plain; charset="US-ASCII"; format=flowed
+Content-Transfer-Encoding: 7bit
+
+
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+--Apple-Mail-7--514873447--
