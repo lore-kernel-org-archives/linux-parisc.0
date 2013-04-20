@@ -1,53 +1,30 @@
-From: Brendan Horan <brendanhoran@basstech.net>
-Subject: Re: PARISC Linux website and status update
-Date: Sat, 20 Apr 2013 22:07:19 +0800 (HKT)
-Message-ID: <1544662368.29.1366466839145.JavaMail.root@basstech.net>
-References: <5171B347.6070600@gmx.de> <13691126.u1dAREQ1nW@donald.sf-tec.de> <276588197.910.1366429889203.JavaMail.root@basstech.net> <20130420155518.0de6df62@marga.jer-c2.orkz.net>
+From: Paolo Borsa <samvise@hobbiton.it>
+Subject: is a 64 bit linux kernel possible?
+Date: Sat, 20 Apr 2013 19:50:00 +0200
+Message-ID: <CAOU17uOgmenAJU+tqLo7npM7eRTQwBUGv=cc0rq7ZrZZA9rjyQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+To: linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130420155518.0de6df62@marga.jer-c2.orkz.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Hi, I have an HP C3750 with 875Mhz PA8700+ cpu. I'm currently running
+debian lenny with kernel 2.6.26 32 bit. I am trying to compile and run
+the last linux kernel, 3.8.7, compiled with 64 bit kernel flag
+enabled. The compilation succeed, and with file vmlinux I get:
+vmlinux: ELF 64-bit MSB executable, PA-RISC 2.0 (LP64) version 1
+(GNU/Linux), statically linked, not stripped
 
-
-On Sat, 20 Apr 2013 11:51:29 +0800 (HKT)
-Brendan Horan <brendanhoran@basstech.net> wrote:
-
-> Would that be Gentoo?
-> Last time I checked the minimal install CD was out of date.
-
-The only two ways in which the install CD could be truly "out of date"
-is if the kernel and userland tools wouldn't support the new hardware
-you wanted to install Gentoo Linux on (like previously unsupported disk
-controllers) or if you wanted to install it on a novel filesystem that
-the install CD's kernel and tools didn't yet support.
-
-
-> I did manage to get it up and running on my j6750.
-
-The install CD's version isn't important to the installation but
-for the two exceptions mentioned above. Indeed, you might even use a
-Debian install CD to do a Gentoo Linux install. The "stage3" tarballs
-which contain the actual install base are what is important[1], and they
-have been kept up to date quite well. That said, we recently released a
-new set of boot images (CD[2] and netboot[3]) with support for
-recent hardware, filesystems and (yes!) SMP.
-
-
-     jer
-
-
-[1] http://distfiles.gentoo.org/releases/hppa/autobuilds/current-stage3/
-[2] http://distfiles.gentoo.org/experimental/hppa/livecd/
-[3] http://distfiles.gentoo.org/experimental/hppa/netboot/
-
-
-I've been using Gentoo for years :) 
-So I understand an "older" install CD is still fine:)
-
-Thanks for pointing out the new live cd for me!
-
-Brendan
+after copying it to /boot partition and rebooted the machine, I
+instructed palo to load this new kernel. Unfortunately it doesn't
+work, I have a serial console and the last message I see is palo
+saying "If this is the last message you see, you may need to switch to
+your console...."
+On the lcd display of the c3750 I see "bus error". Eventually I had to
+do an hard reset and come back to the previous kernel.
+I don't know if the problem is because the machine doesn't support 64
+bit kernel (although I think it should) or because there's some
+misconfiguration in the linux kernel.
+Has anybody had a similar experience?
+Thanks
