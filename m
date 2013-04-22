@@ -1,39 +1,78 @@
-From: Damian Hobson-Garcia <dhobsong@igel.co.jp>
-Subject: [RFC/PATCH 3/4] parisc: Provide default implementation for dma_{alloc,free}_attrs
-Date: Mon, 22 Apr 2013 14:10:07 +0900
-Message-ID: <1366607407-3103-1-git-send-email-dhobsong@igel.co.jp>
-Cc: deller@gmx.de, linux-parisc@vger.kernel.org,
-	Damian Hobson-Garcia <dhobsong@igel.co.jp>
-To: linux-kernel@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+From: Will Deacon <will.deacon@arm.com>
+Subject: [PATCH v2] parisc: uaccess: fix compiler warnings caused by __put_user casting
+Date: Mon, 22 Apr 2013 13:53:43 +0100
+Message-ID: <1366635223-4207-1-git-send-email-will.deacon@arm.com>
+Cc: linux-kernel@vger.kernel.org, Will Deacon <will.deacon@arm.com>,
+	Helge Deller <deller@gmx.de>
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Most architectures that define CONFIG_HAVE_DMA, have implementations for
-both dma_alloc_attrs() and dma_free_attrs().  All achitectures that do
-not define CONFIG_HAVE_DMA also have both of these definitions provided by
-dma-mapping-broken.h.
+When targetting 32-bit processors, __put_user emits a pair of stw
+instructions for the 8-byte case. If the type of __val is a pointer, the
+marshalling code casts it to the wider integer type of u64, resulting
+in the following compiler warnings:
 
-Add default implementations for these functions on parisc.
+  kernel/signal.c: In function 'copy_siginfo_to_user':
+  kernel/signal.c:2752:11: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  kernel/signal.c:2752:11: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  [...]
 
-Signed-off-by: Damian Hobson-Garcia <dhobsong@igel.co.jp>
+This patch fixes the warnings by removing the marshalling code and using
+the correct output modifiers in the __put_{user,kernel}_asm64 macros
+so that GCC will allocate the right registers without the need to
+extract the two words explicitly.
+
+Cc: Helge Deller <deller@gmx.de>
+Signed-off-by: Will Deacon <will.deacon@arm.com>
 ---
- arch/parisc/include/asm/dma-mapping.h |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
 
-diff --git a/arch/parisc/include/asm/dma-mapping.h b/arch/parisc/include/asm/dma-mapping.h
-index 106b395..d0eae5f 100644
---- a/arch/parisc/include/asm/dma-mapping.h
-+++ b/arch/parisc/include/asm/dma-mapping.h
-@@ -46,6 +46,9 @@ extern struct hppa_dma_ops pcx_dma_ops;
+v1->v2: Put the output modifier on the correct word, so 64-bit put_user
+        doesn't end up word-swapped.
+
+ arch/parisc/include/asm/uaccess.h | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
+index 4ba2c93..e0a8235 100644
+--- a/arch/parisc/include/asm/uaccess.h
++++ b/arch/parisc/include/asm/uaccess.h
+@@ -181,30 +181,24 @@ struct exception_data {
+ #if !defined(CONFIG_64BIT)
  
- extern struct hppa_dma_ops *hppa_dma_ops;
+ #define __put_kernel_asm64(__val,ptr) do {		    \
+-	u64 __val64 = (u64)(__val);			    \
+-	u32 hi = (__val64) >> 32;			    \
+-	u32 lo = (__val64) & 0xffffffff;		    \
+ 	__asm__ __volatile__ (				    \
+ 		"\n1:\tstw %2,0(%1)"			    \
+-		"\n2:\tstw %3,4(%1)\n\t"		    \
++		"\n2:\tstw %R2,4(%1)\n\t"		    \
+ 		ASM_EXCEPTIONTABLE_ENTRY(1b,fixup_put_user_skip_2)\
+ 		ASM_EXCEPTIONTABLE_ENTRY(2b,fixup_put_user_skip_1)\
+ 		: "=r"(__pu_err)                            \
+-		: "r"(ptr), "r"(hi), "r"(lo), "0"(__pu_err) \
++		: "r"(ptr), "r"(__val), "0"(__pu_err) \
+ 		: "r1");				    \
+ } while (0)
  
-+#define dma_alloc_attrs(d, s, h, f, a) dma_alloc_coherent(d, s, h, f)
-+#define dma_free_attrs(d, s, h, f, a) dma_free_coherent(d, s, h, f)
-+
- static inline void *
- dma_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle,
- 		   gfp_t flag)
+ #define __put_user_asm64(__val,ptr) do {	    	    \
+-	u64 __val64 = (u64)(__val);			    \
+-	u32 hi = (__val64) >> 32;			    \
+-	u32 lo = (__val64) & 0xffffffff;		    \
+ 	__asm__ __volatile__ (				    \
+ 		"\n1:\tstw %2,0(%%sr3,%1)"		    \
+-		"\n2:\tstw %3,4(%%sr3,%1)\n\t"		    \
++		"\n2:\tstw %R2,4(%%sr3,%1)\n\t"		    \
+ 		ASM_EXCEPTIONTABLE_ENTRY(1b,fixup_put_user_skip_2)\
+ 		ASM_EXCEPTIONTABLE_ENTRY(2b,fixup_put_user_skip_1)\
+ 		: "=r"(__pu_err)                            \
+-		: "r"(ptr), "r"(hi), "r"(lo), "0"(__pu_err) \
++		: "r"(ptr), "r"(__val), "0"(__pu_err) \
+ 		: "r1");				    \
+ } while (0)
+ 
 -- 
-1.7.5.4
+1.8.0
+
