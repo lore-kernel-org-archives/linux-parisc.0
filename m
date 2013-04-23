@@ -1,69 +1,78 @@
-From: Graham Gower <graham.gower@gmail.com>
-Subject: Re: install medium for c8000 [was Re: PARISC Linux website and status update]
-Date: Tue, 23 Apr 2013 09:32:57 +0930
-Message-ID: <CAFk90B_rakTmEWv7RagoOAv7dybZKA_POvrb4MDYCEF9FOO6JA@mail.gmail.com>
-References: <CAFk90B8ZNjwyWKpO_LhGPPkYB_sgJduMVi_YBCoN_Z6hk-_sFQ@mail.gmail.com>
-	<0d62eecac81e83ba969f27e280554c19.squirrel@mail.therion.be>
-	<2146001.U3u6lFCtbY@eto>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: debian-hppa@lists.debian.org,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Rolf Eike Beer <eike-kernel@sf-tec.de>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] PARISC: Change kunmap macro to static inline function
+Date: Mon, 22 Apr 2013 20:23:50 -0400
+Message-ID: <BLU0-SMTP8431D8E2DE5CEDDFC64BF697B40@phx.gbl>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: multipart/mixed; boundary="Apple-Mail-8--325109570"
+Cc: Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>
+To: linux-parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <2146001.U3u6lFCtbY@eto>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 23 April 2013 01:47, Rolf Eike Beer <eike-kernel@sf-tec.de> wrote:
-> Am Montag 22 April 2013, 17:00:07 schrieb Geert Lorang:
->> On Mon, April 22, 2013 15:12, Graham Gower wrote:
->> > I'm wondering if there is an install iso with a kernel that has
->> > CONFIG_PDC_CONSOLE=y, so that I can install on a c8000. (Or am I
->> > missing something, is there a way to get it to work without this?)
->> >
->> > Its kinda annoying if I've got to build a cross toolchain, cross
->> > compile a kernel, tftpboot, nfsroot, etc. in order to put something on the
->> > hard drive.
->>
->> AFAIK the C8000s have unsupported serial ports / network card.
->
-> The network card is an e1000, which has a somewhat weird "checksum" for the
-> EEPROM. In newer kernels the driver knows how to handle that. For older
-> kernels you need to set the MAC by hand, but otherwise everything is fine.
->
-> About the serial I'm not absolutely sure, but I think it worked. The only
-> thing I needed to change was to set the console to ttyB0 instead of ttyS0.
->
-> Greetings,
->
-> Eike
+--Apple-Mail-8--325109570
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Content-Transfer-Encoding: 7bit
 
-Yes, I understand these issues. I went through the process of doing a
-gentoo install a couple of years ago. And I did so without an
-additional serial port. It just took ages to figure out getting all
-the bits built. I fired up my c8000 again yesterday, but noticed one
-of the disks is flakey so I can't log in now.
+Change kunmap macro to static inline function to fix build error  
+compiling drivers/base/dma-buf.c.
 
-A PDC_CONSOLE enabled kernel requires no additional serial port, it
-works fine over the serial port. But the debian/gentoo install kernels
-disable it for some reason. All you need to do is boot without a
-keyboard attached, with your serial port set at 9600/n8, you'll get
-the PDC stuff come up and be able to 'boot lan'.
+Without the change, the following error can occur:
 
-But if, like me, you don't have another fast hppa box to build stuff
-on, you'll need to:
- - build a cross hppa-linux toolchain
- - build palo bits with native toolchain and the 32bit hppa-linux toolchain
- - build a cross hppa64-linux toolchain
- - cross build a 64 bit kernel with hppa64-linux toolchain
- - smash your kernel and palo together in a lan boot compatible way
- - set up a dhcpd/tftpd/nfsd that all gel together for lan booting
-your parisc box.
+   CC      drivers/base/dma-buf.o
+/home/dave/debian/linux/linux-3.8.5/drivers/base/dma-buf.c: In  
+function 'dma_buf_kunmap':
+/home/dave/debian/linux/linux-3.8.5/drivers/base/dma-buf.c:427:46:  
+error: macro "kunmap" passed 3 arguments, but takes just 1
+/home/dave/debian/linux/linux-3.8.5/drivers/base/dma-buf.c:427:3:  
+warning: statement with no effect [-Wunused-value]
+make[7]: *** [drivers/base/dma-buf.o] Error 1
+make[6]: *** [drivers/base] Error 2
+make[5]: *** [drivers] Error 2
+make[4]: *** [sub-make] Error 2
+make[3]: *** [all] Error 2
+make[3]: Leaving directory `/home/dave/debian/linux/linux-3.8.5/debian/ 
+build/build_hppa_none_parisc64'
 
-Needless to say, this can be time consuming and error prone. Which is
-why I'm asking...
+I believe parisc is the only arch to implement kunmap using a macro.
 
-Does anyone have a PDC_CONSOLE enabled install iso? Or lan bootable image?
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+---
 
--Graham
+
+--Apple-Mail-8--325109570
+Content-Disposition: attachment; filename="cacheflush.h.d.txt"
+Content-Type: text/plain; x-unix-mode=0644; name="cacheflush.h.d.txt"
+Content-Transfer-Encoding: 7bit
+
+diff --git a/arch/parisc/include/asm/cacheflush.h b/arch/parisc/include/asm/cacheflush.h
+index 79f694f..f0e2784 100644
+--- a/arch/parisc/include/asm/cacheflush.h
++++ b/arch/parisc/include/asm/cacheflush.h
+@@ -140,7 +140,10 @@ static inline void *kmap(struct page *page)
+ 	return page_address(page);
+ }
+ 
+-#define kunmap(page)			kunmap_parisc(page_address(page))
++static inline void kunmap(struct page *page)
++{
++	kunmap_parisc(page_address(page));
++}
+ 
+ static inline void *kmap_atomic(struct page *page)
+ {
+
+--Apple-Mail-8--325109570
+Content-Type: text/plain; charset="US-ASCII"; format=flowed
+Content-Transfer-Encoding: 7bit
+
+
+
+--
+John David Anglin	dave.anglin@bell.net
+
+
+--Apple-Mail-8--325109570--
