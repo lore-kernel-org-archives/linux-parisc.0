@@ -1,78 +1,52 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] PARISC: Change kunmap macro to static inline function
-Date: Mon, 22 Apr 2013 20:23:50 -0400
-Message-ID: <BLU0-SMTP8431D8E2DE5CEDDFC64BF697B40@phx.gbl>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: multipart/mixed; boundary="Apple-Mail-8--325109570"
-Cc: Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>
-To: linux-parisc List <linux-parisc@vger.kernel.org>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: disable -mlong-calls compiler option for kernel
+ modules
+Date: Tue, 23 Apr 2013 22:20:11 +0200
+Message-ID: <20130423202011.GA7252@p100.box>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Apple-Mail-8--325109570
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
+commit 87622023a2071f81037c92d34ab20ed062e53ea5
+Author: Helge Deller <deller@gmx.de>
+Date:   Tue Apr 23 15:59:45 2013 +0200
 
-Change kunmap macro to static inline function to fix build error  
-compiling drivers/base/dma-buf.c.
+parisc: disable -mlong-calls compiler option for kernel modules
 
-Without the change, the following error can occur:
+CONFIG_MLONGCALLS was introduced in commit
+ec758f98328da3eb933a25dc7a2eed01ef44d849 to overcome linker issues when linking
+huge linux kernels (e.g. with many modules linked in).
 
-   CC      drivers/base/dma-buf.o
-/home/dave/debian/linux/linux-3.8.5/drivers/base/dma-buf.c: In  
-function 'dma_buf_kunmap':
-/home/dave/debian/linux/linux-3.8.5/drivers/base/dma-buf.c:427:46:  
-error: macro "kunmap" passed 3 arguments, but takes just 1
-/home/dave/debian/linux/linux-3.8.5/drivers/base/dma-buf.c:427:3:  
-warning: statement with no effect [-Wunused-value]
-make[7]: *** [drivers/base/dma-buf.o] Error 1
-make[6]: *** [drivers/base] Error 2
-make[5]: *** [drivers] Error 2
-make[4]: *** [sub-make] Error 2
-make[3]: *** [all] Error 2
-make[3]: Leaving directory `/home/dave/debian/linux/linux-3.8.5/debian/ 
-build/build_hppa_none_parisc64'
+But in the kernel module loader there is no support yet for the new
+relocation types, which is why modules built with -mlong-calls can't be
+loaded.
+Furthermore, for modules long calls are not really necessary, since we already use
+stub sections which resolve long distance calls.
 
-I believe parisc is the only arch to implement kunmap using a macro.
+So, let's just disable this compiler option when compiling kernel
+modules.
 
-Signed-off-by: John David Anglin <dave.anglin@bell.net>
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: Helge Deller <deller@gmx.de>
----
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-
---Apple-Mail-8--325109570
-Content-Disposition: attachment; filename="cacheflush.h.d.txt"
-Content-Type: text/plain; x-unix-mode=0644; name="cacheflush.h.d.txt"
-Content-Transfer-Encoding: 7bit
-
-diff --git a/arch/parisc/include/asm/cacheflush.h b/arch/parisc/include/asm/cacheflush.h
-index 79f694f..f0e2784 100644
---- a/arch/parisc/include/asm/cacheflush.h
-+++ b/arch/parisc/include/asm/cacheflush.h
-@@ -140,7 +140,10 @@ static inline void *kmap(struct page *page)
- 	return page_address(page);
- }
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index 01d95e2..c9259b5 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -65,8 +65,10 @@ ifndef CONFIG_FUNCTION_TRACER
+ endif
  
--#define kunmap(page)			kunmap_parisc(page_address(page))
-+static inline void kunmap(struct page *page)
-+{
-+	kunmap_parisc(page_address(page));
-+}
+ # Use long jumps instead of long branches (needed if your linker fails to
+-# link a too big vmlinux executable)
+-cflags-$(CONFIG_MLONGCALLS)	+= -mlong-calls
++# link a too big vmlinux executable). Not enabled for building modules.
++ifdef CONFIG_MLONGCALLS
++KBUILD_CFLAGS_KERNEL += -mlong-calls
++endif
  
- static inline void *kmap_atomic(struct page *page)
- {
-
---Apple-Mail-8--325109570
-Content-Type: text/plain; charset="US-ASCII"; format=flowed
-Content-Transfer-Encoding: 7bit
-
-
-
---
-John David Anglin	dave.anglin@bell.net
-
-
---Apple-Mail-8--325109570--
+ # select which processor to optimise for
+ cflags-$(CONFIG_PA7100)		+= -march=1.1 -mschedule=7100
