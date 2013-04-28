@@ -1,55 +1,49 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: remove the second argument of kmap_atomic
-Date: Sun, 28 Apr 2013 21:56:39 +0200
-Message-ID: <517D7EF7.1080702@gmx.de>
-References: <517BAB83.2060308@huawei.com>
+Subject: Re: [RFC/PATCH 3/4] parisc: Provide default implementation for dma_{alloc,free}_attrs
+Date: Sun, 28 Apr 2013 22:06:53 +0200
+Message-ID: <517D815D.2070207@gmx.de>
+References: <1366607407-3103-1-git-send-email-dhobsong@igel.co.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Cc: linux-parisc@vger.kernel.org
-To: Zhao Hongjiang <zhaohongjiang@huawei.com>
+To: Damian Hobson-Garcia <dhobsong@igel.co.jp>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <517BAB83.2060308@huawei.com>
+In-Reply-To: <1366607407-3103-1-git-send-email-dhobsong@igel.co.jp>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 04/27/2013 12:42 PM, Zhao Hongjiang wrote:
-> kmap_atomic allows only one argument now, just move the second.
+On 04/22/2013 07:10 AM, Damian Hobson-Garcia wrote:
+> Most architectures that define CONFIG_HAVE_DMA, have implementations for
+> both dma_alloc_attrs() and dma_free_attrs().  All achitectures that do
+> not define CONFIG_HAVE_DMA also have both of these definitions provided by
+> dma-mapping-broken.h.
 > 
-> Signed-off-by: Zhao Hongjiang <zhaohongjiang@huawei.com>
+> Add default implementations for these functions on parisc.
+> 
+> Signed-off-by: Damian Hobson-Garcia <dhobsong@igel.co.jp>
 
 Thanks!
-Queued up in parisc tree for 3.10.
+Queued up in the parisc tree for 3.10
 
 Helge
 
-
 > ---
->  arch/parisc/kernel/cache.c |    6 +++---
->  1 files changed, 3 insertions(+), 3 deletions(-)
+>  arch/parisc/include/asm/dma-mapping.h |    3 +++
+>  1 files changed, 3 insertions(+), 0 deletions(-)
 > 
-> diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-> index 4b12890..6df734a 100644
-> --- a/arch/parisc/kernel/cache.c
-> +++ b/arch/parisc/kernel/cache.c
-> @@ -609,7 +609,7 @@ void clear_user_highpage(struct page *page, unsigned long vaddr)
->  	/* Clear using TMPALIAS region.  The page doesn't need to
->  	   be flushed but the kernel mapping needs to be purged.  */
+> diff --git a/arch/parisc/include/asm/dma-mapping.h b/arch/parisc/include/asm/dma-mapping.h
+> index 106b395..d0eae5f 100644
+> --- a/arch/parisc/include/asm/dma-mapping.h
+> +++ b/arch/parisc/include/asm/dma-mapping.h
+> @@ -46,6 +46,9 @@ extern struct hppa_dma_ops pcx_dma_ops;
 >  
-> -	vto = kmap_atomic(page, KM_USER0);
-> +	vto = kmap_atomic(page);
+>  extern struct hppa_dma_ops *hppa_dma_ops;
 >  
->  	/* The PA-RISC 2.0 Architecture book states on page F-6:
->  	   "Before a write-capable translation is enabled, *all*
-> @@ -644,8 +644,8 @@ void copy_user_highpage(struct page *to, struct page *from,
->  	   the `to' page must be flushed in copy_user_page_asm since
->  	   it can be used to bring in executable code.  */
->  
-> -	vfrom = kmap_atomic(from, KM_USER0);
-> -	vto = kmap_atomic(to, KM_USER1);
-> +	vfrom = kmap_atomic(from);
-> +	vto = kmap_atomic(to);
->  
->  	purge_kernel_dcache_page_asm((unsigned long)vto);
->  	purge_tlb_start(flags);
+> +#define dma_alloc_attrs(d, s, h, f, a) dma_alloc_coherent(d, s, h, f)
+> +#define dma_free_attrs(d, s, h, f, a) dma_free_coherent(d, s, h, f)
+> +
+>  static inline void *
+>  dma_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle,
+>  		   gfp_t flag)
 > 
 
