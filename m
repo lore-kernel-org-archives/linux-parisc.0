@@ -1,126 +1,187 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH 20/26] parisc: Don't use create_proc_read_entry() [RFC]
-Date: Sun, 28 Apr 2013 22:20:45 +0200
-Message-ID: <517D849D.1070502@gmx.de>
-References: <20130411132739.32763.82609.stgit@warthog.procyon.org.uk> <20130411133017.32763.99586.stgit@warthog.procyon.org.uk>
+Subject: Re: [PATCH 12/26] hp_sdc_rtc: Don't use create_proc_read_entry()
+ [RFC]
+Date: Sun, 28 Apr 2013 22:36:28 +0200
+Message-ID: <517D884C.9080003@gmx.de>
+References: <20130411132739.32763.82609.stgit@warthog.procyon.org.uk> <20130411132916.32763.83802.stgit@warthog.procyon.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Cc: linux-parisc@vger.kernel.org
+Cc: linux-parisc <linux-parisc@vger.kernel.org>,
+	linux-m68k@vger.kernel.org, "Brian S. Julin" <bri@calyx.com>
 To: David Howells <dhowells@redhat.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130411133017.32763.99586.stgit@warthog.procyon.org.uk>
+In-Reply-To: <20130411132916.32763.83802.stgit@warthog.procyon.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 04/11/2013 03:30 PM, David Howells wrote:
+On 04/11/2013 03:29 PM, David Howells wrote:
 > Don't use create_proc_read_entry() as that is deprecated, but rather use
 > proc_create_data() and seq_file instead.
 > 
 > Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+> cc: Brian S. Julin <bri@calyx.com>
 > cc: Helge Deller <deller@gmx.de>
-> cc: linux-parisc@vger.kernel.org
+> cc: linux-m68k@lists.linux-m68k.org
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-Thanks!
-I've queued it up in the parisc tree for 3.10
+
+Thanks David,
+
+I've cleaned up a few whitespace issues and queued it up for 3.10 in the parisc tree.
 
 Helge
 
 
 > ---
 > 
->  arch/parisc/kernel/pdc_chassis.c |   47 +++++++++++++++++++-------------------
->  1 file changed, 24 insertions(+), 23 deletions(-)
+>  drivers/input/misc/hp_sdc_rtc.c |   58 +++++++++++++++++----------------------
+>  1 file changed, 26 insertions(+), 32 deletions(-)
 > 
-> diff --git a/arch/parisc/kernel/pdc_chassis.c b/arch/parisc/kernel/pdc_chassis.c
-> index d47ba1a..8fa314f 100644
-> --- a/arch/parisc/kernel/pdc_chassis.c
-> +++ b/arch/parisc/kernel/pdc_chassis.c
-> @@ -30,11 +30,13 @@
->  #endif
->  
->  #include <linux/init.h>
-> +#include <linux/module.h>
->  #include <linux/kernel.h>
->  #include <linux/reboot.h>
->  #include <linux/notifier.h>
->  #include <linux/cache.h>
+> diff --git a/drivers/input/misc/hp_sdc_rtc.c b/drivers/input/misc/hp_sdc_rtc.c
+> index 2e3334b..770479d 100644
+> --- a/drivers/input/misc/hp_sdc_rtc.c
+> +++ b/drivers/input/misc/hp_sdc_rtc.c
+> @@ -41,6 +41,7 @@
+>  #include <linux/time.h>
+>  #include <linux/miscdevice.h>
 >  #include <linux/proc_fs.h>
 > +#include <linux/seq_file.h>
+>  #include <linux/poll.h>
+>  #include <linux/rtc.h>
+>  #include <linux/mutex.h>
+> @@ -74,9 +75,6 @@ static unsigned int hp_sdc_rtc_poll(struct file *file, poll_table *wait);
+>  static int hp_sdc_rtc_open(struct inode *inode, struct file *file);
+>  static int hp_sdc_rtc_fasync (int fd, struct file *filp, int on);
 >  
->  #include <asm/pdc_chassis.h>
->  #include <asm/processor.h>
-> @@ -244,38 +246,38 @@ int pdc_chassis_send_status(int message)
->  
->  #ifdef CONFIG_PDC_CHASSIS_WARN
->  #ifdef CONFIG_PROC_FS
-> -static int pdc_chassis_warn_pread(char *page, char **start, off_t off,
-> -		int count, int *eof, void *data)
-> +static int pdc_chassis_warn_show(struct seq_file *m, void *v)
+> -static int hp_sdc_rtc_read_proc(char *page, char **start, off_t off,
+> -				int count, int *eof, void *data);
+> -
+>  static void hp_sdc_rtc_isr (int irq, void *dev_id, 
+>  			    uint8_t status, uint8_t data) 
 >  {
-> -	char *out = page;
-> -	int len, ret;
->  	unsigned long warn;
->  	u32 warnreg;
->  
-> -	ret = pdc_chassis_warn(&warn);
-> -	if (ret != PDC_OK)
-> +	if (pdc_chassis_warn(&warn) != PDC_OK)
->  		return -EIO;
->  
->  	warnreg = (warn & 0xFFFFFFFF);
->  
->  	if ((warnreg >> 24) & 0xFF)
-> -		out += sprintf(out, "Chassis component failure! (eg fan or PSU): 0x%.2x\n", ((warnreg >> 24) & 0xFF));
-> -
-> -	out += sprintf(out, "Battery: %s\n", (warnreg & 0x04) ? "Low!" : "OK");
-> -	out += sprintf(out, "Temp low: %s\n", (warnreg & 0x02) ? "Exceeded!" : "OK");
-> -	out += sprintf(out, "Temp mid: %s\n", (warnreg & 0x01) ? "Exceeded!" : "OK");
-> -
-> -	len = out - page - off;
-> -	if (len < count) {
-> -		*eof = 1;
-> -		if (len <= 0) return 0;
-> -	} else {
-> -		len = count;
-> -	}
-> -	*start = page + off;
-> -	return len;
-> +		seq_printf(m, "Chassis component failure! (eg fan or PSU): 0x%.2x\n",
-> +			   (warnreg >> 24) & 0xFF);
-> +
-> +	seq_printf(m, "Battery: %s\n", (warnreg & 0x04) ? "Low!" : "OK");
-> +	seq_printf(m, "Temp low: %s\n", (warnreg & 0x02) ? "Exceeded!" : "OK");
-> +	seq_printf(m, "Temp mid: %s\n", (warnreg & 0x01) ? "Exceeded!" : "OK");
-> +	return 0;
-> +}
-> +
-> +static int pdc_chassis_warn_open(struct inode *inode, struct file *file)
-> +{
-> +	return single_open(file, pdc_chassis_warn_show, NULL);
+> @@ -427,22 +425,19 @@ static int hp_sdc_rtc_fasync (int fd, struct file *filp, int on)
+>          return fasync_helper (fd, filp, on, &hp_sdc_rtc_async_queue);
 >  }
 >  
-> +static const struct file_operations pdc_chassis_warn_fops = {
-> +	.open		= pdc_chassis_warn_open,
+> -static int hp_sdc_rtc_proc_output (char *buf)
+> +static int hp_sdc_rtc_proc_show(struct seq_file *m, void *v)
+>  {
+>  #define YN(bit) ("no")
+>  #define NY(bit) ("yes")
+> -        char *p;
+>          struct rtc_time tm;
+>  	struct timeval tv;
+>  
+>  	memset(&tm, 0, sizeof(struct rtc_time));
+>  
+> -	p = buf;
+> -
+>  	if (hp_sdc_rtc_read_bbrtc(&tm)) {
+> -		p += sprintf(p, "BBRTC\t\t: READ FAILED!\n");
+> +		seq_puts(m, "BBRTC\t\t: READ FAILED!\n");
+>  	} else {
+> -		p += sprintf(p,
+> +		seq_printf(m,
+>  			     "rtc_time\t: %02d:%02d:%02d\n"
+>  			     "rtc_date\t: %04d-%02d-%02d\n"
+>  			     "rtc_epoch\t: %04lu\n",
+> @@ -452,41 +447,41 @@ static int hp_sdc_rtc_proc_output (char *buf)
+>  	}
+>  
+>  	if (hp_sdc_rtc_read_rt(&tv)) {
+> -		p += sprintf(p, "i8042 rtc\t: READ FAILED!\n");
+> +		seq_puts(m, "i8042 rtc\t: READ FAILED!\n");
+>  	} else {
+> -		p += sprintf(p, "i8042 rtc\t: %ld.%02d seconds\n", 
+> +		seq_printf(m, "i8042 rtc\t: %ld.%02d seconds\n", 
+>  			     tv.tv_sec, (int)tv.tv_usec/1000);
+>  	}
+>  
+>  	if (hp_sdc_rtc_read_fhs(&tv)) {
+> -		p += sprintf(p, "handshake\t: READ FAILED!\n");
+> +		seq_puts(m, "handshake\t: READ FAILED!\n");
+>  	} else {
+> -        	p += sprintf(p, "handshake\t: %ld.%02d seconds\n", 
+> +        	seq_printf(m, "handshake\t: %ld.%02d seconds\n", 
+>  			     tv.tv_sec, (int)tv.tv_usec/1000);
+>  	}
+>  
+>  	if (hp_sdc_rtc_read_mt(&tv)) {
+> -		p += sprintf(p, "alarm\t\t: READ FAILED!\n");
+> +		seq_puts(m, "alarm\t\t: READ FAILED!\n");
+>  	} else {
+> -		p += sprintf(p, "alarm\t\t: %ld.%02d seconds\n", 
+> +		seq_printf(m, "alarm\t\t: %ld.%02d seconds\n", 
+>  			     tv.tv_sec, (int)tv.tv_usec/1000);
+>  	}
+>  
+>  	if (hp_sdc_rtc_read_dt(&tv)) {
+> -		p += sprintf(p, "delay\t\t: READ FAILED!\n");
+> +		seq_puts(m, "delay\t\t: READ FAILED!\n");
+>  	} else {
+> -		p += sprintf(p, "delay\t\t: %ld.%02d seconds\n", 
+> +		seq_printf(m, "delay\t\t: %ld.%02d seconds\n", 
+>  			     tv.tv_sec, (int)tv.tv_usec/1000);
+>  	}
+>  
+>  	if (hp_sdc_rtc_read_ct(&tv)) {
+> -		p += sprintf(p, "periodic\t: READ FAILED!\n");
+> +		seq_puts(m, "periodic\t: READ FAILED!\n");
+>  	} else {
+> -		p += sprintf(p, "periodic\t: %ld.%02d seconds\n", 
+> +		seq_printf(m, "periodic\t: %ld.%02d seconds\n", 
+>  			     tv.tv_sec, (int)tv.tv_usec/1000);
+>  	}
+>  
+> -        p += sprintf(p,
+> +        seq_printf(m,
+>                       "DST_enable\t: %s\n"
+>                       "BCD\t\t: %s\n"
+>                       "24hr\t\t: %s\n"
+> @@ -506,23 +501,23 @@ static int hp_sdc_rtc_proc_output (char *buf)
+>                       1UL,
+>                       1 ? "okay" : "dead");
+>  
+> -        return  p - buf;
+> +        return 0;
+>  #undef YN
+>  #undef NY
+>  }
+>  
+> -static int hp_sdc_rtc_read_proc(char *page, char **start, off_t off,
+> -                         int count, int *eof, void *data)
+> +static int hp_sdc_rtc_proc_open(struct inode *inode, struct file *file)
+>  {
+> -	int len = hp_sdc_rtc_proc_output (page);
+> -        if (len <= off+count) *eof = 1;
+> -        *start = page + off;
+> -        len -= off;
+> -        if (len>count) len = count;
+> -        if (len<0) len = 0;
+> -        return len;
+> +	return single_open(file, hp_sdc_rtc_proc_show, NULL);
+>  }
+>  
+> +static const struct file_operations hp_sdc_rtc_proc_fops = {
+> +	.open		= hp_sdc_rtc_proc_open,
 > +	.read		= seq_read,
 > +	.llseek		= seq_lseek,
 > +	.release	= seq_release,
 > +};
 > +
->  static int __init pdc_chassis_create_procfs(void)
+>  static int hp_sdc_rtc_ioctl(struct file *file, 
+>  			    unsigned int cmd, unsigned long arg)
 >  {
->  	unsigned long test;
-> @@ -290,8 +292,7 @@ static int __init pdc_chassis_create_procfs(void)
+> @@ -715,8 +710,7 @@ static int __init hp_sdc_rtc_init(void)
+>  	if (misc_register(&hp_sdc_rtc_dev) != 0)
+>  		printk(KERN_INFO "Could not register misc. dev for i8042 rtc\n");
 >  
->  	printk(KERN_INFO "Enabling PDC chassis warnings support v%s\n",
->  			PDC_CHASSIS_VER);
-> -	create_proc_read_entry("chassis", 0400, NULL, pdc_chassis_warn_pread,
-> -				NULL);
-> +	proc_create("chassis", 0400, NULL, &pdc_chassis_warn_fops);
->  	return 0;
->  }
+> -        create_proc_read_entry ("driver/rtc", 0, NULL,
+> -				hp_sdc_rtc_read_proc, NULL);
+> +        proc_create("driver/rtc", 0, NULL, &hp_sdc_rtc_proc_fops);
 >  
+>  	printk(KERN_INFO "HP i8042 SDC + MSM-58321 RTC support loaded "
+>  			 "(RTC v " RTC_VERSION ")\n");
 > 
 
