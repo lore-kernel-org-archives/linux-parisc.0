@@ -1,56 +1,40 @@
 From: Damian Hobson-Garcia <dhobsong@igel.co.jp>
-Subject: [PATCH v2 0/4] dma-mapping: Define dma_{alloc,free}_attrs() for all archs
-Date: Tue, 30 Apr 2013 12:01:39 +0900
-Message-ID: <1367290899-10410-1-git-send-email-dhobsong@igel.co.jp>
-Cc: linux-s390@vger.kernel.org, catalin.marinas@arm.com,
-	will.deacon@arm.com, linux-arm-kernel@lists.infradead.org,
-	msalter@redhat.com, linux-c6x-dev@linux-c6x.org, deller@gmx.de,
-	linux-parisc@vger.kernel.org,
+Subject: [PATCH v2 3/4] parisc: Provide default implementation for dma_{alloc,free}_attrs
+Date: Tue, 30 Apr 2013 12:02:55 +0900
+Message-ID: <1367290975-10539-1-git-send-email-dhobsong@igel.co.jp>
+Cc: deller@gmx.de, linux-parisc@vger.kernel.org,
 	Damian Hobson-Garcia <dhobsong@igel.co.jp>
 To: linux-kernel@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Most architectures that define CONFIG_HAVE_DMA=y, have implementations for
+Most architectures that define CONFIG_HAVE_DMA, have implementations for
 both dma_alloc_attrs() and dma_free_attrs().  All achitectures that do
 not define CONFIG_HAVE_DMA also have both of these definitions provided by
 dma-mapping-broken.h.
 
-Provide a default definition for the archs that define CONFIG_HAVE_DMA=y,
-but have no implementation for dma_{alloc,free}_attrs(). 
+Add default implementations for these functions on parisc.
 
-As I don't have hardware for any of these systems, the patches are only
-compile-tested where I could (arm64, s390) and untested for the archs
-where I couldn't find a readily available prebuilt cross-compiler (c6x, parisc).
-
-Changes from v1
----------------
-
-arm64, s390:
- * Since these archs are using dma_ops, pass appropirate value for attrs to 
-   dma_ops->alloc().
- * Indicate that these patches are compile teseted only (I don't have hardware)
-
-
-c6x, parisc:
- * Indicate that these patches are untested (I don't have cross compilers)
-
-Cheers,
-Damian 
-
-
-Damian Hobson-Garcia (4):
-  arm64: Provide default implementation for dma_{alloc,free}_attrs
-  c6x: Provide default implementation for dma_{alloc,free}_attrs
-  parisc: Provide default implementation for dma_{alloc,free}_attrs
-  s390: Provide default implementation for dma_{alloc,free}_attrs
-
- arch/arm64/include/asm/dma-mapping.h  |   17 +++++++++++------
- arch/c6x/include/asm/dma-mapping.h    |    3 +++
+Signed-off-by: Damian Hobson-Garcia <dhobsong@igel.co.jp>
+---
  arch/parisc/include/asm/dma-mapping.h |    3 +++
- arch/s390/include/asm/dma-mapping.h   |   17 +++++++++++------
- 4 files changed, 28 insertions(+), 12 deletions(-)
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
+diff --git a/arch/parisc/include/asm/dma-mapping.h b/arch/parisc/include/asm/dma-mapping.h
+index 106b395..d0eae5f 100644
+--- a/arch/parisc/include/asm/dma-mapping.h
++++ b/arch/parisc/include/asm/dma-mapping.h
+@@ -46,6 +46,9 @@ extern struct hppa_dma_ops pcx_dma_ops;
+ 
+ extern struct hppa_dma_ops *hppa_dma_ops;
+ 
++#define dma_alloc_attrs(d, s, h, f, a) dma_alloc_coherent(d, s, h, f)
++#define dma_free_attrs(d, s, h, f, a) dma_free_coherent(d, s, h, f)
++
+ static inline void *
+ dma_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle,
+ 		   gfp_t flag)
 -- 
 1.7.5.4
+
