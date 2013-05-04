@@ -1,25 +1,59 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: [PATCH] parisc: fix NATIVE set up in build
-Date: Sat, 04 May 2013 19:33:59 +0200
-Message-ID: <295dc694487be4c9f609633c4c3e7474@sf-mail.de>
-References: <1367686258-28525-1-git-send-email-vapier@gentoo.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Cc: <linux-parisc@vger.kernel.org>, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>
-To: Mike Frysinger <vapier@gentoo.org>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: use long branch in fork_like macro
+Date: Sat, 4 May 2013 15:16:41 -0400
+Message-ID: <BLU0-SMTP309E196061626014B6723497BF0@phx.gbl>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: multipart/mixed; boundary="Apple-Mail-9-693261634"
+Cc: Helge Deller <deller@gmx.de>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+To: linux-parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1367686258-28525-1-git-send-email-vapier@gentoo.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Am 04.05.2013 18:50, schrieb Mike Frysinger:
-> The ifeq operator does not accept globs, so this little bit of code 
-> will
-> never match (unless uname literally prints out "parsic*").  Rewrite to
-                                                   ^^^^^^
+--Apple-Mail-9-693261634
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Content-Transfer-Encoding: 7bit
 
-That would never match ;)
+The "b" branch instruction used in the fork_like macro only can handle  
+17-bit pc-relative offsets.
+This fails with an out of range offset with some .config files.   
+Rewrite to use the "be" instruction which
+can branch to any address in a space.
 
-Eike
+Signed-off-by: John David Anglin  <dave.anglin@bell.net>
+---
+
+
+
+--Apple-Mail-9-693261634
+Content-Disposition: attachment; filename="fork_like.d.txt"
+Content-Type: text/plain; x-unix-mode=0644; name="fork_like.d.txt"
+Content-Transfer-Encoding: 7bit
+
+diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
+index f33201b..3a6bb7b 100644
+--- a/arch/parisc/kernel/entry.S
++++ b/arch/parisc/kernel/entry.S
+@@ -1694,7 +1695,8 @@ ENTRY(sys_\name\()_wrapper)
+ 	ldo	TASK_REGS(%r1),%r1
+ 	reg_save %r1
+ 	mfctl	%cr27, %r28
+-	b	sys_\name
++	ldil	L%sys_\name, %r31
++	be	R%sys_\name(%sr4,%r31)
+ 	STREG	%r28, PT_CR27(%r1)
+ ENDPROC(sys_\name\()_wrapper)
+ 	.endm
+
+--Apple-Mail-9-693261634
+Content-Type: text/plain; charset="US-ASCII"; format=flowed
+Content-Transfer-Encoding: 7bit
+
+
+
+--
+John David Anglin	dave.anglin@bell.net
+
+
+--Apple-Mail-9-693261634--
