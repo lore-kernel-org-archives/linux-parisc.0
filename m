@@ -1,59 +1,62 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: use long branch in fork_like macro
-Date: Sat, 4 May 2013 15:16:41 -0400
-Message-ID: <BLU0-SMTP309E196061626014B6723497BF0@phx.gbl>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: multipart/mixed; boundary="Apple-Mail-9-693261634"
-Cc: Helge Deller <deller@gmx.de>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-To: linux-parisc List <linux-parisc@vger.kernel.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] kernel/modsign_certificate.S: fix build on parisc
+ architecture
+Date: Sun, 5 May 2013 23:31:18 +0200
+Message-ID: <20130505213118.GA1622@p100.box>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+To: Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org,
+	linux-security-module@vger.kernel.org, dhowells@redhat.com
+Return-path: <linux-security-module-owner@vger.kernel.org>
+List-ID: <linux-security-module.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Apple-Mail-9-693261634
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
+Module signing functionality breaks the kernel build on parisc with the
+following error: 
 
-The "b" branch instruction used in the fork_like macro only can handle  
-17-bit pc-relative offsets.
-This fails with an out of range offset with some .config files.   
-Rewrite to use the "be" instruction which
-can branch to any address in a space.
+kernel/built-in.o: In function `load_module_signing_keys':
+kernel/modsign_pubkey.c:67: undefined reference to `modsign_certificate_list_end'
+kernel/modsign_pubkey.c:66: undefined reference to `modsign_certificate_list'
+make[3]: *** [vmlinux] Error 1
 
-Signed-off-by: John David Anglin  <dave.anglin@bell.net>
----
+The reason why the build fails is because on parisc assembly syntax is
+different than on other architectures. Most importantly, a semicolon
+marks the start of a comment, while exclamation marks separates
+statements.
 
+Currently the GLOBAL(name) macro uses a semicolon to separate the .globl
+and the ASM_SYMBOL() statements. On PA-RISC the semicolon will now just
+strip the ASM_SYMBOL() statements since it thinks it is a comment and as
+such the modsign_certificate_list/modsign_certificate_list_end symbols
+will not get defined and will not be in the vmlinux binary.
 
+Fix this problem by adding an own implementation for GLOBAL() on the
+PARISC architecture.
 
---Apple-Mail-9-693261634
-Content-Disposition: attachment; filename="fork_like.d.txt"
-Content-Type: text/plain; x-unix-mode=0644; name="fork_like.d.txt"
-Content-Transfer-Encoding: 7bit
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index f33201b..3a6bb7b 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -1694,7 +1695,8 @@ ENTRY(sys_\name\()_wrapper)
- 	ldo	TASK_REGS(%r1),%r1
- 	reg_save %r1
- 	mfctl	%cr27, %r28
--	b	sys_\name
-+	ldil	L%sys_\name, %r31
-+	be	R%sys_\name(%sr4,%r31)
- 	STREG	%r28, PT_CR27(%r1)
- ENDPROC(sys_\name\()_wrapper)
- 	.endm
-
---Apple-Mail-9-693261634
-Content-Type: text/plain; charset="US-ASCII"; format=flowed
-Content-Transfer-Encoding: 7bit
-
-
-
---
-John David Anglin	dave.anglin@bell.net
-
-
---Apple-Mail-9-693261634--
+diff --git a/kernel/modsign_certificate.S b/kernel/modsign_certificate.S
+index 246b4c6..9b9c2ab 100644
+--- a/kernel/modsign_certificate.S
++++ b/kernel/modsign_certificate.S
+@@ -7,9 +7,17 @@
+ #define ASM_SYMBOL(sym) PASTE(SYMBOL_PREFIX, sym)
+ #endif
+ 
+-#define GLOBAL(name)	\
+-	.globl ASM_SYMBOL(name);	\
++#if defined(__hppa__)
++ /* HPPA/PA-RISC assembly is special: comments start with semicolon
++  * and exclamation marks separates statements. */
++ #define GLOBAL(name)	\
++	.globl ASM_SYMBOL(name) ! \
+ 	ASM_SYMBOL(name):
++#else
++ #define GLOBAL(name)	\
++	.globl ASM_SYMBOL(name) ; \
++	ASM_SYMBOL(name):
++#endif
+ 
+ 	.section ".init.data","aw"
+ 
