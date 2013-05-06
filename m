@@ -1,48 +1,60 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] MPILIB: disable usage of floating point registers on parisc
-Date: Mon, 6 May 2013 00:08:22 +0200
-Message-ID: <20130505220822.GA7819@p100.box>
+Subject: [PATCH] parisc: implement atomic64_dec_if_positive()
+Date: Mon, 6 May 2013 21:13:33 +0200
+Message-ID: <20130506191333.GA17146@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Dmitry Kasatkin <dmitry.kasatkin@intel.com>,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The umul_ppmm() macro for parisc uses the xmpyu assembler statement
-which does calculation via a floating point register.
-
-But usage of floating point registers inside the Linux kernel are not
-allowed and gcc will stop compilation due to the -mdisable-fpregs
-compiler option.
-
-Fix this by disabling the umul_ppmm() and udiv_qrnnd() macros. The
-mpilib will then use the generic built-in implementations instead.
-
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/lib/mpi/longlong.h b/lib/mpi/longlong.h
-index 095ab15..d411355 100644
---- a/lib/mpi/longlong.h
-+++ b/lib/mpi/longlong.h
-@@ -318,7 +318,8 @@ extern UDItype __udiv_qrnnd();
- 	     "rM" ((USItype)(bh)), \
- 	     "rM" ((USItype)(al)), \
- 	     "rM" ((USItype)(bl)))
--#if defined(_PA_RISC1_1)
-+#if 0 && defined(_PA_RISC1_1)
-+/* xmpyu uses floating point register which is not allowed in Linux kernel. */
- #define umul_ppmm(wh, wl, u, v) \
- do { \
- 	union {UDItype __ll; \
-@@ -337,7 +338,7 @@ do { \
- #define UMUL_TIME 40
- #define UDIV_TIME 80
- #endif
--#ifndef LONGLONG_STANDALONE
-+#if 0 /* #ifndef LONGLONG_STANDALONE */
- #define udiv_qrnnd(q, r, n1, n0, d) \
- do { USItype __r; \
- 	(q) = __udiv_qrnnd(&__r, (n1), (n0), (d)); \
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 0339181..967d727 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -12,6 +12,7 @@ config PARISC
+ 	select BUG
+ 	select HAVE_PERF_EVENTS
+ 	select GENERIC_ATOMIC64 if !64BIT
++	select ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE
+ 	select HAVE_GENERIC_HARDIRQS
+ 	select BROKEN_RODATA
+ 	select GENERIC_IRQ_PROBE
+diff --git a/arch/parisc/include/asm/atomic.h b/arch/parisc/include/asm/atomic.h
+index f38e198..472886c 100644
+--- a/arch/parisc/include/asm/atomic.h
++++ b/arch/parisc/include/asm/atomic.h
+@@ -229,6 +229,29 @@ static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
+ 
+ #define atomic64_inc_not_zero(v) atomic64_add_unless((v), 1, 0)
+ 
++/*
++ * atomic64_dec_if_positive - decrement by 1 if old value positive
++ * @v: pointer of type atomic_t
++ *
++ * The function returns the old value of *v minus 1, even if
++ * the atomic variable, v, was not decremented.
++ */
++static inline long atomic64_dec_if_positive(atomic64_t *v)
++{
++	long c, old, dec;
++	c = atomic64_read(v);
++	for (;;) {
++		dec = c - 1;
++		if (unlikely(dec < 0))
++			break;
++		old = atomic64_cmpxchg((v), c, dec);
++		if (likely(old == c))
++			break;
++		c = old;
++	}
++	return dec;
++}
++
+ #endif /* !CONFIG_64BIT */
+ 
+ 
