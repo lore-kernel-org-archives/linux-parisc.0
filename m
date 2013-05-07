@@ -1,115 +1,182 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: add kernel stack overflow check
-Date: Tue, 7 May 2013 21:28:52 +0200
-Message-ID: <20130507192852.GA20482@p100.box>
+Subject: [PATCH] parisc: implement irq stacks
+Date: Tue, 7 May 2013 22:25:42 +0200
+Message-ID: <20130507202542.GA8144@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Add the CONFIG_DEBUG_STACKOVERFLOW config option to enable checks to
-detect kernel stack overflows.
+Default kernel stack size on parisc is 16k.  During tests we found that the
+kernel stack can easily grow beyond 13k, which leaves 3k left for irq
+processing.
 
-Stack overflows can not be detected reliable since we do not want to
-introduce too much overhead.
+This patch adds the possibility to activate an additional stack of 16k per CPU
+which is being used during irq processing.  This implementation does not yet
+uses this irq stack for the irq bh handler.
 
-Instead, during irq processing in do_cpu_irq_mask() we check kernel
-stack usage of the interrupted kernel process. Kernel threads can be
-easily detected by checking the value of space register 7 (sr7) which
-is zero when running inside the kernel.
+The assembler code for call_on_stack was heavily cleaned up by John
+David Anglin.
 
-Since THREAD_SIZE is 16k and PAGE_SIZE is 4k, reduce the alignment of
-the init thread to the lower value (PAGE_SIZE) in the kernel
-vmlinux.ld.S linker script.
-
+CC: John David Anglin <dave.anglin@bell.net>
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/Kconfig.debug b/arch/parisc/Kconfig.debug
-index bc989e5..fa6c322 100644
---- a/arch/parisc/Kconfig.debug
-+++ b/arch/parisc/Kconfig.debug
-@@ -13,3 +13,15 @@ config DEBUG_RODATA
-          If in doubt, say "N".
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index fe4afb0..cad060f 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -243,6 +243,14 @@ config SMP
  
- endmenu
+ 	  If you don't know what to do here, say N.
+ 
++config IRQSTACKS
++	bool "Use separate kernel stacks when processing interrupts"
++	default n
++	help
++	  If you say Y here the kernel will use separate kernel stacks
++	  for handling hard and soft interrupts.  This can help avoid
++	  overflowing the process kernel stacks.
 +
-+config DEBUG_STACKOVERFLOW
-+	bool "Check for stack overflows"
-+	default y
-+	depends on DEBUG_KERNEL
-+	---help---
-+	  Say Y here if you want to check the overflows of kernel, IRQ
-+	  and exception stacks. This option will cause messages of the
-+	  stacks in detail when free stack space drops below a certain
-+	  limit.
-+	  If in doubt, say "N".
+ config HOTPLUG_CPU
+ 	bool
+ 	default y if SMP
+diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
+index 09b54a5..242f06a 100644
+--- a/arch/parisc/include/asm/processor.h
++++ b/arch/parisc/include/asm/processor.h
+@@ -20,8 +20,6 @@
+ 
+ #endif /* __ASSEMBLY__ */
+ 
+-#define KERNEL_STACK_SIZE 	(4*PAGE_SIZE)
+-
+ /*
+  * Default implementation of macro that returns current
+  * instruction pointer ("program counter").
+@@ -61,6 +59,23 @@
+ #ifndef __ASSEMBLY__
+ 
+ /*
++ * IRQ STACK - used for irq handler
++ */
++#ifdef __KERNEL__
 +
-diff --git a/arch/parisc/include/asm/thread_info.h b/arch/parisc/include/asm/thread_info.h
-index 6182832..540c88f 100644
---- a/arch/parisc/include/asm/thread_info.h
-+++ b/arch/parisc/include/asm/thread_info.h
-@@ -40,7 +40,7 @@ struct thread_info {
++#define IRQ_STACK_SIZE      (4096 << 2) /* 16k irq stack size */
++
++union irq_stack_union {
++	unsigned long stack[IRQ_STACK_SIZE/sizeof(unsigned long)];
++};
++
++DECLARE_PER_CPU(union irq_stack_union, irq_stack_union);
++
++void call_on_stack(unsigned long p1, void *func, unsigned long new_stack);
++
++#endif /* __KERNEL__ */
++
++/*
+  * Data detected about CPUs at boot time which is the same for all CPU's.
+  * HP boxes are SMP - ie identical processors.
+  *
+diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
+index 3f3326d..4bb96ad 100644
+--- a/arch/parisc/kernel/entry.S
++++ b/arch/parisc/kernel/entry.S
+@@ -2010,6 +2010,47 @@ ftrace_stub:
+ ENDPROC(return_to_handler)
+ #endif	/* CONFIG_FUNCTION_TRACER */
  
- /* thread information allocation */
++#ifdef CONFIG_IRQSTACKS
++/* void call_on_stack(unsigned long param1, void *func,
++		      unsigned long new_stack) */
++ENTRY(call_on_stack)
++	copy	%sp, %r1
++
++	/* Regarding the HPPA calling conventions for function pointers,
++	   we assume the PIC register is not changed across call.  For
++	   CONFIG_64BIT, the argument pointer is left to point at the
++	   argument region allocated for the call to call_on_stack. */
++# ifdef CONFIG_64BIT
++	/* Switch to new stack.  We allocate two 128 byte frames.  */
++	ldo	256(%arg2), %sp
++	/* Save previous stack pointer and return pointer in frame marker */
++	STREG	%rp, -144(%sp)
++	/* Calls always use function descriptor */
++	LDREG	16(%arg1), %arg1
++	bve,l	(%arg1), %rp
++	STREG	%r1, -136(%sp)
++	LDREG	-144(%sp), %rp
++	bve	(%rp)
++	LDREG	-136(%sp), %sp
++# else
++	/* Switch to new stack.  We allocate two 64 byte frames.  */
++	ldo	128(%arg2), %sp
++	/* Save previous stack pointer and return pointer in frame marker */
++	STREG	%r1, -68(%sp)
++	STREG	%rp, -84(%sp)
++	/* Calls use function descriptor if PLABEL bit is set */
++	bb,>=,n	%arg1, 30, 1f
++	depwi	0,31,2, %arg1
++	LDREG	0(%arg1), %arg1
++1:
++	be,l	0(%sr4,%arg1), %sr0, %r31
++	copy	%r31, %rp
++	LDREG	-84(%sp), %rp
++	bv	(%rp)
++	LDREG	-68(%sp), %sp
++# endif /* CONFIG_64BIT */
++ENDPROC(call_on_stack)
++#endif /* CONFIG_IRQSTACKS */
  
--#define THREAD_SIZE_ORDER            2
-+#define THREAD_SIZE_ORDER	2 /* PA-RISC requires at least 16k stack */
- /* Be sure to hunt all references to this down when you change the size of
-  * the kernel stack */
- #define THREAD_SIZE             (PAGE_SIZE << THREAD_SIZE_ORDER)
+ get_register:
+ 	/*
 diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index 8094d3e..61e51ac 100644
+index 61e51ac..810f9cf8 100644
 --- a/arch/parisc/kernel/irq.c
 +++ b/arch/parisc/kernel/irq.c
-@@ -330,6 +330,34 @@ static inline int eirr_to_irq(unsigned long eirr)
- 	return (BITS_PER_LONG - bit) + TIMER_IRQ;
+@@ -358,6 +358,29 @@ static inline void stack_overflow_check(struct pt_regs *regs)
+ #endif
  }
  
-+int sysctl_panic_on_stackoverflow = 1;
++#ifdef CONFIG_IRQSTACKS
++DEFINE_PER_CPU(union irq_stack_union, irq_stack_union);
 +
-+static inline void stack_overflow_check(struct pt_regs *regs)
++static void execute_on_irq_stack(void *func, unsigned long param1)
 +{
-+#ifdef CONFIG_DEBUG_STACKOVERFLOW
-+	#define STACK_MARGIN	(256*6)
++	unsigned long *irq_stack_start;
++	unsigned long irq_stack;
++	int cpu = smp_processor_id();
 +
-+	/* Our stack starts directly behind the thread_info struct. */
-+	unsigned long stack_start = (unsigned long) current_thread_info();
-+	unsigned long sp = regs->gr[30];
++	irq_stack_start = &per_cpu(irq_stack_union, cpu).stack[0];
++	irq_stack = (unsigned long) irq_stack_start;
++	irq_stack = ALIGN(irq_stack, 16); /* align for stack frame usage */
 +
-+	/* if sr7 != 0, we interrupted a userspace process which we do not want
-+	 * to check for stack overflow. We will only check the kernel stack. */
-+	if (regs->sr[7])
-+		return;
++	BUG_ON(*irq_stack_start); /* report bug if we were called recursive. */
++	*irq_stack_start = 1;
 +
-+	if (likely((sp - stack_start) < (THREAD_SIZE - STACK_MARGIN)))
-+		return;
++	/* This is where we switch to the IRQ stack. */
++	call_on_stack(param1, func, irq_stack);
 +
-+	pr_emerg("stackcheck: %s will most likely overflow kernel stack "
-+		 "(sp:%lx, stk bottom-top:%lx-%lx)\n",
-+		current->comm, sp, stack_start, stack_start + THREAD_SIZE);
-+
-+	if (sysctl_panic_on_stackoverflow)
-+		panic("low stack detected by irq handler - check messages\n");
-+#endif
++	*irq_stack_start = 0;
 +}
++#endif /* CONFIG_IRQSTACKS */
 +
  /* ONLY called from entry.S:intr_extint() */
  void do_cpu_irq_mask(struct pt_regs *regs)
  {
-@@ -364,6 +392,7 @@ void do_cpu_irq_mask(struct pt_regs *regs)
- 		goto set_out;
+@@ -393,7 +416,12 @@ void do_cpu_irq_mask(struct pt_regs *regs)
  	}
  #endif
-+	stack_overflow_check(regs);
+ 	stack_overflow_check(regs);
++
++#ifdef CONFIG_IRQSTACKS
++	execute_on_irq_stack(&generic_handle_irq, irq);
++#else
  	generic_handle_irq(irq);
++#endif /* CONFIG_IRQSTACKS */
  
   out:
-@@ -420,6 +449,4 @@ void __init init_IRQ(void)
- 	cpu_eiem = EIEM_MASK(TIMER_IRQ);
- #endif
-         set_eiem(cpu_eiem);	/* EIEM : enable all external intr */
--
- }
+ 	irq_exit();
