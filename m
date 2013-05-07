@@ -1,182 +1,86 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: implement irq stacks
-Date: Tue, 7 May 2013 22:25:42 +0200
-Message-ID: <20130507202542.GA8144@p100.box>
+Subject: [PATCH] parisc: tlb flush counting fix for SMP and UP
+Date: Tue, 7 May 2013 23:42:47 +0200
+Message-ID: <20130507214247.GA17228@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Default kernel stack size on parisc is 16k.  During tests we found that the
-kernel stack can easily grow beyond 13k, which leaves 3k left for irq
-processing.
+Fix up build error on UP and show correctly number of function call
+(ipi) irqs.
 
-This patch adds the possibility to activate an additional stack of 16k per CPU
-which is being used during irq processing.  This implementation does not yet
-uses this irq stack for the irq bh handler.
-
-The assembler code for call_on_stack was heavily cleaned up by John
-David Anglin.
-
-CC: John David Anglin <dave.anglin@bell.net>
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index fe4afb0..cad060f 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -243,6 +243,14 @@ config SMP
+diff --git a/arch/parisc/include/asm/hardirq.h b/arch/parisc/include/asm/hardirq.h
+index a9c0fb1..12373c4 100644
+--- a/arch/parisc/include/asm/hardirq.h
++++ b/arch/parisc/include/asm/hardirq.h
+@@ -19,12 +19,8 @@ typedef struct {
+ #ifdef CONFIG_SMP
+ 	unsigned int irq_resched_count;
+ 	unsigned int irq_call_count;
+-	/*
+-	 * irq_tlb_count is double-counted in irq_call_count, so it must be
+-	 * subtracted from irq_call_count when displaying irq_call_count
+-	 */
+-	unsigned int irq_tlb_count;
+ #endif
++	unsigned int irq_tlb_count;
+ } ____cacheline_aligned irq_cpustat_t;
  
- 	  If you don't know what to do here, say N.
+ DECLARE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);
+diff --git a/arch/parisc/include/asm/tlbflush.h b/arch/parisc/include/asm/tlbflush.h
+index 8f1a810..5273da9 100644
+--- a/arch/parisc/include/asm/tlbflush.h
++++ b/arch/parisc/include/asm/tlbflush.h
+@@ -22,6 +22,8 @@ extern spinlock_t pa_tlb_lock;
+ extern void flush_tlb_all(void);
+ extern void flush_tlb_all_local(void *);
  
-+config IRQSTACKS
-+	bool "Use separate kernel stacks when processing interrupts"
-+	default n
-+	help
-+	  If you say Y here the kernel will use separate kernel stacks
-+	  for handling hard and soft interrupts.  This can help avoid
-+	  overflowing the process kernel stacks.
++#define smp_flush_tlb_all()	flush_tlb_all()
 +
- config HOTPLUG_CPU
- 	bool
- 	default y if SMP
-diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
-index 09b54a5..242f06a 100644
---- a/arch/parisc/include/asm/processor.h
-+++ b/arch/parisc/include/asm/processor.h
-@@ -20,8 +20,6 @@
- 
- #endif /* __ASSEMBLY__ */
- 
--#define KERNEL_STACK_SIZE 	(4*PAGE_SIZE)
--
  /*
-  * Default implementation of macro that returns current
-  * instruction pointer ("program counter").
-@@ -61,6 +59,23 @@
- #ifndef __ASSEMBLY__
- 
- /*
-+ * IRQ STACK - used for irq handler
-+ */
-+#ifdef __KERNEL__
-+
-+#define IRQ_STACK_SIZE      (4096 << 2) /* 16k irq stack size */
-+
-+union irq_stack_union {
-+	unsigned long stack[IRQ_STACK_SIZE/sizeof(unsigned long)];
-+};
-+
-+DECLARE_PER_CPU(union irq_stack_union, irq_stack_union);
-+
-+void call_on_stack(unsigned long p1, void *func, unsigned long new_stack);
-+
-+#endif /* __KERNEL__ */
-+
-+/*
-  * Data detected about CPUs at boot time which is the same for all CPU's.
-  * HP boxes are SMP - ie identical processors.
+  * flush_tlb_mm()
   *
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index 3f3326d..4bb96ad 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -2010,6 +2010,47 @@ ftrace_stub:
- ENDPROC(return_to_handler)
- #endif	/* CONFIG_FUNCTION_TRACER */
- 
-+#ifdef CONFIG_IRQSTACKS
-+/* void call_on_stack(unsigned long param1, void *func,
-+		      unsigned long new_stack) */
-+ENTRY(call_on_stack)
-+	copy	%sp, %r1
-+
-+	/* Regarding the HPPA calling conventions for function pointers,
-+	   we assume the PIC register is not changed across call.  For
-+	   CONFIG_64BIT, the argument pointer is left to point at the
-+	   argument region allocated for the call to call_on_stack. */
-+# ifdef CONFIG_64BIT
-+	/* Switch to new stack.  We allocate two 128 byte frames.  */
-+	ldo	256(%arg2), %sp
-+	/* Save previous stack pointer and return pointer in frame marker */
-+	STREG	%rp, -144(%sp)
-+	/* Calls always use function descriptor */
-+	LDREG	16(%arg1), %arg1
-+	bve,l	(%arg1), %rp
-+	STREG	%r1, -136(%sp)
-+	LDREG	-144(%sp), %rp
-+	bve	(%rp)
-+	LDREG	-136(%sp), %sp
-+# else
-+	/* Switch to new stack.  We allocate two 64 byte frames.  */
-+	ldo	128(%arg2), %sp
-+	/* Save previous stack pointer and return pointer in frame marker */
-+	STREG	%r1, -68(%sp)
-+	STREG	%rp, -84(%sp)
-+	/* Calls use function descriptor if PLABEL bit is set */
-+	bb,>=,n	%arg1, 30, 1f
-+	depwi	0,31,2, %arg1
-+	LDREG	0(%arg1), %arg1
-+1:
-+	be,l	0(%sr4,%arg1), %sr0, %r31
-+	copy	%r31, %rp
-+	LDREG	-84(%sp), %rp
-+	bv	(%rp)
-+	LDREG	-68(%sp), %sp
-+# endif /* CONFIG_64BIT */
-+ENDPROC(call_on_stack)
-+#endif /* CONFIG_IRQSTACKS */
- 
- get_register:
- 	/*
 diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index 61e51ac..810f9cf8 100644
+index a237e32..e255db0 100644
 --- a/arch/parisc/kernel/irq.c
 +++ b/arch/parisc/kernel/irq.c
-@@ -358,6 +358,29 @@ static inline void stack_overflow_check(struct pt_regs *regs)
- #endif
+@@ -175,14 +175,13 @@ int arch_show_interrupts(struct seq_file *p, int prec)
+ 	seq_printf(p, "  Rescheduling interrupts\n");
+ 	seq_printf(p, "%*s: ", prec, "CAL");
+ 	for_each_online_cpu(j)
+-		seq_printf(p, "%10u ", irq_stats(j)->irq_call_count -
+-					irq_stats(j)->irq_tlb_count);
++		seq_printf(p, "%10u ", irq_stats(j)->irq_call_count);
+ 	seq_printf(p, "  Function call interrupts\n");
++#endif
+ 	seq_printf(p, "%*s: ", prec, "TLB");
+ 	for_each_online_cpu(j)
+ 		seq_printf(p, "%10u ", irq_stats(j)->irq_tlb_count);
+ 	seq_printf(p, "  TLB shootdowns\n");
+-#endif
+ 	return 0;
  }
  
-+#ifdef CONFIG_IRQSTACKS
-+DEFINE_PER_CPU(union irq_stack_union, irq_stack_union);
-+
-+static void execute_on_irq_stack(void *func, unsigned long param1)
-+{
-+	unsigned long *irq_stack_start;
-+	unsigned long irq_stack;
-+	int cpu = smp_processor_id();
-+
-+	irq_stack_start = &per_cpu(irq_stack_union, cpu).stack[0];
-+	irq_stack = (unsigned long) irq_stack_start;
-+	irq_stack = ALIGN(irq_stack, 16); /* align for stack frame usage */
-+
-+	BUG_ON(*irq_stack_start); /* report bug if we were called recursive. */
-+	*irq_stack_start = 1;
-+
-+	/* This is where we switch to the IRQ stack. */
-+	call_on_stack(param1, func, irq_stack);
-+
-+	*irq_stack_start = 0;
-+}
-+#endif /* CONFIG_IRQSTACKS */
-+
- /* ONLY called from entry.S:intr_extint() */
- void do_cpu_irq_mask(struct pt_regs *regs)
- {
-@@ -393,7 +416,12 @@ void do_cpu_irq_mask(struct pt_regs *regs)
- 	}
- #endif
- 	stack_overflow_check(regs);
-+
-+#ifdef CONFIG_IRQSTACKS
-+	execute_on_irq_stack(&generic_handle_irq, irq);
-+#else
- 	generic_handle_irq(irq);
-+#endif /* CONFIG_IRQSTACKS */
+diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
+index 218e20b..e3614fb 100644
+--- a/arch/parisc/kernel/smp.c
++++ b/arch/parisc/kernel/smp.c
+@@ -264,17 +264,6 @@ void arch_send_call_function_single_ipi(int cpu)
+ }
  
-  out:
- 	irq_exit();
+ /*
+- * Flush all other CPU's tlb and then mine.  Do this with on_each_cpu()
+- * as we want to ensure all TLB's flushed before proceeding.
+- */
+-
+-void
+-smp_flush_tlb_all(void)
+-{
+-	on_each_cpu(flush_tlb_all_local, NULL, 1);
+-}
