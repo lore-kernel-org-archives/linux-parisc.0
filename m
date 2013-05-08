@@ -1,65 +1,63 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] parisc: fix NATIVE set up in build
-Date: Tue, 7 May 2013 19:24:04 -0400
-Message-ID: <BLU0-SMTP74F2A5D74A5FB368D237A797BA0@phx.gbl>
-References: <1367686258-28525-1-git-send-email-vapier@gentoo.org>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>
-To: Mike Frysinger <vapier@gentoo.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1367686258-28525-1-git-send-email-vapier@gentoo.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [GIT PULL] parisc updates for v3.10
+Date: Wed, 8 May 2013 11:37:04 +1000
+Message-ID: <20130508113704.5ac23906e0e513b4a76d5b55@canb.auug.org.au>
+References: <20130507221102.GA5338@p100.box>
+Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA256";
+ boundary="Signature=_Wed__8_May_2013_11_37_04_+1000_4erjVE.g3agcmWDn"
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20130507221102.GA5338@p100.box>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch breaks builds on current Debian systems that want compiler  
-prefixes
-like hppa64-linux-gnu-", "hppa-linux-gnu-" or no prefix for native 32- 
-bit.  The NATIVE
-match previous failed and we got the correct FSF prefix.
+--Signature=_Wed__8_May_2013_11_37_04_+1000_4erjVE.g3agcmWDn
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Dave
+Hi Guys,
 
-On 4-May-13, at 12:50 PM, Mike Frysinger wrote:
-
-> The ifeq operator does not accept globs, so this little bit of code  
-> will
-> never match (unless uname literally prints out "parsic*").  Rewrite to
-> use a pattern matching operator so that NATIVE is set to 1 on parisc.
+On Wed, 8 May 2013 00:11:02 +0200 Helge Deller <deller@gmx.de> wrote:
 >
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> ---
-> arch/parisc/Makefile | 4 +---
-> 1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-> index 113e282..2f967cc 100644
-> --- a/arch/parisc/Makefile
-> +++ b/arch/parisc/Makefile
-> @@ -24,9 +24,7 @@ CHECKFLAGS	+= -D__hppa__=1
-> LIBGCC		= $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
->
-> MACHINE		:= $(shell uname -m)
-> -ifeq ($(MACHINE),parisc*)
-> -NATIVE		:= 1
-> -endif
-> +NATIVE		:= $(if $(filter parisc%,$(MACHINE)),1,0)
->
-> ifdef CONFIG_64BIT
-> UTS_MACHINE	:= parisc64
-> -- 
-> 1.8.2.1
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux- 
-> parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+> please pull the parisc architecture updates for v3.10 from:
+>=20
+>   git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git p=
+arisc-for-3.10
 
---
-John David Anglin	dave.anglin@bell.net
+Does this mean that the parisc tree I have in linux-next
+(git://git.kernel.org/pub/scm/linux/kernel/git/jejb/parisc-2.6.git#for-next)
+is defunct?
 
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
 
+--Signature=_Wed__8_May_2013_11_37_04_+1000_4erjVE.g3agcmWDn
+Content-Type: application/pgp-signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBCAAGBQJRiaxAAAoJEECxmPOUX5FEPX4QAJt/1pweWxN6H1g8PpY9IGQ9
+U6oB3qnzS7HG+XMOlGvURZd6r/AfJJWXJNq268V7kO+BNUKeoclohnwPi0G282bp
+3Fqq08mwactR60f9cf6is5PTffoeaL3UKf0IrCtpEz7Qf/to3Do8wow29m1pjKpV
+DghY4yDGafaOFex1re0YjoIRJQtjanYxw1+QjzR+t1Gp9RCfwL2iJX+krsvZQ5FW
+O667dJBQqqDaOXOLik9aRvb3VCkyzDwrFHULpcASNz0Nc1t6/f3BrG8wD2cn+D/4
+taOpYchbN/yei5KePK/g3B4/yDH3hN7DtTyEhemdo/WSGAHE2+fOrcOQM9viMuf0
+YoiAac1Kz5Yklu1nKstsxqF20C/TEJr4ikeFyOu9lNqO6HNn3jZk0bI3eVuYv1pw
+yyurq6piTh+14FjhIYUTR3kbvZz+4uzO0wAKFXL/YU2VhFoIP2ryNrKNPkZ771T8
+JS1Icjh/klEz4ve2HoM4pVPl8ZLXRtdoOgBUEQBZD95Q44rY8l/KsNm9cPsGrjNv
+BmekgskNjLehMmu+xqcg8cvfmyQY/o+W5vR94uLr9cxFHHI1MEOu1ZDOxaunmlMm
+jSja8bHmv6GTe+aln6+Ms4othAHM20ck/ccRbuNZnKROeJW8MPjtw+skK6CoEAfA
+2O6NvquTnKhV/rNtUgCZ
+=kzuH
+-----END PGP SIGNATURE-----
+
+--Signature=_Wed__8_May_2013_11_37_04_+1000_4erjVE.g3agcmWDn--
