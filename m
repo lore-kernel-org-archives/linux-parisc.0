@@ -1,56 +1,78 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [PATCH] parisc: fix NATIVE set up in build
-Date: Thu, 9 May 2013 01:04:02 -0400
-Message-ID: <201305090104.03897.vapier@gentoo.org>
-References: <1367686258-28525-1-git-send-email-vapier@gentoo.org> <BLU0-SMTP74F2A5D74A5FB368D237A797BA0@phx.gbl>
-Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart2005987.WZF54iGmYA";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Cc: linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
+Subject: [PATCH] parisc: make default cross compiler search more robust
+Date: Thu,  9 May 2013 01:08:35 -0400
+Message-ID: <1368076115-22262-1-git-send-email-vapier@gentoo.org>
+Cc: John David Anglin <dave.anglin@bell.net>
+To: linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>
-To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP74F2A5D74A5FB368D237A797BA0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---nextPart2005987.WZF54iGmYA
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+People/distros vary how they prefix the toolchain name for 64bit builds.
+Rather than enforce one convention over another, add a for loop which
+does a search for all the general prefixes.  This code will run for both
+native and cross builds when CROSS_COMPILE isn't explicitly set.
 
-On Tuesday 07 May 2013 19:24:04 John David Anglin wrote:
-> This patch breaks builds on current Debian systems that want compiler
-> prefixes
-> like hppa64-linux-gnu-", "hppa-linux-gnu-" or no prefix for native 32-
-> bit.  The NATIVE
-> match previous failed and we got the correct FSF prefix.
+For 64bit builds, we now search for (in order):
+	hppa64-unknown-linux-gnu
+	hppa64-linux-gnu
+	hppa64-linux
 
-that was the intention of the code
--mike
+For 32bit builds, we look for:
+	hppa-unknown-linux-gnu
+	hppa-linux-gnu
+	hppa-linux
+	hppa1.1-unknown-linux-gnu
+	hppa1.1-linux-gnu
+	hppa1.1-linux
+	hppa2.0-unknown-linux-gnu
+	hppa2.0-linux-gnu
+	hppa2.0-linux
 
---nextPart2005987.WZF54iGmYA
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ arch/parisc/Makefile | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index 2f967cc..523ae34 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -23,9 +23,6 @@ NM		= sh $(srctree)/arch/parisc/nm
+ CHECKFLAGS	+= -D__hppa__=1
+ LIBGCC		= $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
+ 
+-MACHINE		:= $(shell uname -m)
+-NATIVE		:= $(if $(filter parisc%,$(MACHINE)),1,0)
+-
+ ifdef CONFIG_64BIT
+ UTS_MACHINE	:= parisc64
+ CHECKFLAGS	+= -D__LP64__=1 -m64
+@@ -35,12 +32,17 @@ WIDTH		:=
+ endif
+ 
+ # attempt to help out folks who are cross-compiling
+-ifeq ($(NATIVE),1)
+-CROSS_COMPILE	:= hppa$(WIDTH)-linux-
+-else
+- ifeq ($(CROSS_COMPILE),)
+- CROSS_COMPILE	:= hppa$(WIDTH)-linux-gnu-
+- endif
++ifeq ($(CROSS_COMPILE),)
++CROSS_COMPILE := $(shell \
++	arches="hppa$(WIDTH)"; \
++	[ -z "$(WIDTH)" ] && arches="$$a hppa1.1 hppa2.0"; \
++	for a in $$arches; do \
++		for p in unknown-linux-gnu linux-gnu linux; do \
++			c="$$a-$$p-"; \
++			command -v $${c}gcc >/dev/null 2>&1 && echo $$c && break 2; \
++		done; \
++	done \
++)
+ endif
+ 
+ OBJCOPY_FLAGS =-O binary -R .note -R .comment -S
+-- 
+1.8.2.1
 
-iQIcBAABAgAGBQJRiy5DAAoJEEFjO5/oN/WBFwcQANabeQfCkbQqutp+43LDb60a
-1+R70iOCiYr67ksyg/JWZ8gEe24jxvI03tt+AYoOJ8q1rFAl5LW/Rqf9d2Yi+/+C
-wt3/gklZdwmd51mzGUU3yPzIGqbp6tjSskyS1HnnGrzGi3a7vlAirtT5VAGBGIYT
-kLlM4UoXymqggf4CK1xPB8P1kTTLTBfoBeRHDua09MoP9h5PstvyQoGndZGoDLBO
-+0V0cOpKPSntSPyee3jyJoYR2lTL5ijWVDNS25q+Szouh2N5+rUrX9/U710x76JZ
-DBx6jHO6X2QjuxOiHPboWEPNfeDm2uaGh1GJWjcbjXEbNOFHnqzWDiM0TUAUvOiD
-l9TM3RV4CmdK+1XTGvRJLKmHsm3SvfiXGTBPPnrvsPoGA4BlpLt+6lS3br+lFqLg
-lGYfcXnC9oHBJRoMn3fMQdesgOvNODf7ojkSb3owpVepFx5YXcp+JJ62duQXGIun
-8XB2H07GbIrv+p8I3NjzWa8kvn6qJdY7A6dOf97FfTxq+K5E0m5UkPdNZAhz6zCo
-1TXC92OZZ6VctEaE9Sltiko7IFcjlk9K7eDr0Hwue/Gw7szPCPFQLhpsMHlBS5Ro
-1NBPHlUdI5nqwmbbDcElRLEuoJ8qeL8FwPhgI0qNdJZpZAOpB917s4itfLzav79p
-iHdPBjVF1v71xTdqB02q
-=rYV6
------END PGP SIGNATURE-----
-
---nextPart2005987.WZF54iGmYA--
