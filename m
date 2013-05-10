@@ -1,112 +1,275 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [GIT PULL] parisc updates for v3.10
-Date: Fri, 10 May 2013 10:15:48 +1000
-Message-ID: <20130510101548.d0a86e3587b6625c00dab7a5@canb.auug.org.au>
-References: <20130507221102.GA5338@p100.box>
-	<20130508113704.5ac23906e0e513b4a76d5b55@canb.auug.org.au>
-	<518C0788.8060200@gmx.de>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] parisc: implement irq stacks - part 2 (v2)
+Date: Fri, 10 May 2013 23:24:01 +0200
+Message-ID: <20130510212401.GA13982@p100.box>
+References: <20130509001438.GA32043@p100.box>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA256";
- boundary="Signature=_Fri__10_May_2013_10_15_48_+1000_OTTyeGl_Nk04ggtG"
-Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <518C0788.8060200@gmx.de>
+In-Reply-To: <20130509001438.GA32043@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Signature=_Fri__10_May_2013_10_15_48_+1000_OTTyeGl_Nk04ggtG
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch fixes few build issues which were introduced with the last
+irq stack patch, e.g. the combination of stack overflow check and irq
+stack.
 
-Hi Helge,
+Furthermore we now do proper locking and change the irq bh handler
+to use the irq stack as well.
 
-On Thu, 09 May 2013 22:31:04 +0200 Helge Deller <deller@gmx.de> wrote:
->
-> On 05/08/2013 03:37 AM, Stephen Rothwell wrote:
-> > On Wed, 8 May 2013 00:11:02 +0200 Helge Deller <deller@gmx.de> wrote:
-> >>
-> >> please pull the parisc architecture updates for v3.10 from:
-> >>
-> >>   git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.gi=
-t parisc-for-3.10
-> >=20
-> > Does this mean that the parisc tree I have in linux-next
-> > (git://git.kernel.org/pub/scm/linux/kernel/git/jejb/parisc-2.6.git#for-=
-next)
-> > is defunct?
->=20
-> Not sure. It will be either James or me who will send pull requests...
-> Of course we will agree who of us will do that and from which tree.
->=20
-> So, would it hurt if you add a second parisc tree for linux-next?
-> I've just created a "for-next" branch in my git repository:=20
-> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git#for=
--next
+In /proc/interrupts one now can monitor how huge the irq stack has grown
+and how often it was preferred over the kernel stack.
 
-I have no problem having both trees in linux-next (as long as you don't
-tread on each other's toes and cause merge problem too often :-)).
+IRQ stacks are now enabled by default just to make sure that we not
+overflow the kernel stack by accident.
 
-I have added your tree from today (noting that it is empty).  I have set
-you and the parisc mailing list as contacts.
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Thanks for adding your subsystem tree as a participant of linux-next.  As
-you may know, this is not a judgment of your code.  The purpose of
-linux-next is for integration testing and to lower the impact of
-conflicts between subsystems in the next merge window.=20
-
-You will need to ensure that the patches/commits in your tree/series have
-been:
-     * submitted under GPL v2 (or later) and include the Contributor's
-	Signed-off-by,
-     * posted to the relevant mailing list,
-     * reviewed by you (or another maintainer of your subsystem tree),
-     * successfully unit tested, and=20
-     * destined for the current or next Linux merge window.
-
-Basically, this should be just what you would send to Linus (or ask him
-to fetch).  It is allowed to be rebased if you deem it necessary.
-
---=20
-Cheers,
-Stephen Rothwell=20
-sfr@canb.auug.org.au
-
-Legal Stuff:
-By participating in linux-next, your subsystem tree contributions are
-public and will be included in the linux-next trees.  You may be sent
-e-mail messages indicating errors or other issues when the
-patches/commits from your subsystem tree are merged and tested in
-linux-next.  These messages may also be cross-posted to the linux-next
-mailing list, the linux-kernel mailing list, etc.  The linux-next tree
-project and IBM (my employer) make no warranties regarding the linux-next
-project, the testing procedures, the results, the e-mails, etc.  If you
-don't agree to these ground rules, let me know and I'll remove your tree
-from participation in linux-next.
-
---Signature=_Fri__10_May_2013_10_15_48_+1000_OTTyeGl_Nk04ggtG
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBCAAGBQJRjDw0AAoJEECxmPOUX5FE7GYQAJ9uhRtL/H2p9LanhevjS9jU
-dx7UIq3fAeBcpOw/YI0ydnkiIzEaatCAcBFfRH1nZY6Pq8kaNr6FohT+wpqVDK4D
-Yfa0DriDgjhGqZ+qfxZ9kBMeQMeSdE0FlpzsPpaLsPDYLLfJ1h3Sa+TWlnDV2j3n
-YlXAN+AgZIzPU+3Dqy7s5JwRS4K80NqFl0ZnD3Mj4E0rwmIpPM+d703fnjYLzcqY
-3XRepwp+h0FzS4++JALr1NC1p+ZW66oE0LatjICIUIGA9ghaWJQz5Dw0GjQJczV7
-RpWzAEUCgPEVKXMEpQXeZZPS18Uyr1GThyUSv5AofcpYmyKWBqR2Lm74xtbSh1ms
-YNo8yd+locCvI4J89HAc8BucFreMlWfQFVuwdxs54x5mSsMjLtmBpmSV1b0ILxkN
-bXq48gauc+xQupTC3a7QRNPxzUJb55OfUsM6h6Pr4tBTLKD2kSAd9tkXiA84XhZL
-WIR+xq0S6JmMJ6cEEWzG7a1Al9TV+mA4KeZsyBzT2j5BlmMI0cLeFgIOO159JFtW
-SAb5hU3LF1Sp77fhVa2jos40zAICGRsTwtry/FAYJcBAzy4nLfyFjjtEMurEA2E/
-18V/SmBdspBHvNHD5oNvEBeRqi/3eCZ5tDkTFUp74V4HFu4NlFIAsRgWmeJL/KaN
-FUr+P5qDHMq4O85FPBgc
-=4/iM
------END PGP SIGNATURE-----
-
---Signature=_Fri__10_May_2013_10_15_48_+1000_OTTyeGl_Nk04ggtG--
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index cad060f..6507dab 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -245,7 +245,7 @@ config SMP
+ 
+ config IRQSTACKS
+ 	bool "Use separate kernel stacks when processing interrupts"
+-	default n
++	default y
+ 	help
+ 	  If you say Y here the kernel will use separate kernel stacks
+ 	  for handling hard and soft interrupts.  This can help avoid
+diff --git a/arch/parisc/include/asm/hardirq.h b/arch/parisc/include/asm/hardirq.h
+index 12373c4..c19f713 100644
+--- a/arch/parisc/include/asm/hardirq.h
++++ b/arch/parisc/include/asm/hardirq.h
+@@ -11,10 +11,18 @@
+ #include <linux/threads.h>
+ #include <linux/irq.h>
+ 
++#ifdef CONFIG_IRQSTACKS
++#define __ARCH_HAS_DO_SOFTIRQ
++#endif
++
+ typedef struct {
+ 	unsigned int __softirq_pending;
+ #ifdef CONFIG_DEBUG_STACKOVERFLOW
+ 	unsigned int kernel_stack_usage;
++#ifdef CONFIG_IRQSTACKS
++	unsigned int irq_stack_usage;
++	unsigned int irq_stack_counter;
++#endif
+ #endif
+ #ifdef CONFIG_SMP
+ 	unsigned int irq_resched_count;
+@@ -28,6 +36,7 @@ DECLARE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);
+ #define __ARCH_IRQ_STAT
+ #define __IRQ_STAT(cpu, member) (irq_stat[cpu].member)
+ #define inc_irq_stat(member)	this_cpu_inc(irq_stat.member)
++#define __inc_irq_stat(member)	__this_cpu_inc(irq_stat.member)
+ #define local_softirq_pending()	this_cpu_read(irq_stat.__softirq_pending)
+ 
+ #define __ARCH_SET_SOFTIRQ_PENDING
+diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
+index 0640155..cfbc439 100644
+--- a/arch/parisc/include/asm/processor.h
++++ b/arch/parisc/include/asm/processor.h
+@@ -63,10 +63,13 @@
+  */
+ #ifdef __KERNEL__
+ 
++#include <linux/spinlock_types.h>
++
+ #define IRQ_STACK_SIZE      (4096 << 2) /* 16k irq stack size */
+ 
+ union irq_stack_union {
+ 	unsigned long stack[IRQ_STACK_SIZE/sizeof(unsigned long)];
++	raw_spinlock_t lock;
+ };
+ 
+ DECLARE_PER_CPU(union irq_stack_union, irq_stack_union);
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index e255db0..55237a7 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -166,22 +166,32 @@ int arch_show_interrupts(struct seq_file *p, int prec)
+ 	seq_printf(p, "%*s: ", prec, "STK");
+ 	for_each_online_cpu(j)
+ 		seq_printf(p, "%10u ", irq_stats(j)->kernel_stack_usage);
+-	seq_printf(p, "  Kernel stack usage\n");
++	seq_puts(p, "  Kernel stack usage\n");
++# ifdef CONFIG_IRQSTACKS
++	seq_printf(p, "%*s: ", prec, "IST");
++	for_each_online_cpu(j)
++		seq_printf(p, "%10u ", irq_stats(j)->irq_stack_usage);
++	seq_puts(p, "  Interrupt stack usage\n");
++	seq_printf(p, "%*s: ", prec, "ISC");
++	for_each_online_cpu(j)
++		seq_printf(p, "%10u ", irq_stats(j)->irq_stack_counter);
++	seq_puts(p, "  Interrupt stack usage counter\n");
++# endif
+ #endif
+ #ifdef CONFIG_SMP
+ 	seq_printf(p, "%*s: ", prec, "RES");
+ 	for_each_online_cpu(j)
+ 		seq_printf(p, "%10u ", irq_stats(j)->irq_resched_count);
+-	seq_printf(p, "  Rescheduling interrupts\n");
++	seq_puts(p, "  Rescheduling interrupts\n");
+ 	seq_printf(p, "%*s: ", prec, "CAL");
+ 	for_each_online_cpu(j)
+ 		seq_printf(p, "%10u ", irq_stats(j)->irq_call_count);
+-	seq_printf(p, "  Function call interrupts\n");
++	seq_puts(p, "  Function call interrupts\n");
+ #endif
+ 	seq_printf(p, "%*s: ", prec, "TLB");
+ 	for_each_online_cpu(j)
+ 		seq_printf(p, "%10u ", irq_stats(j)->irq_tlb_count);
+-	seq_printf(p, "  TLB shootdowns\n");
++	seq_puts(p, "  TLB shootdowns\n");
+ 	return 0;
+ }
+ 
+@@ -378,6 +388,7 @@ static inline void stack_overflow_check(struct pt_regs *regs)
+ 	unsigned long sp = regs->gr[30];
+ 	unsigned long stack_usage;
+ 	unsigned int *last_usage;
++	int cpu = smp_processor_id();
+ 
+ 	/* if sr7 != 0, we interrupted a userspace process which we do not want
+ 	 * to check for stack overflow. We will only check the kernel stack. */
+@@ -386,7 +397,31 @@ static inline void stack_overflow_check(struct pt_regs *regs)
+ 
+ 	/* calculate kernel stack usage */
+ 	stack_usage = sp - stack_start;
+-	last_usage = &per_cpu(irq_stat.kernel_stack_usage, smp_processor_id());
++#ifdef CONFIG_IRQSTACKS
++	if (likely(stack_usage <= THREAD_SIZE))
++		goto check_kernel_stack; /* found kernel stack */
++
++	/* check irq stack usage */
++	stack_start = (unsigned long) &per_cpu(irq_stack_union, cpu).stack;
++	stack_usage = sp - stack_start;
++
++	last_usage = &per_cpu(irq_stat.irq_stack_usage, cpu);
++	if (unlikely(stack_usage > *last_usage))
++		*last_usage = stack_usage;
++
++	if (likely(stack_usage < (IRQ_STACK_SIZE - STACK_MARGIN)))
++		return;
++
++	pr_emerg("stackcheck: %s will most likely overflow irq stack "
++		 "(sp:%lx, stk bottom-top:%lx-%lx)\n",
++		current->comm, sp, stack_start, stack_start + IRQ_STACK_SIZE);
++	goto panic_check;
++
++check_kernel_stack:
++#endif
++
++	/* check kernel stack usage */
++	last_usage = &per_cpu(irq_stat.kernel_stack_usage, cpu);
+ 
+ 	if (unlikely(stack_usage > *last_usage))
+ 		*last_usage = stack_usage;
+@@ -398,31 +433,69 @@ static inline void stack_overflow_check(struct pt_regs *regs)
+ 		 "(sp:%lx, stk bottom-top:%lx-%lx)\n",
+ 		current->comm, sp, stack_start, stack_start + THREAD_SIZE);
+ 
++#ifdef CONFIG_IRQSTACKS
++panic_check:
++#endif
+ 	if (sysctl_panic_on_stackoverflow)
+ 		panic("low stack detected by irq handler - check messages\n");
+ #endif
+ }
+ 
+ #ifdef CONFIG_IRQSTACKS
+-DEFINE_PER_CPU(union irq_stack_union, irq_stack_union);
++DEFINE_PER_CPU(union irq_stack_union, irq_stack_union) = {
++		.lock = __RAW_SPIN_LOCK_UNLOCKED((irq_stack_union).lock)
++	};
+ 
+ static void execute_on_irq_stack(void *func, unsigned long param1)
+ {
+-	unsigned long *irq_stack_start;
++	union irq_stack_union *union_ptr;
+ 	unsigned long irq_stack;
+-	int cpu = smp_processor_id();
++	raw_spinlock_t *irq_stack_in_use;
+ 
+-	irq_stack_start = &per_cpu(irq_stack_union, cpu).stack[0];
+-	irq_stack = (unsigned long) irq_stack_start;
+-	irq_stack = ALIGN(irq_stack, 16); /* align for stack frame usage */
++	union_ptr = &per_cpu(irq_stack_union, smp_processor_id());
++	irq_stack = (unsigned long) &union_ptr->stack;
++	irq_stack = ALIGN(irq_stack + sizeof(irq_stack_union.lock),
++			 64); /* align for stack frame usage */
+ 
+-	BUG_ON(*irq_stack_start); /* report bug if we were called recursive. */
+-	*irq_stack_start = 1;
++	/* We may be called recursive. If we are already using the irq stack,
++	 * just continue to use it. Use spinlocks to serialize
++	 * the irq stack usage.
++	 */
++	irq_stack_in_use = &union_ptr->lock;
++	if (!raw_spin_trylock(irq_stack_in_use)) {
++		void (*direct_call)(unsigned long p1) = func;
++
++		/* We are using the IRQ stack already.
++		 * Do direct call on current stack. */
++		direct_call(param1);
++		return;
++	}
+ 
+ 	/* This is where we switch to the IRQ stack. */
+ 	call_on_stack(param1, func, irq_stack);
+ 
+-	*irq_stack_start = 0;
++	__inc_irq_stat(irq_stack_counter);
++
++	/* free up irq stack usage. */
++	do_raw_spin_unlock(irq_stack_in_use);
++}
++
++asmlinkage void do_softirq(void)
++{
++	__u32 pending;
++	unsigned long flags;
++
++	if (in_interrupt())
++		return;
++
++	local_irq_save(flags);
++
++	pending = local_softirq_pending();
++
++	if (pending)
++		execute_on_irq_stack(__do_softirq, 0);
++
++	local_irq_restore(flags);
+ }
+ #endif /* CONFIG_IRQSTACKS */
+ 
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index ce939ac..1c96564 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -1069,7 +1069,7 @@ void flush_tlb_all(void)
+ {
+ 	int do_recycle;
+ 
+-	inc_irq_stat(irq_tlb_count);
++	__inc_irq_stat(irq_tlb_count);
+ 	do_recycle = 0;
+ 	spin_lock(&sid_lock);
+ 	if (dirty_space_ids > RECYCLE_THRESHOLD) {
+@@ -1090,7 +1090,7 @@ void flush_tlb_all(void)
+ #else
+ void flush_tlb_all(void)
+ {
+-	inc_irq_stat(irq_tlb_count);
++	__inc_irq_stat(irq_tlb_count);
+ 	spin_lock(&sid_lock);
+ 	flush_tlb_all_local(NULL);
+ 	recycle_sids();
