@@ -1,397 +1,82 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: fix SMP races when updating PTE and TLB entries in entry.S
-Date: Fri, 10 May 2013 19:21:38 -0400
-Message-ID: <BLU0-SMTP553125C69B4B57B438F08E97A50@phx.gbl>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: multipart/mixed; boundary="Apple-Mail-26--921125333"
-Cc: Helge Deller <deller@gmx.de>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-To: linux-parisc List <linux-parisc@vger.kernel.org>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: make default cross compiler search more robust (v3)
+Date: Sat, 11 May 2013 21:04:09 +0200
+Message-ID: <20130511190409.GA5110@p100.box>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>,
+	Mike Frysinger <vapier@gentoo.org>,
+	Jeroen Roovers <jer@gentoo.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Apple-Mail-26--921125333
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
+People/distros vary how they prefix the toolchain name for 64bit builds.
+Rather than enforce one convention over another, add a for loop which
+does a search for all the general prefixes.
 
-Currently, race conditions exist in the handling of TLB interruptions  
-in entry.S.  In particular, dirty
-bit updates can be lost if an accessed interruption occurs just after  
-the dirty bit interruption on a
-different cpu.  Lost dirty bit updates result in user pages not being  
-flushed and general system
-instability.  This change adds lock and unlock macros to synchronize  
-all PTE and TLB updates
-done in entry.S.  As a result, userspace stability is significantly  
-improved.
+For 64bit builds, we now search for (in order):
+	hppa64-unknown-linux-gnu
+	hppa64-linux-gnu
+	hppa64-linux
 
-Signed-off-by: John David Anglin  <dave.anglin@bell.net>
----
+For 32bit builds, we look for:
+	hppa-unknown-linux-gnu
+	hppa-linux-gnu
+	hppa-linux
+	hppa1.1-unknown-linux-gnu
+	hppa1.1-linux-gnu
+	hppa1.1-linux
+	hppa2.0-unknown-linux-gnu
+	hppa2.0-linux-gnu
+	hppa2.0-linux
+
+This patch was initiated by Mike Frysinger, with feedback from Jeroen
+Roovers, John David Anglin and Helge Deller.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+CC: Mike Frysinger <vapier@gentoo.org>
+CC: Jeroen Roovers <jer@gentoo.org>
+CC: John David Anglin <dave.anglin@bell.net>
 
 
-
---Apple-Mail-26--921125333
-Content-Disposition: attachment; filename="dbit_lock.d.8.txt"
-Content-Type: text/plain; x-unix-mode=0644; name="dbit_lock.d.8.txt"
-Content-Transfer-Encoding: 7bit
-
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index f33201b..471f4e5 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -444,9 +445,41 @@
- 	L2_ptep		\pgd,\pte,\index,\va,\fault
- 	.endm
- 
-+	/* Acquire pa_dbit_lock lock. */
-+	.macro		dbit_lock	spc,tmp,tmp1
-+#ifdef CONFIG_SMP
-+	cmpib,COND(=),n	0,\spc,2f
-+	load32		PA(pa_dbit_lock),\tmp
-+1:	LDCW		0(\tmp),\tmp1
-+	cmpib,COND(=)	0,\tmp1,1b
-+	nop
-+2:
-+#endif
-+	.endm
-+
-+	/* Release pa_dbit_lock lock without reloading lock address. */
-+	.macro		dbit_unlock0	spc,tmp
-+#ifdef CONFIG_SMP
-+	or,COND(=)	%r0,\spc,%r0
-+	stw             \spc,0(\tmp)
-+#endif
-+	.endm
-+
-+	/* Release pa_dbit_lock lock. */
-+	.macro		dbit_unlock1	spc,tmp
-+#ifdef CONFIG_SMP
-+	load32		PA(pa_dbit_lock),\tmp
-+	dbit_unlock0	\spc,\tmp
-+#endif
-+	.endm
-+
- 	/* Set the _PAGE_ACCESSED bit of the PTE.  Be clever and
- 	 * don't needlessly dirty the cache line if it was already set */
--	.macro		update_ptep	ptep,pte,tmp,tmp1
-+	.macro		update_ptep	spc,ptep,pte,tmp,tmp1
-+#ifdef CONFIG_SMP
-+	or,COND(=)	%r0,\spc,%r0
-+	LDREG		0(\ptep),\pte
-+#endif
- 	ldi		_PAGE_ACCESSED,\tmp1
- 	or		\tmp1,\pte,\tmp
- 	and,COND(<>)	\tmp1,\pte,%r0
-@@ -455,7 +488,11 @@
- 
- 	/* Set the dirty bit (and accessed bit).  No need to be
- 	 * clever, this is only used from the dirty fault */
--	.macro		update_dirty	ptep,pte,tmp
-+	.macro		update_dirty	spc,ptep,pte,tmp
-+#ifdef CONFIG_SMP
-+	or,COND(=)	%r0,\spc,%r0
-+	LDREG		0(\ptep),\pte
-+#endif
- 	ldi		_PAGE_ACCESSED|_PAGE_DIRTY,\tmp
- 	or		\tmp,\pte,\pte
- 	STREG		\pte,0(\ptep)
-@@ -1099,11 +1139,13 @@ dtlb_miss_20w:
- 
- 	L3_ptep		ptp,pte,t0,va,dtlb_check_alias_20w
- 
--	update_ptep	ptp,pte,t0,t1
-+	dbit_lock	spc,t0,t1
-+	update_ptep	spc,ptp,pte,t0,t1
- 
- 	make_insert_tlb	spc,pte,prot
- 	
- 	idtlbt          pte,prot
-+	dbit_unlock1	spc,t0
- 
- 	rfir
- 	nop
-@@ -1123,11 +1165,13 @@ nadtlb_miss_20w:
- 
- 	L3_ptep		ptp,pte,t0,va,nadtlb_check_alias_20w
- 
--	update_ptep	ptp,pte,t0,t1
-+	dbit_lock	spc,t0,t1
-+	update_ptep	spc,ptp,pte,t0,t1
- 
- 	make_insert_tlb	spc,pte,prot
- 
- 	idtlbt          pte,prot
-+	dbit_unlock1	spc,t0
- 
- 	rfir
- 	nop
-@@ -1149,7 +1193,8 @@ dtlb_miss_11:
- 
- 	L2_ptep		ptp,pte,t0,va,dtlb_check_alias_11
- 
--	update_ptep	ptp,pte,t0,t1
-+	dbit_lock	spc,t0,t1
-+	update_ptep	spc,ptp,pte,t0,t1
- 
- 	make_insert_tlb_11	spc,pte,prot
- 
-@@ -1160,6 +1205,7 @@ dtlb_miss_11:
- 	idtlbp		prot,(%sr1,va)
- 
- 	mtsp		t0, %sr1	/* Restore sr1 */
-+	dbit_unlock1	spc,t0
- 
- 	rfir
- 	nop
-@@ -1180,7 +1226,8 @@ nadtlb_miss_11:
- 
- 	L2_ptep		ptp,pte,t0,va,nadtlb_check_alias_11
- 
--	update_ptep	ptp,pte,t0,t1
-+	dbit_lock	spc,t0,t1
-+	update_ptep	spc,ptp,pte,t0,t1
- 
- 	make_insert_tlb_11	spc,pte,prot
- 
-@@ -1192,6 +1239,7 @@ nadtlb_miss_11:
- 	idtlbp		prot,(%sr1,va)
- 
- 	mtsp		t0, %sr1	/* Restore sr1 */
-+	dbit_unlock1	spc,t0
- 
- 	rfir
- 	nop
-@@ -1212,13 +1260,15 @@ dtlb_miss_20:
- 
- 	L2_ptep		ptp,pte,t0,va,dtlb_check_alias_20
- 
--	update_ptep	ptp,pte,t0,t1
-+	dbit_lock	spc,t0,t1
-+	update_ptep	spc,ptp,pte,t0,t1
- 
- 	make_insert_tlb	spc,pte,prot
- 
- 	f_extend	pte,t0
- 
- 	idtlbt          pte,prot
-+	dbit_unlock1	spc,t0
- 
- 	rfir
- 	nop
-@@ -1238,13 +1288,15 @@ nadtlb_miss_20:
- 
- 	L2_ptep		ptp,pte,t0,va,nadtlb_check_alias_20
- 
--	update_ptep	ptp,pte,t0,t1
-+	dbit_lock	spc,t0,t1
-+	update_ptep	spc,ptp,pte,t0,t1
- 
- 	make_insert_tlb	spc,pte,prot
- 
- 	f_extend	pte,t0
- 	
-         idtlbt          pte,prot
-+	dbit_unlock1	spc,t0
- 
- 	rfir
- 	nop
-@@ -1345,11 +1397,13 @@ itlb_miss_20w:
- 
- 	L3_ptep		ptp,pte,t0,va,itlb_fault
- 
--	update_ptep	ptp,pte,t0,t1
-+	dbit_lock	spc,t0,t1
-+	update_ptep	spc,ptp,pte,t0,t1
- 
- 	make_insert_tlb	spc,pte,prot
- 	
- 	iitlbt          pte,prot
-+	dbit_unlock1	spc,t0
- 
- 	rfir
- 	nop
-@@ -1367,11 +1421,13 @@ naitlb_miss_20w:
- 
- 	L3_ptep		ptp,pte,t0,va,naitlb_check_alias_20w
- 
--	update_ptep	ptp,pte,t0,t1
-+	dbit_lock	spc,t0,t1
-+	update_ptep	spc,ptp,pte,t0,t1
- 
- 	make_insert_tlb	spc,pte,prot
- 
- 	iitlbt          pte,prot
-+	dbit_unlock1	spc,t0
- 
- 	rfir
- 	nop
-@@ -1393,7 +1449,8 @@ itlb_miss_11:
- 
- 	L2_ptep		ptp,pte,t0,va,itlb_fault
- 
--	update_ptep	ptp,pte,t0,t1
-+	dbit_lock	spc,t0,t1
-+	update_ptep	spc,ptp,pte,t0,t1
- 
- 	make_insert_tlb_11	spc,pte,prot
- 
-@@ -1404,6 +1461,7 @@ itlb_miss_11:
- 	iitlbp		prot,(%sr1,va)
- 
- 	mtsp		t0, %sr1	/* Restore sr1 */
-+	dbit_unlock1	spc,t0
- 
- 	rfir
- 	nop
-@@ -1415,7 +1473,8 @@ naitlb_miss_11:
- 
- 	L2_ptep		ptp,pte,t0,va,naitlb_check_alias_11
- 
--	update_ptep	ptp,pte,t0,t1
-+	dbit_lock	spc,t0,t1
-+	update_ptep	spc,ptp,pte,t0,t1
- 
- 	make_insert_tlb_11	spc,pte,prot
- 
-@@ -1426,6 +1485,7 @@ naitlb_miss_11:
- 	iitlbp		prot,(%sr1,va)
- 
- 	mtsp		t0, %sr1	/* Restore sr1 */
-+	dbit_unlock1	spc,t0
- 
- 	rfir
- 	nop
-@@ -1447,13 +1507,15 @@ itlb_miss_20:
- 
- 	L2_ptep		ptp,pte,t0,va,itlb_fault
- 
--	update_ptep	ptp,pte,t0,t1
-+	dbit_lock	spc,t0,t1
-+	update_ptep	spc,ptp,pte,t0,t1
- 
- 	make_insert_tlb	spc,pte,prot
- 
- 	f_extend	pte,t0	
- 
- 	iitlbt          pte,prot
-+	dbit_unlock1	spc,t0
- 
- 	rfir
- 	nop
-@@ -1465,13 +1527,15 @@ naitlb_miss_20:
- 
- 	L2_ptep		ptp,pte,t0,va,naitlb_check_alias_20
- 
--	update_ptep	ptp,pte,t0,t1
-+	dbit_lock	spc,t0,t1
-+	update_ptep	spc,ptp,pte,t0,t1
- 
- 	make_insert_tlb	spc,pte,prot
- 
- 	f_extend	pte,t0
- 
- 	iitlbt          pte,prot
-+	dbit_unlock1	spc,t0
- 
- 	rfir
- 	nop
-@@ -1495,29 +1559,13 @@ dbit_trap_20w:
- 
- 	L3_ptep		ptp,pte,t0,va,dbit_fault
- 
--#ifdef CONFIG_SMP
--	cmpib,COND(=),n        0,spc,dbit_nolock_20w
--	load32		PA(pa_dbit_lock),t0
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index 2f967cc..4e5b7b5 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -23,24 +23,21 @@ NM		= sh $(srctree)/arch/parisc/nm
+ CHECKFLAGS	+= -D__hppa__=1
+ LIBGCC		= $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
+ 
+-MACHINE		:= $(shell uname -m)
+-NATIVE		:= $(if $(filter parisc%,$(MACHINE)),1,0)
 -
--dbit_spin_20w:
--	LDCW		0(t0),t1
--	cmpib,COND(=)         0,t1,dbit_spin_20w
--	nop
--
--dbit_nolock_20w:
--#endif
--	update_dirty	ptp,pte,t1
-+	dbit_lock	spc,t0,t1
-+	update_dirty	spc,ptp,pte,t1
+ ifdef CONFIG_64BIT
+ UTS_MACHINE	:= parisc64
+ CHECKFLAGS	+= -D__LP64__=1 -m64
+-WIDTH		:= 64
++CC_ARCHES	= hppa64
+ else # 32-bit
+-WIDTH		:=
++CC_ARCHES	= hppa hppa1.1 hppa2.0
+ endif
  
- 	make_insert_tlb	spc,pte,prot
- 		
- 	idtlbt          pte,prot
--#ifdef CONFIG_SMP
--	cmpib,COND(=),n        0,spc,dbit_nounlock_20w
--	ldi             1,t1
--	stw             t1,0(t0)
--
--dbit_nounlock_20w:
--#endif
-+	dbit_unlock0	spc,t0
+-# attempt to help out folks who are cross-compiling
+-ifeq ($(NATIVE),1)
+-CROSS_COMPILE	:= hppa$(WIDTH)-linux-
+-else
+- ifeq ($(CROSS_COMPILE),)
+- CROSS_COMPILE	:= hppa$(WIDTH)-linux-gnu-
+- endif
++ifneq ($(SUBARCH),$(ARCH))
++	ifeq ($(CROSS_COMPILE),)
++		CC_SUFFIXES = linux linux-gnu unknown-linux-gnu
++		CROSS_COMPILE := $(call cc-cross-prefix, \
++			$(foreach a,$(CC_ARCHES), \
++			$(foreach s,$(CC_SUFFIXES),$(a)-$(s)-)))
++	endif
+ endif
  
- 	rfir
- 	nop
-@@ -1531,18 +1579,8 @@ dbit_trap_11:
- 
- 	L2_ptep		ptp,pte,t0,va,dbit_fault
- 
--#ifdef CONFIG_SMP
--	cmpib,COND(=),n        0,spc,dbit_nolock_11
--	load32		PA(pa_dbit_lock),t0
--
--dbit_spin_11:
--	LDCW		0(t0),t1
--	cmpib,=         0,t1,dbit_spin_11
--	nop
--
--dbit_nolock_11:
--#endif
--	update_dirty	ptp,pte,t1
-+	dbit_lock	spc,t0,t1
-+	update_dirty	spc,ptp,pte,t1
- 
- 	make_insert_tlb_11	spc,pte,prot
- 
-@@ -1553,13 +1591,7 @@ dbit_nolock_11:
- 	idtlbp		prot,(%sr1,va)
- 
- 	mtsp            t1, %sr1     /* Restore sr1 */
--#ifdef CONFIG_SMP
--	cmpib,COND(=),n        0,spc,dbit_nounlock_11
--	ldi             1,t1
--	stw             t1,0(t0)
--
--dbit_nounlock_11:
--#endif
-+	dbit_unlock0	spc,t0
- 
- 	rfir
- 	nop
-@@ -1571,32 +1603,15 @@ dbit_trap_20:
- 
- 	L2_ptep		ptp,pte,t0,va,dbit_fault
- 
--#ifdef CONFIG_SMP
--	cmpib,COND(=),n        0,spc,dbit_nolock_20
--	load32		PA(pa_dbit_lock),t0
--
--dbit_spin_20:
--	LDCW		0(t0),t1
--	cmpib,=         0,t1,dbit_spin_20
--	nop
--
--dbit_nolock_20:
--#endif
--	update_dirty	ptp,pte,t1
-+	dbit_lock	spc,t0,t1
-+	update_dirty	spc,ptp,pte,t1
- 
- 	make_insert_tlb	spc,pte,prot
- 
- 	f_extend	pte,t1
- 	
-         idtlbt          pte,prot
--
--#ifdef CONFIG_SMP
--	cmpib,COND(=),n        0,spc,dbit_nounlock_20
--	ldi             1,t1
--	stw             t1,0(t0)
---Apple-Mail-26--921125333--
+ OBJCOPY_FLAGS =-O binary -R .note -R .comment -S
