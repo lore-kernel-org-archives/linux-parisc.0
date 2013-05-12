@@ -1,54 +1,36 @@
-From: Jeroen Roovers <jer@gentoo.org>
-Subject: Re: [PATCH] parisc: make default cross compiler search more robust
- (v4)
-Date: Sun, 12 May 2013 20:33:41 +0200
-Message-ID: <20130512203341.22d34f99@marga.jer-c2.orkz.net>
-References: <20130511190409.GA5110@p100.box>
-	<20130511215555.GA12893@p100.box>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Build regressions/improvements in v3.10-rc1 (crypto/parisc)
+Date: Sun, 12 May 2013 22:49:21 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1305122248030.5463@ayla.of.borg>
+References: <alpine.DEB.2.00.1305122130270.3789@ayla.of.borg> <alpine.DEB.2.00.1305122239040.5463@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>,
-	Mike Frysinger <vapier@gentoo.org>
-To: Helge Deller <deller@gmx.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-crypto@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Linux Kernel Development <linux-kernel@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130511215555.GA12893@p100.box>
+In-Reply-To: <alpine.DEB.2.00.1305122239040.5463@ayla.of.borg>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, 11 May 2013 23:55:55 +0200
-Helge Deller <deller@gmx.de> wrote:
+On Sun, 12 May 2013, Geert Uytterhoeven wrote:
+> However, the full list of errors isn't that unmanageable, so I'm following
+> up with a digested list...
 
-> People/distros vary how they prefix the toolchain name for 64bit
-> builds. Rather than enforce one convention over another, add a for
-> loop which does a search for all the general prefixes.
-> 
-> For 64bit builds, we now search for (in order):
-> 	hppa64-unknown-linux-gnu
-> 	hppa64-linux-gnu
-> 	hppa64-linux
-> 
-> For 32bit builds, we look for:
-> 	hppa-unknown-linux-gnu
-> 	hppa-linux-gnu
-> 	hppa-linux
-> 	hppa2.0-unknown-linux-gnu
-> 	hppa2.0-linux-gnu
-> 	hppa2.0-linux
-> 	hppa1.1-unknown-linux-gnu
-> 	hppa1.1-linux-gnu
-> 	hppa1.1-linux
-> 
-> This patch was initiated by Mike Frysinger, with feedback from Jeroen
-> Roovers, John David Anglin and Helge Deller.
-> 
-> CC: Mike Frysinger <vapier@gentoo.org>
-> CC: Jeroen Roovers <jer@gentoo.org>
-> Signed-off-by: John David Anglin <dave.anglin@bell.net>
-> Signed-off-by: Helge Deller <deller@gmx.de>
-
-Signed-off-by: Jeroen Roovers <jer@gentoo.org>
+lib/mpi/generic_mpih-mul1.c:50:3: error: inconsistent operand constraints in an 'asm': 1 errors in 1 logs
+lib/mpi/generic_mpih-mul2.c:49:3: error: inconsistent operand constraints in an 'asm': 1 errors in 1 logs
+lib/mpi/generic_mpih-mul3.c:49:3: error: inconsistent operand constraints in an 'asm': 1 errors in 1 logs
+lib/mpi/mpih-div.c:142:6: error: inconsistent operand constraints in an 'asm': 1 errors in 1 logs
+lib/mpi/mpih-div.c:205:6: error: inconsistent operand constraints in an 'asm': 1 errors in 1 logs
+	v3.10-rc1/parisc/parisc-allmodconfig
 
 
-     jer
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
