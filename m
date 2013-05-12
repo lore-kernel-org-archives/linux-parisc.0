@@ -1,84 +1,51 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: make default cross compiler search more robust
- (v4)
-Date: Sat, 11 May 2013 23:55:55 +0200
-Message-ID: <20130511215555.GA12893@p100.box>
-References: <20130511190409.GA5110@p100.box>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [PATCH] parisc: make default cross compiler search more robust (v4)
+Date: Sun, 12 May 2013 14:22:49 -0400
+Message-ID: <201305121422.51899.vapier@gentoo.org>
+References: <20130511190409.GA5110@p100.box> <20130511215555.GA12893@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Mike Frysinger <vapier@gentoo.org>, Jeroen Roovers <jer@gentoo.org>
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
+Content-Type: multipart/signed;
+  boundary="nextPart1418154.j3v8XY3H1M";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Cc: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	John David Anglin <dave.anglin@bell.net>,
+	Jeroen Roovers <jer@gentoo.org>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130511190409.GA5110@p100.box>
+In-Reply-To: <20130511215555.GA12893@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-People/distros vary how they prefix the toolchain name for 64bit builds.
-Rather than enforce one convention over another, add a for loop which
-does a search for all the general prefixes.
+--nextPart1418154.j3v8XY3H1M
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-For 64bit builds, we now search for (in order):
-	hppa64-unknown-linux-gnu
-	hppa64-linux-gnu
-	hppa64-linux
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+-mike
 
-For 32bit builds, we look for:
-	hppa-unknown-linux-gnu
-	hppa-linux-gnu
-	hppa-linux
-	hppa2.0-unknown-linux-gnu
-	hppa2.0-linux-gnu
-	hppa2.0-linux
-	hppa1.1-unknown-linux-gnu
-	hppa1.1-linux-gnu
-	hppa1.1-linux
+--nextPart1418154.j3v8XY3H1M
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-This patch was initiated by Mike Frysinger, with feedback from Jeroen
-Roovers, John David Anglin and Helge Deller.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
 
-CC: Mike Frysinger <vapier@gentoo.org>
-CC: Jeroen Roovers <jer@gentoo.org>
-Signed-off-by: John David Anglin <dave.anglin@bell.net>
-Signed-off-by: Helge Deller <deller@gmx.de>
+iQIcBAABAgAGBQJRj937AAoJEEFjO5/oN/WBZr8QAIQNvcmmoxV/9wYmeNxe0GJ8
+PntWLza8CYmnsF8hFEKbR/cfxzxP2R5inzLnL6qOi30f3L90NLv+Yl+aRpFRm+Ef
+GaxnuannU5f57+3GodYc0sO7vKvglAcehMm+qy19fYOExUXqjmVlQY7KuieA/8Ai
+euzFluNiSjdwef1s2+Df0BNgUJjVtKBOk0mhcDmd4dYgmNfF4822K/z/A9m/fB7/
+ej5siR+91SW6OfobpEiXpPSF2adWK8Y2xxHJivONzmxiOqmzG9aj53fTZ2ffE5rp
+3mJaPqx1dPCuau9jhtSKHsCdLnyR6+Sz/nALFv0fj83HpgAoyLEgr3Obb52EgQfL
+ycKHgK4HUoy5+LpSEGfQkKtiuajiFkFGxbddbOPqkk0RsF6hvfIeUQniHnry8j0x
+nEa4Rove6wG/DPgH8ASMpzfxFc1/MDtuJqqpJcqJngyYx6uDLG+sAt7i7HztGrAx
+wwbTbMFM9ApiGY3O0Qu7WCqmIsZva3FRb/bk3CUhPuz0jBnhrr9MJe/RsbWJ977X
+ARZYx2yAKfONFM1aIIlJReGwo/JxgVQhN2Th4NdeGNvv00Kav2TTrmO/PjNpN+6B
+iSbRniFed32hcNcOGgSfghoptED5qcN1yO+GyMtxJFydFZhiI9Eonatj8XBpuK18
+trFOBT3A63GVOIcFY+Dg
+=iM9w
+-----END PGP SIGNATURE-----
 
-
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index 2f967cc..4e5b7b5 100644
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -23,24 +23,21 @@ NM		= sh $(srctree)/arch/parisc/nm
- CHECKFLAGS	+= -D__hppa__=1
- LIBGCC		= $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
- 
--MACHINE		:= $(shell uname -m)
--NATIVE		:= $(if $(filter parisc%,$(MACHINE)),1,0)
--
- ifdef CONFIG_64BIT
- UTS_MACHINE	:= parisc64
- CHECKFLAGS	+= -D__LP64__=1 -m64
--WIDTH		:= 64
-+CC_ARCHES	= hppa64
- else # 32-bit
--WIDTH		:=
-+CC_ARCHES	= hppa hppa2.0 hppa1.1
- endif
- 
--# attempt to help out folks who are cross-compiling
--ifeq ($(NATIVE),1)
--CROSS_COMPILE	:= hppa$(WIDTH)-linux-
--else
-- ifeq ($(CROSS_COMPILE),)
-- CROSS_COMPILE	:= hppa$(WIDTH)-linux-gnu-
-- endif
-+ifneq ($(SUBARCH),$(UTS_MACHINE))
-+	ifeq ($(CROSS_COMPILE),)
-+		CC_SUFFIXES = linux linux-gnu unknown-linux-gnu
-+		CROSS_COMPILE := $(call cc-cross-prefix, \
-+			$(foreach a,$(CC_ARCHES), \
-+			$(foreach s,$(CC_SUFFIXES),$(a)-$(s)-)))
-+	endif
- endif
- 
- OBJCOPY_FLAGS =-O binary -R .note -R .comment -S
+--nextPart1418154.j3v8XY3H1M--
