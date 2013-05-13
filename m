@@ -1,36 +1,48 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Build regressions/improvements in v3.10-rc1 (crypto/parisc)
-Date: Sun, 12 May 2013 22:49:21 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1305122248030.5463@ayla.of.borg>
-References: <alpine.DEB.2.00.1305122130270.3789@ayla.of.borg> <alpine.DEB.2.00.1305122239040.5463@ayla.of.borg>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc updates for v3.10
+Date: Mon, 13 May 2013 22:48:43 +0200
+Message-ID: <20130513204843.GA1858@p100.box>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-crypto@vger.kernel.org, linux-parisc@vger.kernel.org
-To: Linux Kernel Development <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1305122239040.5463@ayla.of.borg>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 12 May 2013, Geert Uytterhoeven wrote:
-> However, the full list of errors isn't that unmanageable, so I'm following
-> up with a digested list...
+Hi Linus,
 
-lib/mpi/generic_mpih-mul1.c:50:3: error: inconsistent operand constraints in an 'asm': 1 errors in 1 logs
-lib/mpi/generic_mpih-mul2.c:49:3: error: inconsistent operand constraints in an 'asm': 1 errors in 1 logs
-lib/mpi/generic_mpih-mul3.c:49:3: error: inconsistent operand constraints in an 'asm': 1 errors in 1 logs
-lib/mpi/mpih-div.c:142:6: error: inconsistent operand constraints in an 'asm': 1 errors in 1 logs
-lib/mpi/mpih-div.c:205:6: error: inconsistent operand constraints in an 'asm': 1 errors in 1 logs
-	v3.10-rc1/parisc/parisc-allmodconfig
+please pull the parisc-for-3.10 branch of 
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-for-3.10
 
-Gr{oetje,eeting}s,
+to get the latest bug and build fixes for the parisc architecture.
 
-						Geert
+Thanks,
+Helge
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+---------------------------------------
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+The second round of parisc updates for 3.10 includes build fixes and
+enhancements to utilize irq stacks, fixes SMP races when updating PTE
+and TLB entries by proper locking and makes the search for the correct
+cross compiler more robust on Debian and Gentoo.
+
+----------------------------------------------------------------
+Helge Deller (2):
+      parisc: implement irq stacks - part 2 (v2)
+      parisc: make default cross compiler search more robust (v3)
+
+John David Anglin (1):
+      parisc: fix SMP races when updating PTE and TLB entries in entry.S
+
+ arch/parisc/Kconfig                 |   2 +-
+ arch/parisc/Makefile                |  21 +++--
+ arch/parisc/include/asm/hardirq.h   |   9 +++
+ arch/parisc/include/asm/processor.h |   3 +
+ arch/parisc/kernel/entry.S          | 155 +++++++++++++++++++-----------------
+ arch/parisc/kernel/irq.c            | 101 +++++++++++++++++++----
+ arch/parisc/mm/init.c               |   4 +-
+ 7 files changed, 194 insertions(+), 101 deletions(-)
