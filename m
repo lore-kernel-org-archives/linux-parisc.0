@@ -1,40 +1,85 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: use long branch in fork_like macro
-Date: Thu, 16 May 2013 21:28:12 +0200
-Message-ID: <20130516192812.GB357@p100.box>
+Subject: [PATCH] parisc: make default cross compiler search more robust
+Date: Thu, 16 May 2013 21:32:20 +0200
+Message-ID: <20130516193138.GA392@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: stable@vger.kernel.org, linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
 please add to stable kernel v3.9
-upstream commit bbbfde782084b4f0d85ddffb88f1cf4650ff40e4
+this patch is a merge of upstream commits 
+	93782eba49e23c3f311a6b05a19ba15927ec4e8b
+and
+	6880b0150a7c25fd75c5ece80abc49ebf53c38c1
 
-From: John David Anglin <dave.anglin@bell.net>
 
-The "b" branch instruction used in the fork_like macro only can handle
-17-bit pc-relative offsets.
-This fails with an out of range offset with some .config files.
-Rewrite to use the "be" instruction which
-can branch to any address in a space.
+People/distros vary how they prefix the toolchain name for 64bit builds.
+Rather than enforce one convention over another, add a for loop which
+does a search for all the general prefixes.
 
-Signed-off-by: John David Anglin  <dave.anglin@bell.net>
+For 64bit builds, we now search for (in order):
+	hppa64-unknown-linux-gnu
+	hppa64-linux-gnu
+	hppa64-linux
+
+For 32bit builds, we look for:
+	hppa-unknown-linux-gnu
+	hppa-linux-gnu
+	hppa-linux
+	hppa2.0-unknown-linux-gnu
+	hppa2.0-linux-gnu
+	hppa2.0-linux
+	hppa1.1-unknown-linux-gnu
+	hppa1.1-linux-gnu
+	hppa1.1-linux
+
+This patch was initiated by Mike Frysinger, with feedback from Jeroen
+Roovers, John David Anglin and Helge Deller.
+
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+Signed-off-by: Jeroen Roovers <jer@gentoo.org>
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index aa486e4..36f4f1d 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -1702,7 +1702,8 @@ ENTRY(sys_\name\()_wrapper)
- 	ldo	TASK_REGS(%r1),%r1
- 	reg_save %r1
- 	mfctl	%cr27, %r28
--	b	sys_\name
-+	ldil	L%sys_\name, %r31
-+	be	R%sys_\name(%sr4,%r31)
- 	STREG	%r28, PT_CR27(%r1)
- ENDPROC(sys_\name\()_wrapper)
- 	.endm
-
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index 113e282..1976900 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -23,26 +23,21 @@ NM		= sh $(srctree)/arch/parisc/nm
+ CHECKFLAGS	+= -D__hppa__=1
+ LIBGCC		= $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
+ 
+-MACHINE		:= $(shell uname -m)
+-ifeq ($(MACHINE),parisc*)
+-NATIVE		:= 1
+-endif
+-
+ ifdef CONFIG_64BIT
+ UTS_MACHINE	:= parisc64
+ CHECKFLAGS	+= -D__LP64__=1 -m64
+-WIDTH		:= 64
++CC_ARCHES	= hppa64
+ else # 32-bit
+-WIDTH		:=
++CC_ARCHES	= hppa hppa2.0 hppa1.1
+ endif
+ 
+-# attempt to help out folks who are cross-compiling
+-ifeq ($(NATIVE),1)
+-CROSS_COMPILE	:= hppa$(WIDTH)-linux-
+-else
+- ifeq ($(CROSS_COMPILE),)
+- CROSS_COMPILE	:= hppa$(WIDTH)-linux-gnu-
+- endif
++ifneq ($(SUBARCH),$(UTS_MACHINE))
++	ifeq ($(CROSS_COMPILE),)
++		CC_SUFFIXES = linux linux-gnu unknown-linux-gnu
++		CROSS_COMPILE := $(call cc-cross-prefix, \
++			$(foreach a,$(CC_ARCHES), \
++			$(foreach s,$(CC_SUFFIXES),$(a)-$(s)-)))
++	endif
+ endif
+ 
+ OBJCOPY_FLAGS =-O binary -R .note -R .comment -S
