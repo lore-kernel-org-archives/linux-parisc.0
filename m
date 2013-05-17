@@ -1,78 +1,27 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH] parisc: avoid WARNING: at kernel/cpu/idle.c:96
-Date: Thu, 16 May 2013 23:25:35 -0700
-Message-ID: <1368771935.1924.42.camel@dabdike>
-References: <20130508204242.GA16254@p100.box>
-	 <1368047134.8623.5.camel@dabdike>
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] parisc: make default cross compiler search more robust
+Date: Fri, 17 May 2013 11:25:37 -0700
+Message-ID: <20130517182537.GA16640@kroah.com>
+References: <20130516193138.GA392@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Cc: linux-parisc@vger.kernel.org,
-	John David Anglin <dave.anglin@bell.net>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>, Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset=us-ascii
+Cc: stable@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1368047134.8623.5.camel@dabdike>
+In-Reply-To: <20130516193138.GA392@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2013-05-08 at 14:05 -0700, James Bottomley wrote:
-> On Wed, 2013-05-08 at 22:42 +0200, Helge Deller wrote:
-> > We need to enable local irqs to avoid this runtime warning.
-> > 
-> > Signed-off-by: Helge Deller <deller@gmx.de>
-> > 
-> > diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-> > index 55f92b6..2840d43 100644
-> > --- a/arch/parisc/kernel/process.c
-> > +++ b/arch/parisc/kernel/process.c
-> > @@ -286,3 +286,8 @@ void *dereference_function_descriptor(void *ptr)
-> >  	return ptr;
-> >  }
-> >  #endif
-> > +
-> > +void arch_cpu_idle(void)
-> > +{
-> > +	local_irq_enable();
-> 
-> This is definitely wrong.  we'd need at least a cpu_relax() in there.
-> Without that the cpu will bounce around in the idle loop.  I'd advise
-> that we simply keep the default cpu_idle_poll().
-> 
-> However, this looks like a kernel bug to me in cpu_idle_loop()?  not
-> something we should be working around in the arch code.
-> 
-> Thomas, what's going on here?  It looks like you can never avoid the
-> WARN_ON_ONCE if you don't provide any arch specific idle functions.  If
-> you wish to allow this case then the correct patch (keeping the WARN_ON)
-> would appear to be this one.
+On Thu, May 16, 2013 at 09:32:20PM +0200, Helge Deller wrote:
+> please add to stable kernel v3.9
+> this patch is a merge of upstream commits 
+> 	93782eba49e23c3f311a6b05a19ba15927ec4e8b
+> and
+> 	6880b0150a7c25fd75c5ece80abc49ebf53c38c1
 
-Ping on this, please, Thomas ... the patch looks fairly obviously
-correct, do you just want us to take it through the parisc tree?
+I prefer to take the original upstream patches, so I've just applied
+both of these, instead of your merge.
 
-James
+thanks,
 
-
-> James
-> 
-> ----
-> diff --git a/kernel/cpu/idle.c b/kernel/cpu/idle.c
-> index 8b86c0c..829e41f 100644
-> --- a/kernel/cpu/idle.c
-> +++ b/kernel/cpu/idle.c
-> @@ -56,6 +56,7 @@ void __weak arch_cpu_idle_dead(void) { }
->  void __weak arch_cpu_idle(void)
->  {
->  	cpu_idle_force_poll = 1;
-> +	local_irq_enable();
->  }
->  
->  /*
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
-
+greg k-h
