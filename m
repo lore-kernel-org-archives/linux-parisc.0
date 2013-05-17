@@ -1,73 +1,28 @@
-From: "Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>
-Subject: Re: [PATCH] parisc: avoid WARNING: at kernel/cpu/idle.c:96
-Date: Sat, 18 May 2013 00:55:47 +0530
-Message-ID: <5196843B.8060807@linux.vnet.ibm.com>
-References: <20130508204242.GA16254@p100.box> <1368047134.8623.5.camel@dabdike>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] parisc: make default cross compiler search more robust
+Date: Fri, 17 May 2013 22:06:08 +0200
+Message-ID: <51968DB0.6020108@gmx.de>
+References: <20130516193138.GA392@p100.box> <20130517182537.GA16640@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	John David Anglin <dave.anglin@bell.net>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Thomas Gleixner <tglx@linutronix.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1368047134.8623.5.camel@dabdike>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: stable@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Greg KH <gregkh@linuxfoundation.org>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20130517182537.GA16640@kroah.com>
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-On 05/09/2013 02:35 AM, James Bottomley wrote:
-> On Wed, 2013-05-08 at 22:42 +0200, Helge Deller wrote:
->> We need to enable local irqs to avoid this runtime warning.
->>
->> Signed-off-by: Helge Deller <deller@gmx.de>
->>
->> diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
->> index 55f92b6..2840d43 100644
->> --- a/arch/parisc/kernel/process.c
->> +++ b/arch/parisc/kernel/process.c
->> @@ -286,3 +286,8 @@ void *dereference_function_descriptor(void *ptr)
->>  	return ptr;
->>  }
->>  #endif
->> +
->> +void arch_cpu_idle(void)
->> +{
->> +	local_irq_enable();
+On 05/17/2013 08:25 PM, Greg KH wrote:
+> On Thu, May 16, 2013 at 09:32:20PM +0200, Helge Deller wrote:
+>> please add to stable kernel v3.9
+>> this patch is a merge of upstream commits 
+>> 	93782eba49e23c3f311a6b05a19ba15927ec4e8b
+>> and
+>> 	6880b0150a7c25fd75c5ece80abc49ebf53c38c1
 > 
-> This is definitely wrong.  we'd need at least a cpu_relax() in there.
-> Without that the cpu will bounce around in the idle loop.  I'd advise
-> that we simply keep the default cpu_idle_poll().
-> 
-> However, this looks like a kernel bug to me in cpu_idle_loop()?  not
-> something we should be working around in the arch code.
-> 
-> Thomas, what's going on here?  It looks like you can never avoid the
-> WARN_ON_ONCE if you don't provide any arch specific idle functions.  If
-> you wish to allow this case then the correct patch (keeping the WARN_ON)
-> would appear to be this one.
-> 
-> James
-> 
-> ----
-> diff --git a/kernel/cpu/idle.c b/kernel/cpu/idle.c
-> index 8b86c0c..829e41f 100644
-> --- a/kernel/cpu/idle.c
-> +++ b/kernel/cpu/idle.c
-> @@ -56,6 +56,7 @@ void __weak arch_cpu_idle_dead(void) { }
->  void __weak arch_cpu_idle(void)
->  {
->  	cpu_idle_force_poll = 1;
-> +	local_irq_enable();
->  }
-> 
->  /*
-> 
+> I prefer to take the original upstream patches, so I've just applied
+> both of these, instead of your merge.
 
-This patch looks like the correct fix to me.
+That's absolutely fine.
+Thanks!
 
-Reviewed-by: Srivatsa S. Bhat <srivatsa.bhat@linux.vnet.ibm.com>
-
-Regards,
-Srivatsa S. Bhat
-
-
+Helge
