@@ -1,83 +1,76 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: show number of FPE and unaligned access handler
- calls in /proc/interrupts
-Date: Sat, 18 May 2013 21:35:44 +0200
-Message-ID: <20130518193544.GA25925@p100.box>
+Subject: Re: [PATCH] parisc: avoid WARNING: at kernel/cpu/idle.c:96
+Date: Sat, 18 May 2013 21:40:55 +0200
+Message-ID: <5197D947.4070200@gmx.de>
+References: <20130508204242.GA16254@p100.box> <1368047134.8623.5.camel@dabdike> <5196843B.8060807@linux.vnet.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=ISO-8859-15
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-parisc@vger.kernel.org,
+	John David Anglin <dave.anglin@bell.net>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+To: "Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <5196843B.8060807@linux.vnet.ibm.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Show number of floating point assistant and unaligned access fixup
-handler in /proc/interrupts file. 
+On 05/17/2013 09:25 PM, Srivatsa S. Bhat wrote:
+> On 05/09/2013 02:35 AM, James Bottomley wrote:
+>> On Wed, 2013-05-08 at 22:42 +0200, Helge Deller wrote:
+>>> We need to enable local irqs to avoid this runtime warning.
+>>>
+>>> Signed-off-by: Helge Deller <deller@gmx.de>
+>>>
+>>> diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+>>> index 55f92b6..2840d43 100644
+>>> --- a/arch/parisc/kernel/process.c
+>>> +++ b/arch/parisc/kernel/process.c
+>>> @@ -286,3 +286,8 @@ void *dereference_function_descriptor(void *ptr)
+>>>  	return ptr;
+>>>  }
+>>>  #endif
+>>> +
+>>> +void arch_cpu_idle(void)
+>>> +{
+>>> +	local_irq_enable();
+>>
+>> This is definitely wrong.  we'd need at least a cpu_relax() in there.
+>> Without that the cpu will bounce around in the idle loop.  I'd advise
+>> that we simply keep the default cpu_idle_poll().
+>>
+>> However, this looks like a kernel bug to me in cpu_idle_loop()?  not
+>> something we should be working around in the arch code.
+>>
+>> Thomas, what's going on here?  It looks like you can never avoid the
+>> WARN_ON_ONCE if you don't provide any arch specific idle functions.  If
+>> you wish to allow this case then the correct patch (keeping the WARN_ON)
+>> would appear to be this one.
+>>
+>> James
+>>
+>> ----
+>> diff --git a/kernel/cpu/idle.c b/kernel/cpu/idle.c
+>> index 8b86c0c..829e41f 100644
+>> --- a/kernel/cpu/idle.c
+>> +++ b/kernel/cpu/idle.c
+>> @@ -56,6 +56,7 @@ void __weak arch_cpu_idle_dead(void) { }
+>>  void __weak arch_cpu_idle(void)
+>>  {
+>>  	cpu_idle_force_poll = 1;
+>> +	local_irq_enable();
+>>  }
+>>
+>>  /*
+>>
+> 
+> This patch looks like the correct fix to me.
+> 
+> Reviewed-by: Srivatsa S. Bhat <srivatsa.bhat@linux.vnet.ibm.com>
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Thanks Srivatsa!
 
-diff --git a/arch/parisc/include/asm/hardirq.h b/arch/parisc/include/asm/hardirq.h
-index c19f713..4c6dd8d 100644
---- a/arch/parisc/include/asm/hardirq.h
-+++ b/arch/parisc/include/asm/hardirq.h
-@@ -28,6 +28,8 @@ typedef struct {
- 	unsigned int irq_resched_count;
- 	unsigned int irq_call_count;
- #endif
-+	unsigned int irq_unaligned_count;
-+	unsigned int irq_fpassist_count;
- 	unsigned int irq_tlb_count;
- } ____cacheline_aligned irq_cpustat_t;
- 
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index 55237a7..9c2d953 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -188,6 +188,14 @@ int arch_show_interrupts(struct seq_file *p, int prec)
- 		seq_printf(p, "%10u ", irq_stats(j)->irq_call_count);
- 	seq_puts(p, "  Function call interrupts\n");
- #endif
-+	seq_printf(p, "%*s: ", prec, "UAH");
-+	for_each_online_cpu(j)
-+		seq_printf(p, "%10u ", irq_stats(j)->irq_unaligned_count);
-+	seq_puts(p, "  Unaligned access handler traps\n");
-+	seq_printf(p, "%*s: ", prec, "FPA");
-+	for_each_online_cpu(j)
-+		seq_printf(p, "%10u ", irq_stats(j)->irq_fpassist_count);
-+	seq_puts(p, "  Floating point assist traps\n");
- 	seq_printf(p, "%*s: ", prec, "TLB");
- 	for_each_online_cpu(j)
- 		seq_printf(p, "%10u ", irq_stats(j)->irq_tlb_count);
-diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index fe41a98..04e47c6 100644
---- a/arch/parisc/kernel/traps.c
-+++ b/arch/parisc/kernel/traps.c
-@@ -646,6 +646,7 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- 	case 14:
- 		/* Assist Exception Trap, i.e. floating point exception. */
- 		die_if_kernel("Floating point exception", regs, 0); /* quiet */
-+		__inc_irq_stat(irq_fpassist_count);
- 		handle_fpe(regs);
- 		return;
- 
-diff --git a/arch/parisc/kernel/unaligned.c b/arch/parisc/kernel/unaligned.c
-index 234e368..d7c0acb 100644
---- a/arch/parisc/kernel/unaligned.c
-+++ b/arch/parisc/kernel/unaligned.c
-@@ -27,6 +27,7 @@
- #include <linux/signal.h>
- #include <linux/ratelimit.h>
- #include <asm/uaccess.h>
-+#include <asm/hardirq.h>
- 
- /* #define DEBUG_UNALIGNED 1 */
- 
-@@ -454,6 +455,8 @@ void handle_unaligned(struct pt_regs *regs)
- 	struct siginfo si;
- 	register int flop=0;	/* true if this is a flop */
- 
-+	__inc_irq_stat(irq_unaligned_count);
-+
- 	/* log a message with pacing */
- 	if (user_mode(regs)) {
- 		if (current->thread.flags & PARISC_UAC_SIGBUS) {
+I can push it through the parisc tree if nobody objects...
+
+Helge
