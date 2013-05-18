@@ -1,76 +1,75 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: avoid WARNING: at kernel/cpu/idle.c:96
-Date: Sat, 18 May 2013 21:40:55 +0200
-Message-ID: <5197D947.4070200@gmx.de>
-References: <20130508204242.GA16254@p100.box> <1368047134.8623.5.camel@dabdike> <5196843B.8060807@linux.vnet.ibm.com>
+Subject: [PATCH] parisc: use arch_spinlock_t instead of raw_spinlock_t in
+ irqstacks
+Date: Sun, 19 May 2013 00:21:13 +0200
+Message-ID: <20130518222113.GA4317@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	linux-parisc@vger.kernel.org,
-	John David Anglin <dave.anglin@bell.net>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: "Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <5196843B.8060807@linux.vnet.ibm.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 05/17/2013 09:25 PM, Srivatsa S. Bhat wrote:
-> On 05/09/2013 02:35 AM, James Bottomley wrote:
->> On Wed, 2013-05-08 at 22:42 +0200, Helge Deller wrote:
->>> We need to enable local irqs to avoid this runtime warning.
->>>
->>> Signed-off-by: Helge Deller <deller@gmx.de>
->>>
->>> diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
->>> index 55f92b6..2840d43 100644
->>> --- a/arch/parisc/kernel/process.c
->>> +++ b/arch/parisc/kernel/process.c
->>> @@ -286,3 +286,8 @@ void *dereference_function_descriptor(void *ptr)
->>>  	return ptr;
->>>  }
->>>  #endif
->>> +
->>> +void arch_cpu_idle(void)
->>> +{
->>> +	local_irq_enable();
->>
->> This is definitely wrong.  we'd need at least a cpu_relax() in there.
->> Without that the cpu will bounce around in the idle loop.  I'd advise
->> that we simply keep the default cpu_idle_poll().
->>
->> However, this looks like a kernel bug to me in cpu_idle_loop()?  not
->> something we should be working around in the arch code.
->>
->> Thomas, what's going on here?  It looks like you can never avoid the
->> WARN_ON_ONCE if you don't provide any arch specific idle functions.  If
->> you wish to allow this case then the correct patch (keeping the WARN_ON)
->> would appear to be this one.
->>
->> James
->>
->> ----
->> diff --git a/kernel/cpu/idle.c b/kernel/cpu/idle.c
->> index 8b86c0c..829e41f 100644
->> --- a/kernel/cpu/idle.c
->> +++ b/kernel/cpu/idle.c
->> @@ -56,6 +56,7 @@ void __weak arch_cpu_idle_dead(void) { }
->>  void __weak arch_cpu_idle(void)
->>  {
->>  	cpu_idle_force_poll = 1;
->> +	local_irq_enable();
->>  }
->>
->>  /*
->>
-> 
-> This patch looks like the correct fix to me.
-> 
-> Reviewed-by: Srivatsa S. Bhat <srivatsa.bhat@linux.vnet.ibm.com>
+We need to use arch_spinlock_t spinlocks instead of raw_spinlock_t
+spinlocks for irqstack protection else we will hit the "trylock failure
+on UP" error message with CONFIG_SMP=n and CONFIG_DEBUG_SPINLOCK=y.
 
-Thanks Srivatsa!
+Since we can be called recursive here even on UP (we are in the irq
+handler which handles even irq bh) this spinlock error message is just
+wrong.
 
-I can push it through the parisc tree if nobody objects...
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Helge
+diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
+index cfbc439..b2dca96 100644
+--- a/arch/parisc/include/asm/processor.h
++++ b/arch/parisc/include/asm/processor.h
+@@ -69,7 +69,7 @@
+ 
+ union irq_stack_union {
+ 	unsigned long stack[IRQ_STACK_SIZE/sizeof(unsigned long)];
+-	raw_spinlock_t lock;
++	arch_spinlock_t lock;
+ };
+ 
+ DECLARE_PER_CPU(union irq_stack_union, irq_stack_union);
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index 55237a7..9ba8e5a 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -443,14 +451,14 @@ panic_check:
+ 
+ #ifdef CONFIG_IRQSTACKS
+ DEFINE_PER_CPU(union irq_stack_union, irq_stack_union) = {
+-		.lock = __RAW_SPIN_LOCK_UNLOCKED((irq_stack_union).lock)
++		.lock = __ARCH_SPIN_LOCK_UNLOCKED,
+ 	};
+ 
+ static void execute_on_irq_stack(void *func, unsigned long param1)
+ {
+ 	union irq_stack_union *union_ptr;
+ 	unsigned long irq_stack;
+-	raw_spinlock_t *irq_stack_in_use;
++	arch_spinlock_t *irq_stack_in_use;
+ 
+ 	union_ptr = &per_cpu(irq_stack_union, smp_processor_id());
+ 	irq_stack = (unsigned long) &union_ptr->stack;
+@@ -462,7 +470,7 @@ static void execute_on_irq_stack(void *func, unsigned long param1)
+ 	 * the irq stack usage.
+ 	 */
+ 	irq_stack_in_use = &union_ptr->lock;
+-	if (!raw_spin_trylock(irq_stack_in_use)) {
++	if (!arch_spin_trylock(irq_stack_in_use)) {
+ 		void (*direct_call)(unsigned long p1) = func;
+ 
+ 		/* We are using the IRQ stack already.
+@@ -477,7 +485,7 @@ static void execute_on_irq_stack(void *func, unsigned long param1)
+ 	__inc_irq_stat(irq_stack_counter);
+ 
+ 	/* free up irq stack usage. */
+-	do_raw_spin_unlock(irq_stack_in_use);
++	arch_spin_unlock(irq_stack_in_use);
+ }
+ 
+ asmlinkage void do_softirq(void)
