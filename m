@@ -1,54 +1,64 @@
-From: Damian Hobson-Garcia <dhobsong@igel.co.jp>
-Subject: Re: [PATCH v2 0/4] dma-mapping: Define dma_{alloc,free}_attrs() for
- all archs
-Date: Wed, 22 May 2013 11:37:17 +0900
-Message-ID: <519C2F5D.8000809@igel.co.jp>
+From: Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH v2 0/4] dma-mapping: Define dma_{alloc,free}_attrs()
+ for all archs
+Date: Wed, 22 May 2013 10:47:41 +0100
+Message-ID: <20130522094741.GE14322@arm.com>
 References: <1367290899-10410-1-git-send-email-dhobsong@igel.co.jp>
+ <519C2F5D.8000809@igel.co.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-	catalin.marinas@arm.com, will.deacon@arm.com,
-	linux-arm-kernel@lists.infradead.org, msalter@redhat.com,
-	linux-c6x-dev@linux-c6x.org, deller@gmx.de,
-	linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+ "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>,
+ "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+ "deller@gmx.de" <deller@gmx.de>, Will Deacon <Will.Deacon@arm.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "msalter@redhat.com" <msalter@redhat.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 To: Damian Hobson-Garcia <dhobsong@igel.co.jp>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1367290899-10410-1-git-send-email-dhobsong@igel.co.jp>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <519C2F5D.8000809@igel.co.jp>
+List-Id: <linux-arm-kernel.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 
-Hello,
-On 2013/04/30 12:01, Damian Hobson-Garcia wrote:
-> Most architectures that define CONFIG_HAVE_DMA=y, have implementations for
-> both dma_alloc_attrs() and dma_free_attrs().  All achitectures that do
-> not define CONFIG_HAVE_DMA also have both of these definitions provided by
-> dma-mapping-broken.h.
+On Wed, May 22, 2013 at 03:37:17AM +0100, Damian Hobson-Garcia wrote:
+> Hello,
+> On 2013/04/30 12:01, Damian Hobson-Garcia wrote:
+> > Most architectures that define CONFIG_HAVE_DMA=y, have implementations for
+> > both dma_alloc_attrs() and dma_free_attrs().  All achitectures that do
+> > not define CONFIG_HAVE_DMA also have both of these definitions provided by
+> > dma-mapping-broken.h.
+
+BTW, shouldn't this be called CONFIG_HAVE_DMA_ATTRS?
+
+> > Provide a default definition for the archs that define CONFIG_HAVE_DMA=y,
+> > but have no implementation for dma_{alloc,free}_attrs(). 
+> > 
+> > As I don't have hardware for any of these systems, the patches are only
+> > compile-tested where I could (arm64, s390) and untested for the archs
+> > where I couldn't find a readily available prebuilt cross-compiler (c6x, parisc).
 > 
-> Provide a default definition for the archs that define CONFIG_HAVE_DMA=y,
-> but have no implementation for dma_{alloc,free}_attrs(). 
+> >  arch/arm64/include/asm/dma-mapping.h  |   17 +++++++++++------
+> >  arch/c6x/include/asm/dma-mapping.h    |    3 +++
+> >  arch/parisc/include/asm/dma-mapping.h |    3 +++
+> >  arch/s390/include/asm/dma-mapping.h   |   17 +++++++++++------
+> >  4 files changed, 28 insertions(+), 12 deletions(-)
+> > 
 > 
-> As I don't have hardware for any of these systems, the patches are only
-> compile-tested where I could (arm64, s390) and untested for the archs
-> where I couldn't find a readily available prebuilt cross-compiler (c6x, parisc).
-> 
+> Since this series spans several architectures, what would be the best
+> way to have this patch series merged?
+> Should I resubmit each patch to the mailing list for each architecture
+> separately?
 
+I'm happy to take the arm64 patch.
 
->  arch/arm64/include/asm/dma-mapping.h  |   17 +++++++++++------
->  arch/c6x/include/asm/dma-mapping.h    |    3 +++
->  arch/parisc/include/asm/dma-mapping.h |    3 +++
->  arch/s390/include/asm/dma-mapping.h   |   17 +++++++++++------
->  4 files changed, 28 insertions(+), 12 deletions(-)
-> 
-
-Since this series spans several architectures, what would be the best
-way to have this patch series merged?
-Should I resubmit each patch to the mailing list for each architecture
-separately?
-
-Thank you,
-Damian
+Thanks.
 
 -- 
-Damian Hobson-Garcia
-IGEL Co.,Ltd
-http://www.igel.co.jp
+Catalin
