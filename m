@@ -1,75 +1,51 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] arch: configuration,
- deleting 'CONFIG_BUG' since always need it.
-Date: Thu, 23 May 2013 11:39:37 +0200
-Message-ID: <201305231139.38233.arnd@arndb.de>
-References: <519DCBEF.3090208@asianux.com>
- <20130523090534.GJ18614@n2100.arm.linux.org.uk>
- <CAMuHMdWez-j1Maa3BD7ucmzv0_zFJnChERQiHFmkCaZUzG0_AA@mail.gmail.com>
+From: Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH v2 0/4] dma-mapping: Define dma_{alloc,free}_attrs()
+ for all archs
+Date: Thu, 23 May 2013 10:47:09 +0100
+Message-ID: <20130523094709.GB16722@arm.com>
+References: <1367290899-10410-1-git-send-email-dhobsong@igel.co.jp>
+ <519C2F5D.8000809@igel.co.jp>
+ <20130522094741.GE14322@arm.com>
+ <519D8331.3060203@igel.co.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: Catalin Marinas <Catalin.Marinas@arm.com>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Chen Gang <gang.chen@asianux.com>, Heiko Carstens <heiko.carstens@de.ibm.com>,
- "paulus@samba.org" <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>,
- Michel Lespinasse <walken@google.com>,
- Hans-Christian Egtvedt <egtvedt@samfundet.no>,
- Linux-Arch <linux-arch@vger.kernel.org>, linux-s390@vger.kernel.org,
- Russell King - ARM Linux <linux@arm.linux.org.uk>,
- Yoshinori Sato <ysato@users.sourceforge.jp>,
- Richard Weinberger <richard@nod.at>, Helge Deller <deller@gmx.de>,
- the arch/x86 maintainers <x86@kernel.org>,
- "James E.J. Bottomley" <jejb@parisc-linux.org>,
- "mingo@redhat.com" <mingo@redhat.com>,
- Frederic Weisbecker <fweisbec@gmail.com>,
- Paul McKenney <paulmck@linux.vnet.ibm.com>,
- =?utf-8?q?H=C3=A5vard_Skinnemoen?= <hskinnemoen@gmail.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CAMuHMdWez-j1Maa3BD7ucmzv0_zFJnChERQiHFmkCaZUzG0_AA@mail.gmail.com>
-List-Id: <linux-arm-kernel.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+	Will Deacon <Will.Deacon@arm.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>,
+	"msalter@redhat.com" <msalter@redhat.com>,
+	"linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>,
+	"deller@gmx.de" <deller@gmx.de>,
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
+To: Damian Hobson-Garcia <dhobsong@igel.co.jp>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <519D8331.3060203@igel.co.jp>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Thursday 23 May 2013, Geert Uytterhoeven wrote:
-> > The problem is: trying to fix that will mean the result is a larger
-> > kernel than if you just do the usual arch-implemented thing of placing
-> > an defined faulting instruction at the BUG() site - which defeats the
-> > purpose of turning off CONFIG_BUG.
+On Thu, May 23, 2013 at 03:47:13AM +0100, Damian Hobson-Garcia wrote:
+> Hi Catalin,
+> On 2013/05/22 18:47, Catalin Marinas wrote:
+> > On Wed, May 22, 2013 at 03:37:17AM +0100, Damian Hobson-Garcia wrote:
+> >> Hello,
+> >> On 2013/04/30 12:01, Damian Hobson-Garcia wrote:
+> >>> Most architectures that define CONFIG_HAVE_DMA=y, have implementations for
+> >>> both dma_alloc_attrs() and dma_free_attrs().  All achitectures that do
+> >>> not define CONFIG_HAVE_DMA also have both of these definitions provided by
+> >>> dma-mapping-broken.h.
+> > 
+> > BTW, shouldn't this be called CONFIG_HAVE_DMA_ATTRS?
 > 
-> Is __builtin_unreachable() working well these days?
-> 
+> CONFIG_HAVE_DMA_ATTRS is currently used to enable the functions to
+> set/get the DMA attribute values. Poking through the headers, it looks
+> like the struct dma_attrs is defined regardless of the
+> CONFIG_HAVE_DMA_ATTRS setting, so in that respect
+> we always seem to "have" DMA attributes (if we have DMA), but they may
+> not always be meaningful (ie. set to some value).
 
-Hmm, I just tried the trivial patch below, which seemed to do the right thing.
-Needs a little more investigation, but that might actually be the correct
-solution. I thought that at some point __builtin_unreachable() was the same
-as "do {} while (1)", but this is not the case with the gcc I was using --
-it just tells gcc that we don't expect to ever get here.
+My point was about the commit log - grep'ing the kernel for
+CONFIG_HAVE_DMA did not return anything.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
-index 7d10f96..9afff7d 100644
---- a/include/asm-generic/bug.h
-+++ b/include/asm-generic/bug.h
-@@ -108,11 +108,11 @@ extern void warn_slowpath_null(const char *file, const int line);
- 
- #else /* !CONFIG_BUG */
- #ifndef HAVE_ARCH_BUG
--#define BUG() do {} while(0)
-+#define BUG() __builtin_unreachable ()
- #endif
- 
- #ifndef HAVE_ARCH_BUG_ON
--#define BUG_ON(condition) do { if (condition) ; } while(0)
-+#define BUG_ON(condition) do { if (condition) __builtin_unreachable(); } while(0)
- #endif
- 
- #ifndef HAVE_ARCH_WARN_ON
+-- 
+Catalin
