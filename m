@@ -1,59 +1,176 @@
-From: ebiederm@xmission.com (Eric W. Biederman)
-Subject: Re: [PATCH] arch: configuration,
- deleting 'CONFIG_BUG' since always need it.
-Date: Thu, 23 May 2013 22:59:55 -0700
-Message-ID: <877gio3okk.fsf@xmission.com>
-References: <519DCBEF.3090208@asianux.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: fix irq stack on UP and SMP
+Date: Fri, 24 May 2013 23:27:35 +0200
+Message-ID: <20130524212735.GA2341@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: Catalin Marinas <Catalin.Marinas@arm.com>, linux-sh@vger.kernel.org,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>, heiko.carstens@de.ibm.com,
- "paulus@samba.org" <paulus@samba.org>, hpa@zytor.com, walken@google.com,
- egtvedt@samfundet.no, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
- Russell King - ARM Linux <linux@arm.linux.org.uk>,
- user-mode-linux-devel@lists.sourceforge.net, ysato@users.sourceforge.jp,
- richard@nod.at, deller@gmx.de, x86@kernel.org, jejb@parisc-linux.org,
- "mingo@redhat.com" <mingo@redhat.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Frederic Weisbecker <fweisbec@gmail.com>, paulmck@linux.vnet.ibm.com,
- hskinnemoen@gmail.com, Serge Hallyn <serge.hallyn@canonical.com>,
- Mike Frysinger <vapier@gentoo.org>, Arnd Bergmann <arnd@arndb.de>,
- Will Deacon <will.deacon@arm.com>, jdike@addtoit.com, akinobu.mita@gmail.com,
- user-mode-linux-user@lists.s
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <519DCBEF.3090208@asianux.com> (Chen Gang's message of "Thu, 23
- May 2013 15:57:35 +0800")
-List-Id: <linux-arm-kernel.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-Chen Gang <gang.chen@asianux.com> writes:
+The logic to detect if the irq stack was already in use with
+raw_spin_trylock() is wrong, because it will generate a "trylock failure
+on UP" error message with CONFIG_SMP=n and CONFIG_DEBUG_SPINLOCK=y.
+ 
+arch_spin_trylock() can't be used either since in the CONFIG_SMP=n case
+no atomic protection is given and we are reentrant here. A mutex didn't
+worked either and brings more overhead by turning off interrupts.
 
-> The crazy user can unset 'CONFIG_BUG' in menuconfig: "> General setup >
-> Configure standard kernel features (expert users) > BUG() Support".
->
-> But in fact, we always need it, and quite a few of architectures have
-> already implemented it (e.g. alpha, arc, arm, avr32, blackfin, cris,
-> frv, ia64, m68k, mips, mn10300, parisc, powerpc, s390, sh, sparc, x86).
->
-> And kernel also already has prepared a default effective implementation
-> for the architectures which is unwilling to implement it by themselves
-> (e.g. arm64, c6x, h8300, hexagon, m32r, metag, microblaze, openrisc,
-> score, tile, um, unicore32, xtensa).
->
-> So need get rid of 'CONFIG_BUG', and let it always enabled everywhere.
+So, let's use the fastest path for parisc which is the ldcw instruction. 
+ 
+Counting how often the irq stack was used is pretty useless, so just
+drop this piece of code.
 
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-This looks like the right way to handle this to me.  If the BUG
-annotations are too big and not needed they should simply be deleted
-from the code base.  Disabling CONFIG_BUG which removes the BUG
-annotations from the binaries without modifying the source code seems
-like the wrong approach.
-
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+diff --git a/arch/parisc/include/asm/hardirq.h b/arch/parisc/include/asm/hardirq.h
+index 4c6dd8d..241c345 100644
+--- a/arch/parisc/include/asm/hardirq.h
++++ b/arch/parisc/include/asm/hardirq.h
+@@ -17,13 +17,8 @@
+ 
+ typedef struct {
+ 	unsigned int __softirq_pending;
+-#ifdef CONFIG_DEBUG_STACKOVERFLOW
+ 	unsigned int kernel_stack_usage;
+-#ifdef CONFIG_IRQSTACKS
+ 	unsigned int irq_stack_usage;
+-	unsigned int irq_stack_counter;
+-#endif
+-#endif
+ #ifdef CONFIG_SMP
+ 	unsigned int irq_resched_count;
+ 	unsigned int irq_call_count;
+diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
+index cfbc439..cc2290a 100644
+--- a/arch/parisc/include/asm/processor.h
++++ b/arch/parisc/include/asm/processor.h
+@@ -17,7 +17,6 @@
+ #include <asm/ptrace.h>
+ #include <asm/types.h>
+ #include <asm/percpu.h>
+-
+ #endif /* __ASSEMBLY__ */
+ 
+ /*
+@@ -59,26 +58,6 @@
+ #ifndef __ASSEMBLY__
+ 
+ /*
+- * IRQ STACK - used for irq handler
+- */
+-#ifdef __KERNEL__
+-
+-#include <linux/spinlock_types.h>
+-
+-#define IRQ_STACK_SIZE      (4096 << 2) /* 16k irq stack size */
+-
+-union irq_stack_union {
+-	unsigned long stack[IRQ_STACK_SIZE/sizeof(unsigned long)];
+-	raw_spinlock_t lock;
+-};
+-
+-DECLARE_PER_CPU(union irq_stack_union, irq_stack_union);
+-
+-void call_on_stack(unsigned long p1, void *func, unsigned long new_stack);
+-
+-#endif /* __KERNEL__ */
+-
+-/*
+  * Data detected about CPUs at boot time which is the same for all CPU's.
+  * HP boxes are SMP - ie identical processors.
+  *
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index 9c2d953..2e6443b 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -27,11 +27,11 @@
+ #include <linux/interrupt.h>
+ #include <linux/kernel_stat.h>
+ #include <linux/seq_file.h>
+-#include <linux/spinlock.h>
+ #include <linux/types.h>
+ #include <asm/io.h>
+ 
+ #include <asm/smp.h>
++#include <asm/ldcw.h>
+ 
+ #undef PARISC_IRQ_CR16_COUNTS
+ 
+@@ -172,10 +172,6 @@ int arch_show_interrupts(struct seq_file *p, int prec)
+ 	for_each_online_cpu(j)
+ 		seq_printf(p, "%10u ", irq_stats(j)->irq_stack_usage);
+ 	seq_puts(p, "  Interrupt stack usage\n");
+-	seq_printf(p, "%*s: ", prec, "ISC");
+-	for_each_online_cpu(j)
+-		seq_printf(p, "%10u ", irq_stats(j)->irq_stack_counter);
+-	seq_puts(p, "  Interrupt stack usage counter\n");
+ # endif
+ #endif
+ #ifdef CONFIG_SMP
+@@ -384,6 +380,24 @@ static inline int eirr_to_irq(unsigned long eirr)
+ 	return (BITS_PER_LONG - bit) + TIMER_IRQ;
+ }
+ 
++#ifdef CONFIG_IRQSTACKS
++/*
++ * IRQ STACK - used for irq handler
++ */
++#define IRQ_STACK_SIZE      (4096 << 2) /* 16k irq stack size */
++
++union irq_stack_union {
++	unsigned long stack[IRQ_STACK_SIZE/sizeof(unsigned long)];
++	volatile unsigned int slock[4];
++	volatile unsigned int lock[1];
++};
++
++DEFINE_PER_CPU(union irq_stack_union, irq_stack_union) = {
++		.slock = { 1,1,1,1 },
++	};
++#endif
++
++
+ int sysctl_panic_on_stackoverflow = 1;
+ 
+ static inline void stack_overflow_check(struct pt_regs *regs)
+@@ -450,27 +464,26 @@ panic_check:
+ }
+ 
+ #ifdef CONFIG_IRQSTACKS
+-DEFINE_PER_CPU(union irq_stack_union, irq_stack_union) = {
+-		.lock = __RAW_SPIN_LOCK_UNLOCKED((irq_stack_union).lock)
+-	};
++/* in entry.S: */
++void call_on_stack(unsigned long p1, void *func, unsigned long new_stack);
+ 
+ static void execute_on_irq_stack(void *func, unsigned long param1)
+ {
+ 	union irq_stack_union *union_ptr;
+ 	unsigned long irq_stack;
+-	raw_spinlock_t *irq_stack_in_use;
++	volatile unsigned int *irq_stack_in_use;
+ 
+ 	union_ptr = &per_cpu(irq_stack_union, smp_processor_id());
+ 	irq_stack = (unsigned long) &union_ptr->stack;
+-	irq_stack = ALIGN(irq_stack + sizeof(irq_stack_union.lock),
++	irq_stack = ALIGN(irq_stack + sizeof(irq_stack_union.slock),
+ 			 64); /* align for stack frame usage */
+ 
+ 	/* We may be called recursive. If we are already using the irq stack,
+ 	 * just continue to use it. Use spinlocks to serialize
+ 	 * the irq stack usage.
+ 	 */
+-	irq_stack_in_use = &union_ptr->lock;
+-	if (!raw_spin_trylock(irq_stack_in_use)) {
++	irq_stack_in_use = (volatile unsigned int *)__ldcw_align(union_ptr);
++	if (!__ldcw(irq_stack_in_use)) {
+ 		void (*direct_call)(unsigned long p1) = func;
+ 
+ 		/* We are using the IRQ stack already.
+@@ -482,10 +495,8 @@ static void execute_on_irq_stack(void *func, unsigned long param1)
+ 	/* This is where we switch to the IRQ stack. */
+ 	call_on_stack(param1, func, irq_stack);
+ 
+-	__inc_irq_stat(irq_stack_counter);
