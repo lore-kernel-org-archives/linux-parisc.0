@@ -1,176 +1,47 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: fix irq stack on UP and SMP
-Date: Fri, 24 May 2013 23:27:35 +0200
-Message-ID: <20130524212735.GA2341@p100.box>
+Subject: stifb broken on PCI - was: Upgrade woes - was Re: install/update/upgrade
+ dance
+Date: Sat, 25 May 2013 00:23:40 +0200
+Message-ID: <519FE86C.8070701@gmx.de>
+References: <519DB0F2.8000801@landcomp.net> <trinity-c943681e-ac4b-4abc-aee6-081444e7a9a7-1369296347943@3capp-gmx-bs41> <519E697A.1030805@landcomp.net> <519E8BEA.9030309@gmx.de> <519E9A78.40302@landcomp.net> <519EA19B.5050105@landcomp.net> <BLU0-SMTP870BAEC5E9E44730F1075F97AA0@phx.gbl> <519EB625.5070508@landcomp.net> <BLU0-SMTP46578E0659F1ECF756D7DC97AB0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=ISO-8859-1
+To: debian-hppa@lists.debian.org,
+	John David Anglin <dave.anglin@bell.net>,
+	linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <BLU0-SMTP46578E0659F1ECF756D7DC97AB0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The logic to detect if the irq stack was already in use with
-raw_spin_trylock() is wrong, because it will generate a "trylock failure
-on UP" error message with CONFIG_SMP=n and CONFIG_DEBUG_SPINLOCK=y.
- 
-arch_spin_trylock() can't be used either since in the CONFIG_SMP=n case
-no atomic protection is given and we are reentrant here. A mutex didn't
-worked either and brings more overhead by turning off interrupts.
+On 05/24/2013 02:51 AM, John David Anglin wrote:
+> On 23-May-13, at 8:36 PM, Dave Land wrote:
+> 
+>> May 23 10:48:21 hpviz kernel: [    1.880000] STI GSC/PCI core graphics driver V$
+>> May 23 10:48:21 hpviz kernel: [    1.880000] sti 0000:01:01.0: enabling SERR an$
+>> May 23 10:48:21 hpviz kernel: [    1.884000] STI PCI graphic ROM found at fffff$
+>> *May 23 10:48:21 hpviz kernel: [    1.952000] Unable to handle STI device '0000:$*
+> 
+> 
+> This is exactly the problem that I see.
 
-So, let's use the fastest path for parisc which is the ldcw instruction. 
- 
-Counting how often the irq stack was used is pretty useless, so just
-drop this piece of code.
+Me too :-(
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+On my 32bit "old" parisc machine 715/64 with GSC bus it still works.
 
-diff --git a/arch/parisc/include/asm/hardirq.h b/arch/parisc/include/asm/hardirq.h
-index 4c6dd8d..241c345 100644
---- a/arch/parisc/include/asm/hardirq.h
-+++ b/arch/parisc/include/asm/hardirq.h
-@@ -17,13 +17,8 @@
- 
- typedef struct {
- 	unsigned int __softirq_pending;
--#ifdef CONFIG_DEBUG_STACKOVERFLOW
- 	unsigned int kernel_stack_usage;
--#ifdef CONFIG_IRQSTACKS
- 	unsigned int irq_stack_usage;
--	unsigned int irq_stack_counter;
--#endif
--#endif
- #ifdef CONFIG_SMP
- 	unsigned int irq_resched_count;
- 	unsigned int irq_call_count;
-diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
-index cfbc439..cc2290a 100644
---- a/arch/parisc/include/asm/processor.h
-+++ b/arch/parisc/include/asm/processor.h
-@@ -17,7 +17,6 @@
- #include <asm/ptrace.h>
- #include <asm/types.h>
- #include <asm/percpu.h>
--
- #endif /* __ASSEMBLY__ */
- 
- /*
-@@ -59,26 +58,6 @@
- #ifndef __ASSEMBLY__
- 
- /*
-- * IRQ STACK - used for irq handler
-- */
--#ifdef __KERNEL__
--
--#include <linux/spinlock_types.h>
--
--#define IRQ_STACK_SIZE      (4096 << 2) /* 16k irq stack size */
--
--union irq_stack_union {
--	unsigned long stack[IRQ_STACK_SIZE/sizeof(unsigned long)];
--	raw_spinlock_t lock;
--};
--
--DECLARE_PER_CPU(union irq_stack_union, irq_stack_union);
--
--void call_on_stack(unsigned long p1, void *func, unsigned long new_stack);
--
--#endif /* __KERNEL__ */
--
--/*
-  * Data detected about CPUs at boot time which is the same for all CPU's.
-  * HP boxes are SMP - ie identical processors.
-  *
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index 9c2d953..2e6443b 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -27,11 +27,11 @@
- #include <linux/interrupt.h>
- #include <linux/kernel_stat.h>
- #include <linux/seq_file.h>
--#include <linux/spinlock.h>
- #include <linux/types.h>
- #include <asm/io.h>
- 
- #include <asm/smp.h>
-+#include <asm/ldcw.h>
- 
- #undef PARISC_IRQ_CR16_COUNTS
- 
-@@ -172,10 +172,6 @@ int arch_show_interrupts(struct seq_file *p, int prec)
- 	for_each_online_cpu(j)
- 		seq_printf(p, "%10u ", irq_stats(j)->irq_stack_usage);
- 	seq_puts(p, "  Interrupt stack usage\n");
--	seq_printf(p, "%*s: ", prec, "ISC");
--	for_each_online_cpu(j)
--		seq_printf(p, "%10u ", irq_stats(j)->irq_stack_counter);
--	seq_puts(p, "  Interrupt stack usage counter\n");
- # endif
- #endif
- #ifdef CONFIG_SMP
-@@ -384,6 +380,24 @@ static inline int eirr_to_irq(unsigned long eirr)
- 	return (BITS_PER_LONG - bit) + TIMER_IRQ;
- }
- 
-+#ifdef CONFIG_IRQSTACKS
-+/*
-+ * IRQ STACK - used for irq handler
-+ */
-+#define IRQ_STACK_SIZE      (4096 << 2) /* 16k irq stack size */
-+
-+union irq_stack_union {
-+	unsigned long stack[IRQ_STACK_SIZE/sizeof(unsigned long)];
-+	volatile unsigned int slock[4];
-+	volatile unsigned int lock[1];
-+};
-+
-+DEFINE_PER_CPU(union irq_stack_union, irq_stack_union) = {
-+		.slock = { 1,1,1,1 },
-+	};
-+#endif
-+
-+
- int sysctl_panic_on_stackoverflow = 1;
- 
- static inline void stack_overflow_check(struct pt_regs *regs)
-@@ -450,27 +464,26 @@ panic_check:
- }
- 
- #ifdef CONFIG_IRQSTACKS
--DEFINE_PER_CPU(union irq_stack_union, irq_stack_union) = {
--		.lock = __RAW_SPIN_LOCK_UNLOCKED((irq_stack_union).lock)
--	};
-+/* in entry.S: */
-+void call_on_stack(unsigned long p1, void *func, unsigned long new_stack);
- 
- static void execute_on_irq_stack(void *func, unsigned long param1)
- {
- 	union irq_stack_union *union_ptr;
- 	unsigned long irq_stack;
--	raw_spinlock_t *irq_stack_in_use;
-+	volatile unsigned int *irq_stack_in_use;
- 
- 	union_ptr = &per_cpu(irq_stack_union, smp_processor_id());
- 	irq_stack = (unsigned long) &union_ptr->stack;
--	irq_stack = ALIGN(irq_stack + sizeof(irq_stack_union.lock),
-+	irq_stack = ALIGN(irq_stack + sizeof(irq_stack_union.slock),
- 			 64); /* align for stack frame usage */
- 
- 	/* We may be called recursive. If we are already using the irq stack,
- 	 * just continue to use it. Use spinlocks to serialize
- 	 * the irq stack usage.
- 	 */
--	irq_stack_in_use = &union_ptr->lock;
--	if (!raw_spin_trylock(irq_stack_in_use)) {
-+	irq_stack_in_use = (volatile unsigned int *)__ldcw_align(union_ptr);
-+	if (!__ldcw(irq_stack_in_use)) {
- 		void (*direct_call)(unsigned long p1) = func;
- 
- 		/* We are using the IRQ stack already.
-@@ -482,10 +495,8 @@ static void execute_on_irq_stack(void *func, unsigned long param1)
- 	/* This is where we switch to the IRQ stack. */
- 	call_on_stack(param1, func, irq_stack);
- 
--	__inc_irq_stat(irq_stack_counter);
+But on all my PCI machines it fails the same way.
+Same result as Dave: pdc_add_valid() returns error.
+
+For me it seems something has changed wrt PCI.
+
+I tried to debug it somewhat, but I have no clue.
+Maybe this commit is somewhat related: ?
+
+commit 39c2462e163448c7df466c7262109ec6a24d5f88
+Author: Bjorn Helgaas <bhelgaas@google.com>
+Date:   Thu Feb 23 20:19:03 2012 -0700
+    parisc/PCI: get rid of device resource fixups
+    Tell the PCI core about host bridge address translation so it can take
+    care of bus-to-resource conversion for us.
+
+Helge
