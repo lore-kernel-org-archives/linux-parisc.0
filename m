@@ -1,164 +1,142 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: fix irq stack on UP and SMP
-Date: Thu, 23 May 2013 23:52:50 +0200
-Message-ID: <20130523215250.GA17564@p100.box>
+From: Chen Gang <gang.chen@asianux.com>
+Subject: Re: [PATCH] arch: configuration, deleting 'CONFIG_BUG' since always
+ need it.
+Date: Fri, 24 May 2013 10:13:35 +0800
+Message-ID: <519ECCCF.8090909@asianux.com>
+References: <519DCBEF.3090208@asianux.com> <201305231259.43750.arnd@arndb.de>
+ <20130523112401.GO18614@n2100.arm.linux.org.uk>
+ <201305231409.02359.arnd@arndb.de>
+ <20130523125033.GP18614@n2100.arm.linux.org.uk>
+ <CAMuHMdUzcBuDupe4Fa6XieziGPMpPKC_k8X8gUUmDvLJ+Fe=Hg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: Catalin Marinas <Catalin.Marinas@arm.com>,
+ Linux-sh list <linux-sh@vger.kernel.org>,
+ Heiko Carstens <heiko.carstens@de.ibm.com>,
+ "paulus@samba.org" <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>,
+ Michel Lespinasse <walken@google.com>,
+ Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ Linux-Arch <linux-arch@vger.kernel.org>, linux-s390@vger.kernel.org,
+ Russell King - ARM Linux <linux@arm.linux.org.uk>,
+ uml-devel <user-mode-linux-devel@lists.sourceforge.net>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Richard Weinberger <richard@nod.at>, Helge Deller <deller@gmx.de>,
+ the arch/x86 maintainers <x86@kernel.org>,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ "mingo@redhat.com" <mingo@redhat.com>,
+ Frederic Weisbecker <fweisbec@gmail.com>,
+ Paul McKenney <paulmck@linux.vnet.ibm.com>,
+ =?UTF-8?B?SMOldmFyZCBTa2lubmVtb2Vu?= <hskinnemoen@gmail.com>,
+ Serge Hallyn <serge.hall
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <CAMuHMdUzcBuDupe4Fa6XieziGPMpPKC_k8X8gUUmDvLJ+Fe=Hg@mail.gmail.com>
+List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
 
-The logic to detect if the irq stack was already in use with
-raw_spin_trylock() is wrong, because it will generate a "trylock failure
-on UP" error message with CONFIG_SMP=n and CONFIG_DEBUG_SPINLOCK=y.
+On 05/23/2013 10:10 PM, Geert Uytterhoeven wrote:
+> On Thu, May 23, 2013 at 2:50 PM, Russell King - ARM Linux
+> <linux@arm.linux.org.uk> wrote:
+>> > On Thu, May 23, 2013 at 02:09:02PM +0200, Arnd Bergmann wrote:
+>>> >> On Thursday 23 May 2013, Russell King - ARM Linux wrote:
+>>>> >> > This is the problem you guys are missing - unreachable() means "we lose
+>>>> >> > control of the CPU at this point".
+>>> >>
+>>> >> I'm absolutely aware of this. Again, the current behaviour of doing nothing
+>>> >> at all isn't very different from undefined behavior when you get when you
+>>> >> get to the end of a function returning a pointer without a "return" statement,
+>>> >> or when you return from a function that has determined that it is not safe
+>>> >> to continue.
+>> >
+>> > Running off the end of a function like that is a different kettle of fish.
+>> > The execution path is still as the compiler intends - what isn't is that
+>> > the data returned is likely to be random trash.
+>> >
+>> > That's _quite_ different from the CPU starting to execute the contents
+>> > of a literal data pool.
+> I agree it's best to e.g. trap and reboot.
 
-arch_spin_trylock() can't be used either since in the CONFIG_SMP=n case
-no atomic protection is given and we are reentrant here.
+After read the arch/*/include/asm/bug.h,
 
-Now we will use a mutex instead, which is safe on UP and SMP.
+It seems panic() is not suitable for NOMMU platforms (only m68k use it,
+also need CONFIG_BUG and CONFIG_SUN3 enabled).
 
-Counting how often the irq stack was used is pretty useless, so just
-drop this piece of code.
+And unreachable() is need followed with an asm inline instruction (arm,
+x86, powerpc mips...).
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+And __builtin_trap() is "the mechanism used may vary from release to
+release so should not rely on any particular implementation" (ref to
+"http://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html", used by m68k,
+sparc, ia64).
 
-diff --git a/arch/parisc/include/asm/hardirq.h b/arch/parisc/include/asm/hardirq.h
-index 4c6dd8d..241c345 100644
---- a/arch/parisc/include/asm/hardirq.h
-+++ b/arch/parisc/include/asm/hardirq.h
-@@ -17,13 +17,8 @@
- 
- typedef struct {
- 	unsigned int __softirq_pending;
--#ifdef CONFIG_DEBUG_STACKOVERFLOW
- 	unsigned int kernel_stack_usage;
--#ifdef CONFIG_IRQSTACKS
- 	unsigned int irq_stack_usage;
--	unsigned int irq_stack_counter;
--#endif
--#endif
- #ifdef CONFIG_SMP
- 	unsigned int irq_resched_count;
- 	unsigned int irq_call_count;
-diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
-index cfbc439..cc2290a 100644
---- a/arch/parisc/include/asm/processor.h
-+++ b/arch/parisc/include/asm/processor.h
-@@ -17,7 +17,6 @@
- #include <asm/ptrace.h>
- #include <asm/types.h>
- #include <asm/percpu.h>
--
- #endif /* __ASSEMBLY__ */
- 
- /*
-@@ -59,26 +58,6 @@
- #ifndef __ASSEMBLY__
- 
- /*
-- * IRQ STACK - used for irq handler
-- */
--#ifdef __KERNEL__
--
--#include <linux/spinlock_types.h>
--
--#define IRQ_STACK_SIZE      (4096 << 2) /* 16k irq stack size */
--
--union irq_stack_union {
--	unsigned long stack[IRQ_STACK_SIZE/sizeof(unsigned long)];
--	raw_spinlock_t lock;
--};
--
--DECLARE_PER_CPU(union irq_stack_union, irq_stack_union);
--
--void call_on_stack(unsigned long p1, void *func, unsigned long new_stack);
--
--#endif /* __KERNEL__ */
--
--/*
-  * Data detected about CPUs at boot time which is the same for all CPU's.
-  * HP boxes are SMP - ie identical processors.
-  *
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index 9c2d953..88ba8a8 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -27,7 +27,7 @@
- #include <linux/interrupt.h>
- #include <linux/kernel_stat.h>
- #include <linux/seq_file.h>
--#include <linux/spinlock.h>
-+#include <linux/mutex.h>
- #include <linux/types.h>
- #include <asm/io.h>
- 
-@@ -172,10 +172,6 @@ int arch_show_interrupts(struct seq_file *p, int prec)
- 	for_each_online_cpu(j)
- 		seq_printf(p, "%10u ", irq_stats(j)->irq_stack_usage);
- 	seq_puts(p, "  Interrupt stack usage\n");
--	seq_printf(p, "%*s: ", prec, "ISC");
--	for_each_online_cpu(j)
--		seq_printf(p, "%10u ", irq_stats(j)->irq_stack_counter);
--	seq_puts(p, "  Interrupt stack usage counter\n");
- # endif
- #endif
- #ifdef CONFIG_SMP
-@@ -384,6 +380,23 @@ static inline int eirr_to_irq(unsigned long eirr)
- 	return (BITS_PER_LONG - bit) + TIMER_IRQ;
- }
- 
-+#ifdef CONFIG_IRQSTACKS
-+/*
-+ * IRQ STACK - used for irq handler
-+ */
-+#define IRQ_STACK_SIZE      (4096 << 2) /* 16k irq stack size */
-+
-+union irq_stack_union {
-+	unsigned long stack[IRQ_STACK_SIZE/sizeof(unsigned long)];
-+	struct mutex lock;
-+};
-+
-+DEFINE_PER_CPU(union irq_stack_union, irq_stack_union) = {
-+		.lock = __MUTEX_INITIALIZER(irq_stack_union.lock),
-+	};
-+#endif
-+
-+
- int sysctl_panic_on_stackoverflow = 1;
- 
- static inline void stack_overflow_check(struct pt_regs *regs)
-@@ -450,15 +463,14 @@ panic_check:
- }
- 
- #ifdef CONFIG_IRQSTACKS
--DEFINE_PER_CPU(union irq_stack_union, irq_stack_union) = {
--		.lock = __RAW_SPIN_LOCK_UNLOCKED((irq_stack_union).lock)
--	};
-+/* in entry.S: */
-+void call_on_stack(unsigned long p1, void *func, unsigned long new_stack);
- 
- static void execute_on_irq_stack(void *func, unsigned long param1)
- {
- 	union irq_stack_union *union_ptr;
- 	unsigned long irq_stack;
--	raw_spinlock_t *irq_stack_in_use;
-+	struct mutex *irq_stack_in_use;
- 
- 	union_ptr = &per_cpu(irq_stack_union, smp_processor_id());
- 	irq_stack = (unsigned long) &union_ptr->stack;
-@@ -470,7 +482,7 @@ static void execute_on_irq_stack(void *func, unsigned long param1)
- 	 * the irq stack usage.
- 	 */
- 	irq_stack_in_use = &union_ptr->lock;
--	if (!raw_spin_trylock(irq_stack_in_use)) {
-+	if (!mutex_trylock(irq_stack_in_use)) {
- 		void (*direct_call)(unsigned long p1) = func;
- 
- 		/* We are using the IRQ stack already.
-@@ -482,10 +494,8 @@ static void execute_on_irq_stack(void *func, unsigned long param1)
- 	/* This is where we switch to the IRQ stack. */
- 	call_on_stack(param1, func, irq_stack);
- 
--	__inc_irq_stat(irq_stack_counter);
+I can not find any *trap*() and *unreachable*() in "include/asm-generic/"
+
+I can not find any suitable implementation which 'generic' enough to add
+in "include/asm-generic/" (and in fact, CONFIG_BUG itself is not
+'generic' enough to be in "include/asm-generic/").
+
+
+At last, I still suggest to delete CONFIG_BUG, so most of architectures
+can skip this issue firstly.
+
+Then for specific architectures, also can get 3 benefits:
+
+a. the related maintainers can implement it as their own willing (not
+need discus it with another platform maintainers again);
+
+b. the related maintainers can free use the platform specific features
+(which can not be used in "include/asm-generic/");
+
+c. the related maintainers are more familiar their own architectures
+demands and requirements.
+
+
+
+----------- arch/m68k/include/asm/bug.h --------------------------------
+
+  1 #ifndef _M68K_BUG_H
+  2 #define _M68K_BUG_H
+  3
+  4 #ifdef CONFIG_MMU
+  5 #ifdef CONFIG_BUG
+  6 #ifdef CONFIG_DEBUG_BUGVERBOSE
+  7 #ifndef CONFIG_SUN3
+  8 #define BUG() do { \
+  9         printk("kernel BUG at %s:%d!\n", __FILE__, __LINE__); \
+ 10         __builtin_trap(); \
+ 11 } while (0)
+ 12 #else
+ 13 #define BUG() do { \
+ 14         printk("kernel BUG at %s:%d!\n", __FILE__, __LINE__); \
+ 15         panic("BUG!"); \
+ 16 } while (0)
+ 17 #endif
+ 18 #else
+ 19 #define BUG() do { \
+ 20         __builtin_trap(); \
+ 21 } while (0)
+ 22 #endif
+ 23
+ 24 #define HAVE_ARCH_BUG
+ 25 #endif
+ 26 #endif /* CONFIG_MMU */
+ 27
+ 28 #include <asm-generic/bug.h>
+ 29
+ 30 #endif
+
+
+
+
+Thanks.
+-- 
+Chen Gang
+
+Asianux Corporation
