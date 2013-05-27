@@ -1,57 +1,49 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: linux-next: manual merge of the parisc-hd tree with Linus' tree
-Date: Mon, 27 May 2013 10:51:35 +1000
-Message-ID: <20130527105135.cac99b7d9930fbb2f03cc9e6@canb.auug.org.au>
+From: Chen Gang <gang.chen@asianux.com>
+Subject: [PATCH] arch: parisc: kernel: memory overflow, 'name' length is too
+ short for using
+Date: Mon, 27 May 2013 12:57:09 +0800
+Message-ID: <51A2E7A5.5000904@asianux.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA256";
- boundary="Signature=_Mon__27_May_2013_10_51_35_+1000_W7FyexJiBct4XBBG"
-Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-To: Helge Deller <deller@gmx.de>,
-	Parisc List <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Linux-Arch <linux-arch@vger.kernel.org>
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Signature=_Mon__27_May_2013_10_51_35_+1000_W7FyexJiBct4XBBG
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+'path.bc[i]' can be asigned by PCI_SLOT() which can '> 10', so sizeof(6
+* "%u:" + "%u" + '\0') may be 21.
 
-Today's linux-next merge of the parisc-hd tree got conflicts in
-arch/parisc/include/asm/processor.h and arch/parisc/kernel/irq.c between
-commit d96b51ec1465 ("parisc: fix irq stack on UP and SMP") from Linus'
-tree and commit 1c92ce8487f6 ("parisc: use arch_spinlock_t instead of
-raw_spinlock_t in irqstacks") from the parisc-hd tree.
+Since 'name' length is 20, it may be memory overflow.
 
-I just used the version of both files from Linus' tree and can carry the
-fix as necessary (no action is required).
+And 'path.bc[i]' is 'unsigned char' for printing, we can be sure the
+max length of 'name' must be less than 28.
 
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
+So simplify thinking, we can use 28 instead of 20 directly, and do not
+think of whether 'patchc.bc[i]' can '> 100'.
 
---Signature=_Mon__27_May_2013_10_51_35_+1000_W7FyexJiBct4XBBG
-Content-Type: application/pgp-signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+Signed-off-by: Chen Gang <gang.chen@asianux.com>
+---
+ arch/parisc/kernel/drivers.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-iQIcBAEBCAAGBQJRoq4bAAoJEECxmPOUX5FELG4P/RukX9IpW+tSj9jK3PX4OAne
-9brkGUKGPG0Rw7MjfTdbLYF0vAWc7T/ir4Mk5coG0SCZ2g81FT005mhcV9i1ytyq
-CzxLfaL81VAZ3JbwDxc/+Oir4LmnUFhbBFPog9WJdzEz3hLnY7irphyWWJEvVRqi
-gSk20gk2t3NqVYel88dmdxyXbqI6wWUZcK9IjY7S5qRbLaTaQl+zKXChF0stX3z3
-V1LNnEqCKjWxUWXKf/1KlOWzAv+LgVkynIr5vCNrTAv6Lr+bU1zD5OssCeNAPYy0
-ph++rFlrd5O2IYb/BSiB/ad8QWVzPKdsQtmwgMMsTz/hYKS7ksWDA1bItAktk1vO
-5EihbxRW9DLDffj8TgCYE0sOF4IPZPIhhWkRnE+y3T6AAi2MJiUKkMlpVWWoTKXH
-KYlIUYI7BLdnfOz8UNE6SAe/2CLtvHePTI0khEbXAg8/RmW3AJdigpKsqKRS3w13
-LlnUvbZkAWweueriWg+zxXYX3cm24Fk6sRbn21HZ+IuOQzlk22npbj24ASqZOzuT
-BDxCTa0GQN5t8Pk+sJSwVfMkS06T6yvuS0e9NTQilGhn7M+JBGAoScWR4RD5QY4e
-1XMS6t619D8ASJ+sdSbLyEF84+dNyJMBTiPd8ssgVHSiVPxI2ma+ExIr0GFxI6t1
-DaGs1c/atoNgLAtW2gnB
-=hYgt
------END PGP SIGNATURE-----
-
---Signature=_Mon__27_May_2013_10_51_35_+1000_W7FyexJiBct4XBBG--
+diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
+index 5709c5e..14285ca 100644
+--- a/arch/parisc/kernel/drivers.c
++++ b/arch/parisc/kernel/drivers.c
+@@ -394,7 +394,7 @@ EXPORT_SYMBOL(print_pci_hwpath);
+ static void setup_bus_id(struct parisc_device *padev)
+ {
+ 	struct hardware_path path;
+-	char name[20];
++	char name[28];
+ 	char *output = name;
+ 	int i;
+ 
+-- 
+1.7.7.6
