@@ -1,52 +1,95 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Build regressions/improvements in v3.10-rc3
-Date: Tue, 28 May 2013 09:16:30 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1305280909260.29186@ayla.of.borg>
-References: <alpine.DEB.2.00.1305280908430.28098@ayla.of.borg>
+From: Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] arch: configuration, deleting 'CONFIG_BUG' since always
+ need it.
+Date: Tue, 28 May 2013 10:19:10 +0200
+Message-ID: <20130528081910.GA29557@gmail.com>
+References: <519DCBEF.3090208@asianux.com>
+ <20130523090534.GJ18614@n2100.arm.linux.org.uk>
+ <CAMuHMdWez-j1Maa3BD7ucmzv0_zFJnChERQiHFmkCaZUzG0_AA@mail.gmail.com>
+ <201305231139.38233.arnd@arndb.de>
+ <20130523100409.GK18614@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org, devel@driverdev.osuosl.org,
-	linux-s390@vger.kernel.org
-To: Linux Kernel Development <linux-kernel@vger.kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1305280908430.28098@ayla.of.borg>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: Catalin Marinas <Catalin.Marinas@arm.com>,
+ Linux-sh list <linux-sh@vger.kernel.org>, Chen Gang <gang.chen@asianux.com>,
+ Heiko Carstens <heiko.carstens@de.ibm.com>,
+ "paulus@samba.org" <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>,
+ Michel Lespinasse <walken@google.com>,
+ Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ Linux-Arch <linux-arch@vger.kernel.org>, linux-s390@vger.kernel.org,
+ uml-devel <user-mode-linux-devel@lists.sourceforge.net>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Richard Weinberger <richard@nod.at>, Helge Deller <deller@gmx.de>,
+ the arch/x86 maintainers <x86@kernel.org>,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ "mingo@redhat.com" <mingo@redhat.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Frederic Weisbecker <fweisbec@gmail.com>,
+ Paul McKenney <paulmck@linux.vnet.ibm.com>,
+ H?vard Skinnemoen <hskinnemoen@gmail.com>,
+ Serge Hallyn <se
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <20130523100409.GK18614@n2100.arm.linux.org.uk>
+List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
 
-On Tue, 28 May 2013, Geert Uytterhoeven wrote:
-> JFYI, when comparing v3.10-rc3 to v3.10-rc2[3], the summaries are:
->   - build errors: +15/-10
 
-Ignoring the PPC64 relocation truncations in powerpc-allyesconfig:
+* Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
 
-  + error: "__sync_fetch_and_and_4" [drivers/staging/line6/line6usb.ko] undefined!:  => N/A
-  + error: "__sync_fetch_and_or_4" [drivers/staging/line6/line6usb.ko] undefined!:  => N/A
+> So, if you want to use this, then you should update the CONFIG_BUG text 
+> to include a warning to this effect:
+> 
+>      Warning: if CONFIG_BUG is turned off, and control flow reaches
+>      a BUG(), the system behaviour will be undefined.
+> 
+> so that people can make an informed choice about this, because at the
+> moment:
+> 
+>           Disabling this option eliminates support for BUG and WARN, reducing
+>           the size of your kernel image and potentially quietly ignoring
+>           numerous fatal conditions. You should only consider disabling this
+>           option for embedded systems with no facilities for reporting errors.
+>           Just say Y.
+> 
+> will become completely misleading.  Turning this option off will _not_ 
+> result in "quietly ignoring numerous fatal conditions".
 
-parisc-allmodconfig
+I'm fine with adding your text as a clarification - but I think 'quietly 
+ignoring fatal conditions' very much implies an undefined outcome if that 
+unexpected condition does occur: the code might crash, it might corrupt 
+memory or it might do some other unexpected thing.
 
-  + error: "devm_request_threaded_irq" [drivers/i2c/busses/i2c-designware-pci.ko] undefined!:  => N/A
-  + error: "devm_request_threaded_irq" [drivers/input/touchscreen/st1232.ko] undefined!:  => N/A
-  + error: "devm_request_threaded_irq" [drivers/mfd/si476x-core.ko] undefined!:  => N/A
-  + error: "devm_request_threaded_irq" [drivers/net/ethernet/marvell/mvmdio.ko] undefined!:  => N/A
-  + error: "devm_request_threaded_irq" [drivers/staging/dwc2/dwc2.ko] undefined!:  => N/A
-  + error: "irq_create_mapping" [drivers/mfd/mfd-core.ko] undefined!:  => N/A
-  
-s390-allmodconfig, s390-allyesconfig
+There are many other places that do a BUG_ON() of a NULL pointer or so, or 
+of a zero refcount, or a not held lock - and turning the BUG_ON() off 
+makes the code unpredictable _anyway_ - even if the compiler does not 
+notice an uninitialized variable.
 
-Related warning for the last one:
+So pretty much any weakening of BUG_ON() _will_ make the kernel more 
+unpredictable.
 
-warning: (ARM_GIC && ARM_VIC && RENESAS_INTC_IRQPIN && RENESAS_IRQC && VERSATILE_FPGA_IRQ && REGMAP && GPIO_LYNXPOINT && GPIO_GRGPIO && GPIO_PCF857X && GPIO_LANGWELL && MFD_CORE && MFD_MAX77686 && MFD_MAX8997 && AB8500_CORE && MFD_LP8788 && MFD_TPS65910 && TWL4030_CORE && MFD_WM831X_I2C && MFD_WM831X_SPI && EXTCON_MAX77693) selects IRQ_DOMAIN which has unmet direct dependencies (HAVE_GENERIC_HARDIRQS)
+> And I come back to one of my previous arguments - is it not better to 
+> panic() if we hit one of these conditions so that the system can try to 
+> do a panic-reboot rather than continue blindly into the unknown?
 
-> [1] http://kisskb.ellerman.id.au/kisskb/head/6268/ (all 120 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/head/6246/ (all 120 configs)
+It will often continue blindly into the unknown even if the compiler is 
+happy ...
 
-Gr{oetje,eeting}s,
+The only difference is that it's "unpredictable" in a way not visible from 
+the C code: the code won't necessarily fall through the BUG() when hitting 
+that condition - although in practice it probably will.
 
-						Geert
+So I think the same principle applies to it as to any other debugging 
+code: it's fine to be able to turn debugging off. It's a performance 
+versus kernel robustness/determinism trade-off.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thanks,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+	Ingo
