@@ -1,48 +1,152 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: [PATCH] parisc: rename "CONFIG_PA7100" to "CONFIG_PA7000"
-Date: Wed, 29 May 2013 11:56:58 +0200
-Message-ID: <1369821418.23034.25.camel@x61.thuisdomein>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Jiang Liu <liuj97@gmail.com>
+Subject: [PATCH v6, part4 30/41] mm/PARISC: prepare for removing num_physpages and simplify mem_init()
+Date: Wed, 29 May 2013 21:57:48 +0800
+Message-ID: <1369835879-23553-31-git-send-email-jiang.liu@huawei.com>
+References: <1369835879-23553-1-git-send-email-jiang.liu@huawei.com>
+Cc: Jiang Liu <jiang.liu@huawei.com>,
+	David Rientjes <rientjes@google.com>,
+	Wen Congyang <wency@cn.fujitsu.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Minchan Kim <minchan@kernel.org>,
+	KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>,
+	Michal Hocko <mhocko@suse.cz>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+	David Howells <dhowells@redhat.com>,
+	Mark Salter <msalter@redhat.com>,
+	Jianguo Wu <wujianguo@huawei.com>,
+	linux-mm@kvack.org,
+	linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-parisc@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <1369835879-23553-1-git-send-email-jiang.liu@huawei.com>
+List-ID: <linux-mm.kvack.org>
 
-There's a Makefile line setting cflags for CONFIG_PA7100. But that
-Kconfig macro doesn't exist. There is a Kconfig symbol PA7000, which
-covers both PA7000 and PA7100 processors. So let's use the corresponding
-Kconfig macro.
+Prepare for removing num_physpages and simplify mem_init().
 
-Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Michal Hocko <mhocko@suse.cz>
+Cc: David Rientjes <rientjes@google.com>
+Cc: linux-parisc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 ---
-Untested. This needs testing for two reasons:
+ arch/parisc/mm/init.c | 47 +++--------------------------------------------
+ 1 file changed, 3 insertions(+), 44 deletions(-)
 
-- the gcc documentation suggests this might not work for PA7000
-processors of architecture 1.0 (aka, "PA7000 (PCX)");
-
-- this has line has always been a NOP. See, a comparable line was added
-in v2.5.45. It depended on CONFIG_PA7100, which didn't exist. A Kconfig
-symbol PA7100 has actually never been part of the tree. (In v2.5.46 the
-Kconfig symbol PA7000 was added, but that still kept that line a NOP.)
-
- arch/parisc/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index 1976900..96ec398 100644
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -66,7 +66,7 @@ KBUILD_CFLAGS_KERNEL += -mlong-calls
- endif
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 74608f7..3f31102 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -214,7 +214,6 @@ static void __init setup_bootmem(void)
+ 	mem_limit_func();       /* check for "mem=" argument */
  
- # select which processor to optimise for
--cflags-$(CONFIG_PA7100)		+= -march=1.1 -mschedule=7100
-+cflags-$(CONFIG_PA7000)		+= -march=1.1 -mschedule=7100
- cflags-$(CONFIG_PA7200)		+= -march=1.1 -mschedule=7200
- cflags-$(CONFIG_PA7100LC)	+= -march=1.1 -mschedule=7100LC
- cflags-$(CONFIG_PA7300LC)	+= -march=1.1 -mschedule=7300
+ 	mem_max = 0;
+-	num_physpages = 0;
+ 	for (i = 0; i < npmem_ranges; i++) {
+ 		unsigned long rsize;
+ 
+@@ -229,10 +228,8 @@ static void __init setup_bootmem(void)
+ 				npmem_ranges = i + 1;
+ 				mem_max = mem_limit;
+ 			}
+-	        num_physpages += pmem_ranges[i].pages;
+ 			break;
+ 		}
+-	    num_physpages += pmem_ranges[i].pages;
+ 		mem_max += rsize;
+ 	}
+ 
+@@ -532,7 +529,7 @@ void free_initmem(void)
+ 	 * pages are no-longer executable */
+ 	flush_icache_range(init_begin, init_end);
+ 	
+-	num_physpages += free_initmem_default(-1);
++	free_initmem_default(-1);
+ 
+ 	/* set up a new led state on systems shipped LED State panel */
+ 	pdc_chassis_send_status(PDC_CHASSIS_DIRECT_BCOMPLETE);
+@@ -580,8 +577,6 @@ unsigned long pcxl_dma_start __read_mostly;
+ 
+ void __init mem_init(void)
+ {
+-	int codesize, reservedpages, datasize, initsize;
+-
+ 	/* Do sanity checks on page table constants */
+ 	BUILD_BUG_ON(PTE_ENTRY_SIZE != sizeof(pte_t));
+ 	BUILD_BUG_ON(PMD_ENTRY_SIZE != sizeof(pmd_t));
+@@ -603,33 +598,6 @@ void __init mem_init(void)
+ 	}
+ #endif
+ 
+-	codesize = (unsigned long)_etext - (unsigned long)_text;
+-	datasize = (unsigned long)_edata - (unsigned long)_etext;
+-	initsize = (unsigned long)__init_end - (unsigned long)__init_begin;
+-
+-	reservedpages = 0;
+-{
+-	unsigned long pfn;
+-#ifdef CONFIG_DISCONTIGMEM
+-	int i;
+-
+-	for (i = 0; i < npmem_ranges; i++) {
+-		for (pfn = node_start_pfn(i); pfn < node_end_pfn(i); pfn++) {
+-			if (PageReserved(pfn_to_page(pfn)))
+-				reservedpages++;
+-		}
+-	}
+-#else /* !CONFIG_DISCONTIGMEM */
+-	for (pfn = 0; pfn < max_pfn; pfn++) {
+-		/*
+-		 * Only count reserved RAM pages
+-		 */
+-		if (PageReserved(pfn_to_page(pfn)))
+-			reservedpages++;
+-	}
+-#endif
+-}
+-
+ #ifdef CONFIG_PA11
+ 	if (hppa_dma_ops == &pcxl_dma_ops) {
+ 		pcxl_dma_start = (unsigned long)SET_MAP_OFFSET(MAP_START);
+@@ -643,15 +611,7 @@ void __init mem_init(void)
+ 	parisc_vmalloc_start = SET_MAP_OFFSET(MAP_START);
+ #endif
+ 
+-	printk(KERN_INFO "Memory: %luk/%luk available (%dk kernel code, %dk reserved, %dk data, %dk init)\n",
+-		nr_free_pages() << (PAGE_SHIFT-10),
+-		num_physpages << (PAGE_SHIFT-10),
+-		codesize >> 10,
+-		reservedpages << (PAGE_SHIFT-10),
+-		datasize >> 10,
+-		initsize >> 10
+-	);
+-
++	mem_init_print_info(NULL);
+ #ifdef CONFIG_DEBUG_KERNEL /* double-sanity-check paranoia */
+ 	printk("virtual kernel memory layout:\n"
+ 	       "    vmalloc : 0x%p - 0x%p   (%4ld MB)\n"
+@@ -1101,7 +1061,6 @@ void flush_tlb_all(void)
+ #ifdef CONFIG_BLK_DEV_INITRD
+ void free_initrd_mem(unsigned long start, unsigned long end)
+ {
+-	num_physpages += free_reserved_area((void *)start, (void *)end, -1,
+-					    "initrd");
++	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+ }
+ #endif
 -- 
-1.7.11.7
+1.8.1.2
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
