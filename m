@@ -1,56 +1,48 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: fix kernel BUG at arch/parisc/include/asm/mmzone.h:50
-Date: Tue, 28 May 2013 22:35:54 +0200
-Message-ID: <20130528203554.GA18344@p100.box>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: [PATCH] parisc: rename "CONFIG_PA7100" to "CONFIG_PA7000"
+Date: Wed, 29 May 2013 11:56:58 +0200
+Message-ID: <1369821418.23034.25.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-With CONFIG_DISCONTIGMEM=y and multiple physical memory areas,
-cat /proc/kpageflags triggers this kernel bug:
+There's a Makefile line setting cflags for CONFIG_PA7100. But that
+Kconfig macro doesn't exist. There is a Kconfig symbol PA7000, which
+covers both PA7000 and PA7100 processors. So let's use the corresponding
+Kconfig macro.
 
-kernel BUG at arch/parisc/include/asm/mmzone.h:50!
-CPU: 2 PID: 7848 Comm: cat Tainted: G      D W 3.10.0-rc3-64bit #44
- IAOQ[0]: kpageflags_read0x128/0x238
- IAOQ[1]: kpageflags_read0x12c/0x238
- RP(r2): proc_reg_read0xbc/0x130
-Backtrace:
- [<00000000402ca2d4>] proc_reg_read0xbc/0x130
- [<0000000040235bcc>] vfs_read0xc4/0x1d0
- [<0000000040235f0c>] SyS_read0x94/0xf0
- [<0000000040105fc0>] syscall_exit0x0/0x14
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+Untested. This needs testing for two reasons:
 
-kpageflags_read() walks through the whole memory, even if some memory
-areas are physically not available. So, we should better not BUG on an
-unavailable pfn in pfn_to_nid() but just return the expected value -1 or
-0.
+- the gcc documentation suggests this might not work for PA7000
+processors of architecture 1.0 (aka, "PA7000 (PCX)");
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+- this has line has always been a NOP. See, a comparable line was added
+in v2.5.45. It depended on CONFIG_PA7100, which didn't exist. A Kconfig
+symbol PA7100 has actually never been part of the tree. (In v2.5.46 the
+Kconfig symbol PA7000 was added, but that still kept that line a NOP.)
 
-diff --git a/arch/parisc/include/asm/mmzone.h b/arch/parisc/include/asm/mmzone.h
-index 0e625ab..cc50d33 100644
---- a/arch/parisc/include/asm/mmzone.h
-+++ b/arch/parisc/include/asm/mmzone.h
-@@ -39,17 +39,14 @@ extern unsigned char pfnnid_map[PFNNID_MAP_MAX];
- static inline int pfn_to_nid(unsigned long pfn)
- {
- 	unsigned int i;
--	unsigned char r;
+ arch/parisc/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index 1976900..96ec398 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -66,7 +66,7 @@ KBUILD_CFLAGS_KERNEL += -mlong-calls
+ endif
  
- 	if (unlikely(pfn_is_io(pfn)))
- 		return 0;
- 
- 	i = pfn >> PFNNID_SHIFT;
- 	BUG_ON(i >= ARRAY_SIZE(pfnnid_map));
--	r = pfnnid_map[i];
--	BUG_ON(r == 0xff);
- 
--	return (int)r;
-+	return (int)pfnnid_map[i];
- }
- 
- static inline int pfn_valid(int pfn)
+ # select which processor to optimise for
+-cflags-$(CONFIG_PA7100)		+= -march=1.1 -mschedule=7100
++cflags-$(CONFIG_PA7000)		+= -march=1.1 -mschedule=7100
+ cflags-$(CONFIG_PA7200)		+= -march=1.1 -mschedule=7200
+ cflags-$(CONFIG_PA7100LC)	+= -march=1.1 -mschedule=7100LC
+ cflags-$(CONFIG_PA7300LC)	+= -march=1.1 -mschedule=7300
+-- 
+1.7.11.7
