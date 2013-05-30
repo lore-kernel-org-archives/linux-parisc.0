@@ -1,35 +1,37 @@
-From: Kyle McMartin <kmcmarti@redhat.com>
-Subject: Re: [PATCH] arch: parisc: kernel: using strlcpy() instead of strcpy()
-Date: Thu, 30 May 2013 11:35:51 -0400
-Message-ID: <20130530153551.GN19205@redacted.bos.redhat.com>
-References: <51A6A8F3.2030200@asianux.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parport_pc: disable PARPORT_PC_SUPERIO on parisc architecture
+Date: Thu, 30 May 2013 18:24:46 +0200
+Message-ID: <20130530162446.GA5750@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, udknight@gmail.com,
-	Greg KH <gregkh@linuxfoundation.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Linux-Arch <linux-arch@vger.kernel.org>
-To: Chen Gang <gang.chen@asianux.com>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <51A6A8F3.2030200@asianux.com>
-List-ID: <linux-arch.vger.kernel.org>
+To: Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, May 30, 2013 at 09:18:43AM +0800, Chen Gang wrote:
-> 
-> 'boot_args' is an input args, and 'boot_command_line' has a fix length.
-> 
-> So need use strlcpy() instead of strcpy() to avoid memory overflow.
-> 
+If enabled, CONFIG_PARPORT_PC_SUPERIO scans on PC-like hardware for
+various super-io chips by accessing i/o ports in a range which will
+crash any parisc hardware at once.
 
-This is basically impossible, since boot_args is fixed in size by palo,
-initialized to zero, and length checked in the bootloader. It's also
-only 256+4 bytes compared to the 1024 bytes set aside for
-boot_command_line.
+In addition, parisc has it's own incompatible superio chip
+(CONFIG_SUPERIO), so if we disable PARPORT_PC_SUPERIO completely for
+parisc we can avoid that people by accident enable the parport_pc
+superio option too.
 
-That said, it's harmless to use strlcpy here, and obviously (more)
-correct. Thanks!
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Acked-by: Kyle McMartin <kyle@mcmartin.ca>
+diff --git a/drivers/parport/Kconfig b/drivers/parport/Kconfig
+index 24e12d4..a505760 100644
+--- a/drivers/parport/Kconfig
++++ b/drivers/parport/Kconfig
+@@ -71,7 +71,7 @@ config PARPORT_PC_FIFO
+ 
+ config PARPORT_PC_SUPERIO
+ 	bool "SuperIO chipset support"
+-	depends on PARPORT_PC
++	depends on PARPORT_PC && !PARISC
+ 	help
+ 	  Saying Y here enables some probes for Super-IO chipsets in order to
+ 	  find out things like base addresses, IRQ lines and DMA channels.  It
