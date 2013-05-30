@@ -1,60 +1,55 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: fix race conditions flushing user cache pages
-Date: Thu, 30 May 2013 17:05:45 +0200
-Message-ID: <51A76AC9.1020702@gmx.de>
-References: <BLU0-SMTP84F3DE8CE6D8B9F60C5C2597970@phx.gbl> <1369925711.1972.11.camel@dabdike.int.hansenpartnership.com> <51A769B6.50801@gmx.de>
+From: Wang YanQing <udknight@gmail.com>
+Subject: Re: [PATCH] arch: parisc: kernel: using strlcpy() instead of strcpy()
+Date: Thu, 30 May 2013 23:06:36 +0800
+Message-ID: <20130530150636.GA2121@udknight>
+References: <51A6A8F3.2030200@asianux.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Cc: John David Anglin <dave.anglin@bell.net>,
-	linux-parisc List <linux-parisc@vger.kernel.org>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Greg KH <gregkh@linuxfoundation.org>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Linux-Arch <linux-arch@vger.kernel.org>
+To: Chen Gang <gang.chen@asianux.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <51A769B6.50801@gmx.de>
+In-Reply-To: <51A6A8F3.2030200@asianux.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 05/30/2013 05:01 PM, Helge Deller wrote:
-> On 05/30/2013 04:55 PM, James Bottomley wrote:
->> On Tue, 2013-05-28 at 08:09 -0400, John David Anglin wrote:
->>> There are two issues addressed by this patch:
->>>
->>> 1) When we flush user instruction and data pages using the kernel  
->>> tmpalias region, we need to
->>> ensure that the local TLB entry for the tmpalias page is never  
->>> replaced with a different mapping.
->>> Previously, we purged the entry before and after the cache flush  
->>> loop.  Although preemption was
->>> disabled, it seemed possible that the value might change during  
->>> interrupt processing.  The patch
->>> removes the purge and disables interrupts during the initial TLB entry  
->>> purge and cache flush.
->>>
->>> 2) In a number of places, we flush the TLB for the page and then flush  
->>> the page.  We disabled
->>> preemption around the flush.  This change disables preemption around  
->>> both the TLB and cache
->>> flushes as it seemed the effect of the purge might be lost.
->>>
->>> Without this change, I saw four random segmentation faults in about  
->>> 1.5 days of intensive package
->>> building last weekend.  With the change, I haven't seen a single  
->>> random segmentation fault in about
->>> one week of building Debian packages on 4-way rp3440.  So, there is a  
->>> significant improvement
->>> in system stability.
->>
->> an rp3440 is PA2.0, so you weren't really testing any of the tlb purge
->> locking changes.
+On Thu, May 30, 2013 at 09:18:43AM +0800, Chen Gang wrote:
 > 
-> Which kind of system do we need to test those "tlb purge locking changes" (PAx.y)?
-> At least I can confirm, that Dave's patches have made all my systems 
-> absolutely stable.
+> 'boot_args' is an input args, and 'boot_command_line' has a fix length.
+> 
+> So need use strlcpy() instead of strcpy() to avoid memory overflow.
+> 
+> 
+> Signed-off-by: Chen Gang <gang.chen@asianux.com>
+> ---
+>  arch/parisc/kernel/setup.c |    3 ++-
+>  1 files changed, 2 insertions(+), 1 deletions(-)
+> 
+> diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
+> index 60c1ae6..7349a3f 100644
+> --- a/arch/parisc/kernel/setup.c
+> +++ b/arch/parisc/kernel/setup.c
+> @@ -69,7 +69,8 @@ void __init setup_cmdline(char **cmdline_p)
+>  		/* called from hpux boot loader */
+>  		boot_command_line[0] = '\0';
+>  	} else {
+> -		strcpy(boot_command_line, (char *)__va(boot_args[1]));
+> +		strlcpy(boot_command_line, (char *)__va(boot_args[1]),
+> +			COMMAND_LINE_SIZE);
 
-For those who want to test right now, you can check out the "for-next" branch of:
-git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git
-in which I've queue up the outstanding patches for 3.10...
+What about add 
+boot_command_line[COMMAND_LINE_SIZE - 1] = '\0';
+to protect the following another strcpy?
 
-(web: http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/log/?h=for-next)
-
-Helge
+"
+strcpy(command_line, boot_command_line);
+"
+>  
+>  #ifdef CONFIG_BLK_DEV_INITRD
+>  		if (boot_args[2] != 0) /* did palo pass us a ramdisk? */
+> -- 
+> 1.7.7.6
