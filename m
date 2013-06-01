@@ -1,84 +1,61 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc/PCI: lba: fix: convert to pci_create_root_bus()
- for correct root bus resources (v2)
-Date: Sat, 1 Jun 2013 00:24:58 +0200
-Message-ID: <20130531222458.GA7200@p100.box>
-References: <20130530141033.GA3665@ls3530.box>
+Subject: [GIT PULL] parisc updates for v3.10-rc4
+Date: Sat, 1 Jun 2013 15:29:52 +0200
+Message-ID: <20130601132952.GA26730@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-To: linux-parisc@vger.kernel.org,
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org,
 	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130530141033.GA3665@ls3530.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-changes in v2:
-- updated the patch to change all .start -> .flags
-- dropped setting IORESOURCE_BUS, will use Bjorns patch instead.
+Hi Linus,
 
+please pull the latest changes for the parisc architecture.
 
-commit dc7dce280a
-Author: Bjorn Helgaas <bhelgaas@google.com>
-Date:   Fri Oct 28 16:27:27 2011 -0600
-   parisc/PCI: lba: convert to pci_create_root_bus() for correct root bus
-                    resources
+They are available in the for-3.10 branch in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git for-3.10
 
-  Supply root bus resources to pci_create_root_bus() so they're correct
-  immediately.  This fixes the problem of "early" and "header" quirks seeing
-  incorrect root bus resources.
+Thanks!
+Helge
 
-added tests for elmmio_space.start while it should use
-elmmio_space.flags.  This for example led to incorrect resource
-assignments and a non-working stifb framebuffer on most parisc machines.
+----------------------------------------------------------------
 
-LBA 10:1: PCI host bridge to bus 0000:01
-pci_bus 0000:01: root bus resource [io  0x12000-0x13fff] (bus address [0x2000-0x3fff])
-pci_bus 0000:01: root bus resource [mem 0xfffffffffa000000-0xfffffffffbffffff] (bus address [0xfa000000-0xfbffffff])
-pci_bus 0000:01: root bus resource [mem 0xfffffffff4800000-0xfffffffff4ffffff] (bus address [0xf4800000-0xf4ffffff])
-pci_bus 0000:01: root bus resource [??? 0x00000001 flags 0x0]
+This patcheset includes fixes for:
+- the PCI/LBA which brings back the stifb graphics framebuffer console
+- possible memory overflows in parisc kernel init code
+- parport support on older GSC machines
+- avoids that users by mistake enable PARPORT_PC_SUPERIO on parisc
+- MAINTAINERS file list updates for parisc.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+----------------------------------------------------------------
+Bjorn Helgaas (1):
+      parisc/PCI: Set type for LBA bus_num resource
 
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index 2ef7103..90c5805 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -668,7 +668,7 @@ lba_fixup_bus(struct pci_bus *bus)
- 			BUG();
- 		}
- 
--		if (ldev->hba.elmmio_space.start) {
-+		if (ldev->hba.elmmio_space.flags) {
- 			err = request_resource(&iomem_resource,
- 					&(ldev->hba.elmmio_space));
- 			if (err < 0) {
-@@ -993,7 +993,7 @@ lba_pat_resources(struct parisc_device *pa_dev, struct lba_device *lba_dev)
- 
- 		case PAT_LMMIO:
- 			/* used to fix up pre-initialized MEM BARs */
--			if (!lba_dev->hba.lmmio_space.start) {
-+			if (!lba_dev->hba.lmmio_space.flags) {
- 				sprintf(lba_dev->hba.lmmio_name,
- 						"PCI%02x LMMIO",
- 						(int)lba_dev->hba.bus_num.start);
-@@ -1001,7 +1001,7 @@ lba_pat_resources(struct parisc_device *pa_dev, struct lba_device *lba_dev)
- 					io->start;
- 				r = &lba_dev->hba.lmmio_space;
- 				r->name = lba_dev->hba.lmmio_name;
--			} else if (!lba_dev->hba.elmmio_space.start) {
-+			} else if (!lba_dev->hba.elmmio_space.flags) {
- 				sprintf(lba_dev->hba.elmmio_name,
- 						"PCI%02x ELMMIO",
- 						(int)lba_dev->hba.bus_num.start);
-@@ -1494,7 +1494,7 @@ lba_driver_probe(struct parisc_device *dev)
- 
- 	pci_add_resource_offset(&resources, &lba_dev->hba.io_space,
- 				HBA_PORT_BASE(lba_dev->hba.hba_num));
--	if (lba_dev->hba.elmmio_space.start)
-+	if (lba_dev->hba.elmmio_space.flags)
- 		pci_add_resource_offset(&resources, &lba_dev->hba.elmmio_space,
- 					lba_dev->hba.lmmio_space_offset);
- 	if (lba_dev->hba.lmmio_space.flags)
+Chen Gang (2):
+      parisc: memory overflow, 'name' length is too short for using
+      parisc: kernel: using strlcpy() instead of strcpy()
+
+Helge Deller (5):
+      parisc: fix kernel BUG at arch/parisc/include/asm/mmzone.h:50
+      MAINTAINERS: update parisc architecture file list
+      parisc/PCI: lba: fix: convert to pci_create_root_bus() for correct root bus resources (v2)
+      parport_pc: disable PARPORT_PC_SUPERIO on parisc architecture
+      parisc: parport0: fix this legacy no-device port driver!
+
+Paul Bolle (1):
+      parisc: rename "CONFIG_PA7100" to "CONFIG_PA7000"
+
+ MAINTAINERS                      | 8 ++++++++
+ arch/parisc/Makefile             | 2 +-
+ arch/parisc/include/asm/mmzone.h | 5 +----
+ arch/parisc/kernel/drivers.c     | 2 +-
+ arch/parisc/kernel/setup.c       | 3 ++-
+ drivers/parisc/lba_pci.c         | 9 +++++----
+ drivers/parport/Kconfig          | 2 +-
+ drivers/parport/parport_gsc.c    | 6 +++---
+ drivers/parport/parport_gsc.h    | 2 +-
+ 9 files changed, 23 insertions(+), 16 deletions(-)
