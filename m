@@ -1,61 +1,52 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc updates for v3.10-rc4
-Date: Sat, 1 Jun 2013 15:29:52 +0200
-Message-ID: <20130601132952.GA26730@p100.box>
+Subject: Re: Lenny/Sid upgrade
+Date: Sat, 01 Jun 2013 17:34:52 +0200
+Message-ID: <51AA149C.7030801@gmx.de>
+References: <fd52140191b1ce51b2a8017796ab1380aeb5f445@webmail.iinet.net.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: debian-hppa@lists.debian.org,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: Geoff <vk2tfg@ozemail.com.au>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <fd52140191b1ce51b2a8017796ab1380aeb5f445@webmail.iinet.net.au>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+Hi Geoff,
 
-please pull the latest changes for the parisc architecture.
+On 06/01/2013 02:21 AM, Geoff wrote:
+> I am still working on sorting out a fresh lenny -> sid upgrade. I have managed apt-get update, upgrade and dist-upgrade after lots of stuffing around (notes kept). It appears that "dependency based boot sequencing" gets in the way.
+> 
+> I'd like to try a kernel build next. Could anyone please point me towards a "cookbook" set of instructions and a suitably patched repository?
 
-They are available in the for-3.10 branch in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git for-3.10
+For the most stable kernel check out my stable-3.10 branch of 
+git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git
 
-Thanks!
+e.g.: 
+clone a linux tree (3.10-rcX) from Linus, then:
+git pull  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git  stable-3.10
+
+You need a "palo.conf" file, e.g. I use this one for tftbooting...
+http://www.parisc-linux.org/~deller/palo.conf
+-> copy it to your kernel directory (where you build).
+
+Then take (if you like) one of my .config files (either the 32 or 64bit one).
+http://www.parisc-linux.org/~deller/config-3.10-64bit
+http://www.parisc-linux.org/~deller/config-3.10-32bit
+copy this config file to your parisc kernel tree (build tree),
+rename the file to ".config".
+run "make ARCH=parisc oldconfig"
+
+run "make ARCH=parisc -j8 palo"
+
+for tftpbooting, copy the "lifimage" file to the tftp-bootdirectory.
+for direct booting of local disc, copy the "vmlinux" to /boot (on the parisc machine).
+
+Boot up your PA machine, and run
+boot lan -> for tftpbooting, or
+boot pri -> for local booting (if you have the new vmlinux in /boot.
+
+http://wiki.parisc-linux.org/Debian_Ports_Installation has some instructions (for kernel 3.9) as well.
+
 Helge
-
-----------------------------------------------------------------
-
-This patcheset includes fixes for:
-- the PCI/LBA which brings back the stifb graphics framebuffer console
-- possible memory overflows in parisc kernel init code
-- parport support on older GSC machines
-- avoids that users by mistake enable PARPORT_PC_SUPERIO on parisc
-- MAINTAINERS file list updates for parisc.
-
-----------------------------------------------------------------
-Bjorn Helgaas (1):
-      parisc/PCI: Set type for LBA bus_num resource
-
-Chen Gang (2):
-      parisc: memory overflow, 'name' length is too short for using
-      parisc: kernel: using strlcpy() instead of strcpy()
-
-Helge Deller (5):
-      parisc: fix kernel BUG at arch/parisc/include/asm/mmzone.h:50
-      MAINTAINERS: update parisc architecture file list
-      parisc/PCI: lba: fix: convert to pci_create_root_bus() for correct root bus resources (v2)
-      parport_pc: disable PARPORT_PC_SUPERIO on parisc architecture
-      parisc: parport0: fix this legacy no-device port driver!
-
-Paul Bolle (1):
-      parisc: rename "CONFIG_PA7100" to "CONFIG_PA7000"
-
- MAINTAINERS                      | 8 ++++++++
- arch/parisc/Makefile             | 2 +-
- arch/parisc/include/asm/mmzone.h | 5 +----
- arch/parisc/kernel/drivers.c     | 2 +-
- arch/parisc/kernel/setup.c       | 3 ++-
- drivers/parisc/lba_pci.c         | 9 +++++----
- drivers/parport/Kconfig          | 2 +-
- drivers/parport/parport_gsc.c    | 6 +++---
- drivers/parport/parport_gsc.h    | 2 +-
- 9 files changed, 23 insertions(+), 16 deletions(-)
