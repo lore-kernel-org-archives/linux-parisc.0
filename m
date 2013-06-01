@@ -1,52 +1,39 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: Lenny/Sid upgrade
-Date: Sat, 01 Jun 2013 17:34:52 +0200
-Message-ID: <51AA149C.7030801@gmx.de>
-References: <fd52140191b1ce51b2a8017796ab1380aeb5f445@webmail.iinet.net.au>
+Subject: Re: [PATCH] parisc/PCI: lba: fix: convert to pci_create_root_bus()
+ for correct root bus resources
+Date: Sun, 02 Jun 2013 00:03:16 +0200
+Message-ID: <51AA6FA4.3000900@gmx.de>
+References: <20130530141033.GA3665@ls3530.box> <CAErSpo69AxKgz8Dg8+T7n5jsuOzdSoCUstqrX+uUh8TZ08ayqg@mail.gmail.com> <51A7ACBF.4030601@gmx.de> <20130530211244.GA28735@google.com> <51A7C763.4080704@gmx.de> <51A90C21.7010602@gmx.de> <CAErSpo6oX4ADT39_ya_PbHhkQ=i_TaT+hwfrh6qXDn2xCEnx7w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: debian-hppa@lists.debian.org,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Geoff <vk2tfg@ozemail.com.au>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <fd52140191b1ce51b2a8017796ab1380aeb5f445@webmail.iinet.net.au>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc@vger.kernel.org,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Return-path: <linux-pci-owner@vger.kernel.org>
+In-Reply-To: <CAErSpo6oX4ADT39_ya_PbHhkQ=i_TaT+hwfrh6qXDn2xCEnx7w@mail.gmail.com>
+List-ID: <linux-pci.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Geoff,
-
-On 06/01/2013 02:21 AM, Geoff wrote:
-> I am still working on sorting out a fresh lenny -> sid upgrade. I have managed apt-get update, upgrade and dist-upgrade after lots of stuffing around (notes kept). It appears that "dependency based boot sequencing" gets in the way.
+On 05/31/2013 11:25 PM, Bjorn Helgaas wrote:
+>>>> Maybe it has devices that aren't
+>>>> officially supported and the firmware did the wrong thing?  (Though it'd
+>>>> still be nice if Linux did something more sensible than this.)
+>>
+>> Ok, I removed all unnecessary cards, incl. 100MBit NIC, 1000MBit NIC, Matrox G200 and a Visualize FX.
+>>
+>> Now it works nicely and as expected.
+>> Even the Visualize EG graphics card and the Voodo2 work (which were my main problem) :-)
 > 
-> I'd like to try a kernel build next. Could anyone please point me towards a "cookbook" set of instructions and a suitably patched repository?
+> Good, glad that works.  We *ought* to be able to do better, e.g., by
+> just ignoring cards that we can't use.
+> 
+> If you have a chance, you might collect the complete dmesg log from
+> both the working configuration and the broken one, and attach them to
+> a new kernel.org PCI bugzilla. 
 
-For the most stable kernel check out my stable-3.10 branch of 
-git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git
+I opened bugzilla #59191
+https://bugzilla.kernel.org/show_bug.cgi?id=59191
+(Someone needs to reassign this bug to Driver/PCI component - I can't.)
 
-e.g.: 
-clone a linux tree (3.10-rcX) from Linus, then:
-git pull  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git  stable-3.10
-
-You need a "palo.conf" file, e.g. I use this one for tftbooting...
-http://www.parisc-linux.org/~deller/palo.conf
--> copy it to your kernel directory (where you build).
-
-Then take (if you like) one of my .config files (either the 32 or 64bit one).
-http://www.parisc-linux.org/~deller/config-3.10-64bit
-http://www.parisc-linux.org/~deller/config-3.10-32bit
-copy this config file to your parisc kernel tree (build tree),
-rename the file to ".config".
-run "make ARCH=parisc oldconfig"
-
-run "make ARCH=parisc -j8 palo"
-
-for tftpbooting, copy the "lifimage" file to the tftp-bootdirectory.
-for direct booting of local disc, copy the "vmlinux" to /boot (on the parisc machine).
-
-Boot up your PA machine, and run
-boot lan -> for tftpbooting, or
-boot pri -> for local booting (if you have the new vmlinux in /boot.
-
-http://wiki.parisc-linux.org/Debian_Ports_Installation has some instructions (for kernel 3.9) as well.
-
+Thanks!
 Helge
