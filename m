@@ -1,11 +1,9 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH] parisc: Use unshadowed index register for flush
- instructions in flush_dcache_page_asm and flush_icache_page_asm
-Date: Sun, 02 Jun 2013 10:34:18 -0700
-Message-ID: <1370194458.1977.16.camel@dabdike.int.hansenpartnership.com>
-References: <BLU0-SMTP62E4CC425407D88FFC0DF3979C0@phx.gbl>
-	 <1370191421.1977.6.camel@dabdike.int.hansenpartnership.com>
-	 <BLU0-SMTP534874204161B3ACF5D2E4979C0@phx.gbl>
+Subject: Re: [PATCH] parisc: Fix cache coherency for copy/clear_user_page
+ operations
+Date: Sun, 02 Jun 2013 11:02:05 -0700
+Message-ID: <1370196125.1977.26.camel@dabdike.int.hansenpartnership.com>
+References: <BLU0-SMTP5D57135C2483B5BA307F2979C0@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-15"
 Cc: linux-parisc List <linux-parisc@vger.kernel.org>,
@@ -13,74 +11,59 @@ Cc: linux-parisc List <linux-parisc@vger.kernel.org>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>
 To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP534874204161B3ACF5D2E4979C0@phx.gbl>
+In-Reply-To: <BLU0-SMTP5D57135C2483B5BA307F2979C0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 2013-06-02 at 13:16 -0400, John David Anglin wrote:
-> On 2-Jun-13, at 12:43 PM, James Bottomley wrote:
-> 
-> > On Sun, 2013-06-02 at 12:21 -0400, John David Anglin wrote:
-> >> The comment at the start of pacache.S states that the base and index
-> >> registers used for
-> >> fdc,fic, and pdc instructions should not use shadowed registers.
-> >> Although this is probably
-> >> unnecessary for tmpalias flushes, there is also no reason not to
-> >> comply.  The same
-> >> index register (%r23) is used as in other routines.
-> >
-> > Please don't do this, it's a misinterpretation of the comment.
-> 
-> I don't think so.  See the discussion around cases 16 and 17 in  
-> handle_interruption.
+On Sun, 2013-06-02 at 12:09 -0400, John David Anglin wrote:
+> As noted by James E.J. Bottomley, we need to purge the kernel TLB  
+> entries used when copying/clearing
+> to user pages on PA 2.0 systems that require cache coherency.   
+> Otherwise, we generate inequivalent
+> aliases and incorrect cache operation.
 
-Please be clearer: I don't understand what you think the problem is.  16
-and 17 are the non access TLB traps which we can't get into in the
-tmpalias code.
+What I meant was we have to remove the tmpalias tlb entry at the end of
+the tmpalias operation.  This means in the asm of pacache.S.  Like the
+patch below (untested because all my boxes are currently in a shipping
+container on the docks at Seattle).  
 
-The way we handle tlb misses (for both NA, D and I types) within the
-tmpalias region is in the do_alias macro of the interruption handler.
-We never go through to the fault handler.
 
-> >
-> > What the comment is trying to say is that we use unshadowed  
-> > registers to
-> > pass information to the tmpalias handler in our tlb insertion
-> > interruption.  It's the do_alias macro in entry.S.  The only actual
-> > unshadowed registers it uses are %r23 and %r26.  Apart from these  
-> > having
-> > to have specific values, the rest of the routine is free to use any
-> > other registers (either shadowed or unshadowed) as it sees fit.
-> >
-> > If the comment is unclear, perhaps it needs fixing?
+> diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+> index 65fb4cb..a16ede352 100644
+> --- a/arch/parisc/kernel/cache.c
+> +++ b/arch/parisc/kernel/cache.c
+> @@ -383,7 +383,7 @@ void clear_user_page(void *vto, unsigned long
+> vaddr, struct page *page)
+>  {
+>         clear_page_asm(vto);
+>         if (!parisc_requires_coherency())
+> -               flush_kernel_dcache_page_asm(vto);
+> +               flush_kernel_dcache_page_addr(vto);
+>  }
+>  EXPORT_SYMBOL(clear_user_page);
+>  
+> @@ -397,10 +397,10 @@ void copy_user_page(void *vto, void *vfrom,
+> unsigned long vaddr,
+>            the kernel mapping. */
+>         preempt_disable();
+>         flush_dcache_page_asm(__pa(vfrom), vaddr);
+> -       preempt_enable();
+>         copy_page_asm(vto, vfrom);
+>         if (!parisc_requires_coherency())
+> -               flush_kernel_dcache_page_asm(vto);
+> +               flush_kernel_dcache_page_addr(vto);
+> +       preempt_enable();
+>  }
+>  EXPORT_SYMBOL(copy_user_page);
 > 
-> 
-> %r23 is only used by the do_alias macro for interruptions in the  
-> 'from' region.
-> See this hunk:
-> 
-> #ifdef CONFIG_64BIT
->          extrd,u,*=      \va,41,1,%r0
-> #else
->          extrw,u,=       \va,9,1,%r0
-> #endif
->          or,COND(tr)     %r23,%r0,\pte
->          or              %r26,%r0,\pte
-> 
-> The extract instruction tests whether the interruption was in the 'to'  
-> tmpalias
-> region.  If it is in the 'to' region, the instruction following using  
-> %r23 is nullified.
-> 
-> So, %r23 can be used for the index register in these two functions  
-> which don't
-> use the 'from' tmpalias region.
+These two changes should be ineffective.  The only time
+clear_user_page() and copy_user_page() are used is if the architecture
+doesn't supply clear_user_highpage() and copy_user_highpage() along with
+the necessary defines for highmem.h, which we do.
 
-It can, but it's dangerous and confusing to use it because we've
-specifically called out that it has a special meaning in the vario0us
-comments.  Using it for a different purpose from what we stated in the
-comments within the code needlessly confuses the reader who comes after
-us.
+If we go back to the non highpage defines, we've effectively double
+purged, because the kunmap_atomic will do the kernel tlb purge for us as
+well.
 
 James
 
