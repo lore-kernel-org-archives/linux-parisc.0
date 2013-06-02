@@ -1,161 +1,40 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Use unshadowed index register for flush instructions in flush_dcache_page_asm and flush_icache_page_asm
-Date: Sun, 2 Jun 2013 12:21:48 -0400
-Message-ID: <BLU0-SMTP62E4CC425407D88FFC0DF3979C0@phx.gbl>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: multipart/mixed; boundary="Apple-Mail-39-1040884686"
-Cc: Helge Deller <deller@gmx.de>,
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH] parisc: Use unshadowed index register for flush
+ instructions in flush_dcache_page_asm and flush_icache_page_asm
+Date: Sun, 02 Jun 2013 09:43:41 -0700
+Message-ID: <1370191421.1977.6.camel@dabdike.int.hansenpartnership.com>
+References: <BLU0-SMTP62E4CC425407D88FFC0DF3979C0@phx.gbl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-15"
+Cc: linux-parisc List <linux-parisc@vger.kernel.org>,
+	Helge Deller <deller@gmx.de>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>
-To: linux-parisc List <linux-parisc@vger.kernel.org>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <BLU0-SMTP62E4CC425407D88FFC0DF3979C0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Apple-Mail-39-1040884686
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
+On Sun, 2013-06-02 at 12:21 -0400, John David Anglin wrote:
+> The comment at the start of pacache.S states that the base and index  
+> registers used for
+> fdc,fic, and pdc instructions should not use shadowed registers.   
+> Although this is probably
+> unnecessary for tmpalias flushes, there is also no reason not to  
+> comply.  The same
+> index register (%r23) is used as in other routines.
 
-The comment at the start of pacache.S states that the base and index  
-registers used for
-fdc,fic, and pdc instructions should not use shadowed registers.   
-Although this is probably
-unnecessary for tmpalias flushes, there is also no reason not to  
-comply.  The same
-index register (%r23) is used as in other routines.
+Please don't do this, it's a misinterpretation of the comment.
 
-Signed-off-by: John David Anglin  <dave.anglin@bell.net>
----
+What the comment is trying to say is that we use unshadowed registers to
+pass information to the tmpalias handler in our tlb insertion
+interruption.  It's the do_alias macro in entry.S.  The only actual
+unshadowed registers it uses are %r23 and %r26.  Apart from these having
+to have specific values, the rest of the routine is free to use any
+other registers (either shadowed or unshadowed) as it sees fit.
 
+If the comment is unclear, perhaps it needs fixing?
 
-
---Apple-Mail-39-1040884686
-Content-Disposition: attachment; filename="pacache-index-reg.d.txt"
-Content-Type: text/plain; x-unix-mode=0644; name="pacache-index-reg.d.txt"
-Content-Transfer-Encoding: 7bit
-
-diff --git a/arch/parisc/kernel/pacache.S b/arch/parisc/kernel/pacache.S
-index 36d7f40..5f98abc 100644
---- a/arch/parisc/kernel/pacache.S
-+++ b/arch/parisc/kernel/pacache.S
-@@ -860,7 +860,7 @@ ENTRY(flush_dcache_page_asm)
- #endif
- 
- 	ldil		L%dcache_stride, %r1
--	ldw		R%dcache_stride(%r1), %r1
-+	ldw		R%dcache_stride(%r1), r23
- 
- #ifdef CONFIG_64BIT
- 	depdi,z		1, 63-PAGE_SHIFT,1, %r25
-@@ -868,26 +868,26 @@ ENTRY(flush_dcache_page_asm)
- 	depwi,z		1, 31-PAGE_SHIFT,1, %r25
- #endif
- 	add		%r28, %r25, %r25
--	sub		%r25, %r1, %r25
--
--
--1:      fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
--	fdc,m		%r1(%r28)
-+	sub		%r25, r23, %r25
-+
-+
-+1:      fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
-+	fdc,m		r23(%r28)
- 	cmpb,COND(<<)		%r28, %r25,1b
--	fdc,m		%r1(%r28)
-+	fdc,m		r23(%r28)
- 
- 	sync
- 
-@@ -936,7 +936,7 @@ ENTRY(flush_icache_page_asm)
- #endif
- 
- 	ldil		L%icache_stride, %r1
--	ldw		R%icache_stride(%r1), %r1
-+	ldw		R%icache_stride(%r1), %r23
- 
- #ifdef CONFIG_64BIT
- 	depdi,z		1, 63-PAGE_SHIFT,1, %r25
-@@ -944,28 +944,28 @@ ENTRY(flush_icache_page_asm)
- 	depwi,z		1, 31-PAGE_SHIFT,1, %r25
- #endif
- 	add		%r28, %r25, %r25
--	sub		%r25, %r1, %r25
-+	sub		%r25, %r23, %r25
- 
- 
- 	/* fic only has the type 26 form on PA1.1, requiring an
- 	 * explicit space specification, so use %sr4 */
--1:      fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
--	fic,m		%r1(%sr4,%r28)
-+1:      fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
- 	cmpb,COND(<<)	%r28, %r25,1b
--	fic,m		%r1(%sr4,%r28)
-+	fic,m		%r23(%sr4,%r28)
- 
- 	sync
- 
-
---Apple-Mail-39-1040884686
-Content-Type: text/plain; charset="US-ASCII"; format=flowed
-Content-Transfer-Encoding: 7bit
+James
 
 
-
---
-John David Anglin	dave.anglin@bell.net
-
-
---Apple-Mail-39-1040884686--
