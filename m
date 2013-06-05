@@ -1,48 +1,60 @@
-From: Chen Gang <gang.chen@asianux.com>
-Subject: Re: [PATCH] arch: parisc: kernel: using strlcpy() instead of strcpy()
-Date: Mon, 03 Jun 2013 16:55:42 +0800
-Message-ID: <51AC5A0E.4080408@asianux.com>
-References: <51A6A8F3.2030200@asianux.com> <20130530153551.GN19205@redacted.bos.redhat.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: fix kernel BUG at
+ arch/parisc/include/asm/mmzone.h:50 (part 2)
+Date: Wed, 5 Jun 2013 22:50:01 +0200
+Message-ID: <20130605205001.GA2769@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, udknight@gmail.com,
-	Greg KH <gregkh@linuxfoundation.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Linux-Arch <linux-arch@vger.kernel.org>
-To: Kyle McMartin <kmcmarti@redhat.com>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <20130530153551.GN19205@redacted.bos.redhat.com>
-List-ID: <linux-arch.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 05/30/2013 11:35 PM, Kyle McMartin wrote:
-> On Thu, May 30, 2013 at 09:18:43AM +0800, Chen Gang wrote:
->> > 
->> > 'boot_args' is an input args, and 'boot_command_line' has a fix length.
->> > 
->> > So need use strlcpy() instead of strcpy() to avoid memory overflow.
->> > 
-> This is basically impossible, since boot_args is fixed in size by palo,
-> initialized to zero, and length checked in the bootloader. It's also
-> only 256+4 bytes compared to the 1024 bytes set aside for
-> boot_command_line.
-> 
-> That said, it's harmless to use strlcpy here, and obviously (more)
-> correct. Thanks!
-> 
+Make sure that we really return -1 (instead of 0x00ff) as node id for
+page frame numbers which are not physically available.
 
-OK, thanks.
+This finally fixes the kernel panic when running
+cat /proc/kpageflags /proc/kpagecount.
 
-> Acked-by: Kyle McMartin <kyle@mcmartin.ca>
-> 
-> 
+Theoretically this patch now limits the number of physical memory ranges
+to 127 instead of 254, but currently we have MAX_PHYSMEM_RANGES
+hardcoded to 8 which is sufficient for all existing parisc machines.
+    
+Signed-off-by: Helge Deller <deller@gmx.de
 
-Thank you. :-)
-
-
--- 
-Chen Gang
-
-Asianux Corporation
+diff --git a/arch/parisc/include/asm/mmzone.h b/arch/parisc/include/asm/mmzone.h
+index cc50d33..b6b34a0 100644
+--- a/arch/parisc/include/asm/mmzone.h
++++ b/arch/parisc/include/asm/mmzone.h
+@@ -27,7 +27,7 @@ extern struct node_map_data node_data[];
+ 
+ #define PFNNID_SHIFT (30 - PAGE_SHIFT)
+ #define PFNNID_MAP_MAX  512     /* support 512GB */
+-extern unsigned char pfnnid_map[PFNNID_MAP_MAX];
++extern signed char pfnnid_map[PFNNID_MAP_MAX];
+ 
+ #ifndef CONFIG_64BIT
+ #define pfn_is_io(pfn) ((pfn & (0xf0000000UL >> PAGE_SHIFT)) == (0xf0000000UL >> PAGE_SHIFT))
+@@ -46,7 +46,7 @@ static inline int pfn_to_nid(unsigned long pfn)
+ 	i = pfn >> PFNNID_SHIFT;
+ 	BUG_ON(i >= ARRAY_SIZE(pfnnid_map));
+ 
+-	return (int)pfnnid_map[i];
++	return pfnnid_map[i];
+ }
+ 
+ static inline int pfn_valid(int pfn)
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 1c96564..505b56c 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -47,7 +47,7 @@ pte_t pg0[PT_INITIAL * PTRS_PER_PTE] __attribute__ ((__section__ (".data..vm0.pt
+ 
+ #ifdef CONFIG_DISCONTIGMEM
+ struct node_map_data node_data[MAX_NUMNODES] __read_mostly;
+-unsigned char pfnnid_map[PFNNID_MAP_MAX] __read_mostly;
++signed char pfnnid_map[PFNNID_MAP_MAX] __read_mostly;
+ #endif
+ 
+ static struct resource data_resource = {
