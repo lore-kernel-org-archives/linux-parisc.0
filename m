@@ -1,44 +1,31 @@
-From: "Helge Deller" <deller@gmx.de>
-Subject: Aw: Re: [PATCH] parisc: fix serial ports on C8000 workstation
-Date: Mon, 10 Jun 2013 10:27:09 +0200 (CEST)
-Message-ID: <trinity-3fb7467d-4d50-4362-8003-6bdc2d184770-1370852828916@3capp-gmx-bs02>
-References: <20130609210021.GA1009@p100.box>,
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: Re: [PATCH] parisc: fix serial ports on C8000 workstation
+Date: Mon, 10 Jun 2013 12:00:26 +0200
+Message-ID: <20130610100026.GA23862@alpha.franken.de>
+References: <20130609210021.GA1009@p100.box>
  <3684361.ciEK0E58Qm@donald.sf-tec.de>
+ <trinity-3fb7467d-4d50-4362-8003-6bdc2d184770-1370852828916@3capp-gmx-bs02>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-parisc@vger.kernel.org,
-	"James Bottomley" <James.Bottomley@hansenpartnership.com>,
-	"Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-To: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
+Content-Type: text/plain; charset=us-ascii
+Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>,
+	linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@hansenpartnership.com>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <3684361.ciEK0E58Qm@donald.sf-tec.de>
+In-Reply-To: <trinity-3fb7467d-4d50-4362-8003-6bdc2d184770-1370852828916@3capp-gmx-bs02>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > The C8000 workstation (64 bit kernel only) has a somewhat different
-> > serial port configuration that other models.
-> > Thonmas Bogendoerfers sent a patch to fix this in September 2010, w=
-hich
-> > was now minimally modified by me.
+On Mon, Jun 10, 2013 at 10:27:09AM +0200, Helge Deller wrote:
+> Maybe you want to clean up the other parts, e.g. impmi or pci_mmap?
 
-I shouldn't send patches that late... too many typos and not very good =
-patch description :-)
+ipmi is already cleaned up, but I didn't get any response from the
+maintainer.
 
-> Cool, that explains why it doesn't work for me. And it saves me the t=
-ime to
-> debug what _I_ did wrong ;)
+http://www.spinics.net/lists/linux-parisc/msg03191.html
 
-Rolf, the original patch from Thomas Bogend=C3=B6rfer including his com=
-ments is here:
-http://comments.gmane.org/gmane.linux.ports.parisc/3258
-(if you need the patch only, go here: https://patchwork.kernel.org/patc=
-h/357572/raw/)
+Thomas.
 
-Maybe you want to clean up the other parts, e.g. impmi or pci_mmap?
-
-Helge
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
