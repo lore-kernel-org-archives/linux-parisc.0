@@ -1,36 +1,44 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] parisc: fix serial ports on C8000 workstation
-Date: Sun, 9 Jun 2013 18:21:22 -0400
-Message-ID: <BLU0-SMTP43B2DEB0FF4F94FB003F16979B0@phx.gbl>
-References: <20130609210021.GA1009@p100.box> <3684361.ciEK0E58Qm@donald.sf-tec.de>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Rolf Eike Beer <eike-kernel@sf-tec.de>
+From: "Helge Deller" <deller@gmx.de>
+Subject: Aw: Re: [PATCH] parisc: fix serial ports on C8000 workstation
+Date: Mon, 10 Jun 2013 10:27:09 +0200 (CEST)
+Message-ID: <trinity-3fb7467d-4d50-4362-8003-6bdc2d184770-1370852828916@3capp-gmx-bs02>
+References: <20130609210021.GA1009@p100.box>,
+ <3684361.ciEK0E58Qm@donald.sf-tec.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-parisc@vger.kernel.org,
+	"James Bottomley" <James.Bottomley@hansenpartnership.com>,
+	"Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+To: "Rolf Eike Beer" <eike-kernel@sf-tec.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <3684361.ciEK0E58Qm@donald.sf-tec.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 9-Jun-13, at 5:49 PM, Rolf Eike Beer wrote:
+> > The C8000 workstation (64 bit kernel only) has a somewhat different
+> > serial port configuration that other models.
+> > Thonmas Bogendoerfers sent a patch to fix this in September 2010, w=
+hich
+> > was now minimally modified by me.
 
->> 	/* 7.272727MHz on Lasi.  Assumed the same for Dino, Wax and Timi. */
->> -	uart.port.uartclk	= 7272727;
->> +	uart.port.uartclk	= (dev->id.sversion != 0xad) ?
->> +					7272727 : 1843200;
->
-> If there is a nice comment explaining 72 another nice comment for  
-> the other
-> number should be added.
+I shouldn't send patches that late... too many typos and not very good =
+patch description :-)
 
-1.8432 MHz is a common oscillator frequency for UARTs.  See for example,
-http://en.wikipedia.org/wiki/Crystal_oscillator_frequencies
+> Cool, that explains why it doesn't work for me. And it saves me the t=
+ime to
+> debug what _I_ did wrong ;)
 
-Dave
+Rolf, the original patch from Thomas Bogend=C3=B6rfer including his com=
+ments is here:
+http://comments.gmane.org/gmane.linux.ports.parisc/3258
+(if you need the patch only, go here: https://patchwork.kernel.org/patc=
+h/357572/raw/)
+
+Maybe you want to clean up the other parts, e.g. impmi or pci_mmap?
+
+Helge
 --
-John David Anglin	dave.anglin@bell.net
-
-
-
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
