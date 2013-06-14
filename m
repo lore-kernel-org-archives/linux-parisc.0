@@ -1,20 +1,21 @@
-From: Thomas Gleixner <tglx@linutronix.de>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 Subject: Re: [PATCH RESEND] fix WARNING: at kernel/cpu/idle.c:96
-Date: Fri, 14 Jun 2013 22:49:06 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1306142245050.24522@ionos.tec.linutronix.de>
-References: <1371236142.2726.43.camel@dabdike> <alpine.DEB.2.02.1306142227260.24522@ionos.tec.linutronix.de>
+Date: Fri, 14 Jun 2013 14:50:33 -0700
+Message-ID: <1371246633.2726.59.camel@dabdike>
+References: <1371236142.2726.43.camel@dabdike>
+	 <alpine.DEB.2.02.1306142227260.24522@ionos.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-8859-15"
 Cc: Parisc List <linux-parisc@vger.kernel.org>,
 	linux-kernel <linux-kernel@vger.kernel.org>,
 	Andrew Morton <akpm@linux-foundation.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <alpine.DEB.2.02.1306142227260.24522@ionos.tec.linutronix.de>
-List-ID: <linux-parisc.vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 14 Jun 2013, Thomas Gleixner wrote:
+On Fri, 2013-06-14 at 22:39 +0200, Thomas Gleixner wrote:
 > On Fri, 14 Jun 2013, James Bottomley wrote:
 > 
 > > >From 48bbf44a96676ce6f520a408378730c976e9a11e Mon Sep 17 00:00:00 2001
@@ -33,7 +34,10 @@ On Fri, 14 Jun 2013, Thomas Gleixner wrote:
 > 
 > What's the stable tag for? This code got merged in 3,10, so stable is
 > totally irrelevant.
-> 
+
+Hm, OK, it's been so long I'm misremembering which kernel versions need
+it.
+
 > > Signed-off-by: James Bottomley <JBottomley@Parallels.com>
 > > 
 > > ---
@@ -45,7 +49,13 @@ On Fri, 14 Jun 2013, Thomas Gleixner wrote:
 > 
 > Hold your breath. I was not even CC'ed on the original patch and I
 > admit that I ignored the patch which starts with [PARISC].
-> 
+
+Oh, you were ... I made sure of that. It's thread with subject
+
+Re: [PATCH] parisc: avoid WARNING: at kernel/cpu/idle.c:96
+
+You were cc'd from the one dated Wed, 08 May 2013 14:05:34 -0700
+
 > If the subject line would have started with [idle], [core/idle] I
 > definitely would have paid attention.
 > 
@@ -56,24 +66,9 @@ On Fri, 14 Jun 2013, Thomas Gleixner wrote:
 > 
 > I'll pick it up and fix the changelog.
 
-And it needs fixing. It says:
+Sure, whatever you think is best ... Given Linus' current mood I think
+leading with a description of the actual user visible problem being
+fixed is a good way to make sure he doesn't get annoyed, but it's your
+call.
 
-"... way the idle task is selected initially using the weak
- arch_cpu_idle() in idle.c causes us to enter this place once with
- interrupts enabled.  Fix this by disabling interrupts in the weak
- arch_cpu_idle() code."
-
-And the patch does:
-
- void __weak arch_cpu_idle(void)
- {
-        cpu_idle_force_poll = 1;
-+       local_irq_enable();
- }
-
-Instead of bullying around you might consider to read
-Documentation/SubmittingPatches.
-
-Thanks,
-
-	tglx
+James
