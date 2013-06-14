@@ -1,7 +1,8 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: provide pci_mmap_page_range() for parisc
-Date: Fri, 14 Jun 2013 09:05:41 +0200
-Message-ID: <20130614070541.GA10443@p100.box>
+Subject: [PATCH] parisc: fix LMMIO mismatch between PAT length and MASK
+ register
+Date: Fri, 14 Jun 2013 09:11:42 +0200
+Message-ID: <20130614071142.GB10443@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -13,60 +14,31 @@ List-Id: linux-parisc.vger.kernel.org
 
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-pci_mmap_page_range() is needed for X11-server support on C8000 with ATI
-FireGL card.
+The LMMIO length reported by PAT and the length given by the LBA MASK
+register are not consistent. This leads e.g. to a non-working ATI FireGL
+card with the radeon DRM driver since the memory can't be mapped.
+
+Fix this by correctly adjusting the resource sizes.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/include/asm/pci.h b/arch/parisc/include/asm/pci.h
-index 3234f49..4651540 100644
---- a/arch/parisc/include/asm/pci.h
-+++ b/arch/parisc/include/asm/pci.h
-@@ -225,4 +225,9 @@ static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
- 	return channel ? 15 : 14;
- }
- 
-+#define HAVE_PCI_MMAP
-+
-+extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+	enum pci_mmap_state mmap_state, int write_combine);
-+
- #endif /* __ASM_PARISC_PCI_H */
-diff --git a/arch/parisc/kernel/pci.c b/arch/parisc/kernel/pci.c
-index 6030905..64f2764 100644
---- a/arch/parisc/kernel/pci.c
-+++ b/arch/parisc/kernel/pci.c
-@@ -220,6 +220,33 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- }
- 
- 
-+int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+			enum pci_mmap_state mmap_state, int write_combine)
-+{
-+	unsigned long prot;
-+
-+	/*
-+	 * I/O space can be accessed via normal processor loads and stores on
-+	 * this platform but for now we elect not to do this and portable
-+	 * drivers should not do this anyway.
-+	 */
-+	if (mmap_state == pci_mmap_io)
-+		return -EINVAL;
-+
-+	if (write_combine)
-+		return -EINVAL;
-+
-+	/*
-+	 * Ignore write-combine; for now only return uncached mappings.
-+	 */
-+	prot = pgprot_val(vma->vm_page_prot);
-+	prot |= _PAGE_NO_CACHE;
-+	vma->vm_page_prot = __pgprot(prot);
-+
-+	return remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
-+		vma->vm_end - vma->vm_start, vma->vm_page_prot);
-+}
-+
- /*
-  * A driver is enabling the device.  We make sure that all the appropriate
-  * bits are set to allow the device to operate as the driver is expecting.
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index 1f05913..7dc0e40 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -994,6 +994,15 @@ lba_pat_resources(struct parisc_device *pa_dev, struct lba_device *lba_dev)
+ 		case PAT_LMMIO:
+ 			/* used to fix up pre-initialized MEM BARs */
+ 			if (!lba_dev->hba.lmmio_space.flags) {
++				unsigned long lba_len;
++				lba_len = ~READ_REG32(lba_dev->hba.base_addr
++						+ LBA_LMMIO_MASK);
++				if ((p->end - p->start) != lba_len) {
++					pr_warn("PCI%02x LMMIO mismatch between PAT length (0x%lx) and MASK register (0x%lx), fixing.\n",
++					  (int)lba_dev->hba.bus_num.start,
++						p->end - p->start, lba_len);
++					p->end = p->start + lba_len;
++				}
+ 				sprintf(lba_dev->hba.lmmio_name,
+ 						"PCI%02x LMMIO",
+ 						(int)lba_dev->hba.bus_num.start);
