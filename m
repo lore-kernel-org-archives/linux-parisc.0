@@ -1,49 +1,101 @@
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: [PATCH] parisc: delete __cpuinit usage from all users
-Date: Tue, 18 Jun 2013 14:36:08 -0400
-Message-ID: <51C0A898.4020909@windriver.com>
-References: <1371501264-12546-1-git-send-email-paul.gortmaker@windriver.com> <1371509247.8130.34.camel@dabdike>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] parisc: fix LMMIO mismatch between PAT length and MASK
+ register
+Date: Tue, 18 Jun 2013 23:21:25 +0200
+Message-ID: <20130618212125.GA20423@p100.box>
+References: <20130614071142.GB10443@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Cc: Helge Deller <deller@gmx.de>, <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1371509247.8130.34.camel@dabdike>
+In-Reply-To: <20130614071142.GB10443@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 13-06-17 06:47 PM, James Bottomley wrote:
-> On Mon, 2013-06-17 at 16:34 -0400, Paul Gortmaker wrote:
->> The __cpuinit type of throwaway sections might have made sense
->> some time ago when RAM was more constrained, but now the savings
->> do not offset the cost and complications.  For example, the fix in
->> commit 5e427ec2d0 ("x86: Fix bit corruption at CPU resume time")
->> is a good example of the nasty type of bugs that can be created
->> with improper use of the various __init prefixes.
->>
->> After a discussion on LKML[1] it was decided that cpuinit should go
->> the way of devinit and be phased out.  Once all the users are gone,
->> we can then finally remove the macros themselves from linux/init.h.
+* Helge Deller <deller@gmx.de>:
+> From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 > 
-> Fine by us ... I'd recommend just rolling this into one patch for all
-> the cpuinit tags and sending it via the trivial tree (which goes to
-> linux-next) that way we'll know if we do anything to compromise it.
-
-Thanks James,
-
-I'll add an ack'd by for you and keep it with the arch agnostic
-chunks.  I do want it to go by the arch maintainers 1st though,
-and give them 1st right of refusal on carrying the change; e.g.
-for MIPS, Ralf wanted to carry the patch due to the level of
-tree activity still pending there.  And for sparc, it touches
-some trampoline code, so I want to be sure I don't inflict a
-silent boot death on the SPARC folks.  It will get in linux-next
-though -- I'll be asking Stephen for that shortly.
-
-P.
---
-
+> The LMMIO length reported by PAT and the length given by the LBA MASK
+> register are not consistent. This leads e.g. to a non-working ATI FireGL
+> card with the radeon DRM driver since the memory can't be mapped.
 > 
-> James
+> Fix this by correctly adjusting the resource sizes.
 > 
-> 
+> Signed-off-by: Helge Deller <deller@gmx.de>
+
+This is an updated/cleaner approach to this problem.
+Still I want some more testing on it with various machines.
+
+Basically we now extend the LMMIO range up to 256MB above the initial
+start of the region if the value of the MASK register seems to allow it.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index 1f05913..acc3fe8 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -613,6 +613,46 @@ truncate_pat_collision(struct resource *root, struct resource *new)
+ 	return 0;	/* truncation successful */
+ }
+ 
++/*
++ * extend_lmmio_len: extend lmmio range to maximum length
++ */
++static unsigned long
++extend_lmmio_len(unsigned long start, unsigned long end, unsigned long lba_len)
++{
++	struct resource *tmp;
++
++	pr_debug("LMMIO mismatch: PAT length = 0x%lx, MASK register = 0x%lx\n",
++		end - start, lba_len);
++
++	lba_len = min(lba_len+1, 256UL*1024*1024); /* limit to 256 MB */
++
++	pr_info("LBA: lmmio_space [0x%lx-0x%lx] - original\n", start, end);
++
++	end += lba_len;
++	if (end < start) /* fix overflow */
++		end = -1ULL;
++
++	pr_debug("LBA: lmmio_space [0x%lx-0x%lx] - current\n", start, end);
++
++	/* first overlap */
++	for (tmp = iomem_resource.child; tmp; tmp = tmp->sibling) {
++		pr_debug("LBA: testing %pR\n", tmp);
++		if (tmp->start == start)
++			continue; /* ignore ourself */
++		if (tmp->end < start)
++			continue;
++		if (tmp->start > end)
++			continue;
++		if (end >= tmp->start)
++			end = tmp->start - 1;
++	}
++
++	pr_info("LBA: lmmio_space [0x%lx-0x%lx] - new\n", start, end);
++
++	/* return new end */
++	return end;
++}
++
+ #else
+ #define truncate_pat_collision(r,n)  (0)
+ #endif
+@@ -994,6 +1034,14 @@ lba_pat_resources(struct parisc_device *pa_dev, struct lba_device *lba_dev)
+ 		case PAT_LMMIO:
+ 			/* used to fix up pre-initialized MEM BARs */
+ 			if (!lba_dev->hba.lmmio_space.flags) {
++				unsigned long lba_len;
++
++				lba_len = ~READ_REG32(lba_dev->hba.base_addr
++						+ LBA_LMMIO_MASK);
++				if ((p->end - p->start) != lba_len)
++					p->end = extend_lmmio_len(p->start,
++						p->end, lba_len);
++
+ 				sprintf(lba_dev->hba.lmmio_name,
+ 						"PCI%02x LMMIO",
+ 						(int)lba_dev->hba.bus_num.start);
