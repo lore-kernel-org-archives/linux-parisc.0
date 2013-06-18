@@ -1,101 +1,50 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: fix LMMIO mismatch between PAT length and MASK
- register
-Date: Tue, 18 Jun 2013 23:21:25 +0200
-Message-ID: <20130618212125.GA20423@p100.box>
-References: <20130614071142.GB10443@p100.box>
+Subject: [GIT PULL] parisc updates for v3.10
+Date: Tue, 18 Jun 2013 23:39:56 +0200
+Message-ID: <20130618213956.GA20451@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130614071142.GB10443@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-* Helge Deller <deller@gmx.de>:
-> From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> 
-> The LMMIO length reported by PAT and the length given by the LBA MASK
-> register are not consistent. This leads e.g. to a non-working ATI FireGL
-> card with the radeon DRM driver since the memory can't be mapped.
-> 
-> Fix this by correctly adjusting the resource sizes.
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
+Hi Linus,
 
-This is an updated/cleaner approach to this problem.
-Still I want some more testing on it with various machines.
+Please pull the latest parisc architecture fixes from:
 
-Basically we now extend the LMMIO range up to 256MB above the initial
-start of the region if the value of the MASK register seems to allow it.
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.10
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+It contains a kernel segfault fix when reading /proc/kpageflags or /proc/kpagecount,
+two fixes for the serial port and PCI graphic card support on C8000 workstations
+and a fix to use unshadowed registers for flushing D- and I-caches.
 
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index 1f05913..acc3fe8 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -613,6 +613,46 @@ truncate_pat_collision(struct resource *root, struct resource *new)
- 	return 0;	/* truncation successful */
- }
- 
-+/*
-+ * extend_lmmio_len: extend lmmio range to maximum length
-+ */
-+static unsigned long
-+extend_lmmio_len(unsigned long start, unsigned long end, unsigned long lba_len)
-+{
-+	struct resource *tmp;
-+
-+	pr_debug("LMMIO mismatch: PAT length = 0x%lx, MASK register = 0x%lx\n",
-+		end - start, lba_len);
-+
-+	lba_len = min(lba_len+1, 256UL*1024*1024); /* limit to 256 MB */
-+
-+	pr_info("LBA: lmmio_space [0x%lx-0x%lx] - original\n", start, end);
-+
-+	end += lba_len;
-+	if (end < start) /* fix overflow */
-+		end = -1ULL;
-+
-+	pr_debug("LBA: lmmio_space [0x%lx-0x%lx] - current\n", start, end);
-+
-+	/* first overlap */
-+	for (tmp = iomem_resource.child; tmp; tmp = tmp->sibling) {
-+		pr_debug("LBA: testing %pR\n", tmp);
-+		if (tmp->start == start)
-+			continue; /* ignore ourself */
-+		if (tmp->end < start)
-+			continue;
-+		if (tmp->start > end)
-+			continue;
-+		if (end >= tmp->start)
-+			end = tmp->start - 1;
-+	}
-+
-+	pr_info("LBA: lmmio_space [0x%lx-0x%lx] - new\n", start, end);
-+
-+	/* return new end */
-+	return end;
-+}
-+
- #else
- #define truncate_pat_collision(r,n)  (0)
- #endif
-@@ -994,6 +1034,14 @@ lba_pat_resources(struct parisc_device *pa_dev, struct lba_device *lba_dev)
- 		case PAT_LMMIO:
- 			/* used to fix up pre-initialized MEM BARs */
- 			if (!lba_dev->hba.lmmio_space.flags) {
-+				unsigned long lba_len;
-+
-+				lba_len = ~READ_REG32(lba_dev->hba.base_addr
-+						+ LBA_LMMIO_MASK);
-+				if ((p->end - p->start) != lba_len)
-+					p->end = extend_lmmio_len(p->start,
-+						p->end, lba_len);
-+
- 				sprintf(lba_dev->hba.lmmio_name,
- 						"PCI%02x LMMIO",
- 						(int)lba_dev->hba.bus_num.start);
+
+This patchset touches parisc-specific source files only.
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Helge Deller (1):
+      parisc: fix kernel BUG at arch/parisc/include/asm/mmzone.h:50 (part 2)
+
+John David Anglin (1):
+      parisc: Use unshadowed index register for flush instructions in flush_dcache_page_asm and flush_icache_page_asm
+
+Thomas Bogendoerfer (2):
+      parisc: fix serial ports on C8000 workstation
+      parisc: provide pci_mmap_page_range() for parisc
+
+ arch/parisc/include/asm/mmzone.h   |  4 +-
+ arch/parisc/include/asm/pci.h      |  5 +++
+ arch/parisc/kernel/hardware.c      |  1 +
+ arch/parisc/kernel/pacache.S       | 76 +++++++++++++++++++-------------------
+ arch/parisc/kernel/pci.c           | 27 ++++++++++++++
+ arch/parisc/mm/init.c              |  2 +-
+ drivers/parisc/iosapic.c           | 66 +++++++++++++++++++++++++++++++++
+ drivers/tty/serial/8250/8250_gsc.c | 10 ++++-
+ 8 files changed, 149 insertions(+), 42 deletions(-)
