@@ -1,58 +1,40 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Fwd: [RFC PATCH 11/16] hppa: locks: remove unused arch_*_relax operations
-Date: Fri, 21 Jun 2013 20:32:37 +0200
-Message-ID: <51C49C45.1060207@gmx.de>
-References: <1371835057-19335-12-git-send-email-will.deacon@arm.com>
+Subject: [PATCH] parisc: more capabilities info in /proc/cpuinfo
+Date: Fri, 21 Jun 2013 23:32:44 +0200
+Message-ID: <20130621213244.GA19970@p100.box>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------040803040109040107000308"
-To: Will Deacon <will.deacon@arm.com>,
-	linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1371835057-19335-12-git-send-email-will.deacon@arm.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------040803040109040107000308
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Thanks Will,
-
-forwarding to linux-parisc@vger.kernel.org so that it gets into parisc patchwork.
-
-I'll queue this patch up for 3.11 if it's OK for you.
-
-Helge
-
--------- Original Message --------
-Subject: [RFC PATCH 11/16] hppa: locks: remove unused arch_*_relax operations
-Date: Fri, 21 Jun 2013 18:17:32 +0100
-From: Will Deacon <will.deacon@arm.com>
-To: linux-arch@vger.kernel.org
-CC: Will Deacon <will.deacon@arm.com>, Helge Deller <deller@gmx.de>
-
-The arch_{spin,read,write}_relax macros are not used anywhere in the
-kernel and are typically just aliases for cpu_relax().
-
-This patch removes the unused definitions for parisc.
-
-Cc: Helge Deller <deller@gmx.de>
-Signed-off-by: Will Deacon <will.deacon@arm.com>
----
- arch/parisc/include/asm/spinlock.h | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/arch/parisc/include/asm/spinlock.h b/arch/parisc/include/asm/spinlock.h
-index 3516e0b..64f2992 100644
---- a/arch/parisc/include/asm/spinlock.h
-+++ b/arch/parisc/include/asm/spinlock.h
-@@ -191,8 +191,4 @@ static __inline__ int arch_write_can_lock(arch_rwlock_t *rw)
- #define arch_read_lock_flags(lock, flags) arch_read_lock(lock)
- #define arch_write_lock_flags(lock, flags) arch_write_lock(lock)
+diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
+index c8fb61e..4997909 100644
+--- a/arch/parisc/kernel/processor.c
++++ b/arch/parisc/kernel/processor.c
+@@ -374,7 +374,20 @@ show_cpuinfo (struct seq_file *m, void *v)
+ 			seq_printf(m, " os32");
+ 		if (boot_cpu_data.pdc.capabilities & PDC_MODEL_OS64)
+ 			seq_printf(m, " os64");
+-		seq_printf(m, "\n");
++		if (boot_cpu_data.pdc.capabilities & PDC_MODEL_IOPDIR_FDC)
++			seq_printf(m, " iopdir_fdc");
++		switch (boot_cpu_data.pdc.capabilities & PDC_MODEL_NVA_MASK) {
++			case PDC_MODEL_NVA_SUPPORTED:
++				seq_printf(m, " nva_supported");
++				break;
++			case PDC_MODEL_NVA_SLOW:
++				seq_printf(m, " nva_slow");
++				break;
++			case PDC_MODEL_NVA_UNSUPPORTED:
++				seq_printf(m, " needs_equivalent_aliasing");
++				break;
++		}
++		seq_printf(m, " (0x%02lx)\n", boot_cpu_data.pdc.capabilities);
  
--#define arch_spin_relax(lock)	cpu_relax()
--#define arch_read_relax(lock)	cpu_relax()
--#define arch_write_relax(lock)	cpu_relax()
---------------040803040109040107000308--
+ 		seq_printf(m, "model\t\t: %s\n"
+ 				"model name\t: %s\n",
