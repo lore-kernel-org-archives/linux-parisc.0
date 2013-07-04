@@ -1,97 +1,222 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: megaraid hang on parisc
-Date: Wed, 03 Jul 2013 13:31:51 -0700
-Message-ID: <1372883511.3601.69.camel@dabdike>
-References: <51D47B79.7080600@gmx.de>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Fix gcc miscompilation in pa_memcpy()
+Date: Thu, 4 Jul 2013 22:34:11 +0200
+Message-ID: <20130704203411.GA1258@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave.anglin@bell.net>
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <51D47B79.7080600@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2013-07-03 at 21:28 +0200, Helge Deller wrote:
->                 Cc:
-> list parisc-linux
-> <parisc-linux@lists.parisc-linux.org>
+When running the LTP testsuite one may hit this kernel BUG() with the
+write06 testcase:
 
-Wrong list ... we switched to vger long ago (cc updated)
+kernel BUG at mm/filemap.c:2023!
+CPU: 1 PID: 8614 Comm: writev01 Not tainted 3.10.0-rc7-64bit-c3000+ #6
+IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000401e6e84 00000000401e6e88
+ IIR: 03ffe01f    ISR: 0000000010340000  IOR: 000001fbe0380820
+ CPU:        1   CR30: 00000000bef80000 CR31: ffffffffffffffff
+ ORIG_R28: 00000000bdc192c0
+ IAOQ[0]: iov_iter_advance+0x3c/0xc0
+ IAOQ[1]: iov_iter_advance+0x40/0xc0
+ RP(r2): generic_file_buffered_write+0x204/0x3f0
+Backtrace:
+ [<00000000401e764c>] generic_file_buffered_write+0x204/0x3f0
+ [<00000000401eab24>] __generic_file_aio_write+0x244/0x448
+ [<00000000401eadc0>] generic_file_aio_write+0x98/0x150
+ [<000000004024f460>] do_sync_readv_writev+0xc0/0x130
+ [<000000004025037c>] compat_do_readv_writev+0x12c/0x340
+ [<00000000402505f8>] compat_writev+0x68/0xa0
+ [<0000000040251d88>] compat_SyS_writev+0x98/0xf8
 
-> Hi James,
-> 
-> one of my parisc machines has a built-in (HP) megaraid controller.
-> 
-> With Linux kernel 3.10(final) I get a hang in issue_scb_block() in drivers/scsi/megaraid.c
-> which is then finally detected and killed by the hung tasks thread.   
-> Maybe you have an idea?
+Reason for this crash is a gcc miscompilation in the fault handlers of
+pa_memcpy() which return the fault address instead of the copied bytes.
+Since this seems to be a generic problem with gcc-4.7.x (and below), it's
+better to simplify the fault handlers in pa_memcpy to avoid this problem.
 
-It's probably one of
+Here is a simple reproducer for the problem:
 
-     1. Endianness issue in the driver meaning the command doesn't look
-        right to the firmware
-     2. Failure to Issue, may be a missed PCI post flush
-     3. Interrupt routing problem
+int main(int argc, char **argv)
+{
+	int fd, nbytes;
+	struct iovec wr_iovec[] = {
+		{ "TEST STRING                     ",32},
+		{ (char*)0x40005000,32} }; // random memory.
+	fd = open(DATA_FILE, O_RDWR | O_CREAT, 0666);
+	nbytes = writev(fd, wr_iovec, 2);
+	printf("return value = %d, errno %d (%s)\n",
+		nbytes, errno, strerror(errno));
+	return 0;
+}
 
-But without diagnosing, it's hard to say.
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
 
-James
-
-> This is not special to 3.10 - it happens with older kernel releases as well.
-> 
-> Helge
-> 
-> Synthesizing the initial hotplug events...megaraid_legacy 0000:50:00.1: enabling device (0000 -> 0002)
-> megaraid_legacy 0000:50:00.1: enabling SERR and PARITY (0002 -> 0142)
-> megaraid: found 0x8086:0x1960:bus 80:slot 0:func 1
-> scsi4:Found MegaRAID controller at 0x7e000, IRQ:71
-> done.
-> Waiting for /dev to be fully populated...
-> ....
-> BUG: soft lockup - CPU#2 stuck for 23s! [modprobe:1272]
-> Modules linked in: megaraid(+)
-> CPU: 2 PID: 1272 Comm: modprobe Not tainted 3.10.0-64bit-c3000+ #55
-> task: 00000000bedee100 ti: 00000000bdca8000 task.ti: 00000000bdca8000
-> 
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00001000000011001111111100001111 Not tainted
-> r00-03  000000ff080cff0f 00000000040a3000 00000000040abca0 00000000bdca8bb0
-> r04-07  00000000040a3000 00000000bdc87010 00000000bed0b490 00000000bdc87008
-> r08-11  0000000000000050 00000000bed0b490 00000000bdca8a88 000000000007e000
-> r12-15  ffffffff94000000 00000000bed0b000 0000000000000047 00000000bdc86000
-> r16-19  0000000000001228 000000000000000f 0000000000005001 00000000000000ff
-> r20-23  00000000bdc8701e 00000000bdca8a96 00000000bf7220c0 0000001ae4d03500
-> r24-27  0000000040b58cf0 00000000bdca8a88 00000000bed0b490 00000000040a3000
-> r28-31  00000000000000ff 00000000bdca8b80 00000000bdca8c70 00000000000000ff
-> sr00-03  0000000000000000 0000000000000000 0000000000000000 000000000007f000
-> sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> 
-> IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000040a566c 00000000040a5664
->  IIR: 08000240    ISR: 00000000bdca8d48  IOR: 0000000040c2ef80
->  CPU:        2   CR30: 00000000bdca8000 CR31: ffffffffffffffff
->  ORIG_R28: 0000000000000000
->  IAOQ[0]: issue_scb_block+0x134/0x4d8 [megaraid]
->  IAOQ[1]: issue_scb_block+0x12c/0x4d8 [megaraid]
->  RP(r2): megaraid_probe_one+0x808/0x1a68 [megaraid]
-> Backtrace:
->  [<00000000040abca0>] megaraid_probe_one+0x808/0x1a68 [megaraid]
-> 
-> Kernel panic - not syncing: softlockup: hung tasks
-> CPU: 2 PID: 1272 Comm: modprobe Not tainted 3.10.0-64bit-c3000+ #55
-> Backtrace:
->  [<000000004012041c>] show_stack+0x2c/0x40
->  [<00000000403bf2fc>] dump_stack+0x64/0x78
->  [<000000004014b4a4>] panic+0x1a4/0x4f0
->  [<00000000401d1840>] watchdog_timer_fn+0x328/0x350
->  [<00000000401891b4>] hrtimer_run_queues+0x14c/0x3e0
->  [<0000000040163e74>] run_local_timers+0x34/0x70
->  [<0000000040163f28>] update_process_times+0x78/0x148
->  [<0000000040121ae0>] timer_interrupt+0x200/0x288
->  [<00000000401d2c98>] handle_irq_event_percpu+0xb8/0x378
->  [<00000000401d8d0c>] handle_percpu_irq+0xbc/0xf8
->  [<00000000401d1d0c>] generic_handle_irq+0x4c/0x68
->  [<00000000401062d0>] syscall_do_resched+0x28/0x34
-
-
-
+diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
+index a49cc81..ac4370b 100644
+--- a/arch/parisc/lib/memcpy.c
++++ b/arch/parisc/lib/memcpy.c
+@@ -2,6 +2,7 @@
+  *    Optimized memory copy routines.
+  *
+  *    Copyright (C) 2004 Randolph Chung <tausq@debian.org>
++ *    Copyright (C) 2013 Helge Deller <deller@gmx.de>
+  *
+  *    This program is free software; you can redistribute it and/or modify
+  *    it under the terms of the GNU General Public License as published by
+@@ -153,17 +154,21 @@ static inline void prefetch_dst(const void *addr)
+ #define prefetch_dst(addr) do { } while(0)
+ #endif
+ 
++#define PA_MEMCPY_OK		0
++#define PA_MEMCPY_LOAD_ERROR	1
++#define PA_MEMCPY_STORE_ERROR	2
++
+ /* Copy from a not-aligned src to an aligned dst, using shifts. Handles 4 words
+  * per loop.  This code is derived from glibc. 
+  */
+-static inline unsigned long copy_dstaligned(unsigned long dst, unsigned long src, unsigned long len, unsigned long o_dst, unsigned long o_src, unsigned long o_len)
++static inline unsigned long copy_dstaligned(unsigned long dst,
++					unsigned long src, unsigned long len)
+ {
+ 	/* gcc complains that a2 and a3 may be uninitialized, but actually
+ 	 * they cannot be.  Initialize a2/a3 to shut gcc up.
+ 	 */
+ 	register unsigned int a0, a1, a2 = 0, a3 = 0;
+ 	int sh_1, sh_2;
+-	struct exception_data *d;
+ 
+ 	/* prefetch_src((const void *)src); */
+ 
+@@ -197,7 +202,7 @@ static inline unsigned long copy_dstaligned(unsigned long dst, unsigned long src
+ 			goto do2;
+ 		case 0:
+ 			if (len == 0)
+-				return 0;
++				return PA_MEMCPY_OK;
+ 			/* a3 = ((unsigned int *) src)[0];
+ 			   a0 = ((unsigned int *) src)[1]; */
+ 			ldw(s_space, 0, src, a3, cda_ldw_exc);
+@@ -256,42 +261,35 @@ do0:
+ 	preserve_branch(handle_load_error);
+ 	preserve_branch(handle_store_error);
+ 
+-	return 0;
++	return PA_MEMCPY_OK;
+ 
+ handle_load_error:
+ 	__asm__ __volatile__ ("cda_ldw_exc:\n");
+-	d = &__get_cpu_var(exception_data);
+-	DPRINTF("cda_ldw_exc: o_len=%lu fault_addr=%lu o_src=%lu ret=%lu\n",
+-		o_len, d->fault_addr, o_src, o_len - d->fault_addr + o_src);
+-	return o_len * 4 - d->fault_addr + o_src;
++	return PA_MEMCPY_LOAD_ERROR;
+ 
+ handle_store_error:
+ 	__asm__ __volatile__ ("cda_stw_exc:\n");
+-	d = &__get_cpu_var(exception_data);
+-	DPRINTF("cda_stw_exc: o_len=%lu fault_addr=%lu o_dst=%lu ret=%lu\n",
+-		o_len, d->fault_addr, o_dst, o_len - d->fault_addr + o_dst);
+-	return o_len * 4 - d->fault_addr + o_dst;
++	return PA_MEMCPY_STORE_ERROR;
+ }
+ 
+ 
+-/* Returns 0 for success, otherwise, returns number of bytes not transferred. */
+-static unsigned long pa_memcpy(void *dstp, const void *srcp, unsigned long len)
++/* Returns PA_MEMCPY_OK, PA_MEMCPY_LOAD_ERROR or PA_MEMCPY_STORE_ERROR.
++ * In case of an access fault the faulty address can be read from the per_cpu
++ * exception data struct. */
++static unsigned long pa_memcpy_internal(void *dstp, const void *srcp,
++					unsigned long len)
+ {
+ 	register unsigned long src, dst, t1, t2, t3;
+ 	register unsigned char *pcs, *pcd;
+ 	register unsigned int *pws, *pwd;
+ 	register double *pds, *pdd;
+-	unsigned long ret = 0;
+-	unsigned long o_dst, o_src, o_len;
+-	struct exception_data *d;
++	unsigned long ret;
+ 
+ 	src = (unsigned long)srcp;
+ 	dst = (unsigned long)dstp;
+ 	pcs = (unsigned char *)srcp;
+ 	pcd = (unsigned char *)dstp;
+ 
+-	o_dst = dst; o_src = src; o_len = len;
+-
+ 	/* prefetch_src((const void *)srcp); */
+ 
+ 	if (len < THRESHOLD)
+@@ -401,7 +399,7 @@ byte_copy:
+ 		len--;
+ 	}
+ 
+-	return 0;
++	return PA_MEMCPY_OK;
+ 
+ unaligned_copy:
+ 	/* possibly we are aligned on a word, but not on a double... */
+@@ -438,8 +436,7 @@ unaligned_copy:
+ 		src = (unsigned long)pcs;
+ 	}
+ 
+-	ret = copy_dstaligned(dst, src, len / sizeof(unsigned int), 
+-		o_dst, o_src, o_len);
++	ret = copy_dstaligned(dst, src, len / sizeof(unsigned int));
+ 	if (ret)
+ 		return ret;
+ 
+@@ -454,17 +451,41 @@ unaligned_copy:
+ 
+ handle_load_error:
+ 	__asm__ __volatile__ ("pmc_load_exc:\n");
+-	d = &__get_cpu_var(exception_data);
+-	DPRINTF("pmc_load_exc: o_len=%lu fault_addr=%lu o_src=%lu ret=%lu\n",
+-		o_len, d->fault_addr, o_src, o_len - d->fault_addr + o_src);
+-	return o_len - d->fault_addr + o_src;
++	return PA_MEMCPY_LOAD_ERROR;
+ 
+ handle_store_error:
+ 	__asm__ __volatile__ ("pmc_store_exc:\n");
++	return PA_MEMCPY_STORE_ERROR;
++}
++
++
++/* Returns 0 for success, otherwise, returns number of bytes not transferred. */
++static unsigned long pa_memcpy(void *dstp, const void *srcp, unsigned long len)
++{
++	unsigned long ret, fault_addr, reference;
++	struct exception_data *d;
++
++	ret = pa_memcpy_internal(dstp, srcp, len);
++	if (likely(ret == PA_MEMCPY_OK))
++		return 0;
++
++	/* if a load or store fault occured we can get the faulty addr */
+ 	d = &__get_cpu_var(exception_data);
+-	DPRINTF("pmc_store_exc: o_len=%lu fault_addr=%lu o_dst=%lu ret=%lu\n",
+-		o_len, d->fault_addr, o_dst, o_len - d->fault_addr + o_dst);
+-	return o_len - d->fault_addr + o_dst;
++	fault_addr = d->fault_addr;
++
++	/* error in load or store? */
++	if (ret == PA_MEMCPY_LOAD_ERROR)
++		reference = (unsigned long) srcp;
++	else
++		reference = (unsigned long) dstp;
++
++	DPRINTF("pa_memcpy: fault type = %lu, len=%lu fault_addr=%lu ref=%lu\n",
++		ret, len, fault_addr, reference);
++
++	if (fault_addr >= reference)
++		return len - (fault_addr - reference);
++	else
++		return len;
+ }
+ 
+ #ifdef __KERNEL__
