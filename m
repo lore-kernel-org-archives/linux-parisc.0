@@ -1,27 +1,27 @@
-From: Grant Grundler <grantgrundler@gmail.com>
-Subject: FREE: a500, J6000, PCI cards
-Date: Mon, 8 Jul 2013 09:56:33 -0700
-Message-ID: <CAP6odjjk2tGMR-qBXxCi=q+OBjXj1BXmKxXBnewcBRMZ_8kv+w@mail.gmail.com>
+From: Alex Ivanov <gnidorah@p0n4ik.tk>
+Subject: Re: [PATCH] parisc: fix LMMIO mismatch between PAT length and MASK register
+Date: Tue, 9 Jul 2013 05:34:21 +0000 (UTC)
+Message-ID: <loom.20130709T072537-28@post.gmane.org>
+References: <20130614071142.GB10443@p100.box> <CAEdQ38H_nzCEUGXNOtfH=vQdHJ0HvbhyYKLQm8xzEj+DfevLzw@mail.gmail.com> <20130614073827.GA18871@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-To: linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Sorry to say, I haven't powered up my PA-RISC HW in over 2 years.
-That's a clear sign I need to clean out the space for other projects.
+Helge Deller <deller <at> gmx.de> writes:
 
-If anyone in the San Francisco Bay Area wants to pick up, please email
-me off list to arrange a time to stop by my house (or work if that's
-more convient).
+> I did not tested X11 yet (still need to fully install the C8000 with our
+> unstable) - but Thomas mentioned once that this is needed for X11.
 
-Since I'm giving these away, I'm asking they not be resold, only
-re-gifted or recycled.
+I've built from test-3.10 branch of your repo:
+Linux version 3.10.0-rc6-64bit-c3000+ (root@parisc) 
+(gcc version 4.6.4 (GCC) ) #4 SMP PREEMPT Mon Jul 8 23:16:48 
+MSK 2013
 
-A500 and J6000 are both Dual CPU (single core) and more than 4GB of
-RAM. I have lots of PCI cards to go with them and an extra j6000 IO
-cage.
+I'm using a c8000 with firegl x3. I approve that console works, 
+although in an unaccelerated mode. However xorg isn't:
+http://pastebin.com/Y1h2BVHB
+The system is latest unstable. The xorg is of 1:7.7+3 version.
 
-cheers,
-grant
