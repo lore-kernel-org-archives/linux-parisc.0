@@ -1,66 +1,51 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] parisc: fix LMMIO mismatch between PAT length and MASK
- register
-Date: Tue, 09 Jul 2013 16:59:02 -0400
-Message-ID: <51DC7996.3010405@bell.net>
-References: <20130614071142.GB10443@p100.box> <CAEdQ38H_nzCEUGXNOtfH=vQdHJ0HvbhyYKLQm8xzEj+DfevLzw@mail.gmail.com> <20130614073827.GA18871@p100.box> <loom.20130709T072537-28@post.gmane.org> <51DC29DC.8060106@bell.net> <loom.20130709T200549-18@post.gmane.org>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc updates for v3.11
+Date: Tue, 9 Jul 2013 23:28:00 +0200
+Message-ID: <20130709212800.GA16807@p100.box>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060600090709030508050008"
-Cc: linux-parisc@vger.kernel.org
-To: Alex Ivanov <gnidorah@p0n4ik.tk>
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <loom.20130709T200549-18@post.gmane.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------060600090709030508050008
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi Linus,
 
-On 7/9/2013 3:45 PM, Alex Ivanov wrote:
-> The panic on SMP kernel changed to another one:
-> http://pastebin.com/SfUfd0Un
-This is just a guess but I don't think page is valid
-if the pfn is not valid.  You might try this untested change.
+Please pull the latest parisc updates from
 
-flush_cache_mm might have same problem (i.e., we may need to
-check whether the pfn for the pte is valid).
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-for-3.11
 
-Dave
+PA-RISC updates for v3.11 include a gcc miscompilation fix,
+gzip-compressed vmlinuz support, a fix in the PCI code for ATI FireGL
+support on c8000 machines, a fix to prevent that %sr1 is being clobbered
+and a few smaller optimizations and documentation updates.
 
--- 
-John David Anglin    dave.anglin@bell.net
+Thanks,
+Helge
 
+----------------------------------------------------------------
+Helge Deller (6):
+      parisc: fix LMMIO mismatch between PAT length and MASK register
+      parisc: more capabilities info in /proc/cpuinfo
+      parisc: document the shadow registers
+      parisc: switch to gzip-compressed vmlinuz kernel
+      parisc: optimize mtsp(0,sr) inline assembly
+      parisc: Fix gcc miscompilation in pa_memcpy()
 
---------------060600090709030508050008
-Content-Type: text/plain; charset=windows-1252;
- name="cache.c.d.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="cache.c.d.txt"
+John David Anglin (1):
+      parisc: Ensure volatile space register %sr1 is not clobbered
 
-diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index 65fb4cb..8f60123 100644
---- a/arch/parisc/kernel/cache.c
-+++ b/arch/parisc/kernel/cache.c
-@@ -74,10 +74,13 @@ EXPORT_SYMBOL(flush_cache_all_local);
- void
- update_mmu_cache(struct vm_area_struct *vma, unsigned long address, pte_t *ptep)
- {
--	struct page *page = pte_page(*ptep);
-+	struct page *page;
- 
--	if (pfn_valid(page_to_pfn(page)) && page_mapping(page) &&
--	    test_bit(PG_dcache_dirty, &page->flags)) {
-+	if (!pfn_valid(*ptep))
-+		return;
-+
-+	page = pte_page(*ptep);
-+	if (page_mapping(page) && test_bit(PG_dcache_dirty, &page->flags)) {
- 
- 		flush_kernel_dcache_page(page);
- 		clear_bit(PG_dcache_dirty, &page->flags);
-
---------------060600090709030508050008--
+ Documentation/parisc/registers          |  8 ++++
+ arch/parisc/Makefile                    | 15 +++++--
+ arch/parisc/defpalo.conf                |  8 ++--
+ arch/parisc/include/asm/special_insns.h |  9 ++--
+ arch/parisc/include/asm/tlbflush.h      |  5 ++-
+ arch/parisc/install.sh                  |  6 +--
+ arch/parisc/kernel/cache.c              |  2 +-
+ arch/parisc/kernel/processor.c          | 19 ++++++--
+ arch/parisc/lib/memcpy.c                | 79 +++++++++++++++++++++------------
+ drivers/parisc/lba_pci.c                | 56 +++++++++++++++++++++++
+ 10 files changed, 158 insertions(+), 49 deletions(-)
