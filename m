@@ -1,77 +1,72 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] parisc: fix LMMIO mismatch between PAT length and MASK register
-Date: Tue, 9 Jul 2013 19:35:03 -0400
-Message-ID: <BLU0-SMTP393134EC9554B3C1E34F9297790@phx.gbl>
-References: <20130614071142.GB10443@p100.box> <CAEdQ38H_nzCEUGXNOtfH=vQdHJ0HvbhyYKLQm8xzEj+DfevLzw@mail.gmail.com> <20130614073827.GA18871@p100.box> <loom.20130709T072537-28@post.gmane.org> <51DC29DC.8060106@bell.net> <loom.20130709T200549-18@post.gmane.org> <51DC7996.3010405@bell.net>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: multipart/mixed; boundary="Apple-Mail-3--31287552"
-Cc: Alex Ivanov <gnidorah@p0n4ik.tk>, linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@bell.net>
+From: gnidorah@p0n4ik.tk
+Subject: [PATCH] parisc: agp/parisc-agp: allow binding of user memory to the AGP GART
+Date: Wed, 10 Jul 2013 10:17:43 +0400
+Message-ID: <76F511EB-1172-4753-A8AC-B14497EF8121@p0n4ik.tk>
+Mime-Version: 1.0 (Mac OS X Mail 6.5 \(1508\))
+Content-Type: multipart/mixed; boundary="Apple-Mail=_3EF73B8B-184B-4008-9823-ADA469CEBF20"
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <51DC7996.3010405@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Apple-Mail-3--31287552
-Content-Type: text/plain; charset="US-ASCII"; format=flowed
+
+--Apple-Mail=_3EF73B8B-184B-4008-9823-ADA469CEBF20
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=windows-1251
+
+The patch allows binding of user memory to the AGP GART=20
+on systems with HP Quicksilver AGP bus. This resolves 'bind memory =
+failed'=20
+error seen in dmesg:
+
+[   29.365973] [TTM] AGP Bind memory failed.
+=85
+[   29.367030] [drm] Forcing AGP to PCI mode=20
+
+The system doesn't more fail to bind the memory, and hence not falling
+back to the PCI mode (if other failures aren't detected).
+
+This is just a simple write down from the following patches:
+agp/amd-k7: Allow binding user memory to the AGP GART [1]
+agp/hp-agp: Allow binding user memory to the AGP GART [2]
+
+Both fixes are in upstream.
+
+[1] https://lkml.org/lkml/2010/10/15/469
+[2] http://marc.info/?l=3Dlinux-ia64&m=3D131412890819311&w=3D2
+
+
+--Apple-Mail=_3EF73B8B-184B-4008-9823-ADA469CEBF20
+Content-Disposition: attachment;
+	filename=patch-parisc_agp_c
+Content-Type: application/octet-stream;
+	name="patch-parisc_agp_c"
 Content-Transfer-Encoding: 7bit
 
-On 9-Jul-13, at 4:59 PM, John David Anglin wrote:
-
-> On 7/9/2013 3:45 PM, Alex Ivanov wrote:
->> The panic on SMP kernel changed to another one:
->> http://pastebin.com/SfUfd0Un
-> This is just a guess but I don't think page is valid
-> if the pfn is not valid.  You might try this untested change.
->
-> flush_cache_mm might have same problem (i.e., we may need to
-> check whether the pfn for the pte is valid).
-
-This version compiles and boots on rp3440.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
---Apple-Mail-3--31287552
-Content-Disposition: attachment; filename="cache.c.d.txt"
-Content-Type: text/plain; x-unix-mode=0644; name="cache.c.d.txt"
-Content-Transfer-Encoding: 7bit
-
-diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index 65fb4cb..b07720f 100644
---- a/arch/parisc/kernel/cache.c
-+++ b/arch/parisc/kernel/cache.c
-@@ -74,10 +74,13 @@ EXPORT_SYMBOL(flush_cache_all_local);
- void
- update_mmu_cache(struct vm_area_struct *vma, unsigned long address, pte_t *ptep)
- {
--	struct page *page = pte_page(*ptep);
-+	struct page *page;
+diff --git a/drivers/char/agp/parisc-agp.c b/drivers/char/agp/parisc-agp.c
+index 94821ab..9576fad 100644
+--- a/drivers/char/agp/parisc-agp.c
++++ b/drivers/char/agp/parisc-agp.c
+@@ -129,7 +129,8 @@ parisc_agp_insert_memory(struct agp_memory *mem, off_t pg_start, int type)
+ 	off_t j, io_pg_start;
+ 	int io_pg_count;
  
--	if (pfn_valid(page_to_pfn(page)) && page_mapping(page) &&
--	    test_bit(PG_dcache_dirty, &page->flags)) {
-+	if (!pfn_valid(pte_pfn(*ptep)))
-+		return;
-+
-+	page = pte_page(*ptep);
-+	if (page_mapping(page) && test_bit(PG_dcache_dirty, &page->flags)) {
+-	if (type != 0 || mem->type != 0) {
++	if (type != mem->type ||
++		agp_bridge->driver->agp_type_to_mask_type(agp_bridge, type)) {
+ 		return -EINVAL;
+ 	}
  
- 		flush_kernel_dcache_page(page);
- 		clear_bit(PG_dcache_dirty, &page->flags);
-@@ -519,8 +522,9 @@ void flush_cache_mm(struct mm_struct *mm)
- 					pte_t *ptep = get_ptep(pgd, addr);
- 					if (ptep != NULL) {
- 						pte_t pte = *ptep;
--						__flush_cache_page(vma, addr,
--						  page_to_phys(pte_page(pte)));
-+						if (pfn_valid(pte_pfn(pte)))
-+							__flush_cache_page(vma, addr,
-+						  		page_to_phys(pte_page(pte)));
- 					}
- 				}
- 			}
+@@ -175,7 +176,8 @@ parisc_agp_remove_memory(struct agp_memory *mem, off_t pg_start, int type)
+ 	struct _parisc_agp_info *info = &parisc_agp_info;
+ 	int i, io_pg_start, io_pg_count;
+ 
+-	if (type != 0 || mem->type != 0) {
++	if (type != mem->type ||
++		agp_bridge->driver->agp_type_to_mask_type(agp_bridge, type)) {
+ 		return -EINVAL;
+ 	}
+ 
 
---Apple-Mail-3--31287552--
+--Apple-Mail=_3EF73B8B-184B-4008-9823-ADA469CEBF20--
