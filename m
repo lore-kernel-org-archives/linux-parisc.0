@@ -1,72 +1,89 @@
-From: gnidorah@p0n4ik.tk
-Subject: [PATCH] parisc: agp/parisc-agp: allow binding of user memory to the AGP GART
-Date: Wed, 10 Jul 2013 10:17:43 +0400
-Message-ID: <76F511EB-1172-4753-A8AC-B14497EF8121@p0n4ik.tk>
-Mime-Version: 1.0 (Mac OS X Mail 6.5 \(1508\))
-Content-Type: multipart/mixed; boundary="Apple-Mail=_3EF73B8B-184B-4008-9823-ADA469CEBF20"
-To: linux-parisc@vger.kernel.org
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] parisc: agp/parisc-agp: allow binding of user memory
+ to the AGP GART
+Date: Wed, 10 Jul 2013 21:14:55 +0200
+Message-ID: <51DDB2AF.4030805@gmx.de>
+References: <76F511EB-1172-4753-A8AC-B14497EF8121@p0n4ik.tk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1251
+Cc: linux-parisc <linux-parisc@vger.kernel.org>
+To: gnidorah@p0n4ik.tk
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <76F511EB-1172-4753-A8AC-B14497EF8121@p0n4ik.tk>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Hi Alex,
 
---Apple-Mail=_3EF73B8B-184B-4008-9823-ADA469CEBF20
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=windows-1251
+On 07/10/2013 08:17 AM, gnidorah@p0n4ik.tk wrote:
+> The patch allows binding of user memory to the AGP GART=20
+> on systems with HP Quicksilver AGP bus. This resolves 'bind memory fa=
+iled'=20
+> error seen in dmesg:
+>=20
+> [   29.365973] [TTM] AGP Bind memory failed.
+> =85
+> [   29.367030] [drm] Forcing AGP to PCI mode=20
+>=20
+> The system doesn't more fail to bind the memory, and hence not fallin=
+g
+> back to the PCI mode (if other failures aren't detected).
+>=20
+> This is just a simple write down from the following patches:
+> agp/amd-k7: Allow binding user memory to the AGP GART [1]
+> agp/hp-agp: Allow binding user memory to the AGP GART [2]
+>=20
+> Both fixes are in upstream.
+>=20
+> [1] https://lkml.org/lkml/2010/10/15/469
+> [2] http://marc.info/?l=3Dlinux-ia64&m=3D131412890819311&w=3D2
 
-The patch allows binding of user memory to the AGP GART=20
-on systems with HP Quicksilver AGP bus. This resolves 'bind memory =
-failed'=20
-error seen in dmesg:
+Thanks for the patch!!!
 
-[   29.365973] [TTM] AGP Bind memory failed.
-=85
-[   29.367030] [drm] Forcing AGP to PCI mode=20
+Could you please attach patches inline (as text) next time?
+Our patchwork tool (https://patchwork.kernel.org/project/linux-parisc/l=
+ist/) missed to pick up your patch too.
 
-The system doesn't more fail to bind the memory, and hence not falling
-back to the PCI mode (if other failures aren't detected).
+=46urthermore, I just noticed that vger.kernel.org stopped forwarding m=
+e mails to the mailing list
+during the last few days. So, I would have missed your patch if I would=
+n't have noticed the failing forwarding.
 
-This is just a simple write down from the following patches:
-agp/amd-k7: Allow binding user memory to the AGP GART [1]
-agp/hp-agp: Allow binding user memory to the AGP GART [2]
+Thanks,
+Helge
 
-Both fixes are in upstream.
-
-[1] https://lkml.org/lkml/2010/10/15/469
-[2] http://marc.info/?l=3Dlinux-ia64&m=3D131412890819311&w=3D2
+PS: I attached it here again for patchwork....
 
 
---Apple-Mail=_3EF73B8B-184B-4008-9823-ADA469CEBF20
-Content-Disposition: attachment;
-	filename=patch-parisc_agp_c
-Content-Type: application/octet-stream;
-	name="patch-parisc_agp_c"
-Content-Transfer-Encoding: 7bit
-
-diff --git a/drivers/char/agp/parisc-agp.c b/drivers/char/agp/parisc-agp.c
+diff --git a/drivers/char/agp/parisc-agp.c b/drivers/char/agp/parisc-ag=
+p.c
 index 94821ab..9576fad 100644
 --- a/drivers/char/agp/parisc-agp.c
 +++ b/drivers/char/agp/parisc-agp.c
-@@ -129,7 +129,8 @@ parisc_agp_insert_memory(struct agp_memory *mem, off_t pg_start, int type)
+@@ -129,7 +129,8 @@ parisc_agp_insert_memory(struct agp_memory *mem, of=
+f_t pg_start, int type)
  	off_t j, io_pg_start;
  	int io_pg_count;
- 
--	if (type != 0 || mem->type != 0) {
-+	if (type != mem->type ||
+=20
+-	if (type !=3D 0 || mem->type !=3D 0) {
++	if (type !=3D mem->type ||
 +		agp_bridge->driver->agp_type_to_mask_type(agp_bridge, type)) {
  		return -EINVAL;
  	}
- 
-@@ -175,7 +176,8 @@ parisc_agp_remove_memory(struct agp_memory *mem, off_t pg_start, int type)
- 	struct _parisc_agp_info *info = &parisc_agp_info;
+=20
+@@ -175,7 +176,8 @@ parisc_agp_remove_memory(struct agp_memory *mem, of=
+f_t pg_start, int type)
+ 	struct _parisc_agp_info *info =3D &parisc_agp_info;
  	int i, io_pg_start, io_pg_count;
- 
--	if (type != 0 || mem->type != 0) {
-+	if (type != mem->type ||
+=20
+-	if (type !=3D 0 || mem->type !=3D 0) {
++	if (type !=3D mem->type ||
 +		agp_bridge->driver->agp_type_to_mask_type(agp_bridge, type)) {
  		return -EINVAL;
  	}
- 
-
---Apple-Mail=_3EF73B8B-184B-4008-9823-ADA469CEBF20--
+=20
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
