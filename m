@@ -1,41 +1,69 @@
-From: Alex Ivanov <gnidorah@p0n4ik.tk>
-Subject: Re: [PATCH]  parisc: Fix cache routines to ignore vma's with an invalid pfn
-Date: Wed, 24 Jul 2013 14:18:37 +0400
-Message-ID: <FFAF7250-C718-46D5-B632-A6FE442A0EFF@p0n4ik.tk>
-References: <BLU0-SMTP618F2A575D86195DC418DD976F0@phx.gbl> <51EEFB3B.3010107@gmx.de> <BLU0-SMTP673C7B36CA7DEFADDE7F9B976F0@phx.gbl>
-Mime-Version: 1.0 (Mac OS X Mail 6.5 \(1508\))
-Content-Type: text/plain; charset=koi8-r
-Cc: linux-parisc List <linux-parisc@vger.kernel.org>
-To: John David Anglin <dave.anglin@bell.net>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH] parisc: Kconfig: use 'PA8X00' as the default choise
+ instead of 'PA7000'
+Date: Wed, 24 Jul 2013 07:00:43 -0700
+Message-ID: <1374674443.4634.3.camel@dabdike>
+References: <51EF8C52.50403@asianux.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: Chen Gang <gang.chen@asianux.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP673C7B36CA7DEFADDE7F9B976F0@phx.gbl>
+In-Reply-To: <51EF8C52.50403@asianux.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-24.07.2013, =D7 3:44, John David Anglin <dave.anglin@bell.net> =CE=C1=D0=
-=C9=D3=C1=CC(=C1):
 
-> On 23-Jul-13, at 5:52 PM, Helge Deller wrote:
+On Wed, 2013-07-24 at 16:12 +0800, Chen Gang wrote:
+> For server, 64-bit kernel is widely used and '64BIT' have been alread=
+y
+> as the default option of a server.
 >=20
->> I've restructured the functions with cleaner return/continue code an=
-d submitted it into my "for-next" git tree at
->> https://patchwork.kernel.org/patch/2825923/mbox/
->=20
-> Looks fine to me.  I'll test soon.
->=20
-> Dave
-> --
-> John David Anglin	dave.anglin@bell.net
->=20
->=20
->=20
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-paris=
-c" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> So better to use 64-bit kernel as default choise instead of 32-bit
+> kernel.
 
-Thank you both! It behaves normally at my side.--
+I think this is irrelevant since we have defconfig for this.  You
+apparent request doesn't match the code below.
+
+> Or when use cross-compiler 'hppa64-linux-gnu-gcc' with allmodconfig, =
+it
+> will report BUILD_BUG_ON:
+>=20
+>   arch/parisc/mm/init.c: In function =E2=80=98mem_init=E2=80=99:
+>   arch/parisc/mm/init.c:581:2: error: call to =E2=80=98__compiletime_=
+assert_581=E2=80=99 declared with attribute error: BUILD_BUG_ON failed:=
+ PTE_ENTRY_SIZE !=3D sizeof(pte_t)
+
+This shows you're using a buggy compiler.  PTE_OFFSET_SIZE is generated
+as part of the build process, so you need a correct compiler.
+
+> Signed-off-by: Chen Gang <gang.chen@asianux.com>
+> ---
+>  arch/parisc/Kconfig |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+>=20
+> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+> index aa399a5..37bdecf 100644
+> --- a/arch/parisc/Kconfig
+> +++ b/arch/parisc/Kconfig
+> @@ -111,7 +111,7 @@ menu "Processor type and features"
+> =20
+>  choice
+>  	prompt "Processor type"
+> -	default PA7000
+> +	default PA8X00
+
+This doesn't require 64 bit: PA8xxx processors can operate happily in 3=
+2
+bit mode it does make the question appear, since PA7xxx are 32 bit only=
+=2E
+
+James
+
+
+--
 To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
  in
 the body of a message to majordomo@vger.kernel.org
