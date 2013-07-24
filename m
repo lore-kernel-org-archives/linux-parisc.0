@@ -1,55 +1,47 @@
 From: Chen Gang <gang.chen@asianux.com>
-Subject: [PATCH] parisc: Kconfig: use 'PA8X00' as the default choise instead
- of 'PA7000'
-Date: Wed, 24 Jul 2013 16:12:02 +0800
-Message-ID: <51EF8C52.50403@asianux.com>
+Subject: [Suggestion] parisc: kernel: about section mismatch warning.
+Date: Wed, 24 Jul 2013 16:27:25 +0800
+Message-ID: <51EF8FED.9090903@asianux.com>
+References: <51EF8C52.50403@asianux.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252
 Cc: Parisc List <linux-parisc@vger.kernel.org>
 To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <51EF8C52.50403@asianux.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-=46or server, 64-bit kernel is widely used and '64BIT' have been alread=
-y
-as the default option of a server.
+Hello Maintainers:
 
-So better to use 64-bit kernel as default choise instead of 32-bit
-kernel.
+When building parisc with allmodconfig by 'hppa64-linux-gnu-', I find section mismatch warnings.
 
-Or when use cross-compiler 'hppa64-linux-gnu-gcc' with allmodconfig, it
-will report BUILD_BUG_ON:
+I am not quite sure whether they will cause real issue or not, please
+help check, thanks.
 
-  arch/parisc/mm/init.c: In function =91mem_init=92:
-  arch/parisc/mm/init.c:581:2: error: call to =91__compiletime_assert_5=
-81=92 declared with attribute error: BUILD_BUG_ON failed: PTE_ENTRY_SIZ=
-E !=3D sizeof(pte_t)
+  LD      arch/parisc/kernel/built-in.o
+WARNING: arch/parisc/kernel/built-in.o(.data+0x118): Section mismatch in reference from the variable .L24 to the function .init.text:do_device_inventory()
+The variable .L24 references
+the function __init do_device_inventory()
+If the reference is valid then annotate the
+variable with __init* or __refdata (see linux/init.h) or name the variable:
+*_template, *_timer, *_sht, *_ops, *_probe, *_probe_one, *_console
+
+WARNING: arch/parisc/kernel/built-in.o(.data+0x120): Section mismatch in reference from the variable .L26 to the function .init.text:parisc_pdc_chassis_init()
+The variable .L26 references
+the function __init parisc_pdc_chassis_init()
+If the reference is valid then annotate the
+variable with __init* or __refdata (see linux/init.h) or name the variable:
+*_template, *_timer, *_sht, *_ops, *_probe, *_probe_one, *_console
 
 
-Signed-off-by: Chen Gang <gang.chen@asianux.com>
----
- arch/parisc/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+At least, I am sure it is not the source code issue, is it the cross-
+compiler's issue (need change suitable compiler), or just skip them ?
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index aa399a5..37bdecf 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -111,7 +111,7 @@ menu "Processor type and features"
-=20
- choice
- 	prompt "Processor type"
--	default PA7000
-+	default PA8X00
-=20
- config PA7000
- 	bool "PA7000/PA7100"
---=20
-1.7.7.6
+Welcome any suggestions or completions.
+
+
+Thanks.
 --
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Chen Gang
