@@ -1,143 +1,140 @@
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH] BMC support for PARISC machines
-Date: Tue, 30 Jul 2013 02:07:02 +0200 (CEST)
-Message-ID: <20130730000702.4C0D21D232@solo.franken.de>
-Cc: minyard@acm.org
-To: openipmi-developer@lists.sourceforge.net,
-	linux-parisc@vger.kernel.org
+Subject: [PATCH] Fix interrupt routing for C8000 serial ports
+Date: Tue, 30 Jul 2013 02:02:16 +0200 (CEST)
+Message-ID: <20130730000216.94DB91D232@solo.franken.de>
+Cc: deller@gmx.de, jejb@parisc-linux.org
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The last line of PARISC machines (C8000, RP34x0, etc.) have a BMC for
-controlling temperature, fan speed and other stuff. The BMC is connected
-via a special bus and listed in the firmware device tree. This change
-adds support for these BMCs to the IPMI driver.
+We can't use dev->mod_index for selecting the interrupt routing entry,
+because it's not an index into interrupt routing table. It will be even
+wrong on a machine with 2 CPUs (4 cores). But all needed information is
+contained in the PAT entries for the serial ports. mod[0] contains the iosapic
+address and mod_info has some indications for the interrupt input (at least
+it looks like it). This patch implements the searching for the right iosapic
+and uses this interrupt input information.
 
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 ---
 
-This is the second try to get this change integrated. If you see
-any problems with this patch, please give me hints how to improve
-this patch.
+ drivers/char/ipmi/ipmi_si_intf.c |   78 ++++++++++++++++++++++++++++++++++++++
+ arch/parisc/include/asm/parisc-device.h |    1 +
+ arch/parisc/kernel/inventory.c          |    1 +
+ drivers/parisc/iosapic.c                |   40 +++++++++++++++++++++----------
+ drivers/tty/serial/8250/8250_gsc.c      |    4 ++--
+ 4 files changed, 32 insertions(+), 14 deletions(-)
 
-
- drivers/char/ipmi/ipmi_si_intf.c |   77 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 77 insertions(+)
-
-diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
-index af4b23f..b017b8a 100644
---- a/drivers/char/ipmi/ipmi_si_intf.c
-+++ b/drivers/char/ipmi/ipmi_si_intf.c
-@@ -71,6 +71,11 @@
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
- 
-+#ifdef CONFIG_PARISC
-+#include <asm/hardware.h>	/* for register_parisc_driver() stuff */
-+#include <asm/parisc-device.h>
-+#endif
-+
- #define PFX "ipmi_si: "
- 
- /* Measure times between events in the driver. */
-@@ -298,6 +303,9 @@ static int pci_registered;
- #ifdef CONFIG_ACPI
- static int pnp_registered;
+diff --git a/arch/parisc/include/asm/parisc-device.h b/arch/parisc/include/asm/parisc-device.h
+index 9afdad6..b1d8c9d 100644
+--- a/arch/parisc/include/asm/parisc-device.h
++++ b/arch/parisc/include/asm/parisc-device.h
+@@ -23,6 +23,7 @@ struct parisc_device {
+ 	/* generic info returned from pdc_pat_cell_module() */
+ 	unsigned long	mod_info;	/* PAT specific - Misc Module info */
+ 	unsigned long	pmod_loc;	/* physical Module location */
++	unsigned long	mod0;
  #endif
-+#ifdef CONFIG_PARISC
-+static int parisc_registered;
-+#endif
+ 	u64		dma_mask;	/* DMA mask for I/O */
+ 	struct device 	dev;
+diff --git a/arch/parisc/kernel/inventory.c b/arch/parisc/kernel/inventory.c
+index 3295ef4..f0b6722 100644
+--- a/arch/parisc/kernel/inventory.c
++++ b/arch/parisc/kernel/inventory.c
+@@ -211,6 +211,7 @@ pat_query_module(ulong pcell_loc, ulong mod_index)
+ 	/* REVISIT: who is the consumer of this? not sure yet... */
+ 	dev->mod_info = pa_pdc_cell->mod_info;	/* pass to PAT_GET_ENTITY() */
+ 	dev->pmod_loc = pa_pdc_cell->mod_location;
++	dev->mod0 = pa_pdc_cell->mod[0];
  
- static unsigned int kipmid_max_busy_us[SI_MAX_PARMS];
- static int num_max_busy_us;
-@@ -2697,6 +2705,64 @@ static struct platform_driver ipmi_driver = {
- 	.remove		= ipmi_remove,
- };
+ 	register_parisc_device(dev);	/* advertise device */
  
-+#ifdef CONFIG_PARISC
-+static int ipmi_parisc_probe(struct parisc_device *dev)
-+{
-+	struct smi_info *info;
-+
-+	info = kzalloc(sizeof(*info), GFP_KERNEL);
-+
-+	if (!info) {
-+		dev_err(&dev->dev,
-+			"could not allocate memory for PARISC probe\n");
-+		return -ENOMEM;
-+	}
-+
-+	info->si_type		= SI_KCS;
-+	info->addr_source	= SI_DEVICETREE;
-+	info->io_setup		= mem_setup;
-+	info->io.addr_type	= IPMI_MEM_ADDR_SPACE;
-+	info->io.addr_data	= dev->hpa.start;
-+	info->io.regsize	= 1;
-+	info->io.regspacing	= 1;
-+	info->io.regshift	= 0;
-+	info->irq		= 0; /* no interrupt */
-+	info->irq_setup		= NULL;
-+	info->dev		= &dev->dev;
-+
-+	dev_dbg(&dev->dev, "addr 0x%lx regsize %d spacing %d irq %d\n",
-+		info->io.addr_data, info->io.regsize, info->io.regspacing,
-+		info->irq);
-+
-+	dev_set_drvdata(&dev->dev, info);
-+
-+	if (add_smi(info)) {
-+		kfree(info);
-+		return -EBUSY;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ipmi_parisc_remove(struct parisc_device *dev)
-+{
-+	cleanup_one_si(dev_get_drvdata(&dev->dev));
-+	return 0;
-+}
-+
-+static struct parisc_device_id ipmi_parisc_tbl[] = {
-+	{ HPHW_MC, HVERSION_REV_ANY_ID, 0x004, 0xC0 },
-+	{ 0, }
-+};
-+
-+static struct parisc_driver ipmi_parisc_driver = {
-+	.name =		"ipmi",
-+	.id_table =	ipmi_parisc_tbl,
-+	.probe =	ipmi_parisc_probe,
-+	.remove =	ipmi_parisc_remove,
-+};
-+#endif /* CONFIG_PARISC */
-+
- static int wait_for_msg_done(struct smi_info *smi_info)
+diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
+index e79e006..c520d8e 100644
+--- a/drivers/parisc/iosapic.c
++++ b/drivers/parisc/iosapic.c
+@@ -811,18 +811,28 @@ int iosapic_fixup_irq(void *isi_obj, struct pci_dev *pcidev)
+ 	return pcidev->irq;
+ }
+ 
+-static struct iosapic_info *first_isi = NULL;
++static struct iosapic_info *iosapic_list;
+ 
+ #ifdef CONFIG_64BIT
+-int iosapic_serial_irq(int num)
++int iosapic_serial_irq(struct parisc_device *dev)
  {
- 	enum si_sm_result     smi_result;
-@@ -3462,6 +3528,13 @@ static int init_ipmi_si(void)
- 		spmi_find_bmc();
+-	struct iosapic_info *isi = first_isi;
+-	struct irt_entry *irte = NULL;  /* only used if PAT PDC */
++	struct iosapic_info *isi;
++	struct irt_entry *irte;
+ 	struct vector_info *vi;
+-	int isi_line;	/* line used by device */
+-
++	int cnt;
++	int intin;
++	
++	intin = (dev->mod_info >> 24) & 15;
++	
+ 	/* lookup IRT entry for isi/slot/pin set */
+-	irte = &irt_cell[num];
++	for (cnt = 0; cnt < irt_num_entry; cnt++) {
++		irte = &irt_cell[cnt];
++		if (COMPARE_IRTE_ADDR(irte, dev->mod0) &&
++		    irte->dest_iosapic_intin == intin)
++			break;
++	}
++	if (cnt >= irt_num_entry)
++		return 0; /* no irq found, force polling */
+ 
+ 	DBG_IRT("iosapic_serial_irq(): irte %p %x %x %x %x %x %x %x %x\n",
+ 		irte,
+@@ -834,11 +844,17 @@ int iosapic_serial_irq(int num)
+ 		irte->src_seg_id,
+ 		irte->dest_iosapic_intin,
+ 		(u32) irte->dest_iosapic_addr);
+-	isi_line = irte->dest_iosapic_intin;
++	
++	/* search for iosapic */
++	for (isi = iosapic_list; isi; isi = isi->isi_next)
++		if (isi->isi_hpa == dev->mod0)
++			break;
++	if (!isi)
++		return 0; /* no iosapic found, force polling */
+ 
+ 	/* get vector info for this input line */
+-	vi = isi->isi_vector + isi_line;
+-	DBG_IRT("iosapic_serial_irq:  line %d vi 0x%p\n", isi_line, vi);
++	vi = isi->isi_vector + intin;
++	DBG_IRT("iosapic_serial_irq:  line %d vi 0x%p\n", iosapic_intin, vi);
+ 
+ 	/* If this IRQ line has already been setup, skip it */
+ 	if (vi->irte)
+@@ -941,8 +957,8 @@ void *iosapic_register(unsigned long hpa)
+ 		vip->irqline = (unsigned char) cnt;
+ 		vip->iosapic = isi;
+ 	}
+-	if (!first_isi)
+-		first_isi = isi;
++	isi->isi_next = iosapic_list;
++	iosapic_list = isi;
+ 	return isi;
+ }
+ 
+diff --git a/drivers/tty/serial/8250/8250_gsc.c b/drivers/tty/serial/8250/8250_gsc.c
+index bb91b47..694c8bd 100644
+--- a/drivers/tty/serial/8250/8250_gsc.c
++++ b/drivers/tty/serial/8250/8250_gsc.c
+@@ -31,9 +31,9 @@ static int __init serial_init_chip(struct parisc_device *dev)
+ 	int err;
+ 
+ #ifdef CONFIG_64BIT
+-	extern int iosapic_serial_irq(int cellnum);
++	extern int iosapic_serial_irq(struct parisc_device *dev);
+ 	if (!dev->irq && (dev->id.sversion == 0xad))
+-		dev->irq = iosapic_serial_irq(dev->mod_index-1);
++		dev->irq = iosapic_serial_irq(dev);
  #endif
  
-+#ifdef CONFIG_PARISC
-+	register_parisc_driver(&ipmi_parisc_driver);
-+	parisc_registered = 1;
-+	/* poking PC IO addresses will crash machine, don't do it */
-+	si_trydefaults = 0;
-+#endif
-+
- 	/* We prefer devices with interrupts, but in the case of a machine
- 	   with multiple BMCs we assume that there will be several instances
- 	   of a given type so if we succeed in registering a type then also
-@@ -3608,6 +3681,10 @@ static void cleanup_ipmi_si(void)
- 	if (pnp_registered)
- 		pnp_unregister_driver(&ipmi_pnp_driver);
- #endif
-+#ifdef CONFIG_PARISC
-+	if (parisc_registered)
-+		unregister_parisc_driver(&ipmi_parisc_driver);
-+#endif
- 
- 	platform_driver_unregister(&ipmi_driver);
- 
+ 	if (!dev->irq) {
