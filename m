@@ -1,64 +1,39 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc updates for v3.11-rc4
-Date: Wed, 31 Jul 2013 23:55:26 +0200
-Message-ID: <20130731215526.GA5249@p100.box>
+From: Meelis Roos <mroos@linux.ee>
+Subject: Re: INEQUIVALENT ALIASES in 3.11-rc3
+Date: Thu, 1 Aug 2013 12:28:03 +0300 (EEST)
+Message-ID: <alpine.SOC.1.00.1308011226170.14037@math.ut.ee>
+References: <alpine.SOC.1.00.1307310003070.19136@math.ut.ee> <51F8DC7B.9090504@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <51F8DC7B.9090504@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+> > I tried 3.11-rc3 yesterday on my RP3440. It works, but has acquired a 
+> > new warning during Gentoo emerge cycle:
+> > [  922.492000] INEQUIVALENT ALIASES 0x4197a000 and 0x7b000 in file conftest
+> > [  922.492000] INEQUIVALENT ALIASES 0x4197a000 and 0x7b000 in file conftest
+> > [  922.492000] INEQUIVALENT ALIASES 0x4197a000 and 0x7b000 in file conftest
+> > [  922.492000] INEQUIVALENT ALIASES 0x4197a000 and 0x7b000 in file conftest
+> > [  922.492000] INEQUIVALENT ALIASES 0x4197a000 and 0x7b000 in file conftest
+> > [ 4577.536000] INEQUIVALENT ALIASES 0x41a76000 and 0x7b000 in file conftest
+> > [ 4577.536000] INEQUIVALENT ALIASES 0x41a76000 and 0x7b000 in file conftest
+> > [ 4577.536000] INEQUIVALENT ALIASES 0x41a76000 and 0x7b000 in file conftest
+> > [ 4577.536000] INEQUIVALENT ALIASES 0x41a76000 and 0x7b000 in file conftest
+> > [ 4577.536000] INEQUIVALENT ALIASES 0x41a76000 and 0x7b000 in file conftest
+> > 
+> > There is no file named conftest present after emerge, so it must have 
+> > been some temporary program.
+> 
+> Those warnings are uncritical - but you should update binutils.
+> See: http://permalink.gmane.org/gmane.linux.ports.parisc/3834
 
-please pull the latest parisc architecture fixes from:
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.11-rc4
+I did a full deep emerge update on Gentoo taht also installed binutils 
+2.23.1. I will look for further messages when there is something new to 
+upgrade - during the same upgrade, it got messages about locale-archive.
 
-The majority of lines changed are due the addition of a defconfig for the C8000
-machine.  Even the fix in parisc/kernel/cache.c file is actually ony a 10-line
-fix, but the change became bigger (and much nicer) to avoid errors of the
-checkpatch script.
-
-Here is the short-changelog:
-
-This round of parisc updates includes mostly fixes for the C8000 workstation.
-We have a new defconfig file for this machine, as well as fixes for it's serial
-port, the AGP driver and the cache routines to cope with the vmas of the
-FireGL card in a C8000.  The sys32.h header file was not used and as such it's
-now gone.
-
-
-Thanks,
-Helge 
-
-----------------------------------------------------------------
-Alex Ivanov (1):
-      parisc: agp/parisc-agp: allow binding of user memory to the AGP GART
-
-Helge Deller (1):
-      parisc: add defconfig for c8000 machine
-
-John David Anglin (2):
-      parisc: Fix cache routines to ignore vma's with an invalid pfn
-      parisc: Remove arch/parisc/kernel/sys32.h header
-
-Thomas Bogendoerfer (1):
-      parisc: Fix interrupt routing for C8000 serial ports
-
- arch/parisc/configs/c8000_defconfig     | 279 ++++++++++++++++++++++++++++++++
- arch/parisc/include/asm/parisc-device.h |   3 +
- arch/parisc/kernel/cache.c              | 135 ++++++++--------
- arch/parisc/kernel/inventory.c          |   1 +
- arch/parisc/kernel/signal.c             |   7 -
- arch/parisc/kernel/signal32.c           |   1 -
- arch/parisc/kernel/sys32.h              |  36 -----
- arch/parisc/kernel/sys_parisc32.c       |   2 -
- drivers/char/agp/parisc-agp.c           |   6 +-
- drivers/parisc/iosapic.c                |  38 +++--
- drivers/tty/serial/8250/8250_gsc.c      |   3 +-
- 11 files changed, 386 insertions(+), 125 deletions(-)
- create mode 100644 arch/parisc/configs/c8000_defconfig
- delete mode 100644 arch/parisc/kernel/sys32.h
+-- 
+Meelis Roos (mroos@linux.ee)
