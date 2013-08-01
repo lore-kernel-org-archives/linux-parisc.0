@@ -1,74 +1,33 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: INEQUIVALENT ALIASES in 3.11-rc3
-Date: Thu, 1 Aug 2013 10:15:53 -0400
-Message-ID: <BLU0-SMTP31D8AC5BCBAB50119B78C997500@phx.gbl>
-References: <alpine.SOC.1.00.1307310003070.19136@math.ut.ee> <51F8DC7B.9090504@gmx.de> <alpine.SOC.1.00.1308011226170.14037@math.ut.ee>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: Meelis Roos <mroos@linux.ee>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: New Debian Kernel Packages
+Date: Fri, 02 Aug 2013 00:20:41 +0200
+Message-ID: <51FADF39.4020505@gmx.de>
+References: <BLU0-SMTP89A9F5D677CA80946A5DB097550@phx.gbl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Parisc List <linux-parisc@vger.kernel.org>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.SOC.1.00.1308011226170.14037@math.ut.ee>
+In-Reply-To: <BLU0-SMTP89A9F5D677CA80946A5DB097550@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 1-Aug-13, at 5:28 AM, Meelis Roos wrote:
+Hi Dave,
 
->>> I tried 3.11-rc3 yesterday on my RP3440. It works, but has  
->>> acquired a
->>> new warning during Gentoo emerge cycle:
->>> [  922.492000] INEQUIVALENT ALIASES 0x4197a000 and 0x7b000 in file  
->>> conftest
->>> [  922.492000] INEQUIVALENT ALIASES 0x4197a000 and 0x7b000 in file  
->>> conftest
->>> [  922.492000] INEQUIVALENT ALIASES 0x4197a000 and 0x7b000 in file  
->>> conftest
->>> [  922.492000] INEQUIVALENT ALIASES 0x4197a000 and 0x7b000 in file  
->>> conftest
->>> [  922.492000] INEQUIVALENT ALIASES 0x4197a000 and 0x7b000 in file  
->>> conftest
->>> [ 4577.536000] INEQUIVALENT ALIASES 0x41a76000 and 0x7b000 in file  
->>> conftest
->>> [ 4577.536000] INEQUIVALENT ALIASES 0x41a76000 and 0x7b000 in file  
->>> conftest
->>> [ 4577.536000] INEQUIVALENT ALIASES 0x41a76000 and 0x7b000 in file  
->>> conftest
->>> [ 4577.536000] INEQUIVALENT ALIASES 0x41a76000 and 0x7b000 in file  
->>> conftest
->>> [ 4577.536000] INEQUIVALENT ALIASES 0x41a76000 and 0x7b000 in file  
->>> conftest
->>>
->>> There is no file named conftest present after emerge, so it must  
->>> have
->>> been some temporary program.
->>
->> Those warnings are uncritical - but you should update binutils.
->> See: http://permalink.gmane.org/gmane.linux.ports.parisc/3834
->
-> I did a full deep emerge update on Gentoo taht also installed binutils
-> 2.23.1. I will look for further messages when there is something new  
-> to
-> upgrade - during the same upgrade, it got messages about locale- 
-> archive.
+On 07/30/2013 12:46 AM, John David Anglin wrote:
+> The following kernel packages are now in the parisc-linux.org
+> archive:
+> 
+> linux-image-3.10-1-parisc-smp_3.10.3-1_hppa.deb 
+> linux-image-3.10-1-parisc64-smp_3.10.3-1_hppa.deb 
+> linux-image-3.10-1-parisc64_3.10.3-1_hppa.deb 
+> linux-image-3.10-1-parisc_3.10.3-1_hppa.deb
 
+That's fantastic!
+This brings us one big step further to being able to build a real debian-unstable-installer boot CD.
 
-conftest is the name of the test program used by configure.  It's  
-output log is in config.log in the directory
-being configured.
+I'm still hoping the C8000 patches I pushed for inclusion into 3.11 will then
+show up in stable 3.10 series soon as well. If that happens we will have a kernel
+which should boot on all machines - including the c8000.
 
-As I said, the above messages typically occur when a core dump  
-occurs.  This is because the core dump
-flushes all the mappings that the application has and the kernel  
-detects the inequivalent aliases.  Probably,
-this occurred twice in the package being configured.
-
-It is easy to generate inequivalent aliases with a custom linker  
-script.  It's quite likely they are being generated
-by the eglibc package but that's just a guess.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+Helge
