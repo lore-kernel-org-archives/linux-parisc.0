@@ -1,151 +1,57 @@
-From: Helge Deller <deller@gmx.de>
-Subject: State of the PA-RISC/HPPA port (August 2013)
-Date: Sat, 3 Aug 2013 22:41:19 +0200
-Message-ID: <20130803204119.GA2392@halden.box>
+From: Alex Ivanov <gnidorah@p0n4ik.tk>
+Subject: Re: [PATCH] parisc: fix LMMIO mismatch between PAT length and MASK register
+Date: Sun, 04 Aug 2013 15:00:33 +0400
+Message-ID: <995101375614033@web11d.yandex.ru>
+References: <20130614071142.GB10443@p100.box> <CAEdQ38H_nzCEUGXNOtfH=vQdHJ0HvbhyYKLQm8xzEj+DfevLzw@mail.gmail.com> <20130614073827.GA18871@p100.box> <loom.20130709T072537-28@post.gmane.org> <51DC29DC.8060106@bell.net> <loom.20130709T200549-18@post.gmane.org> <51DC7996.3010405@bell.net> <BLU0-SMTP393134EC9554B3C1E34F9297790@phx.gbl> <216411373487566@web6f.yandex.ru> <CAEdQ38FDuGy_yjB+yV93dtNxJ-kicavhOqFNWLiWesVrbd1uRA@mail.gmail.com> <518401373491752@web17h.yandex.ru> <51DF0B90.3040506@gmx.de> <51DF0BEF.6020304@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org, debian-hppa@lists.debian.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset=koi8-r
+To: linux-parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <51DF0BEF.6020304@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello everyone,
+11.07.2013, 23:48, "Helge Deller" <deller@gmx.de>:
+> adding linux parisc mailing list...:
+>
+> On 07/11/2013 09:46 PM, Helge Deller wrote:
+>
+>> =9AOn 07/10/2013 11:29 PM, Alex Ivanov wrote:
+>>> =9A11.07.2013, 01:14, "Matt Turner" <mattst88@gmail.com>:
+>>>> =9AOn Wed, Jul 10, 2013 at 1:19 PM, Alex Ivanov <gnidorah@p0n4ik.t=
+k> wrote:
+>>>>> =9A=9AThank you so much! Your guess looks to be right. After appl=
+ying of your
+>>>>> =9A=9Apatch there was no more KP and X just worked.
+>>>> =9ANice! Does DRI work?
+>>> =9ANot on my side. Plus i can't visually jump over 8bit depth, alth=
+ough Xorg
+>>> =9Astates 24bit in it's log.
+>>> =9AAs for DRI, i'm experiencing
+>>> =9A"ring test failed (scratch(0x15E4)=3D0xCAFEDEAD)" with a firegl =
+x3.
+>> =9AFWIW, I'm seeing the same failure on my FireGL X1:
+>> =9A80:00.0 VGA compatible controller: Advanced Micro Devices [AMD] n=
+ee ATI Radeon R300 NG [FireGL X1] (rev 80)
+>>
+>> =9A[drm] radeon: irq initialized.
+>> =9A[drm] Loading R300 Microcode
+>> =9A[drm] radeon: ring at 0x0000000060001000
+>> =9A[drm:r100_ring_test] *ERROR* radeon: ring test failed (scratch(0x=
+15E4)=3D0xCAFEDEAD)
+>> =9A[drm:r100_cp_init] *ERROR* radeon: cp isn't working (-22).
+>> =9Aradeon 0000:80:00.0: failed initializing CP (-22).
+>> =9Aradeon 0000:80:00.0: Disabling GPU acceleration
+>> =9A[drm:r100_cp_fini] *ERROR* Wait for CP idle timeout, shutting dow=
+n CP.
+>> =9A[drm] radeon: cp finalized
+>> =9A[drm] radeon: cp finalized
 
-this is just a short update on the status of the parisc port from my point of
-view, including a short summary of what have been done during the last few weeks
-and what is planned for the near future. 
-
-So, what's the status of the Linux kernel for parisc?
-
-Basically, I think all major outstanding kernel patches are now in the upcoming
-kernel 3.11 tree, and the important ones will show up in the stable kernel 3.10
-series soon as well. Kernel 3.9 should be OK as well, but some patches might be
-missing.
-
-With kernel 3.11 (and 3.10.5 or higher) I expect most instability issues from
-the past to be gone.  There might still be minor issues with userspace
-segfaults (due to cache issues), but they are rare....
-
-Looking back, the main problems of instability and kernel crashes in the past
-were assumely due to 
-   a) cache and TLB flushing were unreliable,
-   b) kernel stack overflows (because of sudden irq processing which used too much stack), and
-   c) miscompiled code in pa_memcpy() because of C-code which is not valid C...
-
-Testing on my machines showed, that the kernels 3.10.x and 3.11 will boot in UP
-and SMP mode on nearly all machines. Most notably, we now have support for the
-C8000 workstation, for which serial ports and framebuffer mode with FireGL
-cards should work (Thank you Thomas!). Even a patch for the BMC in the C8000
-will probably be included latest with kernel 3.12.
-
-Debian:
-We have our own debian package repository at
-http://ftp.parisc-linux.org/debian-ports/ which currently holds more than 8300
-pre-built debian packages (Thank you Dave!!!).  Even pre-built debian 3.10
-kernel images are now available there.  We don't yet have a real
-debian-installation media yet.
-I've prepared a bootable image and some instructions on how to install
-debian-unstable from our repository, but you should only try this if you are a
-linux/parisc expert.  Brave people will find those instructions here:
-http://wiki.parisc-linux.org/Debian_Ports_Installation For all others I'd
-suggest to wait until we have the debian-installer finished, which is still one
-of my top-priorities.
-
-Furthermore, we sadly still don't have buildd-server. What really is missing
-here is someone who is willing to host a parisc server and provide enough
-direct bandwith to the internet.  Giving away real server hardware is probably
-doable (and those parisc machines luckily aren't expensive any longer on ebay
-:-)) and even administration would be done by Dave, me or someone else if
-necessary.
-On the other side, Dave has the buildd/wanna-build software installed on his
-machine.  The wanna-build software needs a custom trigger script to handle
-running on a non local machine.  It is needed to populate the source and
-packages database.  Maybe, somebody has already done this and may give him a
-hint?
-
-Gentoo:
-If you don't want to wait for debian, I'd suggest that you try Gentoo instead.
-For instructions please see their website at
-http://www.gentoo.org/main/en/where.xml (architecture hppa).
-
-PARISC website:
-Our current parisc website at http://www.parisc-linux.org is still based on
-CVS, and it's sometimes unreliable (means: sometimes it's not reachable).  To
-solve this issue my plan is to migrate it's content in september to the wiki at
-kernel.org: https://parisc.wiki.kernel.org/
-If someone is interested in doing that - and maybe has some interest and
-knowledge in how nice web sites should look like, please let me know!
-
-TODO:
-There is still much on my todo list, most importantly
-- keep pushing kernel patches upstream (https://patchwork.kernel.org/project/linux-parisc/list/)
-- build a debian-installer ISO, and
-- migrate the website.
-For all other things I keep a personal TODO-list at
-http://wiki.parisc-linux.org/TODO. Again, volunteers for some of those topics
-are always welcome!
-
-Last but not least I want to say a thank-you to all people who have contributed
-to this project during the last weeks. The following list of people is taken
-purely from the kernel git tree and shows those who have directly or indirectly
-contributed to parisc kernel source tree. Same thank-you goes of course to all
-other here unnamed people who have tested stuff, reported issues, fixed
-userspace or kept on the discussion.
-
-THANK YOU!
-
-Helge
-
-
-
-List of contributors to the kernel tree:
-----------------------------------------
-Alex Ivanov
-Al Viro
-Bill Pemberton
-Bjorn Helgaas
-Chen Gang
-Cong Wang
-Damian Hobson-Garcia
-David Howells
-Frederic Weisbecker
-Geert Uytterhoeven
-Guy Martin
-Helge Deller
-H. Peter Anvin
-James Bottomley
-Jiang Liu
-Jiri Slaby
-Joe Perches
-John David Anglin
-John Stultz
-Julia Lawall
-Kautuk Consul
-Kees Cook
-Kyle McMartin
-Larry Finger
-Mathias Krause
-Matt Fleming
-Michael S. Tsirkin
-Michel Lespinasse
-Mike Frysinger
-Myron Stowe
-Nikitas Angelinas
-Paul Bolle
-Paul Gortmaker
-Peter Huewe
-Peter Zijlstra
-Rolf Eike Beer
-Srivatsa S. Bhat
-Thomas Bogendoerfer
-Thomas Gleixner
-Torben Hohn
-Wei Yongjun
-Will Deacon
-Yinghai Lu
-Yong Zhang
-Zhao Hongjiang
-
+I still have no clue why this happens. Broken SBA IOMMU / DRM code? Mis=
+sing syncing primitives?
+Should we forward this to dri-devel mail list?
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
