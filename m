@@ -1,79 +1,88 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: State of the PA-RISC/HPPA port (August 2013)
-Date: Sun, 04 Aug 2013 15:06:45 +0200
-Message-ID: <2023332.MIaTqJBISH@donald.sf-tec.de>
+Date: Sun, 4 Aug 2013 10:57:36 -0400
+Message-ID: <BLU0-SMTP72B82A70E34DE847073F0597530@phx.gbl>
 References: <20130803204119.GA2392@halden.box> <CAE2sS1j6z+PJbRW5gS+B4C-WKhPZCXPwOs8np07qsPM1fxAe2w@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2003193.vp3WOVt7vX"; micalg="pgp-sha1"; protocol="application/pgp-signature"
-Cc: debian-hppa@lists.debian.org
-To: linux-parisc@vger.kernel.org,
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: multipart/mixed; boundary="Apple-Mail-9-36581839"
+Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	debian-hppa@lists.debian.org,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <CAE2sS1j6z+PJbRW5gS+B4C-WKhPZCXPwOs8np07qsPM1fxAe2w@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+--Apple-Mail-9-36581839
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Content-Transfer-Encoding: 7bit
 
---nextPart2003193.vp3WOVt7vX
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="ISO-8859-1"
+On 4-Aug-13, at 8:21 AM, Carlos O'Donell wrote:
 
-Carlos O'Donell wrote:
-> On Sat, Aug 3, 2013 at 4:41 PM, Helge Deller <deller@gmx.de> wrote:
-> > So, what's the status of the Linux kernel for parisc?
-> > 
-> > Basically, I think all major outstanding kernel patches are now in the
-> > upcoming kernel 3.11 tree, and the important ones will show up in the
-> > stable kernel 3.10 series soon as well. Kernel 3.9 should be OK as well,
-> > but some patches might be missing.
-> > 
-> > With kernel 3.11 (and 3.10.5 or higher) I expect most instability issues
-> > from the past to be gone.  There might still be minor issues with
-> > userspace segfaults (due to cache issues), but they are rare....
-> 
-> Thanks for all the work Helge!
-> 
-> On the glibc front I don't have as good news. We shipped 2.18 without
-> all of the hppa patches, but keep a patchset up to date, and I'm
-> merging in some changes from Dave.
-> 
 > The glibc testsuite results are really bad, but hopefully I'll poke at
 > those over the coming year.
-> 
-> I'm using gentoo, and taking patches form the gentoo people and
-> feeding those upstream as they are reported (I still have a few to go
-> through).
 
-Thanks to all of you working on that.
+Attached results from last Debian 2.17 build.
 
-I currently do not have problems with glibc, at least I don't see any (Gentoo, 
-using their 2.14 version). What I see are problems in binutils, although 
-AFAICT those are not really HPPA-specific. One easy test is to build a recent 
-version of CMake: if you specify no compiler flags bootstrapping will work, as 
-I inserted -Wl,--unique=.text.* into the LDFLAGS there. But if you pass -O2 if 
-will not build (binutils 2.23.[12]). If you remove the linker flag it will not 
-work without -O2. I can't build newer kernels for my C8000 with frame pointers 
-as it will crash ld with a NULL deref somewhere, older kernels work (probably 
-smaller).
+Have kernel patch installed that fixed tst-mqueue2.  However, I think  
+there are
+still issues with writev syscall.
 
-But otherwise my machine became pretty stable in the last time, that is really 
-good ;)
+We might knock out quite a few if we found the cause of cancel test  
+failures.
 
-Greetings,
+Dave
+--
+John David Anglin	dave.anglin@bell.net
 
-Eike
---nextPart2003193.vp3WOVt7vX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
 
-iEYEABECAAYFAlH+UewACgkQXKSJPmm5/E7bxwCcCBGONrt1MHSXKR8AYg3fbeIv
-m9QAn2wnDkG7oNAdvPmaPPMeItQI/hj6
-=VgYA
------END PGP SIGNATURE-----
+--Apple-Mail-9-36581839
+Content-Disposition: attachment;
+	filename="test-results-hppa-linux-gnu-libc.txt"
+Content-Type: text/plain; x-unix-mode=0644;
+	name="test-results-hppa-linux-gnu-libc.txt"
+Content-Transfer-Encoding: 7bit
 
---nextPart2003193.vp3WOVt7vX--
+#
+# Testsuite failures, someone should be working towards
+# fixing these! They are listed here for the purpose of
+# regression testing during builds.
+# Format: <Failed test>, Error <Make error code> [(ignored)]
+#
+annexc.out, Error 1 (ignored)
+check-execstack.out, Error 1
+check-localplt.out, Error 1
+check-textrel.out, Error 1
+run-conformtest.out, Error 1 (ignored)
+test-double.out, Error 1
+test-float.out, Error 1
+test-idouble.out, Error 1
+test-ifloat.out, Error 1
+tst-addr1.out, Error 1
+tst-attr3.out, Error 1
+tst-audit2.out, Error 139
+tst-backtrace2.out, Error 1
+tst-backtrace3.out, Error 1
+tst-backtrace4.out, Error 1
+tst-backtrace5.out, Error 1
+tst-backtrace6.out, Error 1
+tst-cancel22.out, Error 1
+tst-cancel23.out, Error 1
+tst-cancel4.out, Error 1
+tst-cancel5.out, Error 1
+tst-cancelx20.out, Error 1
+tst-cancelx21.out, Error 1
+tst-cancelx4.out, Error 1
+tst-cancelx5.out, Error 1
+tst-cleanupx4.out, Error 1
+tst-cond25.out, Error 1
+tst-cpuclock2.out, Error 1
+tst-getcpu.out, Error 1
+tst-makecontext.out, Error 255
+tst-mqueue8x.out, Error 1
+tst-trim1.out, Error 1
 
+--Apple-Mail-9-36581839--
