@@ -1,37 +1,57 @@
 From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: PCI & AGP video options
-Date: Sat, 10 Aug 2013 10:07:07 -0400
-Message-ID: <BLU0-SMTP848CBA886F0C5E2BB6645697590@phx.gbl>
-References: <199671375961574@web3d.yandex.ru> <52055C9E.9010503@gmx.de> <EE8284CE-E16F-48FA-BB55-D680CFC39484@p0n4ik.tk>
+Subject: Re: [PATCH] parisc: fix LMMIO mismatch between PAT length and MASK register
+Date: Sat, 10 Aug 2013 15:41:34 -0400
+Message-ID: <BLU0-SMTP37200F0E5A1B7245ECB02397590@phx.gbl>
+References: <20130614071142.GB10443@p100.box> <CAEdQ38H_nzCEUGXNOtfH=vQdHJ0HvbhyYKLQm8xzEj+DfevLzw@mail.gmail.com> <20130614073827.GA18871@p100.box> <loom.20130709T072537-28@post.gmane.org> <51DC29DC.8060106@bell.net> <loom.20130709T200549-18@post.gmane.org> <51DC7996.3010405@bell.net> <BLU0-SMTP393134EC9554B3C1E34F9297790@phx.gbl> <216411373487566@web6f.yandex.ru> <CAEdQ38FDuGy_yjB+yV93dtNxJ-kicavhOqFNWLiWesVrbd1uRA@mail.gmail.com> <518401373491752@web17h.yandex.ru> <51DF0B90.3040506@gmx.de> <51DF0BEF.6020304@gmx.de> <995101375614033@web11d.yandex.ru>
 Mime-Version: 1.0 (Apple Message framework v936)
 Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Helge Deller <deller@gmx.de>,
-	linux-parisc List <linux-parisc@vger.kernel.org>
-To: gnidorah@p0n4ik.tk
+Cc: linux-parisc List <linux-parisc@vger.kernel.org>
+To: Alex Ivanov <gnidorah@p0n4ik.tk>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <EE8284CE-E16F-48FA-BB55-D680CFC39484@p0n4ik.tk>
+In-Reply-To: <995101375614033@web11d.yandex.ru>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 10-Aug-13, at 2:00 AM, gnidorah@p0n4ik.tk wrote:
+On 4-Aug-13, at 7:00 AM, Alex Ivanov wrote:
 
->> I'm not sure if it makes much sense to use a PA-RISC
->> machine as desktop machine nowadays. Every Intel-based
->> machine is faster, cheaper, better supported (graphic cards)
->> and uses less power...
->
-> Got your point.
-> That's true. Still would be nice to use workstation model
-> as workstation.
+> 11.07.2013, 23:48, "Helge Deller" <deller@gmx.de>:
+>> adding linux parisc mailing list...:
+>>
+>> On 07/11/2013 09:46 PM, Helge Deller wrote:
+>>
+>>>  On 07/10/2013 11:29 PM, Alex Ivanov wrote:
+>>>>  11.07.2013, 01:14, "Matt Turner" <mattst88@gmail.com>:
+>>>>>  On Wed, Jul 10, 2013 at 1:19 PM, Alex Ivanov  
+>>>>> <gnidorah@p0n4ik.tk> wrote:
+>>>>>>   Thank you so much! Your guess looks to be right. After  
+>>>>>> applying of your
+>>>>>>   patch there was no more KP and X just worked.
+>>>>>  Nice! Does DRI work?
+>>>>  Not on my side. Plus i can't visually jump over 8bit depth,  
+>>>> although Xorg
+>>>>  states 24bit in it's log.
+>>>>  As for DRI, i'm experiencing
+>>>>  "ring test failed (scratch(0x15E4)=0xCAFEDEAD)" with a firegl x3.
+>>>  FWIW, I'm seeing the same failure on my FireGL X1:
+>>>  80:00.0 VGA compatible controller: Advanced Micro Devices [AMD]  
+>>> nee ATI Radeon R300 NG [FireGL X1] (rev 80)
+>>>
+>>>  [drm] radeon: irq initialized.
+>>>  [drm] Loading R300 Microcode
+>>>  [drm] radeon: ring at 0x0000000060001000
+>>>  [drm:r100_ring_test] *ERROR* radeon: ring test failed  
+>>> (scratch(0x15E4)=0xCAFEDEAD)
+>>>  [drm:r100_cp_init] *ERROR* radeon: cp isn't working (-22).
+>>>  radeon 0000:80:00.0: failed initializing CP (-22).
+>>>  radeon 0000:80:00.0: Disabling GPU acceleration
+>>>  [drm:r100_cp_fini] *ERROR* Wait for CP idle timeout, shutting  
+>>> down CP.
+>>>  [drm] radeon: cp finalized
+>>>  [drm] radeon: cp finalized
 
-Yes, it's a bit of a cop out.
-
-I still tend to think the bug is in the firmware load.  Is there any  
-external way to confirm that it loads
-correctly (e.g., a led on card)?  The error indicates that the command  
-processor (CP) isn't working.
-
-There is a manual "Radeon R5xx Acceleration" that might help debug.
+Have you tried agpmode=-1 to force PCI mode.  It seems like this was a  
+problem at one time on ubuntu:
+http://phoronix.com/forums/showthread.php?17615-Testing-radeon-KMS-on-Ubuntu
 
 Dave
 --
