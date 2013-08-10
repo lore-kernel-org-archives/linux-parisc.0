@@ -1,34 +1,41 @@
-From: gnidorah@p0n4ik.tk
+From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: PCI & AGP video options
-Date: Sat, 10 Aug 2013 10:00:53 +0400
-Message-ID: <EE8284CE-E16F-48FA-BB55-D680CFC39484@p0n4ik.tk>
-References: <199671375961574@web3d.yandex.ru> <52055C9E.9010503@gmx.de>
-Mime-Version: 1.0 (Apple Message framework v753.1)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Cc: linux-parisc List <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
+Date: Sat, 10 Aug 2013 10:07:07 -0400
+Message-ID: <BLU0-SMTP848CBA886F0C5E2BB6645697590@phx.gbl>
+References: <199671375961574@web3d.yandex.ru> <52055C9E.9010503@gmx.de> <EE8284CE-E16F-48FA-BB55-D680CFC39484@p0n4ik.tk>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: Helge Deller <deller@gmx.de>,
+	linux-parisc List <linux-parisc@vger.kernel.org>
+To: gnidorah@p0n4ik.tk
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <52055C9E.9010503@gmx.de>
+In-Reply-To: <EE8284CE-E16F-48FA-BB55-D680CFC39484@p0n4ik.tk>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Helge,
+On 10-Aug-13, at 2:00 AM, gnidorah@p0n4ik.tk wrote:
 
-Thank you much for the answer!
+>> I'm not sure if it makes much sense to use a PA-RISC
+>> machine as desktop machine nowadays. Every Intel-based
+>> machine is faster, cheaper, better supported (graphic cards)
+>> and uses less power...
+>
+> Got your point.
+> That's true. Still would be nice to use workstation model
+> as workstation.
 
-> I'm not sure if it makes much sense to use a PA-RISC
-> machine as desktop machine nowadays. Every Intel-based
-> machine is faster, cheaper, better supported (graphic cards)
-> and uses less power...
+Yes, it's a bit of a cop out.
 
-Got your point.
-That's true. Still would be nice to use workstation model
-as workstation.
+I still tend to think the bug is in the firmware load.  Is there any  
+external way to confirm that it loads
+correctly (e.g., a led on card)?  The error indicates that the command  
+processor (CP) isn't working.
 
-> The only other card I used once (at least I tested it shortly)
-> was a Vodoo 2 card. Sadly it only supported 800x600 with 16bit if
-> I remember correctly.
-> I tried a Matrox PCI once too, but I think it had some issues.
+There is a manual "Radeon R5xx Acceleration" that might help debug.
 
-I have some S3 (PCI 5v) and an Asus AGP (not AGP Pro) though
-can't test them, as i don't have corresponding risers.
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
