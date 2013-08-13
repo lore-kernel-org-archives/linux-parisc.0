@@ -1,45 +1,51 @@
-From: Alex Ivanov <gnidorah@p0n4ik.tk>
-Subject: Fwd: [PATCH] parisc: fix LMMIO mismatch between PAT length and MASK register
-Date: Sat, 10 Aug 2013 23:56:47 +0400
-Message-ID: <E820CE4C-248F-49CF-84F3-1E0A219133C9@p0n4ik.tk>
-References: <A7728478-8754-4B8E-81DD-CDB70165FFAB@p0n4ik.tk>
+From: =?iso-8859-1?Q?Thibaut_Var=E8ne?= <T-Bone@parisc-linux.org>
+Subject: Re: State of the PA-RISC/HPPA port (August 2013)
+Date: Tue, 13 Aug 2013 11:38:03 +0200
+Message-ID: <DB688814-C104-4729-A5C8-848C4EC35750@parisc-linux.org>
+References: <20130803204119.GA2392@halden.box>
 Mime-Version: 1.0 (Mac OS X Mail 6.5 \(1508\))
-Content-Type: text/plain; charset=koi8-r
-To: linux-parisc List <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=iso-8859-1
+Cc: linux-parisc@vger.kernel.org, debian-hppa@lists.debian.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20130803204119.GA2392@halden.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> =EF=D4: Alex Ivanov <gnidorah@p0n4ik.tk>
-> =F4=C5=CD=C1: =EF=D4=D7=C5=D4: [PATCH] parisc: fix LMMIO mismatch bet=
-ween PAT length and MASK register
-> =E4=C1=D4=C1: 10 =C1=D7=C7=D5=D3=D4=C1 2013 =C7., 23:55:35 GMT+04:00
-> =EB=CF=CD=D5: John David Anglin <dave.anglin@bell.net>
->=20
->=20
-> 10.08.2013, =D7 23:41, John David Anglin <dave.anglin@bell.net> =CE=C1=
-=D0=C9=D3=C1=CC(=C1):
->>=20
->> Have you tried agpmode=3D-1 to force PCI mode.  It seems like this w=
-as a problem at one time on ubuntu:
->> http://phoronix.com/forums/showthread.php?17615-Testing-radeon-KMS-o=
-n-Ubuntu
->>=20
->> Dave
->> --
->> John David Anglin	dave.anglin@bell.net
->=20
->=20
-> John,
->=20
-> I've tried this one and many other things (except the messing with en=
-dianness) so far. The error is=20
-> still there.
->=20
-> Thanks.
->=20
+Hi Helge,
 
---
+Le 3 ao=FBt 2013 =E0 22:41, Helge Deller <deller@gmx.de> a =E9crit :
+
+> Furthermore, we sadly still don't have buildd-server. What really is =
+missing
+> here is someone who is willing to host a parisc server and provide en=
+ough
+> direct bandwith to the internet.  Giving away real server hardware is=
+ probably
+> doable (and those parisc machines luckily aren't expensive any longer=
+ on ebay
+> :-)) and even administration would be done by Dave, me or someone els=
+e if
+> necessary.
+
+I think this is not exactly the issue. As I told you before, you are we=
+lcome to set up the A500 (since the rp3440 is broken, and I don't have =
+the means to repair it) hosted at ESIEE (which has plenty of bw) as an =
+autobuild. I think the problem has more to do with finding someone know=
+ledgeable about the process AND willing to go through the pain of said =
+setup. I for one will not volunteer, for the reasons I already detailed=
+ in previous emails ;-)
+
+HTH
+
+T-Bone
+
+--=20
+Thibaut VAR=C8NE
+http://hacks.slashdirt.org/--
 To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
  in
 the body of a message to majordomo@vger.kernel.org
