@@ -1,36 +1,47 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: fanotify_mark()
-Date: Tue, 13 Aug 2013 23:29:42 +0200
-Message-ID: <520AA546.2070503@gmx.de>
-References: <20130813154958.7514d525@marga.jer-c2.orkz.net>
+Subject: Re: State of the PA-RISC/HPPA port (August 2013)
+Date: Tue, 13 Aug 2013 23:36:17 +0200
+Message-ID: <520AA6D1.2070505@gmx.de>
+References: <20130803204119.GA2392@halden.box> <DB688814-C104-4729-A5C8-848C4EC35750@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org
-To: Jeroen Roovers <jer@gentoo.org>
+Cc: linux-parisc@vger.kernel.org, debian-hppa@lists.debian.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: =?ISO-8859-1?Q?Thibaut_Var=E8ne?= <T-Bone@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130813154958.7514d525@marga.jer-c2.orkz.net>
+In-Reply-To: <DB688814-C104-4729-A5C8-848C4EC35750@parisc-linux.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 08/13/2013 03:49 PM, Jeroen Roovers wrote:
-> Trying out systemd I found that libc 2.17 does not build
-> fanotify_mark() support[1]. When I got it to do that (see attached
-> patch, which is probably incorrect), calls to fanotify_mark() still
-> failed on a C8000 (64-bit kernel). I am sure I am missing something
-> obvious.
-> 
-> [1] https://bugs.gentoo.org/show_bug.cgi?id=480268
+Hi Thibaut,
 
-In the Linux kernel we use the compat layer for 32bit syscalls on 64bit kernel:
-arch/parisc/kernel/syscall_table.S:     ENTRY_COMP(fanotify_mark)
-which means we call (with 32bit userspace on 64bit kernel):
-fs/notify/fanotify/fanotify_user.c:COMPAT_SYSCALL_DEFINE6(fanotify_mark, int, fanotify_fd, unsigned int, flags,
-                __u32, mask0, __u32, mask1, int, dfd, const char  __user *, pathname)
-which has 6 parameters.
+On 08/13/2013 11:38 AM, Thibaut Var=E8ne wrote:
+> Le 3 ao=FBt 2013 =E0 22:41, Helge Deller <deller@gmx.de> a =E9crit :
+>> Furthermore, we sadly still don't have buildd-server. What really
+>> is missing here is someone who is willing to host a parisc server
+>> and provide enough direct bandwith to the internet.  Giving away
+>> real server hardware is probably doable (and those parisc machines
+>> luckily aren't expensive any longer on ebay :-)) and even
+>> administration would be done by Dave, me or someone else if=20
+>> necessary.
+>=20
+> I think this is not exactly the issue. As I told you before, you are
+> welcome to set up the A500 (since the rp3440 is broken, and I don't
+> have the means to repair it) hosted at ESIEE (which has plenty of bw)
+> as an autobuild. I think the problem has more to do with finding
+> someone knowledgeable about the process AND willing to go through the
+> pain of said setup. I for one will not volunteer, for the reasons I
+> already detailed in previous emails ;-)
 
-So, I assume you need one more "i" in this line here (change i:iiiis -> i:iiiiis {to 5 i's}):
-> +fanotify_mark	EXTRA	fanotify_mark	i:iiiis	__fanotify_mark fanotify_mark@@GLIBC_2.17
+Sure, I didn't forgot your offer, and yes, it's a lot of work...
+Nevertheless, it doesn't hurt if we have more build servers as well.
 
-Just an assumption...
-
+Thanks!
 Helge
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
