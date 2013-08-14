@@ -1,57 +1,78 @@
-From: Jeroen Roovers <jer@gentoo.org>
-Subject: Re: fanotify_mark()
-Date: Wed, 14 Aug 2013 00:54:00 +0200
-Message-ID: <20130814005400.3766f068@marga.jer-c2.orkz.net>
-References: <20130813154958.7514d525@marga.jer-c2.orkz.net>
-	<520AA546.2070503@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: State of the PA-RISC/HPPA port (August 2013)
+Date: Tue, 13 Aug 2013 21:59:18 -0400
+Message-ID: <BLU0-SMTP9E57229650F947FAC134197450@phx.gbl>
+References: <20130803204119.GA2392@halden.box> <DB688814-C104-4729-A5C8-848C4EC35750@parisc-linux.org> <520AA6D1.2070505@gmx.de>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed	delsp=yes
+Cc: =?ISO-8859-1?Q?Thibaut_Var=E8ne?= <T-Bone@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, debian-hppa@lists.debian.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <520AA546.2070503@gmx.de>
+In-Reply-To: <520AA6D1.2070505@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 13 Aug 2013 23:29:42 +0200
-Helge Deller <deller@gmx.de> wrote:
+On 13-Aug-13, at 5:36 PM, Helge Deller wrote:
 
-> > [1] https://bugs.gentoo.org/show_bug.cgi?id=480268
-> 
-> In the Linux kernel we use the compat layer for 32bit syscalls on
-> 64bit kernel: arch/parisc/kernel/syscall_table.S:
-> ENTRY_COMP(fanotify_mark) which means we call (with 32bit userspace
-> on 64bit kernel):
-> fs/notify/fanotify/fanotify_user.c:COMPAT_SYSCALL_DEFINE6(fanotify_mark,
-> int, fanotify_fd, unsigned int, flags, __u32, mask0, __u32, mask1,
-> int, dfd, const char  __user *, pathname) which has 6 parameters.
-> 
-> So, I assume you need one more "i" in this line here (change i:iiiis
-> -> i:iiiiis {to 5 i's}):
-
-I tried that too with a similarly bad result (I forgot to keep a
-binary tarball of the packages glibc for easy switching, and I didn't
-keep the strace output of the first attempt either).
-
-As noted on the bug report. The bug report lists the relevant strace
-output of the delightfully simple implementation of fanotify_mark in
-the fatrace[1] tool as well:
-
-# grep fanotif fatrace.strace
-361   fanotify_init(0, 0)               = 3
-361   fanotify_mark(0x3, 0x11, 0x4800003b, 0, 0xffffff9c) = -1 EINVAL
-(Invalid argument)
-
-I have since tried with a 32-bit kernel on a C3600, and there I get a
-different one:
-
-# grep fanotif fatrace.strace
-2810  fanotify_init(0, 0)               = 3
-2810  fanotify_mark(0x3, 0x11, 0x4800003b, 0, 0xffffff9c) = -1 EBADF
-(Bad file descriptor)
+> Hi Thibaut,
+>
+> On 08/13/2013 11:38 AM, Thibaut Var=E8ne wrote:
+>> Le 3 ao=FBt 2013 =E0 22:41, Helge Deller <deller@gmx.de> a =E9crit :
+>>> Furthermore, we sadly still don't have buildd-server. What really
+>>> is missing here is someone who is willing to host a parisc server
+>>> and provide enough direct bandwith to the internet.  Giving away
+>>> real server hardware is probably doable (and those parisc machines
+>>> luckily aren't expensive any longer on ebay :-)) and even
+>>> administration would be done by Dave, me or someone else if
+>>> necessary.
+>>
+>> I think this is not exactly the issue. As I told you before, you are
+>> welcome to set up the A500 (since the rp3440 is broken, and I don't
+>> have the means to repair it) hosted at ESIEE (which has plenty of bw=
+)
+>> as an autobuild. I think the problem has more to do with finding
+>> someone knowledgeable about the process AND willing to go through th=
+e
+>> pain of said setup. I for one will not volunteer, for the reasons I
+>> already detailed in previous emails ;-)
+>
+> Sure, I didn't forgot your offer, and yes, it's a lot of work...
+> Nevertheless, it doesn't hurt if we have more build servers as well.
 
 
-     jer
+I have buildd running on my rp3440 and also have installed the wanna-=20
+build
+database infrastructure.  What is lacking are the trigger scripts for =20
+wanna-build to
+handle the remote debian source and parisc package archives.  There is =
+=20
+a local
+trigger script.
+
+So at the moment, the simplest solution appears to be mirroring the =20
+archives locally.
+I'm a bit worried about how much net bandwidth this will require.
+
+All the packages to set up buildd and wanna-build are in the parisc =20
+archive.  It's
+not that much work.  The work in running a buildd server is in =20
+monitoring
+it and resolving package build issues.  I'm not seeing the ports =20
+access issue being
+resolved unless we can demonstrate a working system.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
 
 
-[1] https://launchpad.net/fatrace
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
