@@ -1,69 +1,38 @@
 From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: State of the PA-RISC/HPPA port (August 2013)
-Date: Tue, 13 Aug 2013 21:59:18 -0400
-Message-ID: <BLU0-SMTP9E57229650F947FAC134197450@phx.gbl>
-References: <20130803204119.GA2392@halden.box> <DB688814-C104-4729-A5C8-848C4EC35750@parisc-linux.org> <520AA6D1.2070505@gmx.de>
+Subject: Re: [PATCH] parisc: fix LMMIO mismatch between PAT length and MASK register
+Date: Wed, 14 Aug 2013 19:36:01 -0400
+Message-ID: <BLU0-SMTP28D21C5E1F517BD3CB235C97450@phx.gbl>
+References: <A7728478-8754-4B8E-81DD-CDB70165FFAB@p0n4ik.tk> <E820CE4C-248F-49CF-84F3-1E0A219133C9@p0n4ik.tk>
 Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed	delsp=yes
-Cc: =?ISO-8859-1?Q?Thibaut_Var=E8ne?= <T-Bone@parisc-linux.org>,
-	linux-parisc@vger.kernel.org, debian-hppa@lists.debian.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: linux-parisc List <linux-parisc@vger.kernel.org>
+To: Alex Ivanov <gnidorah@p0n4ik.tk>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <520AA6D1.2070505@gmx.de>
+In-Reply-To: <E820CE4C-248F-49CF-84F3-1E0A219133C9@p0n4ik.tk>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 13-Aug-13, at 5:36 PM, Helge Deller wrote:
+On 10-Aug-13, at 3:56 PM, Alex Ivanov wrote:
 
-> Hi Thibaut,
+>> I've tried this one and many other things (except the messing with  
+>> endianness) so far. The error is
+>> still there.
 >
-> On 08/13/2013 11:38 AM, Thibaut Var=E8ne wrote:
->> Le 3 ao=FBt 2013 =E0 22:41, Helge Deller <deller@gmx.de> a =E9crit :
->>> Furthermore, we sadly still don't have buildd-server. What really
->>> is missing here is someone who is willing to host a parisc server
->>> and provide enough direct bandwith to the internet.  Giving away
->>> real server hardware is probably doable (and those parisc machines
->>> luckily aren't expensive any longer on ebay :-)) and even
->>> administration would be done by Dave, me or someone else if
->>> necessary.
->>
->> I think this is not exactly the issue. As I told you before, you are
->> welcome to set up the A500 (since the rp3440 is broken, and I don't
->> have the means to repair it) hosted at ESIEE (which has plenty of bw=
-)
->> as an autobuild. I think the problem has more to do with finding
->> someone knowledgeable about the process AND willing to go through th=
-e
->> pain of said setup. I for one will not volunteer, for the reasons I
->> already detailed in previous emails ;-)
->
-> Sure, I didn't forgot your offer, and yes, it's a lot of work...
-> Nevertheless, it doesn't hurt if we have more build servers as well.
 
 
-I have buildd running on my rp3440 and also have installed the wanna-=20
-build
-database infrastructure.  What is lacking are the trigger scripts for =20
-wanna-build to
-handle the remote debian source and parisc package archives.  There is =
-=20
-a local
-trigger script.
+Alex, I don't know which distro your using but I built and uploaded a  
+new debian build of mesa and some packages it
+depends on to the parisc archive.  Mesa and the open source ATI driver  
+build without problems on parisc.  However, this
+thread suggests we need to go backwards to resolve the endian issues:
+http://forums.gentoo.org/viewtopic-p-7128758.html
 
-So at the moment, the simplest solution appears to be mirroring the =20
-archives locally.
-I'm a bit worried about how much net bandwidth this will require.
+I have a RV100 in my rp3440 that I may play a bit with if I get a  
+chance.
 
-All the packages to set up buildd and wanna-build are in the parisc =20
-archive.  It's
-not that much work.  The work in running a buildd server is in =20
-monitoring
-it and resolving package build issues.  I'm not seeing the ports =20
-access issue being
-resolved unless we can demonstrate a working system.
+While this might be a kernel issue, I suggest that the bug needs to be  
+filed on the relevant distro package list and
+maybe on the package source list as well.
 
 Dave
 --
@@ -71,8 +40,3 @@ John David Anglin	dave.anglin@bell.net
 
 
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
