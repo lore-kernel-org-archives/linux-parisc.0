@@ -1,38 +1,64 @@
 From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] parisc: fix LMMIO mismatch between PAT length and MASK register
-Date: Wed, 14 Aug 2013 19:36:01 -0400
-Message-ID: <BLU0-SMTP28D21C5E1F517BD3CB235C97450@phx.gbl>
-References: <A7728478-8754-4B8E-81DD-CDB70165FFAB@p0n4ik.tk> <E820CE4C-248F-49CF-84F3-1E0A219133C9@p0n4ik.tk>
+Subject: Re: New Debian Kernel Packages
+Date: Wed, 14 Aug 2013 19:43:57 -0400
+Message-ID: <BLU0-SMTP4320CF464D6486AAAC10C97450@phx.gbl>
+References: <BLU0-SMTP89A9F5D677CA80946A5DB097550@phx.gbl> <51FADF39.4020505@gmx.de> <BLU0-SMTP3529F28468423082C0A26797500@phx.gbl> <1375397525.2070.17.camel@dabdike>
 Mime-Version: 1.0 (Apple Message framework v936)
 Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: linux-parisc List <linux-parisc@vger.kernel.org>
-To: Alex Ivanov <gnidorah@p0n4ik.tk>
+Cc: Helge Deller <deller@gmx.de>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <E820CE4C-248F-49CF-84F3-1E0A219133C9@p0n4ik.tk>
+In-Reply-To: <1375397525.2070.17.camel@dabdike>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 10-Aug-13, at 3:56 PM, Alex Ivanov wrote:
+On 1-Aug-13, at 6:52 PM, James Bottomley wrote:
 
->> I've tried this one and many other things (except the messing with  
->> endianness) so far. The error is
->> still there.
+> On Thu, 2013-08-01 at 18:39 -0400, John David Anglin wrote:
+>> On 1-Aug-13, at 6:20 PM, Helge Deller wrote:
+>>
+>>> Hi Dave,
+>>>
+>>> On 07/30/2013 12:46 AM, John David Anglin wrote:
+>>>> The following kernel packages are now in the parisc-linux.org
+>>>> archive:
+>>>>
+>>>> linux-image-3.10-1-parisc-smp_3.10.3-1_hppa.deb
+>>>> linux-image-3.10-1-parisc64-smp_3.10.3-1_hppa.deb
+>>>> linux-image-3.10-1-parisc64_3.10.3-1_hppa.deb
+>>>> linux-image-3.10-1-parisc_3.10.3-1_hppa.deb
+>>>
+>>> That's fantastic!
+>>> This brings us one big step further to being able to build a real
+>>> debian-unstable-installer boot CD.
+>>>
+>>> I'm still hoping the C8000 patches I pushed for inclusion into 3.11
+>>> will then
+>>> show up in stable 3.10 series soon as well. If that happens we will
+>>> have a kernel
+>>> which should boot on all machines - including the c8000.
+>>
+>>
+>> I have bootstrap tested the linux-image-3.10-1-parisc64-
+>> smp_3.10.3-1_hppa.deb package.  We'll
+>> have to see if 3.10 will be the Debian choice for the next release.
+>>
+>> As I mentioned in private, I have found that flush_cache_all() is the
+>> principal problem causing random
+>> segmentation faults on SMP systems.
 >
+> That would tend to indicate the architectural flush code is wrong: it
+> isn't flushing all as it should be.
 
 
-Alex, I don't know which distro your using but I built and uploaded a  
-new debian build of mesa and some packages it
-depends on to the parisc archive.  Mesa and the open source ATI driver  
-build without problems on parisc.  However, this
-thread suggests we need to go backwards to resolve the endian issues:
-http://forums.gentoo.org/viewtopic-p-7128758.html
-
-I have a RV100 in my rp3440 that I may play a bit with if I get a  
-chance.
-
-While this might be a kernel issue, I suggest that the bug needs to be  
-filed on the relevant distro package list and
-maybe on the package source list as well.
+After looking at this, I think there is an irq problem.  It looks like  
+we loose IPI
+interrupts on occasion, or there is a sequencing issue in processing  
+them.
+In particular, it would be bad if we simultaneously tried to purge  
+both theTLB
+and cache at the same time.  However, this isn't the whole answer.
 
 Dave
 --
