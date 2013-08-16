@@ -1,51 +1,60 @@
 From: Alex Ivanov <gnidorah@p0n4ik.tk>
-Subject: Re: PCI & AGP video options
-Date: Fri, 16 Aug 2013 09:13:48 +0400
-Message-ID: <40141376630028@web3e.yandex.ru>
-References: <199671375961574@web3d.yandex.ru> <52055C9E.9010503@gmx.de> <EE8284CE-E16F-48FA-BB55-D680CFC39484@p0n4ik.tk> <BLU0-SMTP848CBA886F0C5E2BB6645697590@phx.gbl>
+Subject: Fwd: [PATCH] parisc: fix LMMIO mismatch between PAT length and MASK register
+Date: Fri, 16 Aug 2013 09:26:40 +0400
+Message-ID: <56141376630800@web3e.yandex.ru>
+References: <55021376630755@web3e.yandex.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=koi8-r
-Cc: linux-parisc List <linux-parisc@vger.kernel.org>
-To: John David Anglin <dave.anglin@bell.net>
+To: linux-parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP848CBA886F0C5E2BB6645697590@phx.gbl>
+In-Reply-To: <55021376630755@web3e.yandex.ru>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-10.08.2013, 18:07, "John David Anglin" <dave.anglin@bell.net>:
-> On 10-Aug-13, at 2:00 AM, gnidorah@p0n4ik.tk wrote:
+=46orgot CC to the list
+
+16.08.2013, 09:25, "Alex Ivanov" <gnidorah@p0n4ik.tk>:
+
+15.08.2013, 03:36, "John David Anglin" <dave.anglin@bell.net>:
+
+> =9AOn 10-Aug-13, at 3:56 PM, Alex Ivanov wrote:
+>>> =9A=9AI've tried this one and many other things (except the messing=
+ with
+>>> =9A=9Aendianness) so far. The error is
+>>> =9A=9Astill there.
+> =9AAlex, I don't know which distro your using but I built and uploade=
+d a
+> =9Anew debian build of mesa and some packages it
+> =9Adepends on to the parisc archive. =9AMesa and the open source ATI =
+driver
+> =9Abuild without problems on parisc. =9AHowever, this
+> =9Athread suggests we need to go backwards to resolve the endian issu=
+es:
+> =9Ahttp://forums.gentoo.org/viewtopic-p-7128758.html
 >
->>> =9AI'm not sure if it makes much sense to use a PA-RISC
->>> =9Amachine as desktop machine nowadays. Every Intel-based
->>> =9Amachine is faster, cheaper, better supported (graphic cards)
->>> =9Aand uses less power...
->> =9AGot your point.
->> =9AThat's true. Still would be nice to use workstation model
->> =9Aas workstation.
+> =9AI have a RV100 in my rp3440 that I may play a bit with if I get a
+> =9Achance.
 >
-> Yes, it's a bit of a cop out.
+> =9AWhile this might be a kernel issue, I suggest that the bug needs t=
+o be
+> =9Afiled on the relevant distro package list and
+> =9Amaybe on the package source list as well.
 >
-> I still tend to think the bug is in the firmware load. =9AIs there an=
-y
-> external way to confirm that it loads
-> correctly (e.g., a led on card)? =9AThe error indicates that the comm=
-and
-> processor (CP) isn't working.
->
-> There is a manual "Radeon R5xx Acceleration" that might help debug.
->
-> Dave
-> --
-> John David Anglin dave.anglin@bell.net
+> =9ADave
+> =9A--
+> =9AJohn David Anglin dave.anglin@bell.net
 
 Dave,
-=46orgive me for being silent.
 
-Unfortunately, i'm not seeing a presence of any 'works ok' marker.
-
-Thanks for the manual! I've only read a tech note on drm radeon interna=
-ls:
-http://www.botchco.com/agd5f/?p=3D50
+I'm on a Debian.
+The problem is that the same issue happens with framebuffer console too
+(new kernels use radeon drm for this purpose, instead of radeonfb), whi=
+ch
+resides in kernel.
+The console comes unnacelerated and is the same slow as X.
+So yes, this seems to be a kernel issue.
+-------- =FA=C1=D7=C5=D2=DB=C5=CE=C9=C5 =D0=C5=D2=C5=D3=D9=CC=C1=C5=CD=CF=
+=C7=CF =D3=CF=CF=C2=DD=C5=CE=C9=D1 --------
 --
 To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
  in
