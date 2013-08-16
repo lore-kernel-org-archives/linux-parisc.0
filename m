@@ -1,85 +1,53 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: New Debian Kernel Packages
-Date: Wed, 14 Aug 2013 17:38:47 -0700
-Message-ID: <1376527127.2028.67.camel@dabdike.int.hansenpartnership.com>
-References: <BLU0-SMTP89A9F5D677CA80946A5DB097550@phx.gbl>
-	 <51FADF39.4020505@gmx.de> <BLU0-SMTP3529F28468423082C0A26797500@phx.gbl>
-	 <1375397525.2070.17.camel@dabdike>
-	 <BLU0-SMTP4320CF464D6486AAAC10C97450@phx.gbl>
+From: Alex Ivanov <gnidorah@p0n4ik.tk>
+Subject: Re: PCI & AGP video options
+Date: Fri, 16 Aug 2013 09:13:48 +0400
+Message-ID: <40141376630028@web3e.yandex.ru>
+References: <199671375961574@web3d.yandex.ru> <52055C9E.9010503@gmx.de> <EE8284CE-E16F-48FA-BB55-D680CFC39484@p0n4ik.tk> <BLU0-SMTP848CBA886F0C5E2BB6645697590@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Cc: Helge Deller <deller@gmx.de>,
-	Parisc List <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=koi8-r
+Cc: linux-parisc List <linux-parisc@vger.kernel.org>
 To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP4320CF464D6486AAAC10C97450@phx.gbl>
+In-Reply-To: <BLU0-SMTP848CBA886F0C5E2BB6645697590@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2013-08-14 at 19:43 -0400, John David Anglin wrote:
-> On 1-Aug-13, at 6:52 PM, James Bottomley wrote:
-> 
-> > On Thu, 2013-08-01 at 18:39 -0400, John David Anglin wrote:
-> >> On 1-Aug-13, at 6:20 PM, Helge Deller wrote:
-> >>
-> >>> Hi Dave,
-> >>>
-> >>> On 07/30/2013 12:46 AM, John David Anglin wrote:
-> >>>> The following kernel packages are now in the parisc-linux.org
-> >>>> archive:
-> >>>>
-> >>>> linux-image-3.10-1-parisc-smp_3.10.3-1_hppa.deb
-> >>>> linux-image-3.10-1-parisc64-smp_3.10.3-1_hppa.deb
-> >>>> linux-image-3.10-1-parisc64_3.10.3-1_hppa.deb
-> >>>> linux-image-3.10-1-parisc_3.10.3-1_hppa.deb
-> >>>
-> >>> That's fantastic!
-> >>> This brings us one big step further to being able to build a real
-> >>> debian-unstable-installer boot CD.
-> >>>
-> >>> I'm still hoping the C8000 patches I pushed for inclusion into 3.11
-> >>> will then
-> >>> show up in stable 3.10 series soon as well. If that happens we will
-> >>> have a kernel
-> >>> which should boot on all machines - including the c8000.
-> >>
-> >>
-> >> I have bootstrap tested the linux-image-3.10-1-parisc64-
-> >> smp_3.10.3-1_hppa.deb package.  We'll
-> >> have to see if 3.10 will be the Debian choice for the next release.
-> >>
-> >> As I mentioned in private, I have found that flush_cache_all() is the
-> >> principal problem causing random
-> >> segmentation faults on SMP systems.
-> >
-> > That would tend to indicate the architectural flush code is wrong: it
-> > isn't flushing all as it should be.
-> 
-> 
-> After looking at this, I think there is an irq problem.  It looks like  
-> we loose IPI
-> interrupts on occasion,
+10.08.2013, 18:07, "John David Anglin" <dave.anglin@bell.net>:
+> On 10-Aug-13, at 2:00 AM, gnidorah@p0n4ik.tk wrote:
+>
+>>> =9AI'm not sure if it makes much sense to use a PA-RISC
+>>> =9Amachine as desktop machine nowadays. Every Intel-based
+>>> =9Amachine is faster, cheaper, better supported (graphic cards)
+>>> =9Aand uses less power...
+>> =9AGot your point.
+>> =9AThat's true. Still would be nice to use workstation model
+>> =9Aas workstation.
+>
+> Yes, it's a bit of a cop out.
+>
+> I still tend to think the bug is in the firmware load. =9AIs there an=
+y
+> external way to confirm that it loads
+> correctly (e.g., a led on card)? =9AThe error indicates that the comm=
+and
+> processor (CP) isn't working.
+>
+> There is a manual "Radeon R5xx Acceleration" that might help debug.
+>
+> Dave
+> --
+> John David Anglin dave.anglin@bell.net
 
-I don't really think this can be the case.  Our flushes are all done via
-the generic function on_each_cpu() with wait set to true.  If we were
-losing IPIs, this would cause the wait to wait forever and you should
-see a system hang (or at least one CPU spinning in cpu_relax while it
-waits).  on_each_cpu() uses a list to process and store invocations, so
-even two simultaneous calls to the flush functions should be strictly
-sequenced on each cpu.
+Dave,
+=46orgive me for being silent.
 
->  or there is a sequencing issue in processing  
-> them.
-> In particular, it would be bad if we simultaneously tried to purge  
-> both theTLB
-> and cache at the same time.  However, this isn't the whole answer.
+Unfortunately, i'm not seeing a presence of any 'works ok' marker.
 
-I can't really see how: the architectural TLB flush will, of course,
-purge TLBs in the tmpalias region, but they'll just refill on the next
-access for a flush, so I could see simultaneous TLB flush and cache
-flush slowing each other down, but I can't see a problem arising, unless
-I've missed something?
-
-James
-
-
+Thanks for the manual! I've only read a tech note on drm radeon interna=
+ls:
+http://www.botchco.com/agd5f/?p=3D50
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
