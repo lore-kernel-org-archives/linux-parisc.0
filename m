@@ -1,46 +1,137 @@
-From: Jeroen Roovers <jer@gentoo.org>
-Subject: Re: fanotify_mark()
-Date: Mon, 26 Aug 2013 01:46:57 +0200
-Message-ID: <20130826014657.05f4c466@marga.jer-c2.orkz.net>
-References: <20130813154958.7514d525@marga.jer-c2.orkz.net>
-	<520AA546.2070503@gmx.de>
-	<20130814005400.3766f068@marga.jer-c2.orkz.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-To: linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130814005400.3766f068@marga.jer-c2.orkz.net>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Christoph Lameter <cl@linux.com>
+Subject: [guv v2 29/31] parisc: Replace __get_cpu_var uses
+Date: Mon, 26 Aug 2013 20:56:17 +0000
+Message-ID: <00000140bc69ace7-f1bfaae1-ce5a-4c09-9635-340e29d3c6c8-000000@email.amazonses.com>
+References: <20130826204351.725357339@linux.com>
+Cc: akpm@linuxfoundation.org,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+To: Tejun Heo <tj@kernel.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 14 Aug 2013 00:54:00 +0200
-Jeroen Roovers <jer@gentoo.org> wrote:
+__get_cpu_var() is used for multiple purposes in the kernel source. One of them is
+address calculation via the form &__get_cpu_var(x). This calculates the address for
+the instance of the percpu variable of the current processor based on an offset.
 
-> On Tue, 13 Aug 2013 23:29:42 +0200
-> Helge Deller <deller@gmx.de> wrote:
-> 
-> > > [1] https://bugs.gentoo.org/show_bug.cgi?id=480268
-> > 
-> > In the Linux kernel we use the compat layer for 32bit syscalls on
-> > 64bit kernel: arch/parisc/kernel/syscall_table.S:
-> > ENTRY_COMP(fanotify_mark) which means we call (with 32bit userspace
-> > on 64bit kernel):
-> > fs/notify/fanotify/fanotify_user.c:COMPAT_SYSCALL_DEFINE6(fanotify_mark,
-> > int, fanotify_fd, unsigned int, flags, __u32, mask0, __u32, mask1,
-> > int, dfd, const char  __user *, pathname) which has 6 parameters.
-> > 
-> > So, I assume you need one more "i" in this line here (change i:iiiis
-> > -> i:iiiiis {to 5 i's}):
-> 
-> I tried that too with a similarly bad result
+Others usage cases are for storing and retrieving data from the current processors percpu area.
+__get_cpu_var() can be used as an lvalue when writing data or on the right side of an assignment.
 
-After the 5 i patch =and= recompiling fatrace, fanotify_mark() now works
-properly. Which brings me no closer to systemd support on HPPA, I'm
-afraid, but at least systemd now installs properly. I'm working on
-writing up another e-mail about the next hurdle[1] systemd presents us.
+__get_cpu_var() is defined as :
 
 
-     jer
+#define __get_cpu_var(var) (*this_cpu_ptr(&(var)))
 
 
-[1] Sneak preview: https://bugs.gentoo.org/show_bug.cgi?id=482214
+
+__get_cpu_var() always only does a address determination. However, store and retrieve operations
+could use a segment prefix (or global register on other platforms) to avoid the address calculation.
+
+this_cpu_write() and this_cpu_read() can directly take an offset into a percpu area and use
+optimized assembly code to read and write per cpu variables.
+
+
+This patch converts __get_cpu_var into either and explicit address calculation using this_cpu_ptr()
+or into a use of this_cpu operations that use the offset. Thereby address calcualtions are avoided
+and less registers are used when code is generated.
+
+At the end of the patchset all uses of __get_cpu_var have been removed so the macro is removed too.
+
+The patchset includes passes over all arches as well. Once these operations are used throughout then
+specialized macros can be defined in non -x86 arches as well in order to optimize per cpu access by
+f.e. using a global register that may be set to the per cpu base.
+
+
+
+
+Transformations done to __get_cpu_var()
+
+
+1. Determine the address of the percpu instance of the current processor.
+
+	DEFINE_PER_CPU(int, y);
+	int *x = &__get_cpu_var(y);
+
+    Converts to
+
+	int *x = this_cpu_ptr(&y);
+
+
+2. Same as #1 but this time an array structure is involved.
+
+	DEFINE_PER_CPU(int, y[20]);
+	int *x = __get_cpu_var(y);
+
+    Converts to
+
+	int *x = this_cpu_ptr(y);
+
+
+3. Retrieve the content of the current processors instance of a per cpu variable.
+
+	DEFINE_PER_CPU(int, u);
+	int x = __get_cpu_var(y)
+
+   Converts to
+
+	int x = __this_cpu_read(y);
+
+
+4. Retrieve the content of a percpu struct
+
+	DEFINE_PER_CPU(struct mystruct, y);
+	struct mystruct x = __get_cpu_var(y);
+
+   Converts to
+
+	memcpy(this_cpu_ptr(&y), x, sizeof(x));
+
+
+5. Assignment to a per cpu variable
+
+	DEFINE_PER_CPU(int, y)
+	__get_cpu_var(y) = x;
+
+   Converts to
+
+	this_cpu_write(y, x);
+
+
+6. Increment/Decrement etc of a per cpu variable
+
+	DEFINE_PER_CPU(int, y);
+	__get_cpu_var(y)++
+
+   Converts to
+
+	this_cpu_inc(y)
+
+
+
+Index: linux/arch/parisc/lib/memcpy.c
+===================================================================
+--- linux.orig/arch/parisc/lib/memcpy.c	2013-08-26 13:28:53.000000000 -0500
++++ linux/arch/parisc/lib/memcpy.c	2013-08-26 13:30:41.656224744 -0500
+@@ -470,7 +470,7 @@ static unsigned long pa_memcpy(void *dst
+ 		return 0;
+ 
+ 	/* if a load or store fault occured we can get the faulty addr */
+-	d = &__get_cpu_var(exception_data);
++	d = this_cpu_ptr(&exception_data);
+ 	fault_addr = d->fault_addr;
+ 
+ 	/* error in load or store? */
+Index: linux/arch/parisc/mm/fault.c
+===================================================================
+--- linux.orig/arch/parisc/mm/fault.c	2013-08-26 13:28:53.000000000 -0500
++++ linux/arch/parisc/mm/fault.c	2013-08-26 13:30:41.656224744 -0500
+@@ -145,7 +145,7 @@ int fixup_exception(struct pt_regs *regs
+ 	fix = search_exception_tables(regs->iaoq[0]);
+ 	if (fix) {
+ 		struct exception_data *d;
+-		d = &__get_cpu_var(exception_data);
++		d = this_cpu_ptr(&exception_data);
+ 		d->fault_ip = regs->iaoq[0];
+ 		d->fault_space = regs->isr;
+ 		d->fault_addr = regs->ior;
