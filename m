@@ -1,69 +1,137 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: systemd real-time signals choices clash with Linux/PARISC available
- SIGRT range, WAS: fanotify_mark()
-Date: Tue, 27 Aug 2013 11:26:41 -0400
-Message-ID: <521CC531.6020106@bell.net>
-References: <20130813154958.7514d525@marga.jer-c2.orkz.net> <520AA546.2070503@gmx.de> <20130814005400.3766f068@marga.jer-c2.orkz.net> <20130826014657.05f4c466@marga.jer-c2.orkz.net> <521BC84B.4090602@gmx.de> <BLU0-SMTP101B187CC9D02E87059A7C297490@phx.gbl> <20130827164601.4accbbfb@marga.jer-c2.orkz.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>
-To: Jeroen Roovers <jer@gentoo.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130827164601.4accbbfb@marga.jer-c2.orkz.net>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Christoph Lameter <cl@linux.com>
+Subject: [gcv v3 33/35] parisc: Replace __get_cpu_var uses
+Date: Wed, 28 Aug 2013 20:06:37 +0000
+Message-ID: <00000140c688e9a9-deb83537-5b88-46a3-a175-ad9eb68df121-000000@email.amazonses.com>
+References: <20130828193457.140443630@linux.com>
+Cc: akpm@linuxfoundation.org,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+To: Tejun Heo <tj@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 8/27/2013 10:46 AM, Jeroen Roovers wrote:
-> On Mon, 26 Aug 2013 18:37:54 -0400
-> John David Anglin <dave.anglin@bell.net> wrote:
->
->> On 26-Aug-13, at 5:27 PM, Helge Deller wrote:
->>>> [1] Sneak preview: https://bugs.gentoo.org/show_bug.cgi?id=482214
->>> Did you already filed this signal-problem upstream as suggested in
->>> comment #3 (https://bugs.gentoo.org/show_bug.cgi?id=482214#c3)?
-> Well, there are two ways to resolve this problem, and seeing who is
-> developing systemd and seeing the generous way the "available" signal
-> range is used, I'm pretty doubtful about changes there.
->
-> As I said in comment #2, that range could be compacted (a lot) and then
-> fit easily on any future platform. Since it was a design choice even
-> reflected in man pages[1] ("[...], SIGRTMIN+29   Sets the log level to
-> [...]"), I'm very afraid they will not change it easily.
->
->> I believe two of the signal numbers come from HP-UX.
-> #define SIGXCPU         33
-> #define SIGXFSZ         34
-The signal numbers for these two signals come from HP-UX but the signals 
-are used
-by Linux, so I can't see how they can change.
-> #define SIGSTKFLT       36
->
-> According to [2], SIGSTKFLT isn't used.
-This signal isn't used by HP-UX but it is used by Linux, so again this 
-can't change.
+__get_cpu_var() is used for multiple purposes in the kernel source. One of them is
+address calculation via the form &__get_cpu_var(x). This calculates the address for
+the instance of the percpu variable of the current processor based on an offset.
 
-Can we change _NSIG to 69 so there are 32 RT signals as on other arches?
+Other use cases are for storing and retrieving data from the current processors percpu area.
+__get_cpu_var() can be used as an lvalue when writing data or on the right side of an assignment.
 
->
-> Do we still support HP-UX? I have never seen a binary for it I could
-> try with, but then maybe I never went looking for one, either. :)
-Doesn't really matter...
->
->
->       jer
->
->
-> [1] http://www.freedesktop.org/software/systemd/man/systemd.html
-> [2]
-> http://h21007.www2.hp.com/portal/download/files/unprot/STK/Linux_STK/impacts/i60.html
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->
+__get_cpu_var() is defined as :
 
 
--- 
-John David Anglin    dave.anglin@bell.net
+#define __get_cpu_var(var) (*this_cpu_ptr(&(var)))
 
+
+
+__get_cpu_var() always only does an address determination. However, store and retrieve operations
+could use a segment prefix (or global register on other platforms) to avoid the address calculation.
+
+this_cpu_write() and this_cpu_read() can directly take an offset into a percpu area and use
+optimized assembly code to read and write per cpu variables.
+
+
+This patch converts __get_cpu_var into either an explicit address calculation using this_cpu_ptr()
+or into a use of this_cpu operations that use the offset. Thereby address calcualtions are avoided
+and less registers are used when code is generated.
+
+At the end of the patchset all uses of __get_cpu_var have been removed so the macro is removed too.
+
+The patchset includes passes over all arches as well. Once these operations are used throughout then
+specialized macros can be defined in non -x86 arches as well in order to optimize per cpu access by
+f.e. using a global register that may be set to the per cpu base.
+
+
+
+
+Transformations done to __get_cpu_var()
+
+
+1. Determine the address of the percpu instance of the current processor.
+
+	DEFINE_PER_CPU(int, y);
+	int *x = &__get_cpu_var(y);
+
+    Converts to
+
+	int *x = this_cpu_ptr(&y);
+
+
+2. Same as #1 but this time an array structure is involved.
+
+	DEFINE_PER_CPU(int, y[20]);
+	int *x = __get_cpu_var(y);
+
+    Converts to
+
+	int *x = this_cpu_ptr(y);
+
+
+3. Retrieve the content of the current processors instance of a per cpu variable.
+
+	DEFINE_PER_CPU(int, u);
+	int x = __get_cpu_var(y)
+
+   Converts to
+
+	int x = __this_cpu_read(y);
+
+
+4. Retrieve the content of a percpu struct
+
+	DEFINE_PER_CPU(struct mystruct, y);
+	struct mystruct x = __get_cpu_var(y);
+
+   Converts to
+
+	memcpy(this_cpu_ptr(&x), y, sizeof(x));
+
+
+5. Assignment to a per cpu variable
+
+	DEFINE_PER_CPU(int, y)
+	__get_cpu_var(y) = x;
+
+   Converts to
+
+	this_cpu_write(y, x);
+
+
+6. Increment/Decrement etc of a per cpu variable
+
+	DEFINE_PER_CPU(int, y);
+	__get_cpu_var(y)++
+
+   Converts to
+
+	this_cpu_inc(y)
+
+
+
+Index: linux/arch/parisc/lib/memcpy.c
+===================================================================
+--- linux.orig/arch/parisc/lib/memcpy.c	2013-08-26 13:28:53.000000000 -0500
++++ linux/arch/parisc/lib/memcpy.c	2013-08-26 13:30:41.656224744 -0500
+@@ -470,7 +470,7 @@ static unsigned long pa_memcpy(void *dst
+ 		return 0;
+ 
+ 	/* if a load or store fault occured we can get the faulty addr */
+-	d = &__get_cpu_var(exception_data);
++	d = this_cpu_ptr(&exception_data);
+ 	fault_addr = d->fault_addr;
+ 
+ 	/* error in load or store? */
+Index: linux/arch/parisc/mm/fault.c
+===================================================================
+--- linux.orig/arch/parisc/mm/fault.c	2013-08-26 13:28:53.000000000 -0500
++++ linux/arch/parisc/mm/fault.c	2013-08-26 13:30:41.656224744 -0500
+@@ -145,7 +145,7 @@ int fixup_exception(struct pt_regs *regs
+ 	fix = search_exception_tables(regs->iaoq[0]);
+ 	if (fix) {
+ 		struct exception_data *d;
+-		d = &__get_cpu_var(exception_data);
++		d = this_cpu_ptr(&exception_data);
+ 		d->fault_ip = regs->iaoq[0];
+ 		d->fault_space = regs->isr;
+ 		d->fault_addr = regs->ior;
