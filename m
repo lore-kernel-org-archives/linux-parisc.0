@@ -1,137 +1,24 @@
-From: Christoph Lameter <cl@linux.com>
-Subject: [gcv v3 33/35] parisc: Replace __get_cpu_var uses
-Date: Wed, 28 Aug 2013 20:06:37 +0000
-Message-ID: <00000140c688e9a9-deb83537-5b88-46a3-a175-ad9eb68df121-000000@email.amazonses.com>
-References: <20130828193457.140443630@linux.com>
-Cc: akpm@linuxfoundation.org,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: Tejun Heo <tj@kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+From: Helge Deller <deller@gmx.de>
+Subject: Does there exists any 32bit-only PARISC SMP machines?
+Date: Thu, 29 Aug 2013 20:51:52 +0200
+Message-ID: <521F9848.4010404@gmx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+To: linux-parisc <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-__get_cpu_var() is used for multiple purposes in the kernel source. One of them is
-address calculation via the form &__get_cpu_var(x). This calculates the address for
-the instance of the percpu variable of the current processor based on an offset.
+Hi all,
 
-Other use cases are for storing and retrieving data from the current processors percpu area.
-__get_cpu_var() can be used as an lvalue when writing data or on the right side of an assignment.
+I was asked by the debian kernel team to drop on parisc the UP kernels and only provide SMP kernels even for UP-machines.
 
-__get_cpu_var() is defined as :
+For 64bit it might make sense to only ship a 64bit SMP kernel, but I'm not sure if it makes sense for 32bit kernels.
+One major question would be, if there exists any 32bit parisc machines which support multiple CPUs at all?
+If not, then it would make sense to drop the 32bit SMP kernels instead.  
 
+So, are there any 32bit SMP machines out there?
+Any other thoughts on this topic?
 
-#define __get_cpu_var(var) (*this_cpu_ptr(&(var)))
-
-
-
-__get_cpu_var() always only does an address determination. However, store and retrieve operations
-could use a segment prefix (or global register on other platforms) to avoid the address calculation.
-
-this_cpu_write() and this_cpu_read() can directly take an offset into a percpu area and use
-optimized assembly code to read and write per cpu variables.
-
-
-This patch converts __get_cpu_var into either an explicit address calculation using this_cpu_ptr()
-or into a use of this_cpu operations that use the offset. Thereby address calcualtions are avoided
-and less registers are used when code is generated.
-
-At the end of the patchset all uses of __get_cpu_var have been removed so the macro is removed too.
-
-The patchset includes passes over all arches as well. Once these operations are used throughout then
-specialized macros can be defined in non -x86 arches as well in order to optimize per cpu access by
-f.e. using a global register that may be set to the per cpu base.
-
-
-
-
-Transformations done to __get_cpu_var()
-
-
-1. Determine the address of the percpu instance of the current processor.
-
-	DEFINE_PER_CPU(int, y);
-	int *x = &__get_cpu_var(y);
-
-    Converts to
-
-	int *x = this_cpu_ptr(&y);
-
-
-2. Same as #1 but this time an array structure is involved.
-
-	DEFINE_PER_CPU(int, y[20]);
-	int *x = __get_cpu_var(y);
-
-    Converts to
-
-	int *x = this_cpu_ptr(y);
-
-
-3. Retrieve the content of the current processors instance of a per cpu variable.
-
-	DEFINE_PER_CPU(int, u);
-	int x = __get_cpu_var(y)
-
-   Converts to
-
-	int x = __this_cpu_read(y);
-
-
-4. Retrieve the content of a percpu struct
-
-	DEFINE_PER_CPU(struct mystruct, y);
-	struct mystruct x = __get_cpu_var(y);
-
-   Converts to
-
-	memcpy(this_cpu_ptr(&x), y, sizeof(x));
-
-
-5. Assignment to a per cpu variable
-
-	DEFINE_PER_CPU(int, y)
-	__get_cpu_var(y) = x;
-
-   Converts to
-
-	this_cpu_write(y, x);
-
-
-6. Increment/Decrement etc of a per cpu variable
-
-	DEFINE_PER_CPU(int, y);
-	__get_cpu_var(y)++
-
-   Converts to
-
-	this_cpu_inc(y)
-
-
-
-Index: linux/arch/parisc/lib/memcpy.c
-===================================================================
---- linux.orig/arch/parisc/lib/memcpy.c	2013-08-26 13:28:53.000000000 -0500
-+++ linux/arch/parisc/lib/memcpy.c	2013-08-26 13:30:41.656224744 -0500
-@@ -470,7 +470,7 @@ static unsigned long pa_memcpy(void *dst
- 		return 0;
- 
- 	/* if a load or store fault occured we can get the faulty addr */
--	d = &__get_cpu_var(exception_data);
-+	d = this_cpu_ptr(&exception_data);
- 	fault_addr = d->fault_addr;
- 
- 	/* error in load or store? */
-Index: linux/arch/parisc/mm/fault.c
-===================================================================
---- linux.orig/arch/parisc/mm/fault.c	2013-08-26 13:28:53.000000000 -0500
-+++ linux/arch/parisc/mm/fault.c	2013-08-26 13:30:41.656224744 -0500
-@@ -145,7 +145,7 @@ int fixup_exception(struct pt_regs *regs
- 	fix = search_exception_tables(regs->iaoq[0]);
- 	if (fix) {
- 		struct exception_data *d;
--		d = &__get_cpu_var(exception_data);
-+		d = this_cpu_ptr(&exception_data);
- 		d->fault_ip = regs->iaoq[0];
- 		d->fault_space = regs->isr;
- 		d->fault_addr = regs->ior;
+Thanks,
+Helge
