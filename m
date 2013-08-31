@@ -1,41 +1,129 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: Does there exists any 32bit-only PARISC SMP machines?
-Date: Fri, 30 Aug 2013 06:42:21 +0400
-Message-ID: <1377830541.2331.5.camel@dabdike>
-References: <521F9848.4010404@gmx.de>
+From: Jianguo Wu <wujianguo@huawei.com>
+Subject: Re: [PATCH 4/4] mm/arch: use NUMA_NODE
+Date: Sat, 31 Aug 2013 08:54:21 +0800
+Message-ID: <52213EBD.8060609@huawei.com>
+References: <521FFE3B.7040801@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Cc: linux-parisc <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+Cc: <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-mips@linux-mips.org>,
+	<linux-parisc@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+	<sparclinux@vger.kernel.org>, <x86@kernel.org>,
+	<linux-mm@kvack.org>
+To: Andrew Morton <akpm@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <521F9848.4010404@gmx.de>
+In-Reply-To: <521FFE3B.7040801@huawei.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2013-08-29 at 20:51 +0200, Helge Deller wrote:
-> Hi all,
+Cc linux-mm@kvack.org
+
+On 2013/8/30 10:06, Jianguo Wu wrote:
+
+> Use more appropriate NUMA_NO_NODE instead of -1 in some archs' module_alloc()
 > 
-> I was asked by the debian kernel team to drop on parisc the UP kernels
-> and only provide SMP kernels even for UP-machines.
-
-> For 64bit it might make sense to only ship a 64bit SMP kernel, but I'm
-> not sure if it makes sense for 32bit kernels.
-> One major question would be, if there exists any 32bit parisc machines
-> which support multiple CPUs at all?
-> If not, then it would make sense to drop the 32bit SMP kernels
-> instead.  
+> Signed-off-by: Jianguo Wu <wujianguo@huawei.com>
+> ---
+>  arch/arm/kernel/module.c    |    2 +-
+>  arch/arm64/kernel/module.c  |    2 +-
+>  arch/mips/kernel/module.c   |    2 +-
+>  arch/parisc/kernel/module.c |    2 +-
+>  arch/s390/kernel/module.c   |    2 +-
+>  arch/sparc/kernel/module.c  |    2 +-
+>  arch/x86/kernel/module.c    |    2 +-
+>  7 files changed, 7 insertions(+), 7 deletions(-)
 > 
-> So, are there any 32bit SMP machines out there?
+> diff --git a/arch/arm/kernel/module.c b/arch/arm/kernel/module.c
+> index 85c3fb6..8f4cff3 100644
+> --- a/arch/arm/kernel/module.c
+> +++ b/arch/arm/kernel/module.c
+> @@ -40,7 +40,7 @@
+>  void *module_alloc(unsigned long size)
+>  {
+>  	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
+> -				GFP_KERNEL, PAGE_KERNEL_EXEC, -1,
+> +				GFP_KERNEL, PAGE_KERNEL_EXEC, NUMA_NO_NODE,
+>  				__builtin_return_address(0));
+>  }
+>  #endif
+> diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+> index ca0e3d5..8f898bd 100644
+> --- a/arch/arm64/kernel/module.c
+> +++ b/arch/arm64/kernel/module.c
+> @@ -29,7 +29,7 @@
+>  void *module_alloc(unsigned long size)
+>  {
+>  	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
+> -				    GFP_KERNEL, PAGE_KERNEL_EXEC, -1,
+> +				    GFP_KERNEL, PAGE_KERNEL_EXEC, NUMA_NO_NODE,
+>  				    __builtin_return_address(0));
+>  }
+>  
+> diff --git a/arch/mips/kernel/module.c b/arch/mips/kernel/module.c
+> index 977a623..b507e07 100644
+> --- a/arch/mips/kernel/module.c
+> +++ b/arch/mips/kernel/module.c
+> @@ -46,7 +46,7 @@ static DEFINE_SPINLOCK(dbe_lock);
+>  void *module_alloc(unsigned long size)
+>  {
+>  	return __vmalloc_node_range(size, 1, MODULE_START, MODULE_END,
+> -				GFP_KERNEL, PAGE_KERNEL, -1,
+> +				GFP_KERNEL, PAGE_KERNEL, NUMA_NO_NODE,
+>  				__builtin_return_address(0));
+>  }
+>  #endif
+> diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
+> index 2a625fb..50dfafc 100644
+> --- a/arch/parisc/kernel/module.c
+> +++ b/arch/parisc/kernel/module.c
+> @@ -219,7 +219,7 @@ void *module_alloc(unsigned long size)
+>  	 * init_data correctly */
+>  	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
+>  				    GFP_KERNEL | __GFP_HIGHMEM,
+> -				    PAGE_KERNEL_RWX, -1,
+> +				    PAGE_KERNEL_RWX, NUMA_NO_NODE,
+>  				    __builtin_return_address(0));
+>  }
+>  
+> diff --git a/arch/s390/kernel/module.c b/arch/s390/kernel/module.c
+> index 7845e15..b89b591 100644
+> --- a/arch/s390/kernel/module.c
+> +++ b/arch/s390/kernel/module.c
+> @@ -50,7 +50,7 @@ void *module_alloc(unsigned long size)
+>  	if (PAGE_ALIGN(size) > MODULES_LEN)
+>  		return NULL;
+>  	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
+> -				    GFP_KERNEL, PAGE_KERNEL, -1,
+> +				    GFP_KERNEL, PAGE_KERNEL, NUMA_NO_NODE,
+>  				    __builtin_return_address(0));
+>  }
+>  #endif
+> diff --git a/arch/sparc/kernel/module.c b/arch/sparc/kernel/module.c
+> index 4435488..97655e0 100644
+> --- a/arch/sparc/kernel/module.c
+> +++ b/arch/sparc/kernel/module.c
+> @@ -29,7 +29,7 @@ static void *module_map(unsigned long size)
+>  	if (PAGE_ALIGN(size) > MODULES_LEN)
+>  		return NULL;
+>  	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
+> -				GFP_KERNEL, PAGE_KERNEL, -1,
+> +				GFP_KERNEL, PAGE_KERNEL, NUMA_NO_NODE,
+>  				__builtin_return_address(0));
+>  }
+>  #else
+> diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+> index 216a4d7..18be189 100644
+> --- a/arch/x86/kernel/module.c
+> +++ b/arch/x86/kernel/module.c
+> @@ -49,7 +49,7 @@ void *module_alloc(unsigned long size)
+>  		return NULL;
+>  	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
+>  				GFP_KERNEL | __GFP_HIGHMEM, PAGE_KERNEL_EXEC,
+> -				-1, __builtin_return_address(0));
+> +				NUMA_NO_NODE, __builtin_return_address(0));
+>  }
+>  
+>  #ifdef CONFIG_X86_32
 
-Yes, the J class systems have some 32 bit only SMP boxes (well one, the
-J210XC, I think) ... mostly with 7200 and above processors.
-
-> Any other thoughts on this topic?
-
-SMP will certainly work.  The main problem with SMP on UP is the
-unnecessary spinlock cost.  I think given there's very few owners of J
-class SMP 32 bit systems, 32 bit UP and 64 bit SMP is OK.
-
-James
 
 
