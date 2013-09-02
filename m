@@ -1,66 +1,96 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: hppa atomic support in gcc?
-Date: Sun, 1 Sep 2013 14:19:53 -0400
-Message-ID: <BLU0-SMTP69B19758B3BB4407E8D2A597370@phx.gbl>
-References: <CAE2sS1iGfx7RgreM9VB7mPPDkzg=huhFuAtVSyxPz3xQ_3t_8Q@mail.gmail.com> <5213894D.1020508@bell.net> <CAE2sS1gzxWs-5ab9+L+vHY2n2F-XbXRYO3wWQRwbDjXPVR8TBg@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+From: gnidorah@p0n4ik.tk
+Subject: Re: parisc debian kernel - missing  modules for C8000 - linux-image-3.10-2-parisc64-smp
+Date: Mon, 2 Sep 2013 10:43:00 +0400
+Message-ID: <3B9F0B38-597D-439E-B57E-0F7E9E11BE9D@p0n4ik.tk>
+References: <521A7589.5000503@gmx.de> <BLU0-SMTP41F72FA4035273DC12703897360@phx.gbl> <BLU0-SMTP99E4F2E24E1A3F5BA18E7A97360@phx.gbl> <108451378018002@web28j.yandex.ru> <BLU0-SMTP1273DDE4A968FD3A43C55D97370@phx.gbl>
+Mime-Version: 1.0 (Mac OS X Mail 6.5 \(1508\))
+Content-Type: text/plain; charset=koi8-r
 Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: Carlos O'Donell <carlos@systemhalted.org>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAE2sS1gzxWs-5ab9+L+vHY2n2F-XbXRYO3wWQRwbDjXPVR8TBg@mail.gmail.com>
+In-Reply-To: <BLU0-SMTP1273DDE4A968FD3A43C55D97370@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 21-Aug-13, at 1:57 PM, Carlos O'Donell wrote:
 
-> On Tue, Aug 20, 2013 at 11:20 AM, John David Anglin
-> <dave.anglin@bell.net> wrote:
->> Hi Carlos,
->>
->> Yes, it been there for many years but it doesn't use glibc's  
->> atomic.h.  It
->> directly
->> does light-weight system calls into kernel.  The implementation is  
->> very
->> similar to arm.
->> See: libgcc/config/pa/linux-atomic.c.
->>
->> Helge did the initial implementation and I have fixed a few bugs in  
->> it.
->>
->> I changed to using this atomic support in the qt4-x11 package  
->> because the
->> existing
->> ldcw based locking broke the qt4smoke package build.  I need to  
->> submit my
->> patch
->> somewhere.
->
-> Awesome. Responded to Guy Martin with this info.
+01.09.2013, =D7 18:48, John David Anglin <dave.anglin@bell.net> =CE=C1=D0=
+=C9=D3=C1=CC(=C1):
 
+> I had one boot instance where the initial ring test succeeded:
+>=20
+> [drm] radeon kernel modesetting enabled.radeon 0000:e0:02.0: enabling=
+ SERR and PARITY (0187 -> 01c7)
+> [drm] initializing kernel modesetting (RV100 0x1002:0x5159 0x103C:0x1=
+292).
+> [drm] register mmio base: 0xF4040000
+> [drm] register mmio size: 65536
+> [drm] GPU not posted. posting now...
+> radeon 0000:e0:02.0: VRAM: 64M 0xFFFFFFFFF0000000 - 0xFFFFFFFFF3FFFFF=
+=46 (8M used)
+> radeon 0000:e0:02.0: GTT: 512M 0xFFFFFFFFD0000000 - 0xFFFFFFFFEFFFFFF=
+=46
+> [drm] Detected VRAM RAM=3D64M, BAR=3D64M
+> [drm] RAM width 64bits DDR[TTM] Zone  kernel: Available graphics memo=
+ry: 4117164 kiB
+> [TTM] Zone   dma32: Available graphics memory: 2097152 kiB
+> [TTM] Initializing pool allocator
+> [drm] radeon: 8M of VRAM memory ready
+> [drm] radeon: 512M of GTT memory ready.
+> [drm] GART: num cpu pages 131072, num gpu pages 131072
+> [drm] PCI GART of 512M enabled (table at 0x00000000424C0000).
+> radeon 0000:e0:02.0: WB disabled
+> radeon 0000:e0:02.0: fence driver on ring 0 use gpu addr 0xffffffffd0=
+000000 and cpu addr 0x000000007df2b000
+> [drm] Supports vblank timestamp caching Rev 1 (10.10.2010).
+> [drm] Driver supports precise vblank timestamp query.
+> [drm] radeon: irq initialized.
+> [drm] Loading R100 Microcode
+> [drm] radeon: ring at 0xFFFFFFFFD0001000
+> [drm] ring test succeeded in 0 usecs
+> radeon 0000:e0:02.0: GPU lockup CP stall for more than 10000msec
+> radeon 0000:e0:02.0: GPU lockup (waiting for 0x0000000000000001 last =
+fence id 0x0000000000000000)
+> [drm:r100_ib_test] *ERROR* radeon: fence wait failed (-45).
+> [drm:radeon_ib_ring_tests] *ERROR* radeon: failed testing IB on GFX r=
+ing (-45).
+> [drm:radeon_device_init] *ERROR* ib ring test failed (-45).
+> [drm] No TV DAC info found in BIOS
+> [drm] Radeon Display Connectors
+> [drm] Connector 0:
+> [drm]   VGA-1
+> [drm]   DDC: 0x60 0x60 0x60 0x60 0x60 0x60 0x60 0x60
+> [drm]   Encoders:
+> [drm]     CRT1: INTERNAL_DAC1
+> [drm] Connector 1:
+> [drm]   DVI-I-1
+> [drm]   HPD1
+> [drm]   DDC: 0x64 0x64 0x64 0x64 0x64 0x64 0x64 0x64
+> [drm]   Encoders:
+> [drm]     CRT2: INTERNAL_DAC2
+> [drm]     DFP1: INTERNAL_TMDS1
+> radeon 0000:e0:02.0: No connectors reported connected with modes
+> [drm] Cannot find any crtc or sizes - going 1024x768
+> [drm] fb mappable at 0xFFFFFFFFF0040000
+> [drm] vram apper at 0xFFFFFFFFF0000000
+> [drm] size 786432
+> [drm] fb depth is 8
+> [drm]    pitch is 1024
+> Console: switching to colour frame buffer device 128x48
+> radeon 0000:e0:02.0: fb0: radeondrmfb frame buffer device
+> radeon 0000:e0:02.0: registered panic notifier
+> [drm] Initialized radeon 2.34.0 20080528 for 0000:e0:02.0 on minor 0
+>=20
+> There may be some kind of timing issue.  I would swear that it didn't=
+ take 10s for the "GPU
+> lockup CP stall" message to occur.
 
-I noticed today that the /usr/bin/dot command was dropping core.  It  
-generates several
-threads when it runs.
+Dave,
 
-Looking at one of the dumps, it turned out that the exception was in  
-g_private_get.  This
-involves various atomic operations.  Looking at the glib2.0 atomic  
-implementation,
-I see it depends on the GCC cpp define  
-__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4.
-Because of the library implementation, this symbol isn't being  
-defined.  So, glib2.0's
-atomic support isn't atomic.
-
-I'm looking at a GCC change to define the above.  Maybe this will  
-help.  The situation might
-be similar for other packages.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+Passed ring test makes no sense there, as CP isn't working. If you'll j=
+ust disable ring test function, you'll get
+absolutely same output (aside of 'ring test succeeded').
+I'm feeling these aren't timings but improperly initialized CP.--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
