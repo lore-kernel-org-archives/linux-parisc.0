@@ -1,128 +1,27 @@
 From: Alex Ivanov <gnidorah@p0n4ik.tk>
-Subject: Re: parisc debian kernel - missing  modules for C8000 - linux-image-3.10-2-parisc64-smp
-Date: Wed, 04 Sep 2013 22:36:03 +0400
-Message-ID: <152581378319763@web27g.yandex.ru>
-References: <521A7589.5000503@gmx.de> <BLU0-SMTP41F72FA4035273DC12703897360@phx.gbl> <BLU0-SMTP99E4F2E24E1A3F5BA18E7A97360@phx.gbl> <108451378018002@web28j.yandex.ru> <BLU0-SMTP1273DDE4A968FD3A43C55D97370@phx.gbl> <3B9F0B38-597D-439E-B57E-0F7E9E11BE9D@p0n4ik.tk> <BLU0-SMTP6283FFA9572E9BF7725A1E97300@phx.gbl> <F9C1BAB5-56D3-40E2-B0B2-184C92CD51AB@p0n4ik.tk>
+Subject: Re: [PATCH] Fix interrupt routing for C8000 serial ports
+Date: Wed, 04 Sep 2013 22:51:02 +0400
+Message-ID: <165661378320662@web27g.yandex.ru>
+References: <20130730000216.94DB91D232@solo.franken.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
+Content-Type: text/plain
 Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: John David Anglin <dave.anglin@bell.net>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <F9C1BAB5-56D3-40E2-B0B2-184C92CD51AB@p0n4ik.tk>
+In-Reply-To: <20130730000216.94DB91D232@solo.franken.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I meant 0x07dc07e0 not 0x07dc0x07e0 for sure...
+30.07.2013, 05:00, "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>:
+> We can't use dev->mod_index for selecting the interrupt routing entry,
+> because it's not an index into interrupt routing table. It will be even
+> wrong on a machine with 2 CPUs (4 cores). But all needed information is
+> contained in the PAT entries for the serial ports. mod[0] contains the iosapic
+> address and mod_info has some indications for the interrupt input (at least
+> it looks like it). This patch implements the searching for the right iosapic
+> and uses this interrupt input information.
 
-04.09.2013, 22:34, "Alex Ivanov" <gnidorah@p0n4ik.tk>:
-> 02.09.2013, =D7 18:10, John David Anglin <dave.anglin@bell.net> =CE=C1=
-=D0=C9=D3=C1=CC(=C1):
->
->> =9AYou don't think it ran briefly and crashed?
->>
->> =9AI have a thought. =9AThe code that loads the microcode appears to=
- be trying to load in 32-bit hunks. =9AMaybe
->> =9Awe have a 64-bit path on the bus and we need to load the firmware=
- in 64-bit words.
->>
->> =9ADave
->> =9A--
->> =9AJohn David Anglin dave.anglin@bell.net
->
-> Dave,
->
-> Am i understood you right?
->
-> --- r100.c.orig 2013-09-04 16:53:28.000000000 +0000
-> +++ r100.c =9A=9A=9A=9A=9A2013-09-04 18:28:23.000000000 +0000
-> @@ -1049,9 +1049,13 @@ static int r100_cp_init_microcode(struct
-> =9A=9A=9A=9A=9A=9A=9A=9Areturn err;
-> =9A}
->
-> +#define RADEON_CP_ME_RAM_DATAHL 0x07dc0x07e0
-> +
-> +void r100_mm_wregq(struct radeon_device *rdev, uint64_t reg, uint64_=
-t v,
-> + =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Abool always_indi=
-rect);
-> =9Astatic void r100_cp_load_microcode(struct radeon_device *rdev)
-> =9A{
-> - =9A=9A=9A=9A=9A=9Aconst __be32 *fw_data;
-> + =9A=9A=9A=9A=9A=9Aconst __be64 *fw_data;
-> =9A=9A=9A=9A=9A=9A=9A=9Aint i, size;
->
-> =9A=9A=9A=9A=9A=9A=9A=9Aif (r100_gui_wait_for_idle(rdev)) {
-> @@ -1060,14 +1064,12 @@ static void r100_cp_load_microcode(struc
-> =9A=9A=9A=9A=9A=9A=9A=9A}
->
-> =9A=9A=9A=9A=9A=9A=9A=9Aif (rdev->me_fw) {
-> - =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Asize =3D rdev->me_fw->siz=
-e / 4;
-> - =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Afw_data =3D (const __be32=
- *)&rdev->me_fw->data[0];
-> + =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Asize =3D rdev->me_fw->siz=
-e / 8;
-> + =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Afw_data =3D (const __be64=
- *)&rdev->me_fw->data[0];
-> =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9AWREG32(RADEON_CP_ME_R=
-AM_ADDR, 0);
-> - =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Afor (i =3D 0; i < size; i=
- +=3D 2) {
-> - =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9AW=
-REG32(RADEON_CP_ME_RAM_DATAH,
-> - =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=
-=9A=9A=9A=9A=9A=9Abe32_to_cpup(&fw_data[i]));
-> - =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9AW=
-REG32(RADEON_CP_ME_RAM_DATAL,
-> - =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=
-=9A=9A=9A=9A=9A=9Abe32_to_cpup(&fw_data[i + 1]));
-> + =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Afor (i =3D 0; i < size; i=
- +=3D 1) {
-> + =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Ar=
-100_mm_wregq(rdev, RADEON_CP_ME_RAM_DATAHL,
-> + =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=
-=9A=9A=9A=9A=9A=9A=9Abe64_to_cpup(&fw_data[i]), false);
-> =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A}
-> =9A=9A=9A=9A=9A=9A=9A=9A}
-> =9A}
-> @@ -4078,6 +4080,21 @@ void r100_mm_wreg(struct radeon_device *
-> =9A=9A=9A=9A=9A=9A=9A=9A}
-> =9A}
->
-> +void r100_mm_wregq(struct radeon_device *rdev, uint64_t reg, uint64_=
-t v,
-> + =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Abool always_indi=
-rect)
-> +{
-> + =9A=9A=9A=9A=9A=9A=9Aif (reg < rdev->rmmio_size && !always_indirect=
-)
-> + =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Awriteq(v, ((void __iom=
-em *)rdev->rmmio) + reg);
-> + =9A=9A=9A=9A=9A=9A=9Aelse {
-> + =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Aunsigned long flags;
-> +
-> + =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Aspin_lock_irqsave(&rde=
-v->mmio_idx_lock, flags);
-> + =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Awriteq(reg, ((void __i=
-omem *)rdev->rmmio) + RADEON_MM_INDEX);
-> + =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Awriteq(v, ((void __iom=
-em *)rdev->rmmio) + RADEON_MM_DATA);
-> + =9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9A=9Aspin_unlock_irqrestore=
-(&rdev->mmio_idx_lock, flags);
-> + =9A=9A=9A=9A=9A=9A=9A}
-> +}
-> +
-> =9Au32 r100_io_rreg(struct radeon_device *rdev, u32 reg)
-> =9A{
-> =9A=9A=9A=9A=9A=9A=9A=9Aif (reg < rdev->rio_mem_size)
->
-> I'm not sure if this correct, but it didn't help.--
-> To unsubscribe from this list: send the line "unsubscribe linux-paris=
-c" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =9Ahttp://vger.kernel.org/majordomo-info.html
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thomas,
+
+Thanks for the fix! This indeed fixed serial on my c8000. Now, there is no
+need to use PDC_CONSOLE on this machine anymore.
