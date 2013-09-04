@@ -1,27 +1,45 @@
-From: "Helge Deller" <deller@gmx.de>
-Subject: Aw: Re: Does there exists any 32bit-only PARISC SMP machines?
-Date: Wed, 4 Sep 2013 10:13:09 +0200 (CEST)
-Message-ID: <trinity-b7a0d82a-16b9-4204-be6e-2873db548248-1378282389073@3capp-gmx-bs28>
-References: <521F9848.4010404@gmx.de> <1377830541.2331.5.camel@dabdike>,
- <20130903155643.GA1430@glitch>
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: Does there exists any 32bit-only PARISC SMP machines?
+Date: Wed, 4 Sep 2013 10:44:38 +0200
+Message-ID: <20130904084438.GB4498@alpha.franken.de>
+References: <521F9848.4010404@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Cc: linux-parisc <linux-parisc@vger.kernel.org>
-To: "Domenico Andreoli" <cavokz@gmail.com>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130903155643.GA1430@glitch>
+In-Reply-To: <521F9848.4010404@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Domenico,
+On Thu, Aug 29, 2013 at 08:51:52PM +0200, Helge Deller wrote:
+> So, are there any 32bit SMP machines out there?
 
-> J5600 is SMP capable in both 32bit and 64bit mode.
-> mine doesn't boot 64bit SMP since 2.6.22. I've never been able to trace
-> it down but can confirm it happens also on more recent kernels.
+Workstations:
 
-Could you please try a 64bit-SMP (stable series) 3.10 or 3.11 kernel?
-I'm pretty sure your machine should now boot and work with a 64bit SMP kernel.
-If not, please send your bootlog so that we can try to analyze.
+J200, J210, J210XC
 
-Thanks,
-Helge
+Server:
+
+D250, D260, D270, D280, D350, D360
+G70, H70, U70
+K200, K210, K220
+
+and some obscure beasts like T500, T520.
+
+http://www.openpa.net/systems/index.html
+
+has a good list.
+
+I own an J200 with 2 CPUs. Never booted linux on it so far.
+
+> Any other thoughts on this topic?
+
+I'd skip supplying a 32bit SMP kernel package until there is a real demand
+for it.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
