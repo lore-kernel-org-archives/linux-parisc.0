@@ -1,73 +1,102 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Does there exists any 32bit-only PARISC SMP machines?
-Date: Wed, 04 Sep 2013 11:41:03 -0400
-Message-ID: <5227548F.5090909@bell.net>
-References: <521F9848.4010404@gmx.de> <1377830541.2331.5.camel@dabdike> <20130903155643.GA1430@glitch> <trinity-b7a0d82a-16b9-4204-be6e-2873db548248-1378282389073@3capp-gmx-bs28> <20130904140705.GA30223@glitch> <20130904142847.GA2893@glitch>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-To: Helge Deller <deller@gmx.de>,
-	linux-parisc <linux-parisc@vger.kernel.org>
+From: Alex Ivanov <gnidorah@p0n4ik.tk>
+Subject: Re: parisc debian kernel - missing  modules for C8000 - linux-image-3.10-2-parisc64-smp
+Date: Wed, 4 Sep 2013 22:34:04 +0400
+Message-ID: <F9C1BAB5-56D3-40E2-B0B2-184C92CD51AB@p0n4ik.tk>
+References: <521A7589.5000503@gmx.de> <BLU0-SMTP41F72FA4035273DC12703897360@phx.gbl> <BLU0-SMTP99E4F2E24E1A3F5BA18E7A97360@phx.gbl> <108451378018002@web28j.yandex.ru> <BLU0-SMTP1273DDE4A968FD3A43C55D97370@phx.gbl> <3B9F0B38-597D-439E-B57E-0F7E9E11BE9D@p0n4ik.tk> <BLU0-SMTP6283FFA9572E9BF7725A1E97300@phx.gbl>
+Mime-Version: 1.0 (Mac OS X Mail 6.5 \(1508\))
+Content-Type: text/plain; charset=koi8-r
+Cc: Parisc List <linux-parisc@vger.kernel.org>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130904142847.GA2893@glitch>
+In-Reply-To: <BLU0-SMTP6283FFA9572E9BF7725A1E97300@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 9/4/2013 10:28 AM, Domenico Andreoli wrote:
-> BTW, this is the most detailed investigation I'm aware of:
->
-> https://lkml.org/lkml/2008/4/20/251
-I have the sense that MEM_RENDEZ_HI may not be set correctly for your 
-machine:
 
-         /* Set the smp rendezvous address into page zero.
-         ** It would be safer to do this in init_smp_config() but
-         ** it's just way easier to deal with here because
-         ** of 64-bit function ptrs and the address is local to this file.
-         */
-         load32          PA(smp_slave_stext),%r10
-         stw             %r10,0x10(%r0)  /* MEM_RENDEZ */
-         stw             %r0,0x28(%r0)   /* MEM_RENDEZ_HI - assume addr 
-< 4GB */
+02.09.2013, =D7 18:10, John David Anglin <dave.anglin@bell.net> =CE=C1=D0=
+=C9=D3=C1=CC(=C1):
 
-This is possibly due to a change in memory range detection:
+> You don't think it ran briefly and crashed?
+>=20
+> I have a thought.  The code that loads the microcode appears to be tr=
+ying to load in 32-bit hunks.  Maybe
+> we have a 64-bit path on the bus and we need to load the firmware in =
+64-bit words.
+>=20
+> Dave
+> --
+> John David Anglin	dave.anglin@bell.net
 
---- dmesg.txt 2008-04-21 11:19:16.000000000 +0200
-+++ dmesg2.txt 2008-04-21 15:27:46.000000000 +0200
-@@ -1,6 +1,7 @@
--Linux version 2.6.22-3-parisc64-smp (Debian 2.6.22-6) (maks@debian.org) 
-(gcc version 4.1.3 20071019 (prerelease) (Debian 4.1.2-17)) #2 SMP Mon 
-Nov 12 21:04:20 CET 2007
-+Linux version 2.6.25 (cavok@ska) (gcc version 4.1.3 20080308 
-(prerelease) (Debian 4.1.2-21)) #8 SMP Mon Apr 21 12:25:50 CES8
-FP[0] enabled: Rev 1 Model 16
-The 64-bit Kernel has started...
-+console [ttyB0] enabled
-Initialized PDC Console for debugging.
-Determining PDC firmware type: System Map.
-model 00005d10 00000491 00000000 00000002 77b406fc 100000f0 00000008 
-000000b2 000000b2
-@@ -8,41 +9,28 @@
-CPUID vers 17 rev 10 (0x0000022a)
-capabilities 0x3
-model 9000/785/J5600
--Memory Ranges:
-- 0) Start 0x0000000000000000 End 0x00000000efffffff Size 3840 MB
-- 1) Start 0x00000010f0000000 End 0x00000010ffffffff Size 256 MB
--Total Memory: 4096 MB
--initrd: 7fa75000-7ffee77e
--initrd: reserving 3fa75000-3ffee77e (mem_max 100000000)
--On node 0 totalpages: 983040
-- Normal zone: 13440 pages used for memmap
-- Normal zone: 0 pages reserved
-- Normal zone: 969600 pages, LIFO batch:31
--On node 1 totalpages: 65536
-- Normal zone: 896 pages used for memmap
-- Normal zone: 0 pages reserved
-- Normal zone: 64640 pages, LIFO batch:15
-+Total Memory: 3840 MB
+Dave,
 
-Dave
+Am i understood you right?
 
--- 
-John David Anglin    dave.anglin@bell.net
+--- r100.c.orig 2013-09-04 16:53:28.000000000 +0000
++++ r100.c      2013-09-04 18:28:23.000000000 +0000
+@@ -1049,9 +1049,13 @@ static int r100_cp_init_microcode(struct
+        return err;
+ }
+=20
++#define RADEON_CP_ME_RAM_DATAHL 0x07dc0x07e0
++
++void r100_mm_wregq(struct radeon_device *rdev, uint64_t reg, uint64_t =
+v,
++                  bool always_indirect);
+ static void r100_cp_load_microcode(struct radeon_device *rdev)
+ {
+-       const __be32 *fw_data;
++       const __be64 *fw_data;
+        int i, size;
+=20
+        if (r100_gui_wait_for_idle(rdev)) {
+@@ -1060,14 +1064,12 @@ static void r100_cp_load_microcode(struc
+        }
+=20
+        if (rdev->me_fw) {
+-               size =3D rdev->me_fw->size / 4;
+-               fw_data =3D (const __be32 *)&rdev->me_fw->data[0];
++               size =3D rdev->me_fw->size / 8;
++               fw_data =3D (const __be64 *)&rdev->me_fw->data[0];
+                WREG32(RADEON_CP_ME_RAM_ADDR, 0);
+-               for (i =3D 0; i < size; i +=3D 2) {
+-                       WREG32(RADEON_CP_ME_RAM_DATAH,
+-                              be32_to_cpup(&fw_data[i]));
+-                       WREG32(RADEON_CP_ME_RAM_DATAL,
+-                              be32_to_cpup(&fw_data[i + 1]));
++               for (i =3D 0; i < size; i +=3D 1) {
++                       r100_mm_wregq(rdev, RADEON_CP_ME_RAM_DATAHL,
++                               be64_to_cpup(&fw_data[i]), false);
+                }
+        }
+ }
+@@ -4078,6 +4080,21 @@ void r100_mm_wreg(struct radeon_device *
+        }
+ }
+=20
++void r100_mm_wregq(struct radeon_device *rdev, uint64_t reg, uint64_t =
+v,
++                  bool always_indirect)
++{
++        if (reg < rdev->rmmio_size && !always_indirect)
++                writeq(v, ((void __iomem *)rdev->rmmio) + reg);
++        else {
++                unsigned long flags;
++
++                spin_lock_irqsave(&rdev->mmio_idx_lock, flags);
++                writeq(reg, ((void __iomem *)rdev->rmmio) + RADEON_MM_=
+INDEX);
++                writeq(v, ((void __iomem *)rdev->rmmio) + RADEON_MM_DA=
+TA);
++                spin_unlock_irqrestore(&rdev->mmio_idx_lock, flags);
++        }
++}
++
+ u32 r100_io_rreg(struct radeon_device *rdev, u32 reg)
+ {
+        if (reg < rdev->rio_mem_size)
 
+I'm not sure if this correct, but it didn't help.--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
