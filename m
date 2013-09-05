@@ -1,50 +1,50 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: [PATCH] parisc: Export flush_cache_page() (needed by lustre)
-Date: Thu, 5 Sep 2013 20:07:19 +0200
-Message-ID: <CAMuHMdUmKFwpsN9c1qeGf7+=tqMkB=A1j2wSHBrsOYk+co5mog@mail.gmail.com>
-References: <1378373595-29471-1-git-send-email-geert@linux-m68k.org>
-	<1378396919.2142.5.camel@dabdike.int.hansenpartnership.com>
-	<20130905171338.GB25882@merlin.infradead.org>
+Date: Thu, 05 Sep 2013 14:25:32 -0400
+Message-ID: <5228CC9C.9020300@bell.net>
+References: <1378373595-29471-1-git-send-email-geert@linux-m68k.org> <1378396919.2142.5.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-To: Kyle McMartin <kyle@infradead.org>
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130905171338.GB25882@merlin.infradead.org>
+In-Reply-To: <1378396919.2142.5.camel@dabdike.int.hansenpartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Sep 5, 2013 at 7:13 PM, Kyle McMartin <kyle@infradead.org> wrote:
-> On Thu, Sep 05, 2013 at 09:01:59AM -0700, James Bottomley wrote:
->> > +EXPORT_SYMBOL_GPL(flush_cache_page);
+On 9/5/2013 12:01 PM, James Bottomley wrote:
+> On Thu, 2013-09-05 at 11:33 +0200, Geert Uytterhoeven wrote:
+>> ERROR: "flush_cache_page" [drivers/staging/lustre/lustre/libcfs/libcfs.ko] undefined!
 >>
->> This is an internal API: no architecture exports this.  Whoever is
->> trying to use it needs to use the correct API, so this is the wrong
->> patch.
+>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> ---
+>>   arch/parisc/kernel/cache.c |    1 +
+>>   1 file changed, 1 insertion(+)
 >>
+>> diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+>> index c035673..b521c0a 100644
+>> --- a/arch/parisc/kernel/cache.c
+>> +++ b/arch/parisc/kernel/cache.c
+>> @@ -602,6 +602,7 @@ flush_cache_page(struct vm_area_struct *vma, unsigned long vmaddr, unsigned long
+>>   		__flush_cache_page(vma, vmaddr, PFN_PHYS(pfn));
+>>   	}
+>>   }
+>> +EXPORT_SYMBOL_GPL(flush_cache_page);
+> This is an internal API: no architecture exports this.  Whoever is
+> trying to use it needs to use the correct API, so this is the wrong
+> patch.
 >
-> I suspect it's copy_{to,from}_user_page being called here:
+There is a declaration for it in arch/parisc/include/asm/cacheflush.h.  
+There are a bunch
+of callers in mm.  The interface in documented in 
+Documentation/cachetlb.txt.  We currently
+use it in copy_to_user_page and copy_from_user_page.
 
-Indeed. Sorry, I should have mentioned that.
+Dave
 
-> drivers/staging/lustre/lustre/libcfs/linux/linux-curproc.c:
-> copy_to_user_page(vma, page, addr,
->
-> which we could probably take out of line.
+-- 
+John David Anglin    dave.anglin@bell.net
 
-If you want to hide flush_cache_page() for modules, yes.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
