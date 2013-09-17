@@ -1,43 +1,105 @@
-From: Jeroen Roovers <jer@gentoo.org>
-Subject: Re: C8000 / PA8800 64-bit SMP with kernel 3.11.0 - HPMC in
- cpu_startup_entry while setting promiscuous mode on eth
-Date: Sat, 14 Sep 2013 15:45:24 +0200
-Message-ID: <20130914154524.1880f412@marga.jer-c2.orkz.net>
-References: <20130913182705.6d8471ae@marga.jer-c2.orkz.net>
-	<1379090996.2198.3.camel@dabdike.int.hansenpartnership.com>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: linux-next: old trees
+Date: Tue, 17 Sep 2013 17:01:24 +1000
+Message-ID: <20130917170124.0afa2e103a9977355ad7c72c__31163.941024761$1379401359$gmane$org@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: linux-parisc@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA256";
+ boundary="Signature=_Tue__17_Sep_2013_17_01_24_+1000_ugYdwK6T7JDx0cPM"
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus <torvalds@linux-foundation.org>
+To: linux-next@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1379090996.2198.3.camel@dabdike.int.hansenpartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 13 Sep 2013 09:49:56 -0700
-James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
+--Signature=_Tue__17_Sep_2013_17_01_24_+1000_ugYdwK6T7JDx0cPM
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Fri, 2013-09-13 at 18:27 +0200, Jeroen Roovers wrote:
-> > Resending since it apparently never got through (binary
-> > attachment?)...
-> > 
-> > While running tcpdump or wireshark (dumpcap) and setting promiscuous
-> > mode on eth0, I get an HPMC in cpu_startup_entry.
+Hi all,
 
-I forgot to note that this does not happen every time.
+This message is bcc'd to each of the contacts for the trees listed below,
+so apologies if you get two copies.
 
-> Translation of the kernel addresses from %rp (0x4018eb0c), and the
-> two IAOQ entries (0x0, 0x4018eb24).  Since the first IAOQ entry is
-> zero, whatever is at the second seemed to trigger a jump to a NULL
-> pointer.
+I have been inspired to check the ages of the trees included in
+linux-next.  Below I have listed all the trees that have not been
+commited to in the past 6 months.  Please let me know if the tree is not
+longer in use.  I don't mind keeping these trees in linux-next if they
+will have continued use, but would like to remove any that are no longer
+needed.
 
-000000004018e9b0 W arch_cpu_idle
-000000004018e9e0 T cpu_startup_entry
-000000004018ec68 T freezing_slow_path
+Tree		Last commit
+----		-----------
+4xx		1 year, 4 months ago
+apm		1 year, 5 months ago
+asm-generic	9 months ago
+audit		1 year, 8 months ago
+audit-current	1 year, 8 months ago
+configfs	1 year, 10 months ago
+cpupowerutils	1 year, 7 months ago
+cputime		1 year, 9 months ago
+davinci		2 years, 2 months ago
+dwmw2		6 months ago
+dwmw2-iommu	9 months ago
+embedded	5 years ago
+firmware	4 years, 4 months ago
+fsnotify	9 months ago
+fw-nohz		10 months ago
+hsi		1 year, 8 months ago
+hwpoison	2 years, 11 months ago
+hwspinlock	2 years ago
+ibft		1 year, 9 months ago
+isci		1 year, 2 months ago
+ixp4xx		7 months ago
+jc_docs		2 years, 6 months ago
+kconfig		12 months ago
+kgdb		7 months ago
+logfs		10 months ago
+lzo-update	7 months ago
+ocfs2		1 year, 1 month ago
+omfs		1 year, 11 months ago
+openrisc	6 months ago
+osd		9 months ago
+parisc		8 months ago
+pcmcia		1 year, 7 months ago
+pstore		6 months ago
+random		7 months ago
+sh		7 months ago
+sh-current	1 year, 2 months ago
+swiotlb		11 months ago
+sysctl		1 year, 6 months ago
+tmem		11 months ago
+uclinux		7 months ago
+unicore32	10 months ago
+uprobes		1 year, 6 months ago
+viafb		1 year, 6 months ago
 
-http://rooversj.home.xs4all.nl/gentoo/hppa/System.map
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
 
-Is this useful in any way?
+--Signature=_Tue__17_Sep_2013_17_01_24_+1000_ugYdwK6T7JDx0cPM
+Content-Type: application/pgp-signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
 
-     jer
+iQIcBAEBCAAGBQJSN/5KAAoJEECxmPOUX5FEfmEQAJA1Q8roqFRXsr+xD4Cqw9QJ
+mpmhbR5il0FMwrb9pgLJzO3bHhBZn+sOHgKUCSs2wXsbeLU4pYZ00GiM9zqcw4Ns
+LVzTT0bvQaC4F5svo2fLWzk8ShJ4UK5JhXCbRMtHZF4ZVsfdSF3at1j0I4S8/ST2
+iG0j3zSpynyJdwRCIp1P2+kbVVHLhQLUFqa7jpjmZelX4QP0nYXeFXKW1M09dhVA
+0L4pqgzHn6V0e7wTnGp9JDSYsylEtF23FPTGca9hAco8Brg9VCPgLoNXnChR4fbD
+Mu0nHDwhFstvf1ZThjbjZzxd0Vot2MYqPcV+47VKFmpkotj5kdLEeDAom4XAhrhb
+7AI85JPvX0PPcxp/vHWsEfDGZ8+cfWpobTnsTaInOy/F2Ji8m9FQFyHpCj7cr+VV
+o45YdBFj1oyZ9SCTUCNUgMM+7P0me7R9c7yDhHmZ1jJy6x8gNGXCVNZq5ooTSZsy
+L9Hf+Izl9D+HBVP3ek8UOo0LPf3ZJXHZ4LRXy/bC0PPFYAEGNfQz/4mAmbbzZBZC
+ak27e4JaiP8AcLMhiXG/fJ6xhZupQQIcLK+Zy6Q9CPHwMg3Jh9wBSUsQ+G9jJ7KT
+5tNJqrzl+XiE0pz3tiIprgE7kWF5U7LM4hw1hr5GaaDK8oL+nqwij4vmt1Tuq9PQ
+7aDLAP6RKiCMZ1Ean3Ye
+=3Ucm
+-----END PGP SIGNATURE-----
+
+--Signature=_Tue__17_Sep_2013_17_01_24_+1000_ugYdwK6T7JDx0cPM--
