@@ -1,105 +1,106 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: linux-next: old trees
-Date: Tue, 17 Sep 2013 17:01:24 +1000
-Message-ID: <20130917170124.0afa2e103a9977355ad7c72c__31163.941024761$1379401359$gmane$org@canb.auug.org.au>
+From: Alex Ivanov <gnidorah@p0n4ik.tk>
+Subject: Re: parisc debian kernel - missing  modules for C8000 - linux-image-3.10-2-parisc64-smp
+Date: Tue, 17 Sep 2013 11:23:22 +0400
+Message-ID: <37801379402602@web25j.yandex.ru>
+References: <108451378018002@web28j.yandex.ru> <BLU0-SMTP1273DDE4A968FD3A43C55D97370@phx.gbl> <3B9F0B38-597D-439E-B57E-0F7E9E11BE9D@p0n4ik.tk> <BLU0-SMTP6283FFA9572E9BF7725A1E97300@phx.gbl> <F9C1BAB5-56D3-40E2-B0B2-184C92CD51AB@p0n4ik.tk> <52278FBD.2010304@bell.net> <BLU0-SMTP36B9C5CB7AF69063DE0EBD97320@phx.gbl> <5228F071.4040000@gmx.de> <20130906085203.GA15333@alpha.franken.de> <1378479057.2063.6.camel@dabdike.int.hansenpartnership.com> <20130906161158.GA19991@alpha.franken.de> <1378487651.2063.20.camel@dabdike.int.hansenpartnership.com> <BLU0-SMTP524BC4BA31EE9E1B30875F973D0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA256";
- boundary="Signature=_Tue__17_Sep_2013_17_01_24_+1000_ugYdwK6T7JDx0cPM"
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus <torvalds@linux-foundation.org>
-To: linux-next@vger.kernel.org
+Content-Type: text/plain; charset=koi8-r
+To: linux-parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <BLU0-SMTP524BC4BA31EE9E1B30875F973D0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Signature=_Tue__17_Sep_2013_17_01_24_+1000_ugYdwK6T7JDx0cPM
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+08.09.2013, 01:08, "John David Anglin" <dave.anglin@bell.net>:
+> With the new modules, I sometimes encounter the following warning at
+> boot on rp3440:
+>
+> [drm] radeon: 8M of VRAM memory ready
+> [drm] radeon: 512M of GTT memory ready.
+> [drm] GART: num cpu pages 131072, num gpu pages 131072
+> [drm] PCI GART of 512M enabled (table at 0x0000000042540000).
+> radeon 0000:e0:02.0: WB disabled
+> radeon 0000:e0:02.0: fence driver on ring 0 use gpu addr
+> 0xffffffffd0000000 and cpu addr 0x000000007c716000
+> [drm] Supports vblank timestamp caching Rev 1 (10.10.2010).
+> [drm] Driver supports precise vblank timestamp query.
+> ------------[ cut here ]------------
+> WARNING: at kernel/workqueue.c:1378
+> Modules linked in: radeon(+) cfbfillrect cfbimgblt cfbcopyarea
+> i2c_algo_bit drm_kms_helper ttm drm i2c_core backlight ohci_pci
+> ohci_hcd xfs exportfs btrfs xor lzo_compress zlib_deflate raid6_pq
+> crc32c libcrc32c dm_mod zalon7xx lasi700 53c700 hilkbd sd_mod
+> crc_t10dif usb_storage sg sr_mod cdrom ehci_pci tg3 ehci_hcd
+> pata_cmd64x ptp sym53c8xx libata pps_core scsi_transport_spi usbcore
+> scsi_mod usb_common
+> CPU: 0 PID: 1220 Comm: modprobe Not tainted 3.11.0+ #1
+> task: 000000007f054808 ti: 000000007f0c8000 task.ti: 000000007f0c8000
+>
+> =9A=9A=9A=9A=9A=9AYZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> PSW: 00001000000001000000000000001110 Not tainted
+> r00-03 =9A000000000804000e 000000007f0c92b0 000000004015edb8
+> 000000007f0c92b0
+> r04-07 =9A0000000040768900 0000000042536d00 000000007c809f20
+> 000000007c809f28
+> r08-11 =9A000000007f0c9350 000000007fc40600 0000000000000020
+> 0000000000000020
+> r12-15 =9A0000000000000000 0000000000000001 000000004078c100
+> 000000007f0c8288
+> r16-19 =9A0000000000000050 0000000000000000 000000007f0c8410
+> 0000000000000000
+> r20-23 =9A000000000800000e 000000007c808006 0000000000000000
+> 000000001e071628
+> r24-27 =9A000000007c809f20 0000000000000000 0000000042533600
+> 0000000040768900
+> r28-31 =9A0000000000000001 000000007f0c9350 000000007f0c9380
+> 0000000000000000
+> sr00-03 =9A0000000000162800 0000000000000000 0000000000000000
+> 0000000000113000
+> sr04-07 =9A0000000000000000 0000000000000000 0000000000000000
+> 0000000000000000
+>
+> IASQ: 0000000000000000 0000000000000000 IAOQ: 000000004015ee5c
+> 000000004015ee60
+> =9A=9AIIR: 03ffe01f =9A=9A=9AISR: 0000000010240000 =9AIOR: 000000094c=
+d33600
+> =9A=9ACPU: =9A=9A=9A=9A=9A=9A=9A0 =9A=9ACR30: 000000007f0c8000 CR31: =
+a001019408140000
+> =9A=9AORIG_R28: 0000000000000001
+> =9A=9AIAOQ[0]: __queue_work+0x2dc/0x360
+> =9A=9AIAOQ[1]: __queue_work+0x2e0/0x360
+> =9A=9ARP(r2): __queue_work+0x238/0x360
+> Backtrace:
+> =9A=9A[<000000004015ef64>] queue_work_on+0x84/0xa8
+> =9A=9A[<000000001df55dfc>] r100_irq_process+0x2ec/0x5d8 [radeon]
+> =9A=9A[<000000001df48cc4>] radeon_driver_irq_preinstall_kms+0x16c/0x1=
+a0
+> [radeon]
+> =9A=9A[<000000001cdbd024>] drm_irq_install+0x11c/0x3c0 [drm]
+> =9A=9A[<000000001df48f8c>] radeon_irq_kms_init+0x8c/0x168 [radeon]
+> =9A=9A[<000000001df5aeac>] r100_startup+0x22c/0x3c8 [radeon]
+> =9A=9A[<000000001df5b880>] r100_init+0x348/0x5c0 [radeon]
+> =9A=9A[<000000001defbff4>] radeon_device_init+0x79c/0x9d0 [radeon]
+> =9A=9A[<000000001deff588>] radeon_driver_load_kms+0xb8/0x1a8 [radeon]
+> =9A=9A[<000000001cdc682c>] drm_get_pci_dev+0x28c/0x390 [drm]
+> =9A=9A[<000000001def96e4>] radeon_pci_probe+0xcc/0x120 [radeon]
+> =9A=9A[<000000004035fd74>] pci_device_probe+0xc4/0xf8
+> =9A=9A[<00000000403d0fd8>] really_probe+0xd0/0x328
+> =9A=9A[<00000000403d13e8>] __driver_attach+0x100/0x108
+> =9A=9A[<00000000403ce290>] bus_for_each_dev+0xa0/0x100
+> =9A=9A[<00000000403d08cc>] driver_attach+0x34/0x48
+>
+> ---[ end trace 9a90037d977025eb ]---
+> [drm] radeon: irq initialized.
+> [drm] Loading R100 Microcode
+>
+> Dave
+> --
+> John David Anglin dave.anglin@bell.net
 
-Hi all,
-
-This message is bcc'd to each of the contacts for the trees listed below,
-so apologies if you get two copies.
-
-I have been inspired to check the ages of the trees included in
-linux-next.  Below I have listed all the trees that have not been
-commited to in the past 6 months.  Please let me know if the tree is not
-longer in use.  I don't mind keeping these trees in linux-next if they
-will have continued use, but would like to remove any that are no longer
-needed.
-
-Tree		Last commit
-----		-----------
-4xx		1 year, 4 months ago
-apm		1 year, 5 months ago
-asm-generic	9 months ago
-audit		1 year, 8 months ago
-audit-current	1 year, 8 months ago
-configfs	1 year, 10 months ago
-cpupowerutils	1 year, 7 months ago
-cputime		1 year, 9 months ago
-davinci		2 years, 2 months ago
-dwmw2		6 months ago
-dwmw2-iommu	9 months ago
-embedded	5 years ago
-firmware	4 years, 4 months ago
-fsnotify	9 months ago
-fw-nohz		10 months ago
-hsi		1 year, 8 months ago
-hwpoison	2 years, 11 months ago
-hwspinlock	2 years ago
-ibft		1 year, 9 months ago
-isci		1 year, 2 months ago
-ixp4xx		7 months ago
-jc_docs		2 years, 6 months ago
-kconfig		12 months ago
-kgdb		7 months ago
-logfs		10 months ago
-lzo-update	7 months ago
-ocfs2		1 year, 1 month ago
-omfs		1 year, 11 months ago
-openrisc	6 months ago
-osd		9 months ago
-parisc		8 months ago
-pcmcia		1 year, 7 months ago
-pstore		6 months ago
-random		7 months ago
-sh		7 months ago
-sh-current	1 year, 2 months ago
-swiotlb		11 months ago
-sysctl		1 year, 6 months ago
-tmem		11 months ago
-uclinux		7 months ago
-unicore32	10 months ago
-uprobes		1 year, 6 months ago
-viafb		1 year, 6 months ago
-
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-
---Signature=_Tue__17_Sep_2013_17_01_24_+1000_ugYdwK6T7JDx0cPM
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBCAAGBQJSN/5KAAoJEECxmPOUX5FEfmEQAJA1Q8roqFRXsr+xD4Cqw9QJ
-mpmhbR5il0FMwrb9pgLJzO3bHhBZn+sOHgKUCSs2wXsbeLU4pYZ00GiM9zqcw4Ns
-LVzTT0bvQaC4F5svo2fLWzk8ShJ4UK5JhXCbRMtHZF4ZVsfdSF3at1j0I4S8/ST2
-iG0j3zSpynyJdwRCIp1P2+kbVVHLhQLUFqa7jpjmZelX4QP0nYXeFXKW1M09dhVA
-0L4pqgzHn6V0e7wTnGp9JDSYsylEtF23FPTGca9hAco8Brg9VCPgLoNXnChR4fbD
-Mu0nHDwhFstvf1ZThjbjZzxd0Vot2MYqPcV+47VKFmpkotj5kdLEeDAom4XAhrhb
-7AI85JPvX0PPcxp/vHWsEfDGZ8+cfWpobTnsTaInOy/F2Ji8m9FQFyHpCj7cr+VV
-o45YdBFj1oyZ9SCTUCNUgMM+7P0me7R9c7yDhHmZ1jJy6x8gNGXCVNZq5ooTSZsy
-L9Hf+Izl9D+HBVP3ek8UOo0LPf3ZJXHZ4LRXy/bC0PPFYAEGNfQz/4mAmbbzZBZC
-ak27e4JaiP8AcLMhiXG/fJ6xhZupQQIcLK+Zy6Q9CPHwMg3Jh9wBSUsQ+G9jJ7KT
-5tNJqrzl+XiE0pz3tiIprgE7kWF5U7LM4hw1hr5GaaDK8oL+nqwij4vmt1Tuq9PQ
-7aDLAP6RKiCMZ1Ean3Ye
-=3Ucm
------END PGP SIGNATURE-----
-
---Signature=_Tue__17_Sep_2013_17_01_24_+1000_ugYdwK6T7JDx0cPM--
+Seen with 3.11.0 on c8000 few times. Though it was workqueue.c:137*9*
+and no modules were linked in.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
