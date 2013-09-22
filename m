@@ -1,103 +1,49 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: systemd real-time signals choices clash with Linux/PARISC available
- SIGRT range, WAS: fanotify_mark()
-Date: Wed, 18 Sep 2013 14:58:26 -0400
-Message-ID: <5239F7D2.80105@bell.net>
-References: <20130813154958.7514d525@marga.jer-c2.orkz.net> <520AA546.2070503@gmx.de> <20130814005400.3766f068@marga.jer-c2.orkz.net> <20130826014657.05f4c466@marga.jer-c2.orkz.net> <521BC84B.4090602@gmx.de> <BLU0-SMTP101B187CC9D02E87059A7C297490@phx.gbl> <20130827164601.4accbbfb@marga.jer-c2.orkz.net> <521CC531.6020106@bell.net> <5239F392.60901@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: Jeroen Roovers <jer@gentoo.org>, linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+From: Felipe Pena <felipensp@gmail.com>
+Subject: [PATCH 1/1] arch/parisc: mm: fix uninitialized variable usage
+Date: Sun, 22 Sep 2013 15:17:46 -0300
+Message-ID: <1379873866-29219-1-git-send-email-felipensp@gmail.com>
+Cc: Felipe Pena <felipensp@gmail.com>
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, Michal Hocko <mhocko@suse.cz>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	linux-kernel@vger.kernel.org,
+	Kautuk Consul <consul.kautuk@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <5239F392.60901@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Regarding _NSIG, I realized after I wrote that the number has to be 
-divisible by 64 because
-of the way various words are allocated (one bit per signal). There is no 
-roundup in the allocation.
-We need to tweak the RT max value so we at least 32 RT signals. This 
-should keep userspace
-happy.  This will leave a whole bunch of numbers free.  So, probably 
-there wouldn't be a conflict
-with the core dump bit.
+The FAULT_FLAG_WRITE flag has been set based on uninitialized variable
 
-I had the sense the glibc doesn't need to change because of the way 
-POSIX specifies
-the number of available realtime signals.
+Signed-off-by: Felipe Pena <felipensp@gmail.com>
+---
+ arch/parisc/mm/fault.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Dave
-
-On 9/18/2013 2:40 PM, Helge Deller wrote:
-> On 08/27/2013 05:26 PM, John David Anglin wrote:
->> On 8/27/2013 10:46 AM, Jeroen Roovers wrote:
->>> On Mon, 26 Aug 2013 18:37:54 -0400 John David Anglin
->>> <dave.anglin@bell.net> wrote:
->>>
->>>> On 26-Aug-13, at 5:27 PM, Helge Deller wrote:
->>>>>> [1] Sneak preview:
->>>>>> https://bugs.gentoo.org/show_bug.cgi?id=482214
->>>>> Did you already filed this signal-problem upstream as suggested
->>>>> in comment #3
->>>>> (https://bugs.gentoo.org/show_bug.cgi?id=482214#c3)?
->>> Well, there are two ways to resolve this problem, and seeing who
->>> is developing systemd and seeing the generous way the "available"
->>> signal range is used, I'm pretty doubtful about changes there.
-> I can see why they wouldn't like to change this again.
-> It might break systemd binaries on other existing arches which already
-> support systemd.
->
-> Anyway, has there been any further upstream discussion?
->
->>> As I said in comment #2, that range could be compacted (a lot) and
->>> then fit easily on any future platform. Since it was a design
->>> choice even reflected in man pages[1] ("[...], SIGRTMIN+29   Sets
->>> the log level to [...]"), I'm very afraid they will not change it
->>> easily.
->>>
->>>> I believe two of the signal numbers come from HP-UX.
->>> #define SIGXCPU         33 #define SIGXFSZ         34
->> The signal numbers for these two signals come from HP-UX but the
->> signals are used by Linux, so I can't see how they can change.
->>> #define SIGSTKFLT       36
->>>
->>> According to [2], SIGSTKFLT isn't used.
->> This signal isn't used by HP-UX but it is used by Linux, so again
->> this can't change.
-> changing those would break our binary compatibility...
->   
->> Can we change _NSIG to 69 so there are 32 RT signals as on other
->> arches? [Dave followup]: It looks like it needs to be a power of 2.
->> MIPS uses 128.
-> 127 seems to be the better choice then... (signal #128 seems to conflict with
-> the core dump bit)
->
-> So, how should we proceed here?
-> If I haven't overlooked something, it seems that changing the parisc kernel
->   & glibc is possible.
-> Downside is, that people of course need newer kernel/glibc and at least
-> systemd recompiled.
-> Another downside is that we add more overhead in the signal paths, but I'm not
-> sure if this really hurts performance (is signal handling performance-relevant
-> at all?).
->
-> I can come up with a kernel/glibc patch (which seem to be trivial) if we agree
-> to really go that way...
->
-> Helge
->
->>> [1] http://www.freedesktop.org/software/systemd/man/systemd.html
->>> [2]
->>> http://h21007.www2.hp.com/portal/download/files/unprot/STK/Linux_STK/impacts/i60.html
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->
-
-
+diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+index d10d27a..6b38026 100644
+--- a/arch/parisc/mm/fault.c
++++ b/arch/parisc/mm/fault.c
+@@ -182,8 +182,6 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
+ 
+ 	if (user_mode(regs))
+ 		flags |= FAULT_FLAG_USER;
+-	if (acc_type & VM_WRITE)
+-		flags |= FAULT_FLAG_WRITE;
+ retry:
+ 	down_read(&mm->mmap_sem);
+ 	vma = find_vma_prev(mm, address, &prev_vma);
+@@ -201,6 +199,9 @@ good_area:
+ 	if ((vma->vm_flags & acc_type) != acc_type)
+ 		goto bad_area;
+ 
++	if (acc_type & VM_WRITE)
++		flags |= FAULT_FLAG_WRITE;
++
+ 	/*
+ 	 * If for any reason at all we couldn't handle the fault, make
+ 	 * sure we exit gracefully rather than endlessly redo the
 -- 
-John David Anglin    dave.anglin@bell.net
+1.7.10.4
 
