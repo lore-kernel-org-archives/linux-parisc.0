@@ -1,16 +1,16 @@
 From: Jianguo Wu <wujianguo@huawei.com>
-Subject: [Resend with ACK][PATCH] mm/arch: use NUMA_NODE
-Date: Mon, 23 Sep 2013 18:37:04 +0800
-Message-ID: <524019D0.9070706@huawei.com>
+Subject: [Resend with ACK][PATCH] mm/arch: use NUMA_NO_NODE
+Date: Mon, 23 Sep 2013 18:40:50 +0800
+Message-ID: <52401AB2.8000605@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Cc: Ralf Baechle <ralf@linux-mips.org>,
-        David Rientjes <rientjes@google.com>, <linux-mm@kvack.org>,
+Cc: Ralf Baechle <ralf@linux-mips.org>, <linux-mm@kvack.org>,
         <linux-kernel@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-mips@linux-mips.org>, <linux-parisc@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>, <sparclinux@vger.kernel.org>,
-        <x86@kernel.org>
+        <linux-mips@linux-mips.org>, <linux-s390@vger.kernel.org>,
+        <sparclinux@vger.kernel.org>, <x86@kernel.org>,
+        <linux-parisc@vger.kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Return-path: <linux-mips-bounce@linux-mips.org>
 Errors-to: linux-mips-bounce@linux-mips.org
