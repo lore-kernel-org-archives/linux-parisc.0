@@ -1,69 +1,51 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: fix interruption handler to respect
- pagefault_disable()
-Date: Tue, 1 Oct 2013 21:54:46 +0200
-Message-ID: <20131001195446.GA29580@p100.box>
+Subject: [PATCH] [workqueue] check values of pwq and wq in
+ print_worker_info() before use
+Date: Tue, 1 Oct 2013 22:35:20 +0200
+Message-ID: <20131001203520.GA8248@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
+To: Tejun Heo <tj@kernel.org>, Libin <huawei.libin@huawei.com>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Running an "echo t > /proc/sysrq-trigger" crashes the parisc kernel.  The
-problem is, that in print_worker_info() we try to read the workqueue info via
-the probe_kernel_read() functions which use pagefault_disable() to avoid
-crashes like this:
-    probe_kernel_read(&pwq, &worker->current_pwq, sizeof(pwq));
-    probe_kernel_read(&wq, &pwq->wq, sizeof(wq));
-    probe_kernel_read(name, wq->name, sizeof(name) - 1);
+print_worker_info() includes no validity check on the pwq and wq
+pointers before handing them over to the probe_kernel_read() functions.
 
-The problem here is, that the first probe_kernel_read(&pwq) might return zero
-in pwq and as such the following probe_kernel_reads() try to access contents of
-the page zero which is read protected and generate a kernel segfault. 
+It seems that most architectures don't care about that, but at least on
+the parisc architecture this leads to a kernel crash since accesses to
+page zero are protected by the kernel for security reasons.
 
-With this patch we fix the interruption handler to call parisc_terminate()
-directly only if pagefault_disable() was not called (in which case
-preempt_count()==0).  Otherwise we hand over to the pagefault handler which
-will try to look up the faulting address in the fixup tables.
+Fix this problem by verifying the contents of pwq and wq before usage.
+Even if probe_kernel_read() usually prevents such crashes by disabling
+page faults, clean code should always include such checks. 
 
+Without this fix issuing "echo t > /proc/sysrq-trigger" will immediately
+crash the Linux kernel on the parisc architecture.
+
+CC: Tejun Heo <tj@kernel.org>
+CC: Libin <huawei.libin@huawei.com>
+CC: linux-parisc@vger.kernel.org
+CC: James.Bottomley@HansenPartnership.com
 Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: <stable@vger.kernel.org> # v3.0+
 
-diff --git a/arch/parisc/include/asm/traps.h b/arch/parisc/include/asm/traps.h
-index 1945f99..4736020 100644
---- a/arch/parisc/include/asm/traps.h
-+++ b/arch/parisc/include/asm/traps.h
-@@ -6,7 +6,7 @@ struct pt_regs;
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 987293d..c03b47f 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -4512,8 +4512,10 @@ void print_worker_info(const char *log_lvl, struct task_struct *task)
+ 	 */
+ 	probe_kernel_read(&fn, &worker->current_func, sizeof(fn));
+ 	probe_kernel_read(&pwq, &worker->current_pwq, sizeof(pwq));
+-	probe_kernel_read(&wq, &pwq->wq, sizeof(wq));
+-	probe_kernel_read(name, wq->name, sizeof(name) - 1);
++	if (pwq)
++		probe_kernel_read(&wq, &pwq->wq, sizeof(wq));
++	if (wq)
++		probe_kernel_read(name, wq->name, sizeof(name) - 1);
  
- /* traps.c */
- void parisc_terminate(char *msg, struct pt_regs *regs,
--		int code, unsigned long offset);
-+		int code, unsigned long offset) __noreturn __cold;
- 
- /* mm/fault.c */
- void do_page_fault(struct pt_regs *regs, unsigned long code,
-diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index 04e47c6..b3f87a3 100644
---- a/arch/parisc/kernel/traps.c
-+++ b/arch/parisc/kernel/traps.c
-@@ -805,14 +805,14 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- 	else {
- 
- 	    /*
--	     * The kernel should never fault on its own address space.
-+	     * The kernel should never fault on its own address space,
-+	     * unless pagefault_disable() was called before.
- 	     */
- 
--	    if (fault_space == 0) 
-+	    if (fault_space == 0 && !in_atomic())
- 	    {
- 		pdc_chassis_send_status(PDC_CHASSIS_DIRECT_PANIC);
- 		parisc_terminate("Kernel Fault", regs, code, fault_address);
--	
- 	    }
- 	}
- 
+ 	/* copy worker description */
+ 	probe_kernel_read(&desc_valid, &worker->desc_valid, sizeof(desc_valid));
