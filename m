@@ -1,64 +1,95 @@
 From: John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: optimize variable initialization in do_page_fault
-Date: Sat, 5 Oct 2013 10:55:36 -0400
-Message-ID: <BLU0-SMTP634D29D9FAECEFE0FCFE9A97110@phx.gbl>
+Subject: Re: [PATCH] parisc: fix interruption handler to respect pagefault_disable()
+Date: Sat, 5 Oct 2013 20:28:58 -0400
+Message-ID: <BLU0-SMTP320EE7B0D779332AA8137397120@phx.gbl>
+References: <20131001195446.GA29580@p100.box>
 Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: multipart/mixed; boundary="Apple-Mail-14--1049188799"
-Cc: Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>
-To: Parisc List <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20131001195446.GA29580@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Apple-Mail-14--1049188799
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
-
-The attached change defers the initialization of the variables tsk, mm  
-and flags until they
-are needed.  As a result,  the code won't crash if a kernel probe is  
-done with a corrupt context
-and the code will be better optimized.
-
 Signed-off-by: John David Anglin  <dave.anglin@bell.net>
----
+
+On 1-Oct-13, at 3:54 PM, Helge Deller wrote:
+
+> Running an "echo t > /proc/sysrq-trigger" crashes the parisc  
+> kernel.  The
+> problem is, that in print_worker_info() we try to read the workqueue  
+> info via
+> the probe_kernel_read() functions which use pagefault_disable() to  
+> avoid
+> crashes like this:
+>    probe_kernel_read(&pwq, &worker->current_pwq, sizeof(pwq));
+>    probe_kernel_read(&wq, &pwq->wq, sizeof(wq));
+>    probe_kernel_read(name, wq->name, sizeof(name) - 1);
+>
+> The problem here is, that the first probe_kernel_read(&pwq) might  
+> return zero
+> in pwq and as such the following probe_kernel_reads() try to access  
+> contents of
+> the page zero which is read protected and generate a kernel segfault.
+>
+> With this patch we fix the interruption handler to call  
+> parisc_terminate()
+> directly only if pagefault_disable() was not called (in which case
+> preempt_count()==0).  Otherwise we hand over to the pagefault  
+> handler which
+> will try to look up the faulting address in the fixup tables.
+>
+> Signed-off-by: Helge Deller <deller@gmx.de>
+> Cc: <stable@vger.kernel.org> # v3.0+
+>
+> diff --git a/arch/parisc/include/asm/traps.h b/arch/parisc/include/ 
+> asm/traps.h
+> index 1945f99..4736020 100644
+> --- a/arch/parisc/include/asm/traps.h
+> +++ b/arch/parisc/include/asm/traps.h
+> @@ -6,7 +6,7 @@ struct pt_regs;
+>
+> /* traps.c */
+> void parisc_terminate(char *msg, struct pt_regs *regs,
+> -		int code, unsigned long offset);
+> +		int code, unsigned long offset) __noreturn __cold;
+>
+> /* mm/fault.c */
+> void do_page_fault(struct pt_regs *regs, unsigned long code,
+> diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
+> index 04e47c6..b3f87a3 100644
+> --- a/arch/parisc/kernel/traps.c
+> +++ b/arch/parisc/kernel/traps.c
+> @@ -805,14 +805,14 @@ void notrace handle_interruption(int code,  
+> struct pt_regs *regs)
+> 	else {
+>
+> 	    /*
+> -	     * The kernel should never fault on its own address space.
+> +	     * The kernel should never fault on its own address space,
+> +	     * unless pagefault_disable() was called before.
+> 	     */
+>
+> -	    if (fault_space == 0)
+> +	    if (fault_space == 0 && !in_atomic())
+> 	    {
+> 		pdc_chassis_send_status(PDC_CHASSIS_DIRECT_PANIC);
+> 		parisc_terminate("Kernel Fault", regs, code, fault_address);
+> -	
+> 	    }
+> 	}
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux- 
+> parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+
+--
+John David Anglin	dave.anglin@bell.net
 
 
---Apple-Mail-14--1049188799
-Content-Disposition: attachment; filename="fault.c.d.txt"
-Content-Type: text/plain; x-unix-mode=0644; name="fault.c.d.txt"
-Content-Transfer-Encoding: 7bit
 
-diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index 00c0ed3..0293588 100644
---- a/arch/parisc/mm/fault.c
-+++ b/arch/parisc/mm/fault.c
-@@ -171,20 +171,25 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
- 			      unsigned long address)
- {
- 	struct vm_area_struct *vma, *prev_vma;
--	struct task_struct *tsk = current;
--	struct mm_struct *mm = tsk->mm;
-+	struct task_struct *tsk;
-+	struct mm_struct *mm;
- 	unsigned long acc_type;
- 	int fault;
--	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
-+	unsigned int flags;
- 
--	if (in_atomic() || !mm)
-+	if (in_atomic())
- 		goto no_context;
- 
-+	tsk = current;
-+	mm = tsk->mm;
-+	if (!mm)
-+		goto no_context;
-+
-+	flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
- 	if (user_mode(regs))
- 		flags |= FAULT_FLAG_USER;
- 
- 	acc_type = parisc_acctyp(code, regs->iir);
---Apple-Mail-14--1049188799--
