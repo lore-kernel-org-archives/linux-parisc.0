@@ -1,40 +1,104 @@
 From: Mark Salter <msalter@redhat.com>
-Subject: [PATCH v2 08/14] parisc: select ARCH_MAY_HAVE_PC_PARPORT
-Date: Tue,  8 Oct 2013 01:10:24 -0400
-Message-ID: <1381209030-351-9-git-send-email-msalter@redhat.com>
+Subject: [PATCH v2 14/14] Kconfig cleanup (PARPORT_PC dependencies)
+Date: Tue,  8 Oct 2013 01:10:30 -0400
+Message-ID: <1381209030-351-15-git-send-email-msalter@redhat.com>
 References: <1381209030-351-1-git-send-email-msalter@redhat.com>
 Cc: Mark Salter <msalter@redhat.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+        Richard Henderson <rth@twiddle.net>,
+        linux-alpha@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        microblaze-uclinux@itee.uq.edu.au,
+        Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, Paul Mundt <lethal@linux-sh.org>,
 To: linux-kernel@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
+Return-path: <linux-mips-bounce@linux-mips.org>
 In-Reply-To: <1381209030-351-1-git-send-email-msalter@redhat.com>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-Architectures which support CONFIG_PARPORT_PC should select
-ARCH_MAY_HAVE_PC_PARPORT.
+Remove messy dependencies from PARPORT_PC by having it depend on one
+Kconfig symbol (ARCH_MAY_HAVE_PC_PARPORT) and having architectures
+which need it, select ARCH_MAY_HAVE_PC_PARPORT in arch/*/Kconfig.
+New architectures are unlikely to need PARPORT_PC, so this avoids
+having an ever growing list of architectures to exclude. Those
+architectures which do select ARCH_MAY_HAVE_PC_PARPORT in this
+patch are the ones which have an asm/parport.h (or use the generic
+version).
 
 Signed-off-by: Mark Salter <msalter@redhat.com>
+CC: Richard Henderson <rth@twiddle.net>
+CC: linux-alpha@vger.kernel.org
+CC: Vineet Gupta <vgupta@synopsys.com>
+CC: Russell King <linux@arm.linux.org.uk>
+CC: linux-arm-kernel@lists.infradead.org
+CC: Tony Luck <tony.luck@intel.com>
+CC: Fenghua Yu <fenghua.yu@intel.com>
+CC: linux-ia64@vger.kernel.org
+CC: Geert Uytterhoeven <geert@linux-m68k.org>
+CC: linux-m68k@lists.linux-m68k.org
+CC: Michal Simek <monstr@monstr.eu>
+CC: microblaze-uclinux@itee.uq.edu.au
+CC: Ralf Baechle <ralf@linux-mips.org>
+CC: linux-mips@linux-mips.org
 CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
 CC: Helge Deller <deller@gmx.de>
 CC: linux-parisc@vger.kernel.org
+CC: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+CC: Paul Mackerras <paulus@samba.org>
+CC: linuxppc-dev@lists.ozlabs.org
+CC: Paul Mundt <lethal@linux-sh.org>
+CC: linux-sh@vger.kernel.org
+CC: "David S. Miller" <davem@davemloft.net>
+CC: sparclinux@vger.kernel.org
+CC: Guan Xuetao <gxt@mprc.pku.edu.cn>
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: Ingo Molnar <mingo@redhat.com>
+CC: "H. Peter Anvin" <hpa@zytor.com>
+CC: x86@kernel.org
 ---
- arch/parisc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/parport/Kconfig | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index ad2ce8d..9af24ac 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -1,6 +1,7 @@
- config PARISC
- 	def_bool y
- 	select ARCH_HAS_DEBUG_STRICT_USER_COPY_CHECKS
-+	select ARCH_MAY_HAVE_PC_PARPORT
- 	select HAVE_IDE
- 	select HAVE_OPROFILE
- 	select HAVE_FUNCTION_TRACER if 64BIT
+diff --git a/drivers/parport/Kconfig b/drivers/parport/Kconfig
+index 70694ce..a079b18 100644
+--- a/drivers/parport/Kconfig
++++ b/drivers/parport/Kconfig
+@@ -31,13 +31,17 @@ menuconfig PARPORT
+ 
+ 	  If unsure, say Y.
+ 
++config ARCH_MAY_HAVE_PC_PARPORT
++	bool
++	help
++	  Select this config option from the architecture Kconfig if
++	  the architecture may have PC parallel port hardware.
++
+ if PARPORT
+ 
+ config PARPORT_PC
+ 	tristate "PC-style hardware"
+-	depends on (!SPARC64 || PCI) && !SPARC32 && !M32R && !FRV && !S390 && \
+-		(!M68K || ISA) && !MN10300 && !AVR32 && !BLACKFIN && \
+-		!XTENSA && !CRIS && !H8300
++	depends on ARCH_MAY_HAVE_PC_PARPORT
+ 
+ 	---help---
+ 	  You should say Y here if you have a PC-style parallel port. All
 -- 
 1.8.3.1
-
