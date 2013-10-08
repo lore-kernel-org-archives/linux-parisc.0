@@ -1,28 +1,40 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: New udev package requires CONFIG_DEVTMPFS
-Date: Sun, 6 Oct 2013 12:46:50 -0400
-Message-ID: <BLU0-SMTP155C9515FA7D7CC729693B97120@phx.gbl>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-To: Parisc List <linux-parisc@vger.kernel.org>
+From: Mark Salter <msalter@redhat.com>
+Subject: [PATCH v2 08/14] parisc: select ARCH_MAY_HAVE_PC_PARPORT
+Date: Tue,  8 Oct 2013 01:10:24 -0400
+Message-ID: <1381209030-351-9-git-send-email-msalter@redhat.com>
+References: <1381209030-351-1-git-send-email-msalter@redhat.com>
+Cc: Mark Salter <msalter@redhat.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+To: linux-kernel@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1381209030-351-1-git-send-email-msalter@redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I uploaded new consolekit (0.4.6-3) and systemd/udev (204-5) builds to  
-the parisc Debian archive.
-The new version of consolekit breaks the old version of udev.  The new  
-version of udev requires
-the running kernel to have been built with CONFIG_DEVTMPFS.
+Architectures which support CONFIG_PARPORT_PC should select
+ARCH_MAY_HAVE_PC_PARPORT.
 
-So, I advise not upgrading unless you have primary and backup kernels  
-built with CONFIG_DEVTMPFS.
+Signed-off-by: Mark Salter <msalter@redhat.com>
+CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
+CC: Helge Deller <deller@gmx.de>
+CC: linux-parisc@vger.kernel.org
+---
+ arch/parisc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-This option is not selected in at least some parisc default configs.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index ad2ce8d..9af24ac 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -1,6 +1,7 @@
+ config PARISC
+ 	def_bool y
+ 	select ARCH_HAS_DEBUG_STRICT_USER_COPY_CHECKS
++	select ARCH_MAY_HAVE_PC_PARPORT
+ 	select HAVE_IDE
+ 	select HAVE_OPROFILE
+ 	select HAVE_FUNCTION_TRACER if 64BIT
+-- 
+1.8.3.1
 
