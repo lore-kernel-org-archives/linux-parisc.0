@@ -1,45 +1,25 @@
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH v2 14/14] Kconfig cleanup (PARPORT_PC dependencies)
-Date: Tue, 8 Oct 2013 09:00:54 +0200
-Message-ID: <20131008070054.GE1615@linux-mips.org>
-References: <1381209030-351-1-git-send-email-msalter@redhat.com>
- <1381209030-351-15-git-send-email-msalter@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-kernel@vger.kernel.org, Richard Henderson <rth@twiddle.net>,
-	linux-alpha@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>,
-	Russell King <linux@arm.linux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	Tony Luck <tony.luck@intel.com>,
-	Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-	microblaze-uclinux@itee.uq.edu.au, linux-mips@linux-mips.org,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Paul Mackerras <paulus@samba.org>,
-	linuxppc-dev@lists.ozlabs.org, Paul Mundt <lethal@linux-sh.org>,
-	linux-sh@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>,
-	Thomas Gleixner <tgl
-To: Mark Salter <msalter@redhat.com>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <1381209030-351-15-git-send-email-msalter@redhat.com>
-List-ID: <linux-ia64.vger.kernel.org>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: New hppa kernel packages uploaded (3.10.11, aka 3.10-3) to parisc archives
+Date: Tue, 8 Oct 2013 19:41:12 -0400
+Message-ID: <BLU0-SMTP850C7B9645BBBC4DF76FD0971C0@phx.gbl>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed
+Cc: HPPA porters <debian-hppa@lists.debian.org>
+To: Parisc List <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Oct 08, 2013 at 01:10:30AM -0400, Mark Salter wrote:
+I have upload a new Debian kernel build (3.10.11) to the parisc archive:
+deb http://ftp.parisc-linux.org/debian-ports/unstable  unstable main
 
-> Remove messy dependencies from PARPORT_PC by having it depend on one
-> Kconfig symbol (ARCH_MAY_HAVE_PC_PARPORT) and having architectures
-> which need it, select ARCH_MAY_HAVE_PC_PARPORT in arch/*/Kconfig.
-> New architectures are unlikely to need PARPORT_PC, so this avoids
-> having an ever growing list of architectures to exclude. Those
-> architectures which do select ARCH_MAY_HAVE_PC_PARPORT in this
-> patch are the ones which have an asm/parport.h (or use the generic
-> version).
+Except for linux-image-3.10-3-parisc-smp, the packages have been boot
+tested on c3750 and rp3440.
 
-Acked-by: Ralf Baechle <ralf@linux-mips.org>
+Enjoy,
+Dave
+--
+John David Anglin	dave.anglin@bell.net
 
-  Ralf
+
+
