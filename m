@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: let probe_kernel_read() capture access to page zero
-Date: Wed, 9 Oct 2013 23:53:18 +0200
-Message-ID: <20131009215318.GA30131@p100.box>
+Subject: [PATCH] parisc: call set_irq_regs() after disabling local irqs
+Date: Wed, 9 Oct 2013 23:54:13 +0200
+Message-ID: <20131009215413.GA30163@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -12,34 +12,17 @@ List-Id: linux-parisc.vger.kernel.org
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
-index ac4370b..b5507ec 100644
---- a/arch/parisc/lib/memcpy.c
-+++ b/arch/parisc/lib/memcpy.c
-@@ -56,7 +56,7 @@
- #ifdef __KERNEL__
- #include <linux/module.h>
- #include <linux/compiler.h>
--#include <asm/uaccess.h>
-+#include <linux/uaccess.h>
- #define s_space "%%sr1"
- #define d_space "%%sr2"
- #else
-@@ -524,4 +524,17 @@ EXPORT_SYMBOL(copy_to_user);
- EXPORT_SYMBOL(copy_from_user);
- EXPORT_SYMBOL(copy_in_user);
- EXPORT_SYMBOL(memcpy);
-+
-+long probe_kernel_read(void *dst, const void *src, size_t size)
-+{
-+	unsigned long addr = (unsigned long)src;
-+
-+	if (size < 0 || addr < PAGE_SIZE)
-+		return -EFAULT;
-+
-+	/* check for I/O space F_EXTEND(0xfff00000) access as well? */
-+
-+	return __probe_kernel_read(dst, src, size);
-+}
-+
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index 2e6443b..c439c05 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -529,8 +529,8 @@ void do_cpu_irq_mask(struct pt_regs *regs)
+ 	cpumask_t dest;
  #endif
+ 
+-	old_regs = set_irq_regs(regs);
+ 	local_irq_disable();
++	old_regs = set_irq_regs(regs);
+ 	irq_enter();
+ 
+ 	eirr_val = mfctl(23) & cpu_eiem & per_cpu(local_ack_eiem, cpu);
