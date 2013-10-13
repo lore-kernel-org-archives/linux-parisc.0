@@ -1,166 +1,125 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: New hppa kernel packages uploaded (3.10.11, aka 3.10-3) to parisc archives
-Date: Sun, 13 Oct 2013 12:59:48 -0400
-Message-ID: <BLU0-SMTP943EBAB2046BE47061811197190@phx.gbl>
-References: <BLU0-SMTP850C7B9645BBBC4DF76FD0971C0@phx.gbl> <5256AFF5.8080805@landcomp.net> <BLU0-SMTP27179D0C2057664D913C74971F0@phx.gbl> <52578D25.6010102@landcomp.net> <BLU0-SMTP337F2FF2A00CABB1AD2BA2971F0@phx.gbl> <525ACD4D.4060108@landcomp.net>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: Dave Land <xmechanic@landcomp.net>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: provide macro to create exception table entries
+Date: Sun, 13 Oct 2013 21:11:30 +0200
+Message-ID: <20131013191130.GA1437@p100.box>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <525ACD4D.4060108@landcomp.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-To get devtmpfs you need a kernel built with CONFIG_DEVTMPFS.  I think  
-the Debian kernels in the archive
-have this.  However, at least some of the default parisc kernel  
-configs miss this option.
+Provide a macro ASM_EXCEPTIONTABLE_ENTRY() to create exception table
+entries and convert all open-coded places to use that macro.
 
-What has changed is udev.  Previously, it didn't require devtempfs  
-support.  Annoying, I know.
+This patch is a first step toward creating a exception table which only
+holds 32bit pointers even on a 64bit kernel. That way in my own kernel
+I was able to reduce the in-kernel exception table from 44kB to 22kB.
 
-Do you want me to send udev deb for last version that worked without  
-devtmpfs?
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-This isn't drive order issue.  I wrote a warning about this to list.   
-It shouldn't be update until you have kernels
-built with CONFIG_DEVTMPFS.
-
-CC'd list.
-
-Dave
-
-On 13-Oct-13, at 12:41 PM, Dave Land wrote:
-
-> OK, here's the latest on the J6750...
->
-> I deleted all the partitions and started from scratch. When I did  
-> the mke2fs to format I included the 'L' option to set a label for  
-> sda3 (mke2fs -L ROOTscsi0), and followed the instructions for  
-> setting the /boot partition in fstab, etc., after I got all the  
-> packages downloaded again. Now when I reboot from the CD and  
-> interact with the IPL to set root=/dev/sda3, it boots the HDD and  
-> then errors out with the following:
-> [FAIL] udev requires devtempfs support, not started ... failed
-> [WARN] Filesystem mounted on /dev/shm; setting up compatibility bind  
-> mount ... (warning)
->
-> Do I need to set something in /etc/fstab or init.d to get devtmpfs  
-> to start or what?
->
-> Since that happened, I pulled the secondary HDD out to avoid the  
-> drive order issue, and re-partitioned once again, and formatted my  
-> file systems with just the stock options (mke2fs /dev/sda2; mke2fs / 
-> dev/sda3; mkswap /dev/sda4), download everything AGAIN, set the / 
-> boot parameters in /etc/fstab, set my root p/w, and rebooted. Once  
-> again, set root=/dev/sda3 in the IPL list, and it booted the HDD and  
-> errored out again with the failed udev. Has something changed in the  
-> repository?
-> Did it not get rid of the disk label when I re-partitioned/formatted?
-> This is driving me crazy!
->
-> Dave Land
->
-> On 10/11/13 6:26 AM, John David Anglin wrote:
->> Dave,
->>
->> Finding the root is a different issue.  When you have multiple hard
->> drives, the drive detection order can vary.  I have a USB drive on  
->> one
->> machine
->> and the drive detection order varies depending on whether it is  
->> plugged
->> in or not.  For some reason, it always comes up as sda!  The order  
->> can
->> also change with different kernel versions.
->>
->> So, specifying root=/dev/sda3 in the palo.conf is problematic.  It's
->> better to use root=UUID=drive_uuid or root=LABEL=drive_label.  The  
->> label
->> option is shorter.  I labeled my root partition "ROOTn" where n is a
->> drive number (e.g., SCSI ID).  I think this only works when you use  
->> udev to
->> build /dev.  If /dev is fixed, then this doesn't matter.
->>
->> This is why Helge recently changed palo to allow longer command  
->> lines.
->>
->> Dave
->>
->> On 11-Oct-13, at 1:31 AM, Dave Land wrote:
->>
->>> Dave,
->>>
->>> If I remember correctly (it's been a couple weeks), the kernel panic
->>> mentioned that it couldn't find the root partition, in this case  
->>> sda3,
->>> and I specified that when I did the palo config, so I either screwed
->>> up on the partitioning (i.e. sda3 isn't where it's supposed to be,  
->>> or
->>> I didn't do the palo config just exactly right.) If I interact with
->>> the IPL and use the kernel on the CD, it finds sda3 with no problem
->>> and boots the hard disc. I'm thinking it actually IS finding the
->>> kernel, since it actually gets that far before the kernel panics
->>> because it can't find /.
->>>
->>> Anyway, as soon as I get caught up with sorting all the computer
->>> goodies I scored at the local school auction last week, I'll work  
->>> with
->>> it some more, and try to figure out what I'm missing. :)
->>>
->>> Dave Land
->>> Land Computer Service
->>>
->>> On 10/10/13 6:01 PM, John David Anglin wrote:
->>>> Typically, I don't change palo.conf much.  Just use a generic  
->>>> name like
->>>> vmlinux and link it to your current
->>>> default kernel.  Same for initrd.img if you use ram disk.   
->>>> Interact with
->>>> IPL if you want to do something special.
->>>> It supports a ls command, so you can see what's in /boot.  If you  
->>>> can't
->>>> see any kernels, palo is probably
->>>> looking at wrong partition.
->>>>
->>>> Dave
->>>>
->>>> On 10-Oct-13, at 9:47 AM, Dave Land wrote:
->>>>
->>>>> On 10/8/13 5:41 PM, John David Anglin wrote:
->>>>>> I have upload a new Debian kernel build (3.10.11) to the parisc
->>>>>> archive:
->>>>>> deb http://ftp.parisc-linux.org/debian-ports/unstable  unstable  
->>>>>> main
->>>>>>
->>>>>> Except for linux-image-3.10-3-parisc-smp, the packages have  
->>>>>> been boot
->>>>>> tested on c3750 and rp3440.
->>>>>>
->>>>>> Enjoy,
->>>>>> Dave
->>>>>> --
->>>>>> John David Anglin    dave.anglin@bell.net
->>>>>>
->>>>>>
->>>>>>
->>>>>>
->>>>>
->>>>> Thank you Dave. I'm still trying to get my Visualize J6750 to boot
->>>>> from the kernel on the HDD. Some kind of weirdness with palo is
->>>>> keeping it from seeing the /boot partition. Too much other stuff  
->>>>> going
->>>>> on at the moment to worry with it too much though. I'll get it
->>>>> eventually. :) Thanks for all your hard work on this.
->>>>>
->>>>> --
->>>>> Dave Land
->>>>> Land Computer Service  xmechanic@landcomp.net
->
-
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+diff --git a/arch/parisc/include/asm/assembly.h b/arch/parisc/include/asm/assembly.h
+index 0da8482..b3069fd 100644
+--- a/arch/parisc/include/asm/assembly.h
++++ b/arch/parisc/include/asm/assembly.h
+@@ -515,5 +515,17 @@
+ 	nop	/* 7 */
+ 	.endm
+ 
++	/*
++	 * ASM_EXCEPTIONTABLE_ENTRY
++	 *
++	 * Creates an exception table entry.
++	 * Do not convert to a assembler macro. This won't work.
++	 */
++#define ASM_EXCEPTIONTABLE_ENTRY(fault_addr, except_addr)	\
++	.section __ex_table,"aw"			!	\
++	ASM_ULONG_INSN	fault_addr, except_addr		!	\
++	.previous
++
++
+ #endif /* __ASSEMBLY__ */
+ #endif
+diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
+index e0a8235..4006964 100644
+--- a/arch/parisc/include/asm/uaccess.h
++++ b/arch/parisc/include/asm/uaccess.h
+@@ -59,12 +59,13 @@ static inline long access_ok(int type, const void __user * addr,
+ /*
+  * The exception table contains two values: the first is an address
+  * for an instruction that is allowed to fault, and the second is
+- * the address to the fixup routine. 
++ * the address to the fixup routine. Even on a 64bit kernel we could
++ * use a 32bit (unsigned int) address here.
+  */
+ 
+ struct exception_table_entry {
+-	unsigned long insn;  /* address of insn that is allowed to fault.   */
+-	long fixup;          /* fixup routine */
++	unsigned long insn;	/* address of insn that is allowed to fault. */
++	unsigned long fixup;	/* fixup routine */
+ };
+ 
+ #define ASM_EXCEPTIONTABLE_ENTRY( fault_addr, except_addr )\
+diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+index e767ab7..a63bb179 100644
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -649,10 +649,8 @@ cas_action:
+ 	/* Two exception table entries, one for the load,
+ 	   the other for the store. Either return -EFAULT.
+ 	   Each of the entries must be relocated. */
+-	.section __ex_table,"aw"
+-	ASM_ULONG_INSN (1b - linux_gateway_page), (3b - linux_gateway_page)
+-	ASM_ULONG_INSN (2b - linux_gateway_page), (3b - linux_gateway_page)
+-	.previous
++	ASM_EXCEPTIONTABLE_ENTRY(1b-linux_gateway_page, 3b-linux_gateway_page)
++	ASM_EXCEPTIONTABLE_ENTRY(2b-linux_gateway_page, 3b-linux_gateway_page)
+ 
+ 
+ 	/* Make sure nothing else is placed on this page */
+diff --git a/arch/parisc/lib/lusercopy.S b/arch/parisc/lib/lusercopy.S
+index 6f2d935..a512f07 100644
+--- a/arch/parisc/lib/lusercopy.S
++++ b/arch/parisc/lib/lusercopy.S
+@@ -88,9 +88,7 @@ ENDPROC(lclear_user)
+ 	ldo        1(%r25),%r25
+ 	.previous
+ 
+-	.section __ex_table,"aw"
+-	ASM_ULONG_INSN 1b,2b
+-	.previous
++	ASM_EXCEPTIONTABLE_ENTRY(1b,2b)
+ 
+ 	.procend
+ 
+@@ -129,10 +127,8 @@ ENDPROC(lstrnlen_user)
+ 	copy        %r24,%r26    /* reset r26 so 0 is returned on fault */
+ 	.previous
+ 
+-	.section __ex_table,"aw"
+-	ASM_ULONG_INSN 1b,3b
+-	ASM_ULONG_INSN 2b,3b
+-	.previous
++	ASM_EXCEPTIONTABLE_ENTRY(1b,3b)
++	ASM_EXCEPTIONTABLE_ENTRY(2b,3b)
+ 
+ 	.procend
+ 
+diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+index 0293588..d7aea72 100644
+--- a/arch/parisc/mm/fault.c
++++ b/arch/parisc/mm/fault.c
+@@ -142,6 +142,11 @@ int fixup_exception(struct pt_regs *regs)
+ {
+ 	const struct exception_table_entry *fix;
+ 
++	/* If we only stored 32bit addresses in the exception table we can drop
++	 * out if we faulted on a 64bit address. */
++	if (sizeof(fix->insn) == 4 && regs->iaoq[0] >> 32)
++		return 0;
++
+ 	fix = search_exception_tables(regs->iaoq[0]);
+ 	if (fix) {
+ 		struct exception_data *d;
