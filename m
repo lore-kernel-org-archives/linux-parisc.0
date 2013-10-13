@@ -1,79 +1,32 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: show backtrace for all cpus when using sysrq-l
-Date: Sun, 13 Oct 2013 21:37:07 +0200
-Message-ID: <20131013193707.GA15451@p100.box>
+Subject: Re: New hppa kernel packages uploaded (3.10.11, aka 3.10-3) to parisc
+ archives
+Date: Sun, 13 Oct 2013 21:52:50 +0200
+Message-ID: <525AFA12.2000002@gmx.de>
+References: <BLU0-SMTP850C7B9645BBBC4DF76FD0971C0@phx.gbl> <5256AFF5.8080805@landcomp.net> <BLU0-SMTP27179D0C2057664D913C74971F0@phx.gbl> <52578D25.6010102@landcomp.net> <BLU0-SMTP337F2FF2A00CABB1AD2BA2971F0@phx.gbl> <525ACD4D.4060108@landcomp.net> <BLU0-SMTP943EBAB2046BE47061811197190@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Parisc List <linux-parisc@vger.kernel.org>
+To: John David Anglin <dave.anglin@bell.net>,
+	Dave Land <xmechanic@landcomp.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <BLU0-SMTP943EBAB2046BE47061811197190@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Improve output when using sysrq-l command (show backtrace for all cpus).
+Hi Dave,
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+On 10/13/2013 06:59 PM, John David Anglin wrote:
+> To get devtmpfs you need a kernel built with CONFIG_DEVTMPFS.  I think the Debian kernels in the archive
+> have this.  However, at least some of the default parisc kernel configs miss this option.
 
-diff --git a/arch/parisc/include/asm/irq.h b/arch/parisc/include/asm/irq.h
-index 1073599..99989ad 100644
---- a/arch/parisc/include/asm/irq.h
-+++ b/arch/parisc/include/asm/irq.h
-@@ -49,4 +49,9 @@ extern int cpu_check_affinity(struct irq_data *d, const struct cpumask *dest);
- /* soft power switch support (power.c) */
- extern struct tasklet_struct power_tasklet;
- 
-+#ifdef CONFIG_SMP
-+void arch_trigger_all_cpu_backtrace(void);
-+#define arch_trigger_all_cpu_backtrace arch_trigger_all_cpu_backtrace
-+#endif
-+
- #endif	/* _ASM_PARISC_IRQ_H */
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index 2e6443b..2e66892 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -615,3 +615,44 @@ void __init init_IRQ(void)
- #endif
-         set_eiem(cpu_eiem);	/* EIEM : enable all external intr */
- }
-+
-+
-+
-+/*
-+ * Backtrace of all CPUs via IPI. Used when sending sysrq-l.  
-+ */
-+
-+#ifdef arch_trigger_all_cpu_backtrace
-+static DECLARE_BITMAP(backtrace_mask, NR_CPUS) __read_mostly;
-+
-+static void smp_call_func_backtrace(void *info)
-+{
-+	int cpu;
-+	cpu = smp_processor_id();
-+
-+	if (cpumask_test_cpu(cpu, to_cpumask(backtrace_mask))) {
-+		static arch_spinlock_t lock = __ARCH_SPIN_LOCK_UNLOCKED;
-+
-+		arch_spin_lock(&lock);
-+		pr_warn("IPI backtrace for cpu %d\n", cpu);
-+		/* show_regs(get_irq_regs()); */
-+		show_stack(NULL, 0);
-+		arch_spin_unlock(&lock);
-+		cpumask_clear_cpu(cpu, to_cpumask(backtrace_mask));
-+	}
-+}
-+
-+void arch_trigger_all_cpu_backtrace(void)
-+{
-+	unsigned long flags;
-+
-+	cpumask_copy(to_cpumask(backtrace_mask), cpu_online_mask);
-+
-+	pr_info("sending IPI to all CPUs:\n");
-+	local_irq_save(flags);
-+	local_irq_enable();
-+	on_each_cpu(smp_call_func_backtrace, NULL, 0);
-+	local_irq_restore(flags);
-+}
-+#endif
-+
+You are correct.
+I just tested shortly the 712_defconfig and c3000_defconfigs, and both are missing CONFIG_DEVTMPFS.
+
+What about DEVTMPFS_MOUNT? Is it needed as well? 
+(Automount devtmpfs at /dev, after the kernel mounted the rootfs (DEVTMPFS_MOUNT) [N/y/?] (NEW))
+
+I think it makes sense to update the defconfigs.
+What else do you know might be missing?
+
+Helge
