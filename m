@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: add kernel auditing feature
-Date: Mon, 14 Oct 2013 21:08:56 +0200
-Message-ID: <20131014190856.GA1483@p100.box>
+Subject: [PATCH] parisc: enable DEVTMPFS and DEVTMPFS_MOUNT in defconfigs
+Date: Mon, 14 Oct 2013 22:55:36 +0200
+Message-ID: <20131014205536.GA5389@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -10,249 +10,163 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Still untested as additional work - which is ongoing - is needed in the
-upstream auditd tool.
+Latest udev version requires that DEVTMPFS and DEVTMPFS_MOUNT are
+enabled, else initrd will fail to find root filesystem.
+While touching those configs, unify a few other options, e.g.
+disable CONFIG_IP_PNP_DHCP and enable CONFIG_BLK_DEV_INITRD.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index ad2ce8d..73e0ac2 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -287,6 +287,10 @@ config SYSVIPC_COMPAT
- 	def_bool y
- 	depends on COMPAT && SYSVIPC
- 
-+config AUDIT_ARCH
-+	def_bool y
-+	depends on COMPAT
-+
- config HPUX
- 	bool "Support for HP-UX binaries"
- 	depends on !64BIT
-diff --git a/arch/parisc/include/asm/thread_info.h b/arch/parisc/include/asm/thread_info.h
-index 540c88f..bc7cf12 100644
---- a/arch/parisc/include/asm/thread_info.h
-+++ b/arch/parisc/include/asm/thread_info.h
-@@ -59,6 +59,7 @@ struct thread_info {
- #define TIF_32BIT               4       /* 32 bit binary */
- #define TIF_MEMDIE		5	/* is terminating due to OOM killer */
- #define TIF_RESTORE_SIGMASK	6	/* restore saved signal mask */
-+#define TIF_SYSCALL_AUDIT	7	/* syscall auditing active */
- #define TIF_NOTIFY_RESUME	8	/* callback before returning to user */
- #define TIF_SINGLESTEP		9	/* single stepping? */
- #define TIF_BLOCKSTEP		10	/* branch stepping? */
-@@ -68,6 +69,7 @@ struct thread_info {
- #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
- #define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
- #define _TIF_32BIT		(1 << TIF_32BIT)
-+#define _TIF_SYSCALL_AUDIT	(1 << TIF_SYSCALL_AUDIT)
- #define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
- #define _TIF_SINGLESTEP		(1 << TIF_SINGLESTEP)
- #define _TIF_BLOCKSTEP		(1 << TIF_BLOCKSTEP)
-@@ -75,7 +77,7 @@ struct thread_info {
- #define _TIF_USER_WORK_MASK     (_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | \
-                                  _TIF_NEED_RESCHED)
- #define _TIF_SYSCALL_TRACE_MASK (_TIF_SYSCALL_TRACE | _TIF_SINGLESTEP |	\
--				 _TIF_BLOCKSTEP)
-+				 _TIF_BLOCKSTEP | _TIF_SYSCALL_AUDIT)
- 
- #endif /* __KERNEL__ */
- 
-diff --git a/arch/parisc/kernel/Makefile b/arch/parisc/kernel/Makefile
-index 66ee3f1..ad1e3a6 100644
---- a/arch/parisc/kernel/Makefile
-+++ b/arch/parisc/kernel/Makefile
-@@ -31,5 +31,6 @@ obj-$(CONFIG_64BIT)	+= binfmt_elf32.o sys_parisc32.o signal32.o
- obj-$(CONFIG_STACKTRACE)+= stacktrace.o
- # only supported for PCX-W/U in 64-bit mode at the moment
- obj-$(CONFIG_64BIT)	+= perf.o perf_asm.o
-+obj-$(CONFIG_AUDIT_ARCH) += audit.o compat_audit.o
- obj-$(CONFIG_FUNCTION_TRACER)		+= ftrace.o
- obj-$(CONFIG_FUNCTION_GRAPH_TRACER)	+= ftrace.o
-diff --git a/arch/parisc/kernel/audit.c b/arch/parisc/kernel/audit.c
-new file mode 100644
-index 0000000..bdc7773
---- /dev/null
-+++ b/arch/parisc/kernel/audit.c
-@@ -0,0 +1,81 @@
-+#include <linux/init.h>
-+#include <linux/types.h>
-+#include <linux/audit.h>
-+#include <asm/unistd.h>
-+
-+static unsigned dir_class[] = {
-+#include <asm-generic/audit_dir_write.h>
-+~0U
-+};
-+
-+static unsigned read_class[] = {
-+#include <asm-generic/audit_read.h>
-+~0U
-+};
-+
-+static unsigned write_class[] = {
-+#include <asm-generic/audit_write.h>
-+~0U
-+};
-+
-+static unsigned chattr_class[] = {
-+#include <asm-generic/audit_change_attr.h>
-+~0U
-+};
-+
-+static unsigned signal_class[] = {
-+#include <asm-generic/audit_signal.h>
-+~0U
-+};
-+
-+int audit_classify_arch(int arch)
-+{
-+#ifdef CONFIG_COMPAT
-+	if (arch == AUDIT_ARCH_PARISC)
-+		return 1;
-+#endif
-+	return 0;
-+}
-+
-+int audit_classify_syscall(int abi, unsigned syscall)
-+{
-+#ifdef CONFIG_COMPAT
-+	extern int parisc32_classify_syscall(unsigned);
-+	if (abi == AUDIT_ARCH_PARISC)
-+		return parisc32_classify_syscall(syscall);
-+#endif
-+	switch (syscall) {
-+	case __NR_open:
-+		return 2;
-+	case __NR_openat:
-+		return 3;
-+	case __NR_execve:
-+		return 5;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static int __init audit_classes_init(void)
-+{
-+#ifdef CONFIG_COMPAT
-+	extern __u32 parisc32_dir_class[];
-+	extern __u32 parisc32_write_class[];
-+	extern __u32 parisc32_read_class[];
-+	extern __u32 parisc32_chattr_class[];
-+	extern __u32 parisc32_signal_class[];
-+	audit_register_class(AUDIT_CLASS_WRITE_32, parisc32_write_class);
-+	audit_register_class(AUDIT_CLASS_READ_32, parisc32_read_class);
-+	audit_register_class(AUDIT_CLASS_DIR_WRITE_32, parisc32_dir_class);
-+	audit_register_class(AUDIT_CLASS_CHATTR_32, parisc32_chattr_class);
-+	audit_register_class(AUDIT_CLASS_SIGNAL_32, parisc32_signal_class);
-+#endif
-+	audit_register_class(AUDIT_CLASS_WRITE, write_class);
-+	audit_register_class(AUDIT_CLASS_READ, read_class);
-+	audit_register_class(AUDIT_CLASS_DIR_WRITE, dir_class);
-+	audit_register_class(AUDIT_CLASS_CHATTR, chattr_class);
-+	audit_register_class(AUDIT_CLASS_SIGNAL, signal_class);
-+	return 0;
-+}
-+
-+__initcall(audit_classes_init);
-diff --git a/arch/parisc/kernel/compat_audit.c b/arch/parisc/kernel/compat_audit.c
-new file mode 100644
-index 0000000..ba64dfe
---- /dev/null
-+++ b/arch/parisc/kernel/compat_audit.c
-@@ -0,0 +1,40 @@
-+#include <asm/unistd.h>
-+
-+unsigned int parisc32_dir_class[] = {
-+#include <asm-generic/audit_dir_write.h>
-+~0U
-+};
-+
-+unsigned int parisc32_chattr_class[] = {
-+#include <asm-generic/audit_change_attr.h>
-+~0U
-+};
-+
-+unsigned int parisc32_write_class[] = {
-+#include <asm-generic/audit_write.h>
-+~0U
-+};
-+
-+unsigned int parisc32_read_class[] = {
-+#include <asm-generic/audit_read.h>
-+~0U
-+};
-+
-+unsigned int parisc32_signal_class[] = {
-+#include <asm-generic/audit_signal.h>
-+~0U
-+};
-+
-+int parisc32_classify_syscall(unsigned syscall)
-+{
-+	switch (syscall) {
-+	case __NR_open:
-+		return 2;
-+	case __NR_openat:
-+		return 3;
-+	case __NR_execve:
-+		return 5;
-+	default:
-+		return 1;
-+	}
-+}
-diff --git a/arch/parisc/kernel/ptrace.c b/arch/parisc/kernel/ptrace.c
-index 534abd4..e842ee2 100644
---- a/arch/parisc/kernel/ptrace.c
-+++ b/arch/parisc/kernel/ptrace.c
-@@ -19,6 +19,7 @@
- #include <linux/security.h>
- #include <linux/compat.h>
- #include <linux/signal.h>
-+#include <linux/audit.h>
- 
- #include <asm/uaccess.h>
- #include <asm/pgtable.h>
-@@ -267,11 +268,28 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
- 
- long do_syscall_trace_enter(struct pt_regs *regs)
- {
-+	long ret = 0;
-+
- 	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
- 	    tracehook_report_syscall_entry(regs))
--		return -1L;
--
--	return regs->gr[20];
-+		ret = -1L;
-+
-+#ifdef CONFIG_64BIT
-+	if (!is_compat_task())
-+		audit_syscall_entry(AUDIT_ARCH_PARISC64,
-+			regs->gr[20],
-+			regs->gr[26], regs->gr[25],
-+			regs->gr[24], regs->gr[23]);
-+	else
-+#endif
-+		audit_syscall_entry(AUDIT_ARCH_PARISC,
-+			regs->gr[20] & 0xffffffff,
-+			regs->gr[26] & 0xffffffff,
-+			regs->gr[25] & 0xffffffff,
-+			regs->gr[24] & 0xffffffff,
-+			regs->gr[23] & 0xffffffff);
-+
-+	return ret ? : regs->gr[20];
- }
- 
- void do_syscall_trace_exit(struct pt_regs *regs)
-@@ -279,6 +297,8 @@ void do_syscall_trace_exit(struct pt_regs *regs)
- 	int stepping = test_thread_flag(TIF_SINGLESTEP) ||
- 		test_thread_flag(TIF_BLOCKSTEP);
- 
-+	audit_syscall_exit(regs);
-+
- 	if (stepping || test_thread_flag(TIF_SYSCALL_TRACE))
- 		tracehook_report_syscall_exit(regs, stepping);
- }
+diff --git a/arch/parisc/configs/712_defconfig b/arch/parisc/configs/712_defconfig
+index 0f90569..39b680a 100644
+--- a/arch/parisc/configs/712_defconfig
++++ b/arch/parisc/configs/712_defconfig
+@@ -28,7 +28,6 @@ CONFIG_NET_KEY=m
+ CONFIG_INET=y
+ CONFIG_IP_MULTICAST=y
+ CONFIG_IP_PNP=y
+-CONFIG_IP_PNP_DHCP=y
+ CONFIG_IP_PNP_BOOTP=y
+ CONFIG_INET_AH=m
+ CONFIG_INET_ESP=m
+@@ -40,6 +39,8 @@ CONFIG_IP_NF_QUEUE=m
+ CONFIG_LLC2=m
+ CONFIG_NET_PKTGEN=m
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_STANDALONE is not set
+ # CONFIG_PREVENT_FIRMWARE_BUILD is not set
+ CONFIG_PARPORT=y
+diff --git a/arch/parisc/configs/a500_defconfig b/arch/parisc/configs/a500_defconfig
+index b647b18..51cc316 100644
+--- a/arch/parisc/configs/a500_defconfig
++++ b/arch/parisc/configs/a500_defconfig
+@@ -38,7 +38,6 @@ CONFIG_NET_KEY=m
+ CONFIG_INET=y
+ CONFIG_IP_MULTICAST=y
+ CONFIG_IP_PNP=y
+-CONFIG_IP_PNP_DHCP=y
+ CONFIG_IP_PNP_BOOTP=y
+ CONFIG_INET_AH=m
+ CONFIG_INET_ESP=m
+@@ -79,6 +78,8 @@ CONFIG_IP_DCCP=m
+ CONFIG_LLC2=m
+ CONFIG_NET_PKTGEN=m
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_STANDALONE is not set
+ # CONFIG_PREVENT_FIRMWARE_BUILD is not set
+ CONFIG_BLK_DEV_UMEM=m
+diff --git a/arch/parisc/configs/b180_defconfig b/arch/parisc/configs/b180_defconfig
+index e289f5b..f1a0c25 100644
+--- a/arch/parisc/configs/b180_defconfig
++++ b/arch/parisc/configs/b180_defconfig
+@@ -4,6 +4,7 @@ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_LOG_BUF_SHIFT=16
+ CONFIG_SYSFS_DEPRECATED_V2=y
++CONFIG_BLK_DEV_INITRD=y
+ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+ CONFIG_MODVERSIONS=y
+@@ -27,6 +28,8 @@ CONFIG_IP_PNP_BOOTP=y
+ # CONFIG_INET_LRO is not set
+ CONFIG_IPV6=y
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_PREVENT_FIRMWARE_BUILD is not set
+ CONFIG_PARPORT=y
+ CONFIG_PARPORT_PC=y
+diff --git a/arch/parisc/configs/c3000_defconfig b/arch/parisc/configs/c3000_defconfig
+index 311ca36..ec1b014 100644
+--- a/arch/parisc/configs/c3000_defconfig
++++ b/arch/parisc/configs/c3000_defconfig
+@@ -5,6 +5,7 @@ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_LOG_BUF_SHIFT=16
+ CONFIG_SYSFS_DEPRECATED_V2=y
++CONFIG_BLK_DEV_INITRD=y
+ # CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
+ CONFIG_EXPERT=y
+ CONFIG_KALLSYMS_ALL=y
+@@ -39,6 +40,8 @@ CONFIG_NETFILTER_DEBUG=y
+ CONFIG_IP_NF_QUEUE=m
+ CONFIG_NET_PKTGEN=m
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_STANDALONE is not set
+ # CONFIG_PREVENT_FIRMWARE_BUILD is not set
+ CONFIG_BLK_DEV_UMEM=m
+diff --git a/arch/parisc/configs/c8000_defconfig b/arch/parisc/configs/c8000_defconfig
+index f110063..6d3852f 100644
+--- a/arch/parisc/configs/c8000_defconfig
++++ b/arch/parisc/configs/c8000_defconfig
+@@ -42,9 +42,7 @@ CONFIG_NET_KEY=m
+ CONFIG_INET=y
+ CONFIG_IP_MULTICAST=y
+ CONFIG_IP_PNP=y
+-CONFIG_IP_PNP_DHCP=y
+ CONFIG_IP_PNP_BOOTP=y
+-CONFIG_IP_PNP_RARP=y
+ CONFIG_NET_IPIP=m
+ CONFIG_IP_MROUTE=y
+ CONFIG_IP_PIMSM_V1=y
+@@ -62,6 +60,8 @@ CONFIG_TIPC=m
+ CONFIG_LLC2=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_STANDALONE is not set
+ CONFIG_PARPORT=y
+ CONFIG_PARPORT_PC=y
+@@ -197,16 +197,12 @@ CONFIG_USB=y
+ CONFIG_USB_OHCI_HCD=y
+ CONFIG_USB_STORAGE=y
+ CONFIG_EXT2_FS=y
+-CONFIG_EXT2_FS_XATTR=y
+-CONFIG_EXT2_FS_POSIX_ACL=y
+-CONFIG_EXT2_FS_SECURITY=y
+ CONFIG_EXT3_FS=y
+ # CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
+ CONFIG_EXT4_FS=m
+ CONFIG_REISERFS_FS=m
+ CONFIG_REISERFS_PROC_INFO=y
+ CONFIG_XFS_FS=m
+-CONFIG_XFS_POSIX_ACL=y
+ CONFIG_QUOTA=y
+ CONFIG_QFMT_V1=m
+ CONFIG_QFMT_V2=m
+@@ -218,7 +214,6 @@ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=m
+ CONFIG_PROC_KCORE=y
+ CONFIG_TMPFS=y
+-CONFIG_TMPFS_XATTR=y
+ CONFIG_NFS_FS=m
+ CONFIG_NLS_CODEPAGE_437=m
+ CONFIG_NLS_CODEPAGE_737=m
+diff --git a/arch/parisc/configs/default_defconfig b/arch/parisc/configs/default_defconfig
+index dfe88f6..697f409 100644
+--- a/arch/parisc/configs/default_defconfig
++++ b/arch/parisc/configs/default_defconfig
+@@ -37,7 +37,6 @@ CONFIG_NET_KEY=m
+ CONFIG_INET=y
+ CONFIG_IP_MULTICAST=y
+ CONFIG_IP_PNP=y
+-CONFIG_IP_PNP_DHCP=y
+ CONFIG_IP_PNP_BOOTP=y
+ CONFIG_INET_AH=m
+ CONFIG_INET_ESP=m
+@@ -49,6 +48,8 @@ CONFIG_INET6_ESP=y
+ CONFIG_INET6_IPCOMP=y
+ CONFIG_LLC2=m
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_STANDALONE is not set
+ # CONFIG_PREVENT_FIRMWARE_BUILD is not set
+ CONFIG_PARPORT=y
