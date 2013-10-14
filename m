@@ -1,30 +1,54 @@
-From: "Helge Deller" <deller@gmx.de>
-Subject: Aw: Re: [GIT PULL] parisc updates for v3.12-rc5
-Date: Mon, 14 Oct 2013 14:35:33 +0200 (CEST)
-Message-ID: <trinity-4f52e27f-75d8-4137-83d6-d242e529c3c9-1381754133846@3capp-gmx-bs48>
-References: <20131013161130.GA19534@p100.box>,
- <20131014112621.GA9705@infradead.org>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: break out SOCK_NONBLOCK define to own asm header file
+Date: Mon, 14 Oct 2013 21:04:13 +0200
+Message-ID: <20131014190413.GA1356@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: "Linus Torvalds" <torvalds@linux-foundation.org>,
-	"Linux Kernel Development" <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org,
-	"James Bottomley" <James.Bottomley@HansenPartnership.com>
-To: "Christoph Hellwig" <hch@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	dave.anglin@bell.net
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20131014112621.GA9705@infradead.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > Geert Uytterhoeven (1):
-> >       parisc: Export flush_cache_page() (needed by lustre)
-> 
-> This one shouldn't go in - Geert sent it a bit prematurely, as Lustre
-> shouldn't use it just to reimplement core VM functionality (which it
-> shouldn't use either, but that's a separate story).
+Break SOCK_NONBLOCK out to its own asm-file as other arches do. This
+fixes build errors with auditd and probably other packages.
 
-Ok, it's my fault then.
-I'll include a reverting patch in the next parisc pull request...
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Thanks,
-Helge
+diff --git a/arch/parisc/include/asm/socket.h b/arch/parisc/include/asm/socket.h
+new file mode 100644
+index 0000000..8d806d8
+--- /dev/null
++++ b/arch/parisc/include/asm/socket.h
+@@ -0,0 +1,10 @@
++#ifndef _ASM_SOCKET_H
++#define _ASM_SOCKET_H
++
++#include <uapi/asm/socket.h>
++
++/* O_NONBLOCK clashes with the bits used for socket types.  Therefore we
++ * have to define SOCK_NONBLOCK to a different value here.
++ */
++#define SOCK_NONBLOCK	0x40000000
++#endif /* _ASM_SOCKET_H */
+diff --git a/arch/parisc/include/uapi/asm/socket.h b/arch/parisc/include/uapi/asm/socket.h
+index 71700e6..9f2174f 100644
+--- a/arch/parisc/include/uapi/asm/socket.h
++++ b/arch/parisc/include/uapi/asm/socket.h
+@@ -1,5 +1,5 @@
+-#ifndef _ASM_SOCKET_H
+-#define _ASM_SOCKET_H
++#ifndef _UAPI_ASM_SOCKET_H
++#define _UAPI_ASM_SOCKET_H
+ 
+ #include <asm/sockios.h>
+ 
+@@ -75,9 +75,4 @@
+ 
+ #define SO_BUSY_POLL		0x4027
+ 
+-/* O_NONBLOCK clashes with the bits used for socket types.  Therefore we
+- * have to define SOCK_NONBLOCK to a different value here.
+- */
+-#define SOCK_NONBLOCK   0x40000000
