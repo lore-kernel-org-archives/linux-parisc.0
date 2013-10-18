@@ -1,146 +1,62 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: make "make install" not depend on vmlinux
-Date: Fri, 18 Oct 2013 21:18:46 +0200
-Message-ID: <20131018191846.GA31987@p100.box>
+Subject: Re: 3.12-rcX - NFS regression - kswapd0 / kswapd1 stays using 100%
+ CPU?
+Date: Fri, 18 Oct 2013 21:26:23 +0200
+Message-ID: <52618B5F.4000508@gmx.de>
+References: <52604BA9.20104@gmx.de> <1382044045.3216.44.camel@leira.trondhjem.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=UTF-7
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	NFS list <linux-nfs@vger.kernel.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: "Myklebust, Trond" <Trond.Myklebust@netapp.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1382044045.3216.44.camel@leira.trondhjem.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Install targets (install, zinstall, uinstall) on parisc have a
-dependency to vmlinux. This may cause parts of the kernel to be rebuilt
-during installation. We must avoid this since this may run as root.
-Install targets "ABSOLUTELY MUST NOT MODIFY THE SOURCE TREE." as Linus
-emphasized this in:
+On 10/17/2013 11:07 PM, Myklebust, Trond wrote:
+> On Thu, 2013-10-17 at 22:42 +0200, Helge Deller wrote:
+>> I'm seeing a regression with current kernel git head when using NFS-mounts.
+>> Architecture in my case is parisc, although I don't think that this is relevant.
+>> At least kernel 3.10 (and I think 3.11) didn't showed that problem.
+>>
+>> The symtom is, that "top" shows high usage of either kswapd0 or kswapd1.
+>> Here is an output with kswapd1:
+>>   PID USER      PR  NI  VIRT  RES  SHR S  %CPU %MEM     TIME+ COMMAND
+>>    37 root      20   0     0    0    0 R  91.8  0.0  63:00.40 kswapd1
+>> 28448 root      20   0  3252 1428 1060 R  15.3  0.0   0:00.09 top
+>>     1 root      20   0  2784  988  852 S   0.0  0.0   0:09.95 init
+>>
+>> This is what ps shows:
+>> lsXXXX:~# ps -ef |  grep mount
+>> root      1181     1  0 14:51 ?        00:00:18 /usr/sbin/automount --pid-file /var/run/autofs.pid
+>> root     25331  1181  0 21:25 ?        00:00:00 /bin/mount -n -t nfs -s -o nolock,rw,hard,intr homes:/unixhome1 /net/home1
+>> root     25332 25331  0 21:25 ?        00:00:00 /sbin/mount.nfs homes:/unixhome1 /net/home1 -s -n -o rw,nolock,hard,intr
+>>
+>> And using sysrq to show the blocked tasks I get in syslog:
+>> SysRq : Show Blocked State
+>> mount.nfs       D 00000000401040c0     0 25332  25331 0x00000010
+>> Backtrace:
+>> [<0000000040113a68>] __schedule+0x500/0x810
+>>
+>> I know it's not a problem of the NFS server, since the same mount is still ok on other machines.
+>> The NFS directory was already mounted and in use when this mount happened again (called by cron-job). 
+>>  
+>> Any ideas?
+> 
+> If the NFS directory is already mounted, then why is the automounter
+> trying to mount it a second time?
 
-http://lkml.org/lkml/2013/7/10/600
+I was wrong in this.
+The directory wasn't mounted yet (or at least it was unmounted in the meantime before the new
+mount.nfs was called).
 
-So on parisc and maybe other archs we need the same as for x86:
+I'm now not even sure, that the high kswapd is really triggered by the NFS problem,
+because I now have another machine with the blocked NFS-mount, but without
+the high kswapd usage.
 
-1648e4f8 x86, kbuild: make "make install" not depend on vmlinux
+Nevertheless, the blocked nfs mount tasks really make me wonder. There is clearly
+some kind of regression since it doesn't happen with older kernels.
 
-This parisc patch was inspired by:
-
-19514fc6 arm, kbuild: make "make install" not depend on vmlinux
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index e02f665..7187664 100644
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -94,7 +94,7 @@ PALOCONF := $(shell if [ -f $(src)/palo.conf ]; then echo $(src)/palo.conf; \
- 	else echo $(obj)/palo.conf; \
- 	fi)
- 
--palo: vmlinuz
-+palo lifimage: vmlinuz
- 	@if test ! -x "$(PALO)"; then \
- 		echo 'ERROR: Please install palo first (apt-get install palo)';\
- 		echo 'or build it from source and install it somewhere in your $$PATH';\
-@@ -109,16 +109,23 @@ palo: vmlinuz
- 	fi
- 	$(PALO) -f $(PALOCONF)
- 
--# Shorthands for known targets not supported by parisc, use vmlinux/vmlinuz as default
-+BOOT_TARGETS    = zImage Image palo lifimage
-+INSTALL_TARGETS = zinstall install
-+
-+PHONY += bzImage $(BOOT_TARGETS) $(INSTALL_TARGETS)
-+
-+bzImage zImage: vmlinuz
- Image: vmlinux
--zImage bzImage: vmlinuz
- 
- vmlinuz: vmlinux
- 	@gzip -cf -9 $< > $@
- 
--install: vmlinuz
--	sh $(src)/arch/parisc/install.sh \
--			$(KERNELRELEASE) $< System.map "$(INSTALL_PATH)"
-+install:
-+	$(CONFIG_SHELL) $(src)/arch/parisc/install.sh \
-+			$(KERNELRELEASE) vmlinux System.map "$(INSTALL_PATH)"
-+zinstall:
-+	$(CONFIG_SHELL) $(src)/arch/parisc/install.sh \
-+			$(KERNELRELEASE) vmlinuz System.map "$(INSTALL_PATH)"
- 
- CLEAN_FILES	+= lifimage
- MRPROPER_FILES	+= palo.conf
-@@ -127,10 +134,11 @@ define archhelp
- 	@echo  '* vmlinux	- Uncompressed kernel image (./vmlinux)'
- 	@echo  '  vmlinuz	- Compressed kernel image (./vmlinuz)'
- 	@echo  '  palo		- Bootable image (./lifimage)'
--	@echo  '  install	- Install kernel using'
-+	@echo  '  install	- Install uncompressed vmlinux kernel using'
- 	@echo  '		  (your) ~/bin/$(INSTALLKERNEL) or'
- 	@echo  '		  (distribution) /sbin/$(INSTALLKERNEL) or'
- 	@echo  '		  copy to $$(INSTALL_PATH)'
-+	@echo  '  zinstall	- Install compressed vmlinuz kernel'
- endef
- 
- # we require gcc 3.3 or above to compile the kernel
-diff --git a/arch/parisc/install.sh b/arch/parisc/install.sh
-index 4da682b..6f68784 100644
---- a/arch/parisc/install.sh
-+++ b/arch/parisc/install.sh
-@@ -19,20 +19,48 @@
- #   $4 - default install path (blank if root directory)
- #
- 
-+verify () {
-+	if [ ! -f "$1" ]; then
-+		echo ""                                                   1>&2
-+		echo " *** Missing file: $1"                              1>&2
-+		echo ' *** You need to run "make" before "make install".' 1>&2
-+		echo ""                                                   1>&2
-+		exit 1
-+	fi
-+}
-+
-+# Make sure the files actually exist
-+
-+verify "$2"
-+verify "$3"
-+
- # User may have a custom install script
- 
--if [ -x ~/bin/${INSTALLKERNEL} ]; then exec ~/bin/${INSTALLKERNEL} "$@"; fi
--if [ -x /sbin/${INSTALLKERNEL} ]; then exec /sbin/${INSTALLKERNEL} "$@"; fi
-+if [ -n "${INSTALLKERNEL}" ]; then
-+  if [ -x ~/bin/${INSTALLKERNEL} ]; then exec ~/bin/${INSTALLKERNEL} "$@"; fi
-+  if [ -x /sbin/${INSTALLKERNEL} ]; then exec /sbin/${INSTALLKERNEL} "$@"; fi
-+fi
- 
- # Default install
- 
--if [ -f $4/vmlinuz ]; then
--	mv $4/vmlinuz $4/vmlinuz.old
-+if [ "$(basename $2)" = "zImage" ]; then
-+# Compressed install
-+  echo "Installing compressed kernel"
-+  base=vmlinuz
-+else
-+# Normal install
-+  echo "Installing normal kernel"
-+  base=vmlinux
-+fi
-+
-+if [ -f $4/$base-$1 ]; then
-+  mv $4/$base-$1 $4/$base-$1.old
- fi
-+cat $2 > $4/$base-$1
- 
--if [ -f $4/System.map ]; then
--	mv $4/System.map $4/System.old
-+# Install system map file
-+if [ -f $4/System.map-$1 ]; then
-+  mv $4/System.map-$1 $4/System.map-$1.old
- fi
-+cp $3 $4/System.map-$1
- 
--cat $2 > $4/vmlinuz
--cp $3 $4/System.map
+Helge
