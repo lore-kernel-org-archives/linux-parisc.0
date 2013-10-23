@@ -1,83 +1,33 @@
-From: Chen Gang <gang.chen@asianux.com>
-Subject: [PATCH] arch: *: remove '__init' for setup_profiling_timer()
-Date: Wed, 23 Oct 2013 10:05:01 +0800
-Message-ID: <52672ECD.9010800@asianux.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"uclinux-dist-devel@blackfin.uclinux.org"
-	<uclinux-dist-devel@blackfin.uclinux.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-To: "vgupta@synopsys.com" <vgupta@synopsys.com>,
-	Mike Frysinger <vapier@gentoo.org>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Paul Gortmaker <paul.gortmaker@windriver.com>,
-	"Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>,
-	realmz paranoid <realmz6@gmail.com>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+Subject: [PATCH] parisc: remove duplicate define
+Date: Wed, 23 Oct 2013 12:37:08 +0200
+Message-ID: <1382524628-3265-1-git-send-email-michael.opdenacker@free-electrons.com>
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Michael Opdenacker <michael.opdenacker@free-electrons.com>
+To: jejb@parisc-linux.org, deller@gmx.de
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Most of architectures not use '__init' for setup_profiling_timer(), so
-need remove it, or can generate warning (e.g. arc with allmodconfig):
+This patch removes a duplicate define from
+arch/parisc/math-emu/float.h
 
-    MODPOST vmlinux.o
-  WARNING: vmlinux.o(.text+0x3c682): Section mismatch in reference from the function write_profile() to the function .init.text:setup_profiling_timer()
-  The function write_profile() references
-  the function __init setup_profiling_timer().
-  This is often because write_profile lacks a __init
-  annotation or the annotation of setup_profiling_timer is wrong.
-
-
-Signed-off-by: Chen Gang <gang.chen@asianux.com>
+Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
 ---
- arch/arc/kernel/smp.c          |    2 +-
- arch/blackfin/mach-bf561/smp.c |    2 +-
- arch/parisc/kernel/smp.c       |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ arch/parisc/math-emu/float.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arc/kernel/smp.c b/arch/arc/kernel/smp.c
-index bca3052..3bdac11 100644
---- a/arch/arc/kernel/smp.c
-+++ b/arch/arc/kernel/smp.c
-@@ -187,7 +187,7 @@ int __cpu_up(unsigned int cpu, struct task_struct *idle)
- /*
-  * not supported here
+diff --git a/arch/parisc/math-emu/float.h b/arch/parisc/math-emu/float.h
+index ce76f6d..7a51f97 100644
+--- a/arch/parisc/math-emu/float.h
++++ b/arch/parisc/math-emu/float.h
+@@ -484,7 +484,6 @@ typedef int VOID;
+  * |                                                     |G|L|E|U|X|
+  * +-------+-------+-------+-------+-------+-------+-------+-------+
   */
--int __init setup_profiling_timer(unsigned int multiplier)
-+int setup_profiling_timer(unsigned int multiplier)
- {
- 	return -EINVAL;
- }
-diff --git a/arch/blackfin/mach-bf561/smp.c b/arch/blackfin/mach-bf561/smp.c
-index 11789be..3bef058 100644
---- a/arch/blackfin/mach-bf561/smp.c
-+++ b/arch/blackfin/mach-bf561/smp.c
-@@ -43,7 +43,7 @@ void __init platform_prepare_cpus(unsigned int max_cpus)
- 	init_cpu_present(&mask);
- }
- 
--int __init setup_profiling_timer(unsigned int multiplier) /* not supported */
-+int setup_profiling_timer(unsigned int multiplier) /* not supported */
- {
- 	return -EINVAL;
- }
-diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
-index 8a252f2..2e8cd36 100644
---- a/arch/parisc/kernel/smp.c
-+++ b/arch/parisc/kernel/smp.c
-@@ -433,7 +433,7 @@ int __cpu_up(unsigned int cpu, struct task_struct *tidle)
- }
- 
- #ifdef CONFIG_PROC_FS
--int __init
-+int
- setup_profiling_timer(unsigned int multiplier)
- {
- 	return -EINVAL;
+-#define Allexception(object) (object)
+ #define Greaterthanbit(object) Bitfield_extract( 27, 1,object)
+ #define Lessthanbit(object) Bitfield_extract( 28, 1,object)
+ #define Equalbit(object) Bitfield_extract( 29, 1,object)
 -- 
-1.7.7.6
+1.8.1.2
