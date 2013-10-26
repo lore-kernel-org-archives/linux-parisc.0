@@ -1,30 +1,39 @@
-From: "Helge Deller" <deller@gmx.de>
-Subject: Aw: Reproducible kernel panic using gcc
-Date: Fri, 25 Oct 2013 16:31:39 +0200 (CEST)
-Message-ID: <trinity-f177b623-5ca9-4417-a689-b0f8676e3fb5-1382711499524@3capp-gmx-bs08>
-References: <b6f8076c32d0859e4ddb328bb7aca076@tuxicoman.be>
+From: Rolf Eike Beer <eike@sf-mail.de>
+Subject: Short notice: ipmi_si kills C8000
+Date: Sat, 26 Oct 2013 16:26:03 +0200
+Message-ID: <2698496.oieJ4Vatqf@caliban.sf-tec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-parisc@vger.kernel.org
-To: "Guy Martin" <gmsoft@tuxicoman.be>
+Content-Type: multipart/signed; boundary="nextPart2032135.eY9yL26Mti"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <b6f8076c32d0859e4ddb328bb7aca076@tuxicoman.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> Using a simple test program, I'm able to panic the kernel using gdb.
-> 
-> I've attached the test program. The output from the console is the 
-> following :
-> 
-> Bad Address (null pointer deref?): Code=6 regs=000000007e354370 
-> (Addr=0000000000000000)
 
-Works without crash for me on 3.12-rc6 ?
-Linux ls3011 3.12.0-rc6-64bit+
+--nextPart2032135.eY9yL26Mti
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-Since you run 3.10.6, maybe updating the kernel might help.
-Esp. this patch, which has been backported to kernel 3.10 (and is in 3.10.17):
-http://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit/?h=linux-3.10.y&id=77587e89405f5d8225a0e750df254bcc2dcb73e1
+I did "modprobe ipmi_si" on my C8000 (kernel 3.11.6), which immediately=
+ broke=20
+the machine. I have no backtrace yet, but I'll try to get one next week=
+. In=20
+case someone has such a machine and the mood to debug this already=E2=80=
+=A6 ;)
 
-Helge
+Eike
+--nextPart2032135.eY9yL26Mti
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+iEYEABECAAYFAlJr0QAACgkQXKSJPmm5/E6PlgCfbmybhC8pQJo8/0DrThGtAD2R
+ajsAnAtR3R1oD0HbbkYRCtSHcMY20LuC
+=+Xcx
+-----END PGP SIGNATURE-----
+
+--nextPart2032135.eY9yL26Mti--
+
