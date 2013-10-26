@@ -1,73 +1,50 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Do not crash 64bit SMP kernels on machines with >=
- 4GB RAM
-Date: Sat, 26 Oct 2013 23:19:25 +0200
-Message-ID: <20131026211925.GA7639@p100.box>
+Subject: Re: HP J5600/J6750 64bit SMP CPU#1 stuck problems [was: Does there
+ exists any 32bit-only PARISC SMP machines?]
+Date: Sun, 27 Oct 2013 00:06:55 +0200
+Message-ID: <526C3CFF.2070005@gmx.de>
+References: <521F9848.4010404@gmx.de> <1377830541.2331.5.camel@dabdike> <20130903155643.GA1430@glitch> <trinity-b7a0d82a-16b9-4204-be6e-2873db548248-1378282389073@3capp-gmx-bs28> <20130904140705.GA30223@glitch> <20130904142847.GA2893@glitch> <52658989.5090508@gmx.de> <BLU0-SMTP632514F697DEA3A182EE9897010@phx.gbl> <526590F0.8040504@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Dave Land <xmechanic@landcomp.net>
+To: John David Anglin <dave.anglin@bell.net>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	Domenico Andreoli <cavokz@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <526590F0.8040504@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Since the beginning of the parisc-linux port, sometimes 64bit SMP kernels were
-not able to bring up other CPUs than the monarch CPU and instead crashed the
-kernel.  The reason was unclear, esp. since it involved various machines (e.g.
-J5600, J6750 and SuperDome). Testing showed, that those crashes didn't happened
-when less than 4GB were installed, or if a 32bit Linux kernel was booted.
+On 10/21/2013 10:39 PM, Helge Deller wrote:
+>>> On 09/04/2013 04:28 PM, Domenico Andreoli wrote:
+>>>>>>> J5600 is SMP capable in both 32bit and 64bit mode.
+>>>>>>> mine doesn't boot 64bit SMP since 2.6.22. I've never been able to trace
+>>>>>>> it down but can confirm it happens also on more recent kernels.
+>>>>> I confirm that smp parisc64 v3.11 doesn't bring up both the cpus on my
+>>>>> system but at least it boots one, something that didn't happen in some
+>>>>> darker moments since 2.6.22.
+>>>>>
+>>>>> similar "SMP: CPU:1 is stuck." happens also with debian v3.10-parisc64-smp kernel.
+>>>> BTW, this is the most detailed investigation I'm aware of:
+>>>> https://lkml.org/lkml/2008/4/20/251
 
-In the end, the fix for those SMP problems is trivial:
-During the early phase of the initialization of the CPUs, including the monarch
-CPU, the PDC_PSW firmware function to enable WIDE (=64bit) mode is called.
-It's documented that this firmware function may clobber various registers, and
-one one of those possibly clobbered registers is %cr30 which holds the task
-thread info pointer.
+I think we finally found the reason and a fix for the "CPU:1 is stuck" problem :-)
 
-Now, if %cr30 would always have been clobbered, then this bug would have been
-detected much earlier. But lots of testing finally showed, that - at least for
-%cr30 - on some machines only the upper 32bits of the 64bit register suddenly 
-turned zero after the firmware call.
+See the patch I've just sent to the mailing list:
+[PATCH] parisc: Do not crash 64bit SMP kernels on machines with >= 4GB RAM
+https://patchwork.kernel.org/patch/3099061/
 
-So, after finding the root cause, the explanation for the various crashes
-became clear:
-- On 32bit SMP Linux kernels all upper 32bit were zero, so we didn't faced this
-  problem.
-- Monarch CPUs in 64bit mode always booted sucessfully, because the inital task
-  thread info pointer was below 4GB.
-- Secondary CPUs booted sucessfully on machines with less than 4GB RAM because
-  the upper 32bit were zero anyay.
-- Secondary CPus failed to boot if we had more than 4GB RAM and the task thread
-  info pointer was located above the 4GB boundary.
+It would be nice if those people who had problems could verify if this fixes it.
+At least on the J6750 from Dave Land I was now able to successfully boot the 64bit SMP kernel.
 
-Finally, the patch to fix this problem is trivial by saving the %cr30 register
-before the firmware call and restore it afterwards.
+I think this should even fix the SuperDome SMP problem - if someone can test? 
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: John David Anglin <dave.anglin@bell.net>
-Cc: <stable@vger.kernel.org> # 2.6.12+
+If you might be too lazy to build yourself a kernel, just try my 3.10.17-based installer image:
+http://ftp.parisc-linux.org/debian-ports/unstable-boot-image/lifimage
+To select the 64bit kernel at boot, choose in IPL "0/vmlinux64" as kernel image.
+Usually palo would otherwise choose the 32bit kernel...
 
+In case you want to run a full installation, the instructions are available at 
+http://wiki.parisc-linux.org/Debian_Ports_Installation
 
-diff --git a/arch/parisc/kernel/head.S b/arch/parisc/kernel/head.S
-index 37aabd7..d2d5825 100644
---- a/arch/parisc/kernel/head.S
-+++ b/arch/parisc/kernel/head.S
-@@ -195,6 +195,8 @@ common_stext:
- 	ldw             MEM_PDC_HI(%r0),%r6
- 	depd            %r6, 31, 32, %r3        /* move to upper word */
- 
-+	mfctl		%cr30,%r6		/* PCX-W2 firmware bug */
-+
- 	ldo             PDC_PSW(%r0),%arg0              /* 21 */
- 	ldo             PDC_PSW_SET_DEFAULTS(%r0),%arg1 /* 2 */
- 	ldo             PDC_PSW_WIDE_BIT(%r0),%arg2     /* 2 */
-@@ -203,6 +205,8 @@ common_stext:
- 	copy            %r0,%arg3
- 
- stext_pdc_ret:
-+	mtctl		%r6,%cr30		/* restore task thread info */
-+
- 	/* restore rfi target address*/
- 	ldd             TI_TASK-THREAD_SZ_ALGN(%sp), %r10
- 	tophys_r1       %r10
+Helge
