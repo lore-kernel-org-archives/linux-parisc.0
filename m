@@ -1,48 +1,73 @@
-From: Jeroen Roovers <jer@gentoo.org>
-Subject: Re: Short notice: ipmi_si kills C8000
-Date: Sat, 26 Oct 2013 19:17:20 +0200
-Message-ID: <20131026191720.5282c0c3@marga.jer-c2.orkz.net>
-References: <2698496.oieJ4Vatqf@caliban.sf-tec.de>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Do not crash 64bit SMP kernels on machines with >=
+ 4GB RAM
+Date: Sat, 26 Oct 2013 23:19:25 +0200
+Message-ID: <20131026211925.GA7639@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Rolf Eike Beer <eike@sf-mail.de>
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <2698496.oieJ4Vatqf@caliban.sf-tec.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, 26 Oct 2013 16:26:03 +0200
-Rolf Eike Beer <eike@sf-mail.de> wrote:
+Since the beginning of the parisc-linux port, sometimes 64bit SMP kernels were
+not able to bring up other CPUs than the monarch CPU and instead crashed the
+kernel.  The reason was unclear, esp. since it involved various machines (e.g.
+J5600, J6750 and SuperDome). Testing showed, that those crashes didn't happened
+when less than 4GB were installed, or if a 32bit Linux kernel was booted.
 
-> I did "modprobe ipmi_si" on my C8000 (kernel 3.11.6), which
-> immediately broke the machine. I have no backtrace yet, but I'll try
-> to get one next week. In case someone has such a machine and the mood
-> to debug this already=E2=80=A6 ;)
+In the end, the fix for those SMP problems is trivial:
+During the early phase of the initialization of the CPUs, including the monarch
+CPU, the PDC_PSW firmware function to enable WIDE (=64bit) mode is called.
+It's documented that this firmware function may clobber various registers, and
+one one of those possibly clobbered registers is %cr30 which holds the task
+thread info pointer.
 
-[  730.964000] ipmi message handler version 39.2
-[  731.092000] IPMI System Interface driver.
-[  731.148000] ipmi_si: Adding default-specified kcs state
-machine[  731.224000] ipmi_si: Trying default-specified kcs state
-machine at i/o address 0xca2, slave address 0x0, irq 0 <Cpu0>
-e800009800e00000  000000004042ab9c  CC_ERR_CHECK_HPMC <Cpu0>
-37000f7300e00000  8040004000000000  CC_ERR_CPU_CHECK_SUMMARY <Cpu0>
-f600105e00e00000  fffffff0f0c00000  CC_MC_HPMC_MONARCH_SELECTED <Cpu0>
-140003b200e00000  000000000000000b  CC_ERR_HPMC_STATE_ENTRY <Cpu0>
-5600100b00e00000  0000000000000194  CC_MC_OS_HPMC_LEN_ERR <Cpu0>
-5600106400e00000  fffffff0f0435110  CC_MC_BR_TO_OS_HPMC_FAILED <Cpu0>
-e800009800e00000  000000004042ab9c  CC_ERR_CHECK_HPMC <Cpu0>
-37000f7300e00000  8040004000000000  CC_ERR_CPU_CHECK_SUMMARY <Cpu0>
-4000109f00e00000  0000000000000000  CC_MC_HPMC_INITIATED <Cpu0>
-4000101900e00000  0000000000000000  CC_MC_MULTIPLE_HPMCS <Cpu0>
-030010d500e00000  0000000000000000  CC_CPU_STOP
+Now, if %cr30 would always have been clobbered, then this bug would have been
+detected much earlier. But lots of testing finally showed, that - at least for
+%cr30 - on some machines only the upper 32bits of the 64bit register suddenly 
+turned zero after the firmware call.
 
-Confirmed.
+So, after finding the root cause, the explanation for the various crashes
+became clear:
+- On 32bit SMP Linux kernels all upper 32bit were zero, so we didn't faced this
+  problem.
+- Monarch CPUs in 64bit mode always booted sucessfully, because the inital task
+  thread info pointer was below 4GB.
+- Secondary CPUs booted sucessfully on machines with less than 4GB RAM because
+  the upper 32bit were zero anyay.
+- Secondary CPus failed to boot if we had more than 4GB RAM and the task thread
+  info pointer was located above the 4GB boundary.
+
+Finally, the patch to fix this problem is trivial by saving the %cr30 register
+before the firmware call and restore it afterwards.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
+Cc: <stable@vger.kernel.org> # 2.6.12+
 
 
-     jer
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/arch/parisc/kernel/head.S b/arch/parisc/kernel/head.S
+index 37aabd7..d2d5825 100644
+--- a/arch/parisc/kernel/head.S
++++ b/arch/parisc/kernel/head.S
+@@ -195,6 +195,8 @@ common_stext:
+ 	ldw             MEM_PDC_HI(%r0),%r6
+ 	depd            %r6, 31, 32, %r3        /* move to upper word */
+ 
++	mfctl		%cr30,%r6		/* PCX-W2 firmware bug */
++
+ 	ldo             PDC_PSW(%r0),%arg0              /* 21 */
+ 	ldo             PDC_PSW_SET_DEFAULTS(%r0),%arg1 /* 2 */
+ 	ldo             PDC_PSW_WIDE_BIT(%r0),%arg2     /* 2 */
+@@ -203,6 +205,8 @@ common_stext:
+ 	copy            %r0,%arg3
+ 
+ stext_pdc_ret:
++	mtctl		%r6,%cr30		/* restore task thread info */
++
+ 	/* restore rfi target address*/
+ 	ldd             TI_TASK-THREAD_SZ_ALGN(%sp), %r10
+ 	tophys_r1       %r10
