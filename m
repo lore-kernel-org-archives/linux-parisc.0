@@ -1,58 +1,37 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: do not count IPI calls twice
-Date: Sun, 27 Oct 2013 00:26:20 +0200
-Message-ID: <20131026222620.GA11061@p100.box>
+Subject: [GIT PULL] parisc fix for v3.12
+Date: Sun, 27 Oct 2013 16:53:40 +0100
+Message-ID: <20131027155340.GA30470@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The number of IPI calls is already visible as per-cpu IPI irq counters
-in/proc/cpuinfo, so let's drop this additional counting.
-This partly reverts:
-cd85d55 parisc: more irq statistics in /proc/interrupts
+Hi Linus,
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Please pull the one important fix for the parisc architecture from
 
-diff --git a/arch/parisc/include/asm/hardirq.h b/arch/parisc/include/asm/hardirq.h
-index 241c345..9b3bd03 100644
---- a/arch/parisc/include/asm/hardirq.h
-+++ b/arch/parisc/include/asm/hardirq.h
-@@ -21,7 +21,6 @@ typedef struct {
- 	unsigned int irq_stack_usage;
- #ifdef CONFIG_SMP
- 	unsigned int irq_resched_count;
--	unsigned int irq_call_count;
- #endif
- 	unsigned int irq_unaligned_count;
- 	unsigned int irq_fpassist_count;
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index 2e6443b..501ac8b 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -179,10 +179,6 @@ int arch_show_interrupts(struct seq_file *p, int prec)
- 	for_each_online_cpu(j)
- 		seq_printf(p, "%10u ", irq_stats(j)->irq_resched_count);
- 	seq_puts(p, "  Rescheduling interrupts\n");
--	seq_printf(p, "%*s: ", prec, "CAL");
--	for_each_online_cpu(j)
--		seq_printf(p, "%10u ", irq_stats(j)->irq_call_count);
--	seq_puts(p, "  Function call interrupts\n");
- #endif
- 	seq_printf(p, "%*s: ", prec, "UAH");
- 	for_each_online_cpu(j)
-diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
-index 2b96602..ceda229 100644
---- a/arch/parisc/kernel/smp.c
-+++ b/arch/parisc/kernel/smp.c
-@@ -125,11 +125,6 @@ ipi_interrupt(int irq, void *dev_id)
- 	unsigned long ops;
- 	unsigned long flags;
- 
--	/* Count this now; we may make a call that never returns. */
--	inc_irq_stat(irq_call_count);
--
--	mb();	/* Order interrupt and bit testing. */
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.12
+
+This is a 2-line patch to save the CPU register which holds our task thread
+info pointer before calling a firmware function and then to restore it again
+afterwards. This is necessary because on some 64bit machines the high-order
+32bits are being clobbered by the firmware call, and thus we failed to bring up
+secondary CPUs (and instead crashed the kernel) in some situations e.g. if we
+had more than 4GB RAM.  This patch fixes a bug which has been since ever in the
+parisc linux kernel and which prevented some people to use a 64bit kernel.
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Helge Deller (1):
+      parisc: Do not crash 64bit SMP kernels on machines with >= 4GB RAM
+
+ arch/parisc/kernel/head.S | 4 ++++
+ 1 file changed, 4 insertions(+)
