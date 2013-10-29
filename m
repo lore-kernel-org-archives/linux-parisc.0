@@ -1,66 +1,76 @@
-From: Domenico Andreoli <cavokz@gmail.com>
-Subject: Re: HP J5600/J6750 64bit SMP CPU#1 stuck problems [was: Does there
- exists any 32bit-only PARISC SMP machines?]
-Date: Tue, 29 Oct 2013 14:31:07 +0100
-Message-ID: <20131029133107.GA32231@glitch>
-References: <521F9848.4010404@gmx.de>
- <1377830541.2331.5.camel@dabdike>
- <20130903155643.GA1430@glitch>
- <trinity-b7a0d82a-16b9-4204-be6e-2873db548248-1378282389073@3capp-gmx-bs28>
- <20130904140705.GA30223@glitch>
- <20130904142847.GA2893@glitch>
- <52658989.5090508@gmx.de>
- <BLU0-SMTP632514F697DEA3A182EE9897010@phx.gbl>
- <526590F0.8040504@gmx.de>
- <526C3CFF.2070005@gmx.de>
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: Short notice: ipmi_si kills C8000
+Date: Tue, 29 Oct 2013 17:41:51 +0100
+Message-ID: <20131029164151.GA10616@alpha.franken.de>
+References: <2698496.oieJ4Vatqf@caliban.sf-tec.de>
+ <20131026191720.5282c0c3@marga.jer-c2.orkz.net>
+ <20131028105612.GB19852@alpha.franken.de>
+ <20131029093706.GA6255@alpha.franken.de>
+ <236d3862441c13623a9fde73e6988591@sf-mail.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@bell.net>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	Dave Land <xmechanic@landcomp.net>
-To: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <526C3CFF.2070005@gmx.de>
+In-Reply-To: <236d3862441c13623a9fde73e6988591@sf-mail.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Oct 27, 2013 at 12:06:55AM +0200, Helge Deller wrote:
-> On 10/21/2013 10:39 PM, Helge Deller wrote:
-> >>> On 09/04/2013 04:28 PM, Domenico Andreoli wrote:
-> >>>>>>> J5600 is SMP capable in both 32bit and 64bit mode.
-> >>>>>>> mine doesn't boot 64bit SMP since 2.6.22. I've never been able to trace
-> >>>>>>> it down but can confirm it happens also on more recent kernels.
-> >>>>> I confirm that smp parisc64 v3.11 doesn't bring up both the cpus on my
-> >>>>> system but at least it boots one, something that didn't happen in some
-> >>>>> darker moments since 2.6.22.
-> >>>>>
-> >>>>> similar "SMP: CPU:1 is stuck." happens also with debian v3.10-parisc64-smp kernel.
-> >>>> BTW, this is the most detailed investigation I'm aware of:
-> >>>> https://lkml.org/lkml/2008/4/20/251
-> 
-> I think we finally found the reason and a fix for the "CPU:1 is stuck" problem :-)
+On Tue, Oct 29, 2013 at 11:41:08AM +0100, Rolf Eike Beer wrote:
+> Oops, sorry, I misread the git log. I've now applied that patch to
 
-aaaand yes!
+no problem, maybe it's worth to send the fix to stable now it's
+in 3.12
 
-> See the patch I've just sent to the mailing list:
-> [PATCH] parisc: Do not crash 64bit SMP kernels on machines with >= 4GB RAM
-> https://patchwork.kernel.org/patch/3099061/
+> 3.11.6 and the module loads fine. Am I supposed to see anything in
+> the sysfs that I can query now?
 
-mine has (and always had) exactly 4GB
+I've played only with ipmitool, which gives something like
 
-> It would be nice if those people who had problems could verify if this fixes it.
-> At least on the J6750 from Dave Land I was now able to successfully boot the 64bit SMP kernel.
+c8000:~# ipmitool sdr
+Systemboard      | 30 degrees C      | ok
+CPU 1            | 43 degrees C      | ok
+Ambient          | 24.50 degrees C   | ok
+Main +12V        | 12.25 Volts       | ok
+Main -12V        | -12.45 Volts      | ok
+Main +5V         | 5.00 Volts        | ok
+Main 3.3V        | 3.35 Volts        | ok
+Battery +3V      | 3.11 Volts        | ok
+Stdby +3.3V      | 3.40 Volts        | ok
+Main +1.5V       | 1.49 Volts        | ok
+VTT              | 1.19 Volts        | ok
+Main +1.8V       | 1.80 Volts        | ok
+FAN1 SYS         | 6360 RPM          | ok
+FAN2 SYS         | 6240 RPM          | ok
+FAN3 SYS         | 6000 RPM          | ok
+FAN4 SYS         | 6240 RPM          | ok
+FAN5 SYS         | 5880 RPM          | ok
+FAN1 PSU         | 2400 RPM          | ok
+FAN2 PSU         | 2400 RPM          | ok
+SEL Level        | 0 unspecified     | ok
+CPU 1            | 0x80              | ok
+PSU              | Not Readable      | ns
+PS1              | 0x02              | ok
+FAN1 SYS         | 0x01              | ok
+FAN2 SYS         | 0x01              | ok
+FAN3 SYS         | 0x01              | ok
+FAN4 SYS         | 0x01              | ok
+FAN5 SYS         | 0x01              | ok
+FAN1 PSU         | 0x01              | ok
+FAN2 PSU         | 0x01              | ok
+Watchdog         | 0x00              | ok
+iRMC request     | 0x00              | ok
+System Mgmt SW   | Not Readable      | ns
+local Mon.       | 0x02              | ok
+Pwr Btn override | 0x01              | ok
+Software NMI     | 0x00              | ok
+System BIOS      | Not Readable      | ns
+iRMC             | Not Readable      | ns
 
-this fixes the issue for me
 
-> If you might be too lazy to build yourself a kernel, just try my 3.10.17-based installer image:
-> http://ftp.parisc-linux.org/debian-ports/unstable-boot-image/lifimage
+Thomas.
 
-I've built a shiny v3.12-rc7 parisc64.
 
-Can't belive I'll get rid of those old 2.6.22 images and symlinks after all these years...
-
-Many thanks.
-
-Regards,
-Domenico
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
