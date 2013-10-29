@@ -1,29 +1,49 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: Short notice: ipmi_si kills C8000
-Date: Tue, 29 Oct 2013 20:50:51 +0100
-Message-ID: <5270119B.6060908@gmx.de>
-References: <2698496.oieJ4Vatqf@caliban.sf-tec.de> <20131026191720.5282c0c3@marga.jer-c2.orkz.net> <20131028105612.GB19852@alpha.franken.de> <20131029093706.GA6255@alpha.franken.de> <236d3862441c13623a9fde73e6988591@sf-mail.de> <20131029164151.GA10616@alpha.franken.de>
+Subject: Re: Reproducible kernel panic using gdb
+Date: Tue, 29 Oct 2013 21:37:49 +0100
+Message-ID: <52701C9D.7080906@gmx.de>
+References: <b6f8076c32d0859e4ddb328bb7aca076@tuxicoman.be>	 <trinity-f177b623-5ca9-4417-a689-b0f8676e3fb5-1382711499524@3capp-gmx-bs08>	 <650fc503e24cdb24b5cc286aec329df6@tuxicoman.be>	 <1382970655.2161.2.camel@dabdike.int.hansenpartnership.com>	 <2125d8be63f7f5801abba4e67182d2e7@sf-mail.de> <1383023163.19537.3.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+Content-Type: text/plain; charset=ISO-8859-15
+Cc: linux-parisc@vger.kernel.org, Guy Martin <gmsoft@tuxicoman.be>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>,
 	Rolf Eike Beer <eike-kernel@sf-tec.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20131029164151.GA10616@alpha.franken.de>
+In-Reply-To: <1383023163.19537.3.camel@dabdike.int.hansenpartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 10/29/2013 05:41 PM, Thomas Bogendoerfer wrote:
-> On Tue, Oct 29, 2013 at 11:41:08AM +0100, Rolf Eike Beer wrote:
->> Oops, sorry, I misread the git log. I've now applied that patch to
+On 10/29/2013 06:06 AM, James Bottomley wrote:
 > 
-> no problem, maybe it's worth to send the fix to stable now it's
-> in 3.12
+> On Mon, 2013-10-28 at 16:08 +0100, Rolf Eike Beer wrote:
+>> James Bottomley: wrote
+>>> On Mon, 2013-10-28 at 10:00 +0100, Guy Martin wrote:
+>>>> Hi Helge,
+>>>>
+>>>>>
+>>>>> Works without crash for me on 3.12-rc6 ?
+>>>>> Linux ls3011 3.12.0-rc6-64bit+
+>>>>>
+>>>>> Since you run 3.10.6, maybe updating the kernel might help.
+>>>>> Esp. this patch, which has been backported to kernel 3.10 (and is in
+>>>>> 3.10.17):
+>>>>> http://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit/?h=linux-3.10.y&id=77587e89405f5d8225a0e750df254bcc2dcb73e1
+>>>>
+>>>> Still the same problem with 3.12-rc6 here :
+>>>
+>>> What system and CPU?
+>>
+>> C8000
+> 
+> I tried this on a rp3440  (pa8800) and I can't reproduce.  I think it
+> might be something about the way the kernel is compiled.  The (null)
+> values for rp2 and IOAQ[0] look suspicious.
 
-Yes, I think it really makes sense to send this patch to stable kernel series.
-Without this patch, any parisc box (ok - probably only the C8000) crashes
-as soon as the ipmi driver is loaded.
+I tried it again, but this time on my c8000..
+Again, it does not crash for me.
+Kernel is 3.12.0-rc7-64bit.
 
-Will you ask (e.g. if possible for kernel 3.0 and higher - not sure if it applies)? 
+I think James is right. Might be something with your compiler, but it would
+be interesting what it is...
 
 Helge
