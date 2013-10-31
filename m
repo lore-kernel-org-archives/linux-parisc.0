@@ -1,16 +1,14 @@
-From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+From: Chen Gang <gang.chen@asianux.com>
 Subject: Re: [PATCH] arch: *: remove '__init' for setup_profiling_timer()
-Date: Thu, 31 Oct 2013 06:22:26 +0000
-Message-ID: <C2D7FE5348E1B147BCA15975FBA230751538BE@IN01WEMBXA.internal.synopsys.com>
-References: <52672ECD.9010800@asianux.com>
- <C2D7FE5348E1B147BCA15975FBA23075153861@IN01WEMBXA.internal.synopsys.com>
- <5271F4A9.40804@asianux.com> <5271F54F.8070607@asianux.com>
+Date: Thu, 31 Oct 2013 14:36:46 +0800
+Message-ID: <5271FA7E.9050103@asianux.com>
+References: <52672ECD.9010800@asianux.com> <C2D7FE5348E1B147BCA15975FBA23075153861@IN01WEMBXA.internal.synopsys.com> <5271F4A9.40804@asianux.com> <5271F54F.8070607@asianux.com> <C2D7FE5348E1B147BCA15975FBA230751538BE@IN01WEMBXA.internal.synopsys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
 	Mike Frysinger <vapier@gentoo.org>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	"Helge Deller" <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+	Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Paul Gortmaker <paul.gortmaker@windriver.com>,
 	"Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>,
@@ -21,18 +19,30 @@ Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
 	<uclinux-dist-devel@blackfin.uclinux.org>,
 	Parisc List <linux-parisc@vger.kernel.org>,
 	Andrew Morton <akpm@linux-foundation.org>
-To: Chen Gang <gang.chen@asianux.com>
+To: Vineet Gupta <Vineet.Gupta1@synopsys.com>
 Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <C2D7FE5348E1B147BCA15975FBA230751538BE@IN01WEMBXA.internal.synopsys.com>
 List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 10/31/2013 11:45 AM, Chen Gang wrote:
-> Hmm... if so, recommend to modify another architectures which also only
-> return "-EINVAL", but without "__init" prefix.
+On 10/31/2013 02:22 PM, Vineet Gupta wrote:
+> On 10/31/2013 11:45 AM, Chen Gang wrote:
+>> > Hmm... if so, recommend to modify another architectures which also only
+>> > return "-EINVAL", but without "__init" prefix.
+> Yes in first pass, it will only convert the arches which return EINVAL but can ask
+> the maintainers whether they want the alternate versions too.
+> 
 
-Yes in first pass, it will only convert the arches which return EINVAL but can ask
-the maintainers whether they want the alternate versions too.
+Yes.
 
-So you want to take a stab at this series.
+> So you want to take a stab at this series.
 
--Vineet
+If you have time, please help send.
+
+In 1st half of next month, I will/should turn back to do another things
+(e.g. use test tools and read code to find issues, and try to solve them).
+
+
+Thanks.
+-- 
+Chen Gang
