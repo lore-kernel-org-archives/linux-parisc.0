@@ -1,75 +1,90 @@
-From: LOANS ENGINE <rtorrezan@uem.br>
-Subject: =?utf-8?Q?Gru=C3=9F?=
-Date: Wed, 30 Oct 2013 09:11:00 -0200 (BRST)
-Message-ID: <30701622.4739451383131460297.JavaMail.root@Sakhir.uem.br>
-Reply-To: "loansengine.11@manager.in.th" <loansengine.11@manager.in.th>
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: Re: [PATCH] arch: *: remove '__init' for setup_profiling_timer()
+Date: Thu, 31 Oct 2013 05:45:48 +0000
+Message-ID: <C2D7FE5348E1B147BCA15975FBA23075153861@IN01WEMBXA.internal.synopsys.com>
+References: <52672ECD.9010800@asianux.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-To: undisclosed-recipients:;
+Content-Type: text/plain; charset="us-ascii"
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"uclinux-dist-devel@blackfin.uclinux.org"
+	<uclinux-dist-devel@blackfin.uclinux.org>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+To: Chen Gang <gang.chen@asianux.com>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	Mike Frysinger <vapier@gentoo.org>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, "Arnd Bergmann" <arnd@arndb.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Paul Gortmaker" <paul.gortmaker@windriver.com>,
+	"Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>,
+	realmz paranoid <realmz6@gmail.com>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Achtung,
+On 10/23/2013 07:36 AM, Chen Gang wrote:
+> Most of architectures not use '__init' for setup_profiling_timer(), so
+> need remove it, or can generate warning (e.g. arc with allmodconfig):
+>
+>     MODPOST vmlinux.o
+>   WARNING: vmlinux.o(.text+0x3c682): Section mismatch in reference from the function write_profile() to the function .init.text:setup_profiling_timer()
+>   The function write_profile() references
+>   the function __init setup_profiling_timer().
+>   This is often because write_profile lacks a __init
+>   annotation or the annotation of setup_profiling_timer is wrong.
+>
+>
+> Signed-off-by: Chen Gang <gang.chen@asianux.com>
+> ---
+>  arch/arc/kernel/smp.c          |    2 +-
+>  arch/blackfin/mach-bf561/smp.c |    2 +-
+>  arch/parisc/kernel/smp.c       |    2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arc/kernel/smp.c b/arch/arc/kernel/smp.c
+> index bca3052..3bdac11 100644
+> --- a/arch/arc/kernel/smp.c
+> +++ b/arch/arc/kernel/smp.c
+> @@ -187,7 +187,7 @@ int __cpu_up(unsigned int cpu, struct task_struct *idle)
+>  /*
+>   * not supported here
+>   */
+> -int __init setup_profiling_timer(unsigned int multiplier)
+> +int setup_profiling_timer(unsigned int multiplier)
+>  {
+>  	return -EINVAL;
+>  }
+> diff --git a/arch/blackfin/mach-bf561/smp.c b/arch/blackfin/mach-bf561/smp.c
+> index 11789be..3bef058 100644
+> --- a/arch/blackfin/mach-bf561/smp.c
+> +++ b/arch/blackfin/mach-bf561/smp.c
+> @@ -43,7 +43,7 @@ void __init platform_prepare_cpus(unsigned int max_cpus)
+>  	init_cpu_present(&mask);
+>  }
+>  
+> -int __init setup_profiling_timer(unsigned int multiplier) /* not supported */
+> +int setup_profiling_timer(unsigned int multiplier) /* not supported */
+>  {
+>  	return -EINVAL;
+>  }
+> diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
+> index 8a252f2..2e8cd36 100644
+> --- a/arch/parisc/kernel/smp.c
+> +++ b/arch/parisc/kernel/smp.c
+> @@ -433,7 +433,7 @@ int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+>  }
+>  
+>  #ifdef CONFIG_PROC_FS
+> -int __init
+> +int
+>  setup_profiling_timer(unsigned int multiplier)
+>  {
+>  	return -EINVAL;
 
-Wir bieten gesicherte und ungesicherte pers=C3=B6nliche Darlehen und In=
-vestitionen, um Ihren Bed=C3=BCrfnissen und Budget.
-Personal und Investitionen Kredite zu niedrigen Zinsen von 3% und Konze=
-ntrationen von bis zu 5.000 CHF / EUR und 10,000.000.00 CHF / EUR. Der =
-g=C3=BCnstigste Online-Kredit in DE und CH!
+In theory this change is OK. However this is legacy code at best and it would be
+better to define a weak definition in kernel/profile.c and remove this cruft from
+relevant arches. I'll send out a patch.
 
-Bitte f=C3=BCllen Sie die folgenden Informationen von Ihrem Kredit-Antr=
-ag:
-
-Vollst=C3=A4ndiger Name: ...
-Darlehensbetrag: ...
-Loan Dauer: ...
-Zweck des Darlehens: ...
-
-Eine schnelle Reaktion erforderlich ist, bitte.
-
-_____________________________________
-Ana White=20
-Customer Service
-Verarbeitung / Approval Einheit
-20121 Milano,
-E-mail: loansengine.11 @ manager.in.th
-Italien
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Attention,
-
-We offer secured and unsecured personal loans and investment to your ne=
-eds and budget.
-Personal and investment loans at low interest 3% and concentrations of =
-up to 5,000 CHF / EUR and 10,000.000.00 CHF / EUR. The lowest online lo=
-an in DE and CH!
-
-Please fill in the following information from your credit application:
-
-=46ull Name: ...
-Loan amount: ...
-Loan Duration: ...
-Purpose of loan: ...
-
-A quick response is required, please.
-
-_____________________________________
-Ana White=20
-Customer service
-Processing / Approval Unit
-20121 Milano,
-E-mail:loansengine.11@manager.in.th
-Italy
-
---=20
-Esta mensagem foi verificada pelo sistema de antivirus e
- acredita-se estar livre de perigo.
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-Vineet
