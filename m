@@ -1,55 +1,36 @@
-From: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
-Subject: Re: 3.12-rcX - NFS regression - kswapd0 / kswapd1 stays using 100%
- CPU?
-Date: Thu, 31 Oct 2013 20:45:54 +0100
-Message-ID: <5272B372.8040307@gmx.de>
-References: <52604BA9.20104@gmx.de>		 <1382044045.3216.44.camel@leira.trondhjem.org> <52618B5F.4000508@gmx.de>	 <1382124981.20461.4.camel@leira.trondhjem.org> <5261940A.4090101@gmx.de> <1382127133.20461.9.camel@leira.trondhjem.org> <5262CF20.20301@gmx.de>
+From: Helge Deller <deller@gmx.de>
+Subject: STI text console for ATI FireGL cards?
+Date: Thu, 31 Oct 2013 22:26:00 +0100
+Message-ID: <5272CAE8.6050108@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-7
-Cc: Linux Kernel Development <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	NFS list <linux-nfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	linux-parisc <linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-To: "Myklebust, Trond" <Trond.Myklebust-HgOvQuBEEgTQT0dZR+AlfA@public.gmane.org>
-Return-path: <linux-nfs-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <5262CF20.20301-Mmb7MZpHnFY@public.gmane.org>
-List-ID: <linux-nfs.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+To: linux-parisc <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 10/19/2013 08:27 PM, Helge Deller wrote:
-> On 10/18/2013 10:12 PM, Myklebust, Trond wrote:
->> On Fri, 2013-10-18 at 22:03 m, Helge Deller wrote:
->>> On 10/18/2013 09:36 PM, Myklebust, Trond wrote:
->>>> Also, could you please try a sysRQ-t the next time it happens, so that
->>>> we can get a trace of where the mount program is hanging. Knowing that
->>>> the mount is stuck in "__schedule()" is not really interesting unless we
->>>> know from where that was called.
->>>
->>> Actually, the machine was still running in this state.
->>> Here is sysrq-t:
->>> [112009.084000] mount           S 00000000401040c0     0 25331      1 0x00000010
->>> [112009.084000] Backtrace:
->>> [112009.084000]  [<0000000040113a68>] __schedule
->>> [112009.232000]
->>> [112009.232000] mount.nfs       D 00000000401040c0     0 25332  25331 0x00000010
->>> [112009.232000] Backtrace:
->>> [112009.232000]  [<0000000040113a68>] __schedule
->>
->> That makes no sense unless sysrq-t works differently on parisc than on
->> other platforms. I'd expect the backtrace to at least include a system
->> call. Parisc experts?
-> 
-> sysrq-t doesn't work differently on parisc. For other processes I do get
-> a backtrace like the one on x86_64.
-> That's the main reason why I asked for ideas here on the list.
-> I do see the stuck process, but don't see any indications where it comes from.
+Hi all,
 
-I'm pretty sure that the regression (kswapd using 100% CPU) I reported here is fixed by this patch:
-http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/commit/?id=c56b097af26cb11c1f49a4311ba538c825666fed
+Maybe some people here on the list know the answer to this question?
 
-I will start some testing...
+Does the ATI FireGL cards (in e.g. a C8000) have a STI ROM?
+
+I'm asking, because I noticed that with a 64bit kernel the
+sticon driver (the Linux 8-color text console driver for STI) does 
+crash while it worked nicely with a 32bit kernel.
+I was able to fix this bug (patch is coming soon), but while
+I was working on the driver, I found that it doesn't support
+the ATI FireGL X1/X3 cards (e.g. in my C8000) either.
+Now, as long as the Linux aty framebuffer drivers don't work reliable,
+sticon would be at least a nice option for the text console.
+
+Nevertheless, on the C8000 I do see the boot screen, e.g. for IPL.
+So I'm wondering if with the ATI cards in general STI is used
+for the boot screen or not.  
+
+I did looked in the ATI cards PCI ROM for a secondary/third ROM,
+but the things I found didn't looked like a STI-ROM either.
+
+Any help/ideas would be appreciated.
 
 Helge
---
-To unsubscribe from this list: send the line "unsubscribe linux-nfs" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
