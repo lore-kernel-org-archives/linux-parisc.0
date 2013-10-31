@@ -1,48 +1,54 @@
 From: Chen Gang <gang.chen@asianux.com>
-Subject: Re: [PATCH] arch: *: remove '__init' for setup_profiling_timer()
-Date: Thu, 31 Oct 2013 14:36:46 +0800
-Message-ID: <5271FA7E.9050103@asianux.com>
-References: <52672ECD.9010800@asianux.com> <C2D7FE5348E1B147BCA15975FBA23075153861@IN01WEMBXA.internal.synopsys.com> <5271F4A9.40804@asianux.com> <5271F54F.8070607@asianux.com> <C2D7FE5348E1B147BCA15975FBA230751538BE@IN01WEMBXA.internal.synopsys.com>
+Subject: [PATCH] arch: * : include: asm: remove empty SERIAL_PORT_DFNS in
+ serial.h
+Date: Thu, 31 Oct 2013 15:37:46 +0800
+Message-ID: <527208CA.3000007@asianux.com>
+References: <5267406C.9030805@asianux.com> <20131025052926.GA26786@kroah.com> <526BC113.3040003@asianux.com> <5271B1D2.6020301@asianux.com> <C2D7FE5348E1B147BCA15975FBA230751538D9@IN01WEMBXA.internal.synopsys.com> <527202EF.6080704@asianux.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-	Mike Frysinger <vapier@gentoo.org>,
+Cc: Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+	"w.d.hubbs@gmail.com" <w.d.hubbs@gmail.com>,
+	"chris@the-brannons.com" <chris@the-brannons.com>,
+	"kirk@reisers.ca" <kirk@reisers.ca>,
+	"samuel.thibault@ens-lyon.org" <samuel.thibault@ens-lyon.org>,
+	"devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+	"speakup@braille.uwo.ca" <speakup@braille.uwo.ca>
+To: Greg KH <gregkh@linuxfoundation.org>,
+	"dhowells@redhat.com" <dhowells@redhat.com>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Paul Gortmaker <paul.gortmaker@windriver.com>,
-	"Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>,
-	realmz paranoid <realmz6@gmail.com>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"uclinux-dist-devel@blackfin.uclinux.org"
-	<uclinux-dist-devel@blackfin.uclinux.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-To: Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <C2D7FE5348E1B147BCA15975FBA230751538BE@IN01WEMBXA.internal.synopsys.com>
-List-ID: <linux-arch.vger.kernel.org>
+	Parisc List <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <527202EF.6080704@asianux.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 10/31/2013 02:22 PM, Vineet Gupta wrote:
-> On 10/31/2013 11:45 AM, Chen Gang wrote:
->> > Hmm... if so, recommend to modify another architectures which also only
->> > return "-EINVAL", but without "__init" prefix.
-> Yes in first pass, it will only convert the arches which return EINVAL but can ask
-> the maintainers whether they want the alternate versions too.
-> 
+If architectures don't support SERIAL_PORT_DFNS, they need not define
+it to "nothing", the related drivers need do it by themselves (e.g.
+8250 serial driver).
 
-Yes.
+Signed-off-by: Chen Gang <gang.chen@asianux.com>
+---
+ arch/frv/include/asm/serial.h    |    2 --
+ arch/parisc/include/asm/serial.h |    2 --
+ 2 files changed, 0 insertions(+), 4 deletions(-)
 
-> So you want to take a stab at this series.
-
-If you have time, please help send.
-
-In 1st half of next month, I will/should turn back to do another things
-(e.g. use test tools and read code to find issues, and try to solve them).
-
-
-Thanks.
--- 
-Chen Gang
+diff --git a/arch/frv/include/asm/serial.h b/arch/frv/include/asm/serial.h
+index dbb8259..658ceea 100644
+--- a/arch/frv/include/asm/serial.h
++++ b/arch/frv/include/asm/serial.h
+@@ -14,5 +14,3 @@
+ #define BASE_BAUD 0
+ 
+ #define STD_COM_FLAGS		ASYNC_BOOT_AUTOCONF
+-
+-#define SERIAL_PORT_DFNS
+diff --git a/arch/parisc/include/asm/serial.h b/arch/parisc/include/asm/serial.h
+index d7e3cc6..77e9b67 100644
+--- a/arch/parisc/include/asm/serial.h
++++ b/arch/parisc/include/asm/serial.h
+@@ -6,5 +6,3 @@
+  * This is used for 16550-compatible UARTs
+  */
+ #define BASE_BAUD ( 1843200 / 16 )
