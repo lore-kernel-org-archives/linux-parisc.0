@@ -1,101 +1,55 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: Re: Reproducible kernel panic using gdb
-Date: Thu, 31 Oct 2013 15:35:26 +0100
-Message-ID: <75c041887735b2ec9338d8ee6f340a1c@tuxicoman.be>
-References: <b6f8076c32d0859e4ddb328bb7aca076@tuxicoman.be>
- <trinity-f177b623-5ca9-4417-a689-b0f8676e3fb5-1382711499524@3capp-gmx-bs08>
- <650fc503e24cdb24b5cc286aec329df6@tuxicoman.be>
- <1382970655.2161.2.camel@dabdike.int.hansenpartnership.com>
- <2125d8be63f7f5801abba4e67182d2e7@sf-mail.de>
- <1383023163.19537.3.camel@dabdike.int.hansenpartnership.com>
- <52701C9D.7080906@gmx.de>
+From: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
+Subject: Re: 3.12-rcX - NFS regression - kswapd0 / kswapd1 stays using 100%
+ CPU?
+Date: Thu, 31 Oct 2013 20:45:54 +0100
+Message-ID: <5272B372.8040307@gmx.de>
+References: <52604BA9.20104@gmx.de>		 <1382044045.3216.44.camel@leira.trondhjem.org> <52618B5F.4000508@gmx.de>	 <1382124981.20461.4.camel@leira.trondhjem.org> <5261940A.4090101@gmx.de> <1382127133.20461.9.camel@leira.trondhjem.org> <5262CF20.20301@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <52701C9D.7080906@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-7
+Cc: Linux Kernel Development <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+	NFS list <linux-nfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+	linux-parisc <linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+To: "Myklebust, Trond" <Trond.Myklebust-HgOvQuBEEgTQT0dZR+AlfA@public.gmane.org>
+Return-path: <linux-nfs-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <5262CF20.20301-Mmb7MZpHnFY@public.gmane.org>
+List-ID: <linux-nfs.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2013-10-29 21:37, Helge Deller wrote:
-> On 10/29/2013 06:06 AM, James Bottomley wrote:
->> 
->> On Mon, 2013-10-28 at 16:08 +0100, Rolf Eike Beer wrote:
->>> James Bottomley: wrote
->>>> On Mon, 2013-10-28 at 10:00 +0100, Guy Martin wrote:
->>>>> Hi Helge,
->>>>> 
->>>>>> 
->>>>>> Works without crash for me on 3.12-rc6 ?
->>>>>> Linux ls3011 3.12.0-rc6-64bit+
->>>>>> 
->>>>>> Since you run 3.10.6, maybe updating the kernel might help.
->>>>>> Esp. this patch, which has been backported to kernel 3.10 (and is 
->>>>>> in
->>>>>> 3.10.17):
->>>>>> http://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit/?h=linux-3.10.y&id=77587e89405f5d8225a0e750df254bcc2dcb73e1
->>>>> 
->>>>> Still the same problem with 3.12-rc6 here :
->>>> 
->>>> What system and CPU?
->>> 
->>> C8000
->> 
->> I tried this on a rp3440  (pa8800) and I can't reproduce.  I think it
->> might be something about the way the kernel is compiled.  The (null)
->> values for rp2 and IOAQ[0] look suspicious.
+On 10/19/2013 08:27 PM, Helge Deller wrote:
+> On 10/18/2013 10:12 PM, Myklebust, Trond wrote:
+>> On Fri, 2013-10-18 at 22:03 m, Helge Deller wrote:
+>>> On 10/18/2013 09:36 PM, Myklebust, Trond wrote:
+>>>> Also, could you please try a sysRQ-t the next time it happens, so that
+>>>> we can get a trace of where the mount program is hanging. Knowing that
+>>>> the mount is stuck in "__schedule()" is not really interesting unless we
+>>>> know from where that was called.
+>>>
+>>> Actually, the machine was still running in this state.
+>>> Here is sysrq-t:
+>>> [112009.084000] mount           S 00000000401040c0     0 25331      1 0x00000010
+>>> [112009.084000] Backtrace:
+>>> [112009.084000]  [<0000000040113a68>] __schedule
+>>> [112009.232000]
+>>> [112009.232000] mount.nfs       D 00000000401040c0     0 25332  25331 0x00000010
+>>> [112009.232000] Backtrace:
+>>> [112009.232000]  [<0000000040113a68>] __schedule
+>>
+>> That makes no sense unless sysrq-t works differently on parisc than on
+>> other platforms. I'd expect the backtrace to at least include a system
+>> call. Parisc experts?
 > 
-> I tried it again, but this time on my c8000..
-> Again, it does not crash for me.
-> Kernel is 3.12.0-rc7-64bit.
-> 
-> I think James is right. Might be something with your compiler, but it 
-> would
-> be interesting what it is...
+> sysrq-t doesn't work differently on parisc. For other processes I do get
+> a backtrace like the one on x86_64.
+> That's the main reason why I asked for ideas here on the list.
+> I do see the stuck process, but don't see any indications where it comes from.
 
+I'm pretty sure that the regression (kswapd using 100% CPU) I reported here is fixed by this patch:
+http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/commit/?id=c56b097af26cb11c1f49a4311ba538c825666fed
 
-I've tried both
-gcc-4.6.3 with ld 2.22
-gcc-4.7.3 with ld 2.23.1
+I will start some testing...
 
-I've put a compiled kernel with modules here as well as the config :
-http://www.tuxicoman.be/temp/linux-3.12-rc6-gdb-crash.tar.bz2
-
-terminator linux-3.12-rc6 # hppa64-unknown-linux-gnu-gcc -v
-Using built-in specs.
-COLLECT_GCC=/usr/hppa2.0-unknown-linux-gnu/hppa64-unknown-linux-gnu/gcc-bin/4.7.3/hppa64-unknown-linux-gnu-gcc
-COLLECT_LTO_WRAPPER=/usr/libexec/gcc/hppa64-unknown-linux-gnu/4.7.3/lto-wrapper
-Target: hppa64-unknown-linux-gnu
-Configured with: 
-/var/tmp/portage/sys-devel/kgcc64-4.7.3/work/gcc-4.7.3/configure 
---prefix=/usr 
---bindir=/usr/hppa2.0-unknown-linux-gnu/hppa64-unknown-linux-gnu/gcc-bin/4.7.3 
---includedir=/usr/lib/gcc/hppa64-unknown-linux-gnu/4.7.3/include 
---datadir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/4.7.3 
---mandir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/4.7.3/man 
---infodir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/4.7.3/info 
---with-gxx-include-dir=/usr/lib/gcc/hppa64-unknown-linux-gnu/4.7.3/include/g++-v4 
---host=hppa2.0-unknown-linux-gnu --target=hppa64-unknown-linux-gnu 
---build=hppa2.0-unknown-linux-gnu --disable-altivec 
---disable-fixed-point --without-cloog --without-ppl --disable-lto 
---enable-nls --without-included-gettext --with-system-zlib 
---enable-obsolete --disable-werror --enable-secureplt --disable-multilib 
---disable-libmudflap --disable-libssp --disable-libgomp 
---with-python-dir=/share/gcc-data/hppa64-unknown-linux-gnu/4.7.3/python 
---enable-poison-system-directories --enable-checking=release 
---disable-libgcj --disable-build-with-cxx 
---disable-build-poststage1-with-cxx --disable-libquadmath 
---enable-languages=c --disable-shared --disable-threads 
---without-headers --disable-bootstrap --enable-__cxa_atexit 
---enable-clocale=gnu --with-bugurl=http://bugs.gentoo.org/ 
---with-pkgversion='Gentoo 4.7.3 p1.3'
-Thread model: single
-gcc version 4.7.3 (Gentoo 4.7.3 p1.3)
-
-Regards,
-   Guy
-
+Helge
+--
+To unsubscribe from this list: send the line "unsubscribe linux-nfs" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
