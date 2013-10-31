@@ -1,33 +1,101 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: Short notice: ipmi_si kills C8000
-Date: Thu, 31 Oct 2013 13:22:35 +0100
-Message-ID: <52724B8B.6070007@gmx.de>
-References: <2698496.oieJ4Vatqf@caliban.sf-tec.de> <20131026191720.5282c0c3@marga.jer-c2.orkz.net> <20131028105612.GB19852@alpha.franken.de> <20131029093706.GA6255@alpha.franken.de> <236d3862441c13623a9fde73e6988591@sf-mail.de> <20131029164151.GA10616@alpha.franken.de> <5270119B.6060908@gmx.de> <20131031120606.GA17366@alpha.franken.de>
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: Re: Reproducible kernel panic using gdb
+Date: Thu, 31 Oct 2013 15:35:26 +0100
+Message-ID: <75c041887735b2ec9338d8ee6f340a1c@tuxicoman.be>
+References: <b6f8076c32d0859e4ddb328bb7aca076@tuxicoman.be>
+ <trinity-f177b623-5ca9-4417-a689-b0f8676e3fb5-1382711499524@3capp-gmx-bs08>
+ <650fc503e24cdb24b5cc286aec329df6@tuxicoman.be>
+ <1382970655.2161.2.camel@dabdike.int.hansenpartnership.com>
+ <2125d8be63f7f5801abba4e67182d2e7@sf-mail.de>
+ <1383023163.19537.3.camel@dabdike.int.hansenpartnership.com>
+ <52701C9D.7080906@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>,
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Rolf Eike Beer <eike-kernel@sf-tec.de>,
 	linux-parisc@vger.kernel.org
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20131031120606.GA17366@alpha.franken.de>
+In-Reply-To: <52701C9D.7080906@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 10/31/2013 01:06 PM, Thomas Bogendoerfer wrote:
-> On Tue, Oct 29, 2013 at 08:50:51PM +0100, Helge Deller wrote:
->> Yes, I think it really makes sense to send this patch to stable kernel series.
->> Without this patch, any parisc box (ok - probably only the C8000) crashes
->> as soon as the ipmi driver is loaded.
->>
->> Will you ask (e.g. if possible for kernel 3.0 and higher - not sure if
->> it applies)? 
+On 2013-10-29 21:37, Helge Deller wrote:
+> On 10/29/2013 06:06 AM, James Bottomley wrote:
+>> 
+>> On Mon, 2013-10-28 at 16:08 +0100, Rolf Eike Beer wrote:
+>>> James Bottomley: wrote
+>>>> On Mon, 2013-10-28 at 10:00 +0100, Guy Martin wrote:
+>>>>> Hi Helge,
+>>>>> 
+>>>>>> 
+>>>>>> Works without crash for me on 3.12-rc6 ?
+>>>>>> Linux ls3011 3.12.0-rc6-64bit+
+>>>>>> 
+>>>>>> Since you run 3.10.6, maybe updating the kernel might help.
+>>>>>> Esp. this patch, which has been backported to kernel 3.10 (and is 
+>>>>>> in
+>>>>>> 3.10.17):
+>>>>>> http://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit/?h=linux-3.10.y&id=77587e89405f5d8225a0e750df254bcc2dcb73e1
+>>>>> 
+>>>>> Still the same problem with 3.12-rc6 here :
+>>>> 
+>>>> What system and CPU?
+>>> 
+>>> C8000
+>> 
+>> I tried this on a rp3440  (pa8800) and I can't reproduce.  I think it
+>> might be something about the way the kernel is compiled.  The (null)
+>> values for rp2 and IOAQ[0] look suspicious.
 > 
-> 3.4 shows some fuzz and iirc there were some changes I needed to make for
-> inclusion into latest kernels. Afaik all other C8k went only into 3.10,
-> so that should be good enough. And the patch applies cleanly to 3.10.
-> I'll write mail to the stable team.
+> I tried it again, but this time on my c8000..
+> Again, it does not crash for me.
+> Kernel is 3.12.0-rc7-64bit.
+> 
+> I think James is right. Might be something with your compiler, but it 
+> would
+> be interesting what it is...
 
-If possible >= 3.8 would be good.
-I'm not sure Debians main unstable installation kernel is 3.8...
 
-Helge 
+I've tried both
+gcc-4.6.3 with ld 2.22
+gcc-4.7.3 with ld 2.23.1
+
+I've put a compiled kernel with modules here as well as the config :
+http://www.tuxicoman.be/temp/linux-3.12-rc6-gdb-crash.tar.bz2
+
+terminator linux-3.12-rc6 # hppa64-unknown-linux-gnu-gcc -v
+Using built-in specs.
+COLLECT_GCC=/usr/hppa2.0-unknown-linux-gnu/hppa64-unknown-linux-gnu/gcc-bin/4.7.3/hppa64-unknown-linux-gnu-gcc
+COLLECT_LTO_WRAPPER=/usr/libexec/gcc/hppa64-unknown-linux-gnu/4.7.3/lto-wrapper
+Target: hppa64-unknown-linux-gnu
+Configured with: 
+/var/tmp/portage/sys-devel/kgcc64-4.7.3/work/gcc-4.7.3/configure 
+--prefix=/usr 
+--bindir=/usr/hppa2.0-unknown-linux-gnu/hppa64-unknown-linux-gnu/gcc-bin/4.7.3 
+--includedir=/usr/lib/gcc/hppa64-unknown-linux-gnu/4.7.3/include 
+--datadir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/4.7.3 
+--mandir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/4.7.3/man 
+--infodir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/4.7.3/info 
+--with-gxx-include-dir=/usr/lib/gcc/hppa64-unknown-linux-gnu/4.7.3/include/g++-v4 
+--host=hppa2.0-unknown-linux-gnu --target=hppa64-unknown-linux-gnu 
+--build=hppa2.0-unknown-linux-gnu --disable-altivec 
+--disable-fixed-point --without-cloog --without-ppl --disable-lto 
+--enable-nls --without-included-gettext --with-system-zlib 
+--enable-obsolete --disable-werror --enable-secureplt --disable-multilib 
+--disable-libmudflap --disable-libssp --disable-libgomp 
+--with-python-dir=/share/gcc-data/hppa64-unknown-linux-gnu/4.7.3/python 
+--enable-poison-system-directories --enable-checking=release 
+--disable-libgcj --disable-build-with-cxx 
+--disable-build-poststage1-with-cxx --disable-libquadmath 
+--enable-languages=c --disable-shared --disable-threads 
+--without-headers --disable-bootstrap --enable-__cxa_atexit 
+--enable-clocale=gnu --with-bugurl=http://bugs.gentoo.org/ 
+--with-pkgversion='Gentoo 4.7.3 p1.3'
+Thread model: single
+gcc version 4.7.3 (Gentoo 4.7.3 p1.3)
+
+Regards,
+   Guy
+
