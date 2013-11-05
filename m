@@ -1,37 +1,147 @@
-From: dann frazier <dannf@dannf.org>
+From: "Craig Lamparter (ISS Linux)" <craig.lamparter@hp.com>
 Subject: Re: parisc-linux.org losing hw hosting after this month
-Date: Mon, 4 Nov 2013 19:22:09 -0700
-Message-ID: <20131105022209.GC22393@dannf.org>
-References: <20131105003509.GA19864@dannf.org>
- <1383612962.2150.4.camel@dabdike>
- <BLU0-SMTP219421FBE297D4BFF757F897F10@phx.gbl>
+Date: Mon, 04 Nov 2013 19:58:53 -0800
+Message-ID: <52786CFD.1070009@hp.com>
+References: <20131105003509.GA19864@dannf.org> <1383612962.2150.4.camel@dabdike> <BLU0-SMTP219421FBE297D4BFF757F897F10@phx.gbl> <20131105022209.GC22393@dannf.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms040504090002040806020608"
+Cc: John David Anglin <dave.anglin@bell.net>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
 	linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@bell.net>
+To: dann frazier <dannf@dannf.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP219421FBE297D4BFF757F897F10@phx.gbl>
+In-Reply-To: <20131105022209.GC22393@dannf.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Nov 04, 2013 at 08:07:33PM -0500, John David Anglin wrote:
-> On 4-Nov-13, at 7:56 PM, James Bottomley wrote:
-> 
-> >On Mon, 2013-11-04 at 17:35 -0700, dann frazier wrote:
-> >>Hi,
-> >>I've been informed that the subnet on which HP is hosting
-> >>parisc-linux.org is going away next month. They have offered to ship
-> >>the hardware somewhere if it continues to be needed.
-> >
-> >We'll probably end up distributing to people.  Do they have a list of
-> >what it is (and approximate size for those wanting the N class)?
-> 
-> 
-> Is there any possibility that HP might continue to host parisc-linux.org
-> on some other subnet/machine?
+This is a cryptographically signed message in MIME format.
 
-I've asked before if they had other systems/VMs they could host it on
-and the answer was no. I'll ask again to make sure that hasn't changed
-for some reason, but I'd recommend looking for other options in the
-meantime. Perhaps osuosl.org?
+--------------ms040504090002040806020608
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+Just to confirm Dan's comment, HPIT is taking ownership of just
+about everything, so it's harder to do g-jobs like this.  Even
+our internal labs are being moved to isolated subnets, for better or
+worse.  A University or co-lo system is probably going to have
+better throughput than our current R&D edge compartments.
+
+best,
+-craig
+
+--=20
+_______________________
+Craig Lamparter
+HP Servers Linux R&D
+Hewlett Packard Company
+craig.lamparter@hp.com
+
+On 11/04/2013 06:22 PM, dann frazier wrote:
+> I've asked before if they had other systems/VMs they could host it on
+> and the answer was no. I'll ask again to make sure that hasn't changed
+> for some reason, but I'd recommend looking for other options in the
+> meantime. Perhaps osuosl.org?
+
+
+--------------ms040504090002040806020608
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIOcDCC
+BmEwggVJoAMCAQICEFHz5uyygZHVFZ4pmbCHOnswDQYJKoZIhvcNAQEFBQAwgcoxCzAJBgNV
+BAYTAlVTMRcwFQYDVQQKEw5WZXJpU2lnbiwgSW5jLjEfMB0GA1UECxMWVmVyaVNpZ24gVHJ1
+c3QgTmV0d29yazE6MDgGA1UECxMxKGMpIDE5OTkgVmVyaVNpZ24sIEluYy4gLSBGb3IgYXV0
+aG9yaXplZCB1c2Ugb25seTFFMEMGA1UEAxM8VmVyaVNpZ24gQ2xhc3MgMiBQdWJsaWMgUHJp
+bWFyeSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eSAtIEczMB4XDTA5MDkwMjAwMDAwMFoXDTE0
+MDkwMTIzNTk1OVowgfcxCzAJBgNVBAYTAlVTMSAwHgYDVQQKExdIZXdsZXR0LVBhY2thcmQg
+Q29tcGFueTEfMB0GA1UECxMWVmVyaVNpZ24gVHJ1c3QgTmV0d29yazE7MDkGA1UECxMyVGVy
+bXMgb2YgdXNlIGF0IGh0dHBzOi8vd3d3LnZlcmlzaWduLmNvbS9ycGEgKGMpMDkxNTAzBgNV
+BAsTLENsYXNzIDIgTWFuYWdlZCBQS0kgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMTEwLwYD
+VQQDEyhDb2xsYWJvcmF0aW9uIENlcnRpZmljYXRpb24gQXV0aG9yaXR5IEcyMIIBIjANBgkq
+hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp2FraNquqoVkDEvLUMsw6HMhjon+yi1v/kajA27j
+IrdyhRMj4g+PBveBTHrtA7w97Rx1UKPP6CvOaAE5xUtoW9ajYZtO5kdiUFyzWHsbUgSjKy+y
+NO4QoHeEzaQi/JWUOYev/AV5YYJoEDIysosEELS1/M64iE2Utzr+LxiWhdaqSRE4jigbm4Dy
+4ayLzqAv5f7oILrJNZ6ShqLiGGCpP+7relTyRgFXmEX/SKN/a39JwZoKSNUdIkYyr7wmNI9+
+zylheDJghuk+kZDAD3NXv4EGVMUfOg5UEdhAJ0Lw40D4pqKa2ej1H0UipK1EEdRTm94RzfE8
+z8vDP8+dcgOqCwIDAQABo4ICEjCCAg4wEgYDVR0TAQH/BAgwBgEB/wIBADBwBgNVHSAEaTBn
+MGUGC2CGSAGG+EUBBxcCMFYwKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3LnZlcmlzaWduLmNv
+bS9jcHMwKgYIKwYBBQUHAgIwHhocaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYTA0BgNV
+HR8ELTArMCmgJ6AlhiNodHRwOi8vY3JsLnZlcmlzaWduLmNvbS9wY2EyLWczLmNybDAOBgNV
+HQ8BAf8EBAMCAQYwLgYDVR0RBCcwJaQjMCExHzAdBgNVBAMTFlByaXZhdGVMYWJlbDQtMjA0
+OC0xNDIwHQYDVR0OBBYEFCJ906SrV6xWf6l/QUQalbxb+KvuMIHwBgNVHSMEgegwgeWhgdCk
+gc0wgcoxCzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5WZXJpU2lnbiwgSW5jLjEfMB0GA1UECxMW
+VmVyaVNpZ24gVHJ1c3QgTmV0d29yazE6MDgGA1UECxMxKGMpIDE5OTkgVmVyaVNpZ24sIElu
+Yy4gLSBGb3IgYXV0aG9yaXplZCB1c2Ugb25seTFFMEMGA1UEAxM8VmVyaVNpZ24gQ2xhc3Mg
+MiBQdWJsaWMgUHJpbWFyeSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eSAtIEczghBhcMtJjF+Y
+RSnnsKbZUFt6MA0GCSqGSIb3DQEBBQUAA4IBAQAvUbxneMj/3SU5WlUKapv9ZGIeeNSf6/t6
+gKUUsCT2A1KQMlZmK7/gn4ndrXWdch7Uafl6WkPlBcunYRGvJ6YkJCP4uV86Lwv68mK6REwJ
+FMiKHy/qFnRaoI+pLfaIlMQ9l7Q2DRnNLSyCBl9b02PaGzX+XQQxGhLiE89Z1E+ajicWG1zR
+zBUbPx46ptQUjfjYPNyP4cLWT5rJ7olc9/mRyfIO4nGU8lRjGcuKwxZhOP+TftJgd/fRYf68
+Kf2Bkue4cdrI2UUgYD02GBL/S8E8FBsOrAoJ5N6cEYacwT2BZgHzYrxTC5ZyxzY9TWtGldxE
+H/moJ5OLtF+KauJWhaACMIIIBzCCBu+gAwIBAgIQQfpgRPXJ3aqDaZzvPzaAnDANBgkqhkiG
+9w0BAQUFADCB9zELMAkGA1UEBhMCVVMxIDAeBgNVBAoTF0hld2xldHQtUGFja2FyZCBDb21w
+YW55MR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBv
+ZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwOTE1MDMGA1UECxMs
+Q2xhc3MgMiBNYW5hZ2VkIFBLSSBJbmRpdmlkdWFsIFN1YnNjcmliZXIgQ0ExMTAvBgNVBAMT
+KENvbGxhYm9yYXRpb24gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgRzIwHhcNMTMwNzA4MDAw
+MDAwWhcNMTUwNzA4MjM1OTU5WjCBnjEgMB4GA1UEChQXSGV3bGV0dC1QYWNrYXJkIENvbXBh
+bnkxJjAkBgNVBAsUHUVtcGxveW1lbnQgU3RhdHVzIC0gRW1wbG95ZWVzMQ8wDQYDVQQLEwZT
+L01JTUUxGjAYBgNVBAMTEVJpY2hhcmQgTGFtcGFydGVyMSUwIwYJKoZIhvcNAQkBFhZjcmFp
+Zy5sYW1wYXJ0ZXJAaHAuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvFA2
+cVzBzP/n6LsbdewAfytWcbAFpFKJ4KCa9neSoqpKznR2dPo6sT25g9sR7NJmcSS8GMgm4eMS
+iXwES9t6V4a0zCHo8+IR9631qsBwITLp6TbJOe3PMsqWUZwjILISGfyo15eSHNVinCoIM542
+jqujwdkkpZuKW1cs/F1xJHbpJiX4sinQERlsiV36cpGA89hFOa52WmGAhqqMNgYH7Vg18LNp
+RdrOMjPQjHR1kJj3EFq71+r+m3HsdD89T4Ae6424X7RXOmzX6vlxF+GwRuWL17SIPF0TterU
+Y8Omdq1gt4+rSl9BSVeuN3ERcKsVa4Ym31Z4FIhGuLoE3kfC5wIDAQABo4ID5DCCA+AwSQYD
+VR0RBEIwQIEWY3JhaWcubGFtcGFydGVyQGhwLmNvbYEWY3JhaWdfbGFtcGFydGVyQGhwLmNv
+bYEOY3JhaWdlckBocC5jb20wDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCBaAwWQYDVR0f
+BFIwUDBOoEygSoZIaHR0cDovL29uc2l0ZWNybC52ZXJpc2lnbi5jb20vSGV3bGV0dFBhY2th
+cmRDb21wYW55U01JTUVHMi9MYXRlc3RDUkwuY3JsMB8GA1UdIwQYMBaAFCJ906SrV6xWf6l/
+QUQalbxb+KvuMB0GA1UdDgQWBBRX88PXhTmPz9bJUw85ibYgGgd7JzCCATIGCCsGAQUFBwEB
+BIIBJDCCASAwJwYIKwYBBQUHMAGGG2h0dHA6Ly9ocC1vY3NwLnZlcmlzaWduLmNvbTCB9AYI
+KwYBBQUHMAKkgecwgeQxMTAvBgNVBAMTKENvbGxhYm9yYXRpb24gQ2VydGlmaWNhdGlvbiBB
+dXRob3JpdHkgRzIxMDAuBgNVBAsTJ0NsYXNzIDIgT25TaXRlIEluZGl2aWR1YWwgU3Vic2Ny
+aWJlciBDQTE6MDgGA1UECxMxVGVybXMgb2YgdXNlIGF0IGh0dHBzOi8vd3d3LnZlcmlzaWdu
+LmNvbS9ycGEoYykwOTEfMB0GA1UECxMWVmVyaVNpZ24gVHJ1c3QgTmV0d29yazEgMB4GA1UE
+ChMXSGV3bGV0dC1QYWNrYXJkIENvbXBhbnkwggE9BgNVHSAEggE0MIIBMDCCASwGC2CGSAGG
++EUBBxcCMIIBGzAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYTCB
+7gYIKwYBBQUHAgIwgeEwHhYXSGV3bGV0dC1QYWNrYXJkIENvbXBhbnkwAwIBAhqBvkF1dGhv
+cml0eSB0byBiaW5kIEhQIGRvZXMgbm90IGNvcnJlc3BvbmQgd2l0aCB1c2Ugb3IgcG9zc2Vz
+c2lvbiBvZiB0aGlzIGNlcnRpZmljYXRlLiBJc3N1ZWQgdG8gZmFjaWxpdGF0ZSBjb21tdW5p
+Y2F0aW9uIHdpdGggSFAuIFZlcmlTaWduJ3MgQ1BTIGluY29ycC4gQnkgcmVmZXJlbmNlIGxp
+YWIuIGx0ZC4gKGMpOTcgVmVyaVNpZ24wFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwQwSwYJKoZI
+hvcNAQkPBD4wPDAOBggqhkiG9w0DAgICAIAwDgYIKoZIhvcNAwICAgBAMA4GCCqGSIb3DQME
+AgIAgDAKBggqhkiG9w0DBzANBgkqhkiG9w0BAQUFAAOCAQEASVCGOH86//CjUSA2Tb8z/EMe
+pcJW3UTyOXo698SoDQtvsPtho05GVvszY+bRet/9nn7VRQN/g8D5dvY8pAOOebHy/GaGhFc5
+0dWqaG2IVgTB/vUWSF42/z2X49z4a4wDvltR8rXTYHQlBRmsLJ6Efbmm09YT3Pz5kqmSoKqe
+GauhuScue1Qu+c6VsupoyA0KG/50qGjmCjbUg5v3Fin5elGIZSMqPjA8yttez1/z4RsXbbiP
+CeZEfqaMZCxkhueA/MQSfVYw5QX4nsBGMnXFQZe0B4DKZ1XaZtmcp+hBvOYmyTWn+3loxzmu
+IdM+H/doA/aVMljsm7Eib0anxcjXDTGCBUwwggVIAgEBMIIBDDCB9zELMAkGA1UEBhMCVVMx
+IDAeBgNVBAoTF0hld2xldHQtUGFja2FyZCBDb21wYW55MR8wHQYDVQQLExZWZXJpU2lnbiBU
+cnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVy
+aXNpZ24uY29tL3JwYSAoYykwOTE1MDMGA1UECxMsQ2xhc3MgMiBNYW5hZ2VkIFBLSSBJbmRp
+dmlkdWFsIFN1YnNjcmliZXIgQ0ExMTAvBgNVBAMTKENvbGxhYm9yYXRpb24gQ2VydGlmaWNh
+dGlvbiBBdXRob3JpdHkgRzICEEH6YET1yd2qg2mc7z82gJwwCQYFKw4DAhoFAKCCAxMwGAYJ
+KoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTMxMTA1MDM1ODUzWjAj
+BgkqhkiG9w0BCQQxFgQUTTInCYGOl7YCbSjP/HxNXsFptgowbAYJKoZIhvcNAQkPMV8wXTAL
+BglghkgBZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAN
+BggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCCAR8GCSsGAQQBgjcQBDGC
+ARAwggEMMIH3MQswCQYDVQQGEwJVUzEgMB4GA1UEChMXSGV3bGV0dC1QYWNrYXJkIENvbXBh
+bnkxHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9m
+IHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTA5MTUwMwYDVQQLEyxD
+bGFzcyAyIE1hbmFnZWQgUEtJIEluZGl2aWR1YWwgU3Vic2NyaWJlciBDQTExMC8GA1UEAxMo
+Q29sbGFib3JhdGlvbiBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eSBHMgIQQfpgRPXJ3aqDaZzv
+PzaAnDCCASEGCyqGSIb3DQEJEAILMYIBEKCCAQwwgfcxCzAJBgNVBAYTAlVTMSAwHgYDVQQK
+ExdIZXdsZXR0LVBhY2thcmQgQ29tcGFueTEfMB0GA1UECxMWVmVyaVNpZ24gVHJ1c3QgTmV0
+d29yazE7MDkGA1UECxMyVGVybXMgb2YgdXNlIGF0IGh0dHBzOi8vd3d3LnZlcmlzaWduLmNv
+bS9ycGEgKGMpMDkxNTAzBgNVBAsTLENsYXNzIDIgTWFuYWdlZCBQS0kgSW5kaXZpZHVhbCBT
+dWJzY3JpYmVyIENBMTEwLwYDVQQDEyhDb2xsYWJvcmF0aW9uIENlcnRpZmljYXRpb24gQXV0
+aG9yaXR5IEcyAhBB+mBE9cndqoNpnO8/NoCcMA0GCSqGSIb3DQEBAQUABIIBAGBuHLKeP+WV
+UXAqVFg6u4x8gW5vhAgcA313K74R4H4+lxr71buY7XPiN5fqxxin6VfO6n2YcgMxFeu/QHxX
+4eT0OwIPz+twMpR54BACd27csrXbpCfXdq1NZd7+Q7uw8EI9sZRi82YtGMOkF3zM8YEnJJNn
+twKE8sKiTfI0N1BkTR+KOa+pfd56rLBhl8T7vsSpnklKyGC2FYaEwEbl5ilJtk6AEoDdaW6n
+xyv27zuIjQRdGLGXzBvRyOOk42US8wiyQgRGeh9dKa81sI/CcImK499vzFTAxV1QPFLninq+
+JjH3qq6TMTj/vVx0uPmzTnYUv9O81L6P3Jx7KQWei5gAAAAAAAA=
+--------------ms040504090002040806020608--
