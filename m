@@ -1,33 +1,54 @@
-From: "Helge Deller" <deller@gmx.de>
-Subject: Aw: Re: parisc-linux.org losing hw hosting after this month
-Date: Tue, 5 Nov 2013 11:51:15 +0100 (CET)
-Message-ID: <trinity-7edb2a57-bc89-4ebf-9eb7-ebedef0ee7fd-1383648675665@3capp-gmx-bs06>
-References: <20131105003509.GA19864@dannf.org>
- <1383612962.2150.4.camel@dabdike>
- <BLU0-SMTP219421FBE297D4BFF757F897F10@phx.gbl>,
- <20131105022209.GC22393@dannf.org>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Subject: Re: Short notice: =?UTF-8?Q?ipmi=5Fsi=20kills=20C=38=30=30=30?=
+Date: Tue, 05 Nov 2013 13:23:20 +0100
+Message-ID: <c40252aefa03db1431bdb9ed6dcf179e@sf-mail.de>
+References: <2698496.oieJ4Vatqf@caliban.sf-tec.de>
+ <15371438.W2EHpOsA1I@caliban.sf-tec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: "John David Anglin" <dave.anglin@bell.net>,
-	"James Bottomley" <James.Bottomley@HansenPartnership.com>,
-	linux-parisc@vger.kernel.org
-To: "dann frazier" <dannf@dannf.org>
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20131105022209.GC22393@dannf.org>
+In-Reply-To: <15371438.W2EHpOsA1I@caliban.sf-tec.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > Is there any possibility that HP might continue to host parisc-linux.org
-> > on some other subnet/machine?
-> 
-> I've asked before if they had other systems/VMs they could host it on
-> and the answer was no. I'll ask again to make sure that hasn't changed
-> for some reason, but I'd recommend looking for other options in the
-> meantime. Perhaps osuosl.org?
+>> I did "modprobe ipmi_si" on my C8000 (kernel 3.11.6), which=20
+>> immediately
+>> broke the machine. I have no backtrace yet, but I'll try to get one=20
+>> next
+>> week. In case someone has such a machine and the mood to debug this
+>> already=E2=80=A6 ;)
+>=20
+> Ok, I now have IPMI monitoring on the C8000 working smoothly. Thanks=20
+> for the
+> work on this.
+>=20
+> While testing I installed by mistake the nagios IPMI check module and=
+=20
+> freeipmi
+> on the C3600 (running 3.11.2 at that time). Calling "check_ipmi_senso=
+r=20
+> -T
+> Temperature -H localhost" reproducible caused a HPMC. There was no IP=
+MI=20
+> module
+> loaded or even compiled on the machine so I think it has nothing to d=
+o=20
+> with
+> the crash reported above. I'll try if I can get some additional=20
+> information on
+> monday.
 
-I would really prefer if it could go to some place where we e.g. could
-use it as build/hosting server (e.g. osuosl.org). If that's not possible
-I would be happy to get it privately for development, since a A500 is something 
-which I don't have yet, and which is not that easy to get here in germany.
+I can reproduce this on the C8000, using both 3.11.6 and 3.12: if=20
+ipmi_devintf is not loaded the machine will die when nagios does the=20
+first IPMI check. Loading this module makes the machine survive. Sadly=20
+it seems that I have screwed up my serial setup so I don't have a=20
+backtrace of this.
 
-Helge
+Eike
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
