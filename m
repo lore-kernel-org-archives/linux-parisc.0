@@ -1,52 +1,73 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] aio: fix D-cache aliasing issues
-Date: Fri, 15 Nov 2013 23:05:29 +0100
-Message-ID: <20131115220529.GA3160@ls3530.box>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH] aio: fix D-cache aliasing issues
+Date: Fri, 15 Nov 2013 14:42:05 -0800
+Message-ID: <1384555325.2003.39.camel@dabdike.int.hansenpartnership.com>
+References: <20131115220529.GA3160@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Benjamin LaHaise <bcrl@kvack.org>, linux-aio@kvack.org,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Cc: Benjamin LaHaise <bcrl@kvack.org>, linux-aio@kvack.org,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20131115220529.GA3160@ls3530.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-When a user page mapping is released via kunmap*() functions, the D-cache needs
-to be flushed via flush_dcache_page() to avoid D-cache aliasing issues.
+On Fri, 2013-11-15 at 23:05 +0100, Helge Deller wrote:
+> When a user page mapping is released via kunmap*() functions, the D-cache needs
+> to be flushed via flush_dcache_page() to avoid D-cache aliasing issues.
+> 
+> This patch fixes aio on the parisc platform (and probably others).
 
-This patch fixes aio on the parisc platform (and probably others).
+This should be flush_kernel_dcache_page().  flush_dcache_page() is for
+full coherency but for unmap, we know the page was coherent going in and
+may have been modified by the kernel, so only the kernel view needs to
+be sync'd.  Technically, by the kernel API, the flush should be done
+*before* unmapping.  This would have mattered on parisc until we did
+flush via tmpalias which means we no-longer care if the mapping for the
+flush exists or not because we always recreate it via the tmpalias
+pages.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-To: Benjamin LaHaise <bcrl@kvack.org>
-To: linux-aio@kvack.org
-Cc: stable@vger.kernel.org    # 3.12+
+James
 
-diff --git a/fs/aio.c b/fs/aio.c
-index 823efcb..2181821 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -514,6 +514,7 @@ static void free_ioctx(struct work_struct *work)
- 		atomic_add(avail, &ctx->reqs_available);
- 		ring->head = ring->tail;
- 		kunmap_atomic(ring);
-+		flush_dcache_page(ctx->ring_pages[0]);
- 
- 		if (atomic_read(&ctx->reqs_available) >= ctx->nr_events - 1)
- 			break;
-@@ -568,6 +569,7 @@ static int ioctx_add_table(struct kioctx *ctx, struct mm_struct *mm)
- 					ring = kmap_atomic(ctx->ring_pages[0]);
- 					ring->id = ctx->id;
- 					kunmap_atomic(ring);
-+					flush_dcache_page(ctx->ring_pages[0]);
- 					return 0;
- 				}
- 
-@@ -1032,6 +1034,7 @@ static long aio_read_events_ring(struct kioctx *ctx,
- 	head = ring->head;
- 	tail = ring->tail;
- 	kunmap_atomic(ring);
-+	flush_dcache_page(ctx->ring_pages[0]);
- 
- 	pr_debug("h%u t%u m%u\n", head, tail, ctx->nr_events);
- 
+> Signed-off-by: Helge Deller <deller@gmx.de>
+> To: Benjamin LaHaise <bcrl@kvack.org>
+> To: linux-aio@kvack.org
+> Cc: stable@vger.kernel.org    # 3.12+
+> 
+> diff --git a/fs/aio.c b/fs/aio.c
+> index 823efcb..2181821 100644
+> --- a/fs/aio.c
+> +++ b/fs/aio.c
+> @@ -514,6 +514,7 @@ static void free_ioctx(struct work_struct *work)
+>  		atomic_add(avail, &ctx->reqs_available);
+>  		ring->head = ring->tail;
+>  		kunmap_atomic(ring);
+> +		flush_dcache_page(ctx->ring_pages[0]);
+>  
+>  		if (atomic_read(&ctx->reqs_available) >= ctx->nr_events - 1)
+>  			break;
+> @@ -568,6 +569,7 @@ static int ioctx_add_table(struct kioctx *ctx, struct mm_struct *mm)
+>  					ring = kmap_atomic(ctx->ring_pages[0]);
+>  					ring->id = ctx->id;
+>  					kunmap_atomic(ring);
+> +					flush_dcache_page(ctx->ring_pages[0]);
+>  					return 0;
+>  				}
+>  
+> @@ -1032,6 +1034,7 @@ static long aio_read_events_ring(struct kioctx *ctx,
+>  	head = ring->head;
+>  	tail = ring->tail;
+>  	kunmap_atomic(ring);
+> +	flush_dcache_page(ctx->ring_pages[0]);
+>  
+>  	pr_debug("h%u t%u m%u\n", head, tail, ctx->nr_events);
+>  
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
 
