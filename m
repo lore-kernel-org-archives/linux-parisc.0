@@ -1,38 +1,52 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: parisc-linux.org losing hw hosting after this month
-Date: Tue, 12 Nov 2013 12:27:04 -0800
-Message-ID: <1384288024.2248.1.camel@dabdike>
-References: <20131105003509.GA19864@dannf.org>
-	 <1383612962.2150.4.camel@dabdike>
-	 <BLU0-SMTP219421FBE297D4BFF757F897F10@phx.gbl>
-	 <20131105022209.GC22393@dannf.org> <52786CFD.1070009@hp.com>
-	 <527D6428.8060205@gmx.de> <20131108223833.GB32729@dannf.org>
-	 <20131109082036.62C881A8@taggart.lackof.org>
-	 <57A18B42-217E-4588-A0AF-6E4275A501F4@parisc-linux.org>
-	 <20131109191725.DDCE31A1@taggart.lackof.org> <527E9A4E.5000008@gmx.de>
-	 <C9305BC2-086F-48E8-944C-D7751095769A@parisc-linux.org>
-	 <527EA9C9.2070309@gmx.de>
-	 <3B12942A-F2B8-459E-85AE-3AC9DB288D67@parisc-linux.org>
-	 <528285DF.6010305@gmx.de>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] aio: fix D-cache aliasing issues
+Date: Fri, 15 Nov 2013 23:05:29 +0100
+Message-ID: <20131115220529.GA3160@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Cc: Thibaut =?ISO-8859-1?Q?Var=E8ne?= <T-Bone@parisc-linux.org>,
-	Matt Taggart <matt@lackof.org>, dann frazier <dannf@dannf.org>,
-	"Craig Lamparter (ISS Linux)" <craig.lamparter@hp.com>,
-	John David Anglin <dave.anglin@bell.net>,
-	linux-parisc@vger.kernel.org, Matthew Wilcox <matthew@wil.cx>
-To: Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+To: Benjamin LaHaise <bcrl@kvack.org>, linux-aio@kvack.org,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <528285DF.6010305@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2013-11-12 at 20:47 +0100, Helge Deller wrote:
-> Again, I'm happy as long as it can live.
-> Sadly still no feedback from OSUOSL.
+When a user page mapping is released via kunmap*() functions, the D-cache needs
+to be flushed via flush_dcache_page() to avoid D-cache aliasing issues.
 
-If you filled in the form over a week ago, ping Lance directly.
+This patch fixes aio on the parisc platform (and probably others).
 
-James
+Signed-off-by: Helge Deller <deller@gmx.de>
+To: Benjamin LaHaise <bcrl@kvack.org>
+To: linux-aio@kvack.org
+Cc: stable@vger.kernel.org    # 3.12+
 
+diff --git a/fs/aio.c b/fs/aio.c
+index 823efcb..2181821 100644
+--- a/fs/aio.c
++++ b/fs/aio.c
+@@ -514,6 +514,7 @@ static void free_ioctx(struct work_struct *work)
+ 		atomic_add(avail, &ctx->reqs_available);
+ 		ring->head = ring->tail;
+ 		kunmap_atomic(ring);
++		flush_dcache_page(ctx->ring_pages[0]);
+ 
+ 		if (atomic_read(&ctx->reqs_available) >= ctx->nr_events - 1)
+ 			break;
+@@ -568,6 +569,7 @@ static int ioctx_add_table(struct kioctx *ctx, struct mm_struct *mm)
+ 					ring = kmap_atomic(ctx->ring_pages[0]);
+ 					ring->id = ctx->id;
+ 					kunmap_atomic(ring);
++					flush_dcache_page(ctx->ring_pages[0]);
+ 					return 0;
+ 				}
+ 
+@@ -1032,6 +1034,7 @@ static long aio_read_events_ring(struct kioctx *ctx,
+ 	head = ring->head;
+ 	tail = ring->tail;
+ 	kunmap_atomic(ring);
++	flush_dcache_page(ctx->ring_pages[0]);
+ 
+ 	pr_debug("h%u t%u m%u\n", head, tail, ctx->nr_events);
+ 
 
