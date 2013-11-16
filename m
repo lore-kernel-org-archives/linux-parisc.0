@@ -1,19 +1,21 @@
-From: Benjamin LaHaise <bcrl@kvack.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 Subject: Re: [PATCH] aio: fix D-cache aliasing issues
-Date: Sat, 16 Nov 2013 15:09:59 -0500
-Message-ID: <20131116200959.GA14098@kvack.org>
-References: <20131115220529.GA3160@ls3530.box> <1384555325.2003.39.camel@dabdike.int.hansenpartnership.com> <20131116200717.GA18939@schnuecks.de>
+Date: Sat, 16 Nov 2013 14:06:30 -0800
+Message-ID: <1384639590.3614.16.camel@dabdike.int.hansenpartnership.com>
+References: <20131115220529.GA3160@ls3530.box>
+	 <1384555325.2003.39.camel@dabdike.int.hansenpartnership.com>
+	 <20131116200717.GA18939@schnuecks.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>, linux-aio@kvack.org,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset="ISO-8859-15"
+Cc: Helge Deller <deller@gmx.de>, Benjamin LaHaise <bcrl@kvack.org>,
+ linux-aio@kvack.org, linux-kernel@vger.kernel.org,
+ linux-parisc@vger.kernel.org
 To: Simon Baatz <gmbnomis@gmail.com>
 Return-path: <owner-linux-aio@kvack.org>
 In-Reply-To: <20131116200717.GA18939@schnuecks.de>
 List-ID: <linux-aio.kvack.org>
 
-On Sat, Nov 16, 2013 at 09:07:18PM +0100, Simon Baatz wrote:
+On Sat, 2013-11-16 at 21:07 +0100, Simon Baatz wrote:
 > On Fri, Nov 15, 2013 at 02:42:05PM -0800, James Bottomley wrote:
 > > On Fri, 2013-11-15 at 23:05 +0100, Helge Deller wrote:
 > > > When a user page mapping is released via kunmap*() functions, the D-cache needs
@@ -34,17 +36,19 @@ On Sat, Nov 16, 2013 at 09:07:18PM +0100, Simon Baatz wrote:
 > mapped.  It avoids double flushing of highmem pages by not flushing
 > in those cases where kunmap_atomic() already takes care of flushing.
 
-Helge -- are you going to resubmit a version of this patch that makes the 
-recommended change?
+On Parisc, kmap/kunmap is currently a nop.  However, if we ever
+implemented highmem, we would also need to flush before we unmap, which
+is why the flush needs to go before the kunmap.
 
-		-ben
+I've got to say on all of this, we've implemented the most inane set of
+primitives.  It would be much easier if kmap/kunmap just took care of
+all of this.  kmap should bring userspace into coherence (because why
+else would we be kmapping) and kunmap should force coherence on the
+kernel address ... and then no-one would need to worry when to and when
+not to flush.
 
-> 
-> 
-> - Simon
+James
 
--- 
-"Thought is the essence of where you are now."
 
 --
 To unsubscribe, send a message with 'unsubscribe linux-aio' in
