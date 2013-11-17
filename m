@@ -1,79 +1,35 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] aio: fix D-cache aliasing issues
-Date: Sat, 16 Nov 2013 17:49:33 -0500
-Message-ID: <BLU0-SMTP37F8F388A1DE7927BB765997FA0@phx.gbl>
-References: <20131115220529.GA3160@ls3530.box> <1384555325.2003.39.camel@dabdike.int.hansenpartnership.com> <20131116200717.GA18939@schnuecks.de> <1384639590.3614.16.camel@dabdike.int.hansenpartnership.com> <BLU0-SMTP77F560605C9D02E4CA7C6997FA0@phx.gbl> <1384641466.3614.19.camel@dabdike.int.hansenpartnership.com>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Simon Baatz <gmbnomis@gmail.com>, Helge Deller <deller@gmx.de>,
-	Benjamin LaHaise <bcrl@kvack.org>, linux-aio@kvack.org,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Fix commit 63379c1 parisc: implement full version of
+ access_ok()
+Date: Sun, 17 Nov 2013 21:56:38 +0100
+Message-ID: <20131117205638.GA2852@p100.box>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1384641466.3614.19.camel@dabdike.int.hansenpartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 16-Nov-13, at 5:37 PM, James Bottomley wrote:
+Commit 63379c1 parisc: implement full version of access_ok() was incomplete and
+broke userspace. Fix it by checking if we really write to userspace.
 
-> On Sat, 2013-11-16 at 17:32 -0500, John David Anglin wrote:
->> On 16-Nov-13, at 5:06 PM, James Bottomley wrote:
->>
->>> On Sat, 2013-11-16 at 21:07 +0100, Simon Baatz wrote:
->>>> On Fri, Nov 15, 2013 at 02:42:05PM -0800, James Bottomley wrote:
->>>>> On Fri, 2013-11-15 at 23:05 +0100, Helge Deller wrote:
->>>>>> When a user page mapping is released via kunmap*() functions, the
->>>>>> D-cache needs
->>>>>> to be flushed via flush_dcache_page() to avoid D-cache aliasing
->>>>>> issues.
->>>>>>
->>>>>> This patch fixes aio on the parisc platform (and probably  
->>>>>> others).
->>>>>
->>>>> This should be flush_kernel_dcache_page().  flush_dcache_page() is
->>>>> for
->>>>> full coherency but for unmap, we know the page was coherent going
->>>>> in and
->>>>> may have been modified by the kernel, so only the kernel view
->>>>> needs to
->>>>> be sync'd.  Technically, by the kernel API, the flush should be  
->>>>> done
->>>>> *before* unmapping.  This would have mattered on parisc until we  
->>>>> did
->>>>> flush via tmpalias which means we no-longer care if the mapping
->>>>> for the
->>>>> flush exists or not because we always recreate it via the tmpalias
->>>>> pages.
->>>>
->>>> On ARM, flush_kernel_dcache_page() actually assumes that the page  
->>>> is
->>>> mapped.  It avoids double flushing of highmem pages by not flushing
->>>> in those cases where kunmap_atomic() already takes care of  
->>>> flushing.
->>>
->>> On Parisc, kmap/kunmap is currently a nop.  However, if we ever
->>> implemented highmem, we would also need to flush before we unmap,
->>> which
->>> is why the flush needs to go before the kunmap.
->>
->> Not quite.  On PA8800/PA8900, we currently do a flush in kunmap.
->>
->> I'm fairly certain from discussion with Helge that he saw this bug on
->> a C8000
->> with PA8800 processor.  In that case, adding a call to
->> flush_kernel_dcache_page()
->> just duplicates the call in kunmap().
->
-> Yes, if that's true it won't be the solution.
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-The calls may be needed for the two cases where the page is changed,  
-but I don't
-know how to avoid double flush on PA8800/PA8900 without changing the  
-primatives.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
+index 63f4dd0..228fecb 100644
+--- a/arch/parisc/include/asm/uaccess.h
++++ b/arch/parisc/include/asm/uaccess.h
+@@ -45,7 +45,11 @@ static inline int __range_not_ok(unsigned long addr, unsigned long size,
+ 				 unsigned long limit)
+ {
+ 	unsigned long __newaddr = addr + size;
+-	return (__newaddr < addr || __newaddr > limit || size > limit);
++
++	if (segment_eq(get_fs(), KERNEL_DS))
++		return 0;
++
++	return (addr < PAGE_SIZE || __newaddr > limit || size > limit);
+ }
+ 
+ /**
