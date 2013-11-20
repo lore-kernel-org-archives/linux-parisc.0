@@ -1,44 +1,85 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc fixes for v3.13
-Date: Wed, 20 Nov 2013 17:21:04 +0100
-Message-ID: <20131120162104.GA15157@ls3530.dhcp.wdf.sap.corp>
+Subject: [PATCH] parisc: fix re-mmap() of shared file to same fixed address
+Date: Wed, 20 Nov 2013 23:07:42 +0100
+Message-ID: <20131120220742.GA23304@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	dave.anglin@bell.net
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+locale-gen from glibc showed a strange problem on parisc: 
+mmap2(NULL, 536870912, PROT_NONE, MAP_SHARED, 3, 0) = 0x42a54000
+mmap2(0x42a54000, 103860, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, 3, 0) = -1 EINVAL (Invalid argument)
 
-Please pull the latest fixes for the parisc architecture from
+Basically it was just trying to re-mmap() a file at the same address
+which it was given by a previous mmap() call. But this remapping failed
+with EINVAL.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.13
+The problem is, that when MAP_FIXED and MAP_SHARED flags were used, we didn't
+included the mapping-based offset when we verified the alignment of the given
+fixed address against the offset which we calculated it in the previous call.
 
-which has the following fixes: 
-- revert an access_ok() patch which broke 32bit userspace on 64bit kernels
-- avoid a gcc miscompilation in two internal pa_memcpy() functions by not inlining those
-- do not export the definition of SOCK_NONBLOCK via uapi header (fixes build of audit package)
-- depending on the fault type we now correctly report either SIGBUS or SIGSEGV
-- a small fix to not compare a size_t variable for < 0
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: stable....
 
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Helge Deller (5):
-      Revert "parisc: implement full version of access_ok()"
-      parisc: do not inline pa_memcpy() internal functions
-      parisc: break out SOCK_NONBLOCK define to own asm header file
-      parisc: improve SIGBUS/SIGSEGV error reporting
-      parisc: size_t is unsigned, so comparison size < 0 doesn't make sense.
-
- arch/parisc/include/asm/socket.h      | 11 +++++++++
- arch/parisc/include/asm/uaccess.h     | 46 +++--------------------------------
- arch/parisc/include/uapi/asm/socket.h | 11 +++------
- arch/parisc/lib/memcpy.c              |  6 ++---
- arch/parisc/mm/fault.c                | 22 +++++++++++++++--
- 5 files changed, 41 insertions(+), 55 deletions(-)
- create mode 100644 arch/parisc/include/asm/socket.h
+diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
+index 5dfd248..0d3a9d4 100644
+--- a/arch/parisc/kernel/sys_parisc.c
++++ b/arch/parisc/kernel/sys_parisc.c
+@@ -61,8 +61,15 @@ static int get_offset(struct address_space *mapping)
+ 	return (unsigned long) mapping >> 8;
+ }
+ 
+-static unsigned long get_shared_area(struct address_space *mapping,
+-		unsigned long addr, unsigned long len, unsigned long pgoff)
++static unsigned long shared_align_offset(struct file *filp, unsigned long pgoff)
++{
++	struct address_space *mapping = filp ? filp->f_mapping : NULL;
++
++	return (get_offset(mapping) + pgoff) << PAGE_SHIFT;
++}
++
++static unsigned long get_shared_area(struct file *filp, unsigned long addr,
++		unsigned long len, unsigned long pgoff)
+ {
+ 	struct vm_unmapped_area_info info;
+ 
+@@ -71,7 +78,7 @@ static unsigned long get_shared_area(struct address_space *mapping,
+ 	info.low_limit = PAGE_ALIGN(addr);
+ 	info.high_limit = TASK_SIZE;
+ 	info.align_mask = PAGE_MASK & (SHMLBA - 1);
+-	info.align_offset = (get_offset(mapping) + pgoff) << PAGE_SHIFT;
++	info.align_offset = shared_align_offset(filp, pgoff);
+ 	return vm_unmapped_area(&info);
+ }
+ 
+@@ -82,20 +89,18 @@ unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr,
+ 		return -ENOMEM;
+ 	if (flags & MAP_FIXED) {
+ 		if ((flags & MAP_SHARED) &&
+-		    (addr - (pgoff << PAGE_SHIFT)) & (SHMLBA - 1))
++		    (addr - shared_align_offset(filp, pgoff)) & (SHMLBA - 1))
+ 			return -EINVAL;
+ 		return addr;
+ 	}
+ 	if (!addr)
+ 		addr = TASK_UNMAPPED_BASE;
+ 
+-	if (filp) {
+-		addr = get_shared_area(filp->f_mapping, addr, len, pgoff);
+-	} else if(flags & MAP_SHARED) {
+-		addr = get_shared_area(NULL, addr, len, pgoff);
+-	} else {
++	if (filp || (flags & MAP_SHARED))
++		addr = get_shared_area(filp, addr, len, pgoff);
++	else
+ 		addr = get_unshared_area(addr, len);
+-	}
++
+ 	return addr;
+ }
+ 
