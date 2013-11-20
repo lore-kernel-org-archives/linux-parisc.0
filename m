@@ -1,56 +1,35 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: improve SIGBUS/SIGSEGV error reporting
-Date: Mon, 18 Nov 2013 22:12:11 +0100
-Message-ID: <20131118211211.GA2552@p100.box>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+From: =?windows-1252?Q?Thibaut_Var=E8ne?= <T-Bone@parisc-linux.org>
+Subject: Re: parisc-linux.org losing hw hosting after this month
+Date: Wed, 20 Nov 2013 11:35:05 +0100
+Message-ID: <E00E313F-7563-4ACC-B5DF-F6BDFADFFC5F@parisc-linux.org>
+References: <20131105003509.GA19864@dannf.org> <1383612962.2150.4.camel@dabdike> <BLU0-SMTP219421FBE297D4BFF757F897F10@phx.gbl> <20131105022209.GC22393@dannf.org> <52786CFD.1070009@hp.com> <527D6428.8060205@gmx.de> <20131108223833.GB32729@dannf.org> <20131109082036.62C881A8@taggart.lackof.org> <57A18B42-217E-4588-A0AF-6E4275A501F4@parisc-linux.org> <20131109191725.DDCE31A1@taggart.lackof.org> <527E9A4E.5000008@gmx.de> <C9305BC2-086F-48E8-944C-D7751095769A@parisc-linux.org> <527EA9C9.2070309@gmx.de> <3B12942A-F2B8-459E-85AE-3AC9DB288D67@parisc-linux.org> <528285DF.6010305@gmx.de>
+Mime-Version: 1.0 (Mac OS X Mail 6.6 \(1510\))
+Content-Type: text/plain; charset=windows-1252
+Cc: Matt Taggart <matt@lackof.org>, dann frazier <dannf@dannf.org>,
+	"Craig Lamparter (ISS Linux)" <craig.lamparter@hp.com>,
+	John David Anglin <dave.anglin@bell.net>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	linux-parisc@vger.kernel.org, Matthew Wilcox <matthew@wil.cx>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <528285DF.6010305@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch fixes most of the Linux Test Project testcases, e.g. fstat05.
+On 12 nov. 2013, at 20:47, Helge Deller <deller@gmx.de> wrote:
+> On 11/11/2013 08:43 PM, Thibaut Var=E8ne wrote:
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+>> Finally, do we have an exact date as to when the A500 will be powere=
+d
+>> down?
+>=20
+> Again, I'm happy as long as it can live.
 
-diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index 7584a5d..13ff454 100644
---- a/arch/parisc/mm/fault.c
-+++ b/arch/parisc/mm/fault.c
-@@ -282,16 +282,31 @@ bad_area:
- #endif
- 		switch (code) {
- 		case 15:	/* Data TLB miss fault/Data page fault */
-+			/* Outside of vma area? -> send SIGSEGV */
-+			if (!vma ||
-+			    address < vma->vm_start || address > vma->vm_end)
-+				goto send_sigsegv;
-+
-+			/* Wrong permissions? -> send SIGSEGV */
-+			if ((vma->vm_flags & acc_type) != acc_type) {
-+				si.si_signo = SIGSEGV;
-+				si.si_code = SEGV_ACCERR;
-+				break;
-+			}
-+
-+			/* permissions & location OK, but end of mapped file? */
-+			/* fall through */
- 		case 17:	/* NA data TLB miss / page fault */
- 		case 18:	/* Unaligned access - PCXS only */
--			si.si_signo = SIGBUS;
--			si.si_code = BUS_ADRERR;
-+send_sigbus:		si.si_signo = SIGBUS;
-+			si.si_code = (code == 18) ? BUS_ADRALN : BUS_ADRERR;
- 			break;
- 		case 16:	/* Non-access instruction TLB miss fault */
- 		case 26:	/* PCXL: Data memory access rights trap */
- 		default:
--			si.si_signo = SIGSEGV;
--			si.si_code = SEGV_MAPERR;
-+send_sigsegv:		si.si_signo = SIGSEGV;
-+			si.si_code = (code == 26) ? SEGV_ACCERR : SEGV_MAPERR;
-+			break;
- 		}
- 		si.si_errno = 0;
- 		si.si_addr = (void __user *) address;
+I'm happy too, but then again, if we want a smooth transition, having a=
+ date for when to push the button would be nice...
+
+T-Bone--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
