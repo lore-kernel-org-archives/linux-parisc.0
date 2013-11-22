@@ -1,85 +1,58 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: fix re-mmap() of shared file to same fixed address
-Date: Wed, 20 Nov 2013 23:07:42 +0100
-Message-ID: <20131120220742.GA23304@p100.box>
+Subject: [PATCH] parisc: vmlinux.lds.S: fix linkage of the 64bit SMP debian
+ kernel
+Date: Fri, 22 Nov 2013 17:29:52 +0100
+Message-ID: <20131122162952.GA10699@ls3530.dhcp.wdf.sap.corp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	dave.anglin@bell.net
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-locale-gen from glibc showed a strange problem on parisc: 
-mmap2(NULL, 536870912, PROT_NONE, MAP_SHARED, 3, 0) = 0x42a54000
-mmap2(0x42a54000, 103860, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, 3, 0) = -1 EINVAL (Invalid argument)
+When building the 64bit SMP kernel for debian it may happen that it becomes too
+big so that functions in the .init.text or .exit.text may not be able to reach
+important kernel functions in the .text section. Main reason why this happens
+with a 64bit kernel build is that we include the linkage tables (.opd, .plt,
+.dlt) in that data section.  Those linkage tables tend to become huge, and
+since they are located between the .text and the .init sections the distance
+gets too far.
 
-Basically it was just trying to re-mmap() a file at the same address
-which it was given by a previous mmap() call. But this remapping failed
-with EINVAL.
+If the linker fails to link vmlinux, it will either crash without any error
+message, or it will - with newer linker versions - report the following error:
 
-The problem is, that when MAP_FIXED and MAP_SHARED flags were used, we didn't
-included the mapping-based offset when we verified the alignment of the given
-fixed address against the offset which we calculated it in the previous call.
+hppa64-linux-gnu-ld: drivers/built-in.o(.exit.text+0xc4): cannot reach _raw_read_lock
+drivers/built-in.o: In function `pdc_stable_exit':
+drivers/parisc/pdc_stable.o:(.exit.text+0xc4): relocation truncated to fit: R_PARISC_PCREL22F against symbol `_raw_read_lock' defined in .spinlock.text section in kernel/built-in.o
+
+We have three options to solve this issue:
+a) Turn on CONFIG_MLONGCALLS, which will instruct the compiler to use the
+   -mlongcall option. But this option will hurt performance.
+b) Tell the linker (via vmlinux.lds.S) to move the .init.text and .exit.text
+   sections into the normal .text section. Downside here is, that those sections
+   will not be discarded at runtime.
+c) Move the linkage tables somewhere else. Even if this would be possible I did
+   not find a nice solution without any other bad side effects.
+
+Since we are compiling a 64bit kernel which usually runs on machines with lots
+of memory, I preferred option b) since performance is usually more imortant than
+some lost memory area.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: stable....
 
-diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
-index 5dfd248..0d3a9d4 100644
---- a/arch/parisc/kernel/sys_parisc.c
-+++ b/arch/parisc/kernel/sys_parisc.c
-@@ -61,8 +61,15 @@ static int get_offset(struct address_space *mapping)
- 	return (unsigned long) mapping >> 8;
- }
- 
--static unsigned long get_shared_area(struct address_space *mapping,
--		unsigned long addr, unsigned long len, unsigned long pgoff)
-+static unsigned long shared_align_offset(struct file *filp, unsigned long pgoff)
-+{
-+	struct address_space *mapping = filp ? filp->f_mapping : NULL;
-+
-+	return (get_offset(mapping) + pgoff) << PAGE_SHIFT;
-+}
-+
-+static unsigned long get_shared_area(struct file *filp, unsigned long addr,
-+		unsigned long len, unsigned long pgoff)
- {
- 	struct vm_unmapped_area_info info;
- 
-@@ -71,7 +78,7 @@ static unsigned long get_shared_area(struct address_space *mapping,
- 	info.low_limit = PAGE_ALIGN(addr);
- 	info.high_limit = TASK_SIZE;
- 	info.align_mask = PAGE_MASK & (SHMLBA - 1);
--	info.align_offset = (get_offset(mapping) + pgoff) << PAGE_SHIFT;
-+	info.align_offset = shared_align_offset(filp, pgoff);
- 	return vm_unmapped_area(&info);
- }
- 
-@@ -82,20 +89,18 @@ unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr,
- 		return -ENOMEM;
- 	if (flags & MAP_FIXED) {
- 		if ((flags & MAP_SHARED) &&
--		    (addr - (pgoff << PAGE_SHIFT)) & (SHMLBA - 1))
-+		    (addr - shared_align_offset(filp, pgoff)) & (SHMLBA - 1))
- 			return -EINVAL;
- 		return addr;
+diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
+index 4bb095a..f16fa7d 100644
+--- a/arch/parisc/kernel/vmlinux.lds.S
++++ b/arch/parisc/kernel/vmlinux.lds.S
+@@ -67,6 +78,10 @@ SECTIONS
+ 		*(.fixup)
+ 		*(.lock.text)		/* out-of-line lock text */
+ 		*(.gnu.warning)
++#if defined(CONFIG_64BIT) && !defined(CONFIG_MLONGCALLS)
++		INIT_TEXT
++		EXIT_TEXT
++#endif
  	}
- 	if (!addr)
- 		addr = TASK_UNMAPPED_BASE;
- 
--	if (filp) {
--		addr = get_shared_area(filp->f_mapping, addr, len, pgoff);
--	} else if(flags & MAP_SHARED) {
--		addr = get_shared_area(NULL, addr, len, pgoff);
--	} else {
-+	if (filp || (flags & MAP_SHARED))
-+		addr = get_shared_area(filp, addr, len, pgoff);
-+	else
- 		addr = get_unshared_area(addr, len);
--	}
-+
- 	return addr;
- }
- 
+ 	/* End of text section */
+ 	_etext = .;
