@@ -1,75 +1,86 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH 08/24] parisc/uapi: Use Kbuild logic to provide
- <asm/types.h>
-Date: Mon, 25 Nov 2013 14:22:35 +0400
-Message-ID: <1385374955.2354.24.camel@dabdike>
-References: <1385369734-24893-1-git-send-email-geert@linux-m68k.org>
-	 <1385369734-24893-9-git-send-email-geert@linux-m68k.org>
-	 <1385373313.2354.16.camel@dabdike>
-	 <CAMuHMdUV4R0BK-eKkXeDD9B0pRLJjziUkvXZVvfWmuaK=dv9Mg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Linux-Arch <linux-arch@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCH] parisc: fix re-mmap() of shared file to same fixed address
+Date: Mon, 25 Nov 2013 08:19:39 -0500
+Message-ID: <BLU0-SMTP39364B117BB604785BBC7C97ED0@phx.gbl>
+References: <20131120220742.GA23304@p100.box> <201311242341.23301.vapier@gentoo.org>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@hansenpartnership.com>
+To: Mike Frysinger <vapier@gentoo.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdUV4R0BK-eKkXeDD9B0pRLJjziUkvXZVvfWmuaK=dv9Mg@mail.gmail.com>
+In-Reply-To: <201311242341.23301.vapier@gentoo.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2013-11-25 at 11:12 +0100, Geert Uytterhoeven wrote:
-> On Mon, Nov 25, 2013 at 10:55 AM, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > On Mon, 2013-11-25 at 09:55 +0100, Geert Uytterhoeven wrote:
-> >> Uapi <asm-generic/types.h> just includes <asm-generic/int-ll64.h>
-> >
-> > This really doesn't look like a good idea:  Firstly the default of
-> > asm-generic/types.h should *not* be int-ll64, because that's for 32 bit
-> > only and most processors are moving towards 64 bit.  Secondly parisc
-> 
-> In kernelspace, both 32 and 64 bit are ll64.
+On 24-Nov-13, at 11:41 PM, Mike Frysinger wrote:
 
-Not necessarily; the files exist because of variations in gcc.  Some
-versions of gcc have long long being 128 bits and for those you have to
-use int-l64.h
+> On Wednesday 20 November 2013 17:07:42 Helge Deller wrote:
+>> locale-gen from glibc showed a strange problem on parisc:
+>
+> pedantic: locale-gen is from distros while glibc itself provides  
+> localedef.
+>
+>> mmap2(NULL, 536870912, PROT_NONE, MAP_SHARED, 3, 0) = 0x42a54000
+>> mmap2(0x42a54000, 103860, PROT_READ|PROT_WRITE, MAP_SHARED| 
+>> MAP_FIXED, 3, 0)
+>> = -1 EINVAL (Invalid argument)
+>>
+>> Basically it was just trying to re-mmap() a file at the same address
+>> which it was given by a previous mmap() call. But this remapping  
+>> failed
+>> with EINVAL.
+>>
+>> The problem is, that when MAP_FIXED and MAP_SHARED flags were used,  
+>> we
+>> didn't included the mapping-based offset when we verified the  
+>> alignment of
+>> the given fixed address against the offset which we calculated it  
+>> in the
+>> previous call.
+>
+> hmm, which version of glibc were you trying ?  we landed this change  
+> recently:
+> https://sourceware.org/git/?p=glibc.git;a=commitdiff_plain;h=17db6e8d6b12f55e312fcab46faf5d332c806fb6
+>
+> it's part of glibc-2.18.  we know earlier versions of localedef  
+> failed on
+> systems like parisc, although it seemed to really only creep up on  
+> 64bit
+> kernels reliably.
 
-> > currently only has a 32 bit userspace, which is why the file is a simple
-> > include of int-ll64.h; however, people are working on 64 bit userspace
-> 
-> Sorry, I didn't know you support 32 bit userspace only.
-> 
-> > (albeit very slowly) and that file would then have to change.  If we
-> > take the file away someone will forget to add the changed file back.
-> 
-> However, is this a "new" 64 bit userspace ABI? If yes, you may want to
-> consider using ll64 in userspace on 64 bit too, like all "new" 64 bit ports
-> do (arm64, s390, sparc, tile, x86). Only legacy alpha, ia64, mips and
-> old ppc use l64.
-> 
-> Or follow the ppc64 road:
-> 
-> /*
->  * This is here because we used to use l64 for 64bit powerpc
->  * and we don't want to impact user mode with our change to ll64
->  * in the kernel.
->  *
->  * However, some user programs are fine with this.  They can
->  * flag __SANE_USERSPACE_TYPES__ to get int-ll64.h here.
->  */
-> #ifndef __KERNEL__
-> #if !defined(__SANE_USERSPACE_TYPES__) && defined(__powerpc64__)
-> # include <asm-generic/int-l64.h>
-> #else
-> # include <asm-generic/int-ll64.h>
-> #endif
-> #endif
+Besides the above, our mmap allocater doesn't work well when we have a  
+large number
+of small allocations:
+https://rt.perl.org:443/rt3/Ticket/Display.html?id=119567
 
-That's the one I was thinking we might need.
+Effectively, we allocate 4 MB per locale and soon run out of memory.
 
-James
+Problem is here:
+
+/*
+  * We need to know the offset to use.  Old scheme was to look for
+  * existing mapping and use the same offset.  New scheme is to use the
+  * address of the kernel data structure as the seed for the offset.
+  * We'll see how that works...
+  *
+  * The mapping is cacheline aligned, so there's no information in the  
+bottom
+  * few bits of the address.  We're looking for 10 bits (4MB / 4k), so  
+let's
+  * drop the bottom 8 bits and use bits 8-17.
+  */
+static int get_offset(struct address_space *mapping)
+{
+         return (unsigned long) mapping >> 8;
+}
+
+We rarely suceed in allocating two or more maps in the same 4 MB block
+of memory.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
 
 
