@@ -1,80 +1,60 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [PATCH] parisc: fix re-mmap() of shared file to same fixed address
-Date: Sun, 24 Nov 2013 23:41:22 -0500
-Message-ID: <201311242341.23301.vapier@gentoo.org>
-References: <20131120220742.GA23304@p100.box>
-Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1542009.HO7scgiSGA";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Cc: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	dave.anglin@bell.net
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20131120220742.GA23304@p100.box>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 08/24] parisc/uapi: Use Kbuild logic to provide <asm/types.h>
+Date: Mon, 25 Nov 2013 09:55:18 +0100
+Message-ID: <1385369734-24893-9-git-send-email-geert@linux-m68k.org>
+References: <1385369734-24893-1-git-send-email-geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1385369734-24893-1-git-send-email-geert@linux-m68k.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---nextPart1542009.HO7scgiSGA
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Uapi <asm-generic/types.h> just includes <asm-generic/int-ll64.h>
 
-On Wednesday 20 November 2013 17:07:42 Helge Deller wrote:
-> locale-gen from glibc showed a strange problem on parisc:
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+---
+ arch/parisc/include/uapi/asm/Kbuild  |    3 ++-
+ arch/parisc/include/uapi/asm/types.h |    6 ------
+ 2 files changed, 2 insertions(+), 7 deletions(-)
+ delete mode 100644 arch/parisc/include/uapi/asm/types.h
 
-pedantic: locale-gen is from distros while glibc itself provides localedef.
-
-> mmap2(NULL, 536870912, PROT_NONE, MAP_SHARED, 3, 0) =3D 0x42a54000
-> mmap2(0x42a54000, 103860, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, 3, =
-0)
-> =3D -1 EINVAL (Invalid argument)
->=20
-> Basically it was just trying to re-mmap() a file at the same address
-> which it was given by a previous mmap() call. But this remapping failed
-> with EINVAL.
->=20
-> The problem is, that when MAP_FIXED and MAP_SHARED flags were used, we
-> didn't included the mapping-based offset when we verified the alignment of
-> the given fixed address against the offset which we calculated it in the
-> previous call.
-
-hmm, which version of glibc were you trying ?  we landed this change recent=
-ly:
-https://sourceware.org/git/?p=3Dglibc.git;a=3Dcommitdiff_plain;h=3D17db6e8d=
-6b12f55e312fcab46faf5d332c806fb6
-
-it's part of glibc-2.18.  we know earlier versions of localedef failed on=20
-systems like parisc, although it seemed to really only creep up on 64bit=20
-kernels reliably.
-
-based on your description, it sounds like independent bugs, but it also see=
-ms=20
-a little coincidental ...
-=2Dmike
-
---nextPart1542009.HO7scgiSGA
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJSktTzAAoJEEFjO5/oN/WB2g0P/jmaGTwrdZ2Me4pz0UeAREdN
-3XS2c3Cj2LqjazfIlDbqBsiTiAlWUH4oTMbHcFs9m9wGpIjPhY+6y9DuMAFUGmts
-sxMDBY+KcP2LR07hYqfqM7yT8372ctKCLioKoq0kuepJCixhx9uKVF96X7XPO8l3
-/YJ7yqkp+sZfOPhCLE+1XjqQnIEk8EIKmkx5ZXI8mH68VNiQmSXpd80wLscKk67Y
-mIgbtWfH+OC2UWMqdMyCo5cHTa0X1WFCTpzRXD00QCJ+rTxEJbRpwVDmsH3wE+hi
-4N1UbVYyzPO8QgOSVgXv2hGeftpAxvclJ7I/Ut2DT3lWvrRBF+H2lXtboWFNbxiV
-+WC1WKnU5zp2PXx5o/TdCzNzZudzyJbj08JQVjwqdNT05o2Hmofp0AOnmSgDpoHN
-ViyqQJOHbafangTeEEt3CSGEeku65ZwFv55oWJ+wZz6NADWE0RW3YO7vsHFCwGet
-IV0Rm3PN3kalhs0JGrMntmAKabD5441scSGujqJ2jzN1LgvJLshxdakjFDeBPuCV
-M86NmY3YjRPA/N2Op0Q9ZeVPmEx8BbrmNYgNmDJC8CBB73tU/E1sbQMRUwkvD/8L
-QXzCgVknQQ3W2qQ8i3TvzmaWZJISeGjTiUWcoP/3w55oyCUatT6NFV747JRtxWt1
-qSH18T4v3rRv9RaRmbvl
-=3M15
------END PGP SIGNATURE-----
-
---nextPart1542009.HO7scgiSGA--
+diff --git a/arch/parisc/include/uapi/asm/Kbuild b/arch/parisc/include/uapi/asm/Kbuild
+index a580642555b6..e0da93254186 100644
+--- a/arch/parisc/include/uapi/asm/Kbuild
++++ b/arch/parisc/include/uapi/asm/Kbuild
+@@ -1,6 +1,8 @@
+ # UAPI Header export list
+ include include/uapi/asm-generic/Kbuild.asm
+ 
++generic-y += types.h
++
+ header-y += bitsperlong.h
+ header-y += byteorder.h
+ header-y += errno.h
+@@ -27,5 +29,4 @@ header-y += statfs.h
+ header-y += swab.h
+ header-y += termbits.h
+ header-y += termios.h
+-header-y += types.h
+ header-y += unistd.h
+diff --git a/arch/parisc/include/uapi/asm/types.h b/arch/parisc/include/uapi/asm/types.h
+deleted file mode 100644
+index 8866f9bbdeaf..000000000000
+--- a/arch/parisc/include/uapi/asm/types.h
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#ifndef _PARISC_TYPES_H
+-#define _PARISC_TYPES_H
+-
+-#include <asm-generic/int-ll64.h>
+-
+-#endif
+-- 
+1.7.9.5
