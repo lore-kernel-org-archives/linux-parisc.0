@@ -1,168 +1,80 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: vmlinux.lds.S: fix linkage of the 64bit SMP
- debian kernel
-Date: Sun, 24 Nov 2013 23:46:59 +0100
-Message-ID: <20131124224659.GA7628@p100.box>
-References: <20131122162952.GA10699@ls3530.dhcp.wdf.sap.corp>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [PATCH] parisc: fix re-mmap() of shared file to same fixed address
+Date: Sun, 24 Nov 2013 23:41:22 -0500
+Message-ID: <201311242341.23301.vapier@gentoo.org>
+References: <20131120220742.GA23304@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: multipart/signed;
+  boundary="nextPart1542009.HO7scgiSGA";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Cc: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	dave.anglin@bell.net
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20131122162952.GA10699@ls3530.dhcp.wdf.sap.corp>
+In-Reply-To: <20131120220742.GA23304@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Here is an updated (complete) patch.
+--nextPart1542009.HO7scgiSGA
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
+On Wednesday 20 November 2013 17:07:42 Helge Deller wrote:
+> locale-gen from glibc showed a strange problem on parisc:
 
-* Helge Deller <deller@gmx.de>:
-> When building the 64bit SMP kernel for debian it may happen that it becomes too
-> big so that functions in the .init.text or .exit.text may not be able to reach
-> important kernel functions in the .text section. Main reason why this happens
-> with a 64bit kernel build is that we include the linkage tables (.opd, .plt,
-> .dlt) in that data section.  Those linkage tables tend to become huge, and
-> since they are located between the .text and the .init sections the distance
-> gets too far.
-> 
-> If the linker fails to link vmlinux, it will either crash without any error
-> message, or it will - with newer linker versions - report the following error:
-> 
-> hppa64-linux-gnu-ld: drivers/built-in.o(.exit.text+0xc4): cannot reach _raw_read_lock
-> drivers/built-in.o: In function `pdc_stable_exit':
-> drivers/parisc/pdc_stable.o:(.exit.text+0xc4): relocation truncated to fit: R_PARISC_PCREL22F against symbol `_raw_read_lock' defined in .spinlock.text section in kernel/built-in.o
-> 
-> We have three options to solve this issue:
-> a) Turn on CONFIG_MLONGCALLS, which will instruct the compiler to use the
->    -mlongcall option. But this option will hurt performance.
-> b) Tell the linker (via vmlinux.lds.S) to move the .init.text and .exit.text
->    sections into the normal .text section. Downside here is, that those sections
->    will not be discarded at runtime.
-> c) Move the linkage tables somewhere else. Even if this would be possible I did
->    not find a nice solution without any other bad side effects.
-> 
-> Since we are compiling a 64bit kernel which usually runs on machines with lots
-> of memory, I preferred option b) since performance is usually more imortant than
-> some lost memory area.
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
+pedantic: locale-gen is from distros while glibc itself provides localedef.
 
-diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
-index 4bb095a..4d7a1f0 100644
---- a/arch/parisc/kernel/vmlinux.lds.S
-+++ b/arch/parisc/kernel/vmlinux.lds.S
-@@ -23,13 +23,23 @@
-  *    along with this program; if not, write to the Free Software
-  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-  */
-+
-+/*
-+ * Put page table entries (swapper_pg_dir) as the first thing in .bss. This
-+ * will ensure that it has .bss alignment (PAGE_SIZE).
-+ */
-+#define BSS_FIRST_SECTIONS	*(.data..vm0.pmd) \
-+				*(.data..vm0.pgd) \
-+				*(.data..vm0.pte)
-+
- #include <asm-generic/vmlinux.lds.h>
-+
- /* needed for the processor specific cache alignment size */	
- #include <asm/cache.h>
- #include <asm/page.h>
- #include <asm/asm-offsets.h>
- #include <asm/thread_info.h>
--	
-+
- /* ld script to make hppa Linux kernel */
- #ifndef CONFIG_64BIT
- OUTPUT_FORMAT("elf32-hppa-linux")
-@@ -53,6 +63,7 @@ SECTIONS
- 	.head ALIGN(16) : {
- 		HEAD_TEXT
- 	} = 0
-+
- 	.text ALIGN(16) : {
- 		TEXT_TEXT
- 		SCHED_TEXT
-@@ -64,17 +75,23 @@ SECTIONS
- 		*(.text.do_sigaltstack)
- 		*(.text.do_fork)
- 		*(.text.*)
-+#if defined(CONFIG_64BIT) && !defined(CONFIG_MLONGCALLS)
-+		EXIT_TEXT
-+#endif
- 		*(.fixup)
- 		*(.lock.text)		/* out-of-line lock text */
- 		*(.gnu.warning)
- 	}
-+#if defined(CONFIG_64BIT) && !defined(CONFIG_MLONGCALLS)
-+	INIT_TEXT_SECTION(16)
-+#endif
- 	/* End of text section */
- 	_etext = .;
- 
- 	/* Start of data section */
- 	_sdata = .;
- 
--	RODATA
-+	RO_DATA_SECTION(PAGE_SIZE)
- 
- 	/* writeable */
- 	/* Make sure this is page aligned so
-@@ -107,45 +124,36 @@ SECTIONS
- 	_edata = .;
- 
- 	/* BSS */
--	__bss_start = .;
--	/* page table entries need to be PAGE_SIZE aligned */
--	. = ALIGN(PAGE_SIZE);
--	.data..vmpages : {
--		*(.data..vm0.pmd)
--		*(.data..vm0.pgd)
--		*(.data..vm0.pte)
--	}
--	.bss : {
--		*(.bss)
--		*(COMMON)
--	}
--	__bss_stop = .;
-+	BSS_SECTION(16, PAGE_SIZE, 16)
-+
- 
- #ifdef CONFIG_64BIT
-+	/* Linkage tables are huge. */
- 	. = ALIGN(16);
- 	/* Linkage tables */
- 	.opd : {
- 		*(.opd)
--	} PROVIDE (__gp = .); 
-+	} PROVIDE (__gp = .);
- 	.plt : {
- 		*(.plt)
--	} 
-+	}
- 	.dlt : {
- 		*(.dlt)
- 	}
- #endif
- 
--	/* reserve space for interrupt stack by aligning __init* to 16k */
--	. = ALIGN(16384);
--	__init_begin = .;
--	INIT_TEXT_SECTION(16384)
- 	. = ALIGN(PAGE_SIZE);
--	INIT_DATA_SECTION(16)
-+	__init_begin = .;
-+
-+#if !defined(CONFIG_64BIT) || defined(CONFIG_MLONGCALLS)
-+	INIT_TEXT_SECTION(16)
- 	/* we have to discard exit text and such at runtime, not link time */
- 	.exit.text :
- 	{
- 		EXIT_TEXT
- 	}
-+#endif
-+	INIT_DATA_SECTION(16)
- 	.exit.data :
- 	{
- 		EXIT_DATA
+> mmap2(NULL, 536870912, PROT_NONE, MAP_SHARED, 3, 0) =3D 0x42a54000
+> mmap2(0x42a54000, 103860, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, 3, =
+0)
+> =3D -1 EINVAL (Invalid argument)
+>=20
+> Basically it was just trying to re-mmap() a file at the same address
+> which it was given by a previous mmap() call. But this remapping failed
+> with EINVAL.
+>=20
+> The problem is, that when MAP_FIXED and MAP_SHARED flags were used, we
+> didn't included the mapping-based offset when we verified the alignment of
+> the given fixed address against the offset which we calculated it in the
+> previous call.
+
+hmm, which version of glibc were you trying ?  we landed this change recent=
+ly:
+https://sourceware.org/git/?p=3Dglibc.git;a=3Dcommitdiff_plain;h=3D17db6e8d=
+6b12f55e312fcab46faf5d332c806fb6
+
+it's part of glibc-2.18.  we know earlier versions of localedef failed on=20
+systems like parisc, although it seemed to really only creep up on 64bit=20
+kernels reliably.
+
+based on your description, it sounds like independent bugs, but it also see=
+ms=20
+a little coincidental ...
+=2Dmike
+
+--nextPart1542009.HO7scgiSGA
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJSktTzAAoJEEFjO5/oN/WB2g0P/jmaGTwrdZ2Me4pz0UeAREdN
+3XS2c3Cj2LqjazfIlDbqBsiTiAlWUH4oTMbHcFs9m9wGpIjPhY+6y9DuMAFUGmts
+sxMDBY+KcP2LR07hYqfqM7yT8372ctKCLioKoq0kuepJCixhx9uKVF96X7XPO8l3
+/YJ7yqkp+sZfOPhCLE+1XjqQnIEk8EIKmkx5ZXI8mH68VNiQmSXpd80wLscKk67Y
+mIgbtWfH+OC2UWMqdMyCo5cHTa0X1WFCTpzRXD00QCJ+rTxEJbRpwVDmsH3wE+hi
+4N1UbVYyzPO8QgOSVgXv2hGeftpAxvclJ7I/Ut2DT3lWvrRBF+H2lXtboWFNbxiV
++WC1WKnU5zp2PXx5o/TdCzNzZudzyJbj08JQVjwqdNT05o2Hmofp0AOnmSgDpoHN
+ViyqQJOHbafangTeEEt3CSGEeku65ZwFv55oWJ+wZz6NADWE0RW3YO7vsHFCwGet
+IV0Rm3PN3kalhs0JGrMntmAKabD5441scSGujqJ2jzN1LgvJLshxdakjFDeBPuCV
+M86NmY3YjRPA/N2Op0Q9ZeVPmEx8BbrmNYgNmDJC8CBB73tU/E1sbQMRUwkvD/8L
+QXzCgVknQQ3W2qQ8i3TvzmaWZJISeGjTiUWcoP/3w55oyCUatT6NFV747JRtxWt1
+qSH18T4v3rRv9RaRmbvl
+=3M15
+-----END PGP SIGNATURE-----
+
+--nextPart1542009.HO7scgiSGA--
