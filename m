@@ -1,46 +1,56 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] kernel/extable: fix address-checks for core_kernel and init
- areas
-Date: Thu, 28 Nov 2013 09:16:33 +0100
-Message-ID: <20131128081633.GA2111@ls3530.box>
+Subject: [PATCH] parisc: use kernel_text_address() in unwind functions
+Date: Sat, 30 Nov 2013 21:23:20 +0100
+Message-ID: <20131130202320.GA30998@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Linux Kernel <linux-kernel@vger.kernel.org>,
-	linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Ingo Molnar <mingo@elte.hu>,
-	Rusty Russell <rusty@rustcorp.com.au>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The init_kernel_text() and core_kernel_text() functions should not include the
-labels _einittext and _etext when checking if an address is inside the .text or
-.init sections.
-
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/kernel/extable.c b/kernel/extable.c
-index 832cb28..763faf0 100644
---- a/kernel/extable.c
-+++ b/kernel/extable.c
-@@ -61,7 +61,7 @@ const struct exception_table_entry *search_exception_tables(unsigned long addr)
- static inline int init_kernel_text(unsigned long addr)
- {
- 	if (addr >= (unsigned long)_sinittext &&
--	    addr <= (unsigned long)_einittext)
-+	    addr < (unsigned long)_einittext)
- 		return 1;
- 	return 0;
+diff --git a/arch/parisc/kernel/unwind.c b/arch/parisc/kernel/unwind.c
+index 76ed62e..ddd988b 100644
+--- a/arch/parisc/kernel/unwind.c
++++ b/arch/parisc/kernel/unwind.c
+@@ -168,7 +168,7 @@ void unwind_table_remove(struct unwind_table *table)
  }
-@@ -69,7 +69,7 @@ static inline int init_kernel_text(unsigned long addr)
- int core_kernel_text(unsigned long addr)
- {
- 	if (addr >= (unsigned long)_stext &&
--	    addr <= (unsigned long)_etext)
-+	    addr < (unsigned long)_etext)
- 		return 1;
  
- 	if (system_state == SYSTEM_BOOTING &&
+ /* Called from setup_arch to import the kernel unwind info */
+-int unwind_init(void)
++int __init unwind_init(void)
+ {
+ 	long start, stop;
+ 	register unsigned long gp __asm__ ("r27");
+@@ -233,7 +233,6 @@ static void unwind_frame_regs(struct unwind_frame_info *info)
+ 	e = find_unwind_entry(info->ip);
+ 	if (e == NULL) {
+ 		unsigned long sp;
+-		extern char _stext[], _etext[];
+ 
+ 		dbg("Cannot find unwind entry for 0x%lx; forced unwinding\n", info->ip);
+ 
+@@ -281,8 +280,7 @@ static void unwind_frame_regs(struct unwind_frame_info *info)
+ 				break;
+ 			info->prev_ip = tmp;
+ 			sp = info->prev_sp;
+-		} while (info->prev_ip < (unsigned long)_stext ||
+-			 info->prev_ip > (unsigned long)_etext);
++		} while (!kernel_text_address(info->prev_ip));
+ 
+ 		info->rp = 0;
+ 
+@@ -435,9 +433,8 @@ unsigned long return_address(unsigned int level)
+ 	do {
+ 		if (unwind_once(&info) < 0 || info.ip == 0)
+ 			return 0;
+-		if (!__kernel_text_address(info.ip)) {
++		if (!kernel_text_address(info.ip))
+ 			return 0;
+-		}
+ 	} while (info.ip && level--);
+ 
+ 	return info.ip;
