@@ -1,88 +1,174 @@
-From: Luis Henriques <luis.henriques@canonical.com>
-Subject: Re: [PATCH] parisc: break out SOCK_NONBLOCK define to own asm header
- file
-Date: Tue, 3 Dec 2013 19:28:05 +0000
-Message-ID: <20131203192805.GA15906@hercules>
-References: <20131130224227.GA23795@p100.box>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: update 64bit defconfigs and use SIL680 instead of
+ SIIMAGE driver
+Date: Tue, 3 Dec 2013 23:02:26 +0100
+Message-ID: <20131203220226.GA23556@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: stable@vger.kernel.org, linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20131130224227.GA23795@p100.box>
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Nov 30, 2013 at 11:42:27PM +0100, Helge Deller wrote:
-> Dear stable kernel maintainers,
-> 
-> Can you please schedule this patch for inclusion starting from kernel 3.7+ ?
-> 
-> Upstream commit:
->  38c7937 parisc: break out SOCK_NONBLOCK define to own asm header file
-> 
-> Cherry-picking will probably not work easily because of this patch which went
-> in before: 62748f3 net: introduce SO_MAX_PACING_RATE
-> 
-> Thanks,
-> Helge
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Thank you, I am queuing this patch for the 3.11 kernel.
-
-Cheers,
---
-Luis
-
-
-> 
-> ---------------- parisc: break out SOCK_NONBLOCK define to own asm
-> header file
-> 
-> Break SOCK_NONBLOCK out to its own asm-file as other arches do. This
-> fixes build errors with auditd and probably other packages.
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> 
-> diff --git a/arch/parisc/include/asm/socket.h b/arch/parisc/include/asm/socket.h
-> new file mode 100644
-> index 0000000..748016c
-> --- /dev/null
-> +++ b/arch/parisc/include/asm/socket.h
-> @@ -0,0 +1,11 @@
-> +#ifndef _ASM_SOCKET_H
-> +#define _ASM_SOCKET_H
-> +
-> +#include <uapi/asm/socket.h>
-> +
-> +/* O_NONBLOCK clashes with the bits used for socket types.  Therefore we
-> + * have to define SOCK_NONBLOCK to a different value here.
-> + */
-> +#define SOCK_NONBLOCK	0x40000000
-> +
-> +#endif /* _ASM_SOCKET_H */
-> diff --git a/arch/parisc/include/uapi/asm/socket.h b/arch/parisc/include/uapi/asm/socket.h
-> index 71700e6..9f2174f 100644
-> --- a/arch/parisc/include/uapi/asm/socket.h
-> +++ b/arch/parisc/include/uapi/asm/socket.h
-> @@ -1,5 +1,5 @@
-> -#ifndef _ASM_SOCKET_H
-> -#define _ASM_SOCKET_H
-> +#ifndef _UAPI_ASM_SOCKET_H
-> +#define _UAPI_ASM_SOCKET_H
->  
->  #include <asm/sockios.h>
->  
-> @@ -75,9 +75,4 @@
->  
->  #define SO_BUSY_POLL		0x4027
->  
-> -/* O_NONBLOCK clashes with the bits used for socket types.  Therefore we
-> - * have to define SOCK_NONBLOCK to a different value here.
-> - */
-> -#define SOCK_NONBLOCK   0x40000000
-> -
-> -#endif /* _ASM_SOCKET_H */
-> +#endif /* _UAPI_ASM_SOCKET_H */
-> --
-> To unsubscribe from this list: send the line "unsubscribe stable" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/arch/parisc/configs/c3000_defconfig b/arch/parisc/configs/c3000_defconfig
+index ec1b014..acacd34 100644
+--- a/arch/parisc/configs/c3000_defconfig
++++ b/arch/parisc/configs/c3000_defconfig
+@@ -50,7 +50,7 @@ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_IDE=y
+ CONFIG_BLK_DEV_IDECD=y
+ CONFIG_BLK_DEV_NS87415=y
+-CONFIG_BLK_DEV_SIIMAGE=m
++CONFIG_PATA_SIL680=m
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ CONFIG_CHR_DEV_ST=y
+diff --git a/arch/parisc/configs/c8000_defconfig b/arch/parisc/configs/c8000_defconfig
+index bb81d02..8249ac9 100644
+--- a/arch/parisc/configs/c8000_defconfig
++++ b/arch/parisc/configs/c8000_defconfig
+@@ -80,8 +80,6 @@ CONFIG_IDE=y
+ CONFIG_BLK_DEV_IDECD=y
+ CONFIG_BLK_DEV_PLATFORM=y
+ CONFIG_BLK_DEV_GENERIC=y
+-CONFIG_BLK_DEV_SIIMAGE=y
+-CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ CONFIG_CHR_DEV_ST=m
+ CONFIG_BLK_DEV_SR=m
+@@ -93,6 +91,8 @@ CONFIG_SCSI_FC_ATTRS=y
+ CONFIG_SCSI_SAS_LIBSAS=m
+ CONFIG_ISCSI_TCP=m
+ CONFIG_ISCSI_BOOT_SYSFS=m
++CONFIG_ATA=y
++CONFIG_PATA_SIL680=y
+ CONFIG_FUSION=y
+ CONFIG_FUSION_SPI=y
+ CONFIG_FUSION_SAS=y
+@@ -113,9 +113,8 @@ CONFIG_INPUT_FF_MEMLESS=m
+ # CONFIG_KEYBOARD_ATKBD is not set
+ # CONFIG_KEYBOARD_HIL_OLD is not set
+ # CONFIG_KEYBOARD_HIL is not set
+-CONFIG_MOUSE_PS2=m
++# CONFIG_MOUSE_PS2 is not set
+ CONFIG_INPUT_MISC=y
+-CONFIG_INPUT_CM109=m
+ CONFIG_SERIO_SERPORT=m
+ CONFIG_SERIO_PARKBD=m
+ CONFIG_SERIO_GSCPS2=m
+@@ -166,34 +165,6 @@ CONFIG_SND_VERBOSE_PRINTK=y
+ CONFIG_SND_AD1889=m
+ # CONFIG_SND_USB is not set
+ # CONFIG_SND_GSC is not set
+-CONFIG_HID_A4TECH=m
+-CONFIG_HID_APPLE=m
+-CONFIG_HID_BELKIN=m
+-CONFIG_HID_CHERRY=m
+-CONFIG_HID_CHICONY=m
+-CONFIG_HID_CYPRESS=m
+-CONFIG_HID_DRAGONRISE=m
+-CONFIG_HID_EZKEY=m
+-CONFIG_HID_KYE=m
+-CONFIG_HID_GYRATION=m
+-CONFIG_HID_TWINHAN=m
+-CONFIG_HID_KENSINGTON=m
+-CONFIG_HID_LOGITECH=m
+-CONFIG_HID_LOGITECH_DJ=m
+-CONFIG_HID_MICROSOFT=m
+-CONFIG_HID_MONTEREY=m
+-CONFIG_HID_NTRIG=m
+-CONFIG_HID_ORTEK=m
+-CONFIG_HID_PANTHERLORD=m
+-CONFIG_HID_PETALYNX=m
+-CONFIG_HID_SAMSUNG=m
+-CONFIG_HID_SUNPLUS=m
+-CONFIG_HID_GREENASIA=m
+-CONFIG_HID_SMARTJOYPLUS=m
+-CONFIG_HID_TOPSEED=m
+-CONFIG_HID_THRUSTMASTER=m
+-CONFIG_HID_ZEROPLUS=m
+-CONFIG_USB_HID=m
+ CONFIG_USB=y
+ CONFIG_USB_OHCI_HCD=y
+ CONFIG_USB_STORAGE=y
+diff --git a/arch/parisc/configs/generic-64bit_defconfig b/arch/parisc/configs/generic-64bit_defconfig
+index 1413b8d..28c1b5d 100644
+--- a/arch/parisc/configs/generic-64bit_defconfig
++++ b/arch/parisc/configs/generic-64bit_defconfig
+@@ -67,7 +67,6 @@ CONFIG_IDE_GD=m
+ CONFIG_IDE_GD_ATAPI=y
+ CONFIG_BLK_DEV_IDECD=m
+ CONFIG_BLK_DEV_NS87415=y
+-CONFIG_BLK_DEV_SIIMAGE=y
+ # CONFIG_SCSI_PROC_FS is not set
+ CONFIG_BLK_DEV_SD=y
+ CONFIG_BLK_DEV_SR=y
+@@ -81,6 +80,7 @@ CONFIG_SCSI_ZALON=y
+ CONFIG_SCSI_QLA_ISCSI=m
+ CONFIG_SCSI_DH=y
+ CONFIG_ATA=y
++CONFIG_PATA_SIL680=y
+ CONFIG_ATA_GENERIC=y
+ CONFIG_MD=y
+ CONFIG_MD_LINEAR=m
+@@ -161,7 +161,7 @@ CONFIG_SLIP_MODE_SLIP6=y
+ CONFIG_INPUT_EVDEV=y
+ # CONFIG_KEYBOARD_HIL_OLD is not set
+ # CONFIG_KEYBOARD_HIL is not set
+-# CONFIG_INPUT_MOUSE is not set
++# CONFIG_MOUSE_PS2 is not set
+ CONFIG_INPUT_MISC=y
+ CONFIG_SERIO_SERPORT=m
+ # CONFIG_HP_SDC is not set
+@@ -215,32 +215,7 @@ CONFIG_BACKLIGHT_LCD_SUPPORT=y
+ CONFIG_FRAMEBUFFER_CONSOLE_ROTATION=y
+ CONFIG_LOGO=y
+ # CONFIG_LOGO_LINUX_MONO is not set
+-CONFIG_HID=m
+ CONFIG_HIDRAW=y
+-CONFIG_HID_DRAGONRISE=m
+-CONFIG_DRAGONRISE_FF=y
+-CONFIG_HID_KYE=m
+-CONFIG_HID_GYRATION=m
+-CONFIG_HID_TWINHAN=m
+-CONFIG_LOGITECH_FF=y
+-CONFIG_LOGIRUMBLEPAD2_FF=y
+-CONFIG_HID_NTRIG=m
+-CONFIG_HID_PANTHERLORD=m
+-CONFIG_PANTHERLORD_FF=y
+-CONFIG_HID_PETALYNX=m
+-CONFIG_HID_SAMSUNG=m
+-CONFIG_HID_SONY=m
+-CONFIG_HID_SUNPLUS=m
+-CONFIG_HID_GREENASIA=m
+-CONFIG_GREENASIA_FF=y
+-CONFIG_HID_SMARTJOYPLUS=m
+-CONFIG_SMARTJOYPLUS_FF=y
+-CONFIG_HID_TOPSEED=m
+-CONFIG_HID_THRUSTMASTER=m
+-CONFIG_THRUSTMASTER_FF=y
+-CONFIG_HID_ZEROPLUS=m
+-CONFIG_ZEROPLUS_FF=y
+-CONFIG_USB_HID=m
+ CONFIG_HID_PID=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB=y
+@@ -250,13 +225,8 @@ CONFIG_USB_DYNAMIC_MINORS=y
+ CONFIG_USB_MON=m
+ CONFIG_USB_WUSB_CBAF=m
+ CONFIG_USB_XHCI_HCD=m
+-CONFIG_USB_EHCI_HCD=m
+-CONFIG_USB_OHCI_HCD=m
+-CONFIG_USB_R8A66597_HCD=m
+-CONFIG_USB_ACM=m
+-CONFIG_USB_PRINTER=m
+-CONFIG_USB_WDM=m
+-CONFIG_USB_TMC=m
++CONFIG_USB_EHCI_HCD=y
++CONFIG_USB_OHCI_HCD=y
+ CONFIG_NEW_LEDS=y
+ CONFIG_LEDS_CLASS=y
+ CONFIG_LEDS_TRIGGERS=y
