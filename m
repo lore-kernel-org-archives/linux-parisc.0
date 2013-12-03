@@ -1,54 +1,44 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc updates for v3.13
-Date: Tue, 3 Dec 2013 23:51:35 +0100
-Message-ID: <20131203225135.GA24347@p100.box>
+From: David Rientjes <rientjes@google.com>
+Subject: Re: [PATCH] mm, show_mem: Remove SHOW_MEM_FILTER_PAGE_COUNT
+Date: Tue, 3 Dec 2013 15:41:38 -0800 (PST)
+Message-ID: <alpine.DEB.2.02.1312031541240.5946@chino.kir.corp.google.com>
+References: <20131016104228.GM11028@suse.de> <alpine.DEB.2.02.1310161809470.12062@chino.kir.corp.google.com> <20131203145721.GQ11295@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Andrew Morton <akpm@linux-foundation.org>, Tony Luck <tony.luck@intel.com>,
+    Russell King <linux@arm.linux.org.uk>,
+    James Bottomley <jejb@parisc-linux.org>,
+    linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+    linux-parisc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+    LKML <linux-kernel@vger.kernel.org>
+To: Mel Gorman <mgorman@suse.de>
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <20131203145721.GQ11295@suse.de>
+List-ID: <linux-mm.kvack.org>
 
-Hi Linus,
+On Tue, 3 Dec 2013, Mel Gorman wrote:
 
-please pull the latest parisc fixes from:
+> Commit 4b59e6c4 (mm, show_mem: suppress page counts in non-blockable
+> contexts) introduced SHOW_MEM_FILTER_PAGE_COUNT to suppress PFN walks
+> on large memory machines. Commit c78e9363 (mm: do not walk all of system
+> memory during show_mem) avoided a PFN walk in the generic show_mem helper
+> which removes the requirement for SHOW_MEM_FILTER_PAGE_COUNT in that case.
+> 
+> This patch removes PFN walkers from the arch-specific implementations that
+> report on a per-node or per-zone granularity. ARM and unicore32 still do
+> a PFN walk as they report memory usage on each bank which is a much finer
+> granularity where the debugging information may still be of use. As the
+> remaining arches doing PFN walks have relatively small amounts of memory,
+> this patch simply removes SHOW_MEM_FILTER_PAGE_COUNT.
+> 
+> Signed-off-by: Mel Gorman <mgorman@suse.de>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.13
+Acked-by: David Rientjes <rientjes@google.com>
 
-The major changes are:
-- a fix for the mmap(MAP_FIXED|MAP_SHARED) syscall to the same address which
-  was already given in a previous call (fixes locale-gen on debian)
-- change the memory layout of the kernel to avoid the need for the -mlong-calls
-  compiler option (depends on commit 5ecbe3c - kernel/extable: fix
-  address-checks for core_kernel and init areas)
-- defconfig updates, e.g. use the SIL680 driver instead of the SIIMAGE driver
-- add more parisc machine names to the machine database
+Thanks!
 
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Chen Gang (1):
-      parisc: remove empty SERIAL_PORT_DFNS in serial.h
-
-Helge Deller (6):
-      parisc: fix mmap(MAP_FIXED|MAP_SHARED) to already mmapped address
-      parisc: add some more machine names to hardware database
-      parisc: use kernel_text_address() in unwind functions
-      parisc: fix kernel memory layout in vmlinux.ld.S
-      parisc: remove CONFIG_MLONGCALLS=y from defconfigs
-      parisc: update 64bit defconfigs and use SIL680 instead of SIIMAGE driver
-
- arch/parisc/configs/c3000_defconfig         |   2 +-
- arch/parisc/configs/c8000_defconfig         |  36 +-------
- arch/parisc/configs/generic-64bit_defconfig |  39 +-------
- arch/parisc/include/asm/serial.h            |   2 -
- arch/parisc/kernel/hardware.c               |   7 +-
- arch/parisc/kernel/head.S                   |   6 +-
- arch/parisc/kernel/sys_parisc.c             |  25 +++--
- arch/parisc/kernel/unwind.c                 |   9 +-
- arch/parisc/kernel/vmlinux.lds.S            | 138 ++++++++++++----------------
- arch/parisc/mm/init.c                       |  19 +++-
- 10 files changed, 110 insertions(+), 173 deletions(-)
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
