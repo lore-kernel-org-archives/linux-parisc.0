@@ -1,42 +1,95 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] parisc: fix cache flushing in kmap/kunmap API implementation for aio
-Date: Tue, 3 Dec 2013 19:35:19 -0500
-Message-ID: <BLU0-SMTP902C0BE78FF0A1636E894797D40@phx.gbl>
-References: <20131201211832.GA15998@p100.box> <1386115682.2166.125.camel@dabdike.int.hansenpartnership.com>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1386115682.2166.125.camel@dabdike.int.hansenpartnership.com>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: [PATCH 5/9] parisc/pci: Repalce local inline function with PCI standard marco
+Date: Thu, 5 Dec 2013 19:59:38 +0800
+Message-ID: <1386244778-22820-1-git-send-email-wangyijing@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Cc: <linux-pci@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	Yijing Wang <wangyijing@huawei.com>,
+	"Hanjun Guo" <guohanjun@huawei.com>
+To: Bjorn Helgaas <bhelgaas@google.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 3-Dec-13, at 7:08 PM, James Bottomley wrote:
+Repalce local inline function is_pci_dev() with PCI standard marco
+dev_is_pci().
 
-> On Sun, 2013-12-01 at 22:18 +0100, Helge Deller wrote:
->> This is now the next try to fix the aio bug in our kmap/kunmap
->> implementation. It's basically stuff from
->
-> I thought the implementation required us to move to coherency  
-> management
-> in the kmap API?, in which case ...
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+---
+ arch/parisc/kernel/drivers.c |   22 +++++-----------------
+ 1 files changed, 5 insertions(+), 17 deletions(-)
 
-This is what I've been saying to Helge.
-
-We don't fully understand why we need to flush unconditionally to fix  
-the aio bug
-in kunmap.  I can see it for coherency and when different non coherent  
-caches are
-involved (e.g., I & D).  Could this be SMP related?
-
-I think if we understand the kunmap case, we will also understand the  
-kmap case.
-At the moment, the fix is just based on testing.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
+index 14285ca..dba508f 100644
+--- a/arch/parisc/kernel/drivers.c
++++ b/arch/parisc/kernel/drivers.c
+@@ -282,18 +282,6 @@ find_pa_parent_type(const struct parisc_device *padev, int type)
+ 	return NULL;
+ }
+ 
+-#ifdef CONFIG_PCI
+-static inline int is_pci_dev(struct device *dev)
+-{
+-	return dev->bus == &pci_bus_type;
+-}
+-#else
+-static inline int is_pci_dev(struct device *dev)
+-{
+-	return 0;
+-}
+-#endif
+-
+ /*
+  * get_node_path fills in @path with the firmware path to the device.
+  * Note that if @node is a parisc device, we don't fill in the 'mod' field.
+@@ -306,7 +294,7 @@ static void get_node_path(struct device *dev, struct hardware_path *path)
+ 	int i = 5;
+ 	memset(&path->bc, -1, 6);
+ 
+-	if (is_pci_dev(dev)) {
++	if (dev_is_pci(dev)) {
+ 		unsigned int devfn = to_pci_dev(dev)->devfn;
+ 		path->mod = PCI_FUNC(devfn);
+ 		path->bc[i--] = PCI_SLOT(devfn);
+@@ -314,7 +302,7 @@ static void get_node_path(struct device *dev, struct hardware_path *path)
+ 	}
+ 
+ 	while (dev != &root) {
+-		if (is_pci_dev(dev)) {
++		if (dev_is_pci(dev)) {
+ 			unsigned int devfn = to_pci_dev(dev)->devfn;
+ 			path->bc[i--] = PCI_SLOT(devfn) | (PCI_FUNC(devfn)<< 5);
+ 		} else if (dev->bus == &parisc_bus_type) {
+@@ -695,7 +683,7 @@ static int check_parent(struct device * dev, void * data)
+ 		if (dev->bus == &parisc_bus_type) {
+ 			if (match_parisc_device(dev, d->index, d->modpath))
+ 				d->dev = dev;
+-		} else if (is_pci_dev(dev)) {
++		} else if (dev_is_pci(dev)) {
+ 			if (match_pci_device(dev, d->index, d->modpath))
+ 				d->dev = dev;
+ 		} else if (dev->bus == NULL) {
+@@ -753,7 +741,7 @@ struct device *hwpath_to_device(struct hardware_path *modpath)
+ 		if (!parent)
+ 			return NULL;
+ 	}
+-	if (is_pci_dev(parent)) /* pci devices already parse MOD */
++	if (dev_is_pci(parent)) /* pci devices already parse MOD */
+ 		return parent;
+ 	else
+ 		return parse_tree_node(parent, 6, modpath);
+@@ -772,7 +760,7 @@ void device_to_hwpath(struct device *dev, struct hardware_path *path)
+ 		padev = to_parisc_device(dev);
+ 		get_node_path(dev->parent, path);
+ 		path->mod = padev->hw_path;
+-	} else if (is_pci_dev(dev)) {
++	} else if (dev_is_pci(dev)) {
+ 		get_node_path(dev, path);
+ 	}
+ }
+-- 
+1.7.1
