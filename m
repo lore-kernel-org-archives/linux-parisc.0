@@ -1,42 +1,43 @@
-From: Benjamin Herrenschmidt <benh@au1.ibm.com>
+From: Yijing Wang <wangyijing@huawei.com>
 Subject: Re: [PATCH 1/9] PCI: Use dev_is_pci() to check whether it is pci
  device
-Date: Tue, 10 Dec 2013 14:59:33 +1100
-Message-ID: <1386647973.32037.57.camel@pasglop>
-References: <1386244373-35796-1-git-send-email-wangyijing@huawei.com>
-	 <20131210000154.GE4699@google.com>
+Date: Tue, 10 Dec 2013 15:38:16 +0800
+Message-ID: <52A6C4E8.5030003@huawei.com>
+References: <1386244373-35796-1-git-send-email-wangyijing@huawei.com> <20131210000154.GE4699@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Yijing Wang <wangyijing@huawei.com>, linux-ia64@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-pci@vger.kernel.org,
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	Hanjun Guo <guohanjun@huawei.com>,
-	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-	sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@lists.infradead.org
+	<linux-alpha@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+	<linuxppc-dev@lists.ozlabs.org>, <sparclinux@vger.kernel.org>
 To: Bjorn Helgaas <bhelgaas@google.com>
-Return-path: <linux-pci-owner@vger.kernel.org>
+Return-path: <sparclinux-owner@vger.kernel.org>
 In-Reply-To: <20131210000154.GE4699@google.com>
-List-ID: <linux-pci.vger.kernel.org>
+List-ID: <sparclinux.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2013-12-09 at 17:01 -0700, Bjorn Helgaas wrote:
+On 2013/12/10 8:01, Bjorn Helgaas wrote:
 > [+cc arch lists]
 > 
 > On Thu, Dec 05, 2013 at 07:52:53PM +0800, Yijing Wang wrote:
-> > Use dev_is_pci() instead of directly compare
-> > pci_bus_type to check whether it is pci device.
-> > 
-> > Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+>> Use dev_is_pci() instead of directly compare
+>> pci_bus_type to check whether it is pci device.
+>>
+>> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
 > 
 > I applied all these to my pci/yijing-dev_is_pci branch for v3.14, thanks!
 > 
 > Browse them here: http://git.kernel.org/cgit/linux/kernel/git/helgaas/pci.git/log/?h=pci/yijing-dev_is_pci
 
-Ah ok. I also have the powerpc one in powerpc -next, no biggie though
+Thanks!
+Bjorn, I sent the "[patch v2 4/9] sparc/PCI: Use dev_is_pci() to identify PCI devices" to
+correct build error found by kbuild test, Because I have no sparc platform, I guess the build error was introduced
+by I remove the CONFIG_PCI #ifdef in that patch. Now I keep the CONFIG_PCI code and that patch should be no functional change.
 
-Cheers,
-Ben.
 
+> 
 > This should be no functional change.
 > 
 >  arch/alpha/kernel/pci_iommu.c        |    2 +-
@@ -55,32 +56,37 @@ Ben.
 > 
 > Bjorn
 > 
-> > ---
-> >  drivers/pci/pci-acpi.c |    2 +-
-> >  1 files changed, 1 insertions(+), 1 deletions(-)
-> > 
-> > diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> > index 577074e..e0431f1 100644
-> > --- a/drivers/pci/pci-acpi.c
-> > +++ b/drivers/pci/pci-acpi.c
-> > @@ -358,7 +358,7 @@ static void pci_acpi_cleanup(struct device *dev)
-> >  
-> >  static bool pci_acpi_bus_match(struct device *dev)
-> >  {
-> > -	return dev->bus == &pci_bus_type;
-> > +	return dev_is_pci(dev);
-> >  }
-> >  
-> >  static struct acpi_bus_type acpi_pci_bus = {
-> > -- 
-> > 1.7.1
-> > 
-> > 
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe linux-pci" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> _______________________________________________
-> Linuxppc-dev mailing list
-> Linuxppc-dev@lists.ozlabs.org
-> https://lists.ozlabs.org/listinfo/linuxppc-dev
+>> ---
+>>  drivers/pci/pci-acpi.c |    2 +-
+>>  1 files changed, 1 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+>> index 577074e..e0431f1 100644
+>> --- a/drivers/pci/pci-acpi.c
+>> +++ b/drivers/pci/pci-acpi.c
+>> @@ -358,7 +358,7 @@ static void pci_acpi_cleanup(struct device *dev)
+>>  
+>>  static bool pci_acpi_bus_match(struct device *dev)
+>>  {
+>> -	return dev->bus == &pci_bus_type;
+>> +	return dev_is_pci(dev);
+>>  }
+>>  
+>>  static struct acpi_bus_type acpi_pci_bus = {
+>> -- 
+>> 1.7.1
+>>
+>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe linux-pci" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+> .
+> 
+
+
+-- 
+Thanks!
+Yijing
+
