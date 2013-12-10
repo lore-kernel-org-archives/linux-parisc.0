@@ -1,95 +1,74 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH 5/9] parisc/pci: Repalce local inline function with PCI standard marco
-Date: Thu, 5 Dec 2013 19:59:38 +0800
-Message-ID: <1386244778-22820-1-git-send-email-wangyijing@huawei.com>
+From: Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH 1/9] PCI: Use dev_is_pci() to check whether it is pci
+ device
+Date: Mon, 9 Dec 2013 17:01:54 -0700
+Message-ID: <20131210000154.GE4699@google.com>
+References: <1386244373-35796-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: <linux-pci@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	Yijing Wang <wangyijing@huawei.com>,
-	"Hanjun Guo" <guohanjun@huawei.com>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Hanjun Guo <guohanjun@huawei.com>, linux-alpha@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	sparclinux@vger.kernel.org
+To: Yijing Wang <wangyijing@huawei.com>
+Return-path: <sparclinux-owner@vger.kernel.org>
+In-Reply-To: <1386244373-35796-1-git-send-email-wangyijing@huawei.com>
+List-ID: <sparclinux.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Repalce local inline function is_pci_dev() with PCI standard marco
-dev_is_pci().
+[+cc arch lists]
 
-Signed-off-by: Yijing Wang <wangyijing@huawei.com>
----
- arch/parisc/kernel/drivers.c |   22 +++++-----------------
- 1 files changed, 5 insertions(+), 17 deletions(-)
+On Thu, Dec 05, 2013 at 07:52:53PM +0800, Yijing Wang wrote:
+> Use dev_is_pci() instead of directly compare
+> pci_bus_type to check whether it is pci device.
+> 
+> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
 
-diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
-index 14285ca..dba508f 100644
---- a/arch/parisc/kernel/drivers.c
-+++ b/arch/parisc/kernel/drivers.c
-@@ -282,18 +282,6 @@ find_pa_parent_type(const struct parisc_device *padev, int type)
- 	return NULL;
- }
- 
--#ifdef CONFIG_PCI
--static inline int is_pci_dev(struct device *dev)
--{
--	return dev->bus == &pci_bus_type;
--}
--#else
--static inline int is_pci_dev(struct device *dev)
--{
--	return 0;
--}
--#endif
--
- /*
-  * get_node_path fills in @path with the firmware path to the device.
-  * Note that if @node is a parisc device, we don't fill in the 'mod' field.
-@@ -306,7 +294,7 @@ static void get_node_path(struct device *dev, struct hardware_path *path)
- 	int i = 5;
- 	memset(&path->bc, -1, 6);
- 
--	if (is_pci_dev(dev)) {
-+	if (dev_is_pci(dev)) {
- 		unsigned int devfn = to_pci_dev(dev)->devfn;
- 		path->mod = PCI_FUNC(devfn);
- 		path->bc[i--] = PCI_SLOT(devfn);
-@@ -314,7 +302,7 @@ static void get_node_path(struct device *dev, struct hardware_path *path)
- 	}
- 
- 	while (dev != &root) {
--		if (is_pci_dev(dev)) {
-+		if (dev_is_pci(dev)) {
- 			unsigned int devfn = to_pci_dev(dev)->devfn;
- 			path->bc[i--] = PCI_SLOT(devfn) | (PCI_FUNC(devfn)<< 5);
- 		} else if (dev->bus == &parisc_bus_type) {
-@@ -695,7 +683,7 @@ static int check_parent(struct device * dev, void * data)
- 		if (dev->bus == &parisc_bus_type) {
- 			if (match_parisc_device(dev, d->index, d->modpath))
- 				d->dev = dev;
--		} else if (is_pci_dev(dev)) {
-+		} else if (dev_is_pci(dev)) {
- 			if (match_pci_device(dev, d->index, d->modpath))
- 				d->dev = dev;
- 		} else if (dev->bus == NULL) {
-@@ -753,7 +741,7 @@ struct device *hwpath_to_device(struct hardware_path *modpath)
- 		if (!parent)
- 			return NULL;
- 	}
--	if (is_pci_dev(parent)) /* pci devices already parse MOD */
-+	if (dev_is_pci(parent)) /* pci devices already parse MOD */
- 		return parent;
- 	else
- 		return parse_tree_node(parent, 6, modpath);
-@@ -772,7 +760,7 @@ void device_to_hwpath(struct device *dev, struct hardware_path *path)
- 		padev = to_parisc_device(dev);
- 		get_node_path(dev->parent, path);
- 		path->mod = padev->hw_path;
--	} else if (is_pci_dev(dev)) {
-+	} else if (dev_is_pci(dev)) {
- 		get_node_path(dev, path);
- 	}
- }
--- 
-1.7.1
+I applied all these to my pci/yijing-dev_is_pci branch for v3.14, thanks!
+
+Browse them here: http://git.kernel.org/cgit/linux/kernel/git/helgaas/pci.git/log/?h=pci/yijing-dev_is_pci
+
+This should be no functional change.
+
+ arch/alpha/kernel/pci_iommu.c        |    2 +-
+ arch/arm/common/it8152.c             |    4 ++--
+ arch/arm/mach-ixp4xx/common-pci.c    |    6 +++---
+ arch/ia64/hp/common/sba_iommu.c      |    2 +-
+ arch/ia64/sn/pci/pci_dma.c           |   24 ++++++++++++------------
+ arch/parisc/kernel/drivers.c         |   22 +++++-----------------
+ arch/powerpc/sysdev/fsl_pci.c        |    2 +-
+ arch/sparc/include/asm/dma-mapping.h |   10 ++++------
+ arch/sparc/kernel/iommu.c            |    2 +-
+ arch/sparc/kernel/ioport.c           |    4 +---
+ arch/x86/kernel/acpi/boot.c          |    4 +---
+ drivers/pci/pci-acpi.c               |    2 +-
+ 12 files changed, 33 insertions(+), 51 deletions(-)
+
+Bjorn
+
+> ---
+>  drivers/pci/pci-acpi.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+> index 577074e..e0431f1 100644
+> --- a/drivers/pci/pci-acpi.c
+> +++ b/drivers/pci/pci-acpi.c
+> @@ -358,7 +358,7 @@ static void pci_acpi_cleanup(struct device *dev)
+>  
+>  static bool pci_acpi_bus_match(struct device *dev)
+>  {
+> -	return dev->bus == &pci_bus_type;
+> +	return dev_is_pci(dev);
+>  }
+>  
+>  static struct acpi_bus_type acpi_pci_bus = {
+> -- 
+> 1.7.1
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-pci" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
