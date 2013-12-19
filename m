@@ -1,40 +1,37 @@
-From: Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 1/9] PCI: Use dev_is_pci() to check whether it is pci device
-Date: Tue, 10 Dec 2013 10:28:01 -0700
-Message-ID: <CAErSpo67ZB_GUrKpLbkfZs4qLe3S0eYy=oLTKg9=MSxZL2h+yw@mail.gmail.com>
-References: <1386244373-35796-1-git-send-email-wangyijing@huawei.com>
- <20131210000154.GE4699@google.com> <1386647973.32037.57.camel@pasglop>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Yijing Wang <wangyijing@huawei.com>,
-	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-	linux-parisc@vger.kernel.org,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	Hanjun Guo <guohanjun@huawei.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org,
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-	linux-arm <linux-arm-kernel@lists.infradead.org>
-To: Benjamin Herrenschmidt <benh@au1.ibm.com>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <1386647973.32037.57.camel@pasglop>
-List-ID: <linux-ia64.vger.kernel.org>
+From: Levente Kurusa <levex@linux.com>
+Subject: [PATCH 17/38] parisc: kernel: add missing put_device call
+Date: Thu, 19 Dec 2013 16:03:28 +0100
+Message-ID: <1387465429-3568-18-git-send-email-levex@linux.com>
+References: <1387465429-3568-2-git-send-email-levex@linux.com>
+Cc: Levente Kurusa <levex@linux.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Chen Gang <gang.chen@asianux.com>, linux-parisc@vger.kernel.org
+To: LKML <linux-kernel@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1387465429-3568-2-git-send-email-levex@linux.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Dec 9, 2013 at 8:59 PM, Benjamin Herrenschmidt <benh@au1.ibm.com> wrote:
-> On Mon, 2013-12-09 at 17:01 -0700, Bjorn Helgaas wrote:
->> [+cc arch lists]
->>
->> On Thu, Dec 05, 2013 at 07:52:53PM +0800, Yijing Wang wrote:
->> > Use dev_is_pci() instead of directly compare
->> > pci_bus_type to check whether it is pci device.
->> >
->> > Signed-off-by: Yijing Wang <wangyijing@huawei.com>
->>
->> I applied all these to my pci/yijing-dev_is_pci branch for v3.14, thanks!
->>
->> Browse them here: http://git.kernel.org/cgit/linux/kernel/git/helgaas/pci.git/log/?h=pci/yijing-dev_is_pci
->
-> Ah ok. I also have the powerpc one in powerpc -next, no biggie though
+This is required so that we give up the last reference to the device.
 
-I'll drop the powerpc one.
+Signed-off-by: Levente Kurusa <levex@linux.com>
+---
+ arch/parisc/kernel/drivers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
+index 14285ca..b97cc05 100644
+--- a/arch/parisc/kernel/drivers.c
++++ b/arch/parisc/kernel/drivers.c
+@@ -428,7 +428,7 @@ struct parisc_device * create_tree_node(char id, struct device *parent)
+ 	dev->dev.dma_mask = &dev->dma_mask;
+ 	dev->dev.coherent_dma_mask = dev->dma_mask;
+ 	if (device_register(&dev->dev)) {
+-		kfree(dev);
++		put_device(&dev->dev);
+ 		return NULL;
+ 	}
+ 
+-- 
+1.8.3.1
