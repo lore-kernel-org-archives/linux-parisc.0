@@ -1,51 +1,33 @@
-From: Christoph Lameter <cl@linux.com>
-Subject: [PATCH 11/40] parisc: Replace __get_cpu_var uses for address calculation
-Date: Thu, 19 Dec 2013 09:50:26 -0600
-Message-ID: <20131219155031.935326462@linux.com>
-References: <20131219155015.443763038@linux.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: akpm@linuxfoundation.org, rostedt@goodmis.org,
-	linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: Tejun Heo <tj@kernel.org>
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: parisc: fix mmap(MAP_FIXED|MAP_SHARED) to already mmapped address
+Date: Thu, 19 Dec 2013 21:17:51 +0200
+Message-ID: <20131219191750.GC2881@blackmetal.musicnaut.iki.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+To: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Convert to the use of this_cpu_ptr().
+Hi,
 
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
-Signed-off-by: Christoph Lameter <cl@linux.com>
+This commit (0576da2c08e3d332f1b0653030d28ab804585ab6) and the current
+mainline kernel (3.13-rc4) gives me the following with GLIBC 2.18:
 
-Index: linux/arch/parisc/lib/memcpy.c
-===================================================================
---- linux.orig/arch/parisc/lib/memcpy.c	2013-12-02 16:07:49.844632157 -0600
-+++ linux/arch/parisc/lib/memcpy.c	2013-12-02 16:07:49.844632157 -0600
-@@ -470,7 +470,7 @@ static unsigned long pa_memcpy(void *dst
- 		return 0;
- 
- 	/* if a load or store fault occured we can get the faulty addr */
--	d = &__get_cpu_var(exception_data);
-+	d = this_cpu_ptr(&exception_data);
- 	fault_addr = d->fault_addr;
- 
- 	/* error in load or store? */
-Index: linux/arch/parisc/mm/fault.c
-===================================================================
---- linux.orig/arch/parisc/mm/fault.c	2013-12-02 16:07:49.844632157 -0600
-+++ linux/arch/parisc/mm/fault.c	2013-12-02 16:07:49.844632157 -0600
-@@ -151,7 +151,7 @@ int fixup_exception(struct pt_regs *regs
- 	fix = search_exception_tables(regs->iaoq[0]);
- 	if (fix) {
- 		struct exception_data *d;
--		d = &__get_cpu_var(exception_data);
-+		d = this_cpu_ptr(&exception_data);
- 		d->fault_ip = regs->iaoq[0];
- 		d->fault_space = regs->isr;
- 		d->fault_addr = regs->ior;
+$ localedef -c -i en_US -f UTF-8 en_US.UTF-8
+cannot map archive header: Invalid argument
 
+strace looks like this:
+
+mmap2(NULL, 536870912, PROT_NONE, MAP_SHARED, 3, 0) = 0x42f34000
+mmap2(0x43000000, 1607632, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, 3, 0) = -1 EINVAL (Invalid argument)
+
+With the patch reverted, it works:
+
+mmap2(NULL, 536870912, PROT_NONE, MAP_SHARED, 3, 0) = 0x42d74000
+mmap2(0x43000000, 1607632, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_FIXED, 3, 0) = 0x43000000
+
+BTW, note that for GLIBC 2.18 some changes were done regarding this:
+https://sourceware.org/bugzilla/show_bug.cgi?id=10283
+
+A.
