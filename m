@@ -1,141 +1,43 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: parisc: fix mmap(MAP_FIXED|MAP_SHARED) to already mmapped address
-Date: Sat, 21 Dec 2013 13:18:14 -0500
-Message-ID: <BLU0-SMTP14294CF312E46D2D08220497C70@phx.gbl>
-References: <20131219191750.GC2881@blackmetal.musicnaut.iki.fi> <201312191619.05005.vapier@gentoo.org> <BLU0-SMTP458FC9FB0E8F5D98CB7B8897C50@phx.gbl> <201312191802.39169.vapier@gentoo.org>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: carlos@redhat.com, Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: Mike Frysinger <vapier@gentoo.org>
+From: Dave Land <xmechanic@landcomp.net>
+Subject: Merry Christmas to all and a little heads-up...
+Date: Sun, 22 Dec 2013 04:34:27 -0700
+Message-ID: <52B6CE43.2040307@landcomp.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: debian-hppa@lists.debian.org
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <201312191802.39169.vapier@gentoo.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a resend of a comment previously sent (hit wrong button and it  
-only went to Mike).
+Hiya folks!
 
-On 19-Dec-13, at 6:02 PM, Mike Frysinger wrote:
+Here's hoping everyone involved with the parisc-linux project has a 
+Merry Christmas and a safe and Happy New Year.
 
-> On Thursday 19 December 2013 17:38:37 John David Anglin wrote:
->> On 12/19/2013 4:19 PM, Mike Frysinger wrote:
->>> On Thursday 19 December 2013 14:44:40 John David Anglin wrote:
->>>> On 12/19/2013 2:17 PM, Aaro Koskinen wrote:
->>>>> This commit (0576da2c08e3d332f1b0653030d28ab804585ab6) and the  
->>>>> current
->>>>> mainline kernel (3.13-rc4) gives me the following with GLIBC 2.18:
->>>>>
->>>>> $ localedef -c -i en_US -f UTF-8 en_US.UTF-8
->>>>> cannot map archive header: Invalid argument
->>>>>
->>>>> strace looks like this:
->>>>>
->>>>> mmap2(NULL, 536870912, PROT_NONE, MAP_SHARED, 3, 0) = 0x42f34000
->>>>> mmap2(0x43000000, 1607632, PROT_READ|PROT_WRITE, MAP_SHARED| 
->>>>> MAP_FIXED,
->>>>> 3, 0) = -1 EINVAL (Invalid argument)
->>>>>
->>>>> With the patch reverted, it works:
->>>>>
->>>>> mmap2(NULL, 536870912, PROT_NONE, MAP_SHARED, 3, 0) = 0x42d74000
->>>>> mmap2(0x43000000, 1607632, PROT_READ|PROT_WRITE, MAP_SHARED| 
->>>>> MAP_FIXED,
->>>>> 3, 0) = 0x43000000
->>>>>
->>>>> BTW, note that for GLIBC 2.18 some changes were done regarding  
->>>>> this:
->>>>> https://sourceware.org/bugzilla/show_bug.cgi?id=10283
->>>>
->>>> Are you sure the glibc changes are correct?  PARISC addresses are  
->>>> not
->>>> strictly aligned to SHMLBA.
->>>> There's also a page offset and "random" offset derived from the  
->>>> kernel
->>>> address of the mapping struct.
->>>
->>> the glibc changes were to use SHMLBA as the min alignment where as  
->>> before
->>> it was using PAGE_SIZE.  the kernel shouldn't reject us because we
->>> manually increased our alignment ... the mappings should still be
->>> overlapping, so it shouldn't be an "out of mapping space" issue.
->>>
->>> the first one gets a really large map (not fixed), and then the  
->>> second
->>> does a small mapping inside of that first one.
->>
->> The mmap check is here:
->>
->>         if (flags & MAP_FIXED) {
->>                 if ((flags & MAP_SHARED) &&
->>                     (addr - shared_align_offset(filp, pgoff)) &  
->> (SHMLBA
->> - 1))
->>                         return -EINVAL;
->>                 return addr;
->>         }
->>
->> In the case at hand, the addr value passed is not equivalent to the  
->> value
->> returned on first mmap2 call.  So, the error is correct.  The
->> application has to
->> preserve the "SHMLBA - 1" part of the address when selecting a new  
->> map
->> address.
->>
->> The error is EINVAL (i.e., bad address).
->>
->> The old code wouldn't have returned an error but the second mapping
->> would not
->> have been equivalent to the first.
->>
->> My head spins regarding mappings inside mappings as it seems they may
->> conflict.
->
-> we designed the new locale code to work on all systems (including  
-> fixing the
-> behavior on older parisc64 kernels).  the assumption is that, if we  
-> want to do
-> overlapping mappings, we need to use SHMLBA as the min alignment  
-> (since that's
-> what the define represents -- shared mapping alignments that the  
-> hardware is
-> restricted by).  and that is what the new locale code is doing.   
-> glibc defines
-> SHMLBA to 0x00400000 for parisc which is why 0x42d74000 turned into
-> 0x43000000.
->
-> so either SHMLBA on parisc is wrong, or the new kernel code is wrong
-> -mike
+Work is coming along nicely with our newly commissioned buildd server.
+The hpviz is actually running multiple buildd's thanks to Dave Anglin 
+and especially, Helge Deller and his hard work, and a custom-built 
+kernel. It seems to be handling those and anything else we can throw at 
+it, including our development website listed below. We still have one 
+more machine for number-crunching and possibly package building, if my 
+bandwidth will tolerate it. :-)
 
+The RP-2470 (A500), is up and running on the 3.11-1-parisc64-smp kernel, 
+and so far is functioning nicely as a file server and part-time web-app 
+server at the moment.
 
-I think there is a misunderstanding regarding the parisc alignment  
-requirements.
+We also have a J6000 workstation that will probably be more relegated 
+for test work, etc. (My electric bill is already high!), so it will 
+probably be offline more than on. If you'd like to check out what we're 
+up to, and the current setup, take a look below. Suggestions are welcome!
 
-Mappings don't have have to start on a SHMLBA boundary and they never  
-have.  Equivalent mappings
-have to be offset by an integer number of SHMLBA blocks.  This allows  
-more than one mapping
-in a SHMLBA block depending on size.
+Dave L.
 
-Two address are equivalent if:
-
-	(addr1 & (SHMLBA - 1)) == (addr2 & (SHMLBA - 1)
-
-See flush_dcache_page() implementation.
-
-The value for SHMLBA is certainly ok for all parisc machines.
-
-The align mask for parisc shared areas is "PAGE_MASK & (SHMLBA - 1)".
-The align offset is "(get_offset(mapping) + pgoff) << PAGE_SHIFT".
-
-I believe glibc is not taking into account the offset resulting from  
-get_offset(mapping).  Some
-other archs use random offsets.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
+http://www.landcomp.net:884/wp/
+-- 
+Dave Land
+Land Computer Service  xmechanic@landcomp.net
+ICQ: 676030523
 
 
