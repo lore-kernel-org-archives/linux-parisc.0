@@ -1,65 +1,50 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: parisc: fix mmap(MAP_FIXED|MAP_SHARED) to already mmapped address
-Date: Tue, 24 Dec 2013 10:32:49 +0100
-Message-ID: <1529138.HDr1aRmBML@caliban.sf-tec.de>
-References: <20131219191750.GC2881@blackmetal.musicnaut.iki.fi> <2859617.TAsvt0Sziu@caliban.sf-tec.de> <BLU0-SMTP924554170555959730283297C00@phx.gbl>
+From: Matthew Wilcox <willy@linux.intel.com>
+Subject: [PATCH] remap_file_pages needs to check for cache coherency
+Date: Fri, 27 Dec 2013 13:00:18 -0500
+Message-ID: <20131227180018.GC4945@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart693942785.G1J35Xp1NE"; micalg="pgp-sha1"; protocol="application/pgp-signature"
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Cc: "David S. Miller" <davem@davemloft.net>,
+	sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-mips@linux-mips.org
+To: linux-mm@kvack.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP924554170555959730283297C00@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 
---nextPart693942785.G1J35Xp1NE
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+It seems to me that while (for example) on SPARC, it's not possible to
+create a non-coherent mapping with mmap(), after we've done an mmap,
+we can then use remap_file_pages() to create a mapping that no longer
+aliases in the D-cache.
 
-Am Montag, 23. Dezember 2013, 21:39:54 schrieb John David Anglin:
-> On 23-Dec-13, at 3:34 PM, Rolf Eike Beer wrote:
-> > Am Donnerstag, 19. Dezember 2013, 21:17:51 schrieb Aaro Koskinen:
-> >> Hi,
-> >> 
-> >> This commit (0576da2c08e3d332f1b0653030d28ab804585ab6) and the
-> >> current
-> > 
-> >> mainline kernel (3.13-rc4) gives me the following with GLIBC 2.18:
-> > I also suspect this patch of causing trouble. My C8000 regularly
-> > submits to
-> > the libarchive dashboard (http://my.cdash.org/index.php?project=libarchive
-> > ).
-> > Since I upgraded to 3.12.5 one test (libarchive_test_compat_mac) keeps
-> > failing. The day after compile errors and other problems started
-> > (just browse
-> > through the last 2 weeks and you will see it). Then I reverted that
-> > change and
-> > rebootet. The compat_mac test still fails, but the other failures
-> > are gone.
-> 
-> The libarchive_test_compat_mac test also appears to fail on x86.  It
-> didn't fail
-> in my 3.1.2 build with kernel change.
-> 
-> I believe the GLIBC 2.18 change was wrong but I don't see why it would
-> cause compile errors.
+I have only compile-tested this patch.  I don't have any SPARC hardware,
+and my PA-RISC hardware hasn't been turned on in six years ... I noticed
+this while wandering around looking at some other stuff.
 
-I am on glibc 2.17, I only changed the kernel.
-
-Eike
---nextPart693942785.G1J35Xp1NE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iEYEABECAAYFAlK5VMcACgkQXKSJPmm5/E4vNACeIw+2YcDPimefd8bZ4rv+5G7W
-g0sAn3JNemYPraEQ9fmVCKCDLsw2vOnl
-=DHVT
------END PGP SIGNATURE-----
-
---nextPart693942785.G1J35Xp1NE--
-
+diff --git a/mm/fremap.c b/mm/fremap.c
+index 5bff081..01fc2e7 100644
+--- a/mm/fremap.c
++++ b/mm/fremap.c
+@@ -19,6 +19,7 @@
+ 
+ #include <asm/mmu_context.h>
+ #include <asm/cacheflush.h>
++#include <asm/shmparam.h>
+ #include <asm/tlbflush.h>
+ 
+ #include "internal.h"
+@@ -177,6 +178,13 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+ 	if (start < vma->vm_start || start + size > vma->vm_end)
+ 		goto out;
+ 
++#ifdef __ARCH_FORCE_SHMLBA
++	/* Is the mapping cache-coherent? */
++	if ((pgoff ^ linear_page_index(vma, start)) &
++	    ((SHMLBA-1) >> PAGE_SHIFT))
++		goto out;
++#endif
++
+ 	/* Must set VM_NONLINEAR before any pages are populated. */
+ 	if (!(vma->vm_flags & VM_NONLINEAR)) {
+ 		/*
