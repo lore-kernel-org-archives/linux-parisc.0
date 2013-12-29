@@ -1,35 +1,35 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] remap_file_pages needs to check for cache coherency
-Date: Fri, 27 Dec 2013 15:14:39 -0500
-Message-ID: <BLU0-SMTP67B57AF06A5AC44236538A97CD0@phx.gbl>
-References: <20131227180018.GC4945@linux.intel.com> <BLU0-SMTP17D26551261DF285A7E6F497CD0@phx.gbl> <20131227193330.GE4945@linux.intel.com> <BLU0-SMTP15241D603FEB77037F6D1E97CD0@phx.gbl>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Matthew Wilcox <willy@linux.intel.com>, linux-mm@kvack.org,
-	"David S. Miller" <davem@davemloft.net>,
-	sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-mips@linux-mips.org
-To: John David Anglin <dave.anglin@bell.net>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: parisc: fix mmap(MAP_FIXED|MAP_SHARED) to already mmapped address
+Date: Sun, 29 Dec 2013 21:50:56 +0100
+Message-ID: <52C08B30.50309@gmx.de>
+References: <20131219191750.GC2881@blackmetal.musicnaut.iki.fi> <201312191619.05005.vapier@gentoo.org> <BLU0-SMTP458FC9FB0E8F5D98CB7B8897C50@phx.gbl> <201312191802.39169.vapier@gentoo.org> <52B4C03B.2000805@gmx.de> <20131223202611.GA3570@blackmetal.musicnaut.iki.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Mike Frysinger <vapier@gentoo.org>,
+	John David Anglin <dave.anglin@bell.net>, carlos@redhat.com,
+	linux-parisc@vger.kernel.org
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP15241D603FEB77037F6D1E97CD0@phx.gbl>
+In-Reply-To: <20131223202611.GA3570@blackmetal.musicnaut.iki.fi>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 27-Dec-13, at 2:47 PM, John David Anglin wrote:
+Hi Aaro,
 
-> It's worth looking at.  The value is supposed to be returned by the  
-> PDC_CACHE PDC
-> call but I know my rp3440 returns a value of 0 indicating that the  
-> aliasing boundary
-> is unknown and may be greater than 16MB.
+On 12/23/2013 09:26 PM, Aaro Koskinen wrote:
+> On Fri, Dec 20, 2013 at 11:10:03PM +0100, Helge Deller wrote:
+>> You could try my current rewrite for the mmap functions which is in my "aio_mmap_fix" branch at
+>> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git
+>> (http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/log/?h=aio_mmap_fix)
+>> Pulling this branch on top of Linux head should work.
+>> But I think it will not solve this problem.
+> 
+> FWIW, I pulled this branch (aaa88432c03b) on top of 3.13-rc5 and the
+> system won't boot (HP C3700, 32-bit kernel). There's several stack trace
+> dumps during the boot; if you're interested I might be able to setup a
+> serial console to capture these.
 
-c3750 data cache has an aliasing boundary of 4 MB, so I think we are  
-stuck with large
-SHMLBA.
+Yes, the code hit a BUG_ON when running with 32bit kernel.
+I just committed a trivial patch to the same tree, and now it works.
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+Helge 
