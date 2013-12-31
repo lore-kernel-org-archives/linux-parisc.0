@@ -1,114 +1,198 @@
-From: Dave Land <xmechanic@landcomp.net>
-Subject: Possibility that /dev is not being properly populated by udev?
-Date: Mon, 30 Dec 2013 22:08:52 -0700
-Message-ID: <52C25164.9060206@landcomp.net>
+From: Robert Graffham <psquid@psquid.net>
+Subject: [PATCH] Slightly outdated CONFIG_SMP documentation fix
+Date: Tue, 31 Dec 2013 22:59:22 +0000
+Message-ID: <20131231225921.GA1624@sylph>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: John David Anglin <dave.anglin@bell.net>,
-	Helge Deller <deller@gmx.de>
-To: linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Cc: Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Hirokazu Takata <takata@linux-m32r.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        David Howells <dhowells@redhat.com>,
+        Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        linux390@de.ibm.com, Paul Mundt <lethal@linux-sh.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm
+To: linux-kernel@vger.kernel.org
+Return-path: <linux-mips-bounce@linux-mips.org>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-Hiya folks,
+I've removed a reference to "most personal computers" being singleprocessor
+machines in multiple arches' config help, and also brought the arch/arm spacing
+for "singleprocessor" (vs. "single processor" used there originally) in line
+with other arches that had that text.
 
-This is more of request for the collective minds to get together and 
-discuss a possible fix, rather than a direct question. I own 2 of the 
-machines that represent 3 of the current buildd servers for the hppa 
-unstable port. Between Helge Deller, Dave Anglin, and myself, we're 
-attempting to repopulate the repos at debian.ports with fresh packages, 
-and for the most part it's been going pretty well. You can see our 
-progress here: http://unstable.buildd.net/index-hppa.html Helge has 
-developed a couple of experimental kernels to alleviate some of the 
-buildd issues, etc. but we are still plagued with udev mis-interpreting 
-device ID's when populating /dev.
-
-As a result, it becomes a real issue when external drives or other 
-devices are attached to the host. After our latest crash with 
-rio.landcomp.net last night, (hardware related this time) assisted by a 
-possible buildd error, I opened the machine up (RP2470 A500), and 
-removed a failing Symbios SCSI card and replaced it with another. In the 
-past, I've had several issues with this card detecting the external 
-drive array (HP 2110), and usually I had to ID the drives in fdisk by 
-LABEL in order for /etc/fstab to mount them in the proper locations.
-
-Also there was the issue of the Symbios card repeatedly resetting the 
-SCSI bus at startup to the point where fsck.ext3 would finally die with 
-Signal 8, when it couldn't find the drives to check. When the card 
-finally got around to detecting the drives, the OS was practically fully 
-loaded and I would have to manually mount them. With the number of 
-re-boots we have to do with hung kernels, unrecoverable buildd errors, 
-etc. this turned in a real pain.
-
-I then hooked the external drive array to the Ultra2 LVD/SE SCSI port on 
-the 'rio' machine itself, and lo and behold, the internal SCSI BIOS 
-found them immediately. Everything was fine until we determined that the 
-drive order as listed in fdisk-l and blkid wasn't even close to being 
-correct, even though the machine somehow booted from the correct primary 
-partition on what would normally be /dev/sda3 since it was referred to 
-by LABEL, as is, the drive with the /home partition, which would 
-normally be /dev/sdb1. Instead they show up in fdisk-l and blkid as 
-/dev/sde3 and /dev/sdd1. In reality, /dev/sdc,sdd,sde, and sdf are the 
-four drives in the external array. I set them up with LABEL ID's also, 
-except for the swap partitions which I have ID'd by UUID.
-
-I've currently disconnected the externals on both rio.landcomp.net (the 
-A500) and hpviz.landcomp.net (the J6750), as both were exhibiting the 
-same behavior, regardless of which kernel we were using (the stock 
-vmlinux-3.11-1-parisc64-smp or Helge's custom kernel with the buildd 
-patches).
-
-Here's the relevant info for the Visualize J6750 'hpviz' in it's current 
-state:
-Kernel Ver.: *3.11-2-parisc64-smp*
-GCC Ver.: *gcc-4.8.2-10*
-No remote management card
-Access: SSH, local graphics console --> (thanks to Helge's parisc64-smp 
-kernel patches, the FXe graphics card is now stable in STI console mode 
-(color even!) on 64 bit SMP with >4GB of RAM)
-CPU(s): 2x 875mhz. PA-8700
-RAM: 7162 Mb.
-PCI Devices: LSI Logic dual Port LVD/SE SCSI, HP FXe graphics card
-
-...and the current relevant info for the RP2470 (A500) 'rio'
-
-Kernel Ver.: *3.11-1-parisc64-smp*
-GCC Ver.: *gcc-4.8.2-10*
-Remote managemment: GSP built-in service processor
-Access: GSP, serial line (ttyS0)
-CPU(s): 2x 750 mhz. PA-8700
-RAM: 8162 Mb.
-PCI devices: LSI Logic single port LVD/SE SCSI
-
-I'll include links to the text files for /var/log/syslog and /var/log/ 
-messages for both machines (Beware, these are quite lengthy, especially 
-since we were trying to setup postfix and all the related utilities on 
-the rio, and there's still some glitches in the setup, but it might give 
-you some idea of why udev isn't properly populating /dev and assorted 
-other issues.)
-
-You are welcome to email myself, Helge Deller, or Dave Anglin with your 
-thoughts, and/or possible solutions! Thanks!
-
-By the way, I'm mainly the grunt labor for keeping the actual machines 
-up and running, so Dave A. and Helge Deller would be the likely 
-candidates to understand all this and give an educated reply to possible 
-solutions, but please do include me in the Cc's. I'm still trying to 
-absorb all the info I can. :-)
-
-Dave L.
-
-Owner and maintenance tech at Land Computer Service
-
-Links: http://www.landcomp.net:884/images/hpviz-var-log-syslog.txt
-        http://www.landcomp.net:884/images/hpviz-var-log-messages.txt
-        http://www.landcomp.net:884/images/rio-var-log-syslog.txt
-        http://www.landcomp.net:884/images/rio-var-log-messages.txt
-
--- 
-Dave Land
-Land Computer Service  xmechanic@landcomp.net
-ICQ: 676030523
+The diff is included below, and cleanly applies and builds on my system. I have
+not tested on other systems yet since a documentation fix shouldn't fail to
+build inconsistently, but if that's no excuse, I'll be happy to test further
+when I can.
 
 
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/alpha/Kconfig linux/arch/alpha/Kconfig
+--- linux-vanilla/arch/alpha/Kconfig	2013-12-22 18:03:11.881499508 +0000
++++ linux/arch/alpha/Kconfig	2013-12-22 17:58:31.448505765 +0000
+@@ -539,8 +539,8 @@ config SMP
+ 	depends on ALPHA_SABLE || ALPHA_LYNX || ALPHA_RAWHIDE || ALPHA_DP264 || ALPHA_WILDFIRE || ALPHA_TITAN || ALPHA_GENERIC || ALPHA_SHARK || ALPHA_MARVEL
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/arc/Kconfig linux/arch/arc/Kconfig
+--- linux-vanilla/arch/arc/Kconfig	2013-12-22 18:03:11.933499507 +0000
++++ linux/arch/arc/Kconfig	2013-12-22 17:58:24.412505922 +0000
+@@ -128,8 +128,8 @@ config SMP
+ 	default n
+ 	help
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ if SMP
+ 
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/arm/Kconfig linux/arch/arm/Kconfig
+--- linux-vanilla/arch/arm/Kconfig	2013-12-22 18:03:11.956499506 +0000
++++ linux/arch/arm/Kconfig	2013-12-22 17:56:31.187508449 +0000
+@@ -1435,14 +1435,14 @@ config SMP
+ 	depends on MMU || ARM_MPU
+ 	help
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+-	  you say Y here, the kernel will run on many, but not all, single
+-	  processor machines. On a single processor machine, the kernel will
+-	  run faster if you say N here.
++	  you say Y here, the kernel will run on many, but not all,
++	  singleprocessor machines. On a singleprocessor machine, the kernel
++	  will run faster if you say N here.
+ 
+ 	  See also <file:Documentation/x86/i386/IO-APIC.txt>,
+ 	  <file:Documentation/nmi_watchdog.txt> and the SMP-HOWTO available at
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/m32r/Kconfig linux/arch/m32r/Kconfig
+--- linux-vanilla/arch/m32r/Kconfig	2013-12-22 18:03:13.100499481 +0000
++++ linux/arch/m32r/Kconfig	2013-12-22 17:58:27.485505854 +0000
+@@ -277,8 +277,8 @@ config SMP
+ 	bool "Symmetric multi-processing support"
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/mips/Kconfig linux/arch/mips/Kconfig
+--- linux-vanilla/arch/mips/Kconfig	2013-12-22 18:03:13.290499477 +0000
++++ linux/arch/mips/Kconfig	2013-12-22 17:58:28.576505829 +0000
+@@ -2128,8 +2128,8 @@ config SMP
+ 	depends on SYS_SUPPORTS_SMP
+ 	help
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/mn10300/Kconfig linux/arch/mn10300/Kconfig
+--- linux-vanilla/arch/mn10300/Kconfig	2013-12-22 18:03:13.598499470 +0000
++++ linux/arch/mn10300/Kconfig	2013-12-22 17:58:26.460505877 +0000
+@@ -184,8 +184,8 @@ config SMP
+ 	depends on MN10300_PROC_MN2WS0038 || MN10300_PROC_MN2WS0050
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/parisc/Kconfig linux/arch/parisc/Kconfig
+--- linux-vanilla/arch/parisc/Kconfig	2013-12-22 18:03:13.682499468 +0000
++++ linux/arch/parisc/Kconfig	2013-12-22 17:57:38.097506956 +0000
+@@ -229,8 +229,8 @@ config SMP
+ 	bool "Symmetric multi-processing support"
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/s390/Kconfig linux/arch/s390/Kconfig
+--- linux-vanilla/arch/s390/Kconfig	2013-12-22 18:03:14.077499459 +0000
++++ linux/arch/s390/Kconfig	2013-12-22 17:58:29.631505806 +0000
+@@ -332,8 +332,8 @@ config SMP
+ 	prompt "Symmetric multi-processing support"
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/sh/Kconfig linux/arch/sh/Kconfig
+--- linux-vanilla/arch/sh/Kconfig	2013-12-22 18:03:14.188499457 +0000
++++ linux/arch/sh/Kconfig	2013-12-22 17:58:25.470505899 +0000
+@@ -714,8 +714,8 @@ config SMP
+ 	depends on SYS_SUPPORTS_SMP
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/x86/Kconfig linux/arch/x86/Kconfig
+--- linux-vanilla/arch/x86/Kconfig	2013-12-22 18:03:14.584499448 +0000
++++ linux/arch/x86/Kconfig	2013-12-22 17:58:30.711505782 +0000
+@@ -278,8 +278,8 @@ config SMP
+ 	bool "Symmetric multi-processing support"
+ 	---help---
+ 	  This enables support for systems with more than one CPU. If you have
+-	  a system with only one CPU, like most personal computers, say N. If
+-	  you have a system with more than one CPU, say Y.
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
+ 
+ 	  If you say N here, the kernel will run on single and multiprocessor
+ 	  machines, but will use only one CPU of a multiprocessor machine. If
+Signed-off-by: Robert Graffham <psquid@psquid.net>
