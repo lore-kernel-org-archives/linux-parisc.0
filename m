@@ -1,268 +1,114 @@
-From: Robert Graffham <psquid@psquid.net>
-Subject: Re: [PATCH] Slightly outdated CONFIG_SMP documentation fix
-Date: Fri, 3 Jan 2014 00:36:11 +0000
-Message-ID: <20140103003610.GA21711@sylph>
-References: <20131231225921.GA1624@sylph>
- <23596.1388674589@warthog.procyon.org.uk>
- <20140102150219.3df32a23cf7dbe9618ea118e@linux-foundation.org>
- <CAAJfVc7vK9W9Zy0LvGWSTWMSEb_JEx7FbLECy44QEwj+CWgSGg@mail.gmail.com>
- <20140102151547.fde4aa5855cc75e91fea95e5@linux-foundation.org>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: [PATCH] fix crash when using XFS on loopback
+Date: Sat, 4 Jan 2014 12:45:45 -0500 (EST)
+Message-ID: <alpine.LRH.2.02.1401041241590.4648@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Ralf Baechle <ralf@linux-mips.org>, x86@kernel.org,
-        Richard Henderson <rth@twiddle.net>,
-        Ingo Molnar <mingo@redhat.com>, linux-mips@linux-mips.org,
-        Hirokazu Takata <takata@linux-m32r.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-am33-list@redhat.com,
-        linux-sh@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-s390@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Helge Deller <deller@gmx.de>,
-        linux-kernel@vger.kernel.org,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        linux-m32r@ml.linux-m32r.org, Thomas Gleixner <tglx@linutronix.de>,
-        linux-par
-To: Andrew Morton <akpm@linux-foundation.org>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <20140102151547.fde4aa5855cc75e91fea95e5@linux-foundation.org>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@iki.fi>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Andi Kleen <ak@linux.intel.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-As requested, I've modified "singleprocessor" to "uniprocessor" in my tree, and
-the revised patch is included below (with the Signed-off-by at the right end
-this time - thanks Andrew).
+The patch 8456a648cf44f14365f1f44de90a3da2526a4776 causes crash in the
+LVM2 testsuite on PA-RISC (the crashing test is fsadm.sh). The testsuite
+doesn't crash on 3.12, crashes on 3.13-rc1 and later.
 
-To re-summarize given the new revision, this patch now removes an outdated
-reference to "most personal computers" having only one CPU, and changes the use
-of "singleprocessor" and "single processor" in CONFIG_SMP's documentation to
-"uniprocessor" across all arches where that documentation is present.
+ Bad Address (null pointer deref?): Code=15 regs=000000413edd89a0 (Addr=000006202224647d)
+ CPU: 3 PID: 24008 Comm: loop0 Not tainted 3.13.0-rc6 #5
+ task: 00000001bf3c0048 ti: 000000413edd8000 task.ti: 000000413edd8000
 
-Signed-off-by: Robert Graffham <psquid@psquid.net>
+      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+ PSW: 00001000000001101111100100001110 Not tainted
+ r00-03  000000ff0806f90e 00000000405c8de0 000000004013e6c0 000000413edd83f0
+ r04-07  00000000405a95e0 0000000000000200 00000001414735f0 00000001bf349e40
+ r08-11  0000000010fe3d10 0000000000000001 00000040829c7778 000000413efd9000
+ r12-15  0000000000000000 000000004060d800 0000000010fe3000 0000000010fe3000
+ r16-19  000000413edd82a0 00000041078ddbc0 0000000000000010 0000000000000001
+ r20-23  0008f3d0d83a8000 0000000000000000 00000040829c7778 0000000000000080
+ r24-27  00000001bf349e40 00000001bf349e40 202d66202224640d 00000000405a95e0
+ r28-31  202d662022246465 000000413edd88f0 000000413edd89a0 0000000000000001
+ sr00-03  000000000532c000 0000000000000000 0000000000000000 000000000532c000
+ sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
 
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/alpha/Kconfig linux/arch/alpha/Kconfig
---- linux-vanilla/arch/alpha/Kconfig	2013-12-22 18:03:11.881499508 +0000
-+++ linux/arch/alpha/Kconfig	2014-01-03 00:20:04.660530554 +0000
-@@ -539,13 +539,13 @@ config SMP
- 	depends on ALPHA_SABLE || ALPHA_LYNX || ALPHA_RAWHIDE || ALPHA_DP264 || ALPHA_WILDFIRE || ALPHA_TITAN || ALPHA_GENERIC || ALPHA_SHARK || ALPHA_MARVEL
- 	---help---
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
+ IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000401fe42c 00000000401fe430
+  IIR: 539c0030    ISR: 00000000202d6000  IOR: 000006202224647d
+  CPU:        3   CR30: 000000413edd8000 CR31: 0000000000000000
+  ORIG_R28: 00000000405a95e0
+  IAOQ[0]: vma_interval_tree_iter_first+0x14/0x48
+  IAOQ[1]: vma_interval_tree_iter_first+0x18/0x48
+  RP(r2): flush_dcache_page+0x128/0x388
+ Backtrace:
+  [<000000004013e6c0>] flush_dcache_page+0x128/0x388
+  [<0000000010fe6ca0>] lo_splice_actor+0x90/0x148 [loop]
+  [<00000000402579b0>] splice_from_pipe_feed+0xc0/0x1d0
+  [<00000000402580a4>] __splice_from_pipe+0xac/0xc0
+  [<0000000010fe6bbc>] lo_direct_splice_actor+0x1c/0x70 [loop]
+  [<000000004025854c>] splice_direct_to_actor+0xec/0x228
+  [<0000000010fe63ac>] lo_receive+0xe4/0x298 [loop]
+  [<0000000010fe69d8>] loop_thread+0x478/0x640 [loop]
+  [<000000004018975c>] kthread+0x134/0x168
+  [<000000004012c020>] end_fault_vector+0x20/0x28
+  [<00000000115e0098>] xfs_setsize_buftarg+0x0/0x90 [xfs]
+
+ Kernel panic - not syncing: Bad Address (null pointer deref?)
+
+The patch 8456a648cf44f14365f1f44de90a3da2526a4776 changes the page
+structure so that the slab subsystem reuses the page->mapping field.
+
+The crash happens in the following way:
+* XFS allocates some memory from slab and issues a bio to read data into
+  it.
+* the bio is sent to the loopback device.
+* lo_receive creates an actor and calls splice_direct_to_actor.
+* lo_splice_actor copies data to the target page.
+* lo_splice_actor calls flush_dcache_page because the page may be mapped
+  by userspace. In that case we need to flush the kernel cache.
+* flush_dcache_page asks for the list of userspace mappings, however that
+  page->mapping field is reused by the slab subsystem for a different
+  purpose. This causes the crash.
+
+Note that other architectures without coherent caches (sparc, arm, mips)
+also call page_mapping from flush_dcache_page, so they may crash in the
+same way.
+
+This patch fixes this bug by testing if the page is a slab page in
+page_mapping and returning NULL if it is.
+
+
+The patch also fixes VM_BUG_ON(PageSlab(page)) that could happen in
+earlier kernels in the same scenario on architectures without cache
+coherence when CONFIG_DEBUG_VM is enabled - so it should be backported to
+stable kernels.
+
+
+In the old kernels, the function page_mapping is placed in
+include/linux/mm.h, so you should modify the patch accordingly when
+backporting it.
+
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org
+
+---
+ mm/util.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+Index: linux-3.13-rc6/mm/util.c
+===================================================================
+--- linux-3.13-rc6.orig/mm/util.c	2014-01-04 00:06:07.000000000 +0100
++++ linux-3.13-rc6/mm/util.c	2014-01-04 00:24:42.000000000 +0100
+@@ -390,7 +390,10 @@ struct address_space *page_mapping(struc
+ {
+ 	struct address_space *mapping = page->mapping;
  
--	  If you say N here, the kernel will run on single and multiprocessor
-+	  If you say N here, the kernel will run on uni- and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
- 	  you say Y here, the kernel will run on many, but not all,
--	  singleprocessor machines. On a singleprocessor machine, the kernel
-+	  uniprocessor machines. On a uniprocessor machine, the kernel
- 	  will run faster if you say N here.
+-	VM_BUG_ON(PageSlab(page));
++	/* This happens if someone calls flush_dcache_page on slab page */
++	if (unlikely(PageSlab(page)))
++		return NULL;
++
+ 	if (unlikely(PageSwapCache(page))) {
+ 		swp_entry_t entry;
  
- 	  See also the SMP-HOWTO available at
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/arc/Kconfig linux/arch/arc/Kconfig
---- linux-vanilla/arch/arc/Kconfig	2013-12-22 18:03:11.933499507 +0000
-+++ linux/arch/arc/Kconfig	2013-12-22 17:58:24.412505922 +0000
-@@ -128,8 +128,8 @@ config SMP
- 	default n
- 	help
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
- if SMP
- 
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/arm/Kconfig linux/arch/arm/Kconfig
---- linux-vanilla/arch/arm/Kconfig	2013-12-22 18:03:11.956499506 +0000
-+++ linux/arch/arm/Kconfig	2014-01-03 00:18:04.776533229 +0000
-@@ -1435,14 +1435,14 @@ config SMP
- 	depends on MMU || ARM_MPU
- 	help
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
--	  If you say N here, the kernel will run on single and multiprocessor
-+	  If you say N here, the kernel will run on uni- and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
--	  you say Y here, the kernel will run on many, but not all, single
--	  processor machines. On a single processor machine, the kernel will
--	  run faster if you say N here.
-+	  you say Y here, the kernel will run on many, but not all,
-+	  uniprocessor machines. On a uniprocessor machine, the kernel
-+	  will run faster if you say N here.
- 
- 	  See also <file:Documentation/x86/i386/IO-APIC.txt>,
- 	  <file:Documentation/nmi_watchdog.txt> and the SMP-HOWTO available at
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/m32r/Kconfig linux/arch/m32r/Kconfig
---- linux-vanilla/arch/m32r/Kconfig	2013-12-22 18:03:13.100499481 +0000
-+++ linux/arch/m32r/Kconfig	2014-01-03 00:19:05.746531868 +0000
-@@ -277,13 +277,13 @@ config SMP
- 	bool "Symmetric multi-processing support"
- 	---help---
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
--	  If you say N here, the kernel will run on single and multiprocessor
-+	  If you say N here, the kernel will run on uni- and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
- 	  you say Y here, the kernel will run on many, but not all,
--	  singleprocessor machines. On a singleprocessor machine, the kernel
-+	  uniprocessor machines. On a uniprocessor machine, the kernel
- 	  will run faster if you say N here.
- 
- 	  People using multiprocessor machines who say Y here should also say
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/mips/Kconfig linux/arch/mips/Kconfig
---- linux-vanilla/arch/mips/Kconfig	2013-12-22 18:03:13.290499477 +0000
-+++ linux/arch/mips/Kconfig	2014-01-03 00:19:16.904531619 +0000
-@@ -2128,13 +2128,13 @@ config SMP
- 	depends on SYS_SUPPORTS_SMP
- 	help
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
--	  If you say N here, the kernel will run on single and multiprocessor
-+	  If you say N here, the kernel will run on uni- and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
- 	  you say Y here, the kernel will run on many, but not all,
--	  singleprocessor machines. On a singleprocessor machine, the kernel
-+	  uniprocessor machines. On a uniprocessor machine, the kernel
- 	  will run faster if you say N here.
- 
- 	  People using multiprocessor machines who say Y here should also say
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/mn10300/Kconfig linux/arch/mn10300/Kconfig
---- linux-vanilla/arch/mn10300/Kconfig	2013-12-22 18:03:13.598499470 +0000
-+++ linux/arch/mn10300/Kconfig	2014-01-03 00:19:02.061531951 +0000
-@@ -184,13 +184,13 @@ config SMP
- 	depends on MN10300_PROC_MN2WS0038 || MN10300_PROC_MN2WS0050
- 	---help---
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
--	  If you say N here, the kernel will run on single and multiprocessor
-+	  If you say N here, the kernel will run on uni- and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
- 	  you say Y here, the kernel will run on many, but not all,
--	  singleprocessor machines. On a singleprocessor machine, the kernel
-+	  uniprocessor machines. On a uniprocessor machine, the kernel
- 	  will run faster if you say N here.
- 
- 	  See also <file:Documentation/x86/i386/IO-APIC.txt>,
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/parisc/Kconfig linux/arch/parisc/Kconfig
---- linux-vanilla/arch/parisc/Kconfig	2013-12-22 18:03:13.682499468 +0000
-+++ linux/arch/parisc/Kconfig	2014-01-03 00:18:38.464532477 +0000
-@@ -229,13 +229,13 @@ config SMP
- 	bool "Symmetric multi-processing support"
- 	---help---
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
--	  If you say N here, the kernel will run on single and multiprocessor
-+	  If you say N here, the kernel will run on uni- and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
- 	  you say Y here, the kernel will run on many, but not all,
--	  singleprocessor machines. On a singleprocessor machine, the kernel
-+	  uniprocessor machines. On a uniprocessor machine, the kernel
- 	  will run faster if you say N here.
- 
- 	  See also <file:Documentation/nmi_watchdog.txt> and the SMP-HOWTO
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/s390/Kconfig linux/arch/s390/Kconfig
---- linux-vanilla/arch/s390/Kconfig	2014-01-03 00:09:20.086544936 +0000
-+++ linux/arch/s390/Kconfig	2014-01-03 00:19:59.831530662 +0000
-@@ -334,10 +334,10 @@ config SMP
- 	  a system with only one CPU, say N. If you have a system with more
- 	  than one CPU, say Y.
- 
--	  If you say N here, the kernel will run on single and multiprocessor
-+	  If you say N here, the kernel will run on uni- and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
- 	  you say Y here, the kernel will run on many, but not all,
--	  singleprocessor machines. On a singleprocessor machine, the kernel
-+	  uniprocessor machines. On a uniprocessor machine, the kernel
- 	  will run faster if you say N here.
- 
- 	  See also the SMP-HOWTO available at
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/sh/Kconfig linux/arch/sh/Kconfig
---- linux-vanilla/arch/sh/Kconfig	2013-12-22 18:03:14.188499457 +0000
-+++ linux/arch/sh/Kconfig	2014-01-03 00:18:58.090532039 +0000
-@@ -714,13 +714,13 @@ config SMP
- 	depends on SYS_SUPPORTS_SMP
- 	---help---
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
--	  If you say N here, the kernel will run on single and multiprocessor
-+	  If you say N here, the kernel will run on uni- and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
- 	  you say Y here, the kernel will run on many, but not all,
--	  singleprocessor machines. On a singleprocessor machine, the kernel
-+	  uniprocessor machines. On a uniprocessor machine, the kernel
- 	  will run faster if you say N here.
- 
- 	  People using multiprocessor machines who say Y here should also say
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/sparc/Kconfig linux/arch/sparc/Kconfig
---- linux-vanilla/arch/sparc/Kconfig	2013-12-22 18:03:14.368499453 +0000
-+++ linux/arch/sparc/Kconfig	2014-01-03 00:19:50.073530879 +0000
-@@ -152,10 +152,10 @@ config SMP
- 	  a system with only one CPU, say N. If you have a system with more
- 	  than one CPU, say Y.
- 
--	  If you say N here, the kernel will run on single and multiprocessor
-+	  If you say N here, the kernel will run on uni- and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
- 	  you say Y here, the kernel will run on many, but not all,
--	  singleprocessor machines. On a singleprocessor machine, the kernel
-+	  uniprocessor machines. On a uniprocessor machine, the kernel
- 	  will run faster if you say N here.
- 
- 	  People using multiprocessor machines who say Y here should also say
-diff -uprN -X linux-vanilla/Documentation/dontdiff linux-vanilla/arch/x86/Kconfig linux/arch/x86/Kconfig
---- linux-vanilla/arch/x86/Kconfig	2013-12-22 18:03:14.584499448 +0000
-+++ linux/arch/x86/Kconfig	2014-01-03 00:20:02.957530592 +0000
-@@ -278,13 +278,13 @@ config SMP
- 	bool "Symmetric multi-processing support"
- 	---help---
- 	  This enables support for systems with more than one CPU. If you have
--	  a system with only one CPU, like most personal computers, say N. If
--	  you have a system with more than one CPU, say Y.
-+	  a system with only one CPU, say N. If you have a system with more
-+	  than one CPU, say Y.
- 
--	  If you say N here, the kernel will run on single and multiprocessor
-+	  If you say N here, the kernel will run on uni- and multiprocessor
- 	  machines, but will use only one CPU of a multiprocessor machine. If
- 	  you say Y here, the kernel will run on many, but not all,
--	  singleprocessor machines. On a singleprocessor machine, the kernel
-+	  uniprocessor machines. On a uniprocessor machine, the kernel
- 	  will run faster if you say N here.
- 
- 	  Note that if you say Y here and choose architecture "586" or
