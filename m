@@ -1,59 +1,38 @@
-From: John David Anglin <dave.anglin@bell.net>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: [PATCH] Make EWOULDBLOCK be equal to EAGAIN on parisc.
-Date: Thu, 16 Jan 2014 15:49:03 -0500
-Message-ID: <BLU0-SMTP89CC166E31998D28320EA697B90@phx.gbl>
-References: <7b86ec9f26dd9a18e7fae7a39e6a3382@tuxicoman.be> <CAE2sS1gmD21qT=UPJEt9VfAnE=e-k=qwkQM0nUO0viMaJSm3ng@mail.gmail.com>
+Date: Thu, 16 Jan 2014 16:05:50 -0500
+Message-ID: <CAE2sS1hO=do8VTwn-_mPwZge_AdunrOfoC0VW4RnezaDfZYxXQ@mail.gmail.com>
+References: <7b86ec9f26dd9a18e7fae7a39e6a3382@tuxicoman.be>
+	<CAE2sS1gmD21qT=UPJEt9VfAnE=e-k=qwkQM0nUO0viMaJSm3ng@mail.gmail.com>
+	<BLU0-SMTP89CC166E31998D28320EA697B90@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Cc: linux-parisc <linux-parisc@vger.kernel.org>
-To: Carlos O'Donell <carlos@systemhalted.org>,
-	Guy Martin <gmsoft@tuxicoman.be>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Guy Martin <gmsoft@tuxicoman.be>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAE2sS1gmD21qT=UPJEt9VfAnE=e-k=qwkQM0nUO0viMaJSm3ng@mail.gmail.com>
+In-Reply-To: <BLU0-SMTP89CC166E31998D28320EA697B90@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 1/16/2014 3:02 PM, Carlos O'Donell wrote:
-> On Thu, Jan 16, 2014 at 11:17 AM, Guy Martin <gmsoft@tuxicoman.be> wrote:
->> On Linux, only parisc uses a different value for EWOULDBLOCK which
->> causes a lot of troubles for applications not checking for both values.
->> Since the hpux compat is long dead, make EWOULDBLOCK behave the same as
->> all other architectures.
+On Thu, Jan 16, 2014 at 3:49 PM, John David Anglin <dave.anglin@bell.net> wrote:
+>> This is an ABI break.
 >>
->> Signed-off-by: Guy Martin  <gmsoft@tuxicoman.be>
->> ---
->>   arch/parisc/include/uapi/asm/errno.h | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
+>> You can't do this without rebuilding userspace.
 >>
->> diff --git a/arch/parisc/include/uapi/asm/errno.h
->> b/arch/parisc/include/uapi/asm/errno.h
->> index f3a8aa5..c0ae625 100644
->> --- a/arch/parisc/include/uapi/asm/errno.h
->> +++ b/arch/parisc/include/uapi/asm/errno.h
->> @@ -106,7 +106,7 @@
->>
->>   #define        EALREADY        244     /* Operation already in progress */
->>   #define        EINPROGRESS     245     /* Operation now in progress */
->> -#define        EWOULDBLOCK     246     /* Operation would block (Linux
->> returns EAGAIN) */
->> +#define        EWOULDBLOCK     EAGAIN  /* Operation would block (Not HPUX
->> compliant) */
->>   #define        ENOTEMPTY       247     /* Directory not empty */
->>   #define        ENAMETOOLONG    248     /* File name too long */
->>   #define        ELOOP           249     /* Too many symbolic links
->> encountered */
-> This is an ABI break.
+>> You need debian an gentoo onboard to do this ABI break.
 >
-> You can't do this without rebuilding userspace.
->
-> You need debian an gentoo onboard to do this ABI break.
-This would take about a month on Debian, so I'm against.  Various bits 
-of kernel code traditionally
-return EWOULDBLOCK, so any application code that just checks EWOULDBLOCK 
-would fail.
+> This would take about a month on Debian, so I'm against.  Various bits of kernel code traditionally
+> return EWOULDBLOCK, so any application code that just checks EWOULDBLOCK would fail.
 
-Dave
+That's not true if, like all other targets, EWOULDBLOCK == AGAIN. It's
+only true on hppa, and that's the problem.
 
--- 
-John David Anglin    dave.anglin@bell.net
+The kernel is completely inconsistent about returning EWOULDBLOCK or
+EAGAIN, and the standards do dictate one or the other so the kernel
+and glibc are correct to use one or the other to match the standard.
 
+However, user applications are equally sloppy about checking the right value.
+
+Cheers,
+Carlos.
