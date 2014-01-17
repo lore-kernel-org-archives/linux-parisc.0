@@ -1,50 +1,59 @@
-From: Sarah Nadi <snadi@uwaterloo.ca>
-Subject: Re: Kconfig Dependencies in Linux
-Date: Fri, 17 Jan 2014 16:03:34 -0500
-Message-ID: <52D99AA6.7080902@uwaterloo.ca>
-References: <52D98D23.3010004@uwaterloo.ca> <CAP6odjg-dTix7zZKcGmaHJAptAe7wLdD+NMVrmvOcG++d506cA@mail.gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] Make EWOULDBLOCK be equal to EAGAIN on parisc.
+Date: Fri, 17 Jan 2014 23:27:55 +0100
+Message-ID: <52D9AE6B.9000405@gmx.de>
+References: <7b86ec9f26dd9a18e7fae7a39e6a3382@tuxicoman.be> <CAE2sS1gmD21qT=UPJEt9VfAnE=e-k=qwkQM0nUO0viMaJSm3ng@mail.gmail.com> <BLU0-SMTP89CC166E31998D28320EA697B90@phx.gbl> <CAE2sS1hO=do8VTwn-_mPwZge_AdunrOfoC0VW4RnezaDfZYxXQ@mail.gmail.com> <52D84BF5.3010001@gmx.de> <faa430fa75815f8c37dd2ec4ccd4a863@tuxicoman.be> <BLU0-SMTP49AD2B087335E0EF03F54197B80@phx.gbl> <CAE2sS1hdPiLejCRKSJkCGb62WaeqK3uGgXU7Yjy_de9NHyaS3Q@mail.gmail.com> <02413c24ce7571300e50655bd7bb420d@tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: Grant Grundler <grundler@parisc-linux.org>,
+Content-Type: text/plain; charset=UTF-8
+Cc: John David Anglin <dave.anglin@bell.net>,
 	linux-parisc <linux-parisc@vger.kernel.org>
-To: Grant Grundler <grantgrundler@gmail.com>
+To: Guy Martin <gmsoft@tuxicoman.be>,
+	Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAP6odjg-dTix7zZKcGmaHJAptAe7wLdD+NMVrmvOcG++d506cA@mail.gmail.com>
+In-Reply-To: <02413c24ce7571300e50655bd7bb420d@tuxicoman.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Grant,
+On 01/17/2014 04:11 PM, Guy Martin wrote:
+> On 2014-01-17 15:08, Carlos O'Donell wrote:
+>> On Fri, Jan 17, 2014 at 9:01 AM, John David Anglin
+>> <dave.anglin@bell.net> wrote:
+>>> 
+>>> On 17-Jan-14, at 3:55 AM, Guy Martin wrote:
+>>> 
+>>>> So despite the fact that this will break the ABI, the breakage
+>>>> should be minimal if non existent while it will fix a lot of
+>>>> hard to find and identify issues.
+>>> 
+>>> 
+>>> Have you tested the change?
+>> 
+>> This is a good point.
+>> 
+>> If you can make this change and still boot your system with a
+>> rebuilt kernel, then there is hope that your claims are true.
+>> 
+>> The basic argument would be: * Change kernel header to make
+>> EWOULDBLOCK == AGAIN. * Rebuild kernel. * Boot system. * Verify
+>> system is semifunctional, networking, IO, disk, XVnc, etc.
+>> 
+>> That would go a long way to showing that most of the system works.
+>> 
+>> Then if you emerge the world against those changed headers and it
+>> goes well, then we might be talking about it being a low-impact
+>> change.
+>> 
+> 
+> I've rebuilt the kernel with the change and I can't see any impact. 
+> NFS/SSH works fine and upgrading a few packages doesn't show any
+> issue. I don't have X on that box.
 
-Thanks for your feedback. I was actually specifically targetting 
-developers who have committed to the Kconfig files before as far as I 
-could tell from the  kernel's git repository rather than randomly 
-picking people listed in MAINTAINERS. I do have questions about certain 
-dependencies, but I also want to get the general intuition behind when a 
-Kconfig dependency is enforced, and if there is external/domain 
-knowledge that comes into play. This is why I was interested in talking 
-to developers.
 
-In all cases, I do appreciate the advice!
+Just a comment:
+If we do an ABI break, we maybe should take other topics into account at the same time as well, e.g.
+- increasing number of signals for systemd
+- dropping some HP-UX signals
+- maybe something needed to better support 64bit userspace ?
+- ...
 
-Sarah
-
-On 14-01-17 03:55 PM, Grant Grundler wrote:
-> On Fri, Jan 17, 2014 at 12:05 PM, Sarah Nadi <snadi@uwaterloo.ca> wrote:
->> Hi Grant,
-> Sarah,
-> If you have specific questions about Kconfig files (and the rules they
-> embed), my advice is to ask on linux kernel mailing list. You'll get
-> the answers you are looking for.
->
-> For specific projects that use the kernel, like parisc-linux or Chrome
-> OS (my day job), ask on those respective mailing lists:
->       linux-parisc@vger.kernel.org (cc'd)
->       https://groups.google.com/a/chromium.org/forum/#!forum/chromium-os-dev
->
-> Asking random people listed in MAINTAINERS is just going to get you a
-> lot of negative feedback.
->
-> cheers,
-> grant
->
-
+Helge
