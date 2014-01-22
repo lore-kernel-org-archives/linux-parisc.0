@@ -1,53 +1,56 @@
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH] parisc: don't use module_init for non-modular core pdc_cons code
-Date: Wed, 22 Jan 2014 13:19:44 -0500
-Message-ID: <1390414784-6472-1-git-send-email-paul.gortmaker@windriver.com>
-References: <52df8b79.riaKReY/RZZi2qvy%fengguang.wu@intel.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: [PATCH] parisc: report inequivalent aliases only for writeable
+ mappings
+Date: Wed, 22 Jan 2014 14:11:40 -0500 (EST)
+Message-ID: <alpine.LRH.2.02.1401221402190.12739@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, <linux-parisc@vger.kernel.org>
-To: <fengguang.wu@intel.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <52df8b79.riaKReY/RZZi2qvy%fengguang.wu@intel.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The pdc_cons.c code is always built in.  It will never be modular,
-so using module_init as an alias for __initcall is rather
-misleading.
+Hi
 
-Fix this up now, so that we can relocate module_init from
-init.h into module.h in the future.  If we don't do this, we'd
-have to add module.h to obviously non-modular code, and that
-would be a worse thing.
+Here I'm sending a fix for parisc for Debian 5 userspace.
 
-Direct use of __initcall is discouraged, vs prioritized ones.
-Use of device_initcall is consistent with what __initcall
-maps onto, and hence does not change the init order, making the
-impact of this change zero.   Should someone with real hardware
-for boot testing want to change it later to arch_initcall or
-something different, they can do that at a later date.
+I'm just curious - why are those kmap_atomic and kunmap_atomic overrides 
+needed while other architectures with virtually indexed caches (such as 
+sparc) don't override these functions? It is that the other architectures 
+flush cache at differnet points where parisc doesn't flush it?
 
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Mikulas
+
+
+From: Mikulas Patocka <mpatocka@redhat.com>
+
+The patch f8dae00684d678afa13041ef170cecfd1297ed40 breaks Debian 5
+userspace. After application of the patch, you get a lot of INEQUIVALENT
+ALIASES messages on various dynamic libraries - so many that the system is
+unbootable.
+
+This patch changes it so that INEQUIVALENT ALIASES are only reported for
+writeable mappings. PA-RISC specification allows inequivalent aliases for
+read-only mappings, so there's no need to report them as an error.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org
+
 ---
+ arch/parisc/kernel/cache.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[patch will be added to init cleanup series:
-   http://git.kernel.org/cgit/linux/kernel/git/paulg/init.git/  ]
-
- arch/parisc/kernel/pdc_cons.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/parisc/kernel/pdc_cons.c b/arch/parisc/kernel/pdc_cons.c
-index d5cae55195ec..10a5ae9553fd 100644
---- a/arch/parisc/kernel/pdc_cons.c
-+++ b/arch/parisc/kernel/pdc_cons.c
-@@ -207,8 +207,7 @@ static int __init pdc_console_tty_driver_init(void)
- 
- 	return 0;
- }
+Index: linux-3.13/arch/parisc/kernel/cache.c
+===================================================================
+--- linux-3.13.orig/arch/parisc/kernel/cache.c	2014-01-20 21:40:18.000000000 +0100
++++ linux-3.13/arch/parisc/kernel/cache.c	2014-01-20 21:43:23.000000000 +0100
+@@ -325,7 +325,7 @@ void flush_dcache_page(struct page *page
+ 		flush_tlb_page(mpnt, addr);
+ 		if (old_addr == 0 || (old_addr & (SHMLBA - 1)) != (addr & (SHMLBA - 1))) {
+ 			__flush_cache_page(mpnt, addr, page_to_phys(page));
+-			if (old_addr)
++			if (old_addr && unlikely(mapping->i_mmap_writable != 0))
+ 				printk(KERN_ERR "INEQUIVALENT ALIASES 0x%lx and 0x%lx in file %s\n", old_addr, addr, mpnt->vm_file ? (char *)mpnt->vm_file->f_path.dentry->d_name.name : "(null)");
+ 			old_addr = addr;
+ 		}
