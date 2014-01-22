@@ -1,65 +1,44 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH] parisc: don't use module_init for non-modular core
- pdc_cons code
-Date: Wed, 22 Jan 2014 11:57:49 -0800
-Message-ID: <1390420669.2372.98.camel@dabdike.int.hansenpartnership.com>
-References: <52df8b79.riaKReY/RZZi2qvy%fengguang.wu@intel.com>
-		 <1390414784-6472-1-git-send-email-paul.gortmaker@windriver.com>
-	 <1390418450.2372.83.camel@dabdike.int.hansenpartnership.com>
-	 <52E01CF0.4040307@windriver.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: Re: [PATCH] parisc: report inequivalent aliases only for writeable
+ mappings
+Date: Wed, 22 Jan 2014 15:39:44 -0500 (EST)
+Message-ID: <alpine.LRH.2.02.1401221535290.25455@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.1401221402190.12739@file01.intranet.prod.int.rdu2.redhat.com> <1390418695.2372.86.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Cc: fengguang.wu@intel.com,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: John David Anglin <dave.anglin@bell.net>,
 	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: Paul Gortmaker <paul.gortmaker@windriver.com>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <52E01CF0.4040307@windriver.com>
+In-Reply-To: <1390418695.2372.86.camel@dabdike.int.hansenpartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2014-01-22 at 14:33 -0500, Paul Gortmaker wrote:
-> On 14-01-22 02:20 PM, James Bottomley wrote:
-> > On Wed, 2014-01-22 at 13:19 -0500, Paul Gortmaker wrote:
-> >> The pdc_cons.c code is always built in.  It will never be modular,
-> >> so using module_init as an alias for __initcall is rather
-> >> misleading.
-> >>
-> >> Fix this up now, so that we can relocate module_init from
-> >> init.h into module.h in the future.  If we don't do this, we'd
-> >> have to add module.h to obviously non-modular code, and that
-> >> would be a worse thing.
-> > 
-> > I don't buy this.  We've already had an argument about using MODULE_
-> > tags in non-modular code here:
-> > 
-> > http://marc.info/?t=138947344500007
-> > 
-> > The consensus was that we'd continue to do so, so that would seem to
-> > invalidate the rationale for doing this patch set.
-> > 
-> > Without the rationale, this is churn for no gain, so I'd rather not do
-> > it.
+
+
+On Wed, 22 Jan 2014, James Bottomley wrote:
+
+> On Wed, 2014-01-22 at 14:11 -0500, Mikulas Patocka wrote:
+> [no comment on the merits of the patch, just the wording of the change
+> log]
+> > This patch changes it so that INEQUIVALENT ALIASES are only reported for
+> > writeable mappings. PA-RISC specification allows inequivalent aliases for
+> > read-only mappings, so there's no need to report them as an error.
 > 
-> Hi James,
+> No, it doesn't.  The spec says no inequivalent aliases at all for
+> certain types of CPU (that was the cause of the inability to boot on the
+> CPU with the combined PIPT/VIPT cache) ... we believe we skirted the
+> requirements with some judicious flushing but we can't say it was
+> supported by the docs.
 > 
-> Thanks for the link.  Here is another one.
-> 
-> https://lkml.org/lkml/2014/1/21/434
-> 
-> In there I explain the rationale for doing this and what value add we
-> get from it.  Perhaps you'll say those things aren't important, and
-> then I guess we'll have to agree to disagree then... but I hope not.
+> James
 
-Well, OK, so 1 is covered by the link I sent.  3 is an EDONTCARE because
-we don't care when the console is initialised as long as it is. Your
-reason 2 I'm not sure I understand.  module_exit() functions are
-automatically discarded by the linker scripts ... if we have a problem
-with reference to code in them it will cause a link failure.
+A citation from Parisc 2.0 specification, Appendix F, section Address 
+Aliasing:
 
-I'm grateful for dumping all the spurious section mismatches caused by
-HOTPLUG, I really am, but I'm seeing less benefit to this code churn.
+"Software is allowed to have any number of read-only non-equivalently 
+aliased translations to a physical page, as long as there are no other 
+translations to the page. This is referred to as read-only non-equivalent 
+aliasing."
 
-James
-
-
+Mikulas
