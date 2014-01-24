@@ -1,110 +1,32 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: 3.12.8 is doing nasty things
-Date: Fri, 24 Jan 2014 21:44:51 +0100
-Message-ID: <2696873.HIAXvrDslF@caliban.sf-tec.de>
+From: Jeroen Roovers <jer@gentoo.org>
+Subject: Re: 3.12.8 is doing nasty things
+Date: Fri, 24 Jan 2014 22:07:23 +0100
+Message-ID: <20140124220723.5985ac4e@marga.jer-c2.orkz.net>
+References: <2696873.HIAXvrDslF@caliban.sf-tec.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3336682.qQgXemuarZ"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=US-ASCII
+Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>
 To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <2696873.HIAXvrDslF@caliban.sf-tec.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On Fri, 24 Jan 2014 21:44:51 +0100
+Rolf Eike Beer <eike-kernel@sf-tec.de> wrote:
 
---nextPart3336682.qQgXemuarZ
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+> I reported that I saw strange things happening after upgrading to
+> 3.12.5. Meanwhile I upgraded to 3.12.8 and things became worse. I
+> regularly see processes to fail randomly. I can see this as I
+> somethimes get failures in my nagios because the SSH connection to
+> the watched host (only the watched one runs .8) fails.
 
-I reported that I saw strange things happening after upgrading to 3.12.5. 
-Meanwhile I upgraded to 3.12.8 and things became worse. I regularly see 
-processes to fail randomly. I can see this as I somethimes get failures in my 
-nagios because the SSH connection to the watched host (only the watched one 
-runs .8) fails. I then see stuff like this in dmesg:
+Confirmed with any kernel above 3.12.2 that I cared to test (I didn't
+test 3.12.3). The issues vary from illegal instructions to segmentation
+faults to double frees in userland, so it's basically a "random" thing.
+I can't say it's become "worse" after 3.12.5 (since I haven't kept per
+version statistics).
 
-[723945.604000] do_page_fault() pid=30516 command='sshd' type=15 
-address=0x00000000
-[723945.604000] CPU: 1 PID: 30516 Comm: sshd Not tainted 3.12.8 #1
-[723945.604000] task: 000000023f0eb7c8 ti: 00000002397ac000 task.ti: 
-00000002397ac000
 
-[723945.604000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-[723945.604000] PSW: 00000000000001001111111100001111 Not tainted
-[723945.604000] r00-03  000000ff0004ff0f 0000000040c3dc64 0000000040b63027 
-0000000000000000
-[723945.604000] r04-07  0000000040c3d464 0000000000000000 000000000008d11c 
-0000000000089ca0
-[723945.604000] r08-11  000000000008d11c 000000000008991c 000000000008811c 
-000000000008811c
-[723945.604000] r12-15  000000000008811c 0000000000000000 000000000008811c 
-00000000000888a8
-[723945.604000] r16-19  000000000006eb1c 000000000006eb3c 000000000006e440 
-0000000040c3d464
-[723945.604000] r20-23  00000000fb014990 000000004145eb40 0000000000000000 
-0000000000000095
-[723945.604000] r24-27  00000000fffffff5 0000000040002890 00000000fb014988 
-000000000008711c
-[723945.604000] r28-31  fffffffffffffffe 0000000000000000 00000000fb014a00 
-0000000040b644c3
-[723945.604000] sr00-03  0000000006807000 0000000000000000 0000000000000000 
-0000000006807000
-[723945.604000] sr04-07  0000000006807000 0000000006807000 0000000006807000 
-0000000006807000
-
-[723945.604000]       VZOUICununcqcqcqcqcqcrmunTDVZOUI
-[723945.604000] FPSR: 00000000000000000000000000000000
-[723945.604000] FPER1: 00000000
-[723945.604000] fr00-03  0000000000000000 0000000000000000 0000000000000000 
-0000000000000000
-[723945.604000] fr04-07  41d4b5f44002d0e5 0000000000000000 0000000000000000 
-0000000000000000
-[723945.604000] fr08-11  0000000000000000 0000000000000000 0000000000000000 
-0000000000000000
-[723945.604000] fr12-15  41d4b5f44002d0e5 0000000000000000 0000000000000000 
-0000000000000000
-[723945.604000] fr16-19  0000000000000000 0000000000000000 0000000000000000 
-0000000000000000
-[723945.604000] fr20-23  0000000000000000 0000000000000000 0000000000469971 
-0000000600000000
-[723945.604000] fr24-27  0000000034a94675 0000000000000000 0000000000000000 
-0000000000000000
-[723945.604000] fr28-31  0000000000000000 0000000000000000 0000000000000000 
-0000000000000000
-
-[723945.604000] IASQ: 0000000006807000 0000000006807000 IAOQ: 0000000040b63033 
-0000000040b63037
-[723945.604000]  IIR: 0ca0109c    ISR: 0000000006807000  IOR: 0000000000000000
-[723945.604000]  CPU:        1   CR30: 00000002397ac000 CR31: ffffffffffffffff
-[723945.604000]  ORIG_R28: 0000000000000000
-[723945.604000]  IAOQ[0]: 0000000040b63033
-[723945.604000]  IAOQ[1]: 0000000040b63037
-[723945.604000]  RP(r2): 0000000040b63027
-
-When I upgraded OpenSSL I also saw an ICE during build, which went away on the 
-next try.
-
-I also see a lot of those:
-
-[724507.480000] INEQUIVALENT ALIASES 0x42ed0000 and 0x42ed1000 in file 
-libwrap.so.0.7.6
-
-That could be the binutils bug that was mentioned, this file is from 2010. I'll 
-rebuild that now to get rid of those warnings.
-
-Next week I'll try 3.13, but since it has the same changes I expect the same 
-results.
-
-Eike
---nextPart3336682.qQgXemuarZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iEYEABECAAYFAlLi0MkACgkQXKSJPmm5/E62KQCcDbgySv0cgg/pj8GjD/2VUfqL
-zAQAn1qdj/vSolCpYGbtbqvHCJ+mLr56
-=jHD9
------END PGP SIGNATURE-----
-
---nextPart3336682.qQgXemuarZ--
-
+Regards,
+     jer
