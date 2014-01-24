@@ -1,36 +1,110 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: report inequivalent aliases only for writeable
- mappings
-Date: Thu, 23 Jan 2014 20:21:47 +0100
-Message-ID: <52E16BCB.60303@gmx.de>
-References: <alpine.LRH.2.02.1401221402190.12739@file01.intranet.prod.int.rdu2.redhat.com>  <1390418695.2372.86.camel@dabdike.int.hansenpartnership.com>  <alpine.LRH.2.02.1401221535290.25455@file01.intranet.prod.int.rdu2.redhat.com> <1390424223.2372.100.camel@dabdike.int.hansenpartnership.com> <alpine.LRH.2.02.1401221629520.1498@file01.intranet.prod.int.rdu2.redhat.com> <BLU0-SMTP653E849DC18BBE6054E93597A70@phx.gbl> <alpine.LRH.2.02.1401221650320.3906@file01.intranet.prod.int.rdu2.redhat.com> <BLU0-SMTP69D00813F3618BE849AA597A60@phx.gbl>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Subject: 3.12.8 is doing nasty things
+Date: Fri, 24 Jan 2014 21:44:51 +0100
+Message-ID: <2696873.HIAXvrDslF@caliban.sf-tec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@bell.net>,
-	Mikulas Patocka <mpatocka@redhat.com>
+Content-Type: multipart/signed; boundary="nextPart3336682.qQgXemuarZ"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP69D00813F3618BE849AA597A60@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Mikulas,
 
-On 01/23/2014 03:26 AM, John David Anglin wrote:
-> On 22-Jan-14, at 5:27 PM, Mikulas Patocka wrote:
->> Anyway, the kernel should work with Debian 5 - the only way how to install
->> a new parisc system is to install Debian 5 and then switch to
->> debian-ports.
-> 
-> Actually, Helge has a lifimage that allows a new Debian system to be setup with debootstrap.
-> Helge is working toward new installer.  There's documentation on wiki on how to do it.
+--nextPart3336682.qQgXemuarZ
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Installing Debian unstable from debian-ports is fully described here:
-https://parisc.wiki.kernel.org/index.php/Debian_Ports_Installation
-(You will see some inequivalent aliases messages because the lifimage is still based on old binaries)
+I reported that I saw strange things happening after upgrading to 3.12.5. 
+Meanwhile I upgraded to 3.12.8 and things became worse. I regularly see 
+processes to fail randomly. I can see this as I somethimes get failures in my 
+nagios because the SSH connection to the watched host (only the watched one 
+runs .8) fails. I then see stuff like this in dmesg:
 
-That's how I installed the debian buildd servers:
-http://unstable.buildd.net/index-hppa.html
+[723945.604000] do_page_fault() pid=30516 command='sshd' type=15 
+address=0x00000000
+[723945.604000] CPU: 1 PID: 30516 Comm: sshd Not tainted 3.12.8 #1
+[723945.604000] task: 000000023f0eb7c8 ti: 00000002397ac000 task.ti: 
+00000002397ac000
 
-Helge
+[723945.604000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+[723945.604000] PSW: 00000000000001001111111100001111 Not tainted
+[723945.604000] r00-03  000000ff0004ff0f 0000000040c3dc64 0000000040b63027 
+0000000000000000
+[723945.604000] r04-07  0000000040c3d464 0000000000000000 000000000008d11c 
+0000000000089ca0
+[723945.604000] r08-11  000000000008d11c 000000000008991c 000000000008811c 
+000000000008811c
+[723945.604000] r12-15  000000000008811c 0000000000000000 000000000008811c 
+00000000000888a8
+[723945.604000] r16-19  000000000006eb1c 000000000006eb3c 000000000006e440 
+0000000040c3d464
+[723945.604000] r20-23  00000000fb014990 000000004145eb40 0000000000000000 
+0000000000000095
+[723945.604000] r24-27  00000000fffffff5 0000000040002890 00000000fb014988 
+000000000008711c
+[723945.604000] r28-31  fffffffffffffffe 0000000000000000 00000000fb014a00 
+0000000040b644c3
+[723945.604000] sr00-03  0000000006807000 0000000000000000 0000000000000000 
+0000000006807000
+[723945.604000] sr04-07  0000000006807000 0000000006807000 0000000006807000 
+0000000006807000
+
+[723945.604000]       VZOUICununcqcqcqcqcqcrmunTDVZOUI
+[723945.604000] FPSR: 00000000000000000000000000000000
+[723945.604000] FPER1: 00000000
+[723945.604000] fr00-03  0000000000000000 0000000000000000 0000000000000000 
+0000000000000000
+[723945.604000] fr04-07  41d4b5f44002d0e5 0000000000000000 0000000000000000 
+0000000000000000
+[723945.604000] fr08-11  0000000000000000 0000000000000000 0000000000000000 
+0000000000000000
+[723945.604000] fr12-15  41d4b5f44002d0e5 0000000000000000 0000000000000000 
+0000000000000000
+[723945.604000] fr16-19  0000000000000000 0000000000000000 0000000000000000 
+0000000000000000
+[723945.604000] fr20-23  0000000000000000 0000000000000000 0000000000469971 
+0000000600000000
+[723945.604000] fr24-27  0000000034a94675 0000000000000000 0000000000000000 
+0000000000000000
+[723945.604000] fr28-31  0000000000000000 0000000000000000 0000000000000000 
+0000000000000000
+
+[723945.604000] IASQ: 0000000006807000 0000000006807000 IAOQ: 0000000040b63033 
+0000000040b63037
+[723945.604000]  IIR: 0ca0109c    ISR: 0000000006807000  IOR: 0000000000000000
+[723945.604000]  CPU:        1   CR30: 00000002397ac000 CR31: ffffffffffffffff
+[723945.604000]  ORIG_R28: 0000000000000000
+[723945.604000]  IAOQ[0]: 0000000040b63033
+[723945.604000]  IAOQ[1]: 0000000040b63037
+[723945.604000]  RP(r2): 0000000040b63027
+
+When I upgraded OpenSSL I also saw an ICE during build, which went away on the 
+next try.
+
+I also see a lot of those:
+
+[724507.480000] INEQUIVALENT ALIASES 0x42ed0000 and 0x42ed1000 in file 
+libwrap.so.0.7.6
+
+That could be the binutils bug that was mentioned, this file is from 2010. I'll 
+rebuild that now to get rid of those warnings.
+
+Next week I'll try 3.13, but since it has the same changes I expect the same 
+results.
+
+Eike
+--nextPart3336682.qQgXemuarZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iEYEABECAAYFAlLi0MkACgkQXKSJPmm5/E62KQCcDbgySv0cgg/pj8GjD/2VUfqL
+zAQAn1qdj/vSolCpYGbtbqvHCJ+mLr56
+=jHD9
+-----END PGP SIGNATURE-----
+
+--nextPart3336682.qQgXemuarZ--
+
