@@ -1,61 +1,54 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [C8000] serial console drops input
-Date: Sat, 25 Jan 2014 15:13:47 -0500
-Message-ID: <BLU0-SMTP313201DB46978BF91A10FE97A00@phx.gbl>
-References: <20140125054144.4ccfde5e@marga.jer-c2.orkz.net> <1417398.fmUESL4Ngr@eto> <BLU0-SMTP1495AAE1C79CFA59BC915E97A00@phx.gbl> <7905648.nun1s37FKj@eto> <20140125181348.67a2bf8f@marga.jer-c2.orkz.net>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: linux-parisc@vger.kernel.org,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>
-To: Jeroen Roovers <jer@gentoo.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: 3.12.8 is doing nasty things
+Date: Sat, 25 Jan 2014 14:30:39 -0800
+Message-ID: <1390689039.2275.52.camel@dabdike.int.hansenpartnership.com>
+References: <2696873.HIAXvrDslF@caliban.sf-tec.de>
+	 <20140124220723.5985ac4e@marga.jer-c2.orkz.net>
+	 <20140124222615.66cb0d2a@borg.lux.tuxicoman.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-15"
+Cc: Jeroen Roovers <jer@gentoo.org>,
+	Rolf Eike Beer <eike-kernel@sf-tec.de>,
+	linux-parisc@vger.kernel.org
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20140125181348.67a2bf8f@marga.jer-c2.orkz.net>
+In-Reply-To: <20140124222615.66cb0d2a@borg.lux.tuxicoman.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 25-Jan-14, at 12:13 PM, Jeroen Roovers wrote:
+On Fri, 2014-01-24 at 22:26 +0100, Guy Martin wrote:
+> On Fri, 24 Jan 2014 22:07:23 +0100
+> Jeroen Roovers <jer@gentoo.org> wrote:
+> 
+> > On Fri, 24 Jan 2014 21:44:51 +0100
+> > Rolf Eike Beer <eike-kernel@sf-tec.de> wrote:
+> > 
+> > > I reported that I saw strange things happening after upgrading to
+> > > 3.12.5. Meanwhile I upgraded to 3.12.8 and things became worse. I
+> > > regularly see processes to fail randomly. I can see this as I
+> > > somethimes get failures in my nagios because the SSH connection to
+> > > the watched host (only the watched one runs .8) fails.
+> > 
+> > Confirmed with any kernel above 3.12.2 that I cared to test (I didn't
+> > test 3.12.3). The issues vary from illegal instructions to
+> > segmentation faults to double frees in userland, so it's basically a
+> > "random" thing. I can't say it's become "worse" after 3.12.5 (since I
+> > haven't kept per version statistics).
+> 
+> 
+> Same here, 3.12.5 was not behaving correctly and 3.12.8 was even worse.
+> With the later, I also experienced sshd segfault, python threading
+> segfault/hangs.
+> I quickly reverted to 3.12.4 which is far more stable.
 
-> On Sat, 25 Jan 2014 18:03:17 +0100
-> Rolf Eike Beer <eike-kernel@sf-tec.de> wrote:
->
->> Boot output looks fine. Cables are normal nullmodem. I can interact
->> using minicom with the firmware, i.e. typing "BO
->> PRI<return>N<return>" or things like that work fine.
->
-> Yes, in the PDC everything still seems fine.
->
-> But as early as in the IPL I can't paste a string without
-> characters dropping (which is how I first noticed the issue, since
-> that's where I normally do this to select a kernel to boot). So did  
-> the
-> IPL change as well, then?
+This all sounds like a flushing problem.  I can't confirm with my
+pa8800 ... but that could be because the additional pa8800 flushes are
+masking the problem.  Could you try bisecting the parisc commits
+between .4 and .5 and see if there's a particular cause?
 
+Thanks,
 
-Helge has made some changes to palo but I believe that we are on the  
-PDC boot
-console (ttyB0) until switch over here:
-
-Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
-17: ttyS0 at MMIO 0xfffffff0f05e0800 (irq = 75, base_baud = 115200) is  
-a 16550A
-console [ttyS0] enabled, bootconsole disabled
-console [ttyS0] enabled, bootconsole disabled
-18: ttyS1 at MMIO 0xfffffff0f05e2800 (irq = 76, base_baud = 115200) is  
-a 16550A
-
-The PDC code is in firmware.
-
-How long is your cable?    There's no shield connection on DB9  
-connector.  You just
-need to cross transmit and receive data.  Signal ground is straight  
-through.
-
-Dave L is correct about USB keyboard and mouse confusing serial  
-console support.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
+James
 
 
 
