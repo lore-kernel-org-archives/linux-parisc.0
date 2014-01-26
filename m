@@ -1,70 +1,50 @@
-From: Dave Land <xmechanic@landcomp.net>
+From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: [C8000] serial console drops input
-Date: Sun, 26 Jan 2014 13:35:46 -0700
-Message-ID: <52E571A2.8060600@landcomp.net>
-References: <20140125054144.4ccfde5e@marga.jer-c2.orkz.net>	<1417398.fmUESL4Ngr@eto>	<BLU0-SMTP1495AAE1C79CFA59BC915E97A00@phx.gbl>	<7905648.nun1s37FKj@eto>	<20140125181348.67a2bf8f@marga.jer-c2.orkz.net>	<BLU0-SMTP313201DB46978BF91A10FE97A00@phx.gbl>	<20140126010218.33334dbd@marga.jer-c2.orkz.net>	<52E524A6.2060703@gmx.de> <20140126212225.0c6e88f9@marga.jer-c2.orkz.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: Helge Deller <deller@gmx.de>,
-	John David Anglin <dave.anglin@bell.net>,
+Date: Sun, 26 Jan 2014 16:01:53 -0500
+Message-ID: <BLU0-SMTP67B7E8904072C1DACCE37597A30@phx.gbl>
+References: <20140125054144.4ccfde5e@marga.jer-c2.orkz.net> <1417398.fmUESL4Ngr@eto> <BLU0-SMTP1495AAE1C79CFA59BC915E97A00@phx.gbl> <7905648.nun1s37FKj@eto> <20140125181348.67a2bf8f@marga.jer-c2.orkz.net> <BLU0-SMTP313201DB46978BF91A10FE97A00@phx.gbl> <20140126010218.33334dbd@marga.jer-c2.orkz.net> <52E524A6.2060703@gmx.de> <20140126212225.0c6e88f9@marga.jer-c2.orkz.net>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
 	Rolf Eike Beer <eike-kernel@sf-tec.de>
-To: Jeroen Roovers <jer@gentoo.org>, linux-parisc@vger.kernel.org
+To: Jeroen Roovers <jer@gentoo.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <20140126212225.0c6e88f9@marga.jer-c2.orkz.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 1/26/14 1:22 PM, Jeroen Roovers wrote:
-> On Sun, 26 Jan 2014 16:07:18 +0100
-> Helge Deller <deller@gmx.de> wrote:
->
->> I'm pretty sure that I didn't changed anything in palo which is
->> PDC-console related and which would explain why you have such
->> problems. If there is a problem, then it might be because of kernel
->> and/or cable.
->
-> Yes, that seems to be the case. I initially assumed something might
-> actually reconfigure the serial port in the IPL, but I can't find any
-> evidence in support.
->
-> I think I am seeing two problems:
->
-> 1) Pasting strings doesn't work on either the PDC console or the
->     IPL/Linux console.
->
-> 2) Whereas typing on the PDC console works fine, even at some speed,
->     the same is not true for the IPL/Linux console, which lose many
->     characters along the way, and act as if the connection is
->     temporarily lost. Switching the client side terminal program
->     (I tested with minicom, picocom, screen) makes no difference.
->
+On 26-Jan-14, at 3:22 PM, Jeroen Roovers wrote:
+
 > Do serial cables deteriorate over time? :-)
->
->
-> Regards,
->       jer
-> --
 
-Jeroen,
+Not much although the soldered/crimped connections could break.  More  
+of an issue is the
+drivers.  Many boards use +3.3V devices such as the MAX3232.  These  
+don't put out as much voltage
+on the cable as standard RS232 drivers.  So, they can't drive as much  
+cable as a fully standard device.
+Secondly, the driver chips are sensitive to ESD damage (particularly  
+receiver).  So, they could
+get zapped, particularly if devices are connected while running when a  
+connection is made.
+Currents can also flow through the cable when the grounds for the two  
+pieces of equipment
+is the same.  There is no isolation in RS232 so it is sensitive to ESD  
+problem.  There is an 'E'
+version of most RS232 driver devices which has improved (+15KV human  
+body) ESD protection.
 
-It is a possibility that the serial cable may be a problem, or there may 
-actually be a hardware issue with the machine itself.(Most of these 
-machines are pretty old by computer world standards) :-) Sometimes just 
-giving them a good cleaning with compressed air, and re-seating the RAM 
-modules will make a difference. Just a thought... ;-)
+I've seen quite a few devices die in the lab.  The charge pump on  
+these devices is also sometimes
+a problem.
 
-Dave L.
+Without a scope, it's hard to tell when the signals are bad.  Best  
+that can be done is to test both
+units with third device using same/different cables, etc.
 
-P.S. I live in an area where dust is a major problem, and I have to blow 
-the dust and crap out of mine about every 3 months or so. If I don't; 
-when it *does* rain around here and the humidity goes up, I get all 
-kinds of weird errors on some of my machines (the dust becomes 
-electrically conductive). I experience this a lot with my customers 
-machines too.
+Dave
+--
+John David Anglin	dave.anglin@bell.net
 
--- 
-Dave Land
-Land Computer Service  xmechanic@landcomp.net
-ICQ: 676030523
 
 
