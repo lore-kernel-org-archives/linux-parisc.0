@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: wire up sched_setattr and sched_getattr
-Date: Fri, 31 Jan 2014 22:29:17 +0100
-Message-ID: <20140131212917.GA15208@p100.box>
+Subject: [PATCH] parisc: convert uapi/asm/stat.h to use native types only
+Date: Fri, 31 Jan 2014 23:00:38 +0100
+Message-ID: <20140131220038.GA15809@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -11,34 +11,101 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+The stat.h header file is exported to userspace. Some userspace
+applications failed to compile due to missing/unknown types, so we
+better convert it to use native types only (like it's done on other
+architectures too).
+
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
-index 2c8b9bd..4270679 100644
---- a/arch/parisc/include/uapi/asm/unistd.h
-+++ b/arch/parisc/include/uapi/asm/unistd.h
-@@ -826,8 +826,10 @@
- #define __NR_process_vm_writev	(__NR_Linux + 331)
- #define __NR_kcmp		(__NR_Linux + 332)
- #define __NR_finit_module	(__NR_Linux + 333)
-+#define __NR_sched_setattr	(__NR_Linux + 334)
-+#define __NR_sched_getattr	(__NR_Linux + 335)
+diff --git a/arch/parisc/include/uapi/asm/stat.h b/arch/parisc/include/uapi/asm/stat.h
+index d76fbda..b606b36 100644
+--- a/arch/parisc/include/uapi/asm/stat.h
++++ b/arch/parisc/include/uapi/asm/stat.h
+@@ -5,67 +5,65 @@
  
--#define __NR_Linux_syscalls	(__NR_finit_module + 1)
-+#define __NR_Linux_syscalls	(__NR_sched_getattr + 1)
+ struct stat {
+ 	unsigned int	st_dev;		/* dev_t is 32 bits on parisc */
+-	ino_t		st_ino;		/* 32 bits */
+-	mode_t		st_mode;	/* 16 bits */
++	unsigned int	st_ino;		/* 32 bits */
++	unsigned short	st_mode;	/* 16 bits */
+ 	unsigned short	st_nlink;	/* 16 bits */
+ 	unsigned short	st_reserved1;	/* old st_uid */
+ 	unsigned short	st_reserved2;	/* old st_gid */
+ 	unsigned int	st_rdev;
+-	off_t		st_size;
+-	time_t		st_atime;
++	signed int	st_size;
++	signed int	st_atime;
+ 	unsigned int	st_atime_nsec;
+-	time_t		st_mtime;
++	signed int	st_mtime;
+ 	unsigned int	st_mtime_nsec;
+-	time_t		st_ctime;
++	signed int	st_ctime;
+ 	unsigned int	st_ctime_nsec;
+ 	int		st_blksize;
+ 	int		st_blocks;
+ 	unsigned int	__unused1;	/* ACL stuff */
+ 	unsigned int	__unused2;	/* network */
+-	ino_t		__unused3;	/* network */
++	unsigned int	__unused3;	/* network */
+ 	unsigned int	__unused4;	/* cnodes */
+ 	unsigned short	__unused5;	/* netsite */
+ 	short		st_fstype;
+ 	unsigned int	st_realdev;
+ 	unsigned short	st_basemode;
+ 	unsigned short	st_spareshort;
+-	uid_t		st_uid;
+-	gid_t		st_gid;
++	unsigned int	st_uid;
++	unsigned int	st_gid;
+ 	unsigned int	st_spare4[3];
+ };
  
+ #define STAT_HAVE_NSEC
  
- #define __IGNORE_select		/* newselect */
-diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-index 0c91072..8fa3fbb 100644
---- a/arch/parisc/kernel/syscall_table.S
-+++ b/arch/parisc/kernel/syscall_table.S
-@@ -429,6 +429,8 @@
- 	ENTRY_COMP(process_vm_writev)
- 	ENTRY_SAME(kcmp)
- 	ENTRY_SAME(finit_module)
-+	ENTRY_SAME(sched_setattr)
-+	ENTRY_SAME(sched_getattr)	/* 335 */
- 
- 	/* Nothing yet */
+-typedef __kernel_off64_t	off64_t;
+-
+ struct hpux_stat64 {
+ 	unsigned int	st_dev;		/* dev_t is 32 bits on parisc */
+-	ino_t           st_ino;         /* 32 bits */
+-	mode_t		st_mode;	/* 16 bits */
++	unsigned int	st_ino;         /* 32 bits */
++	unsigned short	st_mode;	/* 16 bits */
+ 	unsigned short	st_nlink;	/* 16 bits */
+ 	unsigned short	st_reserved1;	/* old st_uid */
+ 	unsigned short	st_reserved2;	/* old st_gid */
+ 	unsigned int	st_rdev;
+-	off64_t		st_size;
+-	time_t		st_atime;
++	signed long long st_size;
++	signed int	st_atime;
+ 	unsigned int	st_spare1;
+-	time_t		st_mtime;
++	signed int	st_mtime;
+ 	unsigned int	st_spare2;
+-	time_t		st_ctime;
++	signed int	st_ctime;
+ 	unsigned int	st_spare3;
+ 	int		st_blksize;
+-	__u64		st_blocks;
++	unsigned long long st_blocks;
+ 	unsigned int	__unused1;	/* ACL stuff */
+ 	unsigned int	__unused2;	/* network */
+-	ino_t           __unused3;      /* network */
++	unsigned int	__unused3;      /* network */
+ 	unsigned int	__unused4;	/* cnodes */
+ 	unsigned short	__unused5;	/* netsite */
+ 	short		st_fstype;
+ 	unsigned int	st_realdev;
+ 	unsigned short	st_basemode;
+ 	unsigned short	st_spareshort;
+-	uid_t		st_uid;
+-	gid_t		st_gid;
++	unsigned int	st_uid;
++	unsigned int	st_gid;
+ 	unsigned int	st_spare4[3];
+ };
  
