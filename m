@@ -1,40 +1,42 @@
-From: Helge Deller <deller@gmx.de>
+From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: Kernel panic with 3.13.2 and SLAB
-Date: Tue, 11 Feb 2014 20:52:37 +0100
-Message-ID: <52FA7F85.8040508@gmx.de>
+Date: Tue, 11 Feb 2014 14:58:58 -0500
+Message-ID: <BLU0-SMTP95BD75FB8D3DB04FE9F08E97930@phx.gbl>
 References: <8885305a922f01cd7bd484e884667588@tuxicoman.be> <52FA7CFA.7020007@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-To: Guy Martin <gmsoft@tuxicoman.be>, linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Helge Deller <deller@gmx.de>, Guy Martin <gmsoft@tuxicoman.be>,
+	linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <52FA7CFA.7020007@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 02/11/2014 08:41 PM, Helge Deller wrote:
+Actually, if you look at the log, the system panics because of a delayed 
+timer interrupt and soft lockup
+on CPU#3.  Probably, there is a lock issue associated with warning that 
+causes lock up.
+
+Dave
+
+On 2/11/2014 2:41 PM, Helge Deller wrote:
 > On 02/11/2014 11:52 AM, Guy Martin wrote:
 >> Hi,
 >>
 >> I've recently upgraded from 3.12.4 to 3.13.2 and the kernel did not boot with the exact same config.
-> 
-> There has often been problems reported with 
-
-This should read:
-There has often been problems reported with SLAB.
-I think I ran into this once too. 
-
-> 
+> There has often been problems reported with
+>
 > WARN_ON(page_to_nid(virt_to_page(objp)) != nodeid);
 > would be interesting to know what the values of nodeid and page_to_nid() are..
-> 
+>
 > Anyway, I think this needs debugging by someone who knows the details of SLAB.
-> 
-> And, please make sure that this patch is included 
+>
+> And, please make sure that this patch is included
 > http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/commit/?h=for-next&id=57737c49dd72c96cfbcd4f66559f3ffc399aeb4f
-> 
+>
 > Helge
-> 
-> 
+>
+>
 >> Here is an excerpt of the panic :
 >>
 >> [    9.080000] ------------[ cut here ]------------
@@ -86,10 +88,14 @@ I think I ran into this once too.
 >>
 >>
 >> I switched from SLAB to SLUB and the problem went away. However, this used to work in 3.12.4.
-> 
 > --
 > To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
 > the body of a message to majordomo@vger.kernel.org
 > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+>
+>
+
+
+-- 
+John David Anglin    dave.anglin@bell.net
 
