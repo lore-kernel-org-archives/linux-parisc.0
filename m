@@ -1,52 +1,90 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: linux-next: manual merge of the parisc-hd tree with Linus' tree
-Date: Tue, 04 Feb 2014 09:48:26 +0100
-Message-ID: <52F0A95A.8000509@gmx.de>
-References: <20140204112718.160f82c52d5219ef8dd3a924@canb.auug.org.au>
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: Kernel panic with 3.13.2 and SLAB
+Date: Tue, 11 Feb 2014 11:52:01 +0100
+Message-ID: <8885305a922f01cd7bd484e884667588@tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>,
-	Parisc List <linux-parisc@vger.kernel.org>
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <20140204112718.160f82c52d5219ef8dd3a924@canb.auug.org.au>
-List-ID: <linux-next.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi,
 
-On 02/04/2014 01:27 AM, Stephen Rothwell wrote:
-> Today's linux-next merge of the parisc-hd tree got a conflict in
-> arch/parisc/include/asm/elf.h between commit 9dabf60dc4ab ("parisc: add
-> flexible mmap memory layout support") from Linus' tree and commit
-> 13de8ec38997 ("parisc: add flexible mmap memory layout support") from the
-> parisc-hd tree.
-> 
-> It seems that this tree was rebased before being sent to Linus (I
-> understand why) so I will just drop the whole parisc tree for today.
-> Please just tidy up.
+I've recently upgraded from 3.12.4 to 3.13.2 and the kernel did not boot 
+with the exact same config.
 
-Thanks Stephen!
+Here is an excerpt of the panic :
 
-I just cleaned it up.
+[    9.080000] ------------[ cut here ]------------
+[    9.208000] WARNING: at mm/slab.c:2614
+[    9.208000] Modules linked in:
+[    9.348000] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 3.13.2 #1
+[    9.348000] task: 000000007fc75178 ti: 000000007fc78000 task.ti: 
+000000007fc78000
+[    9.488000]
+[    9.488000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+[    9.624000] PSW: 00001000000001000000000000001110 Not tainted
+[    9.624000] r00-03  000000000804000e 0000000000000000 
+00000000402862b4 000000007fc78650
+[    9.764000] r04-07  000000004091a300 000000007fc02080 
+00000001437e40e0 0000000040a64030
+[    9.904000] r08-11  000000007fd4da00 00000001437e4100 
+000000000000000f 000f000000000000
+[   10.044000] r12-15  000000007fc02088 ffffffffc0000000 
+0000000000100100 000000004096a300
+[   10.044000] r16-19  0000000040969b00 00000000000001ff 
+0000000040969b00 0000000000000001
+[   10.184000] r20-23  0000000000000000 000000007fc020a8 
+0000000000000001 bff405fd00000000
+[   10.320000] r24-27  000000007fc78740 00000000006fc81c 
+00000000007fc020 000000004091a300
+[   10.460000] r28-31  000000023f804040 00000000409c2740 
+000000007fc78770 000000007fc020a8
+[   10.604000] sr00-03  0000000000000000 0000000000000000 
+0000000000000000 0000000000000000
+[   10.604000] sr04-07  0000000000000000 0000000000000000 
+0000000000000000 0000000000000000
+[   10.740000]
+[   10.740000] IASQ: 0000000000000000 0000000000000000 IAOQ: 
+00000000402864f8 00000000402864fc
+[   10.880000]  IIR: 03ffe01f    ISR: 0000000010240000  IOR: 
+0000040df93e40f8
+[   11.016000]  CPU:        3   CR30: 000000007fc78000 CR31: 
+ffffffffdffffaef
+[   11.156000]  ORIG_R28: 000000004096a300
+[   11.156000]  IAOQ[0]: cache_alloc_refill+0x4c8/0xbf8
+[   11.296000]  IAOQ[1]: cache_alloc_refill+0x4cc/0xbf8
+[   11.296000]  RP(r2): cache_alloc_refill+0x284/0xbf8
+[   11.436000] Backtrace:
+[   11.436000]  [<0000000040285fa8>] kmem_cache_alloc+0x1c8/0x250
+[   11.436000]  [<0000000040257100>] kmem_cache_create_memcg+0xd0/0x3a8
+[   11.576000]  [<000000004025742c>] kmem_cache_create+0x54/0x68
+[   11.712000]  [<000000004011daf4>] 0x4011daf4
+[   11.712000]  [<000000004015d0b4>] do_one_initcall+0x1ac/0x230
+[   11.756000] random: nonblocking pool is initialized
+[   11.852000]  [<0000000040101a5c>] 0x40101a5c
+[   11.992000]  [<0000000040152d38>] kernel_init+0x30/0x2a0
+[   11.992000]  [<000000004014b020>] end_fault_vector+0x20/0xc0
+[   12.132000]  [<0000000040152d08>] kernel_init+0x0/0x2a0
+[   12.132000]
+[   12.132000] ---[ end trace 436196ee1e834c21 ]---
 
-Helge
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
 
-iQIcBAEBAgAGBQJS8KlaAAoJEKGDlV8wpRJBdQEP/13n4pmbCH8Aox+eFwQhi7G5
-Jkc6d7DodiVsMNLVK1r/JTXhK+S+7lrQT+ccbU0GKjIHs5ROO+FuE2ZiTOAXAvAq
-/maZpewxSq2f5d+gJJZ6bOy7A8N1Zj/5byuuVycz+1XF4jmOj7a+B1wD8/EDqwS3
-YmwTJy+Mo7WtTm5i0qeqmExcieoAviPBmH2T4L0FnHeYSCa876kKWUSzEN2Dy1u8
-E9oKwlBYdH66gywsp27P8pqnH8sAZuhq30S0q7wHjsMzXgep3poo2Yy+RCrP3Vm2
-cpv7cOSgGfDMhhcJ1is0j9UfxYM3mEqThIjAZDcheLDyZ1cmfebks7BojaHBHyQt
-WM7/W1LZR9JQDcvuGlDmqrAOQkOJsAdUm4+sL4tdOt2CiKqtReIqQHnCUNnO81de
-PEDtkkXhOkdzu12tV0HCTVJSIXQU57/h2VobYlDu5VvYDjB1nthWhTV7l7mBlJjx
-Pe0ktJZT/DHs1OWV2nkwRGH92SakPqHxIsHaQ+XyXMkuO9g9rktZ2v3pL1B/uFsA
-q5z6EZ0p604kDzwlAJb+mQ5YjBgAQsxliaCayRVDvoKtCo2Rmf1CHHkmzIYyUG9P
-qffk+cqdUuYzoz5wEsLCtiyFK3t6IYkW50T+iZjt4Fqm8QKqX9ysxSZLkgTi/mzF
-SCQI0dteIigBYakBH1xc
-=WwyM
------END PGP SIGNATURE-----
+
+The full kernel logs can be found here : http://bpaste.net/show/177607/
+
+
+And kconfig here : http://bpaste.net/show/177929/
+
+
+I switched from SLAB to SLUB and the problem went away. However, this 
+used to work in 3.12.4.
+
+
+Regards,
+   Guy
+
+
+
