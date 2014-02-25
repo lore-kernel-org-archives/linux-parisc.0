@@ -1,29 +1,51 @@
-From: "Martin K. Petersen" <mkp@mkp.net>
-Subject: Re: palinux offline
-Date: Thu, 20 Feb 2014 14:19:55 -0500
-Message-ID: <yq1sirdk2w4.fsf@sermon.lab.mkp.net>
-References: <yq161obm2jm.fsf@sermon.lab.mkp.net>
-	<BLU0-SMTP339AF0686BE55B56C26627979B0@phx.gbl>
-	<53050A97.2010000@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain
-Cc: John David Anglin <dave.anglin@bell.net>,
-	linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <53050A97.2010000@gmx.de> (Helge Deller's message of "Wed, 19 Feb
-	2014 20:48:39 +0100")
-List-ID: <linux-parisc.vger.kernel.org>
+From: AKASHI Takahiro <takahiro.akashi@linaro.org>
+Subject: [PATCH v2 0/1] audit: Add CONFIG_HAVE_ARCH_AUDITSYSCALL
+Date: Tue, 25 Feb 2014 18:16:23 +0900
+Message-ID: <1393319784-2758-1-git-send-email-takahiro.akashi@linaro.org>
+References: <1391407232-4623-1-git-send-email-takahiro.akashi@linaro.org>
+Cc: catalin.marinas@arm.com, will.deacon@arm.com, dsaxena@linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	linaro-kernel@lists.linaro.org, linux-kernel@vger.kernel.org,
+	linux-audit@redhat.com, x86@kernel.org,
+	linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	user-mode-linux-devel@lists.sourceforge.net,
+	user-mode-linux-user@lists.sourceforge.net,
+	AKASHI Takahiro <takahiro.akashi@linaro.org>
+To: viro@zeniv.linux.org.uk, eparis@redhat.com, rgb@redhat.com,
+	arndb@arndb.de
+Return-path: <linux-alpha-owner@vger.kernel.org>
+In-Reply-To: <1391407232-4623-1-git-send-email-takahiro.akashi@linaro.org>
+List-ID: <linux-alpha.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
->>>>> "Helge" == Helge Deller <deller@gmx.de> writes:
+Currently AUDITSYSCALL has a long list of architecture depencency:
+       depends on AUDIT && (X86 || PARISC || PPC || S390 || IA64 || UML ||
+                SPARC64 || SUPERH || (ARM && AEABI && !OABI_COMPAT) || ALPHA)
+The purpose of this patch is to replace it with HAVE_ARCH_AUDITSYSCALL
+for simplicity.
 
-Helge> That the machine might have a problem is currently not good for
-Helge> that plan though.
+Changes v1 -> v2:
+* rebased to 3.14-rcX, and so added a change on ALPHA
 
-I still have a J6700 that's up for grabs but it's here in Montreal which
-complicates logistics things a bit. And we won't have remote management
-like on the old machine.
+AKASHI Takahiro (1):
+  audit: Add CONFIG_HAVE_ARCH_AUDITSYSCALL
+
+ arch/alpha/Kconfig     |    1 +
+ arch/arm/Kconfig       |    1 +
+ arch/ia64/Kconfig      |    1 +
+ arch/parisc/Kconfig    |    1 +
+ arch/powerpc/Kconfig   |    1 +
+ arch/s390/Kconfig      |    1 +
+ arch/sh/Kconfig        |    1 +
+ arch/sparc/Kconfig     |    1 +
+ arch/um/Kconfig.common |    1 +
+ arch/x86/Kconfig       |    1 +
+ init/Kconfig           |    5 ++++-
+ 11 files changed, 14 insertions(+), 1 deletion(-)
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+1.7.9.5
+
