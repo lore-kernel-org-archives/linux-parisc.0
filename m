@@ -1,66 +1,54 @@
-From: Matt Turner <mattst88@gmail.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 Subject: Re: [PATCH v2 1/1] audit: Add CONFIG_HAVE_ARCH_AUDITSYSCALL
-Date: Tue, 25 Feb 2014 09:40:15 -0800
-Message-ID: <CAEdQ38Hf=vEXEKhYaduR8HAcXyChQ-Wo7rHPGs20DirVwkDAxw@mail.gmail.com>
+Date: Wed, 26 Feb 2014 23:31:36 +1100
+Message-ID: <1393417896.17341.2.camel@concordia>
 References: <1391407232-4623-1-git-send-email-takahiro.akashi@linaro.org>
- <1393319784-2758-1-git-send-email-takahiro.akashi@linaro.org> <1393319784-2758-2-git-send-email-takahiro.akashi@linaro.org>
+	 <1393319784-2758-1-git-send-email-takahiro.akashi@linaro.org>
+	 <1393319784-2758-2-git-send-email-takahiro.akashi@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Al Viro <viro@zeniv.linux.org.uk>, eparis@redhat.com,
-	rgb@redhat.com, arndb@arndb.de, catalin.marinas@arm.com,
-	Will Deacon <will.deacon@arm.com>, dsaxena@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linaro-kernel@lists.linaro.org,
-	LKML <linux-kernel@vger.kernel.org>, linux-audit@redhat.com,
-	x86@kernel.org, linux-alpha <linux-alpha@vger.kernel.org>,
-	linux-ia64@vger.kernel.org,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+Content-Type: text/plain; charset="UTF-8"
+Cc: viro@zeniv.linux.org.uk, eparis@redhat.com, rgb@redhat.com,
+	arndb@arndb.de, linux-s390@vger.kernel.org,
+	linaro-kernel@lists.linaro.org, linux-ia64@vger.kernel.org,
 	user-mode-linux-devel@lists.sourceforge.net,
-	user-mode-linux-user@lists.sourceforge.net
+	linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
+	catalin.marinas@arm.com, x86@kernel.org, will.deacon@arm.com,
+	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+	dsaxena@linaro.org, user-mode-linux-user@lists.sourceforge.net,
+	linux-audit@redhat.com, sparclinux@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 To: AKASHI Takahiro <takahiro.akashi@linaro.org>
-Return-path: <linux-alpha-owner@vger.kernel.org>
+Return-path: <linux-ia64-owner@vger.kernel.org>
 In-Reply-To: <1393319784-2758-2-git-send-email-takahiro.akashi@linaro.org>
-List-ID: <linux-alpha.vger.kernel.org>
+List-ID: <linux-ia64.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Feb 25, 2014 at 1:16 AM, AKASHI Takahiro
-<takahiro.akashi@linaro.org> wrote:
+On Tue, 2014-02-25 at 18:16 +0900, AKASHI Takahiro wrote:
 > Currently AUDITSYSCALL has a long list of architecture depencency:
 >        depends on AUDIT && (X86 || PARISC || PPC || S390 || IA64 || UML ||
->                 SPARC64 || SUPERH || (ARM && AEABI && !OABI_COMPAT) || ALPHA)
+> 		SPARC64 || SUPERH || (ARM && AEABI && !OABI_COMPAT) || ALPHA)
 > The purpose of this patch is to replace it with HAVE_ARCH_AUDITSYSCALL
 > for simplicity.
->
+> 
 > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> ---
->  arch/alpha/Kconfig     |    1 +
->  arch/arm/Kconfig       |    1 +
->  arch/ia64/Kconfig      |    1 +
->  arch/parisc/Kconfig    |    1 +
->  arch/powerpc/Kconfig   |    1 +
->  arch/s390/Kconfig      |    1 +
->  arch/sh/Kconfig        |    1 +
->  arch/sparc/Kconfig     |    1 +
->  arch/um/Kconfig.common |    1 +
->  arch/x86/Kconfig       |    1 +
->  init/Kconfig           |    5 ++++-
->  11 files changed, 14 insertions(+), 1 deletion(-)
 >
-> diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-> index f6c6b34..b7ff9a3 100644
-> --- a/arch/alpha/Kconfig
-> +++ b/arch/alpha/Kconfig
-> @@ -22,6 +22,7 @@ config ALPHA
->         select GENERIC_SMP_IDLE_THREAD
->         select GENERIC_STRNCPY_FROM_USER
->         select GENERIC_STRNLEN_USER
-> +       select HAVE_ARCH_AUDITSYSCALL
->         select HAVE_MOD_ARCH_SPECIFIC
->         select MODULES_USE_ELF_RELA
->         select ODD_RT_SIGACTION
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 957bf34..7b3b8fe 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -141,6 +141,7 @@ config PPC
+>  	select HAVE_DEBUG_STACKOVERFLOW
+>  	select HAVE_IRQ_EXIT_ON_IRQ_STACK
+>  	select ARCH_USE_CMPXCHG_LOCKREF if PPC64
+> +	select HAVE_ARCH_AUDITSYSCALL
+>  
+>  config GENERIC_CSUM
+>  	def_bool CPU_LITTLE_ENDIAN
 
-Thanks.
+Looks good for powerpc.
 
-Acked-by: Matt Turner <mattst88@gmail.com>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+
+cheers
+
+
