@@ -1,69 +1,48 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: parisc-linux.org website migrated to http://wiki.parisc-linux.org/
-Date: Tue, 4 Mar 2014 19:05:21 -0500
-Message-ID: <BLU0-SMTP84FD1A52AF500D24A05E0A97890@phx.gbl>
-References: <53163194.2040305@gmx.de> <5316543B.3070001@landcomp.net>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: Dave Land <xmechanic@landcomp.net>
+From: Helge Deller <deller@gmx.de>
+Subject: Fwd: [PATCH RESEND 10/14] hppa: locks: remove redundant arch_*_relax
+ operations
+Date: Wed, 05 Mar 2014 21:38:14 +0100
+Message-ID: <53178B36.2070307@gmx.de>
+References: <1393004101-25382-11-git-send-email-will.deacon@arm.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <5316543B.3070001@landcomp.net>
+In-Reply-To: <1393004101-25382-11-git-send-email-will.deacon@arm.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 4-Mar-14, at 5:31 PM, Dave Land wrote:
-
-> On 3/4/14 1:03 PM, Helge Deller wrote:
->> Hello,
->>
->> just to let everyone know...
->>
->> Our original website at http://www.parisc-linux.org was hosted on a  
->> A500 machine at HP in Colorado.
->> If you are interested, you can see original pictures of this  
->> machine here: https://parisc.wiki.kernel.org/index.php/PA-RISC_Linux_Project_History
->> But due to network problems it has been down now for 3 weeks and we  
->> are in progress to move the server physically over to OSUOSL.org  
->> and use it there as buildd server.
->>
->> That said, the original website at www.parisc-linux.org will most  
->> likely now show up again.
->> Instead our new web presence is now our wiki at http://wiki.parisc-linux.org/ 
->>  which is much easier to maintain.
->>
->> As I'm writing this mail, parisc-linux.org shows the contents of  
->> our french mirror, but it will redirect to the wiki page soon.
->> If you had a @parisc-linux.org email address in the past, Thibaut  
->> will try to get the forwarding working again.
->>
->> Helge
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux- 
->> parisc" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
->>
->
-> Heh heh, pretty cool. Theirs even still has the faceplate on it. :-)
+Forwarding to parisc patchwork...
 
 
-I believe that I also have one of those faceplates but never installed  
-it...
-
-I don't know a lot about the early Puffin history (I was holed up in  
-my office at NRC about a
-mile from the Puffins).  I found this article which some might find  
-interesting:
-http://online.wsj.com/news/articles/SB921650089712293845
-
-I also note that the history indicates that Helge died on June 25,  
-1999 ;-)
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
+-------- Original Message --------
+Subject: 	[PATCH RESEND 10/14] hppa: locks: remove redundant 
+arch_*_relax operations
+Date: 	Fri, 21 Feb 2014 17:34:57 +0000
+From: 	Will Deacon <will.deacon@arm.com>
+To: 	akpm@linux-foundation.org
+CC: 	linux-arch@vger.kernel.org, Will Deacon <will.deacon@arm.com>, 
+Helge Deller <deller@gmx.de>
 
 
 
+Now that the arch_{spin,read,write}_relax macros default to cpu_relax(),
+remove the redundant definitions for parisc.
+
+Cc: Helge Deller <deller@gmx.de>
+Signed-off-by: Will Deacon <will.deacon@arm.com>
+---
+  arch/parisc/include/asm/spinlock.h | 4 ----
+  1 file changed, 4 deletions(-)
+
+diff --git a/arch/parisc/include/asm/spinlock.h b/arch/parisc/include/asm/spinlock.h
+index 3516e0b27044..64f2992e439f 100644
+--- a/arch/parisc/include/asm/spinlock.h
++++ b/arch/parisc/include/asm/spinlock.h
+@@ -191,8 +191,4 @@ static __inline__ int arch_write_can_lock(arch_rwlock_t *rw)
+  #define arch_read_lock_flags(lock, flags) arch_read_lock(lock)
+  #define arch_write_lock_flags(lock, flags) arch_write_lock(lock)
+  
+-#define arch_spin_relax(lock)	cpu_relax()
+-#define arch_read_relax(lock)	cpu_relax()
+-#define arch_write_relax(lock)	cpu_relax()
