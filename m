@@ -1,48 +1,85 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Fwd: [PATCH RESEND 10/14] hppa: locks: remove redundant arch_*_relax
- operations
-Date: Wed, 05 Mar 2014 21:38:14 +0100
-Message-ID: <53178B36.2070307@gmx.de>
-References: <1393004101-25382-11-git-send-email-will.deacon@arm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-To: Parisc List <linux-parisc@vger.kernel.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1393004101-25382-11-git-send-email-will.deacon@arm.com>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Richard Guy Briggs <rgb@redhat.com>
+Subject: [PATCH 0/6][RFC] audit: standardize and simplify syscall_get_arch()
+Date: Wed,  5 Mar 2014 16:27:01 -0500
+Message-ID: <cover.1393974970.git.rgb@redhat.com>
+Cc: Richard Guy Briggs <rgb@redhat.com>, eparis@redhat.com,
+        sgrubb@redhat.com, oleg@redhat.com,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        linux-ia64@vger.kernel.org, microblaze-uclinux@itee.uq.edu.au,
+        linux-mips@linux-mips.org, linux@openrisc.net,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org,
+        user-mode-linux-devel@lists.sourceforge.net,
+        linux-arch@vger.kernel.org
+To: linux-audit@redhat.com, linux-kernel@vger.kernel.org
+Return-path: <linux-mips-bounce@linux-mips.org>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-Forwarding to parisc patchwork...
+Each arch that supports audit requires syscall_get_arch() to able to log
+and identify architecture-dependent syscall numbers.  The information is used
+in at least two different subsystems, so standardize it in the same call across
+all arches.
 
+Use the standardized syscall_get_arch() locally to add the arch to the
+AUDIT_SECCOMP record to identify which syscall was issued.
 
--------- Original Message --------
-Subject: 	[PATCH RESEND 10/14] hppa: locks: remove redundant 
-arch_*_relax operations
-Date: 	Fri, 21 Feb 2014 17:34:57 +0000
-From: 	Will Deacon <will.deacon@arm.com>
-To: 	akpm@linux-foundation.org
-CC: 	linux-arch@vger.kernel.org, Will Deacon <will.deacon@arm.com>, 
-Helge Deller <deller@gmx.de>
+Since all the callers of syscall_get_arch() presently pass "current" and none
+of the arch-specific syscall_get_arch() implementations use the regs parameter,
+call syscall_get_arch() locally where it is needed and drop passing around
+arch, current and regs in __audit_syscall_entry() and audit_syscall_entry().
 
+Compiles and runs on i686, x86_64, ppc, ppc64, s390, s390x, manually tested in
+an x86_64 VM.  aarch64 will be added soon.
 
+Richard Guy Briggs (6):
+  syscall: define syscall_get_arch() for each audit-supported arch
+  audit: add arch field to seccomp event log
+  audit: __audit_syscall_entry: ignore arch arg and call
+    syscall_get_arch() directly
+  audit: drop arch from audit_syscall_entry() interface
+  audit: drop args from syscall_get_arch() interface
+  audit: drop arch from __audit_syscall_entry() interface
 
-Now that the arch_{spin,read,write}_relax macros default to cpu_relax(),
-remove the redundant definitions for parisc.
-
-Cc: Helge Deller <deller@gmx.de>
-Signed-off-by: Will Deacon <will.deacon@arm.com>
----
-  arch/parisc/include/asm/spinlock.h | 4 ----
-  1 file changed, 4 deletions(-)
-
-diff --git a/arch/parisc/include/asm/spinlock.h b/arch/parisc/include/asm/spinlock.h
-index 3516e0b27044..64f2992e439f 100644
---- a/arch/parisc/include/asm/spinlock.h
-+++ b/arch/parisc/include/asm/spinlock.h
-@@ -191,8 +191,4 @@ static __inline__ int arch_write_can_lock(arch_rwlock_t *rw)
-  #define arch_read_lock_flags(lock, flags) arch_read_lock(lock)
-  #define arch_write_lock_flags(lock, flags) arch_write_lock(lock)
-  
--#define arch_spin_relax(lock)	cpu_relax()
--#define arch_read_relax(lock)	cpu_relax()
--#define arch_write_relax(lock)	cpu_relax()
+ arch/arm/include/asm/syscall.h        |    5 ++---
+ arch/arm/kernel/ptrace.c              |    2 +-
+ arch/ia64/include/asm/syscall.h       |    6 ++++++
+ arch/ia64/kernel/ptrace.c             |    2 +-
+ arch/microblaze/include/asm/syscall.h |    5 +++++
+ arch/microblaze/kernel/ptrace.c       |    2 +-
+ arch/mips/include/asm/syscall.h       |    6 +++---
+ arch/mips/kernel/ptrace.c             |    3 +--
+ arch/openrisc/include/asm/syscall.h   |    5 +++++
+ arch/openrisc/kernel/ptrace.c         |    2 +-
+ arch/parisc/include/asm/syscall.h     |   11 +++++++++++
+ arch/parisc/kernel/ptrace.c           |    5 ++---
+ arch/powerpc/include/asm/syscall.h    |   12 ++++++++++++
+ arch/powerpc/kernel/ptrace.c          |    6 ++----
+ arch/s390/include/asm/syscall.h       |    7 +++----
+ arch/s390/kernel/ptrace.c             |    4 +---
+ arch/sh/include/asm/syscall.h         |   16 ++++++++++++++++
+ arch/sh/kernel/ptrace_32.c            |   13 +------------
+ arch/sh/kernel/ptrace_64.c            |   16 +---------------
+ arch/sparc/include/asm/syscall.h      |    7 +++++++
+ arch/sparc/kernel/ptrace_64.c         |    5 +----
+ arch/um/kernel/ptrace.c               |    3 +--
+ arch/x86/ia32/ia32entry.S             |   12 ++++++------
+ arch/x86/include/asm/syscall.h        |   10 ++++------
+ arch/x86/kernel/entry_32.S            |   11 +++++------
+ arch/x86/kernel/entry_64.S            |   11 +++++------
+ arch/x86/kernel/ptrace.c              |    6 ++----
+ arch/xtensa/kernel/ptrace.c           |    2 +-
+ include/asm-generic/syscall.h         |    6 ++----
+ include/linux/audit.h                 |    9 ++++-----
+ include/uapi/linux/audit.h            |    1 +
+ kernel/auditsc.c                      |    6 ++++--
+ kernel/seccomp.c                      |    4 ++--
+ 33 files changed, 120 insertions(+), 101 deletions(-)
