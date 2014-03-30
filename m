@@ -1,45 +1,29 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc updates for v3.14
-Date: Sun, 23 Mar 2014 22:02:19 +0100
-Message-ID: <20140323210219.GA15854@p100.fritz.box>
+From: "Linux parisc" <csanders@sefcoelectric.com>
+Subject: My husband loves Jacob & Co
+Date: Sun, 30 Mar 2014 09:24:41 +0200
+Message-ID: <AF12BDC1.1DB94AAD@sefcoelectric.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain;
+	charset="us-ascii"
+Cc: <linux-pci@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<linux-ppp@vger.kernel.org>, <linux-ppp-owner@vger.kernel.org>,
+	<linux-raid@vger.kernel.org>, <linux-raid-owner@vger.kernel.org>,
+	<linux-s390@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+	<linux-serial@vger.kernel.org>, <linux-sh@vger.kernel.org>,
+	<linux-smp@vger.kernel.org>, <linux-smp-owner@vger.kernel.org>,
+	<linux-sound-owner@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+	<linux-userfs@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<majordomo@vger.kernel.org>, <net@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <netfilter@vger.kernel.org>,
+	<netfilter-devel@vger.kernel.org>,
+	<platform-driver-x86@vger.kernel.org>,
+	<postmaster@vger.kernel.org>, <reiserfs-devel@vger.kernel.org>
+To: <linux-parisc@vger.kernel.org>
+Return-path: <linux-serial-owner@vger.kernel.org>
+List-ID: <linux-serial.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+Give her the gift of her lifetime without using your lifetime's savings.
+http://stalvandriel.com/umyvxyp.php
 
-please consider pulling some late patches for the parisc architecture from:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.14
-
-This patchset 
-- reverts parts of my latest patch regarding font selection with STICON console,
-- wires up the utimes() syscall for parisc, and
-- removes the unused parisc tmpalias code and unnecessary arch*relax defines
-
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Helge Deller (2):
-      partly revert commit 8a10bc9: parisc/sti_console: prefer Linux fonts over built-in ROM fonts
-      parisc: wire up sys_utimes
-
-John David Anglin (1):
-      parisc: Remove unused CONFIG_PARISC_TMPALIAS code
-
-Will Deacon (1):
-      parisc: locks: remove redundant arch_*_relax operations
-
- arch/parisc/include/asm/page.h        | 11 ------
- arch/parisc/include/asm/spinlock.h    |  4 ---
- arch/parisc/include/uapi/asm/unistd.h |  4 +--
- arch/parisc/kernel/cache.c            | 64 -----------------------------------
- arch/parisc/kernel/syscall_table.S    |  1 +
- lib/fonts/Kconfig                     |  6 ++--
- 6 files changed, 6 insertions(+), 84 deletions(-)
