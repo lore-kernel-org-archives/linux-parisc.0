@@ -1,65 +1,36 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: remove _STK_LIM_MAX override
-Date: Sun, 27 Apr 2014 16:20:47 -0400
-Message-ID: <BLU0-SMTP61D9E1AAC7E9DE17FA604F97440@phx.gbl>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: multipart/mixed; boundary="Apple-Mail-23--583946909"
-Cc: Helge Deller <deller@gmx.de>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-To: linux-parisc List <linux-parisc@vger.kernel.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [PATCH] parisc: remove _STK_LIM_MAX override
+Date: Sun, 27 Apr 2014 18:41:59 -0400
+Message-ID: <CAE2sS1hW+E9sqoAfrKftzCeXXWXXZntKjTqsPt4KQOi7jyZ=Kw@mail.gmail.com>
+References: <BLU0-SMTP61D9E1AAC7E9DE17FA604F97440@phx.gbl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-parisc List <linux-parisc@vger.kernel.org>,
+	Helge Deller <deller@gmx.de>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <BLU0-SMTP61D9E1AAC7E9DE17FA604F97440@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Apple-Mail-23--583946909
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
+On Sun, Apr 27, 2014 at 4:20 PM, John David Anglin <dave.anglin@bell.net> wrote:
+> The attached change implements the default behavior used by the majority of
+> architectures.
+>
+> Signed-off-by: John David Anglin <dave.anglin@bell.net>
 
-There are only a couple of architectures that override _STK_LIM_MAX to  
-a non-infinity value.
-This changes the stack allocation semantics in subtle ways.  For  
-example, make changes its
-stack allocation to the hard maximum defined by _STK_LIM_MAX.  As a  
-results, threads executed
-by processes running under make are allocated a stack size of  
-_STK_LIM_MAX rather than
-a sensible default value.  This causes various thread stress tests to  
-fail when they can't muster
-more than about 50 threads.
+Reviewed-by: Carlos O'Donell <carlos@systemhalted.org>
 
-The attached change implements the default behavior used by the  
-majority of architectures.
+I have reviewed the kernel code to make sure this does what's intended
+and I've reviewed the userpace NPTL implementation to verify that the
+new infinity value correctly causes the desired semantics e.g. use of
+a sensible default.
 
-Signed-off-by: John David Anglin <dave.anglin@bell.net>
----
+This will cause threads using the max stack to have their stack
+decreased from 80 MB to 8 MB, but 80 MB was never the correct value to
+use anyway and is the cause of userspace failures to create more
+threads.
 
-
---Apple-Mail-23--583946909
-Content-Disposition: attachment; filename="resource.d.txt"
-Content-Type: text/plain; x-unix-mode=0644; name="resource.d.txt"
-Content-Transfer-Encoding: 7bit
-
-diff --git a/arch/parisc/include/uapi/asm/resource.h b/arch/parisc/include/uapi/asm/resource.h
-index 8b06343..090483c 100644
---- a/arch/parisc/include/uapi/asm/resource.h
-+++ b/arch/parisc/include/uapi/asm/resource.h
-@@ -1,7 +1,6 @@
- #ifndef _ASM_PARISC_RESOURCE_H
- #define _ASM_PARISC_RESOURCE_H
- 
--#define _STK_LIM_MAX	10 * _STK_LIM
- #include <asm-generic/resource.h>
- 
- #endif
-
---Apple-Mail-23--583946909
-Content-Type: text/plain; charset="US-ASCII"; format=flowed
-Content-Transfer-Encoding: 7bit
-
-
-
---
-John David Anglin	dave.anglin@bell.net
-
-
---Apple-Mail-23--583946909--
+Cheers,
+Carlos.
