@@ -1,116 +1,65 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH 3/4] ARCH: AUDIT: implement syscall_get_arch
- for all arches
-Date: Tue, 22 Apr 2014 13:09:31 +1000
-Message-ID: <20140422130931.940f53412d30730aa4bc820b@canb.auug.org.au>
-References: <1395266643-3139-1-git-send-email-eparis@redhat.com>
-	<1395266643-3139-3-git-send-email-eparis@redhat.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3184732945041985646=="
-Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org,
-	linux-parisc@vger.kernel.org, microblaze-uclinux@itee.uq.edu.au,
-	linux@openrisc.net, linux-audit@redhat.com,
-	sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-To: Eric Paris <eparis@redhat.com>
-Return-path: <linux-bounces@lists.openrisc.net>
-In-Reply-To: <1395266643-3139-3-git-send-email-eparis@redhat.com>
-List-Id: OpenRISC Linux <linux.lists.openrisc.net>
-List-Unsubscribe: <http://lists.openrisc.net/options/linux>,
-	<mailto:linux-request@lists.openrisc.net?subject=unsubscribe>
-List-Archive: <http://lists.openrisc.net/pipermail/linux>
-List-Post: <mailto:linux@lists.openrisc.net>
-List-Help: <mailto:linux-request@lists.openrisc.net?subject=help>
-List-Subscribe: <http://lists.openrisc.net/listinfo/linux>,
-	<mailto:linux-request@lists.openrisc.net?subject=subscribe>
-Errors-To: linux-bounces@lists.openrisc.net
+From: John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: remove _STK_LIM_MAX override
+Date: Sun, 27 Apr 2014 16:20:47 -0400
+Message-ID: <BLU0-SMTP61D9E1AAC7E9DE17FA604F97440@phx.gbl>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: multipart/mixed; boundary="Apple-Mail-23--583946909"
+Cc: Helge Deller <deller@gmx.de>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+To: linux-parisc List <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
---===============3184732945041985646==
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA256";
- boundary="Signature=_Tue__22_Apr_2014_13_09_31_+1000_flia9hF+yPUdnFYF"
-
---Signature=_Tue__22_Apr_2014_13_09_31_+1000_flia9hF+yPUdnFYF
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Eric,
-
-[I just noticed that this turned up in linux-next ...]
-
-On Wed, 19 Mar 2014 18:04:02 -0400 Eric Paris <eparis@redhat.com> wrote:
->
-> diff --git a/arch/powerpc/include/asm/syscall.h b/arch/powerpc/include/as=
-m/syscall.h
-> index b54b2ad..4271544 100644
-> --- a/arch/powerpc/include/asm/syscall.h
-> +++ b/arch/powerpc/include/asm/syscall.h
-> @@ -13,6 +13,8 @@
->  #ifndef _ASM_SYSCALL_H
->  #define _ASM_SYSCALL_H	1
-> =20
-> +#include <uapi/linux/audit.h>
-> +#include <linux/compat.h>
-
-You don't need linux/compat.h, I think, but you do need to include
-linux/thread_info.h for is_32bit_task() below.
-
->  #include <linux/sched.h>
-> =20
->  /* ftrace syscalls requires exporting the sys_call_table */
-> @@ -86,4 +88,14 @@ static inline void syscall_set_arguments(struct task_s=
-truct *task,
->  	memcpy(&regs->gpr[3 + i], args, n * sizeof(args[0]));
->  }
-> =20
-> +static inline int syscall_get_arch(void)
-> +{
-> +	int arch =3D AUDIT_ARCH_PPC;
-> +
-> +#ifdef CONFIG_PPC64
-> +	if (!is_32bit_task())
-> +		arch =3D AUDIT_ARCH_PPC64;
-> +#endif
-> +	return arch;
-
-This could just be
-
-	return is_32bit_task() ? AUDIT_ARCH_PPC : AUDIT_ARCH_PPC64;
-
-as is_32bit_task() is always defined (and is (1) for !CONFIG_PPC64).
-
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-
---Signature=_Tue__22_Apr_2014_13_09_31_+1000_flia9hF+yPUdnFYF
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBCAAGBQJTVd1wAAoJEMDTa8Ir7ZwVHfUQAJBjX5ikUyun82MFtAMdTh2x
-9nOveILFcSwGt4ZDyYica+UARDkB0KbtMB38pF7MPePG9f93twRYMnRskrM5XaN0
-GDLOJxVoikuMRlt2HxyIVmrLs0JvCccOZz+Uy1Pq50RlB+GqBqCPbDMd7IZBQYKb
-MdPoYr+0wIe2eMYRc+Rj9CBzCuY79FoQhCl6rIMsQRJ1/SrD7zvDP8x8J2n/8hpk
-+jbgeX30zDIQlCP/a5MjSBFdmqW6N8d5GKLcNPdBSdWe0Ff8G/d/8gz8Q2lvyNxQ
-dZdNxa116iZwE5H8p6zLchiwyel3vZzvLCMILCoc1ysMxQXx9Z+sfroFAjYjClm9
-EIzBfzV7GR8QsssjCKSkcfFgfviHxIWFWo1ypmlnU/HMNkDB4ywHF6u6t8sx54c0
-ZAfKuXa4gs+y99SuEoNbqPB1ssGwhFGdPV9A5n5m5aP8BaRYDFvat7rKA46mWCE2
-JFA5CNWHCqzR3Ap/FDht3SeTNFUmDOnY/mfLB5CtjYg8HoTkAT+GB2eXKM9nn5nB
-9UiqxLBFgfp1S0aFYlQqixJN872WxkT3L+V7V9DSwLR83RS4PBoSTWKivdZ4/01Y
-DOhcrsMkZuOtcJO5QQrZ7hU31ngIHOuVdesryVcVTnh28r1IfviH/YW9xXoC9aS1
-axXNb3h4pYFXeMyYxoZ0
-=gnUE
------END PGP SIGNATURE-----
-
---Signature=_Tue__22_Apr_2014_13_09_31_+1000_flia9hF+yPUdnFYF--
-
---===============3184732945041985646==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
+--Apple-Mail-23--583946909
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+
+There are only a couple of architectures that override _STK_LIM_MAX to  
+a non-infinity value.
+This changes the stack allocation semantics in subtle ways.  For  
+example, make changes its
+stack allocation to the hard maximum defined by _STK_LIM_MAX.  As a  
+results, threads executed
+by processes running under make are allocated a stack size of  
+_STK_LIM_MAX rather than
+a sensible default value.  This causes various thread stress tests to  
+fail when they can't muster
+more than about 50 threads.
+
+The attached change implements the default behavior used by the  
+majority of architectures.
+
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
+---
 
 
---===============3184732945041985646==--
+--Apple-Mail-23--583946909
+Content-Disposition: attachment; filename="resource.d.txt"
+Content-Type: text/plain; x-unix-mode=0644; name="resource.d.txt"
+Content-Transfer-Encoding: 7bit
+
+diff --git a/arch/parisc/include/uapi/asm/resource.h b/arch/parisc/include/uapi/asm/resource.h
+index 8b06343..090483c 100644
+--- a/arch/parisc/include/uapi/asm/resource.h
++++ b/arch/parisc/include/uapi/asm/resource.h
+@@ -1,7 +1,6 @@
+ #ifndef _ASM_PARISC_RESOURCE_H
+ #define _ASM_PARISC_RESOURCE_H
+ 
+-#define _STK_LIM_MAX	10 * _STK_LIM
+ #include <asm-generic/resource.h>
+ 
+ #endif
+
+--Apple-Mail-23--583946909
+Content-Type: text/plain; charset="US-ASCII"; format=flowed
+Content-Transfer-Encoding: 7bit
+
+
+
+--
+John David Anglin	dave.anglin@bell.net
+
+
+--Apple-Mail-23--583946909--
