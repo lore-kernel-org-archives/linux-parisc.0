@@ -1,80 +1,216 @@
-From: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
-Subject: Re: [PATCH] parisc,metag: Do not hardcode maximum userspace stack
- size
-Date: Sun, 04 May 2014 09:28:05 +0200
-Message-ID: <5365EC05.5080900@gmx.de>
-References: <20140430212602.GA20601@p100.fritz.box>		 <53622DBA.807@imgtec.com> <1398966636.2174.21.camel@dabdike>	 <5363876A.2030709@imgtec.com> <1399042116.2202.1.camel@dabdike>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: ratelimit userspace segfault printing
+Date: Mon, 5 May 2014 18:07:12 +0200
+Message-ID: <20140505160712.GA2580@ls3530.fritz.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	John David Anglin <dave.anglin-CzeTG9NwML0@public.gmane.org>,
-	linux-metag-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: James Bottomley <James.Bottomley-d9PhHud1JfjCXq6kfMZ53/egYHeGw8Jk@public.gmane.org>,
-	James Hogan <james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Return-path: <linux-metag-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1399042116.2202.1.camel@dabdike>
-List-ID: <linux-metag.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 05/02/2014 04:48 PM, James Bottomley wrote:
-> On Fri, 2014-05-02 at 12:54 +0100, James Hogan wrote:
->> On 01/05/14 18:50, James Bottomley wrote:
->>>
->>>> +
->>>> +config MAX_STACK_SIZE_MB
->>>> +	int "Maximum user stack size (MB)"
->>>> +	default 80
->>>> +	range 8 256 if METAG
->>>> +	range 8 2048
->>>> +	depends on STACK_GROWSUP
->>>> +	help
->>>> +	  This is the maximum stack size in Megabytes in the VM layout of user
->>>> +	  processes when the stack grows upwards (currently only on parisc and
->>>> +	  metag arch). The stack will be located at the highest memory address
->>>> +	  minus the given value, unless the RLIMIT_STACK hard limit is changed
->>>> +	  to a smaller value in which case that is used.
->>>> +
->>>> +	  A sane initial value is 80 MB.
->>>
->>> There's one final issue with this: placement of the stack only really
->>> matters on 32 bits.  We have three expanding memory areas: stack, heap
->>> and maps.  On 64 bits these are placed well separated from each other on
->>> 64 bits, so an artificial limit like this doesn't matter.
->>
->> Does the following fixup diff look reasonable? It forces
->> MAX_STACK_SIZE_MB to 1024 and hides the Kconfig option for 64BIT,
->> effectively leaving the behaviour unchanged in that case.
->>
->> diff --git a/mm/Kconfig b/mm/Kconfig
->> index e80075979530..b0307f737bd7 100644
->> --- a/mm/Kconfig
->> +++ b/mm/Kconfig
->> @@ -583,7 +583,8 @@ config GENERIC_EARLY_IOREMAP
->>  	bool
->>
->>  config MAX_STACK_SIZE_MB
->> -	int "Maximum user stack size (MB)"
->> +	int "Maximum user stack size (MB)" if !64BIT
->> +	default 1024 if 64BIT
->>  	default 80
->>  	range 8 256 if METAG
->>  	range 8 2048
-> 
-> Yes, I think that's probably correct ... 
+Ratelimit printing of userspace segfaults and make it runtime
+configurable via the /proc/sys/debug/exception-trace variable. This
+should resolve syslog from growing way too fast.
 
-No, it's not correct.
-It will then choose then a 1GB stack for compat tasks on 64bit kernel.
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Helge
-
-> parisc doesn't actually have
-> anything other than a testbed 64 bit userspace, so this is a bit
-> theoretical for us.
-
-
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-metag" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 1faefed..108d48e 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -22,6 +22,7 @@ config PARISC
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GENERIC_STRNCPY_FROM_USER
+ 	select SYSCTL_ARCH_UNALIGN_ALLOW
++	select SYSCTL_EXCEPTION_TRACE
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select VIRT_TO_BUS
+ 	select MODULES_USE_ELF_RELA
+diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
+index 1cd1d0c..47ee620 100644
+--- a/arch/parisc/kernel/traps.c
++++ b/arch/parisc/kernel/traps.c
+@@ -25,6 +25,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/console.h>
+ #include <linux/bug.h>
++#include <linux/ratelimit.h>
+ 
+ #include <asm/assembly.h>
+ #include <asm/uaccess.h>
+@@ -42,9 +43,6 @@
+ 
+ #include "../math-emu/math-emu.h"	/* for handle_fpe() */
+ 
+-#define PRINT_USER_FAULTS /* (turn this on if you want user faults to be */
+-			  /*  dumped to the console via printk)          */
+-
+ #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
+ DEFINE_SPINLOCK(pa_dbit_lock);
+ #endif
+@@ -160,6 +158,17 @@ void show_regs(struct pt_regs *regs)
+ 	}
+ }
+ 
++static DEFINE_RATELIMIT_STATE(_hppa_rs,
++	DEFAULT_RATELIMIT_INTERVAL, DEFAULT_RATELIMIT_BURST);
++
++#define parisc_printk_ratelimited(critical, regs, fmt, ...)	{	      \
++	if ((critical || show_unhandled_signals) && __ratelimit(&_hppa_rs)) { \
++		printk(fmt, ##__VA_ARGS__);				      \
++		show_regs(regs);					      \
++	}								      \
++}
++
++
+ static void do_show_stack(struct unwind_frame_info *info)
+ {
+ 	int i = 1;
+@@ -229,12 +238,10 @@ void die_if_kernel(char *str, struct pt_regs *regs, long err)
+ 		if (err == 0)
+ 			return; /* STFU */
+ 
+-		printk(KERN_CRIT "%s (pid %d): %s (code %ld) at " RFMT "\n",
++		parisc_printk_ratelimited(1, regs,
++			KERN_CRIT "%s (pid %d): %s (code %ld) at " RFMT "\n",
+ 			current->comm, task_pid_nr(current), str, err, regs->iaoq[0]);
+-#ifdef PRINT_USER_FAULTS
+-		/* XXX for debugging only */
+-		show_regs(regs);
+-#endif
++
+ 		return;
+ 	}
+ 
+@@ -321,14 +328,11 @@ static void handle_break(struct pt_regs *regs)
+ 			(tt == BUG_TRAP_TYPE_NONE) ? 9 : 0);
+ 	}
+ 
+-#ifdef PRINT_USER_FAULTS
+-	if (unlikely(iir != GDB_BREAK_INSN)) {
+-		printk(KERN_DEBUG "break %d,%d: pid=%d command='%s'\n",
++	if (unlikely(iir != GDB_BREAK_INSN))
++		parisc_printk_ratelimited(0, regs,
++			KERN_DEBUG "break %d,%d: pid=%d command='%s'\n",
+ 			iir & 31, (iir>>13) & ((1<<13)-1),
+ 			task_pid_nr(current), current->comm);
+-		show_regs(regs);
+-	}
+-#endif
+ 
+ 	/* send standard GDB signal */
+ 	handle_gdb_break(regs, TRAP_BRKPT);
+@@ -758,11 +762,9 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
+ 
+ 	default:
+ 		if (user_mode(regs)) {
+-#ifdef PRINT_USER_FAULTS
+-			printk(KERN_DEBUG "\nhandle_interruption() pid=%d command='%s'\n",
+-			    task_pid_nr(current), current->comm);
+-			show_regs(regs);
+-#endif
++			parisc_printk_ratelimited(0, regs, KERN_DEBUG
++				"handle_interruption() pid=%d command='%s'\n",
++				task_pid_nr(current), current->comm);
+ 			/* SIGBUS, for lack of a better one. */
+ 			si.si_signo = SIGBUS;
+ 			si.si_code = BUS_OBJERR;
+@@ -779,16 +781,10 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
+ 
+ 	if (user_mode(regs)) {
+ 	    if ((fault_space >> SPACEID_SHIFT) != (regs->sr[7] >> SPACEID_SHIFT)) {
+-#ifdef PRINT_USER_FAULTS
+-		if (fault_space == 0)
+-			printk(KERN_DEBUG "User Fault on Kernel Space ");
+-		else
+-			printk(KERN_DEBUG "User Fault (long pointer) (fault %d) ",
+-			       code);
+-		printk(KERN_CONT "pid=%d command='%s'\n",
+-		       task_pid_nr(current), current->comm);
+-		show_regs(regs);
+-#endif
++		parisc_printk_ratelimited(0, regs, KERN_DEBUG
++				"User fault %d on space 0x%08lx, pid=%d command='%s'\n",
++				code, fault_space,
++				task_pid_nr(current), current->comm);
+ 		si.si_signo = SIGSEGV;
+ 		si.si_errno = 0;
+ 		si.si_code = SEGV_MAPERR;
+diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+index 7475507..a73e905 100644
+--- a/arch/parisc/mm/fault.c
++++ b/arch/parisc/mm/fault.c
+@@ -19,10 +19,6 @@
+ #include <asm/uaccess.h>
+ #include <asm/traps.h>
+ 
+-#define PRINT_USER_FAULTS /* (turn this on if you want user faults to be */
+-			 /*  dumped to the console via printk)          */
+-
+-
+ /* Various important other fields */
+ #define bit22set(x)		(x & 0x00000200)
+ #define bits23_25set(x)		(x & 0x000001c0)
+@@ -34,6 +30,8 @@
+ 
+ DEFINE_PER_CPU(struct exception_data, exception_data);
+ 
++int show_unhandled_signals = 1;
++
+ /*
+  * parisc_acctyp(unsigned int inst) --
+  *    Given a PA-RISC memory access instruction, determine if the
+@@ -173,6 +171,32 @@ int fixup_exception(struct pt_regs *regs)
+ 	return 0;
+ }
+ 
++/*
++ * Print out info about fatal segfaults, if the show_unhandled_signals
++ * sysctl is set:
++ */
++static inline void
++show_signal_msg(struct pt_regs *regs, unsigned long code,
++		unsigned long address, struct task_struct *tsk,
++		struct vm_area_struct *vma)
++{
++	if (!unhandled_signal(tsk, SIGSEGV))
++		return;
++
++	if (!printk_ratelimit())
++		return;
++
++	pr_debug("\n");
++	pr_debug("do_page_fault() command='%s' type=%lu address=0x%08lx",
++	    tsk->comm, code, address);
++	print_vma_addr(KERN_CONT " in ", regs->iaoq[0]);
++	if (vma)
++		pr_debug(" vm_start = 0x%08lx, vm_end = 0x%08lx\n",
++				vma->vm_start, vma->vm_end);
++
++	show_regs(regs);
++}
++
+ void do_page_fault(struct pt_regs *regs, unsigned long code,
+ 			      unsigned long address)
+ {
+@@ -270,16 +294,8 @@ bad_area:
+ 	if (user_mode(regs)) {
+ 		struct siginfo si;
+ 
+-#ifdef PRINT_USER_FAULTS
+-		printk(KERN_DEBUG "\n");
+-		printk(KERN_DEBUG "do_page_fault() pid=%d command='%s' type=%lu address=0x%08lx\n",
+-		    task_pid_nr(tsk), tsk->comm, code, address);
+-		if (vma) {
+-			printk(KERN_DEBUG "vm_start = 0x%08lx, vm_end = 0x%08lx\n",
+-					vma->vm_start, vma->vm_end);
+-		}
+-		show_regs(regs);
+-#endif
++		show_signal_msg(regs, code, address, tsk, vma);
++
+ 		switch (code) {
+ 		case 15:	/* Data TLB miss fault/Data page fault */
+ 			/* send SIGSEGV when outside of vma */
