@@ -1,216 +1,122 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: ratelimit userspace segfault printing
-Date: Mon, 5 May 2014 18:07:12 +0200
-Message-ID: <20140505160712.GA2580@ls3530.fritz.box>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
+From: John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Improve LWS-CAS performance
+Date: Sun, 11 May 2014 18:40:50 -0400
+Message-ID: <BLU0-SMTP178D56FBECCDEE0B3D0BE6974A0@phx.gbl>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: multipart/mixed; boundary="Apple-Mail-62-634056063"
+Cc: Helge Deller <deller@gmx.de>,
 	James Bottomley <James.Bottomley@HansenPartnership.com>
+To: linux-parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Ratelimit printing of userspace segfaults and make it runtime
-configurable via the /proc/sys/debug/exception-trace variable. This
-should resolve syslog from growing way too fast.
+--Apple-Mail-62-634056063
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+The attached change significantly improves the performance of the LWS- 
+CAS code in syscall.S.
+This allows a number of packages to build (e.g., zeromq3, gtest and  
+libxs) that previously failed because
+slow LWS-CAS performance under contention.  In particular, interrupts  
+taken while the lock was taken
+degraded performance significantly.
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 1faefed..108d48e 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -22,6 +22,7 @@ config PARISC
- 	select GENERIC_SMP_IDLE_THREAD
- 	select GENERIC_STRNCPY_FROM_USER
- 	select SYSCTL_ARCH_UNALIGN_ALLOW
-+	select SYSCTL_EXCEPTION_TRACE
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select VIRT_TO_BUS
- 	select MODULES_USE_ELF_RELA
-diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index 1cd1d0c..47ee620 100644
---- a/arch/parisc/kernel/traps.c
-+++ b/arch/parisc/kernel/traps.c
-@@ -25,6 +25,7 @@
- #include <linux/interrupt.h>
- #include <linux/console.h>
- #include <linux/bug.h>
-+#include <linux/ratelimit.h>
+The change does the following:
+
+1) Disables interrupts around the CAS operation,
+2) Removes the lock code on UP systems where it is not needed, and
+3) Changes the loads and stores to use the ordered completer, "o", on
+PA 2.0.  "o" and "ma" with a zero offset are equivalent.  The latter  
+is accepted
+on both PA 1.X and 2.0.
+
+The use of ordered loads and stores probably makes no difference on  
+all existing
+hardware, but it seemed pedantically correct.  In particular, the CAS  
+operation must
+complete before LDCW lock is released.  As written before, a processor  
+could reorder
+the operations.
+
+I don't believe the period interrupts are disabled is long enough to  
+significantly
+increase interrupt latency.  For example, the TLB insert code is  
+longer.  Worst
+case is a memory fault in the CAS operation.
+
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
+---
+
+
+
+--Apple-Mail-62-634056063
+Content-Disposition: attachment; filename="syscall.S.d.txt"
+Content-Type: text/plain; x-unix-mode=0644; name="syscall.S.d.txt"
+Content-Transfer-Encoding: 7bit
+
+diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+index a63bb179..801ba08 100644
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -589,12 +589,16 @@ cas_nocontend:
+ # endif
+ /* ENABLE_LWS_DEBUG */
  
- #include <asm/assembly.h>
- #include <asm/uaccess.h>
-@@ -42,9 +43,6 @@
++	rsm	PSW_SM_I, %r0				/* Disable interrupts */
++#ifdef CONFIG_SMP
+ 	LDCW	0(%sr2,%r20), %r28			/* Try to acquire the lock */
+ 	cmpb,<>,n	%r0, %r28, cas_action		/* Did we get it? */
+ cas_wouldblock:
+ 	ldo	2(%r0), %r28				/* 2nd case */
++	ssm	PSW_SM_I, %r0
+ 	b	lws_exit				/* Contended... */
+ 	ldo	-EAGAIN(%r0), %r21			/* Spin in userspace */
++#endif
  
- #include "../math-emu/math-emu.h"	/* for handle_fpe() */
- 
--#define PRINT_USER_FAULTS /* (turn this on if you want user faults to be */
--			  /*  dumped to the console via printk)          */
--
- #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
- DEFINE_SPINLOCK(pa_dbit_lock);
+ 	/*
+ 		prev = *addr;
+@@ -619,15 +623,19 @@ cas_action:
+ 	stw	%r1, 4(%sr2,%r20)
  #endif
-@@ -160,6 +158,17 @@ void show_regs(struct pt_regs *regs)
- 	}
- }
- 
-+static DEFINE_RATELIMIT_STATE(_hppa_rs,
-+	DEFAULT_RATELIMIT_INTERVAL, DEFAULT_RATELIMIT_BURST);
-+
-+#define parisc_printk_ratelimited(critical, regs, fmt, ...)	{	      \
-+	if ((critical || show_unhandled_signals) && __ratelimit(&_hppa_rs)) { \
-+		printk(fmt, ##__VA_ARGS__);				      \
-+		show_regs(regs);					      \
-+	}								      \
-+}
-+
-+
- static void do_show_stack(struct unwind_frame_info *info)
- {
- 	int i = 1;
-@@ -229,12 +238,10 @@ void die_if_kernel(char *str, struct pt_regs *regs, long err)
- 		if (err == 0)
- 			return; /* STFU */
- 
--		printk(KERN_CRIT "%s (pid %d): %s (code %ld) at " RFMT "\n",
-+		parisc_printk_ratelimited(1, regs,
-+			KERN_CRIT "%s (pid %d): %s (code %ld) at " RFMT "\n",
- 			current->comm, task_pid_nr(current), str, err, regs->iaoq[0]);
--#ifdef PRINT_USER_FAULTS
--		/* XXX for debugging only */
--		show_regs(regs);
--#endif
-+
- 		return;
- 	}
- 
-@@ -321,14 +328,11 @@ static void handle_break(struct pt_regs *regs)
- 			(tt == BUG_TRAP_TYPE_NONE) ? 9 : 0);
- 	}
- 
--#ifdef PRINT_USER_FAULTS
--	if (unlikely(iir != GDB_BREAK_INSN)) {
--		printk(KERN_DEBUG "break %d,%d: pid=%d command='%s'\n",
-+	if (unlikely(iir != GDB_BREAK_INSN))
-+		parisc_printk_ratelimited(0, regs,
-+			KERN_DEBUG "break %d,%d: pid=%d command='%s'\n",
- 			iir & 31, (iir>>13) & ((1<<13)-1),
- 			task_pid_nr(current), current->comm);
--		show_regs(regs);
--	}
--#endif
- 
- 	/* send standard GDB signal */
- 	handle_gdb_break(regs, TRAP_BRKPT);
-@@ -758,11 +762,9 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- 
- 	default:
- 		if (user_mode(regs)) {
--#ifdef PRINT_USER_FAULTS
--			printk(KERN_DEBUG "\nhandle_interruption() pid=%d command='%s'\n",
--			    task_pid_nr(current), current->comm);
--			show_regs(regs);
--#endif
-+			parisc_printk_ratelimited(0, regs, KERN_DEBUG
-+				"handle_interruption() pid=%d command='%s'\n",
-+				task_pid_nr(current), current->comm);
- 			/* SIGBUS, for lack of a better one. */
- 			si.si_signo = SIGBUS;
- 			si.si_code = BUS_OBJERR;
-@@ -779,16 +781,10 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- 
- 	if (user_mode(regs)) {
- 	    if ((fault_space >> SPACEID_SHIFT) != (regs->sr[7] >> SPACEID_SHIFT)) {
--#ifdef PRINT_USER_FAULTS
--		if (fault_space == 0)
--			printk(KERN_DEBUG "User Fault on Kernel Space ");
--		else
--			printk(KERN_DEBUG "User Fault (long pointer) (fault %d) ",
--			       code);
--		printk(KERN_CONT "pid=%d command='%s'\n",
--		       task_pid_nr(current), current->comm);
--		show_regs(regs);
--#endif
-+		parisc_printk_ratelimited(0, regs, KERN_DEBUG
-+				"User fault %d on space 0x%08lx, pid=%d command='%s'\n",
-+				code, fault_space,
-+				task_pid_nr(current), current->comm);
- 		si.si_signo = SIGSEGV;
- 		si.si_errno = 0;
- 		si.si_code = SEGV_MAPERR;
-diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index 7475507..a73e905 100644
---- a/arch/parisc/mm/fault.c
-+++ b/arch/parisc/mm/fault.c
-@@ -19,10 +19,6 @@
- #include <asm/uaccess.h>
- #include <asm/traps.h>
- 
--#define PRINT_USER_FAULTS /* (turn this on if you want user faults to be */
--			 /*  dumped to the console via printk)          */
--
--
- /* Various important other fields */
- #define bit22set(x)		(x & 0x00000200)
- #define bits23_25set(x)		(x & 0x000001c0)
-@@ -34,6 +30,8 @@
- 
- DEFINE_PER_CPU(struct exception_data, exception_data);
- 
-+int show_unhandled_signals = 1;
-+
- /*
-  * parisc_acctyp(unsigned int inst) --
-  *    Given a PA-RISC memory access instruction, determine if the
-@@ -173,6 +171,32 @@ int fixup_exception(struct pt_regs *regs)
- 	return 0;
- }
- 
-+/*
-+ * Print out info about fatal segfaults, if the show_unhandled_signals
-+ * sysctl is set:
-+ */
-+static inline void
-+show_signal_msg(struct pt_regs *regs, unsigned long code,
-+		unsigned long address, struct task_struct *tsk,
-+		struct vm_area_struct *vma)
-+{
-+	if (!unhandled_signal(tsk, SIGSEGV))
-+		return;
-+
-+	if (!printk_ratelimit())
-+		return;
-+
-+	pr_debug("\n");
-+	pr_debug("do_page_fault() command='%s' type=%lu address=0x%08lx",
-+	    tsk->comm, code, address);
-+	print_vma_addr(KERN_CONT " in ", regs->iaoq[0]);
-+	if (vma)
-+		pr_debug(" vm_start = 0x%08lx, vm_end = 0x%08lx\n",
-+				vma->vm_start, vma->vm_end);
-+
-+	show_regs(regs);
-+}
-+
- void do_page_fault(struct pt_regs *regs, unsigned long code,
- 			      unsigned long address)
- {
-@@ -270,16 +294,8 @@ bad_area:
- 	if (user_mode(regs)) {
- 		struct siginfo si;
- 
--#ifdef PRINT_USER_FAULTS
--		printk(KERN_DEBUG "\n");
--		printk(KERN_DEBUG "do_page_fault() pid=%d command='%s' type=%lu address=0x%08lx\n",
--		    task_pid_nr(tsk), tsk->comm, code, address);
--		if (vma) {
--			printk(KERN_DEBUG "vm_start = 0x%08lx, vm_end = 0x%08lx\n",
--					vma->vm_start, vma->vm_end);
--		}
--		show_regs(regs);
--#endif
-+		show_signal_msg(regs, code, address, tsk, vma);
-+
- 		switch (code) {
- 		case 15:	/* Data TLB miss fault/Data page fault */
- 			/* send SIGSEGV when outside of vma */
+ 	/* The load and store could fail */
+-1:	ldw	0(%sr3,%r26), %r28
++1:	ldw,ma	0(%sr3,%r26), %r28
+ 	sub,<>	%r28, %r25, %r0
+-2:	stw	%r24, 0(%sr3,%r26)
++2:	stw,ma	%r24, 0(%sr3,%r26)
++#ifdef CONFIG_SMP
+ 	/* Free lock */
+-	stw	%r20, 0(%sr2,%r20)
++	stw,ma	%r20, 0(%sr2,%r20)
++#endif
+ #if ENABLE_LWS_DEBUG
+ 	/* Clear thread register indicator */
+ 	stw	%r0, 4(%sr2,%r20)
+ #endif
++	/* Enable interrupts */
++	ssm	PSW_SM_I, %r0
+ 	/* Return to userspace, set no error */
+ 	b	lws_exit
+ 	copy	%r0, %r21
+@@ -639,6 +647,7 @@ cas_action:
+ #if ENABLE_LWS_DEBUG
+ 	stw	%r0, 4(%sr2,%r20)
+ #endif
++	ssm	PSW_SM_I, %r0
+ 	b	lws_exit
+ 	ldo	-EFAULT(%r0),%r21	/* set errno */
+ 	nop
+
+--Apple-Mail-62-634056063
+Content-Type: text/plain; charset="US-ASCII"; format=flowed
+Content-Transfer-Encoding: 7bit
+
+
+
+--
+John David Anglin	dave.anglin@bell.net
+
+
+--Apple-Mail-62-634056063--
