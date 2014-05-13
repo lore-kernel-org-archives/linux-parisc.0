@@ -1,42 +1,45 @@
-From: "Helge Deller" <deller@gmx.de>
-Subject: Aw: Re: [PATCH] parisc: Improve LWS-CAS performance
-Date: Mon, 12 May 2014 17:04:58 +0200
-Message-ID: <trinity-da579718-e250-4165-8589-2d57702fcd21-1399907098483@3capp-gmx-bs31>
-References: <BLU0-SMTP178D56FBECCDEE0B3D0BE6974A0@phx.gbl>
- <5283741.MSteB7R1e7@caliban.sf-tec.de>,
- <BLU0-SMTP37135E46D3493CE552217097350@phx.gbl>
+From: Ley Foon Tan <lftan@altera.com>
+Subject: [PATCH 17/25] parisc: Add 32 bit time_t and clock_t
+Date: Tue, 13 May 2014 17:06:06 +0800
+Message-ID: <1399971966-4598-1-git-send-email-lftan@altera.com>
+References: <1399971456-3941-1-git-send-email-lftan@altera.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: "Rolf Eike Beer" <eike-kernel@sf-tec.de>,
-	"linux-parisc List" <linux-parisc@vger.kernel.org>,
-	"James Bottomley" <James.Bottomley@hansenpartnership.com>
-To: "John David Anglin" <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU0-SMTP37135E46D3493CE552217097350@phx.gbl>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain
+Cc: Ley Foon Tan <lftan@altera.com>, <lftan.linux@gmail.com>,
+	<cltang@codesourcery.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, <linux-parisc@vger.kernel.org>
+To: <linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1399971456-3941-1-git-send-email-lftan@altera.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On 5/12/2014 2:11 AM, Rolf Eike Beer wrote:
-> > Am Sonntag, 11. Mai 2014, 18:40:50 schrieb John David Anglin:
-> >> The attached change significantly improves the performance of the LWS-
-> >> CAS code in syscall.S.
-> >> This allows a number of packages to build (e.g., zeromq3, gtest and
-> >> libxs) that previously failed because
-> >> slow LWS-CAS performance under contention.  In particular, interrupts
-> >> taken while the lock was taken
-> >> degraded performance significantly.
-> > Sounds cool ;)
-> >
-> > The label cas_wouldblock would now only be defined in SMP case, which looks
-> > odd. Since I can't find any references to it I think it should just be dropped.
+Override time_t and clock_t in include/uapi/asm-generic.
 
-> I was aware when I sent the change that the label cas_wouldblock is not 
-> used.  Possibly, it should change to a comment but maybe that's a separate cleanup.
+Signed-off-by: Ley Foon Tan <lftan@altera.com>
+---
+ arch/parisc/include/uapi/asm/posix_types.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-I left it in when I pushed your patch to my git tree:
-http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/log/?h=for-next
-
-I think it makes sense to leave it in because it makes this piece clear.
-In addition I added CC to push it backwards into kernels 3.13 and 3.14 too.
-
-Helge
+diff --git a/arch/parisc/include/uapi/asm/posix_types.h b/arch/parisc/include/uapi/asm/posix_types.h
+index b934425..21fcf1c 100644
+--- a/arch/parisc/include/uapi/asm/posix_types.h
++++ b/arch/parisc/include/uapi/asm/posix_types.h
+@@ -19,6 +19,14 @@ typedef int			__kernel_suseconds_t;
+ typedef long long		__kernel_off64_t;
+ typedef unsigned long long	__kernel_ino64_t;
+ 
++#ifndef CONFIG_64BIT
++typedef long	__kernel_time_t;
++#define __kernel_time_t __kernel_time_t
++
++typedef long	__kernel_clock_t;
++#define __kernel_clock_t __kernel_clock_t
++#endif
++
+ #include <asm-generic/posix_types.h>
+ 
+ #endif
+-- 
+1.8.2.1
