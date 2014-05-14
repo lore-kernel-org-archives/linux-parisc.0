@@ -1,46 +1,35 @@
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 19/27] parisc: Use common bits from generic tlb.h
-Date: Wed, 14 May 2014 20:59:51 +0200
-Message-ID: <1400093999-18703-20-git-send-email-richard@nod.at>
-References: <1400093999-18703-1-git-send-email-richard@nod.at>
-Cc: Richard Weinberger <richard@nod.at>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: linux-arch@vger.kernel.org, arnd@arndb.de,
-	linux-kernel@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1400093999-18703-1-git-send-email-richard@nod.at>
-List-ID: <linux-kernel.vger.kernel.org>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] parisc: Improve LWS-CAS performance
+Date: Wed, 14 May 2014 21:12:41 +0200
+Message-ID: <5373C029.8080504@gmx.de>
+References: <BLU0-SMTP178D56FBECCDEE0B3D0BE6974A0@phx.gbl> <CAE2sS1i7gDUwq+bRoSNhw+kCBsA-cDAzHs4O03yHuWUxqJE-wQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-parisc List <linux-parisc@vger.kernel.org>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>
+To: Carlos O'Donell <carlos@systemhalted.org>,
+	John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <CAE2sS1i7gDUwq+bRoSNhw+kCBsA-cDAzHs4O03yHuWUxqJE-wQ@mail.gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-It is no longer needed to define them on our own.
+On 05/14/2014 05:31 AM, Carlos O'Donell wrote:
+> On Sun, May 11, 2014 at 6:40 PM, John David Anglin <dave.anglin@bell.net> wrote:
+>> 2) Removes the lock code on UP systems where it is not needed, and
+> 
+> This is wrong. The locking was originally only for SMP, but at one
+> point it was discovered that you could COW during the CAS operation
+> and if you didn't take the lock in UP, you could re-enter the CAS via
+> another task and thus incorrectly carry out the CAS in two different
+> threads and corrupt the state. While we attempt our best to prevent
+> the task running the CAS from being scheduled off, the COW operation
+> trap and subsequent scheduling is not something I could find an easy
+> way to prevent. Therefore the solution was to use locks for both UP
+> and SMP.
 
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/parisc/include/asm/tlb.h | 6 ------
- 1 file changed, 6 deletions(-)
+If so, could one of you please send an updated patch to the list...?
+Currently I've scheduled http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/commit/?h=for-next&id=f4030047d92c79344ac4ca6ad4c6e3e22ceb5a55
+for inclusion into the next kernel (hopefully 3.15).
 
-diff --git a/arch/parisc/include/asm/tlb.h b/arch/parisc/include/asm/tlb.h
-index 0792490..4e231b1 100644
---- a/arch/parisc/include/asm/tlb.h
-+++ b/arch/parisc/include/asm/tlb.h
-@@ -16,12 +16,6 @@ do {	if (!(tlb)->fullmm)	\
- 		flush_tlb_range(vma, vma->vm_start, vma->vm_end); \
- } while (0)
- 
--#define __tlb_remove_tlb_entry(tlb, pte, address) \
--	do { } while (0)
--
- #include <asm-generic/tlb.h>
- 
--#define __pmd_free_tlb(tlb, pmd, addr)	pmd_free((tlb)->mm, pmd)
--#define __pte_free_tlb(tlb, pte, addr)	pte_free((tlb)->mm, pte)
--
- #endif
--- 
-1.8.4.2
+Helge
