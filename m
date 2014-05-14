@@ -1,50 +1,71 @@
-From: Ley Foon Tan <lftan@altera.com>
-Subject: Re: [PATCH 17/25] parisc: Add 32 bit time_t and clock_t
-Date: Wed, 14 May 2014 09:57:50 +0800
-Message-ID: <CAFiDJ5_ziSF3ectbkFQp9L5FExwyGQBVsesP3JYAypURhNsKrQ@mail.gmail.com>
-References: <1399971456-3941-1-git-send-email-lftan@altera.com>
-	<1399971966-4598-1-git-send-email-lftan@altera.com>
-	<53727DE8.7000105@gmx.de>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [PATCH] parisc: Improve LWS-CAS performance
+Date: Tue, 13 May 2014 23:31:23 -0400
+Message-ID: <CAE2sS1i7gDUwq+bRoSNhw+kCBsA-cDAzHs4O03yHuWUxqJE-wQ@mail.gmail.com>
+References: <BLU0-SMTP178D56FBECCDEE0B3D0BE6974A0@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Cc: Linux-Arch <linux-arch@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Chung-Lin Tang <cltang@codesourcery.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <53727DE8.7000105@gmx.de>
-List-ID: <linux-arch.vger.kernel.org>
+Cc: linux-parisc List <linux-parisc@vger.kernel.org>,
+	Helge Deller <deller@gmx.de>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>
+To: John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <BLU0-SMTP178D56FBECCDEE0B3D0BE6974A0@phx.gbl>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, May 14, 2014 at 4:17 AM, Helge Deller <deller@gmx.de> wrote:
-> Hi Ley,
+On Sun, May 11, 2014 at 6:40 PM, John David Anglin <dave.anglin@bell.net> wrote:
+> The attached change significantly improves the performance of the LWS-CAS
+> code in syscall.S.
+> This allows a number of packages to build (e.g., zeromq3, gtest and libxs)
+> that previously failed because
+> slow LWS-CAS performance under contention.  In particular, interrupts taken
+> while the lock was taken
+> degraded performance significantly.
 >
-> On 05/13/2014 11:06 AM, Ley Foon Tan wrote:
->> Override time_t and clock_t in include/uapi/asm-generic.
->>
->> Signed-off-by: Ley Foon Tan <lftan@altera.com>
->> ---
->>  arch/parisc/include/uapi/asm/posix_types.h | 8 ++++++++
->>  1 file changed, 8 insertions(+)
->>
->> diff --git a/arch/parisc/include/uapi/asm/posix_types.h b/arch/parisc/include/uapi/asm/posix_types.h
->> index b934425..21fcf1c 100644
->> --- a/arch/parisc/include/uapi/asm/posix_types.h
->> +++ b/arch/parisc/include/uapi/asm/posix_types.h
->> @@ -19,6 +19,14 @@ typedef int                        __kernel_suseconds_t;
->>  typedef long long            __kernel_off64_t;
->>  typedef unsigned long long   __kernel_ino64_t;
->>
->> +#ifndef CONFIG_64BIT
+> The change does the following:
 >
-> We can't use CONFIG_64BIT for a userspace header file. Please use
-> #if !defined(__LP64__)
-> instead.
-> But even then I'm not sure if it's all correct...
-Okay, will change to this. Maybe can try compile and boot with this change.
+> 1) Disables interrupts around the CAS operation,
 
-Thanks.
-Regards
-Ley Foon
+OK.
+
+> 2) Removes the lock code on UP systems where it is not needed, and
+
+This is wrong. The locking was originally only for SMP, but at one
+point it was discovered that you could COW during the CAS operation
+and if you didn't take the lock in UP, you could re-enter the CAS via
+another task and thus incorrectly carry out the CAS in two different
+threads and corrupt the state. While we attempt our best to prevent
+the task running the CAS from being scheduled off, the COW operation
+trap and subsequent scheduling is not something I could find an easy
+way to prevent. Therefore the solution was to use locks for both UP
+and SMP.
+
+> 3) Changes the loads and stores to use the ordered completer, "o", on
+> PA 2.0.  "o" and "ma" with a zero offset are equivalent.  The latter is
+> accepted
+> on both PA 1.X and 2.0.
+>
+> The use of ordered loads and stores probably makes no difference on all
+> existing
+> hardware, but it seemed pedantically correct.  In particular, the CAS
+> operation must
+> complete before LDCW lock is released.  As written before, a processor could
+> reorder
+> the operations.
+
+Agreed.
+
+> I don't believe the period interrupts are disabled is long enough to
+> significantly
+> increase interrupt latency.  For example, the TLB insert code is longer.
+> Worst
+> case is a memory fault in the CAS operation.
+
+The worst case is actually a COW during the write of the CAS? The
+interrupts would be disabled until the kernel turned them back on in
+another code path.
+
+
+Cheers,
+Carlos.
