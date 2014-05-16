@@ -1,106 +1,115 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Improve LWS-CAS performance (take 2)
-Date: Thu, 15 May 2014 08:33:10 -0400
-Message-ID: <BLU0-SMTP917CD5D331D850FC5B68BE97360@phx.gbl>
-References: <BLU0-SMTP178D56FBECCDEE0B3D0BE6974A0@phx.gbl> <CAE2sS1i7gDUwq+bRoSNhw+kCBsA-cDAzHs4O03yHuWUxqJE-wQ@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: multipart/mixed; boundary="Apple-Mail-11-943196040"
-Cc: linux-parisc List <linux-parisc@vger.kernel.org>,
-	Helge Deller <deller@gmx.de>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>
-To: Carlos O'Donell <carlos@systemhalted.org>
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [GIT PULL] Metag architecture and related fixes for v3.15
+Date: Fri, 16 May 2014 15:41:46 +0100
+Message-ID: <537623AA.5040906@imgtec.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="skgagQvT0IPFiF7DF6rKCIW4RESSuBj3B"
+Cc: Helge Deller <deller@gmx.de>,
+	Mikulas Patocka <mpatocka@redhat.com>,
+	linux-metag <linux-metag@vger.kernel.org>,
+	<linux-parisc@vger.kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAE2sS1i7gDUwq+bRoSNhw+kCBsA-cDAzHs4O03yHuWUxqJE-wQ@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Apple-Mail-11-943196040
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
+--skgagQvT0IPFiF7DF6rKCIW4RESSuBj3B
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-On 13-May-14, at 11:31 PM, Carlos O'Donell wrote:
+Hi Linus,
 
->> 2) Removes the lock code on UP systems where it is not needed, and
->
-> This is wrong. The locking was originally only for SMP, but at one
-> point it was discovered that you could COW during the CAS operation
-> and if you didn't take the lock in UP, you could re-enter the CAS via
-> another task and thus incorrectly carry out the CAS in two different
-> threads and corrupt the state.
+Please pull the following metag / parisc fixes, mostly relating to upgrow=
+ing
+stacks. These changes only affect metag and parisc, and although the
+asm-generic one isn't strictly a fix it's simple and follows naturally fr=
+om
+the other _STK_LIM_MAX override removals (here for metag and in rc4 for
+parisc).
 
-The attached file updates the change so that the lock code is no  
-longer removed
-on UP systems.  I added a comment to indicate that contention can  
-occur even on
-UP systems.
+Thanks
+James
 
-Lightly tested with a build of kyotocabinet on c3750.
+The following changes since commit d6d211db37e75de2ddc3a4f979038c40df7cc7=
+9c:
 
-Signed-off-by: John David Anglin <dave.anglin@bell.net>
----
+  Linux 3.15-rc5 (2014-05-09 13:10:52 -0700)
 
+are available in the git repository at:
 
---Apple-Mail-11-943196040
-Content-Disposition: attachment; filename="syscall.S.d.1.txt"
-Content-Type: text/plain; x-unix-mode=0644; name="syscall.S.d.1.txt"
-Content-Transfer-Encoding: 7bit
+  git://git.kernel.org/pub/scm/linux/kernel/git/jhogan/metag.git tags/met=
+ag-for-v3.15-2
 
-diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
-index a63bb179..8387860 100644
---- a/arch/parisc/kernel/syscall.S
-+++ b/arch/parisc/kernel/syscall.S
-@@ -589,10 +589,13 @@ cas_nocontend:
- # endif
- /* ENABLE_LWS_DEBUG */
- 
-+	rsm	PSW_SM_I, %r0				/* Disable interrupts */
-+	/* COW breaks can cause contention on UP systems */
- 	LDCW	0(%sr2,%r20), %r28			/* Try to acquire the lock */
- 	cmpb,<>,n	%r0, %r28, cas_action		/* Did we get it? */
- cas_wouldblock:
- 	ldo	2(%r0), %r28				/* 2nd case */
-+	ssm	PSW_SM_I, %r0
- 	b	lws_exit				/* Contended... */
- 	ldo	-EAGAIN(%r0), %r21			/* Spin in userspace */
- 
-@@ -619,15 +622,17 @@ cas_action:
- 	stw	%r1, 4(%sr2,%r20)
- #endif
- 	/* The load and store could fail */
--1:	ldw	0(%sr3,%r26), %r28
-+1:	ldw,ma	0(%sr3,%r26), %r28
- 	sub,<>	%r28, %r25, %r0
--2:	stw	%r24, 0(%sr3,%r26)
-+2:	stw,ma	%r24, 0(%sr3,%r26)
- 	/* Free lock */
--	stw	%r20, 0(%sr2,%r20)
-+	stw,ma	%r20, 0(%sr2,%r20)
- #if ENABLE_LWS_DEBUG
- 	/* Clear thread register indicator */
- 	stw	%r0, 4(%sr2,%r20)
- #endif
-+	/* Enable interrupts */
-+	ssm	PSW_SM_I, %r0
- 	/* Return to userspace, set no error */
- 	b	lws_exit
- 	copy	%r0, %r21
-@@ -639,6 +644,7 @@ cas_action:
- #if ENABLE_LWS_DEBUG
- 	stw	%r0, 4(%sr2,%r20)
- #endif
-+	ssm	PSW_SM_I, %r0
- 	b	lws_exit
- 	ldo	-EFAULT(%r0),%r21	/* set errno */
- 	nop
+for you to fetch changes up to ffe6902b66aaa4ca6694bc19639259c16d84ddb1:
 
---Apple-Mail-11-943196040
-Content-Type: text/plain; charset="US-ASCII"; format=flowed
-Content-Transfer-Encoding: 7bit
+  asm-generic: remove _STK_LIM_MAX (2014-05-15 00:32:09 +0100)
+
+----------------------------------------------------------------
+Metag architecture and related fixes for v3.15
+
+Mostly fixes for metag and parisc relating to upgrowing stacks.
+
+* Fix missing compiler barriers in metag memory barriers.
+* Fix BUG_ON on metag when RLIMIT_STACK hard limit is increased beyond
+  safe value.
+* Make maximum stack size configurable. This reduces the default user
+  stack size back to 80MB (especially on parisc after their removal of
+  _STK_LIM_MAX override). This only affects metag and parisc.
+* Remove metag _STK_LIM_MAX override to match other arches and follow
+  parisc, now that it is safe to do so (due to the BUG_ON fix mentioned
+  above).
+* Finally now that both metag and parisc _STK_LIM_MAX overrides have
+  been removed, it makes sense to remove _STK_LIM_MAX altogether.
+
+----------------------------------------------------------------
+Helge Deller (1):
+      parisc,metag: Do not hardcode maximum userspace stack size
+
+James Hogan (3):
+      metag: Reduce maximum stack size to 256MB
+      metag: Remove _STK_LIM_MAX override
+      asm-generic: remove _STK_LIM_MAX
+
+Mikulas Patocka (1):
+      metag: fix memory barriers
+
+ arch/metag/include/asm/barrier.h       |  3 +++
+ arch/metag/include/asm/processor.h     |  2 ++
+ arch/metag/include/uapi/asm/Kbuild     |  2 +-
+ arch/metag/include/uapi/asm/resource.h |  7 -------
+ arch/parisc/include/asm/processor.h    |  5 +++++
+ arch/parisc/kernel/sys_parisc.c        |  6 +++---
+ fs/exec.c                              |  6 +++---
+ include/asm-generic/resource.h         |  2 +-
+ include/uapi/asm-generic/resource.h    |  7 -------
+ mm/Kconfig                             | 15 +++++++++++++++
+ 10 files changed, 33 insertions(+), 22 deletions(-)
+ delete mode 100644 arch/metag/include/uapi/asm/resource.h
 
 
+--skgagQvT0IPFiF7DF6rKCIW4RESSuBj3B
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
---
-John David Anglin	dave.anglin@bell.net
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
+iQIcBAEBAgAGBQJTdiOzAAoJEGwLaZPeOHZ6GIAP/0XC/23dihVESRnxhUta3WXp
+pA00rqBdvoAvLpQl7F7ZCK4qUdEszAoMNXHFOWURBEWLoC64hzGQzsslJ4WugOut
+BHzaT+YEhYvpMU1lC1nSu/zIDGBEvPljC6ia2NqcCr/J9Z3q+Dfp31cE/Rd4P+o3
+NGtyLN5vuNff+A3E4WSAeKIDRqxC6r5uBefFAHdx2ixFDEk+tc82bIvEbK9VELig
+Wj7VVgAtyYPyKzHoHVgGf/4OPPdLs0i4lSuICCOsbNQQaT76U3sRjB6fvmIeCV6J
+6XgnqCZBFqjRzbl/AOpoJXkjO/8UrFZmX97mguR2eEMOS90IRFiNTzZBk6iTvfjl
+Mzwxo482/azMI67NYxHFN0K2zgf3lLUD5ShkpiEPy7RGbcIL2OQ9V5keT1M1n7Y6
+ZgXEF/MK1Elcs/xbJbBDcf7NQRlJAZbXwTHTQkO9BsixNTrB+eSvRm1xtwJ9GJrL
+4b8Lmb1Q5cWVLh6AS3VPBsWiXMIz7+6SSbrB3p15pJR7CZkGmwh7jdJ9qen8udg0
+L+ce/IOv6K7ZaLXuYQhawq/b/6YJCpnivle8GLRNbl183NZmLV48Jk8+LjzS8leb
+mpE5Qo6xIFLSQ8E4ILPJ4eZgQyctXuhA+WKvJCyecDcJ5KsxNSDjA2qTjyBc9t6t
+g9MyIEyt+GJnTHEMewPv
+=Zrht
+-----END PGP SIGNATURE-----
 
---Apple-Mail-11-943196040--
+--skgagQvT0IPFiF7DF6rKCIW4RESSuBj3B--
