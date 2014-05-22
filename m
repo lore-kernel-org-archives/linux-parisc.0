@@ -1,45 +1,50 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc updates for v3.15
-Date: Fri, 16 May 2014 22:01:12 +0200
-Message-ID: <20140516200112.GA1315@p100.fritz.box>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: Re: Linux 3.15-rc6
+Date: Thu, 22 May 2014 10:20:32 -0700
+Message-ID: <20140522172032.GA20975@roeck-us.net>
+References: <CA+55aFzwqPh+WUAxi2CY8D6k+LkDbUb__G98qVFrE-DHNMSPUw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <CA+55aFzwqPh+WUAxi2CY8D6k+LkDbUb__G98qVFrE-DHNMSPUw@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+On Thu, May 22, 2014 at 07:47:35AM +0900, Linus Torvalds wrote:
+> Due to travels and related lack of internet access, the rc releases
+> haven't been following the normal Sunday release cycle, and since I
+> caught up with what happened while I was off-line, rather than wait
+> until next Sunday to reset to the normal cycle, I'm just releasing rc6
+> now mid-week from Tokyo.
+> 
+> With rc5 being a couple of days early, and rc6 being several days
+> late, we had almost two weeks in between them. The size of the result
+> is not twice as large, though, hopefully partially because it's
+> getting late in the rc series and things are supposed to be calming
+> down, but presumably also because some submaintainers just didn't send
+> their pull requests because they knew I was off-line. Whatever the
+> reason, things don't look bad.
+> 
+> The patch distribution looks pretty normal too. Mostly drivers (acpi,
+> sound, media, i915, clk, pci..) with the bulk of the rest being
+> various arch updates (notably MIPS, but arm and parisc too). And a
+> smattering of other random stuff in filesystems and core kernel code.
+> 
+Unfortunately it appears that the parisc changes cause build failures
+with parisc 64 bit builds.
 
-please pull the latest parisc architecture fixes for kernel 3.15 from 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.15-4
+Building parisc:a500_defconfig ... failed
+Building parisc:generic-64bit_defconfig ... failed
 
-There are two patches in here:
+Error log:
+arch/parisc/kernel/built-in.o: In function `sys_call_table':
+(.rodata+0xad0): undefined reference to `compat_sys_renameat2'
+make: *** [vmlinux] Error 1
 
-The first patch greatly improves latency and corrects the memory ordering in
-our light-weight atomic locking syscall.
+parisc 32 bit builds (defconfig and generic-32bit_defconfig) are fine.
 
-The second patch ratelimits printing of userspace segfaults in the same way as
-it's done on other platforms. This fixes a possible DOS on parisc since it
-prevents the syslog to grow too fast. For example, when the debian acl2 package
-was built on our debian buildd servers, this package produced lots of gigabytes
-in syslog in very short time and thus filled our harddisks, which then turned
-the server nearly completely unaccessible and unresponsive.
-
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Helge Deller (1):
-      parisc: ratelimit userspace segfault printing
-
-John David Anglin (1):
-      parisc: Improve LWS-CAS performance
-
- arch/parisc/Kconfig          |  1 +
- arch/parisc/kernel/syscall.S | 12 +++++++---
- arch/parisc/kernel/traps.c   | 54 ++++++++++++++++++++------------------------
- arch/parisc/mm/fault.c       | 44 ++++++++++++++++++++++++------------
- 4 files changed, 65 insertions(+), 46 deletions(-)
+Guenter
