@@ -1,66 +1,61 @@
-From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: [PATCH v2] introduce atomic_pointer to fix a race condition in
  cancelable mcs spinlocks
-Date: Mon, 2 Jun 2014 10:03:27 -0700
-Message-ID: <20140602170327.GV22231@linux.vnet.ibm.com>
+Date: Mon, 2 Jun 2014 10:09:35 -0700
+Message-ID: <CA+55aFzwrqkwD=G=w2m7TdXTpsMFjV7XUMXv5DMPGr=5x5YGCQ@mail.gmail.com>
 References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
- <1401727810.7440.34.camel@j-VirtualBox>
-Reply-To: paulmck@linux.vnet.ibm.com
+	<alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
+	<20140602162525.GH16155@laptop.programming.kicks-ass.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>, jejb@parisc-linux.org,
-	deller@gmx.de, John David Anglin <dave.anglin@bell.net>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	chegu_vinod@hp.com, Waiman.Long@hp.com, tglx@linutronix.de,
-	riel@redhat.com, akpm@linux-foundation.org, davidlohr@hp.com,
-	hpa@zytor.com, andi@firstfloor.org, aswin@hp.com,
-	scott.norton@hp.com
-To: Jason Low <jason.low2@hp.com>
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	John David Anglin <dave.anglin@bell.net>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Paul McKenney <paulmck@linux.vnet.ibm.com>,
+	"Vinod, Chegu" <chegu_vinod@hp.com>,
+	Waiman Long <Waiman.Long@hp.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Rik van Riel <riel@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Davidlohr Bueso <davidlohr@hp.com>,
+	Peter Anvin <hpa@zytor.com>, Andi Kleen <andi@firstfloor.org>,
+	"Chandramouleeswaran, Aswin" <aswin@hp.com>,
+	"Norton, Scott J" <scott.norton@hp.com>,
+	Jason Low <jason.low2@hp.com>
+To: Peter Zijlstra <peterz@infradead.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1401727810.7440.34.camel@j-VirtualBox>
+In-Reply-To: <20140602162525.GH16155@laptop.programming.kicks-ass.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jun 02, 2014 at 09:50:10AM -0700, Jason Low wrote:
-> On Mon, 2014-06-02 at 12:00 -0400, Mikulas Patocka wrote:
-> > If you write to some variable with ACCESS_ONCE and use cmpxchg or xchg at
-> > the same time, you break it. ACCESS_ONCE doesn't take the hashed spinlock,
-> > so, in this case, cmpxchg or xchg isn't really atomic at all.
-> 
-> So if the problem is using ACCESS_ONCE writes with cmpxchg and xchg at
-> the same time, would the below change address this problem?
+On Mon, Jun 2, 2014 at 9:25 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> And I can't say I'm a particular fan of these ops either, as alternative
+> I'm almost inclined to just exclude parisc from using opt spinning.
 
-And one could use cmpxchg() or atomic_add_return(..., 0) to read a value
-out.  Probably at the cost of some performance impact, though.
+Please do.
 
-							Thanx, Paul
+There is no way in hell that we should introduce a magic new
+atomic_pointer thing for parisc. And the idea somebody had to change
+ACCESS_ONCE() for PA-RISC (I'm not going to go back to find who to
+blame) is just horribly wrong too, since it's not even necessary for
+any normal use: the special "load-and-store-zero" instruction isn't
+actually used for "real" data, it's used only for the special
+spinlocks afaik, so doing it for all ACCESS_ONCE() users would be
+wrong even on PA-RISC. For any normal data, the usual "just load the
+value, making sure the compiler doesn't reload it" is perfectly fine -
+even on PA-RISC.
 
-> -----
-> diff --git a/kernel/locking/mcs_spinlock.c b/kernel/locking/mcs_spinlock.c
-> index 838dc9e..8396721 100644
-> --- a/kernel/locking/mcs_spinlock.c
-> +++ b/kernel/locking/mcs_spinlock.c
-> @@ -71,7 +71,7 @@ bool osq_lock(struct optimistic_spin_queue **lock)
->  	if (likely(prev == NULL))
->  		return true;
-> 
-> -	ACCESS_ONCE(prev->next) = node;
-> +	xchg(&prev->next, node);
-> 
->  	/*
->  	 * Normally @prev is untouchable after the above store; because at that
-> @@ -144,7 +144,7 @@ unqueue:
->  	 */
-> 
->  	ACCESS_ONCE(next->prev) = prev;
-> -	ACCESS_ONCE(prev->next) = next;
-> +	xchg(&prev->next, next);
-> 
->  	return false;
->  }
-> 
-> 
+Now, if PA-RISC was a major architecture, we'd have to figure this
+out. But as it is, PA-RISC is just about the shittiest RISC ever
+invented (with original sparc being a strong contender), and let's
+face it, nobody really uses it.  It's a "fun project", but it is not
+something that we should use to mess up either ACCESS_ONCE() or the
+MCS locks.
 
+Just make PA-RISC use its own locks, not any of the new fancy ones.
+
+              Linus
