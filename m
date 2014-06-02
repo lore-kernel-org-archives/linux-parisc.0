@@ -1,41 +1,119 @@
-From: Jason Low <jason.low2@hp.com>
+From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: [PATCH] fix a race condition in cancelable mcs spinlocks
-Date: Mon, 02 Jun 2014 08:27:38 -0700
-Message-ID: <1401722858.7440.27.camel@j-VirtualBox>
-References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
-	 <538C86E2.1070806@hp.com>
+Date: Mon, 2 Jun 2014 11:39:55 -0400
+Message-ID: <BLU0-SMTP35E10E00A34C3FF2DB55B297200@phx.gbl>
+References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com> <20140601192026.GE16155@laptop.programming.kicks-ass.net> <BLU0-SMTP387BD0AE22A4EAD432D65F97210@phx.gbl> <alpine.LRH.2.02.1406020914440.18342@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.1406021002090.1300@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Cc: Peter Zijlstra <peterz@infradead.org>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>, jejb@parisc-linux.org,
-	deller@gmx.de, John David Anglin <dave.anglin@bell.net>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	chegu_vinod@hp.com, paulmck@linux.vnet.ibm.com, tglx@linutronix.de,
+	jejb@parisc-linux.org, deller@gmx.de, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, chegu_vinod@hp.com,
+	paulmck@linux.vnet.ibm.com, Waiman.Long@hp.com, tglx@linutronix.de,
 	riel@redhat.com, akpm@linux-foundation.org, davidlohr@hp.com,
 	hpa@zytor.com, andi@firstfloor.org, aswin@hp.com,
-	scott.norton@hp.com
-To: Waiman Long <waiman.long@hp.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <538C86E2.1070806@hp.com>
-List-ID: <linux-kernel.vger.kernel.org>
+	scott.norton@hp.com, Jason Low <jason.low2@hp.com>
+To: Mikulas Patocka <mpatocka@redhat.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <alpine.LRH.2.02.1406021002090.1300@file01.intranet.prod.int.rdu2.redhat.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2014-06-02 at 10:14 -0400, Waiman Long wrote:
-> On 06/01/2014 01:53 PM, Mikulas Patocka wrote:
-> >   struct optimistic_spin_queue {
-> > -	struct optimistic_spin_queue *next, *prev;
-> > +	atomic_pointer_t next;
-> > +	struct optimistic_spin_queue *prev;
-> >   	int locked; /* 1 if lock acquired */
-> >   };
-> 
-> Is there a way to do it without changing the pointer type? It will make 
-> the code harder to read and understand.
+On 6/2/2014 10:02 AM, Mikulas Patocka wrote:
+>
+> On Mon, 2 Jun 2014, Mikulas Patocka wrote:
+>
+>>
+>> On Sun, 1 Jun 2014, John David Anglin wrote:
+>>
+>>> On 1-Jun-14, at 3:20 PM, Peter Zijlstra wrote:
+>>>
+>>>>> If you write to some variable with ACCESS_ONCE and use cmpxchg or xchg at
+>>>>> the same time, you break it. ACCESS_ONCE doesn't take the hashed spinlock,
+>>>>> so, in this case, cmpxchg or xchg isn't really atomic at all.
+>>>> And this is really the first place in the kernel that breaks like this?
+>>>> I've been using xchg() and cmpxchg() without such consideration for
+>>>> quite a while.
+>>> I believe Mikulas is correct.  Even in a controlled situation where a
+>>> cmpxchg operation is used to implement pthread_spin_lock() in userspace,
+>>> we found recently that the lock must be released with a cmpxchg
+>>> operation and not a simple write on SMP systems. There is a race in the
+>>> cache operations or instruction ordering that's not present with the
+>>> ldcw instruction.
+>>>
+>>> Dave
+>>> --
+>>> John David Anglin	dave.anglin@bell.net
+>> That is strange.
+>>
+>> Spinlock with cmpxchg on lock and a single write on unlock should work,
+>> assuming that cmpxchg doesn't write to the target address when it detects
+>> mismatch (the cmpxchg in the kernel syscall page doesn't do it, it
+>> nullifies the write instruction on mismatch).
+>>
+>> Do you have some code that reproduces this misbehavior?
+There is a pthread_spin_lock test in the  kyotocabinet package that 
+reproduces
+this misbehavior.  Essentially, it creates four threads which loop doing 
+pthread_spin_lock(),
+sched_yield() and then pthread_spin_unlock().  On SMP systems, the test 
+hangs with
+the pthread_spin_lock locked and no thread holding lock (i.e., unlock 
+failed).
 
-I agree that it would be nice if there is a way to fix this without
-changing the pointer type of "next". The change of the type to
-atomic_pointer_t might make it less obvious what "next" is for. This is
-then compounded with "prev" being kept as a pointer to
-optimistic_spin_queue, which can further make it appear as if "next" may
-potentially point to something different.
+The pthread support uses the cmpxchg code in 
+arch/parisc/kernel/syscall.S.  This uses
+"hashed" locks, etc, in a manner similar to the kernel code.
+
+>>
+>> We really need to find out why does it behave this way:
+>> - is PA-RISC really out of order? (we used to believe that it is in-order
+>>    and we have empty barrier instructions in the kernel). Does adding the
+>>    "SYNC" instruction before the write in pthread_spin_unlock fix it?
+I tried "SYNC" instruction before write and after the cmpxchg operation both
+with.  In the cmpxchg operation, I also tried it with cache flush. I was 
+trying to
+simulated ldcw behavior.
+>> - does the processor performs nullified writes unconditionally? Does
+>>    moving the write in the cmpxchg implementation from the nullified slot
+>>    to is own branch fix it?
+I don't see how the processor can perform nullified writes 
+unconditionally although that
+might explain the observed symptom.  Didn't try moving the cmpxchg write.
+
+>> - does adding a dummy "ldcw" instruction to an unrelated address fix it?
+>>    Is it that "ldcw" has some magic barrier properties?
+I had wondered about that.  One can't use %r0 as the instruction target 
+as the architecture
+manual says that it may then be implemented as a normal load. "ldcw" 
+definitely has some magic
+cache and barrier properties.  A normal store definitely works with it 
+to reset the semaphore.
+> - and there is "stw,o" instruction that does ordered store according to
+> the specification, so we should test it too...
+This doesn't help.
+
+Currently, the Debian eglibc has a pthread_spin_unlock.diff patch that 
+resolves the
+kyotocabinet bug.  See:
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=725508
+
+>
+>> I think we need to perform these tests and maybe some more to find out
+>> what really happened there...
+>>
+>> BTW. in Debian 5 libc 2.7, pthread_spin_lock uses ldcw and
+>> pthread_spin_unlock uses a single write (just like the kernel spinlock
+>> implementation). In Debian-ports libc 2.18, both pthread_spin_lock and
+>> pthread_spin_unlock call the kernel syscall page. What was the reason for
+>> switching to a less efficient implementation?
+>>
+>> Mikulas
+>>
+>
+
+Dave
+
+-- 
+John David Anglin    dave.anglin@bell.net
+
