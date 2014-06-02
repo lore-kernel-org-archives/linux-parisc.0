@@ -1,73 +1,74 @@
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
 Subject: Re: [PATCH] fix a race condition in cancelable mcs spinlocks
-Date: Mon, 2 Jun 2014 06:34:03 -0400 (EDT)
-Message-ID: <alpine.LRH.2.02.1406020622130.17105@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com> <20140601192026.GE16155@laptop.programming.kicks-ass.net>
+Date: Mon, 2 Jun 2014 06:24:54 -0700
+Message-ID: <20140602132454.GO22231@linux.vnet.ibm.com>
+References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
+ <20140601192026.GE16155@laptop.programming.kicks-ass.net>
+ <BLU0-SMTP387BD0AE22A4EAD432D65F97210@phx.gbl>
+ <20140601213003.GG16155@laptop.programming.kicks-ass.net>
+ <alpine.LRH.2.02.1406020503000.17105@file01.intranet.prod.int.rdu2.redhat.com>
+Reply-To: paulmck@linux.vnet.ibm.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	jejb@parisc-linux.org, deller@gmx.de,
+Content-Type: text/plain; charset=us-ascii
+Cc: Peter Zijlstra <peterz@infradead.org>,
 	John David Anglin <dave.anglin@bell.net>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	chegu_vinod@hp.com, paulmck@linux.vnet.ibm.com, Waiman.Long@hp.com,
-	tglx@linutronix.de, riel@redhat.com, akpm@linux-foundation.org,
-	davidlohr@hp.com, hpa@zytor.com, andi@firstfloor.org, aswin@hp.com,
-	scott.norton@hp.com, Jason Low <jason.low2@hp.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20140601192026.GE16155@laptop.programming.kicks-ass.net>
-List-ID: <linux-parisc.vger.kernel.org>
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	jejb@parisc-linux.org, deller@gmx.de, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, chegu_vinod@hp.com,
+	Waiman.Long@hp.com, tglx@linutronix.de, riel@redhat.com,
+	akpm@linux-foundation.org, davidlohr@hp.com, hpa@zytor.com,
+	andi@firstfloor.org, aswin@hp.com, scott.norton@hp.com,
+	Jason Low <jason.low2@hp.com>
+To: Mikulas Patocka <mpatocka@redhat.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LRH.2.02.1406020503000.17105@file01.intranet.prod.int.rdu2.redhat.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-
-On Sun, 1 Jun 2014, Peter Zijlstra wrote:
-
-> On Sun, Jun 01, 2014 at 01:53:11PM -0400, Mikulas Patocka wrote:
-> > PA-RISC doesn't have xchg or cmpxchg atomic instructions like other
-> > processors. It only has ldcw and ldcd instructions that load a word (or
-> > doubleword) from memory and atomically store zero at the same location.
-> > These instructions can only be used to implement spinlocks, direct
-> > implementation of other atomic operations is impossible.
+On Mon, Jun 02, 2014 at 05:19:39AM -0400, Mikulas Patocka wrote:
+> 
+> 
+> On Sun, 1 Jun 2014, Peter Zijlstra wrote:
+> 
+> > On Sun, Jun 01, 2014 at 04:46:26PM -0400, John David Anglin wrote:
+> > > On 1-Jun-14, at 3:20 PM, Peter Zijlstra wrote:
+> > > 
+> > > >>If you write to some variable with ACCESS_ONCE and use cmpxchg or xchg
+> > > >>at
+> > > >>the same time, you break it. ACCESS_ONCE doesn't take the hashed
+> > > >>spinlock,
+> > > >>so, in this case, cmpxchg or xchg isn't really atomic at all.
+> > > >
+> > > >And this is really the first place in the kernel that breaks like this?
+> > > >I've been using xchg() and cmpxchg() without such consideration for
+> > > >quite a while.
+> > > 
+> > > I believe Mikulas is correct.  Even in a controlled situation where a
+> > > cmpxchg operation
+> > > is used to implement pthread_spin_lock() in userspace, we found recently
+> > > that the lock
+> > > must be released with a  cmpxchg operation and not a simple write on SMP
+> > > systems.
+> > > There is a race in the cache operations or instruction ordering that's not
+> > > present with
+> > > the ldcw instruction.
 > > 
-> > Consequently, Linux xchg and cmpxchg functions are implemented in such a
-> > way that they hash the address, use the hash to index a spinlock, take the
-> > spinlock, perform the xchg or cmpxchg operation non-atomically and drop
-> > the spinlock.
+> > Oh, I'm not arguing that. He's quite right that its broken, but this
+> > form of atomic ops is also quite insane and unusual. Most sane machines
+> > don't have this problem.
 > > 
-> > If you write to some variable with ACCESS_ONCE and use cmpxchg or xchg at
-> > the same time, you break it. ACCESS_ONCE doesn't take the hashed spinlock,
-> > so, in this case, cmpxchg or xchg isn't really atomic at all.
+> > My main concern is how are we going to avoid breaking parisc (and I
+> > think sparc32, which is similarly retarded) in the future; we should
+> > invest in machinery to find and detect these things.
 > 
-> And this is really the first place in the kernel that breaks like this?
-> I've been using xchg() and cmpxchg() without such consideration for
-> quite a while.
+> Grep the kernel for "\<xchg\>" and "\<cmpxchg\>" and replace them with 
+> atomic types and atomic access functions.
 
-It happens on a common mutex operation and it took an hour of 
-stress-testing to trigger it.
+Not so good for pointers, though.  Defeats type-checking, for one thing.
+An example of this is use of xchg() for atomically enqueuing RCU callbacks
+in kernel/rcu/tree_plugin.h.
 
-The other cases may be buggy too, but no one has written a stress test 
-specifically tailored for them.
+I still like the idea of PA-RISC's compiler implementing ACCESS_ONCE()
+as needed to make things work on that architecture.
 
-> Doesn't sparc32 have similarly broken atomic ops?
-
-Yes. tile32, arc and metag seem to be broken by this too. hexagon also has 
-non-standard atomic_set, so it may be broken too.
-
-> Ideally, if we really want to preserve such broken-ness, we'd add some
-> debugging infrastructure to detect such nonsense.
-> 
-> > This patch fixes the bug by introducing a new type atomic_pointer_t 
-> > (backed by atomic_long_t) and replacing the offending pointer with it. 
-> > atomic_long_set takes the hashed spinlock, so it avoids the race 
-> > condition.
-> 
-> So I hate that twice, once since xchg() and cmpxchg() do not share the
-> atomic_ prefix, its inappropriate and misleading here, and secondly,
-> non of this is specific to pointers, xchg() and cmpxchg() take any
-> (naturally aligned) 'native' size type.
-
-I think we don't need xchg() and cmpxchg() at all, because we have atomic 
-types.
-
-Mikulas
+							Thanx, Paul
