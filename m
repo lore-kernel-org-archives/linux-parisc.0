@@ -1,24 +1,27 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
 Subject: Re: [PATCH v2] introduce atomic_pointer to fix a race condition in
  cancelable mcs spinlocks
-Date: Mon, 2 Jun 2014 13:53:48 -0700
-Message-ID: <CA+55aFwCy4-x02U6A-KbkPEpe_4pagsZ__ipBhe5HZOQt2vNmw@mail.gmail.com>
+Date: Mon, 2 Jun 2014 14:02:27 -0700
+Message-ID: <20140602210227.GE22231@linux.vnet.ibm.com>
 References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
-	<alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
-	<20140602162525.GH16155@laptop.programming.kicks-ass.net>
-	<CA+55aFzwrqkwD=G=w2m7TdXTpsMFjV7XUMXv5DMPGr=5x5YGCQ@mail.gmail.com>
-	<alpine.LRH.2.02.1406021622200.5874@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
+ <20140602162525.GH16155@laptop.programming.kicks-ass.net>
+ <20140602163032.GI16155@laptop.programming.kicks-ass.net>
+ <538CB56E.5010709@hp.com>
+ <20140602200525.GD13930@laptop.programming.kicks-ass.net>
+ <CA+55aFwJwVf_MbcwNNWg-KrLdoOaV2xse2jzvBZTJHJgC_Htvg@mail.gmail.com>
+Reply-To: paulmck@linux.vnet.ibm.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Cc: Peter Zijlstra <peterz@infradead.org>,
+	Waiman Long <waiman.long@hp.com>,
+	Mikulas Patocka <mpatocka@redhat.com>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>,
 	John David Anglin <dave.anglin@bell.net>,
 	Parisc List <linux-parisc@vger.kernel.org>,
 	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Paul McKenney <paulmck@linux.vnet.ibm.com>,
 	"Vinod, Chegu" <chegu_vinod@hp.com>,
-	Waiman Long <Waiman.Long@hp.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Rik van Riel <riel@redhat.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
@@ -27,35 +30,78 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	"Chandramouleeswaran, Aswin" <aswin@hp.com>,
 	"Norton, Scott J" <scott.norton@hp.com>,
 	Jason Low <jason.low2@hp.com>
-To: Mikulas Patocka <mpatocka@redhat.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.02.1406021622200.5874@file01.intranet.prod.int.rdu2.redhat.com>
-List-ID: <linux-parisc.vger.kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CA+55aFwJwVf_MbcwNNWg-KrLdoOaV2xse2jzvBZTJHJgC_Htvg@mail.gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jun 2, 2014 at 1:46 PM, Mikulas Patocka <mpatocka@redhat.com> wrote:
->
-> And what else do you want to do?
->
-> Peter Zijlstra said "I've been using xchg() and cmpxchg() without such
-> consideration for quite a while." - so it basically implies that the
-> kernel is full of such races, mcs_spinlock is just the most visible one
-> that crashes the kernel first.
+On Mon, Jun 02, 2014 at 01:22:10PM -0700, Linus Torvalds wrote:
+> On Mon, Jun 2, 2014 at 1:05 PM, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > So the question is, do you prefer subtly broken code or hard compile
+> > fails? Me, I go for the compile fail.
+> 
+> The thing is, parisc has a perfectly fine "cmpxchg" implementation in
+> practice, and ACCESS_ONCE() and friends work fine too for reading.
+> 
+> What the "use a spinlock" approach cannot generally do is:
+> 
+>  - ACCESS_ONCE() to _write_ things doesn't work well. You really
+> should use "atomic_set()".
+> 
+>  - you may not necessarily be able to mix partial updates (ie
+> differently sized updates to the same thing) depending on just how the
+> spinlock hashing works
+> 
+> but both of those are really rare issues and don't affect normal code.
+> 
+> I would not necessarily be opposed to splitting up ACCESS_ONCE() for
+> reading and for writing, and maybe we could do something special for
+> the writing path (which tends to be less ctitical). It's really mixing
+> "ACCESS_ONCE(x)" to _set_ a value, together with atomic ops to update
+> it, that ends up being problematic.
 
-.. so your whole argument is bogus, because it doesn't actually fix
-anything else.
+Knowing what I know now about how ACCESS_ONCE() is used, I would have
+split it for reading and writing to begin with.  Where is that time
+machine when you need it?  ;-)
 
-Now, something that *would* fix something else is (for example) to
-just make "ACCESS_ONCE()" a rvalue so that you cannot use it for
-assignments, and then trying to sort out what happens then. It's
-possible that the "atomic_pointer_t" would be a part of the solution
-to that "what happens then", but THERE IS NO WAY IN HELL we're adding
-it for just one architecture and one use that doesn't warrant even
-_existing_ on that architecture.
+> Maybe there are other issues I can't think of right now. But
+> basically, parisc _can_ do cmpxchg, it's just that the code needs to
+> be somewhat sanitized.
+> 
+> Side note: some of the RCU code uses "ACCESS_ONCE()" for
+> read-modify-write code, which is just f*cking crazy. The semantics are
+> dubious, and it generally makes gcc create bad code too.
 
-See what I'm saying?
+A couple of the places are admittedly overkill, for example the pair of:
 
-You're not fixing the problem, you're fixing one unimportant detail
-that isn't worth fixing that way.
+	ACCESS_ONCE(rsp->n_force_qs_lh)++;
 
-               Linus
+which is just for debug statistics in any case.  I could put these back
+to "rsp->n_force_qs_lh++;" without problems, if desired.  (Yeah, I know,
+I am overly paranoid.)
+
+However, these cases need a bit more care:
+
+	ACCESS_ONCE(rdp->qlen)++;
+	ACCESS_ONCE(rsp->n_barrier_done)++;
+	ACCESS_ONCE(sync_rcu_preempt_exp_count)++;
+
+In the ->qlen case, interrupts are disabled and the current CPU is
+the only one who can write, so the read need not be volatile.  In the
+->n_barrier_done, modifications are done holding ->barrier_mutex, so again
+the read need not be volatile.  In the sync_rcu_preempt_exp_count case,
+modifications are done holding sync_rcu_preempt_exp_mutex, so once again,
+the read need not be volatile.  So I could do something like:
+
+	ACCESS_ONCE(rdp->qlen) = rdp->qlen + 1;
+
+But that still makes gcc generate bad code.
+
+The reason I was not all that worried about this is that these are not
+in fastpaths, and the last two are especially not in fastpaths.
+
+Suggestions?
+
+							Thanx, Paul
