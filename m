@@ -1,16 +1,20 @@
-From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: [PATCH v2] introduce atomic_pointer to fix a race condition in
  cancelable mcs spinlocks
-Date: Mon, 2 Jun 2014 14:03:48 -0700
-Message-ID: <20140602210348.GF22231@linux.vnet.ibm.com>
+Date: Mon, 2 Jun 2014 14:12:30 -0700
+Message-ID: <CA+55aFzX3oDvzqh4AfkJ7-X1Yfo8obFM+jOOmwzeN-GyqOPLJg@mail.gmail.com>
 References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
- <20140602162525.GH16155@laptop.programming.kicks-ass.net>
- <CA+55aFzwrqkwD=G=w2m7TdXTpsMFjV7XUMXv5DMPGr=5x5YGCQ@mail.gmail.com>
-Reply-To: paulmck@linux.vnet.ibm.com
+	<alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
+	<20140602162525.GH16155@laptop.programming.kicks-ass.net>
+	<20140602163032.GI16155@laptop.programming.kicks-ass.net>
+	<538CB56E.5010709@hp.com>
+	<20140602200525.GD13930@laptop.programming.kicks-ass.net>
+	<CA+55aFwJwVf_MbcwNNWg-KrLdoOaV2xse2jzvBZTJHJgC_Htvg@mail.gmail.com>
+	<20140602210227.GE22231@linux.vnet.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Cc: Peter Zijlstra <peterz@infradead.org>,
+	Waiman Long <waiman.long@hp.com>,
 	Mikulas Patocka <mpatocka@redhat.com>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>,
@@ -18,7 +22,6 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Parisc List <linux-parisc@vger.kernel.org>,
 	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	"Vinod, Chegu" <chegu_vinod@hp.com>,
-	Waiman Long <Waiman.Long@hp.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Rik van Riel <riel@redhat.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
@@ -27,43 +30,56 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	"Chandramouleeswaran, Aswin" <aswin@hp.com>,
 	"Norton, Scott J" <scott.norton@hp.com>,
 	Jason Low <jason.low2@hp.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CA+55aFzwrqkwD=G=w2m7TdXTpsMFjV7XUMXv5DMPGr=5x5YGCQ@mail.gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
+To: Paul McKenney <paulmck@linux.vnet.ibm.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20140602210227.GE22231@linux.vnet.ibm.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jun 02, 2014 at 10:09:35AM -0700, Linus Torvalds wrote:
-> On Mon, Jun 2, 2014 at 9:25 AM, Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > And I can't say I'm a particular fan of these ops either, as alternative
-> > I'm almost inclined to just exclude parisc from using opt spinning.
-> 
-> Please do.
-> 
-> There is no way in hell that we should introduce a magic new
-> atomic_pointer thing for parisc. And the idea somebody had to change
-> ACCESS_ONCE() for PA-RISC (I'm not going to go back to find who to
-> blame) is just horribly wrong too, since it's not even necessary for
-> any normal use: the special "load-and-store-zero" instruction isn't
-> actually used for "real" data, it's used only for the special
-> spinlocks afaik, so doing it for all ACCESS_ONCE() users would be
-> wrong even on PA-RISC. For any normal data, the usual "just load the
-> value, making sure the compiler doesn't reload it" is perfectly fine -
-> even on PA-RISC.
+On Mon, Jun 2, 2014 at 2:02 PM, Paul E. McKenney
+<paulmck@linux.vnet.ibm.com> wrote:
+>
+> In the ->qlen case, interrupts are disabled and the current CPU is
+> the only one who can write, so the read need not be volatile.  In the
+> ->n_barrier_done, modifications are done holding ->barrier_mutex, so again
+> the read need not be volatile.  In the sync_rcu_preempt_exp_count case,
+> modifications are done holding sync_rcu_preempt_exp_mutex, so once again,
+> the read need not be volatile.  So I could do something like:
+>
+>         ACCESS_ONCE(rdp->qlen) = rdp->qlen + 1;
+>
+> But that still makes gcc generate bad code
+>
+> The reason I was not all that worried about this is that these are not
+> in fastpaths, and the last two are especially not in fastpaths.
+>
+> Suggestions?
 
-Guilty to charges as read on suggesting PA-RISC-specific ACCESS_ONCE().  ;-)
+So I think it probably *works*, but even so splitting it up to use
+ACCESS_ONCE() on just the write is probably a better option, if only
+because it would then make it much easier to change if we do end up
+splitting reads and writes.
 
-							Thanx, Paul
+Because from a gcc code generation standpoint, using "volatile" will
+always be horrible, because gcc will never be able to turn it into a
+read-modify-write cycle. Arguable gcc _should_ be able to do that (it
+is certainly allowable within the virtual machine definition), but I
+understand why it doesn't ("volatile? Let's not optimize anything at
+all, because it's special").
 
-> Now, if PA-RISC was a major architecture, we'd have to figure this
-> out. But as it is, PA-RISC is just about the shittiest RISC ever
-> invented (with original sparc being a strong contender), and let's
-> face it, nobody really uses it.  It's a "fun project", but it is not
-> something that we should use to mess up either ACCESS_ONCE() or the
-> MCS locks.
-> 
-> Just make PA-RISC use its own locks, not any of the new fancy ones.
-> 
->               Linus
-> 
+So "ACCESS_ONCE() + R-M-W" operation is actually pretty much
+guaranteed to be "ACCESS_TWICE()", which may well be ok (performance
+may not matter, and even when it does most architectures don't
+actually have r-m-w instructions and when they do they aren't always
+even faster), but I think it's just horribly horribly bad from a
+conceptual and readability standpoint because it's so misleading.
+
+So I'd actually rather see two explicit ACCESS_ONCE() calls - once to
+read, once to write. Because that at least describes what is
+happening, unlike the current situation.
+
+Put another way: I can understand why you do it, and I can even agree
+that it is "correct" from a functionality standpoint. But even despite
+that all, I really don't like the construct very much..
+
+              Linus
