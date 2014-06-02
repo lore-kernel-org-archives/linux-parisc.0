@@ -1,51 +1,70 @@
-From: Peter Zijlstra <peterz@infradead.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: [PATCH v2] introduce atomic_pointer to fix a race condition in
  cancelable mcs spinlocks
-Date: Mon, 2 Jun 2014 22:05:25 +0200
-Message-ID: <20140602200525.GD13930@laptop.programming.kicks-ass.net>
+Date: Mon, 2 Jun 2014 13:22:10 -0700
+Message-ID: <CA+55aFwJwVf_MbcwNNWg-KrLdoOaV2xse2jzvBZTJHJgC_Htvg@mail.gmail.com>
 References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
- <20140602162525.GH16155@laptop.programming.kicks-ass.net>
- <20140602163032.GI16155@laptop.programming.kicks-ass.net>
- <538CB56E.5010709@hp.com>
+	<alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
+	<20140602162525.GH16155@laptop.programming.kicks-ass.net>
+	<20140602163032.GI16155@laptop.programming.kicks-ass.net>
+	<538CB56E.5010709@hp.com>
+	<20140602200525.GD13930@laptop.programming.kicks-ass.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	jejb@parisc-linux.org, deller@gmx.de,
+Content-Type: text/plain; charset=UTF-8
+Cc: Waiman Long <waiman.long@hp.com>,
+	Mikulas Patocka <mpatocka@redhat.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
 	John David Anglin <dave.anglin@bell.net>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	paulmck@linux.vnet.ibm.com, chegu_vinod@hp.com, tglx@linutronix.de,
-	riel@redhat.com, akpm@linux-foundation.org, davidlohr@hp.com,
-	hpa@zytor.com, andi@firstfloor.org, aswin@hp.com,
-	scott.norton@hp.com, Jason Low <jason.low2@hp.com>
-To: Waiman Long <waiman.long@hp.com>
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Paul McKenney <paulmck@linux.vnet.ibm.com>,
+	"Vinod, Chegu" <chegu_vinod@hp.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Rik van Riel <riel@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Davidlohr Bueso <davidlohr@hp.com>,
+	Peter Anvin <hpa@zytor.com>, Andi Kleen <andi@firstfloor.org>,
+	"Chandramouleeswaran, Aswin" <aswin@hp.com>,
+	"Norton, Scott J" <scott.norton@hp.com>,
+	Jason Low <jason.low2@hp.com>
+To: Peter Zijlstra <peterz@infradead.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <538CB56E.5010709@hp.com>
+In-Reply-To: <20140602200525.GD13930@laptop.programming.kicks-ass.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jun 02, 2014 at 01:33:34PM -0400, Waiman Long wrote:
-> On 06/02/2014 12:30 PM, Peter Zijlstra wrote:
-> >On Mon, Jun 02, 2014 at 06:25:25PM +0200, Peter Zijlstra wrote:
-> >>I'm almost inclined to just exclude parisc from using opt spinning.
-> >>
-> >>That said, this patch still doesn't address the far more interesting
-> >>problem of actually finding these issues for these few weird archs.
-> >So why do these archs provide xchg() and cmpxchg() at all? Wouldn't it
-> >be much simpler if archs that cannot sanely do this, not provide these
-> >primitives at all?
-> 
-> I believe xchg() and cmpxchg() are used in quite a number of places within
-> the generic kernel code. So kernel compilation will fail if those APIs
-> aren't provided by an architecture.
+On Mon, Jun 2, 2014 at 1:05 PM, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> So the question is, do you prefer subtly broken code or hard compile
+> fails? Me, I go for the compile fail.
 
-Yep.. so this is going to be painful for a while. But given their
-(parisc, sparc32, metag-lock1) constraints, who knows how many of those
-uses are actually broken.
+The thing is, parisc has a perfectly fine "cmpxchg" implementation in
+practice, and ACCESS_ONCE() and friends work fine too for reading.
 
-So the question is, do you prefer subtly broken code or hard compile
-fails? Me, I go for the compile fail.
+What the "use a spinlock" approach cannot generally do is:
 
-In any case, this all goes towards what hpa said, what are the minimal
-requirements we have for running Linux.
+ - ACCESS_ONCE() to _write_ things doesn't work well. You really
+should use "atomic_set()".
+
+ - you may not necessarily be able to mix partial updates (ie
+differently sized updates to the same thing) depending on just how the
+spinlock hashing works
+
+but both of those are really rare issues and don't affect normal code.
+
+I would not necessarily be opposed to splitting up ACCESS_ONCE() for
+reading and for writing, and maybe we could do something special for
+the writing path (which tends to be less ctitical). It's really mixing
+"ACCESS_ONCE(x)" to _set_ a value, together with atomic ops to update
+it, that ends up being problematic.
+
+Maybe there are other issues I can't think of right now. But
+basically, parisc _can_ do cmpxchg, it's just that the code needs to
+be somewhat sanitized.
+
+Side note: some of the RCU code uses "ACCESS_ONCE()" for
+read-modify-write code, which is just f*cking crazy. The semantics are
+dubious, and it generally makes gcc create bad code too.
+
+                 Linus
