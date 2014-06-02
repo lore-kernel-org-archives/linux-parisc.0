@@ -1,96 +1,62 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Waiman Long <waiman.long@hp.com>
 Subject: Re: [PATCH v2] introduce atomic_pointer to fix a race condition in
  cancelable mcs spinlocks
-Date: Mon, 02 Jun 2014 10:14:59 -0700
-Message-ID: <1401729299.2204.27.camel@dabdike.int.hansenpartnership.com>
-References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
-	 <alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
-	 <20140602162525.GH16155@laptop.programming.kicks-ass.net>
-	 <20140602164339.GS22231@linux.vnet.ibm.com>
+Date: Mon, 02 Jun 2014 13:25:29 -0400
+Message-ID: <538CB389.5080108@hp.com>
+References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>  <alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com> <1401727810.7440.34.camel@j-VirtualBox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Mikulas Patocka <mpatocka@redhat.com>,
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Cc: Mikulas Patocka <mpatocka@redhat.com>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
-	jejb@parisc-linux.org, deller@gmx.de,
-	John David Anglin <dave.anglin@bell.net>,
+	Peter Zijlstra <peterz@infradead.org>, jejb@parisc-linux.org,
+	deller@gmx.de, John David Anglin <dave.anglin@bell.net>,
 	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	chegu_vinod@hp.com, Waiman.Long@hp.com, tglx@linutronix.de,
+	paulmck@linux.vnet.ibm.com, chegu_vinod@hp.com, tglx@linutronix.de,
 	riel@redhat.com, akpm@linux-foundation.org, davidlohr@hp.com,
 	hpa@zytor.com, andi@firstfloor.org, aswin@hp.com,
-	scott.norton@hp.com, Jason Low <jason.low2@hp.com>
-To: paulmck@linux.vnet.ibm.com
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20140602164339.GS22231@linux.vnet.ibm.com>
-List-ID: <linux-parisc.vger.kernel.org>
+	scott.norton@hp.com
+To: Jason Low <jason.low2@hp.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1401727810.7440.34.camel@j-VirtualBox>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, 2014-06-02 at 09:43 -0700, Paul E. McKenney wrote:
-> On Mon, Jun 02, 2014 at 06:25:25PM +0200, Peter Zijlstra wrote:
-> > On Mon, Jun 02, 2014 at 12:00:45PM -0400, Mikulas Patocka wrote:
-> > >  struct optimistic_spin_queue {
-> > > -	struct optimistic_spin_queue *next, *prev;
-> > > +	atomic_pointer(struct optimistic_spin_queue *) next;
-> > > +	struct optimistic_spin_queue *prev;
-> > >  	int locked; /* 1 if lock acquired */
-> > >  };
-> > >  
-> > > Index: linux-3.15-rc8/include/asm-generic/atomic-long.h
-> > > ===================================================================
-> > > --- linux-3.15-rc8.orig/include/asm-generic/atomic-long.h	2014-06-02 17:11:17.000000000 +0200
-> > > +++ linux-3.15-rc8/include/asm-generic/atomic-long.h	2014-06-02 17:11:50.000000000 +0200
-> > > @@ -255,4 +255,31 @@ static inline long atomic_long_add_unles
-> > >  
-> > >  #endif  /*  BITS_PER_LONG == 64  */
-> > >  
-> > > +#define atomic_pointer(type)						\
-> > > +union {									\
-> > > +	atomic_long_t __a;						\
-> > > +	type __t;							\
-> > > +	char __check_sizeof[sizeof(type) == sizeof(long) ? 1 : -1];	\
-> > > +}
-> > 
-> > That's still entirely disgusting, and afaict entirely redundant. You can
-> > do that test in the operators below just fine.
-> > 
-> > > +#define ATOMIC_POINTER_INIT(i)	{ .__t = (i) }
-> > > +
-> > > +#define atomic_pointer_read(v)	((typeof((v)->__t))atomic_long_read(&(v)->__a))
-> > > +
-> > > +#define atomic_pointer_set(v, i)		({			\
-> > > +	typeof((v)->__t) __i = (i);					\
-> > > +	atomic_long_set(&(v)->__a, (long)(__i));			\
-> > > +})
-> > > +
-> > > +#define atomic_pointer_xchg(v, i)		({			\
-> > > +	typeof((v)->__t) __i = (i);					\
-> > > +	(typeof((v)->__t))atomic_long_xchg(&(v)->__a, (long)(__i));	\
-> > > +})
-> > > +
-> > > +#define atomic_pointer_cmpxchg(v, old, new)	({			\
-> > > +	typeof((v)->__t) __old = (old);					\
-> > > +	typeof((v)->__t) __new = (new);					\
-> > > +	(typeof((v)->__t))atomic_long_cmpxchg(&(v)->__a, (long)(__old), (long)(__new));\
-> > > +})
-> > 
-> > And I can't say I'm a particular fan of these ops either, as alternative
-> > I'm almost inclined to just exclude parisc from using opt spinning.
-> 
-> That is an excellent point for this particular issue.  Do parisc systems
-> really support enough CPUs to make queued spinlocks worthwhile?  If not,
-> maybe we should just have parisc stick with traditional spinlocks.
+On 06/02/2014 12:50 PM, Jason Low wrote:
+> On Mon, 2014-06-02 at 12:00 -0400, Mikulas Patocka wrote:
+>> If you write to some variable with ACCESS_ONCE and use cmpxchg or xchg at
+>> the same time, you break it. ACCESS_ONCE doesn't take the hashed spinlock,
+>> so, in this case, cmpxchg or xchg isn't really atomic at all.
+> So if the problem is using ACCESS_ONCE writes with cmpxchg and xchg at
+> the same time, would the below change address this problem?
+>
+> -----
+> diff --git a/kernel/locking/mcs_spinlock.c b/kernel/locking/mcs_spinlock.c
+> index 838dc9e..8396721 100644
+> --- a/kernel/locking/mcs_spinlock.c
+> +++ b/kernel/locking/mcs_spinlock.c
+> @@ -71,7 +71,7 @@ bool osq_lock(struct optimistic_spin_queue **lock)
+>   	if (likely(prev == NULL))
+>   		return true;
+>
+> -	ACCESS_ONCE(prev->next) = node;
+> +	xchg(&prev->next, node);
+>
+>   	/*
+>   	 * Normally @prev is untouchable after the above store; because at that
+> @@ -144,7 +144,7 @@ unqueue:
+>   	 */
+>
+>   	ACCESS_ONCE(next->prev) = prev;
+> -	ACCESS_ONCE(prev->next) = next;
+> +	xchg(&prev->next, next);
+>
+>   	return false;
+>   }
+>
+>
 
-Yes and No.  No for Linux because the only hyper CPU system is the
-superdome, which we've never managed to boot linux on (it has some
-complexities in the Bus architecture) and we're not likely to try
-because the installations tend to cost north of US$1m.  For the Server
-systems we do have a few high CPU count ones, but we lost access to them
-when HP dismantled the parisc linux lab.  Currently the standard is
-about 4 cpus.
+Doing an xchg is a very expensive operation compared with ACCESS_ONCE. I 
+will not suggest doing that to make it right for PA-RISC at the expense 
+of performance in other architectures.
 
-I think just not using queued spinlocks is fine for us.  Should anyone
-ever try the large CPU systems, we can revisit.
-
-James
-
-
+-Longman
