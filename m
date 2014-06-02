@@ -1,98 +1,223 @@
 From: Mikulas Patocka <mpatocka@redhat.com>
-Subject: Re: [PATCH] fix a race condition in cancelable mcs spinlocks
-Date: Mon, 2 Jun 2014 11:57:14 -0400 (EDT)
-Message-ID: <alpine.LRH.2.02.1406021146030.20627@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com> <20140601192026.GE16155@laptop.programming.kicks-ass.net> <BLU0-SMTP387BD0AE22A4EAD432D65F97210@phx.gbl> <20140601213003.GG16155@laptop.programming.kicks-ass.net>
- <alpine.LRH.2.02.1406020503000.17105@file01.intranet.prod.int.rdu2.redhat.com> <20140602132454.GO22231@linux.vnet.ibm.com>
+Subject: [PATCH v2] introduce atomic_pointer to fix a race condition in
+ cancelable mcs spinlocks
+Date: Mon, 2 Jun 2014 12:00:45 -0400 (EDT)
+Message-ID: <alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	John David Anglin <dave.anglin@bell.net>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	jejb@parisc-linux.org, deller@gmx.de, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, chegu_vinod@hp.com,
-	Waiman.Long@hp.com, tglx@linutronix.de, riel@redhat.com,
-	akpm@linux-foundation.org, davidlohr@hp.com, hpa@zytor.com,
-	andi@firstfloor.org, aswin@hp.com, scott.norton@hp.com,
-	Jason Low <jason.low2@hp.com>
-To: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+Cc: chegu_vinod@hp.com, Waiman.Long@hp.com, tglx@linutronix.de,
+	riel@redhat.com, akpm@linux-foundation.org, davidlohr@hp.com,
+	hpa@zytor.com, andi@firstfloor.org, aswin@hp.com,
+	scott.norton@hp.com, Jason Low <jason.low2@hp.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>, jejb@parisc-linux.org,
+	deller@gmx.de, John David Anglin <dave.anglin@bell.net>,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	paulmck@linux.vnet.ibm.com
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20140602132454.GO22231@linux.vnet.ibm.com>
+In-Reply-To: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+The cancelable MCS spinlocks introduced in
+fb0527bd5ea99bfeb2dd91e3c1433ecf745d6b99 break the kernel on PA-RISC.
+
+How to reproduce:
+* Use a machine with two dual-core PA-8900 processors.
+* Run the LVM testsuite and compile the kernel in an endless loop at the
+  same time.
+* Wait for an hour or two and the kernel locks up.
+
+You see some process locked up in osd_lock and osq_unlock:
+INFO: rcu_sched self-detected stall on CPU { 2}  (t=18000 jiffies g=247335 c=247334 q=101)
+CPU: 2 PID: 21006 Comm: lvm Tainted: G           O  3.15.0-rc7 #9
+Backtrace:
+ [<000000004013e8a4>] show_stack+0x14/0x20
+ [<00000000403016f0>] dump_stack+0x88/0x100
+ [<00000000401b8738>] rcu_check_callbacks+0x4a8/0x900
+ [<00000000401714c4>] update_process_times+0x64/0xc0
+ [<000000004013fa24>] timer_interrupt+0x19c/0x200
+ [<00000000401ad8d8>] handle_irq_event_percpu+0xa8/0x238
+ [<00000000401b2454>] handle_percpu_irq+0x9c/0xd0
+ [<00000000401acc40>] generic_handle_irq+0x40/0x50
+ [<00000000401408cc>] do_cpu_irq_mask+0x1ac/0x298
+ [<000000004012c074>] intr_return+0x0/0xc
+ [<00000000401a609c>] osq_lock+0xc4/0x178
+ [<0000000040138d24>] __mutex_lock_slowpath+0x1cc/0x290
+ [<0000000040138e78>] mutex_lock+0x90/0x98
+ [<00000000402a5614>] kernfs_activate+0x6c/0x1a0
+ [<00000000402a59e0>] kernfs_add_one+0x140/0x190
+ [<00000000402a75ec>] __kernfs_create_file+0xa4/0xf8
+
+INFO: rcu_sched self-detected stall on CPU { 3}  (t=18473 jiffies g=247335 c=247334 q=101)
+CPU: 3 PID: 21051 Comm: udevd Tainted: G           O  3.15.0-rc7 #9
+Backtrace:
+ [<000000004013e8a4>] show_stack+0x14/0x20
+ [<00000000403016f0>] dump_stack+0x88/0x100
+ [<00000000401b8738>] rcu_check_callbacks+0x4a8/0x900
+ [<00000000401714c4>] update_process_times+0x64/0xc0
+ [<000000004013fa24>] timer_interrupt+0x19c/0x200
+ [<00000000401ad8d8>] handle_irq_event_percpu+0xa8/0x238
+ [<00000000401b2454>] handle_percpu_irq+0x9c/0xd0
+ [<00000000401acc40>] generic_handle_irq+0x40/0x50
+ [<00000000401408cc>] do_cpu_irq_mask+0x1ac/0x298
+ [<000000004012c074>] intr_return+0x0/0xc
+ [<00000000401a6220>] osq_unlock+0xd0/0xf8
+ [<0000000040138dcc>] __mutex_lock_slowpath+0x274/0x290
+ [<0000000040138e78>] mutex_lock+0x90/0x98
+ [<00000000402a3a90>] kernfs_dop_revalidate+0x48/0x108
+ [<0000000040233310>] lookup_fast+0x320/0x348
+ [<0000000040234600>] link_path_walk+0x190/0x9d8
 
 
-On Mon, 2 Jun 2014, Paul E. McKenney wrote:
+The code in kernel/locking/mcs_spinlock.c is broken.
 
-> On Mon, Jun 02, 2014 at 05:19:39AM -0400, Mikulas Patocka wrote:
-> > 
-> > 
-> > On Sun, 1 Jun 2014, Peter Zijlstra wrote:
-> > 
-> > > On Sun, Jun 01, 2014 at 04:46:26PM -0400, John David Anglin wrote:
-> > > > On 1-Jun-14, at 3:20 PM, Peter Zijlstra wrote:
-> > > > 
-> > > > >>If you write to some variable with ACCESS_ONCE and use cmpxchg or xchg
-> > > > >>at
-> > > > >>the same time, you break it. ACCESS_ONCE doesn't take the hashed
-> > > > >>spinlock,
-> > > > >>so, in this case, cmpxchg or xchg isn't really atomic at all.
-> > > > >
-> > > > >And this is really the first place in the kernel that breaks like this?
-> > > > >I've been using xchg() and cmpxchg() without such consideration for
-> > > > >quite a while.
-> > > > 
-> > > > I believe Mikulas is correct.  Even in a controlled situation where a
-> > > > cmpxchg operation
-> > > > is used to implement pthread_spin_lock() in userspace, we found recently
-> > > > that the lock
-> > > > must be released with a  cmpxchg operation and not a simple write on SMP
-> > > > systems.
-> > > > There is a race in the cache operations or instruction ordering that's not
-> > > > present with
-> > > > the ldcw instruction.
-> > > 
-> > > Oh, I'm not arguing that. He's quite right that its broken, but this
-> > > form of atomic ops is also quite insane and unusual. Most sane machines
-> > > don't have this problem.
-> > > 
-> > > My main concern is how are we going to avoid breaking parisc (and I
-> > > think sparc32, which is similarly retarded) in the future; we should
-> > > invest in machinery to find and detect these things.
-> > 
-> > Grep the kernel for "\<xchg\>" and "\<cmpxchg\>" and replace them with 
-> > atomic types and atomic access functions.
-> 
-> Not so good for pointers, though.  Defeats type-checking, for one thing.
-> An example of this is use of xchg() for atomically enqueuing RCU callbacks
-> in kernel/rcu/tree_plugin.h.
-> 
-> I still like the idea of PA-RISC's compiler implementing ACCESS_ONCE()
-> as needed to make things work on that architecture.
-> 
-> 							Thanx, Paul
+PA-RISC doesn't have xchg or cmpxchg atomic instructions like other
+processors. It only has ldcw and ldcd instructions that load a word (or
+doubleword) from memory and atomically store zero at the same location.
+These instructions can only be used to implement spinlocks, direct
+implementation of other atomic operations is impossible.
 
-We can perform some preprocessor tricks to check the pointer type. See my 
-next patch that adds type checking - you declare the variable with
+Consequently, Linux xchg and cmpxchg functions are implemented in such a
+way that they hash the address, use the hash to index a spinlock, take the
+spinlock, perform the xchg or cmpxchg operation non-atomically and drop
+the spinlock.
 
-	atomic_pointer(struct optimistic_spin_queue *) next;
+If you write to some variable with ACCESS_ONCE and use cmpxchg or xchg at
+the same time, you break it. ACCESS_ONCE doesn't take the hashed spinlock,
+so, in this case, cmpxchg or xchg isn't really atomic at all.
 
-and the pointer type is checked on all atomic operations involving this 
-variable.
+This patch fixes the bug by introducing a new type atomic_pointer and
+replacing the offending pointer with it. atomic_pointer_set (calling
+atomic_long_set) takes the hashed spinlock, so it avoids the race
+condition. We perform some gcc-specific compiler tricks to warn on pointer
+type mismatch.
 
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
 
-The problem with ACCESS_ONCE is that people omit it. There's plenty of 
-places in the kernel where ACCESS_ONCE should be used and isn't 
-(i_size_read, i_size_write, rt_mutex_is_locked...). Nothing really forces 
-people to write the code correctly and use it.
+---
+ include/asm-generic/atomic-long.h |   27 +++++++++++++++++++++++++++
+ kernel/locking/mcs_spinlock.c     |   16 ++++++++--------
+ kernel/locking/mcs_spinlock.h     |    4 +++-
+ 3 files changed, 38 insertions(+), 9 deletions(-)
 
-atomic_pointer (and other atomic types) have the advantage that they force 
-people to use the atomic functions to access them. If you read or write to 
-the variable directly, it won't compile.
+Index: linux-3.15-rc8/kernel/locking/mcs_spinlock.c
+===================================================================
+--- linux-3.15-rc8.orig/kernel/locking/mcs_spinlock.c	2014-06-02 17:11:16.000000000 +0200
++++ linux-3.15-rc8/kernel/locking/mcs_spinlock.c	2014-06-02 17:11:50.000000000 +0200
+@@ -47,8 +47,8 @@ osq_wait_next(struct optimistic_spin_que
+ 		 * wait for either @lock to point to us, through its Step-B, or
+ 		 * wait for a new @node->next from its Step-C.
+ 		 */
+-		if (node->next) {
+-			next = xchg(&node->next, NULL);
++		if (atomic_pointer_read(&node->next)) {
++			next = atomic_pointer_xchg(&node->next, NULL);
+ 			if (next)
+ 				break;
+ 		}
+@@ -65,13 +65,13 @@ bool osq_lock(struct optimistic_spin_que
+ 	struct optimistic_spin_queue *prev, *next;
+ 
+ 	node->locked = 0;
+-	node->next = NULL;
++	atomic_pointer_set(&node->next, NULL);
+ 
+ 	node->prev = prev = xchg(lock, node);
+ 	if (likely(prev == NULL))
+ 		return true;
+ 
+-	ACCESS_ONCE(prev->next) = node;
++	atomic_pointer_set(&prev->next, node);
+ 
+ 	/*
+ 	 * Normally @prev is untouchable after the above store; because at that
+@@ -103,8 +103,8 @@ unqueue:
+ 	 */
+ 
+ 	for (;;) {
+-		if (prev->next == node &&
+-		    cmpxchg(&prev->next, node, NULL) == node)
++		if (atomic_pointer_read(&prev->next) == node &&
++		    atomic_pointer_cmpxchg(&prev->next, node, NULL) == node)
+ 			break;
+ 
+ 		/*
+@@ -144,7 +144,7 @@ unqueue:
+ 	 */
+ 
+ 	ACCESS_ONCE(next->prev) = prev;
+-	ACCESS_ONCE(prev->next) = next;
++	atomic_pointer_set(&prev->next, next);
+ 
+ 	return false;
+ }
+@@ -163,7 +163,7 @@ void osq_unlock(struct optimistic_spin_q
+ 	/*
+ 	 * Second most likely case.
+ 	 */
+-	next = xchg(&node->next, NULL);
++	next = atomic_pointer_xchg(&node->next, NULL);
+ 	if (next) {
+ 		ACCESS_ONCE(next->locked) = 1;
+ 		return;
+Index: linux-3.15-rc8/kernel/locking/mcs_spinlock.h
+===================================================================
+--- linux-3.15-rc8.orig/kernel/locking/mcs_spinlock.h	2014-06-02 17:11:16.000000000 +0200
++++ linux-3.15-rc8/kernel/locking/mcs_spinlock.h	2014-06-02 17:11:50.000000000 +0200
+@@ -13,6 +13,7 @@
+ #define __LINUX_MCS_SPINLOCK_H
+ 
+ #include <asm/mcs_spinlock.h>
++#include <linux/atomic.h>
+ 
+ struct mcs_spinlock {
+ 	struct mcs_spinlock *next;
+@@ -119,7 +120,8 @@ void mcs_spin_unlock(struct mcs_spinlock
+  */
+ 
+ struct optimistic_spin_queue {
+-	struct optimistic_spin_queue *next, *prev;
++	atomic_pointer(struct optimistic_spin_queue *) next;
++	struct optimistic_spin_queue *prev;
+ 	int locked; /* 1 if lock acquired */
+ };
+ 
+Index: linux-3.15-rc8/include/asm-generic/atomic-long.h
+===================================================================
+--- linux-3.15-rc8.orig/include/asm-generic/atomic-long.h	2014-06-02 17:11:17.000000000 +0200
++++ linux-3.15-rc8/include/asm-generic/atomic-long.h	2014-06-02 17:11:50.000000000 +0200
+@@ -255,4 +255,31 @@ static inline long atomic_long_add_unles
+ 
+ #endif  /*  BITS_PER_LONG == 64  */
+ 
++#define atomic_pointer(type)						\
++union {									\
++	atomic_long_t __a;						\
++	type __t;							\
++	char __check_sizeof[sizeof(type) == sizeof(long) ? 1 : -1];	\
++}
++
++#define ATOMIC_POINTER_INIT(i)	{ .__t = (i) }
++
++#define atomic_pointer_read(v)	((typeof((v)->__t))atomic_long_read(&(v)->__a))
++
++#define atomic_pointer_set(v, i)		({			\
++	typeof((v)->__t) __i = (i);					\
++	atomic_long_set(&(v)->__a, (long)(__i));			\
++})
++
++#define atomic_pointer_xchg(v, i)		({			\
++	typeof((v)->__t) __i = (i);					\
++	(typeof((v)->__t))atomic_long_xchg(&(v)->__a, (long)(__i));	\
++})
++
++#define atomic_pointer_cmpxchg(v, old, new)	({			\
++	typeof((v)->__t) __old = (old);					\
++	typeof((v)->__t) __new = (new);					\
++	(typeof((v)->__t))atomic_long_cmpxchg(&(v)->__a, (long)(__old), (long)(__new));\
++})
++
+ #endif  /*  _ASM_GENERIC_ATOMIC_LONG_H  */
 
-I think the best solution is to wrap the critical pointers with 
-atomic_pointer(pointer_type *) and let the compiler report errors on all 
-places where it is used unsafely.
-
-Mikulas
