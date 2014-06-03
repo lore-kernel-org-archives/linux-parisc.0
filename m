@@ -1,76 +1,177 @@
-From: Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] fix a race condition in cancelable mcs spinlocks
-Date: Tue, 3 Jun 2014 09:56:16 +0200
-Message-ID: <20140603075616.GJ11096@twins.programming.kicks-ass.net>
-References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
- <20140601192026.GE16155@laptop.programming.kicks-ass.net>
- <BLU0-SMTP387BD0AE22A4EAD432D65F97210@phx.gbl>
- <20140601213003.GG16155@laptop.programming.kicks-ass.net>
- <1401739000.12939.34.camel@dabdike.int.hansenpartnership.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: Re: [PATCH v2] introduce atomic_pointer to fix a race condition in
+ cancelable mcs spinlocks
+Date: Tue, 3 Jun 2014 07:14:31 -0400 (EDT)
+Message-ID: <alpine.LRH.2.02.1406030341570.10639@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com> <20140602162525.GH16155@laptop.programming.kicks-ass.net>
+ <CA+55aFzwrqkwD=G=w2m7TdXTpsMFjV7XUMXv5DMPGr=5x5YGCQ@mail.gmail.com> <alpine.LRH.2.02.1406021622200.5874@file01.intranet.prod.int.rdu2.redhat.com> <CA+55aFwCy4-x02U6A-KbkPEpe_4pagsZ__ipBhe5HZOQt2vNmw@mail.gmail.com> <alpine.LRH.2.02.1406021656550.5874@file01.intranet.prod.int.rdu2.redhat.com>
+ <20140603073613.GH11096@twins.programming.kicks-ass.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3nbTfX4V9Gs/5Yhz"
-Cc: John David Anglin <dave.anglin@bell.net>,
-	Mikulas Patocka <mpatocka@redhat.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	jejb@parisc-linux.org, deller@gmx.de, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, chegu_vinod@hp.com,
-	paulmck@linux.vnet.ibm.com, Waiman.Long@hp.com, tglx@linutronix.de,
-	riel@redhat.com, akpm@linux-foundation.org, davidlohr@hp.com,
-	hpa@zytor.com, andi@firstfloor.org, aswin@hp.com,
-	scott.norton@hp.com, Jason Low <jason.low2@hp.com>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	John David Anglin <dave.anglin@bell.net>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Paul McKenney <paulmck@linux.vnet.ibm.com>,
+	"Vinod, Chegu" <chegu_vinod@hp.com>,
+	Waiman Long <Waiman.Long@hp.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Rik van Riel <riel@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Davidlohr Bueso <davidlohr@hp.com>,
+	Peter Anvin <hpa@zytor.com>, Andi Kleen <andi@firstfloor.org>,
+	"Chandramouleeswaran, Aswin" <aswin@hp.com>,
+	"Norton, Scott J" <scott.norton@hp.com>,
+	Jason Low <jason.low2@hp.com>
+To: Peter Zijlstra <peterz@infradead.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1401739000.12939.34.camel@dabdike.int.hansenpartnership.com>
+In-Reply-To: <20140603073613.GH11096@twins.programming.kicks-ass.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 
---3nbTfX4V9Gs/5Yhz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Mon, Jun 02, 2014 at 12:56:40PM -0700, James Bottomley wrote:
-> Architecturally, there is a way we could emulate the atomic exchange
-> instructions.  We could have a special section of memory that always
-> triggers a page trap.  In the Q state dtlb trap handlers we could
-> recognise the "atomic" section of memory and wrap the attempted
-> modification in a semaphore.  This would add a bit of overhead, but not
-> a huge amount if we do it in the trap handlers like the TMPALIAS
-> flushes.  This involves a lot of work for us because we have to decode
-> the instructions in software, recognise the operations and manually
-> apply the hashed semaphores around them.  If we did it like this, all
-> we'd need by way of mainline support is that variables treated as
-> atomically exchangeable should be in a separate section (because it's a
-> page fault handler effectively, we need them all separated from "normal"
-> code).  This would probably require some type of variable marker and if
-> we ever saw a xchg or cmpxchg on a variable without the marker, we could
-> break the build.
+On Tue, 3 Jun 2014, Peter Zijlstra wrote:
 
-Cute, but I don't think that's entirely feasible given how these things
-can be embedded in other structures (some dynamically allocated etc..).
+> On Mon, Jun 02, 2014 at 05:12:16PM -0400, Mikulas Patocka wrote:
+> > The patch adds atomic_pointer_t for all architectures - it is in the 
+> > common code and it is backed by atomic_long_t (that already exists for all 
+> > architectures). There is no new arch-specific code at all.
+> > 
+> > When we have atomic_pointer_t, we can find the instances of xchg() and 
+> > cmpxchg() and convert them to atomic_pointer_t (or to other atomic*_t 
+> > types).
+> > 
+> > When we convert them all, we can drop xchg() and cmpxchg() at all (at 
+> > least from architecture-neutral code).
+> > 
+> > The problem with xchg() and cmpxchg() is that they are very easy to 
+> > misuse. Peter Zijlstra didn't know that they are not atomic w.r.t. normal 
+> > stores, a lot of other people don't know it too - and if we allow these 
+> > functions to be used, this race condition will reappear in the future 
+> > again and again.
+> > 
+> > That's why I'm proposing atomic_pointer_t - it guarantees that this race 
+> > condition can't be made.
+> 
+> But its horrible, and doesn't have any benefit afaict.
+>
+> So if we really want to keep supporting these platforms; I would propose
+> something like:
+> 
+> #ifdef __CHECKER__
+> #define __atomic	__attribute__((address_space(5)))
+> #else
+> #define __atomic
+> #endif
+> 
+> #define store(p, v)	(*(p) = (typeof(*(p)) __force __atomic)(v))
+> #define load(p)		((typeof(*p) __force)ACCESS_ONCE(*(p)))
+> 
+> Along with changes to xchg() and cmpxchg() that require them to take
+> pointers to __atomic.
+> 
+> That way we keep the flexibility of xchg() and cmpxchg() for being
+> (mostly) type and size invariant, and get sparse to find wrong usage.
+> 
+> Then parisc, sparc32, tile32, metag-lock1 and arc-!llsc can go implement
+> store() however they like.
+
+Your proposal is very good because it warns about incorrect usage 
+automatically.
 
 
 
---3nbTfX4V9Gs/5Yhz
-Content-Type: application/pgp-signature
+Your usage is very similar to what my patch at the top of this thread 
+does:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Instead of "__atomic struct s *p;" declaration, my patch uses
+"atomic_pointer(struct s*) p;" as the declaration
+Instead of store(&p, v), my patch uses atomic_pointer_set(&p, v);
+Instead of load(&p), my patch uses atomic_pointer_get(&p);
+Instead of xchg(&p, v), my patch uses atomic_pointer_xchg(&p, v);
+Instead of cmpxchg(&p, v1, v2), my patch uses atomic_pointer_cmpxchg(&p1, v1, v2);
 
-iQIcBAEBAgAGBQJTjX+gAAoJEHZH4aRLwOS6ux4P+gKgWsCBL126J4OGdL6sRbOu
-0dg/ShhoNJJaX4J7hZYkH1IVhzcSJMC0qOj0aHXGxs2DaaPDdL4b9VjPBwLW5GSK
-ZmF4mvwf2sRbib2RcKSugWSdnuMRMOp71xN1CigAa6if3bEm342m+XXdZcNxigMJ
-yoR4tjTwSSKgCwGDcI75PjBo9VPMc6S04a+kDDcKdSz28s2fwKR0HE6DaWcAiqOa
-8P4Czm0pGkX8uohYf0e98FBDhj/Q9j9uJqMCL3TcfR1yjfxFnJTXZp+963JROFay
-cxRjN40zDJHEZlyvJDjRv0zFsCeuozf0exAwfXqvUY5tK9TcnCBLdkj9tic7w7TO
-iU6kQWTTCsUnG209L9cI5zrNkLl7N0uB0W1pC6SoBwCSCMBWraDLGoKKFPyNEgX7
-aqrdMD/8eEWNTWCapF01sEV776XVR8QNiAlsHKN0S2Sp1RpOEHOFq3Iuh/eUWIMx
-Cbox2pjEUwQ/wcuJMA2Reomjg51aAjqAzg9sKAYnA5FCaUm4yDpG+6reYUgc4KUd
-SatcSq/UC+pb/kxShnTXDmqCLoR24F2LAvpdeACFZjJE3W7bgyw3tAP/bwypJNNo
-xLr4A9Hvya3cqiYKvjdKnrbhi9x1VsWVtnqC+0sBjdVrOoCsNuoViKdoUWBDB75C
-Zz0pMusI7A19MGRlfrNC
-=cgFT
------END PGP SIGNATURE-----
+> But its horrible, and doesn't have any benefit afaict.
 
---3nbTfX4V9Gs/5Yhz--
+See the five cases above - why do you say that the operation on the left 
+is good and the operation on the right is horrible? To me, it looks like 
+they are both similar, they are just named differently. Both check the 
+type of the pointer and warns if the user passes incompatible pointer. If 
+I rename the operations in my patch to store(), load(), xchg(), cmpxchg(), 
+would you like it?
+
+
+My patch has advantage (over your #define __atomic 
+__attribute__((address_space(5))) ) that it checks the mismatches at 
+compile time. Your proposal only check them with sparse. But either way - 
+it is very good that the mismatches are being checked automatically.
+
+
+
+
+We need some method to catch these races automatically. There are places 
+where people xchg() or cmpxchg() with direct modifications, see for 
+example this:
+
+
+$ grep -w mnt_expiry_mark */*.c
+fs/namespace.c:         if (unlikely(m->mnt_expiry_mark))
+fs/namespace.c:                 m->mnt_expiry_mark = 0;
+fs/namespace.c:         if (!xchg(&mnt->mnt_expiry_mark, 1))
+fs/namespace.c: /* we mustn't call path_put() as that would clear mnt_expiry_mark */
+fs/namespace.c:         if (!xchg(&mnt->mnt_expiry_mark, 1) ||
+
+$ grep "sub_info->complete" */*.c
+kernel/kmod.c:  struct completion *comp = xchg(&sub_info->complete, NULL);
+kernel/kmod.c:  sub_info->complete = &done;
+kernel/kmod.c:          if (xchg(&sub_info->complete, NULL))
+
+$ grep -w "fdt->fd" */*.c
+fs/file.c:      free_fdmem(fdt->fd);
+fs/file.c:      fdt->fd = data;
+fs/file.c:      free_fdmem(fdt->fd);
+fs/file.c:                              struct file * file = xchg(&fdt->fd[i], NULL);
+fs/file.c:      if (rcu_access_pointer(fdt->fd[fd]) != NULL) {
+fs/file.c:              rcu_assign_pointer(fdt->fd[fd], NULL);
+fs/file.c:      BUG_ON(fdt->fd[fd] != NULL);
+fs/file.c:      rcu_assign_pointer(fdt->fd[fd], file);
+fs/file.c:      file = fdt->fd[fd];
+fs/file.c:      rcu_assign_pointer(fdt->fd[fd], NULL);
+fs/file.c:                      file = fdt->fd[fd];
+fs/file.c:                      rcu_assign_pointer(fdt->fd[fd], NULL);
+fs/file.c:      tofree = fdt->fd[fd];
+fs/file.c:      rcu_assign_pointer(fdt->fd[fd], file);
+fs/file.c:              file = rcu_dereference_check_fdtable(files, fdt->fd[n]);
+
+$ grep -w exit_state */*.c
+fs/exec.c:                      if (likely(leader->exit_state))
+fs/exec.c:              BUG_ON(leader->exit_state != EXIT_ZOMBIE);
+fs/exec.c:              leader->exit_state = EXIT_DEAD;
+kernel/exit.c:  if (leader != p && thread_group_empty(leader) && leader->exit_state == EXIT_ZOMBIE) {
+kernel/exit.c:                  leader->exit_state = EXIT_DEAD;
+kernel/exit.c:              (p->exit_state && thread_group_empty(p)) ||
+kernel/exit.c:  if (p->exit_state == EXIT_DEAD)
+kernel/exit.c:      p->exit_state == EXIT_ZOMBIE && thread_group_empty(p)) {
+kernel/exit.c:                  p->exit_state = EXIT_DEAD;
+kernel/exit.c:  tsk->exit_state = autoreap ? EXIT_DEAD : EXIT_ZOMBIE;
+kernel/exit.c:  if (cmpxchg(&p->exit_state, EXIT_ZOMBIE, state) != EXIT_ZOMBIE)
+kernel/exit.c:          p->exit_state = state;
+kernel/exit.c:  if (unlikely(p->exit_state == EXIT_DEAD))
+kernel/exit.c:  if (unlikely(p->exit_state == EXIT_TRACE)) {
+kernel/exit.c:  if (p->exit_state == EXIT_ZOMBIE) {
+kernel/fork.c:  WARN_ON(!tsk->exit_state);
+kernel/posix-cpu-timers.c:              if (unlikely(p->exit_state))
+kernel/posix-cpu-timers.c:              } else if (unlikely(p->exit_state) && thread_group_empty(p)) {
+kernel/ptrace.c:        if (unlikely(task->exit_state))
+kernel/ptrace.c:        if (p->exit_state != EXIT_ZOMBIE)
+kernel/ptrace.c:                p->exit_state = EXIT_DEAD;
+kernel/ptrace.c:                if (child->exit_state)  /* already dead */
+kernel/signal.c:                if (t->exit_state)
+kernel/taskstats.c:             if (tsk->exit_state)
+mm/oom_kill.c:  if (task->exit_state)
+
+
+Mikulas
