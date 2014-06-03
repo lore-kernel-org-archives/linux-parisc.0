@@ -1,31 +1,25 @@
-From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+From: Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [PATCH v2] introduce atomic_pointer to fix a race condition in
  cancelable mcs spinlocks
-Date: Mon, 2 Jun 2014 17:28:23 -0700
-Message-ID: <20140603002823.GI22231@linux.vnet.ibm.com>
-References: <20140602163032.GI16155@laptop.programming.kicks-ass.net>
- <538CB56E.5010709@hp.com>
- <20140602200525.GD13930@laptop.programming.kicks-ass.net>
- <CA+55aFwJwVf_MbcwNNWg-KrLdoOaV2xse2jzvBZTJHJgC_Htvg@mail.gmail.com>
- <20140602210227.GE22231@linux.vnet.ibm.com>
- <CA+55aFzX3oDvzqh4AfkJ7-X1Yfo8obFM+jOOmwzeN-GyqOPLJg@mail.gmail.com>
- <20140602220831.GG22231@linux.vnet.ibm.com>
- <1401749088.3645.189.camel@edumazet-glaptop2.roam.corp.google.com>
- <20140602231730.GH22231@linux.vnet.ibm.com>
- <1401753224.3645.190.camel@edumazet-glaptop2.roam.corp.google.com>
-Reply-To: paulmck@linux.vnet.ibm.com
+Date: Tue, 3 Jun 2014 09:20:05 +0200
+Message-ID: <20140603072005.GG11096@twins.programming.kicks-ass.net>
+References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
+ <20140602162525.GH16155@laptop.programming.kicks-ass.net>
+ <CA+55aFzwrqkwD=G=w2m7TdXTpsMFjV7XUMXv5DMPGr=5x5YGCQ@mail.gmail.com>
+ <alpine.LRH.2.02.1406021622200.5874@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fcasAdn045BL8lzs"
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Waiman Long <waiman.long@hp.com>,
-	Mikulas Patocka <mpatocka@redhat.com>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>,
 	John David Anglin <dave.anglin@bell.net>,
 	Parisc List <linux-parisc@vger.kernel.org>,
 	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Paul McKenney <paulmck@linux.vnet.ibm.com>,
 	"Vinod, Chegu" <chegu_vinod@hp.com>,
+	Waiman Long <Waiman.Long@hp.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Rik van Riel <riel@redhat.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
@@ -34,23 +28,80 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	"Chandramouleeswaran, Aswin" <aswin@hp.com>,
 	"Norton, Scott J" <scott.norton@hp.com>,
 	Jason Low <jason.low2@hp.com>
-To: Eric Dumazet <eric.dumazet@gmail.com>
+To: Mikulas Patocka <mpatocka@redhat.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1401753224.3645.190.camel@edumazet-glaptop2.roam.corp.google.com>
+In-Reply-To: <alpine.LRH.2.02.1406021622200.5874@file01.intranet.prod.int.rdu2.redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jun 02, 2014 at 04:53:44PM -0700, Eric Dumazet wrote:
-> On Mon, 2014-06-02 at 16:17 -0700, Paul E. McKenney wrote:
-> 
-> > But given that I already have preemption disabled and given that
-> > __srcu_read_lock() is not to be used by irq handlers, I should be able to
-> > use __this_cpu_inc(), correct?  Just to avoid unnecessary irq disabling
-> > on non-x86 platforms...
-> 
-> Absolutely, __this_cpu_inc() is OK here.
 
-Cool, giving it a test...
+--fcasAdn045BL8lzs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-							Thanx, Paul
+On Mon, Jun 02, 2014 at 04:46:32PM -0400, Mikulas Patocka wrote:
+> It's not only parisc - tile32, arc, metag (maybe hexagon) are broken too,=
+=20
+> because they don't have cmpxchg in hardware.
 
+metag actually does, and the lock1 thing is a fallback/test thing:
+
+config METAG_ATOMICITY_LOCK1
+	depends on SMP
+	bool "lock1"
+	help
+	  This option uses the LOCK1 instruction for atomicity. This is mainly
+	  provided as a debugging aid if the lnkget/lnkset atomicity primitive
+	  isn't working properly.
+
+Then again, metag has qualiteee bits like:
+
+config METAG_SMP_WRITE_REORDERING
+	bool
+	help
+	  This attempts to prevent cache-memory incoherence due to external
+	  reordering of writes from different hardware threads when SMP is
+	  enabled. It adds fences (system event 0) to smp_mb and smp_rmb in an
+	  attempt to catch some of the cases, and also before writes to shared
+	  memory in LOCK1 protected atomics and spinlocks.
+	  This will not completely prevent cache incoherency on affected cores.
+
+Which makes me back away slowly before starting to run.
+
+And there is sane arc hardware:
+
+config ARC_HAS_LLSC
+	bool "Insn: LLOCK/SCOND (efficient atomic ops)"
+	default y
+	depends on ARC_CPU_770 && !ARC_CANT_LLSC
+
+tile32 is indeed equally wrecked, but at least they have a tile64 system
+that is useful (albeit somewhat strange).
+
+Same for sparc32, there's sparc64 which is sane.
+
+parisc otoh is a dead arch that never got sane.
+
+--fcasAdn045BL8lzs
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTjXclAAoJEHZH4aRLwOS6GfUP/0PvUigk+xCoOmj+kbq410lS
+SNVKxiitcZ0Gl5Ha0Y2vWUxquWbCzylbinbaYmA7wbvaAkNYdKFgkuNBXtmACuZ7
+hRlrImpQR3u0pdKFvK4/y+dAOOPSj7hZdt45vphZWCUqdWfnraSPPnZOGFIbn52G
+Ray4hZ4TrO6NwBaOp1oMHrXUEcpiAPm+ZOf4GJUfGUfKhAj1d41SOc0s8B6aOXLr
+Z/XacD2RfCYsxPfaWksyaL+ZnoTf3uRrFCdqLGidEPfR7tsq1Apc53xIHxCDoW/t
+ZvELSNtCcGIuTt40NvbddKtdqJ+J0iYHdx+6Kn5uv/AZFIRFdusllHezcptBkUbC
+kb3V8bux3LELsz+xmq6fvADENLNwdpTFU1ysLmrbRJdn4AmGj1sITyhh0QuiZYCQ
+oY8D3UPNfAmThcoOO5YORPFbzR0wiapwxxoQ9szhSapM+QLIavWHZcM9r7/2blkO
+yZRqXW+zqEMH/YGO7INPjz0Coj1dWPyjY8DxgK0xze+v7F08b/oqMe+XJGv3rD3X
+qhcxHpTJIrsIR7sTS64dqWLyiVezvDgSTYajpaXNGPfBa31Vr99VKf2V9Lukf89H
+p+hgRUPPEOC/pSFTG6HTcBWYQOSwGfWOpPmp5E+uGBvBFu2/yxNtGC4u+yMfeKwe
+wLXeC3SPjYgX+tt+GuL4
+=twhr
+-----END PGP SIGNATURE-----
+
+--fcasAdn045BL8lzs--
