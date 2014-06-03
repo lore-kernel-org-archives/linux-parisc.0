@@ -1,98 +1,170 @@
-From: Luis Henriques <luis.henriques@canonical.com>
-Subject: [PATCH 3.11 080/138] metag: Reduce maximum stack size to 256MB
-Date: Tue,  3 Jun 2014 12:38:46 +0100
-Message-ID: <1401795584-22664-81-git-send-email-luis.henriques@canonical.com>
-References: <1401795584-22664-1-git-send-email-luis.henriques@canonical.com>
-Cc: James Hogan <james.hogan@imgtec.com>, Helge Deller <deller@gmx.de>,
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v2] introduce atomic_pointer to fix a race condition in
+ cancelable mcs spinlocks
+Date: Tue, 3 Jun 2014 15:24:39 +0200
+Message-ID: <20140603132439.GN30445@twins.programming.kicks-ass.net>
+References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
+ <20140602162525.GH16155@laptop.programming.kicks-ass.net>
+ <CA+55aFzwrqkwD=G=w2m7TdXTpsMFjV7XUMXv5DMPGr=5x5YGCQ@mail.gmail.com>
+ <alpine.LRH.2.02.1406021622200.5874@file01.intranet.prod.int.rdu2.redhat.com>
+ <CA+55aFwCy4-x02U6A-KbkPEpe_4pagsZ__ipBhe5HZOQt2vNmw@mail.gmail.com>
+ <alpine.LRH.2.02.1406021656550.5874@file01.intranet.prod.int.rdu2.redhat.com>
+ <20140603073613.GH11096@twins.programming.kicks-ass.net>
+ <alpine.LRH.2.02.1406030341570.10639@file01.intranet.prod.int.rdu2.redhat.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WFkhpfBSKA51eMK1"
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org, linux-metag@vger.kernel.org,
+	Helge Deller <deller@gmx.de>,
 	John David Anglin <dave.anglin@bell.net>,
-	Luis Henriques <luis.henriques@canonical.com>
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	kernel-team@lists.ubuntu.com
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Paul McKenney <paulmck@linux.vnet.ibm.com>,
+	"Vinod, Chegu" <chegu_vinod@hp.com>,
+	Waiman Long <Waiman.Long@hp.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Rik van Riel <riel@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Davidlohr Bueso <davidlohr@hp.com>,
+	Peter Anvin <hpa@zytor.com>, Andi Kleen <andi@firstfloor.org>,
+	"Chandramouleeswaran, Aswin" <aswin@hp.com>,
+	"Norton, Scott J" <scott.norton@hp.com>,
+	Jason Low <jason.low2@hp.com>
+To: Mikulas Patocka <mpatocka@redhat.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1401795584-22664-1-git-send-email-luis.henriques@canonical.com>
+In-Reply-To: <alpine.LRH.2.02.1406030341570.10639@file01.intranet.prod.int.rdu2.redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-3.11.10.11 -stable review patch.  If anyone has any objections, please let me know.
 
-------------------
+--WFkhpfBSKA51eMK1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-From: James Hogan <james.hogan@imgtec.com>
+On Tue, Jun 03, 2014 at 07:14:31AM -0400, Mikulas Patocka wrote:
+> > So if we really want to keep supporting these platforms; I would propose
+> > something like:
+> >=20
+> > #ifdef __CHECKER__
+> > #define __atomic	__attribute__((address_space(5)))
+> > #else
+> > #define __atomic
+> > #endif
+> >=20
+> > #define store(p, v)	(*(p) =3D (typeof(*(p)) __force __atomic)(v))
+> > #define load(p)		((typeof(*p) __force)ACCESS_ONCE(*(p)))
+> >=20
+> > Along with changes to xchg() and cmpxchg() that require them to take
+> > pointers to __atomic.
+> >=20
+> > That way we keep the flexibility of xchg() and cmpxchg() for being
+> > (mostly) type and size invariant, and get sparse to find wrong usage.
+> >=20
+> > Then parisc, sparc32, tile32, metag-lock1 and arc-!llsc can go implement
+> > store() however they like.
+>=20
+> Your proposal is very good because it warns about incorrect usage=20
+> automatically.
 
-commit d71f290b4e98a39f49f2595a13be3b4d5ce8e1f1 upstream.
+Exactly the point.
 
-Specify the maximum stack size for arches where the stack grows upward
-(parisc and metag) in asm/processor.h rather than hard coding in
-fs/exec.c so that metag can specify a smaller value of 256MB rather than
-1GB.
+> Your usage is very similar to what my patch at the top of this thread=20
+> does:
+>=20
+> Instead of "__atomic struct s *p;" declaration, my patch uses
+> "atomic_pointer(struct s*) p;" as the declaration
+> Instead of store(&p, v), my patch uses atomic_pointer_set(&p, v);
+> Instead of load(&p), my patch uses atomic_pointer_get(&p);
+> Instead of xchg(&p, v), my patch uses atomic_pointer_xchg(&p, v);
+> Instead of cmpxchg(&p, v1, v2), my patch uses atomic_pointer_cmpxchg(&p1,=
+ v1, v2);
+>=20
+> > But its horrible, and doesn't have any benefit afaict.
+>=20
+> See the five cases above - why do you say that the operation on the left=
+=20
+> is good and the operation on the right is horrible? To me, it looks like=
+=20
+> they are both similar, they are just named differently. Both check the=20
+> type of the pointer and warns if the user passes incompatible pointer. If=
+=20
+> I rename the operations in my patch to store(), load(), xchg(), cmpxchg()=
+,=20
+> would you like it?
 
-This fixes a BUG on metag if the RLIMIT_STACK hard limit is increased
-beyond a safe value by root. E.g. when starting a process after running
-"ulimit -H -s unlimited" it will then attempt to use a stack size of the
-maximum 1GB which is far too big for metag's limited user virtual
-address space (stack_top is usually 0x3ffff000):
+Nope.. because the above store,load,xchg,cmpxchg are type invariant and
+work for anything of size (1),2,4,(8).
 
-BUG: failure at fs/exec.c:589/shift_arg_pages()!
+So I dislike your proposal on a number of points:
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-metag@vger.kernel.org
-Cc: John David Anglin <dave.anglin@bell.net>
-Signed-off-by: Luis Henriques <luis.henriques@canonical.com>
----
- arch/metag/include/asm/processor.h  | 2 ++
- arch/parisc/include/asm/processor.h | 2 ++
- fs/exec.c                           | 6 +++---
- 3 files changed, 7 insertions(+), 3 deletions(-)
+ 1) its got pointer in, and while the immediate problem is indeed with
+ pointers, there is no reason it always should be, so we'll keep on
+ introducing new APIs;
 
-diff --git a/arch/metag/include/asm/processor.h b/arch/metag/include/asm/processor.h
-index f16477d1f571..3be8581af495 100644
---- a/arch/metag/include/asm/processor.h
-+++ b/arch/metag/include/asm/processor.h
-@@ -22,6 +22,8 @@
- /* Add an extra page of padding at the top of the stack for the guard page. */
- #define STACK_TOP	(TASK_SIZE - PAGE_SIZE)
- #define STACK_TOP_MAX	STACK_TOP
-+/* Maximum virtual space for stack */
-+#define STACK_SIZE_MAX	(1 << 28)	/* 256 MB */
- 
- /* This decides where the kernel will search for a free chunk of vm
-  * space during mmap's.
-diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
-index cc2290a3cace..c6ee86542fec 100644
---- a/arch/parisc/include/asm/processor.h
-+++ b/arch/parisc/include/asm/processor.h
-@@ -53,6 +53,8 @@
- #define STACK_TOP	TASK_SIZE
- #define STACK_TOP_MAX	DEFAULT_TASK_SIZE
- 
-+#define STACK_SIZE_MAX	(1 << 30)	/* 1 GB */
-+
- #endif
- 
- #ifndef __ASSEMBLY__
-diff --git a/fs/exec.c b/fs/exec.c
-index e72f6bbbde2e..87e9edb36fe0 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -655,10 +655,10 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	unsigned long rlim_stack;
- 
- #ifdef CONFIG_STACK_GROWSUP
--	/* Limit stack size to 1GB */
-+	/* Limit stack size */
- 	stack_base = rlimit_max(RLIMIT_STACK);
--	if (stack_base > (1 << 30))
--		stack_base = 1 << 30;
-+	if (stack_base > STACK_SIZE_MAX)
-+		stack_base = STACK_SIZE_MAX;
- 
- 	/* Make sure we didn't let the argument array grow too large. */
- 	if (vma->vm_end - vma->vm_start > stack_base)
--- 
-1.9.1
+ 2) its got a fixed length, nl. sizeof(void *), if we were to find
+ another case which had the same problem which used 'int' we'd have to
+ again create new APIs;
 
+ 3) you only fixed the one site;
+
+ 4) I'm the lazy kind and atomic_foo_* is just too much typing, let
+ alone remembering all the various new atomic_foo_ APIs resulting from
+ all this.
+
+This is the place where I really miss C++ templates; and yes before
+people shoot me in the head for that, I do know about all the various
+pitfalls and down sides of those too.
+
+> My patch has advantage (over your #define __atomic=20
+> __attribute__((address_space(5))) ) that it checks the mismatches at=20
+> compile time. Your proposal only check them with sparse. But either way -=
+=20
+> it is very good that the mismatches are being checked automatically.
+
+So my proposal goes a lot further in that by making xchg() and cmpxchg()
+require pointer to __atomic, all sites get coverage, not only the one
+case where you found was a problem.
+
+Yes, this requires a lot more effort, for we'll have to pretty much
+audit and annotate the entire tree, but such things can be done, see for
+example the introduction of __rcu.
+
+Also, these days we get automagic emails if we introduce new sparse
+fails, so it being sparse and not gcc isn't really any threshold at all.
+
+> We need some method to catch these races automatically. There are places=
+=20
+> where people xchg() or cmpxchg() with direct modifications, see for=20
+> example this:
+
+Yep, so all those places will immediately stand out, the first fail will
+be that those variables aren't marked __atomic, once you do that, the
+direct assignment will complain about crossing the address_space marker.
+
+Voila, sorted.
+
+--WFkhpfBSKA51eMK1
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTjcyWAAoJEHZH4aRLwOS6BjYP/1dyK54lrQr8N7sSFHyc3l+X
+AaV/goYoXEIoQK2nRVX8Zsne1GLWhGVJvNwwa+oLM03qU0Fdx2E4EOyIEoYTAczd
+tQpWH4QKzg9sG4EuBUqJ7ROO3rK+43YB9GwyXzOFX2yjzmbjGnbXk4KBOapyVelC
+Gxwp3b6zHnMvfARPatMaNCqNYqMeidxvxCftgUrw6XqYzEwMBq6BrdRwhbrCXlEb
+3TeXy1yCP1ldxtHmuGKImqDtUVrpHes/c6N4GQFZPFLqkxji74CdujIs5gfr0pVc
+sS/u3mhOIpAMOaZ1jrnnh6Yx0x15PuQCp7Ut7VQvhyZvQkKTMWTUlbFsdfxsT0ND
+miw5yZXJlGuqsuUjSm3YoLkKD5U80/+tyQe5JpAdKNAx08yGLgecGAr3ou0o1vzX
+PmX+qU3R95NfQaRWRdIL+KqC+byA+2uB5yZmxbP5Y3nu3ZXBgaMfk7K/tzL8Qt97
+/Ko5xqsPGdkmMJlnPNVhvhTbKDYWlXtGKYm2C9mc6iyENj9ouIyaXO6dzq+v9HJy
+vtKTSFpvGaeQpGpdeJxKsDKv2Sb90DFyLRoVCI2eBNPk6ZZwO/LLZ0wRi3YMlJkU
+H2jpITn9u0LXOs4GRlFp+b/+TySDEmXbK2Bxy9YPrxRkwR3pt4HojnY05xM1Bayh
+XFLht5ElNrS8wBhm3gd3
+=npg2
+-----END PGP SIGNATURE-----
+
+--WFkhpfBSKA51eMK1--
