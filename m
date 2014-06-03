@@ -1,93 +1,76 @@
 From: Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v2] introduce atomic_pointer to fix a race condition in
- cancelable mcs spinlocks
-Date: Tue, 3 Jun 2014 09:54:33 +0200
-Message-ID: <20140603075433.GI11096@twins.programming.kicks-ass.net>
+Subject: Re: [PATCH] fix a race condition in cancelable mcs spinlocks
+Date: Tue, 3 Jun 2014 09:56:16 +0200
+Message-ID: <20140603075616.GJ11096@twins.programming.kicks-ass.net>
 References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
- <20140602162525.GH16155@laptop.programming.kicks-ass.net>
- <20140602163032.GI16155@laptop.programming.kicks-ass.net>
- <538CB56E.5010709@hp.com>
- <20140602200525.GD13930@laptop.programming.kicks-ass.net>
- <CA+55aFwJwVf_MbcwNNWg-KrLdoOaV2xse2jzvBZTJHJgC_Htvg@mail.gmail.com>
+ <20140601192026.GE16155@laptop.programming.kicks-ass.net>
+ <BLU0-SMTP387BD0AE22A4EAD432D65F97210@phx.gbl>
+ <20140601213003.GG16155@laptop.programming.kicks-ass.net>
+ <1401739000.12939.34.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eOjGLwyQwZ6mtm8V"
-Cc: Waiman Long <waiman.long@hp.com>,
+	protocol="application/pgp-signature"; boundary="3nbTfX4V9Gs/5Yhz"
+Cc: John David Anglin <dave.anglin@bell.net>,
 	Mikulas Patocka <mpatocka@redhat.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	John David Anglin <dave.anglin@bell.net>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Paul McKenney <paulmck@linux.vnet.ibm.com>,
-	"Vinod, Chegu" <chegu_vinod@hp.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Rik van Riel <riel@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Davidlohr Bueso <davidlohr@hp.com>,
-	Peter Anvin <hpa@zytor.com>, Andi Kleen <andi@firstfloor.org>,
-	"Chandramouleeswaran, Aswin" <aswin@hp.com>,
-	"Norton, Scott J" <scott.norton@hp.com>,
-	Jason Low <jason.low2@hp.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	jejb@parisc-linux.org, deller@gmx.de, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, chegu_vinod@hp.com,
+	paulmck@linux.vnet.ibm.com, Waiman.Long@hp.com, tglx@linutronix.de,
+	riel@redhat.com, akpm@linux-foundation.org, davidlohr@hp.com,
+	hpa@zytor.com, andi@firstfloor.org, aswin@hp.com,
+	scott.norton@hp.com, Jason Low <jason.low2@hp.com>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CA+55aFwJwVf_MbcwNNWg-KrLdoOaV2xse2jzvBZTJHJgC_Htvg@mail.gmail.com>
+In-Reply-To: <1401739000.12939.34.camel@dabdike.int.hansenpartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 
---eOjGLwyQwZ6mtm8V
+--3nbTfX4V9Gs/5Yhz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 02, 2014 at 01:22:10PM -0700, Linus Torvalds wrote:
-> On Mon, Jun 2, 2014 at 1:05 PM, Peter Zijlstra <peterz@infradead.org> wro=
-te:
-> >
-> > So the question is, do you prefer subtly broken code or hard compile
-> > fails? Me, I go for the compile fail.
->=20
-> The thing is, parisc has a perfectly fine "cmpxchg" implementation in
-> practice, and ACCESS_ONCE() and friends work fine too for reading.
->=20
-> What the "use a spinlock" approach cannot generally do is:
->=20
->  - ACCESS_ONCE() to _write_ things doesn't work well. You really
-> should use "atomic_set()".
->=20
->  - you may not necessarily be able to mix partial updates (ie
-> differently sized updates to the same thing) depending on just how the
-> spinlock hashing works
->=20
-> but both of those are really rare issues and don't affect normal code.
+On Mon, Jun 02, 2014 at 12:56:40PM -0700, James Bottomley wrote:
+> Architecturally, there is a way we could emulate the atomic exchange
+> instructions.  We could have a special section of memory that always
+> triggers a page trap.  In the Q state dtlb trap handlers we could
+> recognise the "atomic" section of memory and wrap the attempted
+> modification in a semaphore.  This would add a bit of overhead, but not
+> a huge amount if we do it in the trap handlers like the TMPALIAS
+> flushes.  This involves a lot of work for us because we have to decode
+> the instructions in software, recognise the operations and manually
+> apply the hashed semaphores around them.  If we did it like this, all
+> we'd need by way of mainline support is that variables treated as
+> atomically exchangeable should be in a separate section (because it's a
+> page fault handler effectively, we need them all separated from "normal"
+> code).  This would probably require some type of variable marker and if
+> we ever saw a xchg or cmpxchg on a variable without the marker, we could
+> break the build.
 
-Agreed on the second, although that would be fairly easy to fix by
-masking out the lower few bits in the pointer address before hashing.
+Cute, but I don't think that's entirely feasible given how these things
+can be embedded in other structures (some dynamically allocated etc..).
 
-The first, you're probably, right, but seeing how its a completely
-silent fail atm I'm not at all comfortable with it.
 
---eOjGLwyQwZ6mtm8V
+
+--3nbTfX4V9Gs/5Yhz
 Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTjX85AAoJEHZH4aRLwOS6nngQAK9nbOEBxJRjxLBTjGqT2h3H
-CblDpBj0FzQanVUULCmxxLuGwqwqTCcGF/LClYd4+SUaKjD0DErQj5bDI9+IM2zv
-ypDvuWUo7M6OlyMMXEBSkw9E6zSZzl0W5Icznx2gj0Hh0DgcGmuYzHwSKRCdk290
-00soo4700xK7beYrQ9iF2iBgYIY0tqFoP5FQPeOTNX4eTvnYyRjz0BXAAWxqO2Hl
-qMVDtclFkfe3JoQmr2r24ZDdgN9XIjIlIK0UXSwL3S2paSZxBHzq9e1jil9VD+/b
-LORmUqIXdz+56RG7Vqdn1V/RwlOk/K8RPYRby7FvzQx993k6XvxYWS9GwgLQhn0U
-y2wz3O72K3qirIxzXF5CP714xHe+ChMh9F9O91nLxxecdwEwvm7u/xe63XMI4eNV
-TWwAy0Tiv2gPY3cozgYMWBm1989ZQ1zfS98mJhDOdmsirYeV5F8fwzxD7eJeE/4A
-nlTIMzQqC/FeRYFOdxdWK3kCr1QG/a+1H8snBIUgdZZjG3NajXvgGWtzThXPZ+VU
-O+Xt7CQiGiIdSv+eXTULSdD+mcvCcw9VjFevMY4P+EYti8oAHBGv9GJr9YQhOx1Y
-4RcgUJ3hqVwhH+Y6unZXfbddcjAdHGU8h87DqI0daS7j85wJZtN8yxi+/4Dx8Z4a
-eEdB2bjrS8tuAg7Wof/2
-=zSlX
+iQIcBAEBAgAGBQJTjX+gAAoJEHZH4aRLwOS6ux4P+gKgWsCBL126J4OGdL6sRbOu
+0dg/ShhoNJJaX4J7hZYkH1IVhzcSJMC0qOj0aHXGxs2DaaPDdL4b9VjPBwLW5GSK
+ZmF4mvwf2sRbib2RcKSugWSdnuMRMOp71xN1CigAa6if3bEm342m+XXdZcNxigMJ
+yoR4tjTwSSKgCwGDcI75PjBo9VPMc6S04a+kDDcKdSz28s2fwKR0HE6DaWcAiqOa
+8P4Czm0pGkX8uohYf0e98FBDhj/Q9j9uJqMCL3TcfR1yjfxFnJTXZp+963JROFay
+cxRjN40zDJHEZlyvJDjRv0zFsCeuozf0exAwfXqvUY5tK9TcnCBLdkj9tic7w7TO
+iU6kQWTTCsUnG209L9cI5zrNkLl7N0uB0W1pC6SoBwCSCMBWraDLGoKKFPyNEgX7
+aqrdMD/8eEWNTWCapF01sEV776XVR8QNiAlsHKN0S2Sp1RpOEHOFq3Iuh/eUWIMx
+Cbox2pjEUwQ/wcuJMA2Reomjg51aAjqAzg9sKAYnA5FCaUm4yDpG+6reYUgc4KUd
+SatcSq/UC+pb/kxShnTXDmqCLoR24F2LAvpdeACFZjJE3W7bgyw3tAP/bwypJNNo
+xLr4A9Hvya3cqiYKvjdKnrbhi9x1VsWVtnqC+0sBjdVrOoCsNuoViKdoUWBDB75C
+Zz0pMusI7A19MGRlfrNC
+=cgFT
 -----END PGP SIGNATURE-----
 
---eOjGLwyQwZ6mtm8V--
+--3nbTfX4V9Gs/5Yhz--
