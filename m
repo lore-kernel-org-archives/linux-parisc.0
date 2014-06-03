@@ -1,19 +1,20 @@
 From: Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [PATCH v2] introduce atomic_pointer to fix a race condition in
  cancelable mcs spinlocks
-Date: Tue, 3 Jun 2014 09:36:13 +0200
-Message-ID: <20140603073613.GH11096@twins.programming.kicks-ass.net>
+Date: Tue, 3 Jun 2014 09:54:33 +0200
+Message-ID: <20140603075433.GI11096@twins.programming.kicks-ass.net>
 References: <alpine.LRH.2.02.1406011342470.20831@file01.intranet.prod.int.rdu2.redhat.com>
  <alpine.LRH.2.02.1406021158360.20627@file01.intranet.prod.int.rdu2.redhat.com>
  <20140602162525.GH16155@laptop.programming.kicks-ass.net>
- <CA+55aFzwrqkwD=G=w2m7TdXTpsMFjV7XUMXv5DMPGr=5x5YGCQ@mail.gmail.com>
- <alpine.LRH.2.02.1406021622200.5874@file01.intranet.prod.int.rdu2.redhat.com>
- <CA+55aFwCy4-x02U6A-KbkPEpe_4pagsZ__ipBhe5HZOQt2vNmw@mail.gmail.com>
- <alpine.LRH.2.02.1406021656550.5874@file01.intranet.prod.int.rdu2.redhat.com>
+ <20140602163032.GI16155@laptop.programming.kicks-ass.net>
+ <538CB56E.5010709@hp.com>
+ <20140602200525.GD13930@laptop.programming.kicks-ass.net>
+ <CA+55aFwJwVf_MbcwNNWg-KrLdoOaV2xse2jzvBZTJHJgC_Htvg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="C3csQhHPgbq3tf44"
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	protocol="application/pgp-signature"; boundary="eOjGLwyQwZ6mtm8V"
+Cc: Waiman Long <waiman.long@hp.com>,
+	Mikulas Patocka <mpatocka@redhat.com>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>,
 	John David Anglin <dave.anglin@bell.net>,
@@ -21,7 +22,6 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Paul McKenney <paulmck@linux.vnet.ibm.com>,
 	"Vinod, Chegu" <chegu_vinod@hp.com>,
-	Waiman Long <Waiman.Long@hp.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Rik van Riel <riel@redhat.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
@@ -30,87 +30,64 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	"Chandramouleeswaran, Aswin" <aswin@hp.com>,
 	"Norton, Scott J" <scott.norton@hp.com>,
 	Jason Low <jason.low2@hp.com>
-To: Mikulas Patocka <mpatocka@redhat.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.02.1406021656550.5874@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <CA+55aFwJwVf_MbcwNNWg-KrLdoOaV2xse2jzvBZTJHJgC_Htvg@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 
---C3csQhHPgbq3tf44
+--eOjGLwyQwZ6mtm8V
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 02, 2014 at 05:12:16PM -0400, Mikulas Patocka wrote:
-> The patch adds atomic_pointer_t for all architectures - it is in the=20
-> common code and it is backed by atomic_long_t (that already exists for al=
-l=20
-> architectures). There is no new arch-specific code at all.
+On Mon, Jun 02, 2014 at 01:22:10PM -0700, Linus Torvalds wrote:
+> On Mon, Jun 2, 2014 at 1:05 PM, Peter Zijlstra <peterz@infradead.org> wro=
+te:
+> >
+> > So the question is, do you prefer subtly broken code or hard compile
+> > fails? Me, I go for the compile fail.
 >=20
-> When we have atomic_pointer_t, we can find the instances of xchg() and=20
-> cmpxchg() and convert them to atomic_pointer_t (or to other atomic*_t=20
-> types).
+> The thing is, parisc has a perfectly fine "cmpxchg" implementation in
+> practice, and ACCESS_ONCE() and friends work fine too for reading.
 >=20
-> When we convert them all, we can drop xchg() and cmpxchg() at all (at=20
-> least from architecture-neutral code).
+> What the "use a spinlock" approach cannot generally do is:
 >=20
-> The problem with xchg() and cmpxchg() is that they are very easy to=20
-> misuse. Peter Zijlstra didn't know that they are not atomic w.r.t. normal=
-=20
-> stores, a lot of other people don't know it too - and if we allow these=
-=20
-> functions to be used, this race condition will reappear in the future=20
-> again and again.
+>  - ACCESS_ONCE() to _write_ things doesn't work well. You really
+> should use "atomic_set()".
 >=20
-> That's why I'm proposing atomic_pointer_t - it guarantees that this race=
-=20
-> condition can't be made.
+>  - you may not necessarily be able to mix partial updates (ie
+> differently sized updates to the same thing) depending on just how the
+> spinlock hashing works
+>=20
+> but both of those are really rare issues and don't affect normal code.
 
-But its horrible, and doesn't have any benefit afaict.
+Agreed on the second, although that would be fairly easy to fix by
+masking out the lower few bits in the pointer address before hashing.
 
-So if we really want to keep supporting these platforms; I would propose
-something like:
+The first, you're probably, right, but seeing how its a completely
+silent fail atm I'm not at all comfortable with it.
 
-#ifdef __CHECKER__
-#define __atomic	__attribute__((address_space(5)))
-#else
-#define __atomic
-#endif
-
-#define store(p, v)	(*(p) =3D (typeof(*(p)) __force __atomic)(v))
-#define load(p)		((typeof(*p) __force)ACCESS_ONCE(*(p)))
-
-Along with changes to xchg() and cmpxchg() that require them to take
-pointers to __atomic.
-
-That way we keep the flexibility of xchg() and cmpxchg() for being
-(mostly) type and size invariant, and get sparse to find wrong usage.
-
-Then parisc, sparc32, tile32, metag-lock1 and arc-!llsc can go implement
-store() however they like.
-
-
-
---C3csQhHPgbq3tf44
+--eOjGLwyQwZ6mtm8V
 Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTjXrtAAoJEHZH4aRLwOS600UP/31g+OD4KSjczG/ZhSVsIagP
-0wLJYumd8UqFkArSRcJ6q3xcTzV34C705M34dZyFq0etylvyMcNtjvyZkjzTzpcd
-nM5nPNGLIrew12PCqkPeUxCSe7V7e+Wyte/mg1ejWdhdTKi3B3YeKICqGo52cW2v
-8PtzYyVKi83WkYEV/Y1gok1nsbych19manSI6Rn1hy4eLBKS3IBKYcz9Pwff2bgs
-moowd/K19tkvvl2MrBQM1yrrHe8iYSvmeLmdEWma0s3lJCp3BknyjUPPTQpGF8sq
-dE8YDO2mxgcIzx0p/xvBQ2OtiJNqfStrEZMne/2ODWKF12r7pZ/gPnJU4SO8rIZI
-U7xm07hPDKvmBG+h8wSBvCcdtnWqj9Tp6tMa4OqV4Ze4DWne8ysj/y7bJrhAYyiP
-bY25GXknujcOxZPliXgmX5E1fpTAtNP/lG39EACZFP0wBGRHq/efO3wia0Pbw+Ev
-gkZksDf1GkKPmmVkHuAerlzbhBhupy1ZbR6YDWAwNmHiAkitXy5rPmrso6z5Z+6G
-8f/fGIz233BI9bOnYmaf/a0O8xLU9Y+h0+cUXvSoSbfwwZrrgMbbSCufDeYKN/aG
-9quSHASRcQpeUM3aEHk29Wpj0hFyZiRFKntpvrVrCqvo/hAh3iJ5CdpieoBVrB2+
-MkXIDDqJNoUwusUl8lY6
-=CJbB
+iQIcBAEBAgAGBQJTjX85AAoJEHZH4aRLwOS6nngQAK9nbOEBxJRjxLBTjGqT2h3H
+CblDpBj0FzQanVUULCmxxLuGwqwqTCcGF/LClYd4+SUaKjD0DErQj5bDI9+IM2zv
+ypDvuWUo7M6OlyMMXEBSkw9E6zSZzl0W5Icznx2gj0Hh0DgcGmuYzHwSKRCdk290
+00soo4700xK7beYrQ9iF2iBgYIY0tqFoP5FQPeOTNX4eTvnYyRjz0BXAAWxqO2Hl
+qMVDtclFkfe3JoQmr2r24ZDdgN9XIjIlIK0UXSwL3S2paSZxBHzq9e1jil9VD+/b
+LORmUqIXdz+56RG7Vqdn1V/RwlOk/K8RPYRby7FvzQx993k6XvxYWS9GwgLQhn0U
+y2wz3O72K3qirIxzXF5CP714xHe+ChMh9F9O91nLxxecdwEwvm7u/xe63XMI4eNV
+TWwAy0Tiv2gPY3cozgYMWBm1989ZQ1zfS98mJhDOdmsirYeV5F8fwzxD7eJeE/4A
+nlTIMzQqC/FeRYFOdxdWK3kCr1QG/a+1H8snBIUgdZZjG3NajXvgGWtzThXPZ+VU
+O+Xt7CQiGiIdSv+eXTULSdD+mcvCcw9VjFevMY4P+EYti8oAHBGv9GJr9YQhOx1Y
+4RcgUJ3hqVwhH+Y6unZXfbddcjAdHGU8h87DqI0daS7j85wJZtN8yxi+/4Dx8Z4a
+eEdB2bjrS8tuAg7Wof/2
+=zSlX
 -----END PGP SIGNATURE-----
 
---C3csQhHPgbq3tf44--
+--eOjGLwyQwZ6mtm8V--
