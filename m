@@ -1,8 +1,8 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 3.10 082/103] metag: Reduce maximum stack size to 256MB
-Date: Wed,  4 Jun 2014 16:25:45 -0700
-Message-ID: <20140604232549.490369214@linuxfoundation.org>
-References: <20140604232546.704156131@linuxfoundation.org>
+Subject: [PATCH 3.14 170/228] metag: Reduce maximum stack size to 256MB
+Date: Wed,  4 Jun 2014 16:23:19 -0700
+Message-ID: <20140604232353.491191049@linuxfoundation.org>
+References: <20140604232347.966798903@linuxfoundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -12,12 +12,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-parisc@vger.kernel.org, linux-metag@vger.kernel.org,
 	John David Anglin <dave.anglin@bell.net>
 To: linux-kernel@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20140604232546.704156131@linuxfoundation.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140604232347.966798903@linuxfoundation.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-3.10-stable review patch.  If anyone has any objections, please let me know.
+3.14-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -65,7 +65,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
   * space during mmap's.
 --- a/arch/parisc/include/asm/processor.h
 +++ b/arch/parisc/include/asm/processor.h
-@@ -53,6 +53,8 @@
+@@ -55,6 +55,8 @@
  #define STACK_TOP	TASK_SIZE
  #define STACK_TOP_MAX	DEFAULT_TASK_SIZE
  
@@ -90,5 +90,3 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	/* Make sure we didn't let the argument array grow too large. */
  	if (vma->vm_end - vma->vm_start > stack_base)
-
-
