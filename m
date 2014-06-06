@@ -1,27 +1,25 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 3.14 170/228] metag: Reduce maximum stack size to 256MB
-Date: Wed,  4 Jun 2014 16:23:19 -0700
-Message-ID: <20140604232353.491191049@linuxfoundation.org>
-References: <20140604232347.966798903@linuxfoundation.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	stable@vger.kernel.org, James Hogan <james.hogan@imgtec.com>,
-	Helge Deller <deller@gmx.de>,
+From: Jiri Slaby <jslaby@suse.cz>
+Subject: [patch added to the 3.12 stable tree] metag: Reduce maximum stack size to 256MB
+Date: Fri,  6 Jun 2014 14:50:55 +0200
+Message-ID: <1402059090-31277-111-git-send-email-jslaby@suse.cz>
+References: <1402059090-31277-1-git-send-email-jslaby@suse.cz>
+Cc: James Hogan <james.hogan@imgtec.com>, Helge Deller <deller@gmx.de>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	linux-parisc@vger.kernel.org, linux-metag@vger.kernel.org,
-	John David Anglin <dave.anglin@bell.net>
-To: linux-kernel@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140604232347.966798903@linuxfoundation.org>
-List-ID: <linux-kernel.vger.kernel.org>
+	John David Anglin <dave.anglin@bell.net>,
+	Jiri Slaby <jslaby@suse.cz>
+To: stable@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1402059090-31277-1-git-send-email-jslaby@suse.cz>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-3.14-stable review patch.  If anyone has any objections, please let me know.
-
-------------------
-
 From: James Hogan <james.hogan@imgtec.com>
+
+This patch has been added to the 3.12 stable tree. If you have any
+objections, please let us know.
+
+===============
 
 commit d71f290b4e98a39f49f2595a13be3b4d5ce8e1f1 upstream.
 
@@ -44,14 +42,15 @@ Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
 Cc: linux-parisc@vger.kernel.org
 Cc: linux-metag@vger.kernel.org
 Cc: John David Anglin <dave.anglin@bell.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- arch/metag/include/asm/processor.h  |    2 ++
- arch/parisc/include/asm/processor.h |    2 ++
- fs/exec.c                           |    6 +++---
+ arch/metag/include/asm/processor.h  | 2 ++
+ arch/parisc/include/asm/processor.h | 2 ++
+ fs/exec.c                           | 6 +++---
  3 files changed, 7 insertions(+), 3 deletions(-)
 
+diff --git a/arch/metag/include/asm/processor.h b/arch/metag/include/asm/processor.h
+index f16477d1f571..3be8581af495 100644
 --- a/arch/metag/include/asm/processor.h
 +++ b/arch/metag/include/asm/processor.h
 @@ -22,6 +22,8 @@
@@ -63,9 +62,11 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  /* This decides where the kernel will search for a free chunk of vm
   * space during mmap's.
+diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
+index cc2290a3cace..c6ee86542fec 100644
 --- a/arch/parisc/include/asm/processor.h
 +++ b/arch/parisc/include/asm/processor.h
-@@ -55,6 +55,8 @@
+@@ -53,6 +53,8 @@
  #define STACK_TOP	TASK_SIZE
  #define STACK_TOP_MAX	DEFAULT_TASK_SIZE
  
@@ -74,9 +75,11 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  #endif
  
  #ifndef __ASSEMBLY__
+diff --git a/fs/exec.c b/fs/exec.c
+index bb8afc1d1df4..95eef54de2b6 100644
 --- a/fs/exec.c
 +++ b/fs/exec.c
-@@ -654,10 +654,10 @@ int setup_arg_pages(struct linux_binprm
+@@ -657,10 +657,10 @@ int setup_arg_pages(struct linux_binprm *bprm,
  	unsigned long rlim_stack;
  
  #ifdef CONFIG_STACK_GROWSUP
@@ -90,3 +93,6 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	/* Make sure we didn't let the argument array grow too large. */
  	if (vma->vm_end - vma->vm_start > stack_base)
+-- 
+1.9.3
+
