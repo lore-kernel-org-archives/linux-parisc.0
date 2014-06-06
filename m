@@ -1,63 +1,54 @@
-From: Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/2] locking/rwsem: Disable optimistic spinning for
- PA-RISC
-Date: Fri, 6 Jun 2014 20:01:02 +0200
-Message-ID: <20140606180102.GY13930@laptop.programming.kicks-ass.net>
+From: Davidlohr Bueso <davidlohr@hp.com>
+Subject: Re: [PATCH 1/2] locking/rwsem: Add CONFIG_RWSEM_SPIN_ON_OWNER
+Date: Fri, 06 Jun 2014 11:12:38 -0700
+Message-ID: <1402078358.14433.3.camel@buesod1.americas.hpqcorp.net>
 References: <1402070140-15090-1-git-send-email-davidlohr@hp.com>
- <1402070140-15090-3-git-send-email-davidlohr@hp.com>
- <1402070987.2207.75.camel@dabdike.int.hansenpartnership.com>
- <20140606171145.GU13930@laptop.programming.kicks-ass.net>
- <CA+55aFxNLRufHyLHetnst7Lq0Ya1xoAagZf=DbEDTf1ZSfKFCQ@mail.gmail.com>
- <20140606175316.GV13930@laptop.programming.kicks-ass.net>
- <1402077427.2207.91.camel@dabdike.int.hansenpartnership.com>
+	 <1402070140-15090-2-git-send-email-davidlohr@hp.com>
+	 <1402074788.6680.50.camel@j-VirtualBox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Davidlohr Bueso <davidlohr@hp.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>,
-	Jason Low <jason.low2@hp.com>,
-	Waiman Long <waiman.long@hp.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Paul McKenney <paulmck@linux.vnet.ibm.com>,
-	John David Anglin <dave.anglin@bell.net>,
-	"Chandramouleeswaran, Aswin" <aswin@hp.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	David Miller <davem@davemloft.net>,
-	James Hogan <james.hogan@imgtec.com>,
-	Chris Metcalf <cmetcalf@tilera.com>,
-	Vineet Gupta <vgupta@synopsys.com>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1402077427.2207.91.camel@dabdike.int.hansenpartnership.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: peterz@infradead.org, mingo@kernel.org, mpatocka@redhat.com,
+	torvalds@linux-foundation.org, waiman.long@hp.com,
+	jejb@parisc-linux.org, paulmck@linux.vnet.ibm.com,
+	dave.anglin@bell.net, aswin@hp.com, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org
+To: Jason Low <jason.low2@hp.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1402074788.6680.50.camel@j-VirtualBox>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Jun 06, 2014 at 10:57:07AM -0700, James Bottomley wrote:
-> > diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-> > index 29f2e988c56a..407c87d9879a 100644
-> > --- a/arch/sparc/Kconfig
-> > +++ b/arch/sparc/Kconfig
-> > @@ -78,6 +78,7 @@ config SPARC64
-                      ^^^^^^^^^^^^^^
-
-
-> >  	select HAVE_C_RECORDMCOUNT
-> >  	select NO_BOOTMEM
-> >  	select HAVE_ARCH_AUDITSYSCALL
-> > +	select ARCH_SUPPORTS_ATOMIC_RMW
+On Fri, 2014-06-06 at 10:13 -0700, Jason Low wrote:
+> On Fri, 2014-06-06 at 08:55 -0700, Davidlohr Bueso wrote:
+> > Just like with mutexes (CONFIG_MUTEX_SPIN_ON_OWNER),
+> > encapsulate the dependencies for rwsem optimistic spinning.
+> > No logical changes here as it continues to depend on both
+> > SMP and the XADD algorithm variant.
+> > 
+> > Signed-off-by: Davidlohr Bueso <davidlohr@hp.com>
+> > ---
+> >  include/linux/rwsem.h  | 4 ++--
+> >  kernel/Kconfig.locks   | 4 ++++
+> >  kernel/locking/rwsem.c | 2 +-
+> >  3 files changed, 7 insertions(+), 3 deletions(-)
 > 
-> Sparc64 does, Sparc32 doesn't, so shouldn't that be
+> Do we also want to add an #ifdef CONFIG_RWSEM_SPIN_ON_OWNER in
+> __init_rwsem() and in the optimistic spinning functions for rwsem-xadd?
 > 
-> select ARCH_SUPPORTS_ATOMIC_RMW if 64BIT
+
+Not really, as we conditionally build rwsem-xadd.o based on
+CONFIG_RWSEM_XCHGADD_ALGORITHM:
+
+obj-$(CONFIG_RWSEM_GENERIC_SPINLOCK) += rwsem-spinlock.o
+obj-$(CONFIG_RWSEM_XCHGADD_ALGORITHM) += rwsem-xadd.o
+
+So leaving just SMP is ok there.
+
 > 
-> ?
+> Besides that:
+> 
+> Acked-by: Jason Low <jason.low2@hp.com>
+> 
 
-arch/sparc/Kconfig has 3 large sections:
-
-config SPARC (included in both)
-config SPARC32 (specific to 32bit)
-config SPARC64 (specific to 64bit)
-
-I added it to the last.
+Thanks,
+Davidlohr
