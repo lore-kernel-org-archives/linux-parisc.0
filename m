@@ -1,7 +1,7 @@
 From: Davidlohr Bueso <davidlohr@hp.com>
-Subject: [PATCH 1/2] locking/rwsem: Add CONFIG_RWSEM_SPIN_ON_OWNER
-Date: Fri,  6 Jun 2014 08:55:39 -0700
-Message-ID: <1402070140-15090-2-git-send-email-davidlohr@hp.com>
+Subject: [PATCH 2/2] locking/rwsem: Disable optimistic spinning for PA-RISC
+Date: Fri,  6 Jun 2014 08:55:40 -0700
+Message-ID: <1402070140-15090-3-git-send-email-davidlohr@hp.com>
 References: <1402070140-15090-1-git-send-email-davidlohr@hp.com>
 Cc: mpatocka@redhat.com, torvalds@linux-foundation.org,
 	jason.low2@hp.com, waiman.long@hp.com, jejb@parisc-linux.org,
@@ -14,67 +14,30 @@ In-Reply-To: <1402070140-15090-1-git-send-email-davidlohr@hp.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Just like with mutexes (CONFIG_MUTEX_SPIN_ON_OWNER),
-encapsulate the dependencies for rwsem optimistic spinning.
-No logical changes here as it continues to depend on both
-SMP and the XADD algorithm variant.
+PA-RISC's cmpxchg is not save against normal stores and the code used
+for optimistic spinning is known broken because of this.
 
+Disable for now.
+
+[Changelog from PeterZ]
+Reported-by: Mikulas Patocka <mpatocka@redhat.com>
 Signed-off-by: Davidlohr Bueso <davidlohr@hp.com>
 ---
- include/linux/rwsem.h  | 4 ++--
- kernel/Kconfig.locks   | 4 ++++
- kernel/locking/rwsem.c | 2 +-
- 3 files changed, 7 insertions(+), 3 deletions(-)
+ kernel/Kconfig.locks | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
-index 8d79708..accdef7 100644
---- a/include/linux/rwsem.h
-+++ b/include/linux/rwsem.h
-@@ -27,7 +27,7 @@ struct rw_semaphore {
- 	long count;
- 	raw_spinlock_t wait_lock;
- 	struct list_head wait_list;
--#ifdef CONFIG_SMP
-+#ifdef CONFIG_RWSEM_SPIN_ON_OWNER
- 	/*
- 	 * Write owner. Used as a speculative check to see
- 	 * if the owner is running on the cpu.
-@@ -64,7 +64,7 @@ static inline int rwsem_is_locked(struct rw_semaphore *sem)
- # define __RWSEM_DEP_MAP_INIT(lockname)
- #endif
- 
--#if defined(CONFIG_SMP) && !defined(CONFIG_RWSEM_GENERIC_SPINLOCK)
-+#ifdef CONFIG_RWSEM_SPIN_ON_OWNER
- #define __RWSEM_INITIALIZER(name)			\
- 	{ RWSEM_UNLOCKED_VALUE,				\
- 	  __RAW_SPIN_LOCK_UNLOCKED(name.wait_lock),	\
 diff --git a/kernel/Kconfig.locks b/kernel/Kconfig.locks
-index 35536d9..e4c3162 100644
+index e4c3162..125c77a 100644
 --- a/kernel/Kconfig.locks
 +++ b/kernel/Kconfig.locks
-@@ -224,6 +224,10 @@ config MUTEX_SPIN_ON_OWNER
- 	def_bool y
- 	depends on SMP && !DEBUG_MUTEXES
+@@ -226,7 +226,7 @@ config MUTEX_SPIN_ON_OWNER
  
-+config RWSEM_SPIN_ON_OWNER
-+       def_bool y
-+       depends on SMP && RWSEM_XCHGADD_ALGORITHM
-+
+ config RWSEM_SPIN_ON_OWNER
+        def_bool y
+-       depends on SMP && RWSEM_XCHGADD_ALGORITHM
++       depends on SMP && RWSEM_XCHGADD_ALGORITHM && !PARISC
+ 
  config ARCH_USE_QUEUE_RWLOCK
  	bool
- 
-diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index 42f806d..e2d3bc7 100644
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -12,7 +12,7 @@
- 
- #include <linux/atomic.h>
- 
--#if defined(CONFIG_SMP) && defined(CONFIG_RWSEM_XCHGADD_ALGORITHM)
-+#ifdef CONFIG_RWSEM_SPIN_ON_OWNER
- static inline void rwsem_set_owner(struct rw_semaphore *sem)
- {
- 	sem->owner = current;
 -- 
 1.8.1.4
