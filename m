@@ -1,131 +1,97 @@
-From: Davidlohr Bueso <davidlohr@hp.com>
-Subject: Re: [PATCH 1/2] locking/rwsem: Add CONFIG_RWSEM_SPIN_ON_OWNER
-Date: Fri, 06 Jun 2014 12:20:41 -0700
-Message-ID: <1402082441.14433.12.camel@buesod1.americas.hpqcorp.net>
-References: <1402070140-15090-1-git-send-email-davidlohr@hp.com>
-	 <1402070140-15090-2-git-send-email-davidlohr@hp.com>
-	 <1402074788.6680.50.camel@j-VirtualBox>
-	 <1402078358.14433.3.camel@buesod1.americas.hpqcorp.net>
-	 <1402080497.14433.8.camel@buesod1.americas.hpqcorp.net>
-	 <1402081726.6680.61.camel@j-VirtualBox>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: peterz@infradead.org, mingo@kernel.org, mpatocka@redhat.com,
-	torvalds@linux-foundation.org, waiman.long@hp.com,
-	jejb@parisc-linux.org, paulmck@linux.vnet.ibm.com,
-	dave.anglin@bell.net, aswin@hp.com, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org
-To: Jason Low <jason.low2@hp.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1402081726.6680.61.camel@j-VirtualBox>
+From: Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH 3.12 111/146] metag: Reduce maximum stack size to 256MB
+Date: Mon,  9 Jun 2014 10:50:46 +0200
+Message-ID: <c4ecb4801dcfb0666b4ada6c6dfb10c8ba03a45a.1402303821.git.jslaby@suse.cz>
+References: <ebe219e45dcf94c1a34281167427cff4d742faef.1402303820.git.jslaby@suse.cz>
+Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>,
+	Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, linux-metag@vger.kernel.org,
+	John David Anglin <dave.anglin@bell.net>,
+	Jiri Slaby <jslaby@suse.cz>
+To: stable@vger.kernel.org
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <ebe219e45dcf94c1a34281167427cff4d742faef.1402303820.git.jslaby@suse.cz>
+In-Reply-To: <cover.1402303820.git.jslaby@suse.cz>
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2014-06-06 at 12:08 -0700, Jason Low wrote:
-> And should we also change that in the optimistic spinning functions so
-> that it defaults to:
-> 
-> 	static bool rwsem_optimistic_spin(struct rw_semaphore *sem)
-> 	{
->         	return false;
-> 	}
+From: James Hogan <james.hogan@imgtec.com>
 
-Oops Yep, afaict the last offending user.
+3.12-stable review patch.  If anyone has any objections, please let me know.
 
-8<----------------------------------
-From: Davidlohr Bueso <davidlohr@hp.com>
-Date: Fri, 6 Jun 2014 12:15:03 -0700
-Subject: [PATCH v3 1/2] locking/rwsem: Add CONFIG_RWSEM_SPIN_ON_OWNER
+===============
 
-Just like with mutexes (CONFIG_MUTEX_SPIN_ON_OWNER),
-encapsulate the dependencies for rwsem optimistic spinning.
-No logical changes here as it continues to depend on both
-SMP and the XADD algorithm variant.
+commit d71f290b4e98a39f49f2595a13be3b4d5ce8e1f1 upstream.
 
-Acked-by: Jason Low <jason.low2@hp.com>
-Signed-off-by: Davidlohr Bueso <davidlohr@hp.com>
+Specify the maximum stack size for arches where the stack grows upward
+(parisc and metag) in asm/processor.h rather than hard coding in
+fs/exec.c so that metag can specify a smaller value of 256MB rather than
+1GB.
+
+This fixes a BUG on metag if the RLIMIT_STACK hard limit is increased
+beyond a safe value by root. E.g. when starting a process after running
+"ulimit -H -s unlimited" it will then attempt to use a stack size of the
+maximum 1GB which is far too big for metag's limited user virtual
+address space (stack_top is usually 0x3ffff000):
+
+BUG: failure at fs/exec.c:589/shift_arg_pages()!
+
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: linux-parisc@vger.kernel.org
+Cc: linux-metag@vger.kernel.org
+Cc: John David Anglin <dave.anglin@bell.net>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- include/linux/rwsem.h       | 4 ++--
- kernel/Kconfig.locks        | 4 ++++
- kernel/locking/rwsem-xadd.c | 4 ++--
- kernel/locking/rwsem.c      | 2 +-
- 4 files changed, 9 insertions(+), 5 deletions(-)
+ arch/metag/include/asm/processor.h  | 2 ++
+ arch/parisc/include/asm/processor.h | 2 ++
+ fs/exec.c                           | 6 +++---
+ 3 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
-index 8d79708..accdef7 100644
---- a/include/linux/rwsem.h
-+++ b/include/linux/rwsem.h
-@@ -27,7 +27,7 @@ struct rw_semaphore {
- 	long count;
- 	raw_spinlock_t wait_lock;
- 	struct list_head wait_list;
--#ifdef CONFIG_SMP
-+#ifdef CONFIG_RWSEM_SPIN_ON_OWNER
- 	/*
- 	 * Write owner. Used as a speculative check to see
- 	 * if the owner is running on the cpu.
-@@ -64,7 +64,7 @@ static inline int rwsem_is_locked(struct rw_semaphore *sem)
- # define __RWSEM_DEP_MAP_INIT(lockname)
- #endif
+diff --git a/arch/metag/include/asm/processor.h b/arch/metag/include/asm/processor.h
+index f16477d1f571..3be8581af495 100644
+--- a/arch/metag/include/asm/processor.h
++++ b/arch/metag/include/asm/processor.h
+@@ -22,6 +22,8 @@
+ /* Add an extra page of padding at the top of the stack for the guard page. */
+ #define STACK_TOP	(TASK_SIZE - PAGE_SIZE)
+ #define STACK_TOP_MAX	STACK_TOP
++/* Maximum virtual space for stack */
++#define STACK_SIZE_MAX	(1 << 28)	/* 256 MB */
  
--#if defined(CONFIG_SMP) && !defined(CONFIG_RWSEM_GENERIC_SPINLOCK)
-+#ifdef CONFIG_RWSEM_SPIN_ON_OWNER
- #define __RWSEM_INITIALIZER(name)			\
- 	{ RWSEM_UNLOCKED_VALUE,				\
- 	  __RAW_SPIN_LOCK_UNLOCKED(name.wait_lock),	\
-diff --git a/kernel/Kconfig.locks b/kernel/Kconfig.locks
-index 35536d9..e4c3162 100644
---- a/kernel/Kconfig.locks
-+++ b/kernel/Kconfig.locks
-@@ -224,6 +224,10 @@ config MUTEX_SPIN_ON_OWNER
- 	def_bool y
- 	depends on SMP && !DEBUG_MUTEXES
+ /* This decides where the kernel will search for a free chunk of vm
+  * space during mmap's.
+diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
+index cc2290a3cace..c6ee86542fec 100644
+--- a/arch/parisc/include/asm/processor.h
++++ b/arch/parisc/include/asm/processor.h
+@@ -53,6 +53,8 @@
+ #define STACK_TOP	TASK_SIZE
+ #define STACK_TOP_MAX	DEFAULT_TASK_SIZE
  
-+config RWSEM_SPIN_ON_OWNER
-+       def_bool y
-+       depends on SMP && RWSEM_XCHGADD_ALGORITHM
++#define STACK_SIZE_MAX	(1 << 30)	/* 1 GB */
 +
- config ARCH_USE_QUEUE_RWLOCK
- 	bool
- 
-diff --git a/kernel/locking/rwsem-xadd.c b/kernel/locking/rwsem-xadd.c
-index dacc321..abe6e06 100644
---- a/kernel/locking/rwsem-xadd.c
-+++ b/kernel/locking/rwsem-xadd.c
-@@ -82,7 +82,7 @@ void __init_rwsem(struct rw_semaphore *sem, const char *name,
- 	sem->count = RWSEM_UNLOCKED_VALUE;
- 	raw_spin_lock_init(&sem->wait_lock);
- 	INIT_LIST_HEAD(&sem->wait_list);
--#ifdef CONFIG_SMP
-+#ifdef CONFIG_RWSEM_SPIN_ON_OWNER
- 	sem->owner = NULL;
- 	sem->osq = NULL;
  #endif
-@@ -262,7 +262,7 @@ static inline bool rwsem_try_write_lock(long count, struct rw_semaphore *sem)
- 	return false;
- }
  
--#ifdef CONFIG_SMP
-+#ifdef CONFIG_RWSEM_SPIN_ON_OWNER
- /*
-  * Try to acquire write lock before the writer has been put on wait queue.
-  */
-diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index 42f806d..e2d3bc7 100644
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -12,7 +12,7 @@
+ #ifndef __ASSEMBLY__
+diff --git a/fs/exec.c b/fs/exec.c
+index bb8afc1d1df4..95eef54de2b6 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -657,10 +657,10 @@ int setup_arg_pages(struct linux_binprm *bprm,
+ 	unsigned long rlim_stack;
  
- #include <linux/atomic.h>
+ #ifdef CONFIG_STACK_GROWSUP
+-	/* Limit stack size to 1GB */
++	/* Limit stack size */
+ 	stack_base = rlimit_max(RLIMIT_STACK);
+-	if (stack_base > (1 << 30))
+-		stack_base = 1 << 30;
++	if (stack_base > STACK_SIZE_MAX)
++		stack_base = STACK_SIZE_MAX;
  
--#if defined(CONFIG_SMP) && defined(CONFIG_RWSEM_XCHGADD_ALGORITHM)
-+#ifdef CONFIG_RWSEM_SPIN_ON_OWNER
- static inline void rwsem_set_owner(struct rw_semaphore *sem)
- {
- 	sem->owner = current;
+ 	/* Make sure we didn't let the argument array grow too large. */
+ 	if (vma->vm_end - vma->vm_start > stack_base)
 -- 
-1.8.1.4
-
-
-
-
+1.9.3
