@@ -1,44 +1,24 @@
-From: Kamal Mostafa <kamal-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-Subject: [3.13.y.z extended stable] Patch "metag: Reduce maximum stack size to 256MB" has been added to staging queue
-Date: Tue, 17 Jun 2014 14:42:21 -0700
-Message-ID: <1403041341-9524-1-git-send-email-kamal@canonical.com>
-Cc: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>,
-	"James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
-	linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-metag-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	John David Anglin <dave.anglin-CzeTG9NwML0@public.gmane.org>,
-	Kamal Mostafa <kamal-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>,
-	kernel-team-nLRlyDuq1AZFpShjVBNYrg@public.gmane.org
-To: James Hogan <james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Return-path: <linux-metag-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-List-ID: <linux-metag.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Kamal Mostafa <kamal@canonical.com>
+Subject: [PATCH 3.13 122/212] metag: Reduce maximum stack size to 256MB
+Date: Tue, 17 Jun 2014 14:43:36 -0700
+Message-ID: <1403041506-13646-123-git-send-email-kamal@canonical.com>
+References: <1403041506-13646-1-git-send-email-kamal@canonical.com>
+Cc: James Hogan <james.hogan@imgtec.com>, Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, linux-metag@vger.kernel.org,
+	John David Anglin <dave.anglin@bell.net>,
+	Kamal Mostafa <kamal@canonical.com>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	kernel-team@lists.ubuntu.com
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1403041506-13646-1-git-send-email-kamal@canonical.com>
+List-ID: <linux-parisc.vger.kernel.org>
 
-This is a note to let you know that I have just added a patch titled
+3.13.11.4 -stable review patch.  If anyone has any objections, please let me know.
 
-    metag: Reduce maximum stack size to 256MB
+------------------
 
-to the linux-3.13.y-queue branch of the 3.13.y.z extended stable tree 
-which can be found at:
-
- http://kernel.ubuntu.com/git?p=ubuntu/linux.git;a=shortlog;h=refs/heads/linux-3.13.y-queue
-
-This patch is scheduled to be released in version 3.13.11.4.
-
-If you, or anyone else, feels it should not be added to this tree, please 
-reply to this email.
-
-For more information about the 3.13.y.z tree, see
-https://wiki.ubuntu.com/Kernel/Dev/ExtendedStable
-
-Thanks.
--Kamal
-
-------
-
->From 8dd77187cf712fc849df3725f3676dbe61c4a4ff Mon Sep 17 00:00:00 2001
-From: James Hogan <james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Date: Tue, 13 May 2014 23:58:24 +0100
-Subject: metag: Reduce maximum stack size to 256MB
+From: James Hogan <james.hogan@imgtec.com>
 
 commit d71f290b4e98a39f49f2595a13be3b4d5ce8e1f1 upstream.
 
@@ -55,13 +35,13 @@ address space (stack_top is usually 0x3ffff000):
 
 BUG: failure at fs/exec.c:589/shift_arg_pages()!
 
-Signed-off-by: James Hogan <james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Cc: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
-Cc: "James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>
-Cc: linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: linux-metag-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: John David Anglin <dave.anglin-CzeTG9NwML0@public.gmane.org>
-Signed-off-by: Kamal Mostafa <kamal-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: linux-parisc@vger.kernel.org
+Cc: linux-metag@vger.kernel.org
+Cc: John David Anglin <dave.anglin@bell.net>
+Signed-off-by: Kamal Mostafa <kamal@canonical.com>
 ---
  arch/metag/include/asm/processor.h  | 2 ++
  arch/parisc/include/asm/processor.h | 2 ++
@@ -78,7 +58,7 @@ index f16477d..3be8581 100644
  #define STACK_TOP_MAX	STACK_TOP
 +/* Maximum virtual space for stack */
 +#define STACK_SIZE_MAX	(1 << 28)	/* 256 MB */
-
+ 
  /* This decides where the kernel will search for a free chunk of vm
   * space during mmap's.
 diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
@@ -88,11 +68,11 @@ index cc2290a..c6ee865 100644
 @@ -53,6 +53,8 @@
  #define STACK_TOP	TASK_SIZE
  #define STACK_TOP_MAX	DEFAULT_TASK_SIZE
-
+ 
 +#define STACK_SIZE_MAX	(1 << 30)	/* 1 GB */
 +
  #endif
-
+ 
  #ifndef __ASSEMBLY__
 diff --git a/fs/exec.c b/fs/exec.c
 index 7ea097f..5743b8f 100644
@@ -100,7 +80,7 @@ index 7ea097f..5743b8f 100644
 +++ b/fs/exec.c
 @@ -655,10 +655,10 @@ int setup_arg_pages(struct linux_binprm *bprm,
  	unsigned long rlim_stack;
-
+ 
  #ifdef CONFIG_STACK_GROWSUP
 -	/* Limit stack size to 1GB */
 +	/* Limit stack size */
@@ -109,13 +89,8 @@ index 7ea097f..5743b8f 100644
 -		stack_base = 1 << 30;
 +	if (stack_base > STACK_SIZE_MAX)
 +		stack_base = STACK_SIZE_MAX;
-
+ 
  	/* Make sure we didn't let the argument array grow too large. */
  	if (vma->vm_end - vma->vm_start > stack_base)
---
+-- 
 1.9.1
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-metag" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
