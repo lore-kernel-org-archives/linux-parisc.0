@@ -1,31 +1,28 @@
-From: Jeff Liu <jeff.liu@oracle.com>
-Subject: Re: [PATCH 12/24] drivers/parisc: return actual error on pdc_stable_init
-Date: Wed, 18 Jun 2014 09:46:12 +0800
-Message-ID: <53A0EF64.2090400@oracle.com>
-References: <53A05121.1040100@oracle.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: add C8000/1GHz serial ports to hardware database
+Date: Sat, 28 Jun 2014 17:44:51 +0200
+Message-ID: <20140628154451.GA3536@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-To: JBottomley@parallels.com, deller@gmx.de
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <53A05121.1040100@oracle.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi,
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-On 06/17/2014 22:30 PM, Jeff Liu wrote:
-> From: Jie Liu <jeff.liu@oracle.com>
-> 
-> Return the actual error code than ENOMEM if call kset_create_and_add()
-> failed at pdc_stable_init().
-> 
-> Cc: James E.J. Bottomley <jejb@parisc-linux.org>
-> Cc: Helge Deller <deller@gmx.de>
-> Signed-off-by: Jie Liu <jeff.liu@oracle.com>
->
-
-Please ignore this patch because Greg think that is incorrect.
-
-Cheers,
--Jeff
+diff --git a/arch/parisc/kernel/hardware.c b/arch/parisc/kernel/hardware.c
+index 608716f..a976a77 100644
+--- a/arch/parisc/kernel/hardware.c
++++ b/arch/parisc/kernel/hardware.c
+@@ -1210,7 +1210,8 @@ static struct hp_hardware hp_hardware_list[] = {
+ 	{HPHW_FIO, 0x004, 0x00320, 0x0, "Metheus Frame Buffer"}, 
+ 	{HPHW_FIO, 0x004, 0x00340, 0x0, "BARCO CX4500 VME Grphx Cnsl"}, 
+ 	{HPHW_FIO, 0x004, 0x00360, 0x0, "Hughes TOG VME FDDI"}, 
+-	{HPHW_FIO, 0x076, 0x000AD, 0x00, "Crestone Peak RS-232"},
++	{HPHW_FIO, 0x076, 0x000AD, 0x0, "Crestone Peak Core RS-232"},
++	{HPHW_FIO, 0x077, 0x000AD, 0x0, "Crestone Peak Fast? Core RS-232"},
+ 	{HPHW_IOA, 0x185, 0x0000B, 0x00, "Java BC Summit Port"}, 
+ 	{HPHW_IOA, 0x1FF, 0x0000B, 0x00, "Hitachi Ghostview Summit Port"}, 
+ 	{HPHW_IOA, 0x580, 0x0000B, 0x10, "U2-IOA BC Runway Port"}, 
