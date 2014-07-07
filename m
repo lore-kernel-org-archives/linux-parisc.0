@@ -1,57 +1,36 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] fix fanotify_mark() breakage on big endian 32bit kernel
-Date: Sun, 6 Jul 2014 11:08:41 -0400
-Message-ID: <BLU436-SMTP16549AF626A4BCCDD6D82097020@phx.gbl>
-References: <20140704151235.GA22454@ls3530.dhcp.wdf.sap.corp> <20140706091530.GA3589@osiris>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Helge Deller <deller@gmx.de>, Eric Paris <eparis@redhat.com>,
-	Linux Kernel <linux-kernel@vger.kernel.org>,
-	Heinrich Schuchardt <xypron.glpk@gmx.de>,
-	linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Heiko Carstens <heiko.carstens@de.ibm.com>
+From: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>
+Subject: Re: [PATCH] parisc: Remove sizeof(frame) from call to get_sigframe
+Date: Mon, 7 Jul 2014 13:55:54 +0100
+Message-ID: <20140707135554.1c52342c@alan.etchedpixels.co.uk>
+References: <1404530457-4739-1-git-send-email-xerofoify@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Cc: jejb@parisc-linux.org, deller@gmx.de, tiwai@suse.de,
+	jkosina@suse.cz, dave.anglin@bell.net, joe@perches.com,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Nicholas Krause <xerofoify@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20140706091530.GA3589@osiris>
+In-Reply-To: <1404530457-4739-1-git-send-email-xerofoify@gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 6-Jul-14, at 5:15 AM, Heiko Carstens wrote:
+On Fri,  4 Jul 2014 23:20:57 -0400
+Nicholas Krause <xerofoify@gmail.com> wrote:
 
->> But for the CONFIG_COMPAT=n case (32bit kernel & userspace),
->> compat_fanotify_mark() isn't used and the fanotify_mark syscall  
->> implementation
->> is used directly. In that case the upper and lower 32 bits of the  
->> 64bit mask
->> parameter is still swapped on big endian machines and thus leads to
->> fanotify_mark failing with -EINVAL.
->
-> Why do you think upper and lower 32 bits are swapped on big endian  
-> machines?
-> At least an s390 the C ABI defines that 64 bit values are split into  
-> an
-> even odd register pair, where the most significant bits are in the  
-> even numbered
-> register.
+> This removes the sizeof(frame) from the call to get_sigframe on line
+> 243 in order to fix the call to this function as the sizeof in not
+> needed to call this function.
 
+If you are going to submit patches then
 
-On hppa, there is no specific rule as to which registers are used to  
-hold 64-bit integer values
-on 32-bit machines except for the first two call arguments which are  
-passed in registers.
-For example, r25 and r26 contain the first argument and the most  
-significant bits are in r25
-and the least significant bits in r26..
+- actually read what you are submitting
 
-In GCC, we typically have an odd even register pair to hold 64-bit  
-values as register
-r0 is not usable.
+- check it actually compiles
 
-The rules are different for float values.
+- run it on the system in question and verify your changed code paths are
+  used
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
+*then* consider submitting it, otherwise all you are doing is wasting
+people's time.
 
-
-
+Alan
