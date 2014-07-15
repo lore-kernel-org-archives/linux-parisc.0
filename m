@@ -1,43 +1,119 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc updates for v3.16
-Date: Sun, 13 Jul 2014 16:22:41 +0200
-Message-ID: <20140713142241.GA4249@p100.box>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 3.14 08/66] parisc,metag: Do not hardcode maximum userspace stack size
+Date: Tue, 15 Jul 2014 16:17:02 -0700
+Message-ID: <20140715231702.440835453@linuxfoundation.org>
+References: <20140715231702.156040999@linuxfoundation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
+Content-Type: text/plain; charset=UTF-8
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
+	James Hogan <james.hogan@imgtec.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, linux-metag@vger.kernel.org,
 	John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+To: linux-kernel@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140715231702.156040999@linuxfoundation.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+3.14-stable review patch.  If anyone has any objections, please let me know.
 
-please pull the latest parisc architecture fixes for kernel 3.16 from 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.16-5
+------------------
 
-The major patch in here is one which fixes the fanotify_mark() syscall in the
-compat layer of the 64bit parisc kernel. It went unnoticed so long, because the
-calling syntax when using a 64bit parameter in a 32bit syscall is quite complex
-and even worse, it may be even different if you call syscall() or the glibc
-wrapper. This patch makes the kernel accept the calling convention when called
-by the glibc wrapper.
+From: Helge Deller <deller@gmx.de>
 
-The other two patches are trivial and remove unused headers, #includes and adds
-the serial ports of the fastest C8000 workstation to the parisc-kernel internal
-hardware database.
+commit 042d27acb64924a0e8a43e972485913a32407beb upstream.
 
-Thanks,
-Helge
+This patch affects only architectures where the stack grows upwards
+(currently parisc and metag only). On those do not hardcode the maximum
+initial stack size to 1GB for 32-bit processes, but make it configurable
+via a config option.
 
-----------------------------------------------------------------
-Helge Deller (3):
-      parisc: add serial ports of C8000/1GHz machine to hardware database
-      parisc: fix fanotify_mark() syscall on 32bit compat kernel
-      parisc: drop unused defines and header includes
+The main problem with the hardcoded stack size is, that we have two
+memory regions which grow upwards: stack and heap. To keep most of the
+memory available for heap in a flexmap memory layout, it makes no sense
+to hard allocate up to 1GB of the memory for stack which can't be used
+as heap then.
 
- arch/parisc/kernel/hardware.c      |  3 ++-
- arch/parisc/kernel/sys_parisc32.c  | 46 +++++++++-----------------------------
- arch/parisc/kernel/syscall_table.S |  2 +-
- 3 files changed, 13 insertions(+), 38 deletions(-)
+This patch makes the stack size for 32-bit processes configurable and
+uses 80MB as default value which has been in use during the last few
+years on parisc and which hasn't showed any problems yet.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: linux-parisc@vger.kernel.org
+Cc: linux-metag@vger.kernel.org
+Cc: John David Anglin <dave.anglin@bell.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ arch/metag/include/asm/processor.h  |    2 +-
+ arch/parisc/include/asm/processor.h |    5 ++++-
+ arch/parisc/kernel/sys_parisc.c     |    6 +++---
+ mm/Kconfig                          |   15 +++++++++++++++
+ 4 files changed, 23 insertions(+), 5 deletions(-)
+
+--- a/arch/metag/include/asm/processor.h
++++ b/arch/metag/include/asm/processor.h
+@@ -23,7 +23,7 @@
+ #define STACK_TOP	(TASK_SIZE - PAGE_SIZE)
+ #define STACK_TOP_MAX	STACK_TOP
+ /* Maximum virtual space for stack */
+-#define STACK_SIZE_MAX	(1 << 28)	/* 256 MB */
++#define STACK_SIZE_MAX	(CONFIG_MAX_STACK_SIZE_MB*1024*1024)
+ 
+ /* This decides where the kernel will search for a free chunk of vm
+  * space during mmap's.
+--- a/arch/parisc/include/asm/processor.h
++++ b/arch/parisc/include/asm/processor.h
+@@ -55,7 +55,10 @@
+ #define STACK_TOP	TASK_SIZE
+ #define STACK_TOP_MAX	DEFAULT_TASK_SIZE
+ 
+-#define STACK_SIZE_MAX	(1 << 30)	/* 1 GB */
++/* Allow bigger stacks for 64-bit processes */
++#define STACK_SIZE_MAX	(USER_WIDE_MODE					\
++			 ? (1 << 30)	/* 1 GB */			\
++			 : (CONFIG_MAX_STACK_SIZE_MB*1024*1024))
+ 
+ #endif
+ 
+--- a/arch/parisc/kernel/sys_parisc.c
++++ b/arch/parisc/kernel/sys_parisc.c
+@@ -72,10 +72,10 @@ static unsigned long mmap_upper_limit(vo
+ {
+ 	unsigned long stack_base;
+ 
+-	/* Limit stack size to 1GB - see setup_arg_pages() in fs/exec.c */
++	/* Limit stack size - see setup_arg_pages() in fs/exec.c */
+ 	stack_base = rlimit_max(RLIMIT_STACK);
+-	if (stack_base > (1 << 30))
+-		stack_base = 1 << 30;
++	if (stack_base > STACK_SIZE_MAX)
++		stack_base = STACK_SIZE_MAX;
+ 
+ 	return PAGE_ALIGN(STACK_TOP - stack_base);
+ }
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -580,3 +580,18 @@ config PGTABLE_MAPPING
+ 
+ 	  You can check speed with zsmalloc benchmark:
+ 	  https://github.com/spartacus06/zsmapbench
++
++config MAX_STACK_SIZE_MB
++	int "Maximum user stack size for 32-bit processes (MB)"
++	default 80
++	range 8 256 if METAG
++	range 8 2048
++	depends on STACK_GROWSUP && (!64BIT || COMPAT)
++	help
++	  This is the maximum stack size in Megabytes in the VM layout of 32-bit
++	  user processes when the stack grows upwards (currently only on parisc
++	  and metag arch). The stack will be located at the highest memory
++	  address minus the given value, unless the RLIMIT_STACK hard limit is
++	  changed to a smaller value in which case that is used.
++
++	  A sane initial value is 80 MB.
