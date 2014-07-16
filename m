@@ -1,119 +1,56 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 3.14 08/66] parisc,metag: Do not hardcode maximum userspace stack size
-Date: Tue, 15 Jul 2014 16:17:02 -0700
-Message-ID: <20140715231702.440835453@linuxfoundation.org>
-References: <20140715231702.156040999@linuxfoundation.org>
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: Implementing 64bit atomic gcc built-ins
+Date: Wed, 16 Jul 2014 14:40:53 +0200
+Message-ID: <e85c925befea4de68fe6f0d292300eee@tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
-	James Hogan <james.hogan@imgtec.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc@vger.kernel.org, linux-metag@vger.kernel.org,
-	John David Anglin <dave.anglin@bell.net>
-To: linux-kernel@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140715231702.156040999@linuxfoundation.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-3.14-stable review patch.  If anyone has any objections, please let me know.
+Hi all,
 
-------------------
 
-From: Helge Deller <deller@gmx.de>
+It seems that gcc on hppa currently doesn't support 64 bit atomic 
+built-ins such as __sync_compare_and_swap().
 
-commit 042d27acb64924a0e8a43e972485913a32407beb upstream.
+Looking at the current implementation, glibc calls the LWS CAS in the 
+kernel to do the compare and swap operation in an atomic way.
+The current implementation of lws_compare_and_swap64 works only with 64 
+bit kernel.
 
-This patch affects only architectures where the stack grows upwards
-(currently parisc and metag only). On those do not hardcode the maximum
-initial stack size to 1GB for 32-bit processes, but make it configurable
-via a config option.
+In the case of a 32 bit kernel, I'm not sure if it's possible to 
+implement an atomic CAS that would work on two registers at once. If 
+it's possible, most probably a lws_compare_and_swap_dword or so LWS 
+should be created as I can't see the current ABI working in this 
+scenario. As far as I understand the code in syscall.S, it would just be 
+a matter of adding a ldw/stw instruction pair in cas_action to have 
+64bit operations (on top of changing the ABI).
 
-The main problem with the hardcoded stack size is, that we have two
-memory regions which grow upwards: stack and heap. To keep most of the
-memory available for heap in a flexmap memory layout, it makes no sense
-to hard allocate up to 1GB of the memory for stack which can't be used
-as heap then.
+If we are running a 64bit kernel, I guess it might be possible to call 
+lws_compare_and_swap64 from userspace, but it means that we would have 
+to switch to wide mode in userspace prior to perform the call.
+Again, I'm not sure that this is doable as it seems that to do so, the 
+RSM instruction needs to be used while it's a privileged level 
+instruction.
+Another option is to create lws_compare_and_swap_dword with a different 
+ABI that would take 64bit integers stored in two '32bit' registers, 
+merge the registers into a single one and call lws_compare_ans_swap64.
 
-This patch makes the stack size for 32-bit processes configurable and
-uses 80MB as default value which has been in use during the last few
-years on parisc and which hasn't showed any problems yet.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-metag@vger.kernel.org
-Cc: John David Anglin <dave.anglin@bell.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- arch/metag/include/asm/processor.h  |    2 +-
- arch/parisc/include/asm/processor.h |    5 ++++-
- arch/parisc/kernel/sys_parisc.c     |    6 +++---
- mm/Kconfig                          |   15 +++++++++++++++
- 4 files changed, 23 insertions(+), 5 deletions(-)
+For me, the best course of action here is to create 
+lws_compare_and_swap_dword. Provided we can perform the CAS operation on 
+two registers at once, it would solve the problem for 32bit userspace 
+CAS to either kernel word size.
 
---- a/arch/metag/include/asm/processor.h
-+++ b/arch/metag/include/asm/processor.h
-@@ -23,7 +23,7 @@
- #define STACK_TOP	(TASK_SIZE - PAGE_SIZE)
- #define STACK_TOP_MAX	STACK_TOP
- /* Maximum virtual space for stack */
--#define STACK_SIZE_MAX	(1 << 28)	/* 256 MB */
-+#define STACK_SIZE_MAX	(CONFIG_MAX_STACK_SIZE_MB*1024*1024)
- 
- /* This decides where the kernel will search for a free chunk of vm
-  * space during mmap's.
---- a/arch/parisc/include/asm/processor.h
-+++ b/arch/parisc/include/asm/processor.h
-@@ -55,7 +55,10 @@
- #define STACK_TOP	TASK_SIZE
- #define STACK_TOP_MAX	DEFAULT_TASK_SIZE
- 
--#define STACK_SIZE_MAX	(1 << 30)	/* 1 GB */
-+/* Allow bigger stacks for 64-bit processes */
-+#define STACK_SIZE_MAX	(USER_WIDE_MODE					\
-+			 ? (1 << 30)	/* 1 GB */			\
-+			 : (CONFIG_MAX_STACK_SIZE_MB*1024*1024))
- 
- #endif
- 
---- a/arch/parisc/kernel/sys_parisc.c
-+++ b/arch/parisc/kernel/sys_parisc.c
-@@ -72,10 +72,10 @@ static unsigned long mmap_upper_limit(vo
- {
- 	unsigned long stack_base;
- 
--	/* Limit stack size to 1GB - see setup_arg_pages() in fs/exec.c */
-+	/* Limit stack size - see setup_arg_pages() in fs/exec.c */
- 	stack_base = rlimit_max(RLIMIT_STACK);
--	if (stack_base > (1 << 30))
--		stack_base = 1 << 30;
-+	if (stack_base > STACK_SIZE_MAX)
-+		stack_base = STACK_SIZE_MAX;
- 
- 	return PAGE_ALIGN(STACK_TOP - stack_base);
- }
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -580,3 +580,18 @@ config PGTABLE_MAPPING
- 
- 	  You can check speed with zsmalloc benchmark:
- 	  https://github.com/spartacus06/zsmapbench
-+
-+config MAX_STACK_SIZE_MB
-+	int "Maximum user stack size for 32-bit processes (MB)"
-+	default 80
-+	range 8 256 if METAG
-+	range 8 2048
-+	depends on STACK_GROWSUP && (!64BIT || COMPAT)
-+	help
-+	  This is the maximum stack size in Megabytes in the VM layout of 32-bit
-+	  user processes when the stack grows upwards (currently only on parisc
-+	  and metag arch). The stack will be located at the highest memory
-+	  address minus the given value, unless the RLIMIT_STACK hard limit is
-+	  changed to a smaller value in which case that is used.
-+
-+	  A sane initial value is 80 MB.
+Would this approach work or is it a dead end ?
+
+Any comments/advices ?
+
+
+Thanks,
+   Guy
+
