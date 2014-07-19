@@ -1,39 +1,45 @@
 From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [RFC PATCH] 64bit LWS CAS
-Date: Fri, 18 Jul 2014 18:12:30 -0400
-Message-ID: <BLU436-SMTP1308F81AF14D15C0659D6D997F50@phx.gbl>
-References: <20140717220000.555b2bec@dellete.lux.tuxicoman.be> <BLU436-SMTP218A41974C191160FBF5D1097F50@phx.gbl> <CAE2sS1hGVBucXU+34APoWWLRVpmP9RDA0GOOUMiGSKXGhioYsA@mail.gmail.com>
+Subject: Re: Implementing 64bit atomic gcc built-ins
+Date: Fri, 18 Jul 2014 20:30:35 -0400
+Message-ID: <BLU436-SMTP1543CF527E5DA5476D4B7A997F20@phx.gbl>
+References: <e85c925befea4de68fe6f0d292300eee@tuxicoman.be> <1405545383.3165.34.camel@dabdike.int.hansenpartnership.com> <CAE2sS1i8ncnP135uKo1w6+S_JHV6T6_7mR9Pj-jzt9Wk-s_JQw@mail.gmail.com> <f6a350becc52f31a47a279ea1c557c54@tuxicoman.be>
 Mime-Version: 1.0 (Apple Message framework v936)
 Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
-Cc: Guy Martin <gmsoft@tuxicoman.be>,
+Cc: Carlos O'Donell <carlos@systemhalted.org>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
 	linux-parisc <linux-parisc@vger.kernel.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAE2sS1hGVBucXU+34APoWWLRVpmP9RDA0GOOUMiGSKXGhioYsA@mail.gmail.com>
+In-Reply-To: <f6a350becc52f31a47a279ea1c557c54@tuxicoman.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 18-Jul-14, at 5:55 PM, Carlos O'Donell wrote:
+On 17-Jul-14, at 4:44 AM, Guy Martin wrote:
 
->> This discussion has got me thinking that the char and short  
->> implementations
->> may be broken (i.e,
->> the CAS operation may clobber data adjacent to location being  
->> operated on).
->> I'm thinking we need
->> separate LWS calls for them.  Thoughts?
+> Reviewing HPPA 1.1 specs, I see that the FPU has 64bit registers.
+> Can't we use those registers to perform 64bit atomic load and store ?
 >
-> Yes, you need masking or short load variants. How did you test the
-> char and short implementations? ;-)
+> As far as I can see, FLDDX and FSTDX should be able to do the job.
+> Unless there is something I'm missing about the FPU :)
 
-There is no testing beyond the general testing of atomics in GCC.   
-There is masking
-in the GCC code but I think this is racy.  Another thread might modify  
-the masked data
-during the CAS operation and this might be lost.  I've never seen it  
-in the real world though.
+The main inefficiency is that one needs to copy a value through memory  
+to
+get a value in a general register into a floating point register,  
+etc.  Probably,
+for this technique, it would be most efficient to pass the values in  
+floating
+point registers.
 
-The implementation was originally copied from arm.
+Most people are running PA 2.0 machines now and these have 64-bit  
+registers
+and 64-bit loads and stores.  Problem is we don't have a proper 64-bit  
+context
+on these machines like hpux.  So, we don't save/restore everything on an
+interruption.  However, it might be possible to use 64-bit operations  
+in the region
+where interrupts are disabled.  Note that interruptions are still  
+possible in this
+region but it might be we don't care about the values in this case.
 
 Dave
 --
