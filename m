@@ -1,55 +1,48 @@
-From: Nick Krause <xerofoify@gmail.com>
-Subject: Re: [PATCH] parisc: Remove FIXME comment
-Date: Sat, 19 Jul 2014 01:28:22 -0400
-Message-ID: <CAPDOMVhKZsjKn8BDq-epTkqZ4oByFtyCwuxqrSGcvMhB3+ATOA@mail.gmail.com>
-References: <1405715823-17492-1-git-send-email-xerofoify@gmail.com>
-	<1405717414.30262.12.camel@dabdike.int.hansenpartnership.com>
-	<CAPDOMVjScF=7ES7NU=R6sGOmp7QycKX+uMXL-w+1rNEak4G7Dg@mail.gmail.com>
-	<1405747256.605.36.camel@jarvis.lan>
+From: Himangi Saraogi <himangi774@gmail.com>
+Subject: [PATCH] parisc: Eliminate memset after alloc_bootmem_pages
+Date: Sat, 19 Jul 2014 17:07:41 +0530
+Message-ID: <20140719113741.GA23655@himangi-Dell>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: deller@gmx.de, tiwai@suse.de, Jiri Kosina <jkosina@suse.cz>,
-	Joe Perches <joe@perches.com>, dave.anglin@bell.net,
-	linux-parisc@vger.kernel.org,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: Julia Lawall <julia.lawall@lip6.fr>
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1405747256.605.36.camel@jarvis.lan>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Jul 19, 2014 at 1:20 AM, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> On Fri, 2014-07-18 at 22:25 -0400, Nick Krause wrote:
->> On Fri, Jul 18, 2014 at 5:03 PM, James Bottomley
->> <James.Bottomley@hansenpartnership.com> wrote:
->> > On Fri, 2014-07-18 at 16:37 -0400, Nicholas Krause wrote:
->> >> The comment for size of frame not being needed is incorrect , the
->> >> function called needs this parameter.
->> >
->> > Actually, that's not correct.  The point of the FIXME is that fram_size
->> > is only used in a debug print and could be eliminated since the
->> > internals of the function excluding the debugging statements don't use
->> > it.
->> >
->> > James
->> >
->> >
->>
->> So I need to need a patch removing the parameter from the  function
->> and this part of the code?
->
-> Well, no, I'm not sure there's any action to take.  The FIXME reminds us
-> that there's no actual use of the frame size in the function body except
-> for the debugging prints.  The parameter could be removed if everyone
-> who debugs the kernel agrees either to remove the debug code or remove
-> the frame pointer from the prints, but it's probably not worth bothering
-> about, which is why it's still there.
->
-> James
->
->
-Ok then , seems its going through I can however write some comments to
-explain this
-if needed.
-Cheers Nick
+alloc_bootmem and related function always return zeroed region of
+memory. Thus a memset after calls to these functions is unnecessary.
+
+The following Coccinelle semantic patch was used for making the change:
+
+@@
+expression E,E1;
+@@
+
+E = \(alloc_bootmem\|alloc_bootmem_low\|alloc_bootmem_pages\|alloc_bootmem_low_pages\)(...)
+... when != E
+- memset(E,0,E1);
+
+Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
+Acked-by: Julia Lawall <julia.lawall@lip6.fr>
+---
+ arch/parisc/mm/init.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index ae085ad..0bef864 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -728,7 +728,6 @@ static void __init pagetable_init(void)
+ #endif
+ 
+ 	empty_zero_page = alloc_bootmem_pages(PAGE_SIZE);
+-	memset(empty_zero_page, 0, PAGE_SIZE);
+ }
+ 
+ static void __init gateway_init(void)
+-- 
+1.9.1
+
