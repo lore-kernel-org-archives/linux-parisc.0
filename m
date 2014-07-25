@@ -1,93 +1,102 @@
-From: John David Anglin <dave.anglin@bell.net>
+From: Guy Martin <gmsoft@tuxicoman.be>
 Subject: Re: Compiling a 32bit kernel fails
-Date: Thu, 24 Jul 2014 09:19:30 -0400
-Message-ID: <BLU436-SMTP252142D10893C7F99D610A697FF0@phx.gbl>
+Date: Fri, 25 Jul 2014 11:24:55 +0200
+Message-ID: <7908dab4bb5b426fff78ff508ba341ed@tuxicoman.be>
 References: <828ecd1c2a7868e1f1ef7025f9f1e930@tuxicoman.be>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset=WINDOWS-1252;
-	format=flowed	delsp=yes
-Cc: linux-parisc@vger.kernel.org
-To: Guy Martin <gmsoft@tuxicoman.be>
+ <BLU436-SMTP252142D10893C7F99D610A697FF0@phx.gbl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Cc: linux-parisc@vger.kernel.org, linux-parisc-owner@vger.kernel.org
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <828ecd1c2a7868e1f1ef7025f9f1e930@tuxicoman.be>
+In-Reply-To: <BLU436-SMTP252142D10893C7F99D610A697FF0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 24-Jul-14, at 7:39 AM, Guy Martin wrote:
 
->
->
-> I've been trying to compile a 3.15.6 kernel but I did not managed to =
+
+Hi JDA,
+
+
+On 2014-07-24 15:19, John David Anglin wrote:
+> On 24-Jul-14, at 7:39 AM, Guy Martin wrote:
+>> Is the fix to modify the LDCW macro or fix gcc ?
+>=20
+>=20
+> There's not enough info to tell.  In general, arguments in an asm
+> can't overlap in register usage with
+> registers listed in the clobber list.  Because r1 may be needed to
+> reload an argument, the error can
+> occur as a result of optimization, etc.  In that case, the macro woul=
+d
+>  need fixing.
+>=20
+> It would be helpful to see preprocessed source and full compile=20
+> command.
+
+
+This is the command being ran :
+
+gcc -Wp,-MD,kernel/.signal.o.d  -nostdinc -isystem=20
+/usr/lib/gcc/hppa2.0-unknown-linux-gnu/4.8.3/include=20
+-I/usr/src/linux-3.15.6-phoenix/arch/parisc/include=20
+-Iarch/parisc/include/generated  -Iinclude=20
+-I/usr/src/linux-3.15.6-phoenix/arch/parisc/include/uapi=20
+-Iarch/parisc/include/generated/uapi=20
+-I/usr/src/linux-3.15.6-phoenix/include/uapi -Iinclude/generated/uapi=20
+-include /usr/src/linux-3.15.6-phoenix/include/linux/kconfig.h=20
+-D__KERNEL__ -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs=20
+-fno-strict-aliasing -fno-common -Werror-implicit-function-declaration=20
+-Wno-format-security -fno-delete-null-pointer-checks -O2 -pipe=20
+-mno-space-regs -mfast-indirect-calls -mdisable-fpregs=20
+-ffunction-sections -march=3D2.0 -mschedule=3D8000 -Wframe-larger-than=3D=
+1024=20
+-fno-stack-protector -Wno-unused-but-set-variable=20
+-fno-omit-frame-pointer -fno-optimize-sibling-calls=20
+-Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow=20
+-fconserve-stack -Werror=3Dimplicit-int -Werror=3Dstrict-prototypes=20
+-DCC_HAVE_ASM_GOTO    -D"KBUILD_STR(s)=3D#s"=20
+-D"KBUILD_BASENAME=3DKBUILD_STR(signal)" =20
+-D"KBUILD_MODNAME=3DKBUILD_STR(signal)" -c -o kernel/signal.o=20
+kernel/signal.c
+
+The preprocessed sources are here :
+http://bpaste.net/show/498190/
+
+The full config here :
+http://bpaste.net/show/498196/
+
+
+The error is still this :
+
+kernel/signal.c: In function =E2=80=98get_signal_to_deliver=E2=80=99:
+/usr/src/linux-3.15.6-phoenix/arch/parisc/include/asm/ldcw.h:39:2:=20
+error: can=E2=80=99t find a register in class =E2=80=98R1_REGS=E2=80=99=
+ while reloading =E2=80=98asm=E2=80=99
+   __asm__ __volatile__(__LDCW " 0(%2),%0"   \
+   ^
+/usr/src/linux-3.15.6-phoenix/arch/parisc/include/asm/spinlock.h:26:9:=20
+note: in expansion of macro =E2=80=98__ldcw=E2=80=99
+   while (__ldcw(a) =3D=3D 0)
+          ^
+/usr/src/linux-3.15.6-phoenix/arch/parisc/include/asm/ldcw.h:39:2:=20
+error: =E2=80=98asm=E2=80=99 operand has impossible constraints
+   __asm__ __volatile__(__LDCW " 0(%2),%0"   \
+   ^
+/usr/src/linux-3.15.6-phoenix/arch/parisc/include/asm/spinlock.h:26:9:=20
+note: in expansion of macro =E2=80=98__ldcw=E2=80=99
+   while (__ldcw(a) =3D=3D 0)
+
+
+
+I tried to play a bit with the __ldcw macro but I still couldn't get it=
 =20
-> do so with either gcc 4.7.3 or 4.8.3.
->
->
-> This is the error I get :
->
-> In file included from /usr/src/linux-3.15.6-phoenix/arch/parisc/=20
-> include/asm/spinlock.h:5:0,
->                 from /usr/src/linux-3.15.6-phoenix/arch/parisc/=20
-> include/asm/atomic.h:20,
->                 from include/linux/atomic.h:4,
->                 from /usr/src/linux-3.15.6-phoenix/arch/parisc/=20
-> include/asm/bitops.h:11,
->                 from include/linux/bitops.h:33,
->                 from include/linux/kernel.h:10,
->                 from /usr/src/linux-3.15.6-phoenix/arch/parisc/=20
-> include/asm/bug.h:4,
->                 from include/linux/bug.h:4,
->                 from include/linux/thread_info.h:11,
->                 from include/asm-generic/preempt.h:4,
->                 from arch/parisc/include/generated/asm/preempt.h:1,
->                 from include/linux/preempt.h:18,
->                 from include/linux/spinlock.h:50,
->                 from include/linux/mmzone.h:7,
->                 from include/linux/gfp.h:5,
->                 from include/linux/slab.h:14,
->                 from kernel/signal.c:13:
-> kernel/signal.c: In function =91get_signal_to_deliver=92:
-> /usr/src/linux-3.15.6-phoenix/arch/parisc/include/asm/ldcw.h:39:2: =20
-> error: can=92t find a register in class =91R1_REGS=92 while reloading=
- =91asm=92
->  __asm__ __volatile__(__LDCW " 0(%2),%0"   \
->  ^
-> /usr/src/linux-3.15.6-phoenix/arch/parisc/include/asm/spinlock.h:=20
-> 26:9: note: in expansion of macro =91__ldcw=92
->  while (__ldcw(a) =3D=3D 0)
->         ^
-> /usr/src/linux-3.15.6-phoenix/arch/parisc/include/asm/ldcw.h:39:2: =20
-> error: =91asm=92 operand has impossible constraints
->  __asm__ __volatile__(__LDCW " 0(%2),%0"   \
->  ^
-> /usr/src/linux-3.15.6-phoenix/arch/parisc/include/asm/spinlock.h:=20
-> 26:9: note: in expansion of macro =91__ldcw=92
->  while (__ldcw(a) =3D=3D 0)
->         ^
->
-> As far as I can tell, it looks familiar :
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D60925
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D35193
->
->
-> Is the fix to modify the LDCW macro or fix gcc ?
+to compile.
 
 
-There's not enough info to tell.  In general, arguments in an asm =20
-can't overlap in register usage with
-registers listed in the clobber list.  Because r1 may be needed to =20
-reload an argument, the error can
-occur as a result of optimization, etc.  In that case, the macro would =
-=20
-need fixing.
-
-It would be helpful to see preprocessed source and full compile command=
-=2E
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
+Regards,
+   Guy
 
 --
 To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
