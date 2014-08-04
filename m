@@ -1,33 +1,31 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] [PARISC] sys_hpux: NUL terminator is one past the end
-Date: Thu, 31 Jul 2014 18:20:20 +0300
-Message-ID: <20140731152020.GB31539@mwanda>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-To: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Hans Wennborg <hans@hanshq.net>
+Subject: [PATCH 13/19] drivers: parisc: fix %d confusingly prefixed with 0x in format string
+Date: Sun,  3 Aug 2014 17:20:30 -0700
+Message-ID: <1407111630-15087-1-git-send-email-hans@hanshq.net>
+Cc: Hans Wennborg <hans@hanshq.net>
+To: jejb@parisc-linux.org, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-We allocate "len" number of chars so we should put the NUL at "len - 1"
-to avoid corrupting memory.  Btw, strlen_user() is different from the
-normal strlen() function because it includes NUL terminator in the
-count.
+Signed-off-by: Hans Wennborg <hans@hanshq.net>
+---
+ drivers/parisc/dino.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-diff --git a/arch/parisc/hpux/sys_hpux.c b/arch/parisc/hpux/sys_hpux.c
-index d9dc6cd..e5c4da0 100644
---- a/arch/parisc/hpux/sys_hpux.c
-+++ b/arch/parisc/hpux/sys_hpux.c
-@@ -456,7 +456,7 @@ int hpux_sysfs(int opcode, unsigned long arg1, unsigned long arg2)
- 		}
+diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+index 9eae983..a0580af 100644
+--- a/drivers/parisc/dino.c
++++ b/drivers/parisc/dino.c
+@@ -913,7 +913,7 @@ static int __init dino_probe(struct parisc_device *dev)
+ 	printk("%s version %s found at 0x%lx\n", name, version, hpa);
  
- 		/* String could be altered by userspace after strlen_user() */
--		fsname[len] = '\0';
-+		fsname[len - 1] = '\0';
- 
- 		printk(KERN_DEBUG "that is '%s' as (char *)\n", fsname);
- 		if ( !strcmp(fsname, "hfs") ) {
+ 	if (!request_mem_region(hpa, PAGE_SIZE, name)) {
+-		printk(KERN_ERR "DINO: Hey! Someone took my MMIO space (0x%ld)!\n",
++		printk(KERN_ERR "DINO: Hey! Someone took my MMIO space (0x%lx)!\n",
+ 			hpa);
+ 		return 1;
+ 	}
+-- 
+2.0.0.526.g5318336
