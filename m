@@ -1,12 +1,15 @@
-From: Chen Gang <gang.chen.5i5j@gmail.com>
-Subject: Re: [PATCH v3] arch: Kconfig: Let all architectures set endian explicitly
-Date: Fri, 15 Aug 2014 06:22:35 +0800
-Message-ID: <53ED36AB.8020703@gmail.com>
-References: <53ECE9DD.80004@gmail.com> <C2D7FE5348E1B147BCA15975FBA230753C4BA528@IN01WEMBXA.internal.synopsys.com> <CAF0htA6qfhyVXEuLbruiz+dfxnieF-309NdxSDhoEYHM=aBhQA@mail.gmail.com>
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: Re: [PATCH v3] arch: Kconfig: Let all architectures set endian
+ explicitly
+Date: Thu, 14 Aug 2014 23:12:53 +0000
+Message-ID: <C2D7FE5348E1B147BCA15975FBA230753C4BA673@IN01WEMBXA.internal.synopsys.com>
+References: <53ECE9DD.80004@gmail.com>
+ <C2D7FE5348E1B147BCA15975FBA230753C4BA528@IN01WEMBXA.internal.synopsys.com>
+ <CAF0htA6qfhyVXEuLbruiz+dfxnieF-309NdxSDhoEYHM=aBhQA@mail.gmail.com>
+ <53ED36AB.8020703@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Vineet Gupta <Vineet.Gupta1@synopsys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
+Content-Type: text/plain; charset="us-ascii"
+Cc: Arnd Bergmann <arnd@arndb.de>,
         "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
         "rth@twiddle.net" <rth@twiddle.net>,
         "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>,
@@ -22,10 +25,10 @@ Cc: Vineet Gupta <Vineet.Gupta1@synopsys.com>,
         "msalter@redhat.com" <msalter@redhat.com>,
         "a-jacquiot@ti.com" <a-jacquiot@ti.com>,
         "starvik@axis.com" <starvik@axis.com>,
-        "jesper.n
-To: Lennox Wu <lennox.wu@gmail.com>
+        "jesper.nilsson@axis.com" <jesper.nilsson@axis.com>,
+To: Chen Gang <gang.chen.5i5j@gmail.com>,
+        Lennox Wu <lennox.wu@gmail.com>
 Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <CAF0htA6qfhyVXEuLbruiz+dfxnieF-309NdxSDhoEYHM=aBhQA@mail.gmail.com>
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
 List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
@@ -36,41 +39,23 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-On 08/15/2014 02:27 AM, Lennox Wu wrote:
-> I don't think it's necessary, what's the benfit?
-> 
-> 2014-08-15 2:21 GMT+08:00 Vineet Gupta <Vineet.Gupta1@synopsys.com>:
-> 
->> On Thursday 14 August 2014 09:55 AM, Chen Gang wrote:
-[...]
->>> diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
->>> index 9596b0a..e939abd 100644
->>> --- a/arch/arc/Kconfig
->>> +++ b/arch/arc/Kconfig
->>> @@ -35,6 +35,7 @@ config ARC
->>>       select OF_EARLY_FLATTREE
->>>       select PERF_USE_VMALLOC
->>>       select HAVE_DEBUG_STACKOVERFLOW
->>> +     select CPU_LITTLE_ENDIAN if !CPU_BIG_ENDIAN
->>
->> It is not clear what exactly are you trying to fix. What doesn't work w/o
->> this
->> patch !
->>
+On Thursday 14 August 2014 03:22 PM, Chen Gang wrote:
+> For many individual modules may need check CPU_LITTLE_ENDIAN or
+> CPU_BIG_ENDIAN, which is an architecture's attribute.
+>
+> Or they have to list many architectures which they support, which they
+> don't support. And still, it is not precise.
+>
+> For architecture API, endian is a main architecture's attribute which
+> may be used by outside, so every architecture need let outside know
+> about it, explicitly.
 
-For many individual modules may need check CPU_LITTLE_ENDIAN or
-CPU_BIG_ENDIAN, which is an architecture's attribute.
+I don't think that is correct. The modules need to use standard API e.g. swab
+which will take care of proper endian handling anyways. Why would a module do
+anything endian specific outside of those APIs.
 
-Or they have to list many architectures which they support, which they
-don't support. And still, it is not precise.
+And again is this churn just theoretical or do you really have a issue at hand ! I
+would not accept a change for ARC unless you prove that something is broken (or
+atleast potentially broken) !
 
-For architecture API, endian is a main architecture's attribute which
-may be used by outside, so every architecture need let outside know
-about it, explicitly.
-
-
-Thanks.
--- 
-Chen Gang
-
-Open share and attitude like air water and life which God blessed
+-Vineet
