@@ -1,28 +1,31 @@
 From: Chen Gang <gang.chen.5i5j@gmail.com>
 Subject: Re: [PATCH v3] arch: Kconfig: Let all architectures set endian explicitly
-Date: Fri, 15 Aug 2014 06:14:38 +0800
-Message-ID: <53ED34CE.3040001@gmail.com>
-References: <53ECE9DD.80004@gmail.com> <20140814180418.GA20777@linux-mips.org>
+Date: Fri, 15 Aug 2014 06:22:35 +0800
+Message-ID: <53ED36AB.8020703@gmail.com>
+References: <53ECE9DD.80004@gmail.com> <C2D7FE5348E1B147BCA15975FBA230753C4BA528@IN01WEMBXA.internal.synopsys.com> <CAF0htA6qfhyVXEuLbruiz+dfxnieF-309NdxSDhoEYHM=aBhQA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Arnd Bergmann <arnd@arndb.de>, akpm@linux-foundation.org,
-        rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
-        vgupta@synopsys.com, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jean Delvare <jdelvare@suse.de>, linux@arm.linux.org.uk,
-        catalin.marinas@arm.com, will.deacon@arm.com,
-        hskinnemoen@gmail.com, egtvedt@samfundet.no, realmz6@gmail.com,
-        msalter@redhat.com, a-jacquiot@ti.com, starvik@axis.com,
-        jesper.nilsson@axis.com, dhowells@redhat.com, rkuo@codeaurora.org,
-        tony.luck@intel.com, fenghua.yu@intel.com, takata@linux-m32r.org,
-        james.hogan@imgtec.com, Michal Simek <monstr@monstr.eu>,
-        yasutake.koichi@jp.panasonic.com, jonas@southpole.se,
-        jejb@parisc-linux.org, deller@gmx.de,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        paulus@samba.org, mpe@ellerman.id.au,
-        Mart
-To: Ralf Baechle <ralf@linux-mips.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "rth@twiddle.net" <rth@twiddle.net>,
+        "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>,
+        "mattst88@gmail.com" <mattst88@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jean Delvare <jdelvare@suse.de>,
+        "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will.deacon@arm.com" <will.deacon@arm.com>,
+        "hskinnemoen@gmail.com" <hskinnemoen@gmail.com>,
+        "egtvedt@samfundet.no" <egtvedt@samfundet.no>,
+        "realmz6@gmail.com" <realmz6@gmail.com>,
+        "msalter@redhat.com" <msalter@redhat.com>,
+        "a-jacquiot@ti.com" <a-jacquiot@ti.com>,
+        "starvik@axis.com" <starvik@axis.com>,
+        "jesper.n
+To: Lennox Wu <lennox.wu@gmail.com>
 Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <20140814180418.GA20777@linux-mips.org>
+In-Reply-To: <CAF0htA6qfhyVXEuLbruiz+dfxnieF-309NdxSDhoEYHM=aBhQA@mail.gmail.com>
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
 List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
@@ -33,60 +36,37 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-On 08/15/2014 02:04 AM, Ralf Baechle wrote:
-> On Fri, Aug 15, 2014 at 12:54:53AM +0800, Chen Gang wrote:
+On 08/15/2014 02:27 AM, Lennox Wu wrote:
+> I don't think it's necessary, what's the benfit?
 > 
->> Normal architectures:
+> 2014-08-15 2:21 GMT+08:00 Vineet Gupta <Vineet.Gupta1@synopsys.com>:
+> 
+>> On Thursday 14 August 2014 09:55 AM, Chen Gang wrote:
+[...]
+>>> diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+>>> index 9596b0a..e939abd 100644
+>>> --- a/arch/arc/Kconfig
+>>> +++ b/arch/arc/Kconfig
+>>> @@ -35,6 +35,7 @@ config ARC
+>>>       select OF_EARLY_FLATTREE
+>>>       select PERF_USE_VMALLOC
+>>>       select HAVE_DEBUG_STACKOVERFLOW
+>>> +     select CPU_LITTLE_ENDIAN if !CPU_BIG_ENDIAN
 >>
->>  - Big endian: avr32, frv, m68k, openrisc, parisc, s390, sparc
+>> It is not clear what exactly are you trying to fix. What doesn't work w/o
+>> this
+>> patch !
 >>
->>  - Little endian: alpha, blackfin, cris, hexagon, ia64, metag, mn10300,
->>                   score, unicore32, x86
->>
->>  - Choose in config time: arc, arm, arm64, c6x, m32r, mips, powerpc, sh
-> 
-> Nak for MIPS.  On MIPS Kconfig already always sets one of CPU_BIG_ENDIAN
-> and CPU_LITTLE_ENDIAN depending on platforms and where both endianess are
-> supported by a platform, user choice:
-> 
-> config FOO
-> 	bool "foo"
-> 	select SYS_SUPPORTS_LITTLE_ENDIAN
-> 
-> config FOO
-> 	bool "foo"
-> 	select SYS_SUPPORTS_BIG_ENDIAN
-> 	select SYS_SUPPORTS_LITTLE_ENDIAN
-> [...]
-> choice
->         prompt "Endianess selection"
->         help
->           Some MIPS machines can be configured for either little or big endian
->           byte order. These modes require different kernels and a different
->           Linux distribution.  In general there is one preferred byteorder for a
->           particular system but some systems are just as commonly used in the
->           one or the other endianness.
-> 
-> config CPU_BIG_ENDIAN
->         bool "Big endian"
->         depends on SYS_SUPPORTS_BIG_ENDIAN
-> 
-> config CPU_LITTLE_ENDIAN
->         bool "Little endian"
->         depends on SYS_SUPPORTS_LITTLE_ENDIAN
->         help
-> 
-> endchoice
-> 
 
-OK, thanks, I assumes when support both endian, the default choice is
-CPU_BIG_ENDIAN, although no default value for choice (originally, I did
-worry about it).
+For many individual modules may need check CPU_LITTLE_ENDIAN or
+CPU_BIG_ENDIAN, which is an architecture's attribute.
 
-> So I think you can just drop the MIPS segment from your patch.
-> 
+Or they have to list many architectures which they support, which they
+don't support. And still, it is not precise.
 
-If what I assumes is correct, what you said sounds reasonable to me.
+For architecture API, endian is a main architecture's attribute which
+may be used by outside, so every architecture need let outside know
+about it, explicitly.
 
 
 Thanks.
