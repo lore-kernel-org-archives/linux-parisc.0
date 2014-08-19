@@ -1,65 +1,56 @@
-From: Chen Gang <gang.chen.5i5j@gmail.com>
-Subject: Re: [PATCH v3] arch: Kconfig: Let all architectures set endian explicitly
-Date: Fri, 15 Aug 2014 17:01:20 +0800
-Message-ID: <53EDCC60.5040608@gmail.com>
-References: <53ECE9DD.80004@gmail.com> <20140814180418.GA20777@linux-mips.org> <53ED34CE.3040001@gmail.com>
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: Re: Sym2 scsi hang on boot on sparc64
+Date: Tue, 19 Aug 2014 23:17:48 +0300
+Message-ID: <20140819201748.GC4885@drone.musicnaut.iki.fi>
+References: <alpine.SOC.1.00.1408191420150.4929@math.ut.ee>
+ <1408451668.2645.2.camel@jarvis>
+ <alpine.SOC.1.00.1408191736190.7767@math.ut.ee>
+ <1408459655.3491.1.camel@jarvis>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Cc: Arnd Bergmann <arnd@arndb.de>, akpm@linux-foundation.org,
-        rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
-        vgupta@synopsys.com, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jean Delvare <jdelvare@suse.de>, linux@arm.linux.org.uk,
-        catalin.marinas@arm.com, will.deacon@arm.com,
-        hskinnemoen@gmail.com, egtvedt@samfundet.no, realmz6@gmail.com,
-        msalter@redhat.com, a-jacquiot@ti.com, starvik@axis.com,
-        jesper.nilsson@axis.com, dhowells@redhat.com, rkuo@codeaurora.org,
-        tony.luck@intel.com, fenghua.yu@intel.com, takata@linux-m32r.org,
-        james.hogan@imgtec.com, Michal Simek <monstr@monstr.eu>,
-        yasutake.koichi@jp.panasonic.com, jonas@southpole.se,
-        jejb@parisc-linux.org, deller@gmx.de,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        paulus@samba.org, mpe@ellerman.id.au,
-        Mart
-To: Ralf Baechle <ralf@linux-mips.org>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <53ED34CE.3040001@gmail.com>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+Content-Type: text/plain; charset=us-ascii
+Cc: Meelis Roos <mroos@linux.ee>, linux-scsi@vger.kernel.org,
+	sparclinux@vger.kernel.org, Matthew Wilcox <matthew@wil.cx>,
+	linux-parisc@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1408459655.3491.1.camel@jarvis>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
+Hi,
 
-
-On 8/15/14 6:14, Chen Gang wrote:
-> On 08/15/2014 02:04 AM, Ralf Baechle wrote:
->>
+On Tue, Aug 19, 2014 at 09:47:35AM -0500, James Bottomley wrote:
+> On Tue, 2014-08-19 at 17:37 +0300, Meelis Roos wrote:
+> > > On Tue, 2014-08-19 at 14:25 +0300, Meelis Roos wrote:
+> > > > 3.16 scsi worked fine, 3.17-rc1 misbehaves on 3 of my sparc64 test 
+> > > > machines. E220R and E420R are with onboard 5c3875, V210 is with onboarc 
+> > > > 53c1010 and all behave the same. Any ideas whre to dig deeper? bisection 
+> > > > might be nontrivial, because of sparc64 changes that are OK on 3.17-rc1 
+> > > > again - but is possible if nothing else helps.
+> > > 
+> > > We've got a parisc with an 875 as a root SCSI bus ... I haven't got
+> > > around to building for it yet, but I might find time to try today.
+> > 
+> > Same on parisc:
+> > 
+> > sym0: <1010-66> rev 0x1 at pci 0000:20:01.0 irq 22
+> > sym0: PA-RISC Firmware, ID 7, Fast-80, LVD, parity checking
+> > sym0: SCSI BUS has been reset.
+> > scsi host0: sym-2.2.3
+> > random: nonblocking pool is initialized
+> > 
+> > and hangs here. So hopefully it is reproducible for you.
 > 
-> OK, thanks, I assumes when support both endian, the default choice is
-> CPU_BIG_ENDIAN, although no default value for choice (originally, I did
-> worry about it).
-> 
->> So I think you can just drop the MIPS segment from your patch.
->>
-> 
-> If what I assumes is correct, what you said sounds reasonable to me.
-> 
-> 
+> And also independent of the sparc changes.  The only other change in the
+> window you quote is 64 bit luns.
 
-So for me, it is harmless to add CPU_*_ENDIAN explicitly, and can let
-other members don't need think of.
+Bisection (on PA-RISC) points to:
 
-By the way, for sh, it is almost the same case, except it contents the
-default value, for me, it is clear enough, so I skip sh architecture in
-this patch.
+71e75c97f97a9645d25fbf3d8e4165a558f18747 is the first bad commit
+commit 71e75c97f97a9645d25fbf3d8e4165a558f18747
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Fri Apr 11 19:07:01 2014 +0200
 
+    scsi: convert device_busy to atomic_t
 
-Thanks
--- 
-Chen Gang
-
-Open, share, and attitude like air, water, and life which God blessed
+A.
