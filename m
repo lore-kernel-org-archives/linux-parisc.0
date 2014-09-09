@@ -1,86 +1,38 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: Re: [RFC PATCHv2] 64bit LWS CAS
-Date: Wed, 27 Aug 2014 10:35:58 +0200
-Message-ID: <20140827103558.2521838e@dellete.lux.tuxicoman.be>
-References: <20140729211334.02d2b5e2@borg.lux.tuxicoman.be>
-	<53D810FB.9010406@gmx.de>
-	<f4954acbf0d2c11646341cb93efdd247@tuxicoman.be>
-	<53FCE9FF.1080704@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Subject: [PATCH 1/3] parisc/uapi: Add definition of TIOC[SG]RS485
+Date: Tue,  9 Sep 2014 20:06:31 +0200
+Message-ID: <1410285991-24833-1-git-send-email-ricardo.ribalda@gmail.com>
+Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+To: "James E . J . Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <53FCE9FF.1080704@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Commit: e676253b19b2d269cccf67fdb1592120a0cd0676 (serial/8250: Add
+support for RS485 IOCTLs), adds support for RS485 ioctls for 825_core on
+all the archs. Unfortunaltely the definition of TIOCSRS485 and
+TIOCGRS485 was missing on the ioctls.h file
 
-Hi Helge,
+Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+---
+ arch/parisc/include/uapi/asm/ioctls.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On Tue, 26 Aug 2014 22:11:43 +0200
-Helge Deller <deller@gmx.de> wrote:
-
-> should we try to do a last round of cleanup of this patch, since
-> I would like to include it in the next push to Linus...
-> 
-> On 07/30/2014 11:17 AM, Guy Martin wrote:
-> >>> Regading the GCC counterpart of the implementation, I'm not sure
-> >>> about the way to proceed.
-> >>>
-> >>> Should I try to detect the presence of the new LWS and use it for
-> >>> all CAS operations at init time ?
-> >>
-> >> I leave this up to Dave & Carlos to answer.
-> 
-> I think it's OK to stay using the existing 32bit implementation for
-> 32bit CAS, and just use the new one for 8/16/64 bit CAS.
-> And maybe: If the LWS fails, just crash the application.
-
-I seems like the best solution, at least apps will not use a broken
-implementation for 8/16bit.
-
-> >> Should we maybe drop the whole ENABLE_LWS_DEBUG thing? Was it ever
-> >> used/enabled?
-> >
-> > Indeed, I have not tested it and I dropped it in this new patch.
-> 
-> Good.
-> In comments at the top still include info about the debug case:
-> -> "If debugging is DISabled:..."
-
-Indeed.
-
-> >>> I guess that using the new LWS unconditionally for all CAS
-> >>> operations isn't an option since it will break for newer gcc on
-> >>> old kernels.
-> >>
-> >> Up to now we only had the 32bit CAS working correctly, so we
-> >> shouldn't care much about the other CAS anyway.
-> >> And if we get it backported into all relevant kernels before we
-> >> change gcc I would prefer this hard break...
-> 
-> I'm still thinking this is the right way.
-> 
-> Your patch had some whitespace errors too.
-> Please run it through the scripts/checkpatch tool in the kernel tree.
-> 
-> If you like I can take care of the suggested changes and send a
-> revised patch for you? Just let me know.
-
-
-Please go ahead ! I just became a father and as you can imagine, I have
-very little time to spend on hacking things up :)
-
-Also, I'm not sure that the asm exception tables are working
-correctly. I managed to crash my kernel on several occasions while
-passing bad values, causing an invalid pointer dereference.
-
-
-I'll try to work on the gcc patches but it won't be this week, maybe
-next week, or I'll have more time in 2 weeks. If someone wants to step
-in, feel free to do so too.
-
-Regards,
-  Guy
+diff --git a/arch/parisc/include/uapi/asm/ioctls.h b/arch/parisc/include/uapi/asm/ioctls.h
+index 66719c3..3af2d02 100644
+--- a/arch/parisc/include/uapi/asm/ioctls.h
++++ b/arch/parisc/include/uapi/asm/ioctls.h
+@@ -50,6 +50,8 @@
+ #define TCSETS2		_IOW('T',0x2B, struct termios2)
+ #define TCSETSW2	_IOW('T',0x2C, struct termios2)
+ #define TCSETSF2	_IOW('T',0x2D, struct termios2)
++#define TIOCGRS485	0x542E
++#define TIOCSRS485	0x542F
+ #define TIOCGPTN	_IOR('T',0x30, unsigned int) /* Get Pty Number (of pty-mux device) */
+ #define TIOCSPTLCK	_IOW('T',0x31, int)  /* Lock/unlock Pty */
+ #define TIOCGDEV	_IOR('T',0x32, int)  /* Get primary device node of /dev/console */
+-- 
+2.1.0
 
