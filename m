@@ -1,31 +1,37 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCHv3] Implement gcc 64bit atomic operations and fix the broken
- 8/16 bit ones
-Date: Mon, 15 Sep 2014 23:17:44 +0200
-Message-ID: <54175778.3060809@gmx.de>
-References: <507b1e2873b0724964068ba2b4159b6d@tuxicoman.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-To: Guy Martin <gmsoft@tuxicoman.be>, linux-parisc@vger.kernel.org
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCHv3] Implement gcc 64bit atomic operations and fix the broken 8/16 bit ones
+Date: Mon, 15 Sep 2014 21:37:09 -0400
+Message-ID: <BLU436-SMTP2023EAC24A62D7D0C03BAD797C90@phx.gbl>
+References: <507b1e2873b0724964068ba2b4159b6d@tuxicoman.be> <54175778.3060809@gmx.de>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: Guy Martin <gmsoft@tuxicoman.be>, linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <507b1e2873b0724964068ba2b4159b6d@tuxicoman.be>
+In-Reply-To: <54175778.3060809@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Guy,
+On 15-Sep-14, at 5:17 PM, Helge Deller wrote:
 
-On 09/12/2014 06:02 PM, Guy Martin wrote:
-> Here is the latest set of patch for the 8/16/64 bit atomic gcc builtins.
->
-> On the kernel side a new LWS is implemented allowing for variable size CAS.
-> On gcc's side, the new LWS is used for 8/16/64 bit atomic builtins, keeping the old LWS for 32bit ops.
-> Since 8 and 16 bit ops were broken, it's best to use the new LWS unconditionally for these.
+> Maybe someone now can start to push the gcc patch upstream?
 
-I've pushed your kernel patch upstream for kernel 3.17.
-Furthermore I've scheduled it for backporting into kernels >= 3.13.
-I would have liked to go back to kernel 3.0, but then more patches would have needed to be backported.
+Although I don't have anything specific, this is a subtle area and I  
+have had to fix bugs
+in this code before.  I would like to see that this code actually  
+works in the real world in
+code that uses the GCC atomic support (e.g., glib2.0).  I'm still not  
+sure we have correct
+types in our code (arm revamped some of the types used in their  
+implementation).
 
-Maybe someone now can start to push the gcc patch upstream?
+We have some time before gcc-5.0 is released.  As a new feature, it  
+normally would
+not be back ported without strong justification.
 
-Thanks!
-Helge
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
