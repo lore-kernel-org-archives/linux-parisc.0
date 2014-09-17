@@ -1,33 +1,51 @@
 From: Fabian Frederick <fabf@skynet.be>
-Subject: [PATCH 0/6] video: fbdev: use container_of where possible
-Date: Wed, 17 Sep 2014 21:00:13 +0200
-Message-ID: <1410980419-5326-1-git-send-email-fabf@skynet.be>
+Subject: [PATCH 1/6] video: fbdev: stifb.c: use container_of to resolve stifb_info from fb_info
+Date: Wed, 17 Sep 2014 21:00:14 +0200
+Message-ID: <1410980419-5326-2-git-send-email-fabf@skynet.be>
+References: <1410980419-5326-1-git-send-email-fabf@skynet.be>
 Cc: daniel.vetter@intel.com, Fabian Frederick <fabf@skynet.be>,
-	linux-fbdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-parisc@vger.kernel.org
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+	Tomi Valkeinen <tomi.valkeinen@ti.com>,
+	linux-parisc@vger.kernel.org, linux-fbdev@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1410980419-5326-1-git-send-email-fabf@skynet.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Small patchset using container_of instead of casting on first structure member address.
+Use container_of instead of casting first structure member.
 
-Fabian Frederick (6):
-  video: fbdev: stifb.c: use container_of to resolve stifb_info from fb_info
-  video: fbdev: sa1100fb.c: use container_of to resolve sa1100fb_info from fb_info
-  video: fbdev: controlfb.c: use container_of to resolve fb_info_control from fb_info
-  video: fbdev: cyber2000fb.c: use container_of to resolve cfb_info from fb_info
-  video: fbdev: pxafb.c: use container_of to resolve pxafb_info/layer from fb_info
-  video: fbdev: valkyriefb.c: use container_of to resolve fb_info_valkyrie from fb_info
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
+---
+PARISC cross-compiled but untested.
 
- drivers/video/fbdev/controlfb.c   | 15 ++++++++++-----
- drivers/video/fbdev/cyber2000fb.c | 16 ++++++++--------
- drivers/video/fbdev/pxafb.c       | 20 ++++++++++----------
- drivers/video/fbdev/sa1100fb.c    | 18 ++++++++++++------
- drivers/video/fbdev/stifb.c       |  4 ++--
- drivers/video/fbdev/valkyriefb.c  | 12 ++++++++----
- 6 files changed, 50 insertions(+), 35 deletions(-)
+ drivers/video/fbdev/stifb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/video/fbdev/stifb.c b/drivers/video/fbdev/stifb.c
+index cfe8a2f..86621fa 100644
+--- a/drivers/video/fbdev/stifb.c
++++ b/drivers/video/fbdev/stifb.c
+@@ -918,7 +918,7 @@ static int
+ stifb_setcolreg(u_int regno, u_int red, u_int green,
+ 	      u_int blue, u_int transp, struct fb_info *info)
+ {
+-	struct stifb_info *fb = (struct stifb_info *) info;
++	struct stifb_info *fb = container_of(info, struct stifb_info, info);
+ 	u32 color;
+ 
+ 	if (regno >= NR_PALETTE)
+@@ -978,7 +978,7 @@ stifb_setcolreg(u_int regno, u_int red, u_int green,
+ static int
+ stifb_blank(int blank_mode, struct fb_info *info)
+ {
+-	struct stifb_info *fb = (struct stifb_info *) info;
++	struct stifb_info *fb = container_of(info, struct stifb_info, info);
+ 	int enable = (blank_mode == 0) ? ENABLE : DISABLE;
+ 
+ 	switch (fb->id) {
 -- 
 2.1.0
 
