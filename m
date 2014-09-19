@@ -1,51 +1,42 @@
-From: Fabian Frederick <fabf@skynet.be>
-Subject: [PATCH 1/6] video: fbdev: stifb.c: use container_of to resolve stifb_info from fb_info
-Date: Wed, 17 Sep 2014 21:00:14 +0200
-Message-ID: <1410980419-5326-2-git-send-email-fabf@skynet.be>
-References: <1410980419-5326-1-git-send-email-fabf@skynet.be>
-Cc: daniel.vetter@intel.com, Fabian Frederick <fabf@skynet.be>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
-	Tomi Valkeinen <tomi.valkeinen@ti.com>,
-	linux-parisc@vger.kernel.org, linux-fbdev@vger.kernel.org
-To: linux-kernel@vger.kernel.org
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH] Fix end_of_stack() fn and location of stack canary for
+ archs using STACK_GROWSUP
+Date: Fri, 19 Sep 2014 12:21:37 +0100
+Message-ID: <541C11C1.2060105@imgtec.com>
+References: <20140916023736.49db964e@as>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: <linux-kernel@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+	"Aaron Tomlin" <atomlin@redhat.com>,
+	linux-metag <linux-metag@vger.kernel.org>
+To: Chuck Ebbert <cebbert.lkml@gmail.com>, Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1410980419-5326-1-git-send-email-fabf@skynet.be>
+In-Reply-To: <20140916023736.49db964e@as>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Use container_of instead of casting first structure member.
+Hi Chuck,
 
-Signed-off-by: Fabian Frederick <fabf@skynet.be>
----
-PARISC cross-compiled but untested.
+On 16/09/14 08:37, Chuck Ebbert wrote:
+>  static inline unsigned long *end_of_stack(struct task_struct *p)
+>  {
+> +#ifdef CONFIG_STACK_GROWSUP
+> +	return (unsigned long *)((unsigned long)task_thread_info(p) + THREAD_SIZE) - 1;
 
- drivers/video/fbdev/stifb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Nit: this line should probably be wrapped to 80 columns.
 
-diff --git a/drivers/video/fbdev/stifb.c b/drivers/video/fbdev/stifb.c
-index cfe8a2f..86621fa 100644
---- a/drivers/video/fbdev/stifb.c
-+++ b/drivers/video/fbdev/stifb.c
-@@ -918,7 +918,7 @@ static int
- stifb_setcolreg(u_int regno, u_int red, u_int green,
- 	      u_int blue, u_int transp, struct fb_info *info)
- {
--	struct stifb_info *fb = (struct stifb_info *) info;
-+	struct stifb_info *fb = container_of(info, struct stifb_info, info);
- 	u32 color;
- 
- 	if (regno >= NR_PALETTE)
-@@ -978,7 +978,7 @@ stifb_setcolreg(u_int regno, u_int red, u_int green,
- static int
- stifb_blank(int blank_mode, struct fb_info *info)
- {
--	struct stifb_info *fb = (struct stifb_info *) info;
-+	struct stifb_info *fb = container_of(info, struct stifb_info, info);
- 	int enable = (blank_mode == 0) ? ENABLE : DISABLE;
- 
- 	switch (fb->id) {
--- 
-2.1.0
+Other than that, I've tested this on metag and can confirm that it fixes
+the following BUG which you would otherwise get during boot with Aaron's
+patches:
 
+BUG: failure at kernel/sched/core.c:2664/schedule_debug()!
+Kernel panic - not syncing: BUG!
+
+Tested-by: James Hogan <james.hogan@imgtec.com> [metag]
+Acked-by: James Hogan <james.hogan@imgtec.com>
+
+Aaron: please can you try to get this patch applied before your patch
+series.
+
+Thanks
+James
