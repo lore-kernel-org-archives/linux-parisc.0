@@ -1,58 +1,83 @@
-From: Aaron Tomlin <atomlin@redhat.com>
-Subject: Re: [PATCH] Fix end_of_stack() fn and location of stack canary for
- archs using STACK_GROWSUP
-Date: Fri, 19 Sep 2014 14:34:15 +0100
-Message-ID: <20140919133415.GG25400@atomlin.usersys.redhat.com>
-References: <20140916023736.49db964e@as>
- <541C11C1.2060105@imgtec.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] parisc: pdc_stable.c:  Cleaning up unnecessary use of
+ memset in conjunction with strncpy
+Date: Mon, 22 Sep 2014 20:24:55 +0200
+Message-ID: <20140922182455.GA4063@ls3530.box>
+References: <1410710532-14429-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Chuck Ebbert <cebbert.lkml@gmail.com>,
-	Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org,
+Content-Type: text/plain; charset=us-ascii
+To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>,
 	linux-parisc@vger.kernel.org,
-	linux-metag <linux-metag@vger.kernel.org>,
-	James Hogan <james.hogan@imgtec.com>
-To: mingo@kernel.org
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <541C11C1.2060105@imgtec.com>
+In-Reply-To: <1410710532-14429-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Sep 19, 2014 at 12:21:37PM +0100, James Hogan wrote:
-> Hi Chuck,
+* Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>:
+> Using memset before strncpy just to ensure a trailing null
+> character is an unnecessary double writing of a string
+
+Thanks for the patch Rickard!
+
+I've modified it a little (see below) and added it to my tree.
+
+Thanks,
+Helge
+
+> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+> ---
+>  drivers/parisc/pdc_stable.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> On 16/09/14 08:37, Chuck Ebbert wrote:
-> >  static inline unsigned long *end_of_stack(struct task_struct *p)
-> >  {
-> > +#ifdef CONFIG_STACK_GROWSUP
-> > +	return (unsigned long *)((unsigned long)task_thread_info(p) + THREAD_SIZE) - 1;
-> 
-> Nit: this line should probably be wrapped to 80 columns.
-> 
-> Other than that, I've tested this on metag and can confirm that it fixes
-> the following BUG which you would otherwise get during boot with Aaron's
-> patches:
-> 
-> BUG: failure at kernel/sched/core.c:2664/schedule_debug()!
-> Kernel panic - not syncing: BUG!
-> 
-> Tested-by: James Hogan <james.hogan@imgtec.com> [metag]
-> Acked-by: James Hogan <james.hogan@imgtec.com>
-
-OK.
-
-Acked-by: Aaron Tomlin <atomlin@redhat.com>
-
-> Aaron: please can you try to get this patch applied before your patch
-> series.
-
-Ingo,
+> diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
+> index 0f54ab6..76860ad 100644
+> --- a/drivers/parisc/pdc_stable.c
+> +++ b/drivers/parisc/pdc_stable.c
+> @@ -765,8 +765,8 @@ static ssize_t pdcs_auto_write(struct kobject *kobj,
+>  		return -EINVAL;
+>  
+>  	/* We'll use a local copy of buf */
+> -	memset(in, 0, count+1);
+>  	strncpy(in, buf, count);
+> +	in[count] = '\0';
+>  
+>  	/* Current flags are stored in primary boot path entry */
+>  	pathentry = &pdcspath_entry_primary;
 
 
-I hope it's not too late to get this patch in (once the nit has been
-addressed) for CONFIG_STACK_GROWSUP?
+parisc: pdc_stable.c: Cleaning up unnecessary use of memset in conjunction with strncpy
 
-Regards,
+Using memset before strncpy just to ensure a trailing null character is
+an unnecessary double writing of a string
 
--- 
-Aaron Tomlin
+Patch modified by Helge Deller to additionally reduce stack usage.
+
+Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
+index 0f54ab6..e4b73c2 100644
+--- a/drivers/parisc/pdc_stable.c
++++ b/drivers/parisc/pdc_stable.c
+@@ -755,7 +755,7 @@ static ssize_t pdcs_auto_write(struct kobject *kobj,
+ {
+ 	struct pdcspath_entry *pathentry;
+ 	unsigned char flags;
+-	char in[count+1], *temp;
++	char in[8], *temp;
+ 	char c;
+ 
+ 	if (!capable(CAP_SYS_ADMIN))
+@@ -765,8 +765,9 @@ static ssize_t pdcs_auto_write(struct kobject *kobj,
+ 		return -EINVAL;
+ 
+ 	/* We'll use a local copy of buf */
+-	memset(in, 0, count+1);
++	count = min_t(size_t, count, 7);
+ 	strncpy(in, buf, count);
++	in[count] = '\0';
+ 
+ 	/* Current flags are stored in primary boot path entry */
+ 	pathentry = &pdcspath_entry_primary;
