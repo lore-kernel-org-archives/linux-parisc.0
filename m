@@ -1,83 +1,65 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: pdc_stable.c:  Cleaning up unnecessary use of
- memset in conjunction with strncpy
-Date: Mon, 22 Sep 2014 20:24:55 +0200
-Message-ID: <20140922182455.GA4063@ls3530.box>
-References: <1410710532-14429-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+Subject: [PATCH] parisc: pdc_stable.c: Avoid potential stack overflows
+Date: Mon, 22 Sep 2014 20:27:23 +0200
+Message-ID: <20140922182723.GA1248@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>,
-	linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1410710532-14429-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-* Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>:
-> Using memset before strncpy just to ensure a trailing null
-> character is an unnecessary double writing of a string
-
-Thanks for the patch Rickard!
-
-I've modified it a little (see below) and added it to my tree.
-
-Thanks,
-Helge
-
-> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-> ---
->  drivers/parisc/pdc_stable.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
-> index 0f54ab6..76860ad 100644
-> --- a/drivers/parisc/pdc_stable.c
-> +++ b/drivers/parisc/pdc_stable.c
-> @@ -765,8 +765,8 @@ static ssize_t pdcs_auto_write(struct kobject *kobj,
->  		return -EINVAL;
->  
->  	/* We'll use a local copy of buf */
-> -	memset(in, 0, count+1);
->  	strncpy(in, buf, count);
-> +	in[count] = '\0';
->  
->  	/* Current flags are stored in primary boot path entry */
->  	pathentry = &pdcspath_entry_primary;
-
-
-parisc: pdc_stable.c: Cleaning up unnecessary use of memset in conjunction with strncpy
-
-Using memset before strncpy just to ensure a trailing null character is
-an unnecessary double writing of a string
-
-Patch modified by Helge Deller to additionally reduce stack usage.
-
-Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
 Signed-off-by: Helge Deller <deller@gmx.de>
 
 diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
-index 0f54ab6..e4b73c2 100644
+index e4b73c2..3651c38 100644
 --- a/drivers/parisc/pdc_stable.c
 +++ b/drivers/parisc/pdc_stable.c
-@@ -755,7 +755,7 @@ static ssize_t pdcs_auto_write(struct kobject *kobj,
+@@ -278,7 +278,7 @@ pdcspath_hwpath_write(struct pdcspath_entry *entry, const char *buf, size_t coun
  {
- 	struct pdcspath_entry *pathentry;
- 	unsigned char flags;
+ 	struct hardware_path hwpath;
+ 	unsigned short i;
 -	char in[count+1], *temp;
-+	char in[8], *temp;
- 	char c;
++	char in[64], *temp;
+ 	struct device *dev;
+ 	int ret;
  
- 	if (!capable(CAP_SYS_ADMIN))
-@@ -765,8 +765,9 @@ static ssize_t pdcs_auto_write(struct kobject *kobj,
+@@ -286,8 +286,9 @@ pdcspath_hwpath_write(struct pdcspath_entry *entry, const char *buf, size_t coun
  		return -EINVAL;
  
  	/* We'll use a local copy of buf */
 -	memset(in, 0, count+1);
-+	count = min_t(size_t, count, 7);
++	count = min_t(size_t, count, sizeof(in)-1);
  	strncpy(in, buf, count);
 +	in[count] = '\0';
+ 	
+ 	/* Let's clean up the target. 0xff is a blank pattern */
+ 	memset(&hwpath, 0xff, sizeof(hwpath));
+@@ -393,14 +394,15 @@ pdcspath_layer_write(struct pdcspath_entry *entry, const char *buf, size_t count
+ {
+ 	unsigned int layers[6]; /* device-specific info (ctlr#, unit#, ...) */
+ 	unsigned short i;
+-	char in[count+1], *temp;
++	char in[64], *temp;
  
- 	/* Current flags are stored in primary boot path entry */
- 	pathentry = &pdcspath_entry_primary;
+ 	if (!entry || !buf || !count)
+ 		return -EINVAL;
+ 
+ 	/* We'll use a local copy of buf */
+-	memset(in, 0, count+1);
++	count = min_t(size_t, count, sizeof(in)-1);
+ 	strncpy(in, buf, count);
++	in[count] = '\0';
+ 	
+ 	/* Let's clean up the target. 0 is a blank pattern */
+ 	memset(&layers, 0, sizeof(layers));
+@@ -765,7 +767,7 @@ static ssize_t pdcs_auto_write(struct kobject *kobj,
+ 		return -EINVAL;
+ 
+ 	/* We'll use a local copy of buf */
+-	count = min_t(size_t, count, 7);
++	count = min_t(size_t, count, sizeof(in)-1);
+ 	strncpy(in, buf, count);
+ 	in[count] = '\0';
+ 
