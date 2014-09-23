@@ -1,43 +1,76 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc fixes for v3.17
-Date: Tue, 23 Sep 2014 21:43:34 +0200
-Message-ID: <20140923194334.GA18179@p100.box>
+From: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+Subject: Re: [PATCH] atomic_read: Use ACCESS_ONCE() instead of cast to
+ volatile
+Date: Tue, 23 Sep 2014 21:43:27 +0200
+Message-ID: <20140923194327.GA5940@samfundet.no>
+References: <1411482607-20948-1-git-send-email-bobby.prani@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Cc: Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Haavard Skinnemoen <hskinnemoen@gmail.com>,
+        Mikael Starvik <starvik@axis.com>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        David Howells <dhowells@redhat.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Hirokazu Takata <takata@linux-m32r.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Moln
+To: Pranith Kumar <bobby.prani@gmail.com>
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <1411482607-20948-1-git-send-email-bobby.prani@gmail.com>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-Hi Linus,
+Around Tue 23 Sep 2014 10:29:50 -0400 or thereabout, Pranith Kumar wrote:
+> Use the much reader friendly ACCESS_ONCE() instead of the cast to volatile. This
+> is purely a style change.
+> 
+> Signed-off-by: Pranith Kumar <bobby.prani@gmail.com>
+> ---
+>  arch/alpha/include/asm/atomic.h    | 4 ++--
+>  arch/arm/include/asm/atomic.h      | 2 +-
+>  arch/arm64/include/asm/atomic.h    | 4 ++--
+>  arch/avr32/include/asm/atomic.h    | 2 +-
 
-please pull a few late fixes for the parisc architecture for kernel 3.17 from 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.17-7
+For the AVR32 related part.
 
-We avoid using -mfast-indirect-calls for 64bit kernel builds to prevent
-building an unbootable kernel due to latest gcc changes. In the
-pdc_stable/firmware-access driver we fix a few possible stack overflows
-and we now call secure_computing_strict() instead of secure_computing()
-which fixes upcoming SECCOMP patches in the for-next trees.
- 
-Thanks,
-Helge
+Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
 
-----------------------------------------------------------------
-Helge Deller (2):
-      parisc: ptrace: use secure_computing_strict()
-      parisc: pdc_stable.c: Avoid potential stack overflows
+>  arch/cris/include/asm/atomic.h     | 2 +-
+>  arch/frv/include/asm/atomic.h      | 2 +-
+>  arch/ia64/include/asm/atomic.h     | 4 ++--
+>  arch/m32r/include/asm/atomic.h     | 2 +-
+>  arch/m68k/include/asm/atomic.h     | 2 +-
+>  arch/mips/include/asm/atomic.h     | 4 ++--
+>  arch/parisc/include/asm/atomic.h   | 4 ++--
+>  arch/sh/include/asm/atomic.h       | 2 +-
+>  arch/sparc/include/asm/atomic_32.h | 2 +-
+>  arch/sparc/include/asm/atomic_64.h | 4 ++--
+>  arch/x86/include/asm/atomic.h      | 2 +-
+>  arch/x86/include/asm/atomic64_64.h | 2 +-
+>  arch/xtensa/include/asm/atomic.h   | 2 +-
+>  include/asm-generic/atomic.h       | 2 +-
+>  18 files changed, 24 insertions(+), 24 deletions(-)
 
-John David Anglin (1):
-      parisc: Only use -mfast-indirect-calls option for 32-bit kernel builds
+<snipp diff>
 
-Rickard Strandqvist (1):
-      parisc: pdc_stable.c: Cleaning up unnecessary use of memset in conjunction with strncpy
-
- arch/parisc/Makefile        |  7 ++++++-
- arch/parisc/kernel/ptrace.c |  6 ++----
- drivers/parisc/pdc_stable.c | 15 +++++++++------
- 3 files changed, 17 insertions(+), 11 deletions(-)
+-- 
+BR, HcE
