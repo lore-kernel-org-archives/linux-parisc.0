@@ -1,41 +1,33 @@
 From: Helge Deller <deller@gmx.de>
-Subject: serial console broken in v3.17-rc6 ?
-Date: Tue, 23 Sep 2014 22:11:15 +0200
-Message-ID: <5421D3E3.6080805@gmx.de>
+Subject: Re: FIX MES in init.c
+Date: Tue, 23 Sep 2014 22:48:31 +0200
+Message-ID: <5421DC9F.2080504@gmx.de>
+References: <54207769.2020105@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-To: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-parisc <linux-parisc@vger.kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Cc: akpm@linux-foundation.org, himangi774@gmail.com,
+	julia.lawall@lip6.fr, mgorman@suse.de,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: nick <yocto6@gmail.com>, jejb@parisc-linux.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <54207769.2020105@gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-During the release cycle of v3.17 I've seen sometimes a broken serial console output
-on the parisc platform. Interestingly all kernel messages printed by the kernel via printk() show
-up correctly, but output from userspace (e.g. by the init process during boot) show
-up as random bytes.
-Since the printk() output is correct the serial port itself and setup is probably correct.
-Is parisc the only arch which has this problem, or are other architectures affected as well?
-Maybe someone has an idea what could be wrong?
-I did not try to bisect it yet.
+Hi Nick,
 
-Thanks,
+On 09/22/2014 09:24 PM, nick wrote:
+> Greetings James and Other Maintainers of the Parisc Architecture,
+> I am wondering about two fix mes in init.c and how to fix them
+> for being const declared into actual variables.
+> ...
+> 	/* FIXME: This is 'const' in order to trick the compiler
+> 	   into not treating it as DP-relative data. */
+> 	extern void * const linux_gateway_page;
+
+The FIXME: is misleading. It should maybe better read "HINT:" or something like that.
+Trivially it's basically just casting the symbol so that the compiler
+will produce the correct code later on.
+There is nothing you could try to "fix".
+
 Helge
-
-Here is a sample output during bootup:
-
-<lots of standard kernel printk output>...
-usb 1-2: Manufacturer: SILITEK
-rs
-      og
-  ]f"
-s l
-random: nonblocking pool is initialized
-net eth0: Setting full-duplex based on MII#1 link partner capability of 45e1
-tpdsystemd-udevd[744]: starting version 215
-.
-  eg..
-      vp..
-          ..Adding 1350652k swap on /dev/sdb6.  Priority:-1 extents:1 across:1350652k
-.
-  EXT4-fs (sdb5): re-mounted. Opts: (null)
