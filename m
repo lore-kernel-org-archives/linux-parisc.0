@@ -1,60 +1,41 @@
-From: Jesper Nilsson <jesper.nilsson@axis.com>
-Subject: Re: [PATCH] atomic_read: Use ACCESS_ONCE() instead of cast to
- volatile
-Date: Tue, 23 Sep 2014 17:40:16 +0200
-Message-ID: <20140923154016.GT18910@axis.com>
-References: <1411482607-20948-1-git-send-email-bobby.prani@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Haavard Skinnemoen <hskinnemoen@gmail.com>,
-        Hans-Christian Egtvedt <egtvedt@samfundet.no>,
-        Mikael Starvik <starvik@axis.com>,
-        Jesper Nilsson <jespern@axis.com>,
-        David Howells <dhowells@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Hirokazu Takata <takata@linux-m32r.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas
-To: Pranith Kumar <bobby.prani@gmail.com>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <1411482607-20948-1-git-send-email-bobby.prani@gmail.com>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+From: Michal Marek <mmarek@suse.cz>
+Subject: [PATCH 2/5] parisc: Set CONFIG_NET=y in defconfigs
+Date: Tue, 23 Sep 2014 17:44:01 +0200
+Message-ID: <1411487044-14071-2-git-send-email-mmarek@suse.cz>
+References: <54218AEF.5090200@suse.cz>
+ <1411487044-14071-1-git-send-email-mmarek@suse.cz>
+Cc: netdev@vger.kernel.org, linux-next@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+	linux-parisc@vger.kernel.org
+To: sfr@canb.auug.org.au, rdunlap@infradead.org, davem@davemloft.net
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1411487044-14071-1-git-send-email-mmarek@suse.cz>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Sep 23, 2014 at 04:29:50PM +0200, Pranith Kumar wrote:
-> Use the much reader friendly ACCESS_ONCE() instead of the cast to volatile. This
-> is purely a style change.
-> 
-> Signed-off-by: Pranith Kumar <bobby.prani@gmail.com>
-> ---
->  arch/alpha/include/asm/atomic.h    | 4 ++--
->  arch/arm/include/asm/atomic.h      | 2 +-
->  arch/arm64/include/asm/atomic.h    | 4 ++--
->  arch/avr32/include/asm/atomic.h    | 2 +-
->  arch/cris/include/asm/atomic.h     | 2 +-
+Commit 5d6be6a5 ("scsi_netlink : Make SCSI_NETLINK dependent on NET
+instead of selecting NET") removed what happened to be the only instance
+of 'select NET'. Defconfigs that were relying on the select now lack
+networking support.
 
-For the CRIS parts:
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: linux-parisc@vger.kernel.org
+Signed-off-by: Michal Marek <mmarek@suse.cz>
+---
+ arch/parisc/configs/c8000_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
-
-/^JN - Jesper Nilsson
+diff --git a/arch/parisc/configs/c8000_defconfig b/arch/parisc/configs/c8000_defconfig
+index 8249ac9..269c23d 100644
+--- a/arch/parisc/configs/c8000_defconfig
++++ b/arch/parisc/configs/c8000_defconfig
+@@ -33,6 +33,7 @@ CONFIG_PCI_LBA=y
+ # CONFIG_PDC_CHASSIS_WARN is not set
+ # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
+ CONFIG_BINFMT_MISC=m
++CONFIG_NET=y
+ CONFIG_PACKET=y
+ CONFIG_UNIX=y
+ CONFIG_XFRM_USER=m
 -- 
-               Jesper Nilsson -- jesper.nilsson@axis.com
+1.8.4.5
