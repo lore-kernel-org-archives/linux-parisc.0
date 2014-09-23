@@ -1,30 +1,59 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: FIX MES in init.c
-Date: Tue, 23 Sep 2014 16:59:20 -0400
-Message-ID: <BLU436-SMTP6279A45A0CDDB3AC2C3BDF97B00@phx.gbl>
-References: <54207769.2020105@gmail.com> <5421DC9F.2080504@gmx.de>
+From: Peter Hurley <peter@hurleysoftware.com>
+Subject: Re: serial console broken in v3.17-rc6 ?
+Date: Tue, 23 Sep 2014 17:08:54 -0400
+Message-ID: <5421E166.7060206@hurleysoftware.com>
+References: <5421D3E3.6080805@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Cc: akpm@linux-foundation.org, himangi774@gmail.com,
-	julia.lawall@lip6.fr, mgorman@suse.de,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: Helge Deller <deller@gmx.de>, nick <yocto6@gmail.com>,
-	jejb@parisc-linux.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <5421DC9F.2080504@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+To: Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-parisc <linux-parisc@vger.kernel.org>
+Return-path: <linux-serial-owner@vger.kernel.org>
+In-Reply-To: <5421D3E3.6080805@gmx.de>
+List-ID: <linux-serial.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 9/23/2014 4:48 PM, Helge Deller wrote:
-> The FIXME: is misleading. It should maybe better read "HINT:" or 
-> something like that.
-> Trivially it's basically just casting the symbol so that the compiler
-> will produce the correct code later on.
-> There is nothing you could try to "fix".
-Why not just remove "FIXME: " from these comments?
+Hi Helge,
 
-Dave
+On 09/23/2014 04:11 PM, Helge Deller wrote:
+> During the release cycle of v3.17 I've seen sometimes a broken serial console output
+> on the parisc platform. Interestingly all kernel messages printed by the kernel via printk() show
+> up correctly, but output from userspace (e.g. by the init process during boot) show
+> up as random bytes.
+> Since the printk() output is correct the serial port itself and setup is probably correct.
+> Is parisc the only arch which has this problem, or are other architectures affected as well?
+> Maybe someone has an idea what could be wrong?
+> I did not try to bisect it yet.
+> 
+> Thanks,
+> Helge
+> 
+> Here is a sample output during bootup:
+> 
+> <lots of standard kernel printk output>...
+> usb 1-2: Manufacturer: SILITEK
+> rs
+>      og
+>  ]f"
+> s l
+> random: nonblocking pool is initialized
+> net eth0: Setting full-duplex based on MII#1 link partner capability of 45e1
+> tpdsystemd-udevd[744]: starting version 215
+> .
+>  eg..
+>      vp..
+>          ..Adding 1350652k swap on /dev/sdb6.  Priority:-1 extents:1 across:1350652k
+> .
+>  EXT4-fs (sdb5): re-mounted. Opts: (null)
 
--- 
-John David Anglin    dave.anglin@bell.net
+Thanks for the bug report.
+
+1. What serial driver is this?
+2. Regression since when?
+3. Full dmesg please
+4. Output of setserial -a [serial device]
+5. Output of stty -a [serial device]
+
+Regards,
+Peter Hurley
 
