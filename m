@@ -1,76 +1,41 @@
-From: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-Subject: Re: [PATCH] atomic_read: Use ACCESS_ONCE() instead of cast to
- volatile
-Date: Tue, 23 Sep 2014 21:43:27 +0200
-Message-ID: <20140923194327.GA5940@samfundet.no>
-References: <1411482607-20948-1-git-send-email-bobby.prani@gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: serial console broken in v3.17-rc6 ?
+Date: Tue, 23 Sep 2014 22:11:15 +0200
+Message-ID: <5421D3E3.6080805@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Haavard Skinnemoen <hskinnemoen@gmail.com>,
-        Mikael Starvik <starvik@axis.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        David Howells <dhowells@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Hirokazu Takata <takata@linux-m32r.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Moln
-To: Pranith Kumar <bobby.prani@gmail.com>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <1411482607-20948-1-git-send-email-bobby.prani@gmail.com>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-parisc <linux-parisc@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-Around Tue 23 Sep 2014 10:29:50 -0400 or thereabout, Pranith Kumar wrote:
-> Use the much reader friendly ACCESS_ONCE() instead of the cast to volatile. This
-> is purely a style change.
-> 
-> Signed-off-by: Pranith Kumar <bobby.prani@gmail.com>
-> ---
->  arch/alpha/include/asm/atomic.h    | 4 ++--
->  arch/arm/include/asm/atomic.h      | 2 +-
->  arch/arm64/include/asm/atomic.h    | 4 ++--
->  arch/avr32/include/asm/atomic.h    | 2 +-
+During the release cycle of v3.17 I've seen sometimes a broken serial console output
+on the parisc platform. Interestingly all kernel messages printed by the kernel via printk() show
+up correctly, but output from userspace (e.g. by the init process during boot) show
+up as random bytes.
+Since the printk() output is correct the serial port itself and setup is probably correct.
+Is parisc the only arch which has this problem, or are other architectures affected as well?
+Maybe someone has an idea what could be wrong?
+I did not try to bisect it yet.
 
-For the AVR32 related part.
+Thanks,
+Helge
 
-Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+Here is a sample output during bootup:
 
->  arch/cris/include/asm/atomic.h     | 2 +-
->  arch/frv/include/asm/atomic.h      | 2 +-
->  arch/ia64/include/asm/atomic.h     | 4 ++--
->  arch/m32r/include/asm/atomic.h     | 2 +-
->  arch/m68k/include/asm/atomic.h     | 2 +-
->  arch/mips/include/asm/atomic.h     | 4 ++--
->  arch/parisc/include/asm/atomic.h   | 4 ++--
->  arch/sh/include/asm/atomic.h       | 2 +-
->  arch/sparc/include/asm/atomic_32.h | 2 +-
->  arch/sparc/include/asm/atomic_64.h | 4 ++--
->  arch/x86/include/asm/atomic.h      | 2 +-
->  arch/x86/include/asm/atomic64_64.h | 2 +-
->  arch/xtensa/include/asm/atomic.h   | 2 +-
->  include/asm-generic/atomic.h       | 2 +-
->  18 files changed, 24 insertions(+), 24 deletions(-)
-
-<snipp diff>
-
--- 
-BR, HcE
+<lots of standard kernel printk output>...
+usb 1-2: Manufacturer: SILITEK
+rs
+      og
+  ]f"
+s l
+random: nonblocking pool is initialized
+net eth0: Setting full-duplex based on MII#1 link partner capability of 45e1
+tpdsystemd-udevd[744]: starting version 215
+.
+  eg..
+      vp..
+          ..Adding 1350652k swap on /dev/sdb6.  Priority:-1 extents:1 across:1350652k
+.
+  EXT4-fs (sdb5): re-mounted. Opts: (null)
