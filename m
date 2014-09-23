@@ -1,80 +1,43 @@
-From: =?utf-8?B?5bCP5a2U?= <gamebox@xtimes.org>
-Subject: =?utf-8?B?55So6L+Z5Liq5bmz5Y+w5Y+R55+t5L+h77yM6L+Z5bCx5a+55LqGICAgICAgIA==?=
-	=?utf-8?B?ICAgICAgICAgICAgICAgICAgICA=?=
-	=?utf-8?B?ICAgICAgICAgICAgICAgICAgICA=?=
-	=?utf-8?B?ICAgICAgICAgICAgICAgICAgICA=?=
-	=?utf-8?B?ICB4NWZ3M3V1bQ==?=
-Date: Tue, 23 Sep 2014 22:32:55 +0800
-Message-ID: <20140923223305200644@xtimes.org>
-Reply-To: <dingxj8@aliyun.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc fixes for v3.17
+Date: Tue, 23 Sep 2014 21:43:34 +0200
+Message-ID: <20140923194334.GA18179@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-To: <linux-india-help-admin@lists.sourceforge.net>,
-	<linux-nfs@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
-	<linux-raid-request@vger.rutgers.edu>
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-DQogIOWbveWGheacgOWlveeUqOeahOefreS/oeW5s+WPsO+8jOmAiei/meS4qui/meWwseWvueS6
-huOAguato+inhOWGheWuuemDveWPr+S7peWPke+8jOWIsOi+vumrmO+8jOS4jeWxj+iUveOAguWS
-qOivouivt+WKoFFRMTkzOTg5NzI177yM5Y+v5Lul5rWL6K+V5ZOm44CCDQoNCg0KDQoNCg0KIA0K
-DQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoN
-Cg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0K
-DQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoN
-Cg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCuWwkeW5tOS4u+W8oOaWh+eroOmc
-gOimgeaciei2o++8jOWoseS6uuWoseW3seiAjOW3su+8jOiAjOWGr+S6keWxseWImeiupOS4uuaW
-h+eroOW6lOivpeaWh+S7pei9vemBk++8jOaVmeWMluS4luS6uuOAgiAgICDkuKTkurrkuonorrrk
-uoblpb3lh6DlpKnvvIzmnIDlkI7lhpvoo4XlsJHlubTkuL7miYvmipXpmY3vvIzkvYbmmK/ov5nm
-m7Torqnlhq/kupHlsbHmhJ/op4nlsYjovrHvvIzmhJ/op4nku5blj6rmmK/kuI3miZPlvIDovabn
-ga/ovablrZDooYzpqbbkuZ/msqHku4DkuYjpmpznoo3jgIIgICAg6JGj6ZuG55qE6Ziy5Y2r5o6q
-5pa96Z2e5bi45aW977yM5p2R5aS055qE5Zub6KeS5L+u5LqG5Zub5bqn5LiJ5bGC5bCP5rSL5qW8
-77yM5YWF5b2T552A4oCc5ZOo5omA4oCd55qE5L2c55So77yM5q+P5bqn5bCP5qW86YO95pyJ5Lq6
-5LiT6Zeo5pS+5ZOo77yM6KOF5pyJ5aSn5ZaH5Y+t5bm/5pKt44CCICAgIOS7luS7rOi/mOWPkeaY
-juS6huS4gOWSjOeItuS6sui/m+ihjOS4gOasoemVv+iwiOOAgiAgICDov5nnp43plb/osIjvvIzl
-vojlnabor5rvvIzkuZ/lvojnm7TmjqXvvIzpkojlr7nmgKflvojlvLrvvIzosIjlvpfnn6XmoLnn
-n6XlupXvvIzmr4/nu4/ljobkuIDmrKHov5nmoLfnmoTosIjor53vvIzmm7noh7Tov5zpg73kvJro
-p4nlvpflj5fnm4rljKrmtYXjgIIgICAg54i25Lqy6Jm954S25LiN6Iez5LqO5YOP6YKT5YWs6YKj
-5qC34oCc5LiJ6LW35LiJ6JC94oCd5LuV576O5oSf44CCICAgIOWkj+Wwj+a0m+i9u+i9u+WcsOmd
-oOi/keS7lu+8jOS7juiDjOWQjuaKseS9j+Wlue+8jOWlueKAnOWViuKAneWcsOS4gOWjsOaDiuWR
-vO+8jOWQk+S6huS4gOi3s++8jOWPjei/h+i6q+adpeeci+ingeaYr+Wkj+Wwj+a0m++8jOS4gOiE
-uOWoh+e+nui1t+adpeOAgiAgICDll5TmgJLlnLDngrnkuobkuIDkuIvlsI/mtJvnmoTohJHpl6jp
-gZPvvJrigJzkvaDov5nlranlrZDvvIzlkJPmrbvlp5Dlp5DkuobvvIHor4nkvaDvvIzlhbblrp7m
-iJHmoLnmnKzkuI3niLHku4DkuYjni5flsYHor5fmrYzmlaPmloflsI/or7TvvIzmiJHkuZ/kuI3m
-mK/ku4DkuYjmloflrabpnZLlubTvvIzmiJHlsLHmmK/kuIDkuKrkv5fkurrvvIzllpzmrKLpkrHl
-lpzmrKLnianotKjllpzmrKLmnYPliKnvvIzmiJHmsqHpgqPkuYjpq5jpm4XvvIzmsYLmsYLkvaDp
-pbbkuobmiJHooYzkuYjvvJ/pgqPnr4for5fmrYzlsLHmmK/miJHmioTooq3nmoTvvIHigJ0gICAg
-5qWa5Zug5Li657u05oqk5L2V6K+X6Z+15pu+57uP5ZKM5Y2i5Y2X5Y2O44CB6JGj5Zub5Zac5YWs
-54S25byA5oiY44CCICAgIOW+iOWkmuS4quWtpOeLrOmavuecoOeahOWknOmHjO+8jOWlueWcqOWT
-gOWPueiHquW3seS4jeW5uOeahOWpmuWnu+i+l+i9rOWPjeS+p+S5i+mZhe+8jOWcqOWboOS4uuS6
-ieadg+WkuuWIqeiuqeWlueeWsuaDq+eahOaXtuWAme+8jOWlueWkmuaDs+acieS4gOS4queUt+S6
-uuWPr+S7peS/neaKpOiHquW3se+8jAkNCuS9oOOAguKAnSAgICDkuI7mraTliY3mlKvlj5bnrKzk
-uIDmobbph5HnmoTigJznirblhYPnrJTorrDigJ3kuI3lkIzvvIzlkInnpaXnianigJznm7znm7zi
-gJ3pobnnm67lt7Lnu4/lvIDlp4vpga3pgYfliLDms6LmipjvvIzlpI/lsI/mtJvoh6rnhLbmmI7n
-mb3kvIHkuJrotorlpKfvvIznu4/okKXnrqHnkIbotorlpI3mnYLvvIzmm7TlrrnmmJPpgYfliLDl
-kITnp43ljbHmnLrjgIIgICAg5LuW5Lmf6ZqQ6ZqQ6KeJ6YGT77ya4oCc546L6ICB5p2/77yM6LCi
-6LCi5L2g77yM6ICB5aSP5bqE6Ie05a+M5aWU5bCP5bq35bCx5YWo6Z2g5oKo5LqG77yB4oCdICAg
-IOeOi+Wkp+WKm+S6q+WPl+edgOWkj+i/keWRqOeahOaEn+iwouWSjOW0h+aVrO+8jOW+iOa3oeWu
-muWcsOS4gOaRhuaJi++8jOmBk++8muKAnOWwj+S6i+WVpuKApuKApuWlveivtO+8jOWlveivtOOA
-guKAnSAgICDlpI/lsI/mtJvnnqflkJHkvK/niLblpI/ov5HlkajvvIzlj5HnjrDku5bmnoHlnLDm
-lr3lsZXlvIDkuIDouqvlpb3lip/lpKvvvIzkuInkuIvkupTpmaTkuozmiorlh6DkuKrmi4nmia/n
-nYDmn7PmnIjnmoTlsI/pnZLlubTmlL7lgJLkuobjgIIgICAg5Yeg5Liq5bCR5bm05LiA55yL5p2l
-6ICF5LiN5ZaE77yM5a+55pa55piO5pi+5piv5Liq57uD5a625a2Q77yM5Y+v5LiN5piv5LiA6Iis
-55qE5pyJ54K56Juu5Yqb6ICM5bey55qE5Yac5p2R6Z2S5bm077yM5Lmf6L2v5LqG77yM5LiN5pWi
-5YaN5Yqo5omL77yM5L2g5Lya5piv5LuA5LmI5oSf6KeJ77yfICAgIOS9oOS4gOWumua7oeaAgOac
-n+W+heiAjOWPiOWFhea7oeaBkOaDp+WQp+OAgiAgICDlpI/lsI/mtJvlsLHooqvov5nmoLfmnJ/l
-voXlkozmt6Hmt6HnmoTmgZDmg6fokKbnu5XnnYDvvIzku5blhrPlrprvvIzopoHmiorkuozni5fl
-rZDlkozmk47lpKnlk6XmlZnnmoTlip/lpKvpg73lrabkvJrkuobjgIIgICAg5q2k5Yi777yM5rWB
-6KiA6Jya6K+t5Lyg5pKt5b6X5aaC5ZCM5YWJ55Sw5Yek5omN77yf4oCdICAgIOWNs+S9v+mCo+ax
-ieWtkOa1kea1iueahOebruWFieS5n+mavuS7peaOqemlsOWFtuS4reeahOaDiuW8gu+8jOmBk++8
-muKAnOS9oOaAjuS5iOefpemBk+eahOKApuKApuaIkeWwseaYr+S7lueahOeItuS6sueUsOebm+aW
-h++8jOWcqOadkemHjOS6uuS7rOmDveWPq+aIkeeUsOWAreeTnOOAguKAnSAgICDlpI/lsI/mtJvm
-g4rpgZPvvJrigJzkvK/niLbvvIzmnpznhLbmmK/mgqjogIHkurrlrrbvvIzlnKjlooPnlYzkuI7m
-sJTlir/kuIrpg73kuI3lsYDkv4PvvIznnJ/mraPnmoTpq5jmiYvlooPnlYzlsLHmmK/pmo/mhI/l
-h7rmiYvvvIzogIzpg73oh7PlpKflooPnlYzjgILlpoLlkIzmkanltJbliLvlrZfvvIzlhbblrp7p
-m4Tmt7fvvIzoh6rmnInnq6/luoTlrp3nm7jjgIIgICAg5aW555uu5YWJ5LiA55u06IGa54Sm5Zyo
-5aSP5bCP5rSb6IS45LiK77yM5LiA5Yqo5Lmf5LiN5Yqo77yM55u05Yiw5peB6L6555qE5LiA5Liq
-5bCR5aWzCQ0K
+Hi Linus,
 
+please pull a few late fixes for the parisc architecture for kernel 3.17 from 
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.17-7
 
+We avoid using -mfast-indirect-calls for 64bit kernel builds to prevent
+building an unbootable kernel due to latest gcc changes. In the
+pdc_stable/firmware-access driver we fix a few possible stack overflows
+and we now call secure_computing_strict() instead of secure_computing()
+which fixes upcoming SECCOMP patches in the for-next trees.
+ 
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Helge Deller (2):
+      parisc: ptrace: use secure_computing_strict()
+      parisc: pdc_stable.c: Avoid potential stack overflows
+
+John David Anglin (1):
+      parisc: Only use -mfast-indirect-calls option for 32-bit kernel builds
+
+Rickard Strandqvist (1):
+      parisc: pdc_stable.c: Cleaning up unnecessary use of memset in conjunction with strncpy
+
+ arch/parisc/Makefile        |  7 ++++++-
+ arch/parisc/kernel/ptrace.c |  6 ++----
+ drivers/parisc/pdc_stable.c | 15 +++++++++------
+ 3 files changed, 17 insertions(+), 11 deletions(-)
