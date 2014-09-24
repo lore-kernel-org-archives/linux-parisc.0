@@ -1,71 +1,48 @@
-From: Max Filippov <jcmvbkbc@gmail.com>
-Subject: Re: [PATCH] atomic_read: Use ACCESS_ONCE() instead of cast to volatile
-Date: Wed, 24 Sep 2014 03:56:39 +0400
-Message-ID: <CAMo8BfKxwq=pc5Lym7X0Qdgmr37jJ-OK_dCmzukkHxtCxz8_7A@mail.gmail.com>
-References: <1411482607-20948-1-git-send-email-bobby.prani@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Haavard Skinnemoen <hskinnemoen@gmail.com>,
-        Hans-Christian Egtvedt <egtvedt@samfundet.no>,
-        Mikael Starvik <starvik@axis.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        David Howells <dhowells@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Hirokazu Takata <takata@linux-m32r.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-To: Pranith Kumar <bobby.prani@gmail.com>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <1411482607-20948-1-git-send-email-bobby.prani@gmail.com>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+From: Nicholas Krause <yocto6@gmail.com>
+Subject: [PATCH] parisc:Remove unnecessary FIXMES in init.c
+Date: Tue, 23 Sep 2014 21:49:43 -0400
+Message-ID: <1411523383-9820-1-git-send-email-yocto6@gmail.com>
+Cc: deller@gmx.de, akpm@linux-foundation.org, mgorman@suse.de,
+	julia.lawall@lip6.fr, himangi774@gmail.com,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: jejb@parisc-linux.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Sep 23, 2014 at 6:29 PM, Pranith Kumar <bobby.prani@gmail.com> wrote:
-> Use the much reader friendly ACCESS_ONCE() instead of the cast to volatile. This
-> is purely a style change.
->
-> Signed-off-by: Pranith Kumar <bobby.prani@gmail.com>
-> ---
->  arch/alpha/include/asm/atomic.h    | 4 ++--
->  arch/arm/include/asm/atomic.h      | 2 +-
->  arch/arm64/include/asm/atomic.h    | 4 ++--
->  arch/avr32/include/asm/atomic.h    | 2 +-
->  arch/cris/include/asm/atomic.h     | 2 +-
->  arch/frv/include/asm/atomic.h      | 2 +-
->  arch/ia64/include/asm/atomic.h     | 4 ++--
->  arch/m32r/include/asm/atomic.h     | 2 +-
->  arch/m68k/include/asm/atomic.h     | 2 +-
->  arch/mips/include/asm/atomic.h     | 4 ++--
->  arch/parisc/include/asm/atomic.h   | 4 ++--
->  arch/sh/include/asm/atomic.h       | 2 +-
->  arch/sparc/include/asm/atomic_32.h | 2 +-
->  arch/sparc/include/asm/atomic_64.h | 4 ++--
->  arch/x86/include/asm/atomic.h      | 2 +-
->  arch/x86/include/asm/atomic64_64.h | 2 +-
->  arch/xtensa/include/asm/atomic.h   | 2 +-
->  include/asm-generic/atomic.h       | 2 +-
->  18 files changed, 24 insertions(+), 24 deletions(-)
+This removes the two fixmes in the file, init.c for compiler hints
+for comments related to compiler hints in linux_gateway_page_addr
+and map_hpux_gateway_page to change from FIXME to HINT in order
+for people reading this code to understand that these are compiler
+hints.
 
-For xtensa:
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Nicholas Krause <yocto6@gmail.com>
+---
+ arch/parisc/mm/init.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 0bef864..668102e 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -733,7 +733,7 @@ static void __init pagetable_init(void)
+ static void __init gateway_init(void)
+ {
+ 	unsigned long linux_gateway_page_addr;
+-	/* FIXME: This is 'const' in order to trick the compiler
++	/* HINT: This is 'const' in order to trick the compiler
+ 	   into not treating it as DP-relative data. */
+ 	extern void * const linux_gateway_page;
+ 
+@@ -761,7 +761,7 @@ map_hpux_gateway_page(struct task_struct *tsk, struct mm_struct *mm)
+ 	unsigned long start_pte;
+ 	unsigned long address;
+ 	unsigned long hpux_gw_page_addr;
+-	/* FIXME: This is 'const' in order to trick the compiler
++	/* HINT: This is 'const' in order to trick the compiler
+ 	   into not treating it as DP-relative data. */
+ 	extern void * const hpux_gateway_page;
+ 
 -- 
-Thanks.
--- Max
+1.9.1
+
