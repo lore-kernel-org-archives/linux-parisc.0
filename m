@@ -1,51 +1,34 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [RFC PATCH 10/16] mips: support poweroff through poweroff
- handler call chain
-Date: Wed, 1 Oct 2014 09:26:17 -0700
-Message-ID: <20141001162617.GC11708@roeck-us.net>
-References: <1412100056-15517-1-git-send-email-linux@roeck-us.net>
- <1412100056-15517-11-git-send-email-linux@roeck-us.net>
- <20141001133238.GJ19854@linux-mips.org>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Fix serial console for machines with serial port on
+ superio chip
+Date: Wed, 1 Oct 2014 22:11:01 +0200
+Message-ID: <20141001201101.GA18512@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-	linux-ia64@vger.kernel.org, linux-metag@vger.kernel.org,
-	linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20141001133238.GJ19854@linux-mips.org>
-List-ID: <linux-ia64.vger.kernel.org>
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>,
+	Peter Hurley <peter@hurleysoftware.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Oct 01, 2014 at 03:32:39PM +0200, Ralf Baechle wrote:
-> On Tue, Sep 30, 2014 at 11:00:50AM -0700, Guenter Roeck wrote:
-> 
-> > The kernel core now supports a poweroff handler call chain
-> > to remove power from the system. Call it if pm_power_off
-> > is set to NULL.
-> > 
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> > ---
-> >  arch/mips/kernel/reset.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/arch/mips/kernel/reset.c b/arch/mips/kernel/reset.c
-> > index 07fc524..c3391d7 100644
-> > --- a/arch/mips/kernel/reset.c
-> > +++ b/arch/mips/kernel/reset.c
-> > @@ -41,4 +41,6 @@ void machine_power_off(void)
-> >  {
-> >  	if (pm_power_off)
-> >  		pm_power_off();
-> > +	else
-> > +		do_kernel_poweroff();
-> 
-> I'm happy with this as long as in a later version pm_power_off indeed
-> goes away.
-> 
-Yes, that would be the ultimate goal. Hope we can get there.
+Fix the serial console on machines where the serial port is located on
+the SuperIO chip.
 
-Guenter
+Signed-off-by: Helge Deller <deller@gmx.de>
+CC: Peter Hurley <peter@hurleysoftware.com>
+diff --git a/drivers/parisc/superio.c b/drivers/parisc/superio.c
+index a042d06..8be2096 100644
+--- a/drivers/parisc/superio.c
++++ b/drivers/parisc/superio.c
+@@ -395,7 +395,8 @@ static void __init superio_serial_init(void)
+ 	serial_port.iotype	= UPIO_PORT;
+ 	serial_port.type	= PORT_16550A;
+ 	serial_port.uartclk	= 115200*16;
+-	serial_port.fifosize	= 16;
++	serial_port.flags	= UPF_FIXED_PORT | UPF_FIXED_TYPE |
++				  UPF_BOOT_AUTOCONF;
+ 
+ 	/* serial port #1 */
+ 	serial_port.iobase	= sio_dev.sp1_base;
