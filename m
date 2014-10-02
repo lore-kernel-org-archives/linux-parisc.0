@@ -1,66 +1,34 @@
-From: Guenter Roeck <linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org>
-Subject: Re: [Xen-devel] [RFC PATCH 14/16] x86/xen: support poweroff through
- poweroff handler call chain
-Date: Thu, 02 Oct 2014 06:27:08 -0700
-Message-ID: <542D52AC.3040009@roeck-us.net>
-References: <1412100056-15517-1-git-send-email-linux@roeck-us.net> <1412100056-15517-15-git-send-email-linux@roeck-us.net> <542D1EC4.10100@citrix.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc late fix for v3.17
+Date: Thu, 2 Oct 2014 20:39:03 +0200
+Message-ID: <20141002183903.GA1250@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Cc: linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, linux-ia64-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-c6x-dev-jPsnJVOj+W6hPH1hqNUYSQ@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-pm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	Ingo Molnar <mingo-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>,
-	Thomas Gleixner <tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>,
-	"H. Peter Anvin" <hpa-YMNOUZJC4hwAvxtiuMwx3w@public.gmane.org>, xen-devel-GuqFBffKawtpuQazS67q72D2FQJk+8+b@public.gmane.org,
-	Boris Ostrovsky <boris.ostrovsky-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org>,
-	linux-metag-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: David Vrabel <david.vrabel-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>,
-	linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Return-path: <linux-metag-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <542D1EC4.10100-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>
-List-ID: <linux-metag.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 10/02/2014 02:45 AM, David Vrabel wrote:
-> On 30/09/14 19:00, Guenter Roeck wrote:
->> The kernel core now supports a poweroff handler call chain
->> to remove power from the system. Call it if pm_power_off
->> is set to NULL.
->>
->> Cc: Konrad Rzeszutek Wilk <konrad.wilk-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org>
->> Cc: Boris Ostrovsky <boris.ostrovsky-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org>
->> Cc: Thomas Gleixner <tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>
->> Cc: Ingo Molnar <mingo-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
->> Cc: H. Peter Anvin <hpa-YMNOUZJC4hwAvxtiuMwx3w@public.gmane.org>
->> Signed-off-by: Guenter Roeck <linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org>
->> ---
->>   arch/x86/xen/enlighten.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/arch/x86/xen/enlighten.c b/arch/x86/xen/enlighten.c
->> index c0cb11f..645d00f 100644
->> --- a/arch/x86/xen/enlighten.c
->> +++ b/arch/x86/xen/enlighten.c
->> @@ -1322,6 +1322,8 @@ static void xen_machine_power_off(void)
->>   {
->>   	if (pm_power_off)
->>   		pm_power_off();
->> +	else
->> +		do_kernel_poweroff();
->
-> Why isn't this if (pm_power_off) check in do_kernel_poweroff()?
->
-> That way when you finally remove pm_power_off you need only update one
-> place.  A quick skim of the other archs suggest this would work for them
-> too.
->
+Hi Linus,
 
-Good idea. I'll do that for the next version of the patch set.
+can you please pull 
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.17-8
 
-Guenter
+to fetch one late but trivial patch to fix the serial console on parisc
+machines which got broken during the 3.17 release cycle?
 
+Thanks,
+Helge
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-metag" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Changelog:
+Fix serial console for machines with serial port on superio chip
+
+----------------------------------------------------------------
+Helge Deller (1):
+      parisc: Fix serial console for machines with serial port on superio chip
+
+ drivers/parisc/superio.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
