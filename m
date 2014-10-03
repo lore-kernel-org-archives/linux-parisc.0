@@ -1,66 +1,68 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [RFC PATCH 05/16] arm64: support poweroff through poweroff handler
- call chain
-Date: Fri, 03 Oct 2014 06:12:23 -0700
-Message-ID: <542EA0B7.5040007@roeck-us.net>
-References: <1412100056-15517-1-git-send-email-linux@roeck-us.net> <1412100056-15517-6-git-send-email-linux@roeck-us.net> <20141003103056.GB14110@localhost>
+From: Sebastian Reichel <sre@kernel.org>
+Subject: Re: [RFC PATCH 15/16] power/reset: restart-poweroff: Register with
+ kernel poweroff handler
+Date: Fri, 3 Oct 2014 16:27:18 +0200
+Message-ID: <20141003142718.GA8291@earth.universe>
+References: <1412100056-15517-1-git-send-email-linux@roeck-us.net>
+ <1412100056-15517-16-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>,
-	"linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>,
-	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-	"linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>,
-	"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-	Will Deacon <Will.Deacon@arm.com>
-To: Catalin Marinas <catalin.marinas@arm.com>
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <20141003103056.GB14110@localhost>
-List-ID: <linux-sh.vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+	linux-ia64@vger.kernel.org, linux-metag@vger.kernel.org,
+	linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
+	linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
+	Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>
+To: Guenter Roeck <linux@roeck-us.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1412100056-15517-16-git-send-email-linux@roeck-us.net>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 10/03/2014 03:30 AM, Catalin Marinas wrote:
-> On Tue, Sep 30, 2014 at 07:00:45PM +0100, Guenter Roeck wrote:
->> The kernel core now supports a poweroff handler call chain
->> to remove power from the system. Call it if pm_power_off
->> is set to NULL.
->>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will.deacon@arm.com>
->> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
->> ---
->>   arch/arm64/kernel/process.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
->> index 398ab05..cc0c63e 100644
->> --- a/arch/arm64/kernel/process.c
->> +++ b/arch/arm64/kernel/process.c
->> @@ -157,6 +157,8 @@ void machine_power_off(void)
->>   	smp_send_stop();
->>   	if (pm_power_off)
->>   		pm_power_off();
->> +	else
->> +		do_kernel_poweroff();
->
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
->
-> As others already stated, I think we should eventually remove
-> pm_power_off entirely.
->
 
-Hi Catalin,
-yes, already working on it. As suggested by others, I'll move pm_power_off
-to a central location (no need to declare the same variable for each
-architecture) and hide the call to it in do_kernel_poweroff() as a
-first step. You'll see this in the next version of the series.
-This will make it much easier to remove it later on.
+--BOKacYhQ+x31HxR3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Guenter
+Hi,
 
+On Tue, Sep 30, 2014 at 11:00:55AM -0700, Guenter Roeck wrote:
+> Register with kernel poweroff handler instead of seting pm_power_off
+> directly.  Register as poweroff handler of last resort since the driver
+> does not really power off the system but executes a restart.
+>=20
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+
+Acked-By: Sebastian Reichel <sre@kernel.org>
+
+-- Sebastian
+
+--BOKacYhQ+x31HxR3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBCgAGBQJULrJGAAoJENju1/PIO/qaCuEP/jUqxYdfYb3oGnXL4qQQCuXC
+4ODdpz4tRr+pPAbt+2MFu5Dg8IJ8CdlyiSxFwRKTRrQnKUH3x1ZZs4HHqkLo4P7L
+pihROiTW5VpZ6pVkQ7AsS46QOU/WzXGLqMRX2fpZBILtidg+WG48508JyqK1vLYs
+Ly6PUJdCLXpvcOUoLdVHq8oPbk4X/9ZS7oe/oLhtx/Gh9DuaY4du6J3dmViDC0Jk
+xZy/S7FFeJZQ28rHfSqBn1cU/N5A0w3OELpMOXzE64US4D8dpiN602yeapC8S3nK
+ZT4dm+tAqE5B9gS9YPrfM0QZ9sy6kDYEoSx0fsBHV9PgDybvYcmDnLBbduQjBWM4
+Q8DIb0cPERR5N3p9I/jRBgqc7zsu1YeXttGcYVOeK8QxOPEt5WsdxmiV61/U+qXh
+feMPyeXFbfAU6TXqDGrzhnSnY17G19a1hNSvUkG9zywJrPSGTMibwQi5/5oLqc/P
+ZrTqyoHenojj3vF4VM6QiUZlaQXAV37kuwltIfxFPAsazUybUrPHcjA09xhhGO/D
+uPwH1+z2FmI7TRXETQMKGrvpqFgBiAcA+DCKINBJqXVQlphA+EKoHQHUuH/GNTwS
+Zi3+Vcb0VOD+It3Q0Mo3HDDeUAurhLRVeGmyEw50eN/379qql7oqlJBjIlfshO6D
+RPZX2t8dORxxh7BvpoPc
+=OT3F
+-----END PGP SIGNATURE-----
+
+--BOKacYhQ+x31HxR3--
