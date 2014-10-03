@@ -1,68 +1,56 @@
-From: Sebastian Reichel <sre@kernel.org>
-Subject: Re: [RFC PATCH 15/16] power/reset: restart-poweroff: Register with
- kernel poweroff handler
-Date: Fri, 3 Oct 2014 16:27:18 +0200
-Message-ID: <20141003142718.GA8291@earth.universe>
+From: Mark Salter <msalter@redhat.com>
+Subject: Re: [RFC PATCH 07/16] c6x: support poweroff through poweroff
+ handler call chain
+Date: Fri, 03 Oct 2014 11:17:22 -0400
+Message-ID: <1412349442.5410.14.camel@deneb.redhat.com>
 References: <1412100056-15517-1-git-send-email-linux@roeck-us.net>
- <1412100056-15517-16-git-send-email-linux@roeck-us.net>
+         <1412100056-15517-8-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
+Content-Type: text/plain; charset="UTF-8"
 Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-	linux-ia64@vger.kernel.org, linux-metag@vger.kernel.org,
-	linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
-	Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-ia64@vger.kernel.org, linux-metag@vger.kernel.org,
+        linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Aurelien Jacquiot <a-jacquiot@ti.com>
 To: Guenter Roeck <linux@roeck-us.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1412100056-15517-16-git-send-email-linux@roeck-us.net>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <1412100056-15517-8-git-send-email-linux@roeck-us.net>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-
---BOKacYhQ+x31HxR3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Tue, Sep 30, 2014 at 11:00:55AM -0700, Guenter Roeck wrote:
-> Register with kernel poweroff handler instead of seting pm_power_off
-> directly.  Register as poweroff handler of last resort since the driver
-> does not really power off the system but executes a restart.
->=20
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
+On Tue, 2014-09-30 at 11:00 -0700, Guenter Roeck wrote:
+> The kernel core now supports a poweroff handler call chain
+> to remove power from the system. Call it if pm_power_off
+> is set to NULL.
+> 
+> Cc: Mark Salter <msalter@redhat.com>
+> Cc: Aurelien Jacquiot <a-jacquiot@ti.com>
 > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
 
-Acked-By: Sebastian Reichel <sre@kernel.org>
+Acked-by: Mark Salter <msalter@redhat.com>
 
--- Sebastian
-
---BOKacYhQ+x31HxR3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBCgAGBQJULrJGAAoJENju1/PIO/qaCuEP/jUqxYdfYb3oGnXL4qQQCuXC
-4ODdpz4tRr+pPAbt+2MFu5Dg8IJ8CdlyiSxFwRKTRrQnKUH3x1ZZs4HHqkLo4P7L
-pihROiTW5VpZ6pVkQ7AsS46QOU/WzXGLqMRX2fpZBILtidg+WG48508JyqK1vLYs
-Ly6PUJdCLXpvcOUoLdVHq8oPbk4X/9ZS7oe/oLhtx/Gh9DuaY4du6J3dmViDC0Jk
-xZy/S7FFeJZQ28rHfSqBn1cU/N5A0w3OELpMOXzE64US4D8dpiN602yeapC8S3nK
-ZT4dm+tAqE5B9gS9YPrfM0QZ9sy6kDYEoSx0fsBHV9PgDybvYcmDnLBbduQjBWM4
-Q8DIb0cPERR5N3p9I/jRBgqc7zsu1YeXttGcYVOeK8QxOPEt5WsdxmiV61/U+qXh
-feMPyeXFbfAU6TXqDGrzhnSnY17G19a1hNSvUkG9zywJrPSGTMibwQi5/5oLqc/P
-ZrTqyoHenojj3vF4VM6QiUZlaQXAV37kuwltIfxFPAsazUybUrPHcjA09xhhGO/D
-uPwH1+z2FmI7TRXETQMKGrvpqFgBiAcA+DCKINBJqXVQlphA+EKoHQHUuH/GNTwS
-Zi3+Vcb0VOD+It3Q0Mo3HDDeUAurhLRVeGmyEw50eN/379qql7oqlJBjIlfshO6D
-RPZX2t8dORxxh7BvpoPc
-=OT3F
------END PGP SIGNATURE-----
-
---BOKacYhQ+x31HxR3--
+>  arch/c6x/kernel/process.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/c6x/kernel/process.c b/arch/c6x/kernel/process.c
+> index 57d2ea8..ddf088e 100644
+> --- a/arch/c6x/kernel/process.c
+> +++ b/arch/c6x/kernel/process.c
+> @@ -75,6 +75,8 @@ void machine_power_off(void)
+>  {
+>  	if (pm_power_off)
+>  		pm_power_off();
+> +	else
+> +		do_kernel_poweroff();
+>  	halt_loop();
+>  }
+>  
