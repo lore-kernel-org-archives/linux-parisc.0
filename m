@@ -1,7 +1,7 @@
 From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 39/44] x86: ce4100: Register with kernel poweroff handler
-Date: Mon,  6 Oct 2014 22:28:41 -0700
-Message-ID: <1412659726-29957-40-git-send-email-linux@roeck-us.net>
+Subject: [PATCH 40/44] x86: intel-mid: Drop registration of dummy poweroff handlers
+Date: Mon,  6 Oct 2014 22:28:42 -0700
+Message-ID: <1412659726-29957-41-git-send-email-linux@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Cc: adi-buildroot-devel@lists.sourceforge.net,
 	devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
@@ -21,33 +21,68 @@ Cc: adi-buildroot-devel@lists.sourceforge.net,
 	Guenter Roeck <linux@roeck-us.net>,
 	Thomas Gleix
 To: linux-kernel@vger.kernel.org
-Return-path: <linux-acpi-owner@vger.kernel.org>
+Return-path: <linux-alpha-owner@vger.kernel.org>
 In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-List-ID: <linux-acpi.vger.kernel.org>
+List-ID: <linux-alpha.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Register with kernel poweroff handler instead of setting pm_power_off
-directly.
+A dummy poweroff handler does not serve any purpose. Drop it.
 
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Ingo Molnar <mingo@redhat.com>
 Cc: H. Peter Anvin <hpa@zytor.com>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- arch/x86/platform/ce4100/ce4100.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/platform/intel-mid/intel-mid.c | 5 -----
+ arch/x86/platform/intel-mid/mfld.c      | 5 -----
+ 2 files changed, 10 deletions(-)
 
-diff --git a/arch/x86/platform/ce4100/ce4100.c b/arch/x86/platform/ce4100/ce4100.c
-index 701fd58..4a7f3d6 100644
---- a/arch/x86/platform/ce4100/ce4100.c
-+++ b/arch/x86/platform/ce4100/ce4100.c
-@@ -164,5 +164,5 @@ void __init x86_ce4100_early_setup(void)
- 	 */
- 	reboot_type = BOOT_KBD;
+diff --git a/arch/x86/platform/intel-mid/intel-mid.c b/arch/x86/platform/intel-mid/intel-mid.c
+index 1bbedc4..4b70666 100644
+--- a/arch/x86/platform/intel-mid/intel-mid.c
++++ b/arch/x86/platform/intel-mid/intel-mid.c
+@@ -67,10 +67,6 @@ static void *(*get_intel_mid_ops[])(void) = INTEL_MID_OPS_INIT;
+ enum intel_mid_cpu_type __intel_mid_cpu_chip;
+ EXPORT_SYMBOL_GPL(__intel_mid_cpu_chip);
  
--	pm_power_off = ce4100_power_off;
-+	register_poweroff_handler_simple(ce4100_power_off, 128);
+-static void intel_mid_power_off(void)
+-{
+-};
+-
+ static void intel_mid_reboot(void)
+ {
+ 	intel_scu_ipc_simple_command(IPCMSG_COLD_BOOT, 0);
+@@ -183,7 +179,6 @@ void __init x86_intel_mid_early_setup(void)
+ 
+ 	legacy_pic = &null_legacy_pic;
+ 
+-	pm_power_off = intel_mid_power_off;
+ 	machine_ops.emergency_restart  = intel_mid_reboot;
+ 
+ 	/* Avoid searching for BIOS MP tables */
+diff --git a/arch/x86/platform/intel-mid/mfld.c b/arch/x86/platform/intel-mid/mfld.c
+index 23381d2..cf6842f 100644
+--- a/arch/x86/platform/intel-mid/mfld.c
++++ b/arch/x86/platform/intel-mid/mfld.c
+@@ -23,10 +23,6 @@ static struct intel_mid_ops penwell_ops = {
+ 	.arch_setup = penwell_arch_setup,
+ };
+ 
+-static void mfld_power_off(void)
+-{
+-}
+-
+ static unsigned long __init mfld_calibrate_tsc(void)
+ {
+ 	unsigned long fast_calibrate;
+@@ -61,7 +57,6 @@ static unsigned long __init mfld_calibrate_tsc(void)
+ static void __init penwell_arch_setup(void)
+ {
+ 	x86_platform.calibrate_tsc = mfld_calibrate_tsc;
+-	pm_power_off = mfld_power_off;
  }
+ 
+ void *get_penwell_ops(void)
 -- 
 1.9.1
 
