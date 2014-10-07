@@ -1,66 +1,75 @@
-From: Jeroen Roovers <jer@gentoo.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: systemd on hppa and number of free RT signals
-Date: Tue, 7 Oct 2014 22:50:09 +0200
-Message-ID: <20141007225009.3c74e147@marga.jer-c2.orkz.net>
+Date: Tue, 7 Oct 2014 17:03:30 -0400
+Message-ID: <CAE2sS1jy4sgs7xSev5-NnVqOqb8nUvQVGnc=JZt=tc-1HPdSgQ@mail.gmail.com>
 References: <5434418F.1020407@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Cc: linux-parisc <linux-parisc@vger.kernel.org>,
-	John David Anglin <dave.anglin@bell.net>
+	John David Anglin <dave.anglin@bell.net>,
+	Jeroen Roovers <jer@gentoo.org>
 To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <5434418F.1020407@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 07 Oct 2014 21:39:59 +0200
-Helge Deller <deller@gmx.de> wrote:
+On Tue, Oct 7, 2014 at 3:39 PM, Helge Deller <deller@gmx.de> wrote:
+> I've just had a successful boot on hppa with systemd :-)
+> The bootlog is attached.
 
-> As already discussed here:
-> http://article.gmane.org/gmane.linux.ports.parisc/5278
-> we don't have enough RT signals for systemd, which requests
-> "SIGRTMIN+29" which is > 64 (SIGRTMAX). Since systemd gets more and
-> more important (e.g. KDE now seems to require systemd) we should try
-> to find a solution.
+Awesome.
 
-We do have enough RT signals, as the patch attached to [1] demonstrates.
-I haven't tried that patch with recent versions of systemd, though.
-Unless systemd has started using even more signals or introduced even
-more gaps for no reason at all.
+> The attached patches to Linux kernel and glibc shuffles around some signals,
+> so that we end up with
+> #define __SIGRTMIN      32
+> instead of
+> #define __SIGRTMIN      37
 
-> Additionally, given the fact that we have very little users and live
-> in debian/gentoo unstable
+This is the right way to go.
 
-That's Debian unstable and Gentoo /stable/ thank you very much. :)
+Yes it's an ABI event, but these are fundamentally niche architectures
+for which we can't ask everyone else to adjust.
 
-> would IMHO justify such an incompatible change.
+> I do know that this changes the ABI and introduces a binary incompatibly.
+> Nevertheless, my testing with the new kernel and glibc didn't showed any
+> obvious problems, which means that I could install either of those and the
+> system didn't showed problems even after reboots.
 
-Gentoo dropped support for GNOME and KDE years ago (except for some of
-the base libraries such as glib and gtk+ of course). The point being
-that these fat window managers run utterly slow (exactly as they do on
-much more recent x86 hardware).
+That's because the signals you moved/removed aren't used by anything :-)
 
-Interest in supporting systemd therefore never went beyond the
-purely academic interest displayed in [1]. Luckily, Gentoo already uses
-an alternative, modern init system. Gentoo/HPPA has little need for
-systemd, I would guess.
+> Additionally, given the fact that we have very little users and live in
+> debian/gentoo unstable would IMHO justify such an incompatible change. Even
+> HP-UX support was dropped a few months back...
+> And we could easily rebuild packages like strace, gdb and such...
 
-> The other option would be to increase NSIG in kernel from 64 to 128
-> or higher.
+That's right.
 
-Sounds like a lot of work.
+> The other option would be to increase NSIG in kernel from 64 to 128 or
+> higher.
+
+No, that's a very very bad idea because it has consequences on
+sigset_t and that would really really immediately break userspace.
+
+> I did tried to come up with kernel patches for this now for a few weeks, but
+> ended up with the recognition, that this would require to duplicate nearly
+> all of Linux kernel signal handling and which would most likely introduce
+> new bugs.
+
+Agreed.
 
 > What's your opinion on this?
 
->From my perspective it looks like a lot of work for very little gain.
-Gentoo has no need for systemd so all these changes would mean
-upgrading kernel and libc requires a lot more attention, and systemd
-could equally well compact the ill-chosen RT signal range.
+Flawless hack. Very well reorganized. Your removal of SIGLOST, and
+reorganizing is the best I could come up with also.
 
+The only thing I will do different is make SIGEMT equal to SIGABRT,
+that way we preserve the semantics of what this operation means. Linux
+doesn't use SIGEMT, but it keeps hppa defining this for use by other
+software that might want similar semantics. You can catch SIGABRT and
+operate on it, so it's one way forward.
 
-Regards,
-     jer
+If you agree I'll checkin to glibc master.
 
-
-
-[1] https://bugs.gentoo.org/show_bug.cgi?id=482214
+Cheers,
+Carlos.
