@@ -1,56 +1,55 @@
-From: Mark Salter <msalter@redhat.com>
-Subject: Re: [RFC PATCH 07/16] c6x: support poweroff through poweroff
- handler call chain
-Date: Fri, 03 Oct 2014 11:17:22 -0400
-Message-ID: <1412349442.5410.14.camel@deneb.redhat.com>
-References: <1412100056-15517-1-git-send-email-linux@roeck-us.net>
-         <1412100056-15517-8-git-send-email-linux@roeck-us.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        linux-ia64@vger.kernel.org, linux-metag@vger.kernel.org,
-        linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
-        linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Aurelien Jacquiot <a-jacquiot@ti.com>
-To: Guenter Roeck <linux@roeck-us.net>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <1412100056-15517-8-git-send-email-linux@roeck-us.net>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 03/44] hibernate: Call have_kernel_poweroff instead of checking pm_power_off
+Date: Mon,  6 Oct 2014 22:28:05 -0700
+Message-ID: <1412659726-29957-4-git-send-email-linux@roeck-us.net>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+Cc: adi-buildroot-devel@lists.sourceforge.net,
+	devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+	lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org,
+	linux-alpha@vger.kernel.org, linux-am33-list@redhat.com,
+	linux-cris-kernel@axis.com, linux-efi@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org,
+	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+	openipmi-developer@lists.sourceforge.net,
+	user-mode-linux-devel@lists.sourceforge.net,
+	linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+	linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-metag@vger.kernel.org, linux-mips@linux-mips.org,
+	linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
+	Guenter Roeck <linux@roeck-us.net>,
+	"Rafael J. W
+To: linux-kernel@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2014-09-30 at 11:00 -0700, Guenter Roeck wrote:
-> The kernel core now supports a poweroff handler call chain
-> to remove power from the system. Call it if pm_power_off
-> is set to NULL.
-> 
-> Cc: Mark Salter <msalter@redhat.com>
-> Cc: Aurelien Jacquiot <a-jacquiot@ti.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
+Poweroff handlers may now be installed with register_poweroff_handler.
+Use the new API function have_kernel_poweroff to determine if a poweroff
+handler has been installed.
 
-Acked-by: Mark Salter <msalter@redhat.com>
+Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Len Brown <len.brown@intel.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ kernel/power/hibernate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->  arch/c6x/kernel/process.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/c6x/kernel/process.c b/arch/c6x/kernel/process.c
-> index 57d2ea8..ddf088e 100644
-> --- a/arch/c6x/kernel/process.c
-> +++ b/arch/c6x/kernel/process.c
-> @@ -75,6 +75,8 @@ void machine_power_off(void)
->  {
->  	if (pm_power_off)
->  		pm_power_off();
-> +	else
-> +		do_kernel_poweroff();
->  	halt_loop();
->  }
->  
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index a9dfa79..20353c5 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -602,7 +602,7 @@ static void power_down(void)
+ 	case HIBERNATION_PLATFORM:
+ 		hibernation_platform_enter();
+ 	case HIBERNATION_SHUTDOWN:
+-		if (pm_power_off)
++		if (have_kernel_poweroff())
+ 			kernel_power_off();
+ 		break;
+ #ifdef CONFIG_SUSPEND
+-- 
+1.9.1
