@@ -1,30 +1,54 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: systemd on hppa and number of free RT signals
-Date: Wed, 08 Oct 2014 11:10:22 +0200
-Message-ID: <5434FF7E.1070804@gmx.de>
-References: <5434418F.1020407@gmx.de>
+From: =?gbk?B?WHVldGFvIEd1YW4g?= <gxt@pku.edu.cn>
+Subject: =?utf-8?Q?=E5=9B=9E=E5=A4=8D=EF=BC=9A_[PATCH_08/44]_kernel:_Mov?=
+ =?utf-8?Q?e_pm=5Fpower=5Foff_to_common_code?=
+Date: Wed, 8 Oct 2014 19:06:32 +0800 (CST)
+Message-ID: <218135571.28324.1412766392198.JavaMail.root@bj-mail03.pku.edu.cn>
+References: <1412659726-29957-9-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-To: linux-parisc <linux-parisc@vger.kernel.org>,
-	John David Anglin <dave.anglin@bell.net>,
-	Jeroen Roovers <jer@gentoo.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <5434418F.1020407@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Cc: linux-kernel@vger.kernel.org,
+        adi-buildroot-devel@lists.sourceforge.net,
+        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-am33-list@redhat.com,
+        linux-cris-kernel@axis.com, linux-efi@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        openipmi-developer@lists.sourceforge.net,
+        user-mode-linux-devel@lists.sourceforge.net,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org,
+        linux-metag@vger.kernel.org, linux-mips@linux-mips.org,
+        linux-parisc@vger.kernel.org, linux-pm@vg
+To: Guenter Roeck <linux@roeck-us.net>
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <1412659726-29957-9-git-send-email-linux@roeck-us.net>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-On 10/07/2014 09:39 PM, Helge Deller wrote:
-> I've just had a successful boot on hppa with systemd :-)
-> The bootlog is attached.
->...
-> I will provide prebuilt debian packages with those patches for kernel and glibc tomorrow for download, so that people may test themselves...
 
-I've uploaded the debian kernel and glibc packages to:
-ftp://ftp.parisc-linux.org/SIGNAL_NEW/
+----- Guenter Roeck <linux@roeck-us.net> =E5=86=99=E9=81=93=EF=BC=9A
+> pm_power_off is defined for all architectures. Move it to common code=
+=2E
+>=20
+> Have all architectures call do_kernel_poweroff instead of pm_power_of=
+f.
+> Some architectures point pm_power_off to machine_power_off. For those=
+,
+> call do_kernel_poweroff from machine_power_off instead.
+>=20
 
-A short README is here:
-ftp://ftp.parisc-linux.org/SIGNAL_NEW/README.txt
+=46or UniCore32 part,
 
-It would be nice if people could test it...
+Acked-by: Xuetao Guan <gxt@mprc.pku.edu.cn>
 
-Helge
+Thanks
+Xuetao
