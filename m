@@ -1,54 +1,41 @@
-From: =?gbk?B?WHVldGFvIEd1YW4g?= <gxt@pku.edu.cn>
-Subject: =?utf-8?Q?=E5=9B=9E=E5=A4=8D=EF=BC=9A_[PATCH_08/44]_kernel:_Mov?=
- =?utf-8?Q?e_pm=5Fpower=5Foff_to_common_code?=
-Date: Wed, 8 Oct 2014 19:06:32 +0800 (CST)
-Message-ID: <218135571.28324.1412766392198.JavaMail.root@bj-mail03.pku.edu.cn>
-References: <1412659726-29957-9-git-send-email-linux@roeck-us.net>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: systemd on hppa and number of free RT signals
+Date: Wed, 8 Oct 2014 11:59:24 -0400
+Message-ID: <BLU436-SMTP47EE271F36DCCDA27582B797A30@phx.gbl>
+References: <5434418F.1020407@gmx.de> <20141007223418.GB599@drone.musicnaut.iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: linux-kernel@vger.kernel.org,
-        adi-buildroot-devel@lists.sourceforge.net,
-        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-am33-list@redhat.com,
-        linux-cris-kernel@axis.com, linux-efi@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        openipmi-developer@lists.sourceforge.net,
-        user-mode-linux-devel@lists.sourceforge.net,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org,
-        linux-metag@vger.kernel.org, linux-mips@linux-mips.org,
-        linux-parisc@vger.kernel.org, linux-pm@vg
-To: Guenter Roeck <linux@roeck-us.net>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <1412659726-29957-9-git-send-email-linux@roeck-us.net>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Cc: linux-parisc <linux-parisc@vger.kernel.org>,
+	Jeroen Roovers <jer@gentoo.org>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>, Helge Deller <deller@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20141007223418.GB599@drone.musicnaut.iki.fi>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
+On 10/7/2014 6:34 PM, Aaro Koskinen wrote:
+> Personally I don't mind such changes (I compile everything from scratch
+> so ABI breakages are not a big issue), but generally I think Linux/PA-RISC
+> community could maybe put more focus on some core issues like GCC
+> and GLIBC support...
+I think that's happening.
 
------ Guenter Roeck <linux@roeck-us.net> =E5=86=99=E9=81=93=EF=BC=9A
-> pm_power_off is defined for all architectures. Move it to common code=
-=2E
->=20
-> Have all architectures call do_kernel_poweroff instead of pm_power_of=
-f.
-> Some architectures point pm_power_off to machine_power_off. For those=
-,
-> call do_kernel_poweroff from machine_power_off instead.
->=20
+On Debian unstable, we currently have 10291 installed packages.
+We are neck to neck with ppc64, and a couple hundred behind alpha.
+http://buildd.debian-ports.org/stats/
 
-=46or UniCore32 part,
+At this point, adding new packages requires porting and bug fixes. The 
+signal change proposed
+by Helge here is an example.
 
-Acked-by: Xuetao Guan <gxt@mprc.pku.edu.cn>
+I am working at the moment on an update to the GCC fast indirect call 
+support for Linux.  There
+are also two trunk breakages and several minor issues ongoing.
 
-Thanks
-Xuetao
+Is there something specific you would like to see?
+
+Dave
+
+-- 
+John David Anglin    dave.anglin@bell.net
+
