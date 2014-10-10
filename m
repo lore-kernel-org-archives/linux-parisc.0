@@ -1,37 +1,58 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: systemd on hppa and number of free RT signals
-Date: Thu, 09 Oct 2014 22:58:31 +0200
-Message-ID: <5436F6F7.3000501@gmx.de>
-References: <5434418F.1020407@gmx.de>	<CAE2sS1jy4sgs7xSev5-NnVqOqb8nUvQVGnc=JZt=tc-1HPdSgQ@mail.gmail.com>	<20141009204115.GB4606@drone.musicnaut.iki.fi> <CAE2sS1gZKMncpWGKBqQ44ZQPnWBsG0H-XfNaghCRUe6OwQ2ujg@mail.gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 08/44] kernel: Move pm_power_off to common code
+Date: Fri, 10 Oct 2014 09:53:52 -0700
+Message-ID: <54380F20.3060800@roeck-us.net>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net> <1412659726-29957-9-git-send-email-linux@roeck-us.net> <20141009103847.GC6787@amd> <54368A30.9070101@roeck-us.net> <20141009202419.GA16885@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Cc: linux-parisc <linux-parisc@vger.kernel.org>,
-	John David Anglin <dave.anglin@bell.net>,
-	Jeroen Roovers <jer@gentoo.org>
-To: Carlos O'Donell <carlos@systemhalted.org>,
-	Aaro Koskinen <aaro.koskinen@iki.fi>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAE2sS1gZKMncpWGKBqQ44ZQPnWBsG0H-XfNaghCRUe6OwQ2ujg@mail.gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Cc: linux-kernel@vger.kernel.org,
+        adi-buildroot-devel@lists.sourceforge.net,
+        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-am33-list@redhat.com,
+        linux-cris-kernel@axis.com, linux-efi@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        openipmi-developer@lists.sourceforge.net,
+        user-mode-linux-devel@lists.sourceforge.net,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-metag@vger.kernel.org, linux-mips@linux-mips.org,
+        linux-parisc@vger.kernel.org, linux-
+To: Pavel Machek <pavel@denx.de>
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <20141009202419.GA16885@amd>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-Hi Aaro & Carlos,
-
-On 10/09/2014 10:48 PM, Carlos O'Donell wrote:
-> On Thu, Oct 9, 2014 at 4:41 PM, Aaro Koskinen <aaro.koskinen@iki.fi> wrote:
->> #if defined(SIGEMT) && (!defined(SIGXCPU) || (SIGEMT != SIGXCPU))
->>      case SIGEMT: return "SIGEMT";
->> #endif
-
-Aaro, thanks a lot for testing !!!
-
-> I withdraw my suggestion to make SIGEMT equal to SIGABRT. Just remove
-> it. It's not needed on Linux and just causes problems.
+On 10/09/2014 01:24 PM, Pavel Machek wrote:
+> Hi!
 >
-> In this case it conflicts with SIGABRT in the case statement. Better
-> to just remove it.
+>>>> @@ -184,6 +179,8 @@ machine_halt(void)
+>>>>   void
+>>>>   machine_power_off(void)
+>>>>   {
+>>>> +	do_kernel_poweroff();
+>>>> +
+>>>
+>>> poweroff -> power_off for consistency.
+>>>
+>> Dunno; matter of personal preference. I started with that, but ultimately went
+>> with poweroff to distinguish poweroff handler functions from existing code,
+>> specifically kernel_power_off().
+>
+> That works for you, but once it is merged, it is ugly/confusing typo.
+> 									Pavel
+>
 
-Yes, I agree.
+Ok, no problem, I'll change it.
 
-Helge
-
+Guenter
