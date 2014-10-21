@@ -1,86 +1,57 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: use BUILD_BUG() instead of undefined functions
-Date: Tue, 21 Oct 2014 21:29:09 +0200
-Message-ID: <20141021192909.GA14247@ls3530.box>
+Subject: [PATCH] parisc: fix out-of-register compiler error in ldcw inline
+ assembler function
+Date: Tue, 21 Oct 2014 21:46:14 +0200
+Message-ID: <20141021194614.GA14418@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave.anglin@bell.net>
 To: linux-parisc@vger.kernel.org,
 	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Sometimes we face this compiler error:
 
-diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
-index 4006964..a5cb070 100644
---- a/arch/parisc/include/asm/uaccess.h
-+++ b/arch/parisc/include/asm/uaccess.h
-@@ -9,6 +9,8 @@
- #include <asm/errno.h>
- #include <asm-generic/uaccess-unaligned.h>
+arch/parisc/include/asm/ldcw.h:39:2: error: can't find a register in class 'R1_REGS' while reloading 'asm'
+	__asm__ __volatile__(__LDCW " 0(%2),%0"...
+	note: in expansion of macro '__ldcw'
+	error: 'asm' operand has impossible constraints
+
+Dave suggested:
+Likely the problem can be fixed by making __ldcw a static inline function and
+forcing the argument 'a' to a specific register before using in ldcw.
+
+Since it's not easy to reproduce this bug, this patch now tries to still let
+the compiler decide on which register should be used. If it doesn't work, we'll
+have to assign a specific register as suggested by Dave.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: John David Anglin <dave.anglin@bell.net>
+
+diff --git a/arch/parisc/include/asm/ldcw.h b/arch/parisc/include/asm/ldcw.h
+index d2d11b7..b951e01 100644
+--- a/arch/parisc/include/asm/ldcw.h
++++ b/arch/parisc/include/asm/ldcw.h
+@@ -34,12 +34,14 @@
+ #endif /*!CONFIG_PA20*/
  
-+#include <linux/bug.h>
-+
- #define VERIFY_READ 0
- #define VERIFY_WRITE 1
+ /* LDCW, the only atomic read-write operation PA-RISC has. *sigh*.  */
+-#define __ldcw(a) ({						\
+-	unsigned __ret;						\
+-	__asm__ __volatile__(__LDCW " 0(%2),%0"			\
+-		: "=r" (__ret), "+m" (*(a)) : "r" (a));		\
+-	__ret;							\
+-})
++static inline unsigned int __ldcw(volatile unsigned int *address)
++{
++	unsigned int ret;
++	register volatile unsigned int *a = address;
++	__asm__ __volatile__(__LDCW " 0(%2),%0"
++		: "=r" (ret), "+m" (*(a)) : "r" (a));
++	return ret;
++}
  
-@@ -28,11 +30,6 @@
-  * that put_user is the same as __put_user, etc.
-  */
- 
--extern int __get_kernel_bad(void);
--extern int __get_user_bad(void);
--extern int __put_kernel_bad(void);
--extern int __put_user_bad(void);
--
- static inline long access_ok(int type, const void __user * addr,
- 		unsigned long size)
- {
-@@ -43,8 +40,8 @@ static inline long access_ok(int type, const void __user * addr,
- #define get_user __get_user
- 
- #if !defined(CONFIG_64BIT)
--#define LDD_KERNEL(ptr)		__get_kernel_bad();
--#define LDD_USER(ptr)		__get_user_bad();
-+#define LDD_KERNEL(ptr)		BUILD_BUG()
-+#define LDD_USER(ptr)		BUILD_BUG()
- #define STD_KERNEL(x, ptr)	__put_kernel_asm64(x,ptr)
- #define STD_USER(x, ptr)	__put_user_asm64(x,ptr)
- #define ASM_WORD_INSN		".word\t"
-@@ -94,7 +91,7 @@ struct exception_data {
- 	    case 2: __get_kernel_asm("ldh",ptr); break; \
- 	    case 4: __get_kernel_asm("ldw",ptr); break; \
- 	    case 8: LDD_KERNEL(ptr); break;		\
--	    default: __get_kernel_bad(); break;         \
-+	    default: BUILD_BUG(); break;		\
- 	    }                                           \
- 	}                                               \
- 	else {                                          \
-@@ -103,7 +100,7 @@ struct exception_data {
- 	    case 2: __get_user_asm("ldh",ptr); break;   \
- 	    case 4: __get_user_asm("ldw",ptr); break;   \
- 	    case 8: LDD_USER(ptr);  break;		\
--	    default: __get_user_bad(); break;           \
-+	    default: BUILD_BUG(); break;		\
- 	    }                                           \
- 	}                                               \
- 							\
-@@ -136,7 +133,7 @@ struct exception_data {
- 	    case 2: __put_kernel_asm("sth",__x,ptr); break;     \
- 	    case 4: __put_kernel_asm("stw",__x,ptr); break;     \
- 	    case 8: STD_KERNEL(__x,ptr); break;			\
--	    default: __put_kernel_bad(); break;			\
-+	    default: BUILD_BUG(); break;			\
- 	    }                                                   \
- 	}                                                       \
- 	else {                                                  \
-@@ -145,7 +142,7 @@ struct exception_data {
- 	    case 2: __put_user_asm("sth",__x,ptr); break;       \
- 	    case 4: __put_user_asm("stw",__x,ptr); break;       \
- 	    case 8: STD_USER(__x,ptr); break;			\
--	    default: __put_user_bad(); break;			\
-+	    default: BUILD_BUG(); break;			\
- 	    }                                                   \
- 	}                                                       \
- 								\
+ #ifdef CONFIG_SMP
+ # define __lock_aligned __attribute__((__section__(".data..lock_aligned")))
