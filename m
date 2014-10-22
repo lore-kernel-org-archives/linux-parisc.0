@@ -1,39 +1,54 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] parisc: fix out-of-register compiler error in ldcw inline
- assembler function
-Date: Tue, 21 Oct 2014 16:01:00 -0400
-Message-ID: <BLU436-SMTP234E0B9D24642C60497B1EB97940@phx.gbl>
-References: <20141021194614.GA14418@ls3530.box>
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH v2 08/47] kernel: Move pm_power_off to common code
+Date: Wed, 22 Oct 2014 17:31:36 +0200
+Message-ID: <20141022153136.GA11045@linux-mips.org>
+References: <1413864783-3271-1-git-send-email-linux@roeck-us.net>
+ <1413864783-3271-9-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-To: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20141021194614.GA14418@ls3530.box>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        adi-buildroot-devel@lists.sourceforge.net, linux390@de.ibm.com,
+        linux-alpha@vger.kernel.org, linux-am33-list@redhat.com,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux@openrisc.net,
+        linux-m68k@vger.kernel.org, linux-metag@vger.kernel.org,
+        linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        sparclinux@vger.kernel.org,
+        user-mode-linux-devel@lists.sourceforge.net,
+        user-mode-linux-user@lists.sourceforge.net, x86@kernel.org,
+        xen-devel@lists.xenproject.org
+To: Guenter Roeck <linux@roeck-us.net>
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <1413864783-3271-9-git-send-email-linux@roeck-us.net>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-On 10/21/2014 3:46 PM, Helge Deller wrote:
->   /* LDCW, the only atomic read-write operation PA-RISC has. *sigh*.  */
-> -#define __ldcw(a) ({						\
-> -	unsigned __ret;						\
-> -	__asm__ __volatile__(__LDCW " 0(%2),%0"			\
-> -		: "=r" (__ret), "+m" (*(a)) : "r" (a));		\
-> -	__ret;							\
-> -})
-> +static inline unsigned int __ldcw(volatile unsigned int *address)
-> +{
-> +	unsigned int ret;
-> +	register volatile unsigned int *a = address;
-> +	__asm__ __volatile__(__LDCW " 0(%2),%0"
-> +		: "=r" (ret), "+m" (*(a)) : "r" (a));
-> +	return ret;
-> +}
-You could keep the old macro version for 32-bit builds as the problem 
-shouldn't occur there.
+On Mon, Oct 20, 2014 at 09:12:24PM -0700, Guenter Roeck wrote:
 
-Dave
+> pm_power_off is defined for all architectures. Move it to common code.
+> 
+> Have all architectures call do_kernel_power_off instead of pm_power_off.
+> Some architectures point pm_power_off to machine_power_off. For those,
+> call do_kernel_power_off from machine_power_off instead.
+> 
+> Acked-by: David Vrabel <david.vrabel@citrix.com>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Acked-by: Hirokazu Takata <takata@linux-m32r.org>
+> Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
+> Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+> Acked-by: Rafael J. Wysocki <rjw@rjwysocki.net>
+> Acked-by: Richard Weinberger <richard@nod.at>
+> Acked-by: Xuetao Guan <gxt@mprc.pku.edu.cn>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
--- 
-John David Anglin    dave.anglin@bell.net
-
+Acked-by: Ralf Baechle <ralf@linux-mips.org>
