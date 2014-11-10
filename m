@@ -1,336 +1,94 @@
-From: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCH -next 1/2] seq_puts: Convert to return void and convert uses too.
-Date: Mon, 10 Nov 2014 10:58:56 -0800
-Message-ID: <c8249a5c6504275a0e22704dda83b34002a89eac.1415645476.git.joe@perches.com>
-References: <cover.1415645476.git.joe@perches.com>
-Cc: Petr Mladek <pmladek-AlSwsSmVLrQ@public.gmane.org>, Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>,
-	Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>,
-	linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-watchdog-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-fsdevel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Steven Rostedt <rostedt-nx8X9YLhiw1AfugRpC6u6w@public.gmane.org>,
-	"James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
-	Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>,
-	Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
-	Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>,
-	Wim Van Sebroeck <wim-IQzOog9fTRqzQB+pC5nmwQ@public.gmane.org>,
-	Alexander Viro <viro-RmSDqhL/yNMiFSDQTTA3OLVCufUGDwFn@public.gmane.org>
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <cover.1415645476.git.joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
-List-ID: <linux-usb.vger.kernel.org>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Use compat layer for msgctl, shmat, shmctl and
+ semtimedop syscalls
+Date: Mon, 10 Nov 2014 21:46:18 +0100
+Message-ID: <20141110204618.GA3079@ls3530.box>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave.anglin@bell.net>
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Using the return value of seq_puts is error-prone, so
-make it return void instead.
+Switch over the msgctl, shmat, shmctl and semtimedop syscalls to use the compat
+layer.  The problem was found with the debian procenv package, which called
+	shmctl(0, SHM_INFO, &info);
+in which the shmctl syscall then overwrote parts of the surrounding areas on
+the stack on which the info variable was stored and thus lead to a segfault
+later on.
 
-Use seq_has_overflowed where appropriate instead of the
-old return value.
+Additionally fix the definition of struct shminfo64 to use unsigned longs like
+the other architectures. This has no impact on userspace since we only have a
+32bit userspace up to now.
 
-Signed-off-by: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
----
- drivers/parisc/ccio-dma.c         |  7 ++--
- drivers/regulator/dbx500-prcmu.c  | 21 ++++------
- drivers/usb/gadget/udc/goku_udc.c | 81 ++++++++++++++++++++-------------------
- drivers/watchdog/bcm_kona_wdt.c   | 43 ++++++++++++---------
- fs/seq_file.c                     | 15 ++++----
- include/linux/seq_file.h          |  2 +-
- ipc/util.c                        |  6 ++-
- 7 files changed, 89 insertions(+), 86 deletions(-)
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: John David Anglin <dave.anglin@bell.net>
+Cc: <stable@vger.kernel.org> # v3.10+
 
-diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-index 8b490d7..c40cc98 100644
---- a/drivers/parisc/ccio-dma.c
-+++ b/drivers/parisc/ccio-dma.c
-@@ -1101,7 +1101,6 @@ static const struct file_operations ccio_proc_info_fops = {
+diff --git a/arch/parisc/include/uapi/asm/shmbuf.h b/arch/parisc/include/uapi/asm/shmbuf.h
+index 0a3eada..f395cde 100644
+--- a/arch/parisc/include/uapi/asm/shmbuf.h
++++ b/arch/parisc/include/uapi/asm/shmbuf.h
+@@ -36,23 +36,16 @@ struct shmid64_ds {
+ 	unsigned int		__unused2;
+ };
  
- static int ccio_proc_bitmap_info(struct seq_file *m, void *p)
- {
--	int len = 0;
- 	struct ioc *ioc = ioc_list;
+-#ifdef CONFIG_64BIT
+-/* The 'unsigned int' (formerly 'unsigned long') data types below will
+- * ensure that a 32-bit app calling shmctl(*,IPC_INFO,*) will work on
+- * a wide kernel, but if some of these values are meant to contain pointers
+- * they may need to be 'long long' instead. -PB XXX FIXME
+- */
+-#endif
+ struct shminfo64 {
+-	unsigned int	shmmax;
+-	unsigned int	shmmin;
+-	unsigned int	shmmni;
+-	unsigned int	shmseg;
+-	unsigned int	shmall;
+-	unsigned int	__unused1;
+-	unsigned int	__unused2;
+-	unsigned int	__unused3;
+-	unsigned int	__unused4;
++	unsigned long	shmmax;
++	unsigned long	shmmin;
++	unsigned long	shmmni;
++	unsigned long	shmseg;
++	unsigned long	shmall;
++	unsigned long	__unused1;
++	unsigned long	__unused2;
++	unsigned long	__unused3;
++	unsigned long	__unused4;
+ };
  
- 	while (ioc != NULL) {
-@@ -1110,11 +1109,11 @@ static int ccio_proc_bitmap_info(struct seq_file *m, void *p)
- 
- 		for (j = 0; j < (ioc->res_size / sizeof(u32)); j++) {
- 			if ((j & 7) == 0)
--				len += seq_puts(m, "\n   ");
--			len += seq_printf(m, "%08x", *res_ptr);
-+				seq_puts(m, "\n   ");
-+			seq_printf(m, "%08x", *res_ptr);
- 			res_ptr++;
- 		}
--		len += seq_puts(m, "\n\n");
-+		seq_puts(m, "\n\n");
- 		ioc = ioc->next;
- 		break; /* XXX - remove me */
- 	}
-diff --git a/drivers/regulator/dbx500-prcmu.c b/drivers/regulator/dbx500-prcmu.c
-index 2d16b9f..b778ca9 100644
---- a/drivers/regulator/dbx500-prcmu.c
-+++ b/drivers/regulator/dbx500-prcmu.c
-@@ -129,14 +129,8 @@ static int ux500_regulator_status_print(struct seq_file *s, void *p)
- 	int i;
- 
- 	/* print dump header */
--	err = seq_puts(s, "ux500-regulator status:\n");
--	if (err < 0)
--		dev_err(dev, "seq_puts overflow\n");
--
--	err = seq_printf(s, "%31s : %8s : %8s\n", "current",
--		"before", "after");
--	if (err < 0)
--		dev_err(dev, "seq_printf overflow\n");
-+	seq_puts(s, "ux500-regulator status:\n");
-+	seq_printf(s, "%31s : %8s : %8s\n", "current", "before", "after");
- 
- 	for (i = 0; i < rdebug.num_regulators; i++) {
- 		struct dbx500_regulator_info *info;
-@@ -144,12 +138,11 @@ static int ux500_regulator_status_print(struct seq_file *s, void *p)
- 		info = &rdebug.regulator_array[i];
- 
- 		/* print status */
--		err = seq_printf(s, "%20s : %8s : %8s : %8s\n", info->desc.name,
--			info->is_enabled ? "enabled" : "disabled",
--			rdebug.state_before_suspend[i] ? "enabled" : "disabled",
--			rdebug.state_after_suspend[i] ? "enabled" : "disabled");
--		if (err < 0)
--			dev_err(dev, "seq_printf overflow\n");
-+		seq_printf(s, "%20s : %8s : %8s : %8s\n",
-+			   info->desc.name,
-+			   info->is_enabled ? "enabled" : "disabled",
-+			   rdebug.state_before_suspend[i] ? "enabled" : "disabled",
-+			   rdebug.state_after_suspend[i] ? "enabled" : "disabled");
- 	}
- 
- 	return 0;
-diff --git a/drivers/usb/gadget/udc/goku_udc.c b/drivers/usb/gadget/udc/goku_udc.c
-index 5b9176e..c16b4d9 100644
---- a/drivers/usb/gadget/udc/goku_udc.c
-+++ b/drivers/usb/gadget/udc/goku_udc.c
-@@ -1135,44 +1135,47 @@ static int udc_proc_read(struct seq_file *m, void *v)
- 			continue;
- 
- 		tmp = readl(ep->reg_status);
--		if (seq_printf(m,
--			"%s %s max %u %s, irqs %lu, "
--			"status %02x (%s) " FOURBITS "\n",
--			ep->ep.name,
--			ep->is_in ? "in" : "out",
--			ep->ep.maxpacket,
--			ep->dma ? "dma" : "pio",
--			ep->irqs,
--			tmp, ({ char *s;
--			switch (tmp & EPxSTATUS_EP_MASK) {
--			case EPxSTATUS_EP_READY:
--				s = "ready"; break;
--			case EPxSTATUS_EP_DATAIN:
--				s = "packet"; break;
--			case EPxSTATUS_EP_FULL:
--				s = "full"; break;
--			case EPxSTATUS_EP_TX_ERR:	// host will retry
--				s = "tx_err"; break;
--			case EPxSTATUS_EP_RX_ERR:
--				s = "rx_err"; break;
--			case EPxSTATUS_EP_BUSY:		/* ep0 only */
--				s = "busy"; break;
--			case EPxSTATUS_EP_STALL:
--				s = "stall"; break;
--			case EPxSTATUS_EP_INVALID:	// these "can't happen"
--				s = "invalid"; break;
--			default:
--				s = "?"; break;
--			} s; }),
--			(tmp & EPxSTATUS_TOGGLE) ? "data1" : "data0",
--			(tmp & EPxSTATUS_SUSPEND) ? " suspend" : "",
--			(tmp & EPxSTATUS_FIFO_DISABLE) ? " disable" : "",
--			(tmp & EPxSTATUS_STAGE_ERROR) ? " ep0stat" : ""
--			) < 0)
-+		seq_printf(m, "%s %s max %u %s, irqs %lu, status %02x (%s) " FOURBITS "\n",
-+			   ep->ep.name,
-+			   ep->is_in ? "in" : "out",
-+			   ep->ep.maxpacket,
-+			   ep->dma ? "dma" : "pio",
-+			   ep->irqs,
-+			   tmp,
-+			   ({
-+				char *s;
-+				switch (tmp & EPxSTATUS_EP_MASK) {
-+				case EPxSTATUS_EP_READY:
-+					s = "ready"; break;
-+				case EPxSTATUS_EP_DATAIN:
-+					s = "packet"; break;
-+				case EPxSTATUS_EP_FULL:
-+					s = "full"; break;
-+				case EPxSTATUS_EP_TX_ERR:  /* host will retry */
-+					s = "tx_err"; break;
-+				case EPxSTATUS_EP_RX_ERR:
-+					s = "rx_err"; break;
-+				case EPxSTATUS_EP_BUSY:    /* ep0 only */
-+					s = "busy"; break;
-+				case EPxSTATUS_EP_STALL:
-+					s = "stall"; break;
-+				case EPxSTATUS_EP_INVALID: /* "can't happen" */
-+					s = "invalid"; break;
-+				default:
-+					s = "?"; break;
-+				}
-+				s;
-+			   }),
-+			   (tmp & EPxSTATUS_TOGGLE) ? "data1" : "data0",
-+			   (tmp & EPxSTATUS_SUSPEND) ? " suspend" : "",
-+			   (tmp & EPxSTATUS_FIFO_DISABLE) ? " disable" : "",
-+			   (tmp & EPxSTATUS_STAGE_ERROR) ? " ep0stat" : "");
-+		if (seq_has_overflowed(m) < 0)
- 			goto done;
- 
- 		if (list_empty(&ep->queue)) {
--			if (seq_puts(m, "\t(nothing queued)\n") < 0)
-+			seq_puts(m, "\t(nothing queued)\n");
-+			if (seq_has_overflowed(m))
- 				goto done;
- 			continue;
- 		}
-@@ -1187,10 +1190,10 @@ static int udc_proc_read(struct seq_file *m, void *v)
- 			} else
- 				tmp = req->req.actual;
- 
--			if (seq_printf(m,
--				"\treq %p len %u/%u buf %p\n",
--				&req->req, tmp, req->req.length,
--				req->req.buf) < 0)
-+			seq_printf(m, "\treq %p len %u/%u buf %p\n",
-+				   &req->req, tmp, req->req.length,
-+				   req->req.buf);
-+			if (seq_has_overflowed(m))
- 				goto done;
- 		}
- 	}
-diff --git a/drivers/watchdog/bcm_kona_wdt.c b/drivers/watchdog/bcm_kona_wdt.c
-index 4e37db3..0e5ec3c 100644
---- a/drivers/watchdog/bcm_kona_wdt.c
-+++ b/drivers/watchdog/bcm_kona_wdt.c
-@@ -102,34 +102,39 @@ static int bcm_kona_wdt_dbg_show(struct seq_file *s, void *data)
- 	int ctl_val, cur_val, ret;
- 	unsigned long flags;
- 	struct bcm_kona_wdt *wdt = s->private;
-+	int ctl, cur, ctl_sec, cur_sec, res;
- 
--	if (!wdt)
--		return seq_puts(s, "No device pointer\n");
--
-+	if (!wdt) {
-+		seq_puts(s, "No device pointer\n");
-+		return 0;
-+	}
- 	spin_lock_irqsave(&wdt->lock, flags);
- 	ctl_val = secure_register_read(wdt, SECWDOG_CTRL_REG);
- 	cur_val = secure_register_read(wdt, SECWDOG_COUNT_REG);
- 	spin_unlock_irqrestore(&wdt->lock, flags);
- 
- 	if (ctl_val < 0 || cur_val < 0) {
--		ret = seq_puts(s, "Error accessing hardware\n");
--	} else {
--		int ctl, cur, ctl_sec, cur_sec, res;
--
--		ctl = ctl_val & SECWDOG_COUNT_MASK;
--		res = (ctl_val & SECWDOG_RES_MASK) >> SECWDOG_CLKS_SHIFT;
--		cur = cur_val & SECWDOG_COUNT_MASK;
--		ctl_sec = TICKS_TO_SECS(ctl, wdt);
--		cur_sec = TICKS_TO_SECS(cur, wdt);
--		ret = seq_printf(s, "Resolution: %d / %d\n"
--				"Control: %d s / %d (%#x) ticks\n"
--				"Current: %d s / %d (%#x) ticks\n"
--				"Busy count: %lu\n", res,
--				wdt->resolution, ctl_sec, ctl, ctl, cur_sec,
--				cur, cur, wdt->busy_count);
-+		seq_puts(s, "Error accessing hardware\n");
-+		return 0;
- 	}
- 
--	return ret;
-+	ctl = ctl_val & SECWDOG_COUNT_MASK;
-+	res = (ctl_val & SECWDOG_RES_MASK) >> SECWDOG_CLKS_SHIFT;
-+	cur = cur_val & SECWDOG_COUNT_MASK;
-+	ctl_sec = TICKS_TO_SECS(ctl, wdt);
-+	cur_sec = TICKS_TO_SECS(cur, wdt);
-+	seq_printf(s,
-+		   "Resolution: %d / %d\n"
-+		   "Control: %d s / %d (%#x) ticks\n"
-+		   "Current: %d s / %d (%#x) ticks\n"
-+		   "Busy count: %lu\n",
-+		   res, wdt->resolution,
-+		   ctl_sec, ctl, ctl,
-+		   cur_sec, cur, cur,
-+		   wdt->busy_count);
-+	}
-+
-+	return 0;
- }
- 
- static int bcm_kona_dbg_open(struct inode *inode, struct file *file)
-diff --git a/fs/seq_file.c b/fs/seq_file.c
-index 353948b..e6be05a 100644
---- a/fs/seq_file.c
-+++ b/fs/seq_file.c
-@@ -683,16 +683,17 @@ int seq_putc(struct seq_file *m, char c)
- }
- EXPORT_SYMBOL(seq_putc);
- 
--int seq_puts(struct seq_file *m, const char *s)
-+void seq_puts(struct seq_file *m, const char *s)
- {
- 	int len = strlen(s);
--	if (m->count + len < m->size) {
--		memcpy(m->buf + m->count, s, len);
--		m->count += len;
--		return 0;
-+
-+	if (m->count + len >= m->size) {
-+		seq_set_overflow(m);
-+		return;
- 	}
--	seq_set_overflow(m);
--	return -1;
-+
-+	memcpy(m->buf + m->count, s, len);
-+	m->count += len;
- }
- EXPORT_SYMBOL(seq_puts);
- 
-diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
-index cf6a9da..9b02cb6 100644
---- a/include/linux/seq_file.h
-+++ b/include/linux/seq_file.h
-@@ -116,7 +116,7 @@ loff_t seq_lseek(struct file *, loff_t, int);
- int seq_release(struct inode *, struct file *);
- int seq_escape(struct seq_file *, const char *, const char *);
- int seq_putc(struct seq_file *m, char c);
--int seq_puts(struct seq_file *m, const char *s);
-+void seq_puts(struct seq_file *m, const char *s);
- int seq_write(struct seq_file *seq, const void *data, size_t len);
- 
- __printf(2, 3) int seq_printf(struct seq_file *, const char *, ...);
-diff --git a/ipc/util.c b/ipc/util.c
-index 106bed0..4f726b7 100644
---- a/ipc/util.c
-+++ b/ipc/util.c
-@@ -837,8 +837,10 @@ static int sysvipc_proc_show(struct seq_file *s, void *it)
- 	struct ipc_proc_iter *iter = s->private;
- 	struct ipc_proc_iface *iface = iter->iface;
- 
--	if (it == SEQ_START_TOKEN)
--		return seq_puts(s, iface->header);
-+	if (it == SEQ_START_TOKEN) {
-+		seq_puts(s, iface->header);
-+		return seq_has_overflowed(s);
-+	}
- 
- 	return iface->show(s, it);
- }
--- 
-2.1.2
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ #endif /* _PARISC_SHMBUF_H */
+diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
+index 84c5d3a..3cd1c43 100644
+--- a/arch/parisc/kernel/syscall_table.S
++++ b/arch/parisc/kernel/syscall_table.S
+@@ -286,11 +286,11 @@
+ 	ENTRY_COMP(msgsnd)
+ 	ENTRY_COMP(msgrcv)
+ 	ENTRY_SAME(msgget)		/* 190 */
+-	ENTRY_SAME(msgctl)
+-	ENTRY_SAME(shmat)
++	ENTRY_COMP(msgctl)
++	ENTRY_COMP(shmat)
+ 	ENTRY_SAME(shmdt)
+ 	ENTRY_SAME(shmget)
+-	ENTRY_SAME(shmctl)		/* 195 */
++	ENTRY_COMP(shmctl)		/* 195 */
+ 	ENTRY_SAME(ni_syscall)		/* streams1 */
+ 	ENTRY_SAME(ni_syscall)		/* streams2 */
+ 	ENTRY_SAME(lstat64)
+@@ -323,7 +323,7 @@
+ 	ENTRY_SAME(epoll_ctl)		/* 225 */
+ 	ENTRY_SAME(epoll_wait)
+  	ENTRY_SAME(remap_file_pages)
+-	ENTRY_SAME(semtimedop)
++	ENTRY_COMP(semtimedop)
+ 	ENTRY_COMP(mq_open)
+ 	ENTRY_SAME(mq_unlink)		/* 230 */
+ 	ENTRY_COMP(mq_timedsend)
