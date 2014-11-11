@@ -1,59 +1,69 @@
-From: Petr Mladek <pmladek@suse.cz>
-Subject: Re: [PATCH -next 1/2] seq_puts: Convert to return void and convert
- uses too.
-Date: Tue, 11 Nov 2014 14:38:51 +0100
-Message-ID: <20141111133851.GA2567@pathway.suse.cz>
-References: <cover.1415645476.git.joe@perches.com>
- <c8249a5c6504275a0e22704dda83b34002a89eac.1415645476.git.joe@perches.com>
+From: Helge Deller <deller@gmx.de>
+Subject: serial console problem with kernel 3.18.0-rc4
+Date: Tue, 11 Nov 2014 20:13:17 +0100
+Message-ID: <54625FCD.3070008@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Wim Van Sebroeck <wim@iguana.be>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Felipe Balbi <balbi@ti.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-To: Joe Perches <joe@perches.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <c8249a5c6504275a0e22704dda83b34002a89eac.1415645476.git.joe@perches.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: linux-parisc <linux-parisc@vger.kernel.org>
+To: linux-serial@vger.kernel.org
+Return-path: <linux-serial-owner@vger.kernel.org>
+List-ID: <linux-serial.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon 2014-11-10 10:58:56, Joe Perches wrote:
-> diff --git a/ipc/util.c b/ipc/util.c
-> index 106bed0..4f726b7 100644
-> --- a/ipc/util.c
-> +++ b/ipc/util.c
-> @@ -837,8 +837,10 @@ static int sysvipc_proc_show(struct seq_file *s, void *it)
->  	struct ipc_proc_iter *iter = s->private;
->  	struct ipc_proc_iface *iface = iter->iface;
->  
-> -	if (it == SEQ_START_TOKEN)
-> -		return seq_puts(s, iface->header);
-> +	if (it == SEQ_START_TOKEN) {
-> +		seq_puts(s, iface->header);
-> +		return seq_has_overflowed(s);
+While testing kernel 3.18-rc4 I'm facing a problem with serial console.
 
-It should return 0. The overflow is detected by traverse() that is
-called from seq_read(). If the overflow happens, the size of the
-buffer is increased and show() is called again.
+I'm seeing at bootup this message:
+[   17.724000] console [ttyS0] disabled
+after that it's just hanging.
 
-> +	}
->  
->  	return iface->show(s, it);
+It seems as if ttyS0 is somehow being reprogrammed which then disturbs the
+serial ports on the receiver side (in my case a HP PCI Diva Serial [GSP] Multiport UART).
+Any idea what changed between 3.17 and 3.18 which have caused this behavior ?
+Full log below.
 
-This should stay as is. It seems that the show() function might also
-return negative value in case of some other failure. See the error
-handling of "error = m->op->show(m, p);" in traverse() in fs/seq_file.c
+Helge
+
+serial driver: drivers/tty/serial/8250/8250_pci.c
+
+PCI info:
+00:04.1 Serial controller: Hewlett-Packard Company Diva Serial [GSP] Multiport UART (rev 03) (prog-if 02 [16550])
+         Subsystem: Hewlett-Packard Company Device 1283
+         Flags: medium devsel, IRQ 70
+         Memory at ffffffff80000000 (32-bit, non-prefetchable) [size=4K]
+         I/O ports at 0040 [size=64]
+         Capabilities: [48] Power Management version 2
+         Kernel driver in use: serial
 
 
-The rest of the patch looks fine.
+dmesg after bootup:
 
-Best Regards,
-Petr
+[   17.708000] Serial: 8250/16550 driver, 8 ports, IRQ sharing enabled
+[   17.724000] serial 0000:00:04.1: enabling device (0142 -> 0143)
+[   17.724000] console [ttyS0] disabled
+[   17.880000] serial 0000:00:04.1: ttyS0 at MMIO 0xffffffff80000000 (irq = 70, base_baud = 115200) is a 16550A
+[   17.996000] console [ttyS0] enabled
+[   38.888000] INFO: rcu_sched detected stalls on CPUs/tasks: { 3} (detected by 1, t=5252 jiffies, g=-290, c=-291, q=2)
+[   38.888000] Task dump for CPU 3:
+[   38.888000] swapper/0       R  running task        0     1      0 0x00000004
+[   38.888000] Backtrace:
+[   38.888000]  [<0000000040200848>] vprintk_emit+0x570/0x5f8
+[   38.888000]  [<0000000040200bdc>] printk+0x64/0x78
+[   38.888000]  [<0000000040201fc0>] register_console+0x438/0x550
+[   38.888000]  [<0000000040688bb8>] uart_add_one_port+0x400/0x5d0
+[   38.888000]  [<000000004068e6d4>] serial8250_register_8250_port+0x3e4/0x448
+[   38.888000]  [<0000000040695f44>] pciserial_init_ports+0x22c/0x2c8
+[   38.888000]  [<0000000040696628>] pciserial_init_one+0x250/0x2e0
+[   38.888000]  [<00000000405f3880>] pci_device_probe+0xb0/0x150
+[   38.888000]  [<00000000406a8244>] driver_probe_device+0x204/0x570
+[   38.888000]  [<00000000406a8728>] __driver_attach+0xe0/0x158
+[   38.888000]  [<00000000406a4558>] bus_for_each_dev+0xd0/0x128
+[   38.888000]  [<00000000406a76f8>] driver_attach+0x48/0x60
+[   38.888000]  [<00000000406a6de8>] bus_add_driver+0x268/0x460
+[   38.888000]  [<00000000406a915c>] driver_register+0x124/0x1d0
+[   38.888000]  [<00000000405f336c>] __pci_register_driver+0x64/0x78
+[   38.888000]  [<00000000401375e4>] serial_pci_driver_init+0x44/0x58
+
+[   59.084000] timer_interrupt(CPU 3): delayed! cycles 85EBC4C7D rem 2BAF83  next/now 2765C08677/276594D6F4
+[   59.140000] bootconsole [ttyB0] disabled
+[   59.144000] serial 0000:00:04.1: ttyS1 at MMIO 0xffffffff80000008 (irq = 70, base_baud = 115200) is a 16450
+[   59.164000] serial 0000:00:04.1: ttyS2 at MMIO 0xffffffff80000010 (irq = 70, base_baud = 115200) is a 16550A
