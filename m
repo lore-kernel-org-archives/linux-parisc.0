@@ -1,42 +1,95 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture patches for v3.18
-Date: Sat, 15 Nov 2014 23:00:48 +0100
-Message-ID: <20141115220048.GA19278@ls3530.box>
+From: Stefano Stabellini <stefano.stabellini@eu.citrix.com>
+Subject: [RFC] add a struct page* parameter to dma_map_ops.unmap_page
+Date: Mon, 17 Nov 2014 14:11:51 +0000
+Message-ID: <alpine.DEB.2.02.1411111644490.26318@kaball.uk.xensource.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset="US-ASCII"
+Cc: David Vrabel <david.vrabel@citrix.com>,
+	Ian Campbell <Ian.Campbell@citrix.com>,
+	<konrad.wilk@oracle.com>, <linux-kernel@vger.kernel.org>,
+	<xen-devel@lists.xensource.com>, <torvalds@linux-foundation.org>,
+	<vinod.koul@intel.com>, <dmaengine@vger.kernel.org>,
+	Stefano Stabellini <Stefano.Stabellini@eu.citrix.com>,
+	<bhelgaas@google.com>, <jejb@parisc-linux.org>, <deller@gmx.de>,
+	<linux-parisc@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+	<airlied@linux.ie>, <dri-devel@lists.freedesktop.org>,
+	<alexander.deucher@amd.com>, <christian.koenig@amd.com>,
+	<linux@arm.linux.org.uk>, <linux-mips@linux-mips.org>,
+	<ralf@linux-mips.org>, <linux-arm-kernel@lists.infradead.org>,
+	<dwmw2@infradead.org>
+To: <gregkh@linuxfoundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+Hi all,
+I am writing this email to ask for your advice.
 
-please pull some patches for the parisc architecture for kernel 3.18 from 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.18-2
+On architectures where dma addresses are different from physical
+addresses, it can be difficult to retrieve the physical address of a
+page from its dma address.
 
-Changes include:
-- wire up the bpf syscall
-- Remove CONFIG_64BIT usage from some userspace-exported header files
-- Use compat functions for msgctl, shmat, shmctl and semtimedop syscalls 
+Specifically this is the case for Xen on arm and arm64 but I think that
+other architectures might have the same issue.
 
-Thanks,
-Helge
+Knowing the physical address is necessary to be able to issue any
+required cache maintenance operations when unmap_page,
+sync_single_for_cpu and sync_single_for_device are called.
 
-----------------------------------------------------------------
-Helge Deller (4):
-      parisc: Wire up bpf syscall
-      parisc: Use BUILD_BUG() instead of undefined functions
-      parisc: Use compat layer for msgctl, shmat, shmctl and semtimedop syscalls
-      parisc: Avoid using CONFIG_64BIT in userspace exported headers
+Adding a struct page* parameter to unmap_page, sync_single_for_cpu and
+sync_single_for_device would make Linux dma handling on Xen on arm and
+arm64 much easier and quicker.
 
- arch/parisc/include/asm/uaccess.h          | 19 +++++++---------
- arch/parisc/include/uapi/asm/bitsperlong.h |  8 +------
- arch/parisc/include/uapi/asm/msgbuf.h      |  8 ++++---
- arch/parisc/include/uapi/asm/sembuf.h      |  6 +++--
- arch/parisc/include/uapi/asm/shmbuf.h      | 35 +++++++++++++-----------------
- arch/parisc/include/uapi/asm/signal.h      |  2 +-
- arch/parisc/include/uapi/asm/unistd.h      |  3 ++-
- arch/parisc/kernel/syscall_table.S         |  9 ++++----
- 8 files changed, 41 insertions(+), 49 deletions(-)
+I think that other drivers have similar problems, such as the Intel
+IOMMU driver having to call find_iova and walking down an rbtree to get
+the physical address in its implementation of unmap_page.
+
+Callers have the struct page* in their hands already from the previous
+map_page call so it shouldn't be an issue for them.  A problem does
+exist however: there are about 280 callers of dma_unmap_page and
+pci_unmap_page. We have even more callers of the dma_sync_single_for_*
+functions.
+
+
+
+Is such a change even conceivable? How would one go about it?
+
+I think that Xen would not be the only one to gain from it, but I would
+like to have a confirmation from others: given the magnitude of the
+changes involved I would actually prefer to avoid them unless multiple
+drivers/archs/subsystems could really benefit from them.
+
+Cheers,
+
+Stefano
+
+
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index d5d3881..158a765 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -31,8 +31,9 @@ struct dma_map_ops {
+ 			       unsigned long offset, size_t size,
+ 			       enum dma_data_direction dir,
+ 			       struct dma_attrs *attrs);
+-	void (*unmap_page)(struct device *dev, dma_addr_t dma_handle,
+-			   size_t size, enum dma_data_direction dir,
++	void (*unmap_page)(struct device *dev, struct page *page,
++			   dma_addr_t dma_handle, size_t size,
++			   enum dma_data_direction dir,
+ 			   struct dma_attrs *attrs);
+ 	int (*map_sg)(struct device *dev, struct scatterlist *sg,
+ 		      int nents, enum dma_data_direction dir,
+@@ -41,10 +42,10 @@ struct dma_map_ops {
+ 			 struct scatterlist *sg, int nents,
+ 			 enum dma_data_direction dir,
+ 			 struct dma_attrs *attrs);
+-	void (*sync_single_for_cpu)(struct device *dev,
++	void (*sync_single_for_cpu)(struct device *dev, struct page *page,
+ 				    dma_addr_t dma_handle, size_t size,
+ 				    enum dma_data_direction dir);
+-	void (*sync_single_for_device)(struct device *dev,
++	void (*sync_single_for_device)(struct device *dev, struct page *page,
+ 				       dma_addr_t dma_handle, size_t size,
+ 				       enum dma_data_direction dir);
+ 	void (*sync_sg_for_cpu)(struct device *dev,
