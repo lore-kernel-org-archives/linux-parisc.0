@@ -1,18 +1,27 @@
 From: nobody@nowhere.invalid (Unknown)
 Subject: (unknown)
-Date: Sat, 22 Nov 2014 01:26:59 +0000 (UTC)
-Message-ID: <22573.7205510542$1416619619@news.gmane.org>
+Date: Sat, 22 Nov 2014 01:35:53 +0000 (UTC)
+Message-ID: <46499.5562601418$1416620153@news.gmane.org>
 
-...
-P linux/arch/parisc/config.in
-P linux/arch/parisc/defconfig
-cvs server: Updating linux/arch/parisc/boot
-cvs server: Updating linux/arch/parisc/boot/boot_code
-cvs [server aborted]: cannot open directory /home/cvs/parisc/linux/arch/parisc/b
-oot/boot_code: No such file or directory
+it seems that the installation dies before or when it tries to `branch
+to kernel entry point 0x00100000'
 
-Dave
+Why might this be?
 
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+If I try booting from a serial console, over NFS or using rbootd will I
+run into the same problem?
+
+>From the email archive
+
+http://lists.parisc-linux.org/pipermail/parisc-linux/2001-April/012249.html
+
+I see that 710 machines appear to have problems with "interrupt routing
+from the scsi and lan chips to the cpu". Could 705's have the same
+problems (705's and 710's use the same scsi driver according to the
+hardware database, so presumably they use at least very similar scsi
+hardware), and is this the cause of my problem?
+
+Any and all help will be gratefully received, on or off list.
+
+
+Thanks in advance, Derek.
