@@ -1,14 +1,16 @@
 From: Chen Gang <gang.chen.5i5j@gmail.com>
 Subject: [PATCH] arch: uapi: asm: mman.h: Support MADV_FREE for madvise()
-Date: Tue, 02 Dec 2014 04:43:19 +0800
-Message-ID: <547CD2E7.7030100@gmail.com>
+Date: Tue, 02 Dec 2014 04:43:48 +0800
+Message-ID: <547CD304.20407@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Cc: "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
 	"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
 	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
 	"linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
 To: "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
 	minchan@kernel.org, "rth@twiddle.net" <rth@twiddle.net>,
 	"ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>,
@@ -18,8 +20,8 @@ To: "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
 	"deller@gmx.de" <deller@gmx.de>,
 	"chris@zankel.net" <chris@zankel.net>,
 	"jcmvbkbc@gmail.com" <jcmvbkbc@gmail.com>
-Return-path: <linux-alpha-owner@vger.kernel.org>
-List-ID: <linux-alpha.vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 At present, kernel supports madvise(MADV_FREE), so can benefit to all
