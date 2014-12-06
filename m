@@ -1,70 +1,93 @@
 From: Chen Gang <gang.chen.5i5j@gmail.com>
-Subject: Re: [PATCH] arch: uapi: asm: mman.h: Support MADV_FREE for madvise()
-Date: Tue, 02 Dec 2014 10:07:33 +0800
-Message-ID: <547D1EE5.5060409@gmail.com>
-References: <547CD304.20407@gmail.com>	 <CAMo8BfKg=eb7wA2O+cKO+oLDDERh2CKBS7dyAvfqvCESEHWYEg@mail.gmail.com>	 <CAMuHMdXHAZFujShNnAHY8BRv85ncrtcRvRgPS0Br0T9gSxZ+1A@mail.gmail.com>	 <CAE2sS1hDXqLvF9yY5-3d4pmDPiQy8aQ1fYov3_+BKM8uQ3ZSwA@mail.gmail.com> <1417485331.2585.26.camel@HansenPartnership.com>
+Subject: Re: [PATCH] arch: uapi: asm: mman.h: Let MADV_FREE have same value
+ for all architectures
+Date: Sat, 06 Dec 2014 23:57:21 +0800
+Message-ID: <54832761.1050700@gmail.com>
+References: <5480E715.3020900@gmail.com> <20141205065417.GA3358@bbox> <54822B19.2070804@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Minchan Kim <minchan@kernel.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"rth@twiddle.net" <rth@twiddle.net>,
-	"ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>,
-	"mattst88@gmail.com" <mattst88@gmail.com>,
-	Ralf Baechle <ralf@linux-mips.org>,
-	"jejb@parisc-linux.org" <jejb@parisc-linux.org>,
-	"deller@gmx.de" <deller@gmx.de>,
-	"chris@zankel.net" <chris@zankel.net>,
-	"linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-	"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
 	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Carlos O'Donell <carlos@systemhalted.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1417485331.2585.26.camel@HansenPartnership.com>
-List-ID: <linux-kernel.vger.kernel.org>
+	Joel Brobecker <brobecker@adacore.com>
+To: "jejb@parisc-linux.org" <jejb@parisc-linux.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <54822B19.2070804@gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 12/2/14 09:55, James Bottomley wrote:
-> On Mon, 2014-12-01 at 17:01 -0500, Carlos O'Donell wrote:
->> On Mon, Dec 1, 2014 at 4:35 PM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->>> On Mon, Dec 1, 2014 at 9:52 PM, Max Filippov <jcmvbkbc@gmail.com> wrote:
->>>> On Mon, Dec 1, 2014 at 11:43 PM, Chen Gang <gang.chen.5i5j@gmail.com> wrote:
->>>>> At present, kernel supports madvise(MADV_FREE), so can benefit to all
->>>>> related architectures (can grep MADV_WILLNEED or MADV_REMOVE in "arch/"
->>>>> to know about all related architectures).
->>>>
->>>> A similar patch has been posted a while ago:
->>>>
->>>> http://www.spinics.net/lists/linux-mm/msg81538.html
->>>
->>> Would it be possible to use the same number everywhere?
->>
->> Yes please. It's ridiculous that we still need patches like this.
->>
->> I proposed unifying all this two years ago, but didn't follow up.
->>
->> From glibc's perspective it would be simpler if we started using the
->> same number everywhere.
->>
->> http://www.spinics.net/lists/linux-api/msg02064.html
-> 
-> Please co-ordinate with Andrew then because he's intent on merging this
-> patch:
-> 
-> http://marc.info/?l=linux-mm-commits&m=141747572930808
-> 
+Hello Maintainers:
 
-For me, we can let MADV_FREE to 8 based on the Andrew's mm tree. Since
-it is about uapi, we need try our best to let it perfect.
+After this patch, our parisc can pass allmodconfig in linux next tree,
+for me, we can say parisc specific code have no touch for allmodconfig.
+:-)
 
+But for parisc gcc latest upstream compiler, I found several issues, and
+I shall try to analyse them and communicate with gcc related members.
+
+And I also want to consult about parisc assembly instructions, I can not
+find the related reference documents, could you help to have a check (or
+provide some related information for it)? related contents are below:
+
+  parisc support several store instructions: 'stb' (for store byte),
+  'stw(m)' (for store word), and 'std' (for store double word).
+
+  They should be in the same format in binary code, and have neighbour
+  numbers, and 'stw(m)' need be in the middle of 'stb' and 'std'. one
+  sample for the instruction 'inst' (it is 'unsigned int'):
+
+   - for ((inst >> 26) != 0x3):
+
+     stb: 0x18, or 0x19,
+     stw: 0x1a, stwm: 0x1b,
+     std: 0x1c.
+
+   - else ((inst >> 26) == 0x3), need check '(inst >> 6) & 0xf':
+
+     stb: 0x08, or 0x09,
+     stw: 0x0a,
+     std: 0x0b.
+
+  it is about my binutils/gdb patch for parisc, gdb want to recognize
+  'st??' to find the position for saving relate context (registers).
+
+
+Welcome any suggestions, ideas, and completions.
 
 Thanks.
+
+
+On 12/06/2014 06:00 AM, Chen Gang wrote:
+> On 12/05/2014 02:54 PM, Minchan Kim wrote:
+>> On Fri, Dec 05, 2014 at 06:58:29AM +0800, Chen Gang wrote:
+>>> For uapi, need try to let all macros have same value, and MADV_FREE is
+>>> added into main branch recently, so need redefine MADV_FREE for it.
+>>>
+>>> At present, '8' can be shared with all architectures, so redefine it to
+>>> '8'.
+>>>
+>>> Signed-off-by: Chen Gang <gang.chen.5i5j@gmail.com>
+>>
+>>
+>> Hello Chen,
+>>
+>> Thanks for looking at this.
+>> Feel free to add my sign.
+>>
+>> Acked-by: Minchan Kim <minchan@kernel.org>
+>>
+> 
+> OK, thanks.
+> 
+> Originally I sent the same patch like you sent (but later than yours).
+> Geert suggested to use same value for MADV_FREE, and Carlos confirmed
+> it and suggested more things (sorry, I forgot to Cc them in this mail).
+> 
+> 
+> Thanks.
+> 
+
+
 -- 
 Chen Gang
 
-Open, share, and attitude like air, water, and life which God blessed
+Open share and attitude like air water and life which God blessed
