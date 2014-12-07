@@ -1,93 +1,30 @@
-From: Chen Gang <gang.chen.5i5j@gmail.com>
-Subject: Re: [PATCH] arch: uapi: asm: mman.h: Let MADV_FREE have same value
- for all architectures
-Date: Sat, 06 Dec 2014 23:57:21 +0800
-Message-ID: <54832761.1050700@gmail.com>
-References: <5480E715.3020900@gmail.com> <20141205065417.GA3358@bbox> <54822B19.2070804@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCH] arch: uapi: asm: mman.h: Let MADV_FREE have same value for all architectures
+Date: Sun, 7 Dec 2014 11:14:42 -0500
+Message-ID: <BLU436-SMTP2290D2D7C148D22663FD75E97670@phx.gbl>
+References: <5480E715.3020900@gmail.com> <20141205065417.GA3358@bbox> <54822B19.2070804@gmail.com> <54832761.1050700@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Type: text/plain; charset="US-ASCII"; format=flowed; delsp=yes
+Cc: "jejb@parisc-linux.org" <jejb@parisc-linux.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
 	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
 	Joel Brobecker <brobecker@adacore.com>
-To: "jejb@parisc-linux.org" <jejb@parisc-linux.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <54822B19.2070804@gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
+To: Chen Gang <gang.chen.5i5j@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <54832761.1050700@gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello Maintainers:
+On 6-Dec-14, at 10:57 AM, Chen Gang wrote:
 
-After this patch, our parisc can pass allmodconfig in linux next tree,
-for me, we can say parisc specific code have no touch for allmodconfig.
-:-)
+> And I also want to consult about parisc assembly instructions, I can  
+> not
+> find the related reference documents, could you help to have a check  
+> (or
+> provide some related information for it)? related contents are below:
 
-But for parisc gcc latest upstream compiler, I found several issues, and
-I shall try to analyse them and communicate with gcc related members.
+https://parisc.wiki.kernel.org/index.php/Technical_Documentation
 
-And I also want to consult about parisc assembly instructions, I can not
-find the related reference documents, could you help to have a check (or
-provide some related information for it)? related contents are below:
-
-  parisc support several store instructions: 'stb' (for store byte),
-  'stw(m)' (for store word), and 'std' (for store double word).
-
-  They should be in the same format in binary code, and have neighbour
-  numbers, and 'stw(m)' need be in the middle of 'stb' and 'std'. one
-  sample for the instruction 'inst' (it is 'unsigned int'):
-
-   - for ((inst >> 26) != 0x3):
-
-     stb: 0x18, or 0x19,
-     stw: 0x1a, stwm: 0x1b,
-     std: 0x1c.
-
-   - else ((inst >> 26) == 0x3), need check '(inst >> 6) & 0xf':
-
-     stb: 0x08, or 0x09,
-     stw: 0x0a,
-     std: 0x0b.
-
-  it is about my binutils/gdb patch for parisc, gdb want to recognize
-  'st??' to find the position for saving relate context (registers).
-
-
-Welcome any suggestions, ideas, and completions.
-
-Thanks.
-
-
-On 12/06/2014 06:00 AM, Chen Gang wrote:
-> On 12/05/2014 02:54 PM, Minchan Kim wrote:
->> On Fri, Dec 05, 2014 at 06:58:29AM +0800, Chen Gang wrote:
->>> For uapi, need try to let all macros have same value, and MADV_FREE is
->>> added into main branch recently, so need redefine MADV_FREE for it.
->>>
->>> At present, '8' can be shared with all architectures, so redefine it to
->>> '8'.
->>>
->>> Signed-off-by: Chen Gang <gang.chen.5i5j@gmail.com>
->>
->>
->> Hello Chen,
->>
->> Thanks for looking at this.
->> Feel free to add my sign.
->>
->> Acked-by: Minchan Kim <minchan@kernel.org>
->>
-> 
-> OK, thanks.
-> 
-> Originally I sent the same patch like you sent (but later than yours).
-> Geert suggested to use same value for MADV_FREE, and Carlos confirmed
-> it and suggested more things (sorry, I forgot to Cc them in this mail).
-> 
-> 
-> Thanks.
-> 
-
-
--- 
-Chen Gang
-
-Open share and attitude like air water and life which God blessed
+Dave
+--
+John David Anglin	dave.anglin@bell.net
