@@ -1,44 +1,132 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [PATCH] serial: fix parisc boot hang
-Date: Fri, 02 Jan 2015 10:05:13 -0800
-Message-ID: <1420221913.2072.7.camel@HansenPartnership.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: linux-parisc <linux-parisc@vger.kernel.org>,
-	linux-serial@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Subject: [PATCH] arch: parisc: kernel: sys_parisc:  Remove some unused functions
+Date: Fri,  2 Jan 2015 19:09:50 +0100
+Message-ID: <1420222190-32621-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>,
+	James Hogan <james.hogan@imgtec.com>,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: James Bottomley <JBottomley@Parallels.com>
+Removes some functions that are not used anywhere:
+parisc_personality() parisc_fallocate() parisc_sync_file_range()
+parisc_fadvise64_64() parisc_readahead() parisc_pwrite64() parisc_pread64()
+parisc_ftruncate64() parisc_truncate64()
 
-This is a partial revert of 2f2dafe (serial: serial_core.c: printk
-replacement) which gets us booting again.  The real problem seems to be
-the _emit path in early boot.  However, until we can root cause it, we
-need at least to get boot working.
+This was partially found by using a static code analysis program called cppcheck.
 
-Fixes: 2f2dafe77df2c78e189a9fa6b1879dffd06ae5a1
-Cc: stable@vger.kernel.org
-Signed-off-by: James Bottomley <JBottomley@Parallels.com>
-
+Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
 ---
+ arch/parisc/kernel/sys_parisc.c |   81 ---------------------------------------
+ 1 file changed, 81 deletions(-)
 
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-index 57ca61b..984605b 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -2164,7 +2164,9 @@ uart_report_port(struct uart_driver *drv, struct uart_port *port)
- 		break;
- 	}
+diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
+index e1ffea2..65ab69d 100644
+--- a/arch/parisc/kernel/sys_parisc.c
++++ b/arch/parisc/kernel/sys_parisc.c
+@@ -283,18 +283,6 @@ asmlinkage unsigned long sys_mmap(unsigned long addr, unsigned long len,
+ /* Fucking broken ABI */
  
--	dev_info(port->dev, "%s%d at %s (irq = %d, base_baud = %d) is a %s\n",
-+	printk(KERN_INFO "%s%s%s%d at %s (irq = %d, base_baud = %d) is a %s\n",
-+	       port->dev ? dev_name(port->dev) : "",
-+	       port->dev ? ": " : "",
- 	       drv->dev_name,
- 	       drv->tty_driver->name_base + port->line,
- 	       address, port->irq, port->uartclk / 16, uart_type(port));
-
-
+ #ifdef CONFIG_64BIT
+-asmlinkage long parisc_truncate64(const char __user * path,
+-					unsigned int high, unsigned int low)
+-{
+-	return sys_truncate(path, (long)high << 32 | low);
+-}
+-
+-asmlinkage long parisc_ftruncate64(unsigned int fd,
+-					unsigned int high, unsigned int low)
+-{
+-	return sys_ftruncate(fd, (long)high << 32 | low);
+-}
+-
+ /* stubs for the benefit of the syscall_table since truncate64 and truncate 
+  * are identical on LP64 */
+ asmlinkage long sys_truncate64(const char __user * path, unsigned long length)
+@@ -309,62 +297,8 @@ asmlinkage long sys_fcntl64(unsigned int fd, unsigned int cmd, unsigned long arg
+ {
+ 	return sys_fcntl(fd, cmd, arg);
+ }
+-#else
+-
+-asmlinkage long parisc_truncate64(const char __user * path,
+-					unsigned int high, unsigned int low)
+-{
+-	return sys_truncate64(path, (loff_t)high << 32 | low);
+-}
+-
+-asmlinkage long parisc_ftruncate64(unsigned int fd,
+-					unsigned int high, unsigned int low)
+-{
+-	return sys_ftruncate64(fd, (loff_t)high << 32 | low);
+-}
+ #endif
+ 
+-asmlinkage ssize_t parisc_pread64(unsigned int fd, char __user *buf, size_t count,
+-					unsigned int high, unsigned int low)
+-{
+-	return sys_pread64(fd, buf, count, (loff_t)high << 32 | low);
+-}
+-
+-asmlinkage ssize_t parisc_pwrite64(unsigned int fd, const char __user *buf,
+-			size_t count, unsigned int high, unsigned int low)
+-{
+-	return sys_pwrite64(fd, buf, count, (loff_t)high << 32 | low);
+-}
+-
+-asmlinkage ssize_t parisc_readahead(int fd, unsigned int high, unsigned int low,
+-		                    size_t count)
+-{
+-	return sys_readahead(fd, (loff_t)high << 32 | low, count);
+-}
+-
+-asmlinkage long parisc_fadvise64_64(int fd,
+-			unsigned int high_off, unsigned int low_off,
+-			unsigned int high_len, unsigned int low_len, int advice)
+-{
+-	return sys_fadvise64_64(fd, (loff_t)high_off << 32 | low_off,
+-			(loff_t)high_len << 32 | low_len, advice);
+-}
+-
+-asmlinkage long parisc_sync_file_range(int fd,
+-			u32 hi_off, u32 lo_off, u32 hi_nbytes, u32 lo_nbytes,
+-			unsigned int flags)
+-{
+-	return sys_sync_file_range(fd, (loff_t)hi_off << 32 | lo_off,
+-			(loff_t)hi_nbytes << 32 | lo_nbytes, flags);
+-}
+-
+-asmlinkage long parisc_fallocate(int fd, int mode, u32 offhi, u32 offlo,
+-				u32 lenhi, u32 lenlo)
+-{
+-        return sys_fallocate(fd, mode, ((u64)offhi << 32) | offlo,
+-                             ((u64)lenhi << 32) | lenlo);
+-}
+-
+ asmlinkage unsigned long sys_alloc_hugepages(int key, unsigned long addr, unsigned long len, int prot, int flag)
+ {
+ 	return -ENOMEM;
+@@ -374,18 +308,3 @@ asmlinkage int sys_free_hugepages(unsigned long addr)
+ {
+ 	return -EINVAL;
+ }
+-
+-long parisc_personality(unsigned long personality)
+-{
+-	long err;
+-
+-	if (personality(current->personality) == PER_LINUX32
+-	    && personality(personality) == PER_LINUX)
+-		personality = (personality & ~PER_MASK) | PER_LINUX32;
+-
+-	err = sys_personality(personality);
+-	if (personality(err) == PER_LINUX32)
+-		err = (err & ~PER_MASK) | PER_LINUX;
+-
+-	return err;
+-}
+-- 
+1.7.10.4
