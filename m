@@ -1,235 +1,216 @@
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v2 37/40] parisc: macro whitespace fixes
-Date: Tue, 6 Jan 2015 17:45:34 +0200
-Message-ID: <1420558883-10131-38-git-send-email-mst@redhat.com>
-References: <1420558883-10131-1-git-send-email-mst@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+From: Rusty Russell <rusty@rustcorp.com.au>
+Subject: [PATCH 1/3] module_arch_freeing_init(): new hook for archs before module->module_init freed.
+Date: Thu,  8 Jan 2015 11:28:05 +1030
+Message-ID: <1420678687-30548-2-git-send-email-rusty@rustcorp.com.au>
+References: <1420678687-30548-1-git-send-email-rusty@rustcorp.com.au>
+Cc: Rusty Russell <rusty@rustcorp.com.au>,
+	Chris Metcalf <cmetcalf@ezchip.com>,
+	Haavard Skinnemoen <hskinnemoen@gmail.com>,
+	Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+	Tony Luck <tony.luck@intel.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+	Helge Deller <deller@gmx.de>,
+	Martin Schwidefsky <schwidefsky@de.ibm.com>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-s390@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1420558883-10131-1-git-send-email-mst@redhat.com>
-List-ID: <linux-kernel.vger.kernel.org>
+Return-path: <linux-ia64-owner@vger.kernel.org>
+In-Reply-To: <1420678687-30548-1-git-send-email-rusty@rustcorp.com.au>
+List-ID: <linux-ia64.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-While working on arch/parisc/include/asm/uaccess.h, I noticed
-that some macros within this header are made harder to read because they
-violate a coding style rule: space is missing after comma.
+Archs have been abusing module_free() to clean up their arch-specific
+allocations.  Since module_free() is also (ab)used by BPF and trace code,
+let's keep it to simple allocations, and provide a hook called before
+that.
 
-Fix it up.
+This means that avr32, ia64, parisc and s390 no longer need to implement
+their own module_free() at all.  avr32 doesn't need module_finalize()
+either.
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+Cc: Chris Metcalf <cmetcalf@ezchip.com>
+Cc: Haavard Skinnemoen <hskinnemoen@gmail.com>
+Cc: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linux-s390@vger.kernel.org
 ---
- arch/parisc/include/asm/uaccess.h | 116 +++++++++++++++++++-------------------
- 1 file changed, 58 insertions(+), 58 deletions(-)
+ arch/avr32/kernel/module.c   | 13 +------------
+ arch/ia64/kernel/module.c    |  6 ++----
+ arch/parisc/kernel/module.c  |  6 +-----
+ arch/s390/kernel/module.c    | 10 +++-------
+ arch/tile/kernel/module.c    |  2 +-
+ include/linux/moduleloader.h |  2 ++
+ kernel/module.c              |  7 +++++++
+ 7 files changed, 17 insertions(+), 29 deletions(-)
 
-diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
-index 6c79311..0abdd4c 100644
---- a/arch/parisc/include/asm/uaccess.h
-+++ b/arch/parisc/include/asm/uaccess.h
-@@ -17,7 +17,7 @@
- #define KERNEL_DS	((mm_segment_t){0})
- #define USER_DS 	((mm_segment_t){1})
+diff --git a/arch/avr32/kernel/module.c b/arch/avr32/kernel/module.c
+index 2c9412908024..164efa009e5b 100644
+--- a/arch/avr32/kernel/module.c
++++ b/arch/avr32/kernel/module.c
+@@ -19,12 +19,10 @@
+ #include <linux/moduleloader.h>
+ #include <linux/vmalloc.h>
  
--#define segment_eq(a,b)	((a).seg == (b).seg)
-+#define segment_eq(a, b) ((a).seg == (b).seg)
+-void module_free(struct module *mod, void *module_region)
++void module_arch_freeing_init(struct module *mod)
+ {
+ 	vfree(mod->arch.syminfo);
+ 	mod->arch.syminfo = NULL;
+-
+-	vfree(module_region);
+ }
  
- #define get_ds()	(KERNEL_DS)
- #define get_fs()	(current_thread_info()->addr_limit)
-@@ -42,14 +42,14 @@ static inline long access_ok(int type, const void __user * addr,
- #if !defined(CONFIG_64BIT)
- #define LDD_KERNEL(ptr)		BUILD_BUG()
- #define LDD_USER(ptr)		BUILD_BUG()
--#define STD_KERNEL(x, ptr)	__put_kernel_asm64(x,ptr)
--#define STD_USER(x, ptr)	__put_user_asm64(x,ptr)
-+#define STD_KERNEL(x, ptr)	__put_kernel_asm64(x, ptr)
-+#define STD_USER(x, ptr)	__put_user_asm64(x, ptr)
- #define ASM_WORD_INSN		".word\t"
- #else
--#define LDD_KERNEL(ptr)		__get_kernel_asm("ldd",ptr)
--#define LDD_USER(ptr)		__get_user_asm("ldd",ptr)
--#define STD_KERNEL(x, ptr)	__put_kernel_asm("std",x,ptr)
--#define STD_USER(x, ptr)	__put_user_asm("std",x,ptr)
-+#define LDD_KERNEL(ptr)		__get_kernel_asm("ldd", ptr)
-+#define LDD_USER(ptr)		__get_user_asm("ldd", ptr)
-+#define STD_KERNEL(x, ptr)	__put_kernel_asm("std", x, ptr)
-+#define STD_USER(x, ptr)	__put_user_asm("std", x, ptr)
- #define ASM_WORD_INSN		".dword\t"
+ static inline int check_rela(Elf32_Rela *rela, struct module *module,
+@@ -291,12 +289,3 @@ int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
+ 
+ 	return ret;
+ }
+-
+-int module_finalize(const Elf_Ehdr *hdr, const Elf_Shdr *sechdrs,
+-		    struct module *module)
+-{
+-	vfree(module->arch.syminfo);
+-	module->arch.syminfo = NULL;
+-
+-	return 0;
+-}
+diff --git a/arch/ia64/kernel/module.c b/arch/ia64/kernel/module.c
+index 24603be24c14..29754aae5177 100644
+--- a/arch/ia64/kernel/module.c
++++ b/arch/ia64/kernel/module.c
+@@ -305,14 +305,12 @@ plt_target (struct plt_entry *plt)
+ #endif /* !USE_BRL */
+ 
+ void
+-module_free (struct module *mod, void *module_region)
++module_arch_freeing_init (struct module *mod)
+ {
+-	if (mod && mod->arch.init_unw_table &&
+-	    module_region == mod->module_init) {
++	if (mod->arch.init_unw_table) {
+ 		unw_remove_unwind_table(mod->arch.init_unw_table);
+ 		mod->arch.init_unw_table = NULL;
+ 	}
+-	vfree(module_region);
+ }
+ 
+ /* Have we already seen one of these relocations? */
+diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
+index 50dfafc3f2c1..5822e8e200e6 100644
+--- a/arch/parisc/kernel/module.c
++++ b/arch/parisc/kernel/module.c
+@@ -298,14 +298,10 @@ static inline unsigned long count_stubs(const Elf_Rela *rela, unsigned long n)
+ }
  #endif
  
-@@ -80,68 +80,68 @@ struct exception_data {
- 	unsigned long fault_addr;
- };
+-
+-/* Free memory returned from module_alloc */
+-void module_free(struct module *mod, void *module_region)
++void module_arch_freeing_init(struct module *mod)
+ {
+ 	kfree(mod->arch.section);
+ 	mod->arch.section = NULL;
+-
+-	vfree(module_region);
+ }
  
--#define __get_user(x,ptr)                               \
--({                                                      \
--	register long __gu_err __asm__ ("r8") = 0;      \
--	register long __gu_val __asm__ ("r9") = 0;      \
--							\
--	if (segment_eq(get_fs(),KERNEL_DS)) {           \
--	    switch (sizeof(*(ptr))) {                   \
--	    case 1: __get_kernel_asm("ldb",ptr); break; \
--	    case 2: __get_kernel_asm("ldh",ptr); break; \
--	    case 4: __get_kernel_asm("ldw",ptr); break; \
--	    case 8: LDD_KERNEL(ptr); break;		\
--	    default: BUILD_BUG(); break;		\
--	    }                                           \
--	}                                               \
--	else {                                          \
--	    switch (sizeof(*(ptr))) {                   \
--	    case 1: __get_user_asm("ldb",ptr); break;   \
--	    case 2: __get_user_asm("ldh",ptr); break;   \
--	    case 4: __get_user_asm("ldw",ptr); break;   \
--	    case 8: LDD_USER(ptr);  break;		\
--	    default: BUILD_BUG(); break;		\
--	    }                                           \
--	}                                               \
--							\
--	(x) = (__force __typeof__(*(ptr))) __gu_val;	\
--	__gu_err;                                       \
-+#define __get_user(x, ptr)                               \
-+({                                                       \
-+	register long __gu_err __asm__ ("r8") = 0;       \
-+	register long __gu_val __asm__ ("r9") = 0;       \
-+							 \
-+	if (segment_eq(get_fs(), KERNEL_DS)) {           \
-+	    switch (sizeof(*(ptr))) {                    \
-+	    case 1: __get_kernel_asm("ldb", ptr); break; \
-+	    case 2: __get_kernel_asm("ldh", ptr); break; \
-+	    case 4: __get_kernel_asm("ldw", ptr); break; \
-+	    case 8: LDD_KERNEL(ptr); break;		 \
-+	    default: BUILD_BUG(); break;		 \
-+	    }                                            \
-+	}                                                \
-+	else {                                           \
-+	    switch (sizeof(*(ptr))) {                    \
-+	    case 1: __get_user_asm("ldb", ptr); break;   \
-+	    case 2: __get_user_asm("ldh", ptr); break;   \
-+	    case 4: __get_user_asm("ldw", ptr); break;   \
-+	    case 8: LDD_USER(ptr);  break;		 \
-+	    default: BUILD_BUG(); break;		 \
-+	    }                                            \
-+	}                                                \
-+							 \
-+	(x) = (__force __typeof__(*(ptr))) __gu_val;	 \
-+	__gu_err;                                        \
- })
+ /* Additional bytes needed in front of individual sections */
+diff --git a/arch/s390/kernel/module.c b/arch/s390/kernel/module.c
+index b89b59158b95..409d152585be 100644
+--- a/arch/s390/kernel/module.c
++++ b/arch/s390/kernel/module.c
+@@ -55,14 +55,10 @@ void *module_alloc(unsigned long size)
+ }
+ #endif
  
--#define __get_kernel_asm(ldx,ptr)                       \
-+#define __get_kernel_asm(ldx, ptr)                      \
- 	__asm__("\n1:\t" ldx "\t0(%2),%0\n\t"		\
- 		ASM_EXCEPTIONTABLE_ENTRY(1b, fixup_get_user_skip_1)\
- 		: "=r"(__gu_val), "=r"(__gu_err)        \
- 		: "r"(ptr), "1"(__gu_err)		\
- 		: "r1");
+-/* Free memory returned from module_alloc */
+-void module_free(struct module *mod, void *module_region)
++void module_arch_freeing_init(struct module *mod)
+ {
+-	if (mod) {
+-		vfree(mod->arch.syminfo);
+-		mod->arch.syminfo = NULL;
+-	}
+-	vfree(module_region);
++	vfree(mod->arch.syminfo);
++	mod->arch.syminfo = NULL;
+ }
  
--#define __get_user_asm(ldx,ptr)                         \
-+#define __get_user_asm(ldx, ptr)                        \
- 	__asm__("\n1:\t" ldx "\t0(%%sr3,%2),%0\n\t"	\
--		ASM_EXCEPTIONTABLE_ENTRY(1b,fixup_get_user_skip_1)\
-+		ASM_EXCEPTIONTABLE_ENTRY(1b, fixup_get_user_skip_1)\
- 		: "=r"(__gu_val), "=r"(__gu_err)        \
- 		: "r"(ptr), "1"(__gu_err)		\
- 		: "r1");
+ static void check_rela(Elf_Rela *rela, struct module *me)
+diff --git a/arch/tile/kernel/module.c b/arch/tile/kernel/module.c
+index 96447c9160a0..62a597e810d6 100644
+--- a/arch/tile/kernel/module.c
++++ b/arch/tile/kernel/module.c
+@@ -83,7 +83,7 @@ void module_free(struct module *mod, void *module_region)
+ 		     0, 0, 0, NULL, NULL, 0);
  
--#define __put_user(x,ptr)                                       \
-+#define __put_user(x, ptr)                                      \
- ({								\
- 	register long __pu_err __asm__ ("r8") = 0;      	\
-         __typeof__(*(ptr)) __x = (__typeof__(*(ptr)))(x);	\
- 								\
--	if (segment_eq(get_fs(),KERNEL_DS)) {                   \
-+	if (segment_eq(get_fs(), KERNEL_DS)) {                  \
- 	    switch (sizeof(*(ptr))) {                           \
--	    case 1: __put_kernel_asm("stb",__x,ptr); break;     \
--	    case 2: __put_kernel_asm("sth",__x,ptr); break;     \
--	    case 4: __put_kernel_asm("stw",__x,ptr); break;     \
--	    case 8: STD_KERNEL(__x,ptr); break;			\
-+	    case 1: __put_kernel_asm("stb", __x, ptr); break;   \
-+	    case 2: __put_kernel_asm("sth", __x, ptr); break;   \
-+	    case 4: __put_kernel_asm("stw", __x, ptr); break;   \
-+	    case 8: STD_KERNEL(__x, ptr); break;		\
- 	    default: BUILD_BUG(); break;			\
- 	    }                                                   \
- 	}                                                       \
- 	else {                                                  \
- 	    switch (sizeof(*(ptr))) {                           \
--	    case 1: __put_user_asm("stb",__x,ptr); break;       \
--	    case 2: __put_user_asm("sth",__x,ptr); break;       \
--	    case 4: __put_user_asm("stw",__x,ptr); break;       \
--	    case 8: STD_USER(__x,ptr); break;			\
-+	    case 1: __put_user_asm("stb", __x, ptr); break;     \
-+	    case 2: __put_user_asm("sth", __x, ptr); break;     \
-+	    case 4: __put_user_asm("stw", __x, ptr); break;     \
-+	    case 8: STD_USER(__x, ptr); break;			\
- 	    default: BUILD_BUG(); break;			\
- 	    }                                                   \
- 	}                                                       \
-@@ -159,18 +159,18 @@ struct exception_data {
-  * r8/r9 are already listed as err/val.
-  */
+ 	/*
+-	 * FIXME: If module_region == mod->module_init, trim exception
++	 * FIXME: Add module_arch_freeing_init to trim exception
+ 	 * table entries.
+ 	 */
+ }
+diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+index 7eeb9bbfb816..054eac853090 100644
+--- a/include/linux/moduleloader.h
++++ b/include/linux/moduleloader.h
+@@ -82,4 +82,6 @@ int module_finalize(const Elf_Ehdr *hdr,
+ /* Any cleanup needed when module leaves. */
+ void module_arch_cleanup(struct module *mod);
  
--#define __put_kernel_asm(stx,x,ptr)                         \
-+#define __put_kernel_asm(stx, x, ptr)                       \
- 	__asm__ __volatile__ (                              \
- 		"\n1:\t" stx "\t%2,0(%1)\n\t"		    \
--		ASM_EXCEPTIONTABLE_ENTRY(1b,fixup_put_user_skip_1)\
-+		ASM_EXCEPTIONTABLE_ENTRY(1b, fixup_put_user_skip_1)\
- 		: "=r"(__pu_err)                            \
- 		: "r"(ptr), "r"(x), "0"(__pu_err)	    \
- 	    	: "r1")
++/* Any cleanup before freeing mod->module_init */
++void module_arch_freeing_init(struct module *mod);
+ #endif
+diff --git a/kernel/module.c b/kernel/module.c
+index 3965511ae133..68be0b1f9e7f 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -1804,6 +1804,10 @@ void __weak module_arch_cleanup(struct module *mod)
+ {
+ }
  
--#define __put_user_asm(stx,x,ptr)                           \
-+#define __put_user_asm(stx, x, ptr)                         \
- 	__asm__ __volatile__ (                              \
- 		"\n1:\t" stx "\t%2,0(%%sr3,%1)\n\t"	    \
--		ASM_EXCEPTIONTABLE_ENTRY(1b,fixup_put_user_skip_1)\
-+		ASM_EXCEPTIONTABLE_ENTRY(1b, fixup_put_user_skip_1)\
- 		: "=r"(__pu_err)                            \
- 		: "r"(ptr), "r"(x), "0"(__pu_err)	    \
- 		: "r1")
-@@ -178,23 +178,23 @@ struct exception_data {
++void __weak module_arch_freeing_init(struct module *mod)
++{
++}
++
+ /* Free a module, remove from lists, etc. */
+ static void free_module(struct module *mod)
+ {
+@@ -1841,6 +1845,7 @@ static void free_module(struct module *mod)
  
- #if !defined(CONFIG_64BIT)
- 
--#define __put_kernel_asm64(__val,ptr) do {		    \
-+#define __put_kernel_asm64(__val, ptr) do {		    \
- 	__asm__ __volatile__ (				    \
- 		"\n1:\tstw %2,0(%1)"			    \
- 		"\n2:\tstw %R2,4(%1)\n\t"		    \
--		ASM_EXCEPTIONTABLE_ENTRY(1b,fixup_put_user_skip_2)\
--		ASM_EXCEPTIONTABLE_ENTRY(2b,fixup_put_user_skip_1)\
-+		ASM_EXCEPTIONTABLE_ENTRY(1b, fixup_put_user_skip_2)\
-+		ASM_EXCEPTIONTABLE_ENTRY(2b, fixup_put_user_skip_1)\
- 		: "=r"(__pu_err)                            \
- 		: "r"(ptr), "r"(__val), "0"(__pu_err) \
- 		: "r1");				    \
- } while (0)
- 
--#define __put_user_asm64(__val,ptr) do {	    	    \
-+#define __put_user_asm64(__val, ptr) do {	    	    \
- 	__asm__ __volatile__ (				    \
- 		"\n1:\tstw %2,0(%%sr3,%1)"		    \
- 		"\n2:\tstw %R2,4(%%sr3,%1)\n\t"		    \
--		ASM_EXCEPTIONTABLE_ENTRY(1b,fixup_put_user_skip_2)\
--		ASM_EXCEPTIONTABLE_ENTRY(2b,fixup_put_user_skip_1)\
-+		ASM_EXCEPTIONTABLE_ENTRY(1b, fixup_put_user_skip_2)\
-+		ASM_EXCEPTIONTABLE_ENTRY(2b, fixup_put_user_skip_1)\
- 		: "=r"(__pu_err)                            \
- 		: "r"(ptr), "r"(__val), "0"(__pu_err) \
- 		: "r1");				    \
-@@ -211,8 +211,8 @@ extern unsigned long lcopy_to_user(void __user *, const void *, unsigned long);
- extern unsigned long lcopy_from_user(void *, const void __user *, unsigned long);
- extern unsigned long lcopy_in_user(void __user *, const void __user *, unsigned long);
- extern long strncpy_from_user(char *, const char __user *, long);
--extern unsigned lclear_user(void __user *,unsigned long);
--extern long lstrnlen_user(const char __user *,long);
-+extern unsigned lclear_user(void __user *, unsigned long);
-+extern long lstrnlen_user(const char __user *, long);
- /*
-  * Complex access routines -- macros
-  */
+ 	/* This may be NULL, but that's OK */
+ 	unset_module_init_ro_nx(mod);
++	module_arch_freeing_init(mod);
+ 	module_free(mod, mod->module_init);
+ 	kfree(mod->args);
+ 	percpu_modfree(mod);
+@@ -2930,6 +2935,7 @@ static struct module *layout_and_allocate(struct load_info *info, int flags)
+ static void module_deallocate(struct module *mod, struct load_info *info)
+ {
+ 	percpu_modfree(mod);
++	module_arch_freeing_init(mod);
+ 	module_free(mod, mod->module_init);
+ 	module_free(mod, mod->module_core);
+ }
+@@ -3055,6 +3061,7 @@ static int do_init_module(struct module *mod)
+ 	mod->strtab = mod->core_strtab;
+ #endif
+ 	unset_module_init_ro_nx(mod);
++	module_arch_freeing_init(mod);
+ 	module_free(mod, mod->module_init);
+ 	mod->module_init = NULL;
+ 	mod->init_size = 0;
 -- 
-MST
+2.1.0
+
