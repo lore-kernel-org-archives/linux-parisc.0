@@ -1,68 +1,41 @@
-From: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-Subject: Re: [PATCH 1/3] module_arch_freeing_init(): new hook for archs
- before module->module_init freed.
-Date: Thu, 8 Jan 2015 08:55:24 +0100
-Message-ID: <20150108075524.GA24522@samfundet.no>
-References: <1420678687-30548-1-git-send-email-rusty@rustcorp.com.au>
- <1420678687-30548-2-git-send-email-rusty@rustcorp.com.au>
+From: Michal Marek <mmarek@suse.cz>
+Subject: Re: [PATCH 0/6] kbuild: refactor Makefiles related with cc-version
+Date: Fri, 09 Jan 2015 17:27:33 +0100
+Message-ID: <54B00175.4050702@suse.cz>
+References: <1419485488-22336-1-git-send-email-yamada.m@jp.panasonic.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-kernel@vger.kernel.org, Chris Metcalf <cmetcalf@ezchip.com>,
-	Haavard Skinnemoen <hskinnemoen@gmail.com>,
-	Tony Luck <tony.luck@intel.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+Content-Type: text/plain; charset=windows-1252
+Cc: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"H. Peter Anvin" <hpa@linux.intel.com>, linux-doc@vger.kernel.org,
+	Jonathan Corbet <corbet@lwn.net>,
+	Robert Richter <rrichter@cavium.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
 	Helge Deller <deller@gmx.de>,
-	Martin Schwidefsky <schwidefsky@de.ibm.com>,
-	Heiko Carstens <heiko.carstens@de.ibm.com>,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-s390@vger.kernel.org
-To: Rusty Russell <rusty@rustcorp.com.au>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1420678687-30548-2-git-send-email-rusty@rustcorp.com.au>
-List-ID: <linux-parisc.vger.kernel.org>
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+	Andi Kleen <ak@linux.intel.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Paul Mackerras <paulus@samba.org>,
+	Ingo Molnar <mingo@redhat.com>, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org
+To: Masahiro Yamada <yamada.m@jp.panasonic.com>,
+	linux-kbuild@vger.kernel.org
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <1419485488-22336-1-git-send-email-yamada.m@jp.panasonic.com>
+List-ID: <linux-doc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Around Thu 08 Jan 2015 11:28:05 +1030 or thereabout, Rusty Russell wrote:
-> Archs have been abusing module_free() to clean up their arch-specific
-> allocations.  Since module_free() is also (ab)used by BPF and trace code,
-> let's keep it to simple allocations, and provide a hook called before
-> that.
-> 
-> This means that avr32, ia64, parisc and s390 no longer need to implement
-> their own module_free() at all.  avr32 doesn't need module_finalize()
-> either.
+On 2014-12-25 06:31, Masahiro Yamada wrote:
+> Masahiro Yamada (6):
+>   kbuild: fix cc-ifversion macro
+>   kbuild: do not add $(call ...) to invoke cc-version or cc-fullversion
+>   kbuild,gcov: remove unnecessary workaround
+>   kbuild,gcov: simplify kernel/gcov/Makefile
+>   kbuild: allow cc-ifversion to have the argument for false condition
+>   kbuild,gcov: simplify kernel/gcov/Makefile more
 
-At a glance it looks sane.
+Applied to kbuild.git#kbuild, thanks.
 
-> Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
-> Cc: Chris Metcalf <cmetcalf@ezchip.com>
-> Cc: Haavard Skinnemoen <hskinnemoen@gmail.com>
-> Cc: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Fenghua Yu <fenghua.yu@intel.com>
-> Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
-> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-ia64@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linux-s390@vger.kernel.org
+Michal
 
-Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-
-> ---
->  arch/avr32/kernel/module.c   | 13 +------------
->  arch/ia64/kernel/module.c    |  6 ++----
->  arch/parisc/kernel/module.c  |  6 +-----
->  arch/s390/kernel/module.c    | 10 +++-------
->  arch/tile/kernel/module.c    |  2 +-
->  include/linux/moduleloader.h |  2 ++
->  kernel/module.c              |  7 +++++++
->  7 files changed, 17 insertions(+), 29 deletions(-)
-
-<snipp diff>
-
--- 
-HcE
