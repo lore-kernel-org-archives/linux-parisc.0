@@ -1,41 +1,81 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Wire up execveat syscall
-Date: Sat, 10 Jan 2015 22:01:21 +0100
-Message-ID: <20150110210121.GA15738@ls3530.box>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Yinghai Lu <yinghai@kernel.org>
+Subject: [PATCH 08/10] PCI, parisc: clip firmware assigned resource under parent bridge's
+Date: Mon, 12 Jan 2015 11:23:18 -0800
+Message-ID: <1421090600-9750-9-git-send-email-yinghai@kernel.org>
+References: <1421090600-9750-1-git-send-email-yinghai@kernel.org>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Yinghai Lu <yinghai@kernel.org>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+To: Bjorn Helgaas <bhelgaas@google.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1421090600-9750-1-git-send-email-yinghai@kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Some bios put range that is not fully coverred by root bus resources.
+Try to clip them and update them in pci bridge bars.
 
-diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
-index 5f5c037..abfa745 100644
---- a/arch/parisc/include/uapi/asm/unistd.h
-+++ b/arch/parisc/include/uapi/asm/unistd.h
-@@ -834,8 +834,9 @@
- #define __NR_getrandom		(__NR_Linux + 339)
- #define __NR_memfd_create	(__NR_Linux + 340)
- #define __NR_bpf		(__NR_Linux + 341)
-+#define __NR_execveat		(__NR_Linux + 342)
+We'd like to fix other arches instead of just x86.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=85491
+Reported-by: Marek Kordik <kordikmarek@gmail.com>
+Fixes: 5b28541552ef ("PCI: Restrict 64-bit prefetchable bridge windows to 64-bit resources")
+Signed-off-by: Yinghai Lu <yinghai@kernel.org>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+---
+ drivers/parisc/lba_pci.c | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index 37e71ff..e6ab352 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -692,11 +692,25 @@ lba_fixup_bus(struct pci_bus *bus)
+ 	*/
+ 	if (bus->parent) {
+ 		int i;
++		bool changed = false;
++
++		dev = bus->self;
+ 		/* PCI-PCI Bridge */
+ 		pci_read_bridge_bases(bus);
+ 		for (i = PCI_BRIDGE_RESOURCES; i < PCI_NUM_RESOURCES; i++) {
+-			pci_claim_resource(bus->self, i);
++			struct resource *res = &dev->resource[i];
++
++			if (pci_claim_resource(dev, i) >= 0)
++				continue;
++
++			if (pci_bus_clip_resource(dev, res)) {
++				changed = true;
++				if (pci_claim_resource(dev, i) >= 0)
++					continue;
++			}
+ 		}
++		if (changed)
++			pci_setup_bridge(bus);
+ 	} else {
+ 		/* Host-PCI Bridge */
+ 		int err;
+@@ -776,7 +790,15 @@ lba_fixup_bus(struct pci_bus *bus)
+ 			** that share expansion ROMs (think quad tulip), but
+ 			** isn't harmful.
+ 			*/
+-			pci_claim_resource(dev, i);
++			if (pci_claim_resource(dev, i) >= 0)
++				continue;
++
++			/* try again with clip */
++			if (i != PCI_ROM_RESOURCE &&
++			    pci_bus_clip_resource(dev, res)) {
++				pci_update_resource(dev, i);
++				pci_claim_resource(dev, i);
++			}
+ 		}
  
--#define __NR_Linux_syscalls	(__NR_bpf + 1)
-+#define __NR_Linux_syscalls	(__NR_execveat + 1)
- 
- 
- #define __IGNORE_select		/* newselect */
-diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-index fe4f0b8..5a8997d 100644
---- a/arch/parisc/kernel/syscall_table.S
-+++ b/arch/parisc/kernel/syscall_table.S
-@@ -437,6 +437,7 @@
- 	ENTRY_SAME(getrandom)
- 	ENTRY_SAME(memfd_create)	/* 340 */
- 	ENTRY_SAME(bpf)
-+	ENTRY_COMP(execveat)
- 
- 	/* Nothing yet */
- 
+ #ifdef FBB_SUPPORT
+-- 
+1.8.4.5
