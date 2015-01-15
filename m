@@ -1,64 +1,49 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH 1/3] module_arch_freeing_init(): new hook for archs before
- module->module_init freed.
-Date: Tue, 13 Jan 2015 22:11:34 +0100
-Message-ID: <54B58A06.5000800@gmx.de>
-References: <1420678687-30548-1-git-send-email-rusty@rustcorp.com.au> <1420678687-30548-2-git-send-email-rusty@rustcorp.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Cc: Chris Metcalf <cmetcalf@ezchip.com>,
-	Haavard Skinnemoen <hskinnemoen@gmail.com>,
-	Hans-Christian Egtvedt <egtvedt@samfundet.no>,
-	Tony Luck <tony.luck@intel.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
+From: Yinghai Lu <yinghai@kernel.org>
+Subject: [PATCH v2 08/10] PCI, parisc: clip firmware assigned resource under parent bridge's
+Date: Wed, 14 Jan 2015 20:31:35 -0800
+Message-ID: <1421296297-6371-9-git-send-email-yinghai@kernel.org>
+References: <1421296297-6371-1-git-send-email-yinghai@kernel.org>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Yinghai Lu <yinghai@kernel.org>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Martin Schwidefsky <schwidefsky@de.ibm.com>,
-	Heiko Carstens <heiko.carstens@de.ibm.com>,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-s390@vger.kernel.org
-To: Rusty Russell <rusty@rustcorp.com.au>, linux-kernel@vger.kernel.org
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <1420678687-30548-2-git-send-email-rusty@rustcorp.com.au>
-List-ID: <linux-ia64.vger.kernel.org>
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+To: Bjorn Helgaas <bhelgaas@google.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1421296297-6371-1-git-send-email-yinghai@kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 08.01.2015 01:58, Rusty Russell wrote:
-> Archs have been abusing module_free() to clean up their arch-specific
-> allocations.  Since module_free() is also (ab)used by BPF and trace code,
-> let's keep it to simple allocations, and provide a hook called before
-> that.
->
-> This means that avr32, ia64, parisc and s390 no longer need to implement
-> their own module_free() at all.  avr32 doesn't need module_finalize()
-> either.
->
-> Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
-> Cc: Chris Metcalf <cmetcalf@ezchip.com>
-> Cc: Haavard Skinnemoen <hskinnemoen@gmail.com>
-> Cc: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Fenghua Yu <fenghua.yu@intel.com>
-> Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
-> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-ia64@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linux-s390@vger.kernel.org
-> ---
->   arch/avr32/kernel/module.c   | 13 +------------
->   arch/ia64/kernel/module.c    |  6 ++----
->   arch/parisc/kernel/module.c  |  6 +-----
->   arch/s390/kernel/module.c    | 10 +++-------
->   arch/tile/kernel/module.c    |  2 +-
->   include/linux/moduleloader.h |  2 ++
->   kernel/module.c              |  7 +++++++
->   7 files changed, 17 insertions(+), 29 deletions(-)
+Some bios put range that is not fully coverred by root bus resources.
+Try to clip them and update them in pci bridge bars.
 
-I successfully tested it on the parisc arch.
+We'd like to fix other arches instead of just x86.
 
-Acked-by: Helge Deller <deller@gmx.de>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=85491
+Reported-by: Marek Kordik <kordikmarek@gmail.com>
+Fixes: 5b28541552ef ("PCI: Restrict 64-bit prefetchable bridge windows to 64-bit resources")
+Signed-off-by: Yinghai Lu <yinghai@kernel.org>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+---
+ drivers/parisc/lba_pci.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Thanks!
-Helge
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index 37e71ff..dceb9dd 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -694,9 +694,8 @@ lba_fixup_bus(struct pci_bus *bus)
+ 		int i;
+ 		/* PCI-PCI Bridge */
+ 		pci_read_bridge_bases(bus);
+-		for (i = PCI_BRIDGE_RESOURCES; i < PCI_NUM_RESOURCES; i++) {
+-			pci_claim_resource(bus->self, i);
+-		}
++		for (i = PCI_BRIDGE_RESOURCES; i < PCI_NUM_RESOURCES; i++)
++			pci_claim_bridge_resource(bus->self, i);
+ 	} else {
+ 		/* Host-PCI Bridge */
+ 		int err;
+-- 
+1.8.4.5
