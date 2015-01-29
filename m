@@ -1,10 +1,10 @@
 From: Andrey Ryabinin <a.ryabinin@samsung.com>
-Subject: [PATCH v9 14/17] mm: vmalloc: pass additional vm_flags to
+Subject: [PATCH v10 14/17] mm: vmalloc: pass additional vm_flags to
  __vmalloc_node_range()
-Date: Wed, 21 Jan 2015 19:51:42 +0300
-Message-ID: <1421859105-25253-15-git-send-email-a.ryabinin@samsung.com>
+Date: Thu, 29 Jan 2015 18:11:58 +0300
+Message-ID: <1422544321-24232-15-git-send-email-a.ryabinin@samsung.com>
 References: <1404905415-9046-1-git-send-email-a.ryabinin@samsung.com>
- <1421859105-25253-1-git-send-email-a.ryabinin@samsung.com>
+ <1422544321-24232-1-git-send-email-a.ryabinin@samsung.com>
 Cc: Andrey Ryabinin <a.ryabinin@samsung.com>,
         Dmitry Vyukov <dvyukov@google.com>,
         Konstantin Serebryany <kcc@google.com>,
@@ -26,7 +26,7 @@ Cc: Andrey Ryabinin <a.ryabinin@samsung.com>,
         Helge Deller <del
 To: linux-kernel@vger.kernel.org
 Return-path: <linux-mips-bounce@linux-mips.org>
-In-reply-to: <1421859105-25253-1-git-send-email-a.ryabinin@samsung.com>
+In-reply-to: <1422544321-24232-1-git-send-email-a.ryabinin@samsung.com>
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
 List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
@@ -50,7 +50,7 @@ to __vmalloc_node_range() function.
 Signed-off-by: Andrey Ryabinin <a.ryabinin@samsung.com>
 ---
  arch/arm/kernel/module.c       |  2 +-
- arch/arm64/kernel/module.c     |  2 +-
+ arch/arm64/kernel/module.c     |  4 ++--
  arch/mips/kernel/module.c      |  2 +-
  arch/parisc/kernel/module.c    |  2 +-
  arch/s390/kernel/module.c      |  2 +-
@@ -59,7 +59,7 @@ Signed-off-by: Andrey Ryabinin <a.ryabinin@samsung.com>
  arch/x86/kernel/module.c       |  2 +-
  include/linux/vmalloc.h        |  4 +++-
  mm/vmalloc.c                   | 10 ++++++----
- 10 files changed, 17 insertions(+), 13 deletions(-)
+ 10 files changed, 18 insertions(+), 14 deletions(-)
 
 diff --git a/arch/arm/kernel/module.c b/arch/arm/kernel/module.c
 index bea7db9..2e11961 100644
@@ -75,18 +75,20 @@ index bea7db9..2e11961 100644
  }
  #endif
 diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
-index 9b6f71d..5958d6d 100644
+index 9b6f71d..67bf410 100644
 --- a/arch/arm64/kernel/module.c
 +++ b/arch/arm64/kernel/module.c
-@@ -35,7 +35,7 @@
+@@ -35,8 +35,8 @@
  void *module_alloc(unsigned long size)
  {
  	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
 -				    GFP_KERNEL, PAGE_KERNEL_EXEC, NUMA_NO_NODE,
-+				    GFP_KERNEL, PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
- 				    __builtin_return_address(0));
+-				    __builtin_return_address(0));
++				    GFP_KERNEL, PAGE_KERNEL_EXEC, 0,
++				    NUMA_NO_NODE, __builtin_return_address(0));
  }
  
+ enum aarch64_reloc_op {
 diff --git a/arch/mips/kernel/module.c b/arch/mips/kernel/module.c
 index 2a52568..1833f51 100644
 --- a/arch/mips/kernel/module.c
@@ -101,7 +103,7 @@ index 2a52568..1833f51 100644
  }
  #endif
 diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
-index 50dfafc..0d498ef 100644
+index 5822e8e..3c63a82 100644
 --- a/arch/parisc/kernel/module.c
 +++ b/arch/parisc/kernel/module.c
 @@ -219,7 +219,7 @@ void *module_alloc(unsigned long size)
@@ -114,7 +116,7 @@ index 50dfafc..0d498ef 100644
  }
  
 diff --git a/arch/s390/kernel/module.c b/arch/s390/kernel/module.c
-index b89b591..411a7ee 100644
+index 409d152..36154a2 100644
 --- a/arch/s390/kernel/module.c
 +++ b/arch/s390/kernel/module.c
 @@ -50,7 +50,7 @@ void *module_alloc(unsigned long size)
@@ -223,4 +225,4 @@ index 2e74e99..35b25e1 100644
  
  void *__vmalloc(unsigned long size, gfp_t gfp_mask, pgprot_t prot)
 -- 
-2.2.1
+2.2.2
