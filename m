@@ -1,91 +1,55 @@
 From: lausgans@gmail.com
-Subject: Re: Little endianness
-Date: Sun, 15 Feb 2015 09:49:32 +0300
-Message-ID: <4CB18756-188A-47DF-9E31-10EAFE3C558D@gmail.com>
-References: <loom.20150210T112204-76@post.gmane.org> <BLU436-SMTP173A5545802614E9A03A58A97240@phx.gbl> <1423583801.2167.17.camel@HansenPartnership.com>
+Subject: Re: Video option for a big endian machine?
+Date: Sun, 15 Feb 2015 09:52:41 +0300
+Message-ID: <5D8838EB-20BB-4162-A267-6C798F593D9D@gmail.com>
+References: <ABECBC9A-16AB-447B-BEDE-E113D1B258A9@gmail.com> <CADnq5_P237WcxtQgo0yrV4nsK9e95nukjNBWXAYMhibo=Co=Jw@mail.gmail.com> <CAPM=9txYixkb66PkYMypUsWEhEF25tieFtaGwdnj6_1fLOCZPA@mail.gmail.com>
 Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2070.6\))
-Content-Type: text/plain; charset=utf-8
-Cc: John David Anglin <dave.anglin@bell.net>,
-	linux-parisc@vger.kernel.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: dri-users@lists.freedesktop.org,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: Dave Airlie <airlied@gmail.com>,
+	Alex Deucher <alexdeucher@gmail.com>,
+	Ilia Mirkin <imirkin@alum.mit.edu>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1423583801.2167.17.camel@HansenPartnership.com>
+In-Reply-To: <CAPM=9txYixkb66PkYMypUsWEhEF25tieFtaGwdnj6_1fLOCZPA@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Thanks much for the answers, guys!
 
-> James Bottomley <James.Bottomley@HansenPartnership.com>:
->=20
-> On Tue, 2015-02-10 at 10:30 -0500, John David Anglin wrote:
->> On 2015-02-10 5:31 AM, Held Bier wrote:
->>> Hi.
->>>=20
->>> Looks like PA-RISC 1.1 added bi-endian support.
->>> What about PA-RISC Linux? I know it's big endian.
->>> But does it possible to build little endian kernel? If so, how?
->>> Is migration to little endian planned? It should be reasonable
->>> as it will bring more  compatibility with other Linux world.
->=20
-> What compatibility?  x86 is LE, Arm is Schizophrenic, PPC, Sparc and =
-PA
-> are BE.  We're required to support the bus standards anyway, so the S=
-CSI
-> bus is BE and the PCI bus LE by spec.  There's no such thing as a
-> "compatible" endianness.
+> Ilia Mirkin <imirkin@alum.mit.edu>:
+> 
+> With nouveau, you can generally get older cards to work
 
-Some software authors still assume that we're living in x86 only world,=
- or just don't care. This leads to issues when one wish to run such sof=
-tware on a BE Linux.
+Took a bunch of gf2mx and fx5500 cards I had access to. With Noveau they fail with "GPU lockup". The kernel version is 3.16.7.
+The issue chain is nouveau_fbcon_imageblit(): nouveau_fbcon_gpu_lockup() is called -> nv04_fbcon_imageblit(): while (dsize) { ... ret = RING_SPACE(chan, iter_len + 1); if (ret) return ret; /* -EBUSY at some iteration */ ... } -> nouveau_dma_wait() -> while (chan->dma.free < size) { get = READ_GET(chan, &prev_get, &cnt); if (unlikely(get == -EBUSY)) return -EBUSY; /* HERE */ ... }
 
-POWER is moving to LE:
-https://www.ibm.com/developerworks/community/blogs/fe313521-2e95-46f2-8=
-17d-44a4f27eba32/entry/just_the_faqs_about_little_endian
-"Although Power already has Linux distributions and supporting applicat=
-ions that run in big endian mode, the Linux application ecosystem for x=
-86 platforms is much larger and Linux on x86 uses little endian mode.  =
-Numerous clients, software partners, and IBM=E2=80=99s own software dev=
-elopers have told us that porting their software to Power becomes simpl=
-er if the Linux environment on Power supports little endian mode, more =
-closely matching the environment provided by Linux on x86.  This new le=
-vel of support will lower the barrier to entry for porting Linux on x86=
- software to Linux on Power."
+> Dave Airlie <airlied@gmail.com>:
+> 
+> On 12 February 2015 at 00:44, Alex Deucher <alexdeucher@gmail.com> wrote:
+>> On Wed, Feb 11, 2015 at 3:53 AM,  <lausgans@gmail.com> wrote:
+>>> Hello.
+>>> 
+>>> I'm looking for a PCI or AGP video card that would work on a Linux port for a big endian architecture (HP PA-RISC). Unfortunately the stock video options (ATI FireGL X1 and X3) give an incredibly slow unaccelerated 2D due to failure to kickstart the command processor (radeon open source driver). Neither folks from linux-parisc@ nor from dri-devel@ camps know how to fix this.
+>>> 
 
-=46or PPC the patch was made: http://lwn.net/Articles/408845/
+>> 
+>> The X1 and X3 are really old asics and the risc specific versions
+>> tended to have special firmware for that platform that the open driver
+>> does not handle properly.  You might have better luck using a more
+>> modern GPU (e.g., an R5xx or newer based asic) with an x86 vbios.
 
->=20
->> Unlikely.  According to the PA 2.0 arch, implementation of this feat=
-ure=20
->> was optional.
->=20
-> I think it was originally designed for some type of LASI system.
-> There's an endian flip in some of the LASI devices as well.  I think =
-the
-> original problem was LASI was designed big endian, but the chosen SCS=
-I
-> processor was designed for LE at that time, so they tried to flip the
-> processor.  I suspect the reason the feature became optional is that =
-it
-> caused more problems than it solved.
->=20
->> Further the PDC/IODC firmware and software tool chains need little=20
->> endian support.  This
->> is a massive amount of work.  So, unless one one decided to create a=
-=20
->> 64-bit embedded
->> PA-RISC processor for mass deployment, it wouldn't be worth the effo=
-rt.
->=20
-> It's a bit pointless too.  Coping with endianness isn't really an
-> unsolved OS problem, so it would cost a huge amount, open a large can=
- of
-> worms and buy us nothing.
->=20
-> James
->=20
->=20
+If the above is not some Nouveau miss, then it looks like it's some general architecture / chipset related code issue regarding ring buffer. I wonder how network card driver works then. Opinions?
+There is a chipset specific drivers porting note: https://kernel.org/doc/ols/2002/ols2002-pages-183-190.pdf Though some parts of it are about IA64.
+CC to linux-parisc@
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> If memory serves PA-RISC had some restrictions on PCI BAR windows, it
+> wasn't just endianness problems.
+
+The only thing I've heard regarding this was:
+"The FireGL X1 / 256 AGP pro card used in the C8000 is a standard ATI part, but has a special video BIOS that reduces the PCI BAR space used by the card. The C8000 I/O space totals 256Mb, so using it all for the graphics wouldn't allow for any boot devices, etc."
+But then it's all on the vendor behalf, as the driver could read space sizes via PCI info functions.
+
+> 
+> Dave.
+
