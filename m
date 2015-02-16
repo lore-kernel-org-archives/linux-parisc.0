@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: hpux - Remove hpux gateway page
-Date: Mon, 16 Feb 2015 22:21:00 +0100
-Message-ID: <20150216212100.GA1807@ls3530.box>
+Subject: [PATCH] parisc: hpux - Remove HPUX syscall numbers
+Date: Mon, 16 Feb 2015 22:21:27 +0100
+Message-ID: <20150216212127.GB1807@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -11,184 +11,485 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Drop code to create HP-UX gateway page and syscall entry code.
-
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
-index 689a8ad..54adb60 100644
---- a/arch/parisc/include/asm/processor.h
-+++ b/arch/parisc/include/asm/processor.h
-@@ -330,8 +330,6 @@ struct mm_struct;
- /* Free all resources held by a thread. */
- extern void release_thread(struct task_struct *);
+diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
+index 5f5c037..55c6486 100644
+--- a/arch/parisc/include/uapi/asm/unistd.h
++++ b/arch/parisc/include/uapi/asm/unistd.h
+@@ -2,480 +2,6 @@
+ #define _UAPI_ASM_PARISC_UNISTD_H_
  
--extern void map_hpux_gateway_page(struct task_struct *tsk, struct mm_struct *mm);
+ /*
+- * This file contains the system call numbers.
+- */
 -
- extern unsigned long get_wchan(struct task_struct *p);
- 
- #define KSTK_EIP(tsk)	((tsk)->thread.regs.iaoq[0])
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index e8f07dd..2ab16bb 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -1774,10 +1774,6 @@ ENTRY(sys_rt_sigreturn_wrapper)
- ENDPROC(sys_rt_sigreturn_wrapper)
- 
- ENTRY(syscall_exit)
--	/* NOTE: HP-UX syscalls also come through here
--	 * after hpux_syscall_exit fixes up return
--	 * values. */
+-/*
+- *   HP-UX system calls get their native numbers for binary compatibility.
+- */
 -
- 	/* NOTE: Not all syscalls exit this way.  rt_sigreturn will exit
- 	 * via syscall_exit_rfi if the signal was received while the process
- 	 * was running.
-@@ -1789,22 +1785,6 @@ ENTRY(syscall_exit)
- 	LDREG     TI_TASK(%r1),%r1
- 	STREG     %r28,TASK_PT_GR28(%r1)
- 
--#ifdef CONFIG_HPUX
--/* <linux/personality.h> cannot be easily included */
--#define PER_HPUX 0x10
--	ldw	TASK_PERSONALITY(%r1),%r19
+-#define __NR_HPUX_exit                    1
+-#define __NR_HPUX_fork                    2
+-#define __NR_HPUX_read                    3
+-#define __NR_HPUX_write                   4
+-#define __NR_HPUX_open                    5
+-#define __NR_HPUX_close                   6
+-#define __NR_HPUX_wait                    7
+-#define __NR_HPUX_creat                   8
+-#define __NR_HPUX_link                    9
+-#define __NR_HPUX_unlink                 10
+-#define __NR_HPUX_execv                  11
+-#define __NR_HPUX_chdir                  12
+-#define __NR_HPUX_time                   13
+-#define __NR_HPUX_mknod                  14
+-#define __NR_HPUX_chmod                  15
+-#define __NR_HPUX_chown                  16
+-#define __NR_HPUX_break                  17
+-#define __NR_HPUX_lchmod                 18
+-#define __NR_HPUX_lseek                  19
+-#define __NR_HPUX_getpid                 20
+-#define __NR_HPUX_mount                  21
+-#define __NR_HPUX_umount                 22
+-#define __NR_HPUX_setuid                 23
+-#define __NR_HPUX_getuid                 24
+-#define __NR_HPUX_stime                  25
+-#define __NR_HPUX_ptrace                 26
+-#define __NR_HPUX_alarm                  27
+-#define __NR_HPUX_oldfstat               28
+-#define __NR_HPUX_pause                  29
+-#define __NR_HPUX_utime                  30
+-#define __NR_HPUX_stty                   31
+-#define __NR_HPUX_gtty                   32
+-#define __NR_HPUX_access                 33
+-#define __NR_HPUX_nice                   34
+-#define __NR_HPUX_ftime                  35
+-#define __NR_HPUX_sync                   36
+-#define __NR_HPUX_kill                   37
+-#define __NR_HPUX_stat                   38
+-#define __NR_HPUX_setpgrp3               39
+-#define __NR_HPUX_lstat                  40
+-#define __NR_HPUX_dup                    41
+-#define __NR_HPUX_pipe                   42
+-#define __NR_HPUX_times                  43
+-#define __NR_HPUX_profil                 44
+-#define __NR_HPUX_ki_call                45
+-#define __NR_HPUX_setgid                 46
+-#define __NR_HPUX_getgid                 47
+-#define __NR_HPUX_sigsys                 48
+-#define __NR_HPUX_reserved1              49
+-#define __NR_HPUX_reserved2              50
+-#define __NR_HPUX_acct                   51
+-#define __NR_HPUX_set_userthreadid       52
+-#define __NR_HPUX_oldlock                53
+-#define __NR_HPUX_ioctl                  54
+-#define __NR_HPUX_reboot                 55
+-#define __NR_HPUX_symlink                56
+-#define __NR_HPUX_utssys                 57
+-#define __NR_HPUX_readlink               58
+-#define __NR_HPUX_execve                 59
+-#define __NR_HPUX_umask                  60
+-#define __NR_HPUX_chroot                 61
+-#define __NR_HPUX_fcntl                  62
+-#define __NR_HPUX_ulimit                 63
+-#define __NR_HPUX_getpagesize            64
+-#define __NR_HPUX_mremap                 65
+-#define __NR_HPUX_vfork                  66
+-#define __NR_HPUX_vread                  67
+-#define __NR_HPUX_vwrite                 68
+-#define __NR_HPUX_sbrk                   69
+-#define __NR_HPUX_sstk                   70
+-#define __NR_HPUX_mmap                   71
+-#define __NR_HPUX_vadvise                72
+-#define __NR_HPUX_munmap                 73
+-#define __NR_HPUX_mprotect               74
+-#define __NR_HPUX_madvise                75
+-#define __NR_HPUX_vhangup                76
+-#define __NR_HPUX_swapoff                77
+-#define __NR_HPUX_mincore                78
+-#define __NR_HPUX_getgroups              79
+-#define __NR_HPUX_setgroups              80
+-#define __NR_HPUX_getpgrp2               81
+-#define __NR_HPUX_setpgrp2               82
+-#define __NR_HPUX_setitimer              83
+-#define __NR_HPUX_wait3                  84
+-#define __NR_HPUX_swapon                 85
+-#define __NR_HPUX_getitimer              86
+-#define __NR_HPUX_gethostname42          87
+-#define __NR_HPUX_sethostname42          88
+-#define __NR_HPUX_getdtablesize          89
+-#define __NR_HPUX_dup2                   90
+-#define __NR_HPUX_getdopt                91
+-#define __NR_HPUX_fstat                  92
+-#define __NR_HPUX_select                 93
+-#define __NR_HPUX_setdopt                94
+-#define __NR_HPUX_fsync                  95
+-#define __NR_HPUX_setpriority            96
+-#define __NR_HPUX_socket_old             97
+-#define __NR_HPUX_connect_old            98
+-#define __NR_HPUX_accept_old             99
+-#define __NR_HPUX_getpriority           100
+-#define __NR_HPUX_send_old              101
+-#define __NR_HPUX_recv_old              102
+-#define __NR_HPUX_socketaddr_old        103
+-#define __NR_HPUX_bind_old              104
+-#define __NR_HPUX_setsockopt_old        105
+-#define __NR_HPUX_listen_old            106
+-#define __NR_HPUX_vtimes_old            107
+-#define __NR_HPUX_sigvector             108
+-#define __NR_HPUX_sigblock              109
+-#define __NR_HPUX_siggetmask            110
+-#define __NR_HPUX_sigpause              111
+-#define __NR_HPUX_sigstack              112
+-#define __NR_HPUX_recvmsg_old           113
+-#define __NR_HPUX_sendmsg_old           114
+-#define __NR_HPUX_vtrace_old            115
+-#define __NR_HPUX_gettimeofday          116
+-#define __NR_HPUX_getrusage             117
+-#define __NR_HPUX_getsockopt_old        118
+-#define __NR_HPUX_resuba_old            119
+-#define __NR_HPUX_readv                 120
+-#define __NR_HPUX_writev                121
+-#define __NR_HPUX_settimeofday          122
+-#define __NR_HPUX_fchown                123
+-#define __NR_HPUX_fchmod                124
+-#define __NR_HPUX_recvfrom_old          125
+-#define __NR_HPUX_setresuid             126
+-#define __NR_HPUX_setresgid             127
+-#define __NR_HPUX_rename                128
+-#define __NR_HPUX_truncate              129
+-#define __NR_HPUX_ftruncate             130
+-#define __NR_HPUX_flock_old             131
+-#define __NR_HPUX_sysconf               132
+-#define __NR_HPUX_sendto_old            133
+-#define __NR_HPUX_shutdown_old          134
+-#define __NR_HPUX_socketpair_old        135
+-#define __NR_HPUX_mkdir                 136
+-#define __NR_HPUX_rmdir                 137
+-#define __NR_HPUX_utimes_old            138
+-#define __NR_HPUX_sigcleanup_old        139
+-#define __NR_HPUX_setcore               140
+-#define __NR_HPUX_getpeername_old       141
+-#define __NR_HPUX_gethostid             142
+-#define __NR_HPUX_sethostid             143
+-#define __NR_HPUX_getrlimit             144
+-#define __NR_HPUX_setrlimit             145
+-#define __NR_HPUX_killpg_old            146
+-#define __NR_HPUX_cachectl              147
+-#define __NR_HPUX_quotactl              148
+-#define __NR_HPUX_get_sysinfo           149
+-#define __NR_HPUX_getsockname_old       150
+-#define __NR_HPUX_privgrp               151
+-#define __NR_HPUX_rtprio                152
+-#define __NR_HPUX_plock                 153
+-#define __NR_HPUX_reserved3             154
+-#define __NR_HPUX_lockf                 155
+-#define __NR_HPUX_semget                156
+-#define __NR_HPUX_osemctl               157
+-#define __NR_HPUX_semop                 158
+-#define __NR_HPUX_msgget                159
+-#define __NR_HPUX_omsgctl               160
+-#define __NR_HPUX_msgsnd                161
+-#define __NR_HPUX_msgrecv               162
+-#define __NR_HPUX_shmget                163
+-#define __NR_HPUX_oshmctl               164
+-#define __NR_HPUX_shmat                 165
+-#define __NR_HPUX_shmdt                 166
+-#define __NR_HPUX_m68020_advise         167
+-/* [168,189] are for Discless/DUX */
+-#define __NR_HPUX_csp                   168
+-#define __NR_HPUX_cluster               169
+-#define __NR_HPUX_mkrnod                170
+-#define __NR_HPUX_test                  171
+-#define __NR_HPUX_unsp_open             172
+-#define __NR_HPUX_reserved4             173
+-#define __NR_HPUX_getcontext_old        174
+-#define __NR_HPUX_osetcontext           175
+-#define __NR_HPUX_bigio                 176
+-#define __NR_HPUX_pipenode              177
+-#define __NR_HPUX_lsync                 178
+-#define __NR_HPUX_getmachineid          179
+-#define __NR_HPUX_cnodeid               180
+-#define __NR_HPUX_cnodes                181
+-#define __NR_HPUX_swapclients           182
+-#define __NR_HPUX_rmt_process           183
+-#define __NR_HPUX_dskless_stats         184
+-#define __NR_HPUX_sigprocmask           185
+-#define __NR_HPUX_sigpending            186
+-#define __NR_HPUX_sigsuspend            187
+-#define __NR_HPUX_sigaction             188
+-#define __NR_HPUX_reserved5             189
+-#define __NR_HPUX_nfssvc                190
+-#define __NR_HPUX_getfh                 191
+-#define __NR_HPUX_getdomainname         192
+-#define __NR_HPUX_setdomainname         193
+-#define __NR_HPUX_async_daemon          194
+-#define __NR_HPUX_getdirentries         195
+-#define __NR_HPUX_statfs                196
+-#define __NR_HPUX_fstatfs               197
+-#define __NR_HPUX_vfsmount              198
+-#define __NR_HPUX_reserved6             199
+-#define __NR_HPUX_waitpid               200
+-/* 201 - 223 missing */
+-#define __NR_HPUX_sigsetreturn          224
+-#define __NR_HPUX_sigsetstatemask       225
+-/* 226 missing */
+-#define __NR_HPUX_cs                    227
+-#define __NR_HPUX_cds                   228
+-#define __NR_HPUX_set_no_trunc          229
+-#define __NR_HPUX_pathconf              230
+-#define __NR_HPUX_fpathconf             231
+-/* 232, 233 missing */
+-#define __NR_HPUX_nfs_fcntl             234
+-#define __NR_HPUX_ogetacl               235
+-#define __NR_HPUX_ofgetacl              236
+-#define __NR_HPUX_osetacl               237
+-#define __NR_HPUX_ofsetacl              238
+-#define __NR_HPUX_pstat                 239
+-#define __NR_HPUX_getaudid              240
+-#define __NR_HPUX_setaudid              241
+-#define __NR_HPUX_getaudproc            242
+-#define __NR_HPUX_setaudproc            243
+-#define __NR_HPUX_getevent              244
+-#define __NR_HPUX_setevent              245
+-#define __NR_HPUX_audwrite              246
+-#define __NR_HPUX_audswitch             247
+-#define __NR_HPUX_audctl                248
+-#define __NR_HPUX_ogetaccess            249
+-#define __NR_HPUX_fsctl                 250
+-/* 251 - 258 missing */
+-#define __NR_HPUX_swapfs                259
+-#define __NR_HPUX_fss                   260
+-/* 261 - 266 missing */
+-#define __NR_HPUX_tsync                 267
+-#define __NR_HPUX_getnumfds             268
+-#define __NR_HPUX_poll                  269
+-#define __NR_HPUX_getmsg                270
+-#define __NR_HPUX_putmsg                271
+-#define __NR_HPUX_fchdir                272
+-#define __NR_HPUX_getmount_cnt          273
+-#define __NR_HPUX_getmount_entry        274
+-#define __NR_HPUX_accept                275
+-#define __NR_HPUX_bind                  276
+-#define __NR_HPUX_connect               277
+-#define __NR_HPUX_getpeername           278
+-#define __NR_HPUX_getsockname           279
+-#define __NR_HPUX_getsockopt            280
+-#define __NR_HPUX_listen                281
+-#define __NR_HPUX_recv                  282
+-#define __NR_HPUX_recvfrom              283
+-#define __NR_HPUX_recvmsg               284
+-#define __NR_HPUX_send                  285
+-#define __NR_HPUX_sendmsg               286
+-#define __NR_HPUX_sendto                287
+-#define __NR_HPUX_setsockopt            288
+-#define __NR_HPUX_shutdown              289
+-#define __NR_HPUX_socket                290
+-#define __NR_HPUX_socketpair            291
+-#define __NR_HPUX_proc_open             292
+-#define __NR_HPUX_proc_close            293
+-#define __NR_HPUX_proc_send             294
+-#define __NR_HPUX_proc_recv             295
+-#define __NR_HPUX_proc_sendrecv         296
+-#define __NR_HPUX_proc_syscall          297
+-/* 298 - 311 missing */
+-#define __NR_HPUX_semctl                312
+-#define __NR_HPUX_msgctl                313
+-#define __NR_HPUX_shmctl                314
+-#define __NR_HPUX_mpctl                 315
+-#define __NR_HPUX_exportfs              316
+-#define __NR_HPUX_getpmsg               317
+-#define __NR_HPUX_putpmsg               318
+-/* 319 missing */
+-#define __NR_HPUX_msync                 320
+-#define __NR_HPUX_msleep                321
+-#define __NR_HPUX_mwakeup               322
+-#define __NR_HPUX_msem_init             323
+-#define __NR_HPUX_msem_remove           324
+-#define __NR_HPUX_adjtime               325
+-#define __NR_HPUX_kload                 326
+-#define __NR_HPUX_fattach               327
+-#define __NR_HPUX_fdetach               328
+-#define __NR_HPUX_serialize             329
+-#define __NR_HPUX_statvfs               330
+-#define __NR_HPUX_fstatvfs              331
+-#define __NR_HPUX_lchown                332
+-#define __NR_HPUX_getsid                333
+-#define __NR_HPUX_sysfs                 334
+-/* 335, 336 missing */
+-#define __NR_HPUX_sched_setparam        337
+-#define __NR_HPUX_sched_getparam        338
+-#define __NR_HPUX_sched_setscheduler    339
+-#define __NR_HPUX_sched_getscheduler    340
+-#define __NR_HPUX_sched_yield           341
+-#define __NR_HPUX_sched_get_priority_max 342
+-#define __NR_HPUX_sched_get_priority_min 343
+-#define __NR_HPUX_sched_rr_get_interval 344
+-#define __NR_HPUX_clock_settime         345
+-#define __NR_HPUX_clock_gettime         346
+-#define __NR_HPUX_clock_getres          347
+-#define __NR_HPUX_timer_create          348
+-#define __NR_HPUX_timer_delete          349
+-#define __NR_HPUX_timer_settime         350
+-#define __NR_HPUX_timer_gettime         351
+-#define __NR_HPUX_timer_getoverrun      352
+-#define __NR_HPUX_nanosleep             353
+-#define __NR_HPUX_toolbox               354
+-/* 355 missing */
+-#define __NR_HPUX_getdents              356
+-#define __NR_HPUX_getcontext            357
+-#define __NR_HPUX_sysinfo               358
+-#define __NR_HPUX_fcntl64               359
+-#define __NR_HPUX_ftruncate64           360
+-#define __NR_HPUX_fstat64               361
+-#define __NR_HPUX_getdirentries64       362
+-#define __NR_HPUX_getrlimit64           363
+-#define __NR_HPUX_lockf64               364
+-#define __NR_HPUX_lseek64               365
+-#define __NR_HPUX_lstat64               366
+-#define __NR_HPUX_mmap64                367
+-#define __NR_HPUX_setrlimit64           368
+-#define __NR_HPUX_stat64                369
+-#define __NR_HPUX_truncate64            370
+-#define __NR_HPUX_ulimit64              371
+-#define __NR_HPUX_pread                 372
+-#define __NR_HPUX_preadv                373
+-#define __NR_HPUX_pwrite                374
+-#define __NR_HPUX_pwritev               375
+-#define __NR_HPUX_pread64               376
+-#define __NR_HPUX_preadv64              377
+-#define __NR_HPUX_pwrite64              378
+-#define __NR_HPUX_pwritev64             379
+-#define __NR_HPUX_setcontext            380
+-#define __NR_HPUX_sigaltstack           381
+-#define __NR_HPUX_waitid                382
+-#define __NR_HPUX_setpgrp               383
+-#define __NR_HPUX_recvmsg2              384
+-#define __NR_HPUX_sendmsg2              385
+-#define __NR_HPUX_socket2               386
+-#define __NR_HPUX_socketpair2           387
+-#define __NR_HPUX_setregid              388
+-#define __NR_HPUX_lwp_create            389
+-#define __NR_HPUX_lwp_terminate         390
+-#define __NR_HPUX_lwp_wait              391
+-#define __NR_HPUX_lwp_suspend           392
+-#define __NR_HPUX_lwp_resume            393
+-/* 394 missing */
+-#define __NR_HPUX_lwp_abort_syscall     395
+-#define __NR_HPUX_lwp_info              396
+-#define __NR_HPUX_lwp_kill              397
+-#define __NR_HPUX_ksleep                398
+-#define __NR_HPUX_kwakeup               399
+-/* 400 missing */
+-#define __NR_HPUX_pstat_getlwp          401
+-#define __NR_HPUX_lwp_exit              402
+-#define __NR_HPUX_lwp_continue          403
+-#define __NR_HPUX_getacl                404
+-#define __NR_HPUX_fgetacl               405
+-#define __NR_HPUX_setacl                406
+-#define __NR_HPUX_fsetacl               407
+-#define __NR_HPUX_getaccess             408
+-#define __NR_HPUX_lwp_mutex_init        409
+-#define __NR_HPUX_lwp_mutex_lock_sys    410
+-#define __NR_HPUX_lwp_mutex_unlock      411
+-#define __NR_HPUX_lwp_cond_init         412
+-#define __NR_HPUX_lwp_cond_signal       413
+-#define __NR_HPUX_lwp_cond_broadcast    414
+-#define __NR_HPUX_lwp_cond_wait_sys     415
+-#define __NR_HPUX_lwp_getscheduler      416
+-#define __NR_HPUX_lwp_setscheduler      417
+-#define __NR_HPUX_lwp_getstate          418
+-#define __NR_HPUX_lwp_setstate          419
+-#define __NR_HPUX_lwp_detach            420
+-#define __NR_HPUX_mlock                 421
+-#define __NR_HPUX_munlock               422
+-#define __NR_HPUX_mlockall              423
+-#define __NR_HPUX_munlockall            424
+-#define __NR_HPUX_shm_open              425
+-#define __NR_HPUX_shm_unlink            426
+-#define __NR_HPUX_sigqueue              427
+-#define __NR_HPUX_sigwaitinfo           428
+-#define __NR_HPUX_sigtimedwait          429
+-#define __NR_HPUX_sigwait               430
+-#define __NR_HPUX_aio_read              431
+-#define __NR_HPUX_aio_write             432
+-#define __NR_HPUX_lio_listio            433
+-#define __NR_HPUX_aio_error             434
+-#define __NR_HPUX_aio_return            435
+-#define __NR_HPUX_aio_cancel            436
+-#define __NR_HPUX_aio_suspend           437
+-#define __NR_HPUX_aio_fsync             438
+-#define __NR_HPUX_mq_open               439
+-#define __NR_HPUX_mq_close              440
+-#define __NR_HPUX_mq_unlink             441
+-#define __NR_HPUX_mq_send               442
+-#define __NR_HPUX_mq_receive            443
+-#define __NR_HPUX_mq_notify             444
+-#define __NR_HPUX_mq_setattr            445
+-#define __NR_HPUX_mq_getattr            446
+-#define __NR_HPUX_ksem_open             447
+-#define __NR_HPUX_ksem_unlink           448
+-#define __NR_HPUX_ksem_close            449
+-#define __NR_HPUX_ksem_post             450
+-#define __NR_HPUX_ksem_wait             451
+-#define __NR_HPUX_ksem_read             452
+-#define __NR_HPUX_ksem_trywait          453
+-#define __NR_HPUX_lwp_rwlock_init       454
+-#define __NR_HPUX_lwp_rwlock_destroy    455
+-#define __NR_HPUX_lwp_rwlock_rdlock_sys 456
+-#define __NR_HPUX_lwp_rwlock_wrlock_sys 457
+-#define __NR_HPUX_lwp_rwlock_tryrdlock  458
+-#define __NR_HPUX_lwp_rwlock_trywrlock  459
+-#define __NR_HPUX_lwp_rwlock_unlock     460
+-#define __NR_HPUX_ttrace                461
+-#define __NR_HPUX_ttrace_wait           462
+-#define __NR_HPUX_lf_wire_mem           463
+-#define __NR_HPUX_lf_unwire_mem         464
+-#define __NR_HPUX_lf_send_pin_map       465
+-#define __NR_HPUX_lf_free_buf           466
+-#define __NR_HPUX_lf_wait_nq            467
+-#define __NR_HPUX_lf_wakeup_conn_q      468
+-#define __NR_HPUX_lf_unused             469
+-#define __NR_HPUX_lwp_sema_init         470
+-#define __NR_HPUX_lwp_sema_post         471
+-#define __NR_HPUX_lwp_sema_wait         472
+-#define __NR_HPUX_lwp_sema_trywait      473
+-#define __NR_HPUX_lwp_sema_destroy      474
+-#define __NR_HPUX_statvfs64             475
+-#define __NR_HPUX_fstatvfs64            476
+-#define __NR_HPUX_msh_register          477
+-#define __NR_HPUX_ptrace64              478
+-#define __NR_HPUX_sendfile              479
+-#define __NR_HPUX_sendpath              480
+-#define __NR_HPUX_sendfile64            481
+-#define __NR_HPUX_sendpath64            482
+-#define __NR_HPUX_modload               483
+-#define __NR_HPUX_moduload              484
+-#define __NR_HPUX_modpath               485
+-#define __NR_HPUX_getksym               486
+-#define __NR_HPUX_modadm                487
+-#define __NR_HPUX_modstat               488
+-#define __NR_HPUX_lwp_detached_exit     489
+-#define __NR_HPUX_crashconf             490
+-#define __NR_HPUX_siginhibit            491
+-#define __NR_HPUX_sigenable             492
+-#define __NR_HPUX_spuctl                493
+-#define __NR_HPUX_zerokernelsum         494
+-#define __NR_HPUX_nfs_kstat             495
+-#define __NR_HPUX_aio_read64            496
+-#define __NR_HPUX_aio_write64           497
+-#define __NR_HPUX_aio_error64           498
+-#define __NR_HPUX_aio_return64          499
+-#define __NR_HPUX_aio_cancel64          500
+-#define __NR_HPUX_aio_suspend64         501
+-#define __NR_HPUX_aio_fsync64           502
+-#define __NR_HPUX_lio_listio64          503
+-#define __NR_HPUX_recv2                 504
+-#define __NR_HPUX_recvfrom2             505
+-#define __NR_HPUX_send2                 506
+-#define __NR_HPUX_sendto2               507
+-#define __NR_HPUX_acl                   508
+-#define __NR_HPUX___cnx_p2p_ctl         509
+-#define __NR_HPUX___cnx_gsched_ctl      510
+-#define __NR_HPUX___cnx_pmon_ctl        511
 -
--	/* We can't use "CMPIB<> PER_HPUX" since "im5" field is sign extended */
--	ldo	  -PER_HPUX(%r19), %r19
--	cmpib,COND(<>),n 0,%r19,1f
--
--	/* Save other hpux returns if personality is PER_HPUX */
--	STREG     %r22,TASK_PT_GR22(%r1)
--	STREG     %r29,TASK_PT_GR29(%r1)
--1:
--
--#endif /* CONFIG_HPUX */
--
- 	/* Seems to me that dp could be wrong here, if the syscall involved
- 	 * calling a module, and nothing got round to restoring dp on return.
- 	 */
-diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-index 0bbbf0d..8a488c2 100644
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -193,9 +193,7 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
- 	 * Make them const so the compiler knows they live in .text */
- 	extern void * const ret_from_kernel_thread;
- 	extern void * const child_return;
--#ifdef CONFIG_HPUX
--	extern void * const hpux_child_return;
--#endif
-+
- 	if (unlikely(p->flags & PF_KTHREAD)) {
- 		memset(cregs, 0, sizeof(struct pt_regs));
- 		if (!usp) /* idle thread */
-@@ -229,15 +227,8 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
- 				cregs->gr[30] = usp;
- 		}
- 		cregs->ksp = (unsigned long)stack + THREAD_SZ_ALGN + FRAME_SIZE;
--		if (personality(p->personality) == PER_HPUX) {
--#ifdef CONFIG_HPUX
--			cregs->kpc = (unsigned long) &hpux_child_return;
--#else
--			BUG();
--#endif
--		} else {
--			cregs->kpc = (unsigned long) &child_return;
--		}
-+		cregs->kpc = (unsigned long) &child_return;
-+
- 		/* Setup thread TLS area from the 4th parameter in clone */
- 		if (clone_flags & CLONE_SETTLS)
- 			cregs->cr27 = cregs->gr[23];
-diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
-index 9b910a0..81e749f 100644
---- a/arch/parisc/kernel/signal.c
-+++ b/arch/parisc/kernel/signal.c
-@@ -9,8 +9,7 @@
-  *
-  *  Like the IA-64, we are a recent enough port (we are *starting*
-  *  with glibc2.2) that we do not need to support the old non-realtime
-- *  Linux signals.  Therefore we don't.  HP/UX signals will go in
-- *  arch/parisc/hpux/signal.c when we figure out how to do them.
-+ *  Linux signals.  Therefore we don't.
-  */
- 
- #include <linux/sched.h>
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 0bef864..15dbe81 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -750,78 +750,6 @@ static void __init gateway_init(void)
- 		  PAGE_SIZE, PAGE_GATEWAY, 1);
- }
- 
--#ifdef CONFIG_HPUX
--void
--map_hpux_gateway_page(struct task_struct *tsk, struct mm_struct *mm)
--{
--	pgd_t *pg_dir;
--	pmd_t *pmd;
--	pte_t *pg_table;
--	unsigned long start_pmd;
--	unsigned long start_pte;
--	unsigned long address;
--	unsigned long hpux_gw_page_addr;
--	/* FIXME: This is 'const' in order to trick the compiler
--	   into not treating it as DP-relative data. */
--	extern void * const hpux_gateway_page;
--
--	hpux_gw_page_addr = HPUX_GATEWAY_ADDR & PAGE_MASK;
--
--	/*
--	 * Setup HP-UX Gateway page.
--	 *
--	 * The HP-UX gateway page resides in the user address space,
--	 * so it needs to be aliased into each process.
--	 */
--
--	pg_dir = pgd_offset(mm,hpux_gw_page_addr);
--
--#if PTRS_PER_PMD == 1
--	start_pmd = 0;
--#else
--	start_pmd = ((hpux_gw_page_addr >> PMD_SHIFT) & (PTRS_PER_PMD - 1));
--#endif
--	start_pte = ((hpux_gw_page_addr >> PAGE_SHIFT) & (PTRS_PER_PTE - 1));
--
--	address = __pa(&hpux_gateway_page);
--#if PTRS_PER_PMD == 1
--	pmd = (pmd_t *)__pa(pg_dir);
--#else
--	pmd = (pmd_t *) pgd_address(*pg_dir);
--
--	/*
--	 * pmd is physical at this point
--	 */
--
--	if (!pmd) {
--		pmd = (pmd_t *) get_zeroed_page(GFP_KERNEL);
--		pmd = (pmd_t *) __pa(pmd);
--	}
--
--	__pgd_val_set(*pg_dir, PxD_FLAG_PRESENT | PxD_FLAG_VALID | (unsigned long) pmd);
--#endif
--	/* now change pmd to kernel virtual addresses */
--
--	pmd = (pmd_t *)__va(pmd) + start_pmd;
--
--	/*
--	 * pg_table is physical at this point
--	 */
--
--	pg_table = (pte_t *) pmd_address(*pmd);
--	if (!pg_table)
--		pg_table = (pte_t *) __pa(get_zeroed_page(GFP_KERNEL));
--
--	__pmd_val_set(*pmd, PxD_FLAG_PRESENT | PxD_FLAG_VALID | (unsigned long) pg_table);
--
--	/* now change pg_table to kernel virtual addresses */
--
--	pg_table = (pte_t *) __va(pg_table) + start_pte;
--	set_pte(pg_table, __mk_pte(address, PAGE_GATEWAY));
--}
--EXPORT_SYMBOL(map_hpux_gateway_page);
--#endif
+-#define __NR_HPUX_syscalls		512
