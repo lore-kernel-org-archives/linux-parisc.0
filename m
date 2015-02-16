@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: hpux - Do not compile hpux subdirectory
-Date: Mon, 16 Feb 2015 22:18:24 +0100
-Message-ID: <20150216211824.GA1772@ls3530.box>
+Subject: [PATCH] parisc: hpux - Delete files in hpux subdirectory
+Date: Mon, 16 Feb 2015 22:19:06 +0100
+Message-ID: <20150216211906.GA1779@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -13,15 +13,2175 @@ List-Id: linux-parisc.vger.kernel.org
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index 5db8882..91fbb6e 100644
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -84,7 +84,6 @@ head-y			:= arch/parisc/kernel/head.o
- KBUILD_CFLAGS	+= $(cflags-y)
- 
- kernel-y			:= mm/ kernel/ math-emu/
--kernel-$(CONFIG_HPUX)		+= hpux/
- 
- core-y	+= $(addprefix arch/parisc/, $(kernel-y))
- libs-y	+= arch/parisc/lib/ $(LIBGCC)
+diff --git a/arch/parisc/hpux/Makefile b/arch/parisc/hpux/Makefile
+deleted file mode 100644
+index 1048fb6..0000000
+--- a/arch/parisc/hpux/Makefile
++++ /dev/null
+@@ -1,5 +0,0 @@
+-#
+-# Makefile for HPUX emulation
+-#
+-
+-obj-y := entry_hpux.o gate.o wrappers.o fs.o ioctl.o sys_hpux.o
+diff --git a/arch/parisc/hpux/entry_hpux.S b/arch/parisc/hpux/entry_hpux.S
+deleted file mode 100644
+index d15a413..0000000
+--- a/arch/parisc/hpux/entry_hpux.S
++++ /dev/null
+@@ -1,546 +0,0 @@
+-/*    syscall table for HPUX specific syscalls
+- *
+- *    Linux/PA-RISC Project (http://www.parisc-linux.org/)
+- *    Copyright (C) 1999 Matthew Wilcox <willy at debian . org>
+- *
+- *    This program is free software; you can redistribute it and/or modify
+- *    it under the terms of the GNU General Public License as published by
+- *    the Free Software Foundation; either version 2 of the License, or
+- *    (at your option) any later version.
+- *
+- *    This program is distributed in the hope that it will be useful,
+- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *    GNU General Public License for more details.
+- *
+- *    You should have received a copy of the GNU General Public License
+- *    along with this program; if not, write to the Free Software
+- *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+- */
+-
+-#include <asm/unistd.h>
+-#include <asm/assembly.h>
+-#include <linux/sys.h>
+-#include <linux/linkage.h>
+-
+-#define ENTRY_NAME(_name_) ASM_ULONG_INSN _name_
+-
+-	.section .rodata,"a"
+-	.import hpux_unimplemented_wrapper
+-ENTRY(hpux_call_table)
+-	ENTRY_NAME(sys_ni_syscall)	/* 0 */
+-	ENTRY_NAME(sys_exit)
+-	ENTRY_NAME(hpux_fork_wrapper)
+-	ENTRY_NAME(sys_read)
+-	ENTRY_NAME(sys_write)
+-	ENTRY_NAME(sys_open)	/* 5 */
+-	ENTRY_NAME(sys_close)
+-	ENTRY_NAME(hpux_wait)
+-	ENTRY_NAME(sys_creat)
+-	ENTRY_NAME(sys_link)
+-	ENTRY_NAME(sys_unlink)	/* 10 */
+-	ENTRY_NAME(hpux_execv_wrapper)
+-	ENTRY_NAME(sys_chdir)
+-	ENTRY_NAME(sys_time)
+-	ENTRY_NAME(sys_mknod)
+-	ENTRY_NAME(sys_chmod)	/* 15 */
+-	ENTRY_NAME(sys_chown)
+-	ENTRY_NAME(hpux_brk)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_lseek)
+-	ENTRY_NAME(sys_getpid)	/* 20 */
+-	ENTRY_NAME(hpux_mount)
+-	ENTRY_NAME(sys_oldumount)
+-	ENTRY_NAME(sys_setuid)
+-	ENTRY_NAME(sys_getuid)
+-	ENTRY_NAME(sys_stime)	/* 25 */
+-	ENTRY_NAME(hpux_ptrace)
+-	ENTRY_NAME(sys_alarm)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_pause)
+-	ENTRY_NAME(sys_utime)	/* 30 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_access)
+-	ENTRY_NAME(hpux_nice)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 35 */
+-	ENTRY_NAME(sys_sync)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_newstat)
+-	ENTRY_NAME(hpux_setpgrp3)
+-	ENTRY_NAME(sys_newlstat)	/* 40 */
+-	ENTRY_NAME(sys_dup)
+-	ENTRY_NAME(hpux_pipe_wrapper)
+-	ENTRY_NAME(sys_times)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 45 */
+-	ENTRY_NAME(sys_setgid)
+-	ENTRY_NAME(sys_getgid)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 50 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_ioctl)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 55 */
+-	ENTRY_NAME(sys_symlink)
+-	ENTRY_NAME(hpux_utssys)
+-	ENTRY_NAME(sys_readlink)
+-	ENTRY_NAME(hpux_execve_wrapper)
+-	ENTRY_NAME(sys_umask)	/* 60 */
+-	ENTRY_NAME(sys_chroot)
+-	ENTRY_NAME(sys_fcntl)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 65 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_sbrk)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 70 */
+-	ENTRY_NAME(sys_mmap)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 75 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 80 */
+-	ENTRY_NAME(sys_getpgid)
+-	ENTRY_NAME(sys_setpgid)
+-	ENTRY_NAME(sys_setitimer)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 85 */
+-	ENTRY_NAME(sys_getitimer)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_dup2)		/* 90 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_newfstat)
+-	ENTRY_NAME(sys_select)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 95 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 100 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 105 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 110 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 115 */
+-	ENTRY_NAME(sys_gettimeofday)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 120 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_fchown)
+-	ENTRY_NAME(sys_fchmod)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 125 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_rename)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 130 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_sysconf)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 135 */
+-	ENTRY_NAME(sys_mkdir)
+-	ENTRY_NAME(sys_rmdir)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 140 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_getrlimit)
+-	ENTRY_NAME(sys_setrlimit)      /* 145 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 150 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_lockf)      /* 155 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 160 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 165 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 170 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 175 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 180 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_sigprocmask)      /* 185 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 190 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_getdomainname)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 195 */
+-	ENTRY_NAME(hpux_statfs)
+-	ENTRY_NAME(hpux_fstatfs)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_waitpid)	/* 200 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 205 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 210 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 215 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 220 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 225 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 230 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 235 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 240 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 245 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 250 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 255 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 260 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 265 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 270 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_fchdir)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_accept)		/* 275 */
+-	ENTRY_NAME(sys_bind)
+-	ENTRY_NAME(sys_connect)
+-	ENTRY_NAME(sys_getpeername)
+-	ENTRY_NAME(sys_getsockname)
+-	ENTRY_NAME(sys_getsockopt)	/* 280 */
+-	ENTRY_NAME(sys_listen)
+-	ENTRY_NAME(sys_recv)
+-	ENTRY_NAME(sys_recvfrom)
+-	ENTRY_NAME(sys_recvmsg)
+-	ENTRY_NAME(sys_send)		/* 285 */
+-	ENTRY_NAME(sys_sendmsg)
+-	ENTRY_NAME(sys_sendto)
+-	ENTRY_NAME(sys_setsockopt)
+-	ENTRY_NAME(sys_shutdown)
+-	ENTRY_NAME(sys_socket)		/* 290 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 295 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 300 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 305 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 310 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 315 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 320 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 325 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 330 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_lchown)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_sysfs)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 335 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 340 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 345 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 350 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(sys_nanosleep)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 355 */
+-	ENTRY_NAME(hpux_getdents)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 360 */
+-	ENTRY_NAME(hpux_fstat64)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 365 */
+-	ENTRY_NAME(hpux_lstat64)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_stat64)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 370 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 375 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 380 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_setpgrp)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 385 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 390 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 395 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 400 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 405 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 410 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 415 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 420 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 425 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 430 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 435 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 440 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 445 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 450 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 455 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 460 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 465 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 470 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 475 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 480 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 485 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 490 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 495 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 500 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 505 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)      /* 510 */
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-	ENTRY_NAME(hpux_unimplemented_wrapper)
+-END(hpux_call_table)
+-.end
+-
+diff --git a/arch/parisc/hpux/fs.c b/arch/parisc/hpux/fs.c
+deleted file mode 100644
+index 97a7bf8..0000000
+--- a/arch/parisc/hpux/fs.c
++++ /dev/null
+@@ -1,192 +0,0 @@
+-/*
+- *    Implements HPUX syscalls.
+- *
+- *    Copyright (C) 1999 Matthew Wilcox <willy with parisc-linux.org>
+- *    Copyright (C) 2000 Michael Ang <mang with subcarrier.org>
+- *    Copyright (C) 2000 John Marvin <jsm with parisc-linux.org>
+- *    Copyright (C) 2000 Philipp Rumpf
+- *
+- *    This program is free software; you can redistribute it and/or modify
+- *    it under the terms of the GNU General Public License as published by
+- *    the Free Software Foundation; either version 2 of the License, or
+- *    (at your option) any later version.
+- *
+- *    This program is distributed in the hope that it will be useful,
+- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *    GNU General Public License for more details.
+- *
+- *    You should have received a copy of the GNU General Public License
+- *    along with this program; if not, write to the Free Software
+- *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/mm.h>
+-#include <linux/fs.h>
+-#include <linux/sched.h>
+-#include <linux/file.h>
+-#include <linux/ptrace.h>
+-#include <linux/slab.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-int hpux_execve(struct pt_regs *regs)
+-{
+-	return  do_execve(getname((const char __user *) regs->gr[26]),
+-			  (const char __user *const __user *) regs->gr[25],
+-			  (const char __user *const __user *) regs->gr[24]);
+-}
+-
+-struct hpux_dirent {
+-	loff_t	d_off;
+-	ino_t	d_ino;
+-	short	d_reclen;
+-	short	d_namlen;
+-	char	d_name[1];
+-};
+-
+-struct getdents_callback {
+-	struct dir_context ctx;
+-	struct hpux_dirent __user *current_dir;
+-	struct hpux_dirent __user *previous;
+-	int count;
+-	int error;
+-};
+-
+-#define NAME_OFFSET(de) ((int) ((de)->d_name - (char __user *) (de)))
+-
+-static int filldir(struct dir_context *ctx, const char *name, int namlen,
+-		   loff_t offset, u64 ino, unsigned d_type)
+-{
+-	struct hpux_dirent __user * dirent;
+-	struct getdents_callback *buf =
+-		container_of(ctx, struct getdents_callback, ctx);
+-	ino_t d_ino;
+-	int reclen = ALIGN(NAME_OFFSET(dirent) + namlen + 1, sizeof(long));
+-
+-	buf->error = -EINVAL;	/* only used if we fail.. */
+-	if (reclen > buf->count)
+-		return -EINVAL;
+-	d_ino = ino;
+-	if (sizeof(d_ino) < sizeof(ino) && d_ino != ino) {
+-		buf->error = -EOVERFLOW;
+-		return -EOVERFLOW;
+-	}
+-	dirent = buf->previous;
+-	if (dirent)
+-		if (put_user(offset, &dirent->d_off))
+-			goto Efault;
+-	dirent = buf->current_dir;
+-	if (put_user(d_ino, &dirent->d_ino) ||
+-	    put_user(reclen, &dirent->d_reclen) ||
+-	    put_user(namlen, &dirent->d_namlen) ||
+-	    copy_to_user(dirent->d_name, name, namlen) ||
+-	    put_user(0, dirent->d_name + namlen))
+-		goto Efault;
+-	buf->previous = dirent;
+-	buf->current_dir = (void __user *)dirent + reclen;
+-	buf->count -= reclen;
+-	return 0;
+-Efault:
+-	buf->error = -EFAULT;
+-	return -EFAULT;
+-}
+-
+-#undef NAME_OFFSET
+-
+-int hpux_getdents(unsigned int fd, struct hpux_dirent __user *dirent, unsigned int count)
+-{
+-	struct fd arg;
+-	struct hpux_dirent __user * lastdirent;
+-	struct getdents_callback buf = {
+-		.ctx.actor = filldir,
+-		.current_dir = dirent,
+-		.count = count
+-	};
+-	int error;
+-
+-	arg = fdget(fd);
+-	if (!arg.file)
+-		return -EBADF;
+-
+-	error = iterate_dir(arg.file, &buf.ctx);
+-	if (error >= 0)
+-		error = buf.error;
+-	lastdirent = buf.previous;
+-	if (lastdirent) {
+-		if (put_user(buf.ctx.pos, &lastdirent->d_off))
+-			error = -EFAULT;
+-		else
+-			error = count - buf.count;
+-	}
+-
+-	fdput(arg);
+-	return error;
+-}
+-
+-int hpux_mount(const char *fs, const char *path, int mflag,
+-		const char *fstype, const char *dataptr, int datalen)
+-{
+-	return -ENOSYS;
+-}
+-
+-static int cp_hpux_stat(struct kstat *stat, struct hpux_stat64 __user *statbuf)
+-{
+-	struct hpux_stat64 tmp;
+-
+-	/* we probably want a different split here - is hpux 12:20? */
+-
+-	if (!new_valid_dev(stat->dev) || !new_valid_dev(stat->rdev))
+-		return -EOVERFLOW;
+-
+-	memset(&tmp, 0, sizeof(tmp));
+-	tmp.st_dev = new_encode_dev(stat->dev);
+-	tmp.st_ino = stat->ino;
+-	tmp.st_mode = stat->mode;
+-	tmp.st_nlink = stat->nlink;
+-	tmp.st_uid = from_kuid_munged(current_user_ns(), stat->uid);
+-	tmp.st_gid = from_kgid_munged(current_user_ns(), stat->gid);
+-	tmp.st_rdev = new_encode_dev(stat->rdev);
+-	tmp.st_size = stat->size;
+-	tmp.st_atime = stat->atime.tv_sec;
+-	tmp.st_mtime = stat->mtime.tv_sec;
+-	tmp.st_ctime = stat->ctime.tv_sec;
+-	tmp.st_blocks = stat->blocks;
+-	tmp.st_blksize = stat->blksize;
+-	return copy_to_user(statbuf,&tmp,sizeof(tmp)) ? -EFAULT : 0;
+-}
+-
+-long hpux_stat64(const char __user *filename, struct hpux_stat64 __user *statbuf)
+-{
+-	struct kstat stat;
+-	int error = vfs_stat(filename, &stat);
+-
+-	if (!error)
+-		error = cp_hpux_stat(&stat, statbuf);
+-
+-	return error;
+-}
+-
+-long hpux_fstat64(unsigned int fd, struct hpux_stat64 __user *statbuf)
+-{
+-	struct kstat stat;
+-	int error = vfs_fstat(fd, &stat);
+-
+-	if (!error)
+-		error = cp_hpux_stat(&stat, statbuf);
+-
+-	return error;
+-}
+-
+-long hpux_lstat64(const char __user *filename,
+-		  struct hpux_stat64 __user *statbuf)
+-{
+-	struct kstat stat;
+-	int error = vfs_lstat(filename, &stat);
+-
+-	if (!error)
+-		error = cp_hpux_stat(&stat, statbuf);
+-
+-	return error;
+-}
+diff --git a/arch/parisc/hpux/gate.S b/arch/parisc/hpux/gate.S
+deleted file mode 100644
+index 0114688..0000000
+--- a/arch/parisc/hpux/gate.S
++++ /dev/null
+@@ -1,107 +0,0 @@
+-/*
+- *
+- * Linux/PARISC Project (http://www.parisc-linux.org/)
+- *
+- * System call entry code Copyright (c) Matthew Wilcox 1999 <willy@bofh.ai>
+- * Licensed under the GNU GPL.
+- * thanks to Philipp Rumpf, Mike Shaver and various others
+- * sorry about the wall, puffin..
+- */
+-
+-#include <asm/assembly.h>
+-#include <asm/asm-offsets.h>
+-#include <asm/unistd.h>
+-#include <asm/errno.h>
+-#include <linux/linkage.h>
+-
+-	.level	LEVEL
+-	.text
+-
+-	.import hpux_call_table
+-	.import hpux_syscall_exit,code
+-
+-	.align	PAGE_SIZE
+-ENTRY(hpux_gateway_page)
+-	nop
+-#ifdef CONFIG_64BIT
+-#warning NEEDS WORK for 64-bit
+-#endif
+-	ldw     -64(%r30), %r29                 ;! 8th argument
+-	ldw	-60(%r30), %r19			;! 7th argument
+-	ldw	-56(%r30), %r20			;! 6th argument
+-	ldw	-52(%r30), %r21			;! 5th argument
+-	gate	.+8, %r0			/* become privileged */
+-	mtsp	%r0,%sr4			/* get kernel space into sr4 */
+-	mtsp	%r0,%sr5			/* get kernel space into sr5 */
+-	mtsp	%r0,%sr6			/* get kernel space into sr6 */
+-	mfsp    %sr7,%r1                        /* save user sr7 */
+-	mtsp    %r1,%sr3                        /* and store it in sr3 */
+-
+-	mtctl   %r30,%cr28
+-	mfctl   %cr30,%r1
+-	xor     %r1,%r30,%r30                   /* ye olde xor trick */
+-	xor     %r1,%r30,%r1
+-	xor     %r1,%r30,%r30
+-	ldo     TASK_SZ_ALGN+FRAME_SIZE(%r30),%r30  /* set up kernel stack */
+-
+-	/* N.B.: It is critical that we don't set sr7 to 0 until r30
+-	 *       contains a valid kernel stack pointer. It is also
+-	 *       critical that we don't start using the kernel stack
+-	 *       until after sr7 has been set to 0.
+-	 */
+-
+-	mtsp	%r0,%sr7			/* get kernel space into sr7 */
+-	STREG   %r1,TASK_PT_GR30-TASK_SZ_ALGN-FRAME_SIZE(%r30) /* save usp */
+-	ldo     -TASK_SZ_ALGN-FRAME_SIZE(%r30),%r1   /* get task ptr in %r1 */
+-
+-	/* Save some registers for sigcontext and potential task
+-	   switch (see entry.S for the details of which ones are
+-	   saved/restored).  TASK_PT_PSW is zeroed so we can see whether
+-	   a process is on a syscall or not.  For an interrupt the real
+-	   PSW value is stored.  This is needed for gdb and sys_ptrace. */
+-	STREG	%r0,  TASK_PT_PSW(%r1)
+-	STREG	%r2,  TASK_PT_GR2(%r1)		/* preserve rp */
+-	STREG   %r19, TASK_PT_GR19(%r1)         /* 7th argument */
+-	STREG   %r20, TASK_PT_GR20(%r1)         /* 6th argument */
+-	STREG   %r21, TASK_PT_GR21(%r1)         /* 5th argument */
+-	STREG   %r22, TASK_PT_GR22(%r1)         /* syscall # */
+-	STREG	%r23, TASK_PT_GR23(%r1)		/* 4th argument */
+-	STREG	%r24, TASK_PT_GR24(%r1)		/* 3rd argument */
+-	STREG	%r25, TASK_PT_GR25(%r1)		/* 2nd argument */
+-	STREG	%r26, TASK_PT_GR26(%r1)	 	/* 1st argument */
+-	STREG	%r27, TASK_PT_GR27(%r1)		/* user dp */
+-	STREG   %r28, TASK_PT_GR28(%r1)         /* return value 0 */
+-	STREG   %r0, TASK_PT_ORIG_R28(%r1)     /* don't prohibit restarts */
+-	STREG   %r29, TASK_PT_GR29(%r1)         /* 8th argument */
+-	STREG	%r31, TASK_PT_GR31(%r1)		/* preserve syscall return ptr */
+-	
+-	ldo	TASK_PT_FR0(%r1), %r27		/* save fpregs from the kernel */
+-	save_fp	%r27				/* or potential task switch  */
+-
+-	mfctl	%cr11, %r27			/* i.e. SAR */
+-	STREG	%r27, TASK_PT_SAR(%r1)
+-
+-	loadgp
+-
+-	stw	%r21, -52(%r30)			;! 5th argument
+-	stw	%r20, -56(%r30)			;! 6th argument
+-	stw	%r19, -60(%r30)			;! 7th argument
+-	stw     %r29, -64(%r30)                 ;! 8th argument
+-
+-	ldil	L%hpux_call_table, %r21
+-	ldo	R%hpux_call_table(%r21), %r21
+-	comiclr,>>=	__NR_HPUX_syscalls, %r22, %r0
+-	b,n	syscall_nosys
+-	LDREGX	%r22(%r21), %r21
+-	ldil	L%hpux_syscall_exit,%r2
+-	be	0(%sr7,%r21)
+-	ldo	R%hpux_syscall_exit(%r2),%r2
+-
+-syscall_nosys:
+-	ldil	L%hpux_syscall_exit,%r1
+-	be	R%hpux_syscall_exit(%sr7,%r1)
+-	ldo	-ENOSYS(%r0),%r28
+-ENDPROC(hpux_gateway_page)
+-
+-	.align	PAGE_SIZE
+-ENTRY(end_hpux_gateway_page)
+diff --git a/arch/parisc/hpux/ioctl.c b/arch/parisc/hpux/ioctl.c
+deleted file mode 100644
+index dede476..0000000
+--- a/arch/parisc/hpux/ioctl.c
++++ /dev/null
+@@ -1,72 +0,0 @@
+-/*
+- *    Implements some necessary HPUX ioctls.
+- *
+- *    Copyright (C) 1999-2002 Matthew Wilcox <willy with parisc-linux.org>
+- *
+- *    This program is free software; you can redistribute it and/or modify
+- *    it under the terms of the GNU General Public License as published by
+- *    the Free Software Foundation; either version 2 of the License, or
+- *    (at your option) any later version.
+- *
+- *    This program is distributed in the hope that it will be useful,
+- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *    GNU General Public License for more details.
+- *
+- *    You should have received a copy of the GNU General Public License
+- *    along with this program; if not, write to the Free Software
+- *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+- */
+-
+-/*
+- * Supported ioctls:
+- *   TCGETA
+- *   TCSETA
+- *   TCSETAW
+- *   TCSETAF
+- *   TCSBRK
+- *   TCXONC
+- *   TCFLSH
+- *   TIOCGWINSZ
+- *   TIOCSWINSZ
+- *   TIOCGPGRP
+- *   TIOCSPGRP
+- */
+-
+-#include <linux/sched.h>
+-#include <linux/syscalls.h>
+-#include <asm/errno.h>
+-#include <asm/ioctl.h>
+-#include <asm/termios.h>
+-#include <asm/uaccess.h>
+-
+-static int hpux_ioctl_t(int fd, unsigned long cmd, unsigned long arg)
+-{
+-	int result = -EOPNOTSUPP;
+-	int nr = _IOC_NR(cmd);
+-	switch (nr) {
+-	case 106:
+-		result = sys_ioctl(fd, TIOCSWINSZ, arg);
+-		break;
+-	case 107:
+-		result = sys_ioctl(fd, TIOCGWINSZ, arg);
+-		break;
+-	}
+-	return result;
+-}
+-
+-int hpux_ioctl(int fd, unsigned long cmd, unsigned long arg)
+-{
+-	int result = -EOPNOTSUPP;
+-	int type = _IOC_TYPE(cmd);
+-	switch (type) {
+-	case 'T':
+-		/* Our structures are now compatible with HPUX's */
+-		result = sys_ioctl(fd, cmd, arg);
+-		break;
+-	case 't':
+-		result = hpux_ioctl_t(fd, cmd, arg);
+-		break;
+-	}
+-	return result;
+-}
+diff --git a/arch/parisc/hpux/sys_hpux.c b/arch/parisc/hpux/sys_hpux.c
+deleted file mode 100644
+index e5c4da0..0000000
+--- a/arch/parisc/hpux/sys_hpux.c
++++ /dev/null
+@@ -1,963 +0,0 @@
+-/*
+- *    Implements HPUX syscalls.
+- *
+- *    Copyright (C) 1999 Matthew Wilcox <willy with parisc-linux.org>
+- *    Copyright (C) 2000 Philipp Rumpf
+- *    Copyright (C) 2000 John Marvin <jsm with parisc-linux.org>
+- *    Copyright (C) 2000 Michael Ang <mang with subcarrier.org>
+- *    Copyright (C) 2001 Nathan Neulinger <nneul at umr.edu>
+- *
+- *    This program is free software; you can redistribute it and/or modify
+- *    it under the terms of the GNU General Public License as published by
+- *    the Free Software Foundation; either version 2 of the License, or
+- *    (at your option) any later version.
+- *
+- *    This program is distributed in the hope that it will be useful,
+- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *    GNU General Public License for more details.
+- *
+- *    You should have received a copy of the GNU General Public License
+- *    along with this program; if not, write to the Free Software
+- *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+- */
+-
+-#include <linux/capability.h>
+-#include <linux/file.h>
+-#include <linux/fs.h>
+-#include <linux/namei.h>
+-#include <linux/sched.h>
+-#include <linux/slab.h>
+-#include <linux/syscalls.h>
+-#include <linux/utsname.h>
+-#include <linux/vfs.h>
+-#include <linux/vmalloc.h>
+-
+-#include <asm/errno.h>
+-#include <asm/pgalloc.h>
+-#include <asm/uaccess.h>
+-
+-unsigned long hpux_brk(unsigned long addr)
+-{
+-	/* Sigh.  Looks like HP/UX libc relies on kernel bugs. */
+-	return sys_brk(addr + PAGE_SIZE);
+-}
+-
+-int hpux_sbrk(void)
+-{
+-	return -ENOSYS;
+-}
+-
+-/* Random other syscalls */
+-
+-int hpux_nice(int priority_change)
+-{
+-	return -ENOSYS;
+-}
+-
+-int hpux_ptrace(void)
+-{
+-	return -ENOSYS;
+-}
+-
+-int hpux_wait(int __user *stat_loc)
+-{
+-	return sys_waitpid(-1, stat_loc, 0);
+-}
+-
+-int hpux_setpgrp(void)
+-{
+-	return sys_setpgid(0,0);
+-}
+-
+-int hpux_setpgrp3(void)
+-{
+-	return hpux_setpgrp();
+-}
+-
+-#define _SC_CPU_VERSION	10001
+-#define _SC_OPEN_MAX	4
+-#define CPU_PA_RISC1_1	0x210
+-
+-int hpux_sysconf(int which)
+-{
+-	switch (which) {
+-	case _SC_CPU_VERSION:
+-		return CPU_PA_RISC1_1;
+-	case _SC_OPEN_MAX:
+-		return INT_MAX;
+-	default:
+-		return -EINVAL;
+-	}
+-}
+-
+-/*****************************************************************************/
+-
+-#define HPUX_UTSLEN 9
+-#define HPUX_SNLEN 15
+-
+-struct hpux_utsname {
+-	char sysname[HPUX_UTSLEN];
+-	char nodename[HPUX_UTSLEN];
+-	char release[HPUX_UTSLEN];
+-	char version[HPUX_UTSLEN];
+-	char machine[HPUX_UTSLEN];
+-	char idnumber[HPUX_SNLEN];
+-} ;
+-
+-struct hpux_ustat {
+-	int32_t		f_tfree;	/* total free (daddr_t)  */
+-	u_int32_t	f_tinode;	/* total inodes free (ino_t)  */
+-	char		f_fname[6];	/* filsys name */
+-	char		f_fpack[6];	/* filsys pack name */
+-	u_int32_t	f_blksize;	/* filsys block size (int) */
+-};
+-
+-/*
+- * HPUX's utssys() call.  It's a collection of miscellaneous functions,
+- * alas, so there's no nice way of splitting them up.
+- */
+-
+-/*  This function is called from hpux_utssys(); HP-UX implements
+- *  ustat() as an option to utssys().
+- *
+- *  Now, struct ustat on HP-UX is exactly the same as on Linux, except
+- *  that it contains one addition field on the end, int32_t f_blksize.
+- *  So, we could have written this function to just call the Linux
+- *  sys_ustat(), (defined in linux/fs/super.c), and then just
+- *  added this additional field to the user's structure.  But I figure
+- *  if we're gonna be digging through filesystem structures to get
+- *  this, we might as well just do the whole enchilada all in one go.
+- *
+- *  So, most of this function is almost identical to sys_ustat().
+- *  I have placed comments at the few lines changed or added, to
+- *  aid in porting forward if and when sys_ustat() is changed from
+- *  its form in kernel 2.2.5.
+- */
+-static int hpux_ustat(dev_t dev, struct hpux_ustat __user *ubuf)
+-{
+-	struct hpux_ustat tmp;  /* Changed to hpux_ustat */
+-	struct kstatfs sbuf;
+-	int err = vfs_ustat(dev, &sbuf);
+-	if (err)
+-		goto out;
+-
+-	memset(&tmp,0,sizeof(tmp));
+-
+-	tmp.f_tfree = (int32_t)sbuf.f_bfree;
+-	tmp.f_tinode = (u_int32_t)sbuf.f_ffree;
+-	tmp.f_blksize = (u_int32_t)sbuf.f_bsize;  /*  Added this line  */
+-
+-	err = copy_to_user(ubuf, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+-out:
+-	return err;
+-}
+-
+-/*
+- * Wrapper for hpux statfs call. At the moment, just calls the linux native one
+- * and ignores the extra fields at the end of the hpux statfs struct.
+- *
+- */
+-
+-typedef int32_t hpux_fsid_t[2];              /* file system ID type */
+-typedef uint16_t hpux_site_t;
+-
+-struct hpux_statfs {
+-     int32_t f_type;                    /* type of info, zero for now */
+-     int32_t f_bsize;                   /* fundamental file system block size */
+-     int32_t f_blocks;                  /* total blocks in file system */
+-     int32_t f_bfree;                   /* free block in fs */
+-     int32_t f_bavail;                  /* free blocks avail to non-superuser */
+-     int32_t f_files;                   /* total file nodes in file system */
+-     int32_t f_ffree;                   /* free file nodes in fs */
+-     hpux_fsid_t  f_fsid;                    /* file system ID */
+-     int32_t f_magic;                   /* file system magic number */
+-     int32_t f_featurebits;             /* file system features */
+-     int32_t f_spare[4];                /* spare for later */
+-     hpux_site_t  f_cnode;                   /* cluster node where mounted */
+-     int16_t f_pad;
+-};
+-
+-static int do_statfs_hpux(struct kstatfs *st, struct hpux_statfs __user *p)
+-{
+-	struct hpux_statfs buf;
+-	memset(&buf, 0, sizeof(buf));
+-	buf.f_type = st->f_type;
+-	buf.f_bsize = st->f_bsize;
+-	buf.f_blocks = st->f_blocks;
+-	buf.f_bfree = st->f_bfree;
+-	buf.f_bavail = st->f_bavail;
+-	buf.f_files = st->f_files;
+-	buf.f_ffree = st->f_ffree;
+-	buf.f_fsid[0] = st->f_fsid.val[0];
+-	buf.f_fsid[1] = st->f_fsid.val[1];
+-	if (copy_to_user(p, &buf, sizeof(buf)))
+-		return -EFAULT;
+-	return 0;
+-}
+-
+-/* hpux statfs */
+-asmlinkage long hpux_statfs(const char __user *pathname,
+-						struct hpux_statfs __user *buf)
+-{
+-	struct kstatfs st;
+-	int error = user_statfs(pathname, &st);
+-	if (!error)
+-		error = do_statfs_hpux(&st, buf);
+-	return error;
+-}
+-
+-asmlinkage long hpux_fstatfs(unsigned int fd, struct hpux_statfs __user * buf)
+-{
+-	struct kstatfs st;
+-	int error = fd_statfs(fd, &st);
+-	if (!error)
+-		error = do_statfs_hpux(&st, buf);
+-	return error;
+-}
+-
+-
+-/*  This function is called from hpux_utssys(); HP-UX implements
+- *  uname() as an option to utssys().
+- *
+- *  The form of this function is pretty much copied from sys_olduname(),
+- *  defined in linux/arch/i386/kernel/sys_i386.c.
+- */
+-/*  TODO: Are these put_user calls OK?  Should they pass an int?
+- *        (I copied it from sys_i386.c like this.)
+- */
+-static int hpux_uname(struct hpux_utsname __user *name)
+-{
+-	int error;
+-
+-	if (!name)
+-		return -EFAULT;
+-	if (!access_ok(VERIFY_WRITE,name,sizeof(struct hpux_utsname)))
+-		return -EFAULT;
+-
+-	down_read(&uts_sem);
+-
+-	error = __copy_to_user(&name->sysname, &utsname()->sysname,
+-			       HPUX_UTSLEN - 1);
+-	error |= __put_user(0, name->sysname + HPUX_UTSLEN - 1);
+-	error |= __copy_to_user(&name->nodename, &utsname()->nodename,
+-				HPUX_UTSLEN - 1);
+-	error |= __put_user(0, name->nodename + HPUX_UTSLEN - 1);
+-	error |= __copy_to_user(&name->release, &utsname()->release,
+-				HPUX_UTSLEN - 1);
+-	error |= __put_user(0, name->release + HPUX_UTSLEN - 1);
+-	error |= __copy_to_user(&name->version, &utsname()->version,
+-				HPUX_UTSLEN - 1);
+-	error |= __put_user(0, name->version + HPUX_UTSLEN - 1);
+-	error |= __copy_to_user(&name->machine, &utsname()->machine,
+-				HPUX_UTSLEN - 1);
+-	error |= __put_user(0, name->machine + HPUX_UTSLEN - 1);
+-
+-	up_read(&uts_sem);
+-
+-	/*  HP-UX  utsname has no domainname field.  */
+-
+-	/*  TODO:  Implement idnumber!!!  */
+-#if 0
+-	error |= __put_user(0,name->idnumber);
+-	error |= __put_user(0,name->idnumber+HPUX_SNLEN-1);
+-#endif
+-
+-	error = error ? -EFAULT : 0;
+-
+-	return error;
+-}
+-
+-/*  Note: HP-UX just uses the old suser() function to check perms
+- *  in this system call.  We'll use capable(CAP_SYS_ADMIN).
+- */
+-int hpux_utssys(char __user *ubuf, int n, int type)
+-{
+-	int len;
+-	int error;
+-	switch( type ) {
+-	case 0:
+-		/*  uname():  */
+-		return hpux_uname((struct hpux_utsname __user *)ubuf);
+-		break ;
+-	case 1:
+-		/*  Obsolete (used to be umask().)  */
+-		return -EFAULT ;
+-		break ;
+-	case 2:
+-		/*  ustat():  */
+-		return hpux_ustat(new_decode_dev(n),
+-				  (struct hpux_ustat __user *)ubuf);
+-		break;
+-	case 3:
+-		/*  setuname():
+-		 *
+-		 *  On linux (unlike HP-UX), utsname.nodename
+-		 *  is the same as the hostname.
+-		 *
+-		 *  sys_sethostname() is defined in linux/kernel/sys.c.
+-		 */
+-		if (!capable(CAP_SYS_ADMIN))
+-			return -EPERM;
+-		/*  Unlike Linux, HP-UX returns an error if n==0:  */
+-		if ( n <= 0 )
+-			return -EINVAL ;
+-		/*  Unlike Linux, HP-UX truncates it if n is too big:  */
+-		len = (n <= __NEW_UTS_LEN) ? n : __NEW_UTS_LEN ;
+-		return sys_sethostname(ubuf, len);
+-		break ;
+-	case 4:
+-		/*  sethostname():
+-		 *
+-		 *  sys_sethostname() is defined in linux/kernel/sys.c.
+-		 */
+-		if (!capable(CAP_SYS_ADMIN))
+-			return -EPERM;
+-		/*  Unlike Linux, HP-UX returns an error if n==0:  */
+-		if ( n <= 0 )
+-			return -EINVAL ;
+-		/*  Unlike Linux, HP-UX truncates it if n is too big:  */
+-		len = (n <= __NEW_UTS_LEN) ? n : __NEW_UTS_LEN ;
+-		return sys_sethostname(ubuf, len);
+-		break ;
+-	case 5:
+-		/*  gethostname():
+-		 *
+-		 *  sys_gethostname() is defined in linux/kernel/sys.c.
+-		 */
+-		/*  Unlike Linux, HP-UX returns an error if n==0:  */
+-		if ( n <= 0 )
+-			return -EINVAL ;
+-		return sys_gethostname(ubuf, n);
+-		break ;
+-	case 6:
+-		/*  Supposedly called from setuname() in libc.
+-		 *  TODO: When and why is this called?
+-		 *        Is it ever even called?
+-		 *
+-		 *  This code should look a lot like sys_sethostname(),
+-		 *  defined in linux/kernel/sys.c.  If that gets updated,
+-		 *  update this code similarly.
+-		 */
+-		if (!capable(CAP_SYS_ADMIN))
+-			return -EPERM;
+-		/*  Unlike Linux, HP-UX returns an error if n==0:  */
+-		if ( n <= 0 )
+-			return -EINVAL ;
+-		/*  Unlike Linux, HP-UX truncates it if n is too big:  */
+-		len = (n <= __NEW_UTS_LEN) ? n : __NEW_UTS_LEN ;
+-		/**/
+-		/*  TODO:  print a warning about using this?  */
+-		down_write(&uts_sem);
+-		error = -EFAULT;
+-		if (!copy_from_user(utsname()->sysname, ubuf, len)) {
+-			utsname()->sysname[len] = 0;
+-			error = 0;
+-		}
+-		up_write(&uts_sem);
+-		return error;
+-		break ;
+-	case 7:
+-		/*  Sets utsname.release, if you're allowed.
+-		 *  Undocumented.  Used by swinstall to change the
+-		 *  OS version, during OS updates.  Yuck!!!
+-		 *
+-		 *  This code should look a lot like sys_sethostname()
+-		 *  in linux/kernel/sys.c.  If that gets updated, update
+-		 *  this code similarly.
+-		 */
+-		if (!capable(CAP_SYS_ADMIN))
+-			return -EPERM;
+-		/*  Unlike Linux, HP-UX returns an error if n==0:  */
+-		if ( n <= 0 )
+-			return -EINVAL ;
+-		/*  Unlike Linux, HP-UX truncates it if n is too big:  */
+-		len = (n <= __NEW_UTS_LEN) ? n : __NEW_UTS_LEN ;
+-		/**/
+-		/*  TODO:  print a warning about this?  */
+-		down_write(&uts_sem);
+-		error = -EFAULT;
+-		if (!copy_from_user(utsname()->release, ubuf, len)) {
+-			utsname()->release[len] = 0;
+-			error = 0;
+-		}
+-		up_write(&uts_sem);
+-		return error;
+-		break ;
+-	default:
+-		/*  This system call returns -EFAULT if given an unknown type.
+-	 	 *  Why not -EINVAL?  I don't know, it's just not what they did.
+-	 	 */
+-		return -EFAULT ;
+-	}
+-}
+-
+-int hpux_getdomainname(char __user *name, int len)
+-{
+- 	int nlen;
+- 	int err = -EFAULT;
+- 	
+- 	down_read(&uts_sem);
+- 	
+-	nlen = strlen(utsname()->domainname) + 1;
+-
+-	if (nlen < len)
+-		len = nlen;
+-	if(len > __NEW_UTS_LEN)
+-		goto done;
+-	if(copy_to_user(name, utsname()->domainname, len))
+-		goto done;
+-	err = 0;
+-done:
+-	up_read(&uts_sem);
+-	return err;
+-	
+-}
+-
+-int hpux_pipe(int *kstack_fildes)
+-{
+-	return do_pipe_flags(kstack_fildes, 0);
+-}
+-
+-/* lies - says it works, but it really didn't lock anything */
+-int hpux_lockf(int fildes, int function, off_t size)
+-{
+-	return 0;
+-}
+-
+-int hpux_sysfs(int opcode, unsigned long arg1, unsigned long arg2)
+-{
+-	char *fsname = NULL;
+-	int len = 0;
+-	int fstype;
+-
+-/*Unimplemented HP-UX syscall emulation. Syscall #334 (sysfs)
+-  Args: 1 80057bf4 0 400179f0 0 0 0 */
+-	printk(KERN_DEBUG "in hpux_sysfs\n");
+-	printk(KERN_DEBUG "hpux_sysfs called with opcode = %d\n", opcode);
+-	printk(KERN_DEBUG "hpux_sysfs called with arg1='%lx'\n", arg1);
+-
+-	if ( opcode == 1 ) { /* GETFSIND */	
+-		char __user *user_fsname = (char __user *)arg1;
+-		len = strlen_user(user_fsname);
+-		printk(KERN_DEBUG "len of arg1 = %d\n", len);
+-		if (len == 0)
+-			return 0;
+-		fsname = kmalloc(len, GFP_KERNEL);
+-		if (!fsname) {
+-			printk(KERN_DEBUG "failed to kmalloc fsname\n");
+-			return 0;
+-		}
+-
+-		if (copy_from_user(fsname, user_fsname, len)) {
+-			printk(KERN_DEBUG "failed to copy_from_user fsname\n");
+-			kfree(fsname);
+-			return 0;
+-		}
+-
+-		/* String could be altered by userspace after strlen_user() */
+-		fsname[len - 1] = '\0';
+-
+-		printk(KERN_DEBUG "that is '%s' as (char *)\n", fsname);
+-		if ( !strcmp(fsname, "hfs") ) {
+-			fstype = 0;
+-		} else {
+-			fstype = 0;
+-		}
+-
+-		kfree(fsname);
+-
+-		printk(KERN_DEBUG "returning fstype=%d\n", fstype);
+-		return fstype; /* something other than default */
+-	}
+-
+-
+-	return 0;
+-}
+-
+-
+-/* Table of syscall names and handle for unimplemented routines */
+-static const char * const syscall_names[] = {
+-	"nosys",                  /* 0 */
+-	"exit",                  
+-	"fork",                  
+-	"read",                  
+-	"write",                 
+-	"open",                   /* 5 */
+-	"close",                 
+-	"wait",                  
+-	"creat",                 
+-	"link",                  
+-	"unlink",                 /* 10 */
+-	"execv",                 
+-	"chdir",                 
+-	"time",                  
+-	"mknod",                 
+-	"chmod",                  /* 15 */
+-	"chown",                 
+-	"brk",                   
+-	"lchmod",                
+-	"lseek",                 
+-	"getpid",                 /* 20 */
+-	"mount",                 
+-	"umount",                
+-	"setuid",                
+-	"getuid",                
+-	"stime",                  /* 25 */
+-	"ptrace",                
+-	"alarm",                 
+-	NULL,                    
+-	"pause",                 
+-	"utime",                  /* 30 */
+-	"stty",                  
+-	"gtty",                  
+-	"access",                
+-	"nice",                  
+-	"ftime",                  /* 35 */
+-	"sync",                  
+-	"kill",                  
+-	"stat",                  
+-	"setpgrp3",              
+-	"lstat",                  /* 40 */
+-	"dup",                   
+-	"pipe",                  
+-	"times",                 
+-	"profil",                
+-	"ki_call",                /* 45 */
+-	"setgid",                
+-	"getgid",                
+-	NULL,                    
+-	NULL,                    
+-	NULL,                     /* 50 */
+-	"acct",                  
+-	"set_userthreadid",      
+-	NULL,                    
+-	"ioctl",                 
+-	"reboot",                 /* 55 */
+-	"symlink",               
+-	"utssys",                
+-	"readlink",              
+-	"execve",                
+-	"umask",                  /* 60 */
+-	"chroot",                
+-	"fcntl",                 
+-	"ulimit",                
+-	NULL,                    
+-	NULL,                     /* 65 */
+-	"vfork",                 
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                     /* 70 */
+-	"mmap",                  
+-	NULL,                    
+-	"munmap",                
+-	"mprotect",              
+-	"madvise",                /* 75 */
+-	"vhangup",               
+-	"swapoff",               
+-	NULL,                    
+-	"getgroups",             
+-	"setgroups",              /* 80 */
+-	"getpgrp2",              
+-	"setpgid/setpgrp2",      
+-	"setitimer",             
+-	"wait3",                 
+-	"swapon",                 /* 85 */
+-	"getitimer",             
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	"dup2",                   /* 90 */
+-	NULL,                    
+-	"fstat",                 
+-	"select",                
+-	NULL,                    
+-	"fsync",                  /* 95 */
+-	"setpriority",           
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	"getpriority",            /* 100 */
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                     /* 105 */
+-	NULL,                    
+-	NULL,                    
+-	"sigvector",             
+-	"sigblock",              
+-	"sigsetmask",             /* 110 */
+-	"sigpause",              
+-	"sigstack",              
+-	NULL,                    
+-	NULL,                    
+-	NULL,                     /* 115 */
+-	"gettimeofday",          
+-	"getrusage",             
+-	NULL,                    
+-	NULL,                    
+-	"readv",                  /* 120 */
+-	"writev",                
+-	"settimeofday",          
+-	"fchown",                
+-	"fchmod",                
+-	NULL,                     /* 125 */
+-	"setresuid",             
+-	"setresgid",             
+-	"rename",                
+-	"truncate",              
+-	"ftruncate",              /* 130 */
+-	NULL,                    
+-	"sysconf",               
+-	NULL,                    
+-	NULL,                    
+-	NULL,                     /* 135 */
+-	"mkdir",                 
+-	"rmdir",                 
+-	NULL,                    
+-	"sigcleanup",            
+-	"setcore",                /* 140 */
+-	NULL,                    
+-	"gethostid",             
+-	"sethostid",             
+-	"getrlimit",             
+-	"setrlimit",              /* 145 */
+-	NULL,                    
+-	NULL,                    
+-	"quotactl",              
+-	"get_sysinfo",           
+-	NULL,                     /* 150 */
+-	"privgrp",               
+-	"rtprio",                
+-	"plock",                 
+-	NULL,                    
+-	"lockf",                  /* 155 */
+-	"semget",                
+-	NULL,                    
+-	"semop",                 
+-	"msgget",                
+-	NULL,                     /* 160 */
+-	"msgsnd",                
+-	"msgrcv",                
+-	"shmget",                
+-	NULL,                    
+-	"shmat",                  /* 165 */
+-	"shmdt",                 
+-	NULL,                    
+-	"csp/nsp_init",          
+-	"cluster",               
+-	"mkrnod",                 /* 170 */
+-	"test",                  
+-	"unsp_open",             
+-	NULL,                    
+-	"getcontext",            
+-	"osetcontext",            /* 175 */
+-	"bigio",                 
+-	"pipenode",              
+-	"lsync",                 
+-	"getmachineid",          
+-	"cnodeid/mysite",         /* 180 */
+-	"cnodes/sitels",         
+-	"swapclients",           
+-	"rmtprocess",            
+-	"dskless_stats",         
+-	"sigprocmask",            /* 185 */
+-	"sigpending",            
+-	"sigsuspend",            
+-	"sigaction",             
+-	NULL,                    
+-	"nfssvc",                 /* 190 */
+-	"getfh",                 
+-	"getdomainname",         
+-	"setdomainname",         
+-	"async_daemon",          
+-	"getdirentries",          /* 195 */
+-	NULL,                
+-	NULL,               
+-	"vfsmount",              
+-	NULL,                    
+-	"waitpid",                /* 200 */
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                     /* 205 */
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                     /* 210 */
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                     /* 215 */
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                     /* 220 */
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	"sigsetreturn",          
+-	"sigsetstatemask",        /* 225 */
+-	"bfactl",                
+-	"cs",                    
+-	"cds",                   
+-	NULL,                    
+-	"pathconf",               /* 230 */
+-	"fpathconf",             
+-	NULL,                    
+-	NULL,                    
+-	"nfs_fcntl",             
+-	"ogetacl",                /* 235 */
+-	"ofgetacl",              
+-	"osetacl",               
+-	"ofsetacl",              
+-	"pstat",                 
+-	"getaudid",               /* 240 */
+-	"setaudid",              
+-	"getaudproc",            
+-	"setaudproc",            
+-	"getevent",              
+-	"setevent",               /* 245 */
+-	"audwrite",              
+-	"audswitch",             
+-	"audctl",                
+-	"ogetaccess",            
+-	"fsctl",                  /* 250 */
+-	"ulconnect",             
+-	"ulcontrol",             
+-	"ulcreate",              
+-	"uldest",                
+-	"ulrecv",                 /* 255 */
+-	"ulrecvcn",              
+-	"ulsend",                
+-	"ulshutdown",            
+-	"swapfs",                
+-	"fss",                    /* 260 */
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                     /* 265 */
+-	NULL,                    
+-	"tsync",                 
+-	"getnumfds",             
+-	"poll",                  
+-	"getmsg",                 /* 270 */
+-	"putmsg",                
+-	"fchdir",                
+-	"getmount_cnt",          
+-	"getmount_entry",        
+-	"accept",                 /* 275 */
+-	"bind",                  
+-	"connect",               
+-	"getpeername",           
+-	"getsockname",           
+-	"getsockopt",             /* 280 */
+-	"listen",                
+-	"recv",                  
+-	"recvfrom",              
+-	"recvmsg",               
+-	"send",                   /* 285 */
+-	"sendmsg",               
+-	"sendto",                
+-	"setsockopt",            
+-	"shutdown",              
+-	"socket",                 /* 290 */
+-	"socketpair",            
+-	"proc_open",             
+-	"proc_close",            
+-	"proc_send",             
+-	"proc_recv",              /* 295 */
+-	"proc_sendrecv",         
+-	"proc_syscall",          
+-	"ipccreate",             
+-	"ipcname",               
+-	"ipcnamerase",            /* 300 */
+-	"ipclookup",             
+-	"ipcselect",             
+-	"ipcconnect",            
+-	"ipcrecvcn",             
+-	"ipcsend",                /* 305 */
+-	"ipcrecv",               
+-	"ipcgetnodename",        
+-	"ipcsetnodename",        
+-	"ipccontrol",            
+-	"ipcshutdown",            /* 310 */
+-	"ipcdest",               
+-	"semctl",                
+-	"msgctl",                
+-	"shmctl",                
+-	"mpctl",                  /* 315 */
+-	"exportfs",              
+-	"getpmsg",               
+-	"putpmsg",               
+-	"strioctl",              
+-	"msync",                  /* 320 */
+-	"msleep",                
+-	"mwakeup",               
+-	"msem_init",             
+-	"msem_remove",           
+-	"adjtime",                /* 325 */
+-	"kload",                 
+-	"fattach",               
+-	"fdetach",               
+-	"serialize",             
+-	"statvfs",                /* 330 */
+-	"fstatvfs",              
+-	"lchown",                
+-	"getsid",                
+-	"sysfs",                 
+-	NULL,                     /* 335 */
+-	NULL,                    
+-	"sched_setparam",        
+-	"sched_getparam",        
+-	"sched_setscheduler",    
+-	"sched_getscheduler",     /* 340 */
+-	"sched_yield",           
+-	"sched_get_priority_max",
+-	"sched_get_priority_min",
+-	"sched_rr_get_interval", 
+-	"clock_settime",          /* 345 */
+-	"clock_gettime",         
+-	"clock_getres",          
+-	"timer_create",          
+-	"timer_delete",          
+-	"timer_settime",          /* 350 */
+-	"timer_gettime",         
+-	"timer_getoverrun",      
+-	"nanosleep",             
+-	"toolbox",               
+-	NULL,                     /* 355 */
+-	"getdents",              
+-	"getcontext",            
+-	"sysinfo",               
+-	"fcntl64",               
+-	"ftruncate64",            /* 360 */
+-	"fstat64",               
+-	"getdirentries64",       
+-	"getrlimit64",           
+-	"lockf64",               
+-	"lseek64",                /* 365 */
+-	"lstat64",               
+-	"mmap64",                
+-	"setrlimit64",           
+-	"stat64",                
+-	"truncate64",             /* 370 */
+-	"ulimit64",              
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                     /* 375 */
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	NULL,                    
+-	"setcontext",             /* 380 */
+-	"sigaltstack",           
+-	"waitid",                
+-	"setpgrp",               
+-	"recvmsg2",              
+-	"sendmsg2",               /* 385 */
+-	"socket2",               
+-	"socketpair2",           
+-	"setregid",              
+-	"lwp_create",            
+-	"lwp_terminate",          /* 390 */
+-	"lwp_wait",              
+-	"lwp_suspend",           
+-	"lwp_resume",            
+-	"lwp_self",              
+-	"lwp_abort_syscall",      /* 395 */
+-	"lwp_info",              
+-	"lwp_kill",              
+-	"ksleep",                
+-	"kwakeup",               
+-	"ksleep_abort",           /* 400 */
+-	"lwp_proc_info",         
+-	"lwp_exit",              
+-	"lwp_continue",          
+-	"getacl",                
+-	"fgetacl",                /* 405 */
+-	"setacl",                
+-	"fsetacl",               
+-	"getaccess",             
+-	"lwp_mutex_init",        
+-	"lwp_mutex_lock_sys",     /* 410 */
+-	"lwp_mutex_unlock",      
+-	"lwp_cond_init",         
+-	"lwp_cond_signal",       
+-	"lwp_cond_broadcast",    
+-	"lwp_cond_wait_sys",      /* 415 */
+-	"lwp_getscheduler",      
+-	"lwp_setscheduler",      
+-	"lwp_getprivate",        
+-	"lwp_setprivate",        
+-	"lwp_detach",             /* 420 */
+-	"mlock",                 
+-	"munlock",               
+-	"mlockall",              
+-	"munlockall",            
+-	"shm_open",               /* 425 */
+-	"shm_unlink",            
+-	"sigqueue",              
+-	"sigwaitinfo",           
+-	"sigtimedwait",          
+-	"sigwait",                /* 430 */
+-	"aio_read",              
+-	"aio_write",             
+-	"lio_listio",            
+-	"aio_error",             
+-	"aio_return",             /* 435 */
+-	"aio_cancel",            
+-	"aio_suspend",           
+-	"aio_fsync",             
+-	"mq_open",               
+-	"mq_unlink",              /* 440 */
+-	"mq_send",               
+-	"mq_receive",            
+-	"mq_notify",             
+-	"mq_setattr",            
+-	"mq_getattr",             /* 445 */
+-	"ksem_open",             
+-	"ksem_unlink",           
+-	"ksem_close",            
+-	"ksem_destroy",          
+-	"lw_sem_incr",            /* 450 */
+-	"lw_sem_decr",           
+-	"lw_sem_read",           
+-	"mq_close",              
+-};
+-static const int syscall_names_max = 453;
+-
+-int
+-hpux_unimplemented(unsigned long arg1,unsigned long arg2,unsigned long arg3,
+-		   unsigned long arg4,unsigned long arg5,unsigned long arg6,
+-		   unsigned long arg7,unsigned long sc_num)
+-{
+-	/* NOTE: sc_num trashes arg8 for the few syscalls that actually
+-	 * have a valid 8th argument.
+-	 */
+-	const char *name = NULL;
+-	if ( sc_num <= syscall_names_max && sc_num >= 0 ) {
+-		name = syscall_names[sc_num];
+-	}
+-
+-	if ( name ) {
+-		printk(KERN_DEBUG "Unimplemented HP-UX syscall emulation. Syscall #%lu (%s)\n",
+-		sc_num, name);
+-	} else {
+-		printk(KERN_DEBUG "Unimplemented unknown HP-UX syscall emulation. Syscall #%lu\n",
+-		sc_num);
+-	}
+-	
+-	printk(KERN_DEBUG "  Args: %lx %lx %lx %lx %lx %lx %lx\n",
+-		arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+-
+-	return -ENOSYS;
+-}
+diff --git a/arch/parisc/hpux/wrappers.S b/arch/parisc/hpux/wrappers.S
+deleted file mode 100644
+index 58c53c8..0000000
+--- a/arch/parisc/hpux/wrappers.S
++++ /dev/null
+@@ -1,250 +0,0 @@
+-/*
+- * Linux/PARISC Project (http://www.parisc-linux.org/)
+- *
+- * HP-UX System Call Wrapper routines and System Call Return Path
+- *
+- * Copyright (C) 2000 Hewlett-Packard (John Marvin)
+- *
+- *    This program is free software; you can redistribute it and/or modify
+- *    it under the terms of the GNU General Public License as published by
+- *    the Free Software Foundation; either version 2, or (at your option)
+- *    any later version.
+- *
+- *    This program is distributed in the hope that it will be useful,
+- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *    GNU General Public License for more details.
+- *
+- *    You should have received a copy of the GNU General Public License
+- *    along with this program; if not, write to the Free Software
+- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+- */
+-
+-#ifdef CONFIG_64BIT
+-#warning PA64 support needs more work...did first cut
+-#endif
+-
+-#include <asm/asm-offsets.h>
+-#include <asm/assembly.h>
+-#include <asm/signal.h>
+-#include <linux/linkage.h>
+-
+-	.level	LEVEL
+-	.text
+-
+-	/* These should probably go in a header file somewhere.
+-	 * They are duplicated in kernel/wrappers.S
+-	 * Possibly we should consider consolidating these
+-	 * register save/restore macros.
+-	 */
+-	.macro	reg_save regs
+-#ifdef CONFIG_64BIT
+-#warning NEEDS WORK for 64-bit
+-#endif
+-	STREG	%r3, PT_GR3(\regs)
+-	STREG	%r4, PT_GR4(\regs)
+-	STREG	%r5, PT_GR5(\regs)
+-	STREG	%r6, PT_GR6(\regs)
+-	STREG	%r7, PT_GR7(\regs)
+-	STREG	%r8, PT_GR8(\regs)
+-	STREG	%r9, PT_GR9(\regs)
+-	STREG	%r10,PT_GR10(\regs)
+-	STREG	%r11,PT_GR11(\regs)
+-	STREG	%r12,PT_GR12(\regs)
+-	STREG	%r13,PT_GR13(\regs)
+-	STREG	%r14,PT_GR14(\regs)
+-	STREG	%r15,PT_GR15(\regs)
+-	STREG	%r16,PT_GR16(\regs)
+-	STREG	%r17,PT_GR17(\regs)
+-	STREG	%r18,PT_GR18(\regs)
+-	.endm
+-
+-	.macro	reg_restore regs
+-	LDREG	PT_GR3(\regs), %r3
+-	LDREG	PT_GR4(\regs), %r4
+-	LDREG	PT_GR5(\regs), %r5
+-	LDREG	PT_GR6(\regs), %r6
+-	LDREG	PT_GR7(\regs), %r7
+-	LDREG	PT_GR8(\regs), %r8
+-	LDREG	PT_GR9(\regs), %r9
+-	LDREG	PT_GR10(\regs),%r10
+-	LDREG	PT_GR11(\regs),%r11
+-	LDREG	PT_GR12(\regs),%r12
+-	LDREG	PT_GR13(\regs),%r13
+-	LDREG	PT_GR14(\regs),%r14
+-	LDREG	PT_GR15(\regs),%r15
+-	LDREG	PT_GR16(\regs),%r16
+-	LDREG	PT_GR17(\regs),%r17
+-	LDREG	PT_GR18(\regs),%r18
+-	.endm
+-
+-
+-	.import sys_fork
+-
+-ENTRY(hpux_fork_wrapper)
+-	ldo	TASK_REGS-TASK_SZ_ALGN-64(%r30),%r1	    ;! get pt regs
+-							    ;! pointer in task
+-	reg_save %r1
+-
+-	STREG	%r2,-20(%r30)
+-	ldo	64(%r30),%r30
+-	STREG	%r2,PT_GR19(%r1)	;! save for child
+-	STREG	%r30,PT_GR21(%r1)	;! save for child
+-
+-	LDREG	PT_GR30(%r1),%r25
+-	mtctl	%r25,%cr29
+-	copy	%r1,%r24
+-	bl	sys_clone,%r2
+-	ldi	SIGCHLD,%r26
+-
+-	LDREG	-84(%r30),%r2
+-fork_return:
+-	ldo	-64(%r30),%r30
+-	ldo	TASK_REGS-TASK_SZ_ALGN-64(%r30),%r1	    ;! get pt regs
+-
+-	reg_restore %r1
+-
+-	/*
+-	 * HP-UX wants pid (child gets parent pid, parent gets child pid)
+-	 * in r28 and a flag in r29 (r29 == 1 for child, 0 for parent).
+-	 * Linux fork returns 0 for child, pid for parent. Since HP-UX
+-	 * libc stub throws away parent pid and returns 0 for child,
+-	 * we'll just return 0 for parent pid now. Only applications
+-	 * that jump directly to the gateway page (not supported) will
+-	 * know the difference. We can fix this later if necessary.
+-	 */
+-
+-	ldo	-1024(%r0),%r1
+-	comb,>>=,n %r28,%r1,fork_exit  /* just let the syscall exit handle it */
+-	or,=	%r28,%r0,%r0
+-	or,tr	%r0,%r0,%r29	/* r28 <> 0, we are parent, set r29 to 0 */
+-	ldo	1(%r0),%r29 	/* r28 == 0, we are child,  set r29 to 1 */
+-
+-fork_exit:
+-	bv	%r0(%r2)
+-	nop
+-ENDPROC(hpux_fork_wrapper)
+-
+-	/* Set the return value for the child */
+-
+-ENTRY(hpux_child_return)
+-#if defined(CONFIG_SMP) || defined(CONFIG_PREEMPT)
+-	bl,n	schedule_tail, %r2
+-#endif
+-
+-	LDREG	TASK_PT_GR19-TASK_SZ_ALGN-128(%r30),%r2
+-	b fork_return
+-	copy %r0,%r28
+-ENDPROC(hpux_child_return)
+-
+-	.import hpux_execve
+-
+-ENTRY(hpux_execv_wrapper)
+-	copy %r0,%r24  /* NULL environment */
+-
+-ENTRY(hpux_execve_wrapper)
+-
+-	ldo	TASK_REGS-TASK_SZ_ALGN-64(%r30),%r1	    ;! get pt regs
+-
+-	/*
+-	 * Do we need to save/restore r3-r18 here?
+-	 * I don't think so. why would new thread need old
+-	 * threads registers?
+-	 */
+-
+-	/* Store arg0, arg1 and arg2 so that hpux_execve will find them */
+-
+-	STREG %r26,PT_GR26(%r1)
+-	STREG %r25,PT_GR25(%r1)
+-	STREG %r24,PT_GR24(%r1)
+-
+-	STREG %r2,-20(%r30)
+-	ldo 64(%r30),%r30
+-	bl hpux_execve,%r2
+-	copy %r1,%arg0
+-
+-	ldo -64(%r30),%r30
+-	LDREG	-20(%r30),%r2
+-
+-	/* If exec succeeded we need to load the args */
+-
+-	ldo -1024(%r0),%r1
+-	comb,>>= %r28,%r1,exec_error
+-	copy %r2,%r19
+-	ldo	-TASK_SZ_ALGN-64(%r30),%r1	   ;! get task ptr
+-	LDREG	TASK_PT_GR26(%r1),%r26
+-	LDREG	TASK_PT_GR25(%r1),%r25
+-	LDREG	TASK_PT_GR24(%r1),%r24
+-	LDREG	TASK_PT_GR23(%r1),%r23
+-	copy %r0,%r2	/* Flag to syscall_exit not to clear args */
+-
+-exec_error:
+-	bv %r0(%r19)
+-	nop
+-ENDPROC(hpux_execv_wrapper)
+-
+-	.import hpux_pipe
+-
+-	/* HP-UX expects pipefd's returned in r28 & r29 */
+-
+-ENTRY(hpux_pipe_wrapper)
+-	STREG %r2,-20(%r30)
+-	ldo 64(%r30),%r30
+-	bl hpux_pipe,%r2
+-	ldo -56(%r30),%r26 /* pass local array to hpux_pipe */
+-
+-
+-	ldo -1024(%r0),%r1
+-	comb,>>= %r28,%r1,pipe_exit /* let syscall exit handle it */
+-	LDREG	-84(%r30),%r2
+-
+-	/* if success, load fd's from stack array */
+-
+-	LDREG	-56(%r30),%r28
+-	LDREG	-52(%r30),%r29
+-
+-pipe_exit:
+-	bv %r0(%r2)
+-	ldo -64(%r30),%r30
+-ENDPROC(hpux_pipe_wrapper)
+-
+-	.import syscall_exit
+-
+-ENTRY(hpux_syscall_exit)
+-	/*
+-	 *
+-	 * HP-UX call return conventions:
+-	 *
+-	 * if error:
+-	 *	 r22 = 1
+-	 *	 r28 = errno value
+-	 *	 r29 = secondary return value
+-	 * else
+-	 *	 r22 = 0
+-	 *	 r28 = return value
+-	 *	 r29 = secondary return value
+-	 *
+-	 * For now, we'll just check to see if r28 is < (unsigned long)-1024
+-	 * (to handle addresses > 2 Gb) and if so set r22 to zero. If not,
+-	 * we'll complement r28 and set r22 to 1. Wrappers will be
+-	 * needed for syscalls that care about the secondary return value.
+-	 * The wrapper may also need a way of avoiding the following code,
+-	 * but we'll deal with that when it becomes necessary.
+-	 */
+-
+-	ldo -1024(%r0),%r1
+-	comb,<< %r28,%r1,no_error
+-	copy %r0,%r22
+-	subi 0,%r28,%r28
+-	ldo 1(%r0),%r22
+-
+-no_error:
+-	b,n syscall_exit
+-ENDPROC(hpux_syscall_exit)
+-
+-	.import hpux_unimplemented
