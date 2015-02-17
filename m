@@ -1,42 +1,83 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: RFC arch/sh/kernel/traps_64.c - unclear if/else construct (hpux
- compat layer)
-Date: Tue, 17 Feb 2015 16:15:11 +0100
-Message-ID: <54E35AFF.3030206@gmx.de>
-References: <20150203093758.GA27963@opentech.at> <54E2600F.9060502@gmx.de> <1424162967.7082.7.camel@x220>
+Subject: [GIT PULL] parisc architecture patches for v3.20
+Date: Tue, 17 Feb 2015 21:27:16 +0100
+Message-ID: <20150217202716.GA2856@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: Valentin Rothberg <valentinrothberg@gmail.com>,
-	Nicholas Mc Guire <der.herr@hofr.at>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Dan Carpenter <dan.carpenter@oracle.com>,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1424162967.7082.7.camel@x220>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-H Paul,
+Hi Linus,
 
-On 17.02.2015 09:49, Paul Bolle wrote:
-> On Mon, 2015-02-16 at 22:24 +0100, Helge Deller wrote:
->> The hpux code is broken anyway.
->> I'm going to remove it from the tree.
->
-> That happened in commit 04c161497716 ("parisc: hpux - Drop support for
-> HP-UX binaries"), which is included in today's linux-next
-> (next-20150217).
+please the latest patches and fixes for the parisc architecture for kernel 3.20/4.0 from 
 
-Yes.
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-3.20-1
 
-> That commit removed the Kconfig symbol HPUX. As a result BINFMT_SOM (see
-> fs/Kconfig.binfmt) can't be set anymore. I assume a patch to remove that
-> symbol too is also part of that series. Is that correct?
+The major change in here is the removal of the old HP-UX compat code
+which should have made it possible to load and execute 32-bit HP-UX
+binaries on PA-RISC Linux. Since it was never functional and since
+nobody cares about old 32-bit HPUX binaries any longer, it's now time to
+free up 3200 lines of kernel code (CONFIG_HPUX and CONFIG_BINFMT_SOM).
 
-I missed it, but just sent out a patch to remove BINFMT_SOM too.
-It will be in the next linux-next tree via
-http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/log/?h=for-next
+Other than that we wire up the execveat() syscall, fix sparse errors and have
+some whitespace cleanups.
 
+Thanks,
 Helge
 
+----------------------------------------------------------------
+Helge Deller (8):
+      parisc: Wire up execveat syscall
+      parisc: Add error checks when building up signal trampoline handler
+      parisc: hpux - Drop support for HP-UX binaries
+      parisc: hpux - Do not compile hpux subdirectory
+      parisc: hpux - Delete files in hpux subdirectory
+      parisc: hpux - Remove hpux gateway page
+      parisc: hpux - Remove HPUX syscall numbers
+      fs/binfmt_som: Drop kernel support for HP-UX SOM binaries
+
+Michael S. Tsirkin (2):
+      parisc/uaccess: fix sparse errors
+      parisc: macro whitespace fixes
+
+Rickard Strandqvist (1):
+      parisc: Remove unused function
+
+ arch/parisc/Kconfig                   |   4 -
+ arch/parisc/Makefile                  |   1 -
+ arch/parisc/hpux/Makefile             |   5 -
+ arch/parisc/hpux/entry_hpux.S         | 546 -------------------
+ arch/parisc/hpux/fs.c                 | 192 -------
+ arch/parisc/hpux/gate.S               | 107 ----
+ arch/parisc/hpux/ioctl.c              |  72 ---
+ arch/parisc/hpux/sys_hpux.c           | 963 ----------------------------------
+ arch/parisc/hpux/wrappers.S           | 250 ---------
+ arch/parisc/include/asm/processor.h   |   2 -
+ arch/parisc/include/asm/uaccess.h     | 116 ++--
+ arch/parisc/include/uapi/asm/unistd.h | 481 +----------------
+ arch/parisc/kernel/entry.S            |  20 -
+ arch/parisc/kernel/process.c          |  15 +-
+ arch/parisc/kernel/signal.c           |  32 +-
+ arch/parisc/kernel/smp.c              |   3 -
+ arch/parisc/kernel/syscall_table.S    |   1 +
+ arch/parisc/mm/init.c                 |  72 ---
+ fs/Kconfig.binfmt                     |   7 -
+ fs/Makefile                           |   1 -
+ fs/binfmt_som.c                       | 299 -----------
+ include/uapi/linux/Kbuild             |   1 -
+ include/uapi/linux/som.h              | 154 ------
+ 23 files changed, 80 insertions(+), 3264 deletions(-)
+ delete mode 100644 arch/parisc/hpux/Makefile
+ delete mode 100644 arch/parisc/hpux/entry_hpux.S
+ delete mode 100644 arch/parisc/hpux/fs.c
+ delete mode 100644 arch/parisc/hpux/gate.S
+ delete mode 100644 arch/parisc/hpux/ioctl.c
+ delete mode 100644 arch/parisc/hpux/sys_hpux.c
+ delete mode 100644 arch/parisc/hpux/wrappers.S
+ delete mode 100644 fs/binfmt_som.c
+ delete mode 100644 include/uapi/linux/som.h
