@@ -1,262 +1,128 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 26/27] parisc: Remove use of seq_printf return value
-Date: Sat, 21 Feb 2015 18:53:53 -0800
-Message-ID: <6d1a41cdfcec61f6a74e5cbc067be5ee94b2ac9f.1424573328.git.joe@perches.com>
-References: <cover.1424573328.git.joe@perches.com>
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1424573328.git.joe@perches.com>
-List-ID: <linux-kernel.vger.kernel.org>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: parisc: fix mmap(MAP_FIXED|MAP_SHARED) to already mmapped address
+Date: Sun, 22 Feb 2015 11:45:24 -0500
+Message-ID: <BLU436-SMTP737CEAAA0E7C3EAEFB9DB097280@phx.gbl>
+References: <20131219191750.GC2881@blackmetal.musicnaut.iki.fi> <BLU0-SMTP47556722282C83F98582B797C50@phx.gbl> <201312191619.05005.vapier@gentoo.org> <5313A12E.7010307@gmx.de> <20140401182627.GA3285@drone.musicnaut.iki.fi> <533B0A57.2060700@gmx.de> <CAE2sS1jZTzccFy_uWri++cgVz+AYVfY0_aFqXFxnJXZV3d1a0g@mail.gmail.com> <533C7C9A.5080703@gmx.de> <BLU0-SMTP84F101069B44354FC1070C976D0@phx.gbl> <533DB961.9010607@gmx.de> <BLU0-SMTP7204937E7AF88D8736354E976C0@phx.gbl> <533DC3E8.5010701@gmx.de> <CAE2sS1iY6H3fnEJDHr6oPGywwGYmM_2gt2r_p+DUz+v0Rf2szg@mail.gmail.com> <BLU436-SMTP15952414B35EC498F0793B1972B0@phx.gbl> <BLU437-SMTP9274AAFB2636BF93781F02972B0@phx.gbl> <1424560158.2146.22.camel@HansenPartnership.com> <54E9141B.4050009@gmx.de> <1424563046.2146.41.camel@HansenPartnership.com>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Type: text/plain; charset="us-ascii"
+Cc: Helge Deller <deller@gmx.de>,
+	Carlos O'Donell <carlos@systemhalted.org>,
+	Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Mike Frysinger <vapier@gentoo.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1424563046.2146.41.camel@HansenPartnership.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The seq_printf return value, because it's frequently misused,
-will eventually be converted to void.
+On 2015-02-21, at 6:57 PM, James Bottomley wrote:
 
-See: commit 1f33c41c03da ("seq_file: Rename seq_overflow() to
-     seq_has_overflowed() and make public")
+> On Sun, 2015-02-22 at 00:26 +0100, Helge Deller wrote:
+>> On 22.02.2015 00:09, James Bottomley wrote:
+>>> On Sat, 2015-02-21 at 15:40 -0500, John David Anglin wrote:
+>>>> On 2015-02-21, at 3:31 PM, John David Anglin wrote:
+>>>> 
+>>>>> On 2015-02-20, at 4:36 PM, Carlos O'Donell wrote:
+>>>>> 
+>>>>>> On Thu, Apr 3, 2014 at 4:26 PM, Helge Deller <deller@gmx.de> wrote:
+>>>>>>> In current eglibc it's set to 0x00400000
+>>>>>>> That's what my eglibc-patch changes...
+>>>>>>> I'm currently building a eglibc on hpviz with SHMLBA set to 4096 (__getpagesize()).
+>>>>>> 
+>>>>>> Anyone object to me fixing this upstream by making SHMLBA match the kernel?
+>>>>>> 
+>>>>>> I plan to use a fixed value of 4096, since I never expect hppa
+>>>>>> userspace to have to care (even if the kernel uses superpages).
+>>>>> 
+>>>>> We currently use (__getpagesize ()) in Debian and this seems to be a common definition.
+>>>>> Is there a performance advantage in using 4096?
+>>>>> 
+>>>>>> 
+>>>>>> Please correct me if I'm wrong.
+>>>>> 
+>>>>> 
+>>>>> At one time, we thought this value needed to be 4 MB.  Helge was
+>>>> working on improving the mmap
+>>>>> allocation scheme but this work stalled after some improvement.  I
+>>>> can't remember the issues and how
+>>>>> they relate to SHMLBA.
+>>>> 
+>>>> 
+>>>> Actually, the number was 4 Mb (bit).
+>>> 
+>>> No, it was 4MB.  That's the cache equivalency stride on PA processors
+>>> because we have a VIPT cache.  The architectural requirement according
+>>> to the dreaded appendix F is 16MB but we were assured by the PA
+>>> architects that it was 4 because they never planned producing processors
+>>> that would require 16.  The actual meaning is it's the number of bits of
+>>> the virtual address that are significant in the virtual index.
+>>> 
+>> 
+>> Your following statement:
+>> 
+>>> The point of SHMLBA is that if the same physical page is mapped into two
+>>> different virtual addresses but the two addresses are equal, modulo
+>>> SHMLBA, then the L1 cache sees the equivalency and you can't get
+>>> inequivalent cache aliases for the page (two writes to the two different
+>>> addresses producing two separately dirty cache lines which can never
+>>> resolve).  This means that the virtual addresses of all shared mappings
+>>> have to be equal modulo SHMLBA for the caches not to alias.
+>> 
+>> With this you define SHMLBA to be the representative number which defines
+>> what the current cache equivalency stride of the kernel is, *and* which then can
+>> be used by userspace. I think this is a misinterpretation of SHMLBA (or at
+>> least a parisc-specific interpretation of SHMLBA), which is not like how it
+>> is used on other architectures with similar limitations.
+>> Userspace should not know the kernel/architecture specifics. Instead they
+>> should try to mmap() memory somewhere (e.g. 4KB aligned) and if they need shared mappings then
+>> kernel/glibc will return a corrected mapping address (modulo 4MB).
+>> I think this is important, since most userspace programs usually try to mmap at
+>> a multiple of SHMLBA with which we then run very soon out of userspace (with SHMLBA=4MB).
+>> This has been the issue with localedef in glibc (a strange coding which tries
+>> to be platform-specific with mmap-calculation). Because of that in the end
+>> it turned out to be best for parisc to have SHMLBA defined to 4kb (and not 4MB).
+>> 
+>> So, your statement above is correct, I would just not use "SHMLBA" in this term,
+>> but maybe "KERNEL_SHMLBA" instead.
+> 
+> Um, no, SHMLBA comes from the SYS-V IPC primitives.  They were stupid
+> enough to allow the user pick the address of the region of shared
+> memory, so the user had to know these architectural details and SHMLBA
+> encodes them (man shmat will give you the gory details).
+> 
+> For mmap, we can mostly do the right thing in the kernel, except for
+> MAP_FIXED, where the user has to know what they're doing again.
+> 
+> For the cases the user thinks they know best, we can't avoid giving out
+> the knowledge somehow, because inequivalent aliases in writeable
+> mappings will HPMC a system.  We could be more relaxed about
+> inequivalent aliases in read only mappings (say shared libraries), but
+> the consequence of that is an explosion in the use of cache space, so we
+> would want some libraries (like glibc) with many shared copies to obey
+> SHMLBA.
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/parisc/ccio-dma.c  | 54 ++++++++++++++---------------
- drivers/parisc/sba_iommu.c | 86 ++++++++++++++++++++++------------------------
- 2 files changed, 68 insertions(+), 72 deletions(-)
 
-diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-index 8b490d7..6bc1680 100644
---- a/drivers/parisc/ccio-dma.c
-+++ b/drivers/parisc/ccio-dma.c
-@@ -1021,7 +1021,6 @@ static struct hppa_dma_ops ccio_ops = {
- #ifdef CONFIG_PROC_FS
- static int ccio_proc_info(struct seq_file *m, void *p)
- {
--	int len = 0;
- 	struct ioc *ioc = ioc_list;
- 
- 	while (ioc != NULL) {
-@@ -1031,22 +1030,22 @@ static int ccio_proc_info(struct seq_file *m, void *p)
- 		int j;
- #endif
- 
--		len += seq_printf(m, "%s\n", ioc->name);
-+		seq_printf(m, "%s\n", ioc->name);
- 		
--		len += seq_printf(m, "Cujo 2.0 bug    : %s\n",
--				  (ioc->cujo20_bug ? "yes" : "no"));
-+		seq_printf(m, "Cujo 2.0 bug    : %s\n",
-+			   (ioc->cujo20_bug ? "yes" : "no"));
- 		
--		len += seq_printf(m, "IO PDIR size    : %d bytes (%d entries)\n",
--			       total_pages * 8, total_pages);
-+		seq_printf(m, "IO PDIR size    : %d bytes (%d entries)\n",
-+			   total_pages * 8, total_pages);
- 
- #ifdef CCIO_COLLECT_STATS
--		len += seq_printf(m, "IO PDIR entries : %ld free  %ld used (%d%%)\n",
--				  total_pages - ioc->used_pages, ioc->used_pages,
--				  (int)(ioc->used_pages * 100 / total_pages));
-+		seq_printf(m, "IO PDIR entries : %ld free  %ld used (%d%%)\n",
-+			   total_pages - ioc->used_pages, ioc->used_pages,
-+			   (int)(ioc->used_pages * 100 / total_pages));
- #endif
- 
--		len += seq_printf(m, "Resource bitmap : %d bytes (%d pages)\n", 
--				  ioc->res_size, total_pages);
-+		seq_printf(m, "Resource bitmap : %d bytes (%d pages)\n",
-+			   ioc->res_size, total_pages);
- 
- #ifdef CCIO_COLLECT_STATS
- 		min = max = ioc->avg_search[0];
-@@ -1058,26 +1057,26 @@ static int ccio_proc_info(struct seq_file *m, void *p)
- 				min = ioc->avg_search[j];
- 		}
- 		avg /= CCIO_SEARCH_SAMPLE;
--		len += seq_printf(m, "  Bitmap search : %ld/%ld/%ld (min/avg/max CPU Cycles)\n",
--				  min, avg, max);
-+		seq_printf(m, "  Bitmap search : %ld/%ld/%ld (min/avg/max CPU Cycles)\n",
-+			   min, avg, max);
- 
--		len += seq_printf(m, "pci_map_single(): %8ld calls  %8ld pages (avg %d/1000)\n",
--				  ioc->msingle_calls, ioc->msingle_pages,
--				  (int)((ioc->msingle_pages * 1000)/ioc->msingle_calls));
-+		seq_printf(m, "pci_map_single(): %8ld calls  %8ld pages (avg %d/1000)\n",
-+			   ioc->msingle_calls, ioc->msingle_pages,
-+			   (int)((ioc->msingle_pages * 1000)/ioc->msingle_calls));
- 
- 		/* KLUGE - unmap_sg calls unmap_single for each mapped page */
- 		min = ioc->usingle_calls - ioc->usg_calls;
- 		max = ioc->usingle_pages - ioc->usg_pages;
--		len += seq_printf(m, "pci_unmap_single: %8ld calls  %8ld pages (avg %d/1000)\n",
--				  min, max, (int)((max * 1000)/min));
-+		seq_printf(m, "pci_unmap_single: %8ld calls  %8ld pages (avg %d/1000)\n",
-+			   min, max, (int)((max * 1000)/min));
-  
--		len += seq_printf(m, "pci_map_sg()    : %8ld calls  %8ld pages (avg %d/1000)\n",
--				  ioc->msg_calls, ioc->msg_pages,
--				  (int)((ioc->msg_pages * 1000)/ioc->msg_calls));
-+		seq_printf(m, "pci_map_sg()    : %8ld calls  %8ld pages (avg %d/1000)\n",
-+			   ioc->msg_calls, ioc->msg_pages,
-+			   (int)((ioc->msg_pages * 1000)/ioc->msg_calls));
- 
--		len += seq_printf(m, "pci_unmap_sg()  : %8ld calls  %8ld pages (avg %d/1000)\n\n\n",
--				  ioc->usg_calls, ioc->usg_pages,
--				  (int)((ioc->usg_pages * 1000)/ioc->usg_calls));
-+		seq_printf(m, "pci_unmap_sg()  : %8ld calls  %8ld pages (avg %d/1000)\n\n\n",
-+			   ioc->usg_calls, ioc->usg_pages,
-+			   (int)((ioc->usg_pages * 1000)/ioc->usg_calls));
- #endif	/* CCIO_COLLECT_STATS */
- 
- 		ioc = ioc->next;
-@@ -1101,7 +1100,6 @@ static const struct file_operations ccio_proc_info_fops = {
- 
- static int ccio_proc_bitmap_info(struct seq_file *m, void *p)
- {
--	int len = 0;
- 	struct ioc *ioc = ioc_list;
- 
- 	while (ioc != NULL) {
-@@ -1110,11 +1108,11 @@ static int ccio_proc_bitmap_info(struct seq_file *m, void *p)
- 
- 		for (j = 0; j < (ioc->res_size / sizeof(u32)); j++) {
- 			if ((j & 7) == 0)
--				len += seq_puts(m, "\n   ");
--			len += seq_printf(m, "%08x", *res_ptr);
-+				seq_puts(m, "\n   ");
-+			seq_printf(m, "%08x", *res_ptr);
- 			res_ptr++;
- 		}
--		len += seq_puts(m, "\n\n");
-+		seq_puts(m, "\n\n");
- 		ioc = ioc->next;
- 		break; /* XXX - remove me */
- 	}
-diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-index 1ff1b67..f074712 100644
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -1774,37 +1774,35 @@ static int sba_proc_info(struct seq_file *m, void *p)
- #ifdef SBA_COLLECT_STATS
- 	unsigned long avg = 0, min, max;
- #endif
--	int i, len = 0;
--
--	len += seq_printf(m, "%s rev %d.%d\n",
--		sba_dev->name,
--		(sba_dev->hw_rev & 0x7) + 1,
--		(sba_dev->hw_rev & 0x18) >> 3
--		);
--	len += seq_printf(m, "IO PDIR size    : %d bytes (%d entries)\n",
--		(int) ((ioc->res_size << 3) * sizeof(u64)), /* 8 bits/byte */
--		total_pages);
--
--	len += seq_printf(m, "Resource bitmap : %d bytes (%d pages)\n", 
--		ioc->res_size, ioc->res_size << 3);   /* 8 bits per byte */
--
--	len += seq_printf(m, "LMMIO_BASE/MASK/ROUTE %08x %08x %08x\n",
--		READ_REG32(sba_dev->sba_hpa + LMMIO_DIST_BASE),
--		READ_REG32(sba_dev->sba_hpa + LMMIO_DIST_MASK),
--		READ_REG32(sba_dev->sba_hpa + LMMIO_DIST_ROUTE)
--		);
-+	int i;
-+
-+	seq_printf(m, "%s rev %d.%d\n",
-+		   sba_dev->name,
-+		   (sba_dev->hw_rev & 0x7) + 1,
-+		   (sba_dev->hw_rev & 0x18) >> 3);
-+	seq_printf(m, "IO PDIR size    : %d bytes (%d entries)\n",
-+		   (int)((ioc->res_size << 3) * sizeof(u64)), /* 8 bits/byte */
-+		   total_pages);
-+
-+	seq_printf(m, "Resource bitmap : %d bytes (%d pages)\n",
-+		   ioc->res_size, ioc->res_size << 3);   /* 8 bits per byte */
-+
-+	seq_printf(m, "LMMIO_BASE/MASK/ROUTE %08x %08x %08x\n",
-+		   READ_REG32(sba_dev->sba_hpa + LMMIO_DIST_BASE),
-+		   READ_REG32(sba_dev->sba_hpa + LMMIO_DIST_MASK),
-+		   READ_REG32(sba_dev->sba_hpa + LMMIO_DIST_ROUTE));
- 
- 	for (i=0; i<4; i++)
--		len += seq_printf(m, "DIR%d_BASE/MASK/ROUTE %08x %08x %08x\n", i,
--			READ_REG32(sba_dev->sba_hpa + LMMIO_DIRECT0_BASE  + i*0x18),
--			READ_REG32(sba_dev->sba_hpa + LMMIO_DIRECT0_MASK  + i*0x18),
--			READ_REG32(sba_dev->sba_hpa + LMMIO_DIRECT0_ROUTE + i*0x18)
--		);
-+		seq_printf(m, "DIR%d_BASE/MASK/ROUTE %08x %08x %08x\n",
-+			   i,
-+			   READ_REG32(sba_dev->sba_hpa + LMMIO_DIRECT0_BASE  + i*0x18),
-+			   READ_REG32(sba_dev->sba_hpa + LMMIO_DIRECT0_MASK  + i*0x18),
-+			   READ_REG32(sba_dev->sba_hpa + LMMIO_DIRECT0_ROUTE + i*0x18));
- 
- #ifdef SBA_COLLECT_STATS
--	len += seq_printf(m, "IO PDIR entries : %ld free  %ld used (%d%%)\n",
--		total_pages - ioc->used_pages, ioc->used_pages,
--		(int) (ioc->used_pages * 100 / total_pages));
-+	seq_printf(m, "IO PDIR entries : %ld free  %ld used (%d%%)\n",
-+		   total_pages - ioc->used_pages, ioc->used_pages,
-+		   (int)(ioc->used_pages * 100 / total_pages));
- 
- 	min = max = ioc->avg_search[0];
- 	for (i = 0; i < SBA_SEARCH_SAMPLE; i++) {
-@@ -1813,26 +1811,26 @@ static int sba_proc_info(struct seq_file *m, void *p)
- 		if (ioc->avg_search[i] < min) min = ioc->avg_search[i];
- 	}
- 	avg /= SBA_SEARCH_SAMPLE;
--	len += seq_printf(m, "  Bitmap search : %ld/%ld/%ld (min/avg/max CPU Cycles)\n",
--		min, avg, max);
-+	seq_printf(m, "  Bitmap search : %ld/%ld/%ld (min/avg/max CPU Cycles)\n",
-+		   min, avg, max);
- 
--	len += seq_printf(m, "pci_map_single(): %12ld calls  %12ld pages (avg %d/1000)\n",
--		ioc->msingle_calls, ioc->msingle_pages,
--		(int) ((ioc->msingle_pages * 1000)/ioc->msingle_calls));
-+	seq_printf(m, "pci_map_single(): %12ld calls  %12ld pages (avg %d/1000)\n",
-+		   ioc->msingle_calls, ioc->msingle_pages,
-+		   (int)((ioc->msingle_pages * 1000)/ioc->msingle_calls));
- 
- 	/* KLUGE - unmap_sg calls unmap_single for each mapped page */
- 	min = ioc->usingle_calls;
- 	max = ioc->usingle_pages - ioc->usg_pages;
--	len += seq_printf(m, "pci_unmap_single: %12ld calls  %12ld pages (avg %d/1000)\n",
--		min, max, (int) ((max * 1000)/min));
-+	seq_printf(m, "pci_unmap_single: %12ld calls  %12ld pages (avg %d/1000)\n",
-+		   min, max, (int)((max * 1000)/min));
- 
--	len += seq_printf(m, "pci_map_sg()    : %12ld calls  %12ld pages (avg %d/1000)\n",
--		ioc->msg_calls, ioc->msg_pages, 
--		(int) ((ioc->msg_pages * 1000)/ioc->msg_calls));
-+	seq_printf(m, "pci_map_sg()    : %12ld calls  %12ld pages (avg %d/1000)\n",
-+		   ioc->msg_calls, ioc->msg_pages,
-+		   (int)((ioc->msg_pages * 1000)/ioc->msg_calls));
- 
--	len += seq_printf(m, "pci_unmap_sg()  : %12ld calls  %12ld pages (avg %d/1000)\n",
--		ioc->usg_calls, ioc->usg_pages,
--		(int) ((ioc->usg_pages * 1000)/ioc->usg_calls));
-+	seq_printf(m, "pci_unmap_sg()  : %12ld calls  %12ld pages (avg %d/1000)\n",
-+		   ioc->usg_calls, ioc->usg_pages,
-+		   (int)((ioc->usg_pages * 1000)/ioc->usg_calls));
- #endif
- 
- 	return 0;
-@@ -1858,14 +1856,14 @@ sba_proc_bitmap_info(struct seq_file *m, void *p)
- 	struct sba_device *sba_dev = sba_list;
- 	struct ioc *ioc = &sba_dev->ioc[0];	/* FIXME: Multi-IOC support! */
- 	unsigned int *res_ptr = (unsigned int *)ioc->res_map;
--	int i, len = 0;
-+	int i;
- 
- 	for (i = 0; i < (ioc->res_size/sizeof(unsigned int)); ++i, ++res_ptr) {
- 		if ((i & 7) == 0)
--			len += seq_printf(m, "\n   ");
--		len += seq_printf(m, " %08x", *res_ptr);
-+			seq_puts(m, "\n   ");
-+		seq_printf(m, " %08x", *res_ptr);
- 	}
--	len += seq_printf(m, "\n");
-+	seq_putc(m, '\n');
- 
- 	return 0;
- }
--- 
-2.1.2
+I agree with Helge.  We run out of memory too quickly with 4 MB.  This resulted in various
+userspace applications failing as mentioned by Helge.
+
+MAP_FIXED can fail it the address is a problem.  I believe we check for that.
+
+If you look at the pch implementation in gcc, you will see that the MAP_FIXED problem can be
+worked around, and this problem is not specific to parisc.  The pch data has to mapped at the same
+address as it was originally created as there is no way to relocate the data.
+
+SHMLBA is 4096 /* (1 << PGSHIFT) */ on hpux.
+
+The following is in <asm-generic/shmparam.h>:
+#define SHMLBA PAGE_SIZE	 /* attach addr a multiple of this */
+
+Shared mappings are handled with 
+asm/shmparam.h:#define SHM_COLOUR 0x00400000	/* shared mappings colouring */
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
