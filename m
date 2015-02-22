@@ -1,8 +1,8 @@
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
 Subject: Re: parisc: fix mmap(MAP_FIXED|MAP_SHARED) to already mmapped
  address
-Date: Sun, 22 Feb 2015 09:17:55 -0800
-Message-ID: <1424625475.2146.88.camel@HansenPartnership.com>
+Date: Sun, 22 Feb 2015 09:28:09 -0800
+Message-ID: <1424626089.2146.92.camel@HansenPartnership.com>
 References: <20131219191750.GC2881@blackmetal.musicnaut.iki.fi>
 	 <BLU0-SMTP47556722282C83F98582B797C50@phx.gbl>
 	 <201312191619.05005.vapier@gentoo.org> <5313A12E.7010307@gmx.de>
@@ -128,17 +128,11 @@ On Sun, 2015-02-22 at 11:45 -0500, John David Anglin wrote:
 > address as it was originally created as there is no way to relocate the data.
 > 
 > SHMLBA is 4096 /* (1 << PGSHIFT) */ on hpux.
-> 
-> The following is in <asm-generic/shmparam.h>:
-> #define SHMLBA PAGE_SIZE	 /* attach addr a multiple of this */
-> 
-> Shared mappings are handled with 
-> asm/shmparam.h:#define SHM_COLOUR 0x00400000	/* shared mappings colouring */
 
-So how is the sys-v ipc problem fixed?  There the user is told to select
-an address which is a multiple of SHMLBA.  Programs that do this today
-will start to break on writeable mappings if we set SHMLBA to PAGE_SIZE
-because the colour will be wrong.
+Do we know what tricks hpux does in shmat() to pull this off?  Making
+writeable mappings uncacheable might be one way.  Using the space bits
+as part of the VI index generation would be another.  I think there were
+also some space bit quadrant tricks hpux pulls, aren't there?
 
 James
 
