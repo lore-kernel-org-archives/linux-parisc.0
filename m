@@ -1,117 +1,125 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: parisc: fix mmap(MAP_FIXED|MAP_SHARED) to already mmapped
- address
-Date: Sat, 21 Feb 2015 15:57:26 -0800
-Message-ID: <1424563046.2146.41.camel@HansenPartnership.com>
-References: <20131219191750.GC2881@blackmetal.musicnaut.iki.fi>
-		 <BLU0-SMTP47556722282C83F98582B797C50@phx.gbl>
-		 <201312191619.05005.vapier@gentoo.org> <5313A12E.7010307@gmx.de>
-		 <20140401182627.GA3285@drone.musicnaut.iki.fi> <533B0A57.2060700@gmx.de>
-		 <CAE2sS1jZTzccFy_uWri++cgVz+AYVfY0_aFqXFxnJXZV3d1a0g@mail.gmail.com>
-		 <533C7C9A.5080703@gmx.de> <BLU0-SMTP84F101069B44354FC1070C976D0@phx.gbl>
-		 <533DB961.9010607@gmx.de> <BLU0-SMTP7204937E7AF88D8736354E976C0@phx.gbl>
-		 <533DC3E8.5010701@gmx.de>
-		 <CAE2sS1iY6H3fnEJDHr6oPGywwGYmM_2gt2r_p+DUz+v0Rf2szg@mail.gmail.com>
-		 <BLU436-SMTP15952414B35EC498F0793B1972B0@phx.gbl>
-		 <BLU437-SMTP9274AAFB2636BF93781F02972B0@phx.gbl>
-	 <1424560158.2146.22.camel@HansenPartnership.com> <54E9141B.4050009@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: John David Anglin <dave.anglin@bell.net>,
-	Carlos O'Donell <carlos@systemhalted.org>,
-	Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Mike Frysinger <vapier@gentoo.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <54E9141B.4050009@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH 00/27] Convert seq_<foo> output calls to return void
+Date: Sat, 21 Feb 2015 18:53:27 -0800
+Message-ID: <cover.1424573328.git.joe@perches.com>
+Cc: linux-cris-kernel@axis.com, nios2-dev@lists.rocketboards.org,
+	linux@lists.openrisc.net, devel@driverdev.osuosl.org,
+	HPDD-discuss@lists.01.org, linux-usb@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>,
+	linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-pm@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	rtc-linux@googlegroups.com, linux-tegra@vger.kernel.org,
+	linux-watchdog@vger.kernel.org, cgroups@vger.kernel.org,
+	drbd-user@lists.linbit.com
+Return-path: <linux-pm-owner@vger.kernel.org>
+List-ID: <linux-pm.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 2015-02-22 at 00:26 +0100, Helge Deller wrote:
-> On 22.02.2015 00:09, James Bottomley wrote:
-> > On Sat, 2015-02-21 at 15:40 -0500, John David Anglin wrote:
-> >> On 2015-02-21, at 3:31 PM, John David Anglin wrote:
-> >>
-> >>> On 2015-02-20, at 4:36 PM, Carlos O'Donell wrote:
-> >>>
-> >>>> On Thu, Apr 3, 2014 at 4:26 PM, Helge Deller <deller@gmx.de> wrote:
-> >>>>> In current eglibc it's set to 0x00400000
-> >>>>> That's what my eglibc-patch changes...
-> >>>>> I'm currently building a eglibc on hpviz with SHMLBA set to 4096 (__getpagesize()).
-> >>>>
-> >>>> Anyone object to me fixing this upstream by making SHMLBA match the kernel?
-> >>>>
-> >>>> I plan to use a fixed value of 4096, since I never expect hppa
-> >>>> userspace to have to care (even if the kernel uses superpages).
-> >>>
-> >>> We currently use (__getpagesize ()) in Debian and this seems to be a common definition.
-> >>> Is there a performance advantage in using 4096?
-> >>>
-> >>>>
-> >>>> Please correct me if I'm wrong.
-> >>>
-> >>>
-> >>> At one time, we thought this value needed to be 4 MB.  Helge was
-> >> working on improving the mmap
-> >>> allocation scheme but this work stalled after some improvement.  I
-> >> can't remember the issues and how
-> >>> they relate to SHMLBA.
-> >>
-> >>
-> >> Actually, the number was 4 Mb (bit).
-> >
-> > No, it was 4MB.  That's the cache equivalency stride on PA processors
-> > because we have a VIPT cache.  The architectural requirement according
-> > to the dreaded appendix F is 16MB but we were assured by the PA
-> > architects that it was 4 because they never planned producing processors
-> > that would require 16.  The actual meaning is it's the number of bits of
-> > the virtual address that are significant in the virtual index.
-> >
-> 
-> Your following statement:
-> 
-> > The point of SHMLBA is that if the same physical page is mapped into two
-> > different virtual addresses but the two addresses are equal, modulo
-> > SHMLBA, then the L1 cache sees the equivalency and you can't get
-> > inequivalent cache aliases for the page (two writes to the two different
-> > addresses producing two separately dirty cache lines which can never
-> > resolve).  This means that the virtual addresses of all shared mappings
-> > have to be equal modulo SHMLBA for the caches not to alias.
-> 
-> With this you define SHMLBA to be the representative number which defines
-> what the current cache equivalency stride of the kernel is, *and* which then can
-> be used by userspace. I think this is a misinterpretation of SHMLBA (or at
-> least a parisc-specific interpretation of SHMLBA), which is not like how it
-> is used on other architectures with similar limitations.
-> Userspace should not know the kernel/architecture specifics. Instead they
-> should try to mmap() memory somewhere (e.g. 4KB aligned) and if they need shared mappings then
-> kernel/glibc will return a corrected mapping address (modulo 4MB).
-> I think this is important, since most userspace programs usually try to mmap at
-> a multiple of SHMLBA with which we then run very soon out of userspace (with SHMLBA=4MB).
-> This has been the issue with localedef in glibc (a strange coding which tries
-> to be platform-specific with mmap-calculation). Because of that in the end
-> it turned out to be best for parisc to have SHMLBA defined to 4kb (and not 4MB).
-> 
-> So, your statement above is correct, I would just not use "SHMLBA" in this term,
-> but maybe "KERNEL_SHMLBA" instead.
+As Al Viro said:
 
-Um, no, SHMLBA comes from the SYS-V IPC primitives.  They were stupid
-enough to allow the user pick the address of the region of shared
-memory, so the user had to know these architectural details and SHMLBA
-encodes them (man shmat will give you the gory details).
+we are getting well-meaning folks who try to check that return value,
+again and again, getting it wrong every time.   Typical idiocies:
+        * return some kind of error out of ->show() on overflows.  Pointless
+*and* wrong - only hard errors (== fail read(2) with that) should be
+reported that way; the caller does detect overflow and retires with bigger
+buffer just fine.
+        * keep checking it after every sodding call of seq_...(), screwing
+the cleanups up more often than not.  Pointless, unless you are doing some
+seriously expensive calculations to produce something you are going to print.
+seq_...() are no-ops in case when overflow has already happened.
 
-For mmap, we can mostly do the right thing in the kernel, except for
-MAP_FIXED, where the user has to know what they're doing again.
+seq_has_overflowed() is only for situations when you really want to skip
+a serious amount of work generating the data that would end up being
+discarded and recalculated again when the caller grabs a bigger buffer and
+calls you again.  And more often than not it's an indication of ->show()
+trying to do the work of iterator - e.g. when you have single_open() with
+->show() printing the entire hash table of some sort all in one record.
 
-For the cases the user thinks they know best, we can't avoid giving out
-the knowledge somehow, because inequivalent aliases in writeable
-mappings will HPMC a system.  We could be more relaxed about
-inequivalent aliases in read only mappings (say shared libraries), but
-the consequence of that is an explosion in the use of cache space, so we
-would want some libraries (like glibc) with many shared copies to obey
-SHMLBA.
+Most of the time checking return value of seq_...() is better replaced with
+not doing that.  And "must check return value and Do Something(tm)" is too
+strong habit for enough people to cause recurring trouble.
 
-James
+Joe Perches (27):
+  staging: lustre: Convert "return seq_printf(...)" uses
+  staging: lustre: Convert seq_ hash functions to return void
+  staging: lustre: Convert uses of "int rc = seq_printf(...)"
+  staging: lustre: Convert remaining uses of "= seq_printf(...)"
+  x86: mtrr: if: Remove use of seq_printf return value
+  power: wakeup: Remove use of seq_printf return value
+  ipmi: Remove use of seq_printf return value
+  rtc: Remove use of seq_printf return value
+  ipc: Remove use of seq_printf return value
+  pxa27x_udc: Remove use of seq_printf return value
+  microblaze: mb: Remove use of seq_printf return value
+  nios2: cpuinfo: Remove use of seq_printf return value
+  ARM: plat-pxa: Remove use of seq_printf return value
+  openrisc: Remove use of seq_printf return value
+  cris: Remove use of seq_printf return value
+  mfd: ab8500-debugfs: Remove use of seq_printf return value
+  staging: i2o: Remove use of seq_printf return value
+  staging: rtl8192x: Remove use of seq_printf return value
+  s390: Remove use of seq_printf return value
+  i8k: Remove use of seq_printf return value
+  watchdog: bcm281xx: Remove use of seq_printf return value
+  proc: Remove use of seq_printf return value
+  cgroup: Remove use of seq_printf return value
+  tracing: Remove use of seq_printf return value
+  lru_cache: Remove use of seq_printf return value
+  parisc: Remove use of seq_printf return value
+  regulator: dbx500: Remove use of seq_puts/seq_printf return value
 
+ arch/arm/plat-pxa/dma.c                            | 111 ++++++------
+ arch/cris/arch-v10/kernel/setup.c                  |  58 +++---
+ arch/cris/arch-v32/kernel/setup.c                  |  62 +++----
+ arch/microblaze/kernel/cpu/mb.c                    | 149 ++++++++--------
+ arch/nios2/kernel/cpuinfo.c                        |  77 ++++----
+ arch/openrisc/kernel/setup.c                       |  50 +++---
+ arch/s390/pci/pci_debug.c                          |   6 +-
+ arch/x86/kernel/cpu/mtrr/if.c                      |  12 +-
+ drivers/base/power/wakeup.c                        |  16 +-
+ drivers/char/i8k.c                                 |  16 +-
+ drivers/char/ipmi/ipmi_msghandler.c                |  12 +-
+ drivers/char/ipmi/ipmi_si_intf.c                   |  26 +--
+ drivers/char/ipmi/ipmi_ssif.c                      |   4 +-
+ drivers/mfd/ab8500-debugfs.c                       | 196 +++++++++++++--------
+ drivers/parisc/ccio-dma.c                          |  54 +++---
+ drivers/parisc/sba_iommu.c                         |  86 +++++----
+ drivers/regulator/dbx500-prcmu.c                   |  32 +---
+ drivers/rtc/rtc-cmos.c                             |  36 ++--
+ drivers/rtc/rtc-ds1305.c                           |   6 +-
+ drivers/rtc/rtc-mrst.c                             |  16 +-
+ drivers/rtc/rtc-tegra.c                            |   4 +-
+ drivers/s390/cio/blacklist.c                       |  12 +-
+ drivers/staging/i2o/i2o_proc.c                     |  18 +-
+ .../lustre/include/linux/libcfs/libcfs_hash.h      |   4 +-
+ drivers/staging/lustre/lustre/fid/lproc_fid.c      |  23 ++-
+ drivers/staging/lustre/lustre/libcfs/hash.c        |  13 +-
+ drivers/staging/lustre/lustre/llite/lproc_llite.c  | 117 ++++++------
+ drivers/staging/lustre/lustre/lmv/lproc_lmv.c      |  18 +-
+ drivers/staging/lustre/lustre/lov/lproc_lov.c      |  30 ++--
+ drivers/staging/lustre/lustre/mdc/lproc_mdc.c      |   6 +-
+ .../lustre/lustre/obdclass/linux/linux-module.c    |  38 ++--
+ .../lustre/lustre/obdclass/lprocfs_status.c        | 108 ++++++------
+ drivers/staging/lustre/lustre/obdclass/lu_object.c |  25 +--
+ drivers/staging/lustre/lustre/osc/lproc_osc.c      |  67 +++----
+ .../staging/lustre/lustre/ptlrpc/lproc_ptlrpc.c    |  25 +--
+ drivers/staging/lustre/lustre/ptlrpc/sec_bulk.c    |  82 +++++----
+ drivers/staging/rtl8192e/rtllib_module.c           |   4 +-
+ .../staging/rtl8192u/ieee80211/ieee80211_module.c  |   4 +-
+ drivers/usb/gadget/udc/pxa27x_udc.c                | 132 +++++++-------
+ drivers/watchdog/bcm_kona_wdt.c                    |  27 +--
+ fs/proc/array.c                                    |   4 +-
+ fs/proc/base.c                                     |  82 +++++----
+ ipc/msg.c                                          |  34 ++--
+ ipc/sem.c                                          |  26 +--
+ ipc/shm.c                                          |  42 ++---
+ ipc/util.c                                         |   6 +-
+ kernel/cgroup.c                                    |   4 +-
+ kernel/trace/trace_stack.c                         |   4 +-
+ lib/lru_cache.c                                    |   9 +-
+ 49 files changed, 1050 insertions(+), 943 deletions(-)
+
+-- 
+2.1.2
 
