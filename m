@@ -1,125 +1,262 @@
 From: Joe Perches <joe@perches.com>
-Subject: [PATCH 00/27] Convert seq_<foo> output calls to return void
-Date: Sat, 21 Feb 2015 18:53:27 -0800
-Message-ID: <cover.1424573328.git.joe@perches.com>
-Cc: linux-cris-kernel@axis.com, nios2-dev@lists.rocketboards.org,
-	linux@lists.openrisc.net, devel@driverdev.osuosl.org,
-	HPDD-discuss@lists.01.org, linux-usb@vger.kernel.org
+Subject: [PATCH 26/27] parisc: Remove use of seq_printf return value
+Date: Sat, 21 Feb 2015 18:53:53 -0800
+Message-ID: <6d1a41cdfcec61f6a74e5cbc067be5ee94b2ac9f.1424573328.git.joe@perches.com>
+References: <cover.1424573328.git.joe@perches.com>
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
 To: Andrew Morton <akpm@linux-foundation.org>,
-	linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-pm@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	rtc-linux@googlegroups.com, linux-tegra@vger.kernel.org,
-	linux-watchdog@vger.kernel.org, cgroups@vger.kernel.org,
-	drbd-user@lists.linbit.com
-Return-path: <linux-pm-owner@vger.kernel.org>
-List-ID: <linux-pm.vger.kernel.org>
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1424573328.git.joe@perches.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-As Al Viro said:
+The seq_printf return value, because it's frequently misused,
+will eventually be converted to void.
 
-we are getting well-meaning folks who try to check that return value,
-again and again, getting it wrong every time.   Typical idiocies:
-        * return some kind of error out of ->show() on overflows.  Pointless
-*and* wrong - only hard errors (== fail read(2) with that) should be
-reported that way; the caller does detect overflow and retires with bigger
-buffer just fine.
-        * keep checking it after every sodding call of seq_...(), screwing
-the cleanups up more often than not.  Pointless, unless you are doing some
-seriously expensive calculations to produce something you are going to print.
-seq_...() are no-ops in case when overflow has already happened.
+See: commit 1f33c41c03da ("seq_file: Rename seq_overflow() to
+     seq_has_overflowed() and make public")
 
-seq_has_overflowed() is only for situations when you really want to skip
-a serious amount of work generating the data that would end up being
-discarded and recalculated again when the caller grabs a bigger buffer and
-calls you again.  And more often than not it's an indication of ->show()
-trying to do the work of iterator - e.g. when you have single_open() with
-->show() printing the entire hash table of some sort all in one record.
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/parisc/ccio-dma.c  | 54 ++++++++++++++---------------
+ drivers/parisc/sba_iommu.c | 86 ++++++++++++++++++++++------------------------
+ 2 files changed, 68 insertions(+), 72 deletions(-)
 
-Most of the time checking return value of seq_...() is better replaced with
-not doing that.  And "must check return value and Do Something(tm)" is too
-strong habit for enough people to cause recurring trouble.
-
-Joe Perches (27):
-  staging: lustre: Convert "return seq_printf(...)" uses
-  staging: lustre: Convert seq_ hash functions to return void
-  staging: lustre: Convert uses of "int rc = seq_printf(...)"
-  staging: lustre: Convert remaining uses of "= seq_printf(...)"
-  x86: mtrr: if: Remove use of seq_printf return value
-  power: wakeup: Remove use of seq_printf return value
-  ipmi: Remove use of seq_printf return value
-  rtc: Remove use of seq_printf return value
-  ipc: Remove use of seq_printf return value
-  pxa27x_udc: Remove use of seq_printf return value
-  microblaze: mb: Remove use of seq_printf return value
-  nios2: cpuinfo: Remove use of seq_printf return value
-  ARM: plat-pxa: Remove use of seq_printf return value
-  openrisc: Remove use of seq_printf return value
-  cris: Remove use of seq_printf return value
-  mfd: ab8500-debugfs: Remove use of seq_printf return value
-  staging: i2o: Remove use of seq_printf return value
-  staging: rtl8192x: Remove use of seq_printf return value
-  s390: Remove use of seq_printf return value
-  i8k: Remove use of seq_printf return value
-  watchdog: bcm281xx: Remove use of seq_printf return value
-  proc: Remove use of seq_printf return value
-  cgroup: Remove use of seq_printf return value
-  tracing: Remove use of seq_printf return value
-  lru_cache: Remove use of seq_printf return value
-  parisc: Remove use of seq_printf return value
-  regulator: dbx500: Remove use of seq_puts/seq_printf return value
-
- arch/arm/plat-pxa/dma.c                            | 111 ++++++------
- arch/cris/arch-v10/kernel/setup.c                  |  58 +++---
- arch/cris/arch-v32/kernel/setup.c                  |  62 +++----
- arch/microblaze/kernel/cpu/mb.c                    | 149 ++++++++--------
- arch/nios2/kernel/cpuinfo.c                        |  77 ++++----
- arch/openrisc/kernel/setup.c                       |  50 +++---
- arch/s390/pci/pci_debug.c                          |   6 +-
- arch/x86/kernel/cpu/mtrr/if.c                      |  12 +-
- drivers/base/power/wakeup.c                        |  16 +-
- drivers/char/i8k.c                                 |  16 +-
- drivers/char/ipmi/ipmi_msghandler.c                |  12 +-
- drivers/char/ipmi/ipmi_si_intf.c                   |  26 +--
- drivers/char/ipmi/ipmi_ssif.c                      |   4 +-
- drivers/mfd/ab8500-debugfs.c                       | 196 +++++++++++++--------
- drivers/parisc/ccio-dma.c                          |  54 +++---
- drivers/parisc/sba_iommu.c                         |  86 +++++----
- drivers/regulator/dbx500-prcmu.c                   |  32 +---
- drivers/rtc/rtc-cmos.c                             |  36 ++--
- drivers/rtc/rtc-ds1305.c                           |   6 +-
- drivers/rtc/rtc-mrst.c                             |  16 +-
- drivers/rtc/rtc-tegra.c                            |   4 +-
- drivers/s390/cio/blacklist.c                       |  12 +-
- drivers/staging/i2o/i2o_proc.c                     |  18 +-
- .../lustre/include/linux/libcfs/libcfs_hash.h      |   4 +-
- drivers/staging/lustre/lustre/fid/lproc_fid.c      |  23 ++-
- drivers/staging/lustre/lustre/libcfs/hash.c        |  13 +-
- drivers/staging/lustre/lustre/llite/lproc_llite.c  | 117 ++++++------
- drivers/staging/lustre/lustre/lmv/lproc_lmv.c      |  18 +-
- drivers/staging/lustre/lustre/lov/lproc_lov.c      |  30 ++--
- drivers/staging/lustre/lustre/mdc/lproc_mdc.c      |   6 +-
- .../lustre/lustre/obdclass/linux/linux-module.c    |  38 ++--
- .../lustre/lustre/obdclass/lprocfs_status.c        | 108 ++++++------
- drivers/staging/lustre/lustre/obdclass/lu_object.c |  25 +--
- drivers/staging/lustre/lustre/osc/lproc_osc.c      |  67 +++----
- .../staging/lustre/lustre/ptlrpc/lproc_ptlrpc.c    |  25 +--
- drivers/staging/lustre/lustre/ptlrpc/sec_bulk.c    |  82 +++++----
- drivers/staging/rtl8192e/rtllib_module.c           |   4 +-
- .../staging/rtl8192u/ieee80211/ieee80211_module.c  |   4 +-
- drivers/usb/gadget/udc/pxa27x_udc.c                | 132 +++++++-------
- drivers/watchdog/bcm_kona_wdt.c                    |  27 +--
- fs/proc/array.c                                    |   4 +-
- fs/proc/base.c                                     |  82 +++++----
- ipc/msg.c                                          |  34 ++--
- ipc/sem.c                                          |  26 +--
- ipc/shm.c                                          |  42 ++---
- ipc/util.c                                         |   6 +-
- kernel/cgroup.c                                    |   4 +-
- kernel/trace/trace_stack.c                         |   4 +-
- lib/lru_cache.c                                    |   9 +-
- 49 files changed, 1050 insertions(+), 943 deletions(-)
-
+diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
+index 8b490d7..6bc1680 100644
+--- a/drivers/parisc/ccio-dma.c
++++ b/drivers/parisc/ccio-dma.c
+@@ -1021,7 +1021,6 @@ static struct hppa_dma_ops ccio_ops = {
+ #ifdef CONFIG_PROC_FS
+ static int ccio_proc_info(struct seq_file *m, void *p)
+ {
+-	int len = 0;
+ 	struct ioc *ioc = ioc_list;
+ 
+ 	while (ioc != NULL) {
+@@ -1031,22 +1030,22 @@ static int ccio_proc_info(struct seq_file *m, void *p)
+ 		int j;
+ #endif
+ 
+-		len += seq_printf(m, "%s\n", ioc->name);
++		seq_printf(m, "%s\n", ioc->name);
+ 		
+-		len += seq_printf(m, "Cujo 2.0 bug    : %s\n",
+-				  (ioc->cujo20_bug ? "yes" : "no"));
++		seq_printf(m, "Cujo 2.0 bug    : %s\n",
++			   (ioc->cujo20_bug ? "yes" : "no"));
+ 		
+-		len += seq_printf(m, "IO PDIR size    : %d bytes (%d entries)\n",
+-			       total_pages * 8, total_pages);
++		seq_printf(m, "IO PDIR size    : %d bytes (%d entries)\n",
++			   total_pages * 8, total_pages);
+ 
+ #ifdef CCIO_COLLECT_STATS
+-		len += seq_printf(m, "IO PDIR entries : %ld free  %ld used (%d%%)\n",
+-				  total_pages - ioc->used_pages, ioc->used_pages,
+-				  (int)(ioc->used_pages * 100 / total_pages));
++		seq_printf(m, "IO PDIR entries : %ld free  %ld used (%d%%)\n",
++			   total_pages - ioc->used_pages, ioc->used_pages,
++			   (int)(ioc->used_pages * 100 / total_pages));
+ #endif
+ 
+-		len += seq_printf(m, "Resource bitmap : %d bytes (%d pages)\n", 
+-				  ioc->res_size, total_pages);
++		seq_printf(m, "Resource bitmap : %d bytes (%d pages)\n",
++			   ioc->res_size, total_pages);
+ 
+ #ifdef CCIO_COLLECT_STATS
+ 		min = max = ioc->avg_search[0];
+@@ -1058,26 +1057,26 @@ static int ccio_proc_info(struct seq_file *m, void *p)
+ 				min = ioc->avg_search[j];
+ 		}
+ 		avg /= CCIO_SEARCH_SAMPLE;
+-		len += seq_printf(m, "  Bitmap search : %ld/%ld/%ld (min/avg/max CPU Cycles)\n",
+-				  min, avg, max);
++		seq_printf(m, "  Bitmap search : %ld/%ld/%ld (min/avg/max CPU Cycles)\n",
++			   min, avg, max);
+ 
+-		len += seq_printf(m, "pci_map_single(): %8ld calls  %8ld pages (avg %d/1000)\n",
+-				  ioc->msingle_calls, ioc->msingle_pages,
+-				  (int)((ioc->msingle_pages * 1000)/ioc->msingle_calls));
++		seq_printf(m, "pci_map_single(): %8ld calls  %8ld pages (avg %d/1000)\n",
++			   ioc->msingle_calls, ioc->msingle_pages,
++			   (int)((ioc->msingle_pages * 1000)/ioc->msingle_calls));
+ 
+ 		/* KLUGE - unmap_sg calls unmap_single for each mapped page */
+ 		min = ioc->usingle_calls - ioc->usg_calls;
+ 		max = ioc->usingle_pages - ioc->usg_pages;
+-		len += seq_printf(m, "pci_unmap_single: %8ld calls  %8ld pages (avg %d/1000)\n",
+-				  min, max, (int)((max * 1000)/min));
++		seq_printf(m, "pci_unmap_single: %8ld calls  %8ld pages (avg %d/1000)\n",
++			   min, max, (int)((max * 1000)/min));
+  
+-		len += seq_printf(m, "pci_map_sg()    : %8ld calls  %8ld pages (avg %d/1000)\n",
+-				  ioc->msg_calls, ioc->msg_pages,
+-				  (int)((ioc->msg_pages * 1000)/ioc->msg_calls));
++		seq_printf(m, "pci_map_sg()    : %8ld calls  %8ld pages (avg %d/1000)\n",
++			   ioc->msg_calls, ioc->msg_pages,
++			   (int)((ioc->msg_pages * 1000)/ioc->msg_calls));
+ 
+-		len += seq_printf(m, "pci_unmap_sg()  : %8ld calls  %8ld pages (avg %d/1000)\n\n\n",
+-				  ioc->usg_calls, ioc->usg_pages,
+-				  (int)((ioc->usg_pages * 1000)/ioc->usg_calls));
++		seq_printf(m, "pci_unmap_sg()  : %8ld calls  %8ld pages (avg %d/1000)\n\n\n",
++			   ioc->usg_calls, ioc->usg_pages,
++			   (int)((ioc->usg_pages * 1000)/ioc->usg_calls));
+ #endif	/* CCIO_COLLECT_STATS */
+ 
+ 		ioc = ioc->next;
+@@ -1101,7 +1100,6 @@ static const struct file_operations ccio_proc_info_fops = {
+ 
+ static int ccio_proc_bitmap_info(struct seq_file *m, void *p)
+ {
+-	int len = 0;
+ 	struct ioc *ioc = ioc_list;
+ 
+ 	while (ioc != NULL) {
+@@ -1110,11 +1108,11 @@ static int ccio_proc_bitmap_info(struct seq_file *m, void *p)
+ 
+ 		for (j = 0; j < (ioc->res_size / sizeof(u32)); j++) {
+ 			if ((j & 7) == 0)
+-				len += seq_puts(m, "\n   ");
+-			len += seq_printf(m, "%08x", *res_ptr);
++				seq_puts(m, "\n   ");
++			seq_printf(m, "%08x", *res_ptr);
+ 			res_ptr++;
+ 		}
+-		len += seq_puts(m, "\n\n");
++		seq_puts(m, "\n\n");
+ 		ioc = ioc->next;
+ 		break; /* XXX - remove me */
+ 	}
+diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
+index 1ff1b67..f074712 100644
+--- a/drivers/parisc/sba_iommu.c
++++ b/drivers/parisc/sba_iommu.c
+@@ -1774,37 +1774,35 @@ static int sba_proc_info(struct seq_file *m, void *p)
+ #ifdef SBA_COLLECT_STATS
+ 	unsigned long avg = 0, min, max;
+ #endif
+-	int i, len = 0;
+-
+-	len += seq_printf(m, "%s rev %d.%d\n",
+-		sba_dev->name,
+-		(sba_dev->hw_rev & 0x7) + 1,
+-		(sba_dev->hw_rev & 0x18) >> 3
+-		);
+-	len += seq_printf(m, "IO PDIR size    : %d bytes (%d entries)\n",
+-		(int) ((ioc->res_size << 3) * sizeof(u64)), /* 8 bits/byte */
+-		total_pages);
+-
+-	len += seq_printf(m, "Resource bitmap : %d bytes (%d pages)\n", 
+-		ioc->res_size, ioc->res_size << 3);   /* 8 bits per byte */
+-
+-	len += seq_printf(m, "LMMIO_BASE/MASK/ROUTE %08x %08x %08x\n",
+-		READ_REG32(sba_dev->sba_hpa + LMMIO_DIST_BASE),
+-		READ_REG32(sba_dev->sba_hpa + LMMIO_DIST_MASK),
+-		READ_REG32(sba_dev->sba_hpa + LMMIO_DIST_ROUTE)
+-		);
++	int i;
++
++	seq_printf(m, "%s rev %d.%d\n",
++		   sba_dev->name,
++		   (sba_dev->hw_rev & 0x7) + 1,
++		   (sba_dev->hw_rev & 0x18) >> 3);
++	seq_printf(m, "IO PDIR size    : %d bytes (%d entries)\n",
++		   (int)((ioc->res_size << 3) * sizeof(u64)), /* 8 bits/byte */
++		   total_pages);
++
++	seq_printf(m, "Resource bitmap : %d bytes (%d pages)\n",
++		   ioc->res_size, ioc->res_size << 3);   /* 8 bits per byte */
++
++	seq_printf(m, "LMMIO_BASE/MASK/ROUTE %08x %08x %08x\n",
++		   READ_REG32(sba_dev->sba_hpa + LMMIO_DIST_BASE),
++		   READ_REG32(sba_dev->sba_hpa + LMMIO_DIST_MASK),
++		   READ_REG32(sba_dev->sba_hpa + LMMIO_DIST_ROUTE));
+ 
+ 	for (i=0; i<4; i++)
+-		len += seq_printf(m, "DIR%d_BASE/MASK/ROUTE %08x %08x %08x\n", i,
+-			READ_REG32(sba_dev->sba_hpa + LMMIO_DIRECT0_BASE  + i*0x18),
+-			READ_REG32(sba_dev->sba_hpa + LMMIO_DIRECT0_MASK  + i*0x18),
+-			READ_REG32(sba_dev->sba_hpa + LMMIO_DIRECT0_ROUTE + i*0x18)
+-		);
++		seq_printf(m, "DIR%d_BASE/MASK/ROUTE %08x %08x %08x\n",
++			   i,
++			   READ_REG32(sba_dev->sba_hpa + LMMIO_DIRECT0_BASE  + i*0x18),
++			   READ_REG32(sba_dev->sba_hpa + LMMIO_DIRECT0_MASK  + i*0x18),
++			   READ_REG32(sba_dev->sba_hpa + LMMIO_DIRECT0_ROUTE + i*0x18));
+ 
+ #ifdef SBA_COLLECT_STATS
+-	len += seq_printf(m, "IO PDIR entries : %ld free  %ld used (%d%%)\n",
+-		total_pages - ioc->used_pages, ioc->used_pages,
+-		(int) (ioc->used_pages * 100 / total_pages));
++	seq_printf(m, "IO PDIR entries : %ld free  %ld used (%d%%)\n",
++		   total_pages - ioc->used_pages, ioc->used_pages,
++		   (int)(ioc->used_pages * 100 / total_pages));
+ 
+ 	min = max = ioc->avg_search[0];
+ 	for (i = 0; i < SBA_SEARCH_SAMPLE; i++) {
+@@ -1813,26 +1811,26 @@ static int sba_proc_info(struct seq_file *m, void *p)
+ 		if (ioc->avg_search[i] < min) min = ioc->avg_search[i];
+ 	}
+ 	avg /= SBA_SEARCH_SAMPLE;
+-	len += seq_printf(m, "  Bitmap search : %ld/%ld/%ld (min/avg/max CPU Cycles)\n",
+-		min, avg, max);
++	seq_printf(m, "  Bitmap search : %ld/%ld/%ld (min/avg/max CPU Cycles)\n",
++		   min, avg, max);
+ 
+-	len += seq_printf(m, "pci_map_single(): %12ld calls  %12ld pages (avg %d/1000)\n",
+-		ioc->msingle_calls, ioc->msingle_pages,
+-		(int) ((ioc->msingle_pages * 1000)/ioc->msingle_calls));
++	seq_printf(m, "pci_map_single(): %12ld calls  %12ld pages (avg %d/1000)\n",
++		   ioc->msingle_calls, ioc->msingle_pages,
++		   (int)((ioc->msingle_pages * 1000)/ioc->msingle_calls));
+ 
+ 	/* KLUGE - unmap_sg calls unmap_single for each mapped page */
+ 	min = ioc->usingle_calls;
+ 	max = ioc->usingle_pages - ioc->usg_pages;
+-	len += seq_printf(m, "pci_unmap_single: %12ld calls  %12ld pages (avg %d/1000)\n",
+-		min, max, (int) ((max * 1000)/min));
++	seq_printf(m, "pci_unmap_single: %12ld calls  %12ld pages (avg %d/1000)\n",
++		   min, max, (int)((max * 1000)/min));
+ 
+-	len += seq_printf(m, "pci_map_sg()    : %12ld calls  %12ld pages (avg %d/1000)\n",
+-		ioc->msg_calls, ioc->msg_pages, 
+-		(int) ((ioc->msg_pages * 1000)/ioc->msg_calls));
++	seq_printf(m, "pci_map_sg()    : %12ld calls  %12ld pages (avg %d/1000)\n",
++		   ioc->msg_calls, ioc->msg_pages,
++		   (int)((ioc->msg_pages * 1000)/ioc->msg_calls));
+ 
+-	len += seq_printf(m, "pci_unmap_sg()  : %12ld calls  %12ld pages (avg %d/1000)\n",
+-		ioc->usg_calls, ioc->usg_pages,
+-		(int) ((ioc->usg_pages * 1000)/ioc->usg_calls));
++	seq_printf(m, "pci_unmap_sg()  : %12ld calls  %12ld pages (avg %d/1000)\n",
++		   ioc->usg_calls, ioc->usg_pages,
++		   (int)((ioc->usg_pages * 1000)/ioc->usg_calls));
+ #endif
+ 
+ 	return 0;
+@@ -1858,14 +1856,14 @@ sba_proc_bitmap_info(struct seq_file *m, void *p)
+ 	struct sba_device *sba_dev = sba_list;
+ 	struct ioc *ioc = &sba_dev->ioc[0];	/* FIXME: Multi-IOC support! */
+ 	unsigned int *res_ptr = (unsigned int *)ioc->res_map;
+-	int i, len = 0;
++	int i;
+ 
+ 	for (i = 0; i < (ioc->res_size/sizeof(unsigned int)); ++i, ++res_ptr) {
+ 		if ((i & 7) == 0)
+-			len += seq_printf(m, "\n   ");
+-		len += seq_printf(m, " %08x", *res_ptr);
++			seq_puts(m, "\n   ");
++		seq_printf(m, " %08x", *res_ptr);
+ 	}
+-	len += seq_printf(m, "\n");
++	seq_putc(m, '\n');
+ 
+ 	return 0;
+ }
 -- 
 2.1.2
-
