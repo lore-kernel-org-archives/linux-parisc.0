@@ -1,59 +1,125 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: 4.0-rc1/PARISC: BUG: non-zero nr_pmds on freeing mm
-Date: Wed, 25 Feb 2015 14:13:58 -0800
-Message-ID: <20150225141358.8bd74b14c6e1ae039d25dc1c@linux-foundation.org>
-References: <20150224225454.GA14117@fuloong-minipc.musicnaut.iki.fi>
-	<20150225202130.GA31491@node.dhcp.inet.fi>
-	<20150225123048.a9c97ea726f747e029b4688a@linux-foundation.org>
-	<20150225204743.GA31668@node.dhcp.inet.fi>
-	<20150225133140.56cfb479cd2f4461ed4fa6d5@linux-foundation.org>
-	<20150225215757.GA23672@node.dhcp.inet.fi>
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: [PATCH v3 22/30] PCI/Parisc: Use pci_scan_root_bus() for simplicity
+Date: Thu, 26 Feb 2015 09:29:39 +0800
+Message-ID: <1424914187-21027-23-git-send-email-wangyijing@huawei.com>
+References: <1424914187-21027-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	linux-parisc@vger.kernel.org, linux-mm@kvack.org
-To: "Kirill A. Shutemov" <kirill@shutemov.name>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20150225215757.GA23672@node.dhcp.inet.fi>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, <linux-pci@vger.kernel.org>,
+	Yinghai Lu <yinghai@kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	Marc Zyngier <marc.zyngier@arm.com>,
+	<linux-arm-kernel@lists.infradead.org>,
+	Russell King <linux@arm.linux.org.uk>, <x86@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Rusty Russell <rusty@rustcorp.com.au>,
+	Tony Luck <tony.luck@intel.com>, <linux-ia64@vger.kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	"Guan Xuetao" <gxt@mprc.pku.edu.cn>, <linux-alpha@vger.kernel.org>,
+	<linux-m68k@lists.linux-m68k.org>, Liviu Dudau <liviu@dudau.co.uk>,
+	"Arnd Bergmann" <arnd@arndb.de>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	"Yijing Wang" <wangyijing@huawei.com>,
+	Yijing Wang <wangyijing0307@gmail.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	<linux-parisc@vger.kernel.org>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Return-path: <linux-pci-owner@vger.kernel.org>
+In-Reply-To: <1424914187-21027-1-git-send-email-wangyijing@huawei.com>
+List-ID: <linux-pci.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 25 Feb 2015 23:57:57 +0200 "Kirill A. Shutemov" <kirill@shutemov.name> wrote:
+From: Yijing Wang <wangyijing0307@gmail.com>
 
-> On Wed, Feb 25, 2015 at 01:31:40PM -0800, Andrew Morton wrote:
-> > On Wed, 25 Feb 2015 22:47:43 +0200 "Kirill A. Shutemov" <kirill@shutemov.name> wrote:
-> > 
-> > > > > If not, I can prepare a patchset which only adds missing
-> > > > > __PAGETABLE_PUD_FOLDED and __PAGETABLE_PMD_FOLDED.
-> > > > 
-> > > > Something simple would be preferred, but I don't know how much simpler
-> > > > the above would be?
-> > > 
-> > > Not much simplier: __PAGETABLE_PMD_FOLDED is missing in frv, m32r, m68k,
-> > > mn10300, parisc and s390.
-> > 
-> > I don't really know what's going on here.  Let's rewind a bit, please. 
-> > What is the bug, what causes it, which commit caused it and why the
-> > heck does it require a massive patchset to fix 4.0?
-> 
-> PMD accounting happens in __pmd_alloc() and free_pmd_range(). PMD
-> accounting only makes sense on architectures with 3 or more page tables
-> levels. We use __PAGETABLE_PMD_FOLDED to check whether the PMD page table
-> level exists.
-> 
-> Unfortunately, some architectures don't use <asm-generic/pgtable-nopmd.h>
-> to indicate that PMD level doesn't exists and fold it in a custom way.
-> Some of them don't define __PAGETABLE_PMD_FOLDED as pgtable-nopmd.h does.
-> 
-> Missing __PAGETABLE_PMD_FOLDED causes undeflow of mm->nr_pmds:
-> __pmd_alloc() is never called, but we decrement mm->nr_pmds in
-> free_pmd_range().
-> 
-> These architecures need to be fixed to define __PAGETABLE_PMD_FOLDED too.
-> 
-> I can do in one patch if you want. Or split per-arch. After that
-> CONFIG_PGTABLE_LEVELS patchset will require rebasing.
+Now pci_bus_add_devices() has been ripped out
+from pci_scan_root_bus(), we could use pci_scan_root_bus()
+instead of pci_create_root_bus() + pci_scan_child_bus()
+for simplicity. We could also remove the pci bus
+resource(dino_current_bus,255) and pci_bus_update_busn_res_end(),
+because pci_scan_root_bus() would do the same thing.
 
-I guess one patch will be OK - arch maintainers will be able
-review/apply/test that easily enough.
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
+CC: linux-parisc@vger.kernel.org
+---
+ drivers/parisc/dino.c    |   11 ++---------
+ drivers/parisc/lba_pci.c |    7 ++-----
+ 2 files changed, 4 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+index a0580af..e5ee339 100644
+--- a/drivers/parisc/dino.c
++++ b/drivers/parisc/dino.c
+@@ -977,15 +977,11 @@ static int __init dino_probe(struct parisc_device *dev)
+ 	if (dino_dev->hba.gmmio_space.flags)
+ 		pci_add_resource(&resources, &dino_dev->hba.gmmio_space);
+ 
+-	dino_dev->hba.bus_num.start = dino_current_bus;
+-	dino_dev->hba.bus_num.end = 255;
+-	dino_dev->hba.bus_num.flags = IORESOURCE_BUS;
+-	pci_add_resource(&resources, &dino_dev->hba.bus_num);
+ 	/*
+ 	** It's not used to avoid chicken/egg problems
+ 	** with configuration accessor functions.
+ 	*/
+-	dino_dev->hba.hba_bus = bus = pci_create_root_bus(&dev->dev,
++	dino_dev->hba.hba_bus = bus = pci_scan_root_bus(&dev->dev,
+ 			 dino_current_bus, &dino_cfg_ops, NULL, &resources);
+ 	if (!bus) {
+ 		printk(KERN_ERR "ERROR: failed to scan PCI bus on %s (duplicate bus number %d?)\n",
+@@ -996,13 +992,10 @@ static int __init dino_probe(struct parisc_device *dev)
+ 		return 0;
+ 	}
+ 
+-	max = pci_scan_child_bus(bus);
+-	pci_bus_update_busn_res_end(bus, max);
+-
+ 	/* This code *depends* on scanning being single threaded
+ 	 * if it isn't, this global bus number count will fail
+ 	 */
+-	dino_current_bus = max + 1;
++	dino_current_bus = bus->busn_res.end + 1;
+ 	pci_bus_assign_resources(bus);
+ 	pci_bus_add_devices(bus);
+ 	return 0;
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index dceb9dd..ba6daec 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -1422,7 +1422,6 @@ lba_driver_probe(struct parisc_device *dev)
+ 	void *tmp_obj;
+ 	char *version;
+ 	void __iomem *addr = ioremap_nocache(dev->hpa.start, 4096);
+-	int max;
+ 
+ 	/* Read HW Rev First */
+ 	func_class = READ_REG32(addr + LBA_FCLASS);
+@@ -1563,15 +1562,13 @@ lba_driver_probe(struct parisc_device *dev)
+ 
+ 	dev->dev.platform_data = lba_dev;
+ 	lba_bus = lba_dev->hba.hba_bus =
+-		pci_create_root_bus(&dev->dev, lba_dev->hba.bus_num.start,
++		pci_scan_root_bus(&dev->dev, lba_dev->hba.bus_num.start,
+ 				    cfg_ops, NULL, &resources);
+ 	if (!lba_bus) {
+ 		pci_free_resource_list(&resources);
+ 		return 0;
+ 	}
+ 
+-	max = pci_scan_child_bus(lba_bus);
+-
+ 	/* This is in lieu of calling pci_assign_unassigned_resources() */
+ 	if (is_pdc_pat()) {
+ 		/* assign resources to un-initialized devices */
+@@ -1599,7 +1596,7 @@ lba_driver_probe(struct parisc_device *dev)
+ 		lba_dev->flags |= LBA_FLAG_SKIP_PROBE;
+ 	}
+ 
+-	lba_next_bus = max + 1;
++	lba_next_bus = pci_bus_child_max_busnr(lba_bus) + 1;
+ 	pci_bus_add_devices(lba_bus);
+ 
+ 	/* Whew! Finally done! Tell services we got this one covered. */
+-- 
+1.7.1
