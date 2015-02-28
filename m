@@ -1,125 +1,319 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v4 22/30] PCI/Parisc: Use pci_scan_root_bus() for simplicity
-Date: Thu, 26 Feb 2015 16:12:16 +0800
-Message-ID: <1424938344-4017-23-git-send-email-wangyijing@huawei.com>
-References: <1424938344-4017-1-git-send-email-wangyijing@huawei.com>
+From: Kees Cook <keescook@chromium.org>
+Subject: [PATCH] seccomp: switch to using asm-generic for seccomp.h
+Date: Fri, 27 Feb 2015 16:52:29 -0800
+Message-ID: <20150228005228.GA23638@www.outflux.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, <linux-pci@vger.kernel.org>,
-	Yinghai Lu <yinghai@kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	Marc Zyngier <marc.zyngier@arm.com>,
-	<linux-arm-kernel@lists.infradead.org>,
-	Russell King <linux@arm.linux.org.uk>, <x86@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Rusty Russell <rusty@rustcorp.com.au>,
-	Tony Luck <tony.luck@intel.com>, <linux-ia64@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	"Guan Xuetao" <gxt@mprc.pku.edu.cn>, <linux-alpha@vger.kernel.org>,
-	<linux-m68k@lists.linux-m68k.org>, Liviu Dudau <liviu@dudau.co.uk>,
-	"Arnd Bergmann" <arnd@arndb.de>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	"Yijing Wang" <wangyijing@huawei.com>,
-	Yijing Wang <wangyijing0307@gmail.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	<linux-parisc@vger.kernel.org>
-To: Bjorn Helgaas <bhelgaas@google.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1424938344-4017-1-git-send-email-wangyijing@huawei.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-kernel@vger.kernel.org,
+        AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Russell King <linux@arm.linux.org.uk>,
+        Michal Simek <monstr@monstr.eu>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        linux390@de.ibm.com, "David S. Miller" <davem@davemloft.net>,
+        James Hogan <james.hogan@imgtec.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.o
+To: akpm@linux-foundation.org
+Return-path: <linux-mips-bounce@linux-mips.org>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-From: Yijing Wang <wangyijing0307@gmail.com>
+Most architectures don't need to do anything special for the strict
+seccomp syscall entries. Remove the redundant headers and reduce the
+others.
 
-Now pci_bus_add_devices() has been ripped out
-from pci_scan_root_bus(), we could use pci_scan_root_bus()
-instead of pci_create_root_bus() + pci_scan_child_bus()
-for simplicity. We could also remove the pci bus
-resource(dino_current_bus,255) and pci_bus_update_busn_res_end(),
-because pci_scan_root_bus() would do the same thing.
-
-Signed-off-by: Yijing Wang <wangyijing@huawei.com>
-CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
-CC: linux-parisc@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/parisc/dino.c    |   11 ++---------
- drivers/parisc/lba_pci.c |    7 ++-----
- 2 files changed, 4 insertions(+), 14 deletions(-)
+ arch/arm/include/asm/seccomp.h          | 12 +-----------
+ arch/microblaze/include/asm/seccomp.h   | 17 +----------------
+ arch/mips/include/asm/seccomp.h         |  7 ++-----
+ arch/parisc/include/asm/seccomp.h       | 17 +----------------
+ arch/powerpc/include/asm/seccomp.h      |  1 +
+ arch/powerpc/include/uapi/asm/Kbuild    |  1 -
+ arch/powerpc/include/uapi/asm/seccomp.h | 16 ----------------
+ arch/s390/include/asm/seccomp.h         | 17 +----------------
+ arch/sh/include/asm/seccomp.h           | 11 +----------
+ arch/sparc/include/asm/seccomp.h        | 16 +---------------
+ arch/x86/include/asm/seccomp.h          | 21 ++++++++++++++++++---
+ arch/x86/include/asm/seccomp_32.h       | 11 -----------
+ arch/x86/include/asm/seccomp_64.h       | 17 -----------------
+ 13 files changed, 27 insertions(+), 137 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/seccomp.h
+ delete mode 100644 arch/powerpc/include/uapi/asm/seccomp.h
+ delete mode 100644 arch/x86/include/asm/seccomp_32.h
+ delete mode 100644 arch/x86/include/asm/seccomp_64.h
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index a0580af..e5ee339 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -977,15 +977,11 @@ static int __init dino_probe(struct parisc_device *dev)
- 	if (dino_dev->hba.gmmio_space.flags)
- 		pci_add_resource(&resources, &dino_dev->hba.gmmio_space);
- 
--	dino_dev->hba.bus_num.start = dino_current_bus;
--	dino_dev->hba.bus_num.end = 255;
--	dino_dev->hba.bus_num.flags = IORESOURCE_BUS;
--	pci_add_resource(&resources, &dino_dev->hba.bus_num);
- 	/*
- 	** It's not used to avoid chicken/egg problems
- 	** with configuration accessor functions.
- 	*/
--	dino_dev->hba.hba_bus = bus = pci_create_root_bus(&dev->dev,
-+	dino_dev->hba.hba_bus = bus = pci_scan_root_bus(&dev->dev,
- 			 dino_current_bus, &dino_cfg_ops, NULL, &resources);
- 	if (!bus) {
- 		printk(KERN_ERR "ERROR: failed to scan PCI bus on %s (duplicate bus number %d?)\n",
-@@ -996,13 +992,10 @@ static int __init dino_probe(struct parisc_device *dev)
- 		return 0;
- 	}
- 
--	max = pci_scan_child_bus(bus);
--	pci_bus_update_busn_res_end(bus, max);
+diff --git a/arch/arm/include/asm/seccomp.h b/arch/arm/include/asm/seccomp.h
+index 52b156b341f5..66ca6a30bf5c 100644
+--- a/arch/arm/include/asm/seccomp.h
++++ b/arch/arm/include/asm/seccomp.h
+@@ -1,11 +1 @@
+-#ifndef _ASM_ARM_SECCOMP_H
+-#define _ASM_ARM_SECCOMP_H
 -
- 	/* This code *depends* on scanning being single threaded
- 	 * if it isn't, this global bus number count will fail
- 	 */
--	dino_current_bus = max + 1;
-+	dino_current_bus = bus->busn_res.end + 1;
- 	pci_bus_assign_resources(bus);
- 	pci_bus_add_devices(bus);
- 	return 0;
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index dceb9dd..ba6daec 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -1422,7 +1422,6 @@ lba_driver_probe(struct parisc_device *dev)
- 	void *tmp_obj;
- 	char *version;
- 	void __iomem *addr = ioremap_nocache(dev->hpa.start, 4096);
--	int max;
- 
- 	/* Read HW Rev First */
- 	func_class = READ_REG32(addr + LBA_FCLASS);
-@@ -1563,15 +1562,13 @@ lba_driver_probe(struct parisc_device *dev)
- 
- 	dev->dev.platform_data = lba_dev;
- 	lba_bus = lba_dev->hba.hba_bus =
--		pci_create_root_bus(&dev->dev, lba_dev->hba.bus_num.start,
-+		pci_scan_root_bus(&dev->dev, lba_dev->hba.bus_num.start,
- 				    cfg_ops, NULL, &resources);
- 	if (!lba_bus) {
- 		pci_free_resource_list(&resources);
- 		return 0;
- 	}
- 
--	max = pci_scan_child_bus(lba_bus);
+-#include <linux/unistd.h>
 -
- 	/* This is in lieu of calling pci_assign_unassigned_resources() */
- 	if (is_pdc_pat()) {
- 		/* assign resources to un-initialized devices */
-@@ -1599,7 +1596,7 @@ lba_driver_probe(struct parisc_device *dev)
- 		lba_dev->flags |= LBA_FLAG_SKIP_PROBE;
- 	}
+-#define __NR_seccomp_read __NR_read
+-#define __NR_seccomp_write __NR_write
+-#define __NR_seccomp_exit __NR_exit
+-#define __NR_seccomp_sigreturn __NR_rt_sigreturn
+-
+-#endif /* _ASM_ARM_SECCOMP_H */
++#include <asm-generic/seccomp.h>
+diff --git a/arch/microblaze/include/asm/seccomp.h b/arch/microblaze/include/asm/seccomp.h
+index 0d912758a0d7..66ca6a30bf5c 100644
+--- a/arch/microblaze/include/asm/seccomp.h
++++ b/arch/microblaze/include/asm/seccomp.h
+@@ -1,16 +1 @@
+-#ifndef _ASM_MICROBLAZE_SECCOMP_H
+-#define _ASM_MICROBLAZE_SECCOMP_H
+-
+-#include <linux/unistd.h>
+-
+-#define __NR_seccomp_read		__NR_read
+-#define __NR_seccomp_write		__NR_write
+-#define __NR_seccomp_exit		__NR_exit
+-#define __NR_seccomp_sigreturn		__NR_sigreturn
+-
+-#define __NR_seccomp_read_32		__NR_read
+-#define __NR_seccomp_write_32		__NR_write
+-#define __NR_seccomp_exit_32		__NR_exit
+-#define __NR_seccomp_sigreturn_32	__NR_sigreturn
+-
+-#endif	/* _ASM_MICROBLAZE_SECCOMP_H */
++#include <asm-generic/seccomp.h>
+diff --git a/arch/mips/include/asm/seccomp.h b/arch/mips/include/asm/seccomp.h
+index f29c75cf83c6..1d8a2e2c75c1 100644
+--- a/arch/mips/include/asm/seccomp.h
++++ b/arch/mips/include/asm/seccomp.h
+@@ -2,11 +2,6 @@
  
--	lba_next_bus = max + 1;
-+	lba_next_bus = pci_bus_child_max_busnr(lba_bus) + 1;
- 	pci_bus_add_devices(lba_bus);
+ #include <linux/unistd.h>
  
- 	/* Whew! Finally done! Tell services we got this one covered. */
+-#define __NR_seccomp_read __NR_read
+-#define __NR_seccomp_write __NR_write
+-#define __NR_seccomp_exit __NR_exit
+-#define __NR_seccomp_sigreturn __NR_rt_sigreturn
+-
+ /*
+  * Kludge alert:
+  *
+@@ -29,4 +24,6 @@
+ 
+ #endif /* CONFIG_MIPS32_O32 */
+ 
++#include <asm-generic/seccomp.h>
++
+ #endif /* __ASM_SECCOMP_H */
+diff --git a/arch/parisc/include/asm/seccomp.h b/arch/parisc/include/asm/seccomp.h
+index 015f7887aa29..66ca6a30bf5c 100644
+--- a/arch/parisc/include/asm/seccomp.h
++++ b/arch/parisc/include/asm/seccomp.h
+@@ -1,16 +1 @@
+-#ifndef _ASM_PARISC_SECCOMP_H
+-#define _ASM_PARISC_SECCOMP_H
+-
+-#include <linux/unistd.h>
+-
+-#define __NR_seccomp_read __NR_read
+-#define __NR_seccomp_write __NR_write
+-#define __NR_seccomp_exit __NR_exit
+-#define __NR_seccomp_sigreturn __NR_rt_sigreturn
+-
+-#define __NR_seccomp_read_32 __NR_read
+-#define __NR_seccomp_write_32 __NR_write
+-#define __NR_seccomp_exit_32 __NR_exit
+-#define __NR_seccomp_sigreturn_32 __NR_rt_sigreturn
+-
+-#endif	/* _ASM_PARISC_SECCOMP_H */
++#include <asm-generic/seccomp.h>
+diff --git a/arch/powerpc/include/asm/seccomp.h b/arch/powerpc/include/asm/seccomp.h
+new file mode 100644
+index 000000000000..66ca6a30bf5c
+--- /dev/null
++++ b/arch/powerpc/include/asm/seccomp.h
+@@ -0,0 +1 @@
++#include <asm-generic/seccomp.h>
+diff --git a/arch/powerpc/include/uapi/asm/Kbuild b/arch/powerpc/include/uapi/asm/Kbuild
+index 7a3f795ac218..79c4068be278 100644
+--- a/arch/powerpc/include/uapi/asm/Kbuild
++++ b/arch/powerpc/include/uapi/asm/Kbuild
+@@ -25,7 +25,6 @@ header-y += posix_types.h
+ header-y += ps3fb.h
+ header-y += ptrace.h
+ header-y += resource.h
+-header-y += seccomp.h
+ header-y += sembuf.h
+ header-y += setup.h
+ header-y += shmbuf.h
+diff --git a/arch/powerpc/include/uapi/asm/seccomp.h b/arch/powerpc/include/uapi/asm/seccomp.h
+deleted file mode 100644
+index 00c1d9133cfe..000000000000
+--- a/arch/powerpc/include/uapi/asm/seccomp.h
++++ /dev/null
+@@ -1,16 +0,0 @@
+-#ifndef _ASM_POWERPC_SECCOMP_H
+-#define _ASM_POWERPC_SECCOMP_H
+-
+-#include <linux/unistd.h>
+-
+-#define __NR_seccomp_read __NR_read
+-#define __NR_seccomp_write __NR_write
+-#define __NR_seccomp_exit __NR_exit
+-#define __NR_seccomp_sigreturn __NR_rt_sigreturn
+-
+-#define __NR_seccomp_read_32 __NR_read
+-#define __NR_seccomp_write_32 __NR_write
+-#define __NR_seccomp_exit_32 __NR_exit
+-#define __NR_seccomp_sigreturn_32 __NR_sigreturn
+-
+-#endif	/* _ASM_POWERPC_SECCOMP_H */
+diff --git a/arch/s390/include/asm/seccomp.h b/arch/s390/include/asm/seccomp.h
+index 781a9cf9b002..66ca6a30bf5c 100644
+--- a/arch/s390/include/asm/seccomp.h
++++ b/arch/s390/include/asm/seccomp.h
+@@ -1,16 +1 @@
+-#ifndef _ASM_S390_SECCOMP_H
+-#define _ASM_S390_SECCOMP_H
+-
+-#include <linux/unistd.h>
+-
+-#define __NR_seccomp_read	__NR_read
+-#define __NR_seccomp_write	__NR_write
+-#define __NR_seccomp_exit	__NR_exit
+-#define __NR_seccomp_sigreturn	__NR_sigreturn
+-
+-#define __NR_seccomp_read_32	__NR_read
+-#define __NR_seccomp_write_32	__NR_write
+-#define __NR_seccomp_exit_32	__NR_exit
+-#define __NR_seccomp_sigreturn_32 __NR_sigreturn
+-
+-#endif	/* _ASM_S390_SECCOMP_H */
++#include <asm-generic/seccomp.h>
+diff --git a/arch/sh/include/asm/seccomp.h b/arch/sh/include/asm/seccomp.h
+index 3280ed3802ef..66ca6a30bf5c 100644
+--- a/arch/sh/include/asm/seccomp.h
++++ b/arch/sh/include/asm/seccomp.h
+@@ -1,10 +1 @@
+-#ifndef __ASM_SECCOMP_H
+-
+-#include <linux/unistd.h>
+-
+-#define __NR_seccomp_read __NR_read
+-#define __NR_seccomp_write __NR_write
+-#define __NR_seccomp_exit __NR_exit
+-#define __NR_seccomp_sigreturn __NR_rt_sigreturn
+-
+-#endif /* __ASM_SECCOMP_H */
++#include <asm-generic/seccomp.h>
+diff --git a/arch/sparc/include/asm/seccomp.h b/arch/sparc/include/asm/seccomp.h
+index adca1bce41d4..66ca6a30bf5c 100644
+--- a/arch/sparc/include/asm/seccomp.h
++++ b/arch/sparc/include/asm/seccomp.h
+@@ -1,15 +1 @@
+-#ifndef _ASM_SECCOMP_H
+-
+-#include <linux/unistd.h>
+-
+-#define __NR_seccomp_read __NR_read
+-#define __NR_seccomp_write __NR_write
+-#define __NR_seccomp_exit __NR_exit
+-#define __NR_seccomp_sigreturn __NR_rt_sigreturn
+-
+-#define __NR_seccomp_read_32 __NR_read
+-#define __NR_seccomp_write_32 __NR_write
+-#define __NR_seccomp_exit_32 __NR_exit
+-#define __NR_seccomp_sigreturn_32 __NR_sigreturn
+-
+-#endif /* _ASM_SECCOMP_H */
++#include <asm-generic/seccomp.h>
+diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
+index 0f3d7f099224..b13ac5f63702 100644
+--- a/arch/x86/include/asm/seccomp.h
++++ b/arch/x86/include/asm/seccomp.h
+@@ -1,5 +1,20 @@
++#ifndef _ASM_X86_SECCOMP_H
++#define _ASM_X86_SECCOMP_H
++
++#include <asm/unistd.h>
++
++#ifdef CONFIG_COMPAT
++#include <asm/ia32_unistd.h>
++#define __NR_seccomp_read_32		__NR_ia32_read
++#define __NR_seccomp_write_32		__NR_ia32_write
++#define __NR_seccomp_exit_32		__NR_ia32_exit
++#define __NR_seccomp_sigreturn_32	__NR_ia32_sigreturn
++#endif
++
+ #ifdef CONFIG_X86_32
+-# include <asm/seccomp_32.h>
+-#else
+-# include <asm/seccomp_64.h>
++#define __NR_seccomp_sigreturn		__NR_sigreturn
+ #endif
++
++#include <asm-generic/seccomp.h>
++
++#endif /* _ASM_X86_SECCOMP_H */
+diff --git a/arch/x86/include/asm/seccomp_32.h b/arch/x86/include/asm/seccomp_32.h
+deleted file mode 100644
+index b811d6f5780c..000000000000
+--- a/arch/x86/include/asm/seccomp_32.h
++++ /dev/null
+@@ -1,11 +0,0 @@
+-#ifndef _ASM_X86_SECCOMP_32_H
+-#define _ASM_X86_SECCOMP_32_H
+-
+-#include <linux/unistd.h>
+-
+-#define __NR_seccomp_read __NR_read
+-#define __NR_seccomp_write __NR_write
+-#define __NR_seccomp_exit __NR_exit
+-#define __NR_seccomp_sigreturn __NR_sigreturn
+-
+-#endif /* _ASM_X86_SECCOMP_32_H */
+diff --git a/arch/x86/include/asm/seccomp_64.h b/arch/x86/include/asm/seccomp_64.h
+deleted file mode 100644
+index 84ec1bd161a5..000000000000
+--- a/arch/x86/include/asm/seccomp_64.h
++++ /dev/null
+@@ -1,17 +0,0 @@
+-#ifndef _ASM_X86_SECCOMP_64_H
+-#define _ASM_X86_SECCOMP_64_H
+-
+-#include <linux/unistd.h>
+-#include <asm/ia32_unistd.h>
+-
+-#define __NR_seccomp_read __NR_read
+-#define __NR_seccomp_write __NR_write
+-#define __NR_seccomp_exit __NR_exit
+-#define __NR_seccomp_sigreturn __NR_rt_sigreturn
+-
+-#define __NR_seccomp_read_32 __NR_ia32_read
+-#define __NR_seccomp_write_32 __NR_ia32_write
+-#define __NR_seccomp_exit_32 __NR_ia32_exit
+-#define __NR_seccomp_sigreturn_32 __NR_ia32_sigreturn
+-
+-#endif /* _ASM_X86_SECCOMP_64_H */
 -- 
-1.7.1
+1.9.1
+
+
+-- 
+Kees Cook
+Chrome OS Security
