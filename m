@@ -1,104 +1,154 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: Re: [PATCH v4 22/30] PCI/Parisc: Use pci_scan_root_bus() for simplicity
-Date: Tue, 3 Mar 2015 17:31:44 +0800
-Message-ID: <54F57F80.6050205@huawei.com>
-References: <1424938344-4017-1-git-send-email-wangyijing@huawei.com> <1424938344-4017-23-git-send-email-wangyijing@huawei.com> <20150303032412.GK11978@google.com>
+From: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v2] seccomp: switch to using asm-generic for seccomp.h
+Date: Tue, 3 Mar 2015 09:56:02 -0800
+Message-ID: <CAGXu5jKs4_c2jcOzTA2tVQThToVfMUO31GF5+6CXtwA+KKj5_Q@mail.gmail.com>
+References: <20150302231254.GA4857@www.outflux.net>
+	<20150303083002.GA1207@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, <linux-pci@vger.kernel.org>,
-	Yinghai Lu <yinghai@kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	Marc Zyngier <marc.zyngier@arm.com>,
-	<linux-arm-kernel@lists.infradead.org>,
-	Russell King <linux@arm.linux.org.uk>, <x86@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Rusty Russell <rusty@rustcorp.com.au>,
-	Tony Luck <tony.luck@intel.com>, <linux-ia64@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	"Guan Xuetao" <gxt@mprc.pku.edu.cn>, <linux-alpha@vger.kernel.org>,
-	<linux-m68k@lists.linux-m68k.org>, Liviu Dudau <liviu@dudau.co.uk>,
-	"Arnd Bergmann" <arnd@arndb.de>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	"Yijing Wang" <wangyijing0307@gmail.com>,
+Content-Type: text/plain; charset=UTF-8
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	AKASHI Takahiro <takahiro.akashi@linaro.org>,
+	Russell King <linux@arm.linux.org.uk>,
+	Michal Simek <monstr@monstr.eu>,
+	Ralf Baechle <ralf@linux-mips.org>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	<linux-parisc@vger.kernel.org>
-To: Bjorn Helgaas <bhelgaas@google.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20150303032412.GK11978@google.com>
-List-ID: <linux-parisc.vger.kernel.org>
+	Helge Deller <deller@gmx.de>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Paul Mackerras <paulus@samba.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Martin Schwidefsky <schwidefsky@de.ibm.com>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	linux390@de.ibm.com, "David S. Miller" <davem@davemloft.net>,
+	"x86@kernel.org" <x86@kernel.org>,
+	Frederic Weisbecker <fweisbec@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Laura Abbott <lauraa@codeaurora.org>,
+	Will Deacon <will.deacon@arm.com>,
+	Daniel Borkmann <dborkman@redhat.com>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	James Hogan <
+To: Ingo Molnar <mingo@kernel.org>
+Return-path: <sparclinux-owner@vger.kernel.org>
+In-Reply-To: <20150303083002.GA1207@gmail.com>
+List-ID: <sparclinux.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2015/3/3 11:24, Bjorn Helgaas wrote:
-> On Thu, Feb 26, 2015 at 04:12:16PM +0800, Yijing Wang wrote:
->> From: Yijing Wang <wangyijing0307@gmail.com>
-> 
-> When you write subject lines, I think it's friendly to run
-> "git log --oneline" on the file you're changing, and make yours
-> match the previous ones.
-> 
->   $ git log --oneline drivers/parisc/dino.c
->   3f05536d226d PCI/Parisc: Use pci_scan_root_bus() for simplicity
->   3335f75a8877 parisc: dino: fix %d confusingly prefixed with 0x in format string
->   3fad9b8d597f drivers/parisc: Use printf extension %pR for struct resource
->   0fe763c570ad Drivers: misc: remove __dev* attributes.
->   0b79ca2a800d parisc/PCI: Use list_for_each_entry() for bus->devices traversal
->   30aa80da43a5 parisc/PCI: register busn_res for root buses
->   ...
-> 
-> Yours doesn't match any of them, but "parisc/PCI" seems the best match.
+On Tue, Mar 3, 2015 at 12:30 AM, Ingo Molnar <mingo@kernel.org> wrote:
+>
+> * Kees Cook <keescook@chromium.org> wrote:
+>
+>> Most architectures don't need to do anything special for the strict
+>> seccomp syscall entries. Remove the redundant headers and reduce the
+>> others.
+>
+>>  19 files changed, 27 insertions(+), 137 deletions(-)
+>
+> Lovely cleanup factor.
+>
+> Just to make sure, are you sure the 32-bit details are identical
+> across architectures?
 
-OK, I will refresh the title, sorry.
+I did "gcc -E -dM" style output comparisons on the architectures I had
+compilers for, and the buildbot hasn't complained on any of the others
+(though see the bottom of this email).
 
-> 
->> Now pci_bus_add_devices() has been ripped out
->> from pci_scan_root_bus(), we could use pci_scan_root_bus()
->> instead of pci_create_root_bus() + pci_scan_child_bus()
->> for simplicity. We could also remove the pci bus
->> resource(dino_current_bus,255) and pci_bus_update_busn_res_end(),
->> because pci_scan_root_bus() would do the same thing.
->>
->> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
->> CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
->> CC: linux-parisc@vger.kernel.org
->> ---
->>  drivers/parisc/dino.c    |   11 ++---------
->>  drivers/parisc/lba_pci.c |    7 ++-----
->>  2 files changed, 4 insertions(+), 14 deletions(-)
->>
->> diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
->> index a0580af..e5ee339 100644
->> --- a/drivers/parisc/dino.c
->> +++ b/drivers/parisc/dino.c
->> @@ -977,15 +977,11 @@ static int __init dino_probe(struct parisc_device *dev)
->>  	if (dino_dev->hba.gmmio_space.flags)
->>  		pci_add_resource(&resources, &dino_dev->hba.gmmio_space);
->>  
->> -	dino_dev->hba.bus_num.start = dino_current_bus;
->> -	dino_dev->hba.bus_num.end = 255;
->> -	dino_dev->hba.bus_num.flags = IORESOURCE_BUS;
->> -	pci_add_resource(&resources, &dino_dev->hba.bus_num);
-> 
-> I know pci_scan_root_bus() does default to bus 0-255, but I don't really
-> like that behavior, and I think it's a bug for drivers like this to rely on
-> that.  The PCI core has no way to discover the actual bus number range, and
-> the only reason it supplies a default is because it was inconvenient to
-> change all the callers.  The host bridge driver is the only code that has
-> any chance of discovering and/or configuring the correct range.
-> 
-> So I think it's more correct to leave the existing code here, even though
-> this code is is likely incorrect.  At least then if we trip over an issue
-> with the bus range being incorrect, it will be clear that the fix should
-> be in dino.c rather than the PCI core.
+>
+> For example some architectures did this:
+>
+>> --- a/arch/microblaze/include/asm/seccomp.h
+>> +++ /dev/null
+>> @@ -1,16 +0,0 @@
+>> -#ifndef _ASM_MICROBLAZE_SECCOMP_H
+>> -#define _ASM_MICROBLAZE_SECCOMP_H
+>> -
+>> -#include <linux/unistd.h>
+>> -
+>> -#define __NR_seccomp_read            __NR_read
+>> -#define __NR_seccomp_write           __NR_write
+>> -#define __NR_seccomp_exit            __NR_exit
+>> -#define __NR_seccomp_sigreturn               __NR_sigreturn
+>> -
+>> -#define __NR_seccomp_read_32         __NR_read
+>> -#define __NR_seccomp_write_32                __NR_write
+>> -#define __NR_seccomp_exit_32         __NR_exit
+>> -#define __NR_seccomp_sigreturn_32    __NR_sigreturn
 
-OK, I would keep this code here, thanks!
+The asm-generic uses the same syscall numbers from both 64 and 32,
+which matches most architectures, and those are the ones that had
+their seccomp.h entirely eliminated.
 
-> 
-> .
-> 
+> others did this:
+>
+>> diff --git a/arch/x86/include/asm/seccomp_64.h b/arch/x86/include/asm/seccomp_64.h
+>> deleted file mode 100644
+>> index 84ec1bd161a5..000000000000
+>> --- a/arch/x86/include/asm/seccomp_64.h
+>> +++ /dev/null
+>> @@ -1,17 +0,0 @@
+>> -#ifndef _ASM_X86_SECCOMP_64_H
+>> -#define _ASM_X86_SECCOMP_64_H
+>> -
+>> -#include <linux/unistd.h>
+>> -#include <asm/ia32_unistd.h>
+>> -
+>> -#define __NR_seccomp_read __NR_read
+>> -#define __NR_seccomp_write __NR_write
+>> -#define __NR_seccomp_exit __NR_exit
+>> -#define __NR_seccomp_sigreturn __NR_rt_sigreturn
+>> -
+>> -#define __NR_seccomp_read_32 __NR_ia32_read
+>> -#define __NR_seccomp_write_32 __NR_ia32_write
+>> -#define __NR_seccomp_exit_32 __NR_ia32_exit
+>> -#define __NR_seccomp_sigreturn_32 __NR_ia32_sigreturn
+>> -
+>> -#endif /* _ASM_X86_SECCOMP_64_H */
 
+Well, this was x86's split config that was consolidated into the file below:
+
+>
+> While in yet another case you kept the syscall mappings:
+>
+>> --- a/arch/x86/include/asm/seccomp.h
+>> +++ b/arch/x86/include/asm/seccomp.h
+>> @@ -1,5 +1,20 @@
+>> +#ifndef _ASM_X86_SECCOMP_H
+>> +#define _ASM_X86_SECCOMP_H
+>> +
+>> +#include <asm/unistd.h>
+>> +
+>> +#ifdef CONFIG_COMPAT
+>> +#include <asm/ia32_unistd.h>
+>> +#define __NR_seccomp_read_32         __NR_ia32_read
+>> +#define __NR_seccomp_write_32                __NR_ia32_write
+>> +#define __NR_seccomp_exit_32         __NR_ia32_exit
+>> +#define __NR_seccomp_sigreturn_32    __NR_ia32_sigreturn
+>> +#endif
+>> +
+>>  #ifdef CONFIG_X86_32
+>> -# include <asm/seccomp_32.h>
+>> -#else
+>> -# include <asm/seccomp_64.h>
+>> +#define __NR_seccomp_sigreturn               __NR_sigreturn
+>>  #endif
+>> +
+>> +#include <asm-generic/seccomp.h>
+>> +
+>> +#endif /* _ASM_X86_SECCOMP_H */
+>
+> It might all be correct, but it's not obvious to me.
+
+The x86 change was the most complex as it removed a seccomp_32. and
+seccomp_64.h file and merged into a single asm/seccomp.h to provide
+overrides for the _32 #defines.
+
+However, in looking at it now... I see some flip/flopping of
+__NR_sigreturn and __NR_rt_sigreturn between some of the
+architectures. Let me study that and send a v3. I think there are some
+accidental changes on microblaze and powerpc.
+
+-Kees
 
 -- 
-Thanks!
-Yijing
-
+Kees Cook
+Chrome OS Security
