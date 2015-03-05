@@ -1,45 +1,51 @@
-From: Kees Cook <keescook@chromium.org>
-Subject: [PATCH v3 0/8] switch to using asm-generic for seccomp.h
-Date: Wed,  4 Mar 2015 17:27:00 -0800
-Message-ID: <1425518828-16017-1-git-send-email-keescook@chromium.org>
-Cc: Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Michal Simek <monstr@monstr.eu>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "David S. Miller" <davem@davemloft.net>, x86@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Daniel Borkmann <dborkman@redhat.com>,
-        Laura Abbott <lauraa@codeaurora.org>,
-        James Hogan <james.hogan@imgtec.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.
-To: akpm@linux-foundation.org
-Return-path: <linux-mips-bounce@linux-mips.org>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+From: Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v3 8/8] x86: switch to using asm-generic for seccomp.h
+Date: Thu, 5 Mar 2015 07:31:43 +0100
+Message-ID: <20150305063143.GA23023@gmail.com>
+References: <1425518828-16017-1-git-send-email-keescook@chromium.org>
+ <1425518828-16017-9-git-send-email-keescook@chromium.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: akpm@linux-foundation.org, Ingo Molnar <mingo@redhat.com>,
+	Russell King <linux@arm.linux.org.uk>,
+	Michal Simek <monstr@monstr.eu>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Paul Mackerras <paulus@samba.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	"David S. Miller" <davem@davemloft.net>, x86@kernel.org,
+	Arnd Bergmann <arnd@arndb.de>,
+	Frederic Weisbecker <fweisbec@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Will Deacon <will.deacon@arm.com>,
+	Daniel Borkmann <dborkman@redhat.com>,
+	Laura Abbott <lauraa@codeaurora.org>,
+	James Hogan <james.hogan@imgtec.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+	lin
+To: Kees Cook <keescook@chromium.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <1425518828-16017-9-git-send-email-keescook@chromium.org>
+List-ID: <linux-arch.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-Most architectures don't need to do much special for the strict-mode
-seccomp syscall entries. Remove the redundant headers and reduce the
-others.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-v3:
-- split patch series by architecture
-- fix up architectures that need sigreturn overrides (ingo)
-v2:
-- use Kbuild "generic-y" instead of explicit #include lines (sfr)
+* Kees Cook <keescook@chromium.org> wrote:
+
+> Switch to using the newly created asm-generic/seccomp.h for the 
+> seccomp strict mode syscall definitions. The obsolete sigreturn 
+> syscall override is retained in 32-bit mode, and the ia32 syscall 
+> overrides are used in the compat case. Remaining definitions were 
+> identical.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+
+Acked-by: Ingo Molnar <mingo@kernel.org>
+
+Thanks,
+
+	Ingo
