@@ -1,7 +1,7 @@
 From: Kees Cook <keescook@chromium.org>
-Subject: [PATCH v3 1/8] seccomp: allow COMPAT sigreturn overrides
-Date: Wed,  4 Mar 2015 17:27:01 -0800
-Message-ID: <1425518828-16017-2-git-send-email-keescook@chromium.org>
+Subject: [PATCH v3 4/8] mips: switch to using asm-generic for seccomp.h
+Date: Wed,  4 Mar 2015 17:27:04 -0800
+Message-ID: <1425518828-16017-5-git-send-email-keescook@chromium.org>
 References: <1425518828-16017-1-git-send-email-keescook@chromium.org>
 Cc: Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@redhat.com>,
 	Russell King <linux@arm.linux.org.uk>,
@@ -24,32 +24,42 @@ Cc: Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@redhat.com>,
 	linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
 	linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.o
 To: akpm@linux-foundation.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
 In-Reply-To: <1425518828-16017-1-git-send-email-keescook@chromium.org>
-List-ID: <linux-kernel.vger.kernel.org>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Some architectures may need to override the compat sigreturn definition,
-as is already possible in the non-compat case.
+Switch to using the newly created asm-generic/seccomp.h for the seccomp
+strict mode syscall definitions. COMPAT definitions retain their overrides
+and the remaining definitions were identical.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- include/asm-generic/seccomp.h | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/mips/include/asm/seccomp.h | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/include/asm-generic/seccomp.h b/include/asm-generic/seccomp.h
-index 9fa1f653ed3b..c9ccafa0d99a 100644
---- a/include/asm-generic/seccomp.h
-+++ b/include/asm-generic/seccomp.h
-@@ -17,7 +17,9 @@
- #define __NR_seccomp_read_32		__NR_read
- #define __NR_seccomp_write_32		__NR_write
- #define __NR_seccomp_exit_32		__NR_exit
-+#ifndef __NR_seccomp_sigreturn_32
- #define __NR_seccomp_sigreturn_32	__NR_rt_sigreturn
-+#endif
- #endif /* CONFIG_COMPAT && ! already defined */
+diff --git a/arch/mips/include/asm/seccomp.h b/arch/mips/include/asm/seccomp.h
+index f29c75cf83c6..1d8a2e2c75c1 100644
+--- a/arch/mips/include/asm/seccomp.h
++++ b/arch/mips/include/asm/seccomp.h
+@@ -2,11 +2,6 @@
  
- #define __NR_seccomp_read		__NR_read
+ #include <linux/unistd.h>
+ 
+-#define __NR_seccomp_read __NR_read
+-#define __NR_seccomp_write __NR_write
+-#define __NR_seccomp_exit __NR_exit
+-#define __NR_seccomp_sigreturn __NR_rt_sigreturn
+-
+ /*
+  * Kludge alert:
+  *
+@@ -29,4 +24,6 @@
+ 
+ #endif /* CONFIG_MIPS32_O32 */
+ 
++#include <asm-generic/seccomp.h>
++
+ #endif /* __ASM_SECCOMP_H */
 -- 
 1.9.1
