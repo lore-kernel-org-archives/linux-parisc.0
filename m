@@ -1,121 +1,61 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v5 21/29] parisc/PCI: Use pci_scan_root_bus() for simplicity
-Date: Fri, 6 Mar 2015 17:33:38 +0800
-Message-ID: <1425634426-437-22-git-send-email-wangyijing@huawei.com>
-References: <1425634426-437-1-git-send-email-wangyijing@huawei.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: parisc: fix mmap(MAP_FIXED|MAP_SHARED) to already mmapped address
+Date: Sat, 7 Mar 2015 14:05:29 -0500
+Message-ID: <CAE2sS1it+0djrgRhTz2NLU1hB6LTYX9mRGTT_iUZwJR4Bd7Bfw@mail.gmail.com>
+References: <20131219191750.GC2881@blackmetal.musicnaut.iki.fi>
+	<5313A12E.7010307@gmx.de>
+	<20140401182627.GA3285@drone.musicnaut.iki.fi>
+	<533B0A57.2060700@gmx.de>
+	<CAE2sS1jZTzccFy_uWri++cgVz+AYVfY0_aFqXFxnJXZV3d1a0g@mail.gmail.com>
+	<533C7C9A.5080703@gmx.de>
+	<BLU0-SMTP84F101069B44354FC1070C976D0@phx.gbl>
+	<533DB961.9010607@gmx.de>
+	<BLU0-SMTP7204937E7AF88D8736354E976C0@phx.gbl>
+	<533DC3E8.5010701@gmx.de>
+	<CAE2sS1iY6H3fnEJDHr6oPGywwGYmM_2gt2r_p+DUz+v0Rf2szg@mail.gmail.com>
+	<BLU436-SMTP15952414B35EC498F0793B1972B0@phx.gbl>
+	<BLU437-SMTP9274AAFB2636BF93781F02972B0@phx.gbl>
+	<1424560158.2146.22.camel@HansenPartnership.com>
+	<54E9141B.4050009@gmx.de>
+	<1424563046.2146.41.camel@HansenPartnership.com>
+	<BLU436-SMTP737CEAAA0E7C3EAEFB9DB097280@phx.gbl>
+	<1424625475.2146.88.camel@HansenPartnership.com>
+	<BLU437-SMTP61AF76DB80DF7F81524FCC97280@phx.gbl>
+	<1424627938.2146.103.camel@HansenPartnership.com>
+	<54EA1ADC.60701@gmx.de>
+	<1424632396.2146.116.camel@HansenPartnership.com>
+	<54EA2B1B.10406@gmx.de>
+	<1424634170.2146.119.camel@HansenPartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, <linux-pci@vger.kernel.org>,
-	Yinghai Lu <yinghai@kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	Marc Zyngier <marc.zyngier@arm.com>,
-	<linux-arm-kernel@lists.infradead.org>,
-	Russell King <linux@arm.linux.org.uk>, <x86@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Rusty Russell <rusty@rustcorp.com.au>,
-	Tony Luck <tony.luck@intel.com>, <linux-ia64@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	"Guan Xuetao" <gxt@mprc.pku.edu.cn>, <linux-alpha@vger.kernel.org>,
-	<linux-m68k@lists.linux-m68k.org>, Liviu Dudau <liviu@dudau.co.uk>,
-	"Arnd Bergmann" <arnd@arndb.de>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	"Yijing Wang" <wangyijing@huawei.com>,
-	Yijing Wang <wangyijing0307@gmail.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	<linux-parisc@vger.kernel.org>, Bjorn He
-To: Bjorn Helgaas <bhelgaas@google.com>
-Return-path: <linux-pci-owner@vger.kernel.org>
-In-Reply-To: <1425634426-437-1-git-send-email-wangyijing@huawei.com>
-List-ID: <linux-pci.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Helge Deller <deller@gmx.de>,
+	John David Anglin <dave.anglin@bell.net>,
+	Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Mike Frysinger <vapier@gentoo.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1424634170.2146.119.camel@HansenPartnership.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Yijing Wang <wangyijing0307@gmail.com>
+On Sun, Feb 22, 2015 at 2:42 PM, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+> I know, I do, but that's sort of expected: most modern linux apps use
+> mmap.  It's the older stuff that uses sys-v ipc, but perhaps for us this
+> doesn't matter.
 
-Now pci_bus_add_devices() has been ripped out
-from pci_scan_root_bus(), we could use pci_scan_root_bus()
-instead of pci_create_root_bus() + pci_scan_child_bus()
-for simplicity.
+And that's the real truth.
 
-Signed-off-by: Yijing Wang <wangyijing@huawei.com>
-CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
-CC: linux-parisc@vger.kernel.org
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/parisc/dino.c    |    8 +++-----
- drivers/parisc/lba_pci.c |    7 ++-----
- 2 files changed, 5 insertions(+), 10 deletions(-)
+The usage patterns that appear to matter are:
+(a) An initial mmap, followed by an mmap with MAP_FIXED at the same
+previous address.
+(b) shmat with SHM_RND, in which case we get to round the resulting
+address or return EINVAL.
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index a0580af..eb76a9d 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -981,11 +981,12 @@ static int __init dino_probe(struct parisc_device *dev)
- 	dino_dev->hba.bus_num.end = 255;
- 	dino_dev->hba.bus_num.flags = IORESOURCE_BUS;
- 	pci_add_resource(&resources, &dino_dev->hba.bus_num);
-+
- 	/*
- 	** It's not used to avoid chicken/egg problems
- 	** with configuration accessor functions.
- 	*/
--	dino_dev->hba.hba_bus = bus = pci_create_root_bus(&dev->dev,
-+	dino_dev->hba.hba_bus = bus = pci_scan_root_bus(&dev->dev,
- 			 dino_current_bus, &dino_cfg_ops, NULL, &resources);
- 	if (!bus) {
- 		printk(KERN_ERR "ERROR: failed to scan PCI bus on %s (duplicate bus number %d?)\n",
-@@ -996,13 +997,10 @@ static int __init dino_probe(struct parisc_device *dev)
- 		return 0;
- 	}
- 
--	max = pci_scan_child_bus(bus);
--	pci_bus_update_busn_res_end(bus, max);
--
- 	/* This code *depends* on scanning being single threaded
- 	 * if it isn't, this global bus number count will fail
- 	 */
--	dino_current_bus = max + 1;
-+	dino_current_bus = bus->busn_res.end + 1;
- 	pci_bus_assign_resources(bus);
- 	pci_bus_add_devices(bus);
- 	return 0;
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index dceb9dd..ba6daec 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -1422,7 +1422,6 @@ lba_driver_probe(struct parisc_device *dev)
- 	void *tmp_obj;
- 	char *version;
- 	void __iomem *addr = ioremap_nocache(dev->hpa.start, 4096);
--	int max;
- 
- 	/* Read HW Rev First */
- 	func_class = READ_REG32(addr + LBA_FCLASS);
-@@ -1563,15 +1562,13 @@ lba_driver_probe(struct parisc_device *dev)
- 
- 	dev->dev.platform_data = lba_dev;
- 	lba_bus = lba_dev->hba.hba_bus =
--		pci_create_root_bus(&dev->dev, lba_dev->hba.bus_num.start,
-+		pci_scan_root_bus(&dev->dev, lba_dev->hba.bus_num.start,
- 				    cfg_ops, NULL, &resources);
- 	if (!lba_bus) {
- 		pci_free_resource_list(&resources);
- 		return 0;
- 	}
- 
--	max = pci_scan_child_bus(lba_bus);
--
- 	/* This is in lieu of calling pci_assign_unassigned_resources() */
- 	if (is_pdc_pat()) {
- 		/* assign resources to un-initialized devices */
-@@ -1599,7 +1596,7 @@ lba_driver_probe(struct parisc_device *dev)
- 		lba_dev->flags |= LBA_FLAG_SKIP_PROBE;
- 	}
- 
--	lba_next_bus = max + 1;
-+	lba_next_bus = pci_bus_child_max_busnr(lba_bus) + 1;
- 	pci_bus_add_devices(lba_bus);
- 
- 	/* Whew! Finally done! Tell services we got this one covered. */
--- 
-1.7.1
+Both of (a) and (b) work today if glibc sets SHMLBA to 4kb.
+
+On parisc we simply can't deal with the user selecting an arbitrary address.
+
+Cheers,
+Carlos.
