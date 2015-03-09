@@ -1,136 +1,124 @@
-From: Geoff Matthews <g.j.matthews@gmail.com>
-Subject: Re: Pre-DEBIAN 8.0 install images for HPPA architecture (debian-ports
- unstable release)
-Date: Mon, 9 Mar 2015 09:21:40 +1100
-Message-ID: <CAJHT4_S3UNiXC5xqAgcAcGTP5xsQ4kanbQq-Oso=kB5+3DtAvA@mail.gmail.com>
-References: <54ECB150.80907@gmx.de>
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: [PATCH v6 22/30] parisc/PCI: Use pci_scan_root_bus() for simplicity
+Date: Mon, 9 Mar 2015 10:34:19 +0800
+Message-ID: <1425868467-9667-23-git-send-email-wangyijing@huawei.com>
+References: <1425868467-9667-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary=001a1147a4507c0b080510ce5798
-Cc: HPPA porters <debian-hppa@lists.debian.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
-Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
-In-Reply-To: <54ECB150.80907@gmx.de>
-Resent-Message-ID: <NjQw1L4F61.A.UHE.R-M_UB@bendel>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-URL: <http://lists.debian.org/debian-hppa/>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-ia64@vger.kernel.org, linux-pci@vger.kernel.org,
+ Yijing Wang <wangyijing@huawei.com>, Guan
+ Xuetao <gxt@mprc.pku.edu.cn>, Russell King <linux@arm.linux.org.uk>,
+ x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>, Arnd
+ Bergmann <arnd@arndb.de>, Marc Zyngier <marc.zyngier@arm.com>,
+ Rusty Russell <rusty@rustcorp.com.au>, linux-m68k@lists.linux-m68k.org,
+ Bjorn Helgaas <bhelgaas@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Yinghai Lu <yinghai@kernel.org>, Yijing Wang <wangyijing0307@gmail.com>,
+ Liviu Dudau <liviu@dudau.co.uk>, Tony Luck <tony.luck@intel.com>,
+ linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Jiang Liu <jiang.liu@linux.intel.com>, linux-alpha@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net
+To: Bjorn Helgaas <bhelgaas@google.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1425868467-9667-1-git-send-email-wangyijing@huawei.com>
+List-Id: <linux-arm-kernel.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 
---001a1147a4507c0b080510ce5798
-Content-Type: text/plain; charset=UTF-8
+From: Yijing Wang <wangyijing0307@gmail.com>
 
-Hi Helge et al,
+Now pci_bus_add_devices() has been ripped out
+from pci_scan_root_bus(), we could use pci_scan_root_bus()
+instead of pci_create_root_bus() + pci_scan_child_bus()
+for simplicity.
 
-I have tried this Debian 8.0 installation on a spare HD in my C3700. The
-installer is painless & "runs like a Swiss watch". I had no trouble
-installing a KDE desktop environment and booting it. The software
-repository and the packages downloaded gave no trouble at all. The base OS
-has been rock solid. I have installed boinc/seti@home and that has had the
-box at 100% CPU load all night without trouble. Some packages have been a
-bit slow/clunky but given the age of the C3700 that is no surprise.
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
+CC: linux-parisc@vger.kernel.org
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+---
+ drivers/parisc/dino.c    |    8 +++-----
+ drivers/parisc/lba_pci.c |    7 ++-----
+ 2 files changed, 5 insertions(+), 10 deletions(-)
 
-The only package to consistently crash was "system settings" any time I
-tried to change display settings. The base OS has not crashed AT ALL.
-
-Cheers, Geoff.
-
-On Wed, Feb 25, 2015 at 4:13 AM, Helge Deller <deller@gmx.de> wrote:
-
-> Hello everyone,
->
-> I've prepared some initial netboot installation medias for
->         DEBIAN 8.0 on HPPA
->
-> which are available at:
->         http://ftp.debian-ports.org/debian-cd/hppa/debian-8.0/
->
-> You can find the instructions on how to install Debian 8.0 on hppa in our
-> wiki at
->         https://parisc.wiki.kernel.org/index.php/Debian_Ports_Installation
->
-> The install images will install binaries from debian-ports (Debian
-> "unstable").
->
-> Major changes include:
-> - Based on Debian 8.0 code base
-> - Full systemd support
-> - Linux kernel modules for SATA included
-> - Lots of bug fixes
-> - Should support all common PA-RISC hardware (on C8000 installation needs
-> to be done via serial port)
->
-> I'm happy to get your feedback (either as bug report or successful
-> installation report).
->
-> Helge
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-
---001a1147a4507c0b080510ce5798
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div><div>Hi Helge et al,<br><br></div>I have tried this D=
-ebian 8.0 installation on a spare HD in my C3700. The installer is painless=
- &amp; &quot;runs like a Swiss watch&quot;. I had no trouble installing a K=
-DE desktop environment and booting it. The software repository and the pack=
-ages downloaded gave no trouble at all. The base OS has been rock solid. I =
-have installed boinc/seti@home and that has had the box at 100% CPU load al=
-l night without trouble. Some packages have been a bit slow/clunky but give=
-n the age of the C3700 that is no surprise.<br><br></div><div>The only pack=
-age to consistently crash was &quot;system settings&quot; any time I tried =
-to change display settings. The base OS has not crashed AT ALL.<br></div><d=
-iv><br></div>Cheers, Geoff.<br></div><div class=3D"gmail_extra"><br><div cl=
-ass=3D"gmail_quote">On Wed, Feb 25, 2015 at 4:13 AM, Helge Deller <span dir=
-=3D"ltr">&lt;<a href=3D"mailto:deller@gmx.de" target=3D"_blank">deller@gmx.=
-de</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"marg=
-in:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">Hello everyone,<=
-br>
-<br>
-I&#39;ve prepared some initial netboot installation medias for<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 DEBIAN 8.0 on HPPA<br>
-<br>
-which are available at:<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 <a href=3D"http://ftp.debian-ports.org/debian-c=
-d/hppa/debian-8.0/" target=3D"_blank">http://ftp.debian-ports.org/<u></u>de=
-bian-cd/hppa/debian-8.0/</a><br>
-<br>
-You can find the instructions on how to install Debian 8.0 on hppa in our w=
-iki at<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 <a href=3D"https://parisc.wiki.kernel.org/index=
-.php/Debian_Ports_Installation" target=3D"_blank">https://parisc.wiki.kerne=
-l.<u></u>org/index.php/Debian_Ports_<u></u>Installation</a><br>
-<br>
-The install images will install binaries from debian-ports (Debian &quot;un=
-stable&quot;).<br>
-<br>
-Major changes include:<br>
-- Based on Debian 8.0 code base<br>
-- Full systemd support<br>
-- Linux kernel modules for SATA included<br>
-- Lots of bug fixes<br>
-- Should support all common PA-RISC hardware (on C8000 installation needs t=
-o be done via serial port)<br>
-<br>
-I&#39;m happy to get your feedback (either as bug report or successful inst=
-allation report).<br>
-<br>
-Helge<br>
---<br>
-To unsubscribe from this list: send the line &quot;unsubscribe linux-parisc=
-&quot; in<br>
-the body of a message to <a href=3D"mailto:majordomo@vger.kernel.org" targe=
-t=3D"_blank">majordomo@vger.kernel.org</a><br>
-More majordomo info at=C2=A0 <a href=3D"http://vger.kernel.org/majordomo-in=
-fo.html" target=3D"_blank">http://vger.kernel.org/<u></u>majordomo-info.htm=
-l</a><br>
-</blockquote></div><br></div>
-
---001a1147a4507c0b080510ce5798--
+diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+index a0580af..eb76a9d 100644
+--- a/drivers/parisc/dino.c
++++ b/drivers/parisc/dino.c
+@@ -981,11 +981,12 @@ static int __init dino_probe(struct parisc_device *dev)
+ 	dino_dev->hba.bus_num.end = 255;
+ 	dino_dev->hba.bus_num.flags = IORESOURCE_BUS;
+ 	pci_add_resource(&resources, &dino_dev->hba.bus_num);
++
+ 	/*
+ 	** It's not used to avoid chicken/egg problems
+ 	** with configuration accessor functions.
+ 	*/
+-	dino_dev->hba.hba_bus = bus = pci_create_root_bus(&dev->dev,
++	dino_dev->hba.hba_bus = bus = pci_scan_root_bus(&dev->dev,
+ 			 dino_current_bus, &dino_cfg_ops, NULL, &resources);
+ 	if (!bus) {
+ 		printk(KERN_ERR "ERROR: failed to scan PCI bus on %s (duplicate bus number %d?)\n",
+@@ -996,13 +997,10 @@ static int __init dino_probe(struct parisc_device *dev)
+ 		return 0;
+ 	}
+ 
+-	max = pci_scan_child_bus(bus);
+-	pci_bus_update_busn_res_end(bus, max);
+-
+ 	/* This code *depends* on scanning being single threaded
+ 	 * if it isn't, this global bus number count will fail
+ 	 */
+-	dino_current_bus = max + 1;
++	dino_current_bus = bus->busn_res.end + 1;
+ 	pci_bus_assign_resources(bus);
+ 	pci_bus_add_devices(bus);
+ 	return 0;
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index dceb9dd..ba6daec 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -1422,7 +1422,6 @@ lba_driver_probe(struct parisc_device *dev)
+ 	void *tmp_obj;
+ 	char *version;
+ 	void __iomem *addr = ioremap_nocache(dev->hpa.start, 4096);
+-	int max;
+ 
+ 	/* Read HW Rev First */
+ 	func_class = READ_REG32(addr + LBA_FCLASS);
+@@ -1563,15 +1562,13 @@ lba_driver_probe(struct parisc_device *dev)
+ 
+ 	dev->dev.platform_data = lba_dev;
+ 	lba_bus = lba_dev->hba.hba_bus =
+-		pci_create_root_bus(&dev->dev, lba_dev->hba.bus_num.start,
++		pci_scan_root_bus(&dev->dev, lba_dev->hba.bus_num.start,
+ 				    cfg_ops, NULL, &resources);
+ 	if (!lba_bus) {
+ 		pci_free_resource_list(&resources);
+ 		return 0;
+ 	}
+ 
+-	max = pci_scan_child_bus(lba_bus);
+-
+ 	/* This is in lieu of calling pci_assign_unassigned_resources() */
+ 	if (is_pdc_pat()) {
+ 		/* assign resources to un-initialized devices */
+@@ -1599,7 +1596,7 @@ lba_driver_probe(struct parisc_device *dev)
+ 		lba_dev->flags |= LBA_FLAG_SKIP_PROBE;
+ 	}
+ 
+-	lba_next_bus = max + 1;
++	lba_next_bus = pci_bus_child_max_busnr(lba_bus) + 1;
+ 	pci_bus_add_devices(lba_bus);
+ 
+ 	/* Whew! Finally done! Tell services we got this one covered. */
+-- 
+1.7.1
