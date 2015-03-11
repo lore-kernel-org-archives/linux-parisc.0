@@ -1,63 +1,45 @@
-From: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v3 0/8] switch to using asm-generic for seccomp.h
-Date: Wed, 11 Mar 2015 11:59:55 -0700
-Message-ID: <CAGXu5j+PMBEPLTLiDVZ9XvnT9a2P+tOGPLXfE865crteeChDFQ@mail.gmail.com>
-References: <1425518828-16017-1-git-send-email-keescook@chromium.org>
+From: Graham Gower <graham.gower@gmail.com>
+Subject: Re: BUG: non-zero nr_pmds on freeing mm: -1
+Date: Thu, 12 Mar 2015 10:01:40 +1030
+Message-ID: <CAFk90B8ZRnte0K-r8EBacx_WEEEL4fpTLkkVVgj42s1HO6QhFA@mail.gmail.com>
+References: <BLU436-SMTP11459F3D9DC424BE50626A797190@phx.gbl>
+	<CADjby3WS3cJs2BOmYT4Cdr4i9FncD=BYjrkuQiBH3=VmOndRPw@mail.gmail.com>
+	<BLU436-SMTP234E13E9344CBB4D18CEB0D97190@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Cc: Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@redhat.com>,
-	Russell King <linux@arm.linux.org.uk>,
-	Michal Simek <monstr@monstr.eu>,
-	Ralf Baechle <ralf@linux-mips.org>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Paul Mackerras <paulus@samba.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	"x86@kernel.org" <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Frederic Weisbecker <fweisbec@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Will Deacon <will.deacon@arm.com>,
-	Daniel Borkmann <dborkman@redhat.com>,
-	Laura Abbott <lauraa@codeaurora.org>,
-	James Hogan <james.hogan@imgtec.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Linux MIPS Mailing List <linux-mips@linux-m
-To: Andrew Morton <akpm@linux-foundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1425518828-16017-1-git-send-email-keescook@chromium.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Cc: Domenico Andreoli <cavokz@gmail.com>,
+	linux-parisc List <linux-parisc@vger.kernel.org>,
+	kirill@shutemov.name
+To: John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <BLU436-SMTP234E13E9344CBB4D18CEB0D97190@phx.gbl>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Mar 4, 2015 at 5:27 PM, Kees Cook <keescook@chromium.org> wrote:
-> Most architectures don't need to do much special for the strict-mode
-> seccomp syscall entries. Remove the redundant headers and reduce the
-> others.
+I thought this patch was supposed to address the problem?
+https://lkml.org/lkml/2015/2/26/230
+
+However, its not fixed it for me either in 4.0.0-rc3.
+
+-Graham
+
+On 12 March 2015 at 00:44, John David Anglin <dave.anglin@bell.net> wrote:
+> On 2015-03-11 7:32 AM, Domenico Andreoli wrote:
+>>
+>> I also do. Related to https://lkml.org/lkml/2015/2/13/431?
 >
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Hi Andrew,
-
-Just a quick ping: are you able to pick up this series, or should I
-try to get this in on a per-arch basis?
-
-Thanks!
-
--Kees
-
-> ---
-> v3:
-> - split patch series by architecture
-> - fix up architectures that need sigreturn overrides (ingo)
-> v2:
-> - use Kbuild "generic-y" instead of explicit #include lines (sfr)
+> More info is here:
+> http://www.spinics.net/lists/linux-mm/msg84937.html
 >
-
-
-
--- 
-Kees Cook
-Chrome OS Security
+> There doesn't seem to be a patch yet.
+>
+>
+> Dave
+>
+> --
+> John David Anglin  dave.anglin@bell.net
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
