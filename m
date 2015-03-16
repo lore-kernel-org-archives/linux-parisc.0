@@ -1,46 +1,64 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH, v2] parisc: Add compile-time check when adding new
- syscalls
-Date: Sun, 15 Mar 2015 21:32:12 +0100
-Message-ID: <20150315203212.GA452@ls3530.box>
-References: <20150314203416.GA10789@ls3530.box>
+Subject: [PATCH] parisc: Fix pmd code to depend on PT_NLEVELS value, not on
+ CONFIG_64BIT
+Date: Mon, 16 Mar 2015 21:17:50 +0100
+Message-ID: <20150316201750.GA3085@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
 	James Bottomley <James.Bottomley@HansenPartnership.com>,
 	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20150314203416.GA10789@ls3530.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Make the code which sets up the pmd depend on PT_NLEVELS == 3, not on
+CONFIG_64BIT. The reason is, that a 64bit kernel with a page size
+greater than 4k doesn't need the pmd and thus has PT_NLEVELS = 2.
+
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-index 5a8997d..0959fcc 100644
---- a/arch/parisc/kernel/syscall_table.S
-+++ b/arch/parisc/kernel/syscall_table.S
-@@ -55,6 +55,7 @@
- #define ENTRY_COMP(_name_) .word sys_##_name_
+diff --git a/arch/parisc/include/asm/pgalloc.h b/arch/parisc/include/asm/pgalloc.h
+index 8ee9a0b..c500730 100644
+--- a/arch/parisc/include/asm/pgalloc.h
++++ b/arch/parisc/include/asm/pgalloc.h
+@@ -26,7 +26,7 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
+ 
+ 	if (likely(pgd != NULL)) {
+ 		memset(pgd, 0, PAGE_SIZE<<PGD_ALLOC_ORDER);
+-#ifdef CONFIG_64BIT
++#if PT_NLEVELS == 3
+ 		actual_pgd += PTRS_PER_PGD;
+ 		/* Populate first pmd with allocated memory.  We mark it
+ 		 * with PxD_FLAG_ATTACHED as a signal to the system that this
+@@ -46,7 +46,7 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
+ 
+ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+ {
+-#ifdef CONFIG_64BIT
++#if PT_NLEVELS == 3
+ 	pgd -= PTRS_PER_PGD;
  #endif
+ 	free_pages((unsigned long)pgd, PGD_ALLOC_ORDER);
+@@ -73,12 +73,10 @@ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
  
-+99:
- 	ENTRY_SAME(restart_syscall)	/* 0 */
- 	ENTRY_SAME(exit)
- 	ENTRY_SAME(fork_wrapper)
-@@ -439,6 +440,15 @@
- 	ENTRY_SAME(bpf)
- 	ENTRY_COMP(execveat)
+ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+ {
+-#ifdef CONFIG_64BIT
+ 	if(pmd_flag(*pmd) & PxD_FLAG_ATTACHED)
+ 		/* This is the permanent pmd attached to the pgd;
+ 		 * cannot free it */
+ 		return;
+-#endif
+ 	free_pages((unsigned long)pmd, PMD_ORDER);
+ }
  
-+
-+#if defined(CONFIG_64BIT)
-+.ifne (. - 99b) - (__NR_Linux_syscalls * 8)
-+#else /* !defined(CONFIG_64BIT) */
-+.ifne (. - 99b) - (__NR_Linux_syscalls * 4)
-+#endif
-+.error "size of syscall table does not fit value of __NR_Linux_syscalls"
-+.endif
-+
- 	/* Nothing yet */
- 
- #undef ENTRY_SAME
+@@ -100,7 +98,7 @@ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+ static inline void
+ pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *pte)
+ {
+-#ifdef CONFIG_64BIT
++#if PT_NLEVELS == 3
+ 	/* preserve the gateway marker if this is the beginning of
+ 	 * the permanent pmd */
+ 	if(pmd_flag(*pmd) & PxD_FLAG_ATTACHED)
