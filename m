@@ -1,133 +1,92 @@
-From: Federico Sologuren <federico.sologuren@gmail.com>
-Subject: Re: Pre-DEBIAN 8.0 install images for HPPA architecture (debian-ports
- unstable release)
-Date: Sun, 22 Mar 2015 21:00:04 -0400
-Message-ID: <CABojMS54wkj7=5uDBaeKuAR1rUjvawdxoQ3wqGJYP4fFG3mqjg@mail.gmail.com>
-References: <54ECB150.80907@gmx.de>
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: [PATCH v7 22/31] parisc/PCI: Use pci_scan_root_bus() for simplicity
+Date: Mon, 23 Mar 2015 20:40:48 +0800
+Message-ID: <1427114457-16687-23-git-send-email-wangyijing@huawei.com>
+References: <1427114457-16687-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary=001a11479f5006ee7d0511ea3146
-Cc: HPPA porters <debian-hppa@lists.debian.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
-Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
-In-Reply-To: <54ECB150.80907@gmx.de>
-Resent-Message-ID: <c4BxJTrtbaC.A.HHH.KX2DVB@bendel>
+Content-Type: text/plain
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, <linux-pci@vger.kernel.org>,
+	Yinghai Lu <yinghai@kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	Marc Zyngier <marc.zyngier@arm.com>,
+	<linux-arm-kernel@lists.infradead.org>,
+	Russell King <linux@arm.linux.org.uk>, <x86@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Rusty Russell <rusty@rustcorp.com.au>,
+	Tony Luck <tony.luck@intel.com>, <linux-ia64@vger.kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	"Guan Xuetao" <gxt@mprc.pku.edu.cn>, <linux-alpha@vger.kernel.org>,
+	<linux-m68k@lists.linux-m68k.org>, Liviu Dudau <liviu@dudau.co.uk>,
+	"Arnd Bergmann" <arnd@arndb.de>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	"Yijing Wang" <wangyijing@huawei.com>,
+	Yijing Wang <wangyijing0307@gmail.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	<linux-parisc@vger.kernel.org>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Return-path: <linux-pci-owner@vger.kernel.org>
+In-Reply-To: <1427114457-16687-1-git-send-email-wangyijing@huawei.com>
+List-ID: <linux-pci.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-URL: <http://lists.debian.org/debian-hppa/>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
---001a11479f5006ee7d0511ea3146
-Content-Type: text/plain; charset=UTF-8
+From: Yijing Wang <wangyijing0307@gmail.com>
 
-thank you. i finished installation on HP Visualize B2000. it seems to be
-working fine. (terminal  mode only since i knew from past installation that
-graphics card for B2000 is not supported.
+Now pci_bus_add_devices() has been ripped out
+from pci_scan_root_bus(), we could use pci_scan_root_bus()
+instead of pci_create_root_bus() + pci_scan_child_bus()
+for simplicity.
 
-thank you for the update and installation instructions.
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
+CC: linux-parisc@vger.kernel.org
+---
+ drivers/parisc/dino.c    |    4 ++--
+ drivers/parisc/lba_pci.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-On Tue, Feb 24, 2015 at 12:13 PM, Helge Deller <deller@gmx.de> wrote:
-
-> Hello everyone,
->
-> I've prepared some initial netboot installation medias for
->         DEBIAN 8.0 on HPPA
->
-> which are available at:
->         http://ftp.debian-ports.org/debian-cd/hppa/debian-8.0/
->
-> You can find the instructions on how to install Debian 8.0 on hppa in our
-> wiki at
->         https://parisc.wiki.kernel.org/index.php/Debian_Ports_Installation
->
-> The install images will install binaries from debian-ports (Debian
-> "unstable").
->
-> Major changes include:
-> - Based on Debian 8.0 code base
-> - Full systemd support
-> - Linux kernel modules for SATA included
-> - Lots of bug fixes
-> - Should support all common PA-RISC hardware (on C8000 installation needs
-> to be done via serial port)
->
-> I'm happy to get your feedback (either as bug report or successful
-> installation report).
->
-> Helge
->
->
-> --
-> To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-> with a subject of "unsubscribe". Trouble? Contact
-> listmaster@lists.debian.org
-> Archive: https://lists.debian.org/54ECB150.80907@gmx.de
->
->
-
-
+diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+index f375252..146c3ff 100644
+--- a/drivers/parisc/dino.c
++++ b/drivers/parisc/dino.c
+@@ -985,7 +985,7 @@ static int __init dino_probe(struct parisc_device *dev)
+ 	** It's not used to avoid chicken/egg problems
+ 	** with configuration accessor functions.
+ 	*/
+-	dino_dev->hba.hba_bus = bus = pci_create_root_bus(&dev->dev,
++	dino_dev->hba.hba_bus = bus = pci_scan_root_bus(&dev->dev,
+ 			 0, dino_current_bus, &dino_cfg_ops, NULL, &resources);
+ 	if (!bus) {
+ 		printk(KERN_ERR "ERROR: failed to scan PCI bus on %s (duplicate bus number %d?)\n",
+@@ -996,7 +996,7 @@ static int __init dino_probe(struct parisc_device *dev)
+ 		return 0;
+ 	}
+ 
+-	max = pci_scan_child_bus(bus);
++	max = pci_bus_child_max_busnr(bus);
+ 	pci_bus_update_busn_res_end(bus, max);
+ 
+ 	/* This code *depends* on scanning being single threaded
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index 2949030..b630364 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -1563,14 +1563,14 @@ lba_driver_probe(struct parisc_device *dev)
+ 
+ 	dev->dev.platform_data = lba_dev;
+ 	lba_bus = lba_dev->hba.hba_bus =
+-		pci_create_root_bus(&dev->dev, 0, lba_dev->hba.bus_num.start,
++		pci_scan_root_bus(&dev->dev, 0, lba_dev->hba.bus_num.start,
+ 				    cfg_ops, NULL, &resources);
+ 	if (!lba_bus) {
+ 		pci_free_resource_list(&resources);
+ 		return 0;
+ 	}
+ 
+-	max = pci_scan_child_bus(lba_bus);
++	max = pci_bus_child_max_busnr(lba_bus);
+ 
+ 	/* This is in lieu of calling pci_assign_unassigned_resources() */
+ 	if (is_pdc_pat()) {
 -- 
-Federico
-
---001a11479f5006ee7d0511ea3146
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">thank you. i finished installation on HP Visualize B2000. =
-it seems to be working fine. (terminal =C2=A0mode only since i knew from pa=
-st installation that graphics card for B2000 is not supported.<div><br></di=
-v><div>thank you for the update and installation instructions.</div></div><=
-div class=3D"gmail_extra"><br><div class=3D"gmail_quote">On Tue, Feb 24, 20=
-15 at 12:13 PM, Helge Deller <span dir=3D"ltr">&lt;<a href=3D"mailto:deller=
-@gmx.de" target=3D"_blank">deller@gmx.de</a>&gt;</span> wrote:<br><blockquo=
-te class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc so=
-lid;padding-left:1ex">Hello everyone,<br>
-<br>
-I&#39;ve prepared some initial netboot installation medias for<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 DEBIAN 8.0 on HPPA<br>
-<br>
-which are available at:<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 <a href=3D"http://ftp.debian-ports.org/debian-c=
-d/hppa/debian-8.0/" target=3D"_blank">http://ftp.debian-ports.org/<u></u>de=
-bian-cd/hppa/debian-8.0/</a><br>
-<br>
-You can find the instructions on how to install Debian 8.0 on hppa in our w=
-iki at<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 <a href=3D"https://parisc.wiki.kernel.org/index=
-.php/Debian_Ports_Installation" target=3D"_blank">https://parisc.wiki.kerne=
-l.<u></u>org/index.php/Debian_Ports_<u></u>Installation</a><br>
-<br>
-The install images will install binaries from debian-ports (Debian &quot;un=
-stable&quot;).<br>
-<br>
-Major changes include:<br>
-- Based on Debian 8.0 code base<br>
-- Full systemd support<br>
-- Linux kernel modules for SATA included<br>
-- Lots of bug fixes<br>
-- Should support all common PA-RISC hardware (on C8000 installation needs t=
-o be done via serial port)<br>
-<br>
-I&#39;m happy to get your feedback (either as bug report or successful inst=
-allation report).<span class=3D"HOEnZb"><font color=3D"#888888"><br>
-<br>
-Helge<br>
-<br>
-<br>
--- <br>
-To UNSUBSCRIBE, email to <a href=3D"mailto:debian-hppa-REQUEST@lists.debian=
-.org" target=3D"_blank">debian-hppa-REQUEST@lists.<u></u>debian.org</a><br>
-with a subject of &quot;unsubscribe&quot;. Trouble? Contact <a href=3D"mail=
-to:listmaster@lists.debian.org" target=3D"_blank">listmaster@lists.debian.o=
-rg</a><br>
-Archive: <a href=3D"https://lists.debian.org/54ECB150.80907@gmx.de" target=
-=3D"_blank">https://lists.debian.org/<u></u>54ECB150.80907@gmx.de</a><br>
-<br>
-</font></span></blockquote></div><br><br clear=3D"all"><div><br></div>-- <b=
-r><div class=3D"gmail_signature">Federico</div>
-</div>
-
---001a11479f5006ee7d0511ea3146--
+1.7.1
