@@ -1,8 +1,8 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v7 22/31] parisc/PCI: Use pci_scan_root_bus() for simplicity
-Date: Mon, 23 Mar 2015 20:40:48 +0800
-Message-ID: <1427114457-16687-23-git-send-email-wangyijing@huawei.com>
-References: <1427114457-16687-1-git-send-email-wangyijing@huawei.com>
+Subject: [PATCH v8 22/30] parisc/PCI: Use pci_scan_root_bus() for simplicity
+Date: Tue, 24 Mar 2015 11:34:16 +0800
+Message-ID: <1427168064-8657-23-git-send-email-wangyijing@huawei.com>
+References: <1427168064-8657-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Cc: Jiang Liu <jiang.liu@linux.intel.com>, <linux-pci@vger.kernel.org>,
@@ -25,9 +25,9 @@ Cc: Jiang Liu <jiang.liu@linux.intel.com>, <linux-pci@vger.kernel.org>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	<linux-parisc@vger.kernel.org>
 To: Bjorn Helgaas <bhelgaas@google.com>
-Return-path: <linux-pci-owner@vger.kernel.org>
-In-Reply-To: <1427114457-16687-1-git-send-email-wangyijing@huawei.com>
-List-ID: <linux-pci.vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1427168064-8657-1-git-send-email-wangyijing@huawei.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 From: Yijing Wang <wangyijing0307@gmail.com>
