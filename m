@@ -1,41 +1,41 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc fixes for v4.0
-Date: Fri, 27 Mar 2015 23:23:28 +0100
-Message-ID: <20150327222328.GA4014@ls3530.box>
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH 42/86] input/serio: use uapi/linux/pci_ids.h directly
+Date: Sun, 29 Mar 2015 15:40:51 +0200
+Message-ID: <1427635734-24786-43-git-send-email-mst@redhat.com>
+References: <1427635734-24786-1-git-send-email-mst@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	linux-parisc@vger.kernel.org, linux-input@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1427635734-24786-1-git-send-email-mst@redhat.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+Header moved from linux/pci_ids.h to uapi/linux/pci_ids.h,
+use the new header directly so we can drop
+the wrapper in include/linux/pci_ids.h.
 
-Please pull three patches for kernel-4.0 for the parisc architecture from
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+---
+ drivers/input/serio/gscps2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.0-1
-
-One patch from Mikulas fixes a bug on parisc by artifically incrementing the
-counter in pmd_free when the kernel tries to free the preallocated pmd.
-Other than that we now prevent that syscalls gets added without incrementing
-__NR_Linux_syscalls and fix the initial pmd setup code if a default page size
-greater than 4k has been selected. 
-
-Thanks,
-Helge
-
-
-----------------------------------------------------------------
-Helge Deller (2):
-      parisc: Add compile-time check when adding new syscalls
-      parisc: Fix pmd code to depend on PT_NLEVELS value, not on CONFIG_64BIT
-
-Mikulas Patocka (1):
-      parisc: mm: don't count preallocated pmds
-
- arch/parisc/include/asm/pgalloc.h  | 17 ++++++++++-------
- arch/parisc/kernel/syscall_table.S |  9 ++++++---
- 2 files changed, 16 insertions(+), 10 deletions(-)
+diff --git a/drivers/input/serio/gscps2.c b/drivers/input/serio/gscps2.c
+index 94ab494..b7d0854 100644
+--- a/drivers/input/serio/gscps2.c
++++ b/drivers/input/serio/gscps2.c
+@@ -31,7 +31,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/delay.h>
+ #include <linux/ioport.h>
+-#include <linux/pci_ids.h>
++#include <uapi/linux/pci_ids.h>
+ 
+ #include <asm/irq.h>
+ #include <asm/io.h>
+-- 
+MST
