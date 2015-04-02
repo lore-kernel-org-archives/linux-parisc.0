@@ -1,40 +1,60 @@
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v2 2/6] input/serio: drop pci_ids dependency
-Date: Mon, 30 Mar 2015 12:59:27 +0200
-Message-ID: <1427712964-16155-3-git-send-email-mst@redhat.com>
-References: <1427712964-16155-1-git-send-email-mst@redhat.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: E Class and SCSI (53c700 driver)
+Date: Thu, 02 Apr 2015 10:07:53 +0200
+Message-ID: <551CF8D9.3020506@gmx.de>
+References: <5519CA2B.9060407@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	linux-parisc@vger.kernel.org, linux-input@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1427712964-16155-1-git-send-email-mst@redhat.com>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Cc: linux-parisc <linux-parisc@vger.kernel.org>
+To: Dmitry the Zuryanovich <dreadbit@gmail.com>,
+	debian-hppa@lists.debian.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <5519CA2B.9060407@gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This driver does not use any PCI IDs, don't include
-the pci_ids.h header.
+Hi Dmitry,
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/input/serio/gscps2.c | 1 -
- 1 file changed, 1 deletion(-)
+I've added the parisc-kernel-devel mailing list too, since I expect
+that *if* somebody is able to answer your question, it will probably
+be on the parisc-kernel-devel list...
 
-diff --git a/drivers/input/serio/gscps2.c b/drivers/input/serio/gscps2.c
-index 94ab494..ecba666 100644
---- a/drivers/input/serio/gscps2.c
-+++ b/drivers/input/serio/gscps2.c
-@@ -31,7 +31,6 @@
- #include <linux/spinlock.h>
- #include <linux/delay.h>
- #include <linux/ioport.h>
--#include <linux/pci_ids.h>
- 
- #include <asm/irq.h>
- #include <asm/io.h>
--- 
-MST
+On 31.03.2015 00:11, Dmitry the Zuryanovich wrote:
+> As I understand, E class (in my case - E25) has LASI based 53c710
+> which is handled by 53c700.c? (and in case of workstations wrapped by
+> lasi700 - what's for? Just for detecting it?)
+>
+> If I know that that's
+>
+> 5. Sahp Baat Kiuh SCSI at 0xfff74000 [56/52] {4, 0x0, 0x044, 0x00039}
+>
+> , is there a reason to try to
+>
+> #modprobe 53c700 clock=25  base=0xfff74000
+
+Looking at drivers/scsi/lasi700.c, it seems the lasi700 driver sets
+additional flags like force_le_on_be, chip710, burst_length and so on.
+In addition, the IRQs gets connected via drivers/parisc/lasi.c (see lasi_choose_irq()).
+I assume you would need at least a "case 0x39" in there.
+But James is the expert on the 53c700 driver, so he might know more... ?
+  
+> [correct my syntax] and may I expect this to work somehow?
+>
+> What's the problem with  SCSI on E class? Is that a need of some
+> driver which calls 53c700.c with correct parameters taken from
+> hardware? Can it be just passed to module via parameter or the
+> problem is deeper?
+
+It might be deeper.
+In  arch/parisc/kernel/hardware.c I see:
+         {HPHW_A_DMA, 0x044, 0x00039, 0x80, "Sahp Baat Kiuh SCSI"},
+while other SCSI drivers on LASI have HPHW_FIO, e.g.:
+	{HPHW_FIO, 0x016, 0x00082, 0x0, "Gecko Core SCSI"},
+
+
+For reference, here is the full dmesg from Dmitry when he tried to boot his E25
+machine with a recent Linux kernel:
+ftp://parisc.parisc-linux.org/dmesg/E25.dmesg  (http://pastebin.com/sXqUjVub)
+
+Helge
