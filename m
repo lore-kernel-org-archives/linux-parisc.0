@@ -1,84 +1,58 @@
 From: Grant Grundler <grantgrundler@gmail.com>
 Subject: Re: E Class and SCSI (53c700 driver)
-Date: Thu, 2 Apr 2015 10:41:17 -0700
-Message-ID: <CAP6odji4Yrj+ZqiY-UFpbde_j=YBEJtQaMKrAVXuq+y2Sb_1Ng@mail.gmail.com>
+Date: Thu, 2 Apr 2015 11:14:38 -0700
+Message-ID: <CAP6odjgS6KHvB=CHybquCJ4T_hTw5awrF5hzXUENQzOb7Su7Gg@mail.gmail.com>
 References: <5519CA2B.9060407@gmail.com>
 	<551CF8D9.3020506@gmx.de>
 	<1427965174.3559.110.camel@HansenPartnership.com>
+	<BLU437-SMTP517D1501AE614C12AA19EC97F20@phx.gbl>
+	<1427975884.3559.155.camel@HansenPartnership.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Cc: Helge Deller <deller@gmx.de>,
+Cc: John David Anglin <dave.anglin@bell.net>,
+	Helge Deller <deller@gmx.de>,
 	Dmitry the Zuryanovich <dreadbit@gmail.com>,
 	debian-hppa@lists.debian.org,
 	linux-parisc <linux-parisc@vger.kernel.org>
 To: James Bottomley <James.Bottomley@hansenpartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1427965174.3559.110.camel@HansenPartnership.com>
+In-Reply-To: <1427975884.3559.155.camel@HansenPartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Apr 2, 2015 at 1:59 AM, James Bottomley
+On Thu, Apr 2, 2015 at 4:58 AM, James Bottomley
 <James.Bottomley@hansenpartnership.com> wrote:
-....
-> Probably all that's needed is a tiny wrapper driver for whatever bus
-> it's on (what bus is this?).  If you look at lasi, it basically pulls
-> the parameters out of firmware, translates the lasi specific IRQ setting
-> and enables the GSC interrupt (plus some LED stuff specific to lasi).
 ...
->> In  arch/parisc/kernel/hardware.c I see:
->>          {HPHW_A_DMA, 0x044, 0x00039, 0x80, "Sahp Baat Kiuh SCSI"},
+> Well, what do you know: HP has a computer museum full of obsolete
+> documentation.
 >
-> That tells us it's on the Precision bus, doesn't it?
+> http://www.hpmuseum.net/collection_document.php
 
-Yes. "E-class" was one of the "alphabet soup" servers with HP-PB
-(IIRC, not HP-IB) slots. Since the system uses PA-7100LC, the "system
-interconnect" is GSC and an HP-PB bus converter provided access to the
-HP-PB slots.
+oh wow...
 
-I don't believe the 53c710 was connected on E-class servers based on this table:
-    http://www.parisc-linux.org/documentation/hp9000_models.html
+> If anyone can identify the programming specs for the HP-PB (or better
+> still the actual SCSI card) we might be in business.
 
+This doc will help a lot:
+    3000-900_9000-800_OnlineDiagnosticsSubManual_VolIII_LAN-SCSI-MUX_09740-90034_324pages_Jul91.pdf
 
-                                      CPU    BUILT-IN      ADD-ON SCSI I/O
-MODEL STRING     PROJECT NAME        TYPE    SE, FWD/TYPE  SE, FWD, GSC-FWD
-------------     ------------------  -----   ------------  ----------------
-...
-806/E25          WB Orville (48 Mhz) 7100LC  NIO, None     NIO(1),NIO(2),NA
+Look at Section 18 "SCSIPBA" - register descriptions starting on page
+18-21. Register overview on 18-33 (page 216 of the PDF).
 
-("BUILT-IN" and "ADD-ON" SCSI both are NIO - aka HP-PB)
+And I finally found the name of the SCSI chip in the above doc: SPIFI
+(v3).  The "Fast-Wide HVD" NIO card uses SPIFI v4.
 
-...
-> The best docs we have:
-> https://parisc.wiki.kernel.org/images-parisc/5/52/E-class_hpjournal.pdf
+Knowing that name also helped find the Net BSD driver (again):
+    http://lists.parisc-linux.org/pipermail/parisc-linux/2002-June/016557.html
+    http://lists.parisc-linux.org/pipermail/parisc-linux/2002-June/016562.html
+    http://lists.parisc-linux.org/pipermail/parisc-linux/2002-June/016563.html
+    http://lists.parisc-linux.org/pipermail/parisc-linux/2002-June/016576.html
 
-Also check on:
-    http://www.openpa.net/systems/index.html
-
-or more specifically:
-   http://www.openpa.net/systems/hp-9000_e25_e35_e45_e55.html
-
-> Say the SCSI controller here is precision attached not lasi attached
-> (the ethernet is on the lasi, though).  Unfortunately, we don't have any
-> documents at all in the archive for the precision bus that I can find.
-
-I don't recall any HP-PB specific docs being released.  What I can say
-is the HP-PB devices used transaction based interrupt routing similar
-to how Dino and other PCI host controllers generated interrupts. So no
-IRQ lines are used for HP-PB. And IIRC, there is also no IOMMU in
-D/E/F/H/I series servers (meaning they are NOT DMA/Cache coherent
-systems).
-
-Lastly, the HP-PB SCSI adapters used a proprietary HP designed (not
-Symbios designed) SCSI controller. No docs were ever published for
-those either. The "fast-narrow SE" controller (28655A) was directly
-controlled by the host computer and was not particularly efficient
-(IIRC: 3 interrupts per transaction). The "fast-Wide HVD" (28696A) had
-an i960 on board to manage the "version 4" chip. SCSI bus control was
-handed to the host computer if anything happened that the i960
-couldn't handle.
+and looks like NetBSD "newsmips" did support SPIFI-3:
+   http://netbsd.mirrors.treibsand.com/ports/newsmips/
 
 cheers,
 grant
 
-ps. I also found the manual for 28655A:
-   http://pdfs.icecat.biz/pdf/22940335-3766.pdf
+ps. It's embarrassing I couldn't remember the name of the SCSI chip: I
+worked on HPUX SPIFI-4 driver between 1994-1996.
