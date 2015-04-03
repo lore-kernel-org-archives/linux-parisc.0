@@ -1,58 +1,92 @@
-From: Grant Grundler <grantgrundler@gmail.com>
-Subject: Re: E Class and SCSI (53c700 driver)
-Date: Thu, 2 Apr 2015 11:14:38 -0700
-Message-ID: <CAP6odjgS6KHvB=CHybquCJ4T_hTw5awrF5hzXUENQzOb7Su7Gg@mail.gmail.com>
-References: <5519CA2B.9060407@gmail.com>
-	<551CF8D9.3020506@gmx.de>
-	<1427965174.3559.110.camel@HansenPartnership.com>
-	<BLU437-SMTP517D1501AE614C12AA19EC97F20@phx.gbl>
-	<1427975884.3559.155.camel@HansenPartnership.com>
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: [PATCH v9 22/30] parisc/PCI: Use pci_scan_root_bus() for simplicity
+Date: Fri, 3 Apr 2015 17:25:56 +0800
+Message-ID: <1428053164-28277-24-git-send-email-wangyijing@huawei.com>
+References: <1428053164-28277-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: John David Anglin <dave.anglin@bell.net>,
-	Helge Deller <deller@gmx.de>,
-	Dmitry the Zuryanovich <dreadbit@gmail.com>,
-	debian-hppa@lists.debian.org,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1427975884.3559.155.camel@HansenPartnership.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, <linux-pci@vger.kernel.org>,
+	Yinghai Lu <yinghai@kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	Marc Zyngier <marc.zyngier@arm.com>,
+	<linux-arm-kernel@lists.infradead.org>,
+	Russell King <linux@arm.linux.org.uk>, <dja@axtens.net>,
+	<x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Rusty Russell <rusty@rustcorp.com.au>,
+	Tony Luck <tony.luck@intel.com>, <linux-ia64@vger.kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	"Guan Xuetao" <gxt@mprc.pku.edu.cn>, <linux-alpha@vger.kernel.org>,
+	<linux-m68k@lists.linux-m68k.org>, Liviu Dudau <liviu@dudau.co.uk>,
+	"Arnd Bergmann" <arnd@arndb.de>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	"Yijing Wang" <wangyijing@huawei.com>,
+	Yijing Wang <wangyijing0307@gmail.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	<linux-parisc@vger.ker
+To: Bjorn Helgaas <bhelgaas@google.com>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1428053164-28277-1-git-send-email-wangyijing@huawei.com>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Apr 2, 2015 at 4:58 AM, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-...
-> Well, what do you know: HP has a computer museum full of obsolete
-> documentation.
->
-> http://www.hpmuseum.net/collection_document.php
+From: Yijing Wang <wangyijing0307@gmail.com>
 
-oh wow...
+Now pci_bus_add_devices() has been ripped out
+from pci_scan_root_bus(), we could use pci_scan_root_bus()
+instead of pci_create_root_bus() + pci_scan_child_bus()
+for simplicity.
 
-> If anyone can identify the programming specs for the HP-PB (or better
-> still the actual SCSI card) we might be in business.
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
+CC: linux-parisc@vger.kernel.org
+---
+ drivers/parisc/dino.c    |    4 ++--
+ drivers/parisc/lba_pci.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-This doc will help a lot:
-    3000-900_9000-800_OnlineDiagnosticsSubManual_VolIII_LAN-SCSI-MUX_09740-90034_324pages_Jul91.pdf
-
-Look at Section 18 "SCSIPBA" - register descriptions starting on page
-18-21. Register overview on 18-33 (page 216 of the PDF).
-
-And I finally found the name of the SCSI chip in the above doc: SPIFI
-(v3).  The "Fast-Wide HVD" NIO card uses SPIFI v4.
-
-Knowing that name also helped find the Net BSD driver (again):
-    http://lists.parisc-linux.org/pipermail/parisc-linux/2002-June/016557.html
-    http://lists.parisc-linux.org/pipermail/parisc-linux/2002-June/016562.html
-    http://lists.parisc-linux.org/pipermail/parisc-linux/2002-June/016563.html
-    http://lists.parisc-linux.org/pipermail/parisc-linux/2002-June/016576.html
-
-and looks like NetBSD "newsmips" did support SPIFI-3:
-   http://netbsd.mirrors.treibsand.com/ports/newsmips/
-
-cheers,
-grant
-
-ps. It's embarrassing I couldn't remember the name of the SCSI chip: I
-worked on HPUX SPIFI-4 driver between 1994-1996.
+diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+index f375252..146c3ff 100644
+--- a/drivers/parisc/dino.c
++++ b/drivers/parisc/dino.c
+@@ -985,7 +985,7 @@ static int __init dino_probe(struct parisc_device *dev)
+ 	** It's not used to avoid chicken/egg problems
+ 	** with configuration accessor functions.
+ 	*/
+-	dino_dev->hba.hba_bus = bus = pci_create_root_bus(&dev->dev,
++	dino_dev->hba.hba_bus = bus = pci_scan_root_bus(&dev->dev,
+ 			 0, dino_current_bus, &dino_cfg_ops, NULL, &resources);
+ 	if (!bus) {
+ 		printk(KERN_ERR "ERROR: failed to scan PCI bus on %s (duplicate bus number %d?)\n",
+@@ -996,7 +996,7 @@ static int __init dino_probe(struct parisc_device *dev)
+ 		return 0;
+ 	}
+ 
+-	max = pci_scan_child_bus(bus);
++	max = pci_bus_child_max_busnr(bus);
+ 	pci_bus_update_busn_res_end(bus, max);
+ 
+ 	/* This code *depends* on scanning being single threaded
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index 2949030..b630364 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -1563,14 +1563,14 @@ lba_driver_probe(struct parisc_device *dev)
+ 
+ 	dev->dev.platform_data = lba_dev;
+ 	lba_bus = lba_dev->hba.hba_bus =
+-		pci_create_root_bus(&dev->dev, 0, lba_dev->hba.bus_num.start,
++		pci_scan_root_bus(&dev->dev, 0, lba_dev->hba.bus_num.start,
+ 				    cfg_ops, NULL, &resources);
+ 	if (!lba_bus) {
+ 		pci_free_resource_list(&resources);
+ 		return 0;
+ 	}
+ 
+-	max = pci_scan_child_bus(lba_bus);
++	max = pci_bus_child_max_busnr(lba_bus);
+ 
+ 	/* This is in lieu of calling pci_assign_unassigned_resources() */
+ 	if (is_pdc_pat()) {
+-- 
+1.7.1
