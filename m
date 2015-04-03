@@ -1,92 +1,28 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v9 22/30] parisc/PCI: Use pci_scan_root_bus() for simplicity
-Date: Fri, 3 Apr 2015 17:25:56 +0800
-Message-ID: <1428053164-28277-24-git-send-email-wangyijing@huawei.com>
-References: <1428053164-28277-1-git-send-email-wangyijing@huawei.com>
+From: Dmitry the Zuryanovich <dreadbit@gmail.com>
+Subject: Re: E Class and SCSI (53c700 driver)
+Date: Fri, 03 Apr 2015 15:22:36 +0300
+Message-ID: <551E860C.6090701@gmail.com>
+References: <5519CA2B.9060407@gmail.com>	<551CF8D9.3020506@gmx.de>	<1427965174.3559.110.camel@HansenPartnership.com>	<BLU437-SMTP517D1501AE614C12AA19EC97F20@phx.gbl>	<1427975884.3559.155.camel@HansenPartnership.com> <CAP6odjgS6KHvB=CHybquCJ4T_hTw5awrF5hzXUENQzOb7Su7Gg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, <linux-pci@vger.kernel.org>,
-	Yinghai Lu <yinghai@kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	Marc Zyngier <marc.zyngier@arm.com>,
-	<linux-arm-kernel@lists.infradead.org>,
-	Russell King <linux@arm.linux.org.uk>, <dja@axtens.net>,
-	<x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Rusty Russell <rusty@rustcorp.com.au>,
-	Tony Luck <tony.luck@intel.com>, <linux-ia64@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	"Guan Xuetao" <gxt@mprc.pku.edu.cn>, <linux-alpha@vger.kernel.org>,
-	<linux-m68k@lists.linux-m68k.org>, Liviu Dudau <liviu@dudau.co.uk>,
-	"Arnd Bergmann" <arnd@arndb.de>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	"Yijing Wang" <wangyijing@huawei.com>,
-	Yijing Wang <wangyijing0307@gmail.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	<linux-parisc@vger.ker
-To: Bjorn Helgaas <bhelgaas@google.com>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1428053164-28277-1-git-send-email-wangyijing@huawei.com>
-List-ID: <linux-m68k.vger.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Cc: John David Anglin <dave.anglin@bell.net>,
+	Helge Deller <deller@gmx.de>, debian-hppa@lists.debian.org,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: Grant Grundler <grantgrundler@gmail.com>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <CAP6odjgS6KHvB=CHybquCJ4T_hTw5awrF5hzXUENQzOb7Su7Gg@mail.gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Yijing Wang <wangyijing0307@gmail.com>
 
-Now pci_bus_add_devices() has been ripped out
-from pci_scan_root_bus(), we could use pci_scan_root_bus()
-instead of pci_create_root_bus() + pci_scan_child_bus()
-for simplicity.
+> And I finally found the name of the SCSI chip in the above doc: SPIFI
+> (v3).  The "Fast-Wide HVD" NIO card uses SPIFI v4.
 
-Signed-off-by: Yijing Wang <wangyijing@huawei.com>
-CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
-CC: linux-parisc@vger.kernel.org
----
- drivers/parisc/dino.c    |    4 ++--
- drivers/parisc/lba_pci.c |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index f375252..146c3ff 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -985,7 +985,7 @@ static int __init dino_probe(struct parisc_device *dev)
- 	** It's not used to avoid chicken/egg problems
- 	** with configuration accessor functions.
- 	*/
--	dino_dev->hba.hba_bus = bus = pci_create_root_bus(&dev->dev,
-+	dino_dev->hba.hba_bus = bus = pci_scan_root_bus(&dev->dev,
- 			 0, dino_current_bus, &dino_cfg_ops, NULL, &resources);
- 	if (!bus) {
- 		printk(KERN_ERR "ERROR: failed to scan PCI bus on %s (duplicate bus number %d?)\n",
-@@ -996,7 +996,7 @@ static int __init dino_probe(struct parisc_device *dev)
- 		return 0;
- 	}
- 
--	max = pci_scan_child_bus(bus);
-+	max = pci_bus_child_max_busnr(bus);
- 	pci_bus_update_busn_res_end(bus, max);
- 
- 	/* This code *depends* on scanning being single threaded
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index 2949030..b630364 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -1563,14 +1563,14 @@ lba_driver_probe(struct parisc_device *dev)
- 
- 	dev->dev.platform_data = lba_dev;
- 	lba_bus = lba_dev->hba.hba_bus =
--		pci_create_root_bus(&dev->dev, 0, lba_dev->hba.bus_num.start,
-+		pci_scan_root_bus(&dev->dev, 0, lba_dev->hba.bus_num.start,
- 				    cfg_ops, NULL, &resources);
- 	if (!lba_bus) {
- 		pci_free_resource_list(&resources);
- 		return 0;
- 	}
- 
--	max = pci_scan_child_bus(lba_bus);
-+	max = pci_bus_child_max_busnr(lba_bus);
- 
- 	/* This is in lieu of calling pci_assign_unassigned_resources() */
- 	if (is_pdc_pat()) {
+http://xepb.org/dtz/2015E25.html - here is photos of the boards, if this 
+helps.
+
 -- 
-1.7.1
+Slack@office
+
