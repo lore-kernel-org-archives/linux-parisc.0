@@ -1,410 +1,63 @@
-From: Quentin Lambert <lambert.quentin@gmail.com>
-Subject: [PATCH] ALSA: remove deprecated use of pci api
-Date: Wed, 15 Apr 2015 16:10:17 +0200
-Message-ID: <1429107018-8552-1-git-send-email-lambert.quentin@gmail.com>
-Cc: kernel-janitors@vger.kernel.org,
-	Quentin Lambert <lambert.quentin@gmail.com>
-To: Thibaut Varene <T-Bone@parisc-linux.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>,
-	Jaya Kumar <jayakumar.alsa@gmail.com>,
-	linux-parisc@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] parisc: Replace PT_NLEVELS with CONFIG_PGTABLE_LEVELS
+Date: Wed, 15 Apr 2015 13:34:28 -0700
+Message-ID: <1429130068-18096-1-git-send-email-linux@roeck-us.net>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Guenter Roeck <linux@roeck-us.net>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Replace occurences of the pci api by appropriate call to the dma api.
+The following warning is seen when compiling parisc images
 
-A simplified version of the semantic patch that finds this problem is as
-follows: (http://coccinelle.lip6.fr)
+./arch/parisc/include/asm/pgalloc.h: In function 'pgd_alloc':
+./arch/parisc/include/asm/pgalloc.h:29:5: warning: "PT_NLEVELS" is not defined
 
-@deprecated@
-idexpression id;
-position p;
-@@
+Some definitions of PT_NLEVELS were missed with the conversion to
+CONFIG_PGTABLE_LEVELS.
 
-(
-  pci_dma_supported@p ( id, ...)
-|
-  pci_alloc_consistent@p ( id, ...)
-)
-
-@bad1@
-idexpression id;
-position deprecated.p;
-@@
-...when != &id->dev
-   when != pci_get_drvdata ( id )
-   when != pci_enable_device ( id )
-(
-  pci_dma_supported@p ( id, ...)
-|
-  pci_alloc_consistent@p ( id, ...)
-)
-
-@depends on !bad1@
-idexpression id;
-expression direction;
-position deprecated.p;
-@@
-
-(
-- pci_dma_supported@p ( id,
-+ dma_supported ( &id->dev,
-...
-+ , GFP_ATOMIC
-  )
-|
-- pci_alloc_consistent@p ( id,
-+ dma_alloc_coherent ( &id->dev,
-...
-+ , GFP_ATOMIC
-  )
-)
-
-Signed-off-by: Quentin Lambert <lambert.quentin@gmail.com>
+Fixes: f24ffde43237 ("parisc: expose number of page table levels
+	on Kconfig level")
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- sound/pci/ad1889.c                  |    4 ++--
- sound/pci/ali5451/ali5451.c         |    4 ++--
- sound/pci/als300.c                  |    4 ++--
- sound/pci/als4000.c                 |    4 ++--
- sound/pci/au88x0/au88x0.c           |    4 ++--
- sound/pci/aw2/aw2-alsa.c            |    4 ++--
- sound/pci/azt3328.c                 |    4 ++--
- sound/pci/ca0106/ca0106_main.c      |    4 ++--
- sound/pci/cs5535audio/cs5535audio.c |    4 ++--
- sound/pci/ctxfi/cthw20k1.c          |    4 ++--
- sound/pci/ctxfi/cthw20k2.c          |    4 ++--
- sound/pci/emu10k1/emu10k1_main.c    |    4 ++--
- sound/pci/es1938.c                  |    4 ++--
- sound/pci/es1968.c                  |    4 ++--
- sound/pci/hda/hda_intel.c           |    8 ++++----
- sound/pci/ice1712/ice1712.c         |    4 ++--
- sound/pci/lx6464es/lx6464es.c       |    2 +-
- sound/pci/maestro3.c                |    4 ++--
- sound/pci/mixart/mixart.c           |    2 +-
- sound/pci/pcxhr/pcxhr.c             |    2 +-
- sound/pci/sis7019.c                 |   10 +++++-----
- sound/pci/sonicvibes.c              |    4 ++--
- sound/pci/trident/trident_main.c    |    4 ++--
- 23 files changed, 48 insertions(+), 48 deletions(-)
+ arch/parisc/include/asm/pgalloc.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/sound/pci/ad1889.c
-+++ b/sound/pci/ad1889.c
-@@ -898,8 +898,8 @@ snd_ad1889_create(struct snd_card *card,
- 		return err;
+diff --git a/arch/parisc/include/asm/pgalloc.h b/arch/parisc/include/asm/pgalloc.h
+index 1ba29369257c..3a08eae3318f 100644
+--- a/arch/parisc/include/asm/pgalloc.h
++++ b/arch/parisc/include/asm/pgalloc.h
+@@ -26,7 +26,7 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
  
- 	/* check PCI availability (32bit DMA) */
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(32)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(32)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(32)) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(32)) < 0) {
- 		dev_err(card->dev, "error setting 32-bit DMA mask.\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
---- a/sound/pci/ali5451/ali5451.c
-+++ b/sound/pci/ali5451/ali5451.c
-@@ -2105,8 +2105,8 @@ static int snd_ali_create(struct snd_car
- 	if (err < 0)
- 		return err;
- 	/* check, if we can restrict PCI DMA transfers to 31 bits */
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(31)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(31)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(31)) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(31)) < 0) {
- 		dev_err(card->dev,
- 			"architecture does not support 31bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
---- a/sound/pci/als300.c
-+++ b/sound/pci/als300.c
-@@ -658,8 +658,8 @@ static int snd_als300_create(struct snd_
- 	if ((err = pci_enable_device(pci)) < 0)
- 		return err;
+ 	if (likely(pgd != NULL)) {
+ 		memset(pgd, 0, PAGE_SIZE<<PGD_ALLOC_ORDER);
+-#if PT_NLEVELS == 3
++#if CONFIG_PGTABLE_LEVELS == 3
+ 		actual_pgd += PTRS_PER_PGD;
+ 		/* Populate first pmd with allocated memory.  We mark it
+ 		 * with PxD_FLAG_ATTACHED as a signal to the system that this
+@@ -45,7 +45,7 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
  
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(28)) < 0 ||
--		pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(28)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(28)) < 0 ||
-+		dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(28)) < 0) {
- 		dev_err(card->dev, "error setting 28bit DMA mask\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
---- a/sound/pci/als4000.c
-+++ b/sound/pci/als4000.c
-@@ -871,8 +871,8 @@ static int snd_card_als4000_probe(struct
- 		return err;
- 	}
- 	/* check, if we can restrict PCI DMA transfers to 24 bits */
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(24)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(24)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(24)) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(24)) < 0) {
- 		dev_err(&pci->dev, "architecture does not support 24bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
---- a/sound/pci/au88x0/au88x0.c
-+++ b/sound/pci/au88x0/au88x0.c
-@@ -150,8 +150,8 @@ snd_vortex_create(struct snd_card *card,
- 	// check PCI availability (DMA).
- 	if ((err = pci_enable_device(pci)) < 0)
- 		return err;
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(32)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(32)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(32)) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(32)) < 0) {
- 		dev_err(card->dev, "error to set DMA mask\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
---- a/sound/pci/aw2/aw2-alsa.c
-+++ b/sound/pci/aw2/aw2-alsa.c
-@@ -258,8 +258,8 @@ static int snd_aw2_create(struct snd_car
- 	pci_set_master(pci);
- 
- 	/* check PCI availability (32bit DMA) */
--	if ((pci_set_dma_mask(pci, DMA_BIT_MASK(32)) < 0) ||
--	    (pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(32)) < 0)) {
-+	if ((dma_set_mask(&pci->dev, DMA_BIT_MASK(32)) < 0) ||
-+	    (dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(32)) < 0)) {
- 		dev_err(card->dev, "Impossible to set 32bit mask DMA\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
---- a/sound/pci/azt3328.c
-+++ b/sound/pci/azt3328.c
-@@ -2420,8 +2420,8 @@ snd_azf3328_create(struct snd_card *card
- 	chip->irq = -1;
- 
- 	/* check if we can restrict PCI DMA transfers to 24 bits */
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(24)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(24)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(24)) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(24)) < 0) {
- 		dev_err(card->dev,
- 			"architecture does not support 24bit PCI busmaster DMA\n"
- 		);
---- a/sound/pci/ca0106/ca0106_main.c
-+++ b/sound/pci/ca0106/ca0106_main.c
-@@ -1676,8 +1676,8 @@ static int snd_ca0106_create(int dev, st
- 	err = pci_enable_device(pci);
- 	if (err < 0)
- 		return err;
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(32)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(32)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(32)) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(32)) < 0) {
- 		dev_err(card->dev, "error to set 32bit mask DMA\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
---- a/sound/pci/cs5535audio/cs5535audio.c
-+++ b/sound/pci/cs5535audio/cs5535audio.c
-@@ -289,8 +289,8 @@ static int snd_cs5535audio_create(struct
- 	if ((err = pci_enable_device(pci)) < 0)
- 		return err;
- 
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(32)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(32)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(32)) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(32)) < 0) {
- 		dev_warn(card->dev, "unable to get 32bit dma\n");
- 		err = -ENXIO;
- 		goto pcifail;
---- a/sound/pci/ctxfi/cthw20k1.c
-+++ b/sound/pci/ctxfi/cthw20k1.c
-@@ -1910,8 +1910,8 @@ static int hw_card_start(struct hw *hw)
- 		return err;
- 
- 	/* Set DMA transfer mask */
--	if (pci_set_dma_mask(pci, CT_XFI_DMA_MASK) < 0 ||
--	    pci_set_consistent_dma_mask(pci, CT_XFI_DMA_MASK) < 0) {
-+	if (dma_set_mask(&pci->dev, CT_XFI_DMA_MASK) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, CT_XFI_DMA_MASK) < 0) {
- 		dev_err(hw->card->dev,
- 			"architecture does not support PCI busmaster DMA with mask 0x%llx\n",
- 			CT_XFI_DMA_MASK);
---- a/sound/pci/ctxfi/cthw20k2.c
-+++ b/sound/pci/ctxfi/cthw20k2.c
-@@ -2035,8 +2035,8 @@ static int hw_card_start(struct hw *hw)
- 		return err;
- 
- 	/* Set DMA transfer mask */
--	if (pci_set_dma_mask(pci, CT_XFI_DMA_MASK) < 0 ||
--	    pci_set_consistent_dma_mask(pci, CT_XFI_DMA_MASK) < 0) {
-+	if (dma_set_mask(&pci->dev, CT_XFI_DMA_MASK) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, CT_XFI_DMA_MASK) < 0) {
- 		dev_err(hw->card->dev,
- 			"architecture does not support PCI busmaster DMA with mask 0x%llx\n",
- 			CT_XFI_DMA_MASK);
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -1904,8 +1904,8 @@ int snd_emu10k1_create(struct snd_card *
- 
- 	/* set the DMA transfer mask */
- 	emu->dma_mask = is_audigy ? AUDIGY_DMA_MASK : EMU10K1_DMA_MASK;
--	if (pci_set_dma_mask(pci, emu->dma_mask) < 0 ||
--	    pci_set_consistent_dma_mask(pci, emu->dma_mask) < 0) {
-+	if (dma_set_mask(&pci->dev, emu->dma_mask) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, emu->dma_mask) < 0) {
- 		dev_err(card->dev,
- 			"architecture does not support PCI busmaster DMA with mask 0x%lx\n",
- 			emu->dma_mask);
---- a/sound/pci/es1938.c
-+++ b/sound/pci/es1938.c
-@@ -1580,8 +1580,8 @@ static int snd_es1938_create(struct snd_
- 	if ((err = pci_enable_device(pci)) < 0)
- 		return err;
-         /* check, if we can restrict PCI DMA transfers to 24 bits */
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(24)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(24)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(24)) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(24)) < 0) {
- 		dev_err(card->dev,
- 			"architecture does not support 24bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
---- a/sound/pci/es1968.c
-+++ b/sound/pci/es1968.c
-@@ -2689,8 +2689,8 @@ static int snd_es1968_create(struct snd_
- 	if ((err = pci_enable_device(pci)) < 0)
- 		return err;
- 	/* check, if we can restrict PCI DMA transfers to 28 bits */
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(28)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(28)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(28)) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(28)) < 0) {
- 		dev_err(card->dev,
- 			"architecture does not support 28bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1528,11 +1528,11 @@ static int azx_first_init(struct azx *ch
- 	/* allow 64bit DMA address if supported by H/W */
- 	if (!(gcap & AZX_GCAP_64OK))
- 		dma_bits = 32;
--	if (!pci_set_dma_mask(pci, DMA_BIT_MASK(dma_bits))) {
--		pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(dma_bits));
-+	if (!dma_set_mask(&pci->dev, DMA_BIT_MASK(dma_bits))) {
-+		dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(dma_bits));
- 	} else {
--		pci_set_dma_mask(pci, DMA_BIT_MASK(32));
--		pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(32));
-+		dma_set_mask(&pci->dev, DMA_BIT_MASK(32));
-+		dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(32));
- 	}
- 
- 	/* read number of streams from GCAP register instead of using
---- a/sound/pci/ice1712/ice1712.c
-+++ b/sound/pci/ice1712/ice1712.c
-@@ -2530,8 +2530,8 @@ static int snd_ice1712_create(struct snd
- 	if (err < 0)
- 		return err;
- 	/* check, if we can restrict PCI DMA transfers to 28 bits */
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(28)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(28)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(28)) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(28)) < 0) {
- 		dev_err(card->dev,
- 			"architecture does not support 28bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
---- a/sound/pci/lx6464es/lx6464es.c
-+++ b/sound/pci/lx6464es/lx6464es.c
-@@ -981,7 +981,7 @@ static int snd_lx6464es_create(struct sn
- 	pci_set_master(pci);
- 
- 	/* check if we can restrict PCI DMA transfers to 32 bits */
--	err = pci_set_dma_mask(pci, DMA_BIT_MASK(32));
-+	err = dma_set_mask(&pci->dev, DMA_BIT_MASK(32));
- 	if (err < 0) {
- 		dev_err(card->dev,
- 			"architecture does not support 32bit PCI busmaster DMA\n");
---- a/sound/pci/maestro3.c
-+++ b/sound/pci/maestro3.c
-@@ -2537,8 +2537,8 @@ snd_m3_create(struct snd_card *card, str
- 		return -EIO;
- 
- 	/* check, if we can restrict PCI DMA transfers to 28 bits */
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(28)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(28)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(28)) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(28)) < 0) {
- 		dev_err(card->dev,
- 			"architecture does not support 28bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
---- a/sound/pci/mixart/mixart.c
-+++ b/sound/pci/mixart/mixart.c
-@@ -1269,7 +1269,7 @@ static int snd_mixart_probe(struct pci_d
- 	pci_set_master(pci);
- 
- 	/* check if we can restrict PCI DMA transfers to 32 bits */
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(32)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(32)) < 0) {
- 		dev_err(&pci->dev,
- 			"architecture does not support 32bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
---- a/sound/pci/pcxhr/pcxhr.c
-+++ b/sound/pci/pcxhr/pcxhr.c
-@@ -1537,7 +1537,7 @@ static int pcxhr_probe(struct pci_dev *p
- 	pci_set_master(pci);
- 
- 	/* check if we can restrict PCI DMA transfers to 32 bits */
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(32)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(32)) < 0) {
- 		dev_err(&pci->dev,
- 			"architecture does not support 32bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
---- a/sound/pci/sis7019.c
-+++ b/sound/pci/sis7019.c
-@@ -383,9 +383,9 @@ static void __sis_map_silence(struct sis
+ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
  {
- 	/* Helper function: must hold sis->voice_lock on entry */
- 	if (!sis->silence_users)
--		sis->silence_dma_addr = pci_map_single(sis->pci,
-+		sis->silence_dma_addr = dma_map_single(&sis->pci->dev,
- 						sis->suspend_state[0],
--						4096, PCI_DMA_TODEVICE);
-+						4096, DMA_TO_DEVICE);
- 	sis->silence_users++;
- }
- 
-@@ -394,8 +394,8 @@ static void __sis_unmap_silence(struct s
- 	/* Helper function: must hold sis->voice_lock on entry */
- 	sis->silence_users--;
- 	if (!sis->silence_users)
--		pci_unmap_single(sis->pci, sis->silence_dma_addr, 4096,
--					PCI_DMA_TODEVICE);
-+		dma_unmap_single(&sis->pci->dev, sis->silence_dma_addr, 4096,
-+					DMA_TO_DEVICE);
- }
- 
- static void sis_free_voice(struct sis7019 *sis, struct voice *voice)
-@@ -1325,7 +1325,7 @@ static int sis_chip_create(struct snd_ca
- 	if (rc)
- 		goto error_out;
- 
--	rc = pci_set_dma_mask(pci, DMA_BIT_MASK(30));
-+	rc = dma_set_mask(&pci->dev, DMA_BIT_MASK(30));
- 	if (rc < 0) {
- 		dev_err(&pci->dev, "architecture does not support 30-bit PCI busmaster DMA");
- 		goto error_out_enabled;
---- a/sound/pci/sonicvibes.c
-+++ b/sound/pci/sonicvibes.c
-@@ -1259,8 +1259,8 @@ static int snd_sonicvibes_create(struct
- 	if ((err = pci_enable_device(pci)) < 0)
- 		return err;
- 	/* check, if we can restrict PCI DMA transfers to 24 bits */
--        if (pci_set_dma_mask(pci, DMA_BIT_MASK(24)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(24)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(24)) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(24)) < 0) {
- 		dev_err(card->dev,
- 			"architecture does not support 24bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
---- a/sound/pci/trident/trident_main.c
-+++ b/sound/pci/trident/trident_main.c
-@@ -3551,8 +3551,8 @@ int snd_trident_create(struct snd_card *
- 	if ((err = pci_enable_device(pci)) < 0)
- 		return err;
- 	/* check, if we can restrict PCI DMA transfers to 30 bits */
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(30)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(30)) < 0) {
-+	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(30)) < 0 ||
-+	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(30)) < 0) {
- 		dev_err(card->dev,
- 			"architecture does not support 30bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
+-#if PT_NLEVELS == 3
++#if CONFIG_PGTABLE_LEVELS == 3
+ 	pgd -= PTRS_PER_PGD;
+ #endif
+ 	free_pages((unsigned long)pgd, PGD_ALLOC_ORDER);
+@@ -102,7 +102,7 @@ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+ static inline void
+ pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *pte)
+ {
+-#if PT_NLEVELS == 3
++#if CONFIG_PGTABLE_LEVELS == 3
+ 	/* preserve the gateway marker if this is the beginning of
+ 	 * the permanent pmd */
+ 	if(pmd_flag(*pmd) & PxD_FLAG_ATTACHED)
+-- 
+2.1.0
+
