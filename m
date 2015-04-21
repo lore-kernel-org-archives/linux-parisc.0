@@ -1,94 +1,44 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v10 22/29] parisc/PCI: Use pci_scan_root_bus() for simplicity
-Date: Tue, 21 Apr 2015 19:34:41 +0800
-Message-ID: <1429616088-10249-23-git-send-email-wangyijing@huawei.com>
-References: <1429616088-10249-1-git-send-email-wangyijing@huawei.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc fixes for v4.1
+Date: Tue, 21 Apr 2015 22:59:22 +0200
+Message-ID: <20150421205922.GA16749@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, <linux-pci@vger.kernel.org>,
-	Yinghai Lu <yinghai@kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	Marc Zyngier <marc.zyngier@arm.com>,
-	<linux-arm-kernel@lists.infradead.org>,
-	Russell King <linux@arm.linux.org.uk>, <dja@axtens.net>,
-	<x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Rusty Russell <rusty@rustcorp.com.au>,
-	Tony Luck <tony.luck@intel.com>, <linux-ia64@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	"Guan Xuetao" <gxt@mprc.pku.edu.cn>, <linux-alpha@vger.kernel.org>,
-	<linux-m68k@lists.linux-m68k.org>, Liviu Dudau <liviu@dudau.co.uk>,
-	"Arnd Bergmann" <arnd@arndb.de>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	"Yijing Wang" <wangyijing@huawei.com>,
-	Yijing Wang <wangyijing0307@gmail.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	<linux-parisc@vger.ker
-To: Bjorn Helgaas <bhelgaas@google.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1429616088-10249-1-git-send-email-wangyijing@huawei.com>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Yijing Wang <wangyijing0307@gmail.com>
+Hi Linus,
 
-Now pci_bus_add_devices() has been ripped out
-from pci_scan_root_bus(), we could use pci_scan_root_bus()
-instead of pci_create_root_bus() + pci_scan_child_bus()
-for simplicity.
+Please pull two patches for kernel v4.1 for the parisc architecture from
 
-Signed-off-by: Yijing Wang <wangyijing@huawei.com>
-CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
-CC: linux-parisc@vger.kernel.org
----
- drivers/parisc/dino.c    |    6 +++---
- drivers/parisc/lba_pci.c |    5 +++--
- 2 files changed, 6 insertions(+), 5 deletions(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.1-1
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index 56abc43..146c3ff 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -985,8 +985,8 @@ static int __init dino_probe(struct parisc_device *dev)
- 	** It's not used to avoid chicken/egg problems
- 	** with configuration accessor functions.
- 	*/
--	dino_dev->hba.hba_bus = bus = pci_create_root_bus(&dev->dev,
--			 0, &dino_cfg_ops, NULL, &resources);
-+	dino_dev->hba.hba_bus = bus = pci_scan_root_bus(&dev->dev,
-+			 0, dino_current_bus, &dino_cfg_ops, NULL, &resources);
- 	if (!bus) {
- 		printk(KERN_ERR "ERROR: failed to scan PCI bus on %s (duplicate bus number %d?)\n",
- 		       dev_name(&dev->dev), dino_current_bus);
-@@ -996,7 +996,7 @@ static int __init dino_probe(struct parisc_device *dev)
- 		return 0;
- 	}
+The patch by Guenter Roeck fixes the build on parisc which got broken because
+of commit f24ffde43237 (parisc: expose number of page table levels on Kconfig
+level) and the patch from Matthew Wilcox converts our code to use the generic
+scatterlist.h header file.
  
--	max = pci_scan_child_bus(bus);
-+	max = pci_bus_child_max_busnr(bus);
- 	pci_bus_update_busn_res_end(bus, max);
- 
- 	/* This code *depends* on scanning being single threaded
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index 0b9ed96..24e42bf 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -1563,13 +1563,14 @@ lba_driver_probe(struct parisc_device *dev)
- 
- 	dev->dev.platform_data = lba_dev;
- 	lba_bus = lba_dev->hba.hba_bus =
--		pci_create_root_bus(&dev->dev, 0, cfg_ops, NULL, &resources);
-+		pci_scan_root_bus(&dev->dev, 0, lba_dev->hba.bus_num.start,
-+				cfg_ops, NULL, &resources);
- 	if (!lba_bus) {
- 		pci_free_resource_list(&resources);
- 		return 0;
- 	}
- 
--	max = pci_scan_child_bus(lba_bus);
-+	max = pci_bus_child_max_busnr(lba_bus);
- 
- 	/* This is in lieu of calling pci_assign_unassigned_resources() */
- 	if (is_pdc_pat()) {
--- 
-1.7.1
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Guenter Roeck (1):
+      parisc: Replace PT_NLEVELS with CONFIG_PGTABLE_LEVELS
+
+Matthew Wilcox (1):
+      parisc: Eliminate sg_virt_addr() and private scatterlist.h
+
+ arch/parisc/include/asm/Kbuild        |  1 +
+ arch/parisc/include/asm/pgalloc.h     |  6 +++---
+ arch/parisc/include/asm/scatterlist.h | 10 ----------
+ arch/parisc/kernel/pci-dma.c          |  8 ++++----
+ drivers/parisc/ccio-dma.c             |  6 +++---
+ drivers/parisc/iommu-helpers.h        | 26 ++++++++++++++------------
+ drivers/parisc/sba_iommu.c            |  7 +++----
+ 7 files changed, 28 insertions(+), 36 deletions(-)
+ delete mode 100644 arch/parisc/include/asm/scatterlist.h
