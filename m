@@ -1,44 +1,36 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc fixes for v4.1
-Date: Tue, 21 Apr 2015 22:59:22 +0200
-Message-ID: <20150421205922.GA16749@p100.box>
+From: Meelis Roos <mroos@linux.ee>
+Subject: 4.0 parisc regression: memory leak?
+Date: Sat, 25 Apr 2015 22:19:12 +0300 (EEST)
+Message-ID: <alpine.LRH.2.11.1504242317450.14818@math.ut.ee>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: linux-parisc@vger.kernel.org,
+	Linux Kernel list <linux-kernel@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+I noticed that with 4.0 I'm running out of memory on HP A500 (1G RAM) 
+and HP RP3410 (2G RAM) parisc machines during gentoo "revdep-rebuild 
+-ip". Each time free shows less free memory until OOM killer visits us 
+(and first revdep-rebuild after nontrivial emerge compilation loop kills 
+the smaller box).
 
-Please pull two patches for kernel v4.1 for the parisc architecture from
+3.19 did not seem to have this problem.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.1-1
+Nothing in the dmesg besides OOM killer activating.
 
-The patch by Guenter Roeck fixes the build on parisc which got broken because
-of commit f24ffde43237 (parisc: expose number of page table levels on Kconfig
-level) and the patch from Matthew Wilcox converts our code to use the generic
-scatterlist.h header file.
- 
-Thanks,
-Helge
+I reran it, leaving cat /prov/vmstat, cat /proc/meminfo and slabtop -o 
+running in loop (each 5 s). revdep-rebuild -ip was also running in 
+the loop, just checking the binaries and library linking info.
 
-----------------------------------------------------------------
-Guenter Roeck (1):
-      parisc: Replace PT_NLEVELS with CONFIG_PGTABLE_LEVELS
+The results are at
 
-Matthew Wilcox (1):
-      parisc: Eliminate sg_virt_addr() and private scatterlist.h
+http://kodu.ut.ee/~mroos/slabtop-log
+http://kodu.ut.ee/~mroos/meminfo-log
+http://kodu.ut.ee/~mroos/vmstat-log
 
- arch/parisc/include/asm/Kbuild        |  1 +
- arch/parisc/include/asm/pgalloc.h     |  6 +++---
- arch/parisc/include/asm/scatterlist.h | 10 ----------
- arch/parisc/kernel/pci-dma.c          |  8 ++++----
- drivers/parisc/ccio-dma.c             |  6 +++---
- drivers/parisc/iommu-helpers.h        | 26 ++++++++++++++------------
- drivers/parisc/sba_iommu.c            |  7 +++----
- 7 files changed, 28 insertions(+), 36 deletions(-)
- delete mode 100644 arch/parisc/include/asm/scatterlist.h
+Anything else I can provide to pinpoint it?
+
+-- 
+Meelis Roos (mroos@linux.ee)
