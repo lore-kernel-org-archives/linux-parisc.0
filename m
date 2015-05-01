@@ -1,109 +1,108 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH] scatterlist: enable sg chaining for all architectures
-Date: Thu, 30 Apr 2015 07:55:07 -0700
-Message-ID: <1430405707.2167.13.camel@HansenPartnership.com>
-References: <1429973776-7499-1-git-send-email-akinobu.mita@gmail.com>
-	 <20150428142743.578d1c930aca013b596d7546@linux-foundation.org>
-	 <1430259419.2181.26.camel@HansenPartnership.com>
-	 <CAC5umyhM6s4dgJt6BQMhVihh3C8uYd+s2XEZB9UTQKK63OXxfQ@mail.gmail.com>
-	 <1430273746.2181.49.camel@HansenPartnership.com>
-	 <1430380782.24121.99.camel@haakon3.risingtidesystems.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Akinobu Mita <akinobu.mita@gmail.com>
+Subject: [PATCH v2 10/10] parisc: use for_each_sg()
+Date: Fri,  1 May 2015 22:56:43 +0900
+Message-ID: <1430488603-11055-10-git-send-email-akinobu.mita@gmail.com>
+References: <1430488603-11055-1-git-send-email-akinobu.mita@gmail.com>
 Cc: Akinobu Mita <akinobu.mita@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-	Christoph Hellwig <hch@lst.de>,
-	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-	target-devel@vger.kernel.org,
-	Parisc List <linux-parisc@vger.kernel.org>
-To: "Nicholas A. Bellinger" <nab@linux-iscsi.org>
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	linux-arch@vger.kernel.org
+To: linux-kernel@vger.kernel.org, akpm@linux-foundation.org
 Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <1430380782.24121.99.camel@haakon3.risingtidesystems.com>
+In-Reply-To: <1430488603-11055-1-git-send-email-akinobu.mita@gmail.com>
 List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2015-04-30 at 00:59 -0700, Nicholas A. Bellinger wrote:
-> On Tue, 2015-04-28 at 19:15 -0700, James Bottomley wrote:
-> > On Wed, 2015-04-29 at 09:34 +0900, Akinobu Mita wrote:
-> > > 2015-04-29 7:16 GMT+09:00 James Bottomley
-> > > <James.Bottomley@hansenpartnership.com>:
-> > > > On Tue, 2015-04-28 at 14:27 -0700, Andrew Morton wrote:
-> > > >> On Sat, 25 Apr 2015 23:56:16 +0900 Akinobu Mita <akinobu.mita@gmail.com> wrote:
-> > > >>
-> > > >> > Some architectures enable sg chaining option while others do not.
-> > > >> >
-> > > >> > The requirement to enable sg chaining is that pages must be aligned
-> > > >> > at a 32-bit boundary in order to overload the LSB of the pointer.
-> > > >> > Regardless of whether ARCH_HAS_SG_CHAIN is defined or not, the above
-> > > >> > requirement is always chacked by BUG_ON() in sg_assign_page.  So
-> > > >> > all architectures can enable sg chaining.
-> > > >> >
-> > > >> > As you can see from the changes in drivers/target/target_core_rd.c,
-> > > >> > enabling SG chaining for all architectures allows us to allocate
-> > > >> > discontiguous scatterlist tables which can be traversed throughout
-> > > >> > by sg_next() without a special handling for some architectures.
-> > > >>
-> > > >> Thanks, I'll grab this.  If anyone has concerns, speak now or hold both
-> > > >> pieces!
-> > > >
-> > > > It breaks a host of architectures doesn't it?  I can specifically speak
-> > > > for PARISC:  The problem is the way our iommus are consuming
-> > > > scatterlists.  They're assuming we can dereference the scatterlist as an
-> > > > array (like this code in ccio-dma.c):
-> > > >
-> > > > static int
-> > > > ccio_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
-> > > >             enum dma_data_direction direction)
-> > > > [...]
-> > > >         for(i = 0; i < nents; i++)
-> > > >                 prev_len += sglist[i].length;
-> > > >
-> > > > If you turn on sg chaining on our architecture, we'll run off the end of
-> > > > that array dereference and crash.
-> > > >
-> > > > This can all be fixed by making our architecture dma mapping code use
-> > > > iterators instead of array lists, but that needs more code than this
-> > > > patch provides.  I assume there are similar issues on a lot of other
-> > > > architectures, so before you can contemplate a patch like this, surely
-> > > > all the architecture consumers have to be converted to iterator instead
-> > > > of array format?
-> > > >
-> > > > The first place to start would be a survey of who's still using the
-> > > > array format.
-> > > 
-> > > Agreed.  I could find similar issues in arch/m68k/kernel/dma.c.
-> > > (git grep '[^a-z]sg++' shows that there are a lot of similar issues)
-> > 
-> > OK, so the original idea of the chained SG lists was that most of the
-> > older architectures have fixed length lists for their IOMMUs, or simply
-> > wouldn't see a benefit with IO lengths > 0.5MB (which was the default
-> > before chaining) so there wasn't much point converting them to chaining
-> > if they wouldn't see any benefit from it.
-> > 
-> > ARCH_HAS_SG_CHAIN is supposed to be completely transparent to all driver
-> > side consumers, so there was never thought to be much point removing it.
-> > It looks like there's some sort of cockup going on in the target driver
-> > but otherwise, your removal patch is pretty empty, confirming this.
-> > 
-> > Perhaps the best thing to do is just fix target and call it quits?
-> > 
-> 
-> So the ARCH_HAS_SG_CHAIN usage in target_core_rd.c was recently added so
-> target DIF emulation could use standard SGL iterators and correctly
-> handle boundaries across T10-PI metadata SGL tables in the ramdisk
-> backend.
->
-> The SGLs in question are never actually mapped to a HW IOMMU, and
-> Akinobu's current changes in mainline do support both arch cases and
-> make common sbc_dif_copy_prot() code a bit simpler too.
-> 
-> That said, I'd rather to keep the hack around for now so that both
-> ARCH_HAS_SG_CHAIN types can still work, short of a full arch conversion
-> of course..
+This replaces the plain loop over the sglist array with for_each_sg()
+macro which consists of sg_next() function calls.  Since parisc doesn't
+select ARCH_HAS_SG_CHAIN, it is not necessary to use for_each_sg() in
+order to loop over each sg element.  But this can help find problems
+with drivers that do not properly initialize their sg tables when
+CONFIG_DEBUG_SG is enabled.
 
-It looks like you might not have needed the hack if you'd used the
-existing sg chain allocators ....
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+Cc: linux-arch@vger.kernel.org
+---
+* New patch from v2
 
-James
+ arch/parisc/kernel/pci-dma.c | 27 ++++++++++++++++-----------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
+
+diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
+index ff834fd..b9402c9 100644
+--- a/arch/parisc/kernel/pci-dma.c
++++ b/arch/parisc/kernel/pci-dma.c
+@@ -478,14 +478,16 @@ static void pa11_dma_unmap_single(struct device *dev, dma_addr_t dma_handle, siz
+ static int pa11_dma_map_sg(struct device *dev, struct scatterlist *sglist, int nents, enum dma_data_direction direction)
+ {
+ 	int i;
++	struct scatterlist *sg;
+ 
+ 	BUG_ON(direction == DMA_NONE);
+ 
+-	for (i = 0; i < nents; i++, sglist++ ) {
+-		unsigned long vaddr = (unsigned long)sg_virt(sglist);
+-		sg_dma_address(sglist) = (dma_addr_t) virt_to_phys(vaddr);
+-		sg_dma_len(sglist) = sglist->length;
+-		flush_kernel_dcache_range(vaddr, sglist->length);
++	for_each_sg(sglist, sg, nents, i) {
++		unsigned long vaddr = (unsigned long)sg_virt(sg);
++
++		sg_dma_address(sg) = (dma_addr_t) virt_to_phys(vaddr);
++		sg_dma_len(sg) = sg->length;
++		flush_kernel_dcache_range(vaddr, sg->length);
+ 	}
+ 	return nents;
+ }
+@@ -493,6 +495,7 @@ static int pa11_dma_map_sg(struct device *dev, struct scatterlist *sglist, int n
+ static void pa11_dma_unmap_sg(struct device *dev, struct scatterlist *sglist, int nents, enum dma_data_direction direction)
+ {
+ 	int i;
++	struct scatterlist *sg;
+ 
+ 	BUG_ON(direction == DMA_NONE);
+ 
+@@ -501,8 +504,8 @@ static void pa11_dma_unmap_sg(struct device *dev, struct scatterlist *sglist, in
+ 
+ 	/* once we do combining we'll need to use phys_to_virt(sg_dma_address(sglist)) */
+ 
+-	for (i = 0; i < nents; i++, sglist++ )
+-		flush_kernel_vmap_range(sg_virt(sglist), sglist->length);
++	for_each_sg(sglist, sg, nents, i)
++		flush_kernel_vmap_range(sg_virt(sg), sg->length);
+ 	return;
+ }
+ 
+@@ -523,21 +526,23 @@ static void pa11_dma_sync_single_for_device(struct device *dev, dma_addr_t dma_h
+ static void pa11_dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sglist, int nents, enum dma_data_direction direction)
+ {
+ 	int i;
++	struct scatterlist *sg;
+ 
+ 	/* once we do combining we'll need to use phys_to_virt(sg_dma_address(sglist)) */
+ 
+-	for (i = 0; i < nents; i++, sglist++ )
+-		flush_kernel_vmap_range(sg_virt(sglist), sglist->length);
++	for_each_sg(sglist, sg, nents, i)
++		flush_kernel_vmap_range(sg_virt(sg), sg->length);
+ }
+ 
+ static void pa11_dma_sync_sg_for_device(struct device *dev, struct scatterlist *sglist, int nents, enum dma_data_direction direction)
+ {
+ 	int i;
++	struct scatterlist *sg;
+ 
+ 	/* once we do combining we'll need to use phys_to_virt(sg_dma_address(sglist)) */
+ 
+-	for (i = 0; i < nents; i++, sglist++ )
+-		flush_kernel_vmap_range(sg_virt(sglist), sglist->length);
++	for_each_sg(sglist, sg, nents, i)
++		flush_kernel_vmap_range(sg_virt(sg), sg->length);
+ }
+ 
+ struct hppa_dma_ops pcxl_dma_ops = {
+-- 
+1.9.1
