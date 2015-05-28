@@ -1,99 +1,121 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [Patch v2 08/14] genirq: Introduce helper function
- irq_data_get_affinity_mask()
-Date: Wed, 20 May 2015 20:34:26 +0100
-Message-ID: <20150520193426.GT2067@n2100.arm.linux.org.uk>
-References: <1432114845-24304-1-git-send-email-jiang.liu@linux.intel.com>
- <1432114845-24304-9-git-send-email-jiang.liu@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Yinghai Lu <yinghai@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Steven Miao <realmz6@gmail.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        James Hogan <james.hogan@imgtec.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        David Howells <dhowells@redhat.com>,
-To: Jiang Liu <jiang.liu@linux.intel.com>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <1432114845-24304-9-git-send-email-jiang.liu@linux.intel.com>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+From: Luis Henriques <luis.henriques-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
+Subject: [3.16.y-ckt stable] Patch "parisc,metag: Fix crashes due to stack randomization on stack-grows-upwards architectures" has been added to staging queue
+Date: Thu, 28 May 2015 11:56:49 +0100
+Message-ID: <1432810609-24332-1-git-send-email-luis.henriques@canonical.com>
+Cc: linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, James Hogan <james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>,
+	linux-metag-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	Luis Henriques <luis.henriques-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>,
+	kernel-team-nLRlyDuq1AZFpShjVBNYrg@public.gmane.org
+To: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
+Return-path: <linux-metag-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+List-ID: <linux-metag.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Wed, May 20, 2015 at 05:40:39PM +0800, Jiang Liu wrote:
-> diff --git a/arch/arm/kernel/irq.c b/arch/arm/kernel/irq.c
-> index 350f188c92d2..baf8edebe26f 100644
-> --- a/arch/arm/kernel/irq.c
-> +++ b/arch/arm/kernel/irq.c
-> @@ -140,7 +140,7 @@ int __init arch_probe_nr_irqs(void)
->  static bool migrate_one_irq(struct irq_desc *desc)
->  {
->  	struct irq_data *d = irq_desc_get_irq_data(desc);
-> -	const struct cpumask *affinity = d->affinity;
-> +	const struct cpumask *affinity = irq_data_get_affinity_mask(d);
->  	struct irq_chip *c;
->  	bool ret = false;
->  
-> @@ -160,7 +160,7 @@ static bool migrate_one_irq(struct irq_desc *desc)
->  	if (!c->irq_set_affinity)
->  		pr_debug("IRQ%u: unable to set affinity\n", d->irq);
->  	else if (c->irq_set_affinity(d, affinity, false) == IRQ_SET_MASK_OK && ret)
-> -		cpumask_copy(d->affinity, affinity);
-> +		cpumask_copy(irq_data_get_affinity_mask(d), affinity);
->  
->  	return ret;
->  }
+This is a note to let you know that I have just added a patch titled
 
-> diff --git a/include/linux/irq.h b/include/linux/irq.h
-> index 43581e166298..2eb82257aaee 100644
-> --- a/include/linux/irq.h
-> +++ b/include/linux/irq.h
-> @@ -650,6 +650,18 @@ static inline int irq_data_get_node(struct irq_data *d)
->  	return irq_common_data_get_node(d->common);
->  }
->  
-> +static inline struct cpumask *irq_get_affinity_mask(int irq)
-> +{
-> +	struct irq_data *d = irq_get_irq_data(irq);
-> +
-> +	return d ? d->affinity : NULL;
-> +}
-> +
-> +static inline struct cpumask *irq_data_get_affinity_mask(struct irq_data *d)
-> +{
-> +	return d->affinity;
-> +}
-> +
->  unsigned int arch_dynirq_lower_bound(unsigned int from);
->  
->  int __irq_alloc_descs(int irq, unsigned int from, unsigned int cnt, int node,
+    parisc,metag: Fix crashes due to stack randomization on stack-grows-upwards architectures
 
-For the above only,
+to the linux-3.16.y-queue branch of the 3.16.y-ckt extended stable tree 
+which can be found at:
 
-Acked-by: Russell King <rmk+kernel@arm.linux.org.uk>
+    http://kernel.ubuntu.com/git/ubuntu/linux.git/log/?h=linux-3.16.y-queue
+
+This patch is scheduled to be released in version 3.16.7-ckt13.
+
+If you, or anyone else, feels it should not be added to this tree, please 
+reply to this email.
+
+For more information about the 3.16.y-ckt tree, see
+https://wiki.ubuntu.com/Kernel/Dev/ExtendedStable
 
 Thanks.
+-Luis
 
--- 
-FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
-according to speedtest.net.
+------
+
+>From 441b34775e8375194ce741e53f0e19241749ef35 Mon Sep 17 00:00:00 2001
+From: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
+Date: Mon, 11 May 2015 22:01:27 +0200
+Subject: parisc,metag: Fix crashes due to stack randomization on
+ stack-grows-upwards architectures
+
+commit d045c77c1a69703143a36169c224429c48b9eecd upstream.
+
+On architectures where the stack grows upwards (CONFIG_STACK_GROWSUP=y,
+currently parisc and metag only) stack randomization sometimes leads to crashes
+when the stack ulimit is set to lower values than STACK_RND_MASK (which is 8 MB
+by default if not defined in arch-specific headers).
+
+The problem is, that when the stack vm_area_struct is set up in fs/exec.c, the
+additional space needed for the stack randomization (as defined by the value of
+STACK_RND_MASK) was not taken into account yet and as such, when the stack
+randomization code added a random offset to the stack start, the stack
+effectively got smaller than what the user defined via rlimit_max(RLIMIT_STACK)
+which then sometimes leads to out-of-stack situations and crashes.
+
+This patch fixes it by adding the maximum possible amount of memory (based on
+STACK_RND_MASK) which theoretically could be added by the stack randomization
+code to the initial stack size. That way, the user-defined stack size is always
+guaranteed to be at minimum what is defined via rlimit_max(RLIMIT_STACK).
+
+This bug is currently not visible on the metag architecture, because on metag
+STACK_RND_MASK is defined to 0 which effectively disables stack randomization.
+
+The changes to fs/exec.c are inside an "#ifdef CONFIG_STACK_GROWSUP"
+section, so it does not affect other platformws beside those where the
+stack grows upwards (parisc and metag).
+
+Signed-off-by: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
+Cc: linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: James Hogan <james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Cc: linux-metag-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Signed-off-by: Luis Henriques <luis.henriques-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
+---
+ arch/parisc/include/asm/elf.h   | 4 ++++
+ arch/parisc/kernel/sys_parisc.c | 3 +++
+ fs/exec.c                       | 3 +++
+ 3 files changed, 10 insertions(+)
+
+diff --git a/arch/parisc/include/asm/elf.h b/arch/parisc/include/asm/elf.h
+index 3391d061eccc..78c9fd32c554 100644
+--- a/arch/parisc/include/asm/elf.h
++++ b/arch/parisc/include/asm/elf.h
+@@ -348,6 +348,10 @@ struct pt_regs;	/* forward declaration... */
+
+ #define ELF_HWCAP	0
+
++#define STACK_RND_MASK	(is_32bit_task() ? \
++				0x7ff >> (PAGE_SHIFT - 12) : \
++				0x3ffff >> (PAGE_SHIFT - 12))
++
+ struct mm_struct;
+ extern unsigned long arch_randomize_brk(struct mm_struct *);
+ #define arch_randomize_brk arch_randomize_brk
+diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
+index e1ffea2f9a0b..5aba01ac457f 100644
+--- a/arch/parisc/kernel/sys_parisc.c
++++ b/arch/parisc/kernel/sys_parisc.c
+@@ -77,6 +77,9 @@ static unsigned long mmap_upper_limit(void)
+ 	if (stack_base > STACK_SIZE_MAX)
+ 		stack_base = STACK_SIZE_MAX;
+
++	/* Add space for stack randomization. */
++	stack_base += (STACK_RND_MASK << PAGE_SHIFT);
++
+ 	return PAGE_ALIGN(STACK_TOP - stack_base);
+ }
+
+diff --git a/fs/exec.c b/fs/exec.c
+index 68a0843250c9..993ed0aba99a 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -662,6 +662,9 @@ int setup_arg_pages(struct linux_binprm *bprm,
+ 	if (stack_base > STACK_SIZE_MAX)
+ 		stack_base = STACK_SIZE_MAX;
+
++	/* Add space for stack randomization. */
++	stack_base += (STACK_RND_MASK << PAGE_SHIFT);
++
+ 	/* Make sure we didn't let the argument array grow too large. */
+ 	if (vma->vm_end - vma->vm_start > stack_base)
+ 		return -ENOMEM;
