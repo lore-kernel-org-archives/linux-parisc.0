@@ -1,7 +1,7 @@
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH 10/15] parisc: don't use module_init for non-modular core pdc_cons code
-Date: Thu, 28 May 2015 20:48:08 -0400
-Message-ID: <1432860493-23831-11-git-send-email-paul.gortmaker@windriver.com>
+Subject: [PATCH 11/15] parisc64: don't use module_init for non-modular core perf code
+Date: Thu, 28 May 2015 20:48:09 -0400
+Message-ID: <1432860493-23831-12-git-send-email-paul.gortmaker@windriver.com>
 References: <1432860493-23831-1-git-send-email-paul.gortmaker@windriver.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -14,14 +14,22 @@ In-Reply-To: <1432860493-23831-1-git-send-email-paul.gortmaker@windriver.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The pdc_cons.c code is always built in.  It will never be modular,
-so using module_init as an alias for __initcall is rather
-misleading.
+The perf.c code depends on CONFIG_64BIT, so it is either built-in
+or absent.  It will never be modular, so using module_init as an
+alias for __initcall is rather misleading.
 
 Fix this up now, so that we can relocate module_init from
 init.h into module.h in the future.  If we don't do this, we'd
 have to add module.h to obviously non-modular code, and that
-would be a worse thing.
+would be a worse thing.  Aside from it not making sense, it also
+causes a ~10% increase in CPP overhead due to module.h having a
+large list of headers itself -- for example compare line counts:
+
+ device_initcall() and <linux/init.h>
+	20238 arch/parisc/kernel/perf.i
+
+ module_init() and <linux/module.h>
+	22194 arch/parisc/kernel/perf.i
 
 Direct use of __initcall is discouraged, vs prioritized ones.
 Use of device_initcall is consistent with what __initcall
@@ -30,28 +38,31 @@ impact of this change zero.   Should someone with real hardware
 for boot testing want to change it later to arch_initcall or
 something different, they can do that at a later date.
 
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
 Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
 Cc: Helge Deller <deller@gmx.de>
 Cc: linux-parisc@vger.kernel.org
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 ---
- arch/parisc/kernel/pdc_cons.c | 3 +--
+ arch/parisc/kernel/perf.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/parisc/kernel/pdc_cons.c b/arch/parisc/kernel/pdc_cons.c
-index d5cae55195ec..10a5ae9553fd 100644
---- a/arch/parisc/kernel/pdc_cons.c
-+++ b/arch/parisc/kernel/pdc_cons.c
-@@ -207,8 +207,7 @@ static int __init pdc_console_tty_driver_init(void)
+diff --git a/arch/parisc/kernel/perf.c b/arch/parisc/kernel/perf.c
+index ba0c053e25ae..518f4f5f1f43 100644
+--- a/arch/parisc/kernel/perf.c
++++ b/arch/parisc/kernel/perf.c
+@@ -543,6 +543,7 @@ static int __init perf_init(void)
  
  	return 0;
  }
--
--module_init(pdc_console_tty_driver_init);
-+device_initcall(pdc_console_tty_driver_init);
++device_initcall(perf_init);
  
- static struct tty_driver * pdc_console_device (struct console *c, int *index)
- {
+ /*
+  * perf_start_counters(void)
+@@ -847,5 +848,3 @@ printk("perf_rdr_write\n");
+ 	}
+ printk("perf_rdr_write done\n");
+ }
+-
+-module_init(perf_init);
 -- 
 2.2.1
