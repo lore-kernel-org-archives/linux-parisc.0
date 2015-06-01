@@ -1,94 +1,65 @@
-From: Jiang Liu <jiang.liu@linux.intel.com>
-Subject: [Patch v3 23/36] parisc, irq: Use access helper irq_data_get_affinity_mask()
-Date: Mon,  1 Jun 2015 16:05:32 +0800
-Message-ID: <1433145945-789-24-git-send-email-jiang.liu@linux.intel.com>
-References: <1433145945-789-1-git-send-email-jiang.liu@linux.intel.com>
-Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-	Tony Luck <tony.luck@intel.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-acpi@vger.kernel.org, linux-parisc@vger.kernel.org
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Yinghai Lu <yinghai@kernel.org>,
-	Borislav Petkov <bp@alien8.de>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Jiang Liu <jiang.liu@linux.intel.com>
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <1433145945-789-1-git-send-email-jiang.liu@linux.intel.com>
-List-ID: <linux-acpi.vger.kernel.org>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RESEND PATCH 0/3] Allow user to request memory to be locked on
+ page fault
+Date: Mon, 1 Jun 2015 15:27:46 -0700
+Message-ID: <20150601152746.abbbbb9d479c0e2dbdec2aaf@linux-foundation.org>
+References: <1432908808-31150-1-git-send-email-emunson@akamai.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Cc: Shuah Khan <shuahkh@osg.samsung.com>,
+	Michal Hocko <mhocko@suse.cz>, linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mips@linux-mips.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+	linux-mm@kvack.org, linux-arch@vger.kernel.org,
+	linux-api@vger.kernel.org
+To: Eric B Munson <emunson@akamai.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1432908808-31150-1-git-send-email-emunson@akamai.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Use access helper irq_data_get_affinity_mask() to hide implementation
-details of struct irq_desc.
+On Fri, 29 May 2015 10:13:25 -0400 Eric B Munson <emunson@akamai.com> wrote:
 
-Signed-off-by: Jiang Liu <jiang.liu@linux.intel.com>
----
- arch/parisc/kernel/irq.c |   12 ++++++------
- drivers/parisc/iosapic.c |    2 +-
- 2 files changed, 7 insertions(+), 7 deletions(-)
+> mlock() allows a user to control page out of program memory, but this
+> comes at the cost of faulting in the entire mapping when it is
+> allocated.  For large mappings where the entire area is not necessary
+> this is not ideal.
+> 
+> This series introduces new flags for mmap() and mlockall() that allow a
+> user to specify that the covered are should not be paged out, but only
+> after the memory has been used the first time.
 
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index f3191db6e2e9..413ec3c3f9cc 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -131,7 +131,7 @@ static int cpu_set_affinity_irq(struct irq_data *d, const struct cpumask *dest,
- 	if (cpu_dest < 0)
- 		return -1;
- 
--	cpumask_copy(d->affinity, dest);
-+	cpumask_copy(irq_data_get_affinity_mask(d), dest);
- 
- 	return 0;
- }
-@@ -339,7 +339,7 @@ unsigned long txn_affinity_addr(unsigned int irq, int cpu)
- {
- #ifdef CONFIG_SMP
- 	struct irq_data *d = irq_get_irq_data(irq);
--	cpumask_copy(d->affinity, cpumask_of(cpu));
-+	cpumask_copy(irq_data_get_affinity_mask(d), cpumask_of(cpu));
- #endif
- 
- 	return per_cpu(cpu_data, cpu).txn_addr;
-@@ -508,7 +508,7 @@ void do_cpu_irq_mask(struct pt_regs *regs)
- 	unsigned long eirr_val;
- 	int irq, cpu = smp_processor_id();
- #ifdef CONFIG_SMP
--	struct irq_desc *desc;
-+	struct irq_data *irq_data;
- 	cpumask_t dest;
- #endif
- 
-@@ -522,9 +522,9 @@ void do_cpu_irq_mask(struct pt_regs *regs)
- 	irq = eirr_to_irq(eirr_val);
- 
- #ifdef CONFIG_SMP
--	desc = irq_to_desc(irq);
--	cpumask_copy(&dest, desc->irq_data.affinity);
--	if (irqd_is_per_cpu(&desc->irq_data) &&
-+	irq_data = irq_get_irq_data(irq);
-+	cpumask_copy(&dest, irq_data_get_affinity_mask(irq_data));
-+	if (irqd_is_per_cpu(irq_data) &&
- 	    !cpumask_test_cpu(smp_processor_id(), &dest)) {
- 		int cpu = cpumask_first(&dest);
- 
-diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
-index 9ee04b4b68bf..144c77dfe4b1 100644
---- a/drivers/parisc/iosapic.c
-+++ b/drivers/parisc/iosapic.c
-@@ -691,7 +691,7 @@ static int iosapic_set_affinity_irq(struct irq_data *d,
- 	if (dest_cpu < 0)
- 		return -1;
- 
--	cpumask_copy(d->affinity, cpumask_of(dest_cpu));
-+	cpumask_copy(irq_data_get_affinity_mask(d), cpumask_of(dest_cpu));
- 	vi->txn_addr = txn_affinity_addr(d->irq, dest_cpu);
- 
- 	spin_lock_irqsave(&iosapic_lock, flags);
--- 
-1.7.10.4
+I almost applied these, but the naming issue (below) stopped me.
+
+A few things...
+
+- The 0/n changelog should reveal how MAP_LOCKONFAULT interacts with
+  rlimit(RLIMIT_MEMLOCK).
+
+  I see the implementation is "as if the entire mapping will be
+  faulted in" (for mmap) and "as if it was MCL_FUTURE" (for mlockall)
+  which seems fine.  Please include changelog text explaining and
+  justifying these decisions.  This stuff will need to be in the
+  manpage updates as well.
+
+- I think I already asked "why not just use MCL_FUTURE" but I forget
+  the answer ;) In general it is a good idea to update changelogs in
+  response to reviewer questions, because other people will be
+  wondering the same things.  Or maybe I forgot to ask.  Either way,
+  please address this in the changelogs.
+
+- I can perhaps see the point in mmap(MAP_LOCKONFAULT) (other
+  mappings don't get lock-in-memory treatment), but what's the benefit
+  in mlockall(MCL_ON_FAULT) over MCL_FUTURE?  (Add to changelog also,
+  please).
+
+- Is there a manpage update?
+
+- Can we rename patch 1/3 from "add flag to ..." to "add mmap flag to
+  ...", to distinguish from 2/3 "add mlockall flag ..."?
+
+- The MAP_LOCKONFAULT versus MCL_ON_FAULT inconsistency is
+  irritating!  Can we get these consistent please: switch to either
+  MAP_LOCK_ON_FAULT or MCL_ONFAULT.
 
