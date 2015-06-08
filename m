@@ -1,111 +1,69 @@
-From: Luis Henriques <luis.henriques@canonical.com>
-Subject: [PATCH 3.16.y-ckt 039/110] parisc,
- metag: Fix crashes due to stack randomization on stack-grows-upwards
- architectures
-Date: Fri,  5 Jun 2015 14:57:22 +0100
-Message-ID: <1433512713-22984-40-git-send-email-luis.henriques@canonical.com>
-References: <1433512713-22984-1-git-send-email-luis.henriques@canonical.com>
+From: Xose Vazquez Perez <xose.vazquez@gmail.com>
+Subject: Generic kernel features that need architecture(parisc) support
+Date: Mon, 08 Jun 2015 16:54:53 +0200
+Message-ID: <5575ACBD.6080300@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: Helge Deller <deller@gmx.de>, James Hogan <james.hogan@imgtec.com>,
- linux-metag@vger.kernel.org, linux-parisc@vger.kernel.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- kernel-team@lists.ubuntu.com
-Return-path: <kernel-team-bounces@lists.ubuntu.com>
-In-Reply-To: <1433512713-22984-1-git-send-email-luis.henriques@canonical.com>
-List-Unsubscribe: <https://lists.ubuntu.com/mailman/options/kernel-team>,
- <mailto:kernel-team-request@lists.ubuntu.com?subject=unsubscribe>
-List-Archive: <https://lists.ubuntu.com/archives/kernel-team>
-List-Post: <mailto:kernel-team@lists.ubuntu.com>
-List-Help: <mailto:kernel-team-request@lists.ubuntu.com?subject=help>
-List-Subscribe: <https://lists.ubuntu.com/mailman/listinfo/kernel-team>,
- <mailto:kernel-team-request@lists.ubuntu.com?subject=subscribe>
-Errors-To: kernel-team-bounces@lists.ubuntu.com
+Content-Type: text/plain; charset=utf-8
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-3.16.7-ckt13 -stable review patch.  If anyone has any objections, please let me know.
+Hi,
 
-------------------
+If there is anything wrong, please report it in this thread:
+https://marc.info/?t=143332955700003
 
-From: Helge Deller <deller@gmx.de>
 
-commit d045c77c1a69703143a36169c224429c48b9eecd upstream.
+The meaning of entries in the tables is:
 
-On architectures where the stack grows upwards (CONFIG_STACK_GROWSUP=y,
-currently parisc and metag only) stack randomization sometimes leads to crashes
-when the stack ulimit is set to lower values than STACK_RND_MASK (which is 8 MB
-by default if not defined in arch-specific headers).
+    | ok |  # feature supported by the architecture
+    |TODO|  # feature not yet supported by the architecture
+    | .. |  # feature cannot be supported by the hardware
 
-The problem is, that when the stack vm_area_struct is set up in fs/exec.c, the
-additional space needed for the stack randomization (as defined by the value of
-STACK_RND_MASK) was not taken into account yet and as such, when the stack
-randomization code added a random offset to the stack start, the stack
-effectively got smaller than what the user defined via rlimit_max(RLIMIT_STACK)
-which then sometimes leads to out-of-stack situations and crashes.
-
-This patch fixes it by adding the maximum possible amount of memory (based on
-STACK_RND_MASK) which theoretically could be added by the stack randomization
-code to the initial stack size. That way, the user-defined stack size is always
-guaranteed to be at minimum what is defined via rlimit_max(RLIMIT_STACK).
-
-This bug is currently not visible on the metag architecture, because on metag
-STACK_RND_MASK is defined to 0 which effectively disables stack randomization.
-
-The changes to fs/exec.c are inside an "#ifdef CONFIG_STACK_GROWSUP"
-section, so it does not affect other platformws beside those where the
-stack grows upwards (parisc and metag).
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
-Cc: James Hogan <james.hogan@imgtec.com>
-Cc: linux-metag@vger.kernel.org
-Signed-off-by: Luis Henriques <luis.henriques@canonical.com>
----
- arch/parisc/include/asm/elf.h   | 4 ++++
- arch/parisc/kernel/sys_parisc.c | 3 +++
- fs/exec.c                       | 3 +++
- 3 files changed, 10 insertions(+)
-
-diff --git a/arch/parisc/include/asm/elf.h b/arch/parisc/include/asm/elf.h
-index 3391d061eccc..78c9fd32c554 100644
---- a/arch/parisc/include/asm/elf.h
-+++ b/arch/parisc/include/asm/elf.h
-@@ -348,6 +348,10 @@ struct pt_regs;	/* forward declaration... */
- 
- #define ELF_HWCAP	0
- 
-+#define STACK_RND_MASK	(is_32bit_task() ? \
-+				0x7ff >> (PAGE_SHIFT - 12) : \
-+				0x3ffff >> (PAGE_SHIFT - 12))
-+
- struct mm_struct;
- extern unsigned long arch_randomize_brk(struct mm_struct *);
- #define arch_randomize_brk arch_randomize_brk
-diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
-index e1ffea2f9a0b..5aba01ac457f 100644
---- a/arch/parisc/kernel/sys_parisc.c
-+++ b/arch/parisc/kernel/sys_parisc.c
-@@ -77,6 +77,9 @@ static unsigned long mmap_upper_limit(void)
- 	if (stack_base > STACK_SIZE_MAX)
- 		stack_base = STACK_SIZE_MAX;
- 
-+	/* Add space for stack randomization. */
-+	stack_base += (STACK_RND_MASK << PAGE_SHIFT);
-+
- 	return PAGE_ALIGN(STACK_TOP - stack_base);
- }
- 
-diff --git a/fs/exec.c b/fs/exec.c
-index 68a0843250c9..993ed0aba99a 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -662,6 +662,9 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	if (stack_base > STACK_SIZE_MAX)
- 		stack_base = STACK_SIZE_MAX;
- 
-+	/* Add space for stack randomization. */
-+	stack_base += (STACK_RND_MASK << PAGE_SHIFT);
-+
- 	/* Make sure we didn't let the argument array grow too large. */
- 	if (vma->vm_end - vma->vm_start > stack_base)
- 		return -ENOMEM;
+#
+# Kernel feature support matrix of the 'parisc' architecture:
+#
+     sched/ numa-balancing       :  ..  |        ARCH_SUPPORTS_NUMA_BALANCING #  arch supports NUMA balancing
+      time/ irq-time-acct        :  ..  |            HAVE_IRQ_TIME_ACCOUNTING #  arch supports precise IRQ time accounting
+        vm/ numa-memblock        :  ..  |              HAVE_MEMBLOCK_NODE_MAP #  arch supports NUMA aware memblocks
+      core/ generic-idle-thread  :  ok  |             GENERIC_SMP_IDLE_THREAD #  arch makes use of the generic SMP idle thread facility
+      time/ modern-timekeeping   :  ok  |            !ARCH_USES_GETTIMEOFFSET #  arch does not use arch_gettimeoffset() anymore
+      time/ virt-cpuacct         :  ok  |            HAVE_VIRT_CPU_ACCOUNTING #  arch supports precise virtual CPU time accounting
+      core/ BPF-JIT              : TODO |                        HAVE_BPF_JIT #  arch supports BPF JIT optimizations
+      core/ jump-labels          : TODO |                HAVE_ARCH_JUMP_LABEL #  arch supports live patched, high efficiency branches
+      core/ tracehook            : TODO |                 HAVE_ARCH_TRACEHOOK #  arch supports tracehook (ptrace) register handling APIs
+     debug/ gcov-profile-all     : TODO |           ARCH_HAS_GCOV_PROFILE_ALL #  arch supports whole-kernel GCOV code coverage profiling
+     debug/ KASAN                : TODO |                     HAVE_ARCH_KASAN #  arch supports the KASAN runtime memory checker
+     debug/ kgdb                 : TODO |                      HAVE_ARCH_KGDB #  arch supports the kGDB kernel debugger
+     debug/ kprobes              : TODO |                        HAVE_KPROBES #  arch supports live patched kernel probe
+     debug/ kprobes-on-ftrace    : TODO |              HAVE_KPROBES_ON_FTRACE #  arch supports combined kprobes and ftrace live patching
+     debug/ kretprobes           : TODO |                     HAVE_KRETPROBES #  arch supports kernel function-return probes
+     debug/ optprobes            : TODO |                      HAVE_OPTPROBES #  arch supports live patched optprobes
+     debug/ stackprotector       : TODO |              HAVE_CC_STACKPROTECTOR #  arch supports compiler driven stack overflow protection
+     debug/ uprobes              : TODO |               ARCH_SUPPORTS_UPROBES #  arch supports live patched user probes
+     debug/ user-ret-profiler    : TODO |           HAVE_USER_RETURN_NOTIFIER #  arch supports user-space return from system call profiler
+        io/ dma-api-debug        : TODO |                  HAVE_DMA_API_DEBUG #  arch supports DMA debug facilities
+        io/ dma-contiguous       : TODO |                 HAVE_DMA_CONTIGUOUS #  arch supports the DMA CMA (continuous memory allocator)
+        io/ dma_map_attrs        : TODO |                      HAVE_DMA_ATTRS #  arch provides dma_*map*_attrs() APIs
+        io/ sg-chain             : TODO |                   ARCH_HAS_SG_CHAIN #  arch supports chained scatter-gather lists
+       lib/ strncasecmp          : TODO |             __HAVE_ARCH_STRNCASECMP #  arch provides an optimized strncasecmp() function
+   locking/ cmpxchg-local        : TODO |                  HAVE_CMPXCHG_LOCAL #  arch supports the this_cpu_cmpxchg() API
+   locking/ lockdep              : TODO |                     LOCKDEP_SUPPORT #  arch supports the runtime locking correctness debug facility
+   locking/ queued-rwlocks       : TODO |             ARCH_USE_QUEUED_RWLOCKS #  arch supports queued rwlocks
+   locking/ queued-spinlocks     : TODO |           ARCH_USE_QUEUED_SPINLOCKS #  arch supports queued spinlocks
+   locking/ rwsem-optimized      : TODO |               Optimized asm/rwsem.h #  arch provides optimized rwsem APIs
+      perf/ kprobes-event        : TODO |      HAVE_REGS_AND_STACK_ACCESS_API #  arch supports kprobes with perf events
+      perf/ perf-regs            : TODO |                      HAVE_PERF_REGS #  arch supports perf events register access
+      perf/ perf-stackdump       : TODO |           HAVE_PERF_USER_STACK_DUMP #  arch supports perf events stack dumps
+   seccomp/ seccomp-filter       : TODO |            HAVE_ARCH_SECCOMP_FILTER #  arch supports seccomp filters
+      time/ arch-tick-broadcast  : TODO |             ARCH_HAS_TICK_BROADCAST #  arch provides tick_broadcast()
+      time/ clockevents          : TODO |                 GENERIC_CLOCKEVENTS #  arch support generic clock events
+      time/ context-tracking     : TODO |               HAVE_CONTEXT_TRACKING #  arch supports context tracking for NO_HZ_FULL
+        vm/ ELF-ASLR             : TODO |              ARCH_HAS_ELF_RANDOMIZE #  arch randomizes the stack, heap and binary images of ELF binaries
+        vm/ huge-vmap            : TODO |                 HAVE_ARCH_HUGE_VMAP #  arch supports the ioremap_pud_enabled() and ioremap_pmd_enabled() VM APIs
+        vm/ ioremap_prot         : TODO |                   HAVE_IOREMAP_PROT #  arch has ioremap_prot()
+        vm/ PG_uncached          : TODO |               ARCH_USES_PG_UNCACHED #  arch supports the PG_uncached page flag
+        vm/ pmdp_splitting_flush : TODO |    __HAVE_ARCH_PMDP_SPLITTING_FLUSH #  arch supports the pmdp_splitting_flush() VM API
+        vm/ pte_special          : TODO |             __HAVE_ARCH_PTE_SPECIAL #  arch supports the pte_special()/pte_mkspecial() VM APIs
+        vm/ THP                  : TODO |      HAVE_ARCH_TRANSPARENT_HUGEPAGE #  arch supports transparent hugepages
