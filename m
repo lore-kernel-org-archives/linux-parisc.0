@@ -1,151 +1,122 @@
-From: Eric B Munson <emunson@akamai.com>
-Subject: Re: [RESEND PATCH V2 0/3] Allow user to request memory to be locked
- on page fault
-Date: Mon, 15 Jun 2015 10:43:56 -0400
-Message-ID: <20150615144356.GB12300@akamai.com>
-References: <1433942810-7852-1-git-send-email-emunson@akamai.com>
- <20150610145929.b22be8647887ea7091b09ae1@linux-foundation.org>
- <5579DFBA.80809@akamai.com>
- <20150611123424.4bb07cffd0e5bb146cc92231@linux-foundation.org>
- <557ACAFC.90608@suse.cz>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] stifb: Implement hardware accelerated copyarea
+Date: Mon, 15 Jun 2015 20:52:13 +0200
+Message-ID: <557F1EDD.3080504@gmx.de>
+References: <679FC99F-317B-4925-A6D8-2F0DB4EC6EBD@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tsOsTdHNUZQcU9Ye"
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuahkh@osg.samsung.com>,
-	Michal Hocko <mhocko@suse.cz>,
-	Michael Kerrisk <mtk.manpages@gmail.com>,
-	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-	linux-xtensa@linux-xtensa.org, linux-mm@kvack.org,
-	linux-arch@vger.kernel.org, linux-api@vger.kernel.org
-To: Vlastimil Babka <vbabka@suse.cz>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <557ACAFC.90608@suse.cz>
-List-ID: <linux-arch.vger.kernel.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+To: lausgans@gmail.com, linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <679FC99F-317B-4925-A6D8-2F0DB4EC6EBD@gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On 15.06.2015 07:50, lausgans@gmail.com wrote:
+> This patch adds hardware assisted scrolling. The code is based upon the
+> following investigation: https://parisc.wiki.kernel.org/index.php/NGLE#Blitter A
+> simple 'time ls -la /usr/bin' test shows 1.6x speed increase over soft copy and
+> 2.3x increase over FBINFO_READS_FAST (prefer soft copy over screen redraw) on
+> Artist framebuffer.
 
---tsOsTdHNUZQcU9Ye
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I haven't tested it yet, but that's very cool!
+Thanks!
 
-On Fri, 12 Jun 2015, Vlastimil Babka wrote:
+I wonder if adding a BlockTLB (with PA7100LC CPUs) further increases
+speed on Artist graphic cards (e.g. in X11)...?
 
-> On 06/11/2015 09:34 PM, Andrew Morton wrote:
-> >On Thu, 11 Jun 2015 15:21:30 -0400 Eric B Munson <emunson@akamai.com> wr=
-ote:
-> >
-> >>>Ditto mlockall(MCL_ONFAULT) followed by munlock().  I'm not sure
-> >>>that even makes sense but the behaviour should be understood and
-> >>>tested.
-> >>
-> >>I have extended the kselftest for lock-on-fault to try both of these
-> >>scenarios and they work as expected.  The VMA is split and the VM
-> >>flags are set appropriately for the resulting VMAs.
-> >
-> >munlock() should do vma merging as well.  I *think* we implemented
-> >that.  More tests for you to add ;)
-> >
-> >How are you testing the vma merging and splitting, btw?  Parsing
-> >the profcs files?
-> >
-> >>>What's missing here is a syscall to set VM_LOCKONFAULT on an
-> >>>arbitrary range of memory - mlock() for lock-on-fault.  It's a
-> >>>shame that mlock() didn't take a `mode' argument.  Perhaps we
-> >>>should add such a syscall - that would make the mmap flag unneeded
-> >>>but I suppose it should be kept for symmetry.
-> >>
-> >>Do you want such a system call as part of this set?  I would need some
-> >>time to make sure I had thought through all the possible corners one
-> >>could get into with such a call, so it would delay a V3 quite a bit.
-> >>Otherwise I can send a V3 out immediately.
-> >
-> >I think the way to look at this is to pretend that mm/mlock.c doesn't
-> >exist and ask "how should we design these features".
-> >
-> >And that would be:
-> >
-> >- mmap() takes a `flags' argument: MAP_LOCKED|MAP_LOCKONFAULT.
->=20
-> Note that the semantic of MAP_LOCKED can be subtly surprising:
->=20
-> "mlock(2) fails if the memory range cannot get populated to guarantee
-> that no future major faults will happen on the range.
-> mmap(MAP_LOCKED) on the other hand silently succeeds even if the
-> range was populated only
-> partially."
->=20
-> ( from http://marc.info/?l=3Dlinux-mm&m=3D143152790412727&w=3D2 )
->=20
-> So MAP_LOCKED can silently behave like MAP_LOCKONFAULT. While
-> MAP_LOCKONFAULT doesn't suffer from such problem, I wonder if that's
-> sufficient reason not to extend mmap by new mlock() flags that can
-> be instead applied to the VMA after mmapping, using the proposed
-> mlock2() with flags. So I think instead we could deprecate
-> MAP_LOCKED more prominently. I doubt the overhead of calling the
-> extra syscall matters here?
+Helge
 
-We could talk about retiring the MAP_LOCKED flag but I suspect that
-would get significantly more pushback than adding a new mmap flag.
+> Signed-off-by: Alex Ivanov <lausgans@gmail.com>
+>
+> diff --git a/drivers/video/fbdev/stifb.c b/drivers/video/fbdev/stifb.c
+> index 86621fa..735355b 100644
+> --- a/drivers/video/fbdev/stifb.c
+> +++ b/drivers/video/fbdev/stifb.c
+> @@ -121,6 +121,7 @@ static int __initdata stifb_bpp_pref[MAX_STI_ROMS];
+> #define REG_3		0x0004a0
+> #define REG_4		0x000600
+> #define REG_6		0x000800
+> +#define REG_7		0x000804
+> #define REG_8		0x000820
+> #define REG_9		0x000a04
+> #define REG_10		0x018000
+> @@ -135,6 +136,8 @@ static int __initdata stifb_bpp_pref[MAX_STI_ROMS];
+> #define REG_21		0x200218
+> #define REG_22		0x0005a0
+> #define REG_23		0x0005c0
+> +#define REG_24		0x000808
+> +#define REG_25		0x000b00
+> #define REG_26		0x200118
+> #define REG_27		0x200308
+> #define REG_32		0x21003c
+> @@ -429,6 +432,9 @@ ARTIST_ENABLE_DISABLE_DISPLAY(struct stifb_info *fb, int enable)
+> #define SET_LENXY_START_RECFILL(fb, lenxy) \
+> 	WRITE_WORD(lenxy, fb, REG_9)
+>
+> +#define SETUP_COPYAREA(fb) \
+> +	WRITE_BYTE(0, fb, REG_16b1)
+> +
+> static void
+> HYPER_ENABLE_DISABLE_DISPLAY(struct stifb_info *fb, int enable)
+> {
+> @@ -1004,6 +1010,36 @@ stifb_blank(int blank_mode, struct fb_info *info)
+> 	return 0;
+> }
+>
+> +static void
+> +stifb_copyarea(struct fb_info *info, const struct fb_copyarea *area)
+> +{
+> +	struct stifb_info *fb = container_of(info, struct stifb_info, info);
+> +
+> +	SETUP_COPYAREA(fb);
+> +
+> +	SETUP_HW(fb);
+> +	if (fb->info.var.bits_per_pixel == 32) {
+> +		WRITE_WORD(0xBBA0A000, fb, REG_10);
+> +
+> +		NGLE_REALLY_SET_IMAGE_PLANEMASK(fb, 0xffffffff);
+> +	} else {
+> +		WRITE_WORD(fb->id == S9000_ID_HCRX ? 0x13a02000 : 0x13a01000, fb, REG_10);
+> +
+> +		NGLE_REALLY_SET_IMAGE_PLANEMASK(fb, 0xff);
+> +	}
+> +
+> +	NGLE_QUICK_SET_IMAGE_BITMAP_OP(fb,
+> +		IBOvals(RopSrc, MaskAddrOffset(0),
+> +		BitmapExtent08, StaticReg(1),
+> +		DataDynamic, MaskOtc, BGx(0), FGx(0)));
+> +
+> +	WRITE_WORD(((area->sx << 16) | area->sy), fb, REG_24);
+> +	WRITE_WORD(((area->width << 16) | area->height), fb, REG_7);
+> +	WRITE_WORD(((area->dx << 16) | area->dy), fb, REG_25);
+> +
+> +	SETUP_FB(fb);
+> +}
+> +
+> static void __init
+> stifb_init_display(struct stifb_info *fb)
+> {
+> @@ -1069,7 +1105,7 @@ static struct fb_ops stifb_ops = {
+> 	.fb_setcolreg	= stifb_setcolreg,
+> 	.fb_blank	= stifb_blank,
+> 	.fb_fillrect	= cfb_fillrect,
+> -	.fb_copyarea	= cfb_copyarea,
+> +	.fb_copyarea	= stifb_copyarea,
+> 	.fb_imageblit	= cfb_imageblit,
+> };
+>
+> @@ -1258,7 +1294,7 @@ static int __init stifb_init_fb(struct sti_struct *sti, int bpp_pref)
+> 	info->fbops = &stifb_ops;
+> 	info->screen_base = ioremap_nocache(REGION_BASE(fb,1), fix->smem_len);
+> 	info->screen_size = fix->smem_len;
+> -	info->flags = FBINFO_DEFAULT;
+> +	info->flags = FBINFO_DEFAULT | FBINFO_HWACCEL_COPYAREA;
+> 	info->pseudo_palette = &fb->pseudo_palette;
+>
+> 	/* This has to be done !!! */
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
-Likely that the overhead does not matter in most cases, but presumably
-there are cases where it does (as we have a MAP_LOCKED flag today).
-Even with the proposed new system calls I think we should have the
-MAP_LOCKONFAULT for parity with MAP_LOCKED.
-
->=20
-> >- mlock() takes a `flags' argument.  Presently that's
-> >   MLOCK_LOCKED|MLOCK_LOCKONFAULT.
-> >
-> >- munlock() takes a `flags' arument.  MLOCK_LOCKED|MLOCK_LOCKONFAULT
-> >   to specify which flags are being cleared.
-> >
-> >- mlockall() and munlockall() ditto.
-> >
-> >
-> >IOW, LOCKED and LOCKEDONFAULT are treated identically and independently.
-> >
-> >Now, that's how we would have designed all this on day one.  And I
-> >think we can do this now, by adding new mlock2() and munlock2()
-> >syscalls.  And we may as well deprecate the old mlock() and munlock(),
-> >not that this matters much.
-> >
-> >*should* we do this?  I'm thinking "yes" - it's all pretty simple
-> >boilerplate and wrappers and such, and it gets the interface correct,
-> >and extensible.
->=20
-> If the new LOCKONFAULT functionality is indeed desired (I haven't
-> still decided myself) then I agree that would be the cleanest way.
-
-Do you disagree with the use cases I have listed or do you think there
-is a better way of addressing those cases?
-
->=20
-> >What do others think?
-
---tsOsTdHNUZQcU9Ye
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJVfuSrAAoJELbVsDOpoOa9SqoP/32pn+LLrjk0r2GNhFZF26Ig
-182hz7lG8As2Y7a1N+mtpfGq0JmrMbaytwEcmI1BpgI64DNcNOUINEqqaWXNeEBX
-idyVOQ1jeGGxDGyHLDNGfC6zlWxKGYPiKaaifSb37+hIQhOxsmXQ8U1E3GVdnRXK
-g8uPlztYSH5WN7LluiIEPXN1IPs57ADkoupTmSKzU2C9nnEUVYt9AmOm2Gt49Gmu
-F5f8rMGwvoC7WJGI83Xha60W7Fcv4hRoZeud/dspTKJmPrPERQ7kvqgwfTPoDWN+
-IvuzwjPSSCKNZie3HzEG7ae3KASKfh2Yat1zqrKZvI1/q+OSNsn/X8VjPcORIgDz
-OhzUEkL/4tTv+1a007eoPQEYUNxdgY+ZghOX7iw7OBT5gApUPc4kzwcnjTmK0l8A
-FJj6sn627osTIVoVL8ScRRWhY3BgscRhwFW2tBpRUc8GacMYyevfNEpOvX8oh2bv
-zdfo70SgsjTVseJb7WOB3TSjoXBgPV/xU0cBnMQZhLnUzdXHjWwm4lYqwRiPJZpO
-nAn32DLqbBe4GG+PtThn8Es/uddWOrypGtEaYu7ToYz6qqrLtVeMS5UTmaAijnZK
-xwEU889kELmPEg5C4rrfv+ttLUnCMkwLWxD4/fSIaPYLiz3yVIGzlTfUnyEUt8/H
-ZxlwoAMcTlbg88oH6jKj
-=u99f
------END PGP SIGNATURE-----
-
---tsOsTdHNUZQcU9Ye--
