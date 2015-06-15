@@ -1,108 +1,125 @@
-From: lausgans@gmail.com
-Subject: [PATCH] stifb: Implement hardware accelerated copyarea
-Date: Mon, 15 Jun 2015 08:50:45 +0300
-Message-ID: <679FC99F-317B-4925-A6D8-2F0DB4EC6EBD@gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2098\))
+From: Eric B Munson <emunson@akamai.com>
+Subject: Re: [RESEND PATCH V2 0/3] Allow user to request memory to be locked
+ on page fault
+Date: Mon, 15 Jun 2015 10:39:34 -0400
+Message-ID: <20150615143934.GA12300@akamai.com>
+References: <1433942810-7852-1-git-send-email-emunson@akamai.com>
+ <20150610145929.b22be8647887ea7091b09ae1@linux-foundation.org>
+ <5579DFBA.80809@akamai.com>
+ <20150611123424.4bb07cffd0e5bb146cc92231@linux-foundation.org>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3MwIy2ne0vdjdPXF"
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, Michal Hocko <mhocko@suse.cz>,
+	Michael Kerrisk <mtk.manpages@gmail.com>,
+	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+	linux-xtensa@linux-xtensa.org, linux-mm@kvack.org,
+	linux-arch@vger.kernel.org, linux-api@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <20150611123424.4bb07cffd0e5bb146cc92231@linux-foundation.org>
+List-ID: <linux-mm.kvack.org>
+
+
+--3MwIy2ne0vdjdPXF
 Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>
-To: linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This patch adds hardware assisted scrolling. The code is based upon the
-following investigation: https://parisc.wiki.kernel.org/index.php/NGLE#Blitter A
-simple 'time ls -la /usr/bin' test shows 1.6x speed increase over soft copy and
-2.3x increase over FBINFO_READS_FAST (prefer soft copy over screen redraw) on
-Artist framebuffer.
+On Thu, 11 Jun 2015, Andrew Morton wrote:
 
-Thanks!
+> On Thu, 11 Jun 2015 15:21:30 -0400 Eric B Munson <emunson@akamai.com> wro=
+te:
+>=20
+> > > Ditto mlockall(MCL_ONFAULT) followed by munlock().  I'm not sure
+> > > that even makes sense but the behaviour should be understood and
+> > > tested.
+> >
+> > I have extended the kselftest for lock-on-fault to try both of these
+> > scenarios and they work as expected.  The VMA is split and the VM
+> > flags are set appropriately for the resulting VMAs.
+>=20
+> munlock() should do vma merging as well.  I *think* we implemented
+> that.  More tests for you to add ;)
+>=20
+> How are you testing the vma merging and splitting, btw?  Parsing
+> the profcs files?
 
-Signed-off-by: Alex Ivanov <lausgans@gmail.com>
+The lock-on-fault test now covers VMA splitting and merging by parsing
+/proc/self/maps.  VMA splitting and merging works as it should with both
+MAP_LOCKONFAULT and MCL_ONFAULT.
 
-diff --git a/drivers/video/fbdev/stifb.c b/drivers/video/fbdev/stifb.c
-index 86621fa..735355b 100644
---- a/drivers/video/fbdev/stifb.c
-+++ b/drivers/video/fbdev/stifb.c
-@@ -121,6 +121,7 @@ static int __initdata stifb_bpp_pref[MAX_STI_ROMS];
-#define REG_3		0x0004a0
-#define REG_4		0x000600
-#define REG_6		0x000800
-+#define REG_7		0x000804
-#define REG_8		0x000820
-#define REG_9		0x000a04
-#define REG_10		0x018000
-@@ -135,6 +136,8 @@ static int __initdata stifb_bpp_pref[MAX_STI_ROMS];
-#define REG_21		0x200218
-#define REG_22		0x0005a0
-#define REG_23		0x0005c0
-+#define REG_24		0x000808
-+#define REG_25		0x000b00
-#define REG_26		0x200118
-#define REG_27		0x200308
-#define REG_32		0x21003c
-@@ -429,6 +432,9 @@ ARTIST_ENABLE_DISABLE_DISPLAY(struct stifb_info *fb, int enable)
-#define SET_LENXY_START_RECFILL(fb, lenxy) \
-	WRITE_WORD(lenxy, fb, REG_9)
+>=20
+> > > What's missing here is a syscall to set VM_LOCKONFAULT on an
+> > > arbitrary range of memory - mlock() for lock-on-fault.  It's a
+> > > shame that mlock() didn't take a `mode' argument.  Perhaps we
+> > > should add such a syscall - that would make the mmap flag unneeded
+> > > but I suppose it should be kept for symmetry.
+> >=20
+> > Do you want such a system call as part of this set?  I would need some
+> > time to make sure I had thought through all the possible corners one
+> > could get into with such a call, so it would delay a V3 quite a bit.
+> > Otherwise I can send a V3 out immediately.
+>=20
+> I think the way to look at this is to pretend that mm/mlock.c doesn't
+> exist and ask "how should we design these features".
+>=20
+> And that would be:
+>=20
+> - mmap() takes a `flags' argument: MAP_LOCKED|MAP_LOCKONFAULT.
+>=20
+> - mlock() takes a `flags' argument.  Presently that's
+>   MLOCK_LOCKED|MLOCK_LOCKONFAULT.
+>=20
+> - munlock() takes a `flags' arument.  MLOCK_LOCKED|MLOCK_LOCKONFAULT
+>   to specify which flags are being cleared.
+>=20
+> - mlockall() and munlockall() ditto.
+>=20
+>=20
+> IOW, LOCKED and LOCKEDONFAULT are treated identically and independently.
+>=20
+> Now, that's how we would have designed all this on day one.  And I
+> think we can do this now, by adding new mlock2() and munlock2()
+> syscalls.  And we may as well deprecate the old mlock() and munlock(),
+> not that this matters much.
+>=20
+> *should* we do this?  I'm thinking "yes" - it's all pretty simple
+> boilerplate and wrappers and such, and it gets the interface correct,
+> and extensible.
+>=20
+> What do others think?
 
-+#define SETUP_COPYAREA(fb) \
-+	WRITE_BYTE(0, fb, REG_16b1)
-+
-static void
-HYPER_ENABLE_DISABLE_DISPLAY(struct stifb_info *fb, int enable)
-{
-@@ -1004,6 +1010,36 @@ stifb_blank(int blank_mode, struct fb_info *info)
-	return 0;
-}
+I am working on V3 which will introduce the new system calls.
 
-+static void
-+stifb_copyarea(struct fb_info *info, const struct fb_copyarea *area)
-+{
-+	struct stifb_info *fb = container_of(info, struct stifb_info, info);
-+
-+	SETUP_COPYAREA(fb);
-+
-+	SETUP_HW(fb);
-+	if (fb->info.var.bits_per_pixel == 32) {
-+		WRITE_WORD(0xBBA0A000, fb, REG_10);
-+
-+		NGLE_REALLY_SET_IMAGE_PLANEMASK(fb, 0xffffffff);
-+	} else {
-+		WRITE_WORD(fb->id == S9000_ID_HCRX ? 0x13a02000 : 0x13a01000, fb, REG_10);
-+
-+		NGLE_REALLY_SET_IMAGE_PLANEMASK(fb, 0xff);
-+	}
-+
-+	NGLE_QUICK_SET_IMAGE_BITMAP_OP(fb,
-+		IBOvals(RopSrc, MaskAddrOffset(0),
-+		BitmapExtent08, StaticReg(1),
-+		DataDynamic, MaskOtc, BGx(0), FGx(0)));
-+
-+	WRITE_WORD(((area->sx << 16) | area->sy), fb, REG_24);
-+	WRITE_WORD(((area->width << 16) | area->height), fb, REG_7);
-+	WRITE_WORD(((area->dx << 16) | area->dy), fb, REG_25);
-+
-+	SETUP_FB(fb);
-+}
-+
-static void __init
-stifb_init_display(struct stifb_info *fb)
-{
-@@ -1069,7 +1105,7 @@ static struct fb_ops stifb_ops = {
-	.fb_setcolreg	= stifb_setcolreg,
-	.fb_blank	= stifb_blank,
-	.fb_fillrect	= cfb_fillrect,
--	.fb_copyarea	= cfb_copyarea,
-+	.fb_copyarea	= stifb_copyarea,
-	.fb_imageblit	= cfb_imageblit,
-};
+--3MwIy2ne0vdjdPXF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-@@ -1258,7 +1294,7 @@ static int __init stifb_init_fb(struct sti_struct *sti, int bpp_pref)
-	info->fbops = &stifb_ops;
-	info->screen_base = ioremap_nocache(REGION_BASE(fb,1), fix->smem_len);
-	info->screen_size = fix->smem_len;
--	info->flags = FBINFO_DEFAULT;
-+	info->flags = FBINFO_DEFAULT | FBINFO_HWACCEL_COPYAREA;
-	info->pseudo_palette = &fb->pseudo_palette;
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-	/* This has to be done !!! */
+iQIcBAEBAgAGBQJVfuOmAAoJELbVsDOpoOa9s3IP/3PHZ6S5YUFkxUlalwmhJoDD
+YtCVtwakGJ0GjPMI4iM+H1TsCym6AYH/Kv0dxfnTbFMTqClzHq7V3QZt9IHJH7Pb
+Z8gBH247JOk7opOsB3Cb3gLvAkQ4bfgXObSsgvPLCID2GumlUOINBpXwYBpNLh00
++4blC/0gdEp0C8xAPbJIzguSEI5wAwmOISlSQipb2ptEl+aAFjxRLARl47pD6EES
+N6pYgeVfNZ/F63Ywoley/s2RE7pvm3ofCVcrNC8AH1lolbbEZgrQBJKB/Sq5RC2W
+pcO4Z6Y3UOziTyNuWcHRVOGjK/gpoFnncdFJzmjMubx8N+8dus1Wl3xwvXidYT8e
+bLqc3acsUy2zLFQJRZIxuR9PPXVpKLCc0GF5Ufqa6ej5PKEsMJ2Baqy7x5Ujgyts
+ceNH2d1JRtkxdVw+WqBetjatM2icb+Yf/e3hOzr85thaAVGyoNJtlyhAciY4aIbW
+JhCpFuhvCuUcag2nNrrN5Ry3noGv3pm2AuqmUVSEZjorLsQnN5/3FxntVSb4YWkg
+VSLD4QHMiE0UeWnhCzKN7I5e/QhrnJ+HABx0GfTgjcXt1VQiKwxEp9A8+JsRmGiF
+G0oOTWsE/oUx+KCluuIRPpKuuiX0Nc50IEH3vklCIAkAWriMfh/jZvDTIeR1Wtci
+3BTlJ2Z0erX8IPh+BVnI
+=jO18
+-----END PGP SIGNATURE-----
+
+--3MwIy2ne0vdjdPXF--
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
