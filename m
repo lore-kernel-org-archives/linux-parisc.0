@@ -1,123 +1,145 @@
-From: Kamal Mostafa <kamal@canonical.com>
-Subject: [3.19.y-ckt stable] Patch "parisc,metag: Fix crashes due to stack randomization on stack-grows-upwards architectures" has been added to staging queue
-Date: Mon, 15 Jun 2015 17:22:26 -0700
-Message-ID: <1434414146-15514-1-git-send-email-kamal@canonical.com>
-Cc: linux-parisc@vger.kernel.org, James Hogan <james.hogan@imgtec.com>,
-	linux-metag@vger.kernel.org, Kamal Mostafa <kamal@canonical.com>,
-	kernel-team@lists.ubuntu.com
+From: =?UTF-8?B?4oGjIOKBow==?= <lausgans@gmail.com>
+Subject: Re: [PATCH] stifb: Implement hardware accelerated copyarea
+Date: Tue, 16 Jun 2015 15:11:41 +0300
+Message-ID: <CANoehN_ySy=pAbiN33LeXMsqh=vNZgPrDUjDEJQs-1jy8nfUdQ@mail.gmail.com>
+References: <679FC99F-317B-4925-A6D8-2F0DB4EC6EBD@gmail.com>
+	<557F1EDD.3080504@gmx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Cc: Parisc List <linux-parisc@vger.kernel.org>
 To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <557F1EDD.3080504@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a note to let you know that I have just added a patch titled
+Helge Deller <deller@gmx.de>:
+> On 15.06.2015 07:50, lausgans@gmail.com wrote:
+>>
+>> This patch adds hardware assisted scrolling. The code is based upon the
+>> following investigation:
+>> https://parisc.wiki.kernel.org/index.php/NGLE#Blitter A
+>> simple 'time ls -la /usr/bin' test shows 1.6x speed increase over soft
+>> copy and
+>> 2.3x increase over FBINFO_READS_FAST (prefer soft copy over screen redraw)
+>> on
+>> Artist framebuffer.
+>
+>
+> I haven't tested it yet, but that's very cool!
+> Thanks!
+>
+> I wonder if adding a BlockTLB (with PA7100LC CPUs) further increases
+> speed on Artist graphic cards (e.g. in X11)...?
 
-    parisc,metag: Fix crashes due to stack randomization on stack-grows-upwards architectures
+Thanks for pointing me to this facility, Helge! I hadn't been aware of it.
+"Standard Text Interface For Graphics Devices" document says we should
+benefit from using it.
+And an Artist ROM has both frame buffer and MMIO regions marked as
+desirable for Block TLB. I hope other STI devices are ready for this
+too.
 
-to the linux-3.19.y-queue branch of the 3.19.y-ckt extended stable tree 
-which can be found at:
+Alex
 
-    http://kernel.ubuntu.com/git/ubuntu/linux.git/log/?h=linux-3.19.y-queue
-
-This patch is scheduled to be released in version 3.19.8-ckt2.
-
-If you, or anyone else, feels it should not be added to this tree, please 
-reply to this email.
-
-For more information about the 3.19.y-ckt tree, see
-https://wiki.ubuntu.com/Kernel/Dev/ExtendedStable
-
-Thanks.
--Kamal
-
-------
-
->From 264f3887a1df6bf17f366be430441c9b8728dd89 Mon Sep 17 00:00:00 2001
-From: Helge Deller <deller@gmx.de>
-Date: Mon, 11 May 2015 22:01:27 +0200
-Subject: parisc,metag: Fix crashes due to stack randomization on
- stack-grows-upwards architectures
-
-commit d045c77c1a69703143a36169c224429c48b9eecd upstream.
-
-On architectures where the stack grows upwards (CONFIG_STACK_GROWSUP=y,
-currently parisc and metag only) stack randomization sometimes leads to crashes
-when the stack ulimit is set to lower values than STACK_RND_MASK (which is 8 MB
-by default if not defined in arch-specific headers).
-
-The problem is, that when the stack vm_area_struct is set up in fs/exec.c, the
-additional space needed for the stack randomization (as defined by the value of
-STACK_RND_MASK) was not taken into account yet and as such, when the stack
-randomization code added a random offset to the stack start, the stack
-effectively got smaller than what the user defined via rlimit_max(RLIMIT_STACK)
-which then sometimes leads to out-of-stack situations and crashes.
-
-This patch fixes it by adding the maximum possible amount of memory (based on
-STACK_RND_MASK) which theoretically could be added by the stack randomization
-code to the initial stack size. That way, the user-defined stack size is always
-guaranteed to be at minimum what is defined via rlimit_max(RLIMIT_STACK).
-
-This bug is currently not visible on the metag architecture, because on metag
-STACK_RND_MASK is defined to 0 which effectively disables stack randomization.
-
-The changes to fs/exec.c are inside an "#ifdef CONFIG_STACK_GROWSUP"
-section, so it does not affect other platformws beside those where the
-stack grows upwards (parisc and metag).
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
-Cc: James Hogan <james.hogan@imgtec.com>
-Cc: linux-metag@vger.kernel.org
-Signed-off-by: Kamal Mostafa <kamal@canonical.com>
----
- arch/parisc/include/asm/elf.h   | 4 ++++
- arch/parisc/kernel/sys_parisc.c | 3 +++
- fs/exec.c                       | 3 +++
- 3 files changed, 10 insertions(+)
-
-diff --git a/arch/parisc/include/asm/elf.h b/arch/parisc/include/asm/elf.h
-index 3391d06..78c9fd3 100644
---- a/arch/parisc/include/asm/elf.h
-+++ b/arch/parisc/include/asm/elf.h
-@@ -348,6 +348,10 @@ struct pt_regs;	/* forward declaration... */
-
- #define ELF_HWCAP	0
-
-+#define STACK_RND_MASK	(is_32bit_task() ? \
-+				0x7ff >> (PAGE_SHIFT - 12) : \
-+				0x3ffff >> (PAGE_SHIFT - 12))
-+
- struct mm_struct;
- extern unsigned long arch_randomize_brk(struct mm_struct *);
- #define arch_randomize_brk arch_randomize_brk
-diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
-index e1ffea2..5aba01a 100644
---- a/arch/parisc/kernel/sys_parisc.c
-+++ b/arch/parisc/kernel/sys_parisc.c
-@@ -77,6 +77,9 @@ static unsigned long mmap_upper_limit(void)
- 	if (stack_base > STACK_SIZE_MAX)
- 		stack_base = STACK_SIZE_MAX;
-
-+	/* Add space for stack randomization. */
-+	stack_base += (STACK_RND_MASK << PAGE_SHIFT);
-+
- 	return PAGE_ALIGN(STACK_TOP - stack_base);
- }
-
-diff --git a/fs/exec.c b/fs/exec.c
-index 4617a4e..be18722 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -659,6 +659,9 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	if (stack_base > STACK_SIZE_MAX)
- 		stack_base = STACK_SIZE_MAX;
-
-+	/* Add space for stack randomization. */
-+	stack_base += (STACK_RND_MASK << PAGE_SHIFT);
-+
- 	/* Make sure we didn't let the argument array grow too large. */
- 	if (vma->vm_end - vma->vm_start > stack_base)
- 		return -ENOMEM;
---
-1.9.1
-
+>
+> Helge
+>
+>> Signed-off-by: Alex Ivanov <lausgans@gmail.com>
+>>
+>> diff --git a/drivers/video/fbdev/stifb.c b/drivers/video/fbdev/stifb.c
+>> index 86621fa..735355b 100644
+>> --- a/drivers/video/fbdev/stifb.c
+>> +++ b/drivers/video/fbdev/stifb.c
+>> @@ -121,6 +121,7 @@ static int __initdata stifb_bpp_pref[MAX_STI_ROMS];
+>> #define REG_3           0x0004a0
+>> #define REG_4           0x000600
+>> #define REG_6           0x000800
+>> +#define REG_7          0x000804
+>> #define REG_8           0x000820
+>> #define REG_9           0x000a04
+>> #define REG_10          0x018000
+>> @@ -135,6 +136,8 @@ static int __initdata stifb_bpp_pref[MAX_STI_ROMS];
+>> #define REG_21          0x200218
+>> #define REG_22          0x0005a0
+>> #define REG_23          0x0005c0
+>> +#define REG_24         0x000808
+>> +#define REG_25         0x000b00
+>> #define REG_26          0x200118
+>> #define REG_27          0x200308
+>> #define REG_32          0x21003c
+>> @@ -429,6 +432,9 @@ ARTIST_ENABLE_DISABLE_DISPLAY(struct stifb_info *fb,
+>> int enable)
+>> #define SET_LENXY_START_RECFILL(fb, lenxy) \
+>>         WRITE_WORD(lenxy, fb, REG_9)
+>>
+>> +#define SETUP_COPYAREA(fb) \
+>> +       WRITE_BYTE(0, fb, REG_16b1)
+>> +
+>> static void
+>> HYPER_ENABLE_DISABLE_DISPLAY(struct stifb_info *fb, int enable)
+>> {
+>> @@ -1004,6 +1010,36 @@ stifb_blank(int blank_mode, struct fb_info *info)
+>>         return 0;
+>> }
+>>
+>> +static void
+>> +stifb_copyarea(struct fb_info *info, const struct fb_copyarea *area)
+>> +{
+>> +       struct stifb_info *fb = container_of(info, struct stifb_info,
+>> info);
+>> +
+>> +       SETUP_COPYAREA(fb);
+>> +
+>> +       SETUP_HW(fb);
+>> +       if (fb->info.var.bits_per_pixel == 32) {
+>> +               WRITE_WORD(0xBBA0A000, fb, REG_10);
+>> +
+>> +               NGLE_REALLY_SET_IMAGE_PLANEMASK(fb, 0xffffffff);
+>> +       } else {
+>> +               WRITE_WORD(fb->id == S9000_ID_HCRX ? 0x13a02000 :
+>> 0x13a01000, fb, REG_10);
+>> +
+>> +               NGLE_REALLY_SET_IMAGE_PLANEMASK(fb, 0xff);
+>> +       }
+>> +
+>> +       NGLE_QUICK_SET_IMAGE_BITMAP_OP(fb,
+>> +               IBOvals(RopSrc, MaskAddrOffset(0),
+>> +               BitmapExtent08, StaticReg(1),
+>> +               DataDynamic, MaskOtc, BGx(0), FGx(0)));
+>> +
+>> +       WRITE_WORD(((area->sx << 16) | area->sy), fb, REG_24);
+>> +       WRITE_WORD(((area->width << 16) | area->height), fb, REG_7);
+>> +       WRITE_WORD(((area->dx << 16) | area->dy), fb, REG_25);
+>> +
+>> +       SETUP_FB(fb);
+>> +}
+>> +
+>> static void __init
+>> stifb_init_display(struct stifb_info *fb)
+>> {
+>> @@ -1069,7 +1105,7 @@ static struct fb_ops stifb_ops = {
+>>         .fb_setcolreg   = stifb_setcolreg,
+>>         .fb_blank       = stifb_blank,
+>>         .fb_fillrect    = cfb_fillrect,
+>> -       .fb_copyarea    = cfb_copyarea,
+>> +       .fb_copyarea    = stifb_copyarea,
+>>         .fb_imageblit   = cfb_imageblit,
+>> };
+>>
+>> @@ -1258,7 +1294,7 @@ static int __init stifb_init_fb(struct sti_struct
+>> *sti, int bpp_pref)
+>>         info->fbops = &stifb_ops;
+>>         info->screen_base = ioremap_nocache(REGION_BASE(fb,1),
+>> fix->smem_len);
+>>         info->screen_size = fix->smem_len;
+>> -       info->flags = FBINFO_DEFAULT;
+>> +       info->flags = FBINFO_DEFAULT | FBINFO_HWACCEL_COPYAREA;
+>>         info->pseudo_palette = &fb->pseudo_palette;
+>>
+>>         /* This has to be done !!! */
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>
+>
