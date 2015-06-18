@@ -1,114 +1,76 @@
-From: Kamal Mostafa <kamal@canonical.com>
-Subject: [PATCH 3.19.y-ckt 061/146] parisc,
- metag: Fix crashes due to stack randomization on stack-grows-upwards
- architectures
-Date: Wed, 17 Jun 2015 15:22:46 -0700
-Message-ID: <1434579851-1719-62-git-send-email-kamal@canonical.com>
-References: <1434579851-1719-1-git-send-email-kamal@canonical.com>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH 01/44] kernel: Add support for poweroff handler call chain
+Date: Wed, 17 Jun 2015 18:04:54 -0700
+Message-ID: <55821936.4040704@codeaurora.org>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net> <1412659726-29957-2-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: Kamal Mostafa <kamal@canonical.com>, Helge Deller <deller@gmx.de>,
- James Hogan <james.hogan@imgtec.com>, linux-metag@vger.kernel.org,
- linux-parisc@vger.kernel.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- kernel-team@lists.ubuntu.com
-Return-path: <kernel-team-bounces@lists.ubuntu.com>
-In-Reply-To: <1434579851-1719-1-git-send-email-kamal@canonical.com>
-List-Unsubscribe: <https://lists.ubuntu.com/mailman/options/kernel-team>,
- <mailto:kernel-team-request@lists.ubuntu.com?subject=unsubscribe>
-List-Archive: <https://lists.ubuntu.com/archives/kernel-team>
-List-Post: <mailto:kernel-team@lists.ubuntu.com>
-List-Help: <mailto:kernel-team-request@lists.ubuntu.com?subject=help>
-List-Subscribe: <https://lists.ubuntu.com/mailman/listinfo/kernel-team>,
- <mailto:kernel-team-request@lists.ubuntu.com?subject=subscribe>
-Errors-To: kernel-team-bounces@lists.ubuntu.com
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Cc: linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org,
+	linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org,
+	Heiko Stuebner <heiko@sntech.de>,
+	Len Brown <len.brown@intel.com>, linux-xtensa@linux-xtensa.org,
+	Pavel Machek <pavel@ucw.cz>, devel@driverdev.osuosl.org,
+	linux-s390@vger.kernel.org, lguest@lists.ozlabs.org,
+	linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
+	linux-sh@vger.kernel.org, Alexander Graf <agraf@suse.de>,
+	linux-acpi@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	xen-devel@lists.xenproject.org, devicetree@vger.kernel.org,
+	user-mode-linux-devel@lists.sourceforge.net,
+	linux-pm@vger.kernel.org,
+	adi-buildroot-devel@lists.sourceforge.net,
+	linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com,
+	linux-tegra@vger.kernel.org,
+	openipmi-developer@lists.sourceforge.net,
+	linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead
+To: Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org
+Return-path: <linux-hexagon-owner@vger.kernel.org>
+In-Reply-To: <1412659726-29957-2-git-send-email-linux@roeck-us.net>
+List-ID: <linux-hexagon.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-3.19.8-ckt2 -stable review patch.  If anyone has any objections, please let me know.
+On 10/06/2014 10:28 PM, Guenter Roeck wrote:
+> Various drivers implement architecture and/or device specific means to
+> remove power from the system.  For the most part, those drivers set the
+> global variable pm_power_off to point to a function within the driver.
+>
+> This mechanism has a number of drawbacks.  Typically only one scheme
+> to remove power is supported (at least if pm_power_off is used).
+> At least in theory there can be multiple means remove power, some of
+> which may be less desirable. For example, some mechanisms may only
+> power off the CPU or the CPU card, while another may power off the
+> entire system.  Others may really just execute a restart sequence
+> or drop into the ROM monitor. Using pm_power_off can also be racy
+> if the function pointer is set from a driver built as module, as the
+> driver may be in the process of being unloaded when pm_power_off is
+> called. If there are multiple poweroff handlers in the system, removing
+> a module with such a handler may inadvertently reset the pointer to
+> pm_power_off to NULL, leaving the system with no means to remove power.
+>
+> Introduce a system poweroff handler call chain to solve the described
+> problems.  This call chain is expected to be executed from the
+> architecture specific machine_power_off() function.  Drivers providing
+> system poweroff functionality are expected to register with this call chain.
+> By using the priority field in the notifier block, callers can control
+> poweroff handler execution sequence and thus ensure that the poweroff
+> handler with the optimal capabilities to remove power for a given system
+> is called first.
 
-------------------
+What happened to this series? I want to add shutdown support to my
+platform and I need to write a register on the PMIC in one driver to
+configure it for shutdown instead of restart and then write an MMIO
+register to tell the PMIC to actually do the shutdown in another driver.
+It seems that the notifier solves this case for me, albeit with the
+slight complication that I need to order the two with some priority.
 
-From: Helge Deller <deller@gmx.de>
+I'm also considering putting the PMIC configuration part into the reboot
+notifier chain, because it only does things to change the configuration
+and not actually any shutdown/restart itself. That removes any
+requirement to get the priority of notifiers right. This series will
+still be useful for the MMIO register that needs to be toggled though.
+Right now I have to assign pm_power_off or hook the reboot notifier with
+a different priority to make this work.
 
-commit d045c77c1a69703143a36169c224429c48b9eecd upstream.
-
-On architectures where the stack grows upwards (CONFIG_STACK_GROWSUP=y,
-currently parisc and metag only) stack randomization sometimes leads to crashes
-when the stack ulimit is set to lower values than STACK_RND_MASK (which is 8 MB
-by default if not defined in arch-specific headers).
-
-The problem is, that when the stack vm_area_struct is set up in fs/exec.c, the
-additional space needed for the stack randomization (as defined by the value of
-STACK_RND_MASK) was not taken into account yet and as such, when the stack
-randomization code added a random offset to the stack start, the stack
-effectively got smaller than what the user defined via rlimit_max(RLIMIT_STACK)
-which then sometimes leads to out-of-stack situations and crashes.
-
-This patch fixes it by adding the maximum possible amount of memory (based on
-STACK_RND_MASK) which theoretically could be added by the stack randomization
-code to the initial stack size. That way, the user-defined stack size is always
-guaranteed to be at minimum what is defined via rlimit_max(RLIMIT_STACK).
-
-This bug is currently not visible on the metag architecture, because on metag
-STACK_RND_MASK is defined to 0 which effectively disables stack randomization.
-
-The changes to fs/exec.c are inside an "#ifdef CONFIG_STACK_GROWSUP"
-section, so it does not affect other platformws beside those where the
-stack grows upwards (parisc and metag).
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
-Cc: James Hogan <james.hogan@imgtec.com>
-Cc: linux-metag@vger.kernel.org
-Signed-off-by: Kamal Mostafa <kamal@canonical.com>
----
- arch/parisc/include/asm/elf.h   | 4 ++++
- arch/parisc/kernel/sys_parisc.c | 3 +++
- fs/exec.c                       | 3 +++
- 3 files changed, 10 insertions(+)
-
-diff --git a/arch/parisc/include/asm/elf.h b/arch/parisc/include/asm/elf.h
-index 3391d06..78c9fd3 100644
---- a/arch/parisc/include/asm/elf.h
-+++ b/arch/parisc/include/asm/elf.h
-@@ -348,6 +348,10 @@ struct pt_regs;	/* forward declaration... */
- 
- #define ELF_HWCAP	0
- 
-+#define STACK_RND_MASK	(is_32bit_task() ? \
-+				0x7ff >> (PAGE_SHIFT - 12) : \
-+				0x3ffff >> (PAGE_SHIFT - 12))
-+
- struct mm_struct;
- extern unsigned long arch_randomize_brk(struct mm_struct *);
- #define arch_randomize_brk arch_randomize_brk
-diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
-index e1ffea2..5aba01a 100644
---- a/arch/parisc/kernel/sys_parisc.c
-+++ b/arch/parisc/kernel/sys_parisc.c
-@@ -77,6 +77,9 @@ static unsigned long mmap_upper_limit(void)
- 	if (stack_base > STACK_SIZE_MAX)
- 		stack_base = STACK_SIZE_MAX;
- 
-+	/* Add space for stack randomization. */
-+	stack_base += (STACK_RND_MASK << PAGE_SHIFT);
-+
- 	return PAGE_ALIGN(STACK_TOP - stack_base);
- }
- 
-diff --git a/fs/exec.c b/fs/exec.c
-index 4617a4e..be18722 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -659,6 +659,9 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	if (stack_base > STACK_SIZE_MAX)
- 		stack_base = STACK_SIZE_MAX;
- 
-+	/* Add space for stack randomization. */
-+	stack_base += (STACK_RND_MASK << PAGE_SHIFT);
-+
- 	/* Make sure we didn't let the argument array grow too large. */
- 	if (vma->vm_end - vma->vm_start > stack_base)
- 		return -ENOMEM;
 -- 
-1.9.1
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
