@@ -1,40 +1,31 @@
-From: Mohammed El-Shaban <moha_elsharoyality@hotmail.com>
-Subject: PROJECT FUNDING/DEBT FINANCING
-Date: Sat, 27 Jun 2015 10:22:02 +0100
-Message-ID: <20150627092918.DB150C52E2@hdx6145.nexio.info>
-Reply-To: moha_elsharoyality@hotmail.com
+From: Sasnett_Karen <sasnett_karen@asdk12.org>
+Subject: (unknown)
+Date: Wed, 1 Jul 2015 11:53:31 +0000
+Message-ID: <B3EEA09B9C66584198B6765D1492AEF27A4787B7__19765.4832889841$1435753451$gmane$org@ITEXCH01.asdk12.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-To: Recipients <moha_elsharoyality@hotmail.com>
+Content-Type: text/plain; charset=iso-8859-1
+To: undisclosed-recipients:;
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Greetings,
 
-We are an Investment company that invites you to partner with us and benefit in 
 
-our new Loan and Project funding program. We offer flexible loans and funding for 
 
-various projects by passing the usual rigorous procedures.This Funding program 
+Haben Sie einen Investor brauchen?
 
-allows a client to enjoy low interest payback for as low as 3 - 4% per annum for a 
+Haben Sie gesch=E4ftliche oder pers=F6nliche Darlehen ben=F6tigen?
 
-period of 7-8 years. We can approve a loan/funding for up to USD 500,000,000.00 or 
+Wir geben Darlehen an eine nat=FCrliche Person und Unternehmen bei 3% Z=
+insen j=E4hrlich. Weitere Informationen Kontaktieren Sie uns per E-Mail=
+: omfcreditspa@hotmail.com<mailto:omfcreditspa@hotmail.com>
 
-more depending on the nature of business. We are currently funding for:
 
-* Starting up a Franchise
-* Business Acquisition
-* Business Expansion
-* Commercial Real Estate purchase
-* Contract Execution
 
-We are open to having a good business relationship with you. If you think you have 
-
-a solid background and idea of making good profit in any venture, please do not 
-
-hesitate to contact us for possible business co-operation.
-
-Sincerely,
-El-Shaban
+HINWEIS: Leiten Sie Ihre Antwort nur an diese E-Mail: omfcreditspa@hotm=
+ail.com<mailto:omfcreditspa@hotmail.com>
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
