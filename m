@@ -1,58 +1,48 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: Bug#706050: logrotate: spurious "error: getting file ACL"
- messages
-Date: Sun, 12 Jul 2015 09:15:55 +0100
-Message-ID: <1436688955.2344.1.camel@HansenPartnership.com>
-References: <BLU0-SMTP118606EF06DBC860DA78C097B40@phx.gbl>
-	 <20130424110157.GA24835@thinkpad.nowster.org.uk>
-	 <BLU0-SMTP60C4315DE3E426704E80A897B50@phx.gbl>
-	 <BLU436-SMTP10577C68AA6B4B3605CAF59979E0@phx.gbl>
+From: Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 0/3] IRQ trivial clarifications
+Date: Sun, 12 Jul 2015 17:01:45 -0500
+Message-ID: <20150712215559.7166.33068.stgit@bhelgaas-glaptop2.roam.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Paul Martin <pm@debian.org>, 706050@bugs.debian.org,
-	Debian Bug Tracking System <control@bugs.debian.org>,
-	Helge Deller <deller@gmx.de>,
-	linux-parisc List <linux-parisc@vger.kernel.org>
-To: John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset="utf-8"
+Cc: linux-arch@vger.kernel.org, linux-mips@linux-mips.org,
+	linux-am33-list@redhat.com, linux-ia64@vger.kernel.org,
+	linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	adi-buildroot-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-alpha@vger.kernel.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org
+To: Thomas Gleixner <tglx@linutronix.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <BLU436-SMTP10577C68AA6B4B3605CAF59979E0@phx.gbl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, 2015-07-11 at 11:51 -0400, John David Anglin wrote:
-> On 2013-04-24, at 7:36 AM, John David Anglin wrote:
-> 
-> > On 24-Apr-13, at 7:01 AM, Paul Martin wrote:
-> > 
-> >> The test is
-> >> 
-> >>       if ((prev_acl = acl_get_fd(fdcurr)) == NULL) {
-> >>               if (errno != ENOTSUP) {
-> >>                       message(MESS_ERROR, "getting file ACL %s: %s\n",
-> >>                               currLog, strerror(errno));
-> >> 
-> >> 
-> >> and your kernel is responding with ENOSYS instead.  This contradicts
-> >> the manpage acl_get_fd(3):
-> >> 
-> >>    [ENOTSUP]          The file system on which the file identified by fd is
-> >>                       located does not support ACLs, or ACLs are disabled.
-> > 
-> > Thanks, forwarded your response to the parisc-linux list for review.
-> 
-> 
-> The spurious mail  has come back with logrotate 3.8.7-2.  File system is ext4:
-> /dev/sdc6 on /var type ext4 (rw,relatime,data=ordered)
-> 
-> /etc/cron.daily/logrotate:
-> error: getting file ACL /var/log/apt/term.log: Operation not supported
-> error: getting file ACL /var/log/apt/history.log: Operation not supported
-> ...
+These don't fix anything at all.  But they might make code understanding
+and debugging slightly easier.
 
-It looks like you built your kernel without CONFIG_EXT4_FS_POSIX_ACL.
-The warning is harmless because ACLs aren't required for logs ... it's
-merely trying to duplicate the ACL on the rotated file.
+---
 
-James
+Bjorn Helgaas (3):
+      x86, irq: Rename VECTOR_UNDEFINED and VECTOR_RETRIGGERED to IRQ_*
+      x86, irq: Clarify "No irq handler" message
+      IRQ: Print "unexpected IRQ" messages consistently across architectures
 
 
+ arch/alpha/kernel/irq.c            |    2 +-
+ arch/blackfin/kernel/irqchip.c     |    2 +-
+ arch/c6x/kernel/irq.c              |    2 +-
+ arch/ia64/kernel/irq.c             |    2 +-
+ arch/m68k/include/asm/hardirq.h    |    2 +-
+ arch/mips/kernel/irq.c             |    2 +-
+ arch/mn10300/kernel/irq.c          |    2 +-
+ arch/parisc/include/asm/hardirq.h  |    2 +-
+ arch/powerpc/include/asm/hardirq.h |    2 +-
+ arch/s390/include/asm/hardirq.h    |    2 +-
+ arch/sh/kernel/irq.c               |    2 +-
+ arch/tile/kernel/irq.c             |    2 +-
+ arch/x86/include/asm/hw_irq.h      |    4 ++--
+ arch/x86/kernel/apic/vector.c      |   14 +++++++-------
+ arch/x86/kernel/irq.c              |   19 +++++++++----------
+ arch/x86/kernel/irqinit.c          |    4 ++--
+ include/asm-generic/hardirq.h      |    2 +-
+ 17 files changed, 33 insertions(+), 34 deletions(-)
