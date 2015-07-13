@@ -1,64 +1,53 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 3/3] IRQ: Print "unexpected IRQ" messages consistently
- across architectures
-Date: Mon, 13 Jul 2015 09:14:42 +0200
-Message-ID: <CAMuHMdWW3uHLm=rwQ8cmhxGff8vwFDx7_-eSmiy3dndpDKk35Q@mail.gmail.com>
-References: <20150712215559.7166.33068.stgit@bhelgaas-glaptop2.roam.corp.google.com>
-	<20150712220211.7166.42035.stgit@bhelgaas-glaptop2.roam.corp.google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Linux-Arch <linux-arch@vger.kernel.org>,
-	Linux MIPS Mailing List <linux-mips@linux-mips.org>,
-	"moderated list:PANASONIC MN10300..." <linux-am33-list@redhat.com>,
-	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-	linux-c6x-dev@linux-c6x.org,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	linux-s390 <linux-s390@vger.kernel.org>,
-	Linux-sh list <linux-sh@vger.kernel.org>,
-	"adi-buildroot-devel@lists.sourceforge.net"
-	<adi-buildroot-devel@lists.sourceforge.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	linux-m68k <linux-m68k@lists.linux-m68k.org>,
-	alpha <linux-alpha@vger.kernel.org>,
-	"the arch/x86 maintainers" <x86@kernel.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-To: Bjorn Helgaas <bhelgaas@google.com>
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <20150712220211.7166.42035.stgit@bhelgaas-glaptop2.roam.corp.google.com>
-List-ID: <linux-sh.vger.kernel.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] parisc: mm: Fix a memory leak related to pmd not attached to the pgd
+Date: Mon, 13 Jul 2015 11:32:43 +0200
+Message-ID: <1436779963-4286-1-git-send-email-christophe.jaillet@wanadoo.fr>
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: jejb@parisc-linux.org, deller@gmx.de, mpatocka@redhat.com,
+	kirill.shutemov@linux.intel.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jul 13, 2015 at 12:02 AM, Bjorn Helgaas <bhelgaas@google.com> wrote:
-> Many architectures use a variant of "unexpected IRQ trap at vector %x" to
-> log unexpected IRQs.  This is confusing because (a) it prints the Linux IRQ
-> number, but "vector" more often refers to a CPU vector number, and (b) it
-> prints the IRQ number in hex with no base indication, while Linux IRQ
-> numbers are usually printed in decimal.
->
-> Print the same text ("unexpected IRQ %d") across all architectures.
->
-> No functional change other than the output text.
->
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
+Commit 0e0da48dee8d ("parisc: mm: don't count preallocated pmds")
+introduced a memory leak.
 
-Thanks!
+After this commit, the 'return' statement in pmd_free is executed in all
+cases. Even for pmd that are not attached to the pgd.
+So 'free_pages' can never be called anymore, leading to a memory leak.
 
->  arch/m68k/include/asm/hardirq.h    |    2 +-
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+This patch is *untested* as I don't have the hardware to test it.
 
-For m68k:
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+This is just a guess based on the indentation, the comment in the code
+and the commit log.
+---
+ arch/parisc/include/asm/pgalloc.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-And it looks like m68k can switch to the asm-generic version afterwards...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/parisc/include/asm/pgalloc.h b/arch/parisc/include/asm/pgalloc.h
+index 3a08eae..f66d3738 100644
+--- a/arch/parisc/include/asm/pgalloc.h
++++ b/arch/parisc/include/asm/pgalloc.h
+@@ -72,7 +72,7 @@ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ 
+ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+ {
+-	if(pmd_flag(*pmd) & PxD_FLAG_ATTACHED)
++	if (pmd_flag(*pmd) & PxD_FLAG_ATTACHED) {
+ 		/*
+ 		 * This is the permanent pmd attached to the pgd;
+ 		 * cannot free it.
+@@ -81,6 +81,7 @@ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+ 		 */
+ 		mm_inc_nr_pmds(mm);
+ 		return;
++	}
+ 	free_pages((unsigned long)pmd, PMD_ORDER);
+ }
+ 
+-- 
+2.1.4
