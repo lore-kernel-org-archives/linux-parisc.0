@@ -1,64 +1,76 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Bug#706050: logrotate: spurious "error: getting file ACL" messages
-Date: Wed, 15 Jul 2015 08:04:00 -0400
-Message-ID: <BLU436-SMTP18157D4CE0F5950B9C624A5979A0@phx.gbl>
-References: <BLU0-SMTP118606EF06DBC860DA78C097B40@phx.gbl> <20130424110157.GA24835@thinkpad.nowster.org.uk> <BLU0-SMTP60C4315DE3E426704E80A897B50@phx.gbl> <BLU436-SMTP10577C68AA6B4B3605CAF59979E0@phx.gbl> <1436688955.2344.1.camel@HansenPartnership.com>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: text/plain; charset="us-ascii"
-Cc: Paul Martin <pm@debian.org>, 706050@bugs.debian.org,
-	Debian Bug Tracking System <control@bugs.debian.org>,
-	Helge Deller <deller@gmx.de>,
-	linux-parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1436688955.2344.1.camel@HansenPartnership.com>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [3/3] IRQ: Print "unexpected IRQ" messages consistently across
+ architectures
+Date: Thu, 16 Jul 2015 14:12:29 +1000
+Message-ID: <1437019949.28475.6.camel@ellerman.id.au>
+References: <20150712220211.7166.42035.stgit@bhelgaas-glaptop2.roam.corp.google.com>
+	 <20150713032303.D49801402B1@ozlabs.org>
+	 <CAErSpo52Kk0c=1UHQzxntJc3ph_CX8vcY+QdULBKv-HGUHBK9Q@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Linux-Arch <linux-arch@vger.kernel.org>,
+	"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
+	linux-am33-list@redhat.com,
+	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+	linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org,
+	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+	"linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+	adi-buildroot-devel@lists.sourceforge.net,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org,
+	"x86@kernel.org" <x86@kernel.org>,
+	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <CAErSpo52Kk0c=1UHQzxntJc3ph_CX8vcY+QdULBKv-HGUHBK9Q@mail.gmail.com>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2015-07-12, at 4:15 AM, James Bottomley wrote:
-
-> On Sat, 2015-07-11 at 11:51 -0400, John David Anglin wrote:
->> On 2013-04-24, at 7:36 AM, John David Anglin wrote:
->> 
->>> On 24-Apr-13, at 7:01 AM, Paul Martin wrote:
->>> 
->>>> The test is
->>>> 
->>>>      if ((prev_acl = acl_get_fd(fdcurr)) == NULL) {
->>>>              if (errno != ENOTSUP) {
->>>>                      message(MESS_ERROR, "getting file ACL %s: %s\n",
->>>>                              currLog, strerror(errno));
->>>> 
->>>> 
->>>> and your kernel is responding with ENOSYS instead.  This contradicts
->>>> the manpage acl_get_fd(3):
->>>> 
->>>>   [ENOTSUP]          The file system on which the file identified by fd is
->>>>                      located does not support ACLs, or ACLs are disabled.
->>> 
->>> Thanks, forwarded your response to the parisc-linux list for review.
->> 
->> 
->> The spurious mail  has come back with logrotate 3.8.7-2.  File system is ext4:
->> /dev/sdc6 on /var type ext4 (rw,relatime,data=ordered)
->> 
->> /etc/cron.daily/logrotate:
->> error: getting file ACL /var/log/apt/term.log: Operation not supported
->> error: getting file ACL /var/log/apt/history.log: Operation not supported
->> ...
+On Mon, 2015-07-13 at 13:35 -0500, Bjorn Helgaas wrote:
+> On Sun, Jul 12, 2015 at 10:23 PM, Michael Ellerman <mpe@ellerman.id.au> wrote:
+> > On Sun, 2015-12-07 at 22:02:11 UTC, Bjorn Helgaas wrote:
+> >> Many architectures use a variant of "unexpected IRQ trap at vector %x" to
+> >> log unexpected IRQs.  This is confusing because (a) it prints the Linux IRQ
+> >> number, but "vector" more often refers to a CPU vector number, and (b) it
+> >> prints the IRQ number in hex with no base indication, while Linux IRQ
+> >> numbers are usually printed in decimal.
+> >>
+> >> Print the same text ("unexpected IRQ %d") across all architectures.
+> >>
+> >> No functional change other than the output text.
+> >
+> > There's already a fallback version in asm-generic, so shouldn't you instead
+> > just delete all the versions that are identical to that?
+> >
+> > eg. on powerpc we have:
+> >
+> >>  static inline void ack_bad_irq(unsigned int irq)
+> >>  {
+> >> -     printk(KERN_CRIT "unexpected IRQ trap at vector %02x\n", irq);
+> >> +     printk(KERN_CRIT "unexpected IRQ %d\n", irq);
+> >>  }
+> >
+> > And the generic version is:
+> >
+> >>  #ifndef ack_bad_irq
+> >>  static inline void ack_bad_irq(unsigned int irq)
+> >>  {
+> >> -     printk(KERN_CRIT "unexpected IRQ trap at vector %02x\n", irq);
+> >> +     printk(KERN_CRIT "unexpected IRQ %d\n", irq);
+> >>  }
+> >>  #endif
+> >
+> > So we can just delete the powerpc version?
 > 
-> It looks like you built your kernel without CONFIG_EXT4_FS_POSIX_ACL.
-> The warning is harmless because ACLs aren't required for logs ... it's
-> merely trying to duplicate the ACL on the rotated file.
+> Wow, I really didn't do my homework here.  Not only is there a generic
+> version already, but there's also print_irq_desc(), which prints way
+> more information than any of the ack_bad_irq() implementations.
 
+Even better :)
 
-You were correct, CONFIG_EXT4_FS_POSIX_ACL wasn't defined.  Adding this to the kernel
-appears to suppress the spam email from logrotate.
+> I'll try again :)
 
-Thanks,
-Dave
---
-John David Anglin	dave.anglin@bell.net
+Thanks.
 
-
-
+cheers
