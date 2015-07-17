@@ -1,38 +1,50 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Bug#706050: logrotate: spurious "error: getting file ACL" messages
-Date: Thu, 16 Jul 2015 07:32:10 -0400
-Message-ID: <BLU437-SMTP1172C979E55C9F1D1648E997990@phx.gbl>
-References: <BLU0-SMTP118606EF06DBC860DA78C097B40@phx.gbl> <20130424110157.GA24835@thinkpad.nowster.org.uk> <BLU0-SMTP60C4315DE3E426704E80A897B50@phx.gbl> <BLU436-SMTP10577C68AA6B4B3605CAF59979E0@phx.gbl> <20150716065547.GB13102@thinkpad.nowster.org.uk>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: text/plain; charset="us-ascii"
-Cc: 706050@bugs.debian.org, Helge Deller <deller@gmx.de>,
-	linux-parisc List <linux-parisc@vger.kernel.org>
-To: Paul Martin <pm@debian.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20150716065547.GB13102@thinkpad.nowster.org.uk>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 1/3] x86, irq: Rename VECTOR_UNDEFINED and VECTOR_RETRIGGERED
+ to IRQ_*
+Date: Fri, 17 Jul 2015 16:06:54 +0200 (CEST)
+Message-ID: <alpine.DEB.2.11.1507171558010.18576@nanos>
+References: <20150712215559.7166.33068.stgit@bhelgaas-glaptop2.roam.corp.google.com> <20150712220154.7166.48327.stgit@bhelgaas-glaptop2.roam.corp.google.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-arch@vger.kernel.org, linux-mips@linux-mips.org,
+	linux-am33-list@redhat.com, linux-ia64@vger.kernel.org,
+	linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	adi-buildroot-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-alpha@vger.kernel.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org
+To: Bjorn Helgaas <bhelgaas@google.com>
+Return-path: <linux-ia64-owner@vger.kernel.org>
+In-Reply-To: <20150712220154.7166.48327.stgit@bhelgaas-glaptop2.roam.corp.google.com>
+List-ID: <linux-ia64.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2015-07-16, at 2:55 AM, Paul Martin wrote:
+On Sun, 12 Jul 2015, Bjorn Helgaas wrote:
 
-> On Sat, Jul 11, 2015 at 11:51:12AM -0400, John David Anglin wrote:
+> The per-cpu vector_irq[] table is indexed by CPU vector numbers, and each
+> entry contains an IRQ number.
 > 
->> The spurious mail  has come back with logrotate 3.8.7-2.  File system is ext4:
->> /dev/sdc6 on /var type ext4 (rw,relatime,data=ordered)
->> 
->> /etc/cron.daily/logrotate:
->> error: getting file ACL /var/log/apt/term.log: Operation not supported
->> error: getting file ACL /var/log/apt/history.log: Operation not supported
->> ...
-> 
-> Are you running with SELinux enabled by any chance?
+> Rename the special values VECTOR_UNDEFINED and VECTOR_RETRIGGERED to
+> IRQ_UNDEFINED and IRQ_RETRIGGERED to indicate that they are in the IRQ
+> number space, not the CPU vector number space.
 
+Makes some sense, but OTOH vector_irq actually reflects the vector
+state not the irq number state. The fact that we store the Linux irq
+number in vector_irq is just an implementation detail.
 
-No.  As mentioned previously, CONFIG_EXT4_FS_POSIX_ACL=y makes problem go away.
+VECTOR_UNDEFINED is certainly a misnomer; that should be VECTOR_UNUSED
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
+VECTOR_RETRIGGERED is pretty accurate. In the case we retrigger an
+interrupt, we merily use the Linux irq number to figure out which
+vector to kick. And after we retriggered it, we lose the association
+to the Linux irq number completely.
 
+That said, I'm working on storing the irq descriptor pointer in
+vector_irq instead of the irq number, which has the advantage that we
+avoid the lookup of the irq descriptor in the interrupt hotpath.
 
+Thanks,
+
+	tglx
 
