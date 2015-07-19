@@ -1,33 +1,37 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc fixes for v4.2
-Date: Sun, 19 Jul 2015 09:08:54 +0200
-Message-ID: <20150719070854.GA3099@ls3530.box>
+From: Standard lening bedrijf <rpkaya@konya.edu.tr>
+Subject: Meld je nu aan voor meer info / Apply now for more info
+Date: Sun, 19 Jul 2015 19:42:22 +0300 (EEST)
+Message-ID: <2128190917.720398.1437324142121.JavaMail.zimbra__38446.5719610036$1437326674$gmane$org@konya.edu.tr>
+Reply-To: Standard lening bedrijf <standardloansplccomany129@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Christophe Jaillet <christophe.jaillet@wanadoo.fr>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=utf-8
+To: unlisted-recipients:; (no To-header on input)
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
 
-please pull the latest fixes for the parisc architecture for v4.2 from:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.2-2
+Head Office Adres: 16 Hanover Square, Mayfair, Londen W1S 1HT
+Branch Adres: PO Box 20517 CY-3058 Limassol, Istanbul, Turkije
+e-mail:standardloansplccomany129@gmail.com
 
-A memory leak fix from Christophe Jaillet which was introduced with kernel 4.0
-and which leads to kernel crashes on parisc after 1-3 days.
+Heeft u financiering nodig?
+Heeft u zakelijke of persoonlijke lening nodig?
+Wilt u uw bedrijf te herfinancieren?
+Ons bedrijf is gevestigd in de Verenigde Staten en Europa. We geven lening aan een
+individu en onderneming op 3% rente per jaar.
 
-Thanks,
-Helge
+Opmerking: Stuur uw reactie Alleen op deze E-mail:
+standardloansplccomany129@gmail.com
 
-----------------------------------------------------------------
-Christophe Jaillet (1):
-      parisc: mm: Fix a memory leak related to pmd not attached to the pgd
+=======================================================================================================
 
- arch/parisc/include/asm/pgalloc.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Do you need funding?
+Do you need Business or personal Loan?
+Do you wish to refinance your company?
+Our company is based in United States and Europe. We give out loan to any
+individual and company at 3% interest rate yearly.
+
+Note : Forward your response ONLY to this Email:
+standardloansplccomany129@gmail.com
