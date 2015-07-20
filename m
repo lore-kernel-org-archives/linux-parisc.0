@@ -1,37 +1,40 @@
-From: Standard lening bedrijf <rpkaya@konya.edu.tr>
-Subject: Meld je nu aan voor meer info / Apply now for more info
-Date: Sun, 19 Jul 2015 19:42:22 +0300 (EEST)
-Message-ID: <2128190917.720398.1437324142121.JavaMail.zimbra__38446.5719610036$1437326674$gmane$org@konya.edu.tr>
-Reply-To: Standard lening bedrijf <standardloansplccomany129@gmail.com>
+From: Meelis Roos <mroos@linux.ee>
+Subject: Re: [PATCH] parisc: mm: Fix a memory leak related to pmd not attached
+ to the pgd
+Date: Mon, 20 Jul 2015 22:28:56 +0300 (EEST)
+Message-ID: <alpine.LRH.2.11.1507202228030.21509@math.ut.ee>
+References: <1436779963-4286-1-git-send-email-christophe.jaillet@wanadoo.fr> <55A408F5.601@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-To: unlisted-recipients:; (no To-header on input)
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	jejb@parisc-linux.org, mpatocka@redhat.com,
+	kirill.shutemov@linux.intel.com, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	John David Anglin <dave.anglin@bell.net>
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <55A408F5.601@gmx.de>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+> Hi Christophe,
+> 
+> On 13.07.2015 11:32, Christophe JAILLET wrote:
+> > Commit 0e0da48dee8d ("parisc: mm: don't count preallocated pmds")
+> > introduced a memory leak.
+> >
+> > After this commit, the 'return' statement in pmd_free is executed in all
+> > cases. Even for pmd that are not attached to the pgd.
+> > So 'free_pages' can never be called anymore, leading to a memory leak.
+> 
+> That's really great!!! Thanks for spotting this!
+> 
+> I assume this fixes the leak which killed our debian buildds with OOM
+> after an uptime of 1-4 days and which only happened since kernel 4.0.
+> Meelis Roos reported the issue already in this thread:
+> http://marc.info/?l=linux-parisc&m=142999113232154&w=2
 
+Yes, the patch that is merged in 4.2-rc3 fixed my RP3410 with 1G RAM.
 
-Head Office Adres: 16 Hanover Square, Mayfair, Londen W1S 1HT
-Branch Adres: PO Box 20517 CY-3058 Limassol, Istanbul, Turkije
-e-mail:standardloansplccomany129@gmail.com
-
-Heeft u financiering nodig?
-Heeft u zakelijke of persoonlijke lening nodig?
-Wilt u uw bedrijf te herfinancieren?
-Ons bedrijf is gevestigd in de Verenigde Staten en Europa. We geven lening aan een
-individu en onderneming op 3% rente per jaar.
-
-Opmerking: Stuur uw reactie Alleen op deze E-mail:
-standardloansplccomany129@gmail.com
-
-=======================================================================================================
-
-Do you need funding?
-Do you need Business or personal Loan?
-Do you wish to refinance your company?
-Our company is based in United States and Europe. We give out loan to any
-individual and company at 3% interest rate yearly.
-
-Note : Forward your response ONLY to this Email:
-standardloansplccomany129@gmail.com
+-- 
+Meelis Roos (mroos@linux.ee)
