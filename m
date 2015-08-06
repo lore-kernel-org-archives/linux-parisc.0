@@ -1,43 +1,44 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH -next] parisc: Define ioremap_uc and ioremap_wc
-Date: Fri, 31 Jul 2015 19:34:46 -0700
-Message-ID: <1438396486-20937-1-git-send-email-linux@roeck-us.net>
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-	"Luis R. Rodriguez" <mcgrof@suse.com>,
-	Paul Gortmaker <paul.gortmaker@windriver.com>
-To: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH V6 2/6] mm: mlock: Add new mlock system call
+Date: Thu, 6 Aug 2015 16:00:33 +0200
+Message-ID: <55C36881.8050301@suse.cz>
+References: <1438184575-10537-1-git-send-email-emunson@akamai.com>
+ <1438184575-10537-3-git-send-email-emunson@akamai.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Cc: Michal Hocko <mhocko@suse.cz>, Heiko Carstens
+ <heiko.carstens@de.ibm.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Stephen Rothwell <sfr@canb.auug.org.au>, Guenter Roeck <linux@roeck-us.net>,
+ linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ adi-buildroot-devel@lists.sourceforge.net, linux-cris-kernel@axis.com,
+ linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-am33-list@redhat.com, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-xtensa@linux-xtensa.org, linux-api@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-mm@kvack.org
+To: Eric B Munson <emunson@akamai.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <1438184575-10537-3-git-send-email-emunson@akamai.com>
+List-ID: <linux-mm.kvack.org>
 
-Commit 3cc2dac5be3f ("drivers/video/fbdev/atyfb: Replace MTRR UC hole
-with strong UC") introduces calls to ioremap_wc and ioremap_uc. This
-causes build failures with parisc:allmodconfig. Map the missing
-functions to ioremap_nocache.
+On 07/29/2015 05:42 PM, Eric B Munson wrote:
+> With the refactored mlock code, introduce a new system call for mlock.
+> The new call will allow the user to specify what lock states are being
+> added.  mlock2 is trivial at the moment, but a follow on patch will add
+> a new mlock state making it useful.
+>
+> Signed-off-by: Eric B Munson <emunson@akamai.com>
+> Cc: Michal Hocko <mhocko@suse.cz>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
 
-Fixes: 3cc2dac5be3f ("drivers/video/fbdev/atyfb:
-	Replace MTRR UC hole with strong UC")
-Cc: Luis R. Rodriguez <mcgrof@suse.com>
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- arch/parisc/include/asm/io.h | 2 ++
- 1 file changed, 2 insertions(+)
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
-index 8cd0abf28ffb..1a16f1d1075f 100644
---- a/arch/parisc/include/asm/io.h
-+++ b/arch/parisc/include/asm/io.h
-@@ -137,6 +137,8 @@ static inline void __iomem * ioremap(unsigned long offset, unsigned long size)
- 	return __ioremap(offset, size, _PAGE_NO_CACHE);
- }
- #define ioremap_nocache(off, sz)	ioremap((off), (sz))
-+#define ioremap_wc			ioremap_nocache
-+#define ioremap_uc			ioremap_nocache
- 
- extern void iounmap(const volatile void __iomem *addr);
- 
--- 
-2.1.4
-
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
