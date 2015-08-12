@@ -1,7 +1,7 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 25/31] frv: handle page-less SG entries
-Date: Wed, 12 Aug 2015 09:05:44 +0200
-Message-ID: <1439363150-8661-26-git-send-email-hch@lst.de>
+Subject: [PATCH 30/31] intel-iommu: handle page-less SG entries
+Date: Wed, 12 Aug 2015 09:05:49 +0200
+Message-ID: <1439363150-8661-31-git-send-email-hch@lst.de>
 References: <1439363150-8661-1-git-send-email-hch@lst.de>
 Cc: dan.j.williams@intel.com, vgupta@synopsys.com,
 	hskinnemoen@gmail.com, egtvedt@samfundet.no, realmz6@gmail.com,
@@ -15,36 +15,29 @@ Cc: dan.j.williams@intel.com, vgupta@synopsys.com,
 	sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
 	linux-nvdimm@ml01.01.org, linux-media@vger.kernel.org
 To: torvalds@linux-foundation.org, axboe@kernel.dk
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
 In-Reply-To: <1439363150-8661-1-git-send-email-hch@lst.de>
-List-ID: <linux-kernel.vger.kernel.org>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Only call kmap_atomic_primary when the SG entry is mapped into
-kernel virtual space.
-
-XXX: the code already looks odd due to the lack of pairing between
-kmap_atomic_primary and kunmap_atomic_primary.  Does it work either
-before or after this patch?
+Just remove a BUG_ON, the code handles them just fine as-is.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/frv/mb93090-mb00/pci-dma.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/iommu/intel-iommu.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/frv/mb93090-mb00/pci-dma.c b/arch/frv/mb93090-mb00/pci-dma.c
-index 4d1f01d..77b3a1c 100644
---- a/arch/frv/mb93090-mb00/pci-dma.c
-+++ b/arch/frv/mb93090-mb00/pci-dma.c
-@@ -63,6 +63,9 @@ int dma_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
- 	dampr2 = __get_DAMPR(2);
+diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+index 3541d65..ae10573 100644
+--- a/drivers/iommu/intel-iommu.c
++++ b/drivers/iommu/intel-iommu.c
+@@ -3622,7 +3622,6 @@ static int intel_nontranslate_map_sg(struct device *hddev,
+ 	struct scatterlist *sg;
  
- 	for_each_sg(sglist, sg, nents, i) {
-+		if (!sg_has_page(sg))
-+			continue;
-+
- 		vaddr = kmap_atomic_primary(sg_page(sg));
- 
- 		frv_dcache_writeback((unsigned long) vaddr,
+ 	for_each_sg(sglist, sg, nelems, i) {
+-		BUG_ON(!sg_page(sg));
+ 		sg->dma_address = sg_phys(sg);
+ 		sg->dma_length = sg->length;
+ 	}
 -- 
 1.9.1
