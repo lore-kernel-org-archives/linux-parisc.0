@@ -1,63 +1,78 @@
-From: Meelis Roos <mroos@linux.ee>
-Subject: A500 boot crash in 4.2.0-rc3-00246-g763e326
-Date: Wed, 12 Aug 2015 23:35:30 +0300 (EEST)
-Message-ID: <alpine.LRH.2.11.1507260929000.30065@math.ut.ee>
+From: Julian Calaby <julian.calaby@gmail.com>
+Subject: Re: RFC: prepare for struct scatterlist entries without page backing
+Date: Thu, 13 Aug 2015 09:37:37 +1000
+Message-ID: <CAGRGNgUKkaPnyvn30DXyNpdiXQzS6J=1+mQ3ick8C8=bhx_RHA@mail.gmail.com>
+References: <1439363150-8661-1-git-send-email-hch@lst.de> <55CB3F47.3000902@plexistor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-To: linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, axboe@kernel.dk,
+	linux-mips@linux-mips.org, linux-ia64@vger.kernel.org,
+	linux-nvdimm@ml01.01.org, David Howells <dhowells@redhat.com>,
+	sparclinux <sparclinux@vger.kernel.org>,
+	Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+	linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
+	x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
+	=?UTF-8?Q?H=C3=A5vard_Skinnemoen?= <hskinnemoen@gmail.com>,
+	linux-xtensa@linux-xtensa.org, grundler@parisc-linux.org,
+	realmz6@gmail.com, alex.williamson@redhat.com,
+	linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+	linux-parisc@vger.kernel.org, vgupta@synopsys.com,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	linux-alpha@vger.kernel.org,
+	Linux Media Mailing List <linux-media@vger.kernel.org>,
+	linuxppc-dev@lists.ozlabs.org
+To: Boaz Harrosh <boaz@plexistor.com>, Christoph Hellwig <hch@lst.de>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <55CB3F47.3000902@plexistor.com>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Tried 4.2.0-rc3-00246-g763e326 on A500 but it crashes on boot. This is 
-still present in todays 4.2.0-rc6+git. 4.1 was fine, I Will bisect but 
-it takes time.
+Hi,
 
-PDC Stable Storage facility v0.30
-STI GSC/PCI core graphics driver Version 0.9b
-Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
-serial 0000:00:04.0: enabling device (0146 -> 0147)
-console [ttyS0] disabled
-0000:00:04.0: ttyS0 at MMIO 0xfffffffff8000000 (irq = 21, base_baud = 115200) is a 16550A
-console [ttyS0] enabled
-console [ttyS0] enabled
-bootconsole [ttyB0] disabled
-bootconsole [ttyB0] disabled
-0000:00:04.0: ttyS1 at MMIO 0xfffffffff8000008 (irq = 21, base_baud = 115200) is a 16550A
-0000:00:04.0: ttyS2 at MMIO 0xfffffffff8000010 (irq = 21, base_baud = 115200) is a 16550A
-serial 0000:00:05.0: enabling device (0000 -> 0003)
-serial 0000:00:05.0: enabling SERR and PARITY (0003 -> 0143)
-0000:00:05.0: ttyS3 at MMIO 0xfffffffff8003000 (irq = 22, base_baud = 115200) is a 16550A
-serial 0000:00:05.0: Couldn't register serial port 0, irq 22, type 2, error -28
-sym53c8xx 0000:00:01.0: enabling device (0000 -> 0003)
-sym53c8xx 0000:00:01.0: enabling SERR and PARITY (0003 -> 0143)
+On Wed, Aug 12, 2015 at 10:42 PM, Boaz Harrosh <boaz@plexistor.com> wrote:
+> On 08/12/2015 10:05 AM, Christoph Hellwig wrote:
+>> It turns out most DMA mapping implementation can handle SGLs without
+>> page structures with some fairly simple mechanical work.  Most of it
+>> is just about consistently using sg_phys.  For implementations that
+>> need to flush caches we need a new helper that skips these cache
+>> flushes if a entry doesn't have a kernel virtual address.
+>>
+>> However the ccio (parisc) and sba_iommu (parisc & ia64) IOMMUs seem
+>> to be operate mostly on virtual addresses.  It's a fairly odd concept
+>> that I don't fully grasp, so I'll need some help with those if we want
+>> to bring this forward.
+>>
+>> Additional this series skips ARM entirely for now.  The reason is
+>> that most arm implementations of the .map_sg operation just iterate
+>> over all entries and call ->map_page for it, which means we'd need
+>> to convert those to a ->map_pfn similar to Dan's previous approach.
+>>
+>
+[snip]
+>
+> It is a bit of work but is worth while, and accelerating tremendously
+> lots of workloads. Not like this abomination which only branches
+> things more and more, and making things fatter and slower.
 
-************* SYSTEM ALERT **************
-SYSTEM NAME: a500-m
-DATE: 07/26/2015 TIME: 06:06:56
-ALERT LEVEL: 7 = reserved
+As a random guy reading a big bunch of patches on code I know almost
+nothing about, parts of this comment really resonated with me:
+overall, we seem to be adding a lot of if statements to code that
+appears to be in a hot path.
 
-REASON FOR ALERT
-SOURCE: 0 = unknown, no source stated
-SOURCE DETAIL: 0 = unknown, no source stated   SOURCE ID: FF
-PROBLEM DETAIL: 0 = no problem detail
+I.e. ~90% of this patch set seems to be just mechanically dropping
+BUG_ON()s and converting open coded stuff to use accessor functions
+(which should be macros or get inlined, right?) - and the remaining
+bit is not flushing if we don't have a physical page somewhere.
 
-LEDs:  RUN      ATTENTION     FAULT     REMOTE     POWER
-       ON       FLASH         OFF       ON         ON
-LED State: There was a system interruption that did not take the system 
-down.
-Check Chassis and Console Logs for error messages.
+Would it make sense to split this patch set into a few bits: one to
+drop all the useless BUG_ON()s, one to convert all the open coded
+stuff to accessor functions, then another to do the actual page-less
+sg stuff?
 
-0x0000007000FF6292 00000000 00000000 - type  0 = Data Field Unused
-0x5800087000FF6292 00007306 1A060638 - type 11 = Timestamp 07/26/2015 
-06:06:56
-A: ack read of this entry - X: Disable all future alert messages
-Anything else skip redisplay the log entry
-->Choice:a
-*****************************************
-
-
-
+Thanks,
 
 -- 
-Meelis Roos (mroos@linux.ee)
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
