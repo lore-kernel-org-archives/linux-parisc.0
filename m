@@ -1,11 +1,12 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 29/31] parisc: handle page-less SG entries
-Date: Thu, 13 Aug 2015 16:31:50 +0200
-Message-ID: <20150813143150.GA17183@lst.de>
-References: <1439363150-8661-1-git-send-email-hch@lst.de> <1439363150-8661-30-git-send-email-hch@lst.de> <CA+55aFxsH9Lde7wqZi555vqfH2uxeQqC9cjeca9L6Wr=XpyzXA@mail.gmail.com>
+Subject: Re: [PATCH 31/31] dma-mapping-common: skip kmemleak checks for
+	page-less SG entries
+Date: Thu, 13 Aug 2015 16:33:25 +0200
+Message-ID: <20150813143325.GB17183@lst.de>
+References: <1439363150-8661-1-git-send-email-hch@lst.de> <1439363150-8661-32-git-send-email-hch@lst.de> <CA+55aFxfZM81HNfo2ysfhGwrhx6GX-+F--+jLFmMVv+Z0id2rw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Jens Axboe <axboe@kernel.dk>,
+Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
 	Dan Williams <dan.j.williams@intel.com>,
 	Vineet Gupta <vgupta@synopsys.com>,
 	=?iso-8859-1?Q?H=E5vard?= Skinnemoen <hskinnemoen@gmail.com>,
@@ -25,25 +26,24 @@ Cc: Jens Axboe <axboe@kernel.dk>,
 	linux-mips <linux-mips@linux-mips.org>,
 	Parisc List <linux-parisc@vger.kernel.org>,
 	ppc-dev <linuxppc-dev@lists.ozlabs.org>,
-	linux-s390 <linux-s390@vger.kernel.org>,
-	s
+	linux-s390
 To: Linus Torvalds <torvalds@linux-foundation.org>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <CA+55aFxsH9Lde7wqZi555vqfH2uxeQqC9cjeca9L6Wr=XpyzXA@mail.gmail.com>
-List-ID: <linux-ia64.vger.kernel.org>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <CA+55aFxfZM81HNfo2ysfhGwrhx6GX-+F--+jLFmMVv+Z0id2rw@mail.gmail.com>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Aug 12, 2015 at 09:01:02AM -0700, Linus Torvalds wrote:
-> I'm assuming that anybody who wants to use the page-less
-> scatter-gather lists always does so on memory that isn't actually
-> virtually mapped at all, or only does so on sane architectures that
-> are cache coherent at a physical level, but I'd like that assumption
-> *documented* somewhere.
+On Wed, Aug 12, 2015 at 09:05:15AM -0700, Linus Torvalds wrote:
+> [ Again, I'm responding to one random patch - this pattern was in
+> other patches too.  ]
+> 
+> A question: do we actually expect to mix page-less and pageful SG
+> entries in the same SG list?
+> 
+> How does that happen?
 
-It's temporarily mapped by kmap-like helpers.  That code isn't in
-this series. The most recent version of it is here:
-
-https://git.kernel.org/cgit/linux/kernel/git/djbw/nvdimm.git/commit/?h=pfn&id=de8237c99fdb4352be2193f3a7610e902b9bb2f0
-
-note that it's not doing the cache flushing it would have to do yet, but
-it's also only enabled for x86 at the moment.
+Both for DAX and the video buffer case people could do direct I/O
+spanning the boundary between such a VMA and a normal one unless
+we add special code to prevent that.  Right now I don't think it's
+all that useful, but then again it doesn't seem harmful either
+and adding those checks might add up.
