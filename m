@@ -1,26 +1,49 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: A500 boot crash in 4.2.0-rc3-00246-g763e326
-Date: Thu, 13 Aug 2015 07:35:41 -0400
-Message-ID: <BLU436-SMTP2069A5FF25115ADFCC8A9B977D0@phx.gbl>
-References: <alpine.LRH.2.11.1507260929000.30065@math.ut.ee>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-parisc@vger.kernel.org
-To: Meelis Roos <mroos@linux.ee>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.11.1507260929000.30065@math.ut.ee>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 29/31] parisc: handle page-less SG entries
+Date: Thu, 13 Aug 2015 16:31:50 +0200
+Message-ID: <20150813143150.GA17183@lst.de>
+References: <1439363150-8661-1-git-send-email-hch@lst.de> <1439363150-8661-30-git-send-email-hch@lst.de> <CA+55aFxsH9Lde7wqZi555vqfH2uxeQqC9cjeca9L6Wr=XpyzXA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Jens Axboe <axboe@kernel.dk>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Vineet Gupta <vgupta@synopsys.com>,
+	=?iso-8859-1?Q?H=E5vard?= Skinnemoen <hskinnemoen@gmail.com>,
+	Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+	Miao Steven <realmz6@gmail.com>,
+	David Howells <dhowells@redhat.com>,
+	Michal Simek <monstr@monstr.eu>,
+	the arch/x86 maintainers <x86@kernel.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	grundler@parisc-linux.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	linux-alpha@vger.kernel.org,
+	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+	linux-metag@vger.kernel.org,
+	linux-mips <linux-mips@linux-mips.org>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	ppc-dev <linuxppc-dev@lists.ozlabs.org>,
+	linux-s390 <linux-s390@vger.kernel.org>,
+	s
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Return-path: <linux-ia64-owner@vger.kernel.org>
+In-Reply-To: <CA+55aFxsH9Lde7wqZi555vqfH2uxeQqC9cjeca9L6Wr=XpyzXA@mail.gmail.com>
+List-ID: <linux-ia64.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2015-08-12, at 4:35 PM, Meelis Roos wrote:
+On Wed, Aug 12, 2015 at 09:01:02AM -0700, Linus Torvalds wrote:
+> I'm assuming that anybody who wants to use the page-less
+> scatter-gather lists always does so on memory that isn't actually
+> virtually mapped at all, or only does so on sane architectures that
+> are cache coherent at a physical level, but I'd like that assumption
+> *documented* somewhere.
 
-> serial 0000:00:05.0: Couldn't register serial port 0, irq 22, type 2, error -28
+It's temporarily mapped by kmap-like helpers.  That code isn't in
+this series. The most recent version of it is here:
 
-There's something wrong here.
+https://git.kernel.org/cgit/linux/kernel/git/djbw/nvdimm.git/commit/?h=pfn&id=de8237c99fdb4352be2193f3a7610e902b9bb2f0
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+note that it's not doing the cache flushing it would have to do yet, but
+it's also only enabled for x86 at the moment.
