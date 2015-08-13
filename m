@@ -1,33 +1,73 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: A500 boot crash in 4.2.0-rc3-00246-g763e326
-Date: Thu, 13 Aug 2015 12:49:33 -0400
-Message-ID: <BLU437-SMTP107752801B5ED5648487FED977D0@phx.gbl>
-References: <alpine.LRH.2.11.1507260929000.30065@math.ut.ee>
- <BLU437-SMTP22FDC655D41AF9BCB78508977D0@phx.gbl>
- <alpine.LRH.2.20.1508131842320.25000@math.ut.ee>
+From: Julian Calaby <julian.calaby@gmail.com>
+Subject: Re: RFC: prepare for struct scatterlist entries without page backing
+Date: Fri, 14 Aug 2015 09:40:30 +1000
+Message-ID: <CAGRGNgWXO9fYSf5YxPM9atSCmUdHB_WDB=n8zd=7eWK1GaJU4A@mail.gmail.com>
+References: <1439363150-8661-1-git-send-email-hch@lst.de> <55CB3F47.3000902@plexistor.com>
+ <CAGRGNgUKkaPnyvn30DXyNpdiXQzS6J=1+mQ3ick8C8=bhx_RHA@mail.gmail.com> <20150813143528.GC17183@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Cc: linux-parisc@vger.kernel.org
-To: Meelis Roos <mroos@linux.ee>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.20.1508131842320.25000@math.ut.ee>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Boaz Harrosh <boaz@plexistor.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	axboe@kernel.dk, linux-mips@linux-mips.org,
+	linux-ia64@vger.kernel.org, linux-nvdimm@ml01.01.org,
+	David Howells <dhowells@redhat.com>,
+	sparclinux <sparclinux@vger.kernel.org>,
+	Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+	linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
+	x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
+	=?UTF-8?Q?H=C3=A5vard_Skinnemoen?= <hskinnemoen@gmail.com>,
+	linux-xtensa@linux-xtensa.org, grundler@parisc-linux.org,
+	Miao Steven <realmz6@gmail.com>, alex.williamson@redhat.com,
+	linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+	linux-parisc@vger.kernel.org, vgupta@synopsys.com,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	linux-alpha@vger.kernel.org,
+	Linux Media Mailing List <linux-media@vger.kernel.org>,
+	linuxppc-dev@lists.ozl
+To: Christoph Hellwig <hch@lst.de>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20150813143528.GC17183@lst.de>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2015-08-13 11:42 AM, Meelis Roos wrote:
->>> Tried 4.2.0-rc3-00246-g763e326 on A500 but it crashes on boot. This is
->>> still present in todays 4.2.0-rc6+git. 4.1 was fine, I Will bisect but
->>> it takes time.
->> This is probably a hpmc.  Could you look at SL event log?  It should show address of
->> the hpmc.  Then, look at kernel image with objdump and search for address.  This should
->> show where crash occurred and it might give a clue as to the cause.
-> How do I set filters for SL?
->
-I think you need to entry an "E" for event log and just select default 
-for filters.
+Hi Christoph,
 
-Dave
+On Fri, Aug 14, 2015 at 12:35 AM, Christoph Hellwig <hch@lst.de> wrote:
+> On Thu, Aug 13, 2015 at 09:37:37AM +1000, Julian Calaby wrote:
+>> I.e. ~90% of this patch set seems to be just mechanically dropping
+>> BUG_ON()s and converting open coded stuff to use accessor functions
+>> (which should be macros or get inlined, right?) - and the remaining
+>> bit is not flushing if we don't have a physical page somewhere.
+>
+> Which is was 90%.  By lines changed most actually is the diffs for
+> the cache flushing.
+
+I was talking in terms of changes made, not lines changed: by my
+recollection, about a third of the patches didn't touch flush calls
+and most of the lines changed looked like refactoring so that making
+the flush call conditional would be easier.
+
+I guess it smelled like you were doing lots of distinct changes in a
+single patch and I got my numbers wrong.
+
+>> Would it make sense to split this patch set into a few bits: one to
+>> drop all the useless BUG_ON()s, one to convert all the open coded
+>> stuff to accessor functions, then another to do the actual page-less
+>> sg stuff?
+>
+> Without the ifs the BUG_ON() actually are useful to assert we
+> never feed the sort of physical addresses we can't otherwise support,
+> so I don't think that part is doable.
+
+My point is that there's a couple of patches that only remove
+BUG_ON()s, which implies that for that particular driver it doesn't
+matter if there's a physical page or not, so therefore that code is
+purely "documentation".
+
+Thanks,
 
 -- 
-John David Anglin  dave.anglin@bell.net
+Julian Calaby
 
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
