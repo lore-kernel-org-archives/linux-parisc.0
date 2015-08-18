@@ -1,58 +1,39 @@
-From: "Helge Deller" <deller@gmx.de>
-Subject: Aw: A500 boot crash in 4.2.0-rc3-00246-g763e326
-Date: Mon, 17 Aug 2015 16:06:21 +0200
-Message-ID: <trinity-122a736f-3aac-4830-afc5-2abcd91792ea-1439820380917@3capp-gmx-bs71>
-References: <alpine.LRH.2.11.1507260929000.30065@math.ut.ee>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-parisc@vger.kernel.org
-To: "Meelis Roos" <mroos@linux.ee>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: bad address in handle_percpu_irq
+Date: Mon, 17 Aug 2015 21:30:14 -0400
+Message-ID: <BLU436-SMTP1851BC069EDCD672D8DF7C97780@phx.gbl>
+References: <55D0313E.3090602@gmail.com> <55D06863.1090506@gmail.com> <55D0E295.2070000@gmx.de> <CAFk90B-eLz+wVavRA07SA6bVt1EUaFsWd6Xs8DsR_m73OD-kWg@mail.gmail.com> <CAFk90B_v5A-S-5gofZ7tSO=wkb9LF860LLX5OH9vkNzV9igGyA@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Type: text/plain; charset="us-ascii"
+Cc: Helge Deller <deller@gmx.de>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: Graham Gower <graham.gower@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.11.1507260929000.30065@math.ut.ee>
+In-Reply-To: <CAFk90B_v5A-S-5gofZ7tSO=wkb9LF860LLX5OH9vkNzV9igGyA@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> Tried 4.2.0-rc3-00246-g763e326 on A500 but it crashes on boot. This is 
-> still present in todays 4.2.0-rc6+git. 4.1 was fine, I Will bisect but 
-> it takes time.
-> 
-> PDC Stable Storage facility v0.30
-> STI GSC/PCI core graphics driver Version 0.9b
-> Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
-> serial 0000:00:04.0: enabling device (0146 -> 0147)
-> console [ttyS0] disabled
-> 0000:00:04.0: ttyS0 at MMIO 0xfffffffff8000000 (irq = 21, base_baud = 115200) is a 16550A
-> console [ttyS0] enabled
-> console [ttyS0] enabled
-> bootconsole [ttyB0] disabled
-> bootconsole [ttyB0] disabled
-> 0000:00:04.0: ttyS1 at MMIO 0xfffffffff8000008 (irq = 21, base_baud = 115200) is a 16550A
-> 0000:00:04.0: ttyS2 at MMIO 0xfffffffff8000010 (irq = 21, base_baud = 115200) is a 16550A
-> serial 0000:00:05.0: enabling device (0000 -> 0003)
-> serial 0000:00:05.0: enabling SERR and PARITY (0003 -> 0143)
-> 0000:00:05.0: ttyS3 at MMIO 0xfffffffff8003000 (irq = 22, base_baud = 115200) is a 16550A
-> serial 0000:00:05.0: Couldn't register serial port 0, irq 22, type 2, error -28
-> sym53c8xx 0000:00:01.0: enabling device (0000 -> 0003)
-> sym53c8xx 0000:00:01.0: enabling SERR and PARITY (0003 -> 0143)
+On 2015-08-17, at 8:55 AM, Graham Gower wrote:
 
-I'm seeing the same problem on my rp5470 with Kernel 4.2-rc7. My machine just hangs though and doesn't crash.
-The same kernel runs fine on a J5000:
+> Disabling systemd appears to mitigate this issue. I was getting the
+> panic most boots, now I haven't seen one in since switching back to
+> sysvinit.
 
-[   14.100000] sym0: <896> rev 0x4 at pci 0000:00:0f.0 irq 69
-[   14.168000] sym0: PA-RISC Firmware, ID 7, Fast-40, SE, parity checking
-[   14.248000] sym0: SCSI BUS has been reset.
-[   14.304000] sym0: SCSI BUS mode change from SE to SE.
-[   14.304000] sym0: SCSI BUS has been reset.
-[   14.416000] scsi host0: sym-2.2.3
-[   20.056000] sym1: <896> rev 0x4 at pci 0000:00:0f.1 irq 69
-[   20.124000] sym1: PA-RISC Firmware, ID 7, Fast-40, LVD, parity checking
-[   20.204000] sym1: SCSI BUS has been reset.
-[   20.260000] sym1: SCSI BUS mode change from SE to SE.
-[   20.260000] sym1: SCSI BUS has been reset.
-[   20.372000] scsi host1: sym-2.2.3
-[   22.420000] random: nonblocking pool is initialized
-[   24.600000] scsi 1:0:3:0: Direct-Access     SEAGATE  ST118273WC       HP14 PQ: 0 ANSI: 2
+See the same on rp3440 with systemd-sysv.
 
-Since the J5000 has another SCSI driver, I assume the problem is in changes in the SCSI layer or the sym53c8xx driver.
+It might be a kernel feature issue as the sibaris buildd machine seems to be
+running okay with systemd-sysv.
 
-Helge
+With systemd-shim and cgmanager, cgmanager somtimes runs away and needs
+restarting.  There are also annoying console messges like the following:
+
+mx3210 login: systemd-logind[3571]: New seat seat0.
+systemd-logind[3571]: Failed to start user service: Unknown unit: user@1000.service
+systemd-logind[3571]: New session c1 of user dave.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
