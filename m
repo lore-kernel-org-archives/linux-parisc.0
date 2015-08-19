@@ -1,44 +1,16 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Aw: A500 boot crash in 4.2.0-rc3-00246-g763e326
-Date: Wed, 19 Aug 2015 07:25:11 -0400
-Message-ID: <BLU436-SMTP773488774A8C76BF6C12E597670@phx.gbl>
-References: <alpine.LRH.2.11.1507260929000.30065@math.ut.ee> <trinity-122a736f-3aac-4830-afc5-2abcd91792ea-1439820380917@3capp-gmx-bs71> <trinity-5720bef8-5a4c-4465-b9eb-622daaef650a-1439902901415@3capp-gmx-bs02> <alpine.LRH.2.20.1508182141200.24742@math.ut.ee> <55D38BE6.6080302@gmx.de> <CAE9FiQVUUN-SLO0U4G5CC6MEoXfb=bGd+f3bRgQprtaMHjsvpA@mail.gmail.com> <alpine.LRH.2.20.1508190747360.5154@math.ut.ee> <CAE9FiQW9hjDe2NBEfwQqcVZoJKqDjKT1P=7FcGjhVrF7wQW9+g@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: text/plain; charset="us-ascii"
-Cc: Meelis Roos <mroos@linux.ee>, Helge Deller <deller@gmx.de>,
-	linux-parisc@vger.kernel.org,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>
-To: Yinghai Lu <yinghai@kernel.org>
+From: Safia <pds@maths.iitkgp.ernet.in>
+Subject: Today
+Date: Wed, 19 Aug 2015 18:10:08 +0530 (IST)
+Message-ID: <1287921552.1987492.1439988008494.JavaMail.zimbra@maths.iitkgp.ernet.in>
+Reply-To: Safia <safissans@hotmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+To: undisclosed-recipients:;
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAE9FiQW9hjDe2NBEfwQqcVZoJKqDjKT1P=7FcGjhVrF7wQW9+g@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2015-08-19, at 1:30 AM, Yinghai Lu wrote:
-
-> On Tue, Aug 18, 2015 at 9:48 PM, Meelis Roos <mroos@linux.ee> wrote:
->>> On Tue, Aug 18, 2015 at 12:47 PM, Helge Deller <deller@gmx.de> wrote:
->>> 
->>> Then we should change to
->>> 
->>> config PCI_BUS_ADDR_T_64BIT
->>>       def_bool y if (ARCH_DMA_ADDR_T_64BIT || SPARC64)
->>>       depends on PCI
->> 
->> Why SPARC64? The problem happened on parisc.
->> 
-> 
-> so will not set PCI_BUS_ADDR_T_64BIT for parisc.
-
-I'm not sure this is optimal.  While the A500 may only have 32-bit PCI, c8000 appears to have a mix
-of 32 and 64-bit, and rp34XX is all 64-bit.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
 
 
-
+Hi,I have a profitable business offer to discuss with you.It will benefit you and your family.Kindly reply me back so we can discuss further, safissans@hotmail.com
+Safia
