@@ -1,7 +1,7 @@
-From: <jerryfunds19@unitedfunds.onmicrosoft.com>
+From: <jerryfunds2@unitedfunds.onmicrosoft.com>
 Subject: (unknown)
-Date: Sat, 29 Aug 2015 23:53:19 +0530
-Message-ID: <SG2PR0201MB0982262C0E43CBB30E53E69CB86D0@SG2PR0201MB0982.apcprd02.prod.outlook.com>
+Date: Sun, 30 Aug 2015 07:22:43 +0530
+Message-ID: <HK2PR0201MB10108D9A988EB78F6F146F34B86C0@HK2PR0201MB1010.apcprd02.prod.outlook.com>
 Reply-To: <j.funds2000000@inbox.lv>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
