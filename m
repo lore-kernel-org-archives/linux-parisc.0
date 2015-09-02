@@ -1,73 +1,62 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: adjust L1_CACHE_BYTES to 128 bytes on PA8800 and
- PA8900 CPUs
-Date: Wed, 2 Sep 2015 18:20:00 +0200
-Message-ID: <20150902162000.GC2444@ls3530.box>
+Subject: [PATCH] parisc: Align locks for LWS syscalls to L1 cache size
+Date: Wed, 2 Sep 2015 21:38:40 +0200
+Message-ID: <20150902193840.GA4499@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@bell.net>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	ohn David Anglin <dave.anglin@bell.net>
 To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-PA8800 and PA8900 processors have a cache line length of 128 bytes.
+Align the locks for the Light weight syscall (LWS) which is used for
+atomic userspace operations (e.g. gcc atomic builtins) on L1 cache
+boundaries. This should speed up LWS calls on PA20 systems.
 
 Reported-by: John David Anglin <dave.anglin@bell.net>
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/include/asm/cache.h b/arch/parisc/include/asm/cache.h
-index 47f11c7..a775f60 100644
---- a/arch/parisc/include/asm/cache.h
-+++ b/arch/parisc/include/asm/cache.h
-@@ -7,17 +7,19 @@
+diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+index 7ef22e3..80c2306 100644
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -561,9 +561,9 @@ lws_compare_and_swap:
+ 	extru  %r26, 27, 4, %r20
  
+ 	/* Find lock to use, the hash is either one of 0 to
+-	   15, multiplied by 16 (keep it 16-byte aligned)
++	   15, multiplied by L1_CACHE_BYTES (keep it L1 cache aligned)
+ 	   and add to the lock table offset. */
+-	shlw	%r20, 4, %r20
++	shlw	%r20, L1_CACHE_SHIFT, %r20
+ 	add	%r20, %r28, %r20
  
- /*
-- * PA 2.0 processors have 64-byte cachelines; PA 1.1 processors have
-- * 32-byte cachelines.  The default configuration is not for SMP anyway,
-- * so if you're building for SMP, you should select the appropriate
-- * processor type.  There is a potential livelock danger when running
-- * a machine with this value set too small, but it's more probable you'll
-- * just ruin performance.
-+ * Most PA 2.0 processors have 64-byte cachelines, but PA8800 and PA8900
-+ * processors have a cache line length of 128 bytes.
-+ * PA 1.1 processors have 32-byte cachelines.
-+ * There is a potential livelock danger when running a machine with this value
-+ * set too small, but it's more probable you'll just ruin performance.
-  */
--#ifdef CONFIG_PA20
-+#if defined(CONFIG_PA8X00)
-+#define L1_CACHE_BYTES 128
-+#define L1_CACHE_SHIFT 7
-+#elif defined(CONFIG_PA20)
- #define L1_CACHE_BYTES 64
- #define L1_CACHE_SHIFT 6
--#else
-+#else /* PA7XXX */
- #define L1_CACHE_BYTES 32
- #define L1_CACHE_SHIFT 5
- #endif
-
-diff --git a/arch/parisc/include/asm/atomic.h b/arch/parisc/include/asm/atomic.h
-index 226f8ca9..b2bc4b7 100644
---- a/arch/parisc/include/asm/atomic.h
-+++ b/arch/parisc/include/asm/atomic.h
-@@ -19,14 +19,14 @@
+ # if ENABLE_LWS_DEBUG
+@@ -751,9 +751,9 @@ cas2_lock_start:
+ 	extru  %r26, 27, 4, %r20
  
- #ifdef CONFIG_SMP
- #include <asm/spinlock.h>
--#include <asm/cache.h>		/* we use L1_CACHE_BYTES */
-+#include <asm/cache.h>		/* we use L1_CACHE_SHIFT */
+ 	/* Find lock to use, the hash is either one of 0 to
+-	   15, multiplied by 16 (keep it 16-byte aligned)
++	   15, multiplied by L1_CACHE_BYTES (keep it L1 cache aligned)
+ 	   and add to the lock table offset. */
+-	shlw	%r20, 4, %r20
++	shlw	%r20, L1_CACHE_SHIFT, %r20
+ 	add	%r20, %r28, %r20
  
- /* Use an array of spinlocks for our atomic_ts.
-  * Hash function to index into a different SPINLOCK.
-  * Since "a" is usually an address, use one spinlock per cacheline.
-  */
- #  define ATOMIC_HASH_SIZE 4
--#  define ATOMIC_HASH(a) (&(__atomic_hash[ (((unsigned long) (a))/L1_CACHE_BYTES) & (ATOMIC_HASH_SIZE-1) ]))
-+#  define ATOMIC_HASH(a) (&(__atomic_hash[ (((unsigned long) (a)) >> L1_CACHE_SHIFT) & (ATOMIC_HASH_SIZE-1) ]))
- 
- extern arch_spinlock_t __atomic_hash[ATOMIC_HASH_SIZE] __lock_aligned;
- 
+ 	rsm	PSW_SM_I, %r0			/* Disable interrupts */
+@@ -931,11 +931,9 @@ END(sys_call_table64)
+ ENTRY(lws_lock_start)
+ 	/* lws locks */
+ 	.rept 16
+-	/* Keep locks aligned at 16-bytes */
++	/* Keep locks aligned to L1_CACHE_BYTES */
+ 	.word 1
+-	.word 0 
+-	.word 0
+-	.word 0
++	.align	L1_CACHE_BYTES
+ 	.endr
+ END(lws_lock_start)
+ 	.previous
