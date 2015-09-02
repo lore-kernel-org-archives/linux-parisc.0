@@ -1,37 +1,63 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Re: Do you need a loan?
-Date: Tue, 1 Sep 2015 00:20:31 +0530
-Message-ID: <HK2PR02MB0707F8D0BCDD05D589B10732B86B0@HK2PR02MB0707.apcprd02.prod.outlook.com>
-Reply-To: <jmfinancialserviceltd@gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] PCI,parisc: Enable 64-bit bus addresses on PA-RISC
+Date: Wed, 2 Sep 2015 18:17:29 +0200
+Message-ID: <20150902161729.GA2444@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-To: Recipients@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+	Meelis Roos <mroos@linux.ee>
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-pci-owner@vger.kernel.org>
+List-ID: <linux-pci.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-We offer private, commercial and personal loans with very low annualinterest rates as low as 2% in one year to 50 years repayment period anywhere in the world. We offer loans ranging from $5000 to $100 million. Our loans are well insured for maximum security is our priority. Are you losing sleep at night worrying how to get a legitimate loan lender? You bite your nails that fast? Instead of beating you, contact JM Financial Services Ltd now, specialists who help stop loans bad credit history to find a solution that victory is our mission. Applicants must fill out a loan application form below:
+Commit 3a9ad0b ("PCI: Add pci_bus_addr_t") unconditionally introduced usage of
+64-bit PCI bus addresses on all 64-bit platforms which broke PA-RISC.
 
-FORM credit application
+It turned out that due to enabling the 64-bit addresses, the PCI logic decided
+to use the GMMIO instead of the LMMIO region. This commit simply disables
+registering the GMMIO and thus we fall back to use the LMMIO region as before.
 
-loan applications
-Your full name *
-Your e-mail *
-Your phone *
-Your address *
-Your city *
-State / Province *
-Country *
-Fax*
-Date of birth *
-Do you have an account? *
-Have you applied before? *
-The loan amount is needed *
-The Loan Duration*
-The life expectancy *
-The purpose of the loan *
-Send me a scanned copy of your passport: *
+Reverts commit 45ea2a5fed6dacb9bb0558d8b21eacc1c45d5bb4
+("PCI: Don't use 64-bit bus addresses on PA-RISC")
 
-Creditor: Mr. Prakash Lass Dickson.
-Company: JM Financial Services Ltd.
-Copyright JM Financial Ltd. All rights reserved.
+To: linux-parisc@vger.kernel.org
+Cc: linux-pci@vger.kernel.org
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Meelis Roos <mroos@linux.ee>
+Cc: stable@vger.kernel.org  # v3.19+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index dceb9dd..a32c1f6 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -1556,8 +1556,11 @@ lba_driver_probe(struct parisc_device *dev)
+ 	if (lba_dev->hba.lmmio_space.flags)
+ 		pci_add_resource_offset(&resources, &lba_dev->hba.lmmio_space,
+ 					lba_dev->hba.lmmio_space_offset);
+-	if (lba_dev->hba.gmmio_space.flags)
+-		pci_add_resource(&resources, &lba_dev->hba.gmmio_space);
++	if (lba_dev->hba.gmmio_space.flags) {
++		/* pci_add_resource(&resources, &lba_dev->hba.gmmio_space); */
++		pr_warn("LBA: Not registering GMMIO space %pR\n",
++			&lba_dev->hba.gmmio_space);
++	}
+ 
+ 	pci_add_resource(&resources, &lba_dev->hba.bus_num);
+ 
+diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
+index 944f500..73de4ef 100644
+--- a/drivers/pci/Kconfig
++++ b/drivers/pci/Kconfig
+@@ -2,7 +2,7 @@
+ # PCI configuration
+ #
+ config PCI_BUS_ADDR_T_64BIT
+-	def_bool y if (ARCH_DMA_ADDR_T_64BIT || (64BIT && !PARISC))
++	def_bool y if (ARCH_DMA_ADDR_T_64BIT || 64BIT)
+ 	depends on PCI
+ 
+ config PCI_MSI
