@@ -1,88 +1,59 @@
-From: Mathieu Desnoyers <mathieu.desnoyers-vg+e7yoeK/dWk0Htik3J/w@public.gmane.org>
-Subject: Re: [RFC PATCH 9/9] parisc: allocate sys_membarrier system call
- number
-Date: Thu, 3 Sep 2015 15:41:22 +0000 (UTC)
-Message-ID: <489367754.35882.1441294882117.JavaMail.zimbra@efficios.com>
-References: <1440698215-8355-1-git-send-email-mathieu.desnoyers@efficios.com> <1440698215-8355-10-git-send-email-mathieu.desnoyers@efficios.com> <trinity-920d5daa-933d-4e50-bd13-713e544e93c4-1441283170751@3capp-gmx-bs04>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: parisc: adjust L1_CACHE_BYTES to 128 bytes on PA8800 and PA8900
+ CPUs
+Date: Thu, 3 Sep 2015 20:45:02 +0200
+Message-ID: <55E8952E.4080603@gmx.de>
+References: <55E811AB.6070002@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Cc: Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>,
-	linux-api <linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	"James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
-	linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
-Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <trinity-920d5daa-933d-4e50-bd13-713e544e93c4-1441283170751@3capp-gmx-bs04>
-List-ID: <linux-api.vger.kernel.org>
+Cc: linux-parisc@vger.kernel.org,
+	Valentin Rothberg <valentinrothberg@gmail.com>,
+	Paul Bolle <pebolle@tiscali.nl>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	John David Anglin <dave.anglin@bell.net>
+To: Andreas Ziegler <andreas.ziegler@fau.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <55E811AB.6070002@fau.de>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
------ On Sep 3, 2015, at 8:26 AM, Helge Deller deller-Mmb7MZpHnFY@public.gmane.org wrote:
+Hi Andreas,
 
-> Hi Mathieu,
+On 03.09.2015 11:23, Andreas Ziegler wrote:
+> today's linux-next tree (next-20150903) contains commit 20f924902ff6
+> ("parisc: adjust L1_CACHE_BYTES to 128 bytes on PA8800 and PA8900 CPUs")
+> which you authored.
 > 
->> [ Untested on this architecture. To try it out: fetch linux-next/akpm,
->>   apply this patch, build/run a membarrier-enabled kernel, and do make
->>   kselftest. ]
->> 
->> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers-vg+e7yoeK/dWk0Htik3J/w@public.gmane.org>
->> CC: Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>
->> CC: linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
->> CC: "James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>
->> CC: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
->> CC: linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
->> ---
->>  arch/parisc/include/uapi/asm/unistd.h | 3 ++-
->>  arch/parisc/kernel/syscall_table.S    | 1 +
->>  2 files changed, 3 insertions(+), 1 deletion(-)
->> 
->> diff --git a/arch/parisc/include/uapi/asm/unistd.h
->> b/arch/parisc/include/uapi/asm/unistd.h
->> index 2e639d7..dadcada 100644
->> --- a/arch/parisc/include/uapi/asm/unistd.h
->> +++ b/arch/parisc/include/uapi/asm/unistd.h
->> @@ -358,8 +358,9 @@
->>  #define __NR_memfd_create	(__NR_Linux + 340)
->>  #define __NR_bpf		(__NR_Linux + 341)
->>  #define __NR_execveat		(__NR_Linux + 342)
->> +#define __NR_membarrier		(__NR_Linux + 343)
->>  
->> -#define __NR_Linux_syscalls	(__NR_execveat + 1)
->> +#define __NR_Linux_syscalls	(__NR_membarrier + 1)
->>  
->>  
->>  #define __IGNORE_select		/* newselect */
->> diff --git a/arch/parisc/kernel/syscall_table.S
->> b/arch/parisc/kernel/syscall_table.S
->> index 8eefb12..2faa43b 100644
->> --- a/arch/parisc/kernel/syscall_table.S
->> +++ b/arch/parisc/kernel/syscall_table.S
->> @@ -438,6 +438,7 @@
->>  	ENTRY_SAME(memfd_create)	/* 340 */
->>  	ENTRY_SAME(bpf)
->>  	ENTRY_COMP(execveat)
->> +	ENTRY_COMP(membarrier)
+> I noticed it because we[0] are running a daily analysis on all commits
+> in linux-next as part of our research and our tools reported it.
 > 
-> This needs to be ENTRY_SAME(membarrier), since you don't have/need a
-> compat_membarrier() function.
-
-Allright, will fix.
-
+> In the patch, you create the following #if defined() structure in
+> arch/parisc/include/asm/cache.h (lines 16 and following):
 > 
-> After changing to ENTRY_SAME() I did run the kselftest on parisc:
-> deller@ls3xx> ./membarrier_test
-> membarrier MEMBARRIER_CMD_QUERY syscall available.
-> membarrier: MEMBARRIER_CMD_SHARED success.
-> membarrier: tests done!
-
-And add your Tested-by tag, thanks!
-
-Mathieu
-
+>  #if defined(CONFIG_PA8X00)
+>   ...
+>  #elif defined(CONFIG_PA20)
+>   ...
+>  #else
+>   ...
+>  #endif
 > 
-> Helge
+> In Kconfig, CONFIG_PA20 is defined as the following
+> (arch/parisc/Kconfig, line 163):
+> 
+> config PA20
+>   def_bool y
+>   depends on PA8X00
+> 
+> This means that CONFIG_PA20 can and will only be enabled if
+> CONFIG_PA8X00 has already been enabled, which means that the contents of
+> the "#elif defined(CONFIG_PA20)" block can never be reached: its
+> condition is only evaluated if CONFIG_PA8X00 is disabled, but then
+> CONFIG_PA20 can never be enabled either.
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+That's absolutely true.
+I'll fix it with the next iteration of this patch.
+
+Thanks,
+Helge
+
