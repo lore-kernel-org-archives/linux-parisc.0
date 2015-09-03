@@ -1,59 +1,79 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: parisc: adjust L1_CACHE_BYTES to 128 bytes on PA8800 and PA8900
- CPUs
-Date: Thu, 3 Sep 2015 20:45:02 +0200
-Message-ID: <55E8952E.4080603@gmx.de>
-References: <55E811AB.6070002@fau.de>
+Subject: [PATCH] parisc: Filter out spurious interrupts in PA-RISC irq handler
+Date: Thu, 3 Sep 2015 22:45:21 +0200
+Message-ID: <20150903204521.GA26912@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: linux-parisc@vger.kernel.org,
-	Valentin Rothberg <valentinrothberg@gmail.com>,
-	Paul Bolle <pebolle@tiscali.nl>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	John David Anglin <dave.anglin@bell.net>
-To: Andreas Ziegler <andreas.ziegler@fau.de>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <55E811AB.6070002@fau.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Andreas,
+When detecting a serial port on newer PA-RISC machines (with iosapic) we have a
+long way to go to find the right IRQ line, registering it, then registering the
+serial port and the irq handler for the serial port. During this phase spurious
+interrupts for the serial port may happen which then crashes the kernel because
+the action handler might not have been set up yet.
 
-On 03.09.2015 11:23, Andreas Ziegler wrote:
-> today's linux-next tree (next-20150903) contains commit 20f924902ff6
-> ("parisc: adjust L1_CACHE_BYTES to 128 bytes on PA8800 and PA8900 CPUs")
-> which you authored.
-> 
-> I noticed it because we[0] are running a daily analysis on all commits
-> in linux-next as part of our research and our tools reported it.
-> 
-> In the patch, you create the following #if defined() structure in
-> arch/parisc/include/asm/cache.h (lines 16 and following):
-> 
->  #if defined(CONFIG_PA8X00)
->   ...
->  #elif defined(CONFIG_PA20)
->   ...
->  #else
->   ...
->  #endif
-> 
-> In Kconfig, CONFIG_PA20 is defined as the following
-> (arch/parisc/Kconfig, line 163):
-> 
-> config PA20
->   def_bool y
->   depends on PA8X00
-> 
-> This means that CONFIG_PA20 can and will only be enabled if
-> CONFIG_PA8X00 has already been enabled, which means that the contents of
-> the "#elif defined(CONFIG_PA20)" block can never be reached: its
-> condition is only evaluated if CONFIG_PA8X00 is disabled, but then
-> CONFIG_PA20 can never be enabled either.
+So, basically it's a race condition between the serial port hardware and the
+CPU which sets up the necessary fields in the irq sructs. The main reason for
+this race is, that we unmask the serial port irqs too early without having set
+up everything properly before (which isn't easily possible because we need the
+IRQ number to register the serial ports).
 
-That's absolutely true.
-I'll fix it with the next iteration of this patch.
+This patch is a work-around for this problem. It adds checks to the CPU irq
+handler to verify if the IRQ action field has been initialized already. If not,
+we just skip this interrupt (which isn't critical for a serial port at bootup).
+The real fix would probably involve rewriting all PA-RISC specific IRQ code
+(for CPU, IOSAPIC, GSC and EISA) to use IRQ domains with proper parenting of
+the irq chips and proper irq enabling along this line.
 
-Thanks,
-Helge
+This bug has been in the PA-RISC port since the beginning, but the crashes
+happened very rarely with currently used hardware.  But on the latest machine
+which I bought (a C8000 workstation), which uses the fastest CPUs (4 x PA8900,
+1GHz) and which has the largest possible L1 cache size (64MB each), the kernel
+crashed at every boot because of this race. So, without this patch the machine
+would currently be unuseable.
 
+For the record, here is the flow logic:
+1. serial_init_chip() in 8250_gsc.c calls iosapic_serial_irq().
+2. iosapic_serial_irq() calls txn_alloc_irq() to find the irq.
+3. iosapic_serial_irq() calls cpu_claim_irq() to register the CPU irq
+4. cpu_claim_irq() unmasks the CPU irq (which it shouldn't!)
+5. serial_init_chip() then registers the 8250 port.
+Problems:
+- In step 4 the CPU irq shouldn't have been registered yet, but after step 5
+- If serial irq happens between 4 and 5 have finished, the kernel will crash
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index f3191db..c0eab24 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -507,8 +507,8 @@ void do_cpu_irq_mask(struct pt_regs *regs)
+ 	struct pt_regs *old_regs;
+ 	unsigned long eirr_val;
+ 	int irq, cpu = smp_processor_id();
+-#ifdef CONFIG_SMP
+ 	struct irq_desc *desc;
++#ifdef CONFIG_SMP
+ 	cpumask_t dest;
+ #endif
+ 
+@@ -521,8 +521,12 @@ void do_cpu_irq_mask(struct pt_regs *regs)
+ 		goto set_out;
+ 	irq = eirr_to_irq(eirr_val);
+ 
+-#ifdef CONFIG_SMP
++	/* Filter out spurious interrupts, mostly from serial port at bootup */
+ 	desc = irq_to_desc(irq);
++	if (unlikely(!desc->action))
++		goto set_out;
++
++#ifdef CONFIG_SMP
+ 	cpumask_copy(&dest, desc->irq_data.affinity);
+ 	if (irqd_is_per_cpu(&desc->irq_data) &&
+ 	    !cpumask_test_cpu(smp_processor_id(), &dest)) {
