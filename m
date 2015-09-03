@@ -1,70 +1,90 @@
-From: "Helge Deller" <deller-Mmb7MZpHnFY@public.gmane.org>
-Subject: Re: [RFC PATCH 9/9] parisc: allocate sys_membarrier system call
- number
-Date: Thu, 3 Sep 2015 14:26:10 +0200
-Message-ID: <trinity-920d5daa-933d-4e50-bd13-713e544e93c4-1441283170751@3capp-gmx-bs04>
-References: <1440698215-8355-1-git-send-email-mathieu.desnoyers@efficios.com>,
- <1440698215-8355-10-git-send-email-mathieu.desnoyers@efficios.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH] parisc: adjust L1_CACHE_BYTES to 128 bytes on PA8800
+ and PA8900 CPUs
+Date: Thu, 03 Sep 2015 06:30:43 -0700
+Message-ID: <1441287043.2235.6.camel@HansenPartnership.com>
+References: <20150902162000.GC2444@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: "Andrew Morton" <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>,
-	linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	"James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
-	linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Mathieu Desnoyers" <mathieu.desnoyers-vg+e7yoeK/dWk0Htik3J/w@public.gmane.org>
-Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1440698215-8355-10-git-send-email-mathieu.desnoyers-vg+e7yoeK/dWk0Htik3J/w@public.gmane.org>
-List-ID: <linux-api.vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-parisc@vger.kernel.org,
+	John David Anglin <dave.anglin@bell.net>
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20150902162000.GC2444@ls3530.box>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Mathieu,
-
-> [ Untested on this architecture. To try it out: fetch linux-next/akpm,
->   apply this patch, build/run a membarrier-enabled kernel, and do make
->   kselftest. ]
+On Wed, 2015-09-02 at 18:20 +0200, Helge Deller wrote:
+> PA8800 and PA8900 processors have a cache line length of 128 bytes.
 > 
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers-vg+e7yoeK/dWk0Htik3J/w@public.gmane.org>
-> CC: Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>
-> CC: linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> CC: "James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>
-> CC: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
-> CC: linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> ---
->  arch/parisc/include/uapi/asm/unistd.h | 3 ++-
->  arch/parisc/kernel/syscall_table.S    | 1 +
->  2 files changed, 3 insertions(+), 1 deletion(-)
+> Reported-by: John David Anglin <dave.anglin@bell.net>
+> Signed-off-by: Helge Deller <deller@gmx.de>
 > 
-> diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
-> index 2e639d7..dadcada 100644
-> --- a/arch/parisc/include/uapi/asm/unistd.h
-> +++ b/arch/parisc/include/uapi/asm/unistd.h
-> @@ -358,8 +358,9 @@
->  #define __NR_memfd_create	(__NR_Linux + 340)
->  #define __NR_bpf		(__NR_Linux + 341)
->  #define __NR_execveat		(__NR_Linux + 342)
-> +#define __NR_membarrier		(__NR_Linux + 343)
+> diff --git a/arch/parisc/include/asm/cache.h b/arch/parisc/include/asm/cache.h
+> index 47f11c7..a775f60 100644
+> --- a/arch/parisc/include/asm/cache.h
+> +++ b/arch/parisc/include/asm/cache.h
+> @@ -7,17 +7,19 @@
 >  
-> -#define __NR_Linux_syscalls	(__NR_execveat + 1)
-> +#define __NR_Linux_syscalls	(__NR_membarrier + 1)
+> 
+>  /*
+> - * PA 2.0 processors have 64-byte cachelines; PA 1.1 processors have
+> - * 32-byte cachelines.  The default configuration is not for SMP anyway,
+> - * so if you're building for SMP, you should select the appropriate
+> - * processor type.  There is a potential livelock danger when running
+> - * a machine with this value set too small, but it's more probable you'll
+> - * just ruin performance.
+> + * Most PA 2.0 processors have 64-byte cachelines, but PA8800 and PA8900
+> + * processors have a cache line length of 128 bytes.
+> + * PA 1.1 processors have 32-byte cachelines.
+> + * There is a potential livelock danger when running a machine with this value
+> + * set too small, but it's more probable you'll just ruin performance.
+>   */
+> -#ifdef CONFIG_PA20
+> +#if defined(CONFIG_PA8X00)
+> +#define L1_CACHE_BYTES 128
+> +#define L1_CACHE_SHIFT 7
+> +#elif defined(CONFIG_PA20)
+>  #define L1_CACHE_BYTES 64
+>  #define L1_CACHE_SHIFT 6
+> -#else
+> +#else /* PA7XXX */
+>  #define L1_CACHE_BYTES 32
+>  #define L1_CACHE_SHIFT 5
+>  #endif
+> 
+> diff --git a/arch/parisc/include/asm/atomic.h b/arch/parisc/include/asm/atomic.h
+> index 226f8ca9..b2bc4b7 100644
+> --- a/arch/parisc/include/asm/atomic.h
+> +++ b/arch/parisc/include/asm/atomic.h
+> @@ -19,14 +19,14 @@
 >  
+>  #ifdef CONFIG_SMP
+>  #include <asm/spinlock.h>
+> -#include <asm/cache.h>		/* we use L1_CACHE_BYTES */
+> +#include <asm/cache.h>		/* we use L1_CACHE_SHIFT */
 >  
->  #define __IGNORE_select		/* newselect */
-> diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-> index 8eefb12..2faa43b 100644
-> --- a/arch/parisc/kernel/syscall_table.S
-> +++ b/arch/parisc/kernel/syscall_table.S
-> @@ -438,6 +438,7 @@
->  	ENTRY_SAME(memfd_create)	/* 340 */
->  	ENTRY_SAME(bpf)
->  	ENTRY_COMP(execveat)
-> +	ENTRY_COMP(membarrier)
+>  /* Use an array of spinlocks for our atomic_ts.
+>   * Hash function to index into a different SPINLOCK.
+>   * Since "a" is usually an address, use one spinlock per cacheline.
+>   */
+>  #  define ATOMIC_HASH_SIZE 4
+> -#  define ATOMIC_HASH(a) (&(__atomic_hash[ (((unsigned long) (a))/L1_CACHE_BYTES) & (ATOMIC_HASH_SIZE-1) ]))
+> +#  define ATOMIC_HASH(a) (&(__atomic_hash[ (((unsigned long) (a)) >> L1_CACHE_SHIFT) & (ATOMIC_HASH_SIZE-1) ]))
+>  
+>  extern arch_spinlock_t __atomic_hash[ATOMIC_HASH_SIZE] __lock_aligned;
 
-This needs to be ENTRY_SAME(membarrier), since you don't have/need a compat_membarrier() function.
+This doesn't look to be correct.  The L1_CACHE_BYTES is compile time not
+runtime, so it's the Architectural not the Actual width.  For us, there
+are only two architectural widths governed by our compile classes, which
+are PA1 and PA2 at 32 and 64.  There's no config way to produce a PA2
+kernel which is PA88/89 only, so we should follow the PA2 architectural
+width because the kernel can be booted on any PA2 system, not just
+PA88/89.  Even if we could produce a PA88/89 only kernel and would wish
+to, there's still not much point because 128 is the cache burst width.
+PA988/89 work perfectly OK with the architectural width, so the extra
+space is likely added for no benefit.
 
-After changing to ENTRY_SAME() I did run the kselftest on parisc: 
-deller@ls3xx> ./membarrier_test 
-membarrier MEMBARRIER_CMD_QUERY syscall available.
-membarrier: MEMBARRIER_CMD_SHARED success.
-membarrier: tests done!
+James
 
-Helge
+
