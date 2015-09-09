@@ -1,53 +1,72 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture updates for v4.3
-Date: Tue, 8 Sep 2015 21:20:32 +0200
-Message-ID: <20150908192032.GA3171@ls3530.box>
+From: FastEko Finance <joey@imap.hexon.cx>
+Subject: Guten Tag
+Date: Wed, 09 Sep 2015 02:33:40 -0700
+Message-ID: <6880d96f5bd9ac4d9560900935dfcdb0@imap.hexon.cx>
+Reply-To: <fastekofinance@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+To: undisclosed-recipients:;
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+Ich bin Thomas Walter, die vollziehende Mittel aus einem gut erkannt=20
+legitimen Darlehensgeberin als FastEko Finance bekannt. im Vereinigten=20
+K=C3=B6nigreich befindet. Gro=C3=9F wir Geld leihen f=C3=BCr Privatpers=
+onen und=20
+Unternehmen, die Hilfe brauchen, finanziell. Haben Sie schlechte Kredit=
+=20
+haben, oder Sie brauchen Geld, um Ihre Rechnungen zu bezahlen sind? Wir=
+=20
+nutzen dieses Medium, um Ihnen mitzuteilen, dass wir Sie mit jeder Form=
+=20
+von Darlehen Sie Hilfe ben=C3=B6tigen, beispielsweise Refinanzierung,=20
+Schuldenkonsolidierung Darlehen, pers=C3=B6nliche Kredite, Darlehen und=
+=20
+internationalen Business-Darlehen. Wir freuen uns, Ihnen ein Darlehen s=
+o=20
+g=C3=BCnstig wie dem Zinssatz von 4% bieten.
 
-please pull the latest changes for the parisc architecture for kernel v4.3 from:
+Unsere Mission ist es, einen Service f=C3=BCr unsere Kunden, die schnel=
+l,=20
+freundlich und stressfrei ist. In der Regel, wenn wir alle Ihre=20
+Informationen es dauert nur eine Stunde, um Finanz Zustimmung=20
+vereinbaren.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.3-1
+Wir werden Vorkehrungen mit Ihnen zu machen (einmal ein Darlehen=20
+genehmigt worden ist), so dass wir Ihre Kreditfonds, Sie sicher zu=20
+bekommen.
 
-The most important changes in this patchset are:
-- re-enable 64bit PCI bus addresses which were temporarily disabled for PA-RISC
-  in kernel 4.2
-- fix the 64bit CAS operation in the LWS path which now enables us to enable the
-  64bit gcc atomic builtins even on 32bit userspace with 64bit kernel
-- fix a long-standing bug which sometimes crashed kernel at bootup while serial
-  interrupt wasn't registered yet
+Wenn Sie interessiert sind, f=C3=BCllen Sie bitte das Darlehen=20
+Antragsformular und R=C3=BCckkehr so =E2=80=8B=E2=80=8Bbald wie m=C3=B6=
+glich mit Ihrer=20
+pers=C3=B6nlichen Information.
 
-Thanks,
-Helge
+Voller Name:
+Geschlecht:
+Land:
+Adresse:
+Ben=C3=B6tigte Menge:
+Dauer:
+Zweck:
+Tel / PLZ:
+Englisch sprechen?
 
-----------------------------------------------------------------
-Guenter Roeck (1):
-      parisc: Define ioremap_uc and ioremap_wc
+Bitte kontaktieren Sie uns jetzt mit der oben geforderten Informationen=
+=20
+ist mit dieser E-Mail: fastekofinance@gmail.com
 
-Helge Deller (5):
-      PCI,parisc: Enable 64-bit bus addresses on PA-RISC
-      parisc: Additionally check for in_atomic() in page fault handler
-      parisc: Filter out spurious interrupts in PA-RISC irq handler
-      parisc: Drop CONFIG_SMP around update_cr16_clocksource()
-      parisc: Use platform_device_register_simple("rtc-generic")
+=C2=A0Wir m=C3=B6chten Sie warten auf die gef=C3=BCllten Darlehen Antra=
+gsformular,=20
+damit wir die Berechnung zu tun und starten Sie die Kreditbearbeitung=20
+zur Genehmigung vor.
 
-John David Anglin (1):
-      parisc: Use double word condition in 64bit CAS operation
-
- arch/parisc/include/asm/io.h |  2 ++
- arch/parisc/kernel/irq.c     |  9 +++++++--
- arch/parisc/kernel/syscall.S |  2 +-
- arch/parisc/kernel/time.c    | 21 ++++-----------------
- arch/parisc/mm/fault.c       |  2 +-
- drivers/parisc/lba_pci.c     |  7 +++++--
- drivers/pci/Kconfig          |  2 +-
- 7 files changed, 21 insertions(+), 24 deletions(-)
+Gr=C3=BC=C3=9Fe,
+Thomas Walter
+=46astEko Finanzen
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
