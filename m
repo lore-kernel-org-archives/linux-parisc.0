@@ -1,78 +1,38 @@
-From: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
-Subject: Re: [PATCH v2 4/9] parisc: allocate sys_membarrier system call number
-Date: Wed, 16 Sep 2015 21:56:48 +0200
-Message-ID: <55F9C980.7040406@gmx.de>
-References: <1441642556-30972-1-git-send-email-mathieu.desnoyers@efficios.com>
- <1441642556-30972-5-git-send-email-mathieu.desnoyers@efficios.com>
- <1649019858.9290.1442416020165.JavaMail.zimbra@efficios.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] serial: mux: Convert to uart_console_device instead of
+ open-coded
+Date: Sat, 19 Sep 2015 11:43:07 +0800
+Message-ID: <1442634187.28089.1.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-parisc <linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>,
-	linux-api <linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-To: Mathieu Desnoyers <mathieu.desnoyers-vg+e7yoeK/dWk0Htik3J/w@public.gmane.org>,
-	"James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>
-Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1649019858.9290.1442416020165.JavaMail.zimbra-vg+e7yoeK/dWk0Htik3J/w@public.gmane.org>
-List-ID: <linux-api.vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Daniel Thompson <daniel.thompson@linaro.org>,
+	Jiri Slaby <jslaby@suse.com>, linux-serial@vger.kernel.org,
+	linux-parisc@vger.kernel.org
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 16.09.2015 17:07, Mathieu Desnoyers wrote:
-> ----- On Sep 7, 2015, at 12:15 PM, Mathieu Desnoyers mathieu.desnoyers-vg+e7yoeK/dWk0Htik3J/w@public.gmane.org wrote:
-> 
->> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers-vg+e7yoeK/dWk0Htik3J/w@public.gmane.org>
->> Tested-by: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
->> CC: Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>
->> CC: linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
->> CC: "James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>
->> CC: linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> 
-> Hi,
-> 
-> FYI, sys_membarrier has been pulled into Linux 4.3-rc1. Please
-> feel free to wire it up on parisc.
+The implementation of mux_console_device() is very similar to
+uart_console_device(). Setting .data field in mux_console then we can
+convert to use uart_console_device().
 
-Thanks for the notice.
-I'll include your patch with an upcoming parisc pull-request later in the 4.3 cycle.
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+I don't have this h/w to test, so I'd appreciate if someone can test it.
+ drivers/tty/serial/mux.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-Helge
-
-
->> ---
->> arch/parisc/include/uapi/asm/unistd.h | 3 ++-
->> arch/parisc/kernel/syscall_table.S    | 1 +
->> 2 files changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/parisc/include/uapi/asm/unistd.h
->> b/arch/parisc/include/uapi/asm/unistd.h
->> index 2e639d7..dadcada 100644
->> --- a/arch/parisc/include/uapi/asm/unistd.h
->> +++ b/arch/parisc/include/uapi/asm/unistd.h
->> @@ -358,8 +358,9 @@
->> #define __NR_memfd_create	(__NR_Linux + 340)
->> #define __NR_bpf		(__NR_Linux + 341)
->> #define __NR_execveat		(__NR_Linux + 342)
->> +#define __NR_membarrier		(__NR_Linux + 343)
->>
->> -#define __NR_Linux_syscalls	(__NR_execveat + 1)
->> +#define __NR_Linux_syscalls	(__NR_membarrier + 1)
->>
->>
->> #define __IGNORE_select		/* newselect */
->> diff --git a/arch/parisc/kernel/syscall_table.S
->> b/arch/parisc/kernel/syscall_table.S
->> index 8eefb12..4e77991 100644
->> --- a/arch/parisc/kernel/syscall_table.S
->> +++ b/arch/parisc/kernel/syscall_table.S
->> @@ -438,6 +438,7 @@
->> 	ENTRY_SAME(memfd_create)	/* 340 */
->> 	ENTRY_SAME(bpf)
->> 	ENTRY_COMP(execveat)
->> +	ENTRY_SAME(membarrier)
->>
->>
->> .ifne (. - 90b) - (__NR_Linux_syscalls * (91b - 90b))
->> --
->> 1.9.1
-> 
+diff --git a/drivers/tty/serial/mux.c b/drivers/tty/serial/mux.c
+index dd26511..8a4be4b 100644
+--- a/drivers/tty/serial/mux.c
++++ b/drivers/tty/serial/mux.c
+@@ -412,19 +412,14 @@ static int mux_console_setup(struct console *co, char *options)
+         return 0;
+ }
+ 
+-struct tty_driver *mux_console_device(struct console *co, int *index)
+-{
+-        *index = co->index;
+-	return mux_driver.tty_driver;
+-}
