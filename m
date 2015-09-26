@@ -1,8 +1,8 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.2 099/134] PCI,parisc: Enable 64-bit bus addresses on PA-RISC
-Date: Sat, 26 Sep 2015 13:55:51 -0700
-Message-ID: <20150926205317.816721300@linuxfoundation.org>
-References: <20150926205311.819185658@linuxfoundation.org>
+Subject: [PATCH 4.1 076/159] PCI,parisc: Enable 64-bit bus addresses on PA-RISC
+Date: Sat, 26 Sep 2015 13:55:22 -0700
+Message-ID: <20150926205318.076976875@linuxfoundation.org>
+References: <20150926205313.363686083@linuxfoundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -10,12 +10,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Bjorn Helgaas <bhelgaas@google.com>,
 	Meelis Roos <mroos@linux.ee>, Helge Deller <deller@gmx.de>
 To: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150926205311.819185658@linuxfoundation.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20150926205313.363686083@linuxfoundation.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-4.2-stable review patch.  If anyone has any objections, please let me know.
+4.1-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -72,3 +72,5 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	depends on PCI
  
  config PCI_MSI
+
+
