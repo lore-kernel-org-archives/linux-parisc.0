@@ -1,33 +1,54 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH v2][RFC] parisc: Change L1_CACHE_BYTES to 16
-Date: Sun, 27 Sep 2015 12:46:40 -0400
-Message-ID: <87729342-A3F6-453F-BA6F-EF3C096AA92A@bell.net>
-References: <42430464-867C-4E0B-8E95-C6CDB6D8A0B2@bell.net> <32A3BF6F-B243-4AD4-9AE9-A5F9DAE0270A@bell.net> <1443370656.2222.3.camel@HansenPartnership.com>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc List <linux-parisc@vger.kernel.org>,
-	Helge Deller <deller@gmx.de>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] parisc: Re: [PATCH] parisc: adjust L1_CACHE_BYTES to 128
+ bytes on PA8800 and PA8900 CPUs
+Date: Mon, 28 Sep 2015 17:57:32 +0200
+Message-ID: <5609636C.7010604@gmx.de>
+References: <20150902162000.GC2444@ls3530.box>
+ <1441287043.2235.6.camel@HansenPartnership.com>
+ <1441288665.2235.17.camel@HansenPartnership.com> <55EB5EFA.4040407@gmx.de>
+ <56017FB3.5050709@gmx.de> <65929045-FF25-4BFB-BA89-F07A47328F1F@bell.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1443370656.2222.3.camel@HansenPartnership.com>
+In-Reply-To: <65929045-FF25-4BFB-BA89-F07A47328F1F@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2015-09-27, at 12:17 PM, James Bottomley wrote:
+Hi Dave,
 
-> What makes you think we need SMP_CACHE_BYTES to be different from
-> L1_CACHE_BYTES?  No other architecture does this.  The theory that gives
-> us two defines was that some SMP systems would arbitrate for memory at
-> geater than cache line offsets but, in practise, none does because
-> that's the level at which the cross CPU memory ownership model works
-> anyway.
+On 27.09.2015 18:27, John David Anglin wrote:
+> On 2015-09-22, at 12:20 PM, Helge Deller wrote:
+>> The baseline for all results is the timing with a vanilla kernel 4.2:
+>> real    0m13.596s
+>> user    0m18.152s
+>> sys     0m35.752s
+>>
+>>
+>> The next results are with the atomic_hash (a) patch applied:
+>> For ATOMIC_HASH_SIZE = 4. 
+>> real    0m21.892s 
+>> user    0m27.492s
+>> sys     0m59.704s
+>>
+>> For ATOMIC_HASH_SIZE = 64.
+>> real    0m20.604s
+>> user    0m24.832s
+>> sys     0m56.552s
+>>
+> Attached is a revised patch "a" to try to improve performance of atomic_t variables.  If you get a chance, could
+> you see how it performs.
 
-I was just keeping the values we had before.  Changing to the new L1_CACHE_BYTES
-value probably needs testing.
+here are the numbers for your revised "a" patch (on top of vanilla kernel 4.2): 
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
+real    0m20.040s
+user    0m22.876s
+sys     0m56.724s
+(Variations can be around +- 0.5 seconds)
 
+If you want to test yourself:
+The testcase executable is on sibaris: /home/var_lib_sbuild_build/libatomic/libatomic-ops-7.4.2/test_atomic
 
-
+Helge
