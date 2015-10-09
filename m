@@ -1,63 +1,95 @@
-From: Abylay Ospan <aospan@netup.ru>
-Subject: Re: [PATCH 08/15] netup_unidvb: use pci_set_dma_mask insted of pci_dma_supported
-Date: Wed, 7 Oct 2015 11:03:13 +0300
-Message-ID: <CAK3bHNXJp70C3DC8OPsKHmiTeLu-J70VKSfKwDgUd5F=uorEWw@mail.gmail.com>
-References: <1443885579-7094-1-git-send-email-hch@lst.de> <1443885579-7094-9-git-send-email-hch@lst.de>
+From: Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH 3.2 105/107] parisc: Filter out spurious interrupts in
+ PA-RISC irq handler
+Date: Fri, 09 Oct 2015 01:12:28 +0100
+Message-ID: <lsq.1444349548.885190491@decadent.org.uk>
+References: <lsq.1444349547.316291576@decadent.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Don Fry <pcnet32@frontier.com>,
-	Oliver Neukum <oneukum@suse.com>,
-	linux-net-drivers@solarflare.com, dri-devel@lists.freedesktop.org,
-	linux-media <linux-media@vger.kernel.org>,
-	netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-To: Christoph Hellwig <hch@lst.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1443885579-7094-9-git-send-email-hch@lst.de>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: akpm@linux-foundation.org, "Helge Deller" <deller@gmx.de>,
+	linux-parisc@vger.kernel.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <lsq.1444349547.316291576@decadent.org.uk>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello,
+3.2.72-rc1 review patch.  If anyone has any objections, please let me know.
 
-Acked-by: Abylay Ospan <aospan@netup.ru>
+------------------
 
-thanks !
+From: Helge Deller <deller@gmx.de>
 
-2015-10-03 18:19 GMT+03:00 Christoph Hellwig <hch@lst.de>:
-> This ensures the dma mask that is supported by the driver is recorded
-> in the device structure.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/media/pci/netup_unidvb/netup_unidvb_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/media/pci/netup_unidvb/netup_unidvb_core.c b/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
-> index 6d8bf627..511144f 100644
-> --- a/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
-> +++ b/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
-> @@ -809,7 +809,7 @@ static int netup_unidvb_initdev(struct pci_dev *pci_dev,
->                 "%s(): board vendor 0x%x, revision 0x%x\n",
->                 __func__, board_vendor, board_revision);
->         pci_set_master(pci_dev);
-> -       if (!pci_dma_supported(pci_dev, 0xffffffff)) {
-> +       if (!pci_set_dma_mask(pci_dev, 0xffffffff)) {
->                 dev_err(&pci_dev->dev,
->                         "%s(): 32bit PCI DMA is not supported\n", __func__);
->                 goto pci_detect_err;
-> --
-> 1.9.1
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-media" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+commit b1b4e435e4ef7de77f07bf2a42c8380b960c2d44 upstream.
 
+When detecting a serial port on newer PA-RISC machines (with iosapic) we have a
+long way to go to find the right IRQ line, registering it, then registering the
+serial port and the irq handler for the serial port. During this phase spurious
+interrupts for the serial port may happen which then crashes the kernel because
+the action handler might not have been set up yet.
 
+So, basically it's a race condition between the serial port hardware and the
+CPU which sets up the necessary fields in the irq sructs. The main reason for
+this race is, that we unmask the serial port irqs too early without having set
+up everything properly before (which isn't easily possible because we need the
+IRQ number to register the serial ports).
 
--- 
-Abylay Ospan,
-NetUP Inc.
-http://www.netup.tv
+This patch is a work-around for this problem. It adds checks to the CPU irq
+handler to verify if the IRQ action field has been initialized already. If not,
+we just skip this interrupt (which isn't critical for a serial port at bootup).
+The real fix would probably involve rewriting all PA-RISC specific IRQ code
+(for CPU, IOSAPIC, GSC and EISA) to use IRQ domains with proper parenting of
+the irq chips and proper irq enabling along this line.
+
+This bug has been in the PA-RISC port since the beginning, but the crashes
+happened very rarely with currently used hardware.  But on the latest machine
+which I bought (a C8000 workstation), which uses the fastest CPUs (4 x PA8900,
+1GHz) and which has the largest possible L1 cache size (64MB each), the kernel
+crashed at every boot because of this race. So, without this patch the machine
+would currently be unuseable.
+
+For the record, here is the flow logic:
+1. serial_init_chip() in 8250_gsc.c calls iosapic_serial_irq().
+2. iosapic_serial_irq() calls txn_alloc_irq() to find the irq.
+3. iosapic_serial_irq() calls cpu_claim_irq() to register the CPU irq
+4. cpu_claim_irq() unmasks the CPU irq (which it shouldn't!)
+5. serial_init_chip() then registers the 8250 port.
+Problems:
+- In step 4 the CPU irq shouldn't have been registered yet, but after step 5
+- If serial irq happens between 4 and 5 have finished, the kernel will crash
+
+Cc: linux-parisc@vger.kernel.org
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+---
+
+ arch/parisc/kernel/irq.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -336,8 +336,8 @@ void do_cpu_irq_mask(struct pt_regs *reg
+ 	struct pt_regs *old_regs;
+ 	unsigned long eirr_val;
+ 	int irq, cpu = smp_processor_id();
+-#ifdef CONFIG_SMP
+ 	struct irq_desc *desc;
++#ifdef CONFIG_SMP
+ 	cpumask_t dest;
+ #endif
+ 
+@@ -350,8 +350,12 @@ void do_cpu_irq_mask(struct pt_regs *reg
+ 		goto set_out;
+ 	irq = eirr_to_irq(eirr_val);
+ 
+-#ifdef CONFIG_SMP
++	/* Filter out spurious interrupts, mostly from serial port at bootup */
+ 	desc = irq_to_desc(irq);
++	if (unlikely(!desc->action))
++		goto set_out;
++
++#ifdef CONFIG_SMP
+ 	cpumask_copy(&dest, desc->irq_data.affinity);
+ 	if (irqd_is_per_cpu(&desc->irq_data) &&
+ 	    !cpu_isset(smp_processor_id(), dest)) {
+
