@@ -1,95 +1,86 @@
-From: Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 3.2 105/107] parisc: Filter out spurious interrupts in
- PA-RISC irq handler
-Date: Fri, 09 Oct 2015 01:12:28 +0100
-Message-ID: <lsq.1444349548.885190491@decadent.org.uk>
-References: <lsq.1444349547.316291576@decadent.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: akpm@linux-foundation.org, "Helge Deller" <deller@gmx.de>,
-	linux-parisc@vger.kernel.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+From: John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH v3] parisc: Change L1_CACHE_BYTES to 16
+Date: Wed, 14 Oct 2015 20:32:11 -0400
+Message-ID: <B8E85737-5ECD-4CBE-8730-886B098C5FA4@bell.net>
+References: <42430464-867C-4E0B-8E95-C6CDB6D8A0B2@bell.net> <32A3BF6F-B243-4AD4-9AE9-A5F9DAE0270A@bell.net>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Type: multipart/mixed; boundary=Apple-Mail-10-557980494
+Cc: linux-parisc List <linux-parisc@vger.kernel.org>,
+	Helge Deller <deller@gmx.de>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <lsq.1444349547.316291576@decadent.org.uk>
+In-Reply-To: <32A3BF6F-B243-4AD4-9AE9-A5F9DAE0270A@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-3.2.72-rc1 review patch.  If anyone has any objections, please let me know.
 
-------------------
+--Apple-Mail-10-557980494
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-From: Helge Deller <deller@gmx.de>
+The latest version changes L1_CACHE_BYTES to 16 bytes and doesn't adjust =
+SMP_CACHE_BYTES as
+per James suggestion
 
-commit b1b4e435e4ef7de77f07bf2a42c8380b960c2d44 upstream.
+Tested for 16 days on rp3440.
 
-When detecting a serial port on newer PA-RISC machines (with iosapic) we have a
-long way to go to find the right IRQ line, registering it, then registering the
-serial port and the irq handler for the serial port. During this phase spurious
-interrupts for the serial port may happen which then crashes the kernel because
-the action handler might not have been set up yet.
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
 
-So, basically it's a race condition between the serial port hardware and the
-CPU which sets up the necessary fields in the irq sructs. The main reason for
-this race is, that we unmask the serial port irqs too early without having set
-up everything properly before (which isn't easily possible because we need the
-IRQ number to register the serial ports).
 
-This patch is a work-around for this problem. It adds checks to the CPU irq
-handler to verify if the IRQ action field has been initialized already. If not,
-we just skip this interrupt (which isn't critical for a serial port at bootup).
-The real fix would probably involve rewriting all PA-RISC specific IRQ code
-(for CPU, IOSAPIC, GSC and EISA) to use IRQ domains with proper parenting of
-the irq chips and proper irq enabling along this line.
 
-This bug has been in the PA-RISC port since the beginning, but the crashes
-happened very rarely with currently used hardware.  But on the latest machine
-which I bought (a C8000 workstation), which uses the fastest CPUs (4 x PA8900,
-1GHz) and which has the largest possible L1 cache size (64MB each), the kernel
-crashed at every boot because of this race. So, without this patch the machine
-would currently be unuseable.
+--Apple-Mail-10-557980494
+Content-Disposition: attachment;
+	filename=cache.h.d.1.txt
+Content-Type: text/plain;
+	name="cache.h.d.1.txt"
+Content-Transfer-Encoding: quoted-printable
 
-For the record, here is the flow logic:
-1. serial_init_chip() in 8250_gsc.c calls iosapic_serial_irq().
-2. iosapic_serial_irq() calls txn_alloc_irq() to find the irq.
-3. iosapic_serial_irq() calls cpu_claim_irq() to register the CPU irq
-4. cpu_claim_irq() unmasks the CPU irq (which it shouldn't!)
-5. serial_init_chip() then registers the 8250 port.
-Problems:
-- In step 4 the CPU irq shouldn't have been registered yet, but after step 5
-- If serial irq happens between 4 and 5 have finished, the kernel will crash
+diff --git a/arch/parisc/include/asm/cache.h =
+b/arch/parisc/include/asm/cache.h
+index 47f11c7..3d0e17b 100644
+--- a/arch/parisc/include/asm/cache.h
++++ b/arch/parisc/include/asm/cache.h
+@@ -7,20 +7,12 @@
+=20
+=20
+ /*
+- * PA 2.0 processors have 64-byte cachelines; PA 1.1 processors have
+- * 32-byte cachelines.  The default configuration is not for SMP =
+anyway,
+- * so if you're building for SMP, you should select the appropriate
+- * processor type.  There is a potential livelock danger when running
+- * a machine with this value set too small, but it's more probable =
+you'll
+- * just ruin performance.
++ * PA 2.0 processors have 64 and 128-byte L2 cachelines; PA 1.1 =
+processors
++ * have 32-byte cachelines.  The L1 length appears to be 16 bytes but =
+this
++ * is not clearly documented.
+  */
+-#ifdef CONFIG_PA20
+-#define L1_CACHE_BYTES 64
+-#define L1_CACHE_SHIFT 6
+-#else
+-#define L1_CACHE_BYTES 32
+-#define L1_CACHE_SHIFT 5
+-#endif
++#define L1_CACHE_BYTES 16
++#define L1_CACHE_SHIFT 4
+=20
+ #ifndef __ASSEMBLY__
+=20
 
-Cc: linux-parisc@vger.kernel.org
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
----
+--Apple-Mail-10-557980494
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
- arch/parisc/kernel/irq.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -336,8 +336,8 @@ void do_cpu_irq_mask(struct pt_regs *reg
- 	struct pt_regs *old_regs;
- 	unsigned long eirr_val;
- 	int irq, cpu = smp_processor_id();
--#ifdef CONFIG_SMP
- 	struct irq_desc *desc;
-+#ifdef CONFIG_SMP
- 	cpumask_t dest;
- #endif
- 
-@@ -350,8 +350,12 @@ void do_cpu_irq_mask(struct pt_regs *reg
- 		goto set_out;
- 	irq = eirr_to_irq(eirr_val);
- 
--#ifdef CONFIG_SMP
-+	/* Filter out spurious interrupts, mostly from serial port at bootup */
- 	desc = irq_to_desc(irq);
-+	if (unlikely(!desc->action))
-+		goto set_out;
-+
-+#ifdef CONFIG_SMP
- 	cpumask_copy(&dest, desc->irq_data.affinity);
- 	if (irqd_is_per_cpu(&desc->irq_data) &&
- 	    !cpu_isset(smp_processor_id(), dest)) {
 
+--
+John David Anglin	dave.anglin@bell.net
+
+--Apple-Mail-10-557980494--
