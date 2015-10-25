@@ -1,158 +1,161 @@
-From: Helge Deller <deller@gmx.de>
+From: Alexander Duyck <alexander.duyck@gmail.com>
 Subject: Re: CONFIG_XPS depends on L1_CACHE_BYTES being greater than
  sizeof(struct xps_map)
-Date: Sat, 24 Oct 2015 16:43:12 +0200
-Message-ID: <20151024144312.GA26373@ls3530.box>
+Date: Sat, 24 Oct 2015 22:41:47 -0700
+Message-ID: <562C6B9B.3090804@gmail.com>
 References: <1445524549.2207.1.camel@HansenPartnership.com>
- <5628F868.3040105@bell.net>
- <5629404B.8090805@gmx.de>
+ <5628F868.3040105@bell.net> <5629404B.8090805@gmx.de>
  <1445550615.22974.128.camel@edumazet-glaptop2.roam.corp.google.com>
  <562A8990.9000808@gmx.de>
  <1445630588.22974.187.camel@edumazet-glaptop2.roam.corp.google.com>
- <20151023210810.GA1969@ls3530.box>
- <562AAE05.5020300@gmail.com>
- <562AB200.8030209@gmx.de>
- <562AB77A.6080109@gmail.com>
+ <20151023210810.GA1969@ls3530.box> <562AAE05.5020300@gmail.com>
+ <562AB200.8030209@gmx.de> <562AB77A.6080109@gmail.com>
+ <20151024144312.GA26373@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>,
-	Eric Dumazet <eric.dumazet@gmail.com>,
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Cc: Eric Dumazet <eric.dumazet@gmail.com>,
 	linux-parisc@vger.kernel.org,
 	James Bottomley <James.Bottomley@HansenPartnership.com>,
 	John David Anglin <dave.anglin@bell.net>,
 	Tom Herbert <therbert@google.com>,
 	"David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-To: Alexander Duyck <alexander.duyck@gmail.com>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <562AB77A.6080109@gmail.com>
+In-Reply-To: <20151024144312.GA26373@ls3530.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-* Alexander Duyck <alexander.duyck@gmail.com>:
-> On 10/23/2015 03:17 PM, Helge Deller wrote:
-> >On 24.10.2015 00:00, Alexander Duyck wrote:
-> >>On 10/23/2015 02:08 PM, Helge Deller wrote:
-> >>>* Eric Dumazet <eric.dumazet@gmail.com>:
-> >>>>On Fri, 2015-10-23 at 21:25 +0200, Helge Deller wrote:
-> >>>>
-> >>>>>Then, how about simply changing it to twice of L1_CACHE_BYTES ?
-> >>>>>
-> >>>>>#define XPS_MIN_MAP_ALLOC ((L1_CACHE_BYTES * 2 - sizeof(struct xps_map)) / sizeof(u16))
-> >>>>
-> >>>>
-> >>>>Seems good to me.
-> >>>
-> >>>Great!
-> >>>
-> >>>Can you then maybe give me an Acked-by or signed-off for the patch below?
-> >>>It further adds a compile-time check to avoid that XPS_MIN_MAP_ALLOC
-> >>>gets calculated to zero on any architecture - otherwise no queues would
-> >>>be allocated.
-> >>>
-> >>>In addition I would like to push it for v4.3 then through my parisc-tree
-> >>>(after keeping it in for-next for 1-2 days), together with the patch
-> >>>which reduces L1_CACHE_BYTES to 16 on parisc.
-> >>>Would that be OK too?
-> >>>
-> >>>Thanks!
-> >>>Helge
-> >>>
-> >>>
-> >>>[PATCH] net/xps: Increase initial number of xps queues
-> >>>
-> >>>Increase the number of initial allocated xps queues, so that the initial record
-> >>>allocates twice the size of L1_CACHE_BYTES bytes.
-> >>>
-> >>>This change is needed to copy with architectures where L1_CACHE_BYTES is
-> >>>defined to equal or less than 16 bytes.
-> >>>
-> >>>Signed-off-by: Helge Deller <deller@gmx.de>
-> >>>
-> >>>diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> >>>index 2d15e38..d152788 100644
-> >>>--- a/include/linux/netdevice.h
-> >>>+++ b/include/linux/netdevice.h
-> >>>@@ -718,7 +718,7 @@ struct xps_map {
-> >>>       u16 queues[0];
-> >>>   };
-> >>>   #define XPS_MAP_SIZE(_num) (sizeof(struct xps_map) + ((_num) * sizeof(u16)))
-> >>>-#define XPS_MIN_MAP_ALLOC ((L1_CACHE_BYTES - sizeof(struct xps_map))    \
-> >>>+#define XPS_MIN_MAP_ALLOC ((L1_CACHE_BYTES * 2 - sizeof(struct xps_map)) \
-> >>>       / sizeof(u16))
-> >>>
-> >>>   /*
-> >>>diff --git a/net/core/dev.c b/net/core/dev.c
-> >>>index 6bb6470..f6d6dd1 100644
-> >>>--- a/net/core/dev.c
-> >>>+++ b/net/core/dev.c
-> >>>@@ -1972,6 +1972,8 @@ static struct xps_map *expand_xps_map(struct xps_map *map,
-> >>>       int alloc_len = XPS_MIN_MAP_ALLOC;
-> >>>       int i, pos;
-> >>>
-> >>>+    BUILD_BUG_ON(XPS_MIN_MAP_ALLOC == 0);
-> >>>+
-> >>>       for (pos = 0; map && pos < map->len; pos++) {
-> >>>           if (map->queues[pos] != index)
-> >>>               continue;
-> >>>
-> >>>
-> >>
-> >>Rather then leaving a potential bug you could probably rewrite the macro so that it will give you at least 1.
-> >>
-> >>All you need to do is something like the following
-> >>#define XPS_MIN_MAP_ALLOC \
-> >>     ((L1_CACHE_ALIGN(offsetof(struct xps_map, queue[1])) - \
-> >>       sizeof(struct xps_map)) / sizeof(u16))
-> >>
-> >>That should give you at least an XPS_MIN_MAP_ALLOC of 1.
-> >
-> >Yes, good idea!
-> >
-> >What makes me wonder though (because I have no idea about the XPS code/layer):
-> >How likely is it, that more than 1 (e.g. minimum "X") queues are needed?
-> >E.g. if a typical system needs at least 3 queues, then doesn't it make sense to allocate
-> >at least 3 initially by using queue[3] in your proposed patch above ?
-> >What would "X" be then?
-> 
-> The question I would have is in how many cases it it likely that somebody
-> would enable this feature and point a given CPU at more than one queue.  I
-> know the Intel drivers that make use of XPS tend to do a 1:1 mapping for
-> their ATR feature.  I would think if anything most CPUs would probably be
-> mapped many:1, but you probably won't have all that many cases where it is
-> 1:many or many:many.
-> 
-> I'd say starting with at least 1 should be fine.  Worst case scenario is we
-> have to make a couple more calls to expand_xps_map which will likely occur
-> as a slow path and infrequent event anyway.
+On 10/24/2015 07:43 AM, Helge Deller wrote:
+> * Alexander Duyck <alexander.duyck@gmail.com>:
+>> On 10/23/2015 03:17 PM, Helge Deller wrote:
+>>> On 24.10.2015 00:00, Alexander Duyck wrote:
+>>>> On 10/23/2015 02:08 PM, Helge Deller wrote:
+>>>>> * Eric Dumazet <eric.dumazet@gmail.com>:
+>>>>>> On Fri, 2015-10-23 at 21:25 +0200, Helge Deller wrote:
+>>>>>>
+>>>>>>> Then, how about simply changing it to twice of L1_CACHE_BYTES ?
+>>>>>>>
+>>>>>>> #define XPS_MIN_MAP_ALLOC ((L1_CACHE_BYTES * 2 - sizeof(struct xps_map)) / sizeof(u16))
+>>>>>>
+>>>>>>
+>>>>>> Seems good to me.
+>>>>>
+>>>>> Great!
+>>>>>
+>>>>> Can you then maybe give me an Acked-by or signed-off for the patch below?
+>>>>> It further adds a compile-time check to avoid that XPS_MIN_MAP_ALLOC
+>>>>> gets calculated to zero on any architecture - otherwise no queues would
+>>>>> be allocated.
+>>>>>
+>>>>> In addition I would like to push it for v4.3 then through my parisc-tree
+>>>>> (after keeping it in for-next for 1-2 days), together with the patch
+>>>>> which reduces L1_CACHE_BYTES to 16 on parisc.
+>>>>> Would that be OK too?
+>>>>>
+>>>>> Thanks!
+>>>>> Helge
+>>>>>
+>>>>>
+>>>>> [PATCH] net/xps: Increase initial number of xps queues
+>>>>>
+>>>>> Increase the number of initial allocated xps queues, so that the initial record
+>>>>> allocates twice the size of L1_CACHE_BYTES bytes.
+>>>>>
+>>>>> This change is needed to copy with architectures where L1_CACHE_BYTES is
+>>>>> defined to equal or less than 16 bytes.
+>>>>>
+>>>>> Signed-off-by: Helge Deller <deller@gmx.de>
+>>>>>
+>>>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+>>>>> index 2d15e38..d152788 100644
+>>>>> --- a/include/linux/netdevice.h
+>>>>> +++ b/include/linux/netdevice.h
+>>>>> @@ -718,7 +718,7 @@ struct xps_map {
+>>>>>        u16 queues[0];
+>>>>>    };
+>>>>>    #define XPS_MAP_SIZE(_num) (sizeof(struct xps_map) + ((_num) * sizeof(u16)))
+>>>>> -#define XPS_MIN_MAP_ALLOC ((L1_CACHE_BYTES - sizeof(struct xps_map))    \
+>>>>> +#define XPS_MIN_MAP_ALLOC ((L1_CACHE_BYTES * 2 - sizeof(struct xps_map)) \
+>>>>>        / sizeof(u16))
+>>>>>
+>>>>>    /*
+>>>>> diff --git a/net/core/dev.c b/net/core/dev.c
+>>>>> index 6bb6470..f6d6dd1 100644
+>>>>> --- a/net/core/dev.c
+>>>>> +++ b/net/core/dev.c
+>>>>> @@ -1972,6 +1972,8 @@ static struct xps_map *expand_xps_map(struct xps_map *map,
+>>>>>        int alloc_len = XPS_MIN_MAP_ALLOC;
+>>>>>        int i, pos;
+>>>>>
+>>>>> +    BUILD_BUG_ON(XPS_MIN_MAP_ALLOC == 0);
+>>>>> +
+>>>>>        for (pos = 0; map && pos < map->len; pos++) {
+>>>>>            if (map->queues[pos] != index)
+>>>>>                continue;
+>>>>>
+>>>>>
+>>>>
+>>>> Rather then leaving a potential bug you could probably rewrite the macro so that it will give you at least 1.
+>>>>
+>>>> All you need to do is something like the following
+>>>> #define XPS_MIN_MAP_ALLOC \
+>>>>      ((L1_CACHE_ALIGN(offsetof(struct xps_map, queue[1])) - \
+>>>>        sizeof(struct xps_map)) / sizeof(u16))
+>>>>
+>>>> That should give you at least an XPS_MIN_MAP_ALLOC of 1.
+>>>
+>>> Yes, good idea!
+>>>
+>>> What makes me wonder though (because I have no idea about the XPS code/layer):
+>>> How likely is it, that more than 1 (e.g. minimum "X") queues are needed?
+>>> E.g. if a typical system needs at least 3 queues, then doesn't it make sense to allocate
+>>> at least 3 initially by using queue[3] in your proposed patch above ?
+>>> What would "X" be then?
+>>
+>> The question I would have is in how many cases it it likely that somebody
+>> would enable this feature and point a given CPU at more than one queue.  I
+>> know the Intel drivers that make use of XPS tend to do a 1:1 mapping for
+>> their ATR feature.  I would think if anything most CPUs would probably be
+>> mapped many:1, but you probably won't have all that many cases where it is
+>> 1:many or many:many.
+>>
+>> I'd say starting with at least 1 should be fine.  Worst case scenario is we
+>> have to make a couple more calls to expand_xps_map which will likely occur
+>> as a slow path and infrequent event anyway.
+>
+> Ok, can I get then the signed-off or acked-by from you for this patch?
+>
+> Thanks,
+> Helge
+>
+>
+> [PATCH] net/xps: Fix calculation of initial number of xps queues
+>
+> The existing code breaks on architectures where the L1 cache size
+> (L1_CACHE_BYTES) is smaller or equal the size of struct xps_map.
+>
+> The new code ensures that we get at minimum one initial xps queue, or
+> even more as long as it fits into the next multiple of L1_CACHE_SIZE.
+>
+> Signed-off-by: Helge Deller <deller@gmx.de>
+>
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 2d15e38..2212c82 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -718,8 +718,8 @@ struct xps_map {
+>   	u16 queues[0];
+>   };
+>   #define XPS_MAP_SIZE(_num) (sizeof(struct xps_map) + ((_num) * sizeof(u16)))
+> -#define XPS_MIN_MAP_ALLOC ((L1_CACHE_BYTES - sizeof(struct xps_map))	\
+> -    / sizeof(u16))
+> +#define XPS_MIN_MAP_ALLOC ((L1_CACHE_ALIGN(offsetof(struct xps_map, queues[1])) \
+> +       - sizeof(struct xps_map)) / sizeof(u16))
+>
+>   /*
+>    * This structure holds all XPS maps for device.  Maps are indexed by CPU.
+>
 
-Ok, can I get then the signed-off or acked-by from you for this patch?
+This looks good to me.
 
-Thanks,
-Helge
-
-
-[PATCH] net/xps: Fix calculation of initial number of xps queues
-
-The existing code breaks on architectures where the L1 cache size
-(L1_CACHE_BYTES) is smaller or equal the size of struct xps_map.
-
-The new code ensures that we get at minimum one initial xps queue, or
-even more as long as it fits into the next multiple of L1_CACHE_SIZE.
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 2d15e38..2212c82 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -718,8 +718,8 @@ struct xps_map {
- 	u16 queues[0];
- };
- #define XPS_MAP_SIZE(_num) (sizeof(struct xps_map) + ((_num) * sizeof(u16)))
--#define XPS_MIN_MAP_ALLOC ((L1_CACHE_BYTES - sizeof(struct xps_map))	\
--    / sizeof(u16))
-+#define XPS_MIN_MAP_ALLOC ((L1_CACHE_ALIGN(offsetof(struct xps_map, queues[1])) \
-+       - sizeof(struct xps_map)) / sizeof(u16))
- 
- /*
-  * This structure holds all XPS maps for device.  Maps are indexed by CPU.
+Acked-by: Alexander Duyck <aduyck@mirantis.com>
