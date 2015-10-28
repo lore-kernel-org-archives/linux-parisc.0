@@ -1,7 +1,8 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Fix struct ipc64_perm to use userspace-clean types
-Date: Wed, 28 Oct 2015 23:27:09 +0100
-Message-ID: <20151028222709.GA13026@ls3530.box>
+Subject: [PATCH] parisc: Add build-time sanity checks for compat ipc struct
+ sizes
+Date: Wed, 28 Oct 2015 23:30:10 +0100
+Message-ID: <20151028223010.GA27319@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -11,51 +12,43 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The current implementation is just wrong. It should not use standard
-types like uid_t which may be different if used with 32 or 64bit
-userspace. Instead use the __kernel_* types which do not pollute
-userspace.
-
-This change fixes build errors like for the trinity debian package.
+Ensure that the size of various compat ipc structs are the same as of
+the native kernel.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/include/uapi/asm/ipcbuf.h b/arch/parisc/include/uapi/asm/ipcbuf.h
-index bd956c4..53472bc4 100644
---- a/arch/parisc/include/uapi/asm/ipcbuf.h
-+++ b/arch/parisc/include/uapi/asm/ipcbuf.h
-@@ -1,6 +1,8 @@
- #ifndef __PARISC_IPCBUF_H__
- #define __PARISC_IPCBUF_H__
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index c229427..f2ee988 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -23,6 +23,7 @@
+ #include <linux/unistd.h>
+ #include <linux/nodemask.h>	/* for node_online_map */
+ #include <linux/pagemap.h>	/* for release_pages and page_cache_release */
++#include <linux/compat.h>
  
-+#include <linux/posix_types.h>
-+
- /*
-  * The ipc64_perm structure for PA-RISC is almost identical to
-  * kern_ipc_perm as we have always had 32-bit UIDs and GIDs in the kernel.
-@@ -10,16 +12,17 @@
+ #include <asm/pgalloc.h>
+ #include <asm/pgtable.h>
+@@ -30,6 +31,7 @@
+ #include <asm/pdc_chassis.h>
+ #include <asm/mmzone.h>
+ #include <asm/sections.h>
++#include <asm/msgbuf.h>
  
- struct ipc64_perm
+ extern int  data_start;
+ extern void parisc_kernel_start(void);	/* Kernel entry point in head.S */
+@@ -590,6 +592,14 @@ unsigned long pcxl_dma_start __read_mostly;
+ 
+ void __init mem_init(void)
  {
--	key_t           key;
--	uid_t           uid;
--	gid_t           gid;
--	uid_t           cuid;
--	gid_t           cgid;
--	unsigned short int	__pad1;
--	mode_t          mode;
-+	__kernel_key_t		key;
-+	__kernel_uid_t		uid;
-+	__kernel_gid_t		gid;
-+	__kernel_uid_t		cuid;
-+	__kernel_gid_t		cgid;
-+				/* pad if mode_t is u16: */
-+	unsigned char		__pad1[4 - sizeof(__kernel_mode_t)];
-+	__kernel_mode_t		mode;
- 	unsigned short int	__pad2;
- 	unsigned short int	seq;
--	unsigned int	__pad3;
-+	unsigned int		__pad3;
- 	unsigned long long int __unused1;
- 	unsigned long long int __unused2;
- };
++#ifdef CONFIG_COMPAT
++	/* Do sanity checks on compat structures */
++	BUILD_BUG_ON(sizeof(struct compat_ipc64_perm) != sizeof(struct ipc64_perm));
++	BUILD_BUG_ON(sizeof(struct compat_msqid64_ds) != sizeof(struct msqid64_ds));
++	BUILD_BUG_ON(sizeof(struct compat_semid64_ds) != sizeof(struct semid64_ds));
++	BUILD_BUG_ON(sizeof(struct compat_shmid64_ds) != sizeof(struct shmid64_ds));
++#endif
++
+ 	/* Do sanity checks on page table constants */
+ 	BUILD_BUG_ON(PTE_ENTRY_SIZE != sizeof(pte_t));
+ 	BUILD_BUG_ON(PMD_ENTRY_SIZE != sizeof(pmd_t));
