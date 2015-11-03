@@ -1,47 +1,37 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: [GIT PULL] parisc architecture updates for v4.3
-Date: Tue, 3 Nov 2015 15:25:13 -0800
-Message-ID: <CA+55aFyENfhCBj4aaPRc2=82e=fjdg4wynCUCJc9Mbz1PwfCqA@mail.gmail.com>
-References: <20151025114934.GA11108@ls3530.box>
-	<CA+55aFyJyY1FE_1k6Ks-2j4nYr7cbde_KvZ=J3fMUFJG5Okijg@mail.gmail.com>
-	<56393D46.6060903@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: David Miller <davem@davemloft.net>,
+Date: Tue, 3 Nov 2015 18:40:53 -0500
+Message-ID: <0F1C5469-5397-4F1A-AF17-CC7D3112A436@bell.net>
+References: <20151025114934.GA11108@ls3530.box> <CA+55aFyJyY1FE_1k6Ks-2j4nYr7cbde_KvZ=J3fMUFJG5Okijg@mail.gmail.com> <56393D46.6060903@gmx.de> <CA+55aFyENfhCBj4aaPRc2=82e=fjdg4wynCUCJc9Mbz1PwfCqA@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Type: text/plain; charset=us-ascii
+Cc: Helge Deller <deller@gmx.de>, David Miller <davem@davemloft.net>,
 	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Parisc List <linux-parisc@vger.kernel.org>,
 	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	John David Anglin <dave.anglin@bell.net>,
 	Network Development <netdev@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <56393D46.6060903@gmx.de>
+In-Reply-To: <CA+55aFyENfhCBj4aaPRc2=82e=fjdg4wynCUCJc9Mbz1PwfCqA@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Nov 3, 2015 at 3:03 PM, Helge Deller <deller@gmx.de> wrote:
->
-> Sadly it's nowhere clearly documented how big the L1 cacheline of parisc really is.
+On 2015-11-03, at 6:25 PM, Linus Torvalds wrote:
 
-Wow.
+> But if it's actually possible that the pa-risc L1 line size is really
+> just 16 bytes, I guess that objection to the patch goes away. My
+> automatic reaction was "that's not real, it's some odd workaround",
+> but if it is actually real...
 
-Particularly that "it might actually be 16 bytes" from the thread
-according to John David Anglin. I didn't expect anybody to really have
-that small a line size any more.
+See page 10 in this document:
+https://parisc.wiki.kernel.org/images-parisc/e/e9/PA-8700wp.pdf
 
-> I was not very much concerned about any over-alignment, but about the
-> performance. Reducing L1_CACHE_BYTES gave a performance improvement
-> on parisc, most likely since we protect atomic accesses through our
-> atomic spinlocks anyway.
+It shows the PA-8700 L1 design.  James' comments and this paper are the
+basis for this change.
 
-Well, we do end up using L1_CACHE_BYTES to avoid false sharing in some
-places, where it's not so much about atomic accesses, as just trying
-to avoid having different CPU's step on each other when not needed. So
-it's not necessarily about atomic accesses per se.
+Dave
+--
+John David Anglin	dave.anglin@bell.net
 
-But if it's actually possible that the pa-risc L1 line size is really
-just 16 bytes, I guess that objection to the patch goes away. My
-automatic reaction was "that's not real, it's some odd workaround",
-but if it is actually real...
 
-                 Linus
+
