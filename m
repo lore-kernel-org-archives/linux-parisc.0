@@ -1,232 +1,147 @@
 From: Amanieu d'Antras <amanieu@gmail.com>
-Subject: [PATCH v2 01/20] compat: Add generic compat_siginfo_t
-Date: Thu,  5 Nov 2015 00:50:20 +0000
-Message-ID: <1446684640-4112-2-git-send-email-amanieu@gmail.com>
+Subject: [PATCH v2 10/20] parsic: Use generic copy_siginfo_{to,from}_user32
+Date: Thu,  5 Nov 2015 00:50:29 +0000
+Message-ID: <1446684640-4112-11-git-send-email-amanieu@gmail.com>
 References: <1446684640-4112-1-git-send-email-amanieu@gmail.com>
 Cc: Oleg Nesterov <oleg@redhat.com>,
-        Amanieu d'Antras <amanieu@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Metcalf <cmetcalf@ezchip.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org,
-        linux-parisc
+	Amanieu d'Antras <amanieu@gmail.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Return-path: <linux-mips-bounce@linux-mips.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1446684640-4112-1-git-send-email-amanieu@gmail.com>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-
-This matches the normal siginfo_t as closely as possible, unlike
-some architecture-specific versions which are missing some fields.
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
 Signed-off-by: Amanieu d'Antras <amanieu@gmail.com>
 ---
- arch/arm64/include/asm/compat.h   |  2 ++
- arch/mips/include/asm/compat.h    |  1 +
- arch/parisc/include/asm/compat.h  |  2 ++
- arch/powerpc/include/asm/compat.h |  1 +
- arch/s390/include/asm/compat.h    |  2 ++
- arch/sparc/include/asm/compat.h   |  1 +
- arch/tile/include/asm/compat.h    |  1 +
- arch/x86/include/asm/compat.h     |  2 ++
- include/linux/compat.h            | 66 ++++++++++++++++++++++++++++++++++++++-
- 9 files changed, 77 insertions(+), 1 deletion(-)
+ arch/parisc/include/asm/compat.h |   3 --
+ arch/parisc/kernel/signal32.c    | 102 ---------------------------------------
+ 2 files changed, 105 deletions(-)
 
-diff --git a/arch/arm64/include/asm/compat.h b/arch/arm64/include/asm/compat.h
-index 7fbed69..ff4e294 100644
---- a/arch/arm64/include/asm/compat.h
-+++ b/arch/arm64/include/asm/compat.h
-@@ -155,6 +155,8 @@ typedef union compat_sigval {
- 	compat_uptr_t	sival_ptr;
- } compat_sigval_t;
- 
-+#define HAVE_ARCH_COMPAT_SIGINFO_T
-+
- typedef struct compat_siginfo {
- 	int si_signo;
- 	int si_errno;
-diff --git a/arch/mips/include/asm/compat.h b/arch/mips/include/asm/compat.h
-index c4bd54a..5f1f816 100644
---- a/arch/mips/include/asm/compat.h
-+++ b/arch/mips/include/asm/compat.h
-@@ -130,6 +130,7 @@ typedef union compat_sigval {
- 	compat_uptr_t	sival_ptr;
- } compat_sigval_t;
- 
-+#define HAVE_ARCH_COMPAT_SIGINFO_T
- #define SI_PAD_SIZE32	(128/sizeof(int) - 3)
- 
- typedef struct compat_siginfo {
 diff --git a/arch/parisc/include/asm/compat.h b/arch/parisc/include/asm/compat.h
-index 94710cf..e0be05f 100644
+index 6c80ae2..b56188b 100644
 --- a/arch/parisc/include/asm/compat.h
 +++ b/arch/parisc/include/asm/compat.h
-@@ -134,6 +134,8 @@ typedef union compat_sigval {
+@@ -134,9 +134,6 @@ typedef union compat_sigval {
  	compat_uptr_t	sival_ptr;
  } compat_sigval_t;
  
-+#define HAVE_ARCH_COMPAT_SIGINFO_T
-+
- typedef struct compat_siginfo {
- 	int si_signo;
- 	int si_errno;
-diff --git a/arch/powerpc/include/asm/compat.h b/arch/powerpc/include/asm/compat.h
-index 4f2df58..75b25ff 100644
---- a/arch/powerpc/include/asm/compat.h
-+++ b/arch/powerpc/include/asm/compat.h
-@@ -124,6 +124,7 @@ typedef union compat_sigval {
- 	compat_uptr_t	sival_ptr;
- } compat_sigval_t;
+-#define HAVE_ARCH_COPY_SIGINFO_TO_USER32
+-#define HAVE_ARCH_COPY_SIGINFO_FROM_USER32
+-
+ #define COMPAT_OFF_T_MAX	0x7fffffff
+ #define COMPAT_LOFF_T_MAX	0x7fffffffffffffffL
  
-+#define HAVE_ARCH_COMPAT_SIGINFO_T
- #define SI_PAD_SIZE32	(128/sizeof(int) - 3)
+diff --git a/arch/parisc/kernel/signal32.c b/arch/parisc/kernel/signal32.c
+index 984abbe..635012f 100644
+--- a/arch/parisc/kernel/signal32.c
++++ b/arch/parisc/kernel/signal32.c
+@@ -273,105 +273,3 @@ setup_sigcontext32(struct compat_sigcontext __user *sc, struct compat_regfile __
  
- typedef struct compat_siginfo {
-diff --git a/arch/s390/include/asm/compat.h b/arch/s390/include/asm/compat.h
-index d350ed9..ac73ac7 100644
---- a/arch/s390/include/asm/compat.h
-+++ b/arch/s390/include/asm/compat.h
-@@ -192,6 +192,8 @@ typedef union compat_sigval {
- 	compat_uptr_t	sival_ptr;
- } compat_sigval_t;
- 
-+#define HAVE_ARCH_COMPAT_SIGINFO_T
-+
- typedef struct compat_siginfo {
- 	int	si_signo;
- 	int	si_errno;
-diff --git a/arch/sparc/include/asm/compat.h b/arch/sparc/include/asm/compat.h
-index 830502fe..0c80f59 100644
---- a/arch/sparc/include/asm/compat.h
-+++ b/arch/sparc/include/asm/compat.h
-@@ -153,6 +153,7 @@ typedef union compat_sigval {
- 	compat_uptr_t	sival_ptr;
- } compat_sigval_t;
- 
-+#define HAVE_ARCH_COMPAT_SIGINFO_T
- #define SI_PAD_SIZE32	(128/sizeof(int) - 3)
- 
- typedef struct compat_siginfo {
-diff --git a/arch/tile/include/asm/compat.h b/arch/tile/include/asm/compat.h
-index c14e36f..f9bba8d 100644
---- a/arch/tile/include/asm/compat.h
-+++ b/arch/tile/include/asm/compat.h
-@@ -115,6 +115,7 @@ typedef union compat_sigval {
- 	compat_uptr_t	sival_ptr;
- } compat_sigval_t;
- 
-+#define HAVE_ARCH_COMPAT_SIGINFO_T
- #define COMPAT_SI_PAD_SIZE	(128/sizeof(int) - 3)
- 
- typedef struct compat_siginfo {
-diff --git a/arch/x86/include/asm/compat.h b/arch/x86/include/asm/compat.h
-index acdee09..69176b4 100644
---- a/arch/x86/include/asm/compat.h
-+++ b/arch/x86/include/asm/compat.h
-@@ -130,6 +130,8 @@ typedef union compat_sigval {
- 	compat_uptr_t	sival_ptr;
- } compat_sigval_t;
- 
-+#define HAVE_ARCH_COMPAT_SIGINFO_T
-+
- typedef struct compat_siginfo {
- 	int si_signo;
- 	int si_errno;
-diff --git a/include/linux/compat.h b/include/linux/compat.h
-index a76c917..e51574c 100644
---- a/include/linux/compat.h
-+++ b/include/linux/compat.h
-@@ -196,7 +196,71 @@ struct compat_rusage {
- extern int put_compat_rusage(const struct rusage *,
- 			     struct compat_rusage __user *);
- 
--struct compat_siginfo;
-+#ifndef HAVE_ARCH_COMPAT_SIGINFO_T
-+typedef struct compat_siginfo {
-+	int si_signo;
-+	int si_errno;
-+	int si_code;
-+
-+	union {
-+		int _pad[128 / sizeof(int) - 3];
-+
-+		/* kill() */
-+		struct {
-+			compat_pid_t _pid;	/* sender's pid */
-+			compat_uid_t _uid;	/* sender's uid */
-+		} _kill;
-+
-+		/* POSIX.1b timers */
-+		struct {
-+			compat_timer_t _tid;	/* timer id */
-+			int _overrun;		/* overrun count */
-+			compat_sigval_t _sigval;	/* same as below */
-+		} _timer;
-+
-+		/* POSIX.1b signals */
-+		struct {
-+			compat_pid_t _pid;	/* sender's pid */
-+			compat_uid_t _uid;	/* sender's uid */
-+			compat_sigval_t _sigval;
-+		} _rt;
-+
-+		/* SIGCHLD */
-+		struct {
-+			compat_pid_t _pid;	/* which child */
-+			compat_uid_t _uid;	/* sender's uid */
-+			int _status;		/* exit code */
-+			compat_clock_t _utime;
-+			compat_clock_t _stime;
-+		} _sigchld;
-+
-+		/* SIGILL, SIGFPE, SIGSEGV, SIGBUS */
-+		struct {
-+			compat_uptr_t _addr;	/* faulting insn/memory ref. */
-+#ifdef __ARCH_SI_TRAPNO
-+			int _trapno;	/* TRAP # which caused the signal */
-+#endif
-+			short _addr_lsb; /* LSB of the reported address */
-+			struct {
-+				compat_uptr_t _lower;
-+				compat_uptr_t _upper;
-+			} _addr_bnd;
-+		} _sigfault;
-+
-+		/* SIGPOLL */
-+		struct {
-+			compat_long_t _band; /* POLL_IN, POLL_OUT, POLL_MSG */
-+			int _fd;
-+		} _sigpoll;
-+
-+		struct {
-+			compat_uptr_t _call_addr; /* calling insn */
-+			int _syscall;	/* triggering system call number */
-+			compat_uint_t _arch;	/* AUDIT_ARCH_* of syscall */
-+		} _sigsys;
-+	} _sifields;
-+} compat_siginfo_t;
-+#endif
- 
- extern asmlinkage long compat_sys_waitid(int, compat_pid_t,
- 		struct compat_siginfo __user *, int,
+ 	return err;
+ }
+-
+-int
+-copy_siginfo_from_user32 (siginfo_t *to, compat_siginfo_t __user *from)
+-{
+-	compat_uptr_t addr;
+-	int err;
+-
+-	if (!access_ok(VERIFY_READ, from, sizeof(compat_siginfo_t)))
+-		return -EFAULT;
+-
+-	err = __get_user(to->si_signo, &from->si_signo);
+-	err |= __get_user(to->si_errno, &from->si_errno);
+-	err |= __get_user(to->si_code, &from->si_code);
+-
+-	if (to->si_code < 0)
+-		err |= __copy_from_user(&to->_sifields._pad, &from->_sifields._pad, SI_PAD_SIZE);
+-	else {
+-		switch (to->si_code >> 16) {
+-		      case __SI_CHLD >> 16:
+-			err |= __get_user(to->si_utime, &from->si_utime);
+-			err |= __get_user(to->si_stime, &from->si_stime);
+-			err |= __get_user(to->si_status, &from->si_status);
+-		      default:
+-			err |= __get_user(to->si_pid, &from->si_pid);
+-			err |= __get_user(to->si_uid, &from->si_uid);
+-			break;
+-		      case __SI_FAULT >> 16:
+-			err |= __get_user(addr, &from->si_addr);
+-			to->si_addr = compat_ptr(addr);
+-			break;
+-		      case __SI_POLL >> 16:
+-			err |= __get_user(to->si_band, &from->si_band);
+-			err |= __get_user(to->si_fd, &from->si_fd);
+-			break;
+-		      case __SI_RT >> 16: /* This is not generated by the kernel as of now.  */
+-		      case __SI_MESGQ >> 16:
+-			err |= __get_user(to->si_pid, &from->si_pid);
+-			err |= __get_user(to->si_uid, &from->si_uid);
+-			err |= __get_user(to->si_int, &from->si_int);
+-			break;
+-		}
+-	}
+-	return err;
+-}
+-
+-int
+-copy_siginfo_to_user32 (compat_siginfo_t __user *to, const siginfo_t *from)
+-{
+-	compat_uptr_t addr;
+-	compat_int_t val;
+-	int err;
+-
+-	if (!access_ok(VERIFY_WRITE, to, sizeof(compat_siginfo_t)))
+-		return -EFAULT;
+-
+-	/* If you change siginfo_t structure, please be sure
+-	   this code is fixed accordingly.
+-	   It should never copy any pad contained in the structure
+-	   to avoid security leaks, but must copy the generic
+-	   3 ints plus the relevant union member.
+-	   This routine must convert siginfo from 64bit to 32bit as well
+-	   at the same time.  */
+-	err = __put_user(from->si_signo, &to->si_signo);
+-	err |= __put_user(from->si_errno, &to->si_errno);
+-	err |= __put_user((short)from->si_code, &to->si_code);
+-	if (from->si_code < 0)
+-		err |= __copy_to_user(&to->_sifields._pad, &from->_sifields._pad, SI_PAD_SIZE);
+-	else {
+-		switch (from->si_code >> 16) {
+-		case __SI_CHLD >> 16:
+-			err |= __put_user(from->si_utime, &to->si_utime);
+-			err |= __put_user(from->si_stime, &to->si_stime);
+-			err |= __put_user(from->si_status, &to->si_status);
+-		default:
+-			err |= __put_user(from->si_pid, &to->si_pid);
+-			err |= __put_user(from->si_uid, &to->si_uid);
+-			break;
+-		case __SI_FAULT >> 16:
+-			addr = ptr_to_compat(from->si_addr);
+-			err |= __put_user(addr, &to->si_addr);
+-			break;
+-		case __SI_POLL >> 16:
+-			err |= __put_user(from->si_band, &to->si_band);
+-			err |= __put_user(from->si_fd, &to->si_fd);
+-			break;
+-		case __SI_TIMER >> 16:
+-			err |= __put_user(from->si_tid, &to->si_tid);
+-			err |= __put_user(from->si_overrun, &to->si_overrun);
+-			val = (compat_int_t)from->si_int;
+-			err |= __put_user(val, &to->si_int);
+-			break;
+-		case __SI_RT >> 16:	/* Not generated by the kernel as of now.  */
+-		case __SI_MESGQ >> 16:
+-			err |= __put_user(from->si_uid, &to->si_uid);
+-			err |= __put_user(from->si_pid, &to->si_pid);
+-			val = (compat_int_t)from->si_int;
+-			err |= __put_user(val, &to->si_int);
+-			break;
+-		}
+-	}
+-	return err;
+-}
 -- 
 2.6.2
