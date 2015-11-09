@@ -1,67 +1,48 @@
-From: Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v2 00/20] Fix handling of compat_siginfo_t
-Date: Mon, 9 Nov 2015 16:12:04 +0100
-Message-ID: <20151109151204.GA10760@redhat.com>
-References: <1446684640-4112-1-git-send-email-amanieu@gmail.com> <CALCETrWKK_REdX7TJO8X7jC=8k=YdgJH_txXpC4Pdzn-tukg5A@mail.gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc architecture updates for v4.4
+Date: Mon, 9 Nov 2015 15:50:05 +0100
+Message-ID: <20151109145005.GA12624@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: "Amanieu d'Antras" <amanieu@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>,
-	Linux MIPS Mailing List <linux-mips@linux-mips.org>,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	sparclinux@vger.kernel.org,
-	Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-	linux-arch <linux-arch@vger.kernel.org>,
-	Linux API <linux-api@vger.kernel.org>,
-	Kenton Varda <kenton@sandstorm.io>
-To: Andy Lutomirski <luto@amacapital.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CALCETrWKK_REdX7TJO8X7jC=8k=YdgJH_txXpC4Pdzn-tukg5A@mail.gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 11/07, Andy Lutomirski wrote:
->
-> On Wed, Nov 4, 2015 at 4:50 PM, Amanieu d'Antras <amanieu@gmail.com> wrote:
-> > One issue that isn't resolved in this series is sending signals between a 32-bit
-> > process and 64-bit process. Sending a si_int will work correctly, but a si_ptr
-> > value will likely get corrupted due to the different layouts of the 32-bit and
-> > 64-bit siginfo_t structures.
->
-> This is so screwed up it's not even funny.
+Hi Linus,
 
-Agreed,
+please pull latest patches for the parisc architecture for kernel v4.4 from:
 
-> A 64-bit big-endian compat calls rt_sigqueueinfo.  It passes in (among
-> other things) a sigval_t.  The kernel can choose to interpret it
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.4-1
 
-I always thought that the kernel should not interpret it at all. And indeed,
-copy_siginfo_to_user() does
+We have two patches in here:
 
-	if (from->si_code < 0)
-		return __copy_to_user(to, from, sizeof(siginfo_t))
+1. The parisc uapi headers have been screwed up since quite some time. This
+patch fixes some bugs (e.g. endianess not respected in compat_semid64_ds) and
+cleans them up (e.g. uid_t was used instead of __kernel_uid_t) so that they can
+be used by userspace again. This patch has been reviewed by Arnd Bergmann and
+is scheduled for stable kernel series.
 
-probably copy_siginfo_to_user32() should do something similar, at least
-it should not truncate ->si_code it it is less than zero.
+2. Drop the hpux_stat64 struct from stat.h, we do not support HP-UX binaries
+since kernel 4.0.
 
-Not sure what signalfd_copyinfo() should do.
+Thanks,
+Helge
 
-But perhaps I was wrong, I failed to find man sigqueueinfo, and man
-sigqueue() documents that it passes sigval_t.
+----------------------------------------------------------------
+Helge Deller (2):
+      parisc: Drop hpux_stat64 struct from stat.h header file
+      parisc: Fixes and cleanups in kernel uapi header files
 
-
-> BTW, x86 has its own set of screwups here.  Somehow cr2 and error_code
-> ended up as part of ucontext instead of siginfo, which makes
-> absolutely no sense to me and bloats task_struct.
-
-Yes, and probably ->ip should have been the part of siginfo too. Say,
-if you get SIGBUS you can't trust sc->ip if another signal was dequeued
-before SIGBUS, in this case sc->ip will point to the handler of that
-another signal. That is why we have SYNCHRONOUS_MASK and it helps, but
-still this doesn't look nice.
-
-Oleg.
-
+ arch/parisc/include/asm/compat.h           |  4 ++--
+ arch/parisc/include/uapi/asm/ipcbuf.h      | 19 +++++++++++-------
+ arch/parisc/include/uapi/asm/msgbuf.h      | 10 +++++-----
+ arch/parisc/include/uapi/asm/posix_types.h |  2 ++
+ arch/parisc/include/uapi/asm/sembuf.h      |  6 +++---
+ arch/parisc/include/uapi/asm/shmbuf.h      |  8 ++++----
+ arch/parisc/include/uapi/asm/stat.h        | 31 ------------------------------
+ arch/parisc/mm/init.c                      | 16 +++++++++++++++
+ 8 files changed, 44 insertions(+), 52 deletions(-)
