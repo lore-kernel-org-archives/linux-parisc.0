@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH 5/9] parisc: Initialize the fault vector earlier in the boot process.
-Date: Fri, 20 Nov 2015 22:38:38 +0100
-Message-ID: <1448055522-11594-6-git-send-email-deller@gmx.de>
+Subject: [PATCH 6/9] parisc: Increase initial kernel mapping to 32MB on 64bit kernel
+Date: Fri, 20 Nov 2015 22:38:39 +0100
+Message-ID: <1448055522-11594-7-git-send-email-deller@gmx.de>
 References: <1448055522-11594-1-git-send-email-deller@gmx.de>
 Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
 	John David Anglin <dave.anglin@bell.net>
@@ -11,136 +11,58 @@ In-Reply-To: <1448055522-11594-1-git-send-email-deller@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-A fault vector on parisc needs to be 2K aligned.  Furthermore the
-checksum of the fault vector needs to sum up to 0 which is being
-calculated and written at runtime.
+For the 64bit kernel the initially 16 MB kernel memory might become too
+small if you build a kernel with many modules built-in and with kernel
+text and data areas mapped on huge pages.
 
-Up to now we aligned both PA20 and PA11 fault vectors on the same 4K
-page in order to easily write the checksum after having mapped the
-kernel read-only (by mapping this page only as read-write).
-But when we want to map the kernel text and data on huge pages this
-makes things harder.
-So, simplify it by aligning both fault vectors on 2K boundries and write
-the checksum before we map the page read-only.
+This patch increases the initial mapping to 32MB for 64bit kernels and
+keeps 16MB for 32bit kernels.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 ---
- arch/parisc/kernel/entry.S | 11 +++--------
- arch/parisc/kernel/setup.c |  3 +++
- arch/parisc/kernel/traps.c | 35 +++++++++++++++--------------------
- 3 files changed, 21 insertions(+), 28 deletions(-)
+ arch/parisc/include/asm/pgtable.h | 6 +++++-
+ arch/parisc/kernel/head.S         | 4 ++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index c5ef408..b2fdc44 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -646,17 +646,12 @@
+diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
+index 638317a..d8534f9 100644
+--- a/arch/parisc/include/asm/pgtable.h
++++ b/arch/parisc/include/asm/pgtable.h
+@@ -83,7 +83,11 @@ static inline void purge_tlb_entries(struct mm_struct *mm, unsigned long addr)
+ 	printk("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, (unsigned long)pgd_val(e))
  
+ /* This is the size of the initially mapped kernel memory */
+-#define KERNEL_INITIAL_ORDER	24	/* 0 to 1<<24 = 16MB */
++#ifdef CONFIG_64BIT
++#define KERNEL_INITIAL_ORDER	25	/* 1<<25 = 32MB */
++#else
++#define KERNEL_INITIAL_ORDER	24	/* 1<<24 = 16MB */
++#endif
+ #define KERNEL_INITIAL_SIZE	(1 << KERNEL_INITIAL_ORDER)
  
- 	/*
--	 * Align fault_vector_20 on 4K boundary so that both
--	 * fault_vector_11 and fault_vector_20 are on the
--	 * same page. This is only necessary as long as we
--	 * write protect the kernel text, which we may stop
--	 * doing once we use large page translations to cover
--	 * the static part of the kernel address space.
-+	 * Fault_vectors are architecturally required to be aligned on a 2K
-+	 * boundary
- 	 */
+ #if CONFIG_PGTABLE_LEVELS == 3
+diff --git a/arch/parisc/kernel/head.S b/arch/parisc/kernel/head.S
+index e7d6452..75aa0db 100644
+--- a/arch/parisc/kernel/head.S
++++ b/arch/parisc/kernel/head.S
+@@ -69,7 +69,7 @@ $bss_loop:
+ 	stw,ma          %arg2,4(%r1)
+ 	stw,ma          %arg3,4(%r1)
  
- 	.text
--
--	.align 4096
-+	.align 2048
+-	/* Initialize startup VM. Just map first 8/16 MB of memory */
++	/* Initialize startup VM. Just map first 16/32 MB of memory */
+ 	load32		PA(swapper_pg_dir),%r4
+ 	mtctl		%r4,%cr24	/* Initialize kernel root pointer */
+ 	mtctl		%r4,%cr25	/* Initialize user root pointer */
+@@ -107,7 +107,7 @@ $bss_loop:
+ 	/* Now initialize the PTEs themselves.  We use RWX for
+ 	 * everything ... it will get remapped correctly later */
+ 	ldo		0+_PAGE_KERNEL_RWX(%r0),%r3 /* Hardwired 0 phys addr start */
+-	ldi		(1<<(KERNEL_INITIAL_ORDER-PAGE_SHIFT)),%r11 /* PFN count */
++	load32		(1<<(KERNEL_INITIAL_ORDER-PAGE_SHIFT)),%r11 /* PFN count */
+ 	load32		PA(pg0),%r1
  
- ENTRY(fault_vector_20)
- 	/* First vector is invalid (0) */
-diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
-index 72a3c65..f097762 100644
---- a/arch/parisc/kernel/setup.c
-+++ b/arch/parisc/kernel/setup.c
-@@ -377,6 +377,7 @@ arch_initcall(parisc_init);
- void start_parisc(void)
- {
- 	extern void start_kernel(void);
-+	extern void early_trap_init(void);
- 
- 	int ret, cpunum;
- 	struct pdc_coproc_cfg coproc_cfg;
-@@ -397,6 +398,8 @@ void start_parisc(void)
- 		panic("must have an fpu to boot linux");
- 	}
- 
-+	early_trap_init(); /* initialize checksum of fault_vector */
-+
- 	start_kernel();
- 	// not reached
- }
-diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index b99b39f..553b098 100644
---- a/arch/parisc/kernel/traps.c
-+++ b/arch/parisc/kernel/traps.c
-@@ -807,7 +807,7 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- }
- 
- 
--int __init check_ivt(void *iva)
-+void __init initialize_ivt(const void *iva)
- {
- 	extern u32 os_hpmc_size;
- 	extern const u32 os_hpmc[];
-@@ -818,8 +818,8 @@ int __init check_ivt(void *iva)
- 	u32 *hpmcp;
- 	u32 length;
- 
--	if (strcmp((char *)iva, "cows can fly"))
--		return -1;
-+	if (strcmp((const char *)iva, "cows can fly"))
-+		panic("IVT invalid");
- 
- 	ivap = (u32 *)iva;
- 
-@@ -839,28 +839,23 @@ int __init check_ivt(void *iva)
- 	    check += ivap[i];
- 
- 	ivap[5] = -check;
--
--	return 0;
- }
- 	
--#ifndef CONFIG_64BIT
--extern const void fault_vector_11;
--#endif
--extern const void fault_vector_20;
- 
--void __init trap_init(void)
-+/* early_trap_init() is called before we set up kernel mappings and
-+ * write-protect the kernel */
-+void  __init early_trap_init(void)
- {
--	void *iva;
-+	extern const void fault_vector_20;
- 
--	if (boot_cpu_data.cpu_type >= pcxu)
--		iva = (void *) &fault_vector_20;
--	else
--#ifdef CONFIG_64BIT
--		panic("Can't boot 64-bit OS on PA1.1 processor!");
--#else
--		iva = (void *) &fault_vector_11;
-+#ifndef CONFIG_64BIT
-+	extern const void fault_vector_11;
-+	initialize_ivt(&fault_vector_11);
- #endif
- 
--	if (check_ivt(iva))
--		panic("IVT invalid");
-+	initialize_ivt(&fault_vector_20);
-+}
-+
-+void __init trap_init(void)
-+{
- }
+ $pgt_fill_loop:
 -- 
 2.1.0
 
