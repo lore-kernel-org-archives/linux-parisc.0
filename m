@@ -1,82 +1,127 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Show more debug info about space registers and TLB
- configuration
-Date: Wed, 25 Nov 2015 22:43:45 +0100
-Message-ID: <20151125214345.GA1123@p100.box>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: [PATCH] parisc iommu: fix panic due to trying to allocate too large
+ region
+Date: Mon, 30 Nov 2015 14:47:46 -0500 (EST)
+Message-ID: <alpine.LRH.2.02.1511301435240.31700@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org, iommu@lists.linux-foundation.org,
+	linux-kernel@vger.kernel.org,
 	John David Anglin <dave.anglin@bell.net>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+When using the Promise TX2+ SATA controller on PA-RISC, the system often
+crashes with kernel panic, for example just writing data with the dd
+utility will make it crash.
 
-diff --git a/arch/parisc/include/asm/pdc.h b/arch/parisc/include/asm/pdc.h
-index 7eb616e..451906d 100644
---- a/arch/parisc/include/asm/pdc.h
-+++ b/arch/parisc/include/asm/pdc.h
-@@ -63,7 +63,7 @@ struct pdc_tlb_cf {		/* for PDC_CACHE (I/D-TLB's) */
- 		tc_page : 1,	/* 0 = 2K page-size-machine, 1 = 4k page size */
- 		tc_cst  : 3,	/* 0 = incoherent operations, else coherent operations */
- 		tc_aid  : 5,	/* ITLB: width of access ids of processor (encoded!) */
--		tc_pad1 : 8;	/* ITLB: width of space-registers (encoded) */
-+		tc_sr   : 8;	/* ITLB: width of space-registers (encoded) */
- };
+Kernel panic - not syncing: drivers/parisc/sba_iommu.c: I/O MMU @ 000000000000a000 is out of mapping resources
+
+CPU: 0 PID: 18442 Comm: mkspadfs Not tainted 4.4.0-rc2 #2
+Backtrace:
+ [<000000004021497c>] show_stack+0x14/0x20
+ [<0000000040410bf0>] dump_stack+0x88/0x100
+ [<000000004023978c>] panic+0x124/0x360
+ [<0000000040452c18>] sba_alloc_range+0x698/0x6a0
+ [<0000000040453150>] sba_map_sg+0x260/0x5b8
+ [<000000000c18dbb4>] ata_qc_issue+0x264/0x4a8 [libata]
+ [<000000000c19535c>] ata_scsi_translate+0xe4/0x220 [libata]
+ [<000000000c19a93c>] ata_scsi_queuecmd+0xbc/0x320 [libata]
+ [<0000000040499bbc>] scsi_dispatch_cmd+0xfc/0x130
+ [<000000004049da34>] scsi_request_fn+0x6e4/0x970
+ [<00000000403e95a8>] __blk_run_queue+0x40/0x60
+ [<00000000403e9d8c>] blk_run_queue+0x3c/0x68
+ [<000000004049a534>] scsi_run_queue+0x2a4/0x360
+ [<000000004049be68>] scsi_end_request+0x1a8/0x238
+ [<000000004049de84>] scsi_io_completion+0xfc/0x688
+ [<0000000040493c74>] scsi_finish_command+0x17c/0x1d0
+
+The cause of the crash is not exhaustion of the IOMMU space, there is
+plenty of free pages. The function sba_alloc_range is called with size
+0x11000, thus the pages_needed variable is 0x11. The function
+sba_search_bitmap is called with bits_wanted 0x11 and boundary size is
+0x10 (because dma_get_seg_boundary(dev) returns 0xffff).
+
+The function sba_search_bitmap attempts to allocate 17 pages that must not
+cross 16-page boundary - it can't satisfy this requirement
+(iommu_is_span_boundary always returns true) and fails even if there are
+many free entries in the IOMMU space.
+
+How did it happen that we try to allocate 17 pages that don't cross
+16-page boundary? The cause is in the function iommu_coalesce_chunks. This
+function tries to coalesce adjacent entries in the scatterlist. The
+function does several checks if it may coalesce one entry with the next,
+one of those checks is this:
+
+	if (startsg->length + dma_len > max_seg_size)
+		break;
+
+When it finishes coalescing adjacent entries, it allocates the mapping:
+
+sg_dma_len(contig_sg) = dma_len;
+dma_len = ALIGN(dma_len + dma_offset, IOVP_SIZE);
+sg_dma_address(contig_sg) =
+	PIDE_FLAG
+	| (iommu_alloc_range(ioc, dev, dma_len) << IOVP_SHIFT)
+	| dma_offset;
+
+It is possible that (startsg->length + dma_len > max_seg_size) is false
+(we are just near the 0x10000 max_seg_size boundary), so the funcion
+decides to coalesce this entry with the next entry. When the coalescing
+succeeds, the function performs
+	dma_len = ALIGN(dma_len + dma_offset, IOVP_SIZE);
+And now, because of non-zero dma_offset, dma_len is greater than 0x10000.
+iommu_alloc_range (a pointer to sba_alloc_range) is called and it attempts
+to allocate 17 pages for a device that must not cross 16-page boundary.
+
+To fix the bug, we must make sure that dma_len after addition of
+dma_offset and alignment doesn't cross the segment boundary. I.e. change
+	if (startsg->length + dma_len > max_seg_size)
+		break;
+to
+	if (ALIGN(dma_len + dma_offset + startsg->length, IOVP_SIZE) > max_seg_size)
+		break;
+
+This patch makes this change (it precalculates max_seg_boundary at the
+beginning of the function iommu_coalesce_chunks). I also added a check
+that the mapping length doesn't exceed dma_get_seg_boundary(dev) (it is
+not needed for Promise TX2+ SATA, but it may be needed for other devices
+that have dma_get_seg_boundary lower than dma_get_max_seg_size).
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org
+
+---
+ drivers/parisc/iommu-helpers.h |   15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+Index: linux-4.4-rc3/drivers/parisc/iommu-helpers.h
+===================================================================
+--- linux-4.4-rc3.orig/drivers/parisc/iommu-helpers.h	2015-11-30 17:52:10.000000000 +0100
++++ linux-4.4-rc3/drivers/parisc/iommu-helpers.h	2015-11-30 20:19:53.000000000 +0100
+@@ -104,7 +104,11 @@ iommu_coalesce_chunks(struct ioc *ioc, s
+ 	struct scatterlist *contig_sg;	   /* contig chunk head */
+ 	unsigned long dma_offset, dma_len; /* start/len of DMA stream */
+ 	unsigned int n_mappings = 0;
+-	unsigned int max_seg_size = dma_get_max_seg_size(dev);
++	unsigned int max_seg_size = min(dma_get_max_seg_size(dev),
++					(unsigned)DMA_CHUNK_SIZE);
++	unsigned int max_seg_boundary = dma_get_seg_boundary(dev) + 1;
++	if (max_seg_boundary)	/* check if the addition above didn't overflow */
++		max_seg_size = min(max_seg_size, max_seg_boundary);
  
- struct pdc_cache_info {		/* main-PDC_CACHE-structure (caches & TLB's) */
-diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index cda6dbb..32bc0bf 100644
---- a/arch/parisc/kernel/cache.c
-+++ b/arch/parisc/kernel/cache.c
-@@ -172,6 +172,24 @@ parisc_cache_init(void)
- 		cache_info.ic_count,
- 		cache_info.ic_loop);
+ 	while (nents > 0) {
  
-+	printk("IT  base 0x%lx stride 0x%lx count 0x%lx loop 0x%lx off_base 0x%lx off_stride 0x%lx off_count 0x%lx\n",
-+		cache_info.it_sp_base,
-+		cache_info.it_sp_stride,
-+		cache_info.it_sp_count,
-+		cache_info.it_loop,
-+		cache_info.it_off_base,
-+		cache_info.it_off_stride,
-+		cache_info.it_off_count);
-+
-+	printk("DT  base 0x%lx stride 0x%lx count 0x%lx loop 0x%lx off_base 0x%lx off_stride 0x%lx off_count 0x%lx\n",
-+		cache_info.dt_sp_base,
-+		cache_info.dt_sp_stride,
-+		cache_info.dt_sp_count,
-+		cache_info.dt_loop,
-+		cache_info.dt_off_base,
-+		cache_info.dt_off_stride,
-+		cache_info.dt_off_count);
-+
- 	printk("ic_conf = 0x%lx  alias %d blk %d line %d shift %d\n",
- 		*(unsigned long *) (&cache_info.ic_conf),
- 		cache_info.ic_conf.cc_alias,
-@@ -184,19 +202,19 @@ parisc_cache_init(void)
- 		cache_info.ic_conf.cc_cst,
- 		cache_info.ic_conf.cc_hv);
+@@ -138,14 +142,11 @@ iommu_coalesce_chunks(struct ioc *ioc, s
  
--	printk("D-TLB conf: sh %d page %d cst %d aid %d pad1 %d\n",
-+	printk("D-TLB conf: sh %d page %d cst %d aid %d sr %d\n",
- 		cache_info.dt_conf.tc_sh,
- 		cache_info.dt_conf.tc_page,
- 		cache_info.dt_conf.tc_cst,
- 		cache_info.dt_conf.tc_aid,
--		cache_info.dt_conf.tc_pad1);
-+		cache_info.dt_conf.tc_sr);
- 
--	printk("I-TLB conf: sh %d page %d cst %d aid %d pad1 %d\n",
-+	printk("I-TLB conf: sh %d page %d cst %d aid %d sr %d\n",
- 		cache_info.it_conf.tc_sh,
- 		cache_info.it_conf.tc_page,
- 		cache_info.it_conf.tc_cst,
- 		cache_info.it_conf.tc_aid,
--		cache_info.it_conf.tc_pad1);
-+		cache_info.it_conf.tc_sr);
- #endif
- 
- 	split_tlb = 0;
+ 			/*
+ 			** First make sure current dma stream won't
+-			** exceed DMA_CHUNK_SIZE if we coalesce the
++			** exceed max_seg_size if we coalesce the
+ 			** next entry.
+ 			*/   
+-			if(unlikely(ALIGN(dma_len + dma_offset + startsg->length,
+-					    IOVP_SIZE) > DMA_CHUNK_SIZE))
+-				break;
