@@ -1,104 +1,160 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: Remove unused pcibios_init_bus()
-Date: Thu, 3 Dec 2015 17:05:20 +0100
-Message-ID: <56606840.6090004@gmx.de>
-References: <20151201164147.18471.52359.stgit@bhelgaas-glaptop2.roam.corp.google.com>
- <565E06C6.3080707@gmx.de>
- <CAP6odjgr8va4nM2+Rr9gchkg28TctB-yd_n3reitwcUo=nmbCQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	Grant Grundler <grundler@parisc-linux.org>
-To: Grant Grundler <grantgrundler@gmail.com>
+Subject: [PATCH 3/3] parisc: protect huge pte changes with spinlocks
+Date: Sun,  6 Dec 2015 21:43:33 +0100
+Message-ID: <1449434613-32214-3-git-send-email-deller@gmx.de>
+References: <1449434613-32214-1-git-send-email-deller@gmx.de>
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAP6odjgr8va4nM2+Rr9gchkg28TctB-yd_n3reitwcUo=nmbCQ@mail.gmail.com>
+In-Reply-To: <1449434613-32214-1-git-send-email-deller@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 01.12.2015 23:02, Grant Grundler wrote:
-> On Tue, Dec 1, 2015 at 12:44 PM, Helge Deller <deller@gmx.de> wrote:
->> On 01.12.2015 17:41, Bjorn Helgaas wrote:
->>> There are no callers of pcibios_init_bus(), so remove it.
->>
->> True, pcibios_init_bus() isn't called anywhere, so it should be removed.
->>
->> But I wonder if we might need to initialize latency and parity for PCI-PCI
->> bridges somewhere else then?
-> 
-> pcibios_fixup_bus() appears to do that...but I don't know the call chain.
-> I used cscope to look for PCI_BRIDGE_CTL_PARITY.
-> 
->> In one of my machines I have a i960 based RAID controller which isn't working
->> yet (I think it's internally based on a PCI-PCI bridge), and maybe this
->> is the reason it doesn't work? I will need to test it (e.g. firmware doesn't
->> fully initializes PCI-PCI bridges, which is why this code was added once).
+Protect all changes of huge page pte entries with purge_tlb_start() and
+purge_tlb_end() spinlocks.
 
-machine model : 9000/800/L3000-8x
-model name    : Marcato W+ (rp5470)
+Signed-off-by: Helge Deller <deller@gmx.de>
+---
+ arch/parisc/include/asm/hugetlb.h | 20 +++----------
+ arch/parisc/mm/hugetlbpage.c      | 60 +++++++++++++++++++++++++++++++--------
+ 2 files changed, 52 insertions(+), 28 deletions(-)
 
-> If lspci doesn't show the PCI-PCI bridge, the i960 RAID card is using
-> that internally.
-
-lspci does see the PCI-PCI bridge:
-
-50:00.0 PCI bridge: Intel Corporation 80960RP (i960RP) Microprocessor/Bridge (rev 02) (prog-if 00 [Normal decode])
-        Flags: medium devsel
-        Bus: primary=50, secondary=51, subordinate=51, sec-latency=0
-        I/O behind bridge: 00000000-00000fff
-        Memory behind bridge: 94400000-944fffff
-        Prefetchable memory behind bridge: 94500000-945fffff
-        Capabilities: [68] Power Management version 2
-
-50:00.1 I2O: Intel Corporation 80960RP (i960RP) Microprocessor (rev 02) (prog-if 01)
-        Subsystem: Hewlett-Packard Company Device 1228
-        Flags: medium devsel, IRQ 71
-        Memory at ffffffff94000000 (32-bit, prefetchable) [disabled] [size=4M]
-        [virtual] Expansion ROM at ffffffff94600000 [disabled] [size=32K]
-        Capabilities: [80] Power Management version 2
-
-
-sec-latency is listed in the lspci output above as "sec-latency=0", so do we maybe need to add this part somewhere ?
--	/* PCI-PCI bridge - set the cache line and default latency
--	   (32) for primary and secondary buses. */
--	pci_write_config_byte(dev, PCI_SEC_LATENCY_TIMER, 32);
-
-> parisc (and any other architecture) should discover and configure all
-> PCI-PCI bridges already.
-> I know it did for the "multifunction" cards I had available 10 years ago.
-
-Boot log shows:
-[    9.408000] Elroy version TR4.0 (0x5) found at 0xffffffff9fff4000
-[    9.564000] LBA: Not a C8000 system - not extending LMMIO range.
-[    9.568000] LBA: Not registering GMMIO space [mem 0xfffffff504000000-0xfffffff57fffffff]
-[    9.684000] LBA 0:10: PCI host bridge to bus 0000:50
-[    9.820000] pci_bus 0000:50: root bus resource [io  0x80000-0x8ffff] (bus address [0x0000-0xffff])
-[    9.956000] pci_bus 0000:50: root bus resource [mem 0xffffffff94000000-0xffffffff95ffffff] (bus address [0x94000000-0x95ffffff])
-[   10.092000] pci_bus 0000:50: root bus resource [bus 50-57]
-[   10.096000] pci 0000:50:00.0: [8086:0964] type 01 class 0x060400
-[   10.096000] pci 0000:50:00.1: [8086:1960] type 00 class 0x0e0001
-[   10.096000] pci 0000:50:00.1: reg 0x10: [mem 0x00000000-0x003fffff pref]
-[   10.096000] pci 0000:50:00.1: reg 0x30: [mem 0x00000000-0x00007fff pref]
-[   10.096000] pci_bus 0000:51: busn_res: can not insert [bus 51-ff] under [bus 50-57] (conflicts with (null) [bus 50-57])
-[   10.096000] pci 0000:50:00.0: PCI bridge to [bus 51-ff]
-[   10.232000] pci 0000:50:00.0:   bridge window [io  0x80000-0x80fff]
-[   10.232000] pci 0000:50:00.0:   bridge window [mem 0x00000000-0x000fffff]
-[   10.232000] pci 0000:50:00.0:   bridge window [mem 0x00000000-0x000fffff pref]
-[   10.232000] pci 0000:50:00.0: can't claim BAR 14 [mem 0x00000000-0x000fffff]: no compatible bridge window
-[   10.372000] pci 0000:50:00.0: can't claim BAR 15 [mem 0x00000000-0x000fffff pref]: no compatible bridge window
-[   10.508000] pci 0000:50:00.0: can't claim BAR 16 [??? 0x00000000 flags 0x0]: no compatible bridge window
-[   10.648000] pci_bus 0000:51: busn_res: [bus 51-ff] end is updated to 51
-[   10.648000] pci 0000:50:00.0: BAR 16: [??? 0x00000000 flags 0x20000000] has bogus alignment
-[   10.784000] pci 0000:50:00.1: BAR 0: assigned [mem 0xffffffff94000000-0xffffffff943fffff pref]
-[   10.920000] pci 0000:50:00.0: BAR 14: assigned [mem 0xffffffff94400000-0xffffffff944fffff]
-[   11.060000] pci 0000:50:00.0: BAR 15: assigned [mem 0xffffffff94500000-0xffffffff945fffff pref]
-[   11.060000] pci 0000:50:00.1: BAR 6: assigned [mem 0xffffffff94600000-0xffffffff94607fff pref]
-[   11.200000] pci 0000:50:00.0: PCI bridge to [bus 51]
-[   11.336000] pci 0000:50:00.0:   bridge window [io  0x80000-0x80fff]
-[   11.336000] pci 0000:50:00.0:   bridge window [mem 0xffffffff94400000-0xffffffff944fffff]
-[   11.472000] pci 0000:50:00.0:   bridge window [mem 0xffffffff94500000-0xffffffff945fffff pref]
-
-Helge
+diff --git a/arch/parisc/include/asm/hugetlb.h b/arch/parisc/include/asm/hugetlb.h
+index 7d56a9c..a65d888 100644
+--- a/arch/parisc/include/asm/hugetlb.h
++++ b/arch/parisc/include/asm/hugetlb.h
+@@ -54,24 +54,12 @@ static inline pte_t huge_pte_wrprotect(pte_t pte)
+ 	return pte_wrprotect(pte);
+ }
+ 
+-static inline void huge_ptep_set_wrprotect(struct mm_struct *mm,
+-					   unsigned long addr, pte_t *ptep)
+-{
+-	pte_t old_pte = *ptep;
+-	set_huge_pte_at(mm, addr, ptep, pte_wrprotect(old_pte));
+-}
++void huge_ptep_set_wrprotect(struct mm_struct *mm,
++					   unsigned long addr, pte_t *ptep);
+ 
+-static inline int huge_ptep_set_access_flags(struct vm_area_struct *vma,
++int huge_ptep_set_access_flags(struct vm_area_struct *vma,
+ 					     unsigned long addr, pte_t *ptep,
+-					     pte_t pte, int dirty)
+-{
+-	int changed = !pte_same(*ptep, pte);
+-	if (changed) {
+-		set_huge_pte_at(vma->vm_mm, addr, ptep, pte);
+-		flush_tlb_page(vma, addr);
+-	}
+-	return changed;
+-}
++					     pte_t pte, int dirty);
+ 
+ static inline pte_t huge_ptep_get(pte_t *ptep)
+ {
+diff --git a/arch/parisc/mm/hugetlbpage.c b/arch/parisc/mm/hugetlbpage.c
+index f6fdc77..54ba392 100644
+--- a/arch/parisc/mm/hugetlbpage.c
++++ b/arch/parisc/mm/hugetlbpage.c
+@@ -105,15 +105,13 @@ static inline void purge_tlb_entries_huge(struct mm_struct *mm, unsigned long ad
+ 	addr |= _HUGE_PAGE_SIZE_ENCODING_DEFAULT;
+ 
+ 	for (i = 0; i < (1 << (HPAGE_SHIFT-REAL_HPAGE_SHIFT)); i++) {
+-		mtsp(mm->context, 1);
+-		pdtlb(addr);
+-		if (unlikely(split_tlb))
+-			pitlb(addr);
++		purge_tlb_entries(mm, addr);
+ 		addr += (1UL << REAL_HPAGE_SHIFT);
+ 	}
+ }
+ 
+-void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
++/* __set_huge_pte_at() must be called holding the pa_tlb_lock. */
++static void __set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
+ 		     pte_t *ptep, pte_t entry)
+ {
+ 	unsigned long addr_start;
+@@ -123,14 +121,9 @@ void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
+ 	addr_start = addr;
+ 
+ 	for (i = 0; i < (1 << HUGETLB_PAGE_ORDER); i++) {
+-		/* Directly write pte entry.  We could call set_pte_at(mm, addr, ptep, entry)
+-		 * instead, but then we get double locking on pa_tlb_lock. */
+-		*ptep = entry;
++		set_pte(ptep, entry);
+ 		ptep++;
+ 
+-		/* Drop the PAGE_SIZE/non-huge tlb entry */
+-		purge_tlb_entries(mm, addr);
+-
+ 		addr += PAGE_SIZE;
+ 		pte_val(entry) += PAGE_SIZE;
+ 	}
+@@ -138,18 +131,61 @@ void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
+ 	purge_tlb_entries_huge(mm, addr_start);
+ }
+ 
++void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
++		     pte_t *ptep, pte_t entry)
++{
++	unsigned long flags;
++
++	purge_tlb_start(flags);
++	__set_huge_pte_at(mm, addr, ptep, entry);
++	purge_tlb_end(flags);
++}
++
+ 
+ pte_t huge_ptep_get_and_clear(struct mm_struct *mm, unsigned long addr,
+ 			      pte_t *ptep)
+ {
++	unsigned long flags;
+ 	pte_t entry;
+ 
++	purge_tlb_start(flags);
+ 	entry = *ptep;
+-	set_huge_pte_at(mm, addr, ptep, __pte(0));
++	__set_huge_pte_at(mm, addr, ptep, __pte(0));
++	purge_tlb_end(flags);
+ 
+ 	return entry;
+ }
+ 
++
++void huge_ptep_set_wrprotect(struct mm_struct *mm,
++				unsigned long addr, pte_t *ptep)
++{
++	unsigned long flags;
++	pte_t old_pte;
++
++	purge_tlb_start(flags);
++	old_pte = *ptep;
++	__set_huge_pte_at(mm, addr, ptep, pte_wrprotect(old_pte));
++	purge_tlb_end(flags);
++}
++
++int huge_ptep_set_access_flags(struct vm_area_struct *vma,
++				unsigned long addr, pte_t *ptep,
++				pte_t pte, int dirty)
++{
++	unsigned long flags;
++	int changed;
++
++	purge_tlb_start(flags);
++	changed = !pte_same(*ptep, pte);
++	if (changed) {
++		__set_huge_pte_at(vma->vm_mm, addr, ptep, pte);
++	}
++	purge_tlb_end(flags);
++	return changed;
++}
++
++
+ int pmd_huge(pmd_t pmd)
+ {
+ 	return 0;
+-- 
+2.1.0
 
