@@ -1,47 +1,46 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Wire up mlock2 syscall
-Date: Sun,  6 Dec 2015 21:57:19 +0100
-Message-ID: <1449435439-20306-1-git-send-email-deller@gmx.de>
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
-To: linux-parisc@vger.kernel.org
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCH 1/3] parisc: Disable huge pages on Mako machines
+Date: Mon, 7 Dec 2015 10:13:37 -0500
+Message-ID: <5665A221.5050309@bell.net>
+References: <1449434613-32214-1-git-send-email-deller@gmx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1449434613-32214-1-git-send-email-deller@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Helge Deller <deller@gmx.de>
----
- arch/parisc/include/uapi/asm/unistd.h | 3 ++-
- arch/parisc/kernel/syscall_table.S    | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+On 2015-12-06 3:43 PM, Helge Deller wrote:
+> Mako-based machines (PA8800 and PA8900 CPUs) don't allow aliasing on
+> non-equaivalent addresses.
+Where do the non equivalent addresses come from?  When non equivalent 
+mappings are
+used in the kernel, we try pretty hard to ensure that the user mappings 
+are flushed prior
+to using the kernel mapping and then we flush the kernel mapping. 
+There's also the
+copy_user_page_asm and clear_user_page_asm routines that do copies and 
+clear operations
+using equivalent addresses.  I have some notes on the flushing needed 
+using these routines.
 
-diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
-index 3317038..35bdccb 100644
---- a/arch/parisc/include/uapi/asm/unistd.h
-+++ b/arch/parisc/include/uapi/asm/unistd.h
-@@ -360,8 +360,9 @@
- #define __NR_execveat		(__NR_Linux + 342)
- #define __NR_membarrier		(__NR_Linux + 343)
- #define __NR_userfaultfd	(__NR_Linux + 344)
-+#define __NR_mlock2		(__NR_Linux + 345)
- 
--#define __NR_Linux_syscalls	(__NR_userfaultfd + 1)
-+#define __NR_Linux_syscalls	(__NR_mlock2 + 1)
- 
- 
- #define __IGNORE_select		/* newselect */
-diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-index 78c3ef8..d4ffcfb 100644
---- a/arch/parisc/kernel/syscall_table.S
-+++ b/arch/parisc/kernel/syscall_table.S
-@@ -440,6 +440,7 @@
- 	ENTRY_COMP(execveat)
- 	ENTRY_SAME(membarrier)
- 	ENTRY_SAME(userfaultfd)
-+	ENTRY_SAME(mlock2)		/* 345 */
- 
- 
- .ifne (. - 90b) - (__NR_Linux_syscalls * (91b - 90b))
+One source of non equivalent addresses is the boundary between text and 
+data in user
+applications.  At one time, we had data immediately after the text and 
+non equivalent
+addresses.  Now, the start of data is rounded up so it starts on a 4K 
+page boundary.
+This may need adjustment for huge pages, but that implies a rebuild of 
+user space.
+
+I tend to think flush_tlb_all() doesn't work because the aliasing rules 
+are being broken.
+Disabling it causes a significant increase in time to flush the tlb.
+
+Dave
+
 -- 
-2.1.0
+John David Anglin  dave.anglin@bell.net
 
