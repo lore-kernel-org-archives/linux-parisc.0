@@ -1,38 +1,75 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH 1/3] parisc: Disable huge pages on Mako machines
-Date: Mon, 7 Dec 2015 21:03:21 -0500
-Message-ID: <E384F76A-0424-4237-8624-3761A2EA68F0@bell.net>
-References: <1449434613-32214-1-git-send-email-deller@gmx.de> <5665A221.5050309@bell.net> <5665F7CE.3010209@gmx.de>
-Mime-Version: 1.0 (Apple Message framework v1085)
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Reduce overhead of parisc_requires_coherency()
+Date: Sat, 12 Dec 2015 18:22:03 +0100
+Message-ID: <20151212172203.GA1118@p100.box>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Helge Deller <deller@gmx.de>
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <5665F7CE.3010209@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2015-12-07, at 4:19 PM, Helge Deller wrote:
+Signed-off-by: Helge Deller <deller@gmx.de>
 
->> Where do the non equivalent addresses come from?
-> 
-> I think the main problem is the gateway page.
-> It's mapped at address 0 into userspace, but needs to jump into kernel space too.
-> This somehow breaks the huge page mapping.
-
-With latest debian kernel, I see:
-
-000000004015d000 <linux_gateway_page>:
-        ...
-
-000000004015d0b0 <lws_entry>:
-
-Possibly, this needs to be aligned to huge page boundary.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
+index 7e759ec..2e674e1 100644
+--- a/arch/parisc/include/asm/processor.h
++++ b/arch/parisc/include/asm/processor.h
+@@ -311,18 +311,17 @@ extern unsigned long get_wchan(struct task_struct *p);
+ #define cpu_relax()	barrier()
+ #define cpu_relax_lowlatency() cpu_relax()
+ 
+-/* Used as a macro to identify the combined VIPT/PIPT cached
+- * CPUs which require a guarantee of coherency (no inequivalent
+- * aliases with different data, whether clean or not) to operate */
+-static inline int parisc_requires_coherency(void)
+-{
++/*
++ * parisc_requires_coherency() is used to identify the combined VIPT/PIPT
++ * cached CPUs which require a guarantee of coherency (no inequivalent aliases
++ * with different data, whether clean or not) to operate
++ */
+ #ifdef CONFIG_PA8X00
+-	return (boot_cpu_data.cpu_type == mako) ||
+-		(boot_cpu_data.cpu_type == mako2);
++extern int _parisc_requires_coherency;
++#define parisc_requires_coherency()	_parisc_requires_coherency
+ #else
+-	return 0;
++#define parisc_requires_coherency()	(0)
+ #endif
+-}
+ 
+ #endif /* __ASSEMBLY__ */
+ 
+diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
+index b68d977..e81ccf1 100644
+--- a/arch/parisc/kernel/processor.c
++++ b/arch/parisc/kernel/processor.c
+@@ -44,6 +44,10 @@
+ 
+ struct system_cpuinfo_parisc boot_cpu_data __read_mostly;
+ EXPORT_SYMBOL(boot_cpu_data);
++#ifdef CONFIG_PA8X00
++int _parisc_requires_coherency __read_mostly;
++EXPORT_SYMBOL(_parisc_requires_coherency);
++#endif
+ 
+ DEFINE_PER_CPU(struct cpuinfo_parisc, cpu_data);
+ 
+@@ -277,8 +281,12 @@ void __init collect_boot_cpu_data(void)
+ 	boot_cpu_data.cpu_type = parisc_get_cpu_type(boot_cpu_data.hversion);
+ 	boot_cpu_data.cpu_name = cpu_name_version[boot_cpu_data.cpu_type][0];
+ 	boot_cpu_data.family_name = cpu_name_version[boot_cpu_data.cpu_type][1];
+-}
+ 
++#ifdef CONFIG_PA8X00
++	_parisc_requires_coherency = (boot_cpu_data.cpu_type == mako) ||
++				(boot_cpu_data.cpu_type == mako2);
++#endif
++}
+ 
+ 
+ /**
