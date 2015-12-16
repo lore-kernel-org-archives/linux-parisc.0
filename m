@@ -1,88 +1,88 @@
-From: Peter Hurley <peter@hurleysoftware.com>
-Subject: Re: [PATCH 06/11] tty: serial: 8250: Move EXPORT_SYMBOL to function
-Date: Wed, 16 Dec 2015 09:06:47 -0800
-Message-ID: <56719A27.4060102@hurleysoftware.com>
-References: <1450280177-4460-1-git-send-email-anton.wuerfel@fau.de>
- <1450280177-4460-7-git-send-email-anton.wuerfel@fau.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jslaby@suse.com>,
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [RFC PATCH urcu on mips, parisc] Fix: compat_futex should work-around futex signal-restart kernel bug
+Date: Wed, 16 Dec 2015 17:09:52 -0500
+Message-ID: <1450303792-27470-1-git-send-email-mathieu.desnoyers@efficios.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Michael Jeanson <mjeanson@efficios.com>,
+	Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
+	linux-kernel@vger.kernel.org,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Qipeng Zha <qipeng.zha@intel.com>,
-	Desmond Liu <desmondl@broadcom.com>,
-	Wang Long <long.wanglong@huawei.com>,
-	Matt Redfearn <matt.redfearn@imgtec.com>,
-	Paul Burton <paul.burton@imgtec.com>,
-	Ralf Baechle <ralf@linux-mips.org>,
-	Krzysztof Kozlowski <k.kozlowski@samsung.com>,
-	Peter Hung <hpeter@gmail.com>,
-	Soeren Grunewald <soeren.grunewald@desy.de>,
-	Adam Lee <adam.lee@canonical.com>,
-	"Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
-	Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
-	Phillip Raffeck <phillip.raffeck@fau.de>
-To: Anton Wuerfel <anton.wuerfel@fau.de>, linux-serial@vger.kernel.org
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+To: "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1450280177-4460-7-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 12/16/2015 07:36 AM, Anton Wuerfel wrote:
-> This patch moves EXPORT_SYMBOL macros directly after the definition o=
-f
-> the corresponding symbol to remove checkpatch warnings.
+When testing liburcu on a 3.18 Linux kernel, 2-core MIPS (cpu model :
+Ingenic JZRISC V4.15  FPU V0.0), we notice that a blocked sys_futex
+FUTEX_WAIT returns -1, errno=ENOSYS when interrupted by a SA_RESTART
+signal handler. This spurious ENOSYS behavior causes hangs in liburcu
+0.9.x. Running a MIPS 3.18 kernel under a QEMU emulator exhibits the
+same behavior. This might affect earlier kernels.
 
-Ok.
+This issue appears to be fixed in 3.18.y stable kernels and 3.19, but
+nevertheless, we should try to handle this kernel bug more gracefully
+than a user-space hang due to unexpected spurious ENOSYS return value.
 
+Therefore, fallback on the "async-safe" version of compat_futex in those
+situations where FUTEX_WAIT returns ENOSYS. This async-safe fallback has
+the nice property of being OK to use concurrently with other FUTEX_WAKE
+and FUTEX_WAIT futex() calls, because it's simply a busy-wait scheme.
 
-> Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
-> Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
-> CC: linux-kernel@i4.cs.fau.de
-> ---
->  drivers/tty/serial/8250/8250_core.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial=
-/8250/8250_core.c
-> index 89a20c9..67147b2 100644
-> --- a/drivers/tty/serial/8250/8250_core.c
-> +++ b/drivers/tty/serial/8250/8250_core.c
-> @@ -764,6 +764,7 @@ void serial8250_suspend_port(int line)
-> =20
->  	uart_suspend_port(&serial8250_reg, port);
->  }
-> +EXPORT_SYMBOL(serial8250_suspend_port);
-> =20
->  /**
->   *	serial8250_resume_port - resume one serial port
-> @@ -789,6 +790,7 @@ void serial8250_resume_port(int line)
->  	}
->  	uart_resume_port(&serial8250_reg, port);
->  }
-> +EXPORT_SYMBOL(serial8250_resume_port);
-> =20
->  /*
->   * Register a set of serial devices attached to a platform device.  =
-The
-> @@ -1168,9 +1170,6 @@ static void __exit serial8250_exit(void)
->  module_init(serial8250_init);
->  module_exit(serial8250_exit);
-> =20
-> -EXPORT_SYMBOL(serial8250_suspend_port);
-> -EXPORT_SYMBOL(serial8250_resume_port);
-> -
->  MODULE_LICENSE("GPL");
->  MODULE_DESCRIPTION("Generic 8250/16x50 serial driver");
-> =20
->=20
+We suspect that parisc might be affected by a similar issue (Debian
+build bots reported a similar hang on both mips and parisc), but we do
+not have access to the hardware required to test this hypothesis.
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+CC: Michael Jeanson <mjeanson@efficios.com>
+CC: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+CC: Ralf Baechle <ralf@linux-mips.org>
+CC: linux-mips@linux-mips.org
+CC: linux-kernel@vger.kernel.org
+CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
+CC: Helge Deller <deller@gmx.de>
+CC: linux-parisc@vger.kernel.org
+---
+ compat_futex.c |  2 ++
+ urcu/futex.h   | 12 +++++++++++-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/compat_futex.c b/compat_futex.c
+index b7f78f0..9e918fe 100644
+--- a/compat_futex.c
++++ b/compat_futex.c
+@@ -111,6 +111,8 @@ end:
+  * _ASYNC SIGNAL-SAFE_.
+  * For now, timeout, uaddr2 and val3 are unused.
+  * Waiter will busy-loop trying to read the condition.
++ * It is OK to use compat_futex_async() on a futex address on which
++ * futex() WAKE operations are also performed.
+  */
+ 
+ int compat_futex_async(int32_t *uaddr, int op, int32_t val,
+diff --git a/urcu/futex.h b/urcu/futex.h
+index 4d16cfa..a17eda8 100644
+--- a/urcu/futex.h
++++ b/urcu/futex.h
+@@ -73,7 +73,17 @@ static inline int futex_noasync(int32_t *uaddr, int op, int32_t val,
+ 
+ 	ret = futex(uaddr, op, val, timeout, uaddr2, val3);
+ 	if (caa_unlikely(ret < 0 && errno == ENOSYS)) {
+-		return compat_futex_noasync(uaddr, op, val, timeout,
++		/*
++		 * The fallback on ENOSYS is the async-safe version of
++		 * the compat futex implementation, because the
++		 * async-safe compat implementation allows being used
++		 * concurrently with calls to futex(). Indeed, sys_futex
++		 * FUTEX_WAIT, on some architectures (e.g. mips), within
++		 * a given process, spuriously return ENOSYS due to
++		 * signal restart bugs on some kernel versions (e.g.
++		 * Linux kernel 3.18 and possibly earlier).
++		 */
++		return compat_futex_async(uaddr, op, val, timeout,
+ 				uaddr2, val3);
+ 	}
+ 	return ret;
+-- 
+2.1.4
+
