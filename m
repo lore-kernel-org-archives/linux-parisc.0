@@ -1,26 +1,62 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH V2 net-next] drivers/net: fix eisa_driver probe section
- mismatch
-Date: Mon, 14 Dec 2015 00:24:41 -0500 (EST)
-Message-ID: <20151214.002441.143023648656067275.davem@davemloft.net>
-References: <1449941078-15854-1-git-send-email-fabf@skynet.be>
+From: Anton Wuerfel <anton.wuerfel@fau.de>
+Subject: [PATCH 07/11] tty: serial: 8250: Fix line continuation warning
+Date: Wed, 16 Dec 2015 16:36:13 +0100
+Message-ID: <1450280177-4460-8-git-send-email-anton.wuerfel@fau.de>
+References: <1450280177-4460-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	klassert@mathematik.tu-chemnitz.de, perex@perex.cz,
-	linux-parisc@vger.kernel.org
-To: fabf@skynet.be
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1449941078-15854-1-git-send-email-fabf@skynet.be>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jslaby@suse.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Peter Hurley <peter@hurleysoftware.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Qipeng Zha <qipeng.zha@intel.com>,
+	Desmond Liu <desmondl@broadcom.com>,
+	Wang Long <long.wanglong@huawei.com>,
+	Matt Redfearn <matt.redfearn@imgtec.com>,
+	Paul Burton <paul.burton@imgtec.com>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+	Peter Hung <hpeter@gmail.com>,
+	Soeren Grunewald <soeren.grunewald@desy.de>,
+	Adam Lee <adam.lee@canonical.com>,
+	"Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
+	Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
+	Anton Wuerfel <anto
+To: linux-serial@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1450280177-4460-1-git-send-email-anton.wuerfel@fau.de>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Fabian Frederick <fabf@skynet.be>
-Date: Sat, 12 Dec 2015 18:24:38 +0100
+=46ixed checkpatch warning about an unnecessary line continuation in a
+multi-line variable assignment.
 
-> Some eisa_driver structures used __init probe functions which generates
-> a warning and could crash if function is called after being deleted.
-> 
-> Signed-off-by: Fabian Frederick <fabf@skynet.be>
+Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
+Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
+CC: linux-kernel@i4.cs.fau.de
+---
+ drivers/tty/serial/8250/8250_hp300.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Applied, thanks.
+diff --git a/drivers/tty/serial/8250/8250_hp300.c b/drivers/tty/serial/=
+8250/8250_hp300.c
+index 694b509..52c43da 100644
+--- a/drivers/tty/serial/8250/8250_hp300.c
++++ b/drivers/tty/serial/8250/8250_hp300.c
+@@ -249,8 +249,8 @@ static int __init hp300_8250_init(void)
+=20
+ 		/* Memory mapped I/O */
+ 		uart.port.iotype =3D UPIO_MEM;
+-		uart.port.flags =3D UPF_SKIP_TEST | UPF_SHARE_IRQ \
+-			      | UPF_BOOT_AUTOCONF;
++		uart.port.flags =3D UPF_SKIP_TEST | UPF_SHARE_IRQ
++				| UPF_BOOT_AUTOCONF;
+ 		/* XXX - no interrupt support yet */
+ 		uart.port.irq =3D 0;
+ 		uart.port.uartclk =3D HPAPCI_BAUD_BASE * 16;
+--=20
+1.9.1
