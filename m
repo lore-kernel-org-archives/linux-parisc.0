@@ -1,74 +1,131 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH 08/11] tty: serial: 8250: Add parentheses to macro
-Date: Thu, 17 Dec 2015 17:16:41 +0200
-Message-ID: <1450365401.30729.142.camel@linux.intel.com>
-References: <1450280177-4460-1-git-send-email-anton.wuerfel@fau.de>
-	 <1450280177-4460-9-git-send-email-anton.wuerfel@fau.de>
+From: "Helge Deller" <deller@gmx.de>
+Subject: Aw: Re: [RFC PATCH urcu on mips, parisc] Fix: compat_futex should
+ work-around futex signal-restart kernel bug
+Date: Thu, 17 Dec 2015 17:22:50 +0100
+Message-ID: <trinity-0a355ae2-e5eb-40e5-8561-41a2e8e251e2-1450369370294@3capp-gmx-bs60>
+References: <1450303792-27470-1-git-send-email-mathieu.desnoyers@efficios.com>,
+ <663068619.259007.1450356852694.JavaMail.zimbra@efficios.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jslaby@suse.com>,
+Cc: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+	"Jon Bernard" <jbernard@debian.org>,
+	"Michael Jeanson" <mjeanson@efficios.com>,
+	"Ralf Baechle" <ralf@linux-mips.org>,
+	linux-mips <linux-mips@linux-mips.org>,
+	linux-kernel@vger.kernel.org,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Peter Hurley <peter@hurleysoftware.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Qipeng Zha <qipeng.zha@intel.com>,
-	Desmond Liu <desmondl@broadcom.com>,
-	Wang Long <long.wanglong@huawei.com>,
-	Matt Redfearn <matt.redfearn@imgtec.com>,
-	Paul Burton <paul.burton@imgtec.com>,
-	Ralf Baechle <ralf@linux-mips.org>,
-	Krzysztof Kozlowski <k.kozlowski@samsung.com>,
-	Peter Hung <hpeter@gmail.com>,
-	Soeren Grunewald <soeren.grunewald@desy.de>,
-	Adam Lee <adam.lee@canonical.com>,
-	"Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
-	Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
-	Phillip Raffeck <phillip.raffeck@fau.de>
-To: Anton Wuerfel <anton.wuerfel@fau.de>, linux-serial@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1450280177-4460-9-git-send-email-anton.wuerfel@fau.de>
-List-ID: <linux-kernel.vger.kernel.org>
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	"Ed Swierk" <eswierk@skyportsystems.com>,
+	"Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+To: "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <663068619.259007.1450356852694.JavaMail.zimbra@efficios.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2015-12-16 at 16:36 +0100, Anton Wuerfel wrote:
-> This patch fixes a checkpatch warning caused by missing parentheses
-> in the definition of a macro.
->=20
-> Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
-> Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
-> CC: linux-kernel@i4.cs.fau.de
-> ---
-> =C2=A0drivers/tty/serial/8250/8250_core.c | 2 +-
-> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/tty/serial/8250/8250_core.c
-> b/drivers/tty/serial/8250/8250_core.c
-> index 67147b2..3c29530 100644
-> --- a/drivers/tty/serial/8250/8250_core.c
-> +++ b/drivers/tty/serial/8250/8250_core.c
-> @@ -686,7 +686,7 @@ static int __init univ8250_console_init(void)
-> =C2=A0}
-> =C2=A0console_initcall(univ8250_console_init);
-> =C2=A0
-> -#define SERIAL8250_CONSOLE	&univ8250_console
-> +#define SERIAL8250_CONSOLE	(&univ8250_console)
+Hello Mathieu,
 
-What about the rest of the drivers under drivers/tty/serial?
+> > When testing liburcu on a 3.18 Linux kernel, 2-core MIPS (cpu model :
+> > Ingenic JZRISC V4.15  FPU V0.0), we notice that a blocked sys_futex
+> > FUTEX_WAIT returns -1, errno=ENOSYS when interrupted by a SA_RESTART
+> > signal handler. This spurious ENOSYS behavior causes hangs in liburcu
+> > 0.9.x. Running a MIPS 3.18 kernel under a QEMU emulator exhibits the
+> > same behavior. This might affect earlier kernels.
+> > 
+> > This issue appears to be fixed in 3.18.y stable kernels and 3.19, but
+> > nevertheless, we should try to handle this kernel bug more gracefully
+> > than a user-space hang due to unexpected spurious ENOSYS return value.
+> 
+> It's actually fixed in 3.19, but not in 3.18.y stable kernels. The
+> Linux kernel upstream fix commit is:
+> e967ef02 "MIPS: Fix restart of indirect syscalls"
 
-What do you propose to do with, for example, the following
+But that patch fixes mips only.
+ 
+> I've created a small test program that could also be used on parisc
+> to check if it suffers from the same issue (see attached).
+> 
+> On bogus mips kernels, we see the following output:
+> [OK] Test program with pid: 5748 SIGUSR1 handler
+> [FAIL] futex returns -1, Function not implemented
 
-drivers/tty/serial/cpm_uart/cpm_uart_core.c:1392:#define
-CPM_UART_CONSOLE=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&cpm_scc_uart=
-_console
-drivers/tty/serial/cpm_uart/cpm_uart_core.c:1394:#define
-CPM_UART_CONSOLE=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0NULL
+I tested it on a recent 4.2 kernel on parisc.
+It fails as you describe:
 
-> =C2=A0#else
-> =C2=A0#define SERIAL8250_CONSOLE	NULL
-> =C2=A0#endif
+Testing futex sigrestart. Stop with CTRL-c.
+[OK] Test program with pid: 1361 SIGUSR1 handler
+[OK] Test program with pid: 1361 SIGUSR1 handler
+[FAIL] futex returns -1, Function not implemented
+[OK] Test program with pid: 1361 SIGUSR1 handler
+[FAIL] futex returns -1, Function not implemented
 
---=20
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+strace gives:
+[pid  1329] futex(0x1210c, FUTEX_WAIT, -1, NULL <unfinished ...>
+[pid  1328] nanosleep({1, 0},  <unfinished ...>
+[pid  1329] <... futex resumed> )       = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
+[pid  1329] write(2, "[FAIL] futex returns -1, Functio"..., 50[FAIL] futex returns -1, Function not implemented)
+
+
+> > Therefore, fallback on the "async-safe" version of compat_futex in those
+> > situations where FUTEX_WAIT returns ENOSYS. This async-safe fallback has
+> > the nice property of being OK to use concurrently with other FUTEX_WAKE
+> > and FUTEX_WAIT futex() calls, because it's simply a busy-wait scheme.
+> > 
+> > We suspect that parisc might be affected by a similar issue (Debian
+> > build bots reported a similar hang on both mips and parisc), but we do
+> > not have access to the hardware required to test this hypothesis.
+
+If you want access to a machine, let me know.
+I'll try the patch below as well..
+
+> > Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > CC: Michael Jeanson <mjeanson@efficios.com>
+> > CC: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+> > CC: Ralf Baechle <ralf@linux-mips.org>
+> > CC: linux-mips@linux-mips.org
+> > CC: linux-kernel@vger.kernel.org
+> > CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
+> > CC: Helge Deller <deller@gmx.de>
+> > CC: linux-parisc@vger.kernel.org
+> > ---
+> > compat_futex.c |  2 ++
+> > urcu/futex.h   | 12 +++++++++++-
+> > 2 files changed, 13 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/compat_futex.c b/compat_futex.c
+> > index b7f78f0..9e918fe 100644
+> > --- a/compat_futex.c
+> > +++ b/compat_futex.c
+> > @@ -111,6 +111,8 @@ end:
+> >  * _ASYNC SIGNAL-SAFE_.
+> >  * For now, timeout, uaddr2 and val3 are unused.
+> >  * Waiter will busy-loop trying to read the condition.
+> > + * It is OK to use compat_futex_async() on a futex address on which
+> > + * futex() WAKE operations are also performed.
+> >  */
+> > 
+> > int compat_futex_async(int32_t *uaddr, int op, int32_t val,
+> > diff --git a/urcu/futex.h b/urcu/futex.h
+> > index 4d16cfa..a17eda8 100644
+> > --- a/urcu/futex.h
+> > +++ b/urcu/futex.h
+> > @@ -73,7 +73,17 @@ static inline int futex_noasync(int32_t *uaddr, int op,
+> > int32_t val,
+> > 
+> > 	ret = futex(uaddr, op, val, timeout, uaddr2, val3);
+> > 	if (caa_unlikely(ret < 0 && errno == ENOSYS)) {
+> > -		return compat_futex_noasync(uaddr, op, val, timeout,
+> > +		/*
+> > +		 * The fallback on ENOSYS is the async-safe version of
+> > +		 * the compat futex implementation, because the
+> > +		 * async-safe compat implementation allows being used
+> > +		 * concurrently with calls to futex(). Indeed, sys_futex
+> > +		 * FUTEX_WAIT, on some architectures (e.g. mips), within
+> > +		 * a given process, spuriously return ENOSYS due to
+> > +		 * signal restart bugs on some kernel versions (e.g.
+> > +		 * Linux kernel 3.18 and possibly earlier).
+> > +		 */
+> > +		return compat_futex_async(uaddr, op, val, timeout,
+> > 				uaddr2, val3);
+> > 	}
+> > 	return ret;
