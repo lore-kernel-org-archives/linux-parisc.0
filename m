@@ -1,131 +1,115 @@
-From: "Helge Deller" <deller@gmx.de>
-Subject: Aw: Re: [RFC PATCH urcu on mips, parisc] Fix: compat_futex should
- work-around futex signal-restart kernel bug
-Date: Thu, 17 Dec 2015 17:22:50 +0100
-Message-ID: <trinity-0a355ae2-e5eb-40e5-8561-41a2e8e251e2-1450369370294@3capp-gmx-bs60>
-References: <1450303792-27470-1-git-send-email-mathieu.desnoyers@efficios.com>,
- <663068619.259007.1450356852694.JavaMail.zimbra@efficios.com>
+From: Anton Wuerfel <anton.wuerfel@fau.de>
+Subject: [PATCH v2 00/11] tty: serial: 8250: Fix checkpatch warnings
+Date: Fri, 18 Dec 2015 12:21:52 +0100
+Message-ID: <1450437723-2978-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Cc: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-	"Jon Bernard" <jbernard@debian.org>,
-	"Michael Jeanson" <mjeanson@efficios.com>,
-	"Ralf Baechle" <ralf@linux-mips.org>,
-	linux-mips <linux-mips@linux-mips.org>,
-	linux-kernel@vger.kernel.org,
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jslaby@suse.com>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	"Ed Swierk" <eswierk@skyportsystems.com>,
-	"Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-To: "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>
+	Helge Deller <deller@gmx.de>,
+	Peter Hurley <peter@hurleysoftware.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Qipeng Zha <qipeng.zha@intel.com>,
+	Desmond Liu <desmondl@broadcom.com>,
+	Wang Long <long.wanglong@huawei.com>,
+	Matt Redfearn <matt.redfearn@imgtec.com>,
+	Paul Burton <paul.burton@imgtec.com>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+	Peter Hung <hpeter@gmail.com>,
+	Soeren Grunewald <soeren.grunewald@desy.de>,
+	Adam Lee <adam.lee@canonical.com>,
+	"Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
+	Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
+	Anton Wuerfel <anto
+To: linux-serial@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <663068619.259007.1450356852694.JavaMail.zimbra@efficios.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello Mathieu,
+Hello Peter,
 
-> > When testing liburcu on a 3.18 Linux kernel, 2-core MIPS (cpu model :
-> > Ingenic JZRISC V4.15  FPU V0.0), we notice that a blocked sys_futex
-> > FUTEX_WAIT returns -1, errno=ENOSYS when interrupted by a SA_RESTART
-> > signal handler. This spurious ENOSYS behavior causes hangs in liburcu
-> > 0.9.x. Running a MIPS 3.18 kernel under a QEMU emulator exhibits the
-> > same behavior. This might affect earlier kernels.
-> > 
-> > This issue appears to be fixed in 3.18.y stable kernels and 3.19, but
-> > nevertheless, we should try to handle this kernel bug more gracefully
-> > than a user-space hang due to unexpected spurious ENOSYS return value.
-> 
-> It's actually fixed in 3.19, but not in 3.18.y stable kernels. The
-> Linux kernel upstream fix commit is:
-> e967ef02 "MIPS: Fix restart of indirect syscalls"
+thanks for your feedback. We updated the patches according to your remarks.
 
-But that patch fixes mips only.
- 
-> I've created a small test program that could also be used on parisc
-> to check if it suffers from the same issue (see attached).
-> 
-> On bogus mips kernels, we see the following output:
-> [OK] Test program with pid: 5748 SIGUSR1 handler
-> [FAIL] futex returns -1, Function not implemented
+Regards,
+Phillip Raffeck
+Anton Wuerfel
 
-I tested it on a recent 4.2 kernel on parisc.
-It fails as you describe:
+This patch set fixes several checkpatch warnings in tty/serial/8250.
 
-Testing futex sigrestart. Stop with CTRL-c.
-[OK] Test program with pid: 1361 SIGUSR1 handler
-[OK] Test program with pid: 1361 SIGUSR1 handler
-[FAIL] futex returns -1, Function not implemented
-[OK] Test program with pid: 1361 SIGUSR1 handler
-[FAIL] futex returns -1, Function not implemented
+Patch 1/11:  Adds missing spaces (mainly to function/macro headers)
+Patch 2/11:  Replace spaces with tabs wherever possible
+Patch 3/11:  Slight patch which moves an opening curly brace
+Patch 4/11:  Fixes multiline comment style
+Patch 5/11:  Removes else blocks after return statements
+Patch 6/11:  Slight patch which moves EXPORT_SYMBOL macro to correct position
+Patch 7/11:  Slight patch which removes an unneccessary line continuation
+Patch 8/11:  Slight patch which adds parentheses to a macro definition
+Patch 9/11:  Merges user-visible multiline strings to a single line
+Patch 10/11: Replaces printk by corresponding variant of pr_*
+Patch 11/11: Fixes code indentation
 
-strace gives:
-[pid  1329] futex(0x1210c, FUTEX_WAIT, -1, NULL <unfinished ...>
-[pid  1328] nanosleep({1, 0},  <unfinished ...>
-[pid  1329] <... futex resumed> )       = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
-[pid  1329] write(2, "[FAIL] futex returns -1, Functio"..., 50[FAIL] futex returns -1, Function not implemented)
+Remaining checkpatch warnings after applying this patch series:
 
+-line over 80 characters
+	This error mostly occurs in serial_cs.c, which contains long-lined
+	macro calls. However, splitting these calls into multiple lines would
+	not increase readability.
 
-> > Therefore, fallback on the "async-safe" version of compat_futex in those
-> > situations where FUTEX_WAIT returns ENOSYS. This async-safe fallback has
-> > the nice property of being OK to use concurrently with other FUTEX_WAKE
-> > and FUTEX_WAIT futex() calls, because it's simply a busy-wait scheme.
-> > 
-> > We suspect that parisc might be affected by a similar issue (Debian
-> > build bots reported a similar hang on both mips and parisc), but we do
-> > not have access to the hardware required to test this hypothesis.
+-externs should be avoided in .c files
+	This occurs in 8250_hp300.c. There is no corresponding header file
+	the extern statement could be moved to. It could be moved to 8250.h
+	but this would affect other .c files.
 
-If you want access to a machine, let me know.
-I'll try the patch below as well..
+-Use #include <linux/*.h> instead of <asm/*.h>
+	This warning has been left open for more experienced kernel hackers.
+	This patch series is about style issues. We do not intend to alter
+	the code behavior.
 
-> > Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > CC: Michael Jeanson <mjeanson@efficios.com>
-> > CC: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-> > CC: Ralf Baechle <ralf@linux-mips.org>
-> > CC: linux-mips@linux-mips.org
-> > CC: linux-kernel@vger.kernel.org
-> > CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
-> > CC: Helge Deller <deller@gmx.de>
-> > CC: linux-parisc@vger.kernel.org
-> > ---
-> > compat_futex.c |  2 ++
-> > urcu/futex.h   | 12 +++++++++++-
-> > 2 files changed, 13 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/compat_futex.c b/compat_futex.c
-> > index b7f78f0..9e918fe 100644
-> > --- a/compat_futex.c
-> > +++ b/compat_futex.c
-> > @@ -111,6 +111,8 @@ end:
-> >  * _ASYNC SIGNAL-SAFE_.
-> >  * For now, timeout, uaddr2 and val3 are unused.
-> >  * Waiter will busy-loop trying to read the condition.
-> > + * It is OK to use compat_futex_async() on a futex address on which
-> > + * futex() WAKE operations are also performed.
-> >  */
-> > 
-> > int compat_futex_async(int32_t *uaddr, int op, int32_t val,
-> > diff --git a/urcu/futex.h b/urcu/futex.h
-> > index 4d16cfa..a17eda8 100644
-> > --- a/urcu/futex.h
-> > +++ b/urcu/futex.h
-> > @@ -73,7 +73,17 @@ static inline int futex_noasync(int32_t *uaddr, int op,
-> > int32_t val,
-> > 
-> > 	ret = futex(uaddr, op, val, timeout, uaddr2, val3);
-> > 	if (caa_unlikely(ret < 0 && errno == ENOSYS)) {
-> > -		return compat_futex_noasync(uaddr, op, val, timeout,
-> > +		/*
-> > +		 * The fallback on ENOSYS is the async-safe version of
-> > +		 * the compat futex implementation, because the
-> > +		 * async-safe compat implementation allows being used
-> > +		 * concurrently with calls to futex(). Indeed, sys_futex
-> > +		 * FUTEX_WAIT, on some architectures (e.g. mips), within
-> > +		 * a given process, spuriously return ENOSYS due to
-> > +		 * signal restart bugs on some kernel versions (e.g.
-> > +		 * Linux kernel 3.18 and possibly earlier).
-> > +		 */
-> > +		return compat_futex_async(uaddr, op, val, timeout,
-> > 				uaddr2, val3);
-> > 	}
-> > 	return ret;
+-struct uart_ops should normally be const
+	This warning only occurs in 8250_core.c. The corresponding struct
+	cannot be declared as const because it is altered in
+	serial8250_isa_init_ports(). Maybe a checkpatch exception should
+	be added for this particular warning.
+
+-quoted string split across lines
+	These strings were ignored because they otherwise would exceed
+	80 characters in a single line. These particular strings use
+	format specifiers, which break the ability to grep for them anyway.
+
+Anton Wuerfel (11):
+Phillip Raffeck (11):
+  tty: serial: 8250: Fix whitespace errors
+  tty: serial: 8250: Replace spaces with tabs
+  tty: serial: 8250: Fix braces after struct
+  tty: serial: 8250: Fix multiline comment style
+  tty: serial: 8250: Remove else after return
+  tty: serial: 8250: Move EXPORT_SYMBOL to function
+  tty: serial: 8250: Fix line continuation warning
+  tty: serial: 8250: Add parentheses to macro
+  tty: serial: 8250: Fix multi-line strings
+  tty: serial: 8250: Replace printk by pr_*
+  tty: serial: 8250: Fix indentation warnings
+
+ drivers/tty/serial/8250/8250_accent.c        |  2 +-
+ drivers/tty/serial/8250/8250_acorn.c         |  2 +-
+ drivers/tty/serial/8250/8250_boca.c          |  2 +-
+ drivers/tty/serial/8250/8250_core.c          | 15 ++---
+ drivers/tty/serial/8250/8250_exar_st16c554.c |  2 +-
+ drivers/tty/serial/8250/8250_fourport.c      |  2 +-
+ drivers/tty/serial/8250/8250_gsc.c           |  6 +-
+ drivers/tty/serial/8250/8250_hp300.c         | 25 ++++----
+ drivers/tty/serial/8250/8250_hub6.c          |  2 +-
+ drivers/tty/serial/8250/8250_ingenic.c       | 12 ++--
+ drivers/tty/serial/8250/8250_pci.c           | 49 +++++++--------
+ drivers/tty/serial/8250/8250_pnp.c           | 16 ++---
+ drivers/tty/serial/8250/8250_port.c          | 50 ++++++++--------
+ drivers/tty/serial/8250/serial_cs.c          | 89 +++++++++++++++-------------
+ 14 files changed, 142 insertions(+), 132 deletions(-)
+
+-- 
+1.9.1
+
