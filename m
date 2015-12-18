@@ -1,9 +1,9 @@
 From: Peter Hurley <peter@hurleysoftware.com>
-Subject: Re: [PATCH v2 01/11] tty: serial: 8250: Fix whitespace errors
-Date: Fri, 18 Dec 2015 07:11:28 -0800
-Message-ID: <56742220.1060702@hurleysoftware.com>
+Subject: Re: [PATCH v2 02/11] tty: serial: 8250: Replace spaces with tabs
+Date: Fri, 18 Dec 2015 07:12:03 -0800
+Message-ID: <56742243.8000405@hurleysoftware.com>
 References: <1450437723-2978-1-git-send-email-anton.wuerfel@fau.de>
- <1450437723-2978-2-git-send-email-anton.wuerfel@fau.de>
+ <1450437723-2978-3-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Cc: linux-serial@vger.kernel.org,
@@ -28,14 +28,13 @@ Cc: linux-serial@vger.kernel.org,
 	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
 	Phillip Raffeck <phillip.raffe
 To: Anton Wuerfel <anton.wuerfel@fau.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1450437723-2978-2-git-send-email-anton.wuerfel@fau.de>
-List-ID: <linux-kernel.vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1450437723-2978-3-git-send-email-anton.wuerfel@fau.de>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 On 12/18/2015 03:21 AM, Anton Wuerfel wrote:
-> This patch fixes whitespace errors reported by checkpatch to increase
-> readability. Main focus is on missing spaces after commas in
-> function headers and macros (like foo,bar edited to foo, bar).
+> Indentation is changed to match the correct format of using tabs instead
+> of spaces wherever possible.
 
 Reviewed-by: Peter Hurley <peter@hurleysoftware.com>
