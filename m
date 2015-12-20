@@ -1,88 +1,175 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: Aw: Re: [RFC PATCH urcu on mips, parisc] Fix: compat_futex should
- work-around futex signal-restart kernel bug
-Date: Sun, 20 Dec 2015 16:37:00 +0100
-Message-ID: <5676CB1C.8090500@gmx.de>
-References: <1450303792-27470-1-git-send-email-mathieu.desnoyers@efficios.com>
- <663068619.259007.1450356852694.JavaMail.zimbra@efficios.com>
- <trinity-0a355ae2-e5eb-40e5-8561-41a2e8e251e2-1450369370294@3capp-gmx-bs60>
- <1817225945.264082.1450468696180.JavaMail.zimbra@efficios.com>
- <56746FC6.10904@gmx.de> <56753350.2060906@gmx.de>
- <1106544409.268921.1450620701325.JavaMail.zimbra@efficios.com>
+Subject: Re: [PATCH] parisc: Fix syscall restarts
+Date: Sun, 20 Dec 2015 16:49:37 +0100
+Message-ID: <5676CE11.9020808@gmx.de>
+References: <20151218233034.GA24910@p100.box>
+ <1947554021.268870.1450619952347.JavaMail.zimbra@efficios.com>
+ <1102516129.268911.1450620565285.JavaMail.zimbra@efficios.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Cc: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        Jon Bernard <jbernard@debian.org>,
-        Michael Jeanson <mjeanson@efficios.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        linux-mips <linux-mips@linux-mips.org>,
-        linux-kernel@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        linux-parisc <linux-parisc@vger.kernel.org>,
-        Ed Swierk <eswierk@skyportsystems.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-parisc <linux-parisc@vger.kernel.org>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
 To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <1106544409.268921.1450620701325.JavaMail.zimbra@efficios.com>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1102516129.268911.1450620565285.JavaMail.zimbra@efficios.com>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On 20.12.2015 15:11, Mathieu Desnoyers wrote:
-> ----- On Dec 19, 2015, at 5:37 AM, Helge Deller deller@gmx.de wrote:
+On 20.12.2015 15:09, Mathieu Desnoyers wrote:
+> ----- On Dec 20, 2015, at 8:59 AM, Mathieu Desnoyers mathieu.desnoyers@efficios.com wrote:
 > 
->> Hi Mathieu,
+>> ----- On Dec 18, 2015, at 6:30 PM, Helge Deller deller@gmx.de wrote:
 >>
->> On 18.12.2015 21:42, Helge Deller wrote:
->>> On 18.12.2015 20:58, Mathieu Desnoyers wrote:
->>>>>>> When testing liburcu on a 3.18 Linux kernel, 2-core MIPS (cpu model :
->>>>>>> Ingenic JZRISC V4.15  FPU V0.0), we notice that a blocked sys_futex
->>>>>>> FUTEX_WAIT returns -1, errno=ENOSYS when interrupted by a SA_RESTART
->>>>>>> signal handler. This spurious ENOSYS behavior causes hangs in liburcu
->>>>>>> 0.9.x. Running a MIPS 3.18 kernel under a QEMU emulator exhibits the
->>>>>>> same behavior. This might affect earlier kernels.
->>>>>>>
->>>>>>> This issue appears to be fixed in 3.18.y stable kernels and 3.19, but
->>>>>>> nevertheless, we should try to handle this kernel bug more gracefully
->>>>>>> than a user-space hang due to unexpected spurious ENOSYS return value.
->>>>>>
->>>>>> It's actually fixed in 3.19, but not in 3.18.y stable kernels. The
->>>>>> Linux kernel upstream fix commit is:
->>>>>> e967ef02 "MIPS: Fix restart of indirect syscalls"
+>>> On parisc syscalls which are interrupted by signals sometimes fail to restart
+>>> and instead return -ENOSYS which then in the worst case lead to userspace
+>>> crashes.
+>>> A similiar problem existed on MIPS and was fixed by commit e967ef02
+>>> ("MIPS: Fix restart of indirect syscalls").
+>>>
+>>> On parisc the current syscall restart code assumes hat the syscall number is
+>>> always loaded in the delay branch of the ble instruction as defined in the
+>>> unistd.h header file and as such never restored %r20 before returning to
+>>> userspace:
+>>> 	ble 0x100(%sr2, %r0)
+>>> 	ldi #syscall_nr, %r20
+>>>
+>>> This assumption is at least not true for code which uses the syscall() glibc
+>>> function, which instead uses this syntax:
+>>> 	ble 0x100(%sr2, %r0)
+>>> 	copy regX, %r20
+>>> where regX depend on how the compiler optimizes the code and register usage.
+>>>
+>>> This patch fixes this problem by adding code to analyze how the syscall number
+>>> is loaded in the delay branch and - if needed - copy the syscall number to regX
+>>> prior returning to userspace for the syscall restart.
+>>>
+>>> Signed-off-by: Helge Deller <deller@gmx.de>
+>>> Cc: stable@vger.kernel.org
+>>> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>>
+>>> diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
+>>> index dc1ea79..b0414ad 100644
+>>> --- a/arch/parisc/kernel/signal.c
+>>> +++ b/arch/parisc/kernel/signal.c
+>>> @@ -435,6 +435,48 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs,
+>>> int in_syscall)
+>>> 		regs->gr[28]);
+>>> }
+>>>
+>>> +/*
+>>> + * Check the delay branch in userspace how the syscall number gets loaded into
+>>> + * %r20 and adjust as needed.
 >>
->>>> Looks like parisc has an issue very similar to the one that
->>>> has been fixed on MIPS by e967ef02 "MIPS: Fix restart of indirect syscalls".
+>> I'm pretty sure "Check the delay branch in userspace how the syscall..."
+>> is not an English construct. ;-) Suggested rewording:
 >>
->> Yes, parisc is affected the same way.
->> I've posted a patch to the parisc mailing list which fixes this issue for
->> parisc and which I plan to push into stable kernels:
->> http://thread.gmane.org/gmane.linux.ports.parisc/26243
+>> "Check how the syscall number gets loaded into %r20 within
+>> the delay branch in userspace and adjust as needed."
+
+Thanks!
+I'll change that.
+
+
+>>> + */
+>>> +
+>>> +static void check_syscallno_in_delay_branch(struct pt_regs *regs)
+>>> +{
+>>> +	unsigned int opcode, source_reg;
 >>
->> Regarding your patch for liburcu:
+>> Why "unsigned int" above rather than u32 ? Since we're using
+>> opcode as target variable for a get_user, it would be clearer
+>> if the type of the __user * match the type of the target kernel
+>> variable. (understood that those happen to have the same bitness
+>> and type size on all Linux architectures, but it would be clearer
+>> nevertheless).
+
+Yes, seems OK.
+I'll change that.
+
+>>> +	u32 __user *uaddr;
+>>> +
+>>> +	/* Usually we don't have to restore %r20 (the system call number)
+>>> +	 * because it gets loaded in the delay slot of the branch external
+>>> +	 * instruction via the ldi instruction.
+>>> +	 * In some cases a register-to-register copy instruction might have
+>>> +	 * been used instead, in which case we need to copy the syscall
+>>> +	 * number into the source register before returning to userspace.
+>>> +	 */
+>>> +
+>>> +	/* A syscall is just a branch, so all
+>>> +	 * we have to do is fiddle the return pointer.
+>>> +	 */
+>>> +	regs->gr[31] -= 8; /* delayed branching */
+>>> +
+>>> +	/* Get assembler opcode of code in delay branch */
+>>> +	uaddr = (unsigned int *) (regs->gr[31] + 1);
+>>> +	get_user(opcode, uaddr);
 >>
->>>>>>> Therefore, fallback on the "async-safe" version of compat_futex in those
->>>>>>> situations where FUTEX_WAIT returns ENOSYS. This async-safe fallback has
->>>>>>> the nice property of being OK to use concurrently with other FUTEX_WAKE
->>>>>>> and FUTEX_WAIT futex() calls, because it's simply a busy-wait scheme.
+>> get_user() can fail due to EFAULT. This error should be
+>> handled here, otherwise this could lead to the following
+>> code using an uninitialized opcode variable, which could
+>> indirectly leak a few bits of kernel stack information
+>> to userspace (security concern). One attack vector I have
+>> in mind for this is ptrace(), which might be able to tweak
+>> those register values.
+
+Yes, generally get_user() can fail.
+But this would be rather strange in that case, because
+the syscall was started by userspace from this address.
+So, without the code at that address in userspace, we would
+never have reached this get_user().
+
+And, there is no leak (of kernel stack) either. All this
+function does is to move the content of userspace register X
+to userspace register Y. There is no kernel info involved.    
+
+>>> +
+>>> +	/* Check if delay branch uses "ldi int,%r20" */
+>>> +	if ((opcode & 0xffff0000) == 0x34140000)
+>>> +		return;	/* everything ok, just return */
+>>> +
+>>> +	/* Check if delay branch uses "copy %rX,%r20" */
+>>> +	if ((opcode & 0xff00ffff) == 0x08000254) {
+>>> +		source_reg = (opcode >> 16) & 31;
 >>
->> I've tested your patch. It does not produce any regressions on parisc, but I
->> can't
->> say for sure if it really works. ENOSYS is returned randomly, so maybe I didn't
->> faced a situation where your patch actually was used.
+>> Can you explain the reasoning behind the & 31 mask ?
+>> I'm no parisc expert, but this seems rather odd.
+>> Do you really mean "% 31" which translates to "& 5" ?
+>> It would make more sense since there are 32 "gr"
+>> registers. With & 31, a carefully crafted opcode
+>> could overflow the gr[32] array, and cause a kernel
+>> overflow allowing to overwrite kernel memory
+>> (security issue).
 > 
-> If you ran make check and make regtest, and nothing
-> fails/hangs, you should be OK.
+> Hrm, I got my masks temporarily mixed up (early morning
+> here). This is why I always use constructs such as:
+> 
+> #define GR_REGS_BITS  5
+> #define NR_GR_REGS    (1U << GR_REGS_BITS)
+> #define GR_REGS_MASK  (NR_GR_REGS - 1)
+> 
+> and then
+> 
+> v & GR_REGS_MASK;
+> 
+> Which makes everything super-obvious. The & 31 mask
+> seems therefore technically correct.
 
-Yes, I did run both.
+Good. I was struggling with your comments as well :-)
 
-> liburcu runs very heavy
-> stress-tests which makes it likely to hit race conditions
-> repeatedly.
+
+> The paragraph below still holds though:
+> 
+>>
+>> If it's the case, then it would also be good to
+>> check that the register selector within the opcode
+>> is not larger than 31 (e.g. applying to fr or sr
+>> register), rather than applying the modulo and
+>> assuming it's a gr and corrupt userspace state.
+
+I'll check that.
+
+Thanks!
 
 Helge
