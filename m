@@ -1,279 +1,167 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: ptrace interface does not permit modification of syscall return
-Date: Tue, 22 Dec 2015 22:10:56 +0100
-Message-ID: <5679BC60.5090107@gmx.de>
-References: <20151221175558.GA11489@vapier.lan>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH] parisc: Fix syscall restarts (v2)
+Date: Thu, 24 Dec 2015 16:07:15 +0000 (UTC)
+Message-ID: <187718964.290846.1450973235666.JavaMail.zimbra@efficios.com>
+References: <20151218233034.GA24910@p100.box> <20151221091933.GA22935@p100.box> <997901782.279317.1450729643512.JavaMail.zimbra@efficios.com> <56786702.6060600@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060507090003090802010103"
-To: linux-parisc@vger.kernel.org, vapier@gentoo.org
+Content-Type: text/plain; charset=utf-8
+Cc: linux-parisc <linux-parisc@vger.kernel.org>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20151221175558.GA11489@vapier.lan>
+In-Reply-To: <56786702.6060600@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------060507090003090802010103
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+----- On Dec 21, 2015, at 3:54 PM, Helge Deller deller@gmx.de wrote:
 
-Hi Mike,
-
-On 21.12.2015 18:55, Mike Frysinger wrote:
-> i have a ptrace program that watches for specific syscalls and when
-> matched, will:
->  - on entry change the syscall nr to -1 (so the kernel will skip it)
->  - on exit change the return to -EPERM so the userspace sees a denial
+> On 21.12.2015 21:27, Mathieu Desnoyers wrote:
+>> ----- On Dec 21, 2015, at 4:19 AM, Helge Deller deller@gmx.de wrote:
+>> 
+>>> This is version 2 of the patch:
+>>>
+>>> On parisc syscalls which are interrupted by signals sometimes failed to
+>>> restart and instead returned -ENOSYS which in the worst case lead to
+>>> userspace crashes.
+>>> A similiar problem existed on MIPS and was fixed by commit e967ef02
+>>> ("MIPS: Fix restart of indirect syscalls").
+>>>
+>>> On parisc the current syscall restart code assumes that all syscall
+>>> callers load the syscall number in the delay slot of the ble
+>>> instruction. That's how it is e.g. done in the unistd.h header file:
+>>> 	ble 0x100(%sr2, %r0)
+>>> 	ldi #syscall_nr, %r20
+>>> Because of that assumption the current code never restored %r20 before
+>>> returning to userspace.
+>>>
+>>> This assumption is at least not true for code which uses the glibc
+>>> syscall() function, which instead uses this syntax:
+>>> 	ble 0x100(%sr2, %r0)
+>>> 	copy regX, %r20
+>>> where regX depend on how the compiler optimizes the code and register
+>>> usage.
+>>>
+>>> This patch fixes this problem by adding code to analyze how the syscall
+>>> number is loaded in the delay branch and - if needed - copy the syscall
+>>> number to regX prior returning to userspace for the syscall restart.
+>>>
+>>> Signed-off-by: Helge Deller <deller@gmx.de>
+>>> Cc: stable@vger.kernel.org
+>>> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>>
+>>> diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
+>>> index dc1ea79..2264f68 100644
+>>> --- a/arch/parisc/kernel/signal.c
+>>> +++ b/arch/parisc/kernel/signal.c
+>>> @@ -435,6 +435,55 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs,
+>>> int in_syscall)
+>>> 		regs->gr[28]);
+>>> }
+>>>
+>>> +/*
+>>> + * Check how the syscall number gets loaded into %r20 within
+>>> + * the delay branch in userspace and adjust as needed.
+>>> + */
+>>> +
+>>> +static void check_syscallno_in_delay_branch(struct pt_regs *regs)
+>>> +{
+>>> +	u32 opcode, source_reg;
+>>> +	u32 __user *uaddr;
+>>> +	int err;
+>>> +
+>>> +	/* Usually we don't have to restore %r20 (the system call number)
+>>> +	 * because it gets loaded in the delay slot of the branch external
+>>> +	 * instruction via the ldi instruction.
+>>> +	 * In some cases a register-to-register copy instruction might have
+>>> +	 * been used instead, in which case we need to copy the syscall
+>>> +	 * number into the source register before returning to userspace.
+>>> +	 */
+>>> +
+>>> +	/* A syscall is just a branch, so all we have to do is fiddle the
+>>> +	 * return pointer so that the ble instruction gets executed again.
+>>> +	 */
+>>> +	regs->gr[31] -= 8; /* delayed branching */
+>>> +
+>>> +	/* Get assembler opcode of code in delay branch */
+>>> +	uaddr = (unsigned int *) ((regs->gr[31] & ~3) + 4);
+>> 
+>> Is it valid to have unaligned instructions ? Does the architecture
+>> allow it, or it's a fumble and we should pr_warn ?
 > 
-> i have this working on most arches (x86, x86_64, arm, alpha, ia64, etc...).
-> on parisc, the kernel (using 3.18.7 currently) appears to be wrong.  in my
-> tests, if i don't mess with the syscall nr, i can change the return value
-> fine (to EPERM or whatever).  but the syscall executed which i do not want.
-> if i change the syscall to -1, then i can't change the return value (so the
-> child sees ENOSYS), but the kernel still executes the original syscall.
+> How can it be unaligned? It's about u32...
+
+That would be an instruction that is volountarily offset
+from 1, 2, 3 bytes from 4-bytes multiples by the application.
+The only situation where I have seen this is in cases where
+applications are trying to play games with the debugger or
+disassembler and hide what they are doing: they can offset
+the start of a function like this, and therefore all the
+instructions within that function.
+
+> And, no, unaligned instructions are not allowed (I think that at least).
+
+Might be interesting to try it out though. I'm not saying it's
+a valid use-case for an application, but it would be at least good
+to known whether this is an input we can expect.
+
 > 
-> i have a simple test case attached to show the issue.  the code does:
->  - spawn a child with the parent tracing it
->  - child will do:
->   - dupe stderr to another fd
->   - unlink a file named ".test.flag"
->   - write a message through the new fd
->   - close a magic # so the parent knows to start denying
->     - should see EPERM but it sees ENOSYS
->   - close the new fd
->     - should see EPERM but it is closed!
->   - write to the new fd
->     - should work, but the fd is closed
->   - call create on ".test.flag"
->     - should see EPERM, but the file is created!
->  - parent will do:
->   - log the syscalls until child runs close(-12345)
->   - the parent will then try to deny all close/creat calls
->   - uses PTRACE_POKEUSER w/PT_GR20 to set syscall to -1
->   - uses PTRACE_POKEUSER w/PT_GR28 to set return to -EPERM
+>>> +	err = get_user(opcode, uaddr);
+>>> +	if (err)
+>> 
+>> Should we add a pr_warn here ?
 > 
-> you can run the test case by doing:
-> $ gcc test.c && ./a.out
+> No. There is no gain to have a warning here.
 
-I agree, something is fishy :-)
+Allright.
 
-I did some tests with your testcase.
-First problem I had was, that compiling failed since it didn't found the asm/offset.h header file.
-Which one did you used? I know it usually should come with the kernel headers, but there it is asm-offsets.h.
-If you used debian, which package did you installed?
+> 
+>>> +		return;
+>>> +
+>>> +	/* Check if delay branch uses "ldi int,%r20" */
+>>> +	if ((opcode & 0xffff0000) == 0x34140000)
+>>> +		return;	/* everything ok, just return */
+>>> +
+>>> +	/* Check if delay branch uses "nop" */
+>>> +	if (opcode == INSN_NOP)
+>>> +		return;
+>> 
+>> When we find a NOP in the delay slot, how can we be sure %r20
+>> still holds the syscall value when we re-play the branch
+>> instruction ?
+> 
+> I looked at the code and even tested it (with your testcase actually).
+> 
+>> Can it be overwritten during the syscall,
+>> either from start of syscall to here, or from here to
+>> return to userspace ?
+> 
+> No.
+> 
+>>> +
+>>> +	/* Check if delay branch uses "copy %rX,%r20" */
+>>> +	if ((opcode & 0xffe0ffff) == 0x08000254) {
+>>> +		source_reg = (opcode >> 16) & 31;
+>>> +		regs->gr[source_reg] = regs->gr[20];
+>> 
+>> Similar question here, how can we be sure regs->gr[20]
+>> still has the system call number at this point (not
+>> overwritten from start of syscall to here) ?
+> 
+> Those registers are saved at entry of syscall and
+> restored at exit (with exception of a few registers
+> e.g. like r28 which is the return value of the syscall).
 
-Instead I used asm-offsets.h.
-First problem: I had to install the 64bit header file. PT_GR20 in this one was much higher than it should be for 32bit userspace.
+Can r28 be used as a source_reg ? If so, what happens then ?
 
-So, I used those defines (taken from the strace source package):
-#define PT_GR20 (20*4)
-#define PT_GR26 (26*4)
-#define PT_GR28 (28*4)
-#define PT_IAOQ0 (106*4)
-#define PT_IAOQ1 (107*4)
+Thanks,
 
-With that I got those output:
-root@c3000:~# ./a.out
-a.out: parent waiting for child (pid=1344) to signal: Success
-a.out: child setting up ...
-a.out: parent: waiting for exec; status: 0x1a7f
-a.out: parent: waiting for exec; status: 0x857f
-a.out: parent: hit exec!
-a.out: parent: NR: 45 brk
-a.out: parent: NR: 59 uname
-a.out: parent: NR: 33 access
-a.out: parent: NR: 90 mmap
-a.out: parent: NR: 33 access
-a.out: parent: NR:  5 open
-a.out: parent: NR:112 fstat64
-a.out: parent: NR: 90 mmap
-a.out: parent: NR:  6 close
-a.out: parent: NR: 33 access
-a.out: parent: NR:  5 open
-a.out: parent: NR:  3 read
-a.out: parent: NR:112 fstat64
-a.out: parent: NR: 90 mmap
-a.out: parent: NR: 90 mmap
-a.out: parent: NR: 90 mmap
-a.out: parent: NR:  6 close
-a.out: parent: NR: 90 mmap
-a.out: parent: NR:125 mprotect
-a.out: parent: NR: 90 mmap
-a.out: parent: NR:125 mprotect
-a.out: parent: NR: 91 munmap
-a.out: parent: NR: 41 dup
-a.out: parent: NR: 10 
-a.out: parent: NR:  4 write
-child: you should see two of these
-a.out: parent: NR:  6 close
-a.out: parent: setting NR to -1
-a.out: parent: forcing EPERM
-child: close marker (should be EPERM): Function not implemented
-a.out: parent: NR:  4 write
-a.out: parent: NR:  6 close
-a.out: parent: setting NR to -1
-a.out: parent: forcing EPERM
-child: real close (should be EPERM): Success
-a.out: parent: NR:  4 write
-a.out: parent: NR:  4 write
-child: write (should be success): Bad file descriptor
-a.out: parent: NR:  4 write
-a.out: parent: NR:  8 creat
-a.out: parent: setting NR to -1
-a.out: parent: forcing EPERM
-child: creat (should be EPERM): Success
-a.out: parent: NR:  4 write
-a.out: parent: NR: 33 access
-child: access (should be ENOENT): Success
-a.out: parent: NR:  4 write
-a.out: parent: NR: 10 
+Mathieu
 
-Seems not like what it should be.
-I need to look closer at it during the next few days.
+> 
+> Helge
 
-Regarding on how to get correct 32bit PT_REG #defines/values even on 64bit kernel,
-maybe the attached patch is a way to go.
-
-Helge
-
---------------060507090003090802010103
-Content-Type: text/x-diff;
- name="pt_reg_32bit.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="pt_reg_32bit.patch"
-
-diff --git a/arch/parisc/include/uapi/asm/ptrace.h b/arch/parisc/include/uapi/asm/ptrace.h
-index c4fa6c8..1f2f892 100644
---- a/arch/parisc/include/uapi/asm/ptrace.h
-+++ b/arch/parisc/include/uapi/asm/ptrace.h
-@@ -33,6 +33,26 @@ struct pt_regs {
- 	unsigned long ipsw;	/* CR22 */
- };
- 
-+#if defined(__LP64__)
-+struct compat_pt_regs {
-+	unsigned int gr[32];	/* PSW is in gr[0] */
-+	__u64 fr[32];
-+	unsigned int sr[ 8];
-+	unsigned int iasq[2];
-+	unsigned int iaoq[2];
-+	unsigned int cr27;
-+	unsigned int pad0;     /* available for other uses */
-+	unsigned int orig_r28;
-+	unsigned int ksp;
-+	unsigned int kpc;
-+	unsigned int sar;	/* CR11 */
-+	unsigned int iir;	/* CR19 */
-+	unsigned int isr;	/* CR20 */
-+	unsigned int ior;	/* CR21 */
-+	unsigned int ipsw;	/* CR22 */
-+};
-+#endif
-+
- /*
-  * The numbers chosen here are somewhat arbitrary but absolutely MUST
-  * not overlap with any of the number assigned in <linux/ptrace.h>.
-diff --git a/arch/parisc/kernel/asm-offsets.c b/arch/parisc/kernel/asm-offsets.c
-index d2f6257..e2a8030 100644
---- a/arch/parisc/kernel/asm-offsets.c
-+++ b/arch/parisc/kernel/asm-offsets.c
-@@ -240,6 +240,96 @@ int main(void)
- 	DEFINE(PT_SIZE, sizeof(struct pt_regs));
- 	/* PT_SZ_ALGN includes space for a stack frame. */
- 	DEFINE(PT_SZ_ALGN, align_frame(sizeof(struct pt_regs), FRAME_ALIGN));
-+#ifdef CONFIG_64BIT
-+	COMMENT("for 32bit userspace:");
-+	DEFINE(PT_32_PSW, offsetof(struct compat_pt_regs, gr[ 0]));
-+	DEFINE(PT_32_GR1, offsetof(struct compat_pt_regs, gr[ 1]));
-+	DEFINE(PT_32_GR2, offsetof(struct compat_pt_regs, gr[ 2]));
-+	DEFINE(PT_32_GR3, offsetof(struct compat_pt_regs, gr[ 3]));
-+	DEFINE(PT_32_GR4, offsetof(struct compat_pt_regs, gr[ 4]));
-+	DEFINE(PT_32_GR5, offsetof(struct compat_pt_regs, gr[ 5]));
-+	DEFINE(PT_32_GR6, offsetof(struct compat_pt_regs, gr[ 6]));
-+	DEFINE(PT_32_GR7, offsetof(struct compat_pt_regs, gr[ 7]));
-+	DEFINE(PT_32_GR8, offsetof(struct compat_pt_regs, gr[ 8]));
-+	DEFINE(PT_32_GR9, offsetof(struct compat_pt_regs, gr[ 9]));
-+	DEFINE(PT_32_GR10, offsetof(struct compat_pt_regs, gr[10]));
-+	DEFINE(PT_32_GR11, offsetof(struct compat_pt_regs, gr[11]));
-+	DEFINE(PT_32_GR12, offsetof(struct compat_pt_regs, gr[12]));
-+	DEFINE(PT_32_GR13, offsetof(struct compat_pt_regs, gr[13]));
-+	DEFINE(PT_32_GR14, offsetof(struct compat_pt_regs, gr[14]));
-+	DEFINE(PT_32_GR15, offsetof(struct compat_pt_regs, gr[15]));
-+	DEFINE(PT_32_GR16, offsetof(struct compat_pt_regs, gr[16]));
-+	DEFINE(PT_32_GR17, offsetof(struct compat_pt_regs, gr[17]));
-+	DEFINE(PT_32_GR18, offsetof(struct compat_pt_regs, gr[18]));
-+	DEFINE(PT_32_GR19, offsetof(struct compat_pt_regs, gr[19]));
-+	DEFINE(PT_32_GR20, offsetof(struct compat_pt_regs, gr[20]));
-+	DEFINE(PT_32_GR21, offsetof(struct compat_pt_regs, gr[21]));
-+	DEFINE(PT_32_GR22, offsetof(struct compat_pt_regs, gr[22]));
-+	DEFINE(PT_32_GR23, offsetof(struct compat_pt_regs, gr[23]));
-+	DEFINE(PT_32_GR24, offsetof(struct compat_pt_regs, gr[24]));
-+	DEFINE(PT_32_GR25, offsetof(struct compat_pt_regs, gr[25]));
-+	DEFINE(PT_32_GR26, offsetof(struct compat_pt_regs, gr[26]));
-+	DEFINE(PT_32_GR27, offsetof(struct compat_pt_regs, gr[27]));
-+	DEFINE(PT_32_GR28, offsetof(struct compat_pt_regs, gr[28]));
-+	DEFINE(PT_32_GR29, offsetof(struct compat_pt_regs, gr[29]));
-+	DEFINE(PT_32_GR30, offsetof(struct compat_pt_regs, gr[30]));
-+	DEFINE(PT_32_GR31, offsetof(struct compat_pt_regs, gr[31]));
-+	DEFINE(PT_32_FR0, offsetof(struct compat_pt_regs, fr[ 0]));
-+	DEFINE(PT_32_FR1, offsetof(struct compat_pt_regs, fr[ 1]));
-+	DEFINE(PT_32_FR2, offsetof(struct compat_pt_regs, fr[ 2]));
-+	DEFINE(PT_32_FR3, offsetof(struct compat_pt_regs, fr[ 3]));
-+	DEFINE(PT_32_FR4, offsetof(struct compat_pt_regs, fr[ 4]));
-+	DEFINE(PT_32_FR5, offsetof(struct compat_pt_regs, fr[ 5]));
-+	DEFINE(PT_32_FR6, offsetof(struct compat_pt_regs, fr[ 6]));
-+	DEFINE(PT_32_FR7, offsetof(struct compat_pt_regs, fr[ 7]));
-+	DEFINE(PT_32_FR8, offsetof(struct compat_pt_regs, fr[ 8]));
-+	DEFINE(PT_32_FR9, offsetof(struct compat_pt_regs, fr[ 9]));
-+	DEFINE(PT_32_FR10, offsetof(struct compat_pt_regs, fr[10]));
-+	DEFINE(PT_32_FR11, offsetof(struct compat_pt_regs, fr[11]));
-+	DEFINE(PT_32_FR12, offsetof(struct compat_pt_regs, fr[12]));
-+	DEFINE(PT_32_FR13, offsetof(struct compat_pt_regs, fr[13]));
-+	DEFINE(PT_32_FR14, offsetof(struct compat_pt_regs, fr[14]));
-+	DEFINE(PT_32_FR15, offsetof(struct compat_pt_regs, fr[15]));
-+	DEFINE(PT_32_FR16, offsetof(struct compat_pt_regs, fr[16]));
-+	DEFINE(PT_32_FR17, offsetof(struct compat_pt_regs, fr[17]));
-+	DEFINE(PT_32_FR18, offsetof(struct compat_pt_regs, fr[18]));
-+	DEFINE(PT_32_FR19, offsetof(struct compat_pt_regs, fr[19]));
-+	DEFINE(PT_32_FR20, offsetof(struct compat_pt_regs, fr[20]));
-+	DEFINE(PT_32_FR21, offsetof(struct compat_pt_regs, fr[21]));
-+	DEFINE(PT_32_FR22, offsetof(struct compat_pt_regs, fr[22]));
-+	DEFINE(PT_32_FR23, offsetof(struct compat_pt_regs, fr[23]));
-+	DEFINE(PT_32_FR24, offsetof(struct compat_pt_regs, fr[24]));
-+	DEFINE(PT_32_FR25, offsetof(struct compat_pt_regs, fr[25]));
-+	DEFINE(PT_32_FR26, offsetof(struct compat_pt_regs, fr[26]));
-+	DEFINE(PT_32_FR27, offsetof(struct compat_pt_regs, fr[27]));
-+	DEFINE(PT_32_FR28, offsetof(struct compat_pt_regs, fr[28]));
-+	DEFINE(PT_32_FR29, offsetof(struct compat_pt_regs, fr[29]));
-+	DEFINE(PT_32_FR30, offsetof(struct compat_pt_regs, fr[30]));
-+	DEFINE(PT_32_FR31, offsetof(struct compat_pt_regs, fr[31]));
-+	DEFINE(PT_32_SR0, offsetof(struct compat_pt_regs, sr[ 0]));
-+	DEFINE(PT_32_SR1, offsetof(struct compat_pt_regs, sr[ 1]));
-+	DEFINE(PT_32_SR2, offsetof(struct compat_pt_regs, sr[ 2]));
-+	DEFINE(PT_32_SR3, offsetof(struct compat_pt_regs, sr[ 3]));
-+	DEFINE(PT_32_SR4, offsetof(struct compat_pt_regs, sr[ 4]));
-+	DEFINE(PT_32_SR5, offsetof(struct compat_pt_regs, sr[ 5]));
-+	DEFINE(PT_32_SR6, offsetof(struct compat_pt_regs, sr[ 6]));
-+	DEFINE(PT_32_SR7, offsetof(struct compat_pt_regs, sr[ 7]));
-+	DEFINE(PT_32_IASQ0, offsetof(struct compat_pt_regs, iasq[0]));
-+	DEFINE(PT_32_IASQ1, offsetof(struct compat_pt_regs, iasq[1]));
-+	DEFINE(PT_32_IAOQ0, offsetof(struct compat_pt_regs, iaoq[0]));
-+	DEFINE(PT_32_IAOQ1, offsetof(struct compat_pt_regs, iaoq[1]));
-+	DEFINE(PT_32_CR27, offsetof(struct compat_pt_regs, cr27));
-+	DEFINE(PT_32_ORIG_R28, offsetof(struct compat_pt_regs, orig_r28));
-+	DEFINE(PT_32_KSP, offsetof(struct compat_pt_regs, ksp));
-+	DEFINE(PT_32_KPC, offsetof(struct compat_pt_regs, kpc));
-+	DEFINE(PT_32_SAR, offsetof(struct compat_pt_regs, sar));
-+	DEFINE(PT_32_IIR, offsetof(struct compat_pt_regs, iir));
-+	DEFINE(PT_32_ISR, offsetof(struct compat_pt_regs, isr));
-+	DEFINE(PT_32_IOR, offsetof(struct compat_pt_regs, ior));
-+	DEFINE(PT_32_SIZE, sizeof(struct compat_pt_regs));
-+	/* PT_32_SZ_ALGN includes space for a stack frame. */
-+	DEFINE(PT_32_SZ_ALGN, align_frame(sizeof(struct compat_pt_regs), FRAME_ALIGN));
-+#endif
- 	BLANK();
- 	DEFINE(TI_TASK, offsetof(struct thread_info, task));
- 	DEFINE(TI_FLAGS, offsetof(struct thread_info, flags));
-
---------------060507090003090802010103--
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
