@@ -1,53 +1,37 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] parisc: Fix syscall restarts (v2)
-Date: Thu, 24 Dec 2015 11:51:54 -0500
-Message-ID: <567C22AA.1000700@bell.net>
-References: <20151218233034.GA24910@p100.box>
- <20151221091933.GA22935@p100.box>
- <997901782.279317.1450729643512.JavaMail.zimbra@efficios.com>
- <56786702.6060600@gmx.de>
- <187718964.290846.1450973235666.JavaMail.zimbra@efficios.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc syscall restart fix for v4.4
+Date: Fri, 25 Dec 2015 13:19:27 +0100
+Message-ID: <20151225121927.GA6170@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: linux-parisc <linux-parisc@vger.kernel.org>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <187718964.290846.1450973235666.JavaMail.zimbra@efficios.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2015-12-24 11:07 AM, Mathieu Desnoyers wrote:
->>> Is it valid to have unaligned instructions ? Does the architecture
->>> >>allow it, or it's a fumble and we should pr_warn ?
->> >
->> >How can it be unaligned? It's about u32...
-> That would be an instruction that is volountarily offset
-> from 1, 2, 3 bytes from 4-bytes multiples by the application.
-> The only situation where I have seen this is in cases where
-> applications are trying to play games with the debugger or
-> disassembler and hide what they are doing: they can offset
-> the start of a function like this, and therefore all the
-> instructions within that function.
->
-This is not possible on PA-RISC.  Indeed, user instruction addresses are 
-always
-offset by three.  There is no way to branch to an instruction that is 
-offset.
+Hi Linus,
 
-The least significant two bits of an instruction address contain a 
-priority level.
-User code on linux and hpux executes at level 3.  The only way a user 
-can change
-privilege level is with a "gate" instruction (a special branch). Whether 
-this is
-permitted or not depends on page table permissions that the user can't 
-change.
-In practice, a level change is only allowed on the gateway page.
+please pull one late patch for the parisc architecture for kernel v4.4 from:
 
-Dave
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.4-4
 
--- 
-John David Anglin  dave.anglin@bell.net
+The architectural design of parisc always uses two instructions to call kernel
+syscalls (delayed branch feature). This means that the instruction following
+the branch (located in the delay slot of the branch instruction) is executed
+before control passes to the branch destination.
+Depending on which assembler instruction and how it is used in usersapce in
+the delay slot, this sometimes made restarted syscalls like futex() and poll()
+failing with -ENOSYS.
 
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Helge Deller (1):
+      parisc: Fix syscall restarts
+
+ arch/parisc/kernel/signal.c | 64 ++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 52 insertions(+), 12 deletions(-)
