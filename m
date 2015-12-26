@@ -1,128 +1,79 @@
-From: Toshi Kani <toshi.kani@hpe.com>
-Subject: [PATCH v2 09/16] drivers: Initialize resource entry to zero
-Date: Fri, 25 Dec 2015 15:09:18 -0700
-Message-ID: <1451081365-15190-9-git-send-email-toshi.kani@hpe.com>
-References: <1451081365-15190-1-git-send-email-toshi.kani@hpe.com>
-Cc: linux-arch@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	Toshi Kani <toshi.kani@hpe.com>
-To: akpm@linux-foundation.org,
-	bp@alien8.de
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <1451081365-15190-1-git-send-email-toshi.kani@hpe.com>
-List-ID: <linux-mm.kvack.org>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: Re: [GIT PULL] parisc huge page support for v4.4
+Date: Sat, 26 Dec 2015 07:09:16 -0500 (EST)
+Message-ID: <alpine.LRH.2.02.1512260645560.7692@file01.intranet.prod.int.rdu2.redhat.com>
+References: <20151122115153.GA28471@p100.box> <alpine.LRH.2.02.1511241014280.9586@file01.intranet.prod.int.rdu2.redhat.com> <5654892D.1030707@gmx.de> <alpine.LRH.2.02.1511241136440.14442@file01.intranet.prod.int.rdu2.redhat.com> <20151124170020.GA13198@p100.box>
+ <alpine.LRH.2.02.1511241343200.30334@file01.intranet.prod.int.rdu2.redhat.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <alpine.LRH.2.02.1511241343200.30334@file01.intranet.prod.int.rdu2.redhat.com>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-I/O resource descriptor, 'desc' added to struct resource, needs
-to be initialized to zero by default.  Some drivers call kmalloc()
-to allocate a resource entry, but does not initialize it to zero
-by memset().  Change these drivers to call kzalloc(), instead.
 
-Cc: linux-acpi@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
-Signed-off-by: Toshi Kani <toshi.kani@hpe.com>
----
- drivers/acpi/acpi_platform.c       |    2 +-
- drivers/parisc/eisa_enumerator.c   |    4 ++--
- drivers/rapidio/rio.c              |    8 ++++----
- drivers/sh/superhyway/superhyway.c |    2 +-
- 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
-index 296b7a1..b6f7fa3 100644
---- a/drivers/acpi/acpi_platform.c
-+++ b/drivers/acpi/acpi_platform.c
-@@ -62,7 +62,7 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev)
- 	if (count < 0) {
- 		return NULL;
- 	} else if (count > 0) {
--		resources = kmalloc(count * sizeof(struct resource),
-+		resources = kzalloc(count * sizeof(struct resource),
- 				    GFP_KERNEL);
- 		if (!resources) {
- 			dev_err(&adev->dev, "No memory for resources\n");
-diff --git a/drivers/parisc/eisa_enumerator.c b/drivers/parisc/eisa_enumerator.c
-index a656d9e..21905fe 100644
---- a/drivers/parisc/eisa_enumerator.c
-+++ b/drivers/parisc/eisa_enumerator.c
-@@ -91,7 +91,7 @@ static int configure_memory(const unsigned char *buf,
- 	for (i=0;i<HPEE_MEMORY_MAX_ENT;i++) {
- 		c = get_8(buf+len);
- 		
--		if (NULL != (res = kmalloc(sizeof(struct resource), GFP_KERNEL))) {
-+		if (NULL != (res = kzalloc(sizeof(struct resource), GFP_KERNEL))) {
- 			int result;
- 			
- 			res->name = name;
-@@ -183,7 +183,7 @@ static int configure_port(const unsigned char *buf, struct resource *io_parent,
- 	for (i=0;i<HPEE_PORT_MAX_ENT;i++) {
- 		c = get_8(buf+len);
- 		
--		if (NULL != (res = kmalloc(sizeof(struct resource), GFP_KERNEL))) {
-+		if (NULL != (res = kzalloc(sizeof(struct resource), GFP_KERNEL))) {
- 			res->name = board;
- 			res->start = get_16(buf+len+1);
- 			res->end = get_16(buf+len+1)+(c&HPEE_PORT_SIZE_MASK)+1;
-diff --git a/drivers/rapidio/rio.c b/drivers/rapidio/rio.c
-index d7b87c6..e220edc 100644
---- a/drivers/rapidio/rio.c
-+++ b/drivers/rapidio/rio.c
-@@ -117,7 +117,7 @@ int rio_request_inb_mbox(struct rio_mport *mport,
- 	if (mport->ops->open_inb_mbox == NULL)
- 		goto out;
- 
--	res = kmalloc(sizeof(struct resource), GFP_KERNEL);
-+	res = kzalloc(sizeof(struct resource), GFP_KERNEL);
- 
- 	if (res) {
- 		rio_init_mbox_res(res, mbox, mbox);
-@@ -185,7 +185,7 @@ int rio_request_outb_mbox(struct rio_mport *mport,
- 	if (mport->ops->open_outb_mbox == NULL)
- 		goto out;
- 
--	res = kmalloc(sizeof(struct resource), GFP_KERNEL);
-+	res = kzalloc(sizeof(struct resource), GFP_KERNEL);
- 
- 	if (res) {
- 		rio_init_mbox_res(res, mbox, mbox);
-@@ -285,7 +285,7 @@ int rio_request_inb_dbell(struct rio_mport *mport,
- {
- 	int rc = 0;
- 
--	struct resource *res = kmalloc(sizeof(struct resource), GFP_KERNEL);
-+	struct resource *res = kzalloc(sizeof(struct resource), GFP_KERNEL);
- 
- 	if (res) {
- 		rio_init_dbell_res(res, start, end);
-@@ -360,7 +360,7 @@ int rio_release_inb_dbell(struct rio_mport *mport, u16 start, u16 end)
- struct resource *rio_request_outb_dbell(struct rio_dev *rdev, u16 start,
- 					u16 end)
- {
--	struct resource *res = kmalloc(sizeof(struct resource), GFP_KERNEL);
-+	struct resource *res = kzalloc(sizeof(struct resource), GFP_KERNEL);
- 
- 	if (res) {
- 		rio_init_dbell_res(res, start, end);
-diff --git a/drivers/sh/superhyway/superhyway.c b/drivers/sh/superhyway/superhyway.c
-index 2d9e7f3..bb1fb771 100644
---- a/drivers/sh/superhyway/superhyway.c
-+++ b/drivers/sh/superhyway/superhyway.c
-@@ -66,7 +66,7 @@ int superhyway_add_device(unsigned long base, struct superhyway_device *sdev,
- 	superhyway_read_vcr(dev, base, &dev->vcr);
- 
- 	if (!dev->resource) {
--		dev->resource = kmalloc(sizeof(struct resource), GFP_KERNEL);
-+		dev->resource = kzalloc(sizeof(struct resource), GFP_KERNEL);
- 		if (!dev->resource) {
- 			kfree(dev);
- 			return -ENOMEM;
+On Tue, 24 Nov 2015, Mikulas Patocka wrote:
 
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+> 
+> 
+> On Tue, 24 Nov 2015, Helge Deller wrote:
+> 
+> > * Mikulas Patocka <mpatocka@redhat.com>:
+> > > 
+> > > 
+> > > On Tue, 24 Nov 2015, Helge Deller wrote:
+> > > 
+> > > > > Hi
+> > > > > 
+> > > > > Since the kernel 4.4-rc2 I'm getting frequent boot failures on PA-RISC. 
+> > > > > When I revert this patchset, the crashes are gone.
+> > > > 
+> > > > > [    3.296666] CPU(s): 4 out of 4 PA8900 (Shortfin) at 1000.000000 MHz online
+> > > > 
+> > > > Hi Mikulas,
+> > > > 
+> > > > Yes, I've seen this as well.
+> > > > It affects only the PA8900 CPUs, while all PA8500-PA8700 machines seem to work fine.
+> > > > I do have a temporary 3-line patch to avoid the crashes which I'll push to my tree shortly.
+> > > > I'm still investigating why it only affects the PA8900 CPUs, but I assume
+> > > > it's related to the cache aliasing of those CPUs.
+> > > > I'll keep you updated.
+> > > > 
+> > > > Helge
+> > > 
+> > > The PA-RISC specification doesn't allow aliasing on non-equaivalent 
+> > > addresses. Can the kernel map a piece of kernel data to other virtual 
+> > > address? If yes, we can't use big pages to map kernel data.
+> > 
+> > Can you please try the two patches below?
+> > The first one disables mapping kernel text/data on huge pages on
+> > PA8800/PA8900 CPUs. Patch works for me on my Mako PA8800.
+> > 
+> > Independend of my huge page patch the second patch disables the tlb
+> > flush optimization we added earlier. It seems calling flush_tlb_all()
+> > doesn't reliably flushes tlbs on all CPUs so it's better to fall back to
+> > the loop implementation.
+> > 
+> > Helge
+> 
+> The kernel with these patches works fine so far.
+> 
+> Mikulas
+
+BTW. I looked at this in arch/parisc/mm/hugetlbpage.c:set_huge_pte_at 
+"*ptep = entry;" and it seems like a bad bug. PA-RISC doesn't have atomic 
+instructions to modify page table entries, so it takes spinlock in the TLB 
+handler and modifies the page table entry non-atomically. If you modify 
+the page table entry without the spinlock, you may race with TLB handler 
+on another CPU and your modification may be lost.
+
+The comment says something about double locking on pa_tlb_lock, but 
+pa_tlb_lock isn't held when that function is called.
+
+Mikulas
