@@ -1,46 +1,82 @@
 From: Helge Deller <deller@gmx.de>
-Subject: timerfd_settime/timerfd_gettime issue ?
-Date: Sat, 26 Dec 2015 13:26:14 +0100
-Message-ID: <567E8766.6020707@gmx.de>
+Subject: Re: [GIT PULL] parisc huge page support for v4.4
+Date: Sat, 26 Dec 2015 13:31:54 +0100
+Message-ID: <567E88BA.4010607@gmx.de>
+References: <20151122115153.GA28471@p100.box>
+ <alpine.LRH.2.02.1511241014280.9586@file01.intranet.prod.int.rdu2.redhat.com>
+ <5654892D.1030707@gmx.de>
+ <alpine.LRH.2.02.1511241136440.14442@file01.intranet.prod.int.rdu2.redhat.com>
+ <20151124170020.GA13198@p100.box>
+ <alpine.LRH.2.02.1511241343200.30334@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.1512260645560.7692@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset=windows-1252
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+To: Mikulas Patocka <mpatocka@redhat.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <alpine.LRH.2.02.1512260645560.7692@file01.intranet.prod.int.rdu2.redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Thomas,
+On 26.12.2015 13:09, Mikulas Patocka wrote:
+>> On Tue, 24 Nov 2015, Helge Deller wrote:
+>>> * Mikulas Patocka <mpatocka@redhat.com>:
+>>>> On Tue, 24 Nov 2015, Helge Deller wrote:
+>>>>>> Hi
+>>>>>>
+>>>>>> Since the kernel 4.4-rc2 I'm getting frequent boot failures on PA-RISC. 
+>>>>>> When I revert this patchset, the crashes are gone.
+>>>>>
+>>>>>> [    3.296666] CPU(s): 4 out of 4 PA8900 (Shortfin) at 1000.000000 MHz online
+>>>>>
+>>>>> Hi Mikulas,
+>>>>>
+>>>>> Yes, I've seen this as well.
+>>>>> It affects only the PA8900 CPUs, while all PA8500-PA8700 machines seem to work fine.
+>>>>> I do have a temporary 3-line patch to avoid the crashes which I'll push to my tree shortly.
+>>>>> I'm still investigating why it only affects the PA8900 CPUs, but I assume
+>>>>> it's related to the cache aliasing of those CPUs.
+>>>>> I'll keep you updated.
+>>>>>
+>>>>> Helge
+>>>>
+>>>> The PA-RISC specification doesn't allow aliasing on non-equaivalent 
+>>>> addresses. Can the kernel map a piece of kernel data to other virtual 
+>>>> address? If yes, we can't use big pages to map kernel data.
+>>>
+>>> Can you please try the two patches below?
+>>> The first one disables mapping kernel text/data on huge pages on
+>>> PA8800/PA8900 CPUs. Patch works for me on my Mako PA8800.
+>>>
+>>> Independend of my huge page patch the second patch disables the tlb
+>>> flush optimization we added earlier. It seems calling flush_tlb_all()
+>>> doesn't reliably flushes tlbs on all CPUs so it's better to fall back to
+>>> the loop implementation.
+>>>
+>>> Helge
+>>
+>> The kernel with these patches works fine so far.
+>>
+>> Mikulas
+> 
+> BTW. I looked at this in arch/parisc/mm/hugetlbpage.c:set_huge_pte_at 
+> "*ptep = entry;" and it seems like a bad bug. PA-RISC doesn't have atomic 
+> instructions to modify page table entries, so it takes spinlock in the TLB 
+> handler and modifies the page table entry non-atomically. If you modify 
+> the page table entry without the spinlock, you may race with TLB handler 
+> on another CPU and your modification may be lost.
 
-I see a strange behavior on the parisc platform, for which I'm not sure if it's intended or
-if there is a bug somewhere.
+Right.
 
-The program calls timerfd_settime() and sets a timer (e.g. sec=0, nsec=100000000).
-Directly after setting the timer it calls timerfd_gettime() and receives (sec=0, nsec=103914413).
-The second nsec is higher than the initial nsec value which was set.
+> The comment says something about double locking on pa_tlb_lock, but 
+> pa_tlb_lock isn't held when that function is called.
 
-Does timerfd_settime() maybe tries to add the initial time it takes to start the timer?
-Any idea or hint?
+I have a work-in-progress patch for that in one of my trees, e.g.:
+http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/commit/?h=parisc-next&id=5c76b525cbdb097401f46522b27b1eb6244f34f9
+It's lightly tested though.
 
-Thanks,
 Helge
 
-Background:
-I'm debugging the build-failure on debian for the liblinux-fd-perl package:
-https://buildd.debian.org/status/fetch.php?pkg=liblinux-fd-perl&arch=hppa&ver=0.011-1&stamp=1443355593
-
-Here is a log which I get from kernel after adding some printks.
-The problematic line is #3. 
-[  465.888000] timerfd_settime: interval (sec=0, nsec=0)         it_value (sec=0, nsec=100000000) 
-[  466.196000] timerfd_settime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=100000000) 
-[  466.300000] timerfd_gettime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=103914413) 
-[  466.404000] timerfd_gettime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=97444552) 
-[  466.508000] timerfd_gettime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=92611704) 
-[  466.616000] timerfd_gettime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=87376859) 
-[  466.720000] timerfd_gettime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=82538534) 
-[  466.824000] timerfd_gettime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=77293289) 
-[  466.928000] timerfd_gettime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=72501584) 
-[  467.036000] timerfd_gettime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=67377673) 
-[  467.140000] timerfd_gettime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=62631601) 
-[  467.244000] timerfd_gettime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=57401824) 
