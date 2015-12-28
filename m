@@ -1,82 +1,117 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [GIT PULL] parisc huge page support for v4.4
-Date: Sat, 26 Dec 2015 13:31:54 +0100
-Message-ID: <567E88BA.4010607@gmx.de>
-References: <20151122115153.GA28471@p100.box>
- <alpine.LRH.2.02.1511241014280.9586@file01.intranet.prod.int.rdu2.redhat.com>
- <5654892D.1030707@gmx.de>
- <alpine.LRH.2.02.1511241136440.14442@file01.intranet.prod.int.rdu2.redhat.com>
- <20151124170020.GA13198@p100.box>
- <alpine.LRH.2.02.1511241343200.30334@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.1512260645560.7692@file01.intranet.prod.int.rdu2.redhat.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: ptrace interface does not permit modification of syscall return
+Date: Mon, 28 Dec 2015 13:03:07 -0500
+Message-ID: <20151228180307.GI25803@vapier.lan>
+References: <20151221175558.GA11489@vapier.lan>
+ <5679BC60.5090107@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
-To: Mikulas Patocka <mpatocka@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="0k2ZE0YWsaeoufzj"
+Cc: linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.02.1512260645560.7692@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <5679BC60.5090107@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 26.12.2015 13:09, Mikulas Patocka wrote:
->> On Tue, 24 Nov 2015, Helge Deller wrote:
->>> * Mikulas Patocka <mpatocka@redhat.com>:
->>>> On Tue, 24 Nov 2015, Helge Deller wrote:
->>>>>> Hi
->>>>>>
->>>>>> Since the kernel 4.4-rc2 I'm getting frequent boot failures on PA-RISC. 
->>>>>> When I revert this patchset, the crashes are gone.
->>>>>
->>>>>> [    3.296666] CPU(s): 4 out of 4 PA8900 (Shortfin) at 1000.000000 MHz online
->>>>>
->>>>> Hi Mikulas,
->>>>>
->>>>> Yes, I've seen this as well.
->>>>> It affects only the PA8900 CPUs, while all PA8500-PA8700 machines seem to work fine.
->>>>> I do have a temporary 3-line patch to avoid the crashes which I'll push to my tree shortly.
->>>>> I'm still investigating why it only affects the PA8900 CPUs, but I assume
->>>>> it's related to the cache aliasing of those CPUs.
->>>>> I'll keep you updated.
->>>>>
->>>>> Helge
->>>>
->>>> The PA-RISC specification doesn't allow aliasing on non-equaivalent 
->>>> addresses. Can the kernel map a piece of kernel data to other virtual 
->>>> address? If yes, we can't use big pages to map kernel data.
->>>
->>> Can you please try the two patches below?
->>> The first one disables mapping kernel text/data on huge pages on
->>> PA8800/PA8900 CPUs. Patch works for me on my Mako PA8800.
->>>
->>> Independend of my huge page patch the second patch disables the tlb
->>> flush optimization we added earlier. It seems calling flush_tlb_all()
->>> doesn't reliably flushes tlbs on all CPUs so it's better to fall back to
->>> the loop implementation.
->>>
->>> Helge
->>
->> The kernel with these patches works fine so far.
->>
->> Mikulas
-> 
-> BTW. I looked at this in arch/parisc/mm/hugetlbpage.c:set_huge_pte_at 
-> "*ptep = entry;" and it seems like a bad bug. PA-RISC doesn't have atomic 
-> instructions to modify page table entries, so it takes spinlock in the TLB 
-> handler and modifies the page table entry non-atomically. If you modify 
-> the page table entry without the spinlock, you may race with TLB handler 
-> on another CPU and your modification may be lost.
 
-Right.
+--0k2ZE0YWsaeoufzj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> The comment says something about double locking on pa_tlb_lock, but 
-> pa_tlb_lock isn't held when that function is called.
+On 22 Dec 2015 22:10, Helge Deller wrote:
+> On 21.12.2015 18:55, Mike Frysinger wrote:
+> > i have a ptrace program that watches for specific syscalls and when
+> > matched, will:
+> >  - on entry change the syscall nr to -1 (so the kernel will skip it)
+> >  - on exit change the return to -EPERM so the userspace sees a denial
+> >=20
+> > i have this working on most arches (x86, x86_64, arm, alpha, ia64, etc.=
+=2E.).
+> > on parisc, the kernel (using 3.18.7 currently) appears to be wrong.  in=
+ my
+> > tests, if i don't mess with the syscall nr, i can change the return val=
+ue
+> > fine (to EPERM or whatever).  but the syscall executed which i do not w=
+ant.
+> > if i change the syscall to -1, then i can't change the return value (so=
+ the
+> > child sees ENOSYS), but the kernel still executes the original syscall.
+> >=20
+> > i have a simple test case attached to show the issue.  the code does:
+> >  - spawn a child with the parent tracing it
+> >  - child will do:
+> >   - dupe stderr to another fd
+> >   - unlink a file named ".test.flag"
+> >   - write a message through the new fd
+> >   - close a magic # so the parent knows to start denying
+> >     - should see EPERM but it sees ENOSYS
+> >   - close the new fd
+> >     - should see EPERM but it is closed!
+> >   - write to the new fd
+> >     - should work, but the fd is closed
+> >   - call create on ".test.flag"
+> >     - should see EPERM, but the file is created!
+> >  - parent will do:
+> >   - log the syscalls until child runs close(-12345)
+> >   - the parent will then try to deny all close/creat calls
+> >   - uses PTRACE_POKEUSER w/PT_GR20 to set syscall to -1
+> >   - uses PTRACE_POKEUSER w/PT_GR28 to set return to -EPERM
+> >=20
+> > you can run the test case by doing:
+> > $ gcc test.c && ./a.out
+>=20
+> I agree, something is fishy :-)
+>=20
+> I did some tests with your testcase.
+> First problem I had was, that compiling failed since it didn't found the =
+asm/offset.h header file.
+> Which one did you used? I know it usually should come with the kernel hea=
+ders, but there it is asm-offsets.h.
 
-I have a work-in-progress patch for that in one of my trees, e.g.:
-http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/commit/?h=parisc-next&id=5c76b525cbdb097401f46522b27b1eb6244f34f9
-It's lightly tested though.
+hmm, looks like it got installed by hand at some point (Jul 2004 datestamp!)
+and never cleaned up.
 
-Helge
+> First problem: I had to install the 64bit header file. PT_GR20 in this on=
+e was much higher than it should be for 32bit userspace.
+>=20
+> So, I used those defines (taken from the strace source package):
+> #define PT_GR20 (20*4)
+> #define PT_GR26 (26*4)
+> #define PT_GR28 (28*4)
+> #define PT_IAOQ0 (106*4)
+> #define PT_IAOQ1 (107*4)
 
+these are the values in my local asm/offset.h, and what i was using
+in my original code -- the register # multiplied by 4.
+
+> With that I got those output:
+
+looks like you're seeing the same as me.  i'm only testing 32bit user
+and 32bit kernel currently as we don't have a 64bit userspace :).
+-mike
+
+--0k2ZE0YWsaeoufzj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJWgXlbAAoJEEFjO5/oN/WBcfgQAIRL/OrmcsNRf5FlUu7D3y0r
+hUzgwBnj7CNume4sgi9Kmzdhny5RG8mXK6OSDklNXCH2fAz2n7JuaJC8r78NeVN2
+C/33BRaWYpUnI/BuLZ8fToOMIEh8gdr/wvaxE58zJxSovcBg9mK0z2X3+0ouXaVY
+Fwtg9Vbe6EeFIMesOmTZypeM9oQ4rlrWktGDF2mXU5TPBz3tintq/3wSzrPwzTNT
+YcQxZ3Itl3Tx6h41yoq0zAcCWBsksZ7msMw9aFiAWdPZp9CDn62nzwKFE0xPYoFj
+ScQ6THNn2gZwbaRVyXHZTmFgl8pbuKx3PdDVSxeVyxoEcnuA5rs+OITJnpdBlZZu
+xOgZy0JHh4OgGFStKo2RR+AzvQTXMJlp07eGvE07N78Opul8gmx/nbktyr8s+M3u
+1H2qu6nFKHWk+LQdabTQtCn9ageZBg3imTy6yJYp+nwuw2jnTDjJuaQvTCU8UJ9C
+6RvKDeFq2Z07AbSYcVgIJP2ssh7mlDvYhGuLLkMZTlcjhDoIj8pjS3vKk4bSXS4V
+RjmyWZZGURQOswaYilkZb/OMxK9U325H2kQtbxIiayltXPpzuKWxNRwjYHS+5ZNr
+An6mI22+sdyQhYdptvU789d4Jc4yCRf/KDBzCC3th3XqLF+Vm2T7ygiJk55T+wzn
+71j3F1jSQC3jGHHk3tO7
+=YkGF
+-----END PGP SIGNATURE-----
+
+--0k2ZE0YWsaeoufzj--
