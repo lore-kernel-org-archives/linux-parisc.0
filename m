@@ -1,56 +1,48 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: timerfd_settime/timerfd_gettime issue ?
-Date: Tue, 29 Dec 2015 10:44:35 +0100 (CET)
-Message-ID: <alpine.DEB.2.11.1512291027570.28591@nanos>
-References: <567E8766.6020707@gmx.de>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: dladdr returns wrong names on hppa
+Date: Tue, 29 Dec 2015 13:35:19 -0500
+Message-ID: <05E7B0DC-DFD7-4B04-B6DE-DF20E8B64B83@bell.net>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <567E8766.6020707@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Helge,
+There was an old message from Guy Martin regarding dladdr not working on hppa:
+http://permalink.gmane.org/gmane.linux.ports.hppa/1423
 
-On Sat, 26 Dec 2015, Helge Deller wrote:
+The Debian nss package fails to build because of a dladdr problem:
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=791537
 
-> I see a strange behavior on the parisc platform, for which I'm not sure if
-> it's intended or if there is a bug somewhere.
+I created a small test program and a glibc bug report:
+https://sourceware.org/bugzilla/show_bug.cgi?id=19415
 
-> The program calls timerfd_settime() and sets a timer (e.g. sec=0, nsec=100000000).
-> Directly after setting the timer it calls timerfd_gettime() and receives
-> (sec=0, nsec=103914413).
-> The second nsec is higher than the initial nsec value which was set.
-> 
-> Does timerfd_settime() maybe tries to add the initial time it takes to start
-> the timer?
->
-> Any idea or hint?
+This code seems wrong on hppa:
 
-Yes. This is a fallout from the power aware batching magic. Interesting that
-nobody noticed this within 7 years.
+ElfW(Addr)
+_dl_lookup_address (const void *address)
+{
+  ElfW(Addr) addr = (ElfW(Addr)) address;
+  struct fdesc_table *t;
+  unsigned long int i;
 
-Does the patch below fix your issue?
+  for (t = local.root; t != NULL; t = t->next)
+    {
+      i = (struct fdesc *) addr - &t->fdesc[0];
+      if (i < t->first_unused && addr == (ElfW(Addr)) &t->fdesc[i])
+        {
+          addr = t->fdesc[i].ip;
+          break;
+        }
+    }
 
-Thanks,
+  return addr;
+}
 
-	tglx
+Dave
+--
+John David Anglin	dave.anglin@bell.net
 
-8<----------------
 
-diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
-index 76dd4f0da5ca..0f4a3e8734f1 100644
---- a/include/linux/hrtimer.h
-+++ b/include/linux/hrtimer.h
-@@ -268,7 +268,7 @@ static inline s64 hrtimer_get_expires_ns(const struct hrtimer *timer)
- 
- static inline ktime_t hrtimer_expires_remaining(const struct hrtimer *timer)
- {
--	return ktime_sub(timer->node.expires, timer->base->get_time());
-+	return ktime_sub(timer->_softexpires, timer->base->get_time());
- }
- 
- static inline ktime_t hrtimer_cb_get_time(struct hrtimer *timer)
+
