@@ -1,43 +1,56 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH v2 09/16] drivers: Initialize resource entry to zero
-Date: Tue, 29 Dec 2015 08:37:33 +1100
-Message-ID: <20151228213733.GA16152@verge.net.au>
-References: <1451081365-15190-1-git-send-email-toshi.kani@hpe.com>
- <1451081365-15190-9-git-send-email-toshi.kani@hpe.com>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: timerfd_settime/timerfd_gettime issue ?
+Date: Tue, 29 Dec 2015 10:44:35 +0100 (CET)
+Message-ID: <alpine.DEB.2.11.1512291027570.28591@nanos>
+References: <567E8766.6020707@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: akpm@linux-foundation.org, bp@alien8.de, linux-arch@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org
-To: Toshi Kani <toshi.kani@hpe.com>
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <1451081365-15190-9-git-send-email-toshi.kani@hpe.com>
-List-ID: <linux-mm.kvack.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <567E8766.6020707@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Dec 25, 2015 at 03:09:18PM -0700, Toshi Kani wrote:
-> I/O resource descriptor, 'desc' added to struct resource, needs
-> to be initialized to zero by default.  Some drivers call kmalloc()
-> to allocate a resource entry, but does not initialize it to zero
-> by memset().  Change these drivers to call kzalloc(), instead.
+Helge,
+
+On Sat, 26 Dec 2015, Helge Deller wrote:
+
+> I see a strange behavior on the parisc platform, for which I'm not sure if
+> it's intended or if there is a bug somewhere.
+
+> The program calls timerfd_settime() and sets a timer (e.g. sec=0, nsec=100000000).
+> Directly after setting the timer it calls timerfd_gettime() and receives
+> (sec=0, nsec=103914413).
+> The second nsec is higher than the initial nsec value which was set.
 > 
-> Cc: linux-acpi@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linux-sh@vger.kernel.org
-> Signed-off-by: Toshi Kani <toshi.kani@hpe.com>
-> ---
->  drivers/acpi/acpi_platform.c       |    2 +-
->  drivers/parisc/eisa_enumerator.c   |    4 ++--
->  drivers/rapidio/rio.c              |    8 ++++----
->  drivers/sh/superhyway/superhyway.c |    2 +-
->  4 files changed, 8 insertions(+), 8 deletions(-)
+> Does timerfd_settime() maybe tries to add the initial time it takes to start
+> the timer?
+>
+> Any idea or hint?
 
-drivers/sh/ portion:
+Yes. This is a fallout from the power aware batching magic. Interesting that
+nobody noticed this within 7 years.
 
-Acked-by: Simon Horman <horms+renesas@verge.net.au>
+Does the patch below fix your issue?
 
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+Thanks,
+
+	tglx
+
+8<----------------
+
+diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
+index 76dd4f0da5ca..0f4a3e8734f1 100644
+--- a/include/linux/hrtimer.h
++++ b/include/linux/hrtimer.h
+@@ -268,7 +268,7 @@ static inline s64 hrtimer_get_expires_ns(const struct hrtimer *timer)
+ 
+ static inline ktime_t hrtimer_expires_remaining(const struct hrtimer *timer)
+ {
+-	return ktime_sub(timer->node.expires, timer->base->get_time());
++	return ktime_sub(timer->_softexpires, timer->base->get_time());
+ }
+ 
+ static inline ktime_t hrtimer_cb_get_time(struct hrtimer *timer)
