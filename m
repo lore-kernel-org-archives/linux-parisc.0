@@ -1,42 +1,41 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: self-assignment in dino_card_setup
-Date: Tue, 29 Dec 2015 12:51:54 -0800
-Message-ID: <1451422314.2346.6.camel@HansenPartnership.com>
-References: <87k2nx3tuz.fsf@rasmusvillemoes.dk> <5682EB8B.30308@gmx.de>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: timerfd_settime/timerfd_gettime issue ?
+Date: Wed, 30 Dec 2015 10:57:56 +0100 (CET)
+Message-ID: <alpine.DEB.2.11.1512301052520.28591@nanos>
+References: <567E8766.6020707@gmx.de> <alpine.DEB.2.11.1512291027570.28591@nanos> <5682E96A.5040008@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <5682EB8B.30308@gmx.de>
+In-Reply-To: <5682E96A.5040008@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2015-12-29 at 21:22 +0100, Helge Deller wrote:
-> Hi Rasmus,
+On Tue, 29 Dec 2015, Helge Deller wrote:
+> No, the patch below doesn't help.
 > 
-> On 29.12.2015 21:03, Rasmus Villemoes wrote:
-> > Line 474 of drivers/parisc/dino.c reads
-> > 
-> >         res->name = dino_dev->hba.lmmio_space.name;
-> > 
-> > but res is &dino_dev->hba.lmmio_space, so this seems to just assign
-> > NULL
-> > again to res->name. Presumably the allocation of <= 128 bytes never
-> > fails, but I wonder what the purpose was, and if the confusing else
-> > branch couldn't just be deleted (and then one should just do res
-> > ->name =
-> > kmemdup(name, size+1, GFP_KERNEL); and delete the if as well).
+> I still see:
+> [  644.916000] timerfd_settime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=100000000) 
+> [  645.024000] timerfd_gettime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=103029949) 
 > 
-> I'd suggest to just delete the else branch.
-> Do you want to send a patch with signed-off ?
 
-Actually, I'd guess the intention was to put back whatever the contents
-of lmmio_space.name originally was ... it's usually some default static
-string.
+Right. It can't help. Sorry for the distraction.
 
-James
+Looking deeper I found the issue. It's caused by CONFIG_TIME_LOW_RES. See the
+comment in hrtimer_start_range_ns(). We round the expiry time to the next
+jiffies period to avoid short timeouts. Assuming you are running with HZ=250
+this is exactly 4ms. So that's where your extra time comes from.
+
+Not sure what to do about that.
+
+Thanks,
+
+	tglx
+
+
+
+
 
 
