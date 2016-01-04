@@ -1,97 +1,50 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Use relative addresses in exception tables
-Date: Mon, 4 Jan 2016 22:12:47 +0100
-Message-ID: <20160104211247.GA25146@ls3530.box>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: Re: [GIT PULL] parisc huge page support for v4.4
+Date: Mon, 4 Jan 2016 16:24:57 -0500 (EST)
+Message-ID: <alpine.LRH.2.02.1601041619070.20474@file01.intranet.prod.int.rdu2.redhat.com>
+References: <20151122115153.GA28471@p100.box> <alpine.LRH.2.02.1511241014280.9586@file01.intranet.prod.int.rdu2.redhat.com> <5654892D.1030707@gmx.de> <alpine.LRH.2.02.1511241136440.14442@file01.intranet.prod.int.rdu2.redhat.com> <20151124170020.GA13198@p100.box>
+ <alpine.LRH.2.02.1511241343200.30334@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.1512260645560.7692@file01.intranet.prod.int.rdu2.redhat.com> <567E88BA.4010607@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
 	James Bottomley <James.Bottomley@HansenPartnership.com>,
 	John David Anglin <dave.anglin@bell.net>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <567E88BA.4010607@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Change exception tables to use relative instead of absolute addresses.
-This saves quite some memory in the vmlinux binary with the 64bit
-kernel.
 
-This patch depends on the patch series "generic relative extable
-support" by Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+On Sat, 26 Dec 2015, Helge Deller wrote:
 
-diff --git a/arch/parisc/include/asm/assembly.h b/arch/parisc/include/asm/assembly.h
-index b3069fd..d6a2458 100644
---- a/arch/parisc/include/asm/assembly.h
-+++ b/arch/parisc/include/asm/assembly.h
-@@ -523,7 +523,7 @@
- 	 */
- #define ASM_EXCEPTIONTABLE_ENTRY(fault_addr, except_addr)	\
- 	.section __ex_table,"aw"			!	\
--	ASM_ULONG_INSN	fault_addr, except_addr		!	\
-+	.word 	(fault_addr - .), (except_addr - .)	!	\
- 	.previous
- 
- 
-diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
-index 0abdd4c..d4dd6e5 100644
---- a/arch/parisc/include/asm/uaccess.h
-+++ b/arch/parisc/include/asm/uaccess.h
-@@ -60,14 +60,15 @@ static inline long access_ok(int type, const void __user * addr,
-  * use a 32bit (unsigned int) address here.
-  */
- 
-+#define ARCH_HAS_RELATIVE_EXTABLE
- struct exception_table_entry {
--	unsigned long insn;	/* address of insn that is allowed to fault. */
--	unsigned long fixup;	/* fixup routine */
-+	int insn;	/* relative address of insn that is allowed to fault. */
-+	int fixup;	/* relative address of fixup routine */
- };
- 
- #define ASM_EXCEPTIONTABLE_ENTRY( fault_addr, except_addr )\
- 	".section __ex_table,\"aw\"\n"			   \
--	ASM_WORD_INSN #fault_addr ", " #except_addr "\n\t" \
-+	".word (" #fault_addr " - .), (" #except_addr " - .)\n\t" \
- 	".previous\n"
- 
- /*
-diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index a762864..26fac9c 100644
---- a/arch/parisc/mm/fault.c
-+++ b/arch/parisc/mm/fault.c
-@@ -140,12 +140,6 @@ int fixup_exception(struct pt_regs *regs)
- {
- 	const struct exception_table_entry *fix;
- 
--	/* If we only stored 32bit addresses in the exception table we can drop
--	 * out if we faulted on a 64bit address. */
--	if ((sizeof(regs->iaoq[0]) > sizeof(fix->insn))
--		&& (regs->iaoq[0] >> 32))
--			return 0;
--
- 	fix = search_exception_tables(regs->iaoq[0]);
- 	if (fix) {
- 		struct exception_data *d;
-@@ -154,7 +148,8 @@ int fixup_exception(struct pt_regs *regs)
- 		d->fault_space = regs->isr;
- 		d->fault_addr = regs->ior;
- 
--		regs->iaoq[0] = ((fix->fixup) & ~3);
-+		regs->iaoq[0] = (unsigned long)&fix->fixup + fix->fixup;
-+		regs->iaoq[0] &= ~3;
- 		/*
- 		 * NOTE: In some cases the faulting instruction
- 		 * may be in the delay slot of a branch. We
-diff --git a/scripts/sortextable.c b/scripts/sortextable.c
-index af247c7..2944391 100644
---- a/scripts/sortextable.c
-+++ b/scripts/sortextable.c
-@@ -283,6 +283,7 @@ do_file(char const *const fname)
- 	case EM_X86_64:
- 	case EM_S390:
- 	case EM_AARCH64:
-+	case EM_PARISC:
- 		custom_sort = sort_relative_table;
- 		break;
- 	case EM_ARCOMPACT:
+> On 26.12.2015 13:09, Mikulas Patocka wrote:
+> 
+> > BTW. I looked at this in arch/parisc/mm/hugetlbpage.c:set_huge_pte_at 
+> > "*ptep = entry;" and it seems like a bad bug. PA-RISC doesn't have atomic 
+> > instructions to modify page table entries, so it takes spinlock in the TLB 
+> > handler and modifies the page table entry non-atomically. If you modify 
+> > the page table entry without the spinlock, you may race with TLB handler 
+> > on another CPU and your modification may be lost.
+> 
+> Right.
+> 
+> > The comment says something about double locking on pa_tlb_lock, but 
+> > pa_tlb_lock isn't held when that function is called.
+> 
+> I have a work-in-progress patch for that in one of my trees, e.g.:
+> http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/commit/?h=parisc-next&id=5c76b525cbdb097401f46522b27b1eb6244f34f9
+> It's lightly tested though.
+> 
+> Helge
+
+I tested the patch and it works OK for me so far.
+
+BTW. what happens if some kernel code takes the TLB spinlock and then TLB 
+miss in kernel space happens? (it would attempt to lock the spinlock 
+recursively) Is it assumed that the TLB is big enough that this can't 
+happen?
+
+Mikulas
