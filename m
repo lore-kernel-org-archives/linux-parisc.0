@@ -1,71 +1,121 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: timerfd_settime/timerfd_gettime issue ?
-Date: Mon, 4 Jan 2016 23:27:57 +0100
-Message-ID: <20160104222757.GA969@p100.box>
-References: <567E8766.6020707@gmx.de>
- <alpine.DEB.2.11.1512291027570.28591@nanos>
- <5682E96A.5040008@gmx.de>
- <alpine.DEB.2.11.1512301052520.28591@nanos>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.11.1512301052520.28591@nanos>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Toshi Kani <toshi.kani@hpe.com>
+Subject: [PATCH v3 00/17] Enhance iomem search interfaces and support EINJ to NVDIMM
+Date: Tue,  5 Jan 2016 11:54:28 -0700
+Message-ID: <1452020068-26492-1-git-send-email-toshi.kani@hpe.com>
+Cc: torvalds@linux-foundation.org, rafael.j.wysocki@intel.com,
+	dan.j.williams@intel.com, dyoung@redhat.com, x86@kernel.org,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-sh@vger.kernel.org, kexec@lists.infradead.org,
+	xen-devel@lists.xenproject.org, linux-samsung-soc@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-mm@kvack.org,
+	linux-nvdimm@lists.01.org, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+To: akpm@linux-foundation.org, bp@alien8.de
+Return-path: <linux-acpi-owner@vger.kernel.org>
+List-ID: <linux-acpi.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Thomas,
+This patch-set enhances the iomem table and its search interfacs, and
+then changes EINJ to support NVDIMM.
 
-* Thomas Gleixner <tglx@linutronix.de>:
-> On Tue, 29 Dec 2015, Helge Deller wrote:
-> > No, the patch below doesn't help.
-> > 
-> > I still see:
-> > [  644.916000] timerfd_settime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=100000000) 
-> > [  645.024000] timerfd_gettime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=103029949) 
-> > 
-> 
-> Right. It can't help. Sorry for the distraction.
-> 
-> Looking deeper I found the issue. It's caused by CONFIG_TIME_LOW_RES. See the
-> comment in hrtimer_start_range_ns(). We round the expiry time to the next
-> jiffies period to avoid short timeouts. Assuming you are running with HZ=250
-> this is exactly 4ms. So that's where your extra time comes from.
+ - Patches 1-2 add a new System RAM type, IORESOURCE_SYSTEM_RAM, and
+   make the iomem search interfaces work with resource flags with
+   modifier bits set.  IORESOURCE_SYSTEM_RAM has IORESOURCE_MEM bit set
+   for backward compatibility.
 
-Yes, that seems right.
+ - Patch 3 adds a new field, I/O resource descriptor, into struct resource.
+   Drivers can assign their unique descritor to a range when they support
+   the iomem search interfaces.
 
-> Not sure what to do about that.
+ - Patches 4-9 changes initializations of resource entries.  They set
+   the System RAM type to System RAM ranges, set I/O resource descriptors
+   to the regions targeted by the iomem search interfaces, and change
+   to call kzalloc() where kmalloc() is used to allocate struct resource
+   ranges.
 
-The patch below seems to solve the issue for me. But I'm not sure if
-there might be any side-effects. What do you think? Does the patch
-seems correct? It just adjusts to values returned to userspace (and thus
-hides the internal roundings).
+ - Patches 10-14 extend the iomem interfaces to check System RAM ranges
+   with the System RAM type and the I/O resource descriptor.
 
-Thanks,
-Helge
+ - Patch 15-16 remove deprecated walk_iomem_res().
 
-diff --git a/fs/timerfd.c b/fs/timerfd.c
-index b94fa6c..9b6cc73 100644
---- a/fs/timerfd.c
-+++ b/fs/timerfd.c
-@@ -152,8 +152,16 @@ static ktime_t timerfd_get_remaining(struct timerfd_ctx *ctx)
- 
- 	if (isalarm(ctx))
- 		remaining = alarm_expires_remaining(&ctx->t.alarm);
--	else
-+	else {
- 		remaining = hrtimer_expires_remaining(&ctx->t.tmr);
-+#ifdef CONFIG_TIME_LOW_RES
-+		/* Expiry time was rounded up in hrtimer_start_range_ns()
-+		 * to the next jiffies period to avoid short timeouts.
-+		 * Subtract it here again to avoid userspace seeing higher
-+		 * values than expected. */
-+		remaining.tv64 -= hrtimer_resolution;
-+#endif
-+	}
- 
- 	return remaining.tv64 < 0 ? ktime_set(0, 0): remaining;
- }
+ - Patch 17 changes the EINJ driver to allow injecting a memory error
+   to NVDIMM.
+
+---
+v3:
+ - Remove the walk_iomem_res() call with "GART" in crash.c since it is
+   no longer needed. Then kill walk_iomem_res(). (Borislav Petkov,
+   Dave Young)
+ - Change to use crashk_res.desc at the walk_iomem_res_desc() call in
+   kexec_add_buffer(). (Minfei Huang)
+
+v2:
+ - Add 'desc' to struct resource, and add a new iomem interface to
+   search with the desc. (Borislav Petkov)
+ - Add a check to checkpatch.pl to warn on new use of walk_iomem_res().
+   (Borislav Petkov)
+
+v1:
+ - Searching for System RAM in the resource table should not require
+   strcmp(). (Borislav Petkov)
+ - Add a new System RAM type as a modifier to IORESOURCE_MEM.
+   (Linus Torvalds)
+ - NVDIMM check needs to be able to distinguish legacy and NFIT pmem
+   ranges. (Dan Williams)
+
+---
+Toshi Kani (17):
+ 01/17 resource: Add System RAM resource type
+ 02/17 resource: make resource flags handled properly
+ 03/17 resource: Add I/O resource descriptor
+ 04/17 x86/e820: Set System RAM type and descriptor
+ 05/17 ia64: Set System RAM type and descriptor
+ 06/17 arch: Set IORESOURCE_SYSTEM_RAM to System RAM
+ 07/17 kexec: Set IORESOURCE_SYSTEM_RAM to System RAM
+ 08/17 xen, mm: Set IORESOURCE_SYSTEM_RAM to System RAM
+ 09/17 drivers: Initialize resource entry to zero
+ 10/17 resource: Change walk_system_ram to use System RAM type
+ 11/17 arm/samsung: Change s3c_pm_run_res() to use System RAM type
+ 12/17 memremap: Change region_intersects() to take @flags and @desc
+ 13/17 resource: Add walk_iomem_res_desc()
+ 14/17 x86,nvdimm,kexec: Use walk_iomem_res_desc() for iomem search
+ 15/17 x86/kexec: Remove walk_iomem_res() call with GART
+ 16/17 resource: Kill walk_iomem_res()
+ 17/17 ACPI/EINJ: Allow memory error injection to NVDIMM
+
+---
+ arch/arm/kernel/setup.c            |  6 +--
+ arch/arm/plat-samsung/pm-check.c   |  4 +-
+ arch/arm64/kernel/setup.c          |  6 +--
+ arch/avr32/kernel/setup.c          |  6 +--
+ arch/ia64/kernel/efi.c             | 13 ++++--
+ arch/ia64/kernel/setup.c           |  6 +--
+ arch/m32r/kernel/setup.c           |  4 +-
+ arch/mips/kernel/setup.c           | 10 +++--
+ arch/parisc/mm/init.c              |  6 +--
+ arch/powerpc/mm/mem.c              |  2 +-
+ arch/s390/kernel/setup.c           |  8 ++--
+ arch/score/kernel/setup.c          |  2 +-
+ arch/sh/kernel/setup.c             |  8 ++--
+ arch/sparc/mm/init_64.c            |  8 ++--
+ arch/tile/kernel/setup.c           | 11 +++--
+ arch/unicore32/kernel/setup.c      |  6 +--
+ arch/x86/kernel/crash.c            | 41 ++-----------------
+ arch/x86/kernel/e820.c             | 38 ++++++++++++++++-
+ arch/x86/kernel/pmem.c             |  4 +-
+ arch/x86/kernel/setup.c            |  6 +--
+ drivers/acpi/acpi_platform.c       |  2 +-
+ drivers/acpi/apei/einj.c           | 15 +++++--
+ drivers/nvdimm/e820.c              |  2 +-
+ drivers/parisc/eisa_enumerator.c   |  4 +-
+ drivers/rapidio/rio.c              |  8 ++--
+ drivers/sh/superhyway/superhyway.c |  2 +-
+ drivers/xen/balloon.c              |  2 +-
+ include/linux/ioport.h             | 33 ++++++++++++++-
+ include/linux/mm.h                 |  3 +-
+ kernel/kexec_core.c                |  8 ++--
+ kernel/kexec_file.c                |  8 ++--
+ kernel/memremap.c                  | 13 +++---
+ kernel/resource.c                  | 83 ++++++++++++++++++++++----------------
+ mm/memory_hotplug.c                |  2 +-
+ 34 files changed, 225 insertions(+), 155 deletions(-)
