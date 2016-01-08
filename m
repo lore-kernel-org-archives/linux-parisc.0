@@ -1,14 +1,16 @@
 From: Meelis Roos <mroos@linux.ee>
 Subject: parisc late boot crash in 4.4-rc, scsi-related
-Date: Fri, 8 Jan 2016 22:56:43 +0200 (EET)
-Message-ID: <alpine.LRH.2.20.1601082249420.19024@math.ut.ee>
+Date: Fri, 8 Jan 2016 23:30:22 +0200 (EET)
+Message-ID: <alpine.LRH.2.20.1601082329270.23187@math.ut.ee>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-To: linux-parisc@vger.kernel.org, linux.block@vger.kernel.org,
+To: linux-parisc@vger.kernel.org, linux-block@vger.kernel.org,
 	linux-scsi@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-scsi-owner@vger.kernel.org>
+List-ID: <linux-scsi.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
+
+(Try 2, spelling linux-block correctly - please ignore the previous one)
 
 I noticed on RP3440 and A500 that recent 4.4-rc* crashes on boot. The 
 following is dmesg that was copied piecewise by hand from ILO console 
