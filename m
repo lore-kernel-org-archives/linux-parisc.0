@@ -1,7 +1,8 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v3 00/12] tty: serial: 8250: Fix checkpatch warnings
-Date: Fri,  8 Jan 2016 11:21:56 +0100
-Message-ID: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v3 12/12] tty: serial: 8250: Fix indentation warnings
+Date: Fri,  8 Jan 2016 11:22:08 +0100
+Message-ID: <1452248528-14023-13-git-send-email-anton.wuerfel@fau.de>
+References: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Cc: Jiri Slaby <jslaby@suse.com>,
@@ -26,92 +27,86 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 	Anton Wuerfel <anton.wuerfel@fau.de>,
 	Phillip Raffeck <phillip.raffe
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello Peter and Andy,
+Checkpatch complains about incorrect indentation of switch/case stateme=
+nts.
+This patch fixes the corresponding warnings. Additionally some indentat=
+ion
+is changed to match the correct format specified in the Linux Kernel
+Coding Style.
 
-sorry for the long delay - we were very busy during christmas holidays.
-We tried to incorporate your suggestions.
+Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
+Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
+CC: linux-kernel@i4.cs.fau.de
+---
+ drivers/tty/serial/8250/8250_pci.c  | 12 ++++++------
+ drivers/tty/serial/8250/8250_pnp.c  |  4 ++--
+ drivers/tty/serial/8250/8250_port.c |  6 +++---
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
-Regards,
-Anton Wuerfel
-Phillip Raffeck
-
-This patch set fixes several checkpatch warnings in tty/serial/8250.
-
-Patch 1/12:  Adds missing spaces (mainly to function/macro headers)
-Patch 2/12:  Replace spaces with tabs wherever possible
-Patch 3/12:  Slight patch which moves an opening curly brace
-Patch 4/12:  Fixes multiline comment style
-Patch 5/12:  Removes else blocks after return statements
-Patch 6/12:  Slight patch which moves EXPORT_SYMBOL macro to correct position
-Patch 7/12:  Slight patch which removes an unneccessary line continuation
-Patch 8/12:  Slight patch which adds parentheses to a macro definition
-Patch 9/12:  Merges user-visible multiline strings to a single line
-Patch 10/12: Replace printk by dev_* or pr_* where appropriate
-Patch 11/12: Remove orphaned debug macro
-Patch 12/12: Fixes code indentation
-
-Remaining checkpatch warnings after applying this patch series:
-
--line over 80 characters
-	This error mostly occurs in serial_cs.c, which contains long-lined
-	macro calls. However, splitting these calls into multiple lines would
-	not increase readability.
-
--externs should be avoided in .c files
-	This occurs in 8250_hp300.c. There is no corresponding header file
-	the extern statement could be moved to. It could be moved to 8250.h
-	but this would affect other .c files.
-
--Use #include <linux/*.h> instead of <asm/*.h>
-	This warning has been left open for more experienced kernel hackers.
-	This patch series is about style issues. We do not intend to alter
-	the code behavior.
--struct uart_ops should normally be const
-	This warning only occurs in 8250_core.c. The corresponding struct
-	cannot be declared as const because it is altered in
-	serial8250_isa_init_ports(). Maybe a checkpatch exception should
-	be added for this particular warning.
-
--quoted string split across lines
-	These strings were ignored because they otherwise would exceed
-	80 characters in a single line. These particular strings use
-	format specifiers, which break the ability to grep for them anyway.
-
-Anton Wuerfel (12):
-Phillip Raffeck (12):
-  tty: serial: 8250: Fix whitespace errors
-  tty: serial: 8250: Replace spaces with tabs
-  tty: serial: 8250: Fix braces after struct
-  tty: serial: 8250: Fix multiline comment style
-  tty: serial: 8250: Remove else after return
-  tty: serial: 8250: Move EXPORT_SYMBOL to function
-  tty: serial: 8250: Fix line continuation warning
-  tty: serial: 8250: Add parentheses to macro
-  tty: serial: 8250: Fix multi-line strings
-  tty: serial: 8250: Fix indentation warnings
-  tty: serial: 8250: Suitably replace printk
-  tty: serial: 8250: Remove SERIAL_DEBUG_PNP macro
-
- drivers/tty/serial/8250/8250_accent.c        |  2 +-
- drivers/tty/serial/8250/8250_acorn.c         |  2 +-
- drivers/tty/serial/8250/8250_boca.c          |  2 +-
- drivers/tty/serial/8250/8250_core.c          | 15 ++---
- drivers/tty/serial/8250/8250_exar_st16c554.c |  2 +-
- drivers/tty/serial/8250/8250_fourport.c      |  2 +-
- drivers/tty/serial/8250/8250_gsc.c           |  7 ++-
- drivers/tty/serial/8250/8250_hp300.c         | 26 ++++----
- drivers/tty/serial/8250/8250_hub6.c          |  2 +-
- drivers/tty/serial/8250/8250_ingenic.c       | 12 ++--
- drivers/tty/serial/8250/8250_pci.c           | 49 +++++++--------
- drivers/tty/serial/8250/8250_pnp.c           | 20 ++++---
- drivers/tty/serial/8250/8250_port.c          | 46 +++++++-------
- drivers/tty/serial/8250/serial_cs.c          | 89 +++++++++++++++-------------
- 14 files changed, 145 insertions(+), 131 deletions(-)
-
--- 
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
+50/8250_pci.c
+index 09157fa..b0b47f9 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -841,12 +841,12 @@ static int pci_netmos_init(struct pci_dev *dev)
+ 		return 0;
+=20
+ 	switch (dev->device) { /* FALLTHROUGH on all */
+-		case PCI_DEVICE_ID_NETMOS_9904:
+-		case PCI_DEVICE_ID_NETMOS_9912:
+-		case PCI_DEVICE_ID_NETMOS_9922:
+-		case PCI_DEVICE_ID_NETMOS_9900:
+-			num_serial =3D pci_netmos_9900_numports(dev);
+-			break;
++	case PCI_DEVICE_ID_NETMOS_9904:
++	case PCI_DEVICE_ID_NETMOS_9912:
++	case PCI_DEVICE_ID_NETMOS_9922:
++	case PCI_DEVICE_ID_NETMOS_9900:
++		num_serial =3D pci_netmos_9900_numports(dev);
++		break;
+=20
+ 		default:
+ 			if (num_serial =3D=3D 0) {
+diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/82=
+50/8250_pnp.c
+index 5f852e8..ad9debb 100644
+--- a/drivers/tty/serial/8250/8250_pnp.c
++++ b/drivers/tty/serial/8250/8250_pnp.c
+@@ -427,8 +427,8 @@ static int check_resources(struct pnp_dev *dev)
+ static int serial_pnp_guess_board(struct pnp_dev *dev)
+ {
+ 	if (!(check_name(pnp_dev_name(dev)) ||
+-		(dev->card && check_name(dev->card->name))))
+-			return -ENODEV;
++	    (dev->card && check_name(dev->card->name))))
++		return -ENODEV;
+=20
+ 	if (check_resources(dev))
+ 		return 0;
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
+250/8250_port.c
+index 343d050..da3b240 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -2235,9 +2235,9 @@ static void serial8250_set_divisor(struct uart_po=
+rt *port, unsigned int baud,
+ 		serial_port_out(port, 0x2, quot_frac);
+ }
+=20
+-static unsigned int
+-serial8250_get_baud_rate(struct uart_port *port, struct ktermios *term=
+ios,
+-			 struct ktermios *old)
++static unsigned int serial8250_get_baud_rate(struct uart_port *port,
++					     struct ktermios *termios,
++					     struct ktermios *old)
+ {
+ 	unsigned int tolerance =3D port->uartclk / 100;
+=20
+--=20
 1.9.1
-
