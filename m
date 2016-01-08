@@ -1,159 +1,117 @@
-From: "Bounine, Alexandre" <Alexandre.Bounine@idt.com>
-Subject: RE: [PATCH v3 UPDATE 09/17] drivers: Initialize resource entry to
- zero
-Date: Thu, 7 Jan 2016 13:06:37 +0000
-Message-ID: <8D983423E7EDF846BB3056827B8CC5D15CFB6756@corpmail1.na.ads.idt.com>
-References: <1452028537-27365-1-git-send-email-toshi.kani@hpe.com>
+From: Anton Wuerfel <anton.wuerfel@fau.de>
+Subject: [PATCH v3 00/12] tty: serial: 8250: Fix checkpatch warnings
+Date: Fri,  8 Jan 2016 11:21:56 +0100
+Message-ID: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>
-To: Toshi Kani <toshi.kani@hpe.com>,
-        "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <1452028537-27365-1-git-send-email-toshi.kani@hpe.com>
-List-ID: <linux-mm.kvack.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Jiri Slaby <jslaby@suse.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Peter Hurley <peter@hurleysoftware.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Qipeng Zha <qipeng.zha@intel.com>,
+	Desmond Liu <desmondl@broadcom.com>,
+	Wang Long <long.wanglong@huawei.com>,
+	Matt Redfearn <matt.redfearn@imgtec.com>,
+	Paul Burton <paul.burton@imgtec.com>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+	Peter Hung <hpeter@gmail.com>,
+	Soeren Grunewald <soeren.grunewald@desy.de>,
+	Adam Lee <adam.lee@canonical.com>,
+	"Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
+	Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
+	Anton Wuerfel <anton.wuerfel@fau.de>,
+	Phillip Raffeck <phillip.raffe
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-Ack-ed.
+Hello Peter and Andy,
 
-Alex.
+sorry for the long delay - we were very busy during christmas holidays.
+We tried to incorporate your suggestions.
 
------Original Message-----
-From: Toshi Kani [mailto:toshi.kani@hpe.com]=20
-Sent: Tuesday, January 05, 2016 4:16 PM
-To: akpm@linux-foundation.org; bp@alien8.de
-Cc: linux-arch@vger.kernel.org; linux-mm@kvack.org; linux-kernel@vger.kerne=
-l.org; Matt Porter; Bounine, Alexandre; linux-acpi@vger.kernel.org; linux-p=
-arisc@vger.kernel.org; linux-sh@vger.kernel.org; Toshi Kani
-Subject: [PATCH v3 UPDATE 09/17] drivers: Initialize resource entry to zero
+Regards,
+Anton Wuerfel
+Phillip Raffeck
 
-I/O resource descriptor, 'desc' in struct resource, needs to be
-initialized to zero by default.  Some drivers call kmalloc() to
-allocate a resource entry, but does not initialize it to zero by
-memset().  Change these drivers to call kzalloc(), instead.
+This patch set fixes several checkpatch warnings in tty/serial/8250.
 
-Cc: Matt Porter <mporter@kernel.crashing.org>
-Cc: Alexandre Bounine <alexandre.bounine@idt.com>
-Cc: linux-acpi@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
-Acked-by: Simon Horman <horms+renesas@verge.net.au> # sh
-Acked-by: Helge Deller <deller@gmx.de> # parisc
-Signed-off-by: Toshi Kani <toshi.kani@hpe.com>
----
-v3 UPDATE: Add cc to RAPIDIO maintainers that was missing.
----
- drivers/acpi/acpi_platform.c       |    2 +-
- drivers/parisc/eisa_enumerator.c   |    4 ++--
- drivers/rapidio/rio.c              |    8 ++++----
- drivers/sh/superhyway/superhyway.c |    2 +-
- 4 files changed, 8 insertions(+), 8 deletions(-)
+Patch 1/12:  Adds missing spaces (mainly to function/macro headers)
+Patch 2/12:  Replace spaces with tabs wherever possible
+Patch 3/12:  Slight patch which moves an opening curly brace
+Patch 4/12:  Fixes multiline comment style
+Patch 5/12:  Removes else blocks after return statements
+Patch 6/12:  Slight patch which moves EXPORT_SYMBOL macro to correct position
+Patch 7/12:  Slight patch which removes an unneccessary line continuation
+Patch 8/12:  Slight patch which adds parentheses to a macro definition
+Patch 9/12:  Merges user-visible multiline strings to a single line
+Patch 10/12: Replace printk by dev_* or pr_* where appropriate
+Patch 11/12: Remove orphaned debug macro
+Patch 12/12: Fixes code indentation
 
-diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
-index 296b7a1..b6f7fa3 100644
---- a/drivers/acpi/acpi_platform.c
-+++ b/drivers/acpi/acpi_platform.c
-@@ -62,7 +62,7 @@ struct platform_device *acpi_create_platform_device(struc=
-t acpi_device *adev)
- 	if (count < 0) {
- 		return NULL;
- 	} else if (count > 0) {
--		resources =3D kmalloc(count * sizeof(struct resource),
-+		resources =3D kzalloc(count * sizeof(struct resource),
- 				    GFP_KERNEL);
- 		if (!resources) {
- 			dev_err(&adev->dev, "No memory for resources\n");
-diff --git a/drivers/parisc/eisa_enumerator.c b/drivers/parisc/eisa_enumera=
-tor.c
-index a656d9e..21905fe 100644
---- a/drivers/parisc/eisa_enumerator.c
-+++ b/drivers/parisc/eisa_enumerator.c
-@@ -91,7 +91,7 @@ static int configure_memory(const unsigned char *buf,
- 	for (i=3D0;i<HPEE_MEMORY_MAX_ENT;i++) {
- 		c =3D get_8(buf+len);
- 	=09
--		if (NULL !=3D (res =3D kmalloc(sizeof(struct resource), GFP_KERNEL))) {
-+		if (NULL !=3D (res =3D kzalloc(sizeof(struct resource), GFP_KERNEL))) {
- 			int result;
- 		=09
- 			res->name =3D name;
-@@ -183,7 +183,7 @@ static int configure_port(const unsigned char *buf, str=
-uct resource *io_parent,
- 	for (i=3D0;i<HPEE_PORT_MAX_ENT;i++) {
- 		c =3D get_8(buf+len);
- 	=09
--		if (NULL !=3D (res =3D kmalloc(sizeof(struct resource), GFP_KERNEL))) {
-+		if (NULL !=3D (res =3D kzalloc(sizeof(struct resource), GFP_KERNEL))) {
- 			res->name =3D board;
- 			res->start =3D get_16(buf+len+1);
- 			res->end =3D get_16(buf+len+1)+(c&HPEE_PORT_SIZE_MASK)+1;
-diff --git a/drivers/rapidio/rio.c b/drivers/rapidio/rio.c
-index d7b87c6..e220edc 100644
---- a/drivers/rapidio/rio.c
-+++ b/drivers/rapidio/rio.c
-@@ -117,7 +117,7 @@ int rio_request_inb_mbox(struct rio_mport *mport,
- 	if (mport->ops->open_inb_mbox =3D=3D NULL)
- 		goto out;
-=20
--	res =3D kmalloc(sizeof(struct resource), GFP_KERNEL);
-+	res =3D kzalloc(sizeof(struct resource), GFP_KERNEL);
-=20
- 	if (res) {
- 		rio_init_mbox_res(res, mbox, mbox);
-@@ -185,7 +185,7 @@ int rio_request_outb_mbox(struct rio_mport *mport,
- 	if (mport->ops->open_outb_mbox =3D=3D NULL)
- 		goto out;
-=20
--	res =3D kmalloc(sizeof(struct resource), GFP_KERNEL);
-+	res =3D kzalloc(sizeof(struct resource), GFP_KERNEL);
-=20
- 	if (res) {
- 		rio_init_mbox_res(res, mbox, mbox);
-@@ -285,7 +285,7 @@ int rio_request_inb_dbell(struct rio_mport *mport,
- {
- 	int rc =3D 0;
-=20
--	struct resource *res =3D kmalloc(sizeof(struct resource), GFP_KERNEL);
-+	struct resource *res =3D kzalloc(sizeof(struct resource), GFP_KERNEL);
-=20
- 	if (res) {
- 		rio_init_dbell_res(res, start, end);
-@@ -360,7 +360,7 @@ int rio_release_inb_dbell(struct rio_mport *mport, u16 =
-start, u16 end)
- struct resource *rio_request_outb_dbell(struct rio_dev *rdev, u16 start,
- 					u16 end)
- {
--	struct resource *res =3D kmalloc(sizeof(struct resource), GFP_KERNEL);
-+	struct resource *res =3D kzalloc(sizeof(struct resource), GFP_KERNEL);
-=20
- 	if (res) {
- 		rio_init_dbell_res(res, start, end);
-diff --git a/drivers/sh/superhyway/superhyway.c b/drivers/sh/superhyway/sup=
-erhyway.c
-index 2d9e7f3..bb1fb771 100644
---- a/drivers/sh/superhyway/superhyway.c
-+++ b/drivers/sh/superhyway/superhyway.c
-@@ -66,7 +66,7 @@ int superhyway_add_device(unsigned long base, struct supe=
-rhyway_device *sdev,
- 	superhyway_read_vcr(dev, base, &dev->vcr);
-=20
- 	if (!dev->resource) {
--		dev->resource =3D kmalloc(sizeof(struct resource), GFP_KERNEL);
-+		dev->resource =3D kzalloc(sizeof(struct resource), GFP_KERNEL);
- 		if (!dev->resource) {
- 			kfree(dev);
- 			return -ENOMEM;
+Remaining checkpatch warnings after applying this patch series:
 
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+-line over 80 characters
+	This error mostly occurs in serial_cs.c, which contains long-lined
+	macro calls. However, splitting these calls into multiple lines would
+	not increase readability.
+
+-externs should be avoided in .c files
+	This occurs in 8250_hp300.c. There is no corresponding header file
+	the extern statement could be moved to. It could be moved to 8250.h
+	but this would affect other .c files.
+
+-Use #include <linux/*.h> instead of <asm/*.h>
+	This warning has been left open for more experienced kernel hackers.
+	This patch series is about style issues. We do not intend to alter
+	the code behavior.
+-struct uart_ops should normally be const
+	This warning only occurs in 8250_core.c. The corresponding struct
+	cannot be declared as const because it is altered in
+	serial8250_isa_init_ports(). Maybe a checkpatch exception should
+	be added for this particular warning.
+
+-quoted string split across lines
+	These strings were ignored because they otherwise would exceed
+	80 characters in a single line. These particular strings use
+	format specifiers, which break the ability to grep for them anyway.
+
+Anton Wuerfel (12):
+Phillip Raffeck (12):
+  tty: serial: 8250: Fix whitespace errors
+  tty: serial: 8250: Replace spaces with tabs
+  tty: serial: 8250: Fix braces after struct
+  tty: serial: 8250: Fix multiline comment style
+  tty: serial: 8250: Remove else after return
+  tty: serial: 8250: Move EXPORT_SYMBOL to function
+  tty: serial: 8250: Fix line continuation warning
+  tty: serial: 8250: Add parentheses to macro
+  tty: serial: 8250: Fix multi-line strings
+  tty: serial: 8250: Fix indentation warnings
+  tty: serial: 8250: Suitably replace printk
+  tty: serial: 8250: Remove SERIAL_DEBUG_PNP macro
+
+ drivers/tty/serial/8250/8250_accent.c        |  2 +-
+ drivers/tty/serial/8250/8250_acorn.c         |  2 +-
+ drivers/tty/serial/8250/8250_boca.c          |  2 +-
+ drivers/tty/serial/8250/8250_core.c          | 15 ++---
+ drivers/tty/serial/8250/8250_exar_st16c554.c |  2 +-
+ drivers/tty/serial/8250/8250_fourport.c      |  2 +-
+ drivers/tty/serial/8250/8250_gsc.c           |  7 ++-
+ drivers/tty/serial/8250/8250_hp300.c         | 26 ++++----
+ drivers/tty/serial/8250/8250_hub6.c          |  2 +-
+ drivers/tty/serial/8250/8250_ingenic.c       | 12 ++--
+ drivers/tty/serial/8250/8250_pci.c           | 49 +++++++--------
+ drivers/tty/serial/8250/8250_pnp.c           | 20 ++++---
+ drivers/tty/serial/8250/8250_port.c          | 46 +++++++-------
+ drivers/tty/serial/8250/serial_cs.c          | 89 +++++++++++++++-------------
+ 14 files changed, 145 insertions(+), 131 deletions(-)
+
+-- 
+1.9.1
+
