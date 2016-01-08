@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v3 10/12] tty: serial: 8250: Suitably replace printk
-Date: Fri,  8 Jan 2016 11:22:06 +0100
-Message-ID: <1452248528-14023-11-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v3 11/12] tty: serial: 8250: Remove SERIAL_DEBUG_PNP macro
+Date: Fri,  8 Jan 2016 11:22:07 +0100
+Message-ID: <1452248528-14023-12-git-send-email-anton.wuerfel@fau.de>
 References: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -34,160 +34,48 @@ List-Id: linux-parisc.vger.kernel.org
 
 =46rom: Phillip Raffeck <phillip.raffeck@fau.de>
 
-This patch replaces printk by the corresponding variant of dev_* in ord=
-er to
-fix checkpatch warnings. If no suitable device pointer is present, the
-corresponding pr_* variant is used.
+This patch removes the macro SERIAL_DEBUG_PNP, which is used to enable =
+debugging
+at compile time. As SERIAL_DEBUG_PNP is an orphan, the corresponding #i=
+fdef is
+removed. To keep the ability to enable debugging at compile time, the c=
+all to
+printk(KERN_DEBUG ...) is replaced by a corresponding call to dev_dbg()=
+, which
+is configurable via CONFIG_DYNAMIC_DEBUG.
 
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 CC: linux-kernel@i4.cs.fau.de
 ---
-v3: Use dev_* where possible as suggested by Andy
+v3: Remove orphaned macro as suggested by Andy
 ---
- drivers/tty/serial/8250/8250_core.c  |  5 ++---
- drivers/tty/serial/8250/8250_gsc.c   |  7 ++++---
- drivers/tty/serial/8250/8250_hp300.c | 19 ++++++++++---------
- drivers/tty/serial/8250/8250_port.c  |  3 +--
- 4 files changed, 17 insertions(+), 17 deletions(-)
+ drivers/tty/serial/8250/8250_pnp.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
-250/8250_core.c
-index b60b58b..d6b4906 100644
---- a/drivers/tty/serial/8250/8250_core.c
-+++ b/drivers/tty/serial/8250/8250_core.c
-@@ -1094,9 +1094,8 @@ static int __init serial8250_init(void)
+diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/82=
+50/8250_pnp.c
+index ffa7354..5f852e8 100644
+--- a/drivers/tty/serial/8250/8250_pnp.c
++++ b/drivers/tty/serial/8250/8250_pnp.c
+@@ -464,11 +464,11 @@ serial_pnp_probe(struct pnp_dev *dev, const struc=
+t pnp_device_id *dev_id)
+ 	} else
+ 		return -ENODEV;
 =20
- 	serial8250_isa_init_ports();
-=20
--	printk(KERN_INFO "Serial: 8250/16550 driver, "
--		"%d ports, IRQ sharing %sabled\n", nr_uarts,
--		share_irqs ? "en" : "dis");
-+	pr_info("Serial: 8250/16550 driver, %d ports, IRQ sharing %sabled\n",
-+		nr_uarts, share_irqs ? "en" : "dis");
-=20
- #ifdef CONFIG_SPARC
- 	ret =3D sunserial_register_minors(&serial8250_reg, UART_NR);
-diff --git a/drivers/tty/serial/8250/8250_gsc.c b/drivers/tty/serial/82=
-50/8250_gsc.c
-index 2e3ea1a..b1e6ae9 100644
---- a/drivers/tty/serial/8250/8250_gsc.c
-+++ b/drivers/tty/serial/8250/8250_gsc.c
-@@ -42,7 +42,7 @@ static int __init serial_init_chip(struct parisc_devi=
-ce *dev)
- 		 * the user what they're missing.
- 		 */
- 		if (parisc_parent(dev)->id.hw_type !=3D HPHW_IOA)
--			printk(KERN_INFO
-+			dev_info(&dev->dev,
- 				"Serial: device 0x%llx not configured.\n"
- 				"Enable support for Wax, Lasi, Asp or Dino.\n",
- 				(unsigned long long)dev->hpa.start);
-@@ -66,8 +66,9 @@ static int __init serial_init_chip(struct parisc_devi=
-ce *dev)
-=20
- 	err =3D serial8250_register_8250_port(&uart);
- 	if (err < 0) {
--		printk(KERN_WARNING
--			"serial8250_register_8250_port returned error %d\n", err);
-+		dev_warn(&dev->dev,
-+			"serial8250_register_8250_port returned error %d\n",
-+			err);
- 		iounmap(uart.port.membase);
- 		return err;
- 	}
-diff --git a/drivers/tty/serial/8250/8250_hp300.c b/drivers/tty/serial/=
-8250/8250_hp300.c
-index cf566bb..cc11a84 100644
---- a/drivers/tty/serial/8250/8250_hp300.c
-+++ b/drivers/tty/serial/8250/8250_hp300.c
-@@ -110,7 +110,7 @@ int __init hp300_setup_serial_console(void)
- 	/* Check for APCI console */
- 	if (scode =3D=3D 256) {
- #ifdef CONFIG_HPAPCI
--		printk(KERN_INFO "Serial console is HP APCI 1\n");
-+		pr_info("Serial console is HP APCI 1\n");
-=20
- 		port.uartclk =3D HPAPCI_BAUD_BASE * 16;
- 		port.mapbase =3D (FRODO_BASE + FRODO_APCI_OFFSET(1));
-@@ -118,7 +118,7 @@ int __init hp300_setup_serial_console(void)
- 		port.regshift =3D 2;
- 		add_preferred_console("ttyS", port.line, "9600n8");
- #else
--		printk(KERN_WARNING "Serial console is APCI but support is disabled =
-(CONFIG_HPAPCI)!\n");
-+		pr_warn("Serial console is APCI but support is disabled (CONFIG_HPAP=
-CI)!\n");
- 		return 0;
- #endif
- 	} else {
-@@ -127,7 +127,7 @@ int __init hp300_setup_serial_console(void)
- 		if (!pa)
- 			return 0;
-=20
--		printk(KERN_INFO "Serial console is HP DCA at select code %d\n", sco=
-de);
-+		pr_info("Serial console is HP DCA at select code %d\n", scode);
-=20
- 		port.uartclk =3D HPDCA_BAUD_BASE * 16;
- 		port.mapbase =3D (pa + UART_OFFSET);
-@@ -141,13 +141,13 @@ int __init hp300_setup_serial_console(void)
- 		if (DIO_ID(pa + DIO_VIRADDRBASE) & 0x80)
- 			add_preferred_console("ttyS", port.line, "9600n8");
- #else
--		printk(KERN_WARNING "Serial console is DCA but support is disabled (=
-CONFIG_HPDCA)!\n");
-+		pr_warn("Serial console is DCA but support is disabled (CONFIG_HPDCA=
-)!\n");
- 		return 0;
- #endif
- 	}
-=20
- 	if (early_serial_setup(&port) < 0)
--		printk(KERN_WARNING "hp300_setup_serial_console(): early_serial_setu=
-p() failed.\n");
-+		pr_warn("hp300_setup_serial_console(): early_serial_setup() failed.\=
-n");
- 	return 0;
- }
- #endif /* CONFIG_SERIAL_8250_CONSOLE */
-@@ -179,8 +179,9 @@ static int hpdca_init_one(struct dio_dev *d,
- 	line =3D serial8250_register_8250_port(&uart);
-=20
- 	if (line < 0) {
--		printk(KERN_NOTICE "8250_hp300: register_serial() DCA scode %d"
--		       " irq %d failed\n", d->scode, uart.port.irq);
-+		dev_notice(&dev->dev,
-+			  "8250_hp300: register_serial() DCA scode %d irq %d failed\n",
-+			  d->scode, uart.port.irq);
- 		return -ENOMEM;
- 	}
-=20
-@@ -260,8 +261,8 @@ static int __init hp300_8250_init(void)
- 		line =3D serial8250_register_8250_port(&uart);
-=20
- 		if (line < 0) {
--			printk(KERN_NOTICE "8250_hp300: register_serial() APCI"
--			       " %d irq %d failed\n", i, uart.port.irq);
-+			pr_notice("8250_hp300: register_serial() APCI %d irq %d failed\n",
-+				  i, uart.port.irq);
- 			kfree(port);
- 			continue;
- 		}
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
-250/8250_port.c
-index 99f709c..343d050 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -1222,8 +1222,7 @@ static void autoconfig(struct uart_8250_port *up)
- out_lock:
- 	spin_unlock_irqrestore(&port->lock, flags);
- 	if (up->capabilities !=3D old_capabilities) {
--		printk(KERN_WARNING
--		       "ttyS%d: detected caps %08x should be %08x\n",
-+		pr_warn("ttyS%d: detected caps %08x should be %08x\n",
- 		       serial_index(port), old_capabilities,
- 		       up->capabilities);
- 	}
+-#ifdef SERIAL_DEBUG_PNP
+-	printk(KERN_DEBUG
+-		"Setup PNP port: port %x, mem 0x%lx, irq %d, type %d\n",
+-		       uart.port.iobase, uart.port.mapbase, uart.port.irq, uart.port=
+=2Eiotype);
+-#endif
++	dev_debug(&dev->dev,
++		 "Setup PNP port: port %x, mem 0x%lx, irq %d, type %d\n",
++		 uart.port.iobase, uart.port.mapbase,
++		 uart.port.irq, uart.port.iotype);
++
+ 	if (flags & CIR_PORT) {
+ 		uart.port.flags |=3D UPF_FIXED_PORT | UPF_FIXED_TYPE;
+ 		uart.port.type =3D PORT_8250_CIR;
 --=20
 1.9.1
