@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v3 12/12] tty: serial: 8250: Fix indentation warnings
-Date: Fri,  8 Jan 2016 11:22:08 +0100
-Message-ID: <1452248528-14023-13-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v3 05/12] tty: serial: 8250: Remove else after return
+Date: Fri,  8 Jan 2016 11:22:01 +0100
+Message-ID: <1452248528-14023-6-git-send-email-anton.wuerfel@fau.de>
 References: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -27,86 +27,68 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 	Anton Wuerfel <anton.wuerfel@fau.de>,
 	Phillip Raffeck <phillip.raffe
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
-List-ID: <linux-kernel.vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Checkpatch complains about incorrect indentation of switch/case stateme=
-nts.
-This patch fixes the corresponding warnings. Additionally some indentat=
-ion
-is changed to match the correct format specified in the Linux Kernel
-Coding Style.
+This patch fixes checkpatch warnings about unnecessary else blocks afte=
+r
+return statements.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 CC: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_pci.c  | 12 ++++++------
- drivers/tty/serial/8250/8250_pnp.c  |  4 ++--
- drivers/tty/serial/8250/8250_port.c |  6 +++---
- 3 files changed, 11 insertions(+), 11 deletions(-)
+ drivers/tty/serial/8250/8250_pci.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
 50/8250_pci.c
-index 09157fa..b0b47f9 100644
+index 7f9f245..09157fa 100644
 --- a/drivers/tty/serial/8250/8250_pci.c
 +++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -841,12 +841,12 @@ static int pci_netmos_init(struct pci_dev *dev)
- 		return 0;
+@@ -805,10 +805,10 @@ static int pci_netmos_9900_numports(struct pci_de=
+v *dev)
 =20
- 	switch (dev->device) { /* FALLTHROUGH on all */
--		case PCI_DEVICE_ID_NETMOS_9904:
--		case PCI_DEVICE_ID_NETMOS_9912:
--		case PCI_DEVICE_ID_NETMOS_9922:
--		case PCI_DEVICE_ID_NETMOS_9900:
--			num_serial =3D pci_netmos_9900_numports(dev);
--			break;
-+	case PCI_DEVICE_ID_NETMOS_9904:
-+	case PCI_DEVICE_ID_NETMOS_9912:
-+	case PCI_DEVICE_ID_NETMOS_9922:
-+	case PCI_DEVICE_ID_NETMOS_9900:
-+		num_serial =3D pci_netmos_9900_numports(dev);
-+		break;
+ 	pi =3D (c & 0xff);
 =20
- 		default:
- 			if (num_serial =3D=3D 0) {
-diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/82=
-50/8250_pnp.c
-index 5f852e8..ad9debb 100644
---- a/drivers/tty/serial/8250/8250_pnp.c
-+++ b/drivers/tty/serial/8250/8250_pnp.c
-@@ -427,8 +427,8 @@ static int check_resources(struct pnp_dev *dev)
- static int serial_pnp_guess_board(struct pnp_dev *dev)
- {
- 	if (!(check_name(pnp_dev_name(dev)) ||
--		(dev->card && check_name(dev->card->name))))
--			return -ENODEV;
-+	    (dev->card && check_name(dev->card->name))))
-+		return -ENODEV;
+-	if (pi =3D=3D 2) {
++	if (pi =3D=3D 2)
+ 		return 1;
+-	} else if ((pi =3D=3D 0) &&
+-			   (dev->device =3D=3D PCI_DEVICE_ID_NETMOS_9900)) {
++
++	if ((pi =3D=3D 0) && (dev->device =3D=3D PCI_DEVICE_ID_NETMOS_9900)) =
+{
+ 		/* two possibilities: 0x30ps encodes number of parallel and
+ 		 * serial ports, or 0x1000 indicates *something*. This is not
+ 		 * immediately obvious, since the 2s1p+4s configuration seems
+@@ -816,12 +816,11 @@ static int pci_netmos_9900_numports(struct pci_de=
+v *dev)
+ 		 * advertising the same function 3 as the 4s+2s1p config.
+ 		 */
+ 		sub_serports =3D dev->subsystem_device & 0xf;
+-		if (sub_serports > 0) {
++		if (sub_serports > 0)
+ 			return sub_serports;
+-		} else {
+-			dev_err(&dev->dev, "NetMos/Mostech serial driver ignoring port on a=
+mbiguous config.\n");
+-			return 0;
+-		}
++
++		dev_err(&dev->dev, "NetMos/Mostech serial driver ignoring port on am=
+biguous config.\n");
++		return 0;
+ 	}
 =20
- 	if (check_resources(dev))
- 		return 0;
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
-250/8250_port.c
-index 343d050..da3b240 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -2235,9 +2235,9 @@ static void serial8250_set_divisor(struct uart_po=
-rt *port, unsigned int baud,
- 		serial_port_out(port, 0x2, quot_frac);
- }
-=20
--static unsigned int
--serial8250_get_baud_rate(struct uart_port *port, struct ktermios *term=
-ios,
--			 struct ktermios *old)
-+static unsigned int serial8250_get_baud_rate(struct uart_port *port,
-+					     struct ktermios *termios,
-+					     struct ktermios *old)
- {
- 	unsigned int tolerance =3D port->uartclk / 100;
-=20
+ 	moan_device("unknown NetMos/Mostech program interface", dev);
 --=20
 1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
