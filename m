@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v4 03/13] tty: serial: 8250: Fix braces after struct
-Date: Fri,  8 Jan 2016 18:43:49 +0100
-Message-ID: <1452275039-18787-4-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v4 09/13] tty: serial: 8250: Fix multi-line strings
+Date: Fri,  8 Jan 2016 18:43:55 +0100
+Message-ID: <1452275039-18787-10-git-send-email-anton.wuerfel@fau.de>
 References: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,30 +31,55 @@ In-Reply-To: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch fixes a checkpatch warning by moving an opening curly brace
-to its correct position.
+Merged user-visible multi-line strings into a single line according to =
+the
+Linux Kernel Coding Style, which allows user-visible strings to exceed =
+the
+maximum line length of 80 characters. The main reason for this is to
+facilitate grepping for these strings.
+However, some strings were ignored in this patch, because the use of
+format specifiers breaks the ability to grep anyway.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 CC: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_hp300.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/tty/serial/8250/8250_core.c | 3 +--
+ drivers/tty/serial/8250/serial_cs.c | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_hp300.c b/drivers/tty/serial/=
-8250/8250_hp300.c
-index 2891958..5e1b464 100644
---- a/drivers/tty/serial/8250/8250_hp300.c
-+++ b/drivers/tty/serial/8250/8250_hp300.c
-@@ -24,8 +24,7 @@
- #endif
+diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
+250/8250_core.c
+index d042ad5..b60b58b 100644
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -1173,8 +1173,7 @@ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Generic 8250/16x50 serial driver");
 =20
- #ifdef CONFIG_HPAPCI
--struct hp300_port
--{
-+struct hp300_port {
- 	struct hp300_port *next;	/* next port */
- 	int line;			/* line (tty) number */
- };
+ module_param(share_irqs, uint, 0644);
+-MODULE_PARM_DESC(share_irqs, "Share IRQs with other non-8250/16x50 dev=
+ices"
+-	" (unsafe)");
++MODULE_PARM_DESC(share_irqs, "Share IRQs with other non-8250/16x50 dev=
+ices (unsafe)");
+=20
+ module_param(nr_uarts, uint, 0644);
+ MODULE_PARM_DESC(nr_uarts, "Maximum number of UARTs supported. (1-" __=
+MODULE_STRING(CONFIG_SERIAL_8250_NR_UARTS) ")");
+diff --git a/drivers/tty/serial/8250/serial_cs.c b/drivers/tty/serial/8=
+250/serial_cs.c
+index 1f34867..1ab6bfc 100644
+--- a/drivers/tty/serial/8250/serial_cs.c
++++ b/drivers/tty/serial/8250/serial_cs.c
+@@ -533,8 +533,7 @@ static int multi_config(struct pcmcia_device *link)
+ 		info->multi =3D 2;
+ 		if (pcmcia_loop_config(link, multi_config_check_notpicky,
+ 				       &base2)) {
+-			dev_warn(&link->dev, "no usable port range "
+-			       "found, giving up\n");
++			dev_warn(&link->dev, "no usable port range found, giving up\n");
+ 			return -ENODEV;
+ 		}
+ 	}
 --=20
 1.9.1
