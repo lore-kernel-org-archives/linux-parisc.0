@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v4 06/13] tty: serial: 8250: Move EXPORT_SYMBOL to function
-Date: Fri,  8 Jan 2016 18:43:52 +0100
-Message-ID: <1452275039-18787-7-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v4 07/13] tty: serial: 8250: Fix line continuation warning
+Date: Fri,  8 Jan 2016 18:43:53 +0100
+Message-ID: <1452275039-18787-8-git-send-email-anton.wuerfel@fau.de>
 References: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,47 +31,31 @@ In-Reply-To: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch moves EXPORT_SYMBOL macros directly after the definition of
-the corresponding symbol to remove checkpatch warnings.
+=46ixed checkpatch warning about an unnecessary line continuation in a
+multi-line variable assignment.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 CC: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_core.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/tty/serial/8250/8250_hp300.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
-250/8250_core.c
-index 3912646..15082ae 100644
---- a/drivers/tty/serial/8250/8250_core.c
-+++ b/drivers/tty/serial/8250/8250_core.c
-@@ -763,6 +763,7 @@ void serial8250_suspend_port(int line)
+diff --git a/drivers/tty/serial/8250/8250_hp300.c b/drivers/tty/serial/=
+8250/8250_hp300.c
+index 5e1b464..cf566bb 100644
+--- a/drivers/tty/serial/8250/8250_hp300.c
++++ b/drivers/tty/serial/8250/8250_hp300.c
+@@ -248,8 +248,8 @@ static int __init hp300_8250_init(void)
 =20
- 	uart_suspend_port(&serial8250_reg, port);
- }
-+EXPORT_SYMBOL(serial8250_suspend_port);
-=20
- /**
-  *	serial8250_resume_port - resume one serial port
-@@ -788,6 +789,7 @@ void serial8250_resume_port(int line)
- 	}
- 	uart_resume_port(&serial8250_reg, port);
- }
-+EXPORT_SYMBOL(serial8250_resume_port);
-=20
- /*
-  * Register a set of serial devices attached to a platform device.  Th=
-e
-@@ -1167,9 +1169,6 @@ static void __exit serial8250_exit(void)
- module_init(serial8250_init);
- module_exit(serial8250_exit);
-=20
--EXPORT_SYMBOL(serial8250_suspend_port);
--EXPORT_SYMBOL(serial8250_resume_port);
--
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Generic 8250/16x50 serial driver");
-=20
+ 		/* Memory mapped I/O */
+ 		uart.port.iotype =3D UPIO_MEM;
+-		uart.port.flags =3D UPF_SKIP_TEST | UPF_SHARE_IRQ \
+-			      | UPF_BOOT_AUTOCONF;
++		uart.port.flags =3D UPF_SKIP_TEST | UPF_SHARE_IRQ
++				| UPF_BOOT_AUTOCONF;
+ 		/* XXX - no interrupt support yet */
+ 		uart.port.irq =3D 0;
+ 		uart.port.uartclk =3D HPAPCI_BAUD_BASE * 16;
 --=20
 1.9.1
