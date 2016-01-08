@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v4 02/13] tty: serial: 8250: Replace spaces with tabs
-Date: Fri,  8 Jan 2016 18:43:48 +0100
-Message-ID: <1452275039-18787-3-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v4 10/13] tty: serial: 8250: Suitably replace printk
+Date: Fri,  8 Jan 2016 18:43:56 +0100
+Message-ID: <1452275039-18787-11-git-send-email-anton.wuerfel@fau.de>
 References: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -24,96 +24,175 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 	"Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
 	Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
 	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
-	phillip.raffeck@fau.de, Anton Wuerfel <anton.wuerfel@fau.de>
+	phillip.raffeck@fau.de,
+	=?UTF-8?q?Anton=20W=C3=BCrfel?= <anton.wuerf
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
-List-ID: <linux-kernel.vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Indentation is changed to match the correct format of using tabs instea=
-d
-of spaces wherever possible.
+=46rom: Phillip Raffeck <phillip.raffeck@fau.de>
 
-Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
+This patch replaces printk by the corresponding variant of dev_* in ord=
+er
+to fix checkpatch warnings. If no suitable device pointer is present, t=
+he
+corresponding pr_* variant is used.
+
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
+Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 CC: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_pci.c  | 12 ++++++------
- drivers/tty/serial/8250/8250_port.c |  4 ++--
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/tty/serial/8250/8250_core.c  |  5 ++---
+ drivers/tty/serial/8250/8250_gsc.c   |  7 ++++---
+ drivers/tty/serial/8250/8250_hp300.c | 19 ++++++++++---------
+ drivers/tty/serial/8250/8250_port.c  |  3 +--
+ 4 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
-50/8250_pci.c
-index ccf43cb..7f9f245 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -721,7 +721,7 @@ static int pci_ni8430_init(struct pci_dev *dev)
- 	 */
- 	pcibios_resource_to_bus(dev->bus, &region, &dev->resource[bar]);
- 	device_window =3D ((region.start + MITE_IOWBSR1_WIN_OFFSET) & 0xfffff=
-f00)
--	                | MITE_IOWBSR1_WENAB | MITE_IOWBSR1_WSIZE;
-+			| MITE_IOWBSR1_WENAB | MITE_IOWBSR1_WSIZE;
- 	writel(device_window, p + MITE_IOWBSR1);
+diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
+250/8250_core.c
+index b60b58b..d6b4906 100644
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -1094,9 +1094,8 @@ static int __init serial8250_init(void)
 =20
- 	/* Set window access to go to RAMSEL IO address space */
-@@ -1763,7 +1763,7 @@ xr17v35x_has_slave(struct serial_private *priv)
- 	const int dev_id =3D priv->dev->device;
+ 	serial8250_isa_init_ports();
 =20
- 	return ((dev_id =3D=3D PCI_DEVICE_ID_EXAR_XR17V4358) ||
--	        (dev_id =3D=3D PCI_DEVICE_ID_EXAR_XR17V8358));
-+		(dev_id =3D=3D PCI_DEVICE_ID_EXAR_XR17V8358));
+-	printk(KERN_INFO "Serial: 8250/16550 driver, "
+-		"%d ports, IRQ sharing %sabled\n", nr_uarts,
+-		share_irqs ? "en" : "dis");
++	pr_info("Serial: 8250/16550 driver, %d ports, IRQ sharing %sabled\n",
++		nr_uarts, share_irqs ? "en" : "dis");
+=20
+ #ifdef CONFIG_SPARC
+ 	ret =3D sunserial_register_minors(&serial8250_reg, UART_NR);
+diff --git a/drivers/tty/serial/8250/8250_gsc.c b/drivers/tty/serial/82=
+50/8250_gsc.c
+index 2e3ea1a..b1e6ae9 100644
+--- a/drivers/tty/serial/8250/8250_gsc.c
++++ b/drivers/tty/serial/8250/8250_gsc.c
+@@ -42,7 +42,7 @@ static int __init serial_init_chip(struct parisc_devi=
+ce *dev)
+ 		 * the user what they're missing.
+ 		 */
+ 		if (parisc_parent(dev)->id.hw_type !=3D HPHW_IOA)
+-			printk(KERN_INFO
++			dev_info(&dev->dev,
+ 				"Serial: device 0x%llx not configured.\n"
+ 				"Enable support for Wax, Lasi, Asp or Dino.\n",
+ 				(unsigned long long)dev->hpa.start);
+@@ -66,8 +66,9 @@ static int __init serial_init_chip(struct parisc_devi=
+ce *dev)
+=20
+ 	err =3D serial8250_register_8250_port(&uart);
+ 	if (err < 0) {
+-		printk(KERN_WARNING
+-			"serial8250_register_8250_port returned error %d\n", err);
++		dev_warn(&dev->dev,
++			"serial8250_register_8250_port returned error %d\n",
++			err);
+ 		iounmap(uart.port.membase);
+ 		return err;
+ 	}
+diff --git a/drivers/tty/serial/8250/8250_hp300.c b/drivers/tty/serial/=
+8250/8250_hp300.c
+index cf566bb..4aaa24c 100644
+--- a/drivers/tty/serial/8250/8250_hp300.c
++++ b/drivers/tty/serial/8250/8250_hp300.c
+@@ -110,7 +110,7 @@ int __init hp300_setup_serial_console(void)
+ 	/* Check for APCI console */
+ 	if (scode =3D=3D 256) {
+ #ifdef CONFIG_HPAPCI
+-		printk(KERN_INFO "Serial console is HP APCI 1\n");
++		pr_info("Serial console is HP APCI 1\n");
+=20
+ 		port.uartclk =3D HPAPCI_BAUD_BASE * 16;
+ 		port.mapbase =3D (FRODO_BASE + FRODO_APCI_OFFSET(1));
+@@ -118,7 +118,7 @@ int __init hp300_setup_serial_console(void)
+ 		port.regshift =3D 2;
+ 		add_preferred_console("ttyS", port.line, "9600n8");
+ #else
+-		printk(KERN_WARNING "Serial console is APCI but support is disabled =
+(CONFIG_HPAPCI)!\n");
++		pr_warn("Serial console is APCI but support is disabled (CONFIG_HPAP=
+CI)!\n");
+ 		return 0;
+ #endif
+ 	} else {
+@@ -127,7 +127,7 @@ int __init hp300_setup_serial_console(void)
+ 		if (!pa)
+ 			return 0;
+=20
+-		printk(KERN_INFO "Serial console is HP DCA at select code %d\n", sco=
+de);
++		pr_info("Serial console is HP DCA at select code %d\n", scode);
+=20
+ 		port.uartclk =3D HPDCA_BAUD_BASE * 16;
+ 		port.mapbase =3D (pa + UART_OFFSET);
+@@ -141,13 +141,13 @@ int __init hp300_setup_serial_console(void)
+ 		if (DIO_ID(pa + DIO_VIRADDRBASE) & 0x80)
+ 			add_preferred_console("ttyS", port.line, "9600n8");
+ #else
+-		printk(KERN_WARNING "Serial console is DCA but support is disabled (=
+CONFIG_HPDCA)!\n");
++		pr_warn("Serial console is DCA but support is disabled (CONFIG_HPDCA=
+)!\n");
+ 		return 0;
+ #endif
+ 	}
+=20
+ 	if (early_serial_setup(&port) < 0)
+-		printk(KERN_WARNING "hp300_setup_serial_console(): early_serial_setu=
+p() failed.\n");
++		pr_warn("hp300_setup_serial_console(): early_serial_setup() failed.\=
+n");
+ 	return 0;
  }
+ #endif /* CONFIG_SERIAL_8250_CONSOLE */
+@@ -179,8 +179,9 @@ static int hpdca_init_one(struct dio_dev *d,
+ 	line =3D serial8250_register_8250_port(&uart);
 =20
- static int
-@@ -1863,8 +1863,8 @@ pci_fastcom335_setup(struct serial_private *priv,
+ 	if (line < 0) {
+-		printk(KERN_NOTICE "8250_hp300: register_serial() DCA scode %d"
+-		       " irq %d failed\n", d->scode, uart.port.irq);
++		dev_notice(&d->dev,
++			  "8250_hp300: register_serial() DCA scode %d irq %d failed\n",
++			  d->scode, uart.port.irq);
+ 		return -ENOMEM;
+ 	}
 =20
- static int
- pci_wch_ch353_setup(struct serial_private *priv,
--                    const struct pciserial_board *board,
--                    struct uart_8250_port *port, int idx)
-+		    const struct pciserial_board *board,
-+		    struct uart_8250_port *port, int idx)
- {
- 	port->port.flags |=3D UPF_FIXED_TYPE;
- 	port->port.type =3D PORT_16550A;
-@@ -1873,8 +1873,8 @@ pci_wch_ch353_setup(struct serial_private *priv,
+@@ -260,8 +261,8 @@ static int __init hp300_8250_init(void)
+ 		line =3D serial8250_register_8250_port(&uart);
 =20
- static int
- pci_wch_ch38x_setup(struct serial_private *priv,
--                    const struct pciserial_board *board,
--                    struct uart_8250_port *port, int idx)
-+		    const struct pciserial_board *board,
-+		    struct uart_8250_port *port, int idx)
- {
- 	port->port.flags |=3D UPF_FIXED_TYPE;
- 	port->port.type =3D PORT_16850;
+ 		if (line < 0) {
+-			printk(KERN_NOTICE "8250_hp300: register_serial() APCI"
+-			       " %d irq %d failed\n", i, uart.port.irq);
++			pr_notice("8250_hp300: register_serial() APCI %d irq %d failed\n",
++				  i, uart.port.irq);
+ 			kfree(port);
+ 			continue;
+ 		}
 diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
 250/8250_port.c
-index 7f3bd7b..f2e588e 100644
+index 99f709c..343d050 100644
 --- a/drivers/tty/serial/8250/8250_port.c
 +++ b/drivers/tty/serial/8250/8250_port.c
-@@ -52,7 +52,7 @@
- #define DEBUG_AUTOCONF(fmt...)	do { } while (0)
- #endif
-=20
--#define BOTH_EMPTY 	(UART_LSR_TEMT | UART_LSR_THRE)
-+#define BOTH_EMPTY	(UART_LSR_TEMT | UART_LSR_THRE)
-=20
- /*
-  * Here we define the default xmit fifo size used for each type of UAR=
-T.
-@@ -2254,7 +2254,7 @@ serial8250_get_baud_rate(struct uart_port *port, =
-struct ktermios *termios,
-=20
- void
- serial8250_do_set_termios(struct uart_port *port, struct ktermios *ter=
-mios,
--		          struct ktermios *old)
-+			  struct ktermios *old)
- {
- 	struct uart_8250_port *up =3D up_to_u8250p(port);
- 	unsigned char cval;
+@@ -1222,8 +1222,7 @@ static void autoconfig(struct uart_8250_port *up)
+ out_lock:
+ 	spin_unlock_irqrestore(&port->lock, flags);
+ 	if (up->capabilities !=3D old_capabilities) {
+-		printk(KERN_WARNING
+-		       "ttyS%d: detected caps %08x should be %08x\n",
++		pr_warn("ttyS%d: detected caps %08x should be %08x\n",
+ 		       serial_index(port), old_capabilities,
+ 		       up->capabilities);
+ 	}
 --=20
 1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
