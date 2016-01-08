@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v4 07/13] tty: serial: 8250: Fix line continuation warning
-Date: Fri,  8 Jan 2016 18:43:53 +0100
-Message-ID: <1452275039-18787-8-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v4 13/13] tty: serial: 8250: Fix indentation warnings
+Date: Fri,  8 Jan 2016 18:43:59 +0100
+Message-ID: <1452275039-18787-14-git-send-email-anton.wuerfel@fau.de>
 References: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,31 +31,81 @@ In-Reply-To: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-=46ixed checkpatch warning about an unnecessary line continuation in a
-multi-line variable assignment.
+Checkpatch complains about incorrect indentation of switch/case stateme=
+nts.
+This patch fixes the corresponding warnings. Additionally some indentat=
+ion
+is changed to match the correct format specified in the Linux Kernel
+Coding Style.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 CC: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_hp300.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/tty/serial/8250/8250_pci.c  | 12 ++++++------
+ drivers/tty/serial/8250/8250_pnp.c  |  4 ++--
+ drivers/tty/serial/8250/8250_port.c |  6 +++---
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_hp300.c b/drivers/tty/serial/=
-8250/8250_hp300.c
-index 5e1b464..cf566bb 100644
---- a/drivers/tty/serial/8250/8250_hp300.c
-+++ b/drivers/tty/serial/8250/8250_hp300.c
-@@ -248,8 +248,8 @@ static int __init hp300_8250_init(void)
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
+50/8250_pci.c
+index 09157fa..b0b47f9 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -841,12 +841,12 @@ static int pci_netmos_init(struct pci_dev *dev)
+ 		return 0;
 =20
- 		/* Memory mapped I/O */
- 		uart.port.iotype =3D UPIO_MEM;
--		uart.port.flags =3D UPF_SKIP_TEST | UPF_SHARE_IRQ \
--			      | UPF_BOOT_AUTOCONF;
-+		uart.port.flags =3D UPF_SKIP_TEST | UPF_SHARE_IRQ
-+				| UPF_BOOT_AUTOCONF;
- 		/* XXX - no interrupt support yet */
- 		uart.port.irq =3D 0;
- 		uart.port.uartclk =3D HPAPCI_BAUD_BASE * 16;
+ 	switch (dev->device) { /* FALLTHROUGH on all */
+-		case PCI_DEVICE_ID_NETMOS_9904:
+-		case PCI_DEVICE_ID_NETMOS_9912:
+-		case PCI_DEVICE_ID_NETMOS_9922:
+-		case PCI_DEVICE_ID_NETMOS_9900:
+-			num_serial =3D pci_netmos_9900_numports(dev);
+-			break;
++	case PCI_DEVICE_ID_NETMOS_9904:
++	case PCI_DEVICE_ID_NETMOS_9912:
++	case PCI_DEVICE_ID_NETMOS_9922:
++	case PCI_DEVICE_ID_NETMOS_9900:
++		num_serial =3D pci_netmos_9900_numports(dev);
++		break;
+=20
+ 		default:
+ 			if (num_serial =3D=3D 0) {
+diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/82=
+50/8250_pnp.c
+index e99282f..a021e31 100644
+--- a/drivers/tty/serial/8250/8250_pnp.c
++++ b/drivers/tty/serial/8250/8250_pnp.c
+@@ -427,8 +427,8 @@ static int check_resources(struct pnp_dev *dev)
+ static int serial_pnp_guess_board(struct pnp_dev *dev)
+ {
+ 	if (!(check_name(pnp_dev_name(dev)) ||
+-		(dev->card && check_name(dev->card->name))))
+-			return -ENODEV;
++	    (dev->card && check_name(dev->card->name))))
++		return -ENODEV;
+=20
+ 	if (check_resources(dev))
+ 		return 0;
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
+250/8250_port.c
+index 343d050..da3b240 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -2235,9 +2235,9 @@ static void serial8250_set_divisor(struct uart_po=
+rt *port, unsigned int baud,
+ 		serial_port_out(port, 0x2, quot_frac);
+ }
+=20
+-static unsigned int
+-serial8250_get_baud_rate(struct uart_port *port, struct ktermios *term=
+ios,
+-			 struct ktermios *old)
++static unsigned int serial8250_get_baud_rate(struct uart_port *port,
++					     struct ktermios *termios,
++					     struct ktermios *old)
+ {
+ 	unsigned int tolerance =3D port->uartclk / 100;
+=20
 --=20
 1.9.1
