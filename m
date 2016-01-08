@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v3 04/12] tty: serial: 8250: Fix multiline comment style
-Date: Fri,  8 Jan 2016 11:22:00 +0100
-Message-ID: <1452248528-14023-5-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v3 10/12] tty: serial: 8250: Suitably replace printk
+Date: Fri,  8 Jan 2016 11:22:06 +0100
+Message-ID: <1452248528-14023-11-git-send-email-anton.wuerfel@fau.de>
 References: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -24,197 +24,170 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 	"Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
 	Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
 	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
-	Anton Wuerfel <anton.wuerfel@fau.de>,
-	Phillip Raffeck <phillip.raffe
+	Phillip Raffeck <phillip.raffeck@fau.de>,
+	=?UTF-8?q?Anton=20W=C3=BCr
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Checkpatch outputs some warnings about incorrect comment style,
-which is fixed by this patch.
+=46rom: Phillip Raffeck <phillip.raffeck@fau.de>
 
-Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
+This patch replaces printk by the corresponding variant of dev_* in ord=
+er to
+fix checkpatch warnings. If no suitable device pointer is present, the
+corresponding pr_* variant is used.
+
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
+Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 CC: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_ingenic.c | 12 ++++++++----
- drivers/tty/serial/8250/8250_pnp.c     |  6 ++++--
- drivers/tty/serial/8250/8250_port.c    | 31 ++++++++++++++++----------=
------
- drivers/tty/serial/8250/serial_cs.c    | 26 +++++++++++++++++---------
- 4 files changed, 45 insertions(+), 30 deletions(-)
+v3: Use dev_* where possible as suggested by Andy
+---
+ drivers/tty/serial/8250/8250_core.c  |  5 ++---
+ drivers/tty/serial/8250/8250_gsc.c   |  7 ++++---
+ drivers/tty/serial/8250/8250_hp300.c | 19 ++++++++++---------
+ drivers/tty/serial/8250/8250_port.c  |  3 +--
+ 4 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_ingenic.c b/drivers/tty/seria=
-l/8250/8250_ingenic.c
-index 49394b4..086bd00 100644
---- a/drivers/tty/serial/8250/8250_ingenic.c
-+++ b/drivers/tty/serial/8250/8250_ingenic.c
-@@ -152,14 +152,18 @@ static void ingenic_uart_serial_out(struct uart_p=
-ort *p, int offset, int value)
- 		break;
+diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
+250/8250_core.c
+index b60b58b..d6b4906 100644
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -1094,9 +1094,8 @@ static int __init serial8250_init(void)
 =20
- 	case UART_IER:
--		/* Enable receive timeout interrupt with the
--		 * receive line status interrupt */
-+		/*
-+		 * Enable receive timeout interrupt with the
-+		 * receive line status interrupt
-+		 */
- 		value |=3D (value & 0x4) << 2;
- 		break;
+ 	serial8250_isa_init_ports();
 =20
- 	case UART_MCR:
--		/* If we have enabled modem status IRQs we should enable modem
--		 * mode. */
-+		/*
-+		 * If we have enabled modem status IRQs we should enable modem
-+		 * mode.
-+		 */
- 		ier =3D p->serial_in(p, UART_IER);
+-	printk(KERN_INFO "Serial: 8250/16550 driver, "
+-		"%d ports, IRQ sharing %sabled\n", nr_uarts,
+-		share_irqs ? "en" : "dis");
++	pr_info("Serial: 8250/16550 driver, %d ports, IRQ sharing %sabled\n",
++		nr_uarts, share_irqs ? "en" : "dis");
 =20
- 		if (ier & UART_IER_MSI)
-diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/82=
-50/8250_pnp.c
-index 658b392..ffa7354 100644
---- a/drivers/tty/serial/8250/8250_pnp.c
-+++ b/drivers/tty/serial/8250/8250_pnp.c
-@@ -367,8 +367,10 @@ static const struct pnp_device_id pnp_dev_table[] =
-=3D {
- 	{	"PNPCXXX",		UNKNOWN_DEV	},
- 	/* More unknown PnP modems */
- 	{	"PNPDXXX",		UNKNOWN_DEV	},
--	/* Winbond CIR port, should not be probed. We should keep track
--	   of it to prevent the legacy serial driver from probing it */
-+	/*
-+	 * Winbond CIR port, should not be probed. We should keep track
-+	 * of it to prevent the legacy serial driver from probing it
-+	 */
- 	{	"WEC1022",		CIR_PORT	},
- 	/*
- 	 * SMSC IrCC SIR/FIR port, should not be probed by serial driver
+ #ifdef CONFIG_SPARC
+ 	ret =3D sunserial_register_minors(&serial8250_reg, UART_NR);
+diff --git a/drivers/tty/serial/8250/8250_gsc.c b/drivers/tty/serial/82=
+50/8250_gsc.c
+index 2e3ea1a..b1e6ae9 100644
+--- a/drivers/tty/serial/8250/8250_gsc.c
++++ b/drivers/tty/serial/8250/8250_gsc.c
+@@ -42,7 +42,7 @@ static int __init serial_init_chip(struct parisc_devi=
+ce *dev)
+ 		 * the user what they're missing.
+ 		 */
+ 		if (parisc_parent(dev)->id.hw_type !=3D HPHW_IOA)
+-			printk(KERN_INFO
++			dev_info(&dev->dev,
+ 				"Serial: device 0x%llx not configured.\n"
+ 				"Enable support for Wax, Lasi, Asp or Dino.\n",
+ 				(unsigned long long)dev->hpa.start);
+@@ -66,8 +66,9 @@ static int __init serial_init_chip(struct parisc_devi=
+ce *dev)
+=20
+ 	err =3D serial8250_register_8250_port(&uart);
+ 	if (err < 0) {
+-		printk(KERN_WARNING
+-			"serial8250_register_8250_port returned error %d\n", err);
++		dev_warn(&dev->dev,
++			"serial8250_register_8250_port returned error %d\n",
++			err);
+ 		iounmap(uart.port.membase);
+ 		return err;
+ 	}
+diff --git a/drivers/tty/serial/8250/8250_hp300.c b/drivers/tty/serial/=
+8250/8250_hp300.c
+index cf566bb..cc11a84 100644
+--- a/drivers/tty/serial/8250/8250_hp300.c
++++ b/drivers/tty/serial/8250/8250_hp300.c
+@@ -110,7 +110,7 @@ int __init hp300_setup_serial_console(void)
+ 	/* Check for APCI console */
+ 	if (scode =3D=3D 256) {
+ #ifdef CONFIG_HPAPCI
+-		printk(KERN_INFO "Serial console is HP APCI 1\n");
++		pr_info("Serial console is HP APCI 1\n");
+=20
+ 		port.uartclk =3D HPAPCI_BAUD_BASE * 16;
+ 		port.mapbase =3D (FRODO_BASE + FRODO_APCI_OFFSET(1));
+@@ -118,7 +118,7 @@ int __init hp300_setup_serial_console(void)
+ 		port.regshift =3D 2;
+ 		add_preferred_console("ttyS", port.line, "9600n8");
+ #else
+-		printk(KERN_WARNING "Serial console is APCI but support is disabled =
+(CONFIG_HPAPCI)!\n");
++		pr_warn("Serial console is APCI but support is disabled (CONFIG_HPAP=
+CI)!\n");
+ 		return 0;
+ #endif
+ 	} else {
+@@ -127,7 +127,7 @@ int __init hp300_setup_serial_console(void)
+ 		if (!pa)
+ 			return 0;
+=20
+-		printk(KERN_INFO "Serial console is HP DCA at select code %d\n", sco=
+de);
++		pr_info("Serial console is HP DCA at select code %d\n", scode);
+=20
+ 		port.uartclk =3D HPDCA_BAUD_BASE * 16;
+ 		port.mapbase =3D (pa + UART_OFFSET);
+@@ -141,13 +141,13 @@ int __init hp300_setup_serial_console(void)
+ 		if (DIO_ID(pa + DIO_VIRADDRBASE) & 0x80)
+ 			add_preferred_console("ttyS", port.line, "9600n8");
+ #else
+-		printk(KERN_WARNING "Serial console is DCA but support is disabled (=
+CONFIG_HPDCA)!\n");
++		pr_warn("Serial console is DCA but support is disabled (CONFIG_HPDCA=
+)!\n");
+ 		return 0;
+ #endif
+ 	}
+=20
+ 	if (early_serial_setup(&port) < 0)
+-		printk(KERN_WARNING "hp300_setup_serial_console(): early_serial_setu=
+p() failed.\n");
++		pr_warn("hp300_setup_serial_console(): early_serial_setup() failed.\=
+n");
+ 	return 0;
+ }
+ #endif /* CONFIG_SERIAL_8250_CONSOLE */
+@@ -179,8 +179,9 @@ static int hpdca_init_one(struct dio_dev *d,
+ 	line =3D serial8250_register_8250_port(&uart);
+=20
+ 	if (line < 0) {
+-		printk(KERN_NOTICE "8250_hp300: register_serial() DCA scode %d"
+-		       " irq %d failed\n", d->scode, uart.port.irq);
++		dev_notice(&dev->dev,
++			  "8250_hp300: register_serial() DCA scode %d irq %d failed\n",
++			  d->scode, uart.port.irq);
+ 		return -ENOMEM;
+ 	}
+=20
+@@ -260,8 +261,8 @@ static int __init hp300_8250_init(void)
+ 		line =3D serial8250_register_8250_port(&uart);
+=20
+ 		if (line < 0) {
+-			printk(KERN_NOTICE "8250_hp300: register_serial() APCI"
+-			       " %d irq %d failed\n", i, uart.port.irq);
++			pr_notice("8250_hp300: register_serial() APCI %d irq %d failed\n",
++				  i, uart.port.irq);
+ 			kfree(port);
+ 			continue;
+ 		}
 diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
 250/8250_port.c
-index f2e588e..99f709c 100644
+index 99f709c..343d050 100644
 --- a/drivers/tty/serial/8250/8250_port.c
 +++ b/drivers/tty/serial/8250/8250_port.c
-@@ -250,9 +250,11 @@ static const struct serial8250_config uart_config[=
-] =3D {
- 		.fcr		=3D UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_10,
- 		.flags		=3D UART_CAP_FIFO | UART_CAP_AFE,
- 	},
--/* tx_loadsz is set to 63-bytes instead of 64-bytes to implement
--workaround of errata A-008006 which states that tx_loadsz should  be
--configured less than Maximum supported fifo bytes */
-+	/*
-+	 * tx_loadsz is set to 63-bytes instead of 64-bytes to implement
-+	 * workaround of errata A-008006 which states that tx_loadsz should b=
-e
-+	 * configured less than Maximum supported fifo bytes
-+	 */
- 	[PORT_16550A_FSL64] =3D {
- 		.name		=3D "16550A_FSL64",
- 		.fifo_size	=3D 64,
-@@ -1969,23 +1971,22 @@ int serial8250_do_startup(struct uart_port *por=
-t)
-=20
- 	serial8250_set_mctrl(port, port->mctrl);
-=20
--	/* Serial over Lan (SoL) hack:
--	   Intel 8257x Gigabit ethernet chips have a
--	   16550 emulation, to be used for Serial Over Lan.
--	   Those chips take a longer time than a normal
--	   serial device to signalize that a transmission
--	   data was queued. Due to that, the above test generally
--	   fails. One solution would be to delay the reading of
--	   iir. However, this is not reliable, since the timeout
--	   is variable. So, let's just don't test if we receive
--	   TX irq. This way, we'll never enable UART_BUG_TXEN.
-+	/*
-+	 * Serial over Lan (SoL) hack:
-+	 * Intel 8257x Gigabit ethernet chips have a 16550 emulation, to be u=
-sed
-+	 * for Serial Over Lan.  Those chips take a longer time than a normal
-+	 * serial device to signalize that a transmission data was queued. Du=
-e
-+	 * to that, the above test generally fails. One solution would be to
-+	 * delay the reading of iir. However, this is not reliable, since the
-+	 * timeout is variable. So, let's just don't test if we receive TX ir=
-q.
-+	 * This way, we'll never enable UART_BUG_TXEN.
- 	 */
- 	if (up->port.flags & UPF_NO_TXEN_TEST)
- 		goto dont_test_tx_en;
-=20
- 	/*
--	 * Do a quick test to see if we receive an
--	 * interrupt when we enable the TX irq.
-+	 * Do a quick test to see if we receive an interrupt when we enable t=
-he
-+	 * TX irq.
- 	 */
- 	serial_port_out(port, UART_IER, UART_IER_THRI);
- 	lsr =3D serial_port_in(port, UART_LSR);
-diff --git a/drivers/tty/serial/8250/serial_cs.c b/drivers/tty/serial/8=
-250/serial_cs.c
-index 6d7a801..1f34867 100644
---- a/drivers/tty/serial/8250/serial_cs.c
-+++ b/drivers/tty/serial/8250/serial_cs.c
-@@ -441,16 +441,20 @@ static int simple_config(struct pcmcia_device *li=
-nk)
- 	struct serial_info *info =3D link->priv;
- 	int i =3D -ENODEV, try;
-=20
--	/* First pass: look for a config entry that looks normal.
--	 * Two tries: without IO aliases, then with aliases */
-+	/*
-+	 * First pass: look for a config entry that looks normal.
-+	 * Two tries: without IO aliases, then with aliases
-+	 */
- 	link->config_flags |=3D CONF_AUTO_SET_VPP;
- 	for (try =3D 0; try < 4; try++)
- 		if (!pcmcia_loop_config(link, simple_config_check, &try))
- 			goto found_port;
-=20
--	/* Second pass: try to find an entry that isn't picky about
--	   its base address, then try to grab any standard serial port
--	   address, and finally try to get any free port. */
-+	/*
-+	 * Second pass: try to find an entry that isn't picky about
-+	 * its base address, then try to grab any standard serial port
-+	 * address, and finally try to get any free port.
-+	 */
- 	if (!pcmcia_loop_config(link, simple_config_check_notpicky, NULL))
- 		goto found_port;
-=20
-@@ -480,8 +484,10 @@ static int multi_config_check(struct pcmcia_device=
- *p_dev, void *priv_data)
- 	if (p_dev->resource[1]->end)
- 		return -EINVAL;
-=20
--	/* The quad port cards have bad CIS's, so just look for a
--	   window larger than 8 ports and assume it will be right */
-+	/*
-+	 * The quad port cards have bad CIS's, so just look for a
-+	 * window larger than 8 ports and assume it will be right
-+	 */
- 	if (p_dev->resource[0]->end <=3D 8)
- 		return -EINVAL;
-=20
-@@ -623,8 +629,10 @@ static int serial_config(struct pcmcia_device *lin=
-k)
- 			break;
- 		}
-=20
--	/* Another check for dual-serial cards: look for either serial or
--	   multifunction cards that ask for appropriate IO port ranges */
-+	/*
-+	 * Another check for dual-serial cards: look for either serial or
-+	 * multifunction cards that ask for appropriate IO port ranges
-+	 */
- 	if ((info->multi =3D=3D 0) &&
- 	    (link->has_func_id) &&
- 	    (link->socket->pcmcia_pfc =3D=3D 0) &&
+@@ -1222,8 +1222,7 @@ static void autoconfig(struct uart_8250_port *up)
+ out_lock:
+ 	spin_unlock_irqrestore(&port->lock, flags);
+ 	if (up->capabilities !=3D old_capabilities) {
+-		printk(KERN_WARNING
+-		       "ttyS%d: detected caps %08x should be %08x\n",
++		pr_warn("ttyS%d: detected caps %08x should be %08x\n",
+ 		       serial_index(port), old_capabilities,
+ 		       up->capabilities);
+ 	}
 --=20
 1.9.1
