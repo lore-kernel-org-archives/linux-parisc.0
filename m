@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v3 11/12] tty: serial: 8250: Remove SERIAL_DEBUG_PNP macro
-Date: Fri,  8 Jan 2016 11:22:07 +0100
-Message-ID: <1452248528-14023-12-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v3 09/12] tty: serial: 8250: Fix multi-line strings
+Date: Fri,  8 Jan 2016 11:22:05 +0100
+Message-ID: <1452248528-14023-10-git-send-email-anton.wuerfel@fau.de>
 References: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -24,58 +24,69 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 	"Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
 	Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
 	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
-	Phillip Raffeck <phillip.raffeck@fau.de>,
-	=?UTF-8?q?Anton=20W=C3=BCr
+	Anton Wuerfel <anton.wuerfel@fau.de>,
+	Phillip Raffeck <phillip.raffe
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
-List-ID: <linux-kernel.vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-=46rom: Phillip Raffeck <phillip.raffeck@fau.de>
+Merged user-visible multi-line strings into a single line according to =
+the
+Linux Kernel Coding Style, which allows user-visible strings to exceed =
+the
+maximum line length of 80 characters. The main reason for this is to
+facilitate grepping for these strings.
+However, some strings were ignored in this patch, because the use of
+format specifiers breaks the ability to grep anyway.
 
-This patch removes the macro SERIAL_DEBUG_PNP, which is used to enable =
-debugging
-at compile time. As SERIAL_DEBUG_PNP is an orphan, the corresponding #i=
-fdef is
-removed. To keep the ability to enable debugging at compile time, the c=
-all to
-printk(KERN_DEBUG ...) is replaced by a corresponding call to dev_dbg()=
-, which
-is configurable via CONFIG_DYNAMIC_DEBUG.
-
-Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
+Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 CC: linux-kernel@i4.cs.fau.de
 ---
-v3: Remove orphaned macro as suggested by Andy
----
- drivers/tty/serial/8250/8250_pnp.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/tty/serial/8250/8250_core.c | 3 +--
+ drivers/tty/serial/8250/serial_cs.c | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/82=
-50/8250_pnp.c
-index ffa7354..5f852e8 100644
---- a/drivers/tty/serial/8250/8250_pnp.c
-+++ b/drivers/tty/serial/8250/8250_pnp.c
-@@ -464,11 +464,11 @@ serial_pnp_probe(struct pnp_dev *dev, const struc=
-t pnp_device_id *dev_id)
- 	} else
- 		return -ENODEV;
+diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
+250/8250_core.c
+index d042ad5..b60b58b 100644
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -1173,8 +1173,7 @@ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Generic 8250/16x50 serial driver");
 =20
--#ifdef SERIAL_DEBUG_PNP
--	printk(KERN_DEBUG
--		"Setup PNP port: port %x, mem 0x%lx, irq %d, type %d\n",
--		       uart.port.iobase, uart.port.mapbase, uart.port.irq, uart.port=
-=2Eiotype);
--#endif
-+	dev_debug(&dev->dev,
-+		 "Setup PNP port: port %x, mem 0x%lx, irq %d, type %d\n",
-+		 uart.port.iobase, uart.port.mapbase,
-+		 uart.port.irq, uart.port.iotype);
-+
- 	if (flags & CIR_PORT) {
- 		uart.port.flags |=3D UPF_FIXED_PORT | UPF_FIXED_TYPE;
- 		uart.port.type =3D PORT_8250_CIR;
+ module_param(share_irqs, uint, 0644);
+-MODULE_PARM_DESC(share_irqs, "Share IRQs with other non-8250/16x50 dev=
+ices"
+-	" (unsafe)");
++MODULE_PARM_DESC(share_irqs, "Share IRQs with other non-8250/16x50 dev=
+ices (unsafe)");
+=20
+ module_param(nr_uarts, uint, 0644);
+ MODULE_PARM_DESC(nr_uarts, "Maximum number of UARTs supported. (1-" __=
+MODULE_STRING(CONFIG_SERIAL_8250_NR_UARTS) ")");
+diff --git a/drivers/tty/serial/8250/serial_cs.c b/drivers/tty/serial/8=
+250/serial_cs.c
+index 1f34867..1ab6bfc 100644
+--- a/drivers/tty/serial/8250/serial_cs.c
++++ b/drivers/tty/serial/8250/serial_cs.c
+@@ -533,8 +533,7 @@ static int multi_config(struct pcmcia_device *link)
+ 		info->multi =3D 2;
+ 		if (pcmcia_loop_config(link, multi_config_check_notpicky,
+ 				       &base2)) {
+-			dev_warn(&link->dev, "no usable port range "
+-			       "found, giving up\n");
++			dev_warn(&link->dev, "no usable port range found, giving up\n");
+ 			return -ENODEV;
+ 		}
+ 	}
 --=20
 1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
