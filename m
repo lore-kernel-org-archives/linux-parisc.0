@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v3 08/12] tty: serial: 8250: Add parentheses to macro
-Date: Fri,  8 Jan 2016 11:22:04 +0100
-Message-ID: <1452248528-14023-9-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v3 07/12] tty: serial: 8250: Fix line continuation warning
+Date: Fri,  8 Jan 2016 11:22:03 +0100
+Message-ID: <1452248528-14023-8-git-send-email-anton.wuerfel@fau.de>
 References: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -27,34 +27,42 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 	Anton Wuerfel <anton.wuerfel@fau.de>,
 	Phillip Raffeck <phillip.raffe
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
-List-ID: <linux-kernel.vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch fixes a checkpatch warning caused by missing parentheses
-in the definition of a macro.
+=46ixed checkpatch warning about an unnecessary line continuation in a
+multi-line variable assignment.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 CC: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_hp300.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
-250/8250_core.c
-index 15082ae..d042ad5 100644
---- a/drivers/tty/serial/8250/8250_core.c
-+++ b/drivers/tty/serial/8250/8250_core.c
-@@ -686,7 +686,7 @@ static int __init univ8250_console_init(void)
- }
- console_initcall(univ8250_console_init);
+diff --git a/drivers/tty/serial/8250/8250_hp300.c b/drivers/tty/serial/=
+8250/8250_hp300.c
+index 5e1b464..cf566bb 100644
+--- a/drivers/tty/serial/8250/8250_hp300.c
++++ b/drivers/tty/serial/8250/8250_hp300.c
+@@ -248,8 +248,8 @@ static int __init hp300_8250_init(void)
 =20
--#define SERIAL8250_CONSOLE	&univ8250_console
-+#define SERIAL8250_CONSOLE	(&univ8250_console)
- #else
- #define SERIAL8250_CONSOLE	NULL
- #endif
+ 		/* Memory mapped I/O */
+ 		uart.port.iotype =3D UPIO_MEM;
+-		uart.port.flags =3D UPF_SKIP_TEST | UPF_SHARE_IRQ \
+-			      | UPF_BOOT_AUTOCONF;
++		uart.port.flags =3D UPF_SKIP_TEST | UPF_SHARE_IRQ
++				| UPF_BOOT_AUTOCONF;
+ 		/* XXX - no interrupt support yet */
+ 		uart.port.irq =3D 0;
+ 		uart.port.uartclk =3D HPAPCI_BAUD_BASE * 16;
 --=20
 1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
