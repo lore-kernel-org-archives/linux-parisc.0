@@ -1,7 +1,8 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v4 00/13] tty: serial: 8250: Fix checkpatch warnings
-Date: Fri,  8 Jan 2016 18:43:46 +0100
-Message-ID: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v4 02/13] tty: serial: 8250: Replace spaces with tabs
+Date: Fri,  8 Jan 2016 18:43:48 +0100
+Message-ID: <1452275039-18787-3-git-send-email-anton.wuerfel@fau.de>
+References: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Cc: Jiri Slaby <jslaby@suse.com>,
@@ -25,98 +26,94 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
 	phillip.raffeck@fau.de, Anton Wuerfel <anton.wuerfel@fau.de>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello Peter and Andy,
+Indentation is changed to match the correct format of using tabs instea=
+d
+of spaces wherever possible.
 
-sorry for the long delay - we were very busy during christmas holidays.
-We tried to incorporate your suggestions.
+Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
+Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
+CC: linux-kernel@i4.cs.fau.de
+---
+ drivers/tty/serial/8250/8250_pci.c  | 12 ++++++------
+ drivers/tty/serial/8250/8250_port.c |  4 ++--
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-We apologize for syntax errors in v3-patchset. While fixing these issues
-we added another patch to the series, so we decided to send in a new patchset
-instead of fixing the damaged patch files in v3.
-
-Regards,
-Anton Wuerfel
-Phillip Raffeck
-
-This patch set fixes several checkpatch warnings in tty/serial/8250.
-
-Patch 1/13:  Adds missing spaces (mainly to function/macro headers)
-Patch 2/13:  Replace spaces with tabs wherever possible
-Patch 3/13:  Slight patch which moves an opening curly brace
-Patch 4/13:  Fixes multiline comment style
-Patch 5/13:  Removes else blocks after return statements
-Patch 6/13:  Slight patch which moves EXPORT_SYMBOL macro to correct position
-Patch 7/13:  Slight patch which removes an unneccessary line continuation
-Patch 8/13:  Slight patch which adds parentheses to a macro definition
-Patch 9/13:  Merges user-visible multiline strings to a single line
-Patch 10/13: Replace printk by dev_* or pr_* where appropriate
-Patch 11/13: Remove orphaned debug macro
-Patch 12/13: Fix warnings in dev_dbg by adding two casts
-Patch 13/13: Fixes code indentation
-
-Remaining checkpatch warnings after applying this patch series:
-
--line over 80 characters
-	This error mostly occurs in serial_cs.c, which contains long-lined
-	macro calls. However, splitting these calls into multiple lines would
-	not increase readability.
-
--externs should be avoided in .c files
-	This occurs in 8250_hp300.c. There is no corresponding header file
-	the extern statement could be moved to. It could be moved to 8250.h
-	but this would affect other .c files.
-
--Use #include <linux/*.h> instead of <asm/*.h>
-	This warning has been left open for more experienced kernel hackers.
-	This patch series is about style issues. We do not intend to alter
-	the code behavior.
--struct uart_ops should normally be const
-	This warning only occurs in 8250_core.c. The corresponding struct
-	cannot be declared as const because it is altered in
-	serial8250_isa_init_ports(). Maybe a checkpatch exception should
-	be added for this particular warning.
-
--quoted string split across lines
-	These strings were ignored because they otherwise would exceed
-	80 characters in a single line. These particular strings use
-	format specifiers, which break the ability to grep for them anyway.
-
-Anton Wuerfel (13):
-Phillip Raffeck (13):
-  tty: serial: 8250: Fix whitespace errors
-  tty: serial: 8250: Replace spaces with tabs
-  tty: serial: 8250: Fix braces after struct
-  tty: serial: 8250: Fix multiline comment style
-  tty: serial: 8250: Remove else after return
-  tty: serial: 8250: Move EXPORT_SYMBOL to function
-  tty: serial: 8250: Fix line continuation warning
-  tty: serial: 8250: Add parentheses to macro
-  tty: serial: 8250: Fix multi-line strings
-  tty: serial: 8250: Removed warning in debug output
-  tty: serial: 8250: Fix indentation warnings
-  tty: serial: 8250: Suitably replace printk
-  tty: serial: 8250: Remove SERIAL_DEBUG_PNP macro
-
- drivers/tty/serial/8250/8250_accent.c        |  2 +-
- drivers/tty/serial/8250/8250_acorn.c         |  2 +-
- drivers/tty/serial/8250/8250_boca.c          |  2 +-
- drivers/tty/serial/8250/8250_core.c          | 15 ++---
- drivers/tty/serial/8250/8250_exar_st16c554.c |  2 +-
- drivers/tty/serial/8250/8250_fourport.c      |  2 +-
- drivers/tty/serial/8250/8250_gsc.c           |  7 ++-
- drivers/tty/serial/8250/8250_hp300.c         | 26 ++++----
- drivers/tty/serial/8250/8250_hub6.c          |  2 +-
- drivers/tty/serial/8250/8250_ingenic.c       | 12 ++--
- drivers/tty/serial/8250/8250_pci.c           | 49 +++++++--------
- drivers/tty/serial/8250/8250_pnp.c           | 20 ++++---
- drivers/tty/serial/8250/8250_port.c          | 46 +++++++-------
- drivers/tty/serial/8250/serial_cs.c          | 89 +++++++++++++++-------------
- 14 files changed, 145 insertions(+), 131 deletions(-)
-
--- 
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
+50/8250_pci.c
+index ccf43cb..7f9f245 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -721,7 +721,7 @@ static int pci_ni8430_init(struct pci_dev *dev)
+ 	 */
+ 	pcibios_resource_to_bus(dev->bus, &region, &dev->resource[bar]);
+ 	device_window =3D ((region.start + MITE_IOWBSR1_WIN_OFFSET) & 0xfffff=
+f00)
+-	                | MITE_IOWBSR1_WENAB | MITE_IOWBSR1_WSIZE;
++			| MITE_IOWBSR1_WENAB | MITE_IOWBSR1_WSIZE;
+ 	writel(device_window, p + MITE_IOWBSR1);
+=20
+ 	/* Set window access to go to RAMSEL IO address space */
+@@ -1763,7 +1763,7 @@ xr17v35x_has_slave(struct serial_private *priv)
+ 	const int dev_id =3D priv->dev->device;
+=20
+ 	return ((dev_id =3D=3D PCI_DEVICE_ID_EXAR_XR17V4358) ||
+-	        (dev_id =3D=3D PCI_DEVICE_ID_EXAR_XR17V8358));
++		(dev_id =3D=3D PCI_DEVICE_ID_EXAR_XR17V8358));
+ }
+=20
+ static int
+@@ -1863,8 +1863,8 @@ pci_fastcom335_setup(struct serial_private *priv,
+=20
+ static int
+ pci_wch_ch353_setup(struct serial_private *priv,
+-                    const struct pciserial_board *board,
+-                    struct uart_8250_port *port, int idx)
++		    const struct pciserial_board *board,
++		    struct uart_8250_port *port, int idx)
+ {
+ 	port->port.flags |=3D UPF_FIXED_TYPE;
+ 	port->port.type =3D PORT_16550A;
+@@ -1873,8 +1873,8 @@ pci_wch_ch353_setup(struct serial_private *priv,
+=20
+ static int
+ pci_wch_ch38x_setup(struct serial_private *priv,
+-                    const struct pciserial_board *board,
+-                    struct uart_8250_port *port, int idx)
++		    const struct pciserial_board *board,
++		    struct uart_8250_port *port, int idx)
+ {
+ 	port->port.flags |=3D UPF_FIXED_TYPE;
+ 	port->port.type =3D PORT_16850;
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
+250/8250_port.c
+index 7f3bd7b..f2e588e 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -52,7 +52,7 @@
+ #define DEBUG_AUTOCONF(fmt...)	do { } while (0)
+ #endif
+=20
+-#define BOTH_EMPTY 	(UART_LSR_TEMT | UART_LSR_THRE)
++#define BOTH_EMPTY	(UART_LSR_TEMT | UART_LSR_THRE)
+=20
+ /*
+  * Here we define the default xmit fifo size used for each type of UAR=
+T.
+@@ -2254,7 +2254,7 @@ serial8250_get_baud_rate(struct uart_port *port, =
+struct ktermios *termios,
+=20
+ void
+ serial8250_do_set_termios(struct uart_port *port, struct ktermios *ter=
+mios,
+-		          struct ktermios *old)
++			  struct ktermios *old)
+ {
+ 	struct uart_8250_port *up =3D up_to_u8250p(port);
+ 	unsigned char cval;
+--=20
 1.9.1
-
