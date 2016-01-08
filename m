@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v4 12/13] tty: serial: 8250: Removed warning in debug output
-Date: Fri,  8 Jan 2016 18:43:58 +0100
-Message-ID: <1452275039-18787-13-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v4 08/13] tty: serial: 8250: Add parentheses to macro
+Date: Fri,  8 Jan 2016 18:43:54 +0100
+Message-ID: <1452275039-18787-9-git-send-email-anton.wuerfel@fau.de>
 References: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,33 +31,29 @@ In-Reply-To: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch fixes type warnings in a debug output in 8250_pnp.c.
-Those warnings never got triggered, because the command was nested
-in an #ifdef, which is removed by a patch of this series.
+This patch fixes a checkpatch warning caused by missing parentheses
+in the definition of a macro.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 CC: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_pnp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/tty/serial/8250/8250_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/82=
-50/8250_pnp.c
-index ba3a1af..e99282f 100644
---- a/drivers/tty/serial/8250/8250_pnp.c
-+++ b/drivers/tty/serial/8250/8250_pnp.c
-@@ -465,8 +465,8 @@ serial_pnp_probe(struct pnp_dev *dev, const struct =
-pnp_device_id *dev_id)
- 		return -ENODEV;
+diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
+250/8250_core.c
+index 15082ae..d042ad5 100644
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -686,7 +686,7 @@ static int __init univ8250_console_init(void)
+ }
+ console_initcall(univ8250_console_init);
 =20
- 	dev_dbg(&dev->dev,
--		 "Setup PNP port: port %x, mem 0x%lx, irq %d, type %d\n",
--		 uart.port.iobase, uart.port.mapbase,
-+		 "Setup PNP port: port %lx, mem 0x%lx, irq %d, type %d\n",
-+		 uart.port.iobase, (unsigned long) uart.port.mapbase,
- 		 uart.port.irq, uart.port.iotype);
-=20
- 	if (flags & CIR_PORT) {
+-#define SERIAL8250_CONSOLE	&univ8250_console
++#define SERIAL8250_CONSOLE	(&univ8250_console)
+ #else
+ #define SERIAL8250_CONSOLE	NULL
+ #endif
 --=20
 1.9.1
