@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v4 09/13] tty: serial: 8250: Fix multi-line strings
-Date: Fri,  8 Jan 2016 18:43:55 +0100
-Message-ID: <1452275039-18787-10-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v4 06/13] tty: serial: 8250: Move EXPORT_SYMBOL to function
+Date: Fri,  8 Jan 2016 18:43:52 +0100
+Message-ID: <1452275039-18787-7-git-send-email-anton.wuerfel@fau.de>
 References: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,55 +31,47 @@ In-Reply-To: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Merged user-visible multi-line strings into a single line according to =
-the
-Linux Kernel Coding Style, which allows user-visible strings to exceed =
-the
-maximum line length of 80 characters. The main reason for this is to
-facilitate grepping for these strings.
-However, some strings were ignored in this patch, because the use of
-format specifiers breaks the ability to grep anyway.
+This patch moves EXPORT_SYMBOL macros directly after the definition of
+the corresponding symbol to remove checkpatch warnings.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 CC: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_core.c | 3 +--
- drivers/tty/serial/8250/serial_cs.c | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ drivers/tty/serial/8250/8250_core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
 250/8250_core.c
-index d042ad5..b60b58b 100644
+index 3912646..15082ae 100644
 --- a/drivers/tty/serial/8250/8250_core.c
 +++ b/drivers/tty/serial/8250/8250_core.c
-@@ -1173,8 +1173,7 @@ MODULE_LICENSE("GPL");
+@@ -763,6 +763,7 @@ void serial8250_suspend_port(int line)
+=20
+ 	uart_suspend_port(&serial8250_reg, port);
+ }
++EXPORT_SYMBOL(serial8250_suspend_port);
+=20
+ /**
+  *	serial8250_resume_port - resume one serial port
+@@ -788,6 +789,7 @@ void serial8250_resume_port(int line)
+ 	}
+ 	uart_resume_port(&serial8250_reg, port);
+ }
++EXPORT_SYMBOL(serial8250_resume_port);
+=20
+ /*
+  * Register a set of serial devices attached to a platform device.  Th=
+e
+@@ -1167,9 +1169,6 @@ static void __exit serial8250_exit(void)
+ module_init(serial8250_init);
+ module_exit(serial8250_exit);
+=20
+-EXPORT_SYMBOL(serial8250_suspend_port);
+-EXPORT_SYMBOL(serial8250_resume_port);
+-
+ MODULE_LICENSE("GPL");
  MODULE_DESCRIPTION("Generic 8250/16x50 serial driver");
 =20
- module_param(share_irqs, uint, 0644);
--MODULE_PARM_DESC(share_irqs, "Share IRQs with other non-8250/16x50 dev=
-ices"
--	" (unsafe)");
-+MODULE_PARM_DESC(share_irqs, "Share IRQs with other non-8250/16x50 dev=
-ices (unsafe)");
-=20
- module_param(nr_uarts, uint, 0644);
- MODULE_PARM_DESC(nr_uarts, "Maximum number of UARTs supported. (1-" __=
-MODULE_STRING(CONFIG_SERIAL_8250_NR_UARTS) ")");
-diff --git a/drivers/tty/serial/8250/serial_cs.c b/drivers/tty/serial/8=
-250/serial_cs.c
-index 1f34867..1ab6bfc 100644
---- a/drivers/tty/serial/8250/serial_cs.c
-+++ b/drivers/tty/serial/8250/serial_cs.c
-@@ -533,8 +533,7 @@ static int multi_config(struct pcmcia_device *link)
- 		info->multi =3D 2;
- 		if (pcmcia_loop_config(link, multi_config_check_notpicky,
- 				       &base2)) {
--			dev_warn(&link->dev, "no usable port range "
--			       "found, giving up\n");
-+			dev_warn(&link->dev, "no usable port range found, giving up\n");
- 			return -ENODEV;
- 		}
- 	}
 --=20
 1.9.1
