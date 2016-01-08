@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v3 06/12] tty: serial: 8250: Move EXPORT_SYMBOL to function
-Date: Fri,  8 Jan 2016 11:22:02 +0100
-Message-ID: <1452248528-14023-7-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v3 03/12] tty: serial: 8250: Fix braces after struct
+Date: Fri,  8 Jan 2016 11:21:59 +0100
+Message-ID: <1452248528-14023-4-git-send-email-anton.wuerfel@fau.de>
 References: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,47 +32,30 @@ In-Reply-To: <1452248528-14023-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch moves EXPORT_SYMBOL macros directly after the definition of
-the corresponding symbol to remove checkpatch warnings.
+This patch fixes a checkpatch warning by moving an opening curly brace
+to its correct position.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 CC: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_core.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/tty/serial/8250/8250_hp300.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
-250/8250_core.c
-index 3912646..15082ae 100644
---- a/drivers/tty/serial/8250/8250_core.c
-+++ b/drivers/tty/serial/8250/8250_core.c
-@@ -763,6 +763,7 @@ void serial8250_suspend_port(int line)
+diff --git a/drivers/tty/serial/8250/8250_hp300.c b/drivers/tty/serial/=
+8250/8250_hp300.c
+index 2891958..5e1b464 100644
+--- a/drivers/tty/serial/8250/8250_hp300.c
++++ b/drivers/tty/serial/8250/8250_hp300.c
+@@ -24,8 +24,7 @@
+ #endif
 =20
- 	uart_suspend_port(&serial8250_reg, port);
- }
-+EXPORT_SYMBOL(serial8250_suspend_port);
-=20
- /**
-  *	serial8250_resume_port - resume one serial port
-@@ -788,6 +789,7 @@ void serial8250_resume_port(int line)
- 	}
- 	uart_resume_port(&serial8250_reg, port);
- }
-+EXPORT_SYMBOL(serial8250_resume_port);
-=20
- /*
-  * Register a set of serial devices attached to a platform device.  Th=
-e
-@@ -1167,9 +1169,6 @@ static void __exit serial8250_exit(void)
- module_init(serial8250_init);
- module_exit(serial8250_exit);
-=20
--EXPORT_SYMBOL(serial8250_suspend_port);
--EXPORT_SYMBOL(serial8250_resume_port);
--
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Generic 8250/16x50 serial driver");
-=20
+ #ifdef CONFIG_HPAPCI
+-struct hp300_port
+-{
++struct hp300_port {
+ 	struct hp300_port *next;	/* next port */
+ 	int line;			/* line (tty) number */
+ };
 --=20
 1.9.1
