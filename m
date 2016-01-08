@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v4 10/13] tty: serial: 8250: Suitably replace printk
-Date: Fri,  8 Jan 2016 18:43:56 +0100
-Message-ID: <1452275039-18787-11-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v4 05/13] tty: serial: 8250: Remove else after return
+Date: Fri,  8 Jan 2016 18:43:51 +0100
+Message-ID: <1452275039-18787-6-git-send-email-anton.wuerfel@fau.de>
 References: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -24,175 +24,64 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 	"Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
 	Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
 	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
-	phillip.raffeck@fau.de,
-	=?UTF-8?q?Anton=20W=C3=BCrfel?= <anton.wuerf
+	phillip.raffeck@fau.de, Anton Wuerfel <anton.wuerfel@fau.de>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
-List-ID: <linux-parisc.vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-=46rom: Phillip Raffeck <phillip.raffeck@fau.de>
+This patch fixes checkpatch warnings about unnecessary else blocks afte=
+r
+return statements.
 
-This patch replaces printk by the corresponding variant of dev_* in ord=
-er
-to fix checkpatch warnings. If no suitable device pointer is present, t=
-he
-corresponding pr_* variant is used.
-
-Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
+Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 CC: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_core.c  |  5 ++---
- drivers/tty/serial/8250/8250_gsc.c   |  7 ++++---
- drivers/tty/serial/8250/8250_hp300.c | 19 ++++++++++---------
- drivers/tty/serial/8250/8250_port.c  |  3 +--
- 4 files changed, 17 insertions(+), 17 deletions(-)
+ drivers/tty/serial/8250/8250_pci.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
-250/8250_core.c
-index b60b58b..d6b4906 100644
---- a/drivers/tty/serial/8250/8250_core.c
-+++ b/drivers/tty/serial/8250/8250_core.c
-@@ -1094,9 +1094,8 @@ static int __init serial8250_init(void)
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
+50/8250_pci.c
+index 7f9f245..09157fa 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -805,10 +805,10 @@ static int pci_netmos_9900_numports(struct pci_de=
+v *dev)
 =20
- 	serial8250_isa_init_ports();
+ 	pi =3D (c & 0xff);
 =20
--	printk(KERN_INFO "Serial: 8250/16550 driver, "
--		"%d ports, IRQ sharing %sabled\n", nr_uarts,
--		share_irqs ? "en" : "dis");
-+	pr_info("Serial: 8250/16550 driver, %d ports, IRQ sharing %sabled\n",
-+		nr_uarts, share_irqs ? "en" : "dis");
-=20
- #ifdef CONFIG_SPARC
- 	ret =3D sunserial_register_minors(&serial8250_reg, UART_NR);
-diff --git a/drivers/tty/serial/8250/8250_gsc.c b/drivers/tty/serial/82=
-50/8250_gsc.c
-index 2e3ea1a..b1e6ae9 100644
---- a/drivers/tty/serial/8250/8250_gsc.c
-+++ b/drivers/tty/serial/8250/8250_gsc.c
-@@ -42,7 +42,7 @@ static int __init serial_init_chip(struct parisc_devi=
-ce *dev)
- 		 * the user what they're missing.
+-	if (pi =3D=3D 2) {
++	if (pi =3D=3D 2)
+ 		return 1;
+-	} else if ((pi =3D=3D 0) &&
+-			   (dev->device =3D=3D PCI_DEVICE_ID_NETMOS_9900)) {
++
++	if ((pi =3D=3D 0) && (dev->device =3D=3D PCI_DEVICE_ID_NETMOS_9900)) =
+{
+ 		/* two possibilities: 0x30ps encodes number of parallel and
+ 		 * serial ports, or 0x1000 indicates *something*. This is not
+ 		 * immediately obvious, since the 2s1p+4s configuration seems
+@@ -816,12 +816,11 @@ static int pci_netmos_9900_numports(struct pci_de=
+v *dev)
+ 		 * advertising the same function 3 as the 4s+2s1p config.
  		 */
- 		if (parisc_parent(dev)->id.hw_type !=3D HPHW_IOA)
--			printk(KERN_INFO
-+			dev_info(&dev->dev,
- 				"Serial: device 0x%llx not configured.\n"
- 				"Enable support for Wax, Lasi, Asp or Dino.\n",
- 				(unsigned long long)dev->hpa.start);
-@@ -66,8 +66,9 @@ static int __init serial_init_chip(struct parisc_devi=
-ce *dev)
-=20
- 	err =3D serial8250_register_8250_port(&uart);
- 	if (err < 0) {
--		printk(KERN_WARNING
--			"serial8250_register_8250_port returned error %d\n", err);
-+		dev_warn(&dev->dev,
-+			"serial8250_register_8250_port returned error %d\n",
-+			err);
- 		iounmap(uart.port.membase);
- 		return err;
- 	}
-diff --git a/drivers/tty/serial/8250/8250_hp300.c b/drivers/tty/serial/=
-8250/8250_hp300.c
-index cf566bb..4aaa24c 100644
---- a/drivers/tty/serial/8250/8250_hp300.c
-+++ b/drivers/tty/serial/8250/8250_hp300.c
-@@ -110,7 +110,7 @@ int __init hp300_setup_serial_console(void)
- 	/* Check for APCI console */
- 	if (scode =3D=3D 256) {
- #ifdef CONFIG_HPAPCI
--		printk(KERN_INFO "Serial console is HP APCI 1\n");
-+		pr_info("Serial console is HP APCI 1\n");
-=20
- 		port.uartclk =3D HPAPCI_BAUD_BASE * 16;
- 		port.mapbase =3D (FRODO_BASE + FRODO_APCI_OFFSET(1));
-@@ -118,7 +118,7 @@ int __init hp300_setup_serial_console(void)
- 		port.regshift =3D 2;
- 		add_preferred_console("ttyS", port.line, "9600n8");
- #else
--		printk(KERN_WARNING "Serial console is APCI but support is disabled =
-(CONFIG_HPAPCI)!\n");
-+		pr_warn("Serial console is APCI but support is disabled (CONFIG_HPAP=
-CI)!\n");
- 		return 0;
- #endif
- 	} else {
-@@ -127,7 +127,7 @@ int __init hp300_setup_serial_console(void)
- 		if (!pa)
- 			return 0;
-=20
--		printk(KERN_INFO "Serial console is HP DCA at select code %d\n", sco=
-de);
-+		pr_info("Serial console is HP DCA at select code %d\n", scode);
-=20
- 		port.uartclk =3D HPDCA_BAUD_BASE * 16;
- 		port.mapbase =3D (pa + UART_OFFSET);
-@@ -141,13 +141,13 @@ int __init hp300_setup_serial_console(void)
- 		if (DIO_ID(pa + DIO_VIRADDRBASE) & 0x80)
- 			add_preferred_console("ttyS", port.line, "9600n8");
- #else
--		printk(KERN_WARNING "Serial console is DCA but support is disabled (=
-CONFIG_HPDCA)!\n");
-+		pr_warn("Serial console is DCA but support is disabled (CONFIG_HPDCA=
-)!\n");
- 		return 0;
- #endif
+ 		sub_serports =3D dev->subsystem_device & 0xf;
+-		if (sub_serports > 0) {
++		if (sub_serports > 0)
+ 			return sub_serports;
+-		} else {
+-			dev_err(&dev->dev, "NetMos/Mostech serial driver ignoring port on a=
+mbiguous config.\n");
+-			return 0;
+-		}
++
++		dev_err(&dev->dev, "NetMos/Mostech serial driver ignoring port on am=
+biguous config.\n");
++		return 0;
  	}
 =20
- 	if (early_serial_setup(&port) < 0)
--		printk(KERN_WARNING "hp300_setup_serial_console(): early_serial_setu=
-p() failed.\n");
-+		pr_warn("hp300_setup_serial_console(): early_serial_setup() failed.\=
-n");
- 	return 0;
- }
- #endif /* CONFIG_SERIAL_8250_CONSOLE */
-@@ -179,8 +179,9 @@ static int hpdca_init_one(struct dio_dev *d,
- 	line =3D serial8250_register_8250_port(&uart);
-=20
- 	if (line < 0) {
--		printk(KERN_NOTICE "8250_hp300: register_serial() DCA scode %d"
--		       " irq %d failed\n", d->scode, uart.port.irq);
-+		dev_notice(&d->dev,
-+			  "8250_hp300: register_serial() DCA scode %d irq %d failed\n",
-+			  d->scode, uart.port.irq);
- 		return -ENOMEM;
- 	}
-=20
-@@ -260,8 +261,8 @@ static int __init hp300_8250_init(void)
- 		line =3D serial8250_register_8250_port(&uart);
-=20
- 		if (line < 0) {
--			printk(KERN_NOTICE "8250_hp300: register_serial() APCI"
--			       " %d irq %d failed\n", i, uart.port.irq);
-+			pr_notice("8250_hp300: register_serial() APCI %d irq %d failed\n",
-+				  i, uart.port.irq);
- 			kfree(port);
- 			continue;
- 		}
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
-250/8250_port.c
-index 99f709c..343d050 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -1222,8 +1222,7 @@ static void autoconfig(struct uart_8250_port *up)
- out_lock:
- 	spin_unlock_irqrestore(&port->lock, flags);
- 	if (up->capabilities !=3D old_capabilities) {
--		printk(KERN_WARNING
--		       "ttyS%d: detected caps %08x should be %08x\n",
-+		pr_warn("ttyS%d: detected caps %08x should be %08x\n",
- 		       serial_index(port), old_capabilities,
- 		       up->capabilities);
- 	}
+ 	moan_device("unknown NetMos/Mostech program interface", dev);
 --=20
 1.9.1
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
