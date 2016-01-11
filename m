@@ -1,9 +1,9 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v4 01/13] tty: serial: 8250: Fix whitespace errors
-Date: Mon, 11 Jan 2016 14:28:14 +0200
-Message-ID: <1452515294.26146.10.camel@linux.intel.com>
+Subject: Re: [PATCH v4 05/13] tty: serial: 8250: Remove else after return
+Date: Mon, 11 Jan 2016 14:30:29 +0200
+Message-ID: <1452515429.26146.11.camel@linux.intel.com>
 References: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
-	 <1452275039-18787-2-git-send-email-anton.wuerfel@fau.de>
+	 <1452275039-18787-6-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Cc: Jiri Slaby <jslaby@suse.com>,
@@ -28,90 +28,35 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 To: Anton Wuerfel <anton.wuerfel@fau.de>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1452275039-18787-2-git-send-email-anton.wuerfel@fau.de>
+In-Reply-To: <1452275039-18787-6-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 On Fri, 2016-01-08 at 18:43 +0100, Anton Wuerfel wrote:
-> This patch fixes whitespace errors reported by checkpatch to increase
-> readability. Main focus is on missing spaces after commas in
-> function headers and macros (like foo,bar edited to foo, bar).
->=20
-> Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
-> Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
-> CC: linux-kernel@i4.cs.fau.de
+> This patch fixes checkpatch warnings about unnecessary else blocks
+> after
+> return statements.
 
-Cc: looks more standard.
-
-> --- a/drivers/tty/serial/8250/8250_accent.c
-> +++ b/drivers/tty/serial/8250/8250_accent.c
-> @@ -10,7 +10,7 @@
-> =C2=A0#include <linux/init.h>
-> =C2=A0#include <linux/serial_8250.h>
+> --- a/drivers/tty/serial/8250/8250_pci.c
+> +++ b/drivers/tty/serial/8250/8250_pci.c
+> @@ -805,10 +805,10 @@ static int pci_netmos_9900_numports(struct
+> pci_dev *dev)
 > =C2=A0
-> -#define PORT(_base,_irq)				\
-> +#define PORT(_base, _irq)				\
-> =C2=A0	{						\
-> =C2=A0		.iobase		=3D _base,		\
-> =C2=A0		.irq		=3D _irq,			\
->=20
+> =C2=A0	pi =3D (c & 0xff);
 
-While those are okay, I would suggest to make a macro in
-drivers/=E2=80=A6/8250.h one for all, something like this:
+And here the parens are redundant.
 
-#define 8250_PORT_FLAGS(_base, _irq, _flags)
-=E2=80=A6
-	.flags=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=3D =
-UPF_BOOT_AUTOCONF | (_flags) \
-
-#define 8250_PORT(_base, _irq)	8250_PORT_FLAGS(_base, _irq, 0)
-
-And use it.
-
-> --- a/drivers/tty/serial/8250/8250_boca.c
-> +++ b/drivers/tty/serial/8250/8250_boca.c
-> @@ -10,7 +10,7 @@
-> =C2=A0#include <linux/init.h>
-> =C2=A0#include <linux/serial_8250.h>
 > =C2=A0
-> -#define PORT(_base,_irq)				\
-> +#define PORT(_base, _irq)				\
-> =C2=A0	{						\
-> =C2=A0		.iobase		=3D _base,		\
-> =C2=A0		.irq		=3D _irq,			\
->=20
-
-> --- a/drivers/tty/serial/8250/8250_exar_st16c554.c
-> +++ b/drivers/tty/serial/8250/8250_exar_st16c554.c
-> @@ -13,7 +13,7 @@
-> =C2=A0#include <linux/init.h>
-> =C2=A0#include <linux/serial_8250.h>
-> =C2=A0
-> -#define PORT(_base,_irq)				\
-> +#define PORT(_base, _irq)				\
-> =C2=A0	{						\
-> =C2=A0		.iobase		=3D _base,		\
-> =C2=A0		.irq		=3D _irq,			\
->=20
-
-> --- a/drivers/tty/serial/8250/8250_fourport.c
-> +++ b/drivers/tty/serial/8250/8250_fourport.c
-> @@ -10,7 +10,7 @@
-> =C2=A0#include <linux/init.h>
-> =C2=A0#include <linux/serial_8250.h>
-> =C2=A0
-> -#define PORT(_base,_irq)					=09
-> \
-> +#define PORT(_base, _irq)					=09
-> \
-> =C2=A0	{							=09
-> \
-> =C2=A0		.iobase		=3D _base,		=09
-> 	\
-> =C2=A0		.irq		=3D _irq,			=09
-> 	\
-
-
+> -	if (pi =3D=3D 2) {
+> +	if (pi =3D=3D 2)
+> =C2=A0		return 1;
+> -	} else if ((pi =3D=3D 0) &&
+> -			=C2=A0=C2=A0=C2=A0(dev->device =3D=3D
+> PCI_DEVICE_ID_NETMOS_9900)) {
+> +
+> +	if ((pi =3D=3D 0) && (dev->device =3D=3D PCI_DEVICE_ID_NETMOS_9900)=
+)
+> {
 
 --=20
 Andy Shevchenko <andriy.shevchenko@linux.intel.com>
