@@ -1,87 +1,75 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v4 13/13] tty: serial: 8250: Fix indentation warnings
-Date: Mon, 11 Jan 2016 14:47:43 +0200
-Message-ID: <1452516463.26146.20.camel@linux.intel.com>
+From: "Shevchenko, Andriy" <andriy.shevchenko@intel.com>
+Subject: Re: [PATCH v4 01/13] tty: serial: 8250: Fix whitespace errors
+Date: Mon, 11 Jan 2016 12:50:18 +0000
+Message-ID: <1452516646.26146.22.camel@intel.com>
 References: <1452275039-18787-1-git-send-email-anton.wuerfel@fau.de>
-	 <1452275039-18787-14-git-send-email-anton.wuerfel@fau.de>
+	 <1452275039-18787-2-git-send-email-anton.wuerfel@fau.de>
+	 <1452515294.26146.10.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Jiri Slaby <jslaby@suse.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Peter Hurley <peter@hurleysoftware.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Qipeng Zha <qipeng.zha@intel.com>,
-	Desmond Liu <desmondl@broadcom.com>,
-	Wang Long <long.wanglong@huawei.com>,
-	Matt Redfearn <matt.redfearn@imgtec.com>,
-	Paul Burton <paul.burton@imgtec.com>,
-	Ralf Baechle <ralf@linux-mips.org>,
-	Krzysztof Kozlowski <k.kozlowski@samsung.com>,
-	Peter Hung <hpeter@gmail.com>,
-	Soeren Grunewald <soeren.grunewald@desy.de>,
-	Adam Lee <adam.lee@canonical.com>,
-	"Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
-	Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
-	phillip.raffeck@fau.de
-To: Anton Wuerfel <anton.wuerfel@fau.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1452275039-18787-14-git-send-email-anton.wuerfel@fau.de>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"mail@maciej.szmigiero.name" <mail@maciej.szmigiero.name>,
+	"desmondl@broadcom.com" <desmondl@broadcom.com>,
+	"Zha, Qipeng" <qipeng.zha@intel.com>,
+	"heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
+	"long.wanglong@huawei.com" <long.wanglong@huawei.com>,
+	"soeren.grunewald@desy.de" <soeren.grunewald@desy.de>,
+	"deller@gmx.de" <deller@gmx.de>,
+	"jslaby@suse.com" <jslaby@suse.com>,
+	"phillip.raffeck@fau.de" <phillip.raffeck@fau.de>,
+	"paul.burton@imgtec.com" <paul.burton@imgtec.com>,
+	"hpeter@gmail.com" <hpeter@gmail.com>,
+	"ralf@linux-mips.org" <ralf@linux-mips.org>,
+	"linux-kernel@i4.cs.fau.de" <linux-kernel@i4.cs.fau.de>,
+	"mans@mansr.com" <mans@mansr.com>,
+	"adam.lee@canonical.com" <adam.lee@canonical.com>,
+	"jejb@parisc-linux.org" <jejb@parisc-linux.org>,
+	"linux-parisc@vger.kernel.org" <linux-paris
+To: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+	"anton.wuerfel@fau.de" <anton.wuerfel@fau.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1452515294.26146.10.camel@linux.intel.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2016-01-08 at 18:43 +0100, Anton Wuerfel wrote:
-> Checkpatch complains about incorrect indentation of switch/case
-> statements.
-> This patch fixes the corresponding warnings. Additionally some
-> indentation
-> is changed to match the correct format specified in the Linux Kernel
-> Coding Style.
->=20
-> Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
-> Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
-> CC: linux-kernel@i4.cs.fau.de
-> ---
-> =C2=A0drivers/tty/serial/8250/8250_pci.c=C2=A0=C2=A0| 12 ++++++------
-> =C2=A0drivers/tty/serial/8250/8250_pnp.c=C2=A0=C2=A0|=C2=A0=C2=A04 ++=
---
-> =C2=A0drivers/tty/serial/8250/8250_port.c |=C2=A0=C2=A06 +++---
-> =C2=A03 files changed, 11 insertions(+), 11 deletions(-)
->=20
-> diff --git a/drivers/tty/serial/8250/8250_pci.c
-> b/drivers/tty/serial/8250/8250_pci.c
-> index 09157fa..b0b47f9 100644
-> --- a/drivers/tty/serial/8250/8250_pci.c
-> +++ b/drivers/tty/serial/8250/8250_pci.c
-> @@ -841,12 +841,12 @@ static int pci_netmos_init(struct pci_dev *dev)
-> =C2=A0		return 0;
-> =C2=A0
-> =C2=A0	switch (dev->device) { /* FALLTHROUGH on all */
-> -		case PCI_DEVICE_ID_NETMOS_9904:
-> -		case PCI_DEVICE_ID_NETMOS_9912:
-> -		case PCI_DEVICE_ID_NETMOS_9922:
-> -		case PCI_DEVICE_ID_NETMOS_9900:
-> -			num_serial =3D pci_netmos_9900_numports(dev);
-> -			break;
-> +	case PCI_DEVICE_ID_NETMOS_9904:
-> +	case PCI_DEVICE_ID_NETMOS_9912:
-> +	case PCI_DEVICE_ID_NETMOS_9922:
-> +	case PCI_DEVICE_ID_NETMOS_9900:
-> +		num_serial =3D pci_netmos_9900_numports(dev);
-> +		break;
-> =C2=A0
-> =C2=A0		default:
+T24gTW9uLCAyMDE2LTAxLTExIGF0IDE0OjI4ICswMjAwLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6
+DQo+IE9uIEZyaSwgMjAxNi0wMS0wOCBhdCAxODo0MyArMDEwMCwgQW50b24gV3VlcmZlbCB3cm90
+ZToNCj4gPiBUaGlzIHBhdGNoIGZpeGVzIHdoaXRlc3BhY2UgZXJyb3JzIHJlcG9ydGVkIGJ5IGNo
+ZWNrcGF0Y2ggdG8NCj4gPiBpbmNyZWFzZQ0KPiA+IHJlYWRhYmlsaXR5LiBNYWluIGZvY3VzIGlz
+IG9uIG1pc3Npbmcgc3BhY2VzIGFmdGVyIGNvbW1hcyBpbg0KPiA+IGZ1bmN0aW9uIGhlYWRlcnMg
+YW5kIG1hY3JvcyAobGlrZSBmb28sYmFyIGVkaXRlZCB0byBmb28sIGJhcikuDQo+ID4gDQo+ID4g
+U2lnbmVkLW9mZi1ieTogQW50b24gV8O8cmZlbCA8YW50b24ud3VlcmZlbEBmYXUuZGU+DQo+ID4g
+U2lnbmVkLW9mZi1ieTogUGhpbGxpcCBSYWZmZWNrIDxwaGlsbGlwLnJhZmZlY2tAZmF1LmRlPg0K
+PiA+IENDOiBsaW51eC1rZXJuZWxAaTQuY3MuZmF1LmRlDQo+IA0KPiBDYzogbG9va3MgbW9yZSBz
+dGFuZGFyZC4NCj4gDQo+ID4gLS0tIGEvZHJpdmVycy90dHkvc2VyaWFsLzgyNTAvODI1MF9hY2Nl
+bnQuYw0KPiA+ICsrKyBiL2RyaXZlcnMvdHR5L3NlcmlhbC84MjUwLzgyNTBfYWNjZW50LmMNCj4g
+PiBAQCAtMTAsNyArMTAsNyBAQA0KPiA+IMKgI2luY2x1ZGUgPGxpbnV4L2luaXQuaD4NCj4gPiDC
+oCNpbmNsdWRlIDxsaW51eC9zZXJpYWxfODI1MC5oPg0KPiA+IMKgDQo+ID4gLSNkZWZpbmUgUE9S
+VChfYmFzZSxfaXJxKQkJCQlcDQo+ID4gKyNkZWZpbmUgUE9SVChfYmFzZSwgX2lycSkJCQkJXA0K
+PiA+IMKgCXsJCQkJCQlcDQo+ID4gwqAJCS5pb2Jhc2UJCT0gX2Jhc2UsCQlcDQo+ID4gwqAJCS5p
+cnEJCT0gX2lycSwJCQkNCj4gPiBcDQoNCjgyNTBfUE9SVCgpDQoNCj4gPiANCj4gDQo+IFdoaWxl
+IHRob3NlIGFyZSBva2F5LCBJIHdvdWxkIHN1Z2dlc3QgdG8gbWFrZSBhIG1hY3JvIGluDQo+IGRy
+aXZlcnMv4oCmLzgyNTAuaCBvbmUgZm9yIGFsbCwgc29tZXRoaW5nIGxpa2UgdGhpczoNCj4gDQo+
+ICNkZWZpbmUgODI1MF9QT1JUX0ZMQUdTKF9iYXNlLCBfaXJxLCBfZmxhZ3MpDQo+IOKApg0KPiAJ
+LmZsYWdzwqDCoMKgwqDCoMKgwqDCoMKgwqA9IFVQRl9CT09UX0FVVE9DT05GIHwgKF9mbGFncykg
+XA0KPiANCj4gI2RlZmluZSA4MjUwX1BPUlQoX2Jhc2UsIF9pcnEpCTgyNTBfUE9SVF9GTEFHUyhf
+YmFzZSwgX2lycSwgMCkNCj4gDQo+IEFuZCB1c2UgaXQuDQoNCiNkZWZpbmUgODI1MF9GT1VSUE9S
+VChfYmFzZSwgX2lycSkJODI1MF9QT1JUX0ZMQUdTKF9iYXNlLCBfaXJxLA0KVVBGX0ZPVVJQT1JU
+KQ0KDQo+ID4gLS0tIGEvZHJpdmVycy90dHkvc2VyaWFsLzgyNTAvODI1MF9mb3VycG9ydC5jDQo+
+ID4gKysrIGIvZHJpdmVycy90dHkvc2VyaWFsLzgyNTAvODI1MF9mb3VycG9ydC5jDQo+ID4gQEAg
+LTEwLDcgKzEwLDcgQEANCj4gPiDCoCNpbmNsdWRlIDxsaW51eC9pbml0Lmg+DQo+ID4gwqAjaW5j
+bHVkZSA8bGludXgvc2VyaWFsXzgyNTAuaD4NCj4gPiDCoA0KPiA+IC0jZGVmaW5lIFBPUlQoX2Jh
+c2UsX2lycSkJCQkJCQkNCj4gPiBcDQo+ID4gKyNkZWZpbmUgUE9SVChfYmFzZSwgX2lycSkJCQkJ
+CQkNCj4gPiBcDQo+ID4gwqAJewkJCQkJCQkJDQo+ID4gXA0KPiA+IMKgCQkuaW9iYXNlCQk9IF9i
+YXNlLAkJCQ0KPiA+IAlcDQo+ID4gwqAJCS5pcnEJCT0gX2lycSwJCQkNCj4gPiAJDQo+ID4gCVwN
+Cg0KODI1MF9GT1VSUE9SVCgpDQoNCi0tIA0KQW5keSBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hldmNo
+ZW5rb0BpbnRlbC5jb20+DQpJbnRlbCBGaW5sYW5kIE95DQotLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KSW50ZWwgRmlu
+bGFuZCBPeQpSZWdpc3RlcmVkIEFkZHJlc3M6IFBMIDI4MSwgMDAxODEgSGVsc2lua2kgCkJ1c2lu
+ZXNzIElkZW50aXR5IENvZGU6IDAzNTc2MDYgLSA0IApEb21pY2lsZWQgaW4gSGVsc2lua2kgCgpU
+aGlzIGUtbWFpbCBhbmQgYW55IGF0dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBt
+YXRlcmlhbCBmb3IKdGhlIHNvbGUgdXNlIG9mIHRoZSBpbnRlbmRlZCByZWNpcGllbnQocykuIEFu
+eSByZXZpZXcgb3IgZGlzdHJpYnV0aW9uCmJ5IG90aGVycyBpcyBzdHJpY3RseSBwcm9oaWJpdGVk
+LiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQKcmVjaXBpZW50LCBwbGVhc2UgY29udGFjdCB0
+aGUgc2VuZGVyIGFuZCBkZWxldGUgYWxsIGNvcGllcy4K
 
-You forget to shift above line as well.
-
-> =C2=A0			if (num_serial =3D=3D 0) {
-
-But before doing that I would suggest to refactor the warning message
-below in the code: copy it out of 'default:' to below condition and
-replace by 'break;' inside the switch-case.
-
---=20
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
