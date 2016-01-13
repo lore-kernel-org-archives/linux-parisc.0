@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v6 08/15] tty: serial: 8250: Add parentheses to macro
-Date: Wed, 13 Jan 2016 22:29:14 +0100
-Message-ID: <1452720561-28443-9-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v6 03/15] tty: serial: 8250: Fix braces after struct
+Date: Wed, 13 Jan 2016 22:29:09 +0100
+Message-ID: <1452720561-28443-4-git-send-email-anton.wuerfel@fau.de>
 References: <1452720561-28443-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -25,46 +25,30 @@ In-Reply-To: <1452720561-28443-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch fixes a checkpatch warning caused by missing parentheses
-in the definition of a macro.
-=46urthermore redundant parentheses are removed in an assignment.
+This patch fixes a checkpatch warning by moving an opening curly brace
+to its correct position.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 Cc: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_core.c | 2 +-
- drivers/tty/serial/8250/8250_pci.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/tty/serial/8250/8250_hp300.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
-250/8250_core.c
-index 15082ae..d042ad5 100644
---- a/drivers/tty/serial/8250/8250_core.c
-+++ b/drivers/tty/serial/8250/8250_core.c
-@@ -686,7 +686,7 @@ static int __init univ8250_console_init(void)
- }
- console_initcall(univ8250_console_init);
-=20
--#define SERIAL8250_CONSOLE	&univ8250_console
-+#define SERIAL8250_CONSOLE	(&univ8250_console)
- #else
- #define SERIAL8250_CONSOLE	NULL
+diff --git a/drivers/tty/serial/8250/8250_hp300.c b/drivers/tty/serial/=
+8250/8250_hp300.c
+index 2891958..5e1b464 100644
+--- a/drivers/tty/serial/8250/8250_hp300.c
++++ b/drivers/tty/serial/8250/8250_hp300.c
+@@ -24,8 +24,7 @@
  #endif
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
-50/8250_pci.c
-index 8543719..fbd4222 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -803,7 +803,7 @@ static int pci_netmos_9900_numports(struct pci_dev =
-*dev)
- 	unsigned int pi;
- 	unsigned short sub_serports;
 =20
--	pi =3D (c & 0xff);
-+	pi =3D c & 0xff;
-=20
- 	if (pi =3D=3D 2)
- 		return 1;
+ #ifdef CONFIG_HPAPCI
+-struct hp300_port
+-{
++struct hp300_port {
+ 	struct hp300_port *next;	/* next port */
+ 	int line;			/* line (tty) number */
+ };
 --=20
 1.9.1
