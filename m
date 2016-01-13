@@ -1,9 +1,9 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v5 05/15] tty: serial: 8250: Remove else after return
-Date: Wed, 13 Jan 2016 19:05:22 +0200
-Message-ID: <1452704722.26146.73.camel@linux.intel.com>
+Subject: Re: [PATCH v5 09/15] tty: serial: 8250: Fix multi-line strings
+Date: Wed, 13 Jan 2016 19:08:58 +0200
+Message-ID: <1452704938.26146.76.camel@linux.intel.com>
 References: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
-	 <1452703171-5632-6-git-send-email-anton.wuerfel@fau.de>
+	 <1452703171-5632-10-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Cc: Jiri Slaby <jslaby@suse.com>,
@@ -27,39 +27,58 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 	Phillip Raffeck <phillip.raffeck@fau.de>
 To: Anton Wuerfel <anton.wuerfel@fau.de>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1452703171-5632-6-git-send-email-anton.wuerfel@fau.de>
-List-ID: <linux-kernel.vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1452703171-5632-10-git-send-email-anton.wuerfel@fau.de>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 On Wed, 2016-01-13 at 17:39 +0100, Anton Wuerfel wrote:
-> This patch fixes checkpatch warnings about unnecessary else blocks
-> after
-> return statements.
+> Merged user-visible multi-line strings into a single line according
+> to the
+> Linux Kernel Coding Style, which allows user-visible strings to
+> exceed the
+> maximum line length of 80 characters. The main reason for this is to
+> facilitate grepping for these strings.
+> However, some strings were ignored in this patch, because the use of
+> format specifiers breaks the ability to grep anyway.
 >=20
 
-> @@ -816,12 +816,11 @@ static int pci_netmos_9900_numports(struct
-> pci_dev *dev)
-> =C2=A0		=C2=A0* advertising the same function 3 as the 4s+2s1p
-> config.
-> =C2=A0		=C2=A0*/
-> =C2=A0		sub_serports =3D dev->subsystem_device & 0xf;
-> -		if (sub_serports > 0) {
-> +		if (sub_serports > 0)
-> =C2=A0			return sub_serports;
-> -		} else {
-> -			dev_err(&dev->dev, "NetMos/Mostech serial
-> driver ignoring port on ambiguous config.\n");
-> -			return 0;
-> -		}
-> +
-> +		dev_err(&dev->dev, "NetMos/Mostech serial driver
-> ignoring port on ambiguous config.\n");
+> --- a/drivers/tty/serial/8250/8250_core.c
+> +++ b/drivers/tty/serial/8250/8250_core.c
+> @@ -1173,8 +1173,7 @@ MODULE_LICENSE("GPL");
+> =C2=A0MODULE_DESCRIPTION("Generic 8250/16x50 serial driver");
+> =C2=A0
+> =C2=A0module_param(share_irqs, uint, 0644);
+> -MODULE_PARM_DESC(share_irqs, "Share IRQs with other non-8250/16x50
+> devices"
+> -	" (unsafe)");
+> +MODULE_PARM_DESC(share_irqs, "Share IRQs with other non-8250/16x50
+> devices (unsafe)");
 
-Here you may put the literal on the next line and indent it properly to
-&. It might not fit the 80 character limit, but I think still worth to
-do.
+This one looks nice in one line.
+
+> --- a/drivers/tty/serial/8250/serial_cs.c
+> +++ b/drivers/tty/serial/8250/serial_cs.c
+> @@ -533,8 +533,7 @@ static int multi_config(struct pcmcia_device
+> *link)
+> =C2=A0		info->multi =3D 2;
+> =C2=A0		if (pcmcia_loop_config(link,
+> multi_config_check_notpicky,
+> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&base2)) {
+> -			dev_warn(&link->dev, "no usable port range "
+> -			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0"found, giving up\n");
+> +			dev_warn(&link->dev, "no usable port range
+> found, giving up\n");
+
+But here I would comment as in patch 5, i.e. move literal to next line
+it it doesn't fit on the dev_warn() line.
 
 --=20
 Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Intel Finland Oy
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
