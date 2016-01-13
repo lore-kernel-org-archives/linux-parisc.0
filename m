@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v5 14/15] tty: serial: 8250: Add generic port init macro
-Date: Wed, 13 Jan 2016 17:39:30 +0100
-Message-ID: <1452703171-5632-15-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v5 11/15] tty: serial: 8250: Remove SERIAL_DEBUG_PNP macro
+Date: Wed, 13 Jan 2016 17:39:27 +0100
+Message-ID: <1452703171-5632-12-git-send-email-anton.wuerfel@fau.de>
 References: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -25,208 +25,52 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 	Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
 	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
 	Phillip Raffeck <phillip.raffeck@fau.de>,
-	Anton Wuerfel <anton.wuerf
+	=?UTF-8?q?Anton=20W=C3=BCr
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch removes redundant 8250 port initialization macros and
-replaces them by a single generic base-macro, which is specialized
-as needed.
+=46rom: Phillip Raffeck <phillip.raffeck@fau.de>
 
-Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
+This patch removes the macro SERIAL_DEBUG_PNP, which is used to enable
+debugging at compile time.
+As SERIAL_DEBUG_PNP is an orphan, the corresponding #ifdef is removed.
+To keep the ability to enable debugging at compile time,
+the call to printk(KERN_DEBUG ...) is replaced by a corresponding
+call to dev_dbg(), which is configurable via CONFIG_DYNAMIC_DEBUG.
+
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
+Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Cc: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250.h               | 12 ++++++++
- drivers/tty/serial/8250/8250_accent.c        | 13 ++-------
- drivers/tty/serial/8250/8250_boca.c          | 41 ++++++++++++--------=
---------
- drivers/tty/serial/8250/8250_exar_st16c554.c | 17 ++++--------
- drivers/tty/serial/8250/8250_fourport.c      | 28 ++++++++-----------
- 5 files changed, 49 insertions(+), 62 deletions(-)
+ drivers/tty/serial/8250/8250_pnp.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8=
-250.h
-index d54dcd8..4672ab4 100644
---- a/drivers/tty/serial/8250/8250.h
-+++ b/drivers/tty/serial/8250/8250.h
-@@ -92,6 +92,18 @@ struct serial8250_config {
- #define SERIAL8250_SHARE_IRQS 0
- #endif
+diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/82=
+50/8250_pnp.c
+index ffa7354..ba3a1af 100644
+--- a/drivers/tty/serial/8250/8250_pnp.c
++++ b/drivers/tty/serial/8250/8250_pnp.c
+@@ -464,11 +464,11 @@ serial_pnp_probe(struct pnp_dev *dev, const struc=
+t pnp_device_id *dev_id)
+ 	} else
+ 		return -ENODEV;
 =20
-+#define SERIAL8250_PORT_FLAGS(_base, _irq, _flags)		\
-+	{							\
-+		.iobase		=3D _base,			\
-+		.irq		=3D _irq,				\
-+		.uartclk	=3D 1843200,			\
-+		.iotype		=3D UPIO_PORT,			\
-+		.flags		=3D UPF_BOOT_AUTOCONF | (_flags),	\
-+	}
+-#ifdef SERIAL_DEBUG_PNP
+-	printk(KERN_DEBUG
+-		"Setup PNP port: port %x, mem 0x%lx, irq %d, type %d\n",
+-		       uart.port.iobase, uart.port.mapbase, uart.port.irq, uart.port=
+=2Eiotype);
+-#endif
++	dev_dbg(&dev->dev,
++		 "Setup PNP port: port %x, mem 0x%lx, irq %d, type %d\n",
++		 uart.port.iobase, uart.port.mapbase,
++		 uart.port.irq, uart.port.iotype);
 +
-+#define SERIAL8250_PORT(_base, _irq) SERIAL8250_PORT_FLAGS(_base, _irq=
-, 0)
-+
-+
- static inline int serial_in(struct uart_8250_port *up, int offset)
- {
- 	return up->port.serial_in(&up->port, offset);
-diff --git a/drivers/tty/serial/8250/8250_accent.c b/drivers/tty/serial=
-/8250/8250_accent.c
-index 34b51c6..522aeae 100644
---- a/drivers/tty/serial/8250/8250_accent.c
-+++ b/drivers/tty/serial/8250/8250_accent.c
-@@ -10,18 +10,11 @@
- #include <linux/init.h>
- #include <linux/serial_8250.h>
-=20
--#define PORT(_base,_irq)				\
--	{						\
--		.iobase		=3D _base,		\
--		.irq		=3D _irq,			\
--		.uartclk	=3D 1843200,		\
--		.iotype		=3D UPIO_PORT,		\
--		.flags		=3D UPF_BOOT_AUTOCONF,	\
--	}
-+#include "8250.h"
-=20
- static struct plat_serial8250_port accent_data[] =3D {
--	PORT(0x330, 4),
--	PORT(0x338, 4),
-+	SERIAL8250_PORT(0x330, 4),
-+	SERIAL8250_PORT(0x338, 4),
- 	{ },
- };
-=20
-diff --git a/drivers/tty/serial/8250/8250_boca.c b/drivers/tty/serial/8=
-250/8250_boca.c
-index d125dc1..a63b599 100644
---- a/drivers/tty/serial/8250/8250_boca.c
-+++ b/drivers/tty/serial/8250/8250_boca.c
-@@ -10,32 +10,25 @@
- #include <linux/init.h>
- #include <linux/serial_8250.h>
-=20
--#define PORT(_base,_irq)				\
--	{						\
--		.iobase		=3D _base,		\
--		.irq		=3D _irq,			\
--		.uartclk	=3D 1843200,		\
--		.iotype		=3D UPIO_PORT,		\
--		.flags		=3D UPF_BOOT_AUTOCONF,	\
--	}
-+#include "8250.h"
-=20
- static struct plat_serial8250_port boca_data[] =3D {
--	PORT(0x100, 12),
--	PORT(0x108, 12),
--	PORT(0x110, 12),
--	PORT(0x118, 12),
--	PORT(0x120, 12),
--	PORT(0x128, 12),
--	PORT(0x130, 12),
--	PORT(0x138, 12),
--	PORT(0x140, 12),
--	PORT(0x148, 12),
--	PORT(0x150, 12),
--	PORT(0x158, 12),
--	PORT(0x160, 12),
--	PORT(0x168, 12),
--	PORT(0x170, 12),
--	PORT(0x178, 12),
-+	SERIAL8250_PORT(0x100, 12),
-+	SERIAL8250_PORT(0x108, 12),
-+	SERIAL8250_PORT(0x110, 12),
-+	SERIAL8250_PORT(0x118, 12),
-+	SERIAL8250_PORT(0x120, 12),
-+	SERIAL8250_PORT(0x128, 12),
-+	SERIAL8250_PORT(0x130, 12),
-+	SERIAL8250_PORT(0x138, 12),
-+	SERIAL8250_PORT(0x140, 12),
-+	SERIAL8250_PORT(0x148, 12),
-+	SERIAL8250_PORT(0x150, 12),
-+	SERIAL8250_PORT(0x158, 12),
-+	SERIAL8250_PORT(0x160, 12),
-+	SERIAL8250_PORT(0x168, 12),
-+	SERIAL8250_PORT(0x170, 12),
-+	SERIAL8250_PORT(0x178, 12),
- 	{ },
- };
-=20
-diff --git a/drivers/tty/serial/8250/8250_exar_st16c554.c b/drivers/tty=
-/serial/8250/8250_exar_st16c554.c
-index bf53aab..3a7cb82 100644
---- a/drivers/tty/serial/8250/8250_exar_st16c554.c
-+++ b/drivers/tty/serial/8250/8250_exar_st16c554.c
-@@ -13,20 +13,13 @@
- #include <linux/init.h>
- #include <linux/serial_8250.h>
-=20
--#define PORT(_base,_irq)				\
--	{						\
--		.iobase		=3D _base,		\
--		.irq		=3D _irq,			\
--		.uartclk	=3D 1843200,		\
--		.iotype		=3D UPIO_PORT,		\
--		.flags		=3D UPF_BOOT_AUTOCONF,	\
--	}
-+#include "8250.h"
-=20
- static struct plat_serial8250_port exar_data[] =3D {
--	PORT(0x100, 5),
--	PORT(0x108, 5),
--	PORT(0x110, 5),
--	PORT(0x118, 5),
-+	SERIAL8250_PORT(0x100, 5),
-+	SERIAL8250_PORT(0x108, 5),
-+	SERIAL8250_PORT(0x110, 5),
-+	SERIAL8250_PORT(0x118, 5),
- 	{ },
- };
-=20
-diff --git a/drivers/tty/serial/8250/8250_fourport.c b/drivers/tty/seri=
-al/8250/8250_fourport.c
-index be15826..4045180 100644
---- a/drivers/tty/serial/8250/8250_fourport.c
-+++ b/drivers/tty/serial/8250/8250_fourport.c
-@@ -10,24 +10,20 @@
- #include <linux/init.h>
- #include <linux/serial_8250.h>
-=20
--#define PORT(_base,_irq)						\
--	{								\
--		.iobase		=3D _base,				\
--		.irq		=3D _irq,					\
--		.uartclk	=3D 1843200,				\
--		.iotype		=3D UPIO_PORT,				\
--		.flags		=3D UPF_BOOT_AUTOCONF | UPF_FOURPORT,	\
--	}
-+#include "8250.h"
-+
-+#define SERIAL8250_FOURPORT(_base, _irq) \
-+	SERIAL8250_PORT_FLAGS(_base, _irq, UPF_FOURPORT)
-=20
- static struct plat_serial8250_port fourport_data[] =3D {
--	PORT(0x1a0, 9),
--	PORT(0x1a8, 9),
--	PORT(0x1b0, 9),
--	PORT(0x1b8, 9),
--	PORT(0x2a0, 5),
--	PORT(0x2a8, 5),
--	PORT(0x2b0, 5),
--	PORT(0x2b8, 5),
-+	SERIAL8250_FOURPORT(0x1a0, 9),
-+	SERIAL8250_FOURPORT(0x1a8, 9),
-+	SERIAL8250_FOURPORT(0x1b0, 9),
-+	SERIAL8250_FOURPORT(0x1b8, 9),
-+	SERIAL8250_FOURPORT(0x2a0, 5),
-+	SERIAL8250_FOURPORT(0x2a8, 5),
-+	SERIAL8250_FOURPORT(0x2b0, 5),
-+	SERIAL8250_FOURPORT(0x2b8, 5),
- 	{ },
- };
-=20
+ 	if (flags & CIR_PORT) {
+ 		uart.port.flags |=3D UPF_FIXED_PORT | UPF_FIXED_TYPE;
+ 		uart.port.type =3D PORT_8250_CIR;
 --=20
 1.9.1
