@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v5 07/15] tty: serial: 8250: Fix line continuation warning
-Date: Wed, 13 Jan 2016 17:39:23 +0100
-Message-ID: <1452703171-5632-8-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v5 05/15] tty: serial: 8250: Remove else after return
+Date: Wed, 13 Jan 2016 17:39:21 +0100
+Message-ID: <1452703171-5632-6-git-send-email-anton.wuerfel@fau.de>
 References: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,31 +32,57 @@ In-Reply-To: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-=46ixed checkpatch warning about an unnecessary line continuation in a
-multi-line variable assignment.
+This patch fixes checkpatch warnings about unnecessary else blocks afte=
+r
+return statements.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 Cc: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_hp300.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/tty/serial/8250/8250_pci.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_hp300.c b/drivers/tty/serial/=
-8250/8250_hp300.c
-index 5e1b464..cf566bb 100644
---- a/drivers/tty/serial/8250/8250_hp300.c
-+++ b/drivers/tty/serial/8250/8250_hp300.c
-@@ -248,8 +248,8 @@ static int __init hp300_8250_init(void)
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
+50/8250_pci.c
+index 7f9f245..09157fa 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -805,10 +805,10 @@ static int pci_netmos_9900_numports(struct pci_de=
+v *dev)
 =20
- 		/* Memory mapped I/O */
- 		uart.port.iotype =3D UPIO_MEM;
--		uart.port.flags =3D UPF_SKIP_TEST | UPF_SHARE_IRQ \
--			      | UPF_BOOT_AUTOCONF;
-+		uart.port.flags =3D UPF_SKIP_TEST | UPF_SHARE_IRQ
-+				| UPF_BOOT_AUTOCONF;
- 		/* XXX - no interrupt support yet */
- 		uart.port.irq =3D 0;
- 		uart.port.uartclk =3D HPAPCI_BAUD_BASE * 16;
+ 	pi =3D (c & 0xff);
+=20
+-	if (pi =3D=3D 2) {
++	if (pi =3D=3D 2)
+ 		return 1;
+-	} else if ((pi =3D=3D 0) &&
+-			   (dev->device =3D=3D PCI_DEVICE_ID_NETMOS_9900)) {
++
++	if ((pi =3D=3D 0) && (dev->device =3D=3D PCI_DEVICE_ID_NETMOS_9900)) =
+{
+ 		/* two possibilities: 0x30ps encodes number of parallel and
+ 		 * serial ports, or 0x1000 indicates *something*. This is not
+ 		 * immediately obvious, since the 2s1p+4s configuration seems
+@@ -816,12 +816,11 @@ static int pci_netmos_9900_numports(struct pci_de=
+v *dev)
+ 		 * advertising the same function 3 as the 4s+2s1p config.
+ 		 */
+ 		sub_serports =3D dev->subsystem_device & 0xf;
+-		if (sub_serports > 0) {
++		if (sub_serports > 0)
+ 			return sub_serports;
+-		} else {
+-			dev_err(&dev->dev, "NetMos/Mostech serial driver ignoring port on a=
+mbiguous config.\n");
+-			return 0;
+-		}
++
++		dev_err(&dev->dev, "NetMos/Mostech serial driver ignoring port on am=
+biguous config.\n");
++		return 0;
+ 	}
+=20
+ 	moan_device("unknown NetMos/Mostech program interface", dev);
 --=20
 1.9.1
