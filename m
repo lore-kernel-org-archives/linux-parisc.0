@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v5 06/15] tty: serial: 8250: Move EXPORT_SYMBOL to function
-Date: Wed, 13 Jan 2016 17:39:22 +0100
-Message-ID: <1452703171-5632-7-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v5 02/15] tty: serial: 8250: Replace spaces with tabs
+Date: Wed, 13 Jan 2016 17:39:18 +0100
+Message-ID: <1452703171-5632-3-git-send-email-anton.wuerfel@fau.de>
 References: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,47 +32,89 @@ In-Reply-To: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch moves EXPORT_SYMBOL macros directly after the definition of
-the corresponding symbol to remove checkpatch warnings.
+Indentation is changed to match the correct format of using tabs instea=
+d
+of spaces wherever possible.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 Cc: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_core.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/tty/serial/8250/8250_pci.c  | 12 ++++++------
+ drivers/tty/serial/8250/8250_port.c |  4 ++--
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
-250/8250_core.c
-index 3912646..15082ae 100644
---- a/drivers/tty/serial/8250/8250_core.c
-+++ b/drivers/tty/serial/8250/8250_core.c
-@@ -763,6 +763,7 @@ void serial8250_suspend_port(int line)
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
+50/8250_pci.c
+index ccf43cb..7f9f245 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -721,7 +721,7 @@ static int pci_ni8430_init(struct pci_dev *dev)
+ 	 */
+ 	pcibios_resource_to_bus(dev->bus, &region, &dev->resource[bar]);
+ 	device_window =3D ((region.start + MITE_IOWBSR1_WIN_OFFSET) & 0xfffff=
+f00)
+-	                | MITE_IOWBSR1_WENAB | MITE_IOWBSR1_WSIZE;
++			| MITE_IOWBSR1_WENAB | MITE_IOWBSR1_WSIZE;
+ 	writel(device_window, p + MITE_IOWBSR1);
 =20
- 	uart_suspend_port(&serial8250_reg, port);
- }
-+EXPORT_SYMBOL(serial8250_suspend_port);
+ 	/* Set window access to go to RAMSEL IO address space */
+@@ -1763,7 +1763,7 @@ xr17v35x_has_slave(struct serial_private *priv)
+ 	const int dev_id =3D priv->dev->device;
 =20
- /**
-  *	serial8250_resume_port - resume one serial port
-@@ -788,6 +789,7 @@ void serial8250_resume_port(int line)
- 	}
- 	uart_resume_port(&serial8250_reg, port);
+ 	return ((dev_id =3D=3D PCI_DEVICE_ID_EXAR_XR17V4358) ||
+-	        (dev_id =3D=3D PCI_DEVICE_ID_EXAR_XR17V8358));
++		(dev_id =3D=3D PCI_DEVICE_ID_EXAR_XR17V8358));
  }
-+EXPORT_SYMBOL(serial8250_resume_port);
+=20
+ static int
+@@ -1863,8 +1863,8 @@ pci_fastcom335_setup(struct serial_private *priv,
+=20
+ static int
+ pci_wch_ch353_setup(struct serial_private *priv,
+-                    const struct pciserial_board *board,
+-                    struct uart_8250_port *port, int idx)
++		    const struct pciserial_board *board,
++		    struct uart_8250_port *port, int idx)
+ {
+ 	port->port.flags |=3D UPF_FIXED_TYPE;
+ 	port->port.type =3D PORT_16550A;
+@@ -1873,8 +1873,8 @@ pci_wch_ch353_setup(struct serial_private *priv,
+=20
+ static int
+ pci_wch_ch38x_setup(struct serial_private *priv,
+-                    const struct pciserial_board *board,
+-                    struct uart_8250_port *port, int idx)
++		    const struct pciserial_board *board,
++		    struct uart_8250_port *port, int idx)
+ {
+ 	port->port.flags |=3D UPF_FIXED_TYPE;
+ 	port->port.type =3D PORT_16850;
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
+250/8250_port.c
+index 7f3bd7b..f2e588e 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -52,7 +52,7 @@
+ #define DEBUG_AUTOCONF(fmt...)	do { } while (0)
+ #endif
+=20
+-#define BOTH_EMPTY 	(UART_LSR_TEMT | UART_LSR_THRE)
++#define BOTH_EMPTY	(UART_LSR_TEMT | UART_LSR_THRE)
 =20
  /*
-  * Register a set of serial devices attached to a platform device.  Th=
-e
-@@ -1167,9 +1169,6 @@ static void __exit serial8250_exit(void)
- module_init(serial8250_init);
- module_exit(serial8250_exit);
+  * Here we define the default xmit fifo size used for each type of UAR=
+T.
+@@ -2254,7 +2254,7 @@ serial8250_get_baud_rate(struct uart_port *port, =
+struct ktermios *termios,
 =20
--EXPORT_SYMBOL(serial8250_suspend_port);
--EXPORT_SYMBOL(serial8250_resume_port);
--
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Generic 8250/16x50 serial driver");
-=20
+ void
+ serial8250_do_set_termios(struct uart_port *port, struct ktermios *ter=
+mios,
+-		          struct ktermios *old)
++			  struct ktermios *old)
+ {
+ 	struct uart_8250_port *up =3D up_to_u8250p(port);
+ 	unsigned char cval;
 --=20
 1.9.1
