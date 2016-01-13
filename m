@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v5 13/15] tty: serial: 8250: Fix indentation warnings
-Date: Wed, 13 Jan 2016 17:39:29 +0100
-Message-ID: <1452703171-5632-14-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v5 12/15] tty: serial: 8250: Correct conversion specifiers
+Date: Wed, 13 Jan 2016 17:39:28 +0100
+Message-ID: <1452703171-5632-13-git-send-email-anton.wuerfel@fau.de>
 References: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,90 +32,67 @@ In-Reply-To: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Checkpatch complains about incorrect indentation of switch/case stateme=
-nts.
-This patch fixes the corresponding warnings. Additionally some indentat=
-ion
-is changed to match the correct format specified in the Linux Kernel
-Coding Style.
+This patch fixes compiler warnings about wrong conversion specifiers us=
+ed
+in a debug output in 8250_pnp.c. The precise warning is:
+
+drivers/tty/serial/8250/8250_pnp.c: In function =E2=80=98serial_pnp_pro=
+be=E2=80=99:
+include/linux/dynamic_debug.h:64:16: warning: format =E2=80=98%x=E2=80=99=
+ expects argument
+of [...]
+
+include/linux/dynamic_debug.h:84:2: note: in expansion of macro
+=E2=80=98DEFINE_DYNAMIC_DEBUG_METADATA=E2=80=99
+
+include/linux/device.h:1179:2: note: in expansion of macro
+=E2=80=98dynamic_dev_dbg=E2=80=99
+
+drivers/tty/serial/8250/8250_pnp.c:467:2: note: in expansion of macro
+=E2=80=98dev_dbg=E2=80=99
+  dev_dbg(&dev->dev,
+  ^
+include/linux/dynamic_debug.h:64:16: warning: format =E2=80=98%lx=E2=80=
+=99 expects argument
+of [...]
+
+include/linux/dynamic_debug.h:84:2: note: in expansion of macro
+=E2=80=98DEFINE_DYNAMIC_DEBUG_METADATA=E2=80=99
+
+include/linux/device.h:1179:2: note: in expansion of macro
+=E2=80=98dynamic_dev_dbg=E2=80=99
+
+drivers/tty/serial/8250/8250_pnp.c:467:2: note: in expansion of macro
+=E2=80=98dev_dbg=E2=80=99
+  dev_dbg(&dev->dev,
+  ^
+
+Those warnings never got triggered, because the command was nested
+in an #ifdef, which is removed by a patch of this series.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 Cc: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_pci.c  | 20 ++++++++++----------
- drivers/tty/serial/8250/8250_pnp.c  |  4 ++--
- drivers/tty/serial/8250/8250_port.c |  6 +++---
- 3 files changed, 15 insertions(+), 15 deletions(-)
+ drivers/tty/serial/8250/8250_pnp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
-50/8250_pci.c
-index 433afdd..1dd607f 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -841,17 +841,17 @@ static int pci_netmos_init(struct pci_dev *dev)
- 		return 0;
-=20
- 	switch (dev->device) { /* FALLTHROUGH on all */
--		case PCI_DEVICE_ID_NETMOS_9904:
--		case PCI_DEVICE_ID_NETMOS_9912:
--		case PCI_DEVICE_ID_NETMOS_9922:
--		case PCI_DEVICE_ID_NETMOS_9900:
--			num_serial =3D pci_netmos_9900_numports(dev);
--			break;
-+	case PCI_DEVICE_ID_NETMOS_9904:
-+	case PCI_DEVICE_ID_NETMOS_9912:
-+	case PCI_DEVICE_ID_NETMOS_9922:
-+	case PCI_DEVICE_ID_NETMOS_9900:
-+		num_serial =3D pci_netmos_9900_numports(dev);
-+		break;
-=20
--		default:
--			if (num_serial =3D=3D 0) {
--				moan_device("unknown NetMos/Mostech device", dev);
--			}
-+	default:
-+		if (num_serial =3D=3D 0) {
-+			moan_device("unknown NetMos/Mostech device", dev);
-+		}
- 	}
-=20
- 	if (num_serial =3D=3D 0)
 diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/82=
 50/8250_pnp.c
-index 9305591..a11180d 100644
+index ba3a1af..9305591 100644
 --- a/drivers/tty/serial/8250/8250_pnp.c
 +++ b/drivers/tty/serial/8250/8250_pnp.c
-@@ -427,8 +427,8 @@ static int check_resources(struct pnp_dev *dev)
- static int serial_pnp_guess_board(struct pnp_dev *dev)
- {
- 	if (!(check_name(pnp_dev_name(dev)) ||
--		(dev->card && check_name(dev->card->name))))
--			return -ENODEV;
-+	    (dev->card && check_name(dev->card->name))))
-+		return -ENODEV;
+@@ -465,8 +465,8 @@ serial_pnp_probe(struct pnp_dev *dev, const struct =
+pnp_device_id *dev_id)
+ 		return -ENODEV;
 =20
- 	if (check_resources(dev))
- 		return 0;
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
-250/8250_port.c
-index 343d050..da3b240 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -2235,9 +2235,9 @@ static void serial8250_set_divisor(struct uart_po=
-rt *port, unsigned int baud,
- 		serial_port_out(port, 0x2, quot_frac);
- }
+ 	dev_dbg(&dev->dev,
+-		 "Setup PNP port: port %x, mem 0x%lx, irq %d, type %d\n",
+-		 uart.port.iobase, uart.port.mapbase,
++		 "Setup PNP port: port %lx, mem 0x%lx, irq %d, type %d\n",
++		 uart.port.iobase, (unsigned long)uart.port.mapbase,
+ 		 uart.port.irq, uart.port.iotype);
 =20
--static unsigned int
--serial8250_get_baud_rate(struct uart_port *port, struct ktermios *term=
-ios,
--			 struct ktermios *old)
-+static unsigned int serial8250_get_baud_rate(struct uart_port *port,
-+					     struct ktermios *termios,
-+					     struct ktermios *old)
- {
- 	unsigned int tolerance =3D port->uartclk / 100;
-=20
+ 	if (flags & CIR_PORT) {
 --=20
 1.9.1
