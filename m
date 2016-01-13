@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v5 15/15] tty: serial: 8250: Merge duplicate conditions
-Date: Wed, 13 Jan 2016 17:39:31 +0100
-Message-ID: <1452703171-5632-16-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v5 13/15] tty: serial: 8250: Fix indentation warnings
+Date: Wed, 13 Jan 2016 17:39:29 +0100
+Message-ID: <1452703171-5632-14-git-send-email-anton.wuerfel@fau.de>
 References: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,36 +32,90 @@ In-Reply-To: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch refactors a switch case statement by merging an if condition
-in the default case into an identical condition right after the switch
-statement.
-This comes with a slight change in behaviour: If pci_netmos_9900_numpor=
-ts
-returns 0, an additional warning is printed.
+Checkpatch complains about incorrect indentation of switch/case stateme=
+nts.
+This patch fixes the corresponding warnings. Additionally some indentat=
+ion
+is changed to match the correct format specified in the Linux Kernel
+Coding Style.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 Cc: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_pci.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_pci.c  | 20 ++++++++++----------
+ drivers/tty/serial/8250/8250_pnp.c  |  4 ++--
+ drivers/tty/serial/8250/8250_port.c |  6 +++---
+ 3 files changed, 15 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
 50/8250_pci.c
-index 1dd607f..50ab301 100644
+index 433afdd..1dd607f 100644
 --- a/drivers/tty/serial/8250/8250_pci.c
 +++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -854,8 +854,10 @@ static int pci_netmos_init(struct pci_dev *dev)
- 		}
+@@ -841,17 +841,17 @@ static int pci_netmos_init(struct pci_dev *dev)
+ 		return 0;
+=20
+ 	switch (dev->device) { /* FALLTHROUGH on all */
+-		case PCI_DEVICE_ID_NETMOS_9904:
+-		case PCI_DEVICE_ID_NETMOS_9912:
+-		case PCI_DEVICE_ID_NETMOS_9922:
+-		case PCI_DEVICE_ID_NETMOS_9900:
+-			num_serial =3D pci_netmos_9900_numports(dev);
+-			break;
++	case PCI_DEVICE_ID_NETMOS_9904:
++	case PCI_DEVICE_ID_NETMOS_9912:
++	case PCI_DEVICE_ID_NETMOS_9922:
++	case PCI_DEVICE_ID_NETMOS_9900:
++		num_serial =3D pci_netmos_9900_numports(dev);
++		break;
+=20
+-		default:
+-			if (num_serial =3D=3D 0) {
+-				moan_device("unknown NetMos/Mostech device", dev);
+-			}
++	default:
++		if (num_serial =3D=3D 0) {
++			moan_device("unknown NetMos/Mostech device", dev);
++		}
  	}
 =20
--	if (num_serial =3D=3D 0)
-+	if (num_serial =3D=3D 0) {
-+		moan_device("unknown NetMos/Mostech device", dev);
- 		return -ENODEV;
-+	}
+ 	if (num_serial =3D=3D 0)
+diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/82=
+50/8250_pnp.c
+index 9305591..a11180d 100644
+--- a/drivers/tty/serial/8250/8250_pnp.c
++++ b/drivers/tty/serial/8250/8250_pnp.c
+@@ -427,8 +427,8 @@ static int check_resources(struct pnp_dev *dev)
+ static int serial_pnp_guess_board(struct pnp_dev *dev)
+ {
+ 	if (!(check_name(pnp_dev_name(dev)) ||
+-		(dev->card && check_name(dev->card->name))))
+-			return -ENODEV;
++	    (dev->card && check_name(dev->card->name))))
++		return -ENODEV;
 =20
- 	return num_serial;
+ 	if (check_resources(dev))
+ 		return 0;
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
+250/8250_port.c
+index 343d050..da3b240 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -2235,9 +2235,9 @@ static void serial8250_set_divisor(struct uart_po=
+rt *port, unsigned int baud,
+ 		serial_port_out(port, 0x2, quot_frac);
  }
+=20
+-static unsigned int
+-serial8250_get_baud_rate(struct uart_port *port, struct ktermios *term=
+ios,
+-			 struct ktermios *old)
++static unsigned int serial8250_get_baud_rate(struct uart_port *port,
++					     struct ktermios *termios,
++					     struct ktermios *old)
+ {
+ 	unsigned int tolerance =3D port->uartclk / 100;
+=20
 --=20
 1.9.1
