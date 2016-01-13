@@ -1,7 +1,8 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v5 00/15] tty: serial: 8250: Fix checkpatch warnings
-Date: Wed, 13 Jan 2016 17:39:16 +0100
-Message-ID: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v5 01/15] tty: serial: 8250: Fix whitespace errors
+Date: Wed, 13 Jan 2016 17:39:17 +0100
+Message-ID: <1452703171-5632-2-git-send-email-anton.wuerfel@fau.de>
+References: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Cc: Jiri Slaby <jslaby@suse.com>,
@@ -26,98 +27,311 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 	Phillip Raffeck <phillip.raffeck@fau.de>,
 	Anton Wuerfel <anton.wuerf
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello Andy,
+This patch fixes whitespace errors reported by checkpatch to increase
+readability. Main focus is on missing spaces after commas in
+function headers and macros (like foo,bar edited to foo, bar).
 
-thanks for your patch review. We tried to apply your suggested changes.
+Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
+Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
+Cc: linux-kernel@i4.cs.fau.de
+---
+ drivers/tty/serial/8250/8250_acorn.c |  2 +-
+ drivers/tty/serial/8250/8250_hub6.c  |  2 +-
+ drivers/tty/serial/8250/8250_pci.c   | 10 +++---
+ drivers/tty/serial/8250/8250_port.c  |  2 ++
+ drivers/tty/serial/8250/serial_cs.c  | 60 ++++++++++++++++++----------=
+--------
+ 5 files changed, 40 insertions(+), 36 deletions(-)
 
-Regards,
-Anton Wuerfel
-Phillip Raffeck
-
-This patch set fixes several checkpatch warnings in tty/serial/8250.
-
-Patch 1/15:  Adds missing spaces (mainly to function/macro headers)
-Patch 2/15:  Replace spaces with tabs wherever possible
-Patch 3/15:  Slight patch which moves an opening curly brace
-Patch 4/15:  Fixes multiline comment style
-Patch 5/15:  Removes else blocks after return statements
-Patch 6/15:  Slight patch which moves EXPORT_SYMBOL macro to correct
-position
-Patch 7/15:  Slight patch which removes an unneccessary line continuation
-Patch 8/15:  Slight patch which adds parentheses to a macro definition
-Patch 9/15:  Merges user-visible multiline strings to a single line
-Patch 10/15: Replace printk by dev_* or pr_* where appropriate
-Patch 11/15: Remove orphaned debug macro
-Patch 12/15: Fix warnings in dev_dbg by adding two casts
-Patch 13/15: Fixes code indentation
-Patch 14/15: Add a generic port macro
-Patch 15/15: Refactor a switch/case statement
-
-Remaining checkpatch warnings after applying this patch series:
-
--line over 80 characters
-	This error mostly occurs in serial_cs.c, which contains long-lined
-	macro calls. However, splitting these calls into multiple lines would
-	not increase readability.
-
--externs should be avoided in .c files
-	This occurs in 8250_hp300.c. There is no corresponding header file
-	the extern statement could be moved to. It could be moved to 8250.h
-	but this would affect other .c files.
-
--Use #include <linux/*.h> instead of <asm/*.h>
-	This warning has been left open for more experienced kernel hackers.
-	This patch series is about style issues. We do not intend to alter
-	the code behavior.
--struct uart_ops should normally be const
-	This warning only occurs in 8250_core.c. The corresponding struct
-	cannot be declared as const because it is altered in
-	serial8250_isa_init_ports(). Maybe a checkpatch exception should
-	be added for this particular warning.
-
--quoted string split across lines
-	These strings were ignored because they otherwise would exceed
-	80 characters in a single line. These particular strings use
-	format specifiers, which break the ability to grep for them anyway.
-
-Anton Wuerfel (15):
-Phillip Raffeck (15):
-  tty: serial: 8250: Fix whitespace errors
-  tty: serial: 8250: Replace spaces with tabs
-  tty: serial: 8250: Fix braces after struct
-  tty: serial: 8250: Fix multiline comment style
-  tty: serial: 8250: Remove else after return
-  tty: serial: 8250: Move EXPORT_SYMBOL to function
-  tty: serial: 8250: Fix line continuation warning
-  tty: serial: 8250: Add parentheses to macro
-  tty: serial: 8250: Fix multi-line strings
-  tty: serial: 8250: Correct conversion specifiers
-  tty: serial: 8250: Fix indentation warnings
-  tty: serial: 8250: Add generic port init macro
-  tty: serial: 8250: Merge duplicate conditions
-  tty: serial: 8250: Suitably replace printk
-  tty: serial: 8250: Remove SERIAL_DEBUG_PNP macro
-
- drivers/tty/serial/8250/8250.h               | 12 ++++
- drivers/tty/serial/8250/8250_accent.c        | 13 +---
- drivers/tty/serial/8250/8250_acorn.c         |  2 +-
- drivers/tty/serial/8250/8250_boca.c          | 41 ++++++-------
- drivers/tty/serial/8250/8250_core.c          | 15 ++---
- drivers/tty/serial/8250/8250_exar_st16c554.c | 17 ++----
- drivers/tty/serial/8250/8250_fourport.c      | 28 ++++-----
- drivers/tty/serial/8250/8250_gsc.c           |  7 ++-
- drivers/tty/serial/8250/8250_hp300.c         | 27 +++++----
- drivers/tty/serial/8250/8250_hub6.c          |  2 +-
- drivers/tty/serial/8250/8250_ingenic.c       | 12 ++--
- drivers/tty/serial/8250/8250_pci.c           | 55 +++++++++--------
- drivers/tty/serial/8250/8250_pnp.c           | 20 ++++---
- drivers/tty/serial/8250/8250_port.c          | 46 +++++++-------
- drivers/tty/serial/8250/serial_cs.c          | 89 +++++++++++++++-------------
- 15 files changed, 195 insertions(+), 191 deletions(-)
-
--- 
+diff --git a/drivers/tty/serial/8250/8250_acorn.c b/drivers/tty/serial/=
+8250/8250_acorn.c
+index 549aa07..402dfdd 100644
+--- a/drivers/tty/serial/8250/8250_acorn.c
++++ b/drivers/tty/serial/8250/8250_acorn.c
+@@ -70,7 +70,7 @@ serial_card_probe(struct expansion_card *ec, const st=
+ruct ecard_id *id)
+ 	uart.port.regshift	=3D 2;
+ 	uart.port.dev	=3D &ec->dev;
+=20
+-	for (i =3D 0; i < info->num_ports; i ++) {
++	for (i =3D 0; i < info->num_ports; i++) {
+ 		uart.port.membase =3D info->vaddr + type->offset[i];
+ 		uart.port.mapbase =3D bus_addr + type->offset[i];
+=20
+diff --git a/drivers/tty/serial/8250/8250_hub6.c b/drivers/tty/serial/8=
+250/8250_hub6.c
+index a5c778e..27124e2 100644
+--- a/drivers/tty/serial/8250/8250_hub6.c
++++ b/drivers/tty/serial/8250/8250_hub6.c
+@@ -10,7 +10,7 @@
+ #include <linux/init.h>
+ #include <linux/serial_8250.h>
+=20
+-#define HUB6(card,port)							\
++#define HUB6(card, port)						\
+ 	{								\
+ 		.iobase		=3D 0x302,				\
+ 		.irq		=3D 3,					\
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
+50/8250_pci.c
+index 4097f3f..ccf43cb 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -850,7 +850,7 @@ static int pci_netmos_init(struct pci_dev *dev)
+ 			break;
+=20
+ 		default:
+-			if (num_serial =3D=3D 0 ) {
++			if (num_serial =3D=3D 0) {
+ 				moan_device("unknown NetMos/Mostech device", dev);
+ 			}
+ 	}
+@@ -1198,8 +1198,9 @@ static int pci_quatech_has_qmcr(struct uart_8250_=
+port *port)
+=20
+ static int pci_quatech_test(struct uart_8250_port *port)
+ {
+-	u8 reg;
+-	u8 qopr =3D pci_quatech_rqopr(port);
++	u8 reg, qopr;
++
++	qopr =3D pci_quatech_rqopr(port);
+ 	pci_quatech_wqopr(port, qopr & QPCR_TEST_FOR1);
+ 	reg =3D pci_quatech_rqopr(port) & 0xC0;
+ 	if (reg !=3D QPCR_TEST_GET1)
+@@ -1286,6 +1287,7 @@ static int pci_quatech_init(struct pci_dev *dev)
+ 		unsigned long base =3D pci_resource_start(dev, 0);
+ 		if (base) {
+ 			u32 tmp;
++
+ 			outl(inl(base + 0x38) | 0x00002000, base + 0x38);
+ 			tmp =3D inl(base + 0x3c);
+ 			outl(tmp | 0x01000000, base + 0x3c);
+@@ -4502,7 +4504,7 @@ static struct pci_device_id serial_pci_tbl[] =3D =
+{
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+ 		pbn_b0_bt_2_921600 },
+ 	{	PCI_VENDOR_ID_OXSEMI, PCI_DEVICE_ID_OXSEMI_16PCI958,
+-		PCI_ANY_ID , PCI_ANY_ID, 0, 0,
++		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+ 		pbn_b2_8_1152000 },
+=20
+ 	/*
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
+250/8250_port.c
+index 52d82d2..7f3bd7b 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -1327,6 +1327,7 @@ static void serial8250_start_tx(struct uart_port =
+*port)
+=20
+ 		if (up->bugs & UART_BUG_TXEN) {
+ 			unsigned char lsr;
++
+ 			lsr =3D serial_in(up, UART_LSR);
+ 			up->lsr_saved_flags |=3D lsr & LSR_SAVE_FLAGS;
+ 			if (lsr & UART_LSR_THRE)
+@@ -1734,6 +1735,7 @@ static void wait_for_xmitr(struct uart_8250_port =
+*up, int bits)
+ 	/* Wait up to 1s for flow control if necessary */
+ 	if (up->port.flags & UPF_CONS_FLOW) {
+ 		unsigned int tmout;
++
+ 		for (tmout =3D 1000000; tmout; tmout--) {
+ 			unsigned int msr =3D serial_in(up, UART_MSR);
+ 			up->msr_saved_flags |=3D msr & MSR_SAVE_FLAGS;
+diff --git a/drivers/tty/serial/8250/serial_cs.c b/drivers/tty/serial/8=
+250/serial_cs.c
+index 4d180c9..6d7a801 100644
+--- a/drivers/tty/serial/8250/serial_cs.c
++++ b/drivers/tty/serial/8250/serial_cs.c
+@@ -28,7 +28,7 @@
+     and other provisions required by the GPL.  If you do not delete
+     the provisions above, a recipient may use your version of this
+     file under either the MPL or the GPL.
+-   =20
++
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D*/
+=20
+ #include <linux/module.h>
+@@ -257,7 +257,7 @@ static const struct serial_quirk quirks[] =3D {
+ };
+=20
+=20
+-static int serial_config(struct pcmcia_device * link);
++static int serial_config(struct pcmcia_device *link);
+=20
+=20
+ static void serial_remove(struct pcmcia_device *link)
+@@ -309,7 +309,7 @@ static int serial_probe(struct pcmcia_device *link)
+ 	dev_dbg(&link->dev, "serial_attach()\n");
+=20
+ 	/* Create new serial device */
+-	info =3D kzalloc(sizeof (*info), GFP_KERNEL);
++	info =3D kzalloc(sizeof(*info), GFP_KERNEL);
+ 	if (!info)
+ 		return -ENOMEM;
+ 	info->p_dev =3D link;
+@@ -339,7 +339,7 @@ static void serial_detach(struct pcmcia_device *lin=
+k)
+=20
+ /*=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D*/
+=20
+-static int setup_serial(struct pcmcia_device *handle, struct serial_in=
+fo * info,
++static int setup_serial(struct pcmcia_device *handle, struct serial_in=
+fo *info,
+ 			unsigned int iobase, int irq)
+ {
+ 	struct uart_8250_port uart;
+@@ -600,7 +600,7 @@ static int serial_check_for_multi(struct pcmcia_dev=
+ice *p_dev,  void *priv_data)
+ }
+=20
+=20
+-static int serial_config(struct pcmcia_device * link)
++static int serial_config(struct pcmcia_device *link)
+ {
+ 	struct serial_info *info =3D link->priv;
+ 	int i;
+@@ -701,7 +701,7 @@ static const struct pcmcia_device_id serial_ids[] =3D=
+ {
+ 	PCMCIA_PFC_DEVICE_PROD_ID12(1, "LINKSYS", "PCMLM336", 0xf7cb0b07, 0x7=
+a821b58),
+ 	PCMCIA_PFC_DEVICE_PROD_ID12(1, "MEGAHERTZ", "XJEM1144/CCEM1144", 0xf5=
+10db04, 0x52d21e1e),
+ 	PCMCIA_PFC_DEVICE_PROD_ID12(1, "MICRO RESEARCH", "COMBO-L/M-336", 0xb=
+2ced065, 0x3ced0555),
+-	PCMCIA_PFC_DEVICE_PROD_ID12(1, "NEC", "PK-UG-J001" ,0x18df0ba0 ,0x831=
+b1064),
++	PCMCIA_PFC_DEVICE_PROD_ID12(1, "NEC", "PK-UG-J001", 0x18df0ba0, 0x831=
+b1064),
+ 	PCMCIA_PFC_DEVICE_PROD_ID12(1, "Ositech", "Trumpcard:Jack of Diamonds=
+ Modem+Ethernet", 0xc2f80cd, 0x656947b9),
+ 	PCMCIA_PFC_DEVICE_PROD_ID12(1, "Ositech", "Trumpcard:Jack of Hearts M=
+odem+Ethernet", 0xc2f80cd, 0xdc9ba5ed),
+ 	PCMCIA_PFC_DEVICE_PROD_ID12(1, "PCMCIAs", "ComboCard", 0xdcfe12d3, 0x=
+cd8906cc),
+@@ -797,30 +797,30 @@ static const struct pcmcia_device_id serial_ids[]=
+ =3D {
+ 	PCMCIA_DEVICE_CIS_PROD_ID123("ADVANTECH", "COMpad-32/85", "1.0", 0x96=
+913a85, 0x8fbe92ae, 0x0877b627, "cis/COMpad2.cis"),
+ 	PCMCIA_DEVICE_CIS_PROD_ID2("RS-COM 2P", 0xad20b156, "cis/RS-COM-2P.ci=
+s"),
+ 	PCMCIA_DEVICE_CIS_MANF_CARD(0x0013, 0x0000, "cis/GLOBETROTTER.cis"),
+-	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.","SERIAL CA=
+RD: SL100  1.00.",0x19ca78af,0xf964f42b),
+-	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.","SERIAL CA=
+RD: SL100",0x19ca78af,0x71d98e83),
+-	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.","SERIAL CA=
+RD: SL232  1.00.",0x19ca78af,0x69fb7490),
+-	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.","SERIAL CA=
+RD: SL232",0x19ca78af,0xb6bc0235),
+-	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c2000.","SERIAL CA=
+RD: CF232",0x63f2e0bd,0xb9e175d3),
+-	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c2000.","SERIAL CA=
+RD: CF232-5",0x63f2e0bd,0xfce33442),
+-	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: CF232",0x3beb8cf2,0x171e=
+7190),
+-	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: CF232-5",0x3beb8cf2,0x20=
+da4262),
+-	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: CF428",0x3beb8cf2,0xea5d=
+d57d),
+-	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: CF500",0x3beb8cf2,0xd772=
+55fa),
+-	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: IC232",0x3beb8cf2,0x6a70=
+9903),
+-	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: SL232",0x3beb8cf2,0x1843=
+0676),
+-	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: XL232",0x3beb8cf2,0x6f93=
+3767),
+-	PCMCIA_MFC_DEVICE_PROD_ID12(0,"Elan","Serial Port: CF332",0x3beb8cf2,=
+0x16dc1ba7),
+-	PCMCIA_MFC_DEVICE_PROD_ID12(0,"Elan","Serial Port: SL332",0x3beb8cf2,=
+0x19816c41),
+-	PCMCIA_MFC_DEVICE_PROD_ID12(0,"Elan","Serial Port: SL385",0x3beb8cf2,=
+0x64112029),
+-	PCMCIA_MFC_DEVICE_PROD_ID12(0,"Elan","Serial Port: SL432",0x3beb8cf2,=
+0x1cce7ac4),
+-	PCMCIA_MFC_DEVICE_PROD_ID12(0,"Elan","Serial+Parallel Port: SP230",0x=
+3beb8cf2,0xdb9e58bc),
+-	PCMCIA_MFC_DEVICE_PROD_ID12(1,"Elan","Serial Port: CF332",0x3beb8cf2,=
+0x16dc1ba7),
+-	PCMCIA_MFC_DEVICE_PROD_ID12(1,"Elan","Serial Port: SL332",0x3beb8cf2,=
+0x19816c41),
+-	PCMCIA_MFC_DEVICE_PROD_ID12(1,"Elan","Serial Port: SL385",0x3beb8cf2,=
+0x64112029),
+-	PCMCIA_MFC_DEVICE_PROD_ID12(1,"Elan","Serial Port: SL432",0x3beb8cf2,=
+0x1cce7ac4),
+-	PCMCIA_MFC_DEVICE_PROD_ID12(2,"Elan","Serial Port: SL432",0x3beb8cf2,=
+0x1cce7ac4),
+-	PCMCIA_MFC_DEVICE_PROD_ID12(3,"Elan","Serial Port: SL432",0x3beb8cf2,=
+0x1cce7ac4),
++	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.", "SERIAL C=
+ARD: SL100  1.00.", 0x19ca78af, 0xf964f42b),
++	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.", "SERIAL C=
+ARD: SL100", 0x19ca78af, 0x71d98e83),
++	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.", "SERIAL C=
+ARD: SL232  1.00.", 0x19ca78af, 0x69fb7490),
++	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.", "SERIAL C=
+ARD: SL232", 0x19ca78af, 0xb6bc0235),
++	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c2000.", "SERIAL C=
+ARD: CF232", 0x63f2e0bd, 0xb9e175d3),
++	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c2000.", "SERIAL C=
+ARD: CF232-5", 0x63f2e0bd, 0xfce33442),
++	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: CF232", 0x3beb8cf2, 0x1=
+71e7190),
++	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: CF232-5", 0x3beb8cf2, 0=
+x20da4262),
++	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: CF428", 0x3beb8cf2, 0xe=
+a5dd57d),
++	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: CF500", 0x3beb8cf2, 0xd=
+77255fa),
++	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: IC232", 0x3beb8cf2, 0x6=
+a709903),
++	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: SL232", 0x3beb8cf2, 0x1=
+8430676),
++	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: XL232", 0x3beb8cf2, 0x6=
+f933767),
++	PCMCIA_MFC_DEVICE_PROD_ID12(0, "Elan", "Serial Port: CF332", 0x3beb8c=
+f2, 0x16dc1ba7),
++	PCMCIA_MFC_DEVICE_PROD_ID12(0, "Elan", "Serial Port: SL332", 0x3beb8c=
+f2, 0x19816c41),
++	PCMCIA_MFC_DEVICE_PROD_ID12(0, "Elan", "Serial Port: SL385", 0x3beb8c=
+f2, 0x64112029),
++	PCMCIA_MFC_DEVICE_PROD_ID12(0, "Elan", "Serial Port: SL432", 0x3beb8c=
+f2, 0x1cce7ac4),
++	PCMCIA_MFC_DEVICE_PROD_ID12(0, "Elan", "Serial+Parallel Port: SP230",=
+ 0x3beb8cf2, 0xdb9e58bc),
++	PCMCIA_MFC_DEVICE_PROD_ID12(1, "Elan", "Serial Port: CF332", 0x3beb8c=
+f2, 0x16dc1ba7),
++	PCMCIA_MFC_DEVICE_PROD_ID12(1, "Elan", "Serial Port: SL332", 0x3beb8c=
+f2, 0x19816c41),
++	PCMCIA_MFC_DEVICE_PROD_ID12(1, "Elan", "Serial Port: SL385", 0x3beb8c=
+f2, 0x64112029),
++	PCMCIA_MFC_DEVICE_PROD_ID12(1, "Elan", "Serial Port: SL432", 0x3beb8c=
+f2, 0x1cce7ac4),
++	PCMCIA_MFC_DEVICE_PROD_ID12(2, "Elan", "Serial Port: SL432", 0x3beb8c=
+f2, 0x1cce7ac4),
++	PCMCIA_MFC_DEVICE_PROD_ID12(3, "Elan", "Serial Port: SL432", 0x3beb8c=
+f2, 0x1cce7ac4),
+ 	PCMCIA_DEVICE_MANF_CARD(0x0279, 0x950b),
+ 	/* too generic */
+ 	/* PCMCIA_MFC_DEVICE_MANF_CARD(0, 0x0160, 0x0002), */
+--=20
 1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
