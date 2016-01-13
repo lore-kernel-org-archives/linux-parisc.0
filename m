@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v5 12/15] tty: serial: 8250: Correct conversion specifiers
-Date: Wed, 13 Jan 2016 17:39:28 +0100
-Message-ID: <1452703171-5632-13-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v5 09/15] tty: serial: 8250: Fix multi-line strings
+Date: Wed, 13 Jan 2016 17:39:25 +0100
+Message-ID: <1452703171-5632-10-git-send-email-anton.wuerfel@fau.de>
 References: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,67 +32,55 @@ In-Reply-To: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch fixes compiler warnings about wrong conversion specifiers us=
-ed
-in a debug output in 8250_pnp.c. The precise warning is:
-
-drivers/tty/serial/8250/8250_pnp.c: In function =E2=80=98serial_pnp_pro=
-be=E2=80=99:
-include/linux/dynamic_debug.h:64:16: warning: format =E2=80=98%x=E2=80=99=
- expects argument
-of [...]
-
-include/linux/dynamic_debug.h:84:2: note: in expansion of macro
-=E2=80=98DEFINE_DYNAMIC_DEBUG_METADATA=E2=80=99
-
-include/linux/device.h:1179:2: note: in expansion of macro
-=E2=80=98dynamic_dev_dbg=E2=80=99
-
-drivers/tty/serial/8250/8250_pnp.c:467:2: note: in expansion of macro
-=E2=80=98dev_dbg=E2=80=99
-  dev_dbg(&dev->dev,
-  ^
-include/linux/dynamic_debug.h:64:16: warning: format =E2=80=98%lx=E2=80=
-=99 expects argument
-of [...]
-
-include/linux/dynamic_debug.h:84:2: note: in expansion of macro
-=E2=80=98DEFINE_DYNAMIC_DEBUG_METADATA=E2=80=99
-
-include/linux/device.h:1179:2: note: in expansion of macro
-=E2=80=98dynamic_dev_dbg=E2=80=99
-
-drivers/tty/serial/8250/8250_pnp.c:467:2: note: in expansion of macro
-=E2=80=98dev_dbg=E2=80=99
-  dev_dbg(&dev->dev,
-  ^
-
-Those warnings never got triggered, because the command was nested
-in an #ifdef, which is removed by a patch of this series.
+Merged user-visible multi-line strings into a single line according to =
+the
+Linux Kernel Coding Style, which allows user-visible strings to exceed =
+the
+maximum line length of 80 characters. The main reason for this is to
+facilitate grepping for these strings.
+However, some strings were ignored in this patch, because the use of
+format specifiers breaks the ability to grep anyway.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
 Cc: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_pnp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/tty/serial/8250/8250_core.c | 3 +--
+ drivers/tty/serial/8250/serial_cs.c | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/82=
-50/8250_pnp.c
-index ba3a1af..9305591 100644
---- a/drivers/tty/serial/8250/8250_pnp.c
-+++ b/drivers/tty/serial/8250/8250_pnp.c
-@@ -465,8 +465,8 @@ serial_pnp_probe(struct pnp_dev *dev, const struct =
-pnp_device_id *dev_id)
- 		return -ENODEV;
+diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
+250/8250_core.c
+index d042ad5..b60b58b 100644
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -1173,8 +1173,7 @@ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Generic 8250/16x50 serial driver");
 =20
- 	dev_dbg(&dev->dev,
--		 "Setup PNP port: port %x, mem 0x%lx, irq %d, type %d\n",
--		 uart.port.iobase, uart.port.mapbase,
-+		 "Setup PNP port: port %lx, mem 0x%lx, irq %d, type %d\n",
-+		 uart.port.iobase, (unsigned long)uart.port.mapbase,
- 		 uart.port.irq, uart.port.iotype);
+ module_param(share_irqs, uint, 0644);
+-MODULE_PARM_DESC(share_irqs, "Share IRQs with other non-8250/16x50 dev=
+ices"
+-	" (unsafe)");
++MODULE_PARM_DESC(share_irqs, "Share IRQs with other non-8250/16x50 dev=
+ices (unsafe)");
 =20
- 	if (flags & CIR_PORT) {
+ module_param(nr_uarts, uint, 0644);
+ MODULE_PARM_DESC(nr_uarts, "Maximum number of UARTs supported. (1-" __=
+MODULE_STRING(CONFIG_SERIAL_8250_NR_UARTS) ")");
+diff --git a/drivers/tty/serial/8250/serial_cs.c b/drivers/tty/serial/8=
+250/serial_cs.c
+index 1f34867..1ab6bfc 100644
+--- a/drivers/tty/serial/8250/serial_cs.c
++++ b/drivers/tty/serial/8250/serial_cs.c
+@@ -533,8 +533,7 @@ static int multi_config(struct pcmcia_device *link)
+ 		info->multi =3D 2;
+ 		if (pcmcia_loop_config(link, multi_config_check_notpicky,
+ 				       &base2)) {
+-			dev_warn(&link->dev, "no usable port range "
+-			       "found, giving up\n");
++			dev_warn(&link->dev, "no usable port range found, giving up\n");
+ 			return -ENODEV;
+ 		}
+ 	}
 --=20
 1.9.1
