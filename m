@@ -1,63 +1,232 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: linux-next: strange commit in the parisc-hd tree
-Date: Tue, 12 Jan 2016 22:43:54 +0100
-Message-ID: <5695739A.9050700@gmx.de>
-References: <20160111092822.4b4c0233@canb.auug.org.au>
- <569422C8.4000706@gmx.de> <1452551991.23317.3.camel@ellerman.id.au>
+From: Anton Wuerfel <anton.wuerfel@fau.de>
+Subject: [PATCH v5 14/15] tty: serial: 8250: Add generic port init macro
+Date: Wed, 13 Jan 2016 17:39:30 +0100
+Message-ID: <1452703171-5632-15-git-send-email-anton.wuerfel@fau.de>
+References: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-To: Michael Ellerman <mpe@ellerman.id.au>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Parisc List <linux-parisc@vger.kernel.org>
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <1452551991.23317.3.camel@ellerman.id.au>
-List-ID: <linux-next.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Jiri Slaby <jslaby@suse.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Peter Hurley <peter@hurleysoftware.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Qipeng Zha <qipeng.zha@intel.com>,
+	Desmond Liu <desmondl@broadcom.com>,
+	Wang Long <long.wanglong@huawei.com>,
+	Matt Redfearn <matt.redfearn@imgtec.com>,
+	Paul Burton <paul.burton@imgtec.com>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+	Peter Hung <hpeter@gmail.com>,
+	Soeren Grunewald <soeren.grunewald@desy.de>,
+	Adam Lee <adam.lee@canonical.com>,
+	"Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
+	Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
+	Phillip Raffeck <phillip.raffeck@fau.de>,
+	Anton Wuerfel <anton.wuerf
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 11.01.2016 23:39, Michael Ellerman wrote:
-> On Mon, 2016-01-11 at 22:46 +0100, Helge Deller wrote:
->> On 10.01.2016 23:28, Stephen Rothwell wrote:
->>> I noticed the following commit in the parisc-hd tree today:
->>>
->>>   43122681dd75 ("Fix __ARCH_SI_PREAMBLE_SIZE on parisc")
->>>
->>> which among other things says:
->>>
->>>   This patch is not planned to be committed as it currently is.
->>
->> Right, I split it up into two.
->>
->>> [...] Please remove it from linux-next inclusion until it is ready.
->>
->> Sure, I just removed it now.
->>
->>> Delibeately introducing a patch to linux-next that may well cause build breakage
->>> in other architectures just before the merge window opens is a bit antisocial.
->>
->> That was in no way my intention.
->> In contrary, I wanted to see if other platforms are affected by the same bug without knowing.
->> Do you by any chance know if it broke some of the existing platforms?
->> If yes, that would be valuable info...
->>
->> Just in case people want to know what this is all about:
->> On parisc I found __ARCH_SI_PREAMBLE_SIZE to have a wrong value in 64bit kernel builds.
->> Patch which fixes it is here:
->> https://patchwork.kernel.org/patch/7994821/
->>
->> To prevent other (existing and future) architectures to run into the same
->> problem I wanted to test this patch via linux-next and inform them:
->> http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/commit/?h=test__ARCH_SI_PREAMBLE_SIZE
-> 
-> That doesn't fire on powerpc, ie. we have it correct.
+This patch removes redundant 8250 port initialization macros and
+replaces them by a single generic base-macro, which is specialized
+as needed.
 
-It really seems that parisc was the only architecture left which had a wrong value for __ARCH_SI_PREAMBLE_SIZE.
-I followed Stephens suggestion to try it via the zero day build farm and it was only reported one problem (for parisc).
-Tree is here: http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/log/?h=for-next-test
- 
-> Though I wonder why it's not just defined using offsetof? Possibly just that
-> it's awkward with the way the headers are organised.
+Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
+Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
+Cc: linux-kernel@i4.cs.fau.de
+---
+ drivers/tty/serial/8250/8250.h               | 12 ++++++++
+ drivers/tty/serial/8250/8250_accent.c        | 13 ++-------
+ drivers/tty/serial/8250/8250_boca.c          | 41 ++++++++++++--------=
+--------
+ drivers/tty/serial/8250/8250_exar_st16c554.c | 17 ++++--------
+ drivers/tty/serial/8250/8250_fourport.c      | 28 ++++++++-----------
+ 5 files changed, 49 insertions(+), 62 deletions(-)
 
-Yes.
-
-Helge
+diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8=
+250.h
+index d54dcd8..4672ab4 100644
+--- a/drivers/tty/serial/8250/8250.h
++++ b/drivers/tty/serial/8250/8250.h
+@@ -92,6 +92,18 @@ struct serial8250_config {
+ #define SERIAL8250_SHARE_IRQS 0
+ #endif
+=20
++#define SERIAL8250_PORT_FLAGS(_base, _irq, _flags)		\
++	{							\
++		.iobase		=3D _base,			\
++		.irq		=3D _irq,				\
++		.uartclk	=3D 1843200,			\
++		.iotype		=3D UPIO_PORT,			\
++		.flags		=3D UPF_BOOT_AUTOCONF | (_flags),	\
++	}
++
++#define SERIAL8250_PORT(_base, _irq) SERIAL8250_PORT_FLAGS(_base, _irq=
+, 0)
++
++
+ static inline int serial_in(struct uart_8250_port *up, int offset)
+ {
+ 	return up->port.serial_in(&up->port, offset);
+diff --git a/drivers/tty/serial/8250/8250_accent.c b/drivers/tty/serial=
+/8250/8250_accent.c
+index 34b51c6..522aeae 100644
+--- a/drivers/tty/serial/8250/8250_accent.c
++++ b/drivers/tty/serial/8250/8250_accent.c
+@@ -10,18 +10,11 @@
+ #include <linux/init.h>
+ #include <linux/serial_8250.h>
+=20
+-#define PORT(_base,_irq)				\
+-	{						\
+-		.iobase		=3D _base,		\
+-		.irq		=3D _irq,			\
+-		.uartclk	=3D 1843200,		\
+-		.iotype		=3D UPIO_PORT,		\
+-		.flags		=3D UPF_BOOT_AUTOCONF,	\
+-	}
++#include "8250.h"
+=20
+ static struct plat_serial8250_port accent_data[] =3D {
+-	PORT(0x330, 4),
+-	PORT(0x338, 4),
++	SERIAL8250_PORT(0x330, 4),
++	SERIAL8250_PORT(0x338, 4),
+ 	{ },
+ };
+=20
+diff --git a/drivers/tty/serial/8250/8250_boca.c b/drivers/tty/serial/8=
+250/8250_boca.c
+index d125dc1..a63b599 100644
+--- a/drivers/tty/serial/8250/8250_boca.c
++++ b/drivers/tty/serial/8250/8250_boca.c
+@@ -10,32 +10,25 @@
+ #include <linux/init.h>
+ #include <linux/serial_8250.h>
+=20
+-#define PORT(_base,_irq)				\
+-	{						\
+-		.iobase		=3D _base,		\
+-		.irq		=3D _irq,			\
+-		.uartclk	=3D 1843200,		\
+-		.iotype		=3D UPIO_PORT,		\
+-		.flags		=3D UPF_BOOT_AUTOCONF,	\
+-	}
++#include "8250.h"
+=20
+ static struct plat_serial8250_port boca_data[] =3D {
+-	PORT(0x100, 12),
+-	PORT(0x108, 12),
+-	PORT(0x110, 12),
+-	PORT(0x118, 12),
+-	PORT(0x120, 12),
+-	PORT(0x128, 12),
+-	PORT(0x130, 12),
+-	PORT(0x138, 12),
+-	PORT(0x140, 12),
+-	PORT(0x148, 12),
+-	PORT(0x150, 12),
+-	PORT(0x158, 12),
+-	PORT(0x160, 12),
+-	PORT(0x168, 12),
+-	PORT(0x170, 12),
+-	PORT(0x178, 12),
++	SERIAL8250_PORT(0x100, 12),
++	SERIAL8250_PORT(0x108, 12),
++	SERIAL8250_PORT(0x110, 12),
++	SERIAL8250_PORT(0x118, 12),
++	SERIAL8250_PORT(0x120, 12),
++	SERIAL8250_PORT(0x128, 12),
++	SERIAL8250_PORT(0x130, 12),
++	SERIAL8250_PORT(0x138, 12),
++	SERIAL8250_PORT(0x140, 12),
++	SERIAL8250_PORT(0x148, 12),
++	SERIAL8250_PORT(0x150, 12),
++	SERIAL8250_PORT(0x158, 12),
++	SERIAL8250_PORT(0x160, 12),
++	SERIAL8250_PORT(0x168, 12),
++	SERIAL8250_PORT(0x170, 12),
++	SERIAL8250_PORT(0x178, 12),
+ 	{ },
+ };
+=20
+diff --git a/drivers/tty/serial/8250/8250_exar_st16c554.c b/drivers/tty=
+/serial/8250/8250_exar_st16c554.c
+index bf53aab..3a7cb82 100644
+--- a/drivers/tty/serial/8250/8250_exar_st16c554.c
++++ b/drivers/tty/serial/8250/8250_exar_st16c554.c
+@@ -13,20 +13,13 @@
+ #include <linux/init.h>
+ #include <linux/serial_8250.h>
+=20
+-#define PORT(_base,_irq)				\
+-	{						\
+-		.iobase		=3D _base,		\
+-		.irq		=3D _irq,			\
+-		.uartclk	=3D 1843200,		\
+-		.iotype		=3D UPIO_PORT,		\
+-		.flags		=3D UPF_BOOT_AUTOCONF,	\
+-	}
++#include "8250.h"
+=20
+ static struct plat_serial8250_port exar_data[] =3D {
+-	PORT(0x100, 5),
+-	PORT(0x108, 5),
+-	PORT(0x110, 5),
+-	PORT(0x118, 5),
++	SERIAL8250_PORT(0x100, 5),
++	SERIAL8250_PORT(0x108, 5),
++	SERIAL8250_PORT(0x110, 5),
++	SERIAL8250_PORT(0x118, 5),
+ 	{ },
+ };
+=20
+diff --git a/drivers/tty/serial/8250/8250_fourport.c b/drivers/tty/seri=
+al/8250/8250_fourport.c
+index be15826..4045180 100644
+--- a/drivers/tty/serial/8250/8250_fourport.c
++++ b/drivers/tty/serial/8250/8250_fourport.c
+@@ -10,24 +10,20 @@
+ #include <linux/init.h>
+ #include <linux/serial_8250.h>
+=20
+-#define PORT(_base,_irq)						\
+-	{								\
+-		.iobase		=3D _base,				\
+-		.irq		=3D _irq,					\
+-		.uartclk	=3D 1843200,				\
+-		.iotype		=3D UPIO_PORT,				\
+-		.flags		=3D UPF_BOOT_AUTOCONF | UPF_FOURPORT,	\
+-	}
++#include "8250.h"
++
++#define SERIAL8250_FOURPORT(_base, _irq) \
++	SERIAL8250_PORT_FLAGS(_base, _irq, UPF_FOURPORT)
+=20
+ static struct plat_serial8250_port fourport_data[] =3D {
+-	PORT(0x1a0, 9),
+-	PORT(0x1a8, 9),
+-	PORT(0x1b0, 9),
+-	PORT(0x1b8, 9),
+-	PORT(0x2a0, 5),
+-	PORT(0x2a8, 5),
+-	PORT(0x2b0, 5),
+-	PORT(0x2b8, 5),
++	SERIAL8250_FOURPORT(0x1a0, 9),
++	SERIAL8250_FOURPORT(0x1a8, 9),
++	SERIAL8250_FOURPORT(0x1b0, 9),
++	SERIAL8250_FOURPORT(0x1b8, 9),
++	SERIAL8250_FOURPORT(0x2a0, 5),
++	SERIAL8250_FOURPORT(0x2a8, 5),
++	SERIAL8250_FOURPORT(0x2b0, 5),
++	SERIAL8250_FOURPORT(0x2b8, 5),
+ 	{ },
+ };
+=20
+--=20
+1.9.1
