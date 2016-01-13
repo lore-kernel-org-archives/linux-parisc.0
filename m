@@ -1,12 +1,15 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v5 15/15] tty: serial: 8250: Merge duplicate conditions
-Date: Wed, 13 Jan 2016 19:28:39 +0200
-Message-ID: <1452706119.2521.3.camel@linux.intel.com>
+Subject: Re: [PATCH v5 14/15] tty: serial: 8250: Add generic port init macro
+Date: Wed, 13 Jan 2016 19:30:57 +0200
+Message-ID: <1452706257.2521.6.camel@linux.intel.com>
 References: <1452703171-5632-1-git-send-email-anton.wuerfel@fau.de>
-	 <1452703171-5632-16-git-send-email-anton.wuerfel@fau.de>
+	 <1452703171-5632-15-git-send-email-anton.wuerfel@fau.de>
+	 <1452705734.2521.0.camel@linux.intel.com>
+	 <b8289bde414e3a671306c1076cda182e.squirrel@faumail.uni-erlangen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Cc: Jiri Slaby <jslaby@suse.com>,
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jslaby@suse.com>,
 	"James E.J. Bottomley" <jejb@parisc-linux.org>,
 	Helge Deller <deller@gmx.de>,
 	Peter Hurley <peter@hurleysoftware.com>,
@@ -25,57 +28,32 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 	Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org,
 	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de,
 	Phillip Raffeck <phillip.raffeck@fau.de>
-To: Anton Wuerfel <anton.wuerfel@fau.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Anton Wuerfel <anton.wuerfel@fau.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1452703171-5632-16-git-send-email-anton.wuerfel@fau.de>
+In-Reply-To: <b8289bde414e3a671306c1076cda182e.squirrel@faumail.uni-erlangen.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2016-01-13 at 17:39 +0100, Anton Wuerfel wrote:
-> This patch refactors a switch case statement by merging an if
-> condition
-> in the default case into an identical condition right after the
-> switch
-> statement.
-> This comes with a slight change in behaviour: If
-> pci_netmos_9900_numports
-> returns 0, an additional warning is printed.
+On Wed, 2016-01-13 at 18:25 +0100, Anton Wuerfel wrote:
+> > On Wed, 2016-01-13 at 17:39 +0100, Anton Wuerfel wrote:
+> > > This patch removes redundant 8250 port initialization macros and
+> > > replaces them by a single generic base-macro, which is
+> > > specialized
+> > > as needed.
+> >=20
+> > Perhaps you forgot.
+> > Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>=20
+> Sorry, we did not even know that this tag existed. We will add this
+> in our
+> next patch series.
 >=20
 
-+ Suggested-by:
+Also, please thin out the Cc list, I would recommend remove just
+ordinary commiters (with maybe few exceptions) and leave maintainers.=C2=
+=A0
+Moreover some addresses are bounced.
 
-And I would recommend to put this patch before #13 in the series.
-
-> Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
-> Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
-> Cc: linux-kernel@i4.cs.fau.de
-> ---
-> =C2=A0drivers/tty/serial/8250/8250_pci.c | 4 +++-
-> =C2=A01 file changed, 3 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/tty/serial/8250/8250_pci.c
-> b/drivers/tty/serial/8250/8250_pci.c
-> index 1dd607f..50ab301 100644
-> --- a/drivers/tty/serial/8250/8250_pci.c
-> +++ b/drivers/tty/serial/8250/8250_pci.c
-> @@ -854,8 +854,10 @@ static int pci_netmos_init(struct pci_dev *dev)
-> =C2=A0		}
-> =C2=A0	}
-> =C2=A0
-> -	if (num_serial =3D=3D 0)
-> +	if (num_serial =3D=3D 0) {
-> +		moan_device("unknown NetMos/Mostech device", dev);
-> =C2=A0		return -ENODEV;
-> +	}
-
-Yep!
-However, you forgot to fix switch-case as well.
-
-> =C2=A0
-> =C2=A0	return num_serial;
-> =C2=A0}
-
---=20
+--=C2=A0
 Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Intel Finland Oy
