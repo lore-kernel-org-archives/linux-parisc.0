@@ -1,7 +1,7 @@
 From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v6 13/15] tty: serial: 8250: Merge duplicate conditions
-Date: Wed, 13 Jan 2016 22:29:19 +0100
-Message-ID: <1452720561-28443-14-git-send-email-anton.wuerfel@fau.de>
+Subject: [PATCH v6 06/15] tty: serial: 8250: Move EXPORT_SYMBOL to function
+Date: Wed, 13 Jan 2016 22:29:12 +0100
+Message-ID: <1452720561-28443-7-git-send-email-anton.wuerfel@fau.de>
 References: <1452720561-28443-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -25,43 +25,47 @@ In-Reply-To: <1452720561-28443-1-git-send-email-anton.wuerfel@fau.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch refactors a switch case statement by merging an if condition
-in the default case into an identical condition right after the switch
-statement.
-This comes with a slight change in behaviour: If pci_netmos_9900_numpor=
-ts
-returns 0, an additional warning is printed.
+This patch moves EXPORT_SYMBOL macros directly after the definition of
+the corresponding symbol to remove checkpatch warnings.
 
 Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
 Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
-Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: linux-kernel@i4.cs.fau.de
 ---
- drivers/tty/serial/8250/8250_pci.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/tty/serial/8250/8250_core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
-50/8250_pci.c
-index fbd4222..b22e5a5 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -850,13 +850,13 @@ static int pci_netmos_init(struct pci_dev *dev)
- 			break;
+diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8=
+250/8250_core.c
+index 3912646..15082ae 100644
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -763,6 +763,7 @@ void serial8250_suspend_port(int line)
 =20
- 		default:
--			if (num_serial =3D=3D 0 ) {
--				moan_device("unknown NetMos/Mostech device", dev);
--			}
-+			break;
- 	}
-=20
--	if (num_serial =3D=3D 0)
-+	if (num_serial =3D=3D 0) {
-+		moan_device("unknown NetMos/Mostech device", dev);
- 		return -ENODEV;
-+	}
-=20
- 	return num_serial;
+ 	uart_suspend_port(&serial8250_reg, port);
  }
++EXPORT_SYMBOL(serial8250_suspend_port);
+=20
+ /**
+  *	serial8250_resume_port - resume one serial port
+@@ -788,6 +789,7 @@ void serial8250_resume_port(int line)
+ 	}
+ 	uart_resume_port(&serial8250_reg, port);
+ }
++EXPORT_SYMBOL(serial8250_resume_port);
+=20
+ /*
+  * Register a set of serial devices attached to a platform device.  Th=
+e
+@@ -1167,9 +1169,6 @@ static void __exit serial8250_exit(void)
+ module_init(serial8250_init);
+ module_exit(serial8250_exit);
+=20
+-EXPORT_SYMBOL(serial8250_suspend_port);
+-EXPORT_SYMBOL(serial8250_resume_port);
+-
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Generic 8250/16x50 serial driver");
+=20
 --=20
 1.9.1
