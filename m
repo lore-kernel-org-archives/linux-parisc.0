@@ -1,10 +1,7 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v6 12/15] tty: serial: 8250: Correct conversion
- specifiers
-Date: Thu, 14 Jan 2016 11:31:24 +0200
-Message-ID: <1452763884.2521.23.camel@linux.intel.com>
-References: <1452720561-28443-1-git-send-email-anton.wuerfel@fau.de>
-	 <1452720561-28443-13-git-send-email-anton.wuerfel@fau.de>
+From: Anton Wuerfel <anton.wuerfel@fau.de>
+Subject: [PATCH v7 00/15] tty: serial: 8250: Fix checkpatch warnings
+Date: Thu, 14 Jan 2016 16:08:09 +0100
+Message-ID: <1452784104-30840-1-git-send-email-anton.wuerfel@fau.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Cc: Jiri Slaby <jslaby@suse.com>,
@@ -20,120 +17,92 @@ Cc: Jiri Slaby <jslaby@suse.com>,
 	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
 	Peter Hung <hpeter@gmail.com>, linux-serial@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-kernel <linux-kernel@i4.cs.fau.de>
-To: Anton Wuerfel <anton.wuerfel@fau.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1452720561-28443-13-git-send-email-anton.wuerfel@fau.de>
-List-ID: <linux-parisc.vger.kernel.org>
+	linux-kernel@i4.cs.fau.de, Anton Wuerfel <anton.wuerfel@fau.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2016-01-13 at 22:29 +0100, Anton Wuerfel wrote:
-> This patch fixes compiler warnings about wrong conversion specifiers=C2=
-=A0
+This patch set fixes several checkpatch warnings in tty/serial/8250.
 
-This patch obviously doesn't _fix_warnings_, rather changes specifiers
-to get it consistent with argument.
+Patch 1/15:  Adds missing spaces (mainly to function/macro headers)
+Patch 2/15:  Replace spaces with tabs wherever possible
+Patch 3/15:  Slight patch which moves an opening curly brace
+Patch 4/15:  Fixes multiline comment style
+Patch 5/15:  Removes else blocks after return statements
+Patch 6/15:  Slight patch which moves EXPORT_SYMBOL macro to correct
+position
+Patch 7/15:  Slight patch which removes an unneccessary line continuation
+Patch 8/15:  Slight patch which adds parentheses to a macro definition
+Patch 9/15:  Merges user-visible multiline strings to a single line
+Patch 10/15: Replace printk by dev_* or pr_* where appropriate
+Patch 11/15: Remove orphaned debug macro
+Patch 12/15: Fix warnings in dev_dbg by adding two casts
+Patch 13/15: Refactor a switch/case statement
+Patch 14/15: Fixes code indentation
+Patch 15/15: Add a generic port macro
 
-> used
-> in a debug output in 8250_pnp.c. The precise warning is:
+Remaining checkpatch warnings after applying this patch series:
 
-Usually there is no need to cite all lines=E2=80=A6
+-line over 80 characters
+	This error mostly occurs in serial_cs.c, which contains long-lined
+	macro calls. However, splitting these calls into multiple lines would
+	not increase readability.
 
->=20
-> drivers/tty/serial/8250/8250_pnp.c: In function =E2=80=98serial_pnp_p=
-robe=E2=80=99:
-> include/linux/dynamic_debug.h:64:16: warning: format =E2=80=98%x=E2=80=
-=99 expects
-> argument
-> of [...]
+-externs should be avoided in .c files
+	This occurs in 8250_hp300.c. There is no corresponding header file
+	the extern statement could be moved to. It could be moved to 8250.h
+	but this would affect other .c files.
 
-OK.
+-Use #include <linux/*.h> instead of <asm/*.h>
+	This warning has been left open for more experienced kernel hackers.
+	This patch series is about style issues. We do not intend to alter
+	the code behavior.
+-struct uart_ops should normally be const
+	This warning only occurs in 8250_core.c. The corresponding struct
+	cannot be declared as const because it is altered in
+	serial8250_isa_init_ports(). Maybe a checkpatch exception should
+	be added for this particular warning.
 
->=20
-> include/linux/dynamic_debug.h:84:2: note: in expansion of macro
-> =E2=80=98DEFINE_DYNAMIC_DEBUG_METADATA=E2=80=99
->=20
-> include/linux/device.h:1179:2: note: in expansion of macro
-> =E2=80=98dynamic_dev_dbg=E2=80=99
+-quoted string split across lines
+	These strings were ignored because they otherwise would exceed
+	80 characters in a single line. These particular strings use
+	format specifiers, which break the ability to grep for them anyway.
 
-Redundant.
+Anton Wuerfel (15):
+Phillip Raffeck (15):
+  tty: serial: 8250: Fix whitespace errors
+  tty: serial: 8250: Replace spaces with tabs
+  tty: serial: 8250: Fix braces after struct
+  tty: serial: 8250: Fix multiline comment style
+  tty: serial: 8250: Remove else after return
+  tty: serial: 8250: Move EXPORT_SYMBOL to function
+  tty: serial: 8250: Fix line continuation warning
+  tty: serial: 8250: Add parentheses to macro
+  tty: serial: 8250: Fix multi-line strings
+  tty: serial: 8250: Correct conversion specifiers
+  tty: serial: 8250: Merge duplicate conditions
+  tty: serial: 8250: Fix indentation warnings
+  tty: serial: 8250: Add generic port init macro
+  tty: serial: 8250: Suitably replace printk
+  tty: serial: 8250: Remove SERIAL_DEBUG_PNP macro
 
->=20
-> drivers/tty/serial/8250/8250_pnp.c:467:2: note: in expansion of macro
-> =E2=80=98dev_dbg=E2=80=99
-> =C2=A0 dev_dbg(&dev->dev,
-> =C2=A0 ^
-> include/linux/dynamic_debug.h:64:16: warning: format =E2=80=98%lx=E2=80=
-=99 expects
-> argument
-> of [...]
+ drivers/tty/serial/8250/8250.h               | 12 ++++
+ drivers/tty/serial/8250/8250_accent.c        | 13 +---
+ drivers/tty/serial/8250/8250_acorn.c         |  2 +-
+ drivers/tty/serial/8250/8250_boca.c          | 41 ++++++-------
+ drivers/tty/serial/8250/8250_core.c          | 15 ++---
+ drivers/tty/serial/8250/8250_exar_st16c554.c | 17 ++----
+ drivers/tty/serial/8250/8250_fourport.c      | 28 ++++-----
+ drivers/tty/serial/8250/8250_gsc.c           |  7 ++-
+ drivers/tty/serial/8250/8250_hp300.c         | 27 +++++----
+ drivers/tty/serial/8250/8250_hub6.c          |  2 +-
+ drivers/tty/serial/8250/8250_ingenic.c       | 12 ++--
+ drivers/tty/serial/8250/8250_pci.c           | 60 ++++++++++---------
+ drivers/tty/serial/8250/8250_pnp.c           | 28 +++++----
+ drivers/tty/serial/8250/8250_port.c          | 47 ++++++++-------
+ drivers/tty/serial/8250/serial_cs.c          | 90 +++++++++++++++-------------
+ 15 files changed, 203 insertions(+), 198 deletions(-)
 
-OK.
-
->=20
-> include/linux/dynamic_debug.h:84:2: note: in expansion of macro
-> =E2=80=98DEFINE_DYNAMIC_DEBUG_METADATA=E2=80=99
->=20
-> include/linux/device.h:1179:2: note: in expansion of macro
-> =E2=80=98dynamic_dev_dbg=E2=80=99
-
-Redundant.
-
->=20
-> drivers/tty/serial/8250/8250_pnp.c:467:2: note: in expansion of macro
-> =E2=80=98dev_dbg=E2=80=99
-> =C2=A0 dev_dbg(&dev->dev,
-> =C2=A0 ^
->=20
-> Those warnings never got triggered, because the command was nested
-> in an #ifdef, which is removed by a patch of this series.
->=20
-> Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
-> Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
-> Cc: linux-kernel@i4.cs.fau.de
-> ---
-> =C2=A0drivers/tty/serial/8250/8250_pnp.c | 4 ++--
-> =C2=A01 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/tty/serial/8250/8250_pnp.c
-> b/drivers/tty/serial/8250/8250_pnp.c
-> index 0c32c59..92f4412 100644
-> --- a/drivers/tty/serial/8250/8250_pnp.c
-> +++ b/drivers/tty/serial/8250/8250_pnp.c
-> @@ -465,8 +465,8 @@ serial_pnp_probe(struct pnp_dev *dev, const
-> struct pnp_device_id *dev_id)
-> =C2=A0		return -ENODEV;
-> =C2=A0
-> =C2=A0	dev_dbg(&dev->dev,
-> -		=C2=A0"Setup PNP port: port %x, mem 0x%lx, irq %d, type
-> %d\n",
-> -		=C2=A0uart.port.iobase, uart.port.mapbase,
-> +		=C2=A0"Setup PNP port: port %lx, mem 0x%lx, irq %d, type
-> %d\n",
-> +		=C2=A0uart.port.iobase, (unsigned long)uart.port.mapbase,
-
-This approach is not fully correct. In Linux kernel we have %p
-extensions to cover some custom types such as resource_size_t, of which
-mapbase is.
-
-Thus,
-
-"Setup PNP port: port %lx, mem %pa, irq %d, type %d\n",
-uart.port.iobase, &uart.port.mapbase,
-
-looks better.
-
-> =C2=A0		=C2=A0uart.port.irq, uart.port.iotype);
-> =C2=A0
-> =C2=A0	if (flags & CIR_PORT) {
-
---=20
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+1.9.1
