@@ -1,244 +1,49 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [patch 1/4] hrtimer: Handle remaining time proper for
- TIME_LOW_RES
-Date: Sat, 16 Jan 2016 19:36:47 +0100
-Message-ID: <20160116183647.GA6184@ls3530.box>
-References: <20160114163744.582215466@linutronix.de>
- <20160114164159.273328486@linutronix.de>
+Subject: [GIT PULL] parisc architecture updates for v4.5
+Date: Sat, 16 Jan 2016 22:45:00 +0100
+Message-ID: <20160116214500.GA17553@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Helge Deller <deller@gmx.de>,
-	John Stultz <john.stultz@linaro.org>,
-	linux-m68k@lists.linux-m68k.org, dhowells@redhat.com
-To: Thomas Gleixner <tglx@linutronix.de>, linux-parisc@vger.kernel.org,
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
 	John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20160114164159.273328486@linutronix.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Hi Linus,
 
-Hi Thomas,
+please pull the patches for the parisc architecture for v4.5 from:
 
-* Thomas Gleixner <tglx@linutronix.de>:
-> If CONFIG_TIME_LOW_RES is enabled we add a jiffie to the relative timeout to
-> prevent short sleeps, but we do not account for that in interfaces which
-> retrieve the remaining time.
-> 
-> Helge observed that timerfd can return a remaining time larger than the
-> relative timeout. That's not expected and breaks userland test programs.
-> 
-> Store the information that the timer was armed relative and provide functions
-> to adjust the remaining time. To avoid bloating the hrtimer struct make state
-> a u8, which as a bonus results in better code on x86 at least.
-> 
-> Reported-by: Helge Deller <deller@gmx.de>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.5-1
 
-Great!
-You can add for this series:
-Tested-by: Helge Deller <deller@gmx.de>
-
-Any chance it can get backported to v4.4 ?
+This patchset includes two major fixes which are both scheduled for stable:
+First, __ARCH_SI_PREAMBLE_SIZE was defined with a wrong value.
+Second, huge page pte and TLB changes needed protection with a spinlock.
+Other than that there are just some trivial optimizations and cleanups.
 
 Thanks,
 Helge
 
-> ---
->  include/linux/hrtimer.h  |   34 ++++++++++++++++++++++++++---
->  kernel/time/hrtimer.c    |   55 +++++++++++++++++++++++++++++++----------------
->  kernel/time/timer_list.c |    2 -
->  3 files changed, 69 insertions(+), 22 deletions(-)
-> 
-> --- a/include/linux/hrtimer.h
-> +++ b/include/linux/hrtimer.h
-> @@ -87,7 +87,8 @@ enum hrtimer_restart {
->   * @function:	timer expiry callback function
->   * @base:	pointer to the timer base (per cpu and per clock)
->   * @state:	state information (See bit values above)
-> - * @start_pid: timer statistics field to store the pid of the task which
-> + * @is_rel:	Set if the timer was armed relative
-> + * @start_pid:  timer statistics field to store the pid of the task which
->   *		started the timer
->   * @start_site:	timer statistics field to store the site where the timer
->   *		was started
-> @@ -101,7 +102,8 @@ struct hrtimer {
->  	ktime_t				_softexpires;
->  	enum hrtimer_restart		(*function)(struct hrtimer *);
->  	struct hrtimer_clock_base	*base;
-> -	unsigned long			state;
-> +	u8				state;
-> +	u8				is_rel;
->  #ifdef CONFIG_TIMER_STATS
->  	int				start_pid;
->  	void				*start_site;
-> @@ -321,6 +323,27 @@ static inline void clock_was_set_delayed
->  
->  #endif
->  
-> +static inline ktime_t
-> +__hrtimer_expires_remaining_adjusted(const struct hrtimer *timer, ktime_t now)
-> +{
-> +	ktime_t rem = ktime_sub(timer->node.expires, now);
-> +
-> +	/*
-> +	 * Adjust relative timers for the extra we added in
-> +	 * hrtimer_start_range_ns() to prevent short timeouts.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_TIME_LOW_RES) && timer->is_rel)
-> +		rem.tv64 -= hrtimer_resolution;
-> +	return rem;
-> +}
-> +
-> +static inline ktime_t
-> +hrtimer_expires_remaining_adjusted(const struct hrtimer *timer)
-> +{
-> +	return __hrtimer_expires_remaining_adjusted(timer,
-> +						    timer->base->get_time());
-> +}
-> +
->  extern void clock_was_set(void);
->  #ifdef CONFIG_TIMERFD
->  extern void timerfd_clock_was_set(void);
-> @@ -390,7 +413,12 @@ static inline void hrtimer_restart(struc
->  }
->  
->  /* Query timers: */
-> -extern ktime_t hrtimer_get_remaining(const struct hrtimer *timer);
-> +extern ktime_t __hrtimer_get_remaining(const struct hrtimer *timer, bool adjust);
-> +
-> +static inline ktime_t hrtimer_get_remaining(const struct hrtimer *timer)
-> +{
-> +	return __hrtimer_get_remaining(timer, false);
-> +}
->  
->  extern u64 hrtimer_get_next_event(void);
->  
-> --- a/kernel/time/hrtimer.c
-> +++ b/kernel/time/hrtimer.c
-> @@ -897,10 +897,10 @@ static int enqueue_hrtimer(struct hrtime
->   */
->  static void __remove_hrtimer(struct hrtimer *timer,
->  			     struct hrtimer_clock_base *base,
-> -			     unsigned long newstate, int reprogram)
-> +			     u8 newstate, int reprogram)
->  {
->  	struct hrtimer_cpu_base *cpu_base = base->cpu_base;
-> -	unsigned int state = timer->state;
-> +	u8 state = timer->state;
->  
->  	timer->state = newstate;
->  	if (!(state & HRTIMER_STATE_ENQUEUED))
-> @@ -930,7 +930,7 @@ static inline int
->  remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base, bool restart)
->  {
->  	if (hrtimer_is_queued(timer)) {
-> -		unsigned long state = timer->state;
-> +		u8 state = timer->state;
->  		int reprogram;
->  
->  		/*
-> @@ -954,6 +954,22 @@ remove_hrtimer(struct hrtimer *timer, st
->  	return 0;
->  }
->  
-> +static inline ktime_t hrtimer_update_lowres(struct hrtimer *timer, ktime_t tim,
-> +					    const enum hrtimer_mode mode)
-> +{
-> +#ifdef CONFIG_TIME_LOW_RES
-> +	/*
-> +	 * CONFIG_TIME_LOW_RES indicates that the system has no way to return
-> +	 * granular time values. For relative timers we add hrtimer_resolution
-> +	 * (i.e. one jiffie) to prevent short timeouts.
-> +	 */
-> +	timer->is_rel = mode & HRTIMER_MODE_REL;
-> +	if (timer->is_rel)
-> +		tim = ktime_add_safe(tim, ktime_set(0, hrtimer_resolution));
-> +#endif
-> +	return tim;
-> +}
-> +
->  /**
->   * hrtimer_start_range_ns - (re)start an hrtimer on the current CPU
->   * @timer:	the timer to be added
-> @@ -974,19 +990,10 @@ void hrtimer_start_range_ns(struct hrtim
->  	/* Remove an active timer from the queue: */
->  	remove_hrtimer(timer, base, true);
->  
-> -	if (mode & HRTIMER_MODE_REL) {
-> +	if (mode & HRTIMER_MODE_REL)
->  		tim = ktime_add_safe(tim, base->get_time());
-> -		/*
-> -		 * CONFIG_TIME_LOW_RES is a temporary way for architectures
-> -		 * to signal that they simply return xtime in
-> -		 * do_gettimeoffset(). In this case we want to round up by
-> -		 * resolution when starting a relative timer, to avoid short
-> -		 * timeouts. This will go away with the GTOD framework.
-> -		 */
-> -#ifdef CONFIG_TIME_LOW_RES
-> -		tim = ktime_add_safe(tim, ktime_set(0, hrtimer_resolution));
-> -#endif
-> -	}
-> +
-> +	tim = hrtimer_update_lowres(timer, tim, mode);
->  
->  	hrtimer_set_expires_range_ns(timer, tim, delta_ns);
->  
-> @@ -1074,19 +1081,23 @@ EXPORT_SYMBOL_GPL(hrtimer_cancel);
->  /**
->   * hrtimer_get_remaining - get remaining time for the timer
->   * @timer:	the timer to read
-> + * @adjust:	adjust relative timers when CONFIG_TIME_LOW_RES=y
->   */
-> -ktime_t hrtimer_get_remaining(const struct hrtimer *timer)
-> +ktime_t __hrtimer_get_remaining(const struct hrtimer *timer, bool adjust)
->  {
->  	unsigned long flags;
->  	ktime_t rem;
->  
->  	lock_hrtimer_base(timer, &flags);
-> -	rem = hrtimer_expires_remaining(timer);
-> +	if (IS_ENABLED(CONFIG_TIME_LOW_RES) && adjust)
-> +		rem = hrtimer_expires_remaining_adjusted(timer);
-> +	else
-> +		rem = hrtimer_expires_remaining(timer);
->  	unlock_hrtimer_base(timer, &flags);
->  
->  	return rem;
->  }
-> -EXPORT_SYMBOL_GPL(hrtimer_get_remaining);
-> +EXPORT_SYMBOL_GPL(__hrtimer_get_remaining);
->  
->  #ifdef CONFIG_NO_HZ_COMMON
->  /**
-> @@ -1220,6 +1231,14 @@ static void __run_hrtimer(struct hrtimer
->  	fn = timer->function;
->  
->  	/*
-> +	 * Clear the 'is relative' flag for the TIME_LOW_RES case. If the
-> +	 * timer is restarted with a period then it becomes an absolute
-> +	 * timer. If its not restarted it does not matter.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_TIME_LOW_RES))
-> +		timer->is_rel = false;
-> +
-> +	/*
->  	 * Because we run timers from hardirq context, there is no chance
->  	 * they get migrated to another cpu, therefore its safe to unlock
->  	 * the timer base.
-> --- a/kernel/time/timer_list.c
-> +++ b/kernel/time/timer_list.c
-> @@ -69,7 +69,7 @@ print_timer(struct seq_file *m, struct h
->  	print_name_offset(m, taddr);
->  	SEQ_printf(m, ", ");
->  	print_name_offset(m, timer->function);
-> -	SEQ_printf(m, ", S:%02lx", timer->state);
-> +	SEQ_printf(m, ", S:%02x", timer->state);
->  #ifdef CONFIG_TIMER_STATS
->  	SEQ_printf(m, ", ");
->  	print_name_offset(m, timer->start_site);
-> 
-> 
+----------------------------------------------------------------
+Helge Deller (6):
+      parisc: Initialize PCI bridge cache line and default latency
+      parisc: Reduce overhead of parisc_requires_coherency()
+      parisc: Fix __ARCH_SI_PREAMBLE_SIZE
+      parisc: Drop parisc-specific NSIGTRAP define
+      parisc: Imporove debug info about space registers and TLB configuration
+      parisc: Protect huge page pte changes with spinlocks
+
+ arch/parisc/include/asm/hugetlb.h      | 20 +++---------
+ arch/parisc/include/asm/pci.h          |  1 +
+ arch/parisc/include/asm/pdc.h          |  2 +-
+ arch/parisc/include/asm/processor.h    | 17 +++++-----
+ arch/parisc/include/uapi/asm/siginfo.h |  7 ++--
+ arch/parisc/kernel/cache.c             | 26 ++++++++++++---
+ arch/parisc/kernel/pci.c               | 26 +++++++++++++++
+ arch/parisc/kernel/processor.c         | 10 +++++-
+ arch/parisc/mm/hugetlbpage.c           | 60 +++++++++++++++++++++++++++-------
+ drivers/parisc/dino.c                  |  4 ++-
+ drivers/parisc/lba_pci.c               |  4 ++-
+ 11 files changed, 129 insertions(+), 48 deletions(-)
