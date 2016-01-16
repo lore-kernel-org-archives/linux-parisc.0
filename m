@@ -1,316 +1,244 @@
-From: Anton Wuerfel <anton.wuerfel@fau.de>
-Subject: [PATCH v7 01/15] tty: serial: 8250: Fix whitespace errors
-Date: Thu, 14 Jan 2016 16:08:10 +0100
-Message-ID: <1452784104-30840-2-git-send-email-anton.wuerfel@fau.de>
-References: <1452784104-30840-1-git-send-email-anton.wuerfel@fau.de>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [patch 1/4] hrtimer: Handle remaining time proper for
+ TIME_LOW_RES
+Date: Sat, 16 Jan 2016 19:36:47 +0100
+Message-ID: <20160116183647.GA6184@ls3530.box>
+References: <20160114163744.582215466@linutronix.de>
+ <20160114164159.273328486@linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Jiri Slaby <jslaby@suse.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+Content-Type: text/plain; charset=us-ascii
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
 	Helge Deller <deller@gmx.de>,
-	Joachim Eastwood <manabian@gmail.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Masahiro Yamada <yamada.masahiro@socionext.com>,
-	Peter Hurley <peter@hurleysoftware.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Phillip Raffeck <phillip.raffeck@fau.de>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Peter Hung <hpeter@gmail.com>, linux-serial@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-kernel@i4.cs.fau.de, Anton Wuerfel <anton.wuerfel@fau.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1452784104-30840-1-git-send-email-anton.wuerfel@fau.de>
-List-ID: <linux-kernel.vger.kernel.org>
+	John Stultz <john.stultz@linaro.org>,
+	linux-m68k@lists.linux-m68k.org, dhowells@redhat.com
+To: Thomas Gleixner <tglx@linutronix.de>, linux-parisc@vger.kernel.org,
+	John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20160114164159.273328486@linutronix.de>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch fixes whitespace errors reported by checkpatch to increase
-readability. Main focus is on missing spaces after commas in
-function headers and macros (like foo,bar edited to foo, bar).
 
-Signed-off-by: Anton W=C3=BCrfel <anton.wuerfel@fau.de>
-Signed-off-by: Phillip Raffeck <phillip.raffeck@fau.de>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-kernel@i4.cs.fau.de
----
- drivers/tty/serial/8250/8250_acorn.c |  2 +-
- drivers/tty/serial/8250/8250_hub6.c  |  2 +-
- drivers/tty/serial/8250/8250_pci.c   |  8 +++--
- drivers/tty/serial/8250/8250_port.c  |  2 ++
- drivers/tty/serial/8250/serial_cs.c  | 60 ++++++++++++++++++----------=
---------
- 5 files changed, 39 insertions(+), 35 deletions(-)
+Hi Thomas,
 
-diff --git a/drivers/tty/serial/8250/8250_acorn.c b/drivers/tty/serial/=
-8250/8250_acorn.c
-index 549aa07..402dfdd 100644
---- a/drivers/tty/serial/8250/8250_acorn.c
-+++ b/drivers/tty/serial/8250/8250_acorn.c
-@@ -70,7 +70,7 @@ serial_card_probe(struct expansion_card *ec, const st=
-ruct ecard_id *id)
- 	uart.port.regshift	=3D 2;
- 	uart.port.dev	=3D &ec->dev;
-=20
--	for (i =3D 0; i < info->num_ports; i ++) {
-+	for (i =3D 0; i < info->num_ports; i++) {
- 		uart.port.membase =3D info->vaddr + type->offset[i];
- 		uart.port.mapbase =3D bus_addr + type->offset[i];
-=20
-diff --git a/drivers/tty/serial/8250/8250_hub6.c b/drivers/tty/serial/8=
-250/8250_hub6.c
-index a5c778e..27124e2 100644
---- a/drivers/tty/serial/8250/8250_hub6.c
-+++ b/drivers/tty/serial/8250/8250_hub6.c
-@@ -10,7 +10,7 @@
- #include <linux/init.h>
- #include <linux/serial_8250.h>
-=20
--#define HUB6(card,port)							\
-+#define HUB6(card, port)						\
- 	{								\
- 		.iobase		=3D 0x302,				\
- 		.irq		=3D 3,					\
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/82=
-50/8250_pci.c
-index 4097f3f..ecd5a32 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -1198,8 +1198,9 @@ static int pci_quatech_has_qmcr(struct uart_8250_=
-port *port)
-=20
- static int pci_quatech_test(struct uart_8250_port *port)
- {
--	u8 reg;
--	u8 qopr =3D pci_quatech_rqopr(port);
-+	u8 reg, qopr;
-+
-+	qopr =3D pci_quatech_rqopr(port);
- 	pci_quatech_wqopr(port, qopr & QPCR_TEST_FOR1);
- 	reg =3D pci_quatech_rqopr(port) & 0xC0;
- 	if (reg !=3D QPCR_TEST_GET1)
-@@ -1286,6 +1287,7 @@ static int pci_quatech_init(struct pci_dev *dev)
- 		unsigned long base =3D pci_resource_start(dev, 0);
- 		if (base) {
- 			u32 tmp;
-+
- 			outl(inl(base + 0x38) | 0x00002000, base + 0x38);
- 			tmp =3D inl(base + 0x3c);
- 			outl(tmp | 0x01000000, base + 0x3c);
-@@ -4502,7 +4504,7 @@ static struct pci_device_id serial_pci_tbl[] =3D =
-{
- 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
- 		pbn_b0_bt_2_921600 },
- 	{	PCI_VENDOR_ID_OXSEMI, PCI_DEVICE_ID_OXSEMI_16PCI958,
--		PCI_ANY_ID , PCI_ANY_ID, 0, 0,
-+		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
- 		pbn_b2_8_1152000 },
-=20
- 	/*
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
-250/8250_port.c
-index 52d82d2..7f3bd7b 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -1327,6 +1327,7 @@ static void serial8250_start_tx(struct uart_port =
-*port)
-=20
- 		if (up->bugs & UART_BUG_TXEN) {
- 			unsigned char lsr;
-+
- 			lsr =3D serial_in(up, UART_LSR);
- 			up->lsr_saved_flags |=3D lsr & LSR_SAVE_FLAGS;
- 			if (lsr & UART_LSR_THRE)
-@@ -1734,6 +1735,7 @@ static void wait_for_xmitr(struct uart_8250_port =
-*up, int bits)
- 	/* Wait up to 1s for flow control if necessary */
- 	if (up->port.flags & UPF_CONS_FLOW) {
- 		unsigned int tmout;
-+
- 		for (tmout =3D 1000000; tmout; tmout--) {
- 			unsigned int msr =3D serial_in(up, UART_MSR);
- 			up->msr_saved_flags |=3D msr & MSR_SAVE_FLAGS;
-diff --git a/drivers/tty/serial/8250/serial_cs.c b/drivers/tty/serial/8=
-250/serial_cs.c
-index 4d180c9..6d7a801 100644
---- a/drivers/tty/serial/8250/serial_cs.c
-+++ b/drivers/tty/serial/8250/serial_cs.c
-@@ -28,7 +28,7 @@
-     and other provisions required by the GPL.  If you do not delete
-     the provisions above, a recipient may use your version of this
-     file under either the MPL or the GPL.
--   =20
-+
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D*/
-=20
- #include <linux/module.h>
-@@ -257,7 +257,7 @@ static const struct serial_quirk quirks[] =3D {
- };
-=20
-=20
--static int serial_config(struct pcmcia_device * link);
-+static int serial_config(struct pcmcia_device *link);
-=20
-=20
- static void serial_remove(struct pcmcia_device *link)
-@@ -309,7 +309,7 @@ static int serial_probe(struct pcmcia_device *link)
- 	dev_dbg(&link->dev, "serial_attach()\n");
-=20
- 	/* Create new serial device */
--	info =3D kzalloc(sizeof (*info), GFP_KERNEL);
-+	info =3D kzalloc(sizeof(*info), GFP_KERNEL);
- 	if (!info)
- 		return -ENOMEM;
- 	info->p_dev =3D link;
-@@ -339,7 +339,7 @@ static void serial_detach(struct pcmcia_device *lin=
-k)
-=20
- /*=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D*/
-=20
--static int setup_serial(struct pcmcia_device *handle, struct serial_in=
-fo * info,
-+static int setup_serial(struct pcmcia_device *handle, struct serial_in=
-fo *info,
- 			unsigned int iobase, int irq)
- {
- 	struct uart_8250_port uart;
-@@ -600,7 +600,7 @@ static int serial_check_for_multi(struct pcmcia_dev=
-ice *p_dev,  void *priv_data)
- }
-=20
-=20
--static int serial_config(struct pcmcia_device * link)
-+static int serial_config(struct pcmcia_device *link)
- {
- 	struct serial_info *info =3D link->priv;
- 	int i;
-@@ -701,7 +701,7 @@ static const struct pcmcia_device_id serial_ids[] =3D=
- {
- 	PCMCIA_PFC_DEVICE_PROD_ID12(1, "LINKSYS", "PCMLM336", 0xf7cb0b07, 0x7=
-a821b58),
- 	PCMCIA_PFC_DEVICE_PROD_ID12(1, "MEGAHERTZ", "XJEM1144/CCEM1144", 0xf5=
-10db04, 0x52d21e1e),
- 	PCMCIA_PFC_DEVICE_PROD_ID12(1, "MICRO RESEARCH", "COMBO-L/M-336", 0xb=
-2ced065, 0x3ced0555),
--	PCMCIA_PFC_DEVICE_PROD_ID12(1, "NEC", "PK-UG-J001" ,0x18df0ba0 ,0x831=
-b1064),
-+	PCMCIA_PFC_DEVICE_PROD_ID12(1, "NEC", "PK-UG-J001", 0x18df0ba0, 0x831=
-b1064),
- 	PCMCIA_PFC_DEVICE_PROD_ID12(1, "Ositech", "Trumpcard:Jack of Diamonds=
- Modem+Ethernet", 0xc2f80cd, 0x656947b9),
- 	PCMCIA_PFC_DEVICE_PROD_ID12(1, "Ositech", "Trumpcard:Jack of Hearts M=
-odem+Ethernet", 0xc2f80cd, 0xdc9ba5ed),
- 	PCMCIA_PFC_DEVICE_PROD_ID12(1, "PCMCIAs", "ComboCard", 0xdcfe12d3, 0x=
-cd8906cc),
-@@ -797,30 +797,30 @@ static const struct pcmcia_device_id serial_ids[]=
- =3D {
- 	PCMCIA_DEVICE_CIS_PROD_ID123("ADVANTECH", "COMpad-32/85", "1.0", 0x96=
-913a85, 0x8fbe92ae, 0x0877b627, "cis/COMpad2.cis"),
- 	PCMCIA_DEVICE_CIS_PROD_ID2("RS-COM 2P", 0xad20b156, "cis/RS-COM-2P.ci=
-s"),
- 	PCMCIA_DEVICE_CIS_MANF_CARD(0x0013, 0x0000, "cis/GLOBETROTTER.cis"),
--	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.","SERIAL CA=
-RD: SL100  1.00.",0x19ca78af,0xf964f42b),
--	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.","SERIAL CA=
-RD: SL100",0x19ca78af,0x71d98e83),
--	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.","SERIAL CA=
-RD: SL232  1.00.",0x19ca78af,0x69fb7490),
--	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.","SERIAL CA=
-RD: SL232",0x19ca78af,0xb6bc0235),
--	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c2000.","SERIAL CA=
-RD: CF232",0x63f2e0bd,0xb9e175d3),
--	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c2000.","SERIAL CA=
-RD: CF232-5",0x63f2e0bd,0xfce33442),
--	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: CF232",0x3beb8cf2,0x171e=
-7190),
--	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: CF232-5",0x3beb8cf2,0x20=
-da4262),
--	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: CF428",0x3beb8cf2,0xea5d=
-d57d),
--	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: CF500",0x3beb8cf2,0xd772=
-55fa),
--	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: IC232",0x3beb8cf2,0x6a70=
-9903),
--	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: SL232",0x3beb8cf2,0x1843=
-0676),
--	PCMCIA_DEVICE_PROD_ID12("Elan","Serial Port: XL232",0x3beb8cf2,0x6f93=
-3767),
--	PCMCIA_MFC_DEVICE_PROD_ID12(0,"Elan","Serial Port: CF332",0x3beb8cf2,=
-0x16dc1ba7),
--	PCMCIA_MFC_DEVICE_PROD_ID12(0,"Elan","Serial Port: SL332",0x3beb8cf2,=
-0x19816c41),
--	PCMCIA_MFC_DEVICE_PROD_ID12(0,"Elan","Serial Port: SL385",0x3beb8cf2,=
-0x64112029),
--	PCMCIA_MFC_DEVICE_PROD_ID12(0,"Elan","Serial Port: SL432",0x3beb8cf2,=
-0x1cce7ac4),
--	PCMCIA_MFC_DEVICE_PROD_ID12(0,"Elan","Serial+Parallel Port: SP230",0x=
-3beb8cf2,0xdb9e58bc),
--	PCMCIA_MFC_DEVICE_PROD_ID12(1,"Elan","Serial Port: CF332",0x3beb8cf2,=
-0x16dc1ba7),
--	PCMCIA_MFC_DEVICE_PROD_ID12(1,"Elan","Serial Port: SL332",0x3beb8cf2,=
-0x19816c41),
--	PCMCIA_MFC_DEVICE_PROD_ID12(1,"Elan","Serial Port: SL385",0x3beb8cf2,=
-0x64112029),
--	PCMCIA_MFC_DEVICE_PROD_ID12(1,"Elan","Serial Port: SL432",0x3beb8cf2,=
-0x1cce7ac4),
--	PCMCIA_MFC_DEVICE_PROD_ID12(2,"Elan","Serial Port: SL432",0x3beb8cf2,=
-0x1cce7ac4),
--	PCMCIA_MFC_DEVICE_PROD_ID12(3,"Elan","Serial Port: SL432",0x3beb8cf2,=
-0x1cce7ac4),
-+	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.", "SERIAL C=
-ARD: SL100  1.00.", 0x19ca78af, 0xf964f42b),
-+	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.", "SERIAL C=
-ARD: SL100", 0x19ca78af, 0x71d98e83),
-+	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.", "SERIAL C=
-ARD: SL232  1.00.", 0x19ca78af, 0x69fb7490),
-+	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.", "SERIAL C=
-ARD: SL232", 0x19ca78af, 0xb6bc0235),
-+	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c2000.", "SERIAL C=
-ARD: CF232", 0x63f2e0bd, 0xb9e175d3),
-+	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c2000.", "SERIAL C=
-ARD: CF232-5", 0x63f2e0bd, 0xfce33442),
-+	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: CF232", 0x3beb8cf2, 0x1=
-71e7190),
-+	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: CF232-5", 0x3beb8cf2, 0=
-x20da4262),
-+	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: CF428", 0x3beb8cf2, 0xe=
-a5dd57d),
-+	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: CF500", 0x3beb8cf2, 0xd=
-77255fa),
-+	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: IC232", 0x3beb8cf2, 0x6=
-a709903),
-+	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: SL232", 0x3beb8cf2, 0x1=
-8430676),
-+	PCMCIA_DEVICE_PROD_ID12("Elan", "Serial Port: XL232", 0x3beb8cf2, 0x6=
-f933767),
-+	PCMCIA_MFC_DEVICE_PROD_ID12(0, "Elan", "Serial Port: CF332", 0x3beb8c=
-f2, 0x16dc1ba7),
-+	PCMCIA_MFC_DEVICE_PROD_ID12(0, "Elan", "Serial Port: SL332", 0x3beb8c=
-f2, 0x19816c41),
-+	PCMCIA_MFC_DEVICE_PROD_ID12(0, "Elan", "Serial Port: SL385", 0x3beb8c=
-f2, 0x64112029),
-+	PCMCIA_MFC_DEVICE_PROD_ID12(0, "Elan", "Serial Port: SL432", 0x3beb8c=
-f2, 0x1cce7ac4),
-+	PCMCIA_MFC_DEVICE_PROD_ID12(0, "Elan", "Serial+Parallel Port: SP230",=
- 0x3beb8cf2, 0xdb9e58bc),
-+	PCMCIA_MFC_DEVICE_PROD_ID12(1, "Elan", "Serial Port: CF332", 0x3beb8c=
-f2, 0x16dc1ba7),
-+	PCMCIA_MFC_DEVICE_PROD_ID12(1, "Elan", "Serial Port: SL332", 0x3beb8c=
-f2, 0x19816c41),
-+	PCMCIA_MFC_DEVICE_PROD_ID12(1, "Elan", "Serial Port: SL385", 0x3beb8c=
-f2, 0x64112029),
-+	PCMCIA_MFC_DEVICE_PROD_ID12(1, "Elan", "Serial Port: SL432", 0x3beb8c=
-f2, 0x1cce7ac4),
-+	PCMCIA_MFC_DEVICE_PROD_ID12(2, "Elan", "Serial Port: SL432", 0x3beb8c=
-f2, 0x1cce7ac4),
-+	PCMCIA_MFC_DEVICE_PROD_ID12(3, "Elan", "Serial Port: SL432", 0x3beb8c=
-f2, 0x1cce7ac4),
- 	PCMCIA_DEVICE_MANF_CARD(0x0279, 0x950b),
- 	/* too generic */
- 	/* PCMCIA_MFC_DEVICE_MANF_CARD(0, 0x0160, 0x0002), */
---=20
-1.9.1
+* Thomas Gleixner <tglx@linutronix.de>:
+> If CONFIG_TIME_LOW_RES is enabled we add a jiffie to the relative timeout to
+> prevent short sleeps, but we do not account for that in interfaces which
+> retrieve the remaining time.
+> 
+> Helge observed that timerfd can return a remaining time larger than the
+> relative timeout. That's not expected and breaks userland test programs.
+> 
+> Store the information that the timer was armed relative and provide functions
+> to adjust the remaining time. To avoid bloating the hrtimer struct make state
+> a u8, which as a bonus results in better code on x86 at least.
+> 
+> Reported-by: Helge Deller <deller@gmx.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+
+Great!
+You can add for this series:
+Tested-by: Helge Deller <deller@gmx.de>
+
+Any chance it can get backported to v4.4 ?
+
+Thanks,
+Helge
+
+> ---
+>  include/linux/hrtimer.h  |   34 ++++++++++++++++++++++++++---
+>  kernel/time/hrtimer.c    |   55 +++++++++++++++++++++++++++++++----------------
+>  kernel/time/timer_list.c |    2 -
+>  3 files changed, 69 insertions(+), 22 deletions(-)
+> 
+> --- a/include/linux/hrtimer.h
+> +++ b/include/linux/hrtimer.h
+> @@ -87,7 +87,8 @@ enum hrtimer_restart {
+>   * @function:	timer expiry callback function
+>   * @base:	pointer to the timer base (per cpu and per clock)
+>   * @state:	state information (See bit values above)
+> - * @start_pid: timer statistics field to store the pid of the task which
+> + * @is_rel:	Set if the timer was armed relative
+> + * @start_pid:  timer statistics field to store the pid of the task which
+>   *		started the timer
+>   * @start_site:	timer statistics field to store the site where the timer
+>   *		was started
+> @@ -101,7 +102,8 @@ struct hrtimer {
+>  	ktime_t				_softexpires;
+>  	enum hrtimer_restart		(*function)(struct hrtimer *);
+>  	struct hrtimer_clock_base	*base;
+> -	unsigned long			state;
+> +	u8				state;
+> +	u8				is_rel;
+>  #ifdef CONFIG_TIMER_STATS
+>  	int				start_pid;
+>  	void				*start_site;
+> @@ -321,6 +323,27 @@ static inline void clock_was_set_delayed
+>  
+>  #endif
+>  
+> +static inline ktime_t
+> +__hrtimer_expires_remaining_adjusted(const struct hrtimer *timer, ktime_t now)
+> +{
+> +	ktime_t rem = ktime_sub(timer->node.expires, now);
+> +
+> +	/*
+> +	 * Adjust relative timers for the extra we added in
+> +	 * hrtimer_start_range_ns() to prevent short timeouts.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_TIME_LOW_RES) && timer->is_rel)
+> +		rem.tv64 -= hrtimer_resolution;
+> +	return rem;
+> +}
+> +
+> +static inline ktime_t
+> +hrtimer_expires_remaining_adjusted(const struct hrtimer *timer)
+> +{
+> +	return __hrtimer_expires_remaining_adjusted(timer,
+> +						    timer->base->get_time());
+> +}
+> +
+>  extern void clock_was_set(void);
+>  #ifdef CONFIG_TIMERFD
+>  extern void timerfd_clock_was_set(void);
+> @@ -390,7 +413,12 @@ static inline void hrtimer_restart(struc
+>  }
+>  
+>  /* Query timers: */
+> -extern ktime_t hrtimer_get_remaining(const struct hrtimer *timer);
+> +extern ktime_t __hrtimer_get_remaining(const struct hrtimer *timer, bool adjust);
+> +
+> +static inline ktime_t hrtimer_get_remaining(const struct hrtimer *timer)
+> +{
+> +	return __hrtimer_get_remaining(timer, false);
+> +}
+>  
+>  extern u64 hrtimer_get_next_event(void);
+>  
+> --- a/kernel/time/hrtimer.c
+> +++ b/kernel/time/hrtimer.c
+> @@ -897,10 +897,10 @@ static int enqueue_hrtimer(struct hrtime
+>   */
+>  static void __remove_hrtimer(struct hrtimer *timer,
+>  			     struct hrtimer_clock_base *base,
+> -			     unsigned long newstate, int reprogram)
+> +			     u8 newstate, int reprogram)
+>  {
+>  	struct hrtimer_cpu_base *cpu_base = base->cpu_base;
+> -	unsigned int state = timer->state;
+> +	u8 state = timer->state;
+>  
+>  	timer->state = newstate;
+>  	if (!(state & HRTIMER_STATE_ENQUEUED))
+> @@ -930,7 +930,7 @@ static inline int
+>  remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base, bool restart)
+>  {
+>  	if (hrtimer_is_queued(timer)) {
+> -		unsigned long state = timer->state;
+> +		u8 state = timer->state;
+>  		int reprogram;
+>  
+>  		/*
+> @@ -954,6 +954,22 @@ remove_hrtimer(struct hrtimer *timer, st
+>  	return 0;
+>  }
+>  
+> +static inline ktime_t hrtimer_update_lowres(struct hrtimer *timer, ktime_t tim,
+> +					    const enum hrtimer_mode mode)
+> +{
+> +#ifdef CONFIG_TIME_LOW_RES
+> +	/*
+> +	 * CONFIG_TIME_LOW_RES indicates that the system has no way to return
+> +	 * granular time values. For relative timers we add hrtimer_resolution
+> +	 * (i.e. one jiffie) to prevent short timeouts.
+> +	 */
+> +	timer->is_rel = mode & HRTIMER_MODE_REL;
+> +	if (timer->is_rel)
+> +		tim = ktime_add_safe(tim, ktime_set(0, hrtimer_resolution));
+> +#endif
+> +	return tim;
+> +}
+> +
+>  /**
+>   * hrtimer_start_range_ns - (re)start an hrtimer on the current CPU
+>   * @timer:	the timer to be added
+> @@ -974,19 +990,10 @@ void hrtimer_start_range_ns(struct hrtim
+>  	/* Remove an active timer from the queue: */
+>  	remove_hrtimer(timer, base, true);
+>  
+> -	if (mode & HRTIMER_MODE_REL) {
+> +	if (mode & HRTIMER_MODE_REL)
+>  		tim = ktime_add_safe(tim, base->get_time());
+> -		/*
+> -		 * CONFIG_TIME_LOW_RES is a temporary way for architectures
+> -		 * to signal that they simply return xtime in
+> -		 * do_gettimeoffset(). In this case we want to round up by
+> -		 * resolution when starting a relative timer, to avoid short
+> -		 * timeouts. This will go away with the GTOD framework.
+> -		 */
+> -#ifdef CONFIG_TIME_LOW_RES
+> -		tim = ktime_add_safe(tim, ktime_set(0, hrtimer_resolution));
+> -#endif
+> -	}
+> +
+> +	tim = hrtimer_update_lowres(timer, tim, mode);
+>  
+>  	hrtimer_set_expires_range_ns(timer, tim, delta_ns);
+>  
+> @@ -1074,19 +1081,23 @@ EXPORT_SYMBOL_GPL(hrtimer_cancel);
+>  /**
+>   * hrtimer_get_remaining - get remaining time for the timer
+>   * @timer:	the timer to read
+> + * @adjust:	adjust relative timers when CONFIG_TIME_LOW_RES=y
+>   */
+> -ktime_t hrtimer_get_remaining(const struct hrtimer *timer)
+> +ktime_t __hrtimer_get_remaining(const struct hrtimer *timer, bool adjust)
+>  {
+>  	unsigned long flags;
+>  	ktime_t rem;
+>  
+>  	lock_hrtimer_base(timer, &flags);
+> -	rem = hrtimer_expires_remaining(timer);
+> +	if (IS_ENABLED(CONFIG_TIME_LOW_RES) && adjust)
+> +		rem = hrtimer_expires_remaining_adjusted(timer);
+> +	else
+> +		rem = hrtimer_expires_remaining(timer);
+>  	unlock_hrtimer_base(timer, &flags);
+>  
+>  	return rem;
+>  }
+> -EXPORT_SYMBOL_GPL(hrtimer_get_remaining);
+> +EXPORT_SYMBOL_GPL(__hrtimer_get_remaining);
+>  
+>  #ifdef CONFIG_NO_HZ_COMMON
+>  /**
+> @@ -1220,6 +1231,14 @@ static void __run_hrtimer(struct hrtimer
+>  	fn = timer->function;
+>  
+>  	/*
+> +	 * Clear the 'is relative' flag for the TIME_LOW_RES case. If the
+> +	 * timer is restarted with a period then it becomes an absolute
+> +	 * timer. If its not restarted it does not matter.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_TIME_LOW_RES))
+> +		timer->is_rel = false;
+> +
+> +	/*
+>  	 * Because we run timers from hardirq context, there is no chance
+>  	 * they get migrated to another cpu, therefore its safe to unlock
+>  	 * the timer base.
+> --- a/kernel/time/timer_list.c
+> +++ b/kernel/time/timer_list.c
+> @@ -69,7 +69,7 @@ print_timer(struct seq_file *m, struct h
+>  	print_name_offset(m, taddr);
+>  	SEQ_printf(m, ", ");
+>  	print_name_offset(m, timer->function);
+> -	SEQ_printf(m, ", S:%02lx", timer->state);
+> +	SEQ_printf(m, ", S:%02x", timer->state);
+>  #ifdef CONFIG_TIMER_STATS
+>  	SEQ_printf(m, ", ");
+>  	print_name_offset(m, timer->start_site);
+> 
+> 
