@@ -1,49 +1,56 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture updates for v4.5
-Date: Sat, 16 Jan 2016 22:45:00 +0100
-Message-ID: <20160116214500.GA17553@p100.box>
+Subject: [PATCH] Add compile-time check for __ARCH_SI_PREAMBLE_SIZE
+Date: Sun, 17 Jan 2016 22:00:46 +0100
+Message-ID: <20160117210046.GA11472@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Michael Ellerman <mpe@ellerman.id.au>
 To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+The value of __ARCH_SI_PREAMBLE_SIZE defines the size (including padding) of
+the part of the struct siginfo that is before the union, and it is then used to
+calculate the needed padding (SI_PAD_SIZE) to make the size of struct siginfo
+equal to 128 (SI_MAX_SIZE) bytes.
 
-please pull the patches for the parisc architecture for v4.5 from:
+Depending on the target architecture and word width it equals to either
+3 or 4 times sizeof int.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.5-1
+Since the very beginning we had __ARCH_SI_PREAMBLE_SIZE wrong on the parisc
+architecture for the 64bit kernel build. It's even more frustrating, because it
+can easily be checked at compile time if the value was defined correctly.
 
-This patchset includes two major fixes which are both scheduled for stable:
-First, __ARCH_SI_PREAMBLE_SIZE was defined with a wrong value.
-Second, huge page pte and TLB changes needed protection with a spinlock.
-Other than that there are just some trivial optimizations and cleanups.
+This patch adds such a check for the correctness of __ARCH_SI_PREAMBLE_SIZE in
+the hope that it will prevent existing and future architectures from running
+into the same problem.
 
-Thanks,
-Helge
+I refrained from replacing __ARCH_SI_PREAMBLE_SIZE by offsetof() in
+copy_siginfo() in include/asm-generic/siginfo.h, because a) it doesn't make any
+difference and b) it's used in the Documentation/kmemcheck.txt example.
 
-----------------------------------------------------------------
-Helge Deller (6):
-      parisc: Initialize PCI bridge cache line and default latency
-      parisc: Reduce overhead of parisc_requires_coherency()
-      parisc: Fix __ARCH_SI_PREAMBLE_SIZE
-      parisc: Drop parisc-specific NSIGTRAP define
-      parisc: Imporove debug info about space registers and TLB configuration
-      parisc: Protect huge page pte changes with spinlocks
-
- arch/parisc/include/asm/hugetlb.h      | 20 +++---------
- arch/parisc/include/asm/pci.h          |  1 +
- arch/parisc/include/asm/pdc.h          |  2 +-
- arch/parisc/include/asm/processor.h    | 17 +++++-----
- arch/parisc/include/uapi/asm/siginfo.h |  7 ++--
- arch/parisc/kernel/cache.c             | 26 ++++++++++++---
- arch/parisc/kernel/pci.c               | 26 +++++++++++++++
- arch/parisc/kernel/processor.c         | 10 +++++-
- arch/parisc/mm/hugetlbpage.c           | 60 +++++++++++++++++++++++++++-------
- drivers/parisc/dino.c                  |  4 ++-
- drivers/parisc/lba_pci.c               |  4 ++-
- 11 files changed, 129 insertions(+), 48 deletions(-)
+I ran this patch through the 0-DAY kernel test infrastructure and only the
+parisc architecture triggered as expected. That means that this patch should be
+OK for all major architectures.
+ 
+Signed-off-by: Helge Deller <deller@gmx.de>
+ 
+diff --git a/kernel/signal.c b/kernel/signal.c
+index f3f1f7a..1ccd218 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -3579,6 +3579,10 @@ __weak const char *arch_vma_name(struct vm_area_struct *vma)
+ 
+ void __init signals_init(void)
+ {
++	/* If this check fails, the __ARCH_SI_PREAMBLE_SIZE value is wrong! */
++	BUILD_BUG_ON(__ARCH_SI_PREAMBLE_SIZE
++		!= offsetof(struct siginfo, _sifields._pad));
++
+ 	sigqueue_cachep = KMEM_CACHE(sigqueue, SLAB_PANIC);
+ }
+ 
