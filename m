@@ -1,56 +1,91 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] Add compile-time check for __ARCH_SI_PREAMBLE_SIZE
-Date: Sun, 17 Jan 2016 22:00:46 +0100
-Message-ID: <20160117210046.GA11472@ls3530.box>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
-	Michael Ellerman <mpe@ellerman.id.au>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] mm: Remove duplicate definitions of MADV_FREE
+Date: Sun, 17 Jan 2016 19:29:06 -0800
+Message-ID: <1453087746-4658-1-git-send-email-linux@roeck-us.net>
+Cc: Richard Henderson <rth@twiddle.net>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
+	linux-xtensa@linux-xtensa.org, Guenter Roeck <linux@roeck-us.net>,
+	Chen Gang <gang.chen.5i5j@gmail.com>,
+	Minchan Kim <minchan@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The value of __ARCH_SI_PREAMBLE_SIZE defines the size (including padding) of
-the part of the struct siginfo that is before the union, and it is then used to
-calculate the needed padding (SI_PAD_SIZE) to make the size of struct siginfo
-equal to 128 (SI_MAX_SIZE) bytes.
+Commits 21f55b018ba5 ("arch/*/include/uapi/asm/mman.h: : let MADV_FREE
+have same value for all architectures") and ef58978f1eaa ("mm: define
+MADV_FREE for some arches") both defined MADV_FREE, but did not use the
+same values. This results in build errors such as
 
-Depending on the target architecture and word width it equals to either
-3 or 4 times sizeof int.
+./arch/alpha/include/uapi/asm/mman.h:53:0: error: "MADV_FREE" redefined
+./arch/alpha/include/uapi/asm/mman.h:50:0: note:
+	this is the location of the previous definition
 
-Since the very beginning we had __ARCH_SI_PREAMBLE_SIZE wrong on the parisc
-architecture for the 64bit kernel build. It's even more frustrating, because it
-can easily be checked at compile time if the value was defined correctly.
+for the affected architectures.
 
-This patch adds such a check for the correctness of __ARCH_SI_PREAMBLE_SIZE in
-the hope that it will prevent existing and future architectures from running
-into the same problem.
+Fixes: 21f55b018ba5 ("arch/*/include/uapi/asm/mman.h: : let MADV_FREE have same value for all architectures")
+Fixes: ef58978f1eaa ("mm: define MADV_FREE for some arches")
+Cc: Chen Gang <gang.chen.5i5j@gmail.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ arch/alpha/include/uapi/asm/mman.h  | 1 -
+ arch/mips/include/uapi/asm/mman.h   | 1 -
+ arch/parisc/include/uapi/asm/mman.h | 1 -
+ arch/xtensa/include/uapi/asm/mman.h | 1 -
+ 4 files changed, 4 deletions(-)
 
-I refrained from replacing __ARCH_SI_PREAMBLE_SIZE by offsetof() in
-copy_siginfo() in include/asm-generic/siginfo.h, because a) it doesn't make any
-difference and b) it's used in the Documentation/kmemcheck.txt example.
-
-I ran this patch through the 0-DAY kernel test infrastructure and only the
-parisc architecture triggered as expected. That means that this patch should be
-OK for all major architectures.
+diff --git a/arch/alpha/include/uapi/asm/mman.h b/arch/alpha/include/uapi/asm/mman.h
+index ab336c06153e..fec1947b8dbc 100644
+--- a/arch/alpha/include/uapi/asm/mman.h
++++ b/arch/alpha/include/uapi/asm/mman.h
+@@ -47,7 +47,6 @@
+ #define MADV_WILLNEED	3		/* will need these pages */
+ #define	MADV_SPACEAVAIL	5		/* ensure resources are available */
+ #define MADV_DONTNEED	6		/* don't need these pages */
+-#define MADV_FREE	7		/* free pages only if memory pressure */
  
-Signed-off-by: Helge Deller <deller@gmx.de>
+ /* common/generic parameters */
+ #define MADV_FREE	8		/* free pages only if memory pressure */
+diff --git a/arch/mips/include/uapi/asm/mman.h b/arch/mips/include/uapi/asm/mman.h
+index b0ebe59f73fd..ccdcfcbb24aa 100644
+--- a/arch/mips/include/uapi/asm/mman.h
++++ b/arch/mips/include/uapi/asm/mman.h
+@@ -73,7 +73,6 @@
+ #define MADV_SEQUENTIAL 2		/* expect sequential page references */
+ #define MADV_WILLNEED	3		/* will need these pages */
+ #define MADV_DONTNEED	4		/* don't need these pages */
+-#define MADV_FREE	5		/* free pages only if memory pressure */
  
-diff --git a/kernel/signal.c b/kernel/signal.c
-index f3f1f7a..1ccd218 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -3579,6 +3579,10 @@ __weak const char *arch_vma_name(struct vm_area_struct *vma)
+ /* common parameters: try to keep these consistent across architectures */
+ #define MADV_FREE	8		/* free pages only if memory pressure */
+diff --git a/arch/parisc/include/uapi/asm/mman.h b/arch/parisc/include/uapi/asm/mman.h
+index cf830d465f75..f3db7d8eb0c2 100644
+--- a/arch/parisc/include/uapi/asm/mman.h
++++ b/arch/parisc/include/uapi/asm/mman.h
+@@ -43,7 +43,6 @@
+ #define MADV_SPACEAVAIL 5               /* insure that resources are reserved */
+ #define MADV_VPS_PURGE  6               /* Purge pages from VM page cache */
+ #define MADV_VPS_INHERIT 7              /* Inherit parents page size */
+-#define MADV_FREE	8		/* free pages only if memory pressure */
  
- void __init signals_init(void)
- {
-+	/* If this check fails, the __ARCH_SI_PREAMBLE_SIZE value is wrong! */
-+	BUILD_BUG_ON(__ARCH_SI_PREAMBLE_SIZE
-+		!= offsetof(struct siginfo, _sifields._pad));
-+
- 	sigqueue_cachep = KMEM_CACHE(sigqueue, SLAB_PANIC);
- }
+ /* common/generic parameters */
+ #define MADV_FREE	8		/* free pages only if memory pressure */
+diff --git a/arch/xtensa/include/uapi/asm/mman.h b/arch/xtensa/include/uapi/asm/mman.h
+index d030594ed22b..9e079d49e7f2 100644
+--- a/arch/xtensa/include/uapi/asm/mman.h
++++ b/arch/xtensa/include/uapi/asm/mman.h
+@@ -86,7 +86,6 @@
+ #define MADV_SEQUENTIAL	2		/* expect sequential page references */
+ #define MADV_WILLNEED	3		/* will need these pages */
+ #define MADV_DONTNEED	4		/* don't need these pages */
+-#define MADV_FREE	5		/* free pages only if memory pressure */
  
+ /* common parameters: try to keep these consistent across architectures */
+ #define MADV_FREE	8		/* free pages only if memory pressure */
+-- 
+2.1.4
