@@ -1,67 +1,98 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] mm: Remove duplicate definitions of MADV_FREE
-Date: Mon, 18 Jan 2016 09:23:49 +0100
-Message-ID: <569CA115.3010305@gmx.de>
-References: <1453087746-4658-1-git-send-email-linux@roeck-us.net>
+Subject: [PATCH] parisc: Fix ptrace: syscall number and return value
+ modification
+Date: Tue, 19 Jan 2016 16:08:49 +0100
+Message-ID: <20160119150849.GA22546@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Cc: Richard Henderson <rth@twiddle.net>,
-	Ralf Baechle <ralf@linux-mips.org>,
-	Chris Zankel <chris@zankel.net>, linux-alpha@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mips@linux-mips.org,
-	linux-parisc@vger.kernel.org, Chen Gang <gang.chen.5i5j@gmail.com>,
-	Minchan Kim <minchan@kernel.org>
-To: Guenter Roeck <linux@roeck-us.net>,
-	Andrew Morton <akpm@linux-foundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1453087746-4658-1-git-send-email-linux@roeck-us.net>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Mike Frysinger <vapier@gentoo.org>
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 18.01.2016 04:29, Guenter Roeck wrote:
-> Commits 21f55b018ba5 ("arch/*/include/uapi/asm/mman.h: : let MADV_FREE
-> have same value for all architectures") and ef58978f1eaa ("mm: define
-> MADV_FREE for some arches") both defined MADV_FREE, but did not use the
-> same values. This results in build errors such as
-> 
-> ./arch/alpha/include/uapi/asm/mman.h:53:0: error: "MADV_FREE" redefined
-> ./arch/alpha/include/uapi/asm/mman.h:50:0: note:
-> 	this is the location of the previous definition
-> 
-> for the affected architectures.
-> 
-> Fixes: 21f55b018ba5 ("arch/*/include/uapi/asm/mman.h: : let MADV_FREE have same value for all architectures")
-> Fixes: ef58978f1eaa ("mm: define MADV_FREE for some arches")
-> Cc: Chen Gang <gang.chen.5i5j@gmail.com>
-> Cc: Minchan Kim <minchan@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Mike Frysinger reported that his ptrace testcase showed strange
+behaviour on parisc: It was not possible to avoid a syscall and the
+return value of a syscall couldn't be changed.
 
+To modify a syscall number, we were missing to save the new syscall
+number to gr20 which is then picked up later in assembly again.
 
-On parisc both definitions of MADV_FREE are 8, so I do not face the compiler error.
-Nevertheless it should be cleaned up.
+The effect that the return value couldn't be changed is a side-effect of
+another bug in the assembly code. When a process is ptraced, userspace
+expects each syscall to report entrance and exit of a syscall.  If a
+syscall number was given which doesn't exist, we jumped to the normal
+syscall exit code instead of informing userspace that the (non-existant)
+syscall exits. This unexpected behaviour confuses userspace and thus the
+bug was misinterpreted as if we can't change the return value.
 
-Acked-by: Helge Deller <deller@gmx.de>  (for parisc)
+This patch fixes both problems and was tested on 64bit kernel with
+32bit userspace.
 
-Thanks!
-Helge
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: Mike Frysinger <vapier@gentoo.org>
+Cc: <stable@vger.kernel.org>
 
-> ---
->  arch/alpha/include/uapi/asm/mman.h  | 1 -
->  arch/mips/include/uapi/asm/mman.h   | 1 -
->  arch/parisc/include/uapi/asm/mman.h | 1 -
->  arch/xtensa/include/uapi/asm/mman.h | 1 -
->  4 files changed, 4 deletions(-)
-> 
-> diff --git a/arch/parisc/include/uapi/asm/mman.h b/arch/parisc/include/uapi/asm/mman.h
-> index cf830d465f75..f3db7d8eb0c2 100644
-> --- a/arch/parisc/include/uapi/asm/mman.h
-> +++ b/arch/parisc/include/uapi/asm/mman.h
-> @@ -43,7 +43,6 @@
->  #define MADV_SPACEAVAIL 5               /* insure that resources are reserved */
->  #define MADV_VPS_PURGE  6               /* Purge pages from VM page cache */
->  #define MADV_VPS_INHERIT 7              /* Inherit parents page size */
-> -#define MADV_FREE	8		/* free pages only if memory pressure */
->  
->  /* common/generic parameters */
->  #define MADV_FREE	8		/* free pages only if memory pressure */
+diff --git a/arch/parisc/kernel/ptrace.c b/arch/parisc/kernel/ptrace.c
+index 9585c81..ce0b2b4 100644
+--- a/arch/parisc/kernel/ptrace.c
++++ b/arch/parisc/kernel/ptrace.c
+@@ -269,14 +269,19 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+ 
+ long do_syscall_trace_enter(struct pt_regs *regs)
+ {
+-	long ret = 0;
+-
+ 	/* Do the secure computing check first. */
+ 	secure_computing_strict(regs->gr[20]);
+ 
+ 	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
+-	    tracehook_report_syscall_entry(regs))
+-		ret = -1L;
++	    tracehook_report_syscall_entry(regs)) {
++		/*
++		 * Tracing decided this syscall should not happen or the
++		 * debugger stored an invalid system call number. Skip
++		 * the system call and the system call restart handling.
++		 */
++		regs->gr[20] = -1UL;
++		goto out;
++	}
+ 
+ #ifdef CONFIG_64BIT
+ 	if (!is_compat_task())
+@@ -290,7 +295,8 @@ long do_syscall_trace_enter(struct pt_regs *regs)
+ 			regs->gr[24] & 0xffffffff,
+ 			regs->gr[23] & 0xffffffff);
+ 
+-	return ret ? : regs->gr[20];
++out:
++	return regs->gr[20];
+ }
+ 
+ void do_syscall_trace_exit(struct pt_regs *regs)
+diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+index 3fbd725..fbafa0d 100644
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -343,7 +343,7 @@ tracesys_next:
+ #endif
+ 
+ 	comiclr,>>=	__NR_Linux_syscalls, %r20, %r0
+-	b,n	.Lsyscall_nosys
++	b,n	.Ltracesys_nosys
+ 
+ 	LDREGX  %r20(%r19), %r19
+ 
+@@ -359,6 +359,9 @@ tracesys_next:
+ 	be      0(%sr7,%r19)
+ 	ldo	R%tracesys_exit(%r2),%r2
+ 
++.Ltracesys_nosys:
++	ldo	-ENOSYS(%r0),%r28		/* set errno */
++
+ 	/* Do *not* call this function on the gateway page, because it
+ 	makes a direct call to syscall_trace. */
+ 	
