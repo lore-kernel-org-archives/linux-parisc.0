@@ -1,134 +1,75 @@
-From: Borislav Petkov <bp@alien8.de>
-Subject: [PATCH 09/17] drivers: Initialize resource entry to zero
-Date: Tue, 26 Jan 2016 21:57:25 +0100
-Message-ID: <1453841853-11383-10-git-send-email-bp@alien8.de>
-References: <1453841853-11383-1-git-send-email-bp@alien8.de>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-mm <linux-mm@kvack.org>, linux-parisc@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-sh@vger.kernel.org
-To: Ingo Molnar <mingo@kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1453841853-11383-1-git-send-email-bp@alien8.de>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH v2 14/16] input: Redefine INPUT_COMPAT_TEST as in_compat_syscall()
+Date: Wed, 27 Jan 2016 11:17:05 -0800
+Message-ID: <CAKdAkRQm6ADz5aCYAFxXcoGZ2zNFwTUXjMzZdNj-D2-YrYQtrg@mail.gmail.com>
+References: <cover.1453759363.git.luto@kernel.org>
+        <64480084bc652d5fa91bf5cd4be979e2f1e4cf11.1453759363.git.luto@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        X86 ML <x86@kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        Chris Metcalf <cmetcalf@ezchip.com>,
+        linux-parisc@vger.kernel.org,
+        "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
+        sparclinux@vger.kernel.org
+To: Andy Lutomirski <luto@kernel.org>
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <64480084bc652d5fa91bf5cd4be979e2f1e4cf11.1453759363.git.luto@kernel.org>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-From: Toshi Kani <toshi.kani@hpe.com>
+Hi Andy,
 
-I/O resource descriptor, 'desc' in struct resource, needs to be
-initialized to zero by default.  Some drivers call kmalloc() to
-allocate a resource entry, but do not initialize it to zero by
-memset().  Change these drivers to call kzalloc(), instead.
+On Mon, Jan 25, 2016 at 2:24 PM, Andy Lutomirski <luto@kernel.org> wrote:
+> The input compat code should work like all other compat code: for
+> 32-bit syscalls, use the 32-bit ABI and for 64-bit syscalls, use the
+> 64-bit ABI.  We have a helper for that (in_compat_syscall()): just
+> use it.
+>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> ---
+>  drivers/input/input-compat.h | 12 +-----------
+>  1 file changed, 1 insertion(+), 11 deletions(-)
+>
+> diff --git a/drivers/input/input-compat.h b/drivers/input/input-compat.h
+> index 148f66fe3205..0f25878d5fa2 100644
+> --- a/drivers/input/input-compat.h
+> +++ b/drivers/input/input-compat.h
+> @@ -17,17 +17,7 @@
+>
+>  #ifdef CONFIG_COMPAT
+>
+> -/* Note to the author of this code: did it ever occur to
+> -   you why the ifdefs are needed? Think about it again. -AK */
+> -#if defined(CONFIG_X86_64) || defined(CONFIG_TILE)
+> -#  define INPUT_COMPAT_TEST is_compat_task()
+> -#elif defined(CONFIG_S390)
+> -#  define INPUT_COMPAT_TEST test_thread_flag(TIF_31BIT)
+> -#elif defined(CONFIG_MIPS)
+> -#  define INPUT_COMPAT_TEST test_thread_flag(TIF_32BIT_ADDR)
+> -#else
+> -#  define INPUT_COMPAT_TEST test_thread_flag(TIF_32BIT)
+> -#endif
+> +#define INPUT_COMPAT_TEST in_compat_syscall()
+>
 
-Signed-off-by: Toshi Kani <toshi.kani@hpe.com>
-Acked-by: Alexandre Bounine <alexandre.bounine@idt.com>
-Acked-by: Helge Deller <deller@gmx.de>
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Simon Horman <horms+renesas@verge.net.au>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-acpi@vger.kernel.org
-Cc: linux-arch@vger.kernel.org
-Cc: linux-mm <linux-mm@kvack.org>
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-renesas-soc@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
-Link: http://lkml.kernel.org/r/1452020081-26534-9-git-send-email-toshi.kani@hpe.com
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- drivers/acpi/acpi_platform.c       | 2 +-
- drivers/parisc/eisa_enumerator.c   | 4 ++--
- drivers/rapidio/rio.c              | 8 ++++----
- drivers/sh/superhyway/superhyway.c | 2 +-
- 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
-index 296b7a14893a..b6f7fa3a1d40 100644
---- a/drivers/acpi/acpi_platform.c
-+++ b/drivers/acpi/acpi_platform.c
-@@ -62,7 +62,7 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev)
- 	if (count < 0) {
- 		return NULL;
- 	} else if (count > 0) {
--		resources = kmalloc(count * sizeof(struct resource),
-+		resources = kzalloc(count * sizeof(struct resource),
- 				    GFP_KERNEL);
- 		if (!resources) {
- 			dev_err(&adev->dev, "No memory for resources\n");
-diff --git a/drivers/parisc/eisa_enumerator.c b/drivers/parisc/eisa_enumerator.c
-index a656d9e83343..21905fef2cbf 100644
---- a/drivers/parisc/eisa_enumerator.c
-+++ b/drivers/parisc/eisa_enumerator.c
-@@ -91,7 +91,7 @@ static int configure_memory(const unsigned char *buf,
- 	for (i=0;i<HPEE_MEMORY_MAX_ENT;i++) {
- 		c = get_8(buf+len);
- 		
--		if (NULL != (res = kmalloc(sizeof(struct resource), GFP_KERNEL))) {
-+		if (NULL != (res = kzalloc(sizeof(struct resource), GFP_KERNEL))) {
- 			int result;
- 			
- 			res->name = name;
-@@ -183,7 +183,7 @@ static int configure_port(const unsigned char *buf, struct resource *io_parent,
- 	for (i=0;i<HPEE_PORT_MAX_ENT;i++) {
- 		c = get_8(buf+len);
- 		
--		if (NULL != (res = kmalloc(sizeof(struct resource), GFP_KERNEL))) {
-+		if (NULL != (res = kzalloc(sizeof(struct resource), GFP_KERNEL))) {
- 			res->name = board;
- 			res->start = get_16(buf+len+1);
- 			res->end = get_16(buf+len+1)+(c&HPEE_PORT_SIZE_MASK)+1;
-diff --git a/drivers/rapidio/rio.c b/drivers/rapidio/rio.c
-index d7b87c64b7cd..e220edc85c68 100644
---- a/drivers/rapidio/rio.c
-+++ b/drivers/rapidio/rio.c
-@@ -117,7 +117,7 @@ int rio_request_inb_mbox(struct rio_mport *mport,
- 	if (mport->ops->open_inb_mbox == NULL)
- 		goto out;
- 
--	res = kmalloc(sizeof(struct resource), GFP_KERNEL);
-+	res = kzalloc(sizeof(struct resource), GFP_KERNEL);
- 
- 	if (res) {
- 		rio_init_mbox_res(res, mbox, mbox);
-@@ -185,7 +185,7 @@ int rio_request_outb_mbox(struct rio_mport *mport,
- 	if (mport->ops->open_outb_mbox == NULL)
- 		goto out;
- 
--	res = kmalloc(sizeof(struct resource), GFP_KERNEL);
-+	res = kzalloc(sizeof(struct resource), GFP_KERNEL);
- 
- 	if (res) {
- 		rio_init_mbox_res(res, mbox, mbox);
-@@ -285,7 +285,7 @@ int rio_request_inb_dbell(struct rio_mport *mport,
- {
- 	int rc = 0;
- 
--	struct resource *res = kmalloc(sizeof(struct resource), GFP_KERNEL);
-+	struct resource *res = kzalloc(sizeof(struct resource), GFP_KERNEL);
- 
- 	if (res) {
- 		rio_init_dbell_res(res, start, end);
-@@ -360,7 +360,7 @@ int rio_release_inb_dbell(struct rio_mport *mport, u16 start, u16 end)
- struct resource *rio_request_outb_dbell(struct rio_dev *rdev, u16 start,
- 					u16 end)
- {
--	struct resource *res = kmalloc(sizeof(struct resource), GFP_KERNEL);
-+	struct resource *res = kzalloc(sizeof(struct resource), GFP_KERNEL);
- 
- 	if (res) {
- 		rio_init_dbell_res(res, start, end);
-diff --git a/drivers/sh/superhyway/superhyway.c b/drivers/sh/superhyway/superhyway.c
-index 2d9e7f3d5611..bb1fb7712134 100644
---- a/drivers/sh/superhyway/superhyway.c
-+++ b/drivers/sh/superhyway/superhyway.c
-@@ -66,7 +66,7 @@ int superhyway_add_device(unsigned long base, struct superhyway_device *sdev,
- 	superhyway_read_vcr(dev, base, &dev->vcr);
- 
- 	if (!dev->resource) {
--		dev->resource = kmalloc(sizeof(struct resource), GFP_KERNEL);
-+		dev->resource = kzalloc(sizeof(struct resource), GFP_KERNEL);
- 		if (!dev->resource) {
- 			kfree(dev);
- 			return -ENOMEM;
+If we now have function that works on all arches I'd prefer if we used
+it directly instead of continuing using INPUT_COMPAT_TEST.
+
+Thanks.
+
 -- 
-2.3.5
+Dmitry
