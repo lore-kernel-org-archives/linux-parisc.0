@@ -1,77 +1,38 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v2 14/16] input: Redefine INPUT_COMPAT_TEST as
- in_compat_syscall()
-Date: Wed, 27 Jan 2016 13:06:10 -0800
-Message-ID: <20160127210610.GB28687@dtor-ws>
-References: <cover.1453759363.git.luto@kernel.org>
- <64480084bc652d5fa91bf5cd4be979e2f1e4cf11.1453759363.git.luto@kernel.org>
- <CAKdAkRQm6ADz5aCYAFxXcoGZ2zNFwTUXjMzZdNj-D2-YrYQtrg@mail.gmail.com>
- <CALCETrUUNM1Qoqna1e7qmEqNUwo99PJe9fSuXG4fzPdSBLfPuA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Andy Lutomirski <luto@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	X86 ML <x86@kernel.org>,
-	linux-arch <linux-arch@vger.kernel.org>,
-	David Miller <davem@davemloft.net>,
-	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	Chris Metcalf <cmetcalf@ezchip.com>,
-	linux-parisc@vger.kernel.org,
-	"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
-	sparclinux@vger.kernel.org
-To: Andy Lutomirski <luto@amacapital.net>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <CALCETrUUNM1Qoqna1e7qmEqNUwo99PJe9fSuXG4fzPdSBLfPuA@mail.gmail.com>
-List-ID: <linux-arch.vger.kernel.org>
+From: Jeffrey Merkey <jeffmerkey@gmail.com>
+Subject: [PATCH 22/31] Add debugger entry points for PARISC
+Date: Thu, 28 Jan 2016 12:47:21 -0700
+Message-ID: <1454010441-29307-1-git-send-email-jeffmerkey@gmail.com>
+Cc: jejb@parisc-linux.org, deller@gmx.de, linux.mdb@gmail.com,
+	linux-parisc@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Jan 27, 2016 at 12:29:14PM -0800, Andy Lutomirski wrote:
-> On Wed, Jan 27, 2016 at 11:17 AM, Dmitry Torokhov
-> <dmitry.torokhov@gmail.com> wrote:
-> > Hi Andy,
-> >
-> > On Mon, Jan 25, 2016 at 2:24 PM, Andy Lutomirski <luto@kernel.org> wrote:
-> >> The input compat code should work like all other compat code: for
-> >> 32-bit syscalls, use the 32-bit ABI and for 64-bit syscalls, use the
-> >> 64-bit ABI.  We have a helper for that (in_compat_syscall()): just
-> >> use it.
-> >>
-> >> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> >> ---
-> >>  drivers/input/input-compat.h | 12 +-----------
-> >>  1 file changed, 1 insertion(+), 11 deletions(-)
-> >>
-> >> diff --git a/drivers/input/input-compat.h b/drivers/input/input-compat.h
-> >> index 148f66fe3205..0f25878d5fa2 100644
-> >> --- a/drivers/input/input-compat.h
-> >> +++ b/drivers/input/input-compat.h
-> >> @@ -17,17 +17,7 @@
-> >>
-> >>  #ifdef CONFIG_COMPAT
-> >>
-> >> -/* Note to the author of this code: did it ever occur to
-> >> -   you why the ifdefs are needed? Think about it again. -AK */
-> >> -#if defined(CONFIG_X86_64) || defined(CONFIG_TILE)
-> >> -#  define INPUT_COMPAT_TEST is_compat_task()
-> >> -#elif defined(CONFIG_S390)
-> >> -#  define INPUT_COMPAT_TEST test_thread_flag(TIF_31BIT)
-> >> -#elif defined(CONFIG_MIPS)
-> >> -#  define INPUT_COMPAT_TEST test_thread_flag(TIF_32BIT_ADDR)
-> >> -#else
-> >> -#  define INPUT_COMPAT_TEST test_thread_flag(TIF_32BIT)
-> >> -#endif
-> >> +#define INPUT_COMPAT_TEST in_compat_syscall()
-> >>
-> >
-> >
-> > If we now have function that works on all arches I'd prefer if we used
-> > it directly instead of continuing using INPUT_COMPAT_TEST.
-> 
-> I'll write a followup patch for that if you don't beat me to it.
+This patch series adds an export which can be set by system debuggers to
+direct the hard lockup and soft lockup detector to trigger a breakpoint
+exception and enter a debugger if one is active.  It is assumed that if
+someone sets this variable, then an breakpoint handler of some sort will
+be actively loaded or registered via the notify die handler chain.
 
-I promise I wont ;)
+This addition is extremely useful for debugging hard and soft lockups
+real time and quickly from a console debugger.
 
+Signed-off-by: Jeffrey Merkey <jeffmerkey@gmail.com>
+---
+ arch/parisc/include/asm/kdebug.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+ create mode 100644 arch/parisc/include/asm/kdebug.h
+
+diff --git a/arch/parisc/include/asm/kdebug.h b/arch/parisc/include/asm/kdebug.h
+new file mode 100644
+index 0000000..5d09de1
+--- /dev/null
++++ b/arch/parisc/include/asm/kdebug.h
+@@ -0,0 +1,4 @@
++
++static inline void arch_breakpoint(void)
++{
++}
 -- 
-Dmitry
+1.8.3.1
