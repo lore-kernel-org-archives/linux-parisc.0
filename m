@@ -1,35 +1,35 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v7 00/15] tty: serial: 8250: Fix checkpatch warnings
-Date: Wed, 3 Feb 2016 09:54:44 -0800
-Message-ID: <20160203175444.GA24491@kroah.com>
-References: <1452784104-30840-1-git-send-email-anton.wuerfel@fau.de>
- <ff62e385d45ea8755ffaa8495e4d5443.squirrel@faumail.uni-erlangen.de>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Use parentheses around expression in floppy.h
+Date: Wed, 3 Feb 2016 20:54:56 +0100
+Message-ID: <20160203195456.GA18035@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Peter Hurley <peter@hurleysoftware.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Phillip Raffeck <phillip.raffeck@fau.de>,
-	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-kernel@i4.cs.fau.de
-To: Anton Wuerfel <anton.wuerfel@fau.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <ff62e385d45ea8755ffaa8495e4d5443.squirrel@faumail.uni-erlangen.de>
-List-ID: <linux-kernel.vger.kernel.org>
+Cc: David Binderman <dcb314@hotmail.com>
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Feb 03, 2016 at 03:40:09PM +0100, Anton Wuerfel wrote:
-> Hello,
-> 
-> we noticed the patch series has not been merged yet to 4.5. Are there
-> still problems we have to address?
+David Binderman reported a style issue in the floppy.h header file:
+arch/parisc/include/asm/floppy.h:221: (style) Boolean result is used in bitwise
+  operation. Clarify expression with parentheses.
 
-I don't know, they are in my queue to be processed "soon"...
+Reported-by: David Binderman <dcb314@hotmail.com>
+Cc: David Binderman <dcb314@hotmail.com>
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-And they will not go into 4.5, that merge window is long closed, coding
-style fixes like this are on the bottom of my list of things to be
-reviewed, and are not "bug fixes" that affect people so they sometimes
-take a long time to get merged.
-
-thanks,
-
-greg k-h
+diff --git a/arch/parisc/include/asm/floppy.h b/arch/parisc/include/asm/floppy.h
+index f84ff12..6d8276cd 100644
+--- a/arch/parisc/include/asm/floppy.h
++++ b/arch/parisc/include/asm/floppy.h
+@@ -33,7 +33,7 @@
+  * floppy accesses go through the track buffer.
+  */
+ #define _CROSS_64KB(a,s,vdma) \
+-(!vdma && ((unsigned long)(a)/K_64 != ((unsigned long)(a) + (s) - 1) / K_64))
++(!(vdma) && ((unsigned long)(a)/K_64 != ((unsigned long)(a) + (s) - 1) / K_64))
+ 
+ #define CROSS_64KB(a,s) _CROSS_64KB(a,s,use_virtual_dma & 1)
+ 
