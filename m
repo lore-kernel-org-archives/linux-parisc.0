@@ -1,35 +1,27 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Use parentheses around expression in floppy.h
-Date: Wed, 3 Feb 2016 20:54:56 +0100
-Message-ID: <20160203195456.GA18035@p100.box>
+From: "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
+Subject: =?utf-8?Q?=D0=9A=D0=BB=D0=B8=D0=B5=D0=BD=D1=82=D1=81=D0?=
+	=?utf-8?Q?=BA=D0=B8=D0=B5_=D0=B1=D0=B0=D0=B7=D1=8B!_=D0?=
+	=?utf-8?Q?=A2=D0=B5=D0=BB=5CViber=5CWhatsapp=3A+791393935?=
+	=?utf-8?Q?06__Skype=3Aprodawez389__Email=3Ausitnikov94=40?=
+	=?utf-8?Q?gmail=2Ecom_=D0=A3=D0=B7=D0=BD=D0=B0=D0=B9=D1?=
+	=?utf-8?Q?=82=D0=B5_=D0=BF=D0=BE=D0=B4=D1=80=D0=BE=D0=B1?=
+	=?utf-8?Q?=D0=BD=D0=B5=D0=B5!!!?=
+Date: Wed, 10 Feb 2016 16:21:56 +0600
+Message-ID: <40BB0FD06FBB94578B8EC7788CDD58F4@vger.kernel.org>
+Reply-To: "linux-parisc@vger.kernel.org" <usitnikov94@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: David Binderman <dcb314@hotmail.com>
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=utf-8
+To: <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-David Binderman reported a style issue in the floppy.h header file:
-arch/parisc/include/asm/floppy.h:221: (style) Boolean result is used in bitwise
-  operation. Clarify expression with parentheses.
-
-Reported-by: David Binderman <dcb314@hotmail.com>
-Cc: David Binderman <dcb314@hotmail.com>
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/arch/parisc/include/asm/floppy.h b/arch/parisc/include/asm/floppy.h
-index f84ff12..6d8276cd 100644
---- a/arch/parisc/include/asm/floppy.h
-+++ b/arch/parisc/include/asm/floppy.h
-@@ -33,7 +33,7 @@
-  * floppy accesses go through the track buffer.
-  */
- #define _CROSS_64KB(a,s,vdma) \
--(!vdma && ((unsigned long)(a)/K_64 != ((unsigned long)(a) + (s) - 1) / K_64))
-+(!(vdma) && ((unsigned long)(a)/K_64 != ((unsigned long)(a) + (s) - 1) / K_64))
- 
- #define CROSS_64KB(a,s) _CROSS_64KB(a,s,use_virtual_dma & 1)
- 
+=D0=9A=D0=BB=D0=B8=D0=B5=D0=BD=D1=82=D1=81=D0=BA=D0=B8=D0=B5 =D0=B1=D0=B0=
+=D0=B7=D1=8B! =D0=A2=D0=B5=D0=BB\Viber\Whatsapp:+79139393506  Skype:pro=
+dawez389  Email:usitnikov94@gmail.com =D0=A3=D0=B7=D0=BD=D0=B0=D0=B9=D1=
+=82=D0=B5 =D0=BF=D0=BE=D0=B4=D1=80=D0=BE=D0=B1=D0=BD=D0=B5=D0=B5!!!
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
