@@ -1,1022 +1,356 @@
-From: John David Anglin <dave.anglin@bell.net>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 Subject: Re: SCSI bug
-Date: Sun, 21 Feb 2016 13:09:33 -0500
-Message-ID: <14EF1F4E-8045-4990-B29E-D489E82B1929@bell.net>
-References: <28D5FC66-A9E6-4F3E-A8AC-F9E68A6BC543@bell.net> <82D4BF6F-05CF-4441-9530-79475BFF84F3@bell.net> <E2C8DBC2-F0AD-4C78-BD63-9C85B387E284@bell.net> <56C8E1AC.3030409@gmx.de> <038473FE-9E6D-4F03-BBD4-9844B7B529E1@bell.net> <9C42B388-96D5-412A-BAC3-14E93415CA21@bell.net> <1456026424.2268.5.camel@HansenPartnership.com>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: multipart/mixed; boundary=Apple-Mail-2-1029604226
+Date: Sun, 21 Feb 2016 10:10:44 -0800
+Message-ID: <1456078244.2340.4.camel@HansenPartnership.com>
+References: <28D5FC66-A9E6-4F3E-A8AC-F9E68A6BC543@bell.net>
+	 <82D4BF6F-05CF-4441-9530-79475BFF84F3@bell.net>
+	 <E2C8DBC2-F0AD-4C78-BD63-9C85B387E284@bell.net> <56C8E1AC.3030409@gmx.de>
+	 <038473FE-9E6D-4F03-BBD4-9844B7B529E1@bell.net>
+	 <9C42B388-96D5-412A-BAC3-14E93415CA21@bell.net>
+	 <1456026424.2268.5.camel@HansenPartnership.com>
+	 <C6219E31-B9EA-4CD3-AD4A-76C5945E882D@bell.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Cc: Helge Deller <deller@gmx.de>,
 	linux-parisc List <linux-parisc@vger.kernel.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1456026424.2268.5.camel@HansenPartnership.com>
+In-Reply-To: <C6219E31-B9EA-4CD3-AD4A-76C5945E882D@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
---Apple-Mail-2-1029604226
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
-
-On 2016-02-20, at 10:47 PM, James Bottomley wrote:
-
-> On Sat, 2016-02-20 at 21:52 -0500, John David Anglin wrote:
->> On 2016-02-20, at 5:52 PM, John David Anglin wrote:
->> 
->>> On 2016-02-20, at 4:59 PM, Helge Deller wrote:
->>> 
->>>> On 20.02.2016 21:43, John David Anglin wrote:
->>>>> On 2016-02-20, at 3:13 PM, John David Anglin wrote:
->>>>> 
->>>>>> On 2016-01-23, at 1:00 PM, John David Anglin wrote:
->>>>>> 
->>>>>>> WARNING: at block/blk-merge.c:454
->>>>>> 
->>>>>> With linux-image-4.4.0-1-parisc64-smp on c3740, the above
->>>>>> warning is the last message I see.
->>>>>> Kernel seems to hang at that point.  This is warning code:
->>>>>> 
->>>>>>     /*
->>>>>>      * Something must have been wrong if the figured number
->>>>>> of
->>>>>>      * segment is bigger than number of req's physical
->>>>>> segments
->>>>>>      */
->>>>>>     WARN_ON(nsegs > rq->nr_phys_segments);
->>>>> 
->>>>> On Sep. 12, 2015, I reported the following problem:
->>>>> 
->>>>> http://www.spinics.net/lists/linux-parisc/msg06327.html
->>>> 
->>>> The problem is still, that this bug can only be reproduced at
->>>> every boot when then 
->>>> scsi drivers are built as modules (and in an initrd). I could
->>>> never reproduce it when
->>>> I booted a kernel with built-in scsi drivers.
->>>> 
->>>> The bug seems to be triggered by(*nsegs)++ command in
->>>> __blk_segment_map_sg() in block/blk-merge.c.
->>>> I'm testing with the 4.4.2 kernel from debian.
->>>> I modified __blk_segment_map_sg() like that:
->>>> static inline void
->>>> __blk_segment_map_sg(struct request_queue *q, struct bio_vec
->>>> *bvec,
->>>>                   struct scatterlist *sglist, struct bio_vec
->>>> *bvprv,
->>>>                   struct scatterlist **sg, int *nsegs, int
->>>> *cluster)
->>>> {
->>>> 
->>>>      int nbytes = bvec->bv_len;
->>>> 
->>>>      if (*sg && *cluster) {
->>>>              if ((*sg)->length + nbytes >
->>>> queue_max_segment_size(q))
->>>>                      goto new_segment;
->>>> 
->>>>              if (!BIOVEC_PHYS_MERGEABLE(bvprv, bvec))
->>>>                      goto new_segment;
->>>>              if (!BIOVEC_SEG_BOUNDARY(q, bvprv, bvec))
->>>>                      goto new_segment;
->>>> 
->>>>              (*sg)->length += nbytes;
->>>>      } else {
->>>> new_segment:
->>>>              if (*sg && *cluster) {
->>>>                      printk("NEW SEGMENT sg = %p!!!\n", sg);
->>>>                      printk("__blk_segment_map_sg: length = %d,
->>>> nbytes = %d, sum = %d > %d\n", (*sg)->length, nbytes, (*sg)
->>>> ->length + nbytes, queue_max_segment_size(q));
->>>>                      printk("__blk_segment_map_sg:
->>>> BIOVEC_PHYS_MERGEABLE = %d, BIOVEC_SEG_BOUNDARY = %d\n",
->>>> BIOVEC_PHYS_MERGEABLE(bvprv, bvec), BIOVEC_SEG_BOUNDARY(q, bvprv,
->>>> bvec) );
->>>>              }
->>>>              if (!*sg)
->>>>                      *sg = sglist;
->>>>              else {
->>>>                      /*
->>>>                       * If the driver previously mapped a
->>>> shorter
->>>>                       * list, we could see a termination bit
->>>>                       * prematurely unless it fully inits the sg
->>>>                       * table on each mapping. We KNOW that
->>>> there
->>>>                       * must be more entries here or the driver
->>>>                       * would be buggy, so force clear the
->>>>                       * termination bit to avoid doing a full
->>>>                       * sg_init_table() in drivers for each
->>>> command.
->>>>                       */
->>>>                      sg_unmark_end(*sg);
->>>>                      *sg = sg_next(*sg);
->>>>              }
->>>> 
->>>>              sg_set_page(*sg, bvec->bv_page, nbytes, bvec
->>>> ->bv_offset);
->>>>              (*nsegs)++;
->>>>      }
->>>>      *bvprv = *bvec;
->>>> }
->>>> 
->>>> The boot log looks then like this:
->>>> [   43.044000] scsi_init_sgtable: count = 1, nents = 1
->>>> (there are lots of those before it!)
->>>> [   43.164000] scsi_init_sgtable: nr_phys_segments = 1
->>>> [   43.164000] scsi_init_sgtable: count = 1, nents = 1
->>>> [   43.280000] scsi_init_sgtable: nr_phys_segments = 1
->>>> [   43.280000] scsi_init_sgtable: count = 1, nents = 1
->>>> [   43.396000] scsi_init_sgtable: nr_phys_segments = 1
->>>> [   43.396000] scsi_init_sgtable: count = 1, nents = 1
->>>> [   43.512000] scsi_init_sgtable: nr_phys_segments = 1
->>>> [   43.512000] scsi_init_sgtable: count = 1, nents = 1
->>>> [   43.628000] scsi_init_sgtable: nr_phys_segments = 3
->>>> [   43.628000] NEW SEGMENT sg = 000000007fa911e8!!!
->>>> [   43.628000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   43.628000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   43.628000] NEW SEGMENT sg = 000000007fa911e8!!!
->>>> [   43.628000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   43.628000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   43.628000] scsi_init_sgtable: count = 3, nents = 3
->>>> [   44.224000] scsi_init_sgtable: nr_phys_segments = 1
->>>> [   44.224000] scsi_init_sgtable: count = 1, nents = 1
->>>> [   44.340000] scsi_init_sgtable: nr_phys_segments = 1
->>>> [   44.340000] scsi_init_sgtable: count = 1, nents = 1
->>>> [   44.456000] scsi_init_sgtable: nr_phys_segments = 7
->>>> [   44.456000] NEW SEGMENT sg = 00000000bfca0f98!!!
->>>> [   44.456000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   44.456000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   44.456000] NEW SEGMENT sg = 00000000bfca0f98!!!
->>>> [   44.456000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   44.456000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   44.456000] NEW SEGMENT sg = 00000000bfca0f98!!!
->>>> [   44.456000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   44.456000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   44.456000] NEW SEGMENT sg = 00000000bfca0f98!!!
->>>> [   44.456000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   44.456000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   44.456000] NEW SEGMENT sg = 00000000bfca0f98!!!
->>>> [   44.456000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   44.456000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   44.456000] NEW SEGMENT sg = 00000000bfca0f98!!!
->>>> [   44.456000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   44.456000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   44.456000] scsi_init_sgtable: count = 7, nents = 7
->>>> [   44.456000] timer_interrupt(CPU 0): delayed! cycles 4527081F
->>>> rem C6C21  next/now 14E153306E/14E146C44D
->>>> [   46.116000] scsi_init_sgtable: nr_phys_segments = 7
->>>> [   46.116000] NEW SEGMENT sg = 00000000bfca0f98!!!
->>>> [   46.116000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   46.116000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   46.116000] NEW SEGMENT sg = 00000000bfca0f98!!!
->>>> [   46.116000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   46.116000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   46.116000] NEW SEGMENT sg = 00000000bfca0f98!!!
->>>> [   46.116000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   46.116000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   46.116000] NEW SEGMENT sg = 00000000bfca0f98!!!
->>>> [   46.116000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   46.116000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   46.116000] NEW SEGMENT sg = 00000000bfca0f98!!!
->>>> [   46.116000] __blk_segment_map_sg: length = 8192, nbytes =
->>>> 4096, sum = 12288 > 65536
->>>> [   46.116000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   46.116000] NEW SEGMENT sg = 00000000bfca0f98!!!
->>>> [   46.116000] __blk_segment_map_sg: length = 16384, nbytes =
->>>> 4096, sum = 20480 > 65536
->>>> [   46.116000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   46.116000] scsi_init_sgtable: count = 7, nents = 7
->>>> [   46.116000] timer_interrupt(CPU 0): delayed! cycles 453F0A77
->>>> rem 223089  next/now 152BB6286E/152B93F7E5
->>>> [   47.780000] scsi_init_sgtable: nr_phys_segments = 1
->>>> [   47.780000] scsi_init_sgtable: count = 1, nents = 1
->>>> [   47.896000] scsi_init_sgtable: nr_phys_segments = 6
->>>> [   47.896000] NEW SEGMENT sg = 000000007fa911e8!!!
->>>> [   47.896000] __blk_segment_map_sg: length = 61440, nbytes =
->>>> 4096, sum = 65536 > 65536
->>>> [   47.896000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   47.896000] NEW SEGMENT sg = 000000007fa911e8!!!
->>>> [   47.896000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   47.896000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   47.896000] NEW SEGMENT sg = 000000007fa911e8!!!
->>>> [   47.896000] __blk_segment_map_sg: length = 4096, nbytes =
->>>> 4096, sum = 8192 > 65536
->>>> [   47.896000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   47.896000] NEW SEGMENT sg = 000000007fa911e8!!!
->>>> [   47.896000] __blk_segment_map_sg: length = 8192, nbytes =
->>>> 4096, sum = 12288 > 65536
->>>> [   47.896000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   47.896000] NEW SEGMENT sg = 000000007fa911e8!!!
->>>> [   47.896000] __blk_segment_map_sg: length = 8192, nbytes =
->>>> 4096, sum = 12288 > 65536
->>>> [   47.896000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   47.896000] scsi_init_sgtable: count = 6, nents = 6
->>>> [   47.896000] timer_interrupt(CPU 0): delayed! cycles 3AB087E2
->>>> rem 23E4DE  next/now 1570BBD5EE/157097F110
->>>> [   49.324000] scsi_init_sgtable: nr_phys_segments = 1
->>>> [   49.324000] scsi_init_sgtable: count = 1, nents = 1
->>>> [   49.440000] scsi_init_sgtable: nr_phys_segments = 2
->>>> [   49.440000] NEW SEGMENT sg = 000000007fa911e8!!!
->>>> [   49.440000] __blk_segment_map_sg: length = 65536, nbytes =
->>>> 4096, sum = 69632 > 65536
->>>> 
->>>> (this is interesting! Here we reach a sum of > 65536 the first
->>>> time)
->>>> 
->>>> [   49.440000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 1,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   49.440000] NEW SEGMENT sg = 000000007fa911e8!!!
->>>> [   49.440000] __blk_segment_map_sg: length = 16384, nbytes =
->>>> 4096, sum = 20480 > 65536
->>>> [   49.440000] __blk_segment_map_sg: BIOVEC_PHYS_MERGEABLE = 0,
->>>> BIOVEC_SEG_BOUNDARY = 1
->>>> [   49.440000] *** FIXIT *** HELGE: nsegs > rq->nr_phys_segments
->>>> = 3 > 2
->>>> [   49.440000] scsi_init_sgtable: count = 3, nents = 2
->>>> [   50.116000] ------------[ cut here ]------------
->>>> [   50.172000] WARNING: at /build/linux-4.4/linux
->>>> -4.4.2/drivers/scsi/scsi_lib.c:1104
->>>> 
->>>> (this is usually a BUG(). I changed it to WARN() in the hope it
->>>> would work anyway. It didn't.)
->>>> 
->>>> [   50.260000] Modules linked in: sd_mod sr_mod cdrom ata_generic
->>>> ohci_pci ehci_pci ohci_hcd ehci_hcd pata_ns87415 sym53c8xx libata
->>>> scsi_transport_spi scsi_mod usbcorep
->>>> [   50.456000] CPU: 0 PID: 70 Comm: systemd-udevd Not tainted
->>>> 4.4.0-1-parisc64-smp #5 Debian 4.4.2-2
->>>> [   50.564000] task: 000000007f948b28 ti: 000000007fa90000
->>>> task.ti: 000000007fa90000
->>>> [   50.652000] 
->>>> [   50.672000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
->>>> [   50.728000] PSW: 00001000000001001111100100001110 Not tainted
->>>> [   50.796000] r00-03  000000ff0804f90e 00000000409ea2e0
->>>> 00000000003e2ee0 000000007fa91140
->>>> [   50.892000] r04-07  00000000003cd000 000000007f914300
->>>> 000000007f914b10 0000000000000003
->>>> [   50.988000] r08-11  0000000000000000 000000007f918000
->>>> 0000000040bdd6b0 00000000003cd800
->>>> [   51.084000] r12-15  0000000000000000 000000007fa90778
->>>> 00000000003cd000 000000007f918000
->>>> [   51.180000] r16-19  0000000000001300 0000000040bdd6b8
->>>> 0000000040bdd6bc 0000000040ba2420
->>>> [   51.276000] r20-23  0000000099116e92 0000000000000000
->>>> 00000000000002a0 00000000000002ee
->>>> [   51.372000] r24-27  0000000000000000 000000000800000e
->>>> 0000000040b60750 00000000409b3ae0
->>>> [   51.468000] r28-31  0000000000000002 000000007fa914f0
->>>> 000000007fa911e0 0000000040ba2408
->>>> [   51.564000] sr00-03  0000000000015000 0000000000000000
->>>> 0000000000000000 0000000000015000
->>>> [   51.660000] sr04-07  0000000000000000 0000000000000000
->>>> 0000000000000000 0000000000000000
->>>> [   51.756000] 
->>>> [   51.772000] IASQ: 0000000000000000 0000000000000000 IAOQ:
->>>> 00000000003e2f24 00000000003e2f28
->>>> [   51.872000]  IIR: 03ffe01f    ISR: 0000000010340000  IOR:
->>>> 000000fea4691528
->>>> [   51.956000]  CPU:        0   CR30: 000000007fa90000 CR31:
->>>> 00000000ffff7dff
->>>> [   52.040000]  ORIG_R28: 0000000040b60718
->>>> [   52.084000]  IAOQ[0]: scsi_init_sgtable+0xfc/0x1b8 [scsi_mod]
->>>> [   52.152000]  IAOQ[1]: scsi_init_sgtable+0x100/0x1b8 [scsi_mod]
->>>> [   52.224000]  RP(r2): scsi_init_sgtable+0xb8/0x1b8 [scsi_mod]
->>>> [   52.292000] Backtrace:
->>>> [   52.320000]  [<00000000003e304c>] scsi_init_io+0x6c/0x258
->>>> [scsi_mod]
->>>> [   52.396000]  [<000000000087d078>] sd_init_command+0x70/0xec8
->>>> [sd_mod]
->>>> 
->>>> In general I think the bug is somehow in blk-merge.c.
->>>> But I'm not an expert in that code.
->>> 
->>> The warning was added in this patch sequence:
->>> https://lkml.org/lkml/2015/11/23/996
->>> 
->>> Possibly, but above seems to indicate that it could be driver issue
->>> as well.
->> 
->> 
->> I believe this bug was introduced by the following merge:
->> 
->> commit 1081230b748de8f03f37f80c53dfa89feda9b8de
->> Merge: df91039 2ca495a
->> Author: Linus Torvalds <torvalds@linux-foundation.org>
->> Date:   Wed Sep 2 13:10:25 2015 -0700
->> 
->>    Merge branch 'for-4.3/core' of git://git.kernel.dk/linux-block
->> 
->>    Pull core block updates from Jens Axboe:
->>     "This first core part of the block IO changes contains:
->> 
->>       - Cleanup of the bio IO error signaling from Christoph.  We
->> used to
->>         rely on the uptodate bit and passing around of an error, now
->> we
->>         store the error in the bio itself.
->> 
->>       - Improvement of the above from myself, by shrinking the bio
->> size
->>         down again to fit in two cachelines on x86-64.
->> 
->>       - Revert of the max_hw_sectors cap removal from a revision
->> again,
->>         from Jeff Moyer.  This caused performance regressions in
->> various
->>         tests.  Reinstate the limit, bump it to a more reasonable
->> size
->>         instead.
->> 
->>       - Make /sys/block/<dev>/queue/discard_max_bytes writeable, by
->> me.
->>         Most devices have huge trim limits, which can cause nasty
->> latencies
->>         when deleting files.  Enable the admin to configure the size
->> down.
->>         We will look into having a more sane default instead of
->> UINT_MAX
->>         sectors.
->> 
->>       - Improvement of the SGP gaps logic from Keith Busch.
->> 
->>       - Enable the block core to handle arbitrarily sized bios,
->> which
->>         enables a nice simplification of bio_add_page() (which is an
->> IO hot
->>         path).  From Kent.
->> 
->>       - Improvements to the partition io stats accounting, making it
->>         faster.  From Ming Lei.
->> 
->>       - Also from Ming Lei, a basic fixup for overflow of the sysfs
->> pending
->>         file in blk-mq, as well as a fix for a blk-mq timeout race
->>         condition.
->> 
->>       - Ming Lin has been carrying Kents above mentioned patches
->> forward
->>         for a while, and testing them.  Ming also did a few fixes
->> around
->>         that.
->> 
->>       - Sasha Levin found and fixed a use-after-free problem
->> introduced by
->>         the bio->bi_error changes from Christoph.
->> 
->>       - Small blk cgroup cleanup from Viresh Kumar"
->> 
->>    * 'for-4.3/core' of git://git.kernel.dk/linux-block: (26 commits)
->>      blk: Fix bio_io_vec index when checking bvec gaps
->>      block: Replace SG_GAPS with new queue limits mask
->>      block: bump BLK_DEF_MAX_SECTORS to 2560
->>      Revert "block: remove artifical max_hw_sectors cap"
->>      blk-mq: fix race between timeout and freeing request
->>      blk-mq: fix buffer overflow when reading sysfs file of
->> 'pending'
->>      Documentation: update notes in biovecs about arbitrarily sized
->> bios
->>      block: remove bio_get_nr_vecs()
->>      fs: use helper bio_add_page() instead of open coding on
->> bi_io_vec
->>      block: kill merge_bvec_fn() completely
->>      md/raid5: get rid of bio_fits_rdev()
->>      md/raid5: split bio for chunk_aligned_read
->>      block: remove split code in blkdev_issue_{discard,write_same}
->>      btrfs: remove bio splitting and merge_bvec_fn() calls
->>      bcache: remove driver private bio splitting code
->>      block: simplify bio_add_page()
->>      block: make generic_make_request handle arbitrarily sized bios
->>      blk-cgroup: Drop unlikely before IS_ERR(_OR_NULL)
->>      block: don't access bio->bi_error after bio_put()
->>      block: shrink struct bio down to 2 cache lines again
->>      ...
+On Sun, 2016-02-21 at 09:45 -0500, John David Anglin wrote:
+> I tried HEAD this morning and problem is still present.  The warning
+> in blk-merge.c occurs
+> first followed by BUG:
+> kernel BUG at drivers/scsi/scsi_lib.c:1097! 
 > 
-> If you can bisect it down to the exact commit, I might be able to work
-> out what's the problem.  Otherwise, even in an all modular config, I
-> can't reproduce this on 4.5-rc4, so it may be fixed upstream (just not
-> backported).
+> Entire console output is shown below:
 
+OK, this might actually be a clue.  I've attached my full boot below
+for good measure.  There are two significant differences, firstly the
+gcc version: you're 4.9 and I'm 4.5 and secondly the ata drivers.  I
+have no ata drivers for the CD rom in my initrd (they caused problems a
+while ago, so I have them blacklisted).  Can you take all the ata
+drivers out of your initrd and see if you still get the panic.  If not,
+we know where the fault is.
 
-Okay, the bug was introduced by the following change:
+James
 
-commit 54efd50bfd873e2dbf784e0b21a8027ba4299a3e
-Author: Kent Overstreet <kent.overstreet@gmail.com>
-Date:   Thu Apr 23 22:37:18 2015 -0700
+---
 
-    block: make generic_make_request handle arbitrarily sized bios
-    
-    The way the block layer is currently written, it goes to great lengths
-    to avoid having to split bios; upper layer code (such as bio_add_page())
-    checks what the underlying device can handle and tries to always create
-    bios that don't need to be split.
-    
-    But this approach becomes unwieldy and eventually breaks down with
-    stacked devices and devices with dynamic limits, and it adds a lot of
-    complexity. If the block layer could split bios as needed, we could
-    eliminate a lot of complexity elsewhere - particularly in stacked
-    drivers. Code that creates bios can then create whatever size bios are
-    convenient, and more importantly stacked drivers don't have to deal with
-    both their own bio size limitations and the limitations of the
-    (potentially multiple) devices underneath them.  In the future this will
-    let us delete merge_bvec_fn and a bunch of other code.
-    
-    We do this by adding calls to blk_queue_split() to the various
-    make_request functions that need it - a few can already handle arbitrary
-    size bios. Note that we add the call _after_ any call to
-    blk_queue_bounce(); this means that blk_queue_split() and
-    blk_recalc_rq_segments() don't need to be concerned with bouncing
-    affecting segment merging.
-    
-    Some make_request_fn() callbacks were simple enough to audit and verify
-    they don't need blk_queue_split() calls. The skipped ones are:
-    
-     * nfhd_make_request (arch/m68k/emu/nfblock.c)
-     * axon_ram_make_request (arch/powerpc/sysdev/axonram.c)
-     * simdisk_make_request (arch/xtensa/platforms/iss/simdisk.c)
-     * brd_make_request (ramdisk - drivers/block/brd.c)
-     * mtip_submit_request (drivers/block/mtip32xx/mtip32xx.c)
-     * loop_make_request
-     * null_queue_bio
-     * bcache's make_request fns
-    
-    Some others are almost certainly safe to remove now, but will be left
-    for future patches.
-    
-    Cc: Jens Axboe <axboe@kernel.dk>
-    Cc: Christoph Hellwig <hch@infradead.org>
-    Cc: Al Viro <viro@zeniv.linux.org.uk>
-    Cc: Ming Lei <ming.lei@canonical.com>
-    Cc: Neil Brown <neilb@suse.de>
-    Cc: Alasdair Kergon <agk@redhat.com>
-    Cc: Mike Snitzer <snitzer@redhat.com>
-    Cc: dm-devel@redhat.com
-    Cc: Lars Ellenberg <drbd-dev@lists.linbit.com>
-    Cc: drbd-user@lists.linbit.com
-    Cc: Jiri Kosina <jkosina@suse.cz>
-    Cc: Geoff Levand <geoff@infradead.org>
-    Cc: Jim Paris <jim@jtan.com>
-    Cc: Philip Kelleher <pjk1939@linux.vnet.ibm.com>
-    Cc: Minchan Kim <minchan@kernel.org>
-    Cc: Nitin Gupta <ngupta@vflare.org>
-    Cc: Oleg Drokin <oleg.drokin@intel.com>
-    Cc: Andreas Dilger <andreas.dilger@intel.com>
-    Acked-by: NeilBrown <neilb@suse.de> (for the 'md/md.c' bits)
-    Acked-by: Mike Snitzer <snitzer@redhat.com>
-    Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-    Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
-    [dpark: skip more mq-based drivers, resolve merge conflicts, etc.]
-    Signed-off-by: Dongsu Park <dpark@posteo.net>
-    Signed-off-by: Ming Lin <ming.l@ssi.samsung.com>
-    Signed-off-by: Jens Axboe <axboe@fb.com>
+Command line for kernel: ' root=/dev/sda3 panic=5 console=ttyS1 palo_kernel=1/vmlinux-test'
+Selected kernel: /vmlinux-test from partition 1
+Selected ramdisk: /initrd.img-test from partition 1
+ELF64 executable
+Entry 00100000 first 00100000 n 4
+Segment 0 load 00100000 size 229872 mediaptr 0x1000
+Segment 1 load 00139000 size 148016 mediaptr 0x3a000
+Segment 2 load 00200000 size 8622768 mediaptr 0x5f000
+Segment 3 load 00b00000 size 1583856 mediaptr 0x899000
+Loading ramdisk 3119670 bytes @ 3fcf4000...
+Branching to kernel entry point 0x00100000.  If this is the last
+message you see, you may need to switch your console.  This is
+a common symptom -- search the FAQ and mailing list at parisc-linux.org
 
-Attached diff.
+[    0.000000] Linux version 4.5.0-rc2 (jejb@ion) (gcc version 4.2.4 (Debian 4.2.4-6)) #1 SMP Fri Feb 5 17:20:38 PST 2016
+[    0.000000] unwind_init: start = 0x409e92d0, end = 0x40a392b0, entries = 20478
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ed440 and 00000000409ed450
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ed450 and 00000000409ed460
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee160 and 00000000409ee170
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee170 and 00000000409ee180
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee1f0 and 00000000409ee200
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee200 and 00000000409ee210
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee210 and 00000000409ee220
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee220 and 00000000409ee230
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee230 and 00000000409ee240
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee240 and 00000000409ee250
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee250 and 00000000409ee260
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee260 and 00000000409ee270
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee270 and 00000000409ee280
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee280 and 00000000409ee290
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee2b0 and 00000000409ee2c0
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee2c0 and 00000000409ee2d0
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee2d0 and 00000000409ee2e0
+[    0.000000] WARNING: Out of order unwind entry! 00000000409ee2e0 and 00000000409ee2f0
+[    0.000000] FP[0] enabled: Rev 1 Model 20
+[    0.000000] The 64-bit Kernel has started...
+[    0.000000] Kernel default page size is 4 KB. Huge pages enabled with 1 MB physical and 2 MB virtual size.
+[    0.000000] bootconsole [ttyB0] enabled
+[    0.000000] Initialized PDC Console for debugging.
+[    0.000000] Determining PDC firmware type: 64 bit PAT.
+[    0.000000] model 00008870 00000491 00000000 00000002 3e0505e7352af710 100000f0 00000008 000000b2 000000b2
+[    0.000000] vers  00000301
+[    0.000000] CPUID vers 20 rev 4 (0x00000284)
+[    0.000000] capabilities 0x35
+[    0.000000] model 9000/800/rp3440  
+[    0.000000] parisc_cache_init: Only equivalent aliasing supported!
+[    0.000000] Memory Ranges:
+[    0.000000]  0) Start 0x0000000000000000 End 0x000000003fffffff Size   1024 MB
+[    0.000000]  1) Start 0x0000004040000000 End 0x000000407fdfffff Size   1022 MB
+[    0.000000] Total Memory: 2046 MB
+[    0.000000] initrd: 7fcf4000-7ffeda36
+[    0.000000] initrd: reserving 3fcf4000-3ffeda36 (mem_max 7fe00000)
+[    0.000000] PERCPU: Embedded 18 pages/cpu @0000000042020000 s33328 r8192 d32208 u73728
+[    0.000000] SMP: bootstrap CPU ID is 0
+[    0.000000] Built 2 zonelists in Zone order, mobility grouping on.  Total pages: 515592
+[    0.000000] Kernel command line:  root=/dev/sda3 panic=5 console=ttyS1 palo_kernel=1/vmlinux-test
+[    0.000000] PID hash table entries: 4096 (order: 3, 32768 bytes)
+[    0.000000] Dentry cache hash table entries: 262144 (order: 9, 2097152 bytes)
+[    0.000000] Inode-cache hash table entries: 131072 (order: 8, 1048576 bytes)
+[    0.000000] Sorting __ex_table...
+[    0.000000] Memory: 2039128K/2095104K available (6156K kernel code, 2727K rwdata, 1214K rodata, 1024K init, 664K bss, 55976K reserved, 0K cma-reserved)
+[    0.000000] virtual kernel memory layout:
+    0.000000]     vmalloc : 0x0000000000008000 - 0x000000003f000000   (1007 MB)
+    0.000000]     memory  : 0x0000000040000000 - 0x00000040bfe00000   (264190 MB)
+    0.000000]       .init : 0x0000000040100000 - 0x0000000040200000   (1024 kB)
+    0.000000]       .data : 0x0000000040803000 - 0x0000000040bdc8d0   (3942 kB)
+    0.000000]       .text : 0x0000000040200000 - 0x0000000040803000   (6156 kB)
+[    0.000000] Hierarchical RCU implementation.
+[    0.000000] 	Build-time adjustment of leaf fanout to 64.
+[    0.000000] NR_IRQS:128
+[    0.000000] clocksource: cr16: mask: 0xffffffffffffffff max_cycles: 0xb881be7834, max_idle_ns: 440795218296 ns
+[    0.000000] Console: colour dummy device 160x64
+[    0.004000] Calibrating delay loop... 1594.36 BogoMIPS (lpj=3188736)
+[    0.028000] pid_max: default: 32768 minimum: 301
+[    0.028000] Security Framework initialized
+[    0.028000] Yama: becoming mindful.
+[    0.028000] AppArmor: AppArmor disabled by boot time parameter
+[    0.036000] Mount-cache hash table entries: 4096 (order: 3, 32768 bytes)
+[    0.036000] Mountpoint-cache hash table entries: 4096 (order: 3, 32768 bytes)
+[    0.044000] Brought up 1 CPUs
+[    0.044000] devtmpfs: initialized
+[    0.052000] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[    0.076000] NET: Registered protocol family 16
+[    0.076000] EISA bus registered
+[    0.080000] Searching for devices...
+[    0.212000] Found devices:
+[    0.212000] 1. Storm Peak Slow at 0xfffffffffe780000 [128] { 0, 0x0, 0x887, 0x00004 }
+[    0.212000] 2. Storm Peak Slow at 0xfffffffffe781000 [129] { 0, 0x0, 0x887, 0x00004 }
+[    0.212000] 3. Storm Peak Slow at 0xfffffffffe798000 [152] { 0, 0x0, 0x887, 0x00004 }
+[    0.220000] 4. Storm Peak Slow at 0xfffffffffe799000 [153] { 0, 0x0, 0x887, 0x00004 }
+[    0.224000] 5. Everest Mako Memory at 0xfffffffffed08000 [8] { 1, 0x0, 0x0af, 0x00009 }
+[    0.232000] 6. Pluto BC McKinley Port at 0xfffffffffed00000 [0] { 12, 0x0, 0x880, 0x0000c }
+[    0.240000] 7. Mercury PCI Bridge at 0xfffffffffed20000 [0/0] { 13, 0x0, 0x783, 0x0000a }
+[    0.240000] 8. Mercury PCI Bridge at 0xfffffffffed22000 [0/1] { 13, 0x0, 0x783, 0x0000a }
+[    0.248000] 9. Mercury PCI Bridge at 0xfffffffffed24000 [0/2] { 13, 0x0, 0x783, 0x0000a }
+[    0.256000] 10. Mercury PCI Bridge at 0xfffffffffed26000 [0/3] { 13, 0x0, 0x783, 0x0000a }
+[    0.264000] 11. Mercury PCI Bridge at 0xfffffffffed28000 [0/4] { 13, 0x0, 0x783, 0x0000a }
+[    0.272000] 12. Mercury PCI Bridge at 0xfffffffffed2c000 [0/6] { 13, 0x0, 0x783, 0x0000a }
+[    0.280000] 13. Mercury PCI Bridge at 0xfffffffffed2e000 [0/7] { 13, 0x0, 0x783, 0x0000a }
+[    0.280000] 14. BMC IPMI Mgmt Ctlr at 0xfffffff0f05b0000 [16] { 15, 0x0, 0x004, 0x000c0 }
+[    0.288000] Enabling PDC_PAT chassis codes support v0.05
+[    0.912000] Releasing cpu 1 now, hpa=fffffffffe781000
+[    0.960000] FP[1] enabled: Rev 1 Model 20
+[    0.968000] Releasing cpu 2 now, hpa=fffffffffe798000
+[    1.016000] FP[2] enabled: Rev 1 Model 20
+[    1.024000] Releasing cpu 3 now, hpa=fffffffffe799000
+[    1.084000] FP[3] enabled: Rev 1 Model 20
+[    1.088000] CPU(s): 4 out of 4 PA8800 (Mako) at 800.010600 MHz online
+[    1.100000] Setting cache flush threshold to 32768 kB
+[    1.100000] Setting TLB flush threshold to 1436 kB
+[    1.140000] SBA found Pluto 2.3 at 0xfffffffffed00000
+[    1.340000] Mercury version TR3.2 (0x32) found at 0xfffffffffed20000
+[    1.396000] LBA 0:0: PCI host bridge to bus 0000:00
+[    1.396000] pci_bus 0000:00: root bus resource [io  0x0000-0xffff]
+[    1.396000] pci_bus 0000:00: root bus resource [mem 0xffffffff80000000-0xffffffff8fffffff] (bus address [0x80000000-0x8fffffff])
+[    1.404000] pci_bus 0000:00: root bus resource [bus 00-07]
+[    1.428000] Mercury version TR3.2 (0x32) found at 0xfffffffffed22000
+[    1.484000] LBA 0:1: PCI host bridge to bus 0000:20
+[    1.484000] pci_bus 0000:20: root bus resource [io  0x10000-0x1ffff] (bus address [0x0000-0xffff])
+[    1.484000] pci_bus 0000:20: root bus resource [mem 0xffffffff90000000-0xffffffff9fffffff] (bus address [0x90000000-0x9fffffff])
+[    1.492000] pci_bus 0000:20: root bus resource [bus 20-27]
+[    1.524000] Mercury version TR3.2 (0x32) found at 0xfffffffffed24000
+[    1.580000] LBA 0:2: PCI host bridge to bus 0000:40
+[    1.580000] pci_bus 0000:40: root bus resource [io  0x20000-0x2ffff] (bus address [0x0000-0xffff])
+[    1.580000] pci_bus 0000:40: root bus resource [mem 0xffffffffa0000000-0xffffffffafffffff] (bus address [0xa0000000-0xafffffff])
+[    1.588000] pci_bus 0000:40: root bus resource [bus 40-47]
+[    1.620000] Mercury version TR3.2 (0x32) found at 0xfffffffffed26000
+[    1.676000] LBA 0:3: PCI host bridge to bus 0000:60
+[    1.676000] pci_bus 0000:60: root bus resource [io  0x30000-0x3ffff] (bus address [0x0000-0xffff])
+[    1.676000] pci_bus 0000:60: root bus resource [mem 0xffffffffb0000000-0xffffffffbfffffff] (bus address [0xb0000000-0xbfffffff])
+[    1.684000] pci_bus 0000:60: root bus resource [bus 60-67]
+[    1.716000] Mercury version TR3.2 (0x32) found at 0xfffffffffed28000
+[    1.748000] LBA: lmmio_space [0xffffffffc0000000-0xffffffffdfffffff] - new
+[    1.772000] LBA 0:4: PCI host bridge to bus 0000:80
+[    1.772000] pci_bus 0000:80: root bus resource [io  0x40000-0x4ffff] (bus address [0x0000-0xffff])
+[    1.772000] pci_bus 0000:80: root bus resource [mem 0xffffffffc0000000-0xffffffffdfffffff] (bus address [0xc0000000-0xdfffffff])
+[    1.784000] pci_bus 0000:80: root bus resource [bus 80-87]
+[    1.812000] Mercury version TR3.2 (0x32) found at 0xfffffffffed2c000
+[    1.868000] LBA 0:6: PCI host bridge to bus 0000:c0
+[    1.868000] pci_bus 0000:c0: root bus resource [io  0x50000-0x5ffff] (bus address [0x0000-0xffff])
+[    1.872000] pci_bus 0000:c0: root bus resource [mem 0xffffffffe0000000-0xffffffffefffffff] (bus address [0xe0000000-0xefffffff])
+[    1.880000] pci_bus 0000:c0: root bus resource [bus c0-c7]
+[    1.912000] Mercury version TR3.2 (0x32) found at 0xfffffffffed2e000
+[    1.944000] LBA: lmmio_space [0xfffffffff0000000-0xfffffffffe77ffff] - new
+[    1.968000] LBA 0:7: PCI host bridge to bus 0000:e0
+[    1.968000] pci_bus 0000:e0: root bus resource [io  0x60000-0x6ffff] (bus address [0x0000-0xffff])
+[    1.968000] pci_bus 0000:e0: root bus resource [mem 0xfffffffff0000000-0xfffffffffe77ffff] (bus address [0xf0000000-0xfe77ffff])
+[    1.976000] pci_bus 0000:e0: root bus resource [bus e0-e7]
+[    1.988000] powersw: Soft power switch support not available.
+[    2.024000] HugeTLB registered 2 MB page size, pre-allocated 0 pages
+[    2.048000] vgaarb: setting as boot device: PCI:0000:e0:02.0
+[    2.048000] vgaarb: device added: PCI:0000:e0:02.0,decodes=io+mem,owns=io+mem,locks=none
+[    2.048000] vgaarb: loaded
+[    2.048000] vgaarb: bridge control possible 0000:e0:02.0
+[    2.056000] VFS: Disk quotas dquot_6.6.0
+[    2.056000] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
+[    2.068000] NET: Registered protocol family 2
+[    2.092000] TCP established hash table entries: 16384 (order: 5, 131072 bytes)
+[    2.092000] TCP bind hash table entries: 16384 (order: 6, 262144 bytes)
+[    2.092000] TCP: Hash tables configured (established 16384 bind 16384)
+[    2.100000] UDP hash table entries: 1024 (order: 3, 32768 bytes)
+[    2.100000] UDP-Lite hash table entries: 1024 (order: 3, 32768 bytes)
+[    2.108000] NET: Registered protocol family 1
+[    2.176000] Unpacking initramfs...
+[    2.348000] Freeing initrd memory: 3044K (000000007fcf4000 - 000000007ffed000)
+[    2.348000] Chassis warnings not supported.
+[    2.348000] Performance monitoring counters enabled for Storm Peak Slow
+[    2.352000] futex hash table entries: 2048 (order: 4, 65536 bytes)
+[    2.356000] audit: initializing netlink subsys (disabled)
+[    2.364000] audit: type=2000 audit(1456077963.364:1): initialized
+[    2.364000] zbud: loaded
+[    2.372000] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 252)
+[    2.372000] io scheduler noop registered
+[    2.376000] io scheduler deadline registered
+[    2.376000] io scheduler cfq registered (default)
+[    2.384000] PDC Stable Storage facility v0.30
+[    2.432000] STI GSC/PCI core graphics driver Version 0.9b
+[    2.432000] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+[    2.476000] 0000:e0:01.0: ttyS0 at MMIO 0xfffffffff4051000 (irq = 75, base_baud = 115200) is a 16550A
+[    2.520000] 0000:e0:01.1: ttyS1 at MMIO 0xfffffffff4050000 (irq = 75, base_baud = 115200) is a 16550A
+[    2.520000] console [ttyS1] enabled
+[    2.520000] console [ttyS1] enabled
+[    2.524000] bootconsole [ttyB0] disabled
+[    2.524000] bootconsole [ttyB0] disabled
+[    2.552000] 0000:e0:01.1: ttyS2 at MMIO 0xfffffffff4050010 (irq = 75, base_baud = 115200) is a 16550A
+[    2.572000] 0000:e0:01.1: ttyS3 at MMIO 0xfffffffff4050038 (irq = 75, base_baud = 115200) is a 16550A
+[    2.572000] Linux agpgart interface v0.103
+[    2.572000] quicksilver: No AGP devices found.
+[    2.572000] [drm] Initialized drm 1.1.0 20060810
+[    2.580000] mousedev: PS/2 mouse device common for all mice
+[    2.588000] rtc-generic rtc-generic: rtc core: registered rtc-generic as rtc0
+[    2.588000] ledtrig-cpu: registered to indicate activity on CPUs
+[    2.620000] NET: Registered protocol family 10
+[    2.620000] mip6: Mobile IPv6
+[    2.620000] NET: Registered protocol family 17
+[    2.620000] mpls_gso: MPLS GSO support
+[    2.620000] registered taskstats version 1
+[    2.628000] zswap: loaded using pool lzo/zbud
+[    2.636000] rtc-generic rtc-generic: setting system clock to 2016-02-21 18:06:03 UTC (1456077963)
+[    2.660000] Freeing unused kernel memory: 1024K (0000000040100000 - 0000000040200000)
+Loading, please wait...
+/scripts/init-top/udev: line 14: can't create /sys/kernel/uevent_helper: Permission denied
+Begin: Loading essential drivers ... [    3.312000] SCSI subsystem initialized
+[    3.880000] sym0: <1010-66> rev 0x1 at pci 0000:20:01.0 irq 70
+[    3.884000] sym0: No NVRAM, ID 7, Fast-80, LVD, parity checking
+[    3.924000] sym0: SCSI BUS has been reset.
+[    3.924000] scsi host0: sym-2.2.3
+[    4.124000] sym1: <1010-66> rev 0x1 at pci 0000:20:01.1 irq 71
+[    4.128000] sym1: No NVRAM, ID 7, Fast-80, LVD, parity checking
+[    4.168000] sym1: SCSI BUS has been reset.
+[    4.168000] scsi host1: sym-2.2.3
+[    6.936000] scsi 0:0:0:0: Direct-Access     HP 73.4G ST373405LC       HP03 PQ: 0 ANSI: 2
+[    6.936000] scsi target0:0:0: tagged command queuing enabled, command queue depth 16.
+[    6.936000] scsi target0:0:0: Beginning Domain Validation
+[    6.956000] scsi target0:0:0: FAST-80 WIDE SCSI 160.0 MB/s DT (12.5 ns, offset 31)
+[    6.972000] scsi target0:0:0: Ending Domain Validation
+[    6.980000] scsi 0:0:1:0: Direct-Access     HP 73.4G MAX3073NC        HPC1 PQ: 0 ANSI: 3
+[    6.980000] scsi target0:0:1: tagged command queuing enabled, command queue depth 16.
+[    6.980000] scsi target0:0:1: Beginning Domain Validation
+[    6.996000] scsi target0:0:1: FAST-80 WIDE SCSI 160.0 MB/s DT (12.5 ns, offset 31)
+[    7.004000] scsi target0:0:1: Ending Domain Validation
+[    7.816000] scsi 1:0:2:0: Direct-Access     HP 73.4G ST373405LC       HP03 PQ: 0 ANSI: 2
+[    7.820000] scsi target1:0:2: tagged command queuing enabled, command queue depth 16.
+[    7.820000] scsi target1:0:2: Beginning Domain Validation
+[    7.840000] scsi target1:0:2: FAST-80 WIDE SCSI 160.0 MB/s DT (12.5 ns, offset 31)
+[    7.856000] scsi target1:0:2: Ending Domain Validation
+[    8.936000] random: nonblocking pool is initialized
+[   10.888000] sd 0:0:0:0: [sda] 143374738 512-byte logical blocks: (73.4 GB/68.4 GiB)
+[   10.888000] sd 0:0:1:0: [sdb] 143374738 512-byte logical blocks: (73.4 GB/68.4 GiB)
+[   10.888000] sd 0:0:0:0: [sda] Write Protect is off
+[   10.892000] sd 0:0:1:0: [sdb] Write Protect is off
+[   10.892000] sd 0:0:1:0: [sdb] Write cache: disabled, read cache: enabled, supports DPO and FUA
+[   10.916000] sd 0:0:0:0: [sda] Write cache: disabled, read cache: enabled, supports DPO and FUA
+[   10.928000]  sdb: sdb1 sdb2 sdb3
+[   10.968000]  sda: sda1 sda2 sda3
+[   10.988000] sd 0:0:1:0: [sdb] Attached SCSI disk
+[   10.996000] sd 0:0:0:0: [sda] Attached SCSI disk
+[   11.428000] sd 1:0:2:0: [sdc] 143374738 512-byte logical blocks: (73.4 GB/68.4 GiB)
+[   11.428000] sd 1:0:2:0: [sdc] Write Protect is off
+[   11.432000] sd 1:0:2:0: [sdc] Write cache: disabled, read cache: enabled, supports DPO and FUA
+[   11.472000]  sdc: sdc1
+[   11.500000] sd 1:0:2:0: [sdc] Attached SCSI disk
+done.
+Begin: Running /scripts/init-premount ... done.
+Begin: Mounting root file system ... Begin: Running /scripts/local-top ... done.
+error sending message: Connection refused
+udevadm[129]: error sending message: Connection refused
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
+Begin: Running /scripts/local-premount ... done.
+[   12.300000] EXT4-fs (sda3): mounting ext3 file system using the ext4 subsystem
+[   12.320000] EXT4-fs (sda3): mounted filesystem with ordered data mode. Opts: (null)
+Begin: Running /scripts/local-bottom ... done.
+done.
+Begin: Running /scripts/init-bottom ... done.
+INIT: version 2.88 booting
+Setting hostname to 'ion'...done.
+udev requires hotplug support, not started. ... failed!
+ failed!
+Setting the system clock.
+System Clock set to: Sun Feb 21 18:06:17 UTC 2016.
+Activating swap:swapon on /dev/sda2
+swapon: /dev/sda2: found swap signature: version 1, page-size 4, same byte order
+swapon: /dev/sda2: pagesize=4096, swapsize=1028157440, devsize=1028160000
+[   16.128000] Adding 1004056k swap on /dev/sda2.  Priority:-1 extents:1 across:1004056k FS
+.
+[   16.296000] EXT4-fs (sda3): re-mounted. Opts: (null)
+Will now check root file system:fsck from util-linux-ng 2.17.2
+[/sbin/fsck.ext3 (1) -- /] fsck.ext3 -a -C0 /dev/sda3 
+/dev/sda3: clean, 1959576/8814592 files, 10926496/17605231 blocks
+.
+[   16.616000] EXT4-fs (sda3): re-mounted. Opts: errors=remount-ro
+Setting the system clock.
+System Clock set to: Sun Feb 21 18:06:19 UTC 2016.
+Cleaning up ifupdown....
+Loading kernel module tg3.
+WARNING: All config files need .conf: /etc/modprobe.d/arch, it will be ignored in a future release.
+[   18.980000] pps_core: LinuxPPS API ver. 1 registered
+[   18.980000] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+[   19.092000] PTP clock support registered
+[   19.384000] tg3.c:v3.137 (May 11, 2014)
+[   20.904000] tg3 0000:20:02.0 eth0: Tigon3 [partno(BCM95700A6) rev 0105] (PCI:66MHz:64-bit) MAC address 00:30:6e:4b:15:59
+[   20.904000] tg3 0000:20:02.0 eth0: attached PHY is 5701 (10/100/1000Base-T Ethernet) (WireSpeed[1], EEE[0])
+[   20.912000] tg3 0000:20:02.0 eth0: RXcsums[1] LinkChgREG[0] MIirq[0] ASF[0] TSOcap[0]
+[   20.912000] tg3 0000:20:02.0 eth0: dma_rwctrl[76ff2d0f] dma_mask[32-bit]
+Will now activate lvm and md swap:done.
+Will now check all file systems.
+fsck from util-linux-ng 2.17.2
+Checking all file systems.
+[/sbin/fsck.ext2 (1) -- /boot] fsck.ext2 -a -C0 /dev/sda1 
+/dev/sda1: clean, 55/64256 files, 153810/257008 blocks
+Done checking file systems. A log is being saved in /var/log/fsck/checkfs if that location is writable..
+Setting kernel variables ... /etc/sysctl.conf... /etc/sysctl.d/bindv6only.conf...done.
+Will now mount local filesystems:[   21.568000] EXT4-fs (sda1): mounting ext2 file system using the ext4 subsystem
+[   21.580000] EXT4-fs (sda1): mounted filesystem without journal. Opts: (null)
+mount: /sys already mounted or /sys busy
+mount: according to mtab, sysfs is already mounted on /sys
+ failed!
+Will now activate swapfile swap:done.
+Cleaning up temporary files...Cleaning /tmp...done.
+Cleaning /var/run...done.
+Cleaning /var/lock...done.
+.
+Checking minimum space in /tmp...done.
+Running 0dns-down to make sure resolv.conf is ok...done.
+Setting up networking....
+/etc/network/options still exists and it will be IGNORED! Read README.Debian of netbase. ... (warning).
+Configuring network interfaces...Internet Systems Consortium DHCP Client 4.1.1-P1
+Copyright 2004-2010 Internet Systems Consortium.
+All rights reserved.
+For info, please visit https://www.isc.org/software/dhcp/
 
-
-
---Apple-Mail-2-1029604226
-Content-Disposition: attachment;
-	filename=generic_make_request.d.txt
-Content-Type: text/plain;
-	name="generic_make_request.d.txt"
-Content-Transfer-Encoding: quoted-printable
-
-diff --git a/block/blk-core.c b/block/blk-core.c
-index d1796b5..60912e9 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -643,6 +643,10 @@ struct request_queue *blk_alloc_queue_node(gfp_t =
-gfp_mask, int node_id)
- 	if (q->id < 0)
- 		goto fail_q;
-=20
-+	q->bio_split =3D bioset_create(BIO_POOL_SIZE, 0);
-+	if (!q->bio_split)
-+		goto fail_id;
-+
- 	q->backing_dev_info.ra_pages =3D
- 			(VM_MAX_READAHEAD * 1024) / PAGE_CACHE_SIZE;
- 	q->backing_dev_info.capabilities =3D BDI_CAP_CGROUP_WRITEBACK;
-@@ -651,7 +655,7 @@ struct request_queue *blk_alloc_queue_node(gfp_t =
-gfp_mask, int node_id)
-=20
- 	err =3D bdi_init(&q->backing_dev_info);
- 	if (err)
--		goto fail_id;
-+		goto fail_split;
-=20
- 	setup_timer(&q->backing_dev_info.laptop_mode_wb_timer,
- 		    laptop_mode_timer_fn, (unsigned long) q);
-@@ -693,6 +697,8 @@ struct request_queue *blk_alloc_queue_node(gfp_t =
-gfp_mask, int node_id)
-=20
- fail_bdi:
- 	bdi_destroy(&q->backing_dev_info);
-+fail_split:
-+	bioset_free(q->bio_split);
- fail_id:
- 	ida_simple_remove(&blk_queue_ida, q->id);
- fail_q:
-@@ -1610,6 +1616,8 @@ static void blk_queue_bio(struct request_queue *q, =
-struct bio *bio)
- 	struct request *req;
- 	unsigned int request_count =3D 0;
-=20
-+	blk_queue_split(q, &bio, q->bio_split);
-+
- 	/*
- 	 * low level driver can indicate that it wants pages above a
- 	 * certain limit bounced to low memory (ie for highmem, or even
-@@ -1832,15 +1840,6 @@ generic_make_request_checks(struct bio *bio)
- 		goto end_io;
- 	}
-=20
--	if (likely(bio_is_rw(bio) &&
--		   nr_sectors > queue_max_hw_sectors(q))) {
--		printk(KERN_ERR "bio too big device %s (%u > %u)\n",
--		       bdevname(bio->bi_bdev, b),
--		       bio_sectors(bio),
--		       queue_max_hw_sectors(q));
--		goto end_io;
--	}
--
- 	part =3D bio->bi_bdev->bd_part;
- 	if (should_fail_request(part, bio->bi_iter.bi_size) ||
- 	    should_fail_request(&part_to_disk(part)->part0,
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index a455b98..d9c3a75 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -9,12 +9,158 @@
-=20
- #include "blk.h"
-=20
-+static struct bio *blk_bio_discard_split(struct request_queue *q,
-+					 struct bio *bio,
-+					 struct bio_set *bs)
-+{
-+	unsigned int max_discard_sectors, granularity;
-+	int alignment;
-+	sector_t tmp;
-+	unsigned split_sectors;
-+
-+	/* Zero-sector (unknown) and one-sector granularities are the =
-same.  */
-+	granularity =3D max(q->limits.discard_granularity >> 9, 1U);
-+
-+	max_discard_sectors =3D min(q->limits.max_discard_sectors, =
-UINT_MAX >> 9);
-+	max_discard_sectors -=3D max_discard_sectors % granularity;
-+
-+	if (unlikely(!max_discard_sectors)) {
-+		/* XXX: warn */
-+		return NULL;
-+	}
-+
-+	if (bio_sectors(bio) <=3D max_discard_sectors)
-+		return NULL;
-+
-+	split_sectors =3D max_discard_sectors;
-+
-+	/*
-+	 * If the next starting sector would be misaligned, stop the =
-discard at
-+	 * the previous aligned sector.
-+	 */
-+	alignment =3D (q->limits.discard_alignment >> 9) % granularity;
-+
-+	tmp =3D bio->bi_iter.bi_sector + split_sectors - alignment;
-+	tmp =3D sector_div(tmp, granularity);
-+
-+	if (split_sectors > tmp)
-+		split_sectors -=3D tmp;
-+
-+	return bio_split(bio, split_sectors, GFP_NOIO, bs);
-+}
-+
-+static struct bio *blk_bio_write_same_split(struct request_queue *q,
-+					    struct bio *bio,
-+					    struct bio_set *bs)
-+{
-+	if (!q->limits.max_write_same_sectors)
-+		return NULL;
-+
-+	if (bio_sectors(bio) <=3D q->limits.max_write_same_sectors)
-+		return NULL;
-+
-+	return bio_split(bio, q->limits.max_write_same_sectors, =
-GFP_NOIO, bs);
-+}
-+
-+static struct bio *blk_bio_segment_split(struct request_queue *q,
-+					 struct bio *bio,
-+					 struct bio_set *bs)
-+{
-+	struct bio *split;
-+	struct bio_vec bv, bvprv;
-+	struct bvec_iter iter;
-+	unsigned seg_size =3D 0, nsegs =3D 0;
-+	int prev =3D 0;
-+
-+	struct bvec_merge_data bvm =3D {
-+		.bi_bdev	=3D bio->bi_bdev,
-+		.bi_sector	=3D bio->bi_iter.bi_sector,
-+		.bi_size	=3D 0,
-+		.bi_rw		=3D bio->bi_rw,
-+	};
-+
-+	bio_for_each_segment(bv, bio, iter) {
-+		if (q->merge_bvec_fn &&
-+		    q->merge_bvec_fn(q, &bvm, &bv) < (int) bv.bv_len)
-+			goto split;
-+
-+		bvm.bi_size +=3D bv.bv_len;
-+
-+		if (bvm.bi_size >> 9 > queue_max_sectors(q))
-+			goto split;
-+
-+		/*
-+		 * If the queue doesn't support SG gaps and adding this
-+		 * offset would create a gap, disallow it.
-+		 */
-+		if (q->queue_flags & (1 << QUEUE_FLAG_SG_GAPS) &&
-+		    prev && bvec_gap_to_prev(&bvprv, bv.bv_offset))
-+			goto split;
-+
-+		if (prev && blk_queue_cluster(q)) {
-+			if (seg_size + bv.bv_len > =
-queue_max_segment_size(q))
-+				goto new_segment;
-+			if (!BIOVEC_PHYS_MERGEABLE(&bvprv, &bv))
-+				goto new_segment;
-+			if (!BIOVEC_SEG_BOUNDARY(q, &bvprv, &bv))
-+				goto new_segment;
-+
-+			seg_size +=3D bv.bv_len;
-+			bvprv =3D bv;
-+			prev =3D 1;
-+			continue;
-+		}
-+new_segment:
-+		if (nsegs =3D=3D queue_max_segments(q))
-+			goto split;
-+
-+		nsegs++;
-+		bvprv =3D bv;
-+		prev =3D 1;
-+		seg_size =3D bv.bv_len;
-+	}
-+
-+	return NULL;
-+split:
-+	split =3D bio_clone_bioset(bio, GFP_NOIO, bs);
-+
-+	split->bi_iter.bi_size -=3D iter.bi_size;
-+	bio->bi_iter =3D iter;
-+
-+	if (bio_integrity(bio)) {
-+		bio_integrity_advance(bio, split->bi_iter.bi_size);
-+		bio_integrity_trim(split, 0, bio_sectors(split));
-+	}
-+
-+	return split;
-+}
-+
-+void blk_queue_split(struct request_queue *q, struct bio **bio,
-+		     struct bio_set *bs)
-+{
-+	struct bio *split;
-+
-+	if ((*bio)->bi_rw & REQ_DISCARD)
-+		split =3D blk_bio_discard_split(q, *bio, bs);
-+	else if ((*bio)->bi_rw & REQ_WRITE_SAME)
-+		split =3D blk_bio_write_same_split(q, *bio, bs);
-+	else
-+		split =3D blk_bio_segment_split(q, *bio, q->bio_split);
-+
-+	if (split) {
-+		bio_chain(split, *bio);
-+		generic_make_request(*bio);
-+		*bio =3D split;
-+	}
-+}
-+EXPORT_SYMBOL(blk_queue_split);
-+
- static unsigned int __blk_recalc_rq_segments(struct request_queue *q,
- 					     struct bio *bio,
- 					     bool no_sg_merge)
- {
- 	struct bio_vec bv, bvprv =3D { NULL };
--	int cluster, high, highprv =3D 1;
-+	int cluster, prev =3D 0;
- 	unsigned int seg_size, nr_phys_segs;
- 	struct bio *fbio, *bbio;
- 	struct bvec_iter iter;
-@@ -36,7 +182,6 @@ static unsigned int __blk_recalc_rq_segments(struct =
-request_queue *q,
- 	cluster =3D blk_queue_cluster(q);
- 	seg_size =3D 0;
- 	nr_phys_segs =3D 0;
--	high =3D 0;
- 	for_each_bio(bio) {
- 		bio_for_each_segment(bv, bio, iter) {
- 			/*
-@@ -46,13 +191,7 @@ static unsigned int __blk_recalc_rq_segments(struct =
-request_queue *q,
- 			if (no_sg_merge)
- 				goto new_segment;
-=20
--			/*
--			 * the trick here is making sure that a high =
-page is
--			 * never considered part of another segment, =
-since
--			 * that might change with the bounce page.
--			 */
--			high =3D page_to_pfn(bv.bv_page) > =
-queue_bounce_pfn(q);
--			if (!high && !highprv && cluster) {
-+			if (prev && cluster) {
- 				if (seg_size + bv.bv_len
- 				    > queue_max_segment_size(q))
- 					goto new_segment;
-@@ -72,8 +211,8 @@ new_segment:
-=20
- 			nr_phys_segs++;
- 			bvprv =3D bv;
-+			prev =3D 1;
- 			seg_size =3D bv.bv_len;
--			highprv =3D high;
- 		}
- 		bbio =3D bio;
- 	}
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 9455902..81edbd9 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -1287,6 +1287,8 @@ static void blk_mq_make_request(struct =
-request_queue *q, struct bio *bio)
- 		return;
- 	}
-=20
-+	blk_queue_split(q, &bio, q->bio_split);
-+
- 	if (!is_flush_fua && !blk_queue_nomerges(q) &&
- 	    blk_attempt_plug_merge(q, bio, &request_count, =
-&same_queue_rq))
- 		return;
-@@ -1372,6 +1374,8 @@ static void blk_sq_make_request(struct =
-request_queue *q, struct bio *bio)
- 		return;
- 	}
-=20
-+	blk_queue_split(q, &bio, q->bio_split);
-+
- 	if (!is_flush_fua && !blk_queue_nomerges(q) &&
- 	    blk_attempt_plug_merge(q, bio, &request_count, NULL))
- 		return;
-diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index b1f34e4..3e44a9d 100644
---- a/block/blk-sysfs.c
-+++ b/block/blk-sysfs.c
-@@ -561,6 +561,9 @@ static void blk_release_queue(struct kobject *kobj)
-=20
- 	blk_trace_shutdown(q);
-=20
-+	if (q->bio_split)
-+		bioset_free(q->bio_split);
-+
- 	ida_simple_remove(&blk_queue_ida, q->id);
- 	call_rcu(&q->rcu_head, blk_free_queue_rcu);
- }
-diff --git a/drivers/block/drbd/drbd_req.c =
-b/drivers/block/drbd/drbd_req.c
-index 9cb4116..923c857 100644
---- a/drivers/block/drbd/drbd_req.c
-+++ b/drivers/block/drbd/drbd_req.c
-@@ -1499,6 +1499,8 @@ void drbd_make_request(struct request_queue *q, =
-struct bio *bio)
- 	struct drbd_device *device =3D (struct drbd_device *) =
-q->queuedata;
- 	unsigned long start_jif;
-=20
-+	blk_queue_split(q, &bio, q->bio_split);
-+
- 	start_jif =3D jiffies;
-=20
- 	/*
-diff --git a/drivers/block/pktcdvd.c b/drivers/block/pktcdvd.c
-index a7a259e..ee7ad5e 100644
---- a/drivers/block/pktcdvd.c
-+++ b/drivers/block/pktcdvd.c
-@@ -2447,6 +2447,10 @@ static void pkt_make_request(struct request_queue =
-*q, struct bio *bio)
- 	char b[BDEVNAME_SIZE];
- 	struct bio *split;
-=20
-+	blk_queue_bounce(q, &bio);
-+
-+	blk_queue_split(q, &bio, q->bio_split);
-+
- 	pd =3D q->queuedata;
- 	if (!pd) {
- 		pr_err("%s incorrect request queue\n",
-@@ -2477,8 +2481,6 @@ static void pkt_make_request(struct request_queue =
-*q, struct bio *bio)
- 		goto end_io;
- 	}
-=20
--	blk_queue_bounce(q, &bio);
--
- 	do {
- 		sector_t zone =3D get_zone(bio->bi_iter.bi_sector, pd);
- 		sector_t last_zone =3D get_zone(bio_end_sector(bio) - 1, =
-pd);
-diff --git a/drivers/block/ps3vram.c b/drivers/block/ps3vram.c
-index 49b4706..d89fcac 100644
---- a/drivers/block/ps3vram.c
-+++ b/drivers/block/ps3vram.c
-@@ -606,6 +606,8 @@ static void ps3vram_make_request(struct =
-request_queue *q, struct bio *bio)
-=20
- 	dev_dbg(&dev->core, "%s\n", __func__);
-=20
-+	blk_queue_split(q, &bio, q->bio_split);
-+
- 	spin_lock_irq(&priv->lock);
- 	busy =3D !bio_list_empty(&priv->list);
- 	bio_list_add(&priv->list, bio);
-diff --git a/drivers/block/rsxx/dev.c b/drivers/block/rsxx/dev.c
-index 63b9d2f..3163e4cdc 100644
---- a/drivers/block/rsxx/dev.c
-+++ b/drivers/block/rsxx/dev.c
-@@ -151,6 +151,8 @@ static void rsxx_make_request(struct request_queue =
-*q, struct bio *bio)
- 	struct rsxx_bio_meta *bio_meta;
- 	int st =3D -EINVAL;
-=20
-+	blk_queue_split(q, &bio, q->bio_split);
-+
- 	might_sleep();
-=20
- 	if (!card)
-diff --git a/drivers/block/umem.c b/drivers/block/umem.c
-index 3b3afd2..04d6579 100644
---- a/drivers/block/umem.c
-+++ b/drivers/block/umem.c
-@@ -531,6 +531,8 @@ static void mm_make_request(struct request_queue *q, =
-struct bio *bio)
- 		 (unsigned long long)bio->bi_iter.bi_sector,
- 		 bio->bi_iter.bi_size);
-=20
-+	blk_queue_split(q, &bio, q->bio_split);
-+
- 	spin_lock_irq(&card->lock);
- 	*card->biotail =3D bio;
- 	bio->bi_next =3D NULL;
-diff --git a/drivers/block/zram/zram_drv.c =
-b/drivers/block/zram/zram_drv.c
-index 68c3d48..aec781a 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -900,6 +900,8 @@ static void zram_make_request(struct request_queue =
-*queue, struct bio *bio)
- 	if (unlikely(!zram_meta_get(zram)))
- 		goto error;
-=20
-+	blk_queue_split(queue, &bio, queue->bio_split);
-+
- 	if (!valid_io_request(zram, bio->bi_iter.bi_sector,
- 					bio->bi_iter.bi_size)) {
- 		atomic64_inc(&zram->stats.invalid_io);
-diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index 7f367fc..069f8d7 100644
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -1799,6 +1799,8 @@ static void dm_make_request(struct request_queue =
-*q, struct bio *bio)
-=20
- 	map =3D dm_get_live_table(md, &srcu_idx);
-=20
-+	blk_queue_split(q, &bio, q->bio_split);
-+
- 	generic_start_io_acct(rw, bio_sectors(bio), =
-&dm_disk(md)->part0);
-=20
- 	/* if we're suspended, we have to queue this io for later */
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index ac4381a..e1d8723 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -257,6 +257,8 @@ static void md_make_request(struct request_queue *q, =
-struct bio *bio)
- 	unsigned int sectors;
- 	int cpu;
-=20
-+	blk_queue_split(q, &bio, q->bio_split);
-+
- 	if (mddev =3D=3D NULL || mddev->pers =3D=3D NULL
- 	    || !mddev->ready) {
- 		bio_io_error(bio);
-diff --git a/drivers/s390/block/dcssblk.c b/drivers/s390/block/dcssblk.c
-index 8bcb822..29ea239 100644
---- a/drivers/s390/block/dcssblk.c
-+++ b/drivers/s390/block/dcssblk.c
-@@ -826,6 +826,8 @@ dcssblk_make_request(struct request_queue *q, struct =
-bio *bio)
- 	unsigned long source_addr;
- 	unsigned long bytes_done;
-=20
-+	blk_queue_split(q, &bio, q->bio_split);
-+
- 	bytes_done =3D 0;
- 	dev_info =3D bio->bi_bdev->bd_disk->private_data;
- 	if (dev_info =3D=3D NULL)
-diff --git a/drivers/s390/block/xpram.c b/drivers/s390/block/xpram.c
-index 93856b9..02871f1 100644
---- a/drivers/s390/block/xpram.c
-+++ b/drivers/s390/block/xpram.c
-@@ -190,6 +190,8 @@ static void xpram_make_request(struct request_queue =
-*q, struct bio *bio)
- 	unsigned long page_addr;
- 	unsigned long bytes;
-=20
-+	blk_queue_split(q, &bio, q->bio_split);
-+
- 	if ((bio->bi_iter.bi_sector & 7) !=3D 0 ||
- 	    (bio->bi_iter.bi_size & 4095) !=3D 0)
- 		/* Request is not page-aligned. */
-diff --git a/drivers/staging/lustre/lustre/llite/lloop.c =
-b/drivers/staging/lustre/lustre/llite/lloop.c
-index cc00fd1..1e33d54 100644
---- a/drivers/staging/lustre/lustre/llite/lloop.c
-+++ b/drivers/staging/lustre/lustre/llite/lloop.c
-@@ -340,6 +340,8 @@ static void loop_make_request(struct request_queue =
-*q, struct bio *old_bio)
- 	int rw =3D bio_rw(old_bio);
- 	int inactive;
-=20
-+	blk_queue_split(q, &old_bio, q->bio_split);
-+
- 	if (!lo)
- 		goto err;
-=20
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 243f29e..ca778d9 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -463,6 +463,7 @@ struct request_queue {
-=20
- 	struct blk_mq_tag_set	*tag_set;
- 	struct list_head	tag_set_list;
-+	struct bio_set		*bio_split;
- };
-=20
- #define QUEUE_FLAG_QUEUED	1	/* uses generic tag queueing */
-@@ -783,6 +784,8 @@ extern void blk_rq_unprep_clone(struct request *rq);
- extern int blk_insert_cloned_request(struct request_queue *q,
- 				     struct request *rq);
- extern void blk_delay_queue(struct request_queue *, unsigned long);
-+extern void blk_queue_split(struct request_queue *, struct bio **,
-+			    struct bio_set *);
- extern void blk_recount_segments(struct request_queue *, struct bio *);
- extern int scsi_verify_blk_ioctl(struct block_device *, unsigned int);
- extern int scsi_cmd_blk_ioctl(struct block_device *, fmode_t,
-
---Apple-Mail-2-1029604226--
+[   24.416000] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+Listening on LPF/eth0/00:30:6e:4b:15:59
+Sending on   LPF/eth0/00:30:6e:4b:15:59
+Sending on   Socket/fallback
