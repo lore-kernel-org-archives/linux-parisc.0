@@ -1,128 +1,103 @@
 From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: SCSI bug
-Date: Tue, 23 Feb 2016 14:10:12 -0500
-Message-ID: <56CCAE94.3020109@bell.net>
-References: <28D5FC66-A9E6-4F3E-A8AC-F9E68A6BC543@bell.net>
- <82D4BF6F-05CF-4441-9530-79475BFF84F3@bell.net>
- <E2C8DBC2-F0AD-4C78-BD63-9C85B387E284@bell.net> <56C8E1AC.3030409@gmx.de>
- <038473FE-9E6D-4F03-BBD4-9844B7B529E1@bell.net>
- <9C42B388-96D5-412A-BAC3-14E93415CA21@bell.net>
- <1456026424.2268.5.camel@HansenPartnership.com>
- <14EF1F4E-8045-4990-B29E-D489E82B1929@bell.net>
- <1456078381.2340.5.camel@HansenPartnership.com>
- <D14AFC12-8245-4862-9FFA-92A4F114FC41@bell.net>
- <1456081676.2340.10.camel@HansenPartnership.com> <56CA11D2.3020900@gmx.de>
- <1456086490.2340.18.camel@HansenPartnership.com>
- <28582474-5AB3-4022-86FE-E823F5990623@bell.net> <56CA2982.1030607@gmx.de>
- <0905D3D6-635F-4E09-BFD0-2EBE5DA0B0CC@bell.net>
- <951EFC7D-4166-41E5-BD1B-E22EE7884AD7@bell.net>
- <38C40D56-D72B-4F87-AAF3-050391B9546D@bell.net> <56CC9FA2.6020107@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	linux-parisc List <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
+Subject: [BUG] "block: make generic_make_request handle arbitrarily sized bios" breaks boot on parisc-linux
+Date: Tue, 23 Feb 2016 21:28:22 -0500
+Message-ID: <227C05EC-5A1C-4FAF-89D8-4A45AF600EC4@bell.net>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-scsi@vger.kernel.org, Helge Deller <deller@gmx.de>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	linux-parisc List <linux-parisc@vger.kernel.org>,
+	kent.overstreet@gmail.com
+To: linux-block@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <56CC9FA2.6020107@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2016-02-23 1:06 PM, Helge Deller wrote:
-> On 23.02.2016 04:04, John David Anglin wrote:
->> On 2016-02-21, at 10:24 PM, John David Anglin wrote:
->>
->>> On 2016-02-21, at 7:53 PM, John David Anglin wrote:
->>>
->>>> Backtrace:
->>>> [<000000004046f4b0>] scsi_init_sgtable+0x70/0xb8
->>>> [<000000004046f564>] scsi_init_io+0x6c/0x220
->>>> [<000000000811c5c0>] sd_setup_read_write_cmnd+0x58/0x968 [sd_mod]
->>>> [<000000000811cf14>] sd_init_command+0x44/0x130 [sd_mod]
->>>> [<000000004046f81c>] scsi_setup_cmnd+0x104/0x1b0
->>>> [<000000004046fab8>] scsi_prep_fn+0x100/0x1a0
->>>> [<000000004035b9b0>] blk_peek_request+0x1b8/0x298
->>>> [<0000000040471028>] scsi_request_fn+0xf8/0xa90
->>>> [<0000000040357244>] __blk_run_queue+0x4c/0x70
->>>> [<00000000403802c4>] cfq_insert_request+0x2dc/0x580
->>>> [<0000000040356404>] __elv_add_request+0x1b4/0x300
->>>>
->>>> We have in blk-merge.c:
->>>>
->>>>                else {
->>>>                        /*
->>>>                         * If the driver previously mapped a shorter
->>>>                         * list, we could see a termination bit
->>>>                         * prematurely unless it fully inits the sg
->>>>                         * table on each mapping. We KNOW that there
->>>>                         * must be more entries here or the driver
->>>>                         * would be buggy, so force clear the
->>>>                         * termination bit to avoid doing a full
->>>>                         * sg_init_table() in drivers for each command.
->>>>                         */
->>>>                        if (sg_is_last (*sg))
->>>>                          printk ("__blk_segment_map_sg: clearing termination bi
->>>> t\n");
->>>>                        sg_unmark_end(*sg);
->>>>                        *sg = sg_next(*sg);
->>>>                        BUG_ON (!*sg);
->>>>                }
->>>>
->>>> The comment suggests there must be more entries...
->>> I'm thinking with the split the scsi driver needs to provide one or two extra entires in the sg list.
->>
->> With the attached patch, I'm able to boot 4.2.0-rc2+ on linux-block at commit
->> 54efd50bfd873e2dbf784e0b21a8027ba4299a3e.
->>
->> I didn't try to optimize the number of extra entries but I know one is not enough.
->>
->> I guess the puzzle is why the number of entries isn't calculated correctly in the first place.
->> Further, why does blk-merge believe that it's okay to go beyond the terminator?  Clearly,
->> the magic number isn't always set, etc.
->>
->> I added the WARN_ON so I'd know when we run off the end of the the list.
-> Still fails to boot for me on c3000
-> (although I think the patch is going into the right direction!):
->
-> [   25.140000] cdrom: Uniform CD-ROM driver Revision: 3.20
-> [   25.200000] sd 3:0:6:0: [sdb] Write cache: disabled, read cache: enabled, supports DPO and FUA
-> [   25.304000] sd 3:0:5:0: [sda] Write cache: disabled, read cache: enabled, supports DPO and FUA
-> [   25.436000]  sdb: sdb1 sdb2 sdb3 < sdb5 sdb6 >
-> [   25.488000]  sda: sda1 sda2 sda3 < sda5 sda6 >
-> [   25.560000] sd 3:0:6:0: [sdb] Attached SCSI disk
-> [   25.636000] scsi_id(112): unaligned access to 0x00000000faad5009 at ip=0x000000004100390b
-> [   25.752000] sd 3:0:5:0: [sda] Attached SCSI disk
-> [   25.832000] scsi_id(113): unaligned access to 0x00000000fa90a009 at ip=0x000000004100390b
-> [   25.972000] ------------[ cut here ]------------
-> [   26.028000] WARNING: at /build/linux-4.4-neu/linux-4.4.2/block/blk-merge.c:466
-This is this warning (not the one I added):
+The following block change breaks boot on parisc-linux:
 
-         /*
-          * Something must have been wrong if the figured number of
-          * segment is bigger than number of req's physical segments
-          */
-         WARN_ON(nsegs > rq->nr_phys_segments);
+commit 54efd50bfd873e2dbf784e0b21a8027ba4299a3e
+Author: Kent Overstreet <kent.overstreet@gmail.com>
+Date:   Thu Apr 23 22:37:18 2015 -0700
 
-We need backtrace to see who called blk_rq_map_sg.  Think driver didn't 
-provide enough segments.  Maybe
-my "+8" addition should be moved.  I don't think this warning was actual 
-failure point.
+   block: make generic_make_request handle arbitrarily sized bios
 
-James mentioned "Apparently in parisc we don't set the max segment size, 
-so we inherit 64k even in SCSI drivers."
-Can this be changed?
+   The way the block layer is currently written, it goes to great lengths
+   to avoid having to split bios; upper layer code (such as bio_add_page())
+   checks what the underlying device can handle and tries to always create
+   bios that don't need to be split.
 
-> [   26.116000] random: nonblocking pool is initialized
-> [   26.172000] Modules linked in: sr_mod cdrom sd_mod ata_generic ohci_pci ehci_pci ohci_hcd ehci_hcd pata_ns87415 libata sym53c8xx scsi_transport_spi usbcore scsi_modp
-> [   26.368000] CPU: 0 PID: 65 Comm: systemd-udevd Not tainted 4.4.0-1-parisc64-smp #1 Debian 4.4.2-3
-> [   26.476000] task: 00000000bbd70b08 ti: 00000000bbea8000 task.ti: 00000000bbea8000
-> [   26.564000]
-> [   26.584000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> [   26.640000] PSW: 00001000000001001111111100001110 Not tainted
-> [   26.708000] r00-03  000000ff0804ff0e 00000000409e8380 00000000404f18f4 00000000bbea91e0
-> [   26.804000] r04-07  00000000409b2b80 0000000000000000 0000000000000000 000000000000001e
+   But this approach becomes unwieldy and eventually breaks down with
+   stacked devices and devices with dynamic limits, and it adds a lot of
+   complexity. If the block layer could split bios as needed, we could
+   eliminate a lot of complexity elsewhere - particularly in stacked
+   drivers. Code that creates bios can then create whatever size bios are
+   convenient, and more importantly stacked drivers don't have to deal with
+   both their own bio size limitations and the limitations of the
+   (potentially multiple) devices underneath them.  In the future this will
+   let us delete merge_bvec_fn and a bunch of other code.
 
-Dave
+   We do this by adding calls to blk_queue_split() to the various
+   make_request functions that need it - a few can already handle arbitrary
+   size bios. Note that we add the call _after_ any call to
+   blk_queue_bounce(); this means that blk_queue_split() and
+   blk_recalc_rq_segments() don't need to be concerned with bouncing
+   affecting segment merging.
 
--- 
-John David Anglin  dave.anglin@bell.net
+   Some make_request_fn() callbacks were simple enough to audit and verify
+   they don't need blk_queue_split() calls. The skipped ones are:
+
+    * nfhd_make_request (arch/m68k/emu/nfblock.c)
+    * axon_ram_make_request (arch/powerpc/sysdev/axonram.c)
+    * simdisk_make_request (arch/xtensa/platforms/iss/simdisk.c)
+    * brd_make_request (ramdisk - drivers/block/brd.c)
+    * mtip_submit_request (drivers/block/mtip32xx/mtip32xx.c)
+    * loop_make_request
+    * null_queue_bio
+    * bcache's make_request fns
+
+   Some others are almost certainly safe to remove now, but will be left
+   for future patches.
+
+   Cc: Jens Axboe <axboe@kernel.dk>
+   Cc: Christoph Hellwig <hch@infradead.org>
+   Cc: Al Viro <viro@zeniv.linux.org.uk>
+   Cc: Ming Lei <ming.lei@canonical.com>
+   Cc: Neil Brown <neilb@suse.de>
+   Cc: Alasdair Kergon <agk@redhat.com>
+   Cc: Mike Snitzer <snitzer@redhat.com>
+   Cc: dm-devel@redhat.com
+   Cc: Lars Ellenberg <drbd-dev@lists.linbit.com>
+   Cc: drbd-user@lists.linbit.com
+   Cc: Jiri Kosina <jkosina@suse.cz>
+   Cc: Geoff Levand <geoff@infradead.org>
+   Cc: Jim Paris <jim@jtan.com>
+   Cc: Philip Kelleher <pjk1939@linux.vnet.ibm.com>
+   Cc: Minchan Kim <minchan@kernel.org>
+   Cc: Nitin Gupta <ngupta@vflare.org>
+   Cc: Oleg Drokin <oleg.drokin@intel.com>
+   Cc: Andreas Dilger <andreas.dilger@intel.com>
+   Acked-by: NeilBrown <neilb@suse.de> (for the 'md/md.c' bits)
+   Acked-by: Mike Snitzer <snitzer@redhat.com>
+   Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+   Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
+   [dpark: skip more mq-based drivers, resolve merge conflicts, etc.]
+   Signed-off-by: Dongsu Park <dpark@posteo.net>
+   Signed-off-by: Ming Lin <ming.l@ssi.samsung.com>
+   Signed-off-by: Jens Axboe <axboe@fb.com>
+
+This thread on the linux-parisc has most of the discussion and analysis:
+http://www.spinics.net/lists/linux-parisc/msg06710.html
+
+Essentially, the SCSI layer underestimates the number of sg segments needed and we run off the end of the sg list and crash.
+This happens because the protect bit is ignored.  As a result 4.3 and later kernels fail to boot.  This includes the current Debian
+kernel for hppa.
+
+Hopefully, the block group can help resolve this issue.  We can help with testing if needed.
+
+Thanks,
+Dave Anglin
+--
+John David Anglin	dave.anglin@bell.net
+
+
 
