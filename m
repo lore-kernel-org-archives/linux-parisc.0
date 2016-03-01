@@ -1,38 +1,32 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH 1/3] net: tulip: Use setup_timer()
-Date: Thu, 25 Feb 2016 16:52:06 -0500 (EST)
-Message-ID: <20160225.165206.1865735563237444924.davem@davemloft.net>
-References: <20160224135749.GA14342@amitoj-Inspiron-3542>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, julia.lawall@lip6.fr
-To: amitoj1606@gmail.com
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20160224135749.GA14342@amitoj-Inspiron-3542>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 0/6] rtc: generic: follow up for COMPILE_TEST
+Date: Tue,  1 Mar 2016 17:59:56 +0100
+Message-ID: <1456851608-3374907-1-git-send-email-arnd@arndb.de>
+Cc: linux-arm-kernel@lists.infradead.org,
+	Kyle McMartin <kyle@mcmartin.ca>, rtc-linux@googlegroups.com,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Return-path: <linux-sh-owner@vger.kernel.org>
+List-ID: <linux-sh.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Date: Wed, 24 Feb 2016 19:27:49 +0530
+Today's linux-next kernel allowed building the rtc-generic
+driver (and most other rtc drivers) on all architectures,
+but this caused some errors on architectures without asm/rtc.h.
 
-> Convert a call to init_timer and accompanying intializations of
-> the timer's data and function fields to a call to setup_timer.
-> 
-> The Coccinelle semantic patch that fixes this problem is
-> as follows:
-> 
-> // <smpl>
-> @@
-> expression t,f,d;
-> @@
-> 
-> -init_timer(&t);
-> +setup_timer(&t,f,d);
-> -t.data = d;
-> -t.function = f;
-> // </smpl>
-> 
-> Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
+This series reworks that driver to avoid the dependency,
+and simplifies all four implementations. My first approach
+was to split the driver into four separate drivers, but
+that didn't feel right when three of them have their own
+multiplexors.
 
-Applied.
+The first five patches can be applied independent of one other,
+while patch 6 is optional and can be applied when all others
+are merged. Alternatively, they can all go in through the
+rtc tree. I compile-tested only the powerpc and sh targets for
+which I happened to have cross-compilers installed.
+
+	Arnd
+
