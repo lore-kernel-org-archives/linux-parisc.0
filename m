@@ -1,80 +1,95 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 3/6] powerpc: rtc: provide rtc_class_ops directly
-Date: Tue,  1 Mar 2016 17:59:59 +0100
-Message-ID: <1456851608-3374907-4-git-send-email-arnd@arndb.de>
+Subject: [PATCH 5/6] sh: rtc: provide rtc_class_ops directly
+Date: Tue,  1 Mar 2016 18:00:01 +0100
+Message-ID: <1456851608-3374907-6-git-send-email-arnd@arndb.de>
 References: <1456851608-3374907-1-git-send-email-arnd@arndb.de>
 Cc: linux-arm-kernel@lists.infradead.org,
 	Kyle McMartin <kyle@mcmartin.ca>, rtc-linux@googlegroups.com,
 	Alessandro Zummo <a.zummo@towertech.it>,
 	linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
 	linux-parisc@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Paul Mackerras <paulus@samba.org>,
-	Michael Ellerman <mpe@ellerman.id.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	Arnd Bergmann <arnd@arndb.de>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>, linux-kernel@vger.kernel.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <1456851608-3374907-1-git-send-email-arnd@arndb.de>
-List-ID: <linux-kernel.vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 The rtc-generic driver provides an architecture specific
 wrapper on top of the generic rtc_class_ops abstraction,
-and powerpc has another abstraction on top, which is a bit
-silly.
+and on sh, that goes through another indirection using
+the rtc_sh_get_time/rtc_sh_set_time functions.
 
-This changes the powerpc rtc-generic device to provide its
-rtc_class_ops directly, to reduce the number of layers
-by one.
+This changes the sh rtc-generic device to provide its
+rtc_class_ops directly, skipping one of the abstraction
+levels.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/powerpc/kernel/time.c | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+ arch/sh/kernel/time.c | 32 +++++++++++++++++++-------------
+ 1 file changed, 19 insertions(+), 13 deletions(-)
 
-diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
-index 81b0900a39ee..84a1228be617 100644
---- a/arch/powerpc/kernel/time.c
-+++ b/arch/powerpc/kernel/time.c
-@@ -1080,6 +1080,28 @@ void calibrate_delay(void)
- 	loops_per_jiffy = tb_ticks_per_jiffy;
+diff --git a/arch/sh/kernel/time.c b/arch/sh/kernel/time.c
+index d6d0a986c6e9..92cd676970d9 100644
+--- a/arch/sh/kernel/time.c
++++ b/arch/sh/kernel/time.c
+@@ -50,27 +50,30 @@ int update_persistent_clock(struct timespec now)
  }
+ #endif
  
+-unsigned int get_rtc_time(struct rtc_time *tm)
 +static int rtc_generic_get_time(struct device *dev, struct rtc_time *tm)
-+{
-+	ppc_md.get_rtc_time(tm);
-+	return rtc_valid_tm(tm);
-+}
-+
+ {
+-	if (rtc_sh_get_time != null_rtc_get_time) {
+-		struct timespec tv;
++	struct timespec tv;
+ 
+-		rtc_sh_get_time(&tv);
+-		rtc_time_to_tm(tv.tv_sec, tm);
+-	}
+-
+-	return RTC_24H;
++	rtc_sh_get_time(&tv);
++	rtc_time_to_tm(tv.tv_sec, tm);
++	return 0;
+ }
+-EXPORT_SYMBOL(get_rtc_time);
+ 
+-int set_rtc_time(struct rtc_time *tm)
 +static int rtc_generic_set_time(struct device *dev, struct rtc_time *tm)
-+{
-+	if (!ppc_md.set_rtc_time)
-+		return -EOPNOTSUPP;
-+
-+	if (ppc_md.set_rtc_time(tm) < 0)
+ {
+ 	unsigned long secs;
+ 
+ 	rtc_tm_to_time(tm, &secs);
+-	return rtc_sh_set_time(secs);
++	if (!rtc_sh_set_time || rtc_sh_set_time(secs) < 0)
 +		return -EOPNOTSUPP;
 +
 +	return 0;
-+}
+ }
+-EXPORT_SYMBOL(set_rtc_time);
 +
 +static const struct rtc_class_ops rtc_generic_ops = {
 +	.read_time = rtc_generic_get_time,
 +	.set_time = rtc_generic_set_time,
 +};
-+
- static int __init rtc_init(void)
+ 
+ static int __init rtc_generic_init(void)
  {
- 	struct platform_device *pdev;
-@@ -1087,7 +1109,9 @@ static int __init rtc_init(void)
- 	if (!ppc_md.get_rtc_time)
+@@ -79,7 +82,10 @@ static int __init rtc_generic_init(void)
+ 	if (rtc_sh_get_time == null_rtc_get_time)
  		return -ENODEV;
  
 -	pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
 +	pdev = platform_device_register_data(NULL, "rtc-generic", -1,
 +					     &rtc_generic_ops,
 +					     sizeof(rtc_generic_ops));
++
  
  	return PTR_ERR_OR_ZERO(pdev);
  }
 -- 
 2.7.0
+
