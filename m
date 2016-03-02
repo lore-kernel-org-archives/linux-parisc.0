@@ -1,42 +1,94 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Wire up copy_file_range syscall
-Date: Tue, 1 Mar 2016 23:18:43 +0100
-Message-ID: <20160301221843.GA6940@ls3530.box>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/6] rtc: generic: allow building on all architectures
+Date: Wed, 2 Mar 2016 09:57:27 +0100
+Message-ID: <CAMuHMdW5+jZ1n9WnCwBrGSGjUa8ziNTTqf-H15EFTQC_iwnw+Q@mail.gmail.com>
+References: <1456851608-3374907-1-git-send-email-arnd@arndb.de>
+	<1456851608-3374907-2-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=UTF-8
+Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>,
+	Kyle McMartin <kyle@mcmartin.ca>,
+	RTCLINUX <rtc-linux@googlegroups.com>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	Linux-sh list <linux-sh@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	linux-m68k <linux-m68k@lists.linux-m68k.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1456851608-3374907-2-git-send-email-arnd@arndb.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Hi Arnd,
 
-diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
-index 35bdccb..b75039f 100644
---- a/arch/parisc/include/uapi/asm/unistd.h
-+++ b/arch/parisc/include/uapi/asm/unistd.h
-@@ -361,8 +361,9 @@
- #define __NR_membarrier		(__NR_Linux + 343)
- #define __NR_userfaultfd	(__NR_Linux + 344)
- #define __NR_mlock2		(__NR_Linux + 345)
-+#define __NR_copy_file_range	(__NR_Linux + 346)
- 
--#define __NR_Linux_syscalls	(__NR_mlock2 + 1)
-+#define __NR_Linux_syscalls	(__NR_copy_file_range + 1)
- 
- 
- #define __IGNORE_select		/* newselect */
-diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-index d4ffcfb..585d50f 100644
---- a/arch/parisc/kernel/syscall_table.S
-+++ b/arch/parisc/kernel/syscall_table.S
-@@ -441,6 +441,7 @@
- 	ENTRY_SAME(membarrier)
- 	ENTRY_SAME(userfaultfd)
- 	ENTRY_SAME(mlock2)		/* 345 */
-+	ENTRY_SAME(copy_file_range)
- 
- 
- .ifne (. - 90b) - (__NR_Linux_syscalls * (91b - 90b))
+On Tue, Mar 1, 2016 at 5:59 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+> There are four architectures using this driver, but since we can
+> build it with COMPILE_TEST, we should try dealing with the absence
+> of the asm/rtc.h header file, to avoid getting a build error:
+>
+> drivers/rtc/rtc-generic.c:12:21: fatal error: asm/rtc.h: No such file or directory
+>
+> This creates an alternative use of the driver, allowing architectures
+> to pass a set of rtc_class_ops in platform data. We can convert the
+> four architectures to use this and then remove the original
+> code.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/rtc/rtc-generic.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/rtc/rtc-generic.c b/drivers/rtc/rtc-generic.c
+> index e782ebd719b2..d726c6aa96a8 100644
+> --- a/drivers/rtc/rtc-generic.c
+> +++ b/drivers/rtc/rtc-generic.c
+> @@ -9,6 +9,8 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/rtc.h>
+>
+> +#if defined(CONFIG_M68K) || defined(CONFIG_PARISC) || \
+> +    defined(CONFIG_PPC) || defined(CONFIG_SUPERH32)
+>  #include <asm/rtc.h>
+>
+>  static int generic_get_time(struct device *dev, struct rtc_time *tm)
+> @@ -33,13 +35,21 @@ static const struct rtc_class_ops generic_rtc_ops = {
+>         .read_time = generic_get_time,
+>         .set_time = generic_set_time,
+>  };
+> +#else
+> +#define generic_rtc_ops *(struct rtc_class_ops*)NULL
+> +#endif
+>
+>  static int __init generic_rtc_probe(struct platform_device *dev)
+>  {
+>         struct rtc_device *rtc;
+> +       const struct rtc_class_ops *ops;
+> +
+> +       ops = dev_get_platdata(&dev->dev);
+> +       if (!ops)
+> +               ops = &generic_rtc_ops;
+
+I hope no compiler version treats "&*(struct rtc_class_ops*)NULL" as
+undefined behavior?
+
+>
+>         rtc = devm_rtc_device_register(&dev->dev, "rtc-generic",
+> -                                       &generic_rtc_ops, THIS_MODULE);
+> +                                       ops, THIS_MODULE);
+>         if (IS_ERR(rtc))
+>                 return PTR_ERR(rtc);
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
