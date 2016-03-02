@@ -1,64 +1,38 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/6] rtc: generic: allow building on all architectures
-Date: Wed, 2 Mar 2016 10:39:15 +0100
-Message-ID: <CAMuHMdX2Jc4dT5omKmiie7GK+xDYDgJwm34hwANx3HzHt7LzxA@mail.gmail.com>
-References: <1456851608-3374907-1-git-send-email-arnd@arndb.de>
-	<1456851608-3374907-2-git-send-email-arnd@arndb.de>
-	<CAMuHMdW5+jZ1n9WnCwBrGSGjUa8ziNTTqf-H15EFTQC_iwnw+Q@mail.gmail.com>
-	<mvmwpplns8n.fsf@hawking.suse.de>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc architecture updates for v4.5
+Date: Wed, 2 Mar 2016 18:24:58 +0100
+Message-ID: <20160302172458.GA2489@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Alexandre Belloni <alexandre.belloni@free-electrons.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>,
-	Kyle McMartin <kyle@mcmartin.ca>,
-	RTCLINUX <rtc-linux@googlegroups.com>,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	Linux-sh list <linux-sh@vger.kernel.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	linux-m68k <linux-m68k@lists.linux-m68k.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-To: Andreas Schwab <schwab@linux-m68k.org>
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <mvmwpplns8n.fsf@hawking.suse.de>
-List-ID: <linux-sh.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Mar 2, 2016 at 10:28 AM, Andreas Schwab <schwab@linux-m68k.org> wrote:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->
->>> +#else
->>> +#define generic_rtc_ops *(struct rtc_class_ops*)NULL
->>> +#endif
->>>
->>>  static int __init generic_rtc_probe(struct platform_device *dev)
->>>  {
->>>         struct rtc_device *rtc;
->>> +       const struct rtc_class_ops *ops;
->>> +
->>> +       ops = dev_get_platdata(&dev->dev);
->>> +       if (!ops)
->>> +               ops = &generic_rtc_ops;
->>
->> I hope no compiler version treats "&*(struct rtc_class_ops*)NULL" as
->> undefined behavior?
->
-> Yes, that is guaranteed, the operations cancel each other (6.5.3.2#3: If
-> the operand is the result of a unary * operator, neither that operator
-> nor the & operator is evaluated and the result is as if both were
-> omitted).
+Hi Linus,
 
-Thanks for confirming.
+please pull three patches for the parisc architecture for kernel v4.5 from:
 
-Gr{oetje,eeting}s,
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.5-2
 
-                        Geert
+We wire up the copy_file_range syscall, fix two bugs in the parisc ptrace code
+and have a trivial fix for floppy.h to clarify an expression with parentheses.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thanks,
+Helge
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+----------------------------------------------------------------
+Helge Deller (3):
+      parisc: Use parentheses around expression in floppy.h
+      parisc: Fix ptrace syscall number and return value modification
+      parisc: Wire up copy_file_range syscall
+
+ arch/parisc/include/asm/floppy.h      |  2 +-
+ arch/parisc/include/uapi/asm/unistd.h |  3 ++-
+ arch/parisc/kernel/ptrace.c           | 16 +++++++++++-----
+ arch/parisc/kernel/syscall.S          |  5 ++++-
+ arch/parisc/kernel/syscall_table.S    |  1 +
+ 5 files changed, 19 insertions(+), 8 deletions(-)
