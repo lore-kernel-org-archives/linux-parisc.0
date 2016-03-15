@@ -1,53 +1,67 @@
-From: Rolf Eike Beer <eike@sf-mail.de>
-Subject: Re: [BUG] "block: make generic_make_request handle arbitrarily sized bios" breaks boot on parisc-linux
-Date: Thu, 10 Mar 2016 08:04:51 +0100
-Message-ID: <4070811.QJ02MzEnrO@caliban.sf-tec.de>
-References: <227C05EC-5A1C-4FAF-89D8-4A45AF600EC4@bell.net> <56E03E2A.5020208@bell.net> <56E093B6.4040206@gmx.de>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: HP RP8440 Server - Superdome
+Date: Tue, 15 Mar 2016 12:38:19 +0100
+Message-ID: <56E7F42B.1000803@gmx.de>
+References: <000601d17e21$4c45fa10$e4d1ee30$@co.nz>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2709909.azQZ8q3AFL"; micalg="pgp-sha1"; protocol="application/pgp-signature"
-Cc: John David Anglin <dave.anglin@bell.net>,
-	Ming Lei <tom.leiming@gmail.com>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	linux-block@vger.kernel.org,
-	Linux SCSI List <linux-scsi@vger.kernel.org>,
-	linux-parisc List <linux-parisc@vger.kernel.org>,
-	Kent Overstreet <kent.overstreet@gmail.com>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <56E093B6.4040206@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Cc: linux-parisc <linux-parisc@vger.kernel.org>
+To: Mike Hosken <mike@csystems.co.nz>, debian-hppa@lists.debian.org
+Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
+In-Reply-To: <000601d17e21$4c45fa10$e4d1ee30$@co.nz>
+Resent-Message-ID: <YSj8-hHv9SD.A.78D.JR_5WB@bendel>
 List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-URL: <https://lists.debian.org/debian-hppa/>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: https://lists.debian.org/msgid-search/56E7F42B.1000803@gmx.de
 
---nextPart2709909.azQZ8q3AFL
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Hi Mike,
 
-> Right.
-> I just succeeded in reproducing the bug with moving blk_bio_segment_split()
-> into an own file (and with "extern" instead of "static" in blk-merge.c).
-> When compiled with -O2 it still crashes. So, next step is to analyze what
-> gcc does wrong when compiling this function. It should get easier now to
-> find the reason, since we have a smaller reproducer now.
+On 14.03.2016 19:42, Mike Hosken wrote:
+> Hi I have just acquired a HP RP8440 Server with the following specs-
+>=20
+> 9 x HP PA-8900 @ 1.067 dual core CPU,
+> 24 x HP 4GB SuperDome Memory Modules,
+> 4 x 146GB 15000rpm Wide Ultra320 SCSI HDDs,
+> 48 X hp 0950-4741 Voltage Regulator Module (VRM),
+> 3 x HP A9837-60303 HP PCA - Common PDH Daughter card (RoHS),
+> 6 x HP AD193-8001 PCI-X 2-Port 4GB FC & 2-Port 1000BT adapter,
+> 3x HP AB290-80001 PCI-X 2-Port U320 SCSI Adapter,
+> 2x HP AB314-0002A Core I/O Board,
+> 2x HP 0950-4637 Power Module 48VDC,
+> DVD-RW,
+> HP StorageWorks Dat72,
+> 3x HP 0957-2183 PSUs
 
-I have a ton of compilers here on my C8000 and a few even on my C3600 which 
-drive nightly CMake dashboards. Could you send the testcase so I can pass it 
-through the list and see what breaks?
+nice :-)
 
-Greetings,
+> My question is will Debian HPPA Linux support this hardware or should I=
+ keep to the HP-UX.
 
-Eike
---nextPart2709909.azQZ8q3AFL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+Actually, I don't know.
+Processors, Memory and probably SCSI should work with current kernels.
+But I have no clue about the glue/logic chips in there.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+In the wiki (https://parisc.wiki.kernel.org/index.php/Hardware_support) w=
+e just have this sentence:
+Support for Superdome will someday follow but requires some additional VM=
+ work which is in progress.
+But I don't know which kind of "VM work" is necessary...
 
-iEYEABECAAYFAlbhHJkACgkQXKSJPmm5/E7HNACfRi2PViWGjXY+EeBNwwR1fe1m
-Bv4AnjzQq/DCYQipxboH8Bd5Ahr0rnTo
-=LsIb
------END PGP SIGNATURE-----
+Couldn't you just try at least once the boot image as described here:
+https://parisc.wiki.kernel.org/index.php/Debian_Ports_Installation
+and then send us the logs. I think this can give some insights.
 
---nextPart2709909.azQZ8q3AFL--
+Helge
 
+> I=92m planning on using this server for web hosting, Email and MYSQL et=
+c,  replacing my A400 and A180c
+>=20
+> Any advise would be appreciated =20
+>=20
+> Thanks
+> Mike
