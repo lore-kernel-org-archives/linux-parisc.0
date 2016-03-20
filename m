@@ -1,50 +1,48 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Drop alloc_hugepages and free_hugepages syscalls
-Date: Sun, 20 Mar 2016 12:20:31 +0100
-Message-ID: <20160320112031.GA3504@ls3530.box>
+Subject: Re: [BUG] "block: make generic_make_request handle arbitrarily sized
+ bios" breaks boot on parisc-linux
+Date: Sun, 20 Mar 2016 19:12:44 +0100
+Message-ID: <56EEE81C.4080302@gmx.de>
+References: <227C05EC-5A1C-4FAF-89D8-4A45AF600EC4@bell.net>
+ <56E03E2A.5020208@bell.net> <56E093B6.4040206@gmx.de>
+ <4070811.QJ02MzEnrO@caliban.sf-tec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=windows-1252
+Cc: John David Anglin <dave.anglin@bell.net>,
+	Ming Lei <tom.leiming@gmail.com>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	linux-block@vger.kernel.org,
+	Linux SCSI List <linux-scsi@vger.kernel.org>,
+	linux-parisc List <linux-parisc@vger.kernel.org>,
+	Kent Overstreet <kent.overstreet@gmail.com>
+To: Rolf Eike Beer <eike@sf-mail.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <4070811.QJ02MzEnrO@caliban.sf-tec.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Those syscalls were never implemented and don't exists in other arches
-either.
+Hi Eike,
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+On 10.03.2016 08:04, Rolf Eike Beer wrote:
+>> Right.
+>> I just succeeded in reproducing the bug with moving blk_bio_segment_split()
+>> into an own file (and with "extern" instead of "static" in blk-merge.c).
+>> When compiled with -O2 it still crashes. So, next step is to analyze what
+>> gcc does wrong when compiling this function. It should get easier now to
+>> find the reason, since we have a smaller reproducer now.
+> 
+> I have a ton of compilers here on my C8000 and a few even on my C3600 which 
+> drive nightly CMake dashboards. Could you send the testcase so I can pass it 
+> through the list and see what breaks?
 
-diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
-index b75039f..fdb3c4e 100644
---- a/arch/parisc/include/uapi/asm/unistd.h
-+++ b/arch/parisc/include/uapi/asm/unistd.h
-@@ -235,8 +235,8 @@
- #define __NR_io_getevents       (__NR_Linux + 217)
- #define __NR_io_submit          (__NR_Linux + 218)
- #define __NR_io_cancel          (__NR_Linux + 219)
--#define __NR_alloc_hugepages    (__NR_Linux + 220)
--#define __NR_free_hugepages     (__NR_Linux + 221)
-+#define __NR_alloc_hugepages    (__NR_Linux + 220) /* not used */
-+#define __NR_free_hugepages     (__NR_Linux + 221) /* not used */
- #define __NR_exit_group         (__NR_Linux + 222)
- #define __NR_lookup_dcookie     (__NR_Linux + 223)
- #define __NR_epoll_create       (__NR_Linux + 224)
-diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
-index 5aba01a..0a393a0 100644
---- a/arch/parisc/kernel/sys_parisc.c
-+++ b/arch/parisc/kernel/sys_parisc.c
-@@ -368,16 +368,6 @@ asmlinkage long parisc_fallocate(int fd, int mode, u32 offhi, u32 offlo,
-                              ((u64)lenhi << 32) | lenlo);
- }
- 
--asmlinkage unsigned long sys_alloc_hugepages(int key, unsigned long addr, unsigned long len, int prot, int flag)
--{
--	return -ENOMEM;
--}
--
--asmlinkage int sys_free_hugepages(unsigned long addr)
--{
--	return -EINVAL;
--}
+Thanks for the offer!
+Sadly it's not a stand-alone testcase, just the original source code extracted
+which can be manually compiled and then the generated assembly can be compared
+to what it should be.
+That said, I think this specific testcase is not really usable in your test environment.
+
+By the way, the bug was just fixed. Details are in bugzilla:
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70188
+
+Thanks,
+Helge
