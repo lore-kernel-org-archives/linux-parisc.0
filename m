@@ -1,60 +1,50 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc,metag: Implement CONFIG_DEBUG_STACK_USAGE option
-Date: Sat, 19 Mar 2016 17:54:10 +0100
-Message-ID: <20160319165410.GA31630@p100.box>
+Subject: [PATCH] parisc: Drop alloc_hugepages and free_hugepages syscalls
+Date: Sun, 20 Mar 2016 12:20:31 +0100
+Message-ID: <20160320112031.GA3504@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
 	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>,
-	James Hogan <james.hogan@imgtec.com>,
-	linux-metag@vger.kernel.org, linux-ia64@vger.kernel.org,
-	linux-kernel@vger.kernel.org
+	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On parisc and metag the stack grows upwards, so for those we need to
-scan the stack downwards in order to calculate how much stack a process
-has used.
-
-Tested on a 64bit parisc kernel.
+Those syscalls were never implemented and don't exists in other arches
+either.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 084ed9f..71591f3 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2859,10 +2859,18 @@ static inline unsigned long stack_not_used(struct task_struct *p)
- 	unsigned long *n = end_of_stack(p);
- 
- 	do { 	/* Skip over canary */
-+# ifdef CONFIG_STACK_GROWSUP
-+		n--;
-+# else
- 		n++;
-+# endif
- 	} while (!*n);
- 
-+# ifdef CONFIG_STACK_GROWSUP
-+	return (unsigned long)end_of_stack(p) - (unsigned long)n;
-+# else
- 	return (unsigned long)n - (unsigned long)end_of_stack(p);
-+# endif
+diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
+index b75039f..fdb3c4e 100644
+--- a/arch/parisc/include/uapi/asm/unistd.h
++++ b/arch/parisc/include/uapi/asm/unistd.h
+@@ -235,8 +235,8 @@
+ #define __NR_io_getevents       (__NR_Linux + 217)
+ #define __NR_io_submit          (__NR_Linux + 218)
+ #define __NR_io_cancel          (__NR_Linux + 219)
+-#define __NR_alloc_hugepages    (__NR_Linux + 220)
+-#define __NR_free_hugepages     (__NR_Linux + 221)
++#define __NR_alloc_hugepages    (__NR_Linux + 220) /* not used */
++#define __NR_free_hugepages     (__NR_Linux + 221) /* not used */
+ #define __NR_exit_group         (__NR_Linux + 222)
+ #define __NR_lookup_dcookie     (__NR_Linux + 223)
+ #define __NR_epoll_create       (__NR_Linux + 224)
+diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
+index 5aba01a..0a393a0 100644
+--- a/arch/parisc/kernel/sys_parisc.c
++++ b/arch/parisc/kernel/sys_parisc.c
+@@ -368,16 +368,6 @@ asmlinkage long parisc_fallocate(int fd, int mode, u32 offhi, u32 offlo,
+                              ((u64)lenhi << 32) | lenlo);
  }
- #endif
- extern void set_task_stack_end_magic(struct task_struct *tsk);
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index f28f7fa..901f96c 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -546,7 +546,7 @@ config DEBUG_KMEMLEAK_DEFAULT_OFF
  
- config DEBUG_STACK_USAGE
- 	bool "Stack utilization instrumentation"
--	depends on DEBUG_KERNEL && !IA64 && !PARISC && !METAG
-+	depends on DEBUG_KERNEL && !IA64
- 	help
- 	  Enables the display of the minimum amount of free stack which each
- 	  task has ever had available in the sysrq-T and sysrq-P debug output.
+-asmlinkage unsigned long sys_alloc_hugepages(int key, unsigned long addr, unsigned long len, int prot, int flag)
+-{
+-	return -ENOMEM;
+-}
+-
+-asmlinkage int sys_free_hugepages(unsigned long addr)
+-{
+-	return -EINVAL;
+-}
