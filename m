@@ -1,62 +1,50 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 3/4] exit_thread: accept a task parameter to be exited
-Date: Thu, 24 Mar 2016 15:36:58 +0000
-Message-ID: <20160324153658.GU19428@n2100.arm.linux.org.uk>
-References: <1458824294-29733-1-git-send-email-jslaby@suse.cz>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc updates for v4.6 rc1
+Date: Thu, 24 Mar 2016 22:26:02 +0100
+Message-ID: <20160324212602.GA5013@ls3530.fritz.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Haavard Skinnemoen <hskinnemoen@gmail.com>,
-        Hans-Christian Egtvedt <egtvedt@samfundet.no>,
-        Steven Miao <realmz6@gmail.com>,
-        Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <a-jacquiot@ti.com>,
-        Mikael Starvik <starvik@axis.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Richard Kuo <rkuo@codeaurora.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-To: Jiri Slaby <jslaby@suse.cz>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <1458824294-29733-1-git-send-email-jslaby@suse.cz>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Mar 24, 2016 at 01:58:13PM +0100, Jiri Slaby wrote:
-> We need to call exit_thread from copy_process in a fail path.  So make
-> it accept task_struct as a parameter.
+Hi Linus,
 
-Hmm, so what this means is that exit_thread() can now be called for
-threads which are not running on the CPU.  So, I think the comment
-in arch/arm/vfp/vfpmodule.c needs to be updated:
+please pull the latest parisc architecture patches for rc1 from:
 
- *  THREAD_NOTIFY_EXIT
- *   - the thread (v) will be running on the local CPU, so
- *      v === current_thread_info()
+  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.6-1
 
-along with this change, since that becomes false.
+This patchset adds stack usage debug info for parisc and metag (on both the
+stack grows upwards), switches to the new generic realative extable search and
+sort routines,  drops the long time ago removed syscalls alloc_hugepages and
+free_hugepages and wires up the new preadv2 and pwritev2 syscalls.
 
-The code, however, looks like it'll cope just fine with that being
-false, as will the other users of THREAD_NOTIFY_EXIT in ARM.
+Thanks,
+Helge
 
-Thanks.
+----------------------------------------------------------------
+Aaro Koskinen (1):
+      parisc: Panic immediately when panic_on_oops
 
--- 
-RMK's Patch system: http://www.arm.linux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+Helge Deller (4):
+      parisc: Drop alloc_hugepages and free_hugepages syscalls
+      parisc,metag: Implement CONFIG_DEBUG_STACK_USAGE option
+      parisc: Use generic extable search and sort routines
+      parisc: Wire up preadv2 and pwritev2 syscalls
+
+ arch/parisc/Kconfig                   |  1 +
+ arch/parisc/include/asm/assembly.h    |  2 +-
+ arch/parisc/include/asm/uaccess.h     |  7 ++++---
+ arch/parisc/include/uapi/asm/unistd.h |  8 +++++---
+ arch/parisc/kernel/sys_parisc.c       | 10 ----------
+ arch/parisc/kernel/syscall_table.S    |  6 ++++--
+ arch/parisc/kernel/traps.c            |  5 +----
+ arch/parisc/mm/fault.c                |  9 ++-------
+ include/linux/sched.h                 |  8 ++++++++
+ lib/Kconfig.debug                     |  2 +-
+ scripts/sortextable.c                 |  1 +
+ 11 files changed, 28 insertions(+), 31 deletions(-)
