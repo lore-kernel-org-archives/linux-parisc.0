@@ -1,50 +1,28 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc updates for v4.6 rc1
-Date: Thu, 24 Mar 2016 22:26:02 +0100
-Message-ID: <20160324212602.GA5013@ls3530.fritz.box>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [3/4] exit_thread: accept a task parameter to be exited
+Date: Fri, 25 Mar 2016 19:32:11 +1100 (AEDT)
+Message-ID: <3qWc3w0GCtz9sdm@ozlabs.org>
+References: <1458824294-29733-1-git-send-email-jslaby@suse.cz>
+Cc: linux-mips@linux-mips.org, linux-s390@vger.kernel.org, Rich Felker <dalias@libc.org>, Aurelien Jacquiot <a-jacquiot@ti.com>,  Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>,  David Howells <dhowells@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>,  sparclinux@vger.kernel.org, linux-hexagon@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, Jiri Slaby <jslaby@suse.cz>, Lennox Wu <lennox.wu@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>,  Jonas Bonn <jonas@southpole.se>, Chen Liqin <liqin.linux@gmail.com>,  Jesper Nilsson <jesper.nilsson@axis.com>, linux-am33-list@redhat.com,  Russell King <linux@arm.linux.org.uk>, linux-c6x-dev@linux-c6
+ x.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-sh@vger.kernel.org, Helge Deller <deller@gmx
+To: Jiri Slaby <jslaby@suse.cz>, akpm@linux-foundation.org
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <1458824294-29733-1-git-send-email-jslaby@suse.cz>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-Hi Linus,
+On Thu, 2016-24-03 at 12:58:13 UTC, Jiri Slaby wrote:
+> We need to call exit_thread from copy_process in a fail path.  So make
+> it accept task_struct as a parameter.
 
-please pull the latest parisc architecture patches for rc1 from:
+If I'm counting right 22 of those are empty functions, so would it be a good
+clean up to make it optional first?
 
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.6-1
-
-This patchset adds stack usage debug info for parisc and metag (on both the
-stack grows upwards), switches to the new generic realative extable search and
-sort routines,  drops the long time ago removed syscalls alloc_hugepages and
-free_hugepages and wires up the new preadv2 and pwritev2 syscalls.
-
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Aaro Koskinen (1):
-      parisc: Panic immediately when panic_on_oops
-
-Helge Deller (4):
-      parisc: Drop alloc_hugepages and free_hugepages syscalls
-      parisc,metag: Implement CONFIG_DEBUG_STACK_USAGE option
-      parisc: Use generic extable search and sort routines
-      parisc: Wire up preadv2 and pwritev2 syscalls
-
- arch/parisc/Kconfig                   |  1 +
- arch/parisc/include/asm/assembly.h    |  2 +-
- arch/parisc/include/asm/uaccess.h     |  7 ++++---
- arch/parisc/include/uapi/asm/unistd.h |  8 +++++---
- arch/parisc/kernel/sys_parisc.c       | 10 ----------
- arch/parisc/kernel/syscall_table.S    |  6 ++++--
- arch/parisc/kernel/traps.c            |  5 +----
- arch/parisc/mm/fault.c                |  9 ++-------
- include/linux/sched.h                 |  8 ++++++++
- lib/Kconfig.debug                     |  2 +-
- scripts/sortextable.c                 |  1 +
- 11 files changed, 28 insertions(+), 31 deletions(-)
+cheers
