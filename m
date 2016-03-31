@@ -1,32 +1,38 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] selftests/thuge-gen: Use platform specific MAP_HUGETLB value
-Date: Thu, 31 Mar 2016 13:11:05 +0200
-Message-ID: <20160331111105.GA30888@p100.box>
+Subject: [GIT PULL] parisc fixes for v4.6 rc2
+Date: Thu, 31 Mar 2016 14:49:44 +0200
+Message-ID: <20160331124944.GA6181@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org, linux-kselftest@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Do not hardcode MAP_HUGETLB to 0x40000, since quite some architectures
-use a different value.
+Hi Linus,
 
-Tested with a parisc architecture 64bit kernel.
+please pull two fixes for the parisc architecture from:
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.6-2
 
-diff --git a/tools/testing/selftests/vm/thuge-gen.c b/tools/testing/selftests/vm/thuge-gen.c
-index c879572..0bc737a 100644
---- a/tools/testing/selftests/vm/thuge-gen.c
-+++ b/tools/testing/selftests/vm/thuge-gen.c
-@@ -30,7 +30,9 @@
- #define MAP_HUGE_1GB    (30 << MAP_HUGE_SHIFT)
- #define MAP_HUGE_SHIFT  26
- #define MAP_HUGE_MASK   0x3f
-+#if !defined(MAP_HUGETLB)
- #define MAP_HUGETLB	0x40000
-+#endif
- 
- #define SHM_HUGETLB     04000   /* segment will use huge TLB pages */
- #define SHM_HUGE_SHIFT  26
+Fix seccomp filter support and SIGSYS signals on compat kernel. Both patches
+are tagged for v4.5 stable kernel. 
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Helge Deller (2):
+      parisc: Fix SIGSYS signals in compat case
+      parisc: Fix and enable seccomp filter support
+
+ arch/parisc/Kconfig               |  1 +
+ arch/parisc/include/asm/compat.h  |  7 +++++++
+ arch/parisc/include/asm/syscall.h | 13 +++++++++++++
+ arch/parisc/kernel/ptrace.c       |  9 +++++++--
+ arch/parisc/kernel/signal32.c     |  5 +++++
+ arch/parisc/kernel/syscall.S      |  2 ++
+ 6 files changed, 35 insertions(+), 2 deletions(-)
