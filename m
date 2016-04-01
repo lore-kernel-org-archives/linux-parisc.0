@@ -1,7 +1,7 @@
 From: Simone Mannori <simone.mannori@gmail.com>
 Subject: Re: Kernel Panic on 4 cores hp c8000
-Date: Thu, 31 Mar 2016 20:27:35 +0200
-Message-ID: <CACrbsaCah_T1Vg4x7Z4JtJ7mfjPgPdYmEK6YQViAss66Du767Q@mail.gmail.com>
+Date: Fri, 1 Apr 2016 08:41:31 +0200
+Message-ID: <CACrbsaACL9zoO1pt5KFCSzkWhPvddsK7CFwsM1yJNLA+OsGjfQ@mail.gmail.com>
 References: <CACrbsaA0fw4KeKkcO5zZ50yMLsoysqJE6+ShfejCxDG9Zhns1Q@mail.gmail.com>
 	<56FD5C30.4020409@gmx.de>
 	<CACrbsaD4S7mPZcLT79FHU=fR+ecD6qaDyk1enHZ4zwG6y53MiA@mail.gmail.com>
@@ -15,54 +15,105 @@ In-Reply-To: <56FD65FC.9030201@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Partial success :-)
+Success: successfull update and boot with new kernel (please see below
+for the details)
 
-Using IPL, I have added "nosmp" option in the kenel command line.
-Now the boot finish correctly and reach the command line prompt :-).
+Respect the instruction presents on:
 
-I'm updating following the wiki instruction ....
+https://parisc.wiki.kernel.org/index.php/Debian_Ports_Installation
 
-Thanks a lot for the help ...
+I have only few observations:
 
-    Simone Mannori - Italy
+- the "/etc/apt/sources.list" must contains ONLY one repository
+reference, yours:
 
+    deb http://ftp.debian-ports.org/debian unstable main
 
-On 31 March 2016 at 20:01, Helge Deller <deller@gmx.de> wrote:
-> On 31.03.2016 19:44, Simone Mannori wrote:
->>> I think Debian 5 will not even install on the C8000..
->>
->> Correct: the boot DVD hang after a while.
->>
->>> But you didn't gave any information which kernel version you are using ?
->>>
->>> This kernel should be pretty stable on the C8000:
->>> http://backup.parisc-linux.org/kernel/linux-image-4.2.0-1-parisc64-smp_4.2.6-3+b3_hppa.deb
->>
->> The Debian 8.0 ( "debian-8.0-hppa-CD-1.iso") has configured this kernel:
->>
->> Linux version 3.16.0-4-parisc64-smp (debian-kernel@lists.debian.org)
->> (gcc version 4.8.4 (GCC) ) #1 SMP Debian 3.16.7-ckt4-3 (2015-02-03)
->
-> The 3.16 kernel is far too old.
-> It doesn't even makes sense to debug this kernel any longer, which is why
-> I said you should update to latest debian unstable (and it's written in the
-> installation wiki as well).
-> You have to keep in mind, that the parisc linux port was really nearly stopped
-> when I built this install CD. Since then we have fixed an uncountable number of
-> bugs.
-> So, please update all packages including kernel, glibc and so on.
-> If you face problems then, please let us know.
->
->> I'm attaching the full set of booting message.
->>
->> Probably you have a more recent kernel because AFTER the installation
->> you have updated the full distro with more recent packages.
->> Unfortunately, with this configuration, I can't boot.
->> I would like to avoid the de-installation of the second processor.
->
-> You could try to boot with the "nosmp" kernel option (add it at the IPL prompt).
-> Probably "autofs=off" (not sure if this is the syntax) could work as well (if you think it's the autofs module).
->
-> If you have booted up, update kernel and packages.
->
-> Helge
+- after the "apt-get install debian-ports-archive-keyring" and the
+"apt-get update" I was obliged to run
+
+- "apt-get dist-upgrade" because the simple "apt-get upgrade" was not
+sufficient.
+
+For the newbie: login as normal user, then switch to "root" using the
+"su" command.
+
+Thanks a lot for your very helpful support. I will start to put the
+details of this voyage on a wiki page as soon as possible (ASAP).
+
+  Simone Mannori - Italy
+
+//**---------------------------------------------------------------------------------------------------------
+
+NEW KERNEL
+simone@blsw:~$ uname -a
+Linux blsw 4.4.0-1-parisc64-smp #1 SMP Debian 4.4.6-1 (2016-03-17) parisc64 GNU/
+Linux
+
+FOUR CORES ACTIVE
+simone@blsw:~$ cat /proc/cpuinfo
+processor       : 0
+cpu family      : PA-RISC 2.0
+cpu             : PA8800 (Mako)
+cpu MHz         : 1000.000000
+capabilities    : os64 iopdir_fdc needs_equivalent_aliasing (0x35)
+model           : 9000/785/C8000
+model name      : Crestone Peak Fast?
+hversion        : 0x000088b0
+sversion        : 0x00000491
+I-cache         : 32768 KB
+D-cache         : 32768 KB (WB, direct mapped)
+ITLB entries    : 240
+DTLB entries    : 240 - shared with ITLB
+bogomips        : 1988.60
+software id     : 6267540911694045181
+
+processor       : 1
+cpu family      : PA-RISC 2.0
+cpu             : PA8800 (Mako)
+cpu MHz         : 1000.000000
+capabilities    : os64 iopdir_fdc needs_equivalent_aliasing (0x35)
+model           : 9000/785/C8000
+model name      : Crestone Peak Fast?
+hversion        : 0x000088b0
+sversion        : 0x00000491
+I-cache         : 32768 KB
+D-cache         : 32768 KB (WB, direct mapped)
+ITLB entries    : 240
+DTLB entries    : 240 - shared with ITLB
+bogomips        : 1988.60
+software id     : 6267540911694045181
+
+processor       : 2
+cpu family      : PA-RISC 2.0
+cpu             : PA8800 (Mako)
+cpu MHz         : 1000.000000
+capabilities    : os64 iopdir_fdc needs_equivalent_aliasing (0x35)
+model           : 9000/785/C8000
+model name      : Crestone Peak Fast?
+hversion        : 0x000088b0
+sversion        : 0x00000491
+I-cache         : 32768 KB
+D-cache         : 32768 KB (WB, direct mapped)
+ITLB entries    : 240
+DTLB entries    : 240 - shared with ITLB
+bogomips        : 1988.60
+software id     : 6267540911694045181
+
+processor       : 3
+cpu family      : PA-RISC 2.0
+cpu             : PA8800 (Mako)
+cpu MHz         : 1000.000000
+capabilities    : os64 iopdir_fdc needs_equivalent_aliasing (0x35)
+model           : 9000/785/C8000
+model name      : Crestone Peak Fast?
+hversion        : 0x000088b0
+sversion        : 0x00000491
+I-cache         : 32768 KB
+D-cache         : 32768 KB (WB, direct mapped)
+ITLB entries    : 240
+DTLB entries    : 240 - shared with ITLB
+bogomips        : 1988.60
+software id     : 6267540911694045181
+
+simone@blsw:~$
