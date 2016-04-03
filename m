@@ -1,121 +1,217 @@
 From: Simone Mannori <simone.mannori@gmail.com>
-Subject: Re: Aw: Re: Re: Re: HP c8000 linux install issues, troubles and questions
-Date: Sun, 3 Apr 2016 08:39:15 +0200
-Message-ID: <CACrbsaAaTdMvm=SP1+SSSuCk_2M3qUGeJ9z2SWa39XLjRnS3Sw@mail.gmail.com>
-References: <CACrbsaC7KnupAXvon-PRWTXnAZ13Hb5Xmc3364aVivY4HGCC6Q@mail.gmail.com>
-	<4207644.uZSTasQYhb@caliban.sf-tec.de>
-	<trinity-a1bc4683-085f-4f5b-870e-03082f9b89ba-1459237701367@3capp-gmx-bs02>
-	<CACrbsaC_gOAmUixFoE+rXf-TFT0P6VEEDT-2txig09QgzC6iOQ@mail.gmail.com>
-	<trinity-d7ee1960-e99b-416c-bd06-9a3e7bf998bc-1459245685774@3capp-gmx-bs62>
-	<56FA7786.6070100@gmx.de>
-	<56FA77FB.6090406@gmx.de>
-	<CACrbsaD5qP5e99=47j4E+-vq0V1DKDytqzHVakHeH7DJ_-K+5w@mail.gmail.com>
-	<trinity-13a381d1-e1fb-42af-8cd9-4197fe95fdfd-1459331985395@3capp-gmx-bs41>
-	<E1592B17-FA77-42CC-A08F-331C63DE3408@bell.net>
+Subject: Video cards init failure loading the device driver kernel module
+Date: Sun, 3 Apr 2016 09:34:13 +0200
+Message-ID: <CACrbsaB0jQ_9xOCwebpsf5jMijqoi7mHopo4nNC-RAnvSye3VQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Cc: Helge Deller <deller@gmx.de>,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>,
+	Graham Gower <graham.gower@gmail.com>,
 	linux-parisc <linux-parisc@vger.kernel.org>
 To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <E1592B17-FA77-42CC-A08F-331C63DE3408@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-In my - very limited, just one c8000 - experience, the CPU upgrade is
-a successfull move: I have upgraded from one to two PA-8800:
+Dear All,
 
------------------------------------------------------------------------=
--------
-   (c) Copyright 1995-2004, Hewlett-Packard Company, All rights reserve=
-d
------------------------------------------------------------------------=
--------
+following you suggestions, now I have an - almost - perfectly working
+hp c8000 workstation.
 
-  Processor   Speed            State           CoProcessor        Cache=
- Size
-  Number                                       State              Inst =
-   Data
-  ---------  --------   ---------------------  -----------------  -----=
--------
-      0      1000 MHz   Active                 Functional         32 MB=
-/32 MB
-      1      1000 MHz   Idle                   Functional         32 MB=
-/32 MB
-      2      1000 MHz   Idle                   Functional         32 MB=
-/32 MB
-      3      1000 MHz   Idle                   Functional         32 MB=
-/32 MB
+Mission accomplished? Not exactly: despite a lot of efforts, the video
+card section is still not fully operative. Let me resume the
+situation.
 
-The two CPUs MUST be of the same model, have the same clock frequency
-AND have the same revision number. I strongly suspect that HP has
-produced "equal" CPUs but with different revision number.
-
-I had the very same issue restoring and upgrading a DELL 690, a dual
-Xeon "Gro=C3=9Frechner " with 1100Watt power supply. The two Xeon must =
-be
-"matched" otherwise the BIOS refuse to start the booting process.
-
-I have recently bough two PA-8800 on ebay and the supplier has sent to
-me two different CPUs! Looking the integrated heat sink, there are two
-models: the plain "clear alluminium" and the "satinated copper". My
-c8000 was equipped with a single "satinated copper" CPU, so I chose
-the identical one and, with the help of a very skilled technician
-equiped with the right screwdrivers, I have successfully completed the
-upgrade: everythings works perfectly with HP-UX v11 and Linux Debian
-8.0 kernel :
+I'm using a c8000 with two PA-8800 and Debian 8.0, kernel:
 
 Linux version 4.4.0-1-parisc64-smp (debian-kernel@lists.debian.org)
 (gcc version 4.9.3 (GCC) ) #1 SMP Debian 4.4.6-1 (2016-03-17)
 
-If you need, I can dump the CPUs revision numbers. With the help of
-Helge, I'm putting the results of my jurney in the c8000 territory on
-a dedicated wikipage: searching in the maling list messages can be
-very frustrating, expecially for a newbie like me.
+I have two very different AGP video cards (ATI FireGL T2 and NVIDIA
+QUADRO MXR) that have the same issue, despite the two complety
+different drivers ("radeon" and "nouveau"). The full logs are in
+bottom of this post. Just to make a long history short:
 
-Now, I'm fighting with the video cards initializiation failure: I
-strongly suspect that the problem is not inside the (kernel) video
-driver module because both "nouveau" (NVIDIA) and "radeon" (ATI)
-produce exactly the very same error message and switch back to
-"passive" frame buffer mode.
+ATI FIRE GL T2 ("radeon")
+[   47.836000] [drm:r100_ring_test [radeon]] *ERROR* radeon: ring test
+failed (scratch(0x15E4)=0xCAFEDEAD)
+[   47.948000] [drm:r100_cp_init [radeon]] *ERROR* radeon: cp isn't
+working (-22).
+[   48.036000] radeon 0000:80:00.0: failed initializing CP (-22).
+[   48.036000] radeon 0000:80:00.0: Disabling GPU acceleration
 
- Simone Mannori - Italy
+NVIDIA QUADRO MXR ("nouveau")
+[   54.388000] nouveau 0000:80:00.0: DRM: GPU lockup - switching to
+software fbcon
+[   54.684000] nouveau 0000:80:00.0: fb0: nouveaufb frame buffer device
+[   54.784000] [drm] Initialized nouveau 1.3.1 20120801 for
+0000:80:00.0 on minor 0
 
+Looking inside the posts on many developers mailing lists, I see that
+most of the efforts have been focused on the video device drivers init
+code. I have tried to force the video drivers using the "modeset"
+parameter without success. I have tried also to boot without video
+driver, then load it manually using "modprobe". No way: the results
+are the same.
 
-On 2 April 2016 at 23:48, John David Anglin <dave.anglin@bell.net> wrot=
-e:
-> On 2016-03-30, at 5:59 AM, Helge Deller wrote:
->
->>> Now, I'm fighting with a very hardware issue: the screws of the PA
->>> CPUs are non standard hex with a center pin. I hate this things.
->>> Yesterday evening I was ready to upgrade from a single PA-8800/900 =
-MHz
->>> to a dual PA-8900/1GHz
->>
->> I'm not sure if this will simply work. I was looking at the idea mys=
-elf
->> once, and googling for that it seems that some firmware update needs=
- to
->> be done in order for the machine to accept the additional CPU.
->> If you do it, please let us know...
->
-> I had to replace cpu in my rp3440.  I asked vendor if it would be pos=
-sible to increase speed
-> from 800 MHz and they said no.  I think it's possible to add a second=
- cpu but don't have any
-> personal experience.  The machine did run with one cpu module.
->
-> The screws are a pain...
->
-> Dave
-> --
-> John David Anglin       dave.anglin@bell.net
->
->
->
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+"lsmod" tell me that "radeon"/"nouveau" are used by the "ttm" module
+and they cannot be removed (despite the "- r --force" modprobe
+parameters).
+
+Let suppose for a moment that the issue is NOT inside the video driver
+but in the "ttm" module: something is not fully correct in the
+initialization of the ZX1 chipset, therefore the video driver code go
+crazy because cannot match the video card with the chipset.
+
+The only way that I know to investigate this issue is to recompile the
+kernel with debug support and execute "single step"/breakpoint the
+code that initialize the video card and the chipset near the zone of
+the error message.
+
+Question: "What are the deb packages that I need to install to
+recompile the  4.4.0-1-parisc64-smp kernel (or another kernel version
+suitable for this investigation) ?
+
+Thanks in advance for you help
+
+   Simone Mannori - Italy
+
+//**-----------------------------------------------------------------------------------------------------------------
+
+ATI FIRE GL T2
+[   45.460000] [drm] radeon kernel modesetting enabled.
+[   45.576000] radeon 0000:80:00.0: enabling SERR and PARITY (0107 -> 0147)
+[   45.660000] [drm] initializing kernel modesetting (RV350
+0x1002:0x4154 0x1002:0x0002).
+[   45.812000] [drm] register mmio base: 0xC8020000
+[   45.868000] [drm] register mmio size: 65536
+[   46.084000] radeon 0000:80:00.0: putting AGP V3 device into 8x mode
+[   46.160000] radeon 0000:80:00.0: GTT: 512M 0x60000000 - 0x7FFFFFFF
+[   46.236000] [drm] Generation 2 PCI interface, using max accessible memory
+[   46.316000] radeon 0000:80:00.0: VRAM: 128M 0xFFFFFFFFC0000000 -
+0xFFFFFFFFC7FFFFFF (128M used)
+[   46.420000] [drm] Detected VRAM RAM=128M, BAR=128M
+[   46.476000] [drm] RAM width 128bits DDR
+[   46.524000] [TTM] Zone  kernel: Available graphics memory: 3077188 kiB
+[   46.604000] [TTM] Zone   dma32: Available graphics memory: 2097152 kiB
+[   46.680000] [TTM] Initializing pool allocator
+[   46.732000] [drm] radeon: 128M of VRAM memory ready
+[   46.792000] [drm] radeon: 512M of GTT memory ready.
+[   46.852000] [drm] radeon: 1 quad pipes, 1 Z pipes initialized.
+[   46.944000] radeon 0000:80:00.0: WB disabled
+[   46.996000] radeon 0000:80:00.0: fence driver on ring 0 use gpu
+addr 0x0000000060000000 and cpu addr 0x0000000011279000
+[   47.124000] [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
+[   47.204000] [drm] Driver supports precise vblank timestamp query.
+[   47.276000] [drm] radeon: irq initialized.
+[   47.328000] [drm] Loading R300 Microcode
+[   47.468000] radeon 0000:80:00.0: firmware: direct-loading firmware
+radeon/R300_cp.bin
+[   47.584000] [drm] radeon: ring at 0x0000000060001000
+[   47.836000] [drm:r100_ring_test [radeon]] *ERROR* radeon: ring test
+failed (scratch(0x15E4)=0xCAFEDEAD)
+[   47.948000] [drm:r100_cp_init [radeon]] *ERROR* radeon: cp isn't
+working (-22).
+[   48.036000] radeon 0000:80:00.0: failed initializing CP (-22).
+[   48.036000] radeon 0000:80:00.0: Disabling GPU acceleration
+[  OK  ] Found device ST373207LW 2.
+[   48.236000] [drm:r100_cp_fini [radeon]] *ERROR* Wait for CP idle
+timeout, shutting down CP.
+[   48.384000] [drm] radeon: cp finalized
+[   48.448000] [drm] radeon: cp finalized
+[   48.496000] [TTM] Finalizing pool allocator
+[   48.544000] [TTM] Zone  kernel: Used memory at exit: 0 kiB
+[   48.612000] [TTM] Zone   dma32: Used memory at exit: 0 kiB
+[   48.676000] [drm] radeon: ttm finalized
+[   48.724000] [drm] Forcing AGP to PCI mode
+         Starting File System Check on /d[   48.872000] [drm]
+Generation 2 PCI interface, using max accessible memory
+ev/...2-638b-4a0[   48.968000] radeon 0000:80:00.0: VRAM: 128M
+0xFFFFFFFFC0000000 - 0xFFFFFFFFC7FFFFFF (128M used)
+c-be55-7444e126d[   49.088000] radeon 0000:80:00.0: GTT: 512M
+0xFFFFFFFFA0000000 - 0xFFFFFFFFBFFFFFFF
+283...
+[   49.196000] [drm] Detected VRAM RAM=128M, BAR=128M
+[   49.264000] [drm] RAM width 128bits DDR
+[   49.328000] [TTM] Zone  kernel: Available graphics memory: 3077188 kiB
+[   49412000] [TTM] Zone   dma32: Available graphics memory: 2097152 kiB
+[   49.492000] [TTM] Initializing pool allocator
+[   49.492000] [drm] radeon: 128M of VRAM memory ready
+[   49.492000] [drm] radeon: 512M of GTT memory ready.
+[   49.492000] [drm] GART: num cpu pages 131072, num gpu pages 131072
+[   49.636000] [drm] radeon: 1 quad pipes, 1 Z pipes initialized.
+[   49.636000] [drm] PCI GART of 512M enabled (table at 0x0000000043300000).
+[   49.636000] radeon 0000:80:00.0: WB enabled
+[   49.636000] radeon 0000:80:00.0: fence driver on ring 0 use gpu
+addr 0xffffffffa0000000 and cpu addr 0x000000007d239000
+[   49.636000] [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
+[   49.636000] [drm] Driver supports precise vblank timestamp query.
+[   49.636000] [drm] radeon: irq initialized.
+[   49.780000] [drm] radeon: ring at 0xFFFFFFFFA0001000
+[   49.972000] [drm:r100_ring_test [radeon]] *ERROR* radeon: ring test
+failed (scratch(0x15E4)=0xCAFEDEAD)
+[   49.976000] [drm:r100_cp_init [radeon]] *ERROR* radeon: cp isn't
+working (-22).
+[   49.976000] radeon 0000:80:00.0: failed initializing CP (-22).
+[   49.976000] radeon 0000:80:00.0: Disabling GPU acceleration
+[   50.168000] [drm:r100_cp_fini [radeon]] *ERROR* Wait for CP idle
+timeout, shutting down CP.
+[   50.280000] [drm] radeon: cp finalized
+[   50.592000] [drm] Radeon Display Connectors
+[   50.592000] [drm] Connector 0:
+[   50.592000] [drm]   VGA-1
+[   50.592000] [drm]   DDC: 0x60 0x60 0x60 0x60 0x60 0x60 0x60 0x60
+[   50.592000] [drm]   Encoders:
+[   50.592000] [drm]     CRT1: INTERNAL_DAC1
+[   50.592000] [drm] Connector 1:
+[   50.592000] [drm]   DVI-I-1
+[   50.592000] [drm]   HPD1
+[   50.592000] [drm]   DDC: 0x64 0x64 0x64 0x64 0x64 0x64 0x64 0x64
+[   50.592000] [drm]   Encoders:
+[   50.592000] [drm]     CRT2: INTERNAL_DAC2
+[   50.592000] [drm]     DFP1: INTERNAL_TMDS1
+[   50.608000] radeon 0000:80:00.0: No connectors reported connected with modes
+[   50.608000] [drm] Cannot find any crtc or sizes - going 1024x768
+[   50.828000] [drm] fb mappable at 0xFFFFFFFFC0040000
+[   50.828000] [drm] vram apper at 0xFFFFFFFFC0000000
+[   50.828000] [drm] size 3145728
+[   50.828000] [drm] fb depth is 24
+[   50.828000] [drm]    pitch is 4096
+[   51.848000] Console: switching to colour frame buffer device 128x48
+[   52.080000] radeon 0000:80:00.0: fb0: radeondrmfb frame buffer device
+[   52172000] [drm] Initialized radeon 2.43.0 20080528 for
+0000:80:00.0 on minor 0
+
+NVIDIA QUADRO MXR
+[   51.880000] nouveau 0000:80:00.0: enabling SERR and PARITY (0007 -> 0147)
+[   52.044000] nouveau 0000:80:00.0: NVIDIA NV11 (011300a1)
+[   52.364000] nouveau 0000:80:00.0: bios: version 03.11.01.24.00
+[   52.488000] nouveau 0000:80:00.0: putting AGP V2 device into 4x mode
+[   52.592000] nouveau 0000:80:00.0: putting AGP V2 device into 4x mode
+[   52.668000] nouveau 0000:80:00.0: tmr: unknown input clock freq
+[   52.740000] nouveau 0000:80:00.0: fb: 32 MiB SDRAM
+[   52.844000] [TTM] Zone  kernel: Available graphics memory: 3077188 kiB
+[   52.920000] [TTM] Zone   dma32: Available graphics memory: 2097152 kiB
+[   52.920000] [TTM] Initializing pool allocator
+[   52.928000] nouveau 0000:80:00.0: DRM: VRAM: 31 MiB
+[   52.928000] nouveau 0000:80:00.0: DRM: GART: 512 MiB
+[   52.928000] nouveau 0000:80:00.0: DRM: BMP version 5.20
+[   52.928000] nouveau 0000:80:00.0: DRM: No useful DCB data in VBIOS
+[   52.928000] nouveau 0000:80:00.0: DRM: Adaptor not initialised,
+running VBIOS init tables.
+[   53.016000] nouveau 0000:80:00.0: DRM: Saving VGA fonts
+[   53.336000] nouveau 0000:80:00.0: DRM: No useful DCB data in VBIOS
+[   53.336000] [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
+[   53.336000] [drm] Driver supports precise vblank timestamp query.
+[   53.336000] nouveau 0000:80:00.0: DRM: 0xABA2: Parsing digital
+output script table
+[   53.920000] nouveau 0000:80:00.0: DRM: MM: using M2MF for buffer copies
+[   54.144000] nouveau 0000:80:00.0: DRM: allocated 1920x1200 fb:
+0x8000, bo 000000007cee1000
+[   54.276000] nouveau 0000:80:00.0: DRM: 0xABCE: Parsing digital
+output script table
+[   54.312000] Console: switching to colour frame buffer device 240x75
+[   54.388000] nouveau 0000:80:00.0: DRM: GPU lockup - switching to
+software fbcon
+[   54.684000] nouveau 0000:80:00.0: fb0: nouveaufb frame buffer device
+[   54.784000] [drm] Initialized nouveau 1.3.1 20120801 for
+0000:80:00.0 on minor 0
