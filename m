@@ -1,14 +1,16 @@
 From: Mikulas Patocka <mpatocka@redhat.com>
-Subject: Re: kernel 4.6-rc unbootable due to module changes
-Date: Tue, 5 Apr 2016 16:15:36 -0400 (EDT)
-Message-ID: <alpine.LRH.2.02.1604051612310.32758@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.1604051326470.14606@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.1604051332280.25453@file01.intranet.prod.int.rdu2.redhat.com> <570409DA.1060508@gmx.de>
+Subject: Re: Kernel Panic on 4 cores hp c8000
+Date: Tue, 5 Apr 2016 16:18:12 -0400 (EDT)
+Message-ID: <alpine.LRH.2.02.1604051615410.32758@file01.intranet.prod.int.rdu2.redhat.com>
+References: <CACrbsaA0fw4KeKkcO5zZ50yMLsoysqJE6+ShfejCxDG9Zhns1Q@mail.gmail.com> <56FD5C30.4020409@gmx.de> <CACrbsaD4S7mPZcLT79FHU=fR+ecD6qaDyk1enHZ4zwG6y53MiA@mail.gmail.com> <alpine.LRH.2.02.1604051448230.28402@file01.intranet.prod.int.rdu2.redhat.com>
+ <57040A95.2040509@gmx.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org
+Cc: Simone Mannori <simone.mannori@gmail.com>,
+	linux-parisc <linux-parisc@vger.kernel.org>
 To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <570409DA.1060508@gmx.de>
+In-Reply-To: <57040A95.2040509@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
@@ -16,38 +18,29 @@ List-Id: linux-parisc.vger.kernel.org
 
 On Tue, 5 Apr 2016, Helge Deller wrote:
 
-> On 05.04.2016 19:36, Mikulas Patocka wrote:
-> > On Tue, 5 Apr 2016, Mikulas Patocka wrote:
+> On 05.04.2016 20:54, Mikulas Patocka wrote:
+> > On Thu, 31 Mar 2016, Simone Mannori wrote:
+> >>> I think Debian 5 will not even install on the C8000..
+> >>
+> >> Correct: the boot DVD hang after a while.
 > > 
-> >> Hi
-> >>
-> >> The patch "parisc: Use generic extable search and sort routines" makes the 
-> >> kernel unable to load any modules. It fails with:
-> >>
-> >> module unix: Unknown relocation: 9
-> >> modprobe: FATAL: Error inserting unix (/lib/modules/4.6.0-rc2/kernel/net/unix/unix.ko): Invalid module format
-> >>
-> >> When I revert the patch, the kernel 4.6-rc2 boots fine.
-> >>
-> >> Apparently, the function apply_relocate_add in arch/parisc/kernel/module.c 
-> >> doesn't handle the new relocation type.
-> >>
-> >> Mikulas
+> > I installed Debian 5 on the C8000 (using tftp netboot, not DVD) some times 
+> > ago.
 > > 
-> > BTW. I'm using hppa64 binutils 2.21 to build the kernel. It generates the 
-> > R_PARISC_PCREL32 relocation that the kernel module loader doesn't handle:
+> > It required PCI serial card (because the Debian 5 kernel doesn't recognize 
+> > the built-in serial ports) and PCI network card (the Debian 5 kernel can't 
+> > handle the built-in E1000 network card due to non-standard checksum in the 
+> > EEPROM).
 > 
-> 
-> Can you try attached patch (untested) ?
+> ... and the debian 5 kernel was most likely *very* unstable on that machine ? :-)
 > 
 > Helge
 
-I tried a similar patch, the system booted fine ... but then I discovered 
-that the system boots fine no matter what value is written to *loc.
+Yes, it was very unstable. It took long time for the parisc port to 
+stabilize.
 
-Apparently, none of the modules trigger any exceptions in my 
-configuration.
-
-I'll have to create a test module that triggers some exception.
+Recently, I've got some gcc crashes when running kernel compilation in 
+parallel with the LVM2 testsuite, so there may still be some stability 
+bugs.
 
 Mikulas
