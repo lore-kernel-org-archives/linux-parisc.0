@@ -1,50 +1,56 @@
 From: "Helge Deller" <deller@gmx.de>
 Subject: Aw: Re: kernel 4.6-rc unbootable due to module changes
-Date: Fri, 8 Apr 2016 14:06:09 +0200
-Message-ID: <trinity-1ff986de-0345-446b-baa3-dce5d7ebc2cc-1460117169764@3capp-gmx-bs27>
+Date: Fri, 8 Apr 2016 16:59:01 +0200
+Message-ID: <trinity-2288a664-7ecc-47ba-9dbb-630a8f9060c7-1460127541349@3capp-gmx-bs27>
 References: <alpine.LRH.2.02.1604051326470.14606@file01.intranet.prod.int.rdu2.redhat.com>
  <alpine.LRH.2.02.1604051332280.25453@file01.intranet.prod.int.rdu2.redhat.com>
  <570409DA.1060508@gmx.de>
  <alpine.LRH.2.02.1604051612310.32758@file01.intranet.prod.int.rdu2.redhat.com>
  <alpine.LRH.2.02.1604061014490.30369@file01.intranet.prod.int.rdu2.redhat.com>
- <57058332.8050204@gmx.de>, <5706E3A0.2020902@gmx.de>
+ <57058332.8050204@gmx.de>, <5706E3A0.2020902@gmx.de>,
+ <trinity-1ff986de-0345-446b-baa3-dce5d7ebc2cc-1460117169764@3capp-gmx-bs27>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary=kenitramv-d1d0f822-e4f0-4521-8e08-55fb779d54f4
+ boundary=kenitramv-9eac9b62-d9f0-4733-ab7f-bd1333d06bb3
 Cc: "Mikulas Patocka" <mpatocka@redhat.com>,
 	"John David Anglin" <dave.anglin@bell.net>,
 	linux-parisc@vger.kernel.org
 To: "Helge Deller" <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <5706E3A0.2020902@gmx.de>
+In-Reply-To: <trinity-1ff986de-0345-446b-baa3-dce5d7ebc2cc-1460117169764@3capp-gmx-bs27>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---kenitramv-d1d0f822-e4f0-4521-8e08-55fb779d54f4
+--kenitramv-9eac9b62-d9f0-4733-ab7f-bd1333d06bb3
 Content-Type: text/plain; charset=UTF-8
 
-> >> So, it seems that handling exceptions from modules never worked on 
-> >> pa-risc, it was just masked by the fact that exceptions from modules don't 
-> >> happen during normal use.
+> > >> So, it seems that handling exceptions from modules never worked on 
+> > >> pa-risc, it was just masked by the fact that exceptions from modules don't 
+> > >> happen during normal use.
+> > 
+> > Sadly you seem to be right :-(
+> > I did more testing with the test_user_copy module (with vanilla kernel 4.5 and without the relative extable support).
 > 
-> Sadly you seem to be right :-(
-> I did more testing with the test_user_copy module (with vanilla kernel 4.5 and without the relative extable support).
+> The attached patch fixes the exception handling for modules for me.
+> This is realized by saving the %r27 register in the fault handler and restoring it in the exception path.
+> With this patch the "test_user_copy" kernel module succeeds when loaded.
+> Mikulas, can you try it with your testcases ?
 
-The attached patch fixes the exception handling for modules for me.
-This is realized by saving the %r27 register in the fault handler and restoring it in the exception path.
-With this patch the "test_user_copy" kernel module succeeds when loaded.
-Mikulas, can you try it with your testcases ?
+Attached patch additionally adds support for resolving R_PARISC_PCREL32 relocations,
+which fixes the 32bit extable change which was introduced with kernel 4.6-rc1.
+
+With that I think we have all module issues resolved ?
 
 Helge
---kenitramv-d1d0f822-e4f0-4521-8e08-55fb779d54f4
+--kenitramv-9eac9b62-d9f0-4733-ab7f-bd1333d06bb3
 Content-Type: text/x-patch
-Content-Disposition: attachment; filename=fixup2.patch
+Content-Disposition: attachment; filename=fixup3.patch
 
 diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
-index 0abdd4c..1b05163 100644
+index d4dd6e5..b370d61 100644
 --- a/arch/parisc/include/asm/uaccess.h
 +++ b/arch/parisc/include/asm/uaccess.h
-@@ -78,6 +78,7 @@ struct exception_data {
+@@ -79,6 +79,7 @@ struct exception_data {
  	unsigned long fault_ip;
  	unsigned long fault_space;
  	unsigned long fault_addr;
@@ -64,6 +70,21 @@ index d2f6257..137c91e 100644
  	BLANK();
  	DEFINE(ASM_PDC_RESULT_SIZE, NUM_PDC_RESULT * sizeof(unsigned long));
  	BLANK();
+diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
+index b9d75d9..c54cf39 100644
+--- a/arch/parisc/kernel/module.c
++++ b/arch/parisc/kernel/module.c
+@@ -788,6 +788,10 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
+ 			CHECK_RELOC(val, 22);
+ 			*loc = (*loc & ~0x3ff1ffd) | reassemble_22(val);
+ 			break;
++		case R_PARISC_PCREL32:
++			/* 32-bit PC relative address */
++			*loc = val - dot - 8 + addend;
++			break;
+ 		case R_PARISC_DIR64:
+ 			/* 64-bit effective address */
+ 			*loc64 = val + addend;
 diff --git a/arch/parisc/kernel/parisc_ksyms.c b/arch/parisc/kernel/parisc_ksyms.c
 index 568b2c6..3cad8aa 100644
 --- a/arch/parisc/kernel/parisc_ksyms.c
@@ -86,10 +107,10 @@ index 568b2c6..3cad8aa 100644
  EXPORT_SYMBOL(fixup_get_user_skip_2);
  EXPORT_SYMBOL(fixup_put_user_skip_1);
 diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index 553b098..77e2262 100644
+index 16e0735..97d6b20 100644
 --- a/arch/parisc/kernel/traps.c
 +++ b/arch/parisc/kernel/traps.c
-@@ -798,6 +798,9 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
+@@ -795,6 +795,9 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
  
  	    if (fault_space == 0 && !faulthandler_disabled())
  	    {
@@ -132,16 +153,16 @@ index 536ef66..1052b74 100644
  	LDREG EXCDATA_IP(\t2), \t1
  	.endm
 diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index a762864..245784e 100644
+index 26fac9c..7a6ecaa 100644
 --- a/arch/parisc/mm/fault.c
 +++ b/arch/parisc/mm/fault.c
-@@ -153,6 +153,7 @@ int fixup_exception(struct pt_regs *regs)
+@@ -147,6 +147,7 @@ int fixup_exception(struct pt_regs *regs)
  		d->fault_ip = regs->iaoq[0];
  		d->fault_space = regs->isr;
  		d->fault_addr = regs->ior;
 +		d->fault_gp = regs->gr[27];
  
- 		regs->iaoq[0] = ((fix->fixup) & ~3);
- 		/*
+ 		regs->iaoq[0] = (unsigned long)&fix->fixup + fix->fixup;
+ 		regs->iaoq[0] &= ~3;
 
---kenitramv-d1d0f822-e4f0-4521-8e08-55fb779d54f4--
+--kenitramv-9eac9b62-d9f0-4733-ab7f-bd1333d06bb3--
