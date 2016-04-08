@@ -1,25 +1,37 @@
-From: AKINWUMI <urr@adminnfo3.website.tk>
-Subject: FROM: MR. OLIVER SENO!!
-Date: Fri, 8 Apr 2016 11:53:03 -0700
-Message-ID: <BLUPR17MB048338AF4F1D19702EAB86B1D0910@BLUPR17MB0483.namprd17.prod.outlook.com>
-Reply-To: <officeosenol@yahoo.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Handle R_PARISC_PCREL32 relocation in kernel modules
+Date: Fri, 8 Apr 2016 21:26:16 +0200
+Message-ID: <20160408192616.GA4225@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-To: Recipients <urr@adminnfo3.website.tk>
+Content-Type: text/plain; charset=us-ascii
+Cc: mpatocka@redhat.com
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Dear Sir.
+Commit 0de7985 (parisc: Use generic extable search and sort routines)
+changed the exception tables to use 32bit relative offsets.
 
-I bring you greetings. My name is Mr.Oliver Seno Lim, I am a staff of Abbey National Plc. London and heading our regional office in West Africa. Our late customer named Engr.Ben W.westland, made a fixed deposit amount of US$7Million.He did not declare any next of kin in any of his paper work, I want you as a foreigner to stand as the beneficiary to transfer this funds out of my bank into your account, after the successful transfer, we shall share in the ratio of 30% for you, 70%for me. Should you be interested please send me your information:
+With that change, the kernel needs to handle R_PARISC_PCREL32 relocations
+which this patch adds.
 
-1,Full names.
-2,current residential address.
-3,Tele/Fax numbers./your work.
- 
-   
-All I need from you is your readiness, trustworthiness and edication. Please email me directly on my private email address: officeosenol@yahoo.com) so we can begin arrangements and I would give you more information on how we would handle this venture and once i hear from you i will give you information of the bank for the transferring funds on your name.
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Regards,
-Mr.Oliver Seno Lim 
+diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
+index b9d75d9..c54cf39 100644
+--- a/arch/parisc/kernel/module.c
++++ b/arch/parisc/kernel/module.c
+@@ -788,6 +788,10 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
+ 			CHECK_RELOC(val, 22);
+ 			*loc = (*loc & ~0x3ff1ffd) | reassemble_22(val);
+ 			break;
++		case R_PARISC_PCREL32:
++			/* 32-bit PC relative address */
++			*loc = val - dot - 8 + addend;
++			break;
+ 		case R_PARISC_DIR64:
+ 			/* 64-bit effective address */
+ 			*loc64 = val + addend;
