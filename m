@@ -1,10 +1,9 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Handle R_PARISC_PCREL32 relocation in kernel modules
-Date: Fri, 8 Apr 2016 21:26:16 +0200
-Message-ID: <20160408192616.GA4225@ls3530.box>
+Subject: [PATCH] parisc: Avoid function pointers for kernel exception routines
+Date: Fri, 8 Apr 2016 21:27:31 +0200
+Message-ID: <20160408192731.GB4225@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: mpatocka@redhat.com
 To: linux-parisc@vger.kernel.org,
 	James Bottomley <James.Bottomley@HansenPartnership.com>,
 	John David Anglin <dave.anglin@bell.net>
@@ -12,26 +11,34 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Commit 0de7985 (parisc: Use generic extable search and sort routines)
-changed the exception tables to use 32bit relative offsets.
+We want to avoid the kernel module loader to create function pointers
+for the kernel fixup routines of get_user() and put_user(). Changing
+the external reference from function type to int type fixes this.
 
-With that change, the kernel needs to handle R_PARISC_PCREL32 relocations
-which this patch adds.
+This unbreaks exception handling for get_user() and put_user() when
+called from a kernel module.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: stable@vger.kernel.org
 
-diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
-index b9d75d9..c54cf39 100644
---- a/arch/parisc/kernel/module.c
-+++ b/arch/parisc/kernel/module.c
-@@ -788,6 +788,10 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
- 			CHECK_RELOC(val, 22);
- 			*loc = (*loc & ~0x3ff1ffd) | reassemble_22(val);
- 			break;
-+		case R_PARISC_PCREL32:
-+			/* 32-bit PC relative address */
-+			*loc = val - dot - 8 + addend;
-+			break;
- 		case R_PARISC_DIR64:
- 			/* 64-bit effective address */
- 			*loc64 = val + addend;
+diff --git a/arch/parisc/kernel/parisc_ksyms.c b/arch/parisc/kernel/parisc_ksyms.c
+index 568b2c6..3cad8aa 100644
+--- a/arch/parisc/kernel/parisc_ksyms.c
++++ b/arch/parisc/kernel/parisc_ksyms.c
+@@ -47,11 +47,11 @@ EXPORT_SYMBOL(__cmpxchg_u64);
+ EXPORT_SYMBOL(lclear_user);
+ EXPORT_SYMBOL(lstrnlen_user);
+ 
+-/* Global fixups */
+-extern void fixup_get_user_skip_1(void);
+-extern void fixup_get_user_skip_2(void);
+-extern void fixup_put_user_skip_1(void);
+-extern void fixup_put_user_skip_2(void);
++/* Global fixups - defined as int to avoid creation of function pointers */
++extern int fixup_get_user_skip_1;
++extern int fixup_get_user_skip_2;
++extern int fixup_put_user_skip_1;
++extern int fixup_put_user_skip_2;
+ EXPORT_SYMBOL(fixup_get_user_skip_1);
+ EXPORT_SYMBOL(fixup_get_user_skip_2);
+ EXPORT_SYMBOL(fixup_put_user_skip_1);
