@@ -1,72 +1,49 @@
-From: Alexey Brodkin <Alexey.Brodkin@synopsys.com>
-Subject: Re: [PATCH v2 02/30] Include generic parity.h in some
- architectures' bitops.h
-Date: Mon, 11 Apr 2016 17:31:47 +0000
-Message-ID: <1460395905.5119.43.camel@synopsys.com>
-References: <57033DBB.6060600@gmail.com>
- <1459932086-6394-1-git-send-email-zengzhaoxiu@163.com>
+From: Simone Mannori <simone.mannori@gmail.com>
+Subject: PCI video card hangs during system boot
+Date: Tue, 12 Apr 2016 10:20:17 +0200
+Message-ID: <CACrbsaAVBQw5zSiuS9xYo+vuP8sFk1a94FSXVz_sRGkMP+60Jg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-7"
-Cc: "dalias@libc.org" <dalias@libc.org>,
- "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
- "peterz@infradead.org" <peterz@infradead.org>,
- "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
- "will.deacon@arm.com" <will.deacon@arm.com>,
- "dhowells@redhat.com" <dhowells@redhat.com>,
- "jcmvbkbc@gmail.com" <jcmvbkbc@gmail.com>,
- "brueckner@linux.vnet.ibm.com" <brueckner@linux.vnet.ibm.com>,
- "linux@lists.openrisc.net" <linux@lists.openrisc.net>,
- "egtvedt@samfundet.no" <egtvedt@samfundet.no>,
- "jonas@southpole.se" <jonas@southpole.se>,
- "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
- "jesper.nilsson@axis.com" <jesper.nilsson@axis.com>,
- "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>,
- "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
- "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>,
- "ysato@users.sourceforge.jp" <ysato@users.sourceforge.jp>,
- "lin
-To: "zengzhaoxiu@163.com" <zengzhaoxiu@163.com>
-Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1459932086-6394-1-git-send-email-zengzhaoxiu@163.com>
-List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
-List-Post: <mailto:linux-snps-arc@lists.infradead.org>
-List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Cc: Helge Deller <deller@gmx.de>
+To: linux-parisc <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-SGkrQUtBLVpoYW94aXUsCgpPbiBXZWQsIDIwMTYtMDQtMDYgYXQgMTY6NDEgKy0wODAwLCB6ZW5n
-emhhb3hpdUAxNjMuY29tIHdyb3RlOgo+IEZyb206IFpoYW94aXUgWmVuZyA8emhhb3hpdS56ZW5n
-QGdtYWlsLmNvbT4KPiAKPiBVc2UgdGhlIGdlbmVyaWMgdmVyc2lvbgo+IAo+IFNpZ25lZC1vZmYt
-Ynk6IFpoYW94aXUgWmVuZyA8emhhb3hpdS56ZW5nQGdtYWlsLmNvbT4KPiAtLS0KPiArQUtBLWFy
-Y2gvYXJjL2luY2x1ZGUvYXNtL2JpdG9wcy5oK0FLQUFvQUNnQUtBQW9BQ2d8IDEgKy0KPiArQUtB
-LWFyY2gvYXJtL2luY2x1ZGUvYXNtL2JpdG9wcy5oK0FLQUFvQUNnQUtBQW9BQ2d8IDEgKy0KPiAr
-QUtBLWFyY2gvYXJtNjQvaW5jbHVkZS9hc20vYml0b3BzLmgrQUtBQW9BQ2dBS0F8IDEgKy0KPiAr
-QUtBLWFyY2gvYXZyMzIvaW5jbHVkZS9hc20vYml0b3BzLmgrQUtBQW9BQ2dBS0F8IDEgKy0KPiAr
-QUtBLWFyY2gvYzZ4L2luY2x1ZGUvYXNtL2JpdG9wcy5oK0FLQUFvQUNnQUtBQW9BQ2d8IDEgKy0K
-PiArQUtBLWFyY2gvY3Jpcy9pbmNsdWRlL2FzbS9iaXRvcHMuaCtBS0FBb0FDZ0FLQUFvQXwgMSAr
-LQo+ICtBS0EtYXJjaC9mcnYvaW5jbHVkZS9hc20vYml0b3BzLmgrQUtBQW9BQ2dBS0FBb0FDZ3wg
-MSArLQo+ICtBS0EtYXJjaC9oODMwMC9pbmNsdWRlL2FzbS9iaXRvcHMuaCtBS0FBb0FDZ0FLQXwg
-MSArLQo+ICtBS0EtYXJjaC9oZXhhZ29uL2luY2x1ZGUvYXNtL2JpdG9wcy5oK0FLQUFvQXwgMSAr
-LQo+ICtBS0EtYXJjaC9tMzJyL2luY2x1ZGUvYXNtL2JpdG9wcy5oK0FLQUFvQUNnQUtBQW9BfCAx
-ICstCj4gK0FLQS1hcmNoL202OGsvaW5jbHVkZS9hc20vYml0b3BzLmgrQUtBQW9BQ2dBS0FBb0F8
-IDEgKy0KPiArQUtBLWFyY2gvbWV0YWcvaW5jbHVkZS9hc20vYml0b3BzLmgrQUtBQW9BQ2dBS0F8
-IDEgKy0KPiArQUtBLWFyY2gvbW4xMDMwMC9pbmNsdWRlL2FzbS9iaXRvcHMuaCtBS0FBb0F8IDEg
-Ky0KPiArQUtBLWFyY2gvb3BlbnJpc2MvaW5jbHVkZS9hc20vYml0b3BzLmggfCAxICstCj4gK0FL
-QS1hcmNoL3BhcmlzYy9pbmNsdWRlL2FzbS9iaXRvcHMuaCtBS0FBb0FDZ3wgMSArLQo+ICtBS0Et
-YXJjaC9zMzkwL2luY2x1ZGUvYXNtL2JpdG9wcy5oK0FLQUFvQUNnQUtBQW9BfCAxICstCj4gK0FL
-QS1hcmNoL3NoL2luY2x1ZGUvYXNtL2JpdG9wcy5oK0FLQUFvQUNnQUtBQW9BQ2dBS0F8IDEgKy0K
-PiArQUtBLWFyY2gveHRlbnNhL2luY2x1ZGUvYXNtL2JpdG9wcy5oK0FLQUFvQUNnfCAxICstCj4g
-K0FLQS0xOCBmaWxlcyBjaGFuZ2VkLCAxOCBpbnNlcnRpb25zKCstKQoKQ291bGQgeW91IHBsZWFz
-ZSBpbmNsdWRlIGEgY2hhbmdlbG9nIGJlbG93IHlvdXIgY29tbWl0IG1lc3NhZ2U/Ck90aGVyd2lz
-ZSBpdCdzIGJhcmVseSBwb3NzaWJsZSB0byB1bmRlcnN0YW5kIHdoYXQgdGhhdCB2MiBpbXByb3Zl
-cy9maXhlcy4KCkFsc28gaXQgbWFrZXMgc2Vuc2UgdG8gc2VuZCBhdCBsZWFzdCBjb3ZlciBsZXR0
-ZXIgdG8gYWxsIHBlb3BsZSBtZW50aW9uZWQKYXQgbGVhc3QgaW4gb25lIHBhdGNoIG9mIHRoZSBz
-ZXJpZXMuIFRoYXQgZ2l2ZXMgYW4gaWRlYSB3aGF0IHRoaXMgc2VyaWVzCmRvZXMgYW5kIGluIHBh
-cnRpY3VsYXIgd2h5IHBhdGNoIEknbSBtZW50aW9uZWQgaW4gaXMgcmVxdWlyZWQuCgotQWxleGV5
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXNu
-cHMtYXJjIG1haWxpbmcgbGlzdApsaW51eC1zbnBzLWFyY0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtc25wcy1hcmM=
+Dear All,
+
+looking for a solution for a presistent issue (lack of any hardware
+acceleration support for X11 because error during the loading of the
+"radeon" or "nouveau" kernel module at boot time) I have bought a PCI
+video card: ATI RADEON 9300 128M PCI. This test has been suggested by
+many guys on several mailing list.
+
+NOTA BENE: make sure that the PCI video card is 3.3V type or is an
+"universal" (3.3V and 5.0V) model like mine.
+
+I have put this video card leaving the ATI FireCL X1 installed; I have
+removed the AGP video card; I have moved the PCI video card on
+different positions.
+
+No matter what I do, the c8000 is unable to boot.
+
+Using the serial console, I have his message
+
+<Cpu0> 0e000e7a00e00000  600601005d441002  CC_IODISC_PCI_DEVICE_CONFIG
+pci_bus_walk line 2878 - bridge aperture too big
+<Cpu0> 160012cb00e00000  0000000000000000  CC_MPS_SLAV.......
+.......
+Then the system boot process STOPs:
+<Cpu1> e000108401e00000  0000000000000000  CC_BOOT_BOOT_FAILURE
+<Cpu1> 030010d501e00000  0000000000000000  CC_CPU_STOP
+
+This problem lie in the internal c8000 "system bios/diagnostic" code,
+Linux boot process, kernel and modules are not involved.
+
+Finally, the people that have suggested this test have not tried to make it.
+
+Question: "Someone has tried with a NVDIA or MATROX PCI video cards?"
+
+Thanks in advance for your help.
+
+   Simone Mannori - ITALY
