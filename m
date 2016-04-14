@@ -1,52 +1,87 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: PCI video card hangs during system boot
-Date: Thu, 14 Apr 2016 12:19:28 -0400
-Message-ID: <570FC310.2050000@bell.net>
-References: <CACrbsaAVBQw5zSiuS9xYo+vuP8sFk1a94FSXVz_sRGkMP+60Jg@mail.gmail.com>
- <1587186.CtnrnCsSzp@caliban.sf-tec.de> <570D38BF.7040307@bell.net>
- <CACrbsaBBT20+_GtJD3XMxob7Pz+mhdw7BE0h3uQSpKq-VSOHYA@mail.gmail.com>
- <570E5F69.4010203@bell.net>
- <CAFk90B_oAkq=JD0msjm2ZM2oZWAUd6yqh-XnC1Kk4HKHGOBt0w@mail.gmail.com>
- <4E86DE96-4108-41F1-872C-F7E04075466A@bell.net>
- <CACrbsaBOV3vqbwRp1i2aXA0FqgMGbuw_-9KnudnVjSwo-SW2Xg@mail.gmail.com>
- <570FB039.8040109@bell.net>
- <CACrbsaDJ2PCAh3KBV=T1Cwi4JxtV31bPJw-PireiZW6W51qCmg@mail.gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Subject: Re: [PATCH] libseccomp: Add parisc architecture support (v2)
+Date: Thu, 14 Apr 2016 19:14:14 -0400
+Message-ID: <CAHC9VhSseu8kLg0W+Ee0bnOiPSKHfGq-zsq-xmrOfMFozohmZA@mail.gmail.com>
+References: <20160213200731.GA18161@ls3530.box>
+	<3673666.V2ZqGazvLY@sifl>
+	<56C24911.8000200@gmx.de>
+	<1907254.cBdVSxntFv@sifl>
+	<20160409070549.GA5442@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: Graham Gower <graham.gower@gmail.com>,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	Helge Deller <deller@gmx.de>
-To: Simone Mannori <simone.mannori@gmail.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CACrbsaDJ2PCAh3KBV=T1Cwi4JxtV31bPJw-PireiZW6W51qCmg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	John David Anglin <dave.anglin@bell.net>, libseccomp@googlegroups.com,
+	Mike Frysinger <vapier@gentoo.org>
+To: Helge Deller <deller@gmx.de>
+Return-path: <libseccomp+bncBD4NPLXYE4IMNSGAXACRUBCUS2Y7A@googlegroups.com>
+In-Reply-To: <20160409070549.GA5442@ls3530.box>
+List-Post: <https://groups.google.com/group/libseccomp/post>, <mailto:libseccomp@googlegroups.com>
+List-Help: <https://groups.google.com/support/>, <mailto:libseccomp+help@googlegroups.com>
+List-Archive: <https://groups.google.com/group/libseccomp
+List-Subscribe: <https://groups.google.com/group/libseccomp/subscribe>, <mailto:libseccomp+subscribe@googlegroups.com>
+List-Unsubscribe: <mailto:googlegroups-manage+473669215327+unsubscribe@googlegroups.com>,
+ <https://groups.google.com/group/libseccomp/subscribe>
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-On 2016-04-14 11:54 AM, Simone Mannori wrote:
-> Very interesting and useful info, but they don't help us to fix the basic issue.
+On Sat, Apr 9, 2016 at 3:05 AM, Helge Deller <deller@gmx.de> wrote:
+> This patch (v2) adds support for the parisc and parisc64 architectures
+> to libseccomp.
+
+Great!
+
+> I didn't split up the patch, because it's pretty trivial.
+> Those parisc-specific files gets added:
+>  src/arch-parisc-syscalls.c
+>  src/arch-parisc.c
+>  src/arch-parisc.h
+>  src/arch-parisc64.c
 >
-> We have several AGP cards able to work correctly BUT in passive frame
-> buffer only mode, therefore the c8000, a quite fast quad core
-> workstation , with X11, looks like a bradypus instead that a
-> velociraptor.
+> All other changes are trivial because they simply add parisc-specific
+> case statements in variouse switch statements.
 >
-> This is the moment to recompile a custom kernel with some printk.
+> I noticed that when valgrind is not going to be used (e.g. because it's not
+> installed), the test testsuite will issue no information about that. With this
+> patch you will get informed if a testcase was SKIPPED because valgrind is not
+> installed. This additional info is useful for architectures which aren't as
+> fast as x86_64. On parisc it seemed that the whole testcase was hanging, now
+> people know what's actually happening.
+
+Would you mind separating out the valgrind portion of the patch into a
+separate patch?  That is something we can merge regardless, as it
+isn't pa-risc specific, and would be a nice addition.
+
+> I did ran a "make check" sucessfully on x86_64 and parisc.
+> The x86_64 didn't showed any issues, while on the parisc architecture
+> the 29-sim-pseudo_syscall testcase failed. But it seems this testcase
+> failure is not caused by this patch, instead it seems that it will fail
+> on most other architectures beside x86_64 as well.
+
+There should be no test failures on any of the arch/ABIs that
+libseccomp supports.  Can you elaborate on the failure you are seeing
+with 29-sim-pseudo_syscall?  Are you using a current libseccomp from
+the master branch?
+
+Also, it would be good to ensure that 'cd tests; ./regression -T live'
+worked correctly; these tests aren't run automatically because they
+are the live tests, but they need to pass before we merge the new
+architecture.
+
+> It would be nice if you could add this patch to the libseccomp git tree.
+> The patch applies cleanly to current git head.
 >
-I tried this a year or so ago.  I pretty much convinced myself that the 
-firmware loaded
-correctly, and that read and write operations seemed to work. However, I 
-wasn't able
-to find why the the ring buffer test failed.  I also checked that the 
-firmware was identical
-to that used on hpux.
+> Changes compared to v1 of this patch:
+> - Enabled seccomp mode 2 regression tests on parisc. Kernel support for hppa
+> was added in kernel 4.6-rc1 and backported into the kernel stable series.
 
-There is an ATI document somewhere on the register interface.
-
-I understand your frustration.
-
-Dave
+So all necessary kernel support is now part of the 4.6-rcX kernels?
 
 -- 
-John David Anglin  dave.anglin@bell.net
+paul moore
+www.paul-moore.com
 
+-- 
+You received this message because you are subscribed to the Google Groups "libseccomp" group.
+To unsubscribe from this group and stop receiving emails from it, send an email to libseccomp+unsubscribe@googlegroups.com.
+To post to this group, send email to libseccomp@googlegroups.com.
+For more options, visit https://groups.google.com/d/optout.
