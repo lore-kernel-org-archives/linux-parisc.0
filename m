@@ -1,40 +1,49 @@
-From: Graham Gower <graham.gower@gmail.com>
+From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: PCI video card hangs during system boot
-Date: Thu, 14 Apr 2016 09:48:09 +0930
-Message-ID: <CAFk90B_oAkq=JD0msjm2ZM2oZWAUd6yqh-XnC1Kk4HKHGOBt0w@mail.gmail.com>
-References: <CACrbsaAVBQw5zSiuS9xYo+vuP8sFk1a94FSXVz_sRGkMP+60Jg@mail.gmail.com>
-	<1587186.CtnrnCsSzp@caliban.sf-tec.de>
-	<570D38BF.7040307@bell.net>
-	<CACrbsaBBT20+_GtJD3XMxob7Pz+mhdw7BE0h3uQSpKq-VSOHYA@mail.gmail.com>
-	<570E5F69.4010203@bell.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Date: Wed, 13 Apr 2016 20:29:04 -0400
+Message-ID: <4E86DE96-4108-41F1-872C-F7E04075466A@bell.net>
+References: <CACrbsaAVBQw5zSiuS9xYo+vuP8sFk1a94FSXVz_sRGkMP+60Jg@mail.gmail.com> <1587186.CtnrnCsSzp@caliban.sf-tec.de> <570D38BF.7040307@bell.net> <CACrbsaBBT20+_GtJD3XMxob7Pz+mhdw7BE0h3uQSpKq-VSOHYA@mail.gmail.com> <570E5F69.4010203@bell.net> <CAFk90B_oAkq=JD0msjm2ZM2oZWAUd6yqh-XnC1Kk4HKHGOBt0w@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Type: text/plain; charset=us-ascii
 Cc: Simone Mannori <simone.mannori@gmail.com>,
 	Rolf Eike Beer <eike-kernel@sf-tec.de>,
 	linux-parisc <linux-parisc@vger.kernel.org>
-To: John David Anglin <dave.anglin@bell.net>
+To: Graham Gower <graham.gower@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <570E5F69.4010203@bell.net>
+In-Reply-To: <CAFk90B_oAkq=JD0msjm2ZM2oZWAUd6yqh-XnC1Kk4HKHGOBt0w@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 14 April 2016 at 00:32, John David Anglin <dave.anglin@bell.net> wrote:
-> On 2016-04-13 3:06 AM, Simone Mannori wrote:
->>>
->>> Maybe pulling FireGL X1 will help:
->>>
->>> https://lists.freedesktop.org/archives/dri-users/2015-February/000034.html
->>
->> Already done Dave: same error message during system boot. Just to be
->> clear, the error message is also indipendent by the PCI slot position.
->> Thanks for the hint, anyway.
->
-> Just one further thought regarding FireGL X1.  The OLS article by Grant
-> referenced in the above
-> link indicated that a common problem in porting drivers to parisc was timing
-> issues with I/O writes.
-> This was fixed in a couple of drivers by doing a read after doing a write.
-> Possibly, the radeon driver
-> could be hacked to always read after write as a test.
+On 2016-04-13, at 8:18 PM, Graham Gower wrote:
 
-I've tried this. It doesn't change the failure mode.
+> On 14 April 2016 at 00:32, John David Anglin <dave.anglin@bell.net> wrote:
+>> On 2016-04-13 3:06 AM, Simone Mannori wrote:
+>>>> 
+>>>> Maybe pulling FireGL X1 will help:
+>>>> 
+>>>> https://lists.freedesktop.org/archives/dri-users/2015-February/000034.html
+>>> 
+>>> Already done Dave: same error message during system boot. Just to be
+>>> clear, the error message is also indipendent by the PCI slot position.
+>>> Thanks for the hint, anyway.
+>> 
+>> Just one further thought regarding FireGL X1.  The OLS article by Grant
+>> referenced in the above
+>> link indicated that a common problem in porting drivers to parisc was timing
+>> issues with I/O writes.
+>> This was fixed in a couple of drivers by doing a read after doing a write.
+>> Possibly, the radeon driver
+>> could be hacked to always read after write as a test.
+> 
+> I've tried this. It doesn't change the failure mode.
+
+Do you know if c8000 can setup any non HP card (e.g., ATI Rage XL)?  It was reported that
+some old cards would work with PDC firmware in unaccelerated fb mode, but c8000 has
+x86 emulator so it might be able to enable accelerated 2d/3d.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
