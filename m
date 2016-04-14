@@ -1,55 +1,51 @@
 From: Simone Mannori <simone.mannori@gmail.com>
-Subject: Re: PCI video card hangs during system boot
-Date: Thu, 14 Apr 2016 10:14:31 +0200
-Message-ID: <CACrbsaBOV3vqbwRp1i2aXA0FqgMGbuw_-9KnudnVjSwo-SW2Xg@mail.gmail.com>
-References: <CACrbsaAVBQw5zSiuS9xYo+vuP8sFk1a94FSXVz_sRGkMP+60Jg@mail.gmail.com>
-	<1587186.CtnrnCsSzp@caliban.sf-tec.de>
-	<570D38BF.7040307@bell.net>
-	<CACrbsaBBT20+_GtJD3XMxob7Pz+mhdw7BE0h3uQSpKq-VSOHYA@mail.gmail.com>
-	<570E5F69.4010203@bell.net>
-	<CAFk90B_oAkq=JD0msjm2ZM2oZWAUd6yqh-XnC1Kk4HKHGOBt0w@mail.gmail.com>
-	<4E86DE96-4108-41F1-872C-F7E04075466A@bell.net>
+Subject: c8000::kernel hangs with 16G DRAM
+Date: Thu, 14 Apr 2016 10:46:01 +0200
+Message-ID: <CACrbsaC_FOZ4tG+AmBAtz_Dir+w5XfY9Nc-j-XPqnQkPph+jWQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Cc: Graham Gower <graham.gower@gmail.com>,
-	Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	Helge Deller <deller@gmx.de>
-To: John David Anglin <dave.anglin@bell.net>
+To: linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4E86DE96-4108-41F1-872C-F7E04075466A@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> Do you know if c8000 can setup any non HP card (e.g., ATI Rage XL)?  It was reported that
-> some old cards would work with PDC firmware in unaccelerated fb mode, but c8000 has
-> x86 emulator so it might be able to enable accelerated 2d/3d.
+Dear All,
 
-Good hint. I have several "vintage" PCI video cards to try (including
-ATI RAGE, Vodoo, etc.) but I can't because the have 5V PCI interface.
-HP c8000 have several PCI slots BUT PCI 3.3 volt ONLY. Find
-"universal" 5V/3V PCI card is possible but the only cards that I have
-find (the ATI 9200 128Mega) fails at "BIOS" time (see the first
-message of this thread).
+after upgrading the RAM to 16GB (8 x 2GB modules), the kernel hangs
+just after the "nouveau" module loading.
+With X1 ATI video card, the "radeon" driver has the very same behaviour.
+Booting without ANY video card is OK and the c8000 works perfectly
+(this exlude any memory realted issues like memory
+errors/defective/unmatched DIMM)
 
-I'm accumulating several indirect evidences that the primary source of
-the problem is not the video driver (both "radeon" and "nouveau" fail)
-or the bus interface (degrading APG to PCI using video driver options
-at Linux kernel boot time does not change the final results; the only
-PCI video card that I was able to find, if fails at BIOS time).
+With "nouveau" the serial console dump is:
 
-Indirect evidences point the ZX1 chipset. For instance, on my c8000
-with FireGL X1, if I add more than 8G DRAM, Linux boot fails (kernel
-panic) during "radeon" loading. If I remove the video card and I use
-the workstation as "server" via serial port or Ethernet, I can upgrade
-to 16 Giga DRAM (8 x 2GB modules) with zero issue. I will open another
-specific thread with the details soon.
-
-Few days ago, I have mismatched the memory modules; the c8000 was able
-to start Linux boot but I had a kernel panic during "radeon" loading.
-
-As Helge has already point out, the only debug option is to recompile
-the kernel with some "printk" in stategic point, hoping to be able to
-find the primary source of this _very_nasty_ issue.
+[  OK  ] Reached target Graphical Interface.
+[   73.932000] nuveau 0000:80:00.0: DRM: 0xABCE: Parsing digital
+output script table
+         Starting Update UTMP about Syste[   74.104000] nouveau
+0000:80:00.0: DRM: 0xABCE: Parsing digital output script table
+m Runlevel Changes...
+[  OK  ] Started Update UTMP about System Runlevel Changes.
+[   95.616000] INFO: rcu_sched detected stalls on CPUs/tasks:
+[   95.680000]  (detected by 1, t=5272 jiffies, g=2108, c=2107, q=121)
+[   95.756000] All QSes seen, last rcu_sched kthread activity 5284
+(4294916235-4294910951), jiffies_till_next_fqs=1, root ->qsmask 0x0
+[   95.896000] dpkg            R  running task        0   941    938 0x00000014
+[   95.984000] Backtrace:
+[   96.012000]  [<0000000040215bc0>] show_stack+0x20/0x38
+[   96.072000]  [<00000000402756e4>] sched_show_task+0x134/0x1d0
+[   96.140000]  [<00000000402adc04>] rcu_check_callbacks+0x9bc/0x9c8
+[   96.216000]  [<00000000402b2494>] update_process_times+0x74/0xd8
+[   96.288000]  [<0000000040216edc>] timer_interrupt+0x1bc/0x220
+[   96.356000]  [<000000004029d714>] handle_irq_event_percpu+0xb4/0x250
+[   96.432000]  [<00000000402a3028>] handle_percpu_irq+0xa8/0xe8
+[   96.500000]  [<000000004029c99c>] generic_handle_irq+0x4c/0x68
+[   96.568000]  [<0000000040205308>] call_on_stack+0x18/0x24
+[   96.636000]
+[   96.652000] rcu_sched kthread starved for 5508 jiffies! g2108 c2107
+f0x2 s3 ->state=0x100
+[   96.752000] timer_interrupt(CPU 1): delayed! cycles 4370CCA7 rem
+82659  next/now 5AA779EC42/5AA771C5E9
 
   Simone Mannori - ITALY
