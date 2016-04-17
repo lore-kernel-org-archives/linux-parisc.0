@@ -1,7 +1,7 @@
 From: Central Trust Loan Limited <akbar.ramaputra12@kalstaronline.com>
 Subject: =?utf-8?Q?L=C3=A5netilbud?=
-Date: Sun, 17 Apr 2016 23:37:49 +0700 (WIT)
-Message-ID: <820890261.39989.1460911069769.JavaMail.zimbra@kalstaronline.com>
+Date: Sun, 17 Apr 2016 23:39:15 +0700 (WIT)
+Message-ID: <1697976406.40060.1460911155610.JavaMail.zimbra@kalstaronline.com>
 Reply-To: "centraltrustlltd@gmail.com" <centraltrustlltd@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
