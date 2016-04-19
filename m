@@ -1,54 +1,62 @@
-From: Paul Moore <paul@paul-moore.com>
-Subject: Re: [PATCH] libseccomp/tests: Report if test was skipped
- because of missing valgrind
-Date: Mon, 18 Apr 2016 18:37:28 -0400
-Message-ID: <1765217.3d9ZDVQ0iE@sifl>
-References: <20160213200731.GA18161@ls3530.box> <571103AD.20500@gmx.de> <20160415150941.GA11180@ls3530.dhcp.wdf.sap.corp>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Build regressions/improvements in v4.6-rc4
+Date: Tue, 19 Apr 2016 08:57:37 +0200
+Message-ID: <CAMuHMdUqJ0dj25oXhC4MgqSk0SaOHvT262ew+sBs7eV2SCwyUA@mail.gmail.com>
+References: <1461048813-28712-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, James Bottomley <James.Bottomley@hansenpartnership.com>, John David Anglin <dave.anglin@bell.net>, Mike Frysinger <vapier@gentoo.org>
-To: libseccomp@googlegroups.com
-Return-path: <libseccomp+bncBD4NPLXYE4IKVQ6VXACRUBDASMM5G@googlegroups.com>
-In-Reply-To: <20160415150941.GA11180@ls3530.dhcp.wdf.sap.corp>
-List-Post: <https://groups.google.com/group/libseccomp/post>, <mailto:libseccomp@googlegroups.com>
-List-Help: <https://groups.google.com/support/>, <mailto:libseccomp+help@googlegroups.com>
-List-Archive: <https://groups.google.com/group/libseccomp
-List-Subscribe: <https://groups.google.com/group/libseccomp/subscribe>, <mailto:libseccomp+subscribe@googlegroups.com>
-List-Unsubscribe: <mailto:googlegroups-manage+473669215327+unsubscribe@googlegroups.com>,
- <https://groups.google.com/group/libseccomp/subscribe>
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	Linux PM list <linux-pm@vger.kernel.org>
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1461048813-28712-1-git-send-email-geert@linux-m68k.org>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Friday, April 15, 2016 05:09:41 PM Helge Deller wrote:
-> Print a message if a regression test was skipped just because valgrind isn't
-> installed.
-> 
-> This additional info is useful for architectures (e.g. parisc) which aren't
-> as fast as x86_64. On parisc it seemed that the whole testcase was hanging,
-> now people know what's actually happening.
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
+On Tue, Apr 19, 2016 at 8:53 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> Below is the list of build error/warning regressions/improvements in
+> v4.6-rc4[1] compared to v4.5[2].
+>
+> Summarized:
+>   - build errors: +11/-7
+>   - build warnings: +16376/-165
 
-Merged, thanks!
+Sorry for the delay, initially I didn't realize why my first report didn't make
+it to the list. It was too big, due to 16211 warnings in parisc-allmodconfig
+about "-ffunction-sections disabled; it makes profiling impossible [enabled by
+default]".
 
-> diff --git a/tests/regression b/tests/regression
-> index 53d26b2..5949459 100755
-> --- a/tests/regression
-> +++ b/tests/regression
-> @@ -772,6 +773,7 @@ function run_test() {
->  		if check_deps valgrind; then
->  			run_test_bpf_valgrind "$testnumstr" "$3"
->  		else
-> +			print_result $testnumstr "SKIPPED" "(valgrind not installed)"
->  			stats_skipped=$(($stats_skipped+1))
->  		fi
->  	elif [[ "$4" == "live" ]]; then
+> JFYI, when comparing v4.6-rc4[1] to v4.6-rc3[3], the summaries are:
+>   - build errors: +9/-9
 
--- 
-paul moore
-www.paul-moore.com
+  + /home/kisskb/slave/src/arch/powerpc/kernel/pci_dn.c: error:
+'struct pci_dn' has no member named 'edev':  => 272:8
+  + /home/kisskb/slave/src/arch/powerpc/kernel/pci_dn.c: error:
+dereferencing pointer to incomplete type:  => 215:7
+  + /home/kisskb/slave/src/arch/powerpc/kernel/pci_dn.c: error:
+implicit declaration of function 'eeh_dev_init'
+[-Werror=implicit-function-declaration]:  => 212:3
 
--- 
-You received this message because you are subscribed to the Google Groups "libseccomp" group.
-To unsubscribe from this group and stop receiving emails from it, send an email to libseccomp+unsubscribe@googlegroups.com.
-To post to this group, send email to libseccomp@googlegroups.com.
-For more options, visit https://groups.google.com/d/optout.
+powerpc-randconfig
+
+  + /home/kisskb/slave/src/drivers/thermal/mtk_thermal.c: error:
+implicit declaration of function 'device_reset'
+[-Werror=implicit-function-declaration]:  => 560:2
+
+x86_64-randconfig (patch available)
+
+> [1] http://kisskb.ellerman.id.au/kisskb/head/10194/ (all 262 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/head/10162/ (all 262 configs)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
