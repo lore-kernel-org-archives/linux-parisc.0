@@ -1,53 +1,112 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: fix a bug when syscall number of tracee is
- __NR_Linux_syscalls
-Date: Wed, 27 Apr 2016 21:23:12 +0200
-Message-ID: <572111A0.706@gmx.de>
-References: <20160427015611.GA23316@altlinux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Cc: Mike Frysinger <vapier@gentoo.org>, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-To: "Dmitry V. Levin" <ldv@altlinux.org>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v3 07/16] rtc: parisc: provide rtc_class_ops directly
+Date: Thu, 28 Apr 2016 00:34:21 +0200
+Message-ID: <1461796470-1291527-8-git-send-email-arnd@arndb.de>
+References: <1461796470-1291527-1-git-send-email-arnd@arndb.de>
+Cc: Arnd Bergmann <arnd@arndb.de>, geert@linux-m68k.org, deller@gmx.de,
+	benh@kernel.crashing.org, mpe@ellerman.id.au, dalias@libc.org,
+	dhowells@redhat.com, linux-alpha@vger.kernel.org,
+	a.zummo@towertech.it, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-sh@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	rtc-linux@googlegroups.com, linux-arch@vger.kernel.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20160427015611.GA23316@altlinux.org>
+In-Reply-To: <1461796470-1291527-1-git-send-email-arnd@arndb.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 27.04.2016 03:56, Dmitry V. Levin wrote:
-> Do not load one entry beyond the end of the syscall table when the
-> syscall number of a traced process equals to __NR_Linux_syscalls.
-> Similar bug with regular processes was fixed by commit 3bb457af4fa8
-> ("[PARISC] Fix bug when syscall nr is __NR_Linux_syscalls").
-> 
-> This bug was found by strace test suite.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
+The rtc-generic driver provides an architecture specific
+wrapper on top of the generic rtc_class_ops abstraction,
+and on pa-risc, that is implemented using an open-coded
+version of rtc_time_to_tm/rtc_tm_to_time.
 
-Acked-by: Helge Deller <deller@gmx.de>
+This changes the parisc rtc-generic device to provide its
+rtc_class_ops directly, using the normal helper functions,
+which makes this y2038 safe (on 32-bit) and simplifies
+the implementation.
 
-Thanks!
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/parisc/kernel/time.c | 36 +++++++++++++++++++++++++++++++++++-
+ drivers/rtc/rtc-generic.c |  3 +--
+ 2 files changed, 36 insertions(+), 3 deletions(-)
 
-Helge
-
-> ---
->  arch/parisc/kernel/syscall.S | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
-> index c976ebf..57b4836 100644
-> --- a/arch/parisc/kernel/syscall.S
-> +++ b/arch/parisc/kernel/syscall.S
-> @@ -344,7 +344,7 @@ tracesys_next:
->  #endif
->  
->  	cmpib,COND(=),n -1,%r20,tracesys_exit /* seccomp may have returned -1 */
-> -	comiclr,>>=	__NR_Linux_syscalls, %r20, %r0
-> +	comiclr,>>	__NR_Linux_syscalls, %r20, %r0
->  	b,n	.Ltracesys_nosys
->  
->  	LDREGX  %r20(%r19), %r19
-> 
+diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
+index 58dd6801f5be..744878789752 100644
+--- a/arch/parisc/kernel/time.c
++++ b/arch/parisc/kernel/time.c
+@@ -12,6 +12,7 @@
+  */
+ #include <linux/errno.h>
+ #include <linux/module.h>
++#include <linux/rtc.h>
+ #include <linux/sched.h>
+ #include <linux/kernel.h>
+ #include <linux/param.h>
+@@ -248,14 +249,47 @@ void __init start_cpu_itimer(void)
+ 	per_cpu(cpu_data, cpu).it_value = next_tick;
+ }
+ 
++#if IS_ENABLED(CONFIG_RTC_DRV_GENERIC)
++static int rtc_generic_get_time(struct device *dev, struct rtc_time *tm)
++{
++	struct pdc_tod tod_data;
++
++	memset(tm, 0, sizeof(*tm));
++	if (pdc_tod_read(&tod_data) < 0)
++		return -EOPNOTSUPP;
++
++	/* we treat tod_sec as unsigned, so this can work until year 2106 */
++	rtc_time64_to_tm(tod_data.tod_sec, tm);
++	return rtc_valid_tm(tm);
++}
++
++static int rtc_generic_set_time(struct device *dev, struct rtc_time *tm)
++{
++	time64_t secs = rtc_tm_to_time64(tm);
++
++	if (pdc_tod_set(secs, 0) < 0)
++		return -EOPNOTSUPP;
++
++	return 0;
++}
++
++static const struct rtc_class_ops rtc_generic_ops = {
++	.read_time = rtc_generic_get_time,
++	.set_time = rtc_generic_set_time,
++};
++
+ static int __init rtc_init(void)
+ {
+ 	struct platform_device *pdev;
+ 
+-	pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
++	pdev = platform_device_register_data(NULL, "rtc-generic", -1,
++					     &rtc_generic_ops,
++					     sizeof(rtc_generic_ops));
++
+ 	return PTR_ERR_OR_ZERO(pdev);
+ }
+ device_initcall(rtc_init);
++#endif
+ 
+ void read_persistent_clock(struct timespec *ts)
+ {
+diff --git a/drivers/rtc/rtc-generic.c b/drivers/rtc/rtc-generic.c
+index 3958e87a05fa..92b5e02a3750 100644
+--- a/drivers/rtc/rtc-generic.c
++++ b/drivers/rtc/rtc-generic.c
+@@ -9,8 +9,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/rtc.h>
+ 
+-#if defined(CONFIG_M68K) || defined(CONFIG_PARISC) || \
+-    defined(CONFIG_PPC)
++#if defined(CONFIG_M68K) || defined(CONFIG_PPC)
+ #include <asm/rtc.h>
+ 
+ static int generic_get_time(struct device *dev, struct rtc_time *tm)
+-- 
+2.7.0
 
