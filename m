@@ -1,63 +1,53 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 6/8] char/genrtc: parisc: use asm-generic/rtc.h
-Date: Wed, 27 Apr 2016 14:44:34 +0200
-Message-ID: <4737487.5iYaado825@wuerfel>
-References: <1461707052-1337718-1-git-send-email-arnd@arndb.de> <4599222.az1Zyv5Lrl@wuerfel> <CAMuHMdV0DwdMkJURBH05ntrJWz0eY_wT__vHG32sx-sjSp0m_w@mail.gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] parisc: fix a bug when syscall number of tracee is
+ __NR_Linux_syscalls
+Date: Wed, 27 Apr 2016 21:23:12 +0200
+Message-ID: <572111A0.706@gmx.de>
+References: <20160427015611.GA23316@altlinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Tony Luck <tony.luck@intel.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Rich Felker <dalias@libc.org>,
-	David Howells <dhowells@redhat.com>,
-	Koichi Yasutake <yasutake.koichi@jp.panasonic.com>,
-	Richard Henderson <rth@twiddle.net>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	alpha <linux-alpha@vger.kernel.org>,
-	the arch/x86 maintainers <x86@kernel.org>,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Alexandre Belloni <alexandre.belloni@free-electrons.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdV0DwdMkJURBH05ntrJWz0eY_wT__vHG32sx-sjSp0m_w@mail.gmail.com>
-List-ID: <linux-alpha.vger.kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Cc: Mike Frysinger <vapier@gentoo.org>, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+To: "Dmitry V. Levin" <ldv@altlinux.org>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20160427015611.GA23316@altlinux.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wednesday 27 April 2016 13:55:43 Geert Uytterhoeven wrote:
-> On Wed, Apr 27, 2016 at 1:35 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Wednesday 27 April 2016 13:21:16 Arnd Bergmann wrote:
-> >> On Wednesday 27 April 2016 00:07:47 Rolf Eike Beer wrote:
-> >> > Arnd Bergmann wrote:
-> >> > > The asm-generic/rtc.h header can now be included by
-> >> > > architectures that provide their own set_rtc_time/get_rtc_time
-> >> > > macros, letting us remove most of the common contents in
-> >> > > the powerpc implementation.
-> >> >
-> >> > parisc in this case.
-> >> >
-> >>
-> >> Fixed, thanks!
-> >
-> > Actually, after the comment about just removing the gen_rtc driver
-> > in the long run, I checked again and found that PARISC unconditionally
-> > selects RTC_CLASS, so this driver can't even be built here.
-> > We should just remove the header and drop PARISC from the list.
-> >
-> > If we also drop m68k, that just leaves powerpc.
+On 27.04.2016 03:56, Dmitry V. Levin wrote:
+> Do not load one entry beyond the end of the syscall table when the
+> syscall number of a traced process equals to __NR_Linux_syscalls.
+> Similar bug with regular processes was fixed by commit 3bb457af4fa8
+> ("[PARISC] Fix bug when syscall nr is __NR_Linux_syscalls").
 > 
-> I've just checked Debian's unofficial linux-image-4.5.0-1-m68k_4.5.1-1_m68k,
-> and it also enables RTC_CLASS and CONFIG_RTC_DRV_GENERIC, so gen_rtc
-> can be dropped on m68k for sure.
+> This bug was found by strace test suite.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
 
-Ok, excellent. I'll try to rework the series then to completely eliminate
-the driver (or leaving it ppc-only).
+Acked-by: Helge Deller <deller@gmx.de>
 
-	Arnd
+Thanks!
+
+Helge
+
+> ---
+>  arch/parisc/kernel/syscall.S | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+> index c976ebf..57b4836 100644
+> --- a/arch/parisc/kernel/syscall.S
+> +++ b/arch/parisc/kernel/syscall.S
+> @@ -344,7 +344,7 @@ tracesys_next:
+>  #endif
+>  
+>  	cmpib,COND(=),n -1,%r20,tracesys_exit /* seccomp may have returned -1 */
+> -	comiclr,>>=	__NR_Linux_syscalls, %r20, %r0
+> +	comiclr,>>	__NR_Linux_syscalls, %r20, %r0
+>  	b,n	.Ltracesys_nosys
+>  
+>  	LDREGX  %r20(%r19), %r19
+> 
+
