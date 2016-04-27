@@ -1,85 +1,85 @@
-From: "Dmitry V. Levin" <ldv@altlinux.org>
-Subject: Re: [PATCH] parisc: fix a bug when syscall number of tracee is __NR_Linux_syscalls
-Date: Wed, 27 Apr 2016 06:28:26 +0300
-Message-ID: <20160427032826.GA24101@altlinux.org>
-References: <20160427015611.GA23316@altlinux.org> <20160427024511.GA5369@vapier.lan>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v2 1/6] rtc: m68k: provide rtc_class_ops directly
+Date: Wed, 27 Apr 2016 09:47:56 +0200
+Message-ID: <CAMuHMdXS0JL_weLvjV4+i0ZPj=N+G6Vs1WDE9jffGUWehq5Xzg@mail.gmail.com>
+References: <1461707551-1337971-1-git-send-email-arnd@arndb.de>
+	<1461707551-1337971-2-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=x-unknown;
-	protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-To: Mike Frysinger <vapier@gentoo.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20160427024511.GA5369@vapier.lan>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+	Helge Deller <deller@gmx.de>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Rich Felker <dalias@libc.org>,
+	David Howells <dhowells@redhat.com>,
+	alpha <linux-alpha@vger.kernel.org>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	Linux-sh list <linux-sh@vger.kernel.org>,
+	linux-m68k <linux-m68k@lists.linux-m68k.org>,
+	RTCLINUX <rtc-linux@googlegroups.com>,
+	Linux-Arch <linux-arch@vger.kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1461707551-1337971-2-git-send-email-arnd@arndb.de>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Hi Arnd,
 
---AqsLC8rIMeq19msA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Apr 26, 2016 at 11:52 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+> The rtc-generic driver provides an architecture specific
+> wrapper on top of the generic rtc_class_ops abstraction,
+> and m68k has another abstraction on top, which is a bit
+> silly.
+>
+> This changes the m68k rtc-generic device to provide its
+> rtc_class_ops directly, to reduce the number of layers
+> by one.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/m68k/kernel/time.c | 24 ++++++++++++++++++++++--
+>  1 file changed, 22 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
+> index 3857737e3958..fe35890feede 100644
+> --- a/arch/m68k/kernel/time.c
+> +++ b/arch/m68k/kernel/time.c
+> @@ -86,7 +86,24 @@ void read_persistent_clock(struct timespec *ts)
+>         }
+>  }
+>
+> -#ifdef CONFIG_ARCH_USES_GETTIMEOFFSET
+> +#if defined(CONFIG_ARCH_USES_GETTIMEOFFSET) && defined(CONFIG_RTC_DRV_GENERIC)
 
-On Tue, Apr 26, 2016 at 10:45:11PM -0400, Mike Frysinger wrote:
-> On 27 Apr 2016 04:56, Dmitry V. Levin wrote:
-> > Do not load one entry beyond the end of the syscall table when the
-> > syscall number of a traced process equals to __NR_Linux_syscalls.
-> > Similar bug with regular processes was fixed by commit 3bb457af4fa8
-> > ("[PARISC] Fix bug when syscall nr is __NR_Linux_syscalls").
-> >=20
-> > This bug was found by strace test suite.
-> >=20
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
-> > ---
-> >  arch/parisc/kernel/syscall.S | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
-> > index c976ebf..57b4836 100644
-> > --- a/arch/parisc/kernel/syscall.S
-> > +++ b/arch/parisc/kernel/syscall.S
-> > @@ -344,7 +344,7 @@ tracesys_next:
-> >  #endif
-> > =20
-> >  	cmpib,COND(=3D),n -1,%r20,tracesys_exit /* seccomp may have returned =
--1 */
-> > -	comiclr,>>=3D	__NR_Linux_syscalls, %r20, %r0
-> > +	comiclr,>>	__NR_Linux_syscalls, %r20, %r0
-> >  	b,n	.Ltracesys_nosys
-> > =20
-> >  	LDREGX  %r20(%r19), %r19
->=20
-> i've deployd your fix to hake, so feel free to give the tests another
-> run to try and crash the box :).
+s/defined/IS_ENABLED/ for the modular case.
 
-With this fix the box no longer crashes.
+> @@ -95,7 +112,10 @@ static int __init rtc_init(void)
+>         if (!mach_hwclk)
+>                 return -ENODEV;
+>
+> -       pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
+> +       /* or just call devm_rtc_device_register instead? */
 
+I guess this comment is a bogus leftover? There's no "dev" parameter to
+pass to devm_rtc_device_register() here.
 
---=20
-ldv
+> +       pdev = platform_device_register_data(NULL, "rtc-generic", -1,
+> +                                            &generic_rtc_ops,
+> +                                            sizeof(generic_rtc_ops));
+>         return PTR_ERR_OR_ZERO(pdev);
+>  }
 
---AqsLC8rIMeq19msA
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+Gr{oetje,eeting}s,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+                        Geert
 
-iQIcBAEBCAAGBQJXIDHaAAoJEAVFT+BVnCUIKxsQAJVhTUZttcS7ez3NLsGRP6QK
-MLyA8eQjYlN/I1umBwRZNaAePk7pGYxeZYy/C5Wvt0WEe09kILINt9ED19VjmuhQ
-FEQ37TqWeMK6w15hpUTRIhSoBklBi0NG4jPgzuv4TOaFfrB80/VRzp2BmdP0F2x1
-iDSs8XkDHg6VUAv2bvd3ANhMDSuyY8OEUIaj6VVw+FGJxkL+0uzOu1MM8wmmvEpg
-QkhEXEN/MBIsKOwWSkFxAQAqidxUPA4ytZh5RrIC81zytS//X/jlOE9Wx74ELR0N
-PFPV7UQGOsUVSMdW6cWOJbWyxyJGfbpd6NMsF8OwNZ9waBmpZrHd+MuAw920rk6G
-A+U5n4+IdFPX0S5SsICR2T8Cc4pC2gxsCB6vjxtRam0iXuEN62FptXtg0h63P8VV
-ZQk+Mvqdvm26TPRnZoGcEWs9zJySuAUQq48Hyh2s7jFdFb6lvvdLXa6miyMPyyTA
-Xp13TdR8w5g51LwNANXThlq40zzul+V1l6hd8lI1aNhv9oq/wQv0+Ag6MQvqOpcJ
-eHMmFi2dacCgcBBLQRIJoa0050DYPF+pMYnQ4zEaiHIyjQ1KFTPThnl0RUP9BF3d
-ON2J8dIcfcmXsT+nbrRbIMalOVLcIdYxR0T7Hux9c4iHXLCwwFyCLhALRgFVI1NI
-oevppn6cGb+VfFXaA3/F
-=CcFU
------END PGP SIGNATURE-----
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---AqsLC8rIMeq19msA--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
