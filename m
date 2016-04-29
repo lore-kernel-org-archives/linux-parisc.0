@@ -1,58 +1,66 @@
-From: Sam Ravnborg <sam-uyr5N9Q2VtJg9hUCZPvPmw@public.gmane.org>
-Subject: Re: [patch V3] lib: GCD: add binary GCD algorithm
-Date: Thu, 28 Apr 2016 21:54:06 +0200
-Message-ID: <20160428195326.GB29802@ravnborg.org>
-References: <1461843824-19853-1-git-send-email-zengzhaoxiu@163.com>
- <20160428164856.10120.qmail@ns.horizon.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Merge ftrace C-helper and assembler functions into
+ .text.hot section
+Date: Fri, 29 Apr 2016 22:07:31 +0200
+Message-ID: <20160429200731.GA1297@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org, peterz-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org,
-	zengzhaoxiu-9Onoh4P/yGk@public.gmane.org, dalias-8zAoT0mYgF4@public.gmane.org, davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org,
-	deller-Mmb7MZpHnFY@public.gmane.org, geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org, ink-biIs/Y0ymYJMZLIVYojuPNP0rXTJTi09@public.gmane.org,
-	james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org, jonas-A9uVI2HLR7kOP4wsBPIw7w@public.gmane.org,
-	lennox.wu-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lftan-EIB2kfCEclfQT0dZR+AlfA@public.gmane.org, linux-alpha-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-m68k-cunTk1MwBs8S/qaLPR03pWD2FQJk+8+b@public.gmane.org, linux-metag-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org,
-	liqin.linux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, mattst88-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, monstr-pSz03upnqPeHXe+LvDLADg@public.gmane.org,
-	nios2-dev-g9ZBwUv/Ih/yUk5EbOjzuce+I+R0W71w@public.gmane.org, ralf-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org,
-	rth-hL46jP5Bxq7R7s880joybQ@public.gmane.org, sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	uclinux-h8-devel-5NWGOfrQmneRv+LV9MX5uooqe+aC9MnS@public.gmane.org, ysato-Rn4VEauK+AKRv+LV9MX5uooqe+aC9MnS@public.gmane.org,
-	zhaoxiu.zeng-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-To: George Spelvin <linux-gpGsJRJZ3PBBDgjK7y7TUQ@public.gmane.org>
-Return-path: <linux-metag-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20160428164856.10120.qmail-HzZAx2gCgqrSUeElwK9/Pw@public.gmane.org>
-List-ID: <linux-metag.vger.kernel.org>
+To: linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> __ffs on the available architectures:
-> 	Alpha: sometimes (CONFIG_ALPHA_EV6, CONFIG_ALPHA_EV67)
-> 	ARC: sometimes (!CONFIG_ISA_ARCOMPACT)
-> 	ARM: sometimes (V5+)
-> 	ARM64: NO, could be written using RBIT and CLZ
-> 	AVR: yes
-> 	Blackfin: NO, could be written using hweight()
-> 	C6x: yes
-> 	CRIS: NO
-> 	FR-V: yes
-> 	H8300: NO
-> 	Hexagon: yes
-> 	IA64: yes
-> 	M32R: NO
-> 	M68k: sometimes
-> 	MetaG: NO
-> 	Microblaze: NO
-> 	MIPS: sometimes
-> 	MN10300: yes
-> 	OpenRISC: NO
-> 	PA-RISC: NO?  Interesting code, but I think it's a net loss.
-> 	PowerPC: yes
-> 	S390: sometimes (CONFIG_HAVE_MARCH_Z9_109_FEATURES)
-> 	Score: NO
-> 	SH: NO
-> 	SPARC: NO
-SPARC: sparc64: YES, sparc32: NO
-Patch needs to be updated to refelct this.
+When enabling all-branch ftrace support (CONFIG_PROFILE_ALL_BRANCHES) the
+kernel gets really huge and some ftrace assembler functions like mcount can't
+reach the ftrace helper functions which are written in C.  Avoid this problem
+of too distant branches by moving the ftrace C-helper functions into the
+.text.hot section which is put in front of the standard .text section by the
+linker.
 
-	Sam
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
+index 39127d3..2b2b0df 100644
+--- a/arch/parisc/kernel/entry.S
++++ b/arch/parisc/kernel/entry.S
+@@ -667,7 +667,7 @@
+ 	 * boundary
+ 	 */
+ 
+-	.text
++	.section .text.hot
+ 	.align 2048
+ 
+ ENTRY(fault_vector_20)
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index b13f9ec..a828a0a 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -18,12 +18,15 @@
+ #include <asm/ftrace.h>
+ 
+ 
++#define __hot __attribute__ ((__section__ (".text.hot")))
++
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ /*
+  * Hook the return address and push it in the stack of return addrs
+  * in current thread info.
+  */
+-static void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr)
++static void __hot prepare_ftrace_return(unsigned long *parent,
++					unsigned long self_addr)
+ {
+ 	unsigned long old;
+ 	struct ftrace_graph_ent trace;
+@@ -53,7 +56,7 @@ static void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr
+ }
+ #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+ 
+-void notrace ftrace_function_trampoline(unsigned long parent,
++void notrace __hot ftrace_function_trampoline(unsigned long parent,
+ 				unsigned long self_addr,
+ 				unsigned long org_sp_gr3)
+ {
