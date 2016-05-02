@@ -1,112 +1,125 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: RFC: parisc regset support
-Date: Sun, 1 May 2016 11:28:08 +0200
-Message-ID: <5725CC28.6010401@gmx.de>
-References: <5725CB8B.7010206@gmx.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v3 00/16] genrtc removal
+Date: Mon, 2 May 2016 10:45:52 +0200
+Message-ID: <CAMuHMdV3ZHEKgv-LPPQdZzP8KBY-yiSoeJ-cAXy54qD04--LgA@mail.gmail.com>
+References: <1461796470-1291527-1-git-send-email-arnd@arndb.de>
+	<CAMuHMdUcrB38jL1_estfq5aK55UFUeF=4JciVGFqcE17pY9X7g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: John David Anglin <dave.anglin@bell.net>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	Randolph Chung <randolph@tausq.org>
-To: Carlos O'Donell <carlos@systemhalted.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <5725CB8B.7010206@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+	Helge Deller <deller@gmx.de>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Rich Felker <dalias@libc.org>,
+	David Howells <dhowells@redhat.com>,
+	alpha <linux-alpha@vger.kernel.org>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	Linux-sh list <linux-sh@vger.kernel.org>,
+	linux-m68k <linux-m68k@lists.linux-m68k.org>,
+	RTCLINUX <rtc-linux@googlegroups.com>,
+	Linux-Arch <linux-arch@vger.kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdUcrB38jL1_estfq5aK55UFUeF=4JciVGFqcE17pY9X7g@mail.gmail.com>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 01.05.2016 11:25, Helge Deller wrote:
-> Hi all,
-> 
-> Earlier this month I posted a patch which adds regset support
-> to parisc and which I'm planning to push for kernel v4.7:
-> https://patchwork.kernel.org/patch/8787691/
-> 
-> In this patch is the "new" user-visible regset 
-> which I've laid out like this:
-> 
->> +struct user_regs_struct {
->> +	unsigned long gr[32];	/* PSW is in gr[0] */
->> +	unsigned long sr[8];
->> +	unsigned long iaoq[2];
->> +	unsigned long iasq[2];
->> +	unsigned long sar;	/* CR11 */
->> +	unsigned long iir;	/* CR19 */
->> +	unsigned long isr;	/* CR20 */
->> +	unsigned long ior;	/* CR21 */
->> +	unsigned long ipsw;	/* CR22 */
->> +	unsigned long cr0;
->> +	unsigned long cr24, cr25, cr26, cr27, cr28, cr29, cr30, cr31;
->> +	unsigned long cr8, cr9, cr12, cr13, cr10, cr15;
->> +	unsigned long _pad[80-64];	/* pad to ELF_NGREG (80) */
->> +};
-> 
-> Current glibc versions use this definition in
-> /usr/include/hppa-linux-gnu/sys/ucontext.h
-> 
-> /* Container for all general registers.  */
-> typedef struct gregset
->   {
->     greg_t g_regs[32];
->     greg_t sr_regs[8];
->     greg_t cr_regs[24]; 
->     greg_t g_pad[16];
->   } gregset_t;
-> 
-> What is you opinion on this change, e.g. using explicit names of the
-> control registers and their order?
+Hi Arnd,
 
-I missed to mention, that the glibc header file (/usr/include/hppa-linux-gnu/sys/ucontext.h)
-includes a comment at the top which says:
+On Thu, Apr 28, 2016 at 9:48 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Thu, Apr 28, 2016 at 12:34 AM, Arnd Bergmann <arnd@arndb.de> wrote=
+:
+>> I ended up stuffing the two patch series into one, as they are now
+>> more dependent on one another. This now thoroughly removes the
+>> genrtc driver including the asm/rtc.h headers it uses. For all
+>> architectures that still have a meaningful asm/rtc.h, this goes
+>> through two stages:
+>>
+>> 1) make the rtc-generic implementation independent of asm/rtc.h
+>> 2) remove the asm/rtc.h header and disallow the gen_rtc driver
+>>
+>> As the last step, the driver itself gets removed.
+>
+> In general, after fixing the minor nit:
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>
+> For the m68k bits:
+> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-/* Don't rely on this, the interface is currently messed up and may need to
-   be broken to be fixed.  */
+More build coverage uncovered two build failures on m68k due to "[PATCH=
+ v3
+02/16] rtc: cmos: move mc146818rtc code out of asm-generic/rtc.h":
 
-I don't know who added this comment, and what exactly was meant with it.
-Any ideas?
+bvme6000_defconfig:
 
- 
-> By the way, the order I choosed is modelled after the in-kernel
-> ELF/core-dump code which can be seen in  arch/parisc/include/asm/elf.h:
-> 
-> /*
->  * Fill in general registers in a core dump.  This saves pretty
->  * much the same registers as hp-ux, although in a different order.
->  * Registers marked # below are not currently saved in pt_regs, so
->  * we use their current values here.
->  *
->  *      gr0..gr31
->  *      sr0..sr7
->  *      iaoq0..iaoq1
->  *      iasq0..iasq1
->  *      cr11 (sar)
->  *      cr19 (iir)
->  *      cr20 (isr)
->  *      cr21 (ior)
->  *  #   cr22 (ipsw)
->  *  #   cr0 (recovery counter)
->  *  #   cr24..cr31 (temporary registers)
->  *  #   cr8,9,12,13 (protection IDs)
->  *  #   cr10 (scr/ccr)
->  *  #   cr15 (ext int enable mask)
->  *
->  */
-> 
-> #define ELF_CORE_COPY_REGS(dst, pt)     \
->         memset(dst, 0, sizeof(dst));    /* don't leak any "random" bits */ \
->         memcpy(dst + 0, pt->gr, 32 * sizeof(elf_greg_t)); \
->         memcpy(dst + 32, pt->sr, 8 * sizeof(elf_greg_t)); \
->         memcpy(dst + 40, pt->iaoq, 2 * sizeof(elf_greg_t)); \
->         memcpy(dst + 42, pt->iasq, 2 * sizeof(elf_greg_t)); \
->         dst[44] = pt->sar;   dst[45] = pt->iir; \
->         dst[46] = pt->isr;   dst[47] = pt->ior; \
->         dst[48] = mfctl(22); dst[49] = mfctl(0); \
->         dst[50] = mfctl(24); dst[51] = mfctl(25); \
->         dst[52] = mfctl(26); dst[53] = mfctl(27); \
->         dst[54] = mfctl(28); dst[55] = mfctl(29); \
->         dst[56] = mfctl(30); dst[57] = mfctl(31); \
->         dst[58] = mfctl( 8); dst[59] = mfctl( 9); \
->         dst[60] = mfctl(12); dst[61] = mfctl(13); \
->         dst[62] = mfctl(10); dst[63] = mfctl(15);
-> 
-> 
+    In file included from arch/m68k/bvme6000/rtc.c:19:
+    include/linux/mc146818rtc.h: In function =E2=80=98mc146818_is_updat=
+ing=E2=80=99:
+    include/linux/mc146818rtc.h:138: error: implicit declaration of
+function =E2=80=98CMOS_READ=E2=80=99
+    include/linux/mc146818rtc.h: In function =E2=80=98mc146818_get_time=
+=E2=80=99:
+    include/linux/mc146818rtc.h:189: error: =E2=80=98RTC_ALWAYS_BCD=E2=80=
+=99
+undeclared (first use in this function)
+    include/linux/mc146818rtc.h:189: error: (Each undeclared
+identifier is reported only once
+    include/linux/mc146818rtc.h:189: error: for each function it appear=
+s in.)
+    include/linux/mc146818rtc.h: In function =E2=80=98mc146818_set_time=
+=E2=80=99:
+    include/linux/mc146818rtc.h:279: error: =E2=80=98RTC_ALWAYS_BCD=E2=80=
+=99
+undeclared (first use in this function)
+    include/linux/mc146818rtc.h:290: error: implicit declaration of
+function =E2=80=98CMOS_WRITE=E2=80=99
 
+mvme16x_defconfig:
+
+    In file included from arch/m68k/mvme16x/rtc.c:18:
+    include/linux/mc146818rtc.h: In function =E2=80=98mc146818_is_updat=
+ing=E2=80=99:
+    include/linux/mc146818rtc.h:138: error: implicit declaration of
+function =E2=80=98CMOS_READ=E2=80=99
+    include/linux/mc146818rtc.h: In function =E2=80=98mc146818_get_time=
+=E2=80=99:
+    include/linux/mc146818rtc.h:189: error: =E2=80=98RTC_ALWAYS_BCD=E2=80=
+=99
+undeclared (first use in this function)
+    include/linux/mc146818rtc.h:189: error: (Each undeclared
+identifier is reported only once
+    include/linux/mc146818rtc.h:189: error: for each function it appear=
+s in.)
+    include/linux/mc146818rtc.h: In function =E2=80=98mc146818_set_time=
+=E2=80=99:
+    include/linux/mc146818rtc.h:279: error: =E2=80=98RTC_ALWAYS_BCD=E2=80=
+=99
+undeclared (first use in this function)
+    include/linux/mc146818rtc.h:290: error: implicit declaration of
+function =E2=80=98CMOS_WRITE=E2=80=99
+
+These do not show up with a multi-platform config including Atari
+support, as arch/m68k/include/asm/mc146818rtc.h provides a definition o=
+f
+CMOS_READ() if CONFIG_ATARI=3Dy.
+
+=46ortunately the fixes are simple: replace <linux/mc146818rtc.h> by
+<linux/rtc.h>. Will send patches to fix...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+                                -- Linus Torvalds
