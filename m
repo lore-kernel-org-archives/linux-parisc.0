@@ -1,33 +1,122 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc fix for 4.6-rc6
-Date: Fri, 6 May 2016 19:15:28 +0200
-Message-ID: <20160506171528.GA2520@ls3530.box>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [patch V4] lib: GCD: Use binary GCD algorithm instead of
+ Euclidean
+Date: Fri, 6 May 2016 16:00:41 -0700
+Message-ID: <20160506160041.2b5e47757329c288efaed4fb@linux-foundation.org>
+References: <1462527763-15301-1-git-send-email-zengzhaoxiu@163.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: "Dmitry V. Levin" <ldv@altlinux.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux@horizon.com, peterz@infradead.org, jjuran@gmail.com,
+	James.Bottomley@HansenPartnership.com, geert@linux-m68k.org,
+	dalias@libc.org, sam@ravnborg.org, davem@davemloft.net,
+	Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>,
+	Richard Henderson <rth@twiddle.net>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Vineet Gupta <vgupta@synopsys.com>,
+	Russell King <linux@arm.linux.org.uk>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	James Hogan <james.hogan@imgtec.com>,
+	Michal Simek <monstr@monstr.eu>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	Ley Foon Tan <lftan@altera.com>,
+	Jonas Bonn <jonas@southpole.se>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Martin Schwidefsky <schwidefsky@de.ibm.com>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	Chen Liqin <liqin.linux@gmail.com>,
+	Lennox Wu <lennox.wu@gmail.com>, linux-kernel@vger
+To: zengzhaoxiu@163.com
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1462527763-15301-1-git-send-email-zengzhaoxiu@163.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+On Fri,  6 May 2016 17:42:42 +0800 zengzhaoxiu@163.com wrote:
 
-Please pull one small ftrace kernel crash fix for the parisc architecture from 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.6-5
+> From: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
+> 
+> The binary GCD algorithm is based on the following facts:
+> 	1. If a and b are all evens, then gcd(a,b) = 2 * gcd(a/2, b/2)
+> 	2. If a is even and b is odd, then gcd(a,b) = gcd(a/2, b)
+> 	3. If a and b are all odds, then gcd(a,b) = gcd((a-b)/2, b) = gcd((a+b)/2, b)
+> 
+> Even on x86 machines with reasonable division hardware, the binary
+> algorithm runs about 25% faster (80% the execution time) than the
+> division-based Euclidian algorithm.
+> 
+> On platforms like Alpha and ARMv6 where division is a function call to
+> emulation code, it's even more significant.
+> 
+> There are two variants of the code here, depending on whether a
+> fast __ffs (find least significant set bit) instruction is available.
+> This allows the unpredictable branches in the bit-at-a-time shifting
+> loop to be eliminated.
+> 
+> ...
+>
+> --- a/arch/alpha/Kconfig
+> +++ b/arch/alpha/Kconfig
+> @@ -27,6 +27,7 @@ config ALPHA
+>  	select MODULES_USE_ELF_RELA
+>  	select ODD_RT_SIGACTION
+>  	select OLD_SIGSUSPEND
+> +	select CPU_NO_EFFICIENT_FFS if !ALPHA_EV67
+>  	help
 
-Patch from Dmitry V. Levin to fix a kernel crash when a straced process calls
-the (invalid) syscall which is equal to value of __NR_Linux_syscalls.
+argh.  Please don't always put new items at end-of-list.  That's the
+perfect way of maximizing the number of patch collisions.  Insert it at
+a random position. avoiding the end (if the list isn't alpha-sorted,
+which it should be).
 
-Thanks,
-Helge
+<fixes it all up>
 
+>
+> ...
+>
+> --- a/arch/mips/include/asm/cpu-features.h
+> +++ b/arch/mips/include/asm/cpu-features.h
+> @@ -180,6 +180,16 @@
+>  #endif
+>  #endif
+>  
+> +/* __builtin_constant_p(cpu_has_mips_r) && cpu_has_mips_r */
+> +#if !((defined(cpu_has_mips32r1) && cpu_has_mips32r1) || \
+> +	  (defined(cpu_has_mips32r2) && cpu_has_mips32r2) || \
+> +	  (defined(cpu_has_mips32r6) && cpu_has_mips32r6) || \
+> +	  (defined(cpu_has_mips64r1) && cpu_has_mips64r1) || \
+> +	  (defined(cpu_has_mips64r2) && cpu_has_mips64r2) || \
+> +	  (defined(cpu_has_mips64r6) && cpu_has_mips64r6))
+> +#define CONFIG_CPU_NO_EFFICIENT_FFS 1
+> +#endif
 
-----------------------------------------------------------------
-Dmitry V. Levin (1):
-      parisc: fix a bug when syscall number of tracee is __NR_Linux_syscalls
+#defining a CONFIG_ variable is pretty rude - defining these is the
+role of the Kconfig system, not of header files macros.
 
- arch/parisc/kernel/syscall.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This was easy:
+
+--- a/arch/mips/include/asm/cpu-features.h~lib-gcd-use-binary-gcd-algorithm-instead-of-euclidean-fix
++++ a/arch/mips/include/asm/cpu-features.h
+@@ -187,7 +187,7 @@
+ 	  (defined(cpu_has_mips64r1) && cpu_has_mips64r1) || \
+ 	  (defined(cpu_has_mips64r2) && cpu_has_mips64r2) || \
+ 	  (defined(cpu_has_mips64r6) && cpu_has_mips64r6))
+-#define CONFIG_CPU_NO_EFFICIENT_FFS 1
++#define CPU_NO_EFFICIENT_FFS 1
+ #endif
+ 
+ #ifndef cpu_has_mips_1
+--- a/lib/gcd.c~lib-gcd-use-binary-gcd-algorithm-instead-of-euclidean-fix
++++ a/lib/gcd.c
+@@ -10,7 +10,7 @@
+  * has decent hardware division.
+  */
+ 
+-#if !defined(CONFIG_CPU_NO_EFFICIENT_FFS)
++#if !defined(CONFIG_CPU_NO_EFFICIENT_FFS) && !defined(CPU_NO_EFFICIENT_FFS)
+ 
+ /* If __ffs is available, the even/odd algorithm benchmarks slower. */
+ unsigned long gcd(unsigned long a, unsigned long b)
+_
+
