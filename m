@@ -1,227 +1,280 @@
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH net-next 4/5] treewide: replace dev->trans_start update
- with helper
-Date: Mon, 9 May 2016 09:12:51 +0200
-Message-ID: <57303873.5000108@pengutronix.de>
-References: <1462285862-30946-1-git-send-email-fw@strlen.de>
- <1462285994-31983-1-git-send-email-fw@strlen.de>
+From: zengzhaoxiu@163.com
+Subject: [patch V4 02/31] bitops: Include generic parity.h in some
+ architectures' bitops.h
+Date: Wed, 11 May 2016 17:06:17 +0800
+Message-ID: <1462957641-24241-1-git-send-email-zengzhaoxiu@163.com>
+References: <1462955158-28394-1-git-send-email-zengzhaoxiu@163.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="fcr4wLrDMdGPahnJScwefNsWCeJgfIRNI"
-Cc: user-mode-linux-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org,
-	linux-xtensa-PjhNF2WwrV/0Sa2dR60CXw@public.gmane.org,
-	linux1394-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	MPT-FusionLinux.pdl-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-hams-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org,
-	b.a.t.m.a.n-ZwoEplunGu2X36UT3dwllkB+6BGkLq7r@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Florian Westphal <fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1462285994-31983-1-git-send-email-fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>
-List-ID: <linux-wireless.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: Rich Felker <dalias@libc.org>, Aurelien Jacquiot <a-jacquiot@ti.com>,
+ "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ David Howells <dhowells@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>,
+ Hendrik Brueckner <brueckner@linux.vnet.ibm.com>, linux@lists.openrisc.net,
+ Hans-Christian Egtvedt <egtvedt@samfundet.no>, Jonas Bonn <jonas@southpole.se>,
+ linux-s390@vger.kernel.org, Jesper Nilsson <jesper.nilsson@axis.com>,
+ linux-am33-list@redhat.com, linux-c6x-dev@linux-c6x.org,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, linux-hexagon@vger.kernel.org,
+ Helge Deller <deller@gmx.de>, linux-sh@vger.kernel.org,
+ Russell King <linux@armlinux.org.uk>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Mark Salter <msalter@redhat.com>,
+ linux-snps-arc@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1462955158-28394-1-git-send-email-zengzhaoxiu@163.com>
+List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
+List-Post: <mailto:linux-snps-arc@lists.infradead.org>
+List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---fcr4wLrDMdGPahnJScwefNsWCeJgfIRNI
-Content-Type: multipart/mixed; boundary="GFLu7KIgkl64MDwwCs6gU46kBmw2cCDDs"
-From: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-To: Florian Westphal <fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: user-mode-linux-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org,
- linux-xtensa-PjhNF2WwrV/0Sa2dR60CXw@public.gmane.org, linux1394-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org,
- linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, MPT-FusionLinux.pdl-dY08KVG/lbpWk0Htik3J/w@public.gmane.org,
- linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
- linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
- linux-hams-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
- linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
- devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, b.a.t.m.a.n-ZwoEplunGu2X36UT3dwllkB+6BGkLq7r@public.gmane.org,
- linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Message-ID: <57303873.5000108-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH net-next 4/5] treewide: replace dev->trans_start update
- with helper
-References: <1462285862-30946-1-git-send-email-fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>
- <1462285994-31983-1-git-send-email-fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>
-In-Reply-To: <1462285994-31983-1-git-send-email-fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>
+From: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
 
---GFLu7KIgkl64MDwwCs6gU46kBmw2cCDDs
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Simply use the generic version.
 
-On 05/03/2016 04:33 PM, Florian Westphal wrote:
-> Replace all trans_start updates with netif_trans_update helper.
-> change was done via spatch:
->=20
-> struct net_device *d;
-> @@
-> - d->trans_start =3D jiffies
-> + netif_trans_update(d)
->=20
-> Compile tested only.
->=20
-> Cc: user-mode-linux-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
-> Cc: linux-xtensa-PjhNF2WwrV/0Sa2dR60CXw@public.gmane.org
-> Cc: linux1394-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
-> Cc: linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Cc: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Cc: MPT-FusionLinux.pdl-dY08KVG/lbpWk0Htik3J/w@public.gmane.org
-> Cc: linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Cc: linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Cc: linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Cc: linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Cc: linux-hams-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Cc: linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Cc: linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Cc: devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org
-> Cc: b.a.t.m.a.n-ZwoEplunGu2X36UT3dwllkB+6BGkLq7r@public.gmane.org
-> Cc: linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Signed-off-by: Florian Westphal <fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>
-> ---
->  Checkpatch complains about whitespace damage, but
->  this extra whitespace already exists before this patch.
->=20
->  drivers/net/can/mscan/mscan.c                          | 4 ++--
->  drivers/net/can/usb/ems_usb.c                          | 4 ++--
->  drivers/net/can/usb/esd_usb2.c                         | 4 ++--
->  drivers/net/can/usb/peak_usb/pcan_usb_core.c           | 4 ++--
+Signed-off-by: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
+Acked-by: Hans-Christian Noren Egtvedt <egtvedt@samfundet.no> [for avr32]
+---
+ arch/arc/include/asm/bitops.h      | 1 +
+ arch/arm/include/asm/bitops.h      | 1 +
+ arch/arm64/include/asm/bitops.h    | 1 +
+ arch/avr32/include/asm/bitops.h    | 1 +
+ arch/c6x/include/asm/bitops.h      | 1 +
+ arch/cris/include/asm/bitops.h     | 1 +
+ arch/frv/include/asm/bitops.h      | 1 +
+ arch/h8300/include/asm/bitops.h    | 1 +
+ arch/hexagon/include/asm/bitops.h  | 1 +
+ arch/m32r/include/asm/bitops.h     | 1 +
+ arch/m68k/include/asm/bitops.h     | 1 +
+ arch/metag/include/asm/bitops.h    | 1 +
+ arch/mn10300/include/asm/bitops.h  | 1 +
+ arch/openrisc/include/asm/bitops.h | 1 +
+ arch/parisc/include/asm/bitops.h   | 1 +
+ arch/s390/include/asm/bitops.h     | 1 +
+ arch/sh/include/asm/bitops.h       | 1 +
+ arch/xtensa/include/asm/bitops.h   | 1 +
+ 18 files changed, 18 insertions(+)
 
-> diff --git a/drivers/net/can/mscan/mscan.c b/drivers/net/can/mscan/msca=
-n.c
-> index e36b740..acb708f 100644
-> --- a/drivers/net/can/mscan/mscan.c
-> +++ b/drivers/net/can/mscan/mscan.c
-> @@ -276,7 +276,7 @@ static netdev_tx_t mscan_start_xmit(struct sk_buff =
-*skb, struct net_device *dev)
->  	out_8(&regs->cantflg, 1 << buf_id);
-> =20
->  	if (!test_bit(F_TX_PROGRESS, &priv->flags))
-> -		dev->trans_start =3D jiffies;
-> +		netif_trans_update(dev);
-> =20
->  	list_add_tail(&priv->tx_queue[buf_id].list, &priv->tx_head);
-> =20
-> @@ -469,7 +469,7 @@ static irqreturn_t mscan_isr(int irq, void *dev_id)=
-
->  			clear_bit(F_TX_PROGRESS, &priv->flags);
->  			priv->cur_pri =3D 0;
->  		} else {
-> -			dev->trans_start =3D jiffies;
-> +			netif_trans_update(dev);
->  		}
-> =20
->  		if (!test_bit(F_TX_WAIT_ALL, &priv->flags))
-> diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_us=
-b.c
-> index 3400fd1..71f0e79 100644
-> --- a/drivers/net/can/usb/ems_usb.c
-> +++ b/drivers/net/can/usb/ems_usb.c
-> @@ -521,7 +521,7 @@ static void ems_usb_write_bulk_callback(struct urb =
-*urb)
->  	if (urb->status)
->  		netdev_info(netdev, "Tx URB aborted (%d)\n", urb->status);
-> =20
-> -	netdev->trans_start =3D jiffies;
-> +	netif_trans_update(netdev);
-> =20
->  	/* transmission complete interrupt */
->  	netdev->stats.tx_packets++;
-> @@ -835,7 +835,7 @@ static netdev_tx_t ems_usb_start_xmit(struct sk_buf=
-f *skb, struct net_device *ne
->  			stats->tx_dropped++;
->  		}
->  	} else {
-> -		netdev->trans_start =3D jiffies;
-> +		netif_trans_update(netdev);
-> =20
->  		/* Slow down tx path */
->  		if (atomic_read(&dev->active_tx_urbs) >=3D MAX_TX_URBS ||
-> diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_u=
-sb2.c
-> index 113e64f..784a900 100644
-> --- a/drivers/net/can/usb/esd_usb2.c
-> +++ b/drivers/net/can/usb/esd_usb2.c
-> @@ -480,7 +480,7 @@ static void esd_usb2_write_bulk_callback(struct urb=
- *urb)
->  	if (urb->status)
->  		netdev_info(netdev, "Tx URB aborted (%d)\n", urb->status);
-> =20
-> -	netdev->trans_start =3D jiffies;
-> +	netif_trans_update(netdev);
->  }
-> =20
->  static ssize_t show_firmware(struct device *d,
-> @@ -820,7 +820,7 @@ static netdev_tx_t esd_usb2_start_xmit(struct sk_bu=
-ff *skb,
->  		goto releasebuf;
->  	}
-> =20
-> -	netdev->trans_start =3D jiffies;
-> +	netif_trans_update(netdev);
-> =20
->  	/*
->  	 * Release our reference to this URB, the USB core will eventually fr=
-ee
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net=
-/can/usb/peak_usb/pcan_usb_core.c
-> index 5a2e341..bfb91d8 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> @@ -274,7 +274,7 @@ static void peak_usb_write_bulk_callback(struct urb=
- *urb)
->  		netdev->stats.tx_bytes +=3D context->data_len;
-> =20
->  		/* prevent tx timeout */
-> -		netdev->trans_start =3D jiffies;
-> +		netif_trans_update(netdev);
->  		break;
-> =20
->  	default:
-> @@ -373,7 +373,7 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struct s=
-k_buff *skb,
->  			stats->tx_dropped++;
->  		}
->  	} else {
-> -		netdev->trans_start =3D jiffies;
-> +		netif_trans_update(netdev);
-> =20
->  		/* slow down tx path */
->  		if (atomic_read(&dev->active_tx_urbs) >=3D PCAN_USB_MAX_TX_URBS)
-
-For the drivers/can part:
-
-Acked-by: Marc Kleine-Budde <mkl-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-
-regards,
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---GFLu7KIgkl64MDwwCs6gU46kBmw2cCDDs--
-
---fcr4wLrDMdGPahnJScwefNsWCeJgfIRNI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCgAGBQJXMDhzAAoJED07qiWsqSVqY58H/ix0AbZ+YrFYM2PIOprS2fXE
-aX27+KlnttkKPZwwfFINkn2/zij9PmEHqTEIhWIQW+jkvzw3wk2+4r7S6RgCasja
-uYAWpyo35ikxuaRPe9rzVseGZfULqW5rGxx5I9fp9eC4WFjyU66mwhWI08YY2apl
-W1Lqfgzz2Op2wykMdjjjW9bjnDQLigGgdvjsvg03u0hyPhfWol23c3UexJU13qXJ
-blCUgZ3l3JJeh3FsZlb1wJ08j4imD54l2H+/y3uDNEh9V3k40pTtDxWoRwx3wc1C
-Q6gJ1MowW9/sLy+VOcMrFLy4JG652SUKe1B0pNocQX7QjHvQkt7pTtdx3reGwmM=
-=cJdV
------END PGP SIGNATURE-----
-
---fcr4wLrDMdGPahnJScwefNsWCeJgfIRNI--
---
-To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/arch/arc/include/asm/bitops.h b/arch/arc/include/asm/bitops.h
+index 0352fb8..7967e47 100644
+--- a/arch/arc/include/asm/bitops.h
++++ b/arch/arc/include/asm/bitops.h
+@@ -370,6 +370,7 @@ static inline __attribute__ ((const)) int __ffs(unsigned long x)
+ #define ffz(x)	__ffs(~(x))
+ 
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/lock.h>
+diff --git a/arch/arm/include/asm/bitops.h b/arch/arm/include/asm/bitops.h
+index e943e6c..99f28a6 100644
+--- a/arch/arm/include/asm/bitops.h
++++ b/arch/arm/include/asm/bitops.h
+@@ -313,6 +313,7 @@ static inline unsigned long __ffs(unsigned long x)
+ 
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ #ifdef __ARMEB__
+diff --git a/arch/arm64/include/asm/bitops.h b/arch/arm64/include/asm/bitops.h
+index 9c19594..eac4965 100644
+--- a/arch/arm64/include/asm/bitops.h
++++ b/arch/arm64/include/asm/bitops.h
+@@ -44,6 +44,7 @@ extern int test_and_change_bit(int nr, volatile unsigned long *p);
+ 
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ #include <asm-generic/bitops/non-atomic.h>
+diff --git a/arch/avr32/include/asm/bitops.h b/arch/avr32/include/asm/bitops.h
+index 910d537..9f4a2ce 100644
+--- a/arch/avr32/include/asm/bitops.h
++++ b/arch/avr32/include/asm/bitops.h
+@@ -298,6 +298,7 @@ static inline int ffs(unsigned long word)
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ extern unsigned long find_next_zero_bit_le(const void *addr,
+diff --git a/arch/c6x/include/asm/bitops.h b/arch/c6x/include/asm/bitops.h
+index f0ab012..94eb0d1 100644
+--- a/arch/c6x/include/asm/bitops.h
++++ b/arch/c6x/include/asm/bitops.h
+@@ -87,6 +87,7 @@ static inline int ffs(int x)
+ 
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ #include <asm-generic/bitops/atomic.h>
+diff --git a/arch/cris/include/asm/bitops.h b/arch/cris/include/asm/bitops.h
+index 8062cb5..06bc246 100644
+--- a/arch/cris/include/asm/bitops.h
++++ b/arch/cris/include/asm/bitops.h
+@@ -36,6 +36,7 @@
+ #include <asm-generic/bitops/__fls.h>
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+diff --git a/arch/frv/include/asm/bitops.h b/arch/frv/include/asm/bitops.h
+index 0df8e95..f2a7ee8 100644
+--- a/arch/frv/include/asm/bitops.h
++++ b/arch/frv/include/asm/bitops.h
+@@ -314,6 +314,7 @@ int __ilog2_u64(u64 n)
+ 
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ #include <asm-generic/bitops/le.h>
+diff --git a/arch/h8300/include/asm/bitops.h b/arch/h8300/include/asm/bitops.h
+index 05999ab..e392db2 100644
+--- a/arch/h8300/include/asm/bitops.h
++++ b/arch/h8300/include/asm/bitops.h
+@@ -172,6 +172,7 @@ static inline unsigned long __ffs(unsigned long word)
+ #include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ #include <asm-generic/bitops/le.h>
+ #include <asm-generic/bitops/ext2-atomic.h>
+diff --git a/arch/hexagon/include/asm/bitops.h b/arch/hexagon/include/asm/bitops.h
+index 5e4a59b..2df614e 100644
+--- a/arch/hexagon/include/asm/bitops.h
++++ b/arch/hexagon/include/asm/bitops.h
+@@ -290,6 +290,7 @@ static inline unsigned long __fls(unsigned long word)
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ 
+ #include <asm-generic/bitops/le.h>
+ #include <asm-generic/bitops/ext2-atomic.h>
+diff --git a/arch/m32r/include/asm/bitops.h b/arch/m32r/include/asm/bitops.h
+index 86ba2b4..e3cf46b 100644
+--- a/arch/m32r/include/asm/bitops.h
++++ b/arch/m32r/include/asm/bitops.h
+@@ -259,6 +259,7 @@ static __inline__ int test_and_change_bit(int nr, volatile void * addr)
+ #include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/ffs.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ #endif /* __KERNEL__ */
+diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+index b4a9b0d..fd673ea 100644
+--- a/arch/m68k/include/asm/bitops.h
++++ b/arch/m68k/include/asm/bitops.h
+@@ -519,6 +519,7 @@ static inline int __fls(int x)
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ #endif /* __KERNEL__ */
+ 
+diff --git a/arch/metag/include/asm/bitops.h b/arch/metag/include/asm/bitops.h
+index 2671134..ad13087 100644
+--- a/arch/metag/include/asm/bitops.h
++++ b/arch/metag/include/asm/bitops.h
+@@ -118,6 +118,7 @@ static inline int test_and_change_bit(unsigned int bit,
+ #include <asm-generic/bitops/__fls.h>
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/le.h>
+diff --git a/arch/mn10300/include/asm/bitops.h b/arch/mn10300/include/asm/bitops.h
+index fe6f8e2..60761b7 100644
+--- a/arch/mn10300/include/asm/bitops.h
++++ b/arch/mn10300/include/asm/bitops.h
+@@ -225,6 +225,7 @@ int ffs(int x)
+ #include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/ext2-atomic-setbit.h>
+ #include <asm-generic/bitops/le.h>
+ 
+diff --git a/arch/openrisc/include/asm/bitops.h b/arch/openrisc/include/asm/bitops.h
+index 3003cda..8c97642 100644
+--- a/arch/openrisc/include/asm/bitops.h
++++ b/arch/openrisc/include/asm/bitops.h
+@@ -43,6 +43,7 @@
+ #include <asm-generic/bitops/sched.h>
+ #include <asm/bitops/ffs.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ #include <asm-generic/bitops/atomic.h>
+diff --git a/arch/parisc/include/asm/bitops.h b/arch/parisc/include/asm/bitops.h
+index 3f9406d..867ba10 100644
+--- a/arch/parisc/include/asm/bitops.h
++++ b/arch/parisc/include/asm/bitops.h
+@@ -211,6 +211,7 @@ static __inline__ int fls(int x)
+ #include <asm-generic/bitops/__fls.h>
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ #include <asm-generic/bitops/sched.h>
+ 
+diff --git a/arch/s390/include/asm/bitops.h b/arch/s390/include/asm/bitops.h
+index 8043f10..198eead 100644
+--- a/arch/s390/include/asm/bitops.h
++++ b/arch/s390/include/asm/bitops.h
+@@ -460,6 +460,7 @@ static inline int fls(int word)
+ #include <asm-generic/bitops/ffz.h>
+ #include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/le.h>
+ #include <asm-generic/bitops/ext2-atomic-setbit.h>
+diff --git a/arch/sh/include/asm/bitops.h b/arch/sh/include/asm/bitops.h
+index fc8e652..4bf0c35 100644
+--- a/arch/sh/include/asm/bitops.h
++++ b/arch/sh/include/asm/bitops.h
+@@ -86,6 +86,7 @@ static inline unsigned long ffz(unsigned long word)
+ #include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/ffs.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/le.h>
+diff --git a/arch/xtensa/include/asm/bitops.h b/arch/xtensa/include/asm/bitops.h
+index 3f44fa2..981fa83 100644
+--- a/arch/xtensa/include/asm/bitops.h
++++ b/arch/xtensa/include/asm/bitops.h
+@@ -229,6 +229,7 @@ test_and_change_bit(unsigned int bit, volatile unsigned long *p)
+ #include <asm-generic/bitops/ext2-atomic-setbit.h>
+ 
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ #include <asm-generic/bitops/sched.h>
+ 
+-- 
+2.7.4
