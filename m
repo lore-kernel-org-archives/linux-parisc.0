@@ -1,103 +1,52 @@
-From: Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH net-next 4/5] treewide: replace dev->trans_start update
- with helper
-Date: Thu, 12 May 2016 15:40:46 -0400
-Message-ID: <20118955-8739-b79a-e20e-96302e8b41bf@redhat.com>
-References: <1462285862-30946-1-git-send-email-fw@strlen.de>
- <1462285994-31983-1-git-send-email-fw@strlen.de>
+From: <ngler@asu.edu>
+Subject: (unknown)
+Date: Sun, 16 May 2016 04:01:22 0000
+Message-ID: <000101d1af27$9bb49bf6$c0a80001@comstar.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="MxOQ9rEvBghhBiQvcDah4SfXu2ff5Ef0r"
-Cc: user-mode-linux-devel@lists.sourceforge.net,
-	linux-xtensa@linux-xtensa.org,
-	linux1394-devel@lists.sourceforge.net, linux-rdma@vger.kernel.org,
-	mpt-fusionlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-	linux-can@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-omap@vger.kernel.org, linux-hams@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-	linux-s390@vger.kernel.org, devel@driverdev.osuosl.org,
-	b.a.t.m.a.n@lists.open-mesh.org, linux-bluetooth@vger.kernel.org
-To: Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org
+Content-Type: application/zip; name="EMAIL_7236410667_linux-parisc.zip"
+To: "linux-parisc" <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1462285994-31983-1-git-send-email-fw@strlen.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MxOQ9rEvBghhBiQvcDah4SfXu2ff5Ef0r
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-
-On 05/03/2016 10:33 AM, Florian Westphal wrote:
-> Replace all trans_start updates with netif_trans_update helper.
-> change was done via spatch:
->=20
-> struct net_device *d;
-> @@
-> - d->trans_start =3D jiffies
-> + netif_trans_update(d)
->=20
-> Compile tested only.
->=20
-> Cc: user-mode-linux-devel@lists.sourceforge.net
-> Cc: linux-xtensa@linux-xtensa.org
-> Cc: linux1394-devel@lists.sourceforge.net
-> Cc: linux-rdma@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: MPT-FusionLinux.pdl@broadcom.com
-> Cc: linux-scsi@vger.kernel.org
-> Cc: linux-can@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linux-omap@vger.kernel.org
-> Cc: linux-hams@vger.kernel.org
-> Cc: linux-usb@vger.kernel.org
-> Cc: linux-wireless@vger.kernel.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: devel@driverdev.osuosl.org
-> Cc: b.a.t.m.a.n@lists.open-mesh.org
-> Cc: linux-bluetooth@vger.kernel.org
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> ---
->  Checkpatch complains about whitespace damage, but
->  this extra whitespace already exists before this patch.
->=20
->  drivers/infiniband/hw/nes/nes_nic.c                    | 2 +-
->  drivers/infiniband/ulp/ipoib/ipoib_cm.c                | 2 +-
->  drivers/infiniband/ulp/ipoib/ipoib_ib.c                | 2 +-
-
-For InfiniBand bits,
-
-Acked-by: Doug Ledford <dledford@redhat.com>
-
---=20
-Doug Ledford <dledford@redhat.com>
-              GPG KeyID: 0E572FDD
 
 
-
---MxOQ9rEvBghhBiQvcDah4SfXu2ff5Ef0r
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iQIcBAEBCAAGBQJXNNw+AAoJELgmozMOVy/dVQcP/1RZvmqQVJpZMtptIm8OpoPW
-4QrFlnjv+KorYVaF1Hg7+0X6yfCF53ofTKRAg4zaYiASZw4AJWYzslxA9b0OvpPS
-TzMjJrbWm27+W2pH8ZivFepys9afxW5o/qb7CFYyOPOEml495zReUvTqt/nSh7jG
-8nTdwO4xH5kY4P82bDn18Lyqd/8cS7yFl1OAK88eqq+y9JgveiIsO2PlsrtFENtX
-+RyadCAluEUdfe6CZjMjUptBptIi6hfoMqmXXu4vcFs48mqbVf4QubFp5f+4wJa2
-KScILHNil3156j3TY3lpG1ukf2SfF0UYDYxco5tZlZ3O7nB3Xteif94gvvUiszyO
-IfGn3/wblQs6tRSHjMRNYiTVeYkyh0eXbdbha/7bkBG58mEjYFnrjtRuBMD2Ogmm
-uz6MhyD6Ez7mKKVBc3ooQ6SYpcwb4surHEGm36a2Utnb/vftxyPYpA75neZbSGZO
-X828tsNcxB9K8FUCEcP/Xasc5xE6kPtpwu5TIbJ7itYLs4yRoZbsmcI5UrhjqERp
-YAAiI07vifFHyFLUnfAOefjXxQOFJdQHtMphlnjfYiKXSpJsAhT2LIJpepgbovCc
-/268dPol/ul7WUbLu2P4zlnnIEQgABW6NKFMAg/N/b4XQ08VkeKv82yJ9aLuyG2J
-0QbOFyrXnR/I1OYFeDAU
-=2VMH
------END PGP SIGNATURE-----
-
---MxOQ9rEvBghhBiQvcDah4SfXu2ff5Ef0r--
+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
