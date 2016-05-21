@@ -1,7 +1,7 @@
 From: Andrea Gelmini <andrea.gelmini@gelma.net>
-Subject: [PATCH 0208/1529] Fix typo
-Date: Sat, 21 May 2016 14:03:14 +0200
-Message-ID: <20160521120314.10762-1-andrea.gelmini@gelma.net>
+Subject: [PATCH 0209/1529] Fix typo
+Date: Sat, 21 May 2016 14:03:22 +0200
+Message-ID: <20160521120322.10812-1-andrea.gelmini@gelma.net>
 Cc: trivial@kernel.org, jejb@parisc-linux.org, deller@gmx.de,
 	linux-parisc@vger.kernel.org
 To: andrea.gelmini@gelma.net
@@ -11,22 +11,26 @@ List-Id: linux-parisc.vger.kernel.org
 
 Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
 ---
- arch/parisc/include/uapi/asm/pdc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/parisc/math-emu/fpu.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/parisc/include/uapi/asm/pdc.h b/arch/parisc/include/uapi/asm/pdc.h
-index 702498f..0609ff1 100644
---- a/arch/parisc/include/uapi/asm/pdc.h
-+++ b/arch/parisc/include/uapi/asm/pdc.h
-@@ -59,7 +59,7 @@
- #define PDC_MODEL_GET_BOOT__OP	8	/* returns boot test options	*/
- #define PDC_MODEL_SET_BOOT__OP	9	/* set boot test options	*/
+diff --git a/arch/parisc/math-emu/fpu.h b/arch/parisc/math-emu/fpu.h
+index 0af5c3c..46eb90e 100644
+--- a/arch/parisc/math-emu/fpu.h
++++ b/arch/parisc/math-emu/fpu.h
+@@ -63,9 +63,9 @@
+ #define EMULATION_VERSION 4
  
--#define PA89_INSTRUCTION_SET	0x4	/* capatibilies returned	*/
-+#define PA89_INSTRUCTION_SET	0x4	/* capabilities returned	*/
- #define PA90_INSTRUCTION_SET	0x8
+ /*
+- * The only was to differeniate between TIMEX and ROLEX (or PCX-S and PCX-T)
+- * is thorough the potential type field from the PDC_MODEL call.  The 
+- * following flags are used at assist this differeniation.
++ * The only was to differentiate between TIMEX and ROLEX (or PCX-S and PCX-T)
++ * is thorough the potential type field from the PDC_MODEL call.  The
++ * following flags are used at assist this differentiation.
+  */
  
- #define PDC_CACHE	5		/* return/set cache (& TLB) info*/
+ #define ROLEX_POTENTIAL_KEY_FLAGS	PDC_MODEL_CPU_KEY_WORD_TO_IO
 -- 
 2.8.2.534.g1f66975
 
