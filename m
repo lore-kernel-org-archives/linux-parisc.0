@@ -1,7 +1,7 @@
 From: Andrea Gelmini <andrea.gelmini@gelma.net>
-Subject: [PATCH 0209/1529] Fix typo
-Date: Sat, 21 May 2016 14:03:22 +0200
-Message-ID: <20160521120322.10812-1-andrea.gelmini@gelma.net>
+Subject: [PATCH 0210/1529] Fix typo
+Date: Sat, 21 May 2016 14:03:32 +0200
+Message-ID: <20160521120332.10866-1-andrea.gelmini@gelma.net>
 Cc: trivial@kernel.org, jejb@parisc-linux.org, deller@gmx.de,
 	linux-parisc@vger.kernel.org
 To: andrea.gelmini@gelma.net
@@ -11,26 +11,22 @@ List-Id: linux-parisc.vger.kernel.org
 
 Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
 ---
- arch/parisc/math-emu/fpu.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/parisc/math-emu/fpudispatch.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/parisc/math-emu/fpu.h b/arch/parisc/math-emu/fpu.h
-index 0af5c3c..46eb90e 100644
---- a/arch/parisc/math-emu/fpu.h
-+++ b/arch/parisc/math-emu/fpu.h
-@@ -63,9 +63,9 @@
- #define EMULATION_VERSION 4
+diff --git a/arch/parisc/math-emu/fpudispatch.c b/arch/parisc/math-emu/fpudispatch.c
+index 673b73e..18df123 100644
+--- a/arch/parisc/math-emu/fpudispatch.c
++++ b/arch/parisc/math-emu/fpudispatch.c
+@@ -184,7 +184,7 @@ static void parisc_linux_get_fpu_type(u_int fpregs[])
  
  /*
-- * The only was to differeniate between TIMEX and ROLEX (or PCX-S and PCX-T)
-- * is thorough the potential type field from the PDC_MODEL call.  The 
-- * following flags are used at assist this differeniation.
-+ * The only was to differentiate between TIMEX and ROLEX (or PCX-S and PCX-T)
-+ * is thorough the potential type field from the PDC_MODEL call.  The
-+ * following flags are used at assist this differentiation.
-  */
- 
- #define ROLEX_POTENTIAL_KEY_FLAGS	PDC_MODEL_CPU_KEY_WORD_TO_IO
+  * this routine will decode the excepting floating point instruction and
+- * call the approiate emulation routine.
++ * call the appropriate emulation routine.
+  * It is called by decode_fpu with the following parameters:
+  * fpudispatch(current_ir, unimplemented_code, 0, &Fpu_register)
+  * where current_ir is the instruction to be emulated,
 -- 
 2.8.2.534.g1f66975
 
