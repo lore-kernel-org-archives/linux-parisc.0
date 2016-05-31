@@ -1,21 +1,24 @@
-From: Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
 Subject: Re: [PATCH v4 00/16] genrtc removal
-Date: Mon, 30 May 2016 22:32:07 +0200
-Message-ID: <20160530203207.GY3451@piout.net>
+Date: Tue, 31 May 2016 08:56:05 +0200
+Message-ID: <CAMuHMdV5mcKZcBz=v7Pn2pbDiuwMpQYs-70e6NmH6CZ88=JNzA@mail.gmail.com>
 References: <1464634684-1248135-1-git-send-email-arnd@arndb.de>
+	<20160530203207.GY3451@piout.net>
 Reply-To: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Cc: geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org, gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org, deller-Mmb7MZpHnFY@public.gmane.org,
-	benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org, mpe-Gsx/Oe8HsFggBc27wqDAHg@public.gmane.org, dalias-8zAoT0mYgF4@public.gmane.org,
-	dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, linux-alpha-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org,
-	linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-m68k-cunTk1MwBs8S/qaLPR03pWD2FQJk+8+b@public.gmane.org,
-	rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
-Return-path: <rtc-linux+bncBDS7HNEFSALRBSWGWK5AKGQE7WUJBSQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <1464634684-1248135-1-git-send-email-arnd-r2nGTMty4D4@public.gmane.org>
+Cc: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>,
+	Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>, Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>,
+	Michael Ellerman <mpe-Gsx/Oe8HsFggBc27wqDAHg@public.gmane.org>, Rich Felker <dalias-8zAoT0mYgF4@public.gmane.org>,
+	David Howells <dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, alpha <linux-alpha-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+	Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>,
+	"linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Parisc List <linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+	"linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>, Linux-sh list <linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+	linux-m68k <linux-m68k-cunTk1MwBs8S/qaLPR03pWD2FQJk+8+b@public.gmane.org>, RTCLINUX <rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+	Linux-Arch <linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+To: Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Return-path: <rtc-linux+bncBCQJP74GSUDRBBPLWS5AKGQEEMCYSKI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+In-Reply-To: <20160530203207.GY3451-m++hUPXGwpdeoWH0uzbU5w@public.gmane.org>
 List-ID: <rtc-linux.googlegroups.com>
 List-Post: <https://groups.google.com/group/rtc-linux/post>, <mailto:rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:rtc-linux+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -24,48 +27,40 @@ List-Subscribe: <https://groups.google.com/group/rtc-linux/subscribe>, <mailto:r
 List-Unsubscribe: <mailto:googlegroups-manage+712029733259+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
  <https://groups.google.com/group/rtc-linux/subscribe>
 
-Hi,
+Allo Alexandre,
 
-On 30/05/2016 at 20:57:48 +0200, Arnd Bergmann wrote :
-> This is the promised resend of the removal of the genrtc driver and some
-> related code, now that we are at a good time to merge this for the coming
-> merge window.
-> 
+On Mon, May 30, 2016 at 10:32 PM, Alexandre Belloni
+<alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+> On 30/05/2016 at 20:57:48 +0200, Arnd Bergmann wrote :
+>> This is the promised resend of the removal of the genrtc driver and some
+>> related code, now that we are at a good time to merge this for the coming
+>> merge window.
+>>
+>
+> Thanks a lot!
+>
+> I'm applying the series right now so it sits in linux-next for a while
+> before the next merge window.
+>
+> I would still happily take any acks, Reviewed-by or Tested-by tags.
 
-Thanks a lot!
+Looks like Arnd forgot to include these when reposting:
 
-I'm applying the series right now so it sits in linux-next for a while
-before the next merge window.
+Acked-by: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
 
-I would still happily take any acks, Reviewed-by or Tested-by tags.
+For the m68k bits:
+Tested-by: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
 
+Gr{oetje,eeting}s,
 
-> - CONFIG_EFI_RTC is actively used on all six Itanium configurations,
->   though the CONFIG_RTC_DRV_EFI replacement driver is also available
->   there (and has been Itanium-only until ARM64 support for EFI was
->   merged). I suspect it's just a matter of getting an Ack from the
->   Itanium maintainers to remove it and change the defconfigs.
-> 
+                        Geert
 
-I have that one on my radar. There was an impressive number of separate
-drivers for EFI and CMOS...
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
 
-> - the last remaining legacy RTC driver after those is CONFIG_DS1302,
->   which has a slightly nonstandard ioctl interface and is only used
->   on arch/m32r. I have experimented with this a bit and think it
->   can be converted in a backward-compatible way as well.
-> 
-
-That one has been converted to a standard SPI driver in v4.6. Following
-some discussion, driving it using gpios will be added. m32r will have to
-use one of those two interfaces. It is broken on that architecture for
-now but we never got any reply from maintainers.
-
-
--- 
-Alexandre Belloni, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 -- 
 You received this message because you are subscribed to "rtc-linux".
