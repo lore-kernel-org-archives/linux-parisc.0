@@ -1,36 +1,163 @@
-From: Aaro Koskinen <aaro.koskinen@iki.fi>
-Subject: Re: invalid printk time during boot on PA-RISC
-Date: Thu, 2 Jun 2016 00:36:28 +0300
-Message-ID: <20160601213628.GC5218@raspberrypi.musicnaut.iki.fi>
-References: <alpine.LRH.2.02.1605310735130.6341@file01.intranet.prod.int.rdu2.redhat.com>
- <20160601211248.GA15061@p100.box>
+From: Rich Felker <dalias-8zAoT0mYgF4@public.gmane.org>
+Subject: Re: [PATCH v4 04/16] rtc: sh: provide rtc_class_ops directly
+Date: Wed, 1 Jun 2016 17:58:14 -0400
+Message-ID: <20160601215814.GE10893@brightrain.aerifal.cx>
+References: <1464634684-1248135-1-git-send-email-arnd@arndb.de>
+ <1464634684-1248135-5-git-send-email-arnd@arndb.de>
+Reply-To: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Mikulas Patocka <mpatocka@redhat.com>, linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20160601211248.GA15061@p100.box>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Cc: Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>,
+	geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org, gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org, deller-Mmb7MZpHnFY@public.gmane.org,
+	benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org, mpe-Gsx/Oe8HsFggBc27wqDAHg@public.gmane.org, dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org,
+	linux-alpha-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org,
+	linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linux-m68k-cunTk1MwBs8S/qaLPR03pWD2FQJk+8+b@public.gmane.org, rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org,
+	linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
+Return-path: <rtc-linux+bncBCI4NDXKXQHBBIFVXW5AKGQEA3JEEAA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+In-Reply-To: <1464634684-1248135-5-git-send-email-arnd-r2nGTMty4D4@public.gmane.org>
+List-ID: <rtc-linux.googlegroups.com>
+List-Post: <https://groups.google.com/group/rtc-linux/post>, <mailto:rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:rtc-linux+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/rtc-linux
+List-Subscribe: <https://groups.google.com/group/rtc-linux/subscribe>, <mailto:rtc-linux+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+712029733259+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/rtc-linux/subscribe>
 
-Hi,
-
-On Wed, Jun 01, 2016 at 11:12:48PM +0200, Helge Deller wrote:
-> It fixes the problem mostly for me, there is just one little glitch
-> left, which is that the lines "FP[x] enabled" will still print an
-> invalid time. I assume it's because when this text is printed, the
-> clock/interrupts for the just booted CPU aren't enabled yet.
+On Mon, May 30, 2016 at 08:57:52PM +0200, Arnd Bergmann wrote:
+> The rtc-generic driver provides an architecture specific
+> wrapper on top of the generic rtc_class_ops abstraction,
+> and on sh, that goes through another indirection using
+> the rtc_sh_get_time/rtc_sh_set_time functions.
 > 
-> I'm not sure it's worth trying to fix that. 
-> One could print out that info at a later time, or just disabled it.
+> This changes the sh rtc-generic device to provide its
+> rtc_class_ops directly, skipping one of the abstraction
+> levels.
 > 
-> Helge
+> Signed-off-by: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
+
+I haven't tested any of this, but based on our discussion of the
+previous version, I'm satisfied that it makes sense.
+
+Acked-by: Rich Felker <dalias-8zAoT0mYgF4@public.gmane.org>
+
+> ---
+>  arch/sh/include/asm/rtc.h | 11 -----------
+>  arch/sh/kernel/time.c     | 33 ++++++++++++++++++++-------------
+>  drivers/rtc/rtc-generic.c |  2 +-
+>  3 files changed, 21 insertions(+), 25 deletions(-)
 > 
-> [    5.720014] Enabling PDC_PAT chassis codes support v0.05
-> [    6.644542] Releasing cpu 1 now, hpa=fffffffffe781000
-> [    0.196000] FP[1] enabled: Rev 1 Model 20
-> [    7.088432] CPU(s): 2 out of 2 PA8800 (Mako) at 900.000000 MHz online
+> diff --git a/arch/sh/include/asm/rtc.h b/arch/sh/include/asm/rtc.h
+> index 52b0c2dba979..f7b010d48af7 100644
+> --- a/arch/sh/include/asm/rtc.h
+> +++ b/arch/sh/include/asm/rtc.h
+> @@ -6,17 +6,6 @@ extern void (*board_time_init)(void);
+>  extern void (*rtc_sh_get_time)(struct timespec *);
+>  extern int (*rtc_sh_set_time)(const time_t);
+>  
+> -/* some dummy definitions */
+> -#define RTC_BATT_BAD 0x100	/* battery bad */
+> -#define RTC_SQWE 0x08		/* enable square-wave output */
+> -#define RTC_DM_BINARY 0x04	/* all time/date values are BCD if clear */
+> -#define RTC_24H 0x02		/* 24 hour mode - else hours bit 7 means pm */
+> -#define RTC_DST_EN 0x01	        /* auto switch DST - works f. USA only */
+> -
+> -struct rtc_time;
+> -unsigned int get_rtc_time(struct rtc_time *);
+> -int set_rtc_time(struct rtc_time *);
+> -
+>  #define RTC_CAP_4_DIGIT_YEAR	(1 << 0)
+>  
+>  struct sh_rtc_platform_info {
+> diff --git a/arch/sh/kernel/time.c b/arch/sh/kernel/time.c
+> index d6d0a986c6e9..a4a7862b489a 100644
+> --- a/arch/sh/kernel/time.c
+> +++ b/arch/sh/kernel/time.c
+> @@ -50,27 +50,31 @@ int update_persistent_clock(struct timespec now)
+>  }
+>  #endif
+>  
+> -unsigned int get_rtc_time(struct rtc_time *tm)
+> +static int rtc_generic_get_time(struct device *dev, struct rtc_time *tm)
+>  {
+> -	if (rtc_sh_get_time != null_rtc_get_time) {
+> -		struct timespec tv;
+> +	struct timespec tv;
+>  
+> -		rtc_sh_get_time(&tv);
+> -		rtc_time_to_tm(tv.tv_sec, tm);
+> -	}
+> -
+> -	return RTC_24H;
+> +	rtc_sh_get_time(&tv);
+> +	rtc_time_to_tm(tv.tv_sec, tm);
+> +	return 0;
+>  }
+> -EXPORT_SYMBOL(get_rtc_time);
+>  
+> -int set_rtc_time(struct rtc_time *tm)
+> +static int rtc_generic_set_time(struct device *dev, struct rtc_time *tm)
+>  {
+>  	unsigned long secs;
+>  
+>  	rtc_tm_to_time(tm, &secs);
+> -	return rtc_sh_set_time(secs);
+> +	if ((rtc_sh_set_time == null_rtc_set_time) ||
+> +	    (rtc_sh_set_time(secs) < 0))
+> +		return -EOPNOTSUPP;
+> +
+> +	return 0;
+>  }
+> -EXPORT_SYMBOL(set_rtc_time);
+> +
+> +static const struct rtc_class_ops rtc_generic_ops = {
+> +	.read_time = rtc_generic_get_time,
+> +	.set_time = rtc_generic_set_time,
+> +};
+>  
+>  static int __init rtc_generic_init(void)
+>  {
+> @@ -79,7 +83,10 @@ static int __init rtc_generic_init(void)
+>  	if (rtc_sh_get_time == null_rtc_get_time)
+>  		return -ENODEV;
+>  
+> -	pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
+> +	pdev = platform_device_register_data(NULL, "rtc-generic", -1,
+> +					     &rtc_generic_ops,
+> +					     sizeof(rtc_generic_ops));
+> +
+>  
+>  	return PTR_ERR_OR_ZERO(pdev);
+>  }
+> diff --git a/drivers/rtc/rtc-generic.c b/drivers/rtc/rtc-generic.c
+> index d726c6aa96a8..3958e87a05fa 100644
+> --- a/drivers/rtc/rtc-generic.c
+> +++ b/drivers/rtc/rtc-generic.c
+> @@ -10,7 +10,7 @@
+>  #include <linux/rtc.h>
+>  
+>  #if defined(CONFIG_M68K) || defined(CONFIG_PARISC) || \
+> -    defined(CONFIG_PPC) || defined(CONFIG_SUPERH32)
+> +    defined(CONFIG_PPC)
+>  #include <asm/rtc.h>
+>  
+>  static int generic_get_time(struct device *dev, struct rtc_time *tm)
+> -- 
+> 2.7.0
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-sh" in
+> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-Some tools that analyze boot time based on dmesg might get confused.
-
-A.
+-- 
+You received this message because you are subscribed to "rtc-linux".
+Membership options at http://groups.google.com/group/rtc-linux .
+Please read http://groups.google.com/group/rtc-linux/web/checklist
+before submitting a driver.
+--- 
+You received this message because you are subscribed to the Google Groups "rtc-linux" group.
+To unsubscribe from this group and stop receiving emails from it, send an email to rtc-linux+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
