@@ -1,9 +1,9 @@
 From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
-Subject: Re: [RFC v3 02/45] dma-mapping: Use unsigned long for dma_attrs
-Date: Fri, 3 Jun 2016 09:17:00 +0200
-Message-ID: <CAMuHMdXWMf7Dt77wSUj8NytQqb99jzDiAz46kJkAEz+6BX3Uvw@mail.gmail.com>
+Subject: Re: [RFC v3 29/45] m68k: dma-mapping: Use unsigned long for dma_attrs
+Date: Fri, 3 Jun 2016 09:18:44 +0200
+Message-ID: <CAMuHMdXpMu6iuSYRJwyqP8mx_A9cAnsgkTh-8nU+JMpD4f2-SA@mail.gmail.com>
 References: <1464881987-13203-1-git-send-email-k.kozlowski@samsung.com>
-	<1464881987-13203-3-git-send-email-k.kozlowski@samsung.com>
+	<1464881987-13203-30-git-send-email-k.kozlowski@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Cc: Linux MIPS Mailing List <linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org>,
@@ -27,7 +27,7 @@ Cc: Linux MIPS Mailing List <linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org>
 	"linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
 To: Krzysztof Kozlowski <k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <1464881987-13203-3-git-send-email-k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+In-Reply-To: <1464881987-13203-30-git-send-email-k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 List-Id: Development issues for Linux IOMMU support
 	<iommu.lists.linux-foundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
@@ -39,29 +39,16 @@ List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
 	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
 Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
 
-Hi Krzysztof,
-
 On Thu, Jun 2, 2016 at 5:39 PM, Krzysztof Kozlowski
 <k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org> wrote:
-> --- a/include/linux/dma-mapping.h
-> +++ b/include/linux/dma-mapping.h
-> @@ -5,13 +5,25 @@
+> Split out subsystem specific changes for easier reviews. This will be
+> squashed with main commit.
+>
+> Signed-off-by: Krzysztof Kozlowski <k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 
-> +/**
-> + * List of possible attributes associated with a DMA mapping. The semantics
-> + * of each attribute should be defined in Documentation/DMA-attributes.txt.
-> + */
-> +#define DMA_ATTR_WRITE_BARRIER         (1UL << 1)
+Looks good.
 
-Any particular reason they start at 2, not 1?
-
-> +#define DMA_ATTR_WEAK_ORDERING         (1UL << 2)
-> +#define DMA_ATTR_WRITE_COMBINE         (1UL << 3)
-> +#define DMA_ATTR_NON_CONSISTENT                (1UL << 4)
-> +#define DMA_ATTR_NO_KERNEL_MAPPING     (1UL << 5)
-> +#define DMA_ATTR_SKIP_CPU_SYNC         (1UL << 6)
-> +#define DMA_ATTR_FORCE_CONTIGUOUS      (1UL << 7)
-> +#define DMA_ATTR_ALLOC_SINGLE_PAGES    (1UL << 8)
+Acked-by: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
 
 Gr{oetje,eeting}s,
 
