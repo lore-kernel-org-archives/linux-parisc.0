@@ -1,52 +1,49 @@
-From: Jesper Nilsson <jesper.nilsson@axis.com>
-Subject: Re: [RFC v3 10/45] cris: dma-mapping: Use unsigned long for dma_attrs
-Date: Fri, 3 Jun 2016 09:52:19 +0200
-Message-ID: <20160603075219.GF3183@axis.com>
-References: <1464881987-13203-1-git-send-email-k.kozlowski@samsung.com>
- <1464881987-13203-11-git-send-email-k.kozlowski@samsung.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] soreuseport: add compat case for setsockopt
+ SO_ATTACH_REUSEPORT_CBPF
+Date: Fri, 3 Jun 2016 19:18:05 +0200
+Message-ID: <20160603171805.GA3664@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Haavard Skinnemoen <hskinnemoen@gmail.com>,
-        Hans-Christian Egtvedt <egtvedt@samfundet.no>,
-        Steven Miao <realmz6@gmail.com>,
-        Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <a-jacquiot@ti.com>,
-        Mikael Starvik <starvik@axis.com>,
-        Jesper Nilsson <jespern@axis.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Richard Kuo <rkuo@codeaurora.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Konrad Rzeszutek
-To: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <1464881987-13203-11-git-send-email-k.kozlowski@samsung.com>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+Cc: linux-parisc@vger.kernel.org
+To: Craig Gallek <kraig@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Jun 02, 2016 at 05:39:12PM +0200, Krzysztof Kozlowski wrote:
-> Split out subsystem specific changes for easier reviews. This will be
-> squashed with main commit.
+Commit 538950a ("soreuseport: setsockopt SO_ATTACH_REUSEPORT_[CE]BPF")
+missed to add the compat case for the SO_ATTACH_REUSEPORT_CBPF
+setsockoption() option.
 
-Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
+Since both SO_ATTACH_FILTER and SO_ATTACH_REUSEPORT_CBPF use a struct
+sock_fprog let's combine the handling of both.
 
-> Signed-off-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-/^JN - Jesper Nilsson
--- 
-               Jesper Nilsson -- jesper.nilsson@axis.com
+diff --git a/net/compat.c b/net/compat.c
+index 5cfd26a..7e2aac9 100644
+--- a/net/compat.c
++++ b/net/compat.c
+@@ -309,7 +309,7 @@ void scm_detach_fds_compat(struct msghdr *kmsg, struct scm_cookie *scm)
+ 	__scm_destroy(scm);
+ }
+ 
+-static int do_set_attach_filter(struct socket *sock, int level, int optname,
++static int do_sockopt_fix_sock_fprog(struct socket *sock, int level, int optname,
+ 				char __user *optval, unsigned int optlen)
+ {
+ 	struct compat_sock_fprog __user *fprog32 = (struct compat_sock_fprog __user *)optval;
+@@ -354,8 +354,9 @@ static int do_set_sock_timeout(struct socket *sock, int level,
+ static int compat_sock_setsockopt(struct socket *sock, int level, int optname,
+ 				char __user *optval, unsigned int optlen)
+ {
+-	if (optname == SO_ATTACH_FILTER)
+-		return do_set_attach_filter(sock, level, optname,
++	if (optname == SO_ATTACH_FILTER ||
++	    optname == SO_ATTACH_REUSEPORT_CBPF)
++		return do_sockopt_fix_sock_fprog(sock, level, optname,
+ 					    optval, optlen);
+ 	if (optname == SO_RCVTIMEO || optname == SO_SNDTIMEO)
+ 		return do_set_sock_timeout(sock, level, optname, optval, optlen);
