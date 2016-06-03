@@ -1,58 +1,25 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] soreuseport: add compat case for setsockopt
- SO_ATTACH_REUSEPORT_CBPF
-Date: Fri, 3 Jun 2016 23:09:41 +0200
-Message-ID: <5751F215.6080207@gmx.de>
-References: <20160603171805.GA3664@ls3530.box>
- <4cec14e5-2950-be26-1ffa-8d604bdb2fb5@cogentembedded.com>
+From: Craig Gallek <kraigatgoog@gmail.com>
+Subject: Re: [PATCH] soreuseport: Fix reuseport_bpf testcase on 32bit architectures
+Date: Fri, 3 Jun 2016 17:29:38 -0400
+Message-ID: <CAEfhGiyS1Vk=etQcdu6n6NQDvOyc7zQC47PHi=0=8Z3HyvFxBQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Cc: "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-	Craig Gallek <kraig@google.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Content-Type: text/plain; charset=UTF-8
+Cc: Alexei Starovoitov <ast@kernel.org>,
 	"David S. Miller" <davem@davemloft.net>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <4cec14e5-2950-be26-1ffa-8d604bdb2fb5@cogentembedded.com>
+	netdev <netdev@vger.kernel.org>, linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
+Return-path: <netdev-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-On 03.06.2016 20:11, Sergei Shtylyov wrote:
-> Hello.
-> 
-> On 06/03/2016 08:18 PM, Helge Deller wrote:
-> 
->> Commit 538950a ("soreuseport: setsockopt SO_ATTACH_REUSEPORT_[CE]BPF")
-> 
->    At least 12 digits must be specified for SHA1. checkpatch.pl should've caught this.
+On Fri, Jun 3, 2016 at 1:19 PM, Helge Deller <deller@gmx.de> wrote:
+> This fixes the following compiler warnings when compiling the
+> reuseport_bpf testcase on a 32 bit platform:
+>
+> reuseport_bpf.c: In function =E2=80=98attach_ebpf=E2=80=99:
+> reuseport_bpf.c:114:15: warning: cast from pointer to integer of iffe=
+rent size [-Wpointer-to-int-cast]
+>
+> Signed-off-by: Helge Deller <deller@gmx.de>
+Acked-by: Craig Gallek <kraig@google.com>
 
-Ok.
-
->> missed to add the compat case for the SO_ATTACH_REUSEPORT_CBPF
->> setsockoption() option.
->>
->> Since both SO_ATTACH_FILTER and SO_ATTACH_REUSEPORT_CBPF use a struct
->> sock_fprog let's combine the handling of both.
->>
->> Signed-off-by: Helge Deller <deller@gmx.de>
->>
->> diff --git a/net/compat.c b/net/compat.c
->> index 5cfd26a..7e2aac9 100644
->> --- a/net/compat.c
->> +++ b/net/compat.c
->> @@ -309,7 +309,7 @@ void scm_detach_fds_compat(struct msghdr *kmsg, struct scm_cookie *scm)
->>      __scm_destroy(scm);
->>  }
->>
->> -static int do_set_attach_filter(struct socket *sock, int level, int optname,
->> +static int do_sockopt_fix_sock_fprog(struct socket *sock, int level, int optname,
->>                  char __user *optval, unsigned int optlen)
-> 
->    You need to realign this line now.
-
-Sure, I will send an updated patch.
-
-Any idea for a better naming than "do_sockopt_fix_sock_fprog()" ?
-
-Helge
+Thanks!
