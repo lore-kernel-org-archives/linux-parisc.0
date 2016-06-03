@@ -1,28 +1,39 @@
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: Re: [PATCH] soreuseport: add compat case for setsockopt
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH v2] soreuseport: add compat case for setsockopt
  SO_ATTACH_REUSEPORT_CBPF
-Date: Fri, 3 Jun 2016 14:40:04 -0700
-Message-ID: <20160603214002.GA58242@ast-mbp.thefacebook.com>
+Date: Fri, 3 Jun 2016 23:49:17 +0200
+Message-ID: <20160603214917.GA12557@ls3530.box>
 References: <CAEfhGiwwvwf31Dj+s0zA0bpVAZ4x4=rLuU5g217u=wRrgm07Dg@mail.gmail.com>
+ <20160603214002.GA58242@ast-mbp.thefacebook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>,
+Cc: Craig Gallek <kraigatgoog@gmail.com>, Helge Deller <deller@gmx.de>,
 	Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	"David S. Miller" <davem@davemloft.net>,
 	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
 	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
-To: Craig Gallek <kraigatgoog@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <CAEfhGiwwvwf31Dj+s0zA0bpVAZ4x4=rLuU5g217u=wRrgm07Dg@mail.gmail.com>
+In-Reply-To: <20160603214002.GA58242@ast-mbp.thefacebook.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Jun 03, 2016 at 05:33:09PM -0400, Craig Gallek wrote:
-> On Fri, Jun 3, 2016 at 5:09 PM, Helge Deller <deller@gmx.de> wrote:
-> > Any idea for a better naming than "do_sockopt_fix_sock_fprog()" ?
-> Thanks for catching and fixing this.  I'd suggest simply leaving the
-> function name as-is.  Your fix to the condition in that function is
-> sufficient to address the issue.
+Commit 538950a1b752 ("soreuseport: setsockopt SO_ATTACH_REUSEPORT_[CE]BPF")
+missed to add the compat case for the SO_ATTACH_REUSEPORT_CBPF option.
 
-+1
-and thanks for the fixes!
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/net/compat.c b/net/compat.c
+index 5cfd26a..1373947 100644
+--- a/net/compat.c
++++ b/net/compat.c
+@@ -354,7 +354,8 @@ static int do_set_sock_timeout(struct socket *sock, int level,
+ static int compat_sock_setsockopt(struct socket *sock, int level, int optname,
+ 				char __user *optval, unsigned int optlen)
+ {
+-	if (optname == SO_ATTACH_FILTER)
++	if (optname == SO_ATTACH_FILTER ||
++	    optname == SO_ATTACH_REUSEPORT_CBPF)
+ 		return do_set_attach_filter(sock, level, optname,
+ 					    optval, optlen);
+ 	if (optname == SO_RCVTIMEO || optname == SO_SNDTIMEO)
