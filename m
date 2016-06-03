@@ -1,10 +1,10 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] soreuseport: add compat case for setsockopt
- SO_ATTACH_REUSEPORT_CBPF
-Date: Fri, 3 Jun 2016 19:18:05 +0200
-Message-ID: <20160603171805.GA3664@ls3530.box>
+Subject: [PATCH] soreuseport: Fix reuseport_bpf testcase on 32bit
+ architectures
+Date: Fri, 3 Jun 2016 19:19:20 +0200
+Message-ID: <20160603171920.GB3664@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Cc: linux-parisc@vger.kernel.org
 To: Craig Gallek <kraig@google.com>,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -13,37 +13,47 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Commit 538950a ("soreuseport: setsockopt SO_ATTACH_REUSEPORT_[CE]BPF")
-missed to add the compat case for the SO_ATTACH_REUSEPORT_CBPF
-setsockoption() option.
+This fixes the following compiler warnings when compiling the
+reuseport_bpf testcase on a 32 bit platform:
 
-Since both SO_ATTACH_FILTER and SO_ATTACH_REUSEPORT_CBPF use a struct
-sock_fprog let's combine the handling of both.
+reuseport_bpf.c: In function =E2=80=98attach_ebpf=E2=80=99:
+reuseport_bpf.c:114:15: warning: cast from pointer to integer of iffere=
+nt size [-Wpointer-to-int-cast]
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/net/compat.c b/net/compat.c
-index 5cfd26a..7e2aac9 100644
---- a/net/compat.c
-+++ b/net/compat.c
-@@ -309,7 +309,7 @@ void scm_detach_fds_compat(struct msghdr *kmsg, struct scm_cookie *scm)
- 	__scm_destroy(scm);
- }
- 
--static int do_set_attach_filter(struct socket *sock, int level, int optname,
-+static int do_sockopt_fix_sock_fprog(struct socket *sock, int level, int optname,
- 				char __user *optval, unsigned int optlen)
- {
- 	struct compat_sock_fprog __user *fprog32 = (struct compat_sock_fprog __user *)optval;
-@@ -354,8 +354,9 @@ static int do_set_sock_timeout(struct socket *sock, int level,
- static int compat_sock_setsockopt(struct socket *sock, int level, int optname,
- 				char __user *optval, unsigned int optlen)
- {
--	if (optname == SO_ATTACH_FILTER)
--		return do_set_attach_filter(sock, level, optname,
-+	if (optname == SO_ATTACH_FILTER ||
-+	    optname == SO_ATTACH_REUSEPORT_CBPF)
-+		return do_sockopt_fix_sock_fprog(sock, level, optname,
- 					    optval, optlen);
- 	if (optname == SO_RCVTIMEO || optname == SO_SNDTIMEO)
- 		return do_set_sock_timeout(sock, level, optname, optval, optlen);
+diff --git a/tools/testing/selftests/net/reuseport_bpf.c b/tools/testin=
+g/selftests/net/reuseport_bpf.c
+index 96ba386..4a82174 100644
+--- a/tools/testing/selftests/net/reuseport_bpf.c
++++ b/tools/testing/selftests/net/reuseport_bpf.c
+@@ -111,9 +111,9 @@ static void attach_ebpf(int fd, uint16_t mod)
+ 	memset(&attr, 0, sizeof(attr));
+ 	attr.prog_type =3D BPF_PROG_TYPE_SOCKET_FILTER;
+ 	attr.insn_cnt =3D ARRAY_SIZE(prog);
+-	attr.insns =3D (uint64_t)prog;
+-	attr.license =3D (uint64_t)bpf_license;
+-	attr.log_buf =3D (uint64_t)bpf_log_buf;
++	attr.insns =3D (unsigned long) &prog;
++	attr.license =3D (unsigned long) &bpf_license;
++	attr.log_buf =3D (unsigned long) &bpf_log_buf;
+ 	attr.log_size =3D sizeof(bpf_log_buf);
+ 	attr.log_level =3D 1;
+ 	attr.kern_version =3D 0;
+@@ -351,8 +351,8 @@ static void test_filter_no_reuseport(const struct t=
+est_params p)
+ 	memset(&eprog, 0, sizeof(eprog));
+ 	eprog.prog_type =3D BPF_PROG_TYPE_SOCKET_FILTER;
+ 	eprog.insn_cnt =3D ARRAY_SIZE(ecode);
+-	eprog.insns =3D (uint64_t)ecode;
+-	eprog.license =3D (uint64_t)bpf_license;
++	eprog.insns =3D (unsigned long) &ecode;
++	eprog.license =3D (unsigned long) &bpf_license;
+ 	eprog.kern_version =3D 0;
+=20
+ 	memset(&cprog, 0, sizeof(cprog));
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
