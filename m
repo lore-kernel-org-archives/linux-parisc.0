@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Fix pagefault crash in unaligned __get_user() call
-Date: Sat, 4 Jun 2016 17:21:33 +0200
-Message-ID: <20160604152133.GA28597@p100.box>
+Subject: [PATCH] parisc: Move die_if_kernel() prototype into traps.h header
+Date: Sat, 4 Jun 2016 17:38:09 +0200
+Message-ID: <20160604153809.GA28686@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -11,101 +11,35 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-One of the debian buildd servers had this crash in the syslog without
-any other information:
-
- Unaligned handler failed, ret = -2
- clock_adjtime (pid 22578): Unaligned data reference (code 28)
- CPU: 1 PID: 22578 Comm: clock_adjtime Tainted: G  E  4.5.0-2-parisc64-smp #1 Debian 4.5.4-1
- task: 000000007d9960f8 ti: 00000001bde7c000 task.ti: 00000001bde7c000
-
-      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
- PSW: 00001000000001001111100000001111 Tainted: G            E  
- r00-03  000000ff0804f80f 00000001bde7c2b0 00000000402d2be8 00000001bde7c2b0
- r04-07  00000000409e1fd0 00000000fa6f7fff 00000001bde7c148 00000000fa6f7fff
- r08-11  0000000000000000 00000000ffffffff 00000000fac9bb7b 000000000002b4d4
- r12-15  000000000015241c 000000000015242c 000000000000002d 00000000fac9bb7b
- r16-19  0000000000028800 0000000000000001 0000000000000070 00000001bde7c218
- r20-23  0000000000000000 00000001bde7c210 0000000000000002 0000000000000000
- r24-27  0000000000000000 0000000000000000 00000001bde7c148 00000000409e1fd0
- r28-31  0000000000000001 00000001bde7c320 00000001bde7c350 00000001bde7c218
- sr00-03  0000000001200000 0000000001200000 0000000000000000 0000000001200000
- sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-
- IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000402d2e84 00000000402d2e88
-  IIR: 0ca0d089    ISR: 0000000001200000  IOR: 00000000fa6f7fff
-  CPU:        1   CR30: 00000001bde7c000 CR31: ffffffffffffffff
-  ORIG_R28: 00000002369fe628
-  IAOQ[0]: compat_get_timex+0x2dc/0x3c0
-  IAOQ[1]: compat_get_timex+0x2e0/0x3c0
-  RP(r2): compat_get_timex+0x40/0x3c0
- Backtrace:
-  [<00000000402d4608>] compat_SyS_clock_adjtime+0x40/0xc0
-  [<0000000040205024>] syscall_exit+0x0/0x14
-
-This means the userspace program clock_adjtime did call the clock_adjtime()
-syscall and then crashed inside the compat_get_timex() function.
-Syscalls should never crash programs, but instead return EFAULT.
-
-The IIR register contains the executed instruction, which disassebles
-into "ldw 0(sr3,r5),r9".
-This load-word instruction is part of __get_user() which tried to read the word
-at %r5/IOR (0xfa6f7fff). This means the unaligned handler jumped in.  The
-unaligned handler is able to emulate all ldw instructions, but it fails if it
-fails to read the source e.g. because of page fault.
-
-The following program reproduces the problem:
-
-#define _GNU_SOURCE
-#include <unistd.h>
-#include <sys/syscall.h>
-#include <sys/mman.h>
-
-int main(void) {
-        /* allocate 8k */
-        char *ptr = mmap(NULL, 2*4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
-        /* free second half (upper 4k) and make it invalid. */
-        munmap(ptr+4096, 4096);
-        /* syscall where first int is unaligned and clobbers into invalid memory region */
-        /* syscall should return EFAULT */
-        return syscall(__NR_clock_adjtime, 0, ptr+4095);
-}
-
-To fix this issue we simply need to check if the faulting instruction address
-is in the exception fixup table when the unaligned handler failed. If it
-is, call the fixup routine instead of crashing.
-
-While looking at the unaligned handler I found another issue as well: The
-target register should not be modified if the handler was unsuccessful.
-
 Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: stable@vger.kernel.org
 
+diff --git a/arch/parisc/include/asm/traps.h b/arch/parisc/include/asm/traps.h
+index 4736020..5e953ab 100644
+--- a/arch/parisc/include/asm/traps.h
++++ b/arch/parisc/include/asm/traps.h
+@@ -8,6 +8,8 @@ struct pt_regs;
+ void parisc_terminate(char *msg, struct pt_regs *regs,
+ 		int code, unsigned long offset) __noreturn __cold;
+ 
++void die_if_kernel(char *str, struct pt_regs *regs, long err);
++
+ /* mm/fault.c */
+ void do_page_fault(struct pt_regs *regs, unsigned long code,
+ 		unsigned long address);
 diff --git a/arch/parisc/kernel/unaligned.c b/arch/parisc/kernel/unaligned.c
 index d7c0acb..2b65c01 100644
 --- a/arch/parisc/kernel/unaligned.c
 +++ b/arch/parisc/kernel/unaligned.c
-@@ -666,7 +665,7 @@ void handle_unaligned(struct pt_regs *regs)
- 		break;
- 	}
+@@ -28,6 +28,7 @@
+ #include <linux/ratelimit.h>
+ #include <asm/uaccess.h>
+ #include <asm/hardirq.h>
++#include <asm/traps.h>
  
--	if (modify && R1(regs->iir))
-+	if (ret == 0 && modify && R1(regs->iir))
- 		regs->gr[R1(regs->iir)] = newbase;
+ /* #define DEBUG_UNALIGNED 1 */
  
+@@ -130,8 +131,6 @@
  
-@@ -677,6 +676,14 @@ void handle_unaligned(struct pt_regs *regs)
+ int unaligned_enabled __read_mostly = 1;
  
- 	if (ret)
- 	{
-+		/*
-+		 * The unaligned handler failed.
-+		 * If we were called by __get_user() or __put_user() jump
-+		 * to it's exception fixup handler instead of crashing.
-+		 */
-+		if (!user_mode(regs) && fixup_exception(regs))
-+			return;
-+
- 		printk(KERN_CRIT "Unaligned handler failed, ret = %d\n", ret);
- 		die_if_kernel("Unaligned data reference", regs, 28);
- 
+-void die_if_kernel (char *str, struct pt_regs *regs, long err);
