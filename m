@@ -1,97 +1,92 @@
-From: Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>
-Subject: Re: [RFC v3 07/45] avr32: dma-mapping: Use unsigned long for
- dma_attrs
-Date: Mon, 6 Jun 2016 08:43:57 +0200
-Message-ID: <20160606064357.GA7998@samfundet.no>
-References: <1464881987-13203-1-git-send-email-k.kozlowski@samsung.com>
- <1464881987-13203-8-git-send-email-k.kozlowski@samsung.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: Re: invalid printk time during boot on PA-RISC
+Date: Mon, 6 Jun 2016 12:51:13 -0400 (EDT)
+Message-ID: <alpine.LRH.2.02.1606061250160.22217@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.1605310735130.6341@file01.intranet.prod.int.rdu2.redhat.com> <20160601211248.GA15061@p100.box> <20160601213628.GC5218@raspberrypi.musicnaut.iki.fi> <20160603172231.GA4592@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Haavard Skinnemoen <hskinnemoen@gmail.com>,
-        Steven Miao <realmz6@gmail.com>,
-        Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <a-jacquiot@ti.com>,
-        Mikael Starvik <starvik@axis.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Richard Kuo <rkuo@codeaurora.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Geert Uyt
-To: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <1464881987-13203-8-git-send-email-k.kozlowski@samsung.com>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Aaro Koskinen <aaro.koskinen@iki.fi>, linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20160603172231.GA4592@ls3530.box>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-Around Thu 02 Jun 2016 17:39:09 +0200 or thereabout, Krzysztof Kozlowski wrote:
-> Split out subsystem specific changes for easier reviews. This will be
-> squashed with main commit.
+
+
+On Fri, 3 Jun 2016, Helge Deller wrote:
+
+> * Aaro Koskinen <aaro.koskinen@iki.fi>:
+> > Hi,
+> > 
+> > On Wed, Jun 01, 2016 at 11:12:48PM +0200, Helge Deller wrote:
+> > > It fixes the problem mostly for me, there is just one little glitch
+> > > left, which is that the lines "FP[x] enabled" will still print an
+> > > invalid time. I assume it's because when this text is printed, the
+> > > clock/interrupts for the just booted CPU aren't enabled yet.
+> > > 
+> > > I'm not sure it's worth trying to fix that. 
+> > > One could print out that info at a later time, or just disabled it.
+> > > 
+> > > Helge
+> > > 
+> > > [    5.720014] Enabling PDC_PAT chassis codes support v0.05
+> > > [    6.644542] Releasing cpu 1 now, hpa=fffffffffe781000
+> > > [    0.196000] FP[1] enabled: Rev 1 Model 20
+> > > [    7.088432] CPU(s): 2 out of 2 PA8800 (Mako) at 900.000000 MHz online
+> > 
+> > Some tools that analyze boot time based on dmesg might get confused.
 > 
-> Signed-off-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-
-Acked-by: Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>
-
-> ---
->  arch/avr32/mm/dma-coherent.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> Yes, valid point.
+> Updated patch below.
 > 
-> diff --git a/arch/avr32/mm/dma-coherent.c b/arch/avr32/mm/dma-coherent.c
-> index 92cf1fb2b3e6..fc51f4421933 100644
-> --- a/arch/avr32/mm/dma-coherent.c
-> +++ b/arch/avr32/mm/dma-coherent.c
-> @@ -99,7 +99,7 @@ static void __dma_free(struct device *dev, size_t size,
->  }
+> Helge
+> 
+> __________
+> 
+> 
+> parisc: Fix printk time during boot
+> 
+> Avoid showing invalid printk time stamps during boot.
+> 
+> Signed-off-by: Helge Deller <deller@gmx.de>
+> 
+> diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
+> index e81ccf1..5adc339 100644
+> --- a/arch/parisc/kernel/processor.c
+> +++ b/arch/parisc/kernel/processor.c
+> @@ -324,8 +324,9 @@ int init_per_cpu(int cpunum)
+>  		per_cpu(cpu_data, cpunum).fp_rev = coproc_cfg.revision;
+>  		per_cpu(cpu_data, cpunum).fp_model = coproc_cfg.model;
 >  
->  static void *avr32_dma_alloc(struct device *dev, size_t size,
-> -		dma_addr_t *handle, gfp_t gfp, struct dma_attrs *attrs)
-> +		dma_addr_t *handle, gfp_t gfp, unsigned long attrs)
->  {
->  	struct page *page;
->  	dma_addr_t phys;
-> @@ -119,7 +119,7 @@ static void *avr32_dma_alloc(struct device *dev, size_t size,
->  }
+> -		printk(KERN_INFO  "FP[%d] enabled: Rev %ld Model %ld\n",
+> -			cpunum, coproc_cfg.revision, coproc_cfg.model);
+> +		if (cpunum == 0)
+> +			printk(KERN_INFO  "FP[%d] enabled: Rev %ld Model %ld\n",
+> +				cpunum, coproc_cfg.revision, coproc_cfg.model);
+
+BTW. you could also remove "[%d] cpunum" from printk --- if cpunum is 
+always 0 here.
+
+Mikulas
+
 >  
->  static void avr32_dma_free(struct device *dev, size_t size,
-> -		void *cpu_addr, dma_addr_t handle, struct dma_attrs *attrs)
-> +		void *cpu_addr, dma_addr_t handle, unsigned long attrs)
->  {
->  	struct page *page;
+>  		/*
+>  		** store status register to stack (hopefully aligned)
+> diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
+> index 58dd680..31ec99a 100644
+> --- a/arch/parisc/kernel/time.c
+> +++ b/arch/parisc/kernel/time.c
+> @@ -309,11 +309,6 @@ void __init time_init(void)
+>  	clocks_calc_mult_shift(&cyc2ns_mul, &cyc2ns_shift, current_cr16_khz,
+>  				NSEC_PER_MSEC, 0);
 >  
-> @@ -142,7 +142,7 @@ static void avr32_dma_free(struct device *dev, size_t size,
+> -#if defined(CONFIG_HAVE_UNSTABLE_SCHED_CLOCK) && defined(CONFIG_64BIT)
+> -	/* At bootup only one 64bit CPU is online and cr16 is "stable" */
+> -	set_sched_clock_stable();
+> -#endif
+> -
+>  	start_cpu_itimer();	/* get CPU 0 started */
 >  
->  static dma_addr_t avr32_dma_map_page(struct device *dev, struct page *page,
->  		unsigned long offset, size_t size,
-> -		enum dma_data_direction direction, struct dma_attrs *attrs)
-> +		enum dma_data_direction direction, unsigned long attrs)
->  {
->  	void *cpu_addr = page_address(page) + offset;
->  
-> @@ -152,7 +152,7 @@ static dma_addr_t avr32_dma_map_page(struct device *dev, struct page *page,
->  
->  static int avr32_dma_map_sg(struct device *dev, struct scatterlist *sglist,
->  		int nents, enum dma_data_direction direction,
-> -		struct dma_attrs *attrs)
-> +		unsigned long attrs)
->  {
->  	int i;
->  	struct scatterlist *sg;
--- 
-mvh
-Hans-Christian Noren Egtvedt
+>  	/* register at clocksource framework */
+> 
