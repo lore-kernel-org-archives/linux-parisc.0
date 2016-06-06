@@ -1,92 +1,24 @@
-From: Mikulas Patocka <mpatocka@redhat.com>
-Subject: Re: invalid printk time during boot on PA-RISC
-Date: Mon, 6 Jun 2016 12:51:13 -0400 (EDT)
-Message-ID: <alpine.LRH.2.02.1606061250160.22217@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.1605310735130.6341@file01.intranet.prod.int.rdu2.redhat.com> <20160601211248.GA15061@p100.box> <20160601213628.GC5218@raspberrypi.musicnaut.iki.fi> <20160603172231.GA4592@ls3530.box>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] soreuseport: Fix reuseport_bpf testcase on 32bit
+ architectures
+Date: Mon, 06 Jun 2016 15:20:33 -0700 (PDT)
+Message-ID: <20160606.152033.1378544015225851217.davem@davemloft.net>
+References: <20160603171920.GB3664@ls3530.box>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>, linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
+Content-Type: Text/Plain; charset=iso-8859-7
+Cc: kraig@google.com, ast@kernel.org, netdev@vger.kernel.org,
+	linux-parisc@vger.kernel.org
+To: deller@gmx.de
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20160603172231.GA4592@ls3530.box>
+In-Reply-To: <20160603171920.GB3664@ls3530.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-
-On Fri, 3 Jun 2016, Helge Deller wrote:
-
-> * Aaro Koskinen <aaro.koskinen@iki.fi>:
-> > Hi,
-> > 
-> > On Wed, Jun 01, 2016 at 11:12:48PM +0200, Helge Deller wrote:
-> > > It fixes the problem mostly for me, there is just one little glitch
-> > > left, which is that the lines "FP[x] enabled" will still print an
-> > > invalid time. I assume it's because when this text is printed, the
-> > > clock/interrupts for the just booted CPU aren't enabled yet.
-> > > 
-> > > I'm not sure it's worth trying to fix that. 
-> > > One could print out that info at a later time, or just disabled it.
-> > > 
-> > > Helge
-> > > 
-> > > [    5.720014] Enabling PDC_PAT chassis codes support v0.05
-> > > [    6.644542] Releasing cpu 1 now, hpa=fffffffffe781000
-> > > [    0.196000] FP[1] enabled: Rev 1 Model 20
-> > > [    7.088432] CPU(s): 2 out of 2 PA8800 (Mako) at 900.000000 MHz online
-> > 
-> > Some tools that analyze boot time based on dmesg might get confused.
-> 
-> Yes, valid point.
-> Updated patch below.
-> 
-> Helge
-> 
-> __________
-> 
-> 
-> parisc: Fix printk time during boot
-> 
-> Avoid showing invalid printk time stamps during boot.
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> 
-> diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
-> index e81ccf1..5adc339 100644
-> --- a/arch/parisc/kernel/processor.c
-> +++ b/arch/parisc/kernel/processor.c
-> @@ -324,8 +324,9 @@ int init_per_cpu(int cpunum)
->  		per_cpu(cpu_data, cpunum).fp_rev = coproc_cfg.revision;
->  		per_cpu(cpu_data, cpunum).fp_model = coproc_cfg.model;
->  
-> -		printk(KERN_INFO  "FP[%d] enabled: Rev %ld Model %ld\n",
-> -			cpunum, coproc_cfg.revision, coproc_cfg.model);
-> +		if (cpunum == 0)
-> +			printk(KERN_INFO  "FP[%d] enabled: Rev %ld Model %ld\n",
-> +				cpunum, coproc_cfg.revision, coproc_cfg.model);
-
-BTW. you could also remove "[%d] cpunum" from printk --- if cpunum is 
-always 0 here.
-
-Mikulas
-
->  
->  		/*
->  		** store status register to stack (hopefully aligned)
-> diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
-> index 58dd680..31ec99a 100644
-> --- a/arch/parisc/kernel/time.c
-> +++ b/arch/parisc/kernel/time.c
-> @@ -309,11 +309,6 @@ void __init time_init(void)
->  	clocks_calc_mult_shift(&cyc2ns_mul, &cyc2ns_shift, current_cr16_khz,
->  				NSEC_PER_MSEC, 0);
->  
-> -#if defined(CONFIG_HAVE_UNSTABLE_SCHED_CLOCK) && defined(CONFIG_64BIT)
-> -	/* At bootup only one 64bit CPU is online and cr16 is "stable" */
-> -	set_sched_clock_stable();
-> -#endif
-> -
->  	start_cpu_itimer();	/* get CPU 0 started */
->  
->  	/* register at clocksource framework */
-> 
+RnJvbTogSGVsZ2UgRGVsbGVyIDxkZWxsZXJAZ214LmRlPg0KRGF0ZTogRnJpLCAzIEp1biAyMDE2
+IDE5OjE5OjIwICswMjAwDQoNCj4gVGhpcyBmaXhlcyB0aGUgZm9sbG93aW5nIGNvbXBpbGVyIHdh
+cm5pbmdzIHdoZW4gY29tcGlsaW5nIHRoZQ0KPiByZXVzZXBvcnRfYnBmIHRlc3RjYXNlIG9uIGEg
+MzIgYml0IHBsYXRmb3JtOg0KPiANCj4gcmV1c2Vwb3J0X2JwZi5jOiBJbiBmdW5jdGlvbiChYXR0
+YWNoX2VicGaiOg0KPiByZXVzZXBvcnRfYnBmLmM6MTE0OjE1OiB3YXJuaW5nOiBjYXN0IGZyb20g
+cG9pbnRlciB0byBpbnRlZ2VyIG9mIGlmZmVyZW50IHNpemUgWy1XcG9pbnRlci10by1pbnQtY2Fz
+dF0NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEhlbGdlIERlbGxlciA8ZGVsbGVyQGdteC5kZT4NCg0K
+QXBwbGllZC4NCg==
