@@ -1,485 +1,214 @@
-From: Yinghai Lu <yinghai@kernel.org>
-Subject: [PATCH v12.update 01/15] PCI: Let pci_mmap_page_range() take extra resource pointer
-Date: Tue,  7 Jun 2016 11:08:46 -0700
-Message-ID: <20160607180847.15205-1-yinghai@kernel.org>
-Cc: Wei Yang <weiyang@linux.vnet.ibm.com>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yinghai Lu <yinghai@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-cris-kernel@axis.com,
-        linux-ia64@vger.kernel.org, linux-mips@linux-mips.org,
-        linux-am33-list@redhat.com, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org
-To: Bjorn Helgaas <bhelgaas@google.com>,
-        David Miller <davem@davemloft.net>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Return-path: <linux-mips-bounce@linux-mips.org>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+From: "George Spelvin" <linux@sciencehorizons.net>
+Subject: [PATCH v4] parisc: add <asm/hash.h>
+Date: 7 Jun 2016 19:45:06 -0400
+Message-ID: <20160607234506.32160.qmail@ns.sciencehorizons.net>
+References: <20160607012242.5694.qmail@ns.sciencehorizons.net>
+Cc: linux-parisc@vger.kernel.org, linux@sciencehorizons.net
+To: deller@gmx.de
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20160607012242.5694.qmail@ns.sciencehorizons.net>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-This one is preparing patch for next one:
-  PCI: Let pci_mmap_page_range() take resource addr
+PA-RISC is interesting; integer multiplies are implemented in the
+FPU, so are painful in the kernel.  But it tries to be friendly to
+shift-and-add sequences for constant multiplies.
 
-We need to pass extra resource pointer to avoid searching that again
-for powerpc and microblaze prot set operation.
+__hash_32 is implemented using the same shift-and-add sequence as
+Microblaze, just scheduled for the PA7100.  (It's 2-way superscalar
+but in-order, like the Pentium.)
 
-update for fixing bisectibility problem found by build test robot.
+hash_64 was tricky, but a suggestion from Jason Thong allowed a
+good solution by breaking up the multiplier.  After a lot of manual
+optimization, I found a 19-instruction sequence for the multiply that
+can be executed in 10 cycles using only 4 temporaries.
 
-Signed-off-by: Yinghai Lu <yinghai@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-cris-kernel@axis.com
-Cc: linux-ia64@vger.kernel.org
-Cc: linux-mips@linux-mips.org
-Cc: linux-am33-list@redhat.com
+(The PA8xxx can issue 4 instructions per cycle, but 2 must be ALU ops
+and 2 must be loads/stores.  And the final add can't be paired.)
+
+An alternative considered, but ultimately not used, was Thomas Wang's
+64-to-32-bit integer hash.  At 12 instructions, it's smaller, but they're
+all sequentially dependent, so it has longer latency.
+
+https://web.archive.org/web/2011/http://www.concentric.net/~Ttwang/tech/inthash.htm
+http://burtleburtle.net/bob/hash/integer.html
+
+Signed-off-by: George Spelvin <linux@sciencehorizons.net>
+Cc: Helge Deller <deller@gmx.de>
 Cc: linux-parisc@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-sh@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
-Cc: linux-xtensa@linux-xtensa.org
 ---
- arch/arm/include/asm/pci.h              | 2 --
- arch/arm/kernel/bios32.c                | 3 ++-
- arch/cris/arch-v32/drivers/pci/bios.c   | 3 ++-
- arch/cris/include/asm/pci.h             | 3 ---
- arch/ia64/include/asm/pci.h             | 2 --
- arch/ia64/pci/pci.c                     | 3 ++-
- arch/microblaze/include/asm/pci.h       | 3 ---
- arch/microblaze/pci/pci-common.c        | 3 ++-
- arch/mips/include/asm/pci.h             | 3 ---
- arch/mips/pci/pci.c                     | 3 ++-
- arch/mn10300/include/asm/pci.h          | 3 ---
- arch/mn10300/unit-asb2305/pci-asb2305.c | 3 ++-
- arch/parisc/include/asm/pci.h           | 3 ---
- arch/parisc/kernel/pci.c                | 3 ++-
- arch/powerpc/include/asm/pci.h          | 3 ---
- arch/powerpc/kernel/pci-common.c        | 3 ++-
- arch/sh/drivers/pci/pci.c               | 3 ++-
- arch/sh/include/asm/pci.h               | 2 --
- arch/sparc/include/asm/pci_64.h         | 4 ----
- arch/sparc/kernel/pci.c                 | 3 ++-
- arch/unicore32/include/asm/pci.h        | 2 --
- arch/unicore32/kernel/pci.c             | 3 ++-
- arch/x86/include/asm/pci.h              | 4 ----
- arch/x86/pci/i386.c                     | 3 ++-
- arch/xtensa/include/asm/pci.h           | 4 ----
- arch/xtensa/kernel/pci.c                | 3 ++-
- drivers/pci/pci-sysfs.c                 | 2 +-
- drivers/pci/proc.c                      | 2 +-
- include/linux/pci.h                     | 6 ++++++
- 29 files changed, 34 insertions(+), 53 deletions(-)
+No functional change, just cleaned up a lot.  This is final if no problems
+are found.
 
-diff --git a/arch/arm/include/asm/pci.h b/arch/arm/include/asm/pci.h
-index 057d381..51118a0 100644
---- a/arch/arm/include/asm/pci.h
-+++ b/arch/arm/include/asm/pci.h
-@@ -29,8 +29,6 @@ static inline int pci_proc_domain(struct pci_bus *bus)
- #define PCI_DMA_BUS_IS_PHYS     (1)
+ arch/parisc/Kconfig            |   1 +
+ arch/parisc/include/asm/hash.h | 146 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 147 insertions(+)
+ create mode 100644 arch/parisc/include/asm/hash.h
+
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 88cfaa8a..8ed2a444 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -30,6 +30,7 @@ config PARISC
+ 	select TTY # Needed for pdc_cons.c
+ 	select HAVE_DEBUG_STACKOVERFLOW
+ 	select HAVE_ARCH_AUDITSYSCALL
++	select HAVE_ARCH_HASH
+ 	select HAVE_ARCH_SECCOMP_FILTER
+ 	select ARCH_NO_COHERENT_DMA_MMAP
  
- #define HAVE_PCI_MMAP
--extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
--                               enum pci_mmap_state mmap_state, int write_combine);
- 
- static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
- {
-diff --git a/arch/arm/kernel/bios32.c b/arch/arm/kernel/bios32.c
-index 05e61a2..d3245d1 100644
---- a/arch/arm/kernel/bios32.c
-+++ b/arch/arm/kernel/bios32.c
-@@ -602,7 +602,8 @@ int pcibios_enable_device(struct pci_dev *dev, int mask)
- 	return pci_enable_resources(dev, mask);
- }
- 
--int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+int pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+			struct vm_area_struct *vma,
- 			enum pci_mmap_state mmap_state, int write_combine)
- {
- 	if (mmap_state == pci_mmap_io)
-diff --git a/arch/cris/arch-v32/drivers/pci/bios.c b/arch/cris/arch-v32/drivers/pci/bios.c
-index 64a5fb9..082efb9 100644
---- a/arch/cris/arch-v32/drivers/pci/bios.c
-+++ b/arch/cris/arch-v32/drivers/pci/bios.c
-@@ -14,7 +14,8 @@ void pcibios_set_master(struct pci_dev *dev)
- 	pci_write_config_byte(dev, PCI_LATENCY_TIMER, lat);
- }
- 
--int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+int pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+			struct vm_area_struct *vma,
- 			enum pci_mmap_state mmap_state, int write_combine)
- {
- 	unsigned long prot;
-diff --git a/arch/cris/include/asm/pci.h b/arch/cris/include/asm/pci.h
-index b1b289d..65198cb 100644
---- a/arch/cris/include/asm/pci.h
-+++ b/arch/cris/include/asm/pci.h
-@@ -42,9 +42,6 @@ struct pci_dev;
- #define PCI_DMA_BUS_IS_PHYS	(1)
- 
- #define HAVE_PCI_MMAP
--extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
--			       enum pci_mmap_state mmap_state, int write_combine);
--
- 
- #endif /* __KERNEL__ */
- 
-diff --git a/arch/ia64/include/asm/pci.h b/arch/ia64/include/asm/pci.h
-index c0835b0..6a2f5d8 100644
---- a/arch/ia64/include/asm/pci.h
-+++ b/arch/ia64/include/asm/pci.h
-@@ -51,8 +51,6 @@ extern unsigned long ia64_max_iommu_merge_mask;
- #define PCI_DMA_BUS_IS_PHYS	(ia64_max_iommu_merge_mask == ~0UL)
- 
- #define HAVE_PCI_MMAP
--extern int pci_mmap_page_range (struct pci_dev *dev, struct vm_area_struct *vma,
--				enum pci_mmap_state mmap_state, int write_combine);
- #define HAVE_PCI_LEGACY
- extern int pci_mmap_legacy_page_range(struct pci_bus *bus,
- 				      struct vm_area_struct *vma,
-diff --git a/arch/ia64/pci/pci.c b/arch/ia64/pci/pci.c
-index 8f6ac2f..1518d66 100644
---- a/arch/ia64/pci/pci.c
-+++ b/arch/ia64/pci/pci.c
-@@ -419,7 +419,8 @@ pcibios_align_resource (void *data, const struct resource *res,
- }
- 
- int
--pci_mmap_page_range (struct pci_dev *dev, struct vm_area_struct *vma,
-+pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+		     struct vm_area_struct *vma,
- 		     enum pci_mmap_state mmap_state, int write_combine)
- {
- 	unsigned long size = vma->vm_end - vma->vm_start;
-diff --git a/arch/microblaze/include/asm/pci.h b/arch/microblaze/include/asm/pci.h
-index fc3ecb5..1b93824 100644
---- a/arch/microblaze/include/asm/pci.h
-+++ b/arch/microblaze/include/asm/pci.h
-@@ -46,9 +46,6 @@ extern int pci_domain_nr(struct pci_bus *bus);
- extern int pci_proc_domain(struct pci_bus *bus);
- 
- struct vm_area_struct;
--/* Map a range of PCI memory or I/O space for a device into user space */
--int pci_mmap_page_range(struct pci_dev *pdev, struct vm_area_struct *vma,
--			enum pci_mmap_state mmap_state, int write_combine);
- 
- /* Tell drivers/pci/proc.c that we have pci_mmap_page_range() */
- #define HAVE_PCI_MMAP	1
-diff --git a/arch/microblaze/pci/pci-common.c b/arch/microblaze/pci/pci-common.c
-index 14cba60..fd2b013 100644
---- a/arch/microblaze/pci/pci-common.c
-+++ b/arch/microblaze/pci/pci-common.c
-@@ -304,7 +304,8 @@ pgprot_t pci_phys_mem_access_prot(struct file *file,
-  *
-  * Returns a negative error code on failure, zero on success.
-  */
--int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+int pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+			struct vm_area_struct *vma,
- 			enum pci_mmap_state mmap_state, int write_combine)
- {
- 	resource_size_t offset =
-diff --git a/arch/mips/include/asm/pci.h b/arch/mips/include/asm/pci.h
-index 86b239d..71d2c3b 100644
---- a/arch/mips/include/asm/pci.h
-+++ b/arch/mips/include/asm/pci.h
-@@ -75,9 +75,6 @@ extern void pcibios_set_master(struct pci_dev *dev);
- 
- #define HAVE_PCI_MMAP
- 
--extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
--	enum pci_mmap_state mmap_state, int write_combine);
--
- #define HAVE_ARCH_PCI_RESOURCE_TO_USER
- 
- static inline void pci_resource_to_user(const struct pci_dev *dev, int bar,
-diff --git a/arch/mips/pci/pci.c b/arch/mips/pci/pci.c
-index f1b11f0..e620333 100644
---- a/arch/mips/pci/pci.c
-+++ b/arch/mips/pci/pci.c
-@@ -319,7 +319,8 @@ void pcibios_fixup_bus(struct pci_bus *bus)
- EXPORT_SYMBOL(PCIBIOS_MIN_IO);
- EXPORT_SYMBOL(PCIBIOS_MIN_MEM);
- 
--int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+int pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+			struct vm_area_struct *vma,
- 			enum pci_mmap_state mmap_state, int write_combine)
- {
- 	unsigned long prot;
-diff --git a/arch/mn10300/include/asm/pci.h b/arch/mn10300/include/asm/pci.h
-index 51159ff..082b6de 100644
---- a/arch/mn10300/include/asm/pci.h
-+++ b/arch/mn10300/include/asm/pci.h
-@@ -74,9 +74,6 @@ static inline int pci_controller_num(struct pci_dev *dev)
- }
- 
- #define HAVE_PCI_MMAP
--extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
--			       enum pci_mmap_state mmap_state,
--			       int write_combine);
- 
- #endif /* __KERNEL__ */
- 
-diff --git a/arch/mn10300/unit-asb2305/pci-asb2305.c b/arch/mn10300/unit-asb2305/pci-asb2305.c
-index b7ab837..40efdc6 100644
---- a/arch/mn10300/unit-asb2305/pci-asb2305.c
-+++ b/arch/mn10300/unit-asb2305/pci-asb2305.c
-@@ -211,7 +211,8 @@ void __init pcibios_resource_survey(void)
- 	pcibios_allocate_resources(1);
- }
- 
--int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+int pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+			struct vm_area_struct *vma,
- 			enum pci_mmap_state mmap_state, int write_combine)
- {
- 	unsigned long prot;
-diff --git a/arch/parisc/include/asm/pci.h b/arch/parisc/include/asm/pci.h
-index defebd9..bb9ea90 100644
---- a/arch/parisc/include/asm/pci.h
-+++ b/arch/parisc/include/asm/pci.h
-@@ -201,7 +201,4 @@ static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
- 
- #define HAVE_PCI_MMAP
- 
--extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
--	enum pci_mmap_state mmap_state, int write_combine);
--
- #endif /* __ASM_PARISC_PCI_H */
-diff --git a/arch/parisc/kernel/pci.c b/arch/parisc/kernel/pci.c
-index 0903c6a..8d5c34c 100644
---- a/arch/parisc/kernel/pci.c
-+++ b/arch/parisc/kernel/pci.c
-@@ -228,7 +228,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- }
- 
- 
--int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+int pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+			struct vm_area_struct *vma,
- 			enum pci_mmap_state mmap_state, int write_combine)
- {
- 	unsigned long prot;
-diff --git a/arch/powerpc/include/asm/pci.h b/arch/powerpc/include/asm/pci.h
-index a6f3ac0..662c1ef 100644
---- a/arch/powerpc/include/asm/pci.h
-+++ b/arch/powerpc/include/asm/pci.h
-@@ -77,9 +77,6 @@ extern int pci_domain_nr(struct pci_bus *bus);
- extern int pci_proc_domain(struct pci_bus *bus);
- 
- struct vm_area_struct;
--/* Map a range of PCI memory or I/O space for a device into user space */
--int pci_mmap_page_range(struct pci_dev *pdev, struct vm_area_struct *vma,
--			enum pci_mmap_state mmap_state, int write_combine);
- 
- /* Tell drivers/pci/proc.c that we have pci_mmap_page_range() */
- #define HAVE_PCI_MMAP	1
-diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
-index 0f7a60f..1596362 100644
---- a/arch/powerpc/kernel/pci-common.c
-+++ b/arch/powerpc/kernel/pci-common.c
-@@ -445,7 +445,8 @@ pgprot_t pci_phys_mem_access_prot(struct file *file,
-  *
-  * Returns a negative error code on failure, zero on success.
-  */
--int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+int pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+			struct vm_area_struct *vma,
- 			enum pci_mmap_state mmap_state, int write_combine)
- {
- 	resource_size_t offset =
-diff --git a/arch/sh/drivers/pci/pci.c b/arch/sh/drivers/pci/pci.c
-index d5462b7..a1bc7ba 100644
---- a/arch/sh/drivers/pci/pci.c
-+++ b/arch/sh/drivers/pci/pci.c
-@@ -269,7 +269,8 @@ void __init_refok pcibios_report_status(unsigned int status_mask, int warn)
- 	}
- }
- 
--int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+int pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+			struct vm_area_struct *vma,
- 			enum pci_mmap_state mmap_state, int write_combine)
- {
- 	/*
-diff --git a/arch/sh/include/asm/pci.h b/arch/sh/include/asm/pci.h
-index 644314f..8e0fdb9 100644
---- a/arch/sh/include/asm/pci.h
-+++ b/arch/sh/include/asm/pci.h
-@@ -66,8 +66,6 @@ extern unsigned long PCIBIOS_MIN_IO, PCIBIOS_MIN_MEM;
- struct pci_dev;
- 
- #define HAVE_PCI_MMAP
--extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
--	enum pci_mmap_state mmap_state, int write_combine);
- extern void pcibios_set_master(struct pci_dev *dev);
- 
- /* Dynamic DMA mapping stuff.
-diff --git a/arch/sparc/include/asm/pci_64.h b/arch/sparc/include/asm/pci_64.h
-index 022d160..f7a93df 100644
---- a/arch/sparc/include/asm/pci_64.h
-+++ b/arch/sparc/include/asm/pci_64.h
-@@ -45,10 +45,6 @@ static inline int pci_proc_domain(struct pci_bus *bus)
- #define HAVE_ARCH_PCI_GET_UNMAPPED_AREA
- #define get_pci_unmapped_area get_fb_unmapped_area
- 
--int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
--			enum pci_mmap_state mmap_state,
--			int write_combine);
--
- static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
- {
- 	return PCI_IRQ_NONE;
-diff --git a/arch/sparc/kernel/pci.c b/arch/sparc/kernel/pci.c
-index c2b202d..86d7dda 100644
---- a/arch/sparc/kernel/pci.c
-+++ b/arch/sparc/kernel/pci.c
-@@ -862,7 +862,8 @@ static void __pci_mmap_set_pgprot(struct pci_dev *dev, struct vm_area_struct *vm
-  *
-  * Returns a negative error code on failure, zero on success.
-  */
--int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+int pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+			struct vm_area_struct *vma,
- 			enum pci_mmap_state mmap_state,
- 			int write_combine)
- {
-diff --git a/arch/unicore32/include/asm/pci.h b/arch/unicore32/include/asm/pci.h
-index 37e55d0..a5129086 100644
---- a/arch/unicore32/include/asm/pci.h
-+++ b/arch/unicore32/include/asm/pci.h
-@@ -17,8 +17,6 @@
- #include <mach/hardware.h> /* for PCIBIOS_MIN_* */
- 
- #define HAVE_PCI_MMAP
--extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
--	enum pci_mmap_state mmap_state, int write_combine);
- 
- #endif /* __KERNEL__ */
- #endif
-diff --git a/arch/unicore32/kernel/pci.c b/arch/unicore32/kernel/pci.c
-index d45fa5f..ff1b7ef 100644
---- a/arch/unicore32/kernel/pci.c
-+++ b/arch/unicore32/kernel/pci.c
-@@ -362,7 +362,8 @@ int pcibios_enable_device(struct pci_dev *dev, int mask)
- 	return 0;
- }
- 
--int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+int pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+			struct vm_area_struct *vma,
- 			enum pci_mmap_state mmap_state, int write_combine)
- {
- 	unsigned long phys;
-diff --git a/arch/x86/include/asm/pci.h b/arch/x86/include/asm/pci.h
-index 9ab7507..eb87481 100644
---- a/arch/x86/include/asm/pci.h
-+++ b/arch/x86/include/asm/pci.h
-@@ -88,10 +88,6 @@ int pcibios_set_irq_routing(struct pci_dev *dev, int pin, int irq);
- 
- 
- #define HAVE_PCI_MMAP
--extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
--			       enum pci_mmap_state mmap_state,
--			       int write_combine);
--
- 
- #ifdef CONFIG_PCI
- extern void early_quirks(void);
-diff --git a/arch/x86/pci/i386.c b/arch/x86/pci/i386.c
-index 0a9f2ca..36463c7 100644
---- a/arch/x86/pci/i386.c
-+++ b/arch/x86/pci/i386.c
-@@ -411,7 +411,8 @@ static const struct vm_operations_struct pci_mmap_ops = {
- 	.access = generic_access_phys,
- };
- 
--int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+int pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+			struct vm_area_struct *vma,
- 			enum pci_mmap_state mmap_state, int write_combine)
- {
- 	unsigned long prot;
-diff --git a/arch/xtensa/include/asm/pci.h b/arch/xtensa/include/asm/pci.h
-index 5d6bd93..bb5510b 100644
---- a/arch/xtensa/include/asm/pci.h
-+++ b/arch/xtensa/include/asm/pci.h
-@@ -46,10 +46,6 @@ struct pci_dev;
- 
- #define PCI_DMA_BUS_IS_PHYS	(1)
- 
--/* Map a range of PCI memory or I/O space for a device into user space */
--int pci_mmap_page_range(struct pci_dev *pdev, struct vm_area_struct *vma,
--			enum pci_mmap_state mmap_state, int write_combine);
--
- /* Tell drivers/pci/proc.c that we have pci_mmap_page_range() */
- #define HAVE_PCI_MMAP	1
- 
-diff --git a/arch/xtensa/kernel/pci.c b/arch/xtensa/kernel/pci.c
-index b848cc3..89c8687 100644
---- a/arch/xtensa/kernel/pci.c
-+++ b/arch/xtensa/kernel/pci.c
-@@ -362,7 +362,8 @@ __pci_mmap_set_pgprot(struct pci_dev *dev, struct vm_area_struct *vma,
-  *
-  * Returns a negative error code on failure, zero on success.
-  */
--int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
-+int pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+			struct vm_area_struct *vma,
- 			enum pci_mmap_state mmap_state,
- 			int write_combine)
- {
-diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index d319a9c..5bbe20c 100644
---- a/drivers/pci/pci-sysfs.c
-+++ b/drivers/pci/pci-sysfs.c
-@@ -1027,7 +1027,7 @@ static int pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
- 	pci_resource_to_user(pdev, i, res, &start, &end);
- 	vma->vm_pgoff += start >> PAGE_SHIFT;
- 	mmap_type = res->flags & IORESOURCE_MEM ? pci_mmap_mem : pci_mmap_io;
--	return pci_mmap_page_range(pdev, vma, mmap_type, write_combine);
-+	return pci_mmap_page_range(pdev, res, vma, mmap_type, write_combine);
- }
- 
- static int pci_mmap_resource_uc(struct file *filp, struct kobject *kobj,
-diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
-index 3f155e7..f19ee2a 100644
---- a/drivers/pci/proc.c
-+++ b/drivers/pci/proc.c
-@@ -245,7 +245,7 @@ static int proc_bus_pci_mmap(struct file *file, struct vm_area_struct *vma)
- 	if (i >= PCI_ROM_RESOURCE)
- 		return -ENODEV;
- 
--	ret = pci_mmap_page_range(dev, vma,
-+	ret = pci_mmap_page_range(dev, &dev->resource[i], vma,
- 				  fpriv->mmap_state,
- 				  fpriv->write_combine);
- 	if (ret < 0)
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index b67e4df..3c1a0f4 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -70,6 +70,12 @@ enum pci_mmap_state {
- 	pci_mmap_mem
- };
- 
-+struct vm_area_struct;
-+/* Map a range of PCI memory or I/O space for a device into user space */
-+int pci_mmap_page_range(struct pci_dev *dev, struct resource *res,
-+			struct vm_area_struct *vma,
-+			enum pci_mmap_state mmap_state, int write_combine);
+diff --git a/arch/parisc/include/asm/hash.h b/arch/parisc/include/asm/hash.h
+new file mode 100644
+index 00000000..fb992a3b
+--- /dev/null
++++ b/arch/parisc/include/asm/hash.h
+@@ -0,0 +1,146 @@
++#ifndef _ASM_HASH_H
++#define _ASM_HASH_H
 +
- /*
-  *  For PCI devices, the region numbers are assigned this way:
-  */
++/*
++ * HP-PA only implements integer multiply in the FPU.  However, for
++ * integer multiplies by constant, it has a number of shift-and-add
++ * (but no shift-and-subtract, sigh!) instructions that a compiler
++ * can synthesize a code sequence with.
++ *
++ * Unfortunately, GCC isn't very efficient at using them.  For example
++ * it uses three instructions for "x *= 21" when only two are needed.
++ * But we can find a sequence manually.
++ */
++
++#define HAVE_ARCH__HASH_32 1
++
++/*
++ * This is a multiply by GOLDEN_RATIO_32 = 0x61C88647 optimized for the
++ * PA7100 pairing rules.  This is an in-order 2-way superscalar processor.
++ * Only one instruction in a pair may be a shift (by more than 3 bits),
++ * but other than that, simple ALU ops (including shift-and-add by up
++ * to 3 bits) may be paired arbitrarily.
++ *
++ * PA8xxx processors also dual-issue ALU instructions, although with
++ * fewer constraints, so this schedule is good for them, too.
++ *
++ * This 6-step sequence was found by Yevgen Voronenko's implementation
++ * of the Hcub algorithm at http://spiral.ece.cmu.edu/mcm/gen.html.
++ */
++static inline u32 __attribute_const__ __hash_32(u32 x)
++{
++	u32 a, b, c;
++
++	/*
++	 * Phase 1: Compute  a = (x << 19) + x,
++	 * b = (x << 9) + a, c = (x << 23) + b.
++	 */
++	a = x << 19;		/* Two shifts can't be paired */
++	b = x << 9;	a += x;
++	c = x << 23;	b += a;
++			c += b;
++	/* Phase 2: Return (b<<11) + (c<<6) + (a<<3) - c */
++	b <<= 11;
++	a += c << 3;	b -= c;
++	return (a << 3) + b;
++}
++
++#if BITS_PER_LONG == 64
++
++#define HAVE_ARCH_HASH_64 1
++
++/*
++ * Finding a good shift-and-add chain for GOLDEN_RATIO_64 is tricky,
++ * because available software for the purpose chokes on constants this
++ * large.  (It's mostly designed for compiling FIR filter coefficients
++ * into FPGAs.)
++ *
++ * However, Jason Thong pointed out a work-around.  The Hcub software
++ * (http://spiral.ece.cmu.edu/mcm/gen.html) is designed for *multiple*
++ * constant multiplication, and is good at finding shift-and-add chains
++ * which share common terms.
++ *
++ * Looking at 0x0x61C8864680B583EB in binary:
++ * 0110000111001000100001100100011010000000101101011000001111101011
++ *  \______________/    \__________/       \_______/     \________/
++ *   \____________________________/         \____________________/
++ * you can see the non-zero bits are divided into several well-separated
++ * blocks.  Hcub can find algorithms for those terms separately, which
++ * can then be shifted and added together.
++ *
++ * Dividing the input into 2, 3 or 4 blocks, Hcub can find solutions
++ * with 10, 9 or 8 adds, respectively, making a total of 11 for the
++ * whole number.
++ *
++ * Using just two large blocks, 0xC3910C8D << 31 in the high bits,
++ * and 0xB583EB in the low bits, produces as good an algorithm as any,
++ * and with one more small shift than alternatives.
++ *
++ * The high bits are a larger number and more work to compute, as well
++ * as needing one extra cycle to shift left 31 bits before the final
++ * addition, so they are the critical path for scheduling.  The low bits
++ * can fit into the scheduling slots left over.
++ */
++
++
++/*
++ * This _ASSIGN(dst, src) macro performs "dst = src", but prevents GCC
++ * from inferring anything about the value assigned to "dest".
++ *
++ * This prevents it from mis-optimizing certain sequences.
++ * In particular, gcc is annoyingly eager to combine consecutive shifts.
++ * Given "x <<= 19; y += x; z += x << 1;", GCC will turn this into
++ * "y += x << 19; z += x << 20;" even though the latter sequence needs
++ * an additional instruction and temporary register.
++ *
++ * Because no actual assembly code is generated, this construct is
++ * usefully portable across all GCC platforms, and so can be test-compiled
++ * on non-PA systems.
++ *
++ * In two places, additional unused input dependencies are added.  This
++ * forces GCC's scheduling so it does not rearrange instructions too much.
++ * Because the PA-8xxx is out of order, I'm not sure how much this matters,
++ * but why make it more difficult for the processor than necessary?
++ */
++#define _ASSIGN(dst, src, ...) asm("" : "=r" (dst) : "0" (src), ##__VA_ARGS__)
++
++/*
++ * Multiply by GOLDEN_RATIO_64 = 0x0x61C8864680B583EB using a heavily
++ * optimized shift-and-add sequence.
++ *
++ * Without the final shift, the multiply proper is 19 instructions,
++ * 10 cycles and uses only 4 temporaries.  Whew!
++ *
++ * You are not expected to understand this.
++ */
++static __always_inline u32 __attribute_const__
++hash_64(u64 a, unsigned int bits)
++{
++	u64 b, c, d;
++
++	/*
++	 * Encourage GCC to move a dynamic shift to %sar early,
++	 * thereby freeing up an additional temporary register.
++	 */
++	if (!__builtin_constant_p(bits))
++		asm("" : "=q" (bits) : "0" (64 - bits));
++	else
++		bits = 64 - bits;
++
++	_ASSIGN(b, a*5);	c = a << 13;
++	b = (b << 2) + a;	_ASSIGN(d, a << 17);
++	a = b + (a << 1);	c += d;
++	d = a << 10;		_ASSIGN(a, a << 19);
++	d = a - d;		_ASSIGN(a, a << 4, "X" (d));
++	c += b;			a += b;
++	d -= c;			c += a << 1;
++	a += c << 3;		_ASSIGN(b, b << 7+31, "X" (c), "X" (d));
++	a <<= 31;		b += d;
++	a += b;
++	return a >> bits;
++}
++#undef _ASSIGN	/* We're a widely-used header file, so don't litter! */
++
++#endif /* BITS_PER_LONG == 64 */
++
++#endif /* _ASM_HASH_H */
 -- 
-2.8.3
+2.8.1
+
