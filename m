@@ -1,74 +1,284 @@
 From: Helge Deller <deller@gmx.de>
-Subject: kernel BUG in drivers/scsi/53c700.c:1129
-Date: Thu, 9 Jun 2016 21:36:04 +0200
-Message-ID: <5759C524.2030009@gmx.de>
+Subject: Re: [PATCH v4] parisc: add <asm/hash.h>
+Date: Thu, 9 Jun 2016 21:53:59 +0200
+Message-ID: <5759C957.5090607@gmx.de>
+References: <20160607234506.32160.qmail@ns.sciencehorizons.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=windows-1252
 Cc: "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
-To: "James.Bottomley@HansenPartnership.com"
-	<James.Bottomley@HansenPartnership.com>
+To: George Spelvin <linux@sciencehorizons.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20160607234506.32160.qmail@ns.sciencehorizons.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi James,
+Hi George,
 
-I just tried Debian kernel 4.6.1-1 on my historic 715/64 machine, and it
-ran into this  BUG() in the LASI scsi driver:
+On 08.06.2016 01:45, George Spelvin wrote:
+> PA-RISC is interesting; integer multiplies are implemented in the
+> FPU, so are painful in the kernel.  But it tries to be friendly to
+> shift-and-add sequences for constant multiplies.
+>=20
+> __hash_32 is implemented using the same shift-and-add sequence as
+> Microblaze, just scheduled for the PA7100.  (It's 2-way superscalar
+> but in-order, like the Pentium.)
+>=20
+> hash_64 was tricky, but a suggestion from Jason Thong allowed a
+> good solution by breaking up the multiplier.  After a lot of manual
+> optimization, I found a 19-instruction sequence for the multiply that
+> can be executed in 10 cycles using only 4 temporaries.
+>=20
+> (The PA8xxx can issue 4 instructions per cycle, but 2 must be ALU ops
+> and 2 must be loads/stores.  And the final add can't be paired.)
+>=20
+> An alternative considered, but ultimately not used, was Thomas Wang's
+> 64-to-32-bit integer hash.  At 12 instructions, it's smaller, but the=
+y're
+> all sequentially dependent, so it has longer latency.
+>=20
+> https://web.archive.org/web/2011/http://www.concentric.net/~Ttwang/te=
+ch/inthash.htm
+> http://burtleburtle.net/bob/hash/integer.html
+>=20
+> Signed-off-by: George Spelvin <linux@sciencehorizons.net>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: linux-parisc@vger.kernel.org
+> ---
+> No functional change, just cleaned up a lot.  This is final if no pro=
+blems
+> are found.
 
- scsi 0:0:6:0: no saved request for untagged cmd
+Thanks, but two minor issues...
 
-Any idea?
+>  arch/parisc/Kconfig            |   1 +
+>  arch/parisc/include/asm/hash.h | 146 +++++++++++++++++++++++++++++++=
+++++++++++
+>  2 files changed, 147 insertions(+)
+>  create mode 100644 arch/parisc/include/asm/hash.h
+>=20
+> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+> index 88cfaa8a..8ed2a444 100644
+> --- a/arch/parisc/Kconfig
+> +++ b/arch/parisc/Kconfig
+> @@ -30,6 +30,7 @@ config PARISC
+>  	select TTY # Needed for pdc_cons.c
+>  	select HAVE_DEBUG_STACKOVERFLOW
+>  	select HAVE_ARCH_AUDITSYSCALL
+> +	select HAVE_ARCH_HASH
+>  	select HAVE_ARCH_SECCOMP_FILTER
+>  	select ARCH_NO_COHERENT_DMA_MMAP
 
+Minor issue:
+This line (ARCH_NO_COHERENT) is not yet in Linus' tree.
+I assume you diff'ed against -next or something?
+Maybe you move the "select HAVE_ARCH_HASH" one or two lines up, or
+wait until the other patch went upstream?
+
+> diff --git a/arch/parisc/include/asm/hash.h b/arch/parisc/include/asm=
+/hash.h
+> new file mode 100644
+> index 00000000..fb992a3b
+> --- /dev/null
+> +++ b/arch/parisc/include/asm/hash.h
+> @@ -0,0 +1,146 @@
+> +#ifndef _ASM_HASH_H
+> +#define _ASM_HASH_H
+> +
+> +/*
+> + * HP-PA only implements integer multiply in the FPU.  However, for
+> + * integer multiplies by constant, it has a number of shift-and-add
+> + * (but no shift-and-subtract, sigh!) instructions that a compiler
+> + * can synthesize a code sequence with.
+> + *
+> + * Unfortunately, GCC isn't very efficient at using them.  For examp=
+le
+> + * it uses three instructions for "x *=3D 21" when only two are need=
+ed.
+> + * But we can find a sequence manually.
+> + */
+> +
+> +#define HAVE_ARCH__HASH_32 1
+> +
+> +/*
+> + * This is a multiply by GOLDEN_RATIO_32 =3D 0x61C88647 optimized fo=
+r the
+> + * PA7100 pairing rules.  This is an in-order 2-way superscalar proc=
+essor.
+> + * Only one instruction in a pair may be a shift (by more than 3 bit=
+s),
+> + * but other than that, simple ALU ops (including shift-and-add by u=
+p
+> + * to 3 bits) may be paired arbitrarily.
+> + *
+> + * PA8xxx processors also dual-issue ALU instructions, although with
+> + * fewer constraints, so this schedule is good for them, too.
+> + *
+> + * This 6-step sequence was found by Yevgen Voronenko's implementati=
+on
+> + * of the Hcub algorithm at http://spiral.ece.cmu.edu/mcm/gen.html.
+> + */
+> +static inline u32 __attribute_const__ __hash_32(u32 x)
+> +{
+> +	u32 a, b, c;
+> +
+> +	/*
+> +	 * Phase 1: Compute  a =3D (x << 19) + x,
+> +	 * b =3D (x << 9) + a, c =3D (x << 23) + b.
+> +	 */
+> +	a =3D x << 19;		/* Two shifts can't be paired */
+> +	b =3D x << 9;	a +=3D x;
+> +	c =3D x << 23;	b +=3D a;
+> +			c +=3D b;
+> +	/* Phase 2: Return (b<<11) + (c<<6) + (a<<3) - c */
+> +	b <<=3D 11;
+> +	a +=3D c << 3;	b -=3D c;
+> +	return (a << 3) + b;
+> +}
+> +
+> +#if BITS_PER_LONG =3D=3D 64
+> +
+> +#define HAVE_ARCH_HASH_64 1
+> +
+> +/*
+> + * Finding a good shift-and-add chain for GOLDEN_RATIO_64 is tricky,
+> + * because available software for the purpose chokes on constants th=
+is
+> + * large.  (It's mostly designed for compiling FIR filter coefficien=
+ts
+> + * into FPGAs.)
+> + *
+> + * However, Jason Thong pointed out a work-around.  The Hcub softwar=
+e
+> + * (http://spiral.ece.cmu.edu/mcm/gen.html) is designed for *multipl=
+e*
+> + * constant multiplication, and is good at finding shift-and-add cha=
+ins
+> + * which share common terms.
+> + *
+> + * Looking at 0x0x61C8864680B583EB in binary:
+> + * 0110000111001000100001100100011010000000101101011000001111101011
+> + *  \______________/    \__________/       \_______/     \________/
+> + *   \____________________________/         \____________________/
+> + * you can see the non-zero bits are divided into several well-separ=
+ated
+> + * blocks.  Hcub can find algorithms for those terms separately, whi=
+ch
+> + * can then be shifted and added together.
+> + *
+> + * Dividing the input into 2, 3 or 4 blocks, Hcub can find solutions
+> + * with 10, 9 or 8 adds, respectively, making a total of 11 for the
+> + * whole number.
+> + *
+> + * Using just two large blocks, 0xC3910C8D << 31 in the high bits,
+> + * and 0xB583EB in the low bits, produces as good an algorithm as an=
+y,
+> + * and with one more small shift than alternatives.
+> + *
+> + * The high bits are a larger number and more work to compute, as we=
+ll
+> + * as needing one extra cycle to shift left 31 bits before the final
+> + * addition, so they are the critical path for scheduling.  The low =
+bits
+> + * can fit into the scheduling slots left over.
+> + */
+> +
+> +
+> +/*
+> + * This _ASSIGN(dst, src) macro performs "dst =3D src", but prevents=
+ GCC
+> + * from inferring anything about the value assigned to "dest".
+> + *
+> + * This prevents it from mis-optimizing certain sequences.
+> + * In particular, gcc is annoyingly eager to combine consecutive shi=
+fts.
+> + * Given "x <<=3D 19; y +=3D x; z +=3D x << 1;", GCC will turn this =
+into
+> + * "y +=3D x << 19; z +=3D x << 20;" even though the latter sequence=
+ needs
+> + * an additional instruction and temporary register.
+> + *
+> + * Because no actual assembly code is generated, this construct is
+> + * usefully portable across all GCC platforms, and so can be test-co=
+mpiled
+> + * on non-PA systems.
+> + *
+> + * In two places, additional unused input dependencies are added.  T=
+his
+> + * forces GCC's scheduling so it does not rearrange instructions too=
+ much.
+> + * Because the PA-8xxx is out of order, I'm not sure how much this m=
+atters,
+> + * but why make it more difficult for the processor than necessary?
+> + */
+> +#define _ASSIGN(dst, src, ...) asm("" : "=3Dr" (dst) : "0" (src), ##=
+__VA_ARGS__)
+> +
+> +/*
+> + * Multiply by GOLDEN_RATIO_64 =3D 0x0x61C8864680B583EB using a heav=
+ily
+> + * optimized shift-and-add sequence.
+> + *
+> + * Without the final shift, the multiply proper is 19 instructions,
+> + * 10 cycles and uses only 4 temporaries.  Whew!
+> + *
+> + * You are not expected to understand this.
+> + */
+> +static __always_inline u32 __attribute_const__
+> +hash_64(u64 a, unsigned int bits)
+> +{
+> +	u64 b, c, d;
+> +
+> +	/*
+> +	 * Encourage GCC to move a dynamic shift to %sar early,
+> +	 * thereby freeing up an additional temporary register.
+> +	 */
+> +	if (!__builtin_constant_p(bits))
+> +		asm("" : "=3Dq" (bits) : "0" (64 - bits));
+> +	else
+> +		bits =3D 64 - bits;
+> +
+> +	_ASSIGN(b, a*5);	c =3D a << 13;
+> +	b =3D (b << 2) + a;	_ASSIGN(d, a << 17);
+> +	a =3D b + (a << 1);	c +=3D d;
+> +	d =3D a << 10;		_ASSIGN(a, a << 19);
+> +	d =3D a - d;		_ASSIGN(a, a << 4, "X" (d));
+> +	c +=3D b;			a +=3D b;
+> +	d -=3D c;			c +=3D a << 1;
+> +	a +=3D c << 3;		_ASSIGN(b, b << 7+31, "X" (c), "X" (d));
+
+This line produces compiler warnings:
+arch/parisc/include/asm/hash.h: In function =91hash_64=92:
+arch/parisc/include/asm/hash.h:137:29: warning: suggest parentheses aro=
+und =91+=92 inside =91<<=92 [-Wparentheses]
+  a +=3D c << 3;  _ASSIGN(b, b << 7+31, "X" (c), "X" (d));
+                             ^
+
+You should add () around 7+31.
+
+With those changes I sucessfully tested it on a 64bit parisc kernel.
+
+So, please add
+Acked-by: Helge Deller <deller@gmx.de>
+
+
+THANKS!
 Helge
- 
-[    0.000000] Linux version 4.6.0-1-parisc (debian-kernel@lists.debian.org) (gcc version 5.4.0 20160603 (Debian 5.4.0-3) ) #1 Debian 4.6.1-1 (2016-06-06)
-...
-[    0.000000] Determining PDC firmware type: Snake.
-[    0.000000] model 000060a0 00000481 00000000 00000000 773c7d2c 00000000 00000004 00000072 00000072
-[    0.000000] vers  0000000c
-[    0.000000] model 9000/715
-[    0.000000] Total Memory: 160 MB
-...
-[   43.180000] SCSI subsystem initialized
-[   45.076000] 53c700: Version 2.8 By James.Bottomley@HansenPartnership.com
-[   45.156000] scsi0: 53c710 rev 2 
-[   46.204000] scsi host0: LASI SCSI 53c700
-[   58.268000] scsi 0:0:6:0: no saved request for untagged cmd
-[   58.336000] ------------[ cut here ]------------
-[   58.392000] kernel BUG at /build/linux-XAODSw/linux-4.6.1/drivers/scsi/53c700.c:1129!
-[   58.484000] CPU: 0 PID: 0 Comm: swapper Not tainted 4.6.0-1-parisc #1 Debian 4.6.1-1
-[   58.580000] task: 1083cdd8 ti: 107b1000 task.ti: 107b1000
-[   58.644000] 
-[   58.660000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-[   58.716000] PSW: 00000000000001001111111100001110 Not tainted
-[   58.788000] r00-03  0004ff0e 0084e388 00a8ea8c 107ba400
-[   58.848000] r04-07  00000000 00000000 15b88cc0 00000006
-[   58.912000] r08-11  198ca400 000000ff 00000020 00000000
-[   58.976000] r12-15  000000ff 00001003 10801020 00000001
-[   59.036000] r16-19  107b1240 00000002 000000ff 00000001
-[   59.100000] r20-23  00000001 0000000e 0084f388 00000000
-[   59.164000] r24-27  107ba500 0083b540 1021a7a4 107b5020
-[   59.224000] r28-31  00000000 00000040 107ba480 104d52bc
-[   59.288000] sr00-03  00000000 00000000 00000000 0000000d
-[   59.352000] sr04-07  00000000 00000000 00000000 00000000
-[   59.416000] 
-[   59.432000] IASQ: 00000000 00000000 IAOQ: 00a8ea8c 00a8ea90
-[   59.500000]  IIR: 03ffe01f    ISR: 0000000d  IOR: 00a8ea90
-[   59.564000]  CPU:        0   CR30: 107b1000 CR31: f00effff
-[   59.632000]  ORIG_R28: 10855e80
-[   59.668000]  IAOQ[0]: process_script_interrupt+0x13ec/0x16a4 [53c700]
-[   59.748000]  IAOQ[1]: process_script_interrupt+0x13f0/0x16a4 [53c700]
-[   59.824000]  RP(r2): process_script_interrupt+0x13ec/0x16a4 [53c700]
-[   59.900000] Backtrace:
-[   59.928000]  [<00a8ea8c>] process_script_interrupt+0x13ec/0x16a4 [53c700]
-[   60.012000] 
-[   60.028000] CPU: 0 PID: 0 Comm: swapper Not tainted 4.6.0-1-parisc #1 Debian 4.6.1-1
-[   60.120000] Backtrace:
-[   60.148000]  [<1015bffc>] show_stack+0x3c/0x50
-[   60.204000]  [<10425d40>] dump_stack+0x28/0x38
-[   60.256000]  [<1015c180>] die_if_kernel+0x134/0x20c
-[   60.316000]  [<1015cd34>] handle_interruption+0x804/0x828
-[   60.380000] 
-[   60.400000] Kernel panic - not syncing: Fatal exception in interrupt
-[   60.400000] ---[ end Kernel panic - not syncing: Fatal exception in interrupt
+
+
+> +	a <<=3D 31;		b +=3D d;
+> +	a +=3D b;
+> +	return a >> bits;
+> +}
+> +#undef _ASSIGN	/* We're a widely-used header file, so don't litter! =
+*/
+> +
+> +#endif /* BITS_PER_LONG =3D=3D 64 */
+> +
+> +#endif /* _ASM_HASH_H */
+>=20
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
