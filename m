@@ -1,56 +1,61 @@
-From: Yinghai Lu <yinghai@kernel.org>
-Subject: Re: [PATCH v12 01/15] PCI: Let pci_mmap_page_range() take extra
- resource pointer
-Date: Thu, 9 Jun 2016 15:36:35 -0700
-Message-ID: <CAE9FiQUNZ9xShfCHFvKobOJQ4zBfOrq_s=uYQAcR+YguigNjrQ@mail.gmail.com>
-References: <20160604000642.28162-1-yinghai@kernel.org> <20160604000642.28162-2-yinghai@kernel.org>
- <20160608210322.GA4248@localhost> <CAE9FiQXPmG6UYYGHG52_i8vaBJ5yPm6Z4Zfx_BhQxVhyWC5fnw@mail.gmail.com>
- <CAE9FiQWw0pUB=1iDrX_1qyMFAUGQidSaV7CPc0aNb2CzPB-fZw@mail.gmail.com>
+From: Andy Lutomirski <luto@amacapital.net>
+Subject: Re: [PATCH 05/14] seccomp: recheck the syscall after RET_TRACE
+Date: Thu, 9 Jun 2016 15:46:10 -0700
+Message-ID: <CALCETrUsqr3YbD=5mA9mRmgYqiHeEoLpWi-teyexUo_jR1BaFA@mail.gmail.com>
+References: <1465506124-21866-1-git-send-email-keescook@chromium.org> <1465506124-21866-6-git-send-email-keescook@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	David Miller <davem@davemloft.net>,
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Andy Lutomirski <luto@kernel.org>,
 	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Wei Yang <weiyang@linux.vnet.ibm.com>,
-	Khalid Aziz <khalid.aziz@oracle.com>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Chris Metcalf <cmetcalf@mellanox.com>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	James Hogan <james.hogan@imgtec.com>,
+	Jeff Dike <jdike@addtoit.com>,
+	linux-arch <linux-arch@vger.kernel.org>,
 	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, linux-cris-kernel@axis.com,
-	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-	"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
-	linux-am33-list@redhat.com, linux-parisc@vger.kernel.org,
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-	linux-sh@vger.kernel.org,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-	linux-xtensa@linux-xtensa.org
-To: Bjorn Helgaas <helgaas@kernel.org>
-Return-path: <sparclinux-owner@vger.kernel.org>
-In-Reply-To: <CAE9FiQWw0pUB=1iDrX_1qyMFAUGQidSaV7CPc0aNb2CzPB-fZw@mail.gmail.com>
-List-ID: <sparclinux.vger.kernel.org>
+	<linux-arm-kernel@lists.infradead.org>,
+	Linux MIPS Mailing List <linux-mips@linux-mips.org>,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+	"Maciej W. Rozycki" <macro@imgtec.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Martin Schwidefsky <schwidefsky@de.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+To: Kees Cook <keescook@chromium.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1465506124-21866-6-git-send-email-keescook@chromium.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Jun 8, 2016 at 5:00 PM, Yinghai Lu <yinghai@kernel.org> wrote:
-> On Wed, Jun 8, 2016 at 3:35 PM, Yinghai Lu <yinghai@kernel.org> wrote:
+On Thu, Jun 9, 2016 at 2:01 PM, Kees Cook <keescook@chromium.org> wrote:
+> When RET_TRACE triggers, a tracer may change a syscall into something that
+> should be filtered by seccomp. This re-runs seccomp after a trace event
+> to make sure things continue to pass.
 >
->> At the same time, can you kill __pci_mmap_set_pgprot() for powerpc.
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> ---
+>  kernel/seccomp.c | 21 ++++++++++++++++++---
+>  1 file changed, 18 insertions(+), 3 deletions(-)
 >
-> Can you please put your two patches and this attached one into to pci/next?
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 14a37d71b612..54d15eb2b701 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -556,7 +556,8 @@ void secure_computing_strict(int this_syscall)
+>  #else
 >
-> Then I could send updated PCI: Let pci_mmap_page_range() take resource address.
+>  #ifdef CONFIG_SECCOMP_FILTER
+> -static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd)
+> +static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+> +                           const bool recheck_after_trace)
 
-Thanks for putting those patches in pci/resource branch.
+This patch looks good with one minor nit: I read this as "pass true if
+you want to recheck after trace", which is exactly the opposite of how
+it works.
 
-I just re post updated for second patch.
-
-[v12.update2,02/15] PCI: Let pci_mmap_page_range() take resource address
-http://patchwork.ozlabs.org/patch/633399/
-
-And the [v12 01/15] is not needed anymore.
-
-patch3 to patch15 should still can be applied to pci/resource without problem.
-
-Thanks
-
-Yinghai
+--Andy
