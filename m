@@ -1,101 +1,74 @@
-From: Yinghai Lu <yinghai@kernel.org>
-Subject: Re: [PATCH v12 01/15] PCI: Let pci_mmap_page_range() take extra
- resource pointer
-Date: Wed, 8 Jun 2016 17:00:47 -0700
-Message-ID: <CAE9FiQWw0pUB=1iDrX_1qyMFAUGQidSaV7CPc0aNb2CzPB-fZw@mail.gmail.com>
-References: <20160604000642.28162-1-yinghai@kernel.org> <20160604000642.28162-2-yinghai@kernel.org>
- <20160608210322.GA4248@localhost> <CAE9FiQXPmG6UYYGHG52_i8vaBJ5yPm6Z4Zfx_BhQxVhyWC5fnw@mail.gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: kernel BUG in drivers/scsi/53c700.c:1129
+Date: Thu, 9 Jun 2016 21:36:04 +0200
+Message-ID: <5759C524.2030009@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001a113f269454a1b90534cd1d05
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	David Miller <davem@davemloft.net>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Wei Yang <weiyang@linux.vnet.ibm.com>,
-	Khalid Aziz <khalid.aziz@oracle.com>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, linux-cris-kernel@axis.com,
-	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-	"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
-	linux-am33-list@redhat.com, linux-parisc@vger.kernel.org,
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-	linux-sh@vger.kernel.org,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-	linux-xtensa@linux-xtensa.org
-To: Bjorn Helgaas <helgaas@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Cc: "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
+To: "James.Bottomley@HansenPartnership.com"
+	<James.Bottomley@HansenPartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAE9FiQXPmG6UYYGHG52_i8vaBJ5yPm6Z4Zfx_BhQxVhyWC5fnw@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---001a113f269454a1b90534cd1d05
-Content-Type: text/plain; charset=UTF-8
+Hi James,
 
-On Wed, Jun 8, 2016 at 3:35 PM, Yinghai Lu <yinghai@kernel.org> wrote:
+I just tried Debian kernel 4.6.1-1 on my historic 715/64 machine, and it
+ran into this  BUG() in the LASI scsi driver:
 
-> At the same time, can you kill __pci_mmap_set_pgprot() for powerpc.
+ scsi 0:0:6:0: no saved request for untagged cmd
 
-Can you please put your two patches and this attached one into to pci/next?
+Any idea?
 
-Then I could send updated PCI: Let pci_mmap_page_range() take resource address.
-
-Thanks
-
-Yinghai
-
---001a113f269454a1b90534cd1d05
-Content-Type: text/x-patch; charset=US-ASCII; name="remove_powerpc_pci_prot.patch"
-Content-Disposition: attachment; filename="remove_powerpc_pci_prot.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_ip7jeokf0
-
-RnJvbTogQmpvcm4gSGVsZ2FhcyA8YmhlbGdhYXNAZ29vZ2xlLmNvbT4KU3ViamVjdDogW1BBVENI
-XSBwb3dlcnBjL1BDSTogUmVtb3ZlIF9fcGNpX21tYXBfc2V0X3BncHJvdCgpCgogIFBDSTogSWdu
-b3JlIHdyaXRlLWNvbWJpbmluZyB3aGVuIG1hcHBpbmcgSS9PIHBvcnQgc3BhY2UKYWxyZWFkeSBo
-YW5kbGUgdGhlIGlvIHBvcnQgbW1hcCBwYXRoLgoKRm9yIG1taW8gbW1hcCBwYXRoLCBjYWxsZXIg
-c2hvdWxkIHN0YXRlIHRoYXQgY29ycmVjdGx5IGlmIHdyaXRlX2NvbWJpbmUKaXMgcmVhbGx5IG5l
-ZWRlZC4KCnZpYSBwcm9jIHBhdGggaXQgc2hvdWxkIGxvb2sgbGlrZToKICBtbWFwKGZkLCAuLi4p
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBkZWZhdWx0IGlzIEkvTywgbm9uLWNvbWJpbmlu
-ZwogIGlvY3RsKGZkLCBQQ0lJT0NfV1JJVEVfQ09NQklORSwgMSk7ICAgICAjIHJlcXVlc3Qgd3Jp
-dGUtY29tYmluaW5nCiAgaW9jdGwoZmQsIFBDSUlPQ19NTUFQX0lTX01FTSk7ICAgICAgICAgICMg
-cmVxdWVzdCBtZW1vcnkgc3BhY2UKICBtbWFwKGZkLCAuLi4pCgpzeXNmcyBwYXRoLCBpdCBzaG91
-bGQgdXNlIHJlc291cmNlXT9dX3djLgoKU2lnbmVkLW9mZi1ieTogQmpvcm4gSGVsZ2FhcyA8Ymhl
-bGdhYXNAZ29vZ2xlLmNvbT4KCi0tLQogYXJjaC9wb3dlcnBjL2tlcm5lbC9wY2ktY29tbW9uLmMg
-fCAgIDM3ICsrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIDEgZmlsZSBjaGFu
-Z2VkLCA0IGluc2VydGlvbnMoKyksIDMzIGRlbGV0aW9ucygtKQoKSW5kZXg6IGxpbnV4LTIuNi9h
-cmNoL3Bvd2VycGMva2VybmVsL3BjaS1jb21tb24uYwo9PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBsaW51eC0yLjYu
-b3JpZy9hcmNoL3Bvd2VycGMva2VybmVsL3BjaS1jb21tb24uYworKysgbGludXgtMi42L2FyY2gv
-cG93ZXJwYy9rZXJuZWwvcGNpLWNvbW1vbi5jCkBAIC0zNTYsMzYgKzM1Niw2IEBAIHN0YXRpYyBz
-dHJ1Y3QgcmVzb3VyY2UgKl9fcGNpX21tYXBfbWFrZV8KIH0KIAogLyoKLSAqIFNldCB2bV9wYWdl
-X3Byb3Qgb2YgVk1BLCBhcyBhcHByb3ByaWF0ZSBmb3IgdGhpcyBhcmNoaXRlY3R1cmUsIGZvciBh
-IHBjaQotICogZGV2aWNlIG1hcHBpbmcuCi0gKi8KLXN0YXRpYyBwZ3Byb3RfdCBfX3BjaV9tbWFw
-X3NldF9wZ3Byb3Qoc3RydWN0IHBjaV9kZXYgKmRldiwgc3RydWN0IHJlc291cmNlICpycCwKLQkJ
-CQkgICAgICBwZ3Byb3RfdCBwcm90ZWN0aW9uLAotCQkJCSAgICAgIGVudW0gcGNpX21tYXBfc3Rh
-dGUgbW1hcF9zdGF0ZSwKLQkJCQkgICAgICBpbnQgd3JpdGVfY29tYmluZSkKLXsKLQotCS8qIFdy
-aXRlIGNvbWJpbmUgaXMgYWx3YXlzIDAgb24gbm9uLW1lbW9yeSBzcGFjZSBtYXBwaW5ncy4gT24K
-LQkgKiBtZW1vcnkgc3BhY2UsIGlmIHRoZSB1c2VyIGRpZG4ndCBwYXNzIDEsIHdlIGNoZWNrIGZv
-ciBhCi0JICogInByZWZldGNoYWJsZSIgcmVzb3VyY2UuIFRoaXMgaXMgYSBiaXQgaGFja2lzaCwg
-YnV0IHdlIHVzZQotCSAqIHRoaXMgdG8gd29ya2Fyb3VuZCB0aGUgaW5hYmlsaXR5IG9mIC9zeXNm
-cyB0byBwcm92aWRlIGEgd3JpdGUKLQkgKiBjb21iaW5lIGJpdAotCSAqLwotCWlmIChtbWFwX3N0
-YXRlICE9IHBjaV9tbWFwX21lbSkKLQkJd3JpdGVfY29tYmluZSA9IDA7Ci0JZWxzZSBpZiAod3Jp
-dGVfY29tYmluZSA9PSAwKSB7Ci0JCWlmIChycC0+ZmxhZ3MgJiBJT1JFU09VUkNFX1BSRUZFVENI
-KQotCQkJd3JpdGVfY29tYmluZSA9IDE7Ci0JfQotCi0JLyogWFhYIHdvdWxkIGJlIG5pY2UgdG8g
-aGF2ZSBhIHdheSB0byBhc2sgZm9yIHdyaXRlLXRocm91Z2ggKi8KLQlpZiAod3JpdGVfY29tYmlu
-ZSkKLQkJcmV0dXJuIHBncHJvdF9ub25jYWNoZWRfd2MocHJvdGVjdGlvbik7Ci0JZWxzZQotCQly
-ZXR1cm4gcGdwcm90X25vbmNhY2hlZChwcm90ZWN0aW9uKTsKLX0KLQotLyoKICAqIFRoaXMgb25l
-IGlzIHVzZWQgYnkgL2Rldi9tZW0gYW5kIGZiZGV2IHdobyBoYXZlIG5vIGNsdWUgYWJvdXQgdGhl
-CiAgKiBQQ0kgZGV2aWNlLCBpdCB0cmllcyB0byBmaW5kIHRoZSBQQ0kgZGV2aWNlIGZpcnN0IGFu
-ZCBjYWxscyB0aGUKICAqIGFib3ZlIHJvdXRpbmUKQEAgLTQ1OCw5ICs0MjgsMTAgQEAgaW50IHBj
-aV9tbWFwX3BhZ2VfcmFuZ2Uoc3RydWN0IHBjaV9kZXYgKgogCQlyZXR1cm4gLUVJTlZBTDsKIAog
-CXZtYS0+dm1fcGdvZmYgPSBvZmZzZXQgPj4gUEFHRV9TSElGVDsKLQl2bWEtPnZtX3BhZ2VfcHJv
-dCA9IF9fcGNpX21tYXBfc2V0X3BncHJvdChkZXYsIHJwLAotCQkJCQkJICB2bWEtPnZtX3BhZ2Vf
-cHJvdCwKLQkJCQkJCSAgbW1hcF9zdGF0ZSwgd3JpdGVfY29tYmluZSk7CisJaWYgKHdyaXRlX2Nv
-bWJpbmUpCisJCXZtYS0+dm1fcGFnZV9wcm90ID0gcGdwcm90X25vbmNhY2hlZF93Yyh2bWEtPnZt
-X3BhZ2VfcHJvdCk7CisJZWxzZQorCQl2bWEtPnZtX3BhZ2VfcHJvdCA9IHBncHJvdF9ub25jYWNo
-ZWQodm1hLT52bV9wYWdlX3Byb3QpOwogCiAJcmV0ID0gcmVtYXBfcGZuX3JhbmdlKHZtYSwgdm1h
-LT52bV9zdGFydCwgdm1hLT52bV9wZ29mZiwKIAkJCSAgICAgICB2bWEtPnZtX2VuZCAtIHZtYS0+
-dm1fc3RhcnQsIHZtYS0+dm1fcGFnZV9wcm90KTsK
---001a113f269454a1b90534cd1d05--
+Helge
+ 
+[    0.000000] Linux version 4.6.0-1-parisc (debian-kernel@lists.debian.org) (gcc version 5.4.0 20160603 (Debian 5.4.0-3) ) #1 Debian 4.6.1-1 (2016-06-06)
+...
+[    0.000000] Determining PDC firmware type: Snake.
+[    0.000000] model 000060a0 00000481 00000000 00000000 773c7d2c 00000000 00000004 00000072 00000072
+[    0.000000] vers  0000000c
+[    0.000000] model 9000/715
+[    0.000000] Total Memory: 160 MB
+...
+[   43.180000] SCSI subsystem initialized
+[   45.076000] 53c700: Version 2.8 By James.Bottomley@HansenPartnership.com
+[   45.156000] scsi0: 53c710 rev 2 
+[   46.204000] scsi host0: LASI SCSI 53c700
+[   58.268000] scsi 0:0:6:0: no saved request for untagged cmd
+[   58.336000] ------------[ cut here ]------------
+[   58.392000] kernel BUG at /build/linux-XAODSw/linux-4.6.1/drivers/scsi/53c700.c:1129!
+[   58.484000] CPU: 0 PID: 0 Comm: swapper Not tainted 4.6.0-1-parisc #1 Debian 4.6.1-1
+[   58.580000] task: 1083cdd8 ti: 107b1000 task.ti: 107b1000
+[   58.644000] 
+[   58.660000]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+[   58.716000] PSW: 00000000000001001111111100001110 Not tainted
+[   58.788000] r00-03  0004ff0e 0084e388 00a8ea8c 107ba400
+[   58.848000] r04-07  00000000 00000000 15b88cc0 00000006
+[   58.912000] r08-11  198ca400 000000ff 00000020 00000000
+[   58.976000] r12-15  000000ff 00001003 10801020 00000001
+[   59.036000] r16-19  107b1240 00000002 000000ff 00000001
+[   59.100000] r20-23  00000001 0000000e 0084f388 00000000
+[   59.164000] r24-27  107ba500 0083b540 1021a7a4 107b5020
+[   59.224000] r28-31  00000000 00000040 107ba480 104d52bc
+[   59.288000] sr00-03  00000000 00000000 00000000 0000000d
+[   59.352000] sr04-07  00000000 00000000 00000000 00000000
+[   59.416000] 
+[   59.432000] IASQ: 00000000 00000000 IAOQ: 00a8ea8c 00a8ea90
+[   59.500000]  IIR: 03ffe01f    ISR: 0000000d  IOR: 00a8ea90
+[   59.564000]  CPU:        0   CR30: 107b1000 CR31: f00effff
+[   59.632000]  ORIG_R28: 10855e80
+[   59.668000]  IAOQ[0]: process_script_interrupt+0x13ec/0x16a4 [53c700]
+[   59.748000]  IAOQ[1]: process_script_interrupt+0x13f0/0x16a4 [53c700]
+[   59.824000]  RP(r2): process_script_interrupt+0x13ec/0x16a4 [53c700]
+[   59.900000] Backtrace:
+[   59.928000]  [<00a8ea8c>] process_script_interrupt+0x13ec/0x16a4 [53c700]
+[   60.012000] 
+[   60.028000] CPU: 0 PID: 0 Comm: swapper Not tainted 4.6.0-1-parisc #1 Debian 4.6.1-1
+[   60.120000] Backtrace:
+[   60.148000]  [<1015bffc>] show_stack+0x3c/0x50
+[   60.204000]  [<10425d40>] dump_stack+0x28/0x38
+[   60.256000]  [<1015c180>] die_if_kernel+0x134/0x20c
+[   60.316000]  [<1015cd34>] handle_interruption+0x804/0x828
+[   60.380000] 
+[   60.400000] Kernel panic - not syncing: Fatal exception in interrupt
+[   60.400000] ---[ end Kernel panic - not syncing: Fatal exception in interrupt
