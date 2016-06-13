@@ -1,120 +1,68 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: kernel BUG in drivers/scsi/53c700.c:1129
-Date: Fri, 10 Jun 2016 23:46:53 +0200
-Message-ID: <575B354D.3090901@gmx.de>
-References: <5759C524.2030009@gmx.de>
- <1465511002.2259.19.camel@HansenPartnership.com> <575B2239.4020403@gmx.de>
- <1465592285.20724.173.camel@localhost.localdomain>
- <1465592473.2224.52.camel@HansenPartnership.com>
- <1465594421.2224.58.camel@HansenPartnership.com>
+From: Jacek Anaszewski <j.anaszewski@samsung.com>
+Subject: Re: [PATCH v4 6/7] parisc: use the new LED disk activity trigger
+Date: Mon, 13 Jun 2016 09:56:02 +0200
+Message-ID: <575E6712.8030403@samsung.com>
+References: <20160610060021.12382-1-linz@li-pro.net>
+ <20160610060021.12382-6-linz@li-pro.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	linux-scsi <linux-scsi@vger.kernel.org>,
-	Christoph Hellwig <hch@infradead.org>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	"emilne@redhat.com" <emilne@redhat.com>
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <1465594421.2224.58.camel@HansenPartnership.com>
-List-ID: <linux-scsi.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: Stephan Linz <linz@li-pro.net>, linux-leds@vger.kernel.org,
+	linux-ide@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>
+Return-path: <linux-ide-owner@vger.kernel.org>
+In-reply-to: <20160610060021.12382-6-linz@li-pro.net>
+List-ID: <linux-ide.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 10.06.2016 23:33, James Bottomley wrote:
-> On Fri, 2016-06-10 at 14:01 -0700, James Bottomley wrote:
->> On Fri, 2016-06-10 at 16:58 -0400, Ewan D. Milne wrote:
->>> I'm not sure if this is the problem, but the tagging changes to
->>> scsi_tcq.h may have altered the 53c700 driver's assumptions.
->>> In one case it sets sdev->current_cmnd and then some of the
->>> tagging calls would return it if the tag was SCSI_NO_TAG.
->>>
->>> NCR_700_queuecommand_lck() does:
->>>
->>>         if ((hostdata->tag_negotiated & (1<<scmd_id(SCp))) &&
->>>             SCp->device->simple_tags) {
->>>                 slot->tag = SCp->request->tag;
->>>                 CDEBUG(KERN_DEBUG, SCp, "sending out tag %d, slot
->>> %p\n",
->>>                        slot->tag, slot);
->>>         } else {
->>>                 slot->tag = SCSI_NO_TAG;
->>>                 /* must populate current_cmnd for
->>> scsi_host_find_tag
->>> to
->>> work */
->>>                 SCp->device->current_cmnd = SCp;
->>>         }
->>
->> Thanks ... I was just about to look for something this.  I'd got to
->> interpreting the script as reselected with tag information present 
->> and then trying to look the command up with no tag present, hence the
->> BUG().
-> 
-> Yes, you're right, it's
-> 
-> commit 64d513ac31bd02a3c9b69ef04444f36c196f9a9d
-> Author: Christoph Hellwig <hch@lst.de>
-> Date:   Thu Oct 8 09:28:04 2015 +0100
-> 
->     scsi: use host wide tags by default
-> 
-> Again.  This time because it's transformation of the handling of
-> SCSI_NO_TAG is wrong.  You can't replace the return sdev->current_cmnd
-> original in scsi_find_tag with the NULL return in scsi_find_host_tag.
-> 
-> I think this changesets wins the prize for the greatest number of
-> generated faults.
-> 
-> Does this fix 53c700.c?
+Hi all,
 
-Yes, the patch below fixes the boot problems for 53c700.c:
+For consistency reasons this patch should be merged through LED tree,
+but I need an ack for this. Hedge, James?
 
-[    9.869236] 53c700: Version 2.8 By James.Bottomley@HansenPartnership.com
-[    9.949797] scsi0: 53c710 rev 2 
-[   10.994453] scsi host0: LASI SCSI 53c700
-[   13.008861] scsi 0:0:6:0: Direct-Access     QUANTUM  FIREBALL_TM3200S 300X PQ: 0 ANSI: 2
-[   13.106740] scsi target0:0:6: Beginning Domain Validation
-[   13.171889] scsi 0:0:6:0: tag#0 Enabling Tag Command Queuing
-[   13.239996] scsi target0:0:6: asynchronous
-[   13.305374] scsi target0:0:6: FAST-10 SCSI 10.0 MB/s ST (100 ns, offset 8)
-[   13.397482] scsi target0:0:6: Domain Validation skipping write tests
-[   13.473831] scsi target0:0:6: Ending Domain Validation
-[   13.557116] scsi 0:0:6:1: tag#0 Disabling Tag Command Queuing
-[   13.637379] st: Version 20160209, fixed bufsize 32768, s/g segs 256
-[   13.746803] sd 0:0:6:0: Attached scsi generic sg0 type 0
+Thanks,
+Jacek Anaszewski
 
-THANKS!
-(please queue the patch up for 4.6-stable at least)
-Helge
 
- 
-> I suppose we'd better look for other places where no tag fell through
-> ...
-> 
-> James
-> 
+On 06/10/2016 08:00 AM, Stephan Linz wrote:
+> - platform: rename 'ide-disk' to 'disk-activity'
+>
+> Signed-off-by: Stephan Linz <linz@li-pro.net>
 > ---
-> 
-> diff --git a/drivers/scsi/53c700.c b/drivers/scsi/53c700.c
-> index d4c2856..3ddc85e 100644
-> --- a/drivers/scsi/53c700.c
-> +++ b/drivers/scsi/53c700.c
-> @@ -1122,7 +1122,7 @@ process_script_interrupt(__u32 dsps, __u32 dsp, struct scsi_cmnd *SCp,
->  		} else {
->  			struct scsi_cmnd *SCp;
->  
-> -			SCp = scsi_host_find_tag(SDp->host, SCSI_NO_TAG);
-> +			SCp = SDp->current_cmnd;
->  			if(unlikely(SCp == NULL)) {
->  				sdev_printk(KERN_ERR, SDp,
->  					"no saved request for untagged cmd\n");
-> @@ -1826,7 +1826,7 @@ NCR_700_queuecommand_lck(struct scsi_cmnd *SCp, void (*done)(struct scsi_cmnd *)
->  		       slot->tag, slot);
->  	} else {
->  		slot->tag = SCSI_NO_TAG;
-> -		/* must populate current_cmnd for scsi_host_find_tag to work */
-> +		/* save current command for reselection */
->  		SCp->device->current_cmnd = SCp;
->  	}
->  	/* sanity check: some of the commands generated by the mid-layer
-> 
+>   arch/parisc/configs/generic-32bit_defconfig | 2 +-
+>   arch/parisc/configs/generic-64bit_defconfig | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/parisc/configs/generic-32bit_defconfig b/arch/parisc/configs/generic-32bit_defconfig
+> index 5b04d70..8688ba7 100644
+> --- a/arch/parisc/configs/generic-32bit_defconfig
+> +++ b/arch/parisc/configs/generic-32bit_defconfig
+> @@ -214,7 +214,7 @@ CONFIG_NEW_LEDS=y
+>   CONFIG_LEDS_CLASS=y
+>   CONFIG_LEDS_TRIGGERS=y
+>   CONFIG_LEDS_TRIGGER_TIMER=y
+> -CONFIG_LEDS_TRIGGER_IDE_DISK=y
+> +CONFIG_LEDS_TRIGGER_DISK=y
+>   CONFIG_LEDS_TRIGGER_HEARTBEAT=y
+>   CONFIG_LEDS_TRIGGER_DEFAULT_ON=y
+>   CONFIG_DMADEVICES=y
+> diff --git a/arch/parisc/configs/generic-64bit_defconfig b/arch/parisc/configs/generic-64bit_defconfig
+> index e945c08..7e07926 100644
+> --- a/arch/parisc/configs/generic-64bit_defconfig
+> +++ b/arch/parisc/configs/generic-64bit_defconfig
+> @@ -231,7 +231,7 @@ CONFIG_LEDS_CLASS=y
+>   CONFIG_LEDS_TRIGGERS=y
+>   CONFIG_LEDS_TRIGGER_TIMER=y
+>   CONFIG_LEDS_TRIGGER_ONESHOT=y
+> -CONFIG_LEDS_TRIGGER_IDE_DISK=y
+> +CONFIG_LEDS_TRIGGER_DISK=y
+>   CONFIG_LEDS_TRIGGER_HEARTBEAT=m
+>   CONFIG_LEDS_TRIGGER_BACKLIGHT=m
+>   CONFIG_LEDS_TRIGGER_DEFAULT_ON=m
+>
 
+
+-- 
+Best regards,
+Jacek Anaszewski
