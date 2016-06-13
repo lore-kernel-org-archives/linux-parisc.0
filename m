@@ -1,73 +1,71 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH v4 6/7] parisc: use the new LED disk activity trigger
-Date: Mon, 13 Jun 2016 15:24:42 +0200
-Message-ID: <575EB41A.4000306@gmx.de>
-References: <20160610060021.12382-1-linz@li-pro.net>
- <20160610060021.12382-6-linz@li-pro.net> <575E6712.8030403@samsung.com>
+From: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH 00/14] run seccomp after ptrace
+Date: Mon, 13 Jun 2016 13:50:57 -0700
+Message-ID: <CAGXu5jJsWOdhRBauQ-_S-4ODd4m+xUbdjk1_zPXQqY7Qp-Dgdw@mail.gmail.com>
+References: <1465506124-21866-1-git-send-email-keescook@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Cc: Stephan Linz <linz@li-pro.net>,
-	"linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-	"linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-To: Jacek Anaszewski <j.anaszewski@samsung.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <575E6712.8030403@samsung.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Andy Lutomirski <luto@kernel.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Chris Metcalf <cmetcalf@mellanox.com>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	James Hogan <james.hogan@imgtec.com>,
+	Jeff Dike <jdike@addtoit.com>,
+	linux-arch <linux-arch@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>,
+	Linux MIPS Mailing List <linux-mips@linux-mips.org>,
+	linux-parisc <linux-parisc@vger.kernel.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+	"Maciej W. Rozycki" <macro@imgtec.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Martin Schwidefsky <schwidefsky@de.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Paul Mackerra
+To: LKML <linux-kernel@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1465506124-21866-1-git-send-email-keescook@chromium.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Jacek,
+(Oops, forgot to send this series through the lsm list...)
 
-On 13.06.2016 09:56, Jacek Anaszewski wrote:
-> For consistency reasons this patch should be merged through LED tree,
-> but I need an ack for this. Hedge, James?
+On Thu, Jun 9, 2016 at 2:01 PM, Kees Cook <keescook@chromium.org> wrote:
+> There has been a long-standing (and documented) issue with seccomp
+> where ptrace can be used to change a syscall out from under seccomp.
+> This is a problem for containers and other wider seccomp filtered
+> environments where ptrace needs to remain available, as it allows
+> for an escape of the seccomp filter.
+>
+> Since the ptrace attack surface is available for any allowed syscall,
+> moving seccomp after ptrace doesn't increase the actually available
+> attack surface. And this actually improves tracing since, for
+> example, tracers will be notified of syscall entry before seccomp
+> sends a SIGSYS, which makes debugging filters much easier.
+>
+> The per-architecture changes do make one (hopefully small)
+> semantic change, which is that since ptrace comes first, it may
+> request a syscall be skipped. Running seccomp after this doesn't
+> make sense, so if ptrace wants to skip a syscall, it will bail
+> out early similarly to how seccomp was. This means that skipped
+> syscalls will not be fed through audit, though that likely means
+> we're actually avoiding noise this way.
+>
+> This series first cleans up seccomp to remove the now unneeded
+> two-phase entry, fixes the SECCOMP_RET_TRACE hole (same as the
+> ptrace hole above), and then reorders seccomp after ptrace on
+> each architecture.
 
-Ok, sure.
+Has anyone else had a chance to review this series? I'd like to get it
+landed in -next as early as possible in case there are unexpected
+problems...
 
-> On 06/10/2016 08:00 AM, Stephan Linz wrote:
->> - platform: rename 'ide-disk' to 'disk-activity'
->>
->> Signed-off-by: Stephan Linz <linz@li-pro.net>
+-Kees
 
-Acked-by: Helge Deller <deller@gmx.de>
-
-Thanks for the patch!
-Helge
-
->> ---
->>   arch/parisc/configs/generic-32bit_defconfig | 2 +-
->>   arch/parisc/configs/generic-64bit_defconfig | 2 +-
->>   2 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/parisc/configs/generic-32bit_defconfig b/arch/parisc/configs/generic-32bit_defconfig
->> index 5b04d70..8688ba7 100644
->> --- a/arch/parisc/configs/generic-32bit_defconfig
->> +++ b/arch/parisc/configs/generic-32bit_defconfig
->> @@ -214,7 +214,7 @@ CONFIG_NEW_LEDS=y
->>   CONFIG_LEDS_CLASS=y
->>   CONFIG_LEDS_TRIGGERS=y
->>   CONFIG_LEDS_TRIGGER_TIMER=y
->> -CONFIG_LEDS_TRIGGER_IDE_DISK=y
->> +CONFIG_LEDS_TRIGGER_DISK=y
->>   CONFIG_LEDS_TRIGGER_HEARTBEAT=y
->>   CONFIG_LEDS_TRIGGER_DEFAULT_ON=y
->>   CONFIG_DMADEVICES=y
->> diff --git a/arch/parisc/configs/generic-64bit_defconfig b/arch/parisc/configs/generic-64bit_defconfig
->> index e945c08..7e07926 100644
->> --- a/arch/parisc/configs/generic-64bit_defconfig
->> +++ b/arch/parisc/configs/generic-64bit_defconfig
->> @@ -231,7 +231,7 @@ CONFIG_LEDS_CLASS=y
->>   CONFIG_LEDS_TRIGGERS=y
->>   CONFIG_LEDS_TRIGGER_TIMER=y
->>   CONFIG_LEDS_TRIGGER_ONESHOT=y
->> -CONFIG_LEDS_TRIGGER_IDE_DISK=y
->> +CONFIG_LEDS_TRIGGER_DISK=y
->>   CONFIG_LEDS_TRIGGER_HEARTBEAT=m
->>   CONFIG_LEDS_TRIGGER_BACKLIGHT=m
->>   CONFIG_LEDS_TRIGGER_DEFAULT_ON=m
->>
-> 
-> 
-
+-- 
+Kees Cook
+Chrome OS & Brillo Security
