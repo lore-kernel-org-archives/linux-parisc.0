@@ -1,122 +1,106 @@
-From: Mikulas Patocka <mpatocka@redhat.com>
-Subject: Re: invalid printk time during boot on PA-RISC
-Date: Tue, 14 Jun 2016 12:20:53 -0400 (EDT)
-Message-ID: <alpine.LRH.2.02.1606141216510.29159@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.1605310735130.6341@file01.intranet.prod.int.rdu2.redhat.com> <20160601211248.GA15061@p100.box>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] 53c700: fix BUG on untagged commands
+Date: Tue, 14 Jun 2016 22:32:55 +0200
+Message-ID: <576069F7.6040706@gmx.de>
+References: <1465880407.18583.18.camel@linux.vnet.ibm.com>
+ <20160614150555.GA698@infradead.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20160601211248.GA15061@p100.box>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Cc: linux-scsi <linux-scsi@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>
+To: Christoph Hellwig <hch@infradead.org>,
+	James Bottomley <jejb@linux.vnet.ibm.com>
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <20160614150555.GA698@infradead.org>
+List-ID: <linux-scsi.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi
+On 14.06.2016 17:05, Christoph Hellwig wrote:
+> Looks fine:
+> 
+> Acked-by: Christoph Hellwig <hch@lst.de>
+> 
+> But it should really go together with something like this:
+> 
+> ---
+> From e54d1462ae244db3189a8b69018bc5f3e3d3b468 Mon Sep 17 00:00:00 2001
+> From: Christoph Hellwig <hch@lst.de>
+> Date: Tue, 14 Jun 2016 17:04:10 +0200
+> Subject: scsi: move current_cmnd into the 53c700 driver
+> 
+> The 53c700 driver is the only user of the current_cmnd field in
+> struct scsi_device, so let's move it into the driver private data.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-There is another bug: when you enable CONFIG_DEBUG_TIMEKEEPING, parisc 
-boot gets stuck with these messages. (but it is not caused by the patch 
-54b668009076caddbede8fde513ca2c982590bfe, because this bug happens even in 
-kernel 4.6).
+Patch is OK.
 
-Mikulas
+Tested-by: Helge Deller <deller@gmx.de>
 
-[    0.000000] Memory: 7201556K/7337984K available (4096K kernel code, 1419K rwdata, 883K rodata, 176K init, 2296K bss, 136428K reserved, 0K cma-reserved)
-[    0.000000] virtual kernel memory layout:
-[    0.000000]     vmalloc : 0x0000000000008000 - 0x000000003f000000   (1007 MB)
-[    0.000000]     memory  : 0x0000000040000000 - 0x0000004140000000   (266240 MB)
-[    0.000000]       .init : 0x0000000040100000 - 0x000000004012c000   ( 176 kB)
-[    0.000000]       .data : 0x000000004052c000 - 0x000000004076bb60   (2302 kB)
-[    0.000000]       .text : 0x000000004012c000 - 0x000000004052c000   (4096 kB)
-[    0.000000] SLUB: HWalign=16, Order=0-3, MinObjects=0, CPUs=4, Nodes=8
-[    0.000000] Hierarchical RCU implementation.
-[    0.000000]  Build-time adjustment of leaf fanout to 64.
-[    0.000000] NR_IRQS:80
-[    0.000000] clocksource: cr16: mask: 0xffffffffffffffff max_cycles: 0x1cd42e4dffb, max_idle_ns: 881590591483 ns
-[    0.133333] WARNING: timekeeping: Cycle offset (40) is larger than allowed by the 'jiffies' clock's max_cycles value (10): time overflow danger
-[    0.133333]          timekeeping: Your kernel is sick, but tries to cope by capping time updates
-[    0.133333] Console: colour dummy device 160x64
-[    0.303333] WARNING: timekeeping: Cycle offset (51) is larger than allowed by the 'jiffies' clock's max_cycles value (10): time overflow danger
-[    0.303333]          timekeeping: Your kernel is sick, but tries to cope by capping time updates
-[    0.423333] WARNING: timekeeping: Cycle offset (36) is larger than allowed by the 'jiffies' clock's max_cycles value (10): time overflow danger
-[    0.423333]          timekeeping: Your kernel is sick, but tries to cope by capping time updates
-[    0.483333] WARNING: timekeeping: Cycle offset (18) is larger than allowed by the 'jiffies' clock's max_cycles value (10): time overflow danger
-[    0.483333]          timekeeping: Your kernel is sick, but tries to cope by capping time updates
-[    0.653333] WARNING: timekeeping: Cycle offset (51) is larger than allowed by the 'jiffies' clock's max_cycles value (10): time overflow danger
-[    0.653333]          timekeeping: Your kernel is sick, but tries to cope by capping time updates
-[    0.769999] WARNING: timekeeping: Cycle offset (35) is larger than allowed by the 'jiffies' clock's max_cycles value (10): time overflow danger
-[    0.769999]          timekeeping: Your kernel is sick, but tries to cope by capping time updates
-[    0.943333] WARNING: timekeeping: Cycle offset (52) is larger than allowed by the 'jiffies' clock's max_cycles value (10): time overflow danger
-[    0.943333]          timekeeping: Your kernel is sick, but tries to cope by capping time updates
+Even if this is not a real fix, I still would suggest to add
+Cc: stable@vger.kernel.org	# 4.4+
+as well to get both patches backported at the same time.
 
+Helge
 
-On Wed, 1 Jun 2016, Helge Deller wrote:
-
-> * Mikulas Patocka <mpatocka@redhat.com>:
-> > Hi
-> > 
-> > With the kernel 4.7-rc1, I get corrupted printk times when the machine 
-> > boots. The kernel is compiled with "Show timing information on printks" 
-> > (CONFIG_PRINTK_TIME) enabled. There are no other negative effects.
-> > 
-> > Bisecting shows that it is caused by the patch 
-> > 54b668009076caddbede8fde513ca2c982590bfe ("parisc: Add native 
-> > high-resolution sched_clock() implementation").
-> > 
-> > [    0.000000] NR_IRQS:80
-> > [    0.000000] clocksource: cr16: mask: 0xffffffffffffffff max_cycles: 0x1cd42e4dffb, max_idle_ns: 881590591483 ns
-> > [    0.000000] Console: colour dummy device 160x64
-> > [   90.122205] Calibrating delay loop... 1991.60 BogoMIPS (lpj=3317760)
-> > [   90.224168] pid_max: default: 32768 minimum: 301
-> > ....
-> > [   92.235878] 13. Crestone Peak Core RS-232 at 0xfffffff0f05e2000 [18] { 10, 0x0, 0x076, 0x000ad }
-> > [   92.708000] Releasing cpu 1 now, hpa=fffffffffe781000
-> > [   92.818803] FP[1] enabled: Rev 1 Model 20
-> > [    2.917508] Releasing cpu 2 now, hpa=fffffffffe798000
-> > [    0.196666] FP[2] enabled: Rev 1 Model 20
-> > [    3.116794] Releasing cpu 3 now, hpa=fffffffffe799000
-> > [    0.196666] FP[3] enabled: Rev 1 Model 20
-> > [    3.296942] CPU(s): 4 out of 4 PA8900 (Shortfin) at 1000.000000 MHz online
-> > [    3.447762] Setting cache flush threshold to 65536 kB
-> > [    3.450548] Setting TLB flush threshold to 1020 kB
+> ---
+>  drivers/scsi/53c700.c      | 8 +++++---
+>  drivers/scsi/53c700.h      | 1 +
+>  include/scsi/scsi_device.h | 1 -
+>  3 files changed, 6 insertions(+), 4 deletions(-)
 > 
-> Please try attached patch.
-> 
-> It fixes the problem mostly for me, there is just one little glitch
-> left, which is that the lines "FP[x] enabled" will still print an
-> invalid time. I assume it's because when this text is printed, the
-> clock/interrupts for the just booted CPU aren't enabled yet.
-> 
-> I'm not sure it's worth trying to fix that. 
-> One could print out that info at a later time, or just disabled it.
-> 
-> Helge
-> 
-> [    5.720014] Enabling PDC_PAT chassis codes support v0.05
-> [    6.644542] Releasing cpu 1 now, hpa=fffffffffe781000
-> [    0.196000] FP[1] enabled: Rev 1 Model 20
-> [    7.088432] CPU(s): 2 out of 2 PA8800 (Mako) at 900.000000 MHz online
-> 
-> -----------
-> 
-> [PATCH] parisc: Fix printk time during boot
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> 
-> diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
-> index 58dd680..31ec99a 100644
-> --- a/arch/parisc/kernel/time.c
-> +++ b/arch/parisc/kernel/time.c
-> @@ -309,11 +309,6 @@ void __init time_init(void)
->  	clocks_calc_mult_shift(&cyc2ns_mul, &cyc2ns_shift, current_cr16_khz,
->  				NSEC_PER_MSEC, 0);
+> diff --git a/drivers/scsi/53c700.c b/drivers/scsi/53c700.c
+> index 3ddc85e..de53b23 100644
+> --- a/drivers/scsi/53c700.c
+> +++ b/drivers/scsi/53c700.c
+> @@ -1120,9 +1120,9 @@ process_script_interrupt(__u32 dsps, __u32 dsp, struct scsi_cmnd *SCp,
+>  				"reselection is tag %d, slot %p(%d)\n",
+>  				hostdata->msgin[2], slot, slot->tag);
+>  		} else {
+> -			struct scsi_cmnd *SCp;
+> +			struct NCR_700_Device_Parameters *p = SDp->hostdata;
+> +			struct scsi_cmnd *SCp = p->current_cmnd;
 >  
-> -#if defined(CONFIG_HAVE_UNSTABLE_SCHED_CLOCK) && defined(CONFIG_64BIT)
-> -	/* At bootup only one 64bit CPU is online and cr16 is "stable" */
-> -	set_sched_clock_stable();
-> -#endif
-> -
->  	start_cpu_itimer();	/* get CPU 0 started */
+> -			SCp = SDp->current_cmnd;
+>  			if(unlikely(SCp == NULL)) {
+>  				sdev_printk(KERN_ERR, SDp,
+>  					"no saved request for untagged cmd\n");
+> @@ -1825,9 +1825,11 @@ NCR_700_queuecommand_lck(struct scsi_cmnd *SCp, void (*done)(struct scsi_cmnd *)
+>  		CDEBUG(KERN_DEBUG, SCp, "sending out tag %d, slot %p\n",
+>  		       slot->tag, slot);
+>  	} else {
+> +		struct NCR_700_Device_Parameters *p = SCp->device->hostdata;
+> +
+>  		slot->tag = SCSI_NO_TAG;
+>  		/* save current command for reselection */
+> -		SCp->device->current_cmnd = SCp;
+> +		p->current_cmnd = SCp;
+>  	}
+>  	/* sanity check: some of the commands generated by the mid-layer
+>  	 * have an eccentric idea of their sc_data_direction */
+> diff --git a/drivers/scsi/53c700.h b/drivers/scsi/53c700.h
+> index e06bdfe..83b157e 100644
+> --- a/drivers/scsi/53c700.h
+> +++ b/drivers/scsi/53c700.h
+> @@ -82,6 +82,7 @@ struct NCR_700_Device_Parameters {
+>  	 * cmnd[1], this could be in static storage */
+>  	unsigned char cmnd[MAX_COMMAND_SIZE];
+>  	__u8	depth;
+> +	struct scsi_cmnd *current_cmnd;	/* currently active command */
+>  };
 >  
->  	/* register at clocksource framework */
+>  
+> diff --git a/include/scsi/scsi_device.h b/include/scsi/scsi_device.h
+> index a6c346d..8a95631 100644
+> --- a/include/scsi/scsi_device.h
+> +++ b/include/scsi/scsi_device.h
+> @@ -94,7 +94,6 @@ struct scsi_device {
+>  	spinlock_t list_lock;
+>  	struct list_head cmd_list;	/* queue of in use SCSI Command structures */
+>  	struct list_head starved_entry;
+> -	struct scsi_cmnd *current_cmnd;	/* currently active command */
+>  	unsigned short queue_depth;	/* How deep of a queue we want */
+>  	unsigned short max_queue_depth;	/* max queue depth */
+>  	unsigned short last_queue_full_depth; /* These two are used by */
 > 
+
