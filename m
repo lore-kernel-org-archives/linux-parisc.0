@@ -1,130 +1,48 @@
-From: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Subject: [PATCH] parisc: Change structure intialisation to C99 style
-Date: Tue, 14 Jun 2016 12:13:06 +0530
-Message-ID: <20160614064306.GA23993@amitoj-Inspiron-3542>
+From: Johannes Thumshirn <jthumshirn@suse.de>
+Subject: Re: [PATCH] 53c700: fix BUG on untagged commands
+Date: Tue, 14 Jun 2016 09:15:49 +0200
+Message-ID: <20160614071549.5hqvboown32cwe2o@c203.arch.suse.de>
+References: <1465880407.18583.18.camel@linux.vnet.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: julia.lawall@lip6.fr
-To: jejb@parisc-linux.org, deller@gmx.de, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Cc: linux-scsi <linux-scsi@vger.kernel.org>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Christoph Hellwig <hch@infradead.org>
+To: James Bottomley <jejb@linux.vnet.ibm.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1465880407.18583.18.camel@linux.vnet.ibm.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Replace the in order struct initialisation style with explicit field
-style.
+On Mon, Jun 13, 2016 at 10:00:07PM -0700, James Bottomley wrote:
+> The untagged command case in the 53c700 driver has been broken since
+> host wide tags were enabled because the replaced scsi_find_tag()
+> function had a special case for the tag value SCSI_NO_TAG to retrieve
+> sdev->current_cmnd.  The replacement function scsi_host_find_tag() ha=
+s
+> no such special case and returns NULL causing untagged commands to
+> trigger a BUG() in the driver.  Inspection shows that the 53c700 is t=
+he
+> only driver using this SCSI_NO_TAG case, so a local fix in the driver
+> suffices to fix this problem globally.
+>=20
+> Fixes: 64d513ac31b - "scsi: use host wide tags by default"
+> Cc: stable@vger.kernel.org	# 4.4+
+> Reported-by: Helge Deller <deller@gmx.de>
+> Tested-by: Helge Deller <deller@gmx.de>
+> Signed-off-by: James Bottomley <jejb@linux.vnet.ibm.com>
 
-The Coccinelle semantic patch used to make this change is as follows:
+Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
 
-@decl@
-identifier i1,fld;
-type T;
-field list[n] fs;
-@@
-
-struct i1 {
- fs
- T fld;
- ...};
-
-@@
-identifier decl.i1,i2,decl.fld;
-expression e;
-position bad.p, bad.fix;
-@@
-
-struct i1 i2@p = { ...,
-+ .fld = e
-- e@fix
- ,...};
-
-Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
----
- arch/parisc/lib/iomap.c | 64 ++++++++++++++++++++++++-------------------------
- 1 file changed, 32 insertions(+), 32 deletions(-)
-
-diff --git a/arch/parisc/lib/iomap.c b/arch/parisc/lib/iomap.c
-index fb8e10a..eaffbb9 100644
---- a/arch/parisc/lib/iomap.c
-+++ b/arch/parisc/lib/iomap.c
-@@ -125,22 +125,22 @@ static void ioport_write32r(void __iomem *addr, const void *s, unsigned long n)
- }
- 
- static const struct iomap_ops ioport_ops = {
--	ioport_read8,
--	ioport_read16,
--	ioport_read16,
--	ioport_read32,
--	ioport_read32,
--	ioport_write8,
--	ioport_write16,
--	ioport_write16,
--	ioport_write32,
--	ioport_write32,
--	ioport_read8r,
--	ioport_read16r,
--	ioport_read32r,
--	ioport_write8r,
--	ioport_write16r,
--	ioport_write32r,
-+	.read8 = ioport_read8,
-+	.read16 = ioport_read16,
-+	.read16be = ioport_read16,
-+	.read32 = ioport_read32,
-+	.read32be = ioport_read32,
-+	.write8 = ioport_write8,
-+	.write16 = ioport_write16,
-+	.write16be = ioport_write16,
-+	.write32 = ioport_write32,
-+	.write32be = ioport_write32,
-+	.read8r = ioport_read8r,
-+	.read16r = ioport_read16r,
-+	.read32r = ioport_read32r,
-+	.write8r = ioport_write8r,
-+	.write16r = ioport_write16r,
-+	.write32r = ioport_write32r,
- };
- 
- /* Legacy I/O memory ops */
-@@ -244,22 +244,22 @@ static void iomem_write32r(void __iomem *addr, const void *s, unsigned long n)
- }
- 
- static const struct iomap_ops iomem_ops = {
--	iomem_read8,
--	iomem_read16,
--	iomem_read16be,
--	iomem_read32,
--	iomem_read32be,
--	iomem_write8,
--	iomem_write16,
--	iomem_write16be,
--	iomem_write32,
--	iomem_write32be,
--	iomem_read8r,
--	iomem_read16r,
--	iomem_read32r,
--	iomem_write8r,
--	iomem_write16r,
--	iomem_write32r,
-+	.read8 = iomem_read8,
-+	.read16 = iomem_read16,
-+	.read16be = iomem_read16be,
-+	.read32 = iomem_read32,
-+	.read32be = iomem_read32be,
-+	.write8 = iomem_write8,
-+	.write16 = iomem_write16,
-+	.write16be = iomem_write16be,
-+	.write32 = iomem_write32,
-+	.write32be = iomem_write32be,
-+	.read8r = iomem_read8r,
-+	.read16r = iomem_read16r,
-+	.read32r = iomem_read32r,
-+	.write8r = iomem_write8r,
-+	.write16r = iomem_write16r,
-+	.write32r = iomem_write32r,
- };
- 
- static const struct iomap_ops *iomap_ops[8] = {
--- 
-1.9.1
-
+--=20
+Johannes Thumshirn                                          Storage
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE LINUX GmbH, Maxfeldstr. 5, 90409 N=FCrnberg
+GF: Felix Imend=F6rffer, Jane Smithard, Graham Norton
+HRB 21284 (AG N=FCrnberg)
+Key fingerprint =3D EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
