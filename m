@@ -1,38 +1,45 @@
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH][SCSI] 53c700: Use proper debug printk format specifiers
-Date: Mon, 20 Jun 2016 22:02:47 -0400
-Message-ID: <yq1vb1347ug.fsf@sermon.lab.mkp.net>
-References: <20160610203945.GA18046@p100.box>
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: Re: [PATCH] devpts: remove DEVPTS_MULTIPLE_INSTANCES from all
+ configs
+Date: Tue, 21 Jun 2016 05:30:40 +0000
+Message-ID: <C2D7FE5348E1B147BCA15975FBA230750106944A83@us01wembx1.internal.synopsys.com>
+References: <20160620091258.11233-1-00moses.alexander00@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	linux-scsi@vger.kernel.org, linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20160610203945.GA18046@p100.box> (Helge Deller's message of
-	"Fri, 10 Jun 2016 22:39:45 +0200")
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-snps-arc@lists.infradead.org"
+        <linux-snps-arc@lists.infradead.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "bamvor.zhangjian@linaro.org" <bamvor.zhangjian@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org"
+        <linux-arm-kernel@lists.infradead.org>
+To: Alexandru Moise <00moses.alexander00@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Return-path: <linux-mips-bounce@linux-mips.org>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
->>>>> "Helge" =3D=3D Helge Deller <deller@gmx.de> writes:
+On Monday 20 June 2016 02:44 PM, Alexandru Moise wrote:
+> As each mount of devpts is now an independent filesystem,
+> the DEVPTS_MULTIPLE_INSTANCES config option no longer exists.
+> So remove it.
+>
+> Signed-off-by: Alexandru Moise <00moses.alexander00@gmail.com>
 
-Helge> When enabling the debug options NCR_700_DEBUG and
-Helge> NCR_700_TAG_DEBUG various printk format warnings can be seen
-Helge> like: drivers/scsi/53c700.c:357:2: warning: format =E2=80=98%p=E2=
-=80=99 expects
-Helge> argument of type =E2=80=98void *=E2=80=99, but argument 4 has ty=
-pe =E2=80=98dma_addr_t=E2=80=99
-Helge> [-Wformat=3D] script_patch_32(hostdata->dev, script,
-Helge> MessageLocation,
+For arch/arc
 
-Helge> Fix them by using the right printk format specifiers.
-
-Applied to 4.8/scsi-queue.
-
---=20
-Martin K. Petersen	Oracle Linux Engineering
---
-To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Acked-by: Vineet Gupta <vgupta@synopsys.com>
