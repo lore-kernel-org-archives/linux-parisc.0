@@ -1,45 +1,36 @@
-From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Subject: Re: [PATCH] devpts: remove DEVPTS_MULTIPLE_INSTANCES from all
- configs
-Date: Tue, 21 Jun 2016 05:30:40 +0000
-Message-ID: <C2D7FE5348E1B147BCA15975FBA230750106944A83@us01wembx1.internal.synopsys.com>
-References: <20160620091258.11233-1-00moses.alexander00@gmail.com>
+From: Meelis Roos <mroos@linux.ee>
+Subject: Re: parisc late boot crash in 4.4-rc, scsi-related
+Date: Wed, 22 Jun 2016 14:52:40 +0300 (EEST)
+Message-ID: <alpine.LRH.2.20.1606221451310.11869@math.ut.ee>
+References: <alpine.LRH.2.20.1601082329270.23187@math.ut.ee> <56902D77.1020200@gmx.de> <alpine.LRH.2.20.1605162336050.12607@math.ut.ee> <9d1ae51e-69c3-c3f6-60aa-e5238dd18241@bell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-snps-arc@lists.infradead.org"
-        <linux-snps-arc@lists.infradead.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "bamvor.zhangjian@linaro.org" <bamvor.zhangjian@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org"
-        <linux-arm-kernel@lists.infradead.org>
-To: Alexandru Moise <00moses.alexander00@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Return-path: <linux-mips-bounce@linux-mips.org>
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-scsi@vger.kernel.org
+To: John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <9d1ae51e-69c3-c3f6-60aa-e5238dd18241@bell.net>
+List-ID: <linux-scsi.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Monday 20 June 2016 02:44 PM, Alexandru Moise wrote:
-> As each mount of devpts is now an independent filesystem,
-> the DEVPTS_MULTIPLE_INSTANCES config option no longer exists.
-> So remove it.
->
-> Signed-off-by: Alexandru Moise <00moses.alexander00@gmail.com>
+> > > > I noticed on RP3440 and A500 that recent 4.4-rc* crashes on boot.
+> > > >
+> > > >I've not seen it with 4.4-rc yet, but I've seen it on debian kernel
+> > > >4.3.3:
+> > This is still present in 4.6, just tested. All my pariscs are broken
+> > - A500, RP3410, RP3440. 4.3 is the latest working release for me. If
+> > 4.3.3 is broken, it might be possible to bisect more easily.
+> 
+> I believe this is fixed in current gcc versions (4.9 and latter). It was
+> exposed by a blk-merge
+> change.  It was fixed by this change:
 
-For arch/arc
+Out of interest, how do other parisc users get the new compiler?
 
-Acked-by: Vineet Gupta <vgupta@synopsys.com>
+What distro are you using?
+
+My pariscs are gentoo and still only the old versions are available on 
+hppa.
+
+-- 
+Meelis Roos (mroos@linux.ee)
