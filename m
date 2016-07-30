@@ -1,59 +1,18 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [RFC/PATCH 00/14] split exception table content out of module.h
- into extable.h
-Date: Sun, 24 Jul 2016 21:18:19 -0700
-Message-ID: <CA+55aFyDw_jK609LcjpWvVMTzCWuH6nLUXiZDeYC2tpSaZqhXA@mail.gmail.com>
-References: <20160725034247.109173-1-paul.gortmaker@windriver.com>
+From: "hi" <freakibjoerni@aol.de>
+Subject: =?utf-8?B?4peLSGk=?=
+Date: Sat, 30 Jul 2016 22:17:59 +0800
+Message-ID: <BBE6F21EFAF3641AFFEDE6CCC2AFED7D@jvxvzepn>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Chris Metcalf <cmetcalf@mellanox.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Heiko Carstens <heiko.carstens@de.ibm.com>,
-	Helge Deller <deller@gmx.de>, "H. Peter Anvin" <hpa@zytor.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	Martin Schwidefsky <schwidefsky@de.ibm.com>,
-	Matt Turner <mattst88@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Paul Mackerras <paulus@samba.org>,
-	Ralf Baechle <ralf@linux-mips.org>,
-	Richard Henderson <rth@twiddle.net>,
-	Russell King <linux@armlinux.org.uk>,
-	Rus
-To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <20160725034247.109173-1-paul.gortmaker@windriver.com>
-List-ID: <linux-alpha.vger.kernel.org>
+Content-Type: text/plain;
+	charset="utf-8"
+To: <denkant@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Jul 24, 2016 at 8:42 PM, Paul Gortmaker
-<paul.gortmaker@windriver.com> wrote:
->
-> While doing an audit looking for unnecessary instances of module.h
-> inclusion across arch/x86/ I found a significant number of includes
-> of module.h were for things like search_exception_table and friends.
->
-> For historical reasons (i.e. pre-git) the exception table stuff was
-> buried in the middle of the module.h file.  So we have core kernel
-> files that are completely non-modular (both arch specific and arch
-> independent) that are just including module.h for this.
->
-> The converse is also true, in that conventional drivers, be they for
-> filesystems or actual hardware peripherals or similar, do not
-> normally care about the exception tables.
->
-> Here we fork the exception table content [...]
+aGkNCnRoaXMgaXMgYW4gZWxlY3Ryb25pY3Mgc2hvcA0KYmlrZSxicmFuZCBndWl0YXIsY2FtZXJh
+LHR2LHNhbXN1bmcgcHJvZHVjdC4uLi4gZnJlZSBzaGlwcGluZw0Kd3d3IC5zbG9vb25lIC5jb20N
+CmlmIHlvdSBkbyBub3Qgd2FudCByZWNlaXZlIG91ciBlbWFpbC4gcGxlYXNlIHJlcGx5IHRvIHVz
+LCB3ZSB3aWxsIG5ldmVyIHNlbmQgZW1haWwgdG8geW91
 
-This looks to be the right thing to do as far as I can tell. I'm not
-sure how big of a problem the extable stuff is (we definitely have
-much bigger unnecessary include files that cause a lot more problems),
-but it seems like a reasonable cleanup.
 
-              Linus
