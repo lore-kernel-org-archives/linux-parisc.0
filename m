@@ -1,12 +1,15 @@
 From: Baole Ni <baolex.ni@intel.com>
-Subject: [PATCH 0814/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 19:49:03 +0800
-Message-ID: <20160802114904.4233-1-baolex.ni@intel.com>
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	chuansheng.liu@intel.com, baolex.ni@intel.com, arnd@arndb.de
-To: jejb@parisc-linux.org, deller@gmx.de, Allen.Hubbe@emc.com,
-	rjui@broadcom.com, sbranden@broadcom.com, m.chehab@samsung.com,
-	pawel@osciak.com, m.szyprowski@samsung.com,
+Subject: [PATCH 0717/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 19:39:31 +0800
+Message-ID: <20160802113931.29863-1-baolex.ni@intel.com>
+Cc: netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, mugunthanvnm@ti.com, a@unstable.cc,
+	fw@strlen.de, davem@davemloft.net, chuansheng.liu@intel.com,
+	baolex.ni@intel.com, Baohua.Song@csr.com
+To: leedom@chelsio.com, rric@kernel.org,
+	felix.manlunas@caviumnetworks.com,
+	raghu.vatsavayi@caviumnetworks.com, computersforpeace@gmail.com,
+	m.chehab@samsung.com, pawel@osciak.com, m.szyprowski@samsung.com,
 	kyungmin.park@samsung.com, k.kozlowski@samsung.com
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
@@ -21,49 +24,22 @@ thus, I suggest replacing the numeric parameter with the macro.
 Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
 Signed-off-by: Baole Ni <baolex.ni@intel.com>
 ---
- drivers/parisc/pdc_stable.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/net/ethernet/dec/tulip/uli526x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
-index 3651c38..0cb008f 100644
---- a/drivers/parisc/pdc_stable.c
-+++ b/drivers/parisc/pdc_stable.c
-@@ -487,8 +487,8 @@ static const struct sysfs_ops pdcspath_attr_ops = {
- };
+diff --git a/drivers/net/ethernet/dec/tulip/uli526x.c b/drivers/net/ethernet/dec/tulip/uli526x.c
+index e750b5d..a6cd07a 100644
+--- a/drivers/net/ethernet/dec/tulip/uli526x.c
++++ b/drivers/net/ethernet/dec/tulip/uli526x.c
+@@ -1789,7 +1789,7 @@ MODULE_AUTHOR("Peer Chen, peer.chen@uli.com.tw");
+ MODULE_DESCRIPTION("ULi M5261/M5263 fast ethernet driver");
+ MODULE_LICENSE("GPL");
  
- /* These are the two attributes of any PDC path. */
--static PATHS_ATTR(hwpath, 0644, pdcspath_hwpath_read, pdcspath_hwpath_write);
--static PATHS_ATTR(layer, 0644, pdcspath_layer_read, pdcspath_layer_write);
-+static PATHS_ATTR(hwpath, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, pdcspath_hwpath_read, pdcspath_hwpath_write);
-+static PATHS_ATTR(layer, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, pdcspath_layer_read, pdcspath_layer_write);
- 
- static struct attribute *paths_subsys_attrs[] = {
- 	&paths_attr_hwpath.attr,
-@@ -931,15 +931,15 @@ static ssize_t pdcs_osdep2_write(struct kobject *kobj,
- }
- 
- /* The remaining attributes. */
--static PDCS_ATTR(size, 0444, pdcs_size_read, NULL);
--static PDCS_ATTR(autoboot, 0644, pdcs_autoboot_read, pdcs_autoboot_write);
--static PDCS_ATTR(autosearch, 0644, pdcs_autosearch_read, pdcs_autosearch_write);
--static PDCS_ATTR(timer, 0444, pdcs_timer_read, NULL);
--static PDCS_ATTR(osid, 0444, pdcs_osid_read, NULL);
--static PDCS_ATTR(osdep1, 0600, pdcs_osdep1_read, pdcs_osdep1_write);
--static PDCS_ATTR(diagnostic, 0400, pdcs_diagnostic_read, NULL);
--static PDCS_ATTR(fastsize, 0400, pdcs_fastsize_read, NULL);
--static PDCS_ATTR(osdep2, 0600, pdcs_osdep2_read, pdcs_osdep2_write);
-+static PDCS_ATTR(size, S_IRUSR | S_IRGRP | S_IROTH, pdcs_size_read, NULL);
-+static PDCS_ATTR(autoboot, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, pdcs_autoboot_read, pdcs_autoboot_write);
-+static PDCS_ATTR(autosearch, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, pdcs_autosearch_read, pdcs_autosearch_write);
-+static PDCS_ATTR(timer, S_IRUSR | S_IRGRP | S_IROTH, pdcs_timer_read, NULL);
-+static PDCS_ATTR(osid, S_IRUSR | S_IRGRP | S_IROTH, pdcs_osid_read, NULL);
-+static PDCS_ATTR(osdep1, S_IRUSR | S_IWUSR, pdcs_osdep1_read, pdcs_osdep1_write);
-+static PDCS_ATTR(diagnostic, S_IRUSR, pdcs_diagnostic_read, NULL);
-+static PDCS_ATTR(fastsize, S_IRUSR, pdcs_fastsize_read, NULL);
-+static PDCS_ATTR(osdep2, S_IRUSR | S_IWUSR, pdcs_osdep2_read, pdcs_osdep2_write);
- 
- static struct attribute *pdcs_subsys_attrs[] = {
- 	&pdcs_attr_size.attr,
+-module_param(debug, int, 0644);
++module_param(debug, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+ module_param(mode, int, 0);
+ module_param(cr6set, int, 0);
+ MODULE_PARM_DESC(debug, "ULi M5261/M5263 enable debugging (0-1)");
 -- 
 2.9.2
 
