@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Fix automatic selection of cr16 clocksource
-Date: Fri, 19 Aug 2016 22:39:02 +0200
-Message-ID: <20160819203902.GA17039@p100.box>
+Subject: [PATCH] parisc: Fix order of EREFUSED define in errno.h
+Date: Sat, 20 Aug 2016 11:51:38 +0200
+Message-ID: <20160820095138.GA15356@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -11,58 +11,33 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Commit 54b66800907 (parisc: Add native high-resolution sched_clock()
-implementation) added support to use the CPU-internal cr16 counters as reliable
-clocksource with the help of HAVE_UNSTABLE_SCHED_CLOCK.
+When building gccgo in userspace, errno.h gets parsed and the go include file
+sysinfo.go is generated.
 
-Sadly the commit missed to remove the hack which prevented cr16 to become the
-default clocksource even on SMP systems.
+Since EREFUSED is defined to the same value as ECONNREFUSED, and ECONNREFUSED
+is defined later on in errno.h, this leads to go complaining that EREFUSED
+isn't defined yet.
+
+Fix this trivial problem by moving the define of EREFUSED down after
+ECONNREFUSED in errno.h (and clean up the indenting while touching this line).
 
 Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: stable@vger.kernel.org # 4.7+
+Cc: stable@vger.kernel.org
 
-diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
-index 5adc339..0c2a94a 100644
---- a/arch/parisc/kernel/processor.c
-+++ b/arch/parisc/kernel/processor.c
-@@ -51,8 +51,6 @@ EXPORT_SYMBOL(_parisc_requires_coherency);
+diff --git a/arch/parisc/include/uapi/asm/errno.h b/arch/parisc/include/uapi/asm/errno.h
+index c0ae625..a714d01 100644
+--- a/arch/parisc/include/uapi/asm/errno.h
++++ b/arch/parisc/include/uapi/asm/errno.h
+@@ -97,10 +97,10 @@
+ #define	ENOTCONN	235	/* Transport endpoint is not connected */
+ #define	ESHUTDOWN	236	/* Cannot send after transport endpoint shutdown */
+ #define	ETOOMANYREFS	237	/* Too many references: cannot splice */
+-#define EREFUSED	ECONNREFUSED	/* for HP's NFS apparently */
+ #define	ETIMEDOUT	238	/* Connection timed out */
+ #define	ECONNREFUSED	239	/* Connection refused */
+-#define EREMOTERELEASE	240	/* Remote peer released connection */
++#define	EREFUSED	ECONNREFUSED	/* for HP's NFS apparently */
++#define	EREMOTERELEASE	240	/* Remote peer released connection */
+ #define	EHOSTDOWN	241	/* Host is down */
+ #define	EHOSTUNREACH	242	/* No route to host */
  
- DEFINE_PER_CPU(struct cpuinfo_parisc, cpu_data);
- 
--extern int update_cr16_clocksource(void);	/* from time.c */
--
- /*
- **  	PARISC CPU driver - claim "device" and initialize CPU data structures.
- **
-@@ -228,12 +226,6 @@ static int processor_probe(struct parisc_device *dev)
- 	}
- #endif
- 
--	/* If we've registered more than one cpu,
--	 * we'll use the jiffies clocksource since cr16
--	 * is not synchronized between CPUs.
--	 */
--	update_cr16_clocksource();
--
- 	return 0;
- }
- 
-diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
-index 505cf1a..4b0b963 100644
---- a/arch/parisc/kernel/time.c
-+++ b/arch/parisc/kernel/time.c
-@@ -221,18 +221,6 @@ static struct clocksource clocksource_cr16 = {
- 	.flags			= CLOCK_SOURCE_IS_CONTINUOUS,
- };
- 
--int update_cr16_clocksource(void)
--{
--	/* since the cr16 cycle counters are not synchronized across CPUs,
--	   we'll check if we should switch to a safe clocksource: */
--	if (clocksource_cr16.rating != 0 && num_online_cpus() > 1) {
--		clocksource_change_rating(&clocksource_cr16, 0);
--		return 1;
--	}
--
--	return 0;
--}
