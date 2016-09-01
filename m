@@ -1,64 +1,97 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 0/6] constify snd_pcm_ops structures
-Date: Fri,  2 Sep 2016 00:13:08 +0200
-Message-ID: <1472767994-26269-1-git-send-email-Julia.Lawall@lip6.fr>
-Cc: kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Subject: [PATCH 4/6] ALSA: ad1889: constify snd_pcm_ops
+	structures
+Date: Fri,  2 Sep 2016 00:13:12 +0200
+Message-ID: <1472767994-26269-5-git-send-email-Julia.Lawall@lip6.fr>
+References: <1472767994-26269-1-git-send-email-Julia.Lawall@lip6.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Cc: alsa-devel@alsa-project.org, linux-parisc@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>
+To: Thibaut Varene <T-Bone@parisc-linux.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1472767994-26269-1-git-send-email-Julia.Lawall@lip6.fr>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+List-ID: <linux-parisc.vger.kernel.org>
 
-Constify snd_pcm_ops structures.
+Check for snd_pcm_ops structures that are only stored in the ops field of a
+snd_soc_platform_driver structure or passed as the third argument to
+snd_pcm_set_ops.  The corresponding field or parameter is declared const,
+so snd_pcm_ops structures that have this property can be declared as const
+also.
+
+The semantic patch that makes this change is as follows:
+(http://coccinelle.lip6.fr/)
+
+// <smpl>
+@r disable optional_qualifier@
+identifier i;
+position p;
+@@
+static struct snd_pcm_ops i@p = { ... };
+
+@ok1@
+identifier r.i;
+struct snd_soc_platform_driver e;
+position p;
+@@
+e.ops = &i@p;
+
+@ok2@
+identifier r.i;
+expression e1, e2;
+position p;
+@@
+snd_pcm_set_ops(e1, e2, &i@p)
+
+@bad@
+position p != {r.p,ok1.p,ok2.p};
+identifier r.i;
+struct snd_pcm_ops e;
+@@
+e@i@p
+
+@depends on !bad disable optional_qualifier@
+identifier r.i;
+@@
+static
++const
+ struct snd_pcm_ops i = { ... };
+// </smpl>
+
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
+ sound/pci/ad1889.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- sound/firewire/dice/dice-pcm.c          |    4 ++--
- sound/firewire/digi00x/digi00x-pcm.c    |    4 ++--
- sound/firewire/oxfw/oxfw-pcm.c          |    4 ++--
- sound/firewire/tascam/tascam-pcm.c      |    4 ++--
- sound/pci/ad1889.c                      |    4 ++--
- sound/pci/als300.c                      |    4 ++--
- sound/pci/als4000.c                     |    4 ++--
- sound/pci/asihpi/asihpi.c               |    4 ++--
- sound/pci/atiixp.c                      |    6 +++---
- sound/pci/atiixp_modem.c                |    4 ++--
- sound/pci/aw2/aw2-alsa.c                |    4 ++--
- sound/pci/azt3328.c                     |    6 +++---
- sound/pci/bt87x.c                       |    2 +-
- sound/pci/ca0106/ca0106_main.c          |   16 ++++++++--------
- sound/pci/cmipci.c                      |   10 +++++-----
- sound/pci/cs4281.c                      |    4 ++--
- sound/pci/cs5535audio/cs5535audio_pcm.c |    4 ++--
- sound/pci/ctxfi/ctpcm.c                 |    4 ++--
- sound/pci/emu10k1/emu10k1x.c            |    4 ++--
- sound/pci/emu10k1/emupcm.c              |   12 ++++++------
- sound/pci/emu10k1/p16v.c                |    4 ++--
- sound/pci/ens1370.c                     |    6 +++---
- sound/pci/es1938.c                      |    4 ++--
- sound/pci/es1968.c                      |    4 ++--
- sound/pci/fm801.c                       |    4 ++--
- sound/pci/hda/hda_controller.c          |    2 +-
- sound/pci/ice1712/ice1712.c             |   10 +++++-----
- sound/pci/ice1712/ice1724.c             |   10 +++++-----
- sound/pci/korg1212/korg1212.c           |    4 ++--
- sound/pci/lola/lola_pcm.c               |    2 +-
- sound/pci/lx6464es/lx6464es.c           |    4 ++--
- sound/pci/maestro3.c                    |    4 ++--
- sound/pci/mixart/mixart.c               |    4 ++--
- sound/pci/nm256/nm256.c                 |    4 ++--
- sound/pci/oxygen/oxygen_pcm.c           |   12 ++++++------
- sound/pci/pcxhr/pcxhr.c                 |    2 +-
- sound/pci/riptide/riptide.c             |    4 ++--
- sound/pci/rme32.c                       |   16 ++++++++--------
- sound/pci/rme96.c                       |    8 ++++----
- sound/pci/rme9652/hdsp.c                |    4 ++--
- sound/pci/rme9652/hdspm.c               |    2 +-
- sound/pci/rme9652/rme9652.c             |    4 ++--
- sound/pci/sonicvibes.c                  |    4 ++--
- sound/pci/trident/trident_main.c        |   12 ++++++------
- sound/pci/via82xx.c                     |   10 +++++-----
- sound/pci/via82xx_modem.c               |    4 ++--
- sound/pci/ymfpci/ymfpci_main.c          |   10 +++++-----
- 47 files changed, 133 insertions(+), 133 deletions(-)
+diff --git a/sound/pci/ad1889.c b/sound/pci/ad1889.c
+index 1fc6d8b..8c36990 100644
+--- a/sound/pci/ad1889.c
++++ b/sound/pci/ad1889.c
+@@ -571,7 +571,7 @@ snd_ad1889_capture_pointer(struct snd_pcm_substream *ss)
+ 	return bytes_to_frames(ss->runtime, ptr);
+ }
+ 
+-static struct snd_pcm_ops snd_ad1889_playback_ops = {
++static const struct snd_pcm_ops snd_ad1889_playback_ops = {
+ 	.open = snd_ad1889_playback_open,
+ 	.close = snd_ad1889_playback_close,
+ 	.ioctl = snd_pcm_lib_ioctl,
+@@ -582,7 +582,7 @@ static struct snd_pcm_ops snd_ad1889_playback_ops = {
+ 	.pointer = snd_ad1889_playback_pointer, 
+ };
+ 
+-static struct snd_pcm_ops snd_ad1889_capture_ops = {
++static const struct snd_pcm_ops snd_ad1889_capture_ops = {
+ 	.open = snd_ad1889_capture_open,
+ 	.close = snd_ad1889_capture_close,
+ 	.ioctl = snd_pcm_lib_ioctl,
