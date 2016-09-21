@@ -1,75 +1,56 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Update comment regarding implementation of copy_user_page_asm
-Date: Tue, 20 Sep 2016 12:59:39 -0400
-Message-ID: <7B426EDB-5249-4A32-ACE1-05D9D3B2A940@bell.net>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: multipart/mixed; boundary=Apple-Mail-20-14856818
-Cc: deller@kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-To: linux-parisc List <linux-parisc@vger.kernel.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: linux-next: manual merge of the akpm-current tree with the
+ parisc-hd tree
+Date: Wed, 21 Sep 2016 15:20:06 +1000
+Message-ID: <20160921152006.58c2c81c@canb.auug.org.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+        Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>
+Return-path: <linux-next-owner@vger.kernel.org>
+List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Hi Andrew,
 
---Apple-Mail-20-14856818
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-The attached patch describes the current implementation of =
-copy_user_page_asm.  It is possible to implement
-this routine using either the kernel page mappings or equivalent =
-aliases.  I tested both and decided the former
-was more efficient.
+  arch/parisc/Kconfig
 
-Signed-off-by: John David Anglin <dave.anglin@bell.net>
+between commit:
 
+  b5d5cf2b8a68 ("parisc: Drop BROKEN_RODATA config option")
 
+from the parisc-hd tree and commit:
 
---Apple-Mail-20-14856818
-Content-Disposition: attachment;
-	filename=pacache.S.d.txt
-Content-Type: text/plain;
-	name="pacache.S.d.txt"
-Content-Transfer-Encoding: 7bit
+  7b4d24d8c01d ("atomic64: no need for CONFIG_ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE")
 
-diff --git a/arch/parisc/kernel/pacache.S b/arch/parisc/kernel/pacache.S
-index b743a80..1250c02 100644
---- a/arch/parisc/kernel/pacache.S
-+++ b/arch/parisc/kernel/pacache.S
-@@ -573,11 +573,17 @@ ENDPROC(copy_page_asm)
- 	.endm
- 
- 	/*
--	 * We can't do this since copy_user_page is used to bring in
--	 * file data that might have instructions. Since the data would
--	 * then need to be flushed out so the i-fetch can see it, it
--	 * makes more sense to just copy through the kernel translation
--	 * and flush it.
-+	 * copy_user_page_asm() performs a page copy using mappings
-+	 * equivalent to the user page mappings.  It can be used to
-+	 * implement copy_user_page() but unfortunately both the `from'
-+	 * and `to' pages need to be flushed through mappings equivalent
-+	 * to the user mappings after the copy because the kernel accesses
-+	 * the `from' page through the kmap kernel mapping and the `to'
-+	 * page needs to be flushed since code can be copied.  As a
-+	 * result, this implementation is less efficient than the simpler
-+	 * copy using the kernel mapping.  It only needs the `from' page
-+	 * to flushed via the user mapping.  The kunmap routines handle
-+	 * the flushes needed for the kernel mapping.
- 	 *
- 	 * I'm still keeping this around because it may be possible to
- 	 * use it if more information is passed into copy_user_page().
+from the akpm-current tree.
 
---Apple-Mail-20-14856818
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
+-- 
+Cheers,
+Stephen Rothwell
 
-
---
-John David Anglin	dave.anglin@bell.net
-
---Apple-Mail-20-14856818--
+diff --cc arch/parisc/Kconfig
+index f8dc10dcf292,8a96bdcc3807..000000000000
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@@ -14,7 -14,7 +14,6 @@@ config PARIS
+  	select BUILDTIME_EXTABLE_SORT
+  	select HAVE_PERF_EVENTS
+  	select GENERIC_ATOMIC64 if !64BIT
+- 	select ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE
+ -	select BROKEN_RODATA
+  	select GENERIC_IRQ_PROBE
+  	select GENERIC_PCI_IOMAP
+  	select ARCH_HAVE_NMI_SAFE_CMPXCHG
