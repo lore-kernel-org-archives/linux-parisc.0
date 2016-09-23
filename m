@@ -1,56 +1,96 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: linux-next: manual merge of the akpm-current tree with the
- parisc-hd tree
-Date: Wed, 21 Sep 2016 15:20:06 +1000
-Message-ID: <20160921152006.58c2c81c@canb.auug.org.au>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Report trap type as human readable string
+Date: Fri, 23 Sep 2016 20:44:57 +0200
+Message-ID: <20160923184457.GA14114@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-        Helge Deller <deller@gmx.de>,
-        Parisc List <linux-parisc@vger.kernel.org>
-Return-path: <linux-next-owner@vger.kernel.org>
-List-ID: <linux-next.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Andrew,
+When faulting on some trap, the kernel currently reports in dmesg:
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+ do_page_fault() command='perl' type=6 address=0xbe400403 in libcrypt-2.24.so[f9086000+9000]
+ vm_start = 0x00922000, vm_end = 0x00aed000
 
-  arch/parisc/Kconfig
+With this change the trap type additionally gets reported as human readable
+string which makes it simpler to recognize the type of problem:
 
-between commit:
+ do_page_fault() command='perl' type=6 address=0xbe400403 in libcrypt-2.24.so[f9086000+9000]
+ Instruction TLB miss fault, vm_start = 0x00922000, vm_end = 0x00aed000
 
-  b5d5cf2b8a68 ("parisc: Drop BROKEN_RODATA config option")
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-from the parisc-hd tree and commit:
-
-  7b4d24d8c01d ("atomic64: no need for CONFIG_ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
--- 
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/parisc/Kconfig
-index f8dc10dcf292,8a96bdcc3807..000000000000
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@@ -14,7 -14,7 +14,6 @@@ config PARIS
-  	select BUILDTIME_EXTABLE_SORT
-  	select HAVE_PERF_EVENTS
-  	select GENERIC_ATOMIC64 if !64BIT
-- 	select ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE
- -	select BROKEN_RODATA
-  	select GENERIC_IRQ_PROBE
-  	select GENERIC_PCI_IOMAP
-  	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+index 16dbe81..bdbd73b 100644
+--- a/arch/parisc/mm/fault.c
++++ b/arch/parisc/mm/fault.c
+@@ -168,6 +168,43 @@ int fixup_exception(struct pt_regs *regs)
+ }
+ 
+ /*
++ * parisc hardware trap list
++ *
++ * Documented in section 3 "Addressing and Access Control" of the
++ * "PA-RISC 1.1 Architecture and Instruction Set Reference Manual"
++ * https://parisc.wiki.kernel.org/index.php/File:Pa11_acd.pdf
++ *
++ * For implementation see handle_interruption() in traps.c
++ */
++static const char * const trap_description[] = {
++	[1] "High-priority machine check (HPMC)",
++	[2] "Power failure interrupt",
++	[3] "Recovery counter trap",
++	[5] "Low-priority machine check",
++	[6] "Instruction TLB miss fault",
++	[7] "Instruction access rights / protection trap",
++	[8] "Illegal instruction trap",
++	[9] "Break instruction trap",
++	[10] "Privileged operation trap",
++	[11] "Privileged register trap",
++	[12] "Overflow trap",
++	[13] "Conditional trap",
++	[14] "FP Assist Exception trap",
++	[15] "Data TLB miss fault",
++	[16] "Non-access ITLB miss fault",
++	[17] "Non-access DTLB miss fault",
++	[18] "Data memory protection/unaligned access trap",
++	[19] "Data memory break trap",
++	[20] "TLB dirty bit trap",
++	[21] "Page reference trap",
++	[22] "Assist emulation trap",
++	[25] "Taken branch trap",
++	[26] "Data memory access rights trap",
++	[27] "Data memory protection ID trap",
++	[28] "Unaligned data reference trap",
++};
++
++/*
+  * Print out info about fatal segfaults, if the show_unhandled_signals
+  * sysctl is set:
+  */
+@@ -176,6 +213,8 @@ show_signal_msg(struct pt_regs *regs, unsigned long code,
+ 		unsigned long address, struct task_struct *tsk,
+ 		struct vm_area_struct *vma)
+ {
++	const char *trap_name = NULL;
++
+ 	if (!unhandled_signal(tsk, SIGSEGV))
+ 		return;
+ 
+@@ -186,6 +225,12 @@ show_signal_msg(struct pt_regs *regs, unsigned long code,
+ 	pr_warn("do_page_fault() command='%s' type=%lu address=0x%08lx",
+ 	    tsk->comm, code, address);
+ 	print_vma_addr(KERN_CONT " in ", regs->iaoq[0]);
++
++	if (code < ARRAY_SIZE(trap_description))
++		trap_name = trap_description[code];
++	if (trap_name)
++		pr_warn(" %s%c", trap_name, vma ? ',':'\n');
++
+ 	if (vma)
+ 		pr_warn(" vm_start = 0x%08lx, vm_end = 0x%08lx\n",
+ 				vma->vm_start, vma->vm_end);
