@@ -1,94 +1,66 @@
-From: Meelis Roos <mroos@linux.ee>
+From: Helge Deller <deller@gmx.de>
 Subject: Re: parisc crash on boot with 4.8+git
-Date: Sun, 9 Oct 2016 12:03:25 +0300 (EEST)
-Message-ID: <alpine.LRH.2.20.1610091032210.12761@math.ut.ee>
-References: <alpine.LRH.2.20.1610090042580.12761@math.ut.ee> <57F96010.1040309@gmx.de>
+Date: Sun, 9 Oct 2016 11:06:39 +0200
+Message-ID: <57FA089F.1020301@gmx.de>
+References: <alpine.LRH.2.20.1610090042580.12761@math.ut.ee>
+ <57F96010.1040309@gmx.de> <alpine.LRH.2.20.1610091032210.12761@math.ut.ee>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=windows-1252
 Cc: Linux Kernel list <linux-kernel@vger.kernel.org>,
         "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
+To: Meelis Roos <mroos@linux.ee>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <57F96010.1040309@gmx.de>
+In-Reply-To: <alpine.LRH.2.20.1610091032210.12761@math.ut.ee>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On 08.10.2016 23:52, Meelis Roos wrote:
-> > Just tried 4.8.0-11288-gb66484c on three of my parsic machines (enabled 
-> > strict usercopy checking or somethinng like that in make oldconfig).
+On 09.10.2016 11:03, Meelis Roos wrote:
+>> On 08.10.2016 23:52, Meelis Roos wrote:
+>>> rp3410 crashed on boot with the following:
+>>>
+>>> Linux version 4.8.0-11288-gb66484c (mroos@rp3410) (gcc version 5.4.0 (Gentoo 5.4.0 p1.0) ) #81 Sat Oct 8 20:40:24 EEST 2016
+>>> unwind_init: start = 0x4076e980, end = 0x407a7060, entries = 14446
+>>> The 64-bit Kernel has started...
+>>> Kernel default page size is 4 KB. Huge pages enabled with 1 MB physical and 2 MB virtual size.
+>>> bootconsole [ttyB0] enabled
+>>> ...
+>>> Memory Ranges:
+>>>  0) Start 0x0000000000000000 End 0x000000003fffffff Size   1024 MB
+>>>  1) Start 0x0000004040000000 End 0x000000407fdfffff Size   1022 MB
+>>> Total Memory: 2046 MB
+>>> Backtrace:
+>>>  [<0000000040102d40>] paging_init+0x5e0/0x740
+>>>  [<0000000040103744>] setup_arch+0x16c/0x1b0
+>>>  [<0000000040100ce0>] start_kernel+0xb8/0x668
+>>>
+>>> Bad Address (null pointer deref?): Code=15 regs=00000000408034c0 (Addr=000000099cf94000)
+>>
+>> You probably are facing one or both of those problems:
+>> 1. Your kernel is bigger than the initial kernel mappings
+>> 2. You face a bug in the palo boot loader.
+>>
+>> Regarding 1, you probably have CONFIG_TRACE=y or CONFIG_TEST_RHASHTABLE=y enabled?
+>> Both increase the kernel size a lot and trigger this bug. 
 > 
-> It's not related to the usercopy checks, instead it's most likely a
-> parisc-specific problem I just noticed today as well and which I'm 
-> currently fixing.
->  
-> > rp3440 worked fine. a500 and rp3410 cras on boot.
-> > 
-> > rp3410 crashed on boot with the following:
-> > 
-> > Linux version 4.8.0-11288-gb66484c (mroos@rp3410) (gcc version 5.4.0 (Gentoo 5.4.0 p1.0) ) #81 Sat Oct 8 20:40:24 EEST 2016
-> > unwind_init: start = 0x4076e980, end = 0x407a7060, entries = 14446
-> > The 64-bit Kernel has started...
-> > Kernel default page size is 4 KB. Huge pages enabled with 1 MB physical and 2 MB virtual size.
-> > bootconsole [ttyB0] enabled
-> > ...
-> > Memory Ranges:
-> >  0) Start 0x0000000000000000 End 0x000000003fffffff Size   1024 MB
-> >  1) Start 0x0000004040000000 End 0x000000407fdfffff Size   1022 MB
-> > Total Memory: 2046 MB
-> > Backtrace:
-> >  [<0000000040102d40>] paging_init+0x5e0/0x740
-> >  [<0000000040103744>] setup_arch+0x16c/0x1b0
-> >  [<0000000040100ce0>] start_kernel+0xb8/0x668
-> > 
-> > Bad Address (null pointer deref?): Code=15 regs=00000000408034c0 (Addr=000000099cf94000)
+> # CONFIG_TEST_RHASHTABLE is not set
 > 
-> You probably are facing one or both of those problems:
-> 1. Your kernel is bigger than the initial kernel mappings
-> 2. You face a bug in the palo boot loader.
-> 
-> Regarding 1, you probably have CONFIG_TRACE=y or CONFIG_TEST_RHASHTABLE=y enabled?
-> Both increase the kernel size a lot and trigger this bug. 
+> There is no CONFIG_TRACE in my .config.
+> # CONFIG_FTRACE is not set
 
-# CONFIG_TEST_RHASHTABLE is not set
+I meant CONFIG_FTRACE (which you don't seem to have enabled).
 
-There is no CONFIG_TRACE in my .config.
+I just pushed two updated patches to my for-next git tree.
+Please pull them on top of Linux head and try again (please update palo before).
+http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/log/?h=for-next
 
-grep TRACE .config gives
-CONFIG_STACKTRACE_SUPPORT=y
-# CONFIG_TREE_RCU_TRACE is not set
-CONFIG_SYSCTL_EXCEPTION_TRACE=y
-CONFIG_HAVE_ARCH_TRACEHOOK=y
-# CONFIG_TRACE_SINK is not set
-# CONFIG_STACKTRACE is not set
-# CONFIG_RCU_TRACE is not set
-CONFIG_HAVE_FUNCTION_TRACER=y
-CONFIG_HAVE_FUNCTION_GRAPH_TRACER=y
-CONFIG_HAVE_SYSCALL_TRACEPOINTS=y
-# CONFIG_FTRACE is not set
-# CONFIG_BACKTRACE_SELF_TEST is not set
-CONFIG_TRACE_IRQFLAGS_SUPPORT=y
+>> Even if you fix the kernel with the patches above, you still may run
+>> into the palo bug. I've just pushed a fix for it into the palo tree:
+>> https://git.kernel.org/cgit/linux/kernel/git/deller/palo.git/commit/?id=70bd7a9a41e318c0575755a78c4d18ad97495c47
+>>
+>> If you rebuild palo, please make sure to install the new ipl boot loader into
+>> the palo partition of your boot disc. palo should report at bootup version 1.96.
 
-> To fix it, make sure you have this patch in your kernel (it's upstream):
-> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=690d097c00c88fa9d93d198591e184164b1d8c20
+Same here. Please pull latest version, and install it:
+https://git.kernel.org/cgit/linux/kernel/git/deller/palo.git/
 
-I saw this batch of parisc changes in mainline, that's why I built new 
-kernels for test and then I got the error. 4.8.0-11288-gb66484c is the 
-version I ran, with the commit AFAIK.
- 
-> Additionally if people (not you) use a 32bit kernel I suggest this one too (in my for-next tree):
-> http://git.kernel.org/cgit/linux/kernel/git/deller/parisc-linux.git/commit/?h=for-next&id=96c65e4d1c77f461b34161dc8e6f2db7c50fd3e8
-> 
-> Both patches increase the initial kernel page mappings to 32MB which should be sufficient.
-> 
-> Even if you fix the kernel with the patches above, you still may run
-> into the palo bug. I've just pushed a fix for it into the palo tree:
-> https://git.kernel.org/cgit/linux/kernel/git/deller/palo.git/commit/?id=70bd7a9a41e318c0575755a78c4d18ad97495c47
-> 
-> If you rebuild palo, please make sure to install the new ipl boot loader into
-> the palo partition of your boot disc. palo should report at bootup version 1.96.
-> 
-> Helge
-> 
-
--- 
-Meelis Roos (mroos@linux.ee)
+Helge
