@@ -1,31 +1,39 @@
-From: John David Anglin <dave.anglin@bell.net>
+From: Meelis Roos <mroos@linux.ee>
 Subject: Re: parisc crash on boot with 4.8+git
-Date: Sun, 9 Oct 2016 10:01:03 -0400
-Message-ID: <ADF65437-3E9A-493C-89B5-E7C8A107BA92@bell.net>
-References: <alpine.LRH.2.20.1610090042580.12761@math.ut.ee> <57F96010.1040309@gmx.de> <alpine.LRH.2.20.1610091032210.12761@math.ut.ee>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
+Date: Mon, 10 Oct 2016 00:09:44 +0300 (EEST)
+Message-ID: <alpine.LRH.2.20.1610092356270.32571@math.ut.ee>
+References: <alpine.LRH.2.20.1610090042580.12761@math.ut.ee> <57F96010.1040309@gmx.de> <alpine.LRH.2.20.1610091032210.12761@math.ut.ee> <57FA089F.1020301@gmx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux Kernel list <linux-kernel@vger.kernel.org>,
         "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
-To: Meelis Roos <mroos@linux.ee>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.20.1610091032210.12761@math.ut.ee>
+In-Reply-To: <57FA089F.1020301@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2016-10-09, at 5:03 AM, Meelis Roos wrote:
+> >> Even if you fix the kernel with the patches above, you still may run
+> >> into the palo bug. I've just pushed a fix for it into the palo tree:
+> >> https://git.kernel.org/cgit/linux/kernel/git/deller/palo.git/commit/?id=70bd7a9a41e318c0575755a78c4d18ad97495c47
+> >>
+> >> If you rebuild palo, please make sure to install the new ipl boot loader into
+> >> the palo partition of your boot disc. palo should report at bootup version 1.96.
+> 
+> Same here. Please pull latest version, and install it:
+> https://git.kernel.org/cgit/linux/kernel/git/deller/palo.git/
 
->>> Linux version 4.8.0-11288-gb66484c (mroos@rp3410) (gcc version 5.4.0 (Gentoo 5.4.0 p1.0) ) #81 Sat Oct 8 20:40:24 EEST 2016
->>> unwind_init: start = 0x4076e980, end = 0x407a7060, entries = 14446
->>> The 64-bit Kernel has started...
->>> Kernel default page size is 4 KB. Huge pages enabled with 1 MB physical and 2 MB virtual size.
+palo ipl 1.96 http://www.parisc-linux.org - Sun, 08 Oct 2016 22:40:31 +0100
 
-The first thing I would suspect is the enabling of huge pages.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
+Just palo with newst upstream kernel git did not change anything, so 
+it's not palo.
 
 
+Pulled 
+git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git 
+but it seems to be alreay up to date - these commits are in my tested 
+upstream that broke the booting?
 
+
+-- 
+Meelis Roos (mroos@linux.ee)
