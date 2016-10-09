@@ -1,39 +1,31 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Move exception tables into read-only section
-Date: Sun, 9 Oct 2016 11:20:44 +0200
-Message-ID: <20161009092044.GA4484@p100.box>
-Mime-Version: 1.0
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: parisc crash on boot with 4.8+git
+Date: Sun, 9 Oct 2016 10:01:03 -0400
+Message-ID: <ADF65437-3E9A-493C-89B5-E7C8A107BA92@bell.net>
+References: <alpine.LRH.2.20.1610090042580.12761@math.ut.ee> <57F96010.1040309@gmx.de> <alpine.LRH.2.20.1610091032210.12761@math.ut.ee>
+Mime-Version: 1.0 (Apple Message framework v1085)
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Cc: Helge Deller <deller@gmx.de>,
+        Linux Kernel list <linux-kernel@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
+To: Meelis Roos <mroos@linux.ee>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <alpine.LRH.2.20.1610091032210.12761@math.ut.ee>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Since BUILDTIME_EXTABLE_SORT is enabled, the exception tables can move
-into the read-only section.
+On 2016-10-09, at 5:03 AM, Meelis Roos wrote:
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+>>> Linux version 4.8.0-11288-gb66484c (mroos@rp3410) (gcc version 5.4.0 (Gentoo 5.4.0 p1.0) ) #81 Sat Oct 8 20:40:24 EEST 2016
+>>> unwind_init: start = 0x4076e980, end = 0x407a7060, entries = 14446
+>>> The 64-bit Kernel has started...
+>>> Kernel default page size is 4 KB. Huge pages enabled with 1 MB physical and 2 MB virtual size.
 
-diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
-index 9a44e92..3d6ef1b 100644
---- a/arch/parisc/kernel/vmlinux.lds.S
-+++ b/arch/parisc/kernel/vmlinux.lds.S
-@@ -109,6 +109,10 @@ SECTIONS
- 
- 	RO_DATA_SECTION(8)
- 
-+	/* RO because of BUILDTIME_EXTABLE_SORT */
-+	EXCEPTION_TABLE(8)
-+	NOTES
-+
- 	/* unwind info */
- 	.PARISC.unwind : {
- 		__start___unwind = .;
-@@ -124,9 +128,6 @@ SECTIONS
- 	. = ALIGN(HUGEPAGE_SIZE);
- 	data_start = .;
- 
--	EXCEPTION_TABLE(8)
--	NOTES
+The first thing I would suspect is the enabling of huge pages.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
