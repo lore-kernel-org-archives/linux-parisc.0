@@ -1,60 +1,70 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: parisc crash on boot with 4.8+git
-Date: Tue, 11 Oct 2016 20:40:02 +0200
-Message-ID: <20161011184002.GA1363@p100.box>
-References: <alpine.LRH.2.20.1610090042580.12761@math.ut.ee>
- <57F96010.1040309@gmx.de>
- <alpine.LRH.2.20.1610091032210.12761@math.ut.ee>
- <57FA089F.1020301@gmx.de>
- <alpine.LRH.2.20.1610092356270.32571@math.ut.ee>
- <57FAA079.5010502@gmx.de>
- <alpine.LRH.2.20.1610100857110.32571@math.ut.ee>
- <57FBA9F1.6000009@gmx.de>
- <alpine.LRH.2.20.1610101925320.14896@math.ut.ee>
+Subject: [PATCH] parisc: Show trap name in kernel crash
+Date: Tue, 11 Oct 2016 20:49:42 +0200
+Message-ID: <20161011184942.GA4645@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Linux Kernel list <linux-kernel@vger.kernel.org>
-To: Meelis Roos <mroos@linux.ee>, linux-parisc@vger.kernel.org,
+To: linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.20.1610101925320.14896@math.ut.ee>
-List-ID: <linux-kernel.vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-* Meelis Roos <mroos@linux.ee>:
-> > > Memory Ranges:
-> > >  0) Start 0x0000000000000000 End 0x000000003fffffff Size   1024 MB
-> > >  1) Start 0x0000004040000000 End 0x000000407fdfffff Size   1022 MB
-> > > Total Memory: 2046 MB
+Show the real trap name when the kernel crashes.
 
-Meelis and myself debugged the crash off-list.
-It turns out, that I missed to zero-initialize the new memblocks.
-Patch below fixes this.
-
-Helge
-
-------------
-parisc: Zero-initialize newly alloced memblock
-
-Commit 4fe9e1d957e4 ("parisc: Drop bootmem and switch to memblock")
-switched to the memblock allocator, but missed to zero-initialize the
-newly allocated memblocks. This lead to crashes on some machines like
-the rp3410.
-
-Fixes: 4fe9e1d957e4 ("parisc: Drop bootmem and switch to memblock")
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 356f384..62ac801 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -105,6 +105,8 @@ static void * __init get_memblock(unsigned long size)
- 	else
- 		panic("get_memblock() failed.\n");
+diff --git a/arch/parisc/include/asm/traps.h b/arch/parisc/include/asm/traps.h
+index 5e953ab..6367023 100644
+--- a/arch/parisc/include/asm/traps.h
++++ b/arch/parisc/include/asm/traps.h
+@@ -11,6 +11,7 @@ void parisc_terminate(char *msg, struct pt_regs *regs,
+ void die_if_kernel(char *str, struct pt_regs *regs, long err);
  
-+	memset(__va(phys), 0, size);
+ /* mm/fault.c */
++const char *trap_name(unsigned long code);
+ void do_page_fault(struct pt_regs *regs, unsigned long code,
+ 		unsigned long address);
+ #endif
+diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
+index 97d6b20..378df92 100644
+--- a/arch/parisc/kernel/traps.c
++++ b/arch/parisc/kernel/traps.c
+@@ -458,8 +458,8 @@ void parisc_terminate(char *msg, struct pt_regs *regs, int code, unsigned long o
+ 	}
+ 
+ 	printk("\n");
+-	printk(KERN_CRIT "%s: Code=%d regs=%p (Addr=" RFMT ")\n",
+-			msg, code, regs, offset);
++	pr_crit("%s: Code=%d (%s) regs=%p (Addr=" RFMT ")\n",
++		msg, code, trap_name(code), regs, offset);
+ 	show_regs(regs);
+ 
+ 	spin_unlock(&terminate_lock);
+diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+index d64f1c8..8ff9253 100644
+--- a/arch/parisc/mm/fault.c
++++ b/arch/parisc/mm/fault.c
+@@ -204,6 +204,16 @@ static const char * const trap_description[] = {
+ 	[28] "Unaligned data reference trap",
+ };
+ 
++const char *trap_name(unsigned long code)
++{
++	const char *t = NULL;
 +
- 	return __va(phys);
- }
- 
++	if (code < ARRAY_SIZE(trap_description))
++		t = trap_description[code];
++
++	return t ? t : "Unknown trap";
++}
++
+ /*
+  * Print out info about fatal segfaults, if the show_unhandled_signals
+  * sysctl is set:
+@@ -213,8 +223,6 @@ show_signal_msg(struct pt_regs *regs, unsigned long code,
+ 		unsigned long address, struct task_struct *tsk,
+ 		struct vm_area_struct *vma)
+ {
+-	const char *trap_name = NULL;
