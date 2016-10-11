@@ -1,70 +1,52 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Show trap name in kernel crash
-Date: Tue, 11 Oct 2016 20:49:42 +0200
-Message-ID: <20161011184942.GA4645@p100.box>
+Subject: [GIT PULL] parisc architecture fixes for v4.9-rc1
+Date: Tue, 11 Oct 2016 22:24:17 +0200
+Message-ID: <20161011202417.GA3684@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Show the real trap name when the kernel crashes.
+Hi Linus,
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+please pull some final updates and fixes for this merge window for the parisc architecture from:
 
-diff --git a/arch/parisc/include/asm/traps.h b/arch/parisc/include/asm/traps.h
-index 5e953ab..6367023 100644
---- a/arch/parisc/include/asm/traps.h
-+++ b/arch/parisc/include/asm/traps.h
-@@ -11,6 +11,7 @@ void parisc_terminate(char *msg, struct pt_regs *regs,
- void die_if_kernel(char *str, struct pt_regs *regs, long err);
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.9-2
+
+Changes include:
  
- /* mm/fault.c */
-+const char *trap_name(unsigned long code);
- void do_page_fault(struct pt_regs *regs, unsigned long code,
- 		unsigned long address);
- #endif
-diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index 97d6b20..378df92 100644
---- a/arch/parisc/kernel/traps.c
-+++ b/arch/parisc/kernel/traps.c
-@@ -458,8 +458,8 @@ void parisc_terminate(char *msg, struct pt_regs *regs, int code, unsigned long o
- 	}
- 
- 	printk("\n");
--	printk(KERN_CRIT "%s: Code=%d regs=%p (Addr=" RFMT ")\n",
--			msg, code, regs, offset);
-+	pr_crit("%s: Code=%d (%s) regs=%p (Addr=" RFMT ")\n",
-+		msg, code, trap_name(code), regs, offset);
- 	show_regs(regs);
- 
- 	spin_unlock(&terminate_lock);
-diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index d64f1c8..8ff9253 100644
---- a/arch/parisc/mm/fault.c
-+++ b/arch/parisc/mm/fault.c
-@@ -204,6 +204,16 @@ static const char * const trap_description[] = {
- 	[28] "Unaligned data reference trap",
- };
- 
-+const char *trap_name(unsigned long code)
-+{
-+	const char *t = NULL;
-+
-+	if (code < ARRAY_SIZE(trap_description))
-+		t = trap_description[code];
-+
-+	return t ? t : "Unknown trap";
-+}
-+
- /*
-  * Print out info about fatal segfaults, if the show_unhandled_signals
-  * sysctl is set:
-@@ -213,8 +223,6 @@ show_signal_msg(struct pt_regs *regs, unsigned long code,
- 		unsigned long address, struct task_struct *tsk,
- 		struct vm_area_struct *vma)
- {
--	const char *trap_name = NULL;
+- Fix boot problems with new memblock allocator on rp3410 machine
+
+- Increase initial kernel mapping size for 32- and 64-bit kernels, this allows
+  to boot bigger kernels which have many modules built-in
+
+- Fix kernel layout regarding __gp and move exception table into RO section
+
+- Show trap names in crashes, use extable.h header instead of module.h
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Helge Deller (5):
+      parisc: Increase initial kernel mapping size
+      parisc: Fix kernel memory layout regarding position of __gp
+      parisc: Move exception table into read-only section
+      parisc: Zero-initialize newly alloced memblock
+      parisc: Show trap name in kernel crash
+
+Paul Gortmaker (1):
+      parisc: Migrate exception table users off module.h and onto extable.h
+
+ arch/parisc/include/asm/pgtable.h |  6 +++---
+ arch/parisc/include/asm/traps.h   |  1 +
+ arch/parisc/kernel/traps.c        |  4 ++--
+ arch/parisc/kernel/vmlinux.lds.S  | 14 +++++++++-----
+ arch/parisc/mm/fault.c            | 19 ++++++++++++-------
+ arch/parisc/mm/init.c             |  2 ++
+ 6 files changed, 29 insertions(+), 17 deletions(-)
