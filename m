@@ -1,97 +1,60 @@
-From: Marcin Nowakowski <marcin.nowakowski-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH v3 11/11] parisc/tracing: fix compat syscall handling
-Date: Tue, 11 Oct 2016 12:42:56 +0200
-Message-ID: <1476182576-15247-12-git-send-email-marcin.nowakowski@imgtec.com>
-References: <1476182576-15247-1-git-send-email-marcin.nowakowski@imgtec.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: parisc crash on boot with 4.8+git
+Date: Tue, 11 Oct 2016 20:40:02 +0200
+Message-ID: <20161011184002.GA1363@p100.box>
+References: <alpine.LRH.2.20.1610090042580.12761@math.ut.ee>
+ <57F96010.1040309@gmx.de>
+ <alpine.LRH.2.20.1610091032210.12761@math.ut.ee>
+ <57FA089F.1020301@gmx.de>
+ <alpine.LRH.2.20.1610092356270.32571@math.ut.ee>
+ <57FAA079.5010502@gmx.de>
+ <alpine.LRH.2.20.1610100857110.32571@math.ut.ee>
+ <57FBA9F1.6000009@gmx.de>
+ <alpine.LRH.2.20.1610101925320.14896@math.ut.ee>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: <linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, <luto-kltTT9wpgjJwATOyAt5JVQ@public.gmane.org>,
-        <rostedt-nx8X9YLhiw1AfugRpC6u6w@public.gmane.org>,
-        Marcin Nowakowski <marcin.nowakowski-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>,
-        Ingo Molnar <mingo-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>,
-        "James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
-        "Helge Deller" <deller-Mmb7MZpHnFY@public.gmane.org>, <linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-To: <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1476182576-15247-1-git-send-email-marcin.nowakowski-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-List-ID: <linux-api.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Linux Kernel list <linux-kernel@vger.kernel.org>
+To: Meelis Roos <mroos@linux.ee>, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LRH.2.20.1610101925320.14896@math.ut.ee>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Add missing arch code - arch_trace_is_compat_syscall and
-arch_syscall_addr
+* Meelis Roos <mroos@linux.ee>:
+> > > Memory Ranges:
+> > >  0) Start 0x0000000000000000 End 0x000000003fffffff Size   1024 MB
+> > >  1) Start 0x0000004040000000 End 0x000000407fdfffff Size   1022 MB
+> > > Total Memory: 2046 MB
 
-Signed-off-by: Marcin Nowakowski <marcin.nowakowski-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Cc: Steven Rostedt <rostedt-nx8X9YLhiw1AfugRpC6u6w@public.gmane.org>
-Cc: Ingo Molnar <mingo-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Cc: "James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>
-Cc: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
-Cc: linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
----
- arch/parisc/include/asm/ftrace.h | 10 ++++++++++
- arch/parisc/kernel/Makefile      |  1 +
- arch/parisc/kernel/ftrace.c      | 15 +++++++++++++++
- 3 files changed, 26 insertions(+)
+Meelis and myself debugged the crash off-list.
+It turns out, that I missed to zero-initialize the new memblocks.
+Patch below fixes this.
 
-diff --git a/arch/parisc/include/asm/ftrace.h b/arch/parisc/include/asm/ftrace.h
-index d635c6b..0b54385 100644
---- a/arch/parisc/include/asm/ftrace.h
-+++ b/arch/parisc/include/asm/ftrace.h
-@@ -12,6 +12,16 @@ extern unsigned long return_address(unsigned int);
+Helge
+
+------------
+parisc: Zero-initialize newly alloced memblock
+
+Commit 4fe9e1d957e4 ("parisc: Drop bootmem and switch to memblock")
+switched to the memblock allocator, but missed to zero-initialize the
+newly allocated memblocks. This lead to crashes on some machines like
+the rp3410.
+
+Fixes: 4fe9e1d957e4 ("parisc: Drop bootmem and switch to memblock")
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 356f384..62ac801 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -105,6 +105,8 @@ static void * __init get_memblock(unsigned long size)
+ 	else
+ 		panic("get_memblock() failed.\n");
  
- #define ftrace_return_address(n) return_address(n)
- 
-+#if defined(CONFIG_FTRACE_SYSCALLS) && defined(CONFIG_COMPAT)
-+#include <linux/compat.h>
++	memset(__va(phys), 0, size);
 +
-+#define ARCH_COMPAT_SYSCALL_NUMBERS_OVERLAP 1
-+static inline bool arch_trace_is_compat_syscall(struct pt_regs *regs)
-+{
-+	return in_compat_syscall();
-+}
-+#endif /* CONFIG_FTRACE_SYSCALLS && CONFIG_COMPAT */
-+
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _ASM_PARISC_FTRACE_H */
-diff --git a/arch/parisc/kernel/Makefile b/arch/parisc/kernel/Makefile
-index 69a1118..7d1fd39 100644
---- a/arch/parisc/kernel/Makefile
-+++ b/arch/parisc/kernel/Makefile
-@@ -31,3 +31,4 @@ obj64-$(CONFIG_AUDIT)	+= compat_audit.o
- obj-$(CONFIG_64BIT)	+= perf.o perf_asm.o $(obj64-y)
- obj-$(CONFIG_FUNCTION_TRACER)		+= ftrace.o
- obj-$(CONFIG_FUNCTION_GRAPH_TRACER)	+= ftrace.o
-+obj-$(CONFIG_FTRACE_SYSCALLS)	+= ftrace.o
-diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-index 5a5506a..41db7ca 100644
---- a/arch/parisc/kernel/ftrace.c
-+++ b/arch/parisc/kernel/ftrace.c
-@@ -56,6 +56,7 @@ static void __hot prepare_ftrace_return(unsigned long *parent,
+ 	return __va(phys);
  }
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
  
-+#ifdef CONFIG_FUNCTION_TRACER
- void notrace __hot ftrace_function_trampoline(unsigned long parent,
- 				unsigned long self_addr,
- 				unsigned long org_sp_gr3)
-@@ -85,4 +86,18 @@ void notrace __hot ftrace_function_trampoline(unsigned long parent,
- 	}
- #endif
- }
-+#endif /* CONFIG_FUNCTION_TRACER */
-+#if (defined CONFIG_FTRACE_SYSCALLS) && (defined CONFIG_64BIT)
-+extern const unsigned int sys_call_table64[];
- 
-+unsigned long __init arch_syscall_addr(int nr, bool compat)
-+{
-+#ifdef CONFIG_COMPAT
-+	if (compat)
-+		return (unsigned long)sys_call_table[nr];
-+#endif /* CONFIG_COMPAT */
-+
-+	return (unsigned long)sys_call_table64[nr];
-+}
-+
-+#endif /* CONFIG_FTRACE_SYSCALLS && CONFIG_64BIT */
--- 
-2.7.4
