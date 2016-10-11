@@ -1,45 +1,97 @@
-From: Meelis Roos <mroos@linux.ee>
-Subject: Re: parisc crash on boot with 4.8+git
-Date: Mon, 10 Oct 2016 19:26:30 +0300 (EEST)
-Message-ID: <alpine.LRH.2.20.1610101925320.14896@math.ut.ee>
-References: <alpine.LRH.2.20.1610090042580.12761@math.ut.ee> <57F96010.1040309@gmx.de> <alpine.LRH.2.20.1610091032210.12761@math.ut.ee> <57FA089F.1020301@gmx.de> <alpine.LRH.2.20.1610092356270.32571@math.ut.ee> <57FAA079.5010502@gmx.de>
- <alpine.LRH.2.20.1610100857110.32571@math.ut.ee> <57FBA9F1.6000009@gmx.de>
+From: Marcin Nowakowski <marcin.nowakowski-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v3 11/11] parisc/tracing: fix compat syscall handling
+Date: Tue, 11 Oct 2016 12:42:56 +0200
+Message-ID: <1476182576-15247-12-git-send-email-marcin.nowakowski@imgtec.com>
+References: <1476182576-15247-1-git-send-email-marcin.nowakowski@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux Kernel list <linux-kernel@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <57FBA9F1.6000009@gmx.de>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain
+Cc: <linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, <luto-kltTT9wpgjJwATOyAt5JVQ@public.gmane.org>,
+        <rostedt-nx8X9YLhiw1AfugRpC6u6w@public.gmane.org>,
+        Marcin Nowakowski <marcin.nowakowski-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>,
+        Ingo Molnar <mingo-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>,
+        "James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
+        "Helge Deller" <deller-Mmb7MZpHnFY@public.gmane.org>, <linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+To: <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1476182576-15247-1-git-send-email-marcin.nowakowski-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+List-ID: <linux-api.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > Memory Ranges:
-> >  0) Start 0x0000000000000000 End 0x000000003fffffff Size   1024 MB
-> >  1) Start 0x0000004040000000 End 0x000000407fdfffff Size   1022 MB
-> > Total Memory: 2046 MB
-> 
-> 2046 MB ???
-> That's strange, it should be 2048 MB.
-> 
-> Can you check in your firmware "service" or "Configuration" menu, if it 
-> reports some entries in your PDT (Page Deallocation Table) ?
-> What happens if you clean the PDT entries (see firmware menu) and boot again?
+Add missing arch code - arch_trace_is_compat_syscall and
+arch_syscall_addr
 
-Service Menu: Enter command > pdt
+Signed-off-by: Marcin Nowakowski <marcin.nowakowski-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Cc: Steven Rostedt <rostedt-nx8X9YLhiw1AfugRpC6u6w@public.gmane.org>
+Cc: Ingo Molnar <mingo-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Cc: "James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>
+Cc: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
+Cc: linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+---
+ arch/parisc/include/asm/ftrace.h | 10 ++++++++++
+ arch/parisc/kernel/Makefile      |  1 +
+ arch/parisc/kernel/ftrace.c      | 15 +++++++++++++++
+ 3 files changed, 26 insertions(+)
 
-PAGE DEALLOCATION TABLE INFORMATION
-
-   Location      Address       Type        Perm  Page  
-   ------------  ------------  ----------  ----  ---------
-
-   No Entries in Page Deallocation Table 
-
-   PDT Entries Used: 0
-   PDT Entries Free: 3000
-   PDT Total Size:   3000
-
-Seems it is not PDT?
-
+diff --git a/arch/parisc/include/asm/ftrace.h b/arch/parisc/include/asm/ftrace.h
+index d635c6b..0b54385 100644
+--- a/arch/parisc/include/asm/ftrace.h
++++ b/arch/parisc/include/asm/ftrace.h
+@@ -12,6 +12,16 @@ extern unsigned long return_address(unsigned int);
+ 
+ #define ftrace_return_address(n) return_address(n)
+ 
++#if defined(CONFIG_FTRACE_SYSCALLS) && defined(CONFIG_COMPAT)
++#include <linux/compat.h>
++
++#define ARCH_COMPAT_SYSCALL_NUMBERS_OVERLAP 1
++static inline bool arch_trace_is_compat_syscall(struct pt_regs *regs)
++{
++	return in_compat_syscall();
++}
++#endif /* CONFIG_FTRACE_SYSCALLS && CONFIG_COMPAT */
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* _ASM_PARISC_FTRACE_H */
+diff --git a/arch/parisc/kernel/Makefile b/arch/parisc/kernel/Makefile
+index 69a1118..7d1fd39 100644
+--- a/arch/parisc/kernel/Makefile
++++ b/arch/parisc/kernel/Makefile
+@@ -31,3 +31,4 @@ obj64-$(CONFIG_AUDIT)	+= compat_audit.o
+ obj-$(CONFIG_64BIT)	+= perf.o perf_asm.o $(obj64-y)
+ obj-$(CONFIG_FUNCTION_TRACER)		+= ftrace.o
+ obj-$(CONFIG_FUNCTION_GRAPH_TRACER)	+= ftrace.o
++obj-$(CONFIG_FTRACE_SYSCALLS)	+= ftrace.o
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index 5a5506a..41db7ca 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -56,6 +56,7 @@ static void __hot prepare_ftrace_return(unsigned long *parent,
+ }
+ #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+ 
++#ifdef CONFIG_FUNCTION_TRACER
+ void notrace __hot ftrace_function_trampoline(unsigned long parent,
+ 				unsigned long self_addr,
+ 				unsigned long org_sp_gr3)
+@@ -85,4 +86,18 @@ void notrace __hot ftrace_function_trampoline(unsigned long parent,
+ 	}
+ #endif
+ }
++#endif /* CONFIG_FUNCTION_TRACER */
++#if (defined CONFIG_FTRACE_SYSCALLS) && (defined CONFIG_64BIT)
++extern const unsigned int sys_call_table64[];
+ 
++unsigned long __init arch_syscall_addr(int nr, bool compat)
++{
++#ifdef CONFIG_COMPAT
++	if (compat)
++		return (unsigned long)sys_call_table[nr];
++#endif /* CONFIG_COMPAT */
++
++	return (unsigned long)sys_call_table64[nr];
++}
++
++#endif /* CONFIG_FTRACE_SYSCALLS && CONFIG_64BIT */
 -- 
-Meelis Roos (mroos@linux.ee)
+2.7.4
