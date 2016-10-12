@@ -1,52 +1,38 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture fixes for v4.9-rc1
-Date: Tue, 11 Oct 2016 22:24:17 +0200
-Message-ID: <20161011202417.GA3684@p100.box>
+Subject: timekeeping: Cycle offset (32) is larger than allowed by the
+ 'jiffies' clock's max_cycles value (10): time overflow danger
+Date: Wed, 12 Oct 2016 23:22:30 +0200
+Message-ID: <57FEA996.3030004@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+To: "john.stultz@linaro.org" <john.stultz@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+When enabling CONFIG_DEBUG_TIMEKEEPING, I see on kernel 4.8 git head
+those warnings on the parisc architecture:
 
-please pull some final updates and fixes for this merge window for the parisc architecture from:
+Linux version 4.8.0-64bit+ (deller@p100.box) (gcc version 4.9.2 20150212 (Red Hat Cross 4.9.2-5) (GCC) ) #516 SMP Wed Oct 12 22:52:58 CEST 2016
+...
+clocksource: cr16: mask: 0xffffffffffffffff max_cycles: 0xacf9151134, max_idle_ns: 440795214493 ns
+WARNING: timekeeping: Cycle offset (32) is larger than allowed by the 'jiffies' clock's max_cycles value (10): time overflow danger
+         timekeeping: Your kernel is sick, but tries to cope by capping time updates
+WARNING: timekeeping: Cycle offset (42) is larger than allowed by the 'jiffies' clock's max_cycles value (10): time overflow danger
+         timekeeping: Your kernel is sick, but tries to cope by capping time updates
+...
+At this stage the jiffies clocksource was not yet registered (at least not mentioned in the bootlog).
+This warning happens over and over. Maybe it should be rate-limited too?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.9-2
+Comparing to 4.7 where CONFIG_DEBUG_TIMEKEEPING is not enabled I see:
+root@c8000:~# dmesg | grep clock
+[    0.000000] clocksource: cr16: mask: 0xffffffffffffffff max_cycles: 0xcf914c9718, max_idle_ns: 440795231327 ns
+[    0.873644] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[    7.968087] clocksource: Switched to clocksource cr16
 
-Changes include:
- 
-- Fix boot problems with new memblock allocator on rp3410 machine
+Am I somehow missing to initialize the max_cycles field of the jiffies clocksource
+on the parisc architecture ?
 
-- Increase initial kernel mapping size for 32- and 64-bit kernels, this allows
-  to boot bigger kernels which have many modules built-in
-
-- Fix kernel layout regarding __gp and move exception table into RO section
-
-- Show trap names in crashes, use extable.h header instead of module.h
-
-Thanks,
 Helge
-
-----------------------------------------------------------------
-Helge Deller (5):
-      parisc: Increase initial kernel mapping size
-      parisc: Fix kernel memory layout regarding position of __gp
-      parisc: Move exception table into read-only section
-      parisc: Zero-initialize newly alloced memblock
-      parisc: Show trap name in kernel crash
-
-Paul Gortmaker (1):
-      parisc: Migrate exception table users off module.h and onto extable.h
-
- arch/parisc/include/asm/pgtable.h |  6 +++---
- arch/parisc/include/asm/traps.h   |  1 +
- arch/parisc/kernel/traps.c        |  4 ++--
- arch/parisc/kernel/vmlinux.lds.S  | 14 +++++++++-----
- arch/parisc/mm/fault.c            | 19 ++++++++++++-------
- arch/parisc/mm/init.c             |  2 ++
- 6 files changed, 29 insertions(+), 17 deletions(-)
