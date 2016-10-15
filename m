@@ -1,104 +1,97 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Board & CPU temperature of C8000 workstation with IPMI
-Date: Fri, 14 Oct 2016 19:30:21 -0400
-Message-ID: <9DC6B052-2B72-421C-A182-42B904DD5F2D@bell.net>
-References: <xfk3dgbwtml2ipflw4qteta4.1476373659232@email.android.com> <CAL2AjcemWWonjOWNa+X+2Qsewfzohp0C4pFjh8CmAk2UbbC=-A@mail.gmail.com> <57FFB7C1.1040809@gmx.de> <5800DE0E.80809@gmx.de> <75fb661f-ccbd-84ab-ad08-3df37d09b295@bell.net>
-Mime-Version: 1.0 (Apple Message framework v1085)
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Implement executable address layout randomization
+Date: Sun, 16 Oct 2016 00:02:27 +0200
+Message-ID: <20161015220227.GA31338@p100.box>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        pannonmage <pannonmage@googlemail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: John David Anglin <dave.anglin@bell.net>
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <75fb661f-ccbd-84ab-ad08-3df37d09b295@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2016-10-14, at 9:51 AM, John David Anglin wrote:
+Add missing code for userspace executable randomization, e.g.
+applications compiled with the gcc -pie option.
 
-> Hi Helge,
-> 
-> On 2016-10-14 9:30 AM, Helge Deller wrote:
->> Additionally I wonder if it's possible to get more information filled in
->> for IPMI on C8000 machines. E.g. is it possible on HP-UX to remotely turn
->> the machine on and off ?
->> 
-> I had wondered that as well.  On rp3440, I see messages during boot that indicate that
-> the ipmi doesn't know how to do it.
-> 
-> I will try ipmitool on rp3440 tonight.
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-
-mx3210:/home/dave# ipmitool sdr
-Chassis Intrus   | 0x00              | ok
-Chassis Open     | 0x00              | ok
-Security         | Not Readable      | ns
-Power Button     | 0x00              | ok
-Power Button     | 0x00              | ok
-Clear CMOS Jmpr  | Not Readable      | ns
-Safe Mode Jmpr   | Not Readable      | ns
-Clr Passwd Jmpr  | 0x00              | ok
-Rsvd Jmpr        | Not Readable      | ns
-Rsvd2 Jmpr       | Not Readable      | ns
-Watchdog Timer   | Not Readable      | ns
-Cooling 1 (Sys)  | 0x01              | ok
-Cooling 2 (Mem)  | 0x01              | ok
-Cooling 3 (Disk) | 0x01              | ok
-Wake-on-LAN 100  | Not Readable      | ns
-Wake-on-LAN 1Gb  | Not Readable      | ns
-Missing Device   | Not Readable      | ns
-SAF-TE Card      | Not Readable      | ns
-Power Supply 1   | 0x01              | ok
-Power Supply 2   | 0x00              | ok
-Pwr Spply 1 Ctrl | Not Readable      | ns
-Pwr Spply 2 Ctrl | Not Readable      | ns
-Power Redundancy | 0x01              | ok
-AC Pwr Supply 1  | Not Readable      | ns
-AC Pwr Supply 2  | Not Readable      | ns
-12V Pwr Supply 1 | 0x00              | ok
-12V Pwr Supply 2 | 0x00              | ok
-12V Rail 0       | 0x00              | ok
-12V Rail 1       | 0x00              | ok
-12V Rail 2       | 0x00              | ok
-12V Rail 3       | 0x00              | ok
-12V Rail 4       | 0x00              | ok
-Battery Voltage  | 0x00              | ok
-Over-Voltage     | 0x00              | ok
-Power Good       | 0x00              | ok
-Ambient Temp     | 22 degrees C      | ok
-Processor 0 Temp | 56 degrees C      | ok
-Processor 1 Temp | 56 degrees C      | ok
-Fan 1R Tach      | 2610 RPM          | ok
-Fan 1L Tach      | 2670 RPM          | ok
-Fan CPU0 Tach    | 4470 RPM          | ok
-Fan CPU1 Tach    | 4380 RPM          | ok
-Fan 2F Tach      | 3870 RPM          | ok
-Fan 2B Tach      | 4110 RPM          | ok
-Fan 3F Tach      | 3090 RPM          | ok
-Fan 3B Tach      | 2790 RPM          | ok
-Fan 1R (Power)   | 0x00              | ok
-Fan 1L (Power)   | 0x00              | ok
-Fan CPU0 (R)     | 0x00              | ok
-Fan CPU1 (L)     | 0x00              | ok
-Fan 2F (Memory)  | 0x00              | ok
-Fan 2B (Memory)  | 0x00              | ok
-Fan 3F (Disk)    | 0x00              | ok
-Fan 3B (Disk)    | 0x00              | ok
-SCSI Device 0    | 0x01              | ok
-SCSI Device 1    | 0x00              | ok
-SCSI Device 2    | 0x01              | ok
-SCSI ChA Cable   | 0x01              | ok
-SCSI ChB Cable   | 0x01              | ok
-SCSI ChExt Cable | 0x01              | ok
-ACPI State       | 0x01              | ok
-TOC Interrupt    | 0x00              | ok
-SDR Time Set     | 0x00              | ok
-SEL Time Set     | 0x00              | ok
-Intrnl Watchdog  | Not Readable      | ns
-
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 71c4a3a..e5cfadb 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -7,6 +7,7 @@ config PARISC
+ 	select HAVE_FUNCTION_GRAPH_TRACER
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select ARCH_WANT_FRAME_POINTERS
++	select ARCH_HAS_ELF_RANDOMIZE
+ 	select RTC_CLASS
+ 	select RTC_DRV_GENERIC
+ 	select INIT_ALL_POSSIBLE
+diff --git a/arch/parisc/include/asm/elf.h b/arch/parisc/include/asm/elf.h
+index 78c9fd3..a6b2a42 100644
+--- a/arch/parisc/include/asm/elf.h
++++ b/arch/parisc/include/asm/elf.h
+@@ -348,9 +348,10 @@ struct pt_regs;	/* forward declaration... */
+ 
+ #define ELF_HWCAP	0
+ 
+-#define STACK_RND_MASK	(is_32bit_task() ? \
+-				0x7ff >> (PAGE_SHIFT - 12) : \
+-				0x3ffff >> (PAGE_SHIFT - 12))
++/* Masks for stack and mmap randomization */
++#define BRK_RND_MASK	(is_32bit_task() ? 0x07ffUL : 0x3ffffUL)
++#define MMAP_RND_MASK	(is_32bit_task() ? 0x1fffUL : 0x3ffffUL)
++#define STACK_RND_MASK	MMAP_RND_MASK
+ 
+ struct mm_struct;
+ extern unsigned long arch_randomize_brk(struct mm_struct *);
+diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+index 4063943..ea6603e 100644
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -276,11 +276,7 @@ void *dereference_function_descriptor(void *ptr)
+ 
+ static inline unsigned long brk_rnd(void)
+ {
+-	/* 8MB for 32bit, 1GB for 64bit */
+-	if (is_32bit_task())
+-		return (get_random_int() & 0x7ffUL) << PAGE_SHIFT;
+-	else
+-		return (get_random_int() & 0x3ffffUL) << PAGE_SHIFT;
++	return (get_random_int() & BRK_RND_MASK) << PAGE_SHIFT;
+ }
+ 
+ unsigned long arch_randomize_brk(struct mm_struct *mm)
+diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
+index 0a393a0..a81e177 100644
+--- a/arch/parisc/kernel/sys_parisc.c
++++ b/arch/parisc/kernel/sys_parisc.c
+@@ -225,19 +225,17 @@ static unsigned long mmap_rnd(void)
+ {
+ 	unsigned long rnd = 0;
+ 
+-	/*
+-	*  8 bits of randomness in 32bit mmaps, 20 address space bits
+-	* 28 bits of randomness in 64bit mmaps, 40 address space bits
+-	*/
+-	if (current->flags & PF_RANDOMIZE) {
+-		if (is_32bit_task())
+-			rnd = get_random_int() % (1<<8);
+-		else
+-			rnd = get_random_int() % (1<<28);
+-	}
++	if (current->flags & PF_RANDOMIZE)
++		rnd = get_random_int() & MMAP_RND_MASK;
++
+ 	return rnd << PAGE_SHIFT;
+ }
+ 
++unsigned long arch_mmap_rnd(void)
++{
++	return (get_random_int() & MMAP_RND_MASK) << PAGE_SHIFT;
++}
++
+ static unsigned long mmap_legacy_base(void)
+ {
+ 	return TASK_UNMAPPED_BASE + mmap_rnd();
