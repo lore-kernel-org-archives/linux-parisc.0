@@ -1,57 +1,101 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Re-enable interrupts early
-Date: Mon, 24 Oct 2016 21:55:58 +0200
-Message-ID: <20161024195553.GA27612@p100.box>
+From: Alexander Duyck <alexander.h.duyck@intel.com>
+Subject: [net-next PATCH 17/27] arch/parisc: Add option to skip DMA sync as
+ a part of map and unmap
+Date: Tue, 25 Oct 2016 11:38:18 -0400
+Message-ID: <20161025153818.4815.15885.stgit@ahduyck-blue-test.jf.intel.com>
+References: <20161025153220.4815.61239.stgit@ahduyck-blue-test.jf.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Cc: Helge Deller <deller@gmx.de>, brouer@redhat.com,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>, linux-parisc@vger.kernel.org,
+ davem@davemloft.net
+To: netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <20161025153220.4815.61239.stgit@ahduyck-blue-test.jf.intel.com>
+List-ID: <linux-mm.kvack.org>
 
-Since kernel 3.9 we re-enable interrupts quite late due to commit c207a76bf15
-("parisc: only re-enable interrupts if we need to schedule or deliver signals
-when returning to userspace"). At that time the parisc kernel had no dedicated
-IRQ stack, and this commit prevented kernel stack overflows.
+This change allows us to pass DMA_ATTR_SKIP_CPU_SYNC which allows us to
+avoid invoking cache line invalidation if the driver will just handle it
+via a sync_for_cpu or sync_for_device call.
 
-But since commit 200c880420a ("parisc: implement irq stacks") we now have an
-IRQ stack, so we may be safe now.  And when CONFIG_DEBUG_STACKOVERFLOW=y is
-enabled, we can even check at runtime for overflows.
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+Signed-off-by: Alexander Duyck <alexander.h.duyck@intel.com>
+---
+ arch/parisc/kernel/pci-dma.c |   20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index 4fcff2d..ad4cb16 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -878,6 +878,9 @@ ENTRY_CFI(syscall_exit_rfi)
- 	STREG   %r19,PT_SR7(%r16)
+diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
+index 02d9ed0..be55ede 100644
+--- a/arch/parisc/kernel/pci-dma.c
++++ b/arch/parisc/kernel/pci-dma.c
+@@ -459,7 +459,9 @@ static dma_addr_t pa11_dma_map_page(struct device *dev, struct page *page,
+ 	void *addr = page_address(page) + offset;
+ 	BUG_ON(direction == DMA_NONE);
  
- intr_return:
-+	/* NOTE: Need to enable interrupts incase we schedule. */
-+	ssm     PSW_SM_I, %r0
+-	flush_kernel_dcache_range((unsigned long) addr, size);
++	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
++		flush_kernel_dcache_range((unsigned long) addr, size);
 +
- 	/* check for reschedule */
- 	mfctl   %cr30,%r1
- 	LDREG   TI_FLAGS(%r1),%r19	/* sched.h: TIF_NEED_RESCHED */
-@@ -904,11 +907,6 @@ intr_check_sig:
- 	LDREG	PT_IASQ1(%r16), %r20
- 	cmpib,COND(=),n 0,%r20,intr_restore /* backward */
+ 	return virt_to_phys(addr);
+ }
  
--	/* NOTE: We need to enable interrupts if we have to deliver
--	 * signals. We used to do this earlier but it caused kernel
--	 * stack overflows. */
--	ssm     PSW_SM_I, %r0
--
- 	copy	%r0, %r25			/* long in_syscall = 0 */
- #ifdef CONFIG_64BIT
- 	ldo	-16(%r30),%r29			/* Reference param save area */
-@@ -960,10 +958,6 @@ intr_do_resched:
- 	cmpib,COND(=)	0, %r20, intr_do_preempt
- 	nop
+@@ -469,8 +471,11 @@ static void pa11_dma_unmap_page(struct device *dev, dma_addr_t dma_handle,
+ {
+ 	BUG_ON(direction == DMA_NONE);
  
--	/* NOTE: We need to enable interrupts if we schedule.  We used
--	 * to do this earlier but it caused kernel stack overflows. */
--	ssm     PSW_SM_I, %r0
++	if (attrs & DMA_ATTR_SKIP_CPU_SYNC)
++		return;
++
+ 	if (direction == DMA_TO_DEVICE)
+-	    return;
++		return;
+ 
+ 	/*
+ 	 * For PCI_DMA_FROMDEVICE this flush is not necessary for the
+@@ -479,7 +484,6 @@ static void pa11_dma_unmap_page(struct device *dev, dma_addr_t dma_handle,
+ 	 */
+ 
+ 	flush_kernel_dcache_range((unsigned long) phys_to_virt(dma_handle), size);
+-	return;
+ }
+ 
+ static int pa11_dma_map_sg(struct device *dev, struct scatterlist *sglist,
+@@ -496,6 +500,10 @@ static int pa11_dma_map_sg(struct device *dev, struct scatterlist *sglist,
+ 
+ 		sg_dma_address(sg) = (dma_addr_t) virt_to_phys(vaddr);
+ 		sg_dma_len(sg) = sg->length;
++
++		if (attrs & DMA_ATTR_SKIP_CPU_SYNC)
++			continue;
++
+ 		flush_kernel_dcache_range(vaddr, sg->length);
+ 	}
+ 	return nents;
+@@ -510,14 +518,16 @@ static void pa11_dma_unmap_sg(struct device *dev, struct scatterlist *sglist,
+ 
+ 	BUG_ON(direction == DMA_NONE);
+ 
++	if (attrs & DMA_ATTR_SKIP_CPU_SYNC)
++		return;
++
+ 	if (direction == DMA_TO_DEVICE)
+-	    return;
++		return;
+ 
+ 	/* once we do combining we'll need to use phys_to_virt(sg_dma_address(sglist)) */
+ 
+ 	for_each_sg(sglist, sg, nents, i)
+ 		flush_kernel_vmap_range(sg_virt(sg), sg->length);
+-	return;
+ }
+ 
+ static void pa11_dma_sync_single_for_cpu(struct device *dev,
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
