@@ -1,7 +1,8 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: keep track of last shared mmap'ed address
-Date: Thu, 27 Oct 2016 20:39:29 +0200
-Message-ID: <20161027183929.GA10225@ls3530.box>
+Subject: [PATCH] mm, parisc: Optimize unmapped_area_topdown() allocation for
+ bigger alignments
+Date: Thu, 27 Oct 2016 21:56:54 +0200
+Message-ID: <20161027195654.GA31972@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -11,102 +12,107 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-shared mappings (v2)
-Reply-To: 
-In-Reply-To: <20140417204545.GA4567@ls3530.fritz.box>
+(resending this patch from April 2014 to get it into patchwork)
 
-* Helge Deller <deller@gmx.de>:
-> [RFC,PATCH] mm,parisc: keep track of last mmap'ed address
-> 
-> Because of parisc's cache aliasing constraints we need to map shared pages at a
-> multiple of 4MB while most other architectures can map files at any multiple of
-> PAGE_SIZE. In the past this constraint was ensured by calculating a virtual
-> offset into this 4MB region which is based on the physical address of the
-> kernel mapping variable (right-shift value of filp->f_mapping by 8 bits).
-> Since we only have a 32bit userspace (even when running on a 64bit kernel) this
-> often leads to large gaps in the maps of the userspace processes and to out of
-> memory situations even if physical memory was still free.  Of course I did
-> played with other variants of shifting the f_mapping value to find better
-> offsets but this didn't helped either.
-> 
-> This patch chooses a different approach.
-> It adds the additional field i_mmap_lastmmap to the address_space struct to
-> keep track of the last mapping of a shared file. With this bookkeeping it's
-> possible for the parisc memory allocator to 
-> a) choose a new mapping offset if the file hasn't been mapped yet, and
-> b) take the last-used mapping if it was already mapped by another process.
-> 
-> Overall this approach leads to a more condensed memory usage on parisc because
-> the shared files will now be mapped much closer to each other. This is e.g.
-> visible with shared libraries which are now not any longer cluttered around
-> in the userspace process but close to each other at the top of the userspace
-> memory.
+The current implementation of unmapped_area_topdown() is very inefficient for
+architectures which require an alignment bigger than PAGE_SIZE for shared
+mappings. This basically affects architectures like parisc, ia64, sparc and
+probably others.
 
-This is version 2 of this patch.
+When unmapped_area_topdown() is called to find a free area, the current
+implementation looks for an area of size (length + align_mask). For many
+architectures align_mask is 4k (=PAGE_SIZE), while others due to cache
+colouring require bigger alignment masks of up to 4 MB (e.g. on parisc). In
+fragmented memory situations this may lead to unmapped_area_topdown() being
+unable to find even for a few bytes requested a suitable area and as such may
+return out of memory.
 
-Instead of adding one additional field to the address space struct, it
-now uses the private_data field of the file struct to store the last
-used mmap address.
+This patch modifies the search algorithm to look for an area of the requested
+size while taking the required alignment and alignment offset into account.
 
-Additionally I tweaked the flush_dcache_page() function to warn for
-INEQUIVALENT ALIASES only for shared mappings and ignore private
-mappings. Without this change, stracing applications sometimes showed
-those warnings. Not sure if this is the right thing to do.
-
-My testing didn't showed any negative effects yet, although I'm not sure
-if the usage of the private_data field may conflict with other use
-cases, e.g. compressed file systems or such.
-
-To benefit from the more effective/condensed memory usage one additional
-patch is needed.
+Tested on 32- and 64-bit parisc kernels.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index 629eb46..f72789b 100644
---- a/arch/parisc/kernel/cache.c
-+++ b/arch/parisc/kernel/cache.c
-@@ -321,10 +321,10 @@ void flush_dcache_page(struct page *page)
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 1af87c1..f675e07 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1848,16 +1848,26 @@ unsigned long unmapped_area(struct vm_unmapped_area_info *info)
+ 	return gap_start;
+ }
  
- 	pgoff = page->index;
- 
--	/* We have carefully arranged in arch_get_unmapped_area() that
--	 * *any* mappings of a file are always congruently mapped (whether
--	 * declared as MAP_PRIVATE or MAP_SHARED), so we only need
--	 * to flush one address here for them all to become coherent */
-+	/* We have carefully arranged in arch_get_unmapped_area() that mappings
-+	 * of a file are always congruently mapped (if declared as MAP_SHARED, not
-+	 * MAP_PRIVATE), so we only need to flush one address here for them all to
-+	 * become coherent */
- 
- 	flush_dcache_mmap_lock(mapping);
- 	vma_interval_tree_foreach(mpnt, &mapping->i_mmap, pgoff, pgoff) {
-@@ -344,7 +344,7 @@ void flush_dcache_page(struct page *page)
- 		if (old_addr == 0 || (old_addr & (SHM_COLOUR - 1))
- 				      != (addr & (SHM_COLOUR - 1))) {
- 			__flush_cache_page(mpnt, addr, page_to_phys(page));
--			if (old_addr)
-+			if (old_addr && (mpnt->vm_flags & VM_SHARED))
- 				printk(KERN_ERR "INEQUIVALENT ALIASES 0x%lx and 0x%lx in file %pD\n", old_addr, addr, mpnt->vm_file);
- 			old_addr = addr;
- 		}
-diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
-index 0a393a0..c04d946 100644
---- a/arch/parisc/kernel/sys_parisc.c
-+++ b/arch/parisc/kernel/sys_parisc.c
-@@ -36,12 +36,11 @@
- #include <linux/personality.h>
- #include <linux/random.h>
- 
--/* we construct an artificial offset for the mapping based on the physical
-- * address of the kernel mapping variable */
-+/* keep track of the last mapping address offset in the private_data field */
- #define GET_LAST_MMAP(filp)		\
--	(filp ? ((unsigned long) filp->f_mapping) >> 8 : 0UL)
-+	(filp && (file_count(filp) > 0) ? (unsigned long) filp->private_data : 0UL)
- #define SET_LAST_MMAP(filp, val)	\
--	 { /* nothing */ }
-+	{ if (filp) filp->private_data = (void *) (val); }
- 
- static int get_offset(unsigned int last_mmap)
++/* adjust gap start address upwards to desired alignment */
++static unsigned long gap_start_round_up(unsigned long start,
++				struct vm_unmapped_area_info *info)
++{
++	if (!info->align_mask)
++		return start;
++	if ((start & info->align_mask) > info->align_offset)
++		start = ALIGN(start, info->align_mask+1) + info->align_offset;
++	else
++		start = (start & ~info->align_mask) + info->align_offset;
++	return start;
++}
++
+ unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
  {
+ 	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma;
+ 	unsigned long length, low_limit, high_limit, gap_start, gap_end;
+ 
+-	/* Adjust search length to account for worst case alignment overhead */
+-	length = info->length + info->align_mask;
+-	if (length < info->length)
+-		return -ENOMEM;
++	length = info->length;
+ 
+ 	/*
+ 	 * Adjust search limits by the desired length.
+@@ -1874,8 +1884,10 @@ unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
+ 
+ 	/* Check highest gap, which does not precede any rbtree node */
+ 	gap_start = mm->highest_vm_end;
+-	if (gap_start <= high_limit)
+-		goto found_highest;
++	gap_start = gap_start_round_up(gap_start, info);
++	if (gap_start <= high_limit && gap_end - gap_start >= length &&
++			gap_start < gap_end)
++		goto found;
+ 
+ 	/* Check if rbtree root looks promising */
+ 	if (RB_EMPTY_ROOT(&mm->mm_rb))
+@@ -1887,6 +1899,7 @@ unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
+ 	while (true) {
+ 		/* Visit right subtree if it looks promising */
+ 		gap_start = vma->vm_prev ? vma->vm_prev->vm_end : 0;
++		gap_start = gap_start_round_up(gap_start, info);
+ 		if (gap_start <= high_limit && vma->vm_rb.rb_right) {
+ 			struct vm_area_struct *right =
+ 				rb_entry(vma->vm_rb.rb_right,
+@@ -1902,7 +1915,8 @@ unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
+ 		gap_end = vma->vm_start;
+ 		if (gap_end < low_limit)
+ 			return -ENOMEM;
+-		if (gap_start <= high_limit && gap_end - gap_start >= length)
++		if (gap_start <= high_limit && gap_end - gap_start >= length &&
++				gap_start < gap_end)
+ 			goto found;
+ 
+ 		/* Visit left subtree if it looks promising */
+@@ -1926,6 +1940,7 @@ unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
+ 			if (prev == vma->vm_rb.rb_right) {
+ 				gap_start = vma->vm_prev ?
+ 					vma->vm_prev->vm_end : 0;
++				gap_start = gap_start_round_up(gap_start, info);
+ 				goto check_current;
+ 			}
+ 		}
+@@ -1936,7 +1951,6 @@ unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
+ 	if (gap_end > info->high_limit)
+ 		gap_end = info->high_limit;
+ 
+-found_highest:
+ 	/* Compute highest gap address at the desired alignment */
+ 	gap_end -= info->length;
+ 	gap_end -= (gap_end - info->align_offset) & info->align_mask;
