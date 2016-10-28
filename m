@@ -1,118 +1,399 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] mm, parisc: Optimize unmapped_area_topdown() allocation for
- bigger alignments
-Date: Thu, 27 Oct 2016 21:56:54 +0200
-Message-ID: <20161027195654.GA31972@ls3530.box>
+From: <gregkh@linuxfoundation.org>
+Subject: patch "tty: vt, cleanup and document con_scroll" added to tty-next
+Date: Fri, 28 Oct 2016 04:21:02 -0400
+Message-ID: <147764286250173@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+To: jslaby@suse.cz, deller@gmx.de, gregkh@linuxfoundation.org,
+        jejb@parisc-linux.org, linux-fbdev@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-usb@vger.kernel.org,
+        thomas@winischhofer.net, tomi.valkeinen@ti.com
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-(resending this patch from April 2014 to get it into patchwork)
 
-The current implementation of unmapped_area_topdown() is very inefficient for
-architectures which require an alignment bigger than PAGE_SIZE for shared
-mappings. This basically affects architectures like parisc, ia64, sparc and
-probably others.
+This is a note to let you know that I've just added the patch titled
 
-When unmapped_area_topdown() is called to find a free area, the current
-implementation looks for an area of size (length + align_mask). For many
-architectures align_mask is 4k (=PAGE_SIZE), while others due to cache
-colouring require bigger alignment masks of up to 4 MB (e.g. on parisc). In
-fragmented memory situations this may lead to unmapped_area_topdown() being
-unable to find even for a few bytes requested a suitable area and as such may
-return out of memory.
+    tty: vt, cleanup and document con_scroll
 
-This patch modifies the search algorithm to look for an area of the requested
-size while taking the required alignment and alignment offset into account.
+to my tty git tree which can be found at
+    git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git
+in the tty-next branch.
 
-Tested on 32- and 64-bit parisc kernels.
+The patch will show up in the next release of the linux-next tree
+(usually sometime within the next 24 hours during the week.)
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+The patch will also be merged in the next major kernel release
+during the merge window.
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 1af87c1..f675e07 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1848,16 +1848,26 @@ unsigned long unmapped_area(struct vm_unmapped_area_info *info)
- 	return gap_start;
+If you have any questions about this process, please let me know.
+
+
+>From d705ff38189fcfbbfa6aa97363d30c23348ad166 Mon Sep 17 00:00:00 2001
+From: Jiri Slaby <jslaby@suse.cz>
+Date: Mon, 3 Oct 2016 11:18:33 +0200
+Subject: tty: vt, cleanup and document con_scroll
+
+Scrolling helpers scrup and scrdown both accept 'top' and 'bottom' as
+unsigned int. Number of lines 'nr' is accepted as int, but all callers
+pass down unsigned too. So change the type of 'nr' to unsigned too.
+Now, promote unsigned int from the helpers up to the con_scroll
+hook which actually accepted all those as signed int.
+
+Next, the 'dir' parameter can have only two values and we define
+constants for that: SM_UP and SM_DOWN. Switch them to enum and do
+proper type checking on 'dir' too.
+
+Finally, document the behaviour of the hook.
+
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Thomas Winischhofer <thomas@winischhofer.net>
+Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: <linux-fbdev@vger.kernel.org>
+Cc: <linux-usb@vger.kernel.org>
+Cc: <linux-parisc@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/tty/vt/vt.c                     |  6 ++++--
+ drivers/usb/misc/sisusbvga/sisusb_con.c | 18 ++++++++++--------
+ drivers/video/console/fbcon.c           | 18 ++++++++----------
+ drivers/video/console/mdacon.c          |  7 ++++---
+ drivers/video/console/newport_con.c     |  8 ++++----
+ drivers/video/console/sticon.c          |  7 ++++---
+ drivers/video/console/vgacon.c          | 12 +++++-------
+ include/linux/console.h                 | 16 +++++++++++-----
+ 8 files changed, 50 insertions(+), 42 deletions(-)
+
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 06fb39c1d6dd..c4bf96fee32e 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -315,7 +315,8 @@ void schedule_console_callback(void)
+ 	schedule_work(&console_work);
  }
  
-+/* adjust gap start address upwards to desired alignment */
-+static unsigned long gap_start_round_up(unsigned long start,
-+				struct vm_unmapped_area_info *info)
-+{
-+	if (!info->align_mask)
-+		return start;
-+	if ((start & info->align_mask) > info->align_offset)
-+		start = ALIGN(start, info->align_mask+1) + info->align_offset;
-+	else
-+		start = (start & ~info->align_mask) + info->align_offset;
-+	return start;
-+}
-+
- unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
+-static void scrup(struct vc_data *vc, unsigned int t, unsigned int b, int nr)
++static void scrup(struct vc_data *vc, unsigned int t, unsigned int b,
++		unsigned int nr)
  {
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
- 	unsigned long length, low_limit, high_limit, gap_start, gap_end;
+ 	unsigned short *d, *s;
  
--	/* Adjust search length to account for worst case alignment overhead */
--	length = info->length + info->align_mask;
--	if (length < info->length)
--		return -ENOMEM;
-+	length = info->length;
+@@ -332,7 +333,8 @@ static void scrup(struct vc_data *vc, unsigned int t, unsigned int b, int nr)
+ 		    vc->vc_size_row * nr);
+ }
  
- 	/*
- 	 * Adjust search limits by the desired length.
-@@ -1874,8 +1884,10 @@ unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
+-static void scrdown(struct vc_data *vc, unsigned int t, unsigned int b, int nr)
++static void scrdown(struct vc_data *vc, unsigned int t, unsigned int b,
++		unsigned int nr)
+ {
+ 	unsigned short *s;
+ 	unsigned int step;
+diff --git a/drivers/usb/misc/sisusbvga/sisusb_con.c b/drivers/usb/misc/sisusbvga/sisusb_con.c
+index 460cebf322e3..6331965daa0b 100644
+--- a/drivers/usb/misc/sisusbvga/sisusb_con.c
++++ b/drivers/usb/misc/sisusbvga/sisusb_con.c
+@@ -808,9 +808,10 @@ sisusbcon_cursor(struct vc_data *c, int mode)
+ 	mutex_unlock(&sisusb->lock);
+ }
  
- 	/* Check highest gap, which does not precede any rbtree node */
- 	gap_start = mm->highest_vm_end;
--	if (gap_start <= high_limit)
--		goto found_highest;
-+	gap_start = gap_start_round_up(gap_start, info);
-+	if (gap_start <= high_limit && gap_end - gap_start >= length &&
-+			gap_start < gap_end)
-+		goto found;
+-static int
++static bool
+ sisusbcon_scroll_area(struct vc_data *c, struct sisusb_usb_data *sisusb,
+-					int t, int b, int dir, int lines)
++		unsigned int t, unsigned int b, enum con_scroll dir,
++		unsigned int lines)
+ {
+ 	int cols = sisusb->sisusb_num_columns;
+ 	int length = ((b - t) * cols) * 2;
+@@ -852,8 +853,9 @@ sisusbcon_scroll_area(struct vc_data *c, struct sisusb_usb_data *sisusb,
+ }
  
- 	/* Check if rbtree root looks promising */
- 	if (RB_EMPTY_ROOT(&mm->mm_rb))
-@@ -1887,6 +1899,7 @@ unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
- 	while (true) {
- 		/* Visit right subtree if it looks promising */
- 		gap_start = vma->vm_prev ? vma->vm_prev->vm_end : 0;
-+		gap_start = gap_start_round_up(gap_start, info);
- 		if (gap_start <= high_limit && vma->vm_rb.rb_right) {
- 			struct vm_area_struct *right =
- 				rb_entry(vma->vm_rb.rb_right,
-@@ -1902,7 +1915,8 @@ unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
- 		gap_end = vma->vm_start;
- 		if (gap_end < low_limit)
- 			return -ENOMEM;
--		if (gap_start <= high_limit && gap_end - gap_start >= length)
-+		if (gap_start <= high_limit && gap_end - gap_start >= length &&
-+				gap_start < gap_end)
- 			goto found;
+ /* Interface routine */
+-static int
+-sisusbcon_scroll(struct vc_data *c, int t, int b, int dir, int lines)
++static bool
++sisusbcon_scroll(struct vc_data *c, unsigned int t, unsigned int b,
++		enum con_scroll dir, unsigned int lines)
+ {
+ 	struct sisusb_usb_data *sisusb;
+ 	u16 eattr = c->vc_video_erase_char;
+@@ -870,17 +872,17 @@ sisusbcon_scroll(struct vc_data *c, int t, int b, int dir, int lines)
+ 	 */
  
- 		/* Visit left subtree if it looks promising */
-@@ -1926,6 +1940,7 @@ unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
- 			if (prev == vma->vm_rb.rb_right) {
- 				gap_start = vma->vm_prev ?
- 					vma->vm_prev->vm_end : 0;
-+				gap_start = gap_start_round_up(gap_start, info);
- 				goto check_current;
+ 	if (!lines)
+-		return 1;
++		return true;
+ 
+ 	sisusb = sisusb_get_sisusb_lock_and_check(c->vc_num);
+ 	if (!sisusb)
+-		return 0;
++		return false;
+ 
+ 	/* sisusb->lock is down */
+ 
+ 	if (sisusb_is_inactive(c, sisusb)) {
+ 		mutex_unlock(&sisusb->lock);
+-		return 0;
++		return false;
+ 	}
+ 
+ 	/* Special case */
+@@ -971,7 +973,7 @@ sisusbcon_scroll(struct vc_data *c, int t, int b, int dir, int lines)
+ 
+ 	mutex_unlock(&sisusb->lock);
+ 
+-	return 1;
++	return true;
+ }
+ 
+ /* Interface routine */
+diff --git a/drivers/video/console/fbcon.c b/drivers/video/console/fbcon.c
+index b87f5cfdaea5..a44f5627b82a 100644
+--- a/drivers/video/console/fbcon.c
++++ b/drivers/video/console/fbcon.c
+@@ -164,8 +164,6 @@ static void fbcon_putcs(struct vc_data *vc, const unsigned short *s,
+ 			int count, int ypos, int xpos);
+ static void fbcon_clear_margins(struct vc_data *vc, int bottom_only);
+ static void fbcon_cursor(struct vc_data *vc, int mode);
+-static int fbcon_scroll(struct vc_data *vc, int t, int b, int dir,
+-			int count);
+ static void fbcon_bmove(struct vc_data *vc, int sy, int sx, int dy, int dx,
+ 			int height, int width);
+ static int fbcon_switch(struct vc_data *vc);
+@@ -1795,15 +1793,15 @@ static inline void fbcon_softback_note(struct vc_data *vc, int t,
+ 	softback_curr = softback_in;
+ }
+ 
+-static int fbcon_scroll(struct vc_data *vc, int t, int b, int dir,
+-			int count)
++static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
++		enum con_scroll dir, unsigned int count)
+ {
+ 	struct fb_info *info = registered_fb[con2fb_map[vc->vc_num]];
+ 	struct display *p = &fb_display[vc->vc_num];
+ 	int scroll_partial = info->flags & FBINFO_PARTIAL_PAN_OK;
+ 
+ 	if (fbcon_is_inactive(vc, info))
+-		return -EINVAL;
++		return true;
+ 
+ 	fbcon_cursor(vc, CM_ERASE);
+ 
+@@ -1831,7 +1829,7 @@ static int fbcon_scroll(struct vc_data *vc, int t, int b, int dir,
+ 							(b - count)),
+ 				    vc->vc_video_erase_char,
+ 				    vc->vc_size_row * count);
+-			return 1;
++			return true;
+ 			break;
+ 
+ 		case SCROLL_WRAP_MOVE:
+@@ -1903,7 +1901,7 @@ static int fbcon_scroll(struct vc_data *vc, int t, int b, int dir,
+ 							(b - count)),
+ 				    vc->vc_video_erase_char,
+ 				    vc->vc_size_row * count);
+-			return 1;
++			return true;
+ 		}
+ 		break;
+ 
+@@ -1922,7 +1920,7 @@ static int fbcon_scroll(struct vc_data *vc, int t, int b, int dir,
+ 							t),
+ 				    vc->vc_video_erase_char,
+ 				    vc->vc_size_row * count);
+-			return 1;
++			return true;
+ 			break;
+ 
+ 		case SCROLL_WRAP_MOVE:
+@@ -1992,10 +1990,10 @@ static int fbcon_scroll(struct vc_data *vc, int t, int b, int dir,
+ 							t),
+ 				    vc->vc_video_erase_char,
+ 				    vc->vc_size_row * count);
+-			return 1;
++			return true;
+ 		}
+ 	}
+-	return 0;
++	return false;
+ }
+ 
+ 
+diff --git a/drivers/video/console/mdacon.c b/drivers/video/console/mdacon.c
+index bacbb044d77c..ec192a1bf297 100644
+--- a/drivers/video/console/mdacon.c
++++ b/drivers/video/console/mdacon.c
+@@ -488,12 +488,13 @@ static void mdacon_cursor(struct vc_data *c, int mode)
+ 	}
+ }
+ 
+-static int mdacon_scroll(struct vc_data *c, int t, int b, int dir, int lines)
++static bool mdacon_scroll(struct vc_data *c, unsigned int t, unsigned int b,
++		enum con_scroll dir, unsigned int lines)
+ {
+ 	u16 eattr = mda_convert_attr(c->vc_video_erase_char);
+ 
+ 	if (!lines)
+-		return 0;
++		return false;
+ 
+ 	if (lines > c->vc_rows)   /* maximum realistic size */
+ 		lines = c->vc_rows;
+@@ -514,7 +515,7 @@ static int mdacon_scroll(struct vc_data *c, int t, int b, int dir, int lines)
+ 		break;
+ 	}
+ 
+-	return 0;
++	return false;
+ }
+ 
+ 
+diff --git a/drivers/video/console/newport_con.c b/drivers/video/console/newport_con.c
+index e3b9521e4ec3..1e11614322fe 100644
+--- a/drivers/video/console/newport_con.c
++++ b/drivers/video/console/newport_con.c
+@@ -574,8 +574,8 @@ static int newport_font_set(struct vc_data *vc, struct console_font *font, unsig
+ 	return newport_set_font(vc->vc_num, font);
+ }
+ 
+-static int newport_scroll(struct vc_data *vc, int t, int b, int dir,
+-			  int lines)
++static bool newport_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
++		enum con_scroll dir, unsigned int lines)
+ {
+ 	int count, x, y;
+ 	unsigned short *s, *d;
+@@ -595,7 +595,7 @@ static int newport_scroll(struct vc_data *vc, int t, int b, int dir,
+ 					    (vc->vc_color & 0xf0) >> 4);
+ 		}
+ 		npregs->cset.topscan = (topscan - 1) & 0x3ff;
+-		return 0;
++		return false;
+ 	}
+ 
+ 	count = (b - t - lines) * vc->vc_cols;
+@@ -670,7 +670,7 @@ static int newport_scroll(struct vc_data *vc, int t, int b, int dir,
  			}
  		}
-@@ -1936,7 +1951,6 @@ unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
- 	if (gap_end > info->high_limit)
- 		gap_end = info->high_limit;
+ 	}
+-	return 1;
++	return true;
+ }
  
--found_highest:
- 	/* Compute highest gap address at the desired alignment */
- 	gap_end -= info->length;
- 	gap_end -= (gap_end - info->align_offset) & info->align_mask;
+ static int newport_dummy(struct vc_data *c)
+diff --git a/drivers/video/console/sticon.c b/drivers/video/console/sticon.c
+index 3a10ac19598f..79c9bd8d3025 100644
+--- a/drivers/video/console/sticon.c
++++ b/drivers/video/console/sticon.c
+@@ -153,12 +153,13 @@ static void sticon_cursor(struct vc_data *conp, int mode)
+     }
+ }
+ 
+-static int sticon_scroll(struct vc_data *conp, int t, int b, int dir, int count)
++static bool sticon_scroll(struct vc_data *conp, unsigned int t,
++		unsigned int b, enum con_scroll dir, unsigned int count)
+ {
+     struct sti_struct *sti = sticon_sti;
+ 
+     if (vga_is_gfx)
+-        return 0;
++        return false;
+ 
+     sticon_cursor(conp, CM_ERASE);
+ 
+@@ -174,7 +175,7 @@ static int sticon_scroll(struct vc_data *conp, int t, int b, int dir, int count)
+ 	break;
+     }
+ 
+-    return 0;
++    return false;
+ }
+ 
+ static void sticon_init(struct vc_data *c, int init)
+diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
+index 11576611a974..4c54a873452e 100644
+--- a/drivers/video/console/vgacon.c
++++ b/drivers/video/console/vgacon.c
+@@ -83,8 +83,6 @@ static int vgacon_blank(struct vc_data *c, int blank, int mode_switch);
+ static void vgacon_scrolldelta(struct vc_data *c, int lines);
+ static int vgacon_set_origin(struct vc_data *c);
+ static void vgacon_save_screen(struct vc_data *c);
+-static int vgacon_scroll(struct vc_data *c, int t, int b, int dir,
+-			 int lines);
+ static void vgacon_invert_region(struct vc_data *c, u16 * p, int count);
+ static struct uni_pagedir *vgacon_uni_pagedir;
+ static int vgacon_refcount;
+@@ -1350,17 +1348,17 @@ static void vgacon_save_screen(struct vc_data *c)
+ 			    c->vc_screenbuf_size > vga_vram_size ? vga_vram_size : c->vc_screenbuf_size);
+ }
+ 
+-static int vgacon_scroll(struct vc_data *c, int t, int b, int dir,
+-			 int lines)
++static bool vgacon_scroll(struct vc_data *c, unsigned int t, unsigned int b,
++		enum con_scroll dir, unsigned int lines)
+ {
+ 	unsigned long oldo;
+ 	unsigned int delta;
+ 
+ 	if (t || b != c->vc_rows || vga_is_gfx || c->vc_mode != KD_TEXT)
+-		return 0;
++		return false;
+ 
+ 	if (!vga_hardscroll_enabled || lines >= c->vc_rows / 2)
+-		return 0;
++		return false;
+ 
+ 	vgacon_restore_screen(c);
+ 	oldo = c->vc_origin;
+@@ -1396,7 +1394,7 @@ static int vgacon_scroll(struct vc_data *c, int t, int b, int dir,
+ 	c->vc_visible_origin = c->vc_origin;
+ 	vga_set_mem_top(c);
+ 	c->vc_pos = (c->vc_pos - oldo) + c->vc_origin;
+-	return 1;
++	return true;
+ }
+ 
+ 
+diff --git a/include/linux/console.h b/include/linux/console.h
+index 3672809234a7..508b012bd5bd 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -28,9 +28,17 @@ struct tty_struct;
+ #define VT100ID "\033[?1;2c"
+ #define VT102ID "\033[?6c"
+ 
++enum con_scroll {
++	SM_UP,
++	SM_DOWN,
++};
++
+ /**
+  * struct consw - callbacks for consoles
+  *
++ * @con_scroll: move lines from @top to @bottom in direction @dir by @lines.
++ *		Return true if no generic handling should be done.
++ *		Invoked by csi_M and printing to the console.
+  * @con_set_palette: sets the palette of the console to @table (optional)
+  * @con_scrolldelta: the contents of the console should be scrolled by @lines.
+  *		     Invoked by user. (optional)
+@@ -44,7 +52,9 @@ struct consw {
+ 	void	(*con_putc)(struct vc_data *, int, int, int);
+ 	void	(*con_putcs)(struct vc_data *, const unsigned short *, int, int, int);
+ 	void	(*con_cursor)(struct vc_data *, int);
+-	int	(*con_scroll)(struct vc_data *, int, int, int, int);
++	bool	(*con_scroll)(struct vc_data *, unsigned int top,
++			unsigned int bottom, enum con_scroll dir,
++			unsigned int lines);
+ 	int	(*con_switch)(struct vc_data *);
+ 	int	(*con_blank)(struct vc_data *, int, int);
+ 	int	(*con_font_set)(struct vc_data *, struct console_font *, unsigned);
+@@ -99,10 +109,6 @@ static inline int con_debug_leave(void)
+ }
+ #endif
+ 
+-/* scroll */
+-#define SM_UP       (1)
+-#define SM_DOWN     (2)
