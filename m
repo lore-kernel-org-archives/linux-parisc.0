@@ -1,8 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Ensure consistent state when switching to kernel
- stack at syscall entry
-Date: Fri, 28 Oct 2016 22:04:14 +0200
-Message-ID: <20161028200414.GA20703@ls3530.box>
+Subject: [PATCH] parisc: Avoid trashing sr2 and sr3 in LWS code
+Date: Fri, 28 Oct 2016 22:13:42 +0200
+Message-ID: <20161028201342.GA23048@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -12,66 +11,164 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-We have one critical section in the syscall entry path in which we switch from
-the userspace stack to kernel stack. In the event of an external interrupt, the
-interrupt code distinguishes between those two states by analyzing the value of
-sr7. If sr7 is zero, it uses the kernel stack. Therefore it's important, that
-the value of sr7 is in sync with the currently enabled stack.
+parisc: Avoid trashing sr2 and sr3 in LWS code
+From: John David Anglin <dave.anglin@bell.net>
 
-This patch now disables interrupts while executing the critical section.  This
-prevents the interrupt handler to possibly see an inconsitent state which in
-the worst case can lead to crashes.
+There is no need to trash sr2 and sr3 in the Leight-weight syscall (LWS).  sr2
+already points to kernel space (it's zero in userspace, otherwise syscalls
+wouldn't work), and since the LWS code is executed in userspace, we can simply
+ignore to preload sr3.
 
-Interestingly, in the syscall exit path interrupts were already disabled in the
-critical section which switches back to the userspace stack.
-
-Cc: <stable@vger.kernel.org>
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
 Signed-off-by: Helge Deller <deller@gmx.de>
 
 diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
 index d03422e..f13836b 100644
 --- a/arch/parisc/kernel/syscall.S
 +++ b/arch/parisc/kernel/syscall.S
-@@ -106,8 +106,6 @@ linux_gateway_entry:
- 	mtsp	%r0,%sr4			/* get kernel space into sr4 */
- 	mtsp	%r0,%sr5			/* get kernel space into sr5 */
- 	mtsp	%r0,%sr6			/* get kernel space into sr6 */
--	mfsp    %sr7,%r1                        /* save user sr7 */
--	mtsp    %r1,%sr3                        /* and store it in sr3 */
+@@ -474,10 +478,8 @@ lws_start:
+ 	comiclr,>>	__NR_lws_entries, %r20, %r0
+ 	b,n	lws_exit_nosys
  
- #ifdef CONFIG_64BIT
- 	/* for now we can *always* set the W bit on entry to the syscall
-@@ -134,20 +132,26 @@ linux_gateway_entry:
- 1:	
+-	/* WARNING: Trashing sr2 and sr3 */
+-	mfsp	%sr7,%r1			/* get userspace into sr3 */
+-	mtsp	%r1,%sr3
+-	mtsp	%r0,%sr2			/* get kernel space into sr2 */
++	/* Note: %sr2 is zero when called from userspace,
++	   else syscalls wouldn't work. */
+ 
+ 	/* Load table start */
+ 	ldil	L%lws_table, %r1
+@@ -627,9 +629,9 @@ cas_action:
+ 	stw	%r1, 4(%sr2,%r20)
  #endif
- 	mfctl   %cr30,%r1
--	xor     %r1,%r30,%r30                   /* ye olde xor trick */
--	xor     %r1,%r30,%r1
--	xor     %r1,%r30,%r30
--	
--	ldo     THREAD_SZ_ALGN+FRAME_SIZE(%r30),%r30  /* set up kernel stack */
-+	ldo     THREAD_SZ_ALGN+FRAME_SIZE(%r1),%r1  /* set up kernel stack */
+ 	/* The load and store could fail */
+-1:	ldw,ma	0(%sr3,%r26), %r28
++1:	ldw,ma	0(%r26), %r28
+ 	sub,<>	%r28, %r25, %r0
+-2:	stw,ma	%r24, 0(%sr3,%r26)
++2:	stw,ma	%r24, 0(%r26)
+ 	/* Free lock */
+ 	stw,ma	%r20, 0(%sr2,%r20)
+ #if ENABLE_LWS_DEBUG
+@@ -706,9 +708,9 @@ lws_compare_and_swap_2:
+ 	nop
  
- 	/* N.B.: It is critical that we don't set sr7 to 0 until r30
- 	 *       contains a valid kernel stack pointer. It is also
- 	 *       critical that we don't start using the kernel stack
--	 *       until after sr7 has been set to 0.
-+	 *       until after sr7 has been set to 0. To ensure this we
-+	 *       use a rsm/ssm pair to make this operation atomic.
-+	 *       At syscall entry %sr2 points to kernel space, otherwise
-+	 *       syscalls wouldn't work.
- 	 */
-+	rsm     PSW_SM_I, %r0			/* turn interrupts off */
-+	STREGM	%r30,FRAME_SIZE(%sr2, %r1)	/* save usp on kernel stack */
-+	copy    %r1, %r30			/* switch to kernel stack */
-+
-+	mfsp    %sr7,%r1                        /* get user sr7 */
-+	mtsp    %r1,%sr3                        /* store user sr7 in sr3 */
+ 	/* 8bit load */
+-4:	ldb	0(%sr3,%r25), %r25
++4:	ldb	0(%r25), %r25
+ 	b	cas2_lock_start
+-5:	ldb	0(%sr3,%r24), %r24
++5:	ldb	0(%r24), %r24
+ 	nop
+ 	nop
+ 	nop
+@@ -716,9 +718,9 @@ lws_compare_and_swap_2:
+ 	nop
  
- 	mtsp	%r0,%sr7			/* get kernel space into sr7 */
--	STREGM	%r1,FRAME_SIZE(%r30)		/* save r1 (usp) here for now */
-+	ssm     PSW_SM_I, %r0			/* turn interrupts on */
-+
- 	mfctl	%cr30,%r1			/* get task ptr in %r1 */
- 	LDREG	TI_TASK(%r1),%r1
+ 	/* 16bit load */
+-6:	ldh	0(%sr3,%r25), %r25
++6:	ldh	0(%r25), %r25
+ 	b	cas2_lock_start
+-7:	ldh	0(%sr3,%r24), %r24
++7:	ldh	0(%r24), %r24
+ 	nop
+ 	nop
+ 	nop
+@@ -726,9 +728,9 @@ lws_compare_and_swap_2:
+ 	nop
+ 
+ 	/* 32bit load */
+-8:	ldw	0(%sr3,%r25), %r25
++8:	ldw	0(%r25), %r25
+ 	b	cas2_lock_start
+-9:	ldw	0(%sr3,%r24), %r24
++9:	ldw	0(%r24), %r24
+ 	nop
+ 	nop
+ 	nop
+@@ -737,14 +739,14 @@ lws_compare_and_swap_2:
+ 
+ 	/* 64bit load */
+ #ifdef CONFIG_64BIT
+-10:	ldd	0(%sr3,%r25), %r25
+-11:	ldd	0(%sr3,%r24), %r24
++10:	ldd	0(%r25), %r25
++11:	ldd	0(%r24), %r24
+ #else
+ 	/* Load new value into r22/r23 - high/low */
+-10:	ldw	0(%sr3,%r25), %r22
+-11:	ldw	4(%sr3,%r25), %r23
++10:	ldw	0(%r25), %r22
++11:	ldw	4(%r25), %r23
+ 	/* Load new value into fr4 for atomic store later */
+-12:	flddx	0(%sr3,%r24), %fr4
++12:	flddx	0(%r24), %fr4
+ #endif
+ 
+ cas2_lock_start:
+@@ -794,30 +796,30 @@ cas2_action:
+ 	ldo	1(%r0),%r28
+ 
+ 	/* 8bit CAS */
+-13:	ldb,ma	0(%sr3,%r26), %r29
++13:	ldb,ma	0(%r26), %r29
+ 	sub,=	%r29, %r25, %r0
+ 	b,n	cas2_end
+-14:	stb,ma	%r24, 0(%sr3,%r26)
++14:	stb,ma	%r24, 0(%r26)
+ 	b	cas2_end
+ 	copy	%r0, %r28
+ 	nop
+ 	nop
+ 
+ 	/* 16bit CAS */
+-15:	ldh,ma	0(%sr3,%r26), %r29
++15:	ldh,ma	0(%r26), %r29
+ 	sub,=	%r29, %r25, %r0
+ 	b,n	cas2_end
+-16:	sth,ma	%r24, 0(%sr3,%r26)
++16:	sth,ma	%r24, 0(%r26)
+ 	b	cas2_end
+ 	copy	%r0, %r28
+ 	nop
+ 	nop
+ 
+ 	/* 32bit CAS */
+-17:	ldw,ma	0(%sr3,%r26), %r29
++17:	ldw,ma	0(%r26), %r29
+ 	sub,=	%r29, %r25, %r0
+ 	b,n	cas2_end
+-18:	stw,ma	%r24, 0(%sr3,%r26)
++18:	stw,ma	%r24, 0(%r26)
+ 	b	cas2_end
+ 	copy	%r0, %r28
+ 	nop
+@@ -825,22 +827,22 @@ cas2_action:
+ 
+ 	/* 64bit CAS */
+ #ifdef CONFIG_64BIT
+-19:	ldd,ma	0(%sr3,%r26), %r29
++19:	ldd,ma	0(%r26), %r29
+ 	sub,*=	%r29, %r25, %r0
+ 	b,n	cas2_end
+-20:	std,ma	%r24, 0(%sr3,%r26)
++20:	std,ma	%r24, 0(%r26)
+ 	copy	%r0, %r28
+ #else
+ 	/* Compare first word */
+-19:	ldw,ma	0(%sr3,%r26), %r29
++19:	ldw,ma	0(%r26), %r29
+ 	sub,=	%r29, %r22, %r0
+ 	b,n	cas2_end
+ 	/* Compare second word */
+-20:	ldw,ma	4(%sr3,%r26), %r29
++20:	ldw,ma	4(%r26), %r29
+ 	sub,=	%r29, %r23, %r0
+ 	b,n	cas2_end
+ 	/* Perform the store */
+-21:	fstdx	%fr4, 0(%sr3,%r26)
++21:	fstdx	%fr4, 0(%r26)
+ 	copy	%r0, %r28
+ #endif
  
