@@ -1,7 +1,8 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Ignore the pkey system calls for now
-Date: Sat, 29 Oct 2016 23:47:57 +0200
-Message-ID: <20161029214757.GA17608@p100.box>
+Subject: [PATCH] parisc: Use LINUX_GATEWAY_ADDR define instead of hardcoded
+ value value
+Date: Sat, 29 Oct 2016 23:52:43 +0200
+Message-ID: <20161029215243.GA24444@ls3530.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -11,13 +12,20 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+LINUX_GATEWAY_ADDR is defined in unistd.h. Let's use it.
+
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
-index a9b9407..6b0741e 100644
---- a/arch/parisc/include/uapi/asm/unistd.h
-+++ b/arch/parisc/include/uapi/asm/unistd.h
-@@ -368,7 +368,9 @@
+diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+index d03422e..d3407cf 100644
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -100,7 +100,7 @@ set_thread_pointer:
+ 	.endr
  
- #define __IGNORE_select		/* newselect */
- #define __IGNORE_fadvise64	/* fadvise64_64 */
+ /* This address must remain fixed at 0x100 for glibc's syscalls to work */
+-	.align 256
++	.align LINUX_GATEWAY_ADDR
+ linux_gateway_entry:
+ 	gate	.+8, %r0			/* become privileged */
+ 	mtsp	%r0,%sr4			/* get kernel space into sr4 */
