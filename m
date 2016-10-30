@@ -1,31 +1,37 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Use LINUX_GATEWAY_ADDR define instead of hardcoded
- value value
-Date: Sat, 29 Oct 2016 23:52:43 +0200
-Message-ID: <20161029215243.GA24444@ls3530.box>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Subject: Re: [PATCH] parisc: Use LINUX_GATEWAY_ADDR define instead of hardcoded value value
+Date: Sun, 30 Oct 2016 11:23:43 +0100
+Message-ID: <2532502.E0v7kgWD9v@daneel.sf-tec.de>
+References: <20161029215243.GA24444@ls3530.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: multipart/signed; boundary="nextPart7246214.TJVra2sajK"; micalg="pgp-"; protocol="application/pgp-signature"
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20161029215243.GA24444@ls3530.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-LINUX_GATEWAY_ADDR is defined in unistd.h. Let's use it.
+--nextPart7246214.TJVra2sajK
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Helge Deller wrote:
 
-diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
-index d03422e..d3407cf 100644
---- a/arch/parisc/kernel/syscall.S
-+++ b/arch/parisc/kernel/syscall.S
-@@ -100,7 +100,7 @@ set_thread_pointer:
- 	.endr
- 
- /* This address must remain fixed at 0x100 for glibc's syscalls to work */
--	.align 256
-+	.align LINUX_GATEWAY_ADDR
- linux_gateway_entry:
- 	gate	.+8, %r0			/* become privileged */
- 	mtsp	%r0,%sr4			/* get kernel space into sr4 */
+> LINUX_GATEWAY_ADDR is defined in unistd.h. Let's use it.
+
+value value?
+--nextPart7246214.TJVra2sajK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iEYEABECAAYFAlgVyjsACgkQXKSJPmm5/E5ONwCfVi6ZWi8Kqy894vP3WCArcjzc
+S1kAn3HqqKuOny4Kt2mNPMQQNUY6VnrS
+=0JKB
+-----END PGP SIGNATURE-----
+
+--nextPart7246214.TJVra2sajK--
+
