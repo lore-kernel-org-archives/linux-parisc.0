@@ -1,42 +1,48 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: Use LINUX_GATEWAY_ADDR define instead of
- hardcoded value value
-Date: Wed, 2 Nov 2016 22:55:02 +0100
-Message-ID: <581A60B6.6080207@gmx.de>
-References: <20161029215243.GA24444@ls3530.box>
- <2532502.E0v7kgWD9v@daneel.sf-tec.de> <58170E4D.4050801@gmx.de>
- <20161101192512.1cd9bb27@wim.fritz.box>
+Subject: [GIT PULL] parisc architecture fixes and updates for 4.9-rc3
+Date: Wed, 2 Nov 2016 23:36:06 +0100
+Message-ID: <20161102223606.GA24415@ls3530>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
-To: Jeroen Roovers <jer@gentoo.org>
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20161101192512.1cd9bb27@wim.fritz.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 01.11.2016 19:25, Jeroen Roovers wrote:
-> On Mon, 31 Oct 2016 10:26:37 +0100
-> Helge Deller <deller@gmx.de> wrote:
-> 
->> On 30.10.2016 11:23, Rolf Eike Beer wrote:
->>> Helge Deller wrote:
->>>   
->>>> LINUX_GATEWAY_ADDR is defined in unistd.h. Let's use it.  
->>>
->>> value value?  
->>
->> I do see huge value in being able to see where this value is being
->> used. A new developer who uses grep will find the relevant assembler
->> code as well.
-> 
-> Yes, but "value value"! ;-)
+Hi Linus,
 
-Yes, I'm blind :-)
-It took me quite some time (and one additional off-list reminder
-from Rolf Eike) to understand that you both meant the commit title :-)
-I'll fix it before I send upstream.
-Thanks!
+Please pull some updates and fixes for the parisc architecture for v4.9-rc3 from
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.9-3
 
+The first three patches are trivial and add some required KERN_CONT, ignore the new
+pkey syscalls on parisc and use the LINUX_GATEWAY_ADDR define instead of hardcoded
+values.
+
+The two patches from Dave Anglin are important. The first one avoids trashing
+the sr2 and sr3 space registers in the Light-weight syscall path. Especially
+the usage of sr3 is critical since it may get trashed by the interrupt handler.
+The second patch is even more important and tagged for stable series. It
+protects one critical section in the syscall entry path by disabling local
+interrupts. Without disabling interrupts, the sr7 space register may not be in
+sync with the current stack setup and thus an incoming hardware interrupt may
+destroy memory in random userspace areas. 
+
+Thanks,
 Helge
+----------------------------------------------------------------
+Helge Deller (3):
+      parisc: use KERN_CONT when printing device inventory
+      parisc: Use LINUX_GATEWAY_ADDR define instead of hardcoded value
+      parisc: Ignore the pkey system calls for now
+
+John David Anglin (2):
+      parisc: Avoid trashing sr2 and sr3 in LWS code
+      parisc: Ensure consistent state when switching to kernel stack at syscall entry
+
+ arch/parisc/include/uapi/asm/unistd.h |  4 ++-
+ arch/parisc/kernel/drivers.c          |  6 ++--
+ arch/parisc/kernel/syscall.S          | 66 ++++++++++++++++++-----------------
+ 3 files changed, 40 insertions(+), 36 deletions(-)
