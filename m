@@ -1,48 +1,69 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture fixes and updates for 4.9-rc3
-Date: Wed, 2 Nov 2016 23:36:06 +0100
-Message-ID: <20161102223606.GA24415@ls3530>
+From: <m.wierczynska@lask.pl>
+Subject: 19610 linux-parisc
+Date: Thu, 03 Nov 2016 19:45:02 -0000
+Message-ID: <147820230261.18143.4032143676417968309@cpc11-trow5-2-0-cust131.aztw.cable.virginm.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: application/zip; name="EMAIL_57010297_linux-parisc.zip"
+To: <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
-
-Please pull some updates and fixes for the parisc architecture for v4.9-rc3 from
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.9-3
-
-The first three patches are trivial and add some required KERN_CONT, ignore the new
-pkey syscalls on parisc and use the LINUX_GATEWAY_ADDR define instead of hardcoded
-values.
-
-The two patches from Dave Anglin are important. The first one avoids trashing
-the sr2 and sr3 space registers in the Light-weight syscall path. Especially
-the usage of sr3 is critical since it may get trashed by the interrupt handler.
-The second patch is even more important and tagged for stable series. It
-protects one critical section in the syscall entry path by disabling local
-interrupts. Without disabling interrupts, the sr7 space register may not be in
-sync with the current stack setup and thus an incoming hardware interrupt may
-destroy memory in random userspace areas. 
-
-Thanks,
-Helge
-----------------------------------------------------------------
-Helge Deller (3):
-      parisc: use KERN_CONT when printing device inventory
-      parisc: Use LINUX_GATEWAY_ADDR define instead of hardcoded value
-      parisc: Ignore the pkey system calls for now
-
-John David Anglin (2):
-      parisc: Avoid trashing sr2 and sr3 in LWS code
-      parisc: Ensure consistent state when switching to kernel stack at syscall entry
-
- arch/parisc/include/uapi/asm/unistd.h |  4 ++-
- arch/parisc/kernel/drivers.c          |  6 ++--
- arch/parisc/kernel/syscall.S          | 66 ++++++++++++++++++-----------------
- 3 files changed, 40 insertions(+), 36 deletions(-)
+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
+AAEAWgAAAE4MAAAAAA==
