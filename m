@@ -1,165 +1,41 @@
-From: Richard Henderson <rth@twiddle.net>
-Subject: hppa qemu and string functions
-Date: Wed, 9 Nov 2016 13:53:28 +0100
-Message-ID: <21645bc2-f005-5e60-d26a-41af60e3c035@twiddle.net>
+From: "Helge Deller" <deller@gmx.de>
+Subject: Aw: hppa qemu and string functions
+Date: Wed, 9 Nov 2016 15:51:16 +0100
+Message-ID: <trinity-8a5a9da3-1e08-4571-bbfb-b230bd20f15b-1478703076818@3capp-gmx-bs52>
+References: <21645bc2-f005-5e60-d26a-41af60e3c035@twiddle.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------6252A3DA0A2F10EFC1B8A841"
-Cc: GNU C Library <libc-alpha@sourceware.org>
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-parisc@vger.kernel.org,
+        "GNU C Library" <libc-alpha@sourceware.org>
+To: "Richard Henderson" <rth@twiddle.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <21645bc2-f005-5e60-d26a-41af60e3c035@twiddle.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------6252A3DA0A2F10EFC1B8A841
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi Richard,
 
-Off and on, I've been working on a user-only target of hppa to qemu.  It's now 
-about 95% working.  If anyone would like to try it out, it's available at
+> Off and on, I've been working on a user-only target of hppa to qemu.  It's now 
+> about 95% working.  If anyone would like to try it out, it's available at
+>    git://github.com/rth7680/qemu.git tgt-hppa
 
-   git://github.com/rth7680/qemu.git tgt-hppa
+COOL!
+I'm happy to test, but can you shortly describe the required steps how I can build & test it?
 
-While implementing the unit-type instructions, I wondered why no one (outside 
-hp?) had written a version of the string routines utilizing the UXOR insn, with 
-the SomeByteZero and NoByteZero conditions.
+With "user-only target of hppa" I assume this means that I can run hppa binaries
+on e.g. x86-64, similiar to what is described here: https://wiki.debian.org/QemuUserEmulation ?
 
-Attached are versions of strlen, strchr and strrchr.  They pass simple tests 
-within my emulator; I'd be interested to know if they pass full glibc testing 
-on real hardware.
+> While implementing the unit-type instructions, I wondered why no one (outside 
+> hp?) had written a version of the string routines utilizing the UXOR insn, with 
+> the SomeByteZero and NoByteZero conditions.
 
+Interesting.
+I assume nobody did, because there are a few hppa/linux/glibc users anyway ? :-)
+ 
+> Attached are versions of strlen, strchr and strrchr.  They pass simple tests 
+> within my emulator; I'd be interested to know if they pass full glibc testing 
+> on real hardware.
 
-Thanks,
+If you like I can give you access to a hppa-linux box...
 
-
-r~
-
---------------6252A3DA0A2F10EFC1B8A841
-Content-Type: text/plain; charset=UTF-8;
- name="strlen.S"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="strlen.S"
-
-OyEgSFAtUEEgIHN0cmxlbgoKOyEgQ29weXJpZ2h0IChDKSAyMDE2IEZyZWUgU29mdHdhcmUg
-Rm91bmRhdGlvbiwgSW5jLgoKCS50ZXh0CgkuZXhwb3J0CQlzdHJsZW4KCS5iYWxpZ24JCTE2
-CnN0cmxlbjoKCS5wcm9jCgkuY2FsbGluZm8JZnJhbWU9MCxub19jYWxscwoJLmVudHJ5CgoJ
-OyEgQ29tcHV0ZSB0aGUgbnVtYmVyIG9mIGJ5dGVzIHJlcXVpcmVkIHRvIGFsaWduIHRoZSBw
-b2ludGVyLgoJOyEgU2hpZnRpbmcgYnkgMSBnZXRzIHVzIDQgaW5zbnMgdG8gcGxheSB3aXRo
-IHBlciBlbnRyeS4KCWxkbwkJLTEoJXIyNiksICVyMjAKCWRlcHcsegkJJXIyMCwgMzAsIDIs
-ICVyMjAKCWJscgkJJXIyMCwgJXIwCgkgY29weQkJJXIyNiwgJXIyOAoKCTshIHB0ciAlIDQg
-PT0gMQoJbGRiCQkwKCVyMjYpLCAlcjIwCgljbXBpY2xyLD0JMCwgJXIyMCwgJXIwCgliLG4J
-CTlmCglsZG8JCTEoJXIyNiksICVyMjYKCgk7ISBwdHIgJSA0ID09IDIKCWxkYgkJMCglcjI2
-KSwgJXIyMAoJY21waWNsciw9CTAsICVyMjAsICVyMAoJYixuCQk5ZgoJbGRvCQkxKCVyMjYp
-LCAlcjI2CgoJOyEgcHRyICUgNCA9PSAzCglsZGIJCTAoJXIyNiksICVyMjAKCWNtcGljbHIs
-PQkwLCAlcjIwLCAlcjAKCWIsbgkJOWYKCWxkbwkJMSglcjI2KSwgJXIyNgoKCTshIHB0ciAl
-IDQgPT0gMAoJOyEgTWFpbiBsb29wLiAgVXNlIHRoZSBTb21lIEJ5dGUgWmVybyB1bml0IGNv
-bmRpdGlvbiB0byBmaW5kCgk7OyBhIHdvcmQgY29udGFpbmluZyB0aGUgc3RyaW5nIHRlcm1p
-bmF0b3IuCjA6CWxkdyxtYQkJNCglcjI2KSwgJXIyMAoJdXhvcixzYnoJJXIwLCAlcjIwLCAl
-cjAKCWIsbgkJMGIKCgk7ISBGb3VuZCwgc29tZXdoZXJlIGluIHdpdGggd29yZCBpbiAlcjIw
-LiAgVGVzdCBlYWNoIGJ5dGUgaW4KCTshIHNlcXVlbmNlLCBjb21wdXRpbmcgdGhlIGFwcG9w
-cmlhdGUgb2Zmc2V0IGZyb20gJXIyNiBpbnRvICVyMjEuCglsZG8JCS0xKCVyMjYpLCAlcjIx
-CglleHRydyx1LDw+CSVyMjAsIDIzLCA4LCAlcjAKCWxkbwkJLTIoJXIyNiksICVyMjEKCWV4
-dHJ3LHUsPD4JJXIyMCwgMTUsIDgsICVyMAoJbGRvCQktMyglcjI2KSwgJXIyMQoJZXh0cncs
-dSw8PgklcjIwLCAgNywgOCwgJXIwCglsZG8JCS00KCVyMjYpLCAlcjIxCglidgkJMCglcjIp
-Cgkgc3ViCQklcjIxLCAlcjI4LCAlcjI4CgoJOyEgRm91bmQsIHdpdGggbm8gZGlzcGxhY2Vt
-ZW50IG9mZiAlcjI2Lgo5OglidgkJMCglcjIpCgkgc3ViCQklcjI2LCAlcjI4LCAlcjI4CgoJ
-LmV4aXQKCS5wcm9jZW5kCg==
---------------6252A3DA0A2F10EFC1B8A841
-Content-Type: text/plain; charset=UTF-8;
- name="strchr.S"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="strchr.S"
-
-OyEgSFAtUEEgIHN0cmNocgoKOyEgQ29weXJpZ2h0IChDKSAyMDE2IEZyZWUgU29mdHdhcmUg
-Rm91bmRhdGlvbiwgSW5jLgoKCS50ZXh0CgkuZXhwb3J0CQlzdHJjaHIKCS5iYWxpZ24JCTE2
-CnN0cmNocjoKCS5wcm9jCgkuY2FsbGluZm8JZnJhbWU9MCxub19jYWxscwoJLmVudHJ5CgoJ
-OyEgQ29tcHV0ZSB0aGUgbnVtYmVyIG9mIGJ5dGVzIHJlcXVpcmVkIHRvIGFsaWduIHRoZSBw
-b2ludGVyLgoJOyEgTXVsdGlwbHkgYnkgMywgZ2l2aW5nIHVzIDYgaW5zbnMgcGVyIGVudHJ5
-IHRvIHdvcmsgd2l0aC4KCWxkbwkJLTEoJXIyNiksICVyMjAKCWV4dHJ3LHUJCSVyMjUsIDMx
-LCA4LCAlcjI1CglleHRydyx1CQklcjIwLCAzMSwgMiwgJXIyMAoJc2hsYWRkLGwJJXIyMCwg
-MSwgJXIyMCwgJXIyMAoJYmxyCQklcjIwLCAlcjAKCSBjb3B5CQklcjI2LCAlcjI4CgoJOyEg
-cHRyICUgNCA9PSAxCglsZGIJCTAoJXIyOCksICVyMjAKCWNtcGNsciw8PgklcjI1LCAlcjIw
-LCAlcjAKCWJ2LG4JCTAoJXIyKQoJY21wY2xyLDw+CSVyMCwgJXIyMCwgJXIwCgliLG4JCTlm
-CglsZG8JCTEoJXIyOCksICVyMjgKCgk7ISBwdHIgJSA0ID09IDIKCWxkYgkJMCglcjI4KSwg
-JXIyMAoJY21wY2xyLDw+CSVyMjUsICVyMjAsICVyMAoJYnYsbgkJMCglcjIpCgljbXBjbHIs
-PD4JJXIwLCAlcjIwLCAlcjAKCWIsbgkJOWYKCWxkbwkJMSglcjI4KSwgJXIyOAoKCTshIHB0
-ciAlIDQgPT0gMwoJbGRiCQkwKCVyMjgpLCAlcjIwCgljbXBjbHIsPD4JJXIyNSwgJXIyMCwg
-JXIwCglidixuCQkwKCVyMikKCWNtcGNsciw8PgklcjAsICVyMjAsICVyMAoJYixuCQk5ZgoJ
-bGRvCQkxKCVyMjgpLCAlcjI4CgoJOyEgcHRyICUgNCA9PSAwCglsZHcsbWEJCTQoJXIyOCks
-ICVyMjAKCWRlcHcJCSVyMjUsIDIzLCA4LCAlcjI1CglkZXB3CQklcjI1LCAxNSwgMTYsICVy
-MjUKCgk7ISBNYWluIGxvb3AuICBVc2UgdGhlIE5vIEJ5dGUgWmVybyB1bml0IGNvbmRpdGlv
-biB0byBmaW5kCgk7OyBhIHdvcmQgY29udGFpbmluZyBDIG9yIDAuCjA6CXV4b3IsbmJ6CSVy
-MjUsICVyMjAsICVyMAoJYixuCQkxZgoJdXhvcixuYnoJJXIwLCAlcjIwLCAlcjAKCWIsbgkJ
-MWYKCWIJCTBiCgkgbGR3LG1hCQk0KCVyMjgpLCAlcjIwCgoJOyEgRm91bmQsIHNvbWV3aGVy
-ZSBpbiB3aXRoIHdvcmQgaW4gJXIyMC4KCTshIFRlc3QgZWFjaCBieXRlIGluIHNlcXVlbmNl
-LgoxOglleHRydyx1CQklcjI1LCAzMSwgOCwgJXIyNQoKCWV4dHJ3LHUJCSVyMjAsICA3LCA4
-LCAlcjIxCglsZG8JCS00KCVyMjgpLCAlcjI4CgljbXBjbHIsPD4JJXIyNSwgJXIyMSwgJXIw
-CglidixuCQkwKCVyMikKCWNtcGNsciw8PgklcjAsICVyMjEsICVyMAoJYixuCQk5ZgoKCWV4
-dHJ3LHUJCSVyMjAsIDE1LCA4LCAlcjIxCglsZG8JCTEoJXIyOCksICVyMjgKCWNtcGNsciw8
-PgklcjI1LCAlcjIxLCAlcjAKCWJ2LG4JCTAoJXIyKQoJY21wY2xyLDw+CSVyMCwgJXIyMSwg
-JXIwCgliLG4JCTlmCgoJZXh0cncsdQkJJXIyMCwgMjMsIDgsICVyMjEKCWxkbwkJMSglcjI4
-KSwgJXIyOAoJY21wY2xyLDw+CSVyMjUsICVyMjEsICVyMAoJYnYsbgkJMCglcjIpCgljbXBj
-bHIsPD4JJXIwLCAlcjIxLCAlcjAKCWIsbgkJOWYKCglleHRydyx1CQklcjIwLCAzMSwgOCwg
-JXIyMQoJbGRvCQkxKCVyMjgpLCAlcjI4CgljbXBjbHIsPD4JJXIyNSwgJXIyMSwgJXIwCgli
-dixuCQkwKCVyMikKCgk7ISBTdHJpbmcgdGVybWluYXRvciBmb3VuZCBiZWZvcmUgdGhlIHNl
-YXJjaCBjaGFyYWN0ZXIuCjk6CWJ2CQkwKCVyMikKCSBsZGkJCTAsICVyMjgKCgkuZXhpdAoJ
-LnByb2NlbmQK
---------------6252A3DA0A2F10EFC1B8A841
-Content-Type: text/plain; charset=UTF-8;
- name="strrchr.S"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="strrchr.S"
-
-OyEgSFAtUEEgIHN0cnJjaHIKCjshIENvcHlyaWdodCAoQykgMjAxNiBGcmVlIFNvZnR3YXJl
-IEZvdW5kYXRpb24sIEluYy4KCgkudGV4dAoJLmV4cG9ydAkJc3RycmNocgoJLmJhbGlnbgkJ
-MTYKc3RycmNocjoKCS5wcm9jCgkuY2FsbGluZm8JZnJhbWU9MCxub19jYWxscwoJLmVudHJ5
-CgoJOyEgQ29tcHV0ZSB0aGUgbnVtYmVyIG9mIGJ5dGVzIHJlcXVpcmVkIHRvIGFsaWduIHRo
-ZSBwb2ludGVyLgoJOyEgTXVsdGlwbHkgYnkgMywgZ2l2aW5nIHVzIDYgaW5zbnMgcGVyIGVu
-dHJ5IHRvIHdvcmsgd2l0aC4KCWxkbwkJLTEoJXIyNiksICVyMjAKCWV4dHJ3LHUJCSVyMjUs
-IDMxLCA4LCAlcjI1CglleHRydyx1CQklcjIwLCAzMSwgMiwgJXIyMAoJc2hsYWRkLGwJJXIy
-MCwgMSwgJXIyMCwgJXIyMAoJYmxyCQklcjIwLCAlcjAKCSA7ISBCZWdpbiBieSBhc3N1bWlu
-ZyB0aGF0IEMgaXMgbm90IHByZXNlbnQuCgkgbGRpCQkwLCAlcjI4CgoJOyEgcHRyICUgNCA9
-PSAxCglsZGIJCTAoJXIyNiksICVyMjAKCWNtcGNsciw8PgklcjI1LCAlcjIwLCAlcjAKCWNv
-cHkJCSVyMjYsICVyMjgKCWNtcGNsciw8PgklcjAsICVyMjAsICVyMAoJYnYsbgkJMCglcjIp
-CglsZG8JCTEoJXIyNiksICVyMjYKCgk7ISBwdHIgJSA0ID09IDIKCWxkYgkJMCglcjI2KSwg
-JXIyMAoJY21wY2xyLDw+CSVyMjUsICVyMjAsICVyMAoJY29weQkJJXIyNiwgJXIyOAoJY21w
-Y2xyLDw+CSVyMCwgJXIyMCwgJXIwCglidixuCQkwKCVyMikKCWxkbwkJMSglcjI2KSwgJXIy
-NgoKCTshIHB0ciAlIDQgPT0gMwoJbGRiCQkwKCVyMjYpLCAlcjIwCgljbXBjbHIsPD4JJXIy
-NSwgJXIyMCwgJXIwCgljb3B5CQklcjI2LCAlcjI4CgljbXBjbHIsPD4JJXIwLCAlcjIwLCAl
-cjAKCWJ2LG4JCTAoJXIyKQoJbGRvCQkxKCVyMjYpLCAlcjI2CgoJOyEgcHRyICUgNCA9PSAw
-CglsZHcsbWEJCTQoJXIyNiksICVyMjAKCWNvcHkJCSVyMjUsICVyMjQKCWRlcHcJCSVyMjQs
-IDIzLCA4LCAlcjI0CglkZXB3CQklcjI0LCAxNSwgMTYsICVyMjQKCgk7ISBNYWluIGxvb3Au
-CjA6CTs7IFRlc3QgZm9yIGEgTlVMIHRlcm1pbmF0b3Igd2l0aGluIHRoZSB3b3JkIGFuZCBl
-eGl0IGlmIGZvdW5kLgoJdXhvcixuYnoJJXIwLCAlcjIwLCAlcjAKCWIsbgkJMWYKCgk7OyBU
-ZXN0IGZvciBDIHdpdGhpbiB0aGUgd29yZC4gIElmIG5vdCBmb3VuZCwgbG9vcCBhbmQgbG9h
-ZCB0aGUKCTs7IG5leHQgd29yZCBpbiB0aGUgZGVsYXkgc2xvdC4gIElmIGZvdW5kLCBsb2Fk
-IHRoZSBuZXh0IHdvcmQKCTs7IG5vdyBhbnl3YXksIHNpbmNlIHdlIGtub3cgdGhhdCB3ZSBo
-YXZuJ3Qgc2VlbiBlbmQtb2Ytc3RyaW5nLgoJY29weQkJJXIyMCwgJXIyMQoJdXhvcixzYnoJ
-JXIyNCwgJXIyMCwgJXIwCgliCQkwYgoJIGxkdyxtYQkJNCglcjI2KSwgJXIyMAoKCTs7IEZv
-dW5kIEMgd2l0aGluIHRoZSAiY3VycmVudCIgd29yZC4gIE5vdGUgdGhhdCBpdCBpcyBub3cg
-aW4gJXIyMSwKCTs7IGFuZCB0aGUgYWRkcmVzcyBmb3IgdGhlIGJlZ2lubmluZyBvZiB0aGF0
-IHdvcmQgaXMgbm93IC04KCVyMjYpLAoJOzsgc2luY2Ugd2UgaGF2ZSBpbmNyZW1lbnRlZCB0
-aGUgcG9pbnRlciB0d2ljZSBzaW5jZSB0aGUgbG9hZC4KCWV4dHJ3LHUJCSVyMjEsICA3LCA4
-LCAlcjIyCgljbXBjbHIsPD4JJXIyNSwgJXIyMiwgJXIwCglsZG8JCS04KCVyMjYpLCAlcjI4
-CgoJZXh0cncsdQkJJXIyMSwgMTUsIDgsICVyMjIKCWNtcGNsciw8PgklcjI1LCAlcjIyLCAl
-cjAKCWxkbwkJLTcoJXIyNiksICVyMjgKCglleHRydyx1CQklcjIxLCAyMywgOCwgJXIyMgoJ
-Y21wY2xyLDw+CSVyMjUsICVyMjIsICVyMAoJbGRvCQktNiglcjI2KSwgJXIyOAoKCWV4dHJ3
-LHUJCSVyMjEsIDMxLCA4LCAlcjIyCgljbXBjbHIsPD4JJXIyNSwgJXIyMiwgJXIwCglsZG8J
-CS01KCVyMjYpLCAlcjI4CgoJYixuCQkwYgoKCTshIEZvdW5kIE5VTCBzb21ld2hlcmUgaW4g
-d2l0aCB3b3JkIGluICVyMjAsIGxvYWRlZCBmcm9tIC00KCVyMjYpLgoJOyEgVGVzdCBlYWNo
-IGJ5dGUgaW4gc2VxdWVuY2UuCjE6CWV4dHJ3LHUJCSVyMjAsICA3LCA4LCAlcjIxCgljbXBj
-bHIsPD4JJXIyNSwgJXIyMSwgJXIwCglsZG8JCS00KCVyMjYpLCAlcjI4CgljbXBjbHIsPD4J
-JXIwLCAlcjIxLCAlcjAKCWJ2LG4JCTAoJXIyKQoKCWV4dHJ3LHUJCSVyMjAsIDE1LCA4LCAl
-cjIxCgljbXBjbHIsPD4JJXIyNSwgJXIyMSwgJXIwCglsZG8JCS0zKCVyMjYpLCAlcjI4Cglj
-bXBjbHIsPD4JJXIwLCAlcjIxLCAlcjAKCWJ2LG4JCTAoJXIyKQoKCWV4dHJ3LHUJCSVyMjAs
-IDIzLCA4LCAlcjIxCgljbXBjbHIsPD4JJXIyNSwgJXIyMSwgJXIwCglsZG8JCS0yKCVyMjYp
-LCAlcjI4CgljbXBjbHIsPD4JJXIwLCAlcjIxLCAlcjAKCWJ2LG4JCTAoJXIyKQoKCTs7IEhh
-dmluZyBjaGVja2VkIHRoZSBvdGhlcnMsIHRoZSBsYXN0IGJ5dGUgbXVzdCBiZSBOVUwuCgk7
-OyBEbyBjaGVjayBmb3IgdGhlIHVudXN1YWwgY2FzZSBvZiBDID09IE5VTC4KCWNtcGNsciw8
-PgklcjI1LCAlcjAsICVyMAoJbGRvCQktMSglcjI2KSwgJXIyOAoJYnYsbgkJMCglcjIpCgoJ
-LmV4aXQKCS5wcm9jZW5kCg==
---------------6252A3DA0A2F10EFC1B8A841--
+Helge
