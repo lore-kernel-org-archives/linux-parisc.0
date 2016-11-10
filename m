@@ -1,37 +1,100 @@
-From: Richard Henderson <rth@twiddle.net>
-Subject: Re: Aw: hppa qemu and string functions
-Date: Thu, 10 Nov 2016 10:38:51 +0100
-Message-ID: <8367e614-68db-c3a2-bb32-c314c42a7b58@twiddle.net>
-References: <21645bc2-f005-5e60-d26a-41af60e3c035@twiddle.net>
- <trinity-8a5a9da3-1e08-4571-bbfb-b230bd20f15b-1478703076818@3capp-gmx-bs52>
+From: Alexander Duyck <alexander.h.duyck@intel.com>
+Subject: [mm PATCH v3 14/23] arch/parisc: Add option to skip DMA sync as a
+ part of map and unmap
+Date: Thu, 10 Nov 2016 06:35:29 -0500
+Message-ID: <20161110113529.76501.44762.stgit@ahduyck-blue-test.jf.intel.com>
+References: <20161110113027.76501.63030.stgit@ahduyck-blue-test.jf.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: linux-parisc@vger.kernel.org,
-        GNU C Library <libc-alpha@sourceware.org>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <trinity-8a5a9da3-1e08-4571-bbfb-b230bd20f15b-1478703076818@3capp-gmx-bs52>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Cc: netdev@vger.kernel.org, Helge Deller <deller@gmx.de>,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>, linux-parisc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <20161110113027.76501.63030.stgit@ahduyck-blue-test.jf.intel.com>
+List-ID: <linux-mm.kvack.org>
 
-On 11/09/2016 03:51 PM, Helge Deller wrote:
-> Hi Richard,
->
->> Off and on, I've been working on a user-only target of hppa to qemu.  It's now
->> about 95% working.  If anyone would like to try it out, it's available at
->>    git://github.com/rth7680/qemu.git tgt-hppa
->
-> COOL!
-> I'm happy to test, but can you shortly describe the required steps how I can build & test it?
+This change allows us to pass DMA_ATTR_SKIP_CPU_SYNC which allows us to
+avoid invoking cache line invalidation if the driver will just handle it
+via a sync_for_cpu or sync_for_device call.
 
-Check out the indicated branch, configure --target-list=hppa-linux-user, make, 
-install.  qemu-hppa will be the user-mode emulator.
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+Signed-off-by: Alexander Duyck <alexander.h.duyck@intel.com>
+---
+ arch/parisc/kernel/pci-dma.c |   20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
->
-> With "user-only target of hppa" I assume this means that I can run hppa binaries
-> on e.g. x86-64, similiar to what is described here: https://wiki.debian.org/QemuUserEmulation ?
+diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
+index 02d9ed0..be55ede 100644
+--- a/arch/parisc/kernel/pci-dma.c
++++ b/arch/parisc/kernel/pci-dma.c
+@@ -459,7 +459,9 @@ static dma_addr_t pa11_dma_map_page(struct device *dev, struct page *page,
+ 	void *addr = page_address(page) + offset;
+ 	BUG_ON(direction == DMA_NONE);
+ 
+-	flush_kernel_dcache_range((unsigned long) addr, size);
++	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
++		flush_kernel_dcache_range((unsigned long) addr, size);
++
+ 	return virt_to_phys(addr);
+ }
+ 
+@@ -469,8 +471,11 @@ static void pa11_dma_unmap_page(struct device *dev, dma_addr_t dma_handle,
+ {
+ 	BUG_ON(direction == DMA_NONE);
+ 
++	if (attrs & DMA_ATTR_SKIP_CPU_SYNC)
++		return;
++
+ 	if (direction == DMA_TO_DEVICE)
+-	    return;
++		return;
+ 
+ 	/*
+ 	 * For PCI_DMA_FROMDEVICE this flush is not necessary for the
+@@ -479,7 +484,6 @@ static void pa11_dma_unmap_page(struct device *dev, dma_addr_t dma_handle,
+ 	 */
+ 
+ 	flush_kernel_dcache_range((unsigned long) phys_to_virt(dma_handle), size);
+-	return;
+ }
+ 
+ static int pa11_dma_map_sg(struct device *dev, struct scatterlist *sglist,
+@@ -496,6 +500,10 @@ static int pa11_dma_map_sg(struct device *dev, struct scatterlist *sglist,
+ 
+ 		sg_dma_address(sg) = (dma_addr_t) virt_to_phys(vaddr);
+ 		sg_dma_len(sg) = sg->length;
++
++		if (attrs & DMA_ATTR_SKIP_CPU_SYNC)
++			continue;
++
+ 		flush_kernel_dcache_range(vaddr, sg->length);
+ 	}
+ 	return nents;
+@@ -510,14 +518,16 @@ static void pa11_dma_unmap_sg(struct device *dev, struct scatterlist *sglist,
+ 
+ 	BUG_ON(direction == DMA_NONE);
+ 
++	if (attrs & DMA_ATTR_SKIP_CPU_SYNC)
++		return;
++
+ 	if (direction == DMA_TO_DEVICE)
+-	    return;
++		return;
+ 
+ 	/* once we do combining we'll need to use phys_to_virt(sg_dma_address(sglist)) */
+ 
+ 	for_each_sg(sglist, sg, nents, i)
+ 		flush_kernel_vmap_range(sg_virt(sg), sg->length);
+-	return;
+ }
+ 
+ static void pa11_dma_sync_single_for_cpu(struct device *dev,
 
-Yes, exactly.
-
-
-r~
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
