@@ -1,80 +1,23 @@
-From: Jeff Law <law@redhat.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: Change call ABI on PA-RISC
-Date: Mon, 14 Nov 2016 10:02:59 -0700
-Message-ID: <972c16d9-802a-7150-0d58-95e71573c22b@redhat.com>
+Date: Mon, 14 Nov 2016 12:23:19 -0500
+Message-ID: <CAE2sS1g2AX328mz+vi0sfGEuS=YX0=aoOCFg+evfB9-5TJ-Cjg@mail.gmail.com>
 References: <0E3ABDFC-D082-4DA8-9D5B-12FC7E95335F@bell.net>
- <bf499ea2-6148-9cf8-eba3-b0f6de5cf309@gmx.de>
- <93610ddc-78d3-f456-9ca0-59362ac7b355@redhat.com>
- <2d705201-5651-b4e7-9e92-6d0f175b44b9@gmx.de>
- <06f2cef7-6946-911e-53d8-375637d54096@redhat.com>
- <77ee085f-205e-5fcb-d5e8-86bc95d5b9eb@bell.net>
- <491e8502-17a3-f203-0c9a-273a988ee0ee@gmx.de>
+ <bf499ea2-6148-9cf8-eba3-b0f6de5cf309@gmx.de> <93610ddc-78d3-f456-9ca0-59362ac7b355@redhat.com>
+ <2d705201-5651-b4e7-9e92-6d0f175b44b9@gmx.de> <06f2cef7-6946-911e-53d8-375637d54096@redhat.com>
+ <77ee085f-205e-5fcb-d5e8-86bc95d5b9eb@bell.net> <491e8502-17a3-f203-0c9a-273a988ee0ee@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Cc: "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=UTF-8
+Cc: John David Anglin <dave.anglin@bell.net>,
+        Jeff Law <law@redhat.com>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <491e8502-17a3-f203-0c9a-273a988ee0ee@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 11/14/2016 09:24 AM, Helge Deller wrote:
-> On 14.11.2016 16:11, John David Anglin wrote:
->> On 2016-11-14 3:21 AM, Jeff Law wrote:
->>> On 11/13/2016 12:48 PM, Helge Deller wrote:
->>>> On 13.11.2016 19:56, Jeff Law wrote:
->>>>> On 11/13/2016 11:37 AM, Helge Deller wrote:
->>>>>> If you are going to change the ABI, maybe we can add more
->>>>>> things as well? Which comes to my mind here is for example an
->>>>>> optimized mcount() function which allows changing the return
->>>>>> pointer (see -mmcount-ra-address on MIPS) ?
->>>>
->>>>> As in twiddling RP to return to a different point?
->>>>
->>>> No, that's not the use case for me.
->
-> I was wrong.
-> It's actually the use case to modify the RP...
->
->>>> I was working on the ftrace functionality in the Linux kernel.
->>>> I'd need to look up the full details again, but as far as I
->>>> remember one of the tracers wants to know the function to which
->>>> the caller of mcount() would return, so some kind of simple
->>>> __builtin_return_address(2).
->
->>> Ah.  Isn't that going to be sitting at sp-20 or something like
->>> that.  My PA is rusty, but my recollection is that's supposed to be
->>> at a fixed location in the frame.
->
-> Yes, sp-10.
->
-> 0000000000000000 <irq_to_desc>:
->    0:   08 03 02 41     copy r3,r1
->    4:   0f c2 12 c1     std rp,-10(sp)
->    8:   08 1e 02 43     copy sp,r3
->    c:   73 c1 00 a8     std,ma r1,50(sp)
->   10:   37 dd 00 20     ldo 10(sp),ret1
->   14:   0c 65 12 d0     std r5,8(r3)
->   18:   00 00 14 b9     mfia r25
->   1c:   db 45 0b e0     extrd,u,* r26,63,32,r5
->   20:   70 64 00 20     std r4,10(r3)
->   24:   08 02 02 5a     copy rp,r26
->   28:   37 39 3f d1     ldo -18(r25),r25
->   2c:   08 1b 02 44     copy dp,r4
->   30:   2b 60 00 00     addil L%0,dp,r1
->   34:   50 21 00 00     ldd 0(r1),r1
->   38:   0c 20 10 c1     ldd 0(r1),r1
->   3c:   50 22 00 20     ldd 10(r1),rp
->   40:   e8 40 f0 00     bve,l (rp),rp
->   44:   50 3b 00 30     ldd 18(r1),dp
->
->
->> The return address of the the function to which the caller of
->> mcount() would return is passed to mcount() in %r26.  The saved value
->> in the frame is not directly useful as one lacks the frame offset of
->> the routine calling mcount.
->
+On Mon, Nov 14, 2016 at 11:24 AM, Helge Deller <deller@gmx.de> wrote:
 > What I want to archieve is to modify the return pointer, in order
 > to be able to track when the function returns to his caller.
 > The kernel ftracer uses this then to generate call stacks and to
@@ -82,11 +25,17 @@ On 11/14/2016 09:24 AM, Helge Deller wrote:
 > Looking at the above code, it should then be possible for me
 > to modify -10(r3), but is there a guarantee that it's always at
 > -10(r3) and that r3 is used?
-I don't think you can depend on r3 (frame pointer).  But IIRC the save 
-slot for the return address is fixed.  I think the problem you're going 
-to run into is that the RP is saved into the frame allocated by the 
-caller, then we adjust the SP for the current function.  So without 
-knowing the size of the current function's frame, you're hosed.
+> That's the reason I asked if we could modify mcount to
+> give the address (in the stack) of the return pointer, but maybe
+> it's just overkill for this use case ?
 
-Jeff
+Why do you need to modify the value?
 
+AFAICT ftrace uses these values heuristically e.g.
+HAVE_FUNCTION_GRAPH_FP_TEST, HAVE_FUNCTION_GRAPH_RET_ADDR_PTR?
+
+For example the only uses I see are in ftrace_pop_return_trace() and
+they are purely heuristic.
+
+Cheers,
+Carlos.
