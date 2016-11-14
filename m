@@ -1,43 +1,59 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: Change call ABI on PA-RISC
-Date: Mon, 14 Nov 2016 08:32:15 -0500
-Message-ID: <CAE2sS1hv81jC_vf6C-A3_cv_Ds9R2au2pKVtyTH_K7P2Y7c5cA@mail.gmail.com>
+Date: Mon, 14 Nov 2016 10:11:07 -0500
+Message-ID: <77ee085f-205e-5fcb-d5e8-86bc95d5b9eb@bell.net>
 References: <0E3ABDFC-D082-4DA8-9D5B-12FC7E95335F@bell.net>
+ <bf499ea2-6148-9cf8-eba3-b0f6de5cf309@gmx.de>
+ <93610ddc-78d3-f456-9ca0-59362ac7b355@redhat.com>
+ <2d705201-5651-b4e7-9e92-6d0f175b44b9@gmx.de>
+ <06f2cef7-6946-911e-53d8-375637d54096@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Helge Deller <deller@gmx.de>,
-        "linux-parisc@vger.kernel.org List" <linux-parisc@vger.kernel.org>,
-        Jeff Law <law@redhat.com>
-To: John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Cc: "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
+To: Jeff Law <law@redhat.com>, Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <0E3ABDFC-D082-4DA8-9D5B-12FC7E95335F@bell.net>
+In-Reply-To: <06f2cef7-6946-911e-53d8-375637d54096@redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Nov 12, 2016 at 1:00 PM, John David Anglin <dave.anglin@bell.net> wrote:
-> I'm thinking about adding a "-mabi=" option to change the call ABI.  Currently, objects larger than 64 bits
-> in the 32-bit runtime are passed by reference and the callee copies the object when necessary.  This is
-> opposite to x86 where the caller does the copies.  Most targets are caller copies.
->
-> The problem with callee copies is that it doesn't work with openmp.  There are race problems and sometimes
-> we get internal compiler errors with openmp code due to this problem.  This became apparent when new testcases
-> were added to gcc-6.  It's tough to fix this problem in gcc.
->
-> This is gcc PR:
-> <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68733>.
->
-> This is fixed if we change abi to caller copies (maybe "-mabi=gnu" and "-mabi=hp").  The default could be set
-> by a configure options.  Probably, we would want the new gnu abi on linux as the default.  However, there is
-> the potential to break stuff during the migration to the new abi.
->
-> Opinions?
+On 2016-11-14 3:21 AM, Jeff Law wrote:
+> On 11/13/2016 12:48 PM, Helge Deller wrote:
+>> On 13.11.2016 19:56, Jeff Law wrote:
+>>> On 11/13/2016 11:37 AM, Helge Deller wrote:
+>>>> If you are going to change the ABI, maybe we can add more things as 
+>>>> well?
+>>>> Which comes to my mind here is for example an optimized mcount() 
+>>>> function
+>>>> which allows changing the return pointer (see -mmcount-ra-address 
+>>>> on MIPS) ?
+>>
+>>> As in twiddling RP to return to a different point?
+>>
+>> No, that's not the use case for me.
+>>
+>> I was working on the ftrace functionality in the Linux kernel.
+>> I'd need to look up the full details again, but as far as I remember 
+>> one of
+>> the tracers wants to know the function to which the caller of 
+>> mcount() would return,
+>> so some kind of simple __builtin_return_address(2).
+> Ah.  Isn't that going to be sitting at sp-20 or something like that.  
+> My PA is rusty, but my recollection is that's supposed to be at a 
+> fixed location in the frame.
+The return address of the the function to which the caller of mcount() 
+would return
+is passed to mcount() in %r26.  The saved value in the frame is not 
+directly useful as one lacks
+the frame offset of the routine calling mcount.
 
-I think this is a good idea.
+In linux, we have a single space runtime and thus the import stubs don't 
+modify the return
+address when shared library routines are called.  So, the value passed 
+in %r26 can be used
+directly to lookup the calling function.
 
-Anything that brings us slowly towards parity with other arches is
-better in the long-run.
+Dave
 
-Any idea how to test the impact?
+-- 
+John David Anglin  dave.anglin@bell.net
 
-Cheers,
-Carlos.
