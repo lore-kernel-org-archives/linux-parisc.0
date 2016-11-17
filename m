@@ -1,17 +1,52 @@
-From: "gowans@gmx.com" <beltran.montes1@gmx.com>
-Subject: =?windows-1251?Q?=D6=E5=EB=E5=E2=FB=E5_=EA=EB=E8=E5=ED=F2?=
-        =?windows-1251?Q?=F1=EA=E8=E5_=E1=E0=E7=FB_Skype=3A_proda?=
-        =?windows-1251?Q?wez390_Whatsapp=3A_+79139230330_Viber=3A?=
-        =?windows-1251?Q?__+79139230330_Telegram=3A_+79139230330_?=
-        =?windows-1251?Q?Email=3A_prodawez391=40gmail=2Ecom?=
-Date: Fri, 18 Nov 2016 11:10:31 +0700
-Message-ID: <F8FD4B1813C7E95A8683CA7662D4468B@gmx.com>
-Reply-To: "gowans@gmx.com" <prodawez391@gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Fix printk continuations in system detection
+Date: Thu, 17 Nov 2016 21:13:56 +0100
+Message-ID: <20161117201356.GA30025@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1251";
-To: "sara_bp19@hotmail.com" <sara_bp19@hotmail.com>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Целевые клиентские базы Skype: prodawez390 Whatsapp: +79139230330 Viber:  +79139230330 Telegram: +79139230330 Email: prodawez391@gmail.com
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/arch/parisc/kernel/inventory.c b/arch/parisc/kernel/inventory.c
+index 545f9d2..c9789d9 100644
+--- a/arch/parisc/kernel/inventory.c
++++ b/arch/parisc/kernel/inventory.c
+@@ -58,7 +58,7 @@ void __init setup_pdc(void)
+ 	status = pdc_system_map_find_mods(&module_result, &module_path, 0);
+ 	if (status == PDC_OK) {
+ 		pdc_type = PDC_TYPE_SYSTEM_MAP;
+-		printk("System Map.\n");
++		pr_cont("System Map.\n");
+ 		return;
+ 	}
+ 
+@@ -77,7 +77,7 @@ void __init setup_pdc(void)
+ 	status = pdc_pat_cell_get_number(&cell_info);
+ 	if (status == PDC_OK) {
+ 		pdc_type = PDC_TYPE_PAT;
+-		printk("64 bit PAT.\n");
++		pr_cont("64 bit PAT.\n");
+ 		return;
+ 	}
+ #endif
+@@ -97,12 +97,12 @@ void __init setup_pdc(void)
+ 	case 0xC:		/* 715/64, at least */
+ 
+ 		pdc_type = PDC_TYPE_SNAKE;
+-		printk("Snake.\n");
++		pr_cont("Snake.\n");
+ 		return;
+ 
+ 	default:		/* Everything else */
+ 
+-		printk("Unsupported.\n");
++		pr_cont("Unsupported.\n");
+ 		panic("If this is a 64-bit machine, please try a 64-bit kernel.\n");
+ 	}
+ }
