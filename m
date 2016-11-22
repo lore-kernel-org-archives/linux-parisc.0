@@ -1,439 +1,419 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Start processors from a known state and fix races in parisc_setup_cache_timing
-Date: Sun, 20 Nov 2016 21:12:36 -0500
-Message-ID: <763DCD56-C1AF-4564-8911-8B3847B08611@bell.net>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: multipart/mixed; boundary=Apple-Mail-55-1023466952
-Cc: Helge Deller <helge.deller@steuerkanzlei-deller.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-To: "linux-parisc@vger.kernel.org List" <linux-parisc@vger.kernel.org>
+From: kbuild test robot <fengguang.wu@intel.com>
+Subject: [hp-parisc:pdt_devel 5/5] arch/parisc/kernel/inventory.c:283:1:
+ warning: the frame size of 4104 bytes is larger than 2048 bytes
+Date: Wed, 23 Nov 2016 00:13:10 +0800
+Message-ID: <201611230024.aeuc0L1g%fengguang.wu@intel.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="dDRMvlgZJXvWKvBx"
+Cc: kbuild-all@01.org, linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 
---Apple-Mail-55-1023466952
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+--dDRMvlgZJXvWKvBx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Helge reported to me the following startup crash:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git pdt_devel
+head:   9d2a99a3e6a35e064c82e639dbbe65f1a4fc9b09
+commit: 9d2a99a3e6a35e064c82e639dbbe65f1a4fc9b09 [5/5] parisc: Add page deallocation support
+config: parisc-generic-64bit_defconfig (attached as .config)
+compiler: hppa64-linux-gnu-gcc (GCC) 6.2.0 20160901
+reproduce:
+        wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        git checkout 9d2a99a3e6a35e064c82e639dbbe65f1a4fc9b09
+        # save the attached .config to linux build tree
+        make.cross ARCH=parisc 
 
-[    0.000000] Linux version 4.8.0-1-parisc64-smp =
-(debian-kernel@lists.debian.org) (gcc version 5.4.1 20161019 (GCC) ) #1 =
-SMP Debian 4.8.7-1 (2016-11-13)
-[    0.000000] unwind_init: start =3D 0x40d5b5a0, end =3D 0x40db0740, =
-entries =3D 21786
-[    0.000000] FP[0] enabled: Rev 1 Model 16
-[    0.000000] The 64-bit Kernel has started...
-[    0.000000] Kernel default page size is 4 KB. Huge pages enabled with =
-1 MB physical and 2 MB virtual size.
-[    0.000000] bootconsole [ttyB0] enabled
-[    0.000000] Initialized PDC Console for debugging.
-[    0.000000] Determining PDC firmware type: System Map.
-[    0.000000] model 00005bd0 00000491 00000000 00000002 782482ee =
-100000f0 00000008 000000b2 000000b2
-[    0.000000] vers  00000203
-[    0.000000] CPUID vers 17 rev 7 (0x00000227)
-[    0.000000] capabilities 0x3
-[    0.000000] model 9000/785/J5000
-[    0.000000] Total Memory: 2048 MB
-[    0.000000] initrd: 7eace000-7ffeda26
-[    0.000000] initrd: reserving 3eace000-3ffeda26 (mem_max 80000000)
-[    0.000000] LCD display at fffffff0f05d0008,fffffff0f05d0000 =
-registered
-[    0.000000] percpu: Embedded 19 pages/cpu @0000000043417000 s39216 =
-r8192 d30416 u77824
-[    0.000000] SMP: bootstrap CPU ID is 0
-[    0.000000] Built 1 zonelists in Zone order, mobility grouping on.  =
-Total pages: 516096
-[    0.000000] Kernel command line: root=3D/dev/sda3 rootfstype=3Dext4 =
-HOME=3D/ panic=3D-1 console=3DttyS0 TERM=3Dvt102 palo_kernel=3D2/vmlinux
-[    0.000000] PID hash table entries: 4096 (order: 3, 32768 bytes)
-[    0.000000] Dentry cache hash table entries: 262144 (order: 9, =
-2097152 bytes)
-[    0.000000] Inode-cache hash table entries: 131072 (order: 8, 1048576 =
-bytes)
-[    0.000000] Memory: 2018528K/2097152K available (9272K kernel code, =
-3053K rwdata, 1319K rodata, 1024K init, 840K bss, 78624K reserved, 0K =
-cma-reserved)
-[    0.000000] virtual kernel memory layout:
-   0.000000]     vmalloc : 0x0000000000008000 - 0x000000003f000000   =
-(1007 MB)
-   0.000000]     memory  : 0x0000000040000000 - 0x00000000c0000000   =
-(2048 MB)
-   0.000000]       .init : 0x0000000040100000 - 0x0000000040200000   =
-(1024 kB)
-   0.000000]       .data : 0x0000000040b0e000 - 0x0000000040f533e0   =
-(4372 kB)
-   0.000000]       .text : 0x0000000040200000 - 0x0000000040b0e000   =
-(9272 kB)
-[    0.000000] Hierarchical RCU implementation.
-[    0.000000]  Build-time adjustment of leaf fanout to 64.
-[    0.000000] NR_IRQS:128
-[    0.000000] clocksource: cr16: mask: 0xffffffffffffffff max_cycles: =
-0x657a3c2da0, max_idle_ns: 440795224593 ns
-[    0.000000] Console: colour dummy device 160x64
-[    0.196000] Calibrating delay loop... 872.44 BogoMIPS (lpj=3D1744896)
-[    0.264032] pid_max: default: 32768 minimum: 301
-[    0.297351] Security Framework initialized
-[    0.360039] Yama: disabled by default; enable with sysctl =
-kernel.yama.*
-[    0.412087] AppArmor: AppArmor disabled by boot time parameter
-[    0.500468] Mount-cache hash table entries: 4096 (order: 3, 32768 =
-bytes)
-[    0.576040] Mountpoint-cache hash table entries: 4096 (order: 3, =
-32768 bytes)
-[    0.768910] Brought up 1 CPUs
-[    0.811305] devtmpfs: initialized
-[    0.861977] clocksource: jiffies: mask: 0xffffffff max_cycles: =
-0xffffffff, max_idle_ns: 7645041785100000 ns
-[    0.992465] NET: Registered protocol family 16
-[    1.052962 <tel:1052962>] EISA bus registered
-[    1.056311 <tel:1056311>] Searching for devices...
-[    1.388031 <tel:1388031>] Found devices:
-[    1.392053] 1 <tel:13920531>. Astro BC Runway Port at =
-0xfffffffffed00000 [10] { 12, 0x0, 0x582, 0x0000b }
-[    1.532048] 2 <tel:15320482>. Elroy PCI Bridge at 0xfffffffffed30000 =
-[10/0] { 13, 0x0, 0x782, 0x0000a }
-[    1.538406] 3 <tel:15384063>. Elroy PCI Bridge at 0xfffffffffed32000 =
-[10/1] { 13, 0x0, 0x782, 0x0000a }
-[    1.744052] 4 <tel:17440524>. Elroy PCI Bridge at 0xfffffffffed34000 =
-[10/2] { 13, 0x0, 0x782, 0x0000a }
-[    1.852052] 5 <tel:18520525>. Elroy PCI Bridge at 0xfffffffffed38000 =
-[10/4] { 13, 0x0, 0x782, 0x0000a }
-[    1.858406] 6 <tel:18584066>. Elroy PCI Bridge at 0xfffffffffed3c000 =
-[10/6] { 13, 0x0, 0x782, 0x0000a }
-[    2.064047] 7. Forte W 2-way at 0xfffffffffffa0000 [32] { 0, 0x0, =
-0x5bd, 0x00004 }
-[    2.164047] 8. Forte W 2-way at 0xfffffffffffa2000 [34] { 0, 0x0, =
-0x5bd, 0x00004 }
-[    2.264046] 9. Memory at 0xfffffffffed10200 [49] { 1, 0x0, 0x088, =
-0x00009 }
-[    2.356040] Enabling regular chassis codes support v0.05
-[    2.429981] Releasing cpu 1 now, hpa=3Dfffffffffffa2000
-[    2.635751] CPU(s): 2 out of 2 PA8500 (PCX-W) at 440.000000 MHz =
-online
-[    2.726692] Setting cache flush threshold to 1024 kB
-[    2.729932] Not-handled unaligned insn 0x43ffff80
-[    2.798114] Setting TLB flush threshold to 140 kB
-[    2.928039] Unaligned handler failed, ret =3D -1
-[    3.000419]       _______________________________=20
-   3.000419]      < Your System ate a SPARC! Gah! >
-   3.000419]       -------------------------------=20
-   3.000419]              \   ^__^
-   3.000419]                  (__)\       )\/\
-   3.000419]                   U  ||----w |
-   3.000419]                      ||     ||
-[    3.000000] SBA found Astro 2.1 at 0xfffffffffed00000
-[    3.408041] random: fast init done
-[    3.457713] Elroy version TR2.1 (0x2) found at 0xfffffffffed30000
-[    3.584425] swapper/1 (pid 0): Unaligned data reference (code 28)
-[    3.583874] LBA 10:0: PCI host bridge to bus 0000:00
-[    3.583907] pci_bus 0000:00: root bus resource [io  0x0000-0x1fff]
-[    3.583939] pci_bus 0000:00: root bus resource [mem =
-0xfffffffff4000000-0xfffffffff47fffff] (bus address =
-[0xf4000000-0xf47fffff])
-[    3.583967] pci_bus 0000:00: root bus resource [bus 00]
-[    3.584316] pci 0000:00:0c.0: [1011:0019] type 00 class 0x020000
-[    3.584466] pci 0000:00:0c.0: reg 0x10: [io  0x1000-0x107f]
-[    3.584558] pci 0000:00:0c.0: reg 0x14: [mem =
-0xfffffffff4008000-0xfffffffff40083ff]
-[    3.584924] pci 0000:00:0c.0: reg 0x30: [mem =
-0xfffffffff4040000-0xfffffffff407ffff pref]
-[    3.585597] pci 0000:00:0d.0: [11d4:1889] type 00 class 0x040100
-[    3.585752] pci 0000:00:0d.0: reg 0x10: [mem =
-0xfffffffff400c000-0xfffffffff400c1ff pref]
-[    3.585844] pci 0000:00:0d.0: reg 0x14: [mem =
-0xfffffffff400b000-0xfffffffff400b00f pref]
-[    3.585936] pci 0000:00:0d.0: reg 0x18: [mem =
-0xfffffffff400a000-0xfffffffff400a00f pref]
-[    3.586027] pci 0000:00:0d.0: reg 0x1c: [mem =
-0xfffffffff4009000-0xfffffffff400900f pref]
-[    3.586525] pci 0000:00:0d.0: supports D2
-[    3.587048] pci 0000:00:0e.0: [100b:0002] type 00 class 0x01018a
-[    3.587099] PCI: Enabled native mode for NS87415 (pif=3D0x8f)
-[    3.587205] pci 0000:00:0e.0: reg 0x10: [io  0x0f00-0x0f07]
-[    3.587299] pci 0000:00:0e.0: reg 0x14: [io  0x0e00-0x0e03]
-[    3.587391] pci 0000:00:0e.0: reg 0x18: [io  0x0d00-0x0d07]
-[    3.587484] pci 0000:00:0e.0: reg 0x1c: [io  0x0b00-0x0b03]
-[    3.587577] pci 0000:00:0e.0: reg 0x20: [io  0x0a00-0x0a0f]
-[    3.588427] pci 0000:00:0e.1: [100b:000e] type 00 class 0x068000
-[    3.589556] pci 0000:00:0e.2: [100b:0012] type 00 class 0x0c0310
-[    3.589689] pci 0000:00:0e.2: reg 0x10: [mem =
-0xfffffffff4007000-0xfffffffff4007fff]
-[    3.589782] pci 0000:00:0e.2: reg 0x14: [mem =
-0xfffffffff4006000-0xfffffffff4006fff]
-[    3.590826] pci 0000:00:0f.0: [1000:000b] type 00 class 0x010000
-[    3.590982] pci 0000:00:0f.0: reg 0x10: [io  0x0900-0x09ff]
-[    3.591116] pci 0000:00:0f.0: reg 0x14: [mem =
-0xfffffffff4005000-0xfffffffff40053ff 64bit]
-[    3.591247] pci 0000:00:0f.0: reg 0x1c: [mem =
-0xfffffffff4002000-0xfffffffff4003fff 64bit]
-[    3.591672] pci 0000:00:0f.0: supports D1 D2
-[    3.592344] pci 0000:00:0f.1: [1000:000b] type 00 class 0x010000
-[    3.592499] pci 0000:00:0f.1: reg 0x10: [io  0x0800-0x08ff]
-[    3.592632] pci 0000:00:0f.1: reg 0x14: [mem =
-0xfffffffff4004000-0xfffffffff40043ff 64bit]
-[    3.592762] pci 0000:00:0f.1: reg 0x1c: [mem =
-0xfffffffff4000000-0xfffffffff4001fff 64bit]
-[    3.593189] pci 0000:00:0f.1: supports D1 D2
-[    3.663990] Elroy version TR2.1 (0x2) found at 0xfffffffffed32000
-[    3.664613] LBA 10:1: PCI host bridge to bus 0000:01
-[    3.664650] pci_bus 0000:01: root bus resource [io  0x12000-0x13fff] =
-(bus address [0x2000-0x3fff])
-[    3.664680] pci_bus 0000:01: root bus resource [mem =
-0xfffffffff4800000-0xfffffffff4ffffff] (bus address =
-[0xf4800000-0xf4ffffff])
-[    3.664707] pci_bus 0000:01: root bus resource [bus 01]
-[    3.729673] Elroy version TR2.1 (0x2) found at 0xfffffffffed34000
-[    3.730152] LBA 10:2: PCI host bridge to bus 0000:02
-[    3.730189] pci_bus 0000:02: root bus resource [io  0x24000-0x25fff] =
-(bus address [0x4000-0x5fff])
-[    3.730219] pci_bus 0000:02: root bus resource [mem =
-0xfffffffff5000000-0xfffffffff57fffff] (bus address =
-[0xf5000000-0xf57fffff])
-[    3.730247] pci_bus 0000:02: root bus resource [bus 02]
-[    3.811431] Elroy version TR2.1 (0x2) found at 0xfffffffffed38000
-[    3.811912] LBA 10:4: PCI host bridge to bus 0000:03
-[    3.811949] pci_bus 0000:03: root bus resource [io  0x38000-0x39fff] =
-(bus address [0x8000-0x9fff])
-[    3.811979] pci_bus 0000:03: root bus resource [mem =
-0xfffffffff6000000-0xfffffffff67fffff] (bus address =
-[0xf6000000-0xf67fffff])
-[    3.812083] pci_bus 0000:03: root bus resource [bus 03]
-[    3.964113] Elroy version TR2.1 (0x2) found at 0xfffffffffed3c000
-[    3.964644] LBA 10:6: PCI host bridge to bus 0000:04
-[    3.964681] pci_bus 0000:04: root bus resource [io  0x4c000-0x4dfff] =
-(bus address [0xc000-0xdfff])
-[    3.964711] pci_bus 0000:04: root bus resource [mem =
-0xfffffffffa000000-0xfffffffffbffffff] (bus address =
-[0xfa000000-0xfbffffff])
-[    3.964740] pci_bus 0000:04: root bus resource [mem =
-0xfffffffff7000000-0xfffffffff77fffff] (bus address =
-[0xf7000000-0xf77fffff])
-[    3.964769] pci_bus 0000:04: root bus resource [bus 04]
-[    3.964963] pci 0000:04:07.0: [103c:1005] type 00 class 0x038000
-[    3.965090] pci 0000:04:07.0: reg 0x10: [mem =
-0xfffffffffa000000-0xfffffffffbffffff]
-[    3.965475] pci 0000:04:07.0: reg 0x30: [mem =
-0xfffffffff7000000-0xfffffffff700ffff pref]
-[    3.966316] iosapic: hpa not registered for 0000:04:07.0
-[    4.116034] powersw: Soft power switch at 0xfffffff0f0400804 enabled.
-[    4.329553] HugeTLB registered 2 MB page size, pre-allocated 0 pages
-[    4.907795] vgaarb: loaded
-[    9.340055] CPU: 1 PID: 0 Comm: swapper/1 Not tainted =
-4.8.0-1-parisc64-smp #1 Debian 4.8.7-1
-[    9.448082] task: 00000000bfd48060 task.stack: 00000000bfd50000
-[    9.528040]=20
-[    9.548022]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-[    9.608027] PSW: 00001000000001001111111100000000 Not tainted
-[    9.684066] r00-03  000000ff0804ff00 0000000040bbc4c0 =
-000000004025d178 00000000bfd50160
-[    9.788086] r04-07  0000000040b9ecc0 00000000bfd50210 =
-0000000040e1f248 0000000000000002
-[    9.896052] r08-11  0000000000000000 0000000000000001 =
-0000000040f533d0 0000000040e1f248
-[   10.000034] r12-15  0000000040e1f2dc 0000000000000001 =
-0000000000000001 0000000040eaa682
-[   10.104053] r16-19  00000000bfd50580 0000000000000002 =
-fffffff0f000016c 00000000bfd50000
-[   10.212034] r20-23  000000004342e440 000000000800000e =
-0000000000000009 0000000000000032
-[   10.316078] r24-27  0000000000000000 000000000f9f009c =
-00000000402fe8a8 0000000000000000
-[   10.420052] r28-31  0000000000000000 00000000bfd50550 =
-00000000bfd50580 0000000040f533d0
-[   10.528034] sr00-03  0000000000000000 0000000000000000 =
-0000000000000000 0000000000000000
-[   10.632083] sr04-07  0000000000000000 0000000000000000 =
-0000000000000000 0000000000000000
-[   10.740042]=20
-[   10.760029] IASQ: 0000000000000000 0000000000000000 IAOQ: =
-000000004025d154 000000004025d158
-[   10.868052]  IIR: 43ffff80    ISR: 0000000000340000  IOR: =
-000001ff54150960
-[   10.960029]  CPU:        1   CR30: 00000000bfd50000 CR31: =
-0000000011111111
-[   11.052057]  ORIG_R28: 000000004021e3b4
-[   11.100045]  IAOQ[0]: irq_exit+0x94/0x120
-[   11.152062]  IAOQ[1]: irq_exit+0x98/0x120
-[   11.208031]  RP(r2): irq_exit+0xb8/0x120
-[   11.256074] Backtrace:
-[   11.288067]  [<00000000402cd944>] cpu_startup_entry+0x1e4/0x598
-[   11.368058]  [<0000000040109528>] smp_callin+0x2c0/0x2f0
-[   11.436308]  [<00000000402b53fc>] update_curr+0x18c/0x2d0
-[   11.508055]  [<00000000402b73b8>] dequeue_entity+0x2c0/0x1030
-[   11.584040]  [<00000000402b3cc0>] set_next_entity+0x80/0xd30
-[   11.660069]  [<00000000402c1594>] pick_next_task_fair+0x614/0x720
-[   11.740085]  [<000000004020dd34>] __schedule+0x394/0xa60
-[   11.808054]  [<000000004020e488>] schedule+0x88/0x118
-[   11.876039]  [<0000000040283d3c>] rescuer_thread+0x4d4/0x5b0
-[   11.948090]  [<000000004028fc4c>] kthread+0x1ec/0x248
-[   12.016053]  [<0000000040205020>] end_fault_vector+0x20/0xc0
-[   12.092239]  [<00000000402050c0>] _switch_to_ret+0x0/0xf40
-[   12.164044]=20
-[   12.184036] CPU: 1 PID: 0 Comm: swapper/1 Not tainted =
-4.8.0-1-parisc64-smp #1 Debian 4.8.7-1
-[   12.244040] Backtrace:
-[   12.244040]  [<000000004021c480>] show_stack+0x68/0x80
-[   12.244040]  [<00000000406f332c>] dump_stack+0xec/0x168
-[   12.244040]  [<000000004021c74c>] die_if_kernel+0x25c/0x430
-[   12.244040]  [<000000004022d320>] handle_unaligned+0xb48/0xb50
-[   12.244040]=20
-[   12.632066] ---[ end trace 9ca05a7215c7bbb2 ]---
-[   12.692036] Kernel panic - not syncing: Attempted to kill the idle =
-task!
+All warnings (new ones prefixed by >>):
 
-We have the insn 0x43ffff80 in IIR but from IAOQ we should have:
-   4025d150:   0f f3 20 df     ldd,s r19(r31),r31
-   4025d154:   0f 9f 00 9c     ldw r31(ret0),ret0
-   4025d158:   bf 80 20 58     cmpb,*<> r0,ret0,4025d18c <irq_exit+0xcc>
+   arch/parisc/kernel/inventory.c: In function 'pat_query_module':
+>> arch/parisc/kernel/inventory.c:283:1: warning: the frame size of 4104 bytes is larger than 2048 bytes [-Wframe-larger-than=]
+    }
+    ^
 
-Cpu0 has just completed running parisc_setup_cache_timing:
+vim +283 arch/parisc/kernel/inventory.c
 
-[    2.429981] Releasing cpu 1 now, hpa=3Dfffffffffffa2000
-[    2.635751] CPU(s): 2 out of 2 PA8500 (PCX-W) at 440.000000 MHz =
-online
-[    2.726692] Setting cache flush threshold to 1024 kB
-[    2.729932] Not-handled unaligned insn 0x43ffff80
-[    2.798114] Setting TLB flush threshold to 140 kB
-[    2.928039] Unaligned handler failed, ret =3D -1
+0d56d1aa Kyle McMartin  2009-06-23  267  				pa_pdc_cell->mod[3 + i * 3],	/* start */
+0d56d1aa Kyle McMartin  2009-06-23  268  				pa_pdc_cell->mod[4 + i * 3]);	/* finish (ie end) */
+^1da177e Linus Torvalds 2005-04-16  269  			printk(KERN_DEBUG 
+^1da177e Linus Torvalds 2005-04-16  270  				"  IO_VIEW %ld: 0x%016lx 0x%016lx 0x%016lx\n", 
+fa465a6a Helge Deller   2016-11-17  271  				i, io_pdc_cell.mod[2 + i * 3],	/* type */
+fa465a6a Helge Deller   2016-11-17  272  				io_pdc_cell.mod[3 + i * 3],	/* start */
+fa465a6a Helge Deller   2016-11-17  273  				io_pdc_cell.mod[4 + i * 3]);	/* finish (ie end) */
+^1da177e Linus Torvalds 2005-04-16  274  		}
+^1da177e Linus Torvalds 2005-04-16  275  		printk(KERN_DEBUG "\n");
+^1da177e Linus Torvalds 2005-04-16  276  		break;
+^1da177e Linus Torvalds 2005-04-16  277  	}
+^1da177e Linus Torvalds 2005-04-16  278  #endif /* DEBUG_PAT */
+0d56d1aa Kyle McMartin  2009-06-23  279  
+0d56d1aa Kyle McMartin  2009-06-23  280  	kfree(pa_pdc_cell);
+0d56d1aa Kyle McMartin  2009-06-23  281  
+^1da177e Linus Torvalds 2005-04-16  282  	return PDC_OK;
+^1da177e Linus Torvalds 2005-04-16 @283  }
+^1da177e Linus Torvalds 2005-04-16  284  
+^1da177e Linus Torvalds 2005-04-16  285  
+^1da177e Linus Torvalds 2005-04-16  286  /* pat pdc can return information about a variety of different
+^1da177e Linus Torvalds 2005-04-16  287   * types of memory (e.g. firmware,i/o, etc) but we only care about
+^1da177e Linus Torvalds 2005-04-16  288   * the usable physical ram right now. Since the firmware specific
+^1da177e Linus Torvalds 2005-04-16  289   * information is allocated on the stack, we'll be generous, in
+^1da177e Linus Torvalds 2005-04-16  290   * case there is a lot of other information we don't care about.
+^1da177e Linus Torvalds 2005-04-16  291   */
 
-=46rom the backtrace, cpu1 is in smp_callin:
+:::::: The code at line 283 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
 
-void __init smp_callin(void)
-{
-       int slave_id =3D cpu_now_booting;
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
 
-       smp_cpu_init(slave_id);
-       preempt_disable();
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
-       flush_cache_all_local(); /* start with known state */
-       flush_tlb_all_local(NULL);
+--dDRMvlgZJXvWKvBx
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
-       local_irq_enable();  /* Interrupts have been off until now */
+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
 
-       cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
-
-So, it has just flushed its caches and the TLB.   It would seem either =
-the flushes in parisc_setup_cache_timing
-or smp_callin have corrupted kernel memory.
-
-The attached patch reworks parisc_setup_cache_timing to remove the races =
-in setting the cache and TLB
-flush thresholds.  It also corrects the number of bytes flushed in the =
-TLB calculation.
-
-The patch flushes the cache and TLB on cpu0 before starting the =
-secondary processors so that they are
-are started from a known state.
-
-Tested with a few reboots on c8000.
-
-Signed-off-by: John David Anglin  <dave.anglin@bell.net>
-
-
-
---Apple-Mail-55-1023466952
-Content-Disposition: attachment;
-	filename=startup.d.txt
-Content-Type: text/plain;
-	name="startup.d.txt"
-Content-Transfer-Encoding: quoted-printable
-
-diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index 6700127..bf669a2 100644
---- a/arch/parisc/kernel/cache.c
-+++ b/arch/parisc/kernel/cache.c
-@@ -369,6 +369,7 @@ void __init parisc_setup_cache_timing(void)
- {
- 	unsigned long rangetime, alltime;
- 	unsigned long size, start;
-+	unsigned long threshold;
-=20
- 	alltime =3D mfctl(16);
- 	flush_data_cache();
-@@ -382,17 +383,12 @@ void __init parisc_setup_cache_timing(void)
- 	printk(KERN_DEBUG "Whole cache flush %lu cycles, flushing %lu =
-bytes %lu cycles\n",
- 		alltime, size, rangetime);
-=20
--	/* Racy, but if we see an intermediate value, it's ok too... */
--	parisc_cache_flush_threshold =3D size * alltime / rangetime;
--
--	parisc_cache_flush_threshold =3D =
-L1_CACHE_ALIGN(parisc_cache_flush_threshold);
--	if (!parisc_cache_flush_threshold)
--		parisc_cache_flush_threshold =3D FLUSH_THRESHOLD;
--
--	if (parisc_cache_flush_threshold > cache_info.dc_size)
--		parisc_cache_flush_threshold =3D cache_info.dc_size;
--
--	printk(KERN_INFO "Setting cache flush threshold to %lu kB\n",
-+	threshold =3D L1_CACHE_ALIGN(size * alltime / rangetime);
-+	if (threshold > cache_info.dc_size)
-+		threshold =3D cache_info.dc_size;
-+	if (threshold)
-+		parisc_cache_flush_threshold =3D threshold;
-+	printk(KERN_INFO "Cache flush threshold set to %lu kB\n",
- 		parisc_cache_flush_threshold/1024);
-=20
- 	/* calculate TLB flush threshold */
-@@ -401,7 +397,7 @@ void __init parisc_setup_cache_timing(void)
- 	flush_tlb_all();
- 	alltime =3D mfctl(16) - alltime;
-=20
--	size =3D PAGE_SIZE;
-+	size =3D 0;
- 	start =3D (unsigned long) _text;
- 	rangetime =3D mfctl(16);
- 	while (start < (unsigned long) _end) {
-@@ -414,13 +410,10 @@ void __init parisc_setup_cache_timing(void)
- 	printk(KERN_DEBUG "Whole TLB flush %lu cycles, flushing %lu =
-bytes %lu cycles\n",
- 		alltime, size, rangetime);
-=20
--	parisc_tlb_flush_threshold =3D size * alltime / rangetime;
--	parisc_tlb_flush_threshold *=3D num_online_cpus();
--	parisc_tlb_flush_threshold =3D =
-PAGE_ALIGN(parisc_tlb_flush_threshold);
--	if (!parisc_tlb_flush_threshold)
--		parisc_tlb_flush_threshold =3D FLUSH_TLB_THRESHOLD;
--
--	printk(KERN_INFO "Setting TLB flush threshold to %lu kB\n",
-+	threshold =3D PAGE_ALIGN(num_online_cpus() * size * alltime / =
-rangetime);
-+	if (threshold)
-+		parisc_tlb_flush_threshold =3D threshold;
-+	printk(KERN_INFO "TLB flush threshold set to %lu kB\n",
- 		parisc_tlb_flush_threshold/1024);
- }
-=20
-diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
-index 81d6f63..2e66a88 100644
---- a/arch/parisc/kernel/setup.c
-+++ b/arch/parisc/kernel/setup.c
-@@ -334,6 +334,10 @@ static int __init parisc_init(void)
- 	/* tell PDC we're Linux. Nevermind failure. */
- 	pdc_stable_write(0x40, &osid, sizeof(osid));
- =09
-+	/* start with known state */
-+	flush_cache_all_local();
-+	flush_tlb_all_local(NULL);
-+
- 	processor_init();
- #ifdef CONFIG_SMP
- 	pr_info("CPU(s): %d out of %d %s at %d.%06d MHz online\n",
-
---Apple-Mail-55-1023466952
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
-
-
-
---
-John David Anglin	dave.anglin@bell.net
-
---Apple-Mail-55-1023466952--
+--dDRMvlgZJXvWKvBx--
