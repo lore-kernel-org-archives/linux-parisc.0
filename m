@@ -1,169 +1,65 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Also flush data TLB in flush_icache_page_asm
-Date: Thu, 24 Nov 2016 20:18:14 -0500
-Message-ID: <7B459DF1-93C2-4717-A365-BCAFBF37557E@bell.net>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: multipart/mixed; boundary=Apple-Mail-29--781679002
-Cc: Helge Deller <deller@gmx.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-To: "linux-parisc@vger.kernel.org List" <linux-parisc@vger.kernel.org>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc architecture fixes for 4.9-rc7
+Date: Fri, 25 Nov 2016 17:27:18 +0100
+Message-ID: <20161125162718.GA10856@ls3530>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Hi Linus,
 
---Apple-Mail-29--781679002
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-This is the second issue I noticed in reviewing the parisc TLB code.
-
-The fic instruction may use either the instruction or data TLB in =
-flushing the instruction cache.  Thus,
-on machines with a split TLB, we should also flush the data TLB after =
-setting up the temporary alias
-registers.
-
-Although this has no functional impact, I changed the pdtlb and pitlb =
-instructions to consistently use
-the index register %r0.  These instructions do not support integer =
-displacements.
-
-Tested on rp3440 and c8000.
-
-Signed-off-by: John David Anglin  <dave.anglin@bell.net>
+Please pull important fixes for the parisc architecture for v4.9-rc7 from
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.9-4
 
 
---Apple-Mail-29--781679002
-Content-Disposition: attachment;
-	filename=pacache.S.d.txt
-Content-Type: text/plain;
-	name="pacache.S.d.txt"
-Content-Transfer-Encoding: 7bit
+On parisc we were still seeing occasional random segmentation faults and memory
+corruption on SMP machines. Dave Anglin then looked again at the TLB related
+code and found two issues in the PCI DMA and generic TLB flush functions.
 
-diff --git a/arch/parisc/kernel/pacache.S b/arch/parisc/kernel/pacache.S
-index b743a80..fe0b034 100644
---- a/arch/parisc/kernel/pacache.S
-+++ b/arch/parisc/kernel/pacache.S
-@@ -96,7 +96,7 @@ fitmanyloop:					/* Loop if LOOP >= 2 */
- 
- fitmanymiddle:					/* Loop if LOOP >= 2 */
- 	addib,COND(>)		-1, %r31, fitmanymiddle	/* Adjusted inner loop decr */
--	pitlbe		0(%sr1, %r28)
-+	pitlbe		%r0(%sr1, %r28)
- 	pitlbe,m	%arg1(%sr1, %r28)	/* Last pitlbe and addr adjust */
- 	addib,COND(>)		-1, %r29, fitmanymiddle	/* Middle loop decr */
- 	copy		%arg3, %r31		/* Re-init inner loop count */
-@@ -139,7 +139,7 @@ fdtmanyloop:					/* Loop if LOOP >= 2 */
- 
- fdtmanymiddle:					/* Loop if LOOP >= 2 */
- 	addib,COND(>)		-1, %r31, fdtmanymiddle	/* Adjusted inner loop decr */
--	pdtlbe		0(%sr1, %r28)
-+	pdtlbe		%r0(%sr1, %r28)
- 	pdtlbe,m	%arg1(%sr1, %r28)	/* Last pdtlbe and addr adjust */
- 	addib,COND(>)		-1, %r29, fdtmanymiddle	/* Middle loop decr */
- 	copy		%arg3, %r31		/* Re-init inner loop count */
-@@ -620,12 +626,12 @@ ENTRY(copy_user_page_asm)
- 	/* Purge any old translations */
- 
- #ifdef CONFIG_PA20
--	pdtlb,l		0(%r28)
--	pdtlb,l		0(%r29)
-+	pdtlb,l		%r0(%r28)
-+	pdtlb,l		%r0(%r29)
- #else
- 	tlb_lock	%r20,%r21,%r22
--	pdtlb		0(%r28)
--	pdtlb		0(%r29)
-+	pdtlb		%r0(%r28)
-+	pdtlb		%r0(%r29)
- 	tlb_unlock	%r20,%r21,%r22
- #endif
- 
-@@ -768,10 +774,10 @@ ENTRY(clear_user_page_asm)
- 	/* Purge any old translation */
- 
- #ifdef CONFIG_PA20
--	pdtlb,l		0(%r28)
-+	pdtlb,l		%r0(%r28)
- #else
- 	tlb_lock	%r20,%r21,%r22
--	pdtlb		0(%r28)
-+	pdtlb		%r0(%r28)
- 	tlb_unlock	%r20,%r21,%r22
- #endif
- 
-@@ -852,10 +858,10 @@ ENTRY(flush_dcache_page_asm)
- 	/* Purge any old translation */
- 
- #ifdef CONFIG_PA20
--	pdtlb,l		0(%r28)
-+	pdtlb,l		%r0(%r28)
- #else
- 	tlb_lock	%r20,%r21,%r22
--	pdtlb		0(%r28)
-+	pdtlb		%r0(%r28)
- 	tlb_unlock	%r20,%r21,%r22
- #endif
- 
-@@ -892,10 +898,10 @@ ENTRY(flush_dcache_page_asm)
- 	sync
- 
- #ifdef CONFIG_PA20
--	pdtlb,l		0(%r25)
-+	pdtlb,l		%r0(%r25)
- #else
- 	tlb_lock	%r20,%r21,%r22
--	pdtlb		0(%r25)
-+	pdtlb		%r0(%r25)
- 	tlb_unlock	%r20,%r21,%r22
- #endif
- 
-@@ -925,13 +931,18 @@ ENTRY(flush_icache_page_asm)
- 	depwi		0, 31,PAGE_SHIFT, %r28	/* Clear any offset bits */
- #endif
- 
--	/* Purge any old translation */
-+	/* Purge any old translation.  Note that the FIC instruction
-+	 * may use either the instruction or data TLB.  Given that we
-+	 * have a flat address space, it's not clear which TLB will be
-+	 * used.  So, we purge both entries.  */
- 
- #ifdef CONFIG_PA20
-+	pdtlb,l		%r0(%r28)
- 	pitlb,l         %r0(%sr4,%r28)
- #else
- 	tlb_lock        %r20,%r21,%r22
--	pitlb           (%sr4,%r28)
-+	pdtlb		%r0(%r28)
-+	pitlb           %r0(%sr4,%r28)
- 	tlb_unlock      %r20,%r21,%r22
- #endif
- 
-@@ -970,10 +981,12 @@ ENTRY(flush_icache_page_asm)
- 	sync
- 
- #ifdef CONFIG_PA20
-+	pdtlb,l		%r0(%r28)
- 	pitlb,l         %r0(%sr4,%r25)
- #else
- 	tlb_lock        %r20,%r21,%r22
--	pitlb           (%sr4,%r25)
-+	pdtlb		%r0(%r28)
-+	pitlb           %r0(%sr4,%r25)
- 	tlb_unlock      %r20,%r21,%r22
- #endif
- 
+Then, in our startup code we had some timing of the cache and TLB functions to
+calculate a threshold when to use a complete TLB/cache flush or just to flush a
+specific range. This code produced a race with newly started CPUs and thus lead
+to occasional kernel crashes (due to stale TLB/cache entries).  The patch by
+Dave fixes this issue by flushing the local caches before starting secondary
+CPUs and by removing the race.
 
---Apple-Mail-29--781679002
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
+The last problem fixed by this series is that we quite often suffered from hung
+tasks and self-detected stalls on the CPUs. It was somehow clear that this was
+related to the (in v4.7) newly introduced cr16 clocksource and the own
+implementation of sched_clock(). I replaced the open-coded sched_clock()
+function and switched to the generic sched_clock() implementation which seems
+to have fixed this isse as well.
+
+All patches have been sucessfully tested on a variety of machines, including our
+debian buildd servers.
+
+All patches (beside the small pr_cont fix) are tagged for stable releases.
+
+Thanks,
+Helge
 
 
+----------------------------------------------------------------
+Helge Deller (2):
+      parisc: Fix printk continuations in system detection
+      parisc: Switch to generic sched_clock implementation
 
---
-John David Anglin	dave.anglin@bell.net
+John David Anglin (3):
+      parisc: Fix races in parisc_setup_cache_timing()
+      parisc: Fix race in pci-dma.c
+      parisc: Also flush data TLB in flush_icache_page_asm
 
---Apple-Mail-29--781679002--
+ arch/parisc/Kconfig            |  4 ++-
+ arch/parisc/kernel/cache.c     | 31 +++++++++--------------
+ arch/parisc/kernel/inventory.c |  8 +++---
+ arch/parisc/kernel/pacache.S   | 37 ++++++++++++++++-----------
+ arch/parisc/kernel/pci-dma.c   |  2 +-
+ arch/parisc/kernel/setup.c     |  4 +++
+ arch/parisc/kernel/time.c      | 57 ++++++++----------------------------------
+ 7 files changed, 57 insertions(+), 86 deletions(-)
