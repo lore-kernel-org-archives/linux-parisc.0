@@ -1,30 +1,32 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [patch] parisc: perf: return -EFAULT on error
-Date: Thu, 8 Dec 2016 18:10:15 +0300
-Message-ID: <20161208151014.GW8176@mwanda>
-References: <20161208113200.GC11382@elgon.mountain>
- <CAOmT4fTi+7r=1OJsumVC_+ET-NXcGjsZ5+t5ppm0eZZ2VeuF-A@mail.gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] parisc: Fix TLB related boot crash with PA8000-PA8700
+ CPUs
+Date: Thu, 8 Dec 2016 20:58:17 +0100
+Message-ID: <53d038e2-a697-8e20-4225-48034af5aaf4@gmx.de>
+References: <20161207205240.GA5917@ls3530>
+ <20161207213414.hliciockser6d5da@raspberrypi-2.musicnaut.iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-To: bojan prtvar <prtvar.b@gmail.com>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <CAOmT4fTi+7r=1OJsumVC_+ET-NXcGjsZ5+t5ppm0eZZ2VeuF-A@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Cc: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20161207213414.hliciockser6d5da@raspberrypi-2.musicnaut.iki.fi>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Dec 08, 2016 at 03:53:42PM +0100, bojan prtvar wrote:
-> Hi Dan,
+Hi Aaro,
+
+On 07.12.2016 22:34, Aaro Koskinen wrote:
+> On Wed, Dec 07, 2016 at 09:52:40PM +0100, Helge Deller wrote:
+>> Machines with PA8000-PA8700 CPUs crash during startup while we measure
+>> and calculate a good threshold for the TLB flush.
 > 
-> On Thu, Dec 8, 2016 at 12:32 PM, Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > -       if ((err = copy_from_user(&image_type, buf, sizeof(uint32_t))) != 0)
-> > -               return err;
-> 
-> Why not delete err?
+> I haven't seen any crashed on HP c3700 (PA8700)...
 
-Gar... I'm sorry.  I'll resend.
+Thanks for the feedback!
+I did some additional analysis today, and it happens only on SMP machines.
+I could reproduce the crash on a A500-44 and a J5000, both are 2-way boxes.
 
-regards,
-dan carpenter
-
+Helge
