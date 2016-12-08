@@ -1,29 +1,32 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] parisc: Fix TLB related boot crash with PA8000-PA8700
- CPUs
-Date: Wed, 7 Dec 2016 17:17:02 -0500
-Message-ID: <9b2176a9-5f07-da7f-975b-a3ae2ead10ee@bell.net>
-References: <20161207205240.GA5917@ls3530>
- <20161207213414.hliciockser6d5da@raspberrypi-2.musicnaut.iki.fi>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] parisc: perf: return -EFAULT on error
+Date: Thu, 8 Dec 2016 14:32:00 +0300
+Message-ID: <20161208113200.GC11382@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Cc: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Aaro Koskinen <aaro.koskinen@iki.fi>, Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20161207213414.hliciockser6d5da@raspberrypi-2.musicnaut.iki.fi>
+Content-Type: text/plain; charset=us-ascii
+Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-On 2016-12-07 4:34 PM, Aaro Koskinen wrote:
-> On Wed, Dec 07, 2016 at 09:52:40PM +0100, Helge Deller wrote:
->> Machines with PA8000-PA8700 CPUs crash during startup while we measure
->> and calculate a good threshold for the TLB flush.
-> I haven't seen any crashed on HP c3700 (PA8700)...
-I believe the issue only affects SMP machines.  My c3750 also boots okay.
+The copy_from_user() returns the number of bytes remaining to be copied
+but we want to return -EFAULT if it's non-zero.
 
-Dave
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
--- 
-John David Anglin  dave.anglin@bell.net
-
+diff --git a/arch/parisc/kernel/perf.c b/arch/parisc/kernel/perf.c
+index 518f4f5f1f43..76c96a53fc71 100644
+--- a/arch/parisc/kernel/perf.c
++++ b/arch/parisc/kernel/perf.c
+@@ -320,8 +320,8 @@ static ssize_t perf_write(struct file *file, const char __user *buf, size_t coun
+ 	if (count != sizeof(uint32_t))
+ 		return -EIO;
+ 
+-	if ((err = copy_from_user(&image_type, buf, sizeof(uint32_t))) != 0) 
+-		return err;
++	if (copy_from_user(&image_type, buf, sizeof(uint32_t)))
++		return -EFAULT;
+ 
+ 	/* Get the interface type and test type */
+    	interface_type = (image_type >> 16) & 0xffff;
