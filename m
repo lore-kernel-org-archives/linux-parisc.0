@@ -1,42 +1,44 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture fixes for 4.9
-Date: Thu, 8 Dec 2016 22:58:36 +0100
-Message-ID: <20161208215836.GA23993@ls3530>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch v2] parisc: perf: return -EFAULT on error
+Date: Sat, 10 Dec 2016 12:06:25 +0300
+Message-ID: <20161210090625.GA12892@elgon.mountain>
+References: <CAOmT4fTi+7r=1OJsumVC_+ET-NXcGjsZ5+t5ppm0eZZ2VeuF-A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <CAOmT4fTi+7r=1OJsumVC_+ET-NXcGjsZ5+t5ppm0eZZ2VeuF-A@mail.gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Linus,
+The copy_from_user() returns the number of bytes remaining to be copied
+but we want to return -EFAULT if it's non-zero.
 
-Please pull three important fixes for the parisc architecture for v4.9 from
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.9-5
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2: Fix unused variable warning.  Thanks, Bojan.
 
-Dave provided two patches: One which purges the TLB before setting a PTE entry
-and a second one which drops unnecessary TLB flushes. Both patches have been
-tested for one week on the debian buildd servers and prevent random
-segmentation faults. 
-
-The patch from me fixes a crash at boot inside the TLB measuring code on SMP
-machines with PA8000-PA8700 CPUs (specifically A500-44 and J5000 servers).
-
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Helge Deller (1):
-      parisc: Fix TLB related boot crash on SMP machines
-
-John David Anglin (2):
-      parisc: Purge TLB before setting PTE
-      parisc: Remove unnecessary TLB purges from flush_dcache_page_asm and flush_icache_page_asm
-
- arch/parisc/include/asm/pgtable.h |  8 ++++----
- arch/parisc/kernel/cache.c        | 11 +++++++++++
- arch/parisc/kernel/pacache.S      | 22 +---------------------
- 3 files changed, 16 insertions(+), 25 deletions(-)
+diff --git a/arch/parisc/kernel/perf.c b/arch/parisc/kernel/perf.c
+index 518f4f5f1f43..6eabce62463b 100644
+--- a/arch/parisc/kernel/perf.c
++++ b/arch/parisc/kernel/perf.c
+@@ -301,7 +301,6 @@ static ssize_t perf_read(struct file *file, char __user *buf, size_t cnt, loff_t
+ static ssize_t perf_write(struct file *file, const char __user *buf, size_t count, 
+ 	loff_t *ppos)
+ {
+-	int err;
+ 	size_t image_size;
+ 	uint32_t image_type;
+ 	uint32_t interface_type;
+@@ -320,8 +319,8 @@ static ssize_t perf_write(struct file *file, const char __user *buf, size_t coun
+ 	if (count != sizeof(uint32_t))
+ 		return -EIO;
+ 
+-	if ((err = copy_from_user(&image_type, buf, sizeof(uint32_t))) != 0) 
+-		return err;
++	if (copy_from_user(&image_type, buf, sizeof(uint32_t)))
++		return -EFAULT;
+ 
+ 	/* Get the interface type and test type */
+    	interface_type = (image_type >> 16) & 0xffff;
