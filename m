@@ -1,50 +1,34 @@
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: Re: [PATCH] serial: 8250: use initializer instead of memset to clear
- local struct
-Date: Sat, 24 Dec 2016 15:47:19 +0900
-Message-ID: <CAK7LNARpDFDc9ntf3g03+Vz1gejzDVOpEkA1mRmA6sduNsDKWg@mail.gmail.com>
-References: <1482463308-28968-1-git-send-email-yamada.masahiro@socionext.com> <20161223072026.GA23895@kroah.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Mark cr16 clocksource unstable on SMP systems
+Date: Mon, 26 Dec 2016 12:46:01 +0100
+Message-ID: <20161226114601.GA5893@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-serial@vger.kernel.org, linux-parisc@vger.kernel.org,
-        Jiri Slaby <jslaby@suse.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Joachim Eastwood <manabian@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161223072026.GA23895@kroah.com>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Greg,
+The cr16 interval timer of each CPU is not syncronized to other cr16
+timers in other CPUs in a SMP system. So, delay the registration of the
+cr16 clocksource until all CPUs have been detected and then mark it as
+unstable and lower it's rating before registering it at the clockource
+framework.
 
+This patch fixes the stalled CPU warnings which we have seen since
+introduction of the cr16 clocksource.
 
-2016-12-23 16:20 GMT+09:00 Greg Kroah-Hartman <gregkh@linuxfoundation.org>:
-> On Fri, Dec 23, 2016 at 12:21:48PM +0900, Masahiro Yamada wrote:
->> Leave the way of zero-out to the compiler's decision; the compiler
->> may know a more optimized way than calling memset().
->
-> But no, it doesn't, it will leave "blank" areas in the structure with
-> bad data in it, which is why we do memset.  See the tree-wide fixups we
-> made about a year ago for this very issue.  Are you sure none of these
-> structures get copied to userspace?
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-I have to admit no security consideration was in my mind.
-
-If we talk about the particular case of struct uart_8250_port,
-this structure is allocated in the stack temporarily,
-then serial8250_register_8250_port() copies its members to another
-structure one by one.  So no "blank" area is exposed to the user-space,
-I think.
-
-Having said that, we have no good reason to take a risk for this.
-
-So, please feel free to discard this patch.
-
-
--- 
-Best Regards
-Masahiro Yamada
+diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
+index 325f30d..47ef8fd 100644
+--- a/arch/parisc/kernel/time.c
++++ b/arch/parisc/kernel/time.c
+@@ -289,9 +289,26 @@ void __init time_init(void)
+ 
+ 	cr16_hz = 100 * PAGE0->mem_10msec;  /* Hz */
+ 
+-	/* register at clocksource framework */
+-	clocksource_register_hz(&clocksource_cr16, cr16_hz);
