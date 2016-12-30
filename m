@@ -1,58 +1,90 @@
-From: Davidlohr Bueso <dave@stgolabs.net>
-Subject: [PATCH] parisc: use generic current.h
-Date: Tue, 27 Dec 2016 19:48:23 -0800
-Message-ID: <1482896903-25761-1-git-send-email-dave@stgolabs.net>
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Davidlohr Bueso <dbueso@suse.de>
-To: jejb@parisc-linux.org, deller@gmx.de
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Dmitry Safonov <dsafonov@virtuozzo.com>
+Subject: [RFC 0/4] x86: keep TASK_SIZE in sync with mm->task_size
+Date: Fri, 30 Dec 2016 18:56:30 +0300
+Message-ID: <20161230155634.8692-1-dsafonov@virtuozzo.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Cc: <0x7f454c46@gmail.com>, Dmitry Safonov <dsafonov@virtuozzo.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        <x86@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.o
+To: <linux-kernel@vger.kernel.org>
+Return-path: <linux-mips-bounce@linux-mips.org>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-Given that the arch does not add its own implementations, simply
-use the asm-generic/current.h (generic-y) header instead of
-duplicating code.
+At this moment, we have following task_size-related things:
+- TASK_SIZE_OF() macro, which is unused;
+- current->mm->task_size which is used in half and TASK_SIZE() macro
+  which is used in the other half of code
+- TIF_ADDR32, which is used to detect 32-bit address space and is
+  x86-specific, where some other arches misused TIF_32BIT
+- personality ADDR_LIMIT_32BIT, which is used on arm/alpha
+- ADDR_LIMIT_3GB, which is x86-specific and can be used to change
+  running task's TASK_SIZE 3GB <-> 4GB
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- arch/parisc/include/asm/Kbuild    |  1 +
- arch/parisc/include/asm/current.h | 15 ---------------
- 2 files changed, 1 insertion(+), 15 deletions(-)
- delete mode 100644 arch/parisc/include/asm/current.h
+This patches set removes unused definition of TASK_SIZE_OF (1),
+defines TASK_SIZE macro as current->mm->task_size (3).
+I would suggest define TASK_SIZE this way in generic version,
+but currently I test it only on x86.
+It also frees thread info flag (2) and adds arch_prctl()
+on x86_64 to get/set current virtual address space size - as
+it's needed by now only for CRIU, hide it under CHECKPOINT_RESTORE
+config.
+Hope those patches will help to clean task_size-related code
+at least a bit (and helps me to restore vaddr limits).
 
-diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
-index 91f53c07f410..a07448dc2b29 100644
---- a/arch/parisc/include/asm/Kbuild
-+++ b/arch/parisc/include/asm/Kbuild
-@@ -3,6 +3,7 @@ generic-y += auxvec.h
- generic-y += barrier.h
- generic-y += clkdev.h
- generic-y += cputime.h
-+generic-y += current.h
- generic-y += device.h
- generic-y += div64.h
- generic-y += emergency-restart.h
-diff --git a/arch/parisc/include/asm/current.h b/arch/parisc/include/asm/current.h
-deleted file mode 100644
-index 0fb9338e3bf2..000000000000
---- a/arch/parisc/include/asm/current.h
-+++ /dev/null
-@@ -1,15 +0,0 @@
--#ifndef _PARISC_CURRENT_H
--#define _PARISC_CURRENT_H
--
--#include <linux/thread_info.h>
--
--struct task_struct;
--
--static inline struct task_struct * get_current(void)
--{
--	return current_thread_info()->task;
--}
-- 
--#define current get_current()
--
--#endif /* !(_PARISC_CURRENT_H) */
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: x86@kernel.org
+
+Dmitry Safonov (4):
+  mm: remove unused TASK_SIZE_OF()
+  x86/thread_info: kill TIF_ADDR32 in favour of ADDR_LIMIT_32BIT
+  x86/mm: define TASK_SIZE as current->mm->task_size
+  x86/arch_prctl: add ARCH_{GET,SET}_TASK_SIZE
+
+ arch/arm64/include/asm/memory.h       |  2 --
+ arch/mips/include/asm/processor.h     |  3 ---
+ arch/parisc/include/asm/processor.h   |  3 +--
+ arch/powerpc/include/asm/processor.h  |  3 +--
+ arch/s390/include/asm/processor.h     |  3 +--
+ arch/sparc/include/asm/processor_64.h |  3 ---
+ arch/x86/include/asm/elf.h            |  7 +++++--
+ arch/x86/include/asm/processor.h      | 19 +++++++++----------
+ arch/x86/include/asm/thread_info.h    |  4 +---
+ arch/x86/include/uapi/asm/prctl.h     |  3 +++
+ arch/x86/kernel/process_64.c          | 17 +++++++++++++++--
+ arch/x86/kernel/sys_x86_64.c          |  4 ++--
+ arch/x86/um/asm/segment.h             |  2 +-
+ arch/x86/xen/mmu.c                    |  4 ++--
+ fs/exec.c                             | 17 +++++++++++------
+ include/linux/sched.h                 |  4 ----
+ 16 files changed, 52 insertions(+), 46 deletions(-)
+
 -- 
-2.6.6
+2.11.0
