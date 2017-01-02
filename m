@@ -1,71 +1,31 @@
-From: Russell King - ARM Linux <linux@armlinux.org.uk>
-Subject: Re: [PATCH] serial: 8250: use initializer instead of memset to clear
- local struct
-Date: Mon, 2 Jan 2017 13:27:20 +0000
-Message-ID: <20170102132719.GD14217@n2100.armlinux.org.uk>
-References: <1482463308-28968-1-git-send-email-yamada.masahiro@socionext.com>
- <20161223072026.GA23895@kroah.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Add line-break when printing segfault info
+Date: Mon, 2 Jan 2017 17:43:15 +0100
+Message-ID: <20170102164315.GA17815@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
-        linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Jiri Slaby <jslaby@suse.com>,
-        Joachim Eastwood <manabian@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20161223072026.GA23895@kroah.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Dec 23, 2016 at 08:20:26AM +0100, Greg Kroah-Hartman wrote:
-> On Fri, Dec 23, 2016 at 12:21:48PM +0900, Masahiro Yamada wrote:
-> > Leave the way of zero-out to the compiler's decision; the compiler
-> > may know a more optimized way than calling memset().
-> 
-> But no, it doesn't, it will leave "blank" areas in the structure with
-> bad data in it, which is why we do memset.  See the tree-wide fixups we
-> made about a year ago for this very issue.  Are you sure none of these
-> structures get copied to userspace?
-> 
-> > It may end up with memset() for big structures like this after all,
-> > but the code will be cleaner at least.
-> 
-> Please leave it as-is, unless you see a measured speedup.
+Add a leading line break else printed line gets too long.
 
-We can probably have both... we have an "optimisation" in ARM for
-zero-based memset()s which was beneficial with older compilers, but
-I suspect GCC 4 does a much better job itself of optimising
-memset().  arch/arm/include/asm/string.h:
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: <stable@vger.kernel.org> # v4.9
 
-#define memset(p,v,n)                                                   \
-        ({                                                              \
-                void *__p = (p); size_t __n = n;                        \
-                if ((__n) != 0) {                                       \
-                        if (__builtin_constant_p((v)) && (v) == 0)      \
-                                __memzero((__p),(__n));                 \
-                        else                                            \
-                                memset((__p),(v),(__n));                \
-                }                                                       \
-                (__p);                                                  \
-        })
-
-I suspect we should get rid of that with GCC >= 4.
-
-I also suspect that it'll make no difference for uart_8250_port, as
-it's rather large, but for smaller structures (eg, up to a cache line)
-GCC can probably optimise to inline initialisation.
-
-So, probably something for resulting code and performance analysis...
-
-It's worth noting that 32-bit x86 always uses __builtin_memset() for
-memset() on GCC >= 4, so GCC's memset() optimisations must be safe for
-structures copied to userspace, or if not, 32-bit x86 is probably
-rather buggy.
-
--- 
-RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+index 8ff9253..1a0b4f6 100644
+--- a/arch/parisc/mm/fault.c
++++ b/arch/parisc/mm/fault.c
+@@ -234,7 +234,7 @@ show_signal_msg(struct pt_regs *regs, unsigned long code,
+ 	    tsk->comm, code, address);
+ 	print_vma_addr(KERN_CONT " in ", regs->iaoq[0]);
+ 
+-	pr_cont(" trap #%lu: %s%c", code, trap_name(code),
++	pr_cont("\ntrap #%lu: %s%c", code, trap_name(code),
+ 		vma ? ',':'\n');
+ 
+ 	if (vma)
