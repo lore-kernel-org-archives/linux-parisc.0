@@ -1,31 +1,17 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Add line-break when printing segfault info
-Date: Mon, 2 Jan 2017 17:43:15 +0100
-Message-ID: <20170102164315.GA17815@p100.box>
+From: "Dr. David White" <"wd."@eagle.ocn.ne.jp>
+Subject: Urgent Please;;
+Date: Tue, 3 Jan 2017 02:34:44 +0900 (JST)
+Message-ID: <196117354.116392318.1483378484299.JavaMail.root__5309.03597032211$1483379817$gmane$org@eagle.ocn.ne.jp>
+Reply-To: "Dr. David White" <david_white34@mynet.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=ISO-2022-JP
+To: unlisted-recipients:; (no To-header on input)
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Add a leading line break else printed line gets too long.
+Dear,
+With due respect to your person and much sincerity of purpose. I have a business proposal which I will like to handle with you and $14.5 Million USD is involve. But be rest assured that everything is legal and risk free as I have concluded all the arrangements and the legal papers that will back the transaction up. Kindly indicate your interest as to enable me tell you more detail of the proposal. Waiting for your urgent response.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: <stable@vger.kernel.org> # v4.9
-
-diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index 8ff9253..1a0b4f6 100644
---- a/arch/parisc/mm/fault.c
-+++ b/arch/parisc/mm/fault.c
-@@ -234,7 +234,7 @@ show_signal_msg(struct pt_regs *regs, unsigned long code,
- 	    tsk->comm, code, address);
- 	print_vma_addr(KERN_CONT " in ", regs->iaoq[0]);
- 
--	pr_cont(" trap #%lu: %s%c", code, trap_name(code),
-+	pr_cont("\ntrap #%lu: %s%c", code, trap_name(code),
- 		vma ? ',':'\n');
- 
- 	if (vma)
+Yours Faithfully,
+Dr. David White
