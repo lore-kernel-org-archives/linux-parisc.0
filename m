@@ -1,7 +1,7 @@
-From: Heiko Carstens <heiko.carstens@de.ibm.com>
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
 Subject: Re: [RFC 1/4] mm: remove unused TASK_SIZE_OF()
-Date: Mon, 2 Jan 2017 07:57:13 +0100
-Message-ID: <20170102065713.GB4779@osiris>
+Date: Mon, 2 Jan 2017 12:53:42 +0300
+Message-ID: <20170102095342.GD30735@node.shutemov.name>
 References: <20161230155634.8692-1-dsafonov@virtuozzo.com>
  <20161230155634.8692-2-dsafonov@virtuozzo.com>
 Mime-Version: 1.0
@@ -16,14 +16,14 @@ Cc: linux-kernel@vger.kernel.org, 0x7f454c46@gmail.com,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
         "David S. Miller" <davem@davemloft.net>,
         Peter Zijlstra <peterz@infradead.org>,
         linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org,
         linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvi
+        In
 To: Dmitry Safonov <dsafonov@virtuozzo.com>
 Return-path: <sparclinux-owner@vger.kernel.org>
 In-Reply-To: <20161230155634.8692-2-dsafonov@virtuozzo.com>
@@ -38,28 +38,29 @@ On Fri, Dec 30, 2016 at 06:56:31PM +0300, Dmitry Safonov wrote:
 > commit a06db751c321 ("pagemap: check permissions and capabilities at
 > open time"),
 > 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will.deacon@arm.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
+> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-mips@linux-mips.org
+> Cc: linux-parisc@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: sparclinux@vger.kernel.org
 > Signed-off-by: Dmitry Safonov <dsafonov@virtuozzo.com>
-> ---
-...
 
-> diff --git a/arch/s390/include/asm/processor.h b/arch/s390/include/asm/processor.h
-> index 6bca916a5ba0..c53e8e2a51ac 100644
-> --- a/arch/s390/include/asm/processor.h
-> +++ b/arch/s390/include/asm/processor.h
-> @@ -89,10 +89,9 @@ extern void execve_tail(void);
->   * User space process size: 2GB for 31 bit, 4TB or 8PT for 64 bit.
->   */
-> 
-> -#define TASK_SIZE_OF(tsk)	((tsk)->mm->context.asce_limit)
->  #define TASK_UNMAPPED_BASE	(test_thread_flag(TIF_31BIT) ? \
->  					(1UL << 30) : (1UL << 41))
-> -#define TASK_SIZE		TASK_SIZE_OF(current)
-> +#define TASK_SIZE		(current->mm->context.asce_limit)
->  #define TASK_MAX_SIZE		(1UL << 53)
-> 
->  #define STACK_TOP		(1UL << (test_thread_flag(TIF_31BIT) ? 31:42))
+I've noticed this too.
 
-FWIW, for the s390 part:
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-Acked-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-
+-- 
+ Kirill A. Shutemov
