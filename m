@@ -1,73 +1,65 @@
-From: Philippe Reynes <tremyfr@gmail.com>
-Subject: [PATCH] net: dec: winbond-840: use new api ethtool_{get|set}_link_ksettings
-Date: Sun,  1 Jan 2017 20:47:01 +0100
-Message-ID: <1483300021-21783-1-git-send-email-tremyfr@gmail.com>
-Cc: netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Philippe Reynes <tremyfr@gmail.com>
-To: davem@davemloft.net, mugunthanvnm@ti.com, a@unstable.cc,
-        fw@strlen.de, jarod@redhat.com
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+From: Heiko Carstens <heiko.carstens@de.ibm.com>
+Subject: Re: [RFC 1/4] mm: remove unused TASK_SIZE_OF()
+Date: Mon, 2 Jan 2017 07:57:13 +0100
+Message-ID: <20170102065713.GB4779@osiris>
+References: <20161230155634.8692-1-dsafonov@virtuozzo.com>
+ <20161230155634.8692-2-dsafonov@virtuozzo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-kernel@vger.kernel.org, 0x7f454c46@gmail.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvi
+To: Dmitry Safonov <dsafonov@virtuozzo.com>
+Return-path: <sparclinux-owner@vger.kernel.org>
+In-Reply-To: <20161230155634.8692-2-dsafonov@virtuozzo.com>
+List-ID: <sparclinux.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The ethtool api {get|set}_settings is deprecated.
-We move this driver to new api {get|set}_link_ksettings.
+On Fri, Dec 30, 2016 at 06:56:31PM +0300, Dmitry Safonov wrote:
+> All users of TASK_SIZE_OF(tsk) have migrated to mm->task_size or
+> TASK_SIZE_MAX since:
+> commit d696ca016d57 ("x86/fsgsbase/64: Use TASK_SIZE_MAX for
+> FSBASE/GSBASE upper limits"),
+> commit a06db751c321 ("pagemap: check permissions and capabilities at
+> open time"),
+> 
+> Signed-off-by: Dmitry Safonov <dsafonov@virtuozzo.com>
+> ---
+...
 
-Signed-off-by: Philippe Reynes <tremyfr@gmail.com>
----
- drivers/net/ethernet/dec/tulip/winbond-840.c |   14 ++++++++------
- 1 files changed, 8 insertions(+), 6 deletions(-)
+> diff --git a/arch/s390/include/asm/processor.h b/arch/s390/include/asm/processor.h
+> index 6bca916a5ba0..c53e8e2a51ac 100644
+> --- a/arch/s390/include/asm/processor.h
+> +++ b/arch/s390/include/asm/processor.h
+> @@ -89,10 +89,9 @@ extern void execve_tail(void);
+>   * User space process size: 2GB for 31 bit, 4TB or 8PT for 64 bit.
+>   */
+> 
+> -#define TASK_SIZE_OF(tsk)	((tsk)->mm->context.asce_limit)
+>  #define TASK_UNMAPPED_BASE	(test_thread_flag(TIF_31BIT) ? \
+>  					(1UL << 30) : (1UL << 41))
+> -#define TASK_SIZE		TASK_SIZE_OF(current)
+> +#define TASK_SIZE		(current->mm->context.asce_limit)
+>  #define TASK_MAX_SIZE		(1UL << 53)
+> 
+>  #define STACK_TOP		(1UL << (test_thread_flag(TIF_31BIT) ? 31:42))
 
-diff --git a/drivers/net/ethernet/dec/tulip/winbond-840.c b/drivers/net/ethernet/dec/tulip/winbond-840.c
-index bc9bf88..d1f2f3c 100644
---- a/drivers/net/ethernet/dec/tulip/winbond-840.c
-+++ b/drivers/net/ethernet/dec/tulip/winbond-840.c
-@@ -1391,25 +1391,27 @@ static void netdev_get_drvinfo (struct net_device *dev, struct ethtool_drvinfo *
- 	strlcpy(info->bus_info, pci_name(np->pci_dev), sizeof(info->bus_info));
- }
- 
--static int netdev_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
-+static int netdev_get_link_ksettings(struct net_device *dev,
-+				     struct ethtool_link_ksettings *cmd)
- {
- 	struct netdev_private *np = netdev_priv(dev);
- 	int rc;
- 
- 	spin_lock_irq(&np->lock);
--	rc = mii_ethtool_gset(&np->mii_if, cmd);
-+	rc = mii_ethtool_get_link_ksettings(&np->mii_if, cmd);
- 	spin_unlock_irq(&np->lock);
- 
- 	return rc;
- }
- 
--static int netdev_set_settings(struct net_device *dev, struct ethtool_cmd *cmd)
-+static int netdev_set_link_ksettings(struct net_device *dev,
-+				     const struct ethtool_link_ksettings *cmd)
- {
- 	struct netdev_private *np = netdev_priv(dev);
- 	int rc;
- 
- 	spin_lock_irq(&np->lock);
--	rc = mii_ethtool_sset(&np->mii_if, cmd);
-+	rc = mii_ethtool_set_link_ksettings(&np->mii_if, cmd);
- 	spin_unlock_irq(&np->lock);
- 
- 	return rc;
-@@ -1439,12 +1441,12 @@ static void netdev_set_msglevel(struct net_device *dev, u32 value)
- 
- static const struct ethtool_ops netdev_ethtool_ops = {
- 	.get_drvinfo		= netdev_get_drvinfo,
--	.get_settings		= netdev_get_settings,
--	.set_settings		= netdev_set_settings,
- 	.nway_reset		= netdev_nway_reset,
- 	.get_link		= netdev_get_link,
- 	.get_msglevel		= netdev_get_msglevel,
- 	.set_msglevel		= netdev_set_msglevel,
-+	.get_link_ksettings	= netdev_get_link_ksettings,
-+	.set_link_ksettings	= netdev_set_link_ksettings,
- };
- 
- static int netdev_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
--- 
-1.7.4.4
+FWIW, for the s390 part:
+
+Acked-by: Heiko Carstens <heiko.carstens@de.ibm.com>
+
