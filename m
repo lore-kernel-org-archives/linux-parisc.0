@@ -1,17 +1,26 @@
-From: "Dr. David White" <"wd."@eagle.ocn.ne.jp>
-Subject: Urgent Please;;
-Date: Tue, 3 Jan 2017 02:34:44 +0900 (JST)
-Message-ID: <196117354.116392318.1483378484299.JavaMail.root__5309.03597032211$1483379817$gmane$org@eagle.ocn.ne.jp>
-Reply-To: "Dr. David White" <david_white34@mynet.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] net: dec: uli526x: use new api
+ ethtool_{get|set}_link_ksettings
+Date: Mon, 02 Jan 2017 19:31:15 -0500 (EST)
+Message-ID: <20170102.193115.2247105020827859141.davem@davemloft.net>
+References: <1483294266-6222-1-git-send-email-tremyfr@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
-To: unlisted-recipients:; (no To-header on input)
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: Text/Plain; charset=us-ascii
+Cc: mugunthanvnm@ti.com, a@unstable.cc, fw@strlen.de, jarod@redhat.com,
+        netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To: tremyfr@gmail.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1483294266-6222-1-git-send-email-tremyfr@gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Dear,
-With due respect to your person and much sincerity of purpose. I have a business proposal which I will like to handle with you and $14.5 Million USD is involve. But be rest assured that everything is legal and risk free as I have concluded all the arrangements and the legal papers that will back the transaction up. Kindly indicate your interest as to enable me tell you more detail of the proposal. Waiting for your urgent response.
+From: Philippe Reynes <tremyfr@gmail.com>
+Date: Sun,  1 Jan 2017 19:11:06 +0100
 
-Yours Faithfully,
-Dr. David White
+> The ethtool api {get|set}_settings is deprecated.
+> We move this driver to new api {get|set}_link_ksettings.
+> 
+> Signed-off-by: Philippe Reynes <tremyfr@gmail.com>
+
+Applied.
