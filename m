@@ -1,58 +1,49 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [RFC PATCH 3/4] arch, mm: remove arch specific show_mem
-Date: Thu, 12 Jan 2017 21:04:18 +0100
-Message-ID: <2ca95061-4fb3-9f15-1f99-22e3ddd927dc@gmx.de>
-References: <20170112131659.23058-1-mhocko@kernel.org>
- <20170112131659.23058-4-mhocko@kernel.org>
+From: Jeff Epler <jepler@unpythonic.net>
+Subject: Re: [PATCH v2 7/7] uapi: export all headers under uapi directories
+Date: Thu, 12 Jan 2017 19:04:27 -0600
+Message-ID: <20170113010427.GA22650@unpythonic.net>
+References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
+ <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
+ <1483695839-18660-8-git-send-email-nicolas.dichtel@6wind.com>
+ <20170109125638.GA15506@infradead.org>
+ <464a1323-4450-e563-ff59-9e6d57b75959@6wind.com>
+ <alpine.LSU.2.20.1701121727180.19188@erq.vanv.qr>
+ <9d68af8a-a609-d7b1-58a9-f1155313b077@6wind.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@suse.de>,
-        David Rientjes <rientjes@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Metcalf <cmetcalf@mellanox.com>,
-        Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-To: Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20170112131659.23058-4-mhocko@kernel.org>
-List-ID: <linux-ia64.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org,
+ linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org, airlied@linux.ie,
+ linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-mtd@lists.infradead.org, sparclinux@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-am33-list@redhat.com, linux-c6x-dev@linux-c6x.org,
+ linux-rdma@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-sh@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+ coreteam@netfilter.org, fcoe-devel@open-fcoe.org,
+ xen-devel@lists.xenproject.org, linux-snps-arc@lists.infradead.org,
+ linux-media@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp,
+ linux-xtensa@linux-xtensa.org, arnd@arndb.de, linux-kbuild@vger.kernel.org,
+ adi-buildroot-devel@lists.sourceforge.net, linux-raid@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, mmarek@suse.com, linux-metag@v
+To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
+In-Reply-To: <9d68af8a-a609-d7b1-58a9-f1155313b077@6wind.com>
+List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
+List-Post: <mailto:linux-snps-arc@lists.infradead.org>
+List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
 
-On 12.01.2017 14:16, Michal Hocko wrote:
-> From: Michal Hocko <mhocko@suse.com>
-> 
-> We have a generic implementation for quite some time already. If there
-> is any arch specific information to be printed then we should add a
-> callback called from the generic code rather than duplicate the whole
-> show_mem. The current code has resulted in the code duplication and
-> the output divergence which is both confusing and adds maintainance
-> costs. Let's just get rid of this mess.
-> 
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Fenghua Yu <fenghua.yu@intel.com>
-> Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Chris Metcalf <cmetcalf@mellanox.com>
-> Cc: Guan Xuetao <gxt@mprc.pku.edu.cn>
-> Cc: linux-ia64@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
-> ---
->  arch/ia64/mm/init.c      | 48 -----------------------------------------------
->  arch/parisc/mm/init.c    | 49 ------------------------------------------------
->  arch/sparc/mm/init_32.c  | 11 -----------
->  arch/tile/mm/pgtable.c   | 45 --------------------------------------------
->  arch/unicore32/mm/init.c | 44 -------------------------------------------
->  5 files changed, 197 deletions(-)
+On Thu, Jan 12, 2017 at 05:32:09PM +0100, Nicolas Dichtel wrote:
+> What I was trying to say is that I export those directories like other are.
+> Removing those files is not related to that series.
 
-Thanks!
+Perhaps the correct solution is to only copy files matching "*.h" to
+reduce the risk of copying files incidentally created by kbuild but
+which shouldn't be installed as uapi headers.
 
-Acked-by: Helge Deller <deller@gmx.de> [for parisc] 
-
+jeff
