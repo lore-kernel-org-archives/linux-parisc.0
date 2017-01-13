@@ -1,65 +1,47 @@
-From: "Xuetao Guan" <gxt@mprc.pku.edu.cn>
-Subject: Re: [RFC PATCH 3/4] arch, mm: remove arch specific show_mem
-Date: Fri, 13 Jan 2017 10:49:46 +0800 (CST)
-Message-ID: <15923.175.43.247.167.1484275786.squirrel@mprc.pku.edu.cn>
-References: <20170112131659.23058-1-mhocko@kernel.org>
-    <20170112131659.23058-4-mhocko@kernel.org>
-Reply-To: gxt@mprc.pku.edu.cn
-Mime-Version: 1.0
-Content-Type: text/plain;charset=gb2312
-Cc: linux-mm@kvack.org, "Andrew Morton" <akpm@linux-foundation.org>,
-        "Johannes Weiner" <hannes@cmpxchg.org>, "Mel Gorman" <mgorman@suse.de>,
-        "David Rientjes" <rientjes@google.com>,
-        "Michal Hocko" <mhocko@suse.com>, "Tony Luck" <tony.luck@intel.com>,
-        "Fenghua Yu" <fenghua.yu@intel.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        "Helge Deller" <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Chris Metcalf" <cmetcalf@mellanox.com>,
-        "Guan Xuetao" <gxt@mprc.pku.edu.cn>, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-To: "Michal Hocko" <mhocko@kernel.org>
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <20170112131659.23058-4-mhocko@kernel.org>
-List-ID: <linux-mm.kvack.org>
+From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Subject: [PATCH v3 4/8] x86: stop exporting msr-index.h to userland
+Date: Fri, 13 Jan 2017 11:46:42 +0100
+Message-ID: <1484304406-10820-5-git-send-email-nicolas.dichtel@6wind.com>
+References: <3131144.4Ej3KFWRbz@wuerfel>
+ <1484304406-10820-1-git-send-email-nicolas.dichtel@6wind.com>
+Cc: mmarek@suse.com, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        adi-buildroot-devel@lists.sourceforge.net,
+        linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org,
+        linux-mips@linux-mips.org, linux-am33-list@redhat.com,
+        nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-arch@vger.kernel.
+To: arnd@arndb.de
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <1484304406-10820-1-git-send-email-nicolas.dichtel@6wind.com>
+List-ID: <linux-arch.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-> From: Michal Hocko <mhocko@suse.com>
->
-> We have a generic implementation for quite some time already. If there
-> is any arch specific information to be printed then we should add a
-> callback called from the generic code rather than duplicate the whole
-> show_mem. The current code has resulted in the code duplication and
-> the output divergence which is both confusing and adds maintainance
-> costs. Let's just get rid of this mess.
->
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Fenghua Yu <fenghua.yu@intel.com>
-> Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Chris Metcalf <cmetcalf@mellanox.com>
-> Cc: Guan Xuetao <gxt@mprc.pku.edu.cn>
-> Cc: linux-ia64@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
-> ---
->  arch/ia64/mm/init.c      | 48
-> -----------------------------------------------
->  arch/parisc/mm/init.c    | 49
-> ------------------------------------------------
->  arch/sparc/mm/init_32.c  | 11 -----------
->  arch/tile/mm/pgtable.c   | 45
-> --------------------------------------------
->  arch/unicore32/mm/init.c | 44 -------------------------------------------
->  5 files changed, 197 deletions(-)
+Suggested-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+---
+ arch/x86/include/uapi/asm/Kbuild | 1 -
+ 1 file changed, 1 deletion(-)
 
-For UniCore32:
-Acked-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
-
-Thanks.
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+diff --git a/arch/x86/include/uapi/asm/Kbuild b/arch/x86/include/uapi/asm/Kbuild
+index 3dec769cadf7..1c532b3f18ea 100644
+--- a/arch/x86/include/uapi/asm/Kbuild
++++ b/arch/x86/include/uapi/asm/Kbuild
+@@ -27,7 +27,6 @@ header-y += ldt.h
+ header-y += mce.h
+ header-y += mman.h
+ header-y += msgbuf.h
+-header-y += msr-index.h
+ header-y += msr.h
+ header-y += mtrr.h
+ header-y += param.h
+-- 
+2.8.1
