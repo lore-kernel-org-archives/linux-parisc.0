@@ -1,283 +1,309 @@
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH v1] parisc : eisa :- Remove coding style error.
-Date: Tue, 17 Jan 2017 13:35:03 +0530
-Message-ID: <1484640303-16456-1-git-send-email-arvind.yadav.cs@gmail.com>
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: jejb@parisc-linux.org, deller@gmx.de
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Michal Hocko <mhocko@kernel.org>
+Subject: [PATCH 3/4] arch, mm: remove arch specific show_mem
+Date: Tue, 17 Jan 2017 10:15:42 +0100
+Message-ID: <20170117091543.25850-4-mhocko@kernel.org>
+References: <20170117091543.25850-1-mhocko@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Mel Gorman <mgorman@suse.de>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	David Rientjes <rientjes@google.com>,
+	<linux-mm@kvack.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Michal Hocko <mhocko@suse.com>,
+	Tony Luck <tony.luck@intel.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-ia64@vger.kernel.org,
+	linux-parisc@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <20170117091543.25850-1-mhocko@kernel.org>
+List-ID: <linux-mm.kvack.org>
 
-This patch removes coding style errors.
-- ERROR: space prohibited before that close parenthesis ')'
-- ERROR: code indent should use tabs where possible
-- ERROR: space required after that ',' (ctx:VxV)
-- ERROR: trailing whitespace
+From: Michal Hocko <mhocko@suse.com>
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+We have a generic implementation for quite some time already. If there
+is any arch specific information to be printed then we should add a
+callback called from the generic code rather than duplicate the whole
+show_mem. The current code has resulted in the code duplication and
+the output divergence which is both confusing and adds maintainance
+costs. Let's just get rid of this mess.
+
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Acked-by: Guan Xuetao <gxt@mprc.pku.edu.cn> [UniCore32]
+Acked-by: Helge Deller <deller@gmx.de> [for parisc]
+Acked-by: Chris Metcalf <cmetcalf@mellanox.com> [for tile]
+Acked-by: Mel Gorman <mgorman@suse.de>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Michal Hocko <mhocko@suse.com>
 ---
- drivers/parisc/eisa.c | 104 +++++++++++++++++++++++++-------------------------
- 1 file changed, 52 insertions(+), 52 deletions(-)
+ arch/ia64/mm/init.c      | 48 -----------------------------------------------
+ arch/parisc/mm/init.c    | 49 ------------------------------------------------
+ arch/sparc/mm/init_32.c  | 11 -----------
+ arch/tile/mm/pgtable.c   | 45 --------------------------------------------
+ arch/unicore32/mm/init.c | 44 -------------------------------------------
+ 5 files changed, 197 deletions(-)
 
-diff --git a/drivers/parisc/eisa.c b/drivers/parisc/eisa.c
-index 103095b..59edee9 100644
---- a/drivers/parisc/eisa.c
-+++ b/drivers/parisc/eisa.c
-@@ -14,16 +14,16 @@
-  * Wax ASIC also includes a PS/2 and RS-232 controller, but those are
-  * dealt with elsewhere; this file is concerned only with the EISA portions
-  * of Wax.
-- * 
-- * 
-+ *
-+ *
-  * HINT:
-  * -----
-  * To allow an ISA card to work properly in the EISA slot you need to
-- * set an edge trigger level. This may be done on the palo command line 
-- * by adding the kernel parameter "eisa_irq_edge=n,n2,[...]]", with 
-+ * set an edge trigger level. This may be done on the palo command line
-+ * by adding the kernel parameter "eisa_irq_edge=n,n2,[...]]", with
-  * n and n2 as the irq levels you want to use.
-- * 
-- * Example: "eisa_irq_edge=10,11" allows ISA cards to operate at 
-+ *
-+ * Example: "eisa_irq_edge=10,11" allows ISA cards to operate at
-  * irq levels 10 and 11.
-  */
- 
-@@ -46,9 +46,9 @@
- #include <asm/eisa_eeprom.h>
- 
- #if 0
--#define EISA_DBG(msg, arg... ) printk(KERN_DEBUG "eisa: " msg , ## arg )
-+#define EISA_DBG(msg, arg...) printk(KERN_DEBUG "eisa: " msg, ## arg)
- #else
--#define EISA_DBG(msg, arg... )  
-+#define EISA_DBG(msg, arg...)
+diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
+index 1841ef69183d..46afc8d5ebfc 100644
+--- a/arch/ia64/mm/init.c
++++ b/arch/ia64/mm/init.c
+@@ -684,51 +684,3 @@ int arch_remove_memory(u64 start, u64 size)
+ }
  #endif
+ #endif
+-
+-/**
+- * show_mem - give short summary of memory stats
+- *
+- * Shows a simple page count of reserved and used pages in the system.
+- * For discontig machines, it does this on a per-pgdat basis.
+- */
+-void show_mem(unsigned int filter)
+-{
+-	int total_reserved = 0;
+-	unsigned long total_present = 0;
+-	pg_data_t *pgdat;
+-
+-	printk(KERN_INFO "Mem-info:\n");
+-	show_free_areas(filter);
+-	printk(KERN_INFO "Node memory in pages:\n");
+-	for_each_online_pgdat(pgdat) {
+-		unsigned long present;
+-		unsigned long flags;
+-		int reserved = 0;
+-		int nid = pgdat->node_id;
+-		int zoneid;
+-
+-		if (skip_free_areas_node(filter, nid))
+-			continue;
+-		pgdat_resize_lock(pgdat, &flags);
+-
+-		for (zoneid = 0; zoneid < MAX_NR_ZONES; zoneid++) {
+-			struct zone *zone = &pgdat->node_zones[zoneid];
+-			if (!populated_zone(zone))
+-				continue;
+-
+-			reserved += zone->present_pages - zone->managed_pages;
+-		}
+-		present = pgdat->node_present_pages;
+-
+-		pgdat_resize_unlock(pgdat, &flags);
+-		total_present += present;
+-		total_reserved += reserved;
+-		printk(KERN_INFO "Node %4d:  RAM: %11ld, rsvd: %8d, ",
+-		       nid, present, reserved);
+-	}
+-	printk(KERN_INFO "%ld pages of RAM\n", total_present);
+-	printk(KERN_INFO "%d reserved pages\n", total_reserved);
+-	printk(KERN_INFO "Total of %ld pages in page table cache\n",
+-	       quicklist_total_size());
+-	printk(KERN_INFO "%ld free buffer pages\n", nr_free_buffer_pages());
+-}
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index e02ada312be8..64bfdf636f39 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -653,55 +653,6 @@ void __init mem_init(void)
+ unsigned long *empty_zero_page __read_mostly;
+ EXPORT_SYMBOL(empty_zero_page);
  
- #define SNAKES_EEPROM_BASE_ADDR 0xF0810400
-@@ -108,7 +108,7 @@ void eisa_out8(unsigned char data, unsigned short port)
+-void show_mem(unsigned int filter)
+-{
+-	int total = 0,reserved = 0;
+-	pg_data_t *pgdat;
+-
+-	printk(KERN_INFO "Mem-info:\n");
+-	show_free_areas(filter);
+-
+-	for_each_online_pgdat(pgdat) {
+-		unsigned long flags;
+-		int zoneid;
+-
+-		pgdat_resize_lock(pgdat, &flags);
+-		for (zoneid = 0; zoneid < MAX_NR_ZONES; zoneid++) {
+-			struct zone *zone = &pgdat->node_zones[zoneid];
+-			if (!populated_zone(zone))
+-				continue;
+-
+-			total += zone->present_pages;
+-			reserved = zone->present_pages - zone->managed_pages;
+-		}
+-		pgdat_resize_unlock(pgdat, &flags);
+-	}
+-
+-	printk(KERN_INFO "%d pages of RAM\n", total);
+-	printk(KERN_INFO "%d reserved pages\n", reserved);
+-
+-#ifdef CONFIG_DISCONTIGMEM
+-	{
+-		struct zonelist *zl;
+-		int i, j;
+-
+-		for (i = 0; i < npmem_ranges; i++) {
+-			zl = node_zonelist(i, 0);
+-			for (j = 0; j < MAX_NR_ZONES; j++) {
+-				struct zoneref *z;
+-				struct zone *zone;
+-
+-				printk("Zone list for zone %d on node %d: ", j, i);
+-				for_each_zone_zonelist(zone, z, zl, j)
+-					printk("[%d/%s] ", zone_to_nid(zone),
+-								zone->name);
+-				printk("\n");
+-			}
+-		}
+-	}
+-#endif
+-}
+-
+ /*
+  * pagetable_init() sets up the page tables
+  *
+diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
+index eb8287155279..c6afe98de4d9 100644
+--- a/arch/sparc/mm/init_32.c
++++ b/arch/sparc/mm/init_32.c
+@@ -55,17 +55,6 @@ extern unsigned int sparc_ramdisk_size;
  
- void eisa_out16(unsigned short data, unsigned short port)
- {
--	if (EISA_bus)	
-+	if (EISA_bus)
- 		gsc_writew(cpu_to_le16(data), eisa_permute(port));
- }
+ unsigned long highstart_pfn, highend_pfn;
  
-@@ -135,9 +135,9 @@ void eisa_out32(unsigned int data, unsigned short port)
- static int slave_mask;
+-void show_mem(unsigned int filter)
+-{
+-	printk("Mem-info:\n");
+-	show_free_areas(filter);
+-	printk("Free swap:       %6ldkB\n",
+-	       get_nr_swap_pages() << (PAGE_SHIFT-10));
+-	printk("%ld pages of RAM\n", totalram_pages);
+-	printk("%ld free pages\n", nr_free_pages());
+-}
+-
+-
+ unsigned long last_valid_pfn;
  
- /* the trig level can be set with the
-- * eisa_irq_edge=n,n,n commandline parameter 
-- * We should really read this from the EEPROM 
-- * in the furure. 
-+ * eisa_irq_edge=n,n,n commandline parameter
-+ * We should really read this from the EEPROM
-+ * in the furure.
+ unsigned long calc_highpages(void)
+diff --git a/arch/tile/mm/pgtable.c b/arch/tile/mm/pgtable.c
+index 7cc6ee7f1a58..492a7361e58e 100644
+--- a/arch/tile/mm/pgtable.c
++++ b/arch/tile/mm/pgtable.c
+@@ -36,51 +36,6 @@
+ 
+ #define K(x) ((x) << (PAGE_SHIFT-10))
+ 
+-/*
+- * The normal show_free_areas() is too verbose on Tile, with dozens
+- * of processors and often four NUMA zones each with high and lowmem.
+- */
+-void show_mem(unsigned int filter)
+-{
+-	struct zone *zone;
+-
+-	pr_err("Active:%lu inactive:%lu dirty:%lu writeback:%lu unstable:%lu free:%lu\n slab:%lu mapped:%lu pagetables:%lu bounce:%lu pagecache:%lu swap:%lu\n",
+-	       (global_node_page_state(NR_ACTIVE_ANON) +
+-		global_node_page_state(NR_ACTIVE_FILE)),
+-	       (global_node_page_state(NR_INACTIVE_ANON) +
+-		global_node_page_state(NR_INACTIVE_FILE)),
+-	       global_node_page_state(NR_FILE_DIRTY),
+-	       global_node_page_state(NR_WRITEBACK),
+-	       global_node_page_state(NR_UNSTABLE_NFS),
+-	       global_page_state(NR_FREE_PAGES),
+-	       (global_page_state(NR_SLAB_RECLAIMABLE) +
+-		global_page_state(NR_SLAB_UNRECLAIMABLE)),
+-	       global_node_page_state(NR_FILE_MAPPED),
+-	       global_page_state(NR_PAGETABLE),
+-	       global_page_state(NR_BOUNCE),
+-	       global_node_page_state(NR_FILE_PAGES),
+-	       get_nr_swap_pages());
+-
+-	for_each_zone(zone) {
+-		unsigned long flags, order, total = 0, largest_order = -1;
+-
+-		if (!populated_zone(zone))
+-			continue;
+-
+-		spin_lock_irqsave(&zone->lock, flags);
+-		for (order = 0; order < MAX_ORDER; order++) {
+-			int nr = zone->free_area[order].nr_free;
+-			total += nr << order;
+-			if (nr)
+-				largest_order = order;
+-		}
+-		spin_unlock_irqrestore(&zone->lock, flags);
+-		pr_err("Node %d %7s: %lukB (largest %luKb)\n",
+-		       zone_to_nid(zone), zone->name,
+-		       K(total), largest_order ? K(1UL) << largest_order : 0);
+-	}
+-}
+-
+ /**
+  * shatter_huge_page() - ensure a given address is mapped by a small page.
+  *
+diff --git a/arch/unicore32/mm/init.c b/arch/unicore32/mm/init.c
+index be2bde9b07cf..f4950fbfe574 100644
+--- a/arch/unicore32/mm/init.c
++++ b/arch/unicore32/mm/init.c
+@@ -57,50 +57,6 @@ early_param("initrd", early_initrd);
   */
- /* irq 13,8,2,1,0 must be edge */
- static unsigned int eisa_irq_level __read_mostly; /* default to edge triggered */
-@@ -170,7 +170,7 @@ static void eisa_unmask_irq(struct irq_data *d)
- 	unsigned int irq = d->irq;
- 	unsigned long flags;
- 	EISA_DBG("enable irq %d\n", irq);
--		
-+
- 	spin_lock_irqsave(&eisa_irq_lock, flags);
-         if (irq & 8) {
- 		slave_mask &= ~(1 << (irq&7));
-@@ -194,7 +194,7 @@ static irqreturn_t eisa_irq(int wax_irq, void *intr_dev)
+ struct meminfo meminfo;
+ 
+-void show_mem(unsigned int filter)
+-{
+-	int free = 0, total = 0, reserved = 0;
+-	int shared = 0, cached = 0, slab = 0, i;
+-	struct meminfo *mi = &meminfo;
+-
+-	printk(KERN_DEFAULT "Mem-info:\n");
+-	show_free_areas(filter);
+-
+-	for_each_bank(i, mi) {
+-		struct membank *bank = &mi->bank[i];
+-		unsigned int pfn1, pfn2;
+-		struct page *page, *end;
+-
+-		pfn1 = bank_pfn_start(bank);
+-		pfn2 = bank_pfn_end(bank);
+-
+-		page = pfn_to_page(pfn1);
+-		end  = pfn_to_page(pfn2 - 1) + 1;
+-
+-		do {
+-			total++;
+-			if (PageReserved(page))
+-				reserved++;
+-			else if (PageSwapCache(page))
+-				cached++;
+-			else if (PageSlab(page))
+-				slab++;
+-			else if (!page_count(page))
+-				free++;
+-			else
+-				shared += page_count(page) - 1;
+-			page++;
+-		} while (page < end);
+-	}
+-
+-	printk(KERN_DEFAULT "%d pages of RAM\n", total);
+-	printk(KERN_DEFAULT "%d free pages\n", free);
+-	printk(KERN_DEFAULT "%d reserved pages\n", reserved);
+-	printk(KERN_DEFAULT "%d slab pages\n", slab);
+-	printk(KERN_DEFAULT "%d pages shared\n", shared);
+-	printk(KERN_DEFAULT "%d pages swap cached\n", cached);
+-}
+-
+ static void __init find_limits(unsigned long *min, unsigned long *max_low,
+ 	unsigned long *max_high)
  {
- 	int irq = gsc_readb(0xfc01f000); /* EISA supports 16 irqs */
- 	unsigned long flags;
--        
-+
- 	spin_lock_irqsave(&eisa_irq_lock, flags);
- 	/* read IRR command */
- 	eisa_out8(0x0a, 0x20);
-@@ -202,31 +202,31 @@ static irqreturn_t eisa_irq(int wax_irq, void *intr_dev)
- 
- 	EISA_DBG("irq IAR %02x 8259-1 irr %02x 8259-2 irr %02x\n",
- 		   irq, eisa_in8(0x20), eisa_in8(0xa0));
--   
-+
- 	/* read ISR command */
- 	eisa_out8(0x0a, 0x20);
- 	eisa_out8(0x0a, 0xa0);
- 	EISA_DBG("irq 8259-1 isr %02x imr %02x 8259-2 isr %02x imr %02x\n",
- 		 eisa_in8(0x20), eisa_in8(0x21), eisa_in8(0xa0), eisa_in8(0xa1));
--	
-+
- 	irq &= 0xf;
--	
-+
- 	/* mask irq and write eoi */
- 	if (irq & 8) {
- 		slave_mask |= (1 << (irq&7));
- 		eisa_out8(slave_mask, 0xa1);
- 		eisa_out8(0x60 | (irq&7),0xa0);/* 'Specific EOI' to slave */
--		eisa_out8(0x62,0x20);	/* 'Specific EOI' to master-IRQ2 */
--		
-+		eisa_out8(0x62, 0x20);	/* 'Specific EOI' to master-IRQ2 */
-+
- 	} else {
- 		master_mask |= (1 << (irq&7));
- 		eisa_out8(master_mask, 0x21);
--		eisa_out8(0x60|irq,0x20);	/* 'Specific EOI' to master */
-+		eisa_out8(0x60|irq, 0x20);	/* 'Specific EOI' to master */
- 	}
- 	spin_unlock_irqrestore(&eisa_irq_lock, flags);
- 
- 	generic_handle_irq(irq);
--   
-+
- 	spin_lock_irqsave(&eisa_irq_lock, flags);
- 	/* unmask */
-         if (irq & 8) {
-@@ -254,44 +254,44 @@ static irqreturn_t dummy_irq2_handler(int _, void *dev)
- static void init_eisa_pic(void)
- {
- 	unsigned long flags;
--	
-+
- 	spin_lock_irqsave(&eisa_irq_lock, flags);
- 
- 	eisa_out8(0xff, 0x21); /* mask during init */
- 	eisa_out8(0xff, 0xa1); /* mask during init */
--	
-+
- 	/* master pic */
--	eisa_out8(0x11,0x20); /* ICW1 */   
--	eisa_out8(0x00,0x21); /* ICW2 */   
--	eisa_out8(0x04,0x21); /* ICW3 */   
--	eisa_out8(0x01,0x21); /* ICW4 */   
--	eisa_out8(0x40,0x20); /* OCW2 */   
--	
-+	eisa_out8(0x11, 0x20); /* ICW1 */
-+	eisa_out8(0x00, 0x21); /* ICW2 */
-+	eisa_out8(0x04, 0x21); /* ICW3 */
-+	eisa_out8(0x01, 0x21); /* ICW4 */
-+	eisa_out8(0x40, 0x20); /* OCW2 */
-+
- 	/* slave pic */
--	eisa_out8(0x11,0xa0); /* ICW1 */   
--	eisa_out8(0x08,0xa1); /* ICW2 */   
--        eisa_out8(0x02,0xa1); /* ICW3 */   
--	eisa_out8(0x01,0xa1); /* ICW4 */   
--	eisa_out8(0x40,0xa0); /* OCW2 */   
--        
-+	eisa_out8(0x11, 0xa0); /* ICW1 */
-+	eisa_out8(0x08, 0xa1); /* ICW2 */
-+	eisa_out8(0x02, 0xa1); /* ICW3 */
-+	eisa_out8(0x01, 0xa1); /* ICW4 */
-+	eisa_out8(0x40, 0xa0); /* OCW2 */
-+
- 	udelay(100);
--	
--	slave_mask = 0xff; 
--	master_mask = 0xfb; 
-+
-+	slave_mask = 0xff;
-+	master_mask = 0xfb;
- 	eisa_out8(slave_mask, 0xa1); /* OCW1 */
- 	eisa_out8(master_mask, 0x21); /* OCW1 */
--	
-+
- 	/* setup trig level */
- 	EISA_DBG("EISA edge/level %04x\n", eisa_irq_level);
--	
-+
- 	eisa_out8(eisa_irq_level&0xff, 0x4d0); /* Set all irq's to edge  */
--	eisa_out8((eisa_irq_level >> 8) & 0xff, 0x4d1); 
--	
-+	eisa_out8((eisa_irq_level >> 8) & 0xff, 0x4d1);
-+
- 	EISA_DBG("pic0 mask %02x\n", eisa_in8(0x21));
- 	EISA_DBG("pic1 mask %02x\n", eisa_in8(0xa1));
- 	EISA_DBG("pic0 edge/level %02x\n", eisa_in8(0x4d0));
- 	EISA_DBG("pic1 edge/level %02x\n", eisa_in8(0x4d1));
--	
-+
- 	spin_unlock_irqrestore(&eisa_irq_lock, flags);
- }
- 
-@@ -305,7 +305,7 @@ static int __init eisa_probe(struct parisc_device *dev)
- 
- 	char *name = is_mongoose(dev) ? "Mongoose" : "Wax";
- 
--	printk(KERN_INFO "%s EISA Adapter found at 0x%08lx\n", 
-+	printk(KERN_INFO "%s EISA Adapter found at 0x%08lx\n",
- 		name, (unsigned long)dev->hpa.start);
- 
- 	eisa_dev.hba.dev = dev;
-@@ -336,14 +336,14 @@ static int __init eisa_probe(struct parisc_device *dev)
- 		printk(KERN_ERR "EISA: request_irq failed!\n");
- 		return result;
- 	}
--	
-+
- 	/* Reserve IRQ2 */
- 	setup_irq(2, &irq2_action);
- 	for (i = 0; i < 16; i++) {
- 		irq_set_chip_and_handler(i, &eisa_interrupt_type,
- 					 handle_simple_irq);
- 	}
--	
-+
- 	EISA_bus = 1;
- 
- 	if (dev->num_addrs) {
-@@ -375,7 +375,7 @@ static int __init eisa_probe(struct parisc_device *dev)
- 			return -1;
- 		}
- 	}
--	
-+
- 	return 0;
- }
- 
-@@ -404,7 +404,7 @@ void eisa_make_irq_level(int num)
- {
- 	if (eisa_irq_configured& (1<<num)) {
- 		printk(KERN_WARNING
--		       "IRQ %d polarity configured twice (last to level)\n", 
-+		       "IRQ %d polarity configured twice (last to level)\n",
- 		       num);
- 	}
- 	eisa_irq_level |= (1<<num); /* set the corresponding bit */
-@@ -414,7 +414,7 @@ void eisa_make_irq_level(int num)
- void eisa_make_irq_edge(int num)
- {
- 	if (eisa_irq_configured& (1<<num)) {
--		printk(KERN_WARNING 
-+		printk(KERN_WARNING
- 		       "IRQ %d polarity configured twice (last to edge)\n",
- 		       num);
- 	}
-@@ -430,18 +430,18 @@ static int __init eisa_irq_setup(char *str)
- 	EISA_DBG("IRQ setup\n");
- 	while (cur != NULL) {
- 		char *pe;
--		
-+
- 		val = (int) simple_strtoul(cur, &pe, 0);
- 		if (val > 15 || val < 0) {
- 			printk(KERN_ERR "eisa: EISA irq value are 0-15\n");
- 			continue;
- 		}
--		if (val == 2) { 
-+		if (val == 2) {
- 			val = 9;
- 		}
- 		eisa_make_irq_edge(val); /* clear the corresponding bit */
- 		EISA_DBG("setting IRQ %d to edge-triggered mode\n", val);
--		
-+
- 		if ((cur = strchr(cur, ','))) {
- 			cur++;
- 		} else {
 -- 
-1.9.1
+2.11.0
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
