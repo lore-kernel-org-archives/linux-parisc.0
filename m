@@ -1,17 +1,37 @@
-From: tester@aldems.lv
-Subject: =?utf-8?q?Gesch=C3=A4ftsvorschlag?=
-Date: Sun, 15 Jan 2017 04:52:50 +0530
-Message-ID: <1484436417102132344__24508.1464680426$1484734606$gmane$org@mail>
-Reply-To: arnoldkristoferson101@gmail.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-To: Recipients <tester@aldems.lv>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Subject: [PATCH v1] video : fbdev : stifb :- Handle return NULL error from ioremap_nocache.
+Date: Wed, 18 Jan 2017 15:51:51 +0530
+Message-ID: <1484734911-5299-1-git-send-email-arvind.yadav.cs@gmail.com>
+Cc: linux-parisc@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To: jejb@parisc-linux.org, deller@gmx.de, b.zolnierkie@samsung.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Lieber Freund.
+Here, If ioremap_nocache will fail. It will return NULL.
+Kernel can run into a NULL-pointer dereference.
+This error check will avoid NULL pointer dereference.
 
-Erlauben Sie mir, auf diese Weise auf Sie zuzugehen. Ich bin Dr. Arnold Kristofferson, ein US-Auftragnehmer, der mit Nichtkämpfer US Marine in Ba'qubah, Irak arbeitet. Ich habe die Summe von 10,6 Millionen Dollar, die ich aus einem Rohöl-Deal gemacht habe, und ich möchte, dass Sie mir helfen, es zu erhalten. Da ich hier auf offizieller Kapazität arbeite, kann ich diesen Fonds nicht bei mir behalten und dies ist mein einziger Grund für die Kontaktaufnahme mit Ihnen. Wenn Sie interessiert sind und Sie diesen Fonds in Ihrer Kapazität erhalten können, melden Sie sich bitte bei mir, damit ich Ihnen weitere Details geben kann, wie Sie dieses Geld für mich erhalten können. Bitte erreichen Sie mich per E-Mail: arnoldkristoferson101@gmail.com
-Mit freundlichen Grüßen.
+Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+---
+ drivers/video/fbdev/stifb.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/drivers/video/fbdev/stifb.c b/drivers/video/fbdev/stifb.c
+index accfef7..d5deab3 100644
+--- a/drivers/video/fbdev/stifb.c
++++ b/drivers/video/fbdev/stifb.c
+@@ -1294,6 +1294,10 @@ static int __init stifb_init_fb(struct sti_struct *sti, int bpp_pref)
+ 	strcpy(fix->id, "stifb");
+ 	info->fbops = &stifb_ops;
+ 	info->screen_base = ioremap_nocache(REGION_BASE(fb,1), fix->smem_len);
++	if (!info->screen_base) {
++		printk(KERN_ERR "stifb: Failed to Map memory\n");
++		goto out_err0;
++	}
+ 	info->screen_size = fix->smem_len;
+ 	info->flags = FBINFO_DEFAULT | FBINFO_HWACCEL_COPYAREA;
+ 	info->pseudo_palette = &fb->pseudo_palette;
+-- 
+1.9.1
