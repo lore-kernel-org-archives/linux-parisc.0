@@ -1,71 +1,49 @@
-From: Heiko Carstens <heiko.carstens@de.ibm.com>
-Subject: Re: [PATCH 1/2] security: Change name of CONFIG_DEBUG_RODATA
-Date: Thu, 19 Jan 2017 12:33:05 +0100
-Message-ID: <20170119113305.GB5110@osiris>
-References: <1484789346-21012-1-git-send-email-labbott@redhat.com>
- <1484789346-21012-2-git-send-email-labbott@redhat.com>
- <20170119105646.GA11176@leverpostej>
-Reply-To: kernel-hardening@lists.openwall.com
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v1] tty: serial: 8250: 8250_gsc:- Handle return NULL error
+ from ioremap_nocache
+Date: Thu, 19 Jan 2017 20:48:07 +0200
+Message-ID: <CAHp75VfNwkBK2E1bJxCP+-3iv4+GBztVi=Mum1LYe=VunqpxMA@mail.gmail.com>
+References: <1484812844-10598-1-git-send-email-arvind.yadav.cs@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Laura Abbott <labbott@redhat.com>, Kees Cook <keescook@chromium.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Jonathan Corbet <corbet@lwn.net>, Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Rob Herring <robh@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Jessica Yu <jeyu@redhat.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-parisc@vger.k
-To: Mark Rutland <mark.rutland@arm.com>
-Return-path: <kernel-hardening-return-6093-glkh-kernel-hardening=m.gmane.org@lists.openwall.com>
-List-Post: <mailto:kernel-hardening@lists.openwall.com>
-List-Help: <mailto:kernel-hardening-help@lists.openwall.com>
-List-Unsubscribe: <mailto:kernel-hardening-unsubscribe@lists.openwall.com>
-List-Subscribe: <mailto:kernel-hardening-subscribe@lists.openwall.com>
-In-Reply-To: <20170119105646.GA11176@leverpostej>
+Content-Type: text/plain; charset=UTF-8
+Cc: jejb@parisc-linux.org, Helge Deller <deller@gmx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, linux-parisc@vger.kernel.org,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1484812844-10598-1-git-send-email-arvind.yadav.cs@gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Jan 19, 2017 at 10:56:46AM +0000, Mark Rutland wrote:
-> > +config HARDENED_PAGE_MAPPINGS
-> > +	bool "Mark kernel mappings with stricter permissions (RO/W^X)"
-> > +	default y
-> > +	depends on ARCH_HAS_HARDENED_MAPPINGS
-> > +	help
-> > +          If this is set, kernel text and rodata memory will be made read-only,
-> > +	  and non-text memory will be made non-executable. This provides
-> > +	  protection against certain security attacks (e.g. executing the heap
-> > +	  or modifying text).
-> > +
-> > +	  Unless your system has known restrictions or performance issues, it
-> > +	  is recommended to say Y here.
-> 
-> It's somewhat unfortunate that this means the feature is no longer
-> mandatory on arm64 (and s390+x86). We have a boot-time switch to turn
-> the protections off, so I was hoping we could make this mandatory on all
-> architectures with support.
-> 
-> It would be good to see if we could make this mandatory for arm and
-> parisc, or if it really needs to be optional for either of those.
+On Thu, Jan 19, 2017 at 10:00 AM, Arvind Yadav
+<arvind.yadav.cs@gmail.com> wrote:
+> Here, If ioremap_nocache will fail. It will return NULL.
+> Kernel can run into a NULL-pointer dereference.
+> This error check will avoid NULL pointer dereference.
 
-Looks like the config option is a no-op on parisc just like it is on
-s390. Irrelavant of the config option at least on s390 the page tables for
-kernel text and rodata will be read-only anyway.
+>         uart.port.mapbase       = address;
+>         uart.port.membase       = ioremap_nocache(address, 16);
+> +       if (!uart.port.membase) {
+> +               dev_warn(&dev->dev, "Failed to map memory\n");
+> +               return -ENOMEM;
+> +       }
 
-This works since ages and I don't see a reason why this should be
-changed. Also trying to disable this with the "rodata=" command line option
-does not work at least on s390, and I guess this is true for parisc as
-well.
+You also may do something like
 
-The only thing implemented with CONFIG_DEBUG_RODATA on both architectures
-is to emit a message that states memory has been protected
-(mark_rodata_ro).
-This just avoids a wrong "Kernel memory protection disabled." message.
+void __iomem *base;
+...
 
-So yes, I'd really like to keep this option mandatory.
+base = ioremap_nocache(...);
+if (!base)
+ return -ENOMEM;
+// I doubt the message is useful, up to you
+
+memset(&uart, 0, sizeof(uart));
+...
+uart.port.membase       = base;
+
+-- 
+With Best Regards,
+Andy Shevchenko
