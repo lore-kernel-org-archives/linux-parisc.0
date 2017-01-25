@@ -1,207 +1,105 @@
-From: Laura Abbott <labbott@redhat.com>
-Subject: Re: [PATCH 2/2] security: Change name of CONFIG_DEBUG_SET_MODULE_RONX
-Date: Wed, 25 Jan 2017 12:44:14 +0100
-Message-ID: <c7182933-b255-78a1-178b-798262035272@redhat.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH 1/2] security: Change name of CONFIG_DEBUG_RODATA
+Date: Wed, 25 Jan 2017 14:51:24 +0100
+Message-ID: <20170125135124.GA20896@amd>
 References: <1484789346-21012-1-git-send-email-labbott@redhat.com>
- <1484789346-21012-3-git-send-email-labbott@redhat.com>
- <5005f110-2279-9ac7-c9c5-1894b8f6387d@arm.com>
+ <1484789346-21012-2-git-send-email-labbott@redhat.com>
+ <20170119075341.GA14530@amd>
+ <fca01775-9640-8783-a657-a9e6cf0c3e0a@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CE+1k2dSO48ffgeK"
 Cc: Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>, linux-doc@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Pavel Machek <pavel@ucw.cz>, "H. Peter Anvin" <hpa@zytor.com>,
-        kernel-hardening@lists.openwall.com, Rob Herring <robh@kernel.org>,
-        Jessica Yu <jeyu@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
-        Helge Deller <deller@gmx.de>, x86@kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Len Brown <len.brown@intel.com>, linux-s390@vger.kernel.org,
-        Will Deacon <will.deacon@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
-        linux-pm@vger.kernel.org, "Ra
-To: Robin Murphy <robin.murphy@arm.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5005f110-2279-9ac7-c9c5-1894b8f6387d@arm.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+	Jason Wessel <jason.wessel@windriver.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will.deacon@arm.com>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Martin Schwidefsky <schwidefsky@de.ibm.com>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
+	x86@kernel.org, Rob Herring <robh@kernel.org>,
+	"Rafael J. Wysocki" <rjw@rjwysocki.net>,
+	Len Brown <len.brown@intel.com>,
+	Mark Rutland <mark.rutland@arm.com>, Jessica Yu <jeyu@redhat.com>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-pm@vger.kernel.org,
+	kernel-hard
+To: Laura Abbott <labbott@redhat.com>
+Return-path: <kernel-hardening-return-6153-glkh-kernel-hardening=m.gmane.org@lists.openwall.com>
+List-Post: <mailto:kernel-hardening@lists.openwall.com>
+List-Help: <mailto:kernel-hardening-help@lists.openwall.com>
+List-Unsubscribe: <mailto:kernel-hardening-unsubscribe@lists.openwall.com>
+List-Subscribe: <mailto:kernel-hardening-subscribe@lists.openwall.com>
+In-Reply-To: <fca01775-9640-8783-a657-a9e6cf0c3e0a@redhat.com>
+List-ID: <linux-parisc.vger.kernel.org>
 
-On 01/19/2017 12:43 PM, Robin Murphy wrote:
-> Hi Laura,
->
-> On 19/01/17 01:29, Laura Abbott wrote:
->>
->> Despite the word 'debug' in CONFIG_DEBUG_SET_MODULE_RONX, this kernel
->> option provides key security features that are to be expected on a
->> modern system. Change the name to CONFIG_HARDENED_MODULE_MAPPINGS which
->> more accurately describes what this option is intended to do.
->>
->> Signed-off-by: Laura Abbott <labbott@redhat.com>
->> ---
->
-> [...]
->
->> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
->> index 09aff28..ef852e4 100644
->> --- a/arch/arm/Kconfig
->> +++ b/arch/arm/Kconfig
->> @@ -8,6 +8,7 @@ config ARM
->>  	select ARCH_HAVE_CUSTOM_GPIO_H
->>  	select ARCH_HAS_GCOV_PROFILE_ALL
->>  	select ARCH_HAS_HARDENED_MAPPINGS if MMU && !XIP_KERNEL
->> +	select ARCH_HAS_HARDENED_MODULE_MAPPINGS if MMU
->>  	select ARCH_MIGHT_HAVE_PC_PARPORT
->>  	select ARCH_SUPPORTS_ATOMIC_RMW
->>  	select ARCH_USE_BUILTIN_BSWAP
->> diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
->> index d83f7c3..426d271 100644
->> --- a/arch/arm/Kconfig.debug
->> +++ b/arch/arm/Kconfig.debug
->> @@ -1738,17 +1738,6 @@ config PID_IN_CONTEXTIDR
->>  	  additional instructions during context switch. Say Y here only if you
->>  	  are planning to use hardware trace tools with this kernel.
->>
->> -config DEBUG_SET_MODULE_RONX
->> -	bool "Set loadable kernel module data as NX and text as RO"
->> -	depends on MODULES && MMU
->> -	---help---
->> -	  This option helps catch unintended modifications to loadable
->> -	  kernel module's text and read-only data. It also prevents execution
->> -	  of module data. Such protection may interfere with run-time code
->> -	  patching and dynamic kernel tracing - and they might also protect
->> -	  against certain classes of kernel exploits.
->> -	  If in doubt, say "N".
->> -
->>  source "drivers/hwtracing/coresight/Kconfig"
->>
->>  endmenu
->
-> [...]
->
->> --- a/arch/arm64/Kconfig
->> +++ b/arch/arm64/Kconfig
->> @@ -12,6 +12,7 @@ config ARM64
->>  	select ARCH_HAS_GCOV_PROFILE_ALL
->>  	select ARCH_HAS_GIGANTIC_PAGE
->>  	select ARCH_HAS_HARDENED_MAPPINGS
->> +	select ARCH_HAS_HARDENED_MODULE_MAPPINGS
->>  	select ARCH_HAS_KCOV
->>  	select ARCH_HAS_SG_CHAIN
->>  	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
->> diff --git a/arch/arm64/Kconfig.debug b/arch/arm64/Kconfig.debug
->> index a26d27f..1eebe1f 100644
->> --- a/arch/arm64/Kconfig.debug
->> +++ b/arch/arm64/Kconfig.debug
->> @@ -71,17 +71,6 @@ config DEBUG_WX
->>
->>  	  If in doubt, say "Y".
->>
->> -config DEBUG_SET_MODULE_RONX
->> -	bool "Set loadable kernel module data as NX and text as RO"
->> -	depends on MODULES
->> -	default y
->> -	help
->> -	  Is this is set, kernel module text and rodata will be made read-only.
->> -	  This is to help catch accidental or malicious attempts to change the
->> -	  kernel's executable code.
->> -
->> -	  If in doubt, say Y.
->> -
->>  config DEBUG_ALIGN_RODATA
->>  	depends on ARCH_HAS_HARDENED_MAPPINGS
->>  	bool "Align linker sections up to SECTION_SIZE"
->
-> [...]
->
->> --- a/arch/s390/Kconfig
->> +++ b/arch/s390/Kconfig
->> @@ -69,6 +69,7 @@ config S390
->>  	select ARCH_HAS_GCOV_PROFILE_ALL
->>  	select ARCH_HAS_GIGANTIC_PAGE
->>  	select ARCH_HAS_HARDENED_MAPPINGS
->> +	select ARCH_HAS_HARDENED_MODULE_MAPPINGS
->>  	select ARCH_HAS_KCOV
->>  	select ARCH_HAS_SG_CHAIN
->>  	select ARCH_HAS_UBSAN_SANITIZE_ALL
->> diff --git a/arch/s390/Kconfig.debug b/arch/s390/Kconfig.debug
->> index 26c5d5be..57f8ea9 100644
->> --- a/arch/s390/Kconfig.debug
->> +++ b/arch/s390/Kconfig.debug
->> @@ -17,7 +17,4 @@ config S390_PTDUMP
->>  	  kernel.
->>  	  If in doubt, say "N"
->>
->> -config DEBUG_SET_MODULE_RONX
->> -	def_bool y
->> -	depends on MODULES
->>  endmenu
->> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
->> index 9d80cd8..38ce850 100644
->> --- a/arch/x86/Kconfig
->> +++ b/arch/x86/Kconfig
->> @@ -51,6 +51,7 @@ config X86
->>  	select ARCH_HAS_FAST_MULTIPLIER
->>  	select ARCH_HAS_GCOV_PROFILE_ALL
->>  	select ARCH_HAS_HARDENED_MAPPINGS
->> +	select ARCH_HAS_HARDENED_MODULE_MAPPINGS
->>  	select ARCH_HAS_KCOV			if X86_64
->>  	select ARCH_HAS_MMIO_FLUSH
->>  	select ARCH_HAS_PMEM_API		if X86_64
->> diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
->> index 67eec55..69cdd0b 100644
->> --- a/arch/x86/Kconfig.debug
->> +++ b/arch/x86/Kconfig.debug
->> @@ -109,17 +109,6 @@ config DEBUG_WX
->>
->>  	  If in doubt, say "Y".
->>
->> -config DEBUG_SET_MODULE_RONX
->> -	bool "Set loadable kernel module data as NX and text as RO"
->> -	depends on MODULES
->> -	---help---
->> -	  This option helps catch unintended modifications to loadable
->> -	  kernel module's text and read-only data. It also prevents execution
->> -	  of module data. Such protection may interfere with run-time code
->> -	  patching and dynamic kernel tracing - and they might also protect
->> -	  against certain classes of kernel exploits.
->> -	  If in doubt, say "N".
->> -
->>  config DEBUG_NX_TEST
->>  	tristate "Testcase for the NX non-executable stack feature"
->>  	depends on DEBUG_KERNEL && m
->
-> [...]
->
->> --- a/security/Kconfig
->> +++ b/security/Kconfig
->> @@ -174,6 +174,22 @@ config HARDENED_PAGE_MAPPINGS
->>  	  Unless your system has known restrictions or performance issues, it
->>  	  is recommended to say Y here.
->>
->> +config ARCH_HAS_HARDENED_MODULE_MAPPINGS
->> +	def_bool n
->> +
->> +config HARDENED_MODULE_MAPPINGS
->> +	bool "Mark module mappings with stricter permissions (RO/W^X)"
->> +	default y
->> +	depends on ARCH_HAS_HARDENED_MODULE_MAPPINGS
->
-> It would seem that this ends up losing the previous dependency on
-> MODULES - is that intentional?
->
-> Robin.
->
 
-(Apologies, my SMTP was set up incorrectly so this didn't actually
-get sent out when I thought it did)
+--CE+1k2dSO48ffgeK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No, good catch. I missed re-adding that when doing the refactoring.
+On Wed 2017-01-25 12:21:05, Laura Abbott wrote:
+> On 01/19/2017 08:53 AM, Pavel Machek wrote:
+> >On Wed 2017-01-18 17:29:05, Laura Abbott wrote:
+> >>
+> >>Despite the word 'debug' in CONFIG_DEBUG_RODATA, this kernel option
+> >>provides key security features that are to be expected on a modern
+> >>system. Change the name to CONFIG_HARDENED_PAGE_MAPPINGS which more
+> >>accurately describes what this option is intended to do.
+> >
+> >I think this is bad change. CONFIG_DEBUG_RODATA is describing what it
+> >does, CONFIG_HARDENED_PAGE_MAPPINGS is advertising.
+> >
+> >We don't do advertising, and we don't force people to re-answer the
+> >config questions without good reason.
+> >
+> >CONFIG_HARDENED_RODATA might fix the first problem, but not the second
+> >one.
+> >
+> >								Pavel
+> >							=09
+>=20
+> (Apologies, my SMTP was set up incorrectly so my response didn't
+> actually get sent out)
+>=20
+> CONFIG_DEBUG_RODATA isn't describing what it does though. It misses
+> that this config may handle much more than just rodata. I think
+> Mark Rutland's suggestion of STRICT_KERNEL_RWX might be more
+> descriptive.
 
-Thanks,
-Laura
+CONFIG_BUG=3Dy
+CONFIG_LBDAF=3Dy
+CONFIG_PM_OPP=3Dy
 
->>
->
+=2E.it is config option. It is not description of the feature. People
+are living with that config option for a while. I'd keep it.
+
+Maybe you can go from CONFIG_DEBUG_RODATA to CONFIG_RODATA... (but
+you'll still have people re-answer config option.)
+
+
+								Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--CE+1k2dSO48ffgeK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAliIrVwACgkQMOfwapXb+vKDIQCeObwXTavXbjg0vV7fo6GrI6mz
++TEAn3KekWFvtsx4J9UCa0MsjGe1ktv4
+=Av9j
+-----END PGP SIGNATURE-----
+
+--CE+1k2dSO48ffgeK--
