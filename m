@@ -1,36 +1,63 @@
-From: Joyes Dadi <"YD."@biscuit.ocn.ne.jp>
-Subject: Urgent Please,,
-Date: Mon, 23 Jan 2017 23:07:49 +0900 (JST)
-Message-ID: <1028184183.25784289.1485180469689.JavaMail.root__1919.07730554721$1485181310$gmane$org@biscuit.ocn.ne.jp>
-Reply-To: Joyes Dadi <joyesdadi767@citromail.hu>
+From: Laura Abbott <labbott@redhat.com>
+Subject: Re: [PATCH 1/2] security: Change name of CONFIG_DEBUG_RODATA
+Date: Wed, 25 Jan 2017 12:21:05 +0100
+Message-ID: <fca01775-9640-8783-a657-a9e6cf0c3e0a@redhat.com>
+References: <1484789346-21012-1-git-send-email-labbott@redhat.com>
+ <1484789346-21012-2-git-send-email-labbott@redhat.com>
+ <20170119075341.GA14530@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
-To: unlisted-recipients:; (no To-header on input)
-Return-path: <linux-parisc-owner@vger.kernel.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Cc: Kees Cook <keescook@chromium.org>,
+ Jason Wessel <jason.wessel@windriver.com>, Jonathan Corbet <corbet@lwn.net>,
+ Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will.deacon@arm.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ Helge Deller <deller@gmx.de>, Martin Schwidefsky <schwidefsky@de.ibm.com>,
+ Heiko Carstens <heiko.carstens@de.ibm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+ Rob Herring <robh@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Len Brown <len.brown@intel.com>, Mark Rutland <mark.rutland@arm.com>,
+ Jessica Yu <jeyu@redhat.com>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-pm@vger.kernel.org, kernel-hardening
+To: Pavel Machek <pavel@ucw.cz>
+Return-path: <kernel-hardening-return-6148-glkh-kernel-hardening=m.gmane.org@lists.openwall.com>
+List-Post: <mailto:kernel-hardening@lists.openwall.com>
+List-Help: <mailto:kernel-hardening-help@lists.openwall.com>
+List-Unsubscribe: <mailto:kernel-hardening-unsubscribe@lists.openwall.com>
+List-Subscribe: <mailto:kernel-hardening-subscribe@lists.openwall.com>
+In-Reply-To: <20170119075341.GA14530@amd>
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-Good Day Dear,
+On 01/19/2017 08:53 AM, Pavel Machek wrote:
+> On Wed 2017-01-18 17:29:05, Laura Abbott wrote:
+>>
+>> Despite the word 'debug' in CONFIG_DEBUG_RODATA, this kernel option
+>> provides key security features that are to be expected on a modern
+>> system. Change the name to CONFIG_HARDENED_PAGE_MAPPINGS which more
+>> accurately describes what this option is intended to do.
+>
+> I think this is bad change. CONFIG_DEBUG_RODATA is describing what it
+> does, CONFIG_HARDENED_PAGE_MAPPINGS is advertising.
+>
+> We don't do advertising, and we don't force people to re-answer the
+> config questions without good reason.
+>
+> CONFIG_HARDENED_RODATA might fix the first problem, but not the second
+> one.
+>
+> 								Pavel
+> 								
 
-My name is Ms. Joyes Dadi, I am glad you are reading this letter and I hope
-we will start our communication and I know that this message will look strange,
-surprising and probably unbelievable to you, but it is the reality. I want to
-make a donation of money to you.
+(Apologies, my SMTP was set up incorrectly so my response didn't
+actually get sent out)
 
-I contact you by the will of God. I am a firm German woman specialized in
-mining gold and diamonds in Africa. But now, I'm very sick of a cancer. My
-husband died in an accident two years ago with our two children and now I have
-cancer of the esophagus that damaged almost all the cells in my system/agencies
-and I'll die soon according to my doctor.
+CONFIG_DEBUG_RODATA isn't describing what it does though. It misses
+that this config may handle much more than just rodata. I think
+Mark Rutland's suggestion of STRICT_KERNEL_RWX might be more
+descriptive.
 
-My most concern now is, we grew up in the orphanage and were married in
-orphanage. If I die this deposited fund will soon be left alone in the hand of
-the bank, and I do want to it that  way. Please, if you can be reliable and
-sincere to accept my humble proposal; I have (10.5Millions Euro) in a fixed
-deposit account; I will order the Bank to transfer the money into your account
-in your country immediately, and then you will take the fund to  your country
-and invest it to the orphanage homes Please, answer as quickly as possible.
-
-God bless you.
-Ms. Joyes Dadi
-Email: joyesdadi767@citromail.hu
+Thanks,
+Laura
