@@ -1,35 +1,37 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Define access_ok() as macro
-Date: Sun, 29 Jan 2017 18:19:33 +0100
-Message-ID: <20170129171933.GA26147@ls3530.fritz.box>
+Subject: [GIT PULL] parisc architecture fixes for v4.10-rc6
+Date: Sun, 29 Jan 2017 18:30:54 +0100
+Message-ID: <20170129173054.GA1089@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Define access_ok() as macro instead of static function. This fixes build
-warnings in code where the second parameter is given as unsigned long.
+Hi Linus,
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+please pull two fixes for the parisc architecture for kernel 4.10-rc6 from:
 
-diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
-index 9a2aee1..fb4382c 100644
---- a/arch/parisc/include/asm/uaccess.h
-+++ b/arch/parisc/include/asm/uaccess.h
-@@ -32,11 +32,7 @@
-  * that put_user is the same as __put_user, etc.
-  */
- 
--static inline long access_ok(int type, const void __user * addr,
--		unsigned long size)
--{
--	return 1;
--}
-+#define access_ok(type, uaddr, size) (1)
- 
- #define put_user __put_user
- #define get_user __get_user
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.10-3
+
+One fix to avoid usage of BITS_PER_LONG in user-space exported swab.h header
+which breaks compiling qemu, and one trivial fix for printk continuation in the
+parisc parport driver.
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Helge Deller (2):
+      parisc, parport_gsc: Fixes for printk continuation lines
+      parisc: Don't use BITS_PER_LONG in userspace-exported swab.h header
+
+ arch/parisc/include/asm/bitops.h           | 8 +++++++-
+ arch/parisc/include/uapi/asm/bitsperlong.h | 2 --
+ arch/parisc/include/uapi/asm/swab.h        | 5 +++--
+ drivers/parport/parport_gsc.c              | 8 ++++----
+ 4 files changed, 14 insertions(+), 9 deletions(-)
