@@ -1,37 +1,68 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture fixes for v4.10-rc6
-Date: Sun, 29 Jan 2017 18:30:54 +0100
-Message-ID: <20170129173054.GA1089@p100.box>
+From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH v1] video : fbdev : stifb :- Handle return NULL error from
+ ioremap_nocache.
+Date: Mon, 30 Jan 2017 16:59:22 +0100
+Message-ID: <1759269.Z5Z5RrJiUP@amdc3058>
+References: <CGME20170118102229epcas1p21c74a99299ee919a3f2d28ad435b7ca7@epcas1p2.samsung.com>
+ <1484734911-5299-1-git-send-email-arvind.yadav.cs@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Cc: jejb@parisc-linux.org, deller@gmx.de, linux-parisc@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-reply-to: <1484734911-5299-1-git-send-email-arvind.yadav.cs@gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
 
-please pull two fixes for the parisc architecture for kernel 4.10-rc6 from:
+Hi,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.10-3
+On Wednesday, January 18, 2017 03:51:51 PM Arvind Yadav wrote:
+> Here, If ioremap_nocache will fail. It will return NULL.
+> Kernel can run into a NULL-pointer dereference.
+> This error check will avoid NULL pointer dereference.
+> 
+> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 
-One fix to avoid usage of BITS_PER_LONG in user-space exported swab.h header
-which breaks compiling qemu, and one trivial fix for printk continuation in the
-parisc parport driver.
+Thanks, I queued your patch with some minor changes for 4.11
+(you can see the final version of the patch below).
 
-Thanks,
-Helge
+Best regards,
+--
+Bartlomiej Zolnierkiewicz
+Samsung R&D Institute Poland
+Samsung Electronics
 
-----------------------------------------------------------------
-Helge Deller (2):
-      parisc, parport_gsc: Fixes for printk continuation lines
-      parisc: Don't use BITS_PER_LONG in userspace-exported swab.h header
 
- arch/parisc/include/asm/bitops.h           | 8 +++++++-
- arch/parisc/include/uapi/asm/bitsperlong.h | 2 --
- arch/parisc/include/uapi/asm/swab.h        | 5 +++--
- drivers/parport/parport_gsc.c              | 8 ++++----
- 4 files changed, 14 insertions(+), 9 deletions(-)
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Subject: [PATCH v1] video: fbdev: stifb: handle NULL return value from ioremap_nocache
+
+Add missing error check for ioremap_nocache() failure
+(prevents NULL pointer dereference on error).
+
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+[b.zolnierkie: minor fixes]
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+---
+ drivers/video/fbdev/stifb.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+Index: b/drivers/video/fbdev/stifb.c
+===================================================================
+--- a/drivers/video/fbdev/stifb.c	2017-01-30 16:55:15.766435453 +0100
++++ b/drivers/video/fbdev/stifb.c	2017-01-30 16:55:15.750435453 +0100
+@@ -1294,6 +1294,10 @@ static int __init stifb_init_fb(struct s
+ 	strcpy(fix->id, "stifb");
+ 	info->fbops = &stifb_ops;
+ 	info->screen_base = ioremap_nocache(REGION_BASE(fb,1), fix->smem_len);
++	if (!info->screen_base) {
++		printk(KERN_ERR "stifb: failed to map memory\n");
++		goto out_err0;
++	}
+ 	info->screen_size = fix->smem_len;
+ 	info->flags = FBINFO_DEFAULT | FBINFO_HWACCEL_COPYAREA;
+ 	info->pseudo_palette = &fb->pseudo_palette;
+
