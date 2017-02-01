@@ -1,34 +1,62 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH] prctl: implement PR_GET_ENDIAN for all architectures
-Date: Wed, 01 Feb 2017 15:12:12 -0800
-Message-ID: <1485990732.2322.40.camel@HansenPartnership.com>
-References: <20170128111310.GA13389@ls3530.fritz.box>
-         <20170131162624.5a85ec47c6ee22e5cc03c4eb@linux-foundation.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        Michael Kerrisk <mtk.manpages@googlemail.com>,
-        linux-api@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>,
-        Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170131162624.5a85ec47c6ee22e5cc03c4eb@linux-foundation.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Davidlohr Bueso <dave@stgolabs.net>
+Subject: [PATCH 3/4] parisc: use generic current.h
+Date: Wed,  1 Feb 2017 15:47:57 -0800
+Message-ID: <1485992878-4780-4-git-send-email-dave@stgolabs.net>
+References: <1485992878-4780-1-git-send-email-dave@stgolabs.net>
+Cc: dave@stgolabs.net, linux-kernel@vger.kernel.org,
+        jejb@parisc-linux.org, linux-parisc@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+To: akpm@linux-foundation.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1485992878-4780-1-git-send-email-dave@stgolabs.net>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2017-01-31 at 16:26 -0800, Andrew Morton wrote:
-> On Sat, 28 Jan 2017 12:13:10 +0100 Helge Deller <deller@gmx.de>
-> wrote:
-> 
-> > The prctl(PR_GET_ENDIAN) syscall was added to Kernel 2.6.18, but
-> > implemented for PowerPC only. This trivial patch adds support for 
-> > this syscall for all other architectures.
-> 
-> Seems reasonable.  I guess.  Why is this needed?
+Given that the arch does not add its own implementations, simply
+use the asm-generic/current.h (generic-y) header instead of
+duplicating code.
 
-I don't think it is other than for PPC.  If you're not variable endian
-(which is only PPC to date), then you should know a priori what endian
-you are from the #defines in userspace.
+Cc: jejb@parisc-linux.org
+Cc: linux-parisc@vger.kernel.org
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+---
+ arch/parisc/include/asm/Kbuild    |  1 +
+ arch/parisc/include/asm/current.h | 15 ---------------
+ 2 files changed, 1 insertion(+), 15 deletions(-)
+ delete mode 100644 arch/parisc/include/asm/current.h
 
-James
-
+diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
+index 91f53c07f410..a07448dc2b29 100644
+--- a/arch/parisc/include/asm/Kbuild
++++ b/arch/parisc/include/asm/Kbuild
+@@ -3,6 +3,7 @@ generic-y += auxvec.h
+ generic-y += barrier.h
+ generic-y += clkdev.h
+ generic-y += cputime.h
++generic-y += current.h
+ generic-y += device.h
+ generic-y += div64.h
+ generic-y += emergency-restart.h
+diff --git a/arch/parisc/include/asm/current.h b/arch/parisc/include/asm/current.h
+deleted file mode 100644
+index 0fb9338e3bf2..000000000000
+--- a/arch/parisc/include/asm/current.h
++++ /dev/null
+@@ -1,15 +0,0 @@
+-#ifndef _PARISC_CURRENT_H
+-#define _PARISC_CURRENT_H
+-
+-#include <linux/thread_info.h>
+-
+-struct task_struct;
+-
+-static inline struct task_struct * get_current(void)
+-{
+-	return current_thread_info()->task;
+-}
+- 
+-#define current get_current()
+-
+-#endif /* !(_PARISC_CURRENT_H) */
+-- 
+2.6.6
