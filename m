@@ -1,49 +1,81 @@
-From: Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>
-Subject: Re: [PATCH] prctl: implement PR_GET_ENDIAN for all architectures
-Date: Wed, 1 Feb 2017 14:03:22 -0800
-Message-ID: <20170201140322.b469641861861caf8cf6da48@linux-foundation.org>
-References: <20170128111310.GA13389@ls3530.fritz.box>
-        <20170131162624.5a85ec47c6ee22e5cc03c4eb@linux-foundation.org>
-        <7c60f97a-4b63-5eff-e837-186f9a31c5a2@gmx.de>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: crashes in 4.10 because of "parisc: Enable KASLR"
+Date: Wed, 1 Feb 2017 16:12:20 -0500
+Message-ID: <53b0b36a-32cd-2421-7d45-0c8ea8cc1ac1@bell.net>
+References: <alpine.LRH.2.02.1702011234060.25046@file01.intranet.prod.int.rdu2.redhat.com>
+ <b24dbc17-2e13-0630-7969-3d12fe8d11bb@gmx.de>
+ <alpine.LRH.2.02.1702011507040.25889@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-        Michael Kerrisk <mtk.manpages-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>,
-        linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
-Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <7c60f97a-4b63-5eff-e837-186f9a31c5a2-Mmb7MZpHnFY@public.gmane.org>
-List-ID: <linux-api.vger.kernel.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Cc: linux-parisc@vger.kernel.org
+To: Mikulas Patocka <mpatocka@redhat.com>, Helge Deller <deller@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <alpine.LRH.2.02.1702011507040.25889@file01.intranet.prod.int.rdu2.redhat.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 1 Feb 2017 20:47:06 +0100 Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org> wrote:
+On 2017-02-01 3:10 PM, Mikulas Patocka wrote:
+>> I'm not 100% convinced that 4.9 is fully stable and that the patch
+>> is the reason for the crashes you see.
+>> What kind of crashes do you see? Userspace or kernel ?
+> Userspace crashes. Random crashes or internal errors in gcc when compiling
+> the kernel. I once had "aptitude" crash.
+The userspace crashes are present in 4.8 and 4.9 as well.  For example, 
+this build failed due to an OS problem:
+https://buildd.debian.org/status/fetch.php?pkg=kdenlive&arch=hppa&ver=16.12.1-2&stamp=1485956026&raw=0
 
-> Hi Andrew,
-> 
-> On 01.02.2017 01:26, Andrew Morton wrote:
-> > On Sat, 28 Jan 2017 12:13:10 +0100 Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org> wrote:
-> > 
-> >> The prctl(PR_GET_ENDIAN) syscall was added to Kernel 2.6.18, but
-> >> implemented for PowerPC only.
-> >> This trivial patch adds support for this syscall for all other architectures.
-> > 
-> > Seems reasonable.  I guess.
-> 
-> Heck, I did forgot but I submitted a similar patch 8 years ago:
-> http://www.serverphorums.com/read.php?12,51902
-> 
-> > Why is this needed?
-> 
-> It's not actually needed beside the trivial reason of providing an interface
-> not just for one single architecture.
-> 
-> After reading the discussion from 2009 again, I'm fine if 
-> you would simply drop the patch. The decision up to you.
+Probably, 10% or more large packages fail to build because of this. Note 
+that this only occurs on machines
+(e.g., c8000) that only support equivalent aliases.  We don't see this 
+on the parisc buildd which has two PA8600 CPUs.
 
-Can't decide.  I guess that moving it into the kernel will, over time,
-eliminate some irritating ifdefs from userspace code.
+My current theory is the following functions are buggy:
 
-The implementation itself is a bit half-assed.  The put_user() in
-arch/powerpc/kernel/process.c:get_endian() should be moved into
-kernel/sys.c.  So the arch code only does the "what endianness am I"
-function and common code copies that out to userspace.
+/* vmap range flushes and invalidates.  Architecturally, we don't need
+  * the invalidate, because the CPU should refuse to speculate once an
+  * area has been flushed, so invalidate is left empty */
+static inline void flush_kernel_vmap_range(void *vaddr, int size)
+{
+         unsigned long start = (unsigned long)vaddr;
+
+         flush_kernel_dcache_range_asm(start, start + size);
+}
+static inline void invalidate_kernel_vmap_range(void *vaddr, int size)
+{
+         unsigned long start = (unsigned long)vaddr;
+         void *cursor = vaddr;
+
+         for ( ; cursor < vaddr + size; cursor += PAGE_SIZE) {
+                 struct page *page = vmalloc_to_page(cursor);
+
+                 if (test_and_clear_bit(PG_dcache_dirty, &page->flags))
+                         flush_kernel_dcache_page(page);
+         }
+         flush_kernel_dcache_range_asm(start, start + size);
+}
+
+The kernel sets up a vmap range for I/O and we have non equivalent 
+aliases to the offset map
+pages.  I know the PG_dcache_dirty is never set when these routines are 
+called, so the for loop
+does nothing.  Nuking the whole data cache appears to fix the 
+application errors but my test
+was cut short by a second problem.  No one else seems to do anything 
+with offset map, so
+we might have a parisc specific driver problem.
+
+We also have a down_read/up_read problem where applications stall 
+forever and are not killable
+(D state in top).  Some seemed related to signal processing but they 
+have occurred in other
+situations as well.  They seem more prevalent.  For example, I can't 
+remember this happening
+with 3.18 branch.  This problem seems to be triggered by application 
+tests involving multiple
+threads (glibc, gcc go and libgomp, and mariadb).
+
+Dave
+
+-- 
+John David Anglin  dave.anglin@bell.net
+
