@@ -1,81 +1,27 @@
-From: John David Anglin <dave.anglin@bell.net>
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
 Subject: Re: crashes in 4.10 because of "parisc: Enable KASLR"
-Date: Wed, 1 Feb 2017 16:12:20 -0500
-Message-ID: <53b0b36a-32cd-2421-7d45-0c8ea8cc1ac1@bell.net>
+Date: Thu, 2 Feb 2017 00:29:10 +0200
+Message-ID: <20170201222910.yiqudzurzwcjqyw7@raspberrypi-3.musicnaut.iki.fi>
 References: <alpine.LRH.2.02.1702011234060.25046@file01.intranet.prod.int.rdu2.redhat.com>
  <b24dbc17-2e13-0630-7969-3d12fe8d11bb@gmx.de>
- <alpine.LRH.2.02.1702011507040.25889@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Cc: linux-parisc@vger.kernel.org
-To: Mikulas Patocka <mpatocka@redhat.com>, Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+Cc: Mikulas Patocka <mpatocka@redhat.com>,
+        linux-parisc@vger.kernel.org,
+        John David Anglin <dave.anglin@bell.net>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.02.1702011507040.25889@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <b24dbc17-2e13-0630-7969-3d12fe8d11bb@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2017-02-01 3:10 PM, Mikulas Patocka wrote:
->> I'm not 100% convinced that 4.9 is fully stable and that the patch
->> is the reason for the crashes you see.
->> What kind of crashes do you see? Userspace or kernel ?
-> Userspace crashes. Random crashes or internal errors in gcc when compiling
-> the kernel. I once had "aptitude" crash.
-The userspace crashes are present in 4.8 and 4.9 as well.  For example, 
-this build failed due to an OS problem:
-https://buildd.debian.org/status/fetch.php?pkg=kdenlive&arch=hppa&ver=16.12.1-2&stamp=1485956026&raw=0
+Hi,
 
-Probably, 10% or more large packages fail to build because of this. Note 
-that this only occurs on machines
-(e.g., c8000) that only support equivalent aliases.  We don't see this 
-on the parisc buildd which has two PA8600 CPUs.
+On Wed, Feb 01, 2017 at 08:54:57PM +0100, Helge Deller wrote:
+> I know we still face random userspace crashes which happen with plain kernel 4.9/stable too.
+> Dave is still trying various patches to resolve those crashes.
 
-My current theory is the following functions are buggy:
+FWIW, I was able to run full GCC 6 bootstrap (> 20 hours) on C3700/PA8700
+without any issues using plain 4.9 kernel.
 
-/* vmap range flushes and invalidates.  Architecturally, we don't need
-  * the invalidate, because the CPU should refuse to speculate once an
-  * area has been flushed, so invalidate is left empty */
-static inline void flush_kernel_vmap_range(void *vaddr, int size)
-{
-         unsigned long start = (unsigned long)vaddr;
-
-         flush_kernel_dcache_range_asm(start, start + size);
-}
-static inline void invalidate_kernel_vmap_range(void *vaddr, int size)
-{
-         unsigned long start = (unsigned long)vaddr;
-         void *cursor = vaddr;
-
-         for ( ; cursor < vaddr + size; cursor += PAGE_SIZE) {
-                 struct page *page = vmalloc_to_page(cursor);
-
-                 if (test_and_clear_bit(PG_dcache_dirty, &page->flags))
-                         flush_kernel_dcache_page(page);
-         }
-         flush_kernel_dcache_range_asm(start, start + size);
-}
-
-The kernel sets up a vmap range for I/O and we have non equivalent 
-aliases to the offset map
-pages.  I know the PG_dcache_dirty is never set when these routines are 
-called, so the for loop
-does nothing.  Nuking the whole data cache appears to fix the 
-application errors but my test
-was cut short by a second problem.  No one else seems to do anything 
-with offset map, so
-we might have a parisc specific driver problem.
-
-We also have a down_read/up_read problem where applications stall 
-forever and are not killable
-(D state in top).  Some seemed related to signal processing but they 
-have occurred in other
-situations as well.  They seem more prevalent.  For example, I can't 
-remember this happening
-with 3.18 branch.  This problem seems to be triggered by application 
-tests involving multiple
-threads (glibc, gcc go and libgomp, and mariadb).
-
-Dave
-
--- 
-John David Anglin  dave.anglin@bell.net
-
+A.
