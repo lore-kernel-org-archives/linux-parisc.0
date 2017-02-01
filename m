@@ -1,23 +1,25 @@
-From: Miss Marbell <spdr3re9@friend.ocn.ne.jp>
-Subject: =?utf-8?Q?Bitte_kontaktieren_Sie_mich_f=C3=BCr_weitere_Details!?=
-Date: Wed, 1 Feb 2017 17:26:43 +0900 (JST)
-Message-ID: <104145373.132181699.1485937603248.JavaMail.root__26706.2436011203$1485938418$gmane$org@friend.ocn.ne.jp>
-Reply-To: Miss Marbell <brownson.m221@gmail.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: crashes in 4.10 because of "parisc: Enable KASLR"
+Date: Wed, 1 Feb 2017 12:37:33 -0500 (EST)
+Message-ID: <alpine.LRH.2.02.1702011234060.25046@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-To: unlisted-recipients:; (no To-header on input)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org,
+        John David Anglin <dave.anglin@bell.net>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Sehr geehrte Damen und Herren,
+Hi
 
-Ich brauche Ihre Unterstützung in Ihrem Land zu verlagern und zu investieren.Ich bitte Sie um Hilfe, weil ich nicht das Wissen über
-Geschäft und die Regeln, die Ihr Land für eine sichere Investition führen.
+I had some crashes on parisc with the kernel 4.10 and I tracked them to 
+the patch 18d98a79382cbe5a7569788d5b7b18e7015506f2 "parisc: Enable KASLR".
 
-Werden Sie versprechen, mit mir aufrichtig zu sein?
+The crashes can be reproduced by compiling kernel in a loop - a crash 
+happens in a few hours. I have a C8000 workstation with two dual-core 
+PA8900 CPUs.
 
-Bitte kontaktieren Sie mich für weitere Details!
+The kernel 4.9 is stable, 4.9 with the patch 18d98a79 isn't.
 
-Mit freundlichen Grüßen,
-Fräulein Marbell.
+Mikulas
