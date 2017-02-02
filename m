@@ -1,34 +1,39 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: crashes in 4.10 because of "parisc: Enable KASLR"
-Date: Wed, 1 Feb 2017 19:25:24 -0500
-Message-ID: <8DCE783F-17D4-457E-BA5D-4A8FB42AB61F@bell.net>
-References: <alpine.LRH.2.02.1702011234060.25046@file01.intranet.prod.int.rdu2.redhat.com> <b24dbc17-2e13-0630-7969-3d12fe8d11bb@gmx.de> <20170201222910.yiqudzurzwcjqyw7@raspberrypi-3.musicnaut.iki.fi>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        linux-parisc@vger.kernel.org
-To: Aaro Koskinen <aaro.koskinen@iki.fi>
+From: Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH] prctl: implement PR_GET_ENDIAN for all architectures
+Date: Wed, 1 Feb 2017 21:08:06 -0800
+Message-ID: <CALCETrWgoaFHP4BBfJ==p+EhO8mKaKkh-MwuT_Z+hkavYib0FQ@mail.gmail.com>
+References: <20170128111310.GA13389@ls3530.fritz.box> <20170131162624.5a85ec47c6ee22e5cc03c4eb@linux-foundation.org>
+ <1485990732.2322.40.camel@HansenPartnership.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+        Helge Deller <deller@gmx.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-parisc@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@googlemail.com>,
+        Linux API <linux-api@vger.kernel.org>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170201222910.yiqudzurzwcjqyw7@raspberrypi-3.musicnaut.iki.fi>
+In-Reply-To: <1485990732.2322.40.camel@HansenPartnership.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2017-02-01, at 5:29 PM, Aaro Koskinen wrote:
+On Wed, Feb 1, 2017 at 3:12 PM, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+> On Tue, 2017-01-31 at 16:26 -0800, Andrew Morton wrote:
+>> On Sat, 28 Jan 2017 12:13:10 +0100 Helge Deller <deller@gmx.de>
+>> wrote:
+>>
+>> > The prctl(PR_GET_ENDIAN) syscall was added to Kernel 2.6.18, but
+>> > implemented for PowerPC only. This trivial patch adds support for
+>> > this syscall for all other architectures.
+>>
+>> Seems reasonable.  I guess.  Why is this needed?
+>
+> I don't think it is other than for PPC.  If you're not variable endian
+> (which is only PPC to date), then you should know a priori what endian
+> you are from the #defines in userspace.
 
-> On Wed, Feb 01, 2017 at 08:54:57PM +0100, Helge Deller wrote:
->> I know we still face random userspace crashes which happen with plain kernel 4.9/stable too.
->> Dave is still trying various patches to resolve those crashes.
-> 
-> FWIW, I was able to run full GCC 6 bootstrap (> 20 hours) on C3700/PA8700
-> without any issues using plain 4.9 kernel.
-
-As noted in my previous message, the problem appears to only occur on machines that only support
-equivalent aliases (PA8800/PA8900).  The C3700 doesn't have the large L2 cache.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+I find it vaguely odd even on PPC.  Surely you can tell what your
+endianness is directly.  (An API to query the endianness of another
+task would be useful, though.)
