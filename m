@@ -1,62 +1,34 @@
-From: Davidlohr Bueso <dave@stgolabs.net>
-Subject: [PATCH 3/4] parisc: use generic current.h
-Date: Wed,  1 Feb 2017 15:47:57 -0800
-Message-ID: <1485992878-4780-4-git-send-email-dave@stgolabs.net>
-References: <1485992878-4780-1-git-send-email-dave@stgolabs.net>
-Cc: dave@stgolabs.net, linux-kernel@vger.kernel.org,
-        jejb@parisc-linux.org, linux-parisc@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-To: akpm@linux-foundation.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1485992878-4780-1-git-send-email-dave@stgolabs.net>
-List-ID: <linux-kernel.vger.kernel.org>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: crashes in 4.10 because of "parisc: Enable KASLR"
+Date: Wed, 1 Feb 2017 19:25:24 -0500
+Message-ID: <8DCE783F-17D4-457E-BA5D-4A8FB42AB61F@bell.net>
+References: <alpine.LRH.2.02.1702011234060.25046@file01.intranet.prod.int.rdu2.redhat.com> <b24dbc17-2e13-0630-7969-3d12fe8d11bb@gmx.de> <20170201222910.yiqudzurzwcjqyw7@raspberrypi-3.musicnaut.iki.fi>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Type: text/plain; charset=us-ascii
+Cc: Helge Deller <deller@gmx.de>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        linux-parisc@vger.kernel.org
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20170201222910.yiqudzurzwcjqyw7@raspberrypi-3.musicnaut.iki.fi>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Given that the arch does not add its own implementations, simply
-use the asm-generic/current.h (generic-y) header instead of
-duplicating code.
+On 2017-02-01, at 5:29 PM, Aaro Koskinen wrote:
 
-Cc: jejb@parisc-linux.org
-Cc: linux-parisc@vger.kernel.org
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- arch/parisc/include/asm/Kbuild    |  1 +
- arch/parisc/include/asm/current.h | 15 ---------------
- 2 files changed, 1 insertion(+), 15 deletions(-)
- delete mode 100644 arch/parisc/include/asm/current.h
+> On Wed, Feb 01, 2017 at 08:54:57PM +0100, Helge Deller wrote:
+>> I know we still face random userspace crashes which happen with plain kernel 4.9/stable too.
+>> Dave is still trying various patches to resolve those crashes.
+> 
+> FWIW, I was able to run full GCC 6 bootstrap (> 20 hours) on C3700/PA8700
+> without any issues using plain 4.9 kernel.
 
-diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
-index 91f53c07f410..a07448dc2b29 100644
---- a/arch/parisc/include/asm/Kbuild
-+++ b/arch/parisc/include/asm/Kbuild
-@@ -3,6 +3,7 @@ generic-y += auxvec.h
- generic-y += barrier.h
- generic-y += clkdev.h
- generic-y += cputime.h
-+generic-y += current.h
- generic-y += device.h
- generic-y += div64.h
- generic-y += emergency-restart.h
-diff --git a/arch/parisc/include/asm/current.h b/arch/parisc/include/asm/current.h
-deleted file mode 100644
-index 0fb9338e3bf2..000000000000
---- a/arch/parisc/include/asm/current.h
-+++ /dev/null
-@@ -1,15 +0,0 @@
--#ifndef _PARISC_CURRENT_H
--#define _PARISC_CURRENT_H
--
--#include <linux/thread_info.h>
--
--struct task_struct;
--
--static inline struct task_struct * get_current(void)
--{
--	return current_thread_info()->task;
--}
-- 
--#define current get_current()
--
--#endif /* !(_PARISC_CURRENT_H) */
--- 
-2.6.6
+As noted in my previous message, the problem appears to only occur on machines that only support
+equivalent aliases (PA8800/PA8900).  The C3700 doesn't have the large L2 cache.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
