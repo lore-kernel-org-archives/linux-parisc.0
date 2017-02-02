@@ -1,39 +1,47 @@
-From: Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH] prctl: implement PR_GET_ENDIAN for all architectures
-Date: Wed, 1 Feb 2017 21:08:06 -0800
-Message-ID: <CALCETrWgoaFHP4BBfJ==p+EhO8mKaKkh-MwuT_Z+hkavYib0FQ@mail.gmail.com>
-References: <20170128111310.GA13389@ls3530.fritz.box> <20170131162624.5a85ec47c6ee22e5cc03c4eb@linux-foundation.org>
- <1485990732.2322.40.camel@HansenPartnership.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-        Helge Deller <deller@gmx.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-parisc@vger.kernel.org,
-        Michael Kerrisk <mtk.manpages@googlemail.com>,
-        Linux API <linux-api@vger.kernel.org>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1485990732.2322.40.camel@HansenPartnership.com>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Subject: [PATCH] parisc: ccio-dma: Handle return NULL error from ioremap_nocache
+Date: Thu,  2 Feb 2017 18:52:34 +0530
+Message-ID: <1486041754-12996-1-git-send-email-arvind.yadav.cs@gmail.com>
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: deller@gmx.de
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Feb 1, 2017 at 3:12 PM, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> On Tue, 2017-01-31 at 16:26 -0800, Andrew Morton wrote:
->> On Sat, 28 Jan 2017 12:13:10 +0100 Helge Deller <deller@gmx.de>
->> wrote:
->>
->> > The prctl(PR_GET_ENDIAN) syscall was added to Kernel 2.6.18, but
->> > implemented for PowerPC only. This trivial patch adds support for
->> > this syscall for all other architectures.
->>
->> Seems reasonable.  I guess.  Why is this needed?
->
-> I don't think it is other than for PPC.  If you're not variable endian
-> (which is only PPC to date), then you should know a priori what endian
-> you are from the #defines in userspace.
+Here, If ioremap_nocache will fail. It will return NULL.
+Kernel can run into a NULL-pointer dereference.
+This error check will avoid NULL pointer dereference.
 
-I find it vaguely odd even on PPC.  Surely you can tell what your
-endianness is directly.  (An API to query the endianness of another
-task would be useful, though.)
+If kzalloc will fail return -ENOMEM instead of '1'.
+
+Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+---
+ drivers/parisc/ccio-dma.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
+index 553ef8a..b0558e2 100644
+--- a/drivers/parisc/ccio-dma.c
++++ b/drivers/parisc/ccio-dma.c
+@@ -1539,7 +1539,7 @@ static int __init ccio_probe(struct parisc_device *dev)
+ 	ioc = kzalloc(sizeof(struct ioc), GFP_KERNEL);
+ 	if (ioc == NULL) {
+ 		printk(KERN_ERR MODULE_NAME ": memory allocation failure\n");
+-		return 1;
++		return -ENOMEM;
+ 	}
+ 
+ 	ioc->name = dev->id.hversion == U2_IOA_RUNWAY ? "U2" : "UTurn";
+@@ -1554,6 +1554,10 @@ static int __init ccio_probe(struct parisc_device *dev)
+ 
+ 	ioc->hw_path = dev->hw_path;
+ 	ioc->ioc_regs = ioremap_nocache(dev->hpa.start, 4096);
++	if (!ioc->ioc_regs) {
++		kfree(ioc);
++		return -ENOMEM;
++	}
+ 	ccio_ioc_init(ioc);
+ 	ccio_init_resources(ioc);
+ 	hppa_dma_ops = &ccio_ops;
+-- 
+1.9.1
