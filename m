@@ -1,13 +1,9 @@
-From: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCHv2 2/2] arch: Rename CONFIG_DEBUG_RODATA and CONFIG_DEBUG_MODULE_RONX
-Date: Mon, 6 Feb 2017 12:13:38 -0800
-Message-ID: <CAGXu5jKS0_a8Nq+eJN4TN142fxrtEyO7qD9FB8gDCju6PA5xEA@mail.gmail.com>
-References: <1486144343-24998-1-git-send-email-labbott@redhat.com>
- <1486144343-24998-3-git-send-email-labbott@redhat.com> <CAGXu5j+BX_+ymWQztqtOQE-A8yFuR5sdL++46wOvi-iBGLEK-A@mail.gmail.com>
- <e9b6bcba-8488-9502-aebf-f260396671d5@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Jason Wessel <jason.wessel@windriver.com>,
+From: Laura Abbott <labbott@redhat.com>
+Subject: [PATCHv3 0/2] Hardening configs refactor/rename
+Date: Mon,  6 Feb 2017 16:31:56 -0800
+Message-ID: <1486427518-14819-1-git-send-email-labbott@redhat.com>
+Cc: Laura Abbott <labbott@redhat.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
         Jonathan Corbet <corbet@lwn.net>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -18,71 +14,75 @@ Cc: Jason Wessel <jason.wessel@windriver.com>,
         Heiko Carstens <heiko.carstens@de.ibm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "x86@kernel.org" <x86@kernel.org>, Rob Herring <robh@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Rob Herring <robh@kernel.org>,
         "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
         Mark Rutland <mark.rutland@arm.com>,
-        Jessica Yu <jeyu@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-To: Laura Abbott <labbott@redhat.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <e9b6bcba-8488-9502-aebf-f260396671d5@redhat.com>
-List-ID: <linux-parisc.vger.kernel.org>
+        Jessica Yu <jeyu@redhat.com>, linux-doc@vger.kernel.org,
+        linux-ker
+To: Kees Cook <keescook@chromium.org>
+Return-path: <linux-pm-owner@vger.kernel.org>
+List-ID: <linux-pm.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Feb 6, 2017 at 10:49 AM, Laura Abbott <labbott@redhat.com> wrote:
-> On 02/03/2017 12:03 PM, Kees Cook wrote:
->> On Fri, Feb 3, 2017 at 9:52 AM, Laura Abbott <labbott@redhat.com> wrote:
->>>
->>> Both of these options are poorly named. The features they provide are
->>> necessary for system security and should not be considered debug only.
->>> Change the name to something that accurately describes what these
->>> options do.
->>
->> It may help to explicitly call out the name change from/to in the
->> commit message.
->>
->>>
->>> Signed-off-by: Laura Abbott <labbott@redhat.com>
->>> ---
->>> [...]
->>> diff --git a/arch/arm/configs/aspeed_g4_defconfig b/arch/arm/configs/aspeed_g4_defconfig
->>> index ca39c04..beea2cc 100644
->>> --- a/arch/arm/configs/aspeed_g4_defconfig
->>> +++ b/arch/arm/configs/aspeed_g4_defconfig
->>> @@ -25,7 +25,6 @@ CONFIG_MODULE_UNLOAD=y
->>>  # CONFIG_ARCH_MULTI_V7 is not set
->>>  CONFIG_ARCH_ASPEED=y
->>>  CONFIG_MACH_ASPEED_G4=y
->>> -CONFIG_DEBUG_RODATA=y
->>>  CONFIG_AEABI=y
->>>  CONFIG_UACCESS_WITH_MEMCPY=y
->>>  CONFIG_SECCOMP=y
->>
->> Are these defconfig cases correct (dropping DEBUG_RODATA without
->> adding STRICT_KERNEL_RWX)?
->>
->
-> Yes, I think these need to be updated to the new config option since
-> these are not CPUv7
->
->
->> Who should carry this series, btw?
->>
->
-> An excellent question :)
->
-> Would you be willing to carry it with Acks?
+Hi,
 
-Yeah, I can push this via the KSPP tree: it's cross-architecture, so
-it seems like this should go either through my tree or through akpm's
-tree.
+This is v3 of my series to rename/refactor CONFIG_DEBUG_RODATA
+and CONFIG_DEBUG_SET_MODULE_RONX. Among other objections, there shouldn't
+be 'debug' in the name since these provide necessary kernel protection.
 
-Are the arch maintainers okay with that?
+v3 mostly focuses on changing how the Kconfig dependencies work for the
+refactor. Russell King requested that these options be deselectable for arm.
+I also threw in some documentation on this under kernel hardening in case other
+arches decide to follow suit.
 
--Kees
+The plan is for this to go through the KSPP tree so if people are okay with
+this, please give Acks. I didn't take Mark Rutland's ack from before since
+there's been a bit of refactoring.
+
+Thanks,
+Laura
+
+Laura Abbott (2):
+  arch: Move CONFIG_DEBUG_RODATA and CONFIG_SET_MODULE_RONX to be common
+  arch: Rename CONFIG_DEBUG_RODATA and CONFIG_DEBUG_MODULE_RONX
+
+ Documentation/DocBook/kgdb.tmpl            |  8 +++----
+ Documentation/security/self-protection.txt | 10 +++++++--
+ arch/Kconfig                               | 34 ++++++++++++++++++++++++++++++
+ arch/arm/Kconfig                           |  4 ++++
+ arch/arm/Kconfig.debug                     | 11 ----------
+ arch/arm/configs/aspeed_g4_defconfig       |  4 ++--
+ arch/arm/configs/aspeed_g5_defconfig       |  4 ++--
+ arch/arm/include/asm/cacheflush.h          |  2 +-
+ arch/arm/kernel/patch.c                    |  4 ++--
+ arch/arm/kernel/vmlinux.lds.S              |  8 +++----
+ arch/arm/mm/Kconfig                        | 14 +-----------
+ arch/arm/mm/init.c                         |  4 ++--
+ arch/arm64/Kconfig                         |  5 ++---
+ arch/arm64/Kconfig.debug                   | 13 +-----------
+ arch/arm64/kernel/insn.c                   |  2 +-
+ arch/parisc/Kconfig                        |  1 +
+ arch/parisc/Kconfig.debug                  | 11 ----------
+ arch/parisc/configs/712_defconfig          |  1 -
+ arch/parisc/configs/c3000_defconfig        |  1 -
+ arch/parisc/mm/init.c                      |  2 +-
+ arch/s390/Kconfig                          |  5 ++---
+ arch/s390/Kconfig.debug                    |  3 ---
+ arch/x86/Kconfig                           |  5 ++---
+ arch/x86/Kconfig.debug                     | 11 ----------
+ include/linux/filter.h                     |  4 ++--
+ include/linux/init.h                       |  4 ++--
+ include/linux/module.h                     |  2 +-
+ init/main.c                                |  4 ++--
+ kernel/configs/android-recommended.config  |  2 +-
+ kernel/module.c                            |  6 +++---
+ kernel/power/hibernate.c                   |  2 +-
+ kernel/power/power.h                       |  4 ++--
+ kernel/power/snapshot.c                    |  4 ++--
+ 33 files changed, 90 insertions(+), 109 deletions(-)
 
 -- 
-Kees Cook
-Pixel Security
+2.7.4
+
