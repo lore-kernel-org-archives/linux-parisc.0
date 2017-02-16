@@ -1,45 +1,71 @@
-From: Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH] prctl: implement PR_GET_ENDIAN for all architectures
-Date: Wed, 15 Feb 2017 16:20:23 +1100
-Message-ID: <87bmu4kp2g.fsf@concordia.ellerman.id.au>
-References: <20170128111310.GA13389@ls3530.fritz.box> <20170131162624.5a85ec47c6ee22e5cc03c4eb@linux-foundation.org> <1485990732.2322.40.camel@HansenPartnership.com> <CAEdQ38FXam3sXKFc5-3WEgDDov0yayAWXK8hbuNjbSxJQ5QDVw@mail.gmail.com> <alpine.LFD.2.20.1702051300010.27997@eddie.linux-mips.org>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCHv3 2/2] arch: Rename CONFIG_DEBUG_RODATA and
+ CONFIG_DEBUG_MODULE_RONX
+Date: Thu, 16 Feb 2017 23:25:29 +0100
+Message-ID: <20170216222529.GA7531@amd>
+References: <1486427518-14819-1-git-send-email-labbott@redhat.com>
+ <1486427518-14819-3-git-send-email-labbott@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Helge Deller <deller@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-parisc\@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        Michael Kerrisk <mtk.manpages@googlemail.com>,
-        linux-api@vger.kernel.org
-To: "Maciej W. Rozycki" <macro@linux-mips.org>,
-        Matt Turner <mattst88@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="0F1p//8PRICkK4MW"
+Cc: Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>, linux-doc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        kernel-hardening@lists.openwall.com, Rob Herring <robh@kernel.org>,
+        Jessica Yu <jeyu@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+        Helge Deller <deller@gmx.de>, x86@kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Len Brown <len.brown@intel.com>, linux-s390@vger.kernel.org,
+        Will Deacon <will.deacon@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
+        linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysoc
+To: Laura Abbott <labbott@redhat.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LFD.2.20.1702051300010.27997@eddie.linux-mips.org>
+In-Reply-To: <1486427518-14819-3-git-send-email-labbott@redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-"Maciej W. Rozycki" <macro@linux-mips.org> writes:
 
-> On Sun, 5 Feb 2017, Matt Turner wrote:
->
->> > I don't think it is other than for PPC.  If you're not variable endian
->> > (which is only PPC to date), then you should know a priori what endian
->> > you are from the #defines in userspace.
->> 
->> MIPS as well, but it seems strange to require the kernel to tell you
->> your endianness, when you can easily determine it yourself. Unless
->> there's something about this I don't understand.
->
->  Many MIPS processors do have a reverse-endian control bit, which allows a 
-> user process to execute in the endianness opposite to the endianness the 
-> kernel runs in.  The feature has been around since 1991 and the R4000 CPU, 
-> however support is unlikely to be ever added to the MIPS/Linux port, due 
-> to the complexity required for byte-swapping all the data structures 
-> passed in memory between the kernel and the userland.  Does the PPC/Linux 
-> port actually implement this swapping?
+--0F1p//8PRICkK4MW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No. Userspace can change endian, but it has to cope with the kernel
-being in the original endian.
+Hi!
 
-cheers
+> =20
+> -config DEBUG_RODATA
+> +config STRICT_KERNEL_RWX
+>  	bool "Make kernel text and rodata read-only" if ARCH_OPTIONAL_KERNEL_RWX
+>  	depends on ARCH_HAS_STRICT_KERNEL_RWX
+>  	default !ARCH_OPTIONAL_KERNEL_RWX ||
+
+Debug features are expected to have runtime cost, so kconfig help is
+silent about those. But there are runtime costs, right? It would be
+nice to mention them in the help text...
+
+								Pavel
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--0F1p//8PRICkK4MW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlimJtkACgkQMOfwapXb+vIejgCgsvrn5eQ2U0NHrSk8jkwMzi0k
+mSAAnR5YQy0wi16SGmy3kL+mPGH3sglk
+=h8TA
+-----END PGP SIGNATURE-----
+
+--0F1p//8PRICkK4MW--
