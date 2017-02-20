@@ -1,79 +1,132 @@
-From: Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCHv3 2/2] arch: Rename CONFIG_DEBUG_RODATA and
- CONFIG_DEBUG_MODULE_RONX
-Date: Mon, 20 Feb 2017 08:21:30 +0100
-Message-ID: <20170220072130.GB8974@gmail.com>
-References: <1486427518-14819-1-git-send-email-labbott@redhat.com>
- <1486427518-14819-3-git-send-email-labbott@redhat.com>
- <20170216222529.GA7531@amd>
- <CAGXu5jJ4FD=6HLK_21T079JrO569DwWBTeiD18x3WRrYBsaAqw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Pavel Machek <pavel@ucw.cz>, Laura Abbott <labbott@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Heiko Carstens <heiko.carstens@de.ibm.com>,
-	"James E.J. Bottomley" <jejb@parisc-linux.org>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"kernel-hardening@lists.openwall.com" <kernel-hardening@lists.openwall.com>,
-	Rob Herring <robh@kernel.org>, Jessica Yu <jeyu@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>, Helge Deller <deller@gmx.de>,
-	"x86@kernel.org" <x86@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Ingo Molnar <mingo@redhat.com>, Len Brown <len.brown@intel.com>,
-	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	Will Deacon <will.deacon@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	l
-To: Kees Cook <keescook@chromium.org>
-Return-path: <kernel-hardening-return-6777-glkh-kernel-hardening=m.gmane.org@lists.openwall.com>
-List-Post: <mailto:kernel-hardening@lists.openwall.com>
-List-Help: <mailto:kernel-hardening-help@lists.openwall.com>
-List-Unsubscribe: <mailto:kernel-hardening-unsubscribe@lists.openwall.com>
-List-Subscribe: <mailto:kernel-hardening-subscribe@lists.openwall.com>
-In-Reply-To: <CAGXu5jJ4FD=6HLK_21T079JrO569DwWBTeiD18x3WRrYBsaAqw@mail.gmail.com>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Remove flush_user_dcache_range and flush_user_icache_range
+Date: Mon, 20 Feb 2017 14:02:46 -0500
+Message-ID: <03680F6B-3051-49E9-904E-74AB3B52FFA5@bell.net>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Type: multipart/mixed; boundary=Apple-Mail-8-356541916
+Cc: Helge Deller <deller@gmx.de>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+To: "linux-parisc@vger.kernel.org List" <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
 
-* Kees Cook <keescook@chromium.org> wrote:
+--Apple-Mail-8-356541916
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-> On Thu, Feb 16, 2017 at 2:25 PM, Pavel Machek <pavel@ucw.cz> wrote:
-> > Hi!
-> >
-> >>
-> >> -config DEBUG_RODATA
-> >> +config STRICT_KERNEL_RWX
-> >>       bool "Make kernel text and rodata read-only" if ARCH_OPTIONAL_KERNEL_RWX
-> >>       depends on ARCH_HAS_STRICT_KERNEL_RWX
-> >>       default !ARCH_OPTIONAL_KERNEL_RWX ||
-> >
-> > Debug features are expected to have runtime cost, so kconfig help is
-> > silent about those. But there are runtime costs, right? It would be
-> > nice to mention them in the help text...
-> 
-> It depends on the architecture. The prior help text for arm said:
-> 
->          The tradeoff is that each region is padded to section-size (1MiB)
->          boundaries (because their permissions are different and splitting
->          the 1M pages into 4K ones causes TLB performance problems), which
->          can waste memory.
-> 
-> parisc (somewhat inaccurately) said:
-> 
->          This option may have a slight performance impact because a
->          portion of the kernel code won't be covered by a TLB anymore.
-> 
-> IIUC, arm64 does what parisc is hinting at: mappings at the end are
-> broken down to PAGE_SIZE. On x86, IIUC, there's actually no change to
-> TLB performance due to how the mappings are already set up.
+The functions flush_user_dcache_range() and flush_user_icache_range() =
+are only used by the parisc
+signal handling code.  This code only needs to flush a couple of lines, =
+so the threshold check is unnecessary
+overhead.
 
-BTW., a good strategy with RAM sizes above say 4GB would be to just round up to 
-the next large-TLB boundary (2MB) and waste 0-2MB of RAM - which is only 0.05% of 
-4GB of RAM. On most workloads, especially with SSDs it's probably a positive RAM 
-vs. performance trade-off.
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
 
-Thanks,
 
-	Ingo
+
+--Apple-Mail-8-356541916
+Content-Disposition: attachment;
+	filename=flush_user_range.d.txt
+Content-Type: text/plain;
+	name="flush_user_range.d.txt"
+Content-Transfer-Encoding: quoted-printable
+
+diff --git a/arch/parisc/include/asm/cacheflush.h =
+b/arch/parisc/include/asm/cacheflush.h
+index 7bd69bd43a01..c7e15cc5c668 100644
+--- a/arch/parisc/include/asm/cacheflush.h
++++ b/arch/parisc/include/asm/cacheflush.h
+@@ -27,8 +27,6 @@ void flush_user_dcache_range_asm(unsigned long, =
+unsigned long);
+ void flush_kernel_dcache_range_asm(unsigned long, unsigned long);
+ void flush_kernel_dcache_page_asm(void *);
+ void flush_kernel_icache_page(void *);
+-void flush_user_dcache_range(unsigned long, unsigned long);
+-void flush_user_icache_range(unsigned long, unsigned long);
+=20
+ /* Cache flush operations */
+=20
+diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+index 977f0a4f5ecf..aedadefc149e 100644
+--- a/arch/parisc/kernel/cache.c
++++ b/arch/parisc/kernel/cache.c
+@@ -573,24 +573,6 @@ void flush_cache_mm(struct mm_struct *mm)
+ 	}
+ }
+=20
+-void
+-flush_user_dcache_range(unsigned long start, unsigned long end)
+-{
+-	if ((end - start) < parisc_cache_flush_threshold)
+-		flush_user_dcache_range_asm(start,end);
+-	else
+-		flush_data_cache();
+-}
+-
+-void
+-flush_user_icache_range(unsigned long start, unsigned long end)
+-{
+-	if ((end - start) < parisc_cache_flush_threshold)
+-		flush_user_icache_range_asm(start,end);
+-	else
+-		flush_instruction_cache();
+-}
+-
+ void flush_cache_range(struct vm_area_struct *vma,
+ 		unsigned long start, unsigned long end)
+ {
+diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
+index 2264f68f3c2f..120eefa39de9 100644
+--- a/arch/parisc/kernel/signal.c
++++ b/arch/parisc/kernel/signal.c
+@@ -232,6 +232,7 @@ setup_rt_frame(struct ksignal *ksig, sigset_t *set, =
+struct pt_regs *regs,
+ 	struct rt_sigframe __user *frame;
+ 	unsigned long rp, usp;
+ 	unsigned long haddr, sigframe_size;
++	unsigned long start, end;
+ 	int err =3D 0;
+ #ifdef CONFIG_64BIT
+ 	struct compat_rt_sigframe __user * compat_frame;
+@@ -299,10 +300,10 @@ setup_rt_frame(struct ksignal *ksig, sigset_t =
+*set, struct pt_regs *regs,
+ 	}
+ #endif
+=20
+-	flush_user_dcache_range((unsigned long) &frame->tramp[0],
+-			   (unsigned long) &frame->tramp[TRAMP_SIZE]);
+-	flush_user_icache_range((unsigned long) &frame->tramp[0],
+-			   (unsigned long) &frame->tramp[TRAMP_SIZE]);
++	start =3D (unsigned long) &frame->tramp[0];
++	end =3D (unsigned long) &frame->tramp[TRAMP_SIZE];
++	flush_user_dcache_range_asm(start, end);
++	flush_user_icache_range_asm(start, end);
+=20
+ 	/* TRAMP Words 0-4, Length 5 =3D SIGRESTARTBLOCK_TRAMP
+ 	 * TRAMP Words 5-9, Length 4 =3D SIGRETURN_TRAMP
+@@ -548,8 +549,8 @@ insert_restart_trampoline(struct pt_regs *regs)
+ 		WARN_ON(err);
+=20
+ 		/* flush data/instruction cache for new insns */
+-		flush_user_dcache_range(start, end);
+-		flush_user_icache_range(start, end);
++		flush_user_dcache_range_asm(start, end);
++		flush_user_icache_range_asm(start, end);
+=20
+ 		regs->gr[31] =3D regs->gr[30] + 8;
+ 		return;
+
+--Apple-Mail-8-356541916
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
+
+
+
+--
+John David Anglin	dave.anglin@bell.net
+
+--Apple-Mail-8-356541916--
