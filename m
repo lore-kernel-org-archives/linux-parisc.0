@@ -1,32 +1,24 @@
-From: "Mr.Hassan Habib" <hh3584420@gmail.com>
-Subject: Please I want you to patiently read this offer.?
-Date: Wed, 22 Feb 2017 17:24:03 +0000 (UTC)
-Message-ID: <836211494.5109629.1487784243904@mail.yahoo.com>
-References: <836211494.5109629.1487784243904.ref@mail.yahoo.com>
-Reply-To: "Mr.Hassan Habib" <hh3584420@gmail.com>
+From: Qin's Yanjun <Qin.Yanjun@null.net>
+Subject: RE:
+Date: Thu, 23 Feb 2017 20:09:29 +0500
+Message-ID: <cf3faff95fb3db02602e6f37c5cd928f__24494.3554782823$1487879108$gmane$org@mail.aknet.kz>
+Reply-To: Qin's Yanjun <Qin.Yanjun@null.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 To: unlisted-recipients:; (no To-header on input)
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello.
 
-I know this means of communication may not be morally right to you as a person but I also have had a great thought about it and I have come to this conclusion which I am about to share with you.
+How are you today and your family? I require your attention and honest
+co-operation about some issues which i will really want to discuss with you
+which.  Looking forward to read from you soon.  
 
-INTRODUCTION:I am the Credit Manager U. B. A Bank of Burkina Faso Ouagadougou
-and in one way or the other was hoping you will cooperate with me as a partner in a project of transferring an abandoned fund of a late customer of the bank worth of $18,000,000 (Eighteen Million Dollars US).
+Qin's
 
-This will be disbursed or shared between the both of us in these percentages, 55% to me and 35% to you while 10% will be for expenses both parties might have incurred during the process of transferring.
-I
-await for your response so that we can commence on this project as soon as possible.
 
-Reply to this Email:mr_habib2015@yahoo.com
+______________________________
 
-Regards,
-Mr.Hassan Habib.
-
-Credit Manager U.B.A Bank of
-Burkina Faso Ouagadougou
+Sky Silk, http://aknet.kz
 
