@@ -1,15 +1,20 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 3/3] uapi: fix asm/shmbuf.h userspace compilation errors
-Date: Thu, 2 Mar 2017 14:14:59 +0100
-Message-ID: <CAK8P3a1_QLguZ6XEGC9TdGUmF0R3bKaU2EiJ6m+Gf=KpYnmqqw@mail.gmail.com>
-References: <CAK8P3a3Ptm68i43BT5+kWptDw1koPwexpuFwH3-1naj_xi+arQ@mail.gmail.com>
- <20170302002253.GC27132@altlinux.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [PATCH] uapi: fix asm/signal.h userspace compilation errors
+Date: Thu, 2 Mar 2017 10:22:18 -0500
+Message-ID: <CAE2sS1h9QNV+31GMSv8aahJYOb9hFtFp5Aj-yVOfg7cjBHr_kg@mail.gmail.com>
+References: <20170226010156.GA28831@altlinux.org> <CAK8P3a0YX3RGAqWN0mwUJtBsqUX0C+QRtJLrT_UA=wX6Z+q0DA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Cc: Haavard Skinnemoen <hskinnemoen@gmail.com>,
+Cc: "Dmitry V. Levin" <ldv@altlinux.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Haavard Skinnemoen <hskinnemoen@gmail.com>,
         Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+        Mikael Starvik <starvik@axis.com>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
         Tony Luck <tony.luck@intel.com>,
         Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Ralf Baechle <ralf@linux-mips.org>,
         David Howells <dhowells@redhat.com>,
         "James E.J. Bottomley" <jejb@parisc-linux.org>,
@@ -18,61 +23,70 @@ Cc: Haavard Skinnemoen <hskinnemoen@gmail.com>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@linux-mips
-To: "Dmitry V. Levin" <ldv@altlinux.org>
-Return-path: <sparclinux-owner@vger.kernel.org>
-In-Reply-To: <20170302002253.GC27132@altlinux.org>
-List-ID: <sparclinux.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+        Heiko Carstens <heiko.carstens@
+To: Arnd Bergmann <arnd@arndb.de>
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <CAK8P3a0YX3RGAqWN0mwUJtBsqUX0C+QRtJLrT_UA=wX6Z+q0DA@mail.gmail.com>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-On Thu, Mar 2, 2017 at 1:22 AM, Dmitry V. Levin <ldv@altlinux.org> wrote:
-> Include <asm/ipcbuf.h> to fix asm/shmbuf.h userspace compilation errors
-> like this:
+On Wed, Mar 1, 2017 at 11:20 AM, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Sun, Feb 26, 2017 at 2:01 AM, Dmitry V. Levin <ldv@altlinux.org> wrote:
+>> Include <stddef.h> (guarded by #ifndef __KERNEL__) to fix asm/signal.h
+>> userspace compilation errors like this:
+>>
+>> /usr/include/asm/signal.h:126:2: error: unknown type name 'size_t'
+>>   size_t ss_size;
+>>
+>> As no uapi header provides a definition of size_t, inclusion
+>> of <stddef.h> seems to be the most conservative fix available.
+>>
+>> On the kernel side size_t is typedef'ed to __kernel_size_t, so
+>> an alternative fix would be to change the type of sigaltstack.ss_size
+>> from size_t to __kernel_size_t for all architectures except those where
+>> sizeof(size_t) < sizeof(__kernel_size_t), namely, x32 and mips n32.
+>>
+>> On x32 and mips n32, however, #include <stddef.h> seems to be the most
+>> straightforward way to obtain the definition for sigaltstack.ss_size's
+>> type.
+>>
+>> Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
 >
-> /usr/include/asm-generic/shmbuf.h:26:20: error: field 'shm_perm' has incomplete type
->   struct ipc64_perm shm_perm; /* operation perms */
-> /usr/include/asm-generic/shmbuf.h:28:2: error: unknown type name '__kernel_time_t'
->   __kernel_time_t  shm_atime; /* last attach time */
-> /usr/include/asm-generic/shmbuf.h:32:2: error: unknown type name '__kernel_time_t'
->   __kernel_time_t  shm_dtime; /* last detach time */
-> /usr/include/asm-generic/shmbuf.h:36:2: error: unknown type name '__kernel_time_t'
->   __kernel_time_t  shm_ctime; /* last change time */
-> /usr/include/asm-generic/shmbuf.h:40:2: error: unknown type name '__kernel_pid_t'
->   __kernel_pid_t  shm_cpid; /* pid of creator */
-> /usr/include/asm-generic/shmbuf.h:41:2: error: unknown type name '__kernel_pid_t'
->   __kernel_pid_t  shm_lpid; /* pid of last operator */
-> /usr/include/asm-generic/shmbuf.h:42:2: error: unknown type name '__kernel_ulong_t'
->   __kernel_ulong_t shm_nattch; /* no. of current attaches */
-> /usr/include/asm-generic/shmbuf.h:43:2: error: unknown type name '__kernel_ulong_t'
->   __kernel_ulong_t __unused4;
-> /usr/include/asm-generic/shmbuf.h:44:2: error: unknown type name '__kernel_ulong_t'
->   __kernel_ulong_t __unused5;
-> /usr/include/asm-generic/shmbuf.h:48:2: error: unknown type name '__kernel_ulong_t'
->   __kernel_ulong_t shmmax;
-> /usr/include/asm-generic/shmbuf.h:49:2: error: unknown type name '__kernel_ulong_t'
->   __kernel_ulong_t shmmin;
-> /usr/include/asm-generic/shmbuf.h:50:2: error: unknown type name '__kernel_ulong_t'
->   __kernel_ulong_t shmmni;
-> /usr/include/asm-generic/shmbuf.h:51:2: error: unknown type name '__kernel_ulong_t'
->   __kernel_ulong_t shmseg;
-> /usr/include/asm-generic/shmbuf.h:52:2: error: unknown type name '__kernel_ulong_t'
->   __kernel_ulong_t shmall;
-> /usr/include/asm-generic/shmbuf.h:53:2: error: unknown type name '__kernel_ulong_t'
->   __kernel_ulong_t __unused1;
-> /usr/include/asm-generic/shmbuf.h:54:2: error: unknown type name '__kernel_ulong_t'
->   __kernel_ulong_t __unused2;
-> /usr/include/asm-generic/shmbuf.h:55:2: error: unknown type name '__kernel_ulong_t'
->   __kernel_ulong_t __unused3;
-> /usr/include/asm-generic/shmbuf.h:56:2: error: unknown type name '__kernel_ulong_t'
->   __kernel_ulong_t __unused4;
->
-> Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
-> ---
+> I'm not sure if this is the best fix. We generally should not include one
+> standard header from another standard header. Would it be possible
+> to use __kernel_size_t instead of size_t?
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+In glibc we handle this with special use of __need_size_t with GCC's
+provided stddef.h.
+
+For example glibc's signal.h does this:
+
+# define __need_size_t
+# include <stddef.h>
+
+And...
+
+/* Any one of these symbols __need_* means that GNU libc
+   wants us just to define one data type.  So don't define
+   the symbols that indicate this file's entire job has been done.  */
+#if (!defined(__need_wchar_t) && !defined(__need_size_t)        \
+     && !defined(__need_ptrdiff_t) && !defined(__need_NULL)     \
+     && !defined(__need_wint_t))
+
+The idea being that the type you want is really defined by stddef.h,
+but you just one the one type.
+
+Changing the fundamental type causes the issues you see in patch v2
+where sizeof(size_t) < sizeof(__kernel_size_t).
+
+It will only lead to problem substituting the wrong type.
+
+Cheers,
+Carlos.
