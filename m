@@ -1,48 +1,92 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture fixes for 4.11
-Date: Fri, 3 Mar 2017 23:24:24 +0100
-Message-ID: <20170303222424.GA14364@ls3530>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [PATCH] uapi: fix asm/signal.h userspace compilation errors
+Date: Fri, 3 Mar 2017 20:23:20 -0500
+Message-ID: <CAE2sS1i-xezJu2hHfzOxpCMZHc2J+dsturtqFPMRWHa6mm6ccQ@mail.gmail.com>
+References: <20170226010156.GA28831@altlinux.org> <CAK8P3a0YX3RGAqWN0mwUJtBsqUX0C+QRtJLrT_UA=wX6Z+q0DA@mail.gmail.com>
+ <CAE2sS1h9QNV+31GMSv8aahJYOb9hFtFp5Aj-yVOfg7cjBHr_kg@mail.gmail.com> <20170302154845.GB3503@altlinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Cc: Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Haavard Skinnemoen <hskinnemoen@gmail.com>,
+        Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+        Mikael Starvik <starvik@axis.com>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        David Howells <dhowells@redhat.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.
+To: "Dmitry V. Levin" <ldv@altlinux.org>
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <20170302154845.GB3503@altlinux.org>
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-Id: linux-mips <linux-mips.eddie.linux-mips.org>
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 
-Hi Linus,
+On Thu, Mar 2, 2017 at 10:48 AM, Dmitry V. Levin <ldv@altlinux.org> wrote:
+> On Thu, Mar 02, 2017 at 10:22:18AM -0500, Carlos O'Donell wrote:
+>> On Wed, Mar 1, 2017 at 11:20 AM, Arnd Bergmann <arnd@arndb.de> wrote:
+>> > On Sun, Feb 26, 2017 at 2:01 AM, Dmitry V. Levin <ldv@altlinux.org> wrote:
+>> >> Include <stddef.h> (guarded by #ifndef __KERNEL__) to fix asm/signal.h
+>> >> userspace compilation errors like this:
+>> >>
+>> >> /usr/include/asm/signal.h:126:2: error: unknown type name 'size_t'
+>> >>   size_t ss_size;
+>> >>
+>> >> As no uapi header provides a definition of size_t, inclusion
+>> >> of <stddef.h> seems to be the most conservative fix available.
+> [...]
+>> > I'm not sure if this is the best fix. We generally should not include one
+>> > standard header from another standard header. Would it be possible
+>> > to use __kernel_size_t instead of size_t?
+>>
+>> In glibc we handle this with special use of __need_size_t with GCC's
+>> provided stddef.h.
+>>
+>> For example glibc's signal.h does this:
+>>
+>> # define __need_size_t
+>> # include <stddef.h>
+>
+> Just to make it clear, do you suggest this approach for asm/signal.h as well?
 
-Please pull the changes for the parisc architecture for v4.11 from
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.11-1
+The kernel is duplicating userspace headers in the UAPI implementation
+and running into exactly the same problems we have already solved in
+userspace. We currently have no better solution than the "__need_*"
+interface for avoiding the duplication of the type definitions and the
+problems that come with that.
 
-Nothing really important in this patchset: Fix resource leaks in error paths,
-coding style cleanups and code removal.
+I am taking this up with senior glibc developers on libc-alpha to see
+if we have a better suggestion. If you give me 72 hours I'll either
+have a better suggestion or the acknowledgement that my suggestion is
+the best practical solution we have.
 
-Thanks,
-Helge
+Note that in a GNU userspace stddef.h here comes from gcc, which
+completes the implementation of the C development environment that
+provides the types you need. The use of "__need_size_t" is a collusion
+between the components of the implementation and use by the Linux
+kernel would mean expecting something specific to a GNU
+implementation.
 
-----------------------------------------------------------------
-Arvind Yadav (3):
-      parisc: eisa: Remove coding style errors
-      parisc: eisa: Fix resource leaks in error paths
-      parisc: ccio-dma: Handle return NULL error from ioremap_nocache
+I might suggest you use include/uapi/linux/libc-compat.h in an attempt
+to abstract away the GNU-specific magic for getting just size_t from
+stddef.h. That way you have documented the places that other runtime
+authors need to fill out for things to work.
 
-Dan Carpenter (1):
-      parisc: fix a printk
-
-Helge Deller (1):
-      parisc: Define access_ok() as macro
-
-John David Anglin (1):
-      parisc: Remove flush_user_dcache_range and flush_user_icache_range
-
- arch/parisc/include/asm/cacheflush.h |   2 -
- arch/parisc/include/asm/uaccess.h    |   6 +-
- arch/parisc/kernel/cache.c           |  18 ------
- arch/parisc/kernel/signal.c          |  13 ++--
- arch/parisc/mm/fault.c               |   4 +-
- drivers/parisc/ccio-dma.c            |   6 +-
- drivers/parisc/eisa.c                | 122 +++++++++++++++++++----------------
- 7 files changed, 83 insertions(+), 88 deletions(-)
+Cheers,
+Carlos.
