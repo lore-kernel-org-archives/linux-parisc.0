@@ -1,108 +1,262 @@
-From: <catherine.verge@hcahealthcare.co.uk>
-Subject: 59160 linux-parisc
-Date: Sun, 12 Mar 2017 23:01:08 -0000
-Message-ID: <148935966828.30107.7287734522751021813@isurgut.ru>
-Reply-To: <catherine.verge@hcahealthcare.co.uk>
-Mime-Version: 1.0
-Content-Type: application/zip; name="758.zip"
-To: "linux-parisc" <linux-parisc@vger.kernel.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Till Smejkal <till.smejkal@googlemail.com>
+Subject: [RFC PATCH 00/13] Introduce first class virtual address spaces
+Date: Mon, 13 Mar 2017 15:14:02 -0700
+Message-ID: <20170313221415.9375-1-till.smejkal@gmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	adi-buildroot-devel@lists.sourceforge.net,
+	linux-hexagon@vger.kernel.org,
+	linux-ia64@vger.kernel.org,
+	linux-metag@vger.kernel.org,
+	linux-mips@linux-mips.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-xtensa@linux-xtensa.org,
+	linux-media@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-usb@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-aio@kvack.org,
+	linux-mm@kvack.org,
+	linux-api@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	alsa-devel@alsa-project.org
+To: Richard Henderson <rth@twiddle.net>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Vineet Gupta <vgupta@synopsys.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will.deacon@arm.com>,
+	Steven Miao <realmz6@gmail.com>,
+	Richard Kuo <rkuo@codeaurora.org>,
+	Tony Luck <tony.luck@intel.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	James Hogan <james.hogan@imgtec.com>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Paul Mackerras <paulus@samba.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Martin Schwidefsky <schwidefsky@de.ibm.com>,
+	Heiko Carstens <heiko.carstens@de.ibm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	"David S. Miller" <davem@dave
+Return-path: <owner-linux-aio@kvack.org>
+List-ID: <linux-aio.kvack.org>
 
-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
-AAAAAA==
+First class virtual address spaces (also called VAS) are a new functionality of
+the Linux kernel allowing address spaces to exist independently of processes.
+The general idea behind this feature is described in a paper at ASPLOS16 with
+the title 'SpaceJMP: Programming with Multiple Virtual Address Spaces' [1].
+
+This patchset extends the kernel memory management subsystem with a new
+type of address spaces (called VAS) which can be created and destroyed
+independently of processes by a user in the system. During its lifetime
+such a VAS can be attached to processes by the user which allows a process
+to have multiple address spaces and thereby multiple, potentially
+different, views on the system's main memory. During its execution the
+threads belonging to the process are able to switch freely between the
+different attached VAS and the process' original AS enabling them to
+utilize the different available views on the memory. These multiple virtual
+address spaces per process and the possibility to switch between them
+freely can be used in multiple interesting ways as also outlined in the
+mentioned paper. Some of the many possible applications are for example to
+compartmentalize a process for security reasons, to improve the performance
+of data-centric applications and to introduce new application models [1].
+
+In addition to the concept of first class virtual address spaces, this
+patchset introduces yet another feature called VAS segments. VAS segments
+are memory regions which have a fixed size and position in the virtual
+address space and can be shared between multiple first class virtual
+address spaces. Such shareable memory regions are especially useful for
+in-memory pointer-based data structures or other pure in-memory data.
+
+First class virtual address spaces have a significant advantage compared to
+forking a process and using inter process communication mechanism, namely
+that creating and switching between VAS is significant faster than creating
+and switching between processes. As it can be seen in the following table,
+measured on an Intel Xeon E5620 CPU with 2.40GHz, creating a VAS is about 7
+times faster than forking and switching between VAS is up to 4 times faster
+than switching between processes.
+
+            |     VAS     |  processes  |
+    -------------------------------------
+    switch  |       468ns |      1944ns |
+    create  |     20003ns |    150491ns |
+
+Hence, first class virtual address spaces provide a fast mechanism for
+applications to utilize multiple virtual address spaces in parallel with a
+higher performance than splitting up the application into multiple
+independent processes.
+
+Both VAS and VAS segments have another significant advantage when combined
+with non-volatile memory. Because of their independent life cycle from
+processes and other kernel data structures, they can be used to save
+special memory regions or even whole AS into non-volatile memory making it
+possible to reuse them across multiple system reboots.
+
+At the current state of the development, first class virtual address spaces
+have one limitation, that we haven't been able to solve so far. The feature
+allows, that different threads of the same process can execute in different
+AS at the same time. This is possible, because the VAS-switch operation
+only changes the active mm_struct for the task_struct of the calling
+thread. However, when a thread switches into a first class virtual address
+space, some parts of its original AS are duplicated into the new one to
+allow the thread to continue its execution at its current state.
+Accordingly, parts of the processes AS (e.g. the code section, data
+section, heap section and stack sections) exist in multiple AS if the
+process has a VAS attached to it. Changes to these shared memory regions
+are synchronized between the address spaces whenever a thread switches
+between two of them. Unfortunately, in some scenarios the kernel is not
+able to properly synchronize all these shared memory regions because of
+conflicting changes. One such example happens if there are two threads, one
+executing in an attached first class virtual address space, the other in
+the tasks original address space. If both threads make changes to the heap
+section that cause expansion of the underlying vm_area_struct, the kernel
+cannot correctly synchronize these changes, because that would cause parts
+of the virtual address space to be overwritten with unrelated data. In the
+current implementation such conflicts are only detected but not resolved
+and result in an error code being returned by the kernel during the VAS
+switch operation. Unfortunately, that means for the particular thread that
+tried to make the switch, that it cannot do this anymore in the future and
+accordingly has to be killed.
+
+This code was developed during an internship at Hewlett Packard Enterprise.
+
+[1] http://impact.crhc.illinois.edu/shared/Papers/ASPLOS16-SpaceJMP.pdf
+
+Till Smejkal (13):
+  mm: Add mm_struct argument to 'mmap_region'
+  mm: Add mm_struct argument to 'do_mmap' and 'do_mmap_pgoff'
+  mm: Rename 'unmap_region' and add mm_struct argument
+  mm: Add mm_struct argument to 'get_unmapped_area' and
+    'vm_unmapped_area'
+  mm: Add mm_struct argument to 'mm_populate' and '__mm_populate'
+  mm/mmap: Export 'vma_link' and 'find_vma_links' to mm subsystem
+  kernel/fork: Split and export 'mm_alloc' and 'mm_init'
+  kernel/fork: Define explicitly which mm_struct to duplicate during
+    fork
+  mm/memory: Add function to one-to-one duplicate page ranges
+  mm: Introduce first class virtual address spaces
+  mm/vas: Introduce VAS segments - shareable address space regions
+  mm/vas: Add lazy-attach support for first class virtual address spaces
+  fs/proc: Add procfs support for first class virtual address spaces
+
+ MAINTAINERS                                  |   10 +
+ arch/alpha/kernel/osf_sys.c                  |   19 +-
+ arch/arc/mm/mmap.c                           |    8 +-
+ arch/arm/kernel/process.c                    |    2 +-
+ arch/arm/mach-rpc/ecard.c                    |    2 +-
+ arch/arm/mm/mmap.c                           |   19 +-
+ arch/arm64/kernel/vdso.c                     |    2 +-
+ arch/blackfin/include/asm/pgtable.h          |    3 +-
+ arch/blackfin/kernel/sys_bfin.c              |    5 +-
+ arch/frv/mm/elf-fdpic.c                      |   11 +-
+ arch/hexagon/kernel/vdso.c                   |    2 +-
+ arch/ia64/kernel/perfmon.c                   |    3 +-
+ arch/ia64/kernel/sys_ia64.c                  |    6 +-
+ arch/ia64/mm/hugetlbpage.c                   |    7 +-
+ arch/metag/mm/hugetlbpage.c                  |   11 +-
+ arch/mips/kernel/vdso.c                      |    4 +-
+ arch/mips/mm/mmap.c                          |   27 +-
+ arch/parisc/kernel/sys_parisc.c              |   19 +-
+ arch/parisc/mm/hugetlbpage.c                 |    7 +-
+ arch/powerpc/include/asm/book3s/64/hugetlb.h |    6 +-
+ arch/powerpc/include/asm/page_64.h           |    3 +-
+ arch/powerpc/kernel/vdso.c                   |    2 +-
+ arch/powerpc/mm/hugetlbpage-radix.c          |    9 +-
+ arch/powerpc/mm/hugetlbpage.c                |    9 +-
+ arch/powerpc/mm/mmap.c                       |   17 +-
+ arch/powerpc/mm/slice.c                      |   25 +-
+ arch/s390/kernel/vdso.c                      |    3 +-
+ arch/s390/mm/mmap.c                          |   42 +-
+ arch/sh/kernel/vsyscall/vsyscall.c           |    2 +-
+ arch/sh/mm/mmap.c                            |   19 +-
+ arch/sparc/include/asm/pgtable_64.h          |    4 +-
+ arch/sparc/kernel/sys_sparc_32.c             |    6 +-
+ arch/sparc/kernel/sys_sparc_64.c             |   31 +-
+ arch/sparc/mm/hugetlbpage.c                  |   26 +-
+ arch/tile/kernel/vdso.c                      |    2 +-
+ arch/tile/mm/elf.c                           |    2 +-
+ arch/tile/mm/hugetlbpage.c                   |   26 +-
+ arch/x86/entry/syscalls/syscall_32.tbl       |   16 +
+ arch/x86/entry/syscalls/syscall_64.tbl       |   16 +
+ arch/x86/entry/vdso/vma.c                    |    2 +-
+ arch/x86/kernel/sys_x86_64.c                 |   19 +-
+ arch/x86/mm/hugetlbpage.c                    |   26 +-
+ arch/x86/mm/mpx.c                            |    6 +-
+ arch/xtensa/kernel/syscall.c                 |    7 +-
+ drivers/char/mem.c                           |   15 +-
+ drivers/dax/dax.c                            |   10 +-
+ drivers/media/usb/uvc/uvc_v4l2.c             |    6 +-
+ drivers/media/v4l2-core/v4l2-dev.c           |    8 +-
+ drivers/media/v4l2-core/videobuf2-v4l2.c     |    5 +-
+ drivers/mtd/mtdchar.c                        |    3 +-
+ drivers/usb/gadget/function/uvc_v4l2.c       |    3 +-
+ fs/aio.c                                     |    4 +-
+ fs/exec.c                                    |    5 +-
+ fs/hugetlbfs/inode.c                         |    8 +-
+ fs/proc/base.c                               |  528 ++++
+ fs/proc/inode.c                              |   11 +-
+ fs/proc/internal.h                           |    1 +
+ fs/ramfs/file-mmu.c                          |    5 +-
+ fs/ramfs/file-nommu.c                        |   10 +-
+ fs/romfs/mmap-nommu.c                        |    3 +-
+ include/linux/fs.h                           |    2 +-
+ include/linux/huge_mm.h                      |   12 +-
+ include/linux/hugetlb.h                      |   10 +-
+ include/linux/mm.h                           |   53 +-
+ include/linux/mm_types.h                     |   16 +-
+ include/linux/sched.h                        |   34 +-
+ include/linux/shmem_fs.h                     |    5 +-
+ include/linux/syscalls.h                     |   21 +
+ include/linux/vas.h                          |  322 +++
+ include/linux/vas_types.h                    |  173 ++
+ include/media/v4l2-dev.h                     |    3 +-
+ include/media/videobuf2-v4l2.h               |    5 +-
+ include/uapi/asm-generic/unistd.h            |   34 +-
+ include/uapi/linux/Kbuild                    |    1 +
+ include/uapi/linux/vas.h                     |   28 +
+ init/main.c                                  |    2 +
+ ipc/shm.c                                    |   22 +-
+ kernel/events/uprobes.c                      |    2 +-
+ kernel/exit.c                                |    2 +
+ kernel/fork.c                                |   99 +-
+ kernel/sys_ni.c                              |   18 +
+ mm/Kconfig                                   |   47 +
+ mm/Makefile                                  |    1 +
+ mm/gup.c                                     |    4 +-
+ mm/huge_memory.c                             |   83 +-
+ mm/hugetlb.c                                 |  205 +-
+ mm/internal.h                                |   19 +
+ mm/memory.c                                  |  469 +++-
+ mm/mlock.c                                   |   21 +-
+ mm/mmap.c                                    |  124 +-
+ mm/mremap.c                                  |   13 +-
+ mm/nommu.c                                   |   17 +-
+ mm/shmem.c                                   |   14 +-
+ mm/util.c                                    |    4 +-
+ mm/vas.c                                     | 3466 ++++++++++++++++++++++++++
+ sound/core/pcm_native.c                      |    3 +-
+ 96 files changed, 5927 insertions(+), 545 deletions(-)
+ create mode 100644 include/linux/vas.h
+ create mode 100644 include/linux/vas_types.h
+ create mode 100644 include/uapi/linux/vas.h
+ create mode 100644 mm/vas.c
+
+-- 
+2.12.0
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-aio' in
+the body to majordomo@kvack.org.  For more info on Linux AIO,
+see: http://www.kvack.org/aio/
+Don't email: <a href=mailto:"aart@kvack.org">aart@kvack.org</a>
