@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Wire up statx system call
-Date: Wed, 15 Mar 2017 21:10:17 +0100
-Message-ID: <20170315201017.GA14493@p100.box>
+Subject: [PATCH] parisc: Avoid compiler warnings with access_ok()
+Date: Wed, 15 Mar 2017 21:48:42 +0100
+Message-ID: <20170315204842.GA32075@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -11,32 +11,26 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Commit 09b871ffd4d8 (parisc: Define access_ok() as macro) missed to mark uaddr
+as used, which then gives compiler warnings about unused variables.
 
-diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
-index 6b0741e..667c994 100644
---- a/arch/parisc/include/uapi/asm/unistd.h
-+++ b/arch/parisc/include/uapi/asm/unistd.h
-@@ -362,8 +362,9 @@
- #define __NR_copy_file_range	(__NR_Linux + 346)
- #define __NR_preadv2		(__NR_Linux + 347)
- #define __NR_pwritev2		(__NR_Linux + 348)
-+#define __NR_statx		(__NR_Linux + 349)
+Fix it by comparing uaddr to uaddr which then gets optimized away by the
+compiler.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+Fixes: 09b871ffd4d8 ("parisc: Define access_ok() as macro")
+
+diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
+index fb4382c..edfbf9d 100644
+--- a/arch/parisc/include/asm/uaccess.h
++++ b/arch/parisc/include/asm/uaccess.h
+@@ -32,7 +32,8 @@
+  * that put_user is the same as __put_user, etc.
+  */
  
--#define __NR_Linux_syscalls	(__NR_pwritev2 + 1)
-+#define __NR_Linux_syscalls	(__NR_statx + 1)
+-#define access_ok(type, uaddr, size) (1)
++#define access_ok(type, uaddr, size)	\
++	( (uaddr) == (uaddr) )
  
- 
- #define __IGNORE_select		/* newselect */
-diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-index 3cfef1d..44aeaa9 100644
---- a/arch/parisc/kernel/syscall_table.S
-+++ b/arch/parisc/kernel/syscall_table.S
-@@ -444,6 +444,7 @@
- 	ENTRY_SAME(copy_file_range)
- 	ENTRY_COMP(preadv2)
- 	ENTRY_COMP(pwritev2)
-+	ENTRY_SAME(statx)
- 
- 
- .ifne (. - 90b) - (__NR_Linux_syscalls * (91b - 90b))
+ #define put_user __put_user
+ #define get_user __get_user
