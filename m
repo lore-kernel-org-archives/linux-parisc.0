@@ -1,36 +1,87 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Avoid compiler warnings with access_ok()
-Date: Wed, 15 Mar 2017 21:48:42 +0100
-Message-ID: <20170315204842.GA32075@p100.box>
+From: Till Smejkal <till.smejkal@googlemail.com>
+Subject: Re: [RFC PATCH 00/13] Introduce first class virtual address spaces
+Date: Wed, 15 Mar 2017 14:30:43 -0700
+Message-ID: <20170315213042.e5q6daqkqoam2iun@arch-dev>
+References: <20170315194723.GJ1693@brightrain.aerifal.cx>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Cc: Andy Lutomirski <luto@amacapital.net>,
+	Andy Lutomirski <luto@kernel.org>,
+	Till Smejkal <till.smejkal@googlemail.com>,
+	Richard Henderson <rth@twiddle.net>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Vineet Gupta <vgupta@synopsys.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>,
+	Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	James Hogan <james.hogan@imgtec.com>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	"James E.J. Bottomley" <jejb@parisc-linux.org>,
+	Helge Deller <deller@gmx.de>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Paul Mackerras <paulus@samba.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Martin Schwidefsky <schwidefsky@de.ibm.com>,
+	Heiko Carstens <heiko.carstens@de
+To: Rich Felker <dalias@libc.org>
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <20170315194723.GJ1693@brightrain.aerifal.cx>
+List-ID: <linux-mm.kvack.org>
 
-Commit 09b871ffd4d8 (parisc: Define access_ok() as macro) missed to mark uaddr
-as used, which then gives compiler warnings about unused variables.
+On Wed, 15 Mar 2017, Rich Felker wrote:
+> On Wed, Mar 15, 2017 at 12:44:47PM -0700, Till Smejkal wrote:
+> > On Wed, 15 Mar 2017, Andy Lutomirski wrote:
+> > > > One advantage of VAS segments is that they can be globally queried by user programs
+> > > > which means that VAS segments can be shared by applications that not necessarily have
+> > > > to be related. If I am not mistaken, MAP_SHARED of pure in memory data will only work
+> > > > if the tasks that share the memory region are related (aka. have a common parent that
+> > > > initialized the shared mapping). Otherwise, the shared mapping have to be backed by a
+> > > > file.
+> > > 
+> > > What's wrong with memfd_create()?
+> > > 
+> > > > VAS segments on the other side allow sharing of pure in memory data by
+> > > > arbitrary related tasks without the need of a file. This becomes especially
+> > > > interesting if one combines VAS segments with non-volatile memory since one can keep
+> > > > data structures in the NVM and still be able to share them between multiple tasks.
+> > > 
+> > > What's wrong with regular mmap?
+> > 
+> > I never wanted to say that there is something wrong with regular mmap. We just
+> > figured that with VAS segments you could remove the need to mmap your shared data but
+> > instead can keep everything purely in memory.
+> > 
+> > Unfortunately, I am not at full speed with memfds. Is my understanding correct that
+> > if the last user of such a file descriptor closes it, the corresponding memory is
+> > freed? Accordingly, memfd cannot be used to keep data in memory while no program is
+> > currently using it, can it? To be able to do this you need again some representation
+> 
+> I have a name for application-allocated kernel resources that persist
+> without a process holding a reference to them or a node in the
+> filesystem: a bug. See: sysvipc.
 
-Fix it by comparing uaddr to uaddr which then gets optimized away by the
-compiler.
+VAS segments are first class citizens of the OS similar to processes. Accordingly, I
+would not see this behavior as a bug. VAS segments are a kernel handle to
+"persistent" memory (in the sense that they are independent of the lifetime of the
+application that created them). That means the memory that is described by VAS
+segments can be reused by other applications even if the VAS segment was not used by
+any application in between. It is very much like a pure in-memory file. An
+application creates a VAS segment, fills it with content and if it does not delete it
+again, can reuse/open it again later. This also means, that if you know that you
+never want to use this memory again you have to remove it explicitly, like you have
+to remove a file, if you don't want to use it anymore.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Fixes: 09b871ffd4d8 ("parisc: Define access_ok() as macro")
+I think it really might be better to implement VAS segments (if I should keep this
+feature at all) with a special purpose filesystem. The way I've designed it seams to
+be very misleading.
 
-diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
-index fb4382c..edfbf9d 100644
---- a/arch/parisc/include/asm/uaccess.h
-+++ b/arch/parisc/include/asm/uaccess.h
-@@ -32,7 +32,8 @@
-  * that put_user is the same as __put_user, etc.
-  */
- 
--#define access_ok(type, uaddr, size) (1)
-+#define access_ok(type, uaddr, size)	\
-+	( (uaddr) == (uaddr) )
- 
- #define put_user __put_user
- #define get_user __get_user
+Till
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
