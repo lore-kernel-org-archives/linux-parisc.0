@@ -1,58 +1,63 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture fixes for v4.11-rc3
-Date: Sat, 18 Mar 2017 17:54:40 +0100
-Message-ID: <20170318165440.GA24667@p100.box>
+From: <askeeta@canadiannorth.com>
+Subject: 21281 linux-parisc
+Date: Mon, 20 Mar 2017 07:24:58 -0000
+Message-ID: <148999469806.4914.14926072521741935474@zaural.ru>
+Reply-To: <askeeta@canadiannorth.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Mikulas Patocka <mpatocka@redhat.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: application/zip; name="105607732053798.zip"
+To: "linux-parisc" <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
-
-please pull a few fixes for the parisc architecture for kernel 4.11-rc3 from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.11-2
-
-Changes are:
-- Mikulas Patocka added support for R_PARISC_SECREL32 relocations in modules
-  with CONFIG_MODVERSIONS.
-- Dave Anglin optimized the cache flushing for vmap ranges.
-- Arvind Yadav provided a fix for a potential NULL pointer dereference in the
-  parisc perf code (and some code cleanups).
-- I wired up the new statx system call, fixed some compiler warnings with the
-  access_ok() macro and fixed shutdown code to really halt a system at shutdown
-  instead of crashing & rebooting.
-
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Arvind Yadav (1):
-      parisc: perf: Fix potential NULL pointer dereference
-
-Helge Deller (3):
-      parisc: Wire up statx system call
-      parisc: Avoid compiler warnings with access_ok()
-      parisc: Fix system shutdown halt
-
-John David Anglin (1):
-      parisc: Optimize flush_kernel_vmap_range and invalidate_kernel_vmap_range
-
-Mikulas Patocka (1):
-      parisc: support R_PARISC_SECREL32 relocation in modules
-
- arch/parisc/include/asm/cacheflush.h  | 23 +--------
- arch/parisc/include/asm/uaccess.h     |  3 +-
- arch/parisc/include/uapi/asm/unistd.h |  3 +-
- arch/parisc/kernel/cache.c            | 22 ++++++++
- arch/parisc/kernel/module.c           |  8 +++
- arch/parisc/kernel/perf.c             | 94 ++++++++++++++++++-----------------
- arch/parisc/kernel/process.c          |  2 +
- arch/parisc/kernel/syscall_table.S    |  1 +
- 8 files changed, 88 insertions(+), 68 deletions(-)
+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
+BQYAAAAAAQABAGAAAADACgAAAAA=
