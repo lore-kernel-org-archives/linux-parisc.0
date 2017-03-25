@@ -1,308 +1,33 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Clean up fixup routines for get_user()/put_user()
-Date: Sat, 25 Mar 2017 11:59:15 +0100
-Message-ID: <20170325105915.GA15188@p100.box>
-Mime-Version: 1.0
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCH] parisc: Clean up fixup routines for get_user()/put_user()
+Date: Sat, 25 Mar 2017 11:41:01 -0400
+Message-ID: <853363DA-9B8E-49ED-BB3D-262537DF5106@bell.net>
+References: <20170325105915.GA15188@p100.box>
+Mime-Version: 1.0 (Apple Message framework v1085)
 Content-Type: text/plain; charset=us-ascii
-Cc: Al Viro <viro@ZenIV.linux.org.uk>
-To: linux-parisc@vger.kernel.org,
+Cc: linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+        Al Viro <viro@ZenIV.linux.org.uk>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20170325105915.GA15188@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Al Viro noticed that userspace accesses via get_user()/put_user() can be
-simplified a lot with regard to usage of the exception handling.
+On 2017-03-25, at 6:59 AM, Helge Deller wrote:
 
-This patch implements a fixup routine for get_user() and put_user() in such
-that the exception handler will automatically load -EFAULT into the register
-%r8 (the error value) in case on a fault on userspace.  Additionally the fixup
-routine will zero the target register on fault in case of a get_user() call.
-The target register is extracted out of the faulting assembly instruction.
+> +		/*
+> +		 * Fix up get_user() and put_user().
+> +		 * ASM_EXCEPTIONTABLE_ENTRY_EFAULT() sets bit 1 to indicate
 
-This patch brings a few benefits over the old implementation:
-1. Exception handling gets much cleaner, easier and smaller in size.
-2. Helper functions like fixup_get_user_skip_1 (all of fixup.S) can be dropped.
-3. No need to hardcode %r9 as target register for get_user() any longer. This
-   helps the compiler register allocator and thus creates less assembler
-   statements.
-4. No dependency on the exception_data contents any longer.
-5. Nested faults will be handled cleanly.
+Small nit - the bit set is bit 31 in .word.  Maybe "sets the least-significant bit in the relative address
+of the fixup routine".
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Excellent simplification.
 
-diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
-index edfbf9d..8442727 100644
---- a/arch/parisc/include/asm/uaccess.h
-+++ b/arch/parisc/include/asm/uaccess.h
-@@ -65,6 +65,15 @@ struct exception_table_entry {
- 	".previous\n"
- 
- /*
-+ * ASM_EXCEPTIONTABLE_ENTRY_EFAULT() creates a special exception table entry
-+ * (with lowest bit set) for which the fault handler in fixup_exception() will
-+ * load -EFAULT into %r8 for a read or write fault, and zeroes the target
-+ * register in case of a read fault in get_user().
-+ */
-+#define ASM_EXCEPTIONTABLE_ENTRY_EFAULT( fault_addr, except_addr )\
-+	ASM_EXCEPTIONTABLE_ENTRY( fault_addr, except_addr + 1)
-+
-+/*
-  * The page fault handler stores, in a per-cpu area, the following information
-  * if a fixup routine is available.
-  */
-@@ -91,7 +100,7 @@ struct exception_data {
- #define __get_user(x, ptr)                               \
- ({                                                       \
- 	register long __gu_err __asm__ ("r8") = 0;       \
--	register long __gu_val __asm__ ("r9") = 0;       \
-+	register long __gu_val;				 \
- 							 \
- 	load_sr2();					 \
- 	switch (sizeof(*(ptr))) {			 \
-@@ -107,22 +116,23 @@ struct exception_data {
- })
- 
- #define __get_user_asm(ldx, ptr)                        \
--	__asm__("\n1:\t" ldx "\t0(%%sr2,%2),%0\n\t"	\
--		ASM_EXCEPTIONTABLE_ENTRY(1b, fixup_get_user_skip_1)\
-+	__asm__("1: " ldx " 0(%%sr2,%2),%0\n"		\
-+		"9:\n"					\
-+		ASM_EXCEPTIONTABLE_ENTRY_EFAULT(1b, 9b)	\
- 		: "=r"(__gu_val), "=r"(__gu_err)        \
--		: "r"(ptr), "1"(__gu_err)		\
--		: "r1");
-+		: "r"(ptr), "1"(__gu_err));
- 
- #if !defined(CONFIG_64BIT)
- 
- #define __get_user_asm64(ptr) 				\
--	__asm__("\n1:\tldw 0(%%sr2,%2),%0"		\
--		"\n2:\tldw 4(%%sr2,%2),%R0\n\t"		\
--		ASM_EXCEPTIONTABLE_ENTRY(1b, fixup_get_user_skip_2)\
--		ASM_EXCEPTIONTABLE_ENTRY(2b, fixup_get_user_skip_1)\
-+	__asm__("   copy %%r0,%R0\n"			\
-+		"1: ldw 0(%%sr2,%2),%0\n"		\
-+		"2: ldw 4(%%sr2,%2),%R0\n"		\
-+		"9:\n"					\
-+		ASM_EXCEPTIONTABLE_ENTRY_EFAULT(1b, 9b)	\
-+		ASM_EXCEPTIONTABLE_ENTRY_EFAULT(2b, 9b)	\
- 		: "=r"(__gu_val), "=r"(__gu_err)	\
--		: "r"(ptr), "1"(__gu_err)		\
--		: "r1");
-+		: "r"(ptr), "1"(__gu_err));
- 
- #endif /* !defined(CONFIG_64BIT) */
- 
-@@ -148,32 +158,31 @@ struct exception_data {
-  * The "__put_user/kernel_asm()" macros tell gcc they read from memory
-  * instead of writing. This is because they do not write to any memory
-  * gcc knows about, so there are no aliasing issues. These macros must
-- * also be aware that "fixup_put_user_skip_[12]" are executed in the
-- * context of the fault, and any registers used there must be listed
-- * as clobbers. In this case only "r1" is used by the current routines.
-- * r8/r9 are already listed as err/val.
-+ * also be aware that fixups are executed in the context of the fault,
-+ * and any registers used there must be listed as clobbers.
-+ * r8 is already listed as err.
-  */
- 
- #define __put_user_asm(stx, x, ptr)                         \
- 	__asm__ __volatile__ (                              \
--		"\n1:\t" stx "\t%2,0(%%sr2,%1)\n\t"	    \
--		ASM_EXCEPTIONTABLE_ENTRY(1b, fixup_put_user_skip_1)\
-+		"1: " stx " %2,0(%%sr2,%1)\n"		    \
-+		"9:\n"					    \
-+		ASM_EXCEPTIONTABLE_ENTRY_EFAULT(1b, 9b)	    \
- 		: "=r"(__pu_err)                            \
--		: "r"(ptr), "r"(x), "0"(__pu_err)	    \
--		: "r1")
-+		: "r"(ptr), "r"(x), "0"(__pu_err))
- 
- 
- #if !defined(CONFIG_64BIT)
- 
- #define __put_user_asm64(__val, ptr) do {	    	    \
- 	__asm__ __volatile__ (				    \
--		"\n1:\tstw %2,0(%%sr2,%1)"		    \
--		"\n2:\tstw %R2,4(%%sr2,%1)\n\t"		    \
--		ASM_EXCEPTIONTABLE_ENTRY(1b, fixup_put_user_skip_2)\
--		ASM_EXCEPTIONTABLE_ENTRY(2b, fixup_put_user_skip_1)\
-+		"1: stw %2,0(%%sr2,%1)\n"		    \
-+		"2: stw %R2,4(%%sr2,%1)\n"		    \
-+		"9:\n"					    \
-+		ASM_EXCEPTIONTABLE_ENTRY_EFAULT(1b, 9b)	    \
-+		ASM_EXCEPTIONTABLE_ENTRY_EFAULT(2b, 9b)	    \
- 		: "=r"(__pu_err)                            \
--		: "r"(ptr), "r"(__val), "0"(__pu_err) \
--		: "r1");				    \
-+		: "r"(ptr), "r"(__val), "0"(__pu_err));	    \
- } while (0)
- 
- #endif /* !defined(CONFIG_64BIT) */
-diff --git a/arch/parisc/kernel/parisc_ksyms.c b/arch/parisc/kernel/parisc_ksyms.c
-index 7484b3d..c6d6272 100644
---- a/arch/parisc/kernel/parisc_ksyms.c
-+++ b/arch/parisc/kernel/parisc_ksyms.c
-@@ -47,16 +47,6 @@ EXPORT_SYMBOL(__cmpxchg_u64);
- EXPORT_SYMBOL(lclear_user);
- EXPORT_SYMBOL(lstrnlen_user);
- 
--/* Global fixups - defined as int to avoid creation of function pointers */
--extern int fixup_get_user_skip_1;
--extern int fixup_get_user_skip_2;
--extern int fixup_put_user_skip_1;
--extern int fixup_put_user_skip_2;
--EXPORT_SYMBOL(fixup_get_user_skip_1);
--EXPORT_SYMBOL(fixup_get_user_skip_2);
--EXPORT_SYMBOL(fixup_put_user_skip_1);
--EXPORT_SYMBOL(fixup_put_user_skip_2);
--
- #ifndef CONFIG_64BIT
- /* Needed so insmod can set dp value */
- extern int $global$;
-diff --git a/arch/parisc/lib/Makefile b/arch/parisc/lib/Makefile
-index 8fa92b8..f2dac4d 100644
---- a/arch/parisc/lib/Makefile
-+++ b/arch/parisc/lib/Makefile
-@@ -2,7 +2,7 @@
- # Makefile for parisc-specific library files
- #
- 
--lib-y	:= lusercopy.o bitops.o checksum.o io.o memset.o fixup.o memcpy.o \
-+lib-y	:= lusercopy.o bitops.o checksum.o io.o memset.o memcpy.o \
- 	   ucmpdi2.o delay.o
- 
- obj-y	:= iomap.o
-diff --git a/arch/parisc/lib/fixup.S b/arch/parisc/lib/fixup.S
-deleted file mode 100644
-index a5b72f2..0000000
---- a/arch/parisc/lib/fixup.S
-+++ /dev/null
-@@ -1,98 +0,0 @@
--/*
-- * Linux/PA-RISC Project (http://www.parisc-linux.org/)
-- *
-- *  Copyright (C) 2004  Randolph Chung <tausq@debian.org>
-- *
-- *    This program is free software; you can redistribute it and/or modify
-- *    it under the terms of the GNU General Public License as published by
-- *    the Free Software Foundation; either version 2, or (at your option)
-- *    any later version.
-- *
-- *    This program is distributed in the hope that it will be useful,
-- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
-- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- *    GNU General Public License for more details.
-- *
-- *    You should have received a copy of the GNU General Public License
-- *    along with this program; if not, write to the Free Software
-- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-- * 
-- * Fixup routines for kernel exception handling.
-- */
--#include <asm/asm-offsets.h>
--#include <asm/assembly.h>
--#include <asm/errno.h>
--#include <linux/linkage.h>
--
--#ifdef CONFIG_SMP
--	.macro  get_fault_ip t1 t2
--	loadgp
--	addil LT%__per_cpu_offset,%r27
--	LDREG RT%__per_cpu_offset(%r1),\t1
--	/* t2 = smp_processor_id() */
--	mfctl 30,\t2
--	ldw TI_CPU(\t2),\t2
--#ifdef CONFIG_64BIT
--	extrd,u \t2,63,32,\t2
--#endif
--	/* t2 = &__per_cpu_offset[smp_processor_id()]; */
--	LDREGX \t2(\t1),\t2 
--	addil LT%exception_data,%r27
--	LDREG RT%exception_data(%r1),\t1
--	/* t1 = this_cpu_ptr(&exception_data) */
--	add,l \t1,\t2,\t1
--	/* %r27 = t1->fault_gp - restore gp */
--	LDREG EXCDATA_GP(\t1), %r27
--	/* t1 = t1->fault_ip */
--	LDREG EXCDATA_IP(\t1), \t1
--	.endm
--#else
--	.macro  get_fault_ip t1 t2
--	loadgp
--	/* t1 = this_cpu_ptr(&exception_data) */
--	addil LT%exception_data,%r27
--	LDREG RT%exception_data(%r1),\t2
--	/* %r27 = t2->fault_gp - restore gp */
--	LDREG EXCDATA_GP(\t2), %r27
--	/* t1 = t2->fault_ip */
--	LDREG EXCDATA_IP(\t2), \t1
--	.endm
--#endif
--
--	.level LEVEL
--
--	.text
--	.section .fixup, "ax"
--
--	/* get_user() fixups, store -EFAULT in r8, and 0 in r9 */
--ENTRY_CFI(fixup_get_user_skip_1)
--	get_fault_ip %r1,%r8
--	ldo 4(%r1), %r1
--	ldi -EFAULT, %r8
--	bv %r0(%r1)
--	copy %r0, %r9
--ENDPROC_CFI(fixup_get_user_skip_1)
--
--ENTRY_CFI(fixup_get_user_skip_2)
--	get_fault_ip %r1,%r8
--	ldo 8(%r1), %r1
--	ldi -EFAULT, %r8
--	bv %r0(%r1)
--	copy %r0, %r9
--ENDPROC_CFI(fixup_get_user_skip_2)
--
--	/* put_user() fixups, store -EFAULT in r8 */
--ENTRY_CFI(fixup_put_user_skip_1)
--	get_fault_ip %r1,%r8
--	ldo 4(%r1), %r1
--	bv %r0(%r1)
--	ldi -EFAULT, %r8
--ENDPROC_CFI(fixup_put_user_skip_1)
--
--ENTRY_CFI(fixup_put_user_skip_2)
--	get_fault_ip %r1,%r8
--	ldo 8(%r1), %r1
--	bv %r0(%r1)
--	ldi -EFAULT, %r8
--ENDPROC_CFI(fixup_put_user_skip_2)
--
-diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index deab89a..a1c07aa 100644
---- a/arch/parisc/mm/fault.c
-+++ b/arch/parisc/mm/fault.c
-@@ -150,6 +150,22 @@ int fixup_exception(struct pt_regs *regs)
- 		d->fault_space = regs->isr;
- 		d->fault_addr = regs->ior;
- 
-+		/*
-+		 * Fix up get_user() and put_user().
-+		 * ASM_EXCEPTIONTABLE_ENTRY_EFAULT() sets bit 1 to indicate
-+		 * that %r8 should be loaded with -EFAULT to report a
-+		 * userspace access error.
-+		 */
-+		if (fix->fixup & 1) {
-+			regs->gr[8] = -EFAULT;
-+
-+			/* zero target register for get_user() */
-+			if (parisc_acctyp(0, regs->iir) == VM_READ) {
-+				int treg = regs->iir & 0x1f;
-+				regs->gr[treg] = 0;
-+			}
-+		}
-+
- 		regs->iaoq[0] = (unsigned long)&fix->fixup + fix->fixup;
- 		regs->iaoq[0] &= ~3;
- 		/*
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
