@@ -1,33 +1,810 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] parisc: Clean up fixup routines for get_user()/put_user()
-Date: Sat, 25 Mar 2017 11:41:01 -0400
-Message-ID: <853363DA-9B8E-49ED-BB3D-262537DF5106@bell.net>
-References: <20170325105915.GA15188@p100.box>
-Mime-Version: 1.0 (Apple Message framework v1085)
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Fix access fault handling in pa_memcpy()
+Date: Mon, 27 Mar 2017 17:47:02 +0200
+Message-ID: <20170327154702.GA11377@p100.box>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org,
+Cc: Al Viro <viro@ZenIV.linux.org.uk>
+To: linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>
-To: Helge Deller <deller@gmx.de>
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170325105915.GA15188@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2017-03-25, at 6:59 AM, Helge Deller wrote:
+pa_memcpy() is the major memcpy implementation in the parisc kernel which is
+used to do any kind of userspace/kernel memory copies.
 
-> +		/*
-> +		 * Fix up get_user() and put_user().
-> +		 * ASM_EXCEPTIONTABLE_ENTRY_EFAULT() sets bit 1 to indicate
+Al Viro noticed various bugs in the implementation of pa_mempcy(), most notably
+that in case of faults it may report back to have copied more bytes than it
+actually did.
 
-Small nit - the bit set is bit 31 in .word.  Maybe "sets the least-significant bit in the relative address
-of the fixup routine".
+Fixing those bugs is quite hard in the C-implementation, because the compiler
+is messing around with the registers and we are not guaranteed that specific
+variables are always in the same processor registers. This makes proper fault
+handling complicated.
 
-Excellent simplification.
+This patch implements pa_memcpy() in assembler. That way we have correct fault
+handling and adding a 64-bit copy routine was quite easy.
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
+Runtime tested with 32- and 64bit kernels.
+
+Reported-by: Al Viro <viro@ZenIV.linux.org.uk>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: John David Anglin <dave.anglin@bell.net>
 
 
-
+diff --git a/arch/parisc/lib/lusercopy.S b/arch/parisc/lib/lusercopy.S
+index 56845de..8bcff05 100644
+--- a/arch/parisc/lib/lusercopy.S
++++ b/arch/parisc/lib/lusercopy.S
+@@ -5,6 +5,7 @@
+  *    Copyright (C) 2000 Richard Hirst <rhirst with parisc-linux.org>
+  *    Copyright (C) 2001 Matthieu Delahaye <delahaym at esiee.fr>
+  *    Copyright (C) 2003 Randolph Chung <tausq with parisc-linux.org>
++ *    Copyright (C) 2017 Helge Deller <deller@gmx.de>
+  *
+  *
+  *    This program is free software; you can redistribute it and/or modify
+@@ -132,4 +133,284 @@ ENDPROC_CFI(lstrnlen_user)
+ 
+ 	.procend
+ 
++
++
++	/*
++	 * unsigned long pa_memcpy(void *dstp, const void *srcp,
++	 *				unsigned long len)
++	 *
++	 * Inputs:
++	 * - sr1 contains space of source region
++	 * - sr2 contains space of destination region
++	 *
++	 * Returns number of bytes not transferred.
++	 * If bytes were not copied, this means either a read- or write fault
++	 * happened.
++	 */
++
++	dst = arg0
++	src = arg1
++	len = arg2
++	t1  = r19
++	t2  = r20
++	t3  = r21
++	t4  = r22
++	srcspc = sr1
++	dstspc = sr2
++
++	t0 = r1
++	a1 = t1
++	a2 = t2
++	a3 = t3
++	a0 = t4
++
++	save_src = ret0
++	save_dst = ret1
++	save_len = arg3
++
++ENTRY_CFI(pa_memcpy)
++	.proc
++	.callinfo NO_CALLS
++	.entry
++
++	/* short copy with less than 16bytes? */
++	cmpib,>>=,n 15,len,byte_loop
++
++	/* same alignment? */
++	xor	src,dst,t0
++	extru	t0,31,2,t1
++	cmpib,<>,n  0,t1,unaligned_copy
++
++#ifdef CONFIG_64BIT
++	/* only do 64bit copies if we can get aligned. */
++	extru	t0,31,3,t1
++	cmpib,<>,n  0,t1,align_loop32
++
++	/* align until we are 64bit-word-aligned */
++align_loop64:
++	extru	dst,31,3,t1
++	cmpib,=,n	0,t1,copy_loop_16
++20:	ldb,ma	1(srcspc,src),t1
++21:	stb,ma	t1,1(dstspc,dst)
++	b	align_loop64
++	ldo	-1(len),len
++
++	ASM_EXCEPTIONTABLE_ENTRY(20b,copy_done)
++	ASM_EXCEPTIONTABLE_ENTRY(21b,copy_done)
++
++	ldi	31,t0
++copy_loop_16:
++	cmpb,COND(>>=),n t0,len,word_loop
++
++10:	ldd	0(srcspc,src),t1
++11:	ldd	8(srcspc,src),t2
++12:	std	t1,0(dstspc,dst)
++13:	std	t2,8(dstspc,dst)
++	ldo	16(src),src
++	ldo	16(dst),dst
++	ldo	-16(len),len
++14:	ldd	0(srcspc,src),t3
++15:	ldd	8(srcspc,src),t4
++16:	std	t3,0(dstspc,dst)
++17:	std	t4,8(dstspc,dst)
++
++	ASM_EXCEPTIONTABLE_ENTRY(10b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(11b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(12b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(13b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(14b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(15b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(16b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(17b,byte_loop_run)
++
++	ldo	16(src),src
++	ldo	16(dst),dst
++	b	copy_loop_16
++	ldo	-16(len),len
++
++word_loop:
++	cmpib,COND(>>=),n 3,len,byte_loop
++20:	ldw,ma	4(srcspc,src),t1
++21:	stw,ma	t1,4(dstspc,dst)
++	b	word_loop
++	ldo	-4(len),len
++
++	ASM_EXCEPTIONTABLE_ENTRY(20b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(21b,byte_loop_run)
++
++#endif /* CONFIG_64BIT */
++
++	/* align until we are 32bit-word-aligned */
++align_loop32:
++	extru	dst,31,2,t1
++	cmpib,=,n	0,t1,copy_loop_4
++20:	ldb,ma	1(srcspc,src),t1
++21:	stb,ma	t1,1(dstspc,dst)
++	b	align_loop32
++	ldo	-1(len),len
++
++	ASM_EXCEPTIONTABLE_ENTRY(20b,copy_done)
++	ASM_EXCEPTIONTABLE_ENTRY(21b,copy_done)
++
++
++copy_loop_4:
++	cmpib,COND(>>=),n 15,len,byte_loop
++
++10:	ldw	0(srcspc,src),t1
++11:	ldw	4(srcspc,src),t2
++12:	ldw	8(srcspc,src),t3
++13:	ldw	12(srcspc,src),t4
++14:	stw	t1,0(dstspc,dst)
++15:	stw	t2,4(dstspc,dst)
++16:	stw	t3,8(dstspc,dst)
++17:	stw	t4,12(dstspc,dst)
++
++	ASM_EXCEPTIONTABLE_ENTRY(10b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(11b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(12b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(13b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(14b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(15b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(16b,byte_loop_run)
++	ASM_EXCEPTIONTABLE_ENTRY(17b,byte_loop_run)
++
++	ldo	16(src),src
++	ldo	16(dst),dst
++	b	copy_loop_4
++	ldo	-16(len),len
++	
++byte_loop:
++	cmpclr,COND(<>) len,%r0,%r0
++	b,n	copy_done
++byte_loop_run:
++20:	ldb,ma	1(srcspc,src),t1
++21:	stb,ma	t1,1(dstspc,dst)
++	b	byte_loop
++	ldo	-1(len),len
++
++	ASM_EXCEPTIONTABLE_ENTRY(20b,copy_done)
++	ASM_EXCEPTIONTABLE_ENTRY(21b,copy_done)
++
++copy_done:
++	bv	%r0(%r2)
++	copy	len,ret0
++
++
++	/* src and dst are not aligned the same way. */
++	/* need to go the hard way */
++unaligned_copy:
++	/* align until dst is 32bit-word-aligned */
++	extru	dst,31,2,t1
++	cmpib,COND(=),n	0,t1,copy_dstaligned
++20:	ldb,ma	1(srcspc,src),t1
++21:	stb,ma	t1,1(dstspc,dst)
++	b	unaligned_copy
++	ldo	-1(len),len
++
++	ASM_EXCEPTIONTABLE_ENTRY(20b,copy_done)
++	ASM_EXCEPTIONTABLE_ENTRY(21b,copy_done)
++
++copy_dstaligned:
++
++	/* store src, dst and len in safe place */
++	copy	src,save_src
++        copy	dst,save_dst
++	copy	len,save_len
++
++	/* len now needs give number of words to copy */
++	SHRREG	len,2,len
++
++	/*
++	 * Copy from a not-aligned src to an aligned dst using shifts.
++	 * Handles 4 words per loop.
++	 * This code is derived from glibc.
++	 */
++
++	depw,z src,28,2,t0
++	subi 32,t0,t0
++	mtsar t0
++	extru len,31,2,t0
++	cmpib,= 2,t0,.Lcase2
++	/* Make src aligned by rounding it down.  */
++	depi 0,31,2,src
++
++	cmpiclr,<> 3,t0,%r0
++	b,n .Lcase3
++	cmpiclr,<> 1,t0,%r0
++	b,n .Lcase1
++.Lcase0:
++	cmpb,= %r0,len,Lcda_finish
++	nop
++
++1:	ldw,ma 4(srcspc,src), a3
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++1:	ldw,ma 4(srcspc,src), a0
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++	b,n .Ldo3
++.Lcase1:
++1:	ldw,ma 4(srcspc,src), a2
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++1:	ldw,ma 4(srcspc,src), a3
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++	ldo -1(len),len
++	cmpb,=,n %r0,len,.Ldo0
++.Ldo4:
++1:	ldw,ma 4(srcspc,src), a0
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++	shrpw a2, a3, %sar, t0
++1:	stw,ma t0, 4(dstspc,dst)
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++.Ldo3:
++1:	ldw,ma 4(srcspc,src), a1
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++	shrpw a3, a0, %sar, t0
++1:	stw,ma t0, 4(dstspc,dst)
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++.Ldo2:
++1:	ldw,ma 4(srcspc,src), a2
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++	shrpw a0, a1, %sar, t0
++1:	stw,ma t0, 4(dstspc,dst)
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++.Ldo1:
++1:	ldw,ma 4(srcspc,src), a3
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++	shrpw a1, a2, %sar, t0
++1:	stw,ma t0, 4(dstspc,dst)
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++	ldo -4(len),len
++	cmpb,<> %r0,len,.Ldo4
++	nop
++.Ldo0:
++	shrpw a2, a3, %sar, t0
++1:	stw,ma t0, 4(dstspc,dst)
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++
++Lcda_finish:
++
++	/* calculate new src, dst and len and jump to byte-copy */
++	sub	dst,save_dst,t0
++	add	save_src,t0,src
++	b	byte_loop
++	sub	save_len,t0,len
++
++.Lcase3:
++1:	ldw,ma 4(srcspc,src), a0
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++1:	ldw,ma 4(srcspc,src), a1
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++	b .Ldo2
++	ldo 1(len),len
++.Lcase2:
++1:	ldw,ma 4(srcspc,src), a1
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++1:	ldw,ma 4(srcspc,src), a2
++	ASM_EXCEPTIONTABLE_ENTRY(1b,Lcda_finish)
++	b .Ldo1
++	ldo 2(len),len
++
++	.exit
++ENDPROC_CFI(pa_memcpy)
++	.procend
++
+ 	.end
+diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
+index f82ff10..de996e5 100644
+--- a/arch/parisc/lib/memcpy.c
++++ b/arch/parisc/lib/memcpy.c
+@@ -2,7 +2,7 @@
+  *    Optimized memory copy routines.
+  *
+  *    Copyright (C) 2004 Randolph Chung <tausq@debian.org>
+- *    Copyright (C) 2013 Helge Deller <deller@gmx.de>
++ *    Copyright (C) 2013-2017 Helge Deller <deller@gmx.de>
+  *
+  *    This program is free software; you can redistribute it and/or modify
+  *    it under the terms of the GNU General Public License as published by
+@@ -21,474 +21,21 @@
+  *    Portions derived from the GNU C Library
+  *    Copyright (C) 1991, 1997, 2003 Free Software Foundation, Inc.
+  *
+- * Several strategies are tried to try to get the best performance for various
+- * conditions. In the optimal case, we copy 64-bytes in an unrolled loop using 
+- * fp regs. This is followed by loops that copy 32- or 16-bytes at a time using
+- * general registers.  Unaligned copies are handled either by aligning the 
+- * destination and then using shift-and-write method, or in a few cases by 
+- * falling back to a byte-at-a-time copy.
+- *
+- * I chose to implement this in C because it is easier to maintain and debug,
+- * and in my experiments it appears that the C code generated by gcc (3.3/3.4
+- * at the time of writing) is fairly optimal. Unfortunately some of the 
+- * semantics of the copy routine (exception handling) is difficult to express
+- * in C, so we have to play some tricks to get it to work.
+- *
+- * All the loads and stores are done via explicit asm() code in order to use
+- * the right space registers. 
+- * 
+- * Testing with various alignments and buffer sizes shows that this code is 
+- * often >10x faster than a simple byte-at-a-time copy, even for strangely
+- * aligned operands. It is interesting to note that the glibc version
+- * of memcpy (written in C) is actually quite fast already. This routine is 
+- * able to beat it by 30-40% for aligned copies because of the loop unrolling, 
+- * but in some cases the glibc version is still slightly faster. This lends 
+- * more credibility that gcc can generate very good code as long as we are 
+- * careful.
+- *
+- * TODO:
+- * - cache prefetching needs more experimentation to get optimal settings
+- * - try not to use the post-increment address modifiers; they create additional
+- *   interlocks
+- * - replace byte-copy loops with stybs sequences
+  */
+ 
+-#ifdef __KERNEL__
+ #include <linux/module.h>
+ #include <linux/compiler.h>
+ #include <linux/uaccess.h>
+-#define s_space "%%sr1"
+-#define d_space "%%sr2"
+-#else
+-#include "memcpy.h"
+-#define s_space "%%sr0"
+-#define d_space "%%sr0"
+-#define pa_memcpy new2_copy
+-#endif
+ 
+ DECLARE_PER_CPU(struct exception_data, exception_data);
+ 
+-#define preserve_branch(label)	do {					\
+-	volatile int dummy = 0;						\
+-	/* The following branch is never taken, it's just here to  */	\
+-	/* prevent gcc from optimizing away our exception code. */ 	\
+-	if (unlikely(dummy != dummy))					\
+-		goto label;						\
+-} while (0)
+-
+ #define get_user_space() (segment_eq(get_fs(), KERNEL_DS) ? 0 : mfsp(3))
+ #define get_kernel_space() (0)
+ 
+-#define MERGE(w0, sh_1, w1, sh_2)  ({					\
+-	unsigned int _r;						\
+-	asm volatile (							\
+-	"mtsar %3\n"							\
+-	"shrpw %1, %2, %%sar, %0\n"					\
+-	: "=r"(_r)							\
+-	: "r"(w0), "r"(w1), "r"(sh_2)					\
+-	);								\
+-	_r;								\
+-})
+-#define THRESHOLD	16
+-
+-#ifdef DEBUG_MEMCPY
+-#define DPRINTF(fmt, args...) do { printk(KERN_DEBUG "%s:%d:%s ", __FILE__, __LINE__, __func__ ); printk(KERN_DEBUG fmt, ##args ); } while (0)
+-#else
+-#define DPRINTF(fmt, args...)
+-#endif
+-
+-#define def_load_ai_insn(_insn,_sz,_tt,_s,_a,_t,_e)	\
+-	__asm__ __volatile__ (				\
+-	"1:\t" #_insn ",ma " #_sz "(" _s ",%1), %0\n\t"	\
+-	ASM_EXCEPTIONTABLE_ENTRY(1b,_e)			\
+-	: _tt(_t), "+r"(_a)				\
+-	: 						\
+-	: "r8")
+-
+-#define def_store_ai_insn(_insn,_sz,_tt,_s,_a,_t,_e) 	\
+-	__asm__ __volatile__ (				\
+-	"1:\t" #_insn ",ma %1, " #_sz "(" _s ",%0)\n\t"	\
+-	ASM_EXCEPTIONTABLE_ENTRY(1b,_e)			\
+-	: "+r"(_a) 					\
+-	: _tt(_t)					\
+-	: "r8")
+-
+-#define ldbma(_s, _a, _t, _e) def_load_ai_insn(ldbs,1,"=r",_s,_a,_t,_e)
+-#define stbma(_s, _t, _a, _e) def_store_ai_insn(stbs,1,"r",_s,_a,_t,_e)
+-#define ldwma(_s, _a, _t, _e) def_load_ai_insn(ldw,4,"=r",_s,_a,_t,_e)
+-#define stwma(_s, _t, _a, _e) def_store_ai_insn(stw,4,"r",_s,_a,_t,_e)
+-#define flddma(_s, _a, _t, _e) def_load_ai_insn(fldd,8,"=f",_s,_a,_t,_e)
+-#define fstdma(_s, _t, _a, _e) def_store_ai_insn(fstd,8,"f",_s,_a,_t,_e)
+-
+-#define def_load_insn(_insn,_tt,_s,_o,_a,_t,_e) 	\
+-	__asm__ __volatile__ (				\
+-	"1:\t" #_insn " " #_o "(" _s ",%1), %0\n\t"	\
+-	ASM_EXCEPTIONTABLE_ENTRY(1b,_e)			\
+-	: _tt(_t) 					\
+-	: "r"(_a)					\
+-	: "r8")
+-
+-#define def_store_insn(_insn,_tt,_s,_t,_o,_a,_e) 	\
+-	__asm__ __volatile__ (				\
+-	"1:\t" #_insn " %0, " #_o "(" _s ",%1)\n\t" 	\
+-	ASM_EXCEPTIONTABLE_ENTRY(1b,_e)			\
+-	: 						\
+-	: _tt(_t), "r"(_a)				\
+-	: "r8")
+-
+-#define ldw(_s,_o,_a,_t,_e)	def_load_insn(ldw,"=r",_s,_o,_a,_t,_e)
+-#define stw(_s,_t,_o,_a,_e) 	def_store_insn(stw,"r",_s,_t,_o,_a,_e)
+-
+-#ifdef  CONFIG_PREFETCH
+-static inline void prefetch_src(const void *addr)
+-{
+-	__asm__("ldw 0(" s_space ",%0), %%r0" : : "r" (addr));
+-}
+-
+-static inline void prefetch_dst(const void *addr)
+-{
+-	__asm__("ldd 0(" d_space ",%0), %%r0" : : "r" (addr));
+-}
+-#else
+-#define prefetch_src(addr) do { } while(0)
+-#define prefetch_dst(addr) do { } while(0)
+-#endif
+-
+-#define PA_MEMCPY_OK		0
+-#define PA_MEMCPY_LOAD_ERROR	1
+-#define PA_MEMCPY_STORE_ERROR	2
+-
+-/* Copy from a not-aligned src to an aligned dst, using shifts. Handles 4 words
+- * per loop.  This code is derived from glibc. 
+- */
+-static noinline unsigned long copy_dstaligned(unsigned long dst,
+-					unsigned long src, unsigned long len)
+-{
+-	/* gcc complains that a2 and a3 may be uninitialized, but actually
+-	 * they cannot be.  Initialize a2/a3 to shut gcc up.
+-	 */
+-	register unsigned int a0, a1, a2 = 0, a3 = 0;
+-	int sh_1, sh_2;
+-
+-	/* prefetch_src((const void *)src); */
+-
+-	/* Calculate how to shift a word read at the memory operation
+-	   aligned srcp to make it aligned for copy.  */
+-	sh_1 = 8 * (src % sizeof(unsigned int));
+-	sh_2 = 8 * sizeof(unsigned int) - sh_1;
+-
+-	/* Make src aligned by rounding it down.  */
+-	src &= -sizeof(unsigned int);
+-
+-	switch (len % 4)
+-	{
+-		case 2:
+-			/* a1 = ((unsigned int *) src)[0];
+-			   a2 = ((unsigned int *) src)[1]; */
+-			ldw(s_space, 0, src, a1, cda_ldw_exc);
+-			ldw(s_space, 4, src, a2, cda_ldw_exc);
+-			src -= 1 * sizeof(unsigned int);
+-			dst -= 3 * sizeof(unsigned int);
+-			len += 2;
+-			goto do1;
+-		case 3:
+-			/* a0 = ((unsigned int *) src)[0];
+-			   a1 = ((unsigned int *) src)[1]; */
+-			ldw(s_space, 0, src, a0, cda_ldw_exc);
+-			ldw(s_space, 4, src, a1, cda_ldw_exc);
+-			src -= 0 * sizeof(unsigned int);
+-			dst -= 2 * sizeof(unsigned int);
+-			len += 1;
+-			goto do2;
+-		case 0:
+-			if (len == 0)
+-				return PA_MEMCPY_OK;
+-			/* a3 = ((unsigned int *) src)[0];
+-			   a0 = ((unsigned int *) src)[1]; */
+-			ldw(s_space, 0, src, a3, cda_ldw_exc);
+-			ldw(s_space, 4, src, a0, cda_ldw_exc);
+-			src -=-1 * sizeof(unsigned int);
+-			dst -= 1 * sizeof(unsigned int);
+-			len += 0;
+-			goto do3;
+-		case 1:
+-			/* a2 = ((unsigned int *) src)[0];
+-			   a3 = ((unsigned int *) src)[1]; */
+-			ldw(s_space, 0, src, a2, cda_ldw_exc);
+-			ldw(s_space, 4, src, a3, cda_ldw_exc);
+-			src -=-2 * sizeof(unsigned int);
+-			dst -= 0 * sizeof(unsigned int);
+-			len -= 1;
+-			if (len == 0)
+-				goto do0;
+-			goto do4;			/* No-op.  */
+-	}
+-
+-	do
+-	{
+-		/* prefetch_src((const void *)(src + 4 * sizeof(unsigned int))); */
+-do4:
+-		/* a0 = ((unsigned int *) src)[0]; */
+-		ldw(s_space, 0, src, a0, cda_ldw_exc);
+-		/* ((unsigned int *) dst)[0] = MERGE (a2, sh_1, a3, sh_2); */
+-		stw(d_space, MERGE (a2, sh_1, a3, sh_2), 0, dst, cda_stw_exc);
+-do3:
+-		/* a1 = ((unsigned int *) src)[1]; */
+-		ldw(s_space, 4, src, a1, cda_ldw_exc);
+-		/* ((unsigned int *) dst)[1] = MERGE (a3, sh_1, a0, sh_2); */
+-		stw(d_space, MERGE (a3, sh_1, a0, sh_2), 4, dst, cda_stw_exc);
+-do2:
+-		/* a2 = ((unsigned int *) src)[2]; */
+-		ldw(s_space, 8, src, a2, cda_ldw_exc);
+-		/* ((unsigned int *) dst)[2] = MERGE (a0, sh_1, a1, sh_2); */
+-		stw(d_space, MERGE (a0, sh_1, a1, sh_2), 8, dst, cda_stw_exc);
+-do1:
+-		/* a3 = ((unsigned int *) src)[3]; */
+-		ldw(s_space, 12, src, a3, cda_ldw_exc);
+-		/* ((unsigned int *) dst)[3] = MERGE (a1, sh_1, a2, sh_2); */
+-		stw(d_space, MERGE (a1, sh_1, a2, sh_2), 12, dst, cda_stw_exc);
+-
+-		src += 4 * sizeof(unsigned int);
+-		dst += 4 * sizeof(unsigned int);
+-		len -= 4;
+-	}
+-	while (len != 0);
+-
+-do0:
+-	/* ((unsigned int *) dst)[0] = MERGE (a2, sh_1, a3, sh_2); */
+-	stw(d_space, MERGE (a2, sh_1, a3, sh_2), 0, dst, cda_stw_exc);
+-
+-	preserve_branch(handle_load_error);
+-	preserve_branch(handle_store_error);
+-
+-	return PA_MEMCPY_OK;
+-
+-handle_load_error:
+-	__asm__ __volatile__ ("cda_ldw_exc:\n");
+-	return PA_MEMCPY_LOAD_ERROR;
+-
+-handle_store_error:
+-	__asm__ __volatile__ ("cda_stw_exc:\n");
+-	return PA_MEMCPY_STORE_ERROR;
+-}
+-
+-
+-/* Returns PA_MEMCPY_OK, PA_MEMCPY_LOAD_ERROR or PA_MEMCPY_STORE_ERROR.
+- * In case of an access fault the faulty address can be read from the per_cpu
+- * exception data struct. */
+-static noinline unsigned long pa_memcpy_internal(void *dstp, const void *srcp,
+-					unsigned long len)
+-{
+-	register unsigned long src, dst, t1, t2, t3;
+-	register unsigned char *pcs, *pcd;
+-	register unsigned int *pws, *pwd;
+-	register double *pds, *pdd;
+-	unsigned long ret;
+-
+-	src = (unsigned long)srcp;
+-	dst = (unsigned long)dstp;
+-	pcs = (unsigned char *)srcp;
+-	pcd = (unsigned char *)dstp;
+-
+-	/* prefetch_src((const void *)srcp); */
+-
+-	if (len < THRESHOLD)
+-		goto byte_copy;
+-
+-	/* Check alignment */
+-	t1 = (src ^ dst);
+-	if (unlikely(t1 & (sizeof(double)-1)))
+-		goto unaligned_copy;
+-
+-	/* src and dst have same alignment. */
+-
+-	/* Copy bytes till we are double-aligned. */
+-	t2 = src & (sizeof(double) - 1);
+-	if (unlikely(t2 != 0)) {
+-		t2 = sizeof(double) - t2;
+-		while (t2 && len) {
+-			/* *pcd++ = *pcs++; */
+-			ldbma(s_space, pcs, t3, pmc_load_exc);
+-			len--;
+-			stbma(d_space, t3, pcd, pmc_store_exc);
+-			t2--;
+-		}
+-	}
+-
+-	pds = (double *)pcs;
+-	pdd = (double *)pcd;
+-
+-#if 0
+-	/* Copy 8 doubles at a time */
+-	while (len >= 8*sizeof(double)) {
+-		register double r1, r2, r3, r4, r5, r6, r7, r8;
+-		/* prefetch_src((char *)pds + L1_CACHE_BYTES); */
+-		flddma(s_space, pds, r1, pmc_load_exc);
+-		flddma(s_space, pds, r2, pmc_load_exc);
+-		flddma(s_space, pds, r3, pmc_load_exc);
+-		flddma(s_space, pds, r4, pmc_load_exc);
+-		fstdma(d_space, r1, pdd, pmc_store_exc);
+-		fstdma(d_space, r2, pdd, pmc_store_exc);
+-		fstdma(d_space, r3, pdd, pmc_store_exc);
+-		fstdma(d_space, r4, pdd, pmc_store_exc);
+-
+-#if 0
+-		if (L1_CACHE_BYTES <= 32)
+-			prefetch_src((char *)pds + L1_CACHE_BYTES);
+-#endif
+-		flddma(s_space, pds, r5, pmc_load_exc);
+-		flddma(s_space, pds, r6, pmc_load_exc);
+-		flddma(s_space, pds, r7, pmc_load_exc);
+-		flddma(s_space, pds, r8, pmc_load_exc);
+-		fstdma(d_space, r5, pdd, pmc_store_exc);
+-		fstdma(d_space, r6, pdd, pmc_store_exc);
+-		fstdma(d_space, r7, pdd, pmc_store_exc);
+-		fstdma(d_space, r8, pdd, pmc_store_exc);
+-		len -= 8*sizeof(double);
+-	}
+-#endif
+-
+-	pws = (unsigned int *)pds;
+-	pwd = (unsigned int *)pdd;
+-
+-word_copy:
+-	while (len >= 8*sizeof(unsigned int)) {
+-		register unsigned int r1,r2,r3,r4,r5,r6,r7,r8;
+-		/* prefetch_src((char *)pws + L1_CACHE_BYTES); */
+-		ldwma(s_space, pws, r1, pmc_load_exc);
+-		ldwma(s_space, pws, r2, pmc_load_exc);
+-		ldwma(s_space, pws, r3, pmc_load_exc);
+-		ldwma(s_space, pws, r4, pmc_load_exc);
+-		stwma(d_space, r1, pwd, pmc_store_exc);
+-		stwma(d_space, r2, pwd, pmc_store_exc);
+-		stwma(d_space, r3, pwd, pmc_store_exc);
+-		stwma(d_space, r4, pwd, pmc_store_exc);
+-
+-		ldwma(s_space, pws, r5, pmc_load_exc);
+-		ldwma(s_space, pws, r6, pmc_load_exc);
+-		ldwma(s_space, pws, r7, pmc_load_exc);
+-		ldwma(s_space, pws, r8, pmc_load_exc);
+-		stwma(d_space, r5, pwd, pmc_store_exc);
+-		stwma(d_space, r6, pwd, pmc_store_exc);
+-		stwma(d_space, r7, pwd, pmc_store_exc);
+-		stwma(d_space, r8, pwd, pmc_store_exc);
+-		len -= 8*sizeof(unsigned int);
+-	}
+-
+-	while (len >= 4*sizeof(unsigned int)) {
+-		register unsigned int r1,r2,r3,r4;
+-		ldwma(s_space, pws, r1, pmc_load_exc);
+-		ldwma(s_space, pws, r2, pmc_load_exc);
+-		ldwma(s_space, pws, r3, pmc_load_exc);
+-		ldwma(s_space, pws, r4, pmc_load_exc);
+-		stwma(d_space, r1, pwd, pmc_store_exc);
+-		stwma(d_space, r2, pwd, pmc_store_exc);
+-		stwma(d_space, r3, pwd, pmc_store_exc);
+-		stwma(d_space, r4, pwd, pmc_store_exc);
+-		len -= 4*sizeof(unsigned int);
+-	}
+-
+-	pcs = (unsigned char *)pws;
+-	pcd = (unsigned char *)pwd;
+-
+-byte_copy:
+-	while (len) {
+-		/* *pcd++ = *pcs++; */
+-		ldbma(s_space, pcs, t3, pmc_load_exc);
+-		stbma(d_space, t3, pcd, pmc_store_exc);
+-		len--;
+-	}
+-
+-	return PA_MEMCPY_OK;
+-
+-unaligned_copy:
+-	/* possibly we are aligned on a word, but not on a double... */
+-	if (likely((t1 & (sizeof(unsigned int)-1)) == 0)) {
+-		t2 = src & (sizeof(unsigned int) - 1);
+-
+-		if (unlikely(t2 != 0)) {
+-			t2 = sizeof(unsigned int) - t2;
+-			while (t2) {
+-				/* *pcd++ = *pcs++; */
+-				ldbma(s_space, pcs, t3, pmc_load_exc);
+-				stbma(d_space, t3, pcd, pmc_store_exc);
+-				len--;
+-				t2--;
+-			}
+-		}
+-
+-		pws = (unsigned int *)pcs;
+-		pwd = (unsigned int *)pcd;
+-		goto word_copy;
+-	}
+-
+-	/* Align the destination.  */
+-	if (unlikely((dst & (sizeof(unsigned int) - 1)) != 0)) {
+-		t2 = sizeof(unsigned int) - (dst & (sizeof(unsigned int) - 1));
+-		while (t2) {
+-			/* *pcd++ = *pcs++; */
+-			ldbma(s_space, pcs, t3, pmc_load_exc);
+-			stbma(d_space, t3, pcd, pmc_store_exc);
+-			len--;
+-			t2--;
+-		}
+-		dst = (unsigned long)pcd;
+-		src = (unsigned long)pcs;
+-	}
+-
+-	ret = copy_dstaligned(dst, src, len / sizeof(unsigned int));
+-	if (ret)
+-		return ret;
+-
+-	pcs += (len & -sizeof(unsigned int));
+-	pcd += (len & -sizeof(unsigned int));
+-	len %= sizeof(unsigned int);
+-
+-	preserve_branch(handle_load_error);
+-	preserve_branch(handle_store_error);
+-
+-	goto byte_copy;
+-
+-handle_load_error:
+-	__asm__ __volatile__ ("pmc_load_exc:\n");
+-	return PA_MEMCPY_LOAD_ERROR;
+-
+-handle_store_error:
+-	__asm__ __volatile__ ("pmc_store_exc:\n");
+-	return PA_MEMCPY_STORE_ERROR;
+-}
+-
+-
+ /* Returns 0 for success, otherwise, returns number of bytes not transferred. */
+-static unsigned long pa_memcpy(void *dstp, const void *srcp, unsigned long len)
+-{
+-	unsigned long ret, fault_addr, reference;
+-	struct exception_data *d;
+-
+-	ret = pa_memcpy_internal(dstp, srcp, len);
+-	if (likely(ret == PA_MEMCPY_OK))
+-		return 0;
+-
+-	/* if a load or store fault occured we can get the faulty addr */
+-	d = this_cpu_ptr(&exception_data);
+-	fault_addr = d->fault_addr;
+-
+-	/* error in load or store? */
+-	if (ret == PA_MEMCPY_LOAD_ERROR)
+-		reference = (unsigned long) srcp;
+-	else
+-		reference = (unsigned long) dstp;
+-
+-	DPRINTF("pa_memcpy: fault type = %lu, len=%lu fault_addr=%lu ref=%lu\n",
+-		ret, len, fault_addr, reference);
