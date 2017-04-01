@@ -1,69 +1,55 @@
-From: <askeeta@canadiannorth.com>
-Subject: 14770 linux-parisc
-Date: Fri, 31 Mar 2017 23:53:52 -0000
-Message-ID: <149100443209.6121.174125631946998510@jupiter.com.br>
-Reply-To: <askeeta@canadiannorth.com>
-Mime-Version: 1.0
-Content-Type: application/zip; name="8390.zip"
-To: "linux-parisc" <linux-parisc@vger.kernel.org>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: unshare (CLONE_NEWUTS)
+Date: Sat, 1 Apr 2017 12:08:28 -0400
+Message-ID: <74D018A3-5DD0-44EB-8D05-CEF787666249@bell.net>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Type: multipart/mixed; boundary=Apple-Mail-28--492883039
+Cc: Helge Deller <deller@gmx.de>
+To: "linux-parisc@vger.kernel.org List" <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-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
-AQABAE8AAAAhDAAAAAA=
+
+--Apple-Mail-28--492883039
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
+
+We don't seem to support unshare (CLONE_NEWUTS):
+
+dave@mx3210:~/unshare$ ./unshare
+warning: unshare (CLONE_NEWUTS) failed: Operation not permitted
+dave@mx3210:~/unshare$ su
+Password: 
+mx3210:/home/dave/unshare# ./unshare
+warning: unshare (CLONE_NEWUTS) failed: Invalid argument
+
+This appears to cause a couple of glibc tests on trunk to fail.
+
+Dave
+--
+John David Anglin	dave.anglin@bell.net
+
+
+
+--Apple-Mail-28--492883039
+Content-Disposition: attachment;
+	filename=unshare.c
+Content-Type: application/octet-stream;
+	name="unshare.c"
+Content-Transfer-Encoding: 7bit
+
+#define _GNU_SOURCE
+#include <sched.h>
+#include <stdio.h>
+#include <unistd.h>
+int
+main (void)
+{
+  if (unshare (CLONE_NEWUTS) != 0)
+    printf ("warning: unshare (CLONE_NEWUTS) failed: %m\n");
+  return 0;
+}
+
+--Apple-Mail-28--492883039--
