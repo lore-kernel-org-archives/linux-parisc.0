@@ -1,51 +1,60 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: mmap problem in localedef
-Date: Sat, 01 Apr 2017 20:41:05 +0200
-Message-ID: <2241815.7QkIsKQeSs@daneel.sf-tec.de>
-References: <alpine.LRH.2.20.1612051330040.25582@math.ut.ee> <9B251251-04AB-4D78-ADD7-F0D429DEB761@bell.net> <20170401183717.jpvilw2u4lgiceuv@raspberrypi-3.musicnaut.iki.fi>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc architecture fixes for 4.11-rc5
+Date: Sat, 1 Apr 2017 21:10:31 +0200
+Message-ID: <20170401191031.GA18005@ls3530.fritz.box>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1701228.aTp4a23PSd"; micalg="pgp-"; protocol="application/pgp-signature"
-Cc: John David Anglin <dave.anglin@bell.net>,
-        Meelis Roos <mroos@linux.ee>, linux-parisc@vger.kernel.org
-To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Content-Type: text/plain; charset=us-ascii
+Cc: Al Viro <viro@ZenIV.linux.org.uk>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170401183717.jpvilw2u4lgiceuv@raspberrypi-3.musicnaut.iki.fi>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---nextPart1701228.aTp4a23PSd
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Hi Linus,
 
-Aaro Koskinen wrote:
-> Hi,
-> 
-> On Mon, Dec 05, 2016 at 06:50:57PM -0500, John David Anglin wrote:
-> > On 2016-12-05, at 4:17 PM, John David Anglin wrote:
-> > > I'll post the current Debian patch set for hppa tonight and maybe we can
-> > > consolidate.
-> 
-> [...]
-> 
-> > We still have a change to SHMLBA which affects non standard page sizes.
-> 
-> FWIW, this is the one (local-shmlba.diff) that is needed to get localedef
-> working on PA-RISC. I just tested with glibc 2.25 and Linux 4.10 with 4 KB
-> page size.
+Please pull three fixes for the parisc architecture for v4.11-rc5 from
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.11-3
 
-Missing attachment?
---nextPart1701228.aTp4a23PSd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+Al Viro reported that - in case of read faults - our copy_from_user()
+implementation may claim to have copied more bytes than it actually did. In
+order to fix this bug and because of the way how gcc optimizes register usage
+for inline assembly in C code, we had to replace our pa_memcpy() function with
+a pure assembler implementation.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+While fixing the memcpy bug we noticed some other issues with our get_user()
+and put_user() functions, e.g. nested faults may return wrong data. This is now
+fixed by a common fixup handler for get_user/put_user in the exception handler
+which additionally makes generated code smaller and faster.
 
-iEYEABECAAYFAljf9EYACgkQXKSJPmm5/E78mACeMvoGT4njfAzyH6f+4J/d2sqe
-vZwAoIu4kpUOZPKOg9aK7KwEIv9weiP2
-=evJr
------END PGP SIGNATURE-----
+The third patch is a trivial one-line fix for a patch which went in during
+4.11-rc and which avoids stalled CPU warnings after power shutdown (for parisc
+machines which can't plug power off themselves).
 
---nextPart1701228.aTp4a23PSd--
+Due to the rewrite of pa_memcpy() into assembly this patch got bigger than what
+I wanted to have sent at this stage.
 
+Those patches have been running in production during the last few days on our
+debian build servers without any further issues.
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Helge Deller (3):
+      parisc: Fix access fault handling in pa_memcpy()
+      parisc: Clean up fixup routines for get_user()/put_user()
+      parisc: Avoid stalled CPU warnings after system shutdown
+
+ arch/parisc/include/asm/uaccess.h |  59 ++---
+ arch/parisc/kernel/parisc_ksyms.c |  10 -
+ arch/parisc/kernel/process.c      |   2 +
+ arch/parisc/lib/Makefile          |   2 +-
+ arch/parisc/lib/fixup.S           |  98 --------
+ arch/parisc/lib/lusercopy.S       | 318 ++++++++++++++++++++++++++
+ arch/parisc/lib/memcpy.c          | 461 +-------------------------------------
+ arch/parisc/mm/fault.c            |  17 ++
+ 8 files changed, 375 insertions(+), 592 deletions(-)
+ delete mode 100644 arch/parisc/lib/fixup.S
