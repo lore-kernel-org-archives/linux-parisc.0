@@ -1,60 +1,54 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture fixes for 4.11-rc5
-Date: Sat, 1 Apr 2017 21:10:31 +0200
-Message-ID: <20170401191031.GA18005@ls3530.fritz.box>
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: Re: mmap problem in localedef
+Date: Sat, 1 Apr 2017 22:10:23 +0300
+Message-ID: <20170401191023.xpf32zopaecd7dzy@raspberrypi-3.musicnaut.iki.fi>
+References: <alpine.LRH.2.20.1612051330040.25582@math.ut.ee>
+ <9B251251-04AB-4D78-ADD7-F0D429DEB761@bell.net>
+ <20170401183717.jpvilw2u4lgiceuv@raspberrypi-3.musicnaut.iki.fi>
+ <2241815.7QkIsKQeSs@daneel.sf-tec.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Al Viro <viro@ZenIV.linux.org.uk>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Cc: John David Anglin <dave.anglin@bell.net>,
+        Meelis Roos <mroos@linux.ee>, linux-parisc@vger.kernel.org
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <2241815.7QkIsKQeSs@daneel.sf-tec.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+Hi,
 
-Please pull three fixes for the parisc architecture for v4.11-rc5 from
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.11-3
+On Sat, Apr 01, 2017 at 08:41:05PM +0200, Rolf Eike Beer wrote:
+> Aaro Koskinen wrote:
+> > On Mon, Dec 05, 2016 at 06:50:57PM -0500, John David Anglin wrote:
+> > > On 2016-12-05, at 4:17 PM, John David Anglin wrote:
+> > > > I'll post the current Debian patch set for hppa tonight and maybe we can
+> > > > consolidate.
+> > 
+> > [...]
+> > 
+> > > We still have a change to SHMLBA which affects non standard page sizes.
+> > 
+> > FWIW, this is the one (local-shmlba.diff) that is needed to get localedef
+> > working on PA-RISC. I just tested with glibc 2.25 and Linux 4.10 with 4 KB
+> > page size.
+> 
+> Missing attachment?
 
-Al Viro reported that - in case of read faults - our copy_from_user()
-implementation may claim to have copied more bytes than it actually did. In
-order to fix this bug and because of the way how gcc optimizes register usage
-for inline assembly in C code, we had to replace our pa_memcpy() function with
-a pure assembler implementation.
+It was attached to Dave's original mail. Inlined below:
 
-While fixing the memcpy bug we noticed some other issues with our get_user()
-and put_user() functions, e.g. nested faults may return wrong data. This is now
-fixed by a common fixup handler for get_user/put_user in the exception handler
-which additionally makes generated code smaller and faster.
+Index: eglibc-2.18/sysdeps/unix/sysv/linux/hppa/bits/shm.h
+===================================================================
+--- eglibc-2.18.orig/sysdeps/unix/sysv/linux/hppa/bits/shm.h	2013-01-09 19:28:48.000000000 -0500
++++ eglibc-2.18/sysdeps/unix/sysv/linux/hppa/bits/shm.h	2014-04-09 21:08:06.516202583 -0400
+@@ -36,7 +36,7 @@
+ #define SHM_UNLOCK	12		/* unlock segment (root only) */
+ 
+ /* Segment low boundary address multiple.  */
+-#define SHMLBA 0x00400000		/* address needs to be 4 Mb aligned */
++#define SHMLBA		(__getpagesize ())
+ 
+ /* Type to count number of attaches.  */
+ typedef unsigned long int shmatt_t;
 
-The third patch is a trivial one-line fix for a patch which went in during
-4.11-rc and which avoids stalled CPU warnings after power shutdown (for parisc
-machines which can't plug power off themselves).
-
-Due to the rewrite of pa_memcpy() into assembly this patch got bigger than what
-I wanted to have sent at this stage.
-
-Those patches have been running in production during the last few days on our
-debian build servers without any further issues.
-
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Helge Deller (3):
-      parisc: Fix access fault handling in pa_memcpy()
-      parisc: Clean up fixup routines for get_user()/put_user()
-      parisc: Avoid stalled CPU warnings after system shutdown
-
- arch/parisc/include/asm/uaccess.h |  59 ++---
- arch/parisc/kernel/parisc_ksyms.c |  10 -
- arch/parisc/kernel/process.c      |   2 +
- arch/parisc/lib/Makefile          |   2 +-
- arch/parisc/lib/fixup.S           |  98 --------
- arch/parisc/lib/lusercopy.S       | 318 ++++++++++++++++++++++++++
- arch/parisc/lib/memcpy.c          | 461 +-------------------------------------
- arch/parisc/mm/fault.c            |  17 ++
- 8 files changed, 375 insertions(+), 592 deletions(-)
- delete mode 100644 arch/parisc/lib/fixup.S
+A.
