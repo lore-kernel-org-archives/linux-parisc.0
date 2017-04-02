@@ -1,63 +1,80 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: mmap problem in localedef
-Date: Sun, 2 Apr 2017 10:08:59 -0400
-Message-ID: <59CDF2DE-076C-4BC0-8381-CE31A2AA8F56@bell.net>
-References: <alpine.LRH.2.20.1612051330040.25582@math.ut.ee> <9B251251-04AB-4D78-ADD7-F0D429DEB761@bell.net> <20170401183717.jpvilw2u4lgiceuv@raspberrypi-3.musicnaut.iki.fi> <2241815.7QkIsKQeSs@daneel.sf-tec.de> <20170401191023.xpf32zopaecd7dzy@raspberrypi-3.musicnaut.iki.fi>
-Mime-Version: 1.0 (Apple Message framework v1085)
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Drop per-CPU exception_data struct dropped.
+Date: Sun, 2 Apr 2017 16:51:58 +0200
+Message-ID: <20170402145158.GA31702@ls3530.fritz.box>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        Meelis Roos <mroos@linux.ee>, linux-parisc@vger.kernel.org
-To: Aaro Koskinen <aaro.koskinen@iki.fi>
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170401191023.xpf32zopaecd7dzy@raspberrypi-3.musicnaut.iki.fi>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2017-04-01, at 3:10 PM, Aaro Koskinen wrote:
+The only users have been migrated off by commits d19f5e41b344 ("parisc:
+Clean up fixup routines for get_user()/put_user()") and 554bfeceb8a2
+("parisc: Fix access fault handling in pa_memcpy()").
 
-> Hi,
-> 
-> On Sat, Apr 01, 2017 at 08:41:05PM +0200, Rolf Eike Beer wrote:
->> Aaro Koskinen wrote:
->>> On Mon, Dec 05, 2016 at 06:50:57PM -0500, John David Anglin wrote:
->>>> On 2016-12-05, at 4:17 PM, John David Anglin wrote:
->>>>> I'll post the current Debian patch set for hppa tonight and maybe we can
->>>>> consolidate.
->>> 
->>> [...]
->>> 
->>>> We still have a change to SHMLBA which affects non standard page sizes.
->>> 
->>> FWIW, this is the one (local-shmlba.diff) that is needed to get localedef
->>> working on PA-RISC. I just tested with glibc 2.25 and Linux 4.10 with 4 KB
->>> page size.
->> 
->> Missing attachment?
-> 
-> It was attached to Dave's original mail. Inlined below:
-> 
-> Index: eglibc-2.18/sysdeps/unix/sysv/linux/hppa/bits/shm.h
-> ===================================================================
-> --- eglibc-2.18.orig/sysdeps/unix/sysv/linux/hppa/bits/shm.h	2013-01-09 19:28:48.000000000 -0500
-> +++ eglibc-2.18/sysdeps/unix/sysv/linux/hppa/bits/shm.h	2014-04-09 21:08:06.516202583 -0400
-> @@ -36,7 +36,7 @@
-> #define SHM_UNLOCK	12		/* unlock segment (root only) */
-> 
-> /* Segment low boundary address multiple.  */
-> -#define SHMLBA 0x00400000		/* address needs to be 4 Mb aligned */
-> +#define SHMLBA		(__getpagesize ())
-> 
-> /* Type to count number of attaches.  */
-> typedef unsigned long int shmatt_t;
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-This patch goes back to the following discussion:
-https://patchwork.kernel.org/patch/3933841/
-
-As far as I can tell, it was not submitted to the glibc list, nor is there a bug report regarding localedef.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
+index 8442727..04cb974 100644
+--- a/arch/parisc/include/asm/uaccess.h
++++ b/arch/parisc/include/asm/uaccess.h
+@@ -74,17 +74,6 @@ struct exception_table_entry {
+ 	ASM_EXCEPTIONTABLE_ENTRY( fault_addr, except_addr + 1)
+ 
+ /*
+- * The page fault handler stores, in a per-cpu area, the following information
+- * if a fixup routine is available.
+- */
+-struct exception_data {
+-	unsigned long fault_ip;
+-	unsigned long fault_gp;
+-	unsigned long fault_space;
+-	unsigned long fault_addr;
+-};
+-
+-/*
+  * load_sr2() preloads the space register %%sr2 - based on the value of
+  * get_fs() - with either a value of 0 to access kernel space (KERNEL_DS which
+  * is 0), or with the current value of %%sr3 to access user space (USER_DS)
+diff --git a/arch/parisc/kernel/asm-offsets.c b/arch/parisc/kernel/asm-offsets.c
+index 1c4fe61..dfff8a0 100644
+--- a/arch/parisc/kernel/asm-offsets.c
++++ b/arch/parisc/kernel/asm-offsets.c
+@@ -298,11 +298,6 @@ int main(void)
+ 	DEFINE(HUGEPAGE_SIZE, PAGE_SIZE);
+ #endif
+ 	BLANK();
+-	DEFINE(EXCDATA_IP, offsetof(struct exception_data, fault_ip));
+-	DEFINE(EXCDATA_GP, offsetof(struct exception_data, fault_gp));
+-	DEFINE(EXCDATA_SPACE, offsetof(struct exception_data, fault_space));
+-	DEFINE(EXCDATA_ADDR, offsetof(struct exception_data, fault_addr));
+-	BLANK();
+ 	DEFINE(ASM_PDC_RESULT_SIZE, NUM_PDC_RESULT * sizeof(unsigned long));
+ 	BLANK();
+ 	return 0;
+diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+index 32ec221..fdc34cf 100644
+--- a/arch/parisc/mm/fault.c
++++ b/arch/parisc/mm/fault.c
+@@ -29,8 +29,6 @@
+ #define BITSSET		0x1c0	/* for identifying LDCW */
+ 
+ 
+-DEFINE_PER_CPU(struct exception_data, exception_data);
+-
+ int show_unhandled_signals = 1;
+ 
+ /*
+@@ -143,13 +141,6 @@ int fixup_exception(struct pt_regs *regs)
+ 
+ 	fix = search_exception_tables(regs->iaoq[0]);
+ 	if (fix) {
+-		struct exception_data *d;
+-		d = this_cpu_ptr(&exception_data);
+-		d->fault_ip = regs->iaoq[0];
+-		d->fault_gp = regs->gr[27];
+-		d->fault_space = regs->isr;
+-		d->fault_addr = regs->ior;
