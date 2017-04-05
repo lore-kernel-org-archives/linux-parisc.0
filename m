@@ -1,73 +1,249 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: mmap problem in localedef
-Date: Sun, 2 Apr 2017 17:45:34 -0400
-Message-ID: <AF2BAE69-BC0C-4FDE-9B65-D15AC5FB0960@bell.net>
-References: <alpine.LRH.2.20.1612051330040.25582@math.ut.ee> <9B251251-04AB-4D78-ADD7-F0D429DEB761@bell.net> <20170401183717.jpvilw2u4lgiceuv@raspberrypi-3.musicnaut.iki.fi> <2241815.7QkIsKQeSs@daneel.sf-tec.de> <20170401191023.xpf32zopaecd7dzy@raspberrypi-3.musicnaut.iki.fi> <59CDF2DE-076C-4BC0-8381-CE31A2AA8F56@bell.net> <20170402191245.odedqsqcx2cp5xtt@raspberrypi-3.musicnaut.iki.fi> <C5E87DDC-4792-483B-835F-C396A4067174@bell.net>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: text/plain; charset=us-ascii
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>, Helge Deller <deller@gmx.de>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        Meelis Roos <mroos@linux.ee>,
-        "linux-parisc@vger.kernel.org List" <linux-parisc@vger.kernel.org>,
-        Carlos O'Donell <carlos@redhat.com>
-To: John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <C5E87DDC-4792-483B-835F-C396A4067174@bell.net>
-List-ID: <linux-parisc.vger.kernel.org>
+From: David Howells <dhowells@redhat.com>
+Subject: [PATCH 19/38] Annotate hardware config module parameters in
+ drivers/net/ethernet/
+Date: Wed, 05 Apr 2017 17:59:39 +0100
+Message-ID: <149141157961.29162.16197434822666566656.stgit@warthog.procyon.org.uk>
+References: <149141141298.29162.5612793122429261720.stgit@warthog.procyon.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Cc: gnomes@lxorguk.ukuu.org.uk,
+        Steffen Klassert <klassert@mathematik.tu-chemnitz.de>,
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        Jaroslav Kysela <perex@perex.cz>, dhowells@redhat.com,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        gregkh@linuxfoundation.org
+To: linux-kernel@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <149141141298.29162.5612793122429261720.stgit@warthog.procyon.org.uk>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2017-04-02, at 3:49 PM, John David Anglin wrote:
+When the kernel is running in secure boot mode, we lock down the kernel to
+prevent userspace from modifying the running kernel image.  Whilst this
+includes prohibiting access to things like /dev/mem, it must also prevent
+access by means of configuring driver modules in such a way as to cause a
+device to access or modify the kernel image.
 
-> On 2017-04-02, at 3:12 PM, Aaro Koskinen wrote:
-> 
->> Hi,
->> 
->> On Sun, Apr 02, 2017 at 10:08:59AM -0400, John David Anglin wrote:
->>> On 2017-04-01, at 3:10 PM, Aaro Koskinen wrote:
->>>> It was attached to Dave's original mail. Inlined below:
->>>> 
->>>> Index: eglibc-2.18/sysdeps/unix/sysv/linux/hppa/bits/shm.h
->>>> ===================================================================
->>>> --- eglibc-2.18.orig/sysdeps/unix/sysv/linux/hppa/bits/shm.h	2013-01-09 19:28:48.000000000 -0500
->>>> +++ eglibc-2.18/sysdeps/unix/sysv/linux/hppa/bits/shm.h	2014-04-09 21:08:06.516202583 -0400
->>>> @@ -36,7 +36,7 @@
->>>> #define SHM_UNLOCK	12		/* unlock segment (root only) */
->>>> 
->>>> /* Segment low boundary address multiple.  */
->>>> -#define SHMLBA 0x00400000		/* address needs to be 4 Mb aligned */
->>>> +#define SHMLBA		(__getpagesize ())
->>>> 
->>>> /* Type to count number of attaches.  */
->>>> typedef unsigned long int shmatt_t;
->>> 
->>> This patch goes back to the following discussion:
->>> https://patchwork.kernel.org/patch/3933841/
->>> 
->>> As far as I can tell, it was not submitted to the glibc list, nor is
->>> there a bug report regarding localedef.
->> 
->> glibc bug report: https://sourceware.org/bugzilla/show_bug.cgi?id=19838
-> 
-> 
-> Helge, would you send this change to glibc list?  If you already sent it, would you do a ping?
+To this end, annotate module_param* statements that refer to hardware
+configuration and indicate for future reference what type of parameter they
+specify.  The parameter parser in the core sees this information and can
+skip such parameters with an error message if the kernel is locked down.
+The module initialisation then runs as normal, but just sees whatever the
+default values for those parameters is.
 
-Actually, I see from further research that I'm to blame:
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=725508
+Note that we do still need to do the module initialisation because some
+drivers have viable defaults set in case parameters aren't specified and
+some drivers support automatic configuration (e.g. PNP or PCI) in addition
+to manually coded parameters.
 
-Your bug report was here:
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=741243
+This patch annotates drivers in drivers/net/ethernet/.
 
-> 
-> You are in the best position to explain why this value should be page size and not 4MB.  It would be good to note
-> in BZ where patch is on list.
+Suggested-by: Alan Cox <gnomes@lxorguk.ukuu.org.uk>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Steffen Klassert <klassert@mathematik.tu-chemnitz.de>
+cc: Jaroslav Kysela <perex@perex.cz>
+cc: netdev@vger.kernel.org
+cc: linux-parisc@vger.kernel.org
+---
 
-Given the inequivalent alias messages which may have come from glibc testsuite, I'm not sure we have this right.
-It seems like the kernel is not sharing pages in ld-2.24.so correctly.  The text and data in the file appear correctly
-aligned on page boundaries.
+ drivers/net/ethernet/3com/3c509.c      |    2 +-
+ drivers/net/ethernet/3com/3c59x.c      |    4 ++--
+ drivers/net/ethernet/8390/ne.c         |    4 ++--
+ drivers/net/ethernet/8390/smc-ultra.c  |    4 ++--
+ drivers/net/ethernet/8390/wd.c         |    8 ++++----
+ drivers/net/ethernet/amd/lance.c       |    6 +++---
+ drivers/net/ethernet/amd/ni65.c        |    6 +++---
+ drivers/net/ethernet/cirrus/cs89x0.c   |    6 +++---
+ drivers/net/ethernet/dec/tulip/de4x5.c |    2 +-
+ drivers/net/ethernet/hp/hp100.c        |    2 +-
+ drivers/net/ethernet/realtek/atp.c     |    4 ++--
+ drivers/net/ethernet/smsc/smc9194.c    |    4 ++--
+ 12 files changed, 26 insertions(+), 26 deletions(-)
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+diff --git a/drivers/net/ethernet/3com/3c509.c b/drivers/net/ethernet/3com/3c509.c
+index c7f9f2c77da7..db8592d412ab 100644
+--- a/drivers/net/ethernet/3com/3c509.c
++++ b/drivers/net/ethernet/3com/3c509.c
+@@ -1371,7 +1371,7 @@ el3_resume(struct device *pdev)
+ #endif /* CONFIG_PM */
+ 
+ module_param(debug,int, 0);
+-module_param_array(irq, int, NULL, 0);
++module_param_hw_array(irq, int, irq, NULL, 0);
+ module_param(max_interrupt_work, int, 0);
+ MODULE_PARM_DESC(debug, "debug level (0-6)");
+ MODULE_PARM_DESC(irq, "IRQ number(s) (assigned)");
+diff --git a/drivers/net/ethernet/3com/3c59x.c b/drivers/net/ethernet/3com/3c59x.c
+index 40196f41768a..e41245a54f8b 100644
+--- a/drivers/net/ethernet/3com/3c59x.c
++++ b/drivers/net/ethernet/3com/3c59x.c
+@@ -813,8 +813,8 @@ module_param(global_enable_wol, int, 0);
+ module_param_array(enable_wol, int, NULL, 0);
+ module_param(rx_copybreak, int, 0);
+ module_param(max_interrupt_work, int, 0);
+-module_param(compaq_ioaddr, int, 0);
+-module_param(compaq_irq, int, 0);
++module_param_hw(compaq_ioaddr, int, ioport, 0);
++module_param_hw(compaq_irq, int, irq, 0);
+ module_param(compaq_device_id, int, 0);
+ module_param(watchdog, int, 0);
+ module_param(global_use_mmio, int, 0);
+diff --git a/drivers/net/ethernet/8390/ne.c b/drivers/net/ethernet/8390/ne.c
+index c063b410a163..66f47987e2a2 100644
+--- a/drivers/net/ethernet/8390/ne.c
++++ b/drivers/net/ethernet/8390/ne.c
+@@ -74,8 +74,8 @@ static int bad[MAX_NE_CARDS];
+ static u32 ne_msg_enable;
+ 
+ #ifdef MODULE
+-module_param_array(io, int, NULL, 0);
+-module_param_array(irq, int, NULL, 0);
++module_param_hw_array(io, int, ioport, NULL, 0);
++module_param_hw_array(irq, int, irq, NULL, 0);
+ module_param_array(bad, int, NULL, 0);
+ module_param_named(msg_enable, ne_msg_enable, uint, (S_IRUSR|S_IRGRP|S_IROTH));
+ MODULE_PARM_DESC(io, "I/O base address(es),required");
+diff --git a/drivers/net/ethernet/8390/smc-ultra.c b/drivers/net/ethernet/8390/smc-ultra.c
+index 364b6514f65f..4e02f6a23575 100644
+--- a/drivers/net/ethernet/8390/smc-ultra.c
++++ b/drivers/net/ethernet/8390/smc-ultra.c
+@@ -561,8 +561,8 @@ static struct net_device *dev_ultra[MAX_ULTRA_CARDS];
+ static int io[MAX_ULTRA_CARDS];
+ static int irq[MAX_ULTRA_CARDS];
+ 
+-module_param_array(io, int, NULL, 0);
+-module_param_array(irq, int, NULL, 0);
++module_param_hw_array(io, int, ioport, NULL, 0);
++module_param_hw_array(irq, int, irq, NULL, 0);
+ module_param_named(msg_enable, ultra_msg_enable, uint, (S_IRUSR|S_IRGRP|S_IROTH));
+ MODULE_PARM_DESC(io, "I/O base address(es)");
+ MODULE_PARM_DESC(irq, "IRQ number(s) (assigned)");
+diff --git a/drivers/net/ethernet/8390/wd.c b/drivers/net/ethernet/8390/wd.c
+index ad019cbc698f..6efa2722f850 100644
+--- a/drivers/net/ethernet/8390/wd.c
++++ b/drivers/net/ethernet/8390/wd.c
+@@ -503,10 +503,10 @@ static int irq[MAX_WD_CARDS];
+ static int mem[MAX_WD_CARDS];
+ static int mem_end[MAX_WD_CARDS];	/* for non std. mem size */
+ 
+-module_param_array(io, int, NULL, 0);
+-module_param_array(irq, int, NULL, 0);
+-module_param_array(mem, int, NULL, 0);
+-module_param_array(mem_end, int, NULL, 0);
++module_param_hw_array(io, int, ioport, NULL, 0);
++module_param_hw_array(irq, int, irq, NULL, 0);
++module_param_hw_array(mem, int, iomem, NULL, 0);
++module_param_hw_array(mem_end, int, iomem, NULL, 0);
+ module_param_named(msg_enable, wd_msg_enable, uint, (S_IRUSR|S_IRGRP|S_IROTH));
+ MODULE_PARM_DESC(io, "I/O base address(es)");
+ MODULE_PARM_DESC(irq, "IRQ number(s) (ignored for PureData boards)");
+diff --git a/drivers/net/ethernet/amd/lance.c b/drivers/net/ethernet/amd/lance.c
+index 61a641f23149..12a6a93d221b 100644
+--- a/drivers/net/ethernet/amd/lance.c
++++ b/drivers/net/ethernet/amd/lance.c
+@@ -318,9 +318,9 @@ static int io[MAX_CARDS];
+ static int dma[MAX_CARDS];
+ static int irq[MAX_CARDS];
+ 
+-module_param_array(io, int, NULL, 0);
+-module_param_array(dma, int, NULL, 0);
+-module_param_array(irq, int, NULL, 0);
++module_param_hw_array(io, int, ioport, NULL, 0);
++module_param_hw_array(dma, int, dma, NULL, 0);
++module_param_hw_array(irq, int, irq, NULL, 0);
+ module_param(lance_debug, int, 0);
+ MODULE_PARM_DESC(io, "LANCE/PCnet I/O base address(es),required");
+ MODULE_PARM_DESC(dma, "LANCE/PCnet ISA DMA channel (ignored for some devices)");
+diff --git a/drivers/net/ethernet/amd/ni65.c b/drivers/net/ethernet/amd/ni65.c
+index 5985bf220a8d..e248d1ab3e47 100644
+--- a/drivers/net/ethernet/amd/ni65.c
++++ b/drivers/net/ethernet/amd/ni65.c
+@@ -1227,9 +1227,9 @@ static void set_multicast_list(struct net_device *dev)
+ #ifdef MODULE
+ static struct net_device *dev_ni65;
+ 
+-module_param(irq, int, 0);
+-module_param(io, int, 0);
+-module_param(dma, int, 0);
++module_param_hw(irq, int, irq, 0);
++module_param_hw(io, int, ioport, 0);
++module_param_hw(dma, int, dma, 0);
+ MODULE_PARM_DESC(irq, "ni6510 IRQ number (ignored for some cards)");
+ MODULE_PARM_DESC(io, "ni6510 I/O base address");
+ MODULE_PARM_DESC(dma, "ni6510 ISA DMA channel (ignored for some cards)");
+diff --git a/drivers/net/ethernet/cirrus/cs89x0.c b/drivers/net/ethernet/cirrus/cs89x0.c
+index 3647b28e8de0..8f660d9761cc 100644
+--- a/drivers/net/ethernet/cirrus/cs89x0.c
++++ b/drivers/net/ethernet/cirrus/cs89x0.c
+@@ -1704,12 +1704,12 @@ static int use_dma;			/* These generate unused var warnings if ALLOW_DMA = 0 */
+ static int dma;
+ static int dmasize = 16;		/* or 64 */
+ 
+-module_param(io, int, 0);
+-module_param(irq, int, 0);
++module_param_hw(io, int, ioport, 0);
++module_param_hw(irq, int, irq, 0);
+ module_param(debug, int, 0);
+ module_param_string(media, media, sizeof(media), 0);
+ module_param(duplex, int, 0);
+-module_param(dma , int, 0);
++module_param_hw(dma , int, dma, 0);
+ module_param(dmasize , int, 0);
+ module_param(use_dma , int, 0);
+ MODULE_PARM_DESC(io, "cs89x0 I/O base address");
+diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
+index df4a871df633..fd6bcf024729 100644
+--- a/drivers/net/ethernet/dec/tulip/de4x5.c
++++ b/drivers/net/ethernet/dec/tulip/de4x5.c
+@@ -1015,7 +1015,7 @@ static int     compact_infoblock(struct net_device *dev, u_char count, u_char *p
+ 
+ static int io=0x0;/* EDIT THIS LINE FOR YOUR CONFIGURATION IF NEEDED        */
+ 
+-module_param(io, int, 0);
++module_param_hw(io, int, ioport, 0);
+ module_param(de4x5_debug, int, 0);
+ module_param(dec_only, int, 0);
+ module_param(args, charp, 0);
+diff --git a/drivers/net/ethernet/hp/hp100.c b/drivers/net/ethernet/hp/hp100.c
+index 1a31bee6e728..5673b071e39d 100644
+--- a/drivers/net/ethernet/hp/hp100.c
++++ b/drivers/net/ethernet/hp/hp100.c
+@@ -2966,7 +2966,7 @@ MODULE_DESCRIPTION("HP CASCADE Architecture Driver for 100VG-AnyLan Network Adap
+ #define HP100_DEVICES 5
+ /* Parameters set by insmod */
+ static int hp100_port[HP100_DEVICES] = { 0, [1 ... (HP100_DEVICES-1)] = -1 };
+-module_param_array(hp100_port, int, NULL, 0);
++module_param_hw_array(hp100_port, int, ioport, NULL, 0);
+ 
+ /* List of devices */
+ static struct net_device *hp100_devlist[HP100_DEVICES];
+diff --git a/drivers/net/ethernet/realtek/atp.c b/drivers/net/ethernet/realtek/atp.c
+index 9bcd4aefc9c5..bed34684994f 100644
+--- a/drivers/net/ethernet/realtek/atp.c
++++ b/drivers/net/ethernet/realtek/atp.c
+@@ -151,8 +151,8 @@ MODULE_LICENSE("GPL");
+ 
+ module_param(max_interrupt_work, int, 0);
+ module_param(debug, int, 0);
+-module_param_array(io, int, NULL, 0);
+-module_param_array(irq, int, NULL, 0);
++module_param_hw_array(io, int, ioport, NULL, 0);
++module_param_hw_array(irq, int, irq, NULL, 0);
+ module_param_array(xcvr, int, NULL, 0);
+ MODULE_PARM_DESC(max_interrupt_work, "ATP maximum events handled per interrupt");
+ MODULE_PARM_DESC(debug, "ATP debug level (0-7)");
+diff --git a/drivers/net/ethernet/smsc/smc9194.c b/drivers/net/ethernet/smsc/smc9194.c
+index c8d84679ede7..d3bb2ba51f40 100644
+--- a/drivers/net/ethernet/smsc/smc9194.c
++++ b/drivers/net/ethernet/smsc/smc9194.c
+@@ -1501,8 +1501,8 @@ static void smc_set_multicast_list(struct net_device *dev)
+ static struct net_device *devSMC9194;
+ MODULE_LICENSE("GPL");
+ 
+-module_param(io, int, 0);
+-module_param(irq, int, 0);
++module_param_hw(io, int, ioport, 0);
++module_param_hw(irq, int, irq, 0);
+ module_param(ifport, int, 0);
+ MODULE_PARM_DESC(io, "SMC 99194 I/O base address");
+ MODULE_PARM_DESC(irq, "SMC 99194 IRQ number");
