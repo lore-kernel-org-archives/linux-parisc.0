@@ -1,24 +1,154 @@
-From: Sarah JOHNSON <sarah.johnson197070@gmail.com>
-Subject: Greetings.
-Date: Fri, 14 Apr 2017 09:19:12 +0000 (UTC)
-Message-ID: <934227493.275261.1492161552873__14553.391285199$1492161613$gmane$org@mail.yahoo.com>
-References: <934227493.275261.1492161552873.ref@mail.yahoo.com>
-Reply-To: Sarah JOHNSON <sarah.johnson197070@yahoo.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: [PATCH] parisc: fix bugs in pa_memcpy
+Date: Fri, 14 Apr 2017 14:15:20 -0400 (EDT)
+Message-ID: <alpine.LRH.2.02.1704141404470.3534@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-To: unlisted-recipients:; (no To-header on input)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Al Viro <viro@ZenIV.linux.org.uk>,
+        John David Anglin <dave.anglin@bell.net>,
+        linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Good Day Dearest.
+The patch 554bfeceb8a22d448cd986fc9efce25e833278a1 ("parisc: Fix access
+fault handling in pa_memcpy()") reimplements the pa_memcpy function.
+Unfortunatelly, it makes the kernel unbootable. The crash happens in the
+function ide_complete_cmd where memcpy is called with the same source and
+destination address.
 
-My name is Sarah JOHNSON I am 18 years old, the only daughter of late Mr. Raymond JOHNSON from Burkina Faso, I am contacting you to help me relocate to your country to continue my university education in  your country, before my father died he gave me a deposit slip document of ($7,000,000 USD) and made me understand that it was because of his position in the government that his government associates planed and poisoned him on a business trip with them to France and he advised me to look for a faithful and reliable foreigner who will help me to transfer this money to his country and help me to relocate over there to continue my studies.
+This patch fixes a few bugs in pa_memcpy:
 
-I hope you will help me with the good faith and trust I have in you, after you have secured the money and settle my education, I will give you 30% of the money for your good and kind assistance to me. Please Contact me e-Mail:sarah.johnson197070@yahoo.com 
+* When jumping to .Lcopy_loop_16 for the first time, don't skip the
+  instruction "ldi 31,t0" (this bug made the kernel unbootable)
+* Use the COND macro when comparing length, so that the comparison is
+  64-bit (a theoretical issue, in case the length is greater than
+  0xffffffff)
+* Don't use the COND macro after the "extru" instruction (the PA-RISC
+  specification says that the upper 32-bits of extru result are undefined,
+  although they are set to zero in practice)
+* Fix exception addresses in .Lcopy16_fault and .Lcopy8_fault
+* Rename .Lcopy_loop_4 to .Lcopy_loop_8 (so that it is consistent with
+  .Lcopy8_fault)
 
-I am waiting on your reply
+Cc: <stable@vger.kernel.org> # v4.9+
+Fixes: 554bfeceb8a2 ("parisc: Fix access fault handling in pa_memcpy()")
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
 
-Regards,
+---
+ arch/parisc/lib/lusercopy.S |   27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
-Sarah.
+Index: linux-4.11-rc6/arch/parisc/lib/lusercopy.S
+===================================================================
+--- linux-4.11-rc6.orig/arch/parisc/lib/lusercopy.S
++++ linux-4.11-rc6/arch/parisc/lib/lusercopy.S
+@@ -201,7 +201,7 @@ ENTRY_CFI(pa_memcpy)
+ 	add	dst,len,end
+ 
+ 	/* short copy with less than 16 bytes? */
+-	cmpib,>>=,n 15,len,.Lbyte_loop
++	cmpib,COND(>>=),n 15,len,.Lbyte_loop
+ 
+ 	/* same alignment? */
+ 	xor	src,dst,t0
+@@ -216,7 +216,7 @@ ENTRY_CFI(pa_memcpy)
+ 	/* loop until we are 64-bit aligned */
+ .Lalign_loop64:
+ 	extru	dst,31,3,t1
+-	cmpib,=,n	0,t1,.Lcopy_loop_16
++	cmpib,=,n	0,t1,.Lcopy_loop_16_start
+ 20:	ldb,ma	1(srcspc,src),t1
+ 21:	stb,ma	t1,1(dstspc,dst)
+ 	b	.Lalign_loop64
+@@ -225,6 +225,7 @@ ENTRY_CFI(pa_memcpy)
+ 	ASM_EXCEPTIONTABLE_ENTRY(20b,.Lcopy_done)
+ 	ASM_EXCEPTIONTABLE_ENTRY(21b,.Lcopy_done)
+ 
++.Lcopy_loop_16_start:
+ 	ldi	31,t0
+ .Lcopy_loop_16:
+ 	cmpb,COND(>>=),n t0,len,.Lword_loop
+@@ -267,7 +268,7 @@ ENTRY_CFI(pa_memcpy)
+ 	/* loop until we are 32-bit aligned */
+ .Lalign_loop32:
+ 	extru	dst,31,2,t1
+-	cmpib,=,n	0,t1,.Lcopy_loop_4
++	cmpib,=,n	0,t1,.Lcopy_loop_8
+ 20:	ldb,ma	1(srcspc,src),t1
+ 21:	stb,ma	t1,1(dstspc,dst)
+ 	b	.Lalign_loop32
+@@ -277,7 +278,7 @@ ENTRY_CFI(pa_memcpy)
+ 	ASM_EXCEPTIONTABLE_ENTRY(21b,.Lcopy_done)
+ 
+ 
+-.Lcopy_loop_4:
++.Lcopy_loop_8:
+ 	cmpib,COND(>>=),n 15,len,.Lbyte_loop
+ 
+ 10:	ldw	0(srcspc,src),t1
+@@ -299,7 +300,7 @@ ENTRY_CFI(pa_memcpy)
+ 	ASM_EXCEPTIONTABLE_ENTRY(16b,.Lcopy_done)
+ 	ASM_EXCEPTIONTABLE_ENTRY(17b,.Lcopy_done)
+ 
+-	b	.Lcopy_loop_4
++	b	.Lcopy_loop_8
+ 	ldo	-16(len),len
+ 
+ .Lbyte_loop:
+@@ -324,7 +325,7 @@ ENTRY_CFI(pa_memcpy)
+ .Lunaligned_copy:
+ 	/* align until dst is 32bit-word-aligned */
+ 	extru	dst,31,2,t1
+-	cmpib,COND(=),n	0,t1,.Lcopy_dstaligned
++	cmpib,=,n	0,t1,.Lcopy_dstaligned
+ 20:	ldb	0(srcspc,src),t1
+ 	ldo	1(src),src
+ 21:	stb,ma	t1,1(dstspc,dst)
+@@ -362,7 +363,7 @@ ENTRY_CFI(pa_memcpy)
+ 	cmpiclr,<> 1,t0,%r0
+ 	b,n .Lcase1
+ .Lcase0:
+-	cmpb,= %r0,len,.Lcda_finish
++	cmpb,COND(=) %r0,len,.Lcda_finish
+ 	nop
+ 
+ 1:	ldw,ma 4(srcspc,src), a3
+@@ -376,7 +377,7 @@ ENTRY_CFI(pa_memcpy)
+ 1:	ldw,ma 4(srcspc,src), a3
+ 	ASM_EXCEPTIONTABLE_ENTRY(1b,.Lcda_rdfault)
+ 	ldo -1(len),len
+-	cmpb,=,n %r0,len,.Ldo0
++	cmpb,COND(=),n %r0,len,.Ldo0
+ .Ldo4:
+ 1:	ldw,ma 4(srcspc,src), a0
+ 	ASM_EXCEPTIONTABLE_ENTRY(1b,.Lcda_rdfault)
+@@ -402,7 +403,7 @@ ENTRY_CFI(pa_memcpy)
+ 1:	stw,ma t0, 4(dstspc,dst)
+ 	ASM_EXCEPTIONTABLE_ENTRY(1b,.Lcopy_done)
+ 	ldo -4(len),len
+-	cmpb,<> %r0,len,.Ldo4
++	cmpb,COND(<>) %r0,len,.Ldo4
+ 	nop
+ .Ldo0:
+ 	shrpw a2, a3, %sar, t0
+@@ -436,14 +437,14 @@ ENTRY_CFI(pa_memcpy)
+ 	/* fault exception fixup handlers: */
+ #ifdef CONFIG_64BIT
+ .Lcopy16_fault:
+-10:	b	.Lcopy_done
+-	std,ma	t1,8(dstspc,dst)
++	b	.Lcopy_done
++10:	std,ma	t1,8(dstspc,dst)
+ 	ASM_EXCEPTIONTABLE_ENTRY(10b,.Lcopy_done)
+ #endif
+ 
+ .Lcopy8_fault:
+-10:	b	.Lcopy_done
+-	stw,ma	t1,4(dstspc,dst)
++	b	.Lcopy_done
++10:	stw,ma	t1,4(dstspc,dst)
+ 	ASM_EXCEPTIONTABLE_ENTRY(10b,.Lcopy_done)
+ 
+ 	.exit
