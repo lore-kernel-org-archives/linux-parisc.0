@@ -1,154 +1,44 @@
 From: Mikulas Patocka <mpatocka@redhat.com>
-Subject: [PATCH] parisc: fix bugs in pa_memcpy
-Date: Fri, 14 Apr 2017 14:15:20 -0400 (EDT)
-Message-ID: <alpine.LRH.2.02.1704141404470.3534@file01.intranet.prod.int.rdu2.redhat.com>
+Subject: [PATCH] ide: don't call memcpy with the same source and
+ destination
+Date: Fri, 14 Apr 2017 14:35:33 -0400 (EDT)
+Message-ID: <alpine.LRH.2.02.1704141433280.10706@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Al Viro <viro@ZenIV.linux.org.uk>,
+Cc: linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
         John David Anglin <dave.anglin@bell.net>,
         linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+To: "David S. Miller" <davem@davemloft.net>
+Return-path: <linux-ide-owner@vger.kernel.org>
+List-ID: <linux-ide.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The patch 554bfeceb8a22d448cd986fc9efce25e833278a1 ("parisc: Fix access
-fault handling in pa_memcpy()") reimplements the pa_memcpy function.
-Unfortunatelly, it makes the kernel unbootable. The crash happens in the
-function ide_complete_cmd where memcpy is called with the same source and
-destination address.
+The parisc architecture recently reimplemented the memcpy function and
+their reimplementation crashed when source and destination overlapped.
 
-This patch fixes a few bugs in pa_memcpy:
+The crash happened in the function ide_complete_cmd where memcpy is called
+with the same source and destination pointer. According to the C
+specification, memcpy behavior is undefined if the source and destination
+range overlaps. This patches fixes the undefined behavior.
 
-* When jumping to .Lcopy_loop_16 for the first time, don't skip the
-  instruction "ldi 31,t0" (this bug made the kernel unbootable)
-* Use the COND macro when comparing length, so that the comparison is
-  64-bit (a theoretical issue, in case the length is greater than
-  0xffffffff)
-* Don't use the COND macro after the "extru" instruction (the PA-RISC
-  specification says that the upper 32-bits of extru result are undefined,
-  although they are set to zero in practice)
-* Fix exception addresses in .Lcopy16_fault and .Lcopy8_fault
-* Rename .Lcopy_loop_4 to .Lcopy_loop_8 (so that it is consistent with
-  .Lcopy8_fault)
-
-Cc: <stable@vger.kernel.org> # v4.9+
-Fixes: 554bfeceb8a2 ("parisc: Fix access fault handling in pa_memcpy()")
 Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
 
 ---
- arch/parisc/lib/lusercopy.S |   27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ drivers/ide/ide-io.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Index: linux-4.11-rc6/arch/parisc/lib/lusercopy.S
+Index: linux-4.11-rc6/drivers/ide/ide-io.c
 ===================================================================
---- linux-4.11-rc6.orig/arch/parisc/lib/lusercopy.S
-+++ linux-4.11-rc6/arch/parisc/lib/lusercopy.S
-@@ -201,7 +201,7 @@ ENTRY_CFI(pa_memcpy)
- 	add	dst,len,end
+--- linux-4.11-rc6.orig/drivers/ide/ide-io.c
++++ linux-4.11-rc6/drivers/ide/ide-io.c
+@@ -107,7 +107,7 @@ void ide_complete_cmd(ide_drive_t *drive
  
- 	/* short copy with less than 16 bytes? */
--	cmpib,>>=,n 15,len,.Lbyte_loop
-+	cmpib,COND(>>=),n 15,len,.Lbyte_loop
- 
- 	/* same alignment? */
- 	xor	src,dst,t0
-@@ -216,7 +216,7 @@ ENTRY_CFI(pa_memcpy)
- 	/* loop until we are 64-bit aligned */
- .Lalign_loop64:
- 	extru	dst,31,3,t1
--	cmpib,=,n	0,t1,.Lcopy_loop_16
-+	cmpib,=,n	0,t1,.Lcopy_loop_16_start
- 20:	ldb,ma	1(srcspc,src),t1
- 21:	stb,ma	t1,1(dstspc,dst)
- 	b	.Lalign_loop64
-@@ -225,6 +225,7 @@ ENTRY_CFI(pa_memcpy)
- 	ASM_EXCEPTIONTABLE_ENTRY(20b,.Lcopy_done)
- 	ASM_EXCEPTIONTABLE_ENTRY(21b,.Lcopy_done)
- 
-+.Lcopy_loop_16_start:
- 	ldi	31,t0
- .Lcopy_loop_16:
- 	cmpb,COND(>>=),n t0,len,.Lword_loop
-@@ -267,7 +268,7 @@ ENTRY_CFI(pa_memcpy)
- 	/* loop until we are 32-bit aligned */
- .Lalign_loop32:
- 	extru	dst,31,2,t1
--	cmpib,=,n	0,t1,.Lcopy_loop_4
-+	cmpib,=,n	0,t1,.Lcopy_loop_8
- 20:	ldb,ma	1(srcspc,src),t1
- 21:	stb,ma	t1,1(dstspc,dst)
- 	b	.Lalign_loop32
-@@ -277,7 +278,7 @@ ENTRY_CFI(pa_memcpy)
- 	ASM_EXCEPTIONTABLE_ENTRY(21b,.Lcopy_done)
- 
- 
--.Lcopy_loop_4:
-+.Lcopy_loop_8:
- 	cmpib,COND(>>=),n 15,len,.Lbyte_loop
- 
- 10:	ldw	0(srcspc,src),t1
-@@ -299,7 +300,7 @@ ENTRY_CFI(pa_memcpy)
- 	ASM_EXCEPTIONTABLE_ENTRY(16b,.Lcopy_done)
- 	ASM_EXCEPTIONTABLE_ENTRY(17b,.Lcopy_done)
- 
--	b	.Lcopy_loop_4
-+	b	.Lcopy_loop_8
- 	ldo	-16(len),len
- 
- .Lbyte_loop:
-@@ -324,7 +325,7 @@ ENTRY_CFI(pa_memcpy)
- .Lunaligned_copy:
- 	/* align until dst is 32bit-word-aligned */
- 	extru	dst,31,2,t1
--	cmpib,COND(=),n	0,t1,.Lcopy_dstaligned
-+	cmpib,=,n	0,t1,.Lcopy_dstaligned
- 20:	ldb	0(srcspc,src),t1
- 	ldo	1(src),src
- 21:	stb,ma	t1,1(dstspc,dst)
-@@ -362,7 +363,7 @@ ENTRY_CFI(pa_memcpy)
- 	cmpiclr,<> 1,t0,%r0
- 	b,n .Lcase1
- .Lcase0:
--	cmpb,= %r0,len,.Lcda_finish
-+	cmpb,COND(=) %r0,len,.Lcda_finish
- 	nop
- 
- 1:	ldw,ma 4(srcspc,src), a3
-@@ -376,7 +377,7 @@ ENTRY_CFI(pa_memcpy)
- 1:	ldw,ma 4(srcspc,src), a3
- 	ASM_EXCEPTIONTABLE_ENTRY(1b,.Lcda_rdfault)
- 	ldo -1(len),len
--	cmpb,=,n %r0,len,.Ldo0
-+	cmpb,COND(=),n %r0,len,.Ldo0
- .Ldo4:
- 1:	ldw,ma 4(srcspc,src), a0
- 	ASM_EXCEPTIONTABLE_ENTRY(1b,.Lcda_rdfault)
-@@ -402,7 +403,7 @@ ENTRY_CFI(pa_memcpy)
- 1:	stw,ma t0, 4(dstspc,dst)
- 	ASM_EXCEPTIONTABLE_ENTRY(1b,.Lcopy_done)
- 	ldo -4(len),len
--	cmpb,<> %r0,len,.Ldo4
-+	cmpb,COND(<>) %r0,len,.Ldo4
- 	nop
- .Ldo0:
- 	shrpw a2, a3, %sar, t0
-@@ -436,14 +437,14 @@ ENTRY_CFI(pa_memcpy)
- 	/* fault exception fixup handlers: */
- #ifdef CONFIG_64BIT
- .Lcopy16_fault:
--10:	b	.Lcopy_done
--	std,ma	t1,8(dstspc,dst)
-+	b	.Lcopy_done
-+10:	std,ma	t1,8(dstspc,dst)
- 	ASM_EXCEPTIONTABLE_ENTRY(10b,.Lcopy_done)
- #endif
- 
- .Lcopy8_fault:
--10:	b	.Lcopy_done
--	stw,ma	t1,4(dstspc,dst)
-+	b	.Lcopy_done
-+10:	stw,ma	t1,4(dstspc,dst)
- 	ASM_EXCEPTIONTABLE_ENTRY(10b,.Lcopy_done)
- 
- 	.exit
+ 		if (cmd->tf_flags & IDE_TFLAG_DYN)
+ 			kfree(orig_cmd);
+-		else
++		else if (cmd != orig_cmd)
+ 			memcpy(orig_cmd, cmd, sizeof(*cmd));
+ 	}
+ }
