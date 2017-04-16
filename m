@@ -1,155 +1,47 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Fix get_user() for 64-bit value on 32-bit kernel
-Date: Sun, 16 Apr 2017 10:00:14 +0200
-Message-ID: <20170416080014.GA7681@p100.box>
+From: <askeeta@canadiannorth.com>
+Subject: (unknown)
+Date: Sun, 16 Apr 2017 17:41:33 -0000
+Message-ID: <149236449322.21744.18021803007436683437@tvactiete.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: application/zip; name="EMAIL_52728_linux-parisc.zip"
+To: "linux-parisc" <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This fixes a bug in which the upper 32-bits of a 64-bit value which is read by
-get_user() was lost.
-While touching this code, split out pre-loading of %sr2 space register and
-clean up code indent.
-
-Cc: <stable@vger.kernel.org> # v4.9+
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/arch/parisc/include/asm/uaccess.h b/arch/parisc/include/asm/uaccess.h
-index 8442727..cbd4f4a 100644
---- a/arch/parisc/include/asm/uaccess.h
-+++ b/arch/parisc/include/asm/uaccess.h
-@@ -39,10 +39,10 @@
- #define get_user __get_user
- 
- #if !defined(CONFIG_64BIT)
--#define LDD_USER(ptr)		__get_user_asm64(ptr)
-+#define LDD_USER(val, ptr)	__get_user_asm64(val, ptr)
- #define STD_USER(x, ptr)	__put_user_asm64(x, ptr)
- #else
--#define LDD_USER(ptr)		__get_user_asm("ldd", ptr)
-+#define LDD_USER(val, ptr)	__get_user_asm(val, "ldd", ptr)
- #define STD_USER(x, ptr)	__put_user_asm("std", x, ptr)
- #endif
- 
-@@ -97,63 +97,87 @@ struct exception_data {
- 		" mtsp %0,%%sr2\n\t"		\
- 		: : "r"(get_fs()) : )
- 
--#define __get_user(x, ptr)                               \
--({                                                       \
--	register long __gu_err __asm__ ("r8") = 0;       \
--	register long __gu_val;				 \
--							 \
--	load_sr2();					 \
--	switch (sizeof(*(ptr))) {			 \
--	    case 1: __get_user_asm("ldb", ptr); break;   \
--	    case 2: __get_user_asm("ldh", ptr); break;   \
--	    case 4: __get_user_asm("ldw", ptr); break;   \
--	    case 8: LDD_USER(ptr);  break;		 \
--	    default: BUILD_BUG(); break;		 \
--	}                                                \
--							 \
--	(x) = (__force __typeof__(*(ptr))) __gu_val;	 \
--	__gu_err;                                        \
-+#define __get_user_internal(val, ptr)			\
-+({							\
-+	register long __gu_err __asm__ ("r8") = 0;	\
-+							\
-+	switch (sizeof(*(ptr))) {			\
-+	case 1: __get_user_asm(val, "ldb", ptr); break;	\
-+	case 2: __get_user_asm(val, "ldh", ptr); break; \
-+	case 4: __get_user_asm(val, "ldw", ptr); break; \
-+	case 8: LDD_USER(val, ptr); break;		\
-+	default: BUILD_BUG();				\
-+	}						\
-+							\
-+	__gu_err;					\
- })
- 
--#define __get_user_asm(ldx, ptr)                        \
-+#define __get_user(val, ptr)				\
-+({							\
-+	load_sr2();					\
-+	__get_user_internal(val, ptr);			\
-+})
-+
-+#define __get_user_asm(val, ldx, ptr)			\
-+{							\
-+	register long __gu_val;				\
-+							\
- 	__asm__("1: " ldx " 0(%%sr2,%2),%0\n"		\
- 		"9:\n"					\
- 		ASM_EXCEPTIONTABLE_ENTRY_EFAULT(1b, 9b)	\
- 		: "=r"(__gu_val), "=r"(__gu_err)        \
--		: "r"(ptr), "1"(__gu_err));
-+		: "r"(ptr), "1"(__gu_err));		\
-+							\
-+	(val) = (__force __typeof__(*(ptr))) __gu_val;	\
-+}
- 
- #if !defined(CONFIG_64BIT)
- 
--#define __get_user_asm64(ptr) 				\
-+#define __get_user_asm64(val, ptr)			\
-+{							\
-+	union {						\
-+		unsigned long long	l;		\
-+		__typeof__(*(ptr))	t;		\
-+	} __gu_tmp;					\
-+							\
- 	__asm__("   copy %%r0,%R0\n"			\
- 		"1: ldw 0(%%sr2,%2),%0\n"		\
- 		"2: ldw 4(%%sr2,%2),%R0\n"		\
- 		"9:\n"					\
- 		ASM_EXCEPTIONTABLE_ENTRY_EFAULT(1b, 9b)	\
- 		ASM_EXCEPTIONTABLE_ENTRY_EFAULT(2b, 9b)	\
--		: "=r"(__gu_val), "=r"(__gu_err)	\
--		: "r"(ptr), "1"(__gu_err));
-+		: "=&r"(__gu_tmp.l), "=r"(__gu_err)	\
-+		: "r"(ptr), "1"(__gu_err));		\
-+							\
-+	(val) = __gu_tmp.t;				\
-+}
- 
- #endif /* !defined(CONFIG_64BIT) */
- 
- 
--#define __put_user(x, ptr)                                      \
-+#define __put_user_internal(x, ptr)				\
- ({								\
- 	register long __pu_err __asm__ ("r8") = 0;      	\
-         __typeof__(*(ptr)) __x = (__typeof__(*(ptr)))(x);	\
- 								\
--	load_sr2();						\
- 	switch (sizeof(*(ptr))) {				\
--	    case 1: __put_user_asm("stb", __x, ptr); break;     \
--	    case 2: __put_user_asm("sth", __x, ptr); break;     \
--	    case 4: __put_user_asm("stw", __x, ptr); break;     \
--	    case 8: STD_USER(__x, ptr); break;			\
--	    default: BUILD_BUG(); break;			\
--	}                                                       \
-+	case 1: __put_user_asm("stb", __x, ptr); break;		\
-+	case 2: __put_user_asm("sth", __x, ptr); break;		\
-+	case 4: __put_user_asm("stw", __x, ptr); break;		\
-+	case 8: STD_USER(__x, ptr); break;			\
-+	default: BUILD_BUG();					\
-+	}							\
- 								\
- 	__pu_err;						\
- })
- 
-+#define __put_user(x, ptr)					\
-+({								\
-+	load_sr2();						\
-+	__put_user_internal(x, ptr);				\
-+})
-+
-+
- /*
-  * The "__put_user/kernel_asm()" macros tell gcc they read from memory
-  * instead of writing. This is because they do not write to any memory
+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
+t9IBUEsFBgAAAAABAAEAWwAAAHMHAAAAAA==
