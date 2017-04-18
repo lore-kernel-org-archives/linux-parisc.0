@@ -1,32 +1,40 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture fix for v4.11
-Date: Mon, 17 Apr 2017 22:15:41 +0200
-Message-ID: <20170417201541.GA1292@p100.box>
+From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH] ide: don't call memcpy with the same source and destination
+Date: Tue, 18 Apr 2017 12:58:27 +0200
+Message-ID: <3967489.2j6es1sVNT@amdc3058>
+References: <alpine.LRH.2.02.1704141433280.10706@file01.intranet.prod.int.rdu2.redhat.com>
+ <CGME20170418105834epcas1p1b000622da41db1214d1a9a1b888f7896@epcas1p1.samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Cc: "David S. Miller" <davem@davemloft.net>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        John David Anglin <dave.anglin@bell.net>,
+        linux-parisc@vger.kernel.org
+To: Mikulas Patocka <mpatocka@redhat.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-reply-to: <alpine.LRH.2.02.1704141433280.10706@file01.intranet.prod.int.rdu2.redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
 
-please pull one important fix for the parisc architecture for kernel 4.11 from:
+On Friday, April 14, 2017 02:35:33 PM Mikulas Patocka wrote:
+> The parisc architecture recently reimplemented the memcpy function and
+> their reimplementation crashed when source and destination overlapped.
+> 
+> The crash happened in the function ide_complete_cmd where memcpy is called
+> with the same source and destination pointer. According to the C
+> specification, memcpy behavior is undefined if the source and destination
+> range overlaps. This patches fixes the undefined behavior.
+> 
+> Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.11-5
+Reviewed-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 
-One patch which fixes get_user() for 64-bit values on 32-bit kernels. Up
-to now we lost the upper 32-bits of the returned 64-bit value.
+Best regards,
+--
+Bartlomiej Zolnierkiewicz
+Samsung R&D Institute Poland
+Samsung Electronics
 
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Helge Deller (1):
-      parisc: Fix get_user() for 64-bit value on 32-bit kernel
-
- arch/parisc/include/asm/uaccess.h | 86 +++++++++++++++++++++++++--------------
- 1 file changed, 55 insertions(+), 31 deletions(-)
