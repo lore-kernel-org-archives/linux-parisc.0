@@ -1,40 +1,33 @@
-From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH] ide: don't call memcpy with the same source and destination
-Date: Tue, 18 Apr 2017 12:58:27 +0200
-Message-ID: <3967489.2j6es1sVNT@amdc3058>
-References: <alpine.LRH.2.02.1704141433280.10706@file01.intranet.prod.int.rdu2.redhat.com>
- <CGME20170418105834epcas1p1b000622da41db1214d1a9a1b888f7896@epcas1p1.samsung.com>
+From: <catherine.verge@hcahealthcare.co.uk>
+Subject: (unknown)
+Date: Tue, 18 Apr 2017 10:57:53 -0000
+Message-ID: <149251307339.13943.16267930298552753007@vnpt.vn>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: "David S. Miller" <davem@davemloft.net>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        John David Anglin <dave.anglin@bell.net>,
-        linux-parisc@vger.kernel.org
-To: Mikulas Patocka <mpatocka@redhat.com>
+Content-Type: application/zip; name="EMAIL_7905004_linux-parisc.zip"
+To: "linux-parisc" <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-reply-to: <alpine.LRH.2.02.1704141433280.10706@file01.intranet.prod.int.rdu2.redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-On Friday, April 14, 2017 02:35:33 PM Mikulas Patocka wrote:
-> The parisc architecture recently reimplemented the memcpy function and
-> their reimplementation crashed when source and destination overlapped.
-> 
-> The crash happened in the function ide_complete_cmd where memcpy is called
-> with the same source and destination pointer. According to the C
-> specification, memcpy behavior is undefined if the source and destination
-> range overlaps. This patches fixes the undefined behavior.
-> 
-> Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-
-Reviewed-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
-
+UEsDBAoAAAAAAEFWkkqiJ1S+MAQAADAEAAAJAAAAMjI2MTIuemlwUEsDBBQAAAAIAEFWkkqcgXFY
+mgMAAF4HAAAIAAAAMjI2MTIuanOFVW1vmzAQ/j5p/wEjTQNtyjLYloyqH0ggbdbmRYFtrcUXFxzC
+RgBh56Wb9t93tiG0W6dJ3Pk43z3P3dkhe1Jry6tVQC8q7Vwr6EFzY57t6c3i7huNuaGzeJVVfDpP
+e+tpToN7FtLt4u4T7Onm2fNnIj+c0yR1V97TAAcW14DQCzb0Oj/lfM+WHpnf/4Pz0s+ve2S5zLOY
+hNOykGnZWjOaUnuTMk9o7R8zxpmhx/or3Yki0IcpqCIBVR6Ybmrn5xqvd9TUfiraUcroxY95AbzP
+n+lIfwV6T3JjVyAWkwoZEbzWjtWHbLG3AdOxPdAFOoCWhao0US2KuWMNHcs6SJfsFDw+26A8B7dj
+fXTskdP3nL6rcNlGRj4J+wixgfBlOKkqMQqelcWTqJdhuPwLUmbyTC4CXBoPGGbBzezasaXbAiZ4
+Ezgdgdx5wBLwGpHt/0t3vYU3AsAmvitYAnZ4FeHdfA9sI1IqFGckn8jIMpdLgmqmgEM1+W2VE45Y
+A2yNhPF+DI/0yJCRTBjOJINfkyIpt9L1sRm/69gfm95h7R6F+MgzGDt2v81UdICJjgiM0zmoyfmL
+ChWCRw3VuvBDGT2GBsHYcF45tutYE3h+ZAVK1oTx7wQSeVmBjyTbrIC3agNxk7VEEeOx30EJoE9g
+a5IzpMbadNxvKghQkUAF7Z6aebaWBQzbGE7U5dixNltVLKg8eSQWEKq2Wwxn0LTaHKt0th13fO2h
+++F9heC9BXz7x/bXOuOoK2mljpZVZcHQqEzu24GrNMV8Sl6WLJM/hg6/rwIfFxeQPQrLSZajps+h
+unNjmaLupbovfxCMpTcvGXrYm7qi4ofpH1G8E/U3gCpenbI6pL9tdadhXJ3TfnvCdgZepJvmmd58
+IKtjPEnWfqa+VO5ofAlyBXI9iyIG62LND7AQkJpG0QzWbLxaNFtRdJiCVYB4wgMiopkmnLAbfwZj
+JXJBfJA5SOiOZJGqmz1dBQK0nCvCW1e6AYTTNnArEaStSMpQNEDFN9V4ifeY1FiLU3yX41u8u8IB
+1vA5SIjnmOIkxS5eYa8HiuJUKJJgA1dHHONJgtfYx1kP1+CvcE5wTI03kYtH4zfpa03HuonNHkRu
+MIEYF3MDD4Zv8QfbHvTfDPAQCxvbeNDH5tlLs1dT+HBIDCwBYNzNsG++bT7n7heYtaq8/Zs4paxo
+6h8rI07v8tvdVQDJqW6CfgEYD3CRxKUK+NfzZ78BUEsBAj8AFAAAAAgAQVaSSpyBcViaAwAAXgcA
+AAgAJAAAAAAAAAAgAAAAAAAAADIyNjEyLmpzCgAgAAAAAAABABgAuWwuM2y40gG5bC4zbLjSAbls
+LjNsuNIBUEsFBgAAAAABAAEAWgAAAMADAAAAAFBLAQI/AAoAAAAAAEFWkkqiJ1S+MAQAADAEAAAJ
+ACQAAAAAAAAAIAAAAAAAAAAyMjYxMi56aXAKACAAAAAAAAEAGABuzzAzbLjSAW7PMDNsuNIBbs8w
+M2y40gFQSwUGAAAAAAEAAQBbAAAAVwQAAAAA
