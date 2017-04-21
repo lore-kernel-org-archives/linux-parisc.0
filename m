@@ -1,33 +1,17 @@
-From: <catherine.verge@hcahealthcare.co.uk>
+From: "Mr.Jerry Smith" <laszlo.cserhalmi@forsterkozpont.hu>
 Subject: (unknown)
-Date: Tue, 18 Apr 2017 10:57:53 -0000
-Message-ID: <149251307339.13943.16267930298552753007@vnpt.vn>
+Date: Fri, 21 Apr 2017 18:59:48 +0200 (CEST)
+Message-ID: <1377165471.4810025.1492793988909.JavaMail.zimbra@forsterkozpont.hu>
+Reply-To: "jerryfunds11@inbox.lv" <jerryfunds11@inbox.lv>
 Mime-Version: 1.0
-Content-Type: application/zip; name="EMAIL_7905004_linux-parisc.zip"
-To: "linux-parisc" <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+To: unlisted-recipients:; (no To-header on input)
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-UEsDBAoAAAAAAEFWkkqiJ1S+MAQAADAEAAAJAAAAMjI2MTIuemlwUEsDBBQAAAAIAEFWkkqcgXFY
-mgMAAF4HAAAIAAAAMjI2MTIuanOFVW1vmzAQ/j5p/wEjTQNtyjLYloyqH0ggbdbmRYFtrcUXFxzC
-RgBh56Wb9t93tiG0W6dJ3Pk43z3P3dkhe1Jry6tVQC8q7Vwr6EFzY57t6c3i7huNuaGzeJVVfDpP
-e+tpToN7FtLt4u4T7Onm2fNnIj+c0yR1V97TAAcW14DQCzb0Oj/lfM+WHpnf/4Pz0s+ve2S5zLOY
-hNOykGnZWjOaUnuTMk9o7R8zxpmhx/or3Yki0IcpqCIBVR6Ybmrn5xqvd9TUfiraUcroxY95AbzP
-n+lIfwV6T3JjVyAWkwoZEbzWjtWHbLG3AdOxPdAFOoCWhao0US2KuWMNHcs6SJfsFDw+26A8B7dj
-fXTskdP3nL6rcNlGRj4J+wixgfBlOKkqMQqelcWTqJdhuPwLUmbyTC4CXBoPGGbBzezasaXbAiZ4
-Ezgdgdx5wBLwGpHt/0t3vYU3AsAmvitYAnZ4FeHdfA9sI1IqFGckn8jIMpdLgmqmgEM1+W2VE45Y
-A2yNhPF+DI/0yJCRTBjOJINfkyIpt9L1sRm/69gfm95h7R6F+MgzGDt2v81UdICJjgiM0zmoyfmL
-ChWCRw3VuvBDGT2GBsHYcF45tutYE3h+ZAVK1oTx7wQSeVmBjyTbrIC3agNxk7VEEeOx30EJoE9g
-a5IzpMbadNxvKghQkUAF7Z6aebaWBQzbGE7U5dixNltVLKg8eSQWEKq2Wwxn0LTaHKt0th13fO2h
-++F9heC9BXz7x/bXOuOoK2mljpZVZcHQqEzu24GrNMV8Sl6WLJM/hg6/rwIfFxeQPQrLSZajps+h
-unNjmaLupbovfxCMpTcvGXrYm7qi4ofpH1G8E/U3gCpenbI6pL9tdadhXJ3TfnvCdgZepJvmmd58
-IKtjPEnWfqa+VO5ofAlyBXI9iyIG62LND7AQkJpG0QzWbLxaNFtRdJiCVYB4wgMiopkmnLAbfwZj
-JXJBfJA5SOiOZJGqmz1dBQK0nCvCW1e6AYTTNnArEaStSMpQNEDFN9V4ifeY1FiLU3yX41u8u8IB
-1vA5SIjnmOIkxS5eYa8HiuJUKJJgA1dHHONJgtfYx1kP1+CvcE5wTI03kYtH4zfpa03HuonNHkRu
-MIEYF3MDD4Zv8QfbHvTfDPAQCxvbeNDH5tlLs1dT+HBIDCwBYNzNsG++bT7n7heYtaq8/Zs4paxo
-6h8rI07v8tvdVQDJqW6CfgEYD3CRxKUK+NfzZ78BUEsBAj8AFAAAAAgAQVaSSpyBcViaAwAAXgcA
-AAgAJAAAAAAAAAAgAAAAAAAAADIyNjEyLmpzCgAgAAAAAAABABgAuWwuM2y40gG5bC4zbLjSAbls
-LjNsuNIBUEsFBgAAAAABAAEAWgAAAMADAAAAAFBLAQI/AAoAAAAAAEFWkkqiJ1S+MAQAADAEAAAJ
-ACQAAAAAAAAAIAAAAAAAAAAyMjYxMi56aXAKACAAAAAAAAEAGABuzzAzbLjSAW7PMDNsuNIBbs8w
-M2y40gFQSwUGAAAAAAEAAQBbAAAAVwQAAAAA
+
+
+We Give Out Loans At 3% Interest Rate And We Offer Loans From $5,000 To $50,000,000.00, Are You Looking To Buy A House Car Or Company Or Start Up A Truck Company or Buy A Truck Or Personal Loans Or Business Loan, Email Us At jerryfunds11@inbox.lv  With Amount Needed And Phone Number.
+
+
