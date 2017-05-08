@@ -1,97 +1,31 @@
-From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH] fbdev: sti: don't select CONFIG_VT
-Date: Fri, 05 May 2017 17:27:06 +0200
-Message-ID: <3242330.XRvUNh2arJ@amdc3058>
-References: <CGME20170428195120epcas2p2792c14bbbd4cf86be1b84c7f3d0f2040@epcas2p2.samsung.com>
-        <20170428195151.57706-1-arnd@arndb.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] ide: don't call memcpy with the same source and
+ destination
+Date: Mon, 08 May 2017 17:37:21 -0400 (EDT)
+Message-ID: <20170508.173721.1587256787895455007.davem@davemloft.net>
+References: <alpine.LRH.2.02.1704141433280.10706@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
-        jejb@parisc-linux.org, Alexander Beregalov <a.beregalov@gmail.com>,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <20170428195151.57706-1-arnd@arndb.de>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: Text/Plain; charset=us-ascii
+Cc: linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jejb@parisc-linux.org, deller@gmx.de, dave.anglin@bell.net,
+        linux-parisc@vger.kernel.org
+To: mpatocka@redhat.com
+Return-path: <linux-ide-owner@vger.kernel.org>
+In-Reply-To: <alpine.LRH.2.02.1704141433280.10706@file01.intranet.prod.int.rdu2.redhat.com>
+List-ID: <linux-ide.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Friday, April 28, 2017 09:51:25 PM Arnd Bergmann wrote:
-> While working on another build error, I ran into several variations of
-> this dependency loop:
-> 
-> subsection "Kconfig recursive dependency limitations"
-> drivers/input/Kconfig:8:	symbol INPUT is selected by VT
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> drivers/tty/Kconfig:12:	symbol VT is selected by FB_STI
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> drivers/video/fbdev/Kconfig:677:	symbol FB_STI depends on FB
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> drivers/video/fbdev/Kconfig:5:	symbol FB is selected by DRM_KMS_FB_HELPER
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> drivers/gpu/drm/Kconfig:72:	symbol DRM_KMS_FB_HELPER is selected by DRM_KMS_CMA_HELPER
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> drivers/gpu/drm/Kconfig:137:	symbol DRM_KMS_CMA_HELPER is selected by DRM_HDLCD
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> drivers/gpu/drm/arm/Kconfig:6:	symbol DRM_HDLCD depends on OF
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> drivers/of/Kconfig:4:	symbol OF is selected by X86_INTEL_CE
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> arch/x86/Kconfig:523:	symbol X86_INTEL_CE depends on X86_IO_APIC
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> arch/x86/Kconfig:1011:	symbol X86_IO_APIC depends on X86_LOCAL_APIC
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> arch/x86/Kconfig:1005:	symbol X86_LOCAL_APIC depends on X86_UP_APIC
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> arch/x86/Kconfig:980:	symbol X86_UP_APIC depends on PCI_MSI
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> drivers/pci/Kconfig:11:	symbol PCI_MSI is selected by AMD_IOMMU
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> drivers/iommu/Kconfig:106:	symbol AMD_IOMMU depends on IOMMU_SUPPORT
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> drivers/iommu/Kconfig:5:	symbol IOMMU_SUPPORT is selected by DRM_ETNAVIV
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> drivers/gpu/drm/etnaviv/Kconfig:2:	symbol DRM_ETNAVIV depends on THERMAL
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> drivers/thermal/Kconfig:5:	symbol THERMAL is selected by ACPI_VIDEO
-> For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> subsection "Kconfig recursive dependency limitations"
-> drivers/acpi/Kconfig:183:	symbol ACPI_VIDEO is selected by INPUT
-> 
-> This doesn't currently show up as I fixed the 'THERMAL' part of it,
-> but I noticed that the FB_STI dependency should not be there but
-> was introduced by slightly incorrect bug-fix patch that tried to
-> fix a link error.
-> 
-> Instead of selecting 'VT' to make us enter the drivers/video/console
-> directory at compile-time, it's sufficient to build the
-> drivers/video/console/sticore.c file by adding its directory
-> to when CONFIG_FB_STI is enabled. Alternatively, we could move the
-> sticore code to another directory that is always built when we
-> have at STI_CONSOLE or FB_STI enabled.
-> 
-> Fixes: 17085a934592 ("parisc: stifb: should depend on STI_CONSOLE")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Date: Fri, 14 Apr 2017 14:35:33 -0400 (EDT)
 
-Patch queued for 4.12, thanks.
+> The parisc architecture recently reimplemented the memcpy function and
+> their reimplementation crashed when source and destination overlapped.
+> 
+> The crash happened in the function ide_complete_cmd where memcpy is called
+> with the same source and destination pointer. According to the C
+> specification, memcpy behavior is undefined if the source and destination
+> range overlaps. This patches fixes the undefined behavior.
+> 
+> Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
 
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
+Applied.
