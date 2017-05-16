@@ -1,60 +1,29 @@
-From: Will Deacon <will.deacon@arm.com>
-Subject: Re: [PATCH 1/1] futex: remove duplicated code
-Date: Mon, 15 May 2017 14:16:45 +0100
-Message-ID: <20170515131644.GA3605@arm.com>
-References: <20170515130742.18357-1-jslaby@suse.cz>
-Mime-Version: 1.0
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCH] parisc: Stop CPUs via PAT firmware before system halt or reboot.
+Date: Mon, 15 May 2017 20:29:18 -0400
+Message-ID: <926005BA-0712-4D52-8995-E9FEDB5F890E@bell.net>
+References: <20170512165513.GA23551@ls3530.fritz.box> <267CAD7B-3DB7-457E-8A82-2CFB2FF07587@bell.net> <eb437932-ad37-b6d4-0035-edcf76538424@gmx.de>
+Mime-Version: 1.0 (Apple Message framework v1085)
 Content-Type: text/plain; charset=us-ascii
-Cc: tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Richard Kuo <rkuo@codeaurora.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Michal Simek <monstr@monstr.eu>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-To: Jiri Slaby <jslaby@suse.cz>
-Return-path: <linux-hexagon-owner@vger.kernel.org>
-In-Reply-To: <20170515130742.18357-1-jslaby@suse.cz>
-List-ID: <linux-hexagon.vger.kernel.org>
+Cc: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <eb437932-ad37-b6d4-0035-edcf76538424@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Jiri,
+On 2017-05-15, at 3:39 AM, Helge Deller wrote:
 
-On Mon, May 15, 2017 at 03:07:42PM +0200, Jiri Slaby wrote:
-> There is code duplicated over all architecture's headers for
-> futex_atomic_op_inuser. Namely op decoding, access_ok check for uaddr,
-> and comparison of the result.
-> 
-> Remove this duplication and leave up to the arches only the needed
-> assembly which is now in arch_futex_atomic_op_inuser.
-> 
-> Note that s390 removed access_ok check in d12a29703 ("s390/uaccess:
-> remove pointless access_ok() checks") as access_ok there returns true.
-> We introduce it back to the helper for the sake of simplicity (it gets
-> optimized away anyway).
+> Anyway, I did included an updated patch [1] in my last git pull request to Linus (which actually
+> didn't made it into 4.12...).
+> Can you test this one instead?
 
-Whilst I think this is a good idea, the code in question actually results
-in undefined behaviour per the C spec and is reported by UBSAN. See my
-patch fixing arm64 here (which I'd forgotten about):
+I still see same behavior.
 
-https://www.spinics.net/lists/linux-arch/msg38564.html
+Dave
+--
+John David Anglin	dave.anglin@bell.net
 
-But, as stated in the thread above, I think we should go a step further
-and remove FUTEX_OP_{OR,ANDN,XOR,OPARG_SHIFT} altogether. They don't
-appear to be used by userspace, and this whole thing is a total mess.
 
-Any thoughts?
 
-Will
