@@ -1,67 +1,52 @@
-From: Will Deacon <will.deacon@arm.com>
-Subject: Re: [PATCH 1/1] futex: remove duplicated code
-Date: Thu, 18 May 2017 18:30:10 +0100
-Message-ID: <20170518173010.GK21359@arm.com>
-References: <20170515130742.18357-1-jslaby@suse.cz>
- <20170515131644.GA3605@arm.com>
- <14580dfc-9721-38ab-a1e0-6b4aba13b406@suse.cz>
+From: Helge Deller <deller@gmx.de>
+Subject: [RFC][PATCH] parisc: Ignore AUX port of DIVA on rp34xx machines
+Date: Sun, 21 May 2017 23:16:23 +0200
+Message-ID: <20170521211623.GA22326@ls3530.fritz.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Richard Kuo <rkuo@codeaurora.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Michal Simek <monstr@monstr.eu>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-To: Jiri Slaby <jslaby@suse.cz>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <14580dfc-9721-38ab-a1e0-6b4aba13b406@suse.cz>
-List-ID: <linux-arch.vger.kernel.org>
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, May 17, 2017 at 10:01:29AM +0200, Jiri Slaby wrote:
-> On 05/15/2017, 03:16 PM, Will Deacon wrote:
-> > Whilst I think this is a good idea, the code in question actually results
-> > in undefined behaviour per the C spec and is reported by UBSAN.
-> 
-> Hi, yes, I know -- this patch was the 1st from the series of 3 which I
-> sent a long time ago to fix that up too. But I remember your patch, so I
-> sent only this one this time.
-> 
-> > See my
-> > patch fixing arm64 here (which I'd forgotten about):
-> > 
-> > https://www.spinics.net/lists/linux-arch/msg38564.html
-> > 
-> > But, as stated in the thread above, I think we should go a step further
-> > and remove FUTEX_OP_{OR,ANDN,XOR,OPARG_SHIFT} altogether. They don't
-> > appear to be used by userspace, and this whole thing is a total mess.
-> > 
-> > Any thoughts?
-> 
-> Ok, I am all for that. I think the only question is who is going to do
-> the work and submit it :)? Do I understand correctly to eliminate all
-> these functions and the path into the kernel? But won't this break API
-> -- are there really no users of this interface?
+On rp34xx machines Linux detects the AUX port of the DIVA GSP card (PCI
+subsystem id 0x1291) before the console port of DIVA GSP and as such the
+AUX port becomes ttyS0 and the console port becomes ttyS1.  Since the
+palo bootloader by default sets the console output to ttyS0 if no
+keyboard & monitor is attached, all Linux kernel boot messages get lost.
 
-That's the million-dollar question, really. I don't know of any code using
-it, and I couldn't find any when I looked (also nothing reported by Debian
-Codesearch afaict), but I was hoping linux-arch might have some thoughts
-on this too.
+Avoid this problem by ignoring the AUX port. There is no external serial
+port connector for AUX, so we won't miss this serial port either.
 
-For now, I'll queue my arm64 patch before I forget about it again!
+(RFC, patch untested)
 
-Will
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+index 22d32d2..98261aa 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -174,6 +174,9 @@ static int pci_hp_diva_init(struct pci_dev *dev)
+ 	case PCI_DEVICE_ID_HP_DIVA_HURRICANE:
+ 		rc = 1;
+ 		break;
++	case PCI_DEVICE_ID_HP_DIVA_AUX2:
++		rc = -ENODEV; /* ignore on rp34xx */
++		break;
+ 	}
+ 
+ 	return rc;
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 3e5dbbe..633e738 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -760,6 +760,7 @@
+ #define PCI_DEVICE_ID_HP_SX1000_IOC	0x127c
+ #define PCI_DEVICE_ID_HP_DIVA_EVEREST	0x1282
+ #define PCI_DEVICE_ID_HP_DIVA_AUX	0x1290
++#define PCI_DEVICE_ID_HP_DIVA_AUX2	0x1291
+ #define PCI_DEVICE_ID_HP_DIVA_RMP3	0x1301
+ #define PCI_DEVICE_ID_HP_DIVA_HURRICANE	0x132a
+ #define PCI_DEVICE_ID_HP_CISSA		0x3220
