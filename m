@@ -1,9 +1,10 @@
-From: Aleksa Sarai <asarai@suse.de>
+From: Richard Henderson <rth@twiddle.net>
 Subject: Re: [PATCH] tty: add TIOCGPTPEER ioctl
-Date: Fri, 2 Jun 2017 06:00:17 +1000
-Message-ID: <a0671efc-4c4e-bbdc-c9d8-a7bdc22b872a@suse.de>
+Date: Thu, 1 Jun 2017 13:12:15 -0700
+Message-ID: <4e16e83b-8fb7-c9b6-2f06-ee48499a67db@twiddle.net>
 References: <20170601173803.8698-1-asarai@suse.de>
  <CAMuHMdXkaWg70OidDi0_xALbzwZ+o0eEVEzT5U_6HdewBs4WwA@mail.gmail.com>
+ <a0671efc-4c4e-bbdc-c9d8-a7bdc22b872a@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -19,29 +20,32 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Linux-Arch <linux-arch@vger.kernel.org>,
         Christian Brauner <christian.brauner@ubuntu.com>,
         Valentin Rothberg <vrothberg@suse.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXkaWg70OidDi0_xALbzwZ+o0eEVEzT5U_6HdewBs4WwA@mail.gmail.com>
-List-ID: <linux-alpha.vger.kernel.org>
+To: Aleksa Sarai <asarai@suse.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <a0671efc-4c4e-bbdc-c9d8-a7bdc22b872a@suse.de>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
->> --- a/arch/alpha/include/uapi/asm/ioctls.h
->> +++ b/arch/alpha/include/uapi/asm/ioctls.h
->> @@ -94,6 +94,7 @@
->>   #define TIOCSRS485     _IOWR('T', 0x2F, struct serial_rs485)
->>   #define TIOCGPTN       _IOR('T',0x30, unsigned int) /* Get Pty Number (of pty-mux device) */
->>   #define TIOCSPTLCK     _IOW('T',0x31, int)  /* Lock/unlock Pty */
->> +#define TIOCGPTPEER    _IOR('T', 0x41, int) /* Safely open the slave */
+On 06/01/2017 01:00 PM, Aleksa Sarai wrote:
+>>> --- a/arch/alpha/include/uapi/asm/ioctls.h
+>>> +++ b/arch/alpha/include/uapi/asm/ioctls.h
+>>> @@ -94,6 +94,7 @@
+>>>   #define TIOCSRS485     _IOWR('T', 0x2F, struct serial_rs485)
+>>>   #define TIOCGPTN       _IOR('T',0x30, unsigned int) /* Get Pty Number (of 
+>>> pty-mux device) */
+>>>   #define TIOCSPTLCK     _IOW('T',0x31, int)  /* Lock/unlock Pty */
+>>> +#define TIOCGPTPEER    _IOR('T', 0x41, int) /* Safely open the slave */
+>>
+>> Shouldn't the list of definitions be kept sorted, by hex number?
+>> (everywhere)
 > 
-> Shouldn't the list of definitions be kept sorted, by hex number?
-> (everywhere)
+> Probably. The reason I put it here is because it logically is very similar to 
+> TIOCGPTN and TIOSPTLCK, but I can move it if the hex order is more important 
+> for maintainence.
+> 
 
-Probably. The reason I put it here is because it logically is very 
-similar to TIOCGPTN and TIOSPTLCK, but I can move it if the hex order is 
-more important for maintainence.
+Yes please.
 
--- 
-Aleksa Sarai
-Software Engineer (Containers)
-SUSE Linux GmbH
-https://www.cyphar.com/
+
+r~
