@@ -1,35 +1,43 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] net/{mii,smsc}: Make mii_ethtool_get_link_ksettings
- and smc_netdev_get_ecmd return void
-Date: Mon, 05 Jun 2017 11:01:45 -0400 (EDT)
-Message-ID: <20170605.110145.2053472151656679350.davem@davemloft.net>
-References: <20170604172200.4177-1-yuval.shaia@oracle.com>
+From: Jerry Donsin <jerrydonsin6@gmail.com>
+Subject: waiting for your response soon.
+Date: Mon, 5 Jun 2017 16:51:44 +0000
+Message-ID: <CA+r1-+ScphY_i4hE15yJiNwSNvVtN3GRhU3M62OeMfYYA8dwAg@mail.gmail.com>
+Reply-To: jerrydonsin1@hotmail.fr
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: klassert@mathematik.tu-chemnitz.de, pcnet32@frontier.com,
-        hsweeten@visionengravers.com, jeffrey.t.kirsher@intel.com,
-        cooldavid@cooldavid.org, mcuos.com@gmail.com, nic_swsd@realtek.com,
-        ralf@linux-mips.org, romieu@fr.zoreil.com, nico@fluxnic.net,
-        oneukum@suse.com, tremyfr@gmail.com, paul.gortmaker@windriver.com,
-        jarod@redhat.com, green.hu@gmail.com, f.fainelli@gmail.com,
-        edumazet@google.com, shchers@gmail.com, stephen.boyd@linaro.org,
-        fgao@48lvckh6395k16k5.yundunddos.com, tklauser@distanz.ch,
-        jay.vosburgh@canonical.com, robert.jarzmik@free.fr,
-        jeremy.linton@arm.com, rmk+kernel@armlinux.org.uk,
-        stephen@networkplumber.org, arnd@arndb.de, gerg@linux-m68k.org,
-        allan@asix.com.tw, chris.roth@usask.ca, hayeswang@realtek.com,
-        mario_limonciello@dell.com, netdev@vger.kernel.org,
-        linux-parisc@
-To: yuval.shaia@oracle.com
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20170604172200.4177-1-yuval.shaia@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+To: undisclosed-recipients:;
+Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-From: Yuval Shaia <yuval.shaia@oracle.com>
-Date: Sun,  4 Jun 2017 20:22:00 +0300
+Good day,
 
-> Make return value void since functions never returns meaningfull value.
-> 
-> Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
+Please, i Want to introduce my self on this business opportunity to
+you  My name is Jerry Donsin, A Fiduciary bank Attorney At Law. i wish
+to know  if we can work together.
 
-Applied to net-next.
+I Would like you stand as the surviving beneficiary to my deceased
+client Who made some deposit of ($10.5 Million) He died  without
+leaving any WILL and any registered next of kin and as such the funds
+now have open beneficiary mandate.
+
+Kindly get in touch with me through my email address
+(jerrydonsin1@hotmail.fr) with your information For more guild lines
+to  the repartition of this fund.
+
+FULL NAME :
+AGE :
+OCCUPATION :
+INTERNATIONAL PASSPORT OR DRIVERS LICENSE :
+YOUR COUNTRY:
+PERSONAL PHONE NUMBER:
+PERSONAL FAX NUMBER:
+HOME ADDRESS:
+
+May His Fragile Soul Rest In Perfect Peace Amen !!!
+
+Regards,
+
+Jerry Donsin Esq.
+
+jerrydonsin1@hotmail.fr
