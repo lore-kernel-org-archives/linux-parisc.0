@@ -1,22 +1,34 @@
 From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] net/dec: Make __de_get_link_ksettings return void
-Date: Mon, 05 Jun 2017 11:01:21 -0400 (EDT)
-Message-ID: <20170605.110121.1149404417057503000.davem@davemloft.net>
-References: <20170604170851.3808-1-yuval.shaia@oracle.com>
+Subject: Re: [PATCH] net/{mii,smsc}: Make mii_ethtool_get_link_ksettings
+ and smc_netdev_get_ecmd return void
+Date: Mon, 05 Jun 2017 11:01:45 -0400 (EDT)
+Message-ID: <20170605.110145.2053472151656679350.davem@davemloft.net>
+References: <20170604172200.4177-1-yuval.shaia@oracle.com>
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
-Cc: jarod@redhat.com, tklauser@distanz.ch, tremyfr@gmail.com,
-        netdev@vger.kernel.org, linux-parisc@vger.kernel.org
+Cc: klassert@mathematik.tu-chemnitz.de, pcnet32@frontier.com,
+        hsweeten@visionengravers.com, jeffrey.t.kirsher@intel.com,
+        cooldavid@cooldavid.org, mcuos.com@gmail.com, nic_swsd@realtek.com,
+        ralf@linux-mips.org, romieu@fr.zoreil.com, nico@fluxnic.net,
+        oneukum@suse.com, tremyfr@gmail.com, paul.gortmaker@windriver.com,
+        jarod@redhat.com, green.hu@gmail.com, f.fainelli@gmail.com,
+        edumazet@google.com, shchers@gmail.com, stephen.boyd@linaro.org,
+        fgao@48lvckh6395k16k5.yundunddos.com, tklauser@distanz.ch,
+        jay.vosburgh@canonical.com, robert.jarzmik@free.fr,
+        jeremy.linton@arm.com, rmk+kernel@armlinux.org.uk,
+        stephen@networkplumber.org, arnd@arndb.de, gerg@linux-m68k.org,
+        allan@asix.com.tw, chris.roth@usask.ca, hayeswang@realtek.com,
+        mario_limonciello@dell.com, netdev@vger.kernel.org,
+        linux-parisc@
 To: yuval.shaia@oracle.com
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170604170851.3808-1-yuval.shaia@oracle.com>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20170604172200.4177-1-yuval.shaia@oracle.com>
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
 From: Yuval Shaia <yuval.shaia@oracle.com>
-Date: Sun,  4 Jun 2017 20:08:51 +0300
+Date: Sun,  4 Jun 2017 20:22:00 +0300
 
-> Make return value void since function never return meaningfull value
+> Make return value void since functions never returns meaningfull value.
 > 
 > Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
 
