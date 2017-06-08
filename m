@@ -1,45 +1,47 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Don't hardcode PSW values in hpmc code
-Date: Thu, 8 Jun 2017 22:11:00 +0200
-Message-ID: <20170608201100.GA26104@p100.box>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Babu Moger <babu.moger@oracle.com>
+Subject: [PATCH 0/2] Define CPU_BIG_ENDIAN or warn for inconsistencies
+Date: Thu,  8 Jun 2017 15:17:21 -0700
+Message-ID: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
+Cc: mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com,
+        jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org
+To: ysato@users.sourceforge.jp, geert@linux-m68k.org,
+        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
+        shorne@gmail.com, jejb@parisc-linux.org, deller@gmx.de,
+        davem@davemloft.net, viro@zeniv.linux.org.uk
+Return-path: <linux-m68k-owner@vger.kernel.org>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Found this problem while enabling queued rwlock on SPARC.
+The parameter CONFIG_CPU_BIG_ENDIAN is used to clear the
+specific byte in qrwlock structure. Without this parameter,
+we clear the wrong byte. Here is the code.
 
-diff --git a/arch/parisc/kernel/hpmc.S b/arch/parisc/kernel/hpmc.S
-index 0fbd0a0..e3a8e5e 100644
---- a/arch/parisc/kernel/hpmc.S
-+++ b/arch/parisc/kernel/hpmc.S
-@@ -44,6 +44,7 @@
- 
- #include <asm/assembly.h>
- #include <asm/pdc.h>
-+#include <asm/psw.h>
- 
- #include <linux/linkage.h>
- #include <linux/init.h>
-@@ -135,7 +136,7 @@ ENTRY_CFI(os_hpmc)
- 	 * So turn on the Q bit and turn off the M bit.
- 	 */
- 
--	ldo     8(%r0),%r4                       /* PSW Q on, PSW M off */
-+	ldi     PSW_SM_Q,%r4                   /* PSW Q on, PSW M off */
- 	mtctl   %r4,ipsw
- 	mtctl   %r0,pcsq
- 	mtctl   %r0,pcsq
-@@ -257,7 +258,7 @@ os_hpmc_5:
- 
- 	tovirt_r1 %r30      /* make sp virtual */
- 
--	rsm 8,%r0           /* Clear Q bit */
-+	rsm     PSW_SM_Q,%r0           /* Clear Q bit */
- 	ldi     1,%r8       /* Set trap code to "1" for HPMC */
- 	load32	PA(intr_save),%r1
- 	be      0(%sr7,%r1)
+static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
+  {
+         return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
+  }
+
+Here is the previous discussion.
+http://www.spinics.net/lists/devicetree/msg178101.html
+
+Based on the discussion, it was decided to add CONFIG_CPU_BIG_ENDIAN
+for all the fixed big endian architecture(frv, h8300, m68k, openrisc,
+parisc and sparc). And warn if there are inconsistencies in this definition.
+
+Babu Moger (2):
+  arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
+  include: warn for inconsistent endian config definition
+
+ arch/frv/Kconfig                        |    3 +++
+ arch/h8300/Kconfig                      |    3 +++
+ arch/m68k/Kconfig                       |    3 +++
+ arch/openrisc/Kconfig                   |    3 +++
+ arch/parisc/Kconfig                     |    3 +++
+ arch/sparc/Kconfig                      |    3 +++
+ include/linux/byteorder/big_endian.h    |    4 ++++
+ include/linux/byteorder/little_endian.h |    4 ++++
+ 8 files changed, 26 insertions(+), 0 deletions(-)
