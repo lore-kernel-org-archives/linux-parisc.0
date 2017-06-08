@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Don't hardcode value of PSW_SM_D in gsc_*() functions
-Date: Thu, 8 Jun 2017 22:09:18 +0200
-Message-ID: <20170608200918.GA26075@p100.box>
+Subject: [PATCH] parisc: Don't hardcode PSW values in hpmc code
+Date: Thu, 8 Jun 2017 22:11:00 +0200
+Message-ID: <20170608201100.GA26104@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -13,58 +13,33 @@ List-Id: linux-parisc.vger.kernel.org
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
-index 1a16f1d..af98254 100644
---- a/arch/parisc/include/asm/io.h
-+++ b/arch/parisc/include/asm/io.h
-@@ -34,10 +34,10 @@ static inline unsigned char gsc_readb(unsigned long addr)
- 	unsigned char ret;
+diff --git a/arch/parisc/kernel/hpmc.S b/arch/parisc/kernel/hpmc.S
+index 0fbd0a0..e3a8e5e 100644
+--- a/arch/parisc/kernel/hpmc.S
++++ b/arch/parisc/kernel/hpmc.S
+@@ -44,6 +44,7 @@
  
- 	__asm__ __volatile__(
--	"	rsm	2,%0\n"
-+	"	rsm	%3,%0\n"
- 	"	ldbx	0(%2),%1\n"
- 	"	mtsm	%0\n"
--	: "=&r" (flags), "=r" (ret) : "r" (addr) );
-+	: "=&r" (flags), "=r" (ret) : "r" (addr), "i" (PSW_SM_D) );
+ #include <asm/assembly.h>
+ #include <asm/pdc.h>
++#include <asm/psw.h>
  
- 	return ret;
- }
-@@ -48,10 +48,10 @@ static inline unsigned short gsc_readw(unsigned long addr)
- 	unsigned short ret;
+ #include <linux/linkage.h>
+ #include <linux/init.h>
+@@ -135,7 +136,7 @@ ENTRY_CFI(os_hpmc)
+ 	 * So turn on the Q bit and turn off the M bit.
+ 	 */
  
- 	__asm__ __volatile__(
--	"	rsm	2,%0\n"
-+	"	rsm	%3,%0\n"
- 	"	ldhx	0(%2),%1\n"
- 	"	mtsm	%0\n"
--	: "=&r" (flags), "=r" (ret) : "r" (addr) );
-+	: "=&r" (flags), "=r" (ret) : "r" (addr), "i" (PSW_SM_D) );
+-	ldo     8(%r0),%r4                       /* PSW Q on, PSW M off */
++	ldi     PSW_SM_Q,%r4                   /* PSW Q on, PSW M off */
+ 	mtctl   %r4,ipsw
+ 	mtctl   %r0,pcsq
+ 	mtctl   %r0,pcsq
+@@ -257,7 +258,7 @@ os_hpmc_5:
  
- 	return ret;
- }
-@@ -87,20 +87,20 @@ static inline void gsc_writeb(unsigned char val, unsigned long addr)
- {
- 	long flags;
- 	__asm__ __volatile__(
--	"	rsm	2,%0\n"
-+	"	rsm	%3,%0\n"
- 	"	stbs	%1,0(%2)\n"
- 	"	mtsm	%0\n"
--	: "=&r" (flags) :  "r" (val), "r" (addr) );
-+	: "=&r" (flags) :  "r" (val), "r" (addr), "i" (PSW_SM_D) );
- }
+ 	tovirt_r1 %r30      /* make sp virtual */
  
- static inline void gsc_writew(unsigned short val, unsigned long addr)
- {
- 	long flags;
- 	__asm__ __volatile__(
--	"	rsm	2,%0\n"
-+	"	rsm	%3,%0\n"
- 	"	sths	%1,0(%2)\n"
- 	"	mtsm	%0\n"
--	: "=&r" (flags) :  "r" (val), "r" (addr) );
-+	: "=&r" (flags) :  "r" (val), "r" (addr), "i" (PSW_SM_D) );
- }
- 
- static inline void gsc_writel(unsigned int val, unsigned long addr)
+-	rsm 8,%r0           /* Clear Q bit */
++	rsm     PSW_SM_Q,%r0           /* Clear Q bit */
+ 	ldi     1,%r8       /* Set trap code to "1" for HPMC */
+ 	load32	PA(intr_save),%r1
+ 	be      0(%sr7,%r1)
