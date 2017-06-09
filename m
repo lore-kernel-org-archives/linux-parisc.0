@@ -1,65 +1,58 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [RFC][PATCH] atomic: Fix atomic_set_release() for 'funny'
- architectures
-Date: Fri, 09 Jun 2017 11:58:46 -0700
-Message-ID: <1497034726.3510.7.camel@HansenPartnership.com>
-References: <20170609092450.jwmldgtli57ozxgq@hirez.programming.kicks-ass.net>
-         <20170609110506.yod47flaav3wgoj5@hirez.programming.kicks-ass.net>
-         <20170609111305.bn4ca4uscbp6pgxn@hirez.programming.kicks-ass.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, vgupta@synopsys.com,
-        rkuo@codeaurora.org, james.hogan@imgtec.com, jejb@parisc-linux.org,
-        davem@davemloft.net, cmetcalf@mellanox.com,
-        Parisc List <linux-parisc@vger.kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Paul McKenney <paulmck@linux.vnet.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170609111305.bn4ca4uscbp6pgxn@hirez.programming.kicks-ass.net>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Babu Moger <babu.moger@oracle.com>
+Subject: [PATCH v2 0/2] Define CPU_BIG_ENDIAN or warn for inconsistencies
+Date: Fri,  9 Jun 2017 12:48:05 -0700
+Message-ID: <1497037687-107638-1-git-send-email-babu.moger@oracle.com>
+Cc: mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com,
+        jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org
+To: ysato@users.sourceforge.jp, geert@linux-m68k.org,
+        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
+        shorne@gmail.com, jejb@parisc-linux.org, deller@gmx.de,
+        davem@davemloft.net, viro@zeniv.linux.org.uk
+Return-path: <sparclinux-owner@vger.kernel.org>
+List-ID: <sparclinux.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-[adding parisc list]
-On Fri, 2017-06-09 at 13:13 +0200, Peter Zijlstra wrote:
-> On Fri, Jun 09, 2017 at 01:05:06PM +0200, Peter Zijlstra wrote:
-> 
-> > The spinlock based atomics should be SC, that is, none of them
-> > appear to
-> > place extra barriers in atomic_cmpxchg() or any of the other SC
-> > atomic
-> > primitives and therefore seem to rely on their spinlock
-> > implementation
-> > being SC (I did not fully validate all that).
-> 
-> So I did see that ARC and PARISC have 'superfluous' smp_mb() calls
-> around their spinlock implementation.
-> 
-> That is, for spinlock semantics you only need one _after_ lock and 
-> one _before_ unlock. But the atomic stuff relies on being SC and thus
-> would need one before and after both lock and unlock.
+Found this problem while enabling queued rwlock on SPARC.
+The parameter CONFIG_CPU_BIG_ENDIAN is used to clear the
+specific byte in qrwlock structure. Without this parameter,
+we clear the wrong byte.
+Here is the code in include/asm-generic/qrwlock.h
 
-Actually, for us that's not true.  You are correct in the above for
-safety but not for performance: If we remove the safety unnecessary
-barriers, it can elongate our critical sections (the spinlock can move
-up in the code stream and the spin unlock can move down) which leads to
-performance regressions because we end up holding locks longer than we
-need (we also have a lot of hot locks).
+static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
+  {
+         return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
+  }
 
-> Now, afaict PARISC doesn't even have memory barriers (it uses
-> asm-generic/barrier.h) so that's a bit of a puzzle.
+Also found few more references of this parameter in
+drivers/of/base.c
+drivers/of/fdt.c
+drivers/tty/serial/earlycon.c
+drivers/tty/serial/serial_core.c
 
-We disable relaxed ordering on our architecture which means the CPU
-issue stream must match the instruction stream.  We've debated turning
-on relaxed ordering, but decided it was more hassle than it's worth.
+Here is our previous discussion.
+https://lkml.org/lkml/2017/5/24/620
 
-James
+Based on the discussion, it was decided to add CONFIG_CPU_BIG_ENDIAN
+for all the fixed big endian architecture(frv, h8300, m68k, openrisc,
+parisc and sparc). And warn if there are inconsistencies in this definition.
 
+v1 -> v2:
+ Updated the commit messages and acks.
 
-> But ARC could probably optimize (if they still care about that 
-> hardware) by pulling out those barriers and putting it in the atomic
-> implementation.
-> 
+Babu Moger (2):
+  arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
+  include: warn for inconsistent endian config definition
+
+ arch/frv/Kconfig                        |    3 +++
+ arch/h8300/Kconfig                      |    3 +++
+ arch/m68k/Kconfig                       |    3 +++
+ arch/openrisc/Kconfig                   |    3 +++
+ arch/parisc/Kconfig                     |    3 +++
+ arch/sparc/Kconfig                      |    3 +++
+ include/linux/byteorder/big_endian.h    |    4 ++++
+ include/linux/byteorder/little_endian.h |    4 ++++
+ 8 files changed, 26 insertions(+), 0 deletions(-)
 
