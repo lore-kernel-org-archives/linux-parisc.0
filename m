@@ -1,14 +1,13 @@
-From: Babu Moger <babu.moger@oracle.com>
-Subject: Re: [PATCH 2/2] include: warn for inconsistent endian config
- definition
-Date: Fri, 9 Jun 2017 08:55:06 -0500
-Message-ID: <257e0d57-bf55-eb1b-26e2-ba50b1bd2676@oracle.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 2/2] include: warn for inconsistent endian config definition
+Date: Fri, 9 Jun 2017 16:11:18 +0200
+Message-ID: <CAMuHMdV7eC95C=jZdWoAHC2tHT8duoNxWkhO6jWQbzouLDZS4A@mail.gmail.com>
 References: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
  <1496960243-196898-3-git-send-email-babu.moger@oracle.com>
  <CAMuHMdX2u8vZGBVXitH+FcfeMwZ8a1-g2b-Dh7V9=HnqJpj=hw@mail.gmail.com>
- <CAMuHMdVia9Jkwz0eEbSG0OE-Sw5wMbdjA1o3F6m10NaSWXq_Vw@mail.gmail.com>
+ <CAMuHMdVia9Jkwz0eEbSG0OE-Sw5wMbdjA1o3F6m10NaSWXq_Vw@mail.gmail.com> <257e0d57-bf55-eb1b-26e2-ba50b1bd2676@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
         Jonas Bonn <jonas@southpole.se>,
         Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
@@ -23,42 +22,40 @@ Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
         Max Filippov <jcmvbkbc@gmail.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         uclinux-h8-devel@lists.sourceforge.jp,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
         openrisc@lists.librecores.org,
         Parisc List <linux-parisc@vger.kernel.org>,
         sparclinux <sparclinux@vger.kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdVia9Jkwz0eEbSG0OE-Sw5wMbdjA1o3F6m10NaSWXq_Vw@mail.gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
+To: Babu Moger <babu.moger@oracle.com>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <257e0d57-bf55-eb1b-26e2-ba50b1bd2676@oracle.com>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Geert,
+Hi Babu,
 
-On 6/9/2017 2:16 AM, Geert Uytterhoeven wrote:
-> Hi Babu,
->
-> On Fri, Jun 9, 2017 at 9:05 AM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->>> Here is the original discussion
->>> http://www.spinics.net/lists/devicetree/msg178101.html
->>>
->>> Signed-off-by: Babu Moger <babu.moger@oracle.com>
->>> Suggested-by: Arnd Bergmann <arnd@arndb.de>
->> Hmm, the link above refers to a mail from me? ;-)
-> Please ignore that comment. I accidentally copied one line too much
-> from the other reply.
+On Fri, Jun 9, 2017 at 3:55 PM, Babu Moger <babu.moger@oracle.com> wrote:
+> On 6/9/2017 2:16 AM, Geert Uytterhoeven wrote:
+>> On Fri, Jun 9, 2017 at 9:05 AM, Geert Uytterhoeven <geert@linux-m68k.org>
+>> wrote:
+>>>> Here is the original discussion
+>>>> http://www.spinics.net/lists/devicetree/msg178101.html
+>>>>
+>>>> Signed-off-by: Babu Moger <babu.moger@oracle.com>
+>>>> Suggested-by: Arnd Bergmann <arnd@arndb.de>
 
-Yes. Got it.  So patch #1 is fine.   But, patch #2 might cause 
-regressions. Should I drop patch 2.
+> Yes. Got it.  So patch #1 is fine.   But, patch #2 might cause regressions.
+> Should I drop patch 2.
 
->
-> Gr{oetje,eeting}s,
->
->                          Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
+No, it should be applied, and regressions should be fixed.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
