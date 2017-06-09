@@ -1,73 +1,54 @@
-From: Babu Moger <babu.moger@oracle.com>
-Subject: [PATCH v2 2/2] include: warn for inconsistent endian config definition
-Date: Fri,  9 Jun 2017 12:48:07 -0700
-Message-ID: <1497037687-107638-3-git-send-email-babu.moger@oracle.com>
-References: <1497037687-107638-1-git-send-email-babu.moger@oracle.com>
-Cc: mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com,
-        jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org
-To: ysato@users.sourceforge.jp, geert@linux-m68k.org,
-        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
-        shorne@gmail.com, jejb@parisc-linux.org, deller@gmx.de,
-        davem@davemloft.net, viro@zeniv.linux.org.uk
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1497037687-107638-1-git-send-email-babu.moger@oracle.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 00/35] defconfig: Cleanup from old entries
+Date: Fri, 9 Jun 2017 21:59:48 +0200
+Message-ID: <CAK8P3a3bUeC3H2oNfdBedVY4UTCe8OgKbWmv46d5xfu8tC7tAg@mail.gmail.com>
+References: <20170608160836.12196-1-krzk@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Cc: "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
+ Rich Felker <dalias@libc.org>, Aurelien Jacquiot <a-jacquiot@ti.com>,
+ Tony Lindgren <tony@atomide.com>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Liviu Dudau <liviu.dudau@arm.com>,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ David Howells <dhowells@redhat.com>, Paul Mackerras <paulus@samba.org>,
+ "H. Peter Anvin" <hpa@zytor.com>, sparclinux <sparclinux@vger.kernel.org>,
+ linux-hexagon@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>,
+ Thomas Gleixner <tglx@linutronix.de>, Lennox Wu <lennox.wu@gmail.com>,
+ Jonas Bonn <jonas@southpole.se>, Chen Liqin <liqin.linux@gmail.com>,
+ Jesper Nilsson <jesper.nilsson@axis.com>,
+ Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, linux-c6x-dev@linux-c6x.org,
+ Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, linux-sh@vger.kernel.org
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20170608160836.12196-1-krzk@kernel.org>
+List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
+List-Post: <mailto:linux-snps-arc@lists.infradead.org>
+List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
 
-We have seen some generic code use config parameter CONFIG_CPU_BIG_ENDIAN
-to decide the endianness.
+On Thu, Jun 8, 2017 at 6:08 PM, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> Hi,
+>
+> While cleaning Samsung ARM defconfigs with savedefconfig, I encountered
+> similar obsolete entries in other files.
+>
+> Except the ARM, no dependencies.
+> For ARM, the rest of patches depend on the first change (otherwise
+> it might not apply cleanly).
 
-Here are the few examples.
-include/asm-generic/qrwlock.h
-drivers/of/base.c
-drivers/of/fdt.c
-drivers/tty/serial/earlycon.c
-drivers/tty/serial/serial_core.c
+Great work!
 
-Display warning if CPU_BIG_ENDIAN is not defined on big endian
-architecture and also warn if it defined on little endian architectures.
+I looked at all the ARM patches, and everything looks good to me (the
+changlog linewrapping may be suboptimal for readability in some cases,
+if I had to say anything negative ;-) ).
 
-Here is our original discussion
-https://lkml.org/lkml/2017/5/24/620
+Please add my Acked-by to the ARM patches and send a pull request.
 
-Signed-off-by: Babu Moger <babu.moger@oracle.com>
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- include/linux/byteorder/big_endian.h    |    4 ++++
- include/linux/byteorder/little_endian.h |    4 ++++
- 2 files changed, 8 insertions(+), 0 deletions(-)
-
-diff --git a/include/linux/byteorder/big_endian.h b/include/linux/byteorder/big_endian.h
-index 3920414..ffd2159 100644
---- a/include/linux/byteorder/big_endian.h
-+++ b/include/linux/byteorder/big_endian.h
-@@ -3,5 +3,9 @@
- 
- #include <uapi/linux/byteorder/big_endian.h>
- 
-+#ifndef CONFIG_CPU_BIG_ENDIAN
-+#warning inconsistent configuration, needs CONFIG_CPU_BIG_ENDIAN
-+#endif
-+
- #include <linux/byteorder/generic.h>
- #endif /* _LINUX_BYTEORDER_BIG_ENDIAN_H */
-diff --git a/include/linux/byteorder/little_endian.h b/include/linux/byteorder/little_endian.h
-index 0805737..ba910bb 100644
---- a/include/linux/byteorder/little_endian.h
-+++ b/include/linux/byteorder/little_endian.h
-@@ -3,5 +3,9 @@
- 
- #include <uapi/linux/byteorder/little_endian.h>
- 
-+#ifdef CONFIG_CPU_BIG_ENDIAN
-+#warning inconsistent configuration, CONFIG_CPU_BIG_ENDIAN is set
-+#endif
-+
- #include <linux/byteorder/generic.h>
- #endif /* _LINUX_BYTEORDER_LITTLE_ENDIAN_H */
--- 
-1.7.1
+        Arnd
