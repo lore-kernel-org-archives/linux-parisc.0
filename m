@@ -1,57 +1,103 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/2] include: warn for inconsistent endian config definition
-Date: Fri, 9 Jun 2017 09:16:46 +0200
-Message-ID: <CAMuHMdVia9Jkwz0eEbSG0OE-Sw5wMbdjA1o3F6m10NaSWXq_Vw@mail.gmail.com>
-References: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
- <1496960243-196898-3-git-send-email-babu.moger@oracle.com> <CAMuHMdX2u8vZGBVXitH+FcfeMwZ8a1-g2b-Dh7V9=HnqJpj=hw@mail.gmail.com>
+From: <gregkh@linuxfoundation.org>
+Subject: patch "parisc: parisc_bus_type: use dev_groups and not dev_attrs for" added to driver-core-testing
+Date: Fri, 09 Jun 2017 11:01:02 +0200
+Message-ID: <14969988626832@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        openrisc@lists.librecores.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>
-To: Babu Moger <babu.moger@oracle.com>
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+To: gregkh@linuxfoundation.org, bart.vanassche@sandisk.com,
+        deller@gmx.de, dledford@redhat.com, jejb@parisc-linux.org,
+        linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdX2u8vZGBVXitH+FcfeMwZ8a1-g2b-Dh7V9=HnqJpj=hw@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Babu,
 
-On Fri, Jun 9, 2017 at 9:05 AM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
->> Here is the original discussion
->> http://www.spinics.net/lists/devicetree/msg178101.html
->>
->> Signed-off-by: Babu Moger <babu.moger@oracle.com>
->> Suggested-by: Arnd Bergmann <arnd@arndb.de>
->
-> Hmm, the link above refers to a mail from me? ;-)
+This is a note to let you know that I've just added the patch titled
 
-Please ignore that comment. I accidentally copied one line too much
-from the other reply.
+    parisc: parisc_bus_type: use dev_groups and not dev_attrs for
 
-Gr{oetje,eeting}s,
+to my driver-core git tree which can be found at
+    git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git
+in the driver-core-testing branch.
 
-                        Geert
+The patch will show up in the next release of the linux-next tree
+(usually sometime within the next 24 hours during the week.)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+The patch will be merged to the driver-core-next branch sometime soon,
+after it passes testing, and the merge window is open.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+If you have any questions about this process, please let me know.
+
+
+>From 9b7c6682270043415921ee73e584bdc4ee289fdf Mon Sep 17 00:00:00 2001
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date: Tue, 6 Jun 2017 14:16:38 +0200
+Subject: parisc: parisc_bus_type: use dev_groups and not dev_attrs for
+ bus_type
+
+The dev_attrs field has long been "depreciated" and is finally being
+removed, so move the driver to use the "correct" dev_groups field
+instead for struct bus_type.
+
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Bart Van Assche <bart.vanassche@sandisk.com>
+Cc: Doug Ledford <dledford@redhat.com>
+Cc: <linux-parisc@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ arch/parisc/kernel/drivers.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
+
+diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
+index fa78419100c8..d8f77358e2ba 100644
+--- a/arch/parisc/kernel/drivers.c
++++ b/arch/parisc/kernel/drivers.c
+@@ -575,7 +575,8 @@ static ssize_t name##_show(struct device *dev, struct device_attribute *attr, ch
+ {									\
+ 	struct parisc_device *padev = to_parisc_device(dev);		\
+ 	return sprintf(buf, format_string, padev->field);		\
+-}
++}									\
++static DEVICE_ATTR_RO(name);
+ 
+ #define pa_dev_attr_id(field, format) pa_dev_attr(field, id.field, format)
+ 
+@@ -589,22 +590,24 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	return make_modalias(dev, buf);
+ }
++static DEVICE_ATTR_RO(modalias);
+ 
+-static struct device_attribute parisc_device_attrs[] = {
+-	__ATTR_RO(irq),
+-	__ATTR_RO(hw_type),
+-	__ATTR_RO(rev),
+-	__ATTR_RO(hversion),
+-	__ATTR_RO(sversion),
+-	__ATTR_RO(modalias),
+-	__ATTR_NULL,
++static struct attribute *parisc_device_attrs[] = {
++	&dev_attr_irq.attr,
++	&dev_attr_hw_type.attr,
++	&dev_attr_rev.attr,
++	&dev_attr_hversion.attr,
++	&dev_attr_sversion.attr,
++	&dev_attr_modalias.attr,
++	NULL,
+ };
++ATTRIBUTE_GROUPS(parisc_device);
+ 
+ struct bus_type parisc_bus_type = {
+ 	.name = "parisc",
+ 	.match = parisc_generic_match,
+ 	.uevent = parisc_uevent,
+-	.dev_attrs = parisc_device_attrs,
++	.dev_groups = parisc_device_groups,
+ 	.probe = parisc_driver_probe,
+ 	.remove = parisc_driver_remove,
+ };
+-- 
+2.13.1
+
+
