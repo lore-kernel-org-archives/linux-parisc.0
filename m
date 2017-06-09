@@ -1,65 +1,64 @@
-From: Aleksa Sarai <asarai@suse.de>
-Subject: Re: [PATCH v4 2/2] tty: add TIOCGPTPEER ioctl
-Date: Fri, 9 Jun 2017 20:24:30 +1000
-Message-ID: <f3587aca-0d84-1ca7-cfb0-830e536410c2@suse.de>
-References: <20170603141515.9529-1-asarai@suse.de>
- <20170603141515.9529-3-asarai@suse.de> <20170609092659.GA26933@kroah.com>
- <44c2b6c7-63ee-5c7f-cc77-5e1bcd69eea4@suse.de>
- <20170609100442.GA1405@kroah.com>
+From: Babu Moger <babu.moger@oracle.com>
+Subject: Re: [PATCH 2/2] include: warn for inconsistent endian config
+ definition
+Date: Fri, 9 Jun 2017 08:55:06 -0500
+Message-ID: <257e0d57-bf55-eb1b-26e2-ba50b1bd2676@oracle.com>
+References: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
+ <1496960243-196898-3-git-send-email-babu.moger@oracle.com>
+ <CAMuHMdX2u8vZGBVXitH+FcfeMwZ8a1-g2b-Dh7V9=HnqJpj=hw@mail.gmail.com>
+ <CAMuHMdVia9Jkwz0eEbSG0OE-Sw5wMbdjA1o3F6m10NaSWXq_Vw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: Jiri Slaby <jslaby@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Valentin Rothberg <vrothberg@suse.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <20170609100442.GA1405@kroah.com>
-List-ID: <linux-alpha.vger.kernel.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        openrisc@lists.librecores.org,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdVia9Jkwz0eEbSG0OE-Sw5wMbdjA1o3F6m10NaSWXq_Vw@mail.gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
->>>> When opening the slave end of a PTY, it is not possible for userspace to
->>>> safely ensure that /dev/pts/$num is actually a slave (in cases where the
->>>> mount namespace in which devpts was mounted is controlled by an
->>>> untrusted process). In addition, there are several unresolvable
->>>> race conditions if userspace were to attempt to detect attacks through
->>>> stat(2) and other similar methods [in addition it is not clear how
->>>> userspace could detect attacks involving FUSE].
->>>>
->>>> Resolve this by providing an interface for userpace to safely open the
->>>> "peer" end of a PTY file descriptor by using the dentry cached by
->>>> devpts. Since it is not possible to have an open master PTY without
->>>> having its slave exposed in /dev/pts this interface is safe. This
->>>> interface currently does not provide a way to get the master pty (since
->>>> it is not clear whether such an interface is safe or even useful).
->>>>
->>>> Cc: Christian Brauner <christian.brauner@ubuntu.com>
->>>> Cc: Valentin Rothberg <vrothberg@suse.com>
->>>> Signed-off-by: Aleksa Sarai <asarai@suse.de>
+Geert,
+
+On 6/9/2017 2:16 AM, Geert Uytterhoeven wrote:
+> Hi Babu,
+>
+> On Fri, Jun 9, 2017 at 9:05 AM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>>> Here is the original discussion
+>>> http://www.spinics.net/lists/devicetree/msg178101.html
 >>>
->>> Is this going to be documented anywhere?  Is there a man page update
->>> that also goes along with this?
->>
->> I will add one, I didn't know where the man-pages project is hosted / where
->> patches get pushed? What is the ML?
-> 
->  From the MAINTAINERS file:
->    MAN-PAGES: MANUAL PAGES FOR LINUX -- Sections 2, 3, 4, 5, and 7
->    M:      Michael Kerrisk <mtk.manpages@gmail.com>
->    W:      http://www.kernel.org/doc/man-pages
->    L:      linux-man@vger.kernel.org
->    S:      Maintained
+>>> Signed-off-by: Babu Moger <babu.moger@oracle.com>
+>>> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+>> Hmm, the link above refers to a mail from me? ;-)
+> Please ignore that comment. I accidentally copied one line too much
+> from the other reply.
 
-Ah, should've looked there first!
+Yes. Got it.  So patch #1 is fine.   But, patch #2 might cause 
+regressions. Should I drop patch 2.
 
-Thanks Greg, I'll send it over the weekend.
-
--- 
-Aleksa Sarai
-Software Engineer (Containers)
-SUSE Linux GmbH
-https://www.cyphar.com/
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
