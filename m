@@ -1,103 +1,52 @@
-From: <gregkh@linuxfoundation.org>
-Subject: patch "parisc: parisc_bus_type: use dev_groups and not dev_attrs for" added to driver-core-testing
-Date: Fri, 09 Jun 2017 11:01:02 +0200
-Message-ID: <14969988626832@kroah.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v4 2/2] tty: add TIOCGPTPEER ioctl
+Date: Fri, 9 Jun 2017 11:26:59 +0200
+Message-ID: <20170609092659.GA26933@kroah.com>
+References: <20170603141515.9529-1-asarai@suse.de>
+ <20170603141515.9529-3-asarai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
-To: gregkh@linuxfoundation.org, bart.vanassche@sandisk.com,
-        deller@gmx.de, dledford@redhat.com, jejb@parisc-linux.org,
-        linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Jiri Slaby <jslaby@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-arch@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Valentin Rothberg <vrothberg@suse.com>
+To: Aleksa Sarai <asarai@suse.de>
+Return-path: <sparclinux-owner@vger.kernel.org>
+In-Reply-To: <20170603141515.9529-3-asarai@suse.de>
+List-ID: <sparclinux.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On Sun, Jun 04, 2017 at 12:15:15AM +1000, Aleksa Sarai wrote:
+> When opening the slave end of a PTY, it is not possible for userspace to
+> safely ensure that /dev/pts/$num is actually a slave (in cases where the
+> mount namespace in which devpts was mounted is controlled by an
+> untrusted process). In addition, there are several unresolvable
+> race conditions if userspace were to attempt to detect attacks through
+> stat(2) and other similar methods [in addition it is not clear how
+> userspace could detect attacks involving FUSE].
+> 
+> Resolve this by providing an interface for userpace to safely open the
+> "peer" end of a PTY file descriptor by using the dentry cached by
+> devpts. Since it is not possible to have an open master PTY without
+> having its slave exposed in /dev/pts this interface is safe. This
+> interface currently does not provide a way to get the master pty (since
+> it is not clear whether such an interface is safe or even useful).
+> 
+> Cc: Christian Brauner <christian.brauner@ubuntu.com>
+> Cc: Valentin Rothberg <vrothberg@suse.com>
+> Signed-off-by: Aleksa Sarai <asarai@suse.de>
 
-This is a note to let you know that I've just added the patch titled
+Is this going to be documented anywhere?  Is there a man page update
+that also goes along with this?  What userspace program wants to use
+this?
 
-    parisc: parisc_bus_type: use dev_groups and not dev_attrs for
+I'm not objecting to this, I just want to know that people will use
+this, and that they can find out information about it if they want to.
 
-to my driver-core git tree which can be found at
-    git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git
-in the driver-core-testing branch.
+thanks,
 
-The patch will show up in the next release of the linux-next tree
-(usually sometime within the next 24 hours during the week.)
-
-The patch will be merged to the driver-core-next branch sometime soon,
-after it passes testing, and the merge window is open.
-
-If you have any questions about this process, please let me know.
-
-
->From 9b7c6682270043415921ee73e584bdc4ee289fdf Mon Sep 17 00:00:00 2001
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Tue, 6 Jun 2017 14:16:38 +0200
-Subject: parisc: parisc_bus_type: use dev_groups and not dev_attrs for
- bus_type
-
-The dev_attrs field has long been "depreciated" and is finally being
-removed, so move the driver to use the "correct" dev_groups field
-instead for struct bus_type.
-
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Bart Van Assche <bart.vanassche@sandisk.com>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: <linux-parisc@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/parisc/kernel/drivers.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
-
-diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
-index fa78419100c8..d8f77358e2ba 100644
---- a/arch/parisc/kernel/drivers.c
-+++ b/arch/parisc/kernel/drivers.c
-@@ -575,7 +575,8 @@ static ssize_t name##_show(struct device *dev, struct device_attribute *attr, ch
- {									\
- 	struct parisc_device *padev = to_parisc_device(dev);		\
- 	return sprintf(buf, format_string, padev->field);		\
--}
-+}									\
-+static DEVICE_ATTR_RO(name);
- 
- #define pa_dev_attr_id(field, format) pa_dev_attr(field, id.field, format)
- 
-@@ -589,22 +590,24 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
- {
- 	return make_modalias(dev, buf);
- }
-+static DEVICE_ATTR_RO(modalias);
- 
--static struct device_attribute parisc_device_attrs[] = {
--	__ATTR_RO(irq),
--	__ATTR_RO(hw_type),
--	__ATTR_RO(rev),
--	__ATTR_RO(hversion),
--	__ATTR_RO(sversion),
--	__ATTR_RO(modalias),
--	__ATTR_NULL,
-+static struct attribute *parisc_device_attrs[] = {
-+	&dev_attr_irq.attr,
-+	&dev_attr_hw_type.attr,
-+	&dev_attr_rev.attr,
-+	&dev_attr_hversion.attr,
-+	&dev_attr_sversion.attr,
-+	&dev_attr_modalias.attr,
-+	NULL,
- };
-+ATTRIBUTE_GROUPS(parisc_device);
- 
- struct bus_type parisc_bus_type = {
- 	.name = "parisc",
- 	.match = parisc_generic_match,
- 	.uevent = parisc_uevent,
--	.dev_attrs = parisc_device_attrs,
-+	.dev_groups = parisc_device_groups,
- 	.probe = parisc_driver_probe,
- 	.remove = parisc_driver_remove,
- };
--- 
-2.13.1
-
-
+greg k-h
