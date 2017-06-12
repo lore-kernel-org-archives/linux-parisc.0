@@ -1,62 +1,73 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 00/35] defconfig: Cleanup from old entries
-Date: Sat, 10 Jun 2017 18:43:51 +0200
-Message-ID: <20170610164351.7sxzvj4ojj3fbc7h@kozik-lap>
-References: <20170608160836.12196-1-krzk@kernel.org>
- <CAK8P3a3bUeC3H2oNfdBedVY4UTCe8OgKbWmv46d5xfu8tC7tAg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
- Rich Felker <dalias@libc.org>, Aurelien Jacquiot <a-jacquiot@ti.com>,
- Tony Lindgren <tony@atomide.com>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Liviu Dudau <liviu.dudau@arm.com>,
- "James E.J. Bottomley" <jejb@parisc-linux.org>,
- David Howells <dhowells@redhat.com>, Paul Mackerras <paulus@samba.org>,
- "H. Peter Anvin" <hpa@zytor.com>, sparclinux <sparclinux@vger.kernel.org>,
- linux-hexagon@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>,
- Thomas Gleixner <tglx@linutronix.de>, Lennox Wu <lennox.wu@gmail.com>,
- Jonas Bonn <jonas@southpole.se>, Chen Liqin <liqin.linux@gmail.com>,
- Jesper Nilsson <jesper.nilsson@axis.com>,
- Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, linux-c6x-dev@linux-c6x.org,
- Yoshinori Sato <ysato@users.sourceforge.jp>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, linux-sh@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CAK8P3a3bUeC3H2oNfdBedVY4UTCe8OgKbWmv46d5xfu8tC7tAg@mail.gmail.com>
-List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
-List-Post: <mailto:linux-snps-arc@lists.infradead.org>
-List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH 19/27] parisc: move generic-y of exported headers to uapi/asm/Kbuild
+Date: Mon, 12 Jun 2017 12:27:13 +0900
+Message-ID: <1497238041-7011-20-git-send-email-yamada.masahiro@socionext.com>
+References: <1497238041-7011-1-git-send-email-yamada.masahiro@socionext.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+To: linux-kbuild@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1497238041-7011-1-git-send-email-yamada.masahiro@socionext.com>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Jun 09, 2017 at 09:59:48PM +0200, Arnd Bergmann wrote:
-> On Thu, Jun 8, 2017 at 6:08 PM, Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > Hi,
-> >
-> > While cleaning Samsung ARM defconfigs with savedefconfig, I encountered
-> > similar obsolete entries in other files.
-> >
-> > Except the ARM, no dependencies.
-> > For ARM, the rest of patches depend on the first change (otherwise
-> > it might not apply cleanly).
-> 
-> Great work!
-> 
-> I looked at all the ARM patches, and everything looks good to me (the
-> changlog linewrapping may be suboptimal for readability in some cases,
-> if I had to say anything negative ;-) ).
-> 
-> Please add my Acked-by to the ARM patches and send a pull request.
+Since commit fcc8487d477a ("uapi: export all headers under uapi
+directories"), all (and only) headers under uapi directories are
+exported, but asm-generic wrappers are still exceptions.
 
-Thanks, I'll send you ARM part in pull request.
+scripts/Makefile.headersinst still need to deal with old-kbuild-file
+for headers listed in arch/*/include/asm/Kbuild, but actually exported.
 
-As for the rest, I think respective arch/platform maintainers should
-take it.
+As the last work to finish de-coupling the uapi from kernel headers,
+move generic-y of exported headers to uapi/asm/Kbuild.
 
-Best regards,
-Krzysztof
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
+
+ arch/parisc/include/asm/Kbuild      | 5 -----
+ arch/parisc/include/uapi/asm/Kbuild | 4 ++++
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
+index a9909c2d04c5..e26348d52ecc 100644
+--- a/arch/parisc/include/asm/Kbuild
++++ b/arch/parisc/include/asm/Kbuild
+@@ -1,5 +1,3 @@
+-
+-generic-y += auxvec.h
+ generic-y += barrier.h
+ generic-y += clkdev.h
+ generic-y += current.h
+@@ -11,14 +9,11 @@ generic-y += hw_irq.h
+ generic-y += irq_regs.h
+ generic-y += irq_work.h
+ generic-y += kdebug.h
+-generic-y += kvm_para.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += mm-arch-hooks.h
+-generic-y += param.h
+ generic-y += percpu.h
+-generic-y += poll.h
+ generic-y += preempt.h
+ generic-y += seccomp.h
+ generic-y += segment.h
+diff --git a/arch/parisc/include/uapi/asm/Kbuild b/arch/parisc/include/uapi/asm/Kbuild
+index 3971c60a7e7f..196d2a4efb31 100644
+--- a/arch/parisc/include/uapi/asm/Kbuild
++++ b/arch/parisc/include/uapi/asm/Kbuild
+@@ -1,4 +1,8 @@
+ # UAPI Header export list
+ include include/uapi/asm-generic/Kbuild.asm
+ 
++generic-y += auxvec.h
++generic-y += kvm_para.h
++generic-y += param.h
++generic-y += poll.h
+ generic-y += resource.h
+-- 
+2.7.4
