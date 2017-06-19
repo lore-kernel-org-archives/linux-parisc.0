@@ -1,50 +1,33 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: use compat_sys_keyctl()
-Date: Fri, 16 Jun 2017 17:43:16 +0200
-Message-ID: <b06ef951-f916-f1a3-32fd-a7f4231a4b55@gmx.de>
-References: <20170613061830.18013-1-ebiggers3@gmail.com>
+From: INFO <mguerrero@huv.gov.co>
+Subject: Re: Reply Urgent
+Date: Mon, 19 Jun 2017 14:39:18 -0500
+Message-ID: <20170619143918.2132176qvnaamicm__13812.6299869784$1497917327$gmane$org@correo.huv.gov.co>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Cc: "James E . J . Bottomley" <jejb@parisc-linux.org>,
-        keyrings@vger.kernel.org, Eric Biggers <ebiggers@google.com>
-To: Eric Biggers <ebiggers3@gmail.com>, linux-parisc@vger.kernel.org
+Content-Type: text/plain;
+ charset=ISO-8859-1;
+ DelSp="Yes";
+ format="flowed"
+To: undisclosed-recipients:;
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170613061830.18013-1-ebiggers3@gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 13.06.2017 08:18, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Architectures with a compat syscall table must put compat_sys_keyctl()
-> in it, not sys_keyctl().  The parisc architecture was not doing this;
-> fix it.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+Hello,
 
-Acked-by: Helge Deller <deller@gmx.de>
+How are you doing? I have been sent to inform you that, We have an  
+inheritance of a deceased client with your surname. Contact Mr Andrew  
+Bailey Reply Email To: myinfand@gmail.com with your "Full Names" for  
+more info.  Thanks for your understanding.
 
-Thanks Eric!
-I'll queue it up in my next arch pull request (unless someone else takes it earlier).
+Reply ASAP thank you.
 
-Helge
+Melissa.
+----------------------------------
+Correo Corporativo Hospital Universitario del Valle E.S.E
+*******************************************************************************
 
-> ---
->  arch/parisc/kernel/syscall_table.S | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-> index 44aeaa9c039f..6308749359e4 100644
-> --- a/arch/parisc/kernel/syscall_table.S
-> +++ b/arch/parisc/kernel/syscall_table.S
-> @@ -361,7 +361,7 @@
->  	ENTRY_SAME(ni_syscall)	/* 263: reserved for vserver */
->  	ENTRY_SAME(add_key)
->  	ENTRY_SAME(request_key)		/* 265 */
-> -	ENTRY_SAME(keyctl)
-> +	ENTRY_COMP(keyctl)
->  	ENTRY_SAME(ioprio_set)
->  	ENTRY_SAME(ioprio_get)
->  	ENTRY_SAME(inotify_init)
-> 
+"Estamos re-dimensionandonos para crecer!"
+
+******************************************************************************
+
 
