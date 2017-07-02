@@ -1,43 +1,43 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH v2] mm: Fix overflow check in expand_upwards()
-Date: Sun, 2 Jul 2017 21:24:52 +0200
-Message-ID: <20170702192452.GA11868@p100.box>
+Subject: [PATCH] parisc: Report SIGSEGV instead of SIGBUS when running out of
+ stack
+Date: Sun, 2 Jul 2017 22:00:41 +0200
+Message-ID: <20170702200041.GA15902@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Cc: =?iso-8859-15?Q?J=F6rn?= Engel <joern@purestorage.com>,
-        linux-parisc@vger.kernel.org
-To: Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Jörn Engel noticed that the expand_upwards() function might not return -ENOMEM
-in case the requested address is (unsigned long)-PAGE_SIZE and if the
-architecture didn't defined TASK_SIZE as multiple of PAGE_SIZE.
+When a process runs out of stack the parisc kernel wrongly faults with SIGBUS
+instead of the expected SIGSEGV signal.
 
-Affected architectures are arm, frv, m68k, blackfin, h8300 and xtensa which all
-define TASK_SIZE as 0xffffffff, but since none of those have an upwards-growing
-stack we currently have no actual issue.
+This example shows how the kernel faults:
+do_page_fault() command='a.out' type=15 address=0xfaac2000 in libc-2.24.so[f8308000+16c000]
+trap #15: Data TLB miss fault, vm_start = 0xfa2c2000, vm_end = 0xfaac2000
 
-Nevertheless let's fix this just in case any of the architectures with an
-upward-growing stack (currently parisc, metag and partly ia64) define TASK_SIZE
-similar.
+The vma->vm_end value is the first address which does not belong to the vma, so
+adjust the check to include vma->vm_end to the range for which to send the
+SIGSEGV signal.
 
-Reported-by: Jörn Engel <joern@purestorage.com>
-Fixes: bd726c90b6b8 ("Allow stack to grow up to address space limit")
+This patch unbreaks building the debian libsegv package.
+
 Cc: stable@vger.kernel.org
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index a5e3dcd..cc2fc8a 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2232,7 +2232,7 @@ int expand_upwards(struct vm_area_struct *vma, unsigned long address)
- 
- 	/* Guard against exceeding limits of the address space. */
- 	address &= PAGE_MASK;
--	if (address >= TASK_SIZE)
-+	if (address >= (TASK_SIZE & PAGE_MASK))
- 		return -ENOMEM;
- 	address += PAGE_SIZE;
- 
+diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+index 32ec221..9fd95fe 100644
+--- a/arch/parisc/mm/fault.c
++++ b/arch/parisc/mm/fault.c
+@@ -367,7 +367,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
+ 		case 15:	/* Data TLB miss fault/Data page fault */
+ 			/* send SIGSEGV when outside of vma */
+ 			if (!vma ||
+-			    address < vma->vm_start || address > vma->vm_end) {
++			    address < vma->vm_start || address >= vma->vm_end) {
+ 				si.si_signo = SIGSEGV;
+ 				si.si_code = SEGV_MAPERR;
+ 				break;
