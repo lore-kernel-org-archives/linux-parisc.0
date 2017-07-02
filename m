@@ -1,58 +1,43 @@
-From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Subject: [PATCH RFC 20/26] parisc: Remove spin_unlock_wait() arch-specific definitions
-Date: Thu, 29 Jun 2017 17:01:28 -0700
-Message-ID: <1498780894-8253-20-git-send-email-paulmck@linux.vnet.ibm.com>
-References: <20170629235918.GA6445@linux.vnet.ibm.com>
-Cc: netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        oleg@redhat.com, akpm@linux-foundation.org, mingo@redhat.com,
-        dave@stgolabs.net, manfred@colorfullife.com, tj@kernel.org,
-        arnd@arndb.de, linux-arch@vger.kernel.org, will.deacon@arm.com,
-        peterz@infradead.org, stern@rowland.harvard.edu,
-        parri.andrea@gmail.com, torvalds@linux-foundation.org,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>, <linux-parisc@vger.kernel.org>
-To: linux-kernel@vger.kernel.org
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20170629235918.GA6445@linux.vnet.ibm.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH v2] mm: Fix overflow check in expand_upwards()
+Date: Sun, 2 Jul 2017 21:24:52 +0200
+Message-ID: <20170702192452.GA11868@p100.box>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Cc: =?iso-8859-15?Q?J=F6rn?= Engel <joern@purestorage.com>,
+        linux-parisc@vger.kernel.org
+To: Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-There is no agreed-upon definition of spin_unlock_wait()'s semantics,
-and it appears that all callers could do just as well with a lock/unlock
-pair.  This commit therefore removes the underlying arch-specific
-arch_spin_unlock_wait().
+Jörn Engel noticed that the expand_upwards() function might not return -ENOMEM
+in case the requested address is (unsigned long)-PAGE_SIZE and if the
+architecture didn't defined TASK_SIZE as multiple of PAGE_SIZE.
 
-Signed-off-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: <linux-parisc@vger.kernel.org>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: Andrea Parri <parri.andrea@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
----
- arch/parisc/include/asm/spinlock.h | 7 -------
- 1 file changed, 7 deletions(-)
+Affected architectures are arm, frv, m68k, blackfin, h8300 and xtensa which all
+define TASK_SIZE as 0xffffffff, but since none of those have an upwards-growing
+stack we currently have no actual issue.
 
-diff --git a/arch/parisc/include/asm/spinlock.h b/arch/parisc/include/asm/spinlock.h
-index e32936cd7f10..55bfe4affca3 100644
---- a/arch/parisc/include/asm/spinlock.h
-+++ b/arch/parisc/include/asm/spinlock.h
-@@ -14,13 +14,6 @@ static inline int arch_spin_is_locked(arch_spinlock_t *x)
+Nevertheless let's fix this just in case any of the architectures with an
+upward-growing stack (currently parisc, metag and partly ia64) define TASK_SIZE
+similar.
+
+Reported-by: Jörn Engel <joern@purestorage.com>
+Fixes: bd726c90b6b8 ("Allow stack to grow up to address space limit")
+Cc: stable@vger.kernel.org
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/mm/mmap.c b/mm/mmap.c
+index a5e3dcd..cc2fc8a 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -2232,7 +2232,7 @@ int expand_upwards(struct vm_area_struct *vma, unsigned long address)
  
- #define arch_spin_lock(lock) arch_spin_lock_flags(lock, 0)
+ 	/* Guard against exceeding limits of the address space. */
+ 	address &= PAGE_MASK;
+-	if (address >= TASK_SIZE)
++	if (address >= (TASK_SIZE & PAGE_MASK))
+ 		return -ENOMEM;
+ 	address += PAGE_SIZE;
  
--static inline void arch_spin_unlock_wait(arch_spinlock_t *x)
--{
--	volatile unsigned int *a = __ldcw_align(x);
--
--	smp_cond_load_acquire(a, VAL);
--}
--
- static inline void arch_spin_lock_flags(arch_spinlock_t *x,
- 					 unsigned long flags)
- {
--- 
-2.5.2
-
