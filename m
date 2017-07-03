@@ -1,43 +1,26 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Report SIGSEGV instead of SIGBUS when running out of
- stack
-Date: Sun, 2 Jul 2017 22:00:41 +0200
-Message-ID: <20170702200041.GA15902@p100.box>
+From: Meelis Roos <mroos@linux.ee>
+Subject: BUG: workqueue lockup (after powerdown)
+Date: Mon, 3 Jul 2017 10:34:46 +0300 (EEST)
+Message-ID: <alpine.LRH.2.20.1707031031180.28253@math.ut.ee>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+        Linux Kernel list <linux-kernel@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-When a process runs out of stack the parisc kernel wrongly faults with SIGBUS
-instead of the expected SIGSEGV signal.
+Today I tested 4.12 release on my RP3440 (HP parisc). It worked fine, 
+then on shutdown I got this strange message from kernel after shutdown:
 
-This example shows how the kernel faults:
-do_page_fault() command='a.out' type=15 address=0xfaac2000 in libc-2.24.so[f8308000+16c000]
-trap #15: Data TLB miss fault, vm_start = 0xfa2c2000, vm_end = 0xfaac2000
+reboot: Power down
+System shut down completed.
+Please power this system off now.
+BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 40s!
 
-The vma->vm_end value is the first address which does not belong to the vma, so
-adjust the check to include vma->vm_end to the range for which to send the
-SIGSEGV signal.
+and this continues with longer and longer times.
 
-This patch unbreaks building the debian libsegv package.
+Is it something hppa specific or general?
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index 32ec221..9fd95fe 100644
---- a/arch/parisc/mm/fault.c
-+++ b/arch/parisc/mm/fault.c
-@@ -367,7 +367,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
- 		case 15:	/* Data TLB miss fault/Data page fault */
- 			/* send SIGSEGV when outside of vma */
- 			if (!vma ||
--			    address < vma->vm_start || address > vma->vm_end) {
-+			    address < vma->vm_start || address >= vma->vm_end) {
- 				si.si_signo = SIGSEGV;
- 				si.si_code = SEGV_MAPERR;
- 				break;
+-- 
+Meelis Roos (mroos@linux.ee)
