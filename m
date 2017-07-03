@@ -1,230 +1,56 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: DMA API: return error instead of BUG_ON for dma
- ops on non dma devs
-Date: Mon, 3 Jul 2017 16:41:32 +0200
-Message-ID: <83ff44f5-8989-c806-bef3-29fb9c909bee@gmx.de>
-References: <20170703084920.142A9508094@solo.franken.de>
+Subject: Re: BUG: workqueue lockup (after powerdown)
+Date: Mon, 3 Jul 2017 18:01:05 +0200
+Message-ID: <fc3f4979-f533-b411-3794-4bf971bd02a7@gmx.de>
+References: <alpine.LRH.2.20.1707031031180.28253@math.ut.ee>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        jejb@parisc-linux.org, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+To: Meelis Roos <mroos@linux.ee>, linux-parisc@vger.kernel.org,
+        Linux Kernel list <linux-kernel@vger.kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170703084920.142A9508094@solo.franken.de>
+In-Reply-To: <alpine.LRH.2.20.1707031031180.28253@math.ut.ee>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 03.07.2017 10:38, Thomas Bogendoerfer wrote:
-> Enabling parport pc driver on a B2600 (and probably other 64bit PARISC
-> systems) produced following BUG:
+On 03.07.2017 09:34, Meelis Roos wrote:
+> Today I tested 4.12 release on my RP3440 (HP parisc). It worked fine, 
+> then on shutdown I got this strange message from kernel after shutdown:
 > 
-> CPU: 0 PID: 1 Comm: swapper Not tainted 4.12.0-rc5-30198-g1132d5e #156
-> task: 000000009e050000 task.stack: 000000009e04c000
+> reboot: Power down
+> System shut down completed.
+> Please power this system off now.
+> BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 40s!
 > 
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00001000000001101111111100001111 Not tainted
-> r00-03  000000ff0806ff0f 000000009e04c990 0000000040871b78 000000009e04cac0
-> r04-07  0000000040c14de0 ffffffffffffffff 000000009e07f098 000000009d82d200
-> r08-11  000000009d82d210 0000000000000378 0000000000000000 0000000040c345e0
-> r12-15  0000000000000005 0000000040c345e0 0000000000000000 0000000040c9d5e0
-> r16-19  0000000040c345e0 00000000f00001c4 00000000f00001bc 0000000000000061
-> r20-23  000000009e04ce28 0000000000000010 0000000000000010 0000000040b89e40
-> r24-27  0000000000000003 0000000000ffffff 000000009d82d210 0000000040c14de0
-> r28-31  0000000000000000 000000009e04ca90 000000009e04cb40 0000000000000000
-> sr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+> and this continues with longer and longer times.
 > 
-> IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000404aece0 00000000404aece4
->  IIR: 03ffe01f    ISR: 0000000010340000  IOR: 000001781304cac8
->  CPU:        0   CR30: 000000009e04c000 CR31: 00000000e2976de2
->  ORIG_R28: 0000000000000200
->  IAOQ[0]: sba_dma_supported+0x80/0xd0
->  IAOQ[1]: sba_dma_supported+0x84/0xd0
->  RP(r2): parport_pc_probe_port+0x178/0x1200
-> 
-> Cause is a call to dma_coerce_mask_and_coherenet in parport_pc_probe_port,
-> which PARISC DMA API doesn't handle very nicely. This commit gives back
-> DMA_ERROR_CODE for DMA API calls, if device isn't capable of DMA
-> transaction.
-> 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Is it something hppa specific or general?
 
-I didn't had parport_pc enabled on my c3000 so I never saw it crashing.
-After enabling parport_pc it crashes the same way as you describe.
-I tested with kernel 4.9.35.
-Thanks!
- 
-Acked-by: Helge Deller <deller@gmx.de>
+No idea.
+Maybe other platforms (like x86_64) physically drop power on machine 
+so you won't see it. On parisc we can't power off on many machines,
+so instead we will keep running in an endless for-next loop.
 
+Btw, I'm seeing a similar BUG:
 
+[  308.432664] reboot: Power down
+[  308.479625] System shut down completed.
+[  308.479625] Please power this system off now.
+[  332.523916] NMI watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [halt:1807]
+[  332.523916] Modules linked in:
+[  332.523916] CPU: 0 PID: 1807 Comm: halt Not tainted 4.12.0-64bit+ #724
+[  332.523916] task: 00000000af379e00 task.stack: 00000000af00c000
+[  332.523916] 
+[  332.523916] IASQ: 0000000000000000 0000000000000000 IAOQ: 000000004022d180 000000004022d17c
+[  332.523916]  IIR: 08030241    ISR: 0000000000000000  IOR: 0000000000000000
+[  332.523916]  CPU:        0   CR30: 00000000af00c000 CR31: 00000000d23345e2
+[  332.523916]  ORIG_R28: 0000000000000000
+[  332.523916]  IAOQ[0]: machine_restart+0x0/0xa0
+[  332.523916]  IAOQ[1]: machine_power_off+0x104/0x108
+[  332.523916]  RP(r2): machine_power_off+0x104/0x108
+[  332.523916] Backtrace:
+[  332.523916]  [<000000004022d17c>] machine_power_off+0x104/0x108
+[  332.523916]  [<000000004028ff3c>] kernel_power_off+0x1ac/0x1c0
+[  332.523916]  [<00000000402902a8>] SyS_reboot+0x250/0x340
+[  332.523916]  [<0000000040209020>] syscall_exit+0x0/0x14
 
-> ---
->  arch/parisc/include/asm/dma-mapping.h | 11 +++++++----
->  drivers/parisc/ccio-dma.c             | 12 ++++++++++++
->  drivers/parisc/dino.c                 |  5 ++++-
->  drivers/parisc/lba_pci.c              |  6 ++++--
->  drivers/parisc/sba_iommu.c            | 14 ++++++++++++++
->  5 files changed, 41 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/parisc/include/asm/dma-mapping.h b/arch/parisc/include/asm/dma-mapping.h
-> index 5404c6a..9a2a895 100644
-> --- a/arch/parisc/include/asm/dma-mapping.h
-> +++ b/arch/parisc/include/asm/dma-mapping.h
-> @@ -20,6 +20,8 @@
->  ** flush/purge and allocate "regular" cacheable pages for everything.
->  */
->  
-> +#define DMA_ERROR_CODE	(~(dma_addr_t)0)
-> +
->  #ifdef CONFIG_PA11
->  extern const struct dma_map_ops pcxl_dma_ops;
->  extern const struct dma_map_ops pcx_dma_ops;
-> @@ -54,12 +56,13 @@ parisc_walk_tree(struct device *dev)
->  			break;
->  		}
->  	}
-> -	BUG_ON(!dev->platform_data);
->  	return dev->platform_data;
->  }
-> -		
-> -#define GET_IOC(dev) (HBA_DATA(parisc_walk_tree(dev))->iommu)
-> -	
-> +
-> +#define GET_IOC(dev) ({					\
-> +	void *__pdata = parisc_walk_tree(dev);		\
-> +	__pdata ? HBA_DATA(__pdata)->iommu : NULL;	\
-> +})
->  
->  #ifdef CONFIG_IOMMU_CCIO
->  struct parisc_device;
-> diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-> index e32ca2e..56c93f0 100644
-> --- a/drivers/parisc/ccio-dma.c
-> +++ b/drivers/parisc/ccio-dma.c
-> @@ -741,6 +741,8 @@ ccio_map_single(struct device *dev, void *addr, size_t size,
->  
->  	BUG_ON(!dev);
->  	ioc = GET_IOC(dev);
-> +	if (!ioc)
-> +		return DMA_ERROR_CODE;
->  
->  	BUG_ON(size <= 0);
->  
-> @@ -814,6 +816,10 @@ ccio_unmap_page(struct device *dev, dma_addr_t iova, size_t size,
->  	
->  	BUG_ON(!dev);
->  	ioc = GET_IOC(dev);
-> +	if (!ioc) {
-> +		WARN_ON(!ioc);
-> +		return;
-> +	}
->  
->  	DBG_RUN("%s() iovp 0x%lx/%x\n",
->  		__func__, (long)iova, size);
-> @@ -918,6 +924,8 @@ ccio_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
->  	
->  	BUG_ON(!dev);
->  	ioc = GET_IOC(dev);
-> +	if (!ioc)
-> +		return 0;
->  	
->  	DBG_RUN_SG("%s() START %d entries\n", __func__, nents);
->  
-> @@ -990,6 +998,10 @@ ccio_unmap_sg(struct device *dev, struct scatterlist *sglist, int nents,
->  
->  	BUG_ON(!dev);
->  	ioc = GET_IOC(dev);
-> +	if (!ioc) {
-> +		WARN_ON(!ioc);
-> +		return;
-> +	}
->  
->  	DBG_RUN_SG("%s() START %d entries, %p,%x\n",
->  		__func__, nents, sg_virt(sglist), sglist->length);
-> diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-> index 1133b5c..5c63b92 100644
-> --- a/drivers/parisc/dino.c
-> +++ b/drivers/parisc/dino.c
-> @@ -154,7 +154,10 @@ struct dino_device
->  };
->  
->  /* Looks nice and keeps the compiler happy */
-> -#define DINO_DEV(d) ((struct dino_device *) d)
-> +#define DINO_DEV(d) ({				\
-> +	void *__pdata = d;			\
-> +	BUG_ON(!__pdata);			\
-> +	(struct dino_device *)__pdata; })
->  
->  
->  /*
-> diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-> index 2ec2aef..bc286cb 100644
-> --- a/drivers/parisc/lba_pci.c
-> +++ b/drivers/parisc/lba_pci.c
-> @@ -111,8 +111,10 @@ static u32 lba_t32;
->  
->  
->  /* Looks nice and keeps the compiler happy */
-> -#define LBA_DEV(d) ((struct lba_device *) (d))
-> -
-> +#define LBA_DEV(d) ({				\
-> +	void *__pdata = d;			\
-> +	BUG_ON(!__pdata);			\
-> +	(struct lba_device *)__pdata; })
->  
->  /*
->  ** Only allow 8 subsidiary busses per LBA
-> diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-> index 33385e5..87ad5fd 100644
-> --- a/drivers/parisc/sba_iommu.c
-> +++ b/drivers/parisc/sba_iommu.c
-> @@ -691,6 +691,8 @@ static int sba_dma_supported( struct device *dev, u64 mask)
->  		return 0;
->  
->  	ioc = GET_IOC(dev);
-> +	if (!ioc)
-> +		return 0;
->  
->  	/*
->  	 * check if mask is >= than the current max IO Virt Address
-> @@ -722,6 +724,8 @@ sba_map_single(struct device *dev, void *addr, size_t size,
->  	int pide;
->  
->  	ioc = GET_IOC(dev);
-> +	if (!ioc)
-> +		return DMA_ERROR_CODE;
->  
->  	/* save offset bits */
->  	offset = ((dma_addr_t) (long) addr) & ~IOVP_MASK;
-> @@ -813,6 +817,10 @@ sba_unmap_page(struct device *dev, dma_addr_t iova, size_t size,
->  	DBG_RUN("%s() iovp 0x%lx/%x\n", __func__, (long) iova, size);
->  
->  	ioc = GET_IOC(dev);
-> +	if (!ioc) {
-> +		WARN_ON(!ioc);
-> +		return;
-> +	}
->  	offset = iova & ~IOVP_MASK;
->  	iova ^= offset;        /* clear offset bits */
->  	size += offset;
-> @@ -952,6 +960,8 @@ sba_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
->  	DBG_RUN_SG("%s() START %d entries\n", __func__, nents);
->  
->  	ioc = GET_IOC(dev);
-> +	if (!ioc)
-> +		return 0;
->  
->  	/* Fast path single entry scatterlists. */
->  	if (nents == 1) {
-> @@ -1037,6 +1047,10 @@ sba_unmap_sg(struct device *dev, struct scatterlist *sglist, int nents,
->  		__func__, nents, sg_virt(sglist), sglist->length);
->  
->  	ioc = GET_IOC(dev);
-> +	if (!ioc) {
-> +		WARN_ON(!ioc);
-> +		return;
-> +	}
->  
->  #ifdef SBA_COLLECT_STATS
->  	ioc->usg_calls++;
-> 
+Helge
