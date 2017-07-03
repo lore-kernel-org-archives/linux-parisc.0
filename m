@@ -1,56 +1,89 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: BUG: workqueue lockup (after powerdown)
-Date: Mon, 3 Jul 2017 18:01:05 +0200
-Message-ID: <fc3f4979-f533-b411-3794-4bf971bd02a7@gmx.de>
-References: <alpine.LRH.2.20.1707031031180.28253@math.ut.ee>
+Subject: [GIT PULL] parisc architecture updates for v4.13
+Date: Mon, 3 Jul 2017 21:13:03 +0200
+Message-ID: <20170703191303.GA1182@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-To: Meelis Roos <mroos@linux.ee>, linux-parisc@vger.kernel.org,
-        Linux Kernel list <linux-kernel@vger.kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.20.1707031031180.28253@math.ut.ee>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Eric Biggers <ebiggers@google.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 03.07.2017 09:34, Meelis Roos wrote:
-> Today I tested 4.12 release on my RP3440 (HP parisc). It worked fine, 
-> then on shutdown I got this strange message from kernel after shutdown:
-> 
-> reboot: Power down
-> System shut down completed.
-> Please power this system off now.
-> BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 40s!
-> 
-> and this continues with longer and longer times.
-> 
-> Is it something hppa specific or general?
+Hi Linus,
 
-No idea.
-Maybe other platforms (like x86_64) physically drop power on machine 
-so you won't see it. On parisc we can't power off on many machines,
-so instead we will keep running in an endless for-next loop.
+please pull fixes and enhancements for the parisc architecture for kernel 4.13-rc1 from:
 
-Btw, I'm seeing a similar BUG:
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.13-1
 
-[  308.432664] reboot: Power down
-[  308.479625] System shut down completed.
-[  308.479625] Please power this system off now.
-[  332.523916] NMI watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [halt:1807]
-[  332.523916] Modules linked in:
-[  332.523916] CPU: 0 PID: 1807 Comm: halt Not tainted 4.12.0-64bit+ #724
-[  332.523916] task: 00000000af379e00 task.stack: 00000000af00c000
-[  332.523916] 
-[  332.523916] IASQ: 0000000000000000 0000000000000000 IAOQ: 000000004022d180 000000004022d17c
-[  332.523916]  IIR: 08030241    ISR: 0000000000000000  IOR: 0000000000000000
-[  332.523916]  CPU:        0   CR30: 00000000af00c000 CR31: 00000000d23345e2
-[  332.523916]  ORIG_R28: 0000000000000000
-[  332.523916]  IAOQ[0]: machine_restart+0x0/0xa0
-[  332.523916]  IAOQ[1]: machine_power_off+0x104/0x108
-[  332.523916]  RP(r2): machine_power_off+0x104/0x108
-[  332.523916] Backtrace:
-[  332.523916]  [<000000004022d17c>] machine_power_off+0x104/0x108
-[  332.523916]  [<000000004028ff3c>] kernel_power_off+0x1ac/0x1c0
-[  332.523916]  [<00000000402902a8>] SyS_reboot+0x250/0x340
-[  332.523916]  [<0000000040209020>] syscall_exit+0x0/0x14
+Main changes are:
 
+- Added support to the parisc dma functions to return DMA_ERROR_CODE if DMA
+  isn't possible. This fixes a long standing kernel crash if parport_pc is
+  enabled (by Thomas Bogendoerfer, marked for stable series).
+
+- Use the compat_sys_keyctl() in compat mode (by Eric Biggers, marked for stable
+  series).
+ 
+- Initial support for the Page Deallocation Table (PDT) which is maintained by
+  firmware and holds the list of memory addresses which had physical errors.
+  By checking that list we can prevent Linux to use those broken memory areas.
+
+- Ensure IRQs are off in switch_mm().
+
+- Report SIGSEGV instead of SIGBUS when running out of stack.
+
+- Mark the cr16 clocksource stable on single-socket and single-core machines.
+
+Thanks,
 Helge
+
+----------------------------------------------------------------
+Eric Biggers (1):
+      parisc: use compat_sys_keyctl()
+
+Helge Deller (9):
+      parisc: Inline trivial exception code in lusercopy.S
+      parisc: Drop per_cpu uaccess related exception_data struct
+      parisc: Enhance detection of synchronous cr16 clocksources
+      parisc: Add Page Deallocation Table (PDT) support
+      parisc/mm: Ensure IRQs are off in switch_mm()
+      parisc: Avoid zeroing gr[0] in fixup_exception()
+      parisc: Don't hardcode PSW values in gsc_*() functions
+      parisc: Don't hardcode PSW values in hpmc code
+      parisc: Report SIGSEGV instead of SIGBUS when running out of stack
+
+Thomas Bogendoerfer (1):
+      parisc: DMA API: return error instead of BUG_ON for dma ops on non dma devs
+
+ arch/parisc/include/asm/dma-mapping.h |  11 ++-
+ arch/parisc/include/asm/io.h          |  16 ++--
+ arch/parisc/include/asm/mmu_context.h |  15 +++-
+ arch/parisc/include/asm/pdc.h         |  18 +++++
+ arch/parisc/include/asm/pdcpat.h      |  35 ++++++---
+ arch/parisc/include/asm/pgtable.h     |   3 +
+ arch/parisc/include/asm/processor.h   |   2 +
+ arch/parisc/include/asm/uaccess.h     |  11 ---
+ arch/parisc/include/uapi/asm/pdc.h    |  12 +--
+ arch/parisc/kernel/Makefile           |   2 +-
+ arch/parisc/kernel/asm-offsets.c      |   5 --
+ arch/parisc/kernel/firmware.c         | 108 +++++++++++++++++++++++++
+ arch/parisc/kernel/hpmc.S             |   5 +-
+ arch/parisc/kernel/inventory.c        |   9 +++
+ arch/parisc/kernel/pdt.c              | 143 ++++++++++++++++++++++++++++++++++
+ arch/parisc/kernel/processor.c        |   5 +-
+ arch/parisc/kernel/syscall_table.S    |   2 +-
+ arch/parisc/kernel/time.c             |  24 +++++-
+ arch/parisc/lib/lusercopy.S           |  25 +++---
+ arch/parisc/mm/fault.c                |  12 +--
+ arch/parisc/mm/init.c                 |   3 +
+ drivers/parisc/ccio-dma.c             |  12 +++
+ drivers/parisc/dino.c                 |   5 +-
+ drivers/parisc/lba_pci.c              |   6 +-
+ drivers/parisc/sba_iommu.c            |  14 ++++
+ 25 files changed, 420 insertions(+), 83 deletions(-)
+ create mode 100644 arch/parisc/kernel/pdt.c
