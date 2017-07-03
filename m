@@ -1,214 +1,95 @@
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH] parisc: DMA API: return error instead of BUG_ON for dma ops on non dma devs
-Date: Mon, 3 Jul 2017 10:38:05 +0200
-Message-ID: <20170703084920.142A9508094@solo.franken.de>
-To: jejb@parisc-linux.org, deller@gmx.de, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 1/1] futex: remove duplicated code and fix UB
+Date: Mon, 3 Jul 2017 12:18:28 +0200 (CEST)
+Message-ID: <alpine.DEB.2.20.1707031211120.2188@nanos>
+References: <20170621115318.2781-1-jslaby@suse.cz>
+ <alpine.DEB.2.20.1706230017520.2221@nanos>
+ <80af8d81-4522-de2d-8289-1ab46565505a@suse.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>,
+ linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, peterz@infradead.org,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Will Deacon <will.deacon@arm.com>, Max Filippov <jcmvbkbc@gmail.com>,
+ Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>,
+ sparclinux@vger.kernel.org, Jonas Bonn <jonas@southpole.se>,
+ linux-s390@vger.kernel.org, linux-arch@vger.kernel.org,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, linux-hexagon@vger.kernel.org,
+ Helge Deller <deller@gmx.de>, x86@kernel.org,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>, mingo@redhat.com,
+ Catalin Marinas <catalin.marinas@arm.com>, dvhart@infradead.org,
+ Matt Turner <mattst88@gmail.com>, linux-snps-arc@lists.infradead.org,
+ Fenghua Yu <fenghua.yu@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ linux-xtensa@linux-xtensa.org,
+ Stefan Kristiansson <
+To: Jiri Slaby <jslaby@suse.cz>
+Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
+In-Reply-To: <80af8d81-4522-de2d-8289-1ab46565505a@suse.cz>
+List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
+List-Post: <mailto:linux-snps-arc@lists.infradead.org>
+List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
 
-Enabling parport pc driver on a B2600 (and probably other 64bit PARISC
-systems) produced following BUG:
+On Mon, 26 Jun 2017, Jiri Slaby wrote:
+> On 06/23/2017, 09:51 AM, Thomas Gleixner wrote:
+> > On Wed, 21 Jun 2017, Jiri Slaby wrote:
+> >> diff --git a/arch/arm64/include/asm/futex.h b/arch/arm64/include/asm/futex.h
+> >> index f32b42e8725d..5bb2fd4674e7 100644
+> >> --- a/arch/arm64/include/asm/futex.h
+> >> +++ b/arch/arm64/include/asm/futex.h
+> >> @@ -48,20 +48,10 @@ do {									\
+> >>  } while (0)
+> >>  
+> >>  static inline int
+> >> -futex_atomic_op_inuser(unsigned int encoded_op, u32 __user *uaddr)
+> > 
+> > That unsigned int seems to be a change from the arm64 tree in next. It's
+> > not upstream and it'll cause a (easy to resolve) conflict.
+> 
+> Ugh, I thought the arm64 is in upstream already. Note that this patch
+> just takes what is in this arm64 fix and makes it effective for all
+> architectures. So I will wait with v2 until it merges upstream.
 
-CPU: 0 PID: 1 Comm: swapper Not tainted 4.12.0-rc5-30198-g1132d5e #156
-task: 000000009e050000 task.stack: 000000009e04c000
+Ok.
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00001000000001101111111100001111 Not tainted
-r00-03  000000ff0806ff0f 000000009e04c990 0000000040871b78 000000009e04cac0
-r04-07  0000000040c14de0 ffffffffffffffff 000000009e07f098 000000009d82d200
-r08-11  000000009d82d210 0000000000000378 0000000000000000 0000000040c345e0
-r12-15  0000000000000005 0000000040c345e0 0000000000000000 0000000040c9d5e0
-r16-19  0000000040c345e0 00000000f00001c4 00000000f00001bc 0000000000000061
-r20-23  000000009e04ce28 0000000000000010 0000000000000010 0000000040b89e40
-r24-27  0000000000000003 0000000000ffffff 000000009d82d210 0000000040c14de0
-r28-31  0000000000000000 000000009e04ca90 000000009e04cb40 0000000000000000
-sr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+> > Yes, we probably can't change that anymore, but at least we should make it
+> > very explicit and add a comment to that effect.
+> 
+> Something like this or do you want a comment yet?
+>         unsigned int op =         (encoded_op & 0x70000000) >> 28;
+>         unsigned int cmp =        (encoded_op & 0x0f000000) >> 24;
+>         int oparg = sign_extend32((encoded_op & 0x00fff000) >> 12, 12);
+>         int cmparg = sign_extend32(encoded_op & 0x00000fff, 12);
 
-IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000404aece0 00000000404aece4
- IIR: 03ffe01f    ISR: 0000000010340000  IOR: 000001781304cac8
- CPU:        0   CR30: 000000009e04c000 CR31: 00000000e2976de2
- ORIG_R28: 0000000000000200
- IAOQ[0]: sba_dma_supported+0x80/0xd0
- IAOQ[1]: sba_dma_supported+0x84/0xd0
- RP(r2): parport_pc_probe_port+0x178/0x1200
+Yes, that makes sense.
 
-Cause is a call to dma_coerce_mask_and_coherenet in parport_pc_probe_port,
-which PARISC DMA API doesn't handle very nicely. This commit gives back
-DMA_ERROR_CODE for DMA API calls, if device isn't capable of DMA
-transaction.
+There is also the issue with the shift. See this thread for further
+reference:
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- arch/parisc/include/asm/dma-mapping.h | 11 +++++++----
- drivers/parisc/ccio-dma.c             | 12 ++++++++++++
- drivers/parisc/dino.c                 |  5 ++++-
- drivers/parisc/lba_pci.c              |  6 ++++--
- drivers/parisc/sba_iommu.c            | 14 ++++++++++++++
- 5 files changed, 41 insertions(+), 7 deletions(-)
+  http://lkml.kernel.org/r/alpine.DEB.2.20.1706282353190.1890@nanos
 
-diff --git a/arch/parisc/include/asm/dma-mapping.h b/arch/parisc/include/asm/dma-mapping.h
-index 5404c6a..9a2a895 100644
---- a/arch/parisc/include/asm/dma-mapping.h
-+++ b/arch/parisc/include/asm/dma-mapping.h
-@@ -20,6 +20,8 @@
- ** flush/purge and allocate "regular" cacheable pages for everything.
- */
- 
-+#define DMA_ERROR_CODE	(~(dma_addr_t)0)
-+
- #ifdef CONFIG_PA11
- extern const struct dma_map_ops pcxl_dma_ops;
- extern const struct dma_map_ops pcx_dma_ops;
-@@ -54,12 +56,13 @@ parisc_walk_tree(struct device *dev)
- 			break;
- 		}
- 	}
--	BUG_ON(!dev->platform_data);
- 	return dev->platform_data;
- }
--		
--#define GET_IOC(dev) (HBA_DATA(parisc_walk_tree(dev))->iommu)
--	
-+
-+#define GET_IOC(dev) ({					\
-+	void *__pdata = parisc_walk_tree(dev);		\
-+	__pdata ? HBA_DATA(__pdata)->iommu : NULL;	\
-+})
- 
- #ifdef CONFIG_IOMMU_CCIO
- struct parisc_device;
-diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-index e32ca2e..56c93f0 100644
---- a/drivers/parisc/ccio-dma.c
-+++ b/drivers/parisc/ccio-dma.c
-@@ -741,6 +741,8 @@ ccio_map_single(struct device *dev, void *addr, size_t size,
- 
- 	BUG_ON(!dev);
- 	ioc = GET_IOC(dev);
-+	if (!ioc)
-+		return DMA_ERROR_CODE;
- 
- 	BUG_ON(size <= 0);
- 
-@@ -814,6 +816,10 @@ ccio_unmap_page(struct device *dev, dma_addr_t iova, size_t size,
- 	
- 	BUG_ON(!dev);
- 	ioc = GET_IOC(dev);
-+	if (!ioc) {
-+		WARN_ON(!ioc);
-+		return;
-+	}
- 
- 	DBG_RUN("%s() iovp 0x%lx/%x\n",
- 		__func__, (long)iova, size);
-@@ -918,6 +924,8 @@ ccio_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
- 	
- 	BUG_ON(!dev);
- 	ioc = GET_IOC(dev);
-+	if (!ioc)
-+		return 0;
- 	
- 	DBG_RUN_SG("%s() START %d entries\n", __func__, nents);
- 
-@@ -990,6 +998,10 @@ ccio_unmap_sg(struct device *dev, struct scatterlist *sglist, int nents,
- 
- 	BUG_ON(!dev);
- 	ioc = GET_IOC(dev);
-+	if (!ioc) {
-+		WARN_ON(!ioc);
-+		return;
-+	}
- 
- 	DBG_RUN_SG("%s() START %d entries, %p,%x\n",
- 		__func__, nents, sg_virt(sglist), sglist->length);
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index 1133b5c..5c63b92 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -154,7 +154,10 @@ struct dino_device
- };
- 
- /* Looks nice and keeps the compiler happy */
--#define DINO_DEV(d) ((struct dino_device *) d)
-+#define DINO_DEV(d) ({				\
-+	void *__pdata = d;			\
-+	BUG_ON(!__pdata);			\
-+	(struct dino_device *)__pdata; })
- 
- 
- /*
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index 2ec2aef..bc286cb 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -111,8 +111,10 @@ static u32 lba_t32;
- 
- 
- /* Looks nice and keeps the compiler happy */
--#define LBA_DEV(d) ((struct lba_device *) (d))
--
-+#define LBA_DEV(d) ({				\
-+	void *__pdata = d;			\
-+	BUG_ON(!__pdata);			\
-+	(struct lba_device *)__pdata; })
- 
- /*
- ** Only allow 8 subsidiary busses per LBA
-diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-index 33385e5..87ad5fd 100644
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -691,6 +691,8 @@ static int sba_dma_supported( struct device *dev, u64 mask)
- 		return 0;
- 
- 	ioc = GET_IOC(dev);
-+	if (!ioc)
-+		return 0;
- 
- 	/*
- 	 * check if mask is >= than the current max IO Virt Address
-@@ -722,6 +724,8 @@ sba_map_single(struct device *dev, void *addr, size_t size,
- 	int pide;
- 
- 	ioc = GET_IOC(dev);
-+	if (!ioc)
-+		return DMA_ERROR_CODE;
- 
- 	/* save offset bits */
- 	offset = ((dma_addr_t) (long) addr) & ~IOVP_MASK;
-@@ -813,6 +817,10 @@ sba_unmap_page(struct device *dev, dma_addr_t iova, size_t size,
- 	DBG_RUN("%s() iovp 0x%lx/%x\n", __func__, (long) iova, size);
- 
- 	ioc = GET_IOC(dev);
-+	if (!ioc) {
-+		WARN_ON(!ioc);
-+		return;
-+	}
- 	offset = iova & ~IOVP_MASK;
- 	iova ^= offset;        /* clear offset bits */
- 	size += offset;
-@@ -952,6 +960,8 @@ sba_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
- 	DBG_RUN_SG("%s() START %d entries\n", __func__, nents);
- 
- 	ioc = GET_IOC(dev);
-+	if (!ioc)
-+		return 0;
- 
- 	/* Fast path single entry scatterlists. */
- 	if (nents == 1) {
-@@ -1037,6 +1047,10 @@ sba_unmap_sg(struct device *dev, struct scatterlist *sglist, int nents,
- 		__func__, nents, sg_virt(sglist), sglist->length);
- 
- 	ioc = GET_IOC(dev);
-+	if (!ioc) {
-+		WARN_ON(!ioc);
-+		return;
-+	}
- 
- #ifdef SBA_COLLECT_STATS
- 	ioc->usg_calls++;
--- 
-2.1.4
+The gist is:
+
+  "Anything using a shift value < 0 or > 31 will get crap as a
+   result. Rightfully so because it's just undefined.
+
+   Yes I know that the insanity of user space is unlimited, but anything
+   attempting this is so broken that we cannot break it further by making
+   that shift arg unsigned and actually limit it to 0-31"
+
+So we should make that case explicit as well.
+
+        if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28)) {
+		if (oparg < 0 || oparg > 31)
+			return -EINVAL;
+                oparg = 1 << oparg;
+	}
+
+Thanks,
+
+	tglx
