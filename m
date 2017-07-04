@@ -1,89 +1,97 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture updates for v4.13
-Date: Mon, 3 Jul 2017 21:13:03 +0200
-Message-ID: <20170703191303.GA1182@p100.box>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v3 0/3] Define CPU_BIG_ENDIAN or warn for inconsistencies
+Date: Tue, 4 Jul 2017 09:11:43 +0200
+Message-ID: <CAMuHMdUMXL7MQTtxoau9jA_WKOPJo4-Pq30CFti2ZSkXkeYWfQ@mail.gmail.com>
+References: <1497305400-147425-1-git-send-email-babu.moger@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Eric Biggers <ebiggers@google.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Michal Simek <monstr@monstr.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        openrisc@lists.librecores.org,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        sparclinux <sparclinux@vger.ke
+To: Babu Moger <babu.moger@oracle.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1497305400-147425-1-git-send-email-babu.moger@oracle.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+On Tue, Jun 13, 2017 at 12:09 AM, Babu Moger <babu.moger@oracle.com> wrote:
+> Found this problem while enabling queued rwlock on SPARC.
+> The parameter CONFIG_CPU_BIG_ENDIAN is used to clear the
+> specific byte in qrwlock structure. Without this parameter,
+> we clear the wrong byte.
+> Here is the code in include/asm-generic/qrwlock.h
+>
+> static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
+>   {
+>          return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
+>   }
+>
+> Also found few more references of this parameter in
+> drivers/of/base.c
+> drivers/of/fdt.c
+> drivers/tty/serial/earlycon.c
+> drivers/tty/serial/serial_core.c
+>
+> Here is our previous discussion.
+> https://lkml.org/lkml/2017/5/24/620
+>
+> Based on the discussion, it was decided to add CONFIG_CPU_BIG_ENDIAN
+> for all the fixed big endian architecture(frv, h8300, m68k, openrisc,
+> parisc and sparc). And warn if there are inconsistencies in this definition.
+>
+> v2 -> v3:
+>  Added the choice statement for endianness selection for microblaze.
+>  Updated the Makefile for microblaze(Suggested by Arnd Bergmann) to
+>  properly compile for the correct format.
+>  Updated acks.
+>
+> v1 -> v2:
+>  Updated the commit messages and acks.
+>
+> Babu Moger (3):
+>   arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
+>   arch/microblaze: Add choice for endianness and update Makefile
+>   include: warn for inconsistent endian config definition
+>
+>  arch/frv/Kconfig                        |    3 +++
+>  arch/h8300/Kconfig                      |    3 +++
+>  arch/m68k/Kconfig                       |    3 +++
+>  arch/microblaze/Kconfig                 |   16 ++++++++++++++++
+>  arch/microblaze/Makefile                |    2 ++
+>  arch/openrisc/Kconfig                   |    3 +++
+>  arch/parisc/Kconfig                     |    3 +++
+>  arch/sparc/Kconfig                      |    3 +++
+>  include/linux/byteorder/big_endian.h    |    4 ++++
+>  include/linux/byteorder/little_endian.h |    4 ++++
+>  10 files changed, 44 insertions(+), 0 deletions(-)
 
-please pull fixes and enhancements for the parisc architecture for kernel 4.13-rc1 from:
+We've just got a new user in c1b0bc2dabfa884d ("usb: typec:
+Add support for UCSI interface").
+So this series should definitely go in soon.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.13-1
+Gr{oetje,eeting}s,
 
-Main changes are:
+                        Geert
 
-- Added support to the parisc dma functions to return DMA_ERROR_CODE if DMA
-  isn't possible. This fixes a long standing kernel crash if parport_pc is
-  enabled (by Thomas Bogendoerfer, marked for stable series).
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-- Use the compat_sys_keyctl() in compat mode (by Eric Biggers, marked for stable
-  series).
- 
-- Initial support for the Page Deallocation Table (PDT) which is maintained by
-  firmware and holds the list of memory addresses which had physical errors.
-  By checking that list we can prevent Linux to use those broken memory areas.
-
-- Ensure IRQs are off in switch_mm().
-
-- Report SIGSEGV instead of SIGBUS when running out of stack.
-
-- Mark the cr16 clocksource stable on single-socket and single-core machines.
-
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Eric Biggers (1):
-      parisc: use compat_sys_keyctl()
-
-Helge Deller (9):
-      parisc: Inline trivial exception code in lusercopy.S
-      parisc: Drop per_cpu uaccess related exception_data struct
-      parisc: Enhance detection of synchronous cr16 clocksources
-      parisc: Add Page Deallocation Table (PDT) support
-      parisc/mm: Ensure IRQs are off in switch_mm()
-      parisc: Avoid zeroing gr[0] in fixup_exception()
-      parisc: Don't hardcode PSW values in gsc_*() functions
-      parisc: Don't hardcode PSW values in hpmc code
-      parisc: Report SIGSEGV instead of SIGBUS when running out of stack
-
-Thomas Bogendoerfer (1):
-      parisc: DMA API: return error instead of BUG_ON for dma ops on non dma devs
-
- arch/parisc/include/asm/dma-mapping.h |  11 ++-
- arch/parisc/include/asm/io.h          |  16 ++--
- arch/parisc/include/asm/mmu_context.h |  15 +++-
- arch/parisc/include/asm/pdc.h         |  18 +++++
- arch/parisc/include/asm/pdcpat.h      |  35 ++++++---
- arch/parisc/include/asm/pgtable.h     |   3 +
- arch/parisc/include/asm/processor.h   |   2 +
- arch/parisc/include/asm/uaccess.h     |  11 ---
- arch/parisc/include/uapi/asm/pdc.h    |  12 +--
- arch/parisc/kernel/Makefile           |   2 +-
- arch/parisc/kernel/asm-offsets.c      |   5 --
- arch/parisc/kernel/firmware.c         | 108 +++++++++++++++++++++++++
- arch/parisc/kernel/hpmc.S             |   5 +-
- arch/parisc/kernel/inventory.c        |   9 +++
- arch/parisc/kernel/pdt.c              | 143 ++++++++++++++++++++++++++++++++++
- arch/parisc/kernel/processor.c        |   5 +-
- arch/parisc/kernel/syscall_table.S    |   2 +-
- arch/parisc/kernel/time.c             |  24 +++++-
- arch/parisc/lib/lusercopy.S           |  25 +++---
- arch/parisc/mm/fault.c                |  12 +--
- arch/parisc/mm/init.c                 |   3 +
- drivers/parisc/ccio-dma.c             |  12 +++
- drivers/parisc/dino.c                 |   5 +-
- drivers/parisc/lba_pci.c              |   6 +-
- drivers/parisc/sba_iommu.c            |  14 ++++
- 25 files changed, 420 insertions(+), 83 deletions(-)
- create mode 100644 arch/parisc/kernel/pdt.c
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
