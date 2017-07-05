@@ -1,97 +1,145 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v3 0/3] Define CPU_BIG_ENDIAN or warn for inconsistencies
-Date: Tue, 4 Jul 2017 09:11:43 +0200
-Message-ID: <CAMuHMdUMXL7MQTtxoau9jA_WKOPJo4-Pq30CFti2ZSkXkeYWfQ@mail.gmail.com>
-References: <1497305400-147425-1-git-send-email-babu.moger@oracle.com>
+From: Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH] parisc: DMA API: return error instead of BUG_ON for dma
+ ops on non dma devs
+Date: Wed, 5 Jul 2017 11:57:56 -0700
+Message-ID: <20170705185756.GA18087@infradead.org>
+References: <20170703084920.142A9508094@solo.franken.de>
+ <83ff44f5-8989-c806-bef3-29fb9c909bee@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Michal Simek <monstr@monstr.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        openrisc@lists.librecores.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        sparclinux <sparclinux@vger.ke
-To: Babu Moger <babu.moger@oracle.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        jejb@parisc-linux.org, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1497305400-147425-1-git-send-email-babu.moger@oracle.com>
+In-Reply-To: <83ff44f5-8989-c806-bef3-29fb9c909bee@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Jun 13, 2017 at 12:09 AM, Babu Moger <babu.moger@oracle.com> wrote:
-> Found this problem while enabling queued rwlock on SPARC.
-> The parameter CONFIG_CPU_BIG_ENDIAN is used to clear the
-> specific byte in qrwlock structure. Without this parameter,
-> we clear the wrong byte.
-> Here is the code in include/asm-generic/qrwlock.h
->
-> static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
->   {
->          return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
->   }
->
-> Also found few more references of this parameter in
-> drivers/of/base.c
-> drivers/of/fdt.c
-> drivers/tty/serial/earlycon.c
-> drivers/tty/serial/serial_core.c
->
-> Here is our previous discussion.
-> https://lkml.org/lkml/2017/5/24/620
->
-> Based on the discussion, it was decided to add CONFIG_CPU_BIG_ENDIAN
-> for all the fixed big endian architecture(frv, h8300, m68k, openrisc,
-> parisc and sparc). And warn if there are inconsistencies in this definition.
->
-> v2 -> v3:
->  Added the choice statement for endianness selection for microblaze.
->  Updated the Makefile for microblaze(Suggested by Arnd Bergmann) to
->  properly compile for the correct format.
->  Updated acks.
->
-> v1 -> v2:
->  Updated the commit messages and acks.
->
-> Babu Moger (3):
->   arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
->   arch/microblaze: Add choice for endianness and update Makefile
->   include: warn for inconsistent endian config definition
->
->  arch/frv/Kconfig                        |    3 +++
->  arch/h8300/Kconfig                      |    3 +++
->  arch/m68k/Kconfig                       |    3 +++
->  arch/microblaze/Kconfig                 |   16 ++++++++++++++++
->  arch/microblaze/Makefile                |    2 ++
->  arch/openrisc/Kconfig                   |    3 +++
->  arch/parisc/Kconfig                     |    3 +++
->  arch/sparc/Kconfig                      |    3 +++
->  include/linux/byteorder/big_endian.h    |    4 ++++
->  include/linux/byteorder/little_endian.h |    4 ++++
->  10 files changed, 44 insertions(+), 0 deletions(-)
+I've got a tree pending that removes DMA_ERROR_CODE, and it's been
+in linux-next for a while.
 
-We've just got a new user in c1b0bc2dabfa884d ("usb: typec:
-Add support for UCSI interface").
-So this series should definitely go in soon.
+While this won't compile-time conflict with this patch and will
+basically revert the effect.
 
-Gr{oetje,eeting}s,
+Can you please test the patch below and send it to Linus ASAP so that
+I can send the pull request for the dma-mapping tree?
 
-                        Geert
+---
+>From 85942d54e2f0ad5f4b4e074ce2e271be17b31274 Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Tue, 4 Jul 2017 19:55:06 -0700
+Subject: parisc: ->mapping_error
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+DMA_ERROR_CODE already went away in linux-next, but parisc unfortunately
+added a new instance of it without any review as far as I can tell.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Move the two iommu drivers to report errors through ->mapping_error.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/parisc/include/asm/dma-mapping.h |  2 --
+ drivers/parisc/ccio-dma.c             | 10 +++++++++-
+ drivers/parisc/sba_iommu.c            | 10 +++++++++-
+ 3 files changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/arch/parisc/include/asm/dma-mapping.h b/arch/parisc/include/asm/dma-mapping.h
+index 9a2a8956a695..2b16282add69 100644
+--- a/arch/parisc/include/asm/dma-mapping.h
++++ b/arch/parisc/include/asm/dma-mapping.h
+@@ -20,8 +20,6 @@
+ ** flush/purge and allocate "regular" cacheable pages for everything.
+ */
+ 
+-#define DMA_ERROR_CODE	(~(dma_addr_t)0)
+-
+ #ifdef CONFIG_PA11
+ extern const struct dma_map_ops pcxl_dma_ops;
+ extern const struct dma_map_ops pcx_dma_ops;
+diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
+index 56c93f096de9..6aa1e7f6672f 100644
+--- a/drivers/parisc/ccio-dma.c
++++ b/drivers/parisc/ccio-dma.c
+@@ -110,6 +110,8 @@
+ #define CMD_TLB_DIRECT_WRITE 35         /* IO_COMMAND for I/O TLB Writes     */
+ #define CMD_TLB_PURGE        33         /* IO_COMMAND to Purge I/O TLB entry */
+ 
++#define CCIO_MAPPING_ERROR    (~(dma_addr_t)0)
++
+ struct ioa_registers {
+         /* Runway Supervisory Set */
+         int32_t    unused1[12];
+@@ -742,7 +744,7 @@ ccio_map_single(struct device *dev, void *addr, size_t size,
+ 	BUG_ON(!dev);
+ 	ioc = GET_IOC(dev);
+ 	if (!ioc)
+-		return DMA_ERROR_CODE;
++		return CCIO_MAPPING_ERROR;
+ 
+ 	BUG_ON(size <= 0);
+ 
+@@ -1023,6 +1025,11 @@ ccio_unmap_sg(struct device *dev, struct scatterlist *sglist, int nents,
+ 	DBG_RUN_SG("%s() DONE (nents %d)\n", __func__, nents);
+ }
+ 
++static int ccio_mapping_error(struct device *dev, dma_addr_t dma_addr)
++{
++	return dma_addr == CCIO_MAPPING_ERROR;
++}
++
+ static const struct dma_map_ops ccio_ops = {
+ 	.dma_supported =	ccio_dma_supported,
+ 	.alloc =		ccio_alloc,
+@@ -1031,6 +1038,7 @@ static const struct dma_map_ops ccio_ops = {
+ 	.unmap_page =		ccio_unmap_page,
+ 	.map_sg = 		ccio_map_sg,
+ 	.unmap_sg = 		ccio_unmap_sg,
++	.mapping_error =	ccio_mapping_error,
+ };
+ 
+ #ifdef CONFIG_PROC_FS
+diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
+index 87ad5fd6a7a2..4086f79d58d5 100644
+--- a/drivers/parisc/sba_iommu.c
++++ b/drivers/parisc/sba_iommu.c
+@@ -93,6 +93,8 @@
+ 
+ #define DEFAULT_DMA_HINT_REG	0
+ 
++#define SBA_MAPPING_ERROR    (~(dma_addr_t)0)
++
+ struct sba_device *sba_list;
+ EXPORT_SYMBOL_GPL(sba_list);
+ 
+@@ -725,7 +727,7 @@ sba_map_single(struct device *dev, void *addr, size_t size,
+ 
+ 	ioc = GET_IOC(dev);
+ 	if (!ioc)
+-		return DMA_ERROR_CODE;
++		return SBA_MAPPING_ERROR;
+ 
+ 	/* save offset bits */
+ 	offset = ((dma_addr_t) (long) addr) & ~IOVP_MASK;
+@@ -1083,6 +1085,11 @@ sba_unmap_sg(struct device *dev, struct scatterlist *sglist, int nents,
+ 
+ }
+ 
++static int sba_mapping_error(struct device *dev, dma_addr_t dma_addr)
++{
++	return dma_addr == SBA_MAPPING_ERROR;
++}
++
+ static const struct dma_map_ops sba_ops = {
+ 	.dma_supported =	sba_dma_supported,
+ 	.alloc =		sba_alloc,
+@@ -1091,6 +1098,7 @@ static const struct dma_map_ops sba_ops = {
+ 	.unmap_page =		sba_unmap_page,
+ 	.map_sg =		sba_map_sg,
+ 	.unmap_sg =		sba_unmap_sg,
++	.mapping_error =	sba_mapping_error,
+ };
+ 
+ 
+-- 
+2.11.0
+
