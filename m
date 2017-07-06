@@ -1,31 +1,69 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [GIT PULL] one parisc patch for v4.13-rc1
-Date: Wed, 5 Jul 2017 17:42:22 -0700
-Message-ID: <CA+55aFxVUdn53ZXr53rG=uppc6K-bdXv3=hrd-18L3+COQDMSQ@mail.gmail.com>
-References: <20170705202854.GA14623@p100.box> <CA+55aFyKxGhoJNkv2+U0PWS8MtvsJ+PgpT8YJjRPJHqME5G+Jg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Christoph Hellwig <hch@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CA+55aFyKxGhoJNkv2+U0PWS8MtvsJ+PgpT8YJjRPJHqME5G+Jg@mail.gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
+From: Babu Moger <babu.moger@oracle.com>
+Subject: [PATCH v3 0/3] Define CPU_BIG_ENDIAN or warn for inconsistencies
+Date: Thu,  6 Jul 2017 09:34:18 -0700
+Message-ID: <1499358861-179979-1-git-send-email-babu.moger@oracle.com>
+Cc: mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com,
+        jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org
+To: gregkh@linuxfoundation.org, ysato@users.sourceforge.jp,
+        geert@linux-m68k.org, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+        jejb@parisc-linux.org, deller@gmx.de, davem@davemloft.net,
+        viro@zeniv.linux.org.uk, monstr@monstr.eu
+Return-path: <linux-m68k-owner@vger.kernel.org>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Jul 5, 2017 at 5:41 PM, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Wed, Jul 5, 2017 at 1:28 PM, Helge Deller <deller@gmx.de> wrote:
->>
->>   git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.13-1
->
-> Did you perhaps mean 'parisc-4.13-2' instead?
+Resending the series per Greg KH's request.
 
-Yeah, that branch seems to match what you describe, the -1 branch
-hasn't changed since you asked me to pull it earlier.
+Found this problem while enabling queued rwlock on SPARC.
+The parameter CONFIG_CPU_BIG_ENDIAN is used to clear the
+specific byte in qrwlock structure. Without this parameter,
+we clear the wrong byte.
+Here is the code in include/asm-generic/qrwlock.h
 
-               Linus
+static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
+  {
+         return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
+  }
+
+Also found few more references of this parameter in
+drivers/of/base.c
+drivers/of/fdt.c
+drivers/tty/serial/earlycon.c
+drivers/tty/serial/serial_core.c
+
+Here is our previous discussion.
+https://lkml.org/lkml/2017/5/24/620
+
+Based on the discussion, it was decided to add CONFIG_CPU_BIG_ENDIAN
+for all the fixed big endian architecture(frv, h8300, m68k, openrisc,
+parisc and sparc). And warn if there are inconsistencies in this definition.
+
+v2 -> v3:
+ Added the choice statement for endianness selection for microblaze.
+ Updated the Makefile for microblaze(Suggested by Arnd Bergmann) to
+ properly compile for the correct format.
+ Updated acks.
+
+v1 -> v2:
+ Updated the commit messages and acks.
+
+Babu Moger (3):
+  arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
+  arch/microblaze: Add choice for endianness and update Makefile
+  include: warn for inconsistent endian config definition
+
+ arch/frv/Kconfig                        |    3 +++
+ arch/h8300/Kconfig                      |    3 +++
+ arch/m68k/Kconfig                       |    3 +++
+ arch/microblaze/Kconfig                 |   16 ++++++++++++++++
+ arch/microblaze/Makefile                |    2 ++
+ arch/openrisc/Kconfig                   |    3 +++
+ arch/parisc/Kconfig                     |    3 +++
+ arch/sparc/Kconfig                      |    3 +++
+ include/linux/byteorder/big_endian.h    |    4 ++++
+ include/linux/byteorder/little_endian.h |    4 ++++
+ 10 files changed, 44 insertions(+), 0 deletions(-)
