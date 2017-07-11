@@ -1,37 +1,34 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] tty: Fix TIOCGPTPEER ioctl definition
-Date: Tue, 11 Jul 2017 09:30:14 +0200
-Message-ID: <CAK8P3a1uJc0dNoELw1KWKnc9Lme3HDxR2Coj0-snuCmO4n-81A@mail.gmail.com>
-References: <20170711001207.GA11642@glebfm.cloud.tilaa.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Aleksa Sarai <asarai@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Valentin Rothberg <vrothberg@suse.com>,
-        "Dmitry V. Levin" <ldv@altlinux.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-alpha@vger.kernel.org,
-        "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-sh@vger.kernel.org, sparclinux <sparclinux@vger.kernel.org>,
-        linux-xtensa@linux-xtensa.org,
-        linux-arch <linux-arch@vger.kernel.org>
-To: Gleb Fotengauer-Malinovskiy <glebfm@altlinux.org>
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Subject: [PATCH] parisc: pdc_stable: constify attribute_group structures.
+Date: Tue, 11 Jul 2017 14:30:34 +0530
+Message-ID: <d7b7c51aafc608a9be4d136d63d8d0a05f36dd82.1499763477.git.arvind.yadav.cs@gmail.com>
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: jejb@parisc-linux.org, deller@gmx.de
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170711001207.GA11642@glebfm.cloud.tilaa.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, Jul 11, 2017 at 2:12 AM, Gleb Fotengauer-Malinovskiy
-<glebfm@altlinux.org> wrote:
-> This ioctl does nothing to justify an _IOC_READ or _IOC_WRITE flag
-> because it doesn't copy anything from/to userspace to access the
-> argument.
->
-> Fixes: 54ebbfb1 ("tty: add TIOCGPTPEER ioctl")
-> Signed-off-by: Gleb Fotengauer-Malinovskiy <glebfm@altlinux.org>
+attribute_groups are not supposed to change at runtime. All functions
+working with attribute_groups provided by <linux/sysfs.h> work
+with const attribute_group. So mark the non-const structs as const.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+---
+ drivers/parisc/pdc_stable.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
+index 055f83f..7147aa5 100644
+--- a/drivers/parisc/pdc_stable.c
++++ b/drivers/parisc/pdc_stable.c
+@@ -954,7 +954,7 @@ static ssize_t pdcs_osdep2_write(struct kobject *kobj,
+ 	NULL,
+ };
+ 
+-static struct attribute_group pdcs_attr_group = {
++static const struct attribute_group pdcs_attr_group = {
+ 	.attrs = pdcs_subsys_attrs,
+ };
+ 
+-- 
+1.9.1
