@@ -1,56 +1,73 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: glibc updated
-Date: Tue, 18 Jul 2017 17:13:20 +0200
-Message-ID: <7d699079b866802cfcbe1a98c1dea56d@sf-tec.de>
-References: <DFA251E0-F7AD-4F50-8012-13FD30535EC2@bell.net>
- <CAE2sS1hWWdMMWMUeC3LwMJtiY8_V5ugNO7G9sz5mRHcoF7JeQg@mail.gmail.com>
- <e2995a78-a001-c142-4fbd-0c09abf3b9be@bell.net>
- <23667583-845e-3ce9-f327-456fd042cc32@bell.net>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: parisc:generic-64bit_defconfig build failures due to 'kbuild: handle
+ libs-y archives separately...'
+Date: Tue, 18 Jul 2017 08:21:25 -0700
+Message-ID: <20170718152125.GA15577@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-kernel@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+To: Nicholas Piggin <npiggin@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <23667583-845e-3ce9-f327-456fd042cc32@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Am 2017-07-18 16:32, schrieb John David Anglin:
-> On 2017-07-17 12:33 PM, John David Anglin wrote:
->> I would like to know if the gentoo folks would consider fixing the 
->> __gmon_start__ bug:
->> https://sourceware.org/bugzilla/show_bug.cgi?id=19170
->> 
->> There is some risk in applying the patch as rebuilding a library 
->> package may break other
->> packages which depend on the library.  This could break critical tools 
->> such as binutils and
->> gcc.  In which case, some manual intervention may be needed. However, 
->> the transition
->> on Debian went fairly smoothly.  As a result, we no longer have the 
->> external symbol
->> __gmon_start exposed and we have correct library dependencies.
->> 
->> The issues with _init referred to in the BZ report are fixed.  It is 
->> now PIC; and PIE applications
->> work on hppa thanks to Alan Modra.
-> Helge: we need to add PIE load address to the kernel TODO list if it's
-> not already there.
->> 
->> Although not ideal, we could keep the __gmon_start__ patch in Debian.
->> 
-> The other approach is to install the __gmon_start__ patch and let
-> gentoo revert it.  I'm starting
-> to think this is best.
+Hi,
 
-I don't think there will be a big problem for Gentoo to accept it, as 
-long as there is a working upgrade path like "build glibc with flag 
--special-foo, rebuild system, remove flag and rebuild glibc again". And 
-of course a hint in the release notes so it will be obvious to the 
-packagers what they have to take care of. That flag thing is something 
-that Gentoo probably can add to their build scripts, something that e.g. 
-keeps the symbol in the lib without exporting it during linking, so it 
-would be resolvable first and the reference goes away on rebuild. Or 
-whatever ;)
+parisc64 builds, specifically generic-64bit_defconfig, fail to build
+in mainline as follows.
 
-Eike
+hppa64-linux-ld:
+hppa64-linux/bin/../lib/gcc/hppa64-linux/4.9.0/libgcc.a(_divdi3.o)(.text+0xec):
+cannot reach $$divU
+hppa64-linux/bin/../lib/gcc/hppa64-linux/4.9.0/libgcc.a(_divdi3.o):
+In function `__divdi3':
+libgcc2.c:(.text+0xec): relocation truncated to fit: R_PARISC_PCREL22F against
+symbol `$$divU' defined in .text.div section in
+hppa64-linux/bin/../lib/gcc/hppa64-linux/4.9.0/libgcc.a(_divU.o)
+hppa64-linux-ld:
+hppa64-linux/bin/../lib/gcc/hppa64-linux/4.9.0/libgcc.a(_divdi3.o)(.text+0x150):
+cannot reach $$divU
+
+[ and many more ]
+
+This is after enabling CONFIG_MLONGCALLS; otherwise build failures are
+more severe.
+
+Building with gcc 6.3.0 fails as well with the same error.
+
+Bisect points to commit 3a166fc2d4ef ("kbuild: handle libs-y archives
+separately from built-in.o archives") as the culprit. Bisect log is
+attached.
+
+Guenter
+
+---
+# bad: [5771a8c08880cdca3bfb4a3fc6d309d6bba20877] Linux v4.13-rc1
+# good: [9f45efb9286268e01d5022d34a58a68f53ca3072] Merge branch 'akpm' (patches from Andrew)
+git bisect start 'HEAD~1' '9f45efb92862'
+# bad: [af3c8d98508d37541d4bf57f13a984a7f73a328c] Merge tag 'drm-for-v4.13' of git://people.freedesktop.org/~airlied/linux
+git bisect bad af3c8d98508d37541d4bf57f13a984a7f73a328c
+# good: [305b9eddeec6d47778aafeded63ee8f37b9ddce0] Merge tag 'drm-intel-next-2017-06-19' of git://anongit.freedesktop.org/git/drm-intel into drm-next
+git bisect good 305b9eddeec6d47778aafeded63ee8f37b9ddce0
+# good: [ef3ad0898a60d30da7f170032992914998c366e5] Merge tag 'linux-kselftest-4.13-rc1-update' of git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest
+git bisect good ef3ad0898a60d30da7f170032992914998c366e5
+# bad: [026d15f6b9878794fae1f794cae881ccd65052e5] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/shli/md
+git bisect bad 026d15f6b9878794fae1f794cae881ccd65052e5
+# bad: [8b6b3172ce02aef147f74b32ea11796c580f795c] Merge git://git.kernel.org/pub/scm/linux/kernel/git/davem/net
+git bisect bad 8b6b3172ce02aef147f74b32ea11796c580f795c
+# bad: [33198c165b7afd500f7b6b7680ef994296805ef0] Merge tag 'for-linus-v4.13-1' of git://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux
+git bisect bad 33198c165b7afd500f7b6b7680ef994296805ef0
+# bad: [98ced886dd79a7028d203ed8adea8452bbfb47b6] Merge tag 'kbuild-thinar-v4.13' of git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild
+git bisect bad 98ced886dd79a7028d203ed8adea8452bbfb47b6
+# good: [16ffc4c39415e62c1d027d1bc59ee28e267d59f2] Merge tag 'kbuild-misc-v4.13' of git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild
+git bisect good 16ffc4c39415e62c1d027d1bc59ee28e267d59f2
+# bad: [3a166fc2d4ef7a6b7e440271ee6bd1799c066605] kbuild: handle libs-y archives separately from built-in.o archives
+git bisect bad 3a166fc2d4ef7a6b7e440271ee6bd1799c066605
+# good: [df91b0262e2cff23db5eac77126ea0bef06d54d2] ia64: remove unneeded extra-y in Makefile.gate
+git bisect good df91b0262e2cff23db5eac77126ea0bef06d54d2
+# good: [9a6cfca4f4130444cb02536a4fdf7b6e285c713e] kbuild: thin archives use P option to ar
+git bisect good 9a6cfca4f4130444cb02536a4fdf7b6e285c713e
+# first bad commit: [3a166fc2d4ef7a6b7e440271ee6bd1799c066605] kbuild: handle libs-y archives separately from built-in.o archives
