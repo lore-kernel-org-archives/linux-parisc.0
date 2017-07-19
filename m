@@ -1,70 +1,131 @@
-From: "Li, Philip" <philip.li@intel.com>
-Subject: RE: parisc:generic-64bit_defconfig build failures due to 'kbuild:
- handle   libs-y archives separately...'
-Date: Wed, 19 Jul 2017 02:45:07 +0000
-Message-ID: <831EE4E5E37DCC428EB295A351E662494C7B078F@shsmsx102.ccr.corp.intel.com>
-References: <2eee9t3p9qmqow3xr998vi1a.1500415087874@email.android.com>
- <20170719120106.54d6ad1f@roar.ozlabs.ibm.com>
- <20170719021018.d7rqvtdpy7m4m5cz@wfg-t540p.sh.intel.com>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: glibc updated
+Date: Wed, 19 Jul 2017 11:06:09 -0400
+Message-ID: <792c7aad-543b-4891-5593-f687970b5fac@bell.net>
+References: <DFA251E0-F7AD-4F50-8012-13FD30535EC2@bell.net>
+ <7d699079b866802cfcbe1a98c1dea56d@sf-tec.de>
+ <f00975c4-8a3b-06c6-79b4-ad8559828e98@bell.net>
+ <4158728.XctjvHHbYe@daneel.sf-tec.de>
+ <374e365f-a708-2474-2ddd-df77029b818e@bell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: Helge Deller <helge.deller@steuerkanzlei-deller.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "Ye, Xiaolong" <xiaolong.ye@intel.com>,
-        "Lu, LeiX" <leix.lu@intel.com>
-To: "Wu, Fengguang" <fengguang.wu@intel.com>,
-        Nicholas Piggin <npiggin@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170719021018.d7rqvtdpy7m4m5cz@wfg-t540p.sh.intel.com>
+In-Reply-To: <374e365f-a708-2474-2ddd-df77029b818e@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-PiANCj4gT24gV2VkLCBKdWwgMTksIDIwMTcgYXQgMTI6MDE6MDZQTSArMTAwMCwgTmljaG9sYXMg
-UGlnZ2luIHdyb3RlOg0KPiA+T24gVHVlLCAxOCBKdWwgMjAxNyAyMzo1ODowNyArMDIwMA0KPiA+
-SGVsZ2UgRGVsbGVyIDxoZWxnZS5kZWxsZXJAc3RldWVya2FuemxlaS1kZWxsZXIuZGU+IHdyb3Rl
-Og0KPiA+DQo+ID4+DQo+ID4+IFRoaXMgb3V0c3RhbmRpbmcgcGF0Y2ggd2lsbCBmaXggaXQ6DQo+
-ID4+IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvOTgzMjAzMy8NCj4gPj4gSGVs
-Z2UNCj4gPj4gVm9uIG1laW5lbSBTYW1zdW5nIEdlcsOkdCBnZXNlbmRldC4NCj4gPg0KPiA+VGhh
-bmtzIGZvciB0aGUgcXVpY2sgZml4LiBJJ20gbm90IHN1cmUgd2h5IDBkYXkgZGlkbid0IGNhdGNo
-IGl0Lg0KPiA+RG9lcyBpdCBidWlsZCB0ZXN0IHBhcmlzYy9nZW5lcmljLTY0Yml0X2RlZmNvbmZp
-ZywgSSB3b25kZXI/DQo+IA0KPiBXZSBkbyB0ZXN0IHRoYXQgY29uZmlnLiBJIGd1ZXNzIGl0J3Mg
-YmVjYXVzZSB0aGUgYnVpbGQgc2VydmVycyBhcmUNCj4gdW5kZXIgcHJlc3N1cmUgcmVjZW50bHku
-IFBoaWxpcC9YaWFvbG9uZyBhcmUgbG9va2luZyBhdCB0aGlzIGlzc3VlLg0KSGkgYWxsLCBzb3Jy
-eSBmb3IgdGhlIGluY29tcGxldGUgY292ZXJhZ2UsIHRoZSB0ZWFtIG5vdyBpcyBhY3RpdmVseSBm
-aXhpbmcgYnVpbGQgY2x1c3RlciBwcm9ibGVtcywgDQp3aGljaCBoYWQgYmVlbiBkb3duIGFuZCBs
-b3cgZWZmZWN0aXZlbmVzcy4gV2l0aCBjdXJyZW50IGFjY3VtdWxhdGVkIGJ1aWxkcywgaXQgbmVl
-ZA0KYXQgbGVhc3QgMSB3ZWVrIHRvIHJlY292ZXIgdG8gYSBnb29kIHN0YXRlLg0KDQo+IA0KPiBU
-aGFua3MsDQo+IEZlbmdndWFuZw0KPiANCj4gPj4gLS0tLS0tLS0gVXJzcHLDvG5nbGljaGUgTmFj
-aHJpY2h0IC0tLS0tLS0tDQo+ID4+IFZvbjogR3VlbnRlciBSb2VjayA8bGludXhAcm9lY2stdXMu
-bmV0Pg0KPiA+PiBEYXR1bTogMTguMDcuMTcgIDE3OjIxICAoR01UKzAxOjAwKQ0KPiA+PiBBbjog
-TmljaG9sYXMgUGlnZ2luIDxucGlnZ2luQGdtYWlsLmNvbT4NCj4gPj4gQ2M6IGxpbnV4LWtlcm5l
-bEB2Z2VyLmtlcm5lbC5vcmcsIE1hc2FoaXJvIFlhbWFkYQ0KPiA8eWFtYWRhLm1hc2FoaXJvQHNv
-Y2lvbmV4dC5jb20+LCAiSmFtZXMgRS5KLiBCb3R0b21sZXkiIDxqZWpiQHBhcmlzYy0NCj4gbGlu
-dXgub3JnPiwgSGVsZ2UgRGVsbGVyIDxkZWxsZXJAZ214LmRlPiwgbGludXgtcGFyaXNjQHZnZXIu
-a2VybmVsLm9yZw0KPiA+PiBCZXRyZWZmOiBwYXJpc2M6Z2VuZXJpYy02NGJpdF9kZWZjb25maWcg
-YnVpbGQgZmFpbHVyZXMgZHVlIHRvICdrYnVpbGQ6IGhhbmRsZQ0KPiA+ICBsaWJzLXkgYXJjaGl2
-ZXMgc2VwYXJhdGVseS4uLicNCj4gPj4NCj4gPj4gSGksDQo+ID4+DQo+ID4+IHBhcmlzYzY0IGJ1
-aWxkcywgc3BlY2lmaWNhbGx5IGdlbmVyaWMtNjRiaXRfZGVmY29uZmlnLCBmYWlsIHRvIGJ1aWxk
-DQo+ID4+IGluIG1haW5saW5lIGFzIGZvbGxvd3MuDQo+ID4+DQo+ID4+IGhwcGE2NC1saW51eC1s
-ZDoNCj4gPj4gaHBwYTY0LWxpbnV4L2Jpbi8uLi9saWIvZ2NjL2hwcGE2NC1saW51eC80LjkuMC9s
-aWJnY2MuYShfZGl2ZGkzLm8pKC50ZXh0KzB4ZWMpOg0KPiA+PiBjYW5ub3QgcmVhY2ggJCRkaXZV
-DQo+ID4+IGhwcGE2NC1saW51eC9iaW4vLi4vbGliL2djYy9ocHBhNjQtbGludXgvNC45LjAvbGli
-Z2NjLmEoX2RpdmRpMy5vKToNCj4gPj4gSW4gZnVuY3Rpb24gYF9fZGl2ZGkzJzoNCj4gPj4gbGli
-Z2NjMi5jOigudGV4dCsweGVjKTogcmVsb2NhdGlvbiB0cnVuY2F0ZWQgdG8gZml0OiBSX1BBUklT
-Q19QQ1JFTDIyRg0KPiBhZ2FpbnN0DQo+ID4+IHN5bWJvbCBgJCRkaXZVJyBkZWZpbmVkIGluIC50
-ZXh0LmRpdiBzZWN0aW9uIGluDQo+ID4+IGhwcGE2NC1saW51eC9iaW4vLi4vbGliL2djYy9ocHBh
-NjQtbGludXgvNC45LjAvbGliZ2NjLmEoX2RpdlUubykNCj4gPj4gaHBwYTY0LWxpbnV4LWxkOg0K
-PiA+PiBocHBhNjQtbGludXgvYmluLy4uL2xpYi9nY2MvaHBwYTY0LWxpbnV4LzQuOS4wL2xpYmdj
-Yy5hKF9kaXZkaTMubykoLnRleHQrMHgxNTApOg0KPiA+PiBjYW5ub3QgcmVhY2ggJCRkaXZVDQo+
-ID4+DQo+ID4+IFsgYW5kIG1hbnkgbW9yZSBdDQo+ID4+DQo+ID4+IFRoaXMgaXMgYWZ0ZXIgZW5h
-YmxpbmcgQ09ORklHX01MT05HQ0FMTFM7IG90aGVyd2lzZSBidWlsZCBmYWlsdXJlcyBhcmUNCj4g
-Pj4gbW9yZSBzZXZlcmUuDQo+ID4+DQo+ID4+IEJ1aWxkaW5nIHdpdGggZ2NjIDYuMy4wIGZhaWxz
-IGFzIHdlbGwgd2l0aCB0aGUgc2FtZSBlcnJvci4NCj4gPj4NCj4gPj4gQmlzZWN0IHBvaW50cyB0
-byBjb21taXQgM2ExNjZmYzJkNGVmICgia2J1aWxkOiBoYW5kbGUgbGlicy15IGFyY2hpdmVzDQo+
-ID4+IHNlcGFyYXRlbHkgZnJvbSBidWlsdC1pbi5vIGFyY2hpdmVzIikgYXMgdGhlIGN1bHByaXQu
-IEJpc2VjdCBsb2cgaXMNCj4gPj4gYXR0YWNoZWQuDQo=
+On 2017-07-18 4:26 PM, John David Anglin wrote:
+> On 2017-07-18 3:39 PM, Rolf Eike Beer wrote:
+>> John David Anglin wrote:
+>>> On 2017-07-18 11:13 AM, Rolf Eike Beer wrote:
+>>>> Am 2017-07-18 16:32, schrieb John David Anglin:
+>>>>> On 2017-07-17 12:33 PM, John David Anglin wrote:
+>>>>>> I would like to know if the gentoo folks would consider fixing the
+>>>>>> __gmon_start__ bug:
+>>>>>> https://sourceware.org/bugzilla/show_bug.cgi?id=19170
+>>>>>>
+>>>>>> There is some risk in applying the patch as rebuilding a library
+>>>>>> package may break other
+>>>>>> packages which depend on the library.  This could break critical
+>>>>>> tools such as binutils and
+>>>>>> gcc.  In which case, some manual intervention may be needed.
+>>>>>> However, the transition
+>>>>>> on Debian went fairly smoothly.  As a result, we no longer have the
+>>>>>> external symbol
+>>>>>> __gmon_start exposed and we have correct library dependencies.
+>>>>>>
+>>>>>> The issues with _init referred to in the BZ report are fixed. It is
+>>>>>> now PIC; and PIE applications
+>>>>>> work on hppa thanks to Alan Modra.
+>>>>> Helge: we need to add PIE load address to the kernel TODO list if 
+>>>>> it's
+>>>>> not already there.
+>>>>>
+>>>>>> Although not ideal, we could keep the __gmon_start__ patch in 
+>>>>>> Debian.
+>>>>> The other approach is to install the __gmon_start__ patch and let
+>>>>> gentoo revert it.  I'm starting
+>>>>> to think this is best.
+>>>> I don't think there will be a big problem for Gentoo to accept it, as
+>>>> long as there is a working upgrade path like "build glibc with flag
+>>>> -special-foo, rebuild system, remove flag and rebuild glibc again".
+>>>> And of course a hint in the release notes so it will be obvious to the
+>>>> packagers what they have to take care of. That flag thing is something
+>>>> that Gentoo probably can add to their build scripts, something that
+>>>> e.g. keeps the symbol in the lib without exporting it during linking,
+>>>> so it would be resolvable first and the reference goes away on
+>>>> rebuild. Or whatever ;)
+>>> I'm not sure you fully understand the issue.  It doesn't involve doing
+>>> anything special in building glibc.
+>>>
+>>> The issue is this code in glibc's crtn.S:
+>>>
+>>> /* Note that we cannot have a weak undefined __gmon_start__, because
+>>>      that would require this to be PIC, and the linker is currently not
+>>>      able to generate a proper procedure descriptor for _init.  Sad but
+>>>      true.  Anyway, HPPA is one of those horrible architectures where
+>>>      making the comparison and indirect call is quite expensive (see 
+>>> the
+>>>      comment in sysdeps/generic/initfini.c). */
+>>>           .text
+>>>           .align 4
+>>>           .weak   __gmon_start__
+>>>           .type    __gmon_start__,@function
+>>> __gmon_start__:
+>>>           .proc
+>>>           .callinfo
+>>>           .entry
+>>>           bv,n %r0(%r2)
+>>>           .exit
+>>>           .procend
+>>>
+>>> The above hunk of code results in a weak __gmon_start__ function in
+>>> every shared library.
+>>> The function needs to be removed.
+>>>
+>>> As can be seen, the function does nothing.  It is called once when a
+>>> shared library is loaded.
+>>>
+>>> In an application link, __gmon_start__ is resolved to one of the shared
+>>> libraries used by the application.
+>> So, this would be a problem if the application only links to glibc 
+>> (and it's
+>> libraries), no? The problem is not rebuilding, Gentoo is actually 
+>> totally
+>> about rebuilding your system every now and then ;) The point is: what 
+>> must be
+>> done to have an upgrade path from the old glibc to the new one that 
+>> will not
+>> break the system on the way.
+> It's not a problem for applications that only link against libc, but 
+> for other libraries.  I'm
+> not aware of any way to avoid some breakage other than retaining the 
+> old behavior.  The new
+> glibc doesn't break anything directly.  The breakage occurs when 
+> libraries are linked with
+> the new crt* files.
+>
+> One could build up a minimal system in a chroot.  When you are sure 
+> that it works, then
+> these tools could be used to get past any breakage.  I don't know the 
+> gentoo build system
+> so I don't know how easy this would be.
+The patch will not be applied until after the 2.26 branch is created so 
+there is plenty of time to
+consider what needs to be done.
+
+There is one addition issue to consider.  Linuxthreads is now removed 
+and hppa uses the
+generic nptl thread support.  So, old linuxthread applications will no 
+longer work.  Changes
+to nptl broke 2.25 on hppa and no doubt the code that tried to handle 
+both methodologies
+was buggy.  Most architectures dropped linuxthreads years ago.
+
+Dave
+
+-- 
+John David Anglin  dave.anglin@bell.net
+
