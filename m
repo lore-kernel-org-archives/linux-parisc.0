@@ -1,77 +1,70 @@
-From: Fengguang Wu <fengguang.wu@intel.com>
-Subject: Re: parisc:generic-64bit_defconfig build failures due to 'kbuild:
+From: "Li, Philip" <philip.li@intel.com>
+Subject: RE: parisc:generic-64bit_defconfig build failures due to 'kbuild:
  handle   libs-y archives separately...'
-Date: Wed, 19 Jul 2017 10:10:18 +0800
-Message-ID: <20170719021018.d7rqvtdpy7m4m5cz@wfg-t540p.sh.intel.com>
+Date: Wed, 19 Jul 2017 02:45:07 +0000
+Message-ID: <831EE4E5E37DCC428EB295A351E662494C7B078F@shsmsx102.ccr.corp.intel.com>
 References: <2eee9t3p9qmqow3xr998vi1a.1500415087874@email.android.com>
  <20170719120106.54d6ad1f@roar.ozlabs.ibm.com>
+ <20170719021018.d7rqvtdpy7m4m5cz@wfg-t540p.sh.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Cc: Helge Deller <helge.deller@steuerkanzlei-deller.de>,
         Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Masahiro Yamada <yamada.masahiro@socionext.com>,
         "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        Philip Li <philip.li@intel.com>,
-        Ye Xiaolong <xiaolong.ye@intel.com>
-To: Nicholas Piggin <npiggin@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170719120106.54d6ad1f@roar.ozlabs.ibm.com>
-List-ID: <linux-kernel.vger.kernel.org>
+        Helge Deller <deller@gmx.de>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "Ye, Xiaolong" <xiaolong.ye@intel.com>,
+        "Lu, LeiX" <leix.lu@intel.com>
+To: "Wu, Fengguang" <fengguang.wu@intel.com>,
+        Nicholas Piggin <npiggin@gmail.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20170719021018.d7rqvtdpy7m4m5cz@wfg-t540p.sh.intel.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Jul 19, 2017 at 12:01:06PM +1000, Nicholas Piggin wrote:
->On Tue, 18 Jul 2017 23:58:07 +0200
->Helge Deller <helge.deller@steuerkanzlei-deller.de> wrote:
->
->>
->> This outstanding patch will fix it:
->> https://patchwork.kernel.org/patch/9832033/
->> Helge 
->> Von meinem Samsung Gerät gesendet.
->
->Thanks for the quick fix. I'm not sure why 0day didn't catch it.
->Does it build test parisc/generic-64bit_defconfig, I wonder?
-
-We do test that config. I guess it's because the build servers are
-under pressure recently. Philip/Xiaolong are looking at this issue.
-
-Thanks,
-Fengguang
-
->> -------- Ursprüngliche Nachricht --------
->> Von: Guenter Roeck <linux@roeck-us.net>
->> Datum: 18.07.17  17:21  (GMT+01:00)
->> An: Nicholas Piggin <npiggin@gmail.com>
->> Cc: linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
->> Betreff: parisc:generic-64bit_defconfig build failures due to 'kbuild: handle
->  libs-y archives separately...'
->>
->> Hi,
->>
->> parisc64 builds, specifically generic-64bit_defconfig, fail to build
->> in mainline as follows.
->>
->> hppa64-linux-ld:
->> hppa64-linux/bin/../lib/gcc/hppa64-linux/4.9.0/libgcc.a(_divdi3.o)(.text+0xec):
->> cannot reach $$divU
->> hppa64-linux/bin/../lib/gcc/hppa64-linux/4.9.0/libgcc.a(_divdi3.o):
->> In function `__divdi3':
->> libgcc2.c:(.text+0xec): relocation truncated to fit: R_PARISC_PCREL22F against
->> symbol `$$divU' defined in .text.div section in
->> hppa64-linux/bin/../lib/gcc/hppa64-linux/4.9.0/libgcc.a(_divU.o)
->> hppa64-linux-ld:
->> hppa64-linux/bin/../lib/gcc/hppa64-linux/4.9.0/libgcc.a(_divdi3.o)(.text+0x150):
->> cannot reach $$divU
->>
->> [ and many more ]
->>
->> This is after enabling CONFIG_MLONGCALLS; otherwise build failures are
->> more severe.
->>
->> Building with gcc 6.3.0 fails as well with the same error.
->>
->> Bisect points to commit 3a166fc2d4ef ("kbuild: handle libs-y archives
->> separately from built-in.o archives") as the culprit. Bisect log is
->> attached.
+PiANCj4gT24gV2VkLCBKdWwgMTksIDIwMTcgYXQgMTI6MDE6MDZQTSArMTAwMCwgTmljaG9sYXMg
+UGlnZ2luIHdyb3RlOg0KPiA+T24gVHVlLCAxOCBKdWwgMjAxNyAyMzo1ODowNyArMDIwMA0KPiA+
+SGVsZ2UgRGVsbGVyIDxoZWxnZS5kZWxsZXJAc3RldWVya2FuemxlaS1kZWxsZXIuZGU+IHdyb3Rl
+Og0KPiA+DQo+ID4+DQo+ID4+IFRoaXMgb3V0c3RhbmRpbmcgcGF0Y2ggd2lsbCBmaXggaXQ6DQo+
+ID4+IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvOTgzMjAzMy8NCj4gPj4gSGVs
+Z2UNCj4gPj4gVm9uIG1laW5lbSBTYW1zdW5nIEdlcsOkdCBnZXNlbmRldC4NCj4gPg0KPiA+VGhh
+bmtzIGZvciB0aGUgcXVpY2sgZml4LiBJJ20gbm90IHN1cmUgd2h5IDBkYXkgZGlkbid0IGNhdGNo
+IGl0Lg0KPiA+RG9lcyBpdCBidWlsZCB0ZXN0IHBhcmlzYy9nZW5lcmljLTY0Yml0X2RlZmNvbmZp
+ZywgSSB3b25kZXI/DQo+IA0KPiBXZSBkbyB0ZXN0IHRoYXQgY29uZmlnLiBJIGd1ZXNzIGl0J3Mg
+YmVjYXVzZSB0aGUgYnVpbGQgc2VydmVycyBhcmUNCj4gdW5kZXIgcHJlc3N1cmUgcmVjZW50bHku
+IFBoaWxpcC9YaWFvbG9uZyBhcmUgbG9va2luZyBhdCB0aGlzIGlzc3VlLg0KSGkgYWxsLCBzb3Jy
+eSBmb3IgdGhlIGluY29tcGxldGUgY292ZXJhZ2UsIHRoZSB0ZWFtIG5vdyBpcyBhY3RpdmVseSBm
+aXhpbmcgYnVpbGQgY2x1c3RlciBwcm9ibGVtcywgDQp3aGljaCBoYWQgYmVlbiBkb3duIGFuZCBs
+b3cgZWZmZWN0aXZlbmVzcy4gV2l0aCBjdXJyZW50IGFjY3VtdWxhdGVkIGJ1aWxkcywgaXQgbmVl
+ZA0KYXQgbGVhc3QgMSB3ZWVrIHRvIHJlY292ZXIgdG8gYSBnb29kIHN0YXRlLg0KDQo+IA0KPiBU
+aGFua3MsDQo+IEZlbmdndWFuZw0KPiANCj4gPj4gLS0tLS0tLS0gVXJzcHLDvG5nbGljaGUgTmFj
+aHJpY2h0IC0tLS0tLS0tDQo+ID4+IFZvbjogR3VlbnRlciBSb2VjayA8bGludXhAcm9lY2stdXMu
+bmV0Pg0KPiA+PiBEYXR1bTogMTguMDcuMTcgIDE3OjIxICAoR01UKzAxOjAwKQ0KPiA+PiBBbjog
+TmljaG9sYXMgUGlnZ2luIDxucGlnZ2luQGdtYWlsLmNvbT4NCj4gPj4gQ2M6IGxpbnV4LWtlcm5l
+bEB2Z2VyLmtlcm5lbC5vcmcsIE1hc2FoaXJvIFlhbWFkYQ0KPiA8eWFtYWRhLm1hc2FoaXJvQHNv
+Y2lvbmV4dC5jb20+LCAiSmFtZXMgRS5KLiBCb3R0b21sZXkiIDxqZWpiQHBhcmlzYy0NCj4gbGlu
+dXgub3JnPiwgSGVsZ2UgRGVsbGVyIDxkZWxsZXJAZ214LmRlPiwgbGludXgtcGFyaXNjQHZnZXIu
+a2VybmVsLm9yZw0KPiA+PiBCZXRyZWZmOiBwYXJpc2M6Z2VuZXJpYy02NGJpdF9kZWZjb25maWcg
+YnVpbGQgZmFpbHVyZXMgZHVlIHRvICdrYnVpbGQ6IGhhbmRsZQ0KPiA+ICBsaWJzLXkgYXJjaGl2
+ZXMgc2VwYXJhdGVseS4uLicNCj4gPj4NCj4gPj4gSGksDQo+ID4+DQo+ID4+IHBhcmlzYzY0IGJ1
+aWxkcywgc3BlY2lmaWNhbGx5IGdlbmVyaWMtNjRiaXRfZGVmY29uZmlnLCBmYWlsIHRvIGJ1aWxk
+DQo+ID4+IGluIG1haW5saW5lIGFzIGZvbGxvd3MuDQo+ID4+DQo+ID4+IGhwcGE2NC1saW51eC1s
+ZDoNCj4gPj4gaHBwYTY0LWxpbnV4L2Jpbi8uLi9saWIvZ2NjL2hwcGE2NC1saW51eC80LjkuMC9s
+aWJnY2MuYShfZGl2ZGkzLm8pKC50ZXh0KzB4ZWMpOg0KPiA+PiBjYW5ub3QgcmVhY2ggJCRkaXZV
+DQo+ID4+IGhwcGE2NC1saW51eC9iaW4vLi4vbGliL2djYy9ocHBhNjQtbGludXgvNC45LjAvbGli
+Z2NjLmEoX2RpdmRpMy5vKToNCj4gPj4gSW4gZnVuY3Rpb24gYF9fZGl2ZGkzJzoNCj4gPj4gbGli
+Z2NjMi5jOigudGV4dCsweGVjKTogcmVsb2NhdGlvbiB0cnVuY2F0ZWQgdG8gZml0OiBSX1BBUklT
+Q19QQ1JFTDIyRg0KPiBhZ2FpbnN0DQo+ID4+IHN5bWJvbCBgJCRkaXZVJyBkZWZpbmVkIGluIC50
+ZXh0LmRpdiBzZWN0aW9uIGluDQo+ID4+IGhwcGE2NC1saW51eC9iaW4vLi4vbGliL2djYy9ocHBh
+NjQtbGludXgvNC45LjAvbGliZ2NjLmEoX2RpdlUubykNCj4gPj4gaHBwYTY0LWxpbnV4LWxkOg0K
+PiA+PiBocHBhNjQtbGludXgvYmluLy4uL2xpYi9nY2MvaHBwYTY0LWxpbnV4LzQuOS4wL2xpYmdj
+Yy5hKF9kaXZkaTMubykoLnRleHQrMHgxNTApOg0KPiA+PiBjYW5ub3QgcmVhY2ggJCRkaXZVDQo+
+ID4+DQo+ID4+IFsgYW5kIG1hbnkgbW9yZSBdDQo+ID4+DQo+ID4+IFRoaXMgaXMgYWZ0ZXIgZW5h
+YmxpbmcgQ09ORklHX01MT05HQ0FMTFM7IG90aGVyd2lzZSBidWlsZCBmYWlsdXJlcyBhcmUNCj4g
+Pj4gbW9yZSBzZXZlcmUuDQo+ID4+DQo+ID4+IEJ1aWxkaW5nIHdpdGggZ2NjIDYuMy4wIGZhaWxz
+IGFzIHdlbGwgd2l0aCB0aGUgc2FtZSBlcnJvci4NCj4gPj4NCj4gPj4gQmlzZWN0IHBvaW50cyB0
+byBjb21taXQgM2ExNjZmYzJkNGVmICgia2J1aWxkOiBoYW5kbGUgbGlicy15IGFyY2hpdmVzDQo+
+ID4+IHNlcGFyYXRlbHkgZnJvbSBidWlsdC1pbi5vIGFyY2hpdmVzIikgYXMgdGhlIGN1bHByaXQu
+IEJpc2VjdCBsb2cgaXMNCj4gPj4gYXR0YWNoZWQuDQo=
