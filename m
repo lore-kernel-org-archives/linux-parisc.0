@@ -1,58 +1,138 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: [PATCH] parisc: Suspend lockup detectors before system halt
-Date: Tue, 25 Jul 2017 22:01:34 +0200
-Message-ID: <2651830.be6NMSIgim@daneel.sf-tec.de>
-References: <20170725194141.GA14760@p100.box> <5403864.sYzayCyLUt@daneel.sf-tec.de> <d015022e-2ecd-889f-7466-348fa2c230a6@gmx.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart12833711.hfPd7gA7iN"; micalg="pgp-"; protocol="application/pgp-signature"
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-To: linux-parisc@vger.kernel.org
+From: John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Prevent TLB speculation on flushed pages on CPUs that only support equivalent aliases
+Date: Tue, 25 Jul 2017 17:11:26 -0400
+Message-ID: <71EB19D6-E071-42AE-A338-A0D600EEE627@bell.net>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Type: multipart/mixed; boundary=Apple-Mail-38-871360738
+Cc: Helge Deller <deller@gmx.de>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <d015022e-2ecd-889f-7466-348fa2c230a6@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---nextPart12833711.hfPd7gA7iN
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
 
-Helge Deller wrote:
-> On 25.07.2017 21:47, Rolf Eike Beer wrote:
-> > Helge Deller wrote:
-> >> Some machines can't power off the machine, so disable the lockup
-> >> detectors
-> >> to avoid this watchdog BUG to show up every few seconds:
-> >> watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [systemd-shutdow:1]
-> > 
-> > I don't think HPPA is the only architecture that has this problem,
-> 
-> Maybe.
-> I haven't heard of others yet, probably because most other architectures
-> do power off themselves, so they won't see this problem.
-> 
-> > so isn't there a generic solution? Or: is it time to add one?
-> 
-> Sure, you are welcome to test, post and discuss patches upstream if you
-> like. It's not a very critical issue, so I can wait with pushing my patch.
+--Apple-Mail-38-871360738
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-I wont be able to do anything like that this week (maybe longer), so please go 
-ahead with your patch to get rid of the annoying warning. Cleanups later.
+Helge noticed that we flush the TLB page in flush_cache_page but not in =
+flush_cache_range
+or flush_cache_mm.
 
-Eike
+For a long time, we have had random segmentation faults building =
+packages on machines with
+PA8800/8900 processors.  These machines only support equivalent aliases. =
+ We don't see these
+faults on machines that don't require strict coherency.  So, it appears =
+TLB speculation sometimes
+leads to cache corruption on machines that require coherency.
 
---nextPart12833711.hfPd7gA7iN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+This patch adds TLB flushes to flush_cache_range and flush_cache_mm when =
+coherency is
+required.  We only flush the TLB in flush_cache_page when coherency is =
+required.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+The patch also optimizes flush_cache_range.  It turns out we always have =
+the right context
+to use flush_user_dcache_range_asm and flush_user_icache_range_asm.
 
-iEYEABECAAYFAll3o6MACgkQXKSJPmm5/E7SxwCfR8ldYOoCYzOyFH8Sg2BiXw/L
-Eo8Ani+1ffhpzNiHRRGsBlpNcXqpSGzP
-=tm8q
------END PGP SIGNATURE-----
+The patch has been tested for some time on rp3440, rp3410 and A500-44.  =
+It's been boot tested
+on c8000.  No random segmentation faults were observed during testing.
 
---nextPart12833711.hfPd7gA7iN--
+Signed-off-by: John David Anglin <dave.anglin@gell.net>
 
+
+
+--Apple-Mail-38-871360738
+Content-Disposition: attachment;
+	filename=cache-tlb.d.txt
+Content-Type: text/plain;
+	name="cache-tlb.d.txt"
+Content-Transfer-Encoding: quoted-printable
+
+diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+index c32a09095216..85a92db70afc 100644
+--- a/arch/parisc/kernel/cache.c
++++ b/arch/parisc/kernel/cache.c
+@@ -539,6 +539,10 @@ void flush_cache_mm(struct mm_struct *mm)
+ 	struct vm_area_struct *vma;
+ 	pgd_t *pgd;
+=20
++	/* Flush the TLB to avoid speculation if coherency is required. =
+*/
++	if (parisc_requires_coherency())
++		flush_tlb_all();
++
+ 	/* Flushing the whole cache on each cpu takes forever on
+ 	   rp3440, etc.  So, avoid it if the mm isn't too big.  */
+ 	if (mm_total_size(mm) >=3D parisc_cache_flush_threshold) {
+@@ -577,33 +581,22 @@ void flush_cache_mm(struct mm_struct *mm)
+ void flush_cache_range(struct vm_area_struct *vma,
+ 		unsigned long start, unsigned long end)
+ {
+-	unsigned long addr;
+-	pgd_t *pgd;
+-
+ 	BUG_ON(!vma->vm_mm->context);
+=20
++	/* Flush the TLB to avoid speculation if coherency is required. =
+*/
++	if (parisc_requires_coherency())
++		flush_tlb_range(vma, start, end);
++
+ 	if ((end - start) >=3D parisc_cache_flush_threshold) {
+ 		flush_cache_all();
+ 		return;
+ 	}
+=20
+-	if (vma->vm_mm->context =3D=3D mfsp(3)) {
+-		flush_user_dcache_range_asm(start, end);
+-		if (vma->vm_flags & VM_EXEC)
+-			flush_user_icache_range_asm(start, end);
+-		return;
+-	}
++	BUG_ON(vma->vm_mm->context !=3D mfsp(3));
+=20
+-	pgd =3D vma->vm_mm->pgd;
+-	for (addr =3D start & PAGE_MASK; addr < end; addr +=3D =
+PAGE_SIZE) {
+-		unsigned long pfn;
+-		pte_t *ptep =3D get_ptep(pgd, addr);
+-		if (!ptep)
+-			continue;
+-		pfn =3D pte_pfn(*ptep);
+-		if (pfn_valid(pfn))
+-			__flush_cache_page(vma, addr, PFN_PHYS(pfn));
+-	}
++	flush_user_dcache_range_asm(start, end);
++	if (vma->vm_flags & VM_EXEC)
++		flush_user_icache_range_asm(start, end);
+ }
+=20
+ void
+@@ -612,7 +605,8 @@ flush_cache_page(struct vm_area_struct *vma, =
+unsigned long vmaddr, unsigned long
+ 	BUG_ON(!vma->vm_mm->context);
+=20
+ 	if (pfn_valid(pfn)) {
+-		flush_tlb_page(vma, vmaddr);
++		if (parisc_requires_coherency())
++			flush_tlb_page(vma, vmaddr);
+ 		__flush_cache_page(vma, vmaddr, PFN_PHYS(pfn));
+ 	}
+ }
+
+--Apple-Mail-38-871360738
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
+
+
+
+--
+John David Anglin	dave.anglin@bell.net
+
+--Apple-Mail-38-871360738--
