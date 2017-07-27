@@ -1,83 +1,156 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture fixes for v4.13-rc3
-Date: Thu, 27 Jul 2017 21:21:21 +0200
-Message-ID: <20170727192121.GA14162@p100.box>
+Subject: Re: [PATCH v3 1/3] arch: Define CPU_BIG_ENDIAN for all fixed big
+ endian archs
+Date: Thu, 27 Jul 2017 23:10:05 +0200
+Message-ID: <8d0ac21c-5642-14f6-3820-815a1cc3c418@gmx.de>
+References: <1497305400-147425-1-git-send-email-babu.moger@oracle.com>
+ <1497305400-147425-2-git-send-email-babu.moger@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Cc: mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com,
+        jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org
+To: Babu Moger <babu.moger@oracle.com>, ysato@users.sourceforge.jp,
+        geert@linux-m68k.org, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+        jejb@parisc-linux.org, viro@zeniv.linux.org.uk, monstr@monstr.eu
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1497305400-147425-2-git-send-email-babu.moger@oracle.com>
+List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+On 13.06.2017 00:09, Babu Moger wrote:
+> While working on enabling queued rwlock on SPARC, found
+> this following code in include/asm-generic/qrwlock.h
+> which uses CONFIG_CPU_BIG_ENDIAN to clear a byte.
+> 
+> static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
+>  {
+> 	return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
+>  }
+> 
+> Problem is many of the fixed big endian architectures don't define
+> CPU_BIG_ENDIAN and clears the wrong byte.
+> 
+> Define CPU_BIG_ENDIAN for all the fixed big endian architecture to fix it.
+> 
+> Also found few more references of this config parameter in
+> drivers/of/base.c
+> drivers/of/fdt.c
+> drivers/tty/serial/earlycon.c
+> drivers/tty/serial/serial_core.c
+> Be aware that this may cause regressions if someone has worked-around
+> problems in the above code already. Remove the work-around.
+> 
+> Here is our original discussion
+> https://lkml.org/lkml/2017/5/24/620
+> 
+> Signed-off-by: Babu Moger <babu.moger@oracle.com>
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Acked-by: David S. Miller <davem@davemloft.net>
+> Acked-by: Stafford Horne <shorne@gmail.com>
 
-please pull important fixes and updates for the parisc architecture for 4.13-rc3 from
+It seems for sparc it was already merged?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.13-3
+Anyway, you may add
+Acked-by: Helge Deller <deller@gmx.de> # parisc
 
-Changes:
-
-The majority of lines changed are due to regenerated defconfig files.
-
-The support for the Page Deallocation Table (PDT) which was merged in the merge
-window for 4.13 contained a bug which crashes the kernel if a bad page is
-reported by firmware. This is now fixed and the kernel messages will show which
-memory slot holds the broken DIMM.
-
-Commit 3a166fc2d4ef ("kbuild: handle libs-y archives separately from built-in.o
-archives") broke linking the parisc kernel due to millicode symbols which can't
-be reached then any longer.  This was fixed by modifying the parisc vmlinux.lds
-linker script.
-
-If the stack checker panics on stack overflow, avoid recursive panics.
-
-Some parisc machines can't physically power off and thus instead start after
-some time to flood the console by presumably detected soft lockups. Avoid this
-by disabling the lockup detectors before entering the endless for-next loop.
-
-Dave Anglin provided fixes which prevents TLB speculation on flushed pages
-on PA8800/PA9000 CPUs.
-
-Arvind Yadav sent a trivial patch to constify the attribute_group structure in
-our firmware on-board-flash storage driver (pdc_stable.c).
-
-Thanks,
 Helge
 
-----------------------------------------------------------------
-Arvind Yadav (1):
-      parisc: pdc_stable: constify attribute_group structures.
-
-Helge Deller (7):
-      parisc: Disable further stack checks when panic occurs during stack check
-      parisc: Merge millicode routines via linker script
-      parisc: regenerate defconfig files
-      parisc: Fix crash when calling PDC_PAT_MEM PDT firmware function
-      parisc: Add function to return DIMM slot of physical address
-      parisc: Show DIMM slot number which holds broken memory module
-      parisc: Suspend lockup detectors before system halt
-
-John David Anglin (2):
-      parisc: Prevent TLB speculation on flushed pages on CPUs that only support equivalent aliases
-      parisc: Extend disabled preemption in copy_user_page
-
- arch/parisc/configs/712_defconfig           | 41 ++++++-----------------
- arch/parisc/configs/a500_defconfig          | 50 +++++++----------------------
- arch/parisc/configs/b180_defconfig          | 17 ++--------
- arch/parisc/configs/c3000_defconfig         | 38 ++++------------------
- arch/parisc/configs/c8000_defconfig         | 17 ++--------
- arch/parisc/configs/default_defconfig       | 49 +++++++---------------------
- arch/parisc/configs/generic-32bit_defconfig | 21 +-----------
- arch/parisc/configs/generic-64bit_defconfig | 48 +++++++++------------------
- arch/parisc/include/asm/pdcpat.h            | 16 ++++++++-
- arch/parisc/kernel/cache.c                  | 36 +++++++++------------
- arch/parisc/kernel/firmware.c               | 36 +++++++++++++++++++--
- arch/parisc/kernel/irq.c                    |  8 ++++-
- arch/parisc/kernel/pdt.c                    | 23 +++++++++----
- arch/parisc/kernel/process.c                |  2 ++
- arch/parisc/kernel/vmlinux.lds.S            |  2 ++
- drivers/parisc/pdc_stable.c                 |  2 +-
- 16 files changed, 152 insertions(+), 254 deletions(-)
+> ---
+>  arch/frv/Kconfig      |    3 +++
+>  arch/h8300/Kconfig    |    3 +++
+>  arch/m68k/Kconfig     |    3 +++
+>  arch/openrisc/Kconfig |    3 +++
+>  arch/parisc/Kconfig   |    3 +++
+>  arch/sparc/Kconfig    |    3 +++
+>  6 files changed, 18 insertions(+), 0 deletions(-)
+> 
+> diff --git a/arch/frv/Kconfig b/arch/frv/Kconfig
+> index eefd9a4..1cce824 100644
+> --- a/arch/frv/Kconfig
+> +++ b/arch/frv/Kconfig
+> @@ -17,6 +17,9 @@ config FRV
+>  	select HAVE_DEBUG_STACKOVERFLOW
+>  	select ARCH_NO_COHERENT_DMA_MMAP
+>  
+> +config CPU_BIG_ENDIAN
+> +	def_bool y
+> +
+>  config ZONE_DMA
+>  	bool
+>  	default y
+> diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
+> index 3ae8525..5380ac8 100644
+> --- a/arch/h8300/Kconfig
+> +++ b/arch/h8300/Kconfig
+> @@ -23,6 +23,9 @@ config H8300
+>  	select HAVE_ARCH_HASH
+>  	select CPU_NO_EFFICIENT_FFS
+>  
+> +config CPU_BIG_ENDIAN
+> +	def_bool y
+> +
+>  config RWSEM_GENERIC_SPINLOCK
+>  	def_bool y
+>  
+> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+> index d140206..029a58b 100644
+> --- a/arch/m68k/Kconfig
+> +++ b/arch/m68k/Kconfig
+> @@ -23,6 +23,9 @@ config M68K
+>  	select OLD_SIGSUSPEND3
+>  	select OLD_SIGACTION
+>  
+> +config CPU_BIG_ENDIAN
+> +	def_bool y
+> +
+>  config RWSEM_GENERIC_SPINLOCK
+>  	bool
+>  	default y
+> diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
+> index 1e95920..a0f2e4a 100644
+> --- a/arch/openrisc/Kconfig
+> +++ b/arch/openrisc/Kconfig
+> @@ -29,6 +29,9 @@ config OPENRISC
+>  	select CPU_NO_EFFICIENT_FFS if !OPENRISC_HAVE_INST_FF1
+>  	select NO_BOOTMEM
+>  
+> +config CPU_BIG_ENDIAN
+> +	def_bool y
+> +
+>  config MMU
+>  	def_bool y
+>  
+> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+> index 531da9e..dda1f55 100644
+> --- a/arch/parisc/Kconfig
+> +++ b/arch/parisc/Kconfig
+> @@ -47,6 +47,9 @@ config PARISC
+>  	  and later HP3000 series).  The PA-RISC Linux project home page is
+>  	  at <http://www.parisc-linux.org/>.
+>  
+> +config CPU_BIG_ENDIAN
+> +	def_bool y
+> +
+>  config MMU
+>  	def_bool y
+>  
+> diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+> index 908f019..0d9dc49 100644
+> --- a/arch/sparc/Kconfig
+> +++ b/arch/sparc/Kconfig
+> @@ -92,6 +92,9 @@ config ARCH_DEFCONFIG
+>  config ARCH_PROC_KCORE_TEXT
+>  	def_bool y
+>  
+> +config CPU_BIG_ENDIAN
+> +	def_bool y
+> +
+>  config ARCH_ATU
+>  	bool
+>  	default y if SPARC64
+> 
