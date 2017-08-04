@@ -1,8 +1,8 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: PDT/firmware: Add support to read PDT on older
- PAT-machines
-Date: Fri, 4 Aug 2017 19:12:39 +0200
-Message-ID: <20170804171239.GA29604@p100.box>
+Subject: [PATCH] parisc: PDT: Add full support for memory failure via Page
+ Deallocation Table (PDT)
+Date: Fri, 4 Aug 2017 19:23:53 +0200
+Message-ID: <20170804172353.GA29632@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -12,139 +12,393 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Older machines with a PAT firmware (e.g. the rp5470) return their Page
-Deallocation Table (PDT) info per cell via the PDC_PAT_MEM_PD_INFO PDC call.
-This patch adds the necessary structures and wrappers to call firmware.
+parisc: PDT: Add full support for memory failure via Page Deallocation Table (PDT)
+
+This patch adds full support to read PDT info on all machine types.  At bootup
+the PDT is read and bad memory excluded from usage via memblock_reserve().
+
+Later in the boot process a kernel thread is started (kpdtd) which regularily
+checks firmare for new reported bad memory and tries to soft offline pages in
+case of correctable errors and to kill processes and exclude such memory in
+case of uncorrectable errors via memory_failure().
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/include/asm/pdcpat.h b/arch/parisc/include/asm/pdcpat.h
-index e3c0586..a468a17 100644
---- a/arch/parisc/include/asm/pdcpat.h
-+++ b/arch/parisc/include/asm/pdcpat.h
-@@ -223,6 +223,18 @@ struct pdc_pat_mem_retinfo { /* PDC_PAT_MEM/PDC_PAT_MEM_PD_INFO (return info) */
- 	unsigned long clear_time; /* last PDT clear time (since Jan 1970) */
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index dda1f55..7d2faf7 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -9,6 +9,7 @@ config PARISC
+ 	select ARCH_WANT_FRAME_POINTERS
+ 	select ARCH_HAS_ELF_RANDOMIZE
+ 	select ARCH_HAS_STRICT_KERNEL_RWX
++	select ARCH_SUPPORTS_MEMORY_FAILURE
+ 	select RTC_CLASS
+ 	select RTC_DRV_GENERIC
+ 	select INIT_ALL_POSSIBLE
+diff --git a/arch/parisc/kernel/pdt.c b/arch/parisc/kernel/pdt.c
+index d02874e..05730a8 100644
+--- a/arch/parisc/kernel/pdt.c
++++ b/arch/parisc/kernel/pdt.c
+@@ -1,19 +1,20 @@
+ /*
+  *    Page Deallocation Table (PDT) support
+  *
+- *    The Page Deallocation Table (PDT) holds a table with pointers to bad
+- *    memory (broken RAM modules) which is maintained by firmware.
++ *    The Page Deallocation Table (PDT) is maintained by firmware and holds a
++ *    list of memory addresses in which memory errors were detected.
++ *    The list contains both single-bit (correctable) and double-bit
++ *    (uncorrectable) errors.
+  *
+  *    Copyright 2017 by Helge Deller <deller@gmx.de>
+  *
+- *    TODO:
+- *    - check regularily for new bad memory
+- *    - add userspace interface with procfs or sysfs
+- *    - increase number of PDT entries dynamically
++ *    possible future enhancements:
++ *    - add userspace interface via procfs or sysfs to clear PDT
+  */
+ 
+ #include <linux/memblock.h>
+ #include <linux/seq_file.h>
++#include <linux/kthread.h>
+ 
+ #include <asm/pdc.h>
+ #include <asm/pdcpat.h>
+@@ -24,11 +25,16 @@ enum pdt_access_type {
+ 	PDT_NONE,
+ 	PDT_PDC,
+ 	PDT_PAT_NEW,
+-	PDT_PAT_OLD
++	PDT_PAT_CELL
  };
  
-+struct pdc_pat_mem_cell_pdt_retinfo { /* PDC_PAT_MEM/PDC_PAT_MEM_CELL_INFO */
-+	u64 reserved:32;
-+	u64 cs:1;		/* clear status: cleared since the last call? */
-+	u64 current_pdt_entries:15;
-+	u64 ic:1;		/* interleaving had to be changed ? */
-+	u64 max_pdt_entries:15;
-+	unsigned long good_mem;
-+	unsigned long first_dbe_loc; /* first location of double bit error */
-+	unsigned long clear_time; /* last PDT clear time (since Jan 1970) */
-+};
+ static enum pdt_access_type pdt_type;
+ 
++/* PDT poll interval: 1 minute if errors, 5 minutes if everything OK. */
++#define PDT_POLL_INTERVAL_DEFAULT	(5*60*HZ)
++#define PDT_POLL_INTERVAL_SHORT		(1*60*HZ)
++static unsigned long pdt_poll_interval = PDT_POLL_INTERVAL_DEFAULT;
 +
-+
- struct pdc_pat_mem_read_pd_retinfo { /* PDC_PAT_MEM/PDC_PAT_MEM_PD_READ */
- 	unsigned long actual_count_bytes;
- 	unsigned long pdt_entries;
-@@ -325,6 +337,8 @@ extern int pdc_pat_io_pci_cfg_read(unsigned long pci_addr, int pci_size, u32 *va
- extern int pdc_pat_io_pci_cfg_write(unsigned long pci_addr, int pci_size, u32 val); 
+ /* global PDT status information */
+ static struct pdc_mem_retinfo pdt_status;
  
- extern int pdc_pat_mem_pdt_info(struct pdc_pat_mem_retinfo *rinfo);
-+extern int pdc_pat_mem_pdt_cell_info(struct pdc_pat_mem_cell_pdt_retinfo *rinfo,
-+		unsigned long cell);
- extern int pdc_pat_mem_read_cell_pdt(struct pdc_pat_mem_read_pd_retinfo *pret,
- 		unsigned long *pdt_entries_ptr, unsigned long max_entries);
- extern int pdc_pat_mem_read_pd_pdt(struct pdc_pat_mem_read_pd_retinfo *pret,
-diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
-index f622a31..be9a2e8 100644
---- a/arch/parisc/kernel/firmware.c
-+++ b/arch/parisc/kernel/firmware.c
-@@ -142,8 +142,8 @@ static void convert_to_wide(unsigned long *addr)
- 	int i;
- 	unsigned int *p = (unsigned int *)addr;
+@@ -36,6 +42,21 @@ static struct pdc_mem_retinfo pdt_status;
+ #define MAX_PDT_ENTRIES		(MAX_PDT_TABLE_SIZE / sizeof(unsigned long))
+ static unsigned long pdt_entry[MAX_PDT_ENTRIES] __page_aligned_bss;
  
--	if(unlikely(parisc_narrow_firmware)) {
--		for(i = 31; i >= 0; --i)
-+	if (unlikely(parisc_narrow_firmware)) {
-+		for (i = (NUM_PDC_RESULT-1); i >= 0; --i)
- 			addr[i] = p[i];
- 	}
- #endif
-@@ -979,16 +979,22 @@ int pdc_mem_pdt_read_entries(struct pdc_mem_read_pdt *pret,
- 
- 	spin_lock_irqsave(&pdc_lock, flags);
- 	retval = mem_pdc_call(PDC_MEM, PDC_MEM_READ_PDT, __pa(pdc_result),
--			__pa(pdc_result2));
-+			__pa(pdt_entries_ptr));
- 	if (retval == PDC_OK) {
- 		convert_to_wide(pdc_result);
- 		memcpy(pret, pdc_result, sizeof(*pret));
--		convert_to_wide(pdc_result2);
--		memcpy(pdt_entries_ptr, pdc_result2,
--			pret->pdt_entries * sizeof(*pdt_entries_ptr));
- 	}
- 	spin_unlock_irqrestore(&pdc_lock, flags);
- 
-+#ifdef CONFIG_64BIT
-+	/*
-+	 * 64-bit kernels should not call this PDT function in narrow mode.
-+	 * The pdt_entries_ptr array above will now contain 32-bit values
-+	 */
-+	if (WARN_ON_ONCE((retval == PDC_OK) && parisc_narrow_firmware))
-+		return PDC_ERROR;
-+#endif
-+
- 	return retval;
- }
- 
-@@ -1440,6 +1446,29 @@ int pdc_pat_mem_pdt_info(struct pdc_pat_mem_retinfo *rinfo)
- }
- 
- /**
-+ * pdc_pat_mem_pdt_cell_info - Retrieve information about page deallocation
-+ *				table of a cell
-+ * @rinfo: memory pdt information
-+ * @cell: cell number
-+ *
++/*
++ * Constants for the pdt_entry format:
++ * A pdt_entry holds the physical address in bits 0-57, bits 58-61 are
++ * reserved, bit 62 is the perm bit and bit 63 is the error_type bit.
++ * The perm bit indicates whether the error have been verified as a permanent
++ * error (value of 1) or has not been verified, and may be transient (value
++ * of 0). The error_type bit indicates whether the error is a single bit error
++ * (value of 1) or a multiple bit error.
++ * On non-PAT machines phys_addr is encoded in bits 0-59 and error_type in bit
++ * 63. Those machines don't provide the perm bit.
 + */
-+int pdc_pat_mem_pdt_cell_info(struct pdc_pat_mem_cell_pdt_retinfo *rinfo,
-+		unsigned long cell)
++
++#define PDT_ADDR_PHYS_MASK	(pdt_type != PDT_PDC ? ~0x3f : ~0x0f)
++#define PDT_ADDR_PERM_ERR	(pdt_type != PDT_PDC ? 2UL : 0UL)
++#define PDT_ADDR_SINGLE_ERR	1UL
+ 
+ /* report PDT entries via /proc/meminfo */
+ void arch_report_meminfo(struct seq_file *m)
+@@ -49,6 +70,68 @@ void arch_report_meminfo(struct seq_file *m)
+ 			pdt_status.pdt_entries);
+ }
+ 
++static int get_info_pat_new(void)
 +{
-+	int retval;
-+	unsigned long flags;
++	struct pdc_pat_mem_retinfo pat_rinfo;
++	int ret;
 +
-+	spin_lock_irqsave(&pdc_lock, flags);
-+	retval = mem_pdc_call(PDC_PAT_MEM, PDC_PAT_MEM_CELL_INFO,
-+			__pa(&pdc_result), cell);
-+	if (retval == PDC_OK)
-+		memcpy(rinfo, &pdc_result, sizeof(*rinfo));
-+	spin_unlock_irqrestore(&pdc_lock, flags);
++	/* newer PAT machines like C8000 report info for all cells */
++	if (is_pdc_pat())
++		ret = pdc_pat_mem_pdt_info(&pat_rinfo);
++	else
++		return PDC_BAD_PROC;
 +
-+	return retval;
++	pdt_status.pdt_size = pat_rinfo.max_pdt_entries;
++	pdt_status.pdt_entries = pat_rinfo.current_pdt_entries;
++	pdt_status.pdt_status = 0;
++	pdt_status.first_dbe_loc = pat_rinfo.first_dbe_loc;
++	pdt_status.good_mem = pat_rinfo.good_mem;
++
++	return ret;
 +}
 +
-+/**
-  * pdc_pat_mem_read_cell_pdt - Read PDT entries from (old) PAT firmware
-  * @pret: array of PDT entries
-  * @pdt_entries_ptr: ptr to hold number of PDT entries
-@@ -1455,14 +1484,14 @@ int pdc_pat_mem_read_cell_pdt(struct pdc_pat_mem_read_pd_retinfo *pret,
- 	spin_lock_irqsave(&pdc_lock, flags);
- 	/* PDC_PAT_MEM_CELL_READ is available on early PAT machines only */
- 	retval = mem_pdc_call(PDC_PAT_MEM, PDC_PAT_MEM_CELL_READ,
--			__pa(&pdc_result), parisc_cell_num, __pa(&pdc_result2));
-+			__pa(&pdc_result), parisc_cell_num,
-+			__pa(pdt_entries_ptr));
++static int get_info_pat_cell(void)
++{
++	struct pdc_pat_mem_cell_pdt_retinfo cell_rinfo;
++	int ret;
++
++	/* older PAT machines like rp5470 report cell info only */
++	if (is_pdc_pat())
++		ret = pdc_pat_mem_pdt_cell_info(&cell_rinfo, parisc_cell_num);
++	else
++		return PDC_BAD_PROC;
++
++	pdt_status.pdt_size = cell_rinfo.max_pdt_entries;
++	pdt_status.pdt_entries = cell_rinfo.current_pdt_entries;
++	pdt_status.pdt_status = 0;
++	pdt_status.first_dbe_loc = cell_rinfo.first_dbe_loc;
++	pdt_status.good_mem = cell_rinfo.good_mem;
++
++	return ret;
++}
++
++static void report_mem_err(unsigned long pde)
++{
++	struct pdc_pat_mem_phys_mem_location loc;
++	unsigned long addr;
++	char dimm_txt[32];
++
++	addr = pde & PDT_ADDR_PHYS_MASK;
++
++	/* show DIMM slot description on PAT machines */
++	if (is_pdc_pat()) {
++		pdc_pat_mem_get_dimm_phys_location(&loc, addr);
++		sprintf(dimm_txt, "DIMM slot %02x, ", loc.dimm_slot);
++	} else
++		dimm_txt[0] = 0;
++
++	pr_warn("PDT: BAD MEMORY at 0x%08lx, %s%s%s-bit error.\n",
++		addr, dimm_txt,
++		pde & PDT_ADDR_PERM_ERR ? "permanent ":"",
++		pde & PDT_ADDR_SINGLE_ERR ? "single":"multi");
++}
++
++
+ /*
+  * pdc_pdt_init()
+  *
+@@ -63,18 +146,17 @@ void __init pdc_pdt_init(void)
+ 	unsigned long entries;
+ 	struct pdc_mem_read_pdt pdt_read_ret;
  
- 	if (retval == PDC_OK) {
- 		/* build up return value as for PDC_PAT_MEM_PD_READ */
- 		entries = min(pdc_result[0], max_entries);
- 		pret->pdt_entries = entries;
- 		pret->actual_count_bytes = entries * sizeof(unsigned long);
--		memcpy(pdt_entries_ptr, &pdc_result2, pret->actual_count_bytes);
+-	if (is_pdc_pat()) {
+-		struct pdc_pat_mem_retinfo pat_rinfo;
++	pdt_type = PDT_PAT_NEW;
++	ret = get_info_pat_new();
+ 
+-		pdt_type = PDT_PAT_NEW;
+-		ret = pdc_pat_mem_pdt_info(&pat_rinfo);
+-		pdt_status.pdt_size = pat_rinfo.max_pdt_entries;
+-		pdt_status.pdt_entries = pat_rinfo.current_pdt_entries;
+-		pdt_status.pdt_status = 0;
+-		pdt_status.first_dbe_loc = pat_rinfo.first_dbe_loc;
+-		pdt_status.good_mem = pat_rinfo.good_mem;
+-	} else {
++	if (ret != PDC_OK) {
++		pdt_type = PDT_PAT_CELL;
++		ret = get_info_pat_cell();
++	}
++
++	if (ret != PDC_OK) {
+ 		pdt_type = PDT_PDC;
++		/* non-PAT machines provide the standard PDC call */
+ 		ret = pdc_mem_pdt_info(&pdt_status);
  	}
  
- 	spin_unlock_irqrestore(&pdc_lock, flags);
-@@ -1474,6 +1503,8 @@ int pdc_pat_mem_read_cell_pdt(struct pdc_pat_mem_read_pd_retinfo *pret,
-  * pdc_pat_mem_read_pd_pdt - Read PDT entries from (newer) PAT firmware
-  * @pret: array of PDT entries
-  * @pdt_entries_ptr: ptr to hold number of PDT entries
-+ * @count: number of bytes to read
-+ * @offset: offset to start (in bytes)
-  *
-  */
- int pdc_pat_mem_read_pd_pdt(struct pdc_pat_mem_read_pd_retinfo *pret,
+@@ -86,13 +168,17 @@ void __init pdc_pdt_init(void)
+ 	}
+ 
+ 	entries = pdt_status.pdt_entries;
+-	WARN_ON(entries > MAX_PDT_ENTRIES);
++	if (WARN_ON(entries > MAX_PDT_ENTRIES))
++		entries = pdt_status.pdt_entries = MAX_PDT_ENTRIES;
+ 
+-	pr_info("PDT: size %lu, entries %lu, status %lu, dbe_loc 0x%lx,"
+-		" good_mem %lu\n",
++	pr_info("PDT: type %s, size %lu, entries %lu, status %lu, dbe_loc 0x%lx,"
++		" good_mem %lu MB\n",
++			pdt_type == PDT_PDC ? __stringify(PDT_PDC) :
++			pdt_type == PDT_PAT_CELL ? __stringify(PDT_PAT_CELL)
++						 : __stringify(PDT_PAT_NEW),
+ 			pdt_status.pdt_size, pdt_status.pdt_entries,
+ 			pdt_status.pdt_status, pdt_status.first_dbe_loc,
+-			pdt_status.good_mem);
++			pdt_status.good_mem / 1024 / 1024);
+ 
+ 	if (entries == 0) {
+ 		pr_info("PDT: Firmware reports all memory OK.\n");
+@@ -112,15 +198,12 @@ void __init pdc_pdt_init(void)
+ #ifdef CONFIG_64BIT
+ 		struct pdc_pat_mem_read_pd_retinfo pat_pret;
+ 
+-		/* try old obsolete PAT firmware function first */
+-		pdt_type = PDT_PAT_OLD;
+-		ret = pdc_pat_mem_read_cell_pdt(&pat_pret, pdt_entry,
+-			MAX_PDT_ENTRIES);
+-		if (ret != PDC_OK) {
+-			pdt_type = PDT_PAT_NEW;
++		if (pdt_type == PDT_PAT_CELL)
++			ret = pdc_pat_mem_read_cell_pdt(&pat_pret, pdt_entry,
++				MAX_PDT_ENTRIES);
++		else
+ 			ret = pdc_pat_mem_read_pd_pdt(&pat_pret, pdt_entry,
+ 				MAX_PDT_TABLE_SIZE, 0);
+-		}
+ #else
+ 		ret = PDC_BAD_PROC;
+ #endif
+@@ -128,27 +211,142 @@ void __init pdc_pdt_init(void)
+ 
+ 	if (ret != PDC_OK) {
+ 		pdt_type = PDT_NONE;
+-		pr_debug("PDT type %d, retval = %d\n", pdt_type, ret);
++		pr_warn("PDT: Get PDT entries failed with %d\n", ret);
+ 		return;
+ 	}
+ 
+ 	for (i = 0; i < pdt_status.pdt_entries; i++) {
+-		struct pdc_pat_mem_phys_mem_location loc;
++		report_mem_err(pdt_entry[i]);
++
++		/* mark memory page bad */
++		memblock_reserve(pdt_entry[i] & PAGE_MASK, PAGE_SIZE);
++	}
++}
+ 
+-		/* get DIMM slot number */
+-		loc.dimm_slot = 0xff;
++
++/*
++ * This is the PDT kernel thread main loop.
++ */
++
++static int pdt_mainloop(void *unused)
++{
++	struct pdc_mem_read_pdt pdt_read_ret;
++	struct pdc_pat_mem_read_pd_retinfo pat_pret __maybe_unused;
++	unsigned long old_num_entries;
++	unsigned long *bad_mem_ptr;
++	int num, ret;
++
++	for (;;) {
++		set_current_state(TASK_INTERRUPTIBLE);
++
++		old_num_entries = pdt_status.pdt_entries;
++
++		schedule_timeout(pdt_poll_interval);
++		if (kthread_should_stop())
++			break;
++
++		/* Do we have new PDT entries? */
++		switch (pdt_type) {
++		case PDT_PAT_NEW:
++			ret = get_info_pat_new();
++			break;
++		case PDT_PAT_CELL:
++			ret = get_info_pat_cell();
++			break;
++		default:
++			ret = pdc_mem_pdt_info(&pdt_status);
++			break;
++		}
++
++		if (ret != PDC_OK) {
++			pr_warn("PDT: unexpected failure %d\n", ret);
++			return -EINVAL;
++		}
++
++		/* if no new PDT entries, just wait again */
++		num = pdt_status.pdt_entries - old_num_entries;
++		if (num <= 0)
++			continue;
++
++		/* decrease poll interval in case we found memory errors */
++		if (pdt_status.pdt_entries &&
++			pdt_poll_interval == PDT_POLL_INTERVAL_DEFAULT)
++			pdt_poll_interval = PDT_POLL_INTERVAL_SHORT;
++
++		/* limit entries to get */
++		if (num > MAX_PDT_ENTRIES) {
++			num = MAX_PDT_ENTRIES;
++			pdt_status.pdt_entries = old_num_entries + num;
++		}
++
++		/* get new entries */
++		switch (pdt_type) {
+ #ifdef CONFIG_64BIT
+-		pdc_pat_mem_get_dimm_phys_location(&loc, pdt_entry[i]);
++		case PDT_PAT_CELL:
++			if (pdt_status.pdt_entries > MAX_PDT_ENTRIES) {
++				pr_crit("PDT: too many entries.\n");
++				return -ENOMEM;
++			}
++			ret = pdc_pat_mem_read_cell_pdt(&pat_pret, pdt_entry,
++				MAX_PDT_ENTRIES);
++			bad_mem_ptr = &pdt_entry[old_num_entries];
++			break;
++		case PDT_PAT_NEW:
++			ret = pdc_pat_mem_read_pd_pdt(&pat_pret,
++				pdt_entry,
++				num * sizeof(unsigned long),
++				old_num_entries * sizeof(unsigned long));
++			bad_mem_ptr = &pdt_entry[0];
++			break;
+ #endif
++		default:
++			ret = pdc_mem_pdt_read_entries(&pdt_read_ret,
++				pdt_entry);
++			bad_mem_ptr = &pdt_entry[old_num_entries];
++			break;
++		}
+ 
+-		pr_warn("PDT: BAD PAGE #%d at 0x%08lx, "
+-			"DIMM slot %02x (error_type = %lu)\n",
+-			i,
+-			pdt_entry[i] & PAGE_MASK,
+-			loc.dimm_slot,
+-			pdt_entry[i] & 1);
++		/* report and mark memory broken */
++		while (num--) {
++			unsigned long pde = *bad_mem_ptr++;
+ 
+-		/* mark memory page bad */
+-		memblock_reserve(pdt_entry[i] & PAGE_MASK, PAGE_SIZE);
++			report_mem_err(pde);
++
++#ifdef CONFIG_MEMORY_FAILURE
++			if ((pde & PDT_ADDR_PERM_ERR) ||
++			    ((pde & PDT_ADDR_SINGLE_ERR) == 0))
++				memory_failure(pde >> PAGE_SHIFT, 0, 0);
++			else
++				soft_offline_page(
++					pfn_to_page(pde >> PAGE_SHIFT), 0);
++#else
++			pr_crit("PDT: memory error at 0x%lx ignored.\n"
++				"Rebuild kernel with CONFIG_MEMORY_FAILURE=y "
++				"for real handling.\n",
++				pde & PDT_ADDR_PHYS_MASK);
++#endif
++
++		}
+ 	}
++
++	return 0;
+ }
++
++
++static int __init pdt_initcall(void)
++{
++	struct task_struct *kpdtd_task;
++
++	if (pdt_type == PDT_NONE)
++		return -ENODEV;
++
++	kpdtd_task = kthread_create(pdt_mainloop, NULL, "kpdtd");
++	if (IS_ERR(kpdtd_task))
++		return PTR_ERR(kpdtd_task);
++
++	wake_up_process(kpdtd_task);
++
++	return 0;
++}
++
++late_initcall(pdt_initcall);
