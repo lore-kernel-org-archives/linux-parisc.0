@@ -1,108 +1,150 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Fix up generic MADV_* values and add MADV_HWPOISON
- and MADV_SOFT_OFFLINE
-Date: Fri, 4 Aug 2017 18:31:48 +0200
-Message-ID: <20170804163148.GA29168@p100.box>
+Subject: [PATCH] parisc: PDT/firmware: Add support to read PDT on older
+ PAT-machines
+Date: Fri, 4 Aug 2017 19:12:39 +0200
+Message-ID: <20170804171239.GA29604@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+To: linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This patch adds the missing MADV_HWPOISON (100) and MADV_SOFT_OFFLINE (101)
-defines which are needed for an upcoming patch which adds page-deallocation to
-parisc.
-
-In addition there is a conflict with some the common/generic MADV_* constants
-between kernel headers and glibc headers.  The existing glibc headers on parisc
-already define those values in the range of 8-17 which should be common between
-all architectures and which all architectures with the exception of parisc
-follow.  But the parisc kernel still defines those with values above 65 because
-of an old kernel patch which reserved the range of 12-64 for page size
-specifications.  The old kernel patch never actually used those values in code,
-so changing those MADV_* constants back to the common values shouldn't break
-anything and instead make existing userspace applications work as expected.
+Older machines with a PAT firmware (e.g. the rp5470) return their Page
+Deallocation Table (PDT) info per cell via the PDC_PAT_MEM_PD_INFO PDC call.
+This patch adds the necessary structures and wrappers to call firmware.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/include/uapi/asm/mman.h b/arch/parisc/include/uapi/asm/mman.h
-index 5979745..a34ebf4 100644
---- a/arch/parisc/include/uapi/asm/mman.h
-+++ b/arch/parisc/include/uapi/asm/mman.h
-@@ -49,16 +49,18 @@
- #define MADV_REMOVE	9		/* remove these pages & resources */
- #define MADV_DONTFORK	10		/* don't inherit across fork */
- #define MADV_DOFORK	11		/* do inherit across fork */
-+#define MADV_HWPOISON	100		/* poison a page for testing */
-+#define MADV_SOFT_OFFLINE 101		/* soft offline page for testing */
+diff --git a/arch/parisc/include/asm/pdcpat.h b/arch/parisc/include/asm/pdcpat.h
+index e3c0586..a468a17 100644
+--- a/arch/parisc/include/asm/pdcpat.h
++++ b/arch/parisc/include/asm/pdcpat.h
+@@ -223,6 +223,18 @@ struct pdc_pat_mem_retinfo { /* PDC_PAT_MEM/PDC_PAT_MEM_PD_INFO (return info) */
+ 	unsigned long clear_time; /* last PDT clear time (since Jan 1970) */
+ };
  
--#define MADV_MERGEABLE   65		/* KSM may merge identical pages */
--#define MADV_UNMERGEABLE 66		/* KSM may not merge identical pages */
-+#define MADV_MERGEABLE   12		/* KSM may merge identical pages */
-+#define MADV_UNMERGEABLE 13		/* KSM may not merge identical pages */
++struct pdc_pat_mem_cell_pdt_retinfo { /* PDC_PAT_MEM/PDC_PAT_MEM_CELL_INFO */
++	u64 reserved:32;
++	u64 cs:1;		/* clear status: cleared since the last call? */
++	u64 current_pdt_entries:15;
++	u64 ic:1;		/* interleaving had to be changed ? */
++	u64 max_pdt_entries:15;
++	unsigned long good_mem;
++	unsigned long first_dbe_loc; /* first location of double bit error */
++	unsigned long clear_time; /* last PDT clear time (since Jan 1970) */
++};
++
++
+ struct pdc_pat_mem_read_pd_retinfo { /* PDC_PAT_MEM/PDC_PAT_MEM_PD_READ */
+ 	unsigned long actual_count_bytes;
+ 	unsigned long pdt_entries;
+@@ -325,6 +337,8 @@ extern int pdc_pat_io_pci_cfg_read(unsigned long pci_addr, int pci_size, u32 *va
+ extern int pdc_pat_io_pci_cfg_write(unsigned long pci_addr, int pci_size, u32 val); 
  
--#define MADV_HUGEPAGE	67		/* Worth backing with hugepages */
--#define MADV_NOHUGEPAGE	68		/* Not worth backing with hugepages */
-+#define MADV_HUGEPAGE	14		/* Worth backing with hugepages */
-+#define MADV_NOHUGEPAGE	15		/* Not worth backing with hugepages */
+ extern int pdc_pat_mem_pdt_info(struct pdc_pat_mem_retinfo *rinfo);
++extern int pdc_pat_mem_pdt_cell_info(struct pdc_pat_mem_cell_pdt_retinfo *rinfo,
++		unsigned long cell);
+ extern int pdc_pat_mem_read_cell_pdt(struct pdc_pat_mem_read_pd_retinfo *pret,
+ 		unsigned long *pdt_entries_ptr, unsigned long max_entries);
+ extern int pdc_pat_mem_read_pd_pdt(struct pdc_pat_mem_read_pd_retinfo *pret,
+diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
+index f622a31..be9a2e8 100644
+--- a/arch/parisc/kernel/firmware.c
++++ b/arch/parisc/kernel/firmware.c
+@@ -142,8 +142,8 @@ static void convert_to_wide(unsigned long *addr)
+ 	int i;
+ 	unsigned int *p = (unsigned int *)addr;
  
--#define MADV_DONTDUMP   69		/* Explicity exclude from the core dump,
-+#define MADV_DONTDUMP   16		/* Explicity exclude from the core dump,
- 					   overrides the coredump filter bits */
--#define MADV_DODUMP	70		/* Clear the MADV_NODUMP flag */
-+#define MADV_DODUMP	17		/* Clear the MADV_NODUMP flag */
+-	if(unlikely(parisc_narrow_firmware)) {
+-		for(i = 31; i >= 0; --i)
++	if (unlikely(parisc_narrow_firmware)) {
++		for (i = (NUM_PDC_RESULT-1); i >= 0; --i)
+ 			addr[i] = p[i];
+ 	}
+ #endif
+@@ -979,16 +979,22 @@ int pdc_mem_pdt_read_entries(struct pdc_mem_read_pdt *pret,
  
- /* compatibility flags */
- #define MAP_FILE	0
-diff --git a/tools/arch/parisc/include/uapi/asm/mman.h b/tools/arch/parisc/include/uapi/asm/mman.h
-index 03d8d5b..eb4df3e 100644
---- a/tools/arch/parisc/include/uapi/asm/mman.h
-+++ b/tools/arch/parisc/include/uapi/asm/mman.h
-@@ -1,20 +1,22 @@
- #ifndef TOOLS_ARCH_PARISC_UAPI_ASM_MMAN_FIX_H
- #define TOOLS_ARCH_PARISC_UAPI_ASM_MMAN_FIX_H
--#define MADV_DODUMP	70
--#define MADV_DOFORK	11
--#define MADV_DONTDUMP   69
--#define MADV_DONTFORK	10
--#define MADV_DONTNEED   4
--#define MADV_FREE	8
--#define MADV_HUGEPAGE	67
--#define MADV_MERGEABLE   65
--#define MADV_NOHUGEPAGE	68
- #define MADV_NORMAL     0
- #define MADV_RANDOM     1
--#define MADV_REMOVE	9
- #define MADV_SEQUENTIAL 2
--#define MADV_UNMERGEABLE 66
- #define MADV_WILLNEED   3
-+#define MADV_DONTNEED   4
-+#define MADV_FREE	8
-+#define MADV_REMOVE	9
-+#define MADV_DONTFORK	10
-+#define MADV_DOFORK	11
-+#define MADV_HWPOISON	100
-+#define MADV_SOFT_OFFLINE 101
-+#define MADV_MERGEABLE	12
-+#define MADV_UNMERGEABLE 13
-+#define MADV_HUGEPAGE	14
-+#define MADV_NOHUGEPAGE 15
-+#define MADV_DONTDUMP	16
-+#define MADV_DODUMP	17
- #define MAP_ANONYMOUS	0x10
- #define MAP_DENYWRITE	0x0800
- #define MAP_EXECUTABLE	0x1000
-@@ -36,10 +38,6 @@
- #define PROT_READ	0x1
- #define PROT_SEM	0x8
- #define PROT_WRITE	0x2
--/* MADV_HWPOISON is undefined on parisc, fix it for perf */
--#define MADV_HWPOISON	100
--/* MADV_SOFT_OFFLINE is undefined on parisc, fix it for perf */
--#define MADV_SOFT_OFFLINE 101
- /* MAP_32BIT is undefined on parisc, fix it for perf */
- #define MAP_32BIT	0
- /* MAP_UNINITIALIZED is undefined on parisc, fix it for perf */
+ 	spin_lock_irqsave(&pdc_lock, flags);
+ 	retval = mem_pdc_call(PDC_MEM, PDC_MEM_READ_PDT, __pa(pdc_result),
+-			__pa(pdc_result2));
++			__pa(pdt_entries_ptr));
+ 	if (retval == PDC_OK) {
+ 		convert_to_wide(pdc_result);
+ 		memcpy(pret, pdc_result, sizeof(*pret));
+-		convert_to_wide(pdc_result2);
+-		memcpy(pdt_entries_ptr, pdc_result2,
+-			pret->pdt_entries * sizeof(*pdt_entries_ptr));
+ 	}
+ 	spin_unlock_irqrestore(&pdc_lock, flags);
+ 
++#ifdef CONFIG_64BIT
++	/*
++	 * 64-bit kernels should not call this PDT function in narrow mode.
++	 * The pdt_entries_ptr array above will now contain 32-bit values
++	 */
++	if (WARN_ON_ONCE((retval == PDC_OK) && parisc_narrow_firmware))
++		return PDC_ERROR;
++#endif
++
+ 	return retval;
+ }
+ 
+@@ -1440,6 +1446,29 @@ int pdc_pat_mem_pdt_info(struct pdc_pat_mem_retinfo *rinfo)
+ }
+ 
+ /**
++ * pdc_pat_mem_pdt_cell_info - Retrieve information about page deallocation
++ *				table of a cell
++ * @rinfo: memory pdt information
++ * @cell: cell number
++ *
++ */
++int pdc_pat_mem_pdt_cell_info(struct pdc_pat_mem_cell_pdt_retinfo *rinfo,
++		unsigned long cell)
++{
++	int retval;
++	unsigned long flags;
++
++	spin_lock_irqsave(&pdc_lock, flags);
++	retval = mem_pdc_call(PDC_PAT_MEM, PDC_PAT_MEM_CELL_INFO,
++			__pa(&pdc_result), cell);
++	if (retval == PDC_OK)
++		memcpy(rinfo, &pdc_result, sizeof(*rinfo));
++	spin_unlock_irqrestore(&pdc_lock, flags);
++
++	return retval;
++}
++
++/**
+  * pdc_pat_mem_read_cell_pdt - Read PDT entries from (old) PAT firmware
+  * @pret: array of PDT entries
+  * @pdt_entries_ptr: ptr to hold number of PDT entries
+@@ -1455,14 +1484,14 @@ int pdc_pat_mem_read_cell_pdt(struct pdc_pat_mem_read_pd_retinfo *pret,
+ 	spin_lock_irqsave(&pdc_lock, flags);
+ 	/* PDC_PAT_MEM_CELL_READ is available on early PAT machines only */
+ 	retval = mem_pdc_call(PDC_PAT_MEM, PDC_PAT_MEM_CELL_READ,
+-			__pa(&pdc_result), parisc_cell_num, __pa(&pdc_result2));
++			__pa(&pdc_result), parisc_cell_num,
++			__pa(pdt_entries_ptr));
+ 
+ 	if (retval == PDC_OK) {
+ 		/* build up return value as for PDC_PAT_MEM_PD_READ */
+ 		entries = min(pdc_result[0], max_entries);
+ 		pret->pdt_entries = entries;
+ 		pret->actual_count_bytes = entries * sizeof(unsigned long);
+-		memcpy(pdt_entries_ptr, &pdc_result2, pret->actual_count_bytes);
+ 	}
+ 
+ 	spin_unlock_irqrestore(&pdc_lock, flags);
+@@ -1474,6 +1503,8 @@ int pdc_pat_mem_read_cell_pdt(struct pdc_pat_mem_read_pd_retinfo *pret,
+  * pdc_pat_mem_read_pd_pdt - Read PDT entries from (newer) PAT firmware
+  * @pret: array of PDT entries
+  * @pdt_entries_ptr: ptr to hold number of PDT entries
++ * @count: number of bytes to read
++ * @offset: offset to start (in bytes)
+  *
+  */
+ int pdc_pat_mem_read_pd_pdt(struct pdc_pat_mem_read_pd_retinfo *pret,
