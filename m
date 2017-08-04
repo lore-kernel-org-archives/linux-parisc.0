@@ -1,60 +1,42 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Static initialization of spinlocks in perf and
- unwind code
-Date: Fri, 4 Aug 2017 23:54:19 +0200
-Message-ID: <20170804215419.GA9373@p100.box>
+Subject: Undefined behaviour in drivers/scsi/sym53c8xx_2/sym_hipd.c:762:24
+Date: Sat, 5 Aug 2017 00:12:11 +0200
+Message-ID: <d030f03a-0ccf-324b-32d6-002dfb408c16@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=utf-8
+To: Linux SCSI List <linux-scsi@vger.kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-While testing UBSAN I saw this BUG:
- BUG: spinlock bad magic on CPU#0, swapper/0
-in unwind code. Let's avoid that by static initialization.
+On the parisc platform I noticed the UBSAN warning below.
+Maybe nr_divisor isn't correctly initialized ?
+Helge
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/arch/parisc/kernel/perf.c b/arch/parisc/kernel/perf.c
-index 6017a5a..08133590 100644
---- a/arch/parisc/kernel/perf.c
-+++ b/arch/parisc/kernel/perf.c
-@@ -69,7 +69,7 @@ struct rdr_tbl_ent {
- 
- static int perf_processor_interface __read_mostly = UNKNOWN_INTF;
- static int perf_enabled __read_mostly;
--static spinlock_t perf_lock;
-+static DEFINE_SPINLOCK(perf_lock);
- struct parisc_device *cpu_device __read_mostly;
- 
- /* RDRs to write for PCX-W */
-@@ -533,8 +533,6 @@ static int __init perf_init(void)
- 	/* Patch the images to match the system */
-     	perf_patch_images();
- 
--	spin_lock_init(&perf_lock);
--
- 	/* TODO: this only lets us access the first cpu.. what to do for SMP? */
- 	cpu_device = per_cpu(cpu_data, 0).dev;
- 	printk("Performance monitoring counters enabled for %s\n",
-diff --git a/arch/parisc/kernel/unwind.c b/arch/parisc/kernel/unwind.c
-index 1b73690..48dc7d4 100644
---- a/arch/parisc/kernel/unwind.c
-+++ b/arch/parisc/kernel/unwind.c
-@@ -34,7 +34,7 @@
- extern struct unwind_table_entry __start___unwind[];
- extern struct unwind_table_entry __stop___unwind[];
- 
--static spinlock_t unwind_lock;
-+static DEFINE_SPINLOCK(unwind_lock);
- /*
-  * the kernel unwind block is not dynamically allocated so that
-  * we can call unwind_init as early in the bootup process as 
-@@ -181,8 +181,6 @@ int __init unwind_init(void)
- 	start = (long)&__start___unwind[0];
- 	stop = (long)&__stop___unwind[0];
- 
--	spin_lock_init(&unwind_lock);
+[   18.555455] sym0: <896> rev 0x7 at pci 0000:00:0f.0 irq 68
+[   18.625415] ================================================================================
+[   18.726489] UBSAN: Undefined behaviour in ./drivers/scsi/sym53c8xx_2/sym_hipd.c:762:24
+[   18.864911] index -1903078336 is out of range for type 'u32 [7]'
+[   18.936779] CPU: 0 PID: 1 Comm: swapper Not tainted 4.13.0-rc3-32bit+ #427
+[   19.019138] Backtrace:
+[   19.047353]  [<10191eb4>] show_stack+0x3c/0x50
+[   19.100577]  [<10ce82fc>] dump_stack+0x28/0x38
+[   19.153826]  [<10771b3c>] ubsan_epilogue+0x1c/0x60
+[   19.211229]  [<107722ec>] __ubsan_handle_out_of_bounds+0x68/0x80
+[   19.283194]  [<10924074>] sym_hcb_attach+0xc2c/0x3204
+[   19.343724]  [<107aaa38>] sba_dma_supported+0x4c/0x208
+[   19.405291]  [<10911984>] sym2_probe+0xd64/0x122c
+[   19.461661]  [<10501c64>] kernfs_add_one+0x328/0x354
+[   19.521134] 
+[   19.538916] ================================================================================
+[   19.640086] sym0: PA-RISC Firmware, ID 7, Fast-40, SE, parity checking
+[   19.725169] sym0: SCSI BUS has been reset.
+[   19.774192] sym0: SCSI BUS mode change from SE to SE.
+[   19.837034] sym0: SCSI BUS has been reset.
+[   19.886092] scsi host0: sym-2.2.3
+[   25.154088] sym1: <896> rev 0x7 at pci 0000:00:0f.1 irq 68
+[   25.222639] sym1: PA-RISC Firmware, ID 7, Fast-40, LVD, parity checking
+[   25.308775] sym1: SCSI BUS has been reset.
+[   25.357840] scsi host1: sym-2.2.3
