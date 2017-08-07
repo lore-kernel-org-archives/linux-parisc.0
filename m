@@ -1,26 +1,24 @@
-From: Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] docs/features: parisc implements tracehook
-Date: Mon, 7 Aug 2017 14:18:30 -0600
-Message-ID: <20170807141830.186ec4f3@lwn.net>
-References: <20170804102839.23737-1-james.hogan@imgtec.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Drop exception_data struct
+Date: Mon, 7 Aug 2017 23:26:45 +0200
+Message-ID: <20170807212645.GA4867@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: "James E . J . Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@kernel.org>,
-        <linux-parisc@vger.kernel.org>, <linux-doc@vger.kernel.org>
-To: James Hogan <james.hogan@imgtec.com>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170804102839.23737-1-james.hogan@imgtec.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 4 Aug 2017 11:28:39 +0100
-James Hogan <james.hogan@imgtec.com> wrote:
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-> Since commit 64e2a42bca12 ("parisc: Add ARCH_TRACEHOOK and regset
-> support") in v4.7, parisc selects HAVE_ARCH_TRACEHOOK, so update its
-> entry in Documentation/features from TODO to ok.
-
-Applied to the docs tree, thanks.
-
-jon
+diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
+index 99115cd..865a7f7 100644
+--- a/arch/parisc/lib/memcpy.c
++++ b/arch/parisc/lib/memcpy.c
+@@ -27,8 +27,6 @@
+ #include <linux/compiler.h>
+ #include <linux/uaccess.h>
+ 
+-DECLARE_PER_CPU(struct exception_data, exception_data);
