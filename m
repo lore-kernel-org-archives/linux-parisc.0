@@ -1,36 +1,51 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Static initialization of pcxl_res_lock spinlock
-Date: Mon, 7 Aug 2017 23:28:39 +0200
-Message-ID: <20170807212839.GA4891@p100.box>
+Subject: Re: Undefined behaviour in drivers/scsi/sym53c8xx_2/sym_hipd.c:762:24
+Date: Tue, 8 Aug 2017 00:20:21 +0200
+Message-ID: <bf3cee29-26cb-6e4c-9ef2-a84459d41dec@gmx.de>
+References: <d030f03a-0ccf-324b-32d6-002dfb408c16@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=utf-8
+To: Linux SCSI List <linux-scsi@vger.kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        linux-parisc <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <d030f03a-0ccf-324b-32d6-002dfb408c16@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+On 05.08.2017 00:12, Helge Deller wrote:
+> On the parisc platform I noticed the UBSAN warning below.
+> Maybe nr_divisor isn't correctly initialized ?
+> 
+> [   18.625415] ================================================================================
+> [   18.726489] UBSAN: Undefined behaviour in ./drivers/scsi/sym53c8xx_2/sym_hipd.c:762:24
+> [   18.864911] index -1903078336 is out of range for type 'u32 [7]'
+> [   18.936779] CPU: 0 PID: 1 Comm: swapper Not tainted 4.13.0-rc3-32bit+ #427
+> [   19.019138] Backtrace:
+> [   19.047353]  [<10191eb4>] show_stack+0x3c/0x50
+> [   19.100577]  [<10ce82fc>] dump_stack+0x28/0x38
+> [   19.153826]  [<10771b3c>] ubsan_epilogue+0x1c/0x60
+> [   19.211229]  [<107722ec>] __ubsan_handle_out_of_bounds+0x68/0x80
+> [   19.283194]  [<10924074>] sym_hcb_attach+0xc2c/0x3204
+> [   19.343724]  [<107aaa38>] sba_dma_supported+0x4c/0x208
+> [   19.405291]  [<10911984>] sym2_probe+0xd64/0x122c
+> [   19.461661]  [<10501c64>] kernfs_add_one+0x328/0x354
 
-diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
-index 5f0067a..bd4c0a7 100644
---- a/arch/parisc/kernel/pci-dma.c
-+++ b/arch/parisc/kernel/pci-dma.c
-@@ -41,7 +41,7 @@ static unsigned long pcxl_used_bytes __read_mostly = 0;
- static unsigned long pcxl_used_pages __read_mostly = 0;
- 
- extern unsigned long pcxl_dma_start; /* Start of pcxl dma mapping area */
--static spinlock_t   pcxl_res_lock;
-+static DEFINE_SPINLOCK(pcxl_res_lock);
- static char    *pcxl_res_map;
- static int     pcxl_res_hint;
- static int     pcxl_res_size;
-@@ -390,7 +390,6 @@ pcxl_dma_init(void)
- 	if (pcxl_dma_start == 0)
- 		return 0;
- 
--	spin_lock_init(&pcxl_res_lock);
- 	pcxl_res_size = PCXL_DMA_MAP_SIZE >> (PAGE_SHIFT + 3);
- 	pcxl_res_hint = 0;
- 	pcxl_res_map = (char *)__get_free_pages(GFP_KERNEL,
+I did some more debugging.
+
+The offending line is:
+	period = (11 * div_10M[np->clock_divn - 1]) / (4 * np->clock_khz);
+with those values
+	np->clock_divn = 7
+	np->clock_khz  = 160000
+	div_10M[6] = 80000000
+period gets calculated as: 
+	period = 1375
+which is correct.
+
+I have no clue why UBSAN reports an error here.
+There is no overflow in index for div_10M array, neither is there
+a u32 overflow.
+Ideas?
+
+Helge
