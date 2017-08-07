@@ -1,35 +1,26 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Undefined behaviour in drivers/scsi/sym53c8xx_2/sym_hipd.c:762:24
-Date: Fri, 4 Aug 2017 19:10:33 -0400
-Message-ID: <8DE445AF-68F0-4F1C-94B3-5FE7D4C8E6C9@bell.net>
-References: <d030f03a-0ccf-324b-32d6-002dfb408c16@gmx.de>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: text/plain; charset=us-ascii
-Cc: Linux SCSI List <linux-scsi@vger.kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        linux-parisc <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
+From: Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] docs/features: parisc implements tracehook
+Date: Mon, 7 Aug 2017 14:18:30 -0600
+Message-ID: <20170807141830.186ec4f3@lwn.net>
+References: <20170804102839.23737-1-james.hogan@imgtec.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Cc: "James E . J . Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@kernel.org>,
+        <linux-parisc@vger.kernel.org>, <linux-doc@vger.kernel.org>
+To: James Hogan <james.hogan@imgtec.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <d030f03a-0ccf-324b-32d6-002dfb408c16@gmx.de>
+In-Reply-To: <20170804102839.23737-1-james.hogan@imgtec.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2017-08-04, at 6:12 PM, Helge Deller wrote:
+On Fri, 4 Aug 2017 11:28:39 +0100
+James Hogan <james.hogan@imgtec.com> wrote:
 
-> On the parisc platform I noticed the UBSAN warning below.
-> Maybe nr_divisor isn't correctly initialized ?
-> Helge
-> 
-> [   18.555455] sym0: <896> rev 0x7 at pci 0000:00:0f.0 irq 68
-> [   18.625415] ================================================================================
-> [   18.726489] UBSAN: Undefined behaviour in ./drivers/scsi/sym53c8xx_2/sym_hipd.c:762:24
-> [   18.864911] index -1903078336 is out of range for type 'u32 [7]'
+> Since commit 64e2a42bca12 ("parisc: Add ARCH_TRACEHOOK and regset
+> support") in v4.7, parisc selects HAVE_ARCH_TRACEHOOK, so update its
+> entry in Documentation/features from TODO to ok.
 
-What about np->clock_divn?
+Applied to the docs tree, thanks.
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+jon
