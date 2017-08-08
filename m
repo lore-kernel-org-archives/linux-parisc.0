@@ -1,51 +1,50 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: Undefined behaviour in drivers/scsi/sym53c8xx_2/sym_hipd.c:762:24
-Date: Tue, 8 Aug 2017 00:20:21 +0200
-Message-ID: <bf3cee29-26cb-6e4c-9ef2-a84459d41dec@gmx.de>
-References: <d030f03a-0ccf-324b-32d6-002dfb408c16@gmx.de>
+From: Tom Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: PCI resource problem on C360
+Date: Tue, 8 Aug 2017 15:40:12 +0200
+Message-ID: <20170808134012.GA7601@alpha.franken.de>
+References: <20170803140717.GA7380@alpha.franken.de>
+ <89A4641B-DE37-41B1-9F9C-B6312F8F0C84@bell.net>
+ <4d46bfba-170f-2c79-cf69-45d02ccc5a9f@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-To: Linux SCSI List <linux-scsi@vger.kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <d030f03a-0ccf-324b-32d6-002dfb408c16@gmx.de>
+In-Reply-To: <4d46bfba-170f-2c79-cf69-45d02ccc5a9f@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 05.08.2017 00:12, Helge Deller wrote:
-> On the parisc platform I noticed the UBSAN warning below.
-> Maybe nr_divisor isn't correctly initialized ?
+On Fri, Aug 04, 2017 at 12:45:31AM +0200, Helge Deller wrote:
+> I had lots of such problems when I tried various VGA and other
+> PCI cards in my c3000.
+
+I know, but the get a MACH64 card up to sync in a B2600, with a small
+change in aty driver. And the change is because Astro/Elroy behave incorrect
+in respect to PCI standards, IMHO. It looks like it colapses multiple PCI
+mem accesses into one access.
+
+        aty_st_8(CLOCK_CNTL_ADDR, ((offset << 2) & PLL_ADDR) | PLL_WR_EN, par);
+        /* write the register value */
+        aty_st_8(CLOCK_CNTL_DATA, val & PLL_DATA, par);
+        aty_st_8(CLOCK_CNTL_ADDR, ((offset << 2) & PLL_ADDR) & ~PLL_WR_EN, par);
+
+B2600 HPMCs in this code sequence, probably because the two accesses
+to CNTL_ADDR end up in just the last access. Placing in aty_ld_8 after
+the first aty_st_8 avoids the problem. In a B180 everything is fine,
+so Dino doesn't do that. Next testbed is the C360, which shows the PCI
+resourec issue before it even comes to aty drvier.
+
+> I think HP designed many of the PCI slots for special usage only,
+> e.g. some slots allow PCI graphic cards while others don't.
 > 
-> [   18.625415] ================================================================================
-> [   18.726489] UBSAN: Undefined behaviour in ./drivers/scsi/sym53c8xx_2/sym_hipd.c:762:24
-> [   18.864911] index -1903078336 is out of range for type 'u32 [7]'
-> [   18.936779] CPU: 0 PID: 1 Comm: swapper Not tainted 4.13.0-rc3-32bit+ #427
-> [   19.019138] Backtrace:
-> [   19.047353]  [<10191eb4>] show_stack+0x3c/0x50
-> [   19.100577]  [<10ce82fc>] dump_stack+0x28/0x38
-> [   19.153826]  [<10771b3c>] ubsan_epilogue+0x1c/0x60
-> [   19.211229]  [<107722ec>] __ubsan_handle_out_of_bounds+0x68/0x80
-> [   19.283194]  [<10924074>] sym_hcb_attach+0xc2c/0x3204
-> [   19.343724]  [<107aaa38>] sba_dma_supported+0x4c/0x208
-> [   19.405291]  [<10911984>] sym2_probe+0xd64/0x122c
-> [   19.461661]  [<10501c64>] kernfs_add_one+0x328/0x354
+> Maybe plug your cards one-by-one into another slot and check again?
 
-I did some more debugging.
+will do that, but what looks strange to me is the fact that ethernet and
+scsi also don't get all resources assigned. This happened without the VGA
+card plugged in, too.
 
-The offending line is:
-	period = (11 * div_10M[np->clock_divn - 1]) / (4 * np->clock_khz);
-with those values
-	np->clock_divn = 7
-	np->clock_khz  = 160000
-	div_10M[6] = 80000000
-period gets calculated as: 
-	period = 1375
-which is correct.
+Thomas.
 
-I have no clue why UBSAN reports an error here.
-There is no overflow in index for div_10M array, neither is there
-a u32 overflow.
-Ideas?
-
-Helge
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
