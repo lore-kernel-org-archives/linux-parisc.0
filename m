@@ -1,39 +1,37 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] printk-formats.txt: Add examples for %pS and %pF
-Date: Thu, 10 Aug 2017 19:35:33 +0200
-Message-ID: <20170810173533.GA11600@ls3530.fritz.box>
+Subject: [PATCH] sym53c8xx: Avoid undefined behaviour in
+ drivers/scsi/sym53c8xx_2/sym_hipd.c:762
+Date: Thu, 10 Aug 2017 21:08:49 +0200
+Message-ID: <20170810190849.GA12659@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Cc: linux-parisc@vger.kernel.org
+To: linux-scsi@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        linux-kernel@vger.kernel.org
+Return-path: <linux-scsi-owner@vger.kernel.org>
+List-ID: <linux-scsi.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Sometimes people seems unclear when to use the %pS or %pF printk format.
-Adding some examples may help to avoid such mistakes.
+On parisc I see this UBSAN warning with a sym53c896:
 
-See for example commit 51d96dc2e2dc ("random: fix warning message on ia64 and
-parisc") which fixed such a wrong format string.
+ UBSAN: Undefined behaviour in ./drivers/scsi/sym53c8xx_2/sym_hipd.c:762:24
+ index -1903078336 is out of range for type 'u32 [7]'
+
+Avoid this warning by switching to dev64_ul().
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/Documentation/printk-formats.txt b/Documentation/printk-formats.txt
-index 65ea591..be8c05b 100644
---- a/Documentation/printk-formats.txt
-+++ b/Documentation/printk-formats.txt
-@@ -73,6 +73,12 @@ actually function descriptors which must first be resolved. The ``F`` and
- ``f`` specifiers perform this resolution and then provide the same
- functionality as the ``S`` and ``s`` specifiers.
+diff --git a/drivers/scsi/sym53c8xx_2/sym_hipd.c b/drivers/scsi/sym53c8xx_2/sym_hipd.c
+index 6b349e3..15ff285a9 100644
+--- a/drivers/scsi/sym53c8xx_2/sym_hipd.c
++++ b/drivers/scsi/sym53c8xx_2/sym_hipd.c
+@@ -759,7 +759,7 @@ static int sym_prepare_setting(struct Scsi_Host *shost, struct sym_hcb *np, stru
+ 	/*
+ 	 * Maximum synchronous period factor supported by the chip.
+ 	 */
+-	period = (11 * div_10M[np->clock_divn - 1]) / (4 * np->clock_khz);
++	period = div64_ul(11 * div_10M[np->clock_divn - 1], 4 * np->clock_khz);
+ 	np->maxsync = period > 2540 ? 254 : period / 10;
  
-+Examples::
-+
-+	printk("Called from %pS.\n", __builtin_return_address(0));
-+	printk("Called from %pS.\n", (void *)regs->ip);
-+	printk("Called from %pF.\n", &gettimeofday);
-+
- Kernel Pointers
- ===============
- 
+ 	/*
