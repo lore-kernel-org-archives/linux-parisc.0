@@ -1,60 +1,37 @@
-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Subject: Re: [PATCH] printk-formats.txt: Add examples for %pS and %pF
-Date: Fri, 11 Aug 2017 09:15:21 +0900
-Message-ID: <20170811001521.GA520@jagdpanzerIV.localdomain>
-References: <20170810173533.GA11600@ls3530.fritz.box>
+From: Johannes Thumshirn <jthumshirn@suse.de>
+Subject: Re: [PATCH] sym53c8xx: Avoid undefined behaviour in
+ drivers/scsi/sym53c8xx_2/sym_hipd.c:762
+Date: Fri, 11 Aug 2017 09:24:13 +0200
+Message-ID: <20170811072413.GB3744@linux-x5ow.site>
+References: <20170810190849.GA12659@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
+Content-Type: text/plain; charset=iso-8859-1
+Cc: linux-scsi@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
         linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
 To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170810173533.GA11600@ls3530.fritz.box>
+In-Reply-To: <20170810190849.GA12659@p100.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On (08/10/17 19:35), Helge Deller wrote:
-> Sometimes people seems unclear when to use the %pS or %pF printk format.
-> Adding some examples may help to avoid such mistakes.
+On Thu, Aug 10, 2017 at 09:08:49PM +0200, Helge Deller wrote:
+> On parisc I see this UBSAN warning with a sym53c896:
 > 
-> See for example commit 51d96dc2e2dc ("random: fix warning message on ia64 and
-> parisc") which fixed such a wrong format string.
+>  UBSAN: Undefined behaviour in ./drivers/scsi/sym53c8xx_2/sym_hipd.c:762:24
+>  index -1903078336 is out of range for type 'u32 [7]'
 > 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> 
-> diff --git a/Documentation/printk-formats.txt b/Documentation/printk-formats.txt
-> index 65ea591..be8c05b 100644
-> --- a/Documentation/printk-formats.txt
-> +++ b/Documentation/printk-formats.txt
-> @@ -73,6 +73,12 @@ actually function descriptors which must first be resolved. The ``F`` and
->  ``f`` specifiers perform this resolution and then provide the same
->  functionality as the ``S`` and ``s`` specifiers.
->  
-> +Examples::
-> +
-> +	printk("Called from %pS.\n", __builtin_return_address(0));
-> +	printk("Called from %pS.\n", (void *)regs->ip);
-> +	printk("Called from %pF.\n", &gettimeofday);
+> Avoid this warning by switching to dev64_ul().
+                            div64_ul() ^
 
-sorry, but how does it help?
+Otherwise,
+Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
 
 
-there is this paragraph
-
-: On ia64, ppc64 and parisc64 architectures function pointers are
-: actually function descriptors which must first be resolved. The ``F`` and
-: ``f`` specifiers perform this resolution and then provide the same
-: functionality as the ``S`` and ``s`` specifiers.
-
-which supposed to explain everything in details. the examples
-don't make it any `clearer', IMHO.
-
-
-*may be* on "ia64, ppc64 and parisc64" we can somehow check
-that the pointer, which we pass as %pS, belongs to .text and
-print some build-time warnings. well, if it's actually a
-problem. dunno.
-
-	-ss
+-- 
+Johannes Thumshirn                                          Storage
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
+GF: Felix Imendörffer, Jane Smithard, Graham Norton
+HRB 21284 (AG Nürnberg)
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
