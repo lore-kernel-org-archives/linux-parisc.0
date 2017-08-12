@@ -1,73 +1,78 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] printk-formats.txt: Add examples for %pS and %pF
-Date: Fri, 11 Aug 2017 09:31:28 +0200
-Message-ID: <47718712-9eb2-8ad7-965e-d0971d07e985@gmx.de>
-References: <20170810173533.GA11600@ls3530.fritz.box>
- <20170811001521.GA520@jagdpanzerIV.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-To: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH 00/16] ALSA: PCI: constify snd_pcm_hardware const
+Date: Sat, 12 Aug 2017 21:01:12 +0530
+Message-ID: <1502551888-30325-1-git-send-email-bhumirks@gmail.com>
+Cc: Bhumika Goyal <bhumirks@gmail.com>
+To: julia.lawall@lip6.fr, T-Bone@parisc-linux.org, perex@perex.cz,
+        tiwai@suse.com, clemens@ladisch.de, jayakumar.alsa@gmail.com,
+        linux-parisc@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170811001521.GA520@jagdpanzerIV.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 11.08.2017 02:15, Sergey Senozhatsky wrote:
-> On (08/10/17 19:35), Helge Deller wrote:
->> Sometimes people seems unclear when to use the %pS or %pF printk format.
->> Adding some examples may help to avoid such mistakes.
->>
->> See for example commit 51d96dc2e2dc ("random: fix warning message on ia64 and
->> parisc") which fixed such a wrong format string.
->>
->> Signed-off-by: Helge Deller <deller@gmx.de>
->>
->> diff --git a/Documentation/printk-formats.txt b/Documentation/printk-formats.txt
->> index 65ea591..be8c05b 100644
->> --- a/Documentation/printk-formats.txt
->> +++ b/Documentation/printk-formats.txt
->> @@ -73,6 +73,12 @@ actually function descriptors which must first be resolved. The ``F`` and
->>  ``f`` specifiers perform this resolution and then provide the same
->>  functionality as the ``S`` and ``s`` specifiers.
->>  
->> +Examples::
->> +
->> +	printk("Called from %pS.\n", __builtin_return_address(0));
->> +	printk("Called from %pS.\n", (void *)regs->ip);
->> +	printk("Called from %pF.\n", &gettimeofday);
-> 
-> sorry, but how does it help?
-> 
-> 
-> there is this paragraph
-> 
-> : On ia64, ppc64 and parisc64 architectures function pointers are
-> : actually function descriptors which must first be resolved. The ``F`` and
-> : ``f`` specifiers perform this resolution and then provide the same
-> : functionality as the ``S`` and ``s`` specifiers.
-> 
-> which supposed to explain everything in details. the examples
-> don't make it any `clearer', IMHO.
+Declare snd_pcm_hardware const. 
+Done using Coccinelle.
 
-Experts surely do know what function descriptors are.
-Nevertheless even those often get it wrong as can be seen in
-various commits.
+Bhumika Goyal (16):
+  ALSA: aw2: make snd_pcm_hardware const
+  ALSA: ca0106: make snd_pcm_hardware const
+  ALSA: cs46xx: make snd_pcm_hardware const
+  ALSA: korg1212: make snd_pcm_hardware const
+  ALSA: cs5535audio: make snd_pcm_hardware const
+  ALSA: emu10k1: make snd_pcm_hardware const
+  ALSA: lola: make snd_pcm_hardware const
+  ALSA: lx6464es: make snd_pcm_hardware const
+  ALSA: mixart: make snd_pcm_hardware const
+  ALSA: ctxfi: make snd_pcm_hardware const
+  ALSA: pcxhr: make snd_pcm_hardware const
+  ALSA: riptide: make snd_pcm_hardware const
+  ALSA: rme9652: make snd_pcm_hardware const
+  ALSA: trident: make snd_pcm_hardware const
+  ALSA: ymfpci: make snd_pcm_hardware const
+  ALSA: pci: make snd_pcm_hardware const
 
-The hope with this patch is to show widely-used examples
-and avoid additional commits afterwards to fix it up.
+ sound/pci/ad1889.c                      |  4 ++--
+ sound/pci/als300.c                      |  4 ++--
+ sound/pci/als4000.c                     |  4 ++--
+ sound/pci/atiixp.c                      |  2 +-
+ sound/pci/atiixp_modem.c                |  2 +-
+ sound/pci/aw2/aw2-alsa.c                |  4 ++--
+ sound/pci/bt87x.c                       |  4 ++--
+ sound/pci/ca0106/ca0106_main.c          |  4 ++--
+ sound/pci/cmipci.c                      | 12 ++++++------
+ sound/pci/cs4281.c                      |  4 ++--
+ sound/pci/cs46xx/cs46xx_lib.c           |  4 ++--
+ sound/pci/cs5535audio/cs5535audio_pcm.c |  4 ++--
+ sound/pci/ctxfi/ctpcm.c                 |  6 +++---
+ sound/pci/emu10k1/emu10k1x.c            |  4 ++--
+ sound/pci/emu10k1/emupcm.c              | 10 +++++-----
+ sound/pci/emu10k1/p16v.c                |  4 ++--
+ sound/pci/ens1370.c                     |  6 +++---
+ sound/pci/es1938.c                      |  4 ++--
+ sound/pci/es1968.c                      |  4 ++--
+ sound/pci/fm801.c                       |  4 ++--
+ sound/pci/intel8x0.c                    |  2 +-
+ sound/pci/intel8x0m.c                   |  2 +-
+ sound/pci/korg1212/korg1212.c           |  4 ++--
+ sound/pci/lola/lola_pcm.c               |  2 +-
+ sound/pci/lx6464es/lx6464es.c           |  2 +-
+ sound/pci/maestro3.c                    |  4 ++--
+ sound/pci/mixart/mixart.c               |  4 ++--
+ sound/pci/pcxhr/pcxhr.c                 |  2 +-
+ sound/pci/riptide/riptide.c             |  4 ++--
+ sound/pci/rme32.c                       |  8 ++++----
+ sound/pci/rme96.c                       |  8 ++++----
+ sound/pci/rme9652/hdsp.c                |  4 ++--
+ sound/pci/rme9652/rme9652.c             |  4 ++--
+ sound/pci/sis7019.c                     |  4 ++--
+ sound/pci/sonicvibes.c                  |  4 ++--
+ sound/pci/trident/trident_main.c        | 10 +++++-----
+ sound/pci/via82xx.c                     |  2 +-
+ sound/pci/via82xx_modem.c               |  2 +-
+ sound/pci/ymfpci/ymfpci_main.c          |  4 ++--
+ 39 files changed, 85 insertions(+), 85 deletions(-)
 
-This patch was meant to be RFC.
-If you decide not to take it, I'm fine as well.
+-- 
+1.9.1
 
-> *may be* on "ia64, ppc64 and parisc64" we can somehow check
-> that the pointer, which we pass as %pS, belongs to .text and
-> print some build-time warnings. well, if it's actually a
-> problem. dunno.
-
-I think it's not needed. Those bugs will be seen and fixed.
-
-Helge
