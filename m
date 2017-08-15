@@ -1,36 +1,31 @@
-From: Tom Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: Re: [PATCH] parisc: pci memory bar assignment fails with 64bit
- kernels on dino/cujo
-Date: Sun, 13 Aug 2017 18:21:59 +0200
-Message-ID: <20170813162159.GA2779@alpha.franken.de>
-References: <20170812214418.DB60D50835D@solo.franken.de>
- <49d641cb-78be-e1fc-9c72-c8deefee6177@gmx.de>
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH] sym53c8xx: Avoid undefined behaviour in drivers/scsi/sym53c8xx_2/sym_hipd.c:762
+Date: Mon, 14 Aug 2017 23:07:20 -0400
+Message-ID: <yq1d17xwmtz.fsf@oracle.com>
+References: <20170810190849.GA12659@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
+Content-Type: text/plain
+Cc: linux-scsi@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
 To: Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <49d641cb-78be-e1fc-9c72-c8deefee6177@gmx.de>
+In-Reply-To: <20170810190849.GA12659@p100.box> (Helge Deller's message of
+        "Thu, 10 Aug 2017 21:08:49 +0200")
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Aug 13, 2017 at 09:56:26AM +0200, Helge Deller wrote:
-> Does it mean that your mach64 card will then generally not being
-> able to work on a 32bit kernel (due to PCI resource shortage) ?
 
-no, it works 32bit on a B180, but I only tried 64bit kernel on the
-C360.
+Helge,
 
-> Now, if we find the issue why the FireGL cards don't work accelerated
-> on the C8000 it would be great.
+> On parisc I see this UBSAN warning with a sym53c896:
+>
+>  UBSAN: Undefined behaviour in ./drivers/scsi/sym53c8xx_2/sym_hipd.c:762:24
+>  index -1903078336 is out of range for type 'u32 [7]'
+>
+> Avoid this warning by switching to dev64_ul().
 
-that's my final goal. My next step is to see whether I could get cards
-working, which are supported by drivers/video/fbdev/aty/radeon*
-This driver is known to work big endian, so I don't have to wonder
-about endian issues in the first place...
-
-Thomas.
+Applied to 4.14/scsi-queue. Thank you, Helge!
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Martin K. Petersen	Oracle Linux Engineering
