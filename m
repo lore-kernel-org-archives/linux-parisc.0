@@ -1,138 +1,124 @@
-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Subject: Re: [PATCH] printk-formats.txt: Add examples for %pS and %pF
-Date: Wed, 16 Aug 2017 17:14:25 +0900
-Message-ID: <20170816081425.GE522@jagdpanzerIV.localdomain>
-References: <20170810173533.GA11600@ls3530.fritz.box>
- <20170811001521.GA520@jagdpanzerIV.localdomain>
- <47718712-9eb2-8ad7-965e-d0971d07e985@gmx.de>
- <20170815113625.GA2738@pathway.suse.cz>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Fix up devices below a PCI-PCI MegaRAID controller
+ bridge
+Date: Wed, 16 Aug 2017 18:53:16 +0200
+Message-ID: <20170816165316.GA11396@ls3530.fritz.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-To: Petr Mladek <pmladek@suse.com>
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170815113625.GA2738@pathway.suse.cz>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello,
+A MegaRAID PCI card in my rp5470 acts as PCI-PCI bridge.
+Resource allocation for PCI devices behind such a bridge is quite incomplete,
+so that syslog reports those warnings:
 
-sorry for the delay.
+ LBA 0:10: PCI host bridge to bus 0000:50
+ pci_bus 0000:50: root bus resource [io  0x80000-0x8ffff] (bus address [0x0000-0xffff])
+ pci_bus 0000:50: root bus resource [mem 0xffffffff94000000-0xffffffff95ffffff] (bus address [0x94000000-0x95ffffff])
+ pci_bus 0000:50: root bus resource [bus 50-57]
+ pci 0000:50:00.0: [8086:0964] type 01 class 0x060400
+ pci 0000:50:00.1: [8086:1960] type 00 class 0x0e0001
+ pci 0000:50:00.1: reg 0x10: [mem 0x00000000-0x003fffff pref]
+ pci 0000:50:00.1: reg 0x30: [mem 0x00000000-0x00007fff pref]
+ pci 0000:50:00.0: Changing bridge control from 0x00000000 to 0x00000023
+ pci_bus 0000:51: busn_res: can not insert [bus 51-ff] under [bus 50-57] (conflicts with (null) [bus 50-57])
+ pci 0000:50:00.0: PCI bridge to [bus 51-ff]
+ pci 0000:50:00.0:   bridge window [io  0x80000-0x80fff]
+ pci 0000:50:00.0:   bridge window [mem 0x00000000-0x000fffff]
+ pci 0000:50:00.0:   bridge window [mem 0x00000000-0x000fffff pref]
+ pci 0000:50:00.0: can't claim BAR 14 [mem 0x00000000-0x000fffff]: no compatible bridge window
+ pci 0000:50:00.0: can't claim BAR 15 [mem 0x00000000-0x000fffff pref]: no compatible bridge window
+ pci 0000:50:00.0: can't claim BAR 16 [??? 0x00000000 flags 0x0]: no compatible bridge window
+ pci_bus 0000:51: busn_res: [bus 51-ff] end is updated to 51
+ pci 0000:50:00.0: BAR 16: [??? 0x00000000 flags 0x20000000] has bogus alignment
+ pci 0000:50:00.1: BAR 0: assigned [mem 0xffffffff94000000-0xffffffff943fffff pref]
+ pci 0000:50:00.0: BAR 14: assigned [mem 0xffffffff94400000-0xffffffff944fffff]
+ pci 0000:50:00.0: BAR 15: assigned [mem 0xffffffff94500000-0xffffffff945fffff pref]
+ pci 0000:50:00.1: BAR 6: assigned [mem 0xffffffff94600000-0xffffffff94607fff pref]
+ pci 0000:50:00.0: PCI bridge to [bus 51]
+ pci 0000:50:00.0:   bridge window [io  0x80000-0x80fff]
+ pci 0000:50:00.0:   bridge window [mem 0xffffffff94400000-0xffffffff944fffff]
+ pci 0000:50:00.0:   bridge window [mem 0xffffffff94500000-0xffffffff945fffff pref]
 
-On (08/15/17 13:36), Petr Mladek wrote:
-[..]
-> > Experts surely do know what function descriptors are.
-> > Nevertheless even those often get it wrong as can be seen in
-> > various commits.
-> 
-> It seems that these specifiers are used the wrong way on many
-> locations. They might be worth fixing but I cannot test it
-> easily.
-> 
-> Hmm, using %pF might actually cause a crash when used
-> on direct function address.
+The patch below tries to improve the resource allocation.
+Output is now:
 
-:(
+ LBA 0:10: PCI host bridge to bus 0000:50
+ pci_bus 0000:50: root bus resource [io  0x80000-0x8ffff] (bus address [0x0000-0xffff])
+ pci_bus 0000:50: root bus resource [mem 0xffffffff94000000-0xffffffff95ffffff] (bus address [0x94000000-0x95ffffff])
+ pci_bus 0000:50: root bus resource [bus 50-57]
+ pci 0000:50:00.0: Changing bridge control from 0x00000000 to 0x00000023
+ pci 0000:50:00.0: PCI bridge to [bus 51-ff]
+ pci 0000:50:00.1: BAR 0: assigned [mem 0xffffffff94000000-0xffffffff943fffff pref]
+ pci 0000:50:00.1: BAR 6: assigned [mem 0xffffffff94400000-0xffffffff94407fff pref]
+ pci 0000:50:00.0: PCI bridge to [bus 51]
+ pci 0000:50:00.0:   bridge window [io  0x80000-0x80fff]
 
-> > The hope with this patch is to show widely-used examples
-> > and avoid additional commits afterwards to fix it up.
-> 
-> IMHO, one problem is that the meaning of ''F'' and ''f''
-> is hidden at the end of the section. Also the first line
-> 
->   'For printing symbols and function pointers. The ``S`` and ``s`` '
-> 
-> kind of invites to use ``S`` and ``s`` even for function pointers.
-> I suggest to switch the order, slightly retranslate, add the
-> examples, see below.
-
-agree. that was my problem: I saw the examples, didn't quite
-understand anything and had to read that documentation section
-anyway.
-
-> > This patch was meant to be RFC.
-> > If you decide not to take it, I'm fine as well.
-> > 
-> > > *may be* on "ia64, ppc64 and parisc64" we can somehow check
-> > > that the pointer, which we pass as %pS, belongs to .text and
-> > > print some build-time warnings. well, if it's actually a
-> > > problem. dunno.
-> 
-> I think that it would need to be a runtime check because many/most
-> printed addresses are not statically defined.
-
-yep, can do.
-
-> > I think it's not needed. Those bugs will be seen and fixed.
-> 
-> I am not sure how many people are familiar with this problem.
-> I might help to avoid some headaches when debugging.
-> 
-> If we add the warning, it should be ratelimited to reduce messing
-> of the original message.
-
-sure.
-
-[..]
-> From ef983c65095cada994c1fe531e2b98e936c943bf Mon Sep 17 00:00:00 2001
-> From: Helge Deller <deller@gmx.de>
-> Date: Tue, 15 Aug 2017 11:34:19 +0200
-> Subject: [PATCH] printk-formats.txt: Better describe the difference between
->  %pS and %pF
-> 
-> Sometimes people seems unclear when to use the %pS or %pF printk format.
-> For example, see commit 51d96dc2e2dc ("random: fix warning message on ia64
-> and parisc") which fixed such a wrong format string.
-> 
-> The documentation should be more clear about the difference.
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> [pmladek@suse.com: Restructure the entire section]
-> Signed-off-by: Petr Mladek <pmladek@suse.com>
-
-Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-
-> ---
->  Documentation/printk-formats.txt | 19 +++++++++++--------
->  1 file changed, 11 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/printk-formats.txt b/Documentation/printk-formats.txt
-> index 65ea5915178b..074670b98bac 100644
-> --- a/Documentation/printk-formats.txt
-> +++ b/Documentation/printk-formats.txt
-> @@ -58,20 +58,23 @@ Symbols/Function Pointers
->  	%ps	versatile_init
->  	%pB	prev_fn_of_versatile_init+0x88/0x88
->  
-> -For printing symbols and function pointers. The ``S`` and ``s`` specifiers
-> -result in the symbol name with (``S``) or without (``s``) offsets. Where
-> -this is used on a kernel without KALLSYMS - the symbol address is
-> -printed instead.
-> +The ``F`` and ``f`` specifiers are for printing function pointers,
-> +for example, f->func, &gettimeofday. They have the same result as
-> +``S`` and ``s`` specifiers. But they do an extra conversion on
-> +ia64, ppc64 and parisc64 architectures where the function pointers
-> +are actually function descriptors.
-> +
-> +The ``S`` and ``s`` specifiers can be used for printing symbols
-> +from direct addresses, for example, __builtin_return_address(0),
-> +(void *)regs->ip. They result in the symbol name with (``S``) or
-> +without (``s``) offsets. If KALLSYMS are disabled then the symbol
-> +address is printed instead.
->  
->  The ``B`` specifier results in the symbol name with offsets and should be
->  used when printing stack backtraces. The specifier takes into
->  consideration the effect of compiler optimisations which may occur
->  when tail-call``s are used and marked with the noreturn GCC attribute.
->  
-> -On ia64, ppc64 and parisc64 architectures function pointers are
-> -actually function descriptors which must first be resolved. The ``F`` and
-> -``f`` specifiers perform this resolution and then provide the same
-> -functionality as the ``S`` and ``s`` specifiers.
->  
->  Kernel Pointers
->  ===============
+Signed-off-by: Helge Deller <deller@gmx.de>
+ 
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index bc286cb..4dc6df3 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -667,6 +667,42 @@ extend_lmmio_len(unsigned long start, unsigned long end, unsigned long lba_len)
+ #define truncate_pat_collision(r,n)  (0)
+ #endif
+ 
++static void pcibios_allocate_bridge_resources(struct pci_dev *dev)
++{
++	int idx;
++	struct resource *r;
++
++	for (idx = PCI_BRIDGE_RESOURCES; idx < PCI_NUM_RESOURCES; idx++) {
++		r = &dev->resource[idx];
++		if (!r->flags)
++			continue;
++		if (r->parent)	/* Already allocated */
++			continue;
++		if (!r->start || pci_claim_bridge_resource(dev, idx) < 0) {
++			/*
++			 * Something is wrong with the region.
++			 * Invalidate the resource to prevent
++			 * child resource allocations in this
++			 * range.
++			 */
++			r->start = r->end = 0;
++			r->flags = 0;
++		}
++	}
++}
++
++static void pcibios_allocate_bus_resources(struct pci_bus *bus)
++{
++	struct pci_bus *child;
++
++	/* Depth-First Search on bus tree */
++	if (bus->self)
++		pcibios_allocate_bridge_resources(bus->self);
++	list_for_each_entry(child, &bus->children, node)
++		pcibios_allocate_bus_resources(child);
++}
++
++
+ /*
+ ** The algorithm is generic code.
+ ** But it needs to access local data structures to get the IRQ base.
+@@ -693,11 +729,11 @@ lba_fixup_bus(struct pci_bus *bus)
+ 	** pci_alloc_primary_bus() mangles this.
+ 	*/
+ 	if (bus->parent) {
+-		int i;
+ 		/* PCI-PCI Bridge */
+ 		pci_read_bridge_bases(bus);
+-		for (i = PCI_BRIDGE_RESOURCES; i < PCI_NUM_RESOURCES; i++)
+-			pci_claim_bridge_resource(bus->self, i);
++
++		/* check an allocate bridge resources */
++		pcibios_allocate_bus_resources(bus);
+ 	} else {
+ 		/* Host-PCI Bridge */
+ 		int err;
