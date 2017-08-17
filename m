@@ -1,43 +1,29 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture fixes for v4.13-rc6
-Date: Thu, 17 Aug 2017 20:28:13 +0200
-Message-ID: <20170817182813.GA1426@p100.box>
+Subject: Re: hppa: rodata_test: start of .rodata is not page size aligned
+Date: Thu, 17 Aug 2017 20:38:09 +0200
+Message-ID: <769ea943-59da-80cb-ac74-726887656bf6@gmx.de>
+References: <alpine.LRH.2.20.1708172113460.7500@math.ut.ee>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=utf-8
+Cc: Jinbum Park <jinb.park7@gmail.com>
+To: Meelis Roos <mroos@linux.ee>, linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <alpine.LRH.2.20.1708172113460.7500@math.ut.ee>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+On 17.08.2017 20:15, Meelis Roos wrote:
+> Today I compiled 4.13-rc5+git on my farm on on one of my parisc boxes I 
+> got the following warning in dmesg:
+> 
+> rodata_test: start of .rodata is not page size aligned
 
-please pull two small patches from:
+In arch/parisc/kernel/vmlinux.lds.S we have:
+	RO_DATA_SECTION(8)
+so it's 8-byte aligned, and directly behind the linkage tables (on 64bit)
+and before the exception tables which all will be mapped read-only as well.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.13-5
+I see no reason why we should waste space by aligning it on PAGE_SIZE boundary.
+I'd say this test result is in our case bogus...
 
-Changelog:
-
-- Fix PCI memory bar assignments with 64-bit kernels on machines with Dino/Cujo
-  PCI chipsets. This makes PCI graphic cards work on such machines (from Thomas
-  Bogendoerfer).
-
-- Fix documentation to be more clear about the difference between %pF and %pS
-  printk format usage. There are still many places in the kernel which have it
-  wrong (from Petr Mladek, Sergey Senozhatsky & me).
-
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Helge Deller (1):
-      printk-formats.txt: Better describe the difference between %pS and %pF
-
-Thomas Bogendoerfer (1):
-      parisc: pci memory bar assignment fails with 64bit kernels on dino/cujo
-
- Documentation/printk-formats.txt | 19 +++++++++++--------
- drivers/parisc/dino.c            |  2 +-
- 2 files changed, 12 insertions(+), 9 deletions(-)
+Helge 
