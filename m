@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 8/8] parisc: wax: constify parisc_device_id
-Date: Sat, 19 Aug 2017 23:12:26 +0530
-Message-ID: <1503164546-31433-9-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 5/8] parisc: lasi: constify parisc_device_id
+Date: Sat, 19 Aug 2017 23:12:23 +0530
+Message-ID: <1503164546-31433-6-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1503164546-31433-1-git-send-email-arvind.yadav.cs@gmail.com>
 Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
 To: jejb@parisc-linux.org, deller@gmx.de
@@ -16,20 +16,20 @@ with const parisc_device_id. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- drivers/parisc/wax.c | 2 +-
+ drivers/parisc/lasi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/parisc/wax.c b/drivers/parisc/wax.c
-index da9d5ad..e2d5238 100644
---- a/drivers/parisc/wax.c
-+++ b/drivers/parisc/wax.c
-@@ -125,7 +125,7 @@ static int __init wax_init_chip(struct parisc_device *dev)
+diff --git a/drivers/parisc/lasi.c b/drivers/parisc/lasi.c
+index e65727c..b77cf1e 100644
+--- a/drivers/parisc/lasi.c
++++ b/drivers/parisc/lasi.c
+@@ -227,7 +227,7 @@ static int __init lasi_init_chip(struct parisc_device *dev)
  	return ret;
  }
  
--static struct parisc_device_id wax_tbl[] = {
-+static const struct parisc_device_id wax_tbl[] = {
-   	{ HPHW_BA, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x0008e },
+-static struct parisc_device_id lasi_tbl[] = {
++static const struct parisc_device_id lasi_tbl[] = {
+ 	{ HPHW_BA, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x00081 },
  	{ 0, }
  };
 -- 
