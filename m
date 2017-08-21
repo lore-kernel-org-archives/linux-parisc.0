@@ -1,83 +1,89 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH 00/14] parisc: Fix section mismatches
-Date: Mon, 21 Aug 2017 22:22:47 +0200
-Message-ID: <1503346981-28024-1-git-send-email-deller@gmx.de>
+Subject: [PATCH 10/14] parisc/serio: Fix section mismatches in gscps2 and hp_sdc drivers
+Date: Mon, 21 Aug 2017 22:22:57 +0200
+Message-ID: <1503346981-28024-11-git-send-email-deller@gmx.de>
+References: <1503346981-28024-1-git-send-email-deller@gmx.de>
 Cc: John David Anglin <dave.anglin@bell.net>,
         James Bottomley <James.Bottomley@HansenPartnership.com>
 To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1503346981-28024-1-git-send-email-deller@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Clean up section mismatches.
-Helge
+Signed-off-by: Helge Deller <deller@gmx.de>
+---
+ drivers/input/serio/gscps2.c | 10 +++++-----
+ drivers/input/serio/hp_sdc.c |  4 ++--
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-Helge Deller (14):
-  parisc: Add support for self-extracting kernel
-  parisc/harmony: Fix section mismatches
-  parisc/sticore: Fix section mismatches
-  parisc/mux: Fix section mismatches
-  parisc/8250_gsc: Fix section mismatches
-  parisc/scsi/zalon: Fix section mismatches
-  parisc/scsi/lasi700: Fix section mismatches
-  parisc/parport_gsc: Fix section mismatches
-  parisc: Fix section mismatches in parisc core drivers
-  parisc/serio: Fix section mismatches in gscps2 and hp_sdc drivers
-  parisc/net/lasi_82596: Fix section mismatches
-  parisc/input/hilkbd: Fix section mismatches
-  parisc/ipmi_si_intf: Fix section mismatches on parisc platform
-  parisc/core: Fix section mismatches
-
- arch/parisc/Kconfig                       |   6 +
- arch/parisc/Makefile                      |  16 +-
- arch/parisc/boot/.gitignore               |   2 +
- arch/parisc/boot/Makefile                 |  26 +++
- arch/parisc/boot/compressed/.gitignore    |   3 +
- arch/parisc/boot/compressed/Makefile      |  86 +++++++++
- arch/parisc/boot/compressed/head.S        |  85 +++++++++
- arch/parisc/boot/compressed/misc.c        | 301 ++++++++++++++++++++++++++++++
- arch/parisc/boot/compressed/vmlinux.lds.S | 101 ++++++++++
- arch/parisc/boot/compressed/vmlinux.scr   |  10 +
- arch/parisc/boot/install.sh               |  65 +++++++
- arch/parisc/include/asm/page.h            |   4 +
- arch/parisc/include/asm/pdc.h             |   2 +
- arch/parisc/kernel/firmware.c             |  15 +-
- arch/parisc/kernel/processor.c            |   6 +-
- arch/parisc/kernel/real2.S                |   4 +
- drivers/char/ipmi/ipmi_si_intf.c          |  12 +-
- drivers/input/keyboard/hilkbd.c           |  10 +-
- drivers/input/serio/gscps2.c              |  10 +-
- drivers/input/serio/hp_sdc.c              |   4 +-
- drivers/net/ethernet/i825xx/lasi_82596.c  |  10 +-
- drivers/parisc/asp.c                      |   4 +-
- drivers/parisc/ccio-dma.c                 |   4 +-
- drivers/parisc/ccio-rm-dma.c              |   6 +-
- drivers/parisc/dino.c                     |   4 +-
- drivers/parisc/eisa.c                     |   4 +-
- drivers/parisc/hppb.c                     |   6 +-
- drivers/parisc/lasi.c                     |   4 +-
- drivers/parisc/lba_pci.c                  |   4 +-
- drivers/parisc/sba_iommu.c                |   6 +-
- drivers/parisc/superio.c                  |   4 +-
- drivers/parisc/wax.c                      |   4 +-
- drivers/parport/parport_gsc.c             |  10 +-
- drivers/scsi/lasi700.c                    |   6 +-
- drivers/scsi/zalon.c                      |   8 +-
- drivers/tty/serial/8250/8250_gsc.c        |   8 +-
- drivers/tty/serial/mux.c                  |  14 +-
- drivers/video/console/sticore.c           |  11 +-
- sound/parisc/harmony.c                    |  10 +-
- 39 files changed, 808 insertions(+), 87 deletions(-)
- create mode 100644 arch/parisc/boot/.gitignore
- create mode 100644 arch/parisc/boot/Makefile
- create mode 100644 arch/parisc/boot/compressed/.gitignore
- create mode 100644 arch/parisc/boot/compressed/Makefile
- create mode 100644 arch/parisc/boot/compressed/head.S
- create mode 100644 arch/parisc/boot/compressed/misc.c
- create mode 100644 arch/parisc/boot/compressed/vmlinux.lds.S
- create mode 100644 arch/parisc/boot/compressed/vmlinux.scr
- create mode 100644 arch/parisc/boot/install.sh
-
+diff --git a/drivers/input/serio/gscps2.c b/drivers/input/serio/gscps2.c
+index ecba666..0fa592c 100644
+--- a/drivers/input/serio/gscps2.c
++++ b/drivers/input/serio/gscps2.c
+@@ -325,7 +325,7 @@ static void gscps2_close(struct serio *port)
+  * @return: success/error report
+  */
+ 
+-static int gscps2_probe(struct parisc_device *dev)
++static int __init gscps2_probe(struct parisc_device *dev)
+ {
+ 	struct gscps2port *ps2port;
+ 	struct serio *serio;
+@@ -412,7 +412,7 @@ static int gscps2_probe(struct parisc_device *dev)
+  * @return: success/error report
+  */
+ 
+-static int gscps2_remove(struct parisc_device *dev)
++static int __exit gscps2_remove(struct parisc_device *dev)
+ {
+ 	struct gscps2port *ps2port = dev_get_drvdata(&dev->dev);
+ 
+@@ -430,7 +430,7 @@ static int gscps2_remove(struct parisc_device *dev)
+ }
+ 
+ 
+-static struct parisc_device_id gscps2_device_tbl[] = {
++static struct parisc_device_id gscps2_device_tbl[] __initconst = {
+ 	{ HPHW_FIO, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x00084 }, /* LASI PS/2 */
+ #ifdef DINO_TESTED
+ 	{ HPHW_FIO, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x00096 }, /* DINO PS/2 */
+@@ -439,11 +439,11 @@ static struct parisc_device_id gscps2_device_tbl[] = {
+ };
+ MODULE_DEVICE_TABLE(parisc, gscps2_device_tbl);
+ 
+-static struct parisc_driver parisc_ps2_driver = {
++static struct parisc_driver parisc_ps2_driver __refdata = {
+ 	.name		= "gsc_ps2",
+ 	.id_table	= gscps2_device_tbl,
+ 	.probe		= gscps2_probe,
+-	.remove		= gscps2_remove,
++	.remove		= __exit_p(gscps2_remove),
+ };
+ 
+ static int __init gscps2_init(void)
+diff --git a/drivers/input/serio/hp_sdc.c b/drivers/input/serio/hp_sdc.c
+index 1bfdae4..cb9ae5b 100644
+--- a/drivers/input/serio/hp_sdc.c
++++ b/drivers/input/serio/hp_sdc.c
+@@ -805,7 +805,7 @@ static void hp_sdc_kicker(unsigned long data)
+ 
+ #if defined(__hppa__)
+ 
+-static const struct parisc_device_id hp_sdc_tbl[] = {
++static struct parisc_device_id hp_sdc_tbl[] __initconst = {
+ 	{
+ 		.hw_type =	HPHW_FIO,
+ 		.hversion_rev =	HVERSION_REV_ANY_ID,
+@@ -820,7 +820,7 @@ MODULE_DEVICE_TABLE(parisc, hp_sdc_tbl);
+ static int __init hp_sdc_init_hppa(struct parisc_device *d);
+ static struct delayed_work moduleloader_work;
+ 
+-static struct parisc_driver hp_sdc_driver = {
++static struct parisc_driver hp_sdc_driver __refdata = {
+ 	.name =		"hp_sdc",
+ 	.id_table =	hp_sdc_tbl,
+ 	.probe =	hp_sdc_init_hppa,
 -- 
 2.1.0
 
