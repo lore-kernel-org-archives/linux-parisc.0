@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH 08/14] parisc/parport_gsc: Fix section mismatches
-Date: Mon, 21 Aug 2017 22:22:55 +0200
-Message-ID: <1503346981-28024-9-git-send-email-deller@gmx.de>
+Subject: [PATCH 04/14] parisc/mux: Fix section mismatches
+Date: Mon, 21 Aug 2017 22:22:51 +0200
+Message-ID: <1503346981-28024-5-git-send-email-deller@gmx.de>
 References: <1503346981-28024-1-git-send-email-deller@gmx.de>
 Cc: John David Anglin <dave.anglin@bell.net>,
         James Bottomley <James.Bottomley@HansenPartnership.com>
@@ -13,53 +13,61 @@ List-Id: linux-parisc.vger.kernel.org
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 ---
- drivers/parport/parport_gsc.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/tty/serial/mux.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/parport/parport_gsc.c b/drivers/parport/parport_gsc.c
-index 3858b87..435e6f7 100644
---- a/drivers/parport/parport_gsc.c
-+++ b/drivers/parport/parport_gsc.c
-@@ -346,7 +346,7 @@ struct parport *parport_gsc_probe_port(unsigned long base,
- 
- static int parport_count;
- 
--static int parport_init_chip(struct parisc_device *dev)
-+static int __init parport_init_chip(struct parisc_device *dev)
- {
- 	struct parport *p;
- 	unsigned long port;
-@@ -381,7 +381,7 @@ static int parport_init_chip(struct parisc_device *dev)
+diff --git a/drivers/tty/serial/mux.c b/drivers/tty/serial/mux.c
+index 8a4be4b..80c8105 100644
+--- a/drivers/tty/serial/mux.c
++++ b/drivers/tty/serial/mux.c
+@@ -503,7 +503,7 @@ static int __init mux_probe(struct parisc_device *dev)
  	return 0;
  }
  
--static int parport_remove_chip(struct parisc_device *dev)
-+static int __exit parport_remove_chip(struct parisc_device *dev)
+-static int mux_remove(struct parisc_device *dev)
++static int __exit mux_remove(struct parisc_device *dev)
  {
- 	struct parport *p = dev_get_drvdata(&dev->dev);
- 	if (p) {
-@@ -403,18 +403,18 @@ static int parport_remove_chip(struct parisc_device *dev)
- 	return 0;
- }
- 
--static struct parisc_device_id parport_tbl[] = {
-+static struct parisc_device_id parport_tbl[] __initconst = {
- 	{ HPHW_FIO, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x74 },
+ 	int i, j;
+ 	int port_count = (long)dev_get_drvdata(&dev->dev);
+@@ -536,13 +536,13 @@ static int mux_remove(struct parisc_device *dev)
+  * This table only contains the parisc_device_id of known builtin mux
+  * devices.  All other mux cards will be detected by the generic mux_tbl.
+  */
+-static struct parisc_device_id builtin_mux_tbl[] = {
++static struct parisc_device_id builtin_mux_tbl[] __initconst = {
+ 	{ HPHW_A_DIRECT, HVERSION_REV_ANY_ID, 0x15, 0x0000D }, /* All K-class */
+ 	{ HPHW_A_DIRECT, HVERSION_REV_ANY_ID, 0x44, 0x0000D }, /* E35, E45, and E55 */
  	{ 0, }
  };
  
- MODULE_DEVICE_TABLE(parisc, parport_tbl);
+-static struct parisc_device_id mux_tbl[] = {
++static struct parisc_device_id mux_tbl[] __initconst = {
+ 	{ HPHW_A_DIRECT, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x0000D },
+ 	{ 0, }
+ };
+@@ -550,18 +550,18 @@ static struct parisc_device_id mux_tbl[] = {
+ MODULE_DEVICE_TABLE(parisc, builtin_mux_tbl);
+ MODULE_DEVICE_TABLE(parisc, mux_tbl);
  
--static struct parisc_driver parport_driver = {
-+static struct parisc_driver parport_driver __refdata = {
- 	.name		= "Parallel",
- 	.id_table	= parport_tbl,
- 	.probe		= parport_init_chip,
--	.remove		= parport_remove_chip,
-+	.remove		= __exit_p(parport_remove_chip),
+-static struct parisc_driver builtin_serial_mux_driver = {
++static struct parisc_driver builtin_serial_mux_driver __refdata = {
+ 	.name =		"builtin_serial_mux",
+ 	.id_table =	builtin_mux_tbl,
+ 	.probe =	mux_probe,
+-	.remove =       mux_remove,
++	.remove =       __exit_p(mux_remove),
  };
  
- int parport_gsc_init(void)
+-static struct parisc_driver serial_mux_driver = {
++static struct parisc_driver serial_mux_driver __refdata = {
+ 	.name =		"serial_mux",
+ 	.id_table =	mux_tbl,
+ 	.probe =	mux_probe,
+-	.remove =       mux_remove,
++	.remove =       __exit_p(mux_remove),
+ };
+ 
+ /**
 -- 
 2.1.0
 
