@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH 10/14] parisc/serio: Fix section mismatches in gscps2 and hp_sdc drivers
-Date: Mon, 21 Aug 2017 22:22:57 +0200
-Message-ID: <1503346981-28024-11-git-send-email-deller@gmx.de>
+Subject: [PATCH 14/14] parisc/core: Fix section mismatches
+Date: Mon, 21 Aug 2017 22:23:01 +0200
+Message-ID: <1503346981-28024-15-git-send-email-deller@gmx.de>
 References: <1503346981-28024-1-git-send-email-deller@gmx.de>
 Cc: John David Anglin <dave.anglin@bell.net>,
         James Bottomley <James.Bottomley@HansenPartnership.com>
@@ -13,77 +13,37 @@ List-Id: linux-parisc.vger.kernel.org
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 ---
- drivers/input/serio/gscps2.c | 10 +++++-----
- drivers/input/serio/hp_sdc.c |  4 ++--
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ arch/parisc/kernel/processor.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/input/serio/gscps2.c b/drivers/input/serio/gscps2.c
-index ecba666..0fa592c 100644
---- a/drivers/input/serio/gscps2.c
-+++ b/drivers/input/serio/gscps2.c
-@@ -325,7 +325,7 @@ static void gscps2_close(struct serio *port)
-  * @return: success/error report
+diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
+index 0ab3277..1dc7f79 100644
+--- a/arch/parisc/kernel/processor.c
++++ b/arch/parisc/kernel/processor.c
+@@ -89,7 +89,7 @@ init_percpu_prof(unsigned long cpunum)
+  * (return 1).  If so, initialize the chip and tell other partners in crime 
+  * they have work to do.
   */
- 
--static int gscps2_probe(struct parisc_device *dev)
-+static int __init gscps2_probe(struct parisc_device *dev)
+-static int processor_probe(struct parisc_device *dev)
++static int __init processor_probe(struct parisc_device *dev)
  {
- 	struct gscps2port *ps2port;
- 	struct serio *serio;
-@@ -412,7 +412,7 @@ static int gscps2_probe(struct parisc_device *dev)
-  * @return: success/error report
-  */
- 
--static int gscps2_remove(struct parisc_device *dev)
-+static int __exit gscps2_remove(struct parisc_device *dev)
- {
- 	struct gscps2port *ps2port = dev_get_drvdata(&dev->dev);
- 
-@@ -430,7 +430,7 @@ static int gscps2_remove(struct parisc_device *dev)
+ 	unsigned long txn_addr;
+ 	unsigned long cpuid;
+@@ -414,12 +414,12 @@ show_cpuinfo (struct seq_file *m, void *v)
+ 	return 0;
  }
  
- 
--static struct parisc_device_id gscps2_device_tbl[] = {
-+static struct parisc_device_id gscps2_device_tbl[] __initconst = {
- 	{ HPHW_FIO, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x00084 }, /* LASI PS/2 */
- #ifdef DINO_TESTED
- 	{ HPHW_FIO, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x00096 }, /* DINO PS/2 */
-@@ -439,11 +439,11 @@ static struct parisc_device_id gscps2_device_tbl[] = {
- };
- MODULE_DEVICE_TABLE(parisc, gscps2_device_tbl);
- 
--static struct parisc_driver parisc_ps2_driver = {
-+static struct parisc_driver parisc_ps2_driver __refdata = {
- 	.name		= "gsc_ps2",
- 	.id_table	= gscps2_device_tbl,
- 	.probe		= gscps2_probe,
--	.remove		= gscps2_remove,
-+	.remove		= __exit_p(gscps2_remove),
+-static const struct parisc_device_id processor_tbl[] = {
++static const struct parisc_device_id processor_tbl[] __initconst = {
+ 	{ HPHW_NPROC, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, SVERSION_ANY_ID },
+ 	{ 0, }
  };
  
- static int __init gscps2_init(void)
-diff --git a/drivers/input/serio/hp_sdc.c b/drivers/input/serio/hp_sdc.c
-index 1bfdae4..cb9ae5b 100644
---- a/drivers/input/serio/hp_sdc.c
-+++ b/drivers/input/serio/hp_sdc.c
-@@ -805,7 +805,7 @@ static void hp_sdc_kicker(unsigned long data)
- 
- #if defined(__hppa__)
- 
--static const struct parisc_device_id hp_sdc_tbl[] = {
-+static struct parisc_device_id hp_sdc_tbl[] __initconst = {
- 	{
- 		.hw_type =	HPHW_FIO,
- 		.hversion_rev =	HVERSION_REV_ANY_ID,
-@@ -820,7 +820,7 @@ MODULE_DEVICE_TABLE(parisc, hp_sdc_tbl);
- static int __init hp_sdc_init_hppa(struct parisc_device *d);
- static struct delayed_work moduleloader_work;
- 
--static struct parisc_driver hp_sdc_driver = {
-+static struct parisc_driver hp_sdc_driver __refdata = {
- 	.name =		"hp_sdc",
- 	.id_table =	hp_sdc_tbl,
- 	.probe =	hp_sdc_init_hppa,
+-static struct parisc_driver cpu_driver = {
++static struct parisc_driver cpu_driver __refdata = {
+ 	.name		= "CPU",
+ 	.id_table	= processor_tbl,
+ 	.probe		= processor_probe
 -- 
 2.1.0
 
