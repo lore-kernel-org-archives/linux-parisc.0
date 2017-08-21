@@ -1,65 +1,56 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH 02/14] parisc/harmony: Fix section mismatches
-Date: Mon, 21 Aug 2017 22:22:49 +0200
-Message-ID: <1503346981-28024-3-git-send-email-deller@gmx.de>
-References: <1503346981-28024-1-git-send-email-deller@gmx.de>
-Cc: John David Anglin <dave.anglin@bell.net>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-To: linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1503346981-28024-1-git-send-email-deller@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Subject: Re: [PATCH 0/8] constify parisc parisc_device_id
+Date: Mon, 21 Aug 2017 22:42:42 +0200
+Message-ID: <30fb04dd-118e-d866-0166-2f9a8e67ff1a@gmx.de>
+References: <1503164546-31433-1-git-send-email-arvind.yadav.cs@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>, jejb@parisc-linux.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1503164546-31433-1-git-send-email-arvind.yadav.cs@gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Signed-off-by: Helge Deller <deller@gmx.de>
----
- sound/parisc/harmony.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Hi Arvind,
 
-diff --git a/sound/parisc/harmony.c b/sound/parisc/harmony.c
-index 5911eb3..fc68c1c 100644
---- a/sound/parisc/harmony.c
-+++ b/sound/parisc/harmony.c
-@@ -66,7 +66,7 @@ module_param(id, charp, 0444);
- MODULE_PARM_DESC(id, "ID string for Harmony driver.");
- 
- 
--static struct parisc_device_id snd_harmony_devtable[] = {
-+static struct parisc_device_id snd_harmony_devtable[] __initconst = {
- 	/* bushmaster / flounder */
- 	{ HPHW_FIO, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x0007A }, 
- 	/* 712 / 715 */
-@@ -960,7 +960,7 @@ snd_harmony_create(struct snd_card *card,
- 	return err;
- }
- 
--static int
-+static int __init
- snd_harmony_probe(struct parisc_device *padev)
- {
- 	int err;
-@@ -1000,18 +1000,18 @@ snd_harmony_probe(struct parisc_device *padev)
- 	return err;
- }
- 
--static int
-+static int __exit
- snd_harmony_remove(struct parisc_device *padev)
- {
- 	snd_card_free(parisc_get_drvdata(padev));
- 	return 0;
- }
- 
--static struct parisc_driver snd_harmony_driver = {
-+static struct parisc_driver snd_harmony_driver __refdata = {
- 	.name = "harmony",
- 	.id_table = snd_harmony_devtable,
- 	.probe = snd_harmony_probe,
--	.remove = snd_harmony_remove,
-+	.remove = __exit_p(snd_harmony_remove),
- };
- 
- static int __init 
--- 
-2.1.0
+On 19.08.2017 19:42, Arvind Yadav wrote:
+> parisc_device_id are not supposed to change at runtime. All functions
+> working with parisc_device_id provided by <asm/parisc-device.h> work with
+> const parisc_device_id. So mark the non-const structs as const.
 
+Basically your patches are correct, but those structs aren't used
+after bootup any longer.
+So, they are much better placed in the __initconst or __initdata
+sections so that they get dropped before the kernel enters userspace.
+Changing it to __initconst includes more changes to those files
+than just changing one line.
+
+So, I won't apply your patches.
+Instead I've hacked up new versions in my tree which move those to 
+__init* sections.
+
+Anyway, thanks for your patches!
+
+Helge 
+ 
+> Arvind Yadav (8):
+>   [PATCH 1/8] parisc: asp: constify parisc_device_id
+>   [PATCH 2/8] parisc: ccio: constify parisc_device_id
+>   [PATCH 3/8] parisc: dino: constify parisc_device_id
+>   [PATCH 4/8] parisc: hppb: constify parisc_device_id
+>   [PATCH 5/8] parisc: lasi: constify parisc_device_id
+>   [PATCH 6/8] parisc: lba_pci: constify parisc_device_id
+>   [PATCH 7/8] parisc: sba_iommu: constify parisc_device_id
+>   [PATCH 8/8] parisc: wax: constify parisc_device_id
+> 
+>  drivers/parisc/asp.c         | 2 +-
+>  drivers/parisc/ccio-rm-dma.c | 2 +-
+>  drivers/parisc/dino.c        | 2 +-
+>  drivers/parisc/hppb.c        | 2 +-
+>  drivers/parisc/lasi.c        | 2 +-
+>  drivers/parisc/lba_pci.c     | 2 +-
+>  drivers/parisc/sba_iommu.c   | 2 +-
+>  drivers/parisc/wax.c         | 2 +-
+>  8 files changed, 8 insertions(+), 8 deletions(-)
+> 
