@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH 06/14] parisc/scsi/zalon: Fix section mismatches
-Date: Mon, 21 Aug 2017 22:22:53 +0200
-Message-ID: <1503346981-28024-7-git-send-email-deller@gmx.de>
+Subject: [PATCH 07/14] parisc/scsi/lasi700: Fix section mismatches
+Date: Mon, 21 Aug 2017 22:22:54 +0200
+Message-ID: <1503346981-28024-8-git-send-email-deller@gmx.de>
 References: <1503346981-28024-1-git-send-email-deller@gmx.de>
 Cc: John David Anglin <dave.anglin@bell.net>,
         James Bottomley <James.Bottomley@HansenPartnership.com>
@@ -13,44 +13,36 @@ List-Id: linux-parisc.vger.kernel.org
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 ---
- drivers/scsi/zalon.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/scsi/lasi700.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/zalon.c b/drivers/scsi/zalon.c
-index b2cf1fa..a2fb7ad 100644
---- a/drivers/scsi/zalon.c
-+++ b/drivers/scsi/zalon.c
-@@ -160,14 +160,14 @@ zalon_probe(struct parisc_device *dev)
- 	return error;
- }
+diff --git a/drivers/scsi/lasi700.c b/drivers/scsi/lasi700.c
+index 5c4ded9..576aae4 100644
+--- a/drivers/scsi/lasi700.c
++++ b/drivers/scsi/lasi700.c
+@@ -81,7 +81,7 @@ MODULE_LICENSE("GPL");
+ #define LASI710_CLOCK	40
+ #define LASI_SCSI_CORE_OFFSET 0x100
  
--static struct parisc_device_id zalon_tbl[] = {
-+static struct parisc_device_id zalon_tbl[] __initconst = {
- 	{ HPHW_A_DMA, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x00089 }, 
- 	{ 0, }
- };
- 
- MODULE_DEVICE_TABLE(parisc, zalon_tbl);
- 
--static int zalon_remove(struct parisc_device *dev)
-+static int __exit zalon_remove(struct parisc_device *dev)
- {
- 	struct Scsi_Host *host = dev_get_drvdata(&dev->dev);
- 
-@@ -178,11 +178,11 @@ static int zalon_remove(struct parisc_device *dev)
+-static struct parisc_device_id lasi700_ids[] = {
++static struct parisc_device_id lasi700_ids[] __initconst = {
+ 	LASI700_ID_TABLE,
+ 	LASI710_ID_TABLE,
+ 	{ 0 }
+@@ -164,11 +164,11 @@ lasi700_driver_remove(struct parisc_device *dev)
  	return 0;
  }
  
--static struct parisc_driver zalon_driver = {
-+static struct parisc_driver zalon_driver __refdata = {
- 	.name =		"zalon",
- 	.id_table =	zalon_tbl,
- 	.probe =	zalon_probe,
--	.remove =	zalon_remove,
-+	.remove =	__exit_p(zalon_remove),
+-static struct parisc_driver lasi700_driver = {
++static struct parisc_driver lasi700_driver __refdata = {
+ 	.name =		"lasi_scsi",
+ 	.id_table =	lasi700_ids,
+ 	.probe =	lasi700_probe,
+-	.remove =	lasi700_driver_remove,
++	.remove =	__exit_p(lasi700_driver_remove),
  };
  
- static int __init zalon7xx_init(void)
+ static int __init
 -- 
 2.1.0
 
