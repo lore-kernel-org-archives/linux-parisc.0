@@ -1,7 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH 11/14] parisc/net/lasi_82596: Fix section mismatches
-Date: Mon, 21 Aug 2017 22:22:58 +0200
-Message-ID: <1503346981-28024-12-git-send-email-deller@gmx.de>
+Subject: [PATCH 06/14] parisc/scsi/zalon: Fix section mismatches
+Date: Mon, 21 Aug 2017 22:22:53 +0200
+Message-ID: <1503346981-28024-7-git-send-email-deller@gmx.de>
 References: <1503346981-28024-1-git-send-email-deller@gmx.de>
 Cc: John David Anglin <dave.anglin@bell.net>,
         James Bottomley <James.Bottomley@HansenPartnership.com>
@@ -13,54 +13,44 @@ List-Id: linux-parisc.vger.kernel.org
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 ---
- drivers/net/ethernet/i825xx/lasi_82596.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/scsi/zalon.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/i825xx/lasi_82596.c b/drivers/net/ethernet/i825xx/lasi_82596.c
-index d787fdd..68a2af2 100644
---- a/drivers/net/ethernet/i825xx/lasi_82596.c
-+++ b/drivers/net/ethernet/i825xx/lasi_82596.c
-@@ -149,7 +149,7 @@ static void mpu_port(struct net_device *dev, int c, dma_addr_t x)
- 
- #define LAN_PROM_ADDR	0xF0810000
- 
--static int
-+static int __init
- lan_init_chip(struct parisc_device *dev)
- {
- 	struct	net_device *netdevice;
-@@ -194,7 +194,7 @@ lan_init_chip(struct parisc_device *dev)
- 	return retval;
+diff --git a/drivers/scsi/zalon.c b/drivers/scsi/zalon.c
+index b2cf1fa..a2fb7ad 100644
+--- a/drivers/scsi/zalon.c
++++ b/drivers/scsi/zalon.c
+@@ -160,14 +160,14 @@ zalon_probe(struct parisc_device *dev)
+ 	return error;
  }
  
--static int lan_remove_chip(struct parisc_device *pdev)
-+static int __exit lan_remove_chip(struct parisc_device *pdev)
+-static struct parisc_device_id zalon_tbl[] = {
++static struct parisc_device_id zalon_tbl[] __initconst = {
+ 	{ HPHW_A_DMA, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x00089 }, 
+ 	{ 0, }
+ };
+ 
+ MODULE_DEVICE_TABLE(parisc, zalon_tbl);
+ 
+-static int zalon_remove(struct parisc_device *dev)
++static int __exit zalon_remove(struct parisc_device *dev)
  {
- 	struct net_device *dev = parisc_get_drvdata(pdev);
- 	struct i596_private *lp = netdev_priv(dev);
-@@ -206,7 +206,7 @@ static int lan_remove_chip(struct parisc_device *pdev)
+ 	struct Scsi_Host *host = dev_get_drvdata(&dev->dev);
+ 
+@@ -178,11 +178,11 @@ static int zalon_remove(struct parisc_device *dev)
  	return 0;
  }
  
--static struct parisc_device_id lan_tbl[] = {
-+static struct parisc_device_id lan_tbl[] __initconst = {
- 	{ HPHW_FIO, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x0008a },
- 	{ HPHW_FIO, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x00072 },
- 	{ 0, }
-@@ -214,11 +214,11 @@ static struct parisc_device_id lan_tbl[] = {
- 
- MODULE_DEVICE_TABLE(parisc, lan_tbl);
- 
--static struct parisc_driver lan_driver = {
-+static struct parisc_driver lan_driver __refdata = {
- 	.name		= "lasi_82596",
- 	.id_table	= lan_tbl,
- 	.probe		= lan_init_chip,
--	.remove         = lan_remove_chip,
-+	.remove         = __exit_p(lan_remove_chip),
+-static struct parisc_driver zalon_driver = {
++static struct parisc_driver zalon_driver __refdata = {
+ 	.name =		"zalon",
+ 	.id_table =	zalon_tbl,
+ 	.probe =	zalon_probe,
+-	.remove =	zalon_remove,
++	.remove =	__exit_p(zalon_remove),
  };
  
- static int lasi_82596_init(void)
+ static int __init zalon7xx_init(void)
 -- 
 2.1.0
 
