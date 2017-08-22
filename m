@@ -1,61 +1,69 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: linux-next: manual merge of the akpm-current tree with the
- parisc-hd tree
-Date: Tue, 22 Aug 2017 16:53:18 +1000
-Message-ID: <20170822165318.77e3e0ca@canb.auug.org.au>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] fs/select: Fix kernel panic due to memory corruption in
+ compat_get_fd_set()
+Date: Tue, 22 Aug 2017 21:01:37 +0200
+Message-ID: <20170822190137.GA14164@p100.box>
+References: <E754A6C6-AA72-43F1-A799-E48A2146BF17@bell.net>
+ <887D24D5-832C-409A-83AF-646E4937E87E@bell.net>
+ <20170820183903.GA23618@ls3530.fritz.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rik van Riel <riel@redhat.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-        Helge Deller <deller@gmx.de>,
-        Parisc List <linux-parisc@vger.kernel.org>
-Return-path: <linux-next-owner@vger.kernel.org>
-List-ID: <linux-next.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
+        John David Anglin <dave.anglin@bell.net>,
+        linux-kernel@vger.kernel.org,
+        linux-parisc List <linux-parisc@vger.kernel.org>
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170820183903.GA23618@ls3530.fritz.box>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Andrew,
+Dave, can you test this patch?
+Helge
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+------
+[PATCH] Fix kernel panic due to memory corruption in compat_get_fd_set()
 
-  arch/parisc/include/uapi/asm/mman.h
+Dave faced this kernel crash in the select() compat syscall on the
+parisc architecture:
 
-between commit:
+ Kernel Fault: Code=26 (Data memory access rights trap) regs=00000002234b84e0 (Addr=0000000000000000)
+ CPU: 1 PID: 21167 Comm: polyimport Not tainted 4.13.0-rc5+ #1
+ task: 0000000223d74b50 task.stack: 00000002234b8000
+ IAOQ[0]: memset+0x68/0xd8
+ IAOQ[1]: memset+0x6c/0xd8
+ RP(r2): compat_get_fd_set+0x5c/0x78
+ Backtrace:
+ [<00000000402f316c>] compat_get_fd_set+0x5c/0x78
+ [<00000000402f3cac>] compat_core_sys_select+0x1cc/0x300
+ [<00000000402f52dc>] compat_SyS_select+0x144/0x1a0
+ [<0000000040155fe4>] syscall_exit+0x0/0x14
+ Kernel panic - not syncing: Kernel Fault
 
-  1c190151447d ("parisc: Add MADV_HWPOISON and MADV_SOFT_OFFLINE")
+It seems commit 464d62421cb8 ("select: switch compat_{get,put}_fd_set()
+to compat_{get,put}_bitmap()") broke the calculation on how many bytes
+need to be zeroed in case of fdset beeing NULL. This leads to memory
+overwrites and crashes.
 
-from the parisc-hd tree and commit:
+Fixes: 464d62421cb8 ("select: switch compat_{get,put}_fd_set() to compat_{get,put}_bitmap()"
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-fsdevel@vger.kernel.org
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-  115d20ededaf ("mm,fork: introduce MADV_WIPEONFORK")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
--- 
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/parisc/include/uapi/asm/mman.h
-index 9a9c2fe4be50,f6eec376e5fa..000000000000
---- a/arch/parisc/include/uapi/asm/mman.h
-+++ b/arch/parisc/include/uapi/asm/mman.h
-@@@ -57,9 -60,9 +57,12 @@@
-  					   overrides the coredump filter bits */
-  #define MADV_DODUMP	70		/* Clear the MADV_NODUMP flag */
-  
-+ #define MADV_WIPEONFORK 71		/* Zero memory on fork, child only */
-+ #define MADV_KEEPONFORK 72		/* Undo MADV_WIPEONFORK */
-+ 
- +#define MADV_HWPOISON     100		/* poison a page for testing */
- +#define MADV_SOFT_OFFLINE 101		/* soft offline page for testing */
- +
-  /* compatibility flags */
-  #define MAP_FILE	0
-  #define MAP_VARIABLE	0
+diff --git a/fs/select.c b/fs/select.c
+index 9d5f15e..c6362e3 100644
+--- a/fs/select.c
++++ b/fs/select.c
+@@ -1164,11 +1164,7 @@ int compat_get_fd_set(unsigned long nr, compat_ulong_t __user *ufdset,
+ 	if (ufdset) {
+ 		return compat_get_bitmap(fdset, ufdset, nr);
+ 	} else {
+-		/* Tricky, must clear full unsigned long in the
+-		 * kernel fdset at the end, ALIGN makes sure that
+-		 * actually happens.
+-		 */
+-		memset(fdset, 0, ALIGN(nr, BITS_PER_LONG));
++		zero_fd_set(nr, fdset);
+ 		return 0;
+ 	}
+ }
