@@ -1,64 +1,42 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH v2] fs/select: Fix memory corruption in compat_get_fd_set()
-Date: Wed, 23 Aug 2017 22:37:00 +0200
-Message-ID: <20170823203700.GA29614@ls3530.fritz.box>
+From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Subject: Re: [PATCH] printk-formats.txt: Add examples for %pS and %pF
+Date: Thu, 24 Aug 2017 09:41:03 +0900
+Message-ID: <20170824004103.GA3569@jagdpanzerIV.localdomain>
+References: <20170810173533.GA11600@ls3530.fritz.box>
+ <20170811001521.GA520@jagdpanzerIV.localdomain>
+ <47718712-9eb2-8ad7-965e-d0971d07e985@gmx.de>
+ <20170815113625.GA2738@pathway.suse.cz>
+ <d5fda170-e95b-024e-59ad-650b4db78ba6@gmx.de>
+ <20170823144824.GE27895@pathway.suse.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave.anglin@bell.net>,
-        linux-parisc@vger.kernel.org
-To: Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org
-Return-path: <linux-fsdevel-owner@vger.kernel.org>
-List-ID: <linux-fsdevel.vger.kernel.org>
+Cc: Helge Deller <deller@gmx.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Petr Mladek <pmladek@suse.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20170823144824.GE27895@pathway.suse.cz>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Commit 464d62421cb8 ("select: switch compat_{get,put}_fd_set() to
-compat_{get,put}_bitmap()") changed the calculation on how many bytes
-need to be zeroed when userspace handed over a NULL pointer for a
-fdset array in the select syscall.
+On (08/23/17 16:48), Petr Mladek wrote:
+[..]
+> Sometimes people seems unclear when to use the %pS or %pF printk format.
+> For example, see commit 51d96dc2e2dc ("random: fix warning message on ia64
+> and parisc") which fixed such a wrong format string.
+> 
+> The documentation should be more clear about the difference.
+> Also examples might help to avoid some typical mistakes.
+> 
+> Signed-off-by: Helge Deller <deller@gmx.de>
+> [pmladek@suse.com: Restructure the entire section]
+> Signed-off-by: Petr Mladek <pmladek@suse.com>
 
-The calculation was changed in compat_get_fd_set() wrongly from
-	memset(fdset, 0, ((nr + 1) & ~1)*sizeof(compat_ulong_t));
-to
-	memset(fdset, 0, ALIGN(nr, BITS_PER_LONG));
+looks great.
 
-The ALIGN(nr, BITS_PER_LONG) calculates the number of bits which
-need to be zeroed in the target fdset array (rounded up to the next
-full bits for an unsigned long).
-But the memset() call expects the number of bytes to be zeroed.
+FWIW,
+Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 
-This leads to clearing more memory than wanted (on the stack area or
-even at kmalloc()ed memory areas) and to random kernel crashes as we
-have seen them on the parisc platform.
-
-The correct change should have been
-	memset(fdset, 0, (ALIGN(nr, BITS_PER_LONG) / BITS_PER_LONG) * BYTES_PER_LONG);
-which is the same as can be archieved with a call to
-	zero_fd_set(nr, fdset).
-
-Fixes: 464d62421cb8 ("select: switch compat_{get,put}_fd_set() to compat_{get,put}_bitmap()"
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Helge Deller <deller@gmx.de>
----
-Changes between v1 and v2 of the patch:
-- Rephrased description of the problem
-
-diff --git a/fs/select.c b/fs/select.c
-index 9d5f15e..c6362e3 100644
---- a/fs/select.c
-+++ b/fs/select.c
-@@ -1164,11 +1164,7 @@ int compat_get_fd_set(unsigned long nr, compat_ulong_t __user *ufdset,
- 	if (ufdset) {
- 		return compat_get_bitmap(fdset, ufdset, nr);
- 	} else {
--		/* Tricky, must clear full unsigned long in the
--		 * kernel fdset at the end, ALIGN makes sure that
--		 * actually happens.
--		 */
--		memset(fdset, 0, ALIGN(nr, BITS_PER_LONG));
-+		zero_fd_set(nr, fdset);
- 		return 0;
- 	}
- }
+	-ss
