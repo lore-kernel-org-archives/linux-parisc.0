@@ -1,67 +1,19 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 1/1] futex: remove duplicated code and fix UB
-Date: Fri, 25 Aug 2017 22:43:41 +0200 (CEST)
-Message-ID: <alpine.DEB.2.20.1708252243020.2124@nanos>
-References: <20170824073105.3901-1-jslaby@suse.cz>
- <20170824094756.GA6346@arm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>,
- linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, peterz@infradead.org,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Max Filippov <jcmvbkbc@gmail.com>, Paul Mackerras <paulus@samba.org>,
- "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
- Jiri Slaby <jslaby@suse.cz>, Jonas Bonn <jonas@southpole.se>,
- linux-s390@vger.kernel.org, linux-arch@vger.kernel.org,
- Yoshinori Sato <ysato@users.sourceforge.jp>, linux-hexagon@vger.kernel.org,
- Helge Deller <deller@gmx.de>, x86@kernel.org,
- "James E.J. Bottomley" <jejb@parisc-linux.org>, mingo@redhat.com,
- Catalin Marinas <catalin.marinas@arm.com>, dvhart@infradead.org,
- Matt Turner <mattst88@gmail.com>, linux-snps-arc@lists.infradead.org,
- Fenghua Yu <fenghua.yu@intel.com>, Arnd Bergmann <arnd@arndb.de>,
- linux-xtensa@linux-xtensa.org,
- Stefan Kristiansson <stefan
-To: Will Deacon <will.deacon@arm.com>
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170824094756.GA6346@arm.com>
-List-Id: <linux-arm-kernel.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+From: Christoph Hellwig <hch@lst.de>
+Subject: remove dma_alloc_noncoherent V2
+Date: Sat, 26 Aug 2017 09:21:21 +0200
+Message-ID: <20170826072125.9790-1-hch@lst.de>
+Cc: "David S. Miller" <davem@davemloft.net>,
+        Ralf Baechle <ralf@linux-mips.org>, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: netdev@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 24 Aug 2017, Will Deacon wrote:
-> On Thu, Aug 24, 2017 at 09:31:05AM +0200, Jiri Slaby wrote:
-> > +static int futex_atomic_op_inuser(unsigned int encoded_op, u32 __user *uaddr)
-> > +{
-> > +	unsigned int op =	  (encoded_op & 0x70000000) >> 28;
-> > +	unsigned int cmp =	  (encoded_op & 0x0f000000) >> 24;
-> > +	int oparg = sign_extend32((encoded_op & 0x00fff000) >> 12, 12);
-> > +	int cmparg = sign_extend32(encoded_op & 0x00000fff, 12);
-> > +	int oldval, ret;
-> > +
-> > +	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28)) {
-> > +		if (oparg < 0 || oparg > 31)
-> > +			return -EINVAL;
-> > +		oparg = 1 << oparg;
-> > +	}
-> > +
-> > +	if (!access_ok(VERIFY_WRITE, uaddr, sizeof(u32)))
-> > +		return -EFAULT;
-> > +
-> > +	ret = arch_futex_atomic_op_inuser(op, oparg, &oldval, uaddr);
-> > +	if (ret)
-> > +		return ret;
-> 
-> We could move the pagefault_{disable,enable} calls here, and then remove
-> them from the futex_atomic_op_inuser callsites elsewhere in futex.c
+For many years we've had the dma_alloc_attrs API that is more flexible
+than dma_alloc_noncoherent.  This series moves the remaining users over
+to the attrs API.
 
-Correct, but we can do that after getting this in.
-
-Thanks,
-
-	tglx
+After half of the series went in for the last merge window I'd really
+like to merge the remainer.  Any chance to get some ACKs/reviews for
+the net drivers?
