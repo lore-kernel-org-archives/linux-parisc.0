@@ -1,68 +1,25 @@
-From: "Kirill A. Shutemov" <kirill@shutemov.name>
-Subject: Re: [PATCH v6 3/5] mm: introduce mmap3 for safely defining new mmap
- flags
-Date: Sun, 27 Aug 2017 02:56:09 +0300
-Message-ID: <20170826235609.xwdah3raqlqdp3xx@node.shutemov.name>
-References: <20170825130011.GA30072@infradead.org>
- <20170825155803.4km7wttzadfqw2vb@node.shutemov.name>
- <20170825160236.GA2561@infradead.org>
- <20170825161607.6v6beg4zjktllt2z@node.shutemov.name>
- <4de21e8d-5e10-ec40-c731-0c079953cf48@gmx.de>
- <CAPcyv4jeZc8P+E0aHNChzy-wfNpOx3GehKck1nXqJ1b9JdydFA@mail.gmail.com>
- <20170826074047.GA6292@ls3530.fritz.box>
- <CAPcyv4ic0zxQzWEipZ=1LpDC8VnmphGzVSYmrFcjOAgX7esfUw@mail.gmail.com>
- <35692b04-eb4f-740c-e35c-8ccbf69e0e97@gmx.de>
- <CAPcyv4i0+3Smg9bfynKa150y7qvQ-WVRBHyCrK=R1b4oVj3URA@mail.gmail.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH 1/4] sgiseeq: switch to dma_alloc_attrs
+Date: Mon, 28 Aug 2017 15:41:51 -0700 (PDT)
+Message-ID: <20170828.154151.502026172655565151.davem@davemloft.net>
+References: <20170826072125.9790-1-hch@lst.de>
+        <20170826072125.9790-2-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>, Christoph Hellwig <hch@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
-	Arnd Bergmann <arnd@arndb.de>,
-	"linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-	Linux API <linux-api@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	linux-xfs@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	linux-parisc@vger.kernel.org
-To: Dan Williams <dan.j.williams@intel.com>
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <CAPcyv4i0+3Smg9bfynKa150y7qvQ-WVRBHyCrK=R1b4oVj3URA@mail.gmail.com>
-List-ID: <linux-mm.kvack.org>
+Content-Type: Text/Plain; charset=us-ascii
+Cc: netdev@vger.kernel.org, ralf@linux-mips.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To: hch@lst.de
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20170826072125.9790-2-hch@lst.de>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Aug 26, 2017 at 03:46:22PM -0700, Dan Williams wrote:
-> On Sat, Aug 26, 2017 at 12:50 PM, Helge Deller <deller@gmx.de> wrote:
-> > On 26.08.2017 17:15, Dan Williams wrote:
-> [..]
-> >> I have not seen any patches for parisc pmem+dax enabling so it seems
-> >> too early to worry about these "last mile" enabling features of
-> >> MAP_DIRECT and MAP_SYNC. In particular parisc doesn't appear to have
-> >> ARCH_ENABLE_MEMORY_HOTPLUG, so as far as I can see it can't yet
-> >> support the ZONE_DEVICE scheme that is a pre-requisite for MAP_DIRECT.
-> >
-> > I see, but then it's probably best to not to define any MAP_DIRECT or
-> > MAP_SYNC at all in the headers of those arches which don't support
-> > pmem+dax (parisc, m68k, alpha, and probably quite some others).
-> > That way applications can detect at configure time if the platform
-> > supports that, and can leave out the functionality completely.
+From: Christoph Hellwig <hch@lst.de>
+Date: Sat, 26 Aug 2017 09:21:22 +0200
+
+> Use dma_alloc_attrs directly instead of the dma_alloc_noncoherent wrapper.
 > 
-> Yes, that's a good idea we can handle this similar to
-> CONFIG_MMAP_ALLOW_UNINITIALIZED. These patches will also modify
-> 'struct file_operations' so that do_mmap() can validate whether a flag
-> is supported on per architecture basis. Also the plan is to plumb the
-> flags passed to the syscall all the way down to the individual mmap
-> implementations. The ext4 and xfs ->mmap() operations will be able to
-> return -EOPNOTSUP based on runtime variables.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-BTW, we may be able to reuse the bit used for MAP_UNINITIALIZED -- it's
-only used on !MMU machines.
-
--- 
- Kirill A. Shutemov
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+Acked-by: David S. Miller <davem@davemloft.net>
