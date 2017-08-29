@@ -1,56 +1,41 @@
-From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3 0/3] Define CPU_BIG_ENDIAN or warn for inconsistencies
-Date: Tue, 29 Aug 2017 08:30:15 +0200
-Message-ID: <20170829063015.GA12198@kroah.com>
-References: <1499358861-179979-1-git-send-email-babu.moger@oracle.com>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: linux-next: manual merge of the tty tree with the parisc-hd tree
+Date: Tue, 29 Aug 2017 16:35:13 +1000
+Message-ID: <20170829163513.4b119a91@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: ysato@users.sourceforge.jp, geert@linux-m68k.org,
-        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
-        shorne@gmail.com, jejb@parisc-linux.org, deller@gmx.de,
-        davem@davemloft.net, viro@zeniv.linux.org.uk, monstr@monstr.eu,
-        mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com,
-        jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org
-To: Babu Moger <babu.moger@oracle.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1499358861-179979-1-git-send-email-babu.moger@oracle.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arvind Yadav <arvind.yadav.cs@gmail.com>
+To: Greg KH <greg@kroah.com>, Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>
+Return-path: <linux-next-owner@vger.kernel.org>
+List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Jul 06, 2017 at 09:34:18AM -0700, Babu Moger wrote:
-> Resending the series per Greg KH's request.
-> 
-> Found this problem while enabling queued rwlock on SPARC.
-> The parameter CONFIG_CPU_BIG_ENDIAN is used to clear the
-> specific byte in qrwlock structure. Without this parameter,
-> we clear the wrong byte.
-> Here is the code in include/asm-generic/qrwlock.h
-> 
-> static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
->   {
->          return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
->   }
-> 
-> Also found few more references of this parameter in
-> drivers/of/base.c
-> drivers/of/fdt.c
-> drivers/tty/serial/earlycon.c
-> drivers/tty/serial/serial_core.c
-> 
-> Here is our previous discussion.
-> https://lkml.org/lkml/2017/5/24/620
-> 
-> Based on the discussion, it was decided to add CONFIG_CPU_BIG_ENDIAN
-> for all the fixed big endian architecture(frv, h8300, m68k, openrisc,
-> parisc and sparc). And warn if there are inconsistencies in this definition.
+Hi Greg,
 
-Did this series ever get picked up by anyone?  I don't know whose tree
-it should go through if not, anyone have any ideas?  I guess I could,
-but arch-specific stuff is odd...
+Today's linux-next merge of the tty tree got a conflict in:
 
-thanks,
+  drivers/tty/serial/8250/8250_gsc.c
 
-greg k-h
+between commit:
+
+  9e466f101e19 ("parisc/8250_gsc: Fix section mismatches")
+
+from the parisc-hd tree and commit:
+
+  0d474f7fad3b ("tty: 8250: constify parisc_device_id")
+
+from the tty tree.
+
+I fixed it up (the former is a superset of the latter) and can carry the
+fix as necessary. This is now fixed as far as linux-next is concerned,
+but any non trivial conflicts should be mentioned to your upstream
+maintainer when your tree is submitted for merging.  You may also want
+to consider cooperating with the maintainer of the conflicting tree to
+minimise any particularly complex conflicts.
+
+-- 
+Cheers,
+Stephen Rothwell
