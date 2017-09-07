@@ -1,59 +1,80 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- parisc-hd tree
-Date: Tue, 5 Sep 2017 16:58:47 +1000
-Message-ID: <20170905165847.19a7effa@canb.auug.org.au>
-References: <20170822165318.77e3e0ca@canb.auug.org.au>
-        <20170905103448.6dfb93eb@canb.auug.org.au>
-        <bd74906d-c4a2-5ea5-ae4c-dba4cc5ac77f@gmx.de>
+From: Kees Cook <keescook@chromium.org>
+Subject: [PATCH] net: tulip: Constify tulip_tbl
+Date: Thu, 7 Sep 2017 12:35:14 -0700
+Message-ID: <20170907193514.GA114400@beast>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rik van Riel <riel@redhat.com>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <bd74906d-c4a2-5ea5-ae4c-dba4cc5ac77f@gmx.de>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: "David S. Miller" <davem@davemloft.net>,
+        Jarod Wilson <jarod@redhat.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: netdev@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Helge,
+It looks like all users of tulip_tbl are reads, so mark this table
+as read-only.
 
-On Tue, 5 Sep 2017 08:09:01 +0200 Helge Deller <deller@gmx.de> wrote:
->
-> >> diff --cc arch/parisc/include/uapi/asm/mman.h
-> >> index 9a9c2fe4be50,f6eec376e5fa..000000000000
-> >> --- a/arch/parisc/include/uapi/asm/mman.h
-> >> +++ b/arch/parisc/include/uapi/asm/mman.h
-> >> @@@ -57,9 -60,9 +57,12 @@@
-> >>   					   overrides the coredump filter bits */
-> >>   #define MADV_DODUMP	70		/* Clear the MADV_NODUMP flag */
-> >>   
-> >> + #define MADV_WIPEONFORK 71		/* Zero memory on fork, child only */
-> >> + #define MADV_KEEPONFORK 72		/* Undo MADV_WIPEONFORK */
-> >> + 
-> >>  +#define MADV_HWPOISON     100		/* poison a page for testing */
-> >>  +#define MADV_SOFT_OFFLINE 101		/* soft offline page for testing */
-> >>  +
-> >>   /* compatibility flags */
-> >>   #define MAP_FILE	0
-> >>   #define MAP_VARIABLE	0  
-> > 
-> > Just a reminder that the above conflict still exists.  
-> 
-> Thanks Stephen!
-> 
-> @Andrew, I can push the addition of those two MADV_ constants to 
-> arch/parisc/include/uapi/asm/mman.h through the parisc git tree, 
-> if you drop this part from your patchset.
-> Otherwise, just let me know how you prefer to solve this merge conflict. 
+$ git grep tulip_tbl  # edited to avoid line-wraps...
+interrupt.c: iowrite32(tulip_tbl[tp->chip_id].valid_intrs, ...
+interrupt.c: iowrite32(tulip_tbl[tp->chip_id].valid_intrs&~RxPollInt, ...
+interrupt.c: iowrite32(tulip_tbl[tp->chip_id].valid_intrs, ...
+interrupt.c: iowrite32(tulip_tbl[tp->chip_id].valid_intrs | TimerInt,
+pnic.c:      iowrite32(tulip_tbl[tp->chip_id].valid_intrs, ioaddr + CSR7);
+tulip.h:     extern struct tulip_chip_table tulip_tbl[];
+tulip_core.c:struct tulip_chip_table tulip_tbl[] = {
+tulip_core.c:iowrite32(tulip_tbl[tp->chip_id].valid_intrs, ioaddr + CSR5);
+tulip_core.c:iowrite32(tulip_tbl[tp->chip_id].valid_intrs, ioaddr + CSR7);
+tulip_core.c:setup_timer(&tp->timer, tulip_tbl[tp->chip_id].media_timer,
+tulip_core.c:const char *chip_name = tulip_tbl[chip_idx].chip_name;
+tulip_core.c:if (pci_resource_len (pdev, 0) < tulip_tbl[chip_idx].io_size)
+tulip_core.c:ioaddr =  pci_iomap(..., tulip_tbl[chip_idx].io_size);
+tulip_core.c:tp->flags = tulip_tbl[chip_idx].flags;
+tulip_core.c:setup_timer(&tp->timer, tulip_tbl[tp->chip_id].media_timer,
+tulip_core.c:INIT_WORK(&tp->media_work, tulip_tbl[tp->chip_id].media_task);
 
-These simple conflicts are not really a problem (Linus is happy to cope
-with them).  I just send these messages out for consistency and
-openness.
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jarod Wilson <jarod@redhat.com>
+Cc: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: netdev@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/ethernet/dec/tulip/tulip.h      | 2 +-
+ drivers/net/ethernet/dec/tulip/tulip_core.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/dec/tulip/tulip.h b/drivers/net/ethernet/dec/tulip/tulip.h
+index 38431a155f09..06660dbc44b7 100644
+--- a/drivers/net/ethernet/dec/tulip/tulip.h
++++ b/drivers/net/ethernet/dec/tulip/tulip.h
+@@ -515,7 +515,7 @@ void comet_timer(unsigned long data);
+ extern int tulip_debug;
+ extern const char * const medianame[];
+ extern const char tulip_media_cap[];
+-extern struct tulip_chip_table tulip_tbl[];
++extern const struct tulip_chip_table tulip_tbl[];
+ void oom_timer(unsigned long data);
+ extern u8 t21040_csr13[];
+ 
+diff --git a/drivers/net/ethernet/dec/tulip/tulip_core.c b/drivers/net/ethernet/dec/tulip/tulip_core.c
+index 84394b43c0a1..851b6d1f5a42 100644
+--- a/drivers/net/ethernet/dec/tulip/tulip_core.c
++++ b/drivers/net/ethernet/dec/tulip/tulip_core.c
+@@ -138,7 +138,7 @@ static void tulip_timer(unsigned long data)
+  * It is indexed via the values in 'enum chips'
+  */
+ 
+-struct tulip_chip_table tulip_tbl[] = {
++const struct tulip_chip_table tulip_tbl[] = {
+   { }, /* placeholder for array, slot unused currently */
+   { }, /* placeholder for array, slot unused currently */
+ 
+-- 
+2.7.4
+
 
 -- 
-Cheers,
-Stephen Rothwell
+Kees Cook
+Pixel Security
