@@ -1,47 +1,59 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] net: tulip: Constify tulip_tbl
-Date: Fri, 08 Sep 2017 20:54:12 -0700 (PDT)
-Message-ID: <20170908.205412.2183497152163393093.davem@davemloft.net>
-References: <20170907193514.GA114400@beast>
+From: Meelis Roos <mroos@linux.ee>
+Subject: 4.14 git: massive linker failures: cannot reach anything
+Date: Mon, 11 Sep 2017 17:17:24 +0300 (EEST)
+Message-ID: <alpine.LRH.2.21.1709111713220.23935@math.ut.ee>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: netdev@vger.kernel.org, jarod@redhat.com, gustavo@embeddedor.com,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: keescook@chromium.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170907193514.GA114400@beast>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
-Date: Thu, 7 Sep 2017 12:35:14 -0700
+While compiling 4.13+git on all of my gentoo parisc machines, I get tons 
+of linking failures like below. 
 
-> It looks like all users of tulip_tbl are reads, so mark this table
-> as read-only.
-> 
-> $ git grep tulip_tbl  # edited to avoid line-wraps...
-> interrupt.c: iowrite32(tulip_tbl[tp->chip_id].valid_intrs, ...
-> interrupt.c: iowrite32(tulip_tbl[tp->chip_id].valid_intrs&~RxPollInt, ...
-> interrupt.c: iowrite32(tulip_tbl[tp->chip_id].valid_intrs, ...
-> interrupt.c: iowrite32(tulip_tbl[tp->chip_id].valid_intrs | TimerInt,
-> pnic.c:      iowrite32(tulip_tbl[tp->chip_id].valid_intrs, ioaddr + CSR7);
-> tulip.h:     extern struct tulip_chip_table tulip_tbl[];
-> tulip_core.c:struct tulip_chip_table tulip_tbl[] = {
-> tulip_core.c:iowrite32(tulip_tbl[tp->chip_id].valid_intrs, ioaddr + CSR5);
-> tulip_core.c:iowrite32(tulip_tbl[tp->chip_id].valid_intrs, ioaddr + CSR7);
-> tulip_core.c:setup_timer(&tp->timer, tulip_tbl[tp->chip_id].media_timer,
-> tulip_core.c:const char *chip_name = tulip_tbl[chip_idx].chip_name;
-> tulip_core.c:if (pci_resource_len (pdev, 0) < tulip_tbl[chip_idx].io_size)
-> tulip_core.c:ioaddr =  pci_iomap(..., tulip_tbl[chip_idx].io_size);
-> tulip_core.c:tp->flags = tulip_tbl[chip_idx].flags;
-> tulip_core.c:setup_timer(&tp->timer, tulip_tbl[tp->chip_id].media_timer,
-> tulip_core.c:INIT_WORK(&tp->media_work, tulip_tbl[tp->chip_id].media_task);
-> 
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jarod Wilson <jarod@redhat.com>
-> Cc: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-> Cc: netdev@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+$ ld -v
+GNU ld (Gentoo 2.26.1 p1.0) 2.26.1
 
-Applied.
+$ hppa64-linux-gcc -v
+Using built-in specs.
+COLLECT_GCC=/usr/hppa2.0-unknown-linux-gnu/hppa64-unknown-linux-gnu/gcc-bin/5.4.0/hppa64-unknown-linux-gnu-gcc
+COLLECT_LTO_WRAPPER=/usr/libexec/gcc/hppa64-unknown-linux-gnu/5.4.0/lto-wrapper
+Target: hppa64-unknown-linux-gnu
+Configured with: 
+/var/tmp/portage/sys-devel/kgcc64-5.4.0/work/gcc-5.4.0/configure 
+--host=hppa2.0-unknown-linux-gnu --target=hppa64-unknown-linux-gnu 
+--build=hppa2.0-unknown-linux-gnu --prefix=/usr 
+--bindir=/usr/hppa2.0-unknown-linux-gnu/hppa64-unknown-linux-gnu/gcc-bin/5.4.0 
+--includedir=/usr/lib/gcc/hppa64-unknown-linux-gnu/5.4.0/include 
+--datadir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/5.4.0 
+--mandir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/5.4.0/man 
+--infodir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/5.4.0/info 
+--with-gxx-include-dir=/usr/lib/gcc/hppa64-unknown-linux-gnu/5.4.0/include/g++-v5 
+--with-python-dir=/share/gcc-data/hppa64-unknown-linux-gnu/5.4.0/python 
+--enable-languages=c --enable-obsolete --enable-secureplt 
+--disable-werror --with-system-zlib --enable-nls 
+--without-included-gettext --enable-checking=release 
+--with-bugurl=https://bugs.gentoo.org/ --with-pkgversion='Gentoo 5.4.0 p1.0' 
+--enable-poison-system-directories --disable-shared 
+--disable-libatomic --disable-threads --without-headers 
+--disable-bootstrap --enable-__cxa_atexit --enable-clocale=gnu 
+--disable-multilib --disable-altivec --disable-fixed-point 
+--disable-libgcj --disable-libgomp --disable-libmudflap --disable-libssp 
+--disable-libquadmath --enable-lto --without-isl --disable-libsanitizer
+Thread model: single
+gcc version 5.4.0 (Gentoo 5.4.0 p1.0)
+
+hppa64-linux-ld: init/main.o(.text+0x160): cannot reach strreplace
+init/main.o: In function `initcall_blacklisted':(.text+0x160): relocation truncated to fit: R_PARISC_PCREL22F against symbol `strreplace' defined in .text.strreplace section in lib/string.o
+hppa64-linux-ld: init/main.o(.text+0x1a4): cannot reach strcmp
+init/main.o: In function `initcall_blacklisted':(.text+0x1a4): relocation truncated to fit: R_PARISC_PCREL22F against symbol `strcmp' defined in .text.strcmp section in lib/string.o
+hppa64-linux-ld: init/main.o(.text+0x22c): cannot reach __ubsan_handle_type_mismatch
+init/main.o: In function `initcall_blacklisted':(.text+0x22c): relocation truncated to fit: R_PARISC_PCREL22F against symbol `__ubsan_handle_type_mismatch' defined in .text.__ubsan_handle_type_mismatch section in lib/ubsan.o
+
+and so on for pages, more than my terminal scrollback provides.
+
+
+
+-- 
+Meelis Roos (mroos@linux.ee)
