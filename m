@@ -1,63 +1,42 @@
 From: John David Anglin <dave.anglin@bell.net>
 Subject: Re: 4.14 git: massive linker failures: cannot reach anything
-Date: Mon, 11 Sep 2017 10:24:52 -0400
-Message-ID: <bd823006-04ae-0af3-30fb-10989a9729cc@bell.net>
+Date: Mon, 11 Sep 2017 10:51:05 -0400
+Message-ID: <a1de44d2-0557-45d9-60cf-31c0570ffe88@bell.net>
 References: <alpine.LRH.2.21.1709111713220.23935@math.ut.ee>
+ <bd823006-04ae-0af3-30fb-10989a9729cc@bell.net>
+ <alpine.LRH.2.21.1709111730140.23935@math.ut.ee>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-To: Meelis Roos <mroos@linux.ee>, linux-parisc@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+To: Meelis Roos <mroos@linux.ee>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.21.1709111713220.23935@math.ut.ee>
+In-Reply-To: <alpine.LRH.2.21.1709111730140.23935@math.ut.ee>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2017-09-11 10:17 AM, Meelis Roos wrote:
-> While compiling 4.13+git on all of my gentoo parisc machines, I get tons
-> of linking failures like below.
+On 2017-09-11 10:45 AM, Meelis Roos wrote:
+>>> hppa64-linux-ld: init/main.o(.text+0x22c): cannot reach
+>>> __ubsan_handle_type_mismatch
+>>> init/main.o: In function `initcall_blacklisted':(.text+0x22c): relocation
+>>> truncated to fit: R_PARISC_PCREL22F against symbol
+>>> `__ubsan_handle_type_mismatch' defined in .text.__ubsan_handle_type_mismatch
+>>> section in lib/ubsan.o
+>>>
+>>> and so on for pages, more than my terminal scrollback provides.
+>> As far as gcc goes, you need to add -mlong-calls to avoid these errors.  I
+>> think there is a config option. The kernel is too big and some "b,l" branches
+>> can't reach their targets.
+> Thank you, yes, I found CONFIG_MLONGCALLS for that.
 >
-> $ ld -v
-> GNU ld (Gentoo 2.26.1 p1.0) 2.26.1
->
-> $ hppa64-linux-gcc -v
-> Using built-in specs.
-> COLLECT_GCC=/usr/hppa2.0-unknown-linux-gnu/hppa64-unknown-linux-gnu/gcc-bin/5.4.0/hppa64-unknown-linux-gnu-gcc
-> COLLECT_LTO_WRAPPER=/usr/libexec/gcc/hppa64-unknown-linux-gnu/5.4.0/lto-wrapper
-> Target: hppa64-unknown-linux-gnu
-> Configured with:
-> /var/tmp/portage/sys-devel/kgcc64-5.4.0/work/gcc-5.4.0/configure
-> --host=hppa2.0-unknown-linux-gnu --target=hppa64-unknown-linux-gnu
-> --build=hppa2.0-unknown-linux-gnu --prefix=/usr
-> --bindir=/usr/hppa2.0-unknown-linux-gnu/hppa64-unknown-linux-gnu/gcc-bin/5.4.0
-> --includedir=/usr/lib/gcc/hppa64-unknown-linux-gnu/5.4.0/include
-> --datadir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/5.4.0
-> --mandir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/5.4.0/man
-> --infodir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/5.4.0/info
-> --with-gxx-include-dir=/usr/lib/gcc/hppa64-unknown-linux-gnu/5.4.0/include/g++-v5
-> --with-python-dir=/share/gcc-data/hppa64-unknown-linux-gnu/5.4.0/python
-> --enable-languages=c --enable-obsolete --enable-secureplt
-> --disable-werror --with-system-zlib --enable-nls
-> --without-included-gettext --enable-checking=release
-> --with-bugurl=https://bugs.gentoo.org/ --with-pkgversion='Gentoo 5.4.0 p1.0'
-> --enable-poison-system-directories --disable-shared
-> --disable-libatomic --disable-threads --without-headers
-> --disable-bootstrap --enable-__cxa_atexit --enable-clocale=gnu
-> --disable-multilib --disable-altivec --disable-fixed-point
-> --disable-libgcj --disable-libgomp --disable-libmudflap --disable-libssp
-> --disable-libquadmath --enable-lto --without-isl --disable-libsanitizer
-> Thread model: single
-> gcc version 5.4.0 (Gentoo 5.4.0 p1.0)
->
-> hppa64-linux-ld: init/main.o(.text+0x160): cannot reach strreplace
-> init/main.o: In function `initcall_blacklisted':(.text+0x160): relocation truncated to fit: R_PARISC_PCREL22F against symbol `strreplace' defined in .text.strreplace section in lib/string.o
-> hppa64-linux-ld: init/main.o(.text+0x1a4): cannot reach strcmp
-> init/main.o: In function `initcall_blacklisted':(.text+0x1a4): relocation truncated to fit: R_PARISC_PCREL22F against symbol `strcmp' defined in .text.strcmp section in lib/string.o
-> hppa64-linux-ld: init/main.o(.text+0x22c): cannot reach __ubsan_handle_type_mismatch
-> init/main.o: In function `initcall_blacklisted':(.text+0x22c): relocation truncated to fit: R_PARISC_PCREL22F against symbol `__ubsan_handle_type_mismatch' defined in .text.__ubsan_handle_type_mismatch section in lib/ubsan.o
->
-> and so on for pages, more than my terminal scrollback provides.
-As far as gcc goes, you need to add -mlong-calls to avoid these errors.  
-I think there is a config option. The kernel is too big and some "b,l" 
-branches can't reach their targets.
+> However, the next strange thing is why did custom kernels of multiple
+> different machines grew so much (A500 UP and RP3440 SMP kernels)? My
+> kernel configs are quite minimalistic anyway, except I include
+> everything needed for booting (no dependenc on initramfs, so sd, scsi
+> driver and ext4 are in). Perhaps a binary format or two, PDC stable
+> storage and anothe IO schaduler too, and some kernel debugging options
+> like UBSAN.
+UBSAN is huge.  Helge knows more about it.  I would only use it for test 
+kernels.
 
 Dave
 
