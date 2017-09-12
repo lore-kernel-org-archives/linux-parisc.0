@@ -1,51 +1,93 @@
-From: Meelis Roos <mroos@linux.ee>
-Subject: Re: fs/select.c:991:1: warning: the frame size of 1032 bytes is
- larger than 1024 bytes
-Date: Mon, 11 Sep 2017 23:16:37 +0300 (EEST)
-Message-ID: <alpine.LRH.2.21.1709112315350.7844@math.ut.ee>
-References: <alpine.LRH.2.21.1709111719310.23935@math.ut.ee> <20170911194143.GA17131@ls3530.fritz.box>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: [patch V2 03/29] lockup_detector: Provide interface to stop from
+ poweroff()
+Date: Tue, 12 Sep 2017 21:36:57 +0200
+Message-ID: <20170912194146.327343752@linutronix.de>
+References: <20170912193654.321505854@linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org,
-        Linux Kernel list <linux-kernel@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170911194143.GA17131@ls3530.fritz.box>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-15
+Cc: Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Don Zickus <dzickus@redhat.com>,
+        Chris Metcalf <cmetcalf@mellanox.com>,
+        Ulrich Obergfell <uobergfe@redhat.com>,
+        linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>
+To: LKML <linux-kernel@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> Meelis, this patch should fix both issues.
-> Can you test?
+PARISC has a a busy looping power off routine. If the watchdog is enabled
+the watchdog timer will still fire, but the thread is not running, which
+causes the softlockup watchdog to trigger.
 
-At least one of the warnings is still there - but I am on a 64-bit 
-kernel on RP3440, RP3410 and A500 where I saw this.
-> 
-> Helge
-> 
-> [PATCH] parisc: Fix too large frame size warnings
-> 
-> The parisc architecture requires larger stack frames than most other
-> architectures on 32-bit kernels.
-> Increase the default to 1280 bytes for parisc to avoid warnings in
-> do_sys_poll() and pat_memconfig() functions.
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index b19c491cbc4e..2689b7c50c52 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -219,7 +219,8 @@ config FRAME_WARN
->  	range 0 8192
->  	default 0 if KASAN
->  	default 2048 if GCC_PLUGIN_LATENT_ENTROPY
-> -	default 1024 if !64BIT
-> +	default 1280 if (!64BIT && PARISC)
-> +	default 1024 if (!64BIT && !PARISC)
->  	default 2048 if 64BIT
->  	help
->  	  Tell gcc to warn at build time for stack frames larger than this.
-> 
+Provide a interface which allows to turn the watchdog off.
 
--- 
-Meelis Roos (mroos@linux.ee)
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Don Zickus <dzickus@redhat.com>
+Cc: Chris Metcalf <cmetcalf@mellanox.com>
+Cc: linux-parisc@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sebastian Siewior <bigeasy@linutronix.de>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Ulrich Obergfell <uobergfe@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Helge Deller <deller@gmx.de>
+Link: http://lkml.kernel.org/r/20170831073053.202164272@linutronix.de
+
+---
+ include/linux/nmi.h |    6 +++---
+ kernel/watchdog.c   |   14 +++++++++++++-
+ 2 files changed, 16 insertions(+), 4 deletions(-)
+
+--- a/include/linux/nmi.h
++++ b/include/linux/nmi.h
+@@ -12,10 +12,10 @@
+ 
+ #ifdef CONFIG_LOCKUP_DETECTOR
+ void lockup_detector_init(void);
++void lockup_detector_soft_poweroff(void);
+ #else
+-static inline void lockup_detector_init(void)
+-{
+-}
++static inline void lockup_detector_init(void) { }
++static inline void lockup_detector_soft_poweroff(void) { }
+ #endif
+ 
+ #ifdef CONFIG_SOFTLOCKUP_DETECTOR
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -333,7 +333,8 @@ static enum hrtimer_restart watchdog_tim
+ 	int duration;
+ 	int softlockup_all_cpu_backtrace = sysctl_softlockup_all_cpu_backtrace;
+ 
+-	if (atomic_read(&watchdog_park_in_progress) != 0)
++	if (!watchdog_enabled ||
++	    atomic_read(&watchdog_park_in_progress) != 0)
+ 		return HRTIMER_NORESTART;
+ 
+ 	/* kick the hardlockup detector */
+@@ -660,6 +661,17 @@ static void set_sample_period(void)
+ }
+ #endif /* SOFTLOCKUP */
+ 
++/**
++ * lockup_detector_soft_poweroff - Interface to stop lockup detector(s)
++ *
++ * Special interface for parisc. It prevents lockup detector warnings from
++ * the default pm_poweroff() function which busy loops forever.
++ */
++void lockup_detector_soft_poweroff(void)
++{
++	watchdog_enabled = 0;
++}
++
+ /*
+  * Suspend the hard and soft lockup detector by parking the watchdog threads.
+  */
