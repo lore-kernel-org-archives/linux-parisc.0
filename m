@@ -1,83 +1,103 @@
-From: "Luck, Tony" <tony.luck@intel.com>
-Subject: Re: [PATCH 0/5] [RFC] printk/ia64/ppc64/parisc64: let's deprecate
- %pF/%pf printk specifiers
-Date: Mon, 18 Sep 2017 10:44:32 -0700
-Message-ID: <20170918174432.4fksyzco2g6gczwe@intel.com>
-References: <20170916035347.19705-1-sergey.senozhatsky@gmail.com>
+From: Michal Simek <monstr@monstr.eu>
+Subject: Re: [PATCH 2/2] arch: change default endian for microblaze
+Date: Mon, 18 Sep 2017 19:49:12 +0200
+Message-ID: <cf4bd066-b349-070a-ddf9-d6ae02f44cd7@monstr.eu>
+References: <1505753609-602923-1-git-send-email-babu.moger@oracle.com>
+ <1505753609-602923-3-git-send-email-babu.moger@oracle.com>
+Reply-To: monstr@monstr.eu
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Fenghua Yu <fenghua.yu@intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "James E . J . Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-To: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20170916035347.19705-1-sergey.senozhatsky@gmail.com>
-List-ID: <linux-ia64.vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="w8wI5jvOXsju10d8xtnE5mcxrOGavl9pn"
+Cc: sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+To: Babu Moger <babu.moger@oracle.com>, jejb@parisc-linux.org,
+        deller@gmx.de, davem@davemloft.net, akpm@linux-foundation.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1505753609-602923-3-git-send-email-babu.moger@oracle.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat, Sep 16, 2017 at 12:53:42PM +0900, Sergey Senozhatsky wrote:
-> 	Hello
-> 
-> 	RFC
-> 
-> 	On some arches C function pointers are indirect and point to
-> a function descriptor, which contains the actual pointer to the code.
-> This mostly doesn't matter, except for cases when people want to print
-> out function pointers in symbolic format, because the usual '%pS/%ps'
-> does not work on those arches as expected. That's the reason why we
-> have '%pF/%pf', but since it's here because of a subtle ABI detail
-> specific to some arches (ppc64/ia64/parisc64) it's easy to misuse
-> '%pF/%pf' and '%pS/%ps' (see [1], for example).
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--w8wI5jvOXsju10d8xtnE5mcxrOGavl9pn
+Content-Type: multipart/mixed; boundary="sD8A69GodVaAu8XsLbPmmeRUh846P96d9";
+ protected-headers="v1"
+From: Michal Simek <monstr@monstr.eu>
+Reply-To: monstr@monstr.eu
+To: Babu Moger <babu.moger@oracle.com>, jejb@parisc-linux.org, deller@gmx.de,
+ davem@davemloft.net, akpm@linux-foundation.org
+Cc: sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-parisc@vger.kernel.org
+Message-ID: <cf4bd066-b349-070a-ddf9-d6ae02f44cd7@monstr.eu>
+Subject: Re: [PATCH 2/2] arch: change default endian for microblaze
+References: <1505753609-602923-1-git-send-email-babu.moger@oracle.com>
+ <1505753609-602923-3-git-send-email-babu.moger@oracle.com>
+In-Reply-To: <1505753609-602923-3-git-send-email-babu.moger@oracle.com>
 
-A few new warnings when building on ia64:
+--sD8A69GodVaAu8XsLbPmmeRUh846P96d9
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-arch/ia64/kernel/module.c:931: warning: passing argument 1 of 'dereference_function_descriptor' makes pointer from integer without a cast
-arch/ia64/kernel/module.c:931: warning: return makes integer from pointer without a cast
-kernel/kallsyms.c:325: warning: assignment makes integer from pointer without a cast
-kernel/kallsyms.c:325: warning: passing argument 1 of 'dereference_kernel_function_descriptor' makes pointer from integer without a cast
+On 18.9.2017 18:53, Babu Moger wrote:
+> Fix the default for microblaze. Michal Simek mentioned default for
+> microblaze should be CPU_LITTLE_ENDIAN.
+>=20
+> Fixes : commit 206d3642d8ee ("arch/microblaze: add choice for endiannes=
+s
+> 	and update Makefile")
+>=20
+> Signed-off-by: Babu Moger <babu.moger@oracle.com>
+> Cc: Michal Simek <monstr@monstr.eu>
+> ---
+>  arch/microblaze/Kconfig |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+>=20
+> diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
+> index 9d26abd..4f798aa 100644
+> --- a/arch/microblaze/Kconfig
+> +++ b/arch/microblaze/Kconfig
+> @@ -39,7 +39,7 @@ config MICROBLAZE
+>  # Endianness selection
+>  choice
+>  	prompt "Endianness selection"
+> -	default CPU_BIG_ENDIAN
+> +	default CPU_LITTLE_ENDIAN
+>  	help
+>  	  microblaze architectures can be configured for either little or
+>  	  big endian formats. Be sure to select the appropriate mode.
+>=20
 
-Tried out the module case with a simple Hello-world test case.
-This code:
+Acked-by: Michal Simek <michal.simek@xilinx.com>
 
-char buf[1];
+If you want me to take this through my microblaze tree please let me know=
+=2E
 
-int init_module(void)
-{
-	printk(KERN_INFO "Hello world 1.\n");
+Thanks,
+Michal
 
-	printk("using %%p  my init_module is at %p\n", init_module);
-	printk("using %%pF my init_module is at %pF\n", init_module);
-	printk("using %%pS my init_module is at %pS\n", init_module);
-
-	printk("using %%p  my buf is at %p\n", buf);
-	printk("using %%pF my buf is at %pF\n", buf);
-	printk("using %%pS my buf is at %pS\n", buf);
-
-	return 0;
-}
-
-Gave this console output:
-
-Hello world 1.
-using %p  my init_module is at a000000203bf0328
-using %pF my init_module is at init_module+0x0/0x140 [hello_1]
-using %pS my init_module is at init_module+0x0/0x140 [hello_1]
-using %p  my buf is at a000000203bf0648
-using %pF my buf is at buf+0x0/0xfffffffffffffb58 [hello_1]
-using %pS my buf is at buf+0x0/0xfffffffffffffb58 [hello_1]
+--=20
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP SoCs
 
 
-Which looks like what you wanted. People unaware of the vagaries
-of ppc64/ia64/parisc64 can use the wrong %p[SF] variant, but still
-get the right output.
 
--Tony
+--sD8A69GodVaAu8XsLbPmmeRUh846P96d9--
+
+--w8wI5jvOXsju10d8xtnE5mcxrOGavl9pn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iEYEARECAAYFAlnAByUACgkQykllyylKDCFmMACfYDL1NnvIzjFQPopz2IPnYos9
+b+wAnAha9d+de0FJgE2kDYfyilSb7K44
+=anIL
+-----END PGP SIGNATURE-----
+
+--w8wI5jvOXsju10d8xtnE5mcxrOGavl9pn--
