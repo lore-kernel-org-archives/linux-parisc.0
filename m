@@ -1,56 +1,48 @@
-From: Babu Moger <babu.moger@oracle.com>
-Subject: Re: [PATCH 2/2] arch: change default endian for microblaze
-Date: Mon, 18 Sep 2017 13:05:45 -0500
-Message-ID: <e755625e-0b3a-4027-0754-4873fc8446b1@oracle.com>
-References: <1505753609-602923-1-git-send-email-babu.moger@oracle.com>
- <1505753609-602923-3-git-send-email-babu.moger@oracle.com>
- <cf4bd066-b349-070a-ddf9-d6ae02f44cd7@monstr.eu>
+From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Subject: Re: [PATCH 0/5] [RFC] printk/ia64/ppc64/parisc64: let's deprecate
+ %pF/%pf printk specifiers
+Date: Tue, 19 Sep 2017 11:08:13 +0900
+Message-ID: <20170919020812.GB16991@jagdpanzerIV.localdomain>
+References: <20170916035347.19705-1-sergey.senozhatsky@gmail.com>
+ <20170918174432.4fksyzco2g6gczwe@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-To: monstr@monstr.eu, jejb@parisc-linux.org, deller@gmx.de,
-        davem@davemloft.net, akpm@linux-foundation.org
-Return-path: <sparclinux-owner@vger.kernel.org>
-In-Reply-To: <cf4bd066-b349-070a-ddf9-d6ae02f44cd7@monstr.eu>
-List-ID: <sparclinux.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "James E . J . Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: "Luck, Tony" <tony.luck@intel.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20170918174432.4fksyzco2g6gczwe@intel.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On (09/18/17 10:44), Luck, Tony wrote:
+[..]
+> 
+> A few new warnings when building on ia64:
+> 
+> arch/ia64/kernel/module.c:931: warning: passing argument 1 of 'dereference_function_descriptor' makes pointer from integer without a cast
+> arch/ia64/kernel/module.c:931: warning: return makes integer from pointer without a cast
+> kernel/kallsyms.c:325: warning: assignment makes integer from pointer without a cast
+> kernel/kallsyms.c:325: warning: passing argument 1 of 'dereference_kernel_function_descriptor' makes pointer from integer without a cast
 
-On 9/18/2017 12:49 PM, Michal Simek wrote:
-> On 18.9.2017 18:53, Babu Moger wrote:
->> Fix the default for microblaze. Michal Simek mentioned default for
->> microblaze should be CPU_LITTLE_ENDIAN.
->>
->> Fixes : commit 206d3642d8ee ("arch/microblaze: add choice for endianness
->> 	and update Makefile")
->>
->> Signed-off-by: Babu Moger <babu.moger@oracle.com>
->> Cc: Michal Simek <monstr@monstr.eu>
->> ---
->>   arch/microblaze/Kconfig |    2 +-
->>   1 files changed, 1 insertions(+), 1 deletions(-)
->>
->> diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
->> index 9d26abd..4f798aa 100644
->> --- a/arch/microblaze/Kconfig
->> +++ b/arch/microblaze/Kconfig
->> @@ -39,7 +39,7 @@ config MICROBLAZE
->>   # Endianness selection
->>   choice
->>   	prompt "Endianness selection"
->> -	default CPU_BIG_ENDIAN
->> +	default CPU_LITTLE_ENDIAN
->>   	help
->>   	  microblaze architectures can be configured for either little or
->>   	  big endian formats. Be sure to select the appropriate mode.
->>
-> Acked-by: Michal Simek <michal.simek@xilinx.com>
-Thanks.
-> If you want me to take this through my microblaze tree please let me know.
-Sure. Thanks
->
-> Thanks,
-> Michal
->
+got it, will address in v2.
 
+[..]
+> Which looks like what you wanted. People unaware of the vagaries
+> of ppc64/ia64/parisc64 can use the wrong %p[SF] variant, but still
+> get the right output.
+
+thanks!
+
+	-ss
