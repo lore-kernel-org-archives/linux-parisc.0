@@ -1,7 +1,8 @@
 From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: [RFC][PATCH v2 0/7] printk/ia64/ppc64/parisc64: let's deprecate %pF/%pf printk specifiers
-Date: Thu, 21 Sep 2017 01:29:02 +0900
-Message-ID: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
+Subject: [RFC][PATCH v2 2/7] sections: split dereference_function_descriptor()
+Date: Thu, 21 Sep 2017 01:29:04 +0900
+Message-ID: <20170920162910.32053-3-sergey.senozhatsky@gmail.com>
+References: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
 Cc: Petr Mladek <pmladek@suse.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -16,105 +17,127 @@ To: Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         James Bottomley <jejb@parisc-linux.org>,
         Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-        Hello
+There are two format specifiers to print out a pointer in symbolic
+format: '%pS/%ps' and '%pF/%pf'. On most architectures, the two
+mean exactly the same thing, but some architectures (ia64, ppc64,
+parisc64) use an indirect pointer for C function pointers, where
+the function pointer points to a function descriptor (which in
+turn contains the actual pointer to the code). The '%pF/%pf, when
+used appropriately, automatically does the appropriate function
+descriptor dereference on such architectures.
 
-        RFC
+The "when used appropriately" part is tricky. Basically this is
+a subtle ABI detail, specific to some platforms, that made it to
+the API level and people can be unaware of it and miss the whole
+"we need to dereference the function" business out. [1] proves
+that point (note that it fixes only '%pF' and '%pS', there might
+be '%pf' and '%ps' cases as well).
 
-        On some arches C function pointers are indirect and point to
-a function descriptor, which contains the actual pointer to the code.
-This mostly doesn't matter, except for cases when people want to print
-out function pointers in symbolic format, because the usual '%pS/%ps'
-does not work on those arches as expected. That's the reason why we
-have '%pF/%pf', but since it's here because of a subtle ABI detail
-specific to some arches (ppc64/ia64/parisc64) it's easy to misuse
-'%pF/%pf' and '%pS/%ps' (see [1], for example).
+It appears that we can handle everything within the affected
+arches and make '%pS/%ps' smart enough to retire '%pF/%pf'.
+Function descriptors live in .opd elf section and all affected
+arches (ia64, ppc64, parisc64) handle it properly for kernel
+and modules. So we, technically, can decide if the dereference
+is needed by simply looking at the pointer: if it belongs to
+.opd section then we need to dereference it.
 
-        This patch set attempts to move ia64/ppc64/parisc64 C function
-pointer ABI details out of printk() to arch code. Function dereference
-code now checks if a pointer belongs to a .opd ELF section and dereferences
-that pointer only if it does. The kernel and modules have their own .opd
-sections that's why I use two different ARCH functions: for kernel and
-for module pointer dereference.
+The kernel and modules have their own .opd sections, obviously,
+that's why we need to split dereference_function_descriptor()
+and use separate kernel and module dereference arch callbacks.
 
-        I planned to remove dereference_function_descriptor() entirely,
-but then I discovered a bunch other uses cases (kgdbts, init/main.c,
-extable, etc.), so I decided to keep dereference_function_descriptor()
-around because the main point of this patch set is to deprecate %pF/%pf.
-But at the same time, I think I can go further and handle both kernel
-and module descriptor dereference in dereference_function_descriptor().
-We need a module pointer for module .opd check, so that will come at an
-extra cost of module lookup (may be there will some other issues along
-the way, haven't checked it).
+This patch does the first step, it
+a) adds dereference_kernel_function_descriptor() function.
+b) adds a weak alias to dereference_module_function_descriptor()
+   function.
 
-Right now we've got:
+So, for the time being, we will have:
+1) dereference_function_descriptor()
+   A generic function, that simply dereferences the pointer. There is
+   bunch of places that call it: kgdbts, init/main.c, extable, etc.
 
-- dereference_function_descriptor(addr)
-        a generic (old) function. it simply attempts to dereference
-        whatever pointer we give it.
+2) dereference_kernel_function_descriptor()
+   A function to call on kernel symbols that does kernel .opd section
+   address range test.
 
-- dereference_kernel_function_descriptor(addr)
-        dereferences a kernel pointer if it's within the kernel's .opd
-        section.
+3) dereference_module_function_descriptor()
+   A function to call on modules' symbols that does modules' .opd
+   section address range test.
 
-- dereference_module_function_descriptor(module, addr)
-        dereference a module pointer if it's within the module's .opd
-        section.
+[1] https://marc.info/?l=linux-kernel&m=150472969730573
 
+Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+---
+ include/asm-generic/sections.h | 8 ++++++--
+ include/linux/moduleloader.h   | 4 ++++
+ kernel/module.c                | 6 ++++++
+ 3 files changed, 16 insertions(+), 2 deletions(-)
 
-*** A BIG NOTE ***
-        I don't own ia64/ppc64/parisc64 hardware, so the patches are not
-        tested. Sorry about that!
-
-Another note:
-        I need to check what is BPF symbol lookup and do we need to
-        do any dereference there.
-
-v2:
--- convert dereference_function_descriptor() to unsigned long
--- fix kernel descriptor range checks (Helge)
--- fix parisc module descriptor range check (Helge)
--- fix ppc64 module range check
--- add checkpatch patch
-
-
-Sergey Senozhatsky (7):
-  switch dereference_function_descriptor() to `unsigned long'
-  sections: split dereference_function_descriptor()
-  ia64: Add .opd based function descriptor dereference
-  powerpc64: Add .opd based function descriptor dereference
-  parisc64: Add .opd based function descriptor dereference
-  symbol lookup: use new kernel and module dereference functions
-  checkpatch: add pF/pf deprecation warning
-
- Documentation/printk-formats.txt          | 15 +++++----------
- arch/ia64/include/asm/sections.h          | 16 ++++++++++++----
- arch/ia64/kernel/module.c                 | 13 +++++++++++++
- arch/ia64/kernel/vmlinux.lds.S            |  2 ++
- arch/parisc/boot/compressed/vmlinux.lds.S |  2 ++
- arch/parisc/include/asm/sections.h        |  4 +++-
- arch/parisc/kernel/module.c               | 17 +++++++++++++++++
- arch/parisc/kernel/process.c              | 15 ++++++++++++---
- arch/parisc/kernel/vmlinux.lds.S          |  2 ++
- arch/parisc/mm/init.c                     |  4 ++--
- arch/powerpc/include/asm/module.h         |  3 +++
- arch/powerpc/include/asm/sections.h       | 17 ++++++++++++++---
- arch/powerpc/kernel/module_64.c           | 16 ++++++++++++++++
- arch/powerpc/kernel/vmlinux.lds.S         |  2 ++
- drivers/misc/kgdbts.c                     |  2 +-
- include/asm-generic/sections.h            |  8 ++++++--
- include/linux/moduleloader.h              |  4 ++++
- init/main.c                               |  2 +-
- kernel/extable.c                          |  2 +-
- kernel/kallsyms.c                         |  1 +
- kernel/module.c                           |  9 ++++++++-
- lib/vsprintf.c                            |  5 +----
- scripts/checkpatch.pl                     |  6 ++++--
- 23 files changed, 132 insertions(+), 35 deletions(-)
-
+diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
+index e5da44eddd2f..387f22c41e0d 100644
+--- a/include/asm-generic/sections.h
++++ b/include/asm-generic/sections.h
+@@ -29,6 +29,7 @@
+  *	__ctors_start, __ctors_end
+  *	__irqentry_text_start, __irqentry_text_end
+  *	__softirqentry_text_start, __softirqentry_text_end
++ *	__start_opd, __end_opd
+  */
+ extern char _text[], _stext[], _etext[];
+ extern char _data[], _sdata[], _edata[];
+@@ -47,12 +48,15 @@ extern char __softirqentry_text_start[], __softirqentry_text_end[];
+ /* Start and end of .ctors section - used for constructor calls. */
+ extern char __ctors_start[], __ctors_end[];
+ 
++/* Start and end of .opd section - used for function descriptors. */
++extern char __start_opd[], __end_opd[];
++
+ extern __visible const void __nosave_begin, __nosave_end;
+ 
+-/* function descriptor handling (if any).  Override
+- * in asm/sections.h */
++/* Function descriptor handling (if any).  Override in asm/sections.h */
+ #ifndef dereference_function_descriptor
+ #define dereference_function_descriptor(p) (p)
++#define dereference_kernel_function_descriptor(p) (p)
+ #endif
+ 
+ /* random extra sections (if any).  Override
+diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+index 4d0cb9bba93e..172904e9cded 100644
+--- a/include/linux/moduleloader.h
++++ b/include/linux/moduleloader.h
+@@ -85,6 +85,10 @@ void module_arch_cleanup(struct module *mod);
+ /* Any cleanup before freeing mod->module_init */
+ void module_arch_freeing_init(struct module *mod);
+ 
++/* Dereference module function descriptor */
++unsigned long dereference_module_function_descriptor(struct module *mod,
++						     unsigned long addr);
++
+ #ifdef CONFIG_KASAN
+ #include <linux/kasan.h>
+ #define MODULE_ALIGN (PAGE_SIZE << KASAN_SHADOW_SCALE_SHIFT)
+diff --git a/kernel/module.c b/kernel/module.c
+index ea77ab13bead..b792e814150a 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2121,6 +2121,12 @@ void __weak module_arch_freeing_init(struct module *mod)
+ {
+ }
+ 
++unsigned long __weak dereference_module_function_descriptor(struct module *mod,
++							    unsigned long addr)
++{
++	return addr;
++}
++
+ /* Free a module, remove from lists, etc. */
+ static void free_module(struct module *mod)
+ {
 -- 
 2.14.1
-
