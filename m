@@ -1,7 +1,7 @@
 From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 Subject: [RFC][PATCH v2 7/7] checkpatch: add pF/pf deprecation warning
-Date: Thu, 21 Sep 2017 01:29:09 +0900
-Message-ID: <20170920162910.32053-8-sergey.senozhatsky@gmail.com>
+Date: Thu, 21 Sep 2017 01:29:10 +0900
+Message-ID: <20170920162910.32053-9-sergey.senozhatsky@gmail.com>
 References: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
 Cc: Petr Mladek <pmladek@suse.com>,
         Steven Rostedt <rostedt@goodmis.org>,
