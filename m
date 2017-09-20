@@ -1,7 +1,7 @@
 From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: [RFC][PATCH v2 4/7] powerpc64: Add .opd based function descriptor dereference
-Date: Thu, 21 Sep 2017 01:29:06 +0900
-Message-ID: <20170920162910.32053-5-sergey.senozhatsky@gmail.com>
+Subject: [RFC][PATCH v2 1/7] switch dereference_function_descriptor() to `unsigned long'
+Date: Thu, 21 Sep 2017 01:29:03 +0900
+Message-ID: <20170920162910.32053-2-sergey.senozhatsky@gmail.com>
 References: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
 Cc: Petr Mladek <pmladek@suse.com>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -17,119 +17,204 @@ To: Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         James Bottomley <jejb@parisc-linux.org>,
         Helge Deller <deller@gmx.de>
-Return-path: <linux-ia64-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
-List-ID: <linux-ia64.vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-We are moving towards separate kernel and module function descriptor
-dereference callbacks. This patch enables it for powerpc64.
+Convert dereference_function_descriptor() to accept and return
+`unsigned long'. There will be two new ARCH function for kernel
+and module function pointer dereference, which will work with
+`unsigned long', so the patch unifies interfaces.
 
-For pointers that belong to the kernel
--  Added __start_opd and __end_opd pointers, to track the kernel
-   .opd section address range;
+Besides, dereference_function_descriptor() mostly work with
+`unsigned long':
 
--  Added dereference_kernel_function_descriptor(). Now we
-   will dereference only function pointers that are within
-   [__start_opd, __end_opd];
+drivers/misc/kgdbts.c:
+addr = (unsigned long) dereference_function_descriptor((void *)addr);
 
-For pointers that belong to a module
--  Added dereference_module_function_descriptor() to handle module
-   function descriptor dereference. Now we will dereference only
-   pointers that are within [module->opd.start, module->opd.end].
+init/main.c:
+addr = (unsigned long) dereference_function_descriptor(fn);
+
+kernel/extable.c:
+addr = (unsigned long) dereference_function_descriptor(ptr);
+
+kernel/module.c:
+unsigned long a = (unsigned long)dereference_function_descriptor(addr);
+
+Convert dereference_function_descriptor() users tree-wide.
 
 Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 ---
- arch/powerpc/include/asm/module.h   |  3 +++
- arch/powerpc/include/asm/sections.h | 11 +++++++++++
- arch/powerpc/kernel/module_64.c     | 16 ++++++++++++++++
- arch/powerpc/kernel/vmlinux.lds.S   |  2 ++
- 4 files changed, 32 insertions(+)
+ arch/ia64/include/asm/sections.h    | 6 +++---
+ arch/parisc/include/asm/sections.h  | 2 +-
+ arch/parisc/kernel/process.c        | 6 +++---
+ arch/parisc/mm/init.c               | 4 ++--
+ arch/powerpc/include/asm/sections.h | 6 +++---
+ drivers/misc/kgdbts.c               | 2 +-
+ init/main.c                         | 2 +-
+ kernel/extable.c                    | 2 +-
+ kernel/module.c                     | 2 +-
+ lib/vsprintf.c                      | 2 +-
+ 10 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/module.h b/arch/powerpc/include/asm/module.h
-index 6c0132c7212f..7e28442827f1 100644
---- a/arch/powerpc/include/asm/module.h
-+++ b/arch/powerpc/include/asm/module.h
-@@ -45,6 +45,9 @@ struct mod_arch_specific {
- 	unsigned long tramp;
- #endif
+diff --git a/arch/ia64/include/asm/sections.h b/arch/ia64/include/asm/sections.h
+index 2ab2003698ef..de6bfa1ef8fb 100644
+--- a/arch/ia64/include/asm/sections.h
++++ b/arch/ia64/include/asm/sections.h
+@@ -27,13 +27,13 @@ extern char __start_unwind[], __end_unwind[];
+ extern char __start_ivt_text[], __end_ivt_text[];
  
-+	/* For module function descriptor dereference */
-+	unsigned long start_opd;
-+	unsigned long end_opd;
- #else /* powerpc64 */
- 	/* Indices of PLT sections within module. */
- 	unsigned int core_plt_section;
-diff --git a/arch/powerpc/include/asm/sections.h b/arch/powerpc/include/asm/sections.h
-index 67379b8945e8..6b4ee0d1645f 100644
---- a/arch/powerpc/include/asm/sections.h
-+++ b/arch/powerpc/include/asm/sections.h
-@@ -75,6 +75,17 @@ static inline unsigned long dereference_function_descriptor(unsigned long ptr)
- 		ptr = (unsigned long)p;
+ #undef dereference_function_descriptor
+-static inline void *dereference_function_descriptor(void *ptr)
++static inline unsigned long dereference_function_descriptor(unsigned long ptr)
+ {
+-	struct fdesc *desc = ptr;
++	struct fdesc *desc = (struct fdesc *)ptr;
+ 	void *p;
+ 
+ 	if (!probe_kernel_address(&desc->ip, p))
+-		ptr = p;
++		ptr = (unsigned long)p;
  	return ptr;
  }
-+
-+#undef dereference_kernel_function_descriptor
-+static inline unsigned long
-+dereference_kernel_function_descriptor(unsigned long addr)
-+{
-+	if (addr < (unsigned long)__start_opd ||
-+			addr >= (unsigned long)__end_opd)
-+		return addr;
-+
-+	return dereference_function_descriptor(addr);
-+}
- #endif /* PPC64_ELF_ABI_v1 */
+ 
+diff --git a/arch/parisc/include/asm/sections.h b/arch/parisc/include/asm/sections.h
+index 9d13c3507ad6..59fbe0067112 100644
+--- a/arch/parisc/include/asm/sections.h
++++ b/arch/parisc/include/asm/sections.h
+@@ -6,7 +6,7 @@
+ 
+ #ifdef CONFIG_64BIT
+ #undef dereference_function_descriptor
+-void *dereference_function_descriptor(void *);
++unsigned long dereference_function_descriptor(unsigned long);
+ #endif
  
  #endif
-diff --git a/arch/powerpc/kernel/module_64.c b/arch/powerpc/kernel/module_64.c
-index 0b0f89685b67..94caec045a90 100644
---- a/arch/powerpc/kernel/module_64.c
-+++ b/arch/powerpc/kernel/module_64.c
-@@ -344,6 +344,11 @@ int module_frob_arch_sections(Elf64_Ehdr *hdr,
- 		else if (strcmp(secstrings+sechdrs[i].sh_name,"__versions")==0)
- 			dedotify_versions((void *)hdr + sechdrs[i].sh_offset,
- 					  sechdrs[i].sh_size);
-+		else if (!strcmp(secstrings + sechdrs[i].sh_name, ".opd")) {
-+			me->arch.start_opd = sechdrs[i].sh_addr;
-+			me->arch.end_opd = sechdrs[i].sh_addr +
-+					   sechdrs[i].sh_size;
-+		}
- 
- 		/* We don't handle .init for the moment: rename to _init */
- 		while ((p = strstr(secstrings + sechdrs[i].sh_name, ".init")))
-@@ -712,6 +717,17 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
- 	return 0;
+diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+index a45a67d526f8..f00a5f93492a 100644
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -267,13 +267,13 @@ get_wchan(struct task_struct *p)
  }
  
-+#ifdef PPC64_ELF_ABI_v1
-+unsigned long dereference_module_function_descriptor(struct module *mod,
-+						     unsigned long addr)
-+{
-+	if (addr < mod->arch.start_opd || addr >= mod->arch.end_opd)
-+		return addr;
-+
-+	return dereference_function_descriptor(addr);
-+}
-+#endif /* PPC64_ELF_ABI_v1 */
-+
- #ifdef CONFIG_DYNAMIC_FTRACE
+ #ifdef CONFIG_64BIT
+-void *dereference_function_descriptor(void *ptr)
++unsigned long dereference_function_descriptor(unsigned long ptr)
+ {
+-	Elf64_Fdesc *desc = ptr;
++	Elf64_Fdesc *desc = (Elf64_Fdesc *)ptr;
+ 	void *p;
  
- #ifdef CC_USING_MPROFILE_KERNEL
-diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
-index 882628fa6987..70e10251e083 100644
---- a/arch/powerpc/kernel/vmlinux.lds.S
-+++ b/arch/powerpc/kernel/vmlinux.lds.S
-@@ -277,7 +277,9 @@ SECTIONS
- 	}
+ 	if (!probe_kernel_address(&desc->addr, p))
+-		ptr = p;
++		ptr = (unsigned long)p;
+ 	return ptr;
+ }
+ #endif
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 1ca9a2b4239f..06e1b79e2946 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -389,10 +389,10 @@ static void __init setup_bootmem(void)
+ static int __init parisc_text_address(unsigned long vaddr)
+ {
+ 	static unsigned long head_ptr __initdata;
++	unsigned long addr = (unsigned long)&parisc_kernel_start;
  
- 	.opd : AT(ADDR(.opd) - LOAD_OFFSET) {
-+		__start_opd = .;
- 		*(.opd)
-+		__end_opd = .;
- 	}
+ 	if (!head_ptr)
+-		head_ptr = PAGE_MASK & (unsigned long)
+-			dereference_function_descriptor(&parisc_kernel_start);
++		head_ptr = PAGE_MASK & dereference_function_descriptor(addr);
  
- 	. = ALIGN(256);
+ 	return core_kernel_text(vaddr) || vaddr == head_ptr;
+ }
+diff --git a/arch/powerpc/include/asm/sections.h b/arch/powerpc/include/asm/sections.h
+index 7902d6358854..67379b8945e8 100644
+--- a/arch/powerpc/include/asm/sections.h
++++ b/arch/powerpc/include/asm/sections.h
+@@ -66,13 +66,13 @@ static inline int overlaps_kvm_tmp(unsigned long start, unsigned long end)
+ 
+ #ifdef PPC64_ELF_ABI_v1
+ #undef dereference_function_descriptor
+-static inline void *dereference_function_descriptor(void *ptr)
++static inline unsigned long dereference_function_descriptor(unsigned long ptr)
+ {
+-	struct ppc64_opd_entry *desc = ptr;
++	struct ppc64_opd_entry *desc = (struct ppc64_opd_entry *)ptr;
+ 	void *p;
+ 
+ 	if (!probe_kernel_address(&desc->funcaddr, p))
+-		ptr = p;
++		ptr = (unsigned long)p;
+ 	return ptr;
+ }
+ #endif /* PPC64_ELF_ABI_v1 */
+diff --git a/drivers/misc/kgdbts.c b/drivers/misc/kgdbts.c
+index fc7efedbc4be..6a5a159dfb75 100644
+--- a/drivers/misc/kgdbts.c
++++ b/drivers/misc/kgdbts.c
+@@ -225,7 +225,7 @@ static unsigned long lookup_addr(char *arg)
+ 		addr = (unsigned long)_do_fork;
+ 	else if (!strcmp(arg, "hw_break_val"))
+ 		addr = (unsigned long)&hw_break_val;
+-	addr = (unsigned long) dereference_function_descriptor((void *)addr);
++	addr = dereference_function_descriptor(addr);
+ 	return addr;
+ }
+ 
+diff --git a/init/main.c b/init/main.c
+index 0ee9c6866ada..396b0bda696e 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -761,7 +761,7 @@ static bool __init_or_module initcall_blacklisted(initcall_t fn)
+ 	if (list_empty(&blacklisted_initcalls))
+ 		return false;
+ 
+-	addr = (unsigned long) dereference_function_descriptor(fn);
++	addr = dereference_function_descriptor((unsigned long)fn);
+ 	sprint_symbol_no_offset(fn_name, addr);
+ 
+ 	/*
+diff --git a/kernel/extable.c b/kernel/extable.c
+index 38c2412401a1..ca4c34d1d5a4 100644
+--- a/kernel/extable.c
++++ b/kernel/extable.c
+@@ -150,7 +150,7 @@ int kernel_text_address(unsigned long addr)
+ int func_ptr_is_kernel_text(void *ptr)
+ {
+ 	unsigned long addr;
+-	addr = (unsigned long) dereference_function_descriptor(ptr);
++	addr = dereference_function_descriptor((unsigned long)ptr);
+ 	if (core_kernel_text(addr))
+ 		return 1;
+ 	return is_module_text_address(addr);
+diff --git a/kernel/module.c b/kernel/module.c
+index de66ec825992..ea77ab13bead 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -1067,7 +1067,7 @@ EXPORT_SYMBOL(__symbol_put);
+ void symbol_put_addr(void *addr)
+ {
+ 	struct module *modaddr;
+-	unsigned long a = (unsigned long)dereference_function_descriptor(addr);
++	unsigned long a = dereference_function_descriptor((unsigned long)addr);
+ 
+ 	if (core_kernel_text(a))
+ 		return;
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 86c3385b9eb3..bcd906a39010 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -1723,7 +1723,7 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
+ 	switch (*fmt) {
+ 	case 'F':
+ 	case 'f':
+-		ptr = dereference_function_descriptor(ptr);
++		ptr = (void *)dereference_function_descriptor((unsigned long)ptr);
+ 		/* Fallthrough */
+ 	case 'S':
+ 	case 's':
 -- 
 2.14.1
-
