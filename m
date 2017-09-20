@@ -1,7 +1,7 @@
 From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: [RFC][PATCH v2 3/7] ia64: Add .opd based function descriptor dereference
-Date: Thu, 21 Sep 2017 01:29:05 +0900
-Message-ID: <20170920162910.32053-4-sergey.senozhatsky@gmail.com>
+Subject: [RFC][PATCH v2 5/7] parisc64: Add .opd based function descriptor dereference
+Date: Thu, 21 Sep 2017 01:29:07 +0900
+Message-ID: <20170920162910.32053-6-sergey.senozhatsky@gmail.com>
 References: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
 Cc: Petr Mladek <pmladek@suse.com>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -23,7 +23,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 We are moving towards separate kernel and module function descriptor
-dereference callbacks. This patch enables it for IA64.
+dereference callbacks. This patch enables it for parisc64.
 
 For pointers that belong to the kernel
 -  Added __start_opd and __end_opd pointers, to track the kernel
@@ -39,73 +39,107 @@ For pointers that belong to a module
    pointers that are within [module->opd.start, module->opd.end].
 
 Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Signed-off-by: Helge Deller <deller@gmx.de>
 ---
- arch/ia64/include/asm/sections.h | 10 +++++++++-
- arch/ia64/kernel/module.c        | 13 +++++++++++++
- arch/ia64/kernel/vmlinux.lds.S   |  2 ++
- 3 files changed, 24 insertions(+), 1 deletion(-)
+ arch/parisc/boot/compressed/vmlinux.lds.S |  2 ++
+ arch/parisc/include/asm/sections.h        |  2 ++
+ arch/parisc/kernel/module.c               | 17 +++++++++++++++++
+ arch/parisc/kernel/process.c              |  9 +++++++++
+ arch/parisc/kernel/vmlinux.lds.S          |  2 ++
+ 5 files changed, 32 insertions(+)
 
-diff --git a/arch/ia64/include/asm/sections.h b/arch/ia64/include/asm/sections.h
-index de6bfa1ef8fb..3ba7ce9d8bc8 100644
---- a/arch/ia64/include/asm/sections.h
-+++ b/arch/ia64/include/asm/sections.h
-@@ -37,6 +37,14 @@ static inline unsigned long dereference_function_descriptor(unsigned long ptr)
+diff --git a/arch/parisc/boot/compressed/vmlinux.lds.S b/arch/parisc/boot/compressed/vmlinux.lds.S
+index a4ce3314e78e..4ebd4e65524c 100644
+--- a/arch/parisc/boot/compressed/vmlinux.lds.S
++++ b/arch/parisc/boot/compressed/vmlinux.lds.S
+@@ -29,7 +29,9 @@ SECTIONS
+ 	. = ALIGN(16);
+ 	/* Linkage tables */
+ 	.opd : {
++		__start_opd = .;
+ 		*(.opd)
++		__end_opd = .;
+ 	} PROVIDE (__gp = .);
+ 	.plt : {
+ 		*(.plt)
+diff --git a/arch/parisc/include/asm/sections.h b/arch/parisc/include/asm/sections.h
+index 59fbe0067112..845ddc9a3421 100644
+--- a/arch/parisc/include/asm/sections.h
++++ b/arch/parisc/include/asm/sections.h
+@@ -7,6 +7,8 @@
+ #ifdef CONFIG_64BIT
+ #undef dereference_function_descriptor
+ unsigned long dereference_function_descriptor(unsigned long);
++#undef dereference_kernel_function_descriptor
++unsigned long dereference_kernel_function_descriptor(unsigned long);
+ #endif
+ 
+ #endif
+diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
+index f1a76935a314..28f89b3dcc11 100644
+--- a/arch/parisc/kernel/module.c
++++ b/arch/parisc/kernel/module.c
+@@ -66,6 +66,7 @@
+ 
+ #include <asm/pgtable.h>
+ #include <asm/unwind.h>
++#include <asm/sections.h>
+ 
+ #if 0
+ #define DEBUGP printk
+@@ -954,3 +955,19 @@ void module_arch_cleanup(struct module *mod)
+ {
+ 	deregister_unwind_table(mod);
+ }
++
++#ifdef CONFIG_64BIT
++unsigned long dereference_module_function_descriptor(struct module *mod,
++						     unsigned long addr)
++{
++	unsigned long start_opd = (Elf64_Addr)mod->core_layout.base +
++				   mod->arch.fdesc_offset;
++	unsigned long end_opd = start_opd +
++				mod->arch.fdesc_count * sizeof(Elf64_Fdesc);
++
++	if (addr < start_opd || addr >= end_opd)
++		return addr;
++
++	return dereference_function_descriptor(addr);
++}
++#endif
+diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+index f00a5f93492a..ff13726b2d2d 100644
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -276,6 +276,15 @@ unsigned long dereference_function_descriptor(unsigned long ptr)
+ 		ptr = (unsigned long)p;
  	return ptr;
  }
- 
-+#undef dereference_kernel_function_descriptor
-+static inline unsigned long
-+dereference_kernel_function_descriptor(unsigned long addr)
++
++unsigned long dereference_kernel_function_descriptor(unsigned long addr)
 +{
 +	if (addr < (unsigned long)__start_opd ||
 +			addr >= (unsigned long)__end_opd)
 +		return addr;
-+	return dereference_function_descriptor(addr);
-+}
- 
- #endif /* _ASM_IA64_SECTIONS_H */
--
-diff --git a/arch/ia64/kernel/module.c b/arch/ia64/kernel/module.c
-index d1d945c6bd05..0741ae6fa957 100644
---- a/arch/ia64/kernel/module.c
-+++ b/arch/ia64/kernel/module.c
-@@ -35,6 +35,7 @@
- 
- #include <asm/patch.h>
- #include <asm/unaligned.h>
-+#include <asm/sections.h>
- 
- #define ARCH_MODULE_DEBUG 0
- 
-@@ -917,3 +918,15 @@ module_arch_cleanup (struct module *mod)
- 	if (mod->arch.core_unw_table)
- 		unw_remove_unwind_table(mod->arch.core_unw_table);
- }
-+
-+unsigned long
-+dereference_module_function_descriptor(struct module *mod, unsigned long addr)
-+{
-+	Elf64_Shdr *opd = mod->arch.opd;
-+
-+	if (addr < opd->sh_addr ||
-+			addr >= (opd->sh_addr + opd->sh_size))
-+		return addr;
 +
 +	return dereference_function_descriptor(addr);
 +}
-diff --git a/arch/ia64/kernel/vmlinux.lds.S b/arch/ia64/kernel/vmlinux.lds.S
-index 798026dde52e..f872ba5ff82a 100644
---- a/arch/ia64/kernel/vmlinux.lds.S
-+++ b/arch/ia64/kernel/vmlinux.lds.S
-@@ -107,7 +107,9 @@ SECTIONS {
- 	RODATA
+ #endif
  
- 	.opd : AT(ADDR(.opd) - LOAD_OFFSET) {
+ static inline unsigned long brk_rnd(void)
+diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
+index ffe2cbf52d1a..ab030895dd1e 100644
+--- a/arch/parisc/kernel/vmlinux.lds.S
++++ b/arch/parisc/kernel/vmlinux.lds.S
+@@ -99,7 +99,9 @@ SECTIONS
+ 	. = ALIGN(16);
+ 	/* Linkage tables */
+ 	.opd : {
 +		__start_opd = .;
  		*(.opd)
 +		__end_opd = .;
- 	}
- 
- 	/*
+ 	} PROVIDE (__gp = .);
+ 	.plt : {
+ 		*(.plt)
 -- 
 2.14.1
