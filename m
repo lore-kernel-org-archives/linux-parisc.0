@@ -1,56 +1,70 @@
 From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Subject: Re: [RFC][PATCH v2 7/7] checkpatch: add pF/pf deprecation warning
-Date: Thu, 21 Sep 2017 16:43:51 +0900
-Message-ID: <20170921074351.GC773@jagdpanzerIV.localdomain>
+Subject: Re: [RFC][PATCH v2 6/7] symbol lookup: use new kernel and module
+ dereference functions
+Date: Thu, 21 Sep 2017 18:38:08 +0900
+Message-ID: <20170921093808.GE773@jagdpanzerIV.localdomain>
 References: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
- <20170920162910.32053-8-sergey.senozhatsky@gmail.com>
- <1505929138.12311.5.camel@perches.com>
- <ddf9b54b-34d9-c1e2-e34f-a1cc055b8cf7@gmx.de>
- <1505931868.12311.7.camel@perches.com>
+ <20170920162910.32053-7-sergey.senozhatsky@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
+Cc: Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
         James Bottomley <jejb@parisc-linux.org>,
-        Petr Mladek <pmladek@suse.com>,
+        Helge Deller <deller@gmx.de>, Petr Mladek <pmladek@suse.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Jessica Yu <jeyu@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Andy Whitcroft <apw@canonical.com>
-To: Helge Deller <deller@gmx.de>, Joe Perches <joe@perches.com>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <1505931868.12311.7.camel@perches.com>
-List-ID: <linux-ia64.vger.kernel.org>
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170920162910.32053-7-sergey.senozhatsky@gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On (09/20/17 11:24), Joe Perches wrote:
-> On Wed, 2017-09-20 at 19:53 +0200, Helge Deller wrote:
+On (09/21/17 01:29), Sergey Senozhatsky wrote:
 [..]
-> > Is it worth to mention, that it's still needed in older kernels?
-> > Just in case some patch get's backported.
+> +	%pS	versatile_init+0x0/0x110
+> +	%ps	versatile_init
+>  	%pF	versatile_init+0x0/0x110
+>  	%pf	versatile_init
+> -	%pS	versatile_init+0x0/0x110
+>  	%pSR	versatile_init+0x9/0x110
+>  		(with __builtin_extract_return_addr() translation)
+> -	%ps	versatile_init
+>  	%pB	prev_fn_of_versatile_init+0x88/0x88
+>  
+> -The ``F`` and ``f`` specifiers are for printing function pointers,
+> -for example, f->func, &gettimeofday. They have the same result as
+> -``S`` and ``s`` specifiers. But they do an extra conversion on
+> -ia64, ppc64 and parisc64 architectures where the function pointers
+> -are actually function descriptors.
+> -
+>  The ``S`` and ``s`` specifiers can be used for printing symbols
+>  from direct addresses, for example, __builtin_return_address(0),
+>  (void *)regs->ip. They result in the symbol name with (``S``) or
+>  without (``s``) offsets. If KALLSYMS are disabled then the symbol
+>  address is printed instead.
+>  
+> +Note, that the ``F`` and ``f`` specifiers are identical to ``S`` (``s``)
+> +and thus deprecated.
 
-good question.
+JFI,
 
-> I think probably not.
-> 
-> There are relatively few references and
-> modifications are unlikely to be backported.
+I have updated this part. it's probably too early to completely
+wipe out pF/pf info.
 
-I tend to agree.
+the updated Doc goes like this:
 
-unlikely anyone backports printk message updates. I have quickly glanced
-through stable-4.9 and haven't seen such backports. well, may be there
-are some.
-
-can tweak the warning a bit, probably. e.g. "if you are planning to
-backport your change to kernels older than 4.14 then ignore this
-warning". but not sure if it's worth it.
++Note, that the ``F`` and ``f`` specifiers are identical to ``S`` (``s``)
++and thus deprecated. We have ``F`` and ``f`` because on ia64, ppc64 and
++parisc64 function pointers are indirect and, in fact, are function
++descriptors, which require additional dereferencing before we can lookup
++the symbol. As of now, ``S`` and ``s`` perform dereferencing on those
++platforms (when needed), so ``F`` and ``f`` exist for compatibility
++reasons only.
 
 	-ss
