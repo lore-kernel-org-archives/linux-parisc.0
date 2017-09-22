@@ -1,354 +1,166 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: Add CPU topology support
-Date: Thu, 21 Sep 2017 21:55:01 +0200
-Message-ID: <20170921195501.GA15626@p100.box>
-References: <20170920192018.GA14837@p100.box>
+From: Santosh Sivaraj <santosh@fossix.org>
+Subject: Re: [RFC][PATCH v2 0/7] printk/ia64/ppc64/parisc64: let's deprecate
+ %pF/%pf printk specifiers
+Date: Fri, 22 Sep 2017 11:04:04 +0530
+Message-ID: <20170922053404.3zpfpwetabjut2er@santosiv.in.ibm.com>
+References: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3gqke7d3an37ypbd"
+Cc: Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Bottomley <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170920192018.GA14837@p100.box>
+In-Reply-To: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
->From b845fcfb49d60e8cc11e240a0e01911115bdc434 Mon Sep 17 00:00:00 2001
-From: Helge Deller <deller@gmx.de>
-Date: Wed, 20 Sep 2017 21:20:18 +0200
-Subject: [PATCH v2] parisc: Add CPU topology support
 
-Add topology support, including multi-core scheduler support on
-PA8800/PA8900 CPUs and enhanced output in /proc/cpuinfo, e.g.
-lscpu now reports on a single-socket, dual-core machine:
+--3gqke7d3an37ypbd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Architecture:          parisc64
-CPU(s):                2
-On-line CPU(s) list:   0,1
-Thread(s) per core:    1
-Core(s) per socket:    2
-Socket(s):             1
-CPU family:            PA-RISC 2.0
-Model name:            PA8800 (Mako)
+* Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote (on 2017-09-20 16=
+:29:02 +0000):
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+>         Hello
+>=20
+>         RFC
+>=20
+>         On some arches C function pointers are indirect and point to
+> a function descriptor, which contains the actual pointer to the code.
+> This mostly doesn't matter, except for cases when people want to print
+> out function pointers in symbolic format, because the usual '%pS/%ps'
+> does not work on those arches as expected. That's the reason why we
+> have '%pF/%pf', but since it's here because of a subtle ABI detail
+> specific to some arches (ppc64/ia64/parisc64) it's easy to misuse
+> '%pF/%pf' and '%pS/%ps' (see [1], for example).
+>=20
+>         This patch set attempts to move ia64/ppc64/parisc64 C function
+> pointer ABI details out of printk() to arch code. Function dereference
+> code now checks if a pointer belongs to a .opd ELF section and dereferenc=
+es
+> that pointer only if it does. The kernel and modules have their own .opd
+> sections that's why I use two different ARCH functions: for kernel and
+> for module pointer dereference.
+>=20
+>         I planned to remove dereference_function_descriptor() entirely,
+> but then I discovered a bunch other uses cases (kgdbts, init/main.c,
+> extable, etc.), so I decided to keep dereference_function_descriptor()
+> around because the main point of this patch set is to deprecate %pF/%pf.
+> But at the same time, I think I can go further and handle both kernel
+> and module descriptor dereference in dereference_function_descriptor().
+> We need a module pointer for module .opd check, so that will come at an
+> extra cost of module lookup (may be there will some other issues along
+> the way, haven't checked it).
+>=20
+> Right now we've got:
+>=20
+> - dereference_function_descriptor(addr)
+>         a generic (old) function. it simply attempts to dereference
+>         whatever pointer we give it.
+>=20
+> - dereference_kernel_function_descriptor(addr)
+>         dereferences a kernel pointer if it's within the kernel's .opd
+>         section.
+>=20
+> - dereference_module_function_descriptor(module, addr)
+>         dereference a module pointer if it's within the module's .opd
+>         section.
+>=20
+>=20
+> *** A BIG NOTE ***
+>         I don't own ia64/ppc64/parisc64 hardware, so the patches are not
+>         tested. Sorry about that!
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index ba7b7dd..bb8ed34 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -31,6 +31,7 @@ config PARISC
- 	select GENERIC_PCI_IOMAP
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	select GENERIC_SMP_IDLE_THREAD
-+	select GENERIC_CPU_DEVICES
- 	select GENERIC_STRNCPY_FROM_USER
- 	select SYSCTL_ARCH_UNALIGN_ALLOW
- 	select SYSCTL_EXCEPTION_TRACE
-@@ -275,6 +276,21 @@ config SMP
- 
- 	  If you don't know what to do here, say N.
- 
-+config PARISC_CPU_TOPOLOGY
-+	bool "Support cpu topology definition"
-+	depends on SMP
-+	default y
-+	help
-+	  Support PARISC cpu topology definition.
-+
-+config SCHED_MC
-+	bool "Multi-core scheduler support"
-+	depends on PARISC_CPU_TOPOLOGY && PA8X00
-+	help
-+	  Multi-core scheduler support improves the CPU scheduler's decision
-+	  making when dealing with multi-core CPU chips at a cost of slightly
-+	  increased overhead in some places. If unsure say N here.
-+
- config IRQSTACKS
- 	bool "Use separate kernel stacks when processing interrupts"
- 	default y
-diff --git a/arch/parisc/include/asm/topology.h b/arch/parisc/include/asm/topology.h
-new file mode 100644
-index 0000000..6f0750c
---- /dev/null
-+++ b/arch/parisc/include/asm/topology.h
-@@ -0,0 +1,36 @@
-+#ifndef _ASM_PARISC_TOPOLOGY_H
-+#define _ASM_PARISC_TOPOLOGY_H
-+
-+#ifdef CONFIG_PARISC_CPU_TOPOLOGY
-+
-+#include <linux/cpumask.h>
-+
-+struct cputopo_parisc {
-+	int thread_id;
-+	int core_id;
-+	int socket_id;
-+	cpumask_t thread_sibling;
-+	cpumask_t core_sibling;
-+};
-+
-+extern struct cputopo_parisc cpu_topology[NR_CPUS];
-+
-+#define topology_physical_package_id(cpu)	(cpu_topology[cpu].socket_id)
-+#define topology_core_id(cpu)		(cpu_topology[cpu].core_id)
-+#define topology_core_cpumask(cpu)	(&cpu_topology[cpu].core_sibling)
-+#define topology_sibling_cpumask(cpu)	(&cpu_topology[cpu].thread_sibling)
-+
-+void init_cpu_topology(void);
-+void store_cpu_topology(unsigned int cpuid);
-+const struct cpumask *cpu_coregroup_mask(int cpu);
-+
-+#else
-+
-+static inline void init_cpu_topology(void) { }
-+static inline void store_cpu_topology(unsigned int cpuid) { }
-+
-+#endif
-+
-+#include <asm-generic/topology.h>
-+
-+#endif /* _ASM_ARM_TOPOLOGY_H */
-diff --git a/arch/parisc/kernel/Makefile b/arch/parisc/kernel/Makefile
-index c4294df..10b1b04 100644
---- a/arch/parisc/kernel/Makefile
-+++ b/arch/parisc/kernel/Makefile
-@@ -8,8 +8,7 @@ obj-y	     	:= cache.o pacache.o setup.o pdt.o traps.o time.o irq.o \
- 		   pa7300lc.o syscall.o entry.o sys_parisc.o firmware.o \
- 		   ptrace.o hardware.o inventory.o drivers.o \
- 		   signal.o hpmc.o real2.o parisc_ksyms.o unaligned.o \
--		   process.o processor.o pdc_cons.o pdc_chassis.o unwind.o \
--		   topology.o
-+		   process.o processor.o pdc_cons.o pdc_chassis.o unwind.o
- 
- ifdef CONFIG_FUNCTION_TRACER
- # Do not profile debug and lowlevel utilities
-@@ -29,5 +28,6 @@ obj-$(CONFIG_AUDIT)	+= audit.o
- obj64-$(CONFIG_AUDIT)	+= compat_audit.o
- # only supported for PCX-W/U in 64-bit mode at the moment
- obj-$(CONFIG_64BIT)	+= perf.o perf_asm.o $(obj64-y)
-+obj-$(CONFIG_PARISC_CPU_TOPOLOGY)	+= topology.o
- obj-$(CONFIG_FUNCTION_TRACER)		+= ftrace.o
- obj-$(CONFIG_FUNCTION_GRAPH_TRACER)	+= ftrace.o
-diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
-index a778bd3..ad73100 100644
---- a/arch/parisc/kernel/processor.c
-+++ b/arch/parisc/kernel/processor.c
-@@ -184,6 +184,9 @@ static int __init processor_probe(struct parisc_device *dev)
- 	p->txn_addr = txn_addr;	/* save CPU IRQ address */
- 	p->cpu_num = cpu_info.cpu_num;
- 	p->cpu_loc = cpu_info.cpu_loc;
-+
-+	store_cpu_topology(cpuid);
-+
- #ifdef CONFIG_SMP
- 	/*
- 	** FIXME: review if any other initialization is clobbered
-@@ -325,6 +328,8 @@ int init_per_cpu(int cpunum)
- 	set_firmware_width();
- 	ret = pdc_coproc_cfg(&coproc_cfg);
- 
-+	store_cpu_topology(cpunum);
-+
- 	if(ret >= 0 && coproc_cfg.ccr_functional) {
- 		mtctl(coproc_cfg.ccr_functional, 10);  /* 10 == Coprocessor Control Reg */
- 
-@@ -388,6 +393,14 @@ show_cpuinfo (struct seq_file *m, void *v)
- 				 boot_cpu_data.cpu_hz / 1000000,
- 				 boot_cpu_data.cpu_hz % 1000000  );
- 
-+#ifdef CONFIG_PARISC_CPU_TOPOLOGY
-+		seq_printf(m, "physical id\t: %d\n",
-+				topology_physical_package_id(cpu));
-+		seq_printf(m, "siblings\t: %d\n",
-+				cpumask_weight(topology_core_cpumask(cpu)));
-+		seq_printf(m, "core id\t\t: %d\n", topology_core_id(cpu));
-+#endif
-+
- 		seq_printf(m, "capabilities\t:");
- 		if (boot_cpu_data.pdc.capabilities & PDC_MODEL_OS32)
- 			seq_puts(m, " os32");
-diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
-index a31e91c..fd751b9 100644
---- a/arch/parisc/kernel/setup.c
-+++ b/arch/parisc/kernel/setup.c
-@@ -408,6 +408,8 @@ void __init start_parisc(void)
- 
- 	cpunum = smp_processor_id();
- 
-+	init_cpu_topology();
-+
- 	set_firmware_width_unlocked();
- 
- 	ret = pdc_coproc_cfg_unlocked(&coproc_cfg);
-diff --git a/arch/parisc/kernel/topology.c b/arch/parisc/kernel/topology.c
-index f515938..0a10e4d 100644
---- a/arch/parisc/kernel/topology.c
-+++ b/arch/parisc/kernel/topology.c
-@@ -1,37 +1,142 @@
- /*
-- * arch/parisc/kernel/topology.c - Populate sysfs with topology information
-+ * arch/parisc/kernel/topology.c
-  *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-+ * Copyright (C) 2017 Helge Deller <deller@gmx.de>
-  *
-- * This program is distributed in the hope that it will be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE, GOOD TITLE or
-- * NON INFRINGEMENT.  See the GNU General Public License for more
-- * details.
-+ * based on arch/arm/kernel/topology.c
-  *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-+ * This file is subject to the terms and conditions of the GNU General Public
-+ * License.  See the file "COPYING" in the main directory of this archive
-+ * for more details.
-  */
- 
--#include <linux/init.h>
--#include <linux/smp.h>
--#include <linux/cpu.h>
--#include <linux/cache.h>
-+#include <linux/percpu.h>
-+#include <linux/sched.h>
-+#include <linux/sched/topology.h>
- 
--static DEFINE_PER_CPU(struct cpu, cpu_devices);
-+#include <asm/topology.h>
- 
--static int __init topology_init(void)
-+ /*
-+  * cpu topology table
-+  */
-+struct cputopo_parisc cpu_topology[NR_CPUS] __read_mostly;
-+EXPORT_SYMBOL_GPL(cpu_topology);
-+
-+const struct cpumask *cpu_coregroup_mask(int cpu)
- {
--	int num;
-+	return &cpu_topology[cpu].core_sibling;
-+}
-+
-+static void update_siblings_masks(unsigned int cpuid)
-+{
-+	struct cputopo_parisc *cpu_topo, *cpuid_topo = &cpu_topology[cpuid];
-+	int cpu;
-+
-+	/* update core and thread sibling masks */
-+	for_each_possible_cpu(cpu) {
-+		cpu_topo = &cpu_topology[cpu];
-+
-+		if (cpuid_topo->socket_id != cpu_topo->socket_id)
-+			continue;
-+
-+		cpumask_set_cpu(cpuid, &cpu_topo->core_sibling);
-+		if (cpu != cpuid)
-+			cpumask_set_cpu(cpu, &cpuid_topo->core_sibling);
-+
-+		if (cpuid_topo->core_id != cpu_topo->core_id)
-+			continue;
-+
-+		cpumask_set_cpu(cpuid, &cpu_topo->thread_sibling);
-+		if (cpu != cpuid)
-+			cpumask_set_cpu(cpu, &cpuid_topo->thread_sibling);
-+	}
-+	smp_wmb();
-+}
-+
-+static int dualcores_found __initdata;
-+
-+/*
-+ * store_cpu_topology is called at boot when only one cpu is running
-+ * and with the mutex cpu_hotplug.lock locked, when several cpus have booted,
-+ * which prevents simultaneous write access to cpu_topology array
-+ */
-+void __init store_cpu_topology(unsigned int cpuid)
-+{
-+	struct cputopo_parisc *cpuid_topo = &cpu_topology[cpuid];
-+	struct cpuinfo_parisc *p;
-+	int max_socket = -1;
-+	unsigned long cpu;
-+
-+	/* If the cpu topology has been already set, just return */
-+	if (cpuid_topo->core_id != -1)
-+		return;
- 
--	for_each_present_cpu(num) {
--		register_cpu(&per_cpu(cpu_devices, num), num);
-+	/* create cpu topology mapping */
-+	cpuid_topo->thread_id = -1;
-+	cpuid_topo->core_id = 0;
-+
-+	p = &per_cpu(cpu_data, cpuid);
-+	for_each_online_cpu(cpu) {
-+		const struct cpuinfo_parisc *cpuinfo = &per_cpu(cpu_data, cpu);
-+
-+		if (cpu == cpuid) /* ignore current cpu */
-+			continue;
-+
-+		if (cpuinfo->cpu_loc == p->cpu_loc) {
-+			cpuid_topo->core_id = cpu_topology[cpu].core_id;
-+			if (p->cpu_loc) {
-+				cpuid_topo->core_id++;
-+				cpuid_topo->socket_id = cpu_topology[cpu].socket_id;
-+				dualcores_found = 1;
-+				continue;
-+			}
-+		}
-+
-+		if (cpuid_topo->socket_id == -1)
-+			max_socket = max(max_socket, cpu_topology[cpu].socket_id);
- 	}
--	return 0;
-+
-+	if (cpuid_topo->socket_id == -1)
-+		cpuid_topo->socket_id = max_socket + 1;
-+
-+	update_siblings_masks(cpuid);
-+
-+	pr_info("CPU%u: thread %d, cpu %d, socket %d\n",
-+		cpuid, cpu_topology[cpuid].thread_id,
-+		cpu_topology[cpuid].core_id,
-+		cpu_topology[cpuid].socket_id);
- }
- 
--subsys_initcall(topology_init);
-+static struct sched_domain_topology_level parisc_mc_topology[] = {
-+#ifdef CONFIG_SCHED_MC
-+	{ cpu_coregroup_mask, cpu_core_flags, SD_INIT_NAME(MC) },
-+#endif
-+
-+	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
-+	{ NULL, },
-+};
-+
-+/*
-+ * init_cpu_topology is called at boot when only one cpu is running
-+ * which prevent simultaneous write access to cpu_topology array
-+ */
-+void __init init_cpu_topology(void)
-+{
-+	unsigned int cpu;
-+
-+	/* init core mask and capacity */
-+	for_each_possible_cpu(cpu) {
-+		struct cputopo_parisc *cpu_topo = &(cpu_topology[cpu]);
-+
-+		cpu_topo->thread_id = -1;
-+		cpu_topo->core_id =  -1;
-+		cpu_topo->socket_id = -1;
-+		cpumask_clear(&cpu_topo->core_sibling);
-+		cpumask_clear(&cpu_topo->thread_sibling);
-+	}
-+	smp_wmb();
-+
-+	/* Set scheduler topology descriptor */
-+	if (dualcores_found)
-+		set_sched_topology(parisc_mc_topology);
-+}
+Tested patch series on ppc64 sucessfully.
+
+You may add tested by to the series.
+
+Tested-by: Santosh Sivaraj <santosh@fossix.org>
+
+Thanks,
+Santosh
+
+>=20
+> Another note:
+>         I need to check what is BPF symbol lookup and do we need to
+>         do any dereference there.
+>=20
+> v2:
+> -- convert dereference_function_descriptor() to unsigned long
+> -- fix kernel descriptor range checks (Helge)
+> -- fix parisc module descriptor range check (Helge)
+> -- fix ppc64 module range check
+> -- add checkpatch patch
+>=20
+>=20
+> Sergey Senozhatsky (7):
+>   switch dereference_function_descriptor() to `unsigned long'
+>   sections: split dereference_function_descriptor()
+>   ia64: Add .opd based function descriptor dereference
+>   powerpc64: Add .opd based function descriptor dereference
+>   parisc64: Add .opd based function descriptor dereference
+>   symbol lookup: use new kernel and module dereference functions
+>   checkpatch: add pF/pf deprecation warning
+>=20
+>  Documentation/printk-formats.txt          | 15 +++++----------
+>  arch/ia64/include/asm/sections.h          | 16 ++++++++++++----
+>  arch/ia64/kernel/module.c                 | 13 +++++++++++++
+>  arch/ia64/kernel/vmlinux.lds.S            |  2 ++
+>  arch/parisc/boot/compressed/vmlinux.lds.S |  2 ++
+>  arch/parisc/include/asm/sections.h        |  4 +++-
+>  arch/parisc/kernel/module.c               | 17 +++++++++++++++++
+>  arch/parisc/kernel/process.c              | 15 ++++++++++++---
+>  arch/parisc/kernel/vmlinux.lds.S          |  2 ++
+>  arch/parisc/mm/init.c                     |  4 ++--
+>  arch/powerpc/include/asm/module.h         |  3 +++
+>  arch/powerpc/include/asm/sections.h       | 17 ++++++++++++++---
+>  arch/powerpc/kernel/module_64.c           | 16 ++++++++++++++++
+>  arch/powerpc/kernel/vmlinux.lds.S         |  2 ++
+>  drivers/misc/kgdbts.c                     |  2 +-
+>  include/asm-generic/sections.h            |  8 ++++++--
+>  include/linux/moduleloader.h              |  4 ++++
+>  init/main.c                               |  2 +-
+>  kernel/extable.c                          |  2 +-
+>  kernel/kallsyms.c                         |  1 +
+>  kernel/module.c                           |  9 ++++++++-
+>  lib/vsprintf.c                            |  5 +----
+>  scripts/checkpatch.pl                     |  6 ++++--
+>  23 files changed, 132 insertions(+), 35 deletions(-)
+
+--=20
+
+--3gqke7d3an37ypbd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJHBAEBCAAxFiEEEPhI2K1zm+w17KotztxEnntb8vcFAlnEoMwTHHNhbnRvc2hA
+Zm9zc2l4Lm9yZwAKCRDO3ESee1vy9/yREACtsc+xLsqli2HsZB6P2keSw+mETPQH
+LIZsQwpM7NFJl0CunhLUXCJMAlrTcEJzQwSe6r49U4WGCMGA42ZHowOWTPJnXd3l
++jbSpvDg8lTWlwonzZd+TvkYUI7XPKwWULN3S8kxYWXi+3FioLTV1RPWlFreChmV
+5tfLASliqeO4M/7coSS/DFWqTtQ2xYuVDPSITR9VeiVZ8z4/6CMw9H4C20XaTjOs
+UrxoFinqv6tGjG2cyq3es+PiipYkahVdrwuxqqaxs6ZXJ2tvdVer9EvUmf3MxWsg
+RdR2y/mCSKnIHRUCwohxD6bTtqIPq8FZ4f3kzrig8LygJfJOTdS0KedAdBzdAaAI
+yk6WIddOwIpCDF/edzOUo3C6YO/CbxtDO9BoXfgberT8aDfQlC2nDQ18nAoKapmk
+kNu6h8zUP45HMNiuq1pz/oXbUb3INNNzip9oIdYpS0B437xm6iVIkXnj2f2yWvFK
+qrvNmjjvfMOP28KH+0NIXPlnDxeZSBtEjHxJhBAhBD1JhD6prnOEKBVEVG0XhpPm
+As5SNjzWc4gcB3I0kWy6vobwZDWiSEAoYTNnQ94DaUvpv+9HUNAMNBn7tGEwCWgP
+l8yZJppf0kFd9eYAhMBr9zRtLN9uiS03iim34Pn9xvAzgMUP0A8cv9r5cOGEBL4n
+u7B7rmeWpS0iGA==
+=kfaZ
+-----END PGP SIGNATURE-----
+
+--3gqke7d3an37ypbd--
