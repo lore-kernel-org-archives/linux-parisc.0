@@ -1,43 +1,52 @@
-From: "Luck, Tony" <tony.luck@intel.com>
-Subject: RE: [RFC][PATCH v2 0/7] printk/ia64/ppc64/parisc64: let's deprecate
- %pF/%pf printk specifiers
-Date: Fri, 22 Sep 2017 16:48:58 +0000
-Message-ID: <3908561D78D1C84285E8C5FCA982C28F61381992@ORSMSX114.amr.corp.intel.com>
-References: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
- <20170922053404.3zpfpwetabjut2er@santosiv.in.ibm.com>
- <20170922080023.GA599@jagdpanzerIV.localdomain>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Unbreak bootloader due to gcc-7 optimizations
+Date: Fri, 22 Sep 2017 21:57:11 +0200
+Message-ID: <20170922195711.GA28303@p100.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Bottomley <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>, "Petr Mladek" <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-To: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Santosh Sivaraj <santosh@fossix.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20170922080023.GA599@jagdpanzerIV.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Tested patch series on ia64 successfully.
+gcc-7 optimizes the byte-wise accesses of get_unaligned_le32() into
+word-wise accesses if the 32-bit integer output_len is declared as
+external. This panics then the bootloader since we don't have the
+unaligned access fault trap handler installed during boot time.
 
-Tested-by: Tony Luck <tony.luck@intel.com>
+Avoid this optimization by declaring output_len as byte-aligned and thus
+unbreak the bootloader code.
 
-After this goes upstream, you should submit a patch to get rid of
-all uses of %pF (70 instances in 35 files) and %pf (63 in 34)
+Additionally, compile the boot code optimized for size.
 
-Perhaps break the patch by top-level directory (e.g. get all the %pF
-and %pF in the 17 files under drivers/ in one patch).
+Signed-off-by: Helge Deller <deller@gmx.de>
 
--Tony
+diff --git a/arch/parisc/boot/compressed/Makefile b/arch/parisc/boot/compressed/Makefile
+index 5450a11c9d10..7d7e594bda36 100644
+--- a/arch/parisc/boot/compressed/Makefile
++++ b/arch/parisc/boot/compressed/Makefile
+@@ -15,7 +15,7 @@ targets += misc.o piggy.o sizes.h head.o real2.o firmware.o
+ KBUILD_CFLAGS := -D__KERNEL__ -O2 -DBOOTLOADER
+ KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
+ KBUILD_CFLAGS += $(cflags-y) -fno-delete-null-pointer-checks
+-KBUILD_CFLAGS += -fno-PIE -mno-space-regs -mdisable-fpregs
++KBUILD_CFLAGS += -fno-PIE -mno-space-regs -mdisable-fpregs -Os
+ ifndef CONFIG_64BIT
+ KBUILD_CFLAGS += -mfast-indirect-calls
+ endif
+diff --git a/arch/parisc/boot/compressed/misc.c b/arch/parisc/boot/compressed/misc.c
+index 13a4bf9ac4da..a32325914429 100644
+--- a/arch/parisc/boot/compressed/misc.c
++++ b/arch/parisc/boot/compressed/misc.c
+@@ -24,7 +26,8 @@
+ /* Symbols defined by linker scripts */
+ extern char input_data[];
+ extern int input_len;
+-extern __le32 output_len;	/* at unaligned address, little-endian */
++/* output_len is inserted by the linker possibly at an unaligned address */
++extern __le32 output_len __aligned(1);
+ extern char _text, _end;
+ extern char _bss, _ebss;
+ extern char _startcode_end;
