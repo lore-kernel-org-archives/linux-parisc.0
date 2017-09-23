@@ -1,65 +1,74 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Reintroduce option to gzip-compress the kernel
-Date: Fri, 22 Sep 2017 22:24:02 +0200
-Message-ID: <20170922202402.GA21262@ls3530.fritz.box>
+Subject: [GIT PULL] parisc architecture fixes for v4.14-rc2
+Date: Sat, 23 Sep 2017 10:19:14 +0200
+Message-ID: <20170923081914.GA30001@p100.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-By adding the feature to build the kernel as self-extracting
-executeable, the possibility to simply compress the kernel with gzip was
-lost.
+Hi Linus,
 
-This patch now reintroduces this possibilty again and leaves it up to
-the user to decide how the kernel should be built.
+please pull fixes for the parisc architecture for kernel 4.14-rc2 from:
 
-The palo bootloader is able to natively load both formats.
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.14-2
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Changelog:
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index bb8ed34024ef..cce21a159fe7 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -258,6 +258,18 @@ config PARISC_PAGE_SIZE_64KB
- 
- endchoice
- 
-+config PARISC_SELF_EXTRACT
-+	bool "Build kernel as self-extracting executable"
-+	default y
-+	help
-+	  Say Y if you want to build the parisc kernel as a kind of
-+	  self-extracting executable.
-+
-+	  If you say N here, the kernel will be compressed with gzip
-+	  which can be loaded by the palo bootloader directly too.
-+
-+	  If you don't know what to do here, say Y.
-+
- config SMP
- 	bool "Symmetric multi-processing support"
- 	---help---
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index 58fae5d2449d..01946ebaff72 100644
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -129,8 +129,13 @@ Image: vmlinux
- bzImage: vmlinux
- 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
- 
-+ifdef CONFIG_PARISC_SELF_EXTRACT
- vmlinuz: bzImage
- 	$(OBJCOPY) $(boot)/bzImage $@
-+else
-+vmlinuz: vmlinux
-+	@gzip -cf -9 $< > $@
-+endif
- 
- install:
- 	$(CONFIG_SHELL) $(src)/arch/parisc/install.sh \
+- Unbreak parisc bootloader by avoiding a gcc-7 optimization to convert
+  multiple byte-accesses into one word-access.
+
+- Add missing HWPOISON page fault handler code. I completely missed that when I
+  added HWPOISON support during this merge window and it only showed up now
+  with the madvise07 LTP test case.
+
+- Fix backtrace unwinding to stop when stack start has been reached.
+
+- Issue warning if initrd has been loaded into memory regions with broken RAM
+  modules.
+
+- Fix HPMC handler (parisc hardware fault handler) to comply with architecture
+  specification.
+
+- Avoid compiler warnings about too large frame sizes.
+
+- Minor init-section fixes.
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Helge Deller (10):
+      parisc: Fix too large frame size warnings
+      parisc: Stop unwinding at start of stack
+      parisc: Move start_parisc() into init section
+      parisc: Add wrapper for pdc_instr() firmware function
+      parisc: Add PDCE_CHECK instruction to HPMC handler
+      parisc: Check if initrd was loaded into broken RAM
+      parisc: Move init_per_cpu() into init section
+      parisc: Add HWPOISON page fault handler code
+      parisc: Reintroduce option to gzip-compress the kernel
+      parisc: Unbreak bootloader due to gcc-7 optimizations
+
+ arch/parisc/Kconfig                  | 12 ++++++++++++
+ arch/parisc/Makefile                 |  5 +++++
+ arch/parisc/boot/compressed/Makefile |  2 +-
+ arch/parisc/boot/compressed/misc.c   |  3 ++-
+ arch/parisc/include/asm/pdc.h        |  1 +
+ arch/parisc/include/asm/smp.h        |  1 +
+ arch/parisc/kernel/firmware.c        | 20 ++++++++++++++++++++
+ arch/parisc/kernel/pdt.c             |  9 +++++++++
+ arch/parisc/kernel/processor.c       |  2 +-
+ arch/parisc/kernel/setup.c           |  6 +++---
+ arch/parisc/kernel/smp.c             |  3 +--
+ arch/parisc/kernel/traps.c           | 10 +++++++++-
+ arch/parisc/kernel/unwind.c          | 12 ++++++++++++
+ arch/parisc/mm/fault.c               | 33 +++++++++++++++++++++++++++++----
+ lib/Kconfig.debug                    |  3 ++-
+ 15 files changed, 108 insertions(+), 14 deletions(-)
+
