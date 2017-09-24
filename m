@@ -1,36 +1,42 @@
-From: Mr Soumaila Sorgho <nicolemarois7410@gmail.com>
-Subject: Greetings From Mr. Soumaila Sorgho
-Date: Sun, 24 Sep 2017 00:28:45 +0000
-Message-ID: <CAEPXuGP_S1nzOuCb92T8n+CdQLo_m87=bkNTKma0apv7oMyY3w__48521.0973224186$1506212944$gmane$org@mail.gmail.com>
-Reply-To: soumailasorgho@yandex.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-To: undisclosed-recipients:;
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] parisc: Export __cmpxchg_u64 unconditionally
+Date: Sun, 24 Sep 2017 10:28:09 -0700
+Message-ID: <1506274089-28269-1-git-send-email-linux@roeck-us.net>
+Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
+To: "James E . J . Bottomley" <jejb@parisc-linux.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+__cmpxchg_u64 is built and used outside CONFIG_64BIT and thus needs
+to be exported. This fixes the following build error seen when building
+parisc:allmodconfig.
+
+ERROR: "__cmpxchg_u64" [drivers/net/ethernet/intel/i40e/i40e.ko] undefined!
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ arch/parisc/kernel/parisc_ksyms.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/parisc/kernel/parisc_ksyms.c b/arch/parisc/kernel/parisc_ksyms.c
+index c6d6272a934f..7baa2265d439 100644
+--- a/arch/parisc/kernel/parisc_ksyms.c
++++ b/arch/parisc/kernel/parisc_ksyms.c
+@@ -35,12 +35,12 @@ EXPORT_SYMBOL(memset);
+ EXPORT_SYMBOL(__xchg8);
+ EXPORT_SYMBOL(__xchg32);
+ EXPORT_SYMBOL(__cmpxchg_u32);
++EXPORT_SYMBOL(__cmpxchg_u64);
+ #ifdef CONFIG_SMP
+ EXPORT_SYMBOL(__atomic_hash);
+ #endif
+ #ifdef CONFIG_64BIT
+ EXPORT_SYMBOL(__xchg64);
+-EXPORT_SYMBOL(__cmpxchg_u64);
+ #endif
+ 
+ #include <linux/uaccess.h>
 -- 
-Greetings From Mr. Soumaila Sorgho
-
-	I have a Mutual/Beneficial Business Project that would be beneficial
-to you. I only have two questions to ask of you, if you are
-interested.
-
-1. Can you handle this project?
-2. Can I give you this trust?
-
-Please note that the deal requires high level of maturity, honesty and
-secrecy. This will involve moving some money from my office, on trust
-to your hands or bank account. Also note that i will do everything to
-make sure that the money is moved as a purely legitimate fund, so you
-will not be exposed to any risk.
-
-I request for your full co-operation. I will give you details and
-procedure when I receive your reply, to commence this transaction, I
-require you to immediately indicate your interest by a return reply. I
-will be waiting for your response in a timely manner.
-
-Contact  Email: soumailasorgho@yandex.com
-Best Regard,
-Mr. Soumaila Sorgho
+2.7.4
