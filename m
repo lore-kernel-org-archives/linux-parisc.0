@@ -1,42 +1,60 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] parisc: Export __cmpxchg_u64 unconditionally
-Date: Sun, 24 Sep 2017 10:28:09 -0700
-Message-ID: <1506274089-28269-1-git-send-email-linux@roeck-us.net>
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-To: "James E . J . Bottomley" <jejb@parisc-linux.org>
+From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Subject: Re: [RFC][PATCH v2 0/7] printk/ia64/ppc64/parisc64: let's deprecate
+ %pF/%pf printk specifiers
+Date: Mon, 25 Sep 2017 16:05:42 +0900
+Message-ID: <20170925070542.GA387@jagdpanzerIV.localdomain>
+References: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
+ <20170922053404.3zpfpwetabjut2er@santosiv.in.ibm.com>
+ <20170922080023.GA599@jagdpanzerIV.localdomain>
+ <3908561D78D1C84285E8C5FCA982C28F61381992@ORSMSX114.amr.corp.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Bottomley <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.ker
+To: "Luck, Tony" <tony.luck@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <3908561D78D1C84285E8C5FCA982C28F61381992@ORSMSX114.amr.corp.intel.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-__cmpxchg_u64 is built and used outside CONFIG_64BIT and thus needs
-to be exported. This fixes the following build error seen when building
-parisc:allmodconfig.
+On (09/22/17 16:48), Luck, Tony wrote:
+[..]
+> Tested patch series on ia64 successfully.
+> 
+> Tested-by: Tony Luck <tony.luck@intel.com>
 
-ERROR: "__cmpxchg_u64" [drivers/net/ethernet/intel/i40e/i40e.ko] undefined!
+thanks!
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- arch/parisc/kernel/parisc_ksyms.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> After this goes upstream, you should submit a patch to get rid of
+> all uses of %pF (70 instances in 35 files) and %pf (63 in 34)
+> 
+> Perhaps break the patch by top-level directory (e.g. get all the %pF
+> and %pF in the 17 files under drivers/ in one patch).
 
-diff --git a/arch/parisc/kernel/parisc_ksyms.c b/arch/parisc/kernel/parisc_ksyms.c
-index c6d6272a934f..7baa2265d439 100644
---- a/arch/parisc/kernel/parisc_ksyms.c
-+++ b/arch/parisc/kernel/parisc_ksyms.c
-@@ -35,12 +35,12 @@ EXPORT_SYMBOL(memset);
- EXPORT_SYMBOL(__xchg8);
- EXPORT_SYMBOL(__xchg32);
- EXPORT_SYMBOL(__cmpxchg_u32);
-+EXPORT_SYMBOL(__cmpxchg_u64);
- #ifdef CONFIG_SMP
- EXPORT_SYMBOL(__atomic_hash);
- #endif
- #ifdef CONFIG_64BIT
- EXPORT_SYMBOL(__xchg64);
--EXPORT_SYMBOL(__cmpxchg_u64);
- #endif
- 
- #include <linux/uaccess.h>
--- 
-2.7.4
+frankly, I was going to have some sort of a lazy deprecation process:
+didn't plan to send out a patch set that would hunt down all pf/pF-s.
+hm...
+
+
+speaking of upstream, any objections if this patch set will go through
+the printk tree, in one piece?
+
+I'll wait for several more days and then resend v3 with updated
+Documentation and tweaked checkpatch warning message.
+
+	-ss
