@@ -1,48 +1,41 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Decrease thread and stack size back to 16kb
-Date: Mon, 25 Sep 2017 17:48:19 +0200
-Message-ID: <20170925154819.GA24985@ls3530.fritz.box>
+From: "Luck, Tony" <tony.luck@intel.com>
+Subject: RE: [RFC][PATCH v2 0/7] printk/ia64/ppc64/parisc64: let's deprecate
+ %pF/%pf printk specifiers
+Date: Mon, 25 Sep 2017 16:29:43 +0000
+Message-ID: <3908561D78D1C84285E8C5FCA982C28F61384020@ORSMSX114.amr.corp.intel.com>
+References: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
+ <20170922053404.3zpfpwetabjut2er@santosiv.in.ibm.com>
+ <20170922080023.GA599@jagdpanzerIV.localdomain>
+ <3908561D78D1C84285E8C5FCA982C28F61381992@ORSMSX114.amr.corp.intel.com>
+ <20170925070542.GA387@jagdpanzerIV.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Cc: Santosh Sivaraj <santosh@fossix.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Bottomley <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170925070542.GA387@jagdpanzerIV.localdomain>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Revert commit 8f8201dfed91 ("parisc: Increase thread and stack size to 32kb").
+> speaking of upstream, any objections if this patch set will go through
+> the printk tree, in one piece?
 
-Starting with kernel 4.11 the thread and irq stacks on parisc randomly overflow
-the default size of 16k. The reason why the stack usage suddenly grew was
-unknown.  Now the stack sizes seem to be back at their usual 8-12kb, so we can
-revert the temporary workaround of commit 8f8201dfed91.
+Seems to be a better idea than trying to coordinate pulls from three
+separate "arch/"  trees.  Fine with me.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/arch/parisc/include/asm/thread_info.h b/arch/parisc/include/asm/thread_info.h
-index bc208136bbb2..88fe0aad4390 100644
---- a/arch/parisc/include/asm/thread_info.h
-+++ b/arch/parisc/include/asm/thread_info.h
-@@ -34,7 +34,7 @@ struct thread_info {
- 
- /* thread information allocation */
- 
--#define THREAD_SIZE_ORDER	3 /* PA-RISC requires at least 32k stack */
-+#define THREAD_SIZE_ORDER	2 /* PA-RISC requires at least 16k stack */
- /* Be sure to hunt all references to this down when you change the size of
-  * the kernel stack */
- #define THREAD_SIZE             (PAGE_SIZE << THREAD_SIZE_ORDER)
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index 0ca254085a66..5404e4086cb9 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -380,7 +380,7 @@ static inline int eirr_to_irq(unsigned long eirr)
- /*
-  * IRQ STACK - used for irq handler
-  */
--#define IRQ_STACK_SIZE      (4096 << 3) /* 32k irq stack size */
-+#define IRQ_STACK_SIZE      (4096 << 2) /* 16k irq stack size */
- 
- union irq_stack_union {
- 	unsigned long stack[IRQ_STACK_SIZE/sizeof(unsigned long)];
+-Tony
