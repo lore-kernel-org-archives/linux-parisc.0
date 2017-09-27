@@ -1,55 +1,64 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH][RFC] parisc: Convert MAP_TYPE to cover 4 bits on parisc
-Date: Tue, 26 Sep 2017 00:21:27 +0200
-Message-ID: <20170925222127.GA29387@ls3530.fritz.box>
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [RFC][PATCH v2 0/7] printk/ia64/ppc64/parisc64: let's deprecate %pF/%pf printk specifiers
+Date: Wed, 27 Sep 2017 15:01:43 +1000
+Message-ID: <871smsg2fc.fsf@concordia.ellerman.id.au>
+References: <20170920162910.32053-1-sergey.senozhatsky@gmail.com> <20170922053404.3zpfpwetabjut2er@santosiv.in.ibm.com> <20170922080023.GA599@jagdpanzerIV.localdomain> <3908561D78D1C84285E8C5FCA982C28F61381992@ORSMSX114.amr.corp.intel.com> <20170925070542.GA387@jagdpanzerIV.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain
+Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        "Yu\, Fenghua" <fenghua.yu@intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        James Bottomley <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "linux-ia64\@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-parisc\@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev\@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        "Luck\, Tony" <tony.luck@intel.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20170925070542.GA387@jagdpanzerIV.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On parisc we want to be as much as possible compatible to the major
-architectures like x86. Those architectures have MAP_TYPE defined as 0x0f which
-covers MAP_SHARED and MAP_PRIVATE and leaves two more bits unused.
+Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com> writes:
 
-In contrast, on parisc we have MAP_TYPE defined to 0x03 which covers MAP_SHARED
-and MAP_PRIVATE only. But we don't have the 2 bits free as x86.
+> On (09/22/17 16:48), Luck, Tony wrote:
+> [..]
+>> Tested patch series on ia64 successfully.
+>> 
+>> Tested-by: Tony Luck <tony.luck@intel.com>
+>
+> thanks!
+>
+>> After this goes upstream, you should submit a patch to get rid of
+>> all uses of %pF (70 instances in 35 files) and %pf (63 in 34)
+>> 
+>> Perhaps break the patch by top-level directory (e.g. get all the %pF
+>> and %pF in the 17 files under drivers/ in one patch).
+>
+> frankly, I was going to have some sort of a lazy deprecation process:
+> didn't plan to send out a patch set that would hunt down all pf/pF-s.
+> hm...
 
-Usually that's not a problem, but during the discussions for pmem+dax support
-the idea came up to use the two remaining bits of MAP_TYPE (on x86 and others)
-for the new MAP_DIRECT and MAP_SYNC flags. One requirement is, that an old
-kernel should correctly handle MAP_DIRECT and MAP_SYNC and fail on those if
-set. This only works if MAP_TYPE has 4 bits.
+That never works though, we have lots of cruft left over from times when
+that's happened and the conversion never quite got finished.
 
-That said, this patch adds the two missing bits in order to gain compatibility
-to x86 and to be maybe prepared if at some point in future we will add pmem+dax
-support (or any other use case as it's done for x86). The patch as it is now
-will not break any old kernel, and if those bits will be used at some point in
-future, it's a requirement that users will need to run a kernel with this patch
-installed.
+At least if you send out the patches to do the removal they might
+eventually get merged.
 
-Link: http://lkml.org/lkml/2017/8/25/502
-Link: http://lkml.org/r/4de21e8d-5e10-ec40-c731-0c079953cf48@gmx.de
-Cc: stable@vger.kernel.org
-Signed-off-by: Helge Deller <deller@gmx.de>
+> speaking of upstream, any objections if this patch set will go through
+> the printk tree, in one piece?
 
-diff --git a/arch/parisc/include/uapi/asm/mman.h b/arch/parisc/include/uapi/asm/mman.h
-index 775b5d5e41a1..71b0d58dcacd 100644
---- a/arch/parisc/include/uapi/asm/mman.h
-+++ b/arch/parisc/include/uapi/asm/mman.h
-@@ -11,9 +11,11 @@
- 
- #define MAP_SHARED	0x01		/* Share changes */
- #define MAP_PRIVATE	0x02		/* Changes are private */
--#define MAP_TYPE	0x03		/* Mask for type of mapping */
-+#define MAP_TYPE	(MAP_SHARED|MAP_PRIVATE|MAP_RESRVD1|MAP_RESRVD2) /* Mask for type of mapping */
- #define MAP_FIXED	0x04		/* Interpret addr exactly */
-+#define MAP_RESRVD1	0x08		/* reserved for 3rd bit of MAP_TYPE */
- #define MAP_ANONYMOUS	0x10		/* don't use a file */
-+#define MAP_RESRVD2	0x20		/* reserved for 4th bit of MAP_TYPE */
- 
- #define MAP_DENYWRITE	0x0800		/* ETXTBSY */
- #define MAP_EXECUTABLE	0x1000		/* mark it as an executable */
+Do you mind putting it in a topic branch (based on rc2) and then merge
+that into the printk tree? That way I can merge the topic branch iff
+there are conflicts later down the line towards 4.15.
+
+cheers
