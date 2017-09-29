@@ -1,46 +1,38 @@
-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Subject: Re: [RFC][PATCH v2 0/7] printk/ia64/ppc64/parisc64: let's deprecate
- %pF/%pf printk specifiers
-Date: Thu, 28 Sep 2017 10:11:35 +0900
-Message-ID: <20170928011135.GB3722@jagdpanzerIV.localdomain>
-References: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
- <20170922053404.3zpfpwetabjut2er@santosiv.in.ibm.com>
- <87y3p0ejx7.fsf@concordia.ellerman.id.au>
+From: MRS <amrutatandle07@gmail.com>
+Subject: Reply Urgently
+Date: Fri, 29 Sep 2017 07:12:05 +0000
+Message-ID: <CAA1SnY1=Xy8P5wY0VEDRSr5or2QgS0MaeKZ_8Jm4n7Rkq0riyA@mail.gmail.com>
+Reply-To: preciousjeremiah09@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Santosh Sivaraj <santosh@fossix.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        James Bottomley <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-To: Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
+To: undisclosed-recipients:;
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <87y3p0ejx7.fsf@concordia.ellerman.id.au>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On (09/27/17 16:26), Michael Ellerman wrote:
-[..]
-> > Tested-by: Santosh Sivaraj <santosh@fossix.org>
-> 
-> Thanks Santosh.
-> 
-> I also gave it a quick spin. I'll give you an ack for the powerpc changes.
-> 
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
-> 
-> 
-> Thanks for cleaning this up Sergey.
+Reply Urgently
+Attn: Sir/Madam
+I am MRS.PRECIOUS JEREMIAH Thomas James Zida the personal resident Attorney
+here in Burkina Faso to Late Mr. Muammar Muhammad Abu Minyar
+al-Gaddafi of Libya c. 1942 =E2=80=93 20 October 2011.
 
-thanks!
+Late Mr. Muammar Muhammad Abu Minyar al-Gaddafi c. 1942 =E2=80=93 20 Octobe=
+r
+2011, commonly known as Colonel Gaddafi, was a Libyan former head of
+state, revolutionary and a politician, who died on 20 October 2011,
+was my client here in Burkina Faso Africa.
 
-	-ss
+My client Late Mr. Muammar Muhammad Abu Minyar al-Gaddafi c. 1942 =E2=80=93=
+ 20
+October 2011, was having a deposit sum of {thirty million four Hundred
+thousand united state dollars} only ($30.4M USD) with a security
+finance firm affiliated with African development bank here in Burkina
+Faso.
+
+With the above explanation=E2=80=99s I want to move this money from Burkina
+Faso to your country, affidavit on your name, but note that this is a
+deal between me and you and should not be related to anybody until the
+deal is over for security reasons, please if interested reply as soon
+as possible.Reply To This E-mail Address preciousjeremiah09@gmail.com
+Thanks,
+MRS.PRECIOUS JEREMIAH Thomas James Zida
