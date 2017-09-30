@@ -1,42 +1,30 @@
-From: Tom Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: HP-UX for C8000
-Date: Sat, 30 Sep 2017 17:25:06 +0200
-Message-ID: <20170930152506.GA10542@alpha.franken.de>
-Mime-Version: 1.0
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: HP-UX for C8000
+Date: Sat, 30 Sep 2017 13:34:35 -0400
+Message-ID: <D582C6C6-78B5-44F4-9705-B4723B651D8E@bell.net>
+References: <20170930152506.GA10542@alpha.franken.de>
+Mime-Version: 1.0 (Apple Message framework v1085)
 Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+To: Tom Bogendoerfer <tsbogend@alpha.franken.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20170930152506.GA10542@alpha.franken.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi,
+Hi Thomas,
 
-while makeing progress on getting better graphic support for C8000
-machines, I'm at a point I need some help...
+On 2017-09-30, at 11:25 AM, Tom Bogendoerfer wrote:
 
-Current status:
+> Does anyone have a C8000 with a running HP-UX on it and can help
+> getting a register dump of quicksilver ?
 
-- PCI Radeon card is passing the DMA tests (using test hack)
-- fixed three bugs in parisc-agp.c (wrong byte order for iommu entries,
-  missing coherence information in iommu entries and missing fdc for
-  ioemmu entries)
-- AGP card are still not working, looks like they don't even start a DMA
-  transfer at all
+I have a c8000 with hpux although I haven't booted it in some time.  Let me know specifically
+what is needed and I'll give it a try.
 
-I'm stuck at this point as there is no documentation for quicksilver
-agp available. The zx1-ioa document only covers mercury agp bridges
-(used and working in ZX2000/ZX6000), but quicksilver is different
-and I couldn't find the missing bit(s), yet. I now have two ideas
-to make progess. I'm going to measure, if a REQ signal is issued on
-the AGP bus and also look if the bridge responds with GNT. The second
-idea involves HP-UX. I want to look what HP-UX does with quicksilver.
+Dave
+--
+John David Anglin	dave.anglin@bell.net
 
-Does anyone have a C8000 with a running HP-UX on it and can help
-getting a register dump of quicksilver ? Otherwise what HP-UX should
-I try to get for a C8000 ?
 
-Thomas.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
