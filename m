@@ -1,26 +1,28 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: HP-UX for C8000
-Date: Sun, 1 Oct 2017 11:02:01 -0400
-Message-ID: <692A47DA-6F88-44E7-AA7C-2DE516387604@bell.net>
-References: <20170930152506.GA10542@alpha.franken.de> <D582C6C6-78B5-44F4-9705-B4723B651D8E@bell.net> <20171001114626.GA16118@alpha.franken.de>
-Mime-Version: 1.0 (Apple Message framework v1085)
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Avoid include of linux/types.h in pdc.h
+Date: Mon, 2 Oct 2017 07:44:24 +0200
+Message-ID: <20171002054424.GA12619@ls3530.fritz.box>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: Tom Bogendoerfer <tsbogend@alpha.franken.de>
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20171001114626.GA16118@alpha.franken.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2017-10-01, at 7:46 AM, Tom Bogendoerfer wrote:
+Make pdc.h more easily reuseable outside of the kernel, e.g. for seabios
+and qemu builds.
 
-> does it have a working graphics card ? 
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-It's a FireGL T2:
-80:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] RV350 GL [FireGL T2] (rev 80)
-
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+diff --git a/arch/parisc/include/uapi/asm/pdc.h b/arch/parisc/include/uapi/asm/pdc.h
+index 1f30b49772aa..25e85448b252 100644
+--- a/arch/parisc/include/uapi/asm/pdc.h
++++ b/arch/parisc/include/uapi/asm/pdc.h
+@@ -339,9 +339,6 @@
+ 
+ #if !defined(__ASSEMBLY__)
+ 
+-#include <linux/types.h>
+-
