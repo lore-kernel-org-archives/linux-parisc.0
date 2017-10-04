@@ -1,10 +1,9 @@
 From: Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCHv3 1/7] switch dereference_function_descriptor() to
- `unsigned long'
-Date: Wed, 4 Oct 2017 10:24:14 +0200
-Message-ID: <20171004082414.GC20084@pathway.suse.cz>
+Subject: Re: [PATCHv3 2/7] sections: split dereference_function_descriptor()
+Date: Wed, 4 Oct 2017 11:00:43 +0200
+Message-ID: <20171004090043.GD20084@pathway.suse.cz>
 References: <20170930025319.987-1-sergey.senozhatsky@gmail.com>
- <20170930025319.987-2-sergey.senozhatsky@gmail.com>
+ <20170930025319.987-3-sergey.senozhatsky@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: Steven Rostedt <rostedt@goodmis.org>,
@@ -21,83 +20,94 @@ Cc: Steven Rostedt <rostedt@goodmis.org>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 To: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20170930025319.987-2-sergey.senozhatsky@gmail.com>
-List-ID: <linux-ia64.vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170930025319.987-3-sergey.senozhatsky@gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sat 2017-09-30 11:53:13, Sergey Senozhatsky wrote:
-> Convert dereference_function_descriptor() to accept and return
-> `unsigned long'. There will be two new ARCH function for kernel
-> and module function pointer dereference, which will work with
-> `unsigned long', so the patch unifies interfaces.
+On Sat 2017-09-30 11:53:14, Sergey Senozhatsky wrote:
+> There are two format specifiers to print out a pointer in symbolic
+> format: '%pS/%ps' and '%pF/%pf'. On most architectures, the two
+> mean exactly the same thing, but some architectures (ia64, ppc64,
+> parisc64) use an indirect pointer for C function pointers, where
+> the function pointer points to a function descriptor (which in
+> turn contains the actual pointer to the code). The '%pF/%pf, when
+> used appropriately, automatically does the appropriate function
+> descriptor dereference on such architectures.
 > 
-> Besides, dereference_function_descriptor() mostly work with
-> `unsigned long':
+> The "when used appropriately" part is tricky. Basically this is
+> a subtle ABI detail, specific to some platforms, that made it to
+> the API level and people can be unaware of it and miss the whole
+> "we need to dereference the function" business out. [1] proves
+> that point (note that it fixes only '%pF' and '%pS', there might
+> be '%pf' and '%ps' cases as well).
 > 
-> Convert dereference_function_descriptor() users tree-wide.
+> It appears that we can handle everything within the affected
+> arches and make '%pS/%ps' smart enough to retire '%pF/%pf'.
+> Function descriptors live in .opd elf section and all affected
+> arches (ia64, ppc64, parisc64) handle it properly for kernel
+> and modules. So we, technically, can decide if the dereference
+> is needed by simply looking at the pointer: if it belongs to
+> .opd section then we need to dereference it.
 
-I am not sure if this is a real win. If I count correctly,
-the net result is 6 additional casts in this patch. Many
-casts are still needed also in the other patches.
+Great catch. I really like this approach!
 
-
-> diff --git a/arch/ia64/include/asm/sections.h b/arch/ia64/include/asm/sections.h
-> index 2ab2003698ef..de6bfa1ef8fb 100644
-> --- a/arch/ia64/include/asm/sections.h
-> +++ b/arch/ia64/include/asm/sections.h
-> @@ -27,13 +27,13 @@ extern char __start_unwind[], __end_unwind[];
->  extern char __start_ivt_text[], __end_ivt_text[];
+> diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
+> index e5da44eddd2f..387f22c41e0d 100644
+> --- a/include/asm-generic/sections.h
+> +++ b/include/asm-generic/sections.h
+> @@ -29,6 +29,7 @@
+>   *	__ctors_start, __ctors_end
+>   *	__irqentry_text_start, __irqentry_text_end
+>   *	__softirqentry_text_start, __softirqentry_text_end
+> + *	__start_opd, __end_opd
+>   */
+>  extern char _text[], _stext[], _etext[];
+>  extern char _data[], _sdata[], _edata[];
+> @@ -47,12 +48,15 @@ extern char __softirqentry_text_start[], __softirqentry_text_end[];
+>  /* Start and end of .ctors section - used for constructor calls. */
+>  extern char __ctors_start[], __ctors_end[];
 >  
->  #undef dereference_function_descriptor
-> -static inline void *dereference_function_descriptor(void *ptr)
-> +static inline unsigned long dereference_function_descriptor(unsigned long ptr)
-
-I would also expect that a function called "dereference*" would work with
-a pointer. The parameter is called ptr but it is unsigned long.
-
->  {
-> -	struct fdesc *desc = ptr;
-> +	struct fdesc *desc = (struct fdesc *)ptr;
->  	void *p;
+> +/* Start and end of .opd section - used for function descriptors. */
+> +extern char __start_opd[], __end_opd[];
+> +
+>  extern __visible const void __nosave_begin, __nosave_end;
 >  
->  	if (!probe_kernel_address(&desc->ip, p))
-> -		ptr = p;
-> +		ptr = (unsigned long)p;
->  	return ptr;
->  }
+> -/* function descriptor handling (if any).  Override
+> - * in asm/sections.h */
+> +/* Function descriptor handling (if any).  Override in asm/sections.h */
+>  #ifndef dereference_function_descriptor
+>  #define dereference_function_descriptor(p) (p)
+> +#define dereference_kernel_function_descriptor(p) (p)
+>  #endif
 >  
-> diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-> index 1ca9a2b4239f..06e1b79e2946 100644
-> --- a/arch/parisc/mm/init.c
-> +++ b/arch/parisc/mm/init.c
-> @@ -389,10 +389,10 @@ static void __init setup_bootmem(void)
->  static int __init parisc_text_address(unsigned long vaddr)
->  {
->  	static unsigned long head_ptr __initdata;
-> +	unsigned long addr = (unsigned long)&parisc_kernel_start;
+>  /* random extra sections (if any).  Override
+> diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+> index 4d0cb9bba93e..172904e9cded 100644
+> --- a/include/linux/moduleloader.h
+> +++ b/include/linux/moduleloader.h
+> @@ -85,6 +85,10 @@ void module_arch_cleanup(struct module *mod);
+>  /* Any cleanup before freeing mod->module_init */
+>  void module_arch_freeing_init(struct module *mod);
 >  
->  	if (!head_ptr)
-> -		head_ptr = PAGE_MASK & (unsigned long)
-> -			dereference_function_descriptor(&parisc_kernel_start);
-> +		head_ptr = PAGE_MASK & dereference_function_descriptor(addr);
+> +/* Dereference module function descriptor */
+> +unsigned long dereference_module_function_descriptor(struct module *mod,
+> +						     unsigned long addr);
+> +
 
-IMHO, this is harder to read than the original. You need to
-search the definition of "addr" and check its manipulation
-to understand the meaning.
+The function is used when the module is already loaded. IMHO,
+include/linux/module.h would be a better place.
 
->  
->  	return core_kernel_text(vaddr) || vaddr == head_ptr;
->  }
+One advantage would be that we could use the same trick
+as in include/asm-generic/sections.h. I mean:
 
+#define dereference_module_function_descriptor(mod, addr) (addr)
 
-To make it clear. All these comments are not a big deal and I do
-not want to invalidate all the acked-by and tested-by just because
-of them.
+and redefine it in the three affected
+arch/<arch>/include/asm/module.h headers. Then it might be completely
+optimized out on all architectures.
 
-But please, consider removing this change if we need to do
-another iteration of this patchset. IMHO, there is no real win
-and it would just pollute the git history.
+Anyway, we need to get ack from Jessica for this change.
 
 Best Regards,
 Petr
