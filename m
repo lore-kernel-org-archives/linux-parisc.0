@@ -1,35 +1,57 @@
-From: Tobias Klauser <tklauser@distanz.ch>
-Subject: Re: [PATCH] net: tulip: de2104x: Convert timers to use
-Date: Thu, 5 Oct 2017 09:40:06 +0200
-Message-ID: <20171005074006.GB1370@distanz.ch>
-References: <20171005005048.GA23304@beast>
+From: Bjorn Helgaas <helgaas@kernel.org>
+Subject: [PATCH 0/4] PCI: Cleanup unused stuff
+Date: Thu, 05 Oct 2017 15:38:23 -0500
+Message-ID: <20171005201939.18300.25690.stgit@bhelgaas-glaptop.roam.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        "yuval.shaia@oracle.com" <yuval.shaia@oracle.com>,
-        Jarod Wilson <jarod@redhat.com>,
-        Philippe Reynes <tremyfr@gmail.com>, netdev@vger.kernel.org,
-        linux-parisc@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-To: Kees Cook <keescook@chromium.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20171005005048.GA23304@beast>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Cc: linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>,
+        linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        David Howells <dhowells@redhat.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        linux-am33-list@redhat.com,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Helge Deller <deller@gmx.de>, x86@kernel.org,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        linux-xtensa@linux-xtensa.org, Mikael Starvik <starvik@axis.com>,
+        Ivan Kokshays
+To: linux-pci@vger.kernel.org
+Return-path: <linux-sh-owner@vger.kernel.org>
+List-ID: <linux-sh.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2017-10-05 at 02:50:48 +0200, Kees Cook <keescook@chromium.org> wrote:
-> In preparation for unconditionally passing the struct timer_list pointer to
-> all timer callbacks, switch to using the new timer_setup() and from_timer()
-> to pass the timer pointer explicitly.
-> 
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: "yuval.shaia@oracle.com" <yuval.shaia@oracle.com>
-> Cc: Tobias Klauser <tklauser@distanz.ch>
-> Cc: Jarod Wilson <jarod@redhat.com>
-> Cc: Philippe Reynes <tremyfr@gmail.com>
-> Cc: netdev@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Sorry for the long cc list.  These are pretty trivial; they just remove
+some unnecessary declarations across several arches.
 
-Reviewed-by: Tobias Klauser <tklauser@distanz.ch>
+---
+
+Bjorn Helgaas (4):
+      PCI: Remove redundant pcibios_set_master() declarations
+      PCI: Remove redundant pci_dev, pci_bus, resource declarations
+      PCI: Remove unused declarations
+      alpha/PCI: Make pdev_save_srm_config() static
+
+
+ arch/alpha/include/asm/pci.h            |    5 -----
+ arch/alpha/kernel/pci.c                 |   11 ++++++++++-
+ arch/alpha/kernel/pci_impl.h            |    8 --------
+ arch/cris/include/asm/pci.h             |    9 ---------
+ arch/frv/include/asm/pci.h              |    4 ----
+ arch/ia64/include/asm/pci.h             |    4 ----
+ arch/mips/include/asm/pci.h             |    4 ----
+ arch/mn10300/include/asm/pci.h          |    4 ----
+ arch/mn10300/unit-asb2305/pci-asb2305.h |    3 ---
+ arch/parisc/include/asm/pci.h           |    8 --------
+ arch/powerpc/include/asm/pci.h          |    2 --
+ arch/sh/include/asm/pci.h               |    4 ----
+ arch/sparc/include/asm/pci_32.h         |    2 --
+ arch/x86/include/asm/pci.h              |    2 --
+ arch/xtensa/include/asm/pci.h           |    2 --
+ 15 files changed, 10 insertions(+), 62 deletions(-)
