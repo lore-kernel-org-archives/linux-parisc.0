@@ -1,9 +1,8 @@
 From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 1/4] PCI: Remove redundant pcibios_set_master()
- declarations
-Date: Thu, 5 Oct 2017 22:57:16 +0200 (CEST)
-Message-ID: <alpine.DEB.2.20.1710052256540.2398@nanos>
-References: <20171005201939.18300.25690.stgit@bhelgaas-glaptop.roam.corp.google.com> <20171005203842.18300.67328.stgit@bhelgaas-glaptop.roam.corp.google.com>
+Subject: Re: [PATCH 3/4] PCI: Remove unused declarations
+Date: Thu, 5 Oct 2017 22:57:53 +0200 (CEST)
+Message-ID: <alpine.DEB.2.20.1710052257350.2398@nanos>
+References: <20171005201939.18300.25690.stgit@bhelgaas-glaptop.roam.corp.google.com> <20171005203856.18300.62381.stgit@bhelgaas-glaptop.roam.corp.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Cc: linux-pci@vger.kernel.org, linux-mips@linux-mips.org,
@@ -25,18 +24,21 @@ Cc: linux-pci@vger.kernel.org, linux-mips@linux-mips.org,
         Fenghua Yu <fenghua.yu@intel.com>,
         linux-xtensa@linux-xtensa.org, Mikael Starvik <starv
 To: Bjorn Helgaas <helgaas@kernel.org>
-Return-path: <sparclinux-owner@vger.kernel.org>
-In-Reply-To: <20171005203842.18300.67328.stgit@bhelgaas-glaptop.roam.corp.google.com>
-List-ID: <sparclinux.vger.kernel.org>
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <20171005203856.18300.62381.stgit@bhelgaas-glaptop.roam.corp.google.com>
+List-ID: <linux-sh.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 On Thu, 5 Oct 2017, Bjorn Helgaas wrote:
 
 > From: Bjorn Helgaas <bhelgaas@google.com>
 > 
-> All users of pcibios_set_master() include <linux/pci.h>, which already has
-> a declaration.  Remove the unnecessary declarations from the <asm/pci.h>
-> files.
+> Remove these unused declarations:
+> 
+>   pcibios_config_init()              # never defined anywhere
+>   pcibios_scan_root()                # only defined by x86
+>   pcibios_get_irq_routing_table()    # only defined by x86
+>   pcibios_set_irq_routing()          # only defined by x86
 > 
 > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 
