@@ -1,10 +1,10 @@
 From: Jesper Nilsson <jesper.nilsson@axis.com>
-Subject: Re: [PATCH 2/4] PCI: Remove redundant pci_dev, pci_bus, resource
+Subject: Re: [PATCH 1/4] PCI: Remove redundant pcibios_set_master()
  declarations
-Date: Fri, 6 Oct 2017 09:27:13 +0200
-Message-ID: <20171006072713.GP17578@axis.com>
+Date: Fri, 6 Oct 2017 09:28:27 +0200
+Message-ID: <20171006072827.GQ17578@axis.com>
 References: <20171005201939.18300.25690.stgit@bhelgaas-glaptop.roam.corp.google.com>
- <20171005203849.18300.20999.stgit@bhelgaas-glaptop.roam.corp.google.com>
+ <20171005203842.18300.67328.stgit@bhelgaas-glaptop.roam.corp.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: linux-pci@vger.kernel.org, linux-mips@linux-mips.org,
@@ -25,39 +25,34 @@ Cc: linux-pci@vger.kernel.org, linux-mips@linux-mips.org,
         Fenghua Yu <fenghua.yu@intel.com>,
         linux-xtensa@linux-xtensa.org, Mikael Starvik <starvik@axis.com>,
 To: Bjorn Helgaas <helgaas@kernel.org>
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <20171005203849.18300.20999.stgit@bhelgaas-glaptop.roam.corp.google.com>
-List-ID: <linux-sh.vger.kernel.org>
+Return-path: <linux-ia64-owner@vger.kernel.org>
+In-Reply-To: <20171005203842.18300.67328.stgit@bhelgaas-glaptop.roam.corp.google.com>
+List-ID: <linux-ia64.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Oct 05, 2017 at 03:38:49PM -0500, Bjorn Helgaas wrote:
+On Thu, Oct 05, 2017 at 03:38:42PM -0500, Bjorn Helgaas wrote:
 > From: Bjorn Helgaas <bhelgaas@google.com>
 > 
-> <linux/pci.h> defines struct pci_bus and struct pci_dev and includes the
-> struct resource definition before including <asm/pci.h>.  Nobody includes
-> <asm/pci.h> directly, so they don't need their own declarations.
-> 
-> Remove the redundant struct pci_dev, pci_bus, resource declarations.
+> All users of pcibios_set_master() include <linux/pci.h>, which already has
+> a declaration.  Remove the unnecessary declarations from the <asm/pci.h>
+> files.
 > 
 > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 > ---
->  arch/alpha/include/asm/pci.h    |    3 ---
->  arch/cris/include/asm/pci.h     |    2 --
+>  arch/alpha/include/asm/pci.h   |    2 --
+>  arch/cris/include/asm/pci.h    |    1 -
 
 For what it's worth, for the cris changes:
 
 Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
 
->  arch/frv/include/asm/pci.h      |    2 --
->  arch/ia64/include/asm/pci.h     |    2 --
->  arch/mips/include/asm/pci.h     |    2 --
->  arch/mn10300/include/asm/pci.h  |    2 --
->  arch/parisc/include/asm/pci.h   |    7 -------
->  arch/powerpc/include/asm/pci.h  |    2 --
->  arch/sh/include/asm/pci.h       |    2 --
->  arch/sparc/include/asm/pci_32.h |    2 --
->  arch/xtensa/include/asm/pci.h   |    2 --
->  11 files changed, 28 deletions(-)
+>  arch/frv/include/asm/pci.h     |    2 --
+>  arch/mips/include/asm/pci.h    |    2 --
+>  arch/mn10300/include/asm/pci.h |    2 --
+>  arch/parisc/include/asm/pci.h  |    1 -
+>  arch/sh/include/asm/pci.h      |    2 --
+>  arch/x86/include/asm/pci.h     |    1 -
+>  8 files changed, 13 deletions(-)
 
 /^JN - Jesper Nilsson
 -- 
