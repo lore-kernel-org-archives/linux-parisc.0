@@ -1,27 +1,58 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: HP-UX for C8000
-Date: Sun, 8 Oct 2017 12:41:35 -0400
-Message-ID: <45425BF6-26D1-4232-957D-F3F057A8966A@bell.net>
-References: <20170930152506.GA10542@alpha.franken.de> <D582C6C6-78B5-44F4-9705-B4723B651D8E@bell.net> <20171001114626.GA16118@alpha.franken.de> <692A47DA-6F88-44E7-AA7C-2DE516387604@bell.net> <20171006143917.GA4906@alpha.franken.de> <E9BCD0C2-329E-4E93-B4B8-2B928C458BE0@bell.net>
-Mime-Version: 1.0 (Apple Message framework v1085)
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH 1/4] PCI: Remove redundant pcibios_set_master()
+ declarations
+Date: Mon, 9 Oct 2017 15:10:02 +0200
+Message-ID: <20171009131002.GF20977@linux-mips.org>
+References: <20171005201939.18300.25690.stgit@bhelgaas-glaptop.roam.corp.google.com>
+ <20171005203842.18300.67328.stgit@bhelgaas-glaptop.roam.corp.google.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Tom Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <E9BCD0C2-329E-4E93-B4B8-2B928C458BE0@bell.net>
-List-ID: <linux-parisc.vger.kernel.org>
+Cc: linux-pci@vger.kernel.org, linux-mips@linux-mips.org,
+        Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org,
+        linux-sh@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        David Howells <dhowells@redhat.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        linux-am33-list@redhat.com,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Helge Deller <deller@gmx.de>, x86@kernel.org,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        linux-xtensa@linux-xtensa.org, Mikael Starvik <starv
+To: Bjorn Helgaas <helgaas@kernel.org>
+Return-path: <sparclinux-owner@vger.kernel.org>
+In-Reply-To: <20171005203842.18300.67328.stgit@bhelgaas-glaptop.roam.corp.google.com>
+List-ID: <sparclinux.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2017-10-08, at 12:22 PM, John David Anglin wrote:
+On Thu, Oct 05, 2017 at 03:38:42PM -0500, Bjorn Helgaas wrote:
 
-> mmap: Invalid argument
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> All users of pcibios_set_master() include <linux/pci.h>, which already has
+> a declaration.  Remove the unnecessary declarations from the <asm/pci.h>
+> files.
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  arch/alpha/include/asm/pci.h   |    2 --
+>  arch/cris/include/asm/pci.h    |    1 -
+>  arch/frv/include/asm/pci.h     |    2 --
+>  arch/mips/include/asm/pci.h    |    2 --
+>  arch/mn10300/include/asm/pci.h |    2 --
+>  arch/parisc/include/asm/pci.h  |    1 -
+>  arch/sh/include/asm/pci.h      |    2 --
+>  arch/x86/include/asm/pci.h     |    1 -
+>  8 files changed, 13 deletions(-)
 
-Same occurs when gcc is used to compile program.
+For MIPS:
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
+Acked-by: Ralf Baechle <ralf@linux-mips.org>
 
-
-
+  Ralf
