@@ -1,50 +1,33 @@
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH 2/4] PCI: Remove redundant pci_dev, pci_bus, resource
- declarations
-Date: Mon, 9 Oct 2017 15:12:27 +0200
-Message-ID: <20171009131227.GG20977@linux-mips.org>
-References: <20171005201939.18300.25690.stgit@bhelgaas-glaptop.roam.corp.google.com>
- <20171005203849.18300.20999.stgit@bhelgaas-glaptop.roam.corp.google.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: HP-UX for C8000
+Date: Mon, 9 Oct 2017 17:34:41 +0200
+Message-ID: <d6efa26f-9daf-a42f-c4e8-a2f050faf322@gmx.de>
+References: <20170930152506.GA10542@alpha.franken.de>
+ <D582C6C6-78B5-44F4-9705-B4723B651D8E@bell.net>
+ <20171001114626.GA16118@alpha.franken.de>
+ <692A47DA-6F88-44E7-AA7C-2DE516387604@bell.net>
+ <20171006143917.GA4906@alpha.franken.de>
+ <E9BCD0C2-329E-4E93-B4B8-2B928C458BE0@bell.net>
+ <45425BF6-26D1-4232-957D-F3F057A8966A@bell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-pci@vger.kernel.org, linux-mips@linux-mips.org,
-        Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org,
-        linux-sh@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        David Howells <dhowells@redhat.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        linux-am33-list@redhat.com,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Helge Deller <deller@gmx.de>, x86@kernel.org,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        linux-xtensa@linux-xtensa.org, Mikael Starvik <starv
-To: Bjorn Helgaas <helgaas@kernel.org>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20171005203849.18300.20999.stgit@bhelgaas-glaptop.roam.corp.google.com>
-List-ID: <linux-ia64.vger.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Cc: Tom Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <45425BF6-26D1-4232-957D-F3F057A8966A@bell.net>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Oct 05, 2017 at 03:38:49PM -0500, Bjorn Helgaas wrote:
+On 08.10.2017 18:41, John David Anglin wrote:
+> On 2017-10-08, at 12:22 PM, John David Anglin wrote:
+>> mmap: Invalid argument
+> Same occurs when gcc is used to compile program.
 
-> From: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> <linux/pci.h> defines struct pci_bus and struct pci_dev and includes the
-> struct resource definition before including <asm/pci.h>.  Nobody includes
-> <asm/pci.h> directly, so they don't need their own declarations.
-> 
-> Remove the redundant struct pci_dev, pci_bus, resource declarations.
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Maybe PDC does not reset (all of?) those registers when it reboots?
+If so, maybe it's possible to boot into Linux afterwards and get the registers from there?
 
-For MIPS:
+Or, even better, add some code to palo and boot into palo to print out
+the wanted registers?
 
-Acked-by: Ralf Baechle <ralf@linux-mips.org>
-
-  Ralf
+Helge
