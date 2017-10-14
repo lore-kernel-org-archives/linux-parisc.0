@@ -1,28 +1,31 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: HP-UX for C8000
-Date: Tue, 10 Oct 2017 18:06:41 -0400
-Message-ID: <5CF7B86C-F92C-4CED-8A90-A11ABCFBE6B4@bell.net>
-References: <D582C6C6-78B5-44F4-9705-B4723B651D8E@bell.net> <20171001114626.GA16118@alpha.franken.de> <692A47DA-6F88-44E7-AA7C-2DE516387604@bell.net> <20171006143917.GA4906@alpha.franken.de> <E9BCD0C2-329E-4E93-B4B8-2B928C458BE0@bell.net> <45425BF6-26D1-4232-957D-F3F057A8966A@bell.net> <d6efa26f-9daf-a42f-c4e8-a2f050faf322@gmx.de> <8A61C252-CA15-44AB-9225-EAA6C259E872@bell.net> <20171009174146.GA21988@alpha.franken.de> <7521862C-4EC7-47F5-AFF9-41A44775CFAB@bell.net> <20171010184621.GA18582@alpha.franken.de>
-Mime-Version: 1.0 (Apple Message framework v1085)
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: Re: [PATCH] parisc: parport_gsc: constify parisc_device_id
+Date: Sat, 14 Oct 2017 22:27:37 +0100
+Message-ID: <20171014212737.GA4712@sudip-laptop>
+References: <208280b55a359db78eecee720799955f2043fb49.1503162439.git.arvind.yadav.cs@gmail.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: Tom Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: jejb@parisc-linux.org, deller@gmx.de, linux-kernel@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20171010184621.GA18582@alpha.franken.de>
+In-Reply-To: <208280b55a359db78eecee720799955f2043fb49.1503162439.git.arvind.yadav.cs@gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2017-10-10, at 2:46 PM, Tom Bogendoerfer wrote:
+On Sat, Aug 19, 2017 at 10:38:41PM +0530, Arvind Yadav wrote:
+> parisc_device_id are not supposed to change at runtime. All functions
+> working with parisc_device_id provided by <asm/parisc-device.h> work
+> with
+> const parisc_device_id. So mark the non-const structs as const.
+> 
+> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+> ---
+>  drivers/parport/parport_gsc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Does anybody have HP-UX ISOs ? I have enough spare disks and C8000 to
-> run one with HP-UX. The problem is I don't have a mediakit and can't
-> find one on ebay...
+This has already been done by f0973443bef7 ("parisc/parport_gsc: Fix section mismatches")
 
-I believe I have ISOs but I'll have to dig.  I'll look next weekend.
-
-Dave
 --
-John David Anglin	dave.anglin@bell.net
-
-
-
+Regards
+Sudip
