@@ -1,52 +1,92 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: scsi: Wrong diagnostic page; asked for 1 got 8
-Date: Sun, 15 Oct 2017 18:33:09 -0400
-Message-ID: <B53C874B-D705-498B-8677-CBA2A5842010@bell.net>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: text/plain; charset=us-ascii
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-To: linux-parisc List <linux-parisc@vger.kernel.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+From: Kees Cook <keescook@chromium.org>
+Subject: [PATCH 14/58] net: tulip: de2104x: Convert timers to use timer_setup()
+Date: Mon, 16 Oct 2017 17:28:58 -0700
+Message-ID: <1508200182-104605-15-git-send-email-keescook@chromium.org>
+References: <1508200182-104605-1-git-send-email-keescook@chromium.org>
+Cc: Kees Cook <keescook@chromium.org>,
+        "yuval.shaia@oracle.com" <yuval.shaia@oracle.com>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Jarod Wilson <jarod@redhat.com>,
+        Philippe Reynes <tremyfr@gmail.com>, netdev@vger.kernel.org,
+        linux-parisc@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+To: "David S. Miller" <davem@davemloft.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1508200182-104605-1-git-send-email-keescook@chromium.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I noticed the following scsi boot issues with v4.13.7:
+In preparation for unconditionally passing the struct timer_list pointer to
+all timer callbacks, switch to using the new timer_setup() and from_timer()
+to pass the timer pointer explicitly.
 
-[    8.961944] scsi 3:0:0:0: Direct-Access     WD       My Passport 0748 1022 PQ: 0 ANSI: 
-6
-[    8.964334] scsi 3:0:0:1: Enclosure         WD       SES Device       1022 PQ: 0 ANSI: 
-6
-[    9.062546] sd 3:0:0:0: [sda] Spinning up disk...
-[   10.080033] .[   10.436010] scsi 2:0:0:0: Direct-Access     SEAGATE  ST3300007LC      D705 PQ
-: 0 ANSI: 3
-[   10.436010] scsi target2:0:0: tagged command queuing enabled, command queue depth 16.
-[   10.436010] scsi target2:0:0: Beginning Domain Validation
-[   10.443210] scsi target2:0:0: FAST-80 WIDE SCSI 160.0 MB/s DT (12.5 ns, offset 31)
-[   10.451755] scsi target2:0:0: Ending Domain Validation
-[   10.453274] sd 2:0:0:0: [sdb] 585937500 512-byte logical blocks: (300 GB/279 GiB)
-[   10.458212] sd 2:0:0:0: [sdb] Write Protect is off
-[   10.458212] sd 2:0:0:0: [sdb] Mode Sense: ab 00 10 08
-[   10.460232] sd 2:0:0:0: [sdb] Write cache: disabled, read cache: enabled, supports DPO 
-and FUA
-[   10.493071]  sdb: sdb1
-[   10.528764] sd 2:0:0:0: [sdb] Attached SCSI disk
-[   12.053526] scsi 3:0:0:1: Wrong diagnostic page; asked for 1 got 8
-[   12.053707] scsi 3:0:0:1: Failed to get diagnostic page 0xffffffea
-[   12.053696] ready
-[   12.054129] scsi 3:0:0:1: Failed to bind enclosure -19
-[   12.054363] ses 3:0:0:1: Attached Enclosure device
-[   12.054495] sd 3:0:0:0: [sda] 3906963456 512-byte logical blocks: (2.00 TB/1.82 TiB)
-[   12.062494] sd 3:0:0:0: [sda] Write Protect is off
-[   12.062494] sd 3:0:0:0: [sda] Mode Sense: 47 00 10 08[   12.063619] sd 3:0:0:0: [sda] No Caching mode page found
-[   12.066860] sd 3:0:0:0: [sda] Assuming drive cache: write through
-[   12.104257]  sda: sda1 sda2
-[   12.151862] sd 3:0:0:0: [sda] Attached SCSI disk
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: "yuval.shaia@oracle.com" <yuval.shaia@oracle.com>
+Cc: Tobias Klauser <tklauser@distanz.ch>
+Cc: Jarod Wilson <jarod@redhat.com>
+Cc: Philippe Reynes <tremyfr@gmail.com>
+Cc: netdev@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Tobias Klauser <tklauser@distanz.ch>
+---
+ drivers/net/ethernet/dec/tulip/de2104x.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
 
-Haven't seen this before.
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
+index c87b8cc42963..13430f75496c 100644
+--- a/drivers/net/ethernet/dec/tulip/de2104x.c
++++ b/drivers/net/ethernet/dec/tulip/de2104x.c
+@@ -333,8 +333,8 @@ static void de_set_rx_mode (struct net_device *dev);
+ static void de_tx (struct de_private *de);
+ static void de_clean_rings (struct de_private *de);
+ static void de_media_interrupt (struct de_private *de, u32 status);
+-static void de21040_media_timer (unsigned long data);
+-static void de21041_media_timer (unsigned long data);
++static void de21040_media_timer (struct timer_list *t);
++static void de21041_media_timer (struct timer_list *t);
+ static unsigned int de_ok_to_advertise (struct de_private *de, u32 new_media);
+ 
+ 
+@@ -959,9 +959,9 @@ static void de_next_media (struct de_private *de, const u32 *media,
+ 	}
+ }
+ 
+-static void de21040_media_timer (unsigned long data)
++static void de21040_media_timer (struct timer_list *t)
+ {
+-	struct de_private *de = (struct de_private *) data;
++	struct de_private *de = from_timer(de, t, media_timer);
+ 	struct net_device *dev = de->dev;
+ 	u32 status = dr32(SIAStatus);
+ 	unsigned int carrier;
+@@ -1040,9 +1040,9 @@ static unsigned int de_ok_to_advertise (struct de_private *de, u32 new_media)
+ 	return 1;
+ }
+ 
+-static void de21041_media_timer (unsigned long data)
++static void de21041_media_timer (struct timer_list *t)
+ {
+-	struct de_private *de = (struct de_private *) data;
++	struct de_private *de = from_timer(de, t, media_timer);
+ 	struct net_device *dev = de->dev;
+ 	u32 status = dr32(SIAStatus);
+ 	unsigned int carrier;
+@@ -1999,12 +1999,9 @@ static int de_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	de->msg_enable = (debug < 0 ? DE_DEF_MSG_ENABLE : debug);
+ 	de->board_idx = board_idx;
+ 	spin_lock_init (&de->lock);
+-	init_timer(&de->media_timer);
+-	if (de->de21040)
+-		de->media_timer.function = de21040_media_timer;
+-	else
+-		de->media_timer.function = de21041_media_timer;
+-	de->media_timer.data = (unsigned long) de;
++	timer_setup(&de->media_timer,
++		    de->de21040 ? de21040_media_timer : de21041_media_timer,
++		    0);
+ 
+ 	netif_carrier_off(dev);
+ 
+-- 
+2.7.4
