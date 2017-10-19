@@ -1,10 +1,11 @@
 From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Subject: Re: [PATCHv3 2/7] sections: split dereference_function_descriptor()
-Date: Thu, 19 Oct 2017 15:45:44 +0900
-Message-ID: <20171019064544.GE449@jagdpanzerIV>
+Subject: Re: [PATCHv3 1/7] switch dereference_function_descriptor() to
+ `unsigned long'
+Date: Thu, 19 Oct 2017 15:50:04 +0900
+Message-ID: <20171019065004.GF449@jagdpanzerIV>
 References: <20170930025319.987-1-sergey.senozhatsky@gmail.com>
- <20170930025319.987-3-sergey.senozhatsky@gmail.com>
- <20171004090043.GD20084@pathway.suse.cz>
+ <20170930025319.987-2-sergey.senozhatsky@gmail.com>
+ <20171004082414.GC20084@pathway.suse.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
@@ -23,38 +24,23 @@ Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 To: Petr Mladek <pmladek@suse.com>
 Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20171004090043.GD20084@pathway.suse.cz>
+In-Reply-To: <20171004082414.GC20084@pathway.suse.cz>
 List-ID: <linux-ia64.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On (10/04/17 11:00), Petr Mladek wrote:
+On (10/04/17 10:24), Petr Mladek wrote:
 [..]
-> >  /* random extra sections (if any).  Override
-> > diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
-> > index 4d0cb9bba93e..172904e9cded 100644
-> > --- a/include/linux/moduleloader.h
-> > +++ b/include/linux/moduleloader.h
-> > @@ -85,6 +85,10 @@ void module_arch_cleanup(struct module *mod);
-> >  /* Any cleanup before freeing mod->module_init */
-> >  void module_arch_freeing_init(struct module *mod);
-> >  
-> > +/* Dereference module function descriptor */
-> > +unsigned long dereference_module_function_descriptor(struct module *mod,
-> > +						     unsigned long addr);
-> > +
-> 
-> The function is used when the module is already loaded. IMHO,
-> include/linux/module.h would be a better place.
-> 
-> One advantage would be that we could use the same trick
-> as in include/asm-generic/sections.h. I mean:
-> 
-> #define dereference_module_function_descriptor(mod, addr) (addr)
-> 
-> and redefine it in the three affected
-> arch/<arch>/include/asm/module.h headers. Then it might be completely
-> optimized out on all architectures.
+> To make it clear. All these comments are not a big deal and I do
+> not want to invalidate all the acked-by and tested-by just because
+> of them.
+>
+> But please, consider removing this change if we need to do
+> another iteration of this patchset. IMHO, there is no real win
+> and it would just pollute the git history.
 
-will take a look.
+I tend to rather keep it. would that cause any problems on your side?
+it saves a ton of ugly casts later in the patch set and lets us to drop
+some casts from the modules code/etc. the patch is here because otherwise
+I had to add a bunch of new casts.
 
 	-ss
