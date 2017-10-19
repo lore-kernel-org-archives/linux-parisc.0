@@ -1,11 +1,10 @@
 From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Subject: Re: [PATCHv3 4/7] powerpc64: Add .opd based function descriptor
- dereference
-Date: Thu, 19 Oct 2017 15:45:04 +0900
-Message-ID: <20171019064504.GD449@jagdpanzerIV>
+Subject: Re: [PATCHv3 2/7] sections: split dereference_function_descriptor()
+Date: Thu, 19 Oct 2017 15:45:44 +0900
+Message-ID: <20171019064544.GE449@jagdpanzerIV>
 References: <20170930025319.987-1-sergey.senozhatsky@gmail.com>
- <20170930025319.987-5-sergey.senozhatsky@gmail.com>
- <20171004092108.GF20084@pathway.suse.cz>
+ <20170930025319.987-3-sergey.senozhatsky@gmail.com>
+ <20171004090043.GD20084@pathway.suse.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
@@ -23,32 +22,39 @@ Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 To: Petr Mladek <pmladek@suse.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20171004092108.GF20084@pathway.suse.cz>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-ia64-owner@vger.kernel.org>
+In-Reply-To: <20171004090043.GD20084@pathway.suse.cz>
+List-ID: <linux-ia64.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On (10/04/17 11:21), Petr Mladek wrote:
+On (10/04/17 11:00), Petr Mladek wrote:
 [..]
-> > +#ifdef PPC64_ELF_ABI_v1
+> >  /* random extra sections (if any).  Override
+> > diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+> > index 4d0cb9bba93e..172904e9cded 100644
+> > --- a/include/linux/moduleloader.h
+> > +++ b/include/linux/moduleloader.h
+> > @@ -85,6 +85,10 @@ void module_arch_cleanup(struct module *mod);
+> >  /* Any cleanup before freeing mod->module_init */
+> >  void module_arch_freeing_init(struct module *mod);
+> >  
+> > +/* Dereference module function descriptor */
 > > +unsigned long dereference_module_function_descriptor(struct module *mod,
-> > +						     unsigned long addr)
-> > +{
-> > +	if (addr < mod->arch.start_opd || addr >= mod->arch.end_opd)
-> > +		return addr;
+> > +						     unsigned long addr);
 > > +
-> > +	return dereference_function_descriptor(addr);
-> > +}
-> > +#endif /* PPC64_ELF_ABI_v1 */
 > 
-> I would personally move this up in the source file. It is related to
-> the definition of func_desc() and other functions that are
-> also PPC_ELF_ABI-specific.
+> The function is used when the module is already loaded. IMHO,
+> include/linux/module.h would be a better place.
 > 
-> Otherwise, it looks good to me.
+> One advantage would be that we could use the same trick
+> as in include/asm-generic/sections.h. I mean:
 > 
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> #define dereference_module_function_descriptor(mod, addr) (addr)
+> 
+> and redefine it in the three affected
+> arch/<arch>/include/asm/module.h headers. Then it might be completely
+> optimized out on all architectures.
 
-OK, will move.
+will take a look.
 
 	-ss
