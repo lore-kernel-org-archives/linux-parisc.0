@@ -1,93 +1,52 @@
-From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: [RFC][PATCH v2 0/7] printk/ia64/ppc64/parisc64: let's deprecate
- %pF/%pf printk specifiers
-Date: Thu, 19 Oct 2017 23:11:24 +0900
-Message-ID: <20171019141124.GB498@tigerII.localdomain>
-References: <20170920162910.32053-1-sergey.senozhatsky@gmail.com>
- <20170922053404.3zpfpwetabjut2er@santosiv.in.ibm.com>
- <20170922080023.GA599@jagdpanzerIV.localdomain>
- <3908561D78D1C84285E8C5FCA982C28F61381992@ORSMSX114.amr.corp.intel.com>
- <20170925070542.GA387@jagdpanzerIV.localdomain>
- <871smsg2fc.fsf@concordia.ellerman.id.au>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc architecture fixes for 4.14
+Date: Thu, 19 Oct 2017 20:22:58 +0200
+Message-ID: <20171019182258.GA8290@ls3530.fritz.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        James Bottomley <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel
-To: Michael Ellerman <mpe@ellerman.id.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <871smsg2fc.fsf@concordia.ellerman.id.au>
-List-ID: <linux-kernel.vger.kernel.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Michael,
+Hi Linus,
 
-On (09/27/17 15:01), Michael Ellerman wrote:
-> Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com> writes:
-> 
-> > On (09/22/17 16:48), Luck, Tony wrote:
-> > [..]
-> >> Tested patch series on ia64 successfully.
-> >> 
-> >> Tested-by: Tony Luck <tony.luck@intel.com>
-> >
-> > thanks!
-> >
-> >> After this goes upstream, you should submit a patch to get rid of
-> >> all uses of %pF (70 instances in 35 files) and %pf (63 in 34)
-> >> 
-> >> Perhaps break the patch by top-level directory (e.g. get all the %pF
-> >> and %pF in the 17 files under drivers/ in one patch).
-> >
-> > frankly, I was going to have some sort of a lazy deprecation process:
-> > didn't plan to send out a patch set that would hunt down all pf/pF-s.
-> > hm...
-> 
-> That never works though, we have lots of cruft left over from times when
-> that's happened and the conversion never quite got finished.
+please pull three small but important fixes for the parisc architecture for kernel 4.14 from:
 
-this time around it's different, I promise! :)
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.14-3
 
+Three small important fixes for the parisc architecture:
 
-well...
-I guess I can send out a tree wide pf/pF removal patch set. later.
-when we will see that .opd based dereference does not make anyone
-unhappy.
+- Export __cmpxchg_u64() symbol on 32bit kernel too. This unbreaks building the
+  kernel with ixgbe kernel module. From Guenter Roeck.
 
-and I think we can't remove pf/pF from the kernel completely. it
-will stay in vscnprintf() for some time. old habits die hard, I suppose,
-there might be people using it for debugging/etc.
+- Fix 64-bit atomic cmpxchg kernel helper function for 32-bit kernel in LWS
+  code for userspace. This unbreaks e.g. the 64-bit variant of the glibc
+  function __sync_fetch_and_add() with a 32-bit parisc kernel. From John
+  David Anglin, tagged for backport to v3.13+.
 
+- Detect nonsynchronous CPU-internal cr16 cycle counters more reliable. This
+  avoids stalled CPU warnings by the kernel soft lockup detector. From me,
+  tagged for backport to v4.13+.
 
-> At least if you send out the patches to do the removal they might
-> eventually get merged.
-> 
-> > speaking of upstream, any objections if this patch set will go through
-> > the printk tree, in one piece?
-> 
-> Do you mind putting it in a topic branch (based on rc2) and then merge
-> that into the printk tree? That way I can merge the topic branch iff
-> there are conflicts later down the line towards 4.15.
+Thanks,
+Helge
 
-ok, let me re-spin the series. there are some changes here
-and there, so I'll drop Tested-by/Reviewed-by tags and will
-ask platforms' maintainers to re-test the patch set :(
+----------------------------------------------------------------
+Guenter Roeck (1):
+      parisc: Export __cmpxchg_u64 unconditionally
 
-if everything goes OK, then we can ask Petr to do the topic
-branch (I don't have a kernel.org account).
+Helge Deller (1):
+      parisc: Fix detection of nonsynchronous cr16 cycle counters
 
-	-ss
+John David Anglin (1):
+      parisc: Fix double-word compare and exchange in LWS code on 32-bit kernels
+
+ arch/parisc/kernel/parisc_ksyms.c | 2 +-
+ arch/parisc/kernel/syscall.S      | 6 +++---
+ arch/parisc/kernel/time.c         | 5 ++++-
+ 3 files changed, 8 insertions(+), 5 deletions(-)
