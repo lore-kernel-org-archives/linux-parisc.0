@@ -1,20 +1,21 @@
-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Subject: Re: [PATCHv3 1/7] switch dereference_function_descriptor() to
- `unsigned long'
-Date: Thu, 19 Oct 2017 15:50:04 +0900
-Message-ID: <20171019065004.GF449@jagdpanzerIV>
+From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: Re: [PATCHv3 4/7] powerpc64: Add .opd based function descriptor
+ dereference
+Date: Thu, 19 Oct 2017 23:01:06 +0900
+Message-ID: <20171019140106.GA498@tigerII.localdomain>
 References: <20170930025319.987-1-sergey.senozhatsky@gmail.com>
- <20170930025319.987-2-sergey.senozhatsky@gmail.com>
- <20171004082414.GC20084@pathway.suse.cz>
+ <20170930025319.987-5-sergey.senozhatsky@gmail.com>
+ <20171004092108.GF20084@pathway.suse.cz>
+ <87r2ujp3yc.fsf@concordia.ellerman.id.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+Cc: Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Tony Luck <tony.luck@intel.com>,
         Fenghua Yu <fenghua.yu@intel.com>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
         James Bottomley <jejb@parisc-linux.org>,
         Helge Deller <deller@gmx.de>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -22,25 +23,48 @@ Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-To: Petr Mladek <pmladek@suse.com>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20171004082414.GC20084@pathway.suse.cz>
-List-ID: <linux-ia64.vger.kernel.org>
+To: Michael Ellerman <mpe@ellerman.id.au>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <87r2ujp3yc.fsf@concordia.ellerman.id.au>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On (10/04/17 10:24), Petr Mladek wrote:
-[..]
-> To make it clear. All these comments are not a big deal and I do
-> not want to invalidate all the acked-by and tested-by just because
-> of them.
->
-> But please, consider removing this change if we need to do
-> another iteration of this patchset. IMHO, there is no real win
-> and it would just pollute the git history.
+Hello,
 
-I tend to rather keep it. would that cause any problems on your side?
-it saves a ton of ugly casts later in the patch set and lets us to drop
-some casts from the modules code/etc. the patch is here because otherwise
-I had to add a bunch of new casts.
+Michael, sorry for the delay. I'm catching up with the emails
+after... absence.
+
+On (10/04/17 22:06), Michael Ellerman wrote:
+> Petr Mladek <pmladek@suse.com> writes:
+> > On Sat 2017-09-30 11:53:16, Sergey Senozhatsky wrote:
+> >> diff --git a/arch/powerpc/kernel/module_64.c b/arch/powerpc/kernel/module_64.c
+> >> index 0b0f89685b67..94caec045a90 100644
+> >> --- a/arch/powerpc/kernel/module_64.c
+> >> +++ b/arch/powerpc/kernel/module_64.c
+> >> @@ -712,6 +717,17 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
+> >>  	return 0;
+> >>  }
+> >>  
+> >> +#ifdef PPC64_ELF_ABI_v1
+> >> +unsigned long dereference_module_function_descriptor(struct module *mod,
+> >> +						     unsigned long addr)
+> >> +{
+> >> +	if (addr < mod->arch.start_opd || addr >= mod->arch.end_opd)
+> >> +		return addr;
+> >> +
+> >> +	return dereference_function_descriptor(addr);
+> >> +}
+> >> +#endif /* PPC64_ELF_ABI_v1 */
+> >
+> > I would personally move this up in the source file. It is related to
+> > the definition of func_desc() and other functions that are
+> > also PPC_ELF_ABI-specific.
+> 
+> Yeah that would be neater. There's already a PPC64_ELF_ABI_v2 block, you
+> could put this in the else case of that.
+> 
+> But we can do that later if you're not respinning otherwise.
+
+will do.
 
 	-ss
