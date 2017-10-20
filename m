@@ -1,52 +1,121 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture fixes for 4.14
-Date: Thu, 19 Oct 2017 20:22:58 +0200
-Message-ID: <20171019182258.GA8290@ls3530.fritz.box>
+From: Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCHv3 6/7] symbol lookup: use new kernel and module
+ dereference functions
+Date: Fri, 20 Oct 2017 15:08:48 +0200
+Message-ID: <20171020130848.GC22070@pathway.suse.cz>
+References: <20170930025319.987-1-sergey.senozhatsky@gmail.com>
+ <20170930025319.987-7-sergey.senozhatsky@gmail.com>
+ <20171004115306.GH20084@pathway.suse.cz>
+ <20171019064235.GB449@jagdpanzerIV>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Guenter Roeck <linux@roeck-us.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Bottomley <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20171019064235.GB449@jagdpanzerIV>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+On Thu 2017-10-19 15:42:35, Sergey Senozhatsky wrote:
+> Sorry for the delay and thanks for taking a look.
+> 
+> I'll try to re-spin the patch set by the end of this week/early next
+> week.
+> 
+> 
+> On (10/04/17 13:53), Petr Mladek wrote:
+> [..]
+> > Note that kallsyms_lookup() and module_address_lookup() is used
+> > in many other situations.
+> 
+> we dereference only things that can be dereferenced.
+> so calling it on already dereferenced address, or address
+> that does need to be dereferenced is OK.
 
-please pull three small but important fixes for the parisc architecture for kernel 4.14 from:
+My concern is that it changes the behavior. It will suddenly return
+another information for addresses that were not dereference before.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.14-3
+> [..]
+> > > diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> > > index 127e7cfafa55..e2fc09ea9509 100644
+> > > --- a/kernel/kallsyms.c
+> > > +++ b/kernel/kallsyms.c
+> > > @@ -322,6 +322,7 @@ const char *kallsyms_lookup(unsigned long addr,
+> > >  	if (is_ksym_addr(addr)) {
+> > 
+> > is_ksym_addr() ignores the special .opd elf sections if
+> > CONFIG_KALLSYMS_ALL is disabled. We should dereference before
+> > this call.
+> 
+> I'll move it.
+> 
+> > >  		unsigned long pos;
+> > >  
+> > > +		addr = dereference_kernel_function_descriptor(addr);
+> > >  		pos = get_symbol_pos(addr, symbolsize, offset);
+> > 
+> > I still wonder if doing the dereference in the widely used kallsyms
+> > might cause any regression.
+> 
+> more testing wouldn't hurt, yes.
+> 
+> > Also get_symbol_pos() is called in several other helpers
+> > but the dereference is done only here. It would be
+> > confusing if for example kallsyms_lookup_size_offset()
+> > and kallsyms_lookup() give different result.
+> 
+> hm, so there is no change in this regard, right? there was no
+> deference before, there is no dereference now. what am I missing?
 
-Three small important fixes for the parisc architecture:
+But there was no dereference in kallsyms_lookup() before
+and there is dereference now.
 
-- Export __cmpxchg_u64() symbol on 32bit kernel too. This unbreaks building the
-  kernel with ixgbe kernel module. From Guenter Roeck.
+I mean that both kallsyms_lookup_size_offset() and kallsyms_lookup()
+always returned the same @symbolsize and @offset before this patch.
+But they might give different results now because kallsyms_lookup()
+might be newly working with dereferenced value.
 
-- Fix 64-bit atomic cmpxchg kernel helper function for 32-bit kernel in LWS
-  code for userspace. This unbreaks e.g. the 64-bit variant of the glibc
-  function __sync_fetch_and_add() with a 32-bit parisc kernel. From John
-  David Anglin, tagged for backport to v3.13+.
+It is non-consistent, unexpected behavior and might cause problems.
 
-- Detect nonsynchronous CPU-internal cr16 cycle counters more reliable. This
-  avoids stalled CPU warnings by the kernel soft lockup detector. From me,
-  tagged for backport to v4.13+.
+> I'm touching the pf/pF part in this patch set. if there are cases
+> of missing dereferences anywhere else then we need to address it
+> in a separate patch set, I think.
 
-Thanks,
-Helge
+You are changing the behavior of kallsyms_lookup() and introduce
+a possible inconsistency in this patchset.
 
-----------------------------------------------------------------
-Guenter Roeck (1):
-      parisc: Export __cmpxchg_u64 unconditionally
+It might be innocent if kallsyms are used only to display
+debug messages. But there are even functional dependencies,
+for example kallsyms_lookup() is called in ftrace_match_record().
 
-Helge Deller (1):
-      parisc: Fix detection of nonsynchronous cr16 cycle counters
+> > I would feel much more comfortable if we keep the derefenrece
+> > only in vsprintf.
+> 
+> at a price of extra module lookup, because we need `struct module *'
+> for module address dereference.
 
-John David Anglin (1):
-      parisc: Fix double-word compare and exchange in LWS code on 32-bit kernels
+It would be more code but it should not be slower. The module lookup
+is just hidden in the kallsyms call now.
 
- arch/parisc/kernel/parisc_ksyms.c | 2 +-
- arch/parisc/kernel/syscall.S      | 6 +++---
- arch/parisc/kernel/time.c         | 5 ++++-
- 3 files changed, 8 insertions(+), 5 deletions(-)
+Another solution would be to add another helper function into kallsyms
+that does the dereference and keep the current one as is.
+
+I think that the dereference might make sense even in the kallsyms
+code. But we need to make sure that it is safe and consistent.
+This complicates review of this patchset.
+
+Best Regards,
+Petr
