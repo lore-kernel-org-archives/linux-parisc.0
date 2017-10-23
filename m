@@ -1,51 +1,17 @@
-From: Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCHv3 1/7] switch dereference_function_descriptor() to
- `unsigned long'
-Date: Fri, 20 Oct 2017 15:25:44 +0200
-Message-ID: <20171020132544.GA13783@pathway.suse.cz>
-References: <20170930025319.987-1-sergey.senozhatsky@gmail.com>
- <20170930025319.987-2-sergey.senozhatsky@gmail.com>
- <20171004082414.GC20084@pathway.suse.cz>
- <20171019065004.GF449@jagdpanzerIV>
+From: Roy Cockrum <johnny.sandbekk@getmail.no>
+Subject: Betr.: Spende/gute Taten
+Date: Mon, 23 Oct 2017 05:05:32 +0200 (CEST)
+Message-ID: <1889386630.4273594.1508727932419.JavaMail.zimbra@getmail.no>
+Reply-To: Roy Cockrum <info@roycockrum.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Bottomley <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-To: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20171019065004.GF449@jagdpanzerIV>
-List-ID: <linux-ia64.vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+To: unlisted-recipients:; (no To-header on input)
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu 2017-10-19 15:50:04, Sergey Senozhatsky wrote:
-> On (10/04/17 10:24), Petr Mladek wrote:
-> [..]
-> > To make it clear. All these comments are not a big deal and I do
-> > not want to invalidate all the acked-by and tested-by just because
-> > of them.
-> >
-> > But please, consider removing this change if we need to do
-> > another iteration of this patchset. IMHO, there is no real win
-> > and it would just pollute the git history.
-> 
-> I tend to rather keep it. would that cause any problems on your side?
-> it saves a ton of ugly casts later in the patch set and lets us to drop
-> some casts from the modules code/etc. the patch is here because otherwise
-> I had to add a bunch of new casts.
 
-OK, let's keep it.
 
-Best Regards,
-Petr
+Gr=C3=BC=C3=9Fe,Sie erhielten eine Spende von 1.259.000,00 EUR von Herrn Ro=
+y Cockrum. Bitte kontaktieren Sie ihn bei info@roycockrum.org f=C3=BCr weit=
+ere Informationen =C3=BCber die Spende.
