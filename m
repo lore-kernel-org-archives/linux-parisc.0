@@ -1,25 +1,32 @@
-From: Brendan Horan <brendanhoran@basstech.net>
-Subject: Re: HP-UX for C8000
-Date: Thu, 2 Nov 2017 09:57:13 +0800 (HKT)
-Message-ID: <945027596.2687.1509587833744.JavaMail.zimbra@basstech.net>
-References: <D582C6C6-78B5-44F4-9705-B4723B651D8E@bell.net> <45425BF6-26D1-4232-957D-F3F057A8966A@bell.net> <d6efa26f-9daf-a42f-c4e8-a2f050faf322@gmx.de> <8A61C252-CA15-44AB-9225-EAA6C259E872@bell.net> <20171009174146.GA21988@alpha.franken.de> <7521862C-4EC7-47F5-AFF9-41A44775CFAB@bell.net> <20171010184621.GA18582@alpha.franken.de> <5CF7B86C-F92C-4CED-8A90-A11ABCFBE6B4@bell.net>
+From: "Mr David Williams" <56213859@mylife.unisa.ac.za>
+Subject: Darlehensangebot
+Date: Thu, 02 Nov 2017 15:53:37 +0530
+Message-ID: <HE1PR0101MB202620BECB41583BAC8463CEB85C0@HE1PR0101MB2026.eurprd01.prod.exchangelabs.com>
+Reply-To: david.loanfirm09@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Tom Bogendoerfer <tsbogend@alpha.franken.de>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset="utf-8"
+To: Recipients <56213859@mylife.unisa.ac.za>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <5CF7B86C-F92C-4CED-8A90-A11ABCFBE6B4@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
------ On 11 Oct, 2017, at 6:06 AM, John David Anglin dave.anglin@bell.net wrote:
+Sch=C3=B6nen Tag,
+ =
 
-> 
-> I believe I have ISOs but I'll have to dig.  I'll look next weekend.
+Sie ben=C3=B6tigen einen echten Kredit online Ihre Rechnungen zu sichern?
+Startet ein neues Unternehmen? Sie ben=C3=B6tigen einen pers=C3=B6nlichen K=
+redit
+oder Business-Darlehen? Wir bieten ein Darlehen von =E2=82=AC 10.000 bis =
+=E2=82=AC
+500,000.000.00 mit 2% Zinsen pro Jahr und auch mit einem
+erschwinglichen R=C3=BCckzahlungsbedingungen und Zustand. Ich suche f=C3=BCr
+Darlehen und Projektinvestmentfonds ? Wir halten professionelle
+Exzellenz, unsere Definition von Exzellenz liegt in hervorragenden
+Kundenservice, erschwingliche Zahlung und R=C3=BCckzahlung Pl=C3=A4ne, schn=
+ell
+und einfach-Prozess.
+Hochachtungsvoll....
+ =
 
-If you did not manage to find some media, I have the following I can send :
-HPUX 11.23 Core FOE. Dec 2005
-
-Let me know :)
-
+Freundliche Gr=C3=BC=C3=9Fe,
+Herr David Williams
