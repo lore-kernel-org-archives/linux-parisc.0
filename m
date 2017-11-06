@@ -1,40 +1,113 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: HP-UX for C8000
-Date: Thu, 2 Nov 2017 13:45:56 -0400
-Message-ID: <046a3593-c5af-e3ae-0901-a0c5d6f55a75@bell.net>
-References: <D582C6C6-78B5-44F4-9705-B4723B651D8E@bell.net>
- <45425BF6-26D1-4232-957D-F3F057A8966A@bell.net>
- <d6efa26f-9daf-a42f-c4e8-a2f050faf322@gmx.de>
- <8A61C252-CA15-44AB-9225-EAA6C259E872@bell.net>
- <20171009174146.GA21988@alpha.franken.de>
- <7521862C-4EC7-47F5-AFF9-41A44775CFAB@bell.net>
- <20171010184621.GA18582@alpha.franken.de>
- <5CF7B86C-F92C-4CED-8A90-A11ABCFBE6B4@bell.net>
- <945027596.2687.1509587833744.JavaMail.zimbra@basstech.net>
- <9774ee1b-850d-bba3-774c-ee923fa76f64@bell.net>
- <20171102163831.GA14357@alpha.franken.de>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: Testing the lws_compare_and_swap_2 syscall
+Date: Mon, 6 Nov 2017 22:27:34 +0100
+Message-ID: <20171106212734.GA29237@ls3530.fritz.box>
+References: <1508874207@msgid.manchmal.in-ulm.de>
+ <F232B09A-5367-4A4C-B731-00C63AAB489A@bell.net>
+ <1508973952@msgid.manchmal.in-ulm.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: Brendan Horan <brendanhoran@basstech.net>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: Tom Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org
+To: Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>,
+        Richard Henderson <rth@twiddle.net>,
+        John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20171102163831.GA14357@alpha.franken.de>
+In-Reply-To: <1508973952@msgid.manchmal.in-ulm.de>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2017-11-02 12:38 PM, Tom Bogendoerfer wrote:
-> in fact I've made some progress today. I now have a loadable module,
-> which dumps whatever I want, when it's loaded. And the first thing
-> I've detected is that I'm missing a package named Graphics Technical
-> Computing Environment and that a radeon 7000 card will not use
-> DMA over AGP (which means I have to install a firegl in my test machine).
-That's excellent news.  It looks as if one can download it if one 
-creates an HPE account:
-https://h20392.www2.hpe.com/portal/swdepot/displayProductInfo.do?productNumber=B6268AA
+* Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>:
+> John David Anglin wrote...
+> 
+> > On 2017-10-24, at 4:03 PM, Christoph Biedl wrote:
+> > 
+> > > To start with, using the invalid value 4 as size parameter does not
+> > > return ENOSYS as I'd expect but crashes my system[2], using both 32 and
+> > > 64 bit kernel, no root privileges required.
+> > 
+> >         /* Check the validity of the size pointer */
+> >         subi,>>= 4, %r23, %r0
+> >         b,n     lws_exit_nosys
+> > 
+> > The condition in the subi instruction should be ">>".  The branch is incorrectly nullified when
+> > %r23 is 4.
 
-Dave
+I'd prefer this (untested) patch:
 
--- 
-John David Anglin  dave.anglin@bell.net
+diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+index 41e60a9c7db2..f8a8754322ae 100644
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -698,8 +698,7 @@ lws_compare_and_swap_2:
+ #endif
+ 
+ 	/* Check the validity of the size pointer */
+-	subi,>>= 4, %r23, %r0
+-	b,n	lws_exit_nosys
++	cmpib,COND(<<),n 3, %r23, lws_exit_nosys
+ 
+ 	/* Jump to the functions which will load the old and new values into
+ 	   registers depending on the their size */
 
+
+> Ups, way too obvious. This does the trick, or: Tested-By:
+> Should I try to get a CVE number for this, or is parisc considered
+> *that* historical nobody actually cares?
+
+I think a CVE is not needed for parisc. There are no real productive
+users (I assume).
+
+
+> Now, using the given cmpxchg2 function, the following code tests this
+> LWS for 32bit: The first test is for *mem == *old, the second for
+> *mem != *old. Is there anything wrong with this?
+> 
+>     uint32_t mem;
+>     uint32_t old;
+>     uint32_t new;
+> 
+>     mem = 1;
+>     old = 1;
+>     new = 3;
+>     cmpxchg2 (&mem, &old, &new, 2);
+>     if (mem == old) {
+>         printf ("PASS: mem unchanged\n");
+>     } else {
+>         printf ("FAIL: got = 0x%x, expected = 0x%x\n", mem, old);
+>     }
+> 
+>     mem = 1;
+>     old = 3;
+>     new = 3;
+>     cmpxchg2 (&mem, &old, &new, 2);
+>     if (mem == new) {
+>         printf ("PASS: mem changed\n");
+>     } else {
+>         printf ("FAIL: got = 0x%x, expected = 0x%x\n", mem, new);
+>     }
+> 
+> My problem here: Both tests fail, and so do more complex ones that test
+> the other data sizes as well.
+> 
+> After staring at lws_compare_and_swap_2 a long time it seems there are
+> two issues: First, there is more usage of ",ma" so an update of mem/r26
+> hits the wrong place. After that, all results are the wrong way around.
+> I'm frightened to tell but I fear the logic in lws_compare_and_swap_2
+> is inverted in each and every place. I'm happy to be convinced
+> otherwise. But for the time being it seems the patch below is an
+> improvement.
+> 
+> Status: My system boots and all my tests pass. However, I find smartd
+> stalling in 100% CPU, might be coincidence. Now I'm putting some more
+> load onto the box to see whether it's less crashy then it used to be the
+> previous weeks.
+
+Did you continued your tests?
+How were the results.
+
+> Aside, there is another ",ma" modifier in lws_compare_and_swap that I
+> fail to understand. Haven't checked yet in detail yet, though.
+
+I'd suggest to keep the other ",ma" modifiers for now.
+
+Helge
