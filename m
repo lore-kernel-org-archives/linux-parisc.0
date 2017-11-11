@@ -1,83 +1,84 @@
-From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: [PATCHv4 5/6] symbol lookup: introduce
- dereference_symbol_descriptor()
-Date: Sat, 11 Nov 2017 13:49:32 +0900
-Message-ID: <20171111044932.GB596@tigerII.localdomain>
-References: <20171109234830.5067-1-sergey.senozhatsky@gmail.com>
- <20171109234830.5067-6-sergey.senozhatsky@gmail.com>
- <20171110180931.xhhi35osclzceba2@agluck-desk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Bottomley <jejb@parisc-linux.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-To: "Luck, Tony" <tony.luck@intel.com>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20171110180931.xhhi35osclzceba2@agluck-desk>
-List-ID: <linux-ia64.vger.kernel.org>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Fix validity check of pointer size argument in new CAS implementation
+Date: Sat, 11 Nov 2017 17:11:16 -0500
+Message-ID: <45F72D1B-5939-43D5-B4E5-B7D604432C02@bell.net>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Type: multipart/mixed; boundary=Apple-Mail-36--444867575
+Cc: Helge Deller <deller@gmx.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>
+To: linux-parisc List <linux-parisc@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On (11/10/17 10:09), Luck, Tony wrote:
-> On Fri, Nov 10, 2017 at 08:48:29AM +0900, Sergey Senozhatsky wrote:
-> > -Examples::
-> > -
-> > -	printk("Going to call: %pF\n", gettimeofday);
-> > -	printk("Going to call: %pF\n", p->func);
-> > -	printk("%s: called from %pS\n", __func__, (void *)_RET_IP_);
-> > -	printk("%s: called from %pS\n", __func__,
-> > -				(void *)__builtin_return_address(0));
-> > -	printk("Faulted at %pS\n", (void *)regs->ip);
-> > -	printk(" %s%pB\n", (reliable ? "" : "? "), (void *)*stack);
-> 
-> Did you mean to delete the Examples completely?  Wouldn't it
-> be better to just update (s/%pF/%pS/g)?
 
-good question. yes, I think I did it deliberately :) we still
-kinda have some sort of "examples", right at the beginning of
-section "Symbols/Function Pointers"
+--Apple-Mail-36--444867575
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+As noted by Christoph Biedl, passing a pointer size of 4 in the new CAS =
+implementation causes a
+kernel crash.  The attached patch corrects the off by one error in the =
+argument validity check.
+
+In reviewing the code, I noticed that we only perform word operations =
+with the pointer size argument.
+The subi instruction intentionally uses a word condition on 64-bit =
+kernels.  Nullification was used instead
+of a cmpib instruction as the branch should never be taken.  The shlw =
+pseudo-operation generates a
+depw,z instruction and it clears the target before doing a shift left =
+word deposit.  Thus, we don't need to
+clip the upper 32 bits of this argument on 64-bit kernels.
+
+Tested with a gcc testsuite run with a 64-bit kernel.  The gcc atomic =
+code in libgcc is the only direct user
+of the new CAS implementation that I am aware of.
+
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
 
 
->  Symbols/Function Pointers
->  =========================
->
->  ::
->
->         %pS     versatile_init+0x0/0x110
->          %ps     versatile_init
->          %pF     versatile_init+0x0/0x110
->          %pf     versatile_init
->          %pSR    versatile_init+0x9/0x110
->                 (with __builtin_extract_return_addr() translation)
->          %pB     prev_fn_of_versatile_init+0x88/0x88
->
->  The ``S`` and ``s`` specifiers are used for printing a pointer in symbolic
->  format. They result in the symbol name with (``S``) or without (``s``)
->  offsets. If KALLSYMS are disabled then the symbol address is printed instead.
->
->  Note, that the ``F`` and ``f`` specifiers are identical to ``S`` (``s``)
->  and thus deprecated. We have ``F`` and ``f`` because on ia64, ppc64 and
->  parisc64 function pointers are indirect and, in fact, are function
->  descriptors, which require additional dereferencing before we can lookup
->  the symbol. As of now, ``S`` and ``s`` perform dereferencing on those
->  platforms (when needed), so ``F`` and ``f`` exist for compatibility
->  reasons only.
->
->  The ``B`` specifier results in the symbol name with offsets and should be
->  used when printing stack backtraces. The specifier takes into
->  consideration the effect of compiler optimisations which may occur
->  when tail-call``s are used and marked with the noreturn GCC attribute.
+--Apple-Mail-36--444867575
+Content-Disposition: attachment;
+	filename=syscall-size.d.txt
+Content-Type: text/plain;
+	name="syscall-size.d.txt"
+Content-Transfer-Encoding: 7bit
 
-I can return Examples back. don't really have a strong opinion
-on this. let me know.
+diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+index 41e60a9c7db2..e775f80ae28c 100644
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -690,15 +690,15 @@ cas_action:
+ 	/* ELF32 Process entry path */
+ lws_compare_and_swap_2:
+ #ifdef CONFIG_64BIT
+-	/* Clip the input registers */
++	/* Clip the input registers. We don't need to clip %r23 as we
++	   only use it for word operations */
+ 	depdi	0, 31, 32, %r26
+ 	depdi	0, 31, 32, %r25
+ 	depdi	0, 31, 32, %r24
+-	depdi	0, 31, 32, %r23
+ #endif
+ 
+ 	/* Check the validity of the size pointer */
+-	subi,>>= 4, %r23, %r0
++	subi,>>= 3, %r23, %r0
+ 	b,n	lws_exit_nosys
+ 
+ 	/* Jump to the functions which will load the old and new values into
 
-	-ss
+--Apple-Mail-36--444867575
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
+
+
+
+--
+John David Anglin	dave.anglin@bell.net
+
+--Apple-Mail-36--444867575--
