@@ -1,143 +1,153 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ALSA: ad1889: Use common error handling code
- in snd_ad1889_create()
-Date: Sun, 12 Nov 2017 10:26:58 +0100
-Message-ID: <252c71ed-af89-ed5f-d75f-c09292e68bd5@users.sourceforge.net>
+From: Santosh Sivaraj <santosh@fossix.org>
+Subject: Re: [PATCHv4 3/6] powerpc64: Add .opd based function descriptor
+ dereference
+Date: Mon, 13 Nov 2017 12:41:49 +0530
+Message-ID: <20171113071149.crpthceuvtxtzj2s@santosiv.in.ibm.com>
+References: <20171109234830.5067-1-sergey.senozhatsky@gmail.com>
+ <20171109234830.5067-4-sergey.senozhatsky@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-To: alsa-devel@alsa-project.org, linux-parisc@vger.kernel.org,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Thibaut Varene <T-Bone@parisc-linux.org>
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Bottomley <jejb@parisc-linux.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+To: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Return-path: <linux-ia64-owner@vger.kernel.org>
+In-Reply-To: <20171109234830.5067-4-sergey.senozhatsky@gmail.com>
+List-ID: <linux-ia64.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 12 Nov 2017 10:10:53 +0100
+* Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote (on 2017-11-10 08:48:27 +0900):
 
-* Adjust jump targets so that a bit of exception handling can be better
-  reused at the end of this function.
+> We are moving towards separate kernel and module function descriptor
+> dereference callbacks. This patch enables it for powerpc64.
+> 
+> For pointers that belong to the kernel
+> -  Added __start_opd and __end_opd pointers, to track the kernel
+>    .opd section address range;
+> 
+> -  Added dereference_kernel_function_descriptor(). Now we
+>    will dereference only function pointers that are within
+>    [__start_opd, __end_opd);
+> 
+> For pointers that belong to a module
+> -  Added dereference_module_function_descriptor() to handle module
+>    function descriptor dereference. Now we will dereference only
+>    pointers that are within [module->opd.start, module->opd.end).
+> 
+> Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> ---
+>  arch/powerpc/include/asm/module.h   |  3 +++
+>  arch/powerpc/include/asm/sections.h | 12 ++++++++++++
+>  arch/powerpc/kernel/module_64.c     | 14 ++++++++++++++
+>  arch/powerpc/kernel/vmlinux.lds.S   |  2 ++
+>  4 files changed, 31 insertions(+)
+>
 
-  This issue was detected by using the Coccinelle software.
+Looks good on powerpc. If you wish:
 
-* The script "checkpatch.pl" pointed information out like the following.
+Tested-by: Santosh Sivaraj <santosh@fossix.org> # for powerpc
 
-  ERROR: do not use assignment in if condition
+Thanks,
+Santosh
 
-  Thus fix five affected source code places.
+> diff --git a/arch/powerpc/include/asm/module.h b/arch/powerpc/include/asm/module.h
+> index 6c0132c7212f..7e28442827f1 100644
+> --- a/arch/powerpc/include/asm/module.h
+> +++ b/arch/powerpc/include/asm/module.h
+> @@ -45,6 +45,9 @@ struct mod_arch_specific {
+>  	unsigned long tramp;
+>  #endif
+>  
+> +	/* For module function descriptor dereference */
+> +	unsigned long start_opd;
+> +	unsigned long end_opd;
+>  #else /* powerpc64 */
+>  	/* Indices of PLT sections within module. */
+>  	unsigned int core_plt_section;
+> diff --git a/arch/powerpc/include/asm/sections.h b/arch/powerpc/include/asm/sections.h
+> index 82bec63bbd4f..e335a8f846af 100644
+> --- a/arch/powerpc/include/asm/sections.h
+> +++ b/arch/powerpc/include/asm/sections.h
+> @@ -66,6 +66,9 @@ static inline int overlaps_kvm_tmp(unsigned long start, unsigned long end)
+>  }
+>  
+>  #ifdef PPC64_ELF_ABI_v1
+> +
+> +#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+> +
+>  #undef dereference_function_descriptor
+>  static inline void *dereference_function_descriptor(void *ptr)
+>  {
+> @@ -76,6 +79,15 @@ static inline void *dereference_function_descriptor(void *ptr)
+>  		ptr = p;
+>  	return ptr;
+>  }
+> +
+> +#undef dereference_kernel_function_descriptor
+> +static inline void *dereference_kernel_function_descriptor(void *ptr)
+> +{
+> +	if (ptr < (void *)__start_opd || ptr >= (void *)__end_opd)
+> +		return ptr;
+> +
+> +	return dereference_function_descriptor(ptr);
+> +}
+>  #endif /* PPC64_ELF_ABI_v1 */
+>  
+>  #endif
+> diff --git a/arch/powerpc/kernel/module_64.c b/arch/powerpc/kernel/module_64.c
+> index 759104b99f9f..218971ac7e04 100644
+> --- a/arch/powerpc/kernel/module_64.c
+> +++ b/arch/powerpc/kernel/module_64.c
+> @@ -93,6 +93,15 @@ static unsigned int local_entry_offset(const Elf64_Sym *sym)
+>  {
+>  	return 0;
+>  }
+> +
+> +void *dereference_module_function_descriptor(struct module *mod, void *ptr)
+> +{
+> +	if (ptr < (void *)mod->arch.start_opd ||
+> +			ptr >= (void *)mod->arch.end_opd)
+> +		return ptr;
+> +
+> +	return dereference_function_descriptor(ptr);
+> +}
+>  #endif
+>  
+>  #define STUB_MAGIC 0x73747562 /* stub */
+> @@ -344,6 +353,11 @@ int module_frob_arch_sections(Elf64_Ehdr *hdr,
+>  		else if (strcmp(secstrings+sechdrs[i].sh_name,"__versions")==0)
+>  			dedotify_versions((void *)hdr + sechdrs[i].sh_offset,
+>  					  sechdrs[i].sh_size);
+> +		else if (!strcmp(secstrings + sechdrs[i].sh_name, ".opd")) {
+> +			me->arch.start_opd = sechdrs[i].sh_addr;
+> +			me->arch.end_opd = sechdrs[i].sh_addr +
+> +					   sechdrs[i].sh_size;
+> +		}
+>  
+>  		/* We don't handle .init for the moment: rename to _init */
+>  		while ((p = strstr(secstrings + sechdrs[i].sh_name, ".init")))
+> diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
+> index 0494e1566ee2..5dac5ab22fa2 100644
+> --- a/arch/powerpc/kernel/vmlinux.lds.S
+> +++ b/arch/powerpc/kernel/vmlinux.lds.S
+> @@ -278,7 +278,9 @@ SECTIONS
+>  	}
+>  
+>  	.opd : AT(ADDR(.opd) - LOAD_OFFSET) {
+> +		__start_opd = .;
+>  		*(.opd)
+> +		__end_opd = .;
+>  	}
+>  
+>  	. = ALIGN(256);
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/pci/ad1889.c | 45 +++++++++++++++++++++++++--------------------
- 1 file changed, 25 insertions(+), 20 deletions(-)
-
-diff --git a/sound/pci/ad1889.c b/sound/pci/ad1889.c
-index 0bf2c04eeada..9f00e63937a5 100644
---- a/sound/pci/ad1889.c
-+++ b/sound/pci/ad1889.c
-@@ -894,21 +894,23 @@ snd_ad1889_create(struct snd_card *card,
- 
- 	*rchip = NULL;
- 
--	if ((err = pci_enable_device(pci)) < 0)
-+	err = pci_enable_device(pci);
-+	if (err < 0)
- 		return err;
- 
- 	/* check PCI availability (32bit DMA) */
- 	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(32)) < 0 ||
- 	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(32)) < 0) {
- 		dev_err(card->dev, "error setting 32-bit DMA mask.\n");
--		pci_disable_device(pci);
--		return -ENXIO;
-+		err = -ENXIO;
-+		goto disable_device;
- 	}
- 
- 	/* allocate chip specific data with zero-filled memory */
--	if ((chip = kzalloc(sizeof(*chip), GFP_KERNEL)) == NULL) {
--		pci_disable_device(pci);
--		return -ENOMEM;
-+	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
-+	if (!chip) {
-+		err = -ENOMEM;
-+		goto disable_device;
- 	}
- 
- 	chip->card = card;
-@@ -917,15 +919,16 @@ snd_ad1889_create(struct snd_card *card,
- 	chip->irq = -1;
- 
- 	/* (1) PCI resource allocation */
--	if ((err = pci_request_regions(pci, card->driver)) < 0)
--		goto free_and_ret;
-+	err = pci_request_regions(pci, card->driver);
-+	if (err < 0)
-+		goto free_data;
- 
- 	chip->bar = pci_resource_start(pci, 0);
- 	chip->iobase = pci_ioremap_bar(pci, 0);
- 	if (chip->iobase == NULL) {
- 		dev_err(card->dev, "unable to reserve region.\n");
- 		err = -EBUSY;
--		goto free_and_ret;
-+		goto free_data;
- 	}
- 	
- 	pci_set_master(pci);
-@@ -935,32 +938,34 @@ snd_ad1889_create(struct snd_card *card,
- 	if (request_irq(pci->irq, snd_ad1889_interrupt,
- 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
- 		dev_err(card->dev, "cannot obtain IRQ %d\n", pci->irq);
--		snd_ad1889_free(chip);
--		return -EBUSY;
-+		err = -EBUSY;
-+		goto free_sound_chip;
- 	}
- 
- 	chip->irq = pci->irq;
- 	synchronize_irq(chip->irq);
- 
- 	/* (2) initialization of the chip hardware */
--	if ((err = snd_ad1889_init(chip)) < 0) {
--		snd_ad1889_free(chip);
--		return err;
--	}
-+	err = snd_ad1889_init(chip);
-+	if (err < 0)
-+		goto free_sound_chip;
- 
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
--		snd_ad1889_free(chip);
--		return err;
--	}
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+	if (err < 0)
-+		goto free_sound_chip;
- 
- 	*rchip = chip;
- 
- 	return 0;
- 
--free_and_ret:
-+free_data:
- 	kfree(chip);
-+disable_device:
- 	pci_disable_device(pci);
-+	return err;
- 
-+free_sound_chip:
-+	snd_ad1889_free(chip);
- 	return err;
- }
- 
 -- 
-2.15.0
