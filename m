@@ -1,42 +1,60 @@
-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Subject: Re: [PATCHv4 0/6] printk/ia64/ppc64/parisc64: let's deprecate
- %pF/%pf printk specifiers
-Date: Tue, 14 Nov 2017 10:29:27 +0900
-Message-ID: <20171114012927.GB7328@jagdpanzerIV>
-References: <20171109234830.5067-1-sergey.senozhatsky@gmail.com>
- <f7ba9e1c-10d8-3519-faad-7520c450c3e9@gmx.de>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: linux-next: manual merge of the nvdimm tree with the parisc-hd tree
+Date: Tue, 14 Nov 2017 15:39:48 +1100
+Message-ID: <20171114153948.62467591@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Bottomley <jejb@parisc-linux.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <f7ba9e1c-10d8-3519-faad-7520c450c3e9@gmx.de>
-List-ID: <linux-ia64.vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Dan Williams <dan.j.williams@intel.com>,
+        Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>
+Return-path: <linux-next-owner@vger.kernel.org>
+List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On (11/13/17 18:17), Helge Deller wrote:
-> On 10.11.2017 00:48, Sergey Senozhatsky wrote:
-> > 	All Ack-s/Tested-by-s were dropped, since the patch set has been
-> > reworked. I'm kindly asking arch-s maintainers and developers to test it
-> > once again. Sorry for any inconveniences and thanks for your help in
-> > advance.
-> 
-> I tested it successfully on parisc64.
-> You can add back the
-> Tested-by: Helge Deller <deller@gmx.de> #parisc64
+Hi Dan,
 
-thanks!
+Today's linux-next merge of the nvdimm tree got a conflict in:
 
-	-ss
+  arch/parisc/include/uapi/asm/mman.h
+
+between commit:
+
+  48cd4dc8f57f ("parisc: Convert MAP_TYPE to cover 4 bits on parisc")
+
+from the parisc-hd tree and commit:
+
+  1c9725974074 ("mm: introduce MAP_SHARED_VALIDATE, a mechanism to safely define new mmap flag")
+
+from the nvdimm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+-- 
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/parisc/include/uapi/asm/mman.h
+index 9a39035986cc,bca652aa1677..000000000000
+--- a/arch/parisc/include/uapi/asm/mman.h
++++ b/arch/parisc/include/uapi/asm/mman.h
+@@@ -12,11 -11,10 +12,12 @@@
+  
+  #define MAP_SHARED	0x01		/* Share changes */
+  #define MAP_PRIVATE	0x02		/* Changes are private */
++ #define MAP_SHARED_VALIDATE 0x03	/* share + validate extension flags */
+ -#define MAP_TYPE	0x03		/* Mask for type of mapping */
+ +#define MAP_TYPE	(MAP_SHARED|MAP_PRIVATE|MAP_RESRVD1|MAP_RESRVD2) /* Mask for type of mapping */
+  #define MAP_FIXED	0x04		/* Interpret addr exactly */
+ +#define MAP_RESRVD1	0x08		/* reserved for 3rd bit of MAP_TYPE */
+  #define MAP_ANONYMOUS	0x10		/* don't use a file */
+ +#define MAP_RESRVD2	0x20		/* reserved for 4th bit of MAP_TYPE */
+  
+  #define MAP_DENYWRITE	0x0800		/* ETXTBSY */
+  #define MAP_EXECUTABLE	0x1000		/* mark it as an executable */
