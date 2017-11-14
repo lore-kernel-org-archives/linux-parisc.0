@@ -1,94 +1,79 @@
-From: Michal Hocko <mhocko@kernel.org>
-Subject: Re: linux-next: Tree for Nov 7
-Date: Tue, 14 Nov 2017 10:29:16 +0100
-Message-ID: <20171114092916.ho5mvwc23xnelmod@dhcp22.suse.cz>
-References: <20171110123054.5pnefm3mczsfv7bz@dhcp22.suse.cz>
- <CACPK8Xe5uUKEytkRiszdX511b_cYTD-z3X=ZsMcNJ-NOYnXfuQ@mail.gmail.com>
- <20171113092006.cjw2njjukt6limvb@dhcp22.suse.cz>
- <20171113094203.aofz2e7kueitk55y@dhcp22.suse.cz>
- <87lgjawgx1.fsf@concordia.ellerman.id.au>
- <20171113120057.555mvrs4fjq5tyng@dhcp22.suse.cz>
- <20171113151641.yfqrecpcxllpn5mq@dhcp22.suse.cz>
- <20171113154939.6ui2fmpokpm7g4oj@dhcp22.suse.cz>
- <20171113160637.jhekbdyfpccme3be@dhcp22.suse.cz>
- <87a7zpw75f.fsf@concordia.ellerman.id.au>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 0/9] posix_clocks: Prepare syscalls for 64 bit time_t conversion
+Date: Tue, 14 Nov 2017 15:24:40 +0100
+Message-ID: <CAK8P3a2uD=xV5GKtL+nhVoPckb6uoXztEvXK-iP_OYbct8QvJA@mail.gmail.com>
+References: <20171110224259.15930-1-deepa.kernel@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Joel Stanley <joel@jms.id.au>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+Content-Type: text/plain; charset="UTF-8"
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chris Metcalf <cmetcalf@mellanox.com>, cohuck@redhat.com,
+        David Miller <davem@davemloft.net>,
+        Helge Deller <deller@gmx.de>, devel@driverdev.osuosl.org,
+        gerald.schaefer@de.ibm.com, gregkh <gregkh@linuxfoundation.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.vnet.ibm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
         "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-mips@linux-mips.org,
-To: Michael Ellerman <mpe@ellerman.id.au>
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <87a7zpw75f.fsf@concordia.ellerman.id.au>
-List-ID: <linux-sh.vger.kernel.org>
+        Julian Wiedmann
+To: Deepa Dinamani <deepa.kernel@gmail.com>
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20171110224259.15930-1-deepa.kernel@gmail.com>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue 14-11-17 20:18:04, Michael Ellerman wrote:
-> Michal Hocko <mhocko@kernel.org> writes:
-> 
-> > [Sorry for spamming, this one is the last attempt hopefully]
-> >
-> > On Mon 13-11-17 16:49:39, Michal Hocko wrote:
-> >> On Mon 13-11-17 16:16:41, Michal Hocko wrote:
-> >> > On Mon 13-11-17 13:00:57, Michal Hocko wrote:
-> >> > [...]
-> >> > > Yes, I have mentioned that in the previous email but the amount of code
-> >> > > would be even larger. Basically every arch which reimplements
-> >> > > arch_get_unmapped_area would have to special case new MAP_FIXED flag to
-> >> > > do vma lookup.
-> >> > 
-> >> > It turned out that this might be much more easier than I thought after
-> >> > all. It seems we can really handle that in the common code. This would
-> >> > mean that we are exposing a new functionality to the userspace though.
-> >> > Myabe this would be useful on its own though. Just a quick draft (not
-> >> > even compile tested) whether this makes sense in general. I would be
-> >> > worried about unexpected behavior when somebody set other bit without a
-> >> > good reason and we might fail with ENOMEM for such a call now.
-> >> 
-> >> Hmm, the bigger problem would be the backward compatibility actually. We
-> >> would get silent corruptions which is exactly what the flag is trying
-> >> fix. mmap flags handling really sucks. So I guess we would have to make
-> >> the flag internal only :/
-> >
-> > OK, so this one should take care of the backward compatibility while
-> > still not touching the arch code
-> 
-> I'm not sure I understand your worries about backward compatibility?
+On Fri, Nov 10, 2017 at 11:42 PM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
+> The series is a preparation series for individual architectures
+> to use 64 bit time_t syscalls in compat and 32 bit emulation modes.
+>
+> This is a follow up to the series Arnd Bergmann posted:
+> https://sourceware.org/ml/libc-alpha/2015-05/msg00070.html
+>
+> Big picture is as per the lwn article:
+> https://lwn.net/Articles/643234/
+>
+> The series is directed at converting posix clock syscalls:
+> clock_gettime, clock_settime, clock_getres and clock_nanosleep
+> to use a new data structure __kernel_timespec at syscall boundaries.
+> __kernel_timespec maintains 64 bit time_t across all execution modes.
+>
+> vdso will be handled as part of each architecture when they enable
+> support for 64 bit time_t.
+>
+> The compat syscalls are repurposed to provide backward compatibility
+> by using them as native syscalls as well for 32 bit architectures.
+> They will continue to use timespec at syscall boundaries.
+>
+> CONFIG_64_BIT_TIME controls whether the syscalls use __kernel_timespec
+> or timespec at syscall boundaries.
+>
+> The series does the following:
+> 1. Enable compat syscalls unconditionally.
+> 2. Add a new __kernel_timespec type to be used as the data structure
+>    for all the new syscalls.
+> 3. Add new config CONFIG_64BIT_TIME(intead of the CONFIG_COMPAT_TIME in
+>    [1] and [2] to switch to new definition of __kernel_timespec. It is
+>    the same as struct timespec otherwise.
+>
+> Arnd Bergmann (1):
+>   y2038: introduce CONFIG_64BIT_TIME
 
-Just imagine you are running an application which uses the new flag
-combination on an older kernel. You will get no warning, yet you have no
-way to check that you have actually clobbered an existing mapping
-because MAP_FIXED will be used the old way.
+The series looks good to me overall, and I've added it to my build-testing tree
+to see if it shows any regressions in random configurations.
 
-> If we add a new mmap flag which is currently unused then what is the
-> problem? Are you worried about user code that accidentally passes that
-> flag already?
+I had on concern about x32, maybe we should check
+for "COMPAT_USE_64BIT_TIME" before zeroing out the tv_nsec
+bits.
 
-If we add a completely new flag, like in this patch, then the code using
-the flag will not clobber an existing mapping on older kernels which do
-not recognize it (we will simply fall back to the default hint based
-implementation). You might not get the mapping you asked for which sucks
-but that is not fixable AFAICS. You can at least do
+Regarding CONFIG_COMPAT_TIME/CONFIG_64BIT_TIME, would
+it help to just leave out that part for now and unconditionally
+define '__kernel_timespec' as 'timespec' until we are ready to
+convert the architectures?
 
-	mapped_addr = mmap(addr, ... MAP_FIXED_SAFE...);
-	assert(mapped_addr == addr);
-
-So I do not think we can go with the modifier unfortunatelly.
--- 
-Michal Hocko
-SUSE Labs
+       Arnd
