@@ -1,60 +1,96 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: linux-next: manual merge of the nvdimm tree with the parisc-hd tree
-Date: Tue, 14 Nov 2017 15:39:48 +1100
-Message-ID: <20171114153948.62467591@canb.auug.org.au>
+From: Michal Hocko <mhocko@kernel.org>
+Subject: Re: linux-next: Tree for Nov 7
+Date: Tue, 14 Nov 2017 08:07:48 +0100
+Message-ID: <20171114070748.in5zdc4giqbxowjy@dhcp22.suse.cz>
+References: <20171110123054.5pnefm3mczsfv7bz@dhcp22.suse.cz>
+ <CACPK8Xe5uUKEytkRiszdX511b_cYTD-z3X=ZsMcNJ-NOYnXfuQ@mail.gmail.com>
+ <20171113092006.cjw2njjukt6limvb@dhcp22.suse.cz>
+ <20171113094203.aofz2e7kueitk55y@dhcp22.suse.cz>
+ <87lgjawgx1.fsf@concordia.ellerman.id.au>
+ <20171113120057.555mvrs4fjq5tyng@dhcp22.suse.cz>
+ <20171113151641.yfqrecpcxllpn5mq@dhcp22.suse.cz>
+ <20171113154939.6ui2fmpokpm7g4oj@dhcp22.suse.cz>
+ <20171113160637.jhekbdyfpccme3be@dhcp22.suse.cz>
+ <c52fa249-9583-18a2-cbac-28abfb23d5a5@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To: Dan Williams <dan.j.williams@intel.com>,
+Content-Type: text/plain; charset=us-ascii
+Cc: Michael Ellerman <mpe@ellerman.id.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
         Helge Deller <deller@gmx.de>,
-        Parisc List <linux-parisc@vger.kernel.org>
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lis
+To: Khalid Aziz <khalid.aziz@oracle.com>
 Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <c52fa249-9583-18a2-cbac-28abfb23d5a5@oracle.com>
 List-ID: <linux-next.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Dan,
+On Mon 13-11-17 09:35:22, Khalid Aziz wrote:
+> On 11/13/2017 09:06 AM, Michal Hocko wrote:
+> > OK, so this one should take care of the backward compatibility while
+> > still not touching the arch code
+> > ---
+> > commit 39ff9bf8597e79a032da0954aea1f0d77d137765
+> > Author: Michal Hocko <mhocko@suse.com>
+> > Date:   Mon Nov 13 17:06:24 2017 +0100
+> > 
+> >      mm: introduce MAP_FIXED_SAFE
+> >      MAP_FIXED is used quite often but it is inherently dangerous because it
+> >      unmaps an existing mapping covered by the requested range. While this
+> >      might be might be really desidered behavior in many cases there are
+> >      others which would rather see a failure than a silent memory corruption.
+> >      Introduce a new MAP_FIXED_SAFE flag for mmap to achive this behavior.
+> >      It is a MAP_FIXED extension with a single exception that it fails with
+> >      ENOMEM if the requested address is already covered by an existing
+> >      mapping. We still do rely on get_unmaped_area to handle all the arch
+> >      specific MAP_FIXED treatment and check for a conflicting vma after it
+> >      returns.
+> >      Signed-off-by: Michal Hocko <mhocko@suse.com>
+> > 
+> > ...... deleted .......
+> > diff --git a/mm/mmap.c b/mm/mmap.c
+> > index 680506faceae..aad8d37f0205 100644
+> > --- a/mm/mmap.c
+> > +++ b/mm/mmap.c
+> > @@ -1358,6 +1358,10 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
+> >   	if (mm->map_count > sysctl_max_map_count)
+> >   		return -ENOMEM;
+> > +	/* force arch specific MAP_FIXED handling in get_unmapped_area */
+> > +	if (flags & MAP_FIXED_SAFE)
+> > +		flags |= MAP_FIXED;
+> > +
+> >   	/* Obtain the address to map to. we verify (or select) it and ensure
+> >   	 * that it represents a valid section of the address space.
+> >   	 */
+> 
+> Do you need to move this code above:
+> 
+>         if (!(flags & MAP_FIXED))
+>                 addr = round_hint_to_min(addr);
+> 
+>         /* Careful about overflows.. */
+>         len = PAGE_ALIGN(len);
+>         if (!len)
+>                 return -ENOMEM;
+> 
+> Not doing that might mean the hint address will end up being rounded for
+> MAP_FIXED_SAFE which would change the behavior from MAP_FIXED.
 
-Today's linux-next merge of the nvdimm tree got a conflict in:
-
-  arch/parisc/include/uapi/asm/mman.h
-
-between commit:
-
-  48cd4dc8f57f ("parisc: Convert MAP_TYPE to cover 4 bits on parisc")
-
-from the parisc-hd tree and commit:
-
-  1c9725974074 ("mm: introduce MAP_SHARED_VALIDATE, a mechanism to safely define new mmap flag")
-
-from the nvdimm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
+Yes, I will move it.
 -- 
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/parisc/include/uapi/asm/mman.h
-index 9a39035986cc,bca652aa1677..000000000000
---- a/arch/parisc/include/uapi/asm/mman.h
-+++ b/arch/parisc/include/uapi/asm/mman.h
-@@@ -12,11 -11,10 +12,12 @@@
-  
-  #define MAP_SHARED	0x01		/* Share changes */
-  #define MAP_PRIVATE	0x02		/* Changes are private */
-+ #define MAP_SHARED_VALIDATE 0x03	/* share + validate extension flags */
- -#define MAP_TYPE	0x03		/* Mask for type of mapping */
- +#define MAP_TYPE	(MAP_SHARED|MAP_PRIVATE|MAP_RESRVD1|MAP_RESRVD2) /* Mask for type of mapping */
-  #define MAP_FIXED	0x04		/* Interpret addr exactly */
- +#define MAP_RESRVD1	0x08		/* reserved for 3rd bit of MAP_TYPE */
-  #define MAP_ANONYMOUS	0x10		/* don't use a file */
- +#define MAP_RESRVD2	0x20		/* reserved for 4th bit of MAP_TYPE */
-  
-  #define MAP_DENYWRITE	0x0800		/* ETXTBSY */
-  #define MAP_EXECUTABLE	0x1000		/* mark it as an executable */
+Michal Hocko
+SUSE Labs
