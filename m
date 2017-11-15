@@ -1,58 +1,49 @@
-From: Khalid Aziz <khalid.aziz@oracle.com>
-Subject: Re: linux-next: Tree for Nov 7
-Date: Tue, 14 Nov 2017 07:52:25 -0700
-Message-ID: <1510671145.4344.1.camel@oracle.com>
-References: <20171107162217.382cd754@canb.auug.org.au>
- <CACPK8Xfd4nqkf=Lk3n6+TNHAAi327r0dkUfGypZ3TpR0LqfS4Q@mail.gmail.com>
- <20171108142050.7w3yliulxjeco3b7@dhcp22.suse.cz>
- <20171110123054.5pnefm3mczsfv7bz@dhcp22.suse.cz>
- <CACPK8Xe5uUKEytkRiszdX511b_cYTD-z3X=ZsMcNJ-NOYnXfuQ@mail.gmail.com>
- <20171113092006.cjw2njjukt6limvb@dhcp22.suse.cz>
- <20171113094203.aofz2e7kueitk55y@dhcp22.suse.cz>
- <87lgjawgx1.fsf@concordia.ellerman.id.au>
- <20171113120057.555mvrs4fjq5tyng@dhcp22.suse.cz>
- <87h8txw87w.fsf@concordia.ellerman.id.au>
- <20171114090444.lhrkuywuls26g6lu@dhcp22.suse.cz>
+From: " M,Shakour Rosarita" <hassanamira04@gmail.com>
+Subject: Hello Dear...
+Date: Wed, 15 Nov 2017 11:34:09 +0000
+Message-ID: <CADmkupiA2objgsQxK=03WmWJhZVp3+F-yDxXOLOm2rgTnpKhzw__1920.463567558$1510745692$gmane$org@mail.gmail.com>
+Reply-To: mshakourrosarita22@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>,
- linux-sh@vger.kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- "James
- E.J. Bottomley" <jejb@parisc-linux.org>, Max Filippov <jcmvbkbc@gmail.com>,
- sparclinux@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Helge Deller <deller@gmx.de>,
- Russell King <linux@armlinux.org.uk>,
- Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
- Linux-Next Mailing List <linux-next@vger.kernel.org>,
- Joel Stanley <joel@jms.id.au>, linux-xtensa@linux-xtensa.org,
- linux-arm-kernel@lists.infradead.org, Chris Zankel <chris@zankel.net>,
- linux-parisc@vger.kernel.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Ralf Baechle <ralf@linux-mips.org>, Andrew Morton <akpm@linux-foundation.org>,
- linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
-To: Michal Hocko <mhocko@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20171114090444.lhrkuywuls26g6lu@dhcp22.suse.cz>
-List-Id: <linux-arm-kernel.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+To: undisclosed-recipients:;
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 2017-11-14 at 10:04 +0100, Michal Hocko wrote:
-> If there is a general consensus that this is the preferred way to go,
-> I
-> will post the patch as an RFC to linux-api
-> 
-> [1] http://lkml.kernel.org/r/20171113160637.jhekbdyfpccme3be@dhcp22.s
-> use.cz
+Hello Dear...
 
-I prefer the new flag. It is cleaner and avoids unintended breakage for
-existing flag.
+I know that this message will come to you as a surprise. I hoped that
+you will not expose or betray this trust and confident that I am about
+to repose on you, my name is M, Shakour Rosarita. I am 19 years old
+Girl, female, from Tartu Syria, (never married) 61 kg, white in
+complexion, and I am currently living in the refugee camp here in
+Abidjan Ivory Coast, My late beloved father M,Shakour Hassin was a
+renowned businessman and owner of Natour Petrol Station in Syria, he
+was killed in a stampede riot in Tartu, Syria.
+When I got the news about my parents. I fled to a nearby country
+Jordan before I joined a ferry to Africa and came to Abidjan capital
+city Ivory Coast West Africa find safety here.
+I came in 2015 to Abidjan and I now live in refugee camps here as
+refugees are allowed freely to enter here without, My late father
+deposited (US$6.200.000.00m) My late father kept the money at the bank
+of Africa, I want you to help me transfer the money to your hand so
+that you will help me bring me into your country for my continue
+education.
 
---
-Khalid
+I sent my pictures here for you to see. Who I am seriously looking for
+a good-person in my life, so I want to hear from you soon and learn
+more about you.
+
+I am an open-minded and friendly girl to share a good time with you
+and have fun and enjoy on the go, bird watching, the rest of our
+lives. My Hobbies, tourism books, dance, music, soccer, tennis,
+swimming and cinema.
+I would just think about you, including your dose and doesn=E2=80=99t .I
+believe we will do well together, and live like one family.
+Thank you and God bless you, for you in your promise to help me here,
+looking forward to your reply by the grace of God and have a good day.
+I hope you send me your photos as well? I await your next reply in
+faith please reply through my private email at
+(mshakourrosarita22@gmail.com):
+Thanks.
+Ms Rosarita
