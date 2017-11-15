@@ -1,49 +1,55 @@
-From: " M,Shakour Rosarita" <hassanamira04@gmail.com>
-Subject: Hello Dear...
-Date: Wed, 15 Nov 2017 11:34:09 +0000
-Message-ID: <CADmkupiA2objgsQxK=03WmWJhZVp3+F-yDxXOLOm2rgTnpKhzw__1920.463567558$1510745692$gmane$org@mail.gmail.com>
-Reply-To: mshakourrosarita22@gmail.com
+From: Deepa Dinamani <deepa.kernel@gmail.com>
+Subject: Re: [PATCH 0/9] posix_clocks: Prepare syscalls for 64 bit time_t conversion
+Date: Wed, 15 Nov 2017 15:11:31 -0800
+Message-ID: <CABeXuvpy1jbqjeUFHHX-MrJXQLA2QNYbAa6OX7qOpPp4q-mQYQ@mail.gmail.com>
+References: <20171110224259.15930-1-deepa.kernel@gmail.com> <CAK8P3a2uD=xV5GKtL+nhVoPckb6uoXztEvXK-iP_OYbct8QvJA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-To: undisclosed-recipients:;
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chris Metcalf <cmetcalf@mellanox.com>, cohuck@redhat.com,
+        David Miller <davem@davemloft.net>,
+        Helge Deller <deller@gmx.de>, devel@driverdev.osuosl.org,
+        gerald.schaefer@de.ibm.com, gregkh <gregkh@linuxfoundation.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.vnet.ibm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Julian Wiedmann
+To: Arnd Bergmann <arnd@arndb.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <CAK8P3a2uD=xV5GKtL+nhVoPckb6uoXztEvXK-iP_OYbct8QvJA@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hello Dear...
+> I had on concern about x32, maybe we should check
+> for "COMPAT_USE_64BIT_TIME" before zeroing out the tv_nsec
+> bits.
 
-I know that this message will come to you as a surprise. I hoped that
-you will not expose or betray this trust and confident that I am about
-to repose on you, my name is M, Shakour Rosarita. I am 19 years old
-Girl, female, from Tartu Syria, (never married) 61 kg, white in
-complexion, and I am currently living in the refugee camp here in
-Abidjan Ivory Coast, My late beloved father M,Shakour Hassin was a
-renowned businessman and owner of Natour Petrol Station in Syria, he
-was killed in a stampede riot in Tartu, Syria.
-When I got the news about my parents. I fled to a nearby country
-Jordan before I joined a ferry to Africa and came to Abidjan capital
-city Ivory Coast West Africa find safety here.
-I came in 2015 to Abidjan and I now live in refugee camps here as
-refugees are allowed freely to enter here without, My late father
-deposited (US$6.200.000.00m) My late father kept the money at the bank
-of Africa, I want you to help me transfer the money to your hand so
-that you will help me bring me into your country for my continue
-education.
+Thanks, I think you are right. I had the check conditional on
+CONFIG_64BIT_TIME and then removed as I forgot why I added it. :)
 
-I sent my pictures here for you to see. Who I am seriously looking for
-a good-person in my life, so I want to hear from you soon and learn
-more about you.
+> Regarding CONFIG_COMPAT_TIME/CONFIG_64BIT_TIME, would
+> it help to just leave out that part for now and unconditionally
+> define '__kernel_timespec' as 'timespec' until we are ready to
+> convert the architectures?
 
-I am an open-minded and friendly girl to share a good time with you
-and have fun and enjoy on the go, bird watching, the rest of our
-lives. My Hobbies, tourism books, dance, music, soccer, tennis,
-swimming and cinema.
-I would just think about you, including your dose and doesn=E2=80=99t .I
-believe we will do well together, and live like one family.
-Thank you and God bless you, for you in your promise to help me here,
-looking forward to your reply by the grace of God and have a good day.
-I hope you send me your photos as well? I await your next reply in
-faith please reply through my private email at
-(mshakourrosarita22@gmail.com):
-Thanks.
-Ms Rosarita
+Another approach would be to use separate configs:
+
+1. To indicate 64 bit time_t syscall support. This will be dependent
+on architectures as CONFIG_64BIT_TIME.
+We can delete this once all architectures have provided support for this.
+
+2. Another config (maybe COMPAT_32BIT_TIME?) to be introduced later,
+which will compile out all syscalls/ features that use 32 bit time_t.
+This can help build a y2038 safe kernel later.
+
+Would this work for everyone?
+
+-Deepa
