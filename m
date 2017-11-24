@@ -1,49 +1,70 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] video/fbdev/stifb: Delete an error message for a failed
- memory allocation in stifb_init_fb()
-Date: Fri, 24 Nov 2017 22:28:12 +0100
-Message-ID: <7dcd32b6-9691-14a1-29cf-3a746ef5adfc@users.sourceforge.net>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Subject: Re: [PATCH] video/fbdev/stifb: Delete an error message for a failed memory allocation in stifb_init_fb()
+Date: Fri, 24 Nov 2017 22:30:34 +0100
+Message-ID: <25624997.nONnEdNj0s@daneel.sf-tec.de>
+References: <7dcd32b6-9691-14a1-29cf-3a746ef5adfc@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-To: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+Content-Type: multipart/signed; boundary="nextPart1690480.eUU9do5mRG"; micalg="pgp-"; protocol="application/pgp-signature"
+Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-parisc@vger.kernel.org,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Helge Deller <deller@gmx.de>,
-        "James E. J. Bottomley" <jejb@parisc-linux.org>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+        "James E. J. Bottomley" <jejb@parisc-linux.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+To: SF Markus Elfring <elfring@users.sourceforge.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <7dcd32b6-9691-14a1-29cf-3a746ef5adfc@users.sourceforge.net>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 24 Nov 2017 22:22:06 +0100
+--nextPart1690480.eUU9do5mRG
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Omit an extra message for a memory allocation failure in this function.
+Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Fri, 24 Nov 2017 22:22:06 +0100
+> 
+> Omit an extra message for a memory allocation failure in this function.
+> 
+> This issue was detected by using the Coccinelle software.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>  drivers/video/fbdev/stifb.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/stifb.c b/drivers/video/fbdev/stifb.c
+> index 6ded5c198998..fe217a2f7d21 100644
+> --- a/drivers/video/fbdev/stifb.c
+> +++ b/drivers/video/fbdev/stifb.c
+> @@ -1126,10 +1126,8 @@ static int __init stifb_init_fb(struct sti_struct
+> *sti, int bpp_pref) int bpp, xres, yres;
+> 
+>  	fb = kzalloc(sizeof(*fb), GFP_ATOMIC);
+> -	if (!fb) {
+> -		printk(KERN_ERR "stifb: Could not allocate stifb structure\n");
+> +	if (!fb)
+>  		return -ENODEV;
+> -	}
+> 
+>  	info = &fb->info;
 
-This issue was detected by using the Coccinelle software.
+This should be -ENOMEM.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- drivers/video/fbdev/stifb.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Eike
+--nextPart1690480.eUU9do5mRG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-diff --git a/drivers/video/fbdev/stifb.c b/drivers/video/fbdev/stifb.c
-index 6ded5c198998..fe217a2f7d21 100644
---- a/drivers/video/fbdev/stifb.c
-+++ b/drivers/video/fbdev/stifb.c
-@@ -1126,10 +1126,8 @@ static int __init stifb_init_fb(struct sti_struct *sti, int bpp_pref)
- 	int bpp, xres, yres;
- 
- 	fb = kzalloc(sizeof(*fb), GFP_ATOMIC);
--	if (!fb) {
--		printk(KERN_ERR "stifb: Could not allocate stifb structure\n");
-+	if (!fb)
- 		return -ENODEV;
--	}
- 	
- 	info = &fb->info;
- 
--- 
-2.15.0
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
+iEYEABECAAYFAloYj38ACgkQXKSJPmm5/E5cfQCgoFeHSeRxr9yoOVPpNYvJLiXJ
+1NkAoJb/M52HEUrAxPl/xOf55aOpDGdq
+=roWr
+-----END PGP SIGNATURE-----
+
+--nextPart1690480.eUU9do5mRG--
