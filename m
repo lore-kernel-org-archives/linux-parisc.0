@@ -1,70 +1,87 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: [PATCH] video/fbdev/stifb: Delete an error message for a failed memory allocation in stifb_init_fb()
-Date: Fri, 24 Nov 2017 22:30:34 +0100
-Message-ID: <25624997.nONnEdNj0s@daneel.sf-tec.de>
-References: <7dcd32b6-9691-14a1-29cf-3a746ef5adfc@users.sourceforge.net>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH 01/18] mm: introduce MAP_SHARED_VALIDATE, a mechanism to
+ safely define new mmap flags
+Date: Sat, 25 Nov 2017 19:45:21 +0100
+Message-ID: <09f54d38-7cb5-343d-a017-2d71a793d05c@gmx.de>
+References: <20171101153648.30166-1-jack@suse.cz>
+ <20171101153648.30166-2-jack@suse.cz>
+ <638b3b80-5cb9-97c2-5055-fef3a1ec25b9@suse.cz>
+ <CAPcyv4gGRHWc6AH5Enb7njtmqHgd=g+0-mYMdd5wWjJMW0+d7g@mail.gmail.com>
+ <20171122195318.GA29485@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1690480.eUU9do5mRG"; micalg="pgp-"; protocol="application/pgp-signature"
-Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-parisc@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Helge Deller <deller@gmx.de>,
-        "James E. J. Bottomley" <jejb@parisc-linux.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-To: SF Markus Elfring <elfring@users.sourceforge.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <7dcd32b6-9691-14a1-29cf-3a746ef5adfc@users.sourceforge.net>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Cc: Vlastimil Babka <vbabka@suse.cz>, Jan Kara <jack@suse.cz>,
+ Ross Zwisler <ross.zwisler@linux.intel.com>,
+ Christoph Hellwig <hch@infradead.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+ Linux MM <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>,
+ linux-ext4 <linux-ext4@vger.kernel.org>,
+ linux-xfs <linux-xfs@vger.kernel.org>,
+ "Darrick J . Wong" <darrick.wong@oracle.com>, Arnd Bergmann <arnd@arndb.de>,
+ Andy Lutomirski <luto@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Michal Hocko <mhocko@kernel.org>,
+ Kees Cook <keescook@chromium.org>, Florian Weimer <fweimer@redhat.com>,
+ John Hubbard <jhubbard@nvidia.com>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ linux-parisc@vger.kernel.org
+To: Matthew Wilcox <willy@infradead.org>,
+ Dan Williams <dan.j.williams@intel.com>
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <20171122195318.GA29485@bombadil.infradead.org>
+List-ID: <linux-mm.kvack.org>
 
---nextPart1690480.eUU9do5mRG
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-
-Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Fri, 24 Nov 2017 22:22:06 +0100
+On 22.11.2017 20:53, Matthew Wilcox wrote:
+> On Wed, Nov 22, 2017 at 08:52:37AM -0800, Dan Williams wrote:
+>> On Wed, Nov 22, 2017 at 4:02 AM, Vlastimil Babka <vbabka@suse.cz> wrote:
+>>> On 11/01/2017 04:36 PM, Jan Kara wrote:
+>>>> From: Dan Williams <dan.j.williams@intel.com>
+>>>>
+>>>> The mmap(2) syscall suffers from the ABI anti-pattern of not validating
+>>>> unknown flags. However, proposals like MAP_SYNC need a mechanism to
+>>>> define new behavior that is known to fail on older kernels without the
+>>>> support. Define a new MAP_SHARED_VALIDATE flag pattern that is
+>>>> guaranteed to fail on all legacy mmap implementations.
+>>>
+>>> So I'm trying to make sense of this together with Michal's attempt for
+>>> MAP_FIXED_SAFE [1] where he has to introduce a completely new flag
+>>> instead of flag modifier exactly for the reason of not validating
+>>> unknown flags. And my conclusion is that because MAP_SHARED_VALIDATE
+>>> implies MAP_SHARED and excludes MAP_PRIVATE, MAP_FIXED_SAFE as a
+>>> modifier cannot build on top of this. Wouldn't thus it be really better
+>>> long-term to introduce mmap3 at this point? ...
+>>
+>> We have room to define MAP_PRIVATE_VALIDATE in MAP_TYPE on every arch
+>> except parisc. Can we steal an extra bit for MAP_TYPE from somewhere
+>> else on parisc?
 > 
-> Omit an extra message for a memory allocation failure in this function.
-> 
-> This issue was detected by using the Coccinelle software.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->  drivers/video/fbdev/stifb.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/video/fbdev/stifb.c b/drivers/video/fbdev/stifb.c
-> index 6ded5c198998..fe217a2f7d21 100644
-> --- a/drivers/video/fbdev/stifb.c
-> +++ b/drivers/video/fbdev/stifb.c
-> @@ -1126,10 +1126,8 @@ static int __init stifb_init_fb(struct sti_struct
-> *sti, int bpp_pref) int bpp, xres, yres;
-> 
->  	fb = kzalloc(sizeof(*fb), GFP_ATOMIC);
-> -	if (!fb) {
-> -		printk(KERN_ERR "stifb: Could not allocate stifb structure\n");
-> +	if (!fb)
->  		return -ENODEV;
-> -	}
-> 
->  	info = &fb->info;
+> It looks like 0x08 should work.
 
-This should be -ENOMEM.
+I posted an RFC to the parisc mailing list for that:
+https://patchwork.kernel.org/patch/9970553/
 
-Eike
---nextPart1690480.eUU9do5mRG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+Basically this is (for parisc only):
+-#define MAP_TYPE	0x03		/* Mask for type of mapping */
++#define MAP_TYPE	(MAP_SHARED|MAP_PRIVATE|MAP_RESRVD1|MAP_RESRVD2) /* Mask for type of mapping */
+ #define MAP_FIXED	0x04		/* Interpret addr exactly */
++#define MAP_RESRVD1	0x08		/* reserved for 3rd bit of MAP_TYPE */
+ #define MAP_ANONYMOUS	0x10		/* don't use a file */
++#define MAP_RESRVD2	0x20		/* reserved for 4th bit of MAP_TYPE */
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+> But I don't have an HPUX machine around
+> to check that HP didn't use that bit for something else.
 
-iEYEABECAAYFAloYj38ACgkQXKSJPmm5/E5cfQCgoFeHSeRxr9yoOVPpNYvJLiXJ
-1NkAoJb/M52HEUrAxPl/xOf55aOpDGdq
-=roWr
------END PGP SIGNATURE-----
+We completely dropped support for HPUX binaries, so it's not relvant any longer. 
 
---nextPart1690480.eUU9do5mRG--
+> It'd probably help to cc the linux-parisc mailing list when asking
+> questions about PARISC, eh?
+
+Yes, please.
+
+Helge
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
