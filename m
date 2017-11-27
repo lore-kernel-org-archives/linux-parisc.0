@@ -1,92 +1,94 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 3/3] Input: hp_sdc: convert to ktime_get()
-Date: Mon, 27 Nov 2017 12:22:59 +0100
-Message-ID: <20171127112324.1917698-3-arnd@arndb.de>
-References: <20171127112324.1917698-1-arnd@arndb.de>
-Cc: linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
-        "James E . J . Bottomley" <jejb@parisc-linux.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-To: linux-input@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20171127112324.1917698-1-arnd@arndb.de>
-List-ID: <linux-m68k.vger.kernel.org>
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 01/18] mm: introduce MAP_SHARED_VALIDATE, a mechanism to
+ safely define new mmap flags
+Date: Mon, 27 Nov 2017 16:55:54 +0100
+Message-ID: <35fa2cb6-9957-fd77-836c-760cecc64b2e@suse.cz>
+References: <20171101153648.30166-1-jack@suse.cz>
+ <20171101153648.30166-2-jack@suse.cz>
+ <638b3b80-5cb9-97c2-5055-fef3a1ec25b9@suse.cz>
+ <CAPcyv4gGRHWc6AH5Enb7njtmqHgd=g+0-mYMdd5wWjJMW0+d7g@mail.gmail.com>
+ <20171122195318.GA29485@bombadil.infradead.org>
+ <09f54d38-7cb5-343d-a017-2d71a793d05c@gmx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Cc: Jan Kara <jack@suse.cz>,
+        Ross Zwisler <ross.zwisler@linux.intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>, Matthew Wilcox <willy@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <09f54d38-7cb5-343d-a017-2d71a793d05c@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This gets rid of the deprecated do_gettimeofday() call in favor
-of ktime_get(), which is also more reliable as it uses monotonic
-times. The code now gets a bit simpler.
+On 11/25/2017 07:45 PM, Helge Deller wrote:
+> On 22.11.2017 20:53, Matthew Wilcox wrote:
+>> On Wed, Nov 22, 2017 at 08:52:37AM -0800, Dan Williams wrote:
+>>> On Wed, Nov 22, 2017 at 4:02 AM, Vlastimil Babka <vbabka@suse.cz> wrote:
+>>>> On 11/01/2017 04:36 PM, Jan Kara wrote:
+>>>>> From: Dan Williams <dan.j.williams@intel.com>
+>>>>>
+>>>>> The mmap(2) syscall suffers from the ABI anti-pattern of not validating
+>>>>> unknown flags. However, proposals like MAP_SYNC need a mechanism to
+>>>>> define new behavior that is known to fail on older kernels without the
+>>>>> support. Define a new MAP_SHARED_VALIDATE flag pattern that is
+>>>>> guaranteed to fail on all legacy mmap implementations.
+>>>>
+>>>> So I'm trying to make sense of this together with Michal's attempt for
+>>>> MAP_FIXED_SAFE [1] where he has to introduce a completely new flag
+>>>> instead of flag modifier exactly for the reason of not validating
+>>>> unknown flags. And my conclusion is that because MAP_SHARED_VALIDATE
+>>>> implies MAP_SHARED and excludes MAP_PRIVATE, MAP_FIXED_SAFE as a
+>>>> modifier cannot build on top of this. Wouldn't thus it be really better
+>>>> long-term to introduce mmap3 at this point? ...
+>>>
+>>> We have room to define MAP_PRIVATE_VALIDATE in MAP_TYPE on every arch
+>>> except parisc. Can we steal an extra bit for MAP_TYPE from somewhere
+>>> else on parisc?
+>>
+>> It looks like 0x08 should work.
+> 
+> I posted an RFC to the parisc mailing list for that:
+> https://patchwork.kernel.org/patch/9970553/
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/input/serio/hp_sdc.c | 17 +++++++----------
- include/linux/hp_sdc.h       |  2 +-
- 2 files changed, 8 insertions(+), 11 deletions(-)
+Thanks. BTW there doesn't seem to be much interest making MAP_FIXED_SAFE
+a flag modifier after all, so MAP_PRIVATE_VALIDATE wouldn't get
+immediate users.
 
-diff --git a/drivers/input/serio/hp_sdc.c b/drivers/input/serio/hp_sdc.c
-index 1d7c7d81a5ef..0b8a25c58d02 100644
---- a/drivers/input/serio/hp_sdc.c
-+++ b/drivers/input/serio/hp_sdc.c
-@@ -193,7 +193,7 @@ static void hp_sdc_take(int irq, void *dev_id, uint8_t status, uint8_t data)
- 	curr->seq[curr->idx++] = status;
- 	curr->seq[curr->idx++] = data;
- 	hp_sdc.rqty -= 2;
--	do_gettimeofday(&hp_sdc.rtv);
-+	hp_sdc.rtime = ktime_get();
- 
- 	if (hp_sdc.rqty <= 0) {
- 		/* All data has been gathered. */
-@@ -306,13 +306,10 @@ static void hp_sdc_tasklet(unsigned long foo)
- 	write_lock_irq(&hp_sdc.rtq_lock);
- 
- 	if (hp_sdc.rcurr >= 0) {
--		struct timeval tv;
-+		ktime_t now = ktime_get();
- 
--		do_gettimeofday(&tv);
--		if (tv.tv_sec > hp_sdc.rtv.tv_sec)
--			tv.tv_usec += USEC_PER_SEC;
--
--		if (tv.tv_usec - hp_sdc.rtv.tv_usec > HP_SDC_MAX_REG_DELAY) {
-+		if (ktime_after(now, ktime_add_us(hp_sdc.rtime,
-+						  HP_SDC_MAX_REG_DELAY))) {
- 			hp_sdc_transaction *curr;
- 			uint8_t tmp;
- 
-@@ -321,8 +318,8 @@ static void hp_sdc_tasklet(unsigned long foo)
- 			 * we'll need to figure out a way to communicate
- 			 * it back to the application. and be less verbose.
- 			 */
--			printk(KERN_WARNING PREFIX "read timeout (%ius)!\n",
--			       (int)(tv.tv_usec - hp_sdc.rtv.tv_usec));
-+			printk(KERN_WARNING PREFIX "read timeout (%lldus)!\n",
-+			       ktime_us_delta(now, hp_sdc.rtime));
- 			curr->idx += hp_sdc.rqty;
- 			hp_sdc.rqty = 0;
- 			tmp = curr->seq[curr->actidx];
-@@ -551,7 +548,7 @@ unsigned long hp_sdc_put(void)
- 
- 			/* Start a new read */
- 			hp_sdc.rqty = curr->seq[curr->idx];
--			do_gettimeofday(&hp_sdc.rtv);
-+			hp_sdc.rtime = ktime_get();
- 			curr->idx++;
- 			/* Still need to lock here in case of spurious irq. */
- 			write_lock_irq(&hp_sdc.rtq_lock);
-diff --git a/include/linux/hp_sdc.h b/include/linux/hp_sdc.h
-index d392975d8887..6f1dee7e67e0 100644
---- a/include/linux/hp_sdc.h
-+++ b/include/linux/hp_sdc.h
-@@ -281,7 +281,7 @@ typedef struct {
- 	hp_sdc_transaction *tq[HP_SDC_QUEUE_LEN]; /* All pending read/writes */
- 
- 	int		rcurr, rqty;	/* Current read transact in process */
--	struct timeval	rtv;		/* Time when current read started */
-+	ktime_t		rtime;		/* Time when current read started */
- 	int		wcurr;		/* Current write transact in process */
- 
- 	int		dev_err;	/* carries status from registration */
--- 
-2.9.0
+> Basically this is (for parisc only):
+> -#define MAP_TYPE	0x03		/* Mask for type of mapping */
+> +#define MAP_TYPE	(MAP_SHARED|MAP_PRIVATE|MAP_RESRVD1|MAP_RESRVD2) /* Mask for type of mapping */
+>  #define MAP_FIXED	0x04		/* Interpret addr exactly */
+> +#define MAP_RESRVD1	0x08		/* reserved for 3rd bit of MAP_TYPE */
+>  #define MAP_ANONYMOUS	0x10		/* don't use a file */
+> +#define MAP_RESRVD2	0x20		/* reserved for 4th bit of MAP_TYPE */
+> 
+>> But I don't have an HPUX machine around
+>> to check that HP didn't use that bit for something else.
+> 
+> We completely dropped support for HPUX binaries, so it's not relvant any longer. 
+> 
+>> It'd probably help to cc the linux-parisc mailing list when asking
+>> questions about PARISC, eh?
+> 
+> Yes, please.
+> 
+> Helge
+> 
+
