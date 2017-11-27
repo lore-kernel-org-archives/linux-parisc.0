@@ -1,87 +1,69 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH 01/18] mm: introduce MAP_SHARED_VALIDATE, a mechanism to
- safely define new mmap flags
-Date: Sat, 25 Nov 2017 19:45:21 +0100
-Message-ID: <09f54d38-7cb5-343d-a017-2d71a793d05c@gmx.de>
-References: <20171101153648.30166-1-jack@suse.cz>
- <20171101153648.30166-2-jack@suse.cz>
- <638b3b80-5cb9-97c2-5055-fef3a1ec25b9@suse.cz>
- <CAPcyv4gGRHWc6AH5Enb7njtmqHgd=g+0-mYMdd5wWjJMW0+d7g@mail.gmail.com>
- <20171122195318.GA29485@bombadil.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Vlastimil Babka <vbabka@suse.cz>, Jan Kara <jack@suse.cz>,
- Ross Zwisler <ross.zwisler@linux.intel.com>,
- Christoph Hellwig <hch@infradead.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
- Linux MM <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>,
- linux-ext4 <linux-ext4@vger.kernel.org>,
- linux-xfs <linux-xfs@vger.kernel.org>,
- "Darrick J . Wong" <darrick.wong@oracle.com>, Arnd Bergmann <arnd@arndb.de>,
- Andy Lutomirski <luto@kernel.org>, Andrew Morton
- <akpm@linux-foundation.org>, Michal Hocko <mhocko@kernel.org>,
- Kees Cook <keescook@chromium.org>, Florian Weimer <fweimer@redhat.com>,
- John Hubbard <jhubbard@nvidia.com>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- linux-parisc@vger.kernel.org
-To: Matthew Wilcox <willy@infradead.org>,
- Dan Williams <dan.j.williams@intel.com>
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <20171122195318.GA29485@bombadil.infradead.org>
-List-ID: <linux-mm.kvack.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 1/3] Input: hil_mlc: convert timeval to time64_t
+Date: Mon, 27 Nov 2017 12:22:57 +0100
+Message-ID: <20171127112324.1917698-1-arnd@arndb.de>
+Cc: linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
+        "James E . J . Bottomley" <jejb@parisc-linux.org>,
+        WEN Pingbo <pingbo.wen@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+To: linux-input@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On 22.11.2017 20:53, Matthew Wilcox wrote:
-> On Wed, Nov 22, 2017 at 08:52:37AM -0800, Dan Williams wrote:
->> On Wed, Nov 22, 2017 at 4:02 AM, Vlastimil Babka <vbabka@suse.cz> wrote:
->>> On 11/01/2017 04:36 PM, Jan Kara wrote:
->>>> From: Dan Williams <dan.j.williams@intel.com>
->>>>
->>>> The mmap(2) syscall suffers from the ABI anti-pattern of not validating
->>>> unknown flags. However, proposals like MAP_SYNC need a mechanism to
->>>> define new behavior that is known to fail on older kernels without the
->>>> support. Define a new MAP_SHARED_VALIDATE flag pattern that is
->>>> guaranteed to fail on all legacy mmap implementations.
->>>
->>> So I'm trying to make sense of this together with Michal's attempt for
->>> MAP_FIXED_SAFE [1] where he has to introduce a completely new flag
->>> instead of flag modifier exactly for the reason of not validating
->>> unknown flags. And my conclusion is that because MAP_SHARED_VALIDATE
->>> implies MAP_SHARED and excludes MAP_PRIVATE, MAP_FIXED_SAFE as a
->>> modifier cannot build on top of this. Wouldn't thus it be really better
->>> long-term to introduce mmap3 at this point? ...
->>
->> We have room to define MAP_PRIVATE_VALIDATE in MAP_TYPE on every arch
->> except parisc. Can we steal an extra bit for MAP_TYPE from somewhere
->> else on parisc?
-> 
-> It looks like 0x08 should work.
+From: WEN Pingbo <pingbo.wen@linaro.org>
 
-I posted an RFC to the parisc mailing list for that:
-https://patchwork.kernel.org/patch/9970553/
+Since mlc->lcv_t is only interested in seconds, directly using time64_t
+here.
 
-Basically this is (for parisc only):
--#define MAP_TYPE	0x03		/* Mask for type of mapping */
-+#define MAP_TYPE	(MAP_SHARED|MAP_PRIVATE|MAP_RESRVD1|MAP_RESRVD2) /* Mask for type of mapping */
- #define MAP_FIXED	0x04		/* Interpret addr exactly */
-+#define MAP_RESRVD1	0x08		/* reserved for 3rd bit of MAP_TYPE */
- #define MAP_ANONYMOUS	0x10		/* don't use a file */
-+#define MAP_RESRVD2	0x20		/* reserved for 4th bit of MAP_TYPE */
+This gets rid of the deprecated do_gettimeofday() and avoids problems
+with time going backwards since we now use the monotonic clocksource.
 
-> But I don't have an HPUX machine around
-> to check that HP didn't use that bit for something else.
+Signed-off-by: WEN Pingbo <pingbo.wen@linaro.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/input/serio/hil_mlc.c | 8 +++-----
+ include/linux/hil_mlc.h       | 2 +-
+ 2 files changed, 4 insertions(+), 6 deletions(-)
 
-We completely dropped support for HPUX binaries, so it's not relvant any longer. 
+diff --git a/drivers/input/serio/hil_mlc.c b/drivers/input/serio/hil_mlc.c
+index d66d01c5373b..581e47119363 100644
+--- a/drivers/input/serio/hil_mlc.c
++++ b/drivers/input/serio/hil_mlc.c
+@@ -274,14 +274,12 @@ static int hilse_match(hil_mlc *mlc, int unused)
+ /* An LCV used to prevent runaway loops, forces 5 second sleep when reset. */
+ static int hilse_init_lcv(hil_mlc *mlc, int unused)
+ {
+-	struct timeval tv;
++	time64_t now = ktime_get_seconds();
+ 
+-	do_gettimeofday(&tv);
+-
+-	if (mlc->lcv && (tv.tv_sec - mlc->lcv_tv.tv_sec) < 5)
++	if (mlc->lcv && (now - mlc->lcv_time) < 5)
+ 		return -1;
+ 
+-	mlc->lcv_tv = tv;
++	mlc->lcv_time = now;
+ 	mlc->lcv = 0;
+ 
+ 	return 0;
+diff --git a/include/linux/hil_mlc.h b/include/linux/hil_mlc.h
+index 394a8405dd74..d6fc839bdf46 100644
+--- a/include/linux/hil_mlc.h
++++ b/include/linux/hil_mlc.h
+@@ -149,7 +149,7 @@ struct hil_mlc {
+ 
+ 	int			ddi;	/* Last operational device id */
+ 	int			lcv;	/* LCV to throttle loops */
+-	struct timeval		lcv_tv; /* Time loop was started */
++	time64_t		lcv_time; /* Time loop was started */
+ 
+ 	int			di_map[7]; /* Maps below items to live devs */
+ 	struct hil_mlc_devinfo	di[HIL_MLC_DEVMEM];
+-- 
+2.9.0
 
-> It'd probably help to cc the linux-parisc mailing list when asking
-> questions about PARISC, eh?
-
-Yes, please.
-
-Helge
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
