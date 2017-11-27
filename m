@@ -1,193 +1,175 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 2/3] y2038: elfcore: use __kernel_old_timeval for process times
-Date: Mon, 27 Nov 2017 18:00:46 +0100
-Message-ID: <20171127170121.634826-2-arnd@arndb.de>
-References: <20171127170121.634826-1-arnd@arndb.de>
-Cc: y2038@lists.linaro.org, libc-alpha@sourceware.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-api@vger.kernel.org,
-        Albert ARIBAUD <albert.aribaud@3adev.fr>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        Nicolas Pitre <nicolas.pitre@linaro.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Mickael GUENE <mickael.guene@st.com>,
+From: Deepa Dinamani <deepa.kernel@gmail.com>
+Subject: [PATCH v2 00/10] posix_clocks: Prepare syscalls for 64 bit time_t conversion
+Date: Mon, 27 Nov 2017 11:30:27 -0800
+Message-ID: <20171127193037.8711-1-deepa.kernel@gmail.com>
+Cc: linux-kernel@vger.kernel.org, arnd@arndb.de,
+        y2038@lists.linaro.org, acme@kernel.org, benh@kernel.crashing.org,
+        borntraeger@de.ibm.com, catalin.marinas@arm.com,
+        cmetcalf@mellanox.com, cohuck@redhat.com, davem@davemloft.net,
+        deller@gmx.de, devel@driverdev.osuosl.org,
+        gerald.schaefer@de.ibm.com, gregkh@linuxfoundation.org,
+        heiko.carstens@de.ibm.com, hoeppner@linux.vnet.ibm.com,
+        hpa@zytor.com, jejb@parisc-linux.org, jwi@linux.vnet.ibm.com,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
         linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
-        linux-fsdev
-To: John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, mpe@ellerman.id.au,
+        oberpar@linux.vnet.ibm.com, oprofile-list@lists.sf.net,
+        paulus@samba.org, peterz@infradead.org, ralf@linux-mips.org,
+To: tglx@linutronix.de, john.stultz@linaro.org
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171127170121.634826-1-arnd@arndb.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-We store elapsed time for a crashed process in struct elf_prstatus using
-'timeval' structures. Once glibc starts using 64-bit time_t, this becomes
-incompatible with the kernel's idea of timeval since the structure layout
-no longer matches on 32-bit architectures.
+The series is a preparation series for individual architectures
+to use 64 bit time_t syscalls in compat and 32 bit emulation modes.
 
-This changes the definition of the elf_prstatus structure to use
-__kernel_old_timeval instead, which is hardcoded to the currently used
-binary layout. There is no risk of overflow in y2038 though, because
-the time values are all relative times, and can store up to 68 years
-of process elapsed time.
+This is a follow up to the series Arnd Bergmann posted:
+https://sourceware.org/ml/libc-alpha/2015-05/msg00070.html [1]
 
-There is a risk of applications breaking at build time when they
-use the new kernel headers and expect the type to be exactly 'timeval'
-rather than a structure that has the same fields as before. Those
-applications have to be modified to deal with 64-bit time_t anyway.
+Big picture is as per the lwn article:
+https://lwn.net/Articles/643234/ [2]
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/mips/kernel/binfmt_elfn32.c  |  4 ++--
- arch/mips/kernel/binfmt_elfo32.c  |  4 ++--
- arch/parisc/kernel/binfmt_elf32.c |  4 ++--
- fs/binfmt_elf.c                   | 12 ++++++------
- fs/binfmt_elf_fdpic.c             | 12 ++++++------
- fs/compat_binfmt_elf.c            |  4 ++--
- include/uapi/linux/elfcore.h      |  8 ++++----
- 7 files changed, 24 insertions(+), 24 deletions(-)
+The series is directed at converting posix clock syscalls:
+clock_gettime, clock_settime, clock_getres and clock_nanosleep
+to use a new data structure __kernel_timespec at syscall boundaries.
+__kernel_timespec maintains 64 bit time_t across all execution modes.
 
-diff --git a/arch/mips/kernel/binfmt_elfn32.c b/arch/mips/kernel/binfmt_elfn32.c
-index 89b234844534..2fe2d5573289 100644
---- a/arch/mips/kernel/binfmt_elfn32.c
-+++ b/arch/mips/kernel/binfmt_elfn32.c
-@@ -100,7 +100,7 @@ jiffies_to_compat_timeval(unsigned long jiffies, struct compat_timeval *value)
- #undef TASK_SIZE
- #define TASK_SIZE TASK_SIZE32
- 
--#undef ns_to_timeval
--#define ns_to_timeval ns_to_compat_timeval
-+#undef ns_to_kernel_old_timeval
-+#define ns_to_kernel_old_timeval ns_to_compat_timeval
- 
- #include "../../../fs/binfmt_elf.c"
-diff --git a/arch/mips/kernel/binfmt_elfo32.c b/arch/mips/kernel/binfmt_elfo32.c
-index a88c59db3d48..d3c37583ef91 100644
---- a/arch/mips/kernel/binfmt_elfo32.c
-+++ b/arch/mips/kernel/binfmt_elfo32.c
-@@ -103,7 +103,7 @@ jiffies_to_compat_timeval(unsigned long jiffies, struct compat_timeval *value)
- #undef TASK_SIZE
- #define TASK_SIZE TASK_SIZE32
- 
--#undef ns_to_timeval
--#define ns_to_timeval ns_to_compat_timeval
-+#undef ns_to_kernel_old_timeval
-+#define ns_to_kernel_old_timeval ns_to_compat_timeval
- 
- #include "../../../fs/binfmt_elf.c"
-diff --git a/arch/parisc/kernel/binfmt_elf32.c b/arch/parisc/kernel/binfmt_elf32.c
-index 20dfa081ed0b..ad3ea00c64f7 100644
---- a/arch/parisc/kernel/binfmt_elf32.c
-+++ b/arch/parisc/kernel/binfmt_elf32.c
-@@ -92,7 +92,7 @@ struct elf_prpsinfo32
- 	current->thread.map_base = DEFAULT_MAP_BASE32; \
- 	current->thread.task_size = DEFAULT_TASK_SIZE32 \
- 
--#undef ns_to_timeval
--#define ns_to_timeval ns_to_compat_timeval
-+#undef ns_to_kernel_old_timeval
-+#define ns_to_kernel_old_timeval ns_to_compat_timeval
- 
- #include "../../../fs/binfmt_elf.c"
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index 83732fef510d..7ae716db7d99 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -1500,18 +1500,18 @@ static void fill_prstatus(struct elf_prstatus *prstatus,
- 		 * group-wide total, not its individual thread total.
- 		 */
- 		thread_group_cputime(p, &cputime);
--		prstatus->pr_utime = ns_to_timeval(cputime.utime);
--		prstatus->pr_stime = ns_to_timeval(cputime.stime);
-+		prstatus->pr_utime = ns_to_kernel_old_timeval(cputime.utime);
-+		prstatus->pr_stime = ns_to_kernel_old_timeval(cputime.stime);
- 	} else {
- 		u64 utime, stime;
- 
- 		task_cputime(p, &utime, &stime);
--		prstatus->pr_utime = ns_to_timeval(utime);
--		prstatus->pr_stime = ns_to_timeval(stime);
-+		prstatus->pr_utime = ns_to_kernel_old_timeval(utime);
-+		prstatus->pr_stime = ns_to_kernel_old_timeval(stime);
- 	}
- 
--	prstatus->pr_cutime = ns_to_timeval(p->signal->cutime);
--	prstatus->pr_cstime = ns_to_timeval(p->signal->cstime);
-+	prstatus->pr_cutime = ns_to_kernel_old_timeval(p->signal->cutime);
-+	prstatus->pr_cstime = ns_to_kernel_old_timeval(p->signal->cstime);
- }
- 
- static int fill_psinfo(struct elf_prpsinfo *psinfo, struct task_struct *p,
-diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
-index 429326b6e2e7..89717459224b 100644
---- a/fs/binfmt_elf_fdpic.c
-+++ b/fs/binfmt_elf_fdpic.c
-@@ -1362,17 +1362,17 @@ static void fill_prstatus(struct elf_prstatus *prstatus,
- 		 * group-wide total, not its individual thread total.
- 		 */
- 		thread_group_cputime(p, &cputime);
--		prstatus->pr_utime = ns_to_timeval(cputime.utime);
--		prstatus->pr_stime = ns_to_timeval(cputime.stime);
-+		prstatus->pr_utime = ns_to_kernel_old_timeval(cputime.utime);
-+		prstatus->pr_stime = ns_to_kernel_old_timeval(cputime.stime);
- 	} else {
- 		u64 utime, stime;
- 
- 		task_cputime(p, &utime, &stime);
--		prstatus->pr_utime = ns_to_timeval(utime);
--		prstatus->pr_stime = ns_to_timeval(stime);
-+		prstatus->pr_utime = ns_to_kernel_old_timeval(utime);
-+		prstatus->pr_stime = ns_to_kernel_old_timeval(stime);
- 	}
--	prstatus->pr_cutime = ns_to_timeval(p->signal->cutime);
--	prstatus->pr_cstime = ns_to_timeval(p->signal->cstime);
-+	prstatus->pr_cutime = ns_to_kernel_old_timeval(p->signal->cutime);
-+	prstatus->pr_cstime = ns_to_kernel_old_timeval(p->signal->cstime);
- 
- 	prstatus->pr_exec_fdpic_loadmap = p->mm->context.exec_fdpic_loadmap;
- 	prstatus->pr_interp_fdpic_loadmap = p->mm->context.interp_fdpic_loadmap;
-diff --git a/fs/compat_binfmt_elf.c b/fs/compat_binfmt_elf.c
-index 504b3c3539dc..5df608af1306 100644
---- a/fs/compat_binfmt_elf.c
-+++ b/fs/compat_binfmt_elf.c
-@@ -51,8 +51,8 @@
- #define elf_prstatus	compat_elf_prstatus
- #define elf_prpsinfo	compat_elf_prpsinfo
- 
--#undef ns_to_timeval
--#define ns_to_timeval ns_to_compat_timeval
-+#undef ns_to_kernel_old_timeval
-+#define ns_to_kernel_old_timeval ns_to_compat_timeval
- 
- /*
-  * To use this file, asm/elf.h must define compat_elf_check_arch.
-diff --git a/include/uapi/linux/elfcore.h b/include/uapi/linux/elfcore.h
-index 0b2c9e16e345..baf03562306d 100644
---- a/include/uapi/linux/elfcore.h
-+++ b/include/uapi/linux/elfcore.h
-@@ -53,10 +53,10 @@ struct elf_prstatus
- 	pid_t	pr_ppid;
- 	pid_t	pr_pgrp;
- 	pid_t	pr_sid;
--	struct timeval pr_utime;	/* User time */
--	struct timeval pr_stime;	/* System time */
--	struct timeval pr_cutime;	/* Cumulative user time */
--	struct timeval pr_cstime;	/* Cumulative system time */
-+	struct __kernel_old_timeval pr_utime;	/* User time */
-+	struct __kernel_old_timeval pr_stime;	/* System time */
-+	struct __kernel_old_timeval pr_cutime;	/* Cumulative user time */
-+	struct __kernel_old_timeval pr_cstime;	/* Cumulative system time */
- #if 0
- 	long	pr_instr;		/* Current instruction */
- #endif
+vdso will be handled as part of each architecture when they enable
+support for 64 bit time_t.
+
+The compat syscalls are repurposed to provide backward compatibility
+by using them as native syscalls as well for 32 bit architectures.
+They will continue to use timespec at syscall boundaries.
+
+CONFIG_64_BIT_TIME controls whether the syscalls use __kernel_timespec
+or timespec at syscall boundaries.
+
+The series does the following:
+1. Enable compat syscalls on 32 bit architectures.
+2. Add a new __kernel_timespec type to be used as the data structure
+   for all the new syscalls.
+3. Add new config CONFIG_64BIT_TIME(intead of the CONFIG_COMPAT_TIME in
+   [1] and [2] to switch to new definition of __kernel_timespec. It is
+   the same as struct timespec otherwise.
+4. Add new CONFIG_32BIT_TIME to conditionally compile compat syscalls.
+
+* Changes since v1:
+ * Introduce CONFIG_32BIT_TIME
+ * Fixed zeroing out of higher order bits of tv_nsec
+ * Included Arnd's changes to fix up use of compat headers
+
+I decided against using LEGACY_TIME_SYSCALLS to conditionally compile
+legacy time syscalls such as sys_nanosleep because this will need to
+enclose compat_sys_nanosleep as well. So, defining it as 
+
+config LEGACY_TIME_SYSCALLS
+     def_bool 64BIT || !64BIT_TIME
+
+will not include compat_sys_nanosleep. We will instead need a new config to
+exclusively mark legacy syscalls.
+
+Deepa Dinamani (10):
+  compat: Make compat helpers independent of CONFIG_COMPAT
+  include: Move compat_timespec/ timeval to compat_time.h
+  compat: enable compat_get/put_timespec64 always
+  arch: introduce CONFIG_64BIT_TIME
+  arch: Introduce CONFIG_COMPAT_32BIT_TIME
+  posix-clocks: Make compat syscalls depend on CONFIG_COMPAT_32BIT_TIME
+  include: Add new y2038 safe __kernel_timespec
+  fix get_timespec64() for y2038 safe compat interfaces
+  change time types to new y2038 safe __kernel_* types
+  nanosleep: change time types to safe __kernel_* types
+
+ arch/Kconfig                           | 18 +++++++
+ arch/arm64/include/asm/compat.h        | 11 ----
+ arch/arm64/include/asm/stat.h          |  1 +
+ arch/arm64/kernel/hw_breakpoint.c      |  1 -
+ arch/arm64/kernel/perf_regs.c          |  2 +-
+ arch/arm64/kernel/process.c            |  1 -
+ arch/mips/include/asm/compat.h         | 11 ----
+ arch/mips/kernel/signal32.c            |  2 +-
+ arch/parisc/include/asm/compat.h       | 11 ----
+ arch/powerpc/include/asm/compat.h      | 11 ----
+ arch/powerpc/kernel/asm-offsets.c      |  2 +-
+ arch/powerpc/oprofile/backtrace.c      |  2 +-
+ arch/s390/hypfs/hypfs_sprp.c           |  1 -
+ arch/s390/include/asm/compat.h         | 11 ----
+ arch/s390/include/asm/elf.h            |  3 +-
+ arch/s390/kvm/priv.c                   |  1 -
+ arch/s390/pci/pci_clp.c                |  1 -
+ arch/sparc/include/asm/compat.h        | 11 ----
+ arch/tile/include/asm/compat.h         | 11 ----
+ arch/x86/events/core.c                 |  2 +-
+ arch/x86/include/asm/compat.h          | 11 ----
+ arch/x86/include/asm/ftrace.h          |  2 +-
+ arch/x86/include/asm/sys_ia32.h        |  2 +-
+ arch/x86/kernel/sys_x86_64.c           |  2 +-
+ drivers/s390/block/dasd_ioctl.c        |  1 -
+ drivers/s390/char/fs3270.c             |  1 -
+ drivers/s390/char/sclp_ctl.c           |  1 -
+ drivers/s390/char/vmcp.c               |  1 -
+ drivers/s390/cio/chsc_sch.c            |  1 -
+ drivers/s390/net/qeth_core_main.c      |  2 +-
+ drivers/staging/pi433/pi433_if.c       |  2 +-
+ include/linux/compat.h                 | 11 ++--
+ include/linux/compat_time.h            | 23 +++++++++
+ include/linux/restart_block.h          |  7 +--
+ include/linux/syscalls.h               | 12 ++---
+ include/linux/time.h                   |  4 +-
+ include/linux/time64.h                 | 10 +++-
+ include/uapi/asm-generic/posix_types.h |  1 +
+ include/uapi/linux/time.h              |  7 +++
+ kernel/Makefile                        |  2 +-
+ kernel/compat.c                        | 92 ++++++++++++++++++----------------
+ kernel/time/hrtimer.c                  | 10 ++--
+ kernel/time/posix-stubs.c              | 12 +++--
+ kernel/time/posix-timers.c             | 24 ++++++---
+ kernel/time/time.c                     | 10 +++-
+ 45 files changed, 175 insertions(+), 190 deletions(-)
+ create mode 100644 include/linux/compat_time.h
+
+base-commit: b0a84f19a5161418d4360cd57603e94ed489915e
 -- 
-2.9.0
+2.14.1
+
+Cc: acme@kernel.org
+Cc: benh@kernel.crashing.org
+Cc: borntraeger@de.ibm.com
+Cc: catalin.marinas@arm.com
+Cc: cmetcalf@mellanox.com
+Cc: cohuck@redhat.com
+Cc: davem@davemloft.net
+Cc: deller@gmx.de
+Cc: devel@driverdev.osuosl.org
+Cc: gerald.schaefer@de.ibm.com
+Cc: gregkh@linuxfoundation.org
+Cc: heiko.carstens@de.ibm.com
+Cc: hoeppner@linux.vnet.ibm.com
+Cc: hpa@zytor.com
+Cc: jejb@parisc-linux.org
+Cc: jwi@linux.vnet.ibm.com
+Cc: linux-api@vger.kernel.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-s390@vger.kernel.org
+Cc: mark.rutland@arm.com
+Cc: mingo@redhat.com
+Cc: mpe@ellerman.id.au
+Cc: oberpar@linux.vnet.ibm.com
+Cc: oprofile-list@lists.sf.net
+Cc: paulus@samba.org
+Cc: peterz@infradead.org
+Cc: ralf@linux-mips.org
+Cc: rostedt@goodmis.org
+Cc: rric@kernel.org
+Cc: schwidefsky@de.ibm.com
+Cc: sebott@linux.vnet.ibm.com
+Cc: sparclinux@vger.kernel.org
+Cc: sth@linux.vnet.ibm.com
+Cc: ubraun@linux.vnet.ibm.com
+Cc: will.deacon@arm.com
+Cc: x86@kernel.org
