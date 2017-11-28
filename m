@@ -1,51 +1,125 @@
-From: Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCHv4 0/6] printk/ia64/ppc64/parisc64: let's deprecate
- %pF/%pf printk specifiers
-Date: Tue, 28 Nov 2017 16:47:10 +0100
-Message-ID: <20171128154710.ytqixlioc3hrcbl3@pathway.suse.cz>
-References: <20171109234830.5067-1-sergey.senozhatsky@gmail.com>
+From: Deepa Dinamani <deepa.kernel@gmail.com>
+Subject: Re: [PATCH v2 00/10] posix_clocks: Prepare syscalls for 64 bit time_t conversion
+Date: Tue, 28 Nov 2017 15:17:54 -0800
+Message-ID: <CABeXuvrtQfSsOipGTnfmONXS45Dqxy4_T7MAcfO4VajoSycW4w@mail.gmail.com>
+References: <20171127193037.8711-1-deepa.kernel@gmail.com> <CAK8P3a2pcpQqf_TNGVxLBePBSKYhxD90UN-FjBor4d-dKhAwbQ@mail.gmail.com>
+ <CABeXuvrBOSVTNSbEZZMKmuTgWeU_VDqjSZkwGAM+bnPh0-72zA@mail.gmail.com> <CAK8P3a26g74UA5J5uQLwdjK3hq+htzjrdTYRKqfy_MawY7st+g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
-        Helge Deller <deller@gmx.de>,
+Content-Type: text/plain; charset="UTF-8"
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Bottomley <jejb@parisc-linux.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-To: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20171109234830.5067-1-sergey.senozhatsky@gmail.com>
-List-ID: <linux-ia64.vger.kernel.org>
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chris Metcalf <cmetcalf@mellanox.com>, cohuck@redhat.com,
+        David Miller <davem@davemloft.net>,
+        Helge Deller <deller@gmx.de>, devel@driverdev.osuosl.org,
+        gerald.schaefer@de.ibm.com, gregkh <gregkh@linuxfoundation.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.vnet.ibm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Julian Wiedmann
+To: Arnd Bergmann <arnd@arndb.de>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <CAK8P3a26g74UA5J5uQLwdjK3hq+htzjrdTYRKqfy_MawY7st+g@mail.gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri 2017-11-10 08:48:24, Sergey Senozhatsky wrote:
-> 	Hello,
-> 
-> 	A reworked version. There is a new dereference_symbol_descriptor()
-> function now, where "the magic happens", so I don't touch kallsyms_lookup()
-> and module_address_lookup() anymore.
+On Tue, Nov 28, 2017 at 6:17 AM, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Mon, Nov 27, 2017 at 11:29 PM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
+>>>> I decided against using LEGACY_TIME_SYSCALLS to conditionally compile
+>>>> legacy time syscalls such as sys_nanosleep because this will need to
+>>>> enclose compat_sys_nanosleep as well. So, defining it as
+>>>>
+>>>> config LEGACY_TIME_SYSCALLS
+>>>>      def_bool 64BIT || !64BIT_TIME
+>>>>
+>>>> will not include compat_sys_nanosleep. We will instead need a new config to
+>>>> exclusively mark legacy syscalls.
+>>>
+>>> Do you mean we would need to do this separately for native and compat
+>>> syscalls, and have yet another option, like LEGACY_TIME_SYSCALLS
+>>> and LEGACY_TIME_COMPAT_SYSCALLS, to cover all cases? I would
+>>> think that CONFIG_COMPAT_32BIT_TIME handles all the compat versions,
+>>> while CONFIG_LEGACY_TIME_SYSCALLS handles all the native ones.
+>>
+>> I meant sys_nanosleep would be covered by LEGACY_TIME_SYSCALLS, but
+>> compat_sys_nanosleep would be covered by CONFIG_COMPAT_32BIT_TIME
+>> along with other compat syscalls.
+>> So, if we define the LEGACY_TIME_SYSCALLS as
+>>
+>>
+>>         "This controls the compilation of the following system calls:
+>>         time, stime, gettimeofday, settimeofday, adjtimex, nanosleep,
+>> alarm, getitimer,
+>>         setitimer, select, utime, utimes, futimesat, and
+>> {old,new}{l,f,}stat{,64}.
+>>         These all pass 32-bit time_t arguments on 32-bit architectures and
+>>         are replaced by other interfaces (e.g. posix timers and clocks, statx).
+>>         C libraries implementing 64-bit time_t in 32-bit architectures have to
+>>         implement the handles by wrapping around the newer interfaces.
+>>         New architectures should not explicitly enable this."
+>>
+>> This would not be really true as compat interfaces have nothing to do
+>> with this config.
+>>
+>> I was proposing that we could have LEGACY_TIME_SYSCALLS config, but
+>> then have all these "deprecated" syscalls be enclosed within this,
+>> compat or not.
+>> This will also mean that we will have to come up representing these
+>> syscalls in the syscall header files.
+>> This can be a separate patch and this series can be merged as is if
+>> everyone agrees.
+>
+> I think doing this separately  would be good, I don't see any interdependency
+> with the other patches, we just need to decide what we want in the long
+> run.
 
-The new version looks good to me. Thanks a lot for reworking it.
-I feel much better now. For the whole series:
+Right. There are three options:
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+1. Use two configs to identify which syscalls need not be supported by
+new architectures.
+In this case it makes sense to say LEGACY_TIME_SYSCALLS and
+COMPAT_32BIT_TIME both need to be disabled for new architectures. And,
+I can reword the config to what you mention below.
 
-> 	All Ack-s/Tested-by-s were dropped, since the patch set has been
-> reworked. I'm kindly asking arch-s maintainers and developers to test it
-> once again. Sorry for any inconveniences and thanks for your help in
-> advance.
+2. Make the LEGACY_TIME_SYSCALLS eliminate non y2038 safe syscalls
+mentioned below only.
+In this case only the native and compat functions of the below
+mentioned syscalls need to be identified by the config. I like this
+option as this clearly identifies which syscalls are deprecated and do
+not have a 64 bit counterpart. Not all architectures need to support
+turning this off.
 
-I see that it was tested on all affected architectures. Thanks a lot
-all testers.
+3. If we don't need either 1 or 2, then we could stick with what we
+have today in the series as CONFIG_64BIT_TIME will be deleted and they
+only need #ifdef CONFIG_64BIT.
 
-It seems that we are ready to go. I am going to push this into
-for-4.16 branch in printk.git.
+Let me know if anyone prefers something else.
 
-Best Regards,
-Petr
+> I agree my text that you cited doesn't capture the situation correctly,
+> as this is really about the obsolete system calls that take 64-bit time_t
+> arguments on architectures that are converted to allow 64-bit time_t
+> for non-obsolete system calls.
+>
+> Maybe it's better to just reword this to
+>
+>       "This controls the compilation of the following system calls:
+>       time, stime, gettimeofday, settimeofday, adjtimex, nanosleep,
+> alarm, getitimer,
+>       setitimer, select, utime, utimes, futimesat, and {old,new}{l,f,}stat{,64}.
+>       These are all replaced by other interfaces (e.g. posix timers and clocks,
+>       statx) on architectures that got converted from 32-bit time_t to
+> 64-bit time_t.
+>       C libraries implementing 64-bit time_t in 32-bit architectures have to
+>       implement the handles by wrapping around the newer interfaces.
+>       New architectures should not explicitly enable this."
+>
+> That would clarify that it's not about the compat system calls, while
+> also allowing the two options to be set independently.
+
+-Deepa
