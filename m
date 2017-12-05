@@ -1,29 +1,41 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: Debian vmlinux-4.14.0-1-parisc64-smp fails to boot on c3750
-Date: Sun, 3 Dec 2017 15:53:53 -0500
-Message-ID: <BE077D1B-C113-4BBF-8F61-1850AEAAED78@bell.net>
-References: <008A2452-42ED-45E9-8FDE-69757C9D6962@bell.net> <5b767291-0b39-b38b-26f6-80bb6f462032@gmx.de> <7df24e2b-24b4-c62d-eff6-33813c883280@gmx.de>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc List <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <7df24e2b-24b4-c62d-eff6-33813c883280@gmx.de>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] video/console/sticore: Delete an error message for a failed
+ memory allocation in sti_try_rom_generic()
+Date: Tue, 5 Dec 2017 19:00:22 +0100
+Message-ID: <6b8dde60-0550-5fb3-c7a5-5f6282259186@users.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: linux-fbdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+ dri-devel@lists.freedesktop.org,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Helge Deller <deller@gmx.de>, "James E. J. Bottomley" <jejb@parisc-linux.org>
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
 List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
 
-On 2017-12-03, at 3:36 PM, Helge Deller wrote:
-
-> Are you sure that you have run "palo" once that version 1.99 of the palo IPL is installed in your
-> boot sector?  Just having palo 1.99 installed in the Linux filesystems is not sufficient.
-
-That was it.  The palo.conf file had a couple of problems and palo didn't run fully.  The boot
-drive had changed from /dev/sda to /dev/sdb...
-
-Thanks,
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
+OiBUdWUsIDUgRGVjIDIwMTcgMTg6NDU6NDIgKzAxMDAKCk9taXQgYW4gZXh0cmEgbWVzc2FnZSBm
+b3IgYSBtZW1vcnkgYWxsb2NhdGlvbiBmYWlsdXJlIGluIHRoaXMgZnVuY3Rpb24uCgpUaGlzIGlz
+c3VlIHdhcyBkZXRlY3RlZCBieSB1c2luZyB0aGUgQ29jY2luZWxsZSBzb2Z0d2FyZS4KClNpZ25l
+ZC1vZmYtYnk6IE1hcmt1cyBFbGZyaW5nIDxlbGZyaW5nQHVzZXJzLnNvdXJjZWZvcmdlLm5ldD4K
+LS0tCiBkcml2ZXJzL3ZpZGVvL2NvbnNvbGUvc3RpY29yZS5jIHwgNCArLS0tCiAxIGZpbGUgY2hh
+bmdlZCwgMSBpbnNlcnRpb24oKyksIDMgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy92aWRlby9jb25zb2xlL3N0aWNvcmUuYyBiL2RyaXZlcnMvdmlkZW8vY29uc29sZS9zdGljb3Jl
+LmMKaW5kZXggZDFkMzc5Njc3M2FhLi4wOGI4MjI2NTY4NDYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMv
+dmlkZW8vY29uc29sZS9zdGljb3JlLmMKKysrIGIvZHJpdmVycy92aWRlby9jb25zb2xlL3N0aWNv
+cmUuYwpAQCAtODI3LDEwICs4MjcsOCBAQCBzdGF0aWMgc3RydWN0IHN0aV9zdHJ1Y3QgKnN0aV90
+cnlfcm9tX2dlbmVyaWModW5zaWduZWQgbG9uZyBhZGRyZXNzLAogCX0KIAkKIAlzdGkgPSBremFs
+bG9jKHNpemVvZigqc3RpKSwgR0ZQX0tFUk5FTCk7Ci0JaWYgKCFzdGkpIHsKLQkJcHJpbnRrKEtF
+Uk5fRVJSICJOb3QgZW5vdWdoIG1lbW9yeSAhXG4iKTsKKwlpZiAoIXN0aSkKIAkJcmV0dXJuIE5V
+TEw7Ci0JfQogCiAJc3Bpbl9sb2NrX2luaXQoJnN0aS0+bG9jayk7CiAKLS0gCjIuMTUuMQoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1h
+aWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMu
+ZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
