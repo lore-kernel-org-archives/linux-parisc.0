@@ -1,136 +1,48 @@
-From: Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCHv4 5/6] symbol lookup: introduce
- dereference_symbol_descriptor()
-Date: Wed, 6 Dec 2017 11:32:41 +0100
-Message-ID: <20171206103241.t2jbljml7it7wsnz@pathway.suse.cz>
-References: <20171109234830.5067-1-sergey.senozhatsky@gmail.com>
- <20171109234830.5067-6-sergey.senozhatsky@gmail.com>
- <20171206043649.GB15885@jagdpanzerIV>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Subject: Re: [PATCH] ipmi_si: fix crash on parisc
+Date: Wed, 06 Dec 2017 11:59:53 +0100
+Message-ID: <148bb897e55ffbe2225de4c0f1a32cf8@sf-tec.de>
+References: <alpine.LRH.2.02.1712060052170.12854@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Bottomley <jejb@parisc-linux.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-To: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20171206043649.GB15885@jagdpanzerIV>
-List-ID: <linux-ia64.vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Cc: Corey Minyard <minyard@acm.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-parisc@vger.kernel.org
+To: Mikulas Patocka <mpatocka@redhat.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <alpine.LRH.2.02.1712060052170.12854@file01.intranet.prod.int.rdu2.redhat.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed 2017-12-06 13:36:49, Sergey Senozhatsky wrote:
-> Hello,
+Mikulas Patocka wrote:
+> This patch fixes ipmi crash on parisc introduced in the kernel 4.15-rc.
+> The pointer io.io_setup is not initialized and thus it causes crash in
+> try_smi_init when attempting to call new_smi->io.io_setup.
 > 
-> 	so we got a number of build-error reports [somehow I
-> thought 0day has compile tested the patches already; well, I
-> was wrong] basically on congifs that have no KALLSYMS.
+> Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
 > 
-> 
-> Petr, can we replace 0006 with the following patch?
-
-Done. See comments below.
-
-> From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-> Subject: [PATCH] symbol lookup: introduce dereference_symbol_descriptor()
-> 
-> 
-> Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-
-The new patch only shuffled the code to fix a compilation problem
-with CONFIG_CALLSYMS undefined. It did not change the functionality.
-Therefore I put back:
-
-Tested-by: Tony Luck <tony.luck@intel.com> #ia64
-Tested-by: Santosh Sivaraj <santosh@fossix.org> #powerpc
-Tested-by: Helge Deller <deller@gmx.de> #parisc64
-
 > ---
->  Documentation/printk-formats.txt | 42 ++++++++++++-------------------
->  include/linux/kallsyms.h         | 53 ++++++++++++++++++++++++++++++++++++++++
->  kernel/kallsyms.c                | 33 -------------------------
->  lib/vsprintf.c                   |  5 ++--
->  4 files changed, 71 insertions(+), 62 deletions(-)
+>  drivers/char/ipmi/ipmi_si_parisc.c |    2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/Documentation/printk-formats.txt b/Documentation/printk-formats.txt
-> index aa0a776c817a..02745028e909 100644
-> --- a/Documentation/printk-formats.txt
-> +++ b/Documentation/printk-formats.txt
-> @@ -61,41 +61,31 @@ Symbols/Function Pointers
->  
->  ::
->  
-> -	%pF	versatile_init+0x0/0x110
-> -	%pf	versatile_init
-> -	%pS	versatile_init+0x0/0x110
-> -	%pSR	versatile_init+0x9/0x110
-> +	%pS     versatile_init+0x0/0x110
-> +	%ps     versatile_init
-> +	%pF     versatile_init+0x0/0x110
-> +	%pf     versatile_init
-> +	%pSR    versatile_init+0x9/0x110
->  		(with __builtin_extract_return_addr() translation)
-> -	%ps	versatile_init
-> -	%pB	prev_fn_of_versatile_init+0x88/0x88
-> +	%pB     prev_fn_of_versatile_init+0x88/0x88
-
-I was curious why so many lines were changed here. You converted
-the 2nd tab to spaces. I put back the tab. The result is:
-
---- a/Documentation/printk-formats.txt
-+++ b/Documentation/printk-formats.txt
-@@ -50,42 +50,31 @@ Symbols/Function Pointers
- 
- ::
- 
-+	%pS	versatile_init+0x0/0x110
-+	%ps	versatile_init
- 	%pF	versatile_init+0x0/0x110
- 	%pf	versatile_init
--	%pS	versatile_init+0x0/0x110
- 	%pSR	versatile_init+0x9/0x110
- 		(with __builtin_extract_return_addr() translation)
--	%ps	versatile_init
- 	%pB	prev_fn_of_versatile_init+0x88/0x88
- 
-https://git.kernel.org/pub/scm/linux/kernel/git/pmladek/printk.git/commit/?h=for-4.16-deprecate-printk-pf&id=78675fe41d57c2bf9cb671f0a85b369a5a156f0a
-
->  
-> diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
-> index bd118a6c60cb..1bcfe221e62c 100644
-> --- a/include/linux/kallsyms.h
-> +++ b/include/linux/kallsyms.h
-> +static inline void *dereference_symbol_descriptor(void *ptr)
-> +{
-> +#ifdef HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR
-> +	struct module *mod;
+> Index: linux-4.15-rc2/drivers/char/ipmi/ipmi_si_parisc.c
+> ===================================================================
+> --- linux-4.15-rc2.orig/drivers/char/ipmi/ipmi_si_parisc.c	2017-12-06
+> 01:19:49.000000000 +0100
+> +++ linux-4.15-rc2/drivers/char/ipmi/ipmi_si_parisc.c	2017-12-06
+> 06:40:12.000000000 +0100
+> @@ -10,6 +10,8 @@ static int __init ipmi_parisc_probe(stru
+>  {
+>  	struct si_sm_io io;
+> 
+> +	memset(&io, 0, sizeof(io));
 > +
-> +	ptr = dereference_kernel_function_descriptor(ptr);
-> +	if (is_ksym_addr((unsigned long)ptr))
-> +		return ptr;
-> +
-> +	preempt_disable();
-> +	mod = __module_address((unsigned long)ptr);
-> +	preempt_enable();
-> +
-> +	if (mod)
-> +		ptr = dereference_module_function_descriptor(mod, ptr);
-> +#endif
-> +	return ptr;
-> +}
+>  	io.si_type	= SI_KCS;
+>  	io.addr_source	= SI_DEVICETREE;
+>  	io.addr_type	= IPMI_MEM_ADDR_SPACE;
 
-It is a bit too long for an inline function but I did not find a
-better solution. It should always be defined and all suitable
-.c files are compiled only under certain configuration. Well,
-it is a nop on most architectures.
+Can't this be a C99 initializer for the whole struct? AFAIK this would 
+set all remaining members to 0 anyway.
 
-Best Regards,
-Petr
+Eike
