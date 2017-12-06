@@ -1,41 +1,92 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] video/console/sticore: Delete an error message for a failed
- memory allocation in sti_try_rom_generic()
-Date: Tue, 5 Dec 2017 19:00:22 +0100
-Message-ID: <6b8dde60-0550-5fb3-c7a5-5f6282259186@users.sourceforge.net>
+From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Subject: Re: [PATCHv4 5/6] symbol lookup: introduce
+ dereference_symbol_descriptor()
+Date: Wed, 6 Dec 2017 19:46:56 +0900
+Message-ID: <20171206104656.GC462@jagdpanzerIV>
+References: <20171109234830.5067-1-sergey.senozhatsky@gmail.com>
+ <20171109234830.5067-6-sergey.senozhatsky@gmail.com>
+ <20171206043649.GB15885@jagdpanzerIV>
+ <20171206103241.t2jbljml7it7wsnz@pathway.suse.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-To: linux-fbdev@vger.kernel.org, linux-parisc@vger.kernel.org,
- dri-devel@lists.freedesktop.org,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Helge Deller <deller@gmx.de>, "James E. J. Bottomley" <jejb@parisc-linux.org>
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Fenghua Yu <fenghua.yu@intel.com>, Tony Luck <tony.luck@intel.com>,
+ linux-ia64@vger.kernel.org,
+ Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+ linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
+ Jessica Yu <jeyu@kernel.org>, James Bottomley <jejb@parisc-linux.org>,
+ Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+ Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+ Paul Mackerras <paulus@samba.org>, Andrew Morton <akpm@linux-foundation.org>,
+ linuxppc-dev@lists.ozlabs.org
+To: Petr Mladek <pmladek@suse.com>
+Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <20171206103241.t2jbljml7it7wsnz@pathway.suse.cz>
+List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
 
-RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
-OiBUdWUsIDUgRGVjIDIwMTcgMTg6NDU6NDIgKzAxMDAKCk9taXQgYW4gZXh0cmEgbWVzc2FnZSBm
-b3IgYSBtZW1vcnkgYWxsb2NhdGlvbiBmYWlsdXJlIGluIHRoaXMgZnVuY3Rpb24uCgpUaGlzIGlz
-c3VlIHdhcyBkZXRlY3RlZCBieSB1c2luZyB0aGUgQ29jY2luZWxsZSBzb2Z0d2FyZS4KClNpZ25l
-ZC1vZmYtYnk6IE1hcmt1cyBFbGZyaW5nIDxlbGZyaW5nQHVzZXJzLnNvdXJjZWZvcmdlLm5ldD4K
-LS0tCiBkcml2ZXJzL3ZpZGVvL2NvbnNvbGUvc3RpY29yZS5jIHwgNCArLS0tCiAxIGZpbGUgY2hh
-bmdlZCwgMSBpbnNlcnRpb24oKyksIDMgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy92aWRlby9jb25zb2xlL3N0aWNvcmUuYyBiL2RyaXZlcnMvdmlkZW8vY29uc29sZS9zdGljb3Jl
-LmMKaW5kZXggZDFkMzc5Njc3M2FhLi4wOGI4MjI2NTY4NDYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMv
-dmlkZW8vY29uc29sZS9zdGljb3JlLmMKKysrIGIvZHJpdmVycy92aWRlby9jb25zb2xlL3N0aWNv
-cmUuYwpAQCAtODI3LDEwICs4MjcsOCBAQCBzdGF0aWMgc3RydWN0IHN0aV9zdHJ1Y3QgKnN0aV90
-cnlfcm9tX2dlbmVyaWModW5zaWduZWQgbG9uZyBhZGRyZXNzLAogCX0KIAkKIAlzdGkgPSBremFs
-bG9jKHNpemVvZigqc3RpKSwgR0ZQX0tFUk5FTCk7Ci0JaWYgKCFzdGkpIHsKLQkJcHJpbnRrKEtF
-Uk5fRVJSICJOb3QgZW5vdWdoIG1lbW9yeSAhXG4iKTsKKwlpZiAoIXN0aSkKIAkJcmV0dXJuIE5V
-TEw7Ci0JfQogCiAJc3Bpbl9sb2NrX2luaXQoJnN0aS0+bG9jayk7CiAKLS0gCjIuMTUuMQoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1h
-aWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMu
-ZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+On (12/06/17 11:32), Petr Mladek wrote:
+[..]
+> > diff --git a/Documentation/printk-formats.txt b/Documentation/printk-formats.txt
+> > index aa0a776c817a..02745028e909 100644
+> > --- a/Documentation/printk-formats.txt
+> > +++ b/Documentation/printk-formats.txt
+> > @@ -61,41 +61,31 @@ Symbols/Function Pointers
+> >  
+> >  ::
+> >  
+> > -	%pF	versatile_init+0x0/0x110
+> > -	%pf	versatile_init
+> > -	%pS	versatile_init+0x0/0x110
+> > -	%pSR	versatile_init+0x9/0x110
+> > +	%pS     versatile_init+0x0/0x110
+> > +	%ps     versatile_init
+> > +	%pF     versatile_init+0x0/0x110
+> > +	%pf     versatile_init
+> > +	%pSR    versatile_init+0x9/0x110
+> >  		(with __builtin_extract_return_addr() translation)
+> > -	%ps	versatile_init
+> > -	%pB	prev_fn_of_versatile_init+0x88/0x88
+> > +	%pB     prev_fn_of_versatile_init+0x88/0x88
+> 
+> I was curious why so many lines were changed here. You converted
+> the 2nd tab to spaces. I put back the tab. The result is:
+
+ew... how did that happen. thanks for fixing up.
+
+> > +static inline void *dereference_symbol_descriptor(void *ptr)
+> > +{
+> > +#ifdef HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR
+> > +	struct module *mod;
+> > +
+> > +	ptr = dereference_kernel_function_descriptor(ptr);
+> > +	if (is_ksym_addr((unsigned long)ptr))
+> > +		return ptr;
+> > +
+> > +	preempt_disable();
+> > +	mod = __module_address((unsigned long)ptr);
+> > +	preempt_enable();
+> > +
+> > +	if (mod)
+> > +		ptr = dereference_module_function_descriptor(mod, ptr);
+> > +#endif
+> > +	return ptr;
+> > +}
+> 
+> It is a bit too long for an inline function but I did not find a
+> better solution. It should always be defined and all suitable
+> .c files are compiled only under certain configuration. Well,
+> it is a nop on most architectures.
+
+or we can move dereference_symbol_descriptor() to vsprintf.c,
+since all the functions it depends on are now available either
+as exported symbols or via kallsyms header file. not that it
+annoys me, so we can keep it as it is.
+
+	-ss
