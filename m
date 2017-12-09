@@ -1,68 +1,36 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] parisc: Reduce probability of stack overflow
-Date: Fri, 8 Dec 2017 21:46:35 -0500
-Message-ID: <27DBDD58-FAF4-4675-A282-5EDF4577A580@bell.net>
-References: <0B5E3032-0DA1-457B-B32E-21B318FDB687@bell.net>
-Mime-Version: 1.0 (Apple Message framework v1085)
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] parisc: Add missing curly braces in puts()
+Date: Sat, 9 Dec 2017 14:45:24 +0300
+Message-ID: <20171209114524.kwsvkd4ui5jei4r3@mwanda>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc List <linux-parisc@vger.kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-To: John David Anglin <dave.anglin@bell.net>
+Cc: linux-parisc@vger.kernel.org, kernel-janitors@vger.kernel.org
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <0B5E3032-0DA1-457B-B32E-21B318FDB687@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The stack overflow problem was reintroduced by the following change:
+Static analysis tools complain that we intended to have curly braces
+around this indent block.  Which is true.
 
-    Merge branch 'parisc-4.10-1' of git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux
-    
-    Pull parisc updates from Helge Deller:
-    
-     - add Kernel address space layout randomization support
-    
-     - re-enable interrupts earlier now that we have a working IRQ stack
+Fixes: 2f3c7b8137ef ("parisc: Add core code for self-extracting kernel")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-As noted below, interrupts can't be enabled early because the register saves are done on the thread stack prior
-to switching to the IRQ stack.  This caused stack overflows and the thread stack needed increasing to 32k.  Even then,
-stack overflows still occasionally occurred.
-
-On 2017-11-13, at 7:35 PM, John David Anglin wrote:
-
-> Even with a 32 kB thread stack, I have seen instances where the thread stack overflowed on the mx3210 buildd.
-> Detection of stack overflow only occurs when we have an external interrupt.  When an external interrupt occurs,
-> we switch to the thread stack if we are not already on a kernel stack.  Then, registers and specials are saved to
-> the kernel stack.
-> 
-> The bug occurs in intr_return where interrupts are reenabled prior to returning from the interrupt.  This was done
-> incase we need to schedule or deliver signals.  However, it introduces the possibility that multiple external interrupts
-> may occur on the thread stack and cause a stack overflow.  These might not be detected and cause the kernel to
-> misbehave in random ways.
-> 
-> This patch changes the code to only reenable interrupts when we are going to schedule or deliver signals.  As a
-> result, we generally return from an interrupt before reenabling interrupts.  This minimizes the growth of the thread
-> stack.
-> 
-> This patch conflicts with the patch proposed by Helge here:
-> https://patchwork.kernel.org/patch/9970169/
-> 
-> In testing, I found that the thread stack can be 16 kB  when using an irq stack .  Without it, the thread stack needs
-> to be 32 kB.  Currently, the irq stack is 32 kB.  While it probably could be 16 kB, I would prefer to leave it as is for
-> safety.
-> 
-> Signed-off-by: John David Anglin <dave.anglin@bell.net>
-> 
-> 
-> <low-stack.d.stack>
-> 
-> --
-> John David Anglin	dave.anglin@bell.net
-
-
-Dave
---
-John David Anglin	dave.anglin@bell.net
-
-
-
+diff --git a/arch/parisc/boot/compressed/misc.c b/arch/parisc/boot/compressed/misc.c
+index 9345b44b86f0..432d33804a86 100644
+--- a/arch/parisc/boot/compressed/misc.c
++++ b/arch/parisc/boot/compressed/misc.c
+@@ -121,10 +121,11 @@ int puts(const char *s)
+ 	const char *nuline = s;
+ 
+ 	while ((nuline = strchr(s, '\n')) != NULL) {
+-		if (nuline != s)
++		if (nuline != s) {
+ 			pdc_iodc_print(s, nuline - s);
+ 			pdc_iodc_print("\r\n", 2);
+ 			s = nuline + 1;
++		}
+ 	}
+ 	if (*s != '\0')
+ 		pdc_iodc_print(s, strlen(s));
