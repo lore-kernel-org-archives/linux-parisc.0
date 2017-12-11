@@ -1,95 +1,149 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: crashes in 4.10 because of "parisc: Enable KASLR"
-Date: Sun, 10 Dec 2017 16:42:50 -0500
-Message-ID: <7FD0E306-71B6-44B5-8803-E4465CBFF200@bell.net>
-References: <alpine.LRH.2.02.1702011234060.25046@file01.intranet.prod.int.rdu2.redhat.com> <b24dbc17-2e13-0630-7969-3d12fe8d11bb@gmx.de> <alpine.LRH.2.02.1702011507040.25889@file01.intranet.prod.int.rdu2.redhat.com> <53b0b36a-32cd-2421-7d45-0c8ea8cc1ac1@bell.net> <alpine.LRH.2.02.1712080619070.10139@file01.intranet.prod.int.rdu2.redhat.com>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Content-Type: text/plain; charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: Mikulas Patocka <mpatocka@redhat.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: Have my PA8800 back online... (serial port missing on v4.14)
+Date: Mon, 11 Dec 2017 10:26:38 +0200
+Message-ID: <1512980798.25007.581.camel@linux.intel.com>
+References: <20171208190644.GA22228@ls3530.fritz.box>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Cc: debian-hppa@lists.debian.org
+To: Helge Deller <deller@gmx.de>,
+        Frank Scheiner <frank.scheiner@web.de>,
+        linux-parisc@vger.kernel.org,
+        John David Anglin <dave.anglin@bell.net>,
+        linux-serial@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.02.1712080619070.10139@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <20171208190644.GA22228@ls3530.fritz.box>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 2017-12-08, at 6:22 AM, Mikulas Patocka wrote:
+On Fri, 2017-12-08 at 20:06 +0100, Helge Deller wrote:
+> Adding the linux-serial mailing list:
+
+Thanks for pointing to this out.
+Details are below.
+
+> > > Anyway, the *only* problem we have right now is, that the Linux
+> > > kernel 4.14 doesn't detect all serial ports which were detected in
+> > > earlier kernels.
+
+> > > Thus the kernel will talk to the non-existant serial port at
+> > > 0xfffffffff4050010 instead of 0xfffffffff4050000.
+
+Wait, from this sentence you actually confirm that patch removes *non-
+existant* ports.
+
+Can you elaborate what you imply here?
+
+> > > 4.13:
+> > > [   28.882849] Serial: 8250/16550 driver, 4 ports, IRQ sharing
+> > > enabled
+> > > [   28.898720] 0000:e0:01.0: ttyS0 at MMIO 0xfffffffff4051000 (irq
+> > > = 73, base_baud = 115200) is a 16450
+> > > [   28.934669] 0000:e0:01.1: ttyS1 at MMIO 0xfffffffff4050000 (irq
+> > > = 73, base_baud = 115200) is a 16550A
+> > > [   28.963031] 0000:e0:01.1: ttyS2 at MMIO 0xfffffffff4050010 (irq
+> > > = 73, base_baud = 115200) is a 16550A
+> > > [   28.984946] 0000:e0:01.1: ttyS3 at MMIO 0xfffffffff4050038 (irq
+> > > = 73, base_baud = 115200) is a 16550A
+
+>From here it looks like multi-function PCI device with two functions
+with 1 + 3 serial ports each.
+
+> > > ...but for v4.14.x only the following serial ports are detected:
+> > > [   28.671984] Serial: 8250/16550 driver, 4 ports, IRQ sharing
+> > > enabled
+> > > [   28.708902] 0000:e0:01.1: ttyS0 at MMIO 0xfffffffff4050000 (irq
+> > > = 73, base_baud = 115200) is a 16550A
+> > > [   28.731145] 0000:e0:01.1: ttyS1 at MMIO 0xfffffffff4050010 (irq
+> > > = 73, base_baud = 115200) is a 16550A
+
+I'm quite curious how ttyS0 and ttyS3 in previous run (old kernel)
+appear.
+
+> > > 
+> > > 
+> > > Maybe reverting this commit brings back the old behavior:
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> > > /commit/?id=7d8905d064058f4b65057e0101588f362f288bc0
+> > 
+> > I'm unsure about this commit, it speaks more of avoiding duplicate
+> > messages
+> > for device enabling.
+
+No, it's about trying IRQs twice, though it might be not fully clear
+from commit message: the example there shows that IRQs are probed twice
+and on some platforms it may be a problem.
 
 > 
-> On Wed, 1 Feb 2017, John David Anglin wrote:
+> Reverting this commit:
 > 
->> On 2017-02-01 3:10 PM, Mikulas Patocka wrote:
->>>> I'm not 100% convinced that 4.9 is fully stable and that the patch
->>>> is the reason for the crashes you see.
->>>> What kind of crashes do you see? Userspace or kernel ?
->>> Userspace crashes. Random crashes or internal errors in gcc when compiling
->>> the kernel. I once had "aptitude" crash.
->> The userspace crashes are present in 4.8 and 4.9 as well.  For example, this
->> build failed due to an OS problem:
->> https://buildd.debian.org/status/fetch.php?pkg=kdenlive&arch=hppa&ver=16.12.1-2&stamp=1485956026&raw=0
->> 
->> Probably, 10% or more large packages fail to build because of this. Note that
->> this only occurs on machines
->> (e.g., c8000) that only support equivalent aliases.  We don't see this on the
->> parisc buildd which has two PA8600 CPUs.
->> 
->> My current theory is the following functions are buggy:
->> 
->> /* vmap range flushes and invalidates.  Architecturally, we don't need
->> * the invalidate, because the CPU should refuse to speculate once an
->> * area has been flushed, so invalidate is left empty */
->> static inline void flush_kernel_vmap_range(void *vaddr, int size)
->> {
->>        unsigned long start = (unsigned long)vaddr;
->> 
->>        flush_kernel_dcache_range_asm(start, start + size);
->> }
->> static inline void invalidate_kernel_vmap_range(void *vaddr, int size)
->> {
->>        unsigned long start = (unsigned long)vaddr;
->>        void *cursor = vaddr;
->> 
->>        for ( ; cursor < vaddr + size; cursor += PAGE_SIZE) {
->>                struct page *page = vmalloc_to_page(cursor);
->> 
->>                if (test_and_clear_bit(PG_dcache_dirty, &page->flags))
->>                        flush_kernel_dcache_page(page);
->>        }
->>        flush_kernel_dcache_range_asm(start, start + size);
->> }
+> commit 7d8905d064058f4b65057e0101588f362f288bc0
+> Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Date:   Mon Jul 24 20:28:32 2017 +0300
 > 
-> BTW. if you flush a cache line, then - according to the pa-risc 
-> specification - the page stays in the TLB and the CPU can fetch anything 
-> that is in the TLB speculatively. So, such a flush could really have no 
-> effect.
+>     serial: 8250_pci: Enable device after we check black list
 > 
-> The kernel should first flush TLB for the affected range and then flush 
-> the data using the tmpalias mapping.
+> indeed fixes the problem.
+> 
+> After reverting, the serial port from the Diva card shows up as ttyS0
+> (as before).
 
-I agree.  Flushing using the tmpalias mapping handles cache move-in correctly but at the moment
-we only have routines to flush whole pages.  I think the big problem is we don't create translations
-for non access TLB misses correctly.  See top of page F-11.  We should set access rights to 0 or 1
-to prevent I-cache move-in, and the T bit to 1 to prevent D-cache move-in.  As things stands, set up
-the TLB entry for non access exceptions the same as we do for normal access exceptions.  As a result,
-cache flushes may themselves cause a problem.
+> With that patch applied, the serial port from the Diva card gets
+> ignored and the previous ttyS1 port becomes ttyS0 which then breaks
+> booting the parisc machine because the kernel expects the serial port
+> on
+> ttyS1.
 
-I had always wondered why this code is backwards:
+> I'm not sure what the best way forward is.
+> Fact is, that the patch above changes the behaviour and serial ports
+> which were existant before suddenly vanish with kernel 4.14.
 
-void flush_kernel_dcache_page_addr(void *addr)
-{
-        unsigned long flags;
+As stated in the commit message there "We can do this since PCI
+specification requires class, device and vendor ID registers to be
+always present in the configuration space."
 
-        flush_kernel_dcache_page_asm(addr);
-        purge_tlb_start(flags);
-        pdtlb_kernel(addr);
-        purge_tlb_end(flags);
-}
+So, my understanding that the patch reveals the issue with these ports.
 
-I did try reversing the order yesterday and it it seemed to increase the number of random segmentation faults.
-As it stands, there is a bit of a race between the cache flush and the TLB purge.
+(Of course, I agree this is regression and needs to be fixed ASAP)
 
-Dave
---
-John David Anglin	dave.anglin@bell.net
+> This following patch does work, and adds back the Diva serial port on
+> parisc.
 
+> Not sure if it's acceptable though.
 
+For me it looks like the best quick solution right now.
 
+The proper one sounds like a specific initialization routine for these
+ports.
+
+Send it as a formal patch and you may add
+
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+P.S. Sorry, we have no parisc hardware around to test.
+
+> 
+> Helge
+> 
+> diff --git a/drivers/tty/serial/8250/8250_pci.c
+> b/drivers/tty/serial/8250/8250_pci.c
+> index 0c101a7470b0..61319e968e8c 100644
+> --- a/drivers/tty/serial/8250/8250_pci.c
+> +++ b/drivers/tty/serial/8250/8250_pci.c
+> @@ -3393,6 +3393,10 @@ static int
+> serial_pci_is_class_communication(struct pci_dev *dev)
+>  	 * (Should we try to make guesses for multiport serial
+> devices
+>  	 * later?)
+>  	 */
+> +	if (IS_ENABLED(CONFIG_PARISC) &&
+> +	    (dev->class >> 8) == PCI_CLASS_COMMUNICATION_OTHER)
+> +		return 0;
+> +
+>  	if ((((dev->class >> 8) != PCI_CLASS_COMMUNICATION_SERIAL) &&
+>  	     ((dev->class >> 8) != PCI_CLASS_COMMUNICATION_MODEM)) ||
+>  	    (dev->class & 0xff) > 6)
+
+-- 
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Intel Finland Oy
