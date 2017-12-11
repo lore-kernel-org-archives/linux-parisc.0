@@ -1,149 +1,115 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: Have my PA8800 back online... (serial port missing on v4.14)
-Date: Mon, 11 Dec 2017 10:26:38 +0200
-Message-ID: <1512980798.25007.581.camel@linux.intel.com>
-References: <20171208190644.GA22228@ls3530.fritz.box>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: Have my PA8800 back online...
+Date: Mon, 11 Dec 2017 15:46:50 +0100
+Message-ID: <c7d0ee9d-0926-09a7-3a6d-22daf0c05a32@gmx.de>
+References: <2ADB5C8A-DFEB-4CA5-92BA-96E459A3575E@bell.net>
+ <8314a5d6-7df7-3282-0d91-a9b414a122e0@web.de>
+ <526274E4-88D8-4DF8-8F74-5B775186BBEC@bell.net>
+ <cc22ee64-e9f3-aeb4-a9a0-a503f20f9634@web.de>
+ <48320506-f7fa-822b-fb45-40eab1dbda02@bell.net>
+ <17707adb-4f71-1d66-2a19-3cdfaff047f3@gmx.de>
+ <53815372-58e8-70e2-bab4-1777e848cf5e@web.de>
+ <79c110ec-2975-a827-4b9d-1351ab77779b@gmx.de>
+ <d3c1e035-6486-c0b5-e87a-22d26c0c95f5@bell.net>
+ <ccca0165-6c4a-97f3-2e0b-00657948c775@gmx.de>
+ <897B27DE-04A1-4906-8DF2-C037393139C3@bell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: debian-hppa@lists.debian.org
-To: Helge Deller <deller@gmx.de>,
-        Frank Scheiner <frank.scheiner@web.de>,
-        linux-parisc@vger.kernel.org,
-        John David Anglin <dave.anglin@bell.net>,
-        linux-serial@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------5EA2BED1207377F8349E9EC9"
+Cc: Frank Scheiner <frank.scheiner@web.de>,
+        debian-hppa@lists.debian.org,
+        linux-parisc <linux-parisc@vger.kernel.org>
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20171208190644.GA22228@ls3530.fritz.box>
+In-Reply-To: <897B27DE-04A1-4906-8DF2-C037393139C3@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, 2017-12-08 at 20:06 +0100, Helge Deller wrote:
-> Adding the linux-serial mailing list:
+This is a multi-part message in MIME format.
+--------------5EA2BED1207377F8349E9EC9
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 
-Thanks for pointing to this out.
-Details are below.
-
-> > > Anyway, the *only* problem we have right now is, that the Linux
-> > > kernel 4.14 doesn't detect all serial ports which were detected in
-> > > earlier kernels.
-
-> > > Thus the kernel will talk to the non-existant serial port at
-> > > 0xfffffffff4050010 instead of 0xfffffffff4050000.
-
-Wait, from this sentence you actually confirm that patch removes *non-
-existant* ports.
-
-Can you elaborate what you imply here?
-
-> > > 4.13:
-> > > [   28.882849] Serial: 8250/16550 driver, 4 ports, IRQ sharing
-> > > enabled
-> > > [   28.898720] 0000:e0:01.0: ttyS0 at MMIO 0xfffffffff4051000 (irq
-> > > = 73, base_baud = 115200) is a 16450
-> > > [   28.934669] 0000:e0:01.1: ttyS1 at MMIO 0xfffffffff4050000 (irq
-> > > = 73, base_baud = 115200) is a 16550A
-> > > [   28.963031] 0000:e0:01.1: ttyS2 at MMIO 0xfffffffff4050010 (irq
-> > > = 73, base_baud = 115200) is a 16550A
-> > > [   28.984946] 0000:e0:01.1: ttyS3 at MMIO 0xfffffffff4050038 (irq
-> > > = 73, base_baud = 115200) is a 16550A
-
->From here it looks like multi-function PCI device with two functions
-with 1 + 3 serial ports each.
-
-> > > ...but for v4.14.x only the following serial ports are detected:
-> > > [   28.671984] Serial: 8250/16550 driver, 4 ports, IRQ sharing
-> > > enabled
-> > > [   28.708902] 0000:e0:01.1: ttyS0 at MMIO 0xfffffffff4050000 (irq
-> > > = 73, base_baud = 115200) is a 16550A
-> > > [   28.731145] 0000:e0:01.1: ttyS1 at MMIO 0xfffffffff4050010 (irq
-> > > = 73, base_baud = 115200) is a 16550A
-
-I'm quite curious how ttyS0 and ttyS3 in previous run (old kernel)
-appear.
-
-> > > 
-> > > 
-> > > Maybe reverting this commit brings back the old behavior:
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> > > /commit/?id=7d8905d064058f4b65057e0101588f362f288bc0
-> > 
-> > I'm unsure about this commit, it speaks more of avoiding duplicate
-> > messages
-> > for device enabling.
-
-No, it's about trying IRQs twice, though it might be not fully clear
-from commit message: the example there shows that IRQs are probed twice
-and on some platforms it may be a problem.
-
+On 10.12.2017 00:49, John David Anglin wrote:
+> On 2017-12-09, at 4:03 PM, Helge Deller wrote:
 > 
-> Reverting this commit:
+>> Can you please try attached patch which disables the serial MUX and ATI card?
+>> If it works for you and if we backport it to all kernels and if we revert palo to use ttyS0 for all machines we might be good.
 > 
-> commit 7d8905d064058f4b65057e0101588f362f288bc0
-> Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Date:   Mon Jul 24 20:28:32 2017 +0300
-> 
->     serial: 8250_pci: Enable device after we check black list
-> 
-> indeed fixes the problem.
-> 
-> After reverting, the serial port from the Diva card shows up as ttyS0
-> (as before).
+> I hacked on the change but I couldn't get it to work.  As far as I can tell, the quirks aren't being called.
+> Tried EARLY, HEADER and FINAL.  I think the ids are correct.
 
-> With that patch applied, the serial port from the Diva card gets
-> ignored and the previous ttyS1 port becomes ttyS0 which then breaks
-> booting the parisc machine because the kernel expects the serial port
-> on
-> ttyS1.
+Strange. The attached patch does work for me on panama up until boot.
+Haven't tested what lspci reports afterwards...
 
-> I'm not sure what the best way forward is.
-> Fact is, that the patch above changes the behaviour and serial ports
-> which were existant before suddenly vanish with kernel 4.14.
+[    1.832294] LBA 0:7: PCI host bridge to bus 0000:e0
+[    1.832497] pci_bus 0000:e0: root bus resource [io  0x60000-0x6ffff] (bus address [0x0000-0xffff])
+[    1.833005] pci_bus 0000:e0: root bus resource [mem 0xfffffffff0000000-0xfffffffffe77ffff] (bus address [0xf0000000-0xfe77ffff])
+[    1.840028] pci_bus 0000:e0: root bus resource [bus e0-e7]
+     1.844276] subsystem_vendor = 0x103c, subsystem_device =0x1291
+[    1.848022] pci 0000:e0:01.0: Hiding Diva built-in AUX serial device
+     1.849136] subsystem_vendor = 0x103c, subsystem_device =0x1292
+[    1.852023] pci 0000:e0:02.0: Hiding Diva built-in ATI card.
+....
 
-As stated in the commit message there "We can do this since PCI
-specification requires class, device and vendor ID registers to be
-always present in the configuration space."
+Helge
 
-So, my understanding that the patch reveals the issue with these ports.
+--------------5EA2BED1207377F8349E9EC9
+Content-Type: text/plain; charset=UTF-8;
+ name="p1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="p1"
 
-(Of course, I agree this is regression and needs to be fixed ASAP)
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index a25fed52f7e9..dbb4158cf098 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -1692,3 +1692,45 @@ void lba_set_iregs(struct parisc_device *lba, u32 ibase, u32 imask)
+ 	iounmap(base_addr);
+ }
+ 
++
++/*
++ * The design of the Diva management card in rp34x0 machines (rp3410, rp3440)
++ * seems rushed, so that many built-in components simply don't work.
++ * The following quirks disable the serial AUX port and the built-in ATI RV100
++ * Radeon 7000 graphics card which both don't have any external connectors and
++ * thus are useless, and even worse, e.g. the AUX ports occupies ttyS0 and
++ * as such makes those machines the only PARISC machines on which we can't
++ * use ttyS0 as boot console.
++ */
++static void quirk_diva_ati_card(struct pci_dev *dev)
++{
++	printk("subsystem_vendor = 0x%x, subsystem_device =0x%x\n",
++		dev->subsystem_vendor, dev->subsystem_device);
++
++	/* subsystem IDs are from Diva */
++	if (dev->subsystem_vendor != PCI_VENDOR_ID_HP ||
++	    dev->subsystem_device != 0x1292)
++		return;
++
++	dev_info(&dev->dev, "Hiding Diva built-in ATI card.");
++	dev->device = 0;
++}
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATI, PCI_DEVICE_ID_ATI_RADEON_QY,
++	quirk_diva_ati_card);
++
++static void quirk_diva_aux_disable(struct pci_dev *dev)
++{
++	printk("subsystem_vendor = 0x%x, subsystem_device =0x%x\n",
++		dev->subsystem_vendor, dev->subsystem_device);
++
++	/* subsystem IDs are from Diva */
++	if (dev->subsystem_vendor != PCI_VENDOR_ID_HP ||
++	    dev->subsystem_device != 0x1291)
++		return;
++
++	dev_info(&dev->dev, "Hiding Diva built-in AUX serial device");
++	dev->device = 0;
++}
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_HP, PCI_DEVICE_ID_HP_DIVA_AUX,
++	quirk_diva_aux_disable);
++
 
-> This following patch does work, and adds back the Diva serial port on
-> parisc.
-
-> Not sure if it's acceptable though.
-
-For me it looks like the best quick solution right now.
-
-The proper one sounds like a specific initialization routine for these
-ports.
-
-Send it as a formal patch and you may add
-
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-P.S. Sorry, we have no parisc hardware around to test.
-
-> 
-> Helge
-> 
-> diff --git a/drivers/tty/serial/8250/8250_pci.c
-> b/drivers/tty/serial/8250/8250_pci.c
-> index 0c101a7470b0..61319e968e8c 100644
-> --- a/drivers/tty/serial/8250/8250_pci.c
-> +++ b/drivers/tty/serial/8250/8250_pci.c
-> @@ -3393,6 +3393,10 @@ static int
-> serial_pci_is_class_communication(struct pci_dev *dev)
->  	 * (Should we try to make guesses for multiport serial
-> devices
->  	 * later?)
->  	 */
-> +	if (IS_ENABLED(CONFIG_PARISC) &&
-> +	    (dev->class >> 8) == PCI_CLASS_COMMUNICATION_OTHER)
-> +		return 0;
-> +
->  	if ((((dev->class >> 8) != PCI_CLASS_COMMUNICATION_SERIAL) &&
->  	     ((dev->class >> 8) != PCI_CLASS_COMMUNICATION_MODEM)) ||
->  	    (dev->class & 0xff) > 6)
-
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+--------------5EA2BED1207377F8349E9EC9--
