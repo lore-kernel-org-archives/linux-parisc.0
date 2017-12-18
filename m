@@ -1,56 +1,64 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture fixes for 4.15-rc5
-Date: Mon, 18 Dec 2017 19:34:09 +0100
-Message-ID: <20171218183409.GA12524@ls3530.fritz.box>
+Subject: Re: Have my PA8800 back online... (serial port missing on v4.14)
+Date: Mon, 18 Dec 2017 21:07:16 +0100
+Message-ID: <ebe416dd-aa18-9433-4dd7-67490d5778ee@gmx.de>
+References: <20171208190644.GA22228@ls3530.fritz.box>
+ <1512980798.25007.581.camel@linux.intel.com>
+ <43eb21b5-75d9-1142-1307-c2e2d218b362@gmx.de>
+ <1513178210.7000.34.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Cc: debian-hppa@lists.debian.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Frank Scheiner <frank.scheiner@web.de>,
+        linux-parisc@vger.kernel.org,
+        John David Anglin <dave.anglin@bell.net>,
+        linux-serial@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1513178210.7000.34.camel@linux.intel.com>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+Hi Andy,
 
-please pull a few important fixes for the parisc architecture from:
+On 13.12.2017 16:16, Andy Shevchenko wrote:
+> On Tue, 2017-12-12 at 21:11 +0100, Helge Deller wrote:
+>> On 11.12.2017 09:26, Andy Shevchenko wrote:
+>>> On Fri, 2017-12-08 at 20:06 +0100, Helge Deller wrote:
+> 
+>> Before your patch this check was inside the function
+>> serial_pci_guess_board()
+>> and if (ent->driver_data != pbn_default) the pci serial port got
+>> registered 
+>> and initialized *even* if it's *not* of class SERIAL or MODEM.
+> 
+> Ah, okay, it explains indeed.
+> Though PCI devices with wrong class should have their own quirks for my
+> p.o.v.
+> 
+>>> (Of course, I agree this is regression and needs to be fixed ASAP)
+>>
+>> I don't know if it's easy to fix without reverting your patch.
+> 
+> As I explained earlier it's about pci_enable_device() called twice for
+> the same device which basically calls pcibios_enable_irq() twice which
+> might be a problem on some platforms. (At least I have such use case).
+> Perhaps it's possible to workaround the issue on those platforms, though
+> I didn't come up with the better solution that time.
+> 
+>> Thanks for the offer to accept this patch, but maybe we are able
+>> to come up with another patch which simply hides those unsupported
+>> devices (serial port and ATI graphics card device on the Diva card).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.15-2
+>> I posted a proposed patch here:
+>> http://www.spinics.net/lists/linux-parisc/msg08187.html
+> 
+> Reading briefly that one I guess it's even better (now I realized you
+> even do not have connectors of those devices outside).
 
-There are two important fixes:
-- Add PCI quirks to disable built-in a serial AUX and a graphics cards from
-  specific GSP (management board) PCI cards. This fixes boot via serial console
-  on rp3410 and rp3440 machines.
-
-- Revert the "Re-enable interrups early" patch which was added to kernel v4.10.
-  It can trigger stack overflows and thus silent data corruption. With this
-  patch reverted we can lower our thread stack back to 16kb again.
-
-The other patches are minor cleanups: avoid duplicate includes, indenting
-fixes, correctly align variable in asm code.
+It's now fixed for parisc by new PCI quirks which
+disable the parisc serial AUX port: 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bcf3f1752a622f1372d3252d0fea8855d89812e7
 
 Thanks,
 Helge
-
-----------------------------------------------------------------
-Helge Deller (3):
-      parisc: Fix indenting in puts()
-      parisc: Align os_hpmc_size on word boundary
-      parisc: Hide Diva-built-in serial aux and graphics card
-
-John David Anglin (2):
-      Revert "parisc: Re-enable interrupts early"
-      parisc: Reduce thread stack to 16 kb
-
-Pravin Shedge (1):
-      parisc: remove duplicate includes
-
- arch/parisc/boot/compressed/misc.c    |  4 ++--
- arch/parisc/include/asm/thread_info.h |  5 +++++
- arch/parisc/kernel/entry.S            | 12 +++++++++---
- arch/parisc/kernel/hpmc.S             |  1 +
- arch/parisc/kernel/unwind.c           |  1 -
- arch/parisc/lib/delay.c               |  2 --
- drivers/parisc/lba_pci.c              | 33 +++++++++++++++++++++++++++++++++
- 7 files changed, 50 insertions(+), 8 deletions(-)
