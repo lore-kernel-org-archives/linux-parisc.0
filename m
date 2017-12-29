@@ -1,79 +1,62 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 27/67] dma-direct: add dma address sanity checks
-Date: Fri, 29 Dec 2017 15:12:25 +0100
-Message-ID: <CAMuHMdWg3PnTXezMCcr3oGf-83-cjvcj4wGiPk7j2pY1Tgzo9Q@mail.gmail.com>
-References: <20171229081911.2802-1-hch@lst.de> <20171229081911.2802-28-hch@lst.de>
+From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH] video/fbdev/stifb: Delete an error message for a failed
+ memory allocation in stifb_init_fb()
+Date: Fri, 29 Dec 2017 19:05:17 +0100
+Message-ID: <1680261.Msdj7gi9fB@amdc3058>
+References: <7dcd32b6-9691-14a1-29cf-3a746ef5adfc@users.sourceforge.net>
+        <CGME20171124213055epcas4p45c641222185056871b97f4e7bc235d2e@epcas4p4.samsung.com>
+        <25624997.nONnEdNj0s@daneel.sf-tec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: iommu@lists.linux-foundation.org,
-        Linux MIPS Mailing List <linux-mips@linux-mips.org>,
-        linux-ia64@vger.kernel.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Guan Xuetao <gxt@mprc.pku.edu.cn>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-c6x-dev@linux-c6x.org,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        adi-buildroot-devel@lists.sourceforge.net,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        patches@groups.riscv.org,
-        "open list:METAG ARCHITECTURE" <linux-metag@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Michal Simek <monstr@monstr.eu>,
-        Parisc
-To: Christoph Hellwig <hch@lst.de>
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <20171229081911.2802-28-hch@lst.de>
-List-ID: <linux-alpha.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
+        "James E. J. Bottomley" <jejb@parisc-linux.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+To: SF Markus Elfring <elfring@users.sourceforge.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-reply-to: <25624997.nONnEdNj0s@daneel.sf-tec.de>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Christoph,
+On Friday, November 24, 2017 10:30:34 PM Rolf Eike Beer wrote:
+> Markus Elfring wrote:
+> > From: Markus Elfring <elfring@users.sourceforge.net>
+> > Date: Fri, 24 Nov 2017 22:22:06 +0100
+> > 
+> > Omit an extra message for a memory allocation failure in this function.
+> > 
+> > This issue was detected by using the Coccinelle software.
+> > 
+> > Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> > ---
+> >  drivers/video/fbdev/stifb.c | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/video/fbdev/stifb.c b/drivers/video/fbdev/stifb.c
+> > index 6ded5c198998..fe217a2f7d21 100644
+> > --- a/drivers/video/fbdev/stifb.c
+> > +++ b/drivers/video/fbdev/stifb.c
+> > @@ -1126,10 +1126,8 @@ static int __init stifb_init_fb(struct sti_struct
+> > *sti, int bpp_pref) int bpp, xres, yres;
+> > 
+> >  	fb = kzalloc(sizeof(*fb), GFP_ATOMIC);
+> > -	if (!fb) {
+> > -		printk(KERN_ERR "stifb: Could not allocate stifb structure\n");
+> > +	if (!fb)
+> >  		return -ENODEV;
+> > -	}
+> > 
+> >  	info = &fb->info;
+> 
+> This should be -ENOMEM.
 
-On Fri, Dec 29, 2017 at 9:18 AM, Christoph Hellwig <hch@lst.de> wrote:
-> Roughly based on the x86 pci-nommu implementation.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Markus, please fix this issue first (before doing cleanups).
 
-Thanks for your patch!
-
-> --- a/lib/dma-direct.c
-> +++ b/lib/dma-direct.c
-> @@ -9,6 +9,24 @@
->  #include <linux/scatterlist.h>
->  #include <linux/pfn.h>
->
-> +#define DIRECT_MAPPING_ERROR           0
-> +
-> +static bool
-> +check_addr(struct device *dev, dma_addr_t dma_addr, size_t size,
-> +               const char *caller)
-> +{
-> +       if (unlikely(dev && !dma_capable(dev, dma_addr, size))) {
-> +               if (*dev->dma_mask >= DMA_BIT_MASK(32)) {
-> +                       dev_err(dev,
-> +                               "%s: overflow %llx+%zu of device mask %llx\n",
-
-Please use "%pad" to format dma_addr_t ...
-
-> +                               caller, (long long)dma_addr, size,
-
-... and use &dma_addr.
-
-> +                               (long long)*dev->dma_mask);
-
-This cast is not needed, as u64 is unsigned long long in kernelspace on
-all architectures.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+Best regards,
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Bartlomiej Zolnierkiewicz
+Samsung R&D Institute Poland
+Samsung Electronics
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
