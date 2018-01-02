@@ -1,8 +1,7 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Fix alignment of pa_tlb_lock in assembly on 32-bit
- SMP kernel
-Date: Tue, 2 Jan 2018 20:36:44 +0100
-Message-ID: <20180102193644.GA23323@ls3530.fritz.box>
+Subject: [PATCH] parisc: Show unhashed hardware inventory
+Date: Tue, 2 Jan 2018 20:40:21 +0100
+Message-ID: <20180102194021.GA26468@ls3530.fritz.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 To: linux-parisc@vger.kernel.org,
@@ -12,110 +11,19 @@ Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Qemu for PARISC reported on a 32bit SMP parisc kernel strange failures
-with "Not-handled unaligned insn 0x0e8011d6 and 0x0c2011c9."
-
-Those opcodes evaluate to the ldcw() assembly instruction which requires
-(on 32bit) an alignment of 16 bytes to ensure atomicity.
-
-As it turns out, qemu is correct and in our assembly code in entry.S and
-pacache.S we don't pay attention to the required alignment.
-
-This patch fixes the problem by aligning the lock offset in assembly
-code in the same manner as we do in our C-code.
-
+Fixes: ad67b74d2469d9b8 ("printk: hash addresses printed with %p")
 Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: <stable@vger.kernel.org>
 
-diff --git a/arch/parisc/include/asm/ldcw.h b/arch/parisc/include/asm/ldcw.h
-index dd5a08aaa4da..3eb4bfc1fb36 100644
---- a/arch/parisc/include/asm/ldcw.h
-+++ b/arch/parisc/include/asm/ldcw.h
-@@ -12,6 +12,7 @@
-    for the semaphore.  */
+diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
+index d8f77358e2ba..29b99b8964aa 100644
+--- a/arch/parisc/kernel/drivers.c
++++ b/arch/parisc/kernel/drivers.c
+@@ -870,7 +870,7 @@ static void print_parisc_device(struct parisc_device *dev)
+ 	static int count;
  
- #define __PA_LDCW_ALIGNMENT	16
-+#define __PA_LDCW_ALIGN_ORDER	4
- #define __ldcw_align(a) ({					\
- 	unsigned long __ret = (unsigned long) &(a)->lock[0];	\
- 	__ret = (__ret + __PA_LDCW_ALIGNMENT - 1)		\
-@@ -29,6 +30,7 @@
-    ldcd). */
+ 	print_pa_hwpath(dev, hw_path);
+-	printk(KERN_INFO "%d. %s at 0x%p [%s] { %d, 0x%x, 0x%.3x, 0x%.5x }",
++	printk(KERN_INFO "%d. %s at 0x%px [%s] { %d, 0x%x, 0x%.3x, 0x%.5x }",
+ 		++count, dev->name, (void*) dev->hpa.start, hw_path, dev->id.hw_type,
+ 		dev->id.hversion_rev, dev->id.hversion, dev->id.sversion);
  
- #define __PA_LDCW_ALIGNMENT	4
-+#define __PA_LDCW_ALIGN_ORDER	2
- #define __ldcw_align(a) (&(a)->slock)
- #define __LDCW	"ldcw,co"
- 
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index f3cecf5117cf..e95207c0565e 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -35,6 +35,7 @@
- #include <asm/pgtable.h>
- #include <asm/signal.h>
- #include <asm/unistd.h>
-+#include <asm/ldcw.h>
- #include <asm/thread_info.h>
- 
- #include <linux/linkage.h>
-@@ -46,6 +47,14 @@
- #endif
- 
- 	.import		pa_tlb_lock,data
-+	.macro  load_pa_tlb_lock reg
-+#if __PA_LDCW_ALIGNMENT > 4
-+	load32	PA(pa_tlb_lock) + __PA_LDCW_ALIGNMENT-1, \reg
-+	depi	0,31,__PA_LDCW_ALIGN_ORDER, \reg
-+#else
-+	load32	PA(pa_tlb_lock), \reg
-+#endif
-+	.endm
- 
- 	/* space_to_prot macro creates a prot id from a space id */
- 
-@@ -457,7 +466,7 @@
- 	.macro		tlb_lock	spc,ptp,pte,tmp,tmp1,fault
- #ifdef CONFIG_SMP
- 	cmpib,COND(=),n	0,\spc,2f
--	load32		PA(pa_tlb_lock),\tmp
-+	load_pa_tlb_lock \tmp
- 1:	LDCW		0(\tmp),\tmp1
- 	cmpib,COND(=)	0,\tmp1,1b
- 	nop
-@@ -480,7 +489,7 @@
- 	/* Release pa_tlb_lock lock. */
- 	.macro		tlb_unlock1	spc,tmp
- #ifdef CONFIG_SMP
--	load32		PA(pa_tlb_lock),\tmp
-+	load_pa_tlb_lock \tmp
- 	tlb_unlock0	\spc,\tmp
- #endif
- 	.endm
-diff --git a/arch/parisc/kernel/pacache.S b/arch/parisc/kernel/pacache.S
-index adf7187f8951..949624f926ad 100644
---- a/arch/parisc/kernel/pacache.S
-+++ b/arch/parisc/kernel/pacache.S
-@@ -36,6 +36,7 @@
- #include <asm/assembly.h>
- #include <asm/pgtable.h>
- #include <asm/cache.h>
-+#include <asm/ldcw.h>
- #include <linux/linkage.h>
- 
- 	.text
-@@ -333,8 +334,12 @@ ENDPROC_CFI(flush_data_cache_local)
- 
- 	.macro	tlb_lock	la,flags,tmp
- #ifdef CONFIG_SMP
--	ldil		L%pa_tlb_lock,%r1
--	ldo		R%pa_tlb_lock(%r1),\la
-+#if __PA_LDCW_ALIGNMENT > 4
-+	load32		pa_tlb_lock + __PA_LDCW_ALIGNMENT-1, \la
-+	depi		0,31,__PA_LDCW_ALIGN_ORDER, \la
-+#else
-+	load32		pa_tlb_lock, \la
-+#endif
- 	rsm		PSW_SM_I,\flags
- 1:	LDCW		0(\la),\tmp
- 	cmpib,<>,n	0,\tmp,3f
