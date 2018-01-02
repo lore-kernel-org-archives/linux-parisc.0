@@ -1,123 +1,121 @@
-From: Vladimir Murzin <vladimir.murzin@arm.com>
-Subject: Re: [PATCH 31/67] dma-direct: make dma_direct_{alloc, free} available
- to other implementations
-Date: Tue, 2 Jan 2018 16:44:21 +0000
-Message-ID: <f7aca03c-e893-d10a-7a28-bb3c9ae47900@arm.com>
-References: <20171229081911.2802-1-hch@lst.de>
- <20171229081911.2802-32-hch@lst.de>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: Fix alignment of pa_tlb_lock in assembly on 32-bit
+ SMP kernel
+Date: Tue, 2 Jan 2018 20:36:44 +0100
+Message-ID: <20180102193644.GA23323@ls3530.fritz.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-arch@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org,
-        linux-hexagon@vger.kernel.org, x86@kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        adi-buildroot-devel@lists.sourceforge.net,
-        linux-m68k@lists.linux-m68k.org, patches@groups.riscv.org,
-        linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
-        linux-cris-kernel@axis.com, linux-kernel@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-To: Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20171229081911.2802-32-hch@lst.de>
-List-ID: <linux-m68k.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 29/12/17 08:18, Christoph Hellwig wrote:
-> So that they don't need to indirect through the operation vector.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/arm/mm/dma-mapping-nommu.c | 9 +++------
->  include/linux/dma-direct.h      | 5 +++++
->  lib/dma-direct.c                | 6 +++---
->  3 files changed, 11 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/arm/mm/dma-mapping-nommu.c b/arch/arm/mm/dma-mapping-nommu.c
-> index 49e9831dc0f1..b4cf3e4e9d4a 100644
-> --- a/arch/arm/mm/dma-mapping-nommu.c
-> +++ b/arch/arm/mm/dma-mapping-nommu.c
-> @@ -11,7 +11,7 @@
->  
->  #include <linux/export.h>
->  #include <linux/mm.h>
-> -#include <linux/dma-mapping.h>
-> +#include <linux/dma-direct.h>
->  #include <linux/scatterlist.h>
->  
->  #include <asm/cachetype.h>
-> @@ -39,7 +39,6 @@ static void *arm_nommu_dma_alloc(struct device *dev, size_t size,
->  				 unsigned long attrs)
->  
->  {
-> -	const struct dma_map_ops *ops = &dma_direct_ops;
->  	void *ret;
->  
->  	/*
-> @@ -48,7 +47,7 @@ static void *arm_nommu_dma_alloc(struct device *dev, size_t size,
->  	 */
->  
->  	if (attrs & DMA_ATTR_NON_CONSISTENT)
-> -		return ops->alloc(dev, size, dma_handle, gfp, attrs);
-> +		return dma_direct_alloc(dev, size, dma_handle, gfp, attrs);
->  
->  	ret = dma_alloc_from_global_coherent(size, dma_handle);
->  
-> @@ -70,10 +69,8 @@ static void arm_nommu_dma_free(struct device *dev, size_t size,
->  			       void *cpu_addr, dma_addr_t dma_addr,
->  			       unsigned long attrs)
->  {
-> -	const struct dma_map_ops *ops = &dma_direct_ops;
-> -
->  	if (attrs & DMA_ATTR_NON_CONSISTENT) {
-> -		ops->free(dev, size, cpu_addr, dma_addr, attrs);
-> +		dma_direct_free(dev, size, cpu_addr, dma_addr, attrs);
->  	} else {
->  		int ret = dma_release_from_global_coherent(get_order(size),
->  							   cpu_addr);
-> diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
-> index 10e924b7cba7..4788bf0bf683 100644
-> --- a/include/linux/dma-direct.h
-> +++ b/include/linux/dma-direct.h
-> @@ -38,4 +38,9 @@ static inline void dma_mark_clean(void *addr, size_t size)
->  }
->  #endif /* CONFIG_ARCH_HAS_DMA_MARK_CLEAN */
->  
-> +void *dma_direct_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle,
-> +		gfp_t gfp, unsigned long attrs);
-> +void dma_direct_free(struct device *dev, size_t size, void *cpu_addr,
-> +		dma_addr_t dma_addr, unsigned long attrs);
-> +
->  #endif /* _LINUX_DMA_DIRECT_H */
-> diff --git a/lib/dma-direct.c b/lib/dma-direct.c
-> index f8467cb3d89a..7e913728e099 100644
-> --- a/lib/dma-direct.c
-> +++ b/lib/dma-direct.c
-> @@ -33,8 +33,8 @@ static bool dma_coherent_ok(struct device *dev, phys_addr_t phys, size_t size)
->  	return phys_to_dma(dev, phys) + size <= dev->coherent_dma_mask;
->  }
->  
-> -static void *dma_direct_alloc(struct device *dev, size_t size,
-> -		dma_addr_t *dma_handle, gfp_t gfp, unsigned long attrs)
-> +void *dma_direct_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle,
-> +		gfp_t gfp, unsigned long attrs)
->  {
->  	unsigned int count = PAGE_ALIGN(size) >> PAGE_SHIFT;
->  	int page_order = get_order(size);
-> @@ -71,7 +71,7 @@ static void *dma_direct_alloc(struct device *dev, size_t size,
->  	return page_address(page);
->  }
->  
-> -static void dma_direct_free(struct device *dev, size_t size, void *cpu_addr,
-> +void dma_direct_free(struct device *dev, size_t size, void *cpu_addr,
->  		dma_addr_t dma_addr, unsigned long attrs)
->  {
->  	unsigned int count = PAGE_ALIGN(size) >> PAGE_SHIFT;
-> 
+Qemu for PARISC reported on a 32bit SMP parisc kernel strange failures
+with "Not-handled unaligned insn 0x0e8011d6 and 0x0c2011c9."
 
-Reviewed-by: Vladimir Murzin <vladimir.murzin@arm.com>
+Those opcodes evaluate to the ldcw() assembly instruction which requires
+(on 32bit) an alignment of 16 bytes to ensure atomicity.
 
-Thanks
-Vladimir
+As it turns out, qemu is correct and in our assembly code in entry.S and
+pacache.S we don't pay attention to the required alignment.
+
+This patch fixes the problem by aligning the lock offset in assembly
+code in the same manner as we do in our C-code.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: <stable@vger.kernel.org>
+
+diff --git a/arch/parisc/include/asm/ldcw.h b/arch/parisc/include/asm/ldcw.h
+index dd5a08aaa4da..3eb4bfc1fb36 100644
+--- a/arch/parisc/include/asm/ldcw.h
++++ b/arch/parisc/include/asm/ldcw.h
+@@ -12,6 +12,7 @@
+    for the semaphore.  */
+ 
+ #define __PA_LDCW_ALIGNMENT	16
++#define __PA_LDCW_ALIGN_ORDER	4
+ #define __ldcw_align(a) ({					\
+ 	unsigned long __ret = (unsigned long) &(a)->lock[0];	\
+ 	__ret = (__ret + __PA_LDCW_ALIGNMENT - 1)		\
+@@ -29,6 +30,7 @@
+    ldcd). */
+ 
+ #define __PA_LDCW_ALIGNMENT	4
++#define __PA_LDCW_ALIGN_ORDER	2
+ #define __ldcw_align(a) (&(a)->slock)
+ #define __LDCW	"ldcw,co"
+ 
+diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
+index f3cecf5117cf..e95207c0565e 100644
+--- a/arch/parisc/kernel/entry.S
++++ b/arch/parisc/kernel/entry.S
+@@ -35,6 +35,7 @@
+ #include <asm/pgtable.h>
+ #include <asm/signal.h>
+ #include <asm/unistd.h>
++#include <asm/ldcw.h>
+ #include <asm/thread_info.h>
+ 
+ #include <linux/linkage.h>
+@@ -46,6 +47,14 @@
+ #endif
+ 
+ 	.import		pa_tlb_lock,data
++	.macro  load_pa_tlb_lock reg
++#if __PA_LDCW_ALIGNMENT > 4
++	load32	PA(pa_tlb_lock) + __PA_LDCW_ALIGNMENT-1, \reg
++	depi	0,31,__PA_LDCW_ALIGN_ORDER, \reg
++#else
++	load32	PA(pa_tlb_lock), \reg
++#endif
++	.endm
+ 
+ 	/* space_to_prot macro creates a prot id from a space id */
+ 
+@@ -457,7 +466,7 @@
+ 	.macro		tlb_lock	spc,ptp,pte,tmp,tmp1,fault
+ #ifdef CONFIG_SMP
+ 	cmpib,COND(=),n	0,\spc,2f
+-	load32		PA(pa_tlb_lock),\tmp
++	load_pa_tlb_lock \tmp
+ 1:	LDCW		0(\tmp),\tmp1
+ 	cmpib,COND(=)	0,\tmp1,1b
+ 	nop
+@@ -480,7 +489,7 @@
+ 	/* Release pa_tlb_lock lock. */
+ 	.macro		tlb_unlock1	spc,tmp
+ #ifdef CONFIG_SMP
+-	load32		PA(pa_tlb_lock),\tmp
++	load_pa_tlb_lock \tmp
+ 	tlb_unlock0	\spc,\tmp
+ #endif
+ 	.endm
+diff --git a/arch/parisc/kernel/pacache.S b/arch/parisc/kernel/pacache.S
+index adf7187f8951..949624f926ad 100644
+--- a/arch/parisc/kernel/pacache.S
++++ b/arch/parisc/kernel/pacache.S
+@@ -36,6 +36,7 @@
+ #include <asm/assembly.h>
+ #include <asm/pgtable.h>
+ #include <asm/cache.h>
++#include <asm/ldcw.h>
+ #include <linux/linkage.h>
+ 
+ 	.text
+@@ -333,8 +334,12 @@ ENDPROC_CFI(flush_data_cache_local)
+ 
+ 	.macro	tlb_lock	la,flags,tmp
+ #ifdef CONFIG_SMP
+-	ldil		L%pa_tlb_lock,%r1
+-	ldo		R%pa_tlb_lock(%r1),\la
++#if __PA_LDCW_ALIGNMENT > 4
++	load32		pa_tlb_lock + __PA_LDCW_ALIGNMENT-1, \la
++	depi		0,31,__PA_LDCW_ALIGN_ORDER, \la
++#else
++	load32		pa_tlb_lock, \la
++#endif
+ 	rsm		PSW_SM_I,\flags
+ 1:	LDCW		0(\la),\tmp
+ 	cmpib,<>,n	0,\tmp,3f
