@@ -1,155 +1,81 @@
-From: Vineet Gupta <Vineet.Gupta1-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Subject: Re: [PATCH 09/67] arc: remove CONFIG_ARC_PLAT_NEEDS_PHYS_TO_DMA
-Date: Fri, 5 Jan 2018 11:45:16 -0800
-Message-ID: <2c24bfd1-5f54-4b82-444e-833dc53b6efd@synopsys.com>
-References: <20171229081911.2802-1-hch@lst.de>
-	<20171229081911.2802-10-hch@lst.de>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: QEMU host idle sleep support
+Date: Fri, 5 Jan 2018 21:55:38 +0100
+Message-ID: <20180105205538.GA25474@ls3530.fritz.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Cc: "linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org" <linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org>,
-	"linux-ia64-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-ia64-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	"linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	"sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	Guan Xuetao <gxt-TG0Ac1+ktVePQbnJrJN+5g@public.gmane.org>,
-	"linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	"linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	"linux-c6x-dev-jPsnJVOj+W6hPH1hqNUYSQ@public.gmane.org" <linux-c6x-dev-jPsnJVOj+W6hPH1hqNUYSQ@public.gmane.org>,
-	"linux-hexagon-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-hexagon-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
-	"x86-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <x86-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org"
-	<linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>,
-	"adi-buildroot-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org"
-	<adi-buildroot-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>,
-	"linux-m68k-cunTk1MwBs8S/qaLPR03pWD2FQJk+8+b@public.gmane.org" <linux-m68k-cunTk1MwBs8S/qaLPR03pWD2FQJk+8+b@public.gmane.org>,
-	"patches-q3qR2WxjNRFS9aJRtSZj7A@public.gmane.org" <patches-q3qR2WxjNRFS9aJRtSZj7A@public.gmane.org>,
-	"linux-metag-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-metag@vger.k
-To: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, "iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org"
-	<iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <20171229081911.2802-10-hch-jcswGhMUV9g@public.gmane.org>
-List-Id: Development issues for Linux IOMMU support
-	<iommu.lists.linux-foundation.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Content-Type: text/plain; charset=us-ascii
+Cc: Richard Henderson <rth@twiddle.net>
+To: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On 12/29/2017 12:25 AM, Christoph Hellwig wrote:
-> We always use the stub definitions, so remove the unused other code.
->
-> Signed-off-by: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
+Add QEMU host idle sleep support when running under QEMU with SeaBIOS
+PDC Firmware.
 
-Acked-by: Vineet Gupta <vgupta-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Like ppc64 we use "or" assembler instructions (which translate to nops
+on real hardware) to indicate that qemu shall idle sleep.
 
-FWIW, it was removed and reintroduced as one of the customers wanted it, which is 
-not relevant now !
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: Richard Henderson <rth@twiddle.net>
+CC: stable@vger.kernel.org # v4.9+
 
-Thx,
--Vineet
-
-> ---
->   arch/arc/Kconfig                   |  3 ---
->   arch/arc/include/asm/dma-mapping.h |  7 -------
->   arch/arc/mm/dma.c                  | 14 +++++++-------
->   3 files changed, 7 insertions(+), 17 deletions(-)
->
-> diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-> index 9d5fd00d9e91..f3a80cf164cc 100644
-> --- a/arch/arc/Kconfig
-> +++ b/arch/arc/Kconfig
-> @@ -463,9 +463,6 @@ config ARCH_PHYS_ADDR_T_64BIT
->   config ARCH_DMA_ADDR_T_64BIT
->   	bool
->   
-> -config ARC_PLAT_NEEDS_PHYS_TO_DMA
-> -	bool
-> -
->   config ARC_KVADDR_SIZE
->   	int "Kernel Virtual Address Space size (MB)"
->   	range 0 512
-> diff --git a/arch/arc/include/asm/dma-mapping.h b/arch/arc/include/asm/dma-mapping.h
-> index 94285031c4fb..7a16824bfe98 100644
-> --- a/arch/arc/include/asm/dma-mapping.h
-> +++ b/arch/arc/include/asm/dma-mapping.h
-> @@ -11,13 +11,6 @@
->   #ifndef ASM_ARC_DMA_MAPPING_H
->   #define ASM_ARC_DMA_MAPPING_H
->   
-> -#ifndef CONFIG_ARC_PLAT_NEEDS_PHYS_TO_DMA
-> -#define plat_dma_to_phys(dev, dma_handle) ((phys_addr_t)(dma_handle))
-> -#define plat_phys_to_dma(dev, paddr) ((dma_addr_t)(paddr))
-> -#else
-> -#include <plat/dma.h>
-> -#endif
-> -
->   extern const struct dma_map_ops arc_dma_ops;
->   
->   static inline const struct dma_map_ops *get_arch_dma_ops(struct bus_type *bus)
-> diff --git a/arch/arc/mm/dma.c b/arch/arc/mm/dma.c
-> index fad18261ef6a..1d405b86250c 100644
-> --- a/arch/arc/mm/dma.c
-> +++ b/arch/arc/mm/dma.c
-> @@ -60,7 +60,7 @@ static void *arc_dma_alloc(struct device *dev, size_t size,
->   	/* This is linear addr (0x8000_0000 based) */
->   	paddr = page_to_phys(page);
->   
-> -	*dma_handle = plat_phys_to_dma(dev, paddr);
-> +	*dma_handle = paddr;
->   
->   	/* This is kernel Virtual address (0x7000_0000 based) */
->   	if (need_kvaddr) {
-> @@ -92,7 +92,7 @@ static void *arc_dma_alloc(struct device *dev, size_t size,
->   static void arc_dma_free(struct device *dev, size_t size, void *vaddr,
->   		dma_addr_t dma_handle, unsigned long attrs)
->   {
-> -	phys_addr_t paddr = plat_dma_to_phys(dev, dma_handle);
-> +	phys_addr_t paddr = dma_handle;
->   	struct page *page = virt_to_page(paddr);
->   	int is_non_coh = 1;
->   
-> @@ -111,7 +111,7 @@ static int arc_dma_mmap(struct device *dev, struct vm_area_struct *vma,
->   {
->   	unsigned long user_count = vma_pages(vma);
->   	unsigned long count = PAGE_ALIGN(size) >> PAGE_SHIFT;
-> -	unsigned long pfn = __phys_to_pfn(plat_dma_to_phys(dev, dma_addr));
-> +	unsigned long pfn = __phys_to_pfn(dma_addr);
->   	unsigned long off = vma->vm_pgoff;
->   	int ret = -ENXIO;
->   
-> @@ -175,7 +175,7 @@ static dma_addr_t arc_dma_map_page(struct device *dev, struct page *page,
->   	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
->   		_dma_cache_sync(paddr, size, dir);
->   
-> -	return plat_phys_to_dma(dev, paddr);
-> +	return paddr;
->   }
->   
->   /*
-> @@ -190,7 +190,7 @@ static void arc_dma_unmap_page(struct device *dev, dma_addr_t handle,
->   			       size_t size, enum dma_data_direction dir,
->   			       unsigned long attrs)
->   {
-> -	phys_addr_t paddr = plat_dma_to_phys(dev, handle);
-> +	phys_addr_t paddr = handle;
->   
->   	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
->   		_dma_cache_sync(paddr, size, dir);
-> @@ -224,13 +224,13 @@ static void arc_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
->   static void arc_dma_sync_single_for_cpu(struct device *dev,
->   		dma_addr_t dma_handle, size_t size, enum dma_data_direction dir)
->   {
-> -	_dma_cache_sync(plat_dma_to_phys(dev, dma_handle), size, DMA_FROM_DEVICE);
-> +	_dma_cache_sync(dma_handle, size, DMA_FROM_DEVICE);
->   }
->   
->   static void arc_dma_sync_single_for_device(struct device *dev,
->   		dma_addr_t dma_handle, size_t size, enum dma_data_direction dir)
->   {
-> -	_dma_cache_sync(plat_dma_to_phys(dev, dma_handle), size, DMA_TO_DEVICE);
-> +	_dma_cache_sync(dma_handle, size, DMA_TO_DEVICE);
->   }
->   
->   static void arc_dma_sync_sg_for_cpu(struct device *dev,
+diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+index 30f92391a93e..cad3e8661cd6 100644
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -39,6 +39,7 @@
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
+ #include <linux/fs.h>
++#include <linux/cpu.h>
+ #include <linux/module.h>
+ #include <linux/personality.h>
+ #include <linux/ptrace.h>
+@@ -184,6 +185,44 @@ int dump_task_fpu (struct task_struct *tsk, elf_fpregset_t *r)
+ }
+ 
+ /*
++ * Idle thread support
++ *
++ * Detect when running on QEMU with SeaBIOS PDC Firmware and let
++ * QEMU idle the host too.
++ */
++
++int running_on_qemu __read_mostly;
++
++void __cpuidle arch_cpu_idle_dead(void)
++{
++	/* nop on real hardware, qemu will offline CPU. */
++	asm volatile("or %%r31,%%r31,%%r31\n":::);
++}
++
++void __cpuidle arch_cpu_idle(void)
++{
++	local_irq_enable();
++
++	/* nop on real hardware, qemu will idle sleep. */
++	asm volatile("or %%r10,%%r10,%%r10\n":::);
++}
++
++static int __init parisc_idle_init(void)
++{
++	const char *marker;
++
++	/* check QEMU/SeaBIOS marker in PAGE0 */
++	marker = (char *) &PAGE0->pad0;
++	running_on_qemu = (memcmp(marker, "SeaBIOS", 8) == 0);
++
++	if (!running_on_qemu)
++		cpu_idle_poll_ctrl(1);
++
++	return 0;
++}
++arch_initcall(parisc_idle_init);
++
++/*
+  * Copy architecture-specific thread state
+  */
+ int
