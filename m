@@ -1,53 +1,44 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture fixes for 4.15-rc7
-Date: Sun, 7 Jan 2018 17:21:23 +0100
-Message-ID: <20180107162123.GA9715@ls3530.fritz.box>
+Subject: [PATCH] parisc: Use fast cr16 clocksource with qemu
+Date: Mon, 8 Jan 2018 21:36:40 +0100
+Message-ID: <20180108203640.GA16841@ls3530.fritz.box>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Richard Henderson <rth@twiddle.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+To: linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+When booted in qemu, the (emulated) cr16 clocksources are monotonic and
+syncronized, so they can be used as stable clocksources.
 
-please pull a few fixes for the parisc architecture from:
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.15-3
-
-The fixes are:
-- Many small fixes to show the real physical addresses of devices instead of
-  hashed addresses.
-
-- One important fix to unbreak 32-bit SMP support: We forgot to 16-byte align
-  the spinlocks in the assembler code.
-
-- Qemu support: The host will get a chance to sleep when the parisc guest is
-  idle. We use the same mechanism as the power architecture by overlaying the
-  "or %r10,%r10,%r10" instruction which is simply a nop on real hardware.
-
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Helge Deller (6):
-      parisc: Show unhashed hardware inventory
-      parisc: Show initial kernel memory layout unhashed
-      parisc: Show unhashed HPA of Dino chip
-      parisc: Show unhashed EISA EEPROM address
-      parisc: Fix alignment of pa_tlb_lock in assembly on 32-bit SMP kernel
-      parisc: qemu idle sleep support
-
- arch/parisc/include/asm/ldcw.h |  2 ++
- arch/parisc/kernel/drivers.c   |  2 +-
- arch/parisc/kernel/entry.S     | 13 +++++++++++--
- arch/parisc/kernel/pacache.S   |  9 +++++++--
- arch/parisc/kernel/process.c   | 39 +++++++++++++++++++++++++++++++++++++++
- arch/parisc/mm/init.c          | 10 +++++-----
- drivers/parisc/dino.c          | 10 +++++-----
- drivers/parisc/eisa_eeprom.c   |  2 +-
- 8 files changed, 71 insertions(+), 16 deletions(-)
+diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
+index 0e6ab6e4a4e9..2dbe5580a1a4 100644
+--- a/arch/parisc/include/asm/processor.h
++++ b/arch/parisc/include/asm/processor.h
+@@ -316,6 +316,8 @@ extern int _parisc_requires_coherency;
+ #define parisc_requires_coherency()	(0)
+ #endif
+ 
++extern int running_on_qemu;
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* __ASM_PARISC_PROCESSOR_H */
+diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
+index 4b8fd6dc22da..68e88e5c0898 100644
+--- a/arch/parisc/kernel/time.c
++++ b/arch/parisc/kernel/time.c
+@@ -248,7 +248,7 @@ static int __init init_cr16_clocksource(void)
+ 	 * different sockets, so mark them unstable and lower rating on
+ 	 * multi-socket SMP systems.
+ 	 */
+-	if (num_online_cpus() > 1) {
++	if (num_online_cpus() > 1 && !running_on_qemu) {
+ 		int cpu;
+ 		unsigned long cpu0_loc;
+ 		cpu0_loc = per_cpu(cpu_data, 0).cpu_loc;
