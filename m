@@ -1,63 +1,60 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [GIT PULL] parisc architecture fixes for 4.15-rc7
-Date: Wed, 10 Jan 2018 14:44:23 +0100
-Message-ID: <6ed747e2-d037-b37d-51fb-39e0e2c3f2f4@gmx.de>
-References: <20180107162123.GA9715@ls3530.fritz.box>
- <CAGXu5jJ=s8NBBpd9fxr37T+HV8SNunq71AgGwu+Cy7WogPH=xA@mail.gmail.com>
+From: Robin Murphy <robin.murphy-5wv7dgnIgG8@public.gmane.org>
+Subject: Re: [PATCH 11/33] dma-mapping: move swiotlb arch helpers to a new
+	header
+Date: Wed, 10 Jan 2018 14:56:01 +0000
+Message-ID: <3721b4ba-0685-255e-06b9-6e60678a1a92@arm.com>
+References: <20180110080027.13879-1-hch@lst.de>
+	<20180110080027.13879-12-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: LKML <linux-kernel@vger.kernel.org>,
-        linux-parisc <linux-parisc@vger.kernel.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>,
-        Richard Henderson <rth@twiddle.net>,
-        Laura Abbott <labbott@redhat.com>
-To: Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAGXu5jJ=s8NBBpd9fxr37T+HV8SNunq71AgGwu+Cy7WogPH=xA@mail.gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, linux-ia64-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	Guan Xuetao <gxt-TG0Ac1+ktVePQbnJrJN+5g@public.gmane.org>, linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-c6x-dev-jPsnJVOj+W6hPH1hqNUYSQ@public.gmane.org,
+	linux-hexagon-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, x86-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org,
+	Konrad Rzeszutek Wilk <konrad-Gq0aWv8utHQdnm+yROfE0A@public.gmane.org>,
+	linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org,
+	linux-m68k-cunTk1MwBs8S/qaLPR03pWD2FQJk+8+b@public.gmane.org, patches-q3qR2WxjNRFS9aJRtSZj7A@public.gmane.org,
+	linux-metag-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org,
+	Michal Simek <monstr-pSz03upnqPeHXe+LvDLADg@public.gmane.org>, linux-cris-kernel-VrBV9hrLPhE@public.gmane.org,
+	linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linux-alpha-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+To: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+In-Reply-To: <20180110080027.13879-12-hch-jcswGhMUV9g@public.gmane.org>
+List-Id: Development issues for Linux IOMMU support
+	<iommu.lists.linux-foundation.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
 
-On 10.01.2018 00:03, Kees Cook wrote:
-> On Sun, Jan 7, 2018 at 8:21 AM, Helge Deller <deller@gmx.de> wrote:
->> Hi Linus,
->>
->> please pull a few fixes for the parisc architecture from:
->>
->>   git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.15-3
->>
->> The fixes are:
->> - Many small fixes to show the real physical addresses of devices instead of
->>   hashed addresses.
->>
->> - One important fix to unbreak 32-bit SMP support: We forgot to 16-byte align
->>   the spinlocks in the assembler code.
->>
->> - Qemu support: The host will get a chance to sleep when the parisc guest is
->>   idle. We use the same mechanism as the power architecture by overlaying the
->>   "or %r10,%r10,%r10" instruction which is simply a nop on real hardware.
->>
->> Thanks,
->> Helge
->>
->> ----------------------------------------------------------------
->> Helge Deller (6):
->>       parisc: Show unhashed hardware inventory
->>       parisc: Show unhashed EISA EEPROM address
+On 10/01/18 08:00, Christoph Hellwig wrote:
+> phys_to_dma, dma_to_phys and dma_capable are helpers published by
+> architecture code for use of swiotlb and xen-swiotlb only.  Drivers are
+> not supposed to use these directly, but use the DMA API instead.
 > 
-> These looks like a physical addresses, yes.
+> Move these to a new asm/dma-direct.h helper, included by a
+> linux/dma-direct.h wrapper that provides the default linear mapping
+> unless the architecture wants to override it.
 > 
->>       parisc: Show initial kernel memory layout unhashed
->>       parisc: Show unhashed HPA of Dino chip
-> 
-> But these are virtual addresses and should be just removed, not
-> switched to %px. They're not physical addresses that I can see, e.g.
-> "dino_dev" is clearly being used as an in-memory structure, and the
-> kernel layout literally says "virtual kernel memory layout".
+> Signed-off-by: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
+> ---
+[...]
+>   drivers/crypto/marvell/cesa.c                      |  1 +
+>   drivers/mtd/nand/qcom_nandc.c                      |  1 +
 
-Agreed, some of those should go.
-I'll clean that up in upcoming patches.
+I took a look at these, and it seems their phys_to_dma() usage is doing 
+the thing which we subsequently formalised as dma_map_resource(). I've 
+had a crack at a quick patch to update the CESA driver; qcom_nandc looks 
+slightly more complex in that the changes probably need to span the BAM 
+dmaengine driver as well.
 
-Thanks!
-Helge
+In the process, though, I stumbled across gen_pool_dma_alloc() - yuck, 
+something needs doing there, for sure...
+
+Robin.
