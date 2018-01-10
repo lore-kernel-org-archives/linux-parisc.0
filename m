@@ -1,84 +1,63 @@
-From: Kees Cook <keescook@chromium.org>
-Subject: Re: [GIT PULL] parisc architecture fixes for 4.15-rc7
-Date: Tue, 9 Jan 2018 15:03:58 -0800
-Message-ID: <CAGXu5jJ=s8NBBpd9fxr37T+HV8SNunq71AgGwu+Cy7WogPH=xA@mail.gmail.com>
-References: <20180107162123.GA9715@ls3530.fritz.box>
+From: Christoph Hellwig <hch@lst.de>
+Subject: consolidate direct dma mapping V3
+Date: Wed, 10 Jan 2018 08:59:54 +0100
+Message-ID: <20180110080027.13879-1-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: LKML <linux-kernel@vger.kernel.org>,
-        linux-parisc <linux-parisc@vger.kernel.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>,
-        Richard Henderson <rth@twiddle.net>,
-        Laura Abbott <labbott@redhat.com>
-To: Helge Deller <deller@gmx.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180107162123.GA9715@ls3530.fritz.box>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-arch@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org,
+ linux-hexagon@vger.kernel.org, x86@kernel.org,
+ Konrad Rzeszutek Wilk <konrad@darnok.org>, linux-snps-arc@lists.infradead.org,
+ linux-m68k@lists.linux-m68k.org, patches@groups.riscv.org,
+ linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
+ linux-cris-kernel@axis.com, linux-kernel@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+To: iommu@lists.linux-foundation.org
+Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
+List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
+List-Post: <mailto:linux-snps-arc@lists.infradead.org>
+List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
 
-On Sun, Jan 7, 2018 at 8:21 AM, Helge Deller <deller@gmx.de> wrote:
-> Hi Linus,
->
-> please pull a few fixes for the parisc architecture from:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.15-3
->
-> The fixes are:
-> - Many small fixes to show the real physical addresses of devices instead of
->   hashed addresses.
->
-> - One important fix to unbreak 32-bit SMP support: We forgot to 16-byte align
->   the spinlocks in the assembler code.
->
-> - Qemu support: The host will get a chance to sleep when the parisc guest is
->   idle. We use the same mechanism as the power architecture by overlaying the
->   "or %r10,%r10,%r10" instruction which is simply a nop on real hardware.
->
-> Thanks,
-> Helge
->
-> ----------------------------------------------------------------
-> Helge Deller (6):
->       parisc: Show unhashed hardware inventory
->       parisc: Show unhashed EISA EEPROM address
+Almost every architecture supports a direct dma mapping implementation,
+where no iommu is used and the device dma address is a 1:1 mapping to
+the physical address or has a simple linear offset.  Currently the
+code for this implementation is most duplicated over the architectures,
+and the duplicated again in the swiotlb code, and then duplicated again
+for special cases like the x86 memory encryption DMA ops.
 
-These looks like a physical addresses, yes.
+This series takes the existing very simple dma-noop dma mapping
+implementation, enhances it with all the x86 features and quirks, and
+creates a common set of architecture hooks for it and the swiotlb code.
 
->       parisc: Show initial kernel memory layout unhashed
->       parisc: Show unhashed HPA of Dino chip
+It then switches a number of architectures to this generic
+direct map implemention.
 
-But these are virtual addresses and should be just removed, not
-switched to %px. They're not physical addresses that I can see, e.g.
-"dino_dev" is clearly being used as an in-memory structure, and the
-kernel layout literally says "virtual kernel memory layout".
-Especially the kernel memory layout going to dmesg should be removed.
-That kind of thing has been entirely removed from other architectures
-(or will be soon[1]). See commit adb1fe9ae2ee ("mm/page_alloc: Remove
-kernel address exposure in free_reserved_area()"). (Also note that
-hiding behind CONFIG_DEBUG_KERNEL is not sufficient: most distros
-build with that config.)
+Note that for now this only handles architectures that do cache coherent
+DMA, but a similar consolidation for non-coherent architectures is in the
+work for later merge windows.
 
--Kees
+A git tree is also available:
 
-[1] https://www.spinics.net/lists/arm-kernel/msg624390.html
+   git://git.infradead.org/users/hch/misc.git dma-direct.3
 
->       parisc: Fix alignment of pa_tlb_lock in assembly on 32-bit SMP kernel
->       parisc: qemu idle sleep support
->
->  arch/parisc/include/asm/ldcw.h |  2 ++
->  arch/parisc/kernel/drivers.c   |  2 +-
->  arch/parisc/kernel/entry.S     | 13 +++++++++++--
->  arch/parisc/kernel/pacache.S   |  9 +++++++--
->  arch/parisc/kernel/process.c   | 39 +++++++++++++++++++++++++++++++++++++++
->  arch/parisc/mm/init.c          | 10 +++++-----
->  drivers/parisc/dino.c          | 10 +++++-----
->  drivers/parisc/eisa_eeprom.c   |  2 +-
->  8 files changed, 71 insertions(+), 16 deletions(-)
+Gitweb:
 
+   http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dma-direct.3
 
-
--- 
-Kees Cook
-Pixel Security
+Changes since V1:
+ - fixed a few patch description typos
+ - fixed a few printk formats
+ - fixed an off by one in dma_coherent_ok
+ - add a few Reviewed-by/Acked-by tags.
+ - moved the swiotlb consolidation to a new series
+ - dropped a few patches for now to not overwhelem the x86
+   maintainers.  They will be resubmitted in the next merge window
