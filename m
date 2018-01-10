@@ -1,8 +1,9 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 31/33] dma-direct: reject too small dma masks
-Date: Wed, 10 Jan 2018 16:32:26 +0100
-Message-ID: <20180110153226.GE17790@lst.de>
-References: <20180110080027.13879-1-hch@lst.de> <20180110080027.13879-32-hch@lst.de> <0bcca030-a8da-c34a-a905-707986689f33@arm.com>
+Subject: Re: [PATCH 11/33] dma-mapping: move swiotlb arch helpers to a new
+        header
+Date: Wed, 10 Jan 2018 16:40:50 +0100
+Message-ID: <20180110154050.GA18428@lst.de>
+References: <20180110080027.13879-1-hch@lst.de> <20180110080027.13879-12-hch@lst.de> <3721b4ba-0685-255e-06b9-6e60678a1a92@arm.com> <20180110152617.GB17790@lst.de> <b0f90ed0-989f-4dc2-6f86-de8b4e486b55@arm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org,
@@ -20,33 +21,14 @@ Cc: Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org,
         linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 To: Robin Murphy <robin.murphy@arm.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <0bcca030-a8da-c34a-a905-707986689f33@arm.com>
+In-Reply-To: <b0f90ed0-989f-4dc2-6f86-de8b4e486b55@arm.com>
 List-ID: <linux-m68k.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Jan 10, 2018 at 11:49:34AM +0000, Robin Murphy wrote:
->> +#ifdef CONFIG_ZONE_DMA
->> +	if (mask < DMA_BIT_MASK(ARCH_ZONE_DMA_BITS))
->> +		return 0;
->> +#else
->> +	/*
->> +	 * Because 32-bit DMA masks are so common we expect every architecture
->> +	 * to be able to satisfy them - either by not supporting more physical
->> +	 * memory, or by providing a ZONE_DMA32.  If neither is the case, the
->> +	 * architecture needs to use an IOMMU instead of the direct mapping.
->> +	 */
->> +	if (mask < DMA_BIT_MASK(32))
->> +		return 0;
->
-> Do you think it's worth the effort to be a little more accommodating here? 
-> i.e.:
->
-> 		return dma_max_pfn(dev) >= max_pfn;
->
-> We seem to have a fair few 28-31 bit masks for older hardware which 
-> probably associates with host systems packing equivalently small amounts of 
-> RAM.
+On Wed, Jan 10, 2018 at 03:31:08PM +0000, Robin Murphy wrote:
+> Yes indeed, modulo Vladimir's comments - it does seem prudent to fix the 
+> obvious off-by-ones as we touch them. I've wanted to do something like this 
+> for ages, but never got around to it myself.
 
-And those devices don't have a ZONE_DMA?  I think we could do something
-like that, but I'd rather have it as a separate commit with a good
-explanation.  Maybe you can just send on on top of the series?
+I've fixed these now in a separate patch.  I'm taking this as an
+Acked-by.
