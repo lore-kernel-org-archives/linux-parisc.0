@@ -1,83 +1,67 @@
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 04/11] signal/parisc: Document a conflict with SI_USER with SIGFPE
-Date: Thu, 11 Jan 2018 18:59:33 -0600
-Message-ID: <20180112005940.23279-4-ebiederm@xmission.com>
-References: <87373b6ghs.fsf@xmission.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Oleg Nesterov <oleg@redhat.com>,
-        linux-arch@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <87373b6ghs.fsf@xmission.com>
-List-ID: <linux-arch.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
+Subject: consolidate direct dma mapping V4
+Date: Fri, 12 Jan 2018 09:41:58 +0100
+Message-ID: <20180112084232.2857-1-hch@lst.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, linux-ia64-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	Guan Xuetao <gxt-TG0Ac1+ktVePQbnJrJN+5g@public.gmane.org>, linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-c6x-dev-jPsnJVOj+W6hPH1hqNUYSQ@public.gmane.org,
+	linux-hexagon-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, x86-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org,
+	Konrad Rzeszutek Wilk <konrad-Gq0aWv8utHQdnm+yROfE0A@public.gmane.org>,
+	linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org,
+	linux-m68k-cunTk1MwBs8S/qaLPR03pWD2FQJk+8+b@public.gmane.org, patches-q3qR2WxjNRFS9aJRtSZj7A@public.gmane.org,
+	linux-metag-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org,
+	Michal Simek <monstr-pSz03upnqPeHXe+LvDLADg@public.gmane.org>, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linux-cris-kernel-VrBV9hrLPhE@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linux-alpha-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+To: iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Id: Development issues for Linux IOMMU support
+	<iommu.lists.linux-foundation.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
 
-Setting si_code to 0 results in a userspace seeing an si_code of 0.
-This is the same si_code as SI_USER.  Posix and common sense requires
-that SI_USER not be a signal specific si_code.  As such this use of 0
-for the si_code is a pretty horribly broken ABI.
+Almost every architecture supports a direct dma mapping implementation,
+where no iommu is used and the device dma address is a 1:1 mapping to
+the physical address or has a simple linear offset.  Currently the
+code for this implementation is most duplicated over the architectures,
+and the duplicated again in the swiotlb code, and then duplicated again
+for special cases like the x86 memory encryption DMA ops.
 
-Further use of si_code == 0 guaranteed that copy_siginfo_to_user saw a
-value of __SI_KILL and now sees a value of SIL_KILL with the result
-that uid and pid fields are copied and which might copying the si_addr
-field by accident but certainly not by design.  Making this a very
-flakey implementation.
+This series takes the existing very simple dma-noop dma mapping
+implementation, enhances it with all the x86 features and quirks, and
+creates a common set of architecture hooks for it and the swiotlb code.
 
-Utilizing FPE_FIXME siginfo_layout will now return SIL_FAULT and the
-appropriate fields will reliably be copied.
+It then switches a number of architectures to this generic
+direct map implemention.
 
-This bug is 13 years old and parsic machines are no longer being built
-so I don't know if it possible or worth fixing it.  But it is at least
-worth documenting this so other architectures don't make the same
-mistake.
+Note that for now this only handles architectures that do cache coherent
+DMA, but a similar consolidation for non-coherent architectures is in the
+work for later merge windows.
 
-Possible ABI fixes includee:
-  - Send the signal without siginfo
-  - Don't generate a signal
-  - Possibly assign and use an appropriate si_code
-  - Don't handle cases which can't happen
+A git tree is also available:
 
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
-Ref: 313c01d3e3fd ("[PATCH] PA-RISC update for 2.6.0")
-Histroy Tree: https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- arch/parisc/include/uapi/asm/siginfo.h | 7 +++++++
- arch/parisc/kernel/traps.c             | 2 +-
- 2 files changed, 8 insertions(+), 1 deletion(-)
+   git://git.infradead.org/users/hch/misc.git dma-direct.3
 
-diff --git a/arch/parisc/include/uapi/asm/siginfo.h b/arch/parisc/include/uapi/asm/siginfo.h
-index 4a1062e05aaf..be40331f757d 100644
---- a/arch/parisc/include/uapi/asm/siginfo.h
-+++ b/arch/parisc/include/uapi/asm/siginfo.h
-@@ -8,4 +8,11 @@
- 
- #include <asm-generic/siginfo.h>
- 
-+/*
-+ * SIGFPE si_codes
-+ */
-+#ifdef __KERNEL__
-+#define FPE_FIXME	0	/* Broken dup of SI_USER */
-+#endif /* __KERNEL__ */
-+
- #endif
-diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index 8453724b8009..c919e6c0a687 100644
---- a/arch/parisc/kernel/traps.c
-+++ b/arch/parisc/kernel/traps.c
-@@ -629,7 +629,7 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- 			si.si_signo = SIGFPE;
- 			/* Set to zero, and let the userspace app figure it out from
- 			   the insn pointed to by si_addr */
--			si.si_code = 0;
-+			si.si_code = FPE_FIXME;
- 			si.si_addr = (void __user *) regs->iaoq[0];
- 			force_sig_info(SIGFPE, &si, current);
- 			return;
--- 
-2.14.1
+Gitweb:
+
+   http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dma-direct.3
+
+Changes since V3
+ - new patch to fix an off-by-one in mips dma_capable
+Changes since V2:
+ - fixed a few patch description typos
+ - fixed a few printk formats
+ - fixed an off by one in dma_coherent_ok
+ - add a few Reviewed-by/Acked-by tags.
+ - moved the swiotlb consolidation to a new series
+ - dropped a few patches for now to not overwhelem the x86
+   maintainers.  They will be resubmitted in the next merge window
