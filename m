@@ -1,64 +1,83 @@
-From: Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH 31/33] dma-direct: reject too small dma masks
-Date: Wed, 10 Jan 2018 17:00:30 +0000
-Message-ID: <619b174d-f38d-8d9e-dfd2-cc3a64ace446@arm.com>
-References: <20180110080027.13879-1-hch@lst.de>
- <20180110080027.13879-32-hch@lst.de>
- <0bcca030-a8da-c34a-a905-707986689f33@arm.com>
- <20180110153226.GE17790@lst.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: iommu@lists.linux-foundation.org, linux-mips@linux-mips.org,
-        linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>,
-        linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
-        x86@kernel.org, Konrad Rzeszutek Wilk <konrad@darnok.org>,
-        linux-snps-arc@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, patches@groups.riscv.org,
-        linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
-        linux-cris-kernel@axis.com, linux-kernel@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-To: Christoph Hellwig <hch@lst.de>
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <20180110153226.GE17790@lst.de>
-List-ID: <linux-alpha.vger.kernel.org>
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [PATCH 04/11] signal/parisc: Document a conflict with SI_USER with SIGFPE
+Date: Thu, 11 Jan 2018 18:59:33 -0600
+Message-ID: <20180112005940.23279-4-ebiederm@xmission.com>
+References: <87373b6ghs.fsf@xmission.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>, Oleg Nesterov <oleg@redhat.com>,
+        linux-arch@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <87373b6ghs.fsf@xmission.com>
+List-ID: <linux-arch.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Setting si_code to 0 results in a userspace seeing an si_code of 0.
+This is the same si_code as SI_USER.  Posix and common sense requires
+that SI_USER not be a signal specific si_code.  As such this use of 0
+for the si_code is a pretty horribly broken ABI.
 
+Further use of si_code == 0 guaranteed that copy_siginfo_to_user saw a
+value of __SI_KILL and now sees a value of SIL_KILL with the result
+that uid and pid fields are copied and which might copying the si_addr
+field by accident but certainly not by design.  Making this a very
+flakey implementation.
 
-On 10/01/18 15:32, Christoph Hellwig wrote:
-> On Wed, Jan 10, 2018 at 11:49:34AM +0000, Robin Murphy wrote:
->>> +#ifdef CONFIG_ZONE_DMA
->>> +	if (mask < DMA_BIT_MASK(ARCH_ZONE_DMA_BITS))
->>> +		return 0;
->>> +#else
->>> +	/*
->>> +	 * Because 32-bit DMA masks are so common we expect every architecture
->>> +	 * to be able to satisfy them - either by not supporting more physical
->>> +	 * memory, or by providing a ZONE_DMA32.  If neither is the case, the
->>> +	 * architecture needs to use an IOMMU instead of the direct mapping.
->>> +	 */
->>> +	if (mask < DMA_BIT_MASK(32))
->>> +		return 0;
->>
->> Do you think it's worth the effort to be a little more accommodating here?
->> i.e.:
->>
->> 		return dma_max_pfn(dev) >= max_pfn;
->>
->> We seem to have a fair few 28-31 bit masks for older hardware which
->> probably associates with host systems packing equivalently small amounts of
->> RAM.
-> 
-> And those devices don't have a ZONE_DMA?  I think we could do something
-> like that, but I'd rather have it as a separate commit with a good
-> explanation.  Maybe you can just send on on top of the series?
+Utilizing FPE_FIXME siginfo_layout will now return SIL_FAULT and the
+appropriate fields will reliably be copied.
 
-Good point - other than the IXP4xx platform and possibly the Broadcom 
-network drivers, it's probably only x86-relevant stuff where the concern 
-is moot. Let's just keep the simple assumption then, until actually 
-proven otherwise.
+This bug is 13 years old and parsic machines are no longer being built
+so I don't know if it possible or worth fixing it.  But it is at least
+worth documenting this so other architectures don't make the same
+mistake.
 
-Robin.
+Possible ABI fixes includee:
+  - Send the signal without siginfo
+  - Don't generate a signal
+  - Possibly assign and use an appropriate si_code
+  - Don't handle cases which can't happen
+
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+Ref: 313c01d3e3fd ("[PATCH] PA-RISC update for 2.6.0")
+Histroy Tree: https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ arch/parisc/include/uapi/asm/siginfo.h | 7 +++++++
+ arch/parisc/kernel/traps.c             | 2 +-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/arch/parisc/include/uapi/asm/siginfo.h b/arch/parisc/include/uapi/asm/siginfo.h
+index 4a1062e05aaf..be40331f757d 100644
+--- a/arch/parisc/include/uapi/asm/siginfo.h
++++ b/arch/parisc/include/uapi/asm/siginfo.h
+@@ -8,4 +8,11 @@
+ 
+ #include <asm-generic/siginfo.h>
+ 
++/*
++ * SIGFPE si_codes
++ */
++#ifdef __KERNEL__
++#define FPE_FIXME	0	/* Broken dup of SI_USER */
++#endif /* __KERNEL__ */
++
+ #endif
+diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
+index 8453724b8009..c919e6c0a687 100644
+--- a/arch/parisc/kernel/traps.c
++++ b/arch/parisc/kernel/traps.c
+@@ -629,7 +629,7 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
+ 			si.si_signo = SIGFPE;
+ 			/* Set to zero, and let the userspace app figure it out from
+ 			   the insn pointed to by si_addr */
+-			si.si_code = 0;
++			si.si_code = FPE_FIXME;
+ 			si.si_addr = (void __user *) regs->iaoq[0];
+ 			force_sig_info(SIGFPE, &si, current);
+ 			return;
+-- 
+2.14.1
