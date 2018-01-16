@@ -1,38 +1,45 @@
-From: Christoph Hellwig <hch-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>
-Subject: Re: consolidate direct dma mapping V4
-Date: Mon, 15 Jan 2018 23:52:43 -0800
-Message-ID: <20180116075243.GA12693@infradead.org>
-References: <20180112084232.2857-1-hch@lst.de>
+From: Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH v3 02/10] include: Move compat_timespec/ timeval to
+ compat_time.h
+Date: Tue, 16 Jan 2018 09:30:29 +0000
+Message-ID: <20180116093029.gzse6xs4sjx43znp@armageddon.cambridge.arm.com>
+References: <20180116021818.24791-1-deepa.kernel@gmail.com>
+ <20180116021818.24791-3-deepa.kernel@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, linux-ia64-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	Guan Xuetao <gxt-TG0Ac1+ktVePQbnJrJN+5g@public.gmane.org>, linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-c6x-dev-jPsnJVOj+W6hPH1hqNUYSQ@public.gmane.org,
-	linux-hexagon-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, x86-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org,
-	Konrad Rzeszutek Wilk <konrad-Gq0aWv8utHQdnm+yROfE0A@public.gmane.org>,
-	linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org,
-	linux-m68k-cunTk1MwBs8S/qaLPR03pWD2FQJk+8+b@public.gmane.org, patches-q3qR2WxjNRFS9aJRtSZj7A@public.gmane.org,
-	linux-metag-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org,
-	Michal Simek <monstr-pSz03upnqPeHXe+LvDLADg@public.gmane.org>, linux-cris-kernel-VrBV9hrLPhE@public.gmane.org,
-	linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, linux-alpha-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-To: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <20180112084232.2857-1-hch-jcswGhMUV9g@public.gmane.org>
-List-Id: Development issues for Linux IOMMU support
-	<iommu.lists.linux-foundation.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Content-Type: text/plain; charset=us-ascii
+Cc: tglx@linutronix.de, john.stultz@linaro.org,
+        linux-kernel@vger.kernel.org, arnd@arndb.de,
+        y2038@lists.linaro.org, acme@kernel.org, benh@kernel.crashing.org,
+        borntraeger@de.ibm.com, cmetcalf@mellanox.com, cohuck@redhat.com,
+        davem@davemloft.net, deller@gmx.de, devel@driverdev.osuosl.org,
+        gerald.schaefer@de.ibm.com, gregkh@linuxfoundation.org,
+        heiko.carstens@de.ibm.com, hoeppner@linux.vnet.ibm.com,
+        hpa@zytor.com, jejb@parisc-linux.org, jwi@linux.vnet.ibm.com,
+        linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, mpe@ellerman.id.au,
+        oberpar@linux.vnet.ibm.com, oprofile-list@lists.sf.net,
+        paulus@samba.org, peterz@infradead.org, ralf@linux-mips.org,
+        rostedt@goodmis.org, rric@kernel.org, s
+To: Deepa Dinamani <deepa.kernel@gmail.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20180116021818.24791-3-deepa.kernel@gmail.com>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-I've pulled this into the dma-mapping for-next branch so that we get
-a few days exposure before then end of the merge window.  If there is
-anything important (e.g. the powerpc naming issue) please send
-incremental patches.
+On Mon, Jan 15, 2018 at 06:18:10PM -0800, Deepa Dinamani wrote:
+> All the current architecture specific defines for these
+> are the same. Refactor these common defines to a common
+> header file.
+> 
+> The new common linux/compat_time.h is also useful as it
+> will eventually be used to hold all the defines that
+> are needed for compat time types that support non y2038
+> safe types. New architectures need not have to define these
+> new types as they will only use new y2038 safe syscalls.
+> This file can be deleted after y2038 when we stop supporting
+> non y2038 safe syscalls.
+
+For arm64:
+
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
