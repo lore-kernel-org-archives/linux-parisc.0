@@ -1,39 +1,38 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: Running the gdb 7.12.1 testsuite breaks kernel 4.13.8 on C8000
-Date: Thu, 25 Jan 2018 16:36:54 +0100
-Message-ID: <57873f7fe3e5227fcf2f4ed20407f2b6@sf-tec.de>
-References: <11946948.1Lt8Nslq4k@devpool21> <5A69D52B.90405@bell.net>
+From: Peter Schuster <femi.ageuh@gmail.com>
+Subject: =?UTF-8?Q?Darlehen_Geld_f=C3=BCr_Einzelpersonen_und_Fachleute_in_w?=
+        =?UTF-8?Q?eniger_als_72_Stunden?=
+Date: Fri, 26 Jan 2018 08:22:47 +0100
+Message-ID: <CACKcKZ-YTVoO8xO=VcRR-F_91T=fQ=MZa2wBTk_EaRT7GRz52Q__33873.2152748436$1516951279$gmane$org@mail.gmail.com>
+Reply-To: klaus.peterschuster@outlook.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+To: undisclosed-recipients:;
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <5A69D52B.90405@bell.net>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-John David Anglin wrote:
-> On 2018-01-25 3:59 AM, Rolf Eike Beer wrote:
->> [  909.756303] Kernel panic - not syncing: Bad Address (null pointer 
->> deref?)
->> [  909.756303] ---[ end Kernel panic - not syncing: Bad Address (null 
->> pointer deref?)
->> 
->> This is actually the second place where it breaks, before that I had 
->> the same
->> with this test (twice):
-> Would you post the PIM dump of the most recent HPMC in the service
-> menu?
+Hallo,
 
-The service menu does not give any information, as in this older bug: 
-https://bugs.gentoo.org/481768
+Sind Sie in einer schwierigen Situation, f=C3=BCr die Sie sich f=C3=BCr ein
+Darlehen suchen? Ben=C3=B6tigen Sie eine Finanzierung, um eine Schuld zu
+begleichen oder eine Aktivit=C3=A4t zu finanzieren? Haben Sie einen
+Verbraucherkredit, eine Hypothek, einen pers=C3=B6nlichen Kredit, eine
+Hypothek, Investition Darlehen, Schuldenkonsolidierung Darlehen oder
+andere braucht?
 
-> Also needed
-> is the assembler dump of the routine where the HPMC occurred in your
-> kernel.  You need the
-> 64-bit version of objdump for this.
+Ich bin ein einzelner Investor. I zur Verf=C3=BCgung stellen die Kredit
+kurz-, mittel- und langfristige. Ihr Finanzierungsbedingungen sind
+sehr einfach und meine Zinssatz betr=C3=A4gt 3% pro Jahr.
 
-I have put the kernel on 
-https://opensource.sf-tec.de/c8000-kernel.tar.xz
+F=C3=BCr alle Anfragen, bleibe ich zur Verf=C3=BCgung, um Ihre Fragen zu be=
+antworten.
 
-Eike
+Danke, dass Sie mir per E-Mail an Sie von  :   klaus.peterschuster@outlook.=
+de
+
+Mit freundlichen Gr=C3=BC=C3=9Fen.
+
+Peter Schuster
+
+Financial Bank
+https://firstfinancialsa.com/de
