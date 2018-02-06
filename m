@@ -1,66 +1,51 @@
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH 22/34] dma-mapping: add an arch_dma_supported hook
-Date: Fri, 2 Feb 2018 09:47:23 -0800
-Message-ID: <5d7dfb29-eeef-2280-13c9-5260e9104f67@infradead.org>
-References: <20180112084232.2857-1-hch@lst.de>
- <20180112084232.2857-23-hch@lst.de>
+From: "Business Group (gclkjvq)" <wfpzy-Y9sIeH5OGRo@public.gmane.org>
+Subject: =?windows-1251?B?UmU6WzVdIGxpbnV4LW5ldEB2Z2VyLmtlcm5l?=
+ =?windows-1251?B?bC5vcmcgV2Ugb2ZmZXIgRS1tYWlsIGRhdGFi?=
+ =?windows-1251?B?YXNlcyB3aXRoIDgwJSBkaXNjb3VudCAvIM/w?=
+ =?windows-1251?B?5eTr4OPg5ewgRS1tYWlsIOHg5/sg8SA4MCUg?=
+ =?windows-1251?B?8ero5Oru6Q==?=
+Date: Tue, 6 Feb 2018 07:54:40 +0300
+Message-ID: <0702B4E7EC3817F4282D64F3F79EF66C@263.net>
+Reply-To: "Business Group \(gclkjvq\)" <dwtwwoj-o+MxOtu4lMCHXe+LvDLADg@public.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-arch@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org,
- linux-hexagon@vger.kernel.org, x86@kernel.org,
- Konrad Rzeszutek Wilk <konrad@darnok.org>, linux-snps-arc@lists.infradead.org,
- linux-m68k@lists.linux-m68k.org, patches@groups.riscv.org,
- linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
- linux-cris-kernel@axis.com, linux-kernel@vger.kernel.org,
- linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-To: Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20180112084232.2857-23-hch@lst.de>
-List-Id: <linux-arm-kernel.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset="cp1251"
+To: <linux-net-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, <linux-net-4ESfhGDvgol+CIkdHa1UOg@public.gmane.org>,
+ <linux-nfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, <linux-nilfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+ <linux-ntfs-dev-TtF/mJH4Jtrk1uMJSBkQmQ@public.gmane.org>, <linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>,
+ <linux-nvme-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, <linux-omap-open-source-P3Mejjx7fphMeHKdZgrLhA@public.gmane.org>,
+ <linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, <linux-omap-OBmyj6YDURU@public.gmane.org>,
+ <linux-oxnas-Xt5XgHjqiBU06sgRBLv0+0B+6BGkLq7r@public.gmane.org>, <linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+ <linux-parport-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, <linux-pci-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+ <linux-pci-jyMamyUUXNJG4ohzP4jBZS1Fcj925eT/@public.gmane.org>, <linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
+ <linux-pcisupport-ZM4KX8k1dDJhUPSOf7nbvg@public.gmane.org>, <linux-pcmcia-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>,
+ <linux-perf-users-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, <linux-pm-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+Return-path: <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+List-Id: "Linux-nvdimm developer list." <linux-nvdimm.lists.01.org>
+List-Unsubscribe: <https://lists.01.org/mailman/options/linux-nvdimm>,
+ <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.01.org/pipermail/linux-nvdimm/>
+List-Post: <mailto:linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+List-Help: <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.01.org/mailman/listinfo/linux-nvdimm>,
+ <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=subscribe>
+Errors-To: linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
 
-On 01/12/2018 12:42 AM, Christoph Hellwig wrote:
-> To implement the x86 forbid_dac and iommu_sac_force we want an arch hook
-> so that it can apply the global options across all dma_map_ops
-> implementations.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/x86/include/asm/dma-mapping.h |  3 +++
->  arch/x86/kernel/pci-dma.c          | 19 ++++++++++++-------
->  include/linux/dma-mapping.h        | 11 +++++++++++
->  3 files changed, 26 insertions(+), 7 deletions(-)
-
-> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-> index 88bcb1a8211d..d67742dad904 100644
-> --- a/include/linux/dma-mapping.h
-> +++ b/include/linux/dma-mapping.h
-> @@ -576,6 +576,14 @@ static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
->  	return 0;
->  }
->  
-> +/*
-> + * This is a hack for the legacy x86 forbid_dac and iommu_sac_force. Please
-> + * don't use this is new code.
-
-                     in new code.
-
-> + */
-> +#ifndef arch_dma_supported
-> +#define arch_dma_supported(dev, mask)	(1)
-> +#endif
-
-
--- 
-~Randy
+SGVsbG8gbGludXgtbmV0QHZnZXIua2VybmVsLm9yZwpXZSBvZmZlciB5b3UgYW4gRS1tYWlsIGRh
+dGFiYXNlIGZvciBhbnkgY291bnRyeSBpbiB0aGUgV29ybGQgd2l0aCA4MCUgZGlzY291bnQuW3d4
+Y3pwYWh1XSAKRm9yIGVmZmVjdGl2ZSBtYXJrZXRpbmcsIGFkdmVydGlzaW5nLCBuZXdzbGV0dGVy
+cy5bY3F0YWxdCkluIG9yZGVyIHRvIHF1aWNrbHkgYXR0cmFjdCBjdXN0b21lcnMgZm9yIHlvdXIg
+YnVzaW5lc3MuW2RienRkXSAKQ3VzdG9tZXJzIHdobyBib3VnaHQgb3VyIGRhdGFiYXNlLCB0cmFp
+bmluZyBhbmQgYWR2aWNlIGZvciBmcmVlLltjeHVoaG12ZV0gCkh1cnJ5LCBkaXNjb3VudHMgYXJl
+IG9ubHkgMiB3ZWVrcy5bZndibGVqYm9dIApEZXRhaWxzIGJ5IGUtbWFpbDogYW5kcmV5MTAwMDc3
+QGdtYWlsLmNvbSBvciBieSBJQ1E6IDY2Njc4NDQzMCBbamd3cHd3bGNdIAoKxO7h8PvpIOTl7fwg
+bGludXgtbmV0QHZnZXIua2VybmVsLm9yZwrP8OXk6+Dj4OXsIMLg7CBFLW1haWwg4eDn+yDv7iDr
+/uHu6SDx8vDg7eUgzOjw4CDxIDgwJSDx6ujk6u7pLlt5dW9haGNdCsTr/yD99PTl6vLo4u376SDs
+4PDq5fLo7ePu4vv1LCDw5err4Ozt+/UsIPDg8fH76+7qLltmY3d3YWZnXSAK0SD25ev8/iDh+/Hy
+8O7j7iDv8Oji6+X35e3o/yDq6+jl7fLu4iDk6/8gwuD45ePuIOHo5+3l8eAuW3JncnZ6eWZhXSAK
+yuvo5e3y4OwsIOrz7+ji+OjsIPMg7eDxIOHg5/ssIO7h8/fl7ejlIOgg6u7t8fPr/PLg9ujoIOHl
+8e/r4PLt7i5bY2tiaHFdIArR7+X46PLlLCDx6ujk6ugg8u7r/OruIDIg7eXk5evoLltiYWJwYmpv
+bl0gCsfgIOTl8uDr/O3u6SDo7fTu8Ozg9ujl6SDu4fDg+eDp8uXx/DogW2xyc3BrZF0gCndiYXNl
+QGxpc3QucnUg6OvoIO/uIElDUTogNjY2Nzg0NDMwIFtrY2N5Z10gCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4LW52ZGltbSBtYWlsaW5nIGxpc3QK
+TGludXgtbnZkaW1tQGxpc3RzLjAxLm9yZwpodHRwczovL2xpc3RzLjAxLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW52ZGltbQo=
