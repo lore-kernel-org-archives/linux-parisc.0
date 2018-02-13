@@ -1,149 +1,24 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Fix ordering of cache and TLB flushes
-Date: Mon, 12 Feb 2018 19:26:57 -0500
-Message-ID: <7ac084e0-75e7-8356-7839-3403fa53a5e0@bell.net>
+From: Meelis Roos <mroos@linux.ee>
+Subject: parisc 4.16-rc1 error: ERROR: "$$remU" [drivers/net/tun.ko]
+ undefined!
+Date: Tue, 13 Feb 2018 15:55:12 +0200 (EET)
+Message-ID: <alpine.LRH.2.21.1802131552240.9153@math.ut.ee>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------2BAE6F35268CB68C48C05E2E"
-Cc: Helge Deller <deller@gmx.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
+Content-Type: text/plain; charset=US-ASCII
 To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------2BAE6F35268CB68C48C05E2E
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+I am compiling todays git on HP A500 (Gentoo) and it fails with this 
+error. Strange thing is that it did work on RP3410 and RP3440 - I may 
+have different kernel configuration there but Gentoo state is roughly 
+the same (maybe days apart but not months).
 
-The attached change fixes the ordering of cache and TLB flushes in 
-several cases.  When we
-flush the cache using the existing PTE/TLB entries, we need to flush the 
-TLB after doing the cache
-flush.  We don't need to do this when we flush the entire instruction 
-and data caches as these
-flushes don't use the existing TLB entries.  The same is true for 
-tmpalias region flushes.
-
-The flush_kernel_vmap_range() and invalidate_kernel_vmap_range() 
-routines have been
-updated.   Helge reported that using  flush_data_cache() on PA 1.1 
-causes a deadlock in the
-dynamic DMA routines in pci-dma.c in SMP kernels.  So, we have disabled 
-using the whole
-data cache flush in this case.  This fixes PA 1.1 SMP support.
-
-Secondly, we added a new purge_kernel_dcache_range_asm() routine to 
-pacache.S and
-use it in invalidate_kernel_vmap_range().  Nominally, purges are faster 
-than flushes as the
-cache lines don't have to be written back to memory.
-
-Hopefully, this is sufficient to resolve the remaining problems due to 
-cache speculation.  So far,
-testing indicates that this is the case.  I did work up a patch using 
-tmpalias flushes, but there
-is a performance hit because we need the physical address for each page, 
-and we also need
-to sequence access to the tmpalias flush code.  This increases the 
-probability of stalls.
-
-Signed-off-by: John David Anglin  <dave.anglin@bell.net>
+  MODPOST 9 modules
+ERROR: "$$remU" [drivers/net/tun.ko] undefined!
+make[1]: *** [scripts/Makefile.modpost:92: __modpost] Error 1
 
 
---------------2BAE6F35268CB68C48C05E2E
-Content-Type: text/plain; charset=UTF-8;
- name="linux-4.14.18-20180208.d"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="linux-4.14.18-20180208.d"
-
-ZGlmZiAtLWdpdCBhL2FyY2gvcGFyaXNjL2luY2x1ZGUvYXNtL2NhY2hlZmx1c2guaCBiL2Fy
-Y2gvcGFyaXNjL2luY2x1ZGUvYXNtL2NhY2hlZmx1c2guaAppbmRleCAzNzQyNTA4Y2M1MzQu
-LmJkNWNlMzE5MzZmNSAxMDA2NDQKLS0tIGEvYXJjaC9wYXJpc2MvaW5jbHVkZS9hc20vY2Fj
-aGVmbHVzaC5oCisrKyBiL2FyY2gvcGFyaXNjL2luY2x1ZGUvYXNtL2NhY2hlZmx1c2guaApA
-QCAtMjYsNiArMjYsNyBAQCB2b2lkIGZsdXNoX3VzZXJfaWNhY2hlX3JhbmdlX2FzbSh1bnNp
-Z25lZCBsb25nLCB1bnNpZ25lZCBsb25nKTsKIHZvaWQgZmx1c2hfa2VybmVsX2ljYWNoZV9y
-YW5nZV9hc20odW5zaWduZWQgbG9uZywgdW5zaWduZWQgbG9uZyk7CiB2b2lkIGZsdXNoX3Vz
-ZXJfZGNhY2hlX3JhbmdlX2FzbSh1bnNpZ25lZCBsb25nLCB1bnNpZ25lZCBsb25nKTsKIHZv
-aWQgZmx1c2hfa2VybmVsX2RjYWNoZV9yYW5nZV9hc20odW5zaWduZWQgbG9uZywgdW5zaWdu
-ZWQgbG9uZyk7Cit2b2lkIHB1cmdlX2tlcm5lbF9kY2FjaGVfcmFuZ2VfYXNtKHVuc2lnbmVk
-IGxvbmcsIHVuc2lnbmVkIGxvbmcpOwogdm9pZCBmbHVzaF9rZXJuZWxfZGNhY2hlX3BhZ2Vf
-YXNtKHZvaWQgKik7CiB2b2lkIGZsdXNoX2tlcm5lbF9pY2FjaGVfcGFnZSh2b2lkICopOwog
-CmRpZmYgLS1naXQgYS9hcmNoL3BhcmlzYy9rZXJuZWwvY2FjaGUuYyBiL2FyY2gvcGFyaXNj
-L2tlcm5lbC9jYWNoZS5jCmluZGV4IDE5YzBjMTQxYmMzZi4uYWYyY2M0MzAyYTQyIDEwMDY0
-NAotLS0gYS9hcmNoL3BhcmlzYy9rZXJuZWwvY2FjaGUuYworKysgYi9hcmNoL3BhcmlzYy9r
-ZXJuZWwvY2FjaGUuYwpAQCAtNTM5LDEzICs1MzksMTAgQEAgdm9pZCBmbHVzaF9jYWNoZV9t
-bShzdHJ1Y3QgbW1fc3RydWN0ICptbSkKIAlzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYTsK
-IAlwZ2RfdCAqcGdkOwogCi0JLyogRmx1c2ggdGhlIFRMQiB0byBhdm9pZCBzcGVjdWxhdGlv
-biBpZiBjb2hlcmVuY3kgaXMgcmVxdWlyZWQuICovCi0JaWYgKHBhcmlzY19yZXF1aXJlc19j
-b2hlcmVuY3koKSkKLQkJZmx1c2hfdGxiX2FsbCgpOwotCiAJLyogRmx1c2hpbmcgdGhlIHdo
-b2xlIGNhY2hlIG9uIGVhY2ggY3B1IHRha2VzIGZvcmV2ZXIgb24KIAkgICBycDM0NDAsIGV0
-Yy4gIFNvLCBhdm9pZCBpdCBpZiB0aGUgbW0gaXNuJ3QgdG9vIGJpZy4gICovCiAJaWYgKG1t
-X3RvdGFsX3NpemUobW0pID49IHBhcmlzY19jYWNoZV9mbHVzaF90aHJlc2hvbGQpIHsKKwkJ
-Zmx1c2hfdGxiX2FsbCgpOwogCQlmbHVzaF9jYWNoZV9hbGwoKTsKIAkJcmV0dXJuOwogCX0K
-QEAgLTU1Niw2ICs1NTMsNyBAQCB2b2lkIGZsdXNoX2NhY2hlX21tKHN0cnVjdCBtbV9zdHJ1
-Y3QgKm1tKQogCQkJaWYgKCh2bWEtPnZtX2ZsYWdzICYgVk1fRVhFQykgPT0gMCkKIAkJCQlj
-b250aW51ZTsKIAkJCWZsdXNoX3VzZXJfaWNhY2hlX3JhbmdlX2FzbSh2bWEtPnZtX3N0YXJ0
-LCB2bWEtPnZtX2VuZCk7CisJCQlmbHVzaF90bGJfcmFuZ2Uodm1hLCB2bWEtPnZtX3N0YXJ0
-LCB2bWEtPnZtX2VuZCk7CiAJCX0KIAkJcmV0dXJuOwogCX0KQEAgLTU4MSwyMSArNTc5LDE4
-IEBAIHZvaWQgZmx1c2hfY2FjaGVfbW0oc3RydWN0IG1tX3N0cnVjdCAqbW0pCiB2b2lkIGZs
-dXNoX2NhY2hlX3JhbmdlKHN0cnVjdCB2bV9hcmVhX3N0cnVjdCAqdm1hLAogCQl1bnNpZ25l
-ZCBsb25nIHN0YXJ0LCB1bnNpZ25lZCBsb25nIGVuZCkKIHsKLQlCVUdfT04oIXZtYS0+dm1f
-bW0tPmNvbnRleHQpOwotCi0JLyogRmx1c2ggdGhlIFRMQiB0byBhdm9pZCBzcGVjdWxhdGlv
-biBpZiBjb2hlcmVuY3kgaXMgcmVxdWlyZWQuICovCi0JaWYgKHBhcmlzY19yZXF1aXJlc19j
-b2hlcmVuY3koKSkKKwlpZiAoKGVuZCAtIHN0YXJ0KSA+PSBwYXJpc2NfY2FjaGVfZmx1c2hf
-dGhyZXNob2xkKSB7CiAJCWZsdXNoX3RsYl9yYW5nZSh2bWEsIHN0YXJ0LCBlbmQpOwotCi0J
-aWYgKChlbmQgLSBzdGFydCkgPj0gcGFyaXNjX2NhY2hlX2ZsdXNoX3RocmVzaG9sZAotCSAg
-ICB8fCB2bWEtPnZtX21tLT5jb250ZXh0ICE9IG1mc3AoMykpIHsKIAkJZmx1c2hfY2FjaGVf
-YWxsKCk7CiAJCXJldHVybjsKIAl9CiAKKwlCVUdfT04odm1hLT52bV9tbS0+Y29udGV4dCAh
-PSBtZnNwKDMpKTsKKwogCWZsdXNoX3VzZXJfZGNhY2hlX3JhbmdlX2FzbShzdGFydCwgZW5k
-KTsKIAlpZiAodm1hLT52bV9mbGFncyAmIFZNX0VYRUMpCiAJCWZsdXNoX3VzZXJfaWNhY2hl
-X3JhbmdlX2FzbShzdGFydCwgZW5kKTsKKwlmbHVzaF90bGJfcmFuZ2Uodm1hLCBzdGFydCwg
-ZW5kKTsKIH0KIAogdm9pZApAQCAtNjA0LDggKzU5OSw3IEBAIGZsdXNoX2NhY2hlX3BhZ2Uo
-c3RydWN0IHZtX2FyZWFfc3RydWN0ICp2bWEsIHVuc2lnbmVkIGxvbmcgdm1hZGRyLCB1bnNp
-Z25lZCBsb25nCiAJQlVHX09OKCF2bWEtPnZtX21tLT5jb250ZXh0KTsKIAogCWlmIChwZm5f
-dmFsaWQocGZuKSkgewotCQlpZiAocGFyaXNjX3JlcXVpcmVzX2NvaGVyZW5jeSgpKQotCQkJ
-Zmx1c2hfdGxiX3BhZ2Uodm1hLCB2bWFkZHIpOworCQlmbHVzaF90bGJfcGFnZSh2bWEsIHZt
-YWRkcik7CiAJCV9fZmx1c2hfY2FjaGVfcGFnZSh2bWEsIHZtYWRkciwgUEZOX1BIWVMocGZu
-KSk7CiAJfQogfQpAQCAtNjEzLDIxICs2MDcsMzUgQEAgZmx1c2hfY2FjaGVfcGFnZShzdHJ1
-Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYSwgdW5zaWduZWQgbG9uZyB2bWFkZHIsIHVuc2lnbmVk
-IGxvbmcKIHZvaWQgZmx1c2hfa2VybmVsX3ZtYXBfcmFuZ2Uodm9pZCAqdmFkZHIsIGludCBz
-aXplKQogewogCXVuc2lnbmVkIGxvbmcgc3RhcnQgPSAodW5zaWduZWQgbG9uZyl2YWRkcjsK
-Kwl1bnNpZ25lZCBsb25nIGVuZCA9IHN0YXJ0ICsgc2l6ZTsKIAotCWlmICgodW5zaWduZWQg
-bG9uZylzaXplID4gcGFyaXNjX2NhY2hlX2ZsdXNoX3RocmVzaG9sZCkKKyNpZiBkZWZpbmVk
-KENPTkZJR19QQTIwKSB8fCAhZGVmaW5lZChDT05GSUdfU01QKQorCS8qIFRoZSBJUEkgaW50
-ZXJydXB0cyB1c2VkIGJ5IGZsdXNoX2RhdGFfY2FjaGUoKSBjYXVzZSBhIHN0YWxsCisJICAg
-aW4gdGhlIFBBIDEuMSBkeW5hbWljIERNQSBtYXBwaW5nIGNvZGUgaW4gU01QIGtlcm5lbHMu
-ICovCisJaWYgKCh1bnNpZ25lZCBsb25nKXNpemUgPj0gcGFyaXNjX2NhY2hlX2ZsdXNoX3Ro
-cmVzaG9sZCkgeworCQlmbHVzaF90bGJfa2VybmVsX3JhbmdlIChzdGFydCwgZW5kKTsKIAkJ
-Zmx1c2hfZGF0YV9jYWNoZSgpOwotCWVsc2UKLQkJZmx1c2hfa2VybmVsX2RjYWNoZV9yYW5n
-ZV9hc20oc3RhcnQsIHN0YXJ0ICsgc2l6ZSk7CisJCXJldHVybjsKKwl9CisjZW5kaWYKKwor
-CWZsdXNoX2tlcm5lbF9kY2FjaGVfcmFuZ2VfYXNtKHN0YXJ0LCBlbmQpOworCWZsdXNoX3Rs
-Yl9rZXJuZWxfcmFuZ2UgKHN0YXJ0LCBlbmQpOwogfQogRVhQT1JUX1NZTUJPTChmbHVzaF9r
-ZXJuZWxfdm1hcF9yYW5nZSk7CiAKIHZvaWQgaW52YWxpZGF0ZV9rZXJuZWxfdm1hcF9yYW5n
-ZSh2b2lkICp2YWRkciwgaW50IHNpemUpCiB7CiAJdW5zaWduZWQgbG9uZyBzdGFydCA9ICh1
-bnNpZ25lZCBsb25nKXZhZGRyOworCXVuc2lnbmVkIGxvbmcgZW5kID0gc3RhcnQgKyBzaXpl
-OwogCi0JaWYgKCh1bnNpZ25lZCBsb25nKXNpemUgPiBwYXJpc2NfY2FjaGVfZmx1c2hfdGhy
-ZXNob2xkKQorCWlmICgodW5zaWduZWQgbG9uZylzaXplID49IHBhcmlzY19jYWNoZV9mbHVz
-aF90aHJlc2hvbGQpIHsKKwkJZmx1c2hfdGxiX2tlcm5lbF9yYW5nZSAoc3RhcnQsIGVuZCk7
-CiAJCWZsdXNoX2RhdGFfY2FjaGUoKTsKLQllbHNlCi0JCWZsdXNoX2tlcm5lbF9kY2FjaGVf
-cmFuZ2VfYXNtKHN0YXJ0LCBzdGFydCArIHNpemUpOworCQlyZXR1cm47CisJfQorCisJcHVy
-Z2Vfa2VybmVsX2RjYWNoZV9yYW5nZV9hc20oc3RhcnQsIGVuZCk7CisJZmx1c2hfdGxiX2tl
-cm5lbF9yYW5nZSAoc3RhcnQsIGVuZCk7CiB9CiBFWFBPUlRfU1lNQk9MKGludmFsaWRhdGVf
-a2VybmVsX3ZtYXBfcmFuZ2UpOwpkaWZmIC0tZ2l0IGEvYXJjaC9wYXJpc2Mva2VybmVsL3Bh
-Y2FjaGUuUyBiL2FyY2gvcGFyaXNjL2tlcm5lbC9wYWNhY2hlLlMKaW5kZXggMmQ0MGM0ZmYz
-ZjY5Li42N2IwZjc1MzJlODMgMTAwNjQ0Ci0tLSBhL2FyY2gvcGFyaXNjL2tlcm5lbC9wYWNh
-Y2hlLlMKKysrIGIvYXJjaC9wYXJpc2Mva2VybmVsL3BhY2FjaGUuUwpAQCAtMTExMCw2ICsx
-MTEwLDI4IEBAIEVOVFJZX0NGSShmbHVzaF9rZXJuZWxfZGNhY2hlX3JhbmdlX2FzbSkKIAku
-cHJvY2VuZAogRU5EUFJPQ19DRkkoZmx1c2hfa2VybmVsX2RjYWNoZV9yYW5nZV9hc20pCiAK
-K0VOVFJZX0NGSShwdXJnZV9rZXJuZWxfZGNhY2hlX3JhbmdlX2FzbSkKKwkucHJvYworCS5j
-YWxsaW5mbyBOT19DQUxMUworCS5lbnRyeQorCisJbGRpbAkJTCVkY2FjaGVfc3RyaWRlLCAl
-cjEKKwlsZHcJCVIlZGNhY2hlX3N0cmlkZSglcjEpLCAlcjIzCisJbGRvCQktMSglcjIzKSwg
-JXIyMQorCUFORENNCQklcjI2LCAlcjIxLCAlcjI2CisKKzE6ICAgICAgY21wYixDT05EKDw8
-KSxuCSVyMjYsICVyMjUsMWIKKwlwZGMsbQkJJXIyMyglcjI2KQorCisJc3luYworCXN5bmNk
-bWEKKwlidgkJJXIwKCVyMikKKwlub3AKKwkuZXhpdAorCisJLnByb2NlbmQKK0VORFBST0Nf
-Q0ZJKHB1cmdlX2tlcm5lbF9kY2FjaGVfcmFuZ2VfYXNtKQorCiBFTlRSWV9DRkkoZmx1c2hf
-dXNlcl9pY2FjaGVfcmFuZ2VfYXNtKQogCS5wcm9jCiAJLmNhbGxpbmZvIE5PX0NBTExTCg==
---------------2BAE6F35268CB68C48C05E2E--
+-- 
+Meelis Roos (mroos@linux.ee)
