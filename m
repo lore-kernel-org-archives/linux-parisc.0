@@ -1,156 +1,95 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH v2] parisc: Fix ordering of cache and TLB flushes
-Date: Wed, 14 Feb 2018 19:07:51 -0500
-Message-ID: <bf8bd5f7-b875-b755-882a-750a5016c158@bell.net>
+From: ebiederm@xmission.com (Eric W. Biederman)
+Subject: Re: [PATCH 04/11] signal/parisc: Document a conflict with SI_USER with SIGFPE
+Date: Mon, 26 Feb 2018 20:19:35 -0600
+Message-ID: <87r2p7uqbs.fsf@xmission.com>
+References: <87373b6ghs.fsf@xmission.com>
+        <20180112005940.23279-4-ebiederm@xmission.com>
+        <20180112222944.GA22642@ls3530.fritz.box>
+        <87fu5s4l4b.fsf@xmission.com>
+        <68641c9e-99c6-34d3-83aa-1241bddef33c@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------FD627F9E6A6043AB9BD1BCBE"
-Cc: Helge Deller <deller@gmx.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-To: linux-parisc@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain
+Cc: linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>,
+        linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>, linux-arch@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <68641c9e-99c6-34d3-83aa-1241bddef33c@gmx.de> (Helge Deller's
+        message of "Sun, 25 Feb 2018 20:49:41 +0100")
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------FD627F9E6A6043AB9BD1BCBE
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Helge Deller <deller@gmx.de> writes:
 
-I messed up the change to flush_cache_mm() in the first version.
+> On 23.02.2018 01:15, Eric W. Biederman wrote:
+>> Helge Deller <deller@gmx.de> writes:
+>> 
+>>> * Eric W. Biederman <ebiederm@xmission.com>:
+>>>> Setting si_code to 0 results in a userspace seeing an si_code of 0.
+>>>> This is the same si_code as SI_USER.  Posix and common sense requires
+>>>> that SI_USER not be a signal specific si_code.  As such this use of 0
+>>>> for the si_code is a pretty horribly broken ABI.
+>>>>
+>>>> Further use of si_code == 0 guaranteed that copy_siginfo_to_user saw a
+>>>> value of __SI_KILL and now sees a value of SIL_KILL with the result
+>>>> that uid and pid fields are copied and which might copying the si_addr
+>>>> field by accident but certainly not by design.  Making this a very
+>>>> flakey implementation.
+>>>>
+>>>> Utilizing FPE_FIXME siginfo_layout will now return SIL_FAULT and the
+>>>> appropriate fields will reliably be copied.
+>>>>
+>>>> This bug is 13 years old and parsic machines are no longer being built
+>>>> so I don't know if it possible or worth fixing it.  But it is at least
+>>>> worth documenting this so other architectures don't make the same
+>>>> mistake.
+>>>
+>>>
+>>> I think we should fix it, even if we now break the ABI.
+>>>
+>>> It's about a "conditional trap" which needs to be handled by userspace.
+>>> I doubt there is any Linux code out which is utilizing this
+>>> parisc-specific trap.
+>>>
+>>> I'd suggest to add a new FPE trap si_code (e.g. FPE_CONDTRAP).
+>>> While at it, maybe we should include the already existing FPE_MDAOVF
+>>> from the frv architecture, so that arch/frv/include/uapi/asm/siginfo.h
+>>> can go completely.
+>>>
+>>> Suggested patch is below.
+>>>
+>>> I'm willing to test the patch below on the parisc architecture for a few
+>>> weeks. And it will break arch/x86/kernel/signal_compat.c which needs
+>>> looking at then too.
+>> 
+>> Have you managed to test this change?
+>
+> Sadly I haven't done any further testing yet.
 
-The attached change fixes the ordering of cache and TLB flushes in 
-several cases.  When we
-flush the cache using the existing PTE/TLB entries, we need to flush the 
-TLB after doing the cache
-flush.  We don't need to do this when we flush the entire instruction 
-and data caches as these
-flushes don't use the existing TLB entries.  The same is true for 
-tmpalias region flushes.
+So at this point for purposed of testing I don't think it matters which
+number FPE_CONDTRAP gets as long as it is non-zero.
+>  
+>> I am sitting looking at another new FPE si_code and if this has been tested
+>> I figure FPE_CONDTRAP should get the next available FPE si_code and the
+>> other change should get the one that follows.
+>
+> I'm fine either way. Do you have a git tree I can pull which includes
+> all your patches? I can then start testing.
 
-The flush_kernel_vmap_range() and invalidate_kernel_vmap_range() 
-routines have been
-updated.   Helge reported that using  flush_data_cache() on PA 1.1 
-causes a deadlock in the
-dynamic DMA routines in pci-dma.c in SMP kernels.  So, we have disabled 
-using the whole
-data cache flush in this case.  This fixes PA 1.1 SMP support.
+Everything finalized is in Linus's tree.  There is a patch pending
+review on linux-arch that defines FPE_FLTUNK that looks to be useful
+on several architectures.
 
-Secondly, we added a new purge_kernel_dcache_range_asm() routine to 
-pacache.S and
-use it in invalidate_kernel_vmap_range().  Nominally, purges are faster 
-than flushes as the
-cache lines don't have to be written back to memory.
+I had probably misread our earlier exchange.  I had hoped you had tested
+that FPE_CONDTRAP did not cause problems.
 
-Hopefully, this is sufficient to resolve the remaining problems due to 
-cache speculation.  So far,
-testing indicates that this is the case.  I did work up a patch using 
-tmpalias flushes, but there
-is a performance hit because we need the physical address for each page, 
-and we also need
-to sequence access to the tmpalias flush code.  This increases the 
-probability of stalls.
+If that level of testing was complete I would have given FPE_CONDTRAP
+the next FPE number and FPE_FLTUNK the one after.
 
-Signed-off-by: John David Anglin  <dave.anglin@bell.net>
+As it sounds like FPE_CONDTRAP hasn't been tested enough to know if it
+causes problems I will encourage the patches to be merged in the other
+order.
 
-
---------------FD627F9E6A6043AB9BD1BCBE
-Content-Type: text/plain; charset=UTF-8;
- name="cache-v2.d"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="cache-v2.d"
-
-ZGlmZiAtLWdpdCBhL2FyY2gvcGFyaXNjL2luY2x1ZGUvYXNtL2NhY2hlZmx1c2guaCBiL2Fy
-Y2gvcGFyaXNjL2luY2x1ZGUvYXNtL2NhY2hlZmx1c2guaAppbmRleCAzNzQyNTA4Y2M1MzQu
-LmJkNWNlMzE5MzZmNSAxMDA2NDQKLS0tIGEvYXJjaC9wYXJpc2MvaW5jbHVkZS9hc20vY2Fj
-aGVmbHVzaC5oCisrKyBiL2FyY2gvcGFyaXNjL2luY2x1ZGUvYXNtL2NhY2hlZmx1c2guaApA
-QCAtMjYsNiArMjYsNyBAQCB2b2lkIGZsdXNoX3VzZXJfaWNhY2hlX3JhbmdlX2FzbSh1bnNp
-Z25lZCBsb25nLCB1bnNpZ25lZCBsb25nKTsKIHZvaWQgZmx1c2hfa2VybmVsX2ljYWNoZV9y
-YW5nZV9hc20odW5zaWduZWQgbG9uZywgdW5zaWduZWQgbG9uZyk7CiB2b2lkIGZsdXNoX3Vz
-ZXJfZGNhY2hlX3JhbmdlX2FzbSh1bnNpZ25lZCBsb25nLCB1bnNpZ25lZCBsb25nKTsKIHZv
-aWQgZmx1c2hfa2VybmVsX2RjYWNoZV9yYW5nZV9hc20odW5zaWduZWQgbG9uZywgdW5zaWdu
-ZWQgbG9uZyk7Cit2b2lkIHB1cmdlX2tlcm5lbF9kY2FjaGVfcmFuZ2VfYXNtKHVuc2lnbmVk
-IGxvbmcsIHVuc2lnbmVkIGxvbmcpOwogdm9pZCBmbHVzaF9rZXJuZWxfZGNhY2hlX3BhZ2Vf
-YXNtKHZvaWQgKik7CiB2b2lkIGZsdXNoX2tlcm5lbF9pY2FjaGVfcGFnZSh2b2lkICopOwog
-CmRpZmYgLS1naXQgYS9hcmNoL3BhcmlzYy9rZXJuZWwvY2FjaGUuYyBiL2FyY2gvcGFyaXNj
-L2tlcm5lbC9jYWNoZS5jCmluZGV4IDE5YzBjMTQxYmMzZi4uN2MxYmRlODBhZGE0IDEwMDY0
-NAotLS0gYS9hcmNoL3BhcmlzYy9rZXJuZWwvY2FjaGUuYworKysgYi9hcmNoL3BhcmlzYy9r
-ZXJuZWwvY2FjaGUuYwpAQCAtNTM5LDEzICs1MzksMTAgQEAgdm9pZCBmbHVzaF9jYWNoZV9t
-bShzdHJ1Y3QgbW1fc3RydWN0ICptbSkKIAlzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYTsK
-IAlwZ2RfdCAqcGdkOwogCi0JLyogRmx1c2ggdGhlIFRMQiB0byBhdm9pZCBzcGVjdWxhdGlv
-biBpZiBjb2hlcmVuY3kgaXMgcmVxdWlyZWQuICovCi0JaWYgKHBhcmlzY19yZXF1aXJlc19j
-b2hlcmVuY3koKSkKLQkJZmx1c2hfdGxiX2FsbCgpOwotCiAJLyogRmx1c2hpbmcgdGhlIHdo
-b2xlIGNhY2hlIG9uIGVhY2ggY3B1IHRha2VzIGZvcmV2ZXIgb24KIAkgICBycDM0NDAsIGV0
-Yy4gIFNvLCBhdm9pZCBpdCBpZiB0aGUgbW0gaXNuJ3QgdG9vIGJpZy4gICovCiAJaWYgKG1t
-X3RvdGFsX3NpemUobW0pID49IHBhcmlzY19jYWNoZV9mbHVzaF90aHJlc2hvbGQpIHsKKwkJ
-Zmx1c2hfdGxiX2FsbCgpOwogCQlmbHVzaF9jYWNoZV9hbGwoKTsKIAkJcmV0dXJuOwogCX0K
-QEAgLTU1Myw5ICs1NTAsOSBAQCB2b2lkIGZsdXNoX2NhY2hlX21tKHN0cnVjdCBtbV9zdHJ1
-Y3QgKm1tKQogCWlmIChtbS0+Y29udGV4dCA9PSBtZnNwKDMpKSB7CiAJCWZvciAodm1hID0g
-bW0tPm1tYXA7IHZtYTsgdm1hID0gdm1hLT52bV9uZXh0KSB7CiAJCQlmbHVzaF91c2VyX2Rj
-YWNoZV9yYW5nZV9hc20odm1hLT52bV9zdGFydCwgdm1hLT52bV9lbmQpOwotCQkJaWYgKCh2
-bWEtPnZtX2ZsYWdzICYgVk1fRVhFQykgPT0gMCkKLQkJCQljb250aW51ZTsKLQkJCWZsdXNo
-X3VzZXJfaWNhY2hlX3JhbmdlX2FzbSh2bWEtPnZtX3N0YXJ0LCB2bWEtPnZtX2VuZCk7CisJ
-CQlpZiAodm1hLT52bV9mbGFncyAmIFZNX0VYRUMpCisJCQkJZmx1c2hfdXNlcl9pY2FjaGVf
-cmFuZ2VfYXNtKHZtYS0+dm1fc3RhcnQsIHZtYS0+dm1fZW5kKTsKKwkJCWZsdXNoX3RsYl9y
-YW5nZSh2bWEsIHZtYS0+dm1fc3RhcnQsIHZtYS0+dm1fZW5kKTsKIAkJfQogCQlyZXR1cm47
-CiAJfQpAQCAtNTgxLDIxICs1NzgsMTggQEAgdm9pZCBmbHVzaF9jYWNoZV9tbShzdHJ1Y3Qg
-bW1fc3RydWN0ICptbSkKIHZvaWQgZmx1c2hfY2FjaGVfcmFuZ2Uoc3RydWN0IHZtX2FyZWFf
-c3RydWN0ICp2bWEsCiAJCXVuc2lnbmVkIGxvbmcgc3RhcnQsIHVuc2lnbmVkIGxvbmcgZW5k
-KQogewotCUJVR19PTighdm1hLT52bV9tbS0+Y29udGV4dCk7Ci0KLQkvKiBGbHVzaCB0aGUg
-VExCIHRvIGF2b2lkIHNwZWN1bGF0aW9uIGlmIGNvaGVyZW5jeSBpcyByZXF1aXJlZC4gKi8K
-LQlpZiAocGFyaXNjX3JlcXVpcmVzX2NvaGVyZW5jeSgpKQorCWlmICgoZW5kIC0gc3RhcnQp
-ID49IHBhcmlzY19jYWNoZV9mbHVzaF90aHJlc2hvbGQpIHsKIAkJZmx1c2hfdGxiX3Jhbmdl
-KHZtYSwgc3RhcnQsIGVuZCk7Ci0KLQlpZiAoKGVuZCAtIHN0YXJ0KSA+PSBwYXJpc2NfY2Fj
-aGVfZmx1c2hfdGhyZXNob2xkCi0JICAgIHx8IHZtYS0+dm1fbW0tPmNvbnRleHQgIT0gbWZz
-cCgzKSkgewogCQlmbHVzaF9jYWNoZV9hbGwoKTsKIAkJcmV0dXJuOwogCX0KIAorCUJVR19P
-Tih2bWEtPnZtX21tLT5jb250ZXh0ICE9IG1mc3AoMykpOworCiAJZmx1c2hfdXNlcl9kY2Fj
-aGVfcmFuZ2VfYXNtKHN0YXJ0LCBlbmQpOwogCWlmICh2bWEtPnZtX2ZsYWdzICYgVk1fRVhF
-QykKIAkJZmx1c2hfdXNlcl9pY2FjaGVfcmFuZ2VfYXNtKHN0YXJ0LCBlbmQpOworCWZsdXNo
-X3RsYl9yYW5nZSh2bWEsIHN0YXJ0LCBlbmQpOwogfQogCiB2b2lkCkBAIC02MDQsOCArNTk4
-LDcgQEAgZmx1c2hfY2FjaGVfcGFnZShzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYSwgdW5z
-aWduZWQgbG9uZyB2bWFkZHIsIHVuc2lnbmVkIGxvbmcKIAlCVUdfT04oIXZtYS0+dm1fbW0t
-PmNvbnRleHQpOwogCiAJaWYgKHBmbl92YWxpZChwZm4pKSB7Ci0JCWlmIChwYXJpc2NfcmVx
-dWlyZXNfY29oZXJlbmN5KCkpCi0JCQlmbHVzaF90bGJfcGFnZSh2bWEsIHZtYWRkcik7CisJ
-CWZsdXNoX3RsYl9wYWdlKHZtYSwgdm1hZGRyKTsKIAkJX19mbHVzaF9jYWNoZV9wYWdlKHZt
-YSwgdm1hZGRyLCBQRk5fUEhZUyhwZm4pKTsKIAl9CiB9CkBAIC02MTMsMjEgKzYwNiwzNSBA
-QCBmbHVzaF9jYWNoZV9wYWdlKHN0cnVjdCB2bV9hcmVhX3N0cnVjdCAqdm1hLCB1bnNpZ25l
-ZCBsb25nIHZtYWRkciwgdW5zaWduZWQgbG9uZwogdm9pZCBmbHVzaF9rZXJuZWxfdm1hcF9y
-YW5nZSh2b2lkICp2YWRkciwgaW50IHNpemUpCiB7CiAJdW5zaWduZWQgbG9uZyBzdGFydCA9
-ICh1bnNpZ25lZCBsb25nKXZhZGRyOworCXVuc2lnbmVkIGxvbmcgZW5kID0gc3RhcnQgKyBz
-aXplOwogCi0JaWYgKCh1bnNpZ25lZCBsb25nKXNpemUgPiBwYXJpc2NfY2FjaGVfZmx1c2hf
-dGhyZXNob2xkKQorI2lmIGRlZmluZWQoQ09ORklHX1BBMjApIHx8ICFkZWZpbmVkKENPTkZJ
-R19TTVApCisJLyogVGhlIElQSSBpbnRlcnJ1cHRzIHVzZWQgYnkgZmx1c2hfZGF0YV9jYWNo
-ZSgpIGNhdXNlIGEgc3RhbGwKKwkgICBpbiB0aGUgUEEgMS4xIGR5bmFtaWMgRE1BIG1hcHBp
-bmcgY29kZSBpbiBTTVAga2VybmVscy4gKi8KKwlpZiAoKHVuc2lnbmVkIGxvbmcpc2l6ZSA+
-PSBwYXJpc2NfY2FjaGVfZmx1c2hfdGhyZXNob2xkKSB7CisJCWZsdXNoX3RsYl9rZXJuZWxf
-cmFuZ2UgKHN0YXJ0LCBlbmQpOwogCQlmbHVzaF9kYXRhX2NhY2hlKCk7Ci0JZWxzZQotCQlm
-bHVzaF9rZXJuZWxfZGNhY2hlX3JhbmdlX2FzbShzdGFydCwgc3RhcnQgKyBzaXplKTsKKwkJ
-cmV0dXJuOworCX0KKyNlbmRpZgorCisJZmx1c2hfa2VybmVsX2RjYWNoZV9yYW5nZV9hc20o
-c3RhcnQsIGVuZCk7CisJZmx1c2hfdGxiX2tlcm5lbF9yYW5nZSAoc3RhcnQsIGVuZCk7CiB9
-CiBFWFBPUlRfU1lNQk9MKGZsdXNoX2tlcm5lbF92bWFwX3JhbmdlKTsKIAogdm9pZCBpbnZh
-bGlkYXRlX2tlcm5lbF92bWFwX3JhbmdlKHZvaWQgKnZhZGRyLCBpbnQgc2l6ZSkKIHsKIAl1
-bnNpZ25lZCBsb25nIHN0YXJ0ID0gKHVuc2lnbmVkIGxvbmcpdmFkZHI7CisJdW5zaWduZWQg
-bG9uZyBlbmQgPSBzdGFydCArIHNpemU7CiAKLQlpZiAoKHVuc2lnbmVkIGxvbmcpc2l6ZSA+
-IHBhcmlzY19jYWNoZV9mbHVzaF90aHJlc2hvbGQpCisJaWYgKCh1bnNpZ25lZCBsb25nKXNp
-emUgPj0gcGFyaXNjX2NhY2hlX2ZsdXNoX3RocmVzaG9sZCkgeworCQlmbHVzaF90bGJfa2Vy
-bmVsX3JhbmdlIChzdGFydCwgZW5kKTsKIAkJZmx1c2hfZGF0YV9jYWNoZSgpOwotCWVsc2UK
-LQkJZmx1c2hfa2VybmVsX2RjYWNoZV9yYW5nZV9hc20oc3RhcnQsIHN0YXJ0ICsgc2l6ZSk7
-CisJCXJldHVybjsKKwl9CisKKwlwdXJnZV9rZXJuZWxfZGNhY2hlX3JhbmdlX2FzbShzdGFy
-dCwgZW5kKTsKKwlmbHVzaF90bGJfa2VybmVsX3JhbmdlIChzdGFydCwgZW5kKTsKIH0KIEVY
-UE9SVF9TWU1CT0woaW52YWxpZGF0ZV9rZXJuZWxfdm1hcF9yYW5nZSk7CmRpZmYgLS1naXQg
-YS9hcmNoL3BhcmlzYy9rZXJuZWwvcGFjYWNoZS5TIGIvYXJjaC9wYXJpc2Mva2VybmVsL3Bh
-Y2FjaGUuUwppbmRleCAyZDQwYzRmZjNmNjkuLjY3YjBmNzUzMmU4MyAxMDA2NDQKLS0tIGEv
-YXJjaC9wYXJpc2Mva2VybmVsL3BhY2FjaGUuUworKysgYi9hcmNoL3BhcmlzYy9rZXJuZWwv
-cGFjYWNoZS5TCkBAIC0xMTEwLDYgKzExMTAsMjggQEAgRU5UUllfQ0ZJKGZsdXNoX2tlcm5l
-bF9kY2FjaGVfcmFuZ2VfYXNtKQogCS5wcm9jZW5kCiBFTkRQUk9DX0NGSShmbHVzaF9rZXJu
-ZWxfZGNhY2hlX3JhbmdlX2FzbSkKIAorRU5UUllfQ0ZJKHB1cmdlX2tlcm5lbF9kY2FjaGVf
-cmFuZ2VfYXNtKQorCS5wcm9jCisJLmNhbGxpbmZvIE5PX0NBTExTCisJLmVudHJ5CisKKwls
-ZGlsCQlMJWRjYWNoZV9zdHJpZGUsICVyMQorCWxkdwkJUiVkY2FjaGVfc3RyaWRlKCVyMSks
-ICVyMjMKKwlsZG8JCS0xKCVyMjMpLCAlcjIxCisJQU5EQ00JCSVyMjYsICVyMjEsICVyMjYK
-KworMTogICAgICBjbXBiLENPTkQoPDwpLG4JJXIyNiwgJXIyNSwxYgorCXBkYyxtCQklcjIz
-KCVyMjYpCisKKwlzeW5jCisJc3luY2RtYQorCWJ2CQklcjAoJXIyKQorCW5vcAorCS5leGl0
-CisKKwkucHJvY2VuZAorRU5EUFJPQ19DRkkocHVyZ2Vfa2VybmVsX2RjYWNoZV9yYW5nZV9h
-c20pCisKIEVOVFJZX0NGSShmbHVzaF91c2VyX2ljYWNoZV9yYW5nZV9hc20pCiAJLnByb2MK
-IAkuY2FsbGluZm8gTk9fQ0FMTFMK
---------------FD627F9E6A6043AB9BD1BCBE--
+Eric
