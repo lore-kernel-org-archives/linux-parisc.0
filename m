@@ -1,50 +1,113 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH v3 02/10] include: Move compat_timespec/ timeval
- to compat_time.h
-Date: Sun, 4 Mar 2018 21:45:54 +0100
-Message-ID: <e417db45-d400-3513-3897-7aefa9889711@gmx.de>
+From: Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: Re: [PATCH v3 02/10] include: Move compat_timespec/ timeval to
+ compat_time.h
+Date: Mon, 5 Mar 2018 10:30:26 +0100
+Message-ID: <c6fb6676-a8d3-8893-660c-2b9899c5d5ab@de.ibm.com>
 References: <20180116021818.24791-1-deepa.kernel@gmail.com>
  <20180116021818.24791-3-deepa.kernel@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: mark.rutland@arm.com, linux-mips@linux-mips.org, peterz@infradead.org,
- benh@kernel.crashing.org, heiko.carstens@de.ibm.com, paulus@samba.org,
- hpa@zytor.com, sparclinux@vger.kernel.org, devel@driverdev.osuosl.org,
- linux-s390@vger.kernel.org, y2038@lists.linaro.org, mpe@ellerman.id.au,
- ubraun@linux.vnet.ibm.com, x86@kernel.org, sebott@linux.vnet.ibm.com,
- jejb@parisc-linux.org, will.deacon@arm.com, borntraeger@de.ibm.com,
- mingo@redhat.com, oprofile-list@lists.sf.net, catalin.marinas@arm.com,
- rric@kernel.org, cmetcalf@mellanox.com, arnd@arndb.de,
- oberpar@linux.vnet.ibm.com, acme@kernel.org, jwi@linux.vnet.ibm.com,
- rostedt@goodmis.org, gerald.schaefer@de.ibm.com, linux-parisc@vger.kernel.org,
- gregkh@linuxfoundation.org, cohuck@redhat.com, linux-kernel@vger.kernel.org,
- ralf@linux-mips.org, hoeppner@linux.vnet.ibm.com, sth@linux.vnet.ibm.com,
- schwidefsky@de.ibm.com, linuxppc-dev
+Content-Type: text/plain; charset=utf-8
+Cc: linux-kernel@vger.kernel.org, arnd@arndb.de,
+        y2038@lists.linaro.org, acme@kernel.org, benh@kernel.crashing.org,
+        catalin.marinas@arm.com, cmetcalf@mellanox.com, cohuck@redhat.com,
+        davem@davemloft.net, deller@gmx.de, devel@driverdev.osuosl.org,
+        gerald.schaefer@de.ibm.com, gregkh@linuxfoundation.org,
+        heiko.carstens@de.ibm.com, hoeppner@linux.vnet.ibm.com,
+        hpa@zytor.com, jejb@parisc-linux.org, jwi@linux.vnet.ibm.com,
+        linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, mpe@ellerman.id.au,
+        oberpar@linux.vnet.ibm.com, oprofile-list@lists.sf.net,
+        paulus@samba.org, peterz@infradead.org, ralf@linux-mips.org,
+        rostedt@goodmis.org, rric@kernel.org, schwidefsky@de.ibm.com,
+        sebott@linux.vnet.ib
 To: Deepa Dinamani <deepa.kernel@gmail.com>, tglx@linutronix.de,
- john.stultz@linaro.org
-Return-path: <y2038-bounces@lists.linaro.org>
+        john.stultz@linaro.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180116021818.24791-3-deepa.kernel@gmail.com>
-List-Unsubscribe: <https://lists.linaro.org/mailman/options/y2038>,
- <mailto:y2038-request@lists.linaro.org?subject=unsubscribe>
-List-Archive: <http://lists.linaro.org/pipermail/y2038/>
-List-Post: <mailto:y2038@lists.linaro.org>
-List-Help: <mailto:y2038-request@lists.linaro.org?subject=help>
-List-Subscribe: <https://lists.linaro.org/mailman/listinfo/y2038>,
- <mailto:y2038-request@lists.linaro.org?subject=subscribe>
-Errors-To: y2038-bounces@lists.linaro.org
-List-ID: <linux-parisc.vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-T24gMTYuMDEuMjAxOCAwMzoxOCwgRGVlcGEgRGluYW1hbmkgd3JvdGU6Cj4gQWxsIHRoZSBjdXJy
-ZW50IGFyY2hpdGVjdHVyZSBzcGVjaWZpYyBkZWZpbmVzIGZvciB0aGVzZQo+IGFyZSB0aGUgc2Ft
-ZS4gUmVmYWN0b3IgdGhlc2UgY29tbW9uIGRlZmluZXMgdG8gYSBjb21tb24KPiBoZWFkZXIgZmls
-ZS4KPiAKPiBUaGUgbmV3IGNvbW1vbiBsaW51eC9jb21wYXRfdGltZS5oIGlzIGFsc28gdXNlZnVs
-IGFzIGl0Cj4gd2lsbCBldmVudHVhbGx5IGJlIHVzZWQgdG8gaG9sZCBhbGwgdGhlIGRlZmluZXMg
-dGhhdAo+IGFyZSBuZWVkZWQgZm9yIGNvbXBhdCB0aW1lIHR5cGVzIHRoYXQgc3VwcG9ydCBub24g
-eTIwMzgKPiBzYWZlIHR5cGVzLiBOZXcgYXJjaGl0ZWN0dXJlcyBuZWVkIG5vdCBoYXZlIHRvIGRl
-ZmluZSB0aGVzZQo+IG5ldyB0eXBlcyBhcyB0aGV5IHdpbGwgb25seSB1c2UgbmV3IHkyMDM4IHNh
-ZmUgc3lzY2FsbHMuCj4gVGhpcyBmaWxlIGNhbiBiZSBkZWxldGVkIGFmdGVyIHkyMDM4IHdoZW4g
-d2Ugc3RvcCBzdXBwb3J0aW5nCj4gbm9uIHkyMDM4IHNhZmUgc3lzY2FsbHMuCgpGb3IgcGFyaXNj
-OgoKQWNrZWQtYnk6IEhlbGdlIERlbGxlciA8ZGVsbGVyQGdteC5kZT4gIyBwYXJpc2MKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KWTIwMzggbWFpbGluZyBs
-aXN0ClkyMDM4QGxpc3RzLmxpbmFyby5vcmcKaHR0cHM6Ly9saXN0cy5saW5hcm8ub3JnL21haWxt
-YW4vbGlzdGluZm8veTIwMzgK
+On 01/16/2018 03:18 AM, Deepa Dinamani wrote:
+> All the current architecture specific defines for these
+> are the same. Refactor these common defines to a common
+> header file.
+> 
+> The new common linux/compat_time.h is also useful as it
+> will eventually be used to hold all the defines that
+> are needed for compat time types that support non y2038
+> safe types. New architectures need not have to define these
+> new types as they will only use new y2038 safe syscalls.
+> This file can be deleted after y2038 when we stop supporting
+> non y2038 safe syscalls.
+
+You are now include a <linux/*.h> from several asm files
+(
+ arch/arm64/include/asm/stat.h   
+ arch/s390/include/asm/elf.h     
+ arch/x86/include/asm/ftrace.h   
+ arch/x86/include/asm/sys_ia32.h 
+)
+It works, and it is done in many places, but it looks somewhat weird.
+Would it make sense to have an asm-generic/compate-time.h instead? Asking for
+opinions here.
+
+> 
+> The patch also requires an operation similar to:
+> 
+> git grep "asm/compat\.h" | cut -d ":" -f 1 |  xargs -n 1 sed -i -e "s%asm/compat.h%linux/compat.h%g"
+
+some comments from the s390 perspective:
+
+> --- a/arch/s390/hypfs/hypfs_sprp.c
+> +++ b/arch/s390/hypfs/hypfs_sprp.c
+ok.
+[...]
+> --- a/arch/s390/include/asm/elf.h
+> +++ b/arch/s390/include/asm/elf.h
+> @@ -126,7 +126,7 @@
+>   */
+> 
+>  #include <asm/ptrace.h>
+> -#include <asm/compat.h>
+> +#include <linux/compat.h>
+>  #include <asm/syscall.h>
+>  #include <asm/user.h>
+
+see above.
+[...]
+> --- a/arch/s390/kvm/priv.c
+> +++ b/arch/s390/kvm/priv.c
+ok
+> --- a/arch/s390/pci/pci_clp.c
+> +++ b/arch/s390/pci/pci_clp.c
+ok
+> --- a/drivers/s390/block/dasd_ioctl.c
+> +++ b/drivers/s390/block/dasd_ioctl.c
+ok 
+> --- a/drivers/s390/char/fs3270.c
+> +++ b/drivers/s390/char/fs3270.c
+ok
+> --- a/drivers/s390/char/sclp_ctl.c
+> +++ b/drivers/s390/char/sclp_ctl.c
+ok
+> --- a/drivers/s390/char/vmcp.c
+> +++ b/drivers/s390/char/vmcp.c
+ok
+> --- a/drivers/s390/cio/chsc_sch.c
+> +++ b/drivers/s390/cio/chsc_sch.c
+ok
+
+> --- a/drivers/s390/net/qeth_core_main.c
+> +++ b/drivers/s390/net/qeth_core_main.c
+> @@ -32,7 +32,7 @@
+>  #include <asm/chpid.h>
+>  #include <asm/io.h>
+>  #include <asm/sysinfo.h>
+> -#include <asm/compat.h>
+> +#include <linux/compat.h>
+>  #include <asm/diag.h>
+>  #include <asm/cio.h>
+>  #include <asm/ccwdev.h>
+
+Can you move that into the other includes (where all the other <linux/*> includes are.
