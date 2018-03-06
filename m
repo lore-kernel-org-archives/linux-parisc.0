@@ -1,46 +1,104 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: time: stop validating rtc_time in .read_time
-Date: Tue, 6 Mar 2018 22:20:26 +0100
-Message-ID: <c80cb9e7-6a07-bc12-5758-d2b642a315dc@gmx.de>
-References: <20180221214023.1045-1-alexandre.belloni@bootlin.com>
+From: Deepa Dinamani <deepa.kernel@gmail.com>
+Subject: Re: [PATCH v3 02/10] include: Move compat_timespec/ timeval to
+ compat_time.h
+Date: Tue, 6 Mar 2018 14:58:45 -0800
+Message-ID: <CABeXuvrdPV0q4ufuxEnqT6T3b8pCT5RLUfuAZ_cwXr0it8gj0Q@mail.gmail.com>
+References: <20180116021818.24791-1-deepa.kernel@gmail.com>
+ <20180116021818.24791-3-deepa.kernel@gmail.com>
+ <c6fb6676-a8d3-8893-660c-2b9899c5d5ab@de.ibm.com>
+ <CAK8P3a0Gm1L70EaFzJBk0drRNKtX0FE22BHOSrXBgH1wNfKZ5A@mail.gmail.com>
+ <d8480da9-afe9-8a43-9c47-50919215a2de@de.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: "James E . J . Bottomley" <jejb@parisc-linux.org>,
-        linux-parisc@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180221214023.1045-1-alexandre.belloni@bootlin.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Heiko Carstens <heiko.carstens@de.ibm.com>, Paul Mackerras <paulus@samba.org>,
+ "H. Peter Anvin" <hpa@zytor.com>, sparclinux <sparclinux@vger.kernel.org>,
+ devel@driverdev.osuosl.org, linux-s390 <linux-s390@vger.kernel.org>,
+ y2038 Mailman List <y2038@lists.linaro.org>, Helge Deller <deller@gmx.de>,
+ the arch/x86 maintainers <x86@kernel.org>, sebott@linux.vnet.ibm.com,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>, Ingo Molnar <mingo@redhat.com>,
+ oprofile-list@lists.sf.net, Peter Oberparleiter <oberpar@linux.vnet.ibm.com>,
+ Robert Richter <rric@kernel.org>, Chris Metcalf <cmetcalf@mellanox.com>,
+ Arnd Bergmann <arnd@arndb.de>, Will Deacon <will.deacon@arm.com>,
+ Arnaldo Carvalho de Melo <acme@ke
+To: Christian Borntraeger <borntraeger@de.ibm.com>
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+In-Reply-To: <d8480da9-afe9-8a43-9c47-50919215a2de@de.ibm.com>
+List-Id: Linux Driver Project Developer List
+ <driverdev-devel.linuxdriverproject.org>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
 
-On 21.02.2018 22:40, Alexandre Belloni wrote:
-> The RTC core is always calling rtc_valid_tm after the read_time callback.
-> It is not necessary to call it just before returning from the callback.
-> 
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+On Tue, Mar 6, 2018 at 4:48 AM, Christian Borntraeger
+<borntraeger@de.ibm.com> wrote:
+>
+>
+> On 03/06/2018 01:46 PM, Arnd Bergmann wrote:
+>> On Mon, Mar 5, 2018 at 10:30 AM, Christian Borntraeger
+>> <borntraeger@de.ibm.com> wrote:
+>>> On 01/16/2018 03:18 AM, Deepa Dinamani wrote:
+>>>> All the current architecture specific defines for these
+>>>> are the same. Refactor these common defines to a common
+>>>> header file.
+>>>>
+>>>> The new common linux/compat_time.h is also useful as it
+>>>> will eventually be used to hold all the defines that
+>>>> are needed for compat time types that support non y2038
+>>>> safe types. New architectures need not have to define these
+>>>> new types as they will only use new y2038 safe syscalls.
+>>>> This file can be deleted after y2038 when we stop supporting
+>>>> non y2038 safe syscalls.
+>>>
+>>> You are now include a <linux/*.h> from several asm files
+>>> (
+>>>  arch/arm64/include/asm/stat.h
+>>>  arch/s390/include/asm/elf.h
+>>>  arch/x86/include/asm/ftrace.h
+>>>  arch/x86/include/asm/sys_ia32.h
+>>> )
+>>> It works, and it is done in many places, but it looks somewhat weird.
+>>> Would it make sense to have an asm-generic/compate-time.h instead? Asking for
+>>> opinions here.
+>>
+>> I don't think we have such a rule. If a header file is common to all
+>> architectures (i.e. no architecture uses a different implementation),
+>> it should be in include/linux rather than include/asm-generic, regardless
+>> of whether it can be used by assembler files or not.
+>>
+>>>> --- a/drivers/s390/net/qeth_core_main.c
+>>>> +++ b/drivers/s390/net/qeth_core_main.c
+>>>> @@ -32,7 +32,7 @@
+>>>>  #include <asm/chpid.h>
+>>>>  #include <asm/io.h>
+>>>>  #include <asm/sysinfo.h>
+>>>> -#include <asm/compat.h>
+>>>> +#include <linux/compat.h>
+>>>>  #include <asm/diag.h>
+>>>>  #include <asm/cio.h>
+>>>>  #include <asm/ccwdev.h>
+>>>
+>>> Can you move that into the other includes (where all the other <linux/*> includes are.
+>>
+>> Good catch, this is definitely a rule we have ;-)
+>
+> FWIW, this was also broken for
+> arch/x86/include/asm/sys_ia32.h
 
-Acked-by: Helge Deller <deller@gmx.de>
+The reason that this was done this way is because of the sed script
+mentioned in the commit text.
+I was trying to make minimal change apart from the script so that we
+don't have other changes like moving the lines to keep the patch
+simpler.
+I will fix this by hand since this is preferred.
+I will post an update.
 
-Thanks!
-Helge
-
-
-> ---
->  arch/parisc/kernel/time.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
-> index 4b8fd6dc22da..f2890bd240f8 100644
-> --- a/arch/parisc/kernel/time.c
-> +++ b/arch/parisc/kernel/time.c
-> @@ -173,7 +173,7 @@ static int rtc_generic_get_time(struct device *dev, struct rtc_time *tm)
->  
->  	/* we treat tod_sec as unsigned, so this can work until year 2106 */
->  	rtc_time64_to_tm(tod_data.tod_sec, tm);
-> -	return rtc_valid_tm(tm);
-> +	return 0;
->  }
->  
->  static int rtc_generic_set_time(struct device *dev, struct rtc_time *tm)
-> 
+-Deepa
