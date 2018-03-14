@@ -1,16 +1,17 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v5 00/10] posix_clocks: Prepare syscalls for 64 bit time_t
- conversion
-Date: Wed, 14 Mar 2018 17:12:44 +0100
-Message-ID: <CAK8P3a3hbD=-P1wBwXEOnMdewGsUpZPERBHv6wo+3qqDkZD1qg@mail.gmail.com>
-References: <20180314040333.3291-1-deepa.kernel@gmail.com>
+Subject: Re: [Y2038] [PATCH v4 02/10] include: Move compat_timespec/ timeval
+ to compat_time.h
+Date: Wed, 14 Mar 2018 21:52:21 +0100
+Message-ID: <CAK8P3a1fxWAK94GH0cpzh6CHXgL4uJuDNCGpdJen5ib1HH1xoA@mail.gmail.com>
+References: <20180312175307.11032-3-deepa.kernel@gmail.com>
+ <201803132313.a4R8Y434%fengguang.wu@intel.com>
+ <CABeXuvqNKfuvffU24Xydixv6Ro8R=2nAH4bruzx0AW=ax-6yOQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Cc: Mark Rutland <mark.rutland@arm.com>,
  "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
  Peter Zijlstra <peterz@infradead.org>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Stefan Haberland <sth@linux.vnet.ibm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
  Heiko Carstens <heiko.carstens@de.ibm.com>, Paul Mackerras <paulus@samba.org>,
  "H. Peter Anvin" <hpa@zytor.com>, sparclinux <sparclinux@vger.kernel.org>,
  devel@driverdev.osuosl.org, linux-s390 <linux-s390@vger.kernel.org>,
@@ -20,11 +21,11 @@ Cc: Mark Rutland <mark.rutland@arm.com>,
  "James E.J. Bottomley" <jejb@parisc-linux.org>,
  Will Deacon <will.deacon@arm.com>,
  Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>,
- oprofile-list@lists.sf.net, Catalin Marinas <catalin.marinas@arm.com>,
- linu
+ oprofile-list@lists.sf.net, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Robert Richter <rric@kernel.org>, Chris Metcalf
 To: Deepa Dinamani <deepa.kernel@gmail.com>
 Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-In-Reply-To: <20180314040333.3291-1-deepa.kernel@gmail.com>
+In-Reply-To: <CABeXuvqNKfuvffU24Xydixv6Ro8R=2nAH4bruzx0AW=ax-6yOQ@mail.gmail.com>
 List-Id: Linux Driver Project Developer List
  <driverdev-devel.linuxdriverproject.org>
 List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
@@ -36,52 +37,59 @@ List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driver
  <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
 Errors-To: driverdev-devel-bounces@linuxdriverproject.org
 
-On Wed, Mar 14, 2018 at 5:03 AM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
-> The series is a preparation series for individual architectures
-> to use 64 bit time_t syscalls in compat and 32 bit emulation modes.
+On Wed, Mar 14, 2018 at 4:50 AM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
+> The file arch/arm64/kernel/process.c needs asm/compat.h also to be
+> included directly since this is included conditionally from
+> include/compat.h. This does seem to be typical of arm64 as I was not
+> completely able to get rid of asm/compat.h includes for arm64 in this
+> series. My plan is to have separate patches to get rid of asm/compat.h
+> includes for the architectures that are not straight forward to keep
+> this series simple.
+> I will fix this and update the series.
 >
-> This is a follow up to the series Arnd Bergmann posted:
-> https://sourceware.org/ml/libc-alpha/2015-05/msg00070.html [1]
->
-> Thomas, Arnd, this seems ready to be merged now.
-> Can you help get this merged?
->
-> Big picture is as per the lwn article:
-> https://lwn.net/Articles/643234/ [2]
->
-> The series is directed at converting posix clock syscalls:
-> clock_gettime, clock_settime, clock_getres and clock_nanosleep
-> to use a new data structure __kernel_timespec at syscall boundaries.
-> __kernel_timespec maintains 64 bit time_t across all execution modes.
->
-> vdso will be handled as part of each architecture when they enable
-> support for 64 bit time_t.
->
-> The compat syscalls are repurposed to provide backward compatibility
-> by using them as native syscalls as well for 32 bit architectures.
-> They will continue to use timespec at syscall boundaries.
->
-> CONFIG_64_BIT_TIME controls whether the syscalls use __kernel_timespec
-> or timespec at syscall boundaries.
->
-> The series does the following:
-> 1. Enable compat syscalls on 32 bit architectures.
-> 2. Add a new __kernel_timespec type to be used as the data structure
->    for all the new syscalls.
-> 3. Add new config CONFIG_64BIT_TIME(intead of the CONFIG_COMPAT_TIME in
->    [1] and [2] to switch to new definition of __kernel_timespec. It is
->    the same as struct timespec otherwise.
-> 4. Add new CONFIG_32BIT_TIME to conditionally compile compat syscalls.
 
-I've applied all 10 patches to my y2038 git branch [1], which is part
-of linux-next,
-to give it a little wider testing. If everything goes well, I'd send a
-pull request to
-Thomas next week so he can integrate it into tip from there, or (if he prefers)
-send it directly to Linus in the merge window.
+I ran across the same thing in two more files during randconfig testing on
+arm64 now, adding this fixup on top for the moment, but maybe there
+is a better way:
 
-Thanks a lot for your persistence and your work on this!
+commit 4f3e9e1211799a79b201a1af309a1ec3864147ec
+Author: Arnd Bergmann <arnd@arndb.de>
+Date:   Wed Mar 14 18:23:16 2018 +0100
 
-      Arnd
+    arm64: fix perf_regs.c
 
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git#y2038
+    arch/arm64/kernel/perf_regs.c: In function 'perf_reg_abi':
+    arch/arm64/kernel/perf_regs.c:50:6: error: implicit declaration of
+function 'is_compat_thread'; did you mean 'is_compat_task'?
+[-Werror=implicit-function-declaration]
+    arch/arm64/kernel/hw_breakpoint.c: In function 'is_compat_bp':
+    arch/arm64/kernel/hw_breakpoint.c:182:16: error: implicit
+declaration of function 'is_compat_thread'; did you mean
+'is_compat_task'? [-Werror=implicit-function-declaration]
+
+    Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+diff --git a/arch/arm64/kernel/hw_breakpoint.c
+b/arch/arm64/kernel/hw_breakpoint.c
+index 413dbe530da8..74bb56f656ef 100644
+--- a/arch/arm64/kernel/hw_breakpoint.c
++++ b/arch/arm64/kernel/hw_breakpoint.c
+@@ -30,6 +30,7 @@
+ #include <linux/smp.h>
+ #include <linux/uaccess.h>
+
++#include <asm/compat.h>
+ #include <asm/current.h>
+ #include <asm/debug-monitors.h>
+ #include <asm/hw_breakpoint.h>
+diff --git a/arch/arm64/kernel/perf_regs.c b/arch/arm64/kernel/perf_regs.c
+index 0bbac612146e..1b463a4efe49 100644
+--- a/arch/arm64/kernel/perf_regs.c
++++ b/arch/arm64/kernel/perf_regs.c
+@@ -6,6 +6,7 @@
+ #include <linux/bug.h>
+ #include <linux/sched/task_stack.h>
+
++#include <asm/compat.h>
+ #include <asm/perf_regs.h>
+ #include <asm/ptrace.h>
