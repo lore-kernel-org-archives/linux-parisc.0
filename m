@@ -1,16 +1,16 @@
 From: Deepa Dinamani <deepa.kernel@gmail.com>
-Subject: Re: [Y2038] [PATCH v4 02/10] include: Move compat_timespec/ timeval
- to compat_time.h
-Date: Tue, 13 Mar 2018 20:50:31 -0700
-Message-ID: <CABeXuvqNKfuvffU24Xydixv6Ro8R=2nAH4bruzx0AW=ax-6yOQ@mail.gmail.com>
+Subject: Re: [PATCH v4 02/10] include: Move compat_timespec/ timeval to
+ compat_time.h
+Date: Tue, 13 Mar 2018 20:56:19 -0700
+Message-ID: <CABeXuvp617xkFgMDz8WR_=e6tj2d5LDpF56R-iXCOAqM=tdm+A@mail.gmail.com>
 References: <20180312175307.11032-3-deepa.kernel@gmail.com>
- <201803132313.a4R8Y434%fengguang.wu@intel.com>
+ <201803132351.1SZJ68nV%fengguang.wu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Cc: Mark Rutland <mark.rutland@arm.com>,
  "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
  Peter Zijlstra <peterz@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
  Heiko Carstens <heiko.carstens@de.ibm.com>, Paul Mackerras <paulus@samba.org>,
  "H. Peter Anvin" <hpa@zytor.com>, sparclinux <sparclinux@vger.kernel.org>,
  devel@driverdev.osuosl.org, linux-s390 <linux-s390@vger.kernel.org>,
@@ -18,13 +18,13 @@ Cc: Mark Rutland <mark.rutland@arm.com>,
  Michael Ellerman <mpe@ellerman.id.au>, Helge Deller <deller@gmx.de>,
  the arch/x86 maintainers <x86@kernel.org>, sebott@linux.vnet.ibm.com,
  "James E.J. Bottomley" <jejb@parisc-linux.org>,
- Will Deacon <will.deacon@arm.com>,
  Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>,
- oprofile-list@lists.sf.net, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Robert Richter <rric@kernel.org>, Chris Metcalf
+ oprofile-list@lists.sf.net, Catalin Marinas <catalin.marinas@arm.com>,
+ Peter Oberparleiter <oberpar@linux.vnet.ibm.com>,
+ Robert Richter <rric@kernel.org>,
 To: kbuild test robot <lkp@intel.com>
 Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-In-Reply-To: <201803132313.a4R8Y434%fengguang.wu@intel.com>
+In-Reply-To: <201803132351.1SZJ68nV%fengguang.wu@intel.com>
 List-Id: Linux Driver Project Developer List
  <driverdev-devel.linuxdriverproject.org>
 List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
@@ -36,19 +36,19 @@ List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driver
  <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
 Errors-To: driverdev-devel-bounces@linuxdriverproject.org
 
-The file arch/arm64/kernel/process.c needs asm/compat.h also to be
-included directly since this is included conditionally from
-include/compat.h. This does seem to be typical of arm64 as I was not
-completely able to get rid of asm/compat.h includes for arm64 in this
-series. My plan is to have separate patches to get rid of asm/compat.h
-includes for the architectures that are not straight forward to keep
-this series simple.
-I will fix this and update the series.
+This is again a tricky include file ordering when linux/compat.h is
+included instead of asm/compat.h. is_compat_task() is unconditionally
+defined in linux/compat.h as a macro which conflicts with inline
+function define in asm/compat.h for this arch.
+As before, I will do the simple thing here and leave the asm/compat.h
+to keep this series simple.
+I will submit follow up patches to eliminate direct inclusion asm/compat.h.
+
+I will include this also in the update.
 
 -Deepa
 
-
-On Tue, Mar 13, 2018 at 8:22 AM, kbuild test robot <lkp@intel.com> wrote:
+On Tue, Mar 13, 2018 at 8:30 AM, kbuild test robot <lkp@intel.com> wrote:
 > Hi Deepa,
 >
 > Thank you for the patch! Yet something to improve:
@@ -57,100 +57,60 @@ On Tue, Mar 13, 2018 at 8:22 AM, kbuild test robot <lkp@intel.com> wrote:
 >
 > url:    https://github.com/0day-ci/linux/commits/Deepa-Dinamani/posix_clocks-Prepare-syscalls-for-64-bit-time_t-conversion/20180313-203305
 > base:
-> config: arm64-allnoconfig (attached as .config)
-> compiler: aarch64-linux-gnu-gcc (Debian 7.2.0-11) 7.2.0
+> config: powerpc-iss476-smp_defconfig (attached as .config)
+> compiler: powerpc-linux-gnu-gcc (Debian 7.2.0-11) 7.2.0
 > reproduce:
 >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
 >         chmod +x ~/bin/make.cross
 >         # save the attached .config to linux build tree
->         make.cross ARCH=arm64
+>         make.cross ARCH=powerpc
 >
 > All errors (new ones prefixed by >>):
 >
->    arch/arm64/kernel/process.c: In function 'copy_thread':
->>> arch/arm64/kernel/process.c:342:8: error: implicit declaration of function 'is_compat_thread'; did you mean 'is_compat_task'? [-Werror=implicit-function-declaration]
->        if (is_compat_thread(task_thread_info(p)))
->            ^~~~~~~~~~~~~~~~
->            is_compat_task
->    cc1: some warnings being treated as errors
+>    arch/powerpc/oprofile/backtrace.c: In function 'user_getsp32':
+>>> arch/powerpc/oprofile/backtrace.c:31:19: error: implicit declaration of function 'compat_ptr'; did you mean 'complete'? [-Werror=implicit-function-declaration]
+>      void __user *p = compat_ptr(sp);
+>                       ^~~~~~~~~~
+>                       complete
+>>> arch/powerpc/oprofile/backtrace.c:31:19: error: initialization makes pointer from integer without a cast [-Werror=int-conversion]
+>    cc1: all warnings being treated as errors
 >
-> vim +342 arch/arm64/kernel/process.c
+> vim +31 arch/powerpc/oprofile/backtrace.c
 >
-> b3901d54d Catalin Marinas  2012-03-05  307
-> b3901d54d Catalin Marinas  2012-03-05  308  int copy_thread(unsigned long clone_flags, unsigned long stack_start,
-> afa86fc42 Al Viro          2012-10-22  309              unsigned long stk_sz, struct task_struct *p)
-> b3901d54d Catalin Marinas  2012-03-05  310  {
-> b3901d54d Catalin Marinas  2012-03-05  311      struct pt_regs *childregs = task_pt_regs(p);
-> b3901d54d Catalin Marinas  2012-03-05  312
-> c34501d21 Catalin Marinas  2012-10-05  313      memset(&p->thread.cpu_context, 0, sizeof(struct cpu_context));
-> c34501d21 Catalin Marinas  2012-10-05  314
-> bc0ee4760 Dave Martin      2017-10-31  315      /*
-> bc0ee4760 Dave Martin      2017-10-31  316       * Unalias p->thread.sve_state (if any) from the parent task
-> bc0ee4760 Dave Martin      2017-10-31  317       * and disable discard SVE state for p:
-> bc0ee4760 Dave Martin      2017-10-31  318       */
-> bc0ee4760 Dave Martin      2017-10-31  319      clear_tsk_thread_flag(p, TIF_SVE);
-> bc0ee4760 Dave Martin      2017-10-31  320      p->thread.sve_state = NULL;
-> bc0ee4760 Dave Martin      2017-10-31  321
-> 071b6d4a5 Dave Martin      2017-12-05  322      /*
-> 071b6d4a5 Dave Martin      2017-12-05  323       * In case p was allocated the same task_struct pointer as some
-> 071b6d4a5 Dave Martin      2017-12-05  324       * other recently-exited task, make sure p is disassociated from
-> 071b6d4a5 Dave Martin      2017-12-05  325       * any cpu that may have run that now-exited task recently.
-> 071b6d4a5 Dave Martin      2017-12-05  326       * Otherwise we could erroneously skip reloading the FPSIMD
-> 071b6d4a5 Dave Martin      2017-12-05  327       * registers for p.
-> 071b6d4a5 Dave Martin      2017-12-05  328       */
-> 071b6d4a5 Dave Martin      2017-12-05  329      fpsimd_flush_task_state(p);
-> 071b6d4a5 Dave Martin      2017-12-05  330
-> 9ac080021 Al Viro          2012-10-21  331      if (likely(!(p->flags & PF_KTHREAD))) {
-> 9ac080021 Al Viro          2012-10-21  332              *childregs = *current_pt_regs();
-> b3901d54d Catalin Marinas  2012-03-05  333              childregs->regs[0] = 0;
-> d00a3810c Will Deacon      2015-05-27  334
-> b3901d54d Catalin Marinas  2012-03-05  335              /*
-> b3901d54d Catalin Marinas  2012-03-05  336               * Read the current TLS pointer from tpidr_el0 as it may be
-> b3901d54d Catalin Marinas  2012-03-05  337               * out-of-sync with the saved value.
-> b3901d54d Catalin Marinas  2012-03-05  338               */
-> adf758999 Mark Rutland     2016-09-08  339              *task_user_tls(p) = read_sysreg(tpidr_el0);
-> d00a3810c Will Deacon      2015-05-27  340
-> e0fd18ce1 Al Viro          2012-10-18  341              if (stack_start) {
-> d00a3810c Will Deacon      2015-05-27 @342                      if (is_compat_thread(task_thread_info(p)))
-> d00a3810c Will Deacon      2015-05-27  343                              childregs->compat_sp = stack_start;
-> d00a3810c Will Deacon      2015-05-27  344                      else
-> b3901d54d Catalin Marinas  2012-03-05  345                              childregs->sp = stack_start;
-> b3901d54d Catalin Marinas  2012-03-05  346              }
-> d00a3810c Will Deacon      2015-05-27  347
-> c34501d21 Catalin Marinas  2012-10-05  348              /*
-> c34501d21 Catalin Marinas  2012-10-05  349               * If a TLS pointer was passed to clone (4th argument), use it
-> c34501d21 Catalin Marinas  2012-10-05  350               * for the new thread.
-> c34501d21 Catalin Marinas  2012-10-05  351               */
-> b3901d54d Catalin Marinas  2012-03-05  352              if (clone_flags & CLONE_SETTLS)
-> d00a3810c Will Deacon      2015-05-27  353                      p->thread.tp_value = childregs->regs[3];
-> c34501d21 Catalin Marinas  2012-10-05  354      } else {
-> c34501d21 Catalin Marinas  2012-10-05  355              memset(childregs, 0, sizeof(struct pt_regs));
-> c34501d21 Catalin Marinas  2012-10-05  356              childregs->pstate = PSR_MODE_EL1h;
-> 57f4959ba James Morse      2016-02-05  357              if (IS_ENABLED(CONFIG_ARM64_UAO) &&
-> a4023f682 Suzuki K Poulose 2016-11-08  358                  cpus_have_const_cap(ARM64_HAS_UAO))
-> 57f4959ba James Morse      2016-02-05  359                      childregs->pstate |= PSR_UAO_BIT;
-> c34501d21 Catalin Marinas  2012-10-05  360              p->thread.cpu_context.x19 = stack_start;
-> c34501d21 Catalin Marinas  2012-10-05  361              p->thread.cpu_context.x20 = stk_sz;
-> c34501d21 Catalin Marinas  2012-10-05  362      }
-> c34501d21 Catalin Marinas  2012-10-05  363      p->thread.cpu_context.pc = (unsigned long)ret_from_fork;
-> c34501d21 Catalin Marinas  2012-10-05  364      p->thread.cpu_context.sp = (unsigned long)childregs;
-> b3901d54d Catalin Marinas  2012-03-05  365
-> b3901d54d Catalin Marinas  2012-03-05  366      ptrace_hw_copy_thread(p);
-> b3901d54d Catalin Marinas  2012-03-05  367
-> b3901d54d Catalin Marinas  2012-03-05  368      return 0;
-> b3901d54d Catalin Marinas  2012-03-05  369  }
-> b3901d54d Catalin Marinas  2012-03-05  370
+> 6c6bd754 Brian Rogan 2006-03-27  27
+> 6c6bd754 Brian Rogan 2006-03-27  28  static unsigned int user_getsp32(unsigned int sp, int is_first)
+> 6c6bd754 Brian Rogan 2006-03-27  29  {
+> 6c6bd754 Brian Rogan 2006-03-27  30     unsigned int stack_frame[2];
+> 62034f03 Al Viro     2006-09-23 @31     void __user *p = compat_ptr(sp);
+> 6c6bd754 Brian Rogan 2006-03-27  32
+> 62034f03 Al Viro     2006-09-23  33     if (!access_ok(VERIFY_READ, p, sizeof(stack_frame)))
+> 6c6bd754 Brian Rogan 2006-03-27  34             return 0;
+> 6c6bd754 Brian Rogan 2006-03-27  35
+> 6c6bd754 Brian Rogan 2006-03-27  36     /*
+> 6c6bd754 Brian Rogan 2006-03-27  37      * The most likely reason for this is that we returned -EFAULT,
+> 6c6bd754 Brian Rogan 2006-03-27  38      * which means that we've done all that we can do from
+> 6c6bd754 Brian Rogan 2006-03-27  39      * interrupt context.
+> 6c6bd754 Brian Rogan 2006-03-27  40      */
+> 62034f03 Al Viro     2006-09-23  41     if (__copy_from_user_inatomic(stack_frame, p, sizeof(stack_frame)))
+> 6c6bd754 Brian Rogan 2006-03-27  42             return 0;
+> 6c6bd754 Brian Rogan 2006-03-27  43
+> 6c6bd754 Brian Rogan 2006-03-27  44     if (!is_first)
+> 6c6bd754 Brian Rogan 2006-03-27  45             oprofile_add_trace(STACK_LR32(stack_frame));
+> 6c6bd754 Brian Rogan 2006-03-27  46
+> 6c6bd754 Brian Rogan 2006-03-27  47     /*
+> 6c6bd754 Brian Rogan 2006-03-27  48      * We do not enforce increasing stack addresses here because
+> 6c6bd754 Brian Rogan 2006-03-27  49      * we may transition to a different stack, eg a signal handler.
+> 6c6bd754 Brian Rogan 2006-03-27  50      */
+> 6c6bd754 Brian Rogan 2006-03-27  51     return STACK_SP(stack_frame);
+> 6c6bd754 Brian Rogan 2006-03-27  52  }
+> 6c6bd754 Brian Rogan 2006-03-27  53
 >
-> :::::: The code at line 342 was first introduced by commit
-> :::::: d00a3810c16207d2541b7796a73cca5a24ea3742 arm64: context-switch user tls register tpidr_el0 for compat tasks
+> :::::: The code at line 31 was first introduced by commit
+> :::::: 62034f03380a64c0144b6721f4a2aa55d65346c1 [POWERPC] powerpc oprofile __user annotations
 >
-> :::::: TO: Will Deacon <will.deacon@arm.com>
-> :::::: CC: Catalin Marinas <catalin.marinas@arm.com>
+> :::::: TO: Al Viro <viro@ftp.linux.org.uk>
+> :::::: CC: Paul Mackerras <paulus@samba.org>
 >
 > ---
 > 0-DAY kernel test infrastructure                Open Source Technology Center
 > https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
-> _______________________________________________
-> Y2038 mailing list
-> Y2038@lists.linaro.org
-> https://lists.linaro.org/mailman/listinfo/y2038
