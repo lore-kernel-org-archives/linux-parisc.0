@@ -1,57 +1,90 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: C3600 kernel/64bit 4.* slow IO due to -mlong-calls
-Date: Fri, 16 Mar 2018 20:50:33 +0100
-Message-ID: <255e5ebc-4178-2969-9f15-953188108810@gmx.de>
-References: <CA+QBN9C=wHxV5Y=SSt2UB_4b1H_Nx1mZxZu3rvuTY2wRe=GWBw@mail.gmail.com>
- <d637ebd1-db27-585b-c324-0e02baf8c8b2@gmx.de>
- <113ad157-e8c3-81dc-5752-75416c8ce531@bell.net>
- <trinity-f7583046-4aa6-488a-a797-20501118a1c0-1521199558775@3c-app-gmx-bs75>
- <CAEdQ38Fr1yy6Q5a2jkcO_SUCYYh0URtW6CY=D0zxHp0K4W19eA@mail.gmail.com>
- <7168081c-5f62-6632-ca1c-2f374dacca17@bell.net>
- <CAEdQ38HCbZ3Rw2KCNRpBOqjeUciP3_cnw67mAvPD3OZx24zFNw@mail.gmail.com>
- <25172070-e33d-bd4e-feb7-fc24acdffa72@bell.net>
+From: Fengguang Wu <fengguang.wu@intel.com>
+Subject: Re: [Y2038] [PATCH v4 02/10] include: Move compat_timespec/ timeval
+ to compat_time.h
+Date: Sat, 17 Mar 2018 15:32:50 +0800
+Message-ID: <20180317073250.6qfmyv45hc2jmyk4@wfg-t540p.sh.intel.com>
+References: <20180312175307.11032-3-deepa.kernel@gmail.com>
+ <201803132313.a4R8Y434%fengguang.wu@intel.com>
+ <CABeXuvqNKfuvffU24Xydixv6Ro8R=2nAH4bruzx0AW=ax-6yOQ@mail.gmail.com>
+ <CAK8P3a1fxWAK94GH0cpzh6CHXgL4uJuDNCGpdJen5ib1HH1xoA@mail.gmail.com>
+ <CABeXuvpFfD+a6tSSOvni=v23DuJ-bWeZwmnzg4SU+TR=WHxs7Q@mail.gmail.com>
+ <CAK8P3a1p1PruO_KsiE-sGAZdmoAVi2E3zZ+SXMzU=AZsb-RY-A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: debian-hppa@lists.debian.org, linux-parisc <linux-parisc@vger.kernel.org>
-To: John David Anglin <dave.anglin@bell.net>, Matt Turner <mattst88@gmail.com>
-Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
-In-Reply-To: <25172070-e33d-bd4e-feb7-fc24acdffa72@bell.net>
-Resent-Message-ID: <pFiO83NiyJ.A.GPB.0DCraB@bendel>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-URL: <https://lists.debian.org/debian-hppa/>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
-List-Archive: https://lists.debian.org/msgid-search/255e5ebc-4178-2969-9f15-953188108810@gmx.de
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Heiko Carstens <heiko.carstens@de.ibm.com>, Paul Mackerras <paulus@samba.org>,
+ Deepa Dinamani <deepa.kernel@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ sparclinux <sparclinux@vger.kernel.org>, devel@driverdev.osuosl.org,
+ linux-s390 <linux-s390@vger.kernel.org>,
+ y2038 Mailman List <y2038@lists.linaro.org>,
+ Michael Ellerman <mpe@ellerman.id.au>, Helge Deller <deller@gmx.de>,
+ the arch/x86 maintainers <x86@kernel.org>, sebott@linux.vnet.ibm.com,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ Will Deacon <will.deacon@arm.com>,
+ Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>,
+ oprofile-list@lists.sf.net, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Robert
+To: Arnd Bergmann <arnd@arndb.de>
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+In-Reply-To: <CAK8P3a1p1PruO_KsiE-sGAZdmoAVi2E3zZ+SXMzU=AZsb-RY-A@mail.gmail.com>
+List-Id: Linux Driver Project Developer List
+ <driverdev-devel.linuxdriverproject.org>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
 
-On 16.03.2018 19:03, John David Anglin wrote:
-> On 2018-03-16 1:58 PM, Matt Turner wrote:
->> On Fri, Mar 16, 2018 at 10:44 AM, John David Anglin
->> <dave.anglin@bell.net> wrote:
->>> On 2018-03-16 1:29 PM, Matt Turner wrote:
->>>> This week I succeeded in building a stripped-down kernel without
->>>> mlong-calls (in Gentoo), but was unable to get anything to link
->>>> without mlong-calls when CONFIG_PARISC_PAGE_SIZE_16KB=y.
+On Thu, Mar 15, 2018 at 09:04:04AM +0100, Arnd Bergmann wrote:
+>On Thu, Mar 15, 2018 at 3:51 AM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
+>> On Wed, Mar 14, 2018 at 1:52 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+>>> On Wed, Mar 14, 2018 at 4:50 AM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
+>>>> The file arch/arm64/kernel/process.c needs asm/compat.h also to be
+>>>> included directly since this is included conditionally from
+>>>> include/compat.h. This does seem to be typical of arm64 as I was not
+>>>> completely able to get rid of asm/compat.h includes for arm64 in this
+>>>> series. My plan is to have separate patches to get rid of asm/compat.h
+>>>> includes for the architectures that are not straight forward to keep
+>>>> this series simple.
+>>>> I will fix this and update the series.
 >>>>
->>> I wouldn't recommend the above option.  It affects alignment of some things
->>> in kernel
->>> and as you found it makes the kernel bigger.  There are also some things in
->>> userspace
->>> that assume 4KB pages.
->> I expect we're past the point where there are any significant
->> obstacles to userspace support. Most platforms successfully support
->> multiple page sizes these days.
+>>>
+>>> I ran across the same thing in two more files during randconfig testing on
+>>> arm64 now, adding this fixup on top for the moment, but maybe there
+>>> is a better way:
 >>
-> But they don't have the problem we do with non equivalent aliasing. The data section starts on a
-> page boundary on parisc and it doesn't overlap text.
+>> I was looking at how Al tested his uaccess patches:
+>> https://www.spinics.net/lists/linux-fsdevel/msg108752.html
+>>
+>> He seems to be running the kbuild bot tests on his own git.
+>> Is it possible to verify it this way on the 2038 tree? Or, I could
+>> host a tree also.
+>
+>The kbuild bot should generally pick up any branch on git.kernel.org,
+>and the patches sent to the mailing list. It tests a lot of things
+>configurations, but I tend to find some things that it doesn't find
+>by doing lots of randconfig builds on fewer target architectures
+>(I only build arm, arm64 and x86 regularly).
+>
+>I remember that there was some discussion about a method
+>to get the bot to test other branches (besides asking Fengguang
+>to add it manually), but I don't remember what came out of that.
 
-I'd be astonished, if anything other than 4kB page size is able to 
-boot to a login prompt.
-For example, I know the parisc PCI-specific code (dino,lba,...) still
-depends on 4kb page sizes.
-I've left the CONFIG options in the source in the hope somebody
-will try to finish >4kb page support at some point.
+People can send email to me or lkp@intel.com for adding new git URLs
+to 0day tests. Such requests are very welcome. Server load is not a
+problem -- don't worry about your git pushes adding our test load.
+By default all branches in a git tree will be tested, unless there are
+explicit blacklist/whitelist.
 
-Helge
+We also have scripts to scan git.kernel.org/github/LKML looking for
+possible new git URLs to add to 0day kbuild tests. However depending
+on the team's maintenance pressure they may or may not run frequently.
+
+Thanks,
+Fengguang
