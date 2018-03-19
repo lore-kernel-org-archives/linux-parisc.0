@@ -1,9 +1,9 @@
 From: Sasha Levin <Alexander.Levin@microsoft.com>
-Subject: [PATCH AUTOSEL for 4.14 91/97] signal/parisc: Document a conflict
+Subject: [PATCH AUTOSEL for 4.9 277/281] signal/parisc: Document a conflict
  with SI_USER with SIGFPE
-Date: Mon, 19 Mar 2018 15:56:31 +0000
-Message-ID: <20180319155411.12348-91-alexander.levin@microsoft.com>
-References: <20180319155411.12348-1-alexander.levin@microsoft.com>
+Date: Mon, 19 Mar 2018 16:03:23 +0000
+Message-ID: <20180319155742.13731-277-alexander.levin@microsoft.com>
+References: <20180319155742.13731-1-alexander.levin@microsoft.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
@@ -13,10 +13,9 @@ Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
         Sasha Levin <Alexander.Levin@microsoft.com>
 To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "stable@vger.kernel.org" <stable@vger.kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180319155411.12348-1-alexander.levin@microsoft.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20180319155742.13731-1-alexander.levin@microsoft.com>
+List-ID: <linux-parisc.vger.kernel.org>
 
 From: "Eric W. Biederman" <ebiederm@xmission.com>
 
@@ -62,10 +61,10 @@ Signed-off-by: Sasha Levin <alexander.levin@microsoft.com>
 
 diff --git a/arch/parisc/include/uapi/asm/siginfo.h b/arch/parisc/include/u=
 api/asm/siginfo.h
-index 4a1062e05aaf..be40331f757d 100644
+index 8fd10f85c50e..882a8775441f 100644
 --- a/arch/parisc/include/uapi/asm/siginfo.h
 +++ b/arch/parisc/include/uapi/asm/siginfo.h
-@@ -8,4 +8,11 @@
+@@ -7,4 +7,11 @@
 =20
  #include <asm-generic/siginfo.h>
 =20
@@ -78,10 +77,10 @@ index 4a1062e05aaf..be40331f757d 100644
 +
  #endif
 diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index 8453724b8009..c919e6c0a687 100644
+index 378df9207406..3172cb52f703 100644
 --- a/arch/parisc/kernel/traps.c
 +++ b/arch/parisc/kernel/traps.c
-@@ -629,7 +629,7 @@ void notrace handle_interruption(int code, struct pt_re=
+@@ -627,7 +627,7 @@ void notrace handle_interruption(int code, struct pt_re=
 gs *regs)
  			si.si_signo =3D SIGFPE;
  			/* Set to zero, and let the userspace app figure it out from
