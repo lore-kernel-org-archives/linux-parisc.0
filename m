@@ -1,9 +1,9 @@
 From: Sasha Levin <Alexander.Levin@microsoft.com>
-Subject: [PATCH AUTOSEL for 4.15 118/124] signal/parisc: Document a conflict
+Subject: [PATCH AUTOSEL for 4.14 91/97] signal/parisc: Document a conflict
  with SI_USER with SIGFPE
-Date: Mon, 19 Mar 2018 15:49:14 +0000
-Message-ID: <20180319154645.11350-118-alexander.levin@microsoft.com>
-References: <20180319154645.11350-1-alexander.levin@microsoft.com>
+Date: Mon, 19 Mar 2018 15:56:31 +0000
+Message-ID: <20180319155411.12348-91-alexander.levin@microsoft.com>
+References: <20180319155411.12348-1-alexander.levin@microsoft.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
@@ -13,9 +13,10 @@ Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
         Sasha Levin <Alexander.Levin@microsoft.com>
 To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "stable@vger.kernel.org" <stable@vger.kernel.org>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20180319154645.11350-1-alexander.levin@microsoft.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180319155411.12348-1-alexander.levin@microsoft.com>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
 From: "Eric W. Biederman" <ebiederm@xmission.com>
 
