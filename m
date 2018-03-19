@@ -1,26 +1,19 @@
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Re: kernel 4.15.7/64bit, C3600 is unstable during heavy I/O on PCI
-Date: Mon, 19 Mar 2018 16:46:07 -0400
-Message-ID: <115826d6-d506-f41c-b1f0-84e67a9546a9@bell.net>
+From: Helge Deller <deller@gmx.de>
+Subject: [RFC][PATCH] Fix HPMC handler by increasing size to multiple of 16
+ bytes
+Date: Mon, 19 Mar 2018 23:23:53 +0100
+Message-ID: <20180319222353.GA28132@ls3530.fritz.box>
 References: <CA+QBN9DxM5PYCnPJCRtgxQ8xGk75=jAtsE+VibUfFOv+Yah6Og@mail.gmail.com>
  <CA+QBN9D9vUA7Q=Sd=moi+bSAkQjGQ6nGa8wnb1=7qHudAY8L8g@mail.gmail.com>
  <20180317113655.GA30572@ls3530.fritz.box>
- <CAP6odjhTVFkFP0kzCjvpJZ81iwA+cxLNFB7AxK+hZfy_cKxjvw@mail.gmail.com>
- <b2fd86ec-a83a-5133-fa66-29229595851c@bell.net>
- <CA+QBN9DgtjA3vdE7WA36o8P585r8vMbR+s2zPAF+529HuEzzfw@mail.gmail.com>
- <665cf5f2-35e4-f2ca-7b32-3e5f70ba7acd@bell.net>
- <CA+QBN9A6vgzxvDtvKNqenxFCGOksjgcxo_NHaGLRPsFyfDzL1Q@mail.gmail.com>
- <438edd73-e420-e3d9-df03-610e7dbc2e13@bell.net>
- <CA+QBN9CS11tBCOMKyGvjGF+w9bnd-pvUioSJD=o3AT9pJC=OmA@mail.gmail.com>
+ <81f118a7-5bc5-c6b2-eb10-a9c683c72a26@bell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: Grant Grundler <grantgrundler@gmail.com>,
- linux-parisc List <linux-parisc@vger.kernel.org>,
- debian-hppa@lists.debian.org
-To: Carlo Pisani <carlojpisani@gmail.com>
+Content-Type: text/plain; charset=iso-8859-15
+Cc: debian-hppa@lists.debian.org, linux-parisc@vger.kernel.org
+To: John David Anglin <dave.anglin@bell.net>
 Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
-In-Reply-To: <CA+QBN9CS11tBCOMKyGvjGF+w9bnd-pvUioSJD=o3AT9pJC=OmA@mail.gmail.com>
-Resent-Message-ID: <OVLuPkpyA-B.A.RtC.iGCsaB@bendel>
+In-Reply-To: <81f118a7-5bc5-c6b2-eb10-a9c683c72a26@bell.net>
+Resent-Message-ID: <WA3GnTD4HjI.A.pmE.NiDsaB@bendel>
 List-Id: linux-parisc.vger.kernel.org
 List-Id: <debian-hppa.lists.debian.org>
 List-URL: <https://lists.debian.org/debian-hppa/>
@@ -28,94 +21,94 @@ List-Post: <mailto:debian-hppa@lists.debian.org>
 List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
 List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
 List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
-List-Archive: https://lists.debian.org/msgid-search/115826d6-d506-f41c-b1f0-84e67a9546a9@bell.net
+List-Archive: https://lists.debian.org/msgid-search/20180319222353.GA28132@ls3530.fritz.box
 
-This is info about PCI devices that Carlo sent me.Â  It would help if we 
-lnew where 0x4046b840
-was in the kernel. From the IIR, 0xf3c001c, it seems the timeout 
-occurred on a byte operation.
+* John David Anglin <dave.anglin@bell.net>:
+> On 2018-03-17 7:36 AM, Helge Deller wrote:
+> > Can you maybe try to localize where in the drivers/ata/sata_via.c driver
+> > triggers the HPMC ?
+> > 
+> > 
+> > --- arch/parisc/kernel/hpmc.S	2018-01-28 22:20:33.000000000 +0100
+> > +++ arch/parisc/kernel/hpmc.S	2018-03-15 14:13:46.611969815 +0100
+> > @@ -308,4 +290,5 @@
+> >   	.align 4
+> >   	.export os_hpmc_size
+> >   os_hpmc_size:
+> > -	.word .os_hpmc_end-.os_hpmc
+> > +	/* .word .os_hpmc_end-.os_hpmc */
+> > +	.word (.os_hpmc_end - .os_hpmc) * 4 /* sizeof(u32) */
+> > 
+> > This one seems wrong.
+> > I think you just didn't hit a HPMC with your first patch, and as such
+> > this patch has no influence...
 
-Dave
+> Helge, did you check that os_hpmc is correctly entered after you added
+> the ".align 4" statement (e.g., trigger hpmc by accessing page 0 or
+> such)?  I looked at one of my builds and the size is correct as is. 
+> Is it possible that the length needs to be a multiple of 16?  Current
+> length is 0x194.
 
-On 2018-03-17 2:58 PM, Carlo Pisani wrote:
->> Probably, it would be useful to have verbose output from lspci posted to
->> list as well.
->
-> c3600 ~ $ lspci -v
-> 00:0c.0 Ethernet controller: Digital Equipment Corporation DECchip
-> 21142/43 (rev 41)
->          Subsystem: Hewlett-Packard Company DECchip 21142/43
->          Flags: bus master, medium devsel, latency 255, IRQ 17
->          I/O ports at 1000 [size=128]
->          Memory at fffffffff4008000 (32-bit, non-prefetchable) [size=1K]
->          Expansion ROM at fffffffff4040000 [disabled] [size=256K]
->          Kernel driver in use: tulip
-> lspci: Unable to load libkmod resources: error -12
->
-> 00:0d.0 Multimedia audio controller: Analog Devices Device 1889
->          Subsystem: Analog Devices Device 1889
->          Flags: bus master, medium devsel, latency 255, IRQ 18
->          Memory at fffffffff400c000 (32-bit, prefetchable) [size=512]
->          Memory at fffffffff400b000 (32-bit, prefetchable) [size=16]
->          Memory at fffffffff400a000 (32-bit, prefetchable) [size=16]
->          Memory at fffffffff4009000 (32-bit, prefetchable) [size=16]
->          Capabilities: [dc] Power Management version 1
->          Kernel driver in use: snd_ad1889
->
-> 00:0e.0 IDE interface: National Semiconductor Corporation 87415/87560
-> IDE (rev 03) (prog-if 8f [Master SecP SecO PriP PriO])
->          Flags: bus master, medium devsel, latency 255, IRQ 7
->          I/O ports at 0f00 [size=8]
->          I/O ports at 0e00 [size=4]
->          I/O ports at 0d00 [size=8]
->          I/O ports at 0b00 [size=4]
->          I/O ports at 0a00 [size=16]
->          Kernel driver in use: NS87415_IDE
->
-> 00:0e.1 Bridge: National Semiconductor Corporation 87560 Legacy I/O (rev 01)
->          Flags: bus master, medium devsel, latency 255, IRQ 19
->          Kernel driver in use: SuperIO
->
-> 00:0e.2 USB controller: National Semiconductor Corporation USB
-> Controller (rev 02) (prog-if 10 [OHCI])
->          Flags: bus master, medium devsel, latency 240, IRQ 1
->          Memory at fffffffff4007000 (32-bit, non-prefetchable) [size=4K]
->          Memory at fffffffff4006000 (32-bit, non-prefetchable) [size=4K]
->          Kernel driver in use: ohci-pci
->
-> 00:0f.0 SCSI storage controller: LSI Logic / Symbios Logic 53C896/897 (rev 07)
->          Subsystem: LSI Logic / Symbios Logic LSI53C896/7 PCI to Dual
-> Channel Ultra2 SCSI Multifunction Controller
->          Flags: bus master, medium devsel, latency 255, IRQ 20
->          I/O ports at 0900 [size=256]
->          Memory at fffffffff4005000 (64-bit, non-prefetchable) [size=1K]
->          Memory at fffffffff4002000 (64-bit, non-prefetchable) [size=8K]
->          Capabilities: [40] Power Management version 2
->          Kernel driver in use: sym53c8xx
->
-> 00:0f.1 SCSI storage controller: LSI Logic / Symbios Logic 53C896/897 (rev 07)
->          Subsystem: LSI Logic / Symbios Logic LSI53C896/7 PCI to Dual
-> Channel Ultra2 SCSI Multifunction Controller
->          Flags: bus master, medium devsel, latency 255, IRQ 20
->          I/O ports at 0800 [size=256]
->          Memory at fffffffff4004000 (64-bit, non-prefetchable) [size=1K]
->          Memory at fffffffff4000000 (64-bit, non-prefetchable) [size=8K]
->          Capabilities: [40] Power Management version 2
->          Kernel driver in use: sym53c8xx
->
-> 01:05.0 RAID bus controller: VIA Technologies, Inc. VT6421 IDE/SATA
-> Controller (rev 50)
->          Subsystem: VIA Technologies, Inc. VT6421 IDE/SATA Controller
->          Flags: bus master, medium devsel, latency 240, IRQ 21
->          I/O ports at 12500 [size=16]
->          I/O ports at 12400 [size=16]
->          I/O ports at 12300 [size=16]
->          I/O ports at 12200 [size=16]
->          I/O ports at 12100 [size=32]
->          I/O ports at 12000 [size=256]
->          Expansion ROM at fffffffff4800000 [disabled] [size=64K]
->          Capabilities: [e0] Power Management version 2
->          Kernel driver in use: sata_via
->
+Good point. I changed that in the patch below.
 
-The requesting device was 10/1/5/0.
+> There are a couple of minor issues with assembly code.  There are no .type
+> and .size directives for os_hpmc_size.
+
+Fixed as well.
+
+> I think we should investigate further as I have never seen hpmc
+> handler entered on rp3440 or c8000.  On rp3440, there are messages
+> about the branch failing in the SL log.  However, this might have been
+> fixed by your alignment fix. 
+
+No, the problem still exists in existing code.
+
+Below patch is build-tested only.
+
+
+[PATCH] Fix HPMC handler by increasing size to multiple of 16 bytes
+
+Make sure that the HPMC handler is 16-byte aligned and that it's length
+in the IVT is a multiple of 16 bytes. Otherwise PDC may decide not
+to jump to HPMC handler.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/arch/parisc/kernel/hpmc.S b/arch/parisc/kernel/hpmc.S
+index 8d072c44f300..f09f54f8042e 100644
+--- a/arch/parisc/kernel/hpmc.S
++++ b/arch/parisc/kernel/hpmc.S
+@@ -84,6 +84,7 @@ END(hpmc_pim_data)
+ 	.text
+ 
+ 	.import intr_save, code
++	.align 16
+ ENTRY_CFI(os_hpmc)
+ .os_hpmc:
+ 
+@@ -305,7 +306,9 @@ ENDPROC_CFI(os_hpmc)
+ 
+ 
+ 	__INITRODATA
++.globl os_hpmc_size
+ 	.align 4
+-	.export os_hpmc_size
++	.type   os_hpmc_size, @object
++	.size   os_hpmc_size, 4
+ os_hpmc_size:
+ 	.word .os_hpmc_end-.os_hpmc
+diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
+index c919e6c0a687..ca6e8722fffb 100644
+--- a/arch/parisc/kernel/traps.c
++++ b/arch/parisc/kernel/traps.c
+@@ -837,8 +837,8 @@ void __init initialize_ivt(const void *iva)
+ 		ivap[0] = instr;
+ 
+ 	/* Compute Checksum for HPMC handler */
+-	length = os_hpmc_size;
+-	ivap[7] = length;
++	length = ALIGN(os_hpmc_size, 16);
++	ivap[7] = length; /* length needs to be multiple of 16. */
+ 
+ 	hpmcp = (u32 *)os_hpmc;
+ 
