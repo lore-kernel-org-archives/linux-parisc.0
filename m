@@ -1,10 +1,8 @@
 From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH v2 2/2] Architecture defined limit on memory region
- random shift.
-Date: Thu, 22 Mar 2018 13:54:48 -0700
-Message-ID: <20180322135448.046ada120ecd1ab3dd8f94aa@linux-foundation.org>
+Subject: Re: [RFC PATCH v2 0/2] Randomization of address chosen by mmap.
+Date: Thu, 22 Mar 2018 13:57:29 -0700
+Message-ID: <20180322135729.dbfd3575819c92c0f88c5c21@linux-foundation.org>
 References: <1521736598-12812-1-git-send-email-blackzert@gmail.com>
-        <1521736598-12812-3-git-send-email-blackzert@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Cc: rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
@@ -23,12 +21,22 @@ Cc: rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         npiggin@gmail.c
 To: Ilya Smith <blackzert@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1521736598-12812-3-git-send-email-blackzert@gmail.com>
+In-Reply-To: <1521736598-12812-1-git-send-email-blackzert@gmail.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On Thu, 22 Mar 2018 19:36:36 +0300 Ilya Smith <blackzert@gmail.com> wrote:
 
-Please add changelogs.  An explanation of what a "limit on memory
-region random shift" is would be nice ;) Why does it exist, why are we
-doing this, etc.  Surely there's something to be said - at present this
-is just a lump of random code?
+> Current implementation doesn't randomize address returned by mmap.
+> All the entropy ends with choosing mmap_base_addr at the process
+> creation. After that mmap build very predictable layout of address
+> space. It allows to bypass ASLR in many cases.
+
+Perhaps some more effort on the problem description would help.  *Are*
+people predicting layouts at present?  What problems does this cause? 
+How are they doing this and are there other approaches to solving the
+problem?
+
+Mainly: what value does this patchset have to our users?  This reader
+is unable to determine that from the information which you have
+provided.  Full details, please.
