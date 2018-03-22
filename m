@@ -1,68 +1,115 @@
-From: Sasha Levin <Alexander.Levin@microsoft.com>
-Subject: Re: [PATCH AUTOSEL for 4.15 118/124] signal/parisc: Document a
- conflict with SI_USER with SIGFPE
-Date: Wed, 21 Mar 2018 19:58:20 +0000
-Message-ID: <20180321195818.5uoptnf37mak3iq6@sasha-lappy>
-References: <20180319154645.11350-1-alexander.levin@microsoft.com>
- <20180319154645.11350-118-alexander.levin@microsoft.com>
- <87zi327ozu.fsf@xmission.com> <20180321181842.rhniantbvz25bu2f@sasha-lappy>
- <87370txl8a.fsf@xmission.com>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH v2 1/2] Randomization of address chosen by mmap.
+Date: Thu, 22 Mar 2018 13:53:14 -0700
+Message-ID: <20180322135314.61efce938293e051e118fa46@linux-foundation.org>
+References: <1521736598-12812-1-git-send-email-blackzert@gmail.com>
+        <1521736598-12812-2-git-send-email-blackzert@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <87370txl8a.fsf@xmission.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        vgupta@synopsys.com, linux@armlinux.org.uk, tony.luck@intel.com,
+        fenghua.yu@intel.com, jhogan@kernel.org, ralf@linux-mips.org,
+        jejb@parisc-linux.org, deller@gmx.de, benh@kernel.crashing.org,
+        paulus@samba.org, mpe@ellerman.id.au, schwidefsky@de.ibm.com,
+        heiko.carstens@de.ibm.com, ysato@users.sourceforge.jp,
+        dalias@libc.org, davem@davemloft.net, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org,
+        nyc@holomorphy.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
+        gregkh@linuxfoundation.org, deepa.kernel@gmail.com,
+        mhocko@suse.com, hughd@google.com, kstewart@linuxfoundation.org,
+        pombredanne@nexb.com, steve.capper@arm.com, punit.agrawal@arm.com,
+        paul.burton@mips.com, aneesh.kumar@linux.vnet.ibm.com,
+        npiggin@gmail.c
+To: Ilya Smith <blackzert@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1521736598-12812-2-git-send-email-blackzert@gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Mar 21, 2018 at 02:49:25PM -0500, Eric W. Biederman wrote:
->Sasha Levin <Alexander.Levin@microsoft.com> writes:
+On Thu, 22 Mar 2018 19:36:37 +0300 Ilya Smith <blackzert@gmail.com> wrote:
+
+>  include/linux/mm.h |  16 ++++--
+>  mm/mmap.c          | 164 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+You'll be wanting to update the documentation. 
+Documentation/sysctl/kernel.txt and
+Documentation/admin-guide/kernel-parameters.txt.
+
+> ...
 >
->> Hey Eric,
->>
->> On Tue, Mar 20, 2018 at 10:20:21AM -0500, Eric W. Biederman wrote:
->>>Sasha Levin <Alexander.Levin@microsoft.com> writes:
->>>
->>>What is the justification for backporting this and the other similar
->>>Documentation commits?
->>
->> It was flagged as a bug fixing patch by a new process we're testing, and
->> when I looked at it I thought that the commit message suggests it fixes
->> an ABI issue.
+> @@ -2268,6 +2276,9 @@ extern unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info);
+>  static inline unsigned long
+>  vm_unmapped_area(struct vm_unmapped_area_info *info)
+>  {
+> +	/* How about 32 bit process?? */
+> +	if ((current->flags & PF_RANDOMIZE) && randomize_va_space > 3)
+> +		return unmapped_area_random(info);
+
+The handling of randomize_va_space is peculiar.  Rather than being a
+bitfield which independently selects different modes, it is treated as
+a scalar: the larger the value, the more stuff we randomize.
+
+I can see the sense in that (and I wonder what randomize_va_space=5
+will do).  But it is...  odd.
+
+Why did you select randomize_va_space=4 for this?  Is there a mode 3
+already and we forgot to document it?  Or did you leave a gap for
+something?  If the former, please feel free to fix the documentation
+(in a separate, preceding patch) while you're in there ;)
+
+>  	if (info->flags & VM_UNMAPPED_AREA_TOPDOWN)
+>  		return unmapped_area_topdown(info);
+>  	else
+> @@ -2529,11 +2540,6 @@ int drop_caches_sysctl_handler(struct ctl_table *, int,
+>  void drop_slab(void);
+>  void drop_slab_node(int nid);
+>  
 >
->Unfortunately they just reveal an ABI issue.  I believe there are some
->fixes coming but given that the issues are a decade old in many cases
->actually fixing these things must be approach with care so as not to
->create regressions.
-
-I've removed these commits.
-
->>>These commits just introduce a define _FIXME with value of 0, to
->>>document that the userspace ABI was handled incorrectly long ago.
->>>
->>>These commits do not fix anything.  Thes commits do not change anything
->>>except a little how they are handled in siginfo_layout.  And I don't see
->>>the changes that introduce siginfo_layout in kernel/signal.c being
->>>backported.
->>>
->>>Further these commits don't even have a fixes tag so I am curious
->>>what is triggering them for backport.
->>
->> We're testing out a new mechanism where we train a neural network to
->> detect bug fixing patches and flag them for manual review. We're working
->> on a FAQ + more detailed information right now.
+> ...
 >
->The neural network did seem to pick up on something that is worth
->looking at.
+> @@ -1780,6 +1781,169 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+>  	return error;
+>  }
+>  
+> +unsigned long unmapped_area_random(struct vm_unmapped_area_info *info)
+> +{
 
-Indeed, and we use review input to retrain the NN on these commits.
-Thank you!
+This function is just dead code if CONFIG_MMU=n, yes?  Let's add the
+ifdefs to make it go away in that case.
 
---=20
+> +	struct mm_struct *mm = current->mm;
+> +	struct vm_area_struct *vma = NULL;
+> +	struct vm_area_struct *visited_vma = NULL;
+> +	unsigned long entropy[2];
+> +	unsigned long length, low_limit, high_limit, gap_start, gap_end;
+> +	unsigned long addr = 0;
+> +
+> +	/* get entropy with prng */
+> +	prandom_bytes(&entropy, sizeof(entropy));
+> +	/* small hack to prevent EPERM result */
+> +	info->low_limit = max(info->low_limit, mmap_min_addr);
+> +
+>
+> ...
+>
+> +found:
+> +	/* We found a suitable gap. Clip it with the original high_limit. */
+> +	if (gap_end > info->high_limit)
+> +		gap_end = info->high_limit;
+> +	gap_end -= info->length;
+> +	gap_end -= (gap_end - info->align_offset) & info->align_mask;
+> +	/* only one suitable page */
+> +	if (gap_end ==  gap_start)
+> +		return gap_start;
+> +	addr = entropy[1] % (min((gap_end - gap_start) >> PAGE_SHIFT,
+> +							 0x10000UL));
 
-Thanks,
-Sasha=
+What does the magic 10000 mean?  Isn't a comment needed explaining this?
+
+> +	addr = gap_end - (addr << PAGE_SHIFT);
+> +	addr += (info->align_offset - addr) & info->align_mask;
+> +	return addr;
+> +}
+>
+> ...
+>
