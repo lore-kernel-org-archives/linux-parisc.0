@@ -1,65 +1,64 @@
-From: Shea Levy <shea@shealevy.com>
-Subject: [PATCH 14/16] powerpc: Use INITRAMFS_GENERIC_UNLOAD
-Date: Sat, 24 Mar 2018 13:44:56 -0400
-Message-ID: <20180324174458.26423-15-shea@shealevy.com>
-References: <20180324174458.26423-1-shea@shealevy.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [RFC][PATCH v2] Fix HPMC handler by increasing size to multiple
+ of 16 bytes
+Date: Sat, 24 Mar 2018 21:18:25 +0100
+Message-ID: <20180324201825.GA22115@ls3530.fritz.box>
+References: <CA+QBN9DxM5PYCnPJCRtgxQ8xGk75=jAtsE+VibUfFOv+Yah6Og@mail.gmail.com>
+ <CA+QBN9D9vUA7Q=Sd=moi+bSAkQjGQ6nGa8wnb1=7qHudAY8L8g@mail.gmail.com>
+ <20180317113655.GA30572@ls3530.fritz.box>
+ <81f118a7-5bc5-c6b2-eb10-a9c683c72a26@bell.net>
+ <20180319222353.GA28132@ls3530.fritz.box>
+ <a189ed45-af4b-e6cc-db2c-ce50fa706c72@bell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: Shea Levy <shea@shealevy.com>
-To: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
- uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org,
- nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
- user-mode-linux-devel@lists.sourceforge.net
-Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20180324174458.26423-1-shea@shealevy.com>
-List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
-List-Post: <mailto:linux-snps-arc@lists.infradead.org>
-List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Cc: debian-hppa@lists.debian.org
+To: John David Anglin <dave.anglin@bell.net>, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
+In-Reply-To: <a189ed45-af4b-e6cc-db2c-ce50fa706c72@bell.net>
+Resent-Message-ID: <nQZjHoxRDIP.A.oQF.1KrtaB@bendel>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-URL: <https://lists.debian.org/debian-hppa/>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: https://lists.debian.org/msgid-search/20180324201825.GA22115@ls3530.fritz.box
 
-Signed-off-by: Shea Levy <shea@shealevy.com>
----
- arch/powerpc/Kconfig  | 1 +
- arch/powerpc/mm/mem.c | 7 -------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+Make sure that the HPMC (High Priority Machine Check) handler is 16-byte
+aligned and that it's length in the IVT is a multiple of 16 bytes.
+Otherwise PDC may decide not to call the HPMC crash handler.
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 73ce5dd07642..8cf384068e79 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -223,6 +223,7 @@ config PPC
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_VIRT_CPU_ACCOUNTING
- 	select HAVE_IRQ_TIME_ACCOUNTING
-+	select INITRAMFS_GENERIC_UNLOAD
- 	select IRQ_DOMAIN
- 	select IRQ_FORCED_THREADING
- 	select MODULES_USE_ELF_RELA
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index fe8c61149fb8..e85b2a3cd264 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -404,13 +404,6 @@ void free_initmem(void)
- 	free_initmem_default(POISON_FREE_INITMEM);
- }
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: stable@vger.kernel.org
+
+diff --git a/arch/parisc/kernel/hpmc.S b/arch/parisc/kernel/hpmc.S
+index 8d072c44f300..781c3b9a3e46 100644
+--- a/arch/parisc/kernel/hpmc.S
++++ b/arch/parisc/kernel/hpmc.S
+@@ -84,6 +84,7 @@ END(hpmc_pim_data)
+ 	.text
  
--#ifdef CONFIG_BLK_DEV_INITRD
--void __init free_initrd_mem(unsigned long start, unsigned long end)
--{
--	free_reserved_area((void *)start, (void *)end, -1, "initrd");
--}
--#endif
--
- /*
-  * This is called when a page has been modified by the kernel.
-  * It just marks the page as not i-cache clean.  We do the i-cache
--- 
-2.16.2
+ 	.import intr_save, code
++	.align 16
+ ENTRY_CFI(os_hpmc)
+ .os_hpmc:
+ 
+@@ -300,12 +301,15 @@ os_hpmc_6:
+ 
+ 	b .
+ 	nop
++	.align 16	/* make function length multiple of 16 bytes */
+ ENDPROC_CFI(os_hpmc)
+ .os_hpmc_end:
+ 
+ 
+ 	__INITRODATA
++.globl os_hpmc_size
+ 	.align 4
+-	.export os_hpmc_size
++	.type   os_hpmc_size, @object
++	.size   os_hpmc_size, 4
+ os_hpmc_size:
+ 	.word .os_hpmc_end-.os_hpmc
