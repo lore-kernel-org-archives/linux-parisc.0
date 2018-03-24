@@ -1,7 +1,7 @@
 From: Shea Levy <shea@shealevy.com>
-Subject: [PATCH 12/16] openrisc: Use INITRAMFS_GENERIC_UNLOAD
-Date: Sat, 24 Mar 2018 13:44:54 -0400
-Message-ID: <20180324174458.26423-13-shea@shealevy.com>
+Subject: [PATCH 14/16] powerpc: Use INITRAMFS_GENERIC_UNLOAD
+Date: Sat, 24 Mar 2018 13:44:56 -0400
+Message-ID: <20180324174458.26423-15-shea@shealevy.com>
 References: <20180324174458.26423-1-shea@shealevy.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -27,39 +27,39 @@ Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead
 
 Signed-off-by: Shea Levy <shea@shealevy.com>
 ---
- arch/openrisc/Kconfig   | 1 +
- arch/openrisc/mm/init.c | 7 -------
+ arch/powerpc/Kconfig  | 1 +
+ arch/powerpc/mm/mem.c | 7 -------
  2 files changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
-index dfb6a79ba7ff..0f8d2132baa5 100644
---- a/arch/openrisc/Kconfig
-+++ b/arch/openrisc/Kconfig
-@@ -36,6 +36,7 @@ config OPENRISC
- 	select OMPIC if SMP
- 	select ARCH_WANT_FRAME_POINTERS
- 	select GENERIC_IRQ_MULTI_HANDLER
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 73ce5dd07642..8cf384068e79 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -223,6 +223,7 @@ config PPC
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select HAVE_VIRT_CPU_ACCOUNTING
+ 	select HAVE_IRQ_TIME_ACCOUNTING
 +	select INITRAMFS_GENERIC_UNLOAD
- 
- config CPU_BIG_ENDIAN
- 	def_bool y
-diff --git a/arch/openrisc/mm/init.c b/arch/openrisc/mm/init.c
-index 6972d5d6f23f..c1a3dcf9ad40 100644
---- a/arch/openrisc/mm/init.c
-+++ b/arch/openrisc/mm/init.c
-@@ -222,13 +222,6 @@ void __init mem_init(void)
- 	return;
+ 	select IRQ_DOMAIN
+ 	select IRQ_FORCED_THREADING
+ 	select MODULES_USE_ELF_RELA
+diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
+index fe8c61149fb8..e85b2a3cd264 100644
+--- a/arch/powerpc/mm/mem.c
++++ b/arch/powerpc/mm/mem.c
+@@ -404,13 +404,6 @@ void free_initmem(void)
+ 	free_initmem_default(POISON_FREE_INITMEM);
  }
  
 -#ifdef CONFIG_BLK_DEV_INITRD
--void free_initrd_mem(unsigned long start, unsigned long end)
+-void __init free_initrd_mem(unsigned long start, unsigned long end)
 -{
 -	free_reserved_area((void *)start, (void *)end, -1, "initrd");
 -}
 -#endif
 -
- void free_initmem(void)
- {
- 	free_initmem_default(-1);
+ /*
+  * This is called when a page has been modified by the kernel.
+  * It just marks the page as not i-cache clean.  We do the i-cache
 -- 
 2.16.2
