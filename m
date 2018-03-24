@@ -1,70 +1,55 @@
-From: LEROY Christophe <christophe.leroy@c-s.fr>
-Subject: Re: [PATCH 01/16] initrd: Add generic code path for common initrd
- unloading logic.
-Date: Sun, 25 Mar 2018 19:17:40 +0200
-Message-ID: <20180325191740.Horde.Cymi0yr0xcQQV1s42wkNkg2@messagerie.si.c-s.fr>
-References: <20180324174458.26423-1-shea@shealevy.com>
- <20180324174458.26423-2-shea@shealevy.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] ipmi/parisc: Add IPMI chassis poweroff
+ for certain HP PA-RISC servers
+Date: Sat, 24 Mar 2018 20:45:04 +0100
+Message-ID: <20180324194504.GA10210@ls3530.fritz.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
-Cc: user-mode-linux-devel@lists.sourceforge.net,
-        linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
-        openrisc@lists.librecores.org, nios2-dev@lists.rocketboards.org,
-        linux-m68k@lists.linux-m68k.org,
-        uclinux-h8-devel@lists.sourceforge.jp, linux-c6x-dev@linux-c6x.org,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-alpha@vger.kernel.org
-To: Shea Levy <shea@shealevy.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180324174458.26423-2-shea@shealevy.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: linux-parisc@vger.kernel.org, Corey Minyard <minyard@acm.org>,
+ openipmi-developer@lists.sourceforge.net,
+ James Bottomley <James.Bottomley@HansenPartnership.com>,
+ John David Anglin <dave.anglin@bell.net>
+Return-path: <openipmi-developer-bounces@lists.sourceforge.net>
+List-Id: Developer list of OpenIPMI library and Linux driver
+ <openipmi-developer.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/openipmi-developer>,
+ <mailto:openipmi-developer-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=openipmi-developer>
+List-Post: <mailto:openipmi-developer@lists.sourceforge.net>
+List-Help: <mailto:openipmi-developer-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/openipmi-developer>,
+ <mailto:openipmi-developer-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: openipmi-developer-bounces@lists.sourceforge.net
 
-Shea Levy <shea@shealevy.com> a écrit :
+This patch allows HP PA-RISC servers like rp3410/rp3440 and the HP C8000
+workstation with an IPMI controller that predate IPMI 1.5 to use the standard
+poweroff or powercycle commands.
 
-> Signed-off-by: Shea Levy <shea@shealevy.com>
-> ---
->  init/initramfs.c | 7 +++++++
->  usr/Kconfig      | 4 ++++
->  2 files changed, 11 insertions(+)
->
-> diff --git a/init/initramfs.c b/init/initramfs.c
-> index 7e99a0038942..de5ce873eb5a 100644
-> --- a/init/initramfs.c
-> +++ b/init/initramfs.c
-> @@ -526,6 +526,13 @@ extern unsigned long __initramfs_size;
->  #include <linux/initrd.h>
->  #include <linux/kexec.h>
->
-> +#ifdef CONFIG_INITRAMFS_GENERIC_UNLOAD
-> +void free_initrd_mem(unsigned long start, unsigned long end)
-> +{
-> +       free_reserved_area((void *)start, (void *)end, -1, "initrd");
-> +}
-> +#endif
+These systems firmware don't set the chassis capability bit in the Get
+Device ID, but they do implement the standard poweroff and powercycle
+commands.
 
-In powerpc this was an __init function. Why not also put the generic  
-one in __init section ?
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Christophe
+diff --git a/drivers/char/ipmi/ipmi_poweroff.c b/drivers/char/ipmi/ipmi_poweroff.c
+index 38e6af1c8e38..09f34ea370da 100644
+--- a/drivers/char/ipmi/ipmi_poweroff.c
++++ b/drivers/char/ipmi/ipmi_poweroff.c
+@@ -453,6 +453,13 @@ static int ipmi_dell_chassis_detect(ipmi_user_t user)
+ 	    ipmi_version_major <= 1 &&
+ 	    ipmi_version_minor < 5)
+ 		return 1;
++
++	/* BMC in HP C8000 can handle chassis functions too. */
++	if (IS_ENABLED(CONFIG_PARISC) &&
++	    mfg_id == 0x0b && prod_id == 0x8201 &&
++	    ipmi_version == 1)
++		return 1;
++
+ 	return 0;
+ }
+ 
 
-
-> +
->  static void __init free_initrd(void)
->  {
->  #ifdef CONFIG_KEXEC_CORE
-> diff --git a/usr/Kconfig b/usr/Kconfig
-> index 43658b8a975e..fd79d4d6fa26 100644
-> --- a/usr/Kconfig
-> +++ b/usr/Kconfig
-> @@ -233,3 +233,7 @@ config INITRAMFS_COMPRESSION
->  	default ".lzma" if RD_LZMA
->  	default ".bz2"  if RD_BZIP2
->  	default ""
-> +
-> +# Arches can select this for a generic initrd unloading codepath
-> +config INITRAMFS_GENERIC_UNLOAD
-> +	bool
-> --
-> 2.16.2
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, Slashdot.org! http://sdm.link/slashdot
