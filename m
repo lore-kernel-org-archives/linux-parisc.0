@@ -1,64 +1,70 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [RFC][PATCH v2] Fix HPMC handler by increasing size to multiple
- of 16 bytes
-Date: Sat, 24 Mar 2018 21:18:25 +0100
-Message-ID: <20180324201825.GA22115@ls3530.fritz.box>
-References: <CA+QBN9DxM5PYCnPJCRtgxQ8xGk75=jAtsE+VibUfFOv+Yah6Og@mail.gmail.com>
- <CA+QBN9D9vUA7Q=Sd=moi+bSAkQjGQ6nGa8wnb1=7qHudAY8L8g@mail.gmail.com>
- <20180317113655.GA30572@ls3530.fritz.box>
- <81f118a7-5bc5-c6b2-eb10-a9c683c72a26@bell.net>
- <20180319222353.GA28132@ls3530.fritz.box>
- <a189ed45-af4b-e6cc-db2c-ce50fa706c72@bell.net>
+From: LEROY Christophe <christophe.leroy@c-s.fr>
+Subject: Re: [PATCH 01/16] initrd: Add generic code path for common initrd
+ unloading logic.
+Date: Sun, 25 Mar 2018 19:17:40 +0200
+Message-ID: <20180325191740.Horde.Cymi0yr0xcQQV1s42wkNkg2@messagerie.si.c-s.fr>
+References: <20180324174458.26423-1-shea@shealevy.com>
+ <20180324174458.26423-2-shea@shealevy.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: debian-hppa@lists.debian.org
-To: John David Anglin <dave.anglin@bell.net>, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@HansenPartnership.com>
-Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
-In-Reply-To: <a189ed45-af4b-e6cc-db2c-ce50fa706c72@bell.net>
-Resent-Message-ID: <nQZjHoxRDIP.A.oQF.1KrtaB@bendel>
+Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
+Cc: user-mode-linux-devel@lists.sourceforge.net,
+        linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
+        openrisc@lists.librecores.org, nios2-dev@lists.rocketboards.org,
+        linux-m68k@lists.linux-m68k.org,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-c6x-dev@linux-c6x.org,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-alpha@vger.kernel.org
+To: Shea Levy <shea@shealevy.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180324174458.26423-2-shea@shealevy.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-URL: <https://lists.debian.org/debian-hppa/>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
-List-Archive: https://lists.debian.org/msgid-search/20180324201825.GA22115@ls3530.fritz.box
 
-Make sure that the HPMC (High Priority Machine Check) handler is 16-byte
-aligned and that it's length in the IVT is a multiple of 16 bytes.
-Otherwise PDC may decide not to call the HPMC crash handler.
+Shea Levy <shea@shealevy.com> a écrit :
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: stable@vger.kernel.org
+> Signed-off-by: Shea Levy <shea@shealevy.com>
+> ---
+>  init/initramfs.c | 7 +++++++
+>  usr/Kconfig      | 4 ++++
+>  2 files changed, 11 insertions(+)
+>
+> diff --git a/init/initramfs.c b/init/initramfs.c
+> index 7e99a0038942..de5ce873eb5a 100644
+> --- a/init/initramfs.c
+> +++ b/init/initramfs.c
+> @@ -526,6 +526,13 @@ extern unsigned long __initramfs_size;
+>  #include <linux/initrd.h>
+>  #include <linux/kexec.h>
+>
+> +#ifdef CONFIG_INITRAMFS_GENERIC_UNLOAD
+> +void free_initrd_mem(unsigned long start, unsigned long end)
+> +{
+> +       free_reserved_area((void *)start, (void *)end, -1, "initrd");
+> +}
+> +#endif
 
-diff --git a/arch/parisc/kernel/hpmc.S b/arch/parisc/kernel/hpmc.S
-index 8d072c44f300..781c3b9a3e46 100644
---- a/arch/parisc/kernel/hpmc.S
-+++ b/arch/parisc/kernel/hpmc.S
-@@ -84,6 +84,7 @@ END(hpmc_pim_data)
- 	.text
- 
- 	.import intr_save, code
-+	.align 16
- ENTRY_CFI(os_hpmc)
- .os_hpmc:
- 
-@@ -300,12 +301,15 @@ os_hpmc_6:
- 
- 	b .
- 	nop
-+	.align 16	/* make function length multiple of 16 bytes */
- ENDPROC_CFI(os_hpmc)
- .os_hpmc_end:
- 
- 
- 	__INITRODATA
-+.globl os_hpmc_size
- 	.align 4
--	.export os_hpmc_size
-+	.type   os_hpmc_size, @object
-+	.size   os_hpmc_size, 4
- os_hpmc_size:
- 	.word .os_hpmc_end-.os_hpmc
+In powerpc this was an __init function. Why not also put the generic  
+one in __init section ?
+
+Christophe
+
+
+> +
+>  static void __init free_initrd(void)
+>  {
+>  #ifdef CONFIG_KEXEC_CORE
+> diff --git a/usr/Kconfig b/usr/Kconfig
+> index 43658b8a975e..fd79d4d6fa26 100644
+> --- a/usr/Kconfig
+> +++ b/usr/Kconfig
+> @@ -233,3 +233,7 @@ config INITRAMFS_COMPRESSION
+>  	default ".lzma" if RD_LZMA
+>  	default ".bz2"  if RD_BZIP2
+>  	default ""
+> +
+> +# Arches can select this for a generic initrd unloading codepath
+> +config INITRAMFS_GENERIC_UNLOAD
+> +	bool
+> --
+> 2.16.2
