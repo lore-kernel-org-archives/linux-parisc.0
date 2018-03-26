@@ -1,65 +1,45 @@
-From: Michal Hocko <mhocko@kernel.org>
-Subject: Re: [RFC PATCH v2 0/2] Randomization of address chosen by mmap.
-Date: Mon, 26 Mar 2018 10:46:50 +0200
-Message-ID: <20180326084650.GC5652@dhcp22.suse.cz>
-References: <1521736598-12812-1-git-send-email-blackzert@gmail.com>
- <20180323124806.GA5624@bombadil.infradead.org>
- <651E0DB6-4507-4DA1-AD46-9C26ED9792A8@gmail.com>
+From: Matt Turner <mattst88@gmail.com>
+Subject: Re: [PATCH] ipmi/parisc: Add IPMI chassis
+ poweroff for certain HP PA-RISC servers
+Date: Mon, 26 Mar 2018 11:43:42 -0700
+Message-ID: <CAEdQ38EoCOOpwnAPRuHXba0TqZgiZMsd6yo01UjQuKfNsh8HRQ@mail.gmail.com>
+References: <20180324194504.GA10210@ls3530.fritz.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Matthew Wilcox <willy@infradead.org>, rth@twiddle.net,
-        ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@synopsys.com,
-        linux@armlinux.org.uk, tony.luck@intel.com, fenghua.yu@intel.com,
-        ralf@linux-mips.org, jejb@parisc-linux.org,
-        Helge Deller <deller@gmx.de>, benh@kernel.crashing.org,
-        paulus@samba.org, mpe@ellerman.id.au, schwidefsky@de.ibm.com,
-        heiko.carstens@de.ibm.com, ysato@users.sourceforge.jp,
-        dalias@libc.org, davem@davemloft.net, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org,
-        nyc@holomorphy.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
-        gregkh@linuxfoundation.org, deepa.kernel@gmail.com,
-        Hugh Dickins <hughd@google.com>, kstewart@linuxfoundation.org,
-        pombredanne@nexb.com, Andrew Morton <akpm@linux-foundation.org>,
-        steve.capper@arm.com, punit.agrawal@arm.
-To: Ilya Smith <blackzert@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <651E0DB6-4507-4DA1-AD46-9C26ED9792A8@gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
+ openipmi-developer@lists.sourceforge.net,
+ John David Anglin <dave.anglin@bell.net>, Corey Minyard <minyard@acm.org>,
+ linux-parisc <linux-parisc@vger.kernel.org>
+To: Helge Deller <deller@gmx.de>
+Return-path: <openipmi-developer-bounces@lists.sourceforge.net>
+In-Reply-To: <20180324194504.GA10210@ls3530.fritz.box>
+List-Id: Developer list of OpenIPMI library and Linux driver
+ <openipmi-developer.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/openipmi-developer>,
+ <mailto:openipmi-developer-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=openipmi-developer>
+List-Post: <mailto:openipmi-developer@lists.sourceforge.net>
+List-Help: <mailto:openipmi-developer-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/openipmi-developer>,
+ <mailto:openipmi-developer-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: openipmi-developer-bounces@lists.sourceforge.net
 
-On Fri 23-03-18 20:55:49, Ilya Smith wrote:
-> 
-> > On 23 Mar 2018, at 15:48, Matthew Wilcox <willy@infradead.org> wrote:
-> > 
-> > On Thu, Mar 22, 2018 at 07:36:36PM +0300, Ilya Smith wrote:
-> >> Current implementation doesn't randomize address returned by mmap.
-> >> All the entropy ends with choosing mmap_base_addr at the process
-> >> creation. After that mmap build very predictable layout of address
-> >> space. It allows to bypass ASLR in many cases. This patch make
-> >> randomization of address on any mmap call.
-> > 
-> > Why should this be done in the kernel rather than libc?  libc is perfectly
-> > capable of specifying random numbers in the first argument of mmap.
-> Well, there is following reasons:
-> 1. It should be done in any libc implementation, what is not possible IMO;
+On Sat, Mar 24, 2018 at 12:45 PM, Helge Deller <deller@gmx.de> wrote:
+> This patch allows HP PA-RISC servers like rp3410/rp3440 and the HP C8000
+> workstation with an IPMI controller that predate IPMI 1.5 to use the standard
+> poweroff or powercycle commands.
+>
+> These systems firmware don't set the chassis capability bit in the Get
+> Device ID, but they do implement the standard poweroff and powercycle
+> commands.
+>
+> Signed-off-by: Helge Deller <deller@gmx.de>
 
-Is this really so helpful?
+Thanks. I applied your three patches relating to power off and my
+C8000 now properly powers off (surprise surprise! :)
 
-> 2. User mode is not that layer which should be responsible for choosing
-> random address or handling entropy;
+Tested-by: Matt Turner <mattst88@gmail.com>
 
-Why?
-
-> 3. Memory fragmentation is unpredictable in this case
-> 
-> Off course user mode could use random ‘hint’ address, but kernel may
-> discard this address if it is occupied for example and allocate just before
-> closest vma. So this solution doesn’t give that much security like 
-> randomization address inside kernel.
-
-The userspace can use the new MAP_FIXED_NOREPLACE to probe for the
-address range atomically and chose a different range on failure.
-
--- 
-Michal Hocko
-SUSE Labs
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, Slashdot.org! http://sdm.link/slashdot
