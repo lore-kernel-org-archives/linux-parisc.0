@@ -1,19 +1,21 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH v2] ipmi/parisc: Add IPMI chassis
+From: Corey Minyard <minyard@acm.org>
+Subject: Re: [PATCH v2] ipmi/parisc: Add IPMI chassis
  poweroff for certain HP PA-RISC and IA-64 servers
-Date: Tue, 27 Mar 2018 17:58:32 +0200
-Message-ID: <20180327155832.GA19408@ls3530.fritz.box>
+Date: Tue, 27 Mar 2018 11:05:17 -0500
+Message-ID: <45a3f748-0485-442b-6b6f-6dac49b89990@acm.org>
 References: <20180324194504.GA10210@ls3530.fritz.box>
  <54f020d1-55a1-e1a5-88c3-cb9cbf7add9c@acm.org>
  <69751fab-c471-4d3a-257a-0001425d5821@gmx.de>
+ <20180327155832.GA19408@ls3530.fritz.box>
+Reply-To: minyard@acm.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
  John David Anglin <dave.anglin@bell.net>, linux-parisc@vger.kernel.org
-To: minyard@acm.org, openipmi-developer@lists.sourceforge.net,
+To: Helge Deller <deller@gmx.de>, openipmi-developer@lists.sourceforge.net,
  Matt Turner <mattst88@gmail.com>
 Return-path: <openipmi-developer-bounces@lists.sourceforge.net>
-In-Reply-To: <69751fab-c471-4d3a-257a-0001425d5821@gmx.de>
+In-Reply-To: <20180327155832.GA19408@ls3530.fritz.box>
 List-Id: Developer list of OpenIPMI library and Linux driver
  <openipmi-developer.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/options/openipmi-developer>,
@@ -25,56 +27,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/openipmi-developer
  <mailto:openipmi-developer-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: openipmi-developer-bounces@lists.sourceforge.net
 
-This patch allows HP PA-RISC servers like rp3410/rp3440 and the HP C8000
-workstation with an IPMI controller that predate IPMI 1.5 to use the standard
-poweroff or powercycle commands.
-
-These systems firmware don't set the chassis capability bit in the Get
-Device ID, but they do implement the standard poweroff and powercycle
-commands.
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/drivers/char/ipmi/ipmi_poweroff.c b/drivers/char/ipmi/ipmi_poweroff.c
-index 38e6af1c8e38..943c8bc1c364 100644
---- a/drivers/char/ipmi/ipmi_poweroff.c
-+++ b/drivers/char/ipmi/ipmi_poweroff.c
-@@ -457,6 +457,24 @@ static int ipmi_dell_chassis_detect(ipmi_user_t user)
- }
- 
- /*
-+ * ipmi_hp_chassis_detect()
-+ * HP PA-RISC servers rp3410/rp3440, the C8000 workstation and the rx2600 and
-+ * zx6000 machines support IPMI vers 1 and don't set the chassis capability bit
-+ * but they can handle a chassis poweroff or powercycle command.
-+ */
-+
-+#define HP_IANA_MFR_ID 0x0b
-+#define HP_BMC_PROD_ID 0x8201
-+static int ipmi_hp_chassis_detect(ipmi_user_t user)
-+{
-+	if (mfg_id == HP_IANA_MFR_ID
-+		&& prod_id == HP_BMC_PROD_ID
-+		&& ipmi_version == 1)
-+		return 1;
-+	return 0;
-+}
-+
-+/*
-  * Standard chassis support
-  */
- 
-@@ -533,6 +551,9 @@ static struct poweroff_function poweroff_functions[] = {
- 	{ .platform_type	= "chassis",
- 	  .detect		= ipmi_dell_chassis_detect,
- 	  .poweroff_func	= ipmi_poweroff_chassis },
-+	{ .platform_type	= "chassis",
-+	  .detect		= ipmi_hp_chassis_detect,
-+	  .poweroff_func	= ipmi_poweroff_chassis },
- 	/* Chassis should generally be last, other things should override
- 	   it. */
- 	{ .platform_type	= "chassis",
-
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most
-engaging tech sites, Slashdot.org! http://sdm.link/slashdot
+T24gMDMvMjcvMjAxOCAxMDo1OCBBTSwgSGVsZ2UgRGVsbGVyIHdyb3RlOgo+IFRoaXMgcGF0Y2gg
+YWxsb3dzIEhQIFBBLVJJU0Mgc2VydmVycyBsaWtlIHJwMzQxMC9ycDM0NDAgYW5kIHRoZSBIUCBD
+ODAwMAo+IHdvcmtzdGF0aW9uIHdpdGggYW4gSVBNSSBjb250cm9sbGVyIHRoYXQgcHJlZGF0ZSBJ
+UE1JIDEuNSB0byB1c2UgdGhlIHN0YW5kYXJkCj4gcG93ZXJvZmYgb3IgcG93ZXJjeWNsZSBjb21t
+YW5kcy4KPgo+IFRoZXNlIHN5c3RlbXMgZmlybXdhcmUgZG9uJ3Qgc2V0IHRoZSBjaGFzc2lzIGNh
+cGFiaWxpdHkgYml0IGluIHRoZSBHZXQKPiBEZXZpY2UgSUQsIGJ1dCB0aGV5IGRvIGltcGxlbWVu
+dCB0aGUgc3RhbmRhcmQgcG93ZXJvZmYgYW5kIHBvd2VyY3ljbGUKPiBjb21tYW5kcy4KClBlcmZl
+Y3QsIHRoYW5rcyBmb3IgdGhlIHVwZGF0ZS7CoCBJbmNsdWRlZCBmb3IgbmV4dCByZWxlYXNlLgoK
+LWNvcmV5Cgo+IFNpZ25lZC1vZmYtYnk6IEhlbGdlIERlbGxlciA8ZGVsbGVyQGdteC5kZT4KPgo+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2NoYXIvaXBtaS9pcG1pX3Bvd2Vyb2ZmLmMgYi9kcml2ZXJz
+L2NoYXIvaXBtaS9pcG1pX3Bvd2Vyb2ZmLmMKPiBpbmRleCAzOGU2YWYxYzhlMzguLjk0M2M4YmMx
+YzM2NCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2NoYXIvaXBtaS9pcG1pX3Bvd2Vyb2ZmLmMKPiAr
+KysgYi9kcml2ZXJzL2NoYXIvaXBtaS9pcG1pX3Bvd2Vyb2ZmLmMKPiBAQCAtNDU3LDYgKzQ1Nywy
+NCBAQCBzdGF0aWMgaW50IGlwbWlfZGVsbF9jaGFzc2lzX2RldGVjdChpcG1pX3VzZXJfdCB1c2Vy
+KQo+ICAgfQo+ICAgCj4gICAvKgo+ICsgKiBpcG1pX2hwX2NoYXNzaXNfZGV0ZWN0KCkKPiArICog
+SFAgUEEtUklTQyBzZXJ2ZXJzIHJwMzQxMC9ycDM0NDAsIHRoZSBDODAwMCB3b3Jrc3RhdGlvbiBh
+bmQgdGhlIHJ4MjYwMCBhbmQKPiArICogeng2MDAwIG1hY2hpbmVzIHN1cHBvcnQgSVBNSSB2ZXJz
+IDEgYW5kIGRvbid0IHNldCB0aGUgY2hhc3NpcyBjYXBhYmlsaXR5IGJpdAo+ICsgKiBidXQgdGhl
+eSBjYW4gaGFuZGxlIGEgY2hhc3NpcyBwb3dlcm9mZiBvciBwb3dlcmN5Y2xlIGNvbW1hbmQuCj4g
+KyAqLwo+ICsKPiArI2RlZmluZSBIUF9JQU5BX01GUl9JRCAweDBiCj4gKyNkZWZpbmUgSFBfQk1D
+X1BST0RfSUQgMHg4MjAxCj4gK3N0YXRpYyBpbnQgaXBtaV9ocF9jaGFzc2lzX2RldGVjdChpcG1p
+X3VzZXJfdCB1c2VyKQo+ICt7Cj4gKwlpZiAobWZnX2lkID09IEhQX0lBTkFfTUZSX0lECj4gKwkJ
+JiYgcHJvZF9pZCA9PSBIUF9CTUNfUFJPRF9JRAo+ICsJCSYmIGlwbWlfdmVyc2lvbiA9PSAxKQo+
+ICsJCXJldHVybiAxOwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gKy8qCj4gICAgKiBTdGFuZGFy
+ZCBjaGFzc2lzIHN1cHBvcnQKPiAgICAqLwo+ICAgCj4gQEAgLTUzMyw2ICs1NTEsOSBAQCBzdGF0
+aWMgc3RydWN0IHBvd2Vyb2ZmX2Z1bmN0aW9uIHBvd2Vyb2ZmX2Z1bmN0aW9uc1tdID0gewo+ICAg
+CXsgLnBsYXRmb3JtX3R5cGUJPSAiY2hhc3NpcyIsCj4gICAJICAuZGV0ZWN0CQk9IGlwbWlfZGVs
+bF9jaGFzc2lzX2RldGVjdCwKPiAgIAkgIC5wb3dlcm9mZl9mdW5jCT0gaXBtaV9wb3dlcm9mZl9j
+aGFzc2lzIH0sCj4gKwl7IC5wbGF0Zm9ybV90eXBlCT0gImNoYXNzaXMiLAo+ICsJICAuZGV0ZWN0
+CQk9IGlwbWlfaHBfY2hhc3Npc19kZXRlY3QsCj4gKwkgIC5wb3dlcm9mZl9mdW5jCT0gaXBtaV9w
+b3dlcm9mZl9jaGFzc2lzIH0sCj4gICAJLyogQ2hhc3NpcyBzaG91bGQgZ2VuZXJhbGx5IGJlIGxh
+c3QsIG90aGVyIHRoaW5ncyBzaG91bGQgb3ZlcnJpZGUKPiAgIAkgICBpdC4gKi8KPiAgIAl7IC5w
+bGF0Zm9ybV90eXBlCT0gImNoYXNzaXMiLAoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ2hlY2sg
+b3V0IHRoZSB2aWJyYW50IHRlY2ggY29tbXVuaXR5IG9uIG9uZSBvZiB0aGUgd29ybGQncyBtb3N0
+CmVuZ2FnaW5nIHRlY2ggc2l0ZXMsIFNsYXNoZG90Lm9yZyEgaHR0cDovL3NkbS5saW5rL3NsYXNo
+ZG90Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCk9wZW5p
+cG1pLWRldmVsb3BlciBtYWlsaW5nIGxpc3QKT3BlbmlwbWktZGV2ZWxvcGVyQGxpc3RzLnNvdXJj
+ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9v
+cGVuaXBtaS1kZXZlbG9wZXIK
