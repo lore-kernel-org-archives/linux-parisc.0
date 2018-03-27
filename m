@@ -1,18 +1,19 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] ipmi/parisc: Add IPMI chassis
- poweroff for certain HP PA-RISC servers
-Date: Tue, 27 Mar 2018 17:31:53 +0200
-Message-ID: <69751fab-c471-4d3a-257a-0001425d5821@gmx.de>
+Subject: [PATCH v2] ipmi/parisc: Add IPMI chassis
+ poweroff for certain HP PA-RISC and IA-64 servers
+Date: Tue, 27 Mar 2018 17:58:32 +0200
+Message-ID: <20180327155832.GA19408@ls3530.fritz.box>
 References: <20180324194504.GA10210@ls3530.fritz.box>
  <54f020d1-55a1-e1a5-88c3-cb9cbf7add9c@acm.org>
+ <69751fab-c471-4d3a-257a-0001425d5821@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-To: minyard@acm.org, linux-parisc@vger.kernel.org,
- openipmi-developer@lists.sourceforge.net,
- James Bottomley <James.Bottomley@HansenPartnership.com>,
- John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset="us-ascii"
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
+ John David Anglin <dave.anglin@bell.net>, linux-parisc@vger.kernel.org
+To: minyard@acm.org, openipmi-developer@lists.sourceforge.net,
+ Matt Turner <mattst88@gmail.com>
 Return-path: <openipmi-developer-bounces@lists.sourceforge.net>
-In-Reply-To: <54f020d1-55a1-e1a5-88c3-cb9cbf7add9c@acm.org>
+In-Reply-To: <69751fab-c471-4d3a-257a-0001425d5821@gmx.de>
 List-Id: Developer list of OpenIPMI library and Linux driver
  <openipmi-developer.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/options/openipmi-developer>,
@@ -24,41 +25,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/openipmi-developer
  <mailto:openipmi-developer-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: openipmi-developer-bounces@lists.sourceforge.net
 
-T24gMjcuMDMuMjAxOCAxNToxNiwgQ29yZXkgTWlueWFyZCB3cm90ZToKPiBPbiAwMy8yNC8yMDE4
-IDAyOjQ1IFBNLCBIZWxnZSBEZWxsZXIgd3JvdGU6Cj4+IFRoaXMgcGF0Y2ggYWxsb3dzIEhQIFBB
-LVJJU0Mgc2VydmVycyBsaWtlIHJwMzQxMC9ycDM0NDAgYW5kIHRoZSBIUCBDODAwMAo+PiB3b3Jr
-c3RhdGlvbiB3aXRoIGFuIElQTUkgY29udHJvbGxlciB0aGF0IHByZWRhdGUgSVBNSSAxLjUgdG8g
-dXNlIHRoZSBzdGFuZGFyZAo+PiBwb3dlcm9mZiBvciBwb3dlcmN5Y2xlIGNvbW1hbmRzLgo+Pgo+
-PiBUaGVzZSBzeXN0ZW1zIGZpcm13YXJlIGRvbid0IHNldCB0aGUgY2hhc3NpcyBjYXBhYmlsaXR5
-IGJpdCBpbiB0aGUgR2V0Cj4+IERldmljZSBJRCwgYnV0IHRoZXkgZG8gaW1wbGVtZW50IHRoZSBz
-dGFuZGFyZCBwb3dlcm9mZiBhbmQgcG93ZXJjeWNsZQo+PiBjb21tYW5kcy4KPiAKPiBBIGZldyBj
-b21tZW50cyBvbiB0aGlzOgo+IAo+IFRoYXQgZnVuY3Rpb24gaXMgbmFtZWQgaXBtaV9kZWxsX2No
-YXNzaXNfZGV0ZWN0KCksIGp1c3QgYWRkaW5nIGEgSFAKPiBjaGFzc2lzIHRvIGl0IGRvZXNuJ3Qg
-c2VlbSBsaWtlIGEgZ29vZCBpZGVhLsKgIFRoZXJlIGlzIGFscmVhZHkgYW4gYXJyYXkKPiBvZiBw
-b3dlcm9mZiBmdW5jdGlvbnMsIHBsZWFzZSB1c2UgdGhhdCBhbmQgY3JlYXRlIHlvdXIgb3duIGZ1
-bmN0aW9uLgo+IFlvdSB3b3VsZCBoYXZlIHRvIHJlc3RydWN0dXJlIHRoZSBkZWxsIGZ1bmN0aW9u
-IHRvIG1ha2UgaXQgY2xlYW4sCj4gYW5kIEkgZG9uJ3Qgd2FudCB0byBkbyB0aGF0Lgo+IAo+IFRo
-ZSBDT05GSUdfUEFSSVNDIGNsYXVzZSBwcm9iYWJseSBkb2Vzbid0IG1hdHRlci4KPiAKPiBQbGVh
-c2UgY3JlYXRlIGRlZmluZXMgZm9yIHRoZSBtYWdpYyBudW1iZXJzLgoKTXkgaW50ZW50aW9uIHdh
-cyB0byBrZWVwIHRoZSBwYXRjaCBzbWFsbC4KQW55d2F5LCBJJ2xsIHJlc3BpbiBhIG5ldyBwYXRj
-aCB3aXRoIHlvdXIgc3VnZ2VzdGlvbnMuCgpUaGFua3MhCkhlbGdlCgoKPj4gU2lnbmVkLW9mZi1i
-eTogSGVsZ2UgRGVsbGVyIDxkZWxsZXJAZ214LmRlPgo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9jaGFyL2lwbWkvaXBtaV9wb3dlcm9mZi5jIGIvZHJpdmVycy9jaGFyL2lwbWkvaXBtaV9wb3dl
-cm9mZi5jCj4+IGluZGV4IDM4ZTZhZjFjOGUzOC4uMDlmMzRlYTM3MGRhIDEwMDY0NAo+PiAtLS0g
-YS9kcml2ZXJzL2NoYXIvaXBtaS9pcG1pX3Bvd2Vyb2ZmLmMKPj4gKysrIGIvZHJpdmVycy9jaGFy
-L2lwbWkvaXBtaV9wb3dlcm9mZi5jCj4+IEBAIC00NTMsNiArNDUzLDEzIEBAIHN0YXRpYyBpbnQg
-aXBtaV9kZWxsX2NoYXNzaXNfZGV0ZWN0KGlwbWlfdXNlcl90IHVzZXIpCj4+IMKgwqDCoMKgwqDC
-oMKgwqDCoCBpcG1pX3ZlcnNpb25fbWFqb3IgPD0gMSAmJgo+PiDCoMKgwqDCoMKgwqDCoMKgwqAg
-aXBtaV92ZXJzaW9uX21pbm9yIDwgNSkKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiAxOwo+
-PiArCj4+ICvCoMKgwqAgLyogQk1DIGluIEhQIEM4MDAwIGNhbiBoYW5kbGUgY2hhc3NpcyBmdW5j
-dGlvbnMgdG9vLiAqLwo+PiArwqDCoMKgIGlmIChJU19FTkFCTEVEKENPTkZJR19QQVJJU0MpICYm
-Cj4+ICvCoMKgwqDCoMKgwqDCoCBtZmdfaWQgPT0gMHgwYiAmJiBwcm9kX2lkID09IDB4ODIwMSAm
-Jgo+PiArwqDCoMKgwqDCoMKgwqAgaXBtaV92ZXJzaW9uID09IDEpCj4+ICvCoMKgwqDCoMKgwqDC
-oCByZXR1cm4gMTsKPj4gKwo+PiDCoMKgwqDCoMKgIHJldHVybiAwOwo+PiDCoCB9CgotLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0KQ2hlY2sgb3V0IHRoZSB2aWJyYW50IHRlY2ggY29tbXVuaXR5IG9uIG9u
-ZSBvZiB0aGUgd29ybGQncyBtb3N0CmVuZ2FnaW5nIHRlY2ggc2l0ZXMsIFNsYXNoZG90Lm9yZyEg
-aHR0cDovL3NkbS5saW5rL3NsYXNoZG90Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCk9wZW5pcG1pLWRldmVsb3BlciBtYWlsaW5nIGxpc3QKT3BlbmlwbWkt
-ZGV2ZWxvcGVyQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdl
-Lm5ldC9saXN0cy9saXN0aW5mby9vcGVuaXBtaS1kZXZlbG9wZXIK
+This patch allows HP PA-RISC servers like rp3410/rp3440 and the HP C8000
+workstation with an IPMI controller that predate IPMI 1.5 to use the standard
+poweroff or powercycle commands.
+
+These systems firmware don't set the chassis capability bit in the Get
+Device ID, but they do implement the standard poweroff and powercycle
+commands.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/drivers/char/ipmi/ipmi_poweroff.c b/drivers/char/ipmi/ipmi_poweroff.c
+index 38e6af1c8e38..943c8bc1c364 100644
+--- a/drivers/char/ipmi/ipmi_poweroff.c
++++ b/drivers/char/ipmi/ipmi_poweroff.c
+@@ -457,6 +457,24 @@ static int ipmi_dell_chassis_detect(ipmi_user_t user)
+ }
+ 
+ /*
++ * ipmi_hp_chassis_detect()
++ * HP PA-RISC servers rp3410/rp3440, the C8000 workstation and the rx2600 and
++ * zx6000 machines support IPMI vers 1 and don't set the chassis capability bit
++ * but they can handle a chassis poweroff or powercycle command.
++ */
++
++#define HP_IANA_MFR_ID 0x0b
++#define HP_BMC_PROD_ID 0x8201
++static int ipmi_hp_chassis_detect(ipmi_user_t user)
++{
++	if (mfg_id == HP_IANA_MFR_ID
++		&& prod_id == HP_BMC_PROD_ID
++		&& ipmi_version == 1)
++		return 1;
++	return 0;
++}
++
++/*
+  * Standard chassis support
+  */
+ 
+@@ -533,6 +551,9 @@ static struct poweroff_function poweroff_functions[] = {
+ 	{ .platform_type	= "chassis",
+ 	  .detect		= ipmi_dell_chassis_detect,
+ 	  .poweroff_func	= ipmi_poweroff_chassis },
++	{ .platform_type	= "chassis",
++	  .detect		= ipmi_hp_chassis_detect,
++	  .poweroff_func	= ipmi_poweroff_chassis },
+ 	/* Chassis should generally be last, other things should override
+ 	   it. */
+ 	{ .platform_type	= "chassis",
+
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, Slashdot.org! http://sdm.link/slashdot
