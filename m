@@ -1,94 +1,64 @@
-From: Michal Hocko <mhocko@kernel.org>
-Subject: Re: [RFC PATCH v2 0/2] Randomization of address chosen by mmap.
-Date: Tue, 27 Mar 2018 16:38:20 +0200
-Message-ID: <20180327143820.GH5652@dhcp22.suse.cz>
-References: <1521736598-12812-1-git-send-email-blackzert@gmail.com>
- <20180323124806.GA5624@bombadil.infradead.org>
- <651E0DB6-4507-4DA1-AD46-9C26ED9792A8@gmail.com>
- <20180326084650.GC5652@dhcp22.suse.cz>
- <01A133F4-27DF-4AE2-80D6-B0368BF758CD@gmail.com>
- <20180327072432.GY5652@dhcp22.suse.cz>
- <0549F29C-12FC-4401-9E85-A430BC11DA78@gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH] ipmi/parisc: Add IPMI chassis
+ poweroff for certain HP PA-RISC servers
+Date: Tue, 27 Mar 2018 17:31:53 +0200
+Message-ID: <69751fab-c471-4d3a-257a-0001425d5821@gmx.de>
+References: <20180324194504.GA10210@ls3530.fritz.box>
+ <54f020d1-55a1-e1a5-88c3-cb9cbf7add9c@acm.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Matthew Wilcox <willy@infradead.org>, rth@twiddle.net,
-        ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@synopsys.com,
-        linux@armlinux.org.uk, tony.luck@intel.com, fenghua.yu@intel.com,
-        ralf@linux-mips.org, jejb@parisc-linux.org,
-        Helge Deller <deller@gmx.de>, benh@kernel.crashing.org,
-        paulus@samba.org, mpe@ellerman.id.au, schwidefsky@de.ibm.com,
-        heiko.carstens@de.ibm.com, ysato@users.sourceforge.jp,
-        dalias@libc.org, davem@davemloft.net, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org,
-        nyc@holomorphy.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
-        gregkh@linuxfoundation.org, deepa.kernel@gmail.com,
-        Hugh Dickins <hughd@google.com>, kstewart@linuxfoundation.org,
-        pombredanne@nexb.com, Andrew Morton <akpm@linux-foundation.org>,
-        steve.capper@arm.com, punit.agrawal@arm.
-To: Ilya Smith <blackzert@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <0549F29C-12FC-4401-9E85-A430BC11DA78@gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: minyard@acm.org, linux-parisc@vger.kernel.org,
+ openipmi-developer@lists.sourceforge.net,
+ James Bottomley <James.Bottomley@HansenPartnership.com>,
+ John David Anglin <dave.anglin@bell.net>
+Return-path: <openipmi-developer-bounces@lists.sourceforge.net>
+In-Reply-To: <54f020d1-55a1-e1a5-88c3-cb9cbf7add9c@acm.org>
+List-Id: Developer list of OpenIPMI library and Linux driver
+ <openipmi-developer.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/openipmi-developer>,
+ <mailto:openipmi-developer-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=openipmi-developer>
+List-Post: <mailto:openipmi-developer@lists.sourceforge.net>
+List-Help: <mailto:openipmi-developer-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/openipmi-developer>,
+ <mailto:openipmi-developer-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: openipmi-developer-bounces@lists.sourceforge.net
 
-On Tue 27-03-18 16:51:08, Ilya Smith wrote:
-> 
-> > On 27 Mar 2018, at 10:24, Michal Hocko <mhocko@kernel.org> wrote:
-> > 
-> > On Mon 26-03-18 22:45:31, Ilya Smith wrote:
-> >> 
-> >>> On 26 Mar 2018, at 11:46, Michal Hocko <mhocko@kernel.org> wrote:
-> >>> 
-> >>> On Fri 23-03-18 20:55:49, Ilya Smith wrote:
-> >>>> 
-> >>>>> On 23 Mar 2018, at 15:48, Matthew Wilcox <willy@infradead.org> wrote:
-> >>>>> 
-> >>>>> On Thu, Mar 22, 2018 at 07:36:36PM +0300, Ilya Smith wrote:
-> >>>>>> Current implementation doesn't randomize address returned by mmap.
-> >>>>>> All the entropy ends with choosing mmap_base_addr at the process
-> >>>>>> creation. After that mmap build very predictable layout of address
-> >>>>>> space. It allows to bypass ASLR in many cases. This patch make
-> >>>>>> randomization of address on any mmap call.
-> >>>>> 
-> >>>>> Why should this be done in the kernel rather than libc?  libc is perfectly
-> >>>>> capable of specifying random numbers in the first argument of mmap.
-> >>>> Well, there is following reasons:
-> >>>> 1. It should be done in any libc implementation, what is not possible IMO;
-> >>> 
-> >>> Is this really so helpful?
-> >> 
-> >> Yes, ASLR is one of very important mitigation techniques which are really used 
-> >> to protect applications. If there is no ASLR, it is very easy to exploit 
-> >> vulnerable application and compromise the system. We can’t just fix all the 
-> >> vulnerabilities right now, thats why we have mitigations - techniques which are 
-> >> makes exploitation more hard or impossible in some cases.
-> >> 
-> >> Thats why it is helpful.
-> > 
-> > I am not questioning ASLR in general. I am asking whether we really need
-> > per mmap ASLR in general. I can imagine that some environments want to
-> > pay the additional price and other side effects, but considering this
-> > can be achieved by libc, why to add more code to the kernel?
-> 
-> I believe this is the only one right place for it. Adding these 200+ lines of 
-> code we give this feature for any user - on desktop, on server, on IoT device, 
-> on SCADA, etc. But if only glibc will implement ‘user-mode-aslr’ IoT and SCADA 
-> devices will never get it.
-
-I guess it would really help if you could be more specific about the
-class of security issues this would help to mitigate. My first
-understanding was that we we need some randomization between program
-executable segments to reduce the attack space when a single address
-leaks and you know the segments layout (ordering). But why do we need
-_all_ mmaps to be randomized. Because that complicates the
-implementation consirably for different reasons you have mentioned
-earlier.
-
-Do you have any specific CVE that would be mitigated by this
-randomization approach?
-
-I am sorry, I am not a security expert to see all the cosequences but a
-vague - the more randomization the better - sounds rather weak to me.
--- 
-Michal Hocko
-SUSE Labs
+T24gMjcuMDMuMjAxOCAxNToxNiwgQ29yZXkgTWlueWFyZCB3cm90ZToKPiBPbiAwMy8yNC8yMDE4
+IDAyOjQ1IFBNLCBIZWxnZSBEZWxsZXIgd3JvdGU6Cj4+IFRoaXMgcGF0Y2ggYWxsb3dzIEhQIFBB
+LVJJU0Mgc2VydmVycyBsaWtlIHJwMzQxMC9ycDM0NDAgYW5kIHRoZSBIUCBDODAwMAo+PiB3b3Jr
+c3RhdGlvbiB3aXRoIGFuIElQTUkgY29udHJvbGxlciB0aGF0IHByZWRhdGUgSVBNSSAxLjUgdG8g
+dXNlIHRoZSBzdGFuZGFyZAo+PiBwb3dlcm9mZiBvciBwb3dlcmN5Y2xlIGNvbW1hbmRzLgo+Pgo+
+PiBUaGVzZSBzeXN0ZW1zIGZpcm13YXJlIGRvbid0IHNldCB0aGUgY2hhc3NpcyBjYXBhYmlsaXR5
+IGJpdCBpbiB0aGUgR2V0Cj4+IERldmljZSBJRCwgYnV0IHRoZXkgZG8gaW1wbGVtZW50IHRoZSBz
+dGFuZGFyZCBwb3dlcm9mZiBhbmQgcG93ZXJjeWNsZQo+PiBjb21tYW5kcy4KPiAKPiBBIGZldyBj
+b21tZW50cyBvbiB0aGlzOgo+IAo+IFRoYXQgZnVuY3Rpb24gaXMgbmFtZWQgaXBtaV9kZWxsX2No
+YXNzaXNfZGV0ZWN0KCksIGp1c3QgYWRkaW5nIGEgSFAKPiBjaGFzc2lzIHRvIGl0IGRvZXNuJ3Qg
+c2VlbSBsaWtlIGEgZ29vZCBpZGVhLsKgIFRoZXJlIGlzIGFscmVhZHkgYW4gYXJyYXkKPiBvZiBw
+b3dlcm9mZiBmdW5jdGlvbnMsIHBsZWFzZSB1c2UgdGhhdCBhbmQgY3JlYXRlIHlvdXIgb3duIGZ1
+bmN0aW9uLgo+IFlvdSB3b3VsZCBoYXZlIHRvIHJlc3RydWN0dXJlIHRoZSBkZWxsIGZ1bmN0aW9u
+IHRvIG1ha2UgaXQgY2xlYW4sCj4gYW5kIEkgZG9uJ3Qgd2FudCB0byBkbyB0aGF0Lgo+IAo+IFRo
+ZSBDT05GSUdfUEFSSVNDIGNsYXVzZSBwcm9iYWJseSBkb2Vzbid0IG1hdHRlci4KPiAKPiBQbGVh
+c2UgY3JlYXRlIGRlZmluZXMgZm9yIHRoZSBtYWdpYyBudW1iZXJzLgoKTXkgaW50ZW50aW9uIHdh
+cyB0byBrZWVwIHRoZSBwYXRjaCBzbWFsbC4KQW55d2F5LCBJJ2xsIHJlc3BpbiBhIG5ldyBwYXRj
+aCB3aXRoIHlvdXIgc3VnZ2VzdGlvbnMuCgpUaGFua3MhCkhlbGdlCgoKPj4gU2lnbmVkLW9mZi1i
+eTogSGVsZ2UgRGVsbGVyIDxkZWxsZXJAZ214LmRlPgo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9jaGFyL2lwbWkvaXBtaV9wb3dlcm9mZi5jIGIvZHJpdmVycy9jaGFyL2lwbWkvaXBtaV9wb3dl
+cm9mZi5jCj4+IGluZGV4IDM4ZTZhZjFjOGUzOC4uMDlmMzRlYTM3MGRhIDEwMDY0NAo+PiAtLS0g
+YS9kcml2ZXJzL2NoYXIvaXBtaS9pcG1pX3Bvd2Vyb2ZmLmMKPj4gKysrIGIvZHJpdmVycy9jaGFy
+L2lwbWkvaXBtaV9wb3dlcm9mZi5jCj4+IEBAIC00NTMsNiArNDUzLDEzIEBAIHN0YXRpYyBpbnQg
+aXBtaV9kZWxsX2NoYXNzaXNfZGV0ZWN0KGlwbWlfdXNlcl90IHVzZXIpCj4+IMKgwqDCoMKgwqDC
+oMKgwqDCoCBpcG1pX3ZlcnNpb25fbWFqb3IgPD0gMSAmJgo+PiDCoMKgwqDCoMKgwqDCoMKgwqAg
+aXBtaV92ZXJzaW9uX21pbm9yIDwgNSkKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiAxOwo+
+PiArCj4+ICvCoMKgwqAgLyogQk1DIGluIEhQIEM4MDAwIGNhbiBoYW5kbGUgY2hhc3NpcyBmdW5j
+dGlvbnMgdG9vLiAqLwo+PiArwqDCoMKgIGlmIChJU19FTkFCTEVEKENPTkZJR19QQVJJU0MpICYm
+Cj4+ICvCoMKgwqDCoMKgwqDCoCBtZmdfaWQgPT0gMHgwYiAmJiBwcm9kX2lkID09IDB4ODIwMSAm
+Jgo+PiArwqDCoMKgwqDCoMKgwqAgaXBtaV92ZXJzaW9uID09IDEpCj4+ICvCoMKgwqDCoMKgwqDC
+oCByZXR1cm4gMTsKPj4gKwo+PiDCoMKgwqDCoMKgIHJldHVybiAwOwo+PiDCoCB9CgotLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0KQ2hlY2sgb3V0IHRoZSB2aWJyYW50IHRlY2ggY29tbXVuaXR5IG9uIG9u
+ZSBvZiB0aGUgd29ybGQncyBtb3N0CmVuZ2FnaW5nIHRlY2ggc2l0ZXMsIFNsYXNoZG90Lm9yZyEg
+aHR0cDovL3NkbS5saW5rL3NsYXNoZG90Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCk9wZW5pcG1pLWRldmVsb3BlciBtYWlsaW5nIGxpc3QKT3BlbmlwbWkt
+ZGV2ZWxvcGVyQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdl
+Lm5ldC9saXN0cy9saXN0aW5mby9vcGVuaXBtaS1kZXZlbG9wZXIK
