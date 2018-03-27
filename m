@@ -1,129 +1,59 @@
-From: Michal Hocko <mhocko@kernel.org>
-Subject: Re: [RFC PATCH v2 0/2] Randomization of address chosen by mmap.
-Date: Tue, 27 Mar 2018 09:24:32 +0200
-Message-ID: <20180327072432.GY5652@dhcp22.suse.cz>
-References: <1521736598-12812-1-git-send-email-blackzert@gmail.com>
- <20180323124806.GA5624@bombadil.infradead.org>
- <651E0DB6-4507-4DA1-AD46-9C26ED9792A8@gmail.com>
- <20180326084650.GC5652@dhcp22.suse.cz>
- <01A133F4-27DF-4AE2-80D6-B0368BF758CD@gmail.com>
+From: Corey Minyard <minyard@acm.org>
+Subject: Re: [PATCH] ipmi/parisc: Add IPMI chassis
+ poweroff for certain HP PA-RISC servers
+Date: Tue, 27 Mar 2018 08:16:20 -0500
+Message-ID: <54f020d1-55a1-e1a5-88c3-cb9cbf7add9c@acm.org>
+References: <20180324194504.GA10210@ls3530.fritz.box>
+Reply-To: minyard@acm.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Matthew Wilcox <willy@infradead.org>, rth@twiddle.net,
-        ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@synopsys.com,
-        linux@armlinux.org.uk, tony.luck@intel.com, fenghua.yu@intel.com,
-        ralf@linux-mips.org, jejb@parisc-linux.org,
-        Helge Deller <deller@gmx.de>, benh@kernel.crashing.org,
-        paulus@samba.org, mpe@ellerman.id.au, schwidefsky@de.ibm.com,
-        heiko.carstens@de.ibm.com, ysato@users.sourceforge.jp,
-        dalias@libc.org, davem@davemloft.net, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org,
-        nyc@holomorphy.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
-        gregkh@linuxfoundation.org, deepa.kernel@gmail.com,
-        Hugh Dickins <hughd@google.com>, kstewart@linuxfoundation.org,
-        pombredanne@nexb.com, Andrew Morton <akpm@linux-foundation.org>,
-        steve.capper@arm.com, punit.agrawal@arm.
-To: Ilya Smith <blackzert@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <01A133F4-27DF-4AE2-80D6-B0368BF758CD@gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+To: Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+ openipmi-developer@lists.sourceforge.net,
+ James Bottomley <James.Bottomley@HansenPartnership.com>,
+ John David Anglin <dave.anglin@bell.net>
+Return-path: <openipmi-developer-bounces@lists.sourceforge.net>
+In-Reply-To: <20180324194504.GA10210@ls3530.fritz.box>
+List-Id: Developer list of OpenIPMI library and Linux driver
+ <openipmi-developer.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/openipmi-developer>,
+ <mailto:openipmi-developer-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=openipmi-developer>
+List-Post: <mailto:openipmi-developer@lists.sourceforge.net>
+List-Help: <mailto:openipmi-developer-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/openipmi-developer>,
+ <mailto:openipmi-developer-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: openipmi-developer-bounces@lists.sourceforge.net
 
-On Mon 26-03-18 22:45:31, Ilya Smith wrote:
-> 
-> > On 26 Mar 2018, at 11:46, Michal Hocko <mhocko@kernel.org> wrote:
-> > 
-> > On Fri 23-03-18 20:55:49, Ilya Smith wrote:
-> >> 
-> >>> On 23 Mar 2018, at 15:48, Matthew Wilcox <willy@infradead.org> wrote:
-> >>> 
-> >>> On Thu, Mar 22, 2018 at 07:36:36PM +0300, Ilya Smith wrote:
-> >>>> Current implementation doesn't randomize address returned by mmap.
-> >>>> All the entropy ends with choosing mmap_base_addr at the process
-> >>>> creation. After that mmap build very predictable layout of address
-> >>>> space. It allows to bypass ASLR in many cases. This patch make
-> >>>> randomization of address on any mmap call.
-> >>> 
-> >>> Why should this be done in the kernel rather than libc?  libc is perfectly
-> >>> capable of specifying random numbers in the first argument of mmap.
-> >> Well, there is following reasons:
-> >> 1. It should be done in any libc implementation, what is not possible IMO;
-> > 
-> > Is this really so helpful?
-> 
-> Yes, ASLR is one of very important mitigation techniques which are really used 
-> to protect applications. If there is no ASLR, it is very easy to exploit 
-> vulnerable application and compromise the system. We can’t just fix all the 
-> vulnerabilities right now, thats why we have mitigations - techniques which are 
-> makes exploitation more hard or impossible in some cases.
-> 
-> Thats why it is helpful.
-
-I am not questioning ASLR in general. I am asking whether we really need
-per mmap ASLR in general. I can imagine that some environments want to
-pay the additional price and other side effects, but considering this
-can be achieved by libc, why to add more code to the kernel?
-
-> > 
-> >> 2. User mode is not that layer which should be responsible for choosing
-> >> random address or handling entropy;
-> > 
-> > Why?
-> 
-> Because of the following reasons:
-> 1. To get random address you should have entropy. These entropy shouldn’t be 
-> exposed to attacker anyhow, the best case is to get it from kernel. So this is
-> a syscall.
-
-/dev/[u]random is not sufficient?
-
-> 2. You should have memory map of your process to prevent remapping or big
-> fragmentation. Kernel already has this map.
-
-/proc/self/maps?
-
-> You will got another one in libc.
-> And any non-libc user of mmap (via syscall, etc) will make hole in your map.
-> This one also decrease performance cause you any way call syscall_mmap 
-> which will try to find some address for you in worst case, but after you already
-> did some computing on it.
-
-I do not understand. a) you should be prepared to pay an additional
-price for an additional security measures and b) how would anybody punch
-a hole into your mapping? 
-
-> 3. The more memory you use in userland for these proposal, the easier for
-> attacker to leak it or use in exploitation techniques.
-
-This is true in general, isn't it? I fail to see how kernel chosen and
-user chosen ranges would make any difference.
-
-> 4. It is so easy to fix Kernel function and so hard to support memory
-> management from userspace.
-
-Well, on the other hand the new layout mode will add a maintenance
-burden on the kernel and will have to be maintained for ever because it
-is a user visible ABI.
-
-> >> 3. Memory fragmentation is unpredictable in this case
-> >> 
-> >> Off course user mode could use random ‘hint’ address, but kernel may
-> >> discard this address if it is occupied for example and allocate just before
-> >> closest vma. So this solution doesn’t give that much security like 
-> >> randomization address inside kernel.
-> > 
-> > The userspace can use the new MAP_FIXED_NOREPLACE to probe for the
-> > address range atomically and chose a different range on failure.
-> > 
-> 
-> This algorithm should track current memory. If he doesn’t he may cause
-> infinite loop while trying to choose memory. And each iteration increase time
-> needed on allocation new memory, what is not preferred by any libc library
-> developer.
-
-Well, I am pretty sure userspace can implement proper free ranges
-tracking...
-
--- 
-Michal Hocko
-SUSE Labs
+T24gMDMvMjQvMjAxOCAwMjo0NSBQTSwgSGVsZ2UgRGVsbGVyIHdyb3RlOgo+IFRoaXMgcGF0Y2gg
+YWxsb3dzIEhQIFBBLVJJU0Mgc2VydmVycyBsaWtlIHJwMzQxMC9ycDM0NDAgYW5kIHRoZSBIUCBD
+ODAwMAo+IHdvcmtzdGF0aW9uIHdpdGggYW4gSVBNSSBjb250cm9sbGVyIHRoYXQgcHJlZGF0ZSBJ
+UE1JIDEuNSB0byB1c2UgdGhlIHN0YW5kYXJkCj4gcG93ZXJvZmYgb3IgcG93ZXJjeWNsZSBjb21t
+YW5kcy4KPgo+IFRoZXNlIHN5c3RlbXMgZmlybXdhcmUgZG9uJ3Qgc2V0IHRoZSBjaGFzc2lzIGNh
+cGFiaWxpdHkgYml0IGluIHRoZSBHZXQKPiBEZXZpY2UgSUQsIGJ1dCB0aGV5IGRvIGltcGxlbWVu
+dCB0aGUgc3RhbmRhcmQgcG93ZXJvZmYgYW5kIHBvd2VyY3ljbGUKPiBjb21tYW5kcy4KCkEgZmV3
+IGNvbW1lbnRzIG9uIHRoaXM6CgpUaGF0IGZ1bmN0aW9uIGlzIG5hbWVkIGlwbWlfZGVsbF9jaGFz
+c2lzX2RldGVjdCgpLCBqdXN0IGFkZGluZyBhIEhQCmNoYXNzaXMgdG8gaXQgZG9lc24ndCBzZWVt
+IGxpa2UgYSBnb29kIGlkZWEuwqAgVGhlcmUgaXMgYWxyZWFkeSBhbiBhcnJheQpvZiBwb3dlcm9m
+ZiBmdW5jdGlvbnMsIHBsZWFzZSB1c2UgdGhhdCBhbmQgY3JlYXRlIHlvdXIgb3duIGZ1bmN0aW9u
+LgpZb3Ugd291bGQgaGF2ZSB0byByZXN0cnVjdHVyZSB0aGUgZGVsbCBmdW5jdGlvbiB0byBtYWtl
+IGl0IGNsZWFuLAphbmQgSSBkb24ndCB3YW50IHRvIGRvIHRoYXQuCgpUaGUgQ09ORklHX1BBUklT
+QyBjbGF1c2UgcHJvYmFibHkgZG9lc24ndCBtYXR0ZXIuCgpQbGVhc2UgY3JlYXRlIGRlZmluZXMg
+Zm9yIHRoZSBtYWdpYyBudW1iZXJzLgoKVGhhbmtzLAoKLWNvcmV5Cgo+IFNpZ25lZC1vZmYtYnk6
+IEhlbGdlIERlbGxlciA8ZGVsbGVyQGdteC5kZT4KPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2No
+YXIvaXBtaS9pcG1pX3Bvd2Vyb2ZmLmMgYi9kcml2ZXJzL2NoYXIvaXBtaS9pcG1pX3Bvd2Vyb2Zm
+LmMKPiBpbmRleCAzOGU2YWYxYzhlMzguLjA5ZjM0ZWEzNzBkYSAxMDA2NDQKPiAtLS0gYS9kcml2
+ZXJzL2NoYXIvaXBtaS9pcG1pX3Bvd2Vyb2ZmLmMKPiArKysgYi9kcml2ZXJzL2NoYXIvaXBtaS9p
+cG1pX3Bvd2Vyb2ZmLmMKPiBAQCAtNDUzLDYgKzQ1MywxMyBAQCBzdGF0aWMgaW50IGlwbWlfZGVs
+bF9jaGFzc2lzX2RldGVjdChpcG1pX3VzZXJfdCB1c2VyKQo+ICAgCSAgICBpcG1pX3ZlcnNpb25f
+bWFqb3IgPD0gMSAmJgo+ICAgCSAgICBpcG1pX3ZlcnNpb25fbWlub3IgPCA1KQo+ICAgCQlyZXR1
+cm4gMTsKPiArCj4gKwkvKiBCTUMgaW4gSFAgQzgwMDAgY2FuIGhhbmRsZSBjaGFzc2lzIGZ1bmN0
+aW9ucyB0b28uICovCj4gKwlpZiAoSVNfRU5BQkxFRChDT05GSUdfUEFSSVNDKSAmJgo+ICsJICAg
+IG1mZ19pZCA9PSAweDBiICYmIHByb2RfaWQgPT0gMHg4MjAxICYmCj4gKwkgICAgaXBtaV92ZXJz
+aW9uID09IDEpCj4gKwkJcmV0dXJuIDE7Cj4gKwo+ICAgCXJldHVybiAwOwo+ICAgfQo+ICAgCgoK
+Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpDaGVjayBvdXQgdGhlIHZpYnJhbnQgdGVjaCBjb21tdW5p
+dHkgb24gb25lIG9mIHRoZSB3b3JsZCdzIG1vc3QKZW5nYWdpbmcgdGVjaCBzaXRlcywgU2xhc2hk
+b3Qub3JnISBodHRwOi8vc2RtLmxpbmsvc2xhc2hkb3QKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KT3BlbmlwbWktZGV2ZWxvcGVyIG1haWxpbmcgbGlzdApP
+cGVuaXBtaS1kZXZlbG9wZXJAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291
+cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL29wZW5pcG1pLWRldmVsb3Blcgo=
