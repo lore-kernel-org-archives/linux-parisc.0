@@ -1,69 +1,54 @@
-From: Corey Minyard <minyard@acm.org>
-Subject: Re: [PATCH v2] ipmi/parisc: Add IPMI chassis
- poweroff for certain HP PA-RISC and IA-64 servers
-Date: Tue, 27 Mar 2018 11:05:17 -0500
-Message-ID: <45a3f748-0485-442b-6b6f-6dac49b89990@acm.org>
-References: <20180324194504.GA10210@ls3530.fritz.box>
- <54f020d1-55a1-e1a5-88c3-cb9cbf7add9c@acm.org>
- <69751fab-c471-4d3a-257a-0001425d5821@gmx.de>
- <20180327155832.GA19408@ls3530.fritz.box>
-Reply-To: minyard@acm.org
+From: "Theodore Y. Ts'o" <tytso@mit.edu>
+Subject: Re: [RFC PATCH v2 0/2] Randomization of address chosen by mmap.
+Date: Tue, 27 Mar 2018 18:16:35 -0400
+Message-ID: <20180327221635.GA3790@thunk.org>
+References: <1521736598-12812-1-git-send-email-blackzert@gmail.com>
+ <20180323124806.GA5624@bombadil.infradead.org>
+ <651E0DB6-4507-4DA1-AD46-9C26ED9792A8@gmail.com>
+ <20180326084650.GC5652@dhcp22.suse.cz>
+ <01A133F4-27DF-4AE2-80D6-B0368BF758CD@gmail.com>
+ <20180327072432.GY5652@dhcp22.suse.cz>
+ <0549F29C-12FC-4401-9E85-A430BC11DA78@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>,
- John David Anglin <dave.anglin@bell.net>, linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>, openipmi-developer@lists.sourceforge.net,
- Matt Turner <mattst88@gmail.com>
-Return-path: <openipmi-developer-bounces@lists.sourceforge.net>
-In-Reply-To: <20180327155832.GA19408@ls3530.fritz.box>
-List-Id: Developer list of OpenIPMI library and Linux driver
- <openipmi-developer.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/openipmi-developer>,
- <mailto:openipmi-developer-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=openipmi-developer>
-List-Post: <mailto:openipmi-developer@lists.sourceforge.net>
-List-Help: <mailto:openipmi-developer-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/openipmi-developer>,
- <mailto:openipmi-developer-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: openipmi-developer-bounces@lists.sourceforge.net
+Content-Type: text/plain; charset=utf-8
+Cc: Michal Hocko <mhocko@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>, rth@twiddle.net,
+        ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@synopsys.com,
+        linux@armlinux.org.uk, tony.luck@intel.com, fenghua.yu@intel.com,
+        ralf@linux-mips.org, jejb@parisc-linux.org,
+        Helge Deller <deller@gmx.de>, benh@kernel.crashing.org,
+        paulus@samba.org, mpe@ellerman.id.au, schwidefsky@de.ibm.com,
+        heiko.carstens@de.ibm.com, ysato@users.sourceforge.jp,
+        dalias@libc.org, davem@davemloft.net, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org,
+        nyc@holomorphy.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
+        gregkh@linuxfoundation.org, deepa.kernel@gmail.com,
+        Hugh Dickins <hughd@google.com>, kstewart@linuxfoundation.org,
+        pombredanne@nexb.com, Andrew Morton <akpm@linux-foundation.org>,
+To: Ilya Smith <blackzert@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <0549F29C-12FC-4401-9E85-A430BC11DA78@gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-T24gMDMvMjcvMjAxOCAxMDo1OCBBTSwgSGVsZ2UgRGVsbGVyIHdyb3RlOgo+IFRoaXMgcGF0Y2gg
-YWxsb3dzIEhQIFBBLVJJU0Mgc2VydmVycyBsaWtlIHJwMzQxMC9ycDM0NDAgYW5kIHRoZSBIUCBD
-ODAwMAo+IHdvcmtzdGF0aW9uIHdpdGggYW4gSVBNSSBjb250cm9sbGVyIHRoYXQgcHJlZGF0ZSBJ
-UE1JIDEuNSB0byB1c2UgdGhlIHN0YW5kYXJkCj4gcG93ZXJvZmYgb3IgcG93ZXJjeWNsZSBjb21t
-YW5kcy4KPgo+IFRoZXNlIHN5c3RlbXMgZmlybXdhcmUgZG9uJ3Qgc2V0IHRoZSBjaGFzc2lzIGNh
-cGFiaWxpdHkgYml0IGluIHRoZSBHZXQKPiBEZXZpY2UgSUQsIGJ1dCB0aGV5IGRvIGltcGxlbWVu
-dCB0aGUgc3RhbmRhcmQgcG93ZXJvZmYgYW5kIHBvd2VyY3ljbGUKPiBjb21tYW5kcy4KClBlcmZl
-Y3QsIHRoYW5rcyBmb3IgdGhlIHVwZGF0ZS7CoCBJbmNsdWRlZCBmb3IgbmV4dCByZWxlYXNlLgoK
-LWNvcmV5Cgo+IFNpZ25lZC1vZmYtYnk6IEhlbGdlIERlbGxlciA8ZGVsbGVyQGdteC5kZT4KPgo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL2NoYXIvaXBtaS9pcG1pX3Bvd2Vyb2ZmLmMgYi9kcml2ZXJz
-L2NoYXIvaXBtaS9pcG1pX3Bvd2Vyb2ZmLmMKPiBpbmRleCAzOGU2YWYxYzhlMzguLjk0M2M4YmMx
-YzM2NCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2NoYXIvaXBtaS9pcG1pX3Bvd2Vyb2ZmLmMKPiAr
-KysgYi9kcml2ZXJzL2NoYXIvaXBtaS9pcG1pX3Bvd2Vyb2ZmLmMKPiBAQCAtNDU3LDYgKzQ1Nywy
-NCBAQCBzdGF0aWMgaW50IGlwbWlfZGVsbF9jaGFzc2lzX2RldGVjdChpcG1pX3VzZXJfdCB1c2Vy
-KQo+ICAgfQo+ICAgCj4gICAvKgo+ICsgKiBpcG1pX2hwX2NoYXNzaXNfZGV0ZWN0KCkKPiArICog
-SFAgUEEtUklTQyBzZXJ2ZXJzIHJwMzQxMC9ycDM0NDAsIHRoZSBDODAwMCB3b3Jrc3RhdGlvbiBh
-bmQgdGhlIHJ4MjYwMCBhbmQKPiArICogeng2MDAwIG1hY2hpbmVzIHN1cHBvcnQgSVBNSSB2ZXJz
-IDEgYW5kIGRvbid0IHNldCB0aGUgY2hhc3NpcyBjYXBhYmlsaXR5IGJpdAo+ICsgKiBidXQgdGhl
-eSBjYW4gaGFuZGxlIGEgY2hhc3NpcyBwb3dlcm9mZiBvciBwb3dlcmN5Y2xlIGNvbW1hbmQuCj4g
-KyAqLwo+ICsKPiArI2RlZmluZSBIUF9JQU5BX01GUl9JRCAweDBiCj4gKyNkZWZpbmUgSFBfQk1D
-X1BST0RfSUQgMHg4MjAxCj4gK3N0YXRpYyBpbnQgaXBtaV9ocF9jaGFzc2lzX2RldGVjdChpcG1p
-X3VzZXJfdCB1c2VyKQo+ICt7Cj4gKwlpZiAobWZnX2lkID09IEhQX0lBTkFfTUZSX0lECj4gKwkJ
-JiYgcHJvZF9pZCA9PSBIUF9CTUNfUFJPRF9JRAo+ICsJCSYmIGlwbWlfdmVyc2lvbiA9PSAxKQo+
-ICsJCXJldHVybiAxOwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gKy8qCj4gICAgKiBTdGFuZGFy
-ZCBjaGFzc2lzIHN1cHBvcnQKPiAgICAqLwo+ICAgCj4gQEAgLTUzMyw2ICs1NTEsOSBAQCBzdGF0
-aWMgc3RydWN0IHBvd2Vyb2ZmX2Z1bmN0aW9uIHBvd2Vyb2ZmX2Z1bmN0aW9uc1tdID0gewo+ICAg
-CXsgLnBsYXRmb3JtX3R5cGUJPSAiY2hhc3NpcyIsCj4gICAJICAuZGV0ZWN0CQk9IGlwbWlfZGVs
-bF9jaGFzc2lzX2RldGVjdCwKPiAgIAkgIC5wb3dlcm9mZl9mdW5jCT0gaXBtaV9wb3dlcm9mZl9j
-aGFzc2lzIH0sCj4gKwl7IC5wbGF0Zm9ybV90eXBlCT0gImNoYXNzaXMiLAo+ICsJICAuZGV0ZWN0
-CQk9IGlwbWlfaHBfY2hhc3Npc19kZXRlY3QsCj4gKwkgIC5wb3dlcm9mZl9mdW5jCT0gaXBtaV9w
-b3dlcm9mZl9jaGFzc2lzIH0sCj4gICAJLyogQ2hhc3NpcyBzaG91bGQgZ2VuZXJhbGx5IGJlIGxh
-c3QsIG90aGVyIHRoaW5ncyBzaG91bGQgb3ZlcnJpZGUKPiAgIAkgICBpdC4gKi8KPiAgIAl7IC5w
-bGF0Zm9ybV90eXBlCT0gImNoYXNzaXMiLAoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ2hlY2sg
-b3V0IHRoZSB2aWJyYW50IHRlY2ggY29tbXVuaXR5IG9uIG9uZSBvZiB0aGUgd29ybGQncyBtb3N0
-CmVuZ2FnaW5nIHRlY2ggc2l0ZXMsIFNsYXNoZG90Lm9yZyEgaHR0cDovL3NkbS5saW5rL3NsYXNo
-ZG90Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCk9wZW5p
-cG1pLWRldmVsb3BlciBtYWlsaW5nIGxpc3QKT3BlbmlwbWktZGV2ZWxvcGVyQGxpc3RzLnNvdXJj
-ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9v
-cGVuaXBtaS1kZXZlbG9wZXIK
+On Tue, Mar 27, 2018 at 04:51:08PM +0300, Ilya Smith wrote:
+> > /dev/[u]random is not sufficient?
+> 
+> Using /dev/[u]random makes 3 syscalls - open, read, close. This is a performance
+> issue.
+
+You may want to take a look at the getrandom(2) system call, which is
+the recommended way getting secure random numbers from the kernel.
+
+> > Well, I am pretty sure userspace can implement proper free ranges
+> > tracking…
+> 
+> I think we need to know what libc developers will say on implementing ASLR in 
+> user-mode. I am pretty sure they will say ‘nether’ or ‘some-day’. And problem 
+> of ASLR will stay forever.
+
+Why can't you send patches to the libc developers?
+
+Regards,
+
+						- Ted
