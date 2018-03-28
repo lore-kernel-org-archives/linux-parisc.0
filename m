@@ -1,53 +1,42 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 01/16] initrd: Add generic code path for common initrd
- unloading logic.
-Date: Wed, 28 Mar 2018 14:23:47 +0200
-Message-ID: <CAMuHMdXwEL-gLxiVJwuxwRtkyhR=vEm3GP4dzJMpc1nS8AKxKQ@mail.gmail.com>
-References: <20180324174458.26423-1-shea@shealevy.com> <20180324174458.26423-2-shea@shealevy.com>
- <20180328120440.GB1838@infradead.org>
+From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH v2 1/2] video/fbdev/stifb: Return -ENOMEM after a failed
+ kzalloc() in stifb_init_fb()
+Date: Wed, 28 Mar 2018 15:34:08 +0200
+Message-ID: <2557729.Jl5E8iEh4q@amdc3058>
+References: <7dcd32b6-9691-14a1-29cf-3a746ef5adfc@users.sourceforge.net>
+ <889131fe-199c-3bef-0781-00761b807426@users.sourceforge.net>
+ <6341951e-df28-0b40-974e-dedd890b5228@users.sourceforge.net>
+ <CGME20180328133411epcas2p442e8f8a85d6c6e72ec5a5122519fe5eb@epcas2p4.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Shea Levy <shea@shealevy.com>, alpha <linux-alpha@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        linux-c6x-dev@linux-c6x.org,
-        "moderated list:H8/300 ARCHITECTURE"
-        <uclinux-h8-devel@lists.sourceforge.jp>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        nios2-dev@lists.rocketboards.org,
-        Openrisc <openrisc@lists.librecores.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-To: Christoph Hellwig <hch@infradead.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180328120440.GB1838@infradead.org>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Cc: linux-fbdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+ Helge Deller <deller@gmx.de>, kernel-janitors@vger.kernel.org, "James E. J.
+ Bottomley" <jejb@parisc-linux.org>, dri-devel@lists.freedesktop.org,
+ LKML <linux-kernel@vger.kernel.org>, Rolf Eike Beer <eike-kernel@sf-tec.de>
+To: SF Markus Elfring <elfring@users.sourceforge.net>
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-reply-to: <6341951e-df28-0b40-974e-dedd890b5228@users.sourceforge.net>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Mar 28, 2018 at 2:04 PM, Christoph Hellwig <hch@infradead.org> wrote:
->> +#ifdef CONFIG_INITRAMFS_GENERIC_UNLOAD
->> +void free_initrd_mem(unsigned long start, unsigned long end)
->> +{
->> +       free_reserved_area((void *)start, (void *)end, -1, "initrd");
->> +}
->> +#endif
->
-> Given how trivial this is and how many architectures can use it I'd
-> reverse the polarity and add a CONFIG_HAVE_ARCH_FREE_INITRD_MEM
-> instead.
-
-And while adding "special" functionality to the generic version, more and more
-users of CONFIG_HAVE_ARCH_FREE_INITRD_MEM will be removed.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+T24gU3VuZGF5LCBKYW51YXJ5IDA3LCAyMDE4IDEyOjU2OjQ1IFBNIFNGIE1hcmt1cyBFbGZyaW5n
+IHdyb3RlOgo+IEZyb206IE1hcmt1cyBFbGZyaW5nIDxlbGZyaW5nQHVzZXJzLnNvdXJjZWZvcmdl
+Lm5ldD4KPiBEYXRlOiBTdW4sIDcgSmFuIDIwMTggMTE6MzM6NTkgKzAxMDAKPiAKPiBSZXBsYWNl
+IGFuIGVycm9yIGNvZGUgZm9yIHRoZSBpbmRpY2F0aW9uIG9mIGEgbWVtb3J5IGFsbG9jYXRpb24g
+ZmFpbHVyZQo+IGluIHRoaXMgZnVuY3Rpb24uCj4gCj4gRml4ZXM6IDFkYTE3N2U0YzNmNDE1MjRl
+ODg2YjdmMWI4YTBjMWZjNzMyMWNhYyAoIkxpbnV4LTIuNi4xMi1yYzI6IEluaXRpYWwgZ2l0IHJl
+cG9zaXRvcnkgYnVpbGQiKQo+IFN1Z2dlc3RlZC1ieTogUm9sZiBFaWtlIEJlZXIgPGVpa2Uta2Vy
+bmVsQHNmLXRlYy5kZT4KPiBTaWduZWQtb2ZmLWJ5OiBNYXJrdXMgRWxmcmluZyA8ZWxmcmluZ0B1
+c2Vycy5zb3VyY2Vmb3JnZS5uZXQ+CgpQYXRjaCBxdWV1ZWQgZm9yIDQuMTcsIHRoYW5rcy4KCkJl
+c3QgcmVnYXJkcywKLS0KQmFydGxvbWllaiBab2xuaWVya2lld2ljegpTYW1zdW5nIFImRCBJbnN0
+aXR1dGUgUG9sYW5kClNhbXN1bmcgRWxlY3Ryb25pY3MKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVs
+QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
