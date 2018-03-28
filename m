@@ -1,39 +1,53 @@
-From: Christoph Hellwig <hch@infradead.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH 01/16] initrd: Add generic code path for common initrd
  unloading logic.
-Date: Wed, 28 Mar 2018 05:04:40 -0700
-Message-ID: <20180328120440.GB1838@infradead.org>
-References: <20180324174458.26423-1-shea@shealevy.com>
- <20180324174458.26423-2-shea@shealevy.com>
+Date: Wed, 28 Mar 2018 14:23:47 +0200
+Message-ID: <CAMuHMdXwEL-gLxiVJwuxwRtkyhR=vEm3GP4dzJMpc1nS8AKxKQ@mail.gmail.com>
+References: <20180324174458.26423-1-shea@shealevy.com> <20180324174458.26423-2-shea@shealevy.com>
+ <20180328120440.GB1838@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: uclinux-h8-devel@lists.sourceforge.jp, linux-c6x-dev@linux-c6x.org,
- linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- openrisc@lists.librecores.org, linux-alpha@vger.kernel.org,
- user-mode-linux-devel@lists.sourceforge.net, nios2-dev@lists.rocketboards.org,
- linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org
-To: Shea Levy <shea@shealevy.com>
-Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20180324174458.26423-2-shea@shealevy.com>
-List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
-List-Post: <mailto:linux-snps-arc@lists.infradead.org>
-List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: Shea Levy <shea@shealevy.com>, alpha <linux-alpha@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        linux-c6x-dev@linux-c6x.org,
+        "moderated list:H8/300 ARCHITECTURE"
+        <uclinux-h8-devel@lists.sourceforge.jp>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        nios2-dev@lists.rocketboards.org,
+        Openrisc <openrisc@lists.librecores.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Christoph Hellwig <hch@infradead.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180328120440.GB1838@infradead.org>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-> +#ifdef CONFIG_INITRAMFS_GENERIC_UNLOAD
-> +void free_initrd_mem(unsigned long start, unsigned long end)
-> +{
-> +       free_reserved_area((void *)start, (void *)end, -1, "initrd");
-> +}
-> +#endif
+On Wed, Mar 28, 2018 at 2:04 PM, Christoph Hellwig <hch@infradead.org> wrote:
+>> +#ifdef CONFIG_INITRAMFS_GENERIC_UNLOAD
+>> +void free_initrd_mem(unsigned long start, unsigned long end)
+>> +{
+>> +       free_reserved_area((void *)start, (void *)end, -1, "initrd");
+>> +}
+>> +#endif
+>
+> Given how trivial this is and how many architectures can use it I'd
+> reverse the polarity and add a CONFIG_HAVE_ARCH_FREE_INITRD_MEM
+> instead.
 
-Given how trivial this is and how many architectures can use it I'd
-reverse the polarity and add a CONFIG_HAVE_ARCH_FREE_INITRD_MEM
-instead.
+And while adding "special" functionality to the generic version, more and more
+users of CONFIG_HAVE_ARCH_FREE_INITRD_MEM will be removed.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
