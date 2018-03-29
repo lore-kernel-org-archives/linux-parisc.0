@@ -1,78 +1,39 @@
-From: Wei Yang <richard.weiyang@gmail.com>
-Subject: Re: [PATCH] Extract initrd free logic from arch-specific code.
-Date: Thu, 29 Mar 2018 09:12:10 +0800
-Message-ID: <20180329011210.GA4275@WeideMacBook-Pro.local>
-References: <20180325221853.10839-1-shea@shealevy.com>
- <20180328152714.6103-1-shea@shealevy.com>
- <CAGXu5jLioqnOQniXuuNS=PjeAgJr1=BL78Cqu0cwu_Y5e-NDZA@mail.gmail.com>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: Linux MIPS Mailing List <linux-mips@linux-mips.org>,
- linux-sh <linux-sh@vger.kernel.org>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Linus Walleij <linus.walleij@linaro.org>, Will Deacon <will.deacon@arm.com>,
- Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
- "James E.J. Bottomley" <jejb@parisc-linux.org>,
- Christoph Hellwig <hch@infradead.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Matt Turner <mattst88@gmail.com>,
- Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
- uclinux-h8-devel@lists.sourceforge.jp,
- Vladimir Murzin <vladimir.murzin@arm.com>, Marc Zyngier <marc.zyngier@arm.com>,
- adi-buildroot-devel@lists.sourceforge.net, Al Viro <viro@zeniv.linux.org.uk>,
- Thomas Gleixner <tglx@linutronix.de>, Richard Henderson <rth@twiddle.net>,
- linux-cris-kernel@axis.com, Greg Kroah-Hartman <gregkh@linuxfou
-To: Kees Cook <keescook@chromium.org>
-Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CAGXu5jLioqnOQniXuuNS=PjeAgJr1=BL78Cqu0cwu_Y5e-NDZA@mail.gmail.com>
-List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
-List-Post: <mailto:linux-snps-arc@lists.infradead.org>
-List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
+From: Shea Levy <shea@shealevy.com>
+Subject: [PATCH v5 13/16] parisc: Switch to generic free_initrd_mem.
+Date: Thu, 29 Mar 2018 07:32:04 -0400
+Message-ID: <20180329113207.30674-13-shea@shealevy.com>
+References: <20180328203659.18692-1-shea@shealevy.com>
+ <20180329113207.30674-1-shea@shealevy.com>
+Cc: Shea Levy <shea@shealevy.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+To: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180329113207.30674-1-shea@shealevy.com>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Mar 28, 2018 at 09:55:07AM -0700, Kees Cook wrote:
->On Wed, Mar 28, 2018 at 8:26 AM, Shea Levy <shea@shealevy.com> wrote:
->> Now only those architectures that have custom initrd free requirements
->> need to define free_initrd_mem.
->>
->> Signed-off-by: Shea Levy <shea@shealevy.com>
->
->Yay consolidation! :)
->
->> --- a/usr/Kconfig
->> +++ b/usr/Kconfig
->> @@ -233,3 +233,7 @@ config INITRAMFS_COMPRESSION
->>         default ".lzma" if RD_LZMA
->>         default ".bz2"  if RD_BZIP2
->>         default ""
->> +
->> +config HAVE_ARCH_FREE_INITRD_MEM
->> +       bool
->> +       default n
->
->If you keep the Kconfig, you can leave off "default n", and I'd
->suggest adding a help section just to describe what the per-arch
->responsibilities are when select-ing the config. (See
->HAVE_ARCH_SECCOMP_FILTER for an example.)
->
+The generic implementation is functionally identical.
 
-One question about this change.
+Signed-off-by: Shea Levy <shea@shealevy.com>
+---
+ arch/parisc/mm/init.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-The original code would "select" HAVE_ARCH_FREE_INITRD_MEM on those arch.
-After this change, we need to manually "select" this?
-
->-Kees
->
->-- 
->Kees Cook
->Pixel Security
-
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index cab32ee824d2..3643399230f3 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -932,10 +932,3 @@ void flush_tlb_all(void)
+ 	spin_unlock(&sid_lock);
+ }
+ #endif
+-
+-#ifdef CONFIG_BLK_DEV_INITRD
+-void free_initrd_mem(unsigned long start, unsigned long end)
+-{
+-	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+-}
+-#endif
 -- 
-Wei Yang
-Help you, Help me
+2.16.2
