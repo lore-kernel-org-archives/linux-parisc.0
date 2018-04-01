@@ -1,47 +1,44 @@
-From: Rich Felker <dalias@libc.org>
-Subject: Re: [RFC PATCH v2 0/2] Randomization of address chosen by mmap.
-Date: Fri, 30 Mar 2018 09:33:48 -0400
-Message-ID: <20180330133348.GR1436@brightrain.aerifal.cx>
-References: <1521736598-12812-1-git-send-email-blackzert@gmail.com>
- <20180330075508.GA21798@amd>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Ilya Smith <blackzert@gmail.com>, rth@twiddle.net,
-        ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@synopsys.com,
-        linux@armlinux.org.uk, tony.luck@intel.com, fenghua.yu@intel.com,
-        jhogan@kernel.org, ralf@linux-mips.org, jejb@parisc-linux.org,
-        deller@gmx.de, benh@kernel.crashing.org, paulus@samba.org,
-        mpe@ellerman.id.au, schwidefsky@de.ibm.com,
-        heiko.carstens@de.ibm.com, ysato@users.sourceforge.jp,
-        davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, x86@kernel.org, nyc@holomorphy.com,
-        viro@zeniv.linux.org.uk, arnd@arndb.de, gregkh@linuxfoundation.org,
-        deepa.kernel@gmail.com, mhocko@suse.com, hughd@google.com,
-        kstewart@linuxfoundation.org, pombredanne@nexb.com,
-        akpm@linux-foundation.org, steve.capper@arm.com,
-        punit.agrawal@arm.com, paul.burton@mips.com,
-To: Pavel Machek <pavel@ucw.cz>
+From: Shea Levy <shea@shealevy.com>
+Subject: [PATCH v6 13/16] parisc: Switch to generic free_initrd_mem.
+Date: Sun,  1 Apr 2018 10:59:27 -0400
+Message-ID: <20180401145931.7932-13-shea@shealevy.com>
+References: <20180329113207.30674-1-shea@shealevy.com>
+ <20180401145931.7932-1-shea@shealevy.com>
+Cc: Shea Levy <shea@shealevy.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+To: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180330075508.GA21798@amd>
+In-Reply-To: <20180401145931.7932-1-shea@shealevy.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Mar 30, 2018 at 09:55:08AM +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > Current implementation doesn't randomize address returned by mmap.
-> > All the entropy ends with choosing mmap_base_addr at the process
-> > creation. After that mmap build very predictable layout of address
-> > space. It allows to bypass ASLR in many cases. This patch make
-> > randomization of address on any mmap call.
-> 
-> How will this interact with people debugging their application, and
-> getting different behaviours based on memory layout?
-> 
-> strace, strace again, get different results?
+The first patch in this series added a weakly-defined generic
+implementation, which is functionally identical to the
+architecture-specific one removed here.
 
-Normally gdb disables ASLR for the process when invoking a program to
-debug. I don't see why that would be terribly useful with strace but
-you can do the same if you want.
+Series boot-tested on RISC-V (which now uses the generic
+implementation) and x86_64 (which doesn't).
 
-Rich
+Signed-off-by: Shea Levy <shea@shealevy.com>
+---
+ arch/parisc/mm/init.c | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index cab32ee824d2..3643399230f3 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -932,10 +932,3 @@ void flush_tlb_all(void)
+ 	spin_unlock(&sid_lock);
+ }
+ #endif
+-
+-#ifdef CONFIG_BLK_DEV_INITRD
+-void free_initrd_mem(unsigned long start, unsigned long end)
+-{
+-	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+-}
+-#endif
+-- 
+2.16.2
