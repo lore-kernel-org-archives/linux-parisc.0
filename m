@@ -1,26 +1,33 @@
 From: yuan linyu <cugyly@163.com>
-Subject: [RFC linux] init: make all setup_arch() output string to boot_command_line[]
-Date: Fri,  6 Apr 2018 19:11:59 +0800
-Message-ID: <20180406111159.5385-1-cugyly@163.com>
+Subject: [RFC linux v2] init: make all setup_arch() output string to
+ boot_command_line[]
+Date: Sat,  7 Apr 2018 09:55:20 +0800
+Message-ID: <20180407015520.2839-1-cugyly@163.com>
 Mime-Version: 1.0
-Cc: linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, Michal Simek <monstr@monstr.eu>,
-        linux-mips@linux-mips.org, Greentime Hu <green.hu@gmail.com>,
-        nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        user-mode-linux-devel@lists.sourceforge.net,
-        user-mode-linux-user@lists.sourceforge.net,
-        Guan Xuetao <gxt@pku.edu.cn>, linux-xtensa@linux-xtensa.org,
-        yuan linyu <Linyu.Yuan@alcatel-sbell.com.cn
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, uclinux-h8-devel@lists.sourceforge.jp,
+ linux-xtensa@linux-xtensa.org, user-mode-linux-devel@lists.sourceforge.net,
+ linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
+ Greentime Hu <green.hu@gmail.com>, user-mode-linux-user@lists.sourceforge.net,
+ Guan Xuetao <gxt@pku.edu.cn>, linux-arm-kernel@lists.infradead.org,
+ Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
+ yuan linyu <Linyu.Yuan@alcatel-sbell.com.cn>, linux-alpha@vger.kernel.org,
+ nios2-dev@lists.rocketboards.org, linuxppc-dev@lists.ozlabs.org
 To: linux-kernel@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
+List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
+List-Post: <mailto:linux-snps-arc@lists.infradead.org>
+List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
 
 From: yuan linyu <Linyu.Yuan@alcatel-sbell.com.cn>
 
@@ -28,6 +35,9 @@ then all arch boot parameter handled in the same way in start_kernel()
 
 Signed-off-by: yuan linyu <Linyu.Yuan@alcatel-sbell.com.cn>
 ---
+v2:
+	fix kbuild issue of parisc
+
  arch/alpha/kernel/setup.c          |  4 +---
  arch/arc/kernel/setup.c            |  5 +----
  arch/arm/kernel/setup.c            |  7 +------
@@ -43,7 +53,7 @@ Signed-off-by: yuan linyu <Linyu.Yuan@alcatel-sbell.com.cn>
  arch/nds32/kernel/setup.c          |  3 +--
  arch/nios2/kernel/setup.c          |  5 +----
  arch/openrisc/kernel/setup.c       |  4 +---
- arch/parisc/kernel/setup.c         |  9 ++-------
+ arch/parisc/kernel/setup.c         | 11 +++--------
  arch/powerpc/kernel/setup-common.c |  4 +---
  arch/riscv/kernel/setup.c          |  4 +---
  arch/s390/kernel/setup.c           |  6 +-----
@@ -56,7 +66,7 @@ Signed-off-by: yuan linyu <Linyu.Yuan@alcatel-sbell.com.cn>
  arch/xtensa/kernel/setup.c         |  9 +++++----
  include/linux/init.h               |  2 +-
  init/main.c                        | 14 +++++++-------
- 28 files changed, 59 insertions(+), 124 deletions(-)
+ 28 files changed, 60 insertions(+), 125 deletions(-)
 
 diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
 index 5576f7646fb6..c74675cf7129 100644
@@ -466,7 +476,7 @@ index 9d28ab14d139..d73e1faa88d1 100644
  }
  
 diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
-index 0e9675f857a5..7756a6110b83 100644
+index 0e9675f857a5..0a78a897959a 100644
 --- a/arch/parisc/kernel/setup.c
 +++ b/arch/parisc/kernel/setup.c
 @@ -51,8 +51,6 @@
@@ -506,6 +516,15 @@ index 0e9675f857a5..7756a6110b83 100644
  {
  #ifdef CONFIG_64BIT
  	extern int parisc_narrow_firmware;
+@@ -160,7 +155,7 @@ void __init setup_arch(char **cmdline_p)
+ 	}
+ #endif
+ 	setup_pdc();
+-	setup_cmdline(cmdline_p);
++	setup_cmdline();
+ 	collect_boot_cpu_data();
+ 	do_memory_inventory();  /* probe for physical memory */
+ 	parisc_cache_init();
 diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
 index d73ec518ef80..b88ce4afaafd 100644
 --- a/arch/powerpc/kernel/setup-common.c
