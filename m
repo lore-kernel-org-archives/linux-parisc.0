@@ -1,50 +1,51 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture updates for 4.17-rc1
-Date: Thu, 12 Apr 2018 20:41:01 +0200
-Message-ID: <20180412184101.GA20775@ls3530.fritz.box>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] parisc: Switch to generic COMPAT_BINFMT_ELF
+Date: Fri, 13 Apr 2018 11:29:04 -0700
+Message-ID: <20180413182904.GA1722@roeck-us.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+On Wed, Apr 11, 2018 at 09:09:53AM +0200, Helge Deller wrote:
+> Drop our own compat binfmt implementation in
+> arch/parisc/kernel/binfmt_elf32.c in favour of the generic
+> implementation with CONFIG_COMPAT_BINFMT_ELF.
+> 
+> While cleaning up the dependencies, I noticed that ELF_PLATFORM was strangely
+> defined: On a 32-bit kernel, it was defined to "PARISC", while when running in
+> compat mode on a 64-bit kernel it was defined to "PARISC32". Since it doesn't
+> seem to be used in glibc yet, it's now defined in both cases to "PARISC". In
+> any case, it can be distinguished because it's either a 32-bit or a 64-bit ELF
+> file.
+> 
+> Signed-off-by: Helge Deller <deller@gmx.de>
 
-please pull a few last changes for this merge window for the parisc architecture from:
+This patch results in:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.17-2
+Building parisc:a500_defconfig ... failed
+--------------
+Error log:
+make[2]: *** No rule to make target 'arch/parisc/kernel/binfmt_elf32.o', needed
+by 'arch/parisc/kernel/built-in.a'.  Stop.
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [arch/parisc/kernel] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [sub-make] Error 2
+--------------
+Building parisc:generic-64bit_defconfig ... failed
+--------------
+Error log:
+make[2]: *** No rule to make target 'arch/parisc/kernel/binfmt_elf32.o', needed
+by 'arch/parisc/kernel/built-in.a'.  Stop.
 
-Changes:
-- Fix panic when halting system via "shutdown -h now"
-- Drop own coding in favour of generic CONFIG_COMPAT_BINFMT_ELF implementation
-- Add FPE_CONDTRAP constant: last outstanding parisc-specific cleanup for Eric
-  Biedermans siginfo patches
-- move some functions to .init and some to .text.hot linker sections
+Indeed, arch/parisc/kernel/binfmt_elf32.o is still listed in Makefile
+for 64-bit builds.
 
-Thanks,
-Helge
+$ git grep binfmt_elf32.o arch/parisc/
+arch/parisc/kernel/Makefile:obj-$(CONFIG_64BIT) += binfmt_elf32.o sys_parisc32.o signal32.o
 
-----------------------------------------------------------------
-Helge Deller (4):
-      parisc/signal: Add FPE_CONDTRAP for conditional trap handling
-      parisc: Move cache flush functions into .text.hot section
-      parisc: Switch to generic COMPAT_BINFMT_ELF
-      parisc: Prevent panic at system halt
-
- arch/parisc/Kconfig                    |  1 +
- arch/parisc/include/asm/compat.h       |  6 +++
- arch/parisc/include/asm/elf.h          | 69 ++++++++++++------------
- arch/parisc/include/uapi/asm/siginfo.h |  7 ---
- arch/parisc/kernel/binfmt_elf32.c      | 98 ----------------------------------
- arch/parisc/kernel/cache.c             |  2 +-
- arch/parisc/kernel/pacache.S           |  9 ++--
- arch/parisc/kernel/process.c           | 13 ++---
- arch/parisc/kernel/traps.c             |  7 +--
- arch/x86/kernel/signal_compat.c        |  2 +-
- include/uapi/asm-generic/siginfo.h     |  3 +-
- 11 files changed, 60 insertions(+), 157 deletions(-)
- delete mode 100644 arch/parisc/kernel/binfmt_elf32.c
+Guenter
