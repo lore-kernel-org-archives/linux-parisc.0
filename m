@@ -1,55 +1,70 @@
-From: John David Anglin <dave.anglin@bell.net>
+From: Sinan Kaya <okaya@codeaurora.org>
 Subject: Re: [PATCH 1/2] parisc: use the asm-generic version for writeX()
-Date: Mon, 16 Apr 2018 19:09:42 -0400
-Message-ID: <a727e74f-610c-4722-76e9-c1aca2f9e9bd@bell.net>
+Date: Mon, 16 Apr 2018 19:15:37 -0400
+Message-ID: <a7b59f43-cea5-0ead-f528-61899570e353@codeaurora.org>
 References: <1523916078-23049-1-git-send-email-okaya@codeaurora.org>
+ <a727e74f-610c-4722-76e9-c1aca2f9e9bd@bell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Cc: linux-parisc@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-arm-msm@vger.kernel.org,
- Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>,
- linux-kernel@vger.kernel.org, Philippe Ombredanne <pombredanne@nexb.com>,
- Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org
-To: Sinan Kaya <okaya@codeaurora.org>, linux-parisc@linux-mips.org,
- arnd@arndb.de, timur@codeaurora.org, sulrich@codeaurora.org
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1523916078-23049-1-git-send-email-okaya@codeaurora.org>
-List-Id: <linux-arm-kernel.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Cc: linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: John David Anglin <dave.anglin@bell.net>, arnd@arndb.de,
+        timur@codeaurora.org, sulrich@codeaurora.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <a727e74f-610c-4722-76e9-c1aca2f9e9bd@bell.net>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-T24gMjAxOC0wNC0xNiA2OjAxIFBNLCBTaW5hbiBLYXlhIHdyb3RlOgo+IHBhcmlzYyBhcmNoaXRl
-Y3R1cmUgc2VlbXMgdG8gYmUgbWFwcGluZyB3cml0ZVgoKSBhbmQgd3JpdGVYX3JlbGF4ZWQoKSBB
-UElzCj4gdG8gX19yYXdfd3JpdGVYKCkgQVBJLgo+Cj4gX19yYXdfd3JpdGVYKCkgQVBJIGRvZXNu
-J3QgcHJvdmlkZSBhbnkga2luZCBvZiBvcmRlcmluZyBndWFyYW50ZWVzLgo+IGNvbW1pdCA3NTVi
-ZDA0YWFmNGIgKCJpbzogZGVmaW5lIHN0cm9uZ2VyIG9yZGVyaW5nIGZvciB0aGUgZGVmYXVsdCB3
-cml0ZVgoKQo+IGltcGxlbWVudGF0aW9uIikgY2hhbmdlZCBhc20tZ2VuZXJpYyBpbXBsZW1lbnRh
-dGlvbiB0byB1c2UgYSBtb3JlCj4gY29uc2VydmF0aXZlIGFwcHJvYWNoIHRvd2FyZHMgdGhlIHdy
-aXRlWCgpIEFQSS4KPgo+IERyb3AgdGhlIGFyY2ggc3BlY2lmaWMgdmVyc2lvbiBhbmQgcmVseSBv
-biB0aGUgYXNtLWdlbmVyaWMgdmVyc2lvbiBmb3IKPiBwYXJpc2Mgc2luY2UgcGFyaXNjIHZlcnNp
-b24gZG9lc24ndCBzZWVtIHRvIGRvIGFueXRoaW5nIHNwZWNpYWwgd2l0aCB0aGVzZQo+IG1hY3Jv
-cy4KIMKgIEhPU1RMRMKgIHNjcmlwdHMvbW9kL21vZHBvc3QKSW4gZmlsZSBpbmNsdWRlZCBmcm9t
-IC4vYXJjaC9wYXJpc2MvaW5jbHVkZS9hc20vaGFyZGlycS5oOjEzOjAsCiDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBmcm9tIC4vaW5jbHVkZS9saW51eC9oYXJkaXJxLmg6OSwKIMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGZyb20gYXJjaC9wYXJpc2Mva2VybmVsL2Fz
-bS1vZmZzZXRzLmM6MzQ6Ci4vaW5jbHVkZS9saW51eC9pcnEuaDogSW4gZnVuY3Rpb24gJ2lycV9y
-ZWdfd3JpdGVsJzoKLi9pbmNsdWRlL2xpbnV4L2lycS5oOjExMTQ6MzogZXJyb3I6IGltcGxpY2l0
-IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIAond3JpdGVsJyBbLVdlcnJvcj1pbXBsaWNpdC1mdW5j
-dGlvbi1kZWNsYXJhdGlvbl0KIMKgwqAgd3JpdGVsKHZhbCwgZ2MtPnJlZ19iYXNlICsgcmVnX29m
-ZnNldCk7CiDCoMKgIF5+fn5+fgouL2luY2x1ZGUvbGludXgvaXJxLmg6IEluIGZ1bmN0aW9uICdp
-cnFfcmVnX3JlYWRsJzoKLi9pbmNsdWRlL2xpbnV4L2lycS5oOjExMjM6MTA6IGVycm9yOiBpbXBs
-aWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiAKJ3JlYWRsJyBbLVdlcnJvcj1pbXBsaWNpdC1m
-dW5jdGlvbi1kZWNsYXJhdGlvbl0KIMKgwqAgcmV0dXJuIHJlYWRsKGdjLT5yZWdfYmFzZSArIHJl
-Z19vZmZzZXQpOwogwqDCoMKgwqDCoMKgwqDCoMKgIF5+fn5+CmNjMTogc29tZSB3YXJuaW5ncyBi
-ZWluZyB0cmVhdGVkIGFzIGVycm9ycwptYWtlWzFdOiAqKiogW0tidWlsZDo1ODogYXJjaC9wYXJp
-c2Mva2VybmVsL2FzbS1vZmZzZXRzLnNdIEVycm9yIDEKCkRhdmUKCi0tIApKb2huIERhdmlkIEFu
-Z2xpbiAgZGF2ZS5hbmdsaW5AYmVsbC5uZXQKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpsaW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlzdApsaW51eC1h
-cm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCg==
+On 4/16/2018 7:09 PM, John David Anglin wrote:
+> On 2018-04-16 6:01 PM, Sinan Kaya wrote:
+>> parisc architecture seems to be mapping writeX() and writeX_relaxed() APIs
+>> to __raw_writeX() API.
+>>
+>> __raw_writeX() API doesn't provide any kind of ordering guarantees.
+>> commit 755bd04aaf4b ("io: define stronger ordering for the default writeX()
+>> implementation") changed asm-generic implementation to use a more
+>> conservative approach towards the writeX() API.
+>>
+>> Drop the arch specific version and rely on the asm-generic version for
+>> parisc since parisc version doesn't seem to do anything special with these
+>> macros.
+>   HOSTLD  scripts/mod/modpost
+> In file included from ./arch/parisc/include/asm/hardirq.h:13:0,
+>                  from ./include/linux/hardirq.h:9,
+>                  from arch/parisc/kernel/asm-offsets.c:34:
+> ./include/linux/irq.h: In function 'irq_reg_writel':
+> ./include/linux/irq.h:1114:3: error: implicit declaration of function 'writel' [-Werror=implicit-function-declaration]
+>    writel(val, gc->reg_base + reg_offset);
+>    ^~~~~~
+> ./include/linux/irq.h: In function 'irq_reg_readl':
+> ./include/linux/irq.h:1123:10: error: implicit declaration of function 'readl' [-Werror=implicit-function-declaration]
+>    return readl(gc->reg_base + reg_offset);
+>           ^~~~~
+> cc1: some warnings being treated as errors
+> make[1]: *** [Kbuild:58: arch/parisc/kernel/asm-offsets.s] Error 1
+> 
+> Dave
+> 
+
+Thanks for testing. Can you add this on top and see if it helps?
+
+--- a/arch/parisc/include/asm/io.h
++++ b/arch/parisc/include/asm/io.h
+@@ -259,6 +259,7 @@ extern void outsl (unsigned long port, const void *src, unsigned long count);
+  * value for either 32 or 64 bit mode */
+ #define F_EXTEND(x) ((unsigned long)((x) | (0xffffffff00000000ULL)))
+ 
++#include <asm-generic/io.h>
+ #include <asm-generic/iomap.h>
+
+
+-- 
+Sinan Kaya
+Qualcomm Datacenter Technologies, Inc. as an affiliate of Qualcomm Technologies, Inc.
+Qualcomm Technologies, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project.
