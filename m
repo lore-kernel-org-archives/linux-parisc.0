@@ -1,33 +1,30 @@
 From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH 1/2] parisc: use the asm-generic version for writeX()
-Date: Tue, 17 Apr 2018 12:30:50 +0800
-Message-ID: <201804171208.1138HEgL%fengguang.wu@intel.com>
-References: <1523916078-23049-1-git-send-email-okaya@codeaurora.org>
+Subject: Re: [PATCH 2/2] parisc: use the asm-generic version for readX()
+Date: Tue, 17 Apr 2018 12:57:14 +0800
+Message-ID: <201804171252.ib5KDLNm%fengguang.wu@intel.com>
+References: <1523916078-23049-2-git-send-email-okaya@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="wRRV7LY7NUeQGEoC"
-Cc: Sinan Kaya <okaya@codeaurora.org>, sulrich@codeaurora.org,
- linux-parisc@vger.kernel.org, arnd@arndb.de,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-arm-msm@vger.kernel.org,
- timur@codeaurora.org, "James E.J. Bottomley" <jejb@parisc-linux.org>,
- linux-kernel@vger.kernel.org, linux-parisc@linux-mips.org, kbuild-all@01.org,
- Philippe Ombredanne <pombredanne@nexb.com>,
- Thomas Gleixner <tglx@linutronix.de>, Helge Deller <deller@gmx.de>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="fdj2RfSjLxBAspz7"
+Cc: kbuild-all@01.org, linux-parisc@linux-mips.org, arnd@arndb.de,
+        timur@codeaurora.org, sulrich@codeaurora.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Sinan Kaya <okaya@codeaurora.org>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
 To: Sinan Kaya <okaya@codeaurora.org>
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1523916078-23049-1-git-send-email-okaya@codeaurora.org>
-List-Id: <linux-arm-kernel.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1523916078-23049-2-git-send-email-okaya@codeaurora.org>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
 
---wRRV7LY7NUeQGEoC
+--fdj2RfSjLxBAspz7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -55,10 +52,15 @@ All errors (new ones prefixed by >>):
                     from include/linux/hardirq.h:9,
                     from arch/parisc/kernel/asm-offsets.c:34:
    include/linux/irq.h: In function 'irq_reg_writel':
->> include/linux/irq.h:1126:3: error: implicit declaration of function 'writel'; did you mean 'iowrite8'? [-Werror=implicit-function-declaration]
+   include/linux/irq.h:1126:3: error: implicit declaration of function 'writel'; did you mean 'iowrite8'? [-Werror=implicit-function-declaration]
       writel(val, gc->reg_base + reg_offset);
       ^~~~~~
       iowrite8
+   include/linux/irq.h: In function 'irq_reg_readl':
+>> include/linux/irq.h:1135:10: error: implicit declaration of function 'readl'; did you mean 'ioread8'? [-Werror=implicit-function-declaration]
+      return readl(gc->reg_base + reg_offset);
+             ^~~~~
+             ioread8
    cc1: some warnings being treated as errors
    make[2]: *** [arch/parisc/kernel/asm-offsets.s] Error 1
    make[2]: Target '__build' not remade because of errors.
@@ -66,7 +68,7 @@ All errors (new ones prefixed by >>):
    make[1]: Target 'prepare' not remade because of errors.
    make: *** [sub-make] Error 2
 
-vim +1126 include/linux/irq.h
+vim +1135 include/linux/irq.h
 
 7d828062 Thomas Gleixner 2011-04-03  1109  
 ebf9ff75 Boris Brezillon 2016-09-13  1110  /*
@@ -88,8 +90,17 @@ ebf9ff75 Boris Brezillon 2016-09-13  1119
 332fd7c4 Kevin Cernekee  2014-11-06 @1126  		writel(val, gc->reg_base + reg_offset);
 332fd7c4 Kevin Cernekee  2014-11-06  1127  }
 332fd7c4 Kevin Cernekee  2014-11-06  1128  
+332fd7c4 Kevin Cernekee  2014-11-06  1129  static inline u32 irq_reg_readl(struct irq_chip_generic *gc,
+332fd7c4 Kevin Cernekee  2014-11-06  1130  				int reg_offset)
+332fd7c4 Kevin Cernekee  2014-11-06  1131  {
+2b280376 Kevin Cernekee  2014-11-06  1132  	if (gc->reg_readl)
+2b280376 Kevin Cernekee  2014-11-06  1133  		return gc->reg_readl(gc->reg_base + reg_offset);
+2b280376 Kevin Cernekee  2014-11-06  1134  	else
+332fd7c4 Kevin Cernekee  2014-11-06 @1135  		return readl(gc->reg_base + reg_offset);
+332fd7c4 Kevin Cernekee  2014-11-06  1136  }
+332fd7c4 Kevin Cernekee  2014-11-06  1137  
 
-:::::: The code at line 1126 was first introduced by commit
+:::::: The code at line 1135 was first introduced by commit
 :::::: 332fd7c4fef5f3b166e93decb07fd69eb24f7998 genirq: Generic chip: Change irq_reg_{readl,writel} arguments
 
 :::::: TO: Kevin Cernekee <cernekee@gmail.com>
@@ -99,12 +110,12 @@ ebf9ff75 Boris Brezillon 2016-09-13  1119
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---wRRV7LY7NUeQGEoC
+--fdj2RfSjLxBAspz7
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICK901VoAAy5jb25maWcAlDxdc+K4su/nV7hmq27NVu3uBJJhknsrD0KWQQd/RZKB5MXF
+H4sICFV71VoAAy5jb25maWcAlDxdc+K4su/nV7hmq27NVu3uBJJhknsrD0KWQQd/RZKB5MXF
 JMwMtQnkANmd/fe3W7axZCTn3qqdDahbUkvq75b45V+/BOTtuHtZHTePq+fnf4Lv6+16vzqu
 n4Jvm+f1/wRhFqSZCljI1R+AHG+2bz8/va72m8NjcPXHYPTHRTBb77fr54Dutt8239+g82a3
 /dcv/6JZGvFJmRPBJb39p/lO86Icw1+WhpykbXuSFO0XqQidlRORLWSRt81iIVlSTljKBKel
@@ -370,15 +381,4 @@ C6qsjKqFNyJAmuZxvZ7/1Z7qtpQZo2Pf6tk6tlawRfAU4ZykJOuFIAm3awafMeXWSICCSm0n
 uRgWYUKD3jaD8sBuQjFLtI7G+sy1pdxKE3DJH29ho9Pt7ZEsD5iTaxCwdhXMrk0MdJilpaUQ
 OyowVTn5dAfwV7+uLFOPLrGZSAEvFDOrf4XW8/aM5FrFTO2T/wHE8qv9r+QAAA==
 
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---wRRV7LY7NUeQGEoC--
+--fdj2RfSjLxBAspz7--
