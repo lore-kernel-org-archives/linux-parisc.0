@@ -1,58 +1,39 @@
-From: Sinan Kaya <okaya@codeaurora.org>
-Subject: Re: [PATCH v2 2/2] parisc: define stronger ordering for the default
- readX()
-Date: Wed, 18 Apr 2018 09:39:30 -0400
-Message-ID: <a8c3391d-7109-47bf-e1c4-9217fc68bfd0@codeaurora.org>
-References: <1523938133-3224-1-git-send-email-okaya@codeaurora.org>
- <1523938133-3224-2-git-send-email-okaya@codeaurora.org>
- <1523957852.3250.9.camel@HansenPartnership.com>
- <38a1d4e3-cabe-6c39-4355-8d8111637382@codeaurora.org>
- <1523980508.3310.9.camel@HansenPartnership.com>
- <86252a65-265d-e081-b71f-42a0be6b1693@codeaurora.org>
- <97fc18a7-b321-0039-0413-d461abc2097b@bell.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Helge Deller <deller@gmx.de>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-To: John David Anglin <dave.anglin@bell.net>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        linux-parisc@vger.kernel.org, arnd@arndb.de, timur@codeaurora.org,
-        sulrich@codeaurora.org
+From: Baolin Wang <baolin.wang@linaro.org>
+Subject: [PATCH] parisc: time: Convert read_persistent_clock() to read_persistent_clock64()
+Date: Thu, 19 Apr 2018 14:51:03 +0800
+Message-ID: <4914b33abd8969906d2db0ae5c3da4f205f0bfe9.1524120572.git.baolin.wang@linaro.org>
+Cc: alexandre.belloni@bootlin.com, kstewart@linuxfoundation.org,
+        gregkh@linuxfoundation.org, tglx@linutronix.de,
+        linux-parisc@vger.kernel.org, arnd@arndb.de, broonie@kernel.org,
+        linux-kernel@vger.kernel.org, baolin.wang@linaro.org
+To: jejb@parisc-linux.org, deller@gmx.de
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <97fc18a7-b321-0039-0413-d461abc2097b@bell.net>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 4/17/2018 6:53 PM, John David Anglin wrote:
-> On 2018-04-17 2:28 PM, Sinan Kaya wrote:
->> The correct terminology here would be to use observability. Yes, it can be
->> cached in whatever part of the system for some amount of time as long as
->> PCI device sees it in the correct order.
->>
->> Let's do this exercise.
->> 1. OS writes to memory for some descriptor update
->> 2. OS writes to the device via writel to hit a doorbell
->> 3. Device comes and fetches the memory contents for the descriptor
->>
->> writel() of PA-RISC needs to ensure that 3. cannot bypass 1. This is typically
->> done by a write barrier embedded into the writel() on relaxed architectures.
-> The sequence point after the argument evaluation for writel prevents the compiler from reordering
-> 1 and 2.  Accesses to I/O space are strongly ordered on PA-RISC, so 1 must occur before 2 (Page G-1
-> of the PA-RISC 2.0 Architecture).  Thus, the current code is okay.
-> 
+The read_persistent_clock() uses a timespec, which is not year 2038 safe
+on 32bit systems. On parisc architecture, we have implemented generic RTC
+drivers that can be used to compensate the system suspend time, but the
+RTC time can not represent the nanosecond resolution, so this patch just
+converts to read_persistent_clock64() with timespec64.
 
-Many thanks for the clarification.
+Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+---
+ arch/parisc/kernel/time.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Dave
-> 
-
-
+diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
+index c383040..a1e772f 100644
+--- a/arch/parisc/kernel/time.c
++++ b/arch/parisc/kernel/time.c
+@@ -205,7 +205,7 @@ static int __init rtc_init(void)
+ device_initcall(rtc_init);
+ #endif
+ 
+-void read_persistent_clock(struct timespec *ts)
++void read_persistent_clock64(struct timespec64 *ts)
+ {
+ 	static struct pdc_tod tod_data;
+ 	if (pdc_tod_read(&tod_data) == 0) {
 -- 
-Sinan Kaya
-Qualcomm Datacenter Technologies, Inc. as an affiliate of Qualcomm Technologies, Inc.
-Qualcomm Technologies, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project.
+1.7.9.5
