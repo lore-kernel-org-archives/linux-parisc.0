@@ -1,58 +1,113 @@
-From: Jeroen Roovers <jer@gentoo.org>
-Subject: Re: Ultra5 successful install - PGX64 issues
-Date: Fri, 20 Apr 2018 11:24:26 +0200
-Message-ID: <20180420112426.3c8be653@wim.jer>
-References: <CAFC0-0XVQUVHmM+TT4qUK_djRGx-eV+d=5FTpGyjRR40mwAv=Q@mail.gmail.com>
-	<6a4e3490-dd3e-5832-43be-dba8211ce6e4@physik.fu-berlin.de>
-	<dd60b1eb-595d-f208-2885-c958a5ff3a4c@blastwave.org>
-	<16600fdc-6bba-1e2d-f106-560b8ea366c8@physik.fu-berlin.de>
-	<9671ecea-1353-df1c-ebbd-24a5b7d3008b@oetec.com>
-	<de1ac156-926a-c187-f15e-2c3da9251c82@web.de>
-	<f34b2787-17e5-4fef-f028-543082ff95b6@gmx.de>
-	<103f23dc-0d00-2ca1-fb98-271d1e03ad90@web.de>
+From: Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH 01/22] dma-debug: move initialization to common code
+Date: Fri, 20 Apr 2018 11:23:43 +0100
+Message-ID: <294a1469-01d6-10fb-5de1-b1d4513a066c@arm.com>
+References: <20180420080313.18796-1-hch@lst.de>
+ <20180420080313.18796-2-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: Helge Deller <deller@gmx.de>, debian-hppa@lists.debian.org, linux-parisc
- <linux-parisc@vger.kernel.org>, Dennis Clarke <dc@oetec.com>
-To: Frank Scheiner <frank.scheiner@web.de>
-Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
-In-Reply-To: <103f23dc-0d00-2ca1-fb98-271d1e03ad90@web.de>
-Resent-Message-ID: <dlKQxCNoJlP.A.FYF.zXb2aB@bendel>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Cc: linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        Michal Simek <monstr@monstr.eu>,
+        Vincent Chen <deanbo422@gmail.com>,
+        linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        openrisc@lists.librecores.org, Greentime Hu <green.hu@gmail.com>,
+        linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org,
+        nios2-dev@lists.rocketboards.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180420080313.18796-2-hch@lst.de>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-URL: <https://lists.debian.org/debian-hppa/>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
-List-Archive: https://lists.debian.org/msgid-search/20180420112426.3c8be653@wim.jer
 
-On Thu, 19 Apr 2018 21:29:45 +0200
-Frank Scheiner <frank.scheiner@web.de> wrote:
+Hi Christoph,
 
-> Afterwards I found some older notes about this machine which mention
-> no issues during diskless operation with the very same configuration 
-> (kernel and possibly also userland), which made me wonder, if there's 
-> maybe an issue between the machine's built-in NIC and my used 1000
-> Mbit network switch. And indeed, when connecting another 100 Mbit
-> network switch in between the 712/80 and the 1000 Mbit network switch
-> the issue seemed to be gone and the machine stayed accessible .
+Nice cleanup! Looks good overall, just a couple of nits.
+
+On 20/04/18 09:02, Christoph Hellwig wrote:
+[...]
+> diff --git a/lib/dma-debug.c b/lib/dma-debug.c
+> index 7f5cdc1e6b29..712a897174e4 100644
+> --- a/lib/dma-debug.c
+> +++ b/lib/dma-debug.c
+> @@ -41,6 +41,11 @@
+>   #define HASH_FN_SHIFT   13
+>   #define HASH_FN_MASK    (HASH_SIZE - 1)
+>   
+> +/* allow architectures to override this if absolutely required */
+> +#ifndef PREALLOC_DMA_DEBUG_ENTRIES
+> +#define PREALLOC_DMA_DEBUG_ENTRIES (1 << 16)
+> +#endif
+> +
+>   enum {
+>   	dma_debug_single,
+>   	dma_debug_page,
+> @@ -1004,18 +1009,16 @@ void dma_debug_add_bus(struct bus_type *bus)
+>   	bus_register_notifier(bus, nb);
+>   }
+>   
+> -/*
+> - * Let the architectures decide how many entries should be preallocated.
+> - */
+> -void dma_debug_init(u32 num_entries)
+> +static int dma_debug_init(void)
+>   {
+> +	u32 num_entries;
+
+Maybe initialise it to PREALLOC_DMA_DEBUG_ENTRIES?
+
+>   	int i;
+>   
+>   	/* Do not use dma_debug_initialized here, since we really want to be
+>   	 * called to set dma_debug_initialized
+>   	 */
+>   	if (global_disable)
+> -		return;
+> +		return 0;
+>   
+>   	for (i = 0; i < HASH_SIZE; ++i) {
+>   		INIT_LIST_HEAD(&dma_entry_hash[i].list);
+> @@ -1026,17 +1029,19 @@ void dma_debug_init(u32 num_entries)
+>   		pr_err("DMA-API: error creating debugfs entries - disabling\n");
+>   		global_disable = true;
+>   
+> -		return;
+> +		return 0;
+>   	}
+>   
+>   	if (req_entries)
+>   		num_entries = req_entries;
+> +	else
+> +		num_entries = PREALLOC_DMA_DEBUG_ENTRIES;
+>   
+>   	if (prealloc_memory(num_entries) != 0) {
+>   		pr_err("DMA-API: debugging out of memory error - disabled\n");
+>   		global_disable = true;
+>   
+> -		return;
+> +		return 0;
+>   	}
+>   
+>   	nr_total_entries = num_free_entries;
+> @@ -1044,7 +1049,9 @@ void dma_debug_init(u32 num_entries)
+>   	dma_debug_initialized = true;
+>   
+>   	pr_info("DMA-API: debugging enabled by kernel config\n");
+> +	return 0;
+>   }
+> +core_initcall(dma_debug_init);
+
+I think it's worth noting that for most users this now happens much 
+earlier than before. In general that's probably good (e.g. on arm64 it 
+should prevent false-positives from the Arm SMMU drivers under ACPI), 
+and I can't imagine it's high-risk, but it is a behaviour change.
+
+Robin.
+
+>   
+>   static __init int dma_debug_cmdline(char *str)
+>   {
 > 
-> But later this week I retried the 712/80 with the current Linux
-> kernel (4.15.x) and Debian userland and the issue hit me again,
-> although much later and despite the 100 Mbit network switch in
-> between. Looking at it I could see that the collision indicator was
-> active on the switch for the port used by the 712/80. I then
-> configured a singular port of the 1000 Mbit network switch to 10 Mbit
-> full duplex and attached the 712/80 to it. And then the issue again
-> seemed to be gone. But trying to install a package or updating the
-> package cache again quickly triggered it.
-
-You could try setting the internal NIC to half-duplex, or perhaps use a
-(passive) 10BASE-T hub instead of a switch if you cannot configure that
-internally, on the kernel command line, or doing it in userland is too
-late.
-
-
-Kind regards,
-     jer
