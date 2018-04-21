@@ -1,66 +1,60 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH 22/22] parisc: use generic dma_noncoherent_ops
-Date: Sat, 21 Apr 2018 22:52:17 +0100
-Message-ID: <1524347537.3335.12.camel@HansenPartnership.com>
-References: <20180420080313.18796-1-hch@lst.de>
-         <20180420080313.18796-23-hch@lst.de>
-         <e0b4f3be-68b9-c3af-e432-fd20419e2d70@gmx.de>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: Ultra5 successful install - PGX64 issues
+Date: Sun, 22 Apr 2018 00:17:05 +0200
+Message-ID: <a0480809-8512-779d-e59c-c93775dc378a@gmx.de>
+References: <CAFC0-0XVQUVHmM+TT4qUK_djRGx-eV+d=5FTpGyjRR40mwAv=Q@mail.gmail.com>
+ <6a4e3490-dd3e-5832-43be-dba8211ce6e4@physik.fu-berlin.de>
+ <dd60b1eb-595d-f208-2885-c958a5ff3a4c@blastwave.org>
+ <16600fdc-6bba-1e2d-f106-560b8ea366c8@physik.fu-berlin.de>
+ <9671ecea-1353-df1c-ebbd-24a5b7d3008b@oetec.com>
+ <de1ac156-926a-c187-f15e-2c3da9251c82@web.de>
+ <f34b2787-17e5-4fef-f028-543082ff95b6@gmx.de>
+ <103f23dc-0d00-2ca1-fb98-271d1e03ad90@web.de>
+ <2847ef55-b5b1-1867-df6a-ad5ce224abd4@gmx.de>
+ <ece0086b-6c7f-4c61-b101-475f085ec120@bell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-arch@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
-To: Helge Deller <deller@gmx.de>, Christoph Hellwig <hch@lst.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <e0b4f3be-68b9-c3af-e432-fd20419e2d70@gmx.de>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Cc: debian-hppa@lists.debian.org, linux-parisc
+ <linux-parisc@vger.kernel.org>, Dennis Clarke <dc@oetec.com>
+To: John David Anglin <dave.anglin@bell.net>,
+ Frank Scheiner <frank.scheiner@web.de>
+Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
+In-Reply-To: <ece0086b-6c7f-4c61-b101-475f085ec120@bell.net>
+Resent-Message-ID: <Yz2ejWws51E.A.H5C.5h72aB@bendel>
 List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-URL: <https://lists.debian.org/debian-hppa/>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: https://lists.debian.org/msgid-search/a0480809-8512-779d-e59c-c93775dc378a@gmx.de
 
-On Sat, 2018-04-21 at 19:43 +0200, Helge Deller wrote:
-> On 20.04.2018 10:03, Christoph Hellwig wrote:
-> > Switch to the generic noncoherent direct mapping implementation.
-> > 
-> > Parisc previously had two different non-coherent dma ops
-> > implementation that just different in the way coherent allocations
-> > were handled or not handled.  The different behavior is not
-> > selected at runtime in the arch_dma_alloc and arch_dma_free
-> > routines.  The non-coherent allocation in the pcx cases now uses
-> > the dma_direct helpers that are a little more sophisticated and
-> > used by a lot of other architectures.
-> > 
-> > Fix sync_single_for_cpu to do skip the cache flush unless the
-> > transfer is to the device to match the more tested unmap_single
-> > path which should have the same cache coherency implications.
-> > 
-> > This also now consistenly uses flush_kernel_dcache_range for cache
-> > flushing while previously some of the SG based operations used
-> > flush_kernel_vmap_range instead.
-> 
-> 
-> This patch breaks a 32bit kernel on a B160L machine (PA7300LC CPU,
-> "pcxl2"). After applying this patch series the lasi82956 network
-> driver works unreliable.  NIC gets IP, but ping doesn't work.
-> See drivers/net/ethernet/i825xx/lasi_82596.c, it uses dma*sync()
-> functions.
+On 21.04.2018 21:12, John David Anglin wrote:
+> On 2018-04-20 2:37 AM, Helge Deller wrote:
+>>> Also interesting, the kernel messages for 4.15.11, please notice the
+>>> time difference between "random: crng init done" and "Key type
+>>> asymmetric registered":
+>> Seems to be a generic issue.
+>> https://www.linuxquestions.org/questions/showthread.php?p=5803405#post5803405
+>>
+>> My assumption is, that the kernel waits until it has
+>> enough randomness for the various encryption algorithms.
 
-That's actually a weird result.  The 32 bit machines have two cases:
-those that can make uncached memory by setting the U bit (and thus
-don't need the sync operations in the lasi and D700 drivers) and those
-that can't.  The latter is basically only the old 700 series.  The B180
-is in the class of can set pages to uncached, so it sounds like
-something in our uncached memory allocation for dma areas is failing
-after this patch set.
+> I think this is caused by cryptomgr_test.
+> It can be disabled with "cryptomgr.notests" on command line.
 
-I still have an old 700 in my box of curiosities, so I can try to dust
-it off and plug it back in when I get home to see what it makes of the
-series when it gets fixed.
+Did you tested this?
+Unless I typed it wrong it didn't worked on my B160L:
+[    0.000000] Kernel command line: root=/dev/sda5 crpytomgr.notests HOME=/ console=ttyS0 TERM=vt102 palo_kernel=2/vmlinux
+...
+[   15.549370] workingset: timestamp_bits=14 max_order=15 bucket_order=1
+[   15.688261] zbud: loaded
+[   57.608154] random: crng init done
+...long delay here...
+[  207.522038] Key type asymmetric registered
+[  207.574154] Asymmetric key parser 'x509' registered
+[  207.635883] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 250)
+[  207.729718] io scheduler noop registered
 
-James
-
-James
+Helge
