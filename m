@@ -1,366 +1,374 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [REVIEW][PATCH 13/22] signal/parisc: Use force_sig_fault where
- appropriate
-Date: Sat, 21 Apr 2018 19:24:06 +0200
-Message-ID: <0c19d397-57d2-9b39-19f3-f989b34e1580@gmx.de>
-References: <87604mhrnb.fsf@xmission.com>
- <20180420143811.9994-13-ebiederm@xmission.com>
+Subject: Re: [PATCH 22/22] parisc: use generic dma_noncoherent_ops
+Date: Sat, 21 Apr 2018 19:43:46 +0200
+Message-ID: <e0b4f3be-68b9-c3af-e432-fd20419e2d70@gmx.de>
+References: <20180420080313.18796-1-hch@lst.de>
+ <20180420080313.18796-23-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: linux-kernel@vger.kernel.org,
-        James Bottomley <jejb@parisc-linux.org>,
-        linux-parisc@vger.kernel.org
-To: "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-arch@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180420143811.9994-13-ebiederm@xmission.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-arch@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+ Vincent Chen <deanbo422@gmail.com>, linux-c6x-dev@linux-c6x.org,
+ linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
+ Greentime Hu <green.hu@gmail.com>, linux-alpha@vger.kernel.org,
+ sparclinux@vger.kernel.org, nios2-dev@lists.rocketboards.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>
+Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20180420080313.18796-23-hch@lst.de>
+List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
+List-Post: <mailto:linux-snps-arc@lists.infradead.org>
+List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
 
-On 20.04.2018 16:38, Eric W. Biederman wrote:
-> Filling in struct siginfo before calling force_sig_info a tedious and
-> error prone process, where once in a great while the wrong fields
-> are filled out, and siginfo has been inconsistently cleared.
+On 20.04.2018 10:03, Christoph Hellwig wrote:
+> Switch to the generic noncoherent direct mapping implementation.
 > 
-> Simplify this process by using the helper force_sig_fault.  Which
-> takes as a parameters all of the information it needs, ensures
-> all of the fiddly bits of filling in struct siginfo are done properly
-> and then calls force_sig_info.
+> Parisc previously had two different non-coherent dma ops implementation
+> that just different in the way coherent allocations were handled or not
+> handled.  The different behavior is not selected at runtime in the
+> arch_dma_alloc and arch_dma_free routines.  The non-coherent allocation
+> in the pcx cases now uses the dma_direct helpers that are a little more
+> sophisticated and used by a lot of other architectures.
 > 
-> In short about a 5 line reduction in code for every time force_sig_info
-> is called, which makes the calling function clearer.
+> Fix sync_single_for_cpu to do skip the cache flush unless the transfer
+> is to the device to match the more tested unmap_single path which should
+> have the same cache coherency implications.
 > 
-> Cc: James Bottomley <jejb@parisc-linux.org>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: linux-parisc@vger.kernel.org
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> This also now consistenly uses flush_kernel_dcache_range for cache
+> flushing while previously some of the SG based operations used
+> flush_kernel_vmap_range instead.
 
-I pulled this whole patch series from your git tree and 
-booted it on 32- and 64-bit parisc kernels.
- 
-Acked-by: Helge Deller <deller@gmx.de>   # parisc
 
-Thanks!
+This patch breaks a 32bit kernel on a B160L machine (PA7300LC CPU, "pcxl2").
+After applying this patch series the lasi82956 network driver works unreliable. 
+NIC gets IP, but ping doesn't work.
+See drivers/net/ethernet/i825xx/lasi_82596.c, it uses dma*sync() functions.
+
 Helge
 
+ 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  arch/parisc/kernel/ptrace.c    | 11 ++------
->  arch/parisc/kernel/traps.c     | 63 ++++++++++++++----------------------------
->  arch/parisc/kernel/unaligned.c | 16 +++--------
->  arch/parisc/math-emu/driver.c  |  9 ++----
->  arch/parisc/mm/fault.c         | 25 +++++++----------
->  5 files changed, 39 insertions(+), 85 deletions(-)
+>  arch/parisc/Kconfig                   |   4 +
+>  arch/parisc/include/asm/dma-mapping.h |   5 -
+>  arch/parisc/kernel/pci-dma.c          | 181 ++++----------------------
+>  arch/parisc/kernel/setup.c            |   8 +-
+>  arch/parisc/mm/init.c                 |  11 +-
+>  5 files changed, 35 insertions(+), 174 deletions(-)
 > 
-> diff --git a/arch/parisc/kernel/ptrace.c b/arch/parisc/kernel/ptrace.c
-> index b1c12ceb1c88..7aa1d4d0d444 100644
-> --- a/arch/parisc/kernel/ptrace.c
-> +++ b/arch/parisc/kernel/ptrace.c
-> @@ -76,8 +76,6 @@ void user_enable_single_step(struct task_struct *task)
->  	set_tsk_thread_flag(task, TIF_SINGLESTEP);
+> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+> index 47047f0cbe35..80166a1cbcb7 100644
+> --- a/arch/parisc/Kconfig
+> +++ b/arch/parisc/Kconfig
+> @@ -188,6 +188,10 @@ config PA20
+>  config PA11
+>  	def_bool y
+>  	depends on PA7000 || PA7100LC || PA7200 || PA7300LC
+> +	select ARCH_HAS_SYNC_DMA_FOR_CPU
+> +	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+> +	select DMA_NONCOHERENT_OPS
+> +	select DMA_NONCOHERENT_CACHE_SYNC
 >  
->  	if (pa_psw(task)->n) {
-> -		struct siginfo si;
+>  config PREFETCH
+>  	def_bool y
+> diff --git a/arch/parisc/include/asm/dma-mapping.h b/arch/parisc/include/asm/dma-mapping.h
+> index 01e1fc057c83..44a9f97194aa 100644
+> --- a/arch/parisc/include/asm/dma-mapping.h
+> +++ b/arch/parisc/include/asm/dma-mapping.h
+> @@ -21,11 +21,6 @@
+>  ** flush/purge and allocate "regular" cacheable pages for everything.
+>  */
+>  
+> -#ifdef CONFIG_PA11
+> -extern const struct dma_map_ops pcxl_dma_ops;
+> -extern const struct dma_map_ops pcx_dma_ops;
+> -#endif
 > -
->  		/* Nullified, just crank over the queue. */
->  		task_regs(task)->iaoq[0] = task_regs(task)->iaoq[1];
->  		task_regs(task)->iasq[0] = task_regs(task)->iasq[1];
-> @@ -90,12 +88,9 @@ void user_enable_single_step(struct task_struct *task)
->  		ptrace_disable(task);
->  		/* Don't wake up the task, but let the
->  		   parent know something happened. */
-> -		clear_siginfo(&si);
-> -		si.si_code = TRAP_TRACE;
-> -		si.si_addr = (void __user *) (task_regs(task)->iaoq[0] & ~3);
-> -		si.si_signo = SIGTRAP;
-> -		si.si_errno = 0;
-> -		force_sig_info(SIGTRAP, &si, task);
-> +		force_sig_fault(SIGTRAP, TRAP_TRACE,
-> +				(void __user *) (task_regs(task)->iaoq[0] & ~3),
-> +				task);
->  		/* notify_parent(task, SIGCHLD); */
->  		return;
->  	}
-> diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-> index 98f9f2f85940..132b09c657ff 100644
-> --- a/arch/parisc/kernel/traps.c
-> +++ b/arch/parisc/kernel/traps.c
-> @@ -297,14 +297,8 @@ void die_if_kernel(char *str, struct pt_regs *regs, long err)
->  #define GDB_BREAK_INSN 0x10004
->  static void handle_gdb_break(struct pt_regs *regs, int wot)
->  {
-> -	struct siginfo si;
-> -
-> -	clear_siginfo(&si);
-> -	si.si_signo = SIGTRAP;
-> -	si.si_errno = 0;
-> -	si.si_code = wot;
-> -	si.si_addr = (void __user *) (regs->iaoq[0] & ~3);
-> -	force_sig_info(SIGTRAP, &si, current);
-> +	force_sig_fault(SIGTRAP, wot,
-> +			(void __user *) (regs->iaoq[0] & ~3), current);
+>  extern const struct dma_map_ops *hppa_dma_ops;
+>  
+>  static inline const struct dma_map_ops *get_arch_dma_ops(struct bus_type *bus)
+> diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
+> index 91bc0cac03a1..235e2e53959e 100644
+> --- a/arch/parisc/kernel/pci-dma.c
+> +++ b/arch/parisc/kernel/pci-dma.c
+> @@ -21,13 +21,12 @@
+>  #include <linux/init.h>
+>  #include <linux/gfp.h>
+>  #include <linux/mm.h>
+> -#include <linux/pci.h>
+>  #include <linux/proc_fs.h>
+>  #include <linux/seq_file.h>
+>  #include <linux/string.h>
+>  #include <linux/types.h>
+> -#include <linux/scatterlist.h>
+> -#include <linux/export.h>
+> +#include <linux/dma-direct.h>
+> +#include <linux/dma-noncoherent.h>
+>  
+>  #include <asm/cacheflush.h>
+>  #include <asm/dma.h>    /* for DMA_CHUNK_SIZE */
+> @@ -447,178 +446,48 @@ static void pa11_dma_free(struct device *dev, size_t size, void *vaddr,
+>  	free_pages((unsigned long)__va(dma_handle), order);
 >  }
 >  
->  static void handle_break(struct pt_regs *regs)
-> @@ -488,9 +482,8 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
+> -static dma_addr_t pa11_dma_map_page(struct device *dev, struct page *page,
+> -		unsigned long offset, size_t size,
+> -		enum dma_data_direction direction, unsigned long attrs)
+> +void arch_sync_dma_for_device(struct device *dev, phys_addr_t paddr,
+> +		size_t size, enum dma_data_direction dir)
 >  {
->  	unsigned long fault_address = 0;
->  	unsigned long fault_space = 0;
-> -	struct siginfo si;
-> +	int si_code;
+> -	void *addr = page_address(page) + offset;
+> -	BUG_ON(direction == DMA_NONE);
+> -
+> -	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> -		flush_kernel_dcache_range((unsigned long) addr, size);
+> -
+> -	return virt_to_phys(addr);
+> +	flush_kernel_dcache_range((unsigned long)phys_to_virt(paddr), size);
+>  }
 >  
-> -	clear_siginfo(&si);
->  	if (code == 1)
->  	    pdc_console_restart();  /* switch back to pdc if HPMC */
->  	else
-> @@ -573,7 +566,7 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
->  	case  8:
->  		/* Illegal instruction trap */
->  		die_if_kernel("Illegal instruction", regs, code);
-> -		si.si_code = ILL_ILLOPC;
-> +		si_code = ILL_ILLOPC;
->  		goto give_sigill;
->  
->  	case  9:
-> @@ -584,7 +577,7 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
->  	case 10:
->  		/* Privileged operation trap */
->  		die_if_kernel("Privileged operation", regs, code);
-> -		si.si_code = ILL_PRVOPC;
-> +		si_code = ILL_PRVOPC;
->  		goto give_sigill;
->  
->  	case 11:
-> @@ -607,20 +600,16 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
->  		}
->  
->  		die_if_kernel("Privileged register usage", regs, code);
-> -		si.si_code = ILL_PRVREG;
-> +		si_code = ILL_PRVREG;
->  	give_sigill:
-> -		si.si_signo = SIGILL;
-> -		si.si_errno = 0;
-> -		si.si_addr = (void __user *) regs->iaoq[0];
-> -		force_sig_info(SIGILL, &si, current);
-> +		force_sig_fault(SIGILL, si_code,
-> +				(void __user *) regs->iaoq[0], current);
->  		return;
->  
->  	case 12:
->  		/* Overflow Trap, let the userland signal handler do the cleanup */
-> -		si.si_signo = SIGFPE;
-> -		si.si_code = FPE_INTOVF;
-> -		si.si_addr = (void __user *) regs->iaoq[0];
-> -		force_sig_info(SIGFPE, &si, current);
-> +		force_sig_fault(SIGFPE, FPE_INTOVF,
-> +				(void __user *) regs->iaoq[0], current);
->  		return;
->  		
->  	case 13:
-> @@ -628,13 +617,11 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
->  		   The condition succeeds in an instruction which traps
->  		   on condition  */
->  		if(user_mode(regs)){
-> -			si.si_signo = SIGFPE;
->  			/* Let userspace app figure it out from the insn pointed
->  			 * to by si_addr.
->  			 */
-> -			si.si_code = FPE_CONDTRAP;
-> -			si.si_addr = (void __user *) regs->iaoq[0];
-> -			force_sig_info(SIGFPE, &si, current);
-> +			force_sig_fault(SIGFPE, FPE_CONDTRAP,
-> +					(void __user *) regs->iaoq[0], current);
->  			return;
->  		} 
->  		/* The kernel doesn't want to handle condition codes */
-> @@ -743,14 +730,10 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
->  			return;
->  
->  		die_if_kernel("Protection id trap", regs, code);
-> -		si.si_code = SEGV_MAPERR;
-> -		si.si_signo = SIGSEGV;
-> -		si.si_errno = 0;
-> -		if (code == 7)
-> -		    si.si_addr = (void __user *) regs->iaoq[0];
-> -		else
-> -		    si.si_addr = (void __user *) regs->ior;
-> -		force_sig_info(SIGSEGV, &si, current);
-> +		force_sig_fault(SIGSEGV, SEGV_MAPERR,
-> +				(code == 7)?
-> +				((void __user *) regs->iaoq[0]) :
-> +				((void __user *) regs->ior), current);
->  		return;
->  
->  	case 28: 
-> @@ -764,11 +747,8 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
->  				"handle_interruption() pid=%d command='%s'\n",
->  				task_pid_nr(current), current->comm);
->  			/* SIGBUS, for lack of a better one. */
-> -			si.si_signo = SIGBUS;
-> -			si.si_code = BUS_OBJERR;
-> -			si.si_errno = 0;
-> -			si.si_addr = (void __user *) regs->ior;
-> -			force_sig_info(SIGBUS, &si, current);
-> +			force_sig_fault(SIGBUS, BUS_OBJERR,
-> +					(void __user *)regs->ior, current);
->  			return;
->  		}
->  		pdc_chassis_send_status(PDC_CHASSIS_DIRECT_PANIC);
-> @@ -783,11 +763,8 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
->  				"User fault %d on space 0x%08lx, pid=%d command='%s'\n",
->  				code, fault_space,
->  				task_pid_nr(current), current->comm);
-> -		si.si_signo = SIGSEGV;
-> -		si.si_errno = 0;
-> -		si.si_code = SEGV_MAPERR;
-> -		si.si_addr = (void __user *) regs->ior;
-> -		force_sig_info(SIGSEGV, &si, current);
-> +		force_sig_fault(SIGSEGV, SEGV_MAPERR,
-> +				(void __user *)regs->ior, current);
->  		return;
->  	    }
->  	}
-> diff --git a/arch/parisc/kernel/unaligned.c b/arch/parisc/kernel/unaligned.c
-> index 30b7c7f6c471..932bfc0b7cd8 100644
-> --- a/arch/parisc/kernel/unaligned.c
-> +++ b/arch/parisc/kernel/unaligned.c
-> @@ -452,10 +452,8 @@ void handle_unaligned(struct pt_regs *regs)
->  	unsigned long newbase = R1(regs->iir)?regs->gr[R1(regs->iir)]:0;
->  	int modify = 0;
->  	int ret = ERR_NOTHANDLED;
-> -	struct siginfo si;
->  	register int flop=0;	/* true if this is a flop */
->  
-> -	clear_siginfo(&si);
->  	__inc_irq_stat(irq_unaligned_count);
->  
->  	/* log a message with pacing */
-> @@ -691,21 +689,15 @@ void handle_unaligned(struct pt_regs *regs)
->  
->  		if (ret == ERR_PAGEFAULT)
->  		{
-> -			si.si_signo = SIGSEGV;
-> -			si.si_errno = 0;
-> -			si.si_code = SEGV_MAPERR;
-> -			si.si_addr = (void __user *)regs->ior;
-> -			force_sig_info(SIGSEGV, &si, current);
-> +			force_sig_fault(SIGSEGV, SEGV_MAPERR,
-> +					(void __user *)regs->ior, current);
->  		}
->  		else
->  		{
->  force_sigbus:
->  			/* couldn't handle it ... */
-> -			si.si_signo = SIGBUS;
-> -			si.si_errno = 0;
-> -			si.si_code = BUS_ADRALN;
-> -			si.si_addr = (void __user *)regs->ior;
-> -			force_sig_info(SIGBUS, &si, current);
-> +			force_sig_fault(SIGBUS, BUS_ADRALN,
-> +					(void __user *)regs->ior, current);
->  		}
->  		
->  		return;
-> diff --git a/arch/parisc/math-emu/driver.c b/arch/parisc/math-emu/driver.c
-> index 0d10efb53361..0590e05571d1 100644
-> --- a/arch/parisc/math-emu/driver.c
-> +++ b/arch/parisc/math-emu/driver.c
-> @@ -81,7 +81,6 @@ int
->  handle_fpe(struct pt_regs *regs)
+> -static void pa11_dma_unmap_page(struct device *dev, dma_addr_t dma_handle,
+> -		size_t size, enum dma_data_direction direction,
+> -		unsigned long attrs)
+> +void arch_sync_dma_for_cpu(struct device *dev, phys_addr_t paddr,
+> +		size_t size, enum dma_data_direction dir)
 >  {
->  	extern void printbinary(unsigned long x, int nbits);
-> -	struct siginfo si;
->  	unsigned int orig_sw, sw;
->  	int signalcode;
->  	/* need an intermediate copy of float regs because FPU emulation
-> @@ -93,7 +92,6 @@ handle_fpe(struct pt_regs *regs)
+> -	BUG_ON(direction == DMA_NONE);
+> -
+> -	if (attrs & DMA_ATTR_SKIP_CPU_SYNC)
+> -		return;
+> -
+> -	if (direction == DMA_TO_DEVICE)
+> +	if (dir == DMA_TO_DEVICE)
+>  		return;
+>  
+>  	/*
+> -	 * For PCI_DMA_FROMDEVICE this flush is not necessary for the
+> +	 * For DMA_FROM_DEVICE this flush is not necessary for the
+>  	 * simple map/unmap case. However, it IS necessary if if
+> -	 * pci_dma_sync_single_* has been called and the buffer reused.
+> +	 * dma_sync_single_* has been called and the buffer reused.
 >  	 */
->  	__u64 frcopy[36];
 >  
-> -	clear_siginfo(&si);
->  	memcpy(frcopy, regs->fr, sizeof regs->fr);
->  	frcopy[32] = 0;
->  
-> @@ -118,11 +116,8 @@ handle_fpe(struct pt_regs *regs)
->  
->  	memcpy(regs->fr, frcopy, sizeof regs->fr);
->  	if (signalcode != 0) {
-> -	    si.si_signo = signalcode >> 24;
-> -	    si.si_errno = 0;
-> -	    si.si_code = signalcode & 0xffffff;
-> -	    si.si_addr = (void __user *) regs->iaoq[0];
-> -	    force_sig_info(si.si_signo, &si, current);
-> +	    force_sig_fault(signalcode >> 24, signalcode & 0xffffff,
-> +			    (void __user *) regs->iaoq[0], current);
->  	    return -1;
->  	}
->  
-> diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-> index 51215b0048ef..a80117980fc2 100644
-> --- a/arch/parisc/mm/fault.c
-> +++ b/arch/parisc/mm/fault.c
-> @@ -353,23 +353,22 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
->  	up_read(&mm->mmap_sem);
->  
->  	if (user_mode(regs)) {
-> -		struct siginfo si;
-> +		int signo, si_code;
->  
-> -		clear_siginfo(&si);
->  		switch (code) {
->  		case 15:	/* Data TLB miss fault/Data page fault */
->  			/* send SIGSEGV when outside of vma */
->  			if (!vma ||
->  			    address < vma->vm_start || address >= vma->vm_end) {
-> -				si.si_signo = SIGSEGV;
-> -				si.si_code = SEGV_MAPERR;
-> +				signo = SIGSEGV;
-> +				si_code = SEGV_MAPERR;
->  				break;
->  			}
->  
->  			/* send SIGSEGV for wrong permissions */
->  			if ((vma->vm_flags & acc_type) != acc_type) {
-> -				si.si_signo = SIGSEGV;
-> -				si.si_code = SEGV_ACCERR;
-> +				signo = SIGSEGV;
-> +				si_code = SEGV_ACCERR;
->  				break;
->  			}
->  
-> @@ -377,17 +376,16 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
->  			/* fall through */
->  		case 17:	/* NA data TLB miss / page fault */
->  		case 18:	/* Unaligned access - PCXS only */
-> -			si.si_signo = SIGBUS;
-> -			si.si_code = (code == 18) ? BUS_ADRALN : BUS_ADRERR;
-> +			signo = SIGBUS;
-> +			si_code = (code == 18) ? BUS_ADRALN : BUS_ADRERR;
->  			break;
->  		case 16:	/* Non-access instruction TLB miss fault */
->  		case 26:	/* PCXL: Data memory access rights trap */
->  		default:
-> -			si.si_signo = SIGSEGV;
-> -			si.si_code = (code == 26) ? SEGV_ACCERR : SEGV_MAPERR;
-> +			signo = SIGSEGV;
-> +			si_code = (code == 26) ? SEGV_ACCERR : SEGV_MAPERR;
->  			break;
->  		}
+> -	flush_kernel_dcache_range((unsigned long) phys_to_virt(dma_handle), size);
+> -}
 > -
->  #ifdef CONFIG_MEMORY_FAILURE
->  		if (fault & (VM_FAULT_HWPOISON|VM_FAULT_HWPOISON_LARGE)) {
->  			unsigned int lsb = 0;
-> @@ -409,12 +407,9 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
->  			return;
->  		}
+> -static int pa11_dma_map_sg(struct device *dev, struct scatterlist *sglist,
+> -		int nents, enum dma_data_direction direction,
+> -		unsigned long attrs)
+> -{
+> -	int i;
+> -	struct scatterlist *sg;
+> -
+> -	BUG_ON(direction == DMA_NONE);
+> -
+> -	for_each_sg(sglist, sg, nents, i) {
+> -		unsigned long vaddr = (unsigned long)sg_virt(sg);
+> -
+> -		sg_dma_address(sg) = (dma_addr_t) virt_to_phys(vaddr);
+> -		sg_dma_len(sg) = sg->length;
+> -
+> -		if (attrs & DMA_ATTR_SKIP_CPU_SYNC)
+> -			continue;
+> -
+> -		flush_kernel_dcache_range(vaddr, sg->length);
+> -	}
+> -	return nents;
+> +	flush_kernel_dcache_range((unsigned long)phys_to_virt(paddr), size);
+>  }
+>  
+> -static void pa11_dma_unmap_sg(struct device *dev, struct scatterlist *sglist,
+> -		int nents, enum dma_data_direction direction,
+> -		unsigned long attrs)
+> -{
+> -	int i;
+> -	struct scatterlist *sg;
+> -
+> -	BUG_ON(direction == DMA_NONE);
+> -
+> -	if (attrs & DMA_ATTR_SKIP_CPU_SYNC)
+> -		return;
+> -
+> -	if (direction == DMA_TO_DEVICE)
+> -		return;
+> -
+> -	/* once we do combining we'll need to use phys_to_virt(sg_dma_address(sglist)) */
+> -
+> -	for_each_sg(sglist, sg, nents, i)
+> -		flush_kernel_vmap_range(sg_virt(sg), sg->length);
+> -}
+> -
+> -static void pa11_dma_sync_single_for_cpu(struct device *dev,
+> -		dma_addr_t dma_handle, size_t size,
+> -		enum dma_data_direction direction)
+> -{
+> -	BUG_ON(direction == DMA_NONE);
+> -
+> -	flush_kernel_dcache_range((unsigned long) phys_to_virt(dma_handle),
+> -			size);
+> -}
+> -
+> -static void pa11_dma_sync_single_for_device(struct device *dev,
+> -		dma_addr_t dma_handle, size_t size,
+> -		enum dma_data_direction direction)
+> -{
+> -	BUG_ON(direction == DMA_NONE);
+> -
+> -	flush_kernel_dcache_range((unsigned long) phys_to_virt(dma_handle),
+> -			size);
+> -}
+> -
+> -static void pa11_dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sglist, int nents, enum dma_data_direction direction)
+> -{
+> -	int i;
+> -	struct scatterlist *sg;
+> -
+> -	/* once we do combining we'll need to use phys_to_virt(sg_dma_address(sglist)) */
+> -
+> -	for_each_sg(sglist, sg, nents, i)
+> -		flush_kernel_vmap_range(sg_virt(sg), sg->length);
+> -}
+> -
+> -static void pa11_dma_sync_sg_for_device(struct device *dev, struct scatterlist *sglist, int nents, enum dma_data_direction direction)
+> -{
+> -	int i;
+> -	struct scatterlist *sg;
+> -
+> -	/* once we do combining we'll need to use phys_to_virt(sg_dma_address(sglist)) */
+> -
+> -	for_each_sg(sglist, sg, nents, i)
+> -		flush_kernel_vmap_range(sg_virt(sg), sg->length);
+> -}
+> -
+> -static void pa11_dma_cache_sync(struct device *dev, void *vaddr, size_t size,
+> +void arch_dma_cache_sync(struct device *dev, void *vaddr, size_t size,
+>  	       enum dma_data_direction direction)
+>  {
+>  	flush_kernel_dcache_range((unsigned long)vaddr, size);
+>  }
+>  
+> -const struct dma_map_ops pcxl_dma_ops = {
+> -	.alloc =		pa11_dma_alloc,
+> -	.free =			pa11_dma_free,
+> -	.map_page =		pa11_dma_map_page,
+> -	.unmap_page =		pa11_dma_unmap_page,
+> -	.map_sg =		pa11_dma_map_sg,
+> -	.unmap_sg =		pa11_dma_unmap_sg,
+> -	.sync_single_for_cpu =	pa11_dma_sync_single_for_cpu,
+> -	.sync_single_for_device = pa11_dma_sync_single_for_device,
+> -	.sync_sg_for_cpu =	pa11_dma_sync_sg_for_cpu,
+> -	.sync_sg_for_device =	pa11_dma_sync_sg_for_device,
+> -	.cache_sync =		pa11_dma_cache_sync,
+> -};
+> -
+> -static void *pcx_dma_alloc(struct device *dev, size_t size,
+> -		dma_addr_t *dma_handle, gfp_t flag, unsigned long attrs)
+> +void *arch_dma_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle,
+> +		gfp_t gfp, unsigned long attrs)
+>  {
+> -	void *addr;
+> -
+> -	if ((attrs & DMA_ATTR_NON_CONSISTENT) == 0)
+> -		return NULL;
+> -
+> -	addr = (void *)__get_free_pages(flag, get_order(size));
+> -	if (addr)
+> -		*dma_handle = (dma_addr_t)virt_to_phys(addr);
+> -
+> -	return addr;
+> +	if (boot_cpu_data.cpu_type == pcxl2 || boot_cpu_data.cpu_type == pcxl)
+> +		return pa11_dma_alloc(dev, size, dma_handle, gfp, attrs);
+> +	if (attrs & DMA_ATTR_NON_CONSISTENT)
+> +		return dma_direct_alloc(dev, size, dma_handle, gfp, attrs);
+> +	return NULL;
+>  }
+>  
+> -static void pcx_dma_free(struct device *dev, size_t size, void *vaddr,
+> -		dma_addr_t iova, unsigned long attrs)
+> +void arch_dma_free(struct device *dev, size_t size, void *cpu_addr,
+> +		dma_addr_t dma_addr, unsigned long attrs)
+>  {
+> -	free_pages((unsigned long)vaddr, get_order(size));
+> -	return;
+> +	if (boot_cpu_data.cpu_type == pcxl2 || boot_cpu_data.cpu_type == pcxl)
+> +		pa11_dma_free(dev, size, cpu_addr, dma_addr, attrs);
+> +	else
+> +		dma_direct_free(dev, size, cpu_addr, dma_addr, attrs);
+>  }
+> -
+> -const struct dma_map_ops pcx_dma_ops = {
+> -	.alloc =		pcx_dma_alloc,
+> -	.free =			pcx_dma_free,
+> -	.map_page =		pa11_dma_map_page,
+> -	.unmap_page =		pa11_dma_unmap_page,
+> -	.map_sg =		pa11_dma_map_sg,
+> -	.unmap_sg =		pa11_dma_unmap_sg,
+> -	.sync_single_for_cpu =	pa11_dma_sync_single_for_cpu,
+> -	.sync_single_for_device = pa11_dma_sync_single_for_device,
+> -	.sync_sg_for_cpu =	pa11_dma_sync_sg_for_cpu,
+> -	.sync_sg_for_device =	pa11_dma_sync_sg_for_device,
+> -	.cache_sync =		pa11_dma_cache_sync,
+> -};
+> diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
+> index 8d3a7b80ac42..4e87c35c22b7 100644
+> --- a/arch/parisc/kernel/setup.c
+> +++ b/arch/parisc/kernel/setup.c
+> @@ -97,14 +97,12 @@ void __init dma_ops_init(void)
+>  		panic(	"PA-RISC Linux currently only supports machines that conform to\n"
+>  			"the PA-RISC 1.1 or 2.0 architecture specification.\n");
+>  
+> -	case pcxs:
+> -	case pcxt:
+> -		hppa_dma_ops = &pcx_dma_ops;
+> -		break;
+>  	case pcxl2:
+>  		pa7300lc_init();
+>  	case pcxl: /* falls through */
+> -		hppa_dma_ops = &pcxl_dma_ops;
+> +	case pcxs:
+> +	case pcxt:
+> +		hppa_dma_ops = &dma_noncoherent_ops;
+>  		break;
+>  	default:
+>  		break;
+> diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+> index cab32ee824d2..4ad91c28ecbe 100644
+> --- a/arch/parisc/mm/init.c
+> +++ b/arch/parisc/mm/init.c
+> @@ -19,7 +19,6 @@
+>  #include <linux/gfp.h>
+>  #include <linux/delay.h>
+>  #include <linux/init.h>
+> -#include <linux/pci.h>		/* for hppa_dma_ops and pcxl_dma_ops */
+>  #include <linux/initrd.h>
+>  #include <linux/swap.h>
+>  #include <linux/unistd.h>
+> @@ -616,17 +615,13 @@ void __init mem_init(void)
+>  	free_all_bootmem();
+>  
+>  #ifdef CONFIG_PA11
+> -	if (hppa_dma_ops == &pcxl_dma_ops) {
+> +	if (boot_cpu_data.cpu_type == pcxl2 || boot_cpu_data.cpu_type == pcxl) {
+>  		pcxl_dma_start = (unsigned long)SET_MAP_OFFSET(MAP_START);
+>  		parisc_vmalloc_start = SET_MAP_OFFSET(pcxl_dma_start
+>  						+ PCXL_DMA_MAP_SIZE);
+> -	} else {
+> -		pcxl_dma_start = 0;
+> -		parisc_vmalloc_start = SET_MAP_OFFSET(MAP_START);
+> -	}
+> -#else
+> -	parisc_vmalloc_start = SET_MAP_OFFSET(MAP_START);
+> +	} else
 >  #endif
-> -
->  		show_signal_msg(regs, code, address, tsk, vma);
+> +		parisc_vmalloc_start = SET_MAP_OFFSET(MAP_START);
 >  
-> -		si.si_errno = 0;
-> -		si.si_addr = (void __user *) address;
-> -		force_sig_info(si.si_signo, &si, current);
-> +		force_sig_fault(signo, si_code, (void __user *) address, current);
->  		return;
->  	}
+>  	mem_init_print_info(NULL);
 >  
 > 
