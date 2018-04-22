@@ -1,7 +1,7 @@
 From: Frank Scheiner <frank.scheiner@web.de>
 Subject: Re: Ultra5 successful install - PGX64 issues
-Date: Sun, 22 Apr 2018 21:17:25 +0200
-Message-ID: <5902c913-93a2-bb5f-5fd6-b45bcff94158@web.de>
+Date: Sun, 22 Apr 2018 21:17:40 +0200
+Message-ID: <eb611f8b-00de-d7bb-6d6b-245f58b5d22b@web.de>
 References: <CAFC0-0XVQUVHmM+TT4qUK_djRGx-eV+d=5FTpGyjRR40mwAv=Q@mail.gmail.com>
  <6a4e3490-dd3e-5832-43be-dba8211ce6e4@physik.fu-berlin.de>
  <dd60b1eb-595d-f208-2885-c958a5ff3a4c@blastwave.org>
@@ -10,16 +10,19 @@ References: <CAFC0-0XVQUVHmM+TT4qUK_djRGx-eV+d=5FTpGyjRR40mwAv=Q@mail.gmail.com>
  <de1ac156-926a-c187-f15e-2c3da9251c82@web.de>
  <f34b2787-17e5-4fef-f028-543082ff95b6@gmx.de>
  <103f23dc-0d00-2ca1-fb98-271d1e03ad90@web.de>
- <20180420112426.3c8be653@wim.jer>
- <5f57a530-c9e8-0fbd-4eba-ba6995320c10@bell.net>
+ <2847ef55-b5b1-1867-df6a-ad5ce224abd4@gmx.de>
+ <ece0086b-6c7f-4c61-b101-475f085ec120@bell.net>
+ <a0480809-8512-779d-e59c-c93775dc378a@gmx.de>
+ <e6abed84-ef22-ded4-b256-eb96854ad01c@bell.net>
+ <dce63ac1-924f-60f5-5535-2d927de7c59a@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: Helge Deller <deller@gmx.de>, debian-hppa@lists.debian.org,
- linux-parisc <linux-parisc@vger.kernel.org>, Dennis Clarke <dc@oetec.com>
-To: John David Anglin <dave.anglin@bell.net>, Jeroen Roovers <jer@gentoo.org>
+Cc: debian-hppa@lists.debian.org, linux-parisc
+ <linux-parisc@vger.kernel.org>, Dennis Clarke <dc@oetec.com>
+To: Helge Deller <deller@gmx.de>, John David Anglin <dave.anglin@bell.net>
 Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
-In-Reply-To: <5f57a530-c9e8-0fbd-4eba-ba6995320c10@bell.net>
-Resent-Message-ID: <h_bvpm3L6YD.A.ETB.b_N3aB@bendel>
+In-Reply-To: <dce63ac1-924f-60f5-5535-2d927de7c59a@gmx.de>
+Resent-Message-ID: <F9qRYd9od9L.A.8WB.p_N3aB@bendel>
 List-Id: linux-parisc.vger.kernel.org
 List-Id: <debian-hppa.lists.debian.org>
 List-URL: <https://lists.debian.org/debian-hppa/>
@@ -27,43 +30,23 @@ List-Post: <mailto:debian-hppa@lists.debian.org>
 List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
 List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
 List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
-List-Archive: https://lists.debian.org/msgid-search/5902c913-93a2-bb5f-5fd6-b45bcff94158@web.de
+List-Archive: https://lists.debian.org/msgid-search/eb611f8b-00de-d7bb-6d6b-245f58b5d22b@web.de
 
-On 04/21/2018 02:22 AM, John David Anglin wrote:
->  From the manual, it seems the 10BASE-T port is half duplex (CSMA/CD). 
-> The MAU
-> interface is definitely half duplex and the word duplex is not mentioned 
-> in the manual.
-
-I also didn't find any info about half-/full-duplex in the two manuals I 
-have at hand for the 712/80 ("Service Handbook" and "Technical Reference 
-Manual"). To be sure, which one did you consult?
-
+On 04/22/2018 11:06 AM, Helge Deller wrote:
+> On 22.04.2018 00:36, John David Anglin wrote:
+>> On 2018-04-21 6:17 PM, Helge Deller wrote:
+>>>> It can be disabled with "cryptomgr.notests" on command line.
+>>> Did you tested this?
+>> Not recently.  I found this when I was working on the cache.TLB patch.  It caused a stall in one version.
+>>> Unless I typed it wrong it didn't worked on my B160L:
+>>> [    0.000000] Kernel command line: root=/dev/sda5 crpytomgr.notests HOME=/ console=ttyS0 TERM=vt102 palo_kernel=2/vmlinux
 > 
-> The 10BASE-T port probably doesn't support auto negotiation, so you will 
-> need to manually
-> set the switch port to 10BASE-T half duplex if it doesn't automatically 
-> configure to this mode
-> when auto negotiation fails.
-
-Did this at first but then went for full-duplex again. Today I started 
-with full-duplex and actively cooling the heatsink (now smoothed and 
-with fresh thermal grease applied) of the 712/80's processor, but that 
-didn't help alone. The issue hit me after entering the password during 
-login.
-
-Then I reconfigured half-duplex and tried again. The machine now worked 
-through the whole login and I could also do an `apt update` without 
-issues afterwards. Then I let it alone for about twenty minutes and on 
-return I did an `apt list --upgradable` which triggered the issue again.
-
-:-/
-
+>> You typed it wrong.
 > 
-> Some switches support a half-duplex back pressure form of flow control.
+> Yes, my fault.
+> "cryptomgr.notests" did worked as expected.
 
-I'll try that now. According to the documentation my switch can create 
-back-pressure as form of flow control.
+Great, that's pretty useful for slower machines like the 712/80.
 
 Cheers,
 Frank
