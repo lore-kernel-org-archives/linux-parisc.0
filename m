@@ -1,7 +1,7 @@
-From: Helge Deller <deller@gmx.de>
+From: Frank Scheiner <frank.scheiner@web.de>
 Subject: Re: Ultra5 successful install - PGX64 issues
-Date: Sun, 22 Apr 2018 11:06:33 +0200
-Message-ID: <dce63ac1-924f-60f5-5535-2d927de7c59a@gmx.de>
+Date: Sun, 22 Apr 2018 21:17:11 +0200
+Message-ID: <2b4b37c1-b719-8ece-2de3-33075450e6da@web.de>
 References: <CAFC0-0XVQUVHmM+TT4qUK_djRGx-eV+d=5FTpGyjRR40mwAv=Q@mail.gmail.com>
  <6a4e3490-dd3e-5832-43be-dba8211ce6e4@physik.fu-berlin.de>
  <dd60b1eb-595d-f208-2885-c958a5ff3a4c@blastwave.org>
@@ -10,19 +10,15 @@ References: <CAFC0-0XVQUVHmM+TT4qUK_djRGx-eV+d=5FTpGyjRR40mwAv=Q@mail.gmail.com>
  <de1ac156-926a-c187-f15e-2c3da9251c82@web.de>
  <f34b2787-17e5-4fef-f028-543082ff95b6@gmx.de>
  <103f23dc-0d00-2ca1-fb98-271d1e03ad90@web.de>
- <2847ef55-b5b1-1867-df6a-ad5ce224abd4@gmx.de>
- <ece0086b-6c7f-4c61-b101-475f085ec120@bell.net>
- <a0480809-8512-779d-e59c-c93775dc378a@gmx.de>
- <e6abed84-ef22-ded4-b256-eb96854ad01c@bell.net>
+ <20180420112426.3c8be653@wim.jer>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: debian-hppa@lists.debian.org, linux-parisc
- <linux-parisc@vger.kernel.org>, Dennis Clarke <dc@oetec.com>
-To: John David Anglin <dave.anglin@bell.net>,
- Frank Scheiner <frank.scheiner@web.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Cc: Helge Deller <deller@gmx.de>, debian-hppa@lists.debian.org,
+ linux-parisc <linux-parisc@vger.kernel.org>, Dennis Clarke <dc@oetec.com>
+To: Jeroen Roovers <jer@gentoo.org>
 Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
-In-Reply-To: <e6abed84-ef22-ded4-b256-eb96854ad01c@bell.net>
-Resent-Message-ID: <uOjp4enZAGL.A.njE.3DF3aB@bendel>
+In-Reply-To: <20180420112426.3c8be653@wim.jer>
+Resent-Message-ID: <_zgIW75MTXE.A.8NB.O_N3aB@bendel>
 List-Id: linux-parisc.vger.kernel.org
 List-Id: <debian-hppa.lists.debian.org>
 List-URL: <https://lists.debian.org/debian-hppa/>
@@ -30,20 +26,17 @@ List-Post: <mailto:debian-hppa@lists.debian.org>
 List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
 List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
 List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
-List-Archive: https://lists.debian.org/msgid-search/dce63ac1-924f-60f5-5535-2d927de7c59a@gmx.de
+List-Archive: https://lists.debian.org/msgid-search/2b4b37c1-b719-8ece-2de3-33075450e6da@web.de
 
-On 22.04.2018 00:36, John David Anglin wrote:
-> On 2018-04-21 6:17 PM, Helge Deller wrote:
->>> It can be disabled with "cryptomgr.notests" on command line.
->> Did you tested this?
-> Not recently.  I found this when I was working on the cache.TLB patch.  It caused a stall in one version.
->> Unless I typed it wrong it didn't worked on my B160L:
->> [    0.000000] Kernel command line: root=/dev/sda5 crpytomgr.notests HOME=/ console=ttyS0 TERM=vt102 palo_kernel=2/vmlinux
+On 04/20/2018 11:24 AM, Jeroen Roovers wrote:
+> You could try setting the internal NIC to half-duplex, or perhaps use a
+> (passive) 10BASE-T hub instead of a switch if you cannot configure that
+> internally, on the kernel command line, or doing it in userland is too
+> late.
 
-> You typed it wrong.
+I actually had the port configured to half-duplex at first. But I was 
+distracted by the high number of collisions taking place and so changed 
+it to full-duplex.
 
-Yes, my fault.
-"cryptomgr.notests" did worked as expected.
-Thanks!
-Helge
- 
+Cheers,
+Frank
