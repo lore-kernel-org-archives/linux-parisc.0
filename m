@@ -1,113 +1,45 @@
-From: Frank Scheiner <frank.scheiner@web.de>
-Subject: Re: Ultra5 successful install - PGX64 issues
-Date: Mon, 23 Apr 2018 15:38:59 +0200
-Message-ID: <f247e23c-7858-544c-bfe7-41596f8c3569@web.de>
-References: <CAFC0-0XVQUVHmM+TT4qUK_djRGx-eV+d=5FTpGyjRR40mwAv=Q@mail.gmail.com>
- <6a4e3490-dd3e-5832-43be-dba8211ce6e4@physik.fu-berlin.de>
- <dd60b1eb-595d-f208-2885-c958a5ff3a4c@blastwave.org>
- <16600fdc-6bba-1e2d-f106-560b8ea366c8@physik.fu-berlin.de>
- <9671ecea-1353-df1c-ebbd-24a5b7d3008b@oetec.com>
- <de1ac156-926a-c187-f15e-2c3da9251c82@web.de>
- <f34b2787-17e5-4fef-f028-543082ff95b6@gmx.de>
- <103f23dc-0d00-2ca1-fb98-271d1e03ad90@web.de>
- <20180420112426.3c8be653@wim.jer>
- <5f57a530-c9e8-0fbd-4eba-ba6995320c10@bell.net>
- <5902c913-93a2-bb5f-5fd6-b45bcff94158@web.de>
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 01/22] dma-debug: move initialization to common code
+Date: Tue, 24 Apr 2018 09:35:24 +0200
+Message-ID: <20180424073524.GB18945@lst.de>
+References: <20180420080313.18796-1-hch@lst.de> <20180420080313.18796-2-hch@lst.de> <294a1469-01d6-10fb-5de1-b1d4513a066c@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: Helge Deller <deller@gmx.de>, debian-hppa@lists.debian.org,
- linux-parisc <linux-parisc@vger.kernel.org>
-To: John David Anglin <dave.anglin@bell.net>, Jeroen Roovers <jer@gentoo.org>
-Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
-In-Reply-To: <5902c913-93a2-bb5f-5fd6-b45bcff94158@web.de>
-Resent-Message-ID: <6Kqgk0qyrGO.A.PUF.-Le3aB@bendel>
+Content-Type: text/plain; charset=us-ascii
+Cc: Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, Michal Simek <monstr@monstr.eu>,
+        Vincent Chen <deanbo422@gmail.com>,
+        linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        openrisc@lists.librecores.org, Greentime Hu <green.hu@gmail.com>,
+        linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org,
+        nios2-dev@lists.rocketboards.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+To: Robin Murphy <robin.murphy@arm.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <294a1469-01d6-10fb-5de1-b1d4513a066c@arm.com>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-URL: <https://lists.debian.org/debian-hppa/>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
-List-Archive: https://lists.debian.org/msgid-search/f247e23c-7858-544c-bfe7-41596f8c3569@web.de
 
+On Fri, Apr 20, 2018 at 11:23:43AM +0100, Robin Murphy wrote:
+>> -void dma_debug_init(u32 num_entries)
+>> +static int dma_debug_init(void)
+>>   {
+>> +	u32 num_entries;
+>
+> Maybe initialise it to PREALLOC_DMA_DEBUG_ENTRIES?
 
+We initialize it down in an if/else clause which seems a little more clear
+to me, at the cost of two extra lines of code.  But I suspect I should
+just go a little further and merge the global req_entries and the local
+num_entries into a single variable with a better name.
 
-On 04/22/2018 09:17 PM, Frank Scheiner wrote:
->> Some switches support a half-duplex back pressure form of flow control.
-> 
-> I'll try that now. According to the documentation my switch can create 
-> back-pressure as form of flow control.
+>> +core_initcall(dma_debug_init);
+>
+> I think it's worth noting that for most users this now happens much earlier 
+> than before. In general that's probably good (e.g. on arm64 it should 
+> prevent false-positives from the Arm SMMU drivers under ACPI), and I can't 
+> imagine it's high-risk, but it is a behaviour change.
 
-Yesterday after I activated flow control on the switch, the 712/80 got 
-back after a while and finished the `apt list --upgradable` command with 
-output - in between the journald of systemd crashed and restarted. 
-Reissuing the same `apt [...]` command worked without problems. On the 
-switch's port summary I could now also recognize that the host that acts 
-as NFS server now got pause frames submitted by the switch - so the flow 
-control is working.
-
-I then tried to install `joe` and when `update-alternatives` started it 
-again lost the connection to the NFS server. :-( It didn't recover from 
-that - at least not during the time I waited for it - so I powered the 
-712/80 down.
-
-I thought maybe switching back to System V init might ease the load a 
-little bit for the 712/80, so I upgraded the file system with a c8000 
-(incl. newer patch level for the kernel) and removed systemd afterwards 
-(also from initramfs).
-
-I then ran some benchmarks without any issues in between.
-
-Today I still have the problems described in [1] when doing `apt install 
-[...]` or `apt remove [...]` but now the 712/80 recovered each time so 
-far after a while, so it looks like an improvement to me. Look at the 
-timings for `apt remove [...]`:
-
-```
-root@hp-712:~# time apt remove -y joe
-[ 8794.150750] nfs: server 172.16.0.2 not responding, still trying
-[...]
-[ 8794.962227] nfs: server 172.16.0.2 not responding, still trying
-[ 8795.074226] nfs: server 172.16.0.2 OK
-[...]
-[ 8797.271834] nfs: server 172.16.0.2 OK
-[ 8802.242312] nfs: server 172.16.0.2 not responding, still trying
-[...]
-[ 9235.937478] nfs: server 172.16.0.2 OK
-Reading package lists... Done
-Building dependency tree
-Reading state information... Done
-The following packages will be REMOVED:
-   joe
-0 upgraded, 0 newly installed, 1 to remove and 0 not upgraded.
-After this operation, 2,086 kB disk space will be freed.
-(Reading database ... 41128 files and directories currently installed.)
-Removing joe (4.6-1) ...
-update-alternatives: using /usr/bin/jmacs to provide /usr/bin/editor 
-(editor) in auto mode
-update-alternatives: using /usr/bin/jpico to provide /usr/bin/editor 
-(editor) in auto mode
-update-alternatives: using /bin/nano to provide /usr/bin/editor (editor) 
-in auto mode
-Processing triggers for mime-support (3.60) ...
-[ 9357.992385] nfs: server 172.16.0.2 not responding, still trying
-[...]
-[10055.370493] nfs: server 172.16.0.2 not responding, still trying
-[10055.709731] nfs: server 172.16.0.2 OK
-[...]
-[10057.212469] nfs: server 172.16.0.2 OK
-
-real    22m0.853s
-user    1m3.264s
-sys     0m43.875s
-```
-
-...the `apt install -y joe` done beforehand took about 41 minutes. So 
-the 712/80 can recover from the described problems, but package 
-management should really be done from a more powerful machine, at least 
-when running diskless.
-
-[1]: https://lists.debian.org/debian-hppa/2018/04/msg00007.html
-
-Cheers,
-Frank
+I'll mention this in the changelog, thanks!
