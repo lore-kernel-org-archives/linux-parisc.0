@@ -1,36 +1,66 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc section mismatch fixes for 4.17-rc6
-Date: Sun, 20 May 2018 21:34:14 +0200
-Message-ID: <20180520193414.GA6452@ls3530.fritz.box>
+From: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
+Subject: Re: [PATCH 04/20] arm-nommu: use generic dma_noncoherent_ops
+Date: Tue, 22 May 2018 13:53:20 +0200
+Message-ID: <20180522115320.GA14530@lst.de>
+References: <20180511075945.16548-1-hch@lst.de>
+	<20180511075945.16548-5-hch@lst.de>
+	<20180511091114.GA16141@n2100.armlinux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-xtensa-PjhNF2WwrV/0Sa2dR60CXw@public.gmane.org,
+	Michal Simek <monstr-pSz03upnqPeHXe+LvDLADg@public.gmane.org>,
+	linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-c6x-dev-jPsnJVOj+W6hPH1hqNUYSQ@public.gmane.org,
+	linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linux-m68k-cunTk1MwBs8S/qaLPR03pWD2FQJk+8+b@public.gmane.org, linux-hexagon-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org,
+	openrisc-cunTk1MwBs9a3B2Vnqf2dGD2FQJk+8+b@public.gmane.org, Greentime Hu <green.hu-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
+	linux-alpha-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+	nios2-dev-g9ZBwUv/Ih/yUk5EbOjzuce+I+R0W71w@public.gmane.org, Vincent Chen <deanbo422-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
+	Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Russell King - ARM Linux <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+In-Reply-To: <20180511091114.GA16141-l+eeeJia6m9URfEZ8mYm6t73F7V6hmMc@public.gmane.org>
+List-Id: Development issues for Linux IOMMU support
+	<iommu.lists.linux-foundation.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
 
-Hi Linus,
+On Fri, May 11, 2018 at 10:11:15AM +0100, Russell King - ARM Linux wrote:
+> > +void arch_sync_dma_for_device(struct device *dev, phys_addr_t paddr,
+> > +		size_t size, enum dma_data_direction dir)
+> 
+> Please no.  There is a lot of history of these (__dma_page_cpu_to_dev etc)
+> functions being abused by out of tree drivers, because they think they
+> know better.  This is stopped by making them static and ensuring that
+> drivers have no access to these functions.
+> 
+> Please do not re-expose these to the global kernel.
+> 
+> While it may make things easier for a cross-architecture point of view,
+> it makes it a lot easier for people to abuse these private APIs.
 
-please pull three small section mismatch fixes for the parisc architecture from:
+The point of this series, which isn't fully archived yet, is to
+consolidate the direct mapping dma code, that is all dma_map_ops
+instances except for iommus.  It is in fact in many ways modelled
+after the ARM code.  For that we need the architectures to supply
+the cache maintainance routines.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.17-5
+However, even if they now appear in dma-noncoherent.h they are NOT
+and will NOT be exported, so using them directly from drivers won't
+easily be possible.
 
-Three small section mismatch fixes, one of them was found by 0-day test
-infrastructure.
+I'll drop the arm-nommu patch for now, but I will pester your with this
+again once arm is the last architecture not sharing the common code.
 
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Helge Deller (3):
-      parisc: Move find_pa_parent_type() out of init section
-      parisc: Move setup_profiling_timer() out of init section
-      parisc: Move ccio_cujo20_fixup() into init section
-
- arch/parisc/kernel/drivers.c | 2 +-
- arch/parisc/kernel/smp.c     | 3 +--
- drivers/parisc/ccio-dma.c    | 2 +-
- 3 files changed, 3 insertions(+), 4 deletions(-)
+> 
+> -- 
+> RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
+> FTTC broadband for 0.8mile line in suburbia: sync at 8.8Mbps down 630kbps up
+> According to speedtest.net: 8.21Mbps down 510kbps up
+---end quoted text---
