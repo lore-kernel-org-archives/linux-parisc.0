@@ -1,8 +1,9 @@
-From: =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+From: Rob Landley <rob@landley.net>
 Subject: Re: [PATCH] kbuild: add machine size to CHEKCFLAGS
-Date: Thu, 31 May 2018 00:00:03 +0200
-Message-ID: <d47b72cc-9209-a190-38b3-969870e1bf26@suse.de>
+Date: Wed, 30 May 2018 17:36:45 -0500
+Message-ID: <0dd9d6dc-6cb3-157c-33ac-8c3e449a3859@landley.net>
 References: <20180530204838.22079-1-luc.vanoostenryck@gmail.com>
+ <d47b72cc-9209-a190-38b3-969870e1bf26@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
@@ -24,55 +25,41 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
         Ingo Molnar <mingo@redhat.com>,
         "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
         Brendan Higgins <brendanhiggins@google.com>,
-To: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+To: =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180530204838.22079-1-luc.vanoostenryck@gmail.com>
+In-Reply-To: <d47b72cc-9209-a190-38b3-969870e1bf26@suse.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Luc,
-
-The typo in the subject made me curious...
-
-Am 30.05.2018 um 22:48 schrieb Luc Van Oostenryck:
-> By default, sparse assumes a 64bit machine when compiled on x86-64
-> and 32bit when compiled on anything else.
+On 05/30/2018 05:00 PM, Andreas Färber wrote:
+> What about the architectures not touched by your patch that previously
+> had no -m32/-m64? (arc, c6x, h8300, hexagon, m68k, microblaze, nds32,
+> nios2, openrisc, powerpc, riscv, s390, sh, unicore32, xtensa)
 > 
-> This can of course create all sort of problems for the other archs, like
-> issuing false warnings ('shift too big (32) for type unsigned long'), or
-> worse, failing to emit legitimate warnings.
-> 
-> Fix this by adding the -m32/-m64 flag, depending on CONFIG_64BIT,
-> to CHECKFLAGS in the main Makefile (and so for all archs).
-> Also, remove the now unneeded -m32/-m64 in arch specific Makefiles.
-> 
-> Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-> ---
->  Makefile             | 3 +++
->  arch/alpha/Makefile  | 2 +-
->  arch/arm/Makefile    | 2 +-
->  arch/arm64/Makefile  | 2 +-
->  arch/ia64/Makefile   | 2 +-
->  arch/mips/Makefile   | 3 ---
->  arch/parisc/Makefile | 2 +-
->  arch/sparc/Makefile  | 2 +-
->  arch/x86/Makefile    | 2 +-
->  9 files changed, 10 insertions(+), 10 deletions(-)
+> You forgot to CC them on this patch.
 
-What about the architectures not touched by your patch that previously
-had no -m32/-m64? (arc, c6x, h8300, hexagon, m68k, microblaze, nds32,
-nios2, openrisc, powerpc, riscv, s390, sh, unicore32, xtensa)
+A) He cc'd arch/sh on the previous patch earlier today, to which I replied:
 
-You forgot to CC them on this patch.
+https://marc.info/?l=linux-sh&m=152769132515226&w=2
 
-Have you really checked that all their toolchains support the -m32/-m64
-flags you newly introduce for them? Apart from non-biarch architectures,
-I'm thinking of 31-bit s390 as a corner case where !64 != 32.
+B) Every change to common infrastructure should cc: every arch? Really? So like
+filesystem changes and stuff to?
 
-Regards,
-Andreas
+> Have you really checked that all their toolchains support the -m32/-m64
+> flags you newly introduce for them? Apart from non-biarch architectures,
+> I'm thinking of 31-bit s390 as a corner case where !64 != 32.
 
--- 
-SUSE Linux GmbH, Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer, Jane Smithard, Graham Norton
-HRB 21284 (AG Nürnberg)
+1) Last I heard Linux implements lp64:
+   http://www.unix.org/whitepapers/64bit.html
+
+2) it's unlikely to be worse than it was before the patch,
+
+3) last I checked https://github.com/landley/mkroot boots to an s390 shell
+prompt under qemu, although I haven't tried building with this patch. (And you
+may still need to add HOST_EXTRA='lex yacc bison flex' to the command line
+unless they've re-added the _shipped versions like the old kconfig had...) Point
+is, shouldn't be too hard to test it. Presumably that's why we have an -rc1 and
+then 6 more -rc versions each release...
+
+Rob
