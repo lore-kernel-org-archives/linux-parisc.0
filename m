@@ -1,191 +1,133 @@
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: Re: [PATCH] kbuild: add machine size to CHEKCFLAGS
-Date: Sat, 2 Jun 2018 16:53:48 +0900
-Message-ID: <CAK7LNASGYhAGbHbVzb+bbnpOsh2Vvt-C0cYpzu55b0PS-Oqc4Q@mail.gmail.com>
-References: <20180530204838.22079-1-luc.vanoostenryck@gmail.com>
+From: Baoquan He <bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v5 0/4] resource: Use list_head to link sibling resource
+Date: Tue, 12 Jun 2018 11:28:27 +0800
+Message-ID: <20180612032831.29747-1-bhe@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Michal Marek <michal.lkml@markovi.net>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        James Hogan <jhogan@kernel.org>,
-        "James E . J . Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Martin Blumenstingl <martin.blumenstingl@googl
-To: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180530204838.22079-1-luc.vanoostenryck@gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: brijesh.singh-5C7GfCeVMHo@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org,
+ linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, richard.weiyang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, keith.busch-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org,
+ jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, baiyaowei-0p4V/sDNsUmm0O/7XYngnFaTQe2KTcn/@public.gmane.org, kys-0li6OtcxBFHby3iVrkZq2A@public.gmane.org,
+ frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lorenzo.pieralisi-5wv7dgnIgG8@public.gmane.org, sthemmin-0li6OtcxBFHby3iVrkZq2A@public.gmane.org,
+ Baoquan He <bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org,
+ patrik.r.jakobsson-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, gustavo-THi1TnShQwVAfugRpC6u6w@public.gmane.org,
+ dyoung-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, thomas.lendacky-5C7GfCeVMHo@public.gmane.org, haiyangz-0li6OtcxBFHby3iVrkZq2A@public.gmane.org,
+ maarten.lankhorst-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, jglisse-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, seanpaul-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org,
+ bhelgaas-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org, yinghai-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org,
+ jonathan.derrick-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, chris-YvXeqwSYzG2sTnJN9+BGXg@public.gmane.org, monstr-pSz03upnqPeHXe+LvDLADg@public.gmane.org,
+ linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org,
+ dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, kexec-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, ebiederm-aS9lmoZGLiVWk0Htik3J/w@public.gmane.org,
+ devel-tBiZLqfeLfOHmIFyCCdPziST3g8Odh+X@public.gmane.org, linuxppc-dev@lists.o
+To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org,
+ robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, nicolas.pitre-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org,
+ josh-iaAMLnmF4UmaiuxdJuQwMA@public.gmane.org, fengguang.wu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, bp-l3A5Bk7waGM@public.gmane.org
+Return-path: <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+List-Id: "Linux-nvdimm developer list." <linux-nvdimm.lists.01.org>
+List-Unsubscribe: <https://lists.01.org/mailman/options/linux-nvdimm>,
+ <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.01.org/pipermail/linux-nvdimm/>
+List-Post: <mailto:linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+List-Help: <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.01.org/mailman/listinfo/linux-nvdimm>,
+ <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=subscribe>
+Errors-To: linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
 
-2018-05-31 5:48 GMT+09:00 Luc Van Oostenryck <luc.vanoostenryck@gmail.com>:
-> By default, sparse assumes a 64bit machine when compiled on x86-64
-> and 32bit when compiled on anything else.
->
-> This can of course create all sort of problems for the other archs, like
-> issuing false warnings ('shift too big (32) for type unsigned long'), or
-> worse, failing to emit legitimate warnings.
->
-> Fix this by adding the -m32/-m64 flag, depending on CONFIG_64BIT,
-> to CHECKFLAGS in the main Makefile (and so for all archs).
-> Also, remove the now unneeded -m32/-m64 in arch specific Makefiles.
->
-> Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-> ---
+This patchset is doing:
+1) Replace struct resource's sibling list from singly linked list to
+list_head. Clearing out those pointer operation within singly linked
+list for better code readability.
+2) Based on list_head replacement, add a new function
+walk_system_ram_res_rev() which can does reversed iteration on
+iomem_resource's siblings.
+3) Change kexec_file loading to search system RAM top down for kernel
+loadin, using walk_system_ram_res_rev().
 
-Fixed CHEKCFLAGS -> CHECKFLAGS
-and applied to linux-kbuild.  Thanks!
-
-
-
->  Makefile             | 3 +++
->  arch/alpha/Makefile  | 2 +-
->  arch/arm/Makefile    | 2 +-
->  arch/arm64/Makefile  | 2 +-
->  arch/ia64/Makefile   | 2 +-
->  arch/mips/Makefile   | 3 ---
->  arch/parisc/Makefile | 2 +-
->  arch/sparc/Makefile  | 2 +-
->  arch/x86/Makefile    | 2 +-
->  9 files changed, 10 insertions(+), 10 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index 6c6610913..18379987c 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -881,6 +881,9 @@ endif
->  # insure the checker run with the right endianness
->  CHECKFLAGS += $(if $(CONFIG_CPU_BIG_ENDIAN),-mbig-endian,-mlittle-endian)
->
-> +# the checker needs the correct machine size
-> +CHECKFLAGS += $(if $(CONFIG_64BIT),-m64,-m32)
-> +
->  # Default kernel image to build when no specific target is given.
->  # KBUILD_IMAGE may be overruled on the command line or
->  # set in the environment
-> diff --git a/arch/alpha/Makefile b/arch/alpha/Makefile
-> index 2cc3cc519..c5ec8c09c 100644
-> --- a/arch/alpha/Makefile
-> +++ b/arch/alpha/Makefile
-> @@ -11,7 +11,7 @@
->  NM := $(NM) -B
->
->  LDFLAGS_vmlinux        := -static -N #-relax
-> -CHECKFLAGS     += -D__alpha__ -m64
-> +CHECKFLAGS     += -D__alpha__
->  cflags-y       := -pipe -mno-fp-regs -ffixed-8
->  cflags-y       += $(call cc-option, -fno-jump-tables)
->
-> diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-> index e4e537f27..f32a5468d 100644
-> --- a/arch/arm/Makefile
-> +++ b/arch/arm/Makefile
-> @@ -135,7 +135,7 @@ endif
->  KBUILD_CFLAGS  +=$(CFLAGS_ABI) $(CFLAGS_ISA) $(arch-y) $(tune-y) $(call cc-option,-mshort-load-bytes,$(call cc-option,-malignment-traps,)) -msoft-float -Uarm
->  KBUILD_AFLAGS  +=$(CFLAGS_ABI) $(AFLAGS_ISA) $(arch-y) $(tune-y) -include asm/unified.h -msoft-float
->
-> -CHECKFLAGS     += -D__arm__ -m32
-> +CHECKFLAGS     += -D__arm__
->
->  #Default value
->  head-y         := arch/arm/kernel/head$(MMUEXT).o
-> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-> index 87f7d2f9f..3c353b471 100644
-> --- a/arch/arm64/Makefile
-> +++ b/arch/arm64/Makefile
-> @@ -78,7 +78,7 @@ LDFLAGS               += -maarch64linux
->  UTS_MACHINE    := aarch64
->  endif
->
-> -CHECKFLAGS     += -D__aarch64__ -m64
-> +CHECKFLAGS     += -D__aarch64__
->
->  ifeq ($(CONFIG_ARM64_MODULE_PLTS),y)
->  KBUILD_LDFLAGS_MODULE  += -T $(srctree)/arch/arm64/kernel/module.lds
-> diff --git a/arch/ia64/Makefile b/arch/ia64/Makefile
-> index 2dd7f519a..45f59808b 100644
-> --- a/arch/ia64/Makefile
-> +++ b/arch/ia64/Makefile
-> @@ -18,7 +18,7 @@ READELF := $(CROSS_COMPILE)readelf
->
->  export AWK
->
-> -CHECKFLAGS     += -m64 -D__ia64=1 -D__ia64__=1 -D_LP64 -D__LP64__
-> +CHECKFLAGS     += -D__ia64=1 -D__ia64__=1 -D_LP64 -D__LP64__
->
->  OBJCOPYFLAGS   := --strip-all
->  LDFLAGS_vmlinux        := -static
-> diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-> index 5e9fce076..e2122cca4 100644
-> --- a/arch/mips/Makefile
-> +++ b/arch/mips/Makefile
-> @@ -309,9 +309,6 @@ ifdef CONFIG_MIPS
->  CHECKFLAGS += $(shell $(CC) $(KBUILD_CFLAGS) -dM -E -x c /dev/null | \
->         egrep -vw '__GNUC_(|MINOR_|PATCHLEVEL_)_' | \
->         sed -e "s/^\#define /-D'/" -e "s/ /'='/" -e "s/$$/'/" -e 's/\$$/&&/g')
-> -ifdef CONFIG_64BIT
-> -CHECKFLAGS             += -m64
-> -endif
->  endif
->
->  OBJCOPYFLAGS           += --remove-section=.reginfo
-> diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-> index 348ae4779..714284ea6 100644
-> --- a/arch/parisc/Makefile
-> +++ b/arch/parisc/Makefile
-> @@ -28,7 +28,7 @@ export LIBGCC
->
->  ifdef CONFIG_64BIT
->  UTS_MACHINE    := parisc64
-> -CHECKFLAGS     += -D__LP64__=1 -m64
-> +CHECKFLAGS     += -D__LP64__=1
->  CC_ARCHES      = hppa64
->  LD_BFD         := elf64-hppa-linux
->  else # 32-bit
-> diff --git a/arch/sparc/Makefile b/arch/sparc/Makefile
-> index edac927e4..966a13d2b 100644
-> --- a/arch/sparc/Makefile
-> +++ b/arch/sparc/Makefile
-> @@ -39,7 +39,7 @@ else
->  # sparc64
->  #
->
-> -CHECKFLAGS    += -D__sparc__ -D__sparc_v9__ -D__arch64__ -m64
-> +CHECKFLAGS    += -D__sparc__ -D__sparc_v9__ -D__arch64__
->  LDFLAGS       := -m elf64_sparc
->  export BITS   := 64
->  UTS_MACHINE   := sparc64
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index 60135cbd9..f0a6ea224 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -94,7 +94,7 @@ ifeq ($(CONFIG_X86_32),y)
->  else
->          BITS := 64
->          UTS_MACHINE := x86_64
-> -        CHECKFLAGS += -D__x86_64__ -m64
-> +        CHECKFLAGS += -D__x86_64__
->
->          biarch := -m64
->          KBUILD_AFLAGS += -m64
-> --
-> 2.17.0
->
+Note:
+This patchset passed testing on my kvm guest, x86_64 arch with network
+enabling. The thing we need pay attetion to is that a root resource's
+child member need be initialized specifically with LIST_HEAD_INIT() if
+statically defined or INIT_LIST_HEAD() for dynamically definition. Here
+Just like we do for iomem_resource/ioport_resource, or the change in
+get_pci_domain_busn_res().
 
 
+Links of the old post (Boris pointed out that we should use
+https://lkml.kernel.org/r/Message-ID, while it can't be opened from
+my side, so paste all of them here.):
+v4:
+https://lkml.kernel.org/r/20180507063224.24229-1-bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
+https://lkml.org/lkml/2018/5/7/36
+
+v3:
+https://lkml.kernel.org/r/20180419001848.3041-1-bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
+https://lkml.org/lkml/2018/4/18/767
+
+v2:
+https://lkml.kernel.org/r/20180408024724.16812-1-bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
+https://lkml.org/lkml/2018/4/7/169
+
+v1:
+https://lkml.kernel.org/r/20180322033722.9279-1-bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
+https://lkml.org/lkml/2018/3/21/952
+
+Changelog:
+v4->v5:
+  Add new patch 0001 to move duplicated reparent_resources() to
+  kernel/resource.c to make it be shared by different ARCH-es.
+
+  Fix several code bugs reported by test robot on ARCH powerpc and
+  microblaze.
+v3->v4:
+  Fix several bugs test robot reported. Rewrite cover letter and patch
+  log according to reviewer's comment.
+
+v2->v3:
+  Rename resource functions first_child() and sibling() to
+  resource_first_chils() and resource_sibling(). Dan suggested this.
+
+  Move resource_first_chils() and resource_sibling() to linux/ioport.h
+  and make them as inline function. Rob suggested this. Accordingly add
+  linux/list.h including in linux/ioport.h, please help review if this
+  bring efficiency degradation or code redundancy.
+
+  The change on struct resource {} bring two pointers of size increase,
+  mention this in git log to make it more specifically, Rob suggested
+  this.
+
+v1->v2:
+  Use list_head instead to link resource siblings. This is suggested by
+  Andrew.
+
+  Rewrite walk_system_ram_res_rev() after list_head is taken to link
+  resouce siblings.
+
+Baoquan He (4):
+  resource: Move reparent_resources() to kernel/resource.c and make it
+    public
+  resource: Use list_head to link sibling resource
+  resource: add walk_system_ram_res_rev()
+  kexec_file: Load kernel at top of system RAM if required
+
+ arch/arm/plat-samsung/pm-check.c            |   6 +-
+ arch/microblaze/pci/pci-common.c            |  41 +----
+ arch/powerpc/kernel/pci-common.c            |  39 +----
+ arch/sparc/kernel/ioport.c                  |   2 +-
+ arch/xtensa/include/asm/pci-bridge.h        |   4 +-
+ drivers/eisa/eisa-bus.c                     |   2 +
+ drivers/gpu/drm/drm_memory.c                |   3 +-
+ drivers/gpu/drm/gma500/gtt.c                |   5 +-
+ drivers/hv/vmbus_drv.c                      |  52 +++---
+ drivers/input/joystick/iforce/iforce-main.c |   4 +-
+ drivers/nvdimm/namespace_devs.c             |   6 +-
+ drivers/nvdimm/nd.h                         |   5 +-
+ drivers/of/address.c                        |   4 +-
+ drivers/parisc/lba_pci.c                    |   4 +-
+ drivers/pci/host/vmd.c                      |   8 +-
+ drivers/pci/probe.c                         |   2 +
+ drivers/pci/setup-bus.c                     |   2 +-
+ include/linux/ioport.h                      |  21 ++-
+ kernel/kexec_file.c                         |   2 +
+ kernel/resource.c                           | 259 ++++++++++++++++++----------
+ 20 files changed, 244 insertions(+), 227 deletions(-)
 
 -- 
-Best Regards
-Masahiro Yamada
+2.13.6
