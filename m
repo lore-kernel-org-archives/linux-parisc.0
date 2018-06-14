@@ -1,82 +1,93 @@
-From: Baoquan He <bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH v5 2/4] resource: Use list_head to link sibling resource
-Date: Wed, 13 Jun 2018 14:55:47 +0800
-Message-ID: <20180613065547.GH1820@MiWiFi-R3L-srv>
-References: <alpine.DEB.2.20.1806121708070.3334@hadrien>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: brijesh.singh-5C7GfCeVMHo@public.gmane.org, thomas.lendacky-5C7GfCeVMHo@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org,
- linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, richard.weiyang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, keith.busch-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org,
- jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, baiyaowei-0p4V/sDNsUmm0O/7XYngnFaTQe2KTcn/@public.gmane.org, frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org,
- lorenzo.pieralisi-5wv7dgnIgG8@public.gmane.org, sthemmin-0li6OtcxBFHby3iVrkZq2A@public.gmane.org, linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org,
- patrik.r.jakobsson-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, gustavo-THi1TnShQwVAfugRpC6u6w@public.gmane.org,
- dyoung-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, kbuild-all-JC7UmRfGjtg@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
- haiyangz-0li6OtcxBFHby3iVrkZq2A@public.gmane.org, maarten.lankhorst-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, jglisse-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org,
- seanpaul-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, bhelgaas-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org,
- yinghai-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, jonathan.derrick-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, chris-YvXeqwSYzG2sTnJN9+BGXg@public.gmane.org,
- monstr-pSz03upnqPeHXe+LvDLADg@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org,
- dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, kexec-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, ebiederm-aS9lmoZGLiVWk0Htik3J/w@public.gmane.org,
- devel-tBiZLqfeLfOHmIFyCCdPziST3g8Odh+X@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org,
- davem-fT/PcQaiUtJq0hI55+XSNA@public.gmane.org
-To: Julia Lawall <julia.lawall-L2FTfq7BK8M@public.gmane.org>
-Return-path: <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-In-Reply-To: <alpine.DEB.2.20.1806121708070.3334@hadrien>
-List-Id: "Linux-nvdimm developer list." <linux-nvdimm.lists.01.org>
-List-Unsubscribe: <https://lists.01.org/mailman/options/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.01.org/pipermail/linux-nvdimm/>
-List-Post: <mailto:linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-List-Help: <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.01.org/mailman/listinfo/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=subscribe>
-Errors-To: linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Subject: [PATCH v3 03/27] arch/*: Kconfig: fix documentation for NMI watchdog
+Date: Thu, 14 Jun 2018 13:08:48 -0300
+Message-ID: <564367865a45eb5509b23c295259e74387b874ad.1528990947.git.mchehab+samsung@kernel.org>
+References: <cover.1528990947.git.mchehab+samsung@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Russell King <linux@armlinux.org.uk>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1528990947.git.mchehab+samsung@kernel.org>
+In-Reply-To: <cover.1528990947.git.mchehab+samsung@kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On 06/12/18 at 05:10pm, Julia Lawall wrote:
-> This looks wrong.  After a list iterator, the index variable points to a
-> dummy structure.
-> 
-> julia
-> 
-> url:    https://github.com/0day-ci/linux/commits/Baoquan-He/resource-Use-list_head-to-link-sibling-resource/20180612-113600
-> :::::: branch date: 7 hours ago
-> :::::: commit date: 7 hours ago
-> 
-> >> kernel/resource.c:265:17-20: ERROR: invalid reference to the index variable of the iterator on line 253
-> 
-> # https://github.com/0day-ci/linux/commit/e906f15906750a86913ba2b1f08bad99129d3dfc
-> git remote add linux-review https://github.com/0day-ci/linux
-> git remote update linux-review
-> git checkout e906f15906750a86913ba2b1f08bad99129d3dfc
-> vim +265 kernel/resource.c
-> 
-> ^1da177e4 Linus Torvalds 2005-04-16  247
-> 5eeec0ec9 Yinghai Lu     2009-12-22  248  static void __release_child_resources(struct resource *r)
-> 5eeec0ec9 Yinghai Lu     2009-12-22  249  {
-> e906f1590 Baoquan He     2018-06-12  250  	struct resource *tmp, *next;
-> 5eeec0ec9 Yinghai Lu     2009-12-22  251  	resource_size_t size;
-> 5eeec0ec9 Yinghai Lu     2009-12-22  252
-> e906f1590 Baoquan He     2018-06-12 @253  	list_for_each_entry_safe(tmp, next, &r->child, sibling) {
-> 5eeec0ec9 Yinghai Lu     2009-12-22  254  		tmp->parent = NULL;
-> e906f1590 Baoquan He     2018-06-12  255  		INIT_LIST_HEAD(&tmp->sibling);
+Changeset 9919cba7ff71 ("watchdog: Update documentation") updated
+the documentation, removing the old nmi_watchdog.txt and adding
+a file with a new content.
 
-							list_del_init(&tmp->sibling);
+Update Kconfig files accordingly.
 
-Thanks, Julia. Here I should use list_del_init(&op->list) to
-replace INIT_LIST_HEAD(&tmp->sibling). 
+Fixes: 9919cba7ff71 ("watchdog: Update documentation")
 
-> 5eeec0ec9 Yinghai Lu     2009-12-22  256  		__release_child_resources(tmp);
-> 5eeec0ec9 Yinghai Lu     2009-12-22  257
-> 5eeec0ec9 Yinghai Lu     2009-12-22  258  		printk(KERN_DEBUG "release child resource %pR\n", tmp);
-> 5eeec0ec9 Yinghai Lu     2009-12-22  259  		/* need to restore size, and keep flags */
-> 5eeec0ec9 Yinghai Lu     2009-12-22  260  		size = resource_size(tmp);
-> 5eeec0ec9 Yinghai Lu     2009-12-22  261  		tmp->start = 0;
-> 5eeec0ec9 Yinghai Lu     2009-12-22  262  		tmp->end = size - 1;
-> 5eeec0ec9 Yinghai Lu     2009-12-22  263  	}
-> e906f1590 Baoquan He     2018-06-12  264
-> e906f1590 Baoquan He     2018-06-12 @265  	INIT_LIST_HEAD(&tmp->child);
-> 5eeec0ec9 Yinghai Lu     2009-12-22  266  }
-> 5eeec0ec9 Yinghai Lu     2009-12-22  267
-> 
-> ---
-> 0-DAY kernel test infrastructure                Open Source Technology Center
-> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+---
+ arch/arm/Kconfig    | 2 +-
+ arch/parisc/Kconfig | 2 +-
+ arch/sh/Kconfig     | 2 +-
+ arch/sparc/Kconfig  | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 2a78bdef9a24..fc3330807b09 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -1301,7 +1301,7 @@ config SMP
+ 	  will run faster if you say N here.
+ 
+ 	  See also <file:Documentation/x86/i386/IO-APIC.txt>,
+-	  <file:Documentation/nmi_watchdog.txt> and the SMP-HOWTO available at
++	  <file:Documentation/lockup-watchdogs.txt> and the SMP-HOWTO available at
+ 	  <http://tldp.org/HOWTO/SMP-HOWTO.html>.
+ 
+ 	  If you don't know what to do here, say N.
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 4d8f64d48597..c480770fabcd 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -275,7 +275,7 @@ config SMP
+ 	  machines, but will use only one CPU of a multiprocessor machine.
+ 	  On a uniprocessor machine, the kernel will run faster if you say N.
+ 
+-	  See also <file:Documentation/nmi_watchdog.txt> and the SMP-HOWTO
++	  See also <file:Documentation/lockup-watchdogs.txt> and the SMP-HOWTO
+ 	  available at <http://www.tldp.org/docs.html#howto>.
+ 
+ 	  If you don't know what to do here, say N.
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 4d61a085982b..ac1829353139 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -687,7 +687,7 @@ config SMP
+ 	  People using multiprocessor machines who say Y here should also say
+ 	  Y to "Enhanced Real Time Clock Support", below.
+ 
+-	  See also <file:Documentation/nmi_watchdog.txt> and the SMP-HOWTO
++	  See also <file:Documentation/lockup-watchdogs.txt> and the SMP-HOWTO
+ 	  available at <http://www.tldp.org/docs.html#howto>.
+ 
+ 	  If you don't know what to do here, say N.
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index 9a2b8877f174..0f535debf802 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -178,7 +178,7 @@ config SMP
+ 	  Y to "Enhanced Real Time Clock Support", below. The "Advanced Power
+ 	  Management" code will be disabled if you say Y here.
+ 
+-	  See also <file:Documentation/nmi_watchdog.txt> and the SMP-HOWTO
++	  See also <file:Documentation/lockup-watchdogs.txt> and the SMP-HOWTO
+ 	  available at <http://www.tldp.org/docs.html#howto>.
+ 
+ 	  If you don't know what to do here, say N.
+-- 
+2.17.1
