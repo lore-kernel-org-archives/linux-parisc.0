@@ -1,47 +1,45 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture code cleanups and fixes
-Date: Sat, 30 Jun 2018 22:23:35 +0200
-Message-ID: <20180630202335.GA7097@ls3530.fritz.box>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Build regressions/improvements in v4.18-rc3
+Date: Mon, 2 Jul 2018 16:09:40 +0200
+Message-ID: <CAMuHMdUHkShW5dT41x06Jz9DUJHim6=Wg6pspgTBJpsoVNphwA@mail.gmail.com>
+References: <20180702140050.1660-1-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset="UTF-8"
+Cc: sparclinux <sparclinux@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180702140050.1660-1-geert@linux-m68k.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+On Mon, Jul 2, 2018 at 4:01 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> JFYI, when comparing v4.18-rc3[1] to v4.18-rc2[3], the summaries are:
+>   - build errors: +1/-7
 
-please pull some patches for the parisc architecture from:
+  + /kisskb/src/include/linux/highmem.h: error: passing argument 1 of
+'sparc_flush_page_to_ram' from incompatible pointer type
+[-Werror=incompatible-pointer-types]:  => 209:20, 233:36, 137:31
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.18-1
+sparc64/sparc-allmodconfig (patch available)
 
-Nothing exiting in this patchset, just small cleanups of header files, kernel
-now defaults to 4 CPUs when building a SMP kernel, mark 16- and 64-kB page
-sizes broken and addition of the new io_pgetevents syscall.  
+> [1] http://kisskb.ellerman.id.au/kisskb/head/021c91791a5e7e85c567452f1be3e4c2c6cb6063/ (231 out of 244 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/head/7daf201d7fe8334e2d2364d4e8ed3394ec9af819/ (231 out of 244 configs)
 
-Thanks,
-Helge
+> *** WARNINGS ***
+>
+> [Deleted 26903 lines about "warning: ... [-Wpointer-sign]" on parisc-allmodconfig]
+> [Deleted 19308 lines about "warning: -ffunction-sections disabled; it makes profiling impossible [enabled by default]" on parisc-allmodconfig]
 
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      parisc: Convert printk(KERN_LEVEL) to pr_lvl()
+Seems they're gone. Hopefully for good ;-)
 
-Helge Deller (6):
-      parisc: Drop struct sigaction from not exported header file
-      parisc: Mark 16kB and 64kB page sizes BROKEN
-      parisc: Default to 4 SMP CPUs
-      parisc: Wire up io_pgetevents syscall
-      parisc: Reduce debug output in unwind code
-      parisc: Build kernel without -ffunction-sections
+Gr{oetje,eeting}s,
 
- arch/parisc/Kconfig                   |  6 +++---
- arch/parisc/Makefile                  |  4 ----
- arch/parisc/include/asm/signal.h      |  8 --------
- arch/parisc/include/uapi/asm/unistd.h |  3 ++-
- arch/parisc/kernel/drivers.c          | 25 +++++++++----------------
- arch/parisc/kernel/syscall_table.S    |  1 +
- arch/parisc/kernel/unwind.c           |  4 ++--
- 7 files changed, 17 insertions(+), 34 deletions(-)
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
