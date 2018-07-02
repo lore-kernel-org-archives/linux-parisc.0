@@ -1,45 +1,34 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Helge Deller <deller@gmx.de>
 Subject: Re: Build regressions/improvements in v4.18-rc3
-Date: Mon, 2 Jul 2018 16:09:40 +0200
-Message-ID: <CAMuHMdUHkShW5dT41x06Jz9DUJHim6=Wg6pspgTBJpsoVNphwA@mail.gmail.com>
+Date: Mon, 2 Jul 2018 17:13:33 +0200
+Message-ID: <1fa6b973-33e7-53f8-75bb-92d1e8932813@gmx.de>
 References: <20180702140050.1660-1-geert@linux-m68k.org>
+ <CAMuHMdUHkShW5dT41x06Jz9DUJHim6=Wg6pspgTBJpsoVNphwA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: sparclinux <sparclinux@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Cc: Parisc List <linux-parisc@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180702140050.1660-1-geert@linux-m68k.org>
+In-Reply-To: <CAMuHMdUHkShW5dT41x06Jz9DUJHim6=Wg6pspgTBJpsoVNphwA@mail.gmail.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jul 2, 2018 at 4:01 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> JFYI, when comparing v4.18-rc3[1] to v4.18-rc2[3], the summaries are:
->   - build errors: +1/-7
+On 02.07.2018 16:09, Geert Uytterhoeven wrote:
+> On Mon, Jul 2, 2018 at 4:01 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>> JFYI, when comparing v4.18-rc3[1] to v4.18-rc2[3], the summaries are:
+> ...
 
-  + /kisskb/src/include/linux/highmem.h: error: passing argument 1 of
-'sparc_flush_page_to_ram' from incompatible pointer type
-[-Werror=incompatible-pointer-types]:  => 209:20, 233:36, 137:31
+Both of the following are simply happening because of old compiler which is being used:
 
-sparc64/sparc-allmodconfig (patch available)
+>> [Deleted 26903 lines about "warning: ... [-Wpointer-sign]" on parisc-allmodconfig]
 
-> [1] http://kisskb.ellerman.id.au/kisskb/head/021c91791a5e7e85c567452f1be3e4c2c6cb6063/ (231 out of 244 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/head/7daf201d7fe8334e2d2364d4e8ed3394ec9af819/ (231 out of 244 configs)
+?
 
-> *** WARNINGS ***
->
-> [Deleted 26903 lines about "warning: ... [-Wpointer-sign]" on parisc-allmodconfig]
-> [Deleted 19308 lines about "warning: -ffunction-sections disabled; it makes profiling impossible [enabled by default]" on parisc-allmodconfig]
+>> [Deleted 19308 lines about "warning: -ffunction-sections disabled; it makes profiling impossible [enabled by default]" on parisc-allmodconfig]
 
-Seems they're gone. Hopefully for good ;-)
+I dropped function-sections:
+http://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=24b6c22504a27210a8377e54d24d425ae414f2c1
+Still need to see if this gives problems (haven't seen any yet).
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Helge
