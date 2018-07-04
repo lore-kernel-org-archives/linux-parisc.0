@@ -1,89 +1,34 @@
-From: Baoquan He <bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH v5 1/4] resource: Move reparent_resources() to
- kernel/resource.c and make it public
-Date: Wed, 4 Jul 2018 12:18:34 +0800
-Message-ID: <20180704041834.GA2762@MiWiFi-R3L-srv>
-References: <20180612032831.29747-1-bhe@redhat.com>
- <20180612032831.29747-2-bhe@redhat.com>
- <CAHp75Vd6v4+RTq-5uw_BJpT6=w2KGjTfU+rEst6+8igs2cyntw@mail.gmail.com>
- <20180612093812.GC1820@MiWiFi-R3L-srv>
- <CAHp75Vf_kBLkE6v=JyOdfNoWktWEfKs7JzRP1XEc4TeuT5xqfw@mail.gmail.com>
- <CAHp75Vdaqj+n=F7wSB9PFGpf9Ok2XZzKcq_H0DzmtjmN-4UUfw@mail.gmail.com>
- <20180703145503.GA1225@MiWiFi-R3L-srv>
- <CAHp75VeEjhcYF4Fy4O_srdv_nEGGjGwAHhZufscB_tiLQVQ=FQ@mail.gmail.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: Build regressions/improvements in v4.18-rc3
+Date: Wed, 04 Jul 2018 14:56:57 +1000
+Message-ID: <87sh4zlht2.fsf@concordia.ellerman.id.au>
+References: <20180702140050.1660-1-geert@linux-m68k.org> <CAMuHMdUHkShW5dT41x06Jz9DUJHim6=Wg6pspgTBJpsoVNphwA@mail.gmail.com> <1fa6b973-33e7-53f8-75bb-92d1e8932813@gmx.de> <87601xgm6a.fsf@concordia.ellerman.id.au> <74980be1-0684-09ef-9e31-cb8f0db13139@bell.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: Nicolas Pitre <nicolas.pitre-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, brijesh.singh-5C7GfCeVMHo@public.gmane.org,
- devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, David Airlie <airlied-cv59FeDIM0c@public.gmane.org>,
- linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, richard.weiyang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org,
- Max Filippov <jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Paul Mackerras <paulus-eUNUBHrolfbYtjvyW6yDsg@public.gmane.org>,
- baiyaowei-0p4V/sDNsUmm0O/7XYngnFaTQe2KTcn/@public.gmane.org, KY Srinivasan <kys-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>,
- Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
- Lorenzo Pieralisi <lorenzo.pieralisi-5wv7dgnIgG8@public.gmane.org>,
- Stephen Hemminger <sthemmin-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>, linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org,
- Michael Ellerman <mpe-Gsx/Oe8HsFggBc27wqDAHg@public.gmane.org>,
- Patrik Jakobsson <patrik.r.jakobsson-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
- linux-input <linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
- Gustavo Padovan <gustavo-THi1TnShQwVAfugRpC6u6w@public.gmane.org>, Borislav Petkov <bp-l3A5Bk7waGM@public.gmane.org>,
- Dave Young <dyoung-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Tom Lendacky <thomas.lendacky-5C7GfCeVMHo@public.gmane.org>,
- Haiyang Zhang <haiyangz-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>,
- Maarten Lankhorst <maarten.lankhorst-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>,
- Josh Triplett <josh@joshtri
-To: Andy Shevchenko <andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Return-path: <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-In-Reply-To: <CAHp75VeEjhcYF4Fy4O_srdv_nEGGjGwAHhZufscB_tiLQVQ=FQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Id: "Linux-nvdimm developer list." <linux-nvdimm.lists.01.org>
-List-Unsubscribe: <https://lists.01.org/mailman/options/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.01.org/pipermail/linux-nvdimm/>
-List-Post: <mailto:linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-List-Help: <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.01.org/mailman/listinfo/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=subscribe>
-Errors-To: linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
+Content-Type: text/plain
+Cc: Parisc List <linux-parisc@vger.kernel.org>
+To: John David Anglin <dave.anglin@bell.net>,
+        Helge Deller <deller@gmx.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <74980be1-0684-09ef-9e31-cb8f0db13139@bell.net>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On 07/03/18 at 11:57pm, Andy Shevchenko wrote:
-> On Tue, Jul 3, 2018 at 5:55 PM, Baoquan He <bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org> wrote:
-> > On 06/12/18 at 05:24pm, Andy Shevchenko wrote:
-> >> On Tue, Jun 12, 2018 at 5:20 PM, Andy Shevchenko
-> >> <andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
-> 
-> >> > I briefly looked at the code and error codes we have, so, my proposal
-> >> > is one of the following
-> >>
-> >> >  - use -ECANCELED (not the best choice for first occurrence here,
-> >> > though I can't find better)
-> >>
-> >> Actually -ENOTSUPP might suit the first case (although the actual
-> >> would be something like -EOVERLAP, which we don't have)
-> >
-> > Sorry for late reply, and many thanks for your great suggestion.
-> >
-> 
-> > I am fine to use -ENOTSUPP as the first returned value, and -ECANCELED
-> > for the 2nd one.
-> 
-> I have no strong opinion, but I like (slightly better) this approach ^^^
+John David Anglin <dave.anglin@bell.net> writes:
 
-Done, post v6 in this way, many thanks.
+> On 2018-07-02 9:09 PM, Michael Ellerman wrote:
+>> It's GCC 4.6.3. Are you saying that's not supported anymore?
+> See <https://gcc.gnu.org/> for supported releases.
 
-> 
-> > Or define an enum as you suggested inside the function
-> > or in header file.
-> 
-> >
-> > Or use -EBUSY for the first case because existing resource is
-> > overlapping but not fully contained by 'res'; and -EINVAL for
-> > the 2nd case since didn't find any one resources which is contained by
-> > 'res', means we passed in a invalid resource.
-> >
-> > All is fine to me, I can repost with each of them.
-> 
-> >> >  - use positive integers (or enum), like
-> >> >   #define RES_REPARENTED 0
-> >> >   #define RES_OVERLAPPED 1
-> >> >   #define RES_NOCONFLICT 2
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+Thanks, but I mean "supported by the parisc Linux port".
+
+Allegedly the kernel builds with GCC 3.2:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/changes.rst#n32
+
+
+But in reality each arch has a different minimum version they actually
+care about.
+
+cheers
