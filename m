@@ -1,46 +1,73 @@
-From: Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: Build regressions/improvements in v4.18-rc3
-Date: Wed, 04 Jul 2018 14:59:18 +1000
-Message-ID: <87po03lhp5.fsf@concordia.ellerman.id.au>
-References: <20180702140050.1660-1-geert@linux-m68k.org> <CAMuHMdUHkShW5dT41x06Jz9DUJHim6=Wg6pspgTBJpsoVNphwA@mail.gmail.com> <1fa6b973-33e7-53f8-75bb-92d1e8932813@gmx.de> <87601xgm6a.fsf@concordia.ellerman.id.au> <b7c41645-f694-4763-4cc3-f7abb0c2432b@gmx.de>
+From: Alexandre Ghiti <alex@ghiti.fr>
+Subject: [PATCH 01/11] hugetlb: Harmonize hugetlb.h arch specific defines with
+ pgtable.h
+Date: Wed,  4 Jul 2018 05:51:57 +0000
+Message-ID: <20180704055207.27978-2-alex@ghiti.fr>
+References: <20180704055207.27978-1-alex@ghiti.fr>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <b7c41645-f694-4763-4cc3-f7abb0c2432b@gmx.de>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: Alexandre Ghiti <alex@ghiti.fr>
+To: linux@armlinux.org.uk, catalin.marinas@arm.com, will.deacon@arm.com,
+ tony.luck@intel.com, fenghua.yu@intel.com, ralf@linux-mips.org,
+ paul.burton@mips.com, jhogan@kernel.org, jejb@parisc-linux.org,
+ deller@gmx.de, benh@kernel.crashing.org, paulus@samba.org,
+ mpe@ellerman.id.au, ysato@users.sourceforge.jp, dalias@libc.org,
+ davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+ x86@kernel.org, arnd@arndb.de, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
+ linux-mips@linux-mips.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20180704055207.27978-1-alex@ghiti.fr>
+List-Id: <linux-arm-kernel.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 
-Helge Deller <deller@gmx.de> writes:
+asm-generic/hugetlb.h proposes generic implementations of hugetlb
+related functions: use __HAVE_ARCH_HUGE* defines in order to make arch
+specific implementations of hugetlb functions consistent with pgtable.h
+scheme.
 
-> On 03.07.2018 03:09, Michael Ellerman wrote:
->> Helge Deller <deller@gmx.de> writes:
->> 
->>> On 02.07.2018 16:09, Geert Uytterhoeven wrote:
->>>> On Mon, Jul 2, 2018 at 4:01 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->>>>> JFYI, when comparing v4.18-rc3[1] to v4.18-rc2[3], the summaries are:
->>>> ...
->>>
->>> Both of the following are simply happening because of old compiler which is being used:
->>>
->>>>> [Deleted 26903 lines about "warning: ... [-Wpointer-sign]" on parisc-allmodconfig]
->> 
->> It's GCC 4.6.3. Are you saying that's not supported anymore?
->> 
->> I can update to 8.1.0 if that's more useful.
->
-> Yes, please.
-> Any version >= 7.2.1 should be better.
+Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+---
+ arch/arm64/include/asm/hugetlb.h | 2 +-
+ include/asm-generic/hugetlb.h    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-OK, done. It's now using 8.1.0 from kernel.org.
-
-Do you want kisskb to email you build failures for parsic in linux-next
-and/or Linus' tree?
-
-It only mails when a config goes from working to broken or vice versa,
-so shouldn't be too chatty.
-
-cheers
+diff --git a/arch/arm64/include/asm/hugetlb.h b/arch/arm64/include/asm/hugetlb.h
+index e73f68569624..3fcf14663dfa 100644
+--- a/arch/arm64/include/asm/hugetlb.h
++++ b/arch/arm64/include/asm/hugetlb.h
+@@ -81,9 +81,9 @@ extern void huge_ptep_set_wrprotect(struct mm_struct *mm,
+ 				    unsigned long addr, pte_t *ptep);
+ extern void huge_ptep_clear_flush(struct vm_area_struct *vma,
+ 				  unsigned long addr, pte_t *ptep);
++#define __HAVE_ARCH_HUGE_PTE_CLEAR
+ extern void huge_pte_clear(struct mm_struct *mm, unsigned long addr,
+ 			   pte_t *ptep, unsigned long sz);
+-#define huge_pte_clear huge_pte_clear
+ extern void set_huge_swap_pte_at(struct mm_struct *mm, unsigned long addr,
+ 				 pte_t *ptep, pte_t pte, unsigned long sz);
+ #define set_huge_swap_pte_at set_huge_swap_pte_at
+diff --git a/include/asm-generic/hugetlb.h b/include/asm-generic/hugetlb.h
+index 9d0cde8ab716..3da7cff52360 100644
+--- a/include/asm-generic/hugetlb.h
++++ b/include/asm-generic/hugetlb.h
+@@ -32,7 +32,7 @@ static inline pte_t huge_pte_modify(pte_t pte, pgprot_t newprot)
+ 	return pte_modify(pte, newprot);
+ }
+ 
+-#ifndef huge_pte_clear
++#ifndef __HAVE_ARCH_HUGE_PTE_CLEAR
+ static inline void huge_pte_clear(struct mm_struct *mm, unsigned long addr,
+ 		    pte_t *ptep, unsigned long sz)
+ {
+-- 
+2.16.2
