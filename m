@@ -1,84 +1,138 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v5 1/4] resource: Move reparent_resources() to
- kernel/resource.c and make it public
-Date: Tue, 3 Jul 2018 23:57:48 +0300
-Message-ID: <CAHp75VeEjhcYF4Fy4O_srdv_nEGGjGwAHhZufscB_tiLQVQ=FQ@mail.gmail.com>
-References: <20180612032831.29747-1-bhe@redhat.com>
- <20180612032831.29747-2-bhe@redhat.com>
- <CAHp75Vd6v4+RTq-5uw_BJpT6=w2KGjTfU+rEst6+8igs2cyntw@mail.gmail.com>
- <20180612093812.GC1820@MiWiFi-R3L-srv>
- <CAHp75Vf_kBLkE6v=JyOdfNoWktWEfKs7JzRP1XEc4TeuT5xqfw@mail.gmail.com>
- <CAHp75Vdaqj+n=F7wSB9PFGpf9Ok2XZzKcq_H0DzmtjmN-4UUfw@mail.gmail.com>
- <20180703145503.GA1225@MiWiFi-R3L-srv>
+From: Baoquan He <bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v6 0/4] resource: Use list_head to link sibling resource
+Date: Wed,  4 Jul 2018 12:10:34 +0800
+Message-ID: <20180704041038.8190-1-bhe@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, brijesh.singh@amd.com,
- devicetree <devicetree@vger.kernel.org>, David Airlie <airlied@linux.ie>,
- linux-pci@vger.kernel.org, richard.weiyang@gmail.com,
- Keith Busch <keith.busch@intel.com>, Max Filippov <jcmvbkbc@gmail.com>,
- Paul Mackerras <paulus@samba.org>, baiyaowei@cmss.chinamobile.com,
- Frank Rowand <frowand.list@gmail.com>, Dan Williams <dan.j.williams@intel.com>,
- Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
- Stephen Hemminger <sthemmin@microsoft.com>, linux-nvdimm@lists.01.org,
- Michael Ellerman <mpe@ellerman.id.au>,
- Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
- linux-input <linux-input@vger.kernel.org>,
- Gustavo Padovan <gustavo@padovan.org>, Borislav Petkov <bp@suse.de>,
- Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
- Tom Lendacky <thomas.lendacky@amd.com>, Haiyang Zhang <haiyangz@microsoft.com>,
- Maarten
-To: Baoquan He <bhe@redhat.com>
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-In-Reply-To: <20180703145503.GA1225@MiWiFi-R3L-srv>
-List-Id: Linux Driver Project Developer List
- <driverdev-devel.linuxdriverproject.org>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Cc: brijesh.singh-5C7GfCeVMHo@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org,
+ linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, richard.weiyang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org,
+ baiyaowei-0p4V/sDNsUmm0O/7XYngnFaTQe2KTcn/@public.gmane.org, kys-0li6OtcxBFHby3iVrkZq2A@public.gmane.org, frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org,
+ lorenzo.pieralisi-5wv7dgnIgG8@public.gmane.org, sthemmin-0li6OtcxBFHby3iVrkZq2A@public.gmane.org, Baoquan He <bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>,
+ linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org, patrik.r.jakobsson-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org,
+ linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, gustavo-THi1TnShQwVAfugRpC6u6w@public.gmane.org, dyoung-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org,
+ thomas.lendacky-5C7GfCeVMHo@public.gmane.org, haiyangz-0li6OtcxBFHby3iVrkZq2A@public.gmane.org,
+ maarten.lankhorst-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, jglisse-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, seanpaul-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org,
+ bhelgaas-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org, yinghai-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org,
+ jonathan.derrick-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, chris-YvXeqwSYzG2sTnJN9+BGXg@public.gmane.org, monstr-pSz03upnqPeHXe+LvDLADg@public.gmane.org,
+ linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org,
+ dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, kexec-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, ebiederm-aS9lmoZGLiVWk0Htik3J/w@public.gmane.org,
+ devel-tBiZLqfeLfOHmIFyCCdPziST3g8Odh+X@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org,
+ davem@davem
+To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org,
+ robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, nicolas.pitre-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org,
+ josh-iaAMLnmF4UmaiuxdJuQwMA@public.gmane.org, fengguang.wu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, bp-l3A5Bk7waGM@public.gmane.org,
+ andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Return-path: <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+List-Id: "Linux-nvdimm developer list." <linux-nvdimm.lists.01.org>
+List-Unsubscribe: <https://lists.01.org/mailman/options/linux-nvdimm>,
+ <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.01.org/pipermail/linux-nvdimm/>
+List-Post: <mailto:linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+List-Help: <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.01.org/mailman/listinfo/linux-nvdimm>,
+ <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=subscribe>
+Errors-To: linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
 
-On Tue, Jul 3, 2018 at 5:55 PM, Baoquan He <bhe@redhat.com> wrote:
-> On 06/12/18 at 05:24pm, Andy Shevchenko wrote:
->> On Tue, Jun 12, 2018 at 5:20 PM, Andy Shevchenko
->> <andy.shevchenko@gmail.com> wrote:
+This patchset is doing:
+1) Replace struct resource's sibling list from singly linked list to
+list_head. Clearing out those pointer operation within singly linked
+list for better code readability.
+2) Based on list_head replacement, add a new function
+walk_system_ram_res_rev() which can does reversed iteration on
+iomem_resource's siblings.
+3) Change kexec_file loading to search system RAM top down for kernel
+loadin, using walk_system_ram_res_rev().
 
->> > I briefly looked at the code and error codes we have, so, my proposal
->> > is one of the following
->>
->> >  - use -ECANCELED (not the best choice for first occurrence here,
->> > though I can't find better)
->>
->> Actually -ENOTSUPP might suit the first case (although the actual
->> would be something like -EOVERLAP, which we don't have)
->
-> Sorry for late reply, and many thanks for your great suggestion.
->
+Note:
+This patchset only passed testing on  x86_64 arch with network
+enabling. The thing we need pay attetion to is that a root resource's
+child member need be initialized specifically with LIST_HEAD_INIT() if
+statically defined or INIT_LIST_HEAD() for dynamically definition. Here
+Just like we do for iomem_resource/ioport_resource, or the change in
+get_pci_domain_busn_res().
 
-> I am fine to use -ENOTSUPP as the first returned value, and -ECANCELED
-> for the 2nd one.
+v5:
+http://lkml.kernel.org/r/20180612032831.29747-1-bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
 
-I have no strong opinion, but I like (slightly better) this approach ^^^
+v4:
+http://lkml.kernel.org/r/20180507063224.24229-1-bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
 
-> Or define an enum as you suggested inside the function
-> or in header file.
+v3:
+http://lkml.kernel.org/r/20180419001848.3041-1-bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
 
->
-> Or use -EBUSY for the first case because existing resource is
-> overlapping but not fully contained by 'res'; and -EINVAL for
-> the 2nd case since didn't find any one resources which is contained by
-> 'res', means we passed in a invalid resource.
->
-> All is fine to me, I can repost with each of them.
+v2:
+http://lkml.kernel.org/r/20180408024724.16812-1-bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
 
->> >  - use positive integers (or enum), like
->> >   #define RES_REPARENTED 0
->> >   #define RES_OVERLAPPED 1
->> >   #define RES_NOCONFLICT 2
+v1:
+http://lkml.kernel.org/r/20180322033722.9279-1-bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
+
+Changelog:
+v5->v6:
+  Fix code style problems in reparent_resources() and use existing
+  error codes, according to Andy's suggestion.
+
+  Fix bugs test robot reported.
+  
+v4->v5:
+  Add new patch 0001 to move duplicated reparent_resources() to
+  kernel/resource.c to make it be shared by different ARCH-es.
+
+  Fix several code bugs reported by test robot on ARCH powerpc and
+  microblaze.
+v3->v4:
+  Fix several bugs test robot reported. Rewrite cover letter and patch
+  log according to reviewer's comment.
+
+v2->v3:
+  Rename resource functions first_child() and sibling() to
+  resource_first_chils() and resource_sibling(). Dan suggested this.
+
+  Move resource_first_chils() and resource_sibling() to linux/ioport.h
+  and make them as inline function. Rob suggested this. Accordingly add
+  linux/list.h including in linux/ioport.h, please help review if this
+  bring efficiency degradation or code redundancy.
+
+  The change on struct resource {} bring two pointers of size increase,
+  mention this in git log to make it more specifically, Rob suggested
+  this.
+
+v1->v2:
+  Use list_head instead to link resource siblings. This is suggested by
+  Andrew.
+
+  Rewrite walk_system_ram_res_rev() after list_head is taken to link
+  resouce siblings.
+
+
+
+Baoquan He (4):
+  resource: Move reparent_resources() to kernel/resource.c and make it
+    public
+  resource: Use list_head to link sibling resource
+  resource: add walk_system_ram_res_rev()
+  kexec_file: Load kernel at top of system RAM if required
+
+ arch/arm/plat-samsung/pm-check.c            |   6 +-
+ arch/microblaze/pci/pci-common.c            |  41 +----
+ arch/powerpc/kernel/pci-common.c            |  39 +----
+ arch/sparc/kernel/ioport.c                  |   2 +-
+ arch/xtensa/include/asm/pci-bridge.h        |   4 +-
+ drivers/eisa/eisa-bus.c                     |   2 +
+ drivers/gpu/drm/drm_memory.c                |   3 +-
+ drivers/gpu/drm/gma500/gtt.c                |   5 +-
+ drivers/hv/vmbus_drv.c                      |  52 +++---
+ drivers/input/joystick/iforce/iforce-main.c |   4 +-
+ drivers/nvdimm/namespace_devs.c             |   6 +-
+ drivers/nvdimm/nd.h                         |   5 +-
+ drivers/of/address.c                        |   4 +-
+ drivers/parisc/lba_pci.c                    |   4 +-
+ drivers/pci/controller/vmd.c                |   8 +-
+ drivers/pci/probe.c                         |   2 +
+ drivers/pci/setup-bus.c                     |   2 +-
+ include/linux/ioport.h                      |  21 ++-
+ kernel/kexec_file.c                         |   2 +
+ kernel/resource.c                           | 263 ++++++++++++++++++----------
+ 20 files changed, 248 insertions(+), 227 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.13.6
