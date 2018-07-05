@@ -1,235 +1,99 @@
-From: Baoquan He <bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH v6 1/4] resource: Move reparent_resources() to
- kernel/resource.c and make it public
-Date: Thu, 5 Jul 2018 18:09:39 +0800
-Message-ID: <20180705100939.GD1225@MiWiFi-R3L-srv>
-References: <20180704041038.8190-1-bhe@redhat.com>
- <20180704041038.8190-2-bhe@redhat.com>
- <CAHp75VfWLcQq4XGM3RyfO_ENx=3=WrCEhtOw+a0Sfwz_OpQ0UQ@mail.gmail.com>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: Re: [PATCH v3 02/11] hugetlb: Introduce generic version of
+ hugetlb_free_pgd_range
+Date: Thu, 5 Jul 2018 10:22:30 +0000
+Message-ID: <005bf713-fb51-bf29-5f86-6f244cd49f35@c-s.fr>
+References: <20180705051640.790-1-alex@ghiti.fr>
+ <20180705051640.790-3-alex@ghiti.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: Nicolas Pitre <nicolas.pitre-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, brijesh.singh-5C7GfCeVMHo@public.gmane.org,
- devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, David Airlie <airlied-cv59FeDIM0c@public.gmane.org>,
- linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, richard.weiyang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org,
- Max Filippov <jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, baiyaowei-0p4V/sDNsUmm0O/7XYngnFaTQe2KTcn/@public.gmane.org,
- KY Srinivasan <kys-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>, Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
- Lorenzo Pieralisi <lorenzo.pieralisi-5wv7dgnIgG8@public.gmane.org>,
- Stephen Hemminger <sthemmin-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>, linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org,
- Patrik Jakobsson <patrik.r.jakobsson-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
- linux-input <linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
- Gustavo Padovan <gustavo-THi1TnShQwVAfugRpC6u6w@public.gmane.org>, Borislav Petkov <bp-l3A5Bk7waGM@public.gmane.org>,
- Dave Young <dyoung-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Tom Lendacky <thomas.lendacky-5C7GfCeVMHo@public.gmane.org>,
- Haiyang Zhang <haiyangz-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>,
- Maarten Lankhorst <maarten.lankhorst-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>,
- Josh Triplett <josh-iaAMLnmF4UmaiuxdJuQwMA@public.gmane.org>,
- =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>,
- Rob Her
-To: Andy Shevchenko <andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Return-path: <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-In-Reply-To: <CAHp75VfWLcQq4XGM3RyfO_ENx=3=WrCEhtOw+a0Sfwz_OpQ0UQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Id: "Linux-nvdimm developer list." <linux-nvdimm.lists.01.org>
-List-Unsubscribe: <https://lists.01.org/mailman/options/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.01.org/pipermail/linux-nvdimm/>
-List-Post: <mailto:linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-List-Help: <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.01.org/mailman/listinfo/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=subscribe>
-Errors-To: linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+To: Alexandre Ghiti <alex@ghiti.fr>, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will.deacon@arm.com, tony.luck@intel.com,
+        fenghua.yu@intel.com, ralf@linux-mips.org, paul.burton@mips.com,
+        jhogan@kernel.org, jejb@parisc-linux.org, deller@gmx.de,
+        benh@kernel.crashing.org, paulus@samba.org, mpe@ellerman.id.au,
+        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, arnd@arndb.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-mips@linux-mips.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180705051640.790-3-alex@ghiti.fr>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On 07/04/18 at 07:46pm, Andy Shevchenko wrote:
-> On Wed, Jul 4, 2018 at 7:10 AM, Baoquan He <bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org> wrote:
-> > reparent_resources() is duplicated in arch/microblaze/pci/pci-common.c
-> > and arch/powerpc/kernel/pci-common.c, so move it to kernel/resource.c
-> > so that it's shared.
-> 
-> With couple of comments below,
 
-Sure, will fix these and repost with your reviewed-by, thanks. Should be
-after I reproduce and fix those issues reported by test robot.
 
+On 07/05/2018 05:16 AM, Alexandre Ghiti wrote:
+> arm, arm64, mips, parisc, sh, x86 architectures use the
+> same version of hugetlb_free_pgd_range, so move this generic
+> implementation into asm-generic/hugetlb.h.
 > 
-> Reviewed-by: Andy Shevchenko <andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+
+Build failure on mpc885_ads_defconfig
+
+   CC      arch/powerpc/kernel/setup-common.o
+In file included from arch/powerpc/kernel/setup-common.c:37:
+./include/linux/hugetlb.h:191:65: error: expected identifier or '(' 
+before '{' token
+  #define hugetlb_free_pgd_range(tlb, addr, end, floor, ceiling) 
+({BUG(); 0; })
+                                                                  ^
+./include/asm-generic/hugetlb.h:44:20: note: in expansion of macro 
+'hugetlb_free_pgd_range'
+  static inline void hugetlb_free_pgd_range(struct mmu_gather *tlb,
+                     ^~~~~~~~~~~~~~~~~~~~~~
+
+see below
+
+> ---
+>   arch/arm/include/asm/hugetlb.h     | 12 ++----------
+>   arch/arm64/include/asm/hugetlb.h   | 10 ----------
+>   arch/ia64/include/asm/hugetlb.h    |  5 +++--
+>   arch/mips/include/asm/hugetlb.h    | 13 ++-----------
+>   arch/parisc/include/asm/hugetlb.h  | 12 ++----------
+>   arch/powerpc/include/asm/hugetlb.h |  4 +++-
+>   arch/sh/include/asm/hugetlb.h      | 12 ++----------
+>   arch/sparc/include/asm/hugetlb.h   |  4 +++-
+>   arch/x86/include/asm/hugetlb.h     | 11 ++---------
+>   include/asm-generic/hugetlb.h      | 11 +++++++++++
+>   10 files changed, 30 insertions(+), 64 deletions(-)
 > 
-> P.S. In some commit message in this series you used 'likt' instead of 'like'.
-> 
-> >
-> > Signed-off-by: Baoquan He <bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-> > ---
-> >  arch/microblaze/pci/pci-common.c | 37 -------------------------------------
-> >  arch/powerpc/kernel/pci-common.c | 35 -----------------------------------
-> >  include/linux/ioport.h           |  1 +
-> >  kernel/resource.c                | 39 +++++++++++++++++++++++++++++++++++++++
-> >  4 files changed, 40 insertions(+), 72 deletions(-)
-> >
-> > diff --git a/arch/microblaze/pci/pci-common.c b/arch/microblaze/pci/pci-common.c
-> > index f34346d56095..7899bafab064 100644
-> > --- a/arch/microblaze/pci/pci-common.c
-> > +++ b/arch/microblaze/pci/pci-common.c
-> > @@ -619,43 +619,6 @@ int pcibios_add_device(struct pci_dev *dev)
-> >  EXPORT_SYMBOL(pcibios_add_device);
-> >
-> >  /*
-> > - * Reparent resource children of pr that conflict with res
-> > - * under res, and make res replace those children.
-> > - */
-> > -static int __init reparent_resources(struct resource *parent,
-> > -                                    struct resource *res)
-> > -{
-> > -       struct resource *p, **pp;
-> > -       struct resource **firstpp = NULL;
-> > -
-> > -       for (pp = &parent->child; (p = *pp) != NULL; pp = &p->sibling) {
-> > -               if (p->end < res->start)
-> > -                       continue;
-> > -               if (res->end < p->start)
-> > -                       break;
-> > -               if (p->start < res->start || p->end > res->end)
-> > -                       return -1;      /* not completely contained */
-> > -               if (firstpp == NULL)
-> > -                       firstpp = pp;
-> > -       }
-> > -       if (firstpp == NULL)
-> > -               return -1;      /* didn't find any conflicting entries? */
-> > -       res->parent = parent;
-> > -       res->child = *firstpp;
-> > -       res->sibling = *pp;
-> > -       *firstpp = res;
-> > -       *pp = NULL;
-> > -       for (p = res->child; p != NULL; p = p->sibling) {
-> > -               p->parent = res;
-> > -               pr_debug("PCI: Reparented %s [%llx..%llx] under %s\n",
-> > -                        p->name,
-> > -                        (unsigned long long)p->start,
-> > -                        (unsigned long long)p->end, res->name);
-> > -       }
-> > -       return 0;
-> > -}
-> > -
-> > -/*
-> >   *  Handle resources of PCI devices.  If the world were perfect, we could
-> >   *  just allocate all the resource regions and do nothing more.  It isn't.
-> >   *  On the other hand, we cannot just re-allocate all devices, as it would
-> > diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
-> > index fe9733ffffaa..926035bb378d 100644
-> > --- a/arch/powerpc/kernel/pci-common.c
-> > +++ b/arch/powerpc/kernel/pci-common.c
-> > @@ -1088,41 +1088,6 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
-> >  EXPORT_SYMBOL(pcibios_align_resource);
-> >
-> >  /*
-> > - * Reparent resource children of pr that conflict with res
-> > - * under res, and make res replace those children.
-> > - */
-> > -static int reparent_resources(struct resource *parent,
-> > -                                    struct resource *res)
-> > -{
-> > -       struct resource *p, **pp;
-> > -       struct resource **firstpp = NULL;
-> > -
-> > -       for (pp = &parent->child; (p = *pp) != NULL; pp = &p->sibling) {
-> > -               if (p->end < res->start)
-> > -                       continue;
-> > -               if (res->end < p->start)
-> > -                       break;
-> > -               if (p->start < res->start || p->end > res->end)
-> > -                       return -1;      /* not completely contained */
-> > -               if (firstpp == NULL)
-> > -                       firstpp = pp;
-> > -       }
-> > -       if (firstpp == NULL)
-> > -               return -1;      /* didn't find any conflicting entries? */
-> > -       res->parent = parent;
-> > -       res->child = *firstpp;
-> > -       res->sibling = *pp;
-> > -       *firstpp = res;
-> > -       *pp = NULL;
-> > -       for (p = res->child; p != NULL; p = p->sibling) {
-> > -               p->parent = res;
-> > -               pr_debug("PCI: Reparented %s %pR under %s\n",
-> > -                        p->name, p, res->name);
-> > -       }
-> > -       return 0;
-> > -}
-> > -
-> > -/*
-> >   *  Handle resources of PCI devices.  If the world were perfect, we could
-> >   *  just allocate all the resource regions and do nothing more.  It isn't.
-> >   *  On the other hand, we cannot just re-allocate all devices, as it would
-> > diff --git a/include/linux/ioport.h b/include/linux/ioport.h
-> > index da0ebaec25f0..dfdcd0bfe54e 100644
-> > --- a/include/linux/ioport.h
-> > +++ b/include/linux/ioport.h
-> > @@ -192,6 +192,7 @@ extern int allocate_resource(struct resource *root, struct resource *new,
-> >  struct resource *lookup_resource(struct resource *root, resource_size_t start);
-> >  int adjust_resource(struct resource *res, resource_size_t start,
-> >                     resource_size_t size);
-> > +int reparent_resources(struct resource *parent, struct resource *res);
-> >  resource_size_t resource_alignment(struct resource *res);
-> >  static inline resource_size_t resource_size(const struct resource *res)
-> >  {
-> > diff --git a/kernel/resource.c b/kernel/resource.c
-> > index 30e1bc68503b..d1cbf4b50e17 100644
-> > --- a/kernel/resource.c
-> > +++ b/kernel/resource.c
-> > @@ -983,6 +983,45 @@ int adjust_resource(struct resource *res, resource_size_t start,
-> >  }
-> >  EXPORT_SYMBOL(adjust_resource);
-> >
-> > +/*
-> 
-> /** ?
-> 
-> > + * reparent_resources - reparent resource children of parent that res covers
-> > + * @parent: parent resource descriptor
-> > + * @res: resource descriptor desired by caller
-> > + *
-> > + * Reparent resource children of 'parent' that conflict with 'res'
-> > + * under 'res', and make 'res' replace those children.
-> 
-> Describe error codes, please.
-> 
-> > + */
-> > +int reparent_resources(struct resource *parent, struct resource *res)
-> > +{
-> > +       struct resource *p, **pp;
-> > +       struct resource **firstpp = NULL;
-> > +
-> > +       for (pp = &parent->child; (p = *pp) != NULL; pp = &p->sibling) {
-> > +               if (p->end < res->start)
-> > +                       continue;
-> > +               if (res->end < p->start)
-> > +                       break;
-> > +               if (p->start < res->start || p->end > res->end)
-> > +                       return -ENOTSUPP;       /* not completely contained */
-> > +               if (firstpp == NULL)
-> > +                       firstpp = pp;
-> > +       }
-> > +       if (firstpp == NULL)
-> > +               return -ECANCELED; /* didn't find any conflicting entries? */
-> > +       res->parent = parent;
-> > +       res->child = *firstpp;
-> > +       res->sibling = *pp;
-> > +       *firstpp = res;
-> > +       *pp = NULL;
-> > +       for (p = res->child; p != NULL; p = p->sibling) {
-> > +               p->parent = res;
-> > +               pr_debug("PCI: Reparented %s %pR under %s\n",
-> > +                        p->name, p, res->name);
-> > +       }
-> > +       return 0;
-> > +}
-> > +EXPORT_SYMBOL(reparent_resources);
-> > +
-> >  static void __init __reserve_region_with_split(struct resource *root,
-> >                 resource_size_t start, resource_size_t end,
-> >                 const char *name)
-> > --
-> > 2.13.6
-> >
-> 
-> 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+
+[snip]
+
+> diff --git a/arch/powerpc/include/asm/hugetlb.h b/arch/powerpc/include/asm/hugetlb.h
+> index 3225eb6402cc..de46ee16b615 100644
+> --- a/arch/powerpc/include/asm/hugetlb.h
+> +++ b/arch/powerpc/include/asm/hugetlb.h
+> @@ -4,7 +4,6 @@
+>   
+>   #ifdef CONFIG_HUGETLB_PAGE
+>   #include <asm/page.h>
+> -#include <asm-generic/hugetlb.h>
+>   
+>   extern struct kmem_cache *hugepte_cache;
+>   
+> @@ -113,6 +112,7 @@ static inline void flush_hugetlb_page(struct vm_area_struct *vma,
+>   void flush_hugetlb_page(struct vm_area_struct *vma, unsigned long vmaddr);
+>   #endif
+>   
+> +#define __HAVE_ARCH_HUGETLB_FREE_PGD_RANGE
+>   void hugetlb_free_pgd_range(struct mmu_gather *tlb, unsigned long addr,
+>   			    unsigned long end, unsigned long floor,
+>   			    unsigned long ceiling);
+> @@ -193,4 +193,6 @@ static inline pte_t *hugepte_offset(hugepd_t hpd, unsigned long addr,
+>   }
+>   #endif /* CONFIG_HUGETLB_PAGE */
+>   
+> +#include <asm-generic/hugetlb.h>
+> +
+
+That include was previously inside #ifdef CONFIG_HUGETLB_PAGE.
+Why put it outside ?
+
+Christophe
