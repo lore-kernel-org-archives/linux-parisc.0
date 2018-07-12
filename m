@@ -1,33 +1,37 @@
-From: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
-Subject: Re: convert parisc to the generic dma-noncoherent code
-Date: Wed, 11 Jul 2018 17:34:45 +0200
-Message-ID: <20180711153445.GC31946@lst.de>
-References: <20180619070455.26624-1-hch@lst.de>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] liquidio: Use %pad printk format for dma_addr_t values
+Date: Thu, 12 Jul 2018 22:36:29 +0200
+Message-ID: <20180712203629.GA32537@ls3530.fritz.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <20180619070455.26624-1-hch-jcswGhMUV9g@public.gmane.org>
-List-Id: Development issues for Linux IOMMU support
-	<iommu.lists.linux-foundation.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org
+To: Derek Chickles <derek.chickles@caviumnetworks.com>,
+        Satanand Burla <satananda.burla@caviumnetworks.com>,
+        Felix Manlunas <felix.manlunas@caviumnetworks.com>,
+        Raghu Vatsavayi <raghu.vatsavayi@caviumnetworks.com>,
+        netdev@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 
-ping?  Any comments?
+Use the existing %pad printk format to print dma_addr_t values.
+This avoids the following warnings when compiling on the parisc platform:
 
-On Tue, Jun 19, 2018 at 09:04:52AM +0200, Christoph Hellwig wrote:
-> This should address all the comments raised last time.
-> 
-> 
-> _______________________________________________
-> iommu mailing list
-> iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
----end quoted text---
+warning: format '%llx' expects argument of type 'long long unsigned int', but argument 2 has type 'dma_addr_t {aka unsigned int}' [-Wformat=]
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/drivers/net/ethernet/cavium/liquidio/request_manager.c b/drivers/net/ethernet/cavium/liquidio/request_manager.c
+index 1f2e75da28f8..d5d9e47daa4b 100644
+--- a/drivers/net/ethernet/cavium/liquidio/request_manager.c
++++ b/drivers/net/ethernet/cavium/liquidio/request_manager.c
+@@ -110,8 +110,8 @@ int octeon_init_instr_queue(struct octeon_device *oct,
+ 
+ 	memset(iq->request_list, 0, sizeof(*iq->request_list) * num_descs);
+ 
+-	dev_dbg(&oct->pci_dev->dev, "IQ[%d]: base: %p basedma: %llx count: %d\n",
+-		iq_no, iq->base_addr, iq->base_addr_dma, iq->max_count);
++	dev_dbg(&oct->pci_dev->dev, "IQ[%d]: base: %p basedma: %pad count: %d\n",
++		iq_no, iq->base_addr, &iq->base_addr_dma, iq->max_count);
+ 
+ 	iq->txpciq.u64 = txpciq.u64;
+ 	iq->fill_threshold = (u32)conf->db_min;
