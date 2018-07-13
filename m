@@ -1,42 +1,49 @@
-From: Felix Manlunas <felix.manlunas@cavium.com>
-Subject: Re: [PATCH] liquidio: Use %pad printk format for dma_addr_t values
-Date: Thu, 12 Jul 2018 17:06:48 -0700
-Message-ID: <20180713000648.GA3206@felix-thinkpad.cavium.com>
-References: <20180712203629.GA32537@ls3530.fritz.box>
+From: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
+Subject: Re: convert parisc to the generic dma-noncoherent code
+Date: Fri, 13 Jul 2018 10:14:38 +0200
+Message-ID: <e2b653d8-cc04-7a81-89a0-9d286c5cc0ca@gmx.de>
+References: <20180619070455.26624-1-hch@lst.de> <20180711153445.GC31946@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Derek Chickles <derek.chickles@caviumnetworks.com>,
-        Satanand Burla <satananda.burla@caviumnetworks.com>,
-        Felix Manlunas <felix.manlunas@caviumnetworks.com>,
-        Raghu Vatsavayi <raghu.vatsavayi@caviumnetworks.com>,
-        netdev@vger.kernel.org, linux-parisc@vger.kernel.org
-To: Helge Deller <deller@gmx.de>
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20180712203629.GA32537@ls3530.fritz.box>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Cc: James Bottomley <James.Bottomley-d9PhHud1JfjCXq6kfMZ53/egYHeGw8Jk@public.gmane.org>,
+	iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+To: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+In-Reply-To: <20180711153445.GC31946-jcswGhMUV9g@public.gmane.org>
+List-Id: Development issues for Linux IOMMU support
+	<iommu.lists.linux-foundation.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
 
-On Thu, Jul 12, 2018 at 10:36:29PM +0200, Helge Deller wrote:
-> Use the existing %pad printk format to print dma_addr_t values.
-> This avoids the following warnings when compiling on the parisc platform:
-> 
-> warning: format '%llx' expects argument of type 'long long unsigned int', but argument 2 has type 'dma_addr_t {aka unsigned int}' [-Wformat=]
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> 
-> diff --git a/drivers/net/ethernet/cavium/liquidio/request_manager.c b/drivers/net/ethernet/cavium/liquidio/request_manager.c
-> index 1f2e75da28f8..d5d9e47daa4b 100644
-> --- a/drivers/net/ethernet/cavium/liquidio/request_manager.c
-> +++ b/drivers/net/ethernet/cavium/liquidio/request_manager.c
-> @@ -110,8 +110,8 @@ int octeon_init_instr_queue(struct octeon_device *oct,
-> 
->  	memset(iq->request_list, 0, sizeof(*iq->request_list) * num_descs);
-> 
-> -	dev_dbg(&oct->pci_dev->dev, "IQ[%d]: base: %p basedma: %llx count: %d\n",
-> -		iq_no, iq->base_addr, iq->base_addr_dma, iq->max_count);
-> +	dev_dbg(&oct->pci_dev->dev, "IQ[%d]: base: %p basedma: %pad count: %d\n",
-> +		iq_no, iq->base_addr, &iq->base_addr_dma, iq->max_count);
-> 
->  	iq->txpciq.u64 = txpciq.u64;
->  	iq->fill_threshold = (u32)conf->db_min;
+On 11.07.2018 17:34, Christoph Hellwig wrote:
+> ping?  Any comments?
 
-Acked-by: Felix Manlunas <felix.manlunas@cavium.com>
+I applied those 3 patches on top of git head, and booted the
+32-bit kernel on a HP 715/64 (PCX-L) and a HP B160L (PCX-L2).
+On both machines I had problems with those drivers which use
+DMA (I checked specifically the lasi NIC card, which is the 
+main onboard NIC card in both machines).
+Getting IP via DHCP was unreliable, pings on the same network 
+to both machines gave lost packets, login via ssh sometimes failed
+and so on.
+
+So, there is definitively some cache-flush missing in this patchset.
+
+I'm happy to test any further patches, but I'l be blocked at least
+until end of next week. It would be good if James could do some 
+testing on his PCX-machine too, since that machine is different
+than mine.
+
+Thanks for your efforts to clean that up!
+Helge
+
+> On Tue, Jun 19, 2018 at 09:04:52AM +0200, Christoph Hellwig wrote:
+>> This should address all the comments raised last time.
+For the record: Here is the link to the patchbundle:
+https://patchwork.kernel.org/bundle/helge/DMA_OP/
