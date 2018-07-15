@@ -1,15 +1,17 @@
-From: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
+From: John David Anglin <dave.anglin-CzeTG9NwML0@public.gmane.org>
 Subject: Re: convert parisc to the generic dma-noncoherent code
-Date: Fri, 13 Jul 2018 10:14:38 +0200
-Message-ID: <e2b653d8-cc04-7a81-89a0-9d286c5cc0ca@gmx.de>
+Date: Sun, 15 Jul 2018 12:29:37 -0400
+Message-ID: <e29f9140-0d47-e074-1609-d6ae8f8869b3@bell.net>
 References: <20180619070455.26624-1-hch@lst.de> <20180711153445.GC31946@lst.de>
+	<e2b653d8-cc04-7a81-89a0-9d286c5cc0ca@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Cc: James Bottomley <James.Bottomley-d9PhHud1JfjCXq6kfMZ53/egYHeGw8Jk@public.gmane.org>,
 	iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>, Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>,
+	linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <20180711153445.GC31946-jcswGhMUV9g@public.gmane.org>
+In-Reply-To: <e2b653d8-cc04-7a81-89a0-9d286c5cc0ca-Mmb7MZpHnFY@public.gmane.org>
 List-Id: Development issues for Linux IOMMU support
 	<iommu.lists.linux-foundation.org>
 List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
@@ -21,29 +23,21 @@ List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
 	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
 Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
 
-On 11.07.2018 17:34, Christoph Hellwig wrote:
-> ping?  Any comments?
-
-I applied those 3 patches on top of git head, and booted the
-32-bit kernel on a HP 715/64 (PCX-L) and a HP B160L (PCX-L2).
-On both machines I had problems with those drivers which use
-DMA (I checked specifically the lasi NIC card, which is the 
-main onboard NIC card in both machines).
-Getting IP via DHCP was unreliable, pings on the same network 
-to both machines gave lost packets, login via ssh sometimes failed
-and so on.
-
-So, there is definitively some cache-flush missing in this patchset.
-
-I'm happy to test any further patches, but I'l be blocked at least
-until end of next week. It would be good if James could do some 
-testing on his PCX-machine too, since that machine is different
-than mine.
-
-Thanks for your efforts to clean that up!
-Helge
-
-> On Tue, Jun 19, 2018 at 09:04:52AM +0200, Christoph Hellwig wrote:
->> This should address all the comments raised last time.
-For the record: Here is the link to the patchbundle:
-https://patchwork.kernel.org/bundle/helge/DMA_OP/
+T24gMjAxOC0wNy0xMyA0OjE0IEFNLCBIZWxnZSBEZWxsZXIgd3JvdGU6Cj4gT24gMTEuMDcuMjAx
+OCAxNzozNCwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6Cj4+IHBpbmc/ICBBbnkgY29tbWVudHM/
+Cj4gSSBhcHBsaWVkIHRob3NlIDMgcGF0Y2hlcyBvbiB0b3Agb2YgZ2l0IGhlYWQsIGFuZCBib290
+ZWQgdGhlCj4gMzItYml0IGtlcm5lbCBvbiBhIEhQIDcxNS82NCAoUENYLUwpIGFuZCBhIEhQIEIx
+NjBMIChQQ1gtTDIpLgo+IE9uIGJvdGggbWFjaGluZXMgSSBoYWQgcHJvYmxlbXMgd2l0aCB0aG9z
+ZSBkcml2ZXJzIHdoaWNoIHVzZQo+IERNQSAoSSBjaGVja2VkIHNwZWNpZmljYWxseSB0aGUgbGFz
+aSBOSUMgY2FyZCwgd2hpY2ggaXMgdGhlCj4gbWFpbiBvbmJvYXJkIE5JQyBjYXJkIGluIGJvdGgg
+bWFjaGluZXMpLgo+IEdldHRpbmcgSVAgdmlhIERIQ1Agd2FzIHVucmVsaWFibGUsIHBpbmdzIG9u
+IHRoZSBzYW1lIG5ldHdvcmsKPiB0byBib3RoIG1hY2hpbmVzIGdhdmUgbG9zdCBwYWNrZXRzLCBs
+b2dpbiB2aWEgc3NoIHNvbWV0aW1lcyBmYWlsZWQKPiBhbmQgc28gb24uCj4KPiBTbywgdGhlcmUg
+aXMgZGVmaW5pdGl2ZWx5IHNvbWUgY2FjaGUtZmx1c2ggbWlzc2luZyBpbiB0aGlzIHBhdGNoc2V0
+LgpQb3NzaWJseSwgdGhlIGNvZGUgc2hvdWxkIHVzZSBmbHVzaF9rZXJuZWxfdm1hcF9yYW5nZSgp
+IGFzIGl0IHB1cmdlcyB0aGUgClRMQiBlbnRyaWVzIHVzZWQKZm9yIHRoZSBjYWNoZSBmbHVzaC7C
+oCBTb21lIG9mIHRoZSByb3V0aW5lcyBpbiBwY2ktZG1hLmMgY3VycmVudGx5IHVzZSBpdC4KCkRh
+dmUKCi0tIApKb2huIERhdmlkIEFuZ2xpbiAgZGF2ZS5hbmdsaW5AYmVsbC5uZXQKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmlvbW11IG1haWxpbmcgbGlz
+dAppb21tdUBsaXN0cy5saW51eC1mb3VuZGF0aW9uLm9yZwpodHRwczovL2xpc3RzLmxpbnV4Zm91
+bmRhdGlvbi5vcmcvbWFpbG1hbi9saXN0aW5mby9pb21tdQ==
