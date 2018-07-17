@@ -1,28 +1,50 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] liquidio: Use %pad printk format for dma_addr_t values
-Date: Mon, 16 Jul 2018 13:37:49 -0700 (PDT)
-Message-ID: <20180716.133749.971124184265899837.davem@davemloft.net>
-References: <20180712203629.GA32537@ls3530.fritz.box>
+From: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
+Subject: Re: convert parisc to the generic dma-noncoherent code
+Date: Tue, 17 Jul 2018 15:19:52 +0200
+Message-ID: <20180717131952.GF13582@lst.de>
+References: <20180619070455.26624-1-hch@lst.de> <20180711153445.GC31946@lst.de>
+	<e2b653d8-cc04-7a81-89a0-9d286c5cc0ca@gmx.de>
+	<e29f9140-0d47-e074-1609-d6ae8f8869b3@bell.net>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Cc: derek.chickles@caviumnetworks.com,
-        satananda.burla@caviumnetworks.com,
-        felix.manlunas@caviumnetworks.com,
-        raghu.vatsavayi@caviumnetworks.com, netdev@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-To: deller@gmx.de
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20180712203629.GA32537@ls3530.fritz.box>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Cc: James Bottomley <James.Bottomley-d9PhHud1JfjCXq6kfMZ53/egYHeGw8Jk@public.gmane.org>,
+	Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>, iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org,
+	Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: John David Anglin <dave.anglin-CzeTG9NwML0@public.gmane.org>
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+In-Reply-To: <e29f9140-0d47-e074-1609-d6ae8f8869b3-CzeTG9NwML0@public.gmane.org>
+List-Id: Development issues for Linux IOMMU support
+	<iommu.lists.linux-foundation.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
 
-From: Helge Deller <deller@gmx.de>
-Date: Thu, 12 Jul 2018 22:36:29 +0200
+On Sun, Jul 15, 2018 at 12:29:37PM -0400, John David Anglin wrote:
+> On 2018-07-13 4:14 AM, Helge Deller wrote:
+>> On 11.07.2018 17:34, Christoph Hellwig wrote:
+>>> ping?  Any comments?
+>> I applied those 3 patches on top of git head, and booted the
+>> 32-bit kernel on a HP 715/64 (PCX-L) and a HP B160L (PCX-L2).
+>> On both machines I had problems with those drivers which use
+>> DMA (I checked specifically the lasi NIC card, which is the
+>> main onboard NIC card in both machines).
+>> Getting IP via DHCP was unreliable, pings on the same network
+>> to both machines gave lost packets, login via ssh sometimes failed
+>> and so on.
+>>
+>> So, there is definitively some cache-flush missing in this patchset.
+> Possibly, the code should use flush_kernel_vmap_range() as it purges the =
 
-> Use the existing %pad printk format to print dma_addr_t values.
-> This avoids the following warnings when compiling on the parisc platform:
-> 
-> warning: format '%llx' expects argument of type 'long long unsigned int', but argument 2 has type 'dma_addr_t {aka unsigned int}' [-Wformat=]
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
+> TLB entries used
+> for the cache flush.=A0 Some of the routines in pci-dma.c currently use i=
+t.
 
-Applied.
+That might be worth a try and is already discussed in my description.
+
+Also it might be good to check that the last patch really is the culprit,
+I'm pretty certain it is, but a double check never hurts.
