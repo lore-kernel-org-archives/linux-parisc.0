@@ -1,55 +1,60 @@
-From: Andy Shevchenko <andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v7 1/4] resource: Move reparent_resources() to
- kernel/resource.c and make it public
-Date: Wed, 18 Jul 2018 19:37:24 +0300
-Message-ID: <CAHp75Vf2yEwHhEhhQH2XN+pOQ=-skiAHZ=FgLnfVV8vcm59qeQ@mail.gmail.com>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v7 4/4] kexec_file: Load kernel at top of system RAM if
+ required
+Date: Wed, 18 Jul 2018 15:33:26 -0700
+Message-ID: <20180718153326.b795e9ea7835432a56cd7011@linux-foundation.org>
 References: <20180718024944.577-1-bhe@redhat.com>
- <20180718024944.577-2-bhe@redhat.com>
- <CAHp75VdO88ydJQ9GHdaDUmAmzL6QHR=US6JiXZ1R_EEA-xWR1Q@mail.gmail.com>
+        <20180718024944.577-5-bhe@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: Nicolas Pitre <nicolas.pitre-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, brijesh.singh-5C7GfCeVMHo@public.gmane.org,
- devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, David Airlie <airlied-cv59FeDIM0c@public.gmane.org>,
- linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, richard.weiyang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org,
- Max Filippov <jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Paul Mackerras <paulus-eUNUBHrolfbYtjvyW6yDsg@public.gmane.org>,
- baiyaowei-0p4V/sDNsUmm0O/7XYngnFaTQe2KTcn/@public.gmane.org, KY Srinivasan <kys-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>,
- Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
- Lorenzo Pieralisi <lorenzo.pieralisi-5wv7dgnIgG8@public.gmane.org>,
- Stephen Hemminger <sthemmin-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>, linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org,
- Michael Ellerman <mpe-Gsx/Oe8HsFggBc27wqDAHg@public.gmane.org>,
- Patrik Jakobsson <patrik.r.jakobsson-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
- linux-input <linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
- Gustavo Padovan <gustavo-THi1TnShQwVAfugRpC6u6w@public.gmane.org>, Borislav Petkov <bp-l3A5Bk7waGM@public.gmane.org>,
- Dave Young <dyoung-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Tom Lendacky <thomas.lendacky-5C7GfCeVMHo@public.gmane.org>,
- Haiyang Zhang <haiyangz-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>,
- Maarten Lankhorst <maarten.lankhorst-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>,
- Josh Triplett <josh@joshtri
-To: Baoquan He <bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Return-path: <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-In-Reply-To: <CAHp75VdO88ydJQ9GHdaDUmAmzL6QHR=US6JiXZ1R_EEA-xWR1Q-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Id: "Linux-nvdimm developer list." <linux-nvdimm.lists.01.org>
-List-Unsubscribe: <https://lists.01.org/mailman/options/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.01.org/pipermail/linux-nvdimm/>
-List-Post: <mailto:linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-List-Help: <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.01.org/mailman/listinfo/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=subscribe>
-Errors-To: linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        dan.j.williams@intel.com, nicolas.pitre@linaro.org,
+        josh@joshtriplett.org, fengguang.wu@intel.com, bp@suse.de,
+        andy.shevchenko@gmail.com, patrik.r.jakobsson@gmail.com,
+        airlied@linux.ie, kys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, dmitry.torokhov@gmail.com,
+        frowand.list@gmail.com, keith.busch@intel.com,
+        jonathan.derrick@intel.com, lorenzo.pieralisi@arm.com,
+        bhelgaas@google.com, tglx@linutronix.de, brijesh.singh@amd.com,
+        jglisse@redhat.com, thomas.lendacky@amd.com,
+        gregkh@linuxfoundation.org, baiyaowei@cmss.chinamobile.com,
+        richard.weiyang@gmail.com, devel@linuxdriverproject.org,
+        linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
+        devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
+        ebiederm@xmissi
+To: Baoquan He <bhe@redhat.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180718024944.577-5-bhe@redhat.com>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Jul 18, 2018 at 7:36 PM, Andy Shevchenko
-<andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
-> On Wed, Jul 18, 2018 at 5:49 AM, Baoquan He <bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org> wrote:
->> reparent_resources() is duplicated in arch/microblaze/pci/pci-common.c
->> and arch/powerpc/kernel/pci-common.c, so move it to kernel/resource.c
->> so that it's shared.
+On Wed, 18 Jul 2018 10:49:44 +0800 Baoquan He <bhe@redhat.com> wrote:
 
->> + * Returns 0 on success, -ENOTSUPP if child resource is not completely
->> + * contained by 'res', -ECANCELED if no any conflicting entry found.
+> For kexec_file loading, if kexec_buf.top_down is 'true', the memory which
+> is used to load kernel/initrd/purgatory is supposed to be allocated from
+> top to down. This is what we have been doing all along in the old kexec
+> loading interface and the kexec loading is still default setting in some
+> distributions. However, the current kexec_file loading interface doesn't
+> do like this. The function arch_kexec_walk_mem() it calls ignores checking
+> kexec_buf.top_down, but calls walk_system_ram_res() directly to go through
+> all resources of System RAM from bottom to up, to try to find memory region
+> which can contain the specific kexec buffer, then call locate_mem_hole_callback()
+> to allocate memory in that found memory region from top to down. This brings
+> confusion especially when KASLR is widely supported , users have to make clear
+> why kexec/kdump kernel loading position is different between these two
+> interfaces in order to exclude unnecessary noises. Hence these two interfaces
+> need be unified on behaviour.
 
-You also can refer to constants by prefixing them with %, e.g. %-ENOTSUPP.
-But this is up to you completely.
+As far as I can tell, the above is the whole reason for the patchset,
+yes?  To avoid confusing users.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Is that sufficient?  Can we instead simplify their lives by providing
+better documentation or informative printks or better Kconfig text,
+etc?
+
+And who *are* the people who are performing this configuration?  Random
+system administrators?  Linux distro engineers?  If the latter then
+they presumably aren't easily confused!
+
+In other words, I'm trying to understand how much benefit this patchset
+will provide to our users as a whole.
