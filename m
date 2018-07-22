@@ -1,108 +1,54 @@
-From: Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH v4 00/11] hugetlb: Factorize hugetlb architecture
- primitives
-Date: Fri, 20 Jul 2018 17:24:12 -0700
-Message-ID: <75195a7d-3d0f-4e55-92cc-4ad772683c75@oracle.com>
-References: <20180705110716.3919-1-alex@ghiti.fr>
- <20180709141621.GD22297@dhcp22.suse.cz>
- <2173685f-7f85-7acb-4685-2383210c5fa2@ghiti.fr>
+From: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
+Subject: Re: convert parisc to the generic dma-noncoherent code
+Date: Sun, 22 Jul 2018 17:45:40 +0200
+Message-ID: <c080d766-5b7b-2776-848c-60da09bd2c9c@gmx.de>
+References: <20180619070455.26624-1-hch@lst.de> <20180711153445.GC31946@lst.de>
+	<e2b653d8-cc04-7a81-89a0-9d286c5cc0ca@gmx.de>
+	<e29f9140-0d47-e074-1609-d6ae8f8869b3@bell.net>
+	<20180717131952.GF13582@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-mips@linux-mips.org, dalias@libc.org, linux-ia64@vger.kernel.org,
- linux-sh@vger.kernel.org, benh@kernel.crashing.org, will.deacon@arm.com,
- jejb@parisc-linux.org, paulus@samba.org, hpa@zytor.com,
- sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
- ysato@users.sourceforge.jp, mpe@ellerman.id.au, deller@gmx.de, x86@kernel.org,
- linux@armlinux.org.uk, mingo@redhat.com, catalin.marinas@arm.com,
- jhogan@kernel.org, fenghua.yu@intel.com, arnd@arndb.de, tglx@linutronix.de,
- linux-arm-kernel@lists.infradead.org, tony.luck@intel.com,
- linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
- ralf@linux-mips.org, paul.burton@mips.com,
- Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>, linuxppc-dev@lists.ozlabs.org,
- davem@davemloft.net
-To: Alex Ghiti <alex@ghiti.fr>, Michal Hocko <mhocko@kernel.org>
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <2173685f-7f85-7acb-4685-2383210c5fa2@ghiti.fr>
-List-Id: <linux-arm-kernel.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Cc: James Bottomley <James.Bottomley-d9PhHud1JfjCXq6kfMZ53/egYHeGw8Jk@public.gmane.org>,
+	iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, John David Anglin <dave.anglin-CzeTG9NwML0@public.gmane.org>
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+In-Reply-To: <20180717131952.GF13582-jcswGhMUV9g@public.gmane.org>
+List-Id: Development issues for Linux IOMMU support
+	<iommu.lists.linux-foundation.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
 
-On 07/20/2018 11:37 AM, Alex Ghiti wrote:
-> Does anyone have any suggestion about those patches ?
-
-I only took a quick look.  From the hugetlb perspective, I like the
-idea of moving routines to a common file.  If any of the arch owners
-(or anyone else) agree, I can do a review of the series.
--- 
-Mike Kravetz
-
-> On 07/09/2018 02:16 PM, Michal Hocko wrote:
->> [CC hugetlb guys - http://lkml.kernel.org/r/20180705110716.3919-1-alex@ghiti.fr]
->>
->> On Thu 05-07-18 11:07:05, Alexandre Ghiti wrote:
->>> In order to reduce copy/paste of functions across architectures and then
->>> make riscv hugetlb port (and future ports) simpler and smaller, this
->>> patchset intends to factorize the numerous hugetlb primitives that are
->>> defined across all the architectures.
->>>
->>> Except for prepare_hugepage_range, this patchset moves the versions that
->>> are just pass-through to standard pte primitives into
->>> asm-generic/hugetlb.h by using the same #ifdef semantic that can be
->>> found in asm-generic/pgtable.h, i.e. __HAVE_ARCH_***.
->>>
->>> s390 architecture has not been tackled in this serie since it does not
->>> use asm-generic/hugetlb.h at all.
->>> powerpc could be factorized a bit more (cf huge_ptep_set_wrprotect).
->>>
->>> This patchset has been compiled on x86 only.
->>>
->>> Changelog:
->>>
->>> v4:
->>>    Fix powerpc build error due to misplacing of #include
->>>    <asm-generic/hugetlb.h> outside of #ifdef CONFIG_HUGETLB_PAGE, as
->>>    pointed by Christophe Leroy.
->>>
->>> v1, v2, v3:
->>>    Same version, just problems with email provider and misuse of
->>>    --batch-size option of git send-email
->>>
->>> Alexandre Ghiti (11):
->>>    hugetlb: Harmonize hugetlb.h arch specific defines with pgtable.h
->>>    hugetlb: Introduce generic version of hugetlb_free_pgd_range
->>>    hugetlb: Introduce generic version of set_huge_pte_at
->>>    hugetlb: Introduce generic version of huge_ptep_get_and_clear
->>>    hugetlb: Introduce generic version of huge_ptep_clear_flush
->>>    hugetlb: Introduce generic version of huge_pte_none
->>>    hugetlb: Introduce generic version of huge_pte_wrprotect
->>>    hugetlb: Introduce generic version of prepare_hugepage_range
->>>    hugetlb: Introduce generic version of huge_ptep_set_wrprotect
->>>    hugetlb: Introduce generic version of huge_ptep_set_access_flags
->>>    hugetlb: Introduce generic version of huge_ptep_get
->>>
->>>   arch/arm/include/asm/hugetlb-3level.h        | 32 +---------
->>>   arch/arm/include/asm/hugetlb.h               | 33 +----------
->>>   arch/arm64/include/asm/hugetlb.h             | 39 +++---------
->>>   arch/ia64/include/asm/hugetlb.h              | 47 ++-------------
->>>   arch/mips/include/asm/hugetlb.h              | 40 +++----------
->>>   arch/parisc/include/asm/hugetlb.h            | 33 +++--------
->>>   arch/powerpc/include/asm/book3s/32/pgtable.h |  2 +
->>>   arch/powerpc/include/asm/book3s/64/pgtable.h |  1 +
->>>   arch/powerpc/include/asm/hugetlb.h           | 43 ++------------
->>>   arch/powerpc/include/asm/nohash/32/pgtable.h |  2 +
->>>   arch/powerpc/include/asm/nohash/64/pgtable.h |  1 +
->>>   arch/sh/include/asm/hugetlb.h                | 54 ++---------------
->>>   arch/sparc/include/asm/hugetlb.h             | 40 +++----------
->>>   arch/x86/include/asm/hugetlb.h               | 72 +----------------------
->>>   include/asm-generic/hugetlb.h                | 88 +++++++++++++++++++++++++++-
->>>   15 files changed, 143 insertions(+), 384 deletions(-)
->>>
->>> -- 
->>> 2.16.2
-> 
+T24gMTcuMDcuMjAxOCAxNToxOSwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6Cj4gT24gU3VuLCBK
+dWwgMTUsIDIwMTggYXQgMTI6Mjk6MzdQTSAtMDQwMCwgSm9obiBEYXZpZCBBbmdsaW4gd3JvdGU6
+Cj4+IE9uIDIwMTgtMDctMTMgNDoxNCBBTSwgSGVsZ2UgRGVsbGVyIHdyb3RlOgo+Pj4gT24gMTEu
+MDcuMjAxOCAxNzozNCwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6Cj4+Pj4gcGluZz8gIEFueSBj
+b21tZW50cz8KPj4+IEkgYXBwbGllZCB0aG9zZSAzIHBhdGNoZXMgb24gdG9wIG9mIGdpdCBoZWFk
+LCBhbmQgYm9vdGVkIHRoZQo+Pj4gMzItYml0IGtlcm5lbCBvbiBhIEhQIDcxNS82NCAoUENYLUwp
+IGFuZCBhIEhQIEIxNjBMIChQQ1gtTDIpLgo+Pj4gT24gYm90aCBtYWNoaW5lcyBJIGhhZCBwcm9i
+bGVtcyB3aXRoIHRob3NlIGRyaXZlcnMgd2hpY2ggdXNlCj4+PiBETUEgKEkgY2hlY2tlZCBzcGVj
+aWZpY2FsbHkgdGhlIGxhc2kgTklDIGNhcmQsIHdoaWNoIGlzIHRoZQo+Pj4gbWFpbiBvbmJvYXJk
+IE5JQyBjYXJkIGluIGJvdGggbWFjaGluZXMpLgo+Pj4gR2V0dGluZyBJUCB2aWEgREhDUCB3YXMg
+dW5yZWxpYWJsZSwgcGluZ3Mgb24gdGhlIHNhbWUgbmV0d29yawo+Pj4gdG8gYm90aCBtYWNoaW5l
+cyBnYXZlIGxvc3QgcGFja2V0cywgbG9naW4gdmlhIHNzaCBzb21ldGltZXMgZmFpbGVkCj4+PiBh
+bmQgc28gb24uCj4+Pgo+Pj4gU28sIHRoZXJlIGlzIGRlZmluaXRpdmVseSBzb21lIGNhY2hlLWZs
+dXNoIG1pc3NpbmcgaW4gdGhpcyBwYXRjaHNldC4KPj4gUG9zc2libHksIHRoZSBjb2RlIHNob3Vs
+ZCB1c2UgZmx1c2hfa2VybmVsX3ZtYXBfcmFuZ2UoKSBhcyBpdCBwdXJnZXMgdGhlIAo+PiBUTEIg
+ZW50cmllcyB1c2VkCj4+IGZvciB0aGUgY2FjaGUgZmx1c2guwqAgU29tZSBvZiB0aGUgcm91dGlu
+ZXMgaW4gcGNpLWRtYS5jIGN1cnJlbnRseSB1c2UgaXQuCj4gCj4gVGhhdCBtaWdodCBiZSB3b3J0
+aCBhIHRyeSBhbmQgaXMgYWxyZWFkeSBkaXNjdXNzZWQgaW4gbXkgZGVzY3JpcHRpb24uCj4gCj4g
+QWxzbyBpdCBtaWdodCBiZSBnb29kIHRvIGNoZWNrIHRoYXQgdGhlIGxhc3QgcGF0Y2ggcmVhbGx5
+IGlzIHRoZSBjdWxwcml0LAo+IEknbSBwcmV0dHkgY2VydGFpbiBpdCBpcywgYnV0IGEgZG91Ymxl
+IGNoZWNrIG5ldmVyIGh1cnRzLgoKU29tZWhvdyBJIG5vdyBjYW4ndCByZXByb2R1Y2UgdGhlIGNh
+Y2hlIGlzc3VlcyBhbnkgbG9uZ2VyLiBCb3RoLCB5b3VyIG9yaWdpbmFsCnBhdGNoIGFuZCB3aGVu
+IHVzaW5nIGZsdXNoX2tlcm5lbF92bWFwX3JhbmdlKCksIGJvdGggd29yay4KClNvLCB5b3UgY2Fu
+IGFkZCBhIApUZXN0ZWQtYnk6IEhlbGdlIERlbGxlciA8ZGVsbGVyQGdteC5kZT4KdG8geW91ciBv
+cmlnaW5hbCBwYXRjaCBzZXJpZXMuCgpIZWxnZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwppb21tdSBtYWlsaW5nIGxpc3QKaW9tbXVAbGlzdHMubGludXgt
+Zm91bmRhdGlvbi5vcmcKaHR0cHM6Ly9saXN0cy5saW51eGZvdW5kYXRpb24ub3JnL21haWxtYW4v
+bGlzdGluZm8vaW9tbXU=
