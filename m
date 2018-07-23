@@ -1,49 +1,114 @@
-From: Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH v7 4/4] kexec_file: Load kernel at top of system RAM if
- required
-Date: Mon, 23 Jul 2018 16:34:43 +0200
-Message-ID: <20180723143443.GD18181@dhcp22.suse.cz>
-References: <20180718024944.577-1-bhe@redhat.com>
- <20180718024944.577-5-bhe@redhat.com>
- <20180718153326.b795e9ea7835432a56cd7011@linux-foundation.org>
- <20180719151753.GB7147@localhost.localdomain>
+From: Alex Ghiti <alex@ghiti.fr>
+Subject: Re: [PATCH v4 00/11] hugetlb: Factorize hugetlb architecture
+ primitives
+Date: Mon, 23 Jul 2018 17:41:26 +0000
+Message-ID: <2d4c19e1-f622-7747-3ba1-ff3243337b93@ghiti.fr>
+References: <20180705110716.3919-1-alex@ghiti.fr>
+ <20180709141621.GD22297@dhcp22.suse.cz>
+ <2173685f-7f85-7acb-4685-2383210c5fa2@ghiti.fr>
+ <87d0vehx16.fsf@concordia.ellerman.id.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        dan.j.williams@intel.com, nicolas.pitre@linaro.org,
-        josh@joshtriplett.org, fengguang.wu@intel.com, bp@suse.de,
-        andy.shevchenko@gmail.com, patrik.r.jakobsson@gmail.com,
-        airlied@linux.ie, kys@microsoft.com, haiyangz@microsoft.com,
-        sthemmin@microsoft.com, dmitry.torokhov@gmail.com,
-        frowand.list@gmail.com, keith.busch@intel.com,
-        jonathan.derrick@intel.com, lorenzo.pieralisi@arm.com,
-        bhelgaas@google.com, tglx@linutronix.de, brijesh.singh@amd.com,
-        jglisse@redhat.com, thomas.lendacky@amd.com,
-        gregkh@linuxfoundation.org, baiyaowei@cmss.chinamobile.com,
-        richard.weiyang@gmail.com, devel@linuxdriverproject.org,
-        linux-input@vger.kernel.org, linux-nvdimm@lists.01.org,
-        devicetree@vger.kernel.org,
-To: Baoquan He <bhe@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Cc: linux@armlinux.org.uk, catalin.marinas@arm.com,
+        will.deacon@arm.com, tony.luck@intel.com, fenghua.yu@intel.com,
+        ralf@linux-mips.org, paul.burton@mips.com, jhogan@kernel.org,
+        jejb@parisc-linux.org, deller@gmx.de, benh@kernel.crashing.org,
+        paulus@samba.org, ysato@users.sourceforge.jp, dalias@libc.org,
+        davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, x86@kernel.org, arnd@arndb.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-mips@linux-mips.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@kernel
+To: Michael Ellerman <mpe@ellerman.id.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180719151753.GB7147@localhost.localdomain>
+In-Reply-To: <87d0vehx16.fsf@concordia.ellerman.id.au>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu 19-07-18 23:17:53, Baoquan He wrote:
-> Kexec has been a formal feature in our distro, and customers owning
-> those kind of very large machine can make use of this feature to speed
-> up the reboot process. On uefi machine, the kexec_file loading will
-> search place to put kernel under 4G from top to down. As we know, the
-> 1st 4G space is DMA32 ZONE, dma, pci mmcfg, bios etc all try to consume
-> it. It may have possibility to not be able to find a usable space for
-> kernel/initrd. From the top down of the whole memory space, we don't
-> have this worry. 
+Ok will do and report when done.
 
-I do not have the full context here but let me note that you should be
-careful when doing top-down reservation because you can easily get into
-hotplugable memory and break the hotremove usecase. We even warn when
-this is done. See memblock_find_in_range_node
--- 
-Michal Hocko
-SUSE Labs
+Thanks for your feedback,
+
+Alex
+
+On 07/23/2018 02:00 PM, Michael Ellerman wrote:
+> Alex Ghiti <alex@ghiti.fr> writes:
+>
+>> Does anyone have any suggestion about those patches ?
+> Cross compiling it for some non-x86 arches would be a good start :)
+>
+> There are cross compilers available here:
+>
+>    https://mirrors.edge.kernel.org/pub/tools/crosstool/
+>
+>
+> cheers
+>
+>> On 07/09/2018 02:16 PM, Michal Hocko wrote:
+>>> [CC hugetlb guys - http://lkml.kernel.org/r/20180705110716.3919-1-alex@ghiti.fr]
+>>>
+>>> On Thu 05-07-18 11:07:05, Alexandre Ghiti wrote:
+>>>> In order to reduce copy/paste of functions across architectures and then
+>>>> make riscv hugetlb port (and future ports) simpler and smaller, this
+>>>> patchset intends to factorize the numerous hugetlb primitives that are
+>>>> defined across all the architectures.
+>>>>
+>>>> Except for prepare_hugepage_range, this patchset moves the versions that
+>>>> are just pass-through to standard pte primitives into
+>>>> asm-generic/hugetlb.h by using the same #ifdef semantic that can be
+>>>> found in asm-generic/pgtable.h, i.e. __HAVE_ARCH_***.
+>>>>
+>>>> s390 architecture has not been tackled in this serie since it does not
+>>>> use asm-generic/hugetlb.h at all.
+>>>> powerpc could be factorized a bit more (cf huge_ptep_set_wrprotect).
+>>>>
+>>>> This patchset has been compiled on x86 only.
+>>>>
+>>>> Changelog:
+>>>>
+>>>> v4:
+>>>>     Fix powerpc build error due to misplacing of #include
+>>>>     <asm-generic/hugetlb.h> outside of #ifdef CONFIG_HUGETLB_PAGE, as
+>>>>     pointed by Christophe Leroy.
+>>>>
+>>>> v1, v2, v3:
+>>>>     Same version, just problems with email provider and misuse of
+>>>>     --batch-size option of git send-email
+>>>>
+>>>> Alexandre Ghiti (11):
+>>>>     hugetlb: Harmonize hugetlb.h arch specific defines with pgtable.h
+>>>>     hugetlb: Introduce generic version of hugetlb_free_pgd_range
+>>>>     hugetlb: Introduce generic version of set_huge_pte_at
+>>>>     hugetlb: Introduce generic version of huge_ptep_get_and_clear
+>>>>     hugetlb: Introduce generic version of huge_ptep_clear_flush
+>>>>     hugetlb: Introduce generic version of huge_pte_none
+>>>>     hugetlb: Introduce generic version of huge_pte_wrprotect
+>>>>     hugetlb: Introduce generic version of prepare_hugepage_range
+>>>>     hugetlb: Introduce generic version of huge_ptep_set_wrprotect
+>>>>     hugetlb: Introduce generic version of huge_ptep_set_access_flags
+>>>>     hugetlb: Introduce generic version of huge_ptep_get
+>>>>
+>>>>    arch/arm/include/asm/hugetlb-3level.h        | 32 +---------
+>>>>    arch/arm/include/asm/hugetlb.h               | 33 +----------
+>>>>    arch/arm64/include/asm/hugetlb.h             | 39 +++---------
+>>>>    arch/ia64/include/asm/hugetlb.h              | 47 ++-------------
+>>>>    arch/mips/include/asm/hugetlb.h              | 40 +++----------
+>>>>    arch/parisc/include/asm/hugetlb.h            | 33 +++--------
+>>>>    arch/powerpc/include/asm/book3s/32/pgtable.h |  2 +
+>>>>    arch/powerpc/include/asm/book3s/64/pgtable.h |  1 +
+>>>>    arch/powerpc/include/asm/hugetlb.h           | 43 ++------------
+>>>>    arch/powerpc/include/asm/nohash/32/pgtable.h |  2 +
+>>>>    arch/powerpc/include/asm/nohash/64/pgtable.h |  1 +
+>>>>    arch/sh/include/asm/hugetlb.h                | 54 ++---------------
+>>>>    arch/sparc/include/asm/hugetlb.h             | 40 +++----------
+>>>>    arch/x86/include/asm/hugetlb.h               | 72 +----------------------
+>>>>    include/asm-generic/hugetlb.h                | 88 +++++++++++++++++++++++++++-
+>>>>    15 files changed, 143 insertions(+), 384 deletions(-)
+>>>>
+>>>> -- 
+>>>> 2.16.2
