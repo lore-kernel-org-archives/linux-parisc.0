@@ -1,58 +1,89 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH v4 00/11] hugetlb: Factorize hugetlb architecture
- primitives
-Date: Thu, 26 Jul 2018 14:59:40 +0200
-Message-ID: <20180726125940.GA15033@ls3530>
-References: <20180705110716.3919-1-alex@ghiti.fr>
- <20180709141621.GD22297@dhcp22.suse.cz>
- <2173685f-7f85-7acb-4685-2383210c5fa2@ghiti.fr>
- <87d0vehx16.fsf@concordia.ellerman.id.au>
- <67aba0f0-c0d4-b06f-5fbc-f4d113ce5033@ghiti.fr>
+From: Baoquan He <bhe-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH v7 4/4] kexec_file: Load kernel at top of system RAM if
+ required
+Date: Thu, 26 Jul 2018 21:09:04 +0800
+Message-ID: <20180726130904.GL6480@MiWiFi-R3L-srv>
+References: <20180718024944.577-1-bhe@redhat.com>
+ <20180718024944.577-5-bhe@redhat.com>
+ <20180718153326.b795e9ea7835432a56cd7011@linux-foundation.org>
+ <20180719151753.GB7147@localhost.localdomain>
+ <20180723143443.GD18181@dhcp22.suse.cz>
+ <20180725064813.GI6480@MiWiFi-R3L-srv>
+ <20180726125957.GH28386@dhcp22.suse.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Cc: linux-mips@linux-mips.org, dalias@libc.org, linux-ia64@vger.kernel.org,
- linux-sh@vger.kernel.org, benh@kernel.crashing.org, will.deacon@arm.com,
- Michal Hocko <mhocko@kernel.org>, paulus@samba.org, hpa@zytor.com,
- sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
- ysato@users.sourceforge.jp, Michael Ellerman <mpe@ellerman.id.au>,
- deller@gmx.de, x86@kernel.org, linux@armlinux.org.uk, mingo@redhat.com,
- catalin.marinas@arm.com, jhogan@kernel.org, jejb@parisc-linux.org,
- fenghua.yu@intel.com, arnd@arndb.de, tglx@linutronix.de,
- linux-arm-kernel@lists.infradead.org, tony.luck@intel.com,
- linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
- ralf@linux-mips.org, paul.burton@mips.com,
- Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>, linuxppc-dev@lists.ozlabs.org,
- davem@davemloft.net, Mike Kravetz <mike.kravetz@oracle.com>
-To: Alex Ghiti <alex@ghiti.fr>
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <67aba0f0-c0d4-b06f-5fbc-f4d113ce5033@ghiti.fr>
-List-Id: <linux-arm-kernel.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: nicolas.pitre-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, brijesh.singh-5C7GfCeVMHo@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+ airlied-cv59FeDIM0c@public.gmane.org, linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, richard.weiyang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org,
+ jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, baiyaowei-0p4V/sDNsUmm0O/7XYngnFaTQe2KTcn/@public.gmane.org, kys-0li6OtcxBFHby3iVrkZq2A@public.gmane.org,
+ frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lorenzo.pieralisi-5wv7dgnIgG8@public.gmane.org, sthemmin-0li6OtcxBFHby3iVrkZq2A@public.gmane.org,
+ linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org, patrik.r.jakobsson-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org,
+ andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, gustavo-THi1TnShQwVAfugRpC6u6w@public.gmane.org,
+ bp-l3A5Bk7waGM@public.gmane.org, dyoung-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, thomas.lendacky-5C7GfCeVMHo@public.gmane.org, haiyangz-0li6OtcxBFHby3iVrkZq2A@public.gmane.org,
+ maarten.lankhorst-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, josh-iaAMLnmF4UmaiuxdJuQwMA@public.gmane.org, jglisse-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org,
+ robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, seanpaul-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, bhelgaas-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org,
+ tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org, yinghai-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, jonathan.derrick-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org,
+ chris-YvXeqwSYzG2sTnJN9+BGXg@public.gmane.org, monstr-pSz03upnqPeHXe+LvDLADg@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+ gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org, dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org,
+ kexec-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel@vger
+To: Michal Hocko <mhocko-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Return-path: <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+In-Reply-To: <20180726125957.GH28386-2MMpYkNvuYDjFM9bn6wA6Q@public.gmane.org>
+List-Id: "Linux-nvdimm developer list." <linux-nvdimm.lists.01.org>
+List-Unsubscribe: <https://lists.01.org/mailman/options/linux-nvdimm>,
+ <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.01.org/pipermail/linux-nvdimm/>
+List-Post: <mailto:linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+List-Help: <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.01.org/mailman/listinfo/linux-nvdimm>,
+ <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=subscribe>
+Errors-To: linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
 
-* Alex Ghiti <alex@ghiti.fr>:
-> This is the result of the build for all arches tackled in this series
-> rebased on 4.18-rc6:
-> ...
-> parisc:
-> =A0=A0=A0=A0=A0=A0=A0 generic-64bit_defconfig: with huge page does not li=
-nk
-> =A0=A0=A0=A0=A0=A0=A0 generic-64bit_defconfig: without huge page does not=
- link
-> =A0=A0=A0=A0=A0=A0=A0 BUT not because of this series, any feedback welcom=
-e.
-Strange, but I will check that later....
+On 07/26/18 at 02:59pm, Michal Hocko wrote:
+> On Wed 25-07-18 14:48:13, Baoquan He wrote:
+> > On 07/23/18 at 04:34pm, Michal Hocko wrote:
+> > > On Thu 19-07-18 23:17:53, Baoquan He wrote:
+> > > > Kexec has been a formal feature in our distro, and customers owning
+> > > > those kind of very large machine can make use of this feature to speed
+> > > > up the reboot process. On uefi machine, the kexec_file loading will
+> > > > search place to put kernel under 4G from top to down. As we know, the
+> > > > 1st 4G space is DMA32 ZONE, dma, pci mmcfg, bios etc all try to consume
+> > > > it. It may have possibility to not be able to find a usable space for
+> > > > kernel/initrd. From the top down of the whole memory space, we don't
+> > > > have this worry. 
+> > > 
+> > > I do not have the full context here but let me note that you should be
+> > > careful when doing top-down reservation because you can easily get into
+> > > hotplugable memory and break the hotremove usecase. We even warn when
+> > > this is done. See memblock_find_in_range_node
+> > 
+> > Kexec read kernel/initrd file into buffer, just search usable positions
+> > for them to do the later copying. You can see below struct kexec_segment, 
+> > for the old kexec_load, kernel/initrd are read into user space buffer,
+> > the @buf stores the user space buffer address, @mem stores the position
+> > where kernel/initrd will be put. In kernel, it calls
+> > kimage_load_normal_segment() to copy user space buffer to intermediate
+> > pages which are allocated with flag GFP_KERNEL. These intermediate pages
+> > are recorded as entries, later when user execute "kexec -e" to trigger
+> > kexec jumping, it will do the final copying from the intermediate pages
+> > to the real destination pages which @mem pointed. Because we can't touch
+> > the existed data in 1st kernel when do kexec kernel loading. With my
+> > understanding, GFP_KERNEL will make those intermediate pages be
+> > allocated inside immovable area, it won't impact hotplugging. But the
+> > @mem we searched in the whole system RAM might be lost along with
+> > hotplug. Hence we need do kexec kernel again when hotplug event is
+> > detected.
+> 
+> I am not sure I am following. If @mem is placed at movable node then the
+> memory hotremove simply won't work, because we are seeing reserved pages
+> and do not know what to do about them. They are not migrateable.
+> Allocating intermediate pages from other nodes doesn't really help.
 
-Anyway, I applied your v4-patch to my parisc64 tree, built the kernel,
-started it and ran some hugetlb LTP testcases sucessfully.
-So, please add:
+OK, I forgot the 2nd kernel which kexec jump into. It won't impact hotremove
+in 1st kernel, it does impact the kernel which kexec jump into if kernel
+is at top of system RAM and the top RAM is in movable node.
 
-Tested-by: Helge Deller <deller@gmx.de> # parisc
-
-Helge
+> 
+> The memblock code warns exactly for that reason.
+> -- 
+> Michal Hocko
+> SUSE Labs
