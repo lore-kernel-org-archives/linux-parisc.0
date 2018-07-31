@@ -1,61 +1,92 @@
 From: Alexandre Ghiti <alex@ghiti.fr>
-Subject: Re: [PATCH v4 00/11] hugetlb: Factorize hugetlb architecture
- primitives
-Date: Fri, 27 Jul 2018 08:51:51 +0200
-Message-ID: <a6d158b6-965d-7473-677d-13a9b7d46ba1@ghiti.fr>
-References: <20180705110716.3919-1-alex@ghiti.fr>
- <20180709141621.GD22297@dhcp22.suse.cz>
- <2173685f-7f85-7acb-4685-2383210c5fa2@ghiti.fr>
- <75195a7d-3d0f-4e55-92cc-4ad772683c75@oracle.com>
- <87tvomgqyv.fsf@concordia.ellerman.id.au>
- <99473e0d-12d8-bbea-fe9c-4e3738ab7f5a@oracle.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: linux@armlinux.org.uk, catalin.marinas@arm.com,
-        will.deacon@arm.com, tony.luck@intel.com, fenghua.yu@intel.com,
-        ralf@linux-mips.org, paul.burton@mips.com, jhogan@kernel.org,
-        jejb@parisc-linux.org, deller@gmx.de, benh@kernel.crashing.org,
-        paulus@samba.org, ysato@users.sourceforge.jp, dalias@libc.org,
-        davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, x86@kernel.org, arnd@arndb.de,
+Subject: [PATCH v5 00/11] hugetlb: Factorize hugetlb architecture primitives
+Date: Tue, 31 Jul 2018 06:01:44 +0000
+Message-ID: <20180731060155.16915-1-alex@ghiti.fr>
+Cc: Alexandre Ghiti <alex@ghiti.fr>
+To: linux-mm@kvack.org, mike.kravetz@oracle.com, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will.deacon@arm.com, tony.luck@intel.com,
+        fenghua.yu@intel.com, ralf@linux-mips.org, paul.burton@mips.com,
+        jhogan@kernel.org, jejb@parisc-linux.org, deller@gmx.de,
+        benh@kernel.crashing.org, paulus@samba.org, mpe@ellerman.id.au,
+        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, arnd@arndb.de,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-ia64@vger.kernel.org, linux-mips@linux-mips.org,
         linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-To: Mike Kravetz <mike.kravetz@oracle.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@kernel.org>
+        linux-arch@vger.kernel.org
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <99473e0d-12d8-bbea-fe9c-4e3738ab7f5a@oracle.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Mike,
+[CC linux-mm for inclusion in -mm tree] 
 
-Thanks for your review. I'm going to fix the 2nd patch as you said, 
-you're right, no need to move the #include at the bottom of the file.
-I'm going to post a v5, add -mm in cc and ask for inclusion in their tree.
+In order to reduce copy/paste of functions across architectures and then
+make riscv hugetlb port (and future ports) simpler and smaller, this
+patchset intends to factorize the numerous hugetlb primitives that are
+defined across all the architectures.
 
-Thanks again for your time,
+Except for prepare_hugepage_range, this patchset moves the versions that
+are just pass-through to standard pte primitives into
+asm-generic/hugetlb.h by using the same #ifdef semantic that can be
+found in asm-generic/pgtable.h, i.e. __HAVE_ARCH_***.
 
-Alex
+s390 architecture has not been tackled in this serie since it does not
+use asm-generic/hugetlb.h at all.
+powerpc could be factorized a bit more (cf huge_ptep_set_wrprotect).
 
+This patchset has been compiled on all addressed architectures with
+success (except for parisc, but the problem does not come from this series). 
 
-On 07/26/2018 09:16 PM, Mike Kravetz wrote:
-> On 07/26/2018 04:46 AM, Michael Ellerman wrote:
->> Mike Kravetz <mike.kravetz@oracle.com> writes:
->>
->>> On 07/20/2018 11:37 AM, Alex Ghiti wrote:
->>>> Does anyone have any suggestion about those patches ?
->>> I only took a quick look.  From the hugetlb perspective, I like the
->>> idea of moving routines to a common file.  If any of the arch owners
->>> (or anyone else) agree, I can do a review of the series.
->> The conversions look pretty good to me. If you want to give it a review
->> then from my point of view it could go in -mm to shake out any bugs.
-> Nothing of significance found in a review.  As others have suggested,
-> the (cross)compiler may be better at finding issues than human eyes.
->
-> I also suggest it be added to -mm.
+Tested-by: Helge Deller <deller@gmx.de> # parisc
+Acked-by: Paul Burton <paul.burton@mips.com> # MIPS parts
+
+Changelog:
+
+v5:
+  As suggested by Mike Kravetz, no need to move the #include
+  <asm-generic/hugetlb.h> for arm and x86 architectures, let it live at
+  the top of the file.
+
+v4:
+  Fix powerpc build error due to misplacing of #include
+  <asm-generic/hugetlb.h> outside of #ifdef CONFIG_HUGETLB_PAGE, as
+  pointed by Christophe Leroy.
+
+v1, v2, v3:
+  Same version, just problems with email provider and misuse of
+  --batch-size option of git send-email
+
+Alexandre Ghiti (11):
+  hugetlb: Harmonize hugetlb.h arch specific defines with pgtable.h
+  hugetlb: Introduce generic version of hugetlb_free_pgd_range
+  hugetlb: Introduce generic version of set_huge_pte_at
+  hugetlb: Introduce generic version of huge_ptep_get_and_clear
+  hugetlb: Introduce generic version of huge_ptep_clear_flush
+  hugetlb: Introduce generic version of huge_pte_none
+  hugetlb: Introduce generic version of huge_pte_wrprotect
+  hugetlb: Introduce generic version of prepare_hugepage_range
+  hugetlb: Introduce generic version of huge_ptep_set_wrprotect
+  hugetlb: Introduce generic version of huge_ptep_set_access_flags
+  hugetlb: Introduce generic version of huge_ptep_get
+
+ arch/arm/include/asm/hugetlb-3level.h        | 32 +---------
+ arch/arm/include/asm/hugetlb.h               | 30 ----------
+ arch/arm64/include/asm/hugetlb.h             | 39 +++---------
+ arch/ia64/include/asm/hugetlb.h              | 47 ++-------------
+ arch/mips/include/asm/hugetlb.h              | 40 +++----------
+ arch/parisc/include/asm/hugetlb.h            | 33 +++--------
+ arch/powerpc/include/asm/book3s/32/pgtable.h |  2 +
+ arch/powerpc/include/asm/book3s/64/pgtable.h |  1 +
+ arch/powerpc/include/asm/hugetlb.h           | 43 ++------------
+ arch/powerpc/include/asm/nohash/32/pgtable.h |  2 +
+ arch/powerpc/include/asm/nohash/64/pgtable.h |  1 +
+ arch/sh/include/asm/hugetlb.h                | 54 ++---------------
+ arch/sparc/include/asm/hugetlb.h             | 40 +++----------
+ arch/x86/include/asm/hugetlb.h               | 69 ----------------------
+ include/asm-generic/hugetlb.h                | 88 +++++++++++++++++++++++++++-
+ 15 files changed, 139 insertions(+), 382 deletions(-)
+
+-- 
+2.16.2
