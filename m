@@ -1,50 +1,44 @@
-From: Alexandre Ghiti <alex@ghiti.fr>
-Subject: Re: [PATCH v5 00/11] hugetlb: Factorize hugetlb architecture
- primitives
-Date: Wed, 1 Aug 2018 13:50:49 +0200
-Message-ID: <1cee9f98-4cff-3e42-6cc8-088310e406d9@ghiti.fr>
-References: <20180731060155.16915-1-alex@ghiti.fr>
- <20180731160640.11306628@doriath>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Subject: [PATCH] parisc: prefer _THIS_IP_ and _RET_IP_ statement expressions
+Date: Wed,  1 Aug 2018 11:22:56 -0700
+Message-ID: <20180801182258.17834-1-ndesaulniers@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: linux-mm@kvack.org, mike.kravetz@oracle.com, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, will.deacon@arm.com, tony.luck@intel.com,
-        fenghua.yu@intel.com, ralf@linux-mips.org, paul.burton@mips.com,
-        jhogan@kernel.org, jejb@parisc-linux.org, deller@gmx.de,
-        benh@kernel.crashing.org, paulus@samba.org, mpe@ellerman.id.au,
-        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, arnd@arndb.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-mips@linux-mips.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org
-To: Luiz Capitulino <lcapitulino@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: natechancellor@gmail.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Pravin Shedge <pravin.shedge4linux@gmail.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: deller@gmx.de, jejb@parisc-linux.org
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180731160640.11306628@doriath>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 07/31/2018 10:06 PM, Luiz Capitulino wrote:
-> On Tue, 31 Jul 2018 06:01:44 +0000
-> Alexandre Ghiti <alex@ghiti.fr> wrote:
->
->> [CC linux-mm for inclusion in -mm tree]
->>
->> In order to reduce copy/paste of functions across architectures and then
->> make riscv hugetlb port (and future ports) simpler and smaller, this
->> patchset intends to factorize the numerous hugetlb primitives that are
->> defined across all the architectures.
-> [...]
->
->>   15 files changed, 139 insertions(+), 382 deletions(-)
-> I imagine you're mostly interested in non-x86 review at this point, but
-> as this series is looking amazing:
->
-> Reviewed-by: Luiz Capitulino <lcapitulino@redhat.com>
+As part of the effort to reduce the code duplication between _THIS_IP_
+and current_text_addr(), let's consolidate callers of
+current_text_addr() to use _THIS_IP_.
 
-It's always good to have another feedback :)
-Thanks for your review Luiz,
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ arch/parisc/kernel/unwind.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Alex
+diff --git a/arch/parisc/kernel/unwind.c b/arch/parisc/kernel/unwind.c
+index 2ef83d78eec4..a4b430f440a9 100644
+--- a/arch/parisc/kernel/unwind.c
++++ b/arch/parisc/kernel/unwind.c
+@@ -439,8 +439,8 @@ unsigned long return_address(unsigned int level)
+ 	/* initialize unwind info */
+ 	asm volatile ("copy %%r30, %0" : "=r"(sp));
+ 	memset(&r, 0, sizeof(struct pt_regs));
+-	r.iaoq[0] = (unsigned long) current_text_addr();
+-	r.gr[2] = (unsigned long) __builtin_return_address(0);
++	r.iaoq[0] = _THIS_IP_;
++	r.gr[2] = _RET_IP_;
+ 	r.gr[30] = sp;
+ 	unwind_frame_init(&info, current, &r);
+ 
+-- 
+2.18.0.597.ga71716f1ad-goog
