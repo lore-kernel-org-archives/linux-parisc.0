@@ -1,92 +1,56 @@
-From: Alexandre Ghiti <alex@ghiti.fr>
-Subject: Re: [PATCH v5 09/11] hugetlb: Introduce generic version of
- huge_ptep_set_wrprotect
-Date: Fri, 3 Aug 2018 11:47:10 +0200
-Message-ID: <ef7fbd80-84a9-0b39-f948-413dea6f6469@ghiti.fr>
-References: <20180731060155.16915-1-alex@ghiti.fr>
- <20180731060155.16915-10-alex@ghiti.fr>
- <87h8kfhg7o.fsf@concordia.ellerman.id.au>
- <6acb1389-6998-bafb-cf69-174fd522c04c@ghiti.fr>
- <90bf556f-144d-24b8-d2f6-70fee4a30559@ghiti.fr>
- <87muu3hlzc.fsf@concordia.ellerman.id.au>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCH] parisc: prefer _THIS_IP_ and _RET_IP_ statement
+ expressions
+Date: Fri, 3 Aug 2018 13:57:05 -0400
+Message-ID: <80743c1c-2a8c-7bce-2068-24c63790eba7@bell.net>
+References: <20180801182258.17834-1-ndesaulniers@google.com>
+ <78c667f9-5c8b-3835-83eb-4b59e27e4f7e@bell.net>
+ <CAKwvOdmdrA+UvAWyqe8sNJt5nxHXHsSwf5Yxih9HYgVL+kovxQ@mail.gmail.com>
+ <fe7b57d8-b586-a390-31d2-2274f69db3c0@bell.net>
+ <CAKwvOd=CLBFZRQ4HQb_+VCydDEvsbC2w2gD4hTwvp_jm1zqN9Q@mail.gmail.com>
+ <54b2139b-53d2-01c5-f240-93a692cdbc59@bell.net>
+ <CAKwvOdktvrZL8T_5K2VtQtgt_mscS7kzVXYVy0O7CSuGX53Y5A@mail.gmail.com>
+ <536ef1b1-cfa2-f66d-4261-fb8405964632@bell.net>
+ <CAKwvOdmwj76aESZNKhzfPmhfzGKvrfDut7oD5KAwA+VR-JukSg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-To: Michael Ellerman <mpe@ellerman.id.au>, linux-mm@kvack.org,
-        mike.kravetz@oracle.com, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, will.deacon@arm.com, tony.luck@intel.com,
-        fenghua.yu@intel.com, ralf@linux-mips.org, paul.burton@mips.com,
-        jhogan@kernel.org, jejb@parisc-linux.org, deller@gmx.de,
-        benh@kernel.crashing.org, ysato@users.sourceforge.jp,
-        dalias@libc.org, davem@davemloft.net, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, arnd@arndb.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-mips@linux-mips.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.c
+Cc: deller@gmx.de, jejb@parisc-linux.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Pravin Shedge <pravin.shedge4linux@gmail.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-parisc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: Nick Desaulniers <ndesaulniers@google.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87muu3hlzc.fsf@concordia.ellerman.id.au>
+In-Reply-To: <CAKwvOdmwj76aESZNKhzfPmhfzGKvrfDut7oD5KAwA+VR-JukSg@mail.gmail.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Michael,
+On 2018-08-02 4:31 PM, Nick Desaulniers wrote:
+> If I understand your point correctly, is it that you're saying that
+> _THIS_IP_  should be implemented in terms of inline assembly (as in
+> what current_text_addr() is currently)?  If that's what you mean and
+> I'm understanding correctly, my point is that we should be preferring
+> the generic C implementation as that's what's being used in most
+> places currently, so if it was broken you'd likely already know about
+> it.  Unless unwinding is truly broken by the additional label, I don't
+> think we need an inline assembly implementation of current_text_addr()
+> for parisc (or any arch for that matter).  If we do, then it can be
+> localized to the parisc unwinding code, that way it can be
+> consolidated everywhere else for every other arch.
+The label breaks the unwind data, not the unwind code.  So, localizing 
+the use of
+current_text_addr() to the parisc unwind code doesn't help.
 
-Thanks, I will then remove those two specific implementations and we'll 
-use the generic ones.
+Personally, I prefer the implementation of current_text_addr() because:
 
-I send a v6 asap.
+1) The generated code is smaller, and
+2) it doesn't introduce any unnecessary labels into the text.
 
-Thanks again,
+As noted, these labels can cause issues with unwinding.
 
-Alex
+Dave
 
-
-On 08/03/2018 10:51 AM, Michael Ellerman wrote:
-> Hi Alex,
->
-> Sorry missed your previous mail.
->
-> Alex Ghiti <alex@ghiti.fr> writes:
->> Ok, I tried every defconfig available:
->>
->> - for the nohash/32, I found that I could use mpc885_ads_defconfig and I
->> activated HUGETLBFS.
->> I removed the definition of huge_ptep_set_wrprotect from
->> nohash/32/pgtable.h, add an #error in
->> include/asm-generic/hugetlb.h right before the generic definition of
->> huge_ptep_set_wrprotect,
->> and fell onto it at compile-time:
->> => I'm pretty confident then that removing the definition of
->> huge_ptep_set_wrprotect does not
->> break anythingin this case.
-> Thanks, that sounds good.
->
->> - regardind book3s/32, I did not find any defconfig with
->> CONFIG_PPC_BOOK3S_32, CONFIG_PPC32
->> allowing to enable huge page support (ie CONFIG_SYS_SUPPORTS_HUGETLBFS)
->> => Do you have a defconfig that would allow me to try the same as above ?
-> I think you're right, it's dead code AFAICS.
->
-> We have:
->
-> config PPC_BOOK3S_64
->          ...
-> 	select SYS_SUPPORTS_HUGETLBFS
->
-> config PPC_FSL_BOOK3E
->          ...
-> 	select SYS_SUPPORTS_HUGETLBFS if PHYS_64BIT || PPC64
->
-> config PPC_8xx
-> 	...
-> 	select SYS_SUPPORTS_HUGETLBFS
->
->
-> So we can't ever enable HUGETLBFS for Book3S 32.
->
-> Presumably the code got copied when we split the headers apart.
->
-> So I think you can just ignore that one, and we'll delete it.
->
-> cheers
+-- 
+John David Anglin  dave.anglin@bell.net
