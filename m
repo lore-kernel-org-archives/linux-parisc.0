@@ -1,106 +1,102 @@
-From: Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v6 00/11] hugetlb: Factorize hugetlb architecture
- primitives
-Date: Tue, 7 Aug 2018 11:54:02 +0200
-Message-ID: <20180807095402.GA12200@gmail.com>
-References: <20180806175711.24438-1-alex@ghiti.fr>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH] parisc: prefer _THIS_IP_ and _RET_IP_ statement expressions
+Date: Tue, 7 Aug 2018 11:11:56 -0700
+Message-ID: <CAKwvOdkABF9cxFxrtYo_mMWAunLL_ifM8+=H0On7WWcFmoN0Og@mail.gmail.com>
+References: <20180801182258.17834-1-ndesaulniers@google.com>
+ <78c667f9-5c8b-3835-83eb-4b59e27e4f7e@bell.net> <CAKwvOdmdrA+UvAWyqe8sNJt5nxHXHsSwf5Yxih9HYgVL+kovxQ@mail.gmail.com>
+ <fe7b57d8-b586-a390-31d2-2274f69db3c0@bell.net> <CAKwvOd=CLBFZRQ4HQb_+VCydDEvsbC2w2gD4hTwvp_jm1zqN9Q@mail.gmail.com>
+ <54b2139b-53d2-01c5-f240-93a692cdbc59@bell.net> <CAKwvOdktvrZL8T_5K2VtQtgt_mscS7kzVXYVy0O7CSuGX53Y5A@mail.gmail.com>
+ <536ef1b1-cfa2-f66d-4261-fb8405964632@bell.net> <CAKwvOdmwj76aESZNKhzfPmhfzGKvrfDut7oD5KAwA+VR-JukSg@mail.gmail.com>
+ <80743c1c-2a8c-7bce-2068-24c63790eba7@bell.net> <CAKwvOdmDwO1U1sk=3-6zXFrVw6by1e_9VBx1WWMCx_rMqYSw-A@mail.gmail.com>
+ <81a7e33a-0403-b6d4-fcba-c2168a608ba6@bell.net> <CAKwvOdmXi_EY5=sOO9tRqeoFrHjLsF9L988cGC2yjnFYBxac4w@mail.gmail.com>
+ <1d577675-c337-d433-f235-1e46e5d56d4c@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-mm@kvack.org, mike.kravetz@oracle.com, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, will.deacon@arm.com, tony.luck@intel.com,
-        fenghua.yu@intel.com, ralf@linux-mips.org, paul.burton@mips.com,
-        jhogan@kernel.org, jejb@parisc-linux.org, deller@gmx.de,
-        benh@kernel.crashing.org, paulus@samba.org, mpe@ellerman.id.au,
-        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, arnd@arndb.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-mips@linux-mips.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org
-To: Alexandre Ghiti <alex@ghiti.fr>
+Content-Type: text/plain; charset="UTF-8"
+Cc: dave.anglin@bell.net, jejb@parisc-linux.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Pravin Shedge <pravin.shedge4linux@gmail.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-parisc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Alistair Strachan <astrachan@google.com>
+To: deller@gmx.de
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180806175711.24438-1-alex@ghiti.fr>
+In-Reply-To: <1d577675-c337-d433-f235-1e46e5d56d4c@gmx.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On Fri, Aug 3, 2018 at 3:34 PM Helge Deller <deller@gmx.de> wrote:
+>
+> On 03.08.2018 22:33, Nick Desaulniers wrote:
+> > On Fri, Aug 3, 2018 at 12:09 PM John David Anglin <dave.anglin@bell.net> wrote:
+> >>
+> >> On 2018-08-03 2:11 PM, Nick Desaulniers wrote:
+> >>> But the kernel uses the generic_THIS_IP_  *everywhere*, not parisc's
+> >>> custom current_text_addr().  So if this did actually break unwinding,
+> >>> you should have noticed by now.
+> >> The unwind problem was noticed.
+> >
+> > So parisc is currently broken (doesn't unwind) due to the pervasive
+> > use of _THIS_IP_ (generic C) throughout the kernel?
+>
+> I tested it on the 32bit kernel.
+> The answer is: No. Unwinding works (with and without your patch).
+>
+> > If no, that implies this patch (generic C) causes no unwinding problems.
+>
+> correct.
+>
+> > If yes, that implies that the diff I posted later in this thread
+> > (inline assembly) is preferable, and that parisc has bigger problems
+> > (and probably needs to do rewrite the unwinding code to handle these
+> > extra labels everywhere).
+> >
+> >> Patches were recently applied to gcc and binutils to try and fix it.
+> >> The gcc patch moved
+> >> branch tables to rodata so that the label at the head of the table
+> >> wasn't in text.
+> >>
+> >> https://gcc.gnu.org/ml/gcc-patches/2018-07/msg01804.html
+> >> https://sourceware.org/ml/binutils/2018-07/msg00474.html
+> >>
+> >> When I saw your suggested change, I realized there was another source of
+> >> text labels
+> >> that need linker relocations.
+> >
+> > Thank you for the links.
+> >
+> > On Fri, Aug 3, 2018 at 10:57 AM John David Anglin <dave.anglin@bell.net> wrote:
+> >> The label breaks the unwind data, not the unwind code.  So, localizing
+> >> the use of
+> >> current_text_addr() to the parisc unwind code doesn't help.
+> >
+> > Have you confirmed that applying my patch breaks *the ability to
+> > unwind correctly*?
+>
+> I tested your patch (on 32bit).
+> Your patch does not break anything.
+>
+> > It looks like return_address() is used in
+> > ftrace_return_address(), so I assume you can boot a kernel with my
+> > patch applied, and CONFIG_FTRACE=y, then run:
+> >
+> > $ sudo trace-cmd record -p function date
+> > $ trace-cmd report | grep date- | less
+> >
+> > and see if the stacks aren't unwound or look messed up.
+>
+> I faced issues with trace-cmd, but calling ftracing functions manually worked.
+>
+> So, your patch is basically OK and doesn't break anything.
+> But I agree with Dave that Andrew, that THIS_IP is ugly.
 
-* Alexandre Ghiti <alex@ghiti.fr> wrote:
+I don't disagree, and other maintainers have remarked on _THIS_IP_
+being ugly, but renaming it en masse is a tree wide change, which I'm
+trying to avoid at the moment.
 
-> [CC linux-mm for inclusion in -mm tree]                                          
->                                                                                  
-> In order to reduce copy/paste of functions across architectures and then         
-> make riscv hugetlb port (and future ports) simpler and smaller, this             
-> patchset intends to factorize the numerous hugetlb primitives that are           
-> defined across all the architectures.                                            
->                                                                                  
-> Except for prepare_hugepage_range, this patchset moves the versions that         
-> are just pass-through to standard pte primitives into                            
-> asm-generic/hugetlb.h by using the same #ifdef semantic that can be              
-> found in asm-generic/pgtable.h, i.e. __HAVE_ARCH_***.                            
->                                                                                  
-> s390 architecture has not been tackled in this serie since it does not           
-> use asm-generic/hugetlb.h at all.                                                
->                                                                                  
-> This patchset has been compiled on all addressed architectures with              
-> success (except for parisc, but the problem does not come from this              
-> series).                                                                         
->                                                                                  
-> v6:                                                                              
->   - Remove nohash/32 and book3s/32 powerpc specific implementations in
->     order to use the generic ones.                                                        
->   - Add all the Reviewed-by, Acked-by and Tested-by in the commits,              
->     thanks to everyone.                                                          
->                                                                                  
-> v5:                                                                              
->   As suggested by Mike Kravetz, no need to move the #include                     
->   <asm-generic/hugetlb.h> for arm and x86 architectures, let it live at          
->   the top of the file.                                                           
->                                                                                  
-> v4:                                                                              
->   Fix powerpc build error due to misplacing of #include                          
->   <asm-generic/hugetlb.h> outside of #ifdef CONFIG_HUGETLB_PAGE, as              
->   pointed by Christophe Leroy.                                                   
->                                                                                  
-> v1, v2, v3:                                                                      
->   Same version, just problems with email provider and misuse of                  
->   --batch-size option of git send-email
-> 
-> Alexandre Ghiti (11):
->   hugetlb: Harmonize hugetlb.h arch specific defines with pgtable.h
->   hugetlb: Introduce generic version of hugetlb_free_pgd_range
->   hugetlb: Introduce generic version of set_huge_pte_at
->   hugetlb: Introduce generic version of huge_ptep_get_and_clear
->   hugetlb: Introduce generic version of huge_ptep_clear_flush
->   hugetlb: Introduce generic version of huge_pte_none
->   hugetlb: Introduce generic version of huge_pte_wrprotect
->   hugetlb: Introduce generic version of prepare_hugepage_range
->   hugetlb: Introduce generic version of huge_ptep_set_wrprotect
->   hugetlb: Introduce generic version of huge_ptep_set_access_flags
->   hugetlb: Introduce generic version of huge_ptep_get
-> 
->  arch/arm/include/asm/hugetlb-3level.h        | 32 +---------
->  arch/arm/include/asm/hugetlb.h               | 30 ----------
->  arch/arm64/include/asm/hugetlb.h             | 39 +++---------
->  arch/ia64/include/asm/hugetlb.h              | 47 ++-------------
->  arch/mips/include/asm/hugetlb.h              | 40 +++----------
->  arch/parisc/include/asm/hugetlb.h            | 33 +++--------
->  arch/powerpc/include/asm/book3s/32/pgtable.h |  6 --
->  arch/powerpc/include/asm/book3s/64/pgtable.h |  1 +
->  arch/powerpc/include/asm/hugetlb.h           | 43 ++------------
->  arch/powerpc/include/asm/nohash/32/pgtable.h |  6 --
->  arch/powerpc/include/asm/nohash/64/pgtable.h |  1 +
->  arch/sh/include/asm/hugetlb.h                | 54 ++---------------
->  arch/sparc/include/asm/hugetlb.h             | 40 +++----------
->  arch/x86/include/asm/hugetlb.h               | 69 ----------------------
->  include/asm-generic/hugetlb.h                | 88 +++++++++++++++++++++++++++-
->  15 files changed, 135 insertions(+), 394 deletions(-)
-
-The x86 bits look good to me (assuming it's all tested on all relevant architectures, etc.)
-
-Acked-by: Ingo Molnar <mingo@kernel.org>
-
+It sounds like we have a working patch? Are there 64b parisc machines
+to test on, or can this get merged?
+--
 Thanks,
-
-	Ingo
+~Nick Desaulniers
