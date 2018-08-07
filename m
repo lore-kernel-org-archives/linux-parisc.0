@@ -1,10 +1,12 @@
-From: Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH v6 11/11] hugetlb: Introduce generic version of huge_ptep_get
-Date: Mon,  6 Aug 2018 17:57:11 +0000
-Message-ID: <20180806175711.24438-12-alex@ghiti.fr>
+From: Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v6 00/11] hugetlb: Factorize hugetlb architecture
+ primitives
+Date: Tue, 7 Aug 2018 11:54:02 +0200
+Message-ID: <20180807095402.GA12200@gmail.com>
 References: <20180806175711.24438-1-alex@ghiti.fr>
-Cc: Alexandre Ghiti <alex@ghiti.fr>
-To: linux-mm@kvack.org, mike.kravetz@oracle.com, linux@armlinux.org.uk,
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mm@kvack.org, mike.kravetz@oracle.com, linux@armlinux.org.uk,
         catalin.marinas@arm.com, will.deacon@arm.com, tony.luck@intel.com,
         fenghua.yu@intel.com, ralf@linux-mips.org, paul.burton@mips.com,
         jhogan@kernel.org, jejb@parisc-linux.org, deller@gmx.de,
@@ -17,185 +19,88 @@ To: linux-mm@kvack.org, mike.kravetz@oracle.com, linux@armlinux.org.uk,
         linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-arch@vger.kernel.org
+To: Alexandre Ghiti <alex@ghiti.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180806175711.24438-1-alex@ghiti.fr>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-ia64, mips, parisc, powerpc, sh, sparc, x86 architectures use the
-same version of huge_ptep_get, so move this generic implementation into
-asm-generic/hugetlb.h.
 
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-Tested-by: Helge Deller <deller@gmx.de> # parisc
-Acked-by: Catalin Marinas <catalin.marinas@arm.com> # arm64
-Acked-by: Paul Burton <paul.burton@mips.com> # MIPS parts
-Reviewed-by: Luiz Capitulino <lcapitulino@redhat.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
----
- arch/arm/include/asm/hugetlb-3level.h | 1 +
- arch/arm64/include/asm/hugetlb.h      | 1 +
- arch/ia64/include/asm/hugetlb.h       | 5 -----
- arch/mips/include/asm/hugetlb.h       | 5 -----
- arch/parisc/include/asm/hugetlb.h     | 5 -----
- arch/powerpc/include/asm/hugetlb.h    | 5 -----
- arch/sh/include/asm/hugetlb.h         | 5 -----
- arch/sparc/include/asm/hugetlb.h      | 5 -----
- arch/x86/include/asm/hugetlb.h        | 5 -----
- include/asm-generic/hugetlb.h         | 7 +++++++
- 10 files changed, 9 insertions(+), 35 deletions(-)
+* Alexandre Ghiti <alex@ghiti.fr> wrote:
 
-diff --git a/arch/arm/include/asm/hugetlb-3level.h b/arch/arm/include/asm/hugetlb-3level.h
-index 54e4b097b1f5..0d9f3918fa7e 100644
---- a/arch/arm/include/asm/hugetlb-3level.h
-+++ b/arch/arm/include/asm/hugetlb-3level.h
-@@ -29,6 +29,7 @@
-  * ptes.
-  * (The valid bit is automatically cleared by set_pte_at for PROT_NONE ptes).
-  */
-+#define __HAVE_ARCH_HUGE_PTEP_GET
- static inline pte_t huge_ptep_get(pte_t *ptep)
- {
- 	pte_t retval = *ptep;
-diff --git a/arch/arm64/include/asm/hugetlb.h b/arch/arm64/include/asm/hugetlb.h
-index 80887abcef7f..fb6609875455 100644
---- a/arch/arm64/include/asm/hugetlb.h
-+++ b/arch/arm64/include/asm/hugetlb.h
-@@ -20,6 +20,7 @@
- 
- #include <asm/page.h>
- 
-+#define __HAVE_ARCH_HUGE_PTEP_GET
- static inline pte_t huge_ptep_get(pte_t *ptep)
- {
- 	return READ_ONCE(*ptep);
-diff --git a/arch/ia64/include/asm/hugetlb.h b/arch/ia64/include/asm/hugetlb.h
-index e9b42750fdf5..36cc0396b214 100644
---- a/arch/ia64/include/asm/hugetlb.h
-+++ b/arch/ia64/include/asm/hugetlb.h
-@@ -27,11 +27,6 @@ static inline void huge_ptep_clear_flush(struct vm_area_struct *vma,
- {
- }
- 
--static inline pte_t huge_ptep_get(pte_t *ptep)
--{
--	return *ptep;
--}
--
- static inline void arch_clear_hugepage_flags(struct page *page)
- {
- }
-diff --git a/arch/mips/include/asm/hugetlb.h b/arch/mips/include/asm/hugetlb.h
-index 120adc3b2ffd..425bb6fc3bda 100644
---- a/arch/mips/include/asm/hugetlb.h
-+++ b/arch/mips/include/asm/hugetlb.h
-@@ -82,11 +82,6 @@ static inline int huge_ptep_set_access_flags(struct vm_area_struct *vma,
- 	return changed;
- }
- 
--static inline pte_t huge_ptep_get(pte_t *ptep)
--{
--	return *ptep;
--}
--
- static inline void arch_clear_hugepage_flags(struct page *page)
- {
- }
-diff --git a/arch/parisc/include/asm/hugetlb.h b/arch/parisc/include/asm/hugetlb.h
-index 165b4e5a6f32..7cb595dcb7d7 100644
---- a/arch/parisc/include/asm/hugetlb.h
-+++ b/arch/parisc/include/asm/hugetlb.h
-@@ -48,11 +48,6 @@ int huge_ptep_set_access_flags(struct vm_area_struct *vma,
- 					     unsigned long addr, pte_t *ptep,
- 					     pte_t pte, int dirty);
- 
--static inline pte_t huge_ptep_get(pte_t *ptep)
--{
--	return *ptep;
--}
--
- static inline void arch_clear_hugepage_flags(struct page *page)
- {
- }
-diff --git a/arch/powerpc/include/asm/hugetlb.h b/arch/powerpc/include/asm/hugetlb.h
-index 658bf7136a3c..33a2d9e3ea9e 100644
---- a/arch/powerpc/include/asm/hugetlb.h
-+++ b/arch/powerpc/include/asm/hugetlb.h
-@@ -142,11 +142,6 @@ extern int huge_ptep_set_access_flags(struct vm_area_struct *vma,
- 				      unsigned long addr, pte_t *ptep,
- 				      pte_t pte, int dirty);
- 
--static inline pte_t huge_ptep_get(pte_t *ptep)
--{
--	return *ptep;
--}
--
- static inline void arch_clear_hugepage_flags(struct page *page)
- {
- }
-diff --git a/arch/sh/include/asm/hugetlb.h b/arch/sh/include/asm/hugetlb.h
-index c87195ae0cfa..6f025fe18146 100644
---- a/arch/sh/include/asm/hugetlb.h
-+++ b/arch/sh/include/asm/hugetlb.h
-@@ -32,11 +32,6 @@ static inline void huge_ptep_clear_flush(struct vm_area_struct *vma,
- {
- }
- 
--static inline pte_t huge_ptep_get(pte_t *ptep)
--{
--	return *ptep;
--}
--
- static inline void arch_clear_hugepage_flags(struct page *page)
- {
- 	clear_bit(PG_dcache_clean, &page->flags);
-diff --git a/arch/sparc/include/asm/hugetlb.h b/arch/sparc/include/asm/hugetlb.h
-index 028a1465fbe7..3963f80d1cb3 100644
---- a/arch/sparc/include/asm/hugetlb.h
-+++ b/arch/sparc/include/asm/hugetlb.h
-@@ -53,11 +53,6 @@ static inline int huge_ptep_set_access_flags(struct vm_area_struct *vma,
- 	return changed;
- }
- 
--static inline pte_t huge_ptep_get(pte_t *ptep)
--{
--	return *ptep;
--}
--
- static inline void arch_clear_hugepage_flags(struct page *page)
- {
- }
-diff --git a/arch/x86/include/asm/hugetlb.h b/arch/x86/include/asm/hugetlb.h
-index 574d42eb081e..7469d321f072 100644
---- a/arch/x86/include/asm/hugetlb.h
-+++ b/arch/x86/include/asm/hugetlb.h
-@@ -13,11 +13,6 @@ static inline int is_hugepage_only_range(struct mm_struct *mm,
- 	return 0;
- }
- 
--static inline pte_t huge_ptep_get(pte_t *ptep)
--{
--	return *ptep;
--}
--
- static inline void arch_clear_hugepage_flags(struct page *page)
- {
- }
-diff --git a/include/asm-generic/hugetlb.h b/include/asm-generic/hugetlb.h
-index f3c99a03ee83..71d7b77eea50 100644
---- a/include/asm-generic/hugetlb.h
-+++ b/include/asm-generic/hugetlb.h
-@@ -119,4 +119,11 @@ static inline int huge_ptep_set_access_flags(struct vm_area_struct *vma,
- }
- #endif
- 
-+#ifndef __HAVE_ARCH_HUGE_PTEP_GET
-+static inline pte_t huge_ptep_get(pte_t *ptep)
-+{
-+	return *ptep;
-+}
-+#endif
-+
- #endif /* _ASM_GENERIC_HUGETLB_H */
--- 
-2.16.2
+> [CC linux-mm for inclusion in -mm tree]                                          
+>                                                                                  
+> In order to reduce copy/paste of functions across architectures and then         
+> make riscv hugetlb port (and future ports) simpler and smaller, this             
+> patchset intends to factorize the numerous hugetlb primitives that are           
+> defined across all the architectures.                                            
+>                                                                                  
+> Except for prepare_hugepage_range, this patchset moves the versions that         
+> are just pass-through to standard pte primitives into                            
+> asm-generic/hugetlb.h by using the same #ifdef semantic that can be              
+> found in asm-generic/pgtable.h, i.e. __HAVE_ARCH_***.                            
+>                                                                                  
+> s390 architecture has not been tackled in this serie since it does not           
+> use asm-generic/hugetlb.h at all.                                                
+>                                                                                  
+> This patchset has been compiled on all addressed architectures with              
+> success (except for parisc, but the problem does not come from this              
+> series).                                                                         
+>                                                                                  
+> v6:                                                                              
+>   - Remove nohash/32 and book3s/32 powerpc specific implementations in
+>     order to use the generic ones.                                                        
+>   - Add all the Reviewed-by, Acked-by and Tested-by in the commits,              
+>     thanks to everyone.                                                          
+>                                                                                  
+> v5:                                                                              
+>   As suggested by Mike Kravetz, no need to move the #include                     
+>   <asm-generic/hugetlb.h> for arm and x86 architectures, let it live at          
+>   the top of the file.                                                           
+>                                                                                  
+> v4:                                                                              
+>   Fix powerpc build error due to misplacing of #include                          
+>   <asm-generic/hugetlb.h> outside of #ifdef CONFIG_HUGETLB_PAGE, as              
+>   pointed by Christophe Leroy.                                                   
+>                                                                                  
+> v1, v2, v3:                                                                      
+>   Same version, just problems with email provider and misuse of                  
+>   --batch-size option of git send-email
+> 
+> Alexandre Ghiti (11):
+>   hugetlb: Harmonize hugetlb.h arch specific defines with pgtable.h
+>   hugetlb: Introduce generic version of hugetlb_free_pgd_range
+>   hugetlb: Introduce generic version of set_huge_pte_at
+>   hugetlb: Introduce generic version of huge_ptep_get_and_clear
+>   hugetlb: Introduce generic version of huge_ptep_clear_flush
+>   hugetlb: Introduce generic version of huge_pte_none
+>   hugetlb: Introduce generic version of huge_pte_wrprotect
+>   hugetlb: Introduce generic version of prepare_hugepage_range
+>   hugetlb: Introduce generic version of huge_ptep_set_wrprotect
+>   hugetlb: Introduce generic version of huge_ptep_set_access_flags
+>   hugetlb: Introduce generic version of huge_ptep_get
+> 
+>  arch/arm/include/asm/hugetlb-3level.h        | 32 +---------
+>  arch/arm/include/asm/hugetlb.h               | 30 ----------
+>  arch/arm64/include/asm/hugetlb.h             | 39 +++---------
+>  arch/ia64/include/asm/hugetlb.h              | 47 ++-------------
+>  arch/mips/include/asm/hugetlb.h              | 40 +++----------
+>  arch/parisc/include/asm/hugetlb.h            | 33 +++--------
+>  arch/powerpc/include/asm/book3s/32/pgtable.h |  6 --
+>  arch/powerpc/include/asm/book3s/64/pgtable.h |  1 +
+>  arch/powerpc/include/asm/hugetlb.h           | 43 ++------------
+>  arch/powerpc/include/asm/nohash/32/pgtable.h |  6 --
+>  arch/powerpc/include/asm/nohash/64/pgtable.h |  1 +
+>  arch/sh/include/asm/hugetlb.h                | 54 ++---------------
+>  arch/sparc/include/asm/hugetlb.h             | 40 +++----------
+>  arch/x86/include/asm/hugetlb.h               | 69 ----------------------
+>  include/asm-generic/hugetlb.h                | 88 +++++++++++++++++++++++++++-
+>  15 files changed, 135 insertions(+), 394 deletions(-)
+
+The x86 bits look good to me (assuming it's all tested on all relevant architectures, etc.)
+
+Acked-by: Ingo Molnar <mingo@kernel.org>
+
+Thanks,
+
+	Ingo
