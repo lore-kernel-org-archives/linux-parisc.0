@@ -1,49 +1,48 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH 00/33] net: ethernet: Mark expected switch fall-throughs
-Date: Wed, 8 Aug 2018 11:26:05 -0500
-Message-ID: <620f18c0-7329-f808-43bc-0f51def3b92a@embeddedor.com>
-References: <cover.1533675546.git.gustavo@embeddedor.com>
- <20180807.175931.200772329178253653.davem@davemloft.net>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc architecture fixes
+Date: Wed, 8 Aug 2018 22:51:10 +0200
+Message-ID: <20180808205110.GA3398@ls3530>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-net-drivers@solarflare.com, ecree@solarflare.com,
-        bkenward@solarflare.com, jes@trained-monkey.org,
-        linux-acenic@sunsite.dk, michael.chan@broadcom.com,
-        nicolas.ferre@microchip.com, derek.chickles@caviumnetworks.com,
-        satananda.burla@caviumnetworks.com,
-        felix.manlunas@caviumnetworks.com,
-        raghu.vatsavayi@caviumnetworks.com, ganeshgr@chelsio.com,
-        santosh@chelsio.com, sgoutham@cavium.com, rric@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
-        sathya.perla@broadcom.com, ajit.khaparde@broadcom.com,
-        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
-        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        jeffrey.t.kirsher@intel.com, intel-wired-lan@lists.osuosl.org,
-        tariqt@mellanox.com, l
-To: David Miller <davem@davemloft.net>
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20180807.175931.200772329178253653.davem@davemloft.net>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
+Hi Linus,
 
+would you please pull two important patches for the parisc architecture for kernel 4.18 from:
 
-On 8/7/18 7:59 PM, David Miller wrote:
-> From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-> Date: Tue, 7 Aug 2018 18:09:00 -0500
-> 
->> In preparation to enabling -Wimplicit-fallthrough, this patchset aims
->> to add some annotations in order to mark switch cases where we are
->> expecting to fall through.
-> 
-> Ok, I went through all of these and they look good.
-> 
-> If any are not correct we can revert/fix.
-> 
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.18-2
 
-Yep. If anything is reported, I'll take a look right away.
+The first patch is trivial and fixes the kernel build if someone chooses to
+build the generic 64bit defconfig. Alex Ghiti ran into that issue when he tried
+to build a 4.18 kernel with his hugetlb patches on parisc64.
 
-> Series applied, thanks.
-> 
+The patch from Dave adds missing memory barriers to the assembler unlock
+sequences. Our hope is, that this should help us to fix the issues we rarely
+still see with spinlocks.
 
-Thanks
+Both patches had been in the for-next branch for a few days without any
+reported issues and are tagged to be backported to all kernels above v4.0.
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Helge Deller (1):
+      parisc: Enable CONFIG_MLONGCALLS by default
+
+John David Anglin (1):
+      parisc: Define mb() and add memory barriers to assembler unlock sequences
+
+ arch/parisc/Kconfig               |  2 +-
+ arch/parisc/include/asm/barrier.h | 32 ++++++++++++++++++++++++++++++++
+ arch/parisc/kernel/entry.S        |  2 ++
+ arch/parisc/kernel/pacache.S      |  1 +
+ arch/parisc/kernel/syscall.S      |  4 ++++
+ 5 files changed, 40 insertions(+), 1 deletion(-)
+ create mode 100644 arch/parisc/include/asm/barrier.h
