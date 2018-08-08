@@ -1,59 +1,40 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH 11/33] net: tulip: de4x5: mark expected switch fall-throughs
-Date: Tue, 7 Aug 2018 18:16:07 -0500
-Message-ID: <dcb7df430a291a7c1f938abdaa8a1d7a7728b256.1533675546.git.gustavo@embeddedor.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH 00/33] net: ethernet: Mark expected switch fall-throughs
+Date: Tue, 07 Aug 2018 17:59:31 -0700 (PDT)
+Message-ID: <20180807.175931.200772329178253653.davem@davemloft.net>
 References: <cover.1533675546.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-parisc@vger.kernel.org
-To: "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Return-path: <netdev-owner@vger.kernel.org>
+Content-Type: Text/Plain; charset=us-ascii
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-net-drivers@solarflare.com, ecree@solarflare.com,
+        bkenward@solarflare.com, jes@trained-monkey.org,
+        linux-acenic@sunsite.dk, michael.chan@broadcom.com,
+        nicolas.ferre@microchip.com, derek.chickles@caviumnetworks.com,
+        satananda.burla@caviumnetworks.com,
+        felix.manlunas@caviumnetworks.com,
+        raghu.vatsavayi@caviumnetworks.com, ganeshgr@chelsio.com,
+        santosh@chelsio.com, sgoutham@cavium.com, rric@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
+        sathya.perla@broadcom.com, ajit.khaparde@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        jeffrey.t.kirsher@intel.com, intel-wired-lan@lists.osuosl.org,
+        tariqt@mellanox.com, l
+To: gustavo@embeddedor.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1533675546.git.gustavo@embeddedor.com>
-List-ID: <linux-parisc.vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-In preparation to enabling -Wimplicit-fallthrough, mark switch cases
-where we are expecting to fall through.
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Tue, 7 Aug 2018 18:09:00 -0500
 
-Addresses-Coverity-ID: 114784 ("Missing break in switch")
-Addresses-Coverity-ID: 114785 ("Missing break in switch")
-Addresses-Coverity-ID: 114786 ("Missing break in switch")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- drivers/net/ethernet/dec/tulip/de4x5.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+> In preparation to enabling -Wimplicit-fallthrough, this patchset aims
+> to add some annotations in order to mark switch cases where we are
+> expecting to fall through.
 
-diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
-index a31b4df..66535d1 100644
---- a/drivers/net/ethernet/dec/tulip/de4x5.c
-+++ b/drivers/net/ethernet/dec/tulip/de4x5.c
-@@ -3204,6 +3204,8 @@ srom_map_media(struct net_device *dev)
-       case SROM_10BASETF:
- 	if (!lp->params.fdx) return -1;
- 	lp->fdx = true;
-+	/* fall through */
-+
-       case SROM_10BASET:
- 	if (lp->params.fdx && !lp->fdx) return -1;
- 	if ((lp->chipset == DC21140) || ((lp->chipset & ~0x00ff) == DC2114x)) {
-@@ -3224,6 +3226,8 @@ srom_map_media(struct net_device *dev)
-       case SROM_100BASETF:
-         if (!lp->params.fdx) return -1;
- 	lp->fdx = true;
-+	/* fall through */
-+
-       case SROM_100BASET:
- 	if (lp->params.fdx && !lp->fdx) return -1;
- 	lp->media = _100Mb;
-@@ -3236,6 +3240,8 @@ srom_map_media(struct net_device *dev)
-       case SROM_100BASEFF:
- 	if (!lp->params.fdx) return -1;
- 	lp->fdx = true;
-+	/* fall through */
-+
-       case SROM_100BASEF:
- 	if (lp->params.fdx && !lp->fdx) return -1;
- 	lp->media = _100Mb;
--- 
-2.7.4
+Ok, I went through all of these and they look good.
+
+If any are not correct we can revert/fix.
+
+Series applied, thanks.
