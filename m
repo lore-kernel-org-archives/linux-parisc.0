@@ -1,71 +1,105 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc architecture updates for kernel v4.19
-Date: Mon, 13 Aug 2018 19:13:19 +0200
-Message-ID: <20180813171319.GA16531@ls3530.fritz.box>
+From: Alex Ghiti <alex@ghiti.fr>
+Subject: Re: [PATCH v6 00/11] hugetlb: Factorize hugetlb architecture
+ primitives
+Date: Mon, 13 Aug 2018 18:35:53 +0000
+Message-ID: <55833b7d-3c29-d7ac-41f1-82f1ac228e4a@ghiti.fr>
+References: <20180806175711.24438-1-alex@ghiti.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+To: linux-mm@kvack.org, mike.kravetz@oracle.com, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will.deacon@arm.com, tony.luck@intel.com,
+        fenghua.yu@intel.com, ralf@linux-mips.org, paul.burton@mips.com,
+        jhogan@kernel.org, jejb@parisc-linux.org, deller@gmx.de,
+        benh@kernel.crashing.org, paulus@samba.org, mpe@ellerman.id.au,
+        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, arnd@arndb.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-mips@linux-mips.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180806175711.24438-1-alex@ghiti.fr>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Linus,
+Hi everyone,
 
-please pull fixes and updates for the parisc architecture for kernel 4.19 from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.19-1
-
-Changes include:
-- parisc now uses the generic dma_noncoherent_ops implementation, by Christoph Hellwig.
-- further memory barrier and spinlock improvements, by John David Anglin.
-- prepare removal of current_text_addr() functions, by Nick Desaulniers.
-- improve kernel stack unwinding on parisc, by me.
-- drop ENOTSUP which was defined on parisc only, by me.
+Does someone need anything more to be done regarding this series ?
 
 Thanks,
-Helge
 
-----------------------------------------------------------------
-Christoph Hellwig (3):
-      parisc: merge pcx_dma_ops and pcxl_dma_ops
-      parisc: always use flush_kernel_dcache_range for DMA cache maintainance
-      parisc: use generic dma_noncoherent_ops
+Alex
 
-Helge Deller (3):
-      parisc: Drop architecture-specific ENOTSUP define
-      parisc: Add HAVE_REGS_AND_STACK_ACCESS_API feature
-      parisc: Fix and improve kernel stack unwinding
 
-John David Anglin (2):
-      parisc: Remove ordered stores from syscall.S
-      parisc: Remove unnecessary barriers from spinlock.h
-
-Nick Desaulniers (1):
-      parisc: prefer _THIS_IP_ and _RET_IP_ statement expressions
-
- arch/parisc/Kconfig                        |   5 +
- arch/parisc/include/asm/assembly.h         |   2 +
- arch/parisc/include/asm/dma-mapping.h      |   5 -
- arch/parisc/include/asm/linkage.h          |  17 ++-
- arch/parisc/include/asm/ptrace.h           |  11 ++
- arch/parisc/include/asm/spinlock.h         |   8 +-
- arch/parisc/include/asm/unwind.h           |   3 +
- arch/parisc/include/uapi/asm/errno.h       |   1 -
- arch/parisc/kernel/entry.S                 |  53 +++-----
- arch/parisc/kernel/pacache.S               | 125 ------------------
- arch/parisc/kernel/pci-dma.c               | 199 +++++------------------------
- arch/parisc/kernel/process.c               |   2 +-
- arch/parisc/kernel/ptrace.c                | 100 +++++++++++++++
- arch/parisc/kernel/real2.S                 |   6 -
- arch/parisc/kernel/setup.c                 |   8 +-
- arch/parisc/kernel/syscall.S               |  24 ++--
- arch/parisc/kernel/traps.c                 |   2 +-
- arch/parisc/kernel/unwind.c                |  93 ++++++++------
- arch/parisc/lib/lusercopy.S                |  21 ---
- arch/parisc/mm/init.c                      |  11 +-
- kernel/time/posix-timers.c                 |  13 +-
- tools/arch/parisc/include/uapi/asm/errno.h |   1 -
- 22 files changed, 262 insertions(+), 448 deletions(-)
+On 08/06/2018 05:57 PM, Alexandre Ghiti wrote:
+> [CC linux-mm for inclusion in -mm tree]
+>                                                                                   
+> In order to reduce copy/paste of functions across architectures and then
+> make riscv hugetlb port (and future ports) simpler and smaller, this
+> patchset intends to factorize the numerous hugetlb primitives that are
+> defined across all the architectures.
+>                                                                                   
+> Except for prepare_hugepage_range, this patchset moves the versions that
+> are just pass-through to standard pte primitives into
+> asm-generic/hugetlb.h by using the same #ifdef semantic that can be
+> found in asm-generic/pgtable.h, i.e. __HAVE_ARCH_***.
+>                                                                                   
+> s390 architecture has not been tackled in this serie since it does not
+> use asm-generic/hugetlb.h at all.
+>                                                                                   
+> This patchset has been compiled on all addressed architectures with
+> success (except for parisc, but the problem does not come from this
+> series).
+>                                                                                   
+> v6:
+>    - Remove nohash/32 and book3s/32 powerpc specific implementations in
+>      order to use the generic ones.
+>    - Add all the Reviewed-by, Acked-by and Tested-by in the commits,
+>      thanks to everyone.
+>                                                                                   
+> v5:
+>    As suggested by Mike Kravetz, no need to move the #include
+>    <asm-generic/hugetlb.h> for arm and x86 architectures, let it live at
+>    the top of the file.
+>                                                                                   
+> v4:
+>    Fix powerpc build error due to misplacing of #include
+>    <asm-generic/hugetlb.h> outside of #ifdef CONFIG_HUGETLB_PAGE, as
+>    pointed by Christophe Leroy.
+>                                                                                   
+> v1, v2, v3:
+>    Same version, just problems with email provider and misuse of
+>    --batch-size option of git send-email
+>
+> Alexandre Ghiti (11):
+>    hugetlb: Harmonize hugetlb.h arch specific defines with pgtable.h
+>    hugetlb: Introduce generic version of hugetlb_free_pgd_range
+>    hugetlb: Introduce generic version of set_huge_pte_at
+>    hugetlb: Introduce generic version of huge_ptep_get_and_clear
+>    hugetlb: Introduce generic version of huge_ptep_clear_flush
+>    hugetlb: Introduce generic version of huge_pte_none
+>    hugetlb: Introduce generic version of huge_pte_wrprotect
+>    hugetlb: Introduce generic version of prepare_hugepage_range
+>    hugetlb: Introduce generic version of huge_ptep_set_wrprotect
+>    hugetlb: Introduce generic version of huge_ptep_set_access_flags
+>    hugetlb: Introduce generic version of huge_ptep_get
+>
+>   arch/arm/include/asm/hugetlb-3level.h        | 32 +---------
+>   arch/arm/include/asm/hugetlb.h               | 30 ----------
+>   arch/arm64/include/asm/hugetlb.h             | 39 +++---------
+>   arch/ia64/include/asm/hugetlb.h              | 47 ++-------------
+>   arch/mips/include/asm/hugetlb.h              | 40 +++----------
+>   arch/parisc/include/asm/hugetlb.h            | 33 +++--------
+>   arch/powerpc/include/asm/book3s/32/pgtable.h |  6 --
+>   arch/powerpc/include/asm/book3s/64/pgtable.h |  1 +
+>   arch/powerpc/include/asm/hugetlb.h           | 43 ++------------
+>   arch/powerpc/include/asm/nohash/32/pgtable.h |  6 --
+>   arch/powerpc/include/asm/nohash/64/pgtable.h |  1 +
+>   arch/sh/include/asm/hugetlb.h                | 54 ++---------------
+>   arch/sparc/include/asm/hugetlb.h             | 40 +++----------
+>   arch/x86/include/asm/hugetlb.h               | 69 ----------------------
+>   include/asm-generic/hugetlb.h                | 88 +++++++++++++++++++++++++++-
+>   15 files changed, 135 insertions(+), 394 deletions(-)
+>
