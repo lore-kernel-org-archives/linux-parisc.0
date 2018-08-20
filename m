@@ -1,39 +1,44 @@
-From: Alex Ghiti <alex@ghiti.fr>
+From: Alexandre Ghiti <alex@ghiti.fr>
 Subject: Re: [PATCH v6 00/11] hugetlb: Factorize hugetlb architecture
  primitives
-Date: Mon, 13 Aug 2018 18:35:53 +0000
-Message-ID: <55833b7d-3c29-d7ac-41f1-82f1ac228e4a@ghiti.fr>
+Date: Mon, 20 Aug 2018 08:45:10 +0200
+Message-ID: <81078a7f-09cf-7f19-f6bb-8a1f4968d6fb@ghiti.fr>
 References: <20180806175711.24438-1-alex@ghiti.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-To: linux-mm@kvack.org, mike.kravetz@oracle.com, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, will.deacon@arm.com, tony.luck@intel.com,
-        fenghua.yu@intel.com, ralf@linux-mips.org, paul.burton@mips.com,
-        jhogan@kernel.org, jejb@parisc-linux.org, deller@gmx.de,
-        benh@kernel.crashing.org, paulus@samba.org, mpe@ellerman.id.au,
-        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, arnd@arndb.de,
+Content-Type: text/plain; charset=utf-8; format=flowed
+Cc: linux-mm@kvack.org, Mike Kravetz <mike.kravetz@oracle.com>,
+        linux@armlinux.org.uk, catalin.marinas@arm.com,
+        will.deacon@arm.com, tony.luck@intel.com, fenghua.yu@intel.com,
+        ralf@linux-mips.org, paul.burton@mips.com, jhogan@kernel.org,
+        jejb@parisc-linux.org, deller@gmx.de, benh@kernel.crashing.org,
+        paulus@samba.org, mpe@ellerman.id.au, ysato@users.sourceforge.jp,
+        dalias@libc.org, davem@davemloft.net, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, arnd@arndb.de,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-ia64@vger.kernel.org, linux-mips@linux-mips.org,
         linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-arch@vger.kernel.org
+To: Michal Hocko <mhocko@kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180806175711.24438-1-alex@ghiti.fr>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi everyone,
+Hi Michal,
 
-Does someone need anything more to be done regarding this series ?
+This patchset got acked, tested and reviewed by quite a few people, and 
+it has been suggested
+that it should be included in -mm tree: could you tell me if something 
+else needs to be done for
+its inclusion ?
 
-Thanks,
+Thanks for your time,
 
 Alex
 
 
-On 08/06/2018 05:57 PM, Alexandre Ghiti wrote:
+On 08/06/2018 07:57 PM, Alexandre Ghiti wrote:
 > [CC linux-mm for inclusion in -mm tree]
 >                                                                                   
 > In order to reduce copy/paste of functions across architectures and then
