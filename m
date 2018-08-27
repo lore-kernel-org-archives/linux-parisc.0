@@ -1,42 +1,104 @@
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH] parisc: remove check for minimum required GCC version
-Date: Mon, 27 Aug 2018 11:28:08 +0900
-Message-ID: <1535336888-12183-1-git-send-email-yamada.masahiro@socionext.com>
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
-        linux-kernel@vger.kernel.org
-To: "James E . J . Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+From: Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH] treewide: remove current_text_addr
+Date: Sun, 26 Aug 2018 19:52:59 -0700
+Message-ID: <CAKwvOd=wAaPBkFHAcWxgMW91a--9gbvu7xrt3j-q8c+-mT=7Lw@mail.gmail.com>
+References: <CAKwvOdkWL_2yTnJqM6n6R9UCPwY4iz-9BQYGN2MDAk9EzumUvA@mail.gmail.com>
+ <20180821202900.208417-1-ndesaulniers@google.com>
+ <207784db-4fcc-85e7-a0b2-fec26b7dab81@gmx.de>
+ <c62e4e00-fb8f-19a6-f3eb-bde60118cb1a@zytor.com>
+ <81141365-8168-799b-f34f-da5f92efaaf9@zytor.com>
+ <7f49eeab-a5cc-867f-58fb-abd266f9c2c9@zytor.com>
+ <6ca8a1d3-ff95-e9f4-f003-0a5af85bcb6f@zytor.com>
+ <CA+55aFzuSCKfmgT9efHuwtan+m3+bPh4BpwbZwn5gGX_H=Thuw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Cc: nicolas.pitre@linaro.org, linux-mips@linux-mips.org,
+ linux-sh@vger.kernel.org, benh@kernel.crashing.org,
+ Will Deacon <will.deacon@arm.com>, paulus@samba.org, mpe@ellerman.id.au,
+ jejb@parisc-linux.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, gor@linux.vnet.ibm.com,
+ mattst88@gmail.com, uclinux-h8-devel@lists.sourceforge.jp,
+ Marc Zyngier <marc.zyngier@arm.com>, linuxram@us.ibm.com,
+ linux-um@lists.infradead.org, Nicholas Piggin <npiggin@gmail.com>,
+ luto@kernel.org, shannon.nelson@oracle.com,
+ Thomas Gleixner <tglx@linutronix.de>, alex.bennee@linaro.org, rth@twiddle.net,
+ jkosina@suse.cz, LKML <linux-kernel@vger.kernel.org>, ralf@linux-mips.org,
+ rkuo@codeaurora.org, paul.burton@mips.com, aneesh.kumar@linux.vnet.ibm.com,
+ Greg KH <gregkh@linuxfoundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Mark Rutland <mark.rutland@arm.co
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
+In-Reply-To: <CA+55aFzuSCKfmgT9efHuwtan+m3+bPh4BpwbZwn5gGX_H=Thuw@mail.gmail.com>
+List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
+List-Post: <mailto:linux-snps-arc@lists.infradead.org>
+List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
 
-Commit cafa0010cd51 ("Raise the minimum required gcc version to 4.6")
-bumped the minimum GCC version to 4.6 for all architectures.
+On Sun, Aug 26, 2018 at 1:25 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> Honestly, I'd suggest:
+>
+>  - just do the current_text_addr() to _THIS_IP_ conversion
+>
+>  - keep _THIS_IP_ and make it be the generic one, and screw the whole
+> "some architectures might implement is better" issue. Nobody cares.
 
-The version check in arch/parisc/Makefile is obsolete now.
+And mention it to the compiler vendors as this seems like a case where
+code gen can be improved.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+>
+>  - try to convince people to move away from the "we want the kernel
+> instruction pointer for the call" model entirely, and consider this a
+> "legacy" issue.
+>
+> The whole instruction pointer is a nasty thing. We should discourage
+> it and not make complex infrastructure for it.
 
- arch/parisc/Makefile | 9 ---------
- 1 file changed, 9 deletions(-)
+Yes, please.  I think we should strive for simplicity here.
 
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index 5ce0302..d047a09 100644
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -156,12 +156,3 @@ define archhelp
- 	@echo  '		  copy to $$(INSTALL_PATH)'
- 	@echo  '  zinstall	- Install compressed vmlinuz kernel'
- endef
--
--# we require gcc 3.3 or above to compile the kernel
--archprepare: checkbin
--checkbin:
--	@if test "$(cc-version)" -lt "0303"; then \
--		echo -n "Sorry, GCC v3.3 or above is required to build " ; \
--		echo "the kernel." ; \
--		false ; \
--	fi
+>
+> Instead, maybe we could encourage something like
+>
+>   struct kernel_loc { const char *file; const char *fn; int line; };
+>
+>   #define __GEN_LOC__(n) \
+>         ({ static const struct kernel_loc n = { \
+>                 __FILE__, __FUNCTION__, __LINE__  \
+>            }; &n; })
+>
+>   #define _THIS_LOC_ __GEN_LOC__(__UNIQUE_ID(loc))
+>
+> which is a hell of a lot nicer to use, and actually allows gcc to
+> optimize things (try it: if you pass a _THIS_LOC_ off to an inline
+> function, and that inline function uses the name and line number, gcc
+> will pick them up directly, without the extra structure dereference.
+>
+> Wouldn't it be much nicer to pass these kinds of "location pointer"
+> around, rather than the nasty _THIS_IP_ thing?
+>
+> Certainly lockdep looks like it could easily take that "const struct
+> kernel_loc *" instead of "unsigned long ip". Makes it easy to print
+> out the lockdep info.
+>
+> Ok, I didn't try to convert anybody, so maybe people who currently use
+> _THIS_IP_ or current_text_addr() have some fundamental reason why they
+> want just that, but let's not male _THIS_IP_ more complex than it
+> needs to be.
+>
+> Hmm?
+>
+>              Linus
+
+This is extremely reasonable.  I can follow up with the lockdep folks
+to see if they really need _THIS_IP_ to solve their problem, or if
+there's a simpler solution that can solve their needs.  Sometimes
+taking a step back and asking for clarity around the big picture
+allows simpler solutions to shake out.
 -- 
-2.7.4
+Thanks,
+~Nick Desaulniers
