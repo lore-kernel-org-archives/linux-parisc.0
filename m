@@ -1,76 +1,154 @@
-From: "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] treewide: remove current_text_addr
-Date: Mon, 27 Aug 2018 06:33:27 -0700
-Message-ID: <4d1a8f35-e2fc-70d2-ca0e-44b8574c86f1@zytor.com>
-References: <20180821202900.208417-1-ndesaulniers@google.com>
- <207784db-4fcc-85e7-a0b2-fec26b7dab81@gmx.de>
- <c62e4e00-fb8f-19a6-f3eb-bde60118cb1a@zytor.com>
- <81141365-8168-799b-f34f-da5f92efaaf9@zytor.com>
- <7f49eeab-a5cc-867f-58fb-abd266f9c2c9@zytor.com>
- <6ca8a1d3-ff95-e9f4-f003-0a5af85bcb6f@zytor.com>
- <CA+55aFzuSCKfmgT9efHuwtan+m3+bPh4BpwbZwn5gGX_H=Thuw@mail.gmail.com>
- <CAKwvOd=wAaPBkFHAcWxgMW91a--9gbvu7xrt3j-q8c+-mT=7Lw@mail.gmail.com>
- <20180827073358.GV24124@hirez.programming.kicks-ass.net>
- <f9896d68-4a49-e666-cea5-a9c0522f1658@zytor.com>
- <20180827131103.GD24124@hirez.programming.kicks-ass.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: nicolas.pitre@linaro.org, linux-mips@linux-mips.org,
- linux-sh@vger.kernel.org, benh@kernel.crashing.org,
- Will Deacon <will.deacon@arm.com>, paulus@samba.org, mpe@ellerman.id.au,
- jejb@parisc-linux.org, Geert Uytterhoeven <geert@linux-m68k.org>,
- Catalin Marinas <catalin.marinas@arm.com>, gor@linux.vnet.ibm.com,
- mattst88@gmail.com, uclinux-h8-devel@lists.sourceforge.jp,
- Marc Zyngier <marc.zyngier@arm.com>, linuxram@us.ibm.com,
- linux-um@lists.infradead.org, Nicholas Piggin <npiggin@gmail.com>,
- luto@kernel.org, shannon.nelson@oracle.com,
- Thomas Gleixner <tglx@linutronix.de>, alex.bennee@linaro.org, rth@twiddle.net,
- jkosina@suse.cz, Nick Desaulniers <ndesaulniers@google.com>,
- LKML <linux-kernel@vger.kernel.org>, ralf@linux-mips.org, rkuo@codeaurora.org,
- paul.burton@mips.com, aneesh.kumar@linux.vnet.ibm.com,
- Greg KH <gregkh@linuxfoundation.org>,
- Andrew Morton <akpm@linux-found
-To: Peter Zijlstra <peterz@infradead.org>
-Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20180827131103.GD24124@hirez.programming.kicks-ass.net>
-List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
-List-Post: <mailto:linux-snps-arc@lists.infradead.org>
-List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH net-next 2/3] asm-generic: generalize asm/sockios.h
+Date: Wed, 29 Aug 2018 14:59:11 +0200
+Message-ID: <20180829130308.3504560-2-arnd@arndb.de>
+References: <20180829130308.3504560-1-arnd@arndb.de>
+Cc: linux-arch@vger.kernel.org, y2038@lists.linaro.org,
+        Arnd Bergmann <arnd@arndb.de>, Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org
+To: netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180829130308.3504560-1-arnd@arndb.de>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On 08/27/18 06:11, Peter Zijlstra wrote:
-> On Mon, Aug 27, 2018 at 05:26:53AM -0700, H. Peter Anvin wrote:
-> 
->> _THIS_IP_, however, is completely ill-defined, other than being an
->> address *somewhere* in the same global function (not even necessarily
->> the same function if the function is static!)  As my experiment show, in
->> many (nearly) cases gcc will hoist the address all the way to the top of
->> the function, at least for the current generic implementation.
-> 
-> It seems to have mostly worked so far... did anything change?
-> 
+ia64, parisc and sparc just use a copy of the generic version
+of asm/sockios.h, and x86 is a redirect to the same file, so we
+can just let the header file be generated.
 
-Most likely because the major architectures contain a arch-specific
-assembly implementation.  The generic implementation used in some places
-is completely broken, as my experiments show.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/ia64/include/uapi/asm/Kbuild      |  1 +
+ arch/ia64/include/uapi/asm/sockios.h   | 21 ---------------------
+ arch/parisc/include/uapi/asm/Kbuild    |  1 +
+ arch/parisc/include/uapi/asm/sockios.h | 14 --------------
+ arch/sparc/include/uapi/asm/Kbuild     |  1 +
+ arch/sparc/include/uapi/asm/sockios.h  | 15 ---------------
+ arch/x86/include/uapi/asm/Kbuild       |  1 +
+ arch/x86/include/uapi/asm/sockios.h    |  1 -
+ 8 files changed, 4 insertions(+), 51 deletions(-)
+ delete mode 100644 arch/ia64/include/uapi/asm/sockios.h
+ delete mode 100644 arch/parisc/include/uapi/asm/sockios.h
+ delete mode 100644 arch/sparc/include/uapi/asm/sockios.h
+ delete mode 100644 arch/x86/include/uapi/asm/sockios.h
 
->> For the case where _THIS_IP_ is passed to an out-of-line function in all
->> cases, it is extra pointless because all it does is increase the
->> footprint of every caller: _RET_IP_ is inherently passed to the function
->> anyway, and with tailcall protection it will uniquely identify a callsite.
-> 
-> So I think we can convert many of the lockdep _THIS_IP_ calls to
-> _RET_IP_ on the other side, with a wee bit of care.
-> 
-> A little something like so perhaps...
-
-I don't have time to look at this right now (I'm on sabbatical, and I'm
-dealing with personal legal stuff right at the moment), but I think it
-is the right direction.
-
-	-hpa
+diff --git a/arch/ia64/include/uapi/asm/Kbuild b/arch/ia64/include/uapi/asm/Kbuild
+index 3982e673e967..a6377ad3ba1c 100644
+--- a/arch/ia64/include/uapi/asm/Kbuild
++++ b/arch/ia64/include/uapi/asm/Kbuild
+@@ -8,3 +8,4 @@ generic-y += msgbuf.h
+ generic-y += poll.h
+ generic-y += sembuf.h
+ generic-y += shmbuf.h
++generic-y += sockios.h
+diff --git a/arch/ia64/include/uapi/asm/sockios.h b/arch/ia64/include/uapi/asm/sockios.h
+deleted file mode 100644
+index f27a12f95d20..000000000000
+--- a/arch/ia64/include/uapi/asm/sockios.h
++++ /dev/null
+@@ -1,21 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-#ifndef _ASM_IA64_SOCKIOS_H
+-#define _ASM_IA64_SOCKIOS_H
+-
+-/*
+- * Socket-level I/O control calls.
+- *
+- * Based on <asm-i386/sockios.h>.
+- *
+- * Modified 1998, 1999
+- *	David Mosberger-Tang <davidm@hpl.hp.com>, Hewlett-Packard Co
+- */
+-#define FIOSETOWN 	0x8901
+-#define SIOCSPGRP	0x8902
+-#define FIOGETOWN	0x8903
+-#define SIOCGPGRP	0x8904
+-#define SIOCATMARK	0x8905
+-#define SIOCGSTAMP	0x8906		/* Get stamp (timeval) */
+-#define SIOCGSTAMPNS	0x8907		/* Get stamp (timespec) */
+-
+-#endif /* _ASM_IA64_SOCKIOS_H */
+diff --git a/arch/parisc/include/uapi/asm/Kbuild b/arch/parisc/include/uapi/asm/Kbuild
+index 286ef5a5904b..be6c171f57f7 100644
+--- a/arch/parisc/include/uapi/asm/Kbuild
++++ b/arch/parisc/include/uapi/asm/Kbuild
+@@ -7,3 +7,4 @@ generic-y += kvm_para.h
+ generic-y += param.h
+ generic-y += poll.h
+ generic-y += resource.h
++generic-y += sockios.h
+diff --git a/arch/parisc/include/uapi/asm/sockios.h b/arch/parisc/include/uapi/asm/sockios.h
+deleted file mode 100644
+index 66a3ba64d53f..000000000000
+--- a/arch/parisc/include/uapi/asm/sockios.h
++++ /dev/null
+@@ -1,14 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-#ifndef __ARCH_PARISC_SOCKIOS__
+-#define __ARCH_PARISC_SOCKIOS__
+-
+-/* Socket-level I/O control calls. */
+-#define FIOSETOWN 	0x8901
+-#define SIOCSPGRP	0x8902
+-#define FIOGETOWN	0x8903
+-#define SIOCGPGRP	0x8904
+-#define SIOCATMARK	0x8905
+-#define SIOCGSTAMP	0x8906		/* Get stamp (timeval) */
+-#define SIOCGSTAMPNS	0x8907		/* Get stamp (timespec) */
+-
+-#endif
+diff --git a/arch/sparc/include/uapi/asm/Kbuild b/arch/sparc/include/uapi/asm/Kbuild
+index 4680ba246b55..8fdae51d0eae 100644
+--- a/arch/sparc/include/uapi/asm/Kbuild
++++ b/arch/sparc/include/uapi/asm/Kbuild
+@@ -2,4 +2,5 @@
+ include include/uapi/asm-generic/Kbuild.asm
+ 
+ generic-y += bpf_perf_event.h
++generic-y += sockios.h
+ generic-y += types.h
+diff --git a/arch/sparc/include/uapi/asm/sockios.h b/arch/sparc/include/uapi/asm/sockios.h
+deleted file mode 100644
+index 18a3ec14a847..000000000000
+--- a/arch/sparc/include/uapi/asm/sockios.h
++++ /dev/null
+@@ -1,15 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-#ifndef _ASM_SPARC_SOCKIOS_H
+-#define _ASM_SPARC_SOCKIOS_H
+-
+-/* Socket-level I/O control calls. */
+-#define FIOSETOWN 	0x8901
+-#define SIOCSPGRP	0x8902
+-#define FIOGETOWN	0x8903
+-#define SIOCGPGRP	0x8904
+-#define SIOCATMARK	0x8905
+-#define SIOCGSTAMP	0x8906		/* Get stamp (timeval) */
+-#define SIOCGSTAMPNS	0x8907		/* Get stamp (timespec) */
+-
+-#endif /* !(_ASM_SPARC_SOCKIOS_H) */
+-
+diff --git a/arch/x86/include/uapi/asm/Kbuild b/arch/x86/include/uapi/asm/Kbuild
+index 322681622d1e..1d489e6b237e 100644
+--- a/arch/x86/include/uapi/asm/Kbuild
++++ b/arch/x86/include/uapi/asm/Kbuild
+@@ -6,3 +6,4 @@ generated-y += unistd_32.h
+ generated-y += unistd_64.h
+ generated-y += unistd_x32.h
+ generic-y += poll.h
++generic-y += sockios.h
+diff --git a/arch/x86/include/uapi/asm/sockios.h b/arch/x86/include/uapi/asm/sockios.h
+deleted file mode 100644
+index def6d4746ee7..000000000000
+--- a/arch/x86/include/uapi/asm/sockios.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/sockios.h>
+-- 
+2.18.0
