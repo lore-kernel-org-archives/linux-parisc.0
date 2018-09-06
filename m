@@ -1,101 +1,53 @@
-From: Paul Moore <paul@paul-moore.com>
+From: Jonathan Corbet <corbet@lwn.net>
 Subject: Re: [PATCH] [RFC v2] Drop all 00-INDEX files from Documentation/
-Date: Wed, 5 Sep 2018 07:42:04 -0400
-Message-ID: <CAHC9VhR7Zana3xTEj2jUGXb+hBzyh69g0rBg_p_4tkbjtCUdpw@mail.gmail.com>
+Date: Thu, 6 Sep 2018 09:58:04 -0600
+Message-ID: <20180906095804.5ab2716f@lwn.net>
 References: <1536012923-16275-1-git-send-email-henrik@austad.us>
+ <20180904113030.GB25177@amd>
+ <20180904095908.13298b3d@gandalf.local.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-doc@vger.kernel.org, corbet@lwn.net, bhelgaas@google.com,
-        paulmck@linux.vnet.ibm.com, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, axboe@kernel.dk, robh+dt@kernel.org,
-        mark.rutland@arm.com, b.zolnierkie@samsung.com,
-        linus.walleij@linaro.org, davem@davemloft.net, isdn@linux-pingi.de,
-        yamada.masahiro@socionext.com, michal.lkml@markovi.net,
-        peterz@infradead.org, mingo@redhat.com, will.deacon@arm.com,
-        ralf@linux-mips.org, paul.burton@mips.com, jhogan@kernel.org,
-        jejb@parisc-linux.org, deller@gmx.de, rjw@rjwysocki.net,
-        len.brown@intel.com, pavel@ucw.cz, benh@kernel.crashing.org,
-        paulus@samba.org, mpe@ellerman.id.au, schwidefsky@de.ibm.com,
-        heiko.carstens@de.ibm.com, gregkh@linuxfoundation.org,
-        jslaby@suse.com, broonie@kernel.o
-To: henrik@austad.us
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1536012923-16275-1-git-send-email-henrik@austad.us>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Cc: Mark Rutland <mark.rutland@arm.com>, linux-mips@linux-mips.org,
+ linux-fbdev@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+ linux-doc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+ James Hogan <jhogan@kernel.org>, Henrik Austad <henrik@austad.us>,
+ Will Deacon <will.deacon@arm.com>, dri-devel@lists.freedesktop.org,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, Jan Kandziora <jjj@gmx.de>,
+ Paul Mackerras <paulus@samba.org>, Henrik Austad <haustad@cisco.com>,
+ Pavel Machek <pavel@ucw.cz>, "H. Peter Anvin" <hpa@zytor.com>,
+ Evgeniy Polyakov <zbr@ioremap.net>, linux-s390@vger.kernel.org,
+ Ian Kent <raven@themaw.net>, linux-security-module@vger.kernel.org,
+ Paul Moore <paul@paul-moore.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Helge Deller <deller@gmx.de>,
+ Radim =?UTF-8?B?S3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+ "James E.J. Bottomley" <jejb@parisc-linux.org>, Ingo M
+To: Steven Rostedt <rostedt@goodmis.org>
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20180904095908.13298b3d@gandalf.local.home>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Sep 3, 2018 at 6:15 PM Henrik Austad <henrik@austad.us> wrote:
-> This is a respin with a wider audience (all that get_maintainer returned)
-> and I know this spams a *lot* of people. Not sure what would be the correct
-> way, so my apologies for ruining your inbox.
->
-> The 00-INDEX files are supposed to give a summary of all files present
-> in a directory, but these files are horribly out of date and their
-> usefulness is brought into question. Often a simple "ls" would reveal
-> the same information as the filenames are generally quite descriptive as
-> a short introduction to what the file covers (it should not surprise
-> anyone what Documentation/sched/sched-design-CFS.txt covers)
->
-> A few years back it was mentioned that these files were no longer really
-> needed, and they have since then grown further out of date, so perhaps
-> it is time to just throw them out.
->
-> A short status yields the following _outdated_ 00-INDEX files, first
-> counter is files listed in 00-INDEX but missing in the directory, last
-> is files present but not listed in 00-INDEX.
->
-> List of outdated 00-INDEX:
-> Documentation: (4/10)
-> Documentation/sysctl: (0/1)
-> Documentation/timers: (1/0)
-> Documentation/blockdev: (3/1)
-> Documentation/w1/slaves: (0/1)
-> Documentation/locking: (0/1)
-> Documentation/devicetree: (0/5)
-> Documentation/power: (1/1)
-> Documentation/powerpc: (0/5)
-> Documentation/arm: (1/0)
-> Documentation/x86: (0/9)
-> Documentation/x86/x86_64: (1/1)
-> Documentation/scsi: (4/4)
-> Documentation/filesystems: (2/9)
-> Documentation/filesystems/nfs: (0/2)
-> Documentation/cgroup-v1: (0/2)
-> Documentation/kbuild: (0/4)
-> Documentation/spi: (1/0)
-> Documentation/virtual/kvm: (1/0)
-> Documentation/scheduler: (0/2)
-> Documentation/fb: (0/1)
-> Documentation/block: (0/1)
-> Documentation/networking: (6/37)
-> Documentation/vm: (1/3)
->
-> Then there are 364 subdirectories in Documentation/ with several files that
-> are missing 00-INDEX alltogether (and another 120 with a single file and no
-> 00-INDEX).
->
-> I don't really have an opinion to whether or not we /should/ have 00-INDEX,
-> but the above 00-INDEX should either be removed or be kept up to date. If
-> we should keep the files, I can try to keep them updated, but I rather not
-> if we just want to delete them anyway.
->
-> As a starting point, remove all index-files and references to 00-INDEX and
-> see where the discussion is going.
->
-> Again, sorry for the insanely wide distribution.
->
-> Signed-off-by: Henrik Austad <henrik@austad.us>
-...
-> Signed-off-by: Henrik Austad <haustad@cisco.com>
-> ---
->  Documentation/00-INDEX                  | 428 --------------------------------
-...
-
-Looks reasonable to me, you can add my ACK for the NetLabel bits.
-
-Acked-by: Paul Moore <paul@paul-moore.com>
-
--- 
-paul moore
-www.paul-moore.com
+T24gVHVlLCA0IFNlcCAyMDE4IDA5OjU5OjA4IC0wNDAwClN0ZXZlbiBSb3N0ZWR0IDxyb3N0ZWR0
+QGdvb2RtaXMub3JnPiB3cm90ZToKCj4gT24gVHVlLCA0IFNlcCAyMDE4IDEzOjMwOjMwICswMjAw
+Cj4gUGF2ZWwgTWFjaGVrIDxwYXZlbEB1Y3cuY3o+IHdyb3RlOgo+IAo+ID4gSSdkIHNheSB0aGlz
+IGlzIHN0aWxsIHF1aXRlIHZhbHVlYWJsZSwgYW5kIGl0IG1pZ2h0IGJlIHdvcnRoIGZpeGluZywK
+PiA+IHJhdGhlciB0aGVuIHJlbW92aW5nIGNvbXBsZXRlbHkuICAKPiAKPiBJIGFncmVlLiBQZXJo
+YXBzIHdlIHNob3VsZCBoYXZlIGEgMDAtREVTQ1JJUFRJT04gZmlsZSBpbiBlYWNoCj4gZGlyZWN0
+b3J5LCBhbmQgZWFjaCBmaWxlIGNvdWxkIHN0YXJ0IHdpdGggYToKPiAKPiAgREVTQ1JJUFRJT046
+IDxvbmUgbGluZSBkZXNjcmlwdGlvbiBoZXJlPgo+IAo+IGFuZCB0aGVuIHRoZXNlIGZpbGVzIGNv
+dWxkIGJlIGdlbmVyYXRlZCBieSB0aG9zZSB0aGF0IGhhdmUgdGhlc2UgdGFncy4KCkkgcmVhbGx5
+IGRvbid0IHdhbnQgdG8gaGFjayB1cCB5ZXQgYW5vdGhlciBkb2N1bWVudGF0aW9uIHN5bnRheCBh
+bmQKcHJvY2Vzc2luZyBzY2hlbWUuICBXZSBhbHJlYWR5IGhhdmUgb25lIHRoYXQgZG9lcyBhbGwg
+b2YgdGhpcyBhbmQgbW9yZS4KVGhhdCBlbmVyZ3kgd291bGQgYmUgZmFyIGJldHRlciBzcGVudCBi
+cmluZ2luZyB0aGUgZG9jcyBpbnRvIHRoZSBSU1QKaGllcmFyY2h5LCBJTU8uCgpUaGFua3MsCgpq
+b24gICh3aG8gaXMgaW5jcmVhc2luZ2x5IGluY2xpbmVkIHRvIGFwcGx5IHRoaXMgcGF0Y2gpCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBt
+YWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3Rz
+LmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
