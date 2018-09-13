@@ -1,47 +1,56 @@
-From: Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] [RFC v2] Drop all 00-INDEX files from Documentation/
-Date: Sun, 9 Sep 2018 15:12:37 -0600
-Message-ID: <20180909151237.4bc1b3e2@lwn.net>
-References: <1536012923-16275-1-git-send-email-henrik@austad.us>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: Mark Rutland <mark.rutland@arm.com>, linux-mips@linux-mips.org,
- linux-fbdev@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
- linux-doc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
- James Hogan <jhogan@kernel.org>, Will Deacon <will.deacon@arm.com>,
- dri-devel@lists.freedesktop.org,
- Masahiro Yamada <yamada.masahiro@socionext.com>, Jan Kandziora <jjj@gmx.de>,
- Paul Mackerras <paulus@samba.org>, Henrik Austad <haustad@cisco.com>,
- Pavel Machek <pavel@ucw.cz>, "H. Peter Anvin" <hpa@zytor.com>,
- Evgeniy Polyakov <zbr@ioremap.net>, linux-s390@vger.kernel.org,
- Ian Kent <raven@themaw.net>, linux-security-module@vger.kernel.org,
- Paul Moore <paul@paul-moore.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Helge Deller <deller@gmx.de>,
- Radim =?UTF-8?B?S3LEjW3DocWZ?= <rkrcmar@redhat.com>,
- "James E.J. Bottomley" <jejb@parisc-linux.org>, Ingo Molnar <mingo@redhat.com>,
- "Paul E
-To: Henrik Austad <henrik@austad.us>
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1536012923-16275-1-git-send-email-henrik@austad.us>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-List-ID: <linux-parisc.vger.kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [RFC] parisc64: change __kernel_suseconds_t to match glibc
+Date: Thu, 13 Sep 2018 17:59:50 +0200
+Message-ID: <20180913160010.905798-1-arnd@arndb.de>
+Cc: y2038@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-T24gVHVlLCAgNCBTZXAgMjAxOCAwMDoxNToyMyArMDIwMApIZW5yaWsgQXVzdGFkIDxoZW5yaWtA
-YXVzdGFkLnVzPiB3cm90ZToKCj4gSSBkb24ndCByZWFsbHkgaGF2ZSBhbiBvcGluaW9uIHRvIHdo
-ZXRoZXIgb3Igbm90IHdlIC9zaG91bGQvIGhhdmUgMDAtSU5ERVgsCj4gYnV0IHRoZSBhYm92ZSAw
-MC1JTkRFWCBzaG91bGQgZWl0aGVyIGJlIHJlbW92ZWQgb3IgYmUga2VwdCB1cCB0byBkYXRlLiBJ
-Zgo+IHdlIHNob3VsZCBrZWVwIHRoZSBmaWxlcywgSSBjYW4gdHJ5IHRvIGtlZXAgdGhlbSB1cGRh
-dGVkLCBidXQgSSByYXRoZXIgbm90Cj4gaWYgd2UganVzdCB3YW50IHRvIGRlbGV0ZSB0aGVtIGFu
-eXdheS4KPiAKPiBBcyBhIHN0YXJ0aW5nIHBvaW50LCByZW1vdmUgYWxsIGluZGV4LWZpbGVzIGFu
-ZCByZWZlcmVuY2VzIHRvIDAwLUlOREVYIGFuZAo+IHNlZSB3aGVyZSB0aGUgZGlzY3Vzc2lvbiBp
-cyBnb2luZy4KCkFwcGxpZWQsIHRoYW5rcy4KCmpvbgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBs
-aXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9kcmktZGV2ZWwK
+There are only two 64-bit architecture ports that have a 32-bit
+suseconds_t: sparc64 and parisc64. I've encountered a number of problems
+with this, while trying to get a proper 64-bit time_t working on 32-bit
+architectures. Having a 32-bit suseconds_t combined with a 64-bit time_t
+means that we get extra padding in data structures that may leak kernel
+stack data to user space, and it breaks all code that assumes that
+timespec and timeval have the same layout.
+
+While we can't change sparc64, it seems that glibc on parisc64 has always
+set suseconds_t to 'long', and the current version would give incorrect
+results for gettimeofday() and many other interfaces: timestamps passed
+from user space into the kernel result in tv_usec being always zero
+(the lower bits contain the intended value but are ignored) while data
+passed from the kernel to user space contains either zeroes or random
+data in tv_usec.
+
+Based on that, it seems best to change the user API in the kernel in
+an incompatible way to match what glibc expects.
+
+Note that the distros I could find (gentoo and debian) all just
+have 32-bit user space, which does not suffer from this problem.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/parisc/include/uapi/asm/posix_types.h | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/arch/parisc/include/uapi/asm/posix_types.h b/arch/parisc/include/uapi/asm/posix_types.h
+index 2785632c85e7..8dce56f5dcee 100644
+--- a/arch/parisc/include/uapi/asm/posix_types.h
++++ b/arch/parisc/include/uapi/asm/posix_types.h
+@@ -16,9 +16,6 @@ typedef unsigned short		__kernel_mode_t;
+ typedef unsigned short		__kernel_ipc_pid_t;
+ #define __kernel_ipc_pid_t __kernel_ipc_pid_t
+ 
+-typedef int			__kernel_suseconds_t;
+-#define __kernel_suseconds_t __kernel_suseconds_t
+-
+ typedef long long		__kernel_off64_t;
+ typedef unsigned long long	__kernel_ino64_t;
+ 
+-- 
+2.18.0
