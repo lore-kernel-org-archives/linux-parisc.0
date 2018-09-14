@@ -1,56 +1,100 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [RFC] parisc64: change __kernel_suseconds_t to match glibc
-Date: Thu, 13 Sep 2018 17:59:50 +0200
-Message-ID: <20180913160010.905798-1-arnd@arndb.de>
-Cc: y2038@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
+From: Firoz Khan <firoz.khan@linaro.org>
+Subject: [PATCH 0/4] System call table generation support
+Date: Fri, 14 Sep 2018 13:56:39 +0530
+Message-ID: <1536913603-4584-1-git-send-email-firoz.khan@linaro.org>
+Cc: y2038@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, arnd@arndb.de, deepa.kernel@gmail.com,
+        marcin.juszkiewicz@linaro.org, firoz.khan@linaro.org
+To: Thibaut Varene <T-Bone@parisc-linux.org>,
+        linux-parisc@vger.kernel.org,
+        "James E . J . Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>
+        Kate Stewart <kstewart@linuxfoundation.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-There are only two 64-bit architecture ports that have a 32-bit
-suseconds_t: sparc64 and parisc64. I've encountered a number of problems
-with this, while trying to get a proper 64-bit time_t working on 32-bit
-architectures. Having a 32-bit suseconds_t combined with a 64-bit time_t
-means that we get extra padding in data structures that may leak kernel
-stack data to user space, and it breaks all code that assumes that
-timespec and timeval have the same layout.
+The purpose of this patch series is:
+1. We can easily add/modify/delete system call by changing entry 
+in syscall.tbl file. No need to manually edit many files.
 
-While we can't change sparc64, it seems that glibc on parisc64 has always
-set suseconds_t to 'long', and the current version would give incorrect
-results for gettimeofday() and many other interfaces: timestamps passed
-from user space into the kernel result in tv_usec being always zero
-(the lower bits contain the intended value but are ignored) while data
-passed from the kernel to user space contains either zeroes or random
-data in tv_usec.
+2. It is easy to unify the system call implementation across all 
+the architectures. 
 
-Based on that, it seems best to change the user API in the kernel in
-an incompatible way to match what glibc expects.
+The system call tables are in different format in all architecture 
+and it will be difficult to manually add or modify the system calls
+in the respective files manually. To make it easy by keeping a script 
+and which'll generate the header file and syscall table file so this 
+change will unify them across all architectures.
 
-Note that the distros I could find (gentoo and debian) all just
-have 32-bit user space, which does not suffer from this problem.
+syscall.tbl contains the list of available system calls along with 
+system call number and corresponding entry point. Add a new system 
+call in this architecture will be possible by adding new entry in 
+the syscall.tbl file.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/parisc/include/uapi/asm/posix_types.h | 3 ---
- 1 file changed, 3 deletions(-)
+Adding a new table entry consisting of:
+        - System call number.
+        - ABI.
+        - System call name.
+        - Entry point name.
+        - Compat entry name, if required.
 
-diff --git a/arch/parisc/include/uapi/asm/posix_types.h b/arch/parisc/include/uapi/asm/posix_types.h
-index 2785632c85e7..8dce56f5dcee 100644
---- a/arch/parisc/include/uapi/asm/posix_types.h
-+++ b/arch/parisc/include/uapi/asm/posix_types.h
-@@ -16,9 +16,6 @@ typedef unsigned short		__kernel_mode_t;
- typedef unsigned short		__kernel_ipc_pid_t;
- #define __kernel_ipc_pid_t __kernel_ipc_pid_t
- 
--typedef int			__kernel_suseconds_t;
--#define __kernel_suseconds_t __kernel_suseconds_t
--
- typedef long long		__kernel_off64_t;
- typedef unsigned long long	__kernel_ino64_t;
- 
+ARM, s390 and x86 architecuture does exist the similar support. I 
+leverage their implementation to come up with a generic solution.
+
+I have done the same support for work for alpha, m68k, microblaze, 
+ia64, mips, powerpc, sh, sparc, and xtensa. But I started sending 
+the patch for one architecuture for review. Below mentioned git
+repository contains more details.
+Git repo:- https://github.com/frzkhn/system_call_table_generator/
+
+Finally, this is the ground work for solving the Y2038 issue. We 
+need to add/change two dozen of system calls to solve Y2038 issue. 
+So this patch series will help to easily modify from existing 
+system call to Y2038 compatible system calls.
+
+I started working system call table generation on 4.17-rc1. I used 
+marcin's script - https://github.com/hrw/syscalls-table to generate 
+the syscall.tbl file. And this will be the input to the system call 
+table generation script. But there are couple system call got add 
+in the latest rc release. If run Marcin's script on latest release,
+It will generate a new syscall.tbl. But I still use the old file - 
+syscall.tbl and once all review got over I'll update syscall.tbl 
+alone w.r.to the tip of the kernel. The impact of this thing, few 
+of the system call won't work. 
+
+Firoz Khan (4):
+  parisc: Move __IGNORE* entries to non uapi header
+  parisc: Replace __NR_Linux_syscalls macro with __NR_syscalls
+  parisc: Add system call table generation support
+  parisc: uapi header and system call table file generation
+
+ arch/parisc/Makefile                       |   4 +
+ arch/parisc/include/asm/Kbuild             |   3 +
+ arch/parisc/include/asm/unistd.h           |   8 +
+ arch/parisc/include/uapi/asm/Kbuild        |   2 +
+ arch/parisc/include/uapi/asm/unistd.h      | 377 +----------------------
+ arch/parisc/kernel/syscall.S               |  14 +-
+ arch/parisc/kernel/syscall_table.S         | 459 -----------------------------
+ arch/parisc/kernel/syscall_table_32.S      |  11 +
+ arch/parisc/kernel/syscall_table_64.S      |  19 ++
+ arch/parisc/kernel/syscalls/Makefile       |  52 ++++
+ arch/parisc/kernel/syscalls/syscall_32.tbl | 358 ++++++++++++++++++++++
+ arch/parisc/kernel/syscalls/syscall_64.tbl | 357 ++++++++++++++++++++++
+ arch/parisc/kernel/syscalls/syscallhdr.sh  |  38 +++
+ arch/parisc/kernel/syscalls/syscalltbl.sh  |  36 +++
+ 14 files changed, 896 insertions(+), 842 deletions(-)
+ delete mode 100644 arch/parisc/kernel/syscall_table.S
+ create mode 100644 arch/parisc/kernel/syscall_table_32.S
+ create mode 100644 arch/parisc/kernel/syscall_table_64.S
+ create mode 100644 arch/parisc/kernel/syscalls/Makefile
+ create mode 100644 arch/parisc/kernel/syscalls/syscall_32.tbl
+ create mode 100644 arch/parisc/kernel/syscalls/syscall_64.tbl
+ create mode 100644 arch/parisc/kernel/syscalls/syscallhdr.sh
+ create mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
+
 -- 
-2.18.0
+1.9.1
