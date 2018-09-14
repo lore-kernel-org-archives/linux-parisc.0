@@ -1,8 +1,11 @@
 From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 05/30] mm: nobootmem: remove dead code
-Date: Fri, 14 Sep 2018 15:10:20 +0300
-Message-ID: <1536927045-23536-6-git-send-email-rppt@linux.vnet.ibm.com>
+Subject: [PATCH 26/30] memblock: rename __free_pages_bootmem to
+ memblock_free_pages
+Date: Fri, 14 Sep 2018 15:10:41 +0300
+Message-ID: <1536927045-23536-27-git-send-email-rppt@linux.vnet.ibm.com>
 References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Cc: linux-mips@linux-mips.org, Michal Hocko <mhocko@suse.com>,
  linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
  Catalin Marinas <catalin.marinas@arm.com>, Palmer Dabbelt <palmer@sifive.com>,
@@ -11,137 +14,90 @@ Cc: linux-mips@linux-mips.org, Michal Hocko <mhocko@suse.com>,
  linux-riscv@lists.infradead.org, Jonas Bonn <jonas@southpole.se>,
  linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org,
  Yoshinori Sato <ysato@users.sourceforge.jp>, Jonathan Corbet <corbet@lwn.net>,
+ Michael Ellerman <mpe@ellerman.id.au>,
  "James E.J. Bottomley" <jejb@parisc-linux.org>, Ingo Molnar <mingo@redhat.com>,
  Geert Uytterhoeven <geert@linux-m68k.org>, Mark Salter <msalter@redhat.com>,
  Matt Turner <mattst88@gmail.com>, linux-snps-arc@lists.infradead.org,
  uclinux-h8-devel@lists.sourceforge.jp, Mike Rapoport <rppt@linux.vnet.ibm.com>,
- linux-alpha@vger.kernel.org, linux-um@lists.infradead.o
+ linux-alpha@vge
 To: linux-mm@kvack.org
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Return-path: <linux-riscv-bounces+glpr-linux-riscv=m.gmane.org@lists.infradead.org>
 In-Reply-To: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+List-Id: <linux-riscv.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-riscv>,
+ <mailto:linux-riscv-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-riscv/>
+List-Post: <mailto:linux-riscv@lists.infradead.org>
+List-Help: <mailto:linux-riscv-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-riscv>,
+ <mailto:linux-riscv-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-riscv-bounces+glpr-linux-riscv=m.gmane.org@lists.infradead.org
 
-Several bootmem functions and macros are not used. Remove them.
+The conversion is done using
+
+sed -i 's@__free_pages_bootmem@memblock_free_pages@' \
+    $(git grep -l __free_pages_bootmem)
 
 Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
 ---
- include/linux/bootmem.h | 26 --------------------------
- mm/nobootmem.c          | 35 -----------------------------------
- 2 files changed, 61 deletions(-)
+ mm/internal.h   | 2 +-
+ mm/memblock.c   | 2 +-
+ mm/nobootmem.c  | 2 +-
+ mm/page_alloc.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/bootmem.h b/include/linux/bootmem.h
-index fce6278..b74bafd1 100644
---- a/include/linux/bootmem.h
-+++ b/include/linux/bootmem.h
-@@ -36,17 +36,6 @@ extern void free_bootmem_node(pg_data_t *pgdat,
- extern void free_bootmem(unsigned long physaddr, unsigned long size);
- extern void free_bootmem_late(unsigned long physaddr, unsigned long size);
+diff --git a/mm/internal.h b/mm/internal.h
+index 87256ae..291eb2b 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -161,7 +161,7 @@ static inline struct page *pageblock_pfn_to_page(unsigned long start_pfn,
+ }
  
--/*
-- * Flags for reserve_bootmem (also if CONFIG_HAVE_ARCH_BOOTMEM_NODE,
-- * the architecture-specific code should honor this).
-- *
-- * If flags is BOOTMEM_DEFAULT, then the return value is always 0 (success).
-- * If flags contains BOOTMEM_EXCLUSIVE, then -EBUSY is returned if the memory
-- * already was reserved.
-- */
--#define BOOTMEM_DEFAULT		0
--#define BOOTMEM_EXCLUSIVE	(1<<0)
--
- extern void *__alloc_bootmem(unsigned long size,
- 			     unsigned long align,
- 			     unsigned long goal);
-@@ -73,13 +62,6 @@ void *___alloc_bootmem_node_nopanic(pg_data_t *pgdat,
- extern void *__alloc_bootmem_low(unsigned long size,
- 				 unsigned long align,
- 				 unsigned long goal) __malloc;
--void *__alloc_bootmem_low_nopanic(unsigned long size,
--				 unsigned long align,
--				 unsigned long goal) __malloc;
--extern void *__alloc_bootmem_low_node(pg_data_t *pgdat,
--				      unsigned long size,
--				      unsigned long align,
--				      unsigned long goal) __malloc;
+ extern int __isolate_free_page(struct page *page, unsigned int order);
+-extern void __free_pages_bootmem(struct page *page, unsigned long pfn,
++extern void memblock_free_pages(struct page *page, unsigned long pfn,
+ 					unsigned int order);
+ extern void prep_compound_page(struct page *page, unsigned int order);
+ extern void post_alloc_hook(struct page *page, unsigned int order,
+diff --git a/mm/memblock.c b/mm/memblock.c
+index 1534edb..a2cd61d 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -1615,7 +1615,7 @@ void __init __memblock_free_late(phys_addr_t base, phys_addr_t size)
+ 	end = PFN_DOWN(base + size);
  
- /* We are using top down, so it is safe to use 0 here */
- #define BOOTMEM_LOW_LIMIT 0
-@@ -92,8 +74,6 @@ extern void *__alloc_bootmem_low_node(pg_data_t *pgdat,
- 	__alloc_bootmem(x, SMP_CACHE_BYTES, BOOTMEM_LOW_LIMIT)
- #define alloc_bootmem_align(x, align) \
- 	__alloc_bootmem(x, align, BOOTMEM_LOW_LIMIT)
--#define alloc_bootmem_nopanic(x) \
--	__alloc_bootmem_nopanic(x, SMP_CACHE_BYTES, BOOTMEM_LOW_LIMIT)
- #define alloc_bootmem_pages(x) \
- 	__alloc_bootmem(x, PAGE_SIZE, BOOTMEM_LOW_LIMIT)
- #define alloc_bootmem_pages_nopanic(x) \
-@@ -104,17 +84,11 @@ extern void *__alloc_bootmem_low_node(pg_data_t *pgdat,
- 	__alloc_bootmem_node_nopanic(pgdat, x, SMP_CACHE_BYTES, BOOTMEM_LOW_LIMIT)
- #define alloc_bootmem_pages_node(pgdat, x) \
- 	__alloc_bootmem_node(pgdat, x, PAGE_SIZE, BOOTMEM_LOW_LIMIT)
--#define alloc_bootmem_pages_node_nopanic(pgdat, x) \
--	__alloc_bootmem_node_nopanic(pgdat, x, PAGE_SIZE, BOOTMEM_LOW_LIMIT)
- 
- #define alloc_bootmem_low(x) \
- 	__alloc_bootmem_low(x, SMP_CACHE_BYTES, 0)
--#define alloc_bootmem_low_pages_nopanic(x) \
--	__alloc_bootmem_low_nopanic(x, PAGE_SIZE, 0)
- #define alloc_bootmem_low_pages(x) \
- 	__alloc_bootmem_low(x, PAGE_SIZE, 0)
--#define alloc_bootmem_low_pages_node(pgdat, x) \
--	__alloc_bootmem_low_node(pgdat, x, PAGE_SIZE, 0)
- 
- /* FIXME: use MEMBLOCK_ALLOC_* variants here */
- #define BOOTMEM_ALLOC_ACCESSIBLE	0
+ 	for (; cursor < end; cursor++) {
+-		__free_pages_bootmem(pfn_to_page(cursor), cursor, 0);
++		memblock_free_pages(pfn_to_page(cursor), cursor, 0);
+ 		totalram_pages++;
+ 	}
+ }
 diff --git a/mm/nobootmem.c b/mm/nobootmem.c
-index d4d0cd4..44ce7de 100644
+index bb64b09..9608bc5 100644
 --- a/mm/nobootmem.c
 +++ b/mm/nobootmem.c
-@@ -404,38 +404,3 @@ void * __init __alloc_bootmem_low(unsigned long size, unsigned long align,
+@@ -43,7 +43,7 @@ static void __init __free_pages_memory(unsigned long start, unsigned long end)
+ 		while (start + (1UL << order) > end)
+ 			order--;
+ 
+-		__free_pages_bootmem(pfn_to_page(start), start, order);
++		memblock_free_pages(pfn_to_page(start), start, order);
+ 
+ 		start += (1UL << order);
+ 	}
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 13e394c..f4a8bc8 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1334,7 +1334,7 @@ meminit_pfn_in_nid(unsigned long pfn, int node,
+ #endif
+ 
+ 
+-void __init __free_pages_bootmem(struct page *page, unsigned long pfn,
++void __init memblock_free_pages(struct page *page, unsigned long pfn,
+ 							unsigned int order)
  {
- 	return ___alloc_bootmem(size, align, goal, ARCH_LOW_ADDRESS_LIMIT);
- }
--
--void * __init __alloc_bootmem_low_nopanic(unsigned long size,
--					  unsigned long align,
--					  unsigned long goal)
--{
--	return ___alloc_bootmem_nopanic(size, align, goal,
--					ARCH_LOW_ADDRESS_LIMIT);
--}
--
--/**
-- * __alloc_bootmem_low_node - allocate low boot memory from a specific node
-- * @pgdat: node to allocate from
-- * @size: size of the request in bytes
-- * @align: alignment of the region
-- * @goal: preferred starting address of the region
-- *
-- * The goal is dropped if it can not be satisfied and the allocation will
-- * fall back to memory below @goal.
-- *
-- * Allocation may fall back to any node in the system if the specified node
-- * can not hold the requested memory.
-- *
-- * The function panics if the request can not be satisfied.
-- *
-- * Return: address of the allocated region.
-- */
--void * __init __alloc_bootmem_low_node(pg_data_t *pgdat, unsigned long size,
--				       unsigned long align, unsigned long goal)
--{
--	if (WARN_ON_ONCE(slab_is_available()))
--		return kzalloc_node(size, GFP_NOWAIT, pgdat->node_id);
--
--	return ___alloc_bootmem_node(pgdat, size, align, goal,
--				     ARCH_LOW_ADDRESS_LIMIT);
--}
+ 	if (early_page_uninitialised(pfn))
 -- 
 2.7.4
