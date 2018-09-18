@@ -1,80 +1,160 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [RFC] parisc64: change __kernel_suseconds_t to match glibc
-Date: Mon, 17 Sep 2018 21:46:54 +0200
-Message-ID: <de79d285-7cbc-e547-547b-cf3e0627950d@gmx.de>
-References: <20180913160010.905798-1-arnd@arndb.de>
+From: Mikulas Patocka <mpatocka@redhat.com>
+Subject: C11 atomics on parisc are broken on gcc-7 and gcc-8
+Date: Tue, 18 Sep 2018 18:43:48 -0400 (EDT)
+Message-ID: <alpine.LRH.2.02.1809181805210.29259@file01.intranet.prod.int.rdu2.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: y2038@lists.linaro.org, Thomas Gleixner <tglx@linutronix.de>,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180913160010.905798-1-arnd@arndb.de>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: John David Anglin <dave.anglin@bell.net>, Helge Deller <deller@gmx.de>,
+        debian-hppa@lists.debian.org
+To: linux-parisc@vger.kernel.org
+Return-path: <bounce-debian-hppa=debian-hppa=m.gmane.org@lists.debian.org>
+Resent-Message-ID: <H2w1DulMLpN.A.nQF.cWYobB@bendel>
 List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-URL: <https://lists.debian.org/debian-hppa/>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: https://lists.debian.org/msgid-search/alpine.LRH.2.02.1809181805210.29259@file01.intranet.prod.int.rdu2.redhat.com
 
-Hi Arnd,
+Hi
 
-On 13.09.2018 17:59, Arnd Bergmann wrote:
-> There are only two 64-bit architecture ports that have a 32-bit
-> suseconds_t: sparc64 and parisc64. I've encountered a number of problems
-> with this, while trying to get a proper 64-bit time_t working on 32-bit
-> architectures. Having a 32-bit suseconds_t combined with a 64-bit time_t
-> means that we get extra padding in data structures that may leak kernel
-> stack data to user space, and it breaks all code that assumes that
-> timespec and timeval have the same layout.
-> 
-> While we can't change sparc64, it seems that glibc on parisc64 has always
-> set suseconds_t to 'long', and the current version would give incorrect
-> results for gettimeofday() and many other interfaces: timestamps passed
-> from user space into the kernel result in tv_usec being always zero
-> (the lower bits contain the intended value but are ignored) while data
-> passed from the kernel to user space contains either zeroes or random
-> data in tv_usec.
+I have noticed that C11 atomics are broken on gcc-7 and gcc-8 on parisc. 
 
-Should this wrong behavior be visible with 32-bit userspace or
-with 64-bit userspace (or both)?
-I didn't noticed such wrong behavior yet.
+When writing an atomic variable, gcc-6 and before calls the library 
+function __sync_val_compare_and_swap_4. That calls the kernel and takes 
+the lock. There's no problem.
 
-Can you suggest some test programs to verify?
-LTP seems to be correct.
- 
-> Based on that, it seems best to change the user API in the kernel in
-> an incompatible way to match what glibc expects.
+gcc-7 and gcc-8 don't call it, they just directly write the atomic 
+variable, optionally with the "sync" instructions before or after 
+(depending on the memory model).
 
-Basically that sounds the right way to go, but as said before,
-I didn't see such issues.
-
-> Note that the distros I could find (gentoo and debian) all just
-> have 32-bit user space, which does not suffer from this problem.
-
-That's correct.
-Kernel can be 32- or 64-bit, but userspace is currentl 32-bit only.
-
-So, breaking any 64-bit userspace is OK, since we don't have it yet.
-Breaking 32-bit userspace needs some thoughts...
-
-Helge
+Now the problem is - suppose that an atomic write races with atomic 
+exchange on the same variable. Either the write wins the race (in that 
+case the exchange operation should return the value that was written by 
+the write) or the exchange wins the race (in that case the value that was 
+written by the write should permanently stay in the variable). On parisc, 
+the written value is lost, because the write doesn't take the lock.
 
 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/parisc/include/uapi/asm/posix_types.h | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/arch/parisc/include/uapi/asm/posix_types.h b/arch/parisc/include/uapi/asm/posix_types.h
-> index 2785632c85e7..8dce56f5dcee 100644
-> --- a/arch/parisc/include/uapi/asm/posix_types.h
-> +++ b/arch/parisc/include/uapi/asm/posix_types.h
-> @@ -16,9 +16,6 @@ typedef unsigned short		__kernel_mode_t;
->  typedef unsigned short		__kernel_ipc_pid_t;
->  #define __kernel_ipc_pid_t __kernel_ipc_pid_t
->  
-> -typedef int			__kernel_suseconds_t;
-> -#define __kernel_suseconds_t __kernel_suseconds_t
-> -
->  typedef long long		__kernel_off64_t;
->  typedef unsigned long long	__kernel_ino64_t;
->  
-> 
+Initially, val == 1
+
+Thread 1 (excuting atomic_exchange_explicit(&val, 3, memory_order_relaxed))
+read the variable from userspace (reads 1)
+call __sync_val_compare_and_swap_4
+call the kernel
+take the lock
+read the variable inside the kernel (reads 1), so it is going to proceed with the write
+
+Thread 2 (executing atomic_store_explicit(&val, 2, memory_order_relaxed))
+write the variable with 2
+
+Thread 1 (continuing)
+write the variable with 3
+drop the lock
+exit the kernel
+exit __sync_val_compare_and_swap_4
+
+--- the value "2" that was written by thread 2 is lost.
+
+
+The bug can be tested with this program. When compiled with gcc-7 or 
+gcc-8, it fails with "(after 4726 loops): atomics are broken, val = 3, 
+xchg returned 1". With gcc-6 or gcc-5 it works.
+
+What's strange is that this bug only happens with the gcc-7 and gcc-8 from 
+debian ports, when I compiled gcc 7.3.0 on my own, it properly generates 
+the call to __sync_val_compare_and_swap_4. Did someone patch the gcc in 
+Debian? Or is it caused by some configure parameter?
+
+Mikulas
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <pthread.h>
+#include <stdatomic.h>
+
+static pthread_barrier_t barrier;
+
+static atomic_int val;
+
+static void *thread(void *p)
+{
+	int r;
+	struct random_data rnd;
+	char rnd_buf[256];
+	volatile int32_t w;
+
+	rnd.state = NULL;
+	if (initstate_r(2, rnd_buf, sizeof rnd_buf, &rnd)) perror("initstate_r"), exit(1);
+
+	while (1) {
+		r = pthread_barrier_wait(&barrier);
+		if (r > 0) fprintf(stderr, "pthread_barrier_wait: %s\n", strerror(r)), exit(1);
+
+		if (random_r(&rnd, (int32_t *)&w)) perror("random_r");
+		w &= 0xfff;
+		while (w--) ;
+
+		atomic_store_explicit(&val, 2, memory_order_relaxed);
+
+		r = pthread_barrier_wait(&barrier);
+		if (r > 0) fprintf(stderr, "pthread_barrier_wait: %s\n", strerror(r)), exit(1);
+
+		r = pthread_barrier_wait(&barrier);
+		if (r > 0) fprintf(stderr, "pthread_barrier_wait: %s\n", strerror(r)), exit(1);
+	}
+}
+
+int main(void)
+{
+	int r, x;
+	pthread_t t;
+	struct random_data rnd;
+	char rnd_buf[256];
+	volatile int32_t w;
+	int loops = 0;
+
+	rnd.state = NULL;
+	if (initstate_r(1, rnd_buf, sizeof rnd_buf, &rnd)) perror("initstate_r"), exit(1);
+
+	r = pthread_barrier_init(&barrier, NULL, 2);
+	if (r) fprintf(stderr, "pthread_barrier_init: %s\n", strerror(r)), exit(1);
+	r = pthread_create(&t, NULL, thread, NULL);
+	if (r) fprintf(stderr, "pthread_create: %s\n", strerror(r)), exit(1);
+
+	while (1) {
+		atomic_init(&val, 1);
+		r = pthread_barrier_wait(&barrier);
+		if (r > 0) fprintf(stderr, "pthread_barrier_wait: %s\n", strerror(r)), exit(1);
+
+		if (random_r(&rnd, (int32_t *)&w)) perror("random_r");
+		w &= 0xfff;
+		while (w--) ;
+
+		x = atomic_exchange_explicit(&val, 3, memory_order_relaxed);
+
+		r = pthread_barrier_wait(&barrier);
+		if (r > 0) fprintf(stderr, "pthread_barrier_wait: %s\n", strerror(r)), exit(1);
+
+		if (!(
+			(x == 2 && atomic_load_explicit(&val, memory_order_relaxed) == 3) ||
+			(x == 1 && atomic_load_explicit(&val, memory_order_relaxed) == 2)
+		   )) {
+			fprintf(stderr, "(after %d loops): atomics are broken, val = %d, xchg returned %d\n", loops, atomic_load_explicit(&val, memory_order_relaxed), x);
+			exit(1);
+		}
+
+		r = pthread_barrier_wait(&barrier);
+		if (r > 0) fprintf(stderr, "pthread_barrier_wait: %s\n", strerror(r)), exit(1);
+
+		loops++;
+
+		if (!(loops % 1000))
+			fprintf(stderr, "%d\r", loops);
+	}
+}
