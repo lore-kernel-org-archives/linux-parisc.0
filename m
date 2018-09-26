@@ -1,73 +1,73 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 2/7] drivers: nubus: Avoids building driver if CONFIG_NUBUS
- is disabled
-Date: Wed, 26 Sep 2018 16:45:28 +1000 (AEST)
-Message-ID: <alpine.LNX.2.21.1809261515090.639@nippy.intranet>
-References: <20180926015218.GA14964@WindFlash>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 0/7] Remove errors building drivers/DRIVERNAME
+Date: Wed, 26 Sep 2018 09:05:04 +0200
+Message-ID: <CAMuHMdXaAuHdCK8aeRucefn_GwkM-uYdFArOBPHD2gM5bdNRwg@mail.gmail.com>
+References: <20180926015147.GA14862@WindFlash>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
 Cc: lkcamp@lists.libreplanetbr.org,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
         Robert Richter <rric@kernel.org>,
         "James E.J. Bottomley" <jejb@parisc-linux.org>,
         Helge Deller <deller@gmx.de>,
         Martin Schwidefsky <schwidefsky@de.ibm.com>,
         Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        oprofile-list@lists.sf.net, linux-parisc@vger.kernel.org,
-        linux-s390@vger.kernel.org
-To: Leonardo Bras <leobras.c@gmail.com>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        oprofile-list@lists.sf.net,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+To: leobras.c@gmail.com
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180926015218.GA14964@WindFlash>
+In-Reply-To: <20180926015147.GA14862@WindFlash>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Tue, 25 Sep 2018, Leonardo Bras wrote:
+Hi Leonardo,
 
-> Avoids building driver if 'make drivers/nubus/' is called and
-> CONFIG_NUBUS is disabled.
-> Avoids building proc.o if CONFIG_PROC_FS is enabled but
-> CONFIG_NUBUS is disabled.
-> 
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> ---
->  drivers/nubus/Makefile | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/nubus/Makefile b/drivers/nubus/Makefile
-> index 6d063cde39d1..827301c4a84f 100644
-> --- a/drivers/nubus/Makefile
-> +++ b/drivers/nubus/Makefile
-> @@ -2,6 +2,6 @@
->  # Makefile for the nubus specific drivers.
->  #
->  
-> -obj-y := nubus.o bus.o
-> -
-> -obj-$(CONFIG_PROC_FS) += proc.o
-> +obj-$(CONFIG_NUBUS) := nubus.o
-> +nubus-y := bus.o
-> +nubus-$(CONFIG_PROC_FS) += proc.o
-> 
+Thanks for your patch series!
 
-Did you build this for m68k? It doesn't link for me.
+On Wed, Sep 26, 2018 at 3:51 AM Leonardo Brás <leobras.c@gmail.com> wrote:
+> This Patchset changes some driver's Makefile to allow them building
+> using the command 'make drivers/DRIVERNAME', if compatible.
 
-  MODPOST vmlinux.o
-drivers/nubus/bus.o: In function `nubus_device_release':
-bus.c:(.text+0xd0): undefined reference to `nubus_func_rsrcs'
-bus.c:(.text+0xe0): undefined reference to `nubus_func_rsrcs'
-bus.c:(.text+0x118): undefined reference to `nubus_func_rsrcs'
-bus.c:(.text+0xc2): undefined reference to `nubus_func_rsrcs'
-drivers/nubus/proc.o: In function `nubus_devices_proc_show':
-proc.c:(.text+0xa): undefined reference to `nubus_first_rsrc_or_null'
-proc.c:(.text+0x1c): undefined reference to `nubus_next_rsrc_or_null'
-drivers/nubus/proc.o: In function `nubus_proc_rsrc_show':
-proc.c:(.text+0x190): undefined reference to `nubus_seq_write_rsrc_mem'
-drivers/nubus/proc.o: In function `nubus_proc_add_rsrc_mem':
-proc.c:(.text+0x24c): undefined reference to `nubus_dirptr'
+Please note that running "make drivers/DRIVERNAME" assumes that you know
+exactly what you're doing. In the normal build process, you should just run
+"make".
 
-Patch 4/7 (drivers/zorro) also causes 'undefined reference' errors. I 
-didn't test the others.
+> The changed drivers would return error if the above command was run
+> on them, after an x86 allyesconfig.
+
+That is expected, as the DIO, NuBus, and Zorro buses, and PA-RISC and
+S390 specific drivers are not supported on x86.
+That is also the reason why you cannot enable support for them when configuring
+your kernel.
+
+If you want to enable e.g. NuBus support, you have to configure a kernel
+for m68k/Mac, and (cross)compile it.
+
+At https://mirrors.edge.kernel.org/pub/tools/crosstool/, you can find cross
+compiler binaries for download.  Altermatively, your Linux distribution may
+provide cross compiler packages.
+
+> The main reason of this patchset is to allow building lists of
+> drivers looking for warnings and errors to be fixed.
+
+We already have COMPILE_TEST for that.
+If you want to increase compile coverage, please look into adding
+"|| COMPILE_TEST" dependencies to subsystems and drivers that still lack it,
+and (if needed) modifying the code to make the result build.
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
