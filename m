@@ -1,53 +1,47 @@
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Subject: Re: [PATCH 6/7] drivers: oprofile: Avoids building driver from direct
- make command
-Date: Wed, 26 Sep 2018 09:26:09 +0200
-Message-ID: <bf054e64b8284ce5da5f0c361fbb3ee6@sf-tec.de>
-References: <20180926015305.GA14994@WindFlash>
+From: Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH 02/30] mm: remove CONFIG_NO_BOOTMEM
+Date: Wed, 26 Sep 2018 11:22:39 +0200
+Message-ID: <20180926092239.GK6278@dhcp22.suse.cz>
+References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+ <1536927045-23536-3-git-send-email-rppt@linux.vnet.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Cc: lkcamp@lists.libreplanetbr.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Robert Richter <rric@kernel.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chris Zankel <chris@zankel.net>,
+        "David S. Miller" <davem@davemloft.net>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        oprofile-list@lists.sf.net, linux-parisc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-parisc-owner@vger.kernel.org
-To: =?UTF-8?Q?Leonardo_Br=C3=A1s?= <leobras.c@gmail.com>
+        Greentime Hu <green.hu@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ley Foon Tan <lftan@altera.com>,
+        Mark Salter <msalter@redhat.com>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Paul Burton <p
+To: Mike Rapoport <rppt@linux.vnet.ibm.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180926015305.GA14994@WindFlash>
+In-Reply-To: <1536927045-23536-3-git-send-email-rppt@linux.vnet.ibm.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Leonardo Brás wrote:
-> Creates new Makefile to avoid building driver if
-> 'make drivers/oprofile/' is called directly.
-> 
-> This driver is usually built from arch/$ARCH and seems to have
-> no meaning building alone.
-> 
-> Signed-off-by: Leonardo Brás <leobras.c@gmail.com>
-> ---
->  drivers/oprofile/Makefile | 1 +
->  1 file changed, 1 insertion(+)
->  create mode 100644 drivers/oprofile/Makefile
-> 
-> diff --git a/drivers/oprofile/Makefile b/drivers/oprofile/Makefile
-> new file mode 100644
-> index 000000000000..6b36c93e9762
-> --- /dev/null
-> +++ b/drivers/oprofile/Makefile
-> @@ -0,0 +1 @@
-> +#Does nothing, since the source is called from arch/$ARCH/ tree.
-> \ No newline at end of file
-     ^^^^^^^^^^^^^^^^^^^^^^^^^
+On Fri 14-09-18 15:10:17, Mike Rapoport wrote:
+> All achitectures select NO_BOOTMEM which essentially becomes 'Y' for any
+> kernel configuration and therefore it can be removed.
 
-Is that intentional or bogus?
+git grep suggests that DEFERRED_STRUCT_PAGE_INIT still depends on
+NO_BOOTMEM but I have a vague feeling that I've seen a patch to address
+that. It would be great to have it folded to this one.
 
-Eike
+> Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+-- 
+Michal Hocko
+SUSE Labs
