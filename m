@@ -1,8 +1,8 @@
 From: Leonardo =?utf-8?B?QnLDoXM=?= <leobras.c@gmail.com>
-Subject: [PATCH 6/7] drivers: oprofile: Avoids building driver from direct
- make command
-Date: Tue, 25 Sep 2018 22:53:05 -0300
-Message-ID: <20180926015305.GA14994@WindFlash>
+Subject: [PATCH 7/7] drivers: hwtracing: Adds Makefile to enable building
+ from directory.
+Date: Tue, 25 Sep 2018 22:53:16 -0300
+Message-ID: <20180926015316.GA14997@WindFlash>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
@@ -21,25 +21,42 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Creates new Makefile to avoid building driver if
-'make drivers/oprofile/' is called directly.
-
-This driver is usually built from arch/$ARCH and seems to have
-no meaning building alone.
+Adds Makefile to enable building the driver using
+'make drivers/hwtracing/'.
+Changes drivers/Makefile to call the new Makefile directly.
+It enables user building this driver without building the whole drivers/
+subtree.
 
 Signed-off-by: Leonardo Brás <leobras.c@gmail.com>
 ---
- drivers/oprofile/Makefile | 1 +
- 1 file changed, 1 insertion(+)
- create mode 100644 drivers/oprofile/Makefile
+ drivers/Makefile           | 4 +---
+ drivers/hwtracing/Makefile | 3 +++
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/hwtracing/Makefile
 
-diff --git a/drivers/oprofile/Makefile b/drivers/oprofile/Makefile
+diff --git a/drivers/Makefile b/drivers/Makefile
+index 578f469f72fb..a237be6b602f 100644
+--- a/drivers/Makefile
++++ b/drivers/Makefile
+@@ -174,9 +174,7 @@ obj-$(CONFIG_MCB)		+= mcb/
+ obj-$(CONFIG_PERF_EVENTS)	+= perf/
+ obj-$(CONFIG_RAS)		+= ras/
+ obj-$(CONFIG_THUNDERBOLT)	+= thunderbolt/
+-obj-$(CONFIG_CORESIGHT)		+= hwtracing/coresight/
+-obj-y				+= hwtracing/intel_th/
+-obj-$(CONFIG_STM)		+= hwtracing/stm/
++obj-y				+= hwtracing/
+ obj-$(CONFIG_ANDROID)		+= android/
+ obj-$(CONFIG_NVMEM)		+= nvmem/
+ obj-$(CONFIG_FPGA)		+= fpga/
+diff --git a/drivers/hwtracing/Makefile b/drivers/hwtracing/Makefile
 new file mode 100644
-index 000000000000..6b36c93e9762
+index 000000000000..fe5773caec49
 --- /dev/null
-+++ b/drivers/oprofile/Makefile
-@@ -0,0 +1 @@
-+#Does nothing, since the source is called from arch/$ARCH/ tree.
-\ No newline at end of file
++++ b/drivers/hwtracing/Makefile
+@@ -0,0 +1,3 @@
++obj-$(CONFIG_CORESIGHT)		+= coresight/
++obj-y				+= intel_th/
++obj-$(CONFIG_STM)		+= stm/
 -- 
 2.19.0
