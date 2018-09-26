@@ -1,7 +1,8 @@
 From: Leonardo =?utf-8?B?QnLDoXM=?= <leobras.c@gmail.com>
-Subject: [PATCH 0/7] Remove errors building drivers/DRIVERNAME
-Date: Tue, 25 Sep 2018 22:51:47 -0300
-Message-ID: <20180926015147.GA14862@WindFlash>
+Subject: [PATCH 1/7] drivers: dio: Avoids building driver if CONFIG_DIO is
+ disabled
+Date: Tue, 25 Sep 2018 22:52:04 -0300
+Message-ID: <20180926015204.GA14952@WindFlash>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
@@ -20,42 +21,24 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-This Patchset changes some driver's Makefile to allow them building 
-using the command 'make drivers/DRIVERNAME', if compatible.
+Avoids building driver if 'make drivers/dio/' is called and
+CONFIG_DIO is disabled.
 
-The changed drivers would return error if the above command was run
-on them, after an x86 allyesconfig.
+Signed-off-by: Leonardo Brás <leobras.c@gmail.com>
+---
+ drivers/dio/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The main reason of this patchset is to allow building lists of
-drivers looking for warnings and errors to be fixed.
-
-My main objective is to allow developers with low processing power
-to do changes in the kernel and look bugs using free services like
-GiltabCI. 
-
-If there is any interest helping/using this, I have a prototype in
-https://gitlab.com/LeoBras/linux-next.
-
-Leonardo Brás (7):
-  drivers: dio: Avoids building driver if CONFIG_DIO is disabled
-  drivers: nubus: Avoids building driver if CONFIG_NUBUS is disabled
-  drivers: parisc: Avoids building driver if CONFIG_PARISC is disabled
-  drivers: zorro: Avoids building proc.o if CONFIG_ZORRO is disabled
-  drivers: s390: Avoids building drivers if ARCH is not s390.
-  drivers: oprofile: Avoids building driver from direct make command
-  drivers: hwtracing: Adds Makefile to enable building from directory.
-
- drivers/Makefile           | 4 +---
- drivers/dio/Makefile       | 2 +-
- drivers/hwtracing/Makefile | 3 +++
- drivers/nubus/Makefile     | 6 +++---
- drivers/oprofile/Makefile  | 1 +
- drivers/parisc/Makefile    | 2 +-
- drivers/s390/Makefile      | 8 ++++----
- drivers/zorro/Makefile     | 2 +-
- 8 files changed, 15 insertions(+), 13 deletions(-)
- create mode 100644 drivers/hwtracing/Makefile
- create mode 100644 drivers/oprofile/Makefile
-
+diff --git a/drivers/dio/Makefile b/drivers/dio/Makefile
+index ae92d17083f2..f5cffe232448 100644
+--- a/drivers/dio/Makefile
++++ b/drivers/dio/Makefile
+@@ -2,4 +2,4 @@
+ # Makefile for the linux kernel.
+ #
+ 
+-obj-y := dio.o dio-driver.o dio-sysfs.o
++obj-$(CONFIG_DIO) := dio.o dio-driver.o dio-sysfs.o
+\ No newline at end of file
 -- 
 2.19.0
