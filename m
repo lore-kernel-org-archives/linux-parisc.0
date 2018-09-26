@@ -1,10 +1,12 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/7] Remove errors building drivers/DRIVERNAME
-Date: Wed, 26 Sep 2018 09:05:04 +0200
-Message-ID: <CAMuHMdXaAuHdCK8aeRucefn_GwkM-uYdFArOBPHD2gM5bdNRwg@mail.gmail.com>
-References: <20180926015147.GA14862@WindFlash>
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Subject: Re: [PATCH 6/7] drivers: oprofile: Avoids building driver from direct
+ make command
+Date: Wed, 26 Sep 2018 09:26:09 +0200
+Message-ID: <bf054e64b8284ce5da5f0c361fbb3ee6@sf-tec.de>
+References: <20180926015305.GA14994@WindFlash>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Cc: lkcamp@lists.libreplanetbr.org,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Finn Thain <fthain@telegraphics.com.au>,
@@ -13,61 +15,39 @@ Cc: lkcamp@lists.libreplanetbr.org,
         Helge Deller <deller@gmx.de>,
         Martin Schwidefsky <schwidefsky@de.ibm.com>,
         Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        oprofile-list@lists.sf.net,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-To: leobras.c@gmail.com
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        oprofile-list@lists.sf.net, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-parisc-owner@vger.kernel.org
+To: =?UTF-8?Q?Leonardo_Br=C3=A1s?= <leobras.c@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180926015147.GA14862@WindFlash>
+In-Reply-To: <20180926015305.GA14994@WindFlash>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Leonardo,
+Leonardo Brás wrote:
+> Creates new Makefile to avoid building driver if
+> 'make drivers/oprofile/' is called directly.
+> 
+> This driver is usually built from arch/$ARCH and seems to have
+> no meaning building alone.
+> 
+> Signed-off-by: Leonardo Brás <leobras.c@gmail.com>
+> ---
+>  drivers/oprofile/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+>  create mode 100644 drivers/oprofile/Makefile
+> 
+> diff --git a/drivers/oprofile/Makefile b/drivers/oprofile/Makefile
+> new file mode 100644
+> index 000000000000..6b36c93e9762
+> --- /dev/null
+> +++ b/drivers/oprofile/Makefile
+> @@ -0,0 +1 @@
+> +#Does nothing, since the source is called from arch/$ARCH/ tree.
+> \ No newline at end of file
+     ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Thanks for your patch series!
+Is that intentional or bogus?
 
-On Wed, Sep 26, 2018 at 3:51 AM Leonardo Brás <leobras.c@gmail.com> wrote:
-> This Patchset changes some driver's Makefile to allow them building
-> using the command 'make drivers/DRIVERNAME', if compatible.
-
-Please note that running "make drivers/DRIVERNAME" assumes that you know
-exactly what you're doing. In the normal build process, you should just run
-"make".
-
-> The changed drivers would return error if the above command was run
-> on them, after an x86 allyesconfig.
-
-That is expected, as the DIO, NuBus, and Zorro buses, and PA-RISC and
-S390 specific drivers are not supported on x86.
-That is also the reason why you cannot enable support for them when configuring
-your kernel.
-
-If you want to enable e.g. NuBus support, you have to configure a kernel
-for m68k/Mac, and (cross)compile it.
-
-At https://mirrors.edge.kernel.org/pub/tools/crosstool/, you can find cross
-compiler binaries for download.  Altermatively, your Linux distribution may
-provide cross compiler packages.
-
-> The main reason of this patchset is to allow building lists of
-> drivers looking for warnings and errors to be fixed.
-
-We already have COMPILE_TEST for that.
-If you want to increase compile coverage, please look into adding
-"|| COMPILE_TEST" dependencies to subsystems and drivers that still lack it,
-and (if needed) modifying the code to make the result build.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Eike
