@@ -1,8 +1,8 @@
 From: Leonardo =?utf-8?B?QnLDoXM=?= <leobras.c@gmail.com>
-Subject: [PATCH 1/7] drivers: dio: Avoids building driver if CONFIG_DIO is
- disabled
-Date: Tue, 25 Sep 2018 22:52:04 -0300
-Message-ID: <20180926015204.GA14952@WindFlash>
+Subject: [PATCH 2/7] drivers: nubus: Avoids building driver if CONFIG_NUBUS
+ is disabled
+Date: Tue, 25 Sep 2018 22:52:18 -0300
+Message-ID: <20180926015218.GA14964@WindFlash>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
@@ -21,24 +21,29 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Avoids building driver if 'make drivers/dio/' is called and
-CONFIG_DIO is disabled.
+Avoids building driver if 'make drivers/nubus/' is called and
+CONFIG_NUBUS is disabled.
+Avoids building proc.o if CONFIG_PROC_FS is enabled but
+CONFIG_NUBUS is disabled.
 
 Signed-off-by: Leonardo Brás <leobras.c@gmail.com>
 ---
- drivers/dio/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nubus/Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/dio/Makefile b/drivers/dio/Makefile
-index ae92d17083f2..f5cffe232448 100644
---- a/drivers/dio/Makefile
-+++ b/drivers/dio/Makefile
-@@ -2,4 +2,4 @@
- # Makefile for the linux kernel.
+diff --git a/drivers/nubus/Makefile b/drivers/nubus/Makefile
+index 6d063cde39d1..827301c4a84f 100644
+--- a/drivers/nubus/Makefile
++++ b/drivers/nubus/Makefile
+@@ -2,6 +2,6 @@
+ # Makefile for the nubus specific drivers.
  #
  
--obj-y := dio.o dio-driver.o dio-sysfs.o
-+obj-$(CONFIG_DIO) := dio.o dio-driver.o dio-sysfs.o
-\ No newline at end of file
+-obj-y := nubus.o bus.o
+-
+-obj-$(CONFIG_PROC_FS) += proc.o
++obj-$(CONFIG_NUBUS) := nubus.o
++nubus-y := bus.o
++nubus-$(CONFIG_PROC_FS) += proc.o
 -- 
 2.19.0
