@@ -1,59 +1,28 @@
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH 03/30] mm: remove CONFIG_HAVE_MEMBLOCK
-Date: Wed, 26 Sep 2018 14:54:05 +0300
-Message-ID: <20180926115404.GE4628@rapoport-lnx>
-References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
- <1536927045-23536-4-git-send-email-rppt@linux.vnet.ibm.com>
- <20180926092404.GL6278@dhcp22.suse.cz>
+From: John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCH] parisc: Remove PTE load and fault check from L2_ptep
+ macro
+Date: Wed, 26 Sep 2018 08:09:26 -0400
+Message-ID: <dcb9250d-f811-90be-2c5a-4d15cb29b474@bell.net>
+References: <20180926032101.GA2458@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chris Zankel <chris@zankel.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greentime Hu <green.hu@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ley Foon Tan <lftan@altera.com>,
-        Mark Salter <msalter@redhat.com>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Simek <monstr@monstr.eu>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Paul Burton <p
-To: Michal Hocko <mhocko@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Cc: jejb@parisc-linux.org, Helge Deller <deller@gmx.de>,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Guenter Roeck <linux@roeck-us.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180926092404.GL6278@dhcp22.suse.cz>
+In-Reply-To: <20180926032101.GA2458@roeck-us.net>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Sep 26, 2018 at 11:24:04AM +0200, Michal Hocko wrote:
-> On Fri 14-09-18 15:10:18, Mike Rapoport wrote:
-> > All architecures use memblock for early memory management. There is no need
-> > for the CONFIG_HAVE_MEMBLOCK configuration option.
-> 
-> git grep says
-> arch/csky/Kconfig:  select HAVE_MEMBLOCK
- 
-Not only that, there are other bootmem leftovers in csky.
-I've sent the patch with the necessary fixups [1]
+Hi,
 
-[1] https://lkml.kernel.org/lkml/20180926112744.GC4628@rapoport-lnx/
+On 2018-09-25 11:21 PM, Guenter Roeck wrote:
+> This patch causes my parisc qemu tests to fail.
+> Unfortunately I don't have any useful log output; the failure
+> is silent. Reverting the patch fixes the problem.
+Can you be more specific on how to run these tests?
 
-> > Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
-> 
-> Other than that
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> -- 
-> Michal Hocko
-> SUSE Labs
-> 
+Dave
 
 -- 
-Sincerely yours,
-Mike.
+John David Anglin  dave.anglin@bell.net
