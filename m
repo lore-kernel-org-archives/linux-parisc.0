@@ -1,54 +1,63 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] parisc: Remove PTE load and fault check from L2_ptep
- macro
-Date: Wed, 26 Sep 2018 06:29:55 -0700
-Message-ID: <4ac3d6fe-ef61-546d-e9fa-c8189edd288a@roeck-us.net>
-References: <20180926032101.GA2458@roeck-us.net>
- <dcb9250d-f811-90be-2c5a-4d15cb29b474@bell.net>
+From: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [PATCH 14/30] memblock: add align parameter to
+ memblock_alloc_node()
+Date: Wed, 26 Sep 2018 16:43:35 +0300
+Message-ID: <20180926134335.GF4628@rapoport-lnx>
+References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+ <1536927045-23536-15-git-send-email-rppt@linux.vnet.ibm.com>
+ <20180926093127.GO6278@dhcp22.suse.cz>
+ <20180926093648.GP6278@dhcp22.suse.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: jejb@parisc-linux.org, Helge Deller <deller@gmx.de>,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chris Zankel <chris@zankel.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greentime Hu <green.hu@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ley Foon Tan <lftan@altera.com>,
+        Mark Salter <msalter@redhat.com>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Paul Burton <p
+To: Michal Hocko <mhocko@kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <dcb9250d-f811-90be-2c5a-4d15cb29b474@bell.net>
+In-Reply-To: <20180926093648.GP6278@dhcp22.suse.cz>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 09/26/2018 05:09 AM, John David Anglin wrote:
-> Hi,
+On Wed, Sep 26, 2018 at 11:36:48AM +0200, Michal Hocko wrote:
+> On Wed 26-09-18 11:31:27, Michal Hocko wrote:
+> > On Fri 14-09-18 15:10:29, Mike Rapoport wrote:
+> > > With the align parameter memblock_alloc_node() can be used as drop in
+> > > replacement for alloc_bootmem_pages_node() and __alloc_bootmem_node(),
+> > > which is done in the following patches.
+> > 
+> > /me confused. Why do we need this patch at all? Maybe it should be
+> > folded into the later patch you are refereing here?
 > 
-> On 2018-09-25 11:21 PM, Guenter Roeck wrote:
->> This patch causes my parisc qemu tests to fail.
->> Unfortunately I don't have any useful log output; the failure
->> is silent. Reverting the patch fixes the problem.
-> Can you be more specific on how to run these tests?
+> OK, I can see 1536927045-23536-17-git-send-email-rppt@linux.vnet.ibm.com
+> now. If you are going to repost for whatever reason please merge those
+> two. Also I would get rid of the implicit "0 implies SMP_CACHE_BYTES"
+> behavior. It is subtle and you have to dig deep to find that out. Why
+> not make it explicit?
+
+Agree. I'd just prefer to make it a separate patch rather then resend the
+whole series. 
+
+> -- 
+> Michal Hocko
+> SUSE Labs
 > 
-> Dave
-> 
 
-Sorry. Please see
-
-https://github.com/groeck/linux-build-test/tree/master/rootfs/parisc
-
-My tests enable a number of device and debug options on top of defconfig.
-Those are not necessary, though. The problem can be reproduced with defconfig.
-
-With the initrd available from there, and with an image built using 'defconfig',
-run
-
-qemu-system-hppa \
-	-kernel vmlinux -no-reboot \
-	-initrd rootfs.cpio.gz \
-	-append 'rdinit=/sbin/init console=ttyS0,115200' \
-	-nographic -monitor null
-
-I tested with qemu 2.12 and 3.0. Using "arch/parisc/boot/bzImage" as kernel
-image does not make a difference.
-
-Note: The initrd auto-reboots. To avoid that, add "noreboot" as additional
-command line option.
-
-Hope this helps,
-
-Guenter
+-- 
+Sincerely yours,
+Mike.
