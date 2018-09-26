@@ -1,8 +1,8 @@
 From: Leonardo =?utf-8?B?QnLDoXM=?= <leobras.c@gmail.com>
-Subject: [PATCH 2/7] drivers: nubus: Avoids building driver if CONFIG_NUBUS
+Subject: [PATCH 3/7] drivers: parisc: Avoids building driver if CONFIG_PARISC
  is disabled
-Date: Tue, 25 Sep 2018 22:52:18 -0300
-Message-ID: <20180926015218.GA14964@WindFlash>
+Date: Tue, 25 Sep 2018 22:52:29 -0300
+Message-ID: <20180926015229.GA14967@WindFlash>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
@@ -21,29 +21,24 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Avoids building driver if 'make drivers/nubus/' is called and
-CONFIG_NUBUS is disabled.
-Avoids building proc.o if CONFIG_PROC_FS is enabled but
-CONFIG_NUBUS is disabled.
+Avoids building driver if 'make drivers/parisc/' is called and
+CONFIG_PARISC is disabled.
 
 Signed-off-by: Leonardo Brás <leobras.c@gmail.com>
 ---
- drivers/nubus/Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/parisc/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nubus/Makefile b/drivers/nubus/Makefile
-index 6d063cde39d1..827301c4a84f 100644
---- a/drivers/nubus/Makefile
-+++ b/drivers/nubus/Makefile
-@@ -2,6 +2,6 @@
- # Makefile for the nubus specific drivers.
- #
+diff --git a/drivers/parisc/Makefile b/drivers/parisc/Makefile
+index 3cd5e6cb8478..80049d763aa0 100644
+--- a/drivers/parisc/Makefile
++++ b/drivers/parisc/Makefile
+@@ -24,5 +24,5 @@ obj-$(CONFIG_EISA)		+= eisa.o eisa_enumerator.o eisa_eeprom.o
+ obj-$(CONFIG_SUPERIO)		+= superio.o
+ obj-$(CONFIG_CHASSIS_LCD_LED)	+= led.o
+ obj-$(CONFIG_PDC_STABLE)	+= pdc_stable.o
+-obj-y				+= power.o
++obj-$(CONFIG_PARISC)		+= power.o
  
--obj-y := nubus.o bus.o
--
--obj-$(CONFIG_PROC_FS) += proc.o
-+obj-$(CONFIG_NUBUS) := nubus.o
-+nubus-y := bus.o
-+nubus-$(CONFIG_PROC_FS) += proc.o
 -- 
 2.19.0
