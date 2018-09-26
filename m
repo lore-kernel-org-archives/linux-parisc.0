@@ -1,58 +1,61 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [RFC] parisc64: change __kernel_suseconds_t to match glibc
-Date: Tue, 25 Sep 2018 19:53:13 +0200
-Message-ID: <7fdae639-6871-df29-ffbb-1096822ebb34@gmx.de>
-References: <20180913160010.905798-1-arnd@arndb.de>
- <de79d285-7cbc-e547-547b-cf3e0627950d@gmx.de>
- <CAK8P3a1WT87CFyz7457R_cx=ueVjG+xUWXAA6SSw+C4ZnaZHVw@mail.gmail.com>
+From: Leonardo =?utf-8?B?QnLDoXM=?= <leobras.c@gmail.com>
+Subject: [PATCH 0/7] Remove errors building drivers/DRIVERNAME
+Date: Tue, 25 Sep 2018 22:51:47 -0300
+Message-ID: <20180926015147.GA14862@WindFlash>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Robert Richter <rric@kernel.org>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        oprofile-list@lists.sf.net, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org
+To: lkcamp@lists.libreplanetbr.org
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAK8P3a1WT87CFyz7457R_cx=ueVjG+xUWXAA6SSw+C4ZnaZHVw@mail.gmail.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 25.09.2018 12:53, Arnd Bergmann wrote:
-> On Mon, Sep 17, 2018 at 9:46 PM Helge Deller <deller@gmx.de> wrote:
->> On 13.09.2018 17:59, Arnd Bergmann wrote:
->>> There are only two 64-bit architecture ports that have a 32-bit
->>> suseconds_t: sparc64 and parisc64. I've encountered a number of problems
->>> with this, while trying to get a proper 64-bit time_t working on 32-bit
->>> architectures. Having a 32-bit suseconds_t combined with a 64-bit time_t
->>> means that we get extra padding in data structures that may leak kernel
->>> stack data to user space, and it breaks all code that assumes that
->>> timespec and timeval have the same layout.
->>>
->>> While we can't change sparc64, it seems that glibc on parisc64 has always
->>> set suseconds_t to 'long', and the current version would give incorrect
->>> results for gettimeofday() and many other interfaces: timestamps passed
->>> from user space into the kernel result in tv_usec being always zero
->>> (the lower bits contain the intended value but are ignored) while data
->>> passed from the kernel to user space contains either zeroes or random
->>> data in tv_usec.
-> 
-> [back from traveling now, sorry for the delay in replying]
-> 
->> Should this wrong behavior be visible with 32-bit userspace or
->> with 64-bit userspace (or both)?
->> I didn't noticed such wrong behavior yet.
-> 
-> Only 64-bit user space.
-> 
-...
-> A simple 64-bit gettimeofday() should report incorrect
-> nanoseconds using the upstream glibc implementation.
+This Patchset changes some driver's Makefile to allow them building 
+using the command 'make drivers/DRIVERNAME', if compatible.
 
-Yes, you are right.
-Since we don't have any 64-bit userspace yet, it's safe to fix it now as you suggested.
-I've added your patch as is to my for-next tree and tagged it for stable-tree.
+The changed drivers would return error if the above command was run
+on them, after an x86 allyesconfig.
 
-Thanks for catching this!
+The main reason of this patchset is to allow building lists of
+drivers looking for warnings and errors to be fixed.
 
-Helge
+My main objective is to allow developers with low processing power
+to do changes in the kernel and look bugs using free services like
+GiltabCI. 
+
+If there is any interest helping/using this, I have a prototype in
+https://gitlab.com/LeoBras/linux-next.
+
+Leonardo Brás (7):
+  drivers: dio: Avoids building driver if CONFIG_DIO is disabled
+  drivers: nubus: Avoids building driver if CONFIG_NUBUS is disabled
+  drivers: parisc: Avoids building driver if CONFIG_PARISC is disabled
+  drivers: zorro: Avoids building proc.o if CONFIG_ZORRO is disabled
+  drivers: s390: Avoids building drivers if ARCH is not s390.
+  drivers: oprofile: Avoids building driver from direct make command
+  drivers: hwtracing: Adds Makefile to enable building from directory.
+
+ drivers/Makefile           | 4 +---
+ drivers/dio/Makefile       | 2 +-
+ drivers/hwtracing/Makefile | 3 +++
+ drivers/nubus/Makefile     | 6 +++---
+ drivers/oprofile/Makefile  | 1 +
+ drivers/parisc/Makefile    | 2 +-
+ drivers/s390/Makefile      | 8 ++++----
+ drivers/zorro/Makefile     | 2 +-
+ 8 files changed, 15 insertions(+), 13 deletions(-)
+ create mode 100644 drivers/hwtracing/Makefile
+ create mode 100644 drivers/oprofile/Makefile
+
+-- 
+2.19.0
