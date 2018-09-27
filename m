@@ -1,62 +1,86 @@
-From: Leonardo =?utf-8?B?QnLDoXM=?= <leobras.c@gmail.com>
-Subject: [PATCH v2 7/7] drivers: hwtracing: Adds Makefile to enable building
- from directory.
-Date: Wed, 26 Sep 2018 22:41:58 -0300
-Message-ID: <20180927014158.GA8995@WindFlash>
+From: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [PATCH 03/30] mm: remove CONFIG_HAVE_MEMBLOCK
+Date: Thu, 27 Sep 2018 07:50:20 +0300
+Message-ID: <20180927045019.GA16740@rapoport-lnx>
+References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+ <1536927045-23536-4-git-send-email-rppt@linux.vnet.ibm.com>
+ <CAKgT0UdP=78RsWHMxFu4PD8a3AhA3eNcG68Z_9aGY0vhOKf7xA@mail.gmail.com>
+ <20180926183152.GA4597@rapoport-lnx>
+ <CAKgT0UcC-GTtyPK9ynvj6r3YFqy8kE40iMJxzPowbNoXGf9iWg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Robert Richter <rric@kernel.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>, chris@zankel.net,
+        David Miller <davem@davemloft.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, green.hu@gmail.com,
+        Greg KH <gregkh@linuxfoundation.org>, gxt@pku.edu.cn,
+        Ingo Molnar <mingo@redhat.com>, jejb@parisc-linux.org,
+        jonas@southpole.se, Jonathan Corbet <corbet@lwn.net>,
+        lftan@altera.com, msalter@redhat.com,
         Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        oprofile-list@lists.sf.net, linux-parisc@vger.kernel.org,
-        linux-s390@vger.kernel.org
-To: lkcamp@lists.libreplanetbr.org
+        mattst88@gmail.com, mpe@ellerman.id.au,
+        Michal Hocko <mhocko@suse.com>, monstr@monstr.eu,
+        palmer@sifive.com, paul.burton@mips.com, rkuo@codeaurora.org,
+        richard@nod.at, dalias@libc.org,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        fancer.lancer@gmail.com, Thomas Gleixner <tglx@linutronix.de>
+To: Alexander Duyck <alexander.duyck@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAKgT0UcC-GTtyPK9ynvj6r3YFqy8kE40iMJxzPowbNoXGf9iWg@mail.gmail.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Adds Makefile to enable building the driver using
-'make drivers/hwtracing/'.
-Changes drivers/Makefile to call the new Makefile directly.
-It enables user building this driver without building the whole drivers/
-subtree.
+On Wed, Sep 26, 2018 at 05:34:32PM -0700, Alexander Duyck wrote:
+> On Wed, Sep 26, 2018 at 11:32 AM Mike Rapoport <rppt@linux.vnet.ibm.com> wrote:
+> >
+> > On Wed, Sep 26, 2018 at 09:58:41AM -0700, Alexander Duyck wrote:
+> > > On Fri, Sep 14, 2018 at 5:11 AM Mike Rapoport <rppt@linux.vnet.ibm.com> wrote:
+> > > >
+> > > > All architecures use memblock for early memory management. There is no need
+> > > > for the CONFIG_HAVE_MEMBLOCK configuration option.
+> > > >
+> > > > Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+> > >
+> > > <snip>
+> > >
+> > > > diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> > > > index 5169205..4ae91fc 100644
+> > > > --- a/include/linux/memblock.h
+> > > > +++ b/include/linux/memblock.h
+> > > > @@ -2,7 +2,6 @@
+> > > >  #define _LINUX_MEMBLOCK_H
+> > > >  #ifdef __KERNEL__
+> > > >
+> > > > -#ifdef CONFIG_HAVE_MEMBLOCK
+> > > >  /*
+> > > >   * Logical memory blocks.
+> > > >   *
+> > > > @@ -460,7 +459,6 @@ static inline phys_addr_t memblock_alloc(phys_addr_t size, phys_addr_t align)
+> > > >  {
+> > > >         return 0;
+> > > >  }
+> > > > -#endif /* CONFIG_HAVE_MEMBLOCK */
+> > > >
+> > > >  #endif /* __KERNEL__ */
+> > >
+> > > There was an #else above this section and I believe it and the code
+> > > after it needs to be stripped as well.
+> >
+> > Right, I've already sent the fix [1] and it's in mmots.
+> >
+> > [1] https://lkml.org/lkml/2018/9/19/416
+> >
+> 
+> Are you sure? The patch you reference appears to be for
+> drivers/of/fdt.c, and the bit I pointed out here is in
+> include/linux/memblock.h.
 
-Signed-off-by: Leonardo Brás <leobras.c@gmail.com>
----
- drivers/Makefile           | 4 +---
- drivers/hwtracing/Makefile | 3 +++
- 2 files changed, 4 insertions(+), 3 deletions(-)
- create mode 100644 drivers/hwtracing/Makefile
+Ah, sorry. You are right, will fix. Thanks for spotting it!
+ 
+> - Alex
+> 
 
-diff --git a/drivers/Makefile b/drivers/Makefile
-index 578f469f72fb..a237be6b602f 100644
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -174,9 +174,7 @@ obj-$(CONFIG_MCB)		+= mcb/
- obj-$(CONFIG_PERF_EVENTS)	+= perf/
- obj-$(CONFIG_RAS)		+= ras/
- obj-$(CONFIG_THUNDERBOLT)	+= thunderbolt/
--obj-$(CONFIG_CORESIGHT)		+= hwtracing/coresight/
--obj-y				+= hwtracing/intel_th/
--obj-$(CONFIG_STM)		+= hwtracing/stm/
-+obj-y				+= hwtracing/
- obj-$(CONFIG_ANDROID)		+= android/
- obj-$(CONFIG_NVMEM)		+= nvmem/
- obj-$(CONFIG_FPGA)		+= fpga/
-diff --git a/drivers/hwtracing/Makefile b/drivers/hwtracing/Makefile
-new file mode 100644
-index 000000000000..fe5773caec49
---- /dev/null
-+++ b/drivers/hwtracing/Makefile
-@@ -0,0 +1,3 @@
-+obj-$(CONFIG_CORESIGHT)		+= coresight/
-+obj-y				+= intel_th/
-+obj-$(CONFIG_STM)		+= stm/
 -- 
-2.19.0
+Sincerely yours,
+Mike.
