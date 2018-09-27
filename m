@@ -1,86 +1,92 @@
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH 03/30] mm: remove CONFIG_HAVE_MEMBLOCK
-Date: Thu, 27 Sep 2018 07:50:20 +0300
-Message-ID: <20180927045019.GA16740@rapoport-lnx>
-References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
- <1536927045-23536-4-git-send-email-rppt@linux.vnet.ibm.com>
- <CAKgT0UdP=78RsWHMxFu4PD8a3AhA3eNcG68Z_9aGY0vhOKf7xA@mail.gmail.com>
- <20180926183152.GA4597@rapoport-lnx>
- <CAKgT0UcC-GTtyPK9ynvj6r3YFqy8kE40iMJxzPowbNoXGf9iWg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>, chris@zankel.net,
-        David Miller <davem@davemloft.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, green.hu@gmail.com,
-        Greg KH <gregkh@linuxfoundation.org>, gxt@pku.edu.cn,
-        Ingo Molnar <mingo@redhat.com>, jejb@parisc-linux.org,
-        jonas@southpole.se, Jonathan Corbet <corbet@lwn.net>,
-        lftan@altera.com, msalter@redhat.com,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        mattst88@gmail.com, mpe@ellerman.id.au,
-        Michal Hocko <mhocko@suse.com>, monstr@monstr.eu,
-        palmer@sifive.com, paul.burton@mips.com, rkuo@codeaurora.org,
-        richard@nod.at, dalias@libc.org,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        fancer.lancer@gmail.com, Thomas Gleixner <tglx@linutronix.de>
-To: Alexander Duyck <alexander.duyck@gmail.com>
+From: Firoz Khan <firoz.khan@linaro.org>
+Subject: [PATCH v2 0/5] System call table generation support
+Date: Thu, 27 Sep 2018 19:54:22 +0530
+Message-ID: <1538058267-3765-1-git-send-email-firoz.khan@linaro.org>
+Cc: y2038@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, arnd@arndb.de, deepa.kernel@gmail.com,
+        marcin.juszkiewicz@linaro.org, firoz.khan@linaro.org
+To: linux-parisc@vger.kernel.org,
+        "James E . J . Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAKgT0UcC-GTtyPK9ynvj6r3YFqy8kE40iMJxzPowbNoXGf9iWg@mail.gmail.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Sep 26, 2018 at 05:34:32PM -0700, Alexander Duyck wrote:
-> On Wed, Sep 26, 2018 at 11:32 AM Mike Rapoport <rppt@linux.vnet.ibm.com> wrote:
-> >
-> > On Wed, Sep 26, 2018 at 09:58:41AM -0700, Alexander Duyck wrote:
-> > > On Fri, Sep 14, 2018 at 5:11 AM Mike Rapoport <rppt@linux.vnet.ibm.com> wrote:
-> > > >
-> > > > All architecures use memblock for early memory management. There is no need
-> > > > for the CONFIG_HAVE_MEMBLOCK configuration option.
-> > > >
-> > > > Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
-> > >
-> > > <snip>
-> > >
-> > > > diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> > > > index 5169205..4ae91fc 100644
-> > > > --- a/include/linux/memblock.h
-> > > > +++ b/include/linux/memblock.h
-> > > > @@ -2,7 +2,6 @@
-> > > >  #define _LINUX_MEMBLOCK_H
-> > > >  #ifdef __KERNEL__
-> > > >
-> > > > -#ifdef CONFIG_HAVE_MEMBLOCK
-> > > >  /*
-> > > >   * Logical memory blocks.
-> > > >   *
-> > > > @@ -460,7 +459,6 @@ static inline phys_addr_t memblock_alloc(phys_addr_t size, phys_addr_t align)
-> > > >  {
-> > > >         return 0;
-> > > >  }
-> > > > -#endif /* CONFIG_HAVE_MEMBLOCK */
-> > > >
-> > > >  #endif /* __KERNEL__ */
-> > >
-> > > There was an #else above this section and I believe it and the code
-> > > after it needs to be stripped as well.
-> >
-> > Right, I've already sent the fix [1] and it's in mmots.
-> >
-> > [1] https://lkml.org/lkml/2018/9/19/416
-> >
-> 
-> Are you sure? The patch you reference appears to be for
-> drivers/of/fdt.c, and the bit I pointed out here is in
-> include/linux/memblock.h.
+The purpose of this patch series is:
+1. We can easily add/modify/delete system call by changing entry 
+in syscall.tbl file. No need to manually edit many files.
 
-Ah, sorry. You are right, will fix. Thanks for spotting it!
- 
-> - Alex
-> 
+2. It is easy to unify the system call implementation across all 
+the architectures. 
+
+The system call tables are in different format in all architecture 
+and it will be difficult to manually add or modify the system calls
+in the respective files manually. To make it easy by keeping a script 
+and which'll generate the header file and syscall table file so this 
+change will unify them across all architectures.
+
+syscall.tbl contains the list of available system calls along with 
+system call number and corresponding entry point. Add a new system 
+call in this architecture will be possible by adding new entry in 
+the syscall.tbl file.
+
+Adding a new table entry consisting of:
+        - System call number.
+        - ABI.
+        - System call name.
+        - Entry point name.
+        - Compat entry name, if required.
+
+ARM, s390 and x86 architecuture does exist the similar support. I 
+leverage their implementation to come up with a generic solution.
+
+I have done the same support for work for alpha, microblaze, sparc,
+m68k, mips, powerpc, sh, sparc, and xtensa. But I started sending 
+the patch for one architecuture for review. Below mentioned git
+repository contains more details.
+Git repo:- https://github.com/frzkhn/system_call_table_generator/
+
+Added an extra patch to keep __IGNORE* entries in asm/unistd.h.
+
+Finally, this is the ground work for solving the Y2038 issue. We 
+need to add/change two dozen of system calls to solve Y2038 issue. 
+So this patch series will help to easily modify from existing 
+system call to Y2038 compatible system calls.
+
+Firoz Khan (5):
+  parisc: move __IGNORE* entries to non uapi header
+  parisc: add __NR_Linux_syscalls macro with __NR_syscalls
+  parisc: add system call table generation support
+  parisc: uapi header and system call table file generation
+  parisc: add __IGNORE* entries in asm/unistd.h
+
+ arch/parisc/Makefile                       |   4 +
+ arch/parisc/include/asm/Kbuild             |   3 +
+ arch/parisc/include/asm/unistd.h           |   9 +
+ arch/parisc/include/uapi/asm/Kbuild        |   2 +
+ arch/parisc/include/uapi/asm/unistd.h      | 380 +-----------------------
+ arch/parisc/kernel/syscall.S               |  12 +-
+ arch/parisc/kernel/syscall_table.S         | 459 -----------------------------
+ arch/parisc/kernel/syscall_table_32.S      |  13 +
+ arch/parisc/kernel/syscall_table_64.S      |  20 ++
+ arch/parisc/kernel/syscalls/Makefile       |  55 ++++
+ arch/parisc/kernel/syscalls/syscall_32.tbl | 342 +++++++++++++++++++++
+ arch/parisc/kernel/syscalls/syscall_64.tbl | 342 +++++++++++++++++++++
+ arch/parisc/kernel/syscalls/syscallhdr.sh  |  35 +++
+ arch/parisc/kernel/syscalls/syscalltbl.sh  |  42 +++
+ 14 files changed, 877 insertions(+), 841 deletions(-)
+ delete mode 100644 arch/parisc/kernel/syscall_table.S
+ create mode 100644 arch/parisc/kernel/syscall_table_32.S
+ create mode 100644 arch/parisc/kernel/syscall_table_64.S
+ create mode 100644 arch/parisc/kernel/syscalls/Makefile
+ create mode 100644 arch/parisc/kernel/syscalls/syscall_32.tbl
+ create mode 100644 arch/parisc/kernel/syscalls/syscall_64.tbl
+ create mode 100644 arch/parisc/kernel/syscalls/syscallhdr.sh
+ create mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
 
 -- 
-Sincerely yours,
-Mike.
+1.9.1
