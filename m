@@ -1,76 +1,70 @@
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Subject: Re: [PATCH 03/30] mm: remove CONFIG_HAVE_MEMBLOCK
-Date: Wed, 26 Sep 2018 17:34:32 -0700
-Message-ID: <CAKgT0UcC-GTtyPK9ynvj6r3YFqy8kE40iMJxzPowbNoXGf9iWg@mail.gmail.com>
-References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
- <1536927045-23536-4-git-send-email-rppt@linux.vnet.ibm.com>
- <CAKgT0UdP=78RsWHMxFu4PD8a3AhA3eNcG68Z_9aGY0vhOKf7xA@mail.gmail.com> <20180926183152.GA4597@rapoport-lnx>
+From: Leonardo =?utf-8?B?QnLDoXM=?= <leobras.c@gmail.com>
+Subject: [PATCH v2 0/7] Remove errors building drivers/DRIVERNAME
+Date: Wed, 26 Sep 2018 22:39:20 -0300
+Message-ID: <20180927013920.GA8950@WindFlash>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>, chris@zankel.net,
-        David Miller <davem@davemloft.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, green.hu@gmail.com,
-        Greg KH <gregkh@linuxfoundation.org>, gxt@pku.edu.cn,
-        Ingo Molnar <mingo@redhat.com>, jejb@parisc-linux.org,
-        jonas@southpole.se, Jonathan Corbet <corbet@lwn.net>,
-        lftan@altera.com, msalter@redhat.com,
+Content-Type: text/plain; charset=utf-8
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Robert Richter <rric@kernel.org>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
         Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        mattst88@gmail.com, mpe@ellerman.id.au,
-        Michal Hocko <mhocko@suse.com>, monstr@monstr.eu,
-        palmer@sifive.com, paul.burton@mips.com, rkuo@codeaurora.org,
-        richard@nod.at, dalias@libc.org,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        fancer.lancer@gmail.com, Thomas Gleixner <tglx@linutronix.de>
-To: rppt@linux.vnet.ibm.com
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        oprofile-list@lists.sf.net, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org
+To: lkcamp@lists.libreplanetbr.org
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180926183152.GA4597@rapoport-lnx>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Sep 26, 2018 at 11:32 AM Mike Rapoport <rppt@linux.vnet.ibm.com> wrote:
->
-> On Wed, Sep 26, 2018 at 09:58:41AM -0700, Alexander Duyck wrote:
-> > On Fri, Sep 14, 2018 at 5:11 AM Mike Rapoport <rppt@linux.vnet.ibm.com> wrote:
-> > >
-> > > All architecures use memblock for early memory management. There is no need
-> > > for the CONFIG_HAVE_MEMBLOCK configuration option.
-> > >
-> > > Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
-> >
-> > <snip>
-> >
-> > > diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> > > index 5169205..4ae91fc 100644
-> > > --- a/include/linux/memblock.h
-> > > +++ b/include/linux/memblock.h
-> > > @@ -2,7 +2,6 @@
-> > >  #define _LINUX_MEMBLOCK_H
-> > >  #ifdef __KERNEL__
-> > >
-> > > -#ifdef CONFIG_HAVE_MEMBLOCK
-> > >  /*
-> > >   * Logical memory blocks.
-> > >   *
-> > > @@ -460,7 +459,6 @@ static inline phys_addr_t memblock_alloc(phys_addr_t size, phys_addr_t align)
-> > >  {
-> > >         return 0;
-> > >  }
-> > > -#endif /* CONFIG_HAVE_MEMBLOCK */
-> > >
-> > >  #endif /* __KERNEL__ */
-> >
-> > There was an #else above this section and I believe it and the code
-> > after it needs to be stripped as well.
->
-> Right, I've already sent the fix [1] and it's in mmots.
->
-> [1] https://lkml.org/lkml/2018/9/19/416
->
+Special thanks for the feedback from:
+- Finn Thain (I fixed the build problem) 
+- Geert Uytterhoeven (The cross compilers were very useful)
+- Rolf Eike Beer (Was unintentional, thanks for noticing)
 
-Are you sure? The patch you reference appears to be for
-drivers/of/fdt.c, and the bit I pointed out here is in
-include/linux/memblock.h.
+This Patchset changes some driver's Makefile to allow them building
+using the command 'make drivers/DRIVERNAME', if compatible.
 
-- Alex
+The changed drivers would return error if the above command was run
+on them, after an x86 allyesconfig.
+
+The main reason of this patchset is to allow building lists of
+drivers looking for warnings and errors to be fixed. 
+
+I see this change as a new feature, not a bugfix. I understand 
+the default bahavior may be building with a simple 'make', but I
+believe adding this new possibility will not be harmful.
+
+My main objective is to allow developers with low processing power
+to do changes in the kernel and look bugs using free services like
+GiltabCI, before submitting to community.
+
+If there is any interest helping/using this, I have a prototype in:
+https://gitlab.com/LeoBras/linux-next
+
+Leonardo Brás (7):
+  drivers: dio: Avoids building driver if CONFIG_DIO is disabled
+  drivers: nubus: Avoids building driver if CONFIG_NUBUS is disabled
+  drivers: parisc: Avoids building driver if CONFIG_PARISC is disabled
+  drivers: zorro: Avoids building proc.o if CONFIG_ZORRO is disabled
+  drivers: s390: Avoids building drivers if ARCH is not s390.
+  drivers: oprofile: Avoids building driver from direct make command
+  drivers: hwtracing: Adds Makefile to enable building from directory.
+
+ drivers/Makefile           | 4 +---
+ drivers/dio/Makefile       | 2 +-
+ drivers/hwtracing/Makefile | 3 +++
+ drivers/nubus/Makefile     | 5 +++--
+ drivers/oprofile/Makefile  | 2 ++
+ drivers/parisc/Makefile    | 2 +-
+ drivers/s390/Makefile      | 8 ++++----
+ drivers/zorro/Makefile     | 7 ++++---
+ 8 files changed, 19 insertions(+), 14 deletions(-)
+ create mode 100644 drivers/hwtracing/Makefile
+ create mode 100644 drivers/oprofile/Makefile
+
+-- 
+2.19.0
