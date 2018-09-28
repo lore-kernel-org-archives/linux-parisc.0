@@ -1,12 +1,13 @@
-From: =?UTF-8?q?Leonardo=20Br=C3=A1s?= <leobras.c@gmail.com>
-Subject: [PATCH v3 7/7] drivers: hwtracing: Adds Makefile to enable building from directory.
-Date: Thu, 27 Sep 2018 23:08:16 -0300
-Message-ID: <20180928020816.11251-8-leobras.c@gmail.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH v3 3/7] drivers: parisc: Avoids building driver if
+ CONFIG_PARISC is disabled
+Date: Fri, 28 Sep 2018 09:15:15 +0200
+Message-ID: <1538118915.3593.4.camel@HansenPartnership.com>
 References: <20180928020816.11251-1-leobras.c@gmail.com>
+         <20180928020816.11251-4-leobras.c@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: =?UTF-8?q?Leonardo=20Br=C3=A1s?= <leobras.c@gmail.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+Content-Type: text/plain; charset="UTF-8"
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Finn Thain <fthain@telegraphics.com.au>,
         Robert Richter <rric@kernel.org>,
         "James E.J. Bottomley" <jejb@parisc-linux.org>,
@@ -17,48 +18,42 @@ Cc: =?UTF-8?q?Leonardo=20Br=C3=A1s?= <leobras.c@gmail.com>,
         linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         oprofile-list@lists.sf.net, linux-parisc@vger.kernel.org,
         linux-s390@vger.kernel.org
-To: lkcamp@lists.libreplanetbr.org
+To: Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>,
+        lkcamp@lists.libreplanetbr.org
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180928020816.11251-1-leobras.c@gmail.com>
+In-Reply-To: <20180928020816.11251-4-leobras.c@gmail.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Adds Makefile to enable building the driver using
-'make drivers/hwtracing/'.
-Changes drivers/Makefile to call the new Makefile directly.
-It enables user building this driver without building the whole drivers/
-subtree.
+On Thu, 2018-09-27 at 23:08 -0300, Leonardo Brás wrote:
+> Avoids building driver if 'make drivers/parisc/' is called and
+> CONFIG_PARISC is disabled.
+
+Is that really a problem? The drivers/Makefile has this:
+
+obj-$(CONFIG_PARISC)		+= parisc/ 
+And you just overrode that by forcing the build.  It's not even clear
+we should refuse the build in that case; how would we know you don't
+have a legitimate reason for the override? 
 
 Signed-off-by: Leonardo Brás <leobras.c@gmail.com>
----
- drivers/Makefile           | 4 +---
- drivers/hwtracing/Makefile | 3 +++
- 2 files changed, 4 insertions(+), 3 deletions(-)
- create mode 100644 drivers/hwtracing/Makefile
+> ---
+>  drivers/parisc/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/parisc/Makefile b/drivers/parisc/Makefile
+> index 3cd5e6cb8478..80049d763aa0 100644
+> --- a/drivers/parisc/Makefile
+> +++ b/drivers/parisc/Makefile
+> @@ -24,5 +24,5 @@ obj-$(CONFIG_EISA)		+= eisa.o
+> eisa_enumerator.o eisa_eeprom.o
+>  obj-$(CONFIG_SUPERIO)		+= superio.o
+>  obj-$(CONFIG_CHASSIS_LCD_LED)	+= led.o
+>  obj-$(CONFIG_PDC_STABLE)	+= pdc_stable.o
+> -obj-y				+= power.o
+> +obj-$(CONFIG_PARISC)		+= power.o
 
-diff --git a/drivers/Makefile b/drivers/Makefile
-index 578f469f72fb..a237be6b602f 100644
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -174,9 +174,7 @@ obj-$(CONFIG_MCB)		+= mcb/
- obj-$(CONFIG_PERF_EVENTS)	+= perf/
- obj-$(CONFIG_RAS)		+= ras/
- obj-$(CONFIG_THUNDERBOLT)	+= thunderbolt/
--obj-$(CONFIG_CORESIGHT)		+= hwtracing/coresight/
--obj-y				+= hwtracing/intel_th/
--obj-$(CONFIG_STM)		+= hwtracing/stm/
-+obj-y				+= hwtracing/
- obj-$(CONFIG_ANDROID)		+= android/
- obj-$(CONFIG_NVMEM)		+= nvmem/
- obj-$(CONFIG_FPGA)		+= fpga/
-diff --git a/drivers/hwtracing/Makefile b/drivers/hwtracing/Makefile
-new file mode 100644
-index 000000000000..fe5773caec49
---- /dev/null
-+++ b/drivers/hwtracing/Makefile
-@@ -0,0 +1,3 @@
-+obj-$(CONFIG_CORESIGHT)		+= coresight/
-+obj-y				+= intel_th/
-+obj-$(CONFIG_STM)		+= stm/
--- 
-2.19.0
+If we conclude the use case is legitimate, that's not enough: the two
+inner symbols are PARISC only but CONFIG_EISA isn't.
+
+James
