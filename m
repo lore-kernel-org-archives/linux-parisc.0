@@ -1,11 +1,11 @@
-From: Leonardo =?utf-8?B?QnLDoXM=?= <leobras.c@gmail.com>
-Subject: [PATCH v3 7/7] drivers: hwtracing: Adds Makefile to enable building
- from directory.
-Date: Thu, 27 Sep 2018 22:49:07 -0300
-Message-ID: <20180928014907.GA10528@WindFlash>
+From: =?UTF-8?q?Leonardo=20Br=C3=A1s?= <leobras.c@gmail.com>
+Subject: [PATCH v3 0/7]  Remove errors building drivers/DRIVERNAME
+Date: Thu, 27 Sep 2018 23:08:09 -0300
+Message-ID: <20180928020816.11251-1-leobras.c@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+Content-Type: text/plain; charset=UTF-8
+Cc: =?UTF-8?q?Leonardo=20Br=C3=A1s?= <leobras.c@gmail.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Finn Thain <fthain@telegraphics.com.au>,
         Robert Richter <rric@kernel.org>,
         "James E.J. Bottomley" <jejb@parisc-linux.org>,
@@ -21,42 +21,52 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Adds Makefile to enable building the driver using
-'make drivers/hwtracing/'.
-Changes drivers/Makefile to call the new Makefile directly.
-It enables user building this driver without building the whole drivers/
-subtree.
+Special thanks for the feedback from:
+- Finn Thain (I fixed the build problem)
+- Geert Uytterhoeven (The cross compilers were very useful)
+- Rolf Eike Beer (Was unintentional, thanks for the help!)
 
-Signed-off-by: Leonardo Brás <leobras.c@gmail.com>
----
+This Patchset changes some driver's Makefile to allow them building
+using the command 'make drivers/DRIVERNAME', if compatible.
+
+The changed drivers would return error if the above command was run
+on them, after an x86 allyesconfig.
+
+The main reason of this patchset is to allow building lists of
+drivers looking for warnings and errors to be fixed.
+
+I see this change as a new feature, not a bugfix. I understand
+the default bahavior may be building with a simple 'make', but I
+believe adding this new possibility will not be harmful.
+
+My main objective is to allow developers with low processing power
+to do changes in the kernel and look bugs using free services like
+GiltabCI, before submitting to community.
+
+If there is any interest helping/using this, I have a prototype in:
+https://gitlab.com/LeoBras/linux-next
+
+
+Leonardo Brás (7):
+  drivers: dio: Avoids building driver if CONFIG_DIO is disabled
+  drivers: nubus: Avoids building driver if CONFIG_NUBUS is disabled
+  drivers: parisc: Avoids building driver if CONFIG_PARISC is disabled
+  drivers: zorro: Avoids building proc.o if CONFIG_ZORRO is disabled
+  drivers: s390: Avoids building drivers if ARCH is not s390.
+  drivers: oprofile: Avoids building driver from direct make command
+  drivers: hwtracing: Adds Makefile to enable building from directory.
+
  drivers/Makefile           | 4 +---
+ drivers/dio/Makefile       | 2 +-
  drivers/hwtracing/Makefile | 3 +++
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ drivers/nubus/Makefile     | 5 +++--
+ drivers/oprofile/Makefile  | 1 +
+ drivers/parisc/Makefile    | 2 +-
+ drivers/s390/Makefile      | 8 ++++----
+ drivers/zorro/Makefile     | 7 ++++---
+ 8 files changed, 18 insertions(+), 14 deletions(-)
  create mode 100644 drivers/hwtracing/Makefile
+ create mode 100644 drivers/oprofile/Makefile
 
-diff --git a/drivers/Makefile b/drivers/Makefile
-index 578f469f72fb..a237be6b602f 100644
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -174,9 +174,7 @@ obj-$(CONFIG_MCB)		+= mcb/
- obj-$(CONFIG_PERF_EVENTS)	+= perf/
- obj-$(CONFIG_RAS)		+= ras/
- obj-$(CONFIG_THUNDERBOLT)	+= thunderbolt/
--obj-$(CONFIG_CORESIGHT)		+= hwtracing/coresight/
--obj-y				+= hwtracing/intel_th/
--obj-$(CONFIG_STM)		+= hwtracing/stm/
-+obj-y				+= hwtracing/
- obj-$(CONFIG_ANDROID)		+= android/
- obj-$(CONFIG_NVMEM)		+= nvmem/
- obj-$(CONFIG_FPGA)		+= fpga/
-diff --git a/drivers/hwtracing/Makefile b/drivers/hwtracing/Makefile
-new file mode 100644
-index 000000000000..fe5773caec49
---- /dev/null
-+++ b/drivers/hwtracing/Makefile
-@@ -0,0 +1,3 @@
-+obj-$(CONFIG_CORESIGHT)		+= coresight/
-+obj-y				+= intel_th/
-+obj-$(CONFIG_STM)		+= stm/
 -- 
 2.19.0
