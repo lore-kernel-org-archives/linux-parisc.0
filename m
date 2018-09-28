@@ -1,46 +1,71 @@
-From: Firoz Khan <firoz.khan@linaro.org>
-Subject: [PATCH v2 5/5] parisc: add __IGNORE* entries in asm/unistd.h
-Date: Thu, 27 Sep 2018 19:54:27 +0530
-Message-ID: <1538058267-3765-6-git-send-email-firoz.khan@linaro.org>
-References: <1538058267-3765-1-git-send-email-firoz.khan@linaro.org>
-Cc: y2038@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, arnd@arndb.de, deepa.kernel@gmail.com,
-        marcin.juszkiewicz@linaro.org, firoz.khan@linaro.org
-To: linux-parisc@vger.kernel.org,
-        "James E . J . Bottomley" <jejb@parisc-linux.org>,
+From: Leonardo =?utf-8?B?QnLDoXM=?= <leobras.c@gmail.com>
+Subject: [PATCH v3 0/7]  Remove errors building drivers/DRIVERNAME
+Date: Thu, 27 Sep 2018 22:45:36 -0300
+Message-ID: <20180928014536.GA10369@WindFlash>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Robert Richter <rric@kernel.org>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
         Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        oprofile-list@lists.sf.net, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org
+To: lkcamp@lists.libreplanetbr.org
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1538058267-3765-1-git-send-email-firoz.khan@linaro.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Add __IGNORE* entries for nfsservctl, io_pgetevents and rseq
-in the file asm/unistd.h as it is correct to keep __IGNORE*
-entry in non uapi header asm/unistd.h while uapi/asm/unistd.h
-must hold information only useful for user space applications.
+Special thanks for the feedback from:
+- Finn Thain (I fixed the build problem)
+- Geert Uytterhoeven (The cross compilers were very useful)
+- Rolf Eike Beer (Was unintentional, thanks for the help!)
 
-Signed-off-by: Firoz Khan <firoz.khan@linaro.org>
----
- arch/parisc/include/asm/unistd.h | 3 +++
- 1 file changed, 3 insertions(+)
+This Patchset changes some driver's Makefile to allow them building
+using the command 'make drivers/DRIVERNAME', if compatible.
 
-diff --git a/arch/parisc/include/asm/unistd.h b/arch/parisc/include/asm/unistd.h
-index 93fd9f6..9294e10 100644
---- a/arch/parisc/include/asm/unistd.h
-+++ b/arch/parisc/include/asm/unistd.h
-@@ -13,6 +13,9 @@
- #define __IGNORE_pkey_mprotect
- #define __IGNORE_pkey_alloc
- #define __IGNORE_pkey_free
-+#define __IGNORE_nfsservctl
-+#define __IGNORE_io_pgetevents
-+#define __IGNORE_rseq
- 
- #ifndef ASM_LINE_SEP
- # define ASM_LINE_SEP ;
+The changed drivers would return error if the above command was run
+on them, after an x86 allyesconfig.
+
+The main reason of this patchset is to allow building lists of
+drivers looking for warnings and errors to be fixed.
+
+I see this change as a new feature, not a bugfix. I understand
+the default bahavior may be building with a simple 'make', but I
+believe adding this new possibility will not be harmful.
+
+My main objective is to allow developers with low processing power
+to do changes in the kernel and look bugs using free services like
+GiltabCI, before submitting to community.
+
+If there is any interest helping/using this, I have a prototype in:
+https://gitlab.com/LeoBras/linux-next
+
+
+Leonardo Brás (7):
+  drivers: dio: Avoids building driver if CONFIG_DIO is disabled
+  drivers: nubus: Avoids building driver if CONFIG_NUBUS is disabled
+  drivers: parisc: Avoids building driver if CONFIG_PARISC is disabled
+  drivers: zorro: Avoids building proc.o if CONFIG_ZORRO is disabled
+  drivers: s390: Avoids building drivers if ARCH is not s390.
+  drivers: oprofile: Avoids building driver from direct make command
+  drivers: hwtracing: Adds Makefile to enable building from directory.
+
+ drivers/Makefile           | 4 +---
+ drivers/dio/Makefile       | 2 +-
+ drivers/hwtracing/Makefile | 3 +++
+ drivers/nubus/Makefile     | 5 +++--
+ drivers/oprofile/Makefile  | 1 +
+ drivers/parisc/Makefile    | 2 +-
+ drivers/s390/Makefile      | 8 ++++----
+ drivers/zorro/Makefile     | 7 ++++---
+ 8 files changed, 18 insertions(+), 14 deletions(-)
+ create mode 100644 drivers/hwtracing/Makefile
+ create mode 100644 drivers/oprofile/Makefile
+
 -- 
-1.9.1
+2.19.0
