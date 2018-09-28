@@ -1,8 +1,8 @@
 From: Leonardo =?utf-8?B?QnLDoXM=?= <leobras.c@gmail.com>
-Subject: [PATCH v3 1/7] drivers: dio: Avoids building driver if CONFIG_DIO is
- disabled
-Date: Thu, 27 Sep 2018 22:46:28 -0300
-Message-ID: <20180928014628.GA10427@WindFlash>
+Subject: [PATCH v3 2/7] drivers: nubus: Avoids building driver if
+ CONFIG_NUBUS is disabled
+Date: Thu, 27 Sep 2018 22:48:24 -0300
+Message-ID: <20180928014824.GA10504@WindFlash>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
@@ -16,34 +16,34 @@ Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         oprofile-list@lists.sf.net, linux-parisc@vger.kernel.org,
         linux-s390@vger.kernel.org
-To: lkcamp@lists.libreplanetbr.org,
-        /tmp/v3-0002-drivers-nubus-Avoids-building-driver-if-CONFIG_NU.patch@windflash,
-        /tmp/v3-0003-drivers-parisc-Avoids-building-driver-if-CONFIG_P.patch@windflash,
-        /tmp/v3-0004-drivers-zorro-Avoids-building-proc.o-if-CONFIG_ZO.patch@windflash,
-        /tmp/v3-0005-drivers-s390-Avoids-building-drivers-if-ARCH-is-n.patch@windflash,
-        /tmp/v3-0006-drivers-oprofile-Avoids-building-driver-from-dire.patch@windflash,
-        /tmp/v3-0007-drivers-hwtracing-Adds-Makefile-to-enable-buildin.patch@windflash
+To: lkcamp@lists.libreplanetbr.org
 Return-path: <linux-kernel-owner@vger.kernel.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Avoids building driver if 'make drivers/dio/' is called and
-CONFIG_DIO is disabled.
+Avoids building driver if 'make drivers/nubus/' is called and
+CONFIG_NUBUS is disabled.
+Avoids building proc.o if CONFIG_PROC_FS is enabled but
+CONFIG_NUBUS is disabled.
 
 Signed-off-by: Leonardo Brás <leobras.c@gmail.com>
 ---
- drivers/dio/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nubus/Makefile | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dio/Makefile b/drivers/dio/Makefile
-index ae92d17083f2..8fc80e805b90 100644
---- a/drivers/dio/Makefile
-+++ b/drivers/dio/Makefile
-@@ -2,4 +2,4 @@
- # Makefile for the linux kernel.
+diff --git a/drivers/nubus/Makefile b/drivers/nubus/Makefile
+index 6d063cde39d1..1daa51217e95 100644
+--- a/drivers/nubus/Makefile
++++ b/drivers/nubus/Makefile
+@@ -2,6 +2,7 @@
+ # Makefile for the nubus specific drivers.
  #
  
--obj-y := dio.o dio-driver.o dio-sysfs.o
-+obj-$(CONFIG_DIO) := dio.o dio-driver.o dio-sysfs.o
+-obj-y := nubus.o bus.o
++obj-$(CONFIG_NUBUS) := nubus_all.o
++nubus_all-y += bus.o nubus.o
+ 
+-obj-$(CONFIG_PROC_FS) += proc.o
++nubus_all-$(CONFIG_PROC_FS) += proc.o
 -- 
 2.19.0
