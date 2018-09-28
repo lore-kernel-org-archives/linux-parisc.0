@@ -1,59 +1,73 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH v3 3/7] drivers: parisc: Avoids building driver if
- CONFIG_PARISC is disabled
-Date: Fri, 28 Sep 2018 09:15:15 +0200
-Message-ID: <1538118915.3593.4.camel@HansenPartnership.com>
-References: <20180928020816.11251-1-leobras.c@gmail.com>
-         <20180928020816.11251-4-leobras.c@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 2/5] parisc: add __NR_Linux_syscalls macro with __NR_syscalls
+Date: Fri, 28 Sep 2018 14:14:26 +0200
+Message-ID: <CAK8P3a3ZOC-V0uOD6uD=Hg-AoN8mkJynD6ubpaTppevUvQ54qw@mail.gmail.com>
+References: <1538058267-3765-1-git-send-email-firoz.khan@linaro.org> <1538058267-3765-3-git-send-email-firoz.khan@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Robert Richter <rric@kernel.org>,
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
         "James E.J. Bottomley" <jejb@parisc-linux.org>,
         Helge Deller <deller@gmx.de>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        oprofile-list@lists.sf.net, linux-parisc@vger.kernel.org,
-        linux-s390@vger.kernel.org
-To: Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>,
-        lkcamp@lists.libreplanetbr.org
+        Thomas Gleixner <tglx@linutronix.de>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>
+To: Firoz Khan <firoz.khan@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180928020816.11251-4-leobras.c@gmail.com>
+In-Reply-To: <1538058267-3765-3-git-send-email-firoz.khan@linaro.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, 2018-09-27 at 23:08 -0300, Leonardo Brás wrote:
-> Avoids building driver if 'make drivers/parisc/' is called and
-> CONFIG_PARISC is disabled.
-
-Is that really a problem? The drivers/Makefile has this:
-
-obj-$(CONFIG_PARISC)		+= parisc/ 
-And you just overrode that by forcing the build.  It's not even clear
-we should refuse the build in that case; how would we know you don't
-have a legitimate reason for the override? 
-
-Signed-off-by: Leonardo Brás <leobras.c@gmail.com>
+On Thu, Sep 27, 2018 at 4:25 PM Firoz Khan <firoz.khan@linaro.org> wrote:
+>
+> 1. Update __NR_Linux_syscalls in uapi/asm/unistd.h manually
+>    by counting the no.of system calls. No need to update
+>    __NR_Linux_syscalls until we either add a new system call
+>    or delete an existing system call.
+>
+> 2. We can keep this feature it above mentioned script, that
+>    will count the number of syscalls and keep it in a gener-
+>    ated file. In this case we don't need to explicitly update
+>    __NR_Linux_syscalls in asm/unistd.h file.
+>
+> The 2nd option will be the recommended one. For that, I moved
+> the __NR_Linux_syscalls macro from uapi/asm/unistd.h to asm/
+> unistd.h. The macro __NR_syscalls also added for making the
+> name convention same across all architecture. While __NR_sys-
+> calls isn't strictly part of the uapi, having it as part of
+> the generated header to simplifies the implementation. We also
+> need to enclose this macro with #ifdef __KERNEL__ to avoid side
+> effects.
+>
+> Signed-off-by: Firoz Khan <firoz.khan@linaro.org>
 > ---
->  drivers/parisc/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/parisc/Makefile b/drivers/parisc/Makefile
-> index 3cd5e6cb8478..80049d763aa0 100644
-> --- a/drivers/parisc/Makefile
-> +++ b/drivers/parisc/Makefile
-> @@ -24,5 +24,5 @@ obj-$(CONFIG_EISA)		+= eisa.o
-> eisa_enumerator.o eisa_eeprom.o
->  obj-$(CONFIG_SUPERIO)		+= superio.o
->  obj-$(CONFIG_CHASSIS_LCD_LED)	+= led.o
->  obj-$(CONFIG_PDC_STABLE)	+= pdc_stable.o
-> -obj-y				+= power.o
-> +obj-$(CONFIG_PARISC)		+= power.o
+>  arch/parisc/include/uapi/asm/unistd.h | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
+> index bb52e12..255c62a 100644
+> --- a/arch/parisc/include/uapi/asm/unistd.h
+> +++ b/arch/parisc/include/uapi/asm/unistd.h
+> @@ -366,7 +366,11 @@
+>  #define __NR_statx             (__NR_Linux + 349)
+>  #define __NR_io_pgetevents     (__NR_Linux + 350)
+>
+> -#define __NR_Linux_syscalls    (__NR_io_pgetevents + 1)
+> +#ifdef __KERNEL__
+> +#define __NR_syscalls           351
+> +#endif
+> +
+> +#define __NR_Linux_syscalls     __NR_syscalls
+>
 
-If we conclude the use case is legitimate, that's not enough: the two
-inner symbols are PARISC only but CONFIG_EISA isn't.
+Hmm, now you have a __NR_Linux_syscalls macro that is defined in user
+space to a another macro that is not visible there. How about moving
+__NR_Linux_syscalls into arch/parisc/include/asm/unistd.h or
+replacing its users with __NR_syscalls instead?
 
-James
+       Arnd
