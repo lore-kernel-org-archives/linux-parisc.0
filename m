@@ -1,9 +1,9 @@
 From: Firoz Khan <firoz.khan@linaro.org>
-Subject: Re: [PATCH v2 2/5] parisc: add __NR_Linux_syscalls macro with __NR_syscalls
-Date: Mon, 1 Oct 2018 19:36:44 +0530
-Message-ID: <CALxhOnjrmfiPbSXf_ba3+5OyqZA6xuZue8PV4Pu7f3z+h-kUZg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] parisc: add system call table generation support
+Date: Mon, 1 Oct 2018 19:53:12 +0530
+Message-ID: <CALxhOnjwY+n5qdNBsL2_ZxCMkGf=Fz=_MwMwBjrWS8=WzYxAQQ@mail.gmail.com>
 References: <1538058267-3765-1-git-send-email-firoz.khan@linaro.org>
- <1538058267-3765-3-git-send-email-firoz.khan@linaro.org> <CAK8P3a3ZOC-V0uOD6uD=Hg-AoN8mkJynD6ubpaTppevUvQ54qw@mail.gmail.com>
+ <1538058267-3765-4-git-send-email-firoz.khan@linaro.org> <CAK8P3a0D2G8=weYcua7G3HmL07vrYR_iExmmjt2SuokbJ=Vvog@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Cc: linux-parisc@vger.kernel.org,
@@ -20,70 +20,32 @@ Cc: linux-parisc@vger.kernel.org,
         Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>
 To: Arnd Bergmann <arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAK8P3a3ZOC-V0uOD6uD=Hg-AoN8mkJynD6ubpaTppevUvQ54qw@mail.gmail.com>
+In-Reply-To: <CAK8P3a0D2G8=weYcua7G3HmL07vrYR_iExmmjt2SuokbJ=Vvog@mail.gmail.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 Hi Arnd,
 
-On Fri, 28 Sep 2018 at 17:44, Arnd Bergmann <arnd@arndb.de> wrote:
+On Mon, 1 Oct 2018 at 17:06, Arnd Bergmann <arnd@arndb.de> wrote:
 >
 > On Thu, Sep 27, 2018 at 4:25 PM Firoz Khan <firoz.khan@linaro.org> wrote:
 > >
-> > 1. Update __NR_Linux_syscalls in uapi/asm/unistd.h manually
-> >    by counting the no.of system calls. No need to update
-> >    __NR_Linux_syscalls until we either add a new system call
-> >    or delete an existing system call.
-> >
-> > 2. We can keep this feature it above mentioned script, that
-> >    will count the number of syscalls and keep it in a gener-
-> >    ated file. In this case we don't need to explicitly update
-> >    __NR_Linux_syscalls in asm/unistd.h file.
-> >
-> > The 2nd option will be the recommended one. For that, I moved
-> > the __NR_Linux_syscalls macro from uapi/asm/unistd.h to asm/
-> > unistd.h. The macro __NR_syscalls also added for making the
-> > name convention same across all architecture. While __NR_sys-
-> > calls isn't strictly part of the uapi, having it as part of
-> > the generated header to simplifies the implementation. We also
-> > need to enclose this macro with #ifdef __KERNEL__ to avoid side
-> > effects.
-> >
-> > Signed-off-by: Firoz Khan <firoz.khan@linaro.org>
 > > ---
-> >  arch/parisc/include/uapi/asm/unistd.h | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
-> > index bb52e12..255c62a 100644
-> > --- a/arch/parisc/include/uapi/asm/unistd.h
-> > +++ b/arch/parisc/include/uapi/asm/unistd.h
-> > @@ -366,7 +366,11 @@
-> >  #define __NR_statx             (__NR_Linux + 349)
-> >  #define __NR_io_pgetevents     (__NR_Linux + 350)
-> >
-> > -#define __NR_Linux_syscalls    (__NR_io_pgetevents + 1)
-> > +#ifdef __KERNEL__
-> > +#define __NR_syscalls           351
-> > +#endif
-> > +
-> > +#define __NR_Linux_syscalls     __NR_syscalls
-> >
+> >  arch/parisc/kernel/syscalls/Makefile       |  55 +++++
+> >  arch/parisc/kernel/syscalls/syscall_32.tbl | 342 +++++++++++++++++++++++++++++
+> >  arch/parisc/kernel/syscalls/syscall_64.tbl | 342 +++++++++++++++++++++++++++++
+> >  arch/parisc/kernel/syscalls/syscallhdr.sh  |  35 +++
+> >  arch/parisc/kernel/syscalls/syscalltbl.sh  |  42 ++++
 >
-> Hmm, now you have a __NR_Linux_syscalls macro that is defined in user
-> space to a another macro that is not visible there. How about moving
-> __NR_Linux_syscalls into arch/parisc/include/asm/unistd.h or
-> replacing its users with __NR_syscalls instead?
+> I think we absolutely want to share the .tbl files for generating all
+> five outputs
+> (32-bit unistd.h, 64-bit unistd.h, 32-bit native syscall-table.S, 64-bit native
+> syscall-table.S, and 32-bit compat syscall-table.S) so we only
+> have to modify one file when adding another syscall, and to ensure that
+>  32/64 are in sync.
 
-Something went wrong when I created this patch series. Yes, this must be
-reside in asm/unistd.h instead of uapi/asm/unistd.h. I would update this
-change asap.
+For this design, I need to rework. I'll update you shortly
 
-I would appreciate if some can perform boot test on actual platform.
-Hopefully the above change doesn't make any problem.
-
-Thanks
-Firoz
-
+- Firoz
 >
->        Arnd
+>       Arnd
