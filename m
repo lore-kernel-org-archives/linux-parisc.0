@@ -1,73 +1,49 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 2/5] parisc: add __NR_Linux_syscalls macro with __NR_syscalls
-Date: Fri, 28 Sep 2018 14:14:26 +0200
-Message-ID: <CAK8P3a3ZOC-V0uOD6uD=Hg-AoN8mkJynD6ubpaTppevUvQ54qw@mail.gmail.com>
-References: <1538058267-3765-1-git-send-email-firoz.khan@linaro.org> <1538058267-3765-3-git-send-email-firoz.khan@linaro.org>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: linux-next: Signed-off-by missing for commit in the parisc-hd tree
+Date: Mon, 1 Oct 2018 11:04:01 +1000
+Message-ID: <20181001110401.046aa075@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>
-To: Firoz Khan <firoz.khan@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/75A6QhBLrMneuYPivE7KPNd"; protocol="application/pgp-signature"
+Cc: Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1538058267-3765-3-git-send-email-firoz.khan@linaro.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Sep 27, 2018 at 4:25 PM Firoz Khan <firoz.khan@linaro.org> wrote:
->
-> 1. Update __NR_Linux_syscalls in uapi/asm/unistd.h manually
->    by counting the no.of system calls. No need to update
->    __NR_Linux_syscalls until we either add a new system call
->    or delete an existing system call.
->
-> 2. We can keep this feature it above mentioned script, that
->    will count the number of syscalls and keep it in a gener-
->    ated file. In this case we don't need to explicitly update
->    __NR_Linux_syscalls in asm/unistd.h file.
->
-> The 2nd option will be the recommended one. For that, I moved
-> the __NR_Linux_syscalls macro from uapi/asm/unistd.h to asm/
-> unistd.h. The macro __NR_syscalls also added for making the
-> name convention same across all architecture. While __NR_sys-
-> calls isn't strictly part of the uapi, having it as part of
-> the generated header to simplifies the implementation. We also
-> need to enclose this macro with #ifdef __KERNEL__ to avoid side
-> effects.
->
-> Signed-off-by: Firoz Khan <firoz.khan@linaro.org>
-> ---
->  arch/parisc/include/uapi/asm/unistd.h | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
-> index bb52e12..255c62a 100644
-> --- a/arch/parisc/include/uapi/asm/unistd.h
-> +++ b/arch/parisc/include/uapi/asm/unistd.h
-> @@ -366,7 +366,11 @@
->  #define __NR_statx             (__NR_Linux + 349)
->  #define __NR_io_pgetevents     (__NR_Linux + 350)
->
-> -#define __NR_Linux_syscalls    (__NR_io_pgetevents + 1)
-> +#ifdef __KERNEL__
-> +#define __NR_syscalls           351
-> +#endif
-> +
-> +#define __NR_Linux_syscalls     __NR_syscalls
->
+--Sig_/75A6QhBLrMneuYPivE7KPNd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hmm, now you have a __NR_Linux_syscalls macro that is defined in user
-space to a another macro that is not visible there. How about moving
-__NR_Linux_syscalls into arch/parisc/include/asm/unistd.h or
-replacing its users with __NR_syscalls instead?
+Hi all,
 
-       Arnd
+Commit
+
+  f17bbdb5eea2 ("parisc: Remove PTE load and fault check from L2_ptep macro=
+")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/75A6QhBLrMneuYPivE7KPNd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAluxcoEACgkQAVBC80lX
+0Gx07wf/atOF3j4/DKTGL3PsMcgrtLoTQI2qaCbwjfqLMNg/UglIM51SqGvsuLe/
+LiuF3u+QWJ/A5xgvIoG6q1Bra+wQcUM20I8gZedWwajGeQn3IXfqZKoLBwDFHOCE
+I8qTGnP1jYLXOAeP9kuOqvLmWoJBfIluOicMxcasCZVn+A+eshac1e/UW5Wkqymb
+J+AInORTJ5Fhl+C/X5qFpbvemyV6GJhlZULXfO9gKT2ovfTEq/9VSwClzBNO7R32
+s0+WPdUNSXJBCECxSE06LFMCTkwHhLBDomSHUVSsy0AfJIvrBpXkK/Mz/og3VrDH
+7GCZ33AQvpzQN/Ls5ZytVpbptmozxg==
+=VbdX
+-----END PGP SIGNATURE-----
+
+--Sig_/75A6QhBLrMneuYPivE7KPNd--
