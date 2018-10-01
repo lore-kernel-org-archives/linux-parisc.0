@@ -1,42 +1,56 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 3/5] parisc: add system call table generation support
-Date: Mon, 1 Oct 2018 13:36:12 +0200
-Message-ID: <CAK8P3a0D2G8=weYcua7G3HmL07vrYR_iExmmjt2SuokbJ=Vvog@mail.gmail.com>
-References: <1538058267-3765-1-git-send-email-firoz.khan@linaro.org> <1538058267-3765-4-git-send-email-firoz.khan@linaro.org>
+From: Heiko Carstens <heiko.carstens@de.ibm.com>
+Subject: Re: [PATCH v3 5/7] drivers: s390: Avoids building drivers if ARCH is
+ not s390.
+Date: Mon, 1 Oct 2018 14:46:17 +0200
+Message-ID: <20181001124617.GA3185@osiris>
+References: <20180928020816.11251-1-leobras.c@gmail.com>
+ <20180928020816.11251-6-leobras.c@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Parisc List <linux-parisc@vger.kernel.org>,
+Content-Type: text/plain; charset=iso-8859-1
+Cc: lkcamp@lists.libreplanetbr.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Robert Richter <rric@kernel.org>,
         "James E.J. Bottomley" <jejb@parisc-linux.org>,
         Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>
-To: Firoz Khan <firoz.khan@linaro.org>
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        oprofile-list@lists.sf.net, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org
+To: Leonardo =?iso-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1538058267-3765-4-git-send-email-firoz.khan@linaro.org>
+In-Reply-To: <20180928020816.11251-6-leobras.c@gmail.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Sep 27, 2018 at 4:25 PM Firoz Khan <firoz.khan@linaro.org> wrote:
->
+On Thu, Sep 27, 2018 at 11:08:14PM -0300, Leonardo Brás wrote:
+> Avoids building s390 drivers if 'make drivers/s390/' is called but
+> ARCH is not s390.
+> 
+> Signed-off-by: Leonardo Brás <leobras.c@gmail.com>
 > ---
->  arch/parisc/kernel/syscalls/Makefile       |  55 +++++
->  arch/parisc/kernel/syscalls/syscall_32.tbl | 342 +++++++++++++++++++++++++++++
->  arch/parisc/kernel/syscalls/syscall_64.tbl | 342 +++++++++++++++++++++++++++++
->  arch/parisc/kernel/syscalls/syscallhdr.sh  |  35 +++
->  arch/parisc/kernel/syscalls/syscalltbl.sh  |  42 ++++
+>  drivers/s390/Makefile | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/s390/Makefile b/drivers/s390/Makefile
+> index a863b0462b43..0575f02dba45 100644
+> --- a/drivers/s390/Makefile
+> +++ b/drivers/s390/Makefile
+> @@ -3,7 +3,7 @@
+>  # Makefile for the S/390 specific device drivers
+>  #
+>  
+> -obj-y += cio/ block/ char/ crypto/ net/ scsi/ virtio/
+> -
+> -drivers-y += drivers/s390/built-in.a
+> -
+> +ifeq ($(ARCH),s390)
+> +	obj-y += cio/ block/ char/ crypto/ net/ scsi/ virtio/
+> +	drivers-y += drivers/s390/built-in.a
+> +endif
 
-I think we absolutely want to share the .tbl files for generating all
-five outputs
-(32-bit unistd.h, 64-bit unistd.h, 32-bit native syscall-table.S, 64-bit native
-syscall-table.S, and 32-bit compat syscall-table.S) so we only
-have to modify one file when adding another syscall, and to ensure that
- 32/64 are in sync.
-
-      Arnd
+And then somebody wants to build with e.g. "make drivers/s390/cio/" and it
+still doesn't work. So _if_ this should be supported then it should work
+with all directory levels and all configuration options. Otherwise this is
+going to be a never ending story.
