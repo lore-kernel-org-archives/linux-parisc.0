@@ -1,51 +1,52 @@
-From: Firoz Khan <firoz.khan@linaro.org>
-Subject: Re: [PATCH v2 3/5] parisc: add system call table generation support
-Date: Mon, 1 Oct 2018 19:53:12 +0530
-Message-ID: <CALxhOnjwY+n5qdNBsL2_ZxCMkGf=Fz=_MwMwBjrWS8=WzYxAQQ@mail.gmail.com>
-References: <1538058267-3765-1-git-send-email-firoz.khan@linaro.org>
- <1538058267-3765-4-git-send-email-firoz.khan@linaro.org> <CAK8P3a0D2G8=weYcua7G3HmL07vrYR_iExmmjt2SuokbJ=Vvog@mail.gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc fixes for kernel v4.19
+Date: Tue, 2 Oct 2018 23:02:13 +0200
+Message-ID: <20181002210213.GA17826@ls3530.fritz.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-parisc@vger.kernel.org,
-        "James E . J . Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>
-To: Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset=us-ascii
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAK8P3a0D2G8=weYcua7G3HmL07vrYR_iExmmjt2SuokbJ=Vvog@mail.gmail.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Arnd,
+Hi Greg,
 
-On Mon, 1 Oct 2018 at 17:06, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Thu, Sep 27, 2018 at 4:25 PM Firoz Khan <firoz.khan@linaro.org> wrote:
-> >
-> > ---
-> >  arch/parisc/kernel/syscalls/Makefile       |  55 +++++
-> >  arch/parisc/kernel/syscalls/syscall_32.tbl | 342 +++++++++++++++++++++++++++++
-> >  arch/parisc/kernel/syscalls/syscall_64.tbl | 342 +++++++++++++++++++++++++++++
-> >  arch/parisc/kernel/syscalls/syscallhdr.sh  |  35 +++
-> >  arch/parisc/kernel/syscalls/syscalltbl.sh  |  42 ++++
->
-> I think we absolutely want to share the .tbl files for generating all
-> five outputs
-> (32-bit unistd.h, 64-bit unistd.h, 32-bit native syscall-table.S, 64-bit native
-> syscall-table.S, and 32-bit compat syscall-table.S) so we only
-> have to modify one file when adding another syscall, and to ensure that
->  32/64 are in sync.
+please pull a last set of fixes for the parisc architecture for kernel 4.19 from:
 
-For this design, I need to rework. I'll update you shortly
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.19-3
 
-- Firoz
->
->       Arnd
+The major change is for parisc64 to use a 64-bit suseconds_t type to
+match what glibc expects for 64-bit userspace. It's an ABI change, but
+since we don't have a 64-bit userspace on parisc yet, it won't introduce
+a breakage.
+
+Other than that we simply drop unused code and outdated gcc version
+checks.
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      parisc64: change __kernel_suseconds_t to match glibc
+
+Christoph Hellwig (1):
+      parisc: remove the dead ccio-rm-dma driver
+
+Helge Deller (1):
+      parisc: Use PARISC_ITLB_TRAP constant in entry.S
+
+Masahiro Yamada (1):
+      parisc: remove check for minimum required GCC version
+
+ arch/parisc/Makefile                       |   9 --
+ arch/parisc/include/uapi/asm/posix_types.h |   3 -
+ arch/parisc/kernel/entry.S                 |   2 +-
+ drivers/parisc/Makefile                    |   3 -
+ drivers/parisc/ccio-rm-dma.c               | 202 -----------------------------
+ 5 files changed, 1 insertion(+), 218 deletions(-)
+ delete mode 100644 drivers/parisc/ccio-rm-dma.c
