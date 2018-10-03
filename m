@@ -1,98 +1,90 @@
-From: Leonardo Bras <leobras.c@gmail.com>
-Subject: Re: [PATCH v3 0/7] Remove errors building drivers/DRIVERNAME
-Date: Wed, 3 Oct 2018 12:46:15 -0300
-Message-ID: <CADvQ+rETmm2Ag4sijXG-0Aya7B0oww7LkLgijAC+nznyWskkvg@mail.gmail.com>
-References: <20180928020816.11251-1-leobras.c@gmail.com> <20181001075607.GA3776@rric.localdomain>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [GIT PULL] parisc fixes for kernel v4.19
+Date: Wed, 3 Oct 2018 11:16:12 -0700
+Message-ID: <20181003181612.GB28575@kroah.com>
+References: <20181002210213.GA17826@ls3530.fritz.box>
+ <20181002211645.GA6454@kroah.com>
+ <ad45f249-e064-d5a4-c658-eaa03bb3a04a@gmx.de>
+ <20181002222452.GB11788@kroah.com>
+ <dbfa0162-8ed1-b16e-a418-da3b92c76230@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: lkcamp@lists.libreplanetbr.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org, oprofile-list@lists.sf.net,
-        linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-To: Robert Richter <rric@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+To: Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181001075607.GA3776@rric.localdomain>
+In-Reply-To: <dbfa0162-8ed1-b16e-a418-da3b92c76230@gmx.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Oct 1, 2018 at 4:56 AM Robert Richter <rric@kernel.org> wrote:
->
-> On 27.09.18 23:08:09, Leonardo Br=C3=A1s wrote:
-> > This Patchset changes some driver's Makefile to allow them building
-> > using the command 'make drivers/DRIVERNAME', if compatible.
-> >
-> > The changed drivers would return error if the above command was run
-> > on them, after an x86 allyesconfig.
->
-> I don't see what you are trying to achieve here. Why shouldn't the
-> command fail if it is not the intended way to call it? There are a
-> couple of use cases where drivers/ is used to share common code over
-> different archs and it is not always the intention to build them in
-> drivers/ directly.
+Adding Arnd as he wrote the patch in question here...
 
+On Wed, Oct 03, 2018 at 04:47:30PM +0200, Helge Deller wrote:
+> On 03.10.2018 00:24, Greg Kroah-Hartman wrote:
+> > On Tue, Oct 02, 2018 at 11:46:11PM +0200, Helge Deller wrote:
+> >> Hi Greg,
+> >>
+> >> On 02.10.2018 23:16, Greg Kroah-Hartman wrote:
+> >>> On Tue, Oct 02, 2018 at 11:02:13PM +0200, Helge Deller wrote:
+> >>>> please pull a last set of fixes for the parisc architecture for kernel 4.19 from:
+> >>>>
+> >>>>   git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.19-3
+> >>>>
+> >>>> The major change is for parisc64 to use a 64-bit suseconds_t type to
+> >>>> match what glibc expects for 64-bit userspace. It's an ABI change, but
+> >>>> since we don't have a 64-bit userspace on parisc yet, it won't introduce
+> >>>> a breakage.
+> >>>
+> >>> Isn't it a bit "late" in the release cycle for such a change?  Why not
+> >>> do this on the -rc1 release?
+> >>
+> >> I've tagged it for stable release.
+> >> So, it can go in now, or just wait until -rc1 and go in later.
+> > 
+> > Why is a major API change a viable stable change?
+> 
+> Of course it's not.
+> Esp. not if an API has been used already.
+> IMHO, this case is really different though... 
+> 
+> > What bugfix does it provide?
+> 
+> It fixes that code in stable kernels which would return wrong
+> time values *if* someone would create a libc for 64-bit parisc
+> and would run it with those "stable" kernels.
+> Fixing it now has no side-effects, the change is a trivial
+> 2-line-removal patch, would bring the code in sync with
+> newer kernel source code, and it really fixes existing code. 
+> 
+> I still believe that this justifies for a backport.
+> 
+> Nevertheless, if you really disagree, I'm fine dropping the 
+> backport to stable and will only push it in the next
+> merge window for v4.20.
 
-Sorry, I was not very clear at my reasons why this change is important,
-I will try to briefly explain the whole story.
+To clarify, you have no users of this api anywhere (hopefully), and so
+the patch in question prevents anyone from using the api in the future.
+This makes the suseconds_t handling easier for some reason because only
+sparc32 is a "problem" now, right?
 
-Some weeks ago I was trying to solve a task that needed to change some
-compiling options, build the whole kernel (allyesconfig) and look for error=
-s.
-The problem was: It would take a long time to build everything in my comput=
-er.
-And many friends with slimmer laptops would take much longer.
+So I don't see the "bug" that is being fixed here.  I would have pushed
+back on the submission for this for the stable trees as well, this isn't
+anything that anyone is using, so there's nothing to "fix" that I can
+tell.
 
-So, I was looking for a service that could do that for me, in the cloud.
-I found out Gitlab.com offers free 50k minutes of CI for open source projec=
-ts,
-and allows anyone get this CI time by only forking my project, adding their
-changes and pushing to Gitlab.
+Yes, doing it in the "future" is fine, to prevent anyone from making
+this mistake (are new machines even being made for this arch?)  But I
+don't see how this is a -stable issue.
 
-But Gitlab don't allow 'jobs' to take longer than 3 hours, after that the '=
-job'
-is killed.
+In this series, only the first patch, would seem to be a real fix, but
+even that one isn't.  You are just using a #define for a magic number,
+one that will never change either way (the define will never change.) So
+that too isn't really a fix, just a code cleanup.
 
-The kernel could not be built in 3h, not with allyesconfig. So, I created a
-'job' for each directory in Linux kernel, and tried to build them separatel=
-y.
-All went fine, except for drivers/, which took over 3 hours.
+So I am strongly inclined to just not take any of these right now.
 
-Most logical thing was to continue the division and create five 'jobs' that
-could divide the building time of drivers. To do that, each job took care o=
-f a
-range of starting letters, as you can see in this link:
-https://gitlab.com/LeoBras/linux-next/blob/build-ci/.gitlab-ci.yml
+thanks,
 
-But then I found out some drivers were failing to build. Even if they were =
-not
-enabled in my .config. After some work I found out some drivers selection i=
-s
-done in drivers/Makefile, and incompatible drivers would break my build if
-tried to call them directly on drivers/DRIVERNAME.
-
-This patchset intents to let the .config selection happen also in
-drivers/DRIVERNAME/Makefile, avoiding accidentally building drivers
-that are not in .config.
-
-This would allow the kernel to be build on Gitlab CI, and would benefit man=
-y
-people who wants to help in the kernel development, but have not much
-processing power in their machines.
-
-I understand my changes may have mistakes, and I am trying to fix them all.
-I thank you any suggestion to make the code better.
-
-Also, I would be happy to know of any other solution to remote build my cha=
-nges
-and look for warnkings / errors.
-
-
-Thank you for reading,
-Leonardo Bras
+greg k-h
