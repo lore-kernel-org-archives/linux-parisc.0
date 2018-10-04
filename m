@@ -1,96 +1,133 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: [PATCH v3 3/7] drivers: parisc: Avoids building driver if
- CONFIG_PARISC is disabled
-Date: Wed, 03 Oct 2018 21:41:02 -0700
-Message-ID: <1538628062.18776.5.camel@HansenPartnership.com>
-References: <20180928020816.11251-1-leobras.c@gmail.com>
-         <20180928020816.11251-4-leobras.c@gmail.com>
-         <1538118915.3593.4.camel@HansenPartnership.com>
-         <CADvQ+rGQenkoE0xCRTwjA5BuKZbZ2Upkyx=+qWFUGnUcit-aCQ@mail.gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [GIT PULL] parisc fixes for kernel v4.19
+Date: Thu, 4 Oct 2018 10:41:52 +0200
+Message-ID: <ed8a12d5-604f-c938-f65d-051e05561dc6@gmx.de>
+References: <20181002210213.GA17826@ls3530.fritz.box>
+ <20181002211645.GA6454@kroah.com>
+ <ad45f249-e064-d5a4-c658-eaa03bb3a04a@gmx.de>
+ <20181002222452.GB11788@kroah.com>
+ <dbfa0162-8ed1-b16e-a418-da3b92c76230@gmx.de>
+ <20181003181612.GB28575@kroah.com>
+ <CAK8P3a2ntPX4+LbYWJbDG1k-8NwkhyY0nYk-mfZU2FBF_h23Yw@mail.gmail.com>
+ <20181003230226.GB27729@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: lkcamp@lists.libreplanetbr.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Robert Richter <rric@kernel.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org, oprofile-list@lists.sf.net,
-        linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org
-To: Leonardo Bras <leobras.c@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        James.Bottomley@hansenpartnership.com,
+        John David Anglin <dave.anglin@bell.net>
+To: gregkh <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CADvQ+rGQenkoE0xCRTwjA5BuKZbZ2Upkyx=+qWFUGnUcit-aCQ@mail.gmail.com>
+In-Reply-To: <20181003230226.GB27729@kroah.com>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, 2018-10-03 at 21:31 -0300, Leonardo Bras wrote:
-> On Fri, Sep 28, 2018 at 4:15 AM James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > 
-> > On Thu, 2018-09-27 at 23:08 -0300, Leonardo Brás wrote:
-> > > Avoids building driver if 'make drivers/parisc/' is called and
-> > > CONFIG_PARISC is disabled.
-> > 
-> > Is that really a problem? The drivers/Makefile has this:
-> > 
-> > obj-$(CONFIG_PARISC)            += parisc/
-> > And you just overrode that by forcing the build.  It's not even
-> > clear we should refuse the build in that case; how would we know
-> > you don't have a legitimate reason for the override?
-> > 
-> 
-> Sorry I did not explained my reasons earlier. I sent everybody
-> involved an e-mail explaining the full reason of this change.
-> (For reference it's here: https://lkml.org/lkml/2018/10/3/707)
+On 04.10.2018 01:02, gregkh wrote:
+> On Wed, Oct 03, 2018 at 09:49:08PM +0200, Arnd Bergmann wrote:
+>> On Wed, Oct 3, 2018 at 8:16 PM Greg Kroah-Hartman
+>> <gregkh@linuxfoundation.org> wrote:
+>>> On Wed, Oct 03, 2018 at 04:47:30PM +0200, Helge Deller wrote:
+>>>> On 03.10.2018 00:24, Greg Kroah-Hartman wrote:
+>>>>> On Tue, Oct 02, 2018 at 11:46:11PM +0200, Helge Deller wrote:
+>>>>>>
+>>>>>> I've tagged it for stable release.
+>>>>>> So, it can go in now, or just wait until -rc1 and go in later.
+>>>>>
+>>>>> Why is a major API change a viable stable change?
+>>>>
+>>>> Of course it's not.
+>>>> Esp. not if an API has been used already.
+>>>> IMHO, this case is really different though...
+>>>>
+>>>>> What bugfix does it provide?
+>>>>
+>>>> It fixes that code in stable kernels which would return wrong
+>>>> time values *if* someone would create a libc for 64-bit parisc
+>>>> and would run it with those "stable" kernels.
+>>>> Fixing it now has no side-effects, the change is a trivial
+>>>> 2-line-removal patch, would bring the code in sync with
+>>>> newer kernel source code, and it really fixes existing code.
+>>>>
+>>>> I still believe that this justifies for a backport.
+>>>>
+>>>> Nevertheless, if you really disagree, I'm fine dropping the
+>>>> backport to stable and will only push it in the next
+>>>> merge window for v4.20.
+>>>
+>>> To clarify, you have no users of this api anywhere (hopefully), and so
+>>> the patch in question prevents anyone from using the api in the future.
+>>> This makes the suseconds_t handling easier for some reason because only
+>>> sparc32 is a "problem" now, right?
+>>>
+>>> So I don't see the "bug" that is being fixed here.  I would have pushed
+>>> back on the submission for this for the stable trees as well, this isn't
+>>> anything that anyone is using, so there's nothing to "fix" that I can
+>>> tell.
+>>>
+>>> Yes, doing it in the "future" is fine, to prevent anyone from making
+>>> this mistake (are new machines even being made for this arch?)  But I
+>>> don't see how this is a -stable issue.
+>>
+>> The issue here is that glibc has in theory supported 64-bit parisc
+>> user space for a long time, but it has never worked because of the
+>> mismatch. It is very likely that there other problems like it that
+>> /also/ prevent it from working.
+>>
+>> Between changing kernel or glibc, I think it's clear that the glibc
+>> has made the better choice of being compatible with all other
+>> architectures (except sparc64), so changing the kernel is better
+>> here.
+>>
+>> Between fixing it this late, or doing it for the next merge window,
+>> I don't care. There clearly are no users that are affected by it
+>> today, and if there were, this would fix an important bug, both
+>> security (kernel stack information leak) and functionality
+>> (improving accuracy of gettimeofday() from seconds to
+>> microseconds).
+>>
+>> Between backporting it to stable or not, I'd be in favor of the
+>> backport: If we ever want to support 64-bit user space on parisc,
+>> then it's better to have stable kernels get the same working
+>> ABI that new kernels have after the fix (and any other fixes we
+>> may require on top). 
 
-Well it's not really that persuasive.  Most people simply let the build
-run to completion, but if you have a problem with a job control 3h
-timelimit, then create a job that kills itself at 2:59 and then
-resubmits itself.  That will produce a complete build in 3h chunks
-without any need to call sub Makefiles.
+Ack.
 
-All of our Makefiles are coded assuming the upper level can prevent
-descent into the lower ones.  You're proposing to change that
-assumption, requiring a fairly large patch set, which doesn't really
-seem to provide a huge benefit.
+>> Or to put it another way: If the argument is
+>> that there won't ever be a 64-bit user space for parisc 
 
-James
+FYI, I was planning to try a 64-bit user space at some point.
+Just see my recent patches and mails, e.g. 
+b6fc0cccb6b35815a7d1cfc9279cdbfc2c61d00d
+5b00ca0b8035e49ef7c466e959c5cb457a654351
+and
+https://www.spinics.net/lists/linux-parisc/msg09070.html
 
+>> and we don't care about it, 
 
-> > Signed-off-by: Leonardo Brás <leobras.c@gmail.com>
-> > > ---
-> > >  drivers/parisc/Makefile | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/parisc/Makefile b/drivers/parisc/Makefile
-> > > index 3cd5e6cb8478..80049d763aa0 100644
-> > > --- a/drivers/parisc/Makefile
-> > > +++ b/drivers/parisc/Makefile
-> > > @@ -24,5 +24,5 @@ obj-$(CONFIG_EISA)          += eisa.o
-> > > eisa_enumerator.o eisa_eeprom.o
-> > >  obj-$(CONFIG_SUPERIO)                += superio.o
-> > >  obj-$(CONFIG_CHASSIS_LCD_LED)        += led.o
-> > >  obj-$(CONFIG_PDC_STABLE)     += pdc_stable.o
-> > > -obj-y                                += power.o
-> > > +obj-$(CONFIG_PARISC)         += power.o
-> > 
-> > If we conclude the use case is legitimate, that's not enough: the
-> > two
-> > inner symbols are PARISC only but CONFIG_EISA isn't.
+I (and a few others) do care about it.
+
+>> then we'd be better of removing all native 64-bit
+>> syscalls from arch/parisc/kernel/syscall_table.S.
 > 
-> You are right.
-> It worked for my needs because I am only building the drivers, and
-> not linking them. But i believe doing something like I did in
-> zorro/Makefile would fix this all. (For reference,
-> https://lkml.org/lkml/2018/9/28/150 )
+> Ok, then let's treat this like any other arch/driver/subsystem that we
+> remove.  Drop the file(s) in a -rc1 merge window and then if anyone
+> object to it later on because they really were using it, you can easily
+> revert that change.
+
+As a maintainer of this port, I object to this.
+You suggest to remove a working, functional and maintained interface for no good use.
+Removing it won't save lots of bytes in the executable (or source code)
+but will make my life as maintainer harder.
+
+Thanks,
+Helge
+
 > 
-> If you agree, I will send the next patchset with this change.
+> We do not backport removals of drivers/subsystems/arches to stable
+> kernels, so this shouldn't happen here either.
 > 
-> Thanks for your help!
+> thanks,
 > 
-> Leonardo Bras
-> 
+> greg k-h
