@@ -1,102 +1,88 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH v3 3/7] drivers: parisc: Avoids building driver if
- CONFIG_PARISC is disabled
-Date: Sat, 6 Oct 2018 17:28:41 +1300
-Message-ID: <765df6c3-0339-ebf3-6446-cef4fc1eb1cc@gmail.com>
-References: <20180928020816.11251-1-leobras.c@gmail.com>
- <20180928020816.11251-4-leobras.c@gmail.com>
- <1538118915.3593.4.camel@HansenPartnership.com>
- <CADvQ+rGQenkoE0xCRTwjA5BuKZbZ2Upkyx=+qWFUGnUcit-aCQ@mail.gmail.com>
- <1538628062.18776.5.camel@HansenPartnership.com>
- <CADvQ+rG0WQjFTU=A4tAACvqFevw51DX_-yq2-9j78T8pSrjcXQ@mail.gmail.com>
+From: Firoz Khan <firoz.khan@linaro.org>
+Subject: [PATCH v3 0/6] System call table generation support
+Date: Mon,  8 Oct 2018 10:46:35 +0530
+Message-ID: <1538975801-13735-1-git-send-email-firoz.khan@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Cc: lkcamp@lists.libreplanetbr.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Robert Richter <rric@kernel.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org, oprofile-list@lists.sf.net,
-        linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org
-To: Leonardo Bras <leobras.c@gmail.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CADvQ+rG0WQjFTU=A4tAACvqFevw51DX_-yq2-9j78T8pSrjcXQ@mail.gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Cc: linux-arch@vger.kernel.org, arnd@arndb.de, y2038@lists.linaro.org,
+ linux-kernel@vger.kernel.org, marcin.juszkiewicz@linaro.org,
+ firoz.khan@linaro.org, deepa.kernel@gmail.com
+To: linux-parisc@vger.kernel.org,
+ "James E . J . Bottomley" <jejb@parisc-linux.org>,
+ Helge Deller <deller@gmx.de>, Thomas Gleixner <tglx@linutronix.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Philippe Ombredanne <pombredanne@nexb.com>,
+ Kate Stewart <kstewart@linuxfoundation.org>
+Return-path: <y2038-bounces@lists.linaro.org>
+List-Unsubscribe: <https://lists.linaro.org/mailman/options/y2038>,
+ <mailto:y2038-request@lists.linaro.org?subject=unsubscribe>
+List-Archive: <http://lists.linaro.org/pipermail/y2038/>
+List-Post: <mailto:y2038@lists.linaro.org>
+List-Help: <mailto:y2038-request@lists.linaro.org?subject=help>
+List-Subscribe: <https://lists.linaro.org/mailman/listinfo/y2038>,
+ <mailto:y2038-request@lists.linaro.org?subject=subscribe>
+Errors-To: y2038-bounces@lists.linaro.org
+List-ID: <linux-parisc.vger.kernel.org>
 
-
-
-Am 05.10.2018 um 15:16 schrieb Leonardo Bras:
->> Well it's not really that persuasive.  Most people simply let the build
->> run to completion, but if you have a problem with a job control 3h
->> timelimit, then create a job that kills itself at 2:59 and then
->> resubmits itself.  That will produce a complete build in 3h chunks
->> without any need to call sub Makefiles.
->>
->
-> Humm, I probably should have explained better how GitlabCI works.
-> It works creating a docker container that have a limited lifespan of 3h max.
-> After that the time is over, this container ceases to exist, leaving no build
-> objects, only the console log. So there is no way of 'resuming' the building
-> from where it stopped. I used the 'job' term because it's how they call it,
-> and I understand it's easily confused with bash jobs.
->
->> All of our Makefiles are coded assuming the upper level can prevent
->> descent into the lower ones.  You're proposing to change that
->> assumption, requiring a fairly large patch set, which doesn't really
->> seem to provide a huge benefit.
->>
->> James
->
-> I understand your viewpoint.
-> But what I propose is not to change that assumption, but instead give some
-> Makefiles the aditional ability to be called directly and still not build stuff
-> if they were not enabled in .config.
->
-> But, why these chosen Makefiles, and not all of them?
-> Granularity.
-> What I am trying to achieve with this patchset is the ability of building
-> smaller sets of drivers without accidentally building what is not enabled
-> on .config.
-> And, in my viewpoint, building a single drivers/DRIVERNAME is small enough to
-> be fast in most situations.
-
-That already works, doesn't it? So all that you'd need is an offline 
-tool to precompute what drivers to actually build with a given config.
-
-'make -n' with some suitable output mangling might do the job.
-
-There may well be other ways to achieve your stated goal, without any 
-need to make changes to the kernel build process (which is the result of 
-many years of evolution and tuning, BTW).
-
-> This change is not supposed to bother the usual way of building the kernel, and
-
-Enough people have voiced their concern to warrant that you should back 
-up that claim, IMO. Have you verified that your patchset does not change 
-current behaviour when building the entire set of default configurations 
-for each supported architecture? Does it reduce or increase overall 
-complexity of the build process?
-
-> it is not even supposed to add overhead to kernel compilation. And it would,
-> at least, solve my problem with the 3h limit, and enable the tool
-> I am building on GiltabCI to help other developers.
-
-(Apropos of nothing: Am I the only one who thinks gitlab might take a 
-rather dim view of your creativity in dealing with their limit?)
-
-> Thanks for reading,
->
-> Leonardo Bras
-
-Thanks for listening!
-
-Cheers,
-
-	Michael
+VGhlIHB1cnBvc2Ugb2YgdGhpcyBwYXRjaCBzZXJpZXMgaXM6CjEuIFdlIGNhbiBlYXNpbHkgYWRk
+L21vZGlmeS9kZWxldGUgc3lzdGVtIGNhbGwgYnkgY2hhbmdpbmcgZW50cnkgCmluIHN5c2NhbGwu
+dGJsIGZpbGUuIE5vIG5lZWQgdG8gbWFudWFsbHkgZWRpdCBtYW55IGZpbGVzLgoKMi4gSXQgaXMg
+ZWFzeSB0byB1bmlmeSB0aGUgc3lzdGVtIGNhbGwgaW1wbGVtZW50YXRpb24gYWNyb3NzIGFsbCAK
+dGhlIGFyY2hpdGVjdHVyZXMuIAoKVGhlIHN5c3RlbSBjYWxsIHRhYmxlcyBhcmUgaW4gZGlmZmVy
+ZW50IGZvcm1hdCBpbiBhbGwgYXJjaGl0ZWN0dXJlIAphbmQgaXQgd2lsbCBiZSBkaWZmaWN1bHQg
+dG8gbWFudWFsbHkgYWRkIG9yIG1vZGlmeSB0aGUgc3lzdGVtIGNhbGxzCmluIHRoZSByZXNwZWN0
+aXZlIGZpbGVzIG1hbnVhbGx5LiBUbyBtYWtlIGl0IGVhc3kgYnkga2VlcGluZyBhIHNjcmlwdCAK
+YW5kIHdoaWNoJ2xsIGdlbmVyYXRlIHRoZSBoZWFkZXIgZmlsZSBhbmQgc3lzY2FsbCB0YWJsZSBm
+aWxlIHNvIHRoaXMgCmNoYW5nZSB3aWxsIHVuaWZ5IHRoZW0gYWNyb3NzIGFsbCBhcmNoaXRlY3R1
+cmVzLgoKc3lzY2FsbC50YmwgY29udGFpbnMgdGhlIGxpc3Qgb2YgYXZhaWxhYmxlIHN5c3RlbSBj
+YWxscyBhbG9uZyB3aXRoIApzeXN0ZW0gY2FsbCBudW1iZXIgYW5kIGNvcnJlc3BvbmRpbmcgZW50
+cnkgcG9pbnQuIEFkZCBhIG5ldyBzeXN0ZW0gCmNhbGwgaW4gdGhpcyBhcmNoaXRlY3R1cmUgd2ls
+bCBiZSBwb3NzaWJsZSBieSBhZGRpbmcgbmV3IGVudHJ5IGluIAp0aGUgc3lzY2FsbC50YmwgZmls
+ZS4KCkFkZGluZyBhIG5ldyB0YWJsZSBlbnRyeSBjb25zaXN0aW5nIG9mOgogICAgICAgIC0gU3lz
+dGVtIGNhbGwgbnVtYmVyLgogICAgICAgIC0gQUJJLgogICAgICAgIC0gU3lzdGVtIGNhbGwgbmFt
+ZS4KICAgICAgICAtIEVudHJ5IHBvaW50IG5hbWUuCiAgICAgICAgLSBDb21wYXQgZW50cnkgbmFt
+ZSwgaWYgcmVxdWlyZWQuCgpBUk0sIHMzOTAgYW5kIHg4NiBhcmNoaXRlY3V0dXJlIGRvZXMgZXhp
+c3QgdGhlIHNpbWlsYXIgc3VwcG9ydC4gSSAKbGV2ZXJhZ2UgdGhlaXIgaW1wbGVtZW50YXRpb24g
+dG8gY29tZSB1cCB3aXRoIGEgZ2VuZXJpYyBzb2x1dGlvbi4KCkkgaGF2ZSBkb25lIHRoZSBzYW1l
+IHN1cHBvcnQgZm9yIHdvcmsgZm9yIGFscGhhLCBtaWNyb2JsYXplLCBzcGFyYywKbTY4aywgbWlw
+cywgcG93ZXJwYywgc2gsIHNwYXJjLCBhbmQgeHRlbnNhLiBCdXQgSSBzdGFydGVkIHNlbmRpbmcg
+CnRoZSBwYXRjaCBmb3Igb25lIGFyY2hpdGVjdXR1cmUgZm9yIHJldmlldy4gQmVsb3cgbWVudGlv
+bmVkIGdpdApyZXBvc2l0b3J5IGNvbnRhaW5zIG1vcmUgZGV0YWlscy4KR2l0IHJlcG86LSBodHRw
+czovL2dpdGh1Yi5jb20vZnJ6a2huL3N5c3RlbV9jYWxsX3RhYmxlX2dlbmVyYXRvci8KCkFkZGVk
+IGFuIGlnbm9yZSBlbnRyeSBmb3IgbmZzc2VydmN0bCBpbiBzY3JpcHQvY2hlY2tzeXNjYWxscy5z
+aC4KV2lyZWQgdXAgcnNlcSBzeXN0ZW0gY2FsbC4KCkZpbmFsbHksIHRoaXMgaXMgdGhlIGdyb3Vu
+ZCB3b3JrIGZvciBzb2x2aW5nIHRoZSBZMjAzOCBpc3N1ZS4gV2UgCm5lZWQgdG8gYWRkL2NoYW5n
+ZSB0d28gZG96ZW4gb2Ygc3lzdGVtIGNhbGxzIHRvIHNvbHZlIFkyMDM4IGlzc3VlLiAKU28gdGhp
+cyBwYXRjaCBzZXJpZXMgd2lsbCBoZWxwIHRvIGVhc2lseSBtb2RpZnkgZnJvbSBleGlzdGluZyAK
+c3lzdGVtIGNhbGwgdG8gWTIwMzggY29tcGF0aWJsZSBzeXN0ZW0gY2FsbHMuCgpGaXJveiBLaGFu
+ICg2KToKICBwYXJpc2M6IG1vdmUgX19JR05PUkUqIGVudHJpZXMgdG8gbm9uIHVhcGkgaGVhZGVy
+CiAgcGFyaXNjOiBhZGQgX19OUl9MaW51eF9zeXNjYWxscyBhbG9uZyB3aXRoIF9fTlJfc3lzY2Fs
+bHMKICBwYXJpc2M6IGFkZCBzeXN0ZW0gY2FsbCB0YWJsZSBnZW5lcmF0aW9uIHN1cHBvcnQKICBw
+YXJpc2M6IHVhcGkgaGVhZGVyIGFuZCBzeXN0ZW0gY2FsbCB0YWJsZSBmaWxlIGdlbmVyYXRpb24K
+ICBwYXJpc2M6IHdpcmUgdXAgcnNlcSBzeXN0ZW0gY2FsbAogIHBhcmlzYzogc3lzY2FsbHM6IEln
+bm9yZSBuZnNzZXJ2Y3RsIGZvciBvdGhlciBhcmNoaXRlY3R1cmVzCgogYXJjaC9wYXJpc2MvTWFr
+ZWZpbGUgICAgICAgICAgICAgICAgICAgICAgfCAgIDQgKwogYXJjaC9wYXJpc2MvaW5jbHVkZS9h
+c20vS2J1aWxkICAgICAgICAgICAgfCAgIDMgKwogYXJjaC9wYXJpc2MvaW5jbHVkZS9hc20vdW5p
+c3RkLmggICAgICAgICAgfCAgIDggKwogYXJjaC9wYXJpc2MvaW5jbHVkZS91YXBpL2FzbS9LYnVp
+bGQgICAgICAgfCAgIDIgKwogYXJjaC9wYXJpc2MvaW5jbHVkZS91YXBpL2FzbS91bmlzdGQuaCAg
+ICAgfCAzODIgKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogYXJjaC9wYXJpc2Mva2VybmVsL3N5
+c2NhbGwuUyAgICAgICAgICAgICAgfCAgMTIgKy0KIGFyY2gvcGFyaXNjL2tlcm5lbC9zeXNjYWxs
+X3RhYmxlLlMgICAgICAgIHwgNDU5IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogYXJj
+aC9wYXJpc2Mva2VybmVsL3N5c2NhbGxfdGFibGVfMzIuUyAgICAgfCAgMTMgKwogYXJjaC9wYXJp
+c2Mva2VybmVsL3N5c2NhbGxfdGFibGVfNjQuUyAgICAgfCAgMjAgKysKIGFyY2gvcGFyaXNjL2tl
+cm5lbC9zeXNjYWxscy9NYWtlZmlsZSAgICAgIHwgIDU1ICsrKysKIGFyY2gvcGFyaXNjL2tlcm5l
+bC9zeXNjYWxscy9zeXNjYWxsLnRibCAgIHwgMzUzICsrKysrKysrKysrKysrKysrKysrKysrCiBh
+cmNoL3BhcmlzYy9rZXJuZWwvc3lzY2FsbHMvc3lzY2FsbGhkci5zaCB8ICAzNSArKysKIGFyY2gv
+cGFyaXNjL2tlcm5lbC9zeXNjYWxscy9zeXNjYWxsdGJsLnNoIHwgIDQxICsrKwogc2NyaXB0cy9j
+aGVja3N5c2NhbGxzLnNoICAgICAgICAgICAgICAgICAgfCAgIDEgKwogMTQgZmlsZXMgY2hhbmdl
+ZCwgNTQ1IGluc2VydGlvbnMoKyksIDg0MyBkZWxldGlvbnMoLSkKIGRlbGV0ZSBtb2RlIDEwMDY0
+NCBhcmNoL3BhcmlzYy9rZXJuZWwvc3lzY2FsbF90YWJsZS5TCiBjcmVhdGUgbW9kZSAxMDA2NDQg
+YXJjaC9wYXJpc2Mva2VybmVsL3N5c2NhbGxfdGFibGVfMzIuUwogY3JlYXRlIG1vZGUgMTAwNjQ0
+IGFyY2gvcGFyaXNjL2tlcm5lbC9zeXNjYWxsX3RhYmxlXzY0LlMKIGNyZWF0ZSBtb2RlIDEwMDY0
+NCBhcmNoL3BhcmlzYy9rZXJuZWwvc3lzY2FsbHMvTWFrZWZpbGUKIGNyZWF0ZSBtb2RlIDEwMDY0
+NCBhcmNoL3BhcmlzYy9rZXJuZWwvc3lzY2FsbHMvc3lzY2FsbC50YmwKIGNyZWF0ZSBtb2RlIDEw
+MDY0NCBhcmNoL3BhcmlzYy9rZXJuZWwvc3lzY2FsbHMvc3lzY2FsbGhkci5zaAogY3JlYXRlIG1v
+ZGUgMTAwNjQ0IGFyY2gvcGFyaXNjL2tlcm5lbC9zeXNjYWxscy9zeXNjYWxsdGJsLnNoCgotLSAK
+MS45LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClky
+MDM4IG1haWxpbmcgbGlzdApZMjAzOEBsaXN0cy5saW5hcm8ub3JnCmh0dHBzOi8vbGlzdHMubGlu
+YXJvLm9yZy9tYWlsbWFuL2xpc3RpbmZvL3kyMDM4Cg==
