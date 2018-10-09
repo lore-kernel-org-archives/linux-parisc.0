@@ -1,99 +1,89 @@
-From: Firoz Khan <firoz.khan@linaro.org>
-Subject: Re: [PATCH v3 3/6] parisc: add system call table generation support
-Date: Tue, 9 Oct 2018 19:40:46 +0530
-Message-ID: <CALxhOnip15ztzMed59M3eKOdqdLJ2y8Yi5OGF3v__zApHzJkBQ@mail.gmail.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH v3 4/6] parisc: uapi header and system call table file
+ generation
+Date: Tue, 9 Oct 2018 22:13:21 +0200
+Message-ID: <20181009201321.GA28911@ls3530.fritz.box>
 References: <1538975801-13735-1-git-send-email-firoz.khan@linaro.org>
- <1538975801-13735-4-git-send-email-firoz.khan@linaro.org> <CALxhOnj4r_MUuAa2zvkvxvhQttEvCZ98n2dA9d6CYyvVf2rB3g@mail.gmail.com>
- <20181008130301.GM32759@asgard.redhat.com> <CAK8P3a0eoCVBVOZs0VwybAnUw0OUoW4Z=NJYi8686EHKj076_Q@mail.gmail.com>
- <CALxhOniJZGNCP+Xw_9EF8hnUEG_AWwrnQ86Gbh7vAW6SrE8ykQ@mail.gmail.com>
- <CAK8P3a0D+GUzza--ETrT1NHGduTfFGVoCcSEn5LxvKTtMYisbA@mail.gmail.com>
- <CALxhOnhCRWsuz-2G-SovjfqkXpsRdTrG5Atz2X8s+T8u=GbUcA@mail.gmail.com> <CAK8P3a343PoH9WNH5ZYkNDTy=-ybGGsmvH9PbaSMmNo0Yob5eA@mail.gmail.com>
+ <1538975801-13735-5-git-send-email-firoz.khan@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: esyr@redhat.com, linux-parisc@vger.kernel.org,
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-parisc@vger.kernel.org,
         "James E . J . Bottomley" <jejb@parisc-linux.org>,
         Helge Deller <deller@gmx.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Philippe Ombredanne <pombredanne@nexb.com>,
         Kate Stewart <kstewart@linuxfoundation.org>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>
-To: Arnd Bergmann <arnd@arndb.de>
+        y2038@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, arnd@arndb.de, deepa.kernel@gmail.com,
+        marcin.juszkiewicz@linaro.org
+To: Firoz Khan <firoz.khan@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAK8P3a343PoH9WNH5ZYkNDTy=-ybGGsmvH9PbaSMmNo0Yob5eA@mail.gmail.com>
+In-Reply-To: <1538975801-13735-5-git-send-email-firoz.khan@linaro.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Arnd,
+* Firoz Khan <firoz.khan@linaro.org>:
+> System call table generation script must be run to generate
+> unistd_32/64.h and syscall_table_32/64/c32.h files. This patch
+> will have changes which will invokes the script.
+> 
+> This patch will generate unistd_32/64.h and syscall_table_
+> 32/64/c32.h files by the syscall table generation script
+> invoked by arch/parisc/Makefile and the generated files against
+> the removed files will be identical.
+> 
+> The generated uapi header file will be included in uapi/asm/
+> unistd_32/64.h and generated system call table support file will
+> be included by arch/sparc/kernel/syscall_table_32/64.S file.
+> 
+> Signed-off-by: Firoz Khan <firoz.khan@linaro.org>
+> ---
+>  arch/parisc/Makefile                  |   4 +
+>  arch/parisc/include/asm/Kbuild        |   3 +
+>  arch/parisc/include/uapi/asm/Kbuild   |   2 +
+>  arch/parisc/include/uapi/asm/unistd.h | 373 +--------------------------
+>  arch/parisc/kernel/syscall.S          |  12 +-
+>  arch/parisc/kernel/syscall_table.S    | 459 ----------------------------------
 
-On Tue, 9 Oct 2018 at 16:58, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Tue, Oct 9, 2018 at 11:36 AM Firoz Khan <firoz.khan@linaro.org> wrote:
-> > On Tue, 9 Oct 2018 at 13:18, Arnd Bergmann <arnd@arndb.de> wrote:
-> > > On Tue, Oct 9, 2018 at 7:35 AM Firoz Khan <firoz.khan@linaro.org> wrote:
-> > > > On Mon, 8 Oct 2018 at 19:27, Arnd Bergmann <arnd@arndb.de> wrote:
-> > Let me bring another example from powerpc:
-> >
-> > syscall_32.tbl,
-> > 136     common  personality                     sys_personality
-> >          ppc64_personality   ---> 32-bit, compat (this is the current
-> > model which I implemented)
-> > syscall_64.tbl
-> > 136     common  personality                     ppc64_personality
-> >                                        ---> 64-bit
-> >
-> > I was wondering if the above table is right, how to arrange like parisc model?
->
-> I think this should simply be
->
-> 136    32 personality sys_personality      ppc64_personality
-> 136    64 personality ppc64_personality
->
-> Keeping the contents exactly the same as you have them
-> in the separate .tbl files, just merging the two files, and
-> splitting out the differences as 32/64 ABI.
->
-> > FYI, there are some implement missing for SPU in powerpc
-> >
-> > For your reference:
-> > SYSX_SPU(sys_newfstatat,sys_fstatat64,sys_fstatat64)
-> > SYSX_SPU(ppc64_personality,ppc64_personality,sys_personality)
->
-> This is a good question. The only difference between SPU and
-> native 64-bit is that some syscalls are not part of the SPU table
-> because those syscalls are impossible to implement on SPU.
->
-> Maybe we can solve this by allowing multiple comma-separated
-> ABIs in the table. On powerpc, 'common' would then mean
-> '32-bit, 64-bit and spu', while you could have various other
-> combinations:
->
-> /* always:32, 64 and SPU */
-> 1 common exit sys_exit
->
-> /* 32-bit only call */
-> 76  32    getrlimit      sys_old_getrlimit     compat_sys_old_getrlimit
->
-> /* 64-bit only, no SPU */
-> 363 64 switch_endian  sys_switch_endian
->
-> /* 32-bit and 64-bit, no SPU */
-> 198 32,64 pciconfig_read  sys_pciconfig_read
->
-> /* different pointers */
-> 136    32 personality sys_personality      ppc64_personality
-> 136    64,spu personality ppc64_personality
->
-> Would that work for you?
 
-At this point, yes. V2 patches for powerpc on my pipeline. I can bring
-the above points when I start creating those patches.
+Can we please get rid of those two new files: 
 
-Thanks
-Firoz
->
->        Arnd
+>  arch/parisc/kernel/syscall_table_32.S |  13 +
+>  arch/parisc/kernel/syscall_table_64.S |  20 ++
+
+Both are not needed (at least on parisc) if you apply the following
+patch on top of your patch series.
+This patch finally fixes the 64-bit kernel on parisc (tested on real
+hardware).
+
+Helge
+
+diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+index 2523b83b88d8..45cddeeb968f 100644
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -923,10 +923,20 @@ ENTRY(lws_table)
+ END(lws_table)
+ 	/* End of lws table */
+ 
+-#include "syscall_table_32.S"
++#define __SYSCALL(nr, entry, nargs) ASM_ULONG_INSN entry
++
++ENTRY(sys_call_table)
++#if defined(CONFIG_64BIT)
++#include <asm/syscall_table_c32.h>	/* compat syscalls */
++#else
++#include <asm/syscall_table_32.h>	/* 32-bit native syscalls */
++#endif
++END(sys_call_table)
++
+ #ifdef CONFIG_64BIT
+-#define SYSCALL_TABLE_64BIT
+-#include "syscall_table_64.S"
++ENTRY(sys_call_table64)
++#include <asm/syscall_table_64.h>	/* 64-bit native syscalls */
++END(sys_call_table64)
+ #endif
+ 
+ 	/*
