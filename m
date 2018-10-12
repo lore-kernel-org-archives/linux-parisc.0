@@ -1,52 +1,124 @@
-From: "Kirill A. Shutemov" <kirill@shutemov.name>
-Subject: Re: [PATCH v2 2/2] mm: speed up mremap by 500x on large regions
-Date: Fri, 12 Oct 2018 14:36:45 +0300
-Message-ID: <20181012113644.meqy5yb3xrxyh6lh@kshutemo-mobl1>
-References: <20181012013756.11285-1-joel@joelfernandes.org>
- <20181012013756.11285-2-joel@joelfernandes.org>
- <20181012113056.gxhcbrqyu7k7xnyv@kshutemo-mobl1>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v4 3/6] parisc: add system call table generation support
+Date: Fri, 12 Oct 2018 13:51:04 +0200
+Message-ID: <CAK8P3a1Ua0c9H006=_m=EHUufoUX5-d-m9fZcL_sF4mMJuLhkQ@mail.gmail.com>
+References: <1539337442-3676-1-git-send-email-firoz.khan@linaro.org> <1539337442-3676-4-git-send-email-firoz.khan@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>,
- linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
- Peter Zijlstra <peterz@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Dave Hansen <dave.hansen@linux.intel.com>, Will Deacon <will.deacon@arm.com>,
- mhocko@kernel.org, linux-mm@kvack.org, lokeshgidra@google.com,
- sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org,
- elfring@users.sourceforge.net, Jonas Bonn <jonas@southpole.se>,
- linux-s390@vger.kernel.org, dancol@google.com,
- Yoshinori Sato <ysato@users.sourceforge.jp>, linux-xtensa@linux-xtensa.org,
- linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>,
- "maintainer:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
- hughd@google.com, "James E.J. Bottomley" <jejb@parisc-linux.org>,
- kasan-dev@googlegroups.com, kvmarm@lists.cs.columbia.edu,
- Ingo Molnar <mingo@redhat.com>, Geert Uytter
-To: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20181012113056.gxhcbrqyu7k7xnyv@kshutemo-mobl1>
-List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
-List-Post: <mailto:linux-snps-arc@lists.infradead.org>
-List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: Parisc List <linux-parisc@vger.kernel.org>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>
+To: Firoz Khan <firoz.khan@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1539337442-3676-4-git-send-email-firoz.khan@linaro.org>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Oct 12, 2018 at 02:30:56PM +0300, Kirill A. Shutemov wrote:
-> On Thu, Oct 11, 2018 at 06:37:56PM -0700, Joel Fernandes (Google) wrote:
-> > @@ -239,7 +287,21 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
-> >  			split_huge_pmd(vma, old_pmd, old_addr);
-> >  			if (pmd_trans_unstable(old_pmd))
-> >  				continue;
-> > +		} else if (extent == PMD_SIZE) {
-> 
-> Hm. What guarantees that new_addr is PMD_SIZE-aligned?
-> It's not obvious to me.
+On Fri, Oct 12, 2018 at 11:45 AM Firoz Khan <firoz.khan@linaro.org> wrote:
 
-Ignore this :)
+> diff --git a/arch/parisc/kernel/syscalls/Makefile b/arch/parisc/kernel/syscalls/Makefile
+> new file mode 100644
+> index 0000000..a0af5a3
+> --- /dev/null
+> +++ b/arch/parisc/kernel/syscalls/Makefile
 
--- 
- Kirill A. Shutemov
+> +syshdr_abi_unistd_32 := common,32
+> +syshdr_offset_unistd_32 := __NR_Linux
+> +$(uapi)/unistd_32.h: $(syscall) $(syshdr)
+> +       $(call if_changed,syshdr)
+> +
+> +syshdr_abi_unistd_64 := common,64
+> +syshdr_offset_unistd_64 := __NR_Linux
+> +$(uapi)/unistd_64.h: $(syscall) $(syshdr)
+> +       $(call if_changed,syshdr)
+
+The __NR_Linux seems misplaced here, don't we need that only for ia64
+and mips?
+
+> +systbl_abi_syscall_table_32 := common,32
+> +$(kapi)/syscall_table_32.h: $(syscall) $(systbl)
+> +       $(call if_changed,systbl)
+> +
+> +systbl_abi_syscall_table_64 := common,64
+> +$(kapi)/syscall_table_64.h: $(syscall) $(systbl)
+> +       $(call if_changed,systbl)
+
+Have you considered making the 'common' part implied?
+I expected to see it done that way, although listing it explicitly
+doesn't seem harmful either.
+
+> +systbl_abi_syscall_table_c32 := common,compat,32
+> +$(kapi)/syscall_table_c32.h: $(syscall) $(systbl)
+> +       $(call if_changed,systbl)
+
+The way you specify 'compat' as one item in a list of
+ABIs seems rather odd, I'd suggest keeping that a separate
+flag.
+
+I think you can also pass arguments to 'if_changed', rather than
+setting a global variable to control it.
+arch/powerpc/boot/Makefile has some examples of that.
+It should be possible to do this like
+
+$(kapi)/syscall_table_c32.h: $(syscall) $(systbl)
+       $(call if_changed,systbl,common|32,compat)
+
+Passing "common|32" as the list of ABIs in the first argument,
+and 'compat' as the second argument.
+
+> diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
+> new file mode 100644
+> index 0000000..7c9f268
+> --- /dev/null
+> +++ b/arch/parisc/kernel/syscalls/syscall.tbl
+...
+> +346     common  copy_file_range                 sys_copy_file_range
+> +347     common  preadv2                         sys_preadv2                     compat_sys_preadv2
+> +348     common  pwritev2                        sys_pwritev2                    compat_sys_pwritev2
+> +349     common  statx                           sys_statx
+> +350    common  io_pgetevents                   sys_io_pgetevents               compat_sys_io_pgetevents
+> \ No newline at end of file
+
+Here is the missing newline again. This should never happen if your text
+editor is configured correctly.
+
+> diff --git a/arch/parisc/kernel/syscalls/syscallhdr.sh b/arch/parisc/kernel/syscalls/syscallhdr.sh
+> new file mode 100644
+> index 0000000..607d4ca
+> --- /dev/null
+> +++ b/arch/parisc/kernel/syscalls/syscallhdr.sh
+> @@ -0,0 +1,35 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +in="$1"
+> +out="$2"
+> +my_abis=`echo "($3)" | tr ',' '|'`
+> +prefix="$4"
+> +offset="$5"
+> +
+> +fileguard=_UAPI_ASM_PARISC_`basename "$out" | sed \
+> +    -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
+> +    -e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g'`
+
+Maybe use ${ARCH} instead of PARISC here to keep it the same
+across architectures?
+
+> +    my_abi="$(cut -d'|' -f2 <<< $my_abis)"
+> +    while read nr abi name entry compat ; do
+> +       if [ $my_abi = "compat" ]; then
+
+This check seems really fragile, but if you add another argument to the
+script instead of listing "compat" as the second option in the
+list of ABIs, I think it's fine.
+
+        ARnd
