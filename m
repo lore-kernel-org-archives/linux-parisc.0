@@ -1,69 +1,132 @@
-From: Firoz Khan <firoz.khan@linaro.org>
-Subject: Re: [PATCH v4 5/6] parisc: wire up rseq system call
-Date: Sat, 13 Oct 2018 11:12:12 +0530
-Message-ID: <CALxhOniSbukoQYFzeLmWyD9tYE7Bgye6iq1O+fovvi1_G+56-Q@mail.gmail.com>
-References: <1539337442-3676-1-git-send-email-firoz.khan@linaro.org>
- <1539337442-3676-6-git-send-email-firoz.khan@linaro.org> <CAK8P3a1gsuM7mBGm9hx-BTs=HAG3cSjB6M7N-kpMmPy3kixeCQ@mail.gmail.com>
- <CALxhOnhj7qUj57tLX12KmbcE5G-zDK2Qf2fTUbQ=jpmiUcr52w@mail.gmail.com>
- <CAK8P3a3BjuLQh0hTPFTDTkipXXQ+j8ADqbWmNpimkMDzoORkRA@mail.gmail.com> <71ea9dc5-7502-40af-2022-b2196dd2d690@gmx.de>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Subject: Re: [PATCH v2 2/2] mm: speed up mremap by 500x on large regions
+Date: Sat, 13 Oct 2018 07:10:56 +0100
+Message-ID: <4e3d560b-afce-7d87-bbdb-9701d87ef44e@kot-begemot.co.uk>
+References: <20181012013756.11285-1-joel@joelfernandes.org>
+ <20181012013756.11285-2-joel@joelfernandes.org>
+ <9ed82f9e-88c4-8e4f-8c45-3ef153469603@kot-begemot.co.uk>
+ <20181012143728.t42uvr6etg7gp7fh@kshutemo-mobl1>
+ <4dd52e22-5b51-9b30-7178-fde603a08f88@kot-begemot.co.uk>
+ <97cb3fe1-7bc1-12ff-d602-56c72a5496c5@kot-begemot.co.uk>
+ <20181012214008.jj7vhh76vte7xj7i@kshutemo-mobl1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-parisc@vger.kernel.org,
-        "James E . J . Bottomley" <jejb@parisc-linux.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <71ea9dc5-7502-40af-2022-b2196dd2d690@gmx.de>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>,
+ linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
+ Peter Zijlstra <peterz@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Will Deacon <will.deacon@arm.com>,
+ mhocko@kernel.org, linux-mm@kvack.org, lokeshgidra@google.com,
+ "Joel Fernandes \(Google\)" <joel@joelfernandes.org>,
+ linux-riscv@lists.infradead.org, elfring@users.sourceforge.net,
+ Jonas Bonn <jonas@southpole.se>, linux-s390@vger.kernel.org, dancol@google.com,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Max Filippov <jcmvbkbc@gmail.com>,
+ linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>,
+ "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>,
+ hughd@google.com, "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ kasan-dev@googlegroups.com, kvmarm@lists.cs.columbia.edu,
+ Ingo Molnar <mingo
+To: "Kirill A. Shutemov" <kirill@shutemov.name>
+Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20181012214008.jj7vhh76vte7xj7i@kshutemo-mobl1>
+List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
+List-Post: <mailto:linux-snps-arc@lists.infradead.org>
+List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
 
-Hi Arnd, Helge,
-
-On Sat, 13 Oct 2018 at 01:53, Helge Deller <deller@gmx.de> wrote:
->
-> On 12.10.2018 13:52, Arnd Bergmann wrote:
-> > On Fri, Oct 12, 2018 at 12:16 PM Firoz Khan <firoz.khan@linaro.org> wrote:
-> >>
-> >> Hi Arnd,
-> >>
-> >> On Fri, 12 Oct 2018 at 15:26, Arnd Bergmann <arnd@arndb.de> wrote:
-> >>>
-> >>> On Fri, Oct 12, 2018 at 11:45 AM Firoz Khan <firoz.khan@linaro.org> wrote:
-> >>>>
-> >>>> Wire up rseq system call requires an architecture specific
-> >>>> implementation as it not present now.
-> >>>>
-> >>>> Signed-off-by: Firoz Khan <firoz.khan@linaro.org>
-> >>>
-> >>> Didn't we conclude that this should be skipped?
-> >>
-> >> Helge told "I prefer to keep the warning for rseq for now.
-> >> It reminds me that we still may want the rseq syscall.
-> >> If the warning is a problem, you may simply add the __IGNORE_rseq define."
-> >>
-> >> I chose this option; I feel it looks clean
-> >> "# rseq requires an architecture specific implementation" in syscall.tbl
-> >> hopefully remind him to add rseq syscall implementation in this architecture.
-> >
-> > But he said he wants the warning instead.
->
-> Correct.
-> Firoz, please simply drop this patch completely.
-> That way one will see generated warnings about the missing rseq (which is what
-> we want).
-
-Sure. will do!
-
-Firoz
-
->
-> Thanks,
-> Helge
+T24gMTIvMTAvMjAxOCAyMjo0MCwgS2lyaWxsIEEuIFNodXRlbW92IHdyb3RlOgo+IE9uIEZyaSwg
+T2N0IDEyLCAyMDE4IGF0IDA1OjQyOjI0UE0gKzAxMDAsIEFudG9uIEl2YW5vdiB3cm90ZToKPj4g
+T24gMTAvMTIvMTggMzo0OCBQTSwgQW50b24gSXZhbm92IHdyb3RlOgo+Pj4gT24gMTIvMTAvMjAx
+OCAxNTozNywgS2lyaWxsIEEuIFNodXRlbW92IHdyb3RlOgo+Pj4+IE9uIEZyaSwgT2N0IDEyLCAy
+MDE4IGF0IDAzOjA5OjQ5UE0gKzAxMDAsIEFudG9uIEl2YW5vdiB3cm90ZToKPj4+Pj4gT24gMTAv
+MTIvMTggMjozNyBBTSwgSm9lbCBGZXJuYW5kZXMgKEdvb2dsZSkgd3JvdGU6Cj4+Pj4+PiBBbmRy
+b2lkIG5lZWRzIHRvIG1yZW1hcCBsYXJnZSByZWdpb25zIG9mIG1lbW9yeSBkdXJpbmcKPj4+Pj4+
+IG1lbW9yeSBtYW5hZ2VtZW50Cj4+Pj4+PiByZWxhdGVkIG9wZXJhdGlvbnMuIFRoZSBtcmVtYXAg
+c3lzdGVtIGNhbGwgY2FuIGJlIHJlYWxseQo+Pj4+Pj4gc2xvdyBpZiBUSFAgaXMKPj4+Pj4+IG5v
+dCBlbmFibGVkLiBUaGUgYm90dGxlbmVjayBpcyBtb3ZlX3BhZ2VfdGFibGVzLCB3aGljaCBpcyBj
+b3B5aW5nIGVhY2gKPj4+Pj4+IHB0ZSBhdCBhIHRpbWUsIGFuZCBjYW4gYmUgcmVhbGx5IHNsb3cg
+YWNyb3NzIGEgbGFyZ2UgbWFwLgo+Pj4+Pj4gVHVybmluZyBvbiBUSFAKPj4+Pj4+IG1heSBub3Qg
+YmUgYSB2aWFibGUgb3B0aW9uLCBhbmQgaXMgbm90IGZvciB1cy4gVGhpcyBwYXRjaAo+Pj4+Pj4g
+c3BlZWRzIHVwIHRoZQo+Pj4+Pj4gcGVyZm9ybWFuY2UgZm9yIG5vbi1USFAgc3lzdGVtIGJ5IGNv
+cHlpbmcgYXQgdGhlIFBNRCBsZXZlbAo+Pj4+Pj4gd2hlbiBwb3NzaWJsZS4KPj4+Pj4+Cj4+Pj4+
+PiBUaGUgc3BlZWQgdXAgaXMgdGhyZWUgb3JkZXJzIG9mIG1hZ25pdHVkZS4gT24gYSAxR0IgbXJl
+bWFwLCB0aGUgbXJlbWFwCj4+Pj4+PiBjb21wbGV0aW9uIHRpbWVzIGRyb3BzIGZyb20gMTYwLTI1
+MCBtaWxsZXNjb25kcyB0byAzODAtNDAwCj4+Pj4+PiBtaWNyb3NlY29uZHMuCj4+Pj4+Pgo+Pj4+
+Pj4gQmVmb3JlOgo+Pj4+Pj4gVG90YWwgbXJlbWFwIHRpbWUgZm9yIDFHQiBkYXRhOiAyNDIzMjEw
+MTQgbmFub3NlY29uZHMuCj4+Pj4+PiBUb3RhbCBtcmVtYXAgdGltZSBmb3IgMUdCIGRhdGE6IDE5
+Njg0MjQ2NyBuYW5vc2Vjb25kcy4KPj4+Pj4+IFRvdGFsIG1yZW1hcCB0aW1lIGZvciAxR0IgZGF0
+YTogMTY3MDUxMTYyIG5hbm9zZWNvbmRzLgo+Pj4+Pj4KPj4+Pj4+IEFmdGVyOgo+Pj4+Pj4gVG90
+YWwgbXJlbWFwIHRpbWUgZm9yIDFHQiBkYXRhOiAzODU3ODEgbmFub3NlY29uZHMuCj4+Pj4+PiBU
+b3RhbCBtcmVtYXAgdGltZSBmb3IgMUdCIGRhdGE6IDM4ODk1OSBuYW5vc2Vjb25kcy4KPj4+Pj4+
+IFRvdGFsIG1yZW1hcCB0aW1lIGZvciAxR0IgZGF0YTogNDAyODEzIG5hbm9zZWNvbmRzLgo+Pj4+
+Pj4KPj4+Pj4+IEluY2FzZSBUSFAgaXMgZW5hYmxlZCwgdGhlIG9wdGltaXphdGlvbiBpcyBza2lw
+cGVkLiBJIGFsc28gZmx1c2ggdGhlCj4+Pj4+PiB0bGIgZXZlcnkgdGltZSB3ZSBkbyB0aGlzIG9w
+dGltaXphdGlvbiBzaW5jZSBJIGNvdWxkbid0IGZpbmQgYSB3YXkgdG8KPj4+Pj4+IGRldGVybWlu
+ZSBpZiB0aGUgbG93LWxldmVsIFBURXMgYXJlIGRpcnR5LiBJdCBpcyBzZWVuIHRoYXQgdGhlIGNv
+c3Qgb2YKPj4+Pj4+IGRvaW5nIHNvIGlzIG5vdCBtdWNoIGNvbXBhcmVkIHRoZSBpbXByb3ZlbWVu
+dCwgb24gYm90aAo+Pj4+Pj4geDg2LTY0IGFuZCBhcm02NC4KPj4+Pj4+Cj4+Pj4+PiBDYzogbWlu
+Y2hhbkBrZXJuZWwub3JnCj4+Pj4+PiBDYzogcGFudGluQGdvb2dsZS5jb20KPj4+Pj4+IENjOiBo
+dWdoZEBnb29nbGUuY29tCj4+Pj4+PiBDYzogbG9rZXNoZ2lkcmFAZ29vZ2xlLmNvbQo+Pj4+Pj4g
+Q2M6IGRhbmNvbEBnb29nbGUuY29tCj4+Pj4+PiBDYzogbWhvY2tvQGtlcm5lbC5vcmcKPj4+Pj4+
+IENjOiBraXJpbGxAc2h1dGVtb3YubmFtZQo+Pj4+Pj4gQ2M6IGFrcG1AbGludXgtZm91bmRhdGlv
+bi5vcmcKPj4+Pj4+IFNpZ25lZC1vZmYtYnk6IEpvZWwgRmVybmFuZGVzIChHb29nbGUpIDxqb2Vs
+QGpvZWxmZXJuYW5kZXMub3JnPgo+Pj4+Pj4gLS0tCj4+Pj4+PiAgwqDCoCBtbS9tcmVtYXAuYyB8
+IDYyCj4+Pj4+PiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKwo+Pj4+Pj4gIMKgwqAgMSBmaWxlIGNoYW5nZWQsIDYyIGluc2VydGlvbnMoKykKPj4+
+Pj4+Cj4+Pj4+PiBkaWZmIC0tZ2l0IGEvbW0vbXJlbWFwLmMgYi9tbS9tcmVtYXAuYwo+Pj4+Pj4g
+aW5kZXggOWU2OGEwMmE1MmIxLi5kODJjNDg1ODIyZWYgMTAwNjQ0Cj4+Pj4+PiAtLS0gYS9tbS9t
+cmVtYXAuYwo+Pj4+Pj4gKysrIGIvbW0vbXJlbWFwLmMKPj4+Pj4+IEBAIC0xOTEsNiArMTkxLDU0
+IEBAIHN0YXRpYyB2b2lkIG1vdmVfcHRlcyhzdHJ1Y3QKPj4+Pj4+IHZtX2FyZWFfc3RydWN0ICp2
+bWEsIHBtZF90ICpvbGRfcG1kLAo+Pj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgIGRyb3Bfcm1h
+cF9sb2Nrcyh2bWEpOwo+Pj4+Pj4gIMKgwqAgfQo+Pj4+Pj4gK3N0YXRpYyBib29sIG1vdmVfbm9y
+bWFsX3BtZChzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYSwKPj4+Pj4+IHVuc2lnbmVkIGxvbmcg
+b2xkX2FkZHIsCj4+Pj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgIHVuc2lnbmVkIGxvbmcgbmV3X2Fk
+ZHIsIHVuc2lnbmVkIGxvbmcgb2xkX2VuZCwKPj4+Pj4+ICvCoMKgwqDCoMKgwqDCoMKgwqAgcG1k
+X3QgKm9sZF9wbWQsIHBtZF90ICpuZXdfcG1kLCBib29sICpuZWVkX2ZsdXNoKQo+Pj4+Pj4gK3sK
+Pj4+Pj4+ICvCoMKgwqAgc3BpbmxvY2tfdCAqb2xkX3B0bCwgKm5ld19wdGw7Cj4+Pj4+PiArwqDC
+oMKgIHN0cnVjdCBtbV9zdHJ1Y3QgKm1tID0gdm1hLT52bV9tbTsKPj4+Pj4+ICsKPj4+Pj4+ICvC
+oMKgwqAgaWYgKChvbGRfYWRkciAmIH5QTURfTUFTSykgfHwgKG5ld19hZGRyICYgflBNRF9NQVNL
+KQo+Pj4+Pj4gK8KgwqDCoMKgwqDCoMKgIHx8IG9sZF9lbmQgLSBvbGRfYWRkciA8IFBNRF9TSVpF
+KQo+Pj4+Pj4gK8KgwqDCoMKgwqDCoMKgIHJldHVybiBmYWxzZTsKPj4+Pj4+ICsKPj4+Pj4+ICvC
+oMKgwqAgLyoKPj4+Pj4+ICvCoMKgwqDCoCAqIFRoZSBkZXN0aW5hdGlvbiBwbWQgc2hvdWxkbid0
+IGJlIGVzdGFibGlzaGVkLCBmcmVlX3BndGFibGVzKCkKPj4+Pj4+ICvCoMKgwqDCoCAqIHNob3Vs
+ZCBoYXZlIHJlbGVhc2UgaXQuCj4+Pj4+PiArwqDCoMKgwqAgKi8KPj4+Pj4+ICvCoMKgwqAgaWYg
+KFdBUk5fT04oIXBtZF9ub25lKCpuZXdfcG1kKSkpCj4+Pj4+PiArwqDCoMKgwqDCoMKgwqAgcmV0
+dXJuIGZhbHNlOwo+Pj4+Pj4gKwo+Pj4+Pj4gK8KgwqDCoCAvKgo+Pj4+Pj4gK8KgwqDCoMKgICog
+V2UgZG9uJ3QgaGF2ZSB0byB3b3JyeSBhYm91dCB0aGUgb3JkZXJpbmcgb2Ygc3JjIGFuZCBkc3QK
+Pj4+Pj4+ICvCoMKgwqDCoCAqIHB0bG9ja3MgYmVjYXVzZSBleGNsdXNpdmUgbW1hcF9zZW0gcHJl
+dmVudHMgZGVhZGxvY2suCj4+Pj4+PiArwqDCoMKgwqAgKi8KPj4+Pj4+ICvCoMKgwqAgb2xkX3B0
+bCA9IHBtZF9sb2NrKHZtYS0+dm1fbW0sIG9sZF9wbWQpOwo+Pj4+Pj4gK8KgwqDCoCBpZiAob2xk
+X3B0bCkgewo+Pj4+Pj4gK8KgwqDCoMKgwqDCoMKgIHBtZF90IHBtZDsKPj4+Pj4+ICsKPj4+Pj4+
+ICvCoMKgwqDCoMKgwqDCoCBuZXdfcHRsID0gcG1kX2xvY2twdHIobW0sIG5ld19wbWQpOwo+Pj4+
+Pj4gK8KgwqDCoMKgwqDCoMKgIGlmIChuZXdfcHRsICE9IG9sZF9wdGwpCj4+Pj4+PiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCBzcGluX2xvY2tfbmVzdGVkKG5ld19wdGwsIFNJTkdMRV9ERVBUSF9O
+RVNUSU5HKTsKPj4+Pj4+ICsKPj4+Pj4+ICvCoMKgwqDCoMKgwqDCoCAvKiBDbGVhciB0aGUgcG1k
+ICovCj4+Pj4+PiArwqDCoMKgwqDCoMKgwqAgcG1kID0gKm9sZF9wbWQ7Cj4+Pj4+PiArwqDCoMKg
+wqDCoMKgwqAgcG1kX2NsZWFyKG9sZF9wbWQpOwo+Pj4+Pj4gKwo+Pj4+Pj4gK8KgwqDCoMKgwqDC
+oMKgIFZNX0JVR19PTighcG1kX25vbmUoKm5ld19wbWQpKTsKPj4+Pj4+ICsKPj4+Pj4+ICvCoMKg
+wqDCoMKgwqDCoCAvKiBTZXQgdGhlIG5ldyBwbWQgKi8KPj4+Pj4+ICvCoMKgwqDCoMKgwqDCoCBz
+ZXRfcG1kX2F0KG1tLCBuZXdfYWRkciwgbmV3X3BtZCwgcG1kKTsKPj4+Pj4gVU1MIGRvZXMgbm90
+IGhhdmUgc2V0X3BtZF9hdCBhdCBhbGwKPj4+PiBFdmVyeSBhcmNoaXRlY3R1cmUgZG9lcy4gOikK
+Pj4+IEkgdHJpZWQgdG8gYnVpbGQgaXQgcGF0Y2hpbmcgdnMgNC4xOS1yYyBiZWZvcmUgSSBtYWRl
+IHRoaXMgc3RhdGVtZW50IGFuZAo+Pj4gcmFuIGludG8gdGhhdC4KPj4+Cj4+PiBQcmVzZW50bHkg
+aXQgZG9lcyBub3QuCj4+Pgo+Pj4gaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgvdjQu
+MTktcmM3L2lkZW50L3NldF9wbWRfYXQgLSBVTUwgaXMgbm90Cj4+PiBvbiB0aGUgbGlzdC4KPj4g
+T25jZSB0aGlzIHByb2JsZW0gYXMgd2VsbCBhcyB0aGUgb21pc3Npb25zIGluIHRoZSBpbmNsdWRl
+IGNoYW5nZXMgZm9yIFVNTCBpbgo+PiBwYXRjaCBvbmUgaGF2ZSBiZWVuIGZpeGVkIGl0IGFwcGVh
+cnMgdG8gYmUgd29ya2luZy4KPj4KPj4gV2hhdCBpdCBuZWVkcyBpcyBhdHRhY2hlZC4KPiBXZWxs
+LCB0aGUgb3B0aXphdGlvbiBpcyBvbmx5IHN1aXRhYmxlIGZvciBhcmNoIHRoYXQgaGFzIDMgb3Ig
+bW9yZSBsZXZlbHMKPiBvZiBwYWdlIHRhYmxlcy4gT3RoZXJ3aXNlIGl0IHdpbGwgbm90IGhhdmUg
+W25vbi1mb2xkZWRdIHBtZC4KPgo+IEFuZCBpbiB0aGlzIGNhc2UgYXJjaC91bSBhbHJlYWR5IHNo
+b3VsZCBoYXZlIHNldF9wbWRfYXQoKSwgc2VlCj4gM19MRVZFTF9QR1RBQkxFUy4KPgo+IFRvIHBv
+cnQgb24gMi1sZXZlbCBwYWdpbmcsIGl0IGhhcyB0byBiZSBoYW5kbGVkIG9uIHBnZCBsZXZlbC4g
+SXQKPiBjb21wbGljYXRlcyB0aGUgY29kZSBhbmQgd2lsbCBub3QgYnJpbmcgbXVjaCB2YWx1ZS4K
+PgpVTUwgaGFzIDMgbGV2ZWwgcGFnZSB0YWJsZXMgb24gNjQgYml0LgoKQS4KCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC1zbnBzLWFyYyBtYWls
+aW5nIGxpc3QKbGludXgtc25wcy1hcmNAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXNucHMtYXJj
