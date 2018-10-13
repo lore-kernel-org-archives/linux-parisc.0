@@ -1,77 +1,69 @@
-From: Daniel Colascione <dancol@google.com>
-Subject: Re: [PATCH v2 2/2] mm: speed up mremap by 500x on large regions
-Date: Fri, 12 Oct 2018 19:25:08 -0700
-Message-ID: <CAKOZueu2wdkeUFYLQ8qE48yJs1_uRz-9RVJRkp==CL=jp=Q8+g@mail.gmail.com>
-References: <20181012013756.11285-2-joel@joelfernandes.org>
- <20181012113056.gxhcbrqyu7k7xnyv@kshutemo-mobl1> <20181012125046.GA170912@joelaf.mtv.corp.google.com>
- <20181012.111836.1569129998592378186.davem@davemloft.net> <20181013013540.GA207108@joelaf.mtv.corp.google.com>
- <CAKOZueuNvWvn18vffJWpbpg7h-uScT8gXrrudTB2pnT4M2HJ_w@mail.gmail.com>
- <20181013014429.GB207108@joelaf.mtv.corp.google.com> <CAKOZues25aaKz3_AiyfJ=r2QBd5MghgY3ky_ptg4Z8=ST4DCgw@mail.gmail.com>
- <20181013021057.GA213522@joelaf.mtv.corp.google.com>
+From: Firoz Khan <firoz.khan@linaro.org>
+Subject: Re: [PATCH v4 5/6] parisc: wire up rseq system call
+Date: Sat, 13 Oct 2018 11:12:12 +0530
+Message-ID: <CALxhOniSbukoQYFzeLmWyD9tYE7Bgye6iq1O+fovvi1_G+56-Q@mail.gmail.com>
+References: <1539337442-3676-1-git-send-email-firoz.khan@linaro.org>
+ <1539337442-3676-6-git-send-email-firoz.khan@linaro.org> <CAK8P3a1gsuM7mBGm9hx-BTs=HAG3cSjB6M7N-kpMmPy3kixeCQ@mail.gmail.com>
+ <CALxhOnhj7qUj57tLX12KmbcE5G-zDK2Qf2fTUbQ=jpmiUcr52w@mail.gmail.com>
+ <CAK8P3a3BjuLQh0hTPFTDTkipXXQ+j8ADqbWmNpimkMDzoORkRA@mail.gmail.com> <71ea9dc5-7502-40af-2022-b2196dd2d690@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Cc: David Miller <davem@davemloft.net>, kirill@shutemov.name,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-team@android.com, Minchan Kim <minchan@kernel.org>,
-        Ramon Pantin <pantin@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        aryabinin@virtuozzo.com, luto@kernel.org, bp@alien8.de,
-        catalin.marinas@arm.com, Chris Zankel <chris@zankel.net>,
-        dave.hansen@linux.intel.com, elfring@users.sourceforge.net,
-        fenghua.yu@intel.com, geert@linux-m68k.org, gxt@pku.edu.cn,
-        deller@gmx.de, mingo@redhat.com, jejb@parisc-linux.org,
-        jdike@addtoit.com, Jonas Bonn <jonas@southpole.se>,
-        Julia Lawall <Julia.Lawall@lip6.fr>,
-        kasan-dev@googlegroups.com, kvmarm@lists.cs.columbia
-To: Joel Fernandes <joel@joelfernandes.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-parisc@vger.kernel.org,
+        "James E . J . Bottomley" <jejb@parisc-linux.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181013021057.GA213522@joelaf.mtv.corp.google.com>
+In-Reply-To: <71ea9dc5-7502-40af-2022-b2196dd2d690@gmx.de>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Oct 12, 2018 at 7:10 PM, Joel Fernandes <joel@joelfernandes.org> wrote:
-> On Fri, Oct 12, 2018 at 06:54:33PM -0700, Daniel Colascione wrote:
->> I wonder whether it makes sense to expose to userspace somehow whether
->> mremap is "fast" for a particular architecture. If a feature relies on
->> fast mremap, it might be better for some userland component to disable
->> that feature entirely rather than blindly use mremap and end up
->> performing very poorly. If we're disabling fast mremap when THP is
->> enabled, the userland component can't just rely on an architecture
->> switch and some kind of runtime feature detection becomes even more
->> important.
+Hi Arnd, Helge,
+
+On Sat, 13 Oct 2018 at 01:53, Helge Deller <deller@gmx.de> wrote:
 >
-> I hate to point out that its forbidden to top post on LKML :-)
-> https://kernelnewbies.org/mailinglistguidelines
-> So don't that Mr. Dan! :D
+> On 12.10.2018 13:52, Arnd Bergmann wrote:
+> > On Fri, Oct 12, 2018 at 12:16 PM Firoz Khan <firoz.khan@linaro.org> wrote:
+> >>
+> >> Hi Arnd,
+> >>
+> >> On Fri, 12 Oct 2018 at 15:26, Arnd Bergmann <arnd@arndb.de> wrote:
+> >>>
+> >>> On Fri, Oct 12, 2018 at 11:45 AM Firoz Khan <firoz.khan@linaro.org> wrote:
+> >>>>
+> >>>> Wire up rseq system call requires an architecture specific
+> >>>> implementation as it not present now.
+> >>>>
+> >>>> Signed-off-by: Firoz Khan <firoz.khan@linaro.org>
+> >>>
+> >>> Didn't we conclude that this should be skipped?
+> >>
+> >> Helge told "I prefer to keep the warning for rseq for now.
+> >> It reminds me that we still may want the rseq syscall.
+> >> If the warning is a problem, you may simply add the __IGNORE_rseq define."
+> >>
+> >> I chose this option; I feel it looks clean
+> >> "# rseq requires an architecture specific implementation" in syscall.tbl
+> >> hopefully remind him to add rseq syscall implementation in this architecture.
+> >
+> > But he said he wants the warning instead.
+>
+> Correct.
+> Firoz, please simply drop this patch completely.
+> That way one will see generated warnings about the missing rseq (which is what
+> we want).
 
-Guilty as charged. I really should switch back to Gnus. :-)
+Sure. will do!
 
-> But anyway, I think this runtime detection thing is not needed. THP is
-> actually expected to be as fast as this anyway, so if that's available then
-> we should already be as fast.
+Firoz
 
-Ah, I think the commit message is confusing. (Or else I'm misreading
-the patch now.) It's not quite that we're disabling the feature when
-THP is enabled anywhere, but rather that we use the move_huge_pmd path
-for huge PMDs and use the new code only for non-huge PMDs. (Right?) If
-that's the case, the commit message shouldn't say "Incase THP is
-enabled, the optimization is skipped". Even if THP is enabled on a
-system generally, we might use the new PMD-moving code for mapping
-types that don't support THP-ization, right?
-
-> This is for non-THP where THP cannot be enabled
-> and there is still room for some improvement. Most/all architectures will be
-> just fine with this. This flag is more of a safety-net type of thing where in
-> the future if there is this one or two weird architectures that don't play
-> well, then they can turn it off at the architecture level by not selecting
-> the flag. See my latest patches for the per-architecture compile-time
-> controls. Ideally we'd like to blanket turn it on on all, but this is just
-> playing it extra safe as Kirill and me were discussing on other threads.
-
-Sure. I'm just pointing out that the 500x performance different turns
-the operation into a qualitatively different feature, so if we expect
-to actually ship a mainstream architecture without support for this
-thing, we should make it explicit. If we're not, we shouldn't.
+>
+> Thanks,
+> Helge
