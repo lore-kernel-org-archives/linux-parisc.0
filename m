@@ -1,87 +1,262 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: Re: [PATCH v2 1/2] treewide: remove unused address argument from
- pte_alloc functions
-Date: Sat, 13 Oct 2018 11:22:49 +0200
-Message-ID: <e1be1dda-90ab-052d-496b-3de01ffc80d1@users.sourceforge.net>
-References: <20181012013756.11285-1-joel@joelfernandes.org>
- <03b524f3-5f3a-baa0-2254-9c588103d2d6@users.sourceforge.net>
- <20181012194210.GA27630@joelaf.mtv.corp.google.com>
+From: Firoz Khan <firoz.khan@linaro.org>
+Subject: Re: [PATCH v4 3/6] parisc: add system call table generation support
+Date: Sat, 13 Oct 2018 21:04:34 +0530
+Message-ID: <CALxhOngneZuumfn9X9nU3MSB5S7Vasm9gwXvFSw_T_hzSuuKtQ@mail.gmail.com>
+References: <1539337442-3676-1-git-send-email-firoz.khan@linaro.org>
+ <1539337442-3676-4-git-send-email-firoz.khan@linaro.org> <CAK8P3a1Ua0c9H006=_m=EHUufoUX5-d-m9fZcL_sF4mMJuLhkQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>,
- linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
- Peter Zijlstra <peterz@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Dave Hansen <dave.hansen@linux.intel.com>, kernel-janitors@vger.kernel.org,
- Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
- Lokesh Gidra <lokeshgidra@google.com>, sparclinux@vger.kernel.org,
- linux-riscv@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
- Jonas Bonn <jonas@southpole.se>, linux-s390@vger.kernel.org,
- Daniel Colascione <dancol@google.com>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Max Filippov <jcmvbkbc@gmail.com>,
- linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>,
- "maintainer:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
- Hugh Dickins <hughd@google.com>,
- "James E. J. Bottomley" <jejb@parisc-linux.org>, kasan-dev@googlegroups.com,
- Ingo M
-To: Joel Fernandes <joel@joelfernandes.org>
-Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20181012194210.GA27630@joelaf.mtv.corp.google.com>
-List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
-List-Post: <mailto:linux-snps-arc@lists.infradead.org>
-List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-parisc@vger.kernel.org,
+        "James E . J . Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>
+To: Arnd Bergmann <arnd@arndb.de>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAK8P3a1Ua0c9H006=_m=EHUufoUX5-d-m9fZcL_sF4mMJuLhkQ@mail.gmail.com>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-Pj4+IFRoZSBjaGFuZ2VzIHdlcmUgb2J0YWluZWQgYnkgYXBwbHlpbmcgdGhlIGZvbGxvd2luZyBD
-b2NjaW5lbGxlIHNjcmlwdC4KCkhvdyBkbyB5b3UgdGhpbmsgYWJvdXQgdG8gYWRqdXN0IHRoZSBv
-cmRlciBvZiBwcm92aWRlZCBpbmZvcm1hdGlvbgppbiB0aGUgY29tbWl0IGRlc2NyaXB0aW9uPwox
-LiBVcGRhdGUgZ29hbHMKMi4gVHJhbnNmb3JtYXRpb24gaW1wbGVtZW50YXRpb24gYXQgdGhlIGVu
-ZAoKCj4+ICJeKD86cHRlX2FsbG9jKD86X29uZSg/Ol9rZXJuZWwpPyk/fF9fcHRlX2FsbG9jKD86
-X2tlcm5lbCk/KSQiOwo+IAo+IFN1cmUgaXQgbG9va3MgbW9yZSBjbGV2ZXIsIGJ1dCB3aHk/Cgox
-LiBVc2FnZSBvZiBub24tY2FwdHVyaW5nIHBhcmVudGhlc2VzCjIuIENsZWFyZXIgc3BlY2lmaWNh
-dGlvbiB3aGljaCBwYXJ0cyBjYW4gYmUgdHJlYXRlZCBhcyBvcHRpb25hbAogICBpbiB0aGUgc2Vh
-cmNoIHBhdHRlcm4uCgoKPiBVZ2ggdGhhdCdzIGhhcmRlciB0byByZWFkIGFuZCBjb25mdXNpbmcu
-CgoqIERvIHlvdSBjYXJlIGZvciBjb2Rpbmcgc3R5bGUgYW5kIGV4ZWN1dGlvbiBzcGVlZCBvZiBy
-ZWd1bGFyIGV4cHJlc3Npb25zPwoKKiBJZiB5b3Ugd291bGQgcHJlZmVyIHRvIGxpc3QgZnVuY3Rp
-b24gbmFtZXMgd2l0aG91dCBwbGFjZWhvbGRlcnMsCiAgeW91IGNhbiBldmVudHVhbGx5IHNwZWNp
-ZnkgdGhlbSBhbHNvIHdpdGhpbiBTbVBMIGRpc2p1bmN0aW9ucyBkaXJlY3RseS4KCiogSXQgY2Fu
-IGxvb2sgc2ltcGxlciB0byB1c2UgYW4gaWRlbnRpZmllciBsaXN0IGFzIGEgY29uc3RyYWludCB2
-YXJpYW50LgogIGh0dHA6Ly9jb2NjaW5lbGxlLmxpcDYuZnIvZG9jcy9tYWluX2dyYW1tYXIwMDIu
-aHRtbAoKCj4gQWdhaW4gdGhpcyBpcyBjb25mdXNpbmcuCgpUaGUgdmlldyBwb2ludHMgY2FuIGJl
-IGRpZmZlcmVudCBmb3Igc3VjaCBTbVBMIGNvZGUuCgogVDMgZm4oVDEgRTEKKAotICAgICAgICAg
-ICAsIFQyIEUyCnwgICAgICAgICAgICwgVDIgRTIKLSAgICAgICAgICAgLCBUNCBFNAopICAgICAp
-OwoKCj4gSXQgbWFrZXMgb25lIHRoaW5rIHRoYXQgbWF5YmUgdGhlIHNlY29uZCBhcmd1bWVudCBj
-YW4gYWxzbyBiZSByZW1vdmVkCgpZb3UgZXhwcmVzc2VkIHRoaXMgYXMgdGhlIGZpcnN0IHRyYW5z
-Zm9ybWF0aW9uIHBvc3NpYmlsaXR5LCBkaWRuJ3QgeW91PwoKWW91IHdvdWxkIGxpa2UgdG8gZGVs
-ZXRlIGFuIGFyZ3VtZW50IGZyb20gdGhlIGVuZCBvZiBhIGZ1bmN0aW9uCm9yIG1hY3JvIHBhcmFt
-ZXRlciAob3IgZXhwcmVzc2lvbikgbGlzdC4KSSBzdWdnZXN0IHRoZW4gYWdhaW4gdG8gYXZvaWQg
-dGhlIFNtUEwgc3BlY2lmaWNhdGlvbiBvZiBzb3VyY2UgY29kZSBhZGRpdGlvbnMKKHBsdXMgbGlu
-ZXMgaW4gdGhlIGZpbGUgZGlmZmVyZW5jZSBmb3JtYXQpLgoKCj4gYW5kIHJlcXVpcmVzIGNhcmVm
-dWwgb2JzZXJ2YXRpb24gdGhhdCB0aGUgIik7IiBmb2xsb3dzLgoKWWVzLCBvZiBjb3Vyc2UuCgpX
-b3VsZCB5b3UgY2FyZSBtb3JlIGluIHRoZSBkaXN0aW5jdGlvbiB3aGljaCBjb2RlIHBhcnRzIHNo
-b3VsZCBiZSBrZXB0IHVuY2hhbmdlZD8KCgo+IFJpZ2h0LCBJIGRvbid0IG5lZWQgaXQgaW4gdGhp
-cyBjYXNlLgoKVGhhbmtzIGZvciB5b3VyIHVuZGVyc3RhbmRpbmcgdGhhdCB0aGUgbWV0YXZhcmlh
-YmxlIOKAnHBvc2l0aW9uIHDigJ0KY2FuIGJlIGRlbGV0ZWQgaW4gdGhlIFNtUEwgcnVsZSDigJxw
-dGVfYWxsb2NfbWFjcm/igJ0uCgoKPiBCdXQgdGhlIHNjcmlwdCB3b3JrcyBlaXRoZXIgd2F5LgoK
-SSBpbWFnaW5lIHRoYXQgeW91IGNhbiBiZWNvbWUgaW50ZXJlc3RlZCBpbiBhIGJpdCBuaWNlciBy
-dW4gdGltZSBjaGFyYWN0ZXJpc3RpY3MuCgoKPiBJIGxpa2UgdG8gdGFrZSBtb3JlIG9mIGEgcHJv
-YmxlbSBzb2x2aW5nIGFwcHJvYWNoIHRoYXQgbWFrZXMgc2Vuc2UsCgpUaGlzIGlzIHVzdWFsLgoK
-Cj4gdGhhbiBhaW1pbmcgZm9yIHBlcmZlY3Rpb24sCgpJZiB5b3Ugd2lsbCB3b3JrIG1vcmUgd2l0
-aCBzY3JpcHRzIGZvciB0aGUgc2VtYW50aWMgcGF0Y2ggbGFuZ3VhZ2UsCnlvdSBtaWdodCBiZWNv
-bWUgdXNlZCB0byBhZGRpdGlvbmFsIGNvZGluZyB2YXJpYW50cy4KCgo+IGFmdGVyIGFsbCB0aGlz
-IGlzIGEgdXNlZnVsIHNjcmlwdCB0aGF0IHdlIGRvIG5vdCBuZWVkIHRvIGNoZWNrCj4gaW4gb25j
-ZSB3ZSBmaW5pc2ggd2l0aCBpdC4KCkkgYW0gY3VyaW91cyBpZiB0aGVyZSB3aWxsIGV2b2x2ZSBh
-IG5lZWQgdG8gYWRkIHNpbWlsYXIgdHJhbnNmb3JtYXRpb24gYXBwcm9hY2hlcwp0byBhIGtub3du
-IHNjcmlwdCBjb2xsZWN0aW9uLgpodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgv
-a2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvdHJlZS9zY3JpcHRzL2NvY2NpbmVsbGU/aWQ9
-NzlmYzE3MGIxZjVjMzZmNDg2ZDg4NmJmYmQ1OWViNGU2MjMyMTEyOAoKV291bGQgeW91IGV2ZW50
-dWFsbHkgbGlrZSB0byBydW4gc3VjaCBzY3JpcHRzIG9uY2UgbW9yZT8KClJlZ2FyZHMsCk1hcmt1
-cwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgt
-c25wcy1hcmMgbWFpbGluZyBsaXN0CmxpbnV4LXNucHMtYXJjQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1zbnBzLWFy
-Yw==
++ Rolf
+Hi Arnd, Helge, Rolf,
+
+On Fri, 12 Oct 2018 at 17:21, Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Fri, Oct 12, 2018 at 11:45 AM Firoz Khan <firoz.khan@linaro.org> wrote:
+>
+> > diff --git a/arch/parisc/kernel/syscalls/Makefile b/arch/parisc/kernel/syscalls/Makefile
+> > new file mode 100644
+> > index 0000000..a0af5a3
+> > --- /dev/null
+> > +++ b/arch/parisc/kernel/syscalls/Makefile
+>
+> > +syshdr_abi_unistd_32 := common,32
+> > +syshdr_offset_unistd_32 := __NR_Linux
+> > +$(uapi)/unistd_32.h: $(syscall) $(syshdr)
+> > +       $(call if_changed,syshdr)
+> > +
+> > +syshdr_abi_unistd_64 := common,64
+> > +syshdr_offset_unistd_64 := __NR_Linux
+> > +$(uapi)/unistd_64.h: $(syscall) $(syshdr)
+> > +       $(call if_changed,syshdr)
+>
+> The __NR_Linux seems misplaced here, don't we need that only for ia64
+> and mips?
+
+No, It wasn't misplaced. you can refer below link.
+https://github.com/torvalds/linux/blob/master/arch/parisc/include/uapi/asm/unistd.h#L16
+
+FYI, In IA64, I added the __NR_Linux to come up a generic .tbl file
+starts with 0 as a part
+system call table generation. I think you might be applied my IA64
+patches locally sometimes
+before and now you might be confused.
+https://github.com/torvalds/linux/blob/master/arch/ia64/include/uapi/asm/unistd.h
+
+Yes, MIPS also uses this macro.
+
+>
+> > +systbl_abi_syscall_table_32 := common,32
+> > +$(kapi)/syscall_table_32.h: $(syscall) $(systbl)
+> > +       $(call if_changed,systbl)
+> > +
+> > +systbl_abi_syscall_table_64 := common,64
+> > +$(kapi)/syscall_table_64.h: $(syscall) $(systbl)
+> > +       $(call if_changed,systbl)
+>
+> Have you considered making the 'common' part implied?
+> I expected to see it done that way, although listing it explicitly
+> doesn't seem harmful either.
+
+It can't be done in that way easily, I see some problem there existing script.
+
+The problem you will understand by removing "common" and run the script.
+You can do diff before and after the generated files.
+ref: grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+
+FYI, x86/arm/s390 implementation listing explicitly! So I almost followed
+there way of implementation.
+
+If you really want that way, please comment here. I need to redo the
+scripting for
+all 10 architecture.
+
+>
+> > +systbl_abi_syscall_table_c32 := common,compat,32
+> > +$(kapi)/syscall_table_c32.h: $(syscall) $(systbl)
+> > +       $(call if_changed,systbl)
+>
+> The way you specify 'compat' as one item in a list of
+> ABIs seems rather odd, I'd suggest keeping that a separate
+> flag.
+
+Commented below.
+
+>
+> Passing "common|32" as the list of ABIs in the first argument,
+> and 'compat' as the second argument.
+>
+> I think you can also pass arguments to 'if_changed', rather than
+> setting a global variable to control it.
+
+Sure. I'll have a look into this one!
+
+> arch/powerpc/boot/Makefile has some examples of that.
+> It should be possible to do this like
+>
+> $(kapi)/syscall_table_c32.h: $(syscall) $(systbl)
+>        $(call if_changed,systbl,common|32,compat)
+
+This is something interesting!
+Rolf, I was trying to explain this one yesterday. Sorry, I know I
+haven't composed
+the mail properly.
+
+The uapi header generation script syscall table header generation script is
+invoked by this Makefile.
+
+systbl_abi_syscall_table_32 := common,32
+$(kapi)/syscall_table_32.h: $(syscall) $(systbl)
+        $(call if_changed,systbl)
+
+Here I want to generate systbl_abi_syscall_table_32, so I'll pass few
+args including the .tbl file.
+So script must have to identify that it is for 32. It has to read 4th
+column as <32/64 entry point>
+from the .tbl file.
+
+# The format is:
+# <number> <abi> <name> <32/64 entry point> <compat entry point>
+5       common  open                            sys_open
+         compat_sys_open
+
+Similarly for 64 also. Same 4th column should have to read.
+
+systbl_abi_syscall_table_c32 := common,compat,32
+$(kapi)/syscall_table_c32.h: $(syscall) $(systbl)
+        $(call if_changed,systbl)
+
+But for compat interface either it has to read 5th column if present,
+otherwise 4th column.
+Script won't understand it is for compat unless we have to explicitly
+inform from Makefile.
+
+There are multiple way to do:
+
+1. This implementation
+systbl_abi_syscall_table_c32 := common,compat,32 /* Makefile */
+
+my_abi="$(cut -d'|' -f2 <<< $my_abis)" /*systbl.sh */
+if [ $my_abi = "compat" ]; then
+            if [ -z "$compat" ]; then
+                emit $nxt $nr $entry
+            else
+                emit $nxt $nr $compat
+            fi
+        else
+            emit $nxt $nr $entry
+        fi
+
+2. Add extra flag in the Makefile
+
+systbl_abi_syscall_table_c32 := common,32
+systbl_xyz_syscall_table_c32 := compat
+$(kapi)/syscall_table_c32.h: $(syscall) $(systbl)
+        $(call if_changed,systbl)
+
+and check from the script and identify it.
+This looks the direct method. Here I think the problem is
+adding one more args
+
+3. Without Makefile change we can identify it. No need to add extra flag
+
+Makefile
+------------
+systbl_abi_syscall_table_c32 := common,32
+$(kapi)/syscall_table_c32.h: $(syscall) $(systbl)
+        $(call if_changed,systbl)
+
+systbl.sh
+-------------
+    if [ ${out: -5} = "c32.h" ]; then
+            if [ -z "$compat" ]; then
+                emit $nxt $nr $entry
+            else
+                emit $nxt $nr $compat
+            fi
+        elif [ ${out: -4} = "64.h" -o  ${out: -4} = "32.h" ]; then
+            emit $nxt $nr $entry
+        fi
+
+Here I was asking is there any better way to do the same.
+
+Note: The name compat in Makefile may change to c32.
+Note: This implementation remain same for spark and powerpc
+hopefully. But Mips has extra one more interface. We need to consider
+that also here.
+
+>
+> > diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
+> > new file mode 100644
+> > index 0000000..7c9f268
+> > --- /dev/null
+> > +++ b/arch/parisc/kernel/syscalls/syscall.tbl
+> ...
+> > +346     common  copy_file_range                 sys_copy_file_range
+> > +347     common  preadv2                         sys_preadv2                     compat_sys_preadv2
+> > +348     common  pwritev2                        sys_pwritev2                    compat_sys_pwritev2
+> > +349     common  statx                           sys_statx
+> > +350    common  io_pgetevents                   sys_io_pgetevents               compat_sys_io_pgetevents
+> > \ No newline at end of file
+>
+> Here is the missing newline again. This should never happen if your text
+> editor is configured correctly.
+>
+> > diff --git a/arch/parisc/kernel/syscalls/syscallhdr.sh b/arch/parisc/kernel/syscalls/syscallhdr.sh
+> > new file mode 100644
+> > index 0000000..607d4ca
+> > --- /dev/null
+> > +++ b/arch/parisc/kernel/syscalls/syscallhdr.sh
+> > @@ -0,0 +1,35 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +in="$1"
+> > +out="$2"
+> > +my_abis=`echo "($3)" | tr ',' '|'`
+> > +prefix="$4"
+> > +offset="$5"
+> > +
+> > +fileguard=_UAPI_ASM_PARISC_`basename "$out" | sed \
+> > +    -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
+> > +    -e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g'`
+>
+> Maybe use ${ARCH} instead of PARISC here to keep it the same
+> across architectures?
+
+Sure. FYI, x86/arm/s390 has the above implementation,
+
+>
+> > +    my_abi="$(cut -d'|' -f2 <<< $my_abis)"
+> > +    while read nr abi name entry compat ; do
+> > +       if [ $my_abi = "compat" ]; then
+>
+> This check seems really fragile, but if you add another argument to the
+> script instead of listing "compat" as the second option in the
+> list of ABIs, I think it's fine.
+
+Hmm. Please share ur comment in the above for the same.
+
+Thanks
+Firoz
+
+>
+>         ARnd
