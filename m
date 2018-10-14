@@ -1,77 +1,97 @@
-From: Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH v2 2/2] mm: speed up mremap by 500x on large regions
-Date: Sat, 13 Oct 2018 10:50:39 -0700
-Message-ID: <20181013175039.GB213522@joelaf.mtv.corp.google.com>
-References: <20181012013756.11285-2-joel@joelfernandes.org>
- <20181012113056.gxhcbrqyu7k7xnyv@kshutemo-mobl1>
- <20181012125046.GA170912@joelaf.mtv.corp.google.com>
- <20181012.111836.1569129998592378186.davem@davemloft.net>
- <20181013013540.GA207108@joelaf.mtv.corp.google.com>
- <CAKOZueuNvWvn18vffJWpbpg7h-uScT8gXrrudTB2pnT4M2HJ_w@mail.gmail.com>
- <20181013014429.GB207108@joelaf.mtv.corp.google.com>
- <CAKOZues25aaKz3_AiyfJ=r2QBd5MghgY3ky_ptg4Z8=ST4DCgw@mail.gmail.com>
- <20181013021057.GA213522@joelaf.mtv.corp.google.com>
- <CAKOZueu2wdkeUFYLQ8qE48yJs1_uRz-9RVJRkp==CL=jp=Q8+g@mail.gmail.com>
+From: Eugene Syromiatnikov <esyr@redhat.com>
+Subject: Re: [PATCH v4 3/6] parisc: add system call table generation
+	support
+Date: Sun, 14 Oct 2018 03:06:58 +0200
+Message-ID: <20181014010658.GB717@asgard.redhat.com>
+References: <1539337442-3676-1-git-send-email-firoz.khan@linaro.org>
+ <1539337442-3676-4-git-send-email-firoz.khan@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: David Miller <davem@davemloft.net>, kirill@shutemov.name,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-team@android.com, Minchan Kim <minchan@kernel.org>,
-        Ramon Pantin <pantin@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        aryabinin@virtuozzo.com, luto@kernel.org, bp@alien8.de,
-        catalin.marinas@arm.com, Chris Zankel <chris@zankel.net>,
-        dave.hansen@linux.intel.com, elfring@users.sourceforge.net,
-        fenghua.yu@intel.com, geert@linux-m68k.org, gxt@pku.edu.cn,
-        deller@gmx.de, mingo@redhat.com, jejb@parisc-linux.org,
-        jdike@addtoit.com, Jonas Bonn <jonas@southpole.se>,
-        Julia Lawall <Julia.Lawall@lip6.fr>,
-        kasan-dev@googlegroups.com, kvmarm@lists.cs.columbia
-To: dancol@google.com
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAKOZueu2wdkeUFYLQ8qE48yJs1_uRz-9RVJRkp==CL=jp=Q8+g@mail.gmail.com>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Cc: Kate Stewart <kstewart@linuxfoundation.org>, linux-arch@vger.kernel.org,
+ arnd@arndb.de, linux-parisc@vger.kernel.org, y2038@lists.linaro.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Helge Deller <deller@gmx.de>,
+ "James E . J . Bottomley" <jejb@parisc-linux.org>,
+ linux-kernel@vger.kernel.org, marcin.juszkiewicz@linaro.org,
+ deepa.kernel@gmail.com, Philippe Ombredanne <pombredanne@nexb.com>,
+ Thomas Gleixner <tglx@linutronix.de>
+To: Firoz Khan <firoz.khan@linaro.org>
+Return-path: <y2038-bounces@lists.linaro.org>
+In-Reply-To: <1539337442-3676-4-git-send-email-firoz.khan@linaro.org>
+List-Unsubscribe: <https://lists.linaro.org/mailman/options/y2038>,
+ <mailto:y2038-request@lists.linaro.org?subject=unsubscribe>
+List-Archive: <http://lists.linaro.org/pipermail/y2038/>
+List-Post: <mailto:y2038@lists.linaro.org>
+List-Help: <mailto:y2038-request@lists.linaro.org?subject=help>
+List-Subscribe: <https://lists.linaro.org/mailman/listinfo/y2038>,
+ <mailto:y2038-request@lists.linaro.org?subject=subscribe>
+Errors-To: y2038-bounces@lists.linaro.org
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Oct 12, 2018 at 07:25:08PM -0700, Daniel Colascione wrote:
-[...] 
-> > But anyway, I think this runtime detection thing is not needed. THP is
-> > actually expected to be as fast as this anyway, so if that's available then
-> > we should already be as fast.
-> 
-> Ah, I think the commit message is confusing. (Or else I'm misreading
-> the patch now.) It's not quite that we're disabling the feature when
-> THP is enabled anywhere, but rather that we use the move_huge_pmd path
-> for huge PMDs and use the new code only for non-huge PMDs. (Right?) If
-> that's the case, the commit message shouldn't say "Incase THP is
-> enabled, the optimization is skipped". Even if THP is enabled on a
-> system generally, we might use the new PMD-moving code for mapping
-> types that don't support THP-ization, right?
-
-That is true. Ok, I guess I can update the commit message to be more accurate
-about that.
-
-> > This is for non-THP where THP cannot be enabled
-> > and there is still room for some improvement. Most/all architectures will be
-> > just fine with this. This flag is more of a safety-net type of thing where in
-> > the future if there is this one or two weird architectures that don't play
-> > well, then they can turn it off at the architecture level by not selecting
-> > the flag. See my latest patches for the per-architecture compile-time
-> > controls. Ideally we'd like to blanket turn it on on all, but this is just
-> > playing it extra safe as Kirill and me were discussing on other threads.
-> 
-> Sure. I'm just pointing out that the 500x performance different turns
-> the operation into a qualitatively different feature, so if we expect
-> to actually ship a mainstream architecture without support for this
-> thing, we should make it explicit. If we're not, we shouldn't.
-
-We can make it explicit by enabling it in such a mainstream architecture is
-my point. Also if the optimization is not doing what its supposed to, then
-userspace will also just know by measuring the time.
-
-thanks,
-
- - Joel
+T24gRnJpLCBPY3QgMTIsIDIwMTggYXQgMDM6MTM6NTlQTSArMDUzMCwgRmlyb3ogS2hhbiB3cm90
+ZToKPiBkaWZmIC0tZ2l0IGEvYXJjaC9wYXJpc2Mva2VybmVsL3N5c2NhbGxzL3N5c2NhbGwudGJs
+IGIvYXJjaC9wYXJpc2Mva2VybmVsL3N5c2NhbGxzL3N5c2NhbGwudGJsCj4gbmV3IGZpbGUgbW9k
+ZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwLi43YzlmMjY4Cgo+ICs4NiAgICAgIGNvbW1vbiAgdXNl
+bGliICAgICAgICAgICAgICAgICAgICAgICAgICBzeXNfbmlfc3lzY2FsbAoKQWdhaW4sIHdoeSBp
+cyB0aGlzIGRlZmluaXRpb24gbGVmdCwgd2hpbGUgb3RoZXJzIGhhdmUgYmVlbiByZW1vdmVkPwoK
+PiArMzQ4ICAgICBjb21tb24gIHB3cml0ZXYyICAgICAgICAgICAgICAgICAgICAgICAgc3lzX3B3
+cml0ZXYyICAgICAgICAgICAgICAgICAgICBjb21wYXRfc3lzX3B3cml0ZXYyCj4gKzM0OSAgICAg
+Y29tbW9uICBzdGF0eCAgICAgICAgICAgICAgICAgICAgICAgICAgIHN5c19zdGF0eAo+ICszNTAJ
+Y29tbW9uICBpb19wZ2V0ZXZlbnRzCQkJc3lzX2lvX3BnZXRldmVudHMJCWNvbXBhdF9zeXNfaW9f
+cGdldGV2ZW50cwoKVGFiIGluc3RlYWQgb2Ygc3BhY2VzLgoKPiBkaWZmIC0tZ2l0IGEvYXJjaC9w
+YXJpc2Mva2VybmVsL3N5c2NhbGxzL3N5c2NhbGxoZHIuc2ggYi9hcmNoL3BhcmlzYy9rZXJuZWwv
+c3lzY2FsbHMvc3lzY2FsbGhkci5zaAo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gaW5kZXggMDAw
+MDAwMC4uNjA3ZDRjYQo+IC0tLSAvZGV2L251bGwKPiArKysgYi9hcmNoL3BhcmlzYy9rZXJuZWwv
+c3lzY2FsbHMvc3lzY2FsbGhkci5zaAo+IEBAIC0wLDAgKzEsMzUgQEAKPiArIyEvYmluL3NoCgov
+YmluL3NoIC1lZnUKCj4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKCiJleHBv
+cnQgTEFORz1DIiwgZHVlIHRvIHVzYWdlIG9mIHNlZC9ncmVwL3NvcnQuCgo+ICsKPiAraW49IiQx
+Igo+ICtvdXQ9IiQyIgo+ICtteV9hYmlzPWBlY2hvICIoJDMpIiB8IHRyICcsJyAnfCdgCj4gK3By
+ZWZpeD0iJDQiCj4gK29mZnNldD0iJDUiCj4gKwo+ICtmaWxlZ3VhcmQ9X1VBUElfQVNNX1BBUklT
+Q19gYmFzZW5hbWUgIiRvdXQiIHwgc2VkIFwKPiArICAgIC1lICd5L2FiY2RlZmdoaWprbG1ub3Bx
+cnN0dXZ3eHl6L0FCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaLycgXAo+ICsgICAgLWUgJ3MvW15B
+LVowLTlfXS9fL2cnIC1lICdzL19fL18vZydgCj4gK2dyZXAgLUUgIl5bMC05QS1GYS1mWHhdK1tb
+OnNwYWNlOl1dKyR7bXlfYWJpc30iICIkaW4iIHwgc29ydCAtbiB8ICgKCmdyZXAgLUUgJ15bWzp4
+ZGlnaXQ6XVh4XStbWzpzcGFjZTpdXSsnIiR7bXlfYWJpc30iICIkaW4iCnNvcnQgLW4gLWsxLDEK
+Cj4gKyAgICBlY2hvICIjaWZuZGVmICR7ZmlsZWd1YXJkfSIKPiArICAgIGVjaG8gIiNkZWZpbmUg
+JHtmaWxlZ3VhcmR9Igo+ICsgICAgZWNobyAiIgoKCWNhdCA8PC1FT0YKCQkjaWZuZGVmICR7Zmls
+ZWd1YXJkfQoJCSNkZWZpbmUgJHtmaWxlZ3VhcmR9CgoJRU9GCgo+ICsKPiArICAgIG54dD0wCj4g
+KyAgICB3aGlsZSByZWFkIG5yIGFiaSBuYW1lIGVudHJ5IGNvbXBhdCA7IGRvCj4gKwlpZiBbIC16
+ICIkb2Zmc2V0IiBdOyB0aGVuCj4gKwkgICAgZWNobyAtZSAiI2RlZmluZSBfX05SXyR7cHJlZml4
+fSR7bmFtZX1cdCRuciIKPiArCWVsc2UKPiArCSAgICBlY2hvIC1lICIjZGVmaW5lIF9fTlJfJHtw
+cmVmaXh9JHtuYW1lfVx0KCRvZmZzZXQgKyAkbnIpIgo+ICsJZmkKCmVjaG8gb3B0aW9ucyBhcmUg
+bm90IHBvcnRhYmxlOyBzb21ldGhpbmcgbGlrZQoKCXByaW50ZiAiI2RlZmluZSBfX05SXyVzJXNc
+dCglcyArICVzKSIgIiR7cHJlZml4fSIgIiR7bmFtZX0iICIke29mZnNldH0iICIke25yfSIKCj4g
+KwlueHQ9JG5yCj4gKwlsZXQgbnh0PW54dCsxCgoibGV0IiBpcyBhIGJhc2ggZXh0ZW5zaW9uLCBw
+b3NpeC1jb25mb3JtYW50IGV4cHJlc3Npb24gd291bGQgYmUKCglueHQ9JCgobnIgKyAxKSkKCihJ
+IHdvdWxkIGFsc28gY2hlY2sgdGhhdCBuciA+PSBueHQsIGhvd2V2ZXIpCgo+ICsgICAgZG9uZQo+
+ICsKPiArICAgIGVjaG8gIiIKPiArICAgIGVjaG8gIiNpZmRlZiBfX0tFUk5FTF9fIgo+ICsgICAg
+ZWNobyAtZSAiI2RlZmluZSBfX05SX3N5c2NhbGxzXHQkbnh0Igo+ICsgICAgZWNobyAiI2VuZGlm
+Igo+ICsgICAgZWNobyAiIgo+ICsgICAgZWNobyAiI2VuZGlmIC8qICR7ZmlsZWd1YXJkfSAqLyIK
+CgljYXQgPDwtRU9GCgoJCSNpZmRlZiBfX0tFUk5FTF9fCgkJIyBkZWZpbmUgX19OUl9zeXNjYWxs
+c1x0JHtueHR9CgkJI2VuZGlmCgoJCSNlbmRpZiAvKiAke2ZpbGVndWFyZH0gKi8KCUVPRgoKPiAr
+KSA+ICIkb3V0Igo+IGRpZmYgLS1naXQgYS9hcmNoL3BhcmlzYy9rZXJuZWwvc3lzY2FsbHMvc3lz
+Y2FsbHRibC5zaCBiL2FyY2gvcGFyaXNjL2tlcm5lbC9zeXNjYWxscy9zeXNjYWxsdGJsLnNoCj4g
+bmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwLi4wNGFiZGU3Cj4gLS0tIC9kZXYv
+bnVsbAo+ICsrKyBiL2FyY2gvcGFyaXNjL2tlcm5lbC9zeXNjYWxscy9zeXNjYWxsdGJsLnNoCj4g
+QEAgLTAsMCArMSw0NiBAQAo+ICsjIS9iaW4vc2gKPiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
+cjogR1BMLTIuMAo+ICsKPiAraW49IiQxIgo+ICtvdXQ9IiQyIgo+ICtteV9hYmlzPWBlY2hvICIo
+JDMpIiB8IHRyICcsJyAnfCdgCj4gK29mZnNldD0iJDQiCj4gKwo+ICtlbWl0KCkgewo+ICsgICAg
+bnh0PSIkMSIKPiArICAgIGlmIFsgLXogIiRvZmZzZXQiIF07IHRoZW4KPiArCW5yPSIkMiIKPiAr
+ICAgIGVsc2UKPiArCW5yPSIkMiIKPiArCW5yPSQoKG5yK29mZnNldCkpCj4gKyAgICBmaQo+ICsg
+ICAgZW50cnk9IiQzIgo+ICsKPiArICAgIHdoaWxlIFsgJG54dCAtbHQgJG5yIF07IGRvCgpJdCB3
+b3VsZCBicmVhayBuaWNlbHkgaWYgbnh0PSItbiB4IC1vIDEiIG9yIHNvbWV0aGluZyBsaWtlIHRo
+YXQuCgo+ICsJZWNobyAiX19TWVNDQUxMKCRueHQsIHN5c19uaV9zeXNjYWxsLCApIgo+ICsgICAg
+ICAgIGxldCBueHQ9bnh0KzEKPiArICAgIGRvbmUKPiArICAgIGVjaG8gIl9fU1lTQ0FMTCgkbnh0
+LCAkZW50cnksICkiCj4gK30KPiArCj4gK2dyZXAgLUUgIl5bMC05QS1GYS1mWHhdK1tbOnNwYWNl
+Ol1dKyR7bXlfYWJpc30iICIkaW4iIHwgc29ydCAtbiB8ICgKPiArICAgIGlmIFsgLXogIiRvZmZz
+ZXQiIF07IHRoZW4KPiArCW54dD0wCj4gKyAgICBlbHNlCj4gKwlueHQ9JG9mZnNldAo+ICsgICAg
+ZmkKPiArCj4gKyAgICBteV9hYmk9IiQoY3V0IC1kJ3wnIC1mMiA8PDwgJG15X2FiaXMpIgoKCW15
+X2FiaT0iJHtteV9hYmlzIyp8fSIKCkJ1dCBpdCBsb29rcyBsaWtlIHRoYXQgJG15X2FiaXMgaW5j
+bHVkZXMgcGFyZW50aGVzZXMgYW5kIHRoaXMgY29kZQppcyBicm9rZW4uCgo+ICsgICAgd2hpbGUg
+cmVhZCBuciBhYmkgbmFtZSBlbnRyeSBjb21wYXQgOyBkbwo+ICsJaWYgWyAkbXlfYWJpID0gImNv
+bXBhdCIgXTsgdGhlbgo+ICsJICAgIGlmIFsgLXogIiRjb21wYXQiIF07IHRoZW4KPiArCQllbWl0
+ICRueHQgJG5yICRlbnRyeQo+ICsJICAgIGVsc2UKPiArCQllbWl0ICRueHQgJG5yICRjb21wYXQK
+PiArCSAgICBmaQo+ICsJZWxzZQo+ICsJICAgIGVtaXQgJG54dCAkbnIgJGVudHJ5Cj4gKwlmaQo+
+ICsgICAgICAgIGxldCBueHQ9bnh0KzEKPiArICAgIGRvbmUKPiArKSA+ICIkb3V0Igo+IC0tIAo+
+IDEuOS4xCj4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+ClkyMDM4IG1haWxpbmcgbGlzdApZMjAzOEBsaXN0cy5saW5hcm8ub3JnCmh0dHBzOi8vbGlzdHMu
+bGluYXJvLm9yZy9tYWlsbWFuL2xpc3RpbmZvL3kyMDM4Cg==
