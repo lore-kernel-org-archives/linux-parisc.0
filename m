@@ -1,97 +1,199 @@
-From: Eugene Syromiatnikov <esyr@redhat.com>
-Subject: Re: [PATCH v4 3/6] parisc: add system call table generation
-	support
-Date: Sun, 14 Oct 2018 03:06:58 +0200
-Message-ID: <20181014010658.GB717@asgard.redhat.com>
+From: Firoz Khan <firoz.khan@linaro.org>
+Subject: Re: [PATCH v4 3/6] parisc: add system call table generation support
+Date: Mon, 15 Oct 2018 10:18:07 +0530
+Message-ID: <CALxhOngwHfFzCGXknF4_CHjD=4LeM8BnrZ+s-p6ZRcJ3G8i_RA@mail.gmail.com>
 References: <1539337442-3676-1-git-send-email-firoz.khan@linaro.org>
- <1539337442-3676-4-git-send-email-firoz.khan@linaro.org>
+ <1539337442-3676-4-git-send-email-firoz.khan@linaro.org> <c6280818c999449646ec216984f2df9e@sf-tec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Cc: Kate Stewart <kstewart@linuxfoundation.org>, linux-arch@vger.kernel.org,
- arnd@arndb.de, linux-parisc@vger.kernel.org, y2038@lists.linaro.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Helge Deller <deller@gmx.de>,
- "James E . J . Bottomley" <jejb@parisc-linux.org>,
- linux-kernel@vger.kernel.org, marcin.juszkiewicz@linaro.org,
- deepa.kernel@gmail.com, Philippe Ombredanne <pombredanne@nexb.com>,
- Thomas Gleixner <tglx@linutronix.de>
-To: Firoz Khan <firoz.khan@linaro.org>
-Return-path: <y2038-bounces@lists.linaro.org>
-In-Reply-To: <1539337442-3676-4-git-send-email-firoz.khan@linaro.org>
-List-Unsubscribe: <https://lists.linaro.org/mailman/options/y2038>,
- <mailto:y2038-request@lists.linaro.org?subject=unsubscribe>
-List-Archive: <http://lists.linaro.org/pipermail/y2038/>
-List-Post: <mailto:y2038@lists.linaro.org>
-List-Help: <mailto:y2038-request@lists.linaro.org?subject=help>
-List-Subscribe: <https://lists.linaro.org/mailman/listinfo/y2038>,
- <mailto:y2038-request@lists.linaro.org?subject=subscribe>
-Errors-To: y2038-bounces@lists.linaro.org
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-parisc@vger.kernel.org,
+        "James E . J . Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
+        linux-parisc-owner@vger.kernel.org
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <c6280818c999449646ec216984f2df9e@sf-tec.de>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-T24gRnJpLCBPY3QgMTIsIDIwMTggYXQgMDM6MTM6NTlQTSArMDUzMCwgRmlyb3ogS2hhbiB3cm90
-ZToKPiBkaWZmIC0tZ2l0IGEvYXJjaC9wYXJpc2Mva2VybmVsL3N5c2NhbGxzL3N5c2NhbGwudGJs
-IGIvYXJjaC9wYXJpc2Mva2VybmVsL3N5c2NhbGxzL3N5c2NhbGwudGJsCj4gbmV3IGZpbGUgbW9k
-ZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwLi43YzlmMjY4Cgo+ICs4NiAgICAgIGNvbW1vbiAgdXNl
-bGliICAgICAgICAgICAgICAgICAgICAgICAgICBzeXNfbmlfc3lzY2FsbAoKQWdhaW4sIHdoeSBp
-cyB0aGlzIGRlZmluaXRpb24gbGVmdCwgd2hpbGUgb3RoZXJzIGhhdmUgYmVlbiByZW1vdmVkPwoK
-PiArMzQ4ICAgICBjb21tb24gIHB3cml0ZXYyICAgICAgICAgICAgICAgICAgICAgICAgc3lzX3B3
-cml0ZXYyICAgICAgICAgICAgICAgICAgICBjb21wYXRfc3lzX3B3cml0ZXYyCj4gKzM0OSAgICAg
-Y29tbW9uICBzdGF0eCAgICAgICAgICAgICAgICAgICAgICAgICAgIHN5c19zdGF0eAo+ICszNTAJ
-Y29tbW9uICBpb19wZ2V0ZXZlbnRzCQkJc3lzX2lvX3BnZXRldmVudHMJCWNvbXBhdF9zeXNfaW9f
-cGdldGV2ZW50cwoKVGFiIGluc3RlYWQgb2Ygc3BhY2VzLgoKPiBkaWZmIC0tZ2l0IGEvYXJjaC9w
-YXJpc2Mva2VybmVsL3N5c2NhbGxzL3N5c2NhbGxoZHIuc2ggYi9hcmNoL3BhcmlzYy9rZXJuZWwv
-c3lzY2FsbHMvc3lzY2FsbGhkci5zaAo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gaW5kZXggMDAw
-MDAwMC4uNjA3ZDRjYQo+IC0tLSAvZGV2L251bGwKPiArKysgYi9hcmNoL3BhcmlzYy9rZXJuZWwv
-c3lzY2FsbHMvc3lzY2FsbGhkci5zaAo+IEBAIC0wLDAgKzEsMzUgQEAKPiArIyEvYmluL3NoCgov
-YmluL3NoIC1lZnUKCj4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKCiJleHBv
-cnQgTEFORz1DIiwgZHVlIHRvIHVzYWdlIG9mIHNlZC9ncmVwL3NvcnQuCgo+ICsKPiAraW49IiQx
-Igo+ICtvdXQ9IiQyIgo+ICtteV9hYmlzPWBlY2hvICIoJDMpIiB8IHRyICcsJyAnfCdgCj4gK3By
-ZWZpeD0iJDQiCj4gK29mZnNldD0iJDUiCj4gKwo+ICtmaWxlZ3VhcmQ9X1VBUElfQVNNX1BBUklT
-Q19gYmFzZW5hbWUgIiRvdXQiIHwgc2VkIFwKPiArICAgIC1lICd5L2FiY2RlZmdoaWprbG1ub3Bx
-cnN0dXZ3eHl6L0FCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaLycgXAo+ICsgICAgLWUgJ3MvW15B
-LVowLTlfXS9fL2cnIC1lICdzL19fL18vZydgCj4gK2dyZXAgLUUgIl5bMC05QS1GYS1mWHhdK1tb
-OnNwYWNlOl1dKyR7bXlfYWJpc30iICIkaW4iIHwgc29ydCAtbiB8ICgKCmdyZXAgLUUgJ15bWzp4
-ZGlnaXQ6XVh4XStbWzpzcGFjZTpdXSsnIiR7bXlfYWJpc30iICIkaW4iCnNvcnQgLW4gLWsxLDEK
-Cj4gKyAgICBlY2hvICIjaWZuZGVmICR7ZmlsZWd1YXJkfSIKPiArICAgIGVjaG8gIiNkZWZpbmUg
-JHtmaWxlZ3VhcmR9Igo+ICsgICAgZWNobyAiIgoKCWNhdCA8PC1FT0YKCQkjaWZuZGVmICR7Zmls
-ZWd1YXJkfQoJCSNkZWZpbmUgJHtmaWxlZ3VhcmR9CgoJRU9GCgo+ICsKPiArICAgIG54dD0wCj4g
-KyAgICB3aGlsZSByZWFkIG5yIGFiaSBuYW1lIGVudHJ5IGNvbXBhdCA7IGRvCj4gKwlpZiBbIC16
-ICIkb2Zmc2V0IiBdOyB0aGVuCj4gKwkgICAgZWNobyAtZSAiI2RlZmluZSBfX05SXyR7cHJlZml4
-fSR7bmFtZX1cdCRuciIKPiArCWVsc2UKPiArCSAgICBlY2hvIC1lICIjZGVmaW5lIF9fTlJfJHtw
-cmVmaXh9JHtuYW1lfVx0KCRvZmZzZXQgKyAkbnIpIgo+ICsJZmkKCmVjaG8gb3B0aW9ucyBhcmUg
-bm90IHBvcnRhYmxlOyBzb21ldGhpbmcgbGlrZQoKCXByaW50ZiAiI2RlZmluZSBfX05SXyVzJXNc
-dCglcyArICVzKSIgIiR7cHJlZml4fSIgIiR7bmFtZX0iICIke29mZnNldH0iICIke25yfSIKCj4g
-KwlueHQ9JG5yCj4gKwlsZXQgbnh0PW54dCsxCgoibGV0IiBpcyBhIGJhc2ggZXh0ZW5zaW9uLCBw
-b3NpeC1jb25mb3JtYW50IGV4cHJlc3Npb24gd291bGQgYmUKCglueHQ9JCgobnIgKyAxKSkKCihJ
-IHdvdWxkIGFsc28gY2hlY2sgdGhhdCBuciA+PSBueHQsIGhvd2V2ZXIpCgo+ICsgICAgZG9uZQo+
-ICsKPiArICAgIGVjaG8gIiIKPiArICAgIGVjaG8gIiNpZmRlZiBfX0tFUk5FTF9fIgo+ICsgICAg
-ZWNobyAtZSAiI2RlZmluZSBfX05SX3N5c2NhbGxzXHQkbnh0Igo+ICsgICAgZWNobyAiI2VuZGlm
-Igo+ICsgICAgZWNobyAiIgo+ICsgICAgZWNobyAiI2VuZGlmIC8qICR7ZmlsZWd1YXJkfSAqLyIK
-CgljYXQgPDwtRU9GCgoJCSNpZmRlZiBfX0tFUk5FTF9fCgkJIyBkZWZpbmUgX19OUl9zeXNjYWxs
-c1x0JHtueHR9CgkJI2VuZGlmCgoJCSNlbmRpZiAvKiAke2ZpbGVndWFyZH0gKi8KCUVPRgoKPiAr
-KSA+ICIkb3V0Igo+IGRpZmYgLS1naXQgYS9hcmNoL3BhcmlzYy9rZXJuZWwvc3lzY2FsbHMvc3lz
-Y2FsbHRibC5zaCBiL2FyY2gvcGFyaXNjL2tlcm5lbC9zeXNjYWxscy9zeXNjYWxsdGJsLnNoCj4g
-bmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwLi4wNGFiZGU3Cj4gLS0tIC9kZXYv
-bnVsbAo+ICsrKyBiL2FyY2gvcGFyaXNjL2tlcm5lbC9zeXNjYWxscy9zeXNjYWxsdGJsLnNoCj4g
-QEAgLTAsMCArMSw0NiBAQAo+ICsjIS9iaW4vc2gKPiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
-cjogR1BMLTIuMAo+ICsKPiAraW49IiQxIgo+ICtvdXQ9IiQyIgo+ICtteV9hYmlzPWBlY2hvICIo
-JDMpIiB8IHRyICcsJyAnfCdgCj4gK29mZnNldD0iJDQiCj4gKwo+ICtlbWl0KCkgewo+ICsgICAg
-bnh0PSIkMSIKPiArICAgIGlmIFsgLXogIiRvZmZzZXQiIF07IHRoZW4KPiArCW5yPSIkMiIKPiAr
-ICAgIGVsc2UKPiArCW5yPSIkMiIKPiArCW5yPSQoKG5yK29mZnNldCkpCj4gKyAgICBmaQo+ICsg
-ICAgZW50cnk9IiQzIgo+ICsKPiArICAgIHdoaWxlIFsgJG54dCAtbHQgJG5yIF07IGRvCgpJdCB3
-b3VsZCBicmVhayBuaWNlbHkgaWYgbnh0PSItbiB4IC1vIDEiIG9yIHNvbWV0aGluZyBsaWtlIHRo
-YXQuCgo+ICsJZWNobyAiX19TWVNDQUxMKCRueHQsIHN5c19uaV9zeXNjYWxsLCApIgo+ICsgICAg
-ICAgIGxldCBueHQ9bnh0KzEKPiArICAgIGRvbmUKPiArICAgIGVjaG8gIl9fU1lTQ0FMTCgkbnh0
-LCAkZW50cnksICkiCj4gK30KPiArCj4gK2dyZXAgLUUgIl5bMC05QS1GYS1mWHhdK1tbOnNwYWNl
-Ol1dKyR7bXlfYWJpc30iICIkaW4iIHwgc29ydCAtbiB8ICgKPiArICAgIGlmIFsgLXogIiRvZmZz
-ZXQiIF07IHRoZW4KPiArCW54dD0wCj4gKyAgICBlbHNlCj4gKwlueHQ9JG9mZnNldAo+ICsgICAg
-ZmkKPiArCj4gKyAgICBteV9hYmk9IiQoY3V0IC1kJ3wnIC1mMiA8PDwgJG15X2FiaXMpIgoKCW15
-X2FiaT0iJHtteV9hYmlzIyp8fSIKCkJ1dCBpdCBsb29rcyBsaWtlIHRoYXQgJG15X2FiaXMgaW5j
-bHVkZXMgcGFyZW50aGVzZXMgYW5kIHRoaXMgY29kZQppcyBicm9rZW4uCgo+ICsgICAgd2hpbGUg
-cmVhZCBuciBhYmkgbmFtZSBlbnRyeSBjb21wYXQgOyBkbwo+ICsJaWYgWyAkbXlfYWJpID0gImNv
-bXBhdCIgXTsgdGhlbgo+ICsJICAgIGlmIFsgLXogIiRjb21wYXQiIF07IHRoZW4KPiArCQllbWl0
-ICRueHQgJG5yICRlbnRyeQo+ICsJICAgIGVsc2UKPiArCQllbWl0ICRueHQgJG5yICRjb21wYXQK
-PiArCSAgICBmaQo+ICsJZWxzZQo+ICsJICAgIGVtaXQgJG54dCAkbnIgJGVudHJ5Cj4gKwlmaQo+
-ICsgICAgICAgIGxldCBueHQ9bnh0KzEKPiArICAgIGRvbmUKPiArKSA+ICIkb3V0Igo+IC0tIAo+
-IDEuOS4xCj4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-ClkyMDM4IG1haWxpbmcgbGlzdApZMjAzOEBsaXN0cy5saW5hcm8ub3JnCmh0dHBzOi8vbGlzdHMu
-bGluYXJvLm9yZy9tYWlsbWFuL2xpc3RpbmZvL3kyMDM4Cg==
+Hi Rolf,
+
+On Fri, 12 Oct 2018 at 17:37, Rolf Eike Beer <eike-kernel@sf-tec.de> wrote:
+>
+> Firoz Khan wrote:
+>
+> > diff --git a/arch/parisc/kernel/syscalls/syscallhdr.sh
+> > b/arch/parisc/kernel/syscalls/syscallhdr.sh
+> > new file mode 100644
+> > index 0000000..607d4ca
+> > --- /dev/null
+> > +++ b/arch/parisc/kernel/syscalls/syscallhdr.sh
+> > @@ -0,0 +1,35 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +in="$1"
+> > +out="$2"
+> > +my_abis=`echo "($3)" | tr ',' '|'`
+>
+> Any reason not to use $() instead of backticks?
+
+I got this frame work from x86/entry/syscalls;
+https://github.com/torvalds/linux/blob/master/arch/x86/entry/syscalls/syscallhdr.sh
+I haven't modified the script but I tune this script to meet my requirements.
+
+Sure, I'll look into this.
+
+>
+> > +prefix="$4"
+> > +offset="$5"
+> > +
+> > +fileguard=_UAPI_ASM_PARISC_`basename "$out" | sed \
+> > +    -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
+> > +    -e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g'`
+> > +grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+> > +    echo "#ifndef ${fileguard}"
+> > +    echo "#define ${fileguard}"
+> > +    echo ""
+> > +
+> > +    nxt=0
+> > +    while read nr abi name entry compat ; do
+> > +     if [ -z "$offset" ]; then
+> > +         echo -e "#define __NR_${prefix}${name}\t$nr"
+>
+> This mixed indentation with both tabs and spaces is a bit messy.
+
+Is this what you suggested?
+-           echo -e "#define __NR_${prefix}${name}\t$nr"
++           echo "#define __NR_${prefix}${name} $nr"
+
+>
+> > +     else
+> > +         echo -e "#define __NR_${prefix}${name}\t($offset + $nr)"
+> > +     fi
+> > +     nxt=$nr
+> > +     let nxt=nxt+1
+>
+> Why do you use let here when you do $(()) calculations at other places?
+
+Yes, will do this.
+-        nxt=$nr
+-        let nxt=nxt+1
++        nxt=$((nxt+1))
+
+>
+> > +    done
+> > +
+> > +    echo ""
+> > +    echo "#ifdef __KERNEL__"
+> > +    echo -e "#define __NR_syscalls\t$nxt"
+> > +    echo "#endif"
+> > +    echo ""
+> > +    echo "#endif /* ${fileguard} */"
+> > +) > "$out"
+> > diff --git a/arch/parisc/kernel/syscalls/syscalltbl.sh
+> > b/arch/parisc/kernel/syscalls/syscalltbl.sh
+> > new file mode 100644
+> > index 0000000..04abde7
+> > --- /dev/null
+> > +++ b/arch/parisc/kernel/syscalls/syscalltbl.sh
+> > @@ -0,0 +1,46 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +in="$1"
+> > +out="$2"
+> > +my_abis=`echo "($3)" | tr ',' '|'`
+> > +offset="$4"
+> > +
+> > +emit() {
+> > +    nxt="$1"
+> > +    if [ -z "$offset" ]; then
+> > +     nr="$2"
+> > +    else
+> > +     nr="$2"
+> > +     nr=$((nr+offset))
+>
+> This could be one line, no? Or just set offset to 0 if it is empty and
+> avoid that if alltogether.
+
+Sure!
+
+>
+> > +    fi
+> > +    entry="$3"
+> > +
+> > +    while [ $nxt -lt $nr ]; do
+> > +     echo "__SYSCALL($nxt, sys_ni_syscall, )"
+> > +        let nxt=nxt+1
+> > +    done
+> > +    echo "__SYSCALL($nxt, $entry, )"
+> > +}
+> > +
+> > +grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+> > +    if [ -z "$offset" ]; then
+> > +     nxt=0
+> > +    else
+> > +     nxt=$offset
+> > +    fi
+>
+> Another argument for offset=0 as default.
+
+Sure.
+
+>
+> > +
+> > +    my_abi="$(cut -d'|' -f2 <<< $my_abis)"
+>
+> "<<<" is a bash extension and will not work with /bin/sh.
+
+Ohh, ok
+
+>
+> > +    while read nr abi name entry compat ; do
+> > +     if [ $my_abi = "compat" ]; then
+> > +         if [ -z "$compat" ]; then
+> > +             emit $nxt $nr $entry
+> > +         else
+> > +             emit $nxt $nr $compat
+> > +         fi
+> > +     else
+> > +         emit $nxt $nr $entry
+> > +     fi
+>
+> I would go for a local variable being set to $compat or $entry and
+> calling emit at only one place. And there should be only one if with 2
+> expressions, no need for 3 branches.
+
+Sure.
+
+>
+> > +        let nxt=nxt+1
+>
+> Inconsistent indentation.
+
+I'm using emacs editor with default settings. In the actual file, there is no
+indentation problem which I found but if I get patch using git format-patch,
+it has inconsistent indentation.
+
+No idea. I could find the same problem in other patches also.
+Let me use the vi editor to save the file and get the patch.
+
+Thanks
+Firoz
+
+>
+> > +    done
+> > +) > "$out"
+>
+> Eike
