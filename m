@@ -1,49 +1,66 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: linux-next: Signed-off-by missing for commits in the parisc-hd tree
-Date: Wed, 17 Oct 2018 17:15:07 +1100
-Message-ID: <20181017171507.6cfe08d2@canb.auug.org.au>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: linux-next: Signed-off-by missing for commits in the parisc-hd
+ tree
+Date: Wed, 17 Oct 2018 08:19:18 +0200
+Message-ID: <76939293-4ff5-f6e8-aec7-d014e0a0419b@gmx.de>
+References: <20181017171507.6cfe08d2@canb.auug.org.au>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/gZsn.ra0WuoNa=dnqw6kzvd"; protocol="application/pgp-signature"
+ protocol="application/pgp-signature";
+ boundary="fYShguV3TNoFJq0C0cJPj7wkEqW4bqgBs"
 Cc: Linux-Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To: Helge Deller <deller@gmx.de>,
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
         Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181017171507.6cfe08d2@canb.auug.org.au>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
---Sig_/gZsn.ra0WuoNa=dnqw6kzvd
-Content-Type: text/plain; charset=US-ASCII
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--fYShguV3TNoFJq0C0cJPj7wkEqW4bqgBs
+Content-Type: multipart/mixed; boundary="stofG0xModqiYNHPqf8oiqOBD8jFsz0ap";
+ protected-headers="v1"
+From: Helge Deller <deller@gmx.de>
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Parisc List <linux-parisc@vger.kernel.org>
+Cc: Linux-Next Mailing List <linux-next@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-ID: <76939293-4ff5-f6e8-aec7-d014e0a0419b@gmx.de>
+Subject: Re: linux-next: Signed-off-by missing for commits in the parisc-hd
+ tree
+References: <20181017171507.6cfe08d2@canb.auug.org.au>
+In-Reply-To: <20181017171507.6cfe08d2@canb.auug.org.au>
+
+--stofG0xModqiYNHPqf8oiqOBD8jFsz0ap
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 17.10.2018 08:15, Stephen Rothwell wrote:
+> Commits
+>   17714e83ebff ("parisc: Release spinlocks using ordered store")
+>   c389eafd8ac2 ("parisc: Reorder TLB flush timing calculation")
+> are missing a Signed-off-by from their committer.
 
-Commits
+Fixed.
+Thanks,
+Helge
 
-  17714e83ebff ("parisc: Release spinlocks using ordered store")
-  c389eafd8ac2 ("parisc: Reorder TLB flush timing calculation")
 
-are missing a Signed-off-by from their committer.
+--stofG0xModqiYNHPqf8oiqOBD8jFsz0ap--
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/gZsn.ra0WuoNa=dnqw6kzvd
-Content-Type: application/pgp-signature
+--fYShguV3TNoFJq0C0cJPj7wkEqW4bqgBs
+Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAlvG02sACgkQAVBC80lX
-0GxJsAf/ZoFlEOWdSCUHSFJiKFPUXsuPXPhjvrl6cNXGU7Rr3PjwFGLC80EarbWm
-wtp3So5riUBiycvIRI752unoe9DAgzFciZ4LJ+DX1H/JFs2kOoguyc0ehX2WZ+1q
-19NdTYc9QXXQcaTXeQl88RkgCdKYenqd9F+ftijJkaUsvgioSecJabWT8XGaKeDi
-fNPRKgpztzsMJ9me0AEkjT6u3t6sKgYPisX+9SveDsgvKndc0n/lis3m1PvEpLbb
-Z+nPTpnaOV3uF5Z8I0gz0h74JVLofHZ+UrBoZ1trebPwv6X7ruZvjNhWjh4eKmDQ
-XL3KT+IQpGI2JJBjTTPaACPvEpStUg==
-=8Z2q
+iHUEARYIAB0WIQTPnDOmy1/TQodsisYgKkl43U+sXQUCW8bUZgAKCRAgKkl43U+s
+XdiqAP9I2ud6d+Wj5QVVIyeQR6quTfEXgiFKfWw5pUdJPL0gLgD/daZx+fINignC
+QYCj16mZD2jcGh7bUmEjbm1D0KKb2Aw=
+=pFl4
 -----END PGP SIGNATURE-----
 
---Sig_/gZsn.ra0WuoNa=dnqw6kzvd--
+--fYShguV3TNoFJq0C0cJPj7wkEqW4bqgBs--
