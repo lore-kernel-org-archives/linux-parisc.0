@@ -1,86 +1,77 @@
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: Re: [PATCH] extract-vmlinux: Check for uncompressed image as fallback
-Date: Wed, 17 Oct 2018 15:45:42 +0900
-Message-ID: <CAK7LNAQgmjZ53x240HH7ktOS0oqPiO5drkN2E74zUkdwuBmybg@mail.gmail.com>
-References: <20181016060324.GA10928@ls3530.fritz.box>
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 2/4] mm: speed up mremap by 500x on large regions (v2)
+Date: Wed, 17 Oct 2018 09:38:16 +0200
+Message-ID: <80a7d851-51ca-2d81-1273-393d4f701bc4@suse.cz>
+References: <20181013013200.206928-1-joel@joelfernandes.org>
+ <20181013013200.206928-3-joel@joelfernandes.org>
+ <20181015094209.GA31999@infradead.org>
+ <20181015223303.GA164293@joelaf.mtv.corp.google.com>
+ <35b9c85a-b366-9ca3-5647-c2568c811961@suse.cz>
+ <20181016194313.GA247930@joelaf.mtv.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Cc: Adam Borowski <kilobyte@angband.pl>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-parisc@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        dave.anglin@bell.net, corentincj@iksaif.net
-To: Helge Deller <deller@gmx.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181016060324.GA10928@ls3530.fritz.box>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>,
+ linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
+ Peter Zijlstra <peterz@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Will Deacon <will.deacon@arm.com>,
+ mhocko@kernel.org, linux-mm@kvack.org, lokeshgidra@google.com,
+ sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org,
+ kvmarm@lists.cs.columbia.edu, Jonas Bonn <jonas@southpole.se>,
+ linux-s390@vger.kernel.org, dancol@google.com,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Max Filippov <jcmvbkbc@gmail.com>,
+ linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>,
+ "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>,
+ hughd@google.com, "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ kasan-dev@googlegroups.com, elfring@users.sourceforge.net,
+ Christoph Hellwig <hch@infradead.org>, Ingo
+To: Joel Fernandes <joel@joelfernandes.org>
+Return-path: <linux-riscv-bounces+glpr-linux-riscv=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20181016194313.GA247930@joelaf.mtv.corp.google.com>
+List-Id: <linux-riscv.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-riscv>,
+ <mailto:linux-riscv-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-riscv/>
+List-Post: <mailto:linux-riscv@lists.infradead.org>
+List-Help: <mailto:linux-riscv-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-riscv>,
+ <mailto:linux-riscv-request@lists.infradead.org?subject=subscribe>
+Errors-To: linux-riscv-bounces+glpr-linux-riscv=m.gmane.org@lists.infradead.org
 
-Hi Helge,
+On 10/16/18 9:43 PM, Joel Fernandes wrote:
+> On Tue, Oct 16, 2018 at 01:29:52PM +0200, Vlastimil Babka wrote:
+>> On 10/16/18 12:33 AM, Joel Fernandes wrote:
+>>> On Mon, Oct 15, 2018 at 02:42:09AM -0700, Christoph Hellwig wrote:
+>>>> On Fri, Oct 12, 2018 at 06:31:58PM -0700, Joel Fernandes (Google) wrote:
+>>>>> Android needs to mremap large regions of memory during memory management
+>>>>> related operations.
+>>>>
+>>>> Just curious: why?
+>>>
+>>> In Android we have a requirement of moving a large (up to a GB now, but may
+>>> grow bigger in future) memory range from one location to another.
+>>
+>> I think Christoph's "why?" was about the requirement, not why it hurts
+>> applications. I admit I'm now also curious :)
+> 
+> This issue was discovered when we wanted to be able to move the physical
+> pages of a memory range to another location quickly so that, after the
+> application threads are resumed, UFFDIO_REGISTER_MODE_MISSING userfaultfd
+> faults can be received on the original memory range. The actual operations
+> performed on the memory range are beyond the scope of this discussion. The
+> user threads continue to refer to the old address which will now fault. The
+> reason we want retain the old memory range and receives faults there is to
+> avoid the need to fix the addresses all over the address space of the threads
+> after we finish with performing operations on them in the fault handlers, so
+> we mremap it and receive faults at the old addresses.
+> 
+> Does that answer your question?
 
+Yes, interesting, thanks!
 
+Vlastimil
 
-On Tue, Oct 16, 2018 at 3:06 PM Helge Deller <deller@gmx.de> wrote:
->
-> As on x86-64 and other architectures, the boot kernel on parisc (vmlinuz
-> and bzImage) contains a full compressed copy of the final kernel
-> executable (vmlinux.bin.gz), which one should be able to extract with
-> the extract-vmlinux script.
->
-> But on parisc extracting the kernel with extract-vmlinux fails.
-> Currently the script first checks if the given file is an ELF file
-> (which is true on parisc) and if so returns it.  Thus on parisc we
-> unexpectedly get back the vmlinuz boot file instead of the uncompressed
-> vmlinux image.
->
-> This patch fixes this issue by reverting the logic. It now first tries
-> to find a compression signature in the given file and if that fails it
-> checks the file itself as fallback.
->
-> Signed-off-by: Helge Deller <deller@gmx.de>
->
-> diff --git a/scripts/extract-vmlinux b/scripts/extract-vmlinux
-> index e6239f39abad..85e1f32fb4a0 100755
-> --- a/scripts/extract-vmlinux
-> +++ b/scripts/extract-vmlinux
-> @@ -48,9 +48,6 @@ fi
->  tmp=$(mktemp /tmp/vmlinux-XXX)
->  trap "rm -f $tmp" 0
->
-> -# Initial attempt for uncompressed images or objects:
-> -check_vmlinux $img
-> -
-
-This patch looks good in general,
-but, I just wondered why this line is needed.
-
-If I understand this correctly,
-when vmlinux itself is passed to this script,
-it is returned as-is.
-But, we already have what we want in this case.
-
-We can simply drop this code if there is no good reason.
-
-CC'ed the submitter of this script, Corentin Chary
-in case he knows something.
-
-
->  # That didn't work, so retry after decompression.
->  try_decompress '\037\213\010' xy    gunzip
->  try_decompress '\3757zXZ\000' abcde unxz
-> @@ -60,5 +57,8 @@ try_decompress '\211\114\132' xy    'lzop -d'
->  try_decompress '\002!L\030'   xxx   'lz4 -d'
->  try_decompress '(\265/\375'   xxx   unzstd
->
-> +# Finally check for uncompressed images or objects:
-> +check_vmlinux $img
-> +
->  # Bail out:
->  echo "$me: Cannot find vmlinux." >&2
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+> thanks,
+> 
+> - Joel
+> 
