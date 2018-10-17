@@ -1,61 +1,86 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [GIT PULL] parisc fix for kernel v4.19
-Date: Wed, 17 Oct 2018 08:45:24 +0200
-Message-ID: <20181017064524.GA32311@ls3530.fritz.box>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: Re: [PATCH] extract-vmlinux: Check for uncompressed image as fallback
+Date: Wed, 17 Oct 2018 15:45:42 +0900
+Message-ID: <CAK7LNAQgmjZ53x240HH7ktOS0oqPiO5drkN2E74zUkdwuBmybg@mail.gmail.com>
+References: <20181016060324.GA10928@ls3530.fritz.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: Adam Borowski <kilobyte@angband.pl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-parisc@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        dave.anglin@bell.net, corentincj@iksaif.net
+To: Helge Deller <deller@gmx.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181016060324.GA10928@ls3530.fritz.box>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Hi Greg,
-
-would you please include the trivial patch below for 4.19?
-My older cross-compiler didn't complained, so it went unnoticed for me until
-now and the faulty code was added during the 4.19 merge window.
-
-It can be pulled from my git tree as well:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.19-3
-
-Fix an unitialized variable usage in the parisc unwind code.
-
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Helge Deller (1):
-      parisc: Fix uninitialized variable usage in unwind.c
-
- arch/parisc/kernel/unwind.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Helge,
 
 
-----------------------------------------------------------------
 
-From: Helge Deller <deller@gmx.de>
-Date: Tue, 16 Oct 2018 08:21:48 +0200
-Subject: parisc: Fix uninitialized variable usage in unwind.c
+On Tue, Oct 16, 2018 at 3:06 PM Helge Deller <deller@gmx.de> wrote:
+>
+> As on x86-64 and other architectures, the boot kernel on parisc (vmlinuz
+> and bzImage) contains a full compressed copy of the final kernel
+> executable (vmlinux.bin.gz), which one should be able to extract with
+> the extract-vmlinux script.
+>
+> But on parisc extracting the kernel with extract-vmlinux fails.
+> Currently the script first checks if the given file is an ELF file
+> (which is true on parisc) and if so returns it.  Thus on parisc we
+> unexpectedly get back the vmlinuz boot file instead of the uncompressed
+> vmlinux image.
+>
+> This patch fixes this issue by reverting the logic. It now first tries
+> to find a compression signature in the given file and if that fails it
+> checks the file itself as fallback.
+>
+> Signed-off-by: Helge Deller <deller@gmx.de>
+>
+> diff --git a/scripts/extract-vmlinux b/scripts/extract-vmlinux
+> index e6239f39abad..85e1f32fb4a0 100755
+> --- a/scripts/extract-vmlinux
+> +++ b/scripts/extract-vmlinux
+> @@ -48,9 +48,6 @@ fi
+>  tmp=$(mktemp /tmp/vmlinux-XXX)
+>  trap "rm -f $tmp" 0
+>
+> -# Initial attempt for uncompressed images or objects:
+> -check_vmlinux $img
+> -
 
-As noticed by Dave Anglin, the last commit introduced a small bug where
-the potentially uninitialized r struct is used instead of the regs
-pointer as input for unwind_frame_init(). Fix it.
+This patch looks good in general,
+but, I just wondered why this line is needed.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Reported-by: John David Anglin <dave.anglin@bell.net>
+If I understand this correctly,
+when vmlinux itself is passed to this script,
+it is returned as-is.
+But, we already have what we want in this case.
 
-diff --git a/arch/parisc/kernel/unwind.c b/arch/parisc/kernel/unwind.c
-index f329b466e68f..2d14f17838d2 100644
---- a/arch/parisc/kernel/unwind.c
-+++ b/arch/parisc/kernel/unwind.c
-@@ -426,7 +426,7 @@ void unwind_frame_init_task(struct unwind_frame_info *info,
- 			r.gr[30] = get_parisc_stackpointer();
- 			regs = &r;
- 		}
--		unwind_frame_init(info, task, &r);
-+		unwind_frame_init(info, task, regs);
- 	} else {
- 		unwind_frame_init_from_blocked_task(info, task);
- 	}
+We can simply drop this code if there is no good reason.
+
+CC'ed the submitter of this script, Corentin Chary
+in case he knows something.
+
+
+>  # That didn't work, so retry after decompression.
+>  try_decompress '\037\213\010' xy    gunzip
+>  try_decompress '\3757zXZ\000' abcde unxz
+> @@ -60,5 +57,8 @@ try_decompress '\211\114\132' xy    'lzop -d'
+>  try_decompress '\002!L\030'   xxx   'lz4 -d'
+>  try_decompress '(\265/\375'   xxx   unzstd
+>
+> +# Finally check for uncompressed images or objects:
+> +check_vmlinux $img
+> +
+>  # Bail out:
+>  echo "$me: Cannot find vmlinux." >&2
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
