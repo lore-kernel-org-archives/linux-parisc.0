@@ -1,77 +1,28 @@
-From: Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH 2/4] mm: speed up mremap by 500x on large regions (v2)
-Date: Wed, 17 Oct 2018 09:38:16 +0200
-Message-ID: <80a7d851-51ca-2d81-1273-393d4f701bc4@suse.cz>
-References: <20181013013200.206928-1-joel@joelfernandes.org>
- <20181013013200.206928-3-joel@joelfernandes.org>
- <20181015094209.GA31999@infradead.org>
- <20181015223303.GA164293@joelaf.mtv.corp.google.com>
- <35b9c85a-b366-9ca3-5647-c2568c811961@suse.cz>
- <20181016194313.GA247930@joelaf.mtv.corp.google.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [GIT PULL] parisc fix for kernel v4.19
+Date: Wed, 17 Oct 2018 14:01:48 +0200
+Message-ID: <20181017120148.GA692@kroah.com>
+References: <20181017064524.GA32311@ls3530.fritz.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>,
- linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
- Peter Zijlstra <peterz@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Dave Hansen <dave.hansen@linux.intel.com>, Will Deacon <will.deacon@arm.com>,
- mhocko@kernel.org, linux-mm@kvack.org, lokeshgidra@google.com,
- sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org,
- kvmarm@lists.cs.columbia.edu, Jonas Bonn <jonas@southpole.se>,
- linux-s390@vger.kernel.org, dancol@google.com,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Max Filippov <jcmvbkbc@gmail.com>,
- linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>,
- "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>,
- hughd@google.com, "James E.J. Bottomley" <jejb@parisc-linux.org>,
- kasan-dev@googlegroups.com, elfring@users.sourceforge.net,
- Christoph Hellwig <hch@infradead.org>, Ingo
-To: Joel Fernandes <joel@joelfernandes.org>
-Return-path: <linux-riscv-bounces+glpr-linux-riscv=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20181016194313.GA247930@joelaf.mtv.corp.google.com>
-List-Id: <linux-riscv.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-riscv>,
- <mailto:linux-riscv-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-riscv/>
-List-Post: <mailto:linux-riscv@lists.infradead.org>
-List-Help: <mailto:linux-riscv-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-riscv>,
- <mailto:linux-riscv-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-riscv-bounces+glpr-linux-riscv=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Helge Deller <deller@gmx.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181017064524.GA32311@ls3530.fritz.box>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On 10/16/18 9:43 PM, Joel Fernandes wrote:
-> On Tue, Oct 16, 2018 at 01:29:52PM +0200, Vlastimil Babka wrote:
->> On 10/16/18 12:33 AM, Joel Fernandes wrote:
->>> On Mon, Oct 15, 2018 at 02:42:09AM -0700, Christoph Hellwig wrote:
->>>> On Fri, Oct 12, 2018 at 06:31:58PM -0700, Joel Fernandes (Google) wrote:
->>>>> Android needs to mremap large regions of memory during memory management
->>>>> related operations.
->>>>
->>>> Just curious: why?
->>>
->>> In Android we have a requirement of moving a large (up to a GB now, but may
->>> grow bigger in future) memory range from one location to another.
->>
->> I think Christoph's "why?" was about the requirement, not why it hurts
->> applications. I admit I'm now also curious :)
+On Wed, Oct 17, 2018 at 08:45:24AM +0200, Helge Deller wrote:
+> Hi Greg,
 > 
-> This issue was discovered when we wanted to be able to move the physical
-> pages of a memory range to another location quickly so that, after the
-> application threads are resumed, UFFDIO_REGISTER_MODE_MISSING userfaultfd
-> faults can be received on the original memory range. The actual operations
-> performed on the memory range are beyond the scope of this discussion. The
-> user threads continue to refer to the old address which will now fault. The
-> reason we want retain the old memory range and receives faults there is to
-> avoid the need to fix the addresses all over the address space of the threads
-> after we finish with performing operations on them in the fault handlers, so
-> we mremap it and receive faults at the old addresses.
+> would you please include the trivial patch below for 4.19?
+> My older cross-compiler didn't complained, so it went unnoticed for me until
+> now and the faulty code was added during the 4.19 merge window.
 > 
-> Does that answer your question?
+> It can be pulled from my git tree as well:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.19-3
 
-Yes, interesting, thanks!
+Now merged, thanks.
 
-Vlastimil
-
-> thanks,
-> 
-> - Joel
-> 
+greg k-h
