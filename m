@@ -1,256 +1,46 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] parisc: remove the dead ccio-rm-dma driver
-Date: Mon, 22 Oct 2018 12:06:20 +0200
-Message-ID: <e46876bd-569e-a4ac-9fac-3a845b1960e1@gmx.de>
-References: <20181022095251.5699-1-hch@lst.de>
+From: Michal Hocko <mhocko-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] mm: convert totalram_pages, totalhigh_pages and
+ managed_pages to atomic.
+Date: Mon, 22 Oct 2018 20:11:22 +0200
+Message-ID: <20181022181122.GK18839@dhcp22.suse.cz>
+References: <1540229092-25207-1-git-send-email-arunks@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-To: Christoph Hellwig <hch@lst.de>, jejb@parisc-linux.org
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181022095251.5699-1-hch@lst.de>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: Mike Snitzer <snitzer-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>,
+ Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>,
+ Kemi Wang <kemi.wang-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org,
+ "J. Bruce Fields" <bfields-uC3wQj2KruNg9hUCZPvPmw@public.gmane.org>, linux-sctp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
+ Paul Mackerras <paulus-eUNUBHrolfbYtjvyW6yDsg@public.gmane.org>, Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>,
+ Christoph Lameter <cl-vYTEC60ixJUAvxtiuMwx3w@public.gmane.org>, "K. Y. Srinivasan" <kys-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>,
+ Sumit Semwal <sumit.semwal-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>,
+ "David \(ChunMing\) Zhou" <David1.Zhou-5C7GfCeVMHo@public.gmane.org>,
+ Petr Tesarik <ptesarik-IBi9RG/b67k@public.gmane.org>, Michael Ellerman <mpe-Gsx/Oe8HsFggBc27wqDAHg@public.gmane.org>,
+ ceph-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
+ kasan-dev-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Marcos Paulo de Souza <marcos.souza.org-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
+ "Steven J. Hill" <steven.hill-YGCgFSpz5w/QT0dZR+AlfA@public.gmane.org>,
+ David Rientjes <rientjes-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>,
+ Anthony Yznaga <anthony.yznaga-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org>, Daniel Vacek <neelx-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>,
+ Roman Gushchin <guro-b10kYP2dOMg@public.gmane.org>, Len Brown <len.b
+To: Arun KS <arunks-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1540229092-25207-1-git-send-email-arunks-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+List-Id: <linux-mediatek.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 
-On 22.10.2018 11:52, Christoph Hellwig wrote:
-> This driver has never been wired up due to the life of the Linux
-> git tree, and has severely bitrotted.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Mon 22-10-18 22:53:22, Arun KS wrote:
+> Remove managed_page_count_lock spinlock and instead use atomic
+> variables.
 
-Thanks Christoph!
-
-I've already queued it up in the parisc for-next git tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git/log/?h=for-next
-
-Helge
-
-> ---
->  drivers/parisc/Makefile      |   3 -
->  drivers/parisc/ccio-rm-dma.c | 202 -----------------------------------
->  2 files changed, 205 deletions(-)
->  delete mode 100644 drivers/parisc/ccio-rm-dma.c
-> 
-> diff --git a/drivers/parisc/Makefile b/drivers/parisc/Makefile
-> index 3cd5e6cb8478..99fa6a89e0b9 100644
-> --- a/drivers/parisc/Makefile
-> +++ b/drivers/parisc/Makefile
-> @@ -8,9 +8,6 @@
->  obj-$(CONFIG_IOSAPIC)		+= iosapic.o
->  obj-$(CONFIG_IOMMU_SBA)		+= sba_iommu.o
->  obj-$(CONFIG_PCI_LBA)		+= lba_pci.o
-> -
-> -# Only use one of them: ccio-rm-dma is for PCX-W systems *only*
-> -# obj-$(CONFIG_IOMMU_CCIO)	+= ccio-rm-dma.o
->  obj-$(CONFIG_IOMMU_CCIO)	+= ccio-dma.o
->  
->  obj-$(CONFIG_GSC)		+= gsc.o
-> diff --git a/drivers/parisc/ccio-rm-dma.c b/drivers/parisc/ccio-rm-dma.c
-> deleted file mode 100644
-> index df7932af48b7..000000000000
-> --- a/drivers/parisc/ccio-rm-dma.c
-> +++ /dev/null
-> @@ -1,202 +0,0 @@
-> -/*
-> - * ccio-rm-dma.c:
-> - *	DMA management routines for first generation cache-coherent machines.
-> - *	"Real Mode" operation refers to U2/Uturn chip operation. The chip
-> - *      can perform coherency checks w/o using the I/O MMU. That's all we
-> - *      need until support for more than 4GB phys mem is needed.
-> - * 
-> - *	This is the trivial case - basically what x86 does.
-> - *
-> - *	Drawbacks of using Real Mode are:
-> - *	o outbound DMA is slower since one isn't using the prefetching
-> - *	  U2 can do for outbound DMA.
-> - *	o Ability to do scatter/gather in HW is also lost.
-> - *      o only known to work with PCX-W processor. (eg C360)
-> - *        (PCX-U/U+ are not coherent with U2 in real mode.)
-> - *
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
-> - *
-> - *
-> - * Original version/author:
-> - *      CVSROOT=:pserver:anonymous@198.186.203.37:/cvsroot/linux-parisc
-> - *      cvs -z3 co linux/arch/parisc/kernel/dma-rm.c
-> - *
-> - *	(C) Copyright 2000 Philipp Rumpf <prumpf@tux.org>
-> - *
-> - *
-> - * Adopted for The Puffin Group's parisc-linux port by Grant Grundler.
-> - *	(C) Copyright 2000 Grant Grundler <grundler@puffin.external.hp.com>
-> - *	
-> - */
-> -
-> -#include <linux/types.h>
-> -#include <linux/init.h>
-> -#include <linux/mm.h>
-> -#include <linux/string.h>
-> -#include <linux/pci.h>
-> -#include <linux/gfp.h>
-> -
-> -#include <linux/uaccess.h>
-> -
-> -#include <asm/io.h>
-> -#include <asm/hardware.h>
-> -#include <asm/page.h>
-> -
-> -/* Only chose "ccio" since that's what HP-UX calls it....
-> -** Make it easier for folks to migrate from one to the other :^)
-> -*/
-> -#define MODULE_NAME "ccio"
-> -
-> -#define U2_IOA_RUNWAY 0x580
-> -#define U2_BC_GSC     0x501
-> -#define UTURN_IOA_RUNWAY 0x581
-> -#define UTURN_BC_GSC     0x502
-> -
-> -#define IS_U2(id) ( \
-> -    (((id)->hw_type == HPHW_IOA) && ((id)->hversion == U2_IOA_RUNWAY)) || \
-> -    (((id)->hw_type == HPHW_BCPORT) && ((id)->hversion == U2_BC_GSC))  \
-> -)
-> -
-> -#define IS_UTURN(id) ( \
-> -    (((id)->hw_type == HPHW_IOA) && ((id)->hversion == UTURN_IOA_RUNWAY)) || \
-> -    (((id)->hw_type == HPHW_BCPORT) && ((id)->hversion == UTURN_BC_GSC))  \
-> -)
-> -
-> -static int ccio_dma_supported( struct pci_dev *dev, u64 mask)
-> -{
-> -	if (dev == NULL) {
-> -		printk(KERN_ERR MODULE_NAME ": EISA/ISA/et al not supported\n");
-> -		BUG();
-> -		return(0);
-> -	}
-> -
-> -	/* only support 32-bit devices (ie PCI/GSC) */
-> -	return((int) (mask >= 0xffffffffUL));
-> -}
-> -
-> -
-> -static void *ccio_alloc_consistent(struct pci_dev *dev, size_t size,
-> -				 dma_addr_t *handle)
-> -{
-> -	void *ret;
-> -	
-> -	ret = (void *)__get_free_pages(GFP_ATOMIC, get_order(size));
-> -
-> -	if (ret != NULL) {
-> -		memset(ret, 0, size);
-> -		*handle = virt_to_phys(ret);
-> -	}
-> -	return ret;
-> -}
-> -	
-> -static void ccio_free_consistent(struct pci_dev *dev, size_t size,
-> -			       void *vaddr, dma_addr_t handle)
-> -{
-> -	free_pages((unsigned long)vaddr, get_order(size));
-> -}
-> -
-> -static dma_addr_t ccio_map_single(struct pci_dev *dev, void *ptr, size_t size,
-> -			  int direction)
-> -{
-> -	return virt_to_phys(ptr);
-> -}
-> -
-> -static void ccio_unmap_single(struct pci_dev *dev, dma_addr_t dma_addr,
-> -			    size_t size, int direction)
-> -{
-> -	/* Nothing to do */
-> -}
-> -
-> -
-> -static int ccio_map_sg(struct pci_dev *dev, struct scatterlist *sglist, int nents, int direction)
-> -{
-> -	int tmp = nents;
-> -
-> -        /* KISS: map each buffer separately. */
-> -	while (nents) {
-> -		sg_dma_address(sglist) = ccio_map_single(dev, sglist->address, sglist->length, direction);
-> -		sg_dma_len(sglist) = sglist->length;
-> -		nents--;
-> -		sglist++;
-> -	}
-> -
-> -	return tmp;
-> -}
-> -
-> -
-> -static void ccio_unmap_sg(struct pci_dev *dev, struct scatterlist *sglist, int nents, int direction)
-> -{
-> -#if 0
-> -	while (nents) {
-> -		ccio_unmap_single(dev, sg_dma_address(sglist), sg_dma_len(sglist), direction);
-> -		nents--;
-> -		sglist++;
-> -	}
-> -	return;
-> -#else
-> -	/* Do nothing (copied from current ccio_unmap_single()  :^) */
-> -#endif
-> -}
-> -
-> -
-> -static struct pci_dma_ops ccio_ops = {
-> -	ccio_dma_supported,
-> -	ccio_alloc_consistent,
-> -	ccio_free_consistent,
-> -	ccio_map_single,
-> -	ccio_unmap_single,
-> -	ccio_map_sg,
-> -	ccio_unmap_sg,
-> -	NULL,                   /* dma_sync_single_for_cpu : NOP for U2 */
-> -	NULL,                   /* dma_sync_single_for_device : NOP for U2 */
-> -	NULL,                   /* dma_sync_sg_for_cpu     : ditto */
-> -	NULL,                   /* dma_sync_sg_for_device     : ditto */
-> -};
-> -
-> -
-> -/*
-> -** Determine if u2 should claim this chip (return 0) or not (return 1).
-> -** If so, initialize the chip and tell other partners in crime they
-> -** have work to do.
-> -*/
-> -static int __init
-> -ccio_probe(struct parisc_device *dev)
-> -{
-> -	printk(KERN_INFO "%s found %s at 0x%lx\n", MODULE_NAME,
-> -			dev->id.hversion == U2_BC_GSC ? "U2" : "UTurn",
-> -			dev->hpa.start);
-> -
-> -/*
-> -** FIXME - should check U2 registers to verify it's really running
-> -** in "Real Mode".
-> -*/
-> -
-> -#if 0
-> -/* will need this for "Virtual Mode" operation */
-> -	ccio_hw_init(ccio_dev);
-> -	ccio_common_init(ccio_dev);
-> -#endif
-> -	hppa_dma_ops = &ccio_ops;
-> -	return 0;
-> -}
-> -
-> -static const struct parisc_device_id ccio_tbl[] __initconst = {
-> -	{ HPHW_BCPORT, HVERSION_REV_ANY_ID, U2_BC_GSC, 0xc },
-> -	{ HPHW_BCPORT, HVERSION_REV_ANY_ID, UTURN_BC_GSC, 0xc },
-> -	{ 0, }
-> -};
-> -
-> -static struct parisc_driver ccio_driver __refdata = {
-> -	.name =		"U2/Uturn",
-> -	.id_table =	ccio_tbl,
-> -	.probe =	ccio_probe,
-> -};
-> -
-> -void __init ccio_init(void)
-> -{
-> -	register_parisc_driver(&ccio_driver);
-> -}
-> 
+I assume this has been auto-generated. If yes, it would be better to
+mention the script so that people can review it and regenerate for
+comparision. Such a large change is hard to review manually.
+-- 
+Michal Hocko
+SUSE Labs
