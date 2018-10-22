@@ -1,87 +1,245 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH v5 1/5] parisc: move __IGNORE* entries to non uapi header
-Date: Thu, 18 Oct 2018 20:34:27 +0200
-Message-ID: <3571b003-d603-9ec5-01e3-12dbbca692b1@gmx.de>
-References: <1539673418-7279-1-git-send-email-firoz.khan@linaro.org>
- <1539673418-7279-2-git-send-email-firoz.khan@linaro.org>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH] parisc: remove the dead ccio-rm-dma driver
+Date: Mon, 22 Oct 2018 10:52:51 +0100
+Message-ID: <20181022095251.5699-1-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: y2038@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, arnd@arndb.de, deepa.kernel@gmail.com,
-        marcin.juszkiewicz@linaro.org
-To: Firoz Khan <firoz.khan@linaro.org>, linux-parisc@vger.kernel.org,
-        "James E . J . Bottomley" <jejb@parisc-linux.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: jejb@parisc-linux.org, deller@gmx.de
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1539673418-7279-2-git-send-email-firoz.khan@linaro.org>
 List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On 16.10.2018 09:03, Firoz Khan wrote:
-> All the __IGNORE* entries are resides in the uapi header
-> file move to non uapi header asm/unistd.h as it is not
-> used by any user space applications.
-> 
-> It is correct to keep __IGNORE* entry in non uapi header
-> asm/unistd.h while uapi/asm/unistd.h must hold information
-> only useful for user space applications.
-> 
-> One of the patch in this patch series will generate uapi
-> header file. The information which directly used by the
-> user space application must be present in uapi file.
-> 
-> Signed-off-by: Firoz Khan <firoz.khan@linaro.org>
+This driver has never been wired up due to the life of the Linux
+git tree, and has severely bitrotted.
 
-You may add an 
-Acked-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/parisc/Makefile      |   3 -
+ drivers/parisc/ccio-rm-dma.c | 202 -----------------------------------
+ 2 files changed, 205 deletions(-)
+ delete mode 100644 drivers/parisc/ccio-rm-dma.c
 
-I've tested it by sucessfully booting a 32bit kernel.
-
-Thanks!
-Helge
-
-
-> ---
->  arch/parisc/include/asm/unistd.h      | 6 ++++++
->  arch/parisc/include/uapi/asm/unistd.h | 7 -------
->  2 files changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/parisc/include/asm/unistd.h b/arch/parisc/include/asm/unistd.h
-> index 3d507d0..93fd9f6 100644
-> --- a/arch/parisc/include/asm/unistd.h
-> +++ b/arch/parisc/include/asm/unistd.h
-> @@ -8,6 +8,12 @@
->  
->  #define SYS_ify(syscall_name)   __NR_##syscall_name
->  
-> +#define __IGNORE_select                /* newselect */
-> +#define __IGNORE_fadvise64             /* fadvise64_64 */
-> +#define __IGNORE_pkey_mprotect
-> +#define __IGNORE_pkey_alloc
-> +#define __IGNORE_pkey_free
-> +
->  #ifndef ASM_LINE_SEP
->  # define ASM_LINE_SEP ;
->  #endif
-> diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
-> index dc77c5a..bb52e12 100644
-> --- a/arch/parisc/include/uapi/asm/unistd.h
-> +++ b/arch/parisc/include/uapi/asm/unistd.h
-> @@ -368,13 +368,6 @@
->  
->  #define __NR_Linux_syscalls	(__NR_io_pgetevents + 1)
->  
-> -
-> -#define __IGNORE_select		/* newselect */
-> -#define __IGNORE_fadvise64	/* fadvise64_64 */
-> -#define __IGNORE_pkey_mprotect
-> -#define __IGNORE_pkey_alloc
-> -#define __IGNORE_pkey_free
-> -
->  #define LINUX_GATEWAY_ADDR      0x100
->  
->  #endif /* _UAPI_ASM_PARISC_UNISTD_H_ */
-> 
+diff --git a/drivers/parisc/Makefile b/drivers/parisc/Makefile
+index 3cd5e6cb8478..99fa6a89e0b9 100644
+--- a/drivers/parisc/Makefile
++++ b/drivers/parisc/Makefile
+@@ -8,9 +8,6 @@
+ obj-$(CONFIG_IOSAPIC)		+= iosapic.o
+ obj-$(CONFIG_IOMMU_SBA)		+= sba_iommu.o
+ obj-$(CONFIG_PCI_LBA)		+= lba_pci.o
+-
+-# Only use one of them: ccio-rm-dma is for PCX-W systems *only*
+-# obj-$(CONFIG_IOMMU_CCIO)	+= ccio-rm-dma.o
+ obj-$(CONFIG_IOMMU_CCIO)	+= ccio-dma.o
+ 
+ obj-$(CONFIG_GSC)		+= gsc.o
+diff --git a/drivers/parisc/ccio-rm-dma.c b/drivers/parisc/ccio-rm-dma.c
+deleted file mode 100644
+index df7932af48b7..000000000000
+--- a/drivers/parisc/ccio-rm-dma.c
++++ /dev/null
+@@ -1,202 +0,0 @@
+-/*
+- * ccio-rm-dma.c:
+- *	DMA management routines for first generation cache-coherent machines.
+- *	"Real Mode" operation refers to U2/Uturn chip operation. The chip
+- *      can perform coherency checks w/o using the I/O MMU. That's all we
+- *      need until support for more than 4GB phys mem is needed.
+- * 
+- *	This is the trivial case - basically what x86 does.
+- *
+- *	Drawbacks of using Real Mode are:
+- *	o outbound DMA is slower since one isn't using the prefetching
+- *	  U2 can do for outbound DMA.
+- *	o Ability to do scatter/gather in HW is also lost.
+- *      o only known to work with PCX-W processor. (eg C360)
+- *        (PCX-U/U+ are not coherent with U2 in real mode.)
+- *
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- *
+- * Original version/author:
+- *      CVSROOT=:pserver:anonymous@198.186.203.37:/cvsroot/linux-parisc
+- *      cvs -z3 co linux/arch/parisc/kernel/dma-rm.c
+- *
+- *	(C) Copyright 2000 Philipp Rumpf <prumpf@tux.org>
+- *
+- *
+- * Adopted for The Puffin Group's parisc-linux port by Grant Grundler.
+- *	(C) Copyright 2000 Grant Grundler <grundler@puffin.external.hp.com>
+- *	
+- */
+-
+-#include <linux/types.h>
+-#include <linux/init.h>
+-#include <linux/mm.h>
+-#include <linux/string.h>
+-#include <linux/pci.h>
+-#include <linux/gfp.h>
+-
+-#include <linux/uaccess.h>
+-
+-#include <asm/io.h>
+-#include <asm/hardware.h>
+-#include <asm/page.h>
+-
+-/* Only chose "ccio" since that's what HP-UX calls it....
+-** Make it easier for folks to migrate from one to the other :^)
+-*/
+-#define MODULE_NAME "ccio"
+-
+-#define U2_IOA_RUNWAY 0x580
+-#define U2_BC_GSC     0x501
+-#define UTURN_IOA_RUNWAY 0x581
+-#define UTURN_BC_GSC     0x502
+-
+-#define IS_U2(id) ( \
+-    (((id)->hw_type == HPHW_IOA) && ((id)->hversion == U2_IOA_RUNWAY)) || \
+-    (((id)->hw_type == HPHW_BCPORT) && ((id)->hversion == U2_BC_GSC))  \
+-)
+-
+-#define IS_UTURN(id) ( \
+-    (((id)->hw_type == HPHW_IOA) && ((id)->hversion == UTURN_IOA_RUNWAY)) || \
+-    (((id)->hw_type == HPHW_BCPORT) && ((id)->hversion == UTURN_BC_GSC))  \
+-)
+-
+-static int ccio_dma_supported( struct pci_dev *dev, u64 mask)
+-{
+-	if (dev == NULL) {
+-		printk(KERN_ERR MODULE_NAME ": EISA/ISA/et al not supported\n");
+-		BUG();
+-		return(0);
+-	}
+-
+-	/* only support 32-bit devices (ie PCI/GSC) */
+-	return((int) (mask >= 0xffffffffUL));
+-}
+-
+-
+-static void *ccio_alloc_consistent(struct pci_dev *dev, size_t size,
+-				 dma_addr_t *handle)
+-{
+-	void *ret;
+-	
+-	ret = (void *)__get_free_pages(GFP_ATOMIC, get_order(size));
+-
+-	if (ret != NULL) {
+-		memset(ret, 0, size);
+-		*handle = virt_to_phys(ret);
+-	}
+-	return ret;
+-}
+-	
+-static void ccio_free_consistent(struct pci_dev *dev, size_t size,
+-			       void *vaddr, dma_addr_t handle)
+-{
+-	free_pages((unsigned long)vaddr, get_order(size));
+-}
+-
+-static dma_addr_t ccio_map_single(struct pci_dev *dev, void *ptr, size_t size,
+-			  int direction)
+-{
+-	return virt_to_phys(ptr);
+-}
+-
+-static void ccio_unmap_single(struct pci_dev *dev, dma_addr_t dma_addr,
+-			    size_t size, int direction)
+-{
+-	/* Nothing to do */
+-}
+-
+-
+-static int ccio_map_sg(struct pci_dev *dev, struct scatterlist *sglist, int nents, int direction)
+-{
+-	int tmp = nents;
+-
+-        /* KISS: map each buffer separately. */
+-	while (nents) {
+-		sg_dma_address(sglist) = ccio_map_single(dev, sglist->address, sglist->length, direction);
+-		sg_dma_len(sglist) = sglist->length;
+-		nents--;
+-		sglist++;
+-	}
+-
+-	return tmp;
+-}
+-
+-
+-static void ccio_unmap_sg(struct pci_dev *dev, struct scatterlist *sglist, int nents, int direction)
+-{
+-#if 0
+-	while (nents) {
+-		ccio_unmap_single(dev, sg_dma_address(sglist), sg_dma_len(sglist), direction);
+-		nents--;
+-		sglist++;
+-	}
+-	return;
+-#else
+-	/* Do nothing (copied from current ccio_unmap_single()  :^) */
+-#endif
+-}
+-
+-
+-static struct pci_dma_ops ccio_ops = {
+-	ccio_dma_supported,
+-	ccio_alloc_consistent,
+-	ccio_free_consistent,
+-	ccio_map_single,
+-	ccio_unmap_single,
+-	ccio_map_sg,
+-	ccio_unmap_sg,
+-	NULL,                   /* dma_sync_single_for_cpu : NOP for U2 */
+-	NULL,                   /* dma_sync_single_for_device : NOP for U2 */
+-	NULL,                   /* dma_sync_sg_for_cpu     : ditto */
+-	NULL,                   /* dma_sync_sg_for_device     : ditto */
+-};
+-
+-
+-/*
+-** Determine if u2 should claim this chip (return 0) or not (return 1).
+-** If so, initialize the chip and tell other partners in crime they
+-** have work to do.
+-*/
+-static int __init
+-ccio_probe(struct parisc_device *dev)
+-{
+-	printk(KERN_INFO "%s found %s at 0x%lx\n", MODULE_NAME,
+-			dev->id.hversion == U2_BC_GSC ? "U2" : "UTurn",
+-			dev->hpa.start);
+-
+-/*
+-** FIXME - should check U2 registers to verify it's really running
+-** in "Real Mode".
+-*/
+-
+-#if 0
+-/* will need this for "Virtual Mode" operation */
+-	ccio_hw_init(ccio_dev);
+-	ccio_common_init(ccio_dev);
+-#endif
+-	hppa_dma_ops = &ccio_ops;
+-	return 0;
+-}
+-
+-static const struct parisc_device_id ccio_tbl[] __initconst = {
+-	{ HPHW_BCPORT, HVERSION_REV_ANY_ID, U2_BC_GSC, 0xc },
+-	{ HPHW_BCPORT, HVERSION_REV_ANY_ID, UTURN_BC_GSC, 0xc },
+-	{ 0, }
+-};
+-
+-static struct parisc_driver ccio_driver __refdata = {
+-	.name =		"U2/Uturn",
+-	.id_table =	ccio_tbl,
+-	.probe =	ccio_probe,
+-};
+-
+-void __init ccio_init(void)
+-{
+-	register_parisc_driver(&ccio_driver);
+-}
+-- 
+2.19.1
