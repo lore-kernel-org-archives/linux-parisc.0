@@ -1,56 +1,106 @@
-From: "Huang\, Ying" <ying.huang-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] mm: convert totalram_pages,
- totalhigh_pages and managed_pages to atomic.
-Date: Tue, 23 Oct 2018 13:37:01 +0800
-Message-ID: <874lddxlz6.fsf@yhuang-dev.intel.com>
-References: <1540229092-25207-1-git-send-email-arunks@codeaurora.org>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc architecture updates for kernel v4.20
+Date: Tue, 23 Oct 2018 17:00:26 +0200
+Message-ID: <20181023150026.GA15165@ls3530.fritz.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: Mike Snitzer <snitzer-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>,
- Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>,
- Kemi Wang <kemi.wang-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org,
- "J. Bruce Fields" <bfields-uC3wQj2KruNg9hUCZPvPmw@public.gmane.org>, linux-sctp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
- Paul Mackerras <paulus-eUNUBHrolfbYtjvyW6yDsg@public.gmane.org>, Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>,
- Christoph Lameter <cl-vYTEC60ixJUAvxtiuMwx3w@public.gmane.org>, "K. Y. Srinivasan" <kys-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>,
- Sumit Semwal <sumit.semwal-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>,
- "David \(ChunMing\) Zhou" <David1.Zhou-5C7GfCeVMHo@public.gmane.org>,
- Petr Tesarik <ptesarik-IBi9RG/b67k@public.gmane.org>, Michael
- Ellerman <mpe-Gsx/Oe8HsFggBc27wqDAHg@public.gmane.org>, ceph-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
- "James E.J. Bottomley" <jejb-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>, kasan-dev-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org,
- Marcos Paulo de Souza <marcos.souza.org-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
- "Steven J. Hill" <steven.hill-YGCgFSpz5w/QT0dZR+AlfA@public.gmane.org>,
- David Rientjes <rientjes-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>,
- Anthony Yznaga <anthony.yznaga-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org>, Daniel Vacek <neelx-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>,
- Roman Gushchin <guro-b10kYP2dOMg@public.gmane.org>, Len Brown <len.
-To: Arun KS <arunks-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1540229092-25207-1-git-send-email-arunks-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org> (Arun
- KS's message of "Mon, 22 Oct 2018 22:53:22 +0530")
-List-Id: <linux-mediatek.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset=us-ascii
+Cc: Christoph Hellwig <hch@lst.de>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-Arun KS <arunks-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org> writes:
+Hi Linus,
 
-> Remove managed_page_count_lock spinlock and instead use atomic
-> variables.
->
-> Suggested-by: Michal Hocko <mhocko-IBi9RG/b67k@public.gmane.org>
-> Suggested-by: Vlastimil Babka <vbabka-AlSwsSmVLrQ@public.gmane.org>
-> Signed-off-by: Arun KS <arunks-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
->
-> ---
-> As discussed here,
-> https://patchwork.kernel.org/patch/10627521/#22261253
+please pull the parisc architecture patches and fixes for 4.20-rc1 from:
 
-My 2 cents.  I think you should include at least part of the discussion
-in the patch description to make it more readable by itself.
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.20-1
 
-Best Regards,
-Huang, Ying
+Lots of small fixes and enhancements, most noteably:
+
+- Many TLB and cache flush optimizations (Dave)
+- Fixed HPMC/crash handler on 64-bit kernel (Dave and myself)
+- Added alternative infrastructre. The kernel now live-patches itself
+  for various situations, e.g. replace SMP code when running on one CPU
+  only or drop cache flushes when system has no cache installed.
+- vmlinuz now contains a full copy of the compressed vmlinux file. This
+  simplifies debugging the currently booted kernel.
+- Unused driver removal (Christoph)
+- Reduced warnings of Dino PCI bridge when running in qemu
+- Removed gcc version check (Masahiro)
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Christoph Hellwig (1):
+      parisc: remove the dead ccio-rm-dma driver
+
+Helge Deller (14):
+      parisc: Use PARISC_ITLB_TRAP constant in entry.S
+      parisc: Add SYSTEM_INFO and REGISTER TOC PAT functions
+      parisc: Clean up crash header output
+      parisc: dino: Utilize DINO_MASK_IRQ() macro
+      parisc: Ratelimit dino stuck interrupt warnings
+      parisc: Fix map_pages() to not overwrite existing pte entries
+      parisc: Fix exported address of os_hpmc handler
+      extract-vmlinux: Check for uncompressed image as fallback
+      parisc: Include compressed vmlinux file in vmlinuz boot kernel
+      parisc: Add alternative coding infrastructure
+      parisc: Use zdep for shlw macro on PA1.1 and PA2.0
+      parisc: Drop two instructions from pte lookup code
+      parisc: Add PDC PAT cell_info() and pd_get_pdc_revisions() functions
+      parisc: Retrieve and display the PDC PAT capabilities
+
+John David Anglin (7):
+      parisc: Reorder TLB flush timing calculation
+      parisc: Remove PTE load and fault check from L2_ptep macro
+      parisc: Release spinlocks using ordered store
+      parisc: Purge TLB entries after updating page table entry and set page accessed flag in TLB handler
+      parisc: Fix address in HPMC IVA
+      parisc: Remove pte_inserted define
+      parisc: Optimze cache flush algorithms
+
+Masahiro Yamada (1):
+      parisc: remove check for minimum required GCC version
+
+ arch/parisc/Makefile                      |   9 -
+ arch/parisc/boot/compressed/Makefile      |   4 +-
+ arch/parisc/boot/compressed/misc.c        |  95 ++++++++--
+ arch/parisc/boot/compressed/vmlinux.lds.S |  10 +-
+ arch/parisc/include/asm/alternative.h     |  47 +++++
+ arch/parisc/include/asm/assembly.h        |   9 +-
+ arch/parisc/include/asm/cache.h           |  22 ++-
+ arch/parisc/include/asm/page.h            |  12 +-
+ arch/parisc/include/asm/pdc.h             |   1 +
+ arch/parisc/include/asm/pdcpat.h          |  62 +++++--
+ arch/parisc/include/asm/pgtable.h         |  33 ++--
+ arch/parisc/include/asm/sections.h        |   2 +
+ arch/parisc/include/asm/spinlock.h        |   4 +-
+ arch/parisc/include/asm/tlbflush.h        |   3 +-
+ arch/parisc/kernel/cache.c                |  63 ++++---
+ arch/parisc/kernel/entry.S                |  34 ++--
+ arch/parisc/kernel/firmware.c             |  57 ++++++
+ arch/parisc/kernel/hpmc.S                 |   3 +-
+ arch/parisc/kernel/inventory.c            |  10 ++
+ arch/parisc/kernel/pacache.S              | 280 ++++++++++++++++++++++++++----
+ arch/parisc/kernel/setup.c                |  81 +++++++++
+ arch/parisc/kernel/signal.c               |   1 -
+ arch/parisc/kernel/syscall.S              |  12 +-
+ arch/parisc/kernel/traps.c                |   7 +-
+ arch/parisc/kernel/vmlinux.lds.S          |   6 +
+ arch/parisc/mm/init.c                     |  23 ++-
+ drivers/parisc/Makefile                   |   3 -
+ drivers/parisc/ccio-dma.c                 |  12 +-
+ drivers/parisc/ccio-rm-dma.c              | 202 ---------------------
+ drivers/parisc/dino.c                     |   5 +-
+ drivers/parisc/sba_iommu.c                |  17 +-
+ scripts/extract-vmlinux                   |   6 +-
+ 32 files changed, 721 insertions(+), 414 deletions(-)
+ create mode 100644 arch/parisc/include/asm/alternative.h
+ delete mode 100644 drivers/parisc/ccio-rm-dma.c
