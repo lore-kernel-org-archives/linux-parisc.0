@@ -1,30 +1,29 @@
-From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH 2/2] arm64: Create asm/initrd.h
-Date: Tue, 23 Oct 2018 16:40:43 -0700
-Message-ID: <20181023234044.1138-3-f.fainelli@gmail.com>
-References: <20181023234044.1138-1-f.fainelli@gmail.com>
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 1/4] treewide: remove unused address argument from
+ pte_alloc functions (v2)
+Date: Wed, 24 Oct 2018 10:37:16 +0200
+Message-ID: <20181024083716.GN3109@worktop.c.hoisthospitality.com>
+References: <20181013013200.206928-1-joel@joelfernandes.org>
+ <20181013013200.206928-2-joel@joelfernandes.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Cc: "open list:MIPS" <linux-mips@linux-mips.org>,
- Alan Kao <alankao@andestech.com>,
- "open list:SUPERH" <linux-sh@vger.kernel.org>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Will Deacon <will.deacon@arm.com>, Paul Mackerras <paulus@samba.org>,
- "open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>,
- Michael Ellerman <mpe@ellerman.id.au>,
- "James E.J. Bottomley" <jejb@parisc-linux.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Matt Turner <mattst88@gmail.com>,
- "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>,
- Marc Zyngier <marc.zyngier@arm.com>,
- "open list:USER-MODE LINUX UML" <linux-um@lists.infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Richard Henderson <rth@twiddle.net>,
- Matt Redfearn <matt.redfearn@mips.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Ralf Ba
-To: linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>,
+ linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Will Deacon <will.deacon@arm.com>,
+ Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org, lokeshgidra@google.com,
+ sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org,
+ elfring@users.sourceforge.net, Jonas Bonn <jonas@southpole.se>,
+ kvmarm@lists.cs.columbia.edu, dancol@google.com,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, linux-xtensa@linux-xtensa.org,
+ linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>,
+ "maintainer:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+ hughd@google.com, "James E.J. Bottomley" <jejb@parisc-linux.org>,
+ kasan-dev@googlegroups.com, anton.ivanov@kot-begemot.co.uk,
+ Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m
+To: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20181023234044.1138-1-f.fainelli@gmail.com>
+In-Reply-To: <20181013013200.206928-2-joel@joelfernandes.org>
 List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
  <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
@@ -35,73 +34,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
  <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
 Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
 
-ARM64 is the only architecture that requires a re-definition of
-__early_init_dt_declare_initrd(). Now that we added the infrastructure
-in asm-generic to provide an asm/initrd.h file, properly break up that
-definition from asm/memory.h and make use of that header in
-drivers/of/fdt.c where this is used.
+On Fri, Oct 12, 2018 at 06:31:57PM -0700, Joel Fernandes (Google) wrote:
+> This series speeds up mremap(2) syscall by copying page tables at the
+> PMD level even for non-THP systems. There is concern that the extra
+> 'address' argument that mremap passes to pte_alloc may do something
+> subtle architecture related in the future that may make the scheme not
+> work.  Also we find that there is no point in passing the 'address' to
+> pte_alloc since its unused. So this patch therefore removes this
+> argument tree-wide resulting in a nice negative diff as well. Also
+> ensuring along the way that the enabled architectures do not do anything
+> funky with 'address' argument that goes unnoticed by the optimization.
 
-This significantly cuts the number of objects that need to be rebuilt on
-ARM64 due to the repercusions of including asm/memory.h in several
-places.
-
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/arm64/include/asm/initrd.h | 13 +++++++++++++
- arch/arm64/include/asm/memory.h |  8 --------
- drivers/of/fdt.c                |  1 +
- 3 files changed, 14 insertions(+), 8 deletions(-)
- create mode 100644 arch/arm64/include/asm/initrd.h
-
-diff --git a/arch/arm64/include/asm/initrd.h b/arch/arm64/include/asm/initrd.h
-new file mode 100644
-index 000000000000..0c9572485810
---- /dev/null
-+++ b/arch/arm64/include/asm/initrd.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_INITRD_H
-+#define __ASM_INITRD_H
-+
-+#ifdef CONFIG_BLK_DEV_INITRD
-+#define __early_init_dt_declare_initrd(__start, __end)			\
-+	do {								\
-+		initrd_start = (__start);				\
-+		initrd_end = (__end);					\
-+	} while (0)
-+#endif
-+
-+#endif /* __ASM_INITRD_H */
-diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-index b96442960aea..dc3ca21ba240 100644
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -168,14 +168,6 @@
- #define IOREMAP_MAX_ORDER	(PMD_SHIFT)
- #endif
- 
--#ifdef CONFIG_BLK_DEV_INITRD
--#define __early_init_dt_declare_initrd(__start, __end)			\
--	do {								\
--		initrd_start = (__start);				\
--		initrd_end = (__end);					\
--	} while (0)
--#endif
--
- #ifndef __ASSEMBLY__
- 
- #include <linux/bitops.h>
-diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-index 800ad252cf9c..4e4711af907b 100644
---- a/drivers/of/fdt.c
-+++ b/drivers/of/fdt.c
-@@ -28,6 +28,7 @@
- 
- #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
- #include <asm/page.h>
-+#include <asm/initrd.h>
- 
- #include "of_private.h"
- 
--- 
-2.17.1
+Did you happen to look at the history of where that address argument
+came from? -- just being curious here. ISTR something vague about
+architectures having different paging structure for different memory
+ranges.
