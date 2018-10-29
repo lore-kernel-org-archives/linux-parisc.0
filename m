@@ -1,56 +1,44 @@
-From: Will Deacon <will.deacon@arm.com>
-Subject: Re: [PATCH 2/4] mm: speed up mremap by 500x on large regions (v2)
-Date: Mon, 29 Oct 2018 10:28:40 +0000
-Message-ID: <20181029102840.GC13965@arm.com>
-References: <20181013013200.206928-1-joel@joelfernandes.org>
- <20181013013200.206928-3-joel@joelfernandes.org>
- <20181024101255.it4lptrjogalxbey@kshutemo-mobl1>
- <20181024115733.GN8537@350D>
- <20181024125724.yf6frdimjulf35do@kshutemo-mobl1>
- <20181025020907.GA13560@joelaf.mtv.corp.google.com>
- <20181025101900.phqnqpoju5t2gar5@kshutemo-mobl1>
- <20181026211148.GA140716@joelaf.mtv.corp.google.com>
+From: Helge Deller <deller@gmx.de>
+Subject: [GIT PULL] parisc architecture fixes for kernel v4.20
+Date: Mon, 29 Oct 2018 22:04:47 +0100
+Message-ID: <20181029210447.GA17383@ls3530.fritz.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>,
- linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
- Peter Zijlstra <peterz@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Balbir Singh <bsingharora@gmail.com>,
- Dave Hansen <dave.hansen@linux.intel.com>, mhocko@kernel.org,
- linux-mm@kvack.org, lokeshgidra@google.com, sparclinux@vger.kernel.org,
- linux-riscv@lists.infradead.org, elfring@users.sourceforge.net,
- Jonas Bonn <jonas@southpole.se>, kvmarm@lists.cs.columbia.edu,
- dancol@google.com, Yoshinori Sato <ysato@users.sourceforge.jp>,
- linux-xtensa@linux-xtensa.org, linux-hexagon@vger.kernel.org,
- Helge Deller <deller@gmx.de>,
- "maintainer:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
- hughd@google.com, "James E.J. Bottomley" <jejb@parisc-linux.org>,
- kasan-dev@googlegroups.com, anton.ivanov@kot-begemot.co.uk,
- Ingo Molnar <mingo@redhat.com>, Geer
-To: Joel Fernandes <joel@joelfernandes.org>
-Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20181026211148.GA140716@joelaf.mtv.corp.google.com>
-List-Id: Linux on Synopsys ARC Processors <linux-snps-arc.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
-List-Post: <mailto:linux-snps-arc@lists.infradead.org>
-List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
-Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Fri, Oct 26, 2018 at 02:11:48PM -0700, Joel Fernandes wrote:
-> My thinking is to take it slow and get the patch in in its current state,
-> since it improves x86. Then as a next step, look into why the arm64 tlb
-> flushes are that expensive and look into optimizing that. On arm64 I am
-> testing on a 4.9 kernel so I'm wondering there are any optimizations since
-> 4.9 that can help speed it up there. After that, if all else fails about
-> speeding up arm64, then I look into developing the cleanest possible solution
-> where we can keep the lock held for longer and flush lesser.
+Hi Linus,
 
-We rewrote a good chunk of the arm64 TLB invalidation and core mmu_gather
-code this merge window, so please do have another look at -rc1!
+please pull three small patches for the parisc architecture for 4.20-rc1 from:
 
-Will
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.20-2
+
+Three small patches:
+
+- A boot fix for A500 machines, crash was caused by the new alternative
+  patching code from this merge window (by Dave)
+- Change __kernel_suseconds_t to match glibc on 64-bit parisc (by Arnd)
+- Use constants instead of hard-coded numbers (by me)
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      parisc64: change __kernel_suseconds_t to match glibc
+
+Helge Deller (1):
+      parisc: Use LINUX_GATEWAY_SPACE constant in entry.S
+
+John David Anglin (1):
+      parisc: Fix A500 boot crash
+
+ arch/parisc/include/uapi/asm/posix_types.h |  3 ---
+ arch/parisc/kernel/entry.S                 |  5 +++--
+ arch/parisc/mm/init.c                      | 10 ++++------
+ 3 files changed, 7 insertions(+), 11 deletions(-)
