@@ -2,31 +2,37 @@ Return-Path: <SRS0=nAaT=NU=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_NEOMUTT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EAB8C43441
-	for <linux-parisc@archiver.kernel.org>; Fri,  9 Nov 2018 19:00:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E5B9C43610
+	for <linux-parisc@archiver.kernel.org>; Fri,  9 Nov 2018 19:03:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0D6B120855
-	for <linux-parisc@archiver.kernel.org>; Fri,  9 Nov 2018 19:00:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D6B120855
+	by mail.kernel.org (Postfix) with ESMTP id 6F25520855
+	for <linux-parisc@archiver.kernel.org>; Fri,  9 Nov 2018 19:03:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F25520855
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=angband.pl
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728667AbeKJEmT (ORCPT
+        id S1728946AbeKJEp2 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 9 Nov 2018 23:42:19 -0500
-Received: from tartarus.angband.pl ([54.37.238.230]:51088 "EHLO
+        Fri, 9 Nov 2018 23:45:28 -0500
+Received: from tartarus.angband.pl ([54.37.238.230]:51532 "EHLO
         tartarus.angband.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728162AbeKJEmR (ORCPT
+        with ESMTP id S1728683AbeKJEp1 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 9 Nov 2018 23:42:17 -0500
-Received: from kilobyte by tartarus.angband.pl with local (Exim 4.89)
+        Fri, 9 Nov 2018 23:45:27 -0500
+Received: from 89-64-163-218.dynamic.chello.pl ([89.64.163.218] helo=barad-dur.angband.pl)
+        by tartarus.angband.pl with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
         (envelope-from <kilobyte@angband.pl>)
-        id 1gLC0X-000503-84; Fri, 09 Nov 2018 19:59:53 +0100
-Date:   Fri, 9 Nov 2018 19:59:53 +0100
+        id 1gLC3z-00054E-7m; Fri, 09 Nov 2018 20:03:29 +0100
+Received: from kholdan.angband.pl ([2001:470:64f4::5])
+        by barad-dur.angband.pl with smtp (Exim 4.89)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1gLC3x-0005A7-NG; Fri, 09 Nov 2018 20:03:26 +0100
+Received: by kholdan.angband.pl (sSMTP sendmail emulation); Fri, 09 Nov 2018 20:03:25 +0100
 From:   Adam Borowski <kilobyte@angband.pl>
 To:     linux-kernel@vger.kernel.org, Nick Terrell <terrelln@fb.com>,
         Russell King <linux@armlinux.org.uk>,
@@ -55,68 +61,75 @@ To:     linux-kernel@vger.kernel.org, Nick Terrell <terrelln@fb.com>,
         x86@kernel.org, Chris Zankel <chris@zankel.net>,
         Max Filippov <jcmvbkbc@gmail.com>,
         linux-xtensa@linux-xtensa.org
-Subject: [PATCH 0/17] Kernel compression: add ZSTD, remove LZMA1 and BZIP2
-Message-ID: <20181109185953.xwyelyqnygbskkxk@angband.pl>
+Cc:     Adam Borowski <kilobyte@angband.pl>
+Date:   Fri,  9 Nov 2018 20:02:57 +0100
+Message-Id: <20181109190304.8573-10-kilobyte@angband.pl>
+X-Mailer: git-send-email 2.19.1
+In-Reply-To: <20181109190304.8573-1-kilobyte@angband.pl>
+References: <20181109185953.xwyelyqnygbskkxk@angband.pl>
+ <20181109190304.8573-1-kilobyte@angband.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Junkbait: aaron@angband.pl, zzyx@angband.pl
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Connect-IP: 89.64.163.218
 X-SA-Exim-Mail-From: kilobyte@angband.pl
-X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
+Subject: [PATCH 10/17] arm: Remove support for LZMA compressed kernel
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on tartarus.angband.pl)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi!
-As new compressors get invented, they tend to find their way into the
-kernel, yet we never prune superseded ones.  It's time to do so.
+You want XZ instead: newer version of same algorithm, has an optimized
+filter for arm32 executables, uses a library shared with other uses of XZ
+in the kernel.
 
-In particular, BZIP2 is drastically slower than other compressors we
-have, even when they achieve smaller sizes.  It takes more memory, too.
-And, BZIP2 is not used anywhere else in the kernel -- just for booting
-the kernel itself and the initrd.  Thus, we can drop it from the tree
-completely, making Linus happier by around 900 lines.
+Signed-off-by: Adam Borowski <kilobyte@angband.pl>
+---
+ arch/arm/Kconfig                      | 1 -
+ arch/arm/boot/compressed/Makefile     | 1 -
+ arch/arm/boot/compressed/decompress.c | 4 ----
+ 3 files changed, 6 deletions(-)
 
-LZMA1 is redundant with XZ (LZMA2), and unlike the latter, it uses its own
-copy of code that's not shared with anything else (some drivers use XZ).
-Let's drop it as well.  Some bootloaders can use it thus let's keep the
-Kconfig option, but I left no piece of code inside the kernel itself.
-
-On the other hand, Nick Terrell has a couple of patches adding ZSTD support
-(using code already in use in multiple pieces around the kernel).  ZSTD is
-strong and fast, obsoleting all mid-range compressors.  As the removal of
-BZIP2 and LZMA1 would be hopelessly entangled with this addition, I'm
-resending Nick's patches here.  I've been booting using them since Oct'17
-on amd64 (kernel+initrd), armhf and arm64 (initrd) without issues, other
-folks tested various other architectures as well.
-
-Thus, I'd recommend people to use:
-* XZ for most machines
-* ZSTD where speed is important
-* maaaaybe LZ4 is some special cases
-(grub and u-boot are ridiculously slow at reading, making fast but weak
-decompressors a net loss.  On the other hand, XZ decompresses pretty fast
-but is very slow at compress time, making ZSTD preferred for rapid devel
-cycles.)
-
-* we can't get rid of GZIP in foreseable future
-* LZO is obsolete but is used elsewhere in the kernel
-
-Total:
- 69 files changed, 518 insertions(+), 1785 deletions(-)
-
-Not sure whose tree this patchset should go through.  I'm also not sure
-how finely split into commits you want the arch bits be; I included
-defconfig bits all together, yet separated code changes per-arch.
-
-
-Meow!
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 91be74d8df65..637e100de6e3 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -77,7 +77,6 @@ config ARM
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+ 	select HAVE_KERNEL_GZIP
+ 	select HAVE_KERNEL_LZ4
+-	select HAVE_KERNEL_LZMA
+ 	select HAVE_KERNEL_LZO
+ 	select HAVE_KERNEL_XZ
+ 	select HAVE_KPROBES if !XIP_KERNEL && !CPU_ENDIAN_BE32 && !CPU_V7M
+diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
+index 1f5a5ffe7fcf..37e6097b7506 100644
+--- a/arch/arm/boot/compressed/Makefile
++++ b/arch/arm/boot/compressed/Makefile
+@@ -72,7 +72,6 @@ CPPFLAGS_vmlinux.lds := -DTEXT_START="$(ZTEXTADDR)" -DBSS_START="$(ZBSSADDR)"
+ 
+ compress-$(CONFIG_KERNEL_GZIP) = gzip
+ compress-$(CONFIG_KERNEL_LZO)  = lzo
+-compress-$(CONFIG_KERNEL_LZMA) = lzma
+ compress-$(CONFIG_KERNEL_XZ)   = xzkern
+ compress-$(CONFIG_KERNEL_LZ4)  = lz4
+ 
+diff --git a/arch/arm/boot/compressed/decompress.c b/arch/arm/boot/compressed/decompress.c
+index c16c1829a5e4..350e7a96f6af 100644
+--- a/arch/arm/boot/compressed/decompress.c
++++ b/arch/arm/boot/compressed/decompress.c
+@@ -41,10 +41,6 @@ extern int memcmp(const void *cs, const void *ct, size_t count);
+ #include "../../../../lib/decompress_unlzo.c"
+ #endif
+ 
+-#ifdef CONFIG_KERNEL_LZMA
+-#include "../../../../lib/decompress_unlzma.c"
+-#endif
+-
+ #ifdef CONFIG_KERNEL_XZ
+ #define memmove memmove
+ #define memcpy memcpy
 -- 
-⢀⣴⠾⠻⢶⣦⠀ 
-⣾⠁⢠⠒⠀⣿⡁ A dumb species has no way to open a tuna can.
-⢿⡄⠘⠷⠚⠋⠀ A smart species invents a can opener.
-⠈⠳⣄⠀⠀⠀⠀ A master species delegates.
+2.19.1
+
