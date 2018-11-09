@@ -6,33 +6,33 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EFD3C0044C
-	for <linux-parisc@archiver.kernel.org>; Fri,  9 Nov 2018 19:04:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE090C43441
+	for <linux-parisc@archiver.kernel.org>; Fri,  9 Nov 2018 19:04:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 713B120855
-	for <linux-parisc@archiver.kernel.org>; Fri,  9 Nov 2018 19:04:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 713B120855
+	by mail.kernel.org (Postfix) with ESMTP id ABFD720855
+	for <linux-parisc@archiver.kernel.org>; Fri,  9 Nov 2018 19:04:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABFD720855
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=angband.pl
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbeKJEq2 (ORCPT
+        id S1728982AbeKJEpb (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 9 Nov 2018 23:46:28 -0500
-Received: from tartarus.angband.pl ([54.37.238.230]:51756 "EHLO
+        Fri, 9 Nov 2018 23:45:31 -0500
+Received: from tartarus.angband.pl ([54.37.238.230]:51600 "EHLO
         tartarus.angband.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728712AbeKJEpc (ORCPT
+        with ESMTP id S1728225AbeKJEp3 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 9 Nov 2018 23:45:32 -0500
+        Fri, 9 Nov 2018 23:45:29 -0500
 Received: from 89-64-163-218.dynamic.chello.pl ([89.64.163.218] helo=barad-dur.angband.pl)
         by tartarus.angband.pl with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.89)
         (envelope-from <kilobyte@angband.pl>)
-        id 1gLC3x-00053r-Sg; Fri, 09 Nov 2018 20:03:27 +0100
+        id 1gLC40-00054h-J6; Fri, 09 Nov 2018 20:03:30 +0100
 Received: from kholdan.angband.pl ([2001:470:64f4::5])
         by barad-dur.angband.pl with smtp (Exim 4.89)
         (envelope-from <kilobyte@angband.pl>)
-        id 1gLC3w-0005A4-Bc; Fri, 09 Nov 2018 20:03:25 +0100
-Received: by kholdan.angband.pl (sSMTP sendmail emulation); Fri, 09 Nov 2018 20:03:24 +0100
+        id 1gLC3z-0005AA-1i; Fri, 09 Nov 2018 20:03:28 +0100
+Received: by kholdan.angband.pl (sSMTP sendmail emulation); Fri, 09 Nov 2018 20:03:27 +0100
 From:   Adam Borowski <kilobyte@angband.pl>
 To:     linux-kernel@vger.kernel.org, Nick Terrell <terrelln@fb.com>,
         Russell King <linux@armlinux.org.uk>,
@@ -62,8 +62,8 @@ To:     linux-kernel@vger.kernel.org, Nick Terrell <terrelln@fb.com>,
         Max Filippov <jcmvbkbc@gmail.com>,
         linux-xtensa@linux-xtensa.org
 Cc:     Adam Borowski <kilobyte@angband.pl>
-Date:   Fri,  9 Nov 2018 20:02:56 +0100
-Message-Id: <20181109190304.8573-9-kilobyte@angband.pl>
+Date:   Fri,  9 Nov 2018 20:02:58 +0100
+Message-Id: <20181109190304.8573-11-kilobyte@angband.pl>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20181109190304.8573-1-kilobyte@angband.pl>
 References: <20181109185953.xwyelyqnygbskkxk@angband.pl>
@@ -72,7 +72,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 89.64.163.218
 X-SA-Exim-Mail-From: kilobyte@angband.pl
-Subject: [PATCH 09/17] unicore32: Remove support for BZIP2 and LZMA compressed kernel
+Subject: [PATCH 11/17] Kconfig: Remove support for BZIP2-compressed initrd and kernel
 X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
 X-SA-Exim-Scanned: Yes (on tartarus.angband.pl)
 Sender: linux-parisc-owner@vger.kernel.org
@@ -80,77 +80,166 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Made redundant by newer choices -- sort of, as no one enabled support
-for XZ nor ZSTD for unicore yet...
+In no case it's a rational choice anymore: it's much slower than newer
+algorithms at similar compression strength, and takes lots of memory
+as well.
+
+Removal of compression algorithms for vmlinuz is completely safe (the
+kernel gets compressed by this very Makefile), less so for initrd as
+someone might have requested it in initramfs.conf -- but it's not an
+option users tend to alter, and they'd use a better algorithm anyway.
+Thus, user damage is possible but on par with removal of an ancient
+filesystem.
 
 Signed-off-by: Adam Borowski <kilobyte@angband.pl>
 ---
- arch/unicore32/Kconfig                  | 2 --
- arch/unicore32/boot/compressed/Makefile | 4 +---
- arch/unicore32/boot/compressed/misc.c   | 8 --------
- 3 files changed, 1 insertion(+), 13 deletions(-)
+ Makefile                   |  1 -
+ init/Kconfig               | 17 ++---------------
+ init/do_mounts_rd.c        |  1 -
+ kernel/configs/tiny.config |  1 -
+ usr/Kconfig                | 24 ------------------------
+ 5 files changed, 2 insertions(+), 42 deletions(-)
 
-diff --git a/arch/unicore32/Kconfig b/arch/unicore32/Kconfig
-index a4c05159dca5..b7eb7e9fb0d2 100644
---- a/arch/unicore32/Kconfig
-+++ b/arch/unicore32/Kconfig
-@@ -7,10 +7,8 @@ config UNICORE32
- 	select DMA_DIRECT_OPS
- 	select HAVE_GENERIC_DMA_COHERENT
- 	select HAVE_KERNEL_GZIP
--	select HAVE_KERNEL_BZIP2
- 	select GENERIC_ATOMIC64
- 	select HAVE_KERNEL_LZO
--	select HAVE_KERNEL_LZMA
- 	select VIRT_TO_BUS
- 	select ARCH_HAVE_CUSTOM_GPIO_H
- 	select GENERIC_FIND_FIRST_BIT
-diff --git a/arch/unicore32/boot/compressed/Makefile b/arch/unicore32/boot/compressed/Makefile
-index 9aecdd3ddc48..79ff908ad78c 100644
---- a/arch/unicore32/boot/compressed/Makefile
-+++ b/arch/unicore32/boot/compressed/Makefile
-@@ -22,9 +22,7 @@ $(obj)/font.c: $(srctree)/lib/fonts/font_8x8.c
+diff --git a/Makefile b/Makefile
+index 9fce8b91c15f..c812467bfe11 100644
+--- a/Makefile
++++ b/Makefile
+@@ -938,7 +938,6 @@ export mod_compress_cmd
+ # This shall be used by the dracut(8) tool while creating an initramfs image.
+ #
+ INITRD_COMPRESS-y                  := gzip
+-INITRD_COMPRESS-$(CONFIG_RD_BZIP2) := bzip2
+ INITRD_COMPRESS-$(CONFIG_RD_LZMA)  := lzma
+ INITRD_COMPRESS-$(CONFIG_RD_XZ)    := xz
+ INITRD_COMPRESS-$(CONFIG_RD_LZO)   := lzo
+diff --git a/init/Kconfig b/init/Kconfig
+index ffa5ae4abc88..412ba93673fa 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -119,9 +119,6 @@ config BUILD_SALT
+ config HAVE_KERNEL_GZIP
+ 	bool
  
- # piggy.S and piggy.o
- suffix_$(CONFIG_KERNEL_GZIP)	:= gzip
--suffix_$(CONFIG_KERNEL_BZIP2)	:= bz2
- suffix_$(CONFIG_KERNEL_LZO)	:= lzo
--suffix_$(CONFIG_KERNEL_LZMA)	:= lzma
- 
- $(obj)/piggy.$(suffix_y): $(obj)/../Image FORCE
- 	$(call if_changed,$(suffix_y))
-@@ -39,7 +37,7 @@ targets		:= vmlinux vmlinux.lds font.o font.c head.o misc.o \
- 			piggy.$(suffix_y) piggy.o piggy.S \
- 
- # Make sure files are removed during clean
--extra-y		+= piggy.gzip piggy.bz2 piggy.lzo piggy.lzma
-+extra-y		+= piggy.gzip piggy.lzo
- 
- # ?
- LDFLAGS_vmlinux += -p
-diff --git a/arch/unicore32/boot/compressed/misc.c b/arch/unicore32/boot/compressed/misc.c
-index 5c65dfee278c..ab9b56cf6907 100644
---- a/arch/unicore32/boot/compressed/misc.c
-+++ b/arch/unicore32/boot/compressed/misc.c
-@@ -91,18 +91,10 @@ void error(char *x)
- #include "../../../../lib/decompress_inflate.c"
- #endif
- 
--#ifdef CONFIG_KERNEL_BZIP2
--#include "../../../../lib/decompress_bunzip2.c"
--#endif
+-config HAVE_KERNEL_BZIP2
+-	bool
 -
- #ifdef CONFIG_KERNEL_LZO
- #include "../../../../lib/decompress_unlzo.c"
- #endif
+ config HAVE_KERNEL_LZMA
+ 	bool
  
--#ifdef CONFIG_KERNEL_LZMA
--#include "../../../../lib/decompress_unlzma.c"
--#endif
+@@ -143,7 +140,7 @@ config HAVE_KERNEL_UNCOMPRESSED
+ choice
+ 	prompt "Kernel compression mode"
+ 	default KERNEL_GZIP
+-	depends on HAVE_KERNEL_GZIP || HAVE_KERNEL_BZIP2 || HAVE_KERNEL_LZMA || HAVE_KERNEL_XZ || HAVE_KERNEL_LZO || HAVE_KERNEL_LZ4 || HAVE_KERNEL_ZSTD || HAVE_KERNEL_UNCOMPRESSED
++	depends on HAVE_KERNEL_GZIP || HAVE_KERNEL_LZMA || HAVE_KERNEL_XZ || HAVE_KERNEL_LZO || HAVE_KERNEL_LZ4 || HAVE_KERNEL_ZSTD || HAVE_KERNEL_UNCOMPRESSED
+ 	help
+ 	  The linux kernel is a kind of self-extracting executable.
+ 	  Several compression algorithms are available, which differ
+@@ -151,7 +148,7 @@ choice
+ 	  Compression speed is only relevant when building a kernel.
+ 	  Decompression speed is relevant at each boot.
+ 
+-	  If you have any problems with bzip2 or lzma compressed
++	  If you have any problems with lzma compressed
+ 	  kernels, mail me (Alain Knaff) <alain@knaff.lu>. (An older
+ 	  version of this functionality (bzip2 only), for 2.4, was
+ 	  supplied by Christian Ludwig)
+@@ -169,16 +166,6 @@ config KERNEL_GZIP
+ 	  The old and tried gzip compression. It provides a good balance
+ 	  between compression ratio and decompression speed.
+ 
+-config KERNEL_BZIP2
+-	bool "Bzip2"
+-	depends on HAVE_KERNEL_BZIP2
+-	help
+-	  Its compression ratio and speed is intermediate.
+-	  Decompression speed is slowest among the choices.  The kernel
+-	  size is about 10% smaller with bzip2, in comparison to gzip.
+-	  Bzip2 uses a large amount of memory. For modern kernels you
+-	  will need at least 8MB RAM or more for booting.
 -
- unsigned long decompress_kernel(unsigned long output_start,
- 		unsigned long free_mem_ptr_p,
- 		unsigned long free_mem_ptr_end_p)
+ config KERNEL_LZMA
+ 	bool "LZMA"
+ 	depends on HAVE_KERNEL_LZMA
+diff --git a/init/do_mounts_rd.c b/init/do_mounts_rd.c
+index 32fb049d18f9..5f26365ea8b1 100644
+--- a/init/do_mounts_rd.c
++++ b/init/do_mounts_rd.c
+@@ -48,7 +48,6 @@ static int __init crd_load(int in_fd, int out_fd, decompress_fn deco);
+  *	cramfs
+  *	squashfs
+  *	gzip
+- *	bzip2
+  *	lzma
+  *	xz
+  *	lzo
+diff --git a/kernel/configs/tiny.config b/kernel/configs/tiny.config
+index 7fa0c4ae6394..c5480f87fae3 100644
+--- a/kernel/configs/tiny.config
++++ b/kernel/configs/tiny.config
+@@ -1,7 +1,6 @@
+ # CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ # CONFIG_KERNEL_GZIP is not set
+-# CONFIG_KERNEL_BZIP2 is not set
+ # CONFIG_KERNEL_LZMA is not set
+ CONFIG_KERNEL_XZ=y
+ # CONFIG_KERNEL_LZO is not set
+diff --git a/usr/Kconfig b/usr/Kconfig
+index 5ff529b75ee1..05b6be569041 100644
+--- a/usr/Kconfig
++++ b/usr/Kconfig
+@@ -61,15 +61,6 @@ config RD_GZIP
+ 	  Support loading of a gzip encoded initial ramdisk or cpio buffer.
+ 	  If unsure, say Y.
+ 
+-config RD_BZIP2
+-	bool "Support initial ramdisk/ramfs compressed using bzip2"
+-	default y
+-	depends on BLK_DEV_INITRD
+-	select DECOMPRESS_BZIP2
+-	help
+-	  Support loading of a bzip2 encoded initial ramdisk or cpio buffer
+-	  If unsure, say N.
+-
+ config RD_LZMA
+ 	bool "Support initial ramdisk/ramfs compressed using LZMA"
+ 	default y
+@@ -161,19 +152,6 @@ config INITRAMFS_COMPRESSION_GZIP
+ 	  supported by your build system as the gzip tool is present by default
+ 	  on most distros.
+ 
+-config INITRAMFS_COMPRESSION_BZIP2
+-	bool "Bzip2"
+-	depends on RD_BZIP2
+-	help
+-	  It's compression ratio and speed is intermediate. Decompression speed
+-	  is slowest among the choices. The initramfs size is about 10% smaller
+-	  with bzip2, in comparison to gzip. Bzip2 uses a large amount of
+-	  memory. For modern kernels you will need at least 8MB RAM or more for
+-	  booting.
+-
+-	  If you choose this, keep in mind that you need to have the bzip2 tool
+-	  available to be able to compress the initram.
+-
+ config INITRAMFS_COMPRESSION_LZMA
+ 	bool "LZMA"
+ 	depends on RD_LZMA
+@@ -241,7 +219,6 @@ config INITRAMFS_COMPRESSION
+ 	string
+ 	default ""      if INITRAMFS_COMPRESSION_NONE
+ 	default ".gz"   if INITRAMFS_COMPRESSION_GZIP
+-	default ".bz2"  if INITRAMFS_COMPRESSION_BZIP2
+ 	default ".lzma" if INITRAMFS_COMPRESSION_LZMA
+ 	default ".xz"   if INITRAMFS_COMPRESSION_XZ
+ 	default ".lzo"  if INITRAMFS_COMPRESSION_LZO
+@@ -252,6 +229,5 @@ config INITRAMFS_COMPRESSION
+ 	default ".lzo"  if RD_LZO
+ 	default ".xz"   if RD_XZ
+ 	default ".lzma" if RD_LZMA
+-	default ".bz2"  if RD_BZIP2
+ 	default ".zst"  if RD_ZSTD
+ 	default ""
 -- 
 2.19.1
 
