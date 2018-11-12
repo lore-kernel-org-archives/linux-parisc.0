@@ -2,79 +2,65 @@ Return-Path: <SRS0=Hn0r=NX=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97B88C43441
-	for <linux-parisc@archiver.kernel.org>; Mon, 12 Nov 2018 17:05:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85823C43441
+	for <linux-parisc@archiver.kernel.org>; Mon, 12 Nov 2018 17:31:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 68429224E0
-	for <linux-parisc@archiver.kernel.org>; Mon, 12 Nov 2018 17:05:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68429224E0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gmx.de
+	by mail.kernel.org (Postfix) with ESMTP id 30C8922419
+	for <linux-parisc@archiver.kernel.org>; Mon, 12 Nov 2018 17:31:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30C8922419
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bell.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbeKMC7R (ORCPT
+        id S1727354AbeKMD0A (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 12 Nov 2018 21:59:17 -0500
-Received: from mout.gmx.net ([212.227.15.19]:40025 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727659AbeKMC7R (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 12 Nov 2018 21:59:17 -0500
-Received: from [192.168.20.60] ([92.116.170.42]) by mail.gmx.com (mrgmx001
- [212.227.17.190]) with ESMTPSA (Nemesis) id 0MZkv0-1g4BKe265G-00LS7x; Mon, 12
- Nov 2018 18:05:06 +0100
-To:     linux-parisc <linux-parisc@vger.kernel.org>,
+        Mon, 12 Nov 2018 22:26:00 -0500
+Received: from belmont80srvr.owm.bell.net ([184.150.200.80]:55806 "EHLO
+        mtlfep02.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727247AbeKMD0A (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 12 Nov 2018 22:26:00 -0500
+Received: from bell.net mtlfep02 184.150.200.30 by mtlfep02.bell.net
+          with ESMTP
+          id <20181112173147.IJCR11841.mtlfep02.bell.net@mtlspm01.bell.net>
+          for <linux-parisc@vger.kernel.org>;
+          Mon, 12 Nov 2018 12:31:47 -0500
+Received: from [192.168.0.138] (really [65.93.110.216])
+          by mtlspm01.bell.net with ESMTP
+          id <20181112173147.OVAI17436.mtlspm01.bell.net@[192.168.0.138]>;
+          Mon, 12 Nov 2018 12:31:47 -0500
+Subject: Re: New mail archive for parisc-linux available
+To:     Helge Deller <deller@gmx.de>,
+        linux-parisc <linux-parisc@vger.kernel.org>,
         HPPA porters <debian-hppa@lists.debian.org>
-From:   Helge Deller <deller@gmx.de>
-Subject: New mail archive for parisc-linux available
-Message-ID: <4fffe816-29b8-d4b9-6d83-c9b05a45c0c7@gmx.de>
-Date:   Mon, 12 Nov 2018 18:05:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
+References: <4fffe816-29b8-d4b9-6d83-c9b05a45c0c7@gmx.de>
+From:   John David Anglin <dave.anglin@bell.net>
+Message-ID: <e482bda8-3aeb-abb8-a236-1c33eeb5de30@bell.net>
+Date:   Mon, 12 Nov 2018 12:31:49 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <4fffe816-29b8-d4b9-6d83-c9b05a45c0c7@gmx.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:xkeanCPBBHXPVBMVHHmV3mpIAx62oirnwOLv81tC2Va26a6m1F/
- ILw3/khTcIsIePqtRzJ59a1INfCPGUrn9UFLFdzxMxiZARcvMCs/wLDh8aeOpZpyBJvsyfq
- egrx5MVidqM+GZidcsktbHtSI8bbq7taRjvJrBNb2Bz1kruZIC2XIPQVfNGdHAMpl/warJu
- VeYdU7B9PVkfaeLweDGCQ==
-X-UI-Out-Filterresults: notjunk:1;V01:K0:9ypumjcEys4=:IrvpexDwsKMSxKKZC4mnZn
- 3kHln7/yriJ61VIvPmEkD0OH2PSGN0KpZ7t481r0+iw9PvRPwtCVw4wNYDnH6y8opymWt32a9
- eGpRcs5yL/689lMnZtXFdHsvy0FftenHd46rbgh6u2ctat5pSuLOMi3loexekUZ2xj3uCLzjC
- xSbbO5V1xZkwouNrHSD6S4VTRcyGiz+4qJs2or5SdEPCPkS0oJx8F5bQzHlWEU7JFQ8OnhY8Z
- 9vJ+ghqocriPgPvGl8tdz2TzOjInj3heSmH9e5X4zdIejsI3kgoDCzN82Il6OxdK1ER1HThNS
- FGQrGjzoLokqpFQsEjn3870gEHQRrHC2f4yCDiw8zJgZigJzObkl5Zw7NXZo6omLpKiYQb//g
- pSAuq+VG6+RmK+epnSODTwoxwaK8PYSIDxws01GhAwNdY/T3Q/bzQRqKAEAJEFOQrnsr8gPqr
- bn2YIh0JS/h0uEjI/sR6fNFJoa72ZeE2NT/N9efzyGibuDOo1heUM3LhqhWyi78BYDsCm/8is
- 1ia+TQU+1T837kfjqKoK2h72gFKmZHDllVuT5TqEBJCG63QywIBuVKgNLD08kAl+QSGKQtpPF
- mOxxfGjFHHMtchoW8e5MUNpeEjHDtPgNHYMzRGPVF1IxKwOoX1gsqmsEGyWfRvdGAh0gCKmdD
- Jj1eqB6eSNIPeQjBG0Q4UMgjn98yKHO0Ak4PGcoPf9Wl+dHuB10k+X7Iw8xlFbFvQ9z3g1qjF
- X/kBYVAcyj5clpDauk/YWNv6dEyvaYWievqgNYBIGjBPu5Yc6hFf4TGrDrmecHtuxTPNgXyCW
- 1iPKFoDavBWJY4M00Xf6l+m0FVpNC/xUc/eOgZfMXbGLmtosSSf42mbbRnP1bYP+E/WKFYd+4
- 3LLenEHgeQMealKjI0R7Tz/Tw2cDHXRQB1zHus1Nl1ZtqC8/Gs90hFc8VEAVtL
+Content-Language: en-US
+X-Cloudmark-Analysis: v=2.2 cv=L+Xye6b8 c=1 sm=0 tr=0 a=aYA3LyH463q31VAhpBKSeQ==:17 a=IkcTkHD0fZMA:10 a=JHtHm7312UAA:10 a=VwQbUJbxAAAA:8 a=al71tlE3AAAA:8 a=8pif782wAAAA:8 a=FBHGMhGWAAAA:8 a=XzQZQtFs3w2krq54lO0A:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=Zy-rj9olT4bzUGCxLb3Y:22 a=9gvnlMMaQFpL9xblJ6ne:22
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Dear PA-RISC Linux hackers & fans,
+On 2018-11-12 12:05 p.m., Helge Deller wrote:
+> and I think the very first parisc-linux related mail I know of is:
+> 	https://lore.kernel.org/linux-parisc/Pine.LNX.4.04.9901291134480.1532-100000@sprite.osfi-bsif.gc.ca/
+The email suggests there might be earlier discussions.
 
-The admins at the Linux Foundation have been so nice to set up a new 
-complete parisc-linux mailing list archive with me.
+I found this out about Chris Beard:
+https://en.wikipedia.org/wiki/Chris_Beard_(executive)
 
-It's now available at:
-	https://lore.kernel.org/linux-parisc
+-- 
+John David Anglin  dave.anglin@bell.net
 
-Access via NNTP is easiest:
-	nntp://nntp.lore.kernel.org/org.kernel.vger.linux-parisc
-
-A list of currently active parisc-linux mail archives are listed at
-	https://parisc.wiki.kernel.org/index.php/Mailing_lists
-
-and I think the very first parisc-linux related mail I know of is:
-	https://lore.kernel.org/linux-parisc/Pine.LNX.4.04.9901291134480.1532-100000@sprite.osfi-bsif.gc.ca/
-
-Helge
