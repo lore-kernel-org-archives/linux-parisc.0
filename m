@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0B2EC43441
-	for <linux-parisc@archiver.kernel.org>; Wed, 21 Nov 2018 04:15:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D95E9C43441
+	for <linux-parisc@archiver.kernel.org>; Wed, 21 Nov 2018 04:15:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BB8252146D
-	for <linux-parisc@archiver.kernel.org>; Wed, 21 Nov 2018 04:15:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A505F21104
+	for <linux-parisc@archiver.kernel.org>; Wed, 21 Nov 2018 04:15:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=linaro.org header.i=@linaro.org header.b="S8xRq3bI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB8252146D
+	dkim=pass (1024-bit key) header.d=linaro.org header.i=@linaro.org header.b="hm+ioeOE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A505F21104
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727211AbeKUOro (ORCPT
+        id S1727522AbeKUOrt (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 21 Nov 2018 09:47:44 -0500
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:41945 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727325AbeKUOro (ORCPT
+        Wed, 21 Nov 2018 09:47:49 -0500
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:45928 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727450AbeKUOrt (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 21 Nov 2018 09:47:44 -0500
-Received: by mail-pl1-f196.google.com with SMTP id u6so3498858plm.8
-        for <linux-parisc@vger.kernel.org>; Tue, 20 Nov 2018 20:15:02 -0800 (PST)
+        Wed, 21 Nov 2018 09:47:49 -0500
+Received: by mail-pl1-f195.google.com with SMTP id a14so3486992plm.12
+        for <linux-parisc@vger.kernel.org>; Tue, 20 Nov 2018 20:15:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=qKx2DGfS1C19jw7NY3t4lVOTAQM2/ra3r7ahK7MpGHs=;
-        b=S8xRq3bIwvFh+q51xM+mEQ0+/8UD8797f5LcQc9wQknYLBr8VA1tfmeV82z4cgykj0
-         00vK0arCUCO6hRhIAKy1TaMyESdyeBY/d6CSsNRG5of22lKdhUG6QT92aNIdVdzxysB4
-         3VftsWe6PLMlIcjZ8G/4BwE2U8P3Vfe7E5C2Y=
+        bh=YZE1AyeTPRRnquAdnDl25l1LOkW//go+oKzyIjbXwF4=;
+        b=hm+ioeOEZqzXAkSAoJMLslosWiNM54cQ6z/99LjRB6gDyt3LOjzktYLZO5RXxSKL/v
+         r9KZIEtuZUWks7oCnw7K+G7z+eC/uPgrKjWw4BAQeQxLvc1l88sNWMS03SektvPUNF5I
+         bSFBmA+j56zv/dEJYw0u4BFLi9Sxo03mZZoDY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=qKx2DGfS1C19jw7NY3t4lVOTAQM2/ra3r7ahK7MpGHs=;
-        b=PZEAqPU1u1RU4oOlcMp1fkb1YKYSqcsAWKliouZl7j+wbqB2QFlpKj7LGiRBWAESpg
-         g0PiCpxB//j8gk0ZTZk5n2Lx/gk/I4VtX633c/XlgtN2cnp8irKWiTLLdE/mw1y4uaQA
-         oAZMb+k+oq63sBeTflf+KIDM1aqp7WxyZM3bFyyhkiDSeWRZqFf3q1p+VjIE7id4zRrn
-         KWciNKfdh5P966DC8VII/hy4IxPlnshLeQNNbwTXPaCqt797IFGBOrQvKyY3R0hhOUUN
-         XEZD9mJhdr86pO5tZnApvef1SKdlVN3nG38z2pAzmsyLPBXZ+9hec6XCIobUgjjNg89E
-         +q5w==
-X-Gm-Message-State: AGRZ1gITVuC3Vgcqvn2Rf8OwvIJNdUZ55r8aB1LEIzGOCU0VCFPFSlui
-        Jwy/FucQ+vbfP8gcF/aLPh+7GMrWhHM=
-X-Google-Smtp-Source: AJdET5ddLclCeat1blKGPm4KpoNMiXmY5c993EK/mlk9aG7vmpK4cNSDb+Y+knlWamnjRfcI6tLgjw==
-X-Received: by 2002:a62:7796:: with SMTP id s144mr5145861pfc.26.1542773702000;
-        Tue, 20 Nov 2018 20:15:02 -0800 (PST)
+        bh=YZE1AyeTPRRnquAdnDl25l1LOkW//go+oKzyIjbXwF4=;
+        b=M4GzbA46bgQYwKvCbSmqlh3fznwnWrVsXGzb/6GfP7fG1YTtVBCKoe3B+EA/ILLAHg
+         JS76ioJ20stX3SPr7PEHQsAF56WIt7rZVxsJjAhwcCkEf9eVgfoyfasWRr/tKPaq3CmZ
+         YttVBALZwkOYEa0QzAVKbOZLAoex8pEIz1M02ANP7FIaLYIBof5aWpmcycgWtWpeaOpM
+         E8pqWnJU1RxNM09mxaGdICOjJdbFd13ZMgmrbUVEjhfQ8nBBJ4DDYnyW2peYNVnirGDw
+         E4yJl3bt6QqNMnMORzFwgQMIW62LknzjizjGjhagtuW/SXe/3FzgMyy4aPC4bMC0gnuP
+         WjvA==
+X-Gm-Message-State: AGRZ1gJzmSjq5XtjjEu6MAgWJro6KewyvjubuPEjsGCwMAAuu96AFFid
+        Pf4JN+UfOfuLoUekfPZ65GGJ92q3sCw=
+X-Google-Smtp-Source: AJdET5dVb8X62s4n2Of0dNjIXVvZt69JZlLBjESDQj0cT336h375mvGc74M3jq9iPgBSmzWGswnpfQ==
+X-Received: by 2002:a62:a511:: with SMTP id v17-v6mr5143960pfm.18.1542773707402;
+        Tue, 20 Nov 2018 20:15:07 -0800 (PST)
 Received: from qualcomm-HP-ZBook-14-G2.qualcomm.com (blr-bdr-fw-01_globalnat_allzones-outside.qualcomm.com. [103.229.18.19])
-        by smtp.gmail.com with ESMTPSA id v124-v6sm10818712pfb.182.2018.11.20.20.14.57
+        by smtp.gmail.com with ESMTPSA id v124-v6sm10818712pfb.182.2018.11.20.20.15.02
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Tue, 20 Nov 2018 20:15:01 -0800 (PST)
+        Tue, 20 Nov 2018 20:15:06 -0800 (PST)
 From:   Firoz Khan <firoz.khan@linaro.org>
 To:     linux-parisc@vger.kernel.org,
         "James E . J . Bottomley" <jejb@parisc-linux.org>,
@@ -67,9 +67,9 @@ To:     linux-parisc@vger.kernel.org,
 Cc:     y2038@lists.linaro.org, linux-kernel@vger.kernel.org,
         linux-arch@vger.kernel.org, arnd@arndb.de, deepa.kernel@gmail.com,
         marcin.juszkiewicz@linaro.org, firoz.khan@linaro.org
-Subject: [PATCH v8 1/6] parisc: move __IGNORE* entries to non uapi header
-Date:   Wed, 21 Nov 2018 09:44:25 +0530
-Message-Id: <1542773670-25460-2-git-send-email-firoz.khan@linaro.org>
+Subject: [PATCH v8 2/6] parisc: add __NR_syscalls along with __NR_Linux_syscalls
+Date:   Wed, 21 Nov 2018 09:44:26 +0530
+Message-Id: <1542773670-25460-3-git-send-email-firoz.khan@linaro.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1542773670-25460-1-git-send-email-firoz.khan@linaro.org>
 References: <1542773670-25460-1-git-send-email-firoz.khan@linaro.org>
@@ -78,58 +78,70 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-All the __IGNORE* entries are resides in the uapi header
-file move to non uapi header asm/unistd.h as it is not
-used by any user space applications.
+__NR_Linux_syscalls macro holds the number of system call
+exist in parisc architecture. We have to change the value
+of __NR_Linux_syscalls, if we add or delete a system call.
 
-It is correct to keep __IGNORE* entry in non uapi header
-asm/unistd.h while uapi/asm/unistd.h must hold information
-only useful for user space applications.
+One of the patch in this patch series has a script which
+will generate a uapi header based on syscall.tbl file.
+The syscall.tbl file contains the total number of system
+calls information. So we have two option to update __NR-
+_Linux_syscalls value.
 
-One of the patch in this patch series will generate uapi
-header file. The information which directly used by the
-user space application must be present in uapi file.
+1. Update __NR_Linux_syscalls in asm/unistd.h manually by
+   counting the no.of system calls. No need to update __NR-
+   _Linux_syscalls until we either add a new system call or
+   delete existing system call.
+
+2. We can keep this feature it above mentioned script,
+   that will count the number of syscalls and keep it in
+   a generated file. In this case we don't need to expli-
+   citly update __NR_Linux_syscalls in asm/unistd.h file.
+
+The 2nd option will be the recommended one. For that, I
+added the __NR_syscalls macro in uapi/asm/unistd.h along
+with __NR_Linux_syscalls asm/unistd.h. The macro __NR_sys-
+calls also added for making the name convention same across
+all architecture. While __NR_syscalls isn't strictly part
+of the uapi, having it as part of the generated header to
+simplifies the implementation. We also need to enclose
+this macro with #ifdef __KERNEL__ to avoid side effects.
 
 Signed-off-by: Firoz Khan <firoz.khan@linaro.org>
 Acked-by: Helge Deller <deller@gmx.de>
 ---
- arch/parisc/include/asm/unistd.h      | 6 ++++++
- arch/parisc/include/uapi/asm/unistd.h | 7 -------
- 2 files changed, 6 insertions(+), 7 deletions(-)
+ arch/parisc/include/asm/unistd.h      | 2 ++
+ arch/parisc/include/uapi/asm/unistd.h | 6 ++++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/arch/parisc/include/asm/unistd.h b/arch/parisc/include/asm/unistd.h
-index bc37a49..fd1013f 100644
+index fd1013f..c2c2afb 100644
 --- a/arch/parisc/include/asm/unistd.h
 +++ b/arch/parisc/include/asm/unistd.h
-@@ -8,6 +8,12 @@
+@@ -4,6 +4,8 @@
+ 
+ #include <uapi/asm/unistd.h>
+ 
++#define __NR_Linux_syscalls	__NR_syscalls
++
+ #ifndef __ASSEMBLY__
  
  #define SYS_ify(syscall_name)   __NR_##syscall_name
- 
-+#define __IGNORE_select			/* newselect */
-+#define __IGNORE_fadvise64		/* fadvise64_64 */
-+#define __IGNORE_pkey_mprotect
-+#define __IGNORE_pkey_alloc
-+#define __IGNORE_pkey_free
-+
- #ifndef ASM_LINE_SEP
- # define ASM_LINE_SEP ;
- #endif
 diff --git a/arch/parisc/include/uapi/asm/unistd.h b/arch/parisc/include/uapi/asm/unistd.h
-index dc77c5a..bb52e12 100644
+index bb52e12..53cc748 100644
 --- a/arch/parisc/include/uapi/asm/unistd.h
 +++ b/arch/parisc/include/uapi/asm/unistd.h
-@@ -368,13 +368,6 @@
+@@ -366,8 +366,10 @@
+ #define __NR_statx		(__NR_Linux + 349)
+ #define __NR_io_pgetevents	(__NR_Linux + 350)
  
- #define __NR_Linux_syscalls	(__NR_io_pgetevents + 1)
+-#define __NR_Linux_syscalls	(__NR_io_pgetevents + 1)
++#ifdef __KERNEL__
++#define __NR_syscalls		351
++#endif
  
--
--#define __IGNORE_select		/* newselect */
--#define __IGNORE_fadvise64	/* fadvise64_64 */
--#define __IGNORE_pkey_mprotect
--#define __IGNORE_pkey_alloc
--#define __IGNORE_pkey_free
--
- #define LINUX_GATEWAY_ADDR      0x100
+-#define LINUX_GATEWAY_ADDR      0x100
++#define LINUX_GATEWAY_ADDR	0x100
  
  #endif /* _UAPI_ASM_PARISC_UNISTD_H_ */
 -- 
