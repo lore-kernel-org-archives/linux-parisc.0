@@ -4,43 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 339E8C43610
-	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:05:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C257C43441
+	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:05:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EBCF220824
-	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:05:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 417A920684
+	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:05:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fNwPGNUA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBCF220824
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BhkyanM6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 417A920684
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437253AbeKWAno (ORCPT
+        id S2437224AbeKWAnm (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 22 Nov 2018 19:43:44 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:59836 "EHLO
+        Thu, 22 Nov 2018 19:43:42 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:59632 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731181AbeKWAnn (ORCPT
+        with ESMTP id S1731181AbeKWAnm (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 22 Nov 2018 19:43:43 -0500
+        Thu, 22 Nov 2018 19:43:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
         :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=iD/dRc9UIv9SfqvzdC8Dc4U8+KY0iTA1zzLpZCyDmfU=; b=fNwPGNUALylryXuMR7mrWot3JL
-        EzsQChgXsw0SPQkNVpF+eVJtXImr47FWb05HWImcohAewvuG9XDjOWpsgcg8PNTGazy79u8qnqKJm
-        uVWLwtkizZpljbE+BkWLaFo2kdQ6/rsFRU5Q0y4goRQ5YHl3WfRcOxPceGyFRzTJ/sDCKjgI7k3yO
-        tBJ/haN6nPoZG+r630fU/m5l8VZJp/06aJqC/5yh8J9qydk+xZ/Hv8eZEN7cFR79UrYKb/CbotEZ2
-        zvfMMi1CaN+hZSt92Rgiv7/auyh2Sc+okOOpzWHIH8w93BT1JijI8prdIbASAOxfPBhA3Htv1UAGq
-        aUWLveMg==;
+        bh=NRkfp6v/tyUENHy0v3FTFCa7RE2ArNmx9O95c3iBPt0=; b=BhkyanM6gWSsCuX6iaFbuGduoS
+        toCX63m7RIQFNq2vYWjKqhgQG9FSqxcmCclgXpsAg00C8mB3yKFH4SOihjFdqi+a1JGZl6dPQVecj
+        E4A5VsMJbV/K6cmXiC2TZmRbdllLX8hh0j78WQfaUdGl81tMwDtE2zzDb8TIVI4QQ/ivyA8f2hfxf
+        Zt4KbhSd/BULRcE97LNe3BgAHJdGlgfOa0zBls4RZfUvb2K/gDEiySPOq4dcbYDHKYIXYi2rOddNz
+        AaHQtQkDL9QEL8nPchcZNwFn/QTysKBSgf/ZWInsLotPdCEpgkF5hN5ArlIfSpuApg1IC/KEX/BvL
+        EYMbkiww==;
 Received: from clnet-p19-102.ikbnet.co.at ([83.175.77.102] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1gPpaN-0008Pb-Qy; Thu, 22 Nov 2018 14:04:04 +0000
+        id 1gPpaK-0008Ki-OC; Thu, 22 Nov 2018 14:04:01 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     iommu@lists.linux-foundation.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -52,9 +51,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 13/24] alpha: remove the mapping_error dma_map_ops method
-Date:   Thu, 22 Nov 2018 15:03:09 +0100
-Message-Id: <20181122140320.24080-14-hch@lst.de>
+Subject: [PATCH 12/24] arm64: remove the dummy_dma_ops mapping_error method
+Date:   Thu, 22 Nov 2018 15:03:08 +0100
+Message-Id: <20181122140320.24080-13-hch@lst.de>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20181122140320.24080-1-hch@lst.de>
 References: <20181122140320.24080-1-hch@lst.de>
@@ -66,74 +65,47 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Return DMA_MAPPING_ERROR instead of 0 on a dma mapping failure and let
-the core dma-mapping code handle the rest.
+Just return DMA_MAPPING_ERROR from __dummy_map_page and let the core
+dma-mapping code handle the rest.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/alpha/kernel/pci_iommu.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ arch/arm64/mm/dma-mapping.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/arch/alpha/kernel/pci_iommu.c b/arch/alpha/kernel/pci_iommu.c
-index 46e08e0d9181..e1716e0d92fd 100644
---- a/arch/alpha/kernel/pci_iommu.c
-+++ b/arch/alpha/kernel/pci_iommu.c
-@@ -291,7 +291,7 @@ pci_map_single_1(struct pci_dev *pdev, void *cpu_addr, size_t size,
- 	   use direct_map above, it now must be considered an error. */
- 	if (! alpha_mv.mv_pci_tbi) {
- 		printk_once(KERN_WARNING "pci_map_single: no HW sg\n");
--		return 0;
-+		return DMA_MAPPING_ERROR;
- 	}
- 
- 	arena = hose->sg_pci;
-@@ -307,7 +307,7 @@ pci_map_single_1(struct pci_dev *pdev, void *cpu_addr, size_t size,
- 	if (dma_ofs < 0) {
- 		printk(KERN_WARNING "pci_map_single failed: "
- 		       "could not allocate dma page tables\n");
--		return 0;
-+		return DMA_MAPPING_ERROR;
- 	}
- 
- 	paddr &= PAGE_MASK;
-@@ -455,7 +455,7 @@ static void *alpha_pci_alloc_coherent(struct device *dev, size_t size,
- 	memset(cpu_addr, 0, size);
- 
- 	*dma_addrp = pci_map_single_1(pdev, cpu_addr, size, 0);
--	if (*dma_addrp == 0) {
-+	if (*dma_addrp == DMA_MAPPING_ERROR) {
- 		free_pages((unsigned long)cpu_addr, order);
- 		if (alpha_mv.mv_pci_tbi || (gfp & GFP_DMA))
- 			return NULL;
-@@ -671,7 +671,7 @@ static int alpha_pci_map_sg(struct device *dev, struct scatterlist *sg,
- 		sg->dma_address
- 		  = pci_map_single_1(pdev, SG_ENT_VIRT_ADDRESS(sg),
- 				     sg->length, dac_allowed);
--		return sg->dma_address != 0;
-+		return sg->dma_address != DMA_MAPPING_ERROR;
- 	}
- 
- 	start = sg;
-@@ -935,11 +935,6 @@ iommu_unbind(struct pci_iommu_arena *arena, long pg_start, long pg_count)
- 	return 0;
+diff --git a/arch/arm64/mm/dma-mapping.c b/arch/arm64/mm/dma-mapping.c
+index a3ac26284845..fdc26ea5036c 100644
+--- a/arch/arm64/mm/dma-mapping.c
++++ b/arch/arm64/mm/dma-mapping.c
+@@ -282,7 +282,7 @@ static dma_addr_t __dummy_map_page(struct device *dev, struct page *page,
+ 				   enum dma_data_direction dir,
+ 				   unsigned long attrs)
+ {
+-	return 0;
++	return DMA_MAPPING_ERROR;
  }
  
--static int alpha_pci_mapping_error(struct device *dev, dma_addr_t dma_addr)
+ static void __dummy_unmap_page(struct device *dev, dma_addr_t dev_addr,
+@@ -317,11 +317,6 @@ static void __dummy_sync_sg(struct device *dev,
+ {
+ }
+ 
+-static int __dummy_mapping_error(struct device *hwdev, dma_addr_t dma_addr)
 -{
--	return dma_addr == 0;
+-	return 1;
 -}
 -
- const struct dma_map_ops alpha_pci_ops = {
- 	.alloc			= alpha_pci_alloc_coherent,
- 	.free			= alpha_pci_free_coherent,
-@@ -947,7 +942,6 @@ const struct dma_map_ops alpha_pci_ops = {
- 	.unmap_page		= alpha_pci_unmap_page,
- 	.map_sg			= alpha_pci_map_sg,
- 	.unmap_sg		= alpha_pci_unmap_sg,
--	.mapping_error		= alpha_pci_mapping_error,
- 	.dma_supported		= alpha_pci_supported,
+ static int __dummy_dma_supported(struct device *hwdev, u64 mask)
+ {
+ 	return 0;
+@@ -339,7 +334,6 @@ const struct dma_map_ops dummy_dma_ops = {
+ 	.sync_single_for_device = __dummy_sync_single,
+ 	.sync_sg_for_cpu        = __dummy_sync_sg,
+ 	.sync_sg_for_device     = __dummy_sync_sg,
+-	.mapping_error          = __dummy_mapping_error,
+ 	.dma_supported          = __dummy_dma_supported,
  };
- EXPORT_SYMBOL(alpha_pci_ops);
+ EXPORT_SYMBOL(dummy_dma_ops);
 -- 
 2.19.1
 
