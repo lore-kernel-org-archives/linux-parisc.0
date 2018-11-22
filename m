@@ -7,40 +7,40 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DCA8C43441
-	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:05:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECB12C43441
+	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:05:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 131A320684
-	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:05:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AA76C2081C
+	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:05:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="F39t+sTa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 131A320684
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Wh2TGWPA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA76C2081C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437286AbeKWAny (ORCPT
+        id S1731181AbeKWAnp (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 22 Nov 2018 19:43:54 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:60802 "EHLO
+        Thu, 22 Nov 2018 19:43:45 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:60006 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437285AbeKWAnx (ORCPT
+        with ESMTP id S2437252AbeKWAnp (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 22 Nov 2018 19:43:53 -0500
+        Thu, 22 Nov 2018 19:43:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
         :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=84+ojv63c5aopj+ytHcF2VnJPsXc8faE0MW67dhNiSs=; b=F39t+sTaDC00xokjug7SFjkGFg
-        SAQtZKJ5g1RKrfhSZHUJQVMQmMaO9FGHgAFs9T3Rj+W+RruQLb+98MuveFelWudDThNOh6ecS0YsQ
-        5fyGfNKos6TvIrwOQAB5YiRt/Us1B1eNCHT1XRguayi2HwHyUbp1ug3cc5hdwt+0sT6NfsndYppOu
-        Y8EgkXZoS8gzJqkHZKzVqbI8AC0/61M1IPoLMSufGueR35g5N52RF5jVJ2TSEqUQS1qj+hzY+BxKN
-        UQNzOm9U979m4+GlE3f4F9Ar3AqF8WX7Onsx/9PgqLmxmbCD/iGSUPF6Gpnnx3Mn3LoTerUS7tgGV
-        f5lRr/QA==;
+        bh=ewKMIOPiQeSKNSLzG50VuvD8IxV2yIBYh9Hw3lJsGjs=; b=Wh2TGWPAyFqHhHM32M9S10GWgv
+        +W4X52pRAsKJ+NryFFDSis2EVVLFB+qHl/t74Zc6eKH46T2ctjpTlW2asSg8hlAs6OvIcriN/HGzI
+        usdsoD6H+nQJCfbY32l6/1z+8bjw0Xgl8B+5dhqfjomlNz2vmipxsnwdOx9LALllb5YyCY3mTb2cH
+        NSiQCOcNFHjyj7+gwFTGw8Yuf74sQarcttjcx6wbISxdts+6dlfE2LYVmgIi9/R7DfMiIGNqpzYTZ
+        4xSEkKBteHjgd1OseJ6Qaxotk1IUj3lR9k5sIQPTmmInBkLRR5XTTeJiBVscc4C1HIK7qC/pMWNgc
+        TaAYb2pA==;
 Received: from clnet-p19-102.ikbnet.co.at ([83.175.77.102] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1gPpaa-0000GH-3R; Thu, 22 Nov 2018 14:04:16 +0000
+        id 1gPpaQ-0008UE-L5; Thu, 22 Nov 2018 14:04:07 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     iommu@lists.linux-foundation.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -52,9 +52,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 17/24] x86/amd_gart: remove the mapping_error dma_map_ops method
-Date:   Thu, 22 Nov 2018 15:03:13 +0100
-Message-Id: <20181122140320.24080-18-hch@lst.de>
+Subject: [PATCH 14/24] ia64/sba_iommu: improve internal map_page users
+Date:   Thu, 22 Nov 2018 15:03:10 +0100
+Message-Id: <20181122140320.24080-15-hch@lst.de>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20181122140320.24080-1-hch@lst.de>
 References: <20181122140320.24080-1-hch@lst.de>
@@ -66,156 +66,189 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Return DMA_MAPPING_ERROR instead of the magic bad_dma_addr on a dma
-mapping failure and let the core dma-mapping code handle the rest.
-
-Remove the magic EMERGENCY_PAGES that the bad_dma_addr gets redirected to.
+Remove the odd sba_{un,}map_single_attrs wrappers, check errors
+everywhere, and remove the completly bogus alloc_pages_node call that
+uses the dma attributes argument as the node id.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/x86/kernel/amd_gart_64.c | 39 ++++++-----------------------------
- 1 file changed, 6 insertions(+), 33 deletions(-)
+ arch/ia64/hp/common/sba_iommu.c | 71 ++++++++++++---------------------
+ 1 file changed, 26 insertions(+), 45 deletions(-)
 
-diff --git a/arch/x86/kernel/amd_gart_64.c b/arch/x86/kernel/amd_gart_64.c
-index 3f9d1b4019bb..4e733de93f41 100644
---- a/arch/x86/kernel/amd_gart_64.c
-+++ b/arch/x86/kernel/amd_gart_64.c
-@@ -50,8 +50,6 @@ static unsigned long iommu_pages;	/* .. and in pages */
+diff --git a/arch/ia64/hp/common/sba_iommu.c b/arch/ia64/hp/common/sba_iommu.c
+index e8a93b07283e..b953282d4704 100644
+--- a/arch/ia64/hp/common/sba_iommu.c
++++ b/arch/ia64/hp/common/sba_iommu.c
+@@ -907,11 +907,12 @@ sba_mark_invalid(struct ioc *ioc, dma_addr_t iova, size_t byte_cnt)
+ }
  
- static u32 *iommu_gatt_base;		/* Remapping table */
+ /**
+- * sba_map_single_attrs - map one buffer and return IOVA for DMA
++ * sba_map_page - map one buffer and return IOVA for DMA
+  * @dev: instance of PCI owned by the driver that's asking.
+- * @addr:  driver buffer to map.
+- * @size:  number of bytes to map in driver buffer.
+- * @dir:  R/W or both.
++ * @page: page to map
++ * @poff: offset into page
++ * @size: number of bytes to map
++ * @dir: dma direction
+  * @attrs: optional dma attributes
+  *
+  * See Documentation/DMA-API-HOWTO.txt
+@@ -944,7 +945,7 @@ static dma_addr_t sba_map_page(struct device *dev, struct page *page,
+  		** Device is bit capable of DMA'ing to the buffer...
+ 		** just return the PCI address of ptr
+  		*/
+-		DBG_BYPASS("sba_map_single_attrs() bypass mask/addr: "
++		DBG_BYPASS("sba_map_page() bypass mask/addr: "
+ 			   "0x%lx/0x%lx\n",
+ 		           to_pci_dev(dev)->dma_mask, pci_addr);
+ 		return pci_addr;
+@@ -966,7 +967,7 @@ static dma_addr_t sba_map_page(struct device *dev, struct page *page,
  
--static dma_addr_t bad_dma_addr;
--
- /*
-  * If this is disabled the IOMMU will use an optimized flushing strategy
-  * of only flushing when an mapping is reused. With it true the GART is
-@@ -74,8 +72,6 @@ static u32 gart_unmapped_entry;
- 	(((x) & 0xfffff000) | (((x) >> 32) << 4) | GPTE_VALID | GPTE_COHERENT)
- #define GPTE_DECODE(x) (((x) & 0xfffff000) | (((u64)(x) & 0xff0) << 28))
- 
--#define EMERGENCY_PAGES 32 /* = 128KB */
--
- #ifdef CONFIG_AGP
- #define AGPEXTERN extern
- #else
-@@ -184,14 +180,6 @@ static void iommu_full(struct device *dev, size_t size, int dir)
- 	 */
- 
- 	dev_err(dev, "PCI-DMA: Out of IOMMU space for %lu bytes\n", size);
--
--	if (size > PAGE_SIZE*EMERGENCY_PAGES) {
--		if (dir == PCI_DMA_FROMDEVICE || dir == PCI_DMA_BIDIRECTIONAL)
--			panic("PCI-DMA: Memory would be corrupted\n");
--		if (dir == PCI_DMA_TODEVICE || dir == PCI_DMA_BIDIRECTIONAL)
--			panic(KERN_ERR
--				"PCI-DMA: Random memory would be DMAed\n");
--	}
- #ifdef CONFIG_IOMMU_LEAK
- 	dump_leak();
+ #ifdef ASSERT_PDIR_SANITY
+ 	spin_lock_irqsave(&ioc->res_lock, flags);
+-	if (sba_check_pdir(ioc,"Check before sba_map_single_attrs()"))
++	if (sba_check_pdir(ioc,"Check before sba_map_page()"))
+ 		panic("Sanity check failed");
+ 	spin_unlock_irqrestore(&ioc->res_lock, flags);
  #endif
-@@ -220,7 +208,7 @@ static dma_addr_t dma_map_area(struct device *dev, dma_addr_t phys_mem,
- 	int i;
- 
- 	if (unlikely(phys_mem + size > GART_MAX_PHYS_ADDR))
--		return bad_dma_addr;
-+		return DMA_MAPPING_ERROR;
- 
- 	iommu_page = alloc_iommu(dev, npages, align_mask);
- 	if (iommu_page == -1) {
-@@ -229,7 +217,7 @@ static dma_addr_t dma_map_area(struct device *dev, dma_addr_t phys_mem,
- 		if (panic_on_overflow)
- 			panic("dma_map_area overflow %lu bytes\n", size);
- 		iommu_full(dev, size, dir);
--		return bad_dma_addr;
-+		return DMA_MAPPING_ERROR;
- 	}
- 
- 	for (i = 0; i < npages; i++) {
-@@ -271,7 +259,7 @@ static void gart_unmap_page(struct device *dev, dma_addr_t dma_addr,
- 	int npages;
- 	int i;
- 
--	if (dma_addr < iommu_bus_base + EMERGENCY_PAGES*PAGE_SIZE ||
-+	if (dma_addr == DMA_MAPPING_ERROR ||
- 	    dma_addr >= iommu_bus_base + iommu_size)
- 		return;
- 
-@@ -315,7 +303,7 @@ static int dma_map_sg_nonforce(struct device *dev, struct scatterlist *sg,
- 
- 		if (nonforced_iommu(dev, addr, s->length)) {
- 			addr = dma_map_area(dev, addr, s->length, dir, 0);
--			if (addr == bad_dma_addr) {
-+			if (addr == DMA_MAPPING_ERROR) {
- 				if (i > 0)
- 					gart_unmap_sg(dev, sg, i, dir, 0);
- 				nents = 0;
-@@ -471,7 +459,7 @@ static int gart_map_sg(struct device *dev, struct scatterlist *sg, int nents,
- 
- 	iommu_full(dev, pages << PAGE_SHIFT, dir);
- 	for_each_sg(sg, s, nents, i)
--		s->dma_address = bad_dma_addr;
-+		s->dma_address = DMA_MAPPING_ERROR;
- 	return 0;
+@@ -997,20 +998,12 @@ static dma_addr_t sba_map_page(struct device *dev, struct page *page,
+ 	/* form complete address */
+ #ifdef ASSERT_PDIR_SANITY
+ 	spin_lock_irqsave(&ioc->res_lock, flags);
+-	sba_check_pdir(ioc,"Check after sba_map_single_attrs()");
++	sba_check_pdir(ioc,"Check after sba_map_page()");
+ 	spin_unlock_irqrestore(&ioc->res_lock, flags);
+ #endif
+ 	return SBA_IOVA(ioc, iovp, offset);
  }
  
-@@ -490,7 +478,7 @@ gart_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_addr,
- 	*dma_addr = dma_map_area(dev, virt_to_phys(vaddr), size,
- 			DMA_BIDIRECTIONAL, (1UL << get_order(size)) - 1);
- 	flush_gart();
--	if (unlikely(*dma_addr == bad_dma_addr))
-+	if (unlikely(*dma_addr == DMA_MAPPING_ERROR))
- 		goto out_free;
- 	return vaddr;
- out_free:
-@@ -507,11 +495,6 @@ gart_free_coherent(struct device *dev, size_t size, void *vaddr,
- 	dma_direct_free_pages(dev, size, vaddr, dma_addr, attrs);
- }
- 
--static int gart_mapping_error(struct device *dev, dma_addr_t dma_addr)
+-static dma_addr_t sba_map_single_attrs(struct device *dev, void *addr,
+-				       size_t size, enum dma_data_direction dir,
+-				       unsigned long attrs)
 -{
--	return (dma_addr == bad_dma_addr);
+-	return sba_map_page(dev, virt_to_page(addr),
+-			    (unsigned long)addr & ~PAGE_MASK, size, dir, attrs);
 -}
 -
- static int no_agp;
- 
- static __init unsigned long check_iommu_size(unsigned long aper, u64 aper_size)
-@@ -695,7 +678,6 @@ static const struct dma_map_ops gart_dma_ops = {
- 	.unmap_page			= gart_unmap_page,
- 	.alloc				= gart_alloc_coherent,
- 	.free				= gart_free_coherent,
--	.mapping_error			= gart_mapping_error,
- 	.dma_supported			= dma_direct_supported,
- };
- 
-@@ -784,19 +766,12 @@ int __init gart_iommu_init(void)
- 	}
+ #ifdef ENABLE_MARK_CLEAN
+ static SBA_INLINE void
+ sba_mark_clean(struct ioc *ioc, dma_addr_t iova, size_t size)
+@@ -1036,7 +1029,7 @@ sba_mark_clean(struct ioc *ioc, dma_addr_t iova, size_t size)
  #endif
  
--	/*
--	 * Out of IOMMU space handling.
--	 * Reserve some invalid pages at the beginning of the GART.
--	 */
--	bitmap_set(iommu_gart_bitmap, 0, EMERGENCY_PAGES);
+ /**
+- * sba_unmap_single_attrs - unmap one IOVA and free resources
++ * sba_unmap_page - unmap one IOVA and free resources
+  * @dev: instance of PCI owned by the driver that's asking.
+  * @iova:  IOVA of driver buffer previously mapped.
+  * @size:  number of bytes mapped in driver buffer.
+@@ -1063,7 +1056,7 @@ static void sba_unmap_page(struct device *dev, dma_addr_t iova, size_t size,
+ 		/*
+ 		** Address does not fall w/in IOVA, must be bypassing
+ 		*/
+-		DBG_BYPASS("sba_unmap_single_attrs() bypass addr: 0x%lx\n",
++		DBG_BYPASS("sba_unmap_page() bypass addr: 0x%lx\n",
+ 			   iova);
+ 
+ #ifdef ENABLE_MARK_CLEAN
+@@ -1114,12 +1107,6 @@ static void sba_unmap_page(struct device *dev, dma_addr_t iova, size_t size,
+ #endif /* DELAYED_RESOURCE_CNT == 0 */
+ }
+ 
+-void sba_unmap_single_attrs(struct device *dev, dma_addr_t iova, size_t size,
+-			    enum dma_data_direction dir, unsigned long attrs)
+-{
+-	sba_unmap_page(dev, iova, size, dir, attrs);
+-}
 -
- 	pr_info("PCI-DMA: Reserving %luMB of IOMMU area in the AGP aperture\n",
- 	       iommu_size >> 20);
+ /**
+  * sba_alloc_coherent - allocate/map shared mem for DMA
+  * @dev: instance of PCI owned by the driver that's asking.
+@@ -1132,30 +1119,20 @@ static void *
+ sba_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle,
+ 		   gfp_t flags, unsigned long attrs)
+ {
++	struct page *page;
+ 	struct ioc *ioc;
+ 	void *addr;
  
- 	agp_memory_reserved	= iommu_size;
- 	iommu_start		= aper_size - iommu_size;
- 	iommu_bus_base		= info.aper_base + iommu_start;
--	bad_dma_addr		= iommu_bus_base;
- 	iommu_gatt_base		= agp_gatt_table + (iommu_start>>PAGE_SHIFT);
+ 	ioc = GET_IOC(dev);
+ 	ASSERT(ioc);
  
- 	/*
-@@ -838,8 +813,6 @@ int __init gart_iommu_init(void)
- 	if (!scratch)
- 		panic("Cannot allocate iommu scratch page");
- 	gart_unmapped_entry = GPTE_ENCODE(__pa(scratch));
--	for (i = EMERGENCY_PAGES; i < iommu_pages; i++)
--		iommu_gatt_base[i] = gart_unmapped_entry;
+-#ifdef CONFIG_NUMA
+-	{
+-		struct page *page;
+-
+-		page = alloc_pages_node(ioc->node, flags, get_order(size));
+-		if (unlikely(!page))
+-			return NULL;
+-
+-		addr = page_address(page);
+-	}
+-#else
+-	addr = (void *) __get_free_pages(flags, get_order(size));
+-#endif
+-	if (unlikely(!addr))
++	page = alloc_pages(ioc->node, get_order(size));
++	if (unlikely(!page))
+ 		return NULL;
  
- 	flush_gart();
- 	dma_ops = &gart_dma_ops;
++	addr = page_address(page);
+ 	memset(addr, 0, size);
+-	*dma_handle = virt_to_phys(addr);
++	*dma_handle = page_to_phys(page);
+ 
+ #ifdef ALLOW_IOV_BYPASS
+ 	ASSERT(dev->coherent_dma_mask);
+@@ -1174,9 +1151,10 @@ sba_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle,
+ 	 * If device can't bypass or bypass is disabled, pass the 32bit fake
+ 	 * device to map single to get an iova mapping.
+ 	 */
+-	*dma_handle = sba_map_single_attrs(&ioc->sac_only_dev->dev, addr,
+-					   size, 0, 0);
+-
++	*dma_handle = sba_map_page(&ioc->sac_only_dev->dev, page, 0, size,
++			DMA_BIDIRECTIONAL, 0);
++	if (dma_mapping_error(dev, *dma_handle))
++		return NULL;
+ 	return addr;
+ }
+ 
+@@ -1193,7 +1171,7 @@ sba_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle,
+ static void sba_free_coherent(struct device *dev, size_t size, void *vaddr,
+ 			      dma_addr_t dma_handle, unsigned long attrs)
+ {
+-	sba_unmap_single_attrs(dev, dma_handle, size, 0, 0);
++	sba_unmap_page(dev, dma_handle, size, 0, 0);
+ 	free_pages((unsigned long) vaddr, get_order(size));
+ }
+ 
+@@ -1483,7 +1461,10 @@ static int sba_map_sg_attrs(struct device *dev, struct scatterlist *sglist,
+ 	/* Fast path single entry scatterlists. */
+ 	if (nents == 1) {
+ 		sglist->dma_length = sglist->length;
+-		sglist->dma_address = sba_map_single_attrs(dev, sba_sg_address(sglist), sglist->length, dir, attrs);
++		sglist->dma_address = sba_map_page(dev, sg_page(sglist),
++				sglist->offset, sglist->length, dir, attrs);
++		if (dma_mapping_error(dev, sglist->dma_address))
++			return 0;
+ 		return 1;
+ 	}
+ 
+@@ -1572,8 +1553,8 @@ static void sba_unmap_sg_attrs(struct device *dev, struct scatterlist *sglist,
+ 
+ 	while (nents && sglist->dma_length) {
+ 
+-		sba_unmap_single_attrs(dev, sglist->dma_address,
+-				       sglist->dma_length, dir, attrs);
++		sba_unmap_page(dev, sglist->dma_address, sglist->dma_length,
++			       dir, attrs);
+ 		sglist = sg_next(sglist);
+ 		nents--;
+ 	}
 -- 
 2.19.1
 
