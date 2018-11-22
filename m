@@ -7,40 +7,40 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09718C43441
-	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:04:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2823FC43441
+	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:04:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C315720684
-	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:04:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DA62420684
+	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:04:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="lbiaCexD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C315720684
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DwY1zEcc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA62420684
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732097AbeKWAoN (ORCPT
+        id S2437382AbeKWAoG (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 22 Nov 2018 19:44:13 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:33640 "EHLO
+        Thu, 22 Nov 2018 19:44:06 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:32894 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728243AbeKWAoN (ORCPT
+        with ESMTP id S1731458AbeKWAoG (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 22 Nov 2018 19:44:13 -0500
+        Thu, 22 Nov 2018 19:44:06 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
         :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=TrgfIZ3bNF2OWBcL9hBTfrjl2zokhuvB9kcwcuNtjSE=; b=lbiaCexDwg942lJgx2kPd6fWEU
-        pyoDesvbsbbIA2Cc0yKOlIHrpyH1ILGXWsDwpkthE/gCcUQUc4R+B2HCO53sUogUkMjNQBi91srE+
-        YCVIYi7A3qTbGr2/yvKcWPXVbuy+kYkFDV0xfvxMaFdzxGUq34YQxKydNChjd0cmoEtZmttdQfobC
-        HCFod8U6lWc1SB8kh1Qg4YEFWxHhgzsYvXQ6MKNHBD9aU8ebFgdzWA3t43pJxsq/7M7pafE/KfdON
-        meJ8x16mN2P5rs9KqZf4c8+oCU252cwFJD+cb9LDppKfcDUEddRHwhjJJ5mWbq1Pt1tHNNZQxM/cX
-        I2sH4W/A==;
+        bh=YCS+pidKP3Gxbm5vSC4wE2VnyNvtwiurqrYrTEVuMkY=; b=DwY1zEccs6JAZrTCGDlWCI6eaS
+        zO/eDj/0dbU7yFmITV6Y6eXNSKQ8PkcoukvGpQmoVEmHo8s0RkyoHCTOura8XqlfmtBzCHE3QhbhX
+        LeehMtbdi/RIpX7poaFZtsw2umd8gqLLgXh+sIB95lK0XD1TKhWdLurqYom3SHQtEx4BB1ksVqFWH
+        yn8b0/NC3VKipsdvxkB0+vKr5YIbvcW8LoKW7HjU2j0yhwMmAIuDduQzD24uIbeBoEYkyV3AfDZhD
+        ZGS5jyGjW4NaKUc/iD8Rphj24sWIFfsHuyk1dlpDYMttUfASBf8Xihwvrc1rvF4pNDGT3YV7xQvNP
+        zM2J5yuA==;
 Received: from clnet-p19-102.ikbnet.co.at ([83.175.77.102] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1gPpat-0000TT-H1; Thu, 22 Nov 2018 14:04:36 +0000
+        id 1gPpao-0000Rq-15; Thu, 22 Nov 2018 14:04:30 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     iommu@lists.linux-foundation.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -52,9 +52,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 24/24] dma-mapping: remove the mapping_error dma_map_ops method
-Date:   Thu, 22 Nov 2018 15:03:20 +0100
-Message-Id: <20181122140320.24080-25-hch@lst.de>
+Subject: [PATCH 22/24] iommu/dma-iommu: remove the mapping_error dma_map_ops method
+Date:   Thu, 22 Nov 2018 15:03:18 +0100
+Message-Id: <20181122140320.24080-23-hch@lst.de>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20181122140320.24080-1-hch@lst.de>
 References: <20181122140320.24080-1-hch@lst.de>
@@ -66,72 +66,156 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-No users left except for vmd which just forwards it.  Also switch
-dma_mapping_error to an explicit bool return value.
+Return DMA_MAPPING_ERROR instead of 0 on a dma mapping failure and let
+the core dma-mapping code handle the rest.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/pci/controller/vmd.c |  6 ------
- include/linux/dma-mapping.h  | 13 ++-----------
- 2 files changed, 2 insertions(+), 17 deletions(-)
+ arch/arm64/mm/dma-mapping.c |  7 +++----
+ drivers/iommu/dma-iommu.c   | 23 ++++++++---------------
+ include/linux/dma-iommu.h   |  1 -
+ 3 files changed, 11 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-index e50b0b5815ff..98ce79eac128 100644
---- a/drivers/pci/controller/vmd.c
-+++ b/drivers/pci/controller/vmd.c
-@@ -394,11 +394,6 @@ static void vmd_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
- 	vmd_dma_ops(dev)->sync_sg_for_device(to_vmd_dev(dev), sg, nents, dir);
+diff --git a/arch/arm64/mm/dma-mapping.c b/arch/arm64/mm/dma-mapping.c
+index fdc26ea5036c..4cc70029cf8d 100644
+--- a/arch/arm64/mm/dma-mapping.c
++++ b/arch/arm64/mm/dma-mapping.c
+@@ -397,7 +397,7 @@ static void *__iommu_alloc_attrs(struct device *dev, size_t size,
+ 			return NULL;
+ 
+ 		*handle = iommu_dma_map_page(dev, page, 0, iosize, ioprot);
+-		if (iommu_dma_mapping_error(dev, *handle)) {
++		if (*handle == DMA_MAPPING_ERROR) {
+ 			if (coherent)
+ 				__free_pages(page, get_order(size));
+ 			else
+@@ -414,7 +414,7 @@ static void *__iommu_alloc_attrs(struct device *dev, size_t size,
+ 			return NULL;
+ 
+ 		*handle = iommu_dma_map_page(dev, page, 0, iosize, ioprot);
+-		if (iommu_dma_mapping_error(dev, *handle)) {
++		if (*handle == DMA_MAPPING_ERROR) {
+ 			dma_release_from_contiguous(dev, page,
+ 						    size >> PAGE_SHIFT);
+ 			return NULL;
+@@ -574,7 +574,7 @@ static dma_addr_t __iommu_map_page(struct device *dev, struct page *page,
+ 	dma_addr_t dev_addr = iommu_dma_map_page(dev, page, offset, size, prot);
+ 
+ 	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
+-	    !iommu_dma_mapping_error(dev, dev_addr))
++	    dev_addr != DMA_MAPPING_ERROR)
+ 		__dma_map_area(page_address(page) + offset, size, dir);
+ 
+ 	return dev_addr;
+@@ -657,7 +657,6 @@ static const struct dma_map_ops iommu_dma_ops = {
+ 	.sync_sg_for_device = __iommu_sync_sg_for_device,
+ 	.map_resource = iommu_dma_map_resource,
+ 	.unmap_resource = iommu_dma_unmap_resource,
+-	.mapping_error = iommu_dma_mapping_error,
+ };
+ 
+ static int __init __iommu_dma_init(void)
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index d1b04753b204..60c7e9e9901e 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -32,8 +32,6 @@
+ #include <linux/scatterlist.h>
+ #include <linux/vmalloc.h>
+ 
+-#define IOMMU_MAPPING_ERROR	0
+-
+ struct iommu_dma_msi_page {
+ 	struct list_head	list;
+ 	dma_addr_t		iova;
+@@ -523,7 +521,7 @@ void iommu_dma_free(struct device *dev, struct page **pages, size_t size,
+ {
+ 	__iommu_dma_unmap(iommu_get_dma_domain(dev), *handle, size);
+ 	__iommu_dma_free_pages(pages, PAGE_ALIGN(size) >> PAGE_SHIFT);
+-	*handle = IOMMU_MAPPING_ERROR;
++	*handle = DMA_MAPPING_ERROR;
  }
  
--static int vmd_mapping_error(struct device *dev, dma_addr_t addr)
+ /**
+@@ -556,7 +554,7 @@ struct page **iommu_dma_alloc(struct device *dev, size_t size, gfp_t gfp,
+ 	dma_addr_t iova;
+ 	unsigned int count, min_size, alloc_sizes = domain->pgsize_bitmap;
+ 
+-	*handle = IOMMU_MAPPING_ERROR;
++	*handle = DMA_MAPPING_ERROR;
+ 
+ 	min_size = alloc_sizes & -alloc_sizes;
+ 	if (min_size < PAGE_SIZE) {
+@@ -649,11 +647,11 @@ static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
+ 
+ 	iova = iommu_dma_alloc_iova(domain, size, dma_get_mask(dev), dev);
+ 	if (!iova)
+-		return IOMMU_MAPPING_ERROR;
++		return DMA_MAPPING_ERROR;
+ 
+ 	if (iommu_map(domain, iova, phys - iova_off, size, prot)) {
+ 		iommu_dma_free_iova(cookie, iova, size);
+-		return IOMMU_MAPPING_ERROR;
++		return DMA_MAPPING_ERROR;
+ 	}
+ 	return iova + iova_off;
+ }
+@@ -694,7 +692,7 @@ static int __finalise_sg(struct device *dev, struct scatterlist *sg, int nents,
+ 
+ 		s->offset += s_iova_off;
+ 		s->length = s_length;
+-		sg_dma_address(s) = IOMMU_MAPPING_ERROR;
++		sg_dma_address(s) = DMA_MAPPING_ERROR;
+ 		sg_dma_len(s) = 0;
+ 
+ 		/*
+@@ -737,11 +735,11 @@ static void __invalidate_sg(struct scatterlist *sg, int nents)
+ 	int i;
+ 
+ 	for_each_sg(sg, s, nents, i) {
+-		if (sg_dma_address(s) != IOMMU_MAPPING_ERROR)
++		if (sg_dma_address(s) != DMA_MAPPING_ERROR)
+ 			s->offset += sg_dma_address(s);
+ 		if (sg_dma_len(s))
+ 			s->length = sg_dma_len(s);
+-		sg_dma_address(s) = IOMMU_MAPPING_ERROR;
++		sg_dma_address(s) = DMA_MAPPING_ERROR;
+ 		sg_dma_len(s) = 0;
+ 	}
+ }
+@@ -858,11 +856,6 @@ void iommu_dma_unmap_resource(struct device *dev, dma_addr_t handle,
+ 	__iommu_dma_unmap(iommu_get_dma_domain(dev), handle, size);
+ }
+ 
+-int iommu_dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
 -{
--	return vmd_dma_ops(dev)->mapping_error(to_vmd_dev(dev), addr);
+-	return dma_addr == IOMMU_MAPPING_ERROR;
 -}
 -
- static int vmd_dma_supported(struct device *dev, u64 mask)
+ static struct iommu_dma_msi_page *iommu_dma_get_msi_page(struct device *dev,
+ 		phys_addr_t msi_addr, struct iommu_domain *domain)
  {
- 	return vmd_dma_ops(dev)->dma_supported(to_vmd_dev(dev), mask);
-@@ -446,7 +441,6 @@ static void vmd_setup_dma_ops(struct vmd_dev *vmd)
- 	ASSIGN_VMD_DMA_OPS(source, dest, sync_single_for_device);
- 	ASSIGN_VMD_DMA_OPS(source, dest, sync_sg_for_cpu);
- 	ASSIGN_VMD_DMA_OPS(source, dest, sync_sg_for_device);
--	ASSIGN_VMD_DMA_OPS(source, dest, mapping_error);
- 	ASSIGN_VMD_DMA_OPS(source, dest, dma_supported);
- 	ASSIGN_VMD_DMA_OPS(source, dest, get_required_mask);
- 	add_dma_domain(domain);
-diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-index c323c539b7cb..c250e2ca6dfc 100644
---- a/include/linux/dma-mapping.h
-+++ b/include/linux/dma-mapping.h
-@@ -128,7 +128,6 @@ struct dma_map_ops {
- 				   enum dma_data_direction dir);
- 	void (*cache_sync)(struct device *dev, void *vaddr, size_t size,
- 			enum dma_data_direction direction);
--	int (*mapping_error)(struct device *dev, dma_addr_t dma_addr);
- 	int (*dma_supported)(struct device *dev, u64 mask);
- 	u64 (*get_required_mask)(struct device *dev);
- };
-@@ -573,18 +572,10 @@ static inline void dma_free_coherent(struct device *dev, size_t size,
- 	return dma_free_attrs(dev, size, cpu_addr, dma_handle, 0);
- }
+@@ -882,7 +875,7 @@ static struct iommu_dma_msi_page *iommu_dma_get_msi_page(struct device *dev,
+ 		return NULL;
  
--static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
-+static inline bool dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
- {
--	const struct dma_map_ops *ops = get_dma_ops(dev);
--
- 	debug_dma_mapping_error(dev, dma_addr);
--
--	if (dma_addr == DMA_MAPPING_ERROR)
--		return 1;
--
--	if (ops->mapping_error)
--		return ops->mapping_error(dev, dma_addr);
--	return 0;
-+	return dma_addr == DMA_MAPPING_ERROR;
- }
+ 	iova = __iommu_dma_map(dev, msi_addr, size, prot, domain);
+-	if (iommu_dma_mapping_error(dev, iova))
++	if (iova == DMA_MAPPING_ERROR)
+ 		goto out_free_page;
  
- static inline void dma_check_mask(struct device *dev, u64 mask)
+ 	INIT_LIST_HEAD(&msi_page->list);
+diff --git a/include/linux/dma-iommu.h b/include/linux/dma-iommu.h
+index e8ca5e654277..e760dc5d1fa8 100644
+--- a/include/linux/dma-iommu.h
++++ b/include/linux/dma-iommu.h
+@@ -69,7 +69,6 @@ dma_addr_t iommu_dma_map_resource(struct device *dev, phys_addr_t phys,
+ 		size_t size, enum dma_data_direction dir, unsigned long attrs);
+ void iommu_dma_unmap_resource(struct device *dev, dma_addr_t handle,
+ 		size_t size, enum dma_data_direction dir, unsigned long attrs);
+-int iommu_dma_mapping_error(struct device *dev, dma_addr_t dma_addr);
+ 
+ /* The DMA API isn't _quite_ the whole story, though... */
+ void iommu_dma_map_msi_msg(int irq, struct msi_msg *msg);
 -- 
 2.19.1
 
