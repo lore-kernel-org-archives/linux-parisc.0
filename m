@@ -7,23 +7,23 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E51D7C43441
-	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:06:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E05AAC43441
+	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:06:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id ADCAE20684
-	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:06:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A542620684
+	for <linux-parisc@archiver.kernel.org>; Thu, 22 Nov 2018 14:06:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="liIeK+xP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADCAE20684
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mjwab/AN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A542620684
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395332AbeKWAnL (ORCPT
+        id S2395352AbeKWAnL (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
         Thu, 22 Nov 2018 19:43:11 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:55286 "EHLO
+Received: from bombadil.infradead.org ([198.137.202.133]:55274 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395350AbeKWAnL (ORCPT
+        with ESMTP id S2395332AbeKWAnL (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
         Thu, 22 Nov 2018 19:43:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -32,15 +32,15 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
         :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=b0mTsSZ7pnWLHYe0tv9bLnm4xmcVv2T1rI2O6B8DMzE=; b=liIeK+xPUei0lEBxStOyanHUYE
-        TaRXiwE03YnksJRiqDK9vKDV0SuL4zjUX6vtvXUyKf2Clftum0N/fnxl/Oe8pOV+Akw9rlRSWvkqV
-        aGExKqG9sfG4gtPUI3AQwCBME9IiGpDRKV8OXZnOGLK4Wv1FogJk5gIf6KvRKBv+y68w2c7duGRuW
-        RDCyJ9OSOUrTIiuD/Ene81oeB8JyQkj3/5ZhOzfm+H+i41NDb8yMqO0uByUhv0zLzfniM4aXrblwG
-        WkBlTS/mukROY3vYG1mu8DnONxaPTdKme6tU17Sr5ceVtJaJRdhp5oeUzyznkpu3l8215voWO/ArI
-        n2K8GzGA==;
+        bh=9YixXoOCvTbfXDjN53pMRm0NG2dEtXbXnG/qpDVGj5U=; b=mjwab/ANWvbCntAYdSA+p+t5e5
+        KghP9FKQgGU9IO/wq+Pa0hWEDbVlptCgMbY4ZEqYcXVbIFJdyW41ySTsUR5dEC2+RSE1wLcvN0o9v
+        NCiUoE+B8vVfRmKGJCtw4w5UHmYSazpTy3rgUtc11HLIdVrqGpgxKFJdgA+BlZ6eHdIvUzHUKzTQQ
+        V0ke6KaJMMrbRn6ku6RzvlDlBMONUTKFkfbJqfi8HMEJgsSpfUrPoQ38KJQ8BonVQpe/op6AmjUGX
+        pr3TWypFtx9N3/laSvSkbVC5EFx283/8vgmydn3s7p5DEErHfcSm85GWUjxxheB8E4M8jBD5tlGVJ
+        iYwv+oXg==;
 Received: from clnet-p19-102.ikbnet.co.at ([83.175.77.102] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1gPpZt-0007eI-0G; Thu, 22 Nov 2018 14:03:33 +0000
+        id 1gPpZq-0007YI-0w; Thu, 22 Nov 2018 14:03:30 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     iommu@lists.linux-foundation.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -52,9 +52,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 03/24] dma-mapping: provide a generic DMA_MAPPING_ERROR
-Date:   Thu, 22 Nov 2018 15:02:59 +0100
-Message-Id: <20181122140320.24080-4-hch@lst.de>
+Subject: [PATCH 02/24] swiotlb: Skip cache maintenance on map error
+Date:   Thu, 22 Nov 2018 15:02:58 +0100
+Message-Id: <20181122140320.24080-3-hch@lst.de>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20181122140320.24080-1-hch@lst.de>
 References: <20181122140320.24080-1-hch@lst.de>
@@ -66,50 +66,37 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Error handling of the dma_map_single and dma_map_page APIs is a little
-problematic at the moment, in that we use different encodings in the
-returned dma_addr_t to indicate an error.  That means we require an
-additional indirect call to figure out if a dma mapping call returned
-an error, and a lot of boilerplate code to implement these semantics.
+From: Robin Murphy <robin.murphy@arm.com>
 
-Instead return the maximum addressable value as the error.  As long
-as we don't allow mapping single-byte ranges with single-byte alignment
-this value can never be a valid return.  Additionaly if drivers do
-not check the return value from the dma_map* routines this values means
-they will generally not be pointed to actual memory.
+If swiotlb_bounce_page() failed, calling arch_sync_dma_for_device() may
+lead to such delights as performing cache maintenance on whatever
+address phys_to_virt(SWIOTLB_MAP_ERROR) looks like, which is typically
+outside the kernel memory map and goes about as well as expected.
 
-Once the default value is added here we can start removing the
-various mapping_error methods and just rely on this generic check.
+Don't do that.
 
+Fixes: a4a4330db46a ("swiotlb: add support for non-coherent DMA")
+Tested-by: John Stultz <john.stultz@linaro.org>
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/linux/dma-mapping.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/dma/swiotlb.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-index 15bd41447025..c323c539b7cb 100644
---- a/include/linux/dma-mapping.h
-+++ b/include/linux/dma-mapping.h
-@@ -133,6 +133,8 @@ struct dma_map_ops {
- 	u64 (*get_required_mask)(struct device *dev);
- };
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 5731daa09a32..045930e32c0e 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -679,7 +679,8 @@ dma_addr_t swiotlb_map_page(struct device *dev, struct page *page,
+ 	}
  
-+#define DMA_MAPPING_ERROR		(~(dma_addr_t)0)
-+
- extern const struct dma_map_ops dma_direct_ops;
- extern const struct dma_map_ops dma_virt_ops;
+ 	if (!dev_is_dma_coherent(dev) &&
+-	    (attrs & DMA_ATTR_SKIP_CPU_SYNC) == 0)
++	    (attrs & DMA_ATTR_SKIP_CPU_SYNC) == 0 &&
++	    dev_addr != DIRECT_MAPPING_ERROR)
+ 		arch_sync_dma_for_device(dev, phys, size, dir);
  
-@@ -576,6 +578,10 @@ static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
- 	const struct dma_map_ops *ops = get_dma_ops(dev);
- 
- 	debug_dma_mapping_error(dev, dma_addr);
-+
-+	if (dma_addr == DMA_MAPPING_ERROR)
-+		return 1;
-+
- 	if (ops->mapping_error)
- 		return ops->mapping_error(dev, dma_addr);
- 	return 0;
+ 	return dev_addr;
 -- 
 2.19.1
 
