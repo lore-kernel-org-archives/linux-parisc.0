@@ -1,102 +1,94 @@
-Return-Path: <SRS0=OJJW=OD=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=W84X=OE=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97E4DC43441
-	for <linux-parisc@archiver.kernel.org>; Sat, 24 Nov 2018 18:46:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB2D2C43441
+	for <linux-parisc@archiver.kernel.org>; Sun, 25 Nov 2018 03:59:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 53E672086B
-	for <linux-parisc@archiver.kernel.org>; Sat, 24 Nov 2018 18:46:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53E672086B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+	by mail.kernel.org (Postfix) with ESMTP id 83F592082E
+	for <linux-parisc@archiver.kernel.org>; Sun, 25 Nov 2018 03:59:22 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ocdTkfBE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83F592082E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbeKYFfi (ORCPT
+        id S1726564AbeKYOtZ (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 25 Nov 2018 00:35:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726097AbeKYFfi (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 25 Nov 2018 00:35:38 -0500
-Received: from gandalf.local.home (cpe-66-24-56-78.stny.res.rr.com [66.24.56.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F7ED20868;
-        Sat, 24 Nov 2018 18:46:36 +0000 (UTC)
-Date:   Sat, 24 Nov 2018 13:46:34 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        linux-parisc@vger.kernel.org, stable@kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [for-next][PATCH 08/18] parisc: function_graph: Simplify with
- function_graph_entry()
-Message-ID: <20181124134634.306192c2@gandalf.local.home>
-In-Reply-To: <20181123200011.GM1917@sasha-vm>
-References: <20181122003332.500796758@goodmis.org>
-        <20181123073033.2083020863@mail.kernel.org>
-        <511cb47a-a1bd-bb5d-69ec-0836c6b5abfe@gmx.de>
-        <20181123121253.278146b4@vmware.local.home>
-        <20181123183415.GB1917@sasha-vm>
-        <20181123142617.3d3972ca@vmware.local.home>
-        <20181123200011.GM1917@sasha-vm>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Sun, 25 Nov 2018 09:49:25 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:36804 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726514AbeKYOtZ (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 25 Nov 2018 09:49:25 -0500
+Received: by mail-ed1-f67.google.com with SMTP id f23so13124361edb.3;
+        Sat, 24 Nov 2018 19:59:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c+VbIPcUA0nJnu19TEKgDmZfhoeqvq+Zc/bRRQahK3k=;
+        b=ocdTkfBE5AFtLyhSSV8CuyIFXHG7GlsaOSO2j0zy3JdpMsb0At1PKZh1bBgvl+syDO
+         lx45TU5Phwa8H6BdHwH+Bf6IJPf7HRQ/yOAe7fZjbM8U51f6xAyBZi8Po1l7EBMRCzXq
+         zhCEziYoT2r3r1dgupyt6RCI4LoeiJ0GexBWvcivKlOZZzLssK2SAjLMwh0svjbJdzxw
+         cvwHa4m9XqlCttALqA20+fJbDiTTaX7Pa7FnMBLyJZCAeKGWLPMbuN6ZU1K3cOxPMaBp
+         W40LpbtMifYMNHlQ6g7X4/cSupZ5xareMupm50/a4TGfR3zSOJJjJ5JoV+UbmSWqYB6N
+         oloQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c+VbIPcUA0nJnu19TEKgDmZfhoeqvq+Zc/bRRQahK3k=;
+        b=rf4ycBIExnB310tBUrsSRN29v55DQhlsNXHlf1s40PdSw0OLJXuPNwnPojIMXUchvY
+         eL60tR74n1o7r1lACwbae2K1nQBfQMeAedtS9Dqcq6g3V5LNRZbKTikT5p1eTN+phaaw
+         P0Eg/Tno7AS8x7/hs3InmprhG+Y+NBQeIENxLBDCIhmEt9nkaQkQFijkRoGNQif/WIzR
+         BnvBtBOWGHMqkoiB7sgfEUqZuY+3mvOUuyWSI5TGyl6NP+Vi1ZyiRVu76vKBQy9QDJ17
+         ciAhNRzmHYFB7G2PwGf2bDpTm8IyxGu8Ql0fdqQTPGug5WW1DM1UYQQJey89npl8xH+w
+         SNVg==
+X-Gm-Message-State: AGRZ1gKpxGZO+Lopj4JpOMtUCF7tFlGikdRir2L/Drxt2b+xZRY9n3vb
+        KQP6ULYVU7YrOp7XFtbOQz7uSHzTTqhtsp5yoeM58A==
+X-Google-Smtp-Source: AJdET5fP384hUZ9MCTMYcaTg+4qb4i0FIO8NdOS/IfPbEZfc1J9ZA3JA647zCPwROOGuZcyrIWGP021BQcn7w8N3H5Q=
+X-Received: by 2002:a17:906:4a4b:: with SMTP id a11-v6mr16244194ejv.68.1543118357002;
+ Sat, 24 Nov 2018 19:59:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20181124022035.17519-1-deepa.kernel@gmail.com> <20181124022035.17519-3-deepa.kernel@gmail.com>
+In-Reply-To: <20181124022035.17519-3-deepa.kernel@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Sat, 24 Nov 2018 22:58:39 -0500
+Message-ID: <CAF=yD-KfxXK=Ta=+a8UYMcmUYzN=UokotfzSno2-xi=JeS6=0g@mail.gmail.com>
+Subject: Re: [PATCH 2/8] sockopt: Rename SO_TIMESTAMP* to SO_TIMESTAMP*_OLD
+To:     Deepa Dinamani <deepa.kernel@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Helge Deller <deller@gmx.de>,
+        David Howells <dhowells@redhat.com>, jejb@parisc-linux.org,
+        ralf@linux-mips.org, rth@twiddle.net,
+        linux-afs@lists.infradead.org, linux-alpha@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mips@linux-mips.org,
+        linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, 23 Nov 2018 15:00:11 -0500
-Sasha Levin <sashal@kernel.org> wrote:
+On Sat, Nov 24, 2018 at 3:58 AM Deepa Dinamani <deepa.kernel@gmail.com> wrote:
+>
+> SO_TIMESTAMP, SO_TIMESTAMPNS and SO_TIMESTAMPING options, the
+> way they are currently defined, are not y2038 safe.
+> Subsequent patches in the series add new y2038 safe versions
+> of these options which provide 64 bit timestamps on all
+> architectures uniformly.
+> Hence, rename existing options with OLD tag suffixes.
 
-> On Fri, Nov 23, 2018 at 02:26:17PM -0500, Steven Rostedt wrote:
-> >On Fri, 23 Nov 2018 13:34:15 -0500
-> >Sasha Levin <sashal@kernel.org> wrote:
-> >  
-> >> Does this mean that someone (Steve) will send a backport of this to all
-> >> relevant stable trees? Right now it looks like the series will randomly
-> >> apply on a mix of trees, which can't be good.  
-> >
-> >Nope. I stated that in my 0 patch.  
-> 
-> That's not good though, if you don't intend for them to be automagically
-> backported to stable trees by Greg, then they shouldn't be tagged at all
-> and if someone is interested then he can provide a backport.
-
-For the most part they will be fine going back a few releases. But how
-far back is questionable before they start getting into issues. I
-talked a bit about this to Greg on IRC and he seemed fine with me
-adding the stable tag.
-
-If they don't port back properly, it wont be a silent failure. They
-will either build or they wont. I'm suspect that you build all
-supported archs for your stable trees, right? If the patch fails to
-build, then either have someone that cares for that arch back port it,
-or don't back port the series. Simple as that.
-
-> 
-> What will happen with these is that once Greg's scripts process Linus's
-> tree he'll end up with this patch series inconsistently backported to
-> stable trees, which is not what you want here.
-
-It's not like it won't work and then start to work again. Once they
-start failing in older versions, they will probably fail in all
-versions before that.
-
-> 
-> Sure, we can wait for the "added to the xyz stable tree" mails and
-> object then, but why risk breaking the trees?
-
-Again, it's not much different than other stable patches that need to
-be fixed for older trees. If they build, they are fine, if they don't
-then they need to be fixed. You'll know right at build time.
-
--- Steve
+Why do the existing interfaces have to be renamed when new interfaces are added?
