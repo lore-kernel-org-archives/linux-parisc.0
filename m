@@ -2,118 +2,114 @@ Return-Path: <SRS0=cI4q=OH=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DF46C43441
-	for <linux-parisc@archiver.kernel.org>; Wed, 28 Nov 2018 17:46:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02F42C04EB8
+	for <linux-parisc@archiver.kernel.org>; Wed, 28 Nov 2018 18:00:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5796920832
-	for <linux-parisc@archiver.kernel.org>; Wed, 28 Nov 2018 17:46:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C266C2147D
+	for <linux-parisc@archiver.kernel.org>; Wed, 28 Nov 2018 18:00:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="ofRs3GaY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5796920832
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=armlinux.org.uk
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ElBEfMzs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C266C2147D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728807AbeK2EsX (ORCPT
+        id S1725266AbeK2FC4 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 28 Nov 2018 23:48:23 -0500
-Received: from pandora.armlinux.org.uk ([78.32.30.218]:52406 "EHLO
-        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727867AbeK2EsX (ORCPT
+        Thu, 29 Nov 2018 00:02:56 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:44297 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726806AbeK2FCz (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 28 Nov 2018 23:48:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2014; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=k4Z7OkTNJk0fXnQq6JzVB6Wb0tgecubNwuvpU5g+JU4=; b=ofRs3GaYZUxqpRLXyEVm2IEbW
-        ByvhoKepbttsLZZo35S209BgCvznZBD4F1VgxWoyWWm7MeEuCCSxamKnd6K+eRxhcItBZAX7+d6rR
-        5N/psCmqjjY40Akd71ik3xQr8Hdex9vRSxBOYTN6j1PiULrInbsX/W0peT7SRcNifwjrQ=;
-Received: from n2100.armlinux.org.uk ([fd8f:7570:feb6:1:214:fdff:fe10:4f86]:51193)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1gS3uJ-00063i-NN; Wed, 28 Nov 2018 17:45:51 +0000
-Received: from linux by n2100.armlinux.org.uk with local (Exim 4.90_1)
-        (envelope-from <linux@n2100.armlinux.org.uk>)
-        id 1gS3uF-0005YN-SF; Wed, 28 Nov 2018 17:45:48 +0000
-Date:   Wed, 28 Nov 2018 17:45:45 +0000
-From:   Russell King - ARM Linux <linux@armlinux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+        Thu, 29 Nov 2018 00:02:55 -0500
+Received: by mail-lf1-f65.google.com with SMTP id z13so20029832lfe.11
+        for <linux-parisc@vger.kernel.org>; Wed, 28 Nov 2018 10:00:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ESkwdHBBDasYizEIp40J7493QYQPcDQi32FjrB5LM38=;
+        b=ElBEfMzsPx+DweVR8IVClFnR3MS28XOgn5rhuriDmS4mK9Lmr4ytbx9nIEu026kwAo
+         iqUtNEVKmggXCmEV2uxk655ZI1Re3dhqjrcZF4uxRtP0ggO3/CUo3Aug+F0auWcb3sEW
+         hc5bgqxvFNOAfIU9IKuVgmAFJHREPOkY+cbjQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ESkwdHBBDasYizEIp40J7493QYQPcDQi32FjrB5LM38=;
+        b=XM9HhUEjogNNWYxofA2NSZMFI2iT2XyX8L7qbkaka9SPpdq1pqx+oJqoonLMZLkt6r
+         oNoz5BO0F4fYpg0QkGxfs9AI1/pZ5MWfm8mm3kCZ3vT3wNvxXVhl++p6zbMQ3PlDl/ZU
+         ON6nn9zKoVXswlE+jMtaj2mSAqFbOKNi9/jUx5nTDSe7qxrxifzeDX3n9yPHLjsFY/dl
+         BQ+beS3YklPDZxBEUXQUGiPYloU7vpC2NZZjF6R92f/Ga8EPGEihGrMy9S8WGO5Ema/1
+         OD4CK875P5Ix4QBfXg6sjvKnqJkAQe2BURV3F006xeJve9f7G+d0aPWfE5ZN4R1utOzm
+         8VMQ==
+X-Gm-Message-State: AGRZ1gJKWYfEEUoqD7lMsexd6iFC/H4bVyazBhRzRRW4KofljH9X7THl
+        gw0pI1BC7122eBMs529nj9osLGVGUrE=
+X-Google-Smtp-Source: AJdET5c0fciZem4RbjYIERuA/XOl70D5TwyBw4Cu4gCUtFN5EohTL0CPq1jSeiw9R9YB1/gxQqBVcg==
+X-Received: by 2002:a19:4ace:: with SMTP id x197mr21497498lfa.39.1543428025321;
+        Wed, 28 Nov 2018 10:00:25 -0800 (PST)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id b25sm1324782lfa.96.2018.11.28.10.00.23
+        for <linux-parisc@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Nov 2018 10:00:23 -0800 (PST)
+Received: by mail-lj1-f169.google.com with SMTP id n18-v6so24266470lji.7
+        for <linux-parisc@vger.kernel.org>; Wed, 28 Nov 2018 10:00:23 -0800 (PST)
+X-Received: by 2002:a2e:9983:: with SMTP id w3-v6mr25570388lji.133.1543428022781;
+ Wed, 28 Nov 2018 10:00:22 -0800 (PST)
+MIME-Version: 1.0
+References: <20181122140320.24080-1-hch@lst.de> <CAHk-=wh=_T=A53+o4zLNbKio43LGqVDb0KCbWPDvAg54bRDmWw@mail.gmail.com>
+ <20181122170715.GI30658@n2100.armlinux.org.uk> <CAHk-=wgfGzXuDAKFQPdzMib3QCRHfSTsy5=gLU-WCoya+Ym+1A@mail.gmail.com>
+ <11829e3c-7302-f821-cf5c-863e5267a17b@arm.com> <CAHk-=whxf0zqutExPr_j1A625Z3gcL6k_ABzKo1BtzN4F93hkA@mail.gmail.com>
+ <20181123065511.GA17856@lst.de> <20181128074117.GA21126@lst.de>
+ <CAHk-=wg5+rXK8dpjkSmK7tuz29VfxVWNEwmTVYB409mmyLkeew@mail.gmail.com> <20181128174545.GJ30658@n2100.armlinux.org.uk>
+In-Reply-To: <20181128174545.GJ30658@n2100.armlinux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 28 Nov 2018 10:00:06 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whnz4Kty6cas11bc2Gh=9zTzeeRS2k=dV9Hfc4B=xnHkQ@mail.gmail.com>
+Message-ID: <CAHk-=whnz4Kty6cas11bc2Gh=9zTzeeRS2k=dV9Hfc4B=xnHkQ@mail.gmail.com>
+Subject: Re: remove the ->mapping_error method from dma_map_ops V2
+To:     linux@armlinux.org.uk
 Cc:     Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        robin.murphy@arm.com, the arch/x86 maintainers <x86@kernel.org>,
+        robin.murphy@arm.com, "the arch/x86 maintainers" <x86@kernel.org>,
         Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
         iommu@lists.linux-foundation.org, linux-alpha@vger.kernel.org,
         xen-devel@lists.xenproject.org,
         David Woodhouse <dwmw2@infradead.org>,
         linux-arm-kernel@lists.infradead.org
-Subject: Re: remove the ->mapping_error method from dma_map_ops V2
-Message-ID: <20181128174545.GJ30658@n2100.armlinux.org.uk>
-References: <20181122140320.24080-1-hch@lst.de>
- <CAHk-=wh=_T=A53+o4zLNbKio43LGqVDb0KCbWPDvAg54bRDmWw@mail.gmail.com>
- <20181122170715.GI30658@n2100.armlinux.org.uk>
- <CAHk-=wgfGzXuDAKFQPdzMib3QCRHfSTsy5=gLU-WCoya+Ym+1A@mail.gmail.com>
- <11829e3c-7302-f821-cf5c-863e5267a17b@arm.com>
- <CAHk-=whxf0zqutExPr_j1A625Z3gcL6k_ABzKo1BtzN4F93hkA@mail.gmail.com>
- <20181123065511.GA17856@lst.de>
- <20181128074117.GA21126@lst.de>
- <CAHk-=wg5+rXK8dpjkSmK7tuz29VfxVWNEwmTVYB409mmyLkeew@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg5+rXK8dpjkSmK7tuz29VfxVWNEwmTVYB409mmyLkeew@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Wed, Nov 28, 2018 at 08:47:05AM -0800, Linus Torvalds wrote:
-> On Tue, Nov 27, 2018 at 11:41 PM Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > On Fri, Nov 23, 2018 at 07:55:11AM +0100, Christoph Hellwig wrote:
-> > > Well, I can tweak the last patch to return -EINVAL from dma_mapping_error
-> > > instead of the old 1 is as bool true.  The callers should all be fine,
-> > > although I'd have to audit them.  Still wouldn't help with being able to
-> > > return different errors.
-> >
-> > Any opinions?  I'd really like to make some forward progress on this
-> > series.
-> 
-> So I do think that yes, dma_mapping_error() should return an error
-> code, not 0/1.
-> 
-> But I was really hoping that the individual drivers themselves could
-> return error codes. Right now the patch-series has code like this:
-> 
->       ret = needs_bounce(dev, dma_addr, size);
->       if (ret < 0)
-> -         return ARM_MAPPING_ERROR;
-> +         return DMA_MAPPING_ERROR;
-> 
-> which while it all makes sense in the context of this patch-series, I
-> *really* think it would have been so much nicer to return the error
-> code 'ret' instead (which in this case is -E2BIG).
-> 
-> I don't think this is a huge deal, but ERR_PTR() has been hugely
-> successful elsewhere. And I'm not hugely convinced about all these
-> "any address can be valid" arguments. How the hell do you generate a
-> random dma address in the last page that isn't even page-aligned?
+On Wed, Nov 28, 2018 at 9:45 AM Russell King - ARM Linux
+<linux@armlinux.org.uk> wrote:
+>
+> > I don't think this is a huge deal, but ERR_PTR() has been hugely
+> > successful elsewhere. And I'm not hugely convinced about all these
+> > "any address can be valid" arguments. How the hell do you generate a
+> > random dma address in the last page that isn't even page-aligned?
+>
+> kmalloc() a 64-byte buffer, dma_map_single() that buffer.
 
-kmalloc() a 64-byte buffer, dma_map_single() that buffer.  If you
-have RAM that maps to a _bus_ address in the top page of 4GB of a
-32-bit bus address, then you lose.  Simples.
+No.
 
-Subsystems like I2C, SPI, USB etc all deal with small kmalloc'd
-buffers and their drivers make use of DMA.
+You already cannot do that kmalloc(), exactly because of ERR_PTR().
 
--- 
-RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 12.1Mbps down 622kbps up
-According to speedtest.net: 11.9Mbps down 500kbps up
+Not all memory is accessible even to the kernel. If you have memory
+that shows up in the last page of phys_addr_t, you just mark it
+reserved at boot-time.
+
+Which is what we ALREADY do for these exact reasons. If the DMA
+mappings means that you'd need to add one more page to that list of
+reserved pages, then so be it.
+
+The whole argument of "every possible piece of memory is DMA'able" is
+just wrong.
+
+                Linus
