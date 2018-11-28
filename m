@@ -2,139 +2,118 @@ Return-Path: <SRS0=cI4q=OH=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 427E6C43441
-	for <linux-parisc@archiver.kernel.org>; Wed, 28 Nov 2018 17:14:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DF46C43441
+	for <linux-parisc@archiver.kernel.org>; Wed, 28 Nov 2018 17:46:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0DAD9206B6
-	for <linux-parisc@archiver.kernel.org>; Wed, 28 Nov 2018 17:14:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0DAD9206B6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gmx.de
+	by mail.kernel.org (Postfix) with ESMTP id 5796920832
+	for <linux-parisc@archiver.kernel.org>; Wed, 28 Nov 2018 17:46:04 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="ofRs3GaY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5796920832
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=armlinux.org.uk
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbeK2EQq (ORCPT
+        id S1728807AbeK2EsX (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 28 Nov 2018 23:16:46 -0500
-Received: from mout.gmx.net ([212.227.15.18]:36495 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728807AbeK2EQq (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 28 Nov 2018 23:16:46 -0500
-Received: from localhost.localdomain ([155.56.44.143]) by mail.gmx.com
- (mrgmx003 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 0MBnSJ-1gHuf90dZH-00Apkr; Wed, 28 Nov 2018 18:14:16 +0100
-Subject: Re: C200, 712/80: strange sysfs issues with Linux 4.18.0-1-parisc
-To:     Frank Scheiner <frank.scheiner@web.de>
-References: <c7ab21b1-6ee2-37c1-272e-7f39a4953403@web.de>
-Cc:     HPPA porters <debian-hppa@lists.debian.org>,
-        linux-parisc <linux-parisc@vger.kernel.org>
-From:   Helge Deller <deller@gmx.de>
-Message-ID: <49dd98ae-bd74-b3b4-add0-0427bd642859@gmx.de>
-Date:   Wed, 28 Nov 2018 18:14:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.1
+        Wed, 28 Nov 2018 23:48:23 -0500
+Received: from pandora.armlinux.org.uk ([78.32.30.218]:52406 "EHLO
+        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727867AbeK2EsX (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 28 Nov 2018 23:48:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2014; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=k4Z7OkTNJk0fXnQq6JzVB6Wb0tgecubNwuvpU5g+JU4=; b=ofRs3GaYZUxqpRLXyEVm2IEbW
+        ByvhoKepbttsLZZo35S209BgCvznZBD4F1VgxWoyWWm7MeEuCCSxamKnd6K+eRxhcItBZAX7+d6rR
+        5N/psCmqjjY40Akd71ik3xQr8Hdex9vRSxBOYTN6j1PiULrInbsX/W0peT7SRcNifwjrQ=;
+Received: from n2100.armlinux.org.uk ([fd8f:7570:feb6:1:214:fdff:fe10:4f86]:51193)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1gS3uJ-00063i-NN; Wed, 28 Nov 2018 17:45:51 +0000
+Received: from linux by n2100.armlinux.org.uk with local (Exim 4.90_1)
+        (envelope-from <linux@n2100.armlinux.org.uk>)
+        id 1gS3uF-0005YN-SF; Wed, 28 Nov 2018 17:45:48 +0000
+Date:   Wed, 28 Nov 2018 17:45:45 +0000
+From:   Russell King - ARM Linux <linux@armlinux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        robin.murphy@arm.com, the arch/x86 maintainers <x86@kernel.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, linux-alpha@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: remove the ->mapping_error method from dma_map_ops V2
+Message-ID: <20181128174545.GJ30658@n2100.armlinux.org.uk>
+References: <20181122140320.24080-1-hch@lst.de>
+ <CAHk-=wh=_T=A53+o4zLNbKio43LGqVDb0KCbWPDvAg54bRDmWw@mail.gmail.com>
+ <20181122170715.GI30658@n2100.armlinux.org.uk>
+ <CAHk-=wgfGzXuDAKFQPdzMib3QCRHfSTsy5=gLU-WCoya+Ym+1A@mail.gmail.com>
+ <11829e3c-7302-f821-cf5c-863e5267a17b@arm.com>
+ <CAHk-=whxf0zqutExPr_j1A625Z3gcL6k_ABzKo1BtzN4F93hkA@mail.gmail.com>
+ <20181123065511.GA17856@lst.de>
+ <20181128074117.GA21126@lst.de>
+ <CAHk-=wg5+rXK8dpjkSmK7tuz29VfxVWNEwmTVYB409mmyLkeew@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c7ab21b1-6ee2-37c1-272e-7f39a4953403@web.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:mdwNaoV5byxw8mz4JnwTHrM1GMOemqRw40ERArbkPt7rLcZhh/O
- +tejb3F5VfaFSudQ5uIbg7q3RqUGFDatwqTVhLRmoXSC0ycT3Bj5Lu92NIed++kkkJg1JEb
- qNvq8HcKpPm+ZouZcXXLaeQHctA74LZEfPDZmaojyMJyUXkt0jksvu/XDH74D8s1Yp+RTeX
- FUraL+wKjiBH5LYKGN94A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6tFpCnd2Jdc=:dbaC18r91yjQQQbl4p6aWc
- 8eaAIJfxXuJsHaCA8UhguO3fdHKjzz0KSulwKR4HBeUSD1QIdAsfI2moDGFv70Uv8rwtFxRgl
- L3em5aRd723VBLSi0Yl6bWMGeNUui1dzkQO86cpzdNPf8zzQ7nQ84siX9ZbNh/ao1VV/Vnocz
- EL+ovrKVBO8AJW8Bx/ftPbUvnFZGDQWgrOigv8Hy5Ap73R893l7nM6vYHoO67pSiJFUHGlaBW
- o4pulwdFsJhsiEvFkUJap5KtwF1boK1w3BWFG5/zOZ9vLxFArU3sv6BGiL1jHkgvL5I+b0YfV
- kA+6RJgGh5KIiYklg1ykpbBUoXu45DIuyuhgsPOYZEfmoansPW5KqEAVcFYT46tZyHUQzplYV
- Btb5FaRshKoAA3sAsbf62TK3rk9cnwbgTQ8h2uFOth34GyGE84Nsr5B5Z5x1CodMhfRKt3mti
- oJgUf9hBIfHpYeWvSQQ2z4y9ViSJcs8lUTEJII2i7fV46Ur24oaIMoMWx+np9WDbzS+1bo48X
- m1t+nEucaZ1U4RpqRpW//GUzUkc2v8sN1/2RJoJJKzpwqsLzmf3Dw2h9/BGTZc9YUSoKc249z
- 2ll1qP/Q4GaHmmNHUPLRWgaVLdihqEeycpg28HpdE2NsRBjIoP+a7YsT82WtQoGeVQGiaxecE
- u3P30sDoKLjSaUyyDyHvMAj3ILP7TW0PMnG9QCZ09AstWKmO8TaSOiLp7hiAyQiXQNI4xgKr5
- hnx4cJ3vo7dyq2UqIrhE/vco2nne+WlcyT0AOumtqe+f6ijABfKNb6Vf1nggNQC2J9JoxRQjM
- vy9gu07Ipir3WxgrObayPb54eUy8QJ31bJRVNotS4Bvr1dqsxj6VsPZziyWQuFqDXWVJNELP+
- Da910UFsdVZjvgHeA60rYs7XcQ8MXZe25InLwLJg7bG9kxJ06DvFOu3Zl2EeyF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg5+rXK8dpjkSmK7tuz29VfxVWNEwmTVYB409mmyLkeew@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 28.11.18 16:26, Frank Scheiner wrote:
-> I'm experiencing some strange issues on both a C200 and a 712/80 with
-> the current 32 bit SP kernel (4.18.0-2.parisc (4.18.10-2)). This does
-> not happen when using the 64 bit MP kernel of the same version on a
-> rp3440 for example.
+On Wed, Nov 28, 2018 at 08:47:05AM -0800, Linus Torvalds wrote:
+> On Tue, Nov 27, 2018 at 11:41 PM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > On Fri, Nov 23, 2018 at 07:55:11AM +0100, Christoph Hellwig wrote:
+> > > Well, I can tweak the last patch to return -EINVAL from dma_mapping_error
+> > > instead of the old 1 is as bool true.  The callers should all be fine,
+> > > although I'd have to audit them.  Still wouldn't help with being able to
+> > > return different errors.
+> >
+> > Any opinions?  I'd really like to make some forward progress on this
+> > series.
 > 
-> For every module loaded I get a message similar to the following example:
-> [...]
-> [   47.799100] sysfs: cannot create duplicate filename '/module/nfs/sections/.text'
-> [   47.887396] CPU: 0 PID: 98 Comm: modprobe Not tainted 4.18.0-2-parisc #1 Debian 4.18.10-2
-> [   47.984894] Backtrace:
-> [   48.013164]  [<1017ce2c>] show_stack+0x3c/0x50
-> [   48.066177]  [<107a7210>] dump_stack+0x28/0x38
-> [   48.119192]  [<103f900c>] sysfs_warn_dup+0x88/0xac
-> [   48.176329]  [<103f8b1c>] sysfs_add_file_mode_ns+0x164/0x1d0
-> [   48.243832]  [<103f9e70>] internal_create_group+0x11c/0x304
-> [   48.310277]  [<103fa0a0>] sysfs_create_group+0x48/0x60
-> [   48.371571]  [<1022abe8>] load_module.constprop.35+0x1f9c/0x23b8
-> [   48.443200]  [<1022b278>] sys_finit_module+0xd0/0x11c
-> [   48.503468]  [<101831dc>] syscall_exit+0x0/0x14
+> So I do think that yes, dma_mapping_error() should return an error
+> code, not 0/1.
+> 
+> But I was really hoping that the individual drivers themselves could
+> return error codes. Right now the patch-series has code like this:
+> 
+>       ret = needs_bounce(dev, dma_addr, size);
+>       if (ret < 0)
+> -         return ARM_MAPPING_ERROR;
+> +         return DMA_MAPPING_ERROR;
+> 
+> which while it all makes sense in the context of this patch-series, I
+> *really* think it would have been so much nicer to return the error
+> code 'ret' instead (which in this case is -E2BIG).
+> 
+> I don't think this is a huge deal, but ERR_PTR() has been hugely
+> successful elsewhere. And I'm not hugely convinced about all these
+> "any address can be valid" arguments. How the hell do you generate a
+> random dma address in the last page that isn't even page-aligned?
 
-I think it happens because I disabled building the kernel with the "-ffunction-sections" compiler option.
-The relevant patch was included in kernel 4.18:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=24b6c22504a27210a8377e54d24d425ae414f2c1
+kmalloc() a 64-byte buffer, dma_map_single() that buffer.  If you
+have RAM that maps to a _bus_ address in the top page of 4GB of a
+32-bit bus address, then you lose.  Simples.
 
-On kernel 4.17 I see:
+Subsystems like I2C, SPI, USB etc all deal with small kmalloc'd
+buffers and their drivers make use of DMA.
 
-./4.17.0-3-parisc-smp/kernel/drivers/net/ethernet/intel/e1000/e1000.ko:     file format elf32-hppa-linux
-Sections:
-Idx Name          Size      VMA       LMA       File off  Algn
-   0 .note.gnu.build-id 00000024  00000000  00000000  00000034  2**2
-                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-   1 .text         00000000  00000000  00000000  00000058  2**0
-                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-   2 .text.e1000_alloc_dummy_rx_buffers 0000002c  00000000  00000000  00000058  2**2
-                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-   3 .text.e1000_fix_features 00000074  00000000  00000000  00000084  2**2
-                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-   4 .text.unlikely.e1000_regdump 0000049c  00000000  00000000  000000f8  2**2
-                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-   5 .text.e1000_setup_rctl 00000144  00000000  00000000  00000594  2**2
-                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-   6 .text.e1000_configure_rx 000002a0  00000000  00000000  000006d8  2**2
-                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-
-
-On kernel 4.18 I get:
-./4.18.0-3-parisc-smp/kernel/drivers/net/ethernet/intel/e1000/e1000.ko:     file format elf32-hppa-linux
-
-Sections:
-Idx Name          Size      VMA       LMA       File off  Algn
-   0 .note.gnu.build-id 00000024  00000000  00000000  00000034  2**2
-                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-   1 .text         0000a550  00000000  00000000  00000058  2**2
-                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-   2 .text.unlikely 0000078c  00000000  00000000  0000a5a8  2**2
-                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-   3 .init.text    000000cc  00000000  00000000  0000ad34  2**2
-                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-   4 .exit.text    00000030  00000000  00000000  0000ae00  2**2
-                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-   5 .text         00007848  00000000  00000000  0000ae30  2**2
-                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-   6 .text         00004298  00000000  00000000  00012678  2**2
-                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-   7 .text         00000c8c  00000000  00000000  00016910  2**2
-                   CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-   8 .text         00000000  00000000  00000000  0001759c  2**0
-                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-
-As can be seen, we now get multiple sections all named ".text" which is what triggers the kernel warning.
-
-It seems we need to revert the patch, or find a way that the compiler doesn't produce multiple .text sections...?
-
-Helge
+-- 
+RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 12.1Mbps down 622kbps up
+According to speedtest.net: 11.9Mbps down 500kbps up
