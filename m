@@ -2,111 +2,82 @@ Return-Path: <SRS0=noE3=OI=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
+X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE0F4C43441
-	for <linux-parisc@archiver.kernel.org>; Thu, 29 Nov 2018 16:05:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E52F5C43441
+	for <linux-parisc@archiver.kernel.org>; Thu, 29 Nov 2018 16:23:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A4F7A21019
-	for <linux-parisc@archiver.kernel.org>; Thu, 29 Nov 2018 16:05:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4F7A21019
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gmx.de
+	by mail.kernel.org (Postfix) with ESMTP id B73E720863
+	for <linux-parisc@archiver.kernel.org>; Thu, 29 Nov 2018 16:23:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B73E720863
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728776AbeK3DLu (ORCPT
+        id S1728562AbeK3D3U (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 29 Nov 2018 22:11:50 -0500
-Received: from mout.gmx.net ([212.227.15.19]:34209 "EHLO mout.gmx.net"
+        Thu, 29 Nov 2018 22:29:20 -0500
+Received: from verein.lst.de ([213.95.11.211]:44466 "EHLO newverein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728826AbeK3DLt (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 29 Nov 2018 22:11:49 -0500
-Received: from localhost.localdomain ([155.56.40.74]) by mail.gmx.com
- (mrgmx003 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 0LqRKT-1h6QbH2dGb-00e3TB; Thu, 29 Nov 2018 17:05:50 +0100
-Date:   Thu, 29 Nov 2018 17:05:47 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Cc:     Frank Scheiner <frank.scheiner@web.de>
-Subject: [PATCH] parisc: Enable -ffunction-sections for modules on 32-bit
- kernel
-Message-ID: <20181129160547.GA24412@localhost.localdomain>
+        id S1728423AbeK3D3T (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 29 Nov 2018 22:29:19 -0500
+Received: by newverein.lst.de (Postfix, from userid 2407)
+        id 5722B68B02; Thu, 29 Nov 2018 17:23:23 +0100 (CET)
+Date:   Thu, 29 Nov 2018 17:23:23 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        robin.murphy@arm.com, the arch/x86 maintainers <x86@kernel.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, linux-alpha@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: remove the ->mapping_error method from dma_map_ops V2
+Message-ID: <20181129162323.GA27068@lst.de>
+References: <CAHk-=wgfGzXuDAKFQPdzMib3QCRHfSTsy5=gLU-WCoya+Ym+1A@mail.gmail.com> <11829e3c-7302-f821-cf5c-863e5267a17b@arm.com> <CAHk-=whxf0zqutExPr_j1A625Z3gcL6k_ABzKo1BtzN4F93hkA@mail.gmail.com> <20181123065511.GA17856@lst.de> <20181128074117.GA21126@lst.de> <CAHk-=wg5+rXK8dpjkSmK7tuz29VfxVWNEwmTVYB409mmyLkeew@mail.gmail.com> <20181128174545.GJ30658@n2100.armlinux.org.uk> <CAHk-=whnz4Kty6cas11bc2Gh=9zTzeeRS2k=dV9Hfc4B=xnHkQ@mail.gmail.com> <20181128180841.GM30658@n2100.armlinux.org.uk> <CAHk-=whcbiSxSUprsKjVPEdN5-+o8WnTGiKxEV-+HbKNDs=iNA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:yLeo1f1MOCWajyIE2aZxZYtaPFQ/he9r2TIjBIs34Om0gMp6mps
- wSOMJku/+NrUYaDJU+TqchltqyxaSElXsnUS3jVBUrtgjzMwyDyxR2f1uvVWn3oGRsXekk9
- 81EPk3ahQI8b/n8TYZ1Ql0TYJU0P09gHI7BYe2uOzk+ChJIZ3qWlkxlWPcUnqtCqjj/KA6C
- saNfYUqrKVFHKZ4YPgA/g==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4R4vSpCQOBE=:sOLuRTdnOksWRd5pSY+tjD
- RuEkNUj0482UQx5w/FLQvyGVveCTlJZisVOrr+BwiXkokJdT65DJHt8EwKAhHIn98pgzVp6qm
- zne+d0NjhZmmrIKrja/t+IMscoXyXryNbAI44p7HRISs4SzX1IuPdqylZgxpdEoIiZMgFwl7T
- HN54PEVcPYgtiaZKu1qNFfk7PVfQoagqXbG2Mas1ueaRx2LeptA6XLIZCXAwTRgneZLXaYkE+
- u7vZyH6gIzA1gitD5oHebOJ+wYkt3zRZBWT0/rAVd9LskFqndHDVEHhMsAVN58/b5sGwq4VUh
- 8p32c32hNNxFY67yZyy/PQLMZp5N0k0WNQ2ZxZ3Q979VKt/ndDqn4gsNfwW4BOeg/oVQkPHIl
- Ud8ZSnFVVE3F9nmoYGzpGEPOz0kfzuL5gMUkmuIPMZcMKMJOP9IHymlLpXT4j9C8gUYyq16eq
- fq3NBhN5jpDfRV5UzUeimrsLvB6EILe47cf62npfTcfzavbnYz27kXXIYbG6saMdBlbkdWC3Q
- Bnb1lKdzcfLMGfBnJ18kuTTUfaKpAUoqeDsE+uXJRM5XVHpuRuqhqAASXWQHFvkWUSPSy0CUX
- dZ0G7y8OEA0wDXHvKfYEpeiVa5idINym3zsSS/Dq15b+QQy9D0Kl4H0pvpWehs/lauDHEnnwM
- BfaNs8zoEwCQjaBbuBmpA9fo6DU38hJ2POfS2tA+RzEDXC3po5rbjcf+2QgkmYA0/X2H1Xr83
- GwByFGkfHZ2IS3PJwOlqK6/Nc6crwoGkECy6hgCTK1BWhjuJQTy7xkSQRwkircDWJPEFWnn9z
- a2ZBFOqOC8DDyD0MDmDA9AoOgcIOgXSzyQz0axO//83D7B4HEfv/vQ+f9EChJPxExz/vQDVtW
- RvepVX6N9I+YiCg/nQfqn5FMWQa3kSxfL02T5Yep8=
+In-Reply-To: <CAHk-=whcbiSxSUprsKjVPEdN5-+o8WnTGiKxEV-+HbKNDs=iNA@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Frank Schreiner reported, that since kernel 4.18 he faces sysfs-warnings
-when loading modules on a 32-bit kernel. Here is one such example:
+On Wed, Nov 28, 2018 at 11:19:15AM -0800, Linus Torvalds wrote:
+> Let me just paste it back in here:
+> 
+>   "Which is what we ALREADY do for these exact reasons. If the DMA
+> mappings means that you'd need to add one more page to that list of
+> reserved pages, then so be it."
+> 
+> So no, I'm not at all confused.
+> 
+> Let me re-iterate: the argument that all addresses have to be dma'able is
+> garbage.
+> 
+> *Exactly* as with kmalloc and limited virtual addresses, we can limit
+> physical addresses.
 
- sysfs: cannot create duplicate filename '/module/nfs/sections/.text'
- CPU: 0 PID: 98 Comm: modprobe Not tainted 4.18.0-2-parisc #1 Debian 4.18.10-2
- Backtrace:
-  [<1017ce2c>] show_stack+0x3c/0x50
-  [<107a7210>] dump_stack+0x28/0x38
-  [<103f900c>] sysfs_warn_dup+0x88/0xac
-  [<103f8b1c>] sysfs_add_file_mode_ns+0x164/0x1d0
-  [<103f9e70>] internal_create_group+0x11c/0x304
-  [<103fa0a0>] sysfs_create_group+0x48/0x60
-  [<1022abe8>] load_module.constprop.35+0x1f9c/0x23b8
-  [<1022b278>] sys_finit_module+0xd0/0x11c
-  [<101831dc>] syscall_exit+0x0/0x14 
+We can.  At least in theory.  The problem is that depending on the
+crazy mapping from physical and kernel virtual address to dma addresses
+these might be pages at pretty random places.  Look at fun like
+arch/x86/pci/sta2x11-fixup.c for how ugly these mappings could look.
 
-This warning gets triggered by the fact, that due to commit 24b6c22504a2
-("parisc: Build kernel without -ffunction-sections") we now get multiple .text
-sections in the kernel modules for which sysfs_create_group() can't create
-multiple virtual files.
+It also means that we might have setup swiotlb on just about every
+32-bit architecture, even if it has no real addressing limit except for
+the one we imposed.  I don't really see how this is a win for us just
+to be able to report more detailed error codes, which would be nice
+to have, but the lack of which hasn't really harmed us.
 
-This patch works around the problem by re-enabling the -ffunction-sections
-compiler option for modules, while keeping it disabled for the non-module
-kernel code.
-
-Reported-by: Frank Scheiner <frank.scheiner@web.de>
-Fixes: 24b6c22504a2 ("parisc: Build kernel without -ffunction-sections")
-Cc: <stable@vger.kernel.org> # v4.18+
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index d047a09d660f..1085385e1f06 100644
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -71,6 +71,13 @@ ifdef CONFIG_MLONGCALLS
- KBUILD_CFLAGS_KERNEL += -mlong-calls
- endif
- 
-+# Without this, "ld -r" results in .text sections that are too big (> 0x40000)
-+# for branches to reach stubs. And multiple .text sections trigger a warning
-+# when creating the sysfs module information section.
-+ifndef CONFIG_64BIT
-+KBUILD_CFLAGS_MODULE += -ffunction-sections
-+endif
-+
- # select which processor to optimise for
- cflags-$(CONFIG_PA7000)		+= -march=1.1 -mschedule=7100
- cflags-$(CONFIG_PA7200)		+= -march=1.1 -mschedule=7200
+So as far as I'm concerned I'd go either with the series that we are
+discussing here, or change the map_page method to return an errno
+and the dma_addr_t in the argument.  As Davem pointed out that can lead
+to less optimal code, but it would still be better than the indirect
+call we have.  But then again I think the series as posted here might
+and up much simpler and good enough without opening up this rathole.
