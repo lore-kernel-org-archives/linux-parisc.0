@@ -6,40 +6,40 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C568C04EB8
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93119C64EB4
 	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 13:24:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 230412080A
+	by mail.kernel.org (Postfix) with ESMTP id 59F662082F
 	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 13:24:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QvxaOe6x"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 230412080A
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="V/EM1xYN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59F662082F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbeLAAdv (ORCPT
+        id S1727495AbeLAAd2 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 30 Nov 2018 19:33:51 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:50554 "EHLO
+        Fri, 30 Nov 2018 19:33:28 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:50322 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726912AbeLAAdb (ORCPT
+        with ESMTP id S1726802AbeLAAd2 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 30 Nov 2018 19:33:31 -0500
+        Fri, 30 Nov 2018 19:33:28 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
         :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=WHPez5RhxTIcMvprH5ITOwWzwL8816DB5aR/L+bV10Y=; b=QvxaOe6xTN0/tuaQo5nZ3QJzhz
-        5QpF5LnpdEiPQk0uG/ly5Q2nk7b0AgaiP/IDZpnMhfsVvWrz9wf0Pnyh0yRcoNkVDNGQPLAQ/6zd9
-        aSLtEu7qkrVNCfWogzjFPoriNEwh2Ut1VYlzPYe4A1Vv+Sy7TCuxhwtrIJZ32lAWrMeeSmI2Rasb8
-        kmT0p1zbNHYFZpywa5eY0yej4T2Gi0QT/cXkpR8bej8scFbCX+T+oVEOgnme6wJR0Kw2FpTshS6en
-        QBLBno7icMeoUlIgXJkFRmbCD+AhAl8299SvHkfFsZ7LDfjnGw548s0hvFSHr+ZNvnDQytlXhsgJl
-        PesLRlaw==;
+        bh=QOdsrc/faqsZxnU8wIA40QZooNAmBFxTGNTU9fzg/4E=; b=V/EM1xYN3rmZMWR+v1LC70Xb0f
+        Y8zhSJdnLRfLfm6hJkATYs/RrIRQeyjZsWsbCbek89q2hBMpdfp/3f8k4BEcg2SIdxqNTQ7FlShn7
+        eK04xBXeWEHDGgCFoz1E25+fNb2wqjm86TQfSse9X+5EAQwCbZmk1dMibOOp99Sv2qkSY8LfNnG/V
+        6Pz/hlms5hjSjko8yiy3SVpKN97J4dL99cOVCikEB0nAOx8prEWQff57xXXOvSt0sI571ib+8Lb7d
+        6FUS4cZUeryqDZ1LZ+mD3+qaxUx3Q9g5/i6jydq5gFhhijf8/9mFPpZI2VmoUR4sMbHQTq7tFFsqa
+        238ZHVNQ==;
 Received: from 089144206221.atnat0015.highway.bob.at ([89.144.206.221] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1gSim2-00055n-Bx; Fri, 30 Nov 2018 13:24:02 +0000
+        id 1gSilt-0004wY-A1; Fri, 30 Nov 2018 13:23:53 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     iommu@lists.linux-foundation.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -51,9 +51,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 21/23] xen-swiotlb: remove the mapping_error dma_map_ops method
-Date:   Fri, 30 Nov 2018 14:22:29 +0100
-Message-Id: <20181130132231.16512-22-hch@lst.de>
+Subject: [PATCH 18/23] iommu/intel: small map_page cleanup
+Date:   Fri, 30 Nov 2018 14:22:26 +0100
+Message-Id: <20181130132231.16512-19-hch@lst.de>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20181130132231.16512-1-hch@lst.de>
 References: <20181130132231.16512-1-hch@lst.de>
@@ -65,63 +65,55 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Return DMA_MAPPING_ERROR instead of 0 on a dma mapping failure and let
-the core dma-mapping code handle the rest.
+Pass the page + offset to the low-level __iommu_map_single helper
+(which gets renamed to fit the new calling conventions) as both
+callers have the page at hand.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/xen/swiotlb-xen.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ drivers/iommu/intel-iommu.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-index 2a7f545bd0b5..6dc969d5ea2f 100644
---- a/drivers/xen/swiotlb-xen.c
-+++ b/drivers/xen/swiotlb-xen.c
-@@ -53,8 +53,6 @@
-  * API.
-  */
- 
--#define XEN_SWIOTLB_ERROR_CODE	(~(dma_addr_t)0x0)
--
- static char *xen_io_tlb_start, *xen_io_tlb_end;
- static unsigned long xen_io_tlb_nslabs;
- /*
-@@ -406,7 +404,7 @@ static dma_addr_t xen_swiotlb_map_page(struct device *dev, struct page *page,
- 	map = swiotlb_tbl_map_single(dev, start_dma_addr, phys, size, dir,
- 				     attrs);
- 	if (map == SWIOTLB_MAP_ERROR)
--		return XEN_SWIOTLB_ERROR_CODE;
-+		return DMA_MAPPING_ERROR;
- 
- 	dev_addr = xen_phys_to_bus(map);
- 	xen_dma_map_page(dev, pfn_to_page(map >> PAGE_SHIFT),
-@@ -421,7 +419,7 @@ static dma_addr_t xen_swiotlb_map_page(struct device *dev, struct page *page,
- 	attrs |= DMA_ATTR_SKIP_CPU_SYNC;
- 	swiotlb_tbl_unmap_single(dev, map, size, dir, attrs);
- 
--	return XEN_SWIOTLB_ERROR_CODE;
-+	return DMA_MAPPING_ERROR;
+diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+index 41a4b8808802..66b4444398ae 100644
+--- a/drivers/iommu/intel-iommu.c
++++ b/drivers/iommu/intel-iommu.c
+@@ -3597,9 +3597,11 @@ static int iommu_no_mapping(struct device *dev)
+ 	return 0;
  }
  
- /*
-@@ -700,11 +698,6 @@ xen_swiotlb_get_sgtable(struct device *dev, struct sg_table *sgt,
- 	return dma_common_get_sgtable(dev, sgt, cpu_addr, handle, size, attrs);
+-static dma_addr_t __intel_map_single(struct device *dev, phys_addr_t paddr,
+-				     size_t size, int dir, u64 dma_mask)
++static dma_addr_t __intel_map_page(struct device *dev, struct page *page,
++				   unsigned long offset, size_t size, int dir,
++				   u64 dma_mask)
+ {
++	phys_addr_t paddr = page_to_phys(page) + offset;
+ 	struct dmar_domain *domain;
+ 	phys_addr_t start_paddr;
+ 	unsigned long iova_pfn;
+@@ -3661,8 +3663,7 @@ static dma_addr_t intel_map_page(struct device *dev, struct page *page,
+ 				 enum dma_data_direction dir,
+ 				 unsigned long attrs)
+ {
+-	return __intel_map_single(dev, page_to_phys(page) + offset, size,
+-				  dir, *dev->dma_mask);
++	return __intel_map_page(dev, page, offset, size, dir, *dev->dma_mask);
  }
  
--static int xen_swiotlb_mapping_error(struct device *dev, dma_addr_t dma_addr)
--{
--	return dma_addr == XEN_SWIOTLB_ERROR_CODE;
--}
--
- const struct dma_map_ops xen_swiotlb_dma_ops = {
- 	.alloc = xen_swiotlb_alloc_coherent,
- 	.free = xen_swiotlb_free_coherent,
-@@ -719,5 +712,4 @@ const struct dma_map_ops xen_swiotlb_dma_ops = {
- 	.dma_supported = xen_swiotlb_dma_supported,
- 	.mmap = xen_swiotlb_dma_mmap,
- 	.get_sgtable = xen_swiotlb_get_sgtable,
--	.mapping_error	= xen_swiotlb_mapping_error,
- };
+ static void intel_unmap(struct device *dev, dma_addr_t dev_addr, size_t size)
+@@ -3753,9 +3754,8 @@ static void *intel_alloc_coherent(struct device *dev, size_t size,
+ 		return NULL;
+ 	memset(page_address(page), 0, size);
+ 
+-	*dma_handle = __intel_map_single(dev, page_to_phys(page), size,
+-					 DMA_BIDIRECTIONAL,
+-					 dev->coherent_dma_mask);
++	*dma_handle = __intel_map_page(dev, page, 0, size, DMA_BIDIRECTIONAL,
++				       dev->coherent_dma_mask);
+ 	if (*dma_handle)
+ 		return page_address(page);
+ 	if (!dma_release_from_contiguous(dev, page, size >> PAGE_SHIFT))
 -- 
 2.19.1
 
