@@ -2,101 +2,105 @@ Return-Path: <SRS0=fqjw=OJ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48894C04EB8
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 23:05:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3837EC04EB8
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 23:29:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EB0B520863
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 23:05:45 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bNqUWAI4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB0B520863
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTP id 0429920867
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 23:29:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0429920867
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725790AbeLAKQi (ORCPT
+        id S1726635AbeLAKjv (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 1 Dec 2018 05:16:38 -0500
-Received: from mail-yb1-f195.google.com ([209.85.219.195]:37333 "EHLO
-        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725749AbeLAKQh (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 1 Dec 2018 05:16:37 -0500
-Received: by mail-yb1-f195.google.com with SMTP id w129-v6so1339867ybe.4;
-        Fri, 30 Nov 2018 15:05:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qFTAE6tP9xU0AGPHwRa6UHsQrmdFu57GcbGCXh1Vx5E=;
-        b=bNqUWAI4Fv9XrPOh1jleFYmf5dtNMfYKepG+fQtINjxz+fjUIbuYNlmCL+xJkMRaR3
-         ORxkMVS7vWfG0tkyg0lcKTdfBOroXbBpQwSK4KFIHn1nMois/D9iQqw6AjmGLXJRkdap
-         JDwocZ726ZFHdEundmiUErMnzIfcF1oxFgqXoKd9CU8hY8lpsl9BbMoJXCbknglwW9gf
-         2ES+KezdX7rDazpcykjfHhNWe/kj8zmglW+f8vXlFl4anJMPm57gqwG3p8yX93Hm62xG
-         RRgOpshMW3jAeS22LbQayY6nYqb9eCFM9kGn6vI+fvB1UhgoYDMIqxeJd3KqfZTSI07N
-         B7hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qFTAE6tP9xU0AGPHwRa6UHsQrmdFu57GcbGCXh1Vx5E=;
-        b=XWLzfSevaOodCmktAGOZHbUTOHsVnCbDMJ5CyCm3UhHXDyTzP/oCxr1H0DxlnjVwbY
-         uOeOEfLC6IPCpaUi5eKzdO7t4Wj2P3BypQ85kRvfPtpKat5RDZn8ibKERwACfsCy2VDD
-         vhq+djfU1/qPeYJo8qUmtASwzRcedvA6rmI9hMml4oOSzoqjG42Re1XkxkmfIEcI7Cky
-         CPJdtTKtEn0FJZgoKvR5rER4AYSnUXqLTmFcTQp4MD5PfPGD3awYjKoVmhxh1sAV9uLi
-         rKaeYtYmC4I1XU72R4feOgJmRVWTO2Qsg9CGFHBLPueqqj7GWKM5R4DquchjkaNmqv8F
-         jD8w==
-X-Gm-Message-State: AA+aEWbvxhsI5xEzN4kM1gdslwx3btHQk3sK/M10OBkeSkof1xaTlsHE
-        pgRM08mm2ruBBNxvze9DGyW2e6IyLlViStx8cjc=
-X-Google-Smtp-Source: AFSGD/U+84yPr34+p6A4F8dsnyR0otFDDXE4sYBhu0TuvIxflN5V/6YuBwjkJ4xOC+bjRsWL/9SmbKp5F4MmOCN31Kg=
-X-Received: by 2002:a25:b990:: with SMTP id r16-v6mr7285744ybg.74.1543619144235;
- Fri, 30 Nov 2018 15:05:44 -0800 (PST)
+        Sat, 1 Dec 2018 05:39:51 -0500
+Received: from mga17.intel.com ([192.55.52.151]:34752 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725867AbeLAKjv (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sat, 1 Dec 2018 05:39:51 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 30 Nov 2018 15:28:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.56,300,1539673200"; 
+   d="scan'208";a="255173443"
+Received: from jsakkine-mobl1.jf.intel.com (HELO localhost) ([10.241.225.27])
+  by orsmga004.jf.intel.com with ESMTP; 30 Nov 2018 15:28:54 -0800
+Date:   Fri, 30 Nov 2018 15:28:54 -0800
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Daniel Axtens <dja@axtens.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Eric Dumazet <edumazet@google.com>, federico.vaga@vaga.pv.it,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Helge Deller <deller@gmx.de>, Joshua Kinard <kumba@gentoo.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux MIPS Mailing List <linux-mips@linux-mips.org>,
+        Linux mtd <linux-mtd@lists.infradead.org>,
+        linux-parisc <linux-parisc@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-scsi@vger.kernel.org, matthias.bgg@gmail.com,
+        Network Development <netdev@vger.kernel.org>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Paul Burton <paul.burton@mips.com>,
+        Petr Mladek <pmladek@suse.com>, Rob Herring <robh@kernel.org>,
+        sean.wang@mediatek.com,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        shannon.nelson@oracle.com, Stefano Brivio <sbrivio@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Tobin C. Harding" <me@tobin.cc>, makita.toshiaki@lab.ntt.co.jp,
+        Willem de Bruijn <willemb@google.com>,
+        Yonghong Song <yhs@fb.com>, yanjun.zhu@oracle.com
+Subject: Re: [PATCH RFC 00/15] Zero ****s, hugload of hugs <3
+Message-ID: <20181130232854.GA464@linux.intel.com>
+References: <20181130195652.7syqys76646kpaph@linux-r8p5>
+ <20181130205521.GA21006@linux.intel.com>
+ <1543611662.3031.20.camel@HansenPartnership.com>
+ <20181130214405.GG23772@linux.intel.com>
+ <1543615069.3031.27.camel@HansenPartnership.com>
+ <20181130221219.GA25537@linux.intel.com>
+ <20181130151459.3ca2f5c8@lwn.net>
+ <20181130222605.GA26261@linux.intel.com>
+ <1543617045.3031.41.camel@HansenPartnership.com>
+ <20181130224019.GA27562@linux.intel.com>
 MIME-Version: 1.0
-References: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com> <20181130192737.15053-6-jarkko.sakkinen@linux.intel.com>
-In-Reply-To: <20181130192737.15053-6-jarkko.sakkinen@linux.intel.com>
-From:   Diego Viola <diego.viola@gmail.com>
-Date:   Fri, 30 Nov 2018 21:05:32 -0200
-Message-ID: <CA+ToGPGA9PTzhaQjhXULzqpes_V16LovWA2tjSJLRsByLRxWmw@mail.gmail.com>
-Subject: Re: [PATCH RFC 05/15] parisc: replace **** with a hug
-To:     jarkko.sakkinen@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, jejb@parisc-linux.org, deller@gmx.de,
-        linux@dominikbrodowski.net, keescook@chromium.org,
-        akpm@linux-foundation.org, linux-parisc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20181130224019.GA27562@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, Nov 30, 2018 at 5:30 PM Jarkko Sakkinen
-<jarkko.sakkinen@linux.intel.com> wrote:
->
-> In order to comply with the CoC, replace **** with a hug.
->
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->  arch/parisc/kernel/sys_parisc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
-> index 376ea0d1b275..4782c41f00c8 100644
-> --- a/arch/parisc/kernel/sys_parisc.c
-> +++ b/arch/parisc/kernel/sys_parisc.c
-> @@ -287,7 +287,7 @@ asmlinkage unsigned long sys_mmap(unsigned long addr, unsigned long len,
->         }
->  }
->
-> -/* Fucking broken ABI */
-> +/* Hugging broken ABI */
->
->  #ifdef CONFIG_64BIT
->  asmlinkage long parisc_truncate64(const char __user * path,
-> --
-> 2.19.1
->
+On Fri, Nov 30, 2018 at 02:40:19PM -0800, Jarkko Sakkinen wrote:
+> Got you... Well I now read the 2nd amendment now through, and yeah, kind
+> of way I work/function anyway.
 
-What about profanity in commit messages?
+Ugh, looked up the word from dictionary for something that makes
+additions to some guidelines because did not know the english word.
+Not meant as a political reference of any kind. Just don't know
+any better English word.
+
+/Jarkko
