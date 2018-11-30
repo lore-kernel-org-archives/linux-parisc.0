@@ -1,59 +1,113 @@
-Return-Path: <SRS0=noE3=OI=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=fqjw=OJ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF444C18DF5
-	for <linux-parisc@archiver.kernel.org>; Thu, 29 Nov 2018 18:55:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5873C64EB4
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 13:23:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 904932146F
-	for <linux-parisc@archiver.kernel.org>; Thu, 29 Nov 2018 18:55:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 904932146F
+	by mail.kernel.org (Postfix) with ESMTP id 9C1ED2082F
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 13:23:13 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JOf9fiGG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C1ED2082F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbeK3GCC (ORCPT
+        id S1726558AbeLAAc3 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 30 Nov 2018 01:02:02 -0500
-Received: from verein.lst.de ([213.95.11.211]:45630 "EHLO newverein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725871AbeK3GCC (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 30 Nov 2018 01:02:02 -0500
-Received: by newverein.lst.de (Postfix, from userid 2407)
-        id C48E168BDF; Thu, 29 Nov 2018 19:55:37 +0100 (CET)
-Date:   Thu, 29 Nov 2018 19:55:37 +0100
+        Fri, 30 Nov 2018 19:32:29 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:45746 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726270AbeLAAc3 (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 30 Nov 2018 19:32:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=A/J16M6FpKMXGkalsHGNWwyWuLoovXiruopq0QWan0w=; b=JOf9fiGGeEzv7Mt/zHkUdvbTB
+        zHtAa1SoRX05GKpGnE5qIzzxnlalDkQqgyT3ju5lZXgn6hkJDaFUkcnQquhPA2Qp0C1TcCTvPKI8h
+        T/tRDgywtXeZ2rMJ4vS476aCCZ4wGTVJXFdNW6eRvbw0VJ2mILvgUf5jz1sskmxkB64jjxnlI+Shs
+        SVrgLZu0rGaEqTan6jjh1lcnfGVdoC2pK3I7Mve6SHSQvFrWmjqvL3+JCORLuM29LMF9DUPZAFtAE
+        tNpZlq5wvBmSeFKhBoOsmssSFKlBLL8RR95oxAY4kJs8bbvrXOJeNt+uiPEFbc0VQChsbSkz99+S5
+        fdx5C6l1w==;
+Received: from 089144206221.atnat0015.highway.bob.at ([89.144.206.221] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1gSil1-0004Ge-1e; Fri, 30 Nov 2018 13:22:59 +0000
 From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org, robin.murphy@arm.com,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, linux-alpha@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
+To:     iommu@lists.linux-foundation.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jon Mason <jdmason@kudzu.us>, Joerg Roedel <joro@8bytes.org>,
         David Woodhouse <dwmw2@infradead.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: remove the ->mapping_error method from dma_map_ops V2
-Message-ID: <20181129185537.GA30824@lst.de>
-References: <20181128074117.GA21126@lst.de> <CAHk-=wg5+rXK8dpjkSmK7tuz29VfxVWNEwmTVYB409mmyLkeew@mail.gmail.com> <20181128174545.GJ30658@n2100.armlinux.org.uk> <CAHk-=whnz4Kty6cas11bc2Gh=9zTzeeRS2k=dV9Hfc4B=xnHkQ@mail.gmail.com> <20181128180841.GM30658@n2100.armlinux.org.uk> <CAHk-=whcbiSxSUprsKjVPEdN5-+o8WnTGiKxEV-+HbKNDs=iNA@mail.gmail.com> <20181129162323.GA27068@lst.de> <CAHk-=wi2K7_+dgCbc-sAK9CST5Zh+pOuH7sVT9WW-kqs50HSzQ@mail.gmail.com> <20181129183132.GA30281@lst.de> <CAHk-=wjjmtZAAGvB8c6hyKvABPHNTfE+b+eHu7iktdogDfTgMw@mail.gmail.com>
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: remove the ->mapping_error method from dma_map_ops V3
+Date:   Fri, 30 Nov 2018 14:22:08 +0100
+Message-Id: <20181130132231.16512-1-hch@lst.de>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjjmtZAAGvB8c6hyKvABPHNTfE+b+eHu7iktdogDfTgMw@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Thu, Nov 29, 2018 at 10:53:32AM -0800, Linus Torvalds wrote:
-> Most of the high-performance IO is already using SG lists anyway, no?
-> Disk/networking/whatever.
+Error reporting for the dma_map_single and dma_map_page operations is
+currently a mess.  Both APIs directly return the dma_addr_t to be used for
+the DMA, with a magic error escape that is specific to the instance and
+checked by another method provided.  This has a few downsides:
 
-Networking basically never uses S/G lists.  Block I/O mostly uses it,
-and graphics / media seems to have a fair amount of S/G uses, including
-very, erm special ones.
+ - the error check is easily forgotten and a __must_check marker doesn't
+   help as the value always is consumed anyway
+ - the error checking requires another indirect call, which have gotten
+   incredibly expensive
+ - a lot of code is wasted on implementing these methods
+
+The historical reason for this is that people thought DMA mappings would
+not fail when the API was created, which sounds like a really bad
+assumption in retrospective, and then we tried to cram error handling
+onto it later on.
+
+There basically are two variants:  the error code is 0 because the
+implementation will never return 0 as a valid DMA address, or the error
+code is all-F as the implementation won't ever return an address that
+high.  The old AMD GART is the only one not falling into these two camps
+as it picks sort of a relative zero relative to where it is mapped.
+
+The 0 return doesn't work for direct mappings that have ram at address
+zero and a lot of IOMMUs that start allocating bus space from address
+zero, so we can't consolidate on that, but I think we can move everyone
+to all-Fs, which the patch here does.  The reason for that is that
+there is only one way to ever get this address: by doing a 1-byte long,
+1-byte aligned mapping, but all our mappings are not only longer but
+generally aligned, and the mappings have to keep at least the basic
+alignment.
+
+A git tree is also available here:
+
+    git://git.infradead.org/users/hch/misc.git dma-mapping-error.3
+
+Gitweb:
+
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dma-mapping-error.3
+
+Changes since v2:
+ - fix a compile error in the ia64 sba_iommu driver
+ - return an errno value from dma_mapping_error
+
+Changes since v1:
+ - dropped the signature change
+ - split into multiple patches
+ - fixed the iova allocator return check in amd-iommu
+ - remove EMERGENCY_PAGES in amd_gart and calgary
