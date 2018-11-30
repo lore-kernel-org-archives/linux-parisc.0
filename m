@@ -2,44 +2,45 @@ Return-Path: <SRS0=fqjw=OJ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2227C04EB8
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 13:23:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF93CC04EB8
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 13:24:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8FFE92080A
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 13:23:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B704220868
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 13:24:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WYL13HPt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8FFE92080A
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="dgMw0L6L"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B704220868
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727261AbeLAAcz (ORCPT
+        id S1727467AbeLAAdW (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 30 Nov 2018 19:32:55 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:46714 "EHLO
+        Fri, 30 Nov 2018 19:33:22 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:49640 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727187AbeLAAco (ORCPT
+        with ESMTP id S1726802AbeLAAdV (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 30 Nov 2018 19:32:44 -0500
+        Fri, 30 Nov 2018 19:33:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
         :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ZNLU6sSp3uiLMX8F8bTjTkvpVBXJnza8jEm00Ete8Hs=; b=WYL13HPtB9MlQv/kOGe/4Q3WSs
-        yDbms2Kmar5C6qmbVX42/1vftIrIP/q5R+GUqvWbKgH+0NlKvxGDNcEW9F6PV0CwM6ew7lf7+QJhe
-        XOTdLguzwpqS4ulTosRL4UhQPEcfBtI/uWa7aUCxgOYF9EebN6zQV+lgRTd5zaCs20hU49pg1Qj05
-        pqnUOuPImzRAt3DZLPmXh6skgIazBpZvW/bRIFJ/xWtBuNWdyPQHzPO82j9v8TwAjAupS/CyLZBgR
-        zP7XuhfSyQyCXjTonrPX37iJwkwhUBlt6TtiOe/ywYj6atWqay5tq3k2lIl+Ul+62XWi5uhxRKOK9
-        62eQzaNA==;
+        bh=uo0Q98winaBB83hkbU/s9+bS7uoJBORh6pgs2ABTT38=; b=dgMw0L6L2cMJMv+i2XyQpaW0Ub
+        qoLAa69Dpwo4bL6bY/Mdq6WJrewp2Vbo2R1v+1tsagN8mWTUI5sgH9E7d3KBMBsIzygVEpTatecQN
+        O4SiwOsShrUi6rpeyGzgaM9cRqIhBpzkjgTzasXWr8v/HI5XVVpnSu8BZqg1bkQPkRPPoB3MmjCkA
+        15PqNGJCaTzKlEoGt6uvuGiwdgUtNTT/8zbCECg+921wvraD2W5Vx5VVN7eHfWG6I4/2RpBIrigo0
+        vnrAW1rngT8mQ6KBODix0GY4BMr70MuArKZmqnj78/1uh8sXRy1e1xIzYDDfIJN7w6mIvgB3bPp1n
+        51XSJnMw==;
 Received: from 089144206221.atnat0015.highway.bob.at ([89.144.206.221] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1gSilM-0004Wg-BL; Fri, 30 Nov 2018 13:23:20 +0000
+        id 1gSilw-0004zL-AT; Fri, 30 Nov 2018 13:23:56 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     iommu@lists.linux-foundation.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -51,9 +52,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 07/23] sparc: remove the mapping_error dma_map_ops method
-Date:   Fri, 30 Nov 2018 14:22:15 +0100
-Message-Id: <20181130132231.16512-8-hch@lst.de>
+Subject: [PATCH 19/23] iommu/vt-d: remove the mapping_error dma_map_ops method
+Date:   Fri, 30 Nov 2018 14:22:27 +0100
+Message-Id: <20181130132231.16512-20-hch@lst.de>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20181130132231.16512-1-hch@lst.de>
 References: <20181130132231.16512-1-hch@lst.de>
@@ -65,136 +66,65 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Sparc already returns (~(dma_addr_t)0x0) on mapping failures, so we can
-switch over to returning DMA_MAPPING_ERROR and let the core dma-mapping
-code handle the rest.
+Return DMA_MAPPING_ERROR instead of 0 on a dma mapping failure and let
+the core dma-mapping code handle the rest.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/sparc/kernel/iommu.c        | 12 +++---------
- arch/sparc/kernel/iommu_common.h |  2 --
- arch/sparc/kernel/pci_sun4v.c    | 14 ++++----------
- 3 files changed, 7 insertions(+), 21 deletions(-)
+ drivers/iommu/intel-iommu.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/arch/sparc/kernel/iommu.c b/arch/sparc/kernel/iommu.c
-index 40d008b0bd3e..0626bae5e3da 100644
---- a/arch/sparc/kernel/iommu.c
-+++ b/arch/sparc/kernel/iommu.c
-@@ -315,7 +315,7 @@ static dma_addr_t dma_4u_map_page(struct device *dev, struct page *page,
- bad_no_ctx:
- 	if (printk_ratelimit())
- 		WARN_ON(1);
--	return SPARC_MAPPING_ERROR;
+diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+index 66b4444398ae..0ad67d65bbce 100644
+--- a/drivers/iommu/intel-iommu.c
++++ b/drivers/iommu/intel-iommu.c
+@@ -3617,7 +3617,7 @@ static dma_addr_t __intel_map_page(struct device *dev, struct page *page,
+ 
+ 	domain = get_valid_domain_for_dev(dev);
+ 	if (!domain)
+-		return 0;
++		return DMA_MAPPING_ERROR;
+ 
+ 	iommu = domain_get_iommu(domain);
+ 	size = aligned_nrpages(paddr, size);
+@@ -3655,7 +3655,7 @@ static dma_addr_t __intel_map_page(struct device *dev, struct page *page,
+ 		free_iova_fast(&domain->iovad, iova_pfn, dma_to_mm_pfn(size));
+ 	pr_err("Device %s request: %zx@%llx dir %d --- failed\n",
+ 		dev_name(dev), size, (unsigned long long)paddr, dir);
+-	return 0;
 +	return DMA_MAPPING_ERROR;
  }
  
- static void strbuf_flush(struct strbuf *strbuf, struct iommu *iommu,
-@@ -548,7 +548,7 @@ static int dma_4u_map_sg(struct device *dev, struct scatterlist *sglist,
+ static dma_addr_t intel_map_page(struct device *dev, struct page *page,
+@@ -3756,7 +3756,7 @@ static void *intel_alloc_coherent(struct device *dev, size_t size,
  
- 	if (outcount < incount) {
- 		outs = sg_next(outs);
--		outs->dma_address = SPARC_MAPPING_ERROR;
-+		outs->dma_address = DMA_MAPPING_ERROR;
- 		outs->dma_length = 0;
- 	}
- 
-@@ -574,7 +574,7 @@ static int dma_4u_map_sg(struct device *dev, struct scatterlist *sglist,
- 			iommu_tbl_range_free(&iommu->tbl, vaddr, npages,
- 					     IOMMU_ERROR_CODE);
- 
--			s->dma_address = SPARC_MAPPING_ERROR;
-+			s->dma_address = DMA_MAPPING_ERROR;
- 			s->dma_length = 0;
- 		}
- 		if (s == outs)
-@@ -742,11 +742,6 @@ static void dma_4u_sync_sg_for_cpu(struct device *dev,
- 	spin_unlock_irqrestore(&iommu->lock, flags);
+ 	*dma_handle = __intel_map_page(dev, page, 0, size, DMA_BIDIRECTIONAL,
+ 				       dev->coherent_dma_mask);
+-	if (*dma_handle)
++	if (*dma_handle != DMA_MAPPING_ERROR)
+ 		return page_address(page);
+ 	if (!dma_release_from_contiguous(dev, page, size >> PAGE_SHIFT))
+ 		__free_pages(page, order);
+@@ -3865,11 +3865,6 @@ static int intel_map_sg(struct device *dev, struct scatterlist *sglist, int nele
+ 	return nelems;
  }
  
--static int dma_4u_mapping_error(struct device *dev, dma_addr_t dma_addr)
+-static int intel_mapping_error(struct device *dev, dma_addr_t dma_addr)
 -{
--	return dma_addr == SPARC_MAPPING_ERROR;
+-	return !dma_addr;
 -}
 -
- static int dma_4u_supported(struct device *dev, u64 device_mask)
- {
- 	struct iommu *iommu = dev->archdata.iommu;
-@@ -772,7 +767,6 @@ static const struct dma_map_ops sun4u_dma_ops = {
- 	.sync_single_for_cpu	= dma_4u_sync_single_for_cpu,
- 	.sync_sg_for_cpu	= dma_4u_sync_sg_for_cpu,
- 	.dma_supported		= dma_4u_supported,
--	.mapping_error		= dma_4u_mapping_error,
+ static const struct dma_map_ops intel_dma_ops = {
+ 	.alloc = intel_alloc_coherent,
+ 	.free = intel_free_coherent,
+@@ -3877,7 +3872,6 @@ static const struct dma_map_ops intel_dma_ops = {
+ 	.unmap_sg = intel_unmap_sg,
+ 	.map_page = intel_map_page,
+ 	.unmap_page = intel_unmap_page,
+-	.mapping_error = intel_mapping_error,
+ 	.dma_supported = dma_direct_supported,
  };
  
- const struct dma_map_ops *dma_ops = &sun4u_dma_ops;
-diff --git a/arch/sparc/kernel/iommu_common.h b/arch/sparc/kernel/iommu_common.h
-index e3c02ba32500..d62ed9c5682d 100644
---- a/arch/sparc/kernel/iommu_common.h
-+++ b/arch/sparc/kernel/iommu_common.h
-@@ -48,6 +48,4 @@ static inline int is_span_boundary(unsigned long entry,
- 	return iommu_is_span_boundary(entry, nr, shift, boundary_size);
- }
- 
--#define SPARC_MAPPING_ERROR	(~(dma_addr_t)0x0)
--
- #endif /* _IOMMU_COMMON_H */
-diff --git a/arch/sparc/kernel/pci_sun4v.c b/arch/sparc/kernel/pci_sun4v.c
-index 565d9ac883d0..fa0e42b4cbfb 100644
---- a/arch/sparc/kernel/pci_sun4v.c
-+++ b/arch/sparc/kernel/pci_sun4v.c
-@@ -414,12 +414,12 @@ static dma_addr_t dma_4v_map_page(struct device *dev, struct page *page,
- bad:
- 	if (printk_ratelimit())
- 		WARN_ON(1);
--	return SPARC_MAPPING_ERROR;
-+	return DMA_MAPPING_ERROR;
- 
- iommu_map_fail:
- 	local_irq_restore(flags);
- 	iommu_tbl_range_free(tbl, bus_addr, npages, IOMMU_ERROR_CODE);
--	return SPARC_MAPPING_ERROR;
-+	return DMA_MAPPING_ERROR;
- }
- 
- static void dma_4v_unmap_page(struct device *dev, dma_addr_t bus_addr,
-@@ -592,7 +592,7 @@ static int dma_4v_map_sg(struct device *dev, struct scatterlist *sglist,
- 
- 	if (outcount < incount) {
- 		outs = sg_next(outs);
--		outs->dma_address = SPARC_MAPPING_ERROR;
-+		outs->dma_address = DMA_MAPPING_ERROR;
- 		outs->dma_length = 0;
- 	}
- 
-@@ -609,7 +609,7 @@ static int dma_4v_map_sg(struct device *dev, struct scatterlist *sglist,
- 			iommu_tbl_range_free(tbl, vaddr, npages,
- 					     IOMMU_ERROR_CODE);
- 			/* XXX demap? XXX */
--			s->dma_address = SPARC_MAPPING_ERROR;
-+			s->dma_address = DMA_MAPPING_ERROR;
- 			s->dma_length = 0;
- 		}
- 		if (s == outs)
-@@ -688,11 +688,6 @@ static int dma_4v_supported(struct device *dev, u64 device_mask)
- 	return pci64_dma_supported(to_pci_dev(dev), device_mask);
- }
- 
--static int dma_4v_mapping_error(struct device *dev, dma_addr_t dma_addr)
--{
--	return dma_addr == SPARC_MAPPING_ERROR;
--}
--
- static const struct dma_map_ops sun4v_dma_ops = {
- 	.alloc				= dma_4v_alloc_coherent,
- 	.free				= dma_4v_free_coherent,
-@@ -701,7 +696,6 @@ static const struct dma_map_ops sun4v_dma_ops = {
- 	.map_sg				= dma_4v_map_sg,
- 	.unmap_sg			= dma_4v_unmap_sg,
- 	.dma_supported			= dma_4v_supported,
--	.mapping_error			= dma_4v_mapping_error,
- };
- 
- static void pci_sun4v_scan_bus(struct pci_pbm_info *pbm, struct device *parent)
 -- 
 2.19.1
 
