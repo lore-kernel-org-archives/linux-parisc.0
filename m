@@ -7,23 +7,23 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62C90C64EB4
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 13:25:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD015C65BAE
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 13:25:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2BAB82080A
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 13:25:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7445F2080A
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Nov 2018 13:25:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="e9swujTF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BAB82080A
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sV59/y1/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7445F2080A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727187AbeLAAc7 (ORCPT
+        id S1727071AbeLAAe0 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 30 Nov 2018 19:32:59 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:48042 "EHLO
+        Fri, 30 Nov 2018 19:34:26 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:48058 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726645AbeLAAc7 (ORCPT
+        with ESMTP id S1726798AbeLAAc7 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
         Fri, 30 Nov 2018 19:32:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -32,15 +32,15 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
         :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=y70DZ2fm3EDwoGaOi1zf4filovpEWIC1jIMmvTH5Sw4=; b=e9swujTFGvnWshpKpDvkgkwPJO
-        p3LYFN2NRs9xbV+fUpUph4xX7IC6RQc42oMI4dqXlM/bST/gNS4QEJdwkd9ue9mU6ABlTcMqggwlw
-        PzJFT7EGQsG4WUEXr54SmE0sUNBXeRm5EedVB8yGjAKTNq1rN1mEVqj91PqZyH8I+p8y3CY/uN3zg
-        zSAhsBiri8G8JkBM49amlbahWbMcI1D1QnmH+bD/Ll5FwZLbP77b676qDTGvVzXmOFA6ZSHa5Exb8
-        9X+Ft3WUum+qVWKIlr6uNJT/fpg294pcwHhhDmwJ/d+ukpEhljkcO7fGF5/HkYVHPdn0Ju+AtHxCU
-        Gc9Ii+8Q==;
+        bh=NRkfp6v/tyUENHy0v3FTFCa7RE2ArNmx9O95c3iBPt0=; b=sV59/y1/uSNMWMkubtCTim30ZE
+        SJvdc0okxTDV6DPg8ZqKx3OvSOuWyLxTYpGUgsnWZPGEdu6dHuHIs3R4m0LaVbXmVjLN493dOom9t
+        +Xk635MBbpXUSsBoEVIexzTSdScPUWlr3wQVJSzd9x9z+fvQ9AVmavo5zGuzulGZ0YwgEVwpHOrR6
+        4CJWO7xjQhx8POLemFHhgxOG9A2AbhLj5d36xH9BTWcALMq/eo4894IYUpAzTR/piJnvxji83BIKK
+        D9ui4xgBQU65mBNht8uhi4LOu4JqX7V0r8qDiE324Hbvg8Qa2IDN/rxSAjcsTa89ZT4Ftg1fmFGB4
+        pcgWnU7A==;
 Received: from 089144206221.atnat0015.highway.bob.at ([89.144.206.221] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1gSilS-0004ZP-Cp; Fri, 30 Nov 2018 13:23:27 +0000
+        id 1gSilV-0004dI-EZ; Fri, 30 Nov 2018 13:23:30 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     iommu@lists.linux-foundation.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -52,9 +52,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 09/23] parisc/sba_iommu: remove the mapping_error dma_map_ops method
-Date:   Fri, 30 Nov 2018 14:22:17 +0100
-Message-Id: <20181130132231.16512-10-hch@lst.de>
+Subject: [PATCH 10/23] arm64: remove the dummy_dma_ops mapping_error method
+Date:   Fri, 30 Nov 2018 14:22:18 +0100
+Message-Id: <20181130132231.16512-11-hch@lst.de>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20181130132231.16512-1-hch@lst.de>
 References: <20181130132231.16512-1-hch@lst.de>
@@ -66,57 +66,47 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The SBA iommu code already returns (~(dma_addr_t)0x0) on mapping
-failures, so we can switch over to returning DMA_MAPPING_ERROR and let
-the core dma-mapping code handle the rest.
+Just return DMA_MAPPING_ERROR from __dummy_map_page and let the core
+dma-mapping code handle the rest.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/parisc/sba_iommu.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ arch/arm64/mm/dma-mapping.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-index c1e599a429af..452d306ce5cb 100644
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -93,8 +93,6 @@
- 
- #define DEFAULT_DMA_HINT_REG	0
- 
--#define SBA_MAPPING_ERROR    (~(dma_addr_t)0)
--
- struct sba_device *sba_list;
- EXPORT_SYMBOL_GPL(sba_list);
- 
-@@ -725,7 +723,7 @@ sba_map_single(struct device *dev, void *addr, size_t size,
- 
- 	ioc = GET_IOC(dev);
- 	if (!ioc)
--		return SBA_MAPPING_ERROR;
-+		return DMA_MAPPING_ERROR;
- 
- 	/* save offset bits */
- 	offset = ((dma_addr_t) (long) addr) & ~IOVP_MASK;
-@@ -1080,11 +1078,6 @@ sba_unmap_sg(struct device *dev, struct scatterlist *sglist, int nents,
- 
+diff --git a/arch/arm64/mm/dma-mapping.c b/arch/arm64/mm/dma-mapping.c
+index a3ac26284845..fdc26ea5036c 100644
+--- a/arch/arm64/mm/dma-mapping.c
++++ b/arch/arm64/mm/dma-mapping.c
+@@ -282,7 +282,7 @@ static dma_addr_t __dummy_map_page(struct device *dev, struct page *page,
+ 				   enum dma_data_direction dir,
+ 				   unsigned long attrs)
+ {
+-	return 0;
++	return DMA_MAPPING_ERROR;
  }
  
--static int sba_mapping_error(struct device *dev, dma_addr_t dma_addr)
+ static void __dummy_unmap_page(struct device *dev, dma_addr_t dev_addr,
+@@ -317,11 +317,6 @@ static void __dummy_sync_sg(struct device *dev,
+ {
+ }
+ 
+-static int __dummy_mapping_error(struct device *hwdev, dma_addr_t dma_addr)
 -{
--	return dma_addr == SBA_MAPPING_ERROR;
+-	return 1;
 -}
 -
- static const struct dma_map_ops sba_ops = {
- 	.dma_supported =	sba_dma_supported,
- 	.alloc =		sba_alloc,
-@@ -1093,7 +1086,6 @@ static const struct dma_map_ops sba_ops = {
- 	.unmap_page =		sba_unmap_page,
- 	.map_sg =		sba_map_sg,
- 	.unmap_sg =		sba_unmap_sg,
--	.mapping_error =	sba_mapping_error,
+ static int __dummy_dma_supported(struct device *hwdev, u64 mask)
+ {
+ 	return 0;
+@@ -339,7 +334,6 @@ const struct dma_map_ops dummy_dma_ops = {
+ 	.sync_single_for_device = __dummy_sync_single,
+ 	.sync_sg_for_cpu        = __dummy_sync_sg,
+ 	.sync_sg_for_device     = __dummy_sync_sg,
+-	.mapping_error          = __dummy_mapping_error,
+ 	.dma_supported          = __dummy_dma_supported,
  };
- 
- 
+ EXPORT_SYMBOL(dummy_dma_ops);
 -- 
 2.19.1
 
