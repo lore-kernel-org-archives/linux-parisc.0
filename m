@@ -2,128 +2,81 @@ Return-Path: <SRS0=QyeK=ON=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.7 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.4 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4F25C04EB8
-	for <linux-parisc@archiver.kernel.org>; Tue,  4 Dec 2018 11:27:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DE72C04EB8
+	for <linux-parisc@archiver.kernel.org>; Tue,  4 Dec 2018 15:00:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 98C9D20851
-	for <linux-parisc@archiver.kernel.org>; Tue,  4 Dec 2018 11:27:06 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="b4j6wo9E"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98C9D20851
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
+	by mail.kernel.org (Postfix) with ESMTP id 712242082B
+	for <linux-parisc@archiver.kernel.org>; Tue,  4 Dec 2018 15:00:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 712242082B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gmx.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726401AbeLDK7a (ORCPT
+        id S1726617AbeLDPAq (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 4 Dec 2018 05:59:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44312 "EHLO mail.kernel.org"
+        Tue, 4 Dec 2018 10:00:46 -0500
+Received: from mout.gmx.net ([212.227.17.22]:57371 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726265AbeLDK7a (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 4 Dec 2018 05:59:30 -0500
-Received: from localhost (5356596B.cm-6-7b.dynamic.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F0642146D;
-        Tue,  4 Dec 2018 10:59:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1543921169;
-        bh=ZyKoAFidhgeBconQf2Xx9WF6WvrnyQnuu40448UzMX4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b4j6wo9EnbAITm9USZhtvH1RYqWZEf73C4bXEHZyFY9NoDhFjCmOIMvS0zfm2fFKR
-         JockpyYQJ5bRiJj63fz5w2jUhK1haTGSufZRE34JYK2BElDtg6gd8FUTz3fHSZMLs2
-         /246tXrtzAdPHDrID89jBshyAX9JRF3Z47UHt8DM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        stable@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.19 106/139] parisc: function_graph: Simplify with function_graph_enter()
-Date:   Tue,  4 Dec 2018 11:49:47 +0100
-Message-Id: <20181204103654.910713936@linuxfoundation.org>
-X-Mailer: git-send-email 2.19.2
-In-Reply-To: <20181204103649.950154335@linuxfoundation.org>
-References: <20181204103649.950154335@linuxfoundation.org>
-User-Agent: quilt/0.65
-X-stable: review
-X-Patchwork-Hint: ignore
+        id S1725910AbeLDPAo (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 4 Dec 2018 10:00:44 -0500
+Received: from ls3530.dellerweb.de ([92.116.169.31]) by mail.gmx.com (mrgmx103
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 0LxPgU-1hZnPV2sby-0170gw; Tue, 04
+ Dec 2018 16:00:35 +0100
+Date:   Tue, 4 Dec 2018 16:00:32 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture fix for kernel v4.20-rc6
+Message-ID: <20181204150032.GA29884@ls3530.dellerweb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:DVO82d2ax1Pf2p4kFgKyoegoxQcOb1VH2dJ2MbUnOYiCZtNlvY+
+ Q84R/mhJwqe38Nm0qssBQQ62rwo67rQN9g8t505d99KeAxyrhEG8f/GzIa4WcQ3nOJy2Rla
+ 5+n8nKrCoEaVaWArE1m7NhIezFt7WFYzIpmf1cYcRBOAjJXaf+DviI3iYWB41j/wB2SIvNC
+ pFnTi3I32sFAmYHvu+uNQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rOPWwVB2cLU=:wmJkth7zc7f9whzb1zV1BT
+ N3EL0JNrgceB7uaJeL9gMv5haYw0nwdkitaTsxJtx9JYYr6sNJpLZIFtW1XQ8jPJk+dDXUKJX
+ bmWi9bU3GhT89cKnaU/9OXQqpAfFCha26IJ8wHBGYCSkBJvvIzbhOi5Njd2MoywCS1XRzWKwG
+ JAeLit5fYzvMzMhpz8pqwLUJUucpAd98kFBKbpNJs6sj/jjvMURYkHZcP4xDRykuEt+nJi678
+ ZQZ2nojYDZsj4QcGnX2nmRoGorIo2UaNtinql9oFpTCot2KJDHphV1l0kIDdUlIBUsAGjQ0CJ
+ ZkN/vrNcUx5/hodKH0QOxPQS6tL0FdMAT1BsbW5KMe5gQQ2ZrvFwoEJw89o6UoIJyEmHJ4P5u
+ pbNt4chQiU59XMAQxrXd8FJvnmTBv/fCkgBHC4lW0jbTm07P0HXdy46SvXZ3YQ+Jtw8ZdNtnQ
+ EV7Npm9lLh0lYsusp0bdbqkqIt8PVHbdfpxw8rqm9LKsKaJgscbQ5ASUTdZyh0sEdaCoS8EZl
+ iTXIkAXgq91O9V0gc/R4+ZWg/TAU+vfrsm1zwAplnJ7lvSEQg/3xYdtc3dKuoSjRsCkWxE+Tq
+ pGnFO54c+C86Uf5jr+aSqi4dF3SonjFTHtRUihBDrAIqB7Ia7Vt8bcGoyQztxXDbnUnuG3hGT
+ rF+MaGhC6347bVmx1w+HjsOUh2xjOeCztMuaKY5lr5g7pR9xSXqkHvkfzudNtAfuPn7rdZRAU
+ Ui+p5hAuFx9r2u2J1cgrc11YJzJoLj+LkWR1QBfqjz+EMNrCXyfMMxiFLNTU0BQJj8o57mSFO
+ DctNMPDrnWTKP/MmXFqe6ALeGBNk3EcbFHdv+i04yHzNgNEcuB4M/tJ1Ac7IOhyP8fsARrbYP
+ BnTQmqIEq9uR7PcT0EBO/Qz7Law7goUq6DldobU0c=
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-4.19-stable review patch.  If anyone has any objections, please let me know.
+Hi Linus,
 
-------------------
+please pull one patch for the parisc architecture for 4.20-rc6 from:
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.20-4
 
-commit a87532c78d291265efadc4b20a8c7a70cd59ea29 upstream.
+On parisc, use -ffunction-sections compiler option when building 32-bit kernel
+modules to avoid sysfs-warnings when loading such modules. This got broken with
+kernel v4.18.
 
-The function_graph_enter() function does the work of calling the function
-graph hook function and the management of the shadow stack, simplifying the
-work done in the architecture dependent prepare_ftrace_return().
+Thanks,
+Helge
 
-Have parisc use the new code, and remove the shadow stack management as well as
-having to set up the trace structure.
+----------------------------------------------------------------
+Helge Deller (1):
+      parisc: Enable -ffunction-sections for modules on 32-bit kernel
 
-This is needed to prepare for a fix of a design bug on how the curr_ret_stack
-is used.
-
-Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
-Cc: stable@kernel.org
-Fixes: 03274a3ffb449 ("tracing/fgraph: Adjust fgraph depth before calling trace return callback")
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- arch/parisc/kernel/ftrace.c |   17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
-
---- a/arch/parisc/kernel/ftrace.c
-+++ b/arch/parisc/kernel/ftrace.c
-@@ -30,7 +30,6 @@ static void __hot prepare_ftrace_return(
- 					unsigned long self_addr)
- {
- 	unsigned long old;
--	struct ftrace_graph_ent trace;
- 	extern int parisc_return_to_handler;
- 
- 	if (unlikely(ftrace_graph_is_dead()))
-@@ -41,19 +40,9 @@ static void __hot prepare_ftrace_return(
- 
- 	old = *parent;
- 
--	trace.func = self_addr;
--	trace.depth = current->curr_ret_stack + 1;
--
--	/* Only trace if the calling function expects to */
--	if (!ftrace_graph_entry(&trace))
--		return;
--
--        if (ftrace_push_return_trace(old, self_addr, &trace.depth,
--				     0, NULL) == -EBUSY)
--                return;
--
--	/* activate parisc_return_to_handler() as return point */
--	*parent = (unsigned long) &parisc_return_to_handler;
-+	if (!function_graph_enter(old, self_addr, 0, NULL))
-+		/* activate parisc_return_to_handler() as return point */
-+		*parent = (unsigned long) &parisc_return_to_handler;
- }
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
- 
-
-
+ arch/parisc/Makefile | 7 +++++++
+ 1 file changed, 7 insertions(+)
