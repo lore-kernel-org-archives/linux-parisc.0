@@ -1,60 +1,74 @@
-Return-Path: <SRS0=QyeK=ON=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=I14f=OO=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7F49C04EBF
-	for <linux-parisc@archiver.kernel.org>; Tue,  4 Dec 2018 22:34:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84FF4C04EBF
+	for <linux-parisc@archiver.kernel.org>; Wed,  5 Dec 2018 18:20:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A49C020850
-	for <linux-parisc@archiver.kernel.org>; Tue,  4 Dec 2018 22:34:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A49C020850
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+	by mail.kernel.org (Postfix) with ESMTP id 4BFFF20645
+	for <linux-parisc@archiver.kernel.org>; Wed,  5 Dec 2018 18:20:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1544034026;
+	bh=DdFOXFCd4hv2mRjj/Awx9NVpOh+sjYRQ+XlG5uw3jlg=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
+	b=qIHmHRLLTLqzxdEdNgeL+vuthalPxaNyV1M0S6XZJ4k7n44SjOUg1YIJq8GByzieZ
+	 OpqNuC2q4G5kBW8KEig32s5Ad3xFqtdExe8e62pifE87/HM19urHzC6fesjBMvNJu6
+	 nBp2v+8eOCh/bKV1L4fDL/Q5UkzHhZAQPJNNl/Q4=
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BFFF20645
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726378AbeLDWd5 (ORCPT
+        id S1728185AbeLESUX (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 4 Dec 2018 17:33:57 -0500
-Received: from verein.lst.de ([213.95.11.211]:46499 "EHLO newverein.lst.de"
+        Wed, 5 Dec 2018 13:20:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbeLDWd5 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 4 Dec 2018 17:33:57 -0500
-Received: by newverein.lst.de (Postfix, from userid 2407)
-        id 3E8FD68B03; Tue,  4 Dec 2018 23:33:55 +0100 (CET)
-Date:   Tue, 4 Dec 2018 23:33:55 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org,
-        linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 01/23] dma-mapping: provide a generic DMA_MAPPING_ERROR
-Message-ID: <20181204223355.GA12534@lst.de>
-References: <20181130132231.16512-1-hch@lst.de> <20181130132231.16512-2-hch@lst.de> <653ca801-63a1-3c19-ee09-ade19fa2bbb8@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <653ca801-63a1-3c19-ee09-ade19fa2bbb8@arm.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1727660AbeLESUD (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 5 Dec 2018 13:20:03 -0500
+Subject: Re: [GIT PULL] parisc architecture fix for kernel v4.20-rc6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1544034002;
+        bh=DdFOXFCd4hv2mRjj/Awx9NVpOh+sjYRQ+XlG5uw3jlg=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=SM3bgLqj4f/X8GaDLWnHwQMuoYXO5gF7stnYSGZQqQsP49Mt+vyE3bK+L7i+yHGQh
+         tFdB+ucMjr3oERvsgVZSk25xub8+Pf53sdEjYM/u2ARvwF7haLsHOOPkbvVICAviNv
+         nYx1ntYcfg/Ul9P+HlhcfMOwrccEReCXHmHVYNdU=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20181204150032.GA29884@ls3530.dellerweb.de>
+References: <20181204150032.GA29884@ls3530.dellerweb.de>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20181204150032.GA29884@ls3530.dellerweb.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git
+ parisc-4.20-4
+X-PR-Tracked-Commit-Id: 1e8249b8a4e960018e4baca6b523b8a4500af600
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: a517af52cb57f972cee2378765e1c5dd10141f0d
+Message-Id: <20181205182002.5826.67607.pr-tracker-bot@pdx-korg-gitolite-1.ci.codeaurora.org>
+Date:   Wed, 05 Dec 2018 18:20:02 +0000
+To:     Helge Deller <deller@gmx.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue, Dec 04, 2018 at 04:41:34PM +0000, Robin Murphy wrote:
-> I'd have been inclined to put the default check here, i.e.
->
-> -	return 0
-> +	return dma_addr == DMA_MAPPING_ERROR
->
-> such that the callback retains full precedence and we don't have to deal 
-> with the non-trivial removals immediately if it comes to it. Not that it 
-> makes a vast difference though, so either way,
+The pull request you sent on Tue, 4 Dec 2018 16:00:32 +0100:
 
-Ok, I've switched it around.
+> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-4.20-4
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/a517af52cb57f972cee2378765e1c5dd10141f0d
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
