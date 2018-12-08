@@ -1,158 +1,174 @@
-Return-Path: <SRS0=bJET=OQ=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=T3kf=OR=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5879BC64EB1
-	for <linux-parisc@archiver.kernel.org>; Fri,  7 Dec 2018 13:40:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2503AC67838
+	for <linux-parisc@archiver.kernel.org>; Sat,  8 Dec 2018 17:37:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 14642208E7
-	for <linux-parisc@archiver.kernel.org>; Fri,  7 Dec 2018 13:40:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DF6B02081C
+	for <linux-parisc@archiver.kernel.org>; Sat,  8 Dec 2018 17:37:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G/t9Px1j"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14642208E7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ihDkI2KB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF6B02081C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbeLGNkI (ORCPT
+        id S1726267AbeLHRhU (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 7 Dec 2018 08:40:08 -0500
-Received: from mail-it1-f195.google.com ([209.85.166.195]:56138 "EHLO
-        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbeLGNkI (ORCPT
+        Sat, 8 Dec 2018 12:37:20 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:42956 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726192AbeLHRhS (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 7 Dec 2018 08:40:08 -0500
-Received: by mail-it1-f195.google.com with SMTP id o19so6846761itg.5;
-        Fri, 07 Dec 2018 05:40:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QZXOxCmXChwQnEIdXhUUmnLs50L3mvTVM/iVgJWrrCM=;
-        b=G/t9Px1j0jXrR3MzTgIZSl56sw48OTkb7wwT4NJK1HgP9mMfek2XH8LyteYPPDm9nG
-         i+kDA/BD7XgeAB5qBc2Uj6vR1uBOZVhfcdzJwSri8/byDDx1t4SXqetF0vAxBzMnbKme
-         ry5Mya85zw1isLLie2MmFI+QPpGYZVepvMFVQpHD0zezwZFCPuN4kZFYWZpLd6TxTnLE
-         +a2N2iy5SmEIhP/oG478K4vcYuvAO/xrpga2QLx0a8gWobxvoTn05LMHaCLojLIy1iiQ
-         28jtPKT6d2GKGFeXSEV72WA9lZZQJ2ZE41n1bBb0oaDz4PCP5LJ9XG/UoFOwy9WB+Pg+
-         3ZJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QZXOxCmXChwQnEIdXhUUmnLs50L3mvTVM/iVgJWrrCM=;
-        b=DHTUHNDrGVQ4c4LCceTKpyc5msVkkUvHTGHbXOkrGeCLBXYCzd4UKUqWZNKKfWWZNy
-         tNR8x17QCTeKYmtjRTHYtLjl2DrT5qI9SBaeuls3MgAROpUegSSQRB58Ps/3CDE33uqJ
-         fPZwmUU8q+3UWDM7tykkOKF5zN1E/rMtzZ0DprkLjtoa21Hj5q24JLPw5tZ4O2V6U5Cr
-         EiTOulZfspHNQUjf/xB+/4862sagatnVtRvES7tPOaO8QcU0BiZ3jwLqvCl4J0b/8Z5J
-         LE34rZQP3pBTRiLG0kalWBCwv9TPovzDXYaKanKCwl1ocqE5hf1NtgX7xCsBu8oE7EJn
-         74PA==
-X-Gm-Message-State: AA+aEWaAAO31g2Dm0v9J6ZrJYxqTWm6QnLedACiTXsaPqDlXeeXL8OuX
-        rtfTMq/XPEelBytZ+uP64mGTJglxsoCIDzIfwDI=
-X-Google-Smtp-Source: AFSGD/XbOHW/zXOhA4bdEgg20HUHD0DtMFmBjzHois75dVpzcZAIuER3IN3Ri1068cAo7NanWHWDGr+Q3FjjtCIyzBA=
-X-Received: by 2002:a02:3f0b:: with SMTP id d11mr1899652jaa.26.1544190005869;
- Fri, 07 Dec 2018 05:40:05 -0800 (PST)
+        Sat, 8 Dec 2018 12:37:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
+        :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=NLkfdUBEdCMvItDNu9ApfVyxMTjrOso1MH0a7btwpaw=; b=ihDkI2KBJLoZeyxd3zD6I3kY0i
+        BZms6VHd7EFml42ho/Wk/Ab1yUJ5Z7RKMsqFDIsqx/9XUadtmf1Q5+3bAe6KStmKApoGMmy2kldOy
+        2PClm98ZZ+p/9hcZJ+98ZnTEhZgAAOVS4V77SOn8v9DfmUiC2JHkbYu8CUNj9FDaVZqRc9AjKSD8g
+        yOTn36/h8m1BbxZLks4s5YW4JXCAllgq8EQDKDkma+E+WJzw5e5LO02QIA82StUmVpehkfvT3jE++
+        Q5m0OWuykXvlff+gh5p6l6ZreX0TuQxntNZDjVWEg/Ls0RErcTVBl+iDCV2Jajnq6RaI984DcWfNt
+        VYUj8b3g==;
+Received: from [184.48.100.57] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1gVgXK-00054Y-Md; Sat, 08 Dec 2018 17:37:06 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     iommu@lists.linux-foundation.org
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "Matwey V. Kornilov" <matwey@sai.msu.ru>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-snps-arc@lists.infradead.org,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-arm-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, sparclinux@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH 10/10] Documentation: update the description for DMA_ATTR_NON_CONSISTENT
+Date:   Sat,  8 Dec 2018 09:37:02 -0800
+Message-Id: <20181208173702.15158-11-hch@lst.de>
+X-Mailer: git-send-email 2.19.2
+In-Reply-To: <20181208173702.15158-1-hch@lst.de>
+References: <20181208173702.15158-1-hch@lst.de>
 MIME-Version: 1.0
-References: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com>
- <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
- <20181130195652.7syqys76646kpaph@linux-r8p5> <20181130205521.GA21006@linux.intel.com>
- <1543611662.3031.20.camel@HansenPartnership.com> <20181130214405.GG23772@linux.intel.com>
- <1543615069.3031.27.camel@HansenPartnership.com> <20181130221219.GA25537@linux.intel.com>
- <20181130151459.3ca2f5c8@lwn.net> <CAMuHMdUkpLWm5NZmYj=uMgVncw6ZOb7j9KxFoDGhrnr7vzpx_w@mail.gmail.com>
-In-Reply-To: <CAMuHMdUkpLWm5NZmYj=uMgVncw6ZOb7j9KxFoDGhrnr7vzpx_w@mail.gmail.com>
-From:   Eric Curtin <ericcurtin17@gmail.com>
-Date:   Fri, 7 Dec 2018 13:39:54 +0000
-Message-ID: <CANpvso4ZjJkUA7+saYRR4qssvreZcm-74EPo3nrGSohFZF9akA@mail.gmail.com>
-Subject: Re: [PATCH RFC 00/15] Zero ****s, hugload of hugs <3
-To:     geert@linux-m68k.org
-Cc:     corbet@lwn.net, jarkko.sakkinen@linux.intel.com,
-        James.Bottomley@hansenpartnership.com, dave@stgolabs.net,
-        keescook@chromium.org,
-        Kernel development list <linux-kernel@vger.kernel.org>,
-        amir73il@gmail.com, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, dja@axtens.net,
-        davem@davemloft.net, linux@dominikbrodowski.net,
-        dri-devel@lists.freedesktop.org, edumazet@google.com,
-        federico.vaga@vaga.pv.it, geert+renesas@glider.be, deller@gmx.de,
-        kumba@gentoo.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org,
-        linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
-        linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-scsi@vger.kernel.org, matthias.bgg@gmail.com,
-        netdev@vger.kernel.org, nouveau@lists.freedesktop.org,
-        pabeni@redhat.com, paul.burton@mips.com, pmladek@suse.com,
-        robh@kernel.org, sean.wang@mediatek.com,
-        sergey.senozhatsky@gmail.com, shannon.nelson@oracle.com,
-        sbrivio@redhat.com, rostedt@goodmis.org, me@tobin.cc,
-        makita.toshiaki@lab.ntt.co.jp, willemb@google.com, yhs@fb.com,
-        yanjun.zhu@oracle.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi Guys,
+We got rid of the odd selective consistent or not behavior, and now
+want the normal dma_sync_single_* functions to be used for strict
+ownership transfers.  While dma_cache_sync hasn't been removed from
+the tree yet it should not be used in any new caller, so documentation
+for it is dropped here.
 
-I initially thought these patches were a joke. But I guess they are
-not. I suppose 2018 is the year everything became offensive.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ Documentation/DMA-API.txt        | 30 ++++--------------------------
+ Documentation/DMA-attributes.txt |  9 +++++----
+ include/linux/dma-mapping.h      |  3 +++
+ 3 files changed, 12 insertions(+), 30 deletions(-)
 
-Could we avoid the s/fuck/hug/g though? I have nothing against
-re-wording this stuff to remove the curse word, but it should at least
-make sense.
+diff --git a/Documentation/DMA-API.txt b/Documentation/DMA-API.txt
+index ac66ae2509a9..c81fe8a4aeec 100644
+--- a/Documentation/DMA-API.txt
++++ b/Documentation/DMA-API.txt
+@@ -518,20 +518,9 @@ API at all.
+ 	dma_alloc_attrs(struct device *dev, size_t size, dma_addr_t *dma_handle,
+ 			gfp_t flag, unsigned long attrs)
+ 
+-Identical to dma_alloc_coherent() except that when the
+-DMA_ATTR_NON_CONSISTENT flags is passed in the attrs argument, the
+-platform will choose to return either consistent or non-consistent memory
+-as it sees fit.  By using this API, you are guaranteeing to the platform
+-that you have all the correct and necessary sync points for this memory
+-in the driver should it choose to return non-consistent memory.
+-
+-Note: where the platform can return consistent memory, it will
+-guarantee that the sync points become nops.
+-
+-Warning:  Handling non-consistent memory is a real pain.  You should
+-only use this API if you positively know your driver will be
+-required to work on one of the rare (usually non-PCI) architectures
+-that simply cannot make consistent memory.
++Similar to dma_alloc_coherent(), except that the behavior can be controlled
++in more detail using the attrs argument.  See Documentation/DMA-attributes.txt
++for more details.
+ 
+ ::
+ 
+@@ -540,7 +529,7 @@ that simply cannot make consistent memory.
+ 		       dma_addr_t dma_handle, unsigned long attrs)
+ 
+ Free memory allocated by the dma_alloc_attrs().  All parameters common
+-parameters must identical to those otherwise passed to dma_fre_coherent,
++parameters must identical to those otherwise passed to dma_free_coherent,
+ and the attrs argument must be identical to the attrs passed to
+ dma_alloc_attrs().
+ 
+@@ -560,17 +549,6 @@ memory or doing partial flushes.
+ 	into the width returned by this call.  It will also always be a power
+ 	of two for easy alignment.
+ 
+-::
+-
+-	void
+-	dma_cache_sync(struct device *dev, void *vaddr, size_t size,
+-		       enum dma_data_direction direction)
+-
+-Do a partial sync of memory that was allocated by dma_alloc_attrs() with
+-the DMA_ATTR_NON_CONSISTENT flag starting at virtual address vaddr and
+-continuing on for size.  Again, you *must* observe the cache line
+-boundaries when doing this.
+-
+ ::
+ 
+ 	int
+diff --git a/Documentation/DMA-attributes.txt b/Documentation/DMA-attributes.txt
+index 8f8d97f65d73..2bb3fc0a621b 100644
+--- a/Documentation/DMA-attributes.txt
++++ b/Documentation/DMA-attributes.txt
+@@ -46,10 +46,11 @@ behavior.
+ DMA_ATTR_NON_CONSISTENT
+ -----------------------
+ 
+-DMA_ATTR_NON_CONSISTENT lets the platform to choose to return either
+-consistent or non-consistent memory as it sees fit.  By using this API,
+-you are guaranteeing to the platform that you have all the correct and
+-necessary sync points for this memory in the driver.
++DMA_ATTR_NON_CONSISTENT specifies that the memory returned is not
++required to be consistent.  The memory is owned by the device when
++returned from this function, and ownership must be explicitly
++transferred to the CPU using dma_sync_single_for_cpu, and back to the
++device using dma_sync_single_for_device.
+ 
+ DMA_ATTR_NO_KERNEL_MAPPING
+ --------------------------
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index 8c81fa5d1f44..8757ad5087c4 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -432,6 +432,9 @@ dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
+ #define dma_map_page(d, p, o, s, r) dma_map_page_attrs(d, p, o, s, r, 0)
+ #define dma_unmap_page(d, a, s, r) dma_unmap_page_attrs(d, a, s, r, 0)
+ 
++/*
++ * Don't use in new code, use dma_sync_single_for_{device,cpu} instead.
++ */
+ static inline void
+ dma_cache_sync(struct device *dev, void *vaddr, size_t size,
+ 		enum dma_data_direction dir)
+-- 
+2.19.2
 
-What's going to happen is someone is a newbie is going to see a comment
-like "We found an mark in the idr at the right wd, but it's not the
-mark we were told to remove. eparis seriously hugged up somewhere",
-probably google the term as they are unfamiliar with it, find out it's
-an alias for "fucked" and if they are sensitive get offended anyway.
-
-On Sat, 1 Dec 2018 at 08:20, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Jon,
->
-> On Fri, Nov 30, 2018 at 11:15 PM Jonathan Corbet <corbet@lwn.net> wrote:
-> > On Fri, 30 Nov 2018 14:12:19 -0800
-> > Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
-> >
-> > > As a maintainer myself (and based on somewhat disturbed feedback from
-> > > other maintainers) I can only make the conclusion that nobody knows what
-> > > the responsibility part here means.
-> > >
-> > > I would interpret, if I read it like at lawyer at least, that even for
-> > > existing code you would need to do the changes postmorterm.
-> > >
-> > > Is this wrong interpretation?  Should I conclude that I made a mistake
-> > > by reading the CoC and trying to understand what it *actually* says?
-> > > After this discussion, I can say that I understand it less than before.
-> >
-> > Have you read Documentation/process/code-of-conduct-interpretation.rst?
-> > As has been pointed out, it contains a clear answer to how things should
-> > be interpreted here.
->
-> Indeed:
->
-> | Contributions submitted for the kernel should use appropriate language.
-> | Content that already exists predating the Code of Conduct will not be
-> | addressed now as a violation.
->
-> However:
->
-> | Inappropriate language can be seen as a
-> | bug, though; such bugs will be fixed more quickly if any interested
-> | parties submit patches to that effect.
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
