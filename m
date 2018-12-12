@@ -2,66 +2,66 @@ Return-Path: <SRS0=rUCe=OV=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,T_MIXED_ES,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C140C65BAF
-	for <linux-parisc@archiver.kernel.org>; Wed, 12 Dec 2018 15:22:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F41FC67839
+	for <linux-parisc@archiver.kernel.org>; Wed, 12 Dec 2018 15:36:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E1BF52080F
-	for <linux-parisc@archiver.kernel.org>; Wed, 12 Dec 2018 15:22:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D9F4020839
+	for <linux-parisc@archiver.kernel.org>; Wed, 12 Dec 2018 15:36:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XX9SVF84"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1BF52080F
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aO2jXo9c"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9F4020839
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbeLLPWp (ORCPT
+        id S1726468AbeLLPgC (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 12 Dec 2018 10:22:45 -0500
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:37760 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726879AbeLLPWo (ORCPT
+        Wed, 12 Dec 2018 10:36:02 -0500
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:39393 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726325AbeLLPgC (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 12 Dec 2018 10:22:44 -0500
-Received: by mail-ed1-f68.google.com with SMTP id h15so15879717edb.4;
-        Wed, 12 Dec 2018 07:22:42 -0800 (PST)
+        Wed, 12 Dec 2018 10:36:02 -0500
+Received: by mail-ed1-f65.google.com with SMTP id b14so15898781edt.6;
+        Wed, 12 Dec 2018 07:36:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pb6nsh9mQtsebl/A8ULqr+d08QVFd5jJ4arDtoQLm+E=;
-        b=XX9SVF84w0E2nWYIaKdpu28NhQC2SHGavLEKa/ttJl4raX+HCV/bJ+8boNd0ncrwVS
-         Acmh8S/gvvJsYkxB7exHFaTeLRfZzuCWleZCf8ZJVaC60iqeHmFH5curmcNaS5BdBN+N
-         raiNFM9gYdQ47KWSBAXZNlnBaOEOL7ZlaWaiVjni0tsmDJjU2HoRw+euPYLhILxv4pOo
-         SD0aJZs3vCde9Y4v6e+DptmPtP/VAoFAaZsL+9b77Z8eA2Duyi1IULbMdpODeuAshZ87
-         TWAuIC+irfC2s1Gun983oQNwECMCav17MPWAAL926UZ8oojQYx9uTFOTwJD3QUQfwzbY
-         RkGw==
+        bh=W89X3rrftkS34pp8m4+cNsxgaqdG/+ly7NIdp+tMwg8=;
+        b=aO2jXo9cna//uAcdtmyRdaUZLdOg7nZCHKkZ6UQ2LuVVA9GwunE1scGMZ5MVTinzbf
+         +AzWr+gHGAmMYbWwnh8qbddvV9pMQNMSnWDbk3KXQ9H1ee/9AUTui8myA4OLiiysZo3p
+         FmepUaKYUY3+tscWYNhUNG9ntUZJh9yc2QqGcBNHiz0v0r9YhcRV08ULGxhJz3Npywjx
+         Xs0MpBgV/r/bkDF1iLMKjyPCzlKiDtG42lYtbAE8PlXcrgnujj7VGddPY4g6PLG9n5c3
+         OY7WZAhdJ3EiVpfO/s9kCOYImShh8UV7KvWOVEDUueqGh8QAarclkvjjTCPs6QWVMRtB
+         xKxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pb6nsh9mQtsebl/A8ULqr+d08QVFd5jJ4arDtoQLm+E=;
-        b=djSCLChI4fBUBnS7WfxI2MkixFPVyw+IbC826tHS7EiHoOtudDDgpz6hULUW/EDvMf
-         YLF+KAuPc3YsBulJACutkgRL1XNpVS+tB4OhUXuwtCW9s8h2XpMEGVmxNO12qxO5uakK
-         KVnEObux4cdMLB3A47qUDaDI9jcdiS74g548I5foc21dlPklzqA0hz0zxxknk3mxjd48
-         r3S9EIAhifvInSDTE9DvcPUQQ7nED1skqE9izzYrwWMrZCJAPISOuD8ao/+NIa0z1IKX
-         7LxZBLbo3X4l1+bYIMNwqBxwwEubCY9cmGNMAFAt9ZICX1yoxmUu2nvJu/6oSQB+no1/
-         Z63Q==
-X-Gm-Message-State: AA+aEWaZnyahaYCV/g2kOL/X6ZK8JtTRyc5PVr3q/i4WBjnFQHXT3Pn1
-        pM1uT4xciCyfgUg3fRbGza4kKh+9Pq/Cx6iL0Kc=
-X-Google-Smtp-Source: AFSGD/W2e52auBMplrqJ7beXavB75ytlRdlHniGY+Bb9xclojtze2ZzJFrTI5BsoeVB4swode+eAQgbtfogrLDGjpbM=
-X-Received: by 2002:a50:b31c:: with SMTP id q28mr19169443edd.241.1544628161381;
- Wed, 12 Dec 2018 07:22:41 -0800 (PST)
+        bh=W89X3rrftkS34pp8m4+cNsxgaqdG/+ly7NIdp+tMwg8=;
+        b=SYB8Xrwc9nvpcl7KusiVANynvUV/aA9r4Fuz0GpD6M0eIT7CnbIcKg+0467wAywiqg
+         hIMUT3ztf6Nc68VflYsWMHWtelWwSf5E3z9JFXdSQ0YE7qNoIHjcmQZVTQL+om/I2Obu
+         sf1IVxtUDLF6CoC/Zr+Zcf3UGKlDf1ltCO5H3yNMArHc5J6lB7NypNeey8PRBOtXOO9v
+         1hGAuDAYMRwNvOkd5kFd2P04Oc588IA6+MvsQ4ZTZzv6iWrIHmhSbx3BZNVvll4WbFQ/
+         2xcSZXIQAt4mSs/TkOzKonxaIflHvRAEVO8hzv8V/M1Psc5gSIn9F3HRdF/9t09FXuxz
+         y+YA==
+X-Gm-Message-State: AA+aEWahUsFL8c5vxBoXbAAiDqNQB/FkdGvKNp6iEe62NBYmZnq7Sctz
+        QhvVfYlpEOB3b9cv7U6X3SpXX+DpKeCbkhZk7d4=
+X-Google-Smtp-Source: AFSGD/W36/Y9Nq871ioxR//LgBld/IrhxxEkPkbBXz7QpoAxX5Y2MzX8JaowLaWzv5t7FYbXspPDozxDek3fyP6also=
+X-Received: by 2002:a17:906:4a4b:: with SMTP id a11-v6mr15704988ejv.68.1544628959470;
+ Wed, 12 Dec 2018 07:35:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20181211202520.16799-1-deepa.kernel@gmail.com> <20181211202520.16799-7-deepa.kernel@gmail.com>
-In-Reply-To: <20181211202520.16799-7-deepa.kernel@gmail.com>
+References: <20181211202520.16799-1-deepa.kernel@gmail.com>
+ <20181211202520.16799-7-deepa.kernel@gmail.com> <CAF=yD-LDWrjxK+XFv-KNAoyP7NCOZiL00n5PkzQ-5aEzq+eCLQ@mail.gmail.com>
+In-Reply-To: <CAF=yD-LDWrjxK+XFv-KNAoyP7NCOZiL00n5PkzQ-5aEzq+eCLQ@mail.gmail.com>
 From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Wed, 12 Dec 2018 10:22:04 -0500
-Message-ID: <CAF=yD-LDWrjxK+XFv-KNAoyP7NCOZiL00n5PkzQ-5aEzq+eCLQ@mail.gmail.com>
+Date:   Wed, 12 Dec 2018 10:35:23 -0500
+Message-ID: <CAF=yD-J8Ea1ope3ZBgPCufnMxDgGArhqRdvszz44u29BJAPS7w@mail.gmail.com>
 Subject: Re: [PATCH v2 6/8] socket: Add SO_TIMESTAMP[NS]_NEW
 To:     Deepa Dinamani <deepa.kernel@gmail.com>
 Cc:     David Miller <davem@davemloft.net>,
@@ -79,276 +79,47 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue, Dec 11, 2018 at 3:30 PM Deepa Dinamani <deepa.kernel@gmail.com> wrote:
+> This did not address yet the previous comments on consistency and
+> unnecessary code churn.
 >
-> Add SO_TIMESTAMP_NEW and SO_TIMESTAMPNS_NEW variants of
-> socket timestamp options.
-> These are the y2038 safe versions of the SO_TIMESTAMP_OLD
-> and SO_TIMESTAMPNS_OLD for all architectures.
+> The existing logic to differentiate SO_TIMESTAMP from SO_TIMESTAMPNS
+> in both tcp_recv_timestamp and __sock_recv_timestamp is
 >
-> Note that the format of scm_timestamping.ts[0] is not changed
-> in this patch.
+>   if (sock_flag(sk, SOCK_RCVTSTAMP)) {
+>       if (sock_flag(sk, SOCK_RCVTSTAMPNS))
+>           /* timespec case */
+>       else
+>           /* timeval case */
+>   }
 >
-> Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
-> Cc: jejb@parisc-linux.org
-> Cc: ralf@linux-mips.org
-> Cc: rth@twiddle.net
-> Cc: linux-alpha@vger.kernel.org
-> Cc: linux-mips@linux-mips.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linux-rdma@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: sparclinux@vger.kernel.org
-> ---
->  arch/alpha/include/uapi/asm/socket.h  | 15 ++++++-
->  arch/mips/include/uapi/asm/socket.h   | 14 ++++++-
->  arch/parisc/include/uapi/asm/socket.h | 14 ++++++-
->  arch/sparc/include/uapi/asm/socket.h  | 14 ++++++-
->  include/linux/skbuff.h                | 18 +++++++++
->  include/net/sock.h                    |  1 +
->  include/uapi/asm-generic/socket.h     | 15 ++++++-
->  net/core/sock.c                       | 51 ++++++++++++++++++------
->  net/ipv4/tcp.c                        | 57 +++++++++++++++++++--------
->  net/rds/af_rds.c                      |  8 +++-
->  net/rds/recv.c                        | 16 +++++++-
->  net/socket.c                          | 47 ++++++++++++++++------
->  12 files changed, 216 insertions(+), 54 deletions(-)
+> A new level of nesting needs to be added to differentiate .._OLD from .._NEW.
 >
-> diff --git a/arch/alpha/include/uapi/asm/socket.h b/arch/alpha/include/uapi/asm/socket.h
-> index 00e45c80e574..352e3dc0b3d9 100644
-> --- a/arch/alpha/include/uapi/asm/socket.h
-> +++ b/arch/alpha/include/uapi/asm/socket.h
-> @@ -3,6 +3,7 @@
->  #define _UAPI_ASM_SOCKET_H
+> Even if massively changing the original functions, please do so
+> consistently, either
 >
->  #include <asm/sockios.h>
-> +#include <asm/bitsperlong.h>
->
->  /* For setsockopt(2) */
->  /*
-> @@ -110,12 +111,22 @@
->
->  #define SO_TIMESTAMP_OLD         29
->  #define SO_TIMESTAMPNS_OLD       35
-> +
->  #define SO_TIMESTAMPING_OLD      37
->
-> +#define SO_TIMESTAMP_NEW         62
-> +#define SO_TIMESTAMPNS_NEW       63
-> +
->  #if !defined(__KERNEL__)
->
-> -#define SO_TIMESTAMP           SO_TIMESTAMP_OLD
-> -#define SO_TIMESTAMPNS         SO_TIMESTAMPNS_OLD
-> +#if __BITS_PER_LONG == 64
-> +#define SO_TIMESTAMP           SO_TIMESTAMP_OLD
-> +#define SO_TIMESTAMPNS         SO_TIMESTAMPNS_OLD
-> +#else
-> +#define SO_TIMESTAMP (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMP_OLD : SO_TIMESTAMP_NEW)
-> +#define SO_TIMESTAMPNS (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMPNS_OLD : SO_TIMESTAMPNS_NEW)
-> +#endif
-> +
+>   if (sock_flag(sk, SOCK_RCVTSTAMP)) {
+>       if (sock_flag(sk, SOCK_TSTAMP_NEW) {
+>           /* new code */
+>       } else {
+>           if (sock_flag(sk, SOCK_RCVTSTAMPNS))
+>               /* timespec case */
+>           else
+>               /* timeval case */
+>      }
+>   }
 
-This is not platform specific. Perhaps it can be deduplicated. The
-interface expects callers to include <linux/socket.h>, not
-<asm/socket.h> directly. So perhaps it can go there?
+This first example is wrong. I meant
 
-> -/* Similar to __sock_recv_timestamp, but does not require an skb */
-> -static void tcp_recv_timestamp(struct msghdr *msg, const struct sock *sk,
-> -                              struct scm_timestamping *tss)
-> +static void tcp_recv_sw_timestamp(struct msghdr *msg, const struct sock *sk, struct timespec64 *ts)
->  {
-> -       struct __kernel_old_timeval tv;
-> -       bool has_timestamping = false;
-> +       int new_tstamp = sock_flag(sk, SOCK_TSTAMP_NEW);
-> +
-> +       if (ts->tv_sec || ts->tv_nsec) {
-> +               if (sock_flag(sk, SOCK_RCVTSTAMPNS)) {
-> +                       if (new_tstamp) {
-> +                               struct __kernel_timespec kts = {ts->tv_sec, ts->tv_nsec};
-> +
-> +                               put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMPNS_NEW,
-> +                                        sizeof(kts), &kts);
-> +                       } else {
-> +                               struct timespec ts_old = timespec64_to_timespec(*ts);
->
-> -       if (tss->ts[0].tv_sec || tss->ts[0].tv_nsec) {
-> -               if (sock_flag(sk, SOCK_RCVTSTAMP)) {
-> -                       if (sock_flag(sk, SOCK_RCVTSTAMPNS)) {
->                                 put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMPNS_OLD,
-> -                                        sizeof(tss->ts[0]), &tss->ts[0]);
-> +                                        sizeof(ts), &ts_old);
-> +                       }
-> +               } else if (sock_flag(sk, SOCK_RCVTSTAMP)) {
-> +                       if (new_tstamp) {
-> +                               struct __kernel_sock_timeval stv;
-> +
-> +                               stv.tv_sec = ts->tv_sec;
-> +                               stv.tv_usec = ts->tv_nsec / 1000;
-> +
-> +                               put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_NEW,
-> +                                        sizeof(stv), &stv);
->                         } else {
-> -                               tv.tv_sec = tss->ts[0].tv_sec;
-> -                               tv.tv_usec = tss->ts[0].tv_nsec / 1000;
-> +                               struct __kernel_old_timeval tv;
->
-> +                               tv.tv_sec = ts->tv_sec;
-> +                               tv.tv_usec = ts->tv_nsec / 1000;
->                                 put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_OLD,
->                                          sizeof(tv), &tv);
->                         }
->                 }
-> -
-> -               if (sk->sk_tsflags & SOF_TIMESTAMPING_SOFTWARE)
-> -                       has_timestamping = true;
-> -               else
-> -                       tss->ts[0] = (struct timespec) {0};
->         }
-> +}
-> +
-> +/* Similar to __sock_recv_timestamp, but does not require an skb */
-> +static void tcp_recv_timestamp(struct msghdr *msg, const struct sock *sk,
-> +                              struct scm_timestamping *tss)
-> +{
-> +       bool has_timestamping = false;
-> +       struct timespec64 ts = timespec_to_timespec64(tss->ts[0]);
-> +
-> +       tcp_recv_sw_timestamp(msg, sk, &ts);
-> +
-> +       if (sk->sk_tsflags & SOF_TIMESTAMPING_SOFTWARE)
-> +               has_timestamping = true;
-> +       else
-> +               tss->ts[0] = (struct timespec) {0};
->
->         if (tss->ts[2].tv_sec || tss->ts[2].tv_nsec) {
->                 if (sk->sk_tsflags & SOF_TIMESTAMPING_RAW_HARDWARE)
-
-This did not address yet the previous comments on consistency and
-unnecessary code churn.
-
-The existing logic to differentiate SO_TIMESTAMP from SO_TIMESTAMPNS
-in both tcp_recv_timestamp and __sock_recv_timestamp is
-
-  if (sock_flag(sk, SOCK_RCVTSTAMP)) {
-      if (sock_flag(sk, SOCK_RCVTSTAMPNS))
-          /* timespec case */
-      else
-          /* timeval case */
-  }
-
-A new level of nesting needs to be added to differentiate .._OLD from .._NEW.
-
-Even if massively changing the original functions, please do so
-consistently, either
-
-  if (sock_flag(sk, SOCK_RCVTSTAMP)) {
-      if (sock_flag(sk, SOCK_TSTAMP_NEW) {
-          /* new code */
-      } else {
-          if (sock_flag(sk, SOCK_RCVTSTAMPNS))
-              /* timespec case */
+   if (sock_flag(sk, SOCK_RCVTSTAMP)) {
+       if (sock_flag(sk, SOCK_RCVTSTAMPNS)) {
+           if (sock_flag(sk, SOCK_TSTAMP_NEW)
+                /* new code */
           else
-              /* timeval case */
-     }
-  }
-
-or
-
-  if (sock_flag(sk, SOCK_RCVTSTAMP)) {
-      if (sock_flag(sk, SOCK_TSTAMP_NEW) {
-          if (sock_flag(sk, SOCK_RCVTSTAMPNS))
-              /* new timespec case */
+                /* timespec case */
+       } else {
+           if (sock_flag(sk, SOCK_TSTAMP_NEW)
+                /* new code */
           else
-              /* timespec case */
-      } else {
-           if (sock_flag(sk, SOCK_RCVTSTAMPNS))
-               /* new timespec case */
-           else
-               /* timespec case */
-      }
-  }
-
-But not one variant in one function and one in the other.
-
-Deep nesting is hard to follow and, once again, massive code changes
-(even indentations) make git blame harder to use. So where possible,
-try to avoid both and just insert a branch to a new function for the
-.._NEW cases instead:
-
-  if (sock_flag(sk, SOCK_RCVTSTAMP)) {
-+      if (sock_flag(sk, SOCK_TSTAMP_NEW)
-+          __sock_recv_timestamp_new(..);
--      if (sock_flag(sk, SOCK_RCVTSTAMPNS))
-+      else if (sock_flag(sk, SOCK_RCVTSTAMPNS))
-          /* timespec case */
-      else
-          /* timeval case */
-  }
-
-and leave the rest of the function unmodified.
-
-> +static void sock_recv_sw_timestamp(struct msghdr *msg, struct sock *sk,
-> +                                  struct sk_buff *skb)
-> +{
-> +       if (sock_flag(sk, SOCK_TSTAMP_NEW)) {
-> +               if (!sock_flag(sk, SOCK_RCVTSTAMPNS)) {
-> +                       struct __kernel_sock_timeval tv;
-> +
-> +                       skb_get_new_timestamp(skb, &tv);
-> +                       put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_NEW,
-> +                                sizeof(tv), &tv);
-> +               } else {
-> +                       struct __kernel_timespec ts;
-> +
-> +                       skb_get_new_timestampns(skb, &ts);
-> +                       put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMPNS_NEW,
-> +                                sizeof(ts), &ts);
-> +               }
-> +       }
-
-In relation to previous: note the different branching approach to
-tcp_recv_timestamp.
-
-> +       if (!sock_flag(sk, SOCK_RCVTSTAMPNS)) {
-> +               struct __kernel_old_timeval tv;
-> +
-> +               skb_get_timestamp(skb, &tv);
-> +               put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_OLD,
-> +                        sizeof(tv), &tv);
-> +       } else {
-> +               struct timespec ts;
-> +
-> +               skb_get_timestampns(skb, &ts);
-> +               put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMPNS_OLD,
-> +                        sizeof(ts), &ts);
-> +       }
-> +}
->  /*
->   * called from sock_recv_timestamp() if sock_flag(sk, SOCK_RCVTSTAMP)
->   */
-> @@ -718,19 +750,8 @@ void __sock_recv_timestamp(struct msghdr *msg, struct sock *sk,
->                 false_tstamp = 1;
->         }
->
-> -       if (need_software_tstamp) {
-> -               if (!sock_flag(sk, SOCK_RCVTSTAMPNS)) {
-> -                       struct __kernel_old_timeval tv;
-> -                       skb_get_timestamp(skb, &tv);
-> -                       put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_OLD,
-> -                                sizeof(tv), &tv);
-> -               } else {
-> -                       struct timespec ts;
-> -                       skb_get_timestampns(skb, &ts);
-> -                       put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMPNS_OLD,
-> -                                sizeof(ts), &ts);
-> -               }
-> -       }
-> +       if (need_software_tstamp)
-> +               sock_recv_sw_timestamp(msg, sk, skb);
->
->         memset(&tss, 0, sizeof(tss));
->         if ((sk->sk_tsflags & SOF_TIMESTAMPING_SOFTWARE) &&
-> --
-> 2.17.1
->
+                /* timeval case */
+        }
+   }
