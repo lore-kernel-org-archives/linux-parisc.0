@@ -2,55 +2,34 @@ Return-Path: <SRS0=7JUv=OX=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.4 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C008C67839
-	for <linux-parisc@archiver.kernel.org>; Fri, 14 Dec 2018 09:55:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43461C67839
+	for <linux-parisc@archiver.kernel.org>; Fri, 14 Dec 2018 11:47:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DBF0520879
-	for <linux-parisc@archiver.kernel.org>; Fri, 14 Dec 2018 09:55:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBF0520879
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by mail.kernel.org (Postfix) with ESMTP id D9512208E7
+	for <linux-parisc@archiver.kernel.org>; Fri, 14 Dec 2018 11:47:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9512208E7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-parisc-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728269AbeLNJzn (ORCPT
+        id S1727579AbeLNLrW (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 14 Dec 2018 04:55:43 -0500
-Received: from mail-vs1-f68.google.com ([209.85.217.68]:43553 "EHLO
-        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbeLNJzl (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 14 Dec 2018 04:55:41 -0500
-Received: by mail-vs1-f68.google.com with SMTP id x1so2997489vsc.10;
-        Fri, 14 Dec 2018 01:55:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ThuXCDpz5CSLhhjoqBknKNp1QrnaV9y+p8Qap5dUeXs=;
-        b=OmMKWXF9bV5yc9PSoa2IVbjqcgwKvzo+67onrcfPDnsJmoRdau6VE0Ulla2M9APmHP
-         l/3NgaXMMo15BNW0rbfjzb4WZ5lcNFIDOz68Te/kxbtYjL7mB2xTgrgOR2bcMpdalVmK
-         kY/DSg6zvUcPuV8g5KVcivjxqfhfMg9m88l12u/dNsL+VRmDTfLPseb4xCvQy6sPNuRE
-         b4BtWdk+b09hUEaSEDLZligvc13mLnWfBPN/hnEl3ivJp/3JD3ALw1SHm0hGo+ATv7B7
-         NXpXjZ9ArkucY/PdRCZHoRMyiMxQmn9SHBmOOIxuHOhHzzhQ1OaAljrJwfa6VOD8H1S2
-         x6Ag==
-X-Gm-Message-State: AA+aEWayWHN0omDkbzsH/jqoBwWF7kVNT9yLgyFxtJVGpPZnp8mlV4vC
-        djyJyEkgcxys5g2WlR5zlEotikEBIzEz5dhHM8A=
-X-Google-Smtp-Source: AFSGD/V3n/1TM+2yf4bgAfeH10M3EAUX09H19VWC7w1ulSBQvf8Trtj1/fBaKWP6qMPLPi5zwjqKKm4ZDeSXJk26JLs=
-X-Received: by 2002:a67:6002:: with SMTP id u2mr980067vsb.115.1544781340192;
- Fri, 14 Dec 2018 01:55:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20181214082515.14835-1-hch@lst.de> <20181214082515.14835-2-hch@lst.de>
- <CAMuHMdWOr0EsgFQF8tjJYLxKVXx+Jwn73N8SVKt8AQGLKQ8V-A@mail.gmail.com>
-In-Reply-To: <CAMuHMdWOr0EsgFQF8tjJYLxKVXx+Jwn73N8SVKt8AQGLKQ8V-A@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 14 Dec 2018 10:55:27 +0100
-Message-ID: <CAMuHMdXzuS3sEZ1LNxhCiNtvzUneGsfPjMNWSh8UfbGEEnPTRA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dma-mapping: zero memory returned from dma_alloc_*
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Fri, 14 Dec 2018 06:47:22 -0500
+Received: from verein.lst.de ([213.95.11.211]:46716 "EHLO newverein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726670AbeLNLrW (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 14 Dec 2018 06:47:22 -0500
+Received: by newverein.lst.de (Postfix, from userid 2407)
+        id 05FEC68DDD; Fri, 14 Dec 2018 12:47:20 +0100 (CET)
+Date:   Fri, 14 Dec 2018 12:47:19 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
         Michal Simek <monstr@monstr.eu>, ashutosh.dixit@intel.com,
         alpha <linux-alpha@vger.kernel.org>,
         arcml <linux-snps-arc@lists.infradead.org>,
@@ -62,50 +41,160 @@ Cc:     Linux IOMMU <iommu@lists.linux-foundation.org>,
         sparclinux <sparclinux@vger.kernel.org>,
         linux-xtensa@linux-xtensa.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 1/2] dma-mapping: zero memory returned from dma_alloc_*
+Message-ID: <20181214114719.GA3316@lst.de>
+References: <20181214082515.14835-1-hch@lst.de> <20181214082515.14835-2-hch@lst.de> <CAMuHMdWOr0EsgFQF8tjJYLxKVXx+Jwn73N8SVKt8AQGLKQ8V-A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWOr0EsgFQF8tjJYLxKVXx+Jwn73N8SVKt8AQGLKQ8V-A@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, Dec 14, 2018 at 10:54 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Fri, Dec 14, 2018 at 9:26 AM Christoph Hellwig <hch@lst.de> wrote:
-> > If we want to map memory from the DMA allocator to userspace it must be
-> > zeroed at allocation time to prevent stale data leaks.   We already do
-> > this on most common architectures, but some architectures don't do this
-> > yet, fix them up, either by passing GFP_ZERO when we use the normal page
-> > allocator or doing a manual memset otherwise.
-> >
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
->
-> Thanks for your patch!
->
-> > --- a/arch/m68k/kernel/dma.c
-> > +++ b/arch/m68k/kernel/dma.c
-> > @@ -32,7 +32,7 @@ void *arch_dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
-> >         size = PAGE_ALIGN(size);
-> >         order = get_order(size);
-> >
+On Fri, Dec 14, 2018 at 10:54:32AM +0100, Geert Uytterhoeven wrote:
 > > -       page = alloc_pages(flag, order);
 > > +       page = alloc_pages(flag | GFP_ZERO, order);
 > >         if (!page)
 > >                 return NULL;
->
+> 
 > There's second implementation below, which calls __get_free_pages() and
 > does an explicit memset().  As __get_free_pages() calls alloc_pages(), perhaps
 > it makes sense to replace the memset() by GFP_ZERO, to increase consistency?
 
-Regardless, for m68k:
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+It would, but this patch really tries to be minimally invasive to just
+provide the zeroing everywhere.  There is plenty of opportunity
+to improve the m68k dma allocator if I can get enough reviewers/testers:
 
-Gr{oetje,eeting}s,
+ - for one the coldfire/nommu case absolutely does not make sense to
+   me as there is not work done at all to make sure the memory is
+   mapped uncached despite the architecture implementing cache
+   flushing for the map interface.  So this whole implementation
+   looks broken to me and will need some major work (I had a previous
+   discussion with Greg on that which needs to be dug out)
+ - the "regular" implementation in this patch should probably be replaced
+   with the generic remapping helpers that have been added for the 4.21
+   merge window:
 
-                        Geert
+	http://git.infradead.org/users/hch/dma-mapping.git/commitdiff/0c3b3171ceccb8830c2bb5adff1b4e9b204c1450
 
+Compile tested only patch below:
+
+--
+From ade86dc75b9850daf9111ebf9ce15825a6144f2d Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Fri, 14 Dec 2018 12:41:45 +0100
+Subject: m68k: use the generic dma coherent remap allocator
+
+This switche to using common code for the DMA allocations, including
+potential use of the CMA allocator if configure.  Also add a few
+comments where the existing behavior seems to be lacking.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/m68k/Kconfig      |  2 ++
+ arch/m68k/kernel/dma.c | 64 ++++++++++++------------------------------
+ 2 files changed, 20 insertions(+), 46 deletions(-)
+
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 8a5868e9a3a0..60788cf02fbc 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -2,10 +2,12 @@
+ config M68K
+ 	bool
+ 	default y
++	select ARCH_HAS_DMA_MMAP_PGPROT if MMU && !COLDFIRE
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if HAS_DMA
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
+ 	select ARCH_NO_COHERENT_DMA_MMAP if !MMU
+ 	select ARCH_NO_PREEMPT if !COLDFIRE
++	select DMA_DIRECT_REMAP if MMU && !COLDFIRE
+ 	select HAVE_IDE
+ 	select HAVE_AOUT if MMU
+ 	select HAVE_DEBUG_BUGVERBOSE
+diff --git a/arch/m68k/kernel/dma.c b/arch/m68k/kernel/dma.c
+index dafe99d08a6a..16da5d96e228 100644
+--- a/arch/m68k/kernel/dma.c
++++ b/arch/m68k/kernel/dma.c
+@@ -18,57 +18,29 @@
+ #include <asm/pgalloc.h>
+ 
+ #if defined(CONFIG_MMU) && !defined(CONFIG_COLDFIRE)
+-
+-void *arch_dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
+-		gfp_t flag, unsigned long attrs)
++void arch_dma_prep_coherent(struct page *page, size_t size)
+ {
+-	struct page *page, **map;
+-	pgprot_t pgprot;
+-	void *addr;
+-	int i, order;
+-
+-	pr_debug("dma_alloc_coherent: %d,%x\n", size, flag);
+-
+-	size = PAGE_ALIGN(size);
+-	order = get_order(size);
+-
+-	page = alloc_pages(flag | GFP_ZERO, order);
+-	if (!page)
+-		return NULL;
+-
+-	*handle = page_to_phys(page);
+-	map = kmalloc(sizeof(struct page *) << order, flag & ~__GFP_DMA);
+-	if (!map) {
+-		__free_pages(page, order);
+-		return NULL;
+-	}
+-	split_page(page, order);
+-
+-	order = 1 << order;
+-	size >>= PAGE_SHIFT;
+-	map[0] = page;
+-	for (i = 1; i < size; i++)
+-		map[i] = page + i;
+-	for (; i < order; i++)
+-		__free_page(page + i);
+-	pgprot = __pgprot(_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_DIRTY);
+-	if (CPU_IS_040_OR_060)
+-		pgprot_val(pgprot) |= _PAGE_GLOBAL040 | _PAGE_NOCACHE_S;
+-	else
+-		pgprot_val(pgprot) |= _PAGE_NOCACHE030;
+-	addr = vmap(map, size, VM_MAP, pgprot);
+-	kfree(map);
+-
+-	return addr;
++	/*
++	 * XXX: don't we need to flush and invalidate the caches before
++	 * creating a coherent mapping?
++	 * coherent?
++	 */
+ }
+ 
+-void arch_dma_free(struct device *dev, size_t size, void *addr,
+-		dma_addr_t handle, unsigned long attrs)
++pgprot_t arch_dma_mmap_pgprot(struct device *dev, pgprot_t prot,
++		unsigned long attrs)
+ {
+-	pr_debug("dma_free_coherent: %p, %x\n", addr, handle);
+-	vfree(addr);
++	/*
++	 * XXX: this doesn't seem to handle the sun3 MMU at all.
++	 */
++	if (CPU_IS_040_OR_060) {
++		pgprot_val(prot) &= ~_PAGE_CACHE040;
++		pgprot_val(prot) |= _PAGE_GLOBAL040 | _PAGE_NOCACHE_S;
++	} else {
++		pgprot_val(prot) |= _PAGE_NOCACHE030;
++	}
++	return prot;
+ }
+-
+ #else
+ 
+ #include <asm/cacheflush.h>
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.19.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
