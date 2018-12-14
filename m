@@ -2,57 +2,61 @@ Return-Path: <SRS0=7JUv=OX=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.9 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C900C43387
-	for <linux-parisc@archiver.kernel.org>; Fri, 14 Dec 2018 18:35:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C74DAC43387
+	for <linux-parisc@archiver.kernel.org>; Fri, 14 Dec 2018 23:24:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C5094204FD
-	for <linux-parisc@archiver.kernel.org>; Fri, 14 Dec 2018 18:35:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 41A312086D
+	for <linux-parisc@archiver.kernel.org>; Fri, 14 Dec 2018 23:24:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730521AbeLNSfM (ORCPT
+        id S1726890AbeLNXY3 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 14 Dec 2018 13:35:12 -0500
-Received: from verein.lst.de ([213.95.11.211]:49165 "EHLO newverein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728388AbeLNSfM (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 14 Dec 2018 13:35:12 -0500
-Received: by newverein.lst.de (Postfix, from userid 2407)
-        id EA32468DF1; Fri, 14 Dec 2018 19:35:09 +0100 (CET)
-Date:   Fri, 14 Dec 2018 19:35:09 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org,
-        Michal Simek <monstr@monstr.eu>,
-        Ashutosh Dixit <ashutosh.dixit@intel.com>,
-        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-c6x-dev@linux-c6x.org, linux-m68k@lists.linux-m68k.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dma-mapping: zero memory returned from dma_alloc_*
-Message-ID: <20181214183509.GA5247@lst.de>
-References: <20181214082515.14835-1-hch@lst.de> <20181214082515.14835-2-hch@lst.de> <20181214181056.GA17941@ravnborg.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20181214181056.GA17941@ravnborg.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        Fri, 14 Dec 2018 18:24:29 -0500
+Received: from shards.monkeyblade.net ([23.128.96.9]:36618 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726423AbeLNXY3 (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 14 Dec 2018 18:24:29 -0500
+Received: from localhost (unknown [IPv6:2601:601:9f80:35cd::bf5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 451EB14E0AB81;
+        Fri, 14 Dec 2018 15:24:27 -0800 (PST)
+Date:   Fri, 14 Dec 2018 15:24:24 -0800 (PST)
+Message-Id: <20181214.152424.610334997107326314.davem@davemloft.net>
+To:     deepa.kernel@gmail.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        arnd@arndb.de, y2038@lists.linaro.org, chris@zankel.net,
+        deller@gmx.de, dhowells@redhat.com, fenghua.yu@intel.com,
+        isdn@linux-pingi.de, jejb@parisc-linux.org, ralf@linux-mips.org,
+        rth@twiddle.net, schwidefsky@de.ibm.com, tglx@linutronix.de,
+        ubraun@linux.ibm.com, linux-afs@lists.infradead.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-mips@linux-mips.org,
+        linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        sparclinux@vger.kernel.org
+Subject: Re: [PATCH v2 0/8] net: y2038-safe socket timestamps 
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20181211202520.16799-1-deepa.kernel@gmail.com>
+References: <20181211202520.16799-1-deepa.kernel@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 14 Dec 2018 15:24:28 -0800 (PST)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, Dec 14, 2018 at 07:10:56PM +0100, Sam Ravnborg wrote:
-> Hi Christoph,
-> 
-> I stumbled upon this one:
-> 
-> #define __get_dma_pages(gfp_mask, order) \
->                 __get_free_pages((gfp_mask) | GFP_DMA, (order))
+From: Deepa Dinamani <deepa.kernel@gmail.com>
+Date: Tue, 11 Dec 2018 12:25:12 -0800
 
-This isn't directly related to the dma mapping, but another place
-that hides GFP_DMA allocations.  So no need for the treatment,
-but we really should kill this obsfucating wrapper..
+> The series introduces new socket timestamps that are
+> y2038 safe.
+
+Please address Willem's feedback, thank you.
