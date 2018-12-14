@@ -3,32 +3,29 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.4 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 143AEC43387
-	for <linux-parisc@archiver.kernel.org>; Fri, 14 Dec 2018 18:20:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C900C43387
+	for <linux-parisc@archiver.kernel.org>; Fri, 14 Dec 2018 18:35:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 57DD5206C0
-	for <linux-parisc@archiver.kernel.org>; Fri, 14 Dec 2018 18:20:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C5094204FD
+	for <linux-parisc@archiver.kernel.org>; Fri, 14 Dec 2018 18:35:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730145AbeLNSUd (ORCPT
+        id S1730521AbeLNSfM (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 14 Dec 2018 13:20:33 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:39784 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729273AbeLNSUd (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 14 Dec 2018 13:20:33 -0500
-Received: from ravnborg.org (unknown [158.248.194.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 2E23C80489;
-        Fri, 14 Dec 2018 19:10:58 +0100 (CET)
-Date:   Fri, 14 Dec 2018 19:10:56 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     iommu@lists.linux-foundation.org, Michal Simek <monstr@monstr.eu>,
+        Fri, 14 Dec 2018 13:35:12 -0500
+Received: from verein.lst.de ([213.95.11.211]:49165 "EHLO newverein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728388AbeLNSfM (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 14 Dec 2018 13:35:12 -0500
+Received: by newverein.lst.de (Postfix, from userid 2407)
+        id EA32468DF1; Fri, 14 Dec 2018 19:35:09 +0100 (CET)
+Date:   Fri, 14 Dec 2018 19:35:09 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org,
+        Michal Simek <monstr@monstr.eu>,
         Ashutosh Dixit <ashutosh.dixit@intel.com>,
         linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
         linux-c6x-dev@linux-c6x.org, linux-m68k@lists.linux-m68k.org,
@@ -36,36 +33,26 @@ Cc:     iommu@lists.linux-foundation.org, Michal Simek <monstr@monstr.eu>,
         linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 1/2] dma-mapping: zero memory returned from dma_alloc_*
-Message-ID: <20181214181056.GA17941@ravnborg.org>
-References: <20181214082515.14835-1-hch@lst.de>
- <20181214082515.14835-2-hch@lst.de>
+Message-ID: <20181214183509.GA5247@lst.de>
+References: <20181214082515.14835-1-hch@lst.de> <20181214082515.14835-2-hch@lst.de> <20181214181056.GA17941@ravnborg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20181214082515.14835-2-hch@lst.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=UpRNyd4B c=1 sm=1 tr=0
-        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
-        a=kj9zAlcOel0A:10 a=7gkXJVJtAAAA:8 a=TGOzq4YYzDjkCyAB1AEA:9
-        a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22
+In-Reply-To: <20181214181056.GA17941@ravnborg.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi Christoph,
+On Fri, Dec 14, 2018 at 07:10:56PM +0100, Sam Ravnborg wrote:
+> Hi Christoph,
+> 
+> I stumbled upon this one:
+> 
+> #define __get_dma_pages(gfp_mask, order) \
+>                 __get_free_pages((gfp_mask) | GFP_DMA, (order))
 
-I stumbled upon this one:
-
-#define __get_dma_pages(gfp_mask, order) \
-                __get_free_pages((gfp_mask) | GFP_DMA, (order))
-
-(include/linux/gfp.h)
-Should it also have the __GFP_ZERO treatment?
-Or maybe this is already done in your tree..
-
-As for the sparc bits:
-Acked-by: Sam Ravnborg <sam@ravnborg.org> [sparc]
-
-	Sam
+This isn't directly related to the dma mapping, but another place
+that hides GFP_DMA allocations.  So no need for the treatment,
+but we really should kill this obsfucating wrapper..
