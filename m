@@ -2,112 +2,173 @@ Return-Path: <SRS0=///d=OY=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EBD3C43387
-	for <linux-parisc@archiver.kernel.org>; Sat, 15 Dec 2018 14:57:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD66BC43387
+	for <linux-parisc@archiver.kernel.org>; Sat, 15 Dec 2018 15:12:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E9C7E2086D
-	for <linux-parisc@archiver.kernel.org>; Sat, 15 Dec 2018 14:57:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9D9822084D
+	for <linux-parisc@archiver.kernel.org>; Sat, 15 Dec 2018 15:12:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RIj0WZ80"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N8n6DnWp"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730037AbeLOO5r (ORCPT
+        id S1730153AbeLOPME (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 15 Dec 2018 09:57:47 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:44853 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729966AbeLOO5q (ORCPT
+        Sat, 15 Dec 2018 10:12:04 -0500
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:33520 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729687AbeLOPMD (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 15 Dec 2018 09:57:46 -0500
-Received: by mail-pf1-f196.google.com with SMTP id u6so4232462pfh.11;
-        Sat, 15 Dec 2018 06:57:46 -0800 (PST)
+        Sat, 15 Dec 2018 10:12:03 -0500
+Received: by mail-ed1-f65.google.com with SMTP id p6so7321177eds.0;
+        Sat, 15 Dec 2018 07:12:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+oZ8yQFI+tBK9p+3AmPM+g1VsW4TbnbAmenwuop//G4=;
-        b=RIj0WZ80o7T2oHJfoXbW9K4AtxUB63cORHEymtuAvPEAZyvmHU1AiqS+D/AOG/OpgA
-         /qaj5KgYoCk0lANaiuRgovG580UsEkQLNhpLtPPGlY7yomrn6RTPmiSzgQq6ojrw8E+I
-         hmdIcyTnZyTYtX8UDxxM/L/uPOTdV83REEfN9AxruIQSn9dfDIVeYBAmyAFAtfwZtJ+p
-         JRJLJ4Aizqf+li42qP3OJiqUFZyytKB03+JFwtN17H3umAV2ca1fp/ACWQBNWoVMVvox
-         ZC/t2aDW9t595Byanw8sCCuwX9QzkIvWTuKZ2YSSk7pfpDE40oZVW2iIPQIEO4BKUHwM
-         Bmug==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c0rnw73UaXdNzttsDaAG6QqR/lhfSpIOwVTtyGMrH4A=;
+        b=N8n6DnWpps5OwUl+jj3CseJfOy6KyTylwa57aK65GoZ0J2meflKvU++9cUvpvg5uPV
+         J1Ac9ij0RbK9KxN855i1cm4mqwGrXl+y1Y5PI1iniqsu8s6QSHW7fYxXFHnP4upGX8iN
+         DV07grDA6JKqmjakSyxYBjLwD9ehB+KHTggpA+ORnImKeX8T7u2X2Zv6eh048PedJPy1
+         0/sj1Gzwh3NR5GD+/ZEWHInTld/6Vu8M+mnwRs6xrs8A2zGlAW94pUK3/PFEzZlYkytC
+         xZWTo5rCUdqIht9ML8bOpRIPNiS5rsS8i61vyM8bn5L8hTchBshxewnpZ2FTCbYOLSZk
+         uPXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+oZ8yQFI+tBK9p+3AmPM+g1VsW4TbnbAmenwuop//G4=;
-        b=nNiEyeJl7O8SV/nkyukWX/AUsvRefWSzt/gfrWjRAFGNtr+/D/zPfiQ1q6Eyp/4Rdy
-         rNrWuUFQrH5ZIsDi59AF19vfca5PtbP1F/iz+eubouY0fkTOIWt/hihJiZysfXjde8xi
-         5yjEFpTcnrY0CZnPmvKc+TrcXYonshM4+Bh6wmacyPuCGaycSsyE7Zw4e6F4GZl22hUA
-         mUd5bsANUP2dvQSqM56dylEyek1KtQ4phF5vsTWO5Jjm0gpzuJmBCk1MLeqqwAupUxkM
-         qsXbobwxUkdHV+pDDjvuhv4l57ia/X9pfk16vjLx6elWVkou8updNJh39m06IDdakFEQ
-         btMw==
-X-Gm-Message-State: AA+aEWa0Ppdl7mDOTshIs8hP/csxlNbplN64/9vPBzQbeoxl9EZshgKI
-        +s49KNg+mecs67USiB9WvloHb7h6
-X-Google-Smtp-Source: AFSGD/USDnpzPISPYb8ceeqq0IFsuHp/zdAef1v0Hz7qxMBl11J60Ik5z/YP0tmNfqnQuNuiAm3znA==
-X-Received: by 2002:a63:9041:: with SMTP id a62mr3012889pge.163.1544885865326;
-        Sat, 15 Dec 2018 06:57:45 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z191sm9077804pgd.74.2018.12.15.06.57.42
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 15 Dec 2018 06:57:44 -0800 (PST)
-Subject: Re: [PATCH 3/6] sparc: remove the sparc32_dma_ops indirection
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "Matwey V. Kornilov" <matwey@sai.msu.ru>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-snps-arc@lists.infradead.org,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, sparclinux@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linux-mips@vger.kernel.org
-References: <20181208174115.16237-1-hch@lst.de>
- <20181208174115.16237-4-hch@lst.de> <20181215063018.GA11415@roeck-us.net>
- <20181215104720.GA1575@lst.de>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <53761fd8-06f1-6443-1997-f518e725925e@roeck-us.net>
-Date:   Sat, 15 Dec 2018 06:57:42 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c0rnw73UaXdNzttsDaAG6QqR/lhfSpIOwVTtyGMrH4A=;
+        b=Vu81nEVEvnIw7aWGZNph/zfLdZsRfrKfKkSyPS6y7v7oUj78LXXIxQ0lLTMRoie3c1
+         hA/sylw9lq7LLaj+mQtMyRtg7hn6muvet5T5WMpjFaq5kzNuuNTf3ecAv076ISWwb913
+         dXNdvG8Y2swr7vbNGyCD60vukBO+tbMtRS7zmoiYAbNqsTPl4/TvetMHgd7MoWT0yw3M
+         gdBZHb/0u/8Dw8Be/JxjBW8wAwNRSs30hyvmRSZT0M8gxpyeHB2wqQl6Dk+CA8mp2BWP
+         RFxxi+wI/WU97kf0wWvOLaZ0yT1UENVsnsYFfOxD389bLAUCiilu7InHvi1e1S9eHm3i
+         FzGg==
+X-Gm-Message-State: AA+aEWZ8SrK1XW4EPWPgvm4Qyoo6LKBJ+e9cJH0v4+tFh+TWw7e4qah3
+        WsMhFSFmVjv406mzQVWgIHGqnz2r67oRw5HO8A3ub0wk
+X-Google-Smtp-Source: AFSGD/V6TNyqwJyVlDqAC6jqdMeGdSsnFCtIispOB40zLS8ha9uaW7HrlFfUSXGSMx+esu81vOmkvjUlDNv++61mLTc=
+X-Received: by 2002:a50:bdc8:: with SMTP id z8mr6704530edh.46.1544886720966;
+ Sat, 15 Dec 2018 07:12:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20181215104720.GA1575@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20181211202520.16799-1-deepa.kernel@gmail.com>
+ <20181211202520.16799-7-deepa.kernel@gmail.com> <CAF=yD-LDWrjxK+XFv-KNAoyP7NCOZiL00n5PkzQ-5aEzq+eCLQ@mail.gmail.com>
+ <CABeXuvpAZfd6gAdJbKxsOowXnDnwyQQRuYMJ-6LDo9BsRDDj-g@mail.gmail.com>
+In-Reply-To: <CABeXuvpAZfd6gAdJbKxsOowXnDnwyQQRuYMJ-6LDo9BsRDDj-g@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Sat, 15 Dec 2018 10:11:24 -0500
+Message-ID: <CAF=yD-L4xTU-KXsQ=uU36fEKv5St=69mmKqT8sD1mAmT_hfuVQ@mail.gmail.com>
+Subject: Re: [PATCH v2 6/8] socket: Add SO_TIMESTAMP[NS]_NEW
+To:     Deepa Dinamani <deepa.kernel@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Network Devel Mailing List <netdev@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Ralf Baechle <ralf@linux-mips.org>, rth@twiddle.net,
+        linux-alpha@vger.kernel.org,
+        "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 12/15/18 2:47 AM, Christoph Hellwig wrote:
-> On Fri, Dec 14, 2018 at 10:30:18PM -0800, Guenter Roeck wrote:
->> and so on, until qemu is terminated. This is seen with all sparc32
->> qemu emulations. Reverting the patch fixes the problem.
-> 
-> Hi Guenter,
-> 
-> can you check which of the three new ops is used in this case?  Or
-> provide the qemu config and rootfs?
-> 
+On Fri, Dec 14, 2018 at 8:07 PM Deepa Dinamani <deepa.kernel@gmail.com> wrote:
+>
+> > > diff --git a/arch/alpha/include/uapi/asm/socket.h b/arch/alpha/include/uapi/asm/socket.h
+> > > index 00e45c80e574..352e3dc0b3d9 100644
+> > > --- a/arch/alpha/include/uapi/asm/socket.h
+> > > +++ b/arch/alpha/include/uapi/asm/socket.h
+> > > @@ -3,6 +3,7 @@
+> > >  #define _UAPI_ASM_SOCKET_H
+> > >
+> > >  #include <asm/sockios.h>
+> > > +#include <asm/bitsperlong.h>
+> > >
+> > >  /* For setsockopt(2) */
+> > >  /*
+> > > @@ -110,12 +111,22 @@
+> > >
+> > >  #define SO_TIMESTAMP_OLD         29
+> > >  #define SO_TIMESTAMPNS_OLD       35
+> > > +
+> > >  #define SO_TIMESTAMPING_OLD      37
+> > >
+> > > +#define SO_TIMESTAMP_NEW         62
+> > > +#define SO_TIMESTAMPNS_NEW       63
+> > > +
+> > >  #if !defined(__KERNEL__)
+> > >
+> > > -#define SO_TIMESTAMP           SO_TIMESTAMP_OLD
+> > > -#define SO_TIMESTAMPNS         SO_TIMESTAMPNS_OLD
+> > > +#if __BITS_PER_LONG == 64
+> > > +#define SO_TIMESTAMP           SO_TIMESTAMP_OLD
+> > > +#define SO_TIMESTAMPNS         SO_TIMESTAMPNS_OLD
+> > > +#else
+> > > +#define SO_TIMESTAMP (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMP_OLD : SO_TIMESTAMP_NEW)
+> > > +#define SO_TIMESTAMPNS (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMPNS_OLD : SO_TIMESTAMPNS_NEW)
+> > > +#endif
+> > > +
+> >
+> > This is not platform specific. Perhaps it can be deduplicated. The
+> > interface expects callers to include <linux/socket.h>, not
+> > <asm/socket.h> directly. So perhaps it can go there?
+>
+> I'm not following what you are saying here.
+>
+> Are you talking about in kernel users or userspace interface?
+>
+> Userspace should always include sys/socket.h according to the man page.
+> I'm not sure if userspace can even include linux/socket.h directly.
+> On my distribution this includes bits/socket.h which in turn includes
+> asm/socket.h.
 
-sparc32 defconfig+CONFIG_SQUASHFS=y+CONFIG_DEVTMPFS=y, and:
+I meant include/uapi/linux/socket.h.
 
-qemu-system-sparc -M SPARCClassic -kernel arch/sparc/boot/image \
-	-no-reboot -snapshot -drive file=/var/cache/buildbot/sparc/hda.sqf,if=scsi,format=raw \
-	-append 'root=/dev/sda rw init=/sbin/init.sh panic=1 console=ttyS0' \
-	-nographic
+But you're right that that is not referenced from sys/socket.h.
 
-qemu version doesn't seem to matter. I used gcc-7.3.0 using the toolchain from kernel.org
-to build the image.
+I do see a reference to it in my bits/socket.h
 
-Root file system is at https://github.com/groeck/linux-build-test/tree/master/rootfs/sparc/.
+    /* Socket level message types.  This must match the definitions in
+       <linux/socket.h>.  */
 
-Guenter
+so perhaps the logic could be both there and in libc bits/socket.h.
+
+> Which file gets installed as asm/socket.h is defined per architecture
+> in the kbuild file such as
+> arch/ia64/include/uapi/asm/Kbuild (without series applied):
+>
+>  generic-y += poll.h
+>  generic-y += sembuf.h
+>  generic-y += shmbuf.h
+>  generic-y += socket.h
+>
+> Also the new timestamp numbers being added are not the same for all
+> architectures.
+>
+> So I'm not sure how this can be moved to linux/socket.h.
+
+Does that matter, as long as they are defined? This basic block is the
+same between all archs:
+
+    -#define SO_TIMESTAMP           SO_TIMESTAMP_OLD
+    -#define SO_TIMESTAMPNS         SO_TIMESTAMPNS_OLD
+    +#if __BITS_PER_LONG == 64
+    +#define SO_TIMESTAMP           SO_TIMESTAMP_OLD
+    +#define SO_TIMESTAMPNS         SO_TIMESTAMPNS_OLD
+    +#else
+    +#define SO_TIMESTAMP (sizeof(time_t) == sizeof(__kernel_long_t) ?
+SO_TIMESTAMP_OLD : SO_TIMESTAMP_NEW)
+    +#define SO_TIMESTAMPNS (sizeof(time_t) == sizeof(__kernel_long_t)
+? SO_TIMESTAMPNS_OLD : SO_TIMESTAMPNS_NEW)
+    +#endif
+
+It might be too complex to coordinate changes between kernel and libc
+headers, in which case you're right that this just has to live in
+(each arch's) asm/socket.h directly.
