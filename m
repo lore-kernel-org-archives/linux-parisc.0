@@ -1,158 +1,86 @@
-Return-Path: <SRS0=///d=OY=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=nf/M=O2=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB894C43387
-	for <linux-parisc@archiver.kernel.org>; Sat, 15 Dec 2018 20:56:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACE4CC43387
+	for <linux-parisc@archiver.kernel.org>; Mon, 17 Dec 2018 11:59:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 73E282080F
-	for <linux-parisc@archiver.kernel.org>; Sat, 15 Dec 2018 20:56:22 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EaE57+j5"
+	by mail.kernel.org (Postfix) with ESMTP id 88C0E2133F
+	for <linux-parisc@archiver.kernel.org>; Mon, 17 Dec 2018 11:59:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727265AbeLOU4W (ORCPT
+        id S1732606AbeLQL7f (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 15 Dec 2018 15:56:22 -0500
-Received: from mail-io1-f52.google.com ([209.85.166.52]:43278 "EHLO
-        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727206AbeLOU4V (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 15 Dec 2018 15:56:21 -0500
-Received: by mail-io1-f52.google.com with SMTP id l3so7161446ioc.10;
-        Sat, 15 Dec 2018 12:56:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RxUIYK5jq5UFHGA9uu0rZ7mZo30FH8h4myjB1K/gJPk=;
-        b=EaE57+j5uiOByuwN6hqdu1RyKysSVPETULK74LbAvzHx9c3ARjSCow5D3a7EBWh+Ri
-         zJJ4pQQ5az5tbEa70GAw8ejjYnYFu9cPkcCCAE86IiYPbqb7SEQRbPU+1/H3YX4+pDC4
-         3TTzM+uRMvUv+rEOZG+zcykyjUMDpfufsvONSMY09uRjn1H+OG91HHzfkHawe3wWMrIe
-         JMmkE5onTp/Ge+GVfU/A1yzzE3yz8VUAGMGMj3JZGoPMRRVRx/9qWgVqRvNDFycaDRxy
-         a+nSG2FzC5qi/cNws9yu2dsPCw2d/cba/InvuOWzdDuVuK1LwphU8Xu64Ejqal8Bzkee
-         vx2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RxUIYK5jq5UFHGA9uu0rZ7mZo30FH8h4myjB1K/gJPk=;
-        b=aNZR8a1kfqD1yV/E9uZtiKxZ6tz9pbGKdgLV0SoZmngUCjrnFJ43BU5zjdjjMnSKxW
-         rYoVDG+64fkQDgZbnX15zxgFIM058PCLp8Eety0/vMXztBUZRcZb6A/9NP+aH2/nzHv4
-         g584GPh1shRNiNjZsLbRiuO0onjUe8hyelBMwg/ZYevwExOQ1D/gD8xeWaN1AbCJ+ak5
-         OQce1kUnvRsbJrEIdGm+yB7o4nK8/76cSinA86Gb4jHLVF6D4d43D8DaUw74wXATWpDu
-         N5xQ8hJnpKCkqayPIYUhX3yFHjyxw28L/PyoiCaric95lnhPs898VPxWbOrOhfRwAz99
-         ZNeg==
-X-Gm-Message-State: AA+aEWYGLTrdpeQh76y9NruOI8ijki8oUN5vmql1gmnCw/O4Qi0WmT4e
-        7FdAgCf5ij2VuGkqqS7dKPNC39wHu61OTgBcSbs=
-X-Google-Smtp-Source: AFSGD/XizO6+SosvWysC4HJY/uLigM+kNpJUHJrJa7Z+a4hSMTmMfRrE3hAkm9ZRP7SVtvFZ19fQtRcMN1GGkX0FkMQ=
-X-Received: by 2002:a6b:4001:: with SMTP id k1mr7176331ioa.34.1544907380181;
- Sat, 15 Dec 2018 12:56:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20181211202520.16799-1-deepa.kernel@gmail.com>
- <20181211202520.16799-7-deepa.kernel@gmail.com> <CAF=yD-LDWrjxK+XFv-KNAoyP7NCOZiL00n5PkzQ-5aEzq+eCLQ@mail.gmail.com>
- <CABeXuvpAZfd6gAdJbKxsOowXnDnwyQQRuYMJ-6LDo9BsRDDj-g@mail.gmail.com>
- <CAF=yD-L4xTU-KXsQ=uU36fEKv5St=69mmKqT8sD1mAmT_hfuVQ@mail.gmail.com>
- <CABeXuvqrZgEDF5RYQEPJ8RyXDg0uvXx_qMq=2ER8Bc9RXFPDGQ@mail.gmail.com> <CAF=yD-KFYdXRgL-HpAJLLHuywMcaBGfz7sDL35DBNs0hoq+zxQ@mail.gmail.com>
-In-Reply-To: <CAF=yD-KFYdXRgL-HpAJLLHuywMcaBGfz7sDL35DBNs0hoq+zxQ@mail.gmail.com>
-From:   Deepa Dinamani <deepa.kernel@gmail.com>
-Date:   Sat, 15 Dec 2018 12:56:07 -0800
-Message-ID: <CABeXuvr7je=LG9+xO286b7HH2WNLSfoOL4V6nN0AkjsGr_SoCQ@mail.gmail.com>
-Subject: Re: [PATCH v2 6/8] socket: Add SO_TIMESTAMP[NS]_NEW
-To:     willemdebruijn.kernel@gmail.com
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Network Devel Mailing List <netdev@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Ralf Baechle <ralf@linux-mips.org>, rth@twiddle.net,
-        linux-alpha@vger.kernel.org,
-        "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
+        Mon, 17 Dec 2018 06:59:35 -0500
+Received: from verein.lst.de ([213.95.11.211]:33919 "EHLO newverein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727255AbeLQL7e (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 17 Dec 2018 06:59:34 -0500
+Received: by newverein.lst.de (Postfix, from userid 2407)
+        id E66B168DD3; Mon, 17 Dec 2018 12:59:31 +0100 (CET)
+Date:   Mon, 17 Dec 2018 12:59:31 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Greg Ungerer <gregungerer@westnet.com.au>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Michal Simek <monstr@monstr.eu>, ashutosh.dixit@intel.com,
+        alpha <linux-alpha@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        linux-c6x-dev@linux-c6x.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Openrisc <openrisc@lists.librecores.org>,
         Parisc List <linux-parisc@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, sparclinux <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-xtensa@linux-xtensa.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] dma-mapping: zero memory returned from dma_alloc_*
+Message-ID: <20181217115931.GA6853@lst.de>
+References: <20181214082515.14835-1-hch@lst.de> <20181214082515.14835-2-hch@lst.de> <CAMuHMdWOr0EsgFQF8tjJYLxKVXx+Jwn73N8SVKt8AQGLKQ8V-A@mail.gmail.com> <20181214114719.GA3316@lst.de> <5ae55118-6858-9121-6b3e-9b19b41550ef@westnet.com.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5ae55118-6858-9121-6b3e-9b19b41550ef@westnet.com.au>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-> > Also for the other comment. The reason the conditionals were not
-> > consistent is because they were not consistent to begin with.
->
-> The only difference I see is an inversion of the test. Nesting order
-> is the same:
->
->         int need_software_tstamp = sock_flag(sk, SOCK_RCVTSTAMP);
->         ...
->         if (need_software_tstamp) {
->                 if (!sock_flag(sk, SOCK_RCVTSTAMPNS)) {
->                 } else {
->                 }
->         }
->
-> vs
->
->                 if (sock_flag(sk, SOCK_RCVTSTAMP)) {
->                         if (sock_flag(sk, SOCK_RCVTSTAMPNS)) {
->                         } else {
->                         }
->                 }
->
-> I suggest just adding something like
->
->         if (need_software_tstamp) {
-> +              if (sock_uses_new_tstamp(sk) {
-> +                   __sock_recv_timestamp_new(msg, sk,
-> ktime_to_timespec64(skb->tstamp));
-> +              } else if (!sock_flag(sk, SOCK_RCVTSTAMPNS)) {
-> -               if (!sock_flag(sk, SOCK_RCVTSTAMPNS)) {
->                 } else {
->                 }
->
-> and
->
->                 if (sock_flag(sk, SOCK_RCVTSTAMP)) {
-> +                      if (sock_uses_new_tstamp(sk) {
-> +                           __sock_recv_timestamp_new(msg, sk, ts);
-> +                      else if (sock_flag(sk, SOCK_RCVTSTAMPNS)) {
-> -                       if (sock_flag(sk, SOCK_RCVTSTAMPNS)) {
->                         } else {
->                         }
->
-> I think we can use the same helper for both the sock and tcp variant.
-> The only intended difference between the two functions, as described
-> in the tcp_recv_timestamp function comment, is the absence of an skb
-> in the tcp case. That is immaterial at this level.
+On Sat, Dec 15, 2018 at 12:14:29AM +1000, Greg Ungerer wrote:
+> Yep, that is right. Certainly the MMU case is broken. Some noMMU cases work
+> by virtue of the SoC only having an instruction cache (the older V2 cores).
 
-I will just not refactor things into a function: __sock_rescv_timestamp_new().
-I will just add new conditionals for the new timestamps.
-When you guys refactor the other timestamp stuff like you mentioned
-below maybe you can move the new timestamps to a new funtcion as you
-see fit.
+Is there a good an easy case to detect if a core has a cache?  Either
+runtime or in Kconfig?
 
-The helper functions in skbuff.h might first need to be refactored
-first. But I again leave this to you guys.
+> The MMU case is fixable, but I think it will mean changing away from
+> the fall-back virtual:physical 1:1 mapping it uses for the kernel address
+> space. So not completely trivial. Either that or a dedicated area of RAM
+> for coherent allocations that we can mark as non-cachable via the really
+> course grained and limited ACR registers - not really very appealing.
 
-> Note also (2) tentative helper function sock_uses_new_tstamp(const
-> struct sock *sk) instead of testing sock_flag(sk, SOCK_TSTAMP_NEW)
-> directly. Since the .._NEW variants are equivalent to .._OLD on 64-bit,
-> I wonder if we can just compile out the branch. Something like
+What about CF_PAGE_NOCACHE?  Reading arch/m68k/include/asm/mcf_pgtable.h
+suggest this would cause an uncached mapping, in which case something
+like this should work:
+
+	http://git.infradead.org/users/hch/misc.git/commitdiff/4b8711d436e8d56edbc5ca19aa2be639705bbfef
+
+> The noMMU case in general is probably limited to something like that same
+> type of dedicated RAM/ACR register mechamism.
 >
->     static inline bool sock_uses_new_tstamp(const struct sock *sk) {
->             return (sizeof(time_t) != sizeof(__kernel_long_t)) &&
->                        sock_flag(sk, SOCK_TSTAMP_NEW);
->     }
->
+> The most commonly used periperal with DMA is the FEC ethernet module,
+> and it has some "special" (used very loosely) cache flushing for
+> parts like the 532x family which probably makes it mostly work right.
+> There is a PCI bus on the 54xx family of parts, and I know general
+> ethernet cards on it (like e1000's) have problems I am sure are
+> related to the fact that coherent memory allocations aren't.
 
-You could just ifdef CONFIG_64BIT if you are worried about branching.
-Note that SO_TIMESTAMP is by default SO_TIMESTAMP_OLD on 64 bit machines.
-But, I will again leave the optimization to you. I will implement in a
-straight forward way and you guys can deicde how you want to optimize
-the fast path or what should it even be.
-
--Deepa
+If we really just care about FEC we can just switch it do use
+DMA_ATTR_NON_CONSISTENT and do explicit cache flushing.  But as far
+as I can tell FEC only uses DMA coherent allocations for the TSO
+headers anyway, is TSO even used on this SOC?
