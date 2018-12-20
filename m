@@ -5,22 +5,22 @@ X-Spam-Level:
 X-Spam-Status: No, score=-2.5 required=3.0 tests=MAILING_LIST_MULTI,SPF_PASS,
 	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CC38C43387
-	for <linux-parisc@archiver.kernel.org>; Thu, 20 Dec 2018 14:46:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3ABCC43387
+	for <linux-parisc@archiver.kernel.org>; Thu, 20 Dec 2018 17:37:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 449A7217D8
-	for <linux-parisc@archiver.kernel.org>; Thu, 20 Dec 2018 14:46:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9FD902186A
+	for <linux-parisc@archiver.kernel.org>; Thu, 20 Dec 2018 17:37:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387718AbeLTOqG (ORCPT
+        id S2387662AbeLTRhT (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 20 Dec 2018 09:46:06 -0500
-Received: from verein.lst.de ([213.95.11.211]:53607 "EHLO newverein.lst.de"
+        Thu, 20 Dec 2018 12:37:19 -0500
+Received: from verein.lst.de ([213.95.11.211]:54391 "EHLO newverein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387667AbeLTOqG (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 20 Dec 2018 09:46:06 -0500
+        id S2387591AbeLTRhT (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 20 Dec 2018 12:37:19 -0500
 Received: by newverein.lst.de (Postfix, from userid 2407)
-        id 485C368AA6; Thu, 20 Dec 2018 15:46:04 +0100 (CET)
-Date:   Thu, 20 Dec 2018 15:46:04 +0100
+        id 5076F68AA6; Thu, 20 Dec 2018 18:37:17 +0100 (CET)
+Date:   Thu, 20 Dec 2018 18:37:17 +0100
 From:   "hch@lst.de" <hch@lst.de>
 To:     Eugeniy Paltsev <eugeniy.paltsev@synopsys.com>
 Cc:     "hch@lst.de" <hch@lst.de>,
@@ -40,29 +40,17 @@ Cc:     "hch@lst.de" <hch@lst.de>,
         "monstr@monstr.eu" <monstr@monstr.eu>,
         "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>
 Subject: Re: ensure dma_alloc_coherent always returns zeroed memory
-Message-ID: <20181220144604.GA18034@lst.de>
-References: <20181214082515.14835-1-hch@lst.de> <20181219165939.GA26087@lst.de> <1545316369.14089.20.camel@synopsys.com> <20181220143415.GA17726@lst.de> <1545316759.14089.22.camel@synopsys.com>
+Message-ID: <20181220173717.GA20939@lst.de>
+References: <20181214082515.14835-1-hch@lst.de> <20181219165939.GA26087@lst.de> <1545316369.14089.20.camel@synopsys.com> <20181220143415.GA17726@lst.de> <1545316759.14089.22.camel@synopsys.com> <20181220144604.GA18034@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1545316759.14089.22.camel@synopsys.com>
+In-Reply-To: <20181220144604.GA18034@lst.de>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Thu, Dec 20, 2018 at 02:39:20PM +0000, Eugeniy Paltsev wrote:
-> > I would be really surprised if that is caused by the patch to add
-> > the zeroing. 
-> Me too :)
-> 
-> >  Can you check which commit caused the issue by bisecting
-> > from a known good baseline?
-> 
-> Yep. At least kernel build from v4.20-rc4 (which is base for your branch)
-> seems to work fine.
-
-Well, the branch has quite a few commits.  Can you check the commit
-just before the zeroing to start, and if that is already broken (which
-I suspect) bisect the offending commit?
+Btw, can you try wit the very latests dma-mapping-for-next tree
+which has a new fix from Thierry Reding that might be related.
