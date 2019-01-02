@@ -1,103 +1,102 @@
-Return-Path: <SRS0=/AOo=PH=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=qleu=PK=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7ACAC43387
-	for <linux-parisc@archiver.kernel.org>; Sun, 30 Dec 2018 13:02:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1116C43387
+	for <linux-parisc@archiver.kernel.org>; Wed,  2 Jan 2019 16:02:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8327520815
-	for <linux-parisc@archiver.kernel.org>; Sun, 30 Dec 2018 13:02:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7C210218A4
+	for <linux-parisc@archiver.kernel.org>; Wed,  2 Jan 2019 16:02:57 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=linaro.org header.i=@linaro.org header.b="DPLC2ftD"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbeL3NCC (ORCPT
+        id S1729782AbfABQC4 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 30 Dec 2018 08:02:02 -0500
-Received: from mout.gmx.net ([212.227.17.22]:40457 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725914AbeL3NCC (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 30 Dec 2018 08:02:02 -0500
-Received: from ls3530.dellerweb.de ([92.116.187.119]) by mail.gmx.com
- (mrgmx102 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 0LhkiL-1h8Zpw1kX3-00mtHI; Sun, 30 Dec 2018 14:01:53 +0100
-Date:   Sun, 30 Dec 2018 14:01:49 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Count IPI function calls
-Message-ID: <20181230130149.GA24375@ls3530.dellerweb.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:jJk6AOjbzRM0/D99yBXhrNJyCw6ZYaPZHLQC10xP0sn8zy1HO0/
- OzTG7CgOY14ONug7zrmL61OT1wE164PsZP9OD00Lhg1BvraFd6sgkkGjR7Us/SB3N0LJlhq
- JypBryphK0R2NB6NZ6ftzg1A8ELJn09wyx4iXTR4q5FB3M+XrdyM25cCVaMoY6SWluGpS+1
- WXy5tY9vhkw13drXj+r4Q==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fz6qwc6YKpc=:9Q4thFCjHfI/FpAJXWS0Yu
- RowJBartvUx0gnFAdYYPclcn/2hMdhrWMPF+lB/m9SdJkixBbS26qskeQsTbRo7KcWSEuvMDg
- g4pKVtQAOfpe/sjT0NHgpcOF/IbeCeew8cYGp8uPrOGFM9wqS3IdtGyqlsUWXk98TczW+ODfg
- vzgxqeSLeHZ2v6yDl2VYZkAQ++P9DlhaUs7/bS5FpKjtXLB2XIX/TFD5vQCZMF1pUpg4uH6/J
- mIC0BYCPMJlH+pnrjzrbCrQFf0Lr2GFmS7piFPe7LAPZCqbtVJdI7scYScg6DlhOPOgiFhabO
- Uj0JDCI6jGy6oU1eDrJ3vZOEi5MLNdO0RHaQ1yM/LRLb5d7RvdS0nTLs8hWmLUfwmxVB7jjAd
- l+HTrajZSmUHXka5A4Vjb71vUyXBSGCAm16UTReKTjTcUDvIIseQ14D81xc1mhiU4CYkxN6WM
- FLn3gA0O1ugXjuRwNSdhhXYo07PwrPcYSgUqfZV6E67ygqnwcaX00YwEa7xicCgl1OoZW4p8O
- YMeItJ+TfJjjLyE7tlGhCVdLpHdugF8SlReUNqy/7vo64JicPDIpdxRfB9DuTEFVDkkFq2hWA
- 3fp30rRlKkiM/JUgnf4VZIUJDzleOKou6uAb6gEMcp7ABrquL9UrnAaCc0af1l/PHPBr4yUx5
- rayGJVgRi6g3JBTJKxDuf+IhHx7e4Ov9khJA9GORA+aEJdT2d5pczC4pizM+Qr2RSuNNO+JLX
- 4g+c06gJ6slUMNzshl1Gmn/x1ZI0KIea/TkmHOGk6OmtLEFsZtNHzVCyPKfUjS2QTaXWSXfJf
- Kbz0wJjvtEAx25J7ZkO8BXhPyZJ1q7R96DOL1TOa9w88/y3S8i4pgg6OXPpWtlRnxcH5Ecdjx
- lzHW0EgdBpAEGGAD4U6qiIJbL64nzofPKDirlEciM=
+        Wed, 2 Jan 2019 11:02:56 -0500
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:37653 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729659AbfABQC4 (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 2 Jan 2019 11:02:56 -0500
+Received: by mail-pl1-f196.google.com with SMTP id b5so14680525plr.4
+        for <linux-parisc@vger.kernel.org>; Wed, 02 Jan 2019 08:02:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=PXGuCJrVW20PniJ7mybEcH0RVohbyohqaTTZOSaXkz0=;
+        b=DPLC2ftDLLWTiKH5I2fBT7p1Ks7YM5jEpdDrfiL7FynM3G6HXbjZWklZBRyQfj3Cg4
+         3b0JPYdVpogG/+hzdtUVqPB3Yd6/kxYLMWLEHW8MRWXVdNTXDrxVdPTe3kS0/abEdJXY
+         eULgGve24PoQlP87btDf1zzqp7iICWK6kbDro=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=PXGuCJrVW20PniJ7mybEcH0RVohbyohqaTTZOSaXkz0=;
+        b=gHFVK8116OEHIqy4NSYvP4Sr1aO1daylVSrBIsA1/P+o5EQJQZqfqxWXrWEEFqiKHi
+         oFBuhiGeMbMi8PtVVTTjYH4dkQXtdULJe3LUowTga6cOx78g5ykXcZPS0y0cYLf50KzC
+         XgCvs03Tf0WoPwUuiu7mSE5xhQB5VFNr4oUAZH+6H9DjgD5mtKVXbnCgSXTr5PRyQ9Ho
+         SeDQ99WV0jVQpsR9o0EKv3pm0qgBAMBDZ3Z9fMBUsdWs471zSD6g1Lj/8b1PGqQa32lu
+         4btAZOvHIcBJNURdiZtKAlMRfPFLM4q6XgzKTvgXCV/c8tmRrMHI3PYnbYHTiAM9fZt7
+         iZTQ==
+X-Gm-Message-State: AJcUukdShW7uvT+UuTJZvHuRQPJ9f2m0rkXOjj8yyEWneB2sAzglbOlH
+        0Q0h6CjVL/HJBL1M0NIVFNqBTg==
+X-Google-Smtp-Source: ALg8bN6m+1wu1Mn2e2YHDFLjLcI7RgCeWKGTKcZ5aKe0pzRUqejFgYjLHXIOj9emtG8haba+ZDmtdg==
+X-Received: by 2002:a17:902:d01:: with SMTP id 1mr44490679plu.127.1546444976145;
+        Wed, 02 Jan 2019 08:02:56 -0800 (PST)
+Received: from qualcomm-HP-ZBook-14-G2.qualcomm.com (blr-bdr-fw-01_globalnat_allzones-outside.qualcomm.com. [103.229.18.19])
+        by smtp.gmail.com with ESMTPSA id s2sm104344924pfa.167.2019.01.02.08.02.51
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Wed, 02 Jan 2019 08:02:55 -0800 (PST)
+From:   Firoz Khan <firoz.khan@linaro.org>
+To:     "James E . J . Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>,
+        John David Anglin <dave.anglin@bell.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-parisc@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kate Stewart <kstewart@linuxfoundation.org>
+Cc:     y2038@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, arnd@arndb.de, deepa.kernel@gmail.com,
+        marcin.juszkiewicz@linaro.org, firoz.khan@linaro.org
+Subject: [PATCH 0/2] parisc: Unify the system call scripts
+Date:   Wed,  2 Jan 2019 21:32:31 +0530
+Message-Id: <1546444953-21630-1-git-send-email-firoz.khan@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Like other platforms, count the number of IPI function calls and show it
-in /proc/interrupts.
+System call table generation support is provided for
+alpha, ia64, m68k, microblaze, mips, parisc, powerpc,
+sh, sparc and xtensa architectures. The implementat-
+ions are almost similar across all the above archte-
+ctures. In order to reduce the source code across all
+the above architectures, create common ".sh" files and
+keep it in the common directory, script/. This will 
+be a generic scripts which can use for all the above
+architectures.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+This patch depends on;
+ https://lore.kernel.org/lkml/1546439331-18646-1-git-send-email-firoz.khan@linaro.org/
 
-diff --git a/arch/parisc/include/asm/hardirq.h b/arch/parisc/include/asm/hardirq.h
-index 1a1235a9d533..7f7039516e53 100644
---- a/arch/parisc/include/asm/hardirq.h
-+++ b/arch/parisc/include/asm/hardirq.h
-@@ -22,6 +22,7 @@ typedef struct {
- 	unsigned int irq_stack_usage;
- #ifdef CONFIG_SMP
- 	unsigned int irq_resched_count;
-+	unsigned int irq_call_count;
- #endif
- 	unsigned int irq_unaligned_count;
- 	unsigned int irq_fpassist_count;
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index 0ca254085a66..e24a790815a5 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -179,6 +180,10 @@ int arch_show_interrupts(struct seq_file *p, int prec)
- 	for_each_online_cpu(j)
- 		seq_printf(p, "%10u ", irq_stats(j)->irq_resched_count);
- 	seq_puts(p, "  Rescheduling interrupts\n");
-+	seq_printf(p, "%*s: ", prec, "CAL");
-+	for_each_online_cpu(j)
-+		seq_printf(p, "%10u ", irq_stats(j)->irq_call_count);
-+	seq_puts(p, "  Function call interrupts\n");
- #endif
- 	seq_printf(p, "%*s: ", prec, "UAH");
- 	for_each_online_cpu(j)
-diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
-index 5e26dbede5fc..d9e2d69c9e48 100644
---- a/arch/parisc/kernel/smp.c
-+++ b/arch/parisc/kernel/smp.c
-@@ -155,6 +155,7 @@ ipi_interrupt(int irq, void *dev_id)
- 
- 			case IPI_CALL_FUNC:
- 				smp_debug(100, KERN_DEBUG "CPU%d IPI_CALL_FUNC\n", this_cpu);
-+				inc_irq_stat(irq_call_count);
- 				generic_smp_call_function_interrupt();
- 				break;
- 
+Firoz Khan (2):
+  parisc: remove nargs from __SYSCALL
+  parisc: generate uapi header and system call table files
+
+ arch/parisc/kernel/syscall.S              |  2 +-
+ arch/parisc/kernel/syscalls/Makefile      | 11 ++++++++--
+ arch/parisc/kernel/syscalls/syscallhdr.sh | 36 -------------------------------
+ arch/parisc/kernel/syscalls/syscalltbl.sh | 36 -------------------------------
+ 4 files changed, 10 insertions(+), 75 deletions(-)
+ delete mode 100644 arch/parisc/kernel/syscalls/syscallhdr.sh
+ delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
+
+-- 
+1.9.1
+
