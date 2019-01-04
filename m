@@ -4,83 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.5 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2F4EC43387
-	for <linux-parisc@archiver.kernel.org>; Fri,  4 Jan 2019 22:33:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C333C43387
+	for <linux-parisc@archiver.kernel.org>; Fri,  4 Jan 2019 23:05:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7016721872
-	for <linux-parisc@archiver.kernel.org>; Fri,  4 Jan 2019 22:33:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 03AF9218D3
+	for <linux-parisc@archiver.kernel.org>; Fri,  4 Jan 2019 23:05:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbfADWdM (ORCPT
+        id S1726105AbfADXF6 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 4 Jan 2019 17:33:12 -0500
-Received: from mout.gmx.net ([212.227.17.22]:33335 "EHLO mout.gmx.net"
+        Fri, 4 Jan 2019 18:05:58 -0500
+Received: from mout.gmx.net ([212.227.15.15]:39333 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726094AbfADWdM (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 4 Jan 2019 17:33:12 -0500
-Received: from p100.box ([92.116.186.155]) by mail.gmx.com (mrgmx103
- [212.227.17.168]) with ESMTPSA (Nemesis) id 0Lqyi7-1hIA9q3IQN-00eano; Fri, 04
- Jan 2019 23:32:57 +0100
-Date:   Fri, 4 Jan 2019 23:32:53 +0100
+        id S1726009AbfADXF6 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 4 Jan 2019 18:05:58 -0500
+Received: from p100.box ([92.116.186.155]) by mail.gmx.com (mrgmx003
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 0Lymoh-1hPnZq2ad5-0168jv; Sat, 05
+ Jan 2019 00:05:49 +0100
+Date:   Sat, 5 Jan 2019 00:05:46 +0100
 From:   Helge Deller <deller@gmx.de>
 To:     linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Cc:     Mike Hosken <mike@purple-cat.net>
-Subject: [PATCH] parisc: Remap hugepage-aligned pages in set_kernel_text_rw()
-Message-ID: <20190104223253.GA13982@p100.box>
+Subject: [PATCH] parisc: Improve initial IRQ to CPU assignment
+Message-ID: <20190104230546.GA18977@p100.box>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Provags-ID: V03:K1:0sU590+FUnbWRTHRxhoNaJn1aCo7EKvDgsXPZ8vdFbjISAZb8+l
- TAz+mXIXW4AZm8AbXi3QmujEdz7Hcax9r9C/X6h54jdeJO+C3FA4++SMYYY/wThiEC1rM0E
- l/NZqR5iaYPSicw5wJB27iSPJn2aF2zDXi4dMlLQ9SbRlAvxNx0teHR2y5Rx+l1jtcXHSBw
- 4K6kltlaGfCX8yaIql/Wg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1GnSWk06oDE=:zpojp6o79/z1PHQarruMoC
- XMcNx6x82Q2At5dKjv0CrCvh+rVlhRMyNwHAKW6MdCOEmSTDE9jPcoonKq2sFg4B7PJsJxjkX
- pgJGI9Uy5MImlt4tZzB5COwzDS2CKj4puPG5j8MHaS1McTVdMnM718lDAPIJivozZkwIG1p17
- 9yN9z87l9Me4EI31Ax8MZHrs6tUrZkXb6BHzYFTD44kjb+l3nK3W5WWKO8EfP0VJlYfaZyORu
- pEcVBcNcGsW1ITKMS6HipIWBs3qsZQNdRaIGhZO4WIA2yHy7eznNyZxXIyduaA+B2eGMnvmFP
- k4QLT8Tw4n8ywULjh1bcnJjl1F0DK7aydCI1959i7gMYzkYuDdueJp8YiG2BMU09uAG1n1OTz
- iIKZo38PjkhY47bdI3y7jr6k7K2fzSrxwhz3ril459vDOYYZ/P7jFeusZK0T6AJpeJzCoa/o6
- i9jSJqNU0e3U/bmt83+6/0Ed8lLnSZD174eQE9p0Z9ryHOeeTS25UzQy8TLq3o0XfApWSnzP4
- hyHlejuLHMfrRzivf1d1lCZvrru/6K2msaNU9SmqCLj2lq2KrsKE6TUY41K2tC5zMbX9U0yYL
- sDo8wIAW/2uaBP3qgh8exbG9ArJFEUxQzeby/gxieweOCeWUid+V6jeOL/BwhTc4vFl6KfU20
- XMDsawDy96uzqdYTDWHNh0M8wzJL5ou2Nnf5qAsyaa1451bdsWUJrAncRYYNadcX1QtzDJMjc
- lqb2M3VB/0K/8Wnm3Mi1Qhg+hQt8Clmmc5cQbcUhImgc1XocCifdqtyhsTh5cEbiqH4zijsZN
- l3NHwYdE2pZv8r9O/57zF3RmmMgp8depPvHtG1/nLsG1SlcwVQosXMwNd/HZamtMTERvxOerZ
- 5Fm0Gz82HISsov7QOrPMeONKM97HVGErSP7kye3tM=
+X-Provags-ID: V03:K1:imjKfPqUU4lk0EnsME9I0mV0T+M8ZqHRYEYy40iO03bs4nRRZDU
+ QHyig3UZIjtJwxBX8XoKj9WU5Eg6cZKtDvvsAB0zxfKssn/sGIym9RcteRTMqp0qi6baOYB
+ KeQblCHwT02qJ0XSjSTOIuNWW++mpinilA6Btl1WLVSyeUOFOrnMgr8vLcqZgquk8kshINZ
+ iRADI80BrlwK3e3cveHIQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1LVdfAfViLI=:1lO3jBKHvjUwpsil4AXfk5
+ m3olhFRf1dQhZNwD3P54R2hv52mmUE9vxq9cJZSk6yzGZG3MCXWFAh6Py6SfNoQulmaYqcOS8
+ xgZI6r9FpldJKqoRXjk7hYfwt2IcJe3dAcZetGdvhhrCR7quYQUkLKC9nmLBCgahDFaGcwzZy
+ +s4aYL3FlgY7qShuECTbyNcez+QAW3IIwZv/4OfKbbKcAhCi/87Ymu3WoYP9+hLaI0NsX5LMz
+ AiJJ9LdEVVsi9emJGVy4sA4bfUo/umqxFwgs4X6KNjMZmhIl3qv+pVLh5KiyF4tLAztAXomUL
+ QKwd1JpzynhmAhdR1V6P0Z9/GsvdzZBP92GvgS0Veu9sJ5efUK0w8jqy8Y5rorR69o24TyFaK
+ CKEXOUTH8S+EE7NnZ2w+KVIwPImOwckgyGOGkOr49uxeJij60k8Vfcb6cM27iZwahh/2mX+jS
+ OmP2vC37Bo/kEdXXEJTNko0Vsw0FTOBErWaZoR+5oeyX78u4eggGk7DxBuFdLWzREMxoxpMw0
+ Fy/XrHW1UaJzaL9Ia0qJzTEnziJD6/azbdPRT8k3ZXj+kk+ZYFZHuiZtJbcVHdz5A466swrnE
+ 8YUmh9OQPT7+zzHCNxj/p0r+l65cGlpSNI5LGaLrlnWvr8LI6EGxXYCa6NOapIHA9a5UFayti
+ pJTQbxIbM6bywKUCigpQrgH63LuIatxNI0rzaPWnut5CLKoOA91/Jd0x8+VX77hAFsFpqLBtm
+ Mf9AN1s4WXccCNCDGu8H6pFBq1iy/8wBh29e8zcuawOx/twSgY6kVLHR6BkcRiYbtZQhkmMwl
+ j77WSHDG8Z41VuJqfussk2zLgX99rpy7y8V8DD9YbKseceCR2BwFwI0m3SAkt13+iIKRaqa8i
+ cNl1KW3nz8Qq3ZNIPQVL2rx5fZ1YozreZzojbbPgc=
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The alternative coding patch for parisc in kernel 4.20 broke booting
-machines with PA8500-PA8700 CPUs. The problem is, that for such machines
-the parisc kernel automatically utilizes huge pages to access kernel
-text code, but the set_kernel_text_rw() function, which is used shortly
-before applying any alternative patches, didn't used the correctly
-hugepage-aligned addresses to remap the kernel text read-writeable.
+On parisc, each IRQ can only be handled by one CPU, and currently CPU0
+is choosen as default for handling all IRQs by default.
+With this patch we now assign each requested IRQ to one of the online
+CPUs (and thus distribute the IRQs across all CPUs), even without an
+instance of irqbalance running.
 
-Fixes: 3847dab77421 ("parisc: Add alternative coding infrastructure")
-Cc: <stable@vger.kernel.org>	[4.20]
 Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 2d7cffc..059187a 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -512,8 +512,8 @@ static void __init map_pages(unsigned long start_vaddr,
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index fd6d873..04e8755 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -117,7 +117,10 @@ int cpu_check_affinity(struct irq_data *d, const struct cpumask *dest)
+ 		return -EINVAL;
  
- void __init set_kernel_text_rw(int enable_read_write)
- {
--	unsigned long start = (unsigned long)__init_begin;
--	unsigned long end   = (unsigned long)_etext;
-+	unsigned long start = (unsigned long) _text;
-+	unsigned long end   = (unsigned long) &data_start;
+ 	/* whatever mask they set, we just allow one CPU */
+-	cpu_dest = cpumask_first_and(dest, cpu_online_mask);
++	cpu_dest = cpumask_next_and(d->irq & (num_online_cpus()-1),
++					dest, cpu_online_mask);
++	if (cpu_dest >= nr_cpu_ids)
++		cpu_dest = cpumask_first_and(dest, cpu_online_mask);
  
- 	map_pages(start, __pa(start), end-start,
- 		PAGE_KERNEL_RWX, enable_read_write ? 1:0);
+ 	return cpu_dest;
+ }
