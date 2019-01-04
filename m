@@ -1,219 +1,86 @@
-Return-Path: <SRS0=qleu=PK=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=cK3J=PM=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-8.5 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3E10C43387
-	for <linux-parisc@archiver.kernel.org>; Wed,  2 Jan 2019 16:03:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2F4EC43387
+	for <linux-parisc@archiver.kernel.org>; Fri,  4 Jan 2019 22:33:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9B900218A4
-	for <linux-parisc@archiver.kernel.org>; Wed,  2 Jan 2019 16:03:07 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=linaro.org header.i=@linaro.org header.b="UeOpEcpT"
+	by mail.kernel.org (Postfix) with ESMTP id 7016721872
+	for <linux-parisc@archiver.kernel.org>; Fri,  4 Jan 2019 22:33:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730324AbfABQDH (ORCPT
+        id S1726168AbfADWdM (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 2 Jan 2019 11:03:07 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:34112 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730321AbfABQDH (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 2 Jan 2019 11:03:07 -0500
-Received: by mail-pg1-f194.google.com with SMTP id j10so14767338pga.1
-        for <linux-parisc@vger.kernel.org>; Wed, 02 Jan 2019 08:03:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Q8Sr5ThZMKRXocJdw2zivcshx9cGsDEOtoQKtsu1DjU=;
-        b=UeOpEcpTukVAkxrdNciikTb/mnIsLxRZzAW1QMXW+vHq6h5bDIZty8KzZ+7lsTSdqX
-         WBHgZEdt47qCMQ8ye122LT+7ULYfnuvJJYLfK2Yf5RqqLDWUkm3o1y1gEIyeOz4+BNTM
-         ZLw7z749QfXZ59ptesovKJgNPJyAqLOHPkwB4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Q8Sr5ThZMKRXocJdw2zivcshx9cGsDEOtoQKtsu1DjU=;
-        b=ejq5wdCiLJ0t7p/mVAmtmBzeVlalB3wnZaav7EDgac/LZiE61nqH3BCxMlzii3yL6V
-         F/1YmHXZAlOkrRVrtrvlUnd9T2Cqf8woNKJmBZpGhkZIbKsXWCXYTfifgDnngB2GxoGL
-         5Djx2kDUmqoMAply7S6A2fwI2cpRh31Xrfud2wW5E3Tjk9e2yFh/O+2tw9+ztwO5/Lbd
-         qgyXgrGMFfUpwfjMMctEreyGcGFOs7TRhvi16uIxRdnKEKvUdRozs2KonFJOV5+INRhV
-         fImOMjmlzuT7CXpSdJedRjWO6enqlbAh1OOymMnzfhYh6JvAuR7DEkDHmCku4fDjmzGQ
-         gwSg==
-X-Gm-Message-State: AJcUukeLID46h8GtB/OycCCUUbtH+eUhipKmmIWsWAG4XBMsm3TEr691
-        1kuXCoqPuV45n1zI5ecSQgieDw==
-X-Google-Smtp-Source: ALg8bN7THPa15CPxPIPFlC0lo39ITdCHAX9p7mYkZJ2/1b5dhFudxUbWnvIOG3O50vhmJct2v0VDeA==
-X-Received: by 2002:a63:c051:: with SMTP id z17mr13623516pgi.20.1546444985915;
-        Wed, 02 Jan 2019 08:03:05 -0800 (PST)
-Received: from qualcomm-HP-ZBook-14-G2.qualcomm.com (blr-bdr-fw-01_globalnat_allzones-outside.qualcomm.com. [103.229.18.19])
-        by smtp.gmail.com with ESMTPSA id s2sm104344924pfa.167.2019.01.02.08.03.01
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 02 Jan 2019 08:03:05 -0800 (PST)
-From:   Firoz Khan <firoz.khan@linaro.org>
-To:     "James E . J . Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        John David Anglin <dave.anglin@bell.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-parisc@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kate Stewart <kstewart@linuxfoundation.org>
-Cc:     y2038@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, arnd@arndb.de, deepa.kernel@gmail.com,
-        marcin.juszkiewicz@linaro.org, firoz.khan@linaro.org,
-        Firoz Khan <firozk@codeaurora.org>
-Subject: [PATCH 2/2] parisc: generate uapi header and system call table files
-Date:   Wed,  2 Jan 2019 21:32:33 +0530
-Message-Id: <1546444953-21630-3-git-send-email-firoz.khan@linaro.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1546444953-21630-1-git-send-email-firoz.khan@linaro.org>
-References: <1546444953-21630-1-git-send-email-firoz.khan@linaro.org>
+        Fri, 4 Jan 2019 17:33:12 -0500
+Received: from mout.gmx.net ([212.227.17.22]:33335 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726094AbfADWdM (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 4 Jan 2019 17:33:12 -0500
+Received: from p100.box ([92.116.186.155]) by mail.gmx.com (mrgmx103
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 0Lqyi7-1hIA9q3IQN-00eano; Fri, 04
+ Jan 2019 23:32:57 +0100
+Date:   Fri, 4 Jan 2019 23:32:53 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Cc:     Mike Hosken <mike@purple-cat.net>
+Subject: [PATCH] parisc: Remap hugepage-aligned pages in set_kernel_text_rw()
+Message-ID: <20190104223253.GA13982@p100.box>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Provags-ID: V03:K1:0sU590+FUnbWRTHRxhoNaJn1aCo7EKvDgsXPZ8vdFbjISAZb8+l
+ TAz+mXIXW4AZm8AbXi3QmujEdz7Hcax9r9C/X6h54jdeJO+C3FA4++SMYYY/wThiEC1rM0E
+ l/NZqR5iaYPSicw5wJB27iSPJn2aF2zDXi4dMlLQ9SbRlAvxNx0teHR2y5Rx+l1jtcXHSBw
+ 4K6kltlaGfCX8yaIql/Wg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1GnSWk06oDE=:zpojp6o79/z1PHQarruMoC
+ XMcNx6x82Q2At5dKjv0CrCvh+rVlhRMyNwHAKW6MdCOEmSTDE9jPcoonKq2sFg4B7PJsJxjkX
+ pgJGI9Uy5MImlt4tZzB5COwzDS2CKj4puPG5j8MHaS1McTVdMnM718lDAPIJivozZkwIG1p17
+ 9yN9z87l9Me4EI31Ax8MZHrs6tUrZkXb6BHzYFTD44kjb+l3nK3W5WWKO8EfP0VJlYfaZyORu
+ pEcVBcNcGsW1ITKMS6HipIWBs3qsZQNdRaIGhZO4WIA2yHy7eznNyZxXIyduaA+B2eGMnvmFP
+ k4QLT8Tw4n8ywULjh1bcnJjl1F0DK7aydCI1959i7gMYzkYuDdueJp8YiG2BMU09uAG1n1OTz
+ iIKZo38PjkhY47bdI3y7jr6k7K2fzSrxwhz3ril459vDOYYZ/P7jFeusZK0T6AJpeJzCoa/o6
+ i9jSJqNU0e3U/bmt83+6/0Ed8lLnSZD174eQE9p0Z9ryHOeeTS25UzQy8TLq3o0XfApWSnzP4
+ hyHlejuLHMfrRzivf1d1lCZvrru/6K2msaNU9SmqCLj2lq2KrsKE6TUY41K2tC5zMbX9U0yYL
+ sDo8wIAW/2uaBP3qgh8exbG9ArJFEUxQzeby/gxieweOCeWUid+V6jeOL/BwhTc4vFl6KfU20
+ XMDsawDy96uzqdYTDWHNh0M8wzJL5ou2Nnf5qAsyaa1451bdsWUJrAncRYYNadcX1QtzDJMjc
+ lqb2M3VB/0K/8Wnm3Mi1Qhg+hQt8Clmmc5cQbcUhImgc1XocCifdqtyhsTh5cEbiqH4zijsZN
+ l3NHwYdE2pZv8r9O/57zF3RmmMgp8depPvHtG1/nLsG1SlcwVQosXMwNd/HZamtMTERvxOerZ
+ 5Fm0Gz82HISsov7QOrPMeONKM97HVGErSP7kye3tM=
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Firoz Khan <firozk@codeaurora.org>
+The alternative coding patch for parisc in kernel 4.20 broke booting
+machines with PA8500-PA8700 CPUs. The problem is, that for such machines
+the parisc kernel automatically utilizes huge pages to access kernel
+text code, but the set_kernel_text_rw() function, which is used shortly
+before applying any alternative patches, didn't used the correctly
+hugepage-aligned addresses to remap the kernel text read-writeable.
 
-Unified system call table generation script must be run to
-generate unistd_32/64.h and syscall_table_32/64/c32.h files.
-This patch will have changes which will invokes the script.
+Fixes: 3847dab77421 ("parisc: Add alternative coding infrastructure")
+Cc: <stable@vger.kernel.org>	[4.20]
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-This patch will generate unistd_32/64.h and syscall_table-
-_32/64/c32.h files by the syscall table generation script
-invoked by parisc/Makefile and the generated files against
-the removed files must be identical.
-
-The generated uapi header file will be included in uapi/-
-asm/unistd.h and generated system call table header file
-will be included by kernel/syscall.S file.
-
-Signed-off-by: Firoz Khan <firoz.khan@linaro.org>
----
- arch/parisc/kernel/syscalls/Makefile      | 11 ++++++++--
- arch/parisc/kernel/syscalls/syscallhdr.sh | 36 -------------------------------
- arch/parisc/kernel/syscalls/syscalltbl.sh | 36 -------------------------------
- 3 files changed, 9 insertions(+), 74 deletions(-)
- delete mode 100644 arch/parisc/kernel/syscalls/syscallhdr.sh
- delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
-
-diff --git a/arch/parisc/kernel/syscalls/Makefile b/arch/parisc/kernel/syscalls/Makefile
-index c22a21c..e24272d 100644
---- a/arch/parisc/kernel/syscalls/Makefile
-+++ b/arch/parisc/kernel/syscalls/Makefile
-@@ -6,8 +6,9 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
- 	  $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)')
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 2d7cffc..059187a 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -512,8 +512,8 @@ static void __init map_pages(unsigned long start_vaddr,
  
- syscall := $(srctree)/$(src)/syscall.tbl
--syshdr := $(srctree)/$(src)/syscallhdr.sh
--systbl := $(srctree)/$(src)/syscalltbl.sh
-+syshdr := $(srctree)/scripts/syscallhdr.sh
-+sysnr := $(srctree)/scripts/syscallnr.sh
-+systbl := $(srctree)/scripts/syscalltbl.sh
+ void __init set_kernel_text_rw(int enable_read_write)
+ {
+-	unsigned long start = (unsigned long)__init_begin;
+-	unsigned long end   = (unsigned long)_etext;
++	unsigned long start = (unsigned long) _text;
++	unsigned long end   = (unsigned long) &data_start;
  
- quiet_cmd_syshdr = SYSHDR  $@
-       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
-@@ -15,6 +16,12 @@ quiet_cmd_syshdr = SYSHDR  $@
- 		   '$(syshdr_pfx_$(basetarget))'		\
- 		   '$(syshdr_offset_$(basetarget))'
- 
-+quiet_cmd_sysnr = SYSNR  $@
-+      cmd_sysnr = $(CONFIG_SHELL) '$(sysnr)' '$<' '$@'		\
-+		  '$(sysnr_abis_$(basetarget))'			\
-+		  '$(sysnr_pfx_$(basetarget))'			\
-+		  '$(sysnr_offset_$(basetarget))'
-+
- quiet_cmd_systbl = SYSTBL  $@
-       cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
- 		   '$(systbl_abis_$(basetarget))'		\
-diff --git a/arch/parisc/kernel/syscalls/syscallhdr.sh b/arch/parisc/kernel/syscalls/syscallhdr.sh
-deleted file mode 100644
-index 50242b7..0000000
---- a/arch/parisc/kernel/syscalls/syscallhdr.sh
-+++ /dev/null
-@@ -1,36 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--prefix="$4"
--offset="$5"
--
--fileguard=_UAPI_ASM_PARISC_`basename "$out" | sed \
--	-e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
--	-e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g'`
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	printf "#ifndef %s\n" "${fileguard}"
--	printf "#define %s\n" "${fileguard}"
--	printf "\n"
--
--	nxt=0
--	while read nr abi name entry compat ; do
--		if [ -z "$offset" ]; then
--			printf "#define __NR_%s%s\t%s\n" \
--				"${prefix}" "${name}" "${nr}"
--		else
--			printf "#define __NR_%s%s\t(%s + %s)\n" \
--				"${prefix}" "${name}" "${offset}" "${nr}"
--		fi
--		nxt=$((nr+1))
--	done
--
--	printf "\n"
--	printf "#ifdef __KERNEL__\n"
--	printf "#define __NR_syscalls\t%s\n" "${nxt}"
--	printf "#endif\n"
--	printf "\n"
--	printf "#endif /* %s */" "${fileguard}"
--) > "$out"
-diff --git a/arch/parisc/kernel/syscalls/syscalltbl.sh b/arch/parisc/kernel/syscalls/syscalltbl.sh
-deleted file mode 100644
-index f7393a7..0000000
---- a/arch/parisc/kernel/syscalls/syscalltbl.sh
-+++ /dev/null
-@@ -1,36 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--my_abi="$4"
--offset="$5"
--
--emit() {
--	t_nxt="$1"
--	t_nr="$2"
--	t_entry="$3"
--
--	while [ $t_nxt -lt $t_nr ]; do
--		printf "__SYSCALL(%s,sys_ni_syscall)\n" "${t_nxt}"
--		t_nxt=$((t_nxt+1))
--	done
--	printf "__SYSCALL(%s,%s)\n" "${t_nxt}" "${t_entry}"
--}
--
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	nxt=0
--	if [ -z "$offset" ]; then
--		offset=0
--	fi
--
--	while read nr abi name entry compat ; do
--		if [ "$my_abi" = "c32" ] && [ ! -z "$compat" ]; then
--			emit $((nxt+offset)) $((nr+offset)) $compat
--		else
--			emit $((nxt+offset)) $((nr+offset)) $entry
--		fi
--		nxt=$((nr+1))
--	done
--) > "$out"
--- 
-1.9.1
-
+ 	map_pages(start, __pa(start), end-start,
+ 		PAGE_KERNEL_RWX, enable_read_write ? 1:0);
