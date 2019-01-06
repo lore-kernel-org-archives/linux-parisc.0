@@ -1,36 +1,31 @@
-Return-Path: <SRS0=8551=PN=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=7atb=PO=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA96BC43387
-	for <linux-parisc@archiver.kernel.org>; Sat,  5 Jan 2019 22:36:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E16DC43387
+	for <linux-parisc@archiver.kernel.org>; Sun,  6 Jan 2019 09:07:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9C3A3222C7
-	for <linux-parisc@archiver.kernel.org>; Sat,  5 Jan 2019 22:36:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 527F321873
+	for <linux-parisc@archiver.kernel.org>; Sun,  6 Jan 2019 09:07:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726360AbfAEWgd (ORCPT
+        id S1726439AbfAFJHr (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 5 Jan 2019 17:36:33 -0500
-Received: from mout.gmx.net ([212.227.17.20]:33789 "EHLO mout.gmx.net"
+        Sun, 6 Jan 2019 04:07:47 -0500
+Received: from mout.gmx.net ([212.227.15.15]:58611 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726356AbfAEWgc (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 5 Jan 2019 17:36:32 -0500
-Received: from [192.168.20.60] ([92.116.168.54]) by mail.gmx.com (mrgmx102
- [212.227.17.168]) with ESMTPSA (Nemesis) id 0LoKHN-1hClKv18Mj-00gEuH; Sat, 05
- Jan 2019 23:36:20 +0100
-Subject: Re: [PATCH] parisc: Improve initial IRQ to CPU assignment
-To:     Dennis Clarke <dclarke@blastwave.org>,
-        linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-References: <20190104230546.GA18977@p100.box>
- <76386f22-f894-5202-576a-357782743ec4@blastwave.org>
- <e3ba658f-9505-8258-8172-746e234a8bb4@gmx.de>
- <0d94b184-fd9f-b143-037f-7536f9e59625@blastwave.org>
+        id S1726417AbfAFJHr (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 6 Jan 2019 04:07:47 -0500
+Received: from [192.168.20.60] ([92.116.161.34]) by mail.gmx.com (mrgmx003
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 0MBnSJ-1gYg0l2hMt-00Apin; Sun, 06
+ Jan 2019 10:07:44 +0100
+Subject: Re: [PATCH 0/2] parisc: Unify the system call scripts
+To:     Firoz Khan <firoz.khan@linaro.org>, linux-parisc@vger.kernel.org
+Cc:     y2038@lists.linaro.org, linux-kernel@vger.kernel.org
+References: <1546444953-21630-1-git-send-email-firoz.khan@linaro.org>
 From:   Helge Deller <deller@gmx.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=deller@gmx.de; keydata=
@@ -57,86 +52,71 @@ Autocrypt: addr=deller@gmx.de; keydata=
  lJ/MgLOPkfIUgjRXt0ZcZEN6pAMPU95+u1N52hmqAOQZvyoyUOJFH1siBMAFRbhgWyv+YE2Y
  ZkAyVDL2WxAedQgD/YCCJ+16yXlGYGNAKlvp07SimS6vBEIXk/3h5Vq4Hwgg0Z8+FRGtYZyD
  KrhlU0uMP9QTB5WAUvxvGy8=
-Message-ID: <234eebc6-5958-8cf7-7914-4b39489c5218@gmx.de>
-Date:   Sat, 5 Jan 2019 23:36:16 +0100
+Message-ID: <d2b9fb1a-15b3-b2f9-9380-8ce9098c787a@gmx.de>
+Date:   Sun, 6 Jan 2019 10:07:44 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.3.1
 MIME-Version: 1.0
-In-Reply-To: <0d94b184-fd9f-b143-037f-7536f9e59625@blastwave.org>
+In-Reply-To: <1546444953-21630-1-git-send-email-firoz.khan@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:wZld62Hb7lOXe3EwIwcZYlkzOZv+KlDoXHUSnFKghpiRTutuEOs
- 1osmAyg/Esq5EV60BRhxN1i6DoStg3Ite4o0dMElbwl5l5PDzOy9bqE62AUJp2Oe/xUnktr
- kgKZc4b9f9UwSzLa/nFBiYIt6ENRGLPbANgzOPbRVOVvOwLYvGWzRoSOFRcXK+kKMJJkuiV
- kcFcP7AcxqPQTmryrsjWA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eH654CqtHqE=:EFSUyrtqUx0uJz4Jj0Z5wU
- IgAQU6eRLNT4S9nOLJ4HCL9/Zdkm/3lfrJYmAolNItzVcCc7hSCaDIHIx3Qo8BRyXLi/Pcc/l
- aCx59wnI2/mhwurbfLXGh5eBrhwhhzkqJ+aworVxtDIzrtY02uU9hhepo4uiJZOPjUCmkj1ss
- dZMMoVIn58tP6r6AURZCSy0cCxGAUYP/KzeFjiq+VOFVG5iZfbH99Nym7eBbn00noy8bmBeh/
- 3WbIyXRDGbUPdH2xOty5UeKWEDWosZ90whiS/uParTMuieTsKv6+gE7O0IPakEP+pNfhpo3y9
- 2UOjHF3/QPMl01w7mfMwDaRoSP5v6oOFFgreuYn3m0gvl+oVQ1PZ5P3kJW1xNPph1AhQbpYgo
- Vj1L0UsYRTeR6+C9NjTLqsHUQEdLWPBNiN8wW9WCYX7SEwAVJmWOaWQkNSVlDWTeaFKvP32+z
- sdYsIlvB0lO2IcBFRSJhrgrIRqtOcWFyc9136z1l6KSC6JIA2z5n8veJaJO0FY7BOm5yHS9O0
- p6+UISetzzS6oXusUx5dAwmMZHEfGegoYme747NVnMOa6wm/nkuIdmigoJHymLQdvpWmSzBMG
- rwLpX6xnjSAXFbDM2kQYPAYY/MWjm92zA5887jDYJzEancXbhAhJ8Fnmcxa5o3ptAIpiSPps9
- J70nIKTf1wjn9//CTURxfAYXawo4gmkc1jhVpbH/wCPaFzMFdvb0eHKTVq5K2CoTkC/LDpZEn
- ArpyXZBYyhF0FyFmc8uiovbninAv4OXdlyNYFE2F0d9df9Nj4llljyiFhnXnbSsRUAheSNg8j
- 6pcHm/izAt2ib4FVJ9X93v/rnFQx4o3rPvdt7uiwAX8FX9wy1DI1whh8dHpki3+onNtTPi7UX
- i6fKt5hxfAvm5hTVyFjO/J04PG+I3SQZJ75LJo6vDeRd5JS07138on0LYkppFU
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:3o/IjxbzgBxeIM761yMc9rnFH6vMNj6utLM0CnjRGoNfl4BWcaV
+ dV/crHyyS7ptLKe1ZyZ0Hy45C4CwbqlvLT6LQPnek8gHqs48U1lkO3W2FbZ1037vrFHe4hb
+ 6pNu2N9p4N3pDIZ2gi2D8Rf0Jw9Z08I3HIz7Lj9x+Rwd3KIrt6tddj9n/t5VdB2AX7nBccf
+ YH3ESpmJFh78jY1l/kbFw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:osPyddsNmnM=:JR/i1jEulCxjL4w9MW1z1F
+ CgHfy2+cPMoYVo2AfKKpp/jt4L4kD8pUxhjQs/0V4Hd13uLWwTlTt3x2pNa3902SVxMKN50S3
+ XKxIs9iHlIxfT216Bt5meK8bpY3NU9JiUyjjlK7J7hoMIsdtjb5uFiqcfMQhyXOAJQR5nZPkV
+ G1BpC3hYkDjSdX2bFdXfsG2S6jjT7m1HuIZu3R1C8GfyKNjzBH60ZFa8PYZ6MjyFw3HdptB6T
+ lCd/NW8qZy8mhkdAyfc1wA2ME1nBS64sKQKgmE7TNsCG/bohycht31VWR7xi0cNZV2ZlCKp/S
+ 533dGAxlCVO6VoLv8lns10g9VP0+EY1jX+7UuTzJ5UBWWurM4WF7n2APML9gKZD1j0DwZY4Bb
+ 0qbp078VW7zeXxvLMuGOSvsS602vYy557HttUZe3zQVQaMjVqeR27LzsQxZNUmg31IIzVqRzj
+ TopyJZHoAc8ay5AHNRzYJRrye4zr/XznbjGzjczeSIabjTdMlBlUEPq8fVKipsE6pjuLil8aB
+ gwNlsGgfURkXv3X2MWa9yGUFCKLV9Ko4vTWP3STI72KhVEwmcuno9CaUNjTegEdIjm2wYZSAh
+ NKe8bINwlOk0fl8YWj4CxuMRgmGu1FkxdCjkKM6UoEpB3muyP4BDJGeXJcMGaDOnhRWwRyam7
+ ImryQ6Dzs6rJzvlXaOH6hVcGyNxUxVBMOaDaQDjhmK8bi9XSO7ECvemZQ3xlbzjutJCfhOIvu
+ rCvzbU5590BwsfRnGLPswLVv+y0ny0E3f6SGe/h1trPU5PLCH7JX+U1g4qwiS4V1PDwGoCs51
+ W3JqPlhoDlI8ZA1uKM5kzjUpqkf3Dxcr9zRBqRov1vaRWCssknQH+F/MrtcVH4k7aHORs28NS
+ wPDgLKSQ6GpHxpv/sP9uh5y+MokQarNYDPx6tGqxbfcAQopN8MqYQ6DWcdOwP7
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 05.01.19 22:45, Dennis Clarke wrote:
-> On 1/5/19 4:21 PM, Helge Deller wrote:
->> On 05.01.19 00:21, Dennis Clarke wrote:
->>> On 1/4/19 6:05 PM, Helge Deller wrote:
->>>> On parisc, each IRQ can only be handled by one CPU, and currently CPU0
->>>> is choosen as default for handling all IRQs by default.
->>>> With this patch we now assign each requested IRQ to one of the online
->>>> CPUs (and thus distribute the IRQs across all CPUs), even without an
->>>> instance of irqbalance running.
->>>
->>> Will this take into consideration the features in default_smp_affinity
->>> and allow processor cores to be considered 'non interrupt' service
->>> state?
->>
->> It seems the feature of default_smp_affinity to disable specific cores from
->> servicing interrupts doesn't work on the parisc platform.
->> On a 2-CPU machine I booted with the "irqaffinity=0" kernel commandline option
->> (to enable CPU#0 and disable CPU#1), which then led to a hanging kernel when
->> CPU#1 ist started.
->> On parisc, each CPU needs to handle at least it's timer and IPMI interrupt.
->> Any idea what I should try?
+On 02.01.19 17:02, Firoz Khan wrote:
+> System call table generation support is provided for
+> alpha, ia64, m68k, microblaze, mips, parisc, powerpc,
+> sh, sparc and xtensa architectures. The implementat-
+> ions are almost similar across all the above archte-
+> ctures. In order to reduce the source code across all
+> the above architectures, create common ".sh" files and
+> keep it in the common directory, script/. This will 
+> be a generic scripts which can use for all the above
+> architectures.
 > 
-> Sorry, the first question was "does this work there" and we now know it
-> is most likely "no". I tried similar on ppc64 and also arrived at
-> nothing but problems.
-> 
-> I am somewhat focused on digging into RISC-V at the moment and your post
-> raised the question in my mind.
-> 
-> One of the features I once enjoyed about Solaris was that it could
-> easily bring cpu cores online and offline as well as disable irq service
-> disruptions on any core with a trivial one line command.
+> This patch depends on;
+>  https://lore.kernel.org/lkml/1546439331-18646-1-git-send-email-firoz.khan@linaro.org/
 
-That's already possible on Linux (e.g. on x86,power,...).
- > I always wanted to port something similar over to linux but would
-> start with something interesting like RISC-V.
+Ok, this has to go upstream first...
 
-There shouldn't be much to port.
-Even on parisc, enabling and disabling irqs on specific CPUs is possible
-today with simple echo-commands into the files in /proc/irq/#/... (with the
-exception of timer and IPI irqs).
-Onlining and offlining cpu cores is on my todo list for parisc.
-So, I think it shouldn't take much to do that on RISC-V too.
+> Firoz Khan (2):
+>   parisc: remove nargs from __SYSCALL
+>   parisc: generate uapi header and system call table files
 
-> ps: Also I still have those black superdomes standing around doing
->     nothing and still want to get serial attached, powered up, etc.
->     Yet another news years resolution post-it note idea.
+Both patches seem OK, and I can then take them through the parisc
+git tree when the patch above has reached upstream.
 
-Yes, would be interesting.
-
+Thanks!
 Helge
+
+> 
+>  arch/parisc/kernel/syscall.S              |  2 +-
+>  arch/parisc/kernel/syscalls/Makefile      | 11 ++++++++--
+>  arch/parisc/kernel/syscalls/syscallhdr.sh | 36 -------------------------------
+>  arch/parisc/kernel/syscalls/syscalltbl.sh | 36 -------------------------------
+>  4 files changed, 10 insertions(+), 75 deletions(-)
+>  delete mode 100644 arch/parisc/kernel/syscalls/syscallhdr.sh
+>  delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
+> 
+
