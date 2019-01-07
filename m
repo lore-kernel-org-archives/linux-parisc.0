@@ -2,697 +2,831 @@ Return-Path: <SRS0=2Ct7=PP=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 403EAC43444
-	for <linux-parisc@archiver.kernel.org>; Mon,  7 Jan 2019 02:55:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69390C43387
+	for <linux-parisc@archiver.kernel.org>; Mon,  7 Jan 2019 07:31:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EC4BB20838
-	for <linux-parisc@archiver.kernel.org>; Mon,  7 Jan 2019 02:55:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 25F2520881
+	for <linux-parisc@archiver.kernel.org>; Mon,  7 Jan 2019 07:31:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726591AbfAGCzW (ORCPT
+        id S1726548AbfAGHbv (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 6 Jan 2019 21:55:22 -0500
-Received: from vmicros1.altlinux.org ([194.107.17.57]:56346 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbfAGCzV (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 6 Jan 2019 21:55:21 -0500
-Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id 5C50F72CC71;
-        Mon,  7 Jan 2019 05:54:47 +0300 (MSK)
-Received: by mua.local.altlinux.org (Postfix, from userid 508)
-        id 4FE738E5C51; Mon,  7 Jan 2019 05:54:47 +0300 (MSK)
-Date:   Mon, 7 Jan 2019 05:54:47 +0300
-From:   "Dmitry V. Levin" <ldv@altlinux.org>
-To:     linux-kernel@vger.kernel.org, Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Richard Kuo <rkuo@codeaurora.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Ley Foon Tan <lftan@altera.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Guan Xuetao <gxt@pku.edu.cn>, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Elvira Khabirova <lineprinter@altlinux.org>,
-        Eugene Syromyatnikov <esyr@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Paul Burton <paul.burton@mips.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        Mark Salter <msalter@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        James Hogan <jhogan@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-arch@vger.kernel.org, linux-audit@redhat.com
-Subject: [PATCH v7 20/22] syscall_get_arch: add "struct task_struct *"
- argument
-Message-ID: <20190107025447.GT1207@altlinux.org>
-References: <20190107025101.GA1182@altlinux.org>
+        Mon, 7 Jan 2019 02:31:51 -0500
+Received: from mout.gmx.net ([212.227.15.18]:43447 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726257AbfAGHbv (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 7 Jan 2019 02:31:51 -0500
+Received: from [192.168.20.60] ([92.116.182.21]) by mail.gmx.com (mrgmx002
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 0Lhwgc-1h235h46FO-00n64n; Mon, 07
+ Jan 2019 08:31:44 +0100
+Subject: Re: [RFC][PATCH] m68k/parisc: Convert hp_sdc_rtc driver to rtc
+ framework
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org,
+        Kars de Jong <jongk@linux-m68k.org>
+References: <20181127210107.GA11661@ls3530.dellerweb.de>
+ <alpine.LNX.2.21.1811280815210.28@nippy.intranet>
+From:   Helge Deller <deller@gmx.de>
+Openpgp: preference=signencrypt
+Autocrypt: addr=deller@gmx.de; keydata=
+ xsBNBFDPIPYBCAC6PdtagIE06GASPWQJtfXiIzvpBaaNbAGgmd3Iv7x+3g039EV7/zJ1do/a
+ y9jNEDn29j0/jyd0A9zMzWEmNO4JRwkMd5Z0h6APvlm2D8XhI94r/8stwroXOQ8yBpBcP0yX
+ +sqRm2UXgoYWL0KEGbL4XwzpDCCapt+kmarND12oFj30M1xhTjuFe0hkhyNHkLe8g6MC0xNg
+ KW3x7B74Rk829TTAtj03KP7oA+dqsp5hPlt/hZO0Lr0kSAxf3kxtaNA7+Z0LLiBqZ1nUerBh
+ OdiCasCF82vQ4/y8rUaKotXqdhGwD76YZry9AQ9p6ccqKaYEzWis078Wsj7p0UtHoYDbABEB
+ AAHNHEhlbGdlIERlbGxlciA8ZGVsbGVyQGdteC5kZT7CwJIEEwECADwCGwMGCwkIBwMCBhUI
+ AgkKCwQWAgMBAh4BAheAFiEE9M/0wAvkPPtRU6Boh8nBUbUeOGQFAlrHzIICGQEACgkQh8nB
+ UbUeOGT1GAgAt+EeoHB4DbAx+pZoGbBYp6ZY8L6211n8fSi7wiwgM5VppucJ+C+wILoPkqiU
+ +ZHKlcWRbttER2oBUvKOt0+yDfAGcoZwHS0P+iO3HtxR81h3bosOCwek+TofDXl+TH/WSQJa
+ iaitof6iiPZLygzUmmW+aLSSeIAHBunpBetRpFiep1e5zujCglKagsW78Pq0DnzbWugGe26A
+ 288JcK2W939bT1lZc22D9NhXXRHfX2QdDdrCQY7UsI6g/dAm1d2ldeFlGleqPMdaaQMcv5+E
+ vDOur20qjTlenjnR/TFm9tA1zV+K7ePh+JfwKc6BSbELK4EHv8J8WQJjfTphakYLVM7ATQRQ
+ zyD2AQgA2SJJapaLvCKdz83MHiTMbyk8yj2AHsuuXdmB30LzEQXjT3JEqj1mpvcEjXrX1B3h
+ +0nLUHPI2Q4XWRazrzsseNMGYqfVIhLsK6zT3URPkEAp7R1JxoSiLoh4qOBdJH6AJHex4CWu
+ UaSXX5HLqxKl1sq1tO8rq2+hFxY63zbWINvgT0FUEME27Uik9A5t8l9/dmF0CdxKdmrOvGMw
+ T770cTt76xUryzM3fAyjtOEVEglkFtVQNM/BN/dnq4jDE5fikLLs8eaJwsWG9k9wQUMtmLpL
+ gRXeFPRRK+IT48xuG8rK0g2NOD8aW5ThTkF4apznZe74M7OWr/VbuZbYW443QQARAQABwsBf
+ BBgBAgAJBQJQzyD2AhsMAAoJEIfJwVG1HjhkNTgH/idWz2WjLE8DvTi7LvfybzvnXyx6rWUs
+ 91tXUdCzLuOtjqWVsqBtSaZynfhAjlbqRlrFZQ8i8jRyJY1IwqgvHP6PO9s+rIxKlfFQtqhl
+ kR1KUdhNGtiI90sTpi4aeXVsOyG3572KV3dKeFe47ALU6xE5ZL5U2LGhgQkbjr44I3EhPWc/
+ lJ/MgLOPkfIUgjRXt0ZcZEN6pAMPU95+u1N52hmqAOQZvyoyUOJFH1siBMAFRbhgWyv+YE2Y
+ ZkAyVDL2WxAedQgD/YCCJ+16yXlGYGNAKlvp07SimS6vBEIXk/3h5Vq4Hwgg0Z8+FRGtYZyD
+ KrhlU0uMP9QTB5WAUvxvGy8=
+Message-ID: <908a3147-1fac-6f38-c61c-b88c81dd23ff@gmx.de>
+Date:   Mon, 7 Jan 2019 08:31:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.21.1811280815210.28@nippy.intranet>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:5DvNOh09A1XKHXRv05rR3q8cYSE6IT0DCVKpmJPHUaTn6ovDQxn
+ oZ0s7ijnnSGy0/4q6cXLf5mGdgAnu2ACLjzOlPpN8YZGcdciNMXrN5Ibr/fMaX4Sv2AxTr4
+ BH4kdAthtfAMPv9iawl2pLbcvdlneYpe7Dn9JVnez2Mfe7OuV3gFw0HcZRSvIcBh7JtHn8B
+ 2zPKA/nEu3B4QN7ToKexw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:G3hmAl+n+9w=:v3ogjZRcMnHXNdA7LyGbxO
+ PwRVBVLkeVCb/uZL1LR9nFXe6YwkAlgNTuIrTBMfaNN12ty+pln6Mzs+XIdeeNBh3FNcMPehg
+ 3HpJz2SGGfD/uUTgFEYAWQ3A4+33LosL9Nxq1UYjYUIqYDa8q/PxH8IBX/fHeqzs1Os3BRUVO
+ ZtEB9+ZWaLM2cD51HM7eEq57Ct9avPqOJJRsbysvC2TAZH8iNWO1wG22PY54pqynXD1P5Jg5C
+ cXUOYP/mdDMt0hRxNpId+dgDUkmXyHU6VQWYkGJMAT17CtimvrKxmS4/CuqbhyNph7UlZmLhE
+ AAAPot2yKjkjPb9Nlq+ORTAx5WaPsWb/+Rs2subpr6eQZjYwccD1i0+RZa+t0nG2d/Tl4yFnG
+ PJP4Bh+Vcb2yuZOuUexFwrYTRj/c7XewxhgtwKvkS/8b+im5hbXsYV94G5Eo1lMMKHlgm8y0u
+ KgaEzl+nNThPu568j9OxsBbmjQrnSWSIBy8VSFEpDz9DNNiAjSQGi/wQAiu+1O/oznZ/UIZDM
+ 7hVxQwlKO7jgT9FDC0mpkCPqCIS473rNVUqCTHjtYriSL0V7NGj2ii6+yzO1qAV45vfTSnlp2
+ pU1zITfwPsnRSySwwKDYtx4Qtxxb0pHoONyZHLZ1meZlrWcUr/NeaG39rxACAzEMYniMKLuDJ
+ kCqkAjQq61q0A64ewBrdPIjG2GiR1DeL8Ru0LhD/njuPnaIpL1CfXkMcPrT27C3RfotuS49E/
+ 5Soae9Ivv+UQPb7U3+QsdE2u8lYiHLtuxM3x7Z2N4OtKgTIwrBStvFCabmmf/PsAoI9+FXq+i
+ oePZumyAe031KfZeZMjbtqtdSt0nLt7R5ZCRhVkOkud2J0FAmWF5uVR3NXx8RULqDQBnJEMix
+ eivJ5w2dZN/RENRaQNyUwf/rsB1HevjRxRbmkh7tDrc2499MhB6y7MkLierK8z
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-This argument is required to extend the generic ptrace API with
-PTRACE_GET_SYSCALL_INFO request: syscall_get_arch() is going
-to be called from ptrace_request() along with syscall_get_nr(),
-syscall_get_arguments(), syscall_get_error(), and
-syscall_get_return_value() functions with a tracee as their argument.
+On 27.11.18 22:17, Finn Thain wrote:
+> Adding Kars to Cc.
 
-Reverts: 5e937a9ae913 ("syscall_get_arch: remove useless function arguments")
-Reverts: 1002d94d3076 ("syscall.h: fix doc text for syscall_get_arch()")
-Reviewed-by: Andy Lutomirski <luto@kernel.org> # for x86
-Reviewed-by: Palmer Dabbelt <palmer@sifive.com>
-Acked-by: Paul Burton <paul.burton@mips.com> # MIPS parts
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
-Acked-by: Kees Cook <keescook@chromium.org> # seccomp parts
-Acked-by: Mark Salter <msalter@redhat.com> # for the c6x bit
-Acked-by: Paul Moore <paul@paul-moore.com> # audit related parts
-Cc: Eric Paris <eparis@redhat.com>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Richard Kuo <rkuo@codeaurora.org>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michal Simek <monstr@monstr.eu>
-Cc: Greentime Hu <green.hu@gmail.com>
-Cc: Vincent Chen <deanbo422@gmail.com>
-Cc: Ley Foon Tan <lftan@altera.com>
-Cc: Jonas Bonn <jonas@southpole.se>
-Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-Cc: Stafford Horne <shorne@gmail.com>
-Cc: James E.J. Bottomley <jejb@parisc-linux.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Rich Felker <dalias@libc.org>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Guan Xuetao <gxt@pku.edu.cn>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Will Drewry <wad@chromium.org>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Elvira Khabirova <lineprinter@altlinux.org>
-Cc: Eugene Syromyatnikov <esyr@redhat.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <jhogan@kernel.org>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: x86@kernel.org
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-snps-arc@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-c6x-dev@linux-c6x.org
-Cc: uclinux-h8-devel@lists.sourceforge.jp
-Cc: linux-hexagon@vger.kernel.org
-Cc: linux-ia64@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-mips@vger.kernel.org
-Cc: nios2-dev@lists.rocketboards.org
-Cc: openrisc@lists.librecores.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-riscv@lists.infradead.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
-Cc: linux-um@lists.infradead.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: linux-arch@vger.kernel.org
-Cc: linux-audit@redhat.com
-Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
----
+Any chance this can get tested on m68k?
 
-Notes:
-    v7: added more Acked-by
-    v6: added more Acked-by
-    v5: added Cc
-    v2: cleaned up mips part, added Reviewed-by
+Helge
 
- arch/alpha/include/asm/syscall.h      |  2 +-
- arch/arc/include/asm/syscall.h        |  2 +-
- arch/arm/include/asm/syscall.h        |  2 +-
- arch/arm64/include/asm/syscall.h      |  4 ++--
- arch/c6x/include/asm/syscall.h        |  2 +-
- arch/csky/include/asm/syscall.h       |  2 +-
- arch/h8300/include/asm/syscall.h      |  2 +-
- arch/hexagon/include/asm/syscall.h    |  2 +-
- arch/ia64/include/asm/syscall.h       |  2 +-
- arch/m68k/include/asm/syscall.h       |  2 +-
- arch/microblaze/include/asm/syscall.h |  2 +-
- arch/mips/include/asm/syscall.h       |  6 +++---
- arch/mips/kernel/ptrace.c             |  2 +-
- arch/nds32/include/asm/syscall.h      |  2 +-
- arch/nios2/include/asm/syscall.h      |  2 +-
- arch/openrisc/include/asm/syscall.h   |  2 +-
- arch/parisc/include/asm/syscall.h     |  4 ++--
- arch/powerpc/include/asm/syscall.h    | 10 ++++++++--
- arch/riscv/include/asm/syscall.h      |  2 +-
- arch/s390/include/asm/syscall.h       |  4 ++--
- arch/sh/include/asm/syscall_32.h      |  2 +-
- arch/sh/include/asm/syscall_64.h      |  2 +-
- arch/sparc/include/asm/syscall.h      |  5 +++--
- arch/unicore32/include/asm/syscall.h  |  2 +-
- arch/x86/include/asm/syscall.h        |  8 +++++---
- arch/x86/um/asm/syscall.h             |  2 +-
- arch/xtensa/include/asm/syscall.h     |  2 +-
- include/asm-generic/syscall.h         |  5 +++--
- kernel/auditsc.c                      |  4 ++--
- kernel/seccomp.c                      |  4 ++--
- 30 files changed, 52 insertions(+), 42 deletions(-)
+> On Tue, 27 Nov 2018, Helge Deller wrote:
+> 
+>> This patch is a first step to convert the hp_sdc_rtc driver to the new
+>> rtc framework.
+>>
+>> The HP SDC RTC driver is available on HP machines only, which run either
+>> a parisc or a m68k processor.  I did tested this patch on a parisc
+>> machine, but it would be nice if someone with a m68k machine could test
+>> it too.
+>>     
+>> Signed-off-by: Helge Deller <deller@gmx.de>
+>>
+>> diff --git a/drivers/input/misc/hp_sdc_rtc.c b/drivers/input/misc/hp_sdc_rtc.c
+>> index 47eb8ca729fe..c787bde12fce 100644
+>> --- a/drivers/input/misc/hp_sdc_rtc.c
+>> +++ b/drivers/input/misc/hp_sdc_rtc.c
+>> @@ -34,51 +34,27 @@
+>>   */
+>>  
+>>  #include <linux/hp_sdc.h>
+>> -#include <linux/errno.h>
+>> -#include <linux/types.h>
+>> -#include <linux/init.h>
+>>  #include <linux/module.h>
+>> -#include <linux/time.h>
+>> -#include <linux/miscdevice.h>
+>> -#include <linux/proc_fs.h>
+>> -#include <linux/seq_file.h>
+>> -#include <linux/poll.h>
+>>  #include <linux/rtc.h>
+>> -#include <linux/mutex.h>
+>>  #include <linux/semaphore.h>
+>>  
+>>  MODULE_AUTHOR("Brian S. Julin <bri@calyx.com>");
+>>  MODULE_DESCRIPTION("HP i8042 SDC + MSM-58321 RTC Driver");
+>>  MODULE_LICENSE("Dual BSD/GPL");
+>>  
+>> -#define RTC_VERSION "1.10d"
+>> +#define RTC_VERSION "1.2"
+>>  
+>> -static DEFINE_MUTEX(hp_sdc_rtc_mutex);
+>> -static unsigned long epoch = 2000;
+>> +static struct rtc_device *rtc;
+>>  
+>>  static struct semaphore i8042tregs;
+>>  
+>> -static hp_sdc_irqhook hp_sdc_rtc_isr;
+>> -
+>> -static struct fasync_struct *hp_sdc_rtc_async_queue;
+>> -
+>>  static DECLARE_WAIT_QUEUE_HEAD(hp_sdc_rtc_wait);
+>>  
+>> -static ssize_t hp_sdc_rtc_read(struct file *file, char __user *buf,
+>> -			       size_t count, loff_t *ppos);
+>> -
+>> -static long hp_sdc_rtc_unlocked_ioctl(struct file *file,
+>> -				      unsigned int cmd, unsigned long arg);
+>> -
+>> -static unsigned int hp_sdc_rtc_poll(struct file *file, poll_table *wait);
+>> -
+>> -static int hp_sdc_rtc_open(struct inode *inode, struct file *file);
+>> -static int hp_sdc_rtc_fasync (int fd, struct file *filp, int on);
+>> -
+>>  static void hp_sdc_rtc_isr (int irq, void *dev_id, 
+>>  			    uint8_t status, uint8_t data) 
+>>  {
+>> -	return;
+>> +	/* Notify RTC core on alarm event */
+>> +	rtc_update_irq(rtc, 1, RTC_IRQF | RTC_AF);
+>>  }
+>>  
+>>  static int hp_sdc_rtc_do_read_bbrtc (struct rtc_time *rtctm)
+>> @@ -105,17 +81,18 @@ static int hp_sdc_rtc_do_read_bbrtc (struct rtc_time *rtctm)
+>>  	t.act.semaphore =	&tsem;
+>>  	sema_init(&tsem, 0);
+>>  	
+>> -	if (hp_sdc_enqueue_transaction(&t)) return -1;
+>> +	if (hp_sdc_enqueue_transaction(&t))
+>> +		return -EIO;
+>>  	
+>>  	/* Put ourselves to sleep for results. */
+>>  	if (WARN_ON(down_interruptible(&tsem)))
+>> -		return -1;
+>> +		return -EIO;
+>>  	
+>>  	/* Check for nonpresence of BBRTC */
+>>  	if (!((tseq[83] | tseq[90] | tseq[69] | tseq[76] |
+>>  	       tseq[55] | tseq[62] | tseq[34] | tseq[41] |
+>>  	       tseq[20] | tseq[27] | tseq[6]  | tseq[13]) & 0x0f))
+>> -		return -1;
+>> +		return -ENODEV;
+>>  
+>>  	memset(rtctm, 0, sizeof(struct rtc_time));
+>>  	rtctm->tm_year = (tseq[83] & 0x0f) + (tseq[90] & 0x0f) * 10;
+>> @@ -132,17 +109,24 @@ static int hp_sdc_rtc_do_read_bbrtc (struct rtc_time *rtctm)
+>>  static int hp_sdc_rtc_read_bbrtc (struct rtc_time *rtctm)
+>>  {
+>>  	struct rtc_time tm, tm_last;
+>> -	int i = 0;
+>> +	int i = 0, ret;
+>>  
+>>  	/* MSM-58321 has no read latch, so must read twice and compare. */
+>>  
+>> -	if (hp_sdc_rtc_do_read_bbrtc(&tm_last)) return -1;
+>> -	if (hp_sdc_rtc_do_read_bbrtc(&tm)) return -1;
+>> +	ret = hp_sdc_rtc_do_read_bbrtc(&tm_last);
+>> +	if (ret)
+>> +		return ret;
+>> +	ret = hp_sdc_rtc_do_read_bbrtc(&tm);
+>> +	if (ret)
+>> +		return ret;
+>>  
+>>  	while (memcmp(&tm, &tm_last, sizeof(struct rtc_time))) {
+>> -		if (i++ > 4) return -1;
+>> +		if (i++ > 4)
+>> +			return -EAGAIN;
+>>  		memcpy(&tm_last, &tm, sizeof(struct rtc_time));
+>> -		if (hp_sdc_rtc_do_read_bbrtc(&tm)) return -1;
+>> +		ret = hp_sdc_rtc_do_read_bbrtc(&tm);
+>> +		if (ret)
+>> +			return ret;
+>>  	}
+>>  
+>>  	memcpy(rtctm, &tm, sizeof(struct rtc_time));
+>> @@ -150,7 +134,6 @@ static int hp_sdc_rtc_read_bbrtc (struct rtc_time *rtctm)
+>>  	return 0;
+>>  }
+>>  
+>> -
+>>  static int64_t hp_sdc_rtc_read_i8042timer (uint8_t loadcmd, int numreg)
+>>  {
+>>  	hp_sdc_transaction t;
+>> @@ -178,16 +161,16 @@ static int64_t hp_sdc_rtc_read_i8042timer (uint8_t loadcmd, int numreg)
+>>  
+>>  	/* Sleep if output regs in use. */
+>>  	if (WARN_ON(down_interruptible(&i8042tregs)))
+>> -		return -1;
+>> +		return -EIO;
+>>  
+>>  	if (hp_sdc_enqueue_transaction(&t)) {
+>>  		up(&i8042tregs);
+>> -		return -1;
+>> +		return -EIO;
+>>  	}
+>>  	
+>>  	/* Sleep until results come back. */
+>>  	if (WARN_ON(down_interruptible(&i8042tregs)))
+>> -		return -1;
+>> +		return -EIO;
+>>  
+>>  	up(&i8042tregs);
+>>  
+>> @@ -198,13 +181,15 @@ static int64_t hp_sdc_rtc_read_i8042timer (uint8_t loadcmd, int numreg)
+>>  
+>>  
+>>  /* Read the i8042 real-time clock */
+>> -static inline int hp_sdc_rtc_read_rt(struct timespec64 *res) {
+>> +static int hp_sdc_rtc_read_rt(struct timespec64 *res)
+>> +{
+>>  	int64_t raw;
+>>  	uint32_t tenms; 
+>>  	unsigned int days;
+>>  
+>>  	raw = hp_sdc_rtc_read_i8042timer(HP_SDC_CMD_LOAD_RT, 5);
+>> -	if (raw < 0) return -1;
+>> +	if (raw < 0)
+>> +		return -EIO;
+>>  
+>>  	tenms = (uint32_t)raw & 0xffffff;
+>>  	days  = (unsigned int)(raw >> 24) & 0xffff;
+>> @@ -222,7 +207,8 @@ static inline int hp_sdc_rtc_read_fhs(struct timespec64 *res) {
+>>  	unsigned int tenms;
+>>  
+>>  	raw = hp_sdc_rtc_read_i8042timer(HP_SDC_CMD_LOAD_FHS, 2);
+>> -	if (raw < 0) return -1;
+>> +	if (raw < 0)
+>> +		return -EIO;
+>>  
+>>  	tenms = (unsigned int)raw & 0xffff;
+>>  
+>> @@ -239,7 +225,8 @@ static inline int hp_sdc_rtc_read_mt(struct timespec64 *res) {
+>>  	uint32_t tenms; 
+>>  
+>>  	raw = hp_sdc_rtc_read_i8042timer(HP_SDC_CMD_LOAD_MT, 3);
+>> -	if (raw < 0) return -1;
+>> +	if (raw < 0)
+>> +		return -EIO;
+>>  
+>>  	tenms = (uint32_t)raw & 0xffffff;
+>>  
+>> @@ -256,7 +243,8 @@ static inline int hp_sdc_rtc_read_dt(struct timespec64 *res) {
+>>  	uint32_t tenms;
+>>  
+>>  	raw = hp_sdc_rtc_read_i8042timer(HP_SDC_CMD_LOAD_DT, 3);
+>> -	if (raw < 0) return -1;
+>> +	if (raw < 0)
+>> +		return -EIO;
+>>  
+>>  	tenms = (uint32_t)raw & 0xffffff;
+>>  
+>> @@ -273,7 +261,8 @@ static inline int hp_sdc_rtc_read_ct(struct timespec64 *res) {
+>>  	uint32_t tenms;
+>>  
+>>  	raw = hp_sdc_rtc_read_i8042timer(HP_SDC_CMD_LOAD_CT, 3);
+>> -	if (raw < 0) return -1;
+>> +	if (raw < 0)
+>> +		return -EIO;
+>>  
+>>  	tenms = (uint32_t)raw & 0xffffff;
+>>  
+>> @@ -284,11 +273,11 @@ static inline int hp_sdc_rtc_read_ct(struct timespec64 *res) {
+>>  }
+>>  
+>>  
+>> -#if 0 /* not used yet */
+>>  /* Set the i8042 real-time clock */
+>> -static int hp_sdc_rtc_set_rt (struct timeval *setto)
+>> +static int hp_sdc_rtc_set_rt(struct rtc_time *tm)
+>>  {
+>>  	uint32_t tenms;
+>> +	time64_t seconds;
+>>  	unsigned int days;
+>>  	hp_sdc_transaction t;
+>>  	uint8_t tseq[11] = {
+>> @@ -300,17 +289,13 @@ static int hp_sdc_rtc_set_rt (struct timeval *setto)
+>>  
+>>  	t.endidx = 10;
+>>  
+>> -	if (0xffff < setto->tv_sec / 86400) return -1;
+>> -	days = setto->tv_sec / 86400;
+>> -	if (0xffff < setto->tv_usec / 1000000 / 86400) return -1;
+>> -	days += ((setto->tv_sec % 86400) + setto->tv_usec / 1000000) / 86400;
+>> -	if (days > 0xffff) return -1;
+>> -
+>> -	if (0xffffff < setto->tv_sec) return -1;
+>> -	tenms  = setto->tv_sec * 100;
+>> -	if (0xffffff < setto->tv_usec / 10000) return -1;
+>> -	tenms += setto->tv_usec / 10000;
+>> -	if (tenms > 0xffffff) return -1;
+>> +	seconds = rtc_tm_to_time64(tm);
+>> +	days = seconds / 86400;
+>> +	if (days > 0xffff)
+>> +		return -EINVAL;
+>> +	tenms  = (seconds % 86400) * 100;
+>> +	if (tenms > 0xffffff)
+>> +		return -EINVAL;
+>>  
+>>  	tseq[3] = (uint8_t)(tenms & 0xff);
+>>  	tseq[4] = (uint8_t)((tenms >> 8)  & 0xff);
+>> @@ -321,12 +306,14 @@ static int hp_sdc_rtc_set_rt (struct timeval *setto)
+>>  
+>>  	t.seq =	tseq;
+>>  
+>> -	if (hp_sdc_enqueue_transaction(&t)) return -1;
+>> +	if (hp_sdc_enqueue_transaction(&t))
+>> +		return -EIO;
+>>  	return 0;
+>>  }
+>>  
+>>  /* Set the i8042 fast handshake timer */
+>> -static int hp_sdc_rtc_set_fhs (struct timeval *setto)
+>> +#if 0
+>> +static int hp_sdc_rtc_set_fhs(struct timespec64 *setto)
+>>  {
+>>  	uint32_t tenms;
+>>  	hp_sdc_transaction t;
+>> @@ -337,36 +324,36 @@ static int hp_sdc_rtc_set_fhs (struct timeval *setto)
+>>  
+>>  	t.endidx = 4;
+>>  
+>> -	if (0xffff < setto->tv_sec) return -1;
+>>  	tenms  = setto->tv_sec * 100;
+>> -	if (0xffff < setto->tv_usec / 10000) return -1;
+>> -	tenms += setto->tv_usec / 10000;
+>> -	if (tenms > 0xffff) return -1;
+>> +	tenms += setto->tv_nsec / 10000 / 1000;
+>> +	if (tenms > 0xffff)
+>> +		return -EINVAL;
+>>  
+>>  	tseq[3] = (uint8_t)(tenms & 0xff);
+>>  	tseq[4] = (uint8_t)((tenms >> 8)  & 0xff);
+>>  
+>>  	t.seq =	tseq;
+>>  
+>> -	if (hp_sdc_enqueue_transaction(&t)) return -1;
+>> +	if (hp_sdc_enqueue_transaction(&t))
+>> +		return -EIO;
+>>  	return 0;
+>>  }
+>> -
+>> +#endif
+>>  
+>>  /* Set the i8042 match timer (a.k.a. alarm) */
+>> -#define hp_sdc_rtc_set_mt (setto) \
+>> +#define hp_sdc_rtc_set_mt(setto) \
+>>  	hp_sdc_rtc_set_i8042timer(setto, HP_SDC_CMD_SET_MT)
+>>  
+>>  /* Set the i8042 delay timer */
+>> -#define hp_sdc_rtc_set_dt (setto) \
+>> +#define hp_sdc_rtc_set_dt(setto) \
+>>  	hp_sdc_rtc_set_i8042timer(setto, HP_SDC_CMD_SET_DT)
+>>  
+>>  /* Set the i8042 cycle timer (a.k.a. periodic) */
+>> -#define hp_sdc_rtc_set_ct (setto) \
+>> +#define hp_sdc_rtc_set_ct(setto) \
+>>  	hp_sdc_rtc_set_i8042timer(setto, HP_SDC_CMD_SET_CT)
+>>  
+>>  /* Set one of the i8042 3-byte wide timers */
+>> -static int hp_sdc_rtc_set_i8042timer (struct timeval *setto, uint8_t setcmd)
+>> +static int hp_sdc_rtc_set_i8042timer(struct timespec64 *setto, uint8_t setcmd)
+>>  {
+>>  	uint32_t tenms;
+>>  	hp_sdc_transaction t;
+>> @@ -377,58 +364,96 @@ static int hp_sdc_rtc_set_i8042timer (struct timeval *setto, uint8_t setcmd)
+>>  
+>>  	t.endidx = 6;
+>>  
+>> -	if (0xffffff < setto->tv_sec) return -1;
+>> +	if (setto->tv_sec > 0xffffff)
+>> +		return -EINVAL;
+>>  	tenms  = setto->tv_sec * 100;
+>> -	if (0xffffff < setto->tv_usec / 10000) return -1;
+>> -	tenms += setto->tv_usec / 10000;
+>> -	if (tenms > 0xffffff) return -1;
+>> +	if (setto->tv_nsec / 10000 / 1000 > 0xffffff)
+>> +		return -EINVAL;
+>> +	tenms += setto->tv_nsec / 10000 / 1000;
+>> +	if (tenms > 0xffffff)
+>> +		return -EINVAL;
+>>  
+>>  	tseq[1] = setcmd;
+>>  	tseq[3] = (uint8_t)(tenms & 0xff);
+>>  	tseq[4] = (uint8_t)((tenms >> 8)  & 0xff);
+>>  	tseq[5] = (uint8_t)((tenms >> 16)  & 0xff);
+>>  
+>> -	t.seq =			tseq;
+>> +	t.seq =	tseq;
+>>  
+>>  	if (hp_sdc_enqueue_transaction(&t)) { 
+>> -		return -1;
+>> +		return -EIO;
+>>  	}
+>>  	return 0;
+>>  }
+>> -#endif
+>>  
+>> -static ssize_t hp_sdc_rtc_read(struct file *file, char __user *buf,
+>> -			       size_t count, loff_t *ppos) {
+>> -	ssize_t retval;
+>> -
+>> -        if (count < sizeof(unsigned long))
+>> -                return -EINVAL;
+>> -
+>> -	retval = put_user(68, (unsigned long __user *)buf);
+>> -	return retval;
+>> +static int hp_sdc_rtc_get_time(struct device *dev, struct rtc_time *tm)
+>> +{
+>> +	return hp_sdc_rtc_read_bbrtc(tm);
+>>  }
+>>  
+>> -static __poll_t hp_sdc_rtc_poll(struct file *file, poll_table *wait)
+>> +static int hp_sdc_rtc_set_time(struct device *dev, struct rtc_time *tm)
+>>  {
+>> -        unsigned long l;
+>> +	if (!rtc_valid_tm(tm))
+>> +		return -EINVAL;
+>>  
+>> -	l = 0;
+>> -        if (l != 0)
+>> -                return EPOLLIN | EPOLLRDNORM;
+>> -        return 0;
+>> +	return hp_sdc_rtc_set_rt(tm);
+>>  }
+>>  
+>> -static int hp_sdc_rtc_open(struct inode *inode, struct file *file)
+>> +static int hp_sdc_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *wa)
+>>  {
+>> -        return 0;
+>> +	/* Read the present alarm time */
+>> +	int ret;
+>> +	struct timespec64 ttime;
+>> +	struct rtc_time *wtime = &wa->time;
+>> +
+>> +	ret = hp_sdc_rtc_read_mt(&ttime);
+>> +	if (ret)
+>> +		return ret;
+>> +	ret = hp_sdc_rtc_read_bbrtc(wtime);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	wtime->tm_hour = ttime.tv_sec / 3600;  ttime.tv_sec %= 3600;
+>> +	wtime->tm_min  = ttime.tv_sec / 60;    ttime.tv_sec %= 60;
+>> +	wtime->tm_sec  = ttime.tv_sec;
+>> +
+>> +	wa->enabled = 0;
+>> +	wa->pending = 0;
+>> +
+>> +	return 0;
+>>  }
+>>  
+>> -static int hp_sdc_rtc_fasync (int fd, struct file *filp, int on)
+>> +static int hp_sdc_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *wa)
+>>  {
+>> -        return fasync_helper (fd, filp, on, &hp_sdc_rtc_async_queue);
+>> +	/* Set the alarm time */
+>> +	struct timespec64 ttime;
+>> +
+>> +	/*
+>> +	 * This expects a struct hp_sdc_rtc_time. Writing 0xff means
+>> +	 * "don't care" or "match all" for PC timers.  The HP SDC
+>> +	 * does not support that perk, but it could be emulated fairly
+>> +	 * easily.  Only the tm_hour, tm_min and tm_sec are used.
+>> +	 * We could do it with 10ms accuracy with the HP SDC, if the
+>> +	 * rtc interface left us a way to do that.
+>> +	 */
+>> +
+>> +	if (wa->time.tm_hour > 23)
+>> +		return -EINVAL;
+>> +	if (wa->time.tm_min  > 59)
+>> +		return -EINVAL;
+>> +	if (wa->time.tm_sec  > 59)
+>> +		return -EINVAL;
+>> +
+>> +	ttime.tv_sec = wa->time.tm_hour * 3600 +
+>> +	  wa->time.tm_min * 60 + wa->time.tm_sec;
+>> +	ttime.tv_nsec = 0;
+>> +	if (hp_sdc_rtc_set_mt(&ttime))
+>> +		return -EIO;
+>> +
+>> +	return 0;
+>>  }
+>>  
+>> -static int hp_sdc_rtc_proc_show(struct seq_file *m, void *v)
+>> +static int hp_sdc_rtc_proc(struct device *dev, struct seq_file *m)
+>>  {
+>>  #define YN(bit) ("no")
+>>  #define NY(bit) ("yes")
+>> @@ -442,11 +467,10 @@ static int hp_sdc_rtc_proc_show(struct seq_file *m, void *v)
+>>  	} else {
+>>  		seq_printf(m,
+>>  			     "rtc_time\t: %02d:%02d:%02d\n"
+>> -			     "rtc_date\t: %04d-%02d-%02d\n"
+>> -			     "rtc_epoch\t: %04lu\n",
+>> +			     "rtc_date\t: %04d-%02d-%02d\n",
+>>  			     tm.tm_hour, tm.tm_min, tm.tm_sec,
+>>  			     tm.tm_year + 1900, tm.tm_mon + 1, 
+>> -			     tm.tm_mday, epoch);
+>> +			     tm.tm_mday);
+>>  	}
+>>  
+>>  	if (hp_sdc_rtc_read_rt(&tv)) {
+>> @@ -509,185 +533,42 @@ static int hp_sdc_rtc_proc_show(struct seq_file *m, void *v)
+>>  #undef NY
+>>  }
+>>  
+>> -static int hp_sdc_rtc_ioctl(struct file *file, 
+>> +static int hp_sdc_rtc_ioctl(struct device *dev,
+>>  			    unsigned int cmd, unsigned long arg)
+>>  {
+>> -#if 1
+>> -	return -EINVAL;
+>> -#else
+>> -	
+>> -        struct rtc_time wtime; 
+>> -	struct timeval ttime;
+>> -	int use_wtime = 0;
+>> -
+>> -	/* This needs major work. */
+>> -
+>> -        switch (cmd) {
+>> -
+>> -        case RTC_AIE_OFF:       /* Mask alarm int. enab. bit    */
+>> -        case RTC_AIE_ON:        /* Allow alarm interrupts.      */
+>> +	switch (cmd) {
+>> +	case RTC_AIE_OFF:       /* Mask alarm int. enab. bit    */
+>> +	case RTC_AIE_ON:        /* Allow alarm interrupts.      */
+>>  	case RTC_PIE_OFF:       /* Mask periodic int. enab. bit */
+>> -        case RTC_PIE_ON:        /* Allow periodic ints          */
+>> -        case RTC_UIE_ON:        /* Allow ints for RTC updates.  */
+>> -        case RTC_UIE_OFF:       /* Allow ints for RTC updates.  */
+>> -        {
+>> +	case RTC_PIE_ON:        /* Allow periodic ints          */
+>> +	case RTC_UIE_ON:        /* Allow ints for RTC updates.  */
+>> +	case RTC_UIE_OFF:       /* Allow ints for RTC updates.  */
+>> +	{
+>>  		/* We cannot mask individual user timers and we
+>>  		   cannot tell them apart when they occur, so it 
+>>  		   would be disingenuous to succeed these IOCTLs */
+>>  		return -EINVAL;
+>> -        }
+>> -        case RTC_ALM_READ:      /* Read the present alarm time */
+>> -        {
+>> -		if (hp_sdc_rtc_read_mt(&ttime)) return -EFAULT;
+>> -		if (hp_sdc_rtc_read_bbrtc(&wtime)) return -EFAULT;
+>> -
+>> -		wtime.tm_hour = ttime.tv_sec / 3600;  ttime.tv_sec %= 3600;
+>> -		wtime.tm_min  = ttime.tv_sec / 60;    ttime.tv_sec %= 60;
+>> -		wtime.tm_sec  = ttime.tv_sec;
+>> -                
+>> -		break;
+>> -        }
+>> -        case RTC_IRQP_READ:     /* Read the periodic IRQ rate.  */
+>> -        {
+>> -                return put_user(hp_sdc_rtc_freq, (unsigned long *)arg);
+>> -        }
+>> -        case RTC_IRQP_SET:      /* Set periodic IRQ rate.       */
+>> -        {
+>> -                /* 
+>> -                 * The max we can do is 100Hz.
+>> -		 */
+>> -
+>> -                if ((arg < 1) || (arg > 100)) return -EINVAL;
+>> -		ttime.tv_sec = 0;
+>> -		ttime.tv_usec = 1000000 / arg;
+>> -		if (hp_sdc_rtc_set_ct(&ttime)) return -EFAULT;
+>> -		hp_sdc_rtc_freq = arg;
+>> -                return 0;
+>> -        }
+>> -        case RTC_ALM_SET:       /* Store a time into the alarm */
+>> -        {
+>> -                /*
+>> -                 * This expects a struct hp_sdc_rtc_time. Writing 0xff means
+>> -                 * "don't care" or "match all" for PC timers.  The HP SDC
+>> -		 * does not support that perk, but it could be emulated fairly
+>> -		 * easily.  Only the tm_hour, tm_min and tm_sec are used.
+>> -		 * We could do it with 10ms accuracy with the HP SDC, if the 
+>> -		 * rtc interface left us a way to do that.
+>> -                 */
+>> -                struct hp_sdc_rtc_time alm_tm;
+>> -
+>> -                if (copy_from_user(&alm_tm, (struct hp_sdc_rtc_time*)arg,
+>> -                                   sizeof(struct hp_sdc_rtc_time)))
+>> -                       return -EFAULT;
+>> -
+>> -                if (alm_tm.tm_hour > 23) return -EINVAL;
+>> -		if (alm_tm.tm_min  > 59) return -EINVAL;
+>> -		if (alm_tm.tm_sec  > 59) return -EINVAL;  
+>> -
+>> -		ttime.sec = alm_tm.tm_hour * 3600 + 
+>> -		  alm_tm.tm_min * 60 + alm_tm.tm_sec;
+>> -		ttime.usec = 0;
+>> -		if (hp_sdc_rtc_set_mt(&ttime)) return -EFAULT;
+>> -                return 0;
+>> -        }
+>> -        case RTC_RD_TIME:       /* Read the time/date from RTC  */
+>> -        {
+>> -		if (hp_sdc_rtc_read_bbrtc(&wtime)) return -EFAULT;
+>> -                break;
+>> -        }
+>> -        case RTC_SET_TIME:      /* Set the RTC */
+>> -        {
+>> -                struct rtc_time hp_sdc_rtc_tm;
+>> -                unsigned char mon, day, hrs, min, sec, leap_yr;
+>> -                unsigned int yrs;
+>> -
+>> -                if (!capable(CAP_SYS_TIME))
+>> -                        return -EACCES;
+>> -		if (copy_from_user(&hp_sdc_rtc_tm, (struct rtc_time *)arg,
+>> -                                   sizeof(struct rtc_time)))
+>> -                        return -EFAULT;
+>> -
+>> -                yrs = hp_sdc_rtc_tm.tm_year + 1900;
+>> -                mon = hp_sdc_rtc_tm.tm_mon + 1;   /* tm_mon starts at zero */
+>> -                day = hp_sdc_rtc_tm.tm_mday;
+>> -                hrs = hp_sdc_rtc_tm.tm_hour;
+>> -                min = hp_sdc_rtc_tm.tm_min;
+>> -                sec = hp_sdc_rtc_tm.tm_sec;
+>> -
+>> -                if (yrs < 1970)
+>> -                        return -EINVAL;
+>> -
+>> -                leap_yr = ((!(yrs % 4) && (yrs % 100)) || !(yrs % 400));
+>> -
+>> -                if ((mon > 12) || (day == 0))
+>> -                        return -EINVAL;
+>> -                if (day > (days_in_mo[mon] + ((mon == 2) && leap_yr)))
+>> -                        return -EINVAL;
+>> -		if ((hrs >= 24) || (min >= 60) || (sec >= 60))
+>> -                        return -EINVAL;
+>> -
+>> -                if ((yrs -= eH) > 255)    /* They are unsigned */
+>> -                        return -EINVAL;
+>> -
+>> -
+>> -                return 0;
+>> -        }
+>> -        case RTC_EPOCH_READ:    /* Read the epoch.      */
+>> -        {
+>> -                return put_user (epoch, (unsigned long *)arg);
+>> -        }
+>> -        case RTC_EPOCH_SET:     /* Set the epoch.       */
+>> -        {
+>> -                /* 
+>> -                 * There were no RTC clocks before 1900.
+>> -                 */
+>> -                if (arg < 1900)
+>> -		  return -EINVAL;
+>> -		if (!capable(CAP_SYS_TIME))
+>> -		  return -EACCES;
+>> -		
+>> -                epoch = arg;
+>> -                return 0;
+>> -        }
+>> -        default:
+>> -                return -EINVAL;
+>> -        }
+>> -        return copy_to_user((void *)arg, &wtime, sizeof wtime) ? -EFAULT : 0;
+>> -#endif
+>> -}
+>> -
+>> -static long hp_sdc_rtc_unlocked_ioctl(struct file *file,
+>> -				      unsigned int cmd, unsigned long arg)
+>> -{
+>> -	int ret;
+>> -
+>> -	mutex_lock(&hp_sdc_rtc_mutex);
+>> -	ret = hp_sdc_rtc_ioctl(file, cmd, arg);
+>> -	mutex_unlock(&hp_sdc_rtc_mutex);
+>> -
+>> -	return ret;
+>> +	}
+>> +	default:
+>> +		return -ENOIOCTLCMD;
+>> +	}
+>> +	return 0;
+>>  }
+>>  
+>> -
+>> -static const struct file_operations hp_sdc_rtc_fops = {
+>> -        .owner =		THIS_MODULE,
+>> -        .llseek =		no_llseek,
+>> -        .read =			hp_sdc_rtc_read,
+>> -        .poll =			hp_sdc_rtc_poll,
+>> -        .unlocked_ioctl =	hp_sdc_rtc_unlocked_ioctl,
+>> -        .open =			hp_sdc_rtc_open,
+>> -        .fasync =		hp_sdc_rtc_fasync,
+>> -};
+>> -
+>> -static struct miscdevice hp_sdc_rtc_dev = {
+>> -        .minor =	RTC_MINOR,
+>> -        .name =		"rtc_HIL",
+>> -        .fops =		&hp_sdc_rtc_fops
+>> +static const struct rtc_class_ops hp_sdc_rtc_ops = {
+>> +	.ioctl = hp_sdc_rtc_ioctl,
+>> +	.proc = hp_sdc_rtc_proc,
+>> +	.read_time = hp_sdc_rtc_get_time,
+>> +	.set_time = hp_sdc_rtc_set_time,
+>> +	.read_alarm = hp_sdc_rtc_read_alarm,
+>> +	.set_alarm = hp_sdc_rtc_set_alarm,
+>> +	// int (*alarm_irq_enable)(struct device *, unsigned int enabled);
+>>  };
+>>  
+>>  static int __init hp_sdc_rtc_init(void)
+>>  {
+>>  	int ret;
+>> +	struct rtc_time tm;
+>>  
+>>  #ifdef __mc68000__
+>>  	if (!MACH_IS_HP300)
+>> @@ -696,14 +577,22 @@ static int __init hp_sdc_rtc_init(void)
+>>  
+>>  	sema_init(&i8042tregs, 1);
+>>  
+>> +	/* check if BBRTC is available */
+>> +	ret = hp_sdc_rtc_read_bbrtc(&tm);
+>> +	if (ret) {
+>> +		pr_info("hil-rtc: BBRTC not available.");
+>> +		return -ENODEV;
+>> +	}
+>> +
+>>  	if ((ret = hp_sdc_request_timer_irq(&hp_sdc_rtc_isr)))
+>>  		return ret;
+>> -	if (misc_register(&hp_sdc_rtc_dev) != 0)
+>> -		printk(KERN_INFO "Could not register misc. dev for i8042 rtc\n");
+>>  
+>> -        proc_create_single("driver/rtc", 0, NULL, hp_sdc_rtc_proc_show);
+>> +	rtc = devm_rtc_device_register(hp_sdc_get_sdc_device(),
+>> +			"hil-rtc", &hp_sdc_rtc_ops, THIS_MODULE);
+>> +	if (IS_ERR(rtc))
+>> +		return PTR_ERR(rtc);
+>>  
+>> -	printk(KERN_INFO "HP i8042 SDC + MSM-58321 RTC support loaded "
+>> +	pr_info("hil-rtc: HP i8042 SDC + MSM-58321 RTC support loaded "
+>>  			 "(RTC v " RTC_VERSION ")\n");
+>>  
+>>  	return 0;
+>> @@ -711,10 +600,9 @@ static int __init hp_sdc_rtc_init(void)
+>>  
+>>  static void __exit hp_sdc_rtc_exit(void)
+>>  {
+>> -	remove_proc_entry ("driver/rtc", NULL);
+>> -        misc_deregister(&hp_sdc_rtc_dev);
+>> +	devm_rtc_device_unregister(hp_sdc_get_sdc_device(), rtc);
+>>  	hp_sdc_release_timer_irq(hp_sdc_rtc_isr);
+>> -        printk(KERN_INFO "HP i8042 SDC + MSM-58321 RTC support unloaded\n");
+>> +	pr_info("hil-rtc: HP i8042 SDC + MSM-58321 RTC support unloaded\n");
+>>  }
+>>  
+>>  module_init(hp_sdc_rtc_init);
+>> diff --git a/drivers/input/serio/hp_sdc.c b/drivers/input/serio/hp_sdc.c
+>> index 0b8a25c58d02..3e0ad6a4907f 100644
+>> --- a/drivers/input/serio/hp_sdc.c
+>> +++ b/drivers/input/serio/hp_sdc.c
+>> @@ -110,6 +110,17 @@ MODULE_PARM_DESC(no_hpsdc, "Do not enable HP SDC driver.");
+>>  
+>>  static hp_i8042_sdc	hp_sdc;	/* All driver state is kept in here. */
+>>  
+>> +struct device *hp_sdc_get_sdc_device(void)
+>> +{
+>> +#if defined(__hppa__)
+>> +	return &hp_sdc.dev->dev;
+>> +#elif defined(__mc68000__)
+>> +	/* hp_sdc.dev is 1, so return NULL instead. */
+>> +	return NULL;
+>> +#endif
+>> +}
+>> +EXPORT_SYMBOL(hp_sdc_get_sdc_device);
+>> +
+>>  /*************** primitives for use in any context *********************/
+>>  static inline uint8_t hp_sdc_status_in8(void)
+>>  {
+>> diff --git a/include/linux/hp_sdc.h b/include/linux/hp_sdc.h
+>> index 6f1dee7e67e0..8988e32adebd 100644
+>> --- a/include/linux/hp_sdc.h
+>> +++ b/include/linux/hp_sdc.h
+>> @@ -298,4 +298,6 @@ typedef struct {
+>>  
+>>  } hp_i8042_sdc;
+>>  
+>> +struct device *hp_sdc_get_sdc_device(void);
+>> +
+>>  #endif /* _LINUX_HP_SDC_H */
+>>
 
-diff --git a/arch/alpha/include/asm/syscall.h b/arch/alpha/include/asm/syscall.h
-index c67d6a69d7c8..20078aef0922 100644
---- a/arch/alpha/include/asm/syscall.h
-+++ b/arch/alpha/include/asm/syscall.h
-@@ -33,7 +33,7 @@ syscall_get_return_value(struct task_struct *task, struct pt_regs *regs)
- }
- 
- static inline int
--syscall_get_arch(void)
-+syscall_get_arch(struct task_struct *task)
- {
- 	return AUDIT_ARCH_ALPHA;
- }
-diff --git a/arch/arc/include/asm/syscall.h b/arch/arc/include/asm/syscall.h
-index c7fc4c0c3bcb..caf2697ef5b7 100644
---- a/arch/arc/include/asm/syscall.h
-+++ b/arch/arc/include/asm/syscall.h
-@@ -70,7 +70,7 @@ syscall_get_arguments(struct task_struct *task, struct pt_regs *regs,
- }
- 
- static inline int
--syscall_get_arch(void)
-+syscall_get_arch(struct task_struct *task)
- {
- 	return IS_ENABLED(CONFIG_ISA_ARCOMPACT)
- 		? (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN)
-diff --git a/arch/arm/include/asm/syscall.h b/arch/arm/include/asm/syscall.h
-index 06dea6bce293..3940ceac0bdc 100644
---- a/arch/arm/include/asm/syscall.h
-+++ b/arch/arm/include/asm/syscall.h
-@@ -104,7 +104,7 @@ static inline void syscall_set_arguments(struct task_struct *task,
- 	memcpy(&regs->ARM_r0 + i, args, n * sizeof(args[0]));
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	/* ARM tasks don't change audit architectures on the fly. */
- 	return AUDIT_ARCH_ARM;
-diff --git a/arch/arm64/include/asm/syscall.h b/arch/arm64/include/asm/syscall.h
-index ad8be16a39c9..1870df03f774 100644
---- a/arch/arm64/include/asm/syscall.h
-+++ b/arch/arm64/include/asm/syscall.h
-@@ -117,9 +117,9 @@ static inline void syscall_set_arguments(struct task_struct *task,
-  * We don't care about endianness (__AUDIT_ARCH_LE bit) here because
-  * AArch64 has the same system calls both on little- and big- endian.
-  */
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
--	if (is_compat_task())
-+	if (is_compat_thread(task_thread_info(task)))
- 		return AUDIT_ARCH_ARM;
- 
- 	return AUDIT_ARCH_AARCH64;
-diff --git a/arch/c6x/include/asm/syscall.h b/arch/c6x/include/asm/syscall.h
-index 39dbd1ef994c..595057191c9c 100644
---- a/arch/c6x/include/asm/syscall.h
-+++ b/arch/c6x/include/asm/syscall.h
-@@ -121,7 +121,7 @@ static inline void syscall_set_arguments(struct task_struct *task,
- 	}
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	return IS_ENABLED(CONFIG_CPU_BIG_ENDIAN)
- 		? AUDIT_ARCH_C6XBE : AUDIT_ARCH_C6X;
-diff --git a/arch/csky/include/asm/syscall.h b/arch/csky/include/asm/syscall.h
-index d637445737b7..150ffb894fa2 100644
---- a/arch/csky/include/asm/syscall.h
-+++ b/arch/csky/include/asm/syscall.h
-@@ -70,7 +70,7 @@ syscall_set_arguments(struct task_struct *task, struct pt_regs *regs,
- }
- 
- static inline int
--syscall_get_arch(void)
-+syscall_get_arch(struct task_struct *task)
- {
- 	return AUDIT_ARCH_CSKY;
- }
-diff --git a/arch/h8300/include/asm/syscall.h b/arch/h8300/include/asm/syscall.h
-index 0a6565d12836..5c2ab1072700 100644
---- a/arch/h8300/include/asm/syscall.h
-+++ b/arch/h8300/include/asm/syscall.h
-@@ -62,7 +62,7 @@ syscall_get_return_value(struct task_struct *task, struct pt_regs *regs)
- }
- 
- static inline int
--syscall_get_arch(void)
-+syscall_get_arch(struct task_struct *task)
- {
- 	return AUDIT_ARCH_H8300;
- }
-diff --git a/arch/hexagon/include/asm/syscall.h b/arch/hexagon/include/asm/syscall.h
-index c3290c0bc458..94bdfd22f912 100644
---- a/arch/hexagon/include/asm/syscall.h
-+++ b/arch/hexagon/include/asm/syscall.h
-@@ -60,7 +60,7 @@ static inline long syscall_get_return_value(struct task_struct *task,
- 	return regs->r00;
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	return AUDIT_ARCH_HEXAGON;
- }
-diff --git a/arch/ia64/include/asm/syscall.h b/arch/ia64/include/asm/syscall.h
-index 1d0b875fec44..47ab33f5448a 100644
---- a/arch/ia64/include/asm/syscall.h
-+++ b/arch/ia64/include/asm/syscall.h
-@@ -81,7 +81,7 @@ static inline void syscall_set_arguments(struct task_struct *task,
- 	ia64_syscall_get_set_arguments(task, regs, i, n, args, 1);
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	return AUDIT_ARCH_IA64;
- }
-diff --git a/arch/m68k/include/asm/syscall.h b/arch/m68k/include/asm/syscall.h
-index c87b14417753..e5ea2e20d3a5 100644
---- a/arch/m68k/include/asm/syscall.h
-+++ b/arch/m68k/include/asm/syscall.h
-@@ -34,7 +34,7 @@ syscall_get_return_value(struct task_struct *task, struct pt_regs *regs)
- }
- 
- static inline int
--syscall_get_arch(void)
-+syscall_get_arch(struct task_struct *task)
- {
- 	return AUDIT_ARCH_M68K;
- }
-diff --git a/arch/microblaze/include/asm/syscall.h b/arch/microblaze/include/asm/syscall.h
-index 220decd605a4..77a86fafa974 100644
---- a/arch/microblaze/include/asm/syscall.h
-+++ b/arch/microblaze/include/asm/syscall.h
-@@ -101,7 +101,7 @@ static inline void syscall_set_arguments(struct task_struct *task,
- asmlinkage unsigned long do_syscall_trace_enter(struct pt_regs *regs);
- asmlinkage void do_syscall_trace_leave(struct pt_regs *regs);
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	return AUDIT_ARCH_MICROBLAZE;
- }
-diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/syscall.h
-index 04ab927ff47d..466957d0474b 100644
---- a/arch/mips/include/asm/syscall.h
-+++ b/arch/mips/include/asm/syscall.h
-@@ -146,14 +146,14 @@ extern const unsigned long sys_call_table[];
- extern const unsigned long sys32_call_table[];
- extern const unsigned long sysn32_call_table[];
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	int arch = AUDIT_ARCH_MIPS;
- #ifdef CONFIG_64BIT
--	if (!test_thread_flag(TIF_32BIT_REGS)) {
-+	if (!test_tsk_thread_flag(task, TIF_32BIT_REGS)) {
- 		arch |= __AUDIT_ARCH_64BIT;
- 		/* N32 sets only TIF_32BIT_ADDR */
--		if (test_thread_flag(TIF_32BIT_ADDR))
-+		if (test_tsk_thread_flag(task, TIF_32BIT_ADDR))
- 			arch |= __AUDIT_ARCH_CONVENTION_MIPS64_N32;
- 	}
- #endif
-diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
-index 0057c910bc2f..2ead6ff919b7 100644
---- a/arch/mips/kernel/ptrace.c
-+++ b/arch/mips/kernel/ptrace.c
-@@ -1418,7 +1418,7 @@ asmlinkage long syscall_trace_enter(struct pt_regs *regs, long syscall)
- 		unsigned long args[6];
- 
- 		sd.nr = syscall;
--		sd.arch = syscall_get_arch();
-+		sd.arch = syscall_get_arch(current);
- 		syscall_get_arguments(current, regs, 0, 6, args);
- 		for (i = 0; i < 6; i++)
- 			sd.args[i] = args[i];
-diff --git a/arch/nds32/include/asm/syscall.h b/arch/nds32/include/asm/syscall.h
-index 569149ca25da..e109acd225e6 100644
---- a/arch/nds32/include/asm/syscall.h
-+++ b/arch/nds32/include/asm/syscall.h
-@@ -187,7 +187,7 @@ void syscall_set_arguments(struct task_struct *task, struct pt_regs *regs,
- 	memcpy(&regs->uregs[0] + i, args, n * sizeof(args[0]));
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	return IS_ENABLED(CONFIG_CPU_BIG_ENDIAN)
- 		? AUDIT_ARCH_NDS32BE : AUDIT_ARCH_NDS32;
-diff --git a/arch/nios2/include/asm/syscall.h b/arch/nios2/include/asm/syscall.h
-index cf35e210fc4d..f0f6ae208e78 100644
---- a/arch/nios2/include/asm/syscall.h
-+++ b/arch/nios2/include/asm/syscall.h
-@@ -136,7 +136,7 @@ static inline void syscall_set_arguments(struct task_struct *task,
- 	}
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	return AUDIT_ARCH_NIOS2;
- }
-diff --git a/arch/openrisc/include/asm/syscall.h b/arch/openrisc/include/asm/syscall.h
-index 2db9f1cf0694..46b10c674bd2 100644
---- a/arch/openrisc/include/asm/syscall.h
-+++ b/arch/openrisc/include/asm/syscall.h
-@@ -72,7 +72,7 @@ syscall_set_arguments(struct task_struct *task, struct pt_regs *regs,
- 	memcpy(&regs->gpr[3 + i], args, n * sizeof(args[0]));
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	return AUDIT_ARCH_OPENRISC;
- }
-diff --git a/arch/parisc/include/asm/syscall.h b/arch/parisc/include/asm/syscall.h
-index 477511ff7546..310016e1925d 100644
---- a/arch/parisc/include/asm/syscall.h
-+++ b/arch/parisc/include/asm/syscall.h
-@@ -69,11 +69,11 @@ static inline void syscall_rollback(struct task_struct *task,
- 	/* do nothing */
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	int arch = AUDIT_ARCH_PARISC;
- #ifdef CONFIG_64BIT
--	if (!is_compat_task())
-+	if (!__is_compat_task(task))
- 		arch = AUDIT_ARCH_PARISC64;
- #endif
- 	return arch;
-diff --git a/arch/powerpc/include/asm/syscall.h b/arch/powerpc/include/asm/syscall.h
-index b522781ad7c0..7375808c566c 100644
---- a/arch/powerpc/include/asm/syscall.h
-+++ b/arch/powerpc/include/asm/syscall.h
-@@ -109,9 +109,15 @@ static inline void syscall_set_arguments(struct task_struct *task,
- 		regs->orig_gpr3 = args[0];
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
--	int arch = is_32bit_task() ? AUDIT_ARCH_PPC : AUDIT_ARCH_PPC64;
-+	int arch;
-+
-+	if (IS_ENABLED(CONFIG_PPC64) && !test_tsk_thread_flag(task, TIF_32BIT))
-+		arch = AUDIT_ARCH_PPC64;
-+	else
-+		arch = AUDIT_ARCH_PPC;
-+
- #ifdef __LITTLE_ENDIAN__
- 	arch |= __AUDIT_ARCH_LE;
- #endif
-diff --git a/arch/riscv/include/asm/syscall.h b/arch/riscv/include/asm/syscall.h
-index bba3da6ef157..ca120a36a037 100644
---- a/arch/riscv/include/asm/syscall.h
-+++ b/arch/riscv/include/asm/syscall.h
-@@ -100,7 +100,7 @@ static inline void syscall_set_arguments(struct task_struct *task,
- 	memcpy(&regs->a1 + i * sizeof(regs->a1), args, n * sizeof(regs->a0));
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- #ifdef CONFIG_64BIT
- 	return AUDIT_ARCH_RISCV64;
-diff --git a/arch/s390/include/asm/syscall.h b/arch/s390/include/asm/syscall.h
-index 96f9a9151fde..5a40ea8b90ea 100644
---- a/arch/s390/include/asm/syscall.h
-+++ b/arch/s390/include/asm/syscall.h
-@@ -92,10 +92,10 @@ static inline void syscall_set_arguments(struct task_struct *task,
- 		regs->orig_gpr2 = args[0];
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- #ifdef CONFIG_COMPAT
--	if (test_tsk_thread_flag(current, TIF_31BIT))
-+	if (test_tsk_thread_flag(task, TIF_31BIT))
- 		return AUDIT_ARCH_S390;
- #endif
- 	return AUDIT_ARCH_S390X;
-diff --git a/arch/sh/include/asm/syscall_32.h b/arch/sh/include/asm/syscall_32.h
-index 6e118799831c..08de429eccd4 100644
---- a/arch/sh/include/asm/syscall_32.h
-+++ b/arch/sh/include/asm/syscall_32.h
-@@ -95,7 +95,7 @@ static inline void syscall_set_arguments(struct task_struct *task,
- 	}
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	int arch = AUDIT_ARCH_SH;
- 
-diff --git a/arch/sh/include/asm/syscall_64.h b/arch/sh/include/asm/syscall_64.h
-index 43882580c7f9..9b62a2404531 100644
---- a/arch/sh/include/asm/syscall_64.h
-+++ b/arch/sh/include/asm/syscall_64.h
-@@ -63,7 +63,7 @@ static inline void syscall_set_arguments(struct task_struct *task,
- 	memcpy(&regs->regs[2 + i], args, n * sizeof(args[0]));
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	int arch = AUDIT_ARCH_SH;
- 
-diff --git a/arch/sparc/include/asm/syscall.h b/arch/sparc/include/asm/syscall.h
-index 053989e3f6a6..9ffb367c17fd 100644
---- a/arch/sparc/include/asm/syscall.h
-+++ b/arch/sparc/include/asm/syscall.h
-@@ -128,10 +128,11 @@ static inline void syscall_set_arguments(struct task_struct *task,
- 		regs->u_regs[UREG_I0 + i + j] = args[j];
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- #if defined(CONFIG_SPARC64) && defined(CONFIG_COMPAT)
--	return in_compat_syscall() ? AUDIT_ARCH_SPARC : AUDIT_ARCH_SPARC64;
-+	return test_tsk_thread_flag(task, TIF_32BIT)
-+		? AUDIT_ARCH_SPARC : AUDIT_ARCH_SPARC64;
- #elif defined(CONFIG_SPARC64)
- 	return AUDIT_ARCH_SPARC64;
- #else
-diff --git a/arch/unicore32/include/asm/syscall.h b/arch/unicore32/include/asm/syscall.h
-index 267e97e256bd..1451bce52eb8 100644
---- a/arch/unicore32/include/asm/syscall.h
-+++ b/arch/unicore32/include/asm/syscall.h
-@@ -39,7 +39,7 @@ syscall_get_return_value(struct task_struct *task, struct pt_regs *regs)
- }
- 
- static inline int
--syscall_get_arch(void)
-+syscall_get_arch(struct task_struct *task)
- {
- 	return AUDIT_ARCH_UNICORE;
- }
-diff --git a/arch/x86/include/asm/syscall.h b/arch/x86/include/asm/syscall.h
-index d653139857af..435f3f09279c 100644
---- a/arch/x86/include/asm/syscall.h
-+++ b/arch/x86/include/asm/syscall.h
-@@ -107,7 +107,7 @@ static inline void syscall_set_arguments(struct task_struct *task,
- 	memcpy(&regs->bx + i, args, n * sizeof(args[0]));
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	return AUDIT_ARCH_I386;
- }
-@@ -236,10 +236,12 @@ static inline void syscall_set_arguments(struct task_struct *task,
- 		}
- }
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	/* x32 tasks should be considered AUDIT_ARCH_X86_64. */
--	return in_ia32_syscall() ? AUDIT_ARCH_I386 : AUDIT_ARCH_X86_64;
-+	return (IS_ENABLED(CONFIG_IA32_EMULATION) &&
-+		task->thread_info.status & TS_COMPAT)
-+		? AUDIT_ARCH_I386 : AUDIT_ARCH_X86_64;
- }
- #endif	/* CONFIG_X86_32 */
- 
-diff --git a/arch/x86/um/asm/syscall.h b/arch/x86/um/asm/syscall.h
-index ef898af102d1..56a2f0913e3c 100644
---- a/arch/x86/um/asm/syscall.h
-+++ b/arch/x86/um/asm/syscall.h
-@@ -9,7 +9,7 @@ typedef asmlinkage long (*sys_call_ptr_t)(unsigned long, unsigned long,
- 					  unsigned long, unsigned long,
- 					  unsigned long, unsigned long);
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- #ifdef CONFIG_X86_32
- 	return AUDIT_ARCH_I386;
-diff --git a/arch/xtensa/include/asm/syscall.h b/arch/xtensa/include/asm/syscall.h
-index a168bf81c7f4..0681ca656809 100644
---- a/arch/xtensa/include/asm/syscall.h
-+++ b/arch/xtensa/include/asm/syscall.h
-@@ -14,7 +14,7 @@
- #include <asm/ptrace.h>
- #include <uapi/linux/audit.h>
- 
--static inline int syscall_get_arch(void)
-+static inline int syscall_get_arch(struct task_struct *task)
- {
- 	return AUDIT_ARCH_XTENSA;
- }
-diff --git a/include/asm-generic/syscall.h b/include/asm-generic/syscall.h
-index fdefe27fa63f..43216b431770 100644
---- a/include/asm-generic/syscall.h
-+++ b/include/asm-generic/syscall.h
-@@ -194,16 +194,17 @@ syscall_set_arguments(struct task_struct *task, struct pt_regs *regs,
- 
- /**
-  * syscall_get_arch - return the AUDIT_ARCH for the current system call
-+ * @task:	task of interest, must be blocked
-  *
-  * Returns the AUDIT_ARCH_* based on the system call convention in use.
-  *
-- * It's only valid to call this when current is stopped on entry to a system
-+ * It's only valid to call this when @task is stopped on entry to a system
-  * call, due to %TIF_SYSCALL_TRACE, %TIF_SYSCALL_AUDIT, or %TIF_SECCOMP.
-  *
-  * Architectures which permit CONFIG_HAVE_ARCH_SECCOMP_FILTER must
-  * provide an implementation of this.
-  */
- static int
--syscall_get_arch(void);
-+syscall_get_arch(struct task_struct *task);
- 
- #endif	/* _ASM_GENERIC_SYSCALL_H */
-diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-index 6593a5207fb0..919fe4ef4314 100644
---- a/kernel/auditsc.c
-+++ b/kernel/auditsc.c
-@@ -1505,7 +1505,7 @@ void __audit_syscall_entry(int major, unsigned long a1, unsigned long a2,
- 			return;
- 	}
- 
--	context->arch	    = syscall_get_arch();
-+	context->arch	    = syscall_get_arch(current);
- 	context->major      = major;
- 	context->argv[0]    = a1;
- 	context->argv[1]    = a2;
-@@ -2480,7 +2480,7 @@ void audit_seccomp(unsigned long syscall, long signr, int code)
- 		return;
- 	audit_log_task(ab);
- 	audit_log_format(ab, " sig=%ld arch=%x syscall=%ld compat=%d ip=0x%lx code=0x%x",
--			 signr, syscall_get_arch(), syscall,
-+			 signr, syscall_get_arch(current), syscall,
- 			 in_compat_syscall(), KSTK_EIP(current), code);
- 	audit_log_end(ab);
- }
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index d7f538847b84..803a69e6af37 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -148,7 +148,7 @@ static void populate_seccomp_data(struct seccomp_data *sd)
- 	unsigned long args[6];
- 
- 	sd->nr = syscall_get_nr(task, regs);
--	sd->arch = syscall_get_arch();
-+	sd->arch = syscall_get_arch(task);
- 	syscall_get_arguments(task, regs, 0, 6, args);
- 	sd->args[0] = args[0];
- 	sd->args[1] = args[1];
-@@ -589,7 +589,7 @@ static void seccomp_init_siginfo(kernel_siginfo_t *info, int syscall, int reason
- 	info->si_code = SYS_SECCOMP;
- 	info->si_call_addr = (void __user *)KSTK_EIP(current);
- 	info->si_errno = reason;
--	info->si_arch = syscall_get_arch();
-+	info->si_arch = syscall_get_arch(current);
- 	info->si_syscall = syscall;
- }
- 
--- 
-ldv
