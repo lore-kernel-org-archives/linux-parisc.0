@@ -4,32 +4,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2675C43387
-	for <linux-parisc@archiver.kernel.org>; Tue,  8 Jan 2019 07:44:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96804C43387
+	for <linux-parisc@archiver.kernel.org>; Tue,  8 Jan 2019 07:44:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9C10A2087E
-	for <linux-parisc@archiver.kernel.org>; Tue,  8 Jan 2019 07:44:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6D83420700
+	for <linux-parisc@archiver.kernel.org>; Tue,  8 Jan 2019 07:44:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727473AbfAHHoJ (ORCPT
+        id S1727597AbfAHHoW (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 8 Jan 2019 02:44:09 -0500
-Received: from mout.gmx.net ([212.227.17.20]:58207 "EHLO mout.gmx.net"
+        Tue, 8 Jan 2019 02:44:22 -0500
+Received: from mout.gmx.net ([212.227.17.22]:52705 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727295AbfAHHoJ (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 8 Jan 2019 02:44:09 -0500
-Received: from [10.16.37.249] ([155.56.44.137]) by mail.gmx.com (mrgmx101
- [212.227.17.168]) with ESMTPSA (Nemesis) id 0LrJTs-1hPyh62Bie-0132K9; Tue, 08
- Jan 2019 08:44:04 +0100
-Subject: Re: [PATCH] parisc: remove meaningless ccflags-y in
- arch/parisc/boot/Makefile
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        "James E . J . Bottomley" <jejb@parisc-linux.org>,
-        linux-parisc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <1546929918-27235-1-git-send-email-yamada.masahiro@socionext.com>
+        id S1727295AbfAHHoV (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 8 Jan 2019 02:44:21 -0500
+Received: from [10.16.37.249] ([155.56.44.137]) by mail.gmx.com (mrgmx102
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 0LaJWs-1h904z3aLW-00m2DX; Tue, 08
+ Jan 2019 08:44:19 +0100
+Subject: Re: [PATCH] parisc: replace oops_in_progress manipulation with
+ bust_spinlocks()
+To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        "James E . J . Bottomley" <jejb@parisc-linux.org>
+Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+References: <20190107095612.7086-1-sergey.senozhatsky@gmail.com>
 From:   Helge Deller <deller@gmx.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=deller@gmx.de; keydata=
@@ -56,72 +55,74 @@ Autocrypt: addr=deller@gmx.de; keydata=
  lJ/MgLOPkfIUgjRXt0ZcZEN6pAMPU95+u1N52hmqAOQZvyoyUOJFH1siBMAFRbhgWyv+YE2Y
  ZkAyVDL2WxAedQgD/YCCJ+16yXlGYGNAKlvp07SimS6vBEIXk/3h5Vq4Hwgg0Z8+FRGtYZyD
  KrhlU0uMP9QTB5WAUvxvGy8=
-Message-ID: <98c37856-16e5-4c90-bd7e-d635ab33871a@gmx.de>
-Date:   Tue, 8 Jan 2019 08:44:03 +0100
+Message-ID: <d09f4a9a-f966-80d7-01e1-5d92401b5d7e@gmx.de>
+Date:   Tue, 8 Jan 2019 08:44:19 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.4.0
 MIME-Version: 1.0
-In-Reply-To: <1546929918-27235-1-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <20190107095612.7086-1-sergey.senozhatsky@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:hKOeBOvuQrT5Zh3nlQMdY2C8JToNig+QbicYkFVglnFIygdRL2z
- wxKT9usN4iOUqwbkWLzos1quTN0/AWhO6qlE8hr6yCbEcx9smJCOoWv/966sMKGeL5DBGKu
- VQgWm4DKl269pBVqrLMwvEdrfCNp3NhaA6QEs0JSejTKVGxmxxO+04EQ+yVMK2aq/LKGq/A
- ygixTpyRfjgzPueKv3PKA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:y9m81JuoHj0=:ZbqWuvkQSNevIAOkE73+Jt
- 8r6XHCf9+6ZhMJRKtpNUpRKxFRlsxKO4qAwZkSnKDwhTIXmWtW7Fl03rHr4qx2Oj5KX9BeVqA
- f9HDfzTeUNlGwgmnoPHo62pMTE0A2oLc49CcZEh8x2tu+Pw9yspSJb9ZGaVE1UFaOIjC0Sp+t
- k0hSCXiJJ7rrVbg7Nt+aZUmLGkfHYqsWTyyXLlGzlSfD2xusMoNFa20+0EacgZJe5adVVx0hs
- 33rNNW8xXp0GsxZRz55ecwzwV8Y3Ynajg2CnhJRdpnyYNwmSEh/a3UiQeSn3suFR6pSZurctT
- PuMoEcZxlcAdbSLfGpf85MLztjj9e9XS5r/cNmTO8UJ/lo4bWMfSPtkDLP7erm5g/UUJHJs0z
- eKanD8DCpldl5tiNyWvRMr/gSB5C9cBRvvlKa1KPAzICdAvN8V9WwCRQVhOBTFe6ug/fLqgr9
- iVGmJjL5EB4eQDnXTZPthi9Nou/L9ia14mmmziLYQOj6Jf4+qGT3UZVvB2y50u4y5ocnNNXPN
- vsCGPhuYEHq9UJJP00Q7c++g/Z0nXWfmdpuuCe/nwqexoPr6N/UOXfRamiMoJEdrK2h67lY9/
- cZ2DkNht/sqHQ80377l5NSY6wuMr0q1fsJsujxE4Csq3NpYUcHKG39UdpwBgvqWxGswfYV5zG
- 1MwuoRera3/IQsK2Ca0phqDtDQpWJ9Irqth6+X+XXfT2ep7NOklKL5hK7jkQnqjHje4FfAwxe
- dBhZ1MQWKneUr0l2FCbUuWBz8v8SMFgqi2CzNk4l+FZA6mBST/mumk1NhR7oQA0T0onqEyfm8
- bh3CsbbwgtBHYF5yalBGBK2ihhDvo8AuWYgg2uY2gN+4J1W1jWJ1ao3cqdo84JUVJwAMZIwz9
- +mt3xeQG8hl7NCidO7Cvw3ovjRg6NZ+PtO/00nFr+4iZgDL6LbjoEP2rPAlQudf74NQgV08Kl
- fexXzaldPkq6V2hhKl7WgnM7L4XTQOrnJh/P+CorS/iUq9KMmhzlm/xWbHRzZpLZLzKuBopgp
- DQ==
+X-Provags-ID: V03:K1:6yHQLIN7zbmZ5mfrHhiu/A+vw/g2wpOdmYPEwF5ofzrOOGVAjLC
+ s0RlZCFg30Q0j9fUG2GkmEAn11XUb2XJmXGQE/ZwyJ2m7uLQp3x5vN9kXC1lT/1QXtGpl0K
+ uLr1DtRdTg0bqTN7jg059UmPj5zkGHft0Ef05erf2dyX/m8MdJnqCVuOjmSzeh6j9gf1yC8
+ kl+rfRFTpYQw0OI3NlQtw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qKrvxApiw6s=:C0wWQ1n7lOqlnRWoYc1KFh
+ 0SQOAiEr6WGMgih3UKU894xDjiV8EyR9qL9Y9IHvydzcR1SId0A9RXYuLo13b9WNWTROZ8ig8
+ sjGvjn6s9jPyH9avVsa1yHf80PYbc9kVjSAbrhZHb3ljmVGFx5Bqb+F8j4/CnBO9f42tGTOS8
+ blB2o2pnSnoTfxW0ZH6NYYQWuBS9O86NcrGRWbFMC3ck0XNz2eRQS2bH+PHHtDmaLvBu4jk1C
+ cNdgGcXxr4bPahydOXLcZgnpEixyzrmcddGLUJhc8XVXx99BfqiCaTc5aWbGCNWm6WDEqKNTB
+ Ekb2EyJ7xNhfZ1tT1TvVS4ehaKWhNpF9iDjfj5RTY8k3ivUC8AxasIWKG+tQWK3KFRiEYiMSN
+ 7qy3eMFmDnpP6swGhKX6yl6PrwHCWAAABEbZWgW6ozbml2qCWmYzKmAg3S8L+UkajbUSoIBd+
+ f+zXW/Ad4zh4DOy5aF/+kFI5jcV+KWeA9ClFEbTWVVIUbdooT0pGerMPRw3pjJosY9MqjQpO+
+ 5hbBV1YPyNcp3Nb1uxCiC5dIrfkpK87GfldhCHHzOZYYchWFkq7V7o3g7RP64zxO4tZ+LlnkL
+ 6LYXOfhlcJPMToOT+i/Q/WZ35qvxi4zJ4hwj3EPOD0E4sZzg8wNraJL02E0JRab8tuzIr0DnP
+ cVQ3+6pm/yU573ihAUcBcQA3zmuraHkNzTXhnXZyETqpm+QlTqLBdfaIJsGiDfvpcuAdidWFb
+ z1mbMId1DmvW/8JG53PEjSi1MfqfH1sgLE3JnnjRtP4hUrnyBhu0OckKZG9cDoXnyROnTltDa
+ njB3xR01JMHXXBzS/CDeRlFXEcBMMHjuJ1IQu5jkdbnSxUUjdtzGBWhLAk9/pIyY6pxWgn2os
+ 0E4aIDSyaKlTYtdEVDoQBGcK/ic26SJG3Lcv7dqEk5bCaULaQMSfEYjQpOauaV
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 08.01.19 07:45, Masahiro Yamada wrote:
-> This ccflags-y is never used because arch/parisc/boot/Makefile
-> only contains objcopy and install targets.
+On 07.01.19 10:56, Sergey Senozhatsky wrote:
+> Use bust_spinlocks() function to set oops_in_progress.
 > 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 
 I've added this patch to the parisc for-next tree.
 
 Thanks,
 Helge
 
+
 > ---
+>  arch/parisc/kernel/traps.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
->  arch/parisc/boot/Makefile | 6 ------
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/arch/parisc/boot/Makefile b/arch/parisc/boot/Makefile
-> index cad68a5..41cce07 100644
-> --- a/arch/parisc/boot/Makefile
-> +++ b/arch/parisc/boot/Makefile
-> @@ -2,12 +2,6 @@
->  # Makefile for the linux parisc-specific parts of the boot image creator.
->  #
+> diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
+> index 472a818e8c17..7e1ccafadf57 100644
+> --- a/arch/parisc/kernel/traps.c
+> +++ b/arch/parisc/kernel/traps.c
+> @@ -218,7 +218,7 @@ void die_if_kernel(char *str, struct pt_regs *regs, long err)
+>  		return;
+>  	}
 >  
-> -COMPILE_VERSION := __linux_compile_version_id__`hostname |  \
-> -			tr -c '[0-9A-Za-z]' '_'`__`date | \
-> -			tr -c '[0-9A-Za-z]' '_'`_t
-> -
-> -ccflags-y  := -DCOMPILE_VERSION=$(COMPILE_VERSION) -gstabs -I.
-> -
->  targets := image
->  targets += bzImage
->  subdir- := compressed
+> -	oops_in_progress = 1;
+> +	bust_spinlocks(1);
+>  
+>  	oops_enter();
+>  
+> @@ -396,7 +396,7 @@ void parisc_terminate(char *msg, struct pt_regs *regs, int code, unsigned long o
+>  {
+>  	static DEFINE_SPINLOCK(terminate_lock);
+>  
+> -	oops_in_progress = 1;
+> +	bust_spinlocks(1);
+>  
+>  	set_eiem(0);
+>  	local_irq_disable();
 > 
 
