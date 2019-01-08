@@ -2,87 +2,140 @@ Return-Path: <SRS0=d2uh=PQ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1062DC43387
-	for <linux-parisc@archiver.kernel.org>; Tue,  8 Jan 2019 08:53:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24C51C43387
+	for <linux-parisc@archiver.kernel.org>; Tue,  8 Jan 2019 13:37:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D079A2070B
-	for <linux-parisc@archiver.kernel.org>; Tue,  8 Jan 2019 08:53:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DAC6720827
+	for <linux-parisc@archiver.kernel.org>; Tue,  8 Jan 2019 13:37:47 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fQJq3kfa"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727825AbfAHIxP (ORCPT
+        id S1727764AbfAHNhr (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 8 Jan 2019 03:53:15 -0500
-Received: from smtpq4.mnd.mail.iss.as9143.net ([212.54.34.167]:37458 "EHLO
-        smtpq4.mnd.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726333AbfAHIxP (ORCPT
+        Tue, 8 Jan 2019 08:37:47 -0500
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:37656 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727677AbfAHNhq (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 8 Jan 2019 03:53:15 -0500
-X-Greylist: delayed 1104 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Jan 2019 03:53:14 EST
-Received: from [212.54.34.115] (helo=smtp7.mnd.mail.iss.as9143.net)
-        by smtpq4.mnd.mail.iss.as9143.net with esmtp (Exim 4.86_2)
-        (envelope-from <jongk@linux-m68k.org>)
-        id 1ggmqX-00006J-7E
-        for linux-parisc@vger.kernel.org; Tue, 08 Jan 2019 09:34:49 +0100
-Received: from mail-lj1-f169.google.com ([209.85.208.169])
-        by smtp7.mnd.mail.iss.as9143.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <jongk@linux-m68k.org>)
-        id 1ggmqX-0000YR-4v
-        for linux-parisc@vger.kernel.org; Tue, 08 Jan 2019 09:34:49 +0100
-Received: by mail-lj1-f169.google.com with SMTP id u89-v6so2689984lje.1
-        for <linux-parisc@vger.kernel.org>; Tue, 08 Jan 2019 00:34:49 -0800 (PST)
-X-Gm-Message-State: AJcUukdHO1LYDot1R4VQLbGpN4x+0voE9/s2jT4S/znVQS2eD0n1xoUI
-        GOUpnNDAtjrvEaDlCmjCcXsofb/jmcdJ4V4Aea4=
-X-Google-Smtp-Source: ALg8bN72mYWV1BI1KEw7jtnh95gh0jzjxqRRN8FqOEKSIIfD2WiWmjVf2BkDRvnuFIhR5itbmlucMhegy1yLbalw6M0=
-X-Received: by 2002:a2e:7f04:: with SMTP id a4-v6mr560879ljd.156.1546936488589;
- Tue, 08 Jan 2019 00:34:48 -0800 (PST)
+        Tue, 8 Jan 2019 08:37:46 -0500
+Received: by mail-ed1-f65.google.com with SMTP id h15so4255510edb.4;
+        Tue, 08 Jan 2019 05:37:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6nXKYaCNiwgzlBrCj/v1vQjps+Q5gGfbpQOOfB1h0CI=;
+        b=fQJq3kfazkRaVcWp/jPyOlyKRy5/ek8ymQOV+bF2CWzmEjQUp053C+Rgi/qmTgxPb7
+         2AiGxr0nOB+Osg6yaSWO3EoPyW8btVIJDxvZFk211tKdiHLhXICxYKURjEUDjgR7c3BE
+         7Pp4d7Xkb5SUpz066jZZ2OK6w4qtdfNP1XPUF6fdNqJaFMdtIPVyBBJnj6IhiQy0AA0J
+         LgUa75e0kK/DymYavwYIg7nKGj40aqv0rcaDgdYAQ4yzXboZqTFPtvglQgYIV330GHm3
+         h8ksU4gM3pO1YNzJtUYRdWDMnVwaJFqz2iTO6DL8UfDPpefn0sVNG2l24PFVvS8EM4NK
+         ChUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6nXKYaCNiwgzlBrCj/v1vQjps+Q5gGfbpQOOfB1h0CI=;
+        b=P6Sv7506gqAha1fKnq9TD5jJpd5vnO5HjnBNSKoPJvCTQN9iWDQBG2I4W+p/uy1tAq
+         gkmLQAVJeyC6K5+rCpE/ZtxL5AIZofYMuV9i+OzoZS3bFn+PdU4VMz+mKkEbJMvrbP7h
+         aXWULmBSiU11TIKYTZpiiSPwsZbUbJbQfiEIT0wTuCiZRvl17kVLooUTzlPLDTZQFTm7
+         OiUmCPrFIklCcL3ZI9Jbj6AbLMvaQ/GK84mjZ5uOskIRpLrZ+GExnWhJzi/gfyr8fBwL
+         mM02D9TD3IVAoe6aW+v1owbngmf7O3H+wsel83wap1dq+D8XhJJirm71/bl8yTRTdxs3
+         hq7Q==
+X-Gm-Message-State: AJcUukeFLQQPSa41apkiGDs6HMnoFzHMsGdBcdpwlYnUeMdDBBpEwSYk
+        mtZX8kUCkdRRPgqmDzvSiqIS+K4M0swRRm9zI+c=
+X-Google-Smtp-Source: ALg8bN6X8ZcOXLEatM5qF1v6ohRVupo0MHYrFK/Rc+HQE/howUNszts5xyEWsKGJSadb3HAUYegy2sl528E8HtLYcS4=
+X-Received: by 2002:a50:a517:: with SMTP id y23mr2140352edb.219.1546954663585;
+ Tue, 08 Jan 2019 05:37:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20181127210107.GA11661@ls3530.dellerweb.de> <alpine.LNX.2.21.1811280815210.28@nippy.intranet>
- <908a3147-1fac-6f38-c61c-b88c81dd23ff@gmx.de> <alpine.LNX.2.21.1901080855180.34@nippy.intranet>
-In-Reply-To: <alpine.LNX.2.21.1901080855180.34@nippy.intranet>
-From:   Kars de Jong <jongk@linux-m68k.org>
-Date:   Tue, 8 Jan 2019 09:34:37 +0100
-X-Gmail-Original-Message-ID: <CACz-3rg0Jp-QO-1aunwWOFZmd4sdcjQ8cq8QwD5HE+r8t_QQ_A@mail.gmail.com>
-Message-ID: <CACz-3rg0Jp-QO-1aunwWOFZmd4sdcjQ8cq8QwD5HE+r8t_QQ_A@mail.gmail.com>
-Subject: Re: [RFC][PATCH] m68k/parisc: Convert hp_sdc_rtc driver to rtc framework
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Helge Deller <deller@gmx.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org
+References: <20190108032657.8331-1-deepa.kernel@gmail.com>
+In-Reply-To: <20190108032657.8331-1-deepa.kernel@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Tue, 8 Jan 2019 08:37:07 -0500
+Message-ID: <CAF=yD-JuXHnp-5TvPSq87PDvHD1hkrUEWHQ9Uxwhbsd08vszHw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/8] net: y2038-safe socket timestamps
+To:     Deepa Dinamani <deepa.kernel@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Chris Zankel <chris@zankel.net>, Helge Deller <deller@gmx.de>,
+        David Howells <dhowells@redhat.com>, fenghua.yu@intel.com,
+        isdn@linux-pingi.de,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        linux-afs@lists.infradead.org, linux-alpha@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
+        "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-xtensa@linux-xtensa.org, Ralf Baechle <ralf@linux-mips.org>,
+        rth@twiddle.net, schwidefsky@de.ibm.com,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, ubraun@linux.ibm.com
 Content-Type: text/plain; charset="UTF-8"
-X-SourceIP: 209.85.208.169
-X-Authenticated-Sender: karsdejong@home.nl (via SMTP)
-X-Ziggo-spambar: /
-X-Ziggo-spamscore: 0.0
-X-Ziggo-spamreport: CMAE Analysis: v=2.3 cv=S6mnP7kP c=1 sm=1 tr=0 a=9+rZDBEiDlHhcck0kWbJtElFXBc=:19 a=IkcTkHD0fZMA:10 a=3JhidrIBZZsA:10 a=8981fWPbAAAA:8 a=yTy-wk4C7kLxNe33bcsA:9 a=QEXdDO2ut3YA:10 a=o72u2rHnfW5qNJ_4I8LD:22
-X-Ziggo-Spam-Status: No
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Op ma 7 jan. 2019 om 22:59 schreef Finn Thain <fthain@telegraphics.com.au>:
+On Mon, Jan 7, 2019 at 10:29 PM Deepa Dinamani <deepa.kernel@gmail.com> wrote:
 >
-> On Mon, 7 Jan 2019, Helge Deller wrote:
+> The series introduces new socket timestamps that are
+> y2038 safe.
 >
-> > On 27.11.18 22:17, Finn Thain wrote:
-> > > Adding Kars to Cc.
-> >
-> > Any chance this can get tested on m68k?
-> >
+> The time data types used for the existing socket timestamp
+> options: SO_TIMESTAMP, SO_TIMESTAMPNS and SO_TIMESTAMPING
+> are not y2038 safe. The series introduces SO_TIMESTAMP_NEW,
+> SO_TIMESTAMPNS_NEW and SO_TIMESTAMPING_NEW to replace these.
+> These new timestamps can be used on all architectures.
 >
-> Sorry, I don't have any HP9000/300 hardware. I think that Kars does, which
-> is why I Cc'd him...
+> The alternative considered was to extend the sys_setsockopt()
+> by using the flags. We did not receive any strong opinions about
+> either of the approaches. Hence, this was chosen, as glibc folks
+> preferred this.
 >
+> The series does not deal with updating the internal kernel socket
+> calls like rxrpc to make them y2038 safe. This will be dealt
+> with separately.
+>
+> Note that the timestamps behavior already does not match the
+> man page specific behavior:
+> SIOCGSTAMP
+>     This ioctl should only be used if the socket option SO_TIMESTAMP
+>         is not set on the socket. Otherwise, it returns the timestamp of
+>         the last packet that was received while SO_TIMESTAMP was not set,
+>         or it fails if no such packet has been received,
+>         (i.e., ioctl(2) returns -1 with errno set to ENOENT).
+>
+> The recommendation is to update the man page to remove the above statement.
+>
+> The overview of the series is as below:
+> 1. Delete asm specific socket.h when possible.
+> 2. Support SO/SCM_TIMESTAMP* options only in userspace.
+> 3. Rename current SO/SCM_TIMESTAMP* to SO/SCM_TIMESTAMP*_OLD.
+> 3. Alter socket options so that SOCK_RCVTSTAMPNS does
+>    not rely on SOCK_RCVTSTAMP.
+> 4. Introduce y2038 safe types for socket timestamp.
+> 5. Introduce new y2038 safe socket options SO/SCM_TIMESTAMP*_NEW.
+>
+> Changes since v2:
+> * Removed extra functions to reduce diff churn as per code review
 
-Yes, I do still have the hardware, but I haven't booted Linux on it
-for a long time. I planned on doing it during the holidays, but didn't
-get around to it. Maybe I can test it this weekend, but don't hold
-your breath...
+Thanks, Deepa. This set looks great to me.
 
-Kind regards,
+One issue, it does not apply cleanly to current davem-net-next/master
+for me. A conflict on patch 7. It does apply cleanly on davem-net
+master. Please rebase and also send with [PATCH net-next].
 
-Kars.
+Perhaps also run the selftests in
+tools/testing/selftests/networking/timestamping/txtimestamp.sh, just
+to be sure.
+
+Since you have a to resend anyway, a few minor nits inline, as well.
