@@ -4,25 +4,25 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1DB2C43387
-	for <linux-parisc@archiver.kernel.org>; Thu, 10 Jan 2019 16:27:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA001C43387
+	for <linux-parisc@archiver.kernel.org>; Thu, 10 Jan 2019 16:27:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9BA47206B7
-	for <linux-parisc@archiver.kernel.org>; Thu, 10 Jan 2019 16:27:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A4AE6206B7
+	for <linux-parisc@archiver.kernel.org>; Thu, 10 Jan 2019 16:27:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729123AbfAJQ1U (ORCPT
+        id S1730156AbfAJQ12 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 10 Jan 2019 11:27:20 -0500
-Received: from mout.kundenserver.de ([217.72.192.73]:50865 "EHLO
+        Thu, 10 Jan 2019 11:27:28 -0500
+Received: from mout.kundenserver.de ([212.227.17.24]:59445 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729904AbfAJQ0X (ORCPT
+        with ESMTP id S1729870AbfAJQ0W (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 10 Jan 2019 11:26:23 -0500
+        Thu, 10 Jan 2019 11:26:22 -0500
 Received: from wuerfel.lan ([109.192.41.194]) by mrelayeu.kundenserver.de
  (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1Mlf8e-1h7aDx3tBq-00ik97; Thu, 10 Jan 2019 17:25:16 +0100
+ 1MXGzQ-1gmTTU2Mc2-00YlJB; Thu, 10 Jan 2019 17:25:10 +0100
 From:   Arnd Bergmann <arnd@arndb.de>
 To:     y2038@lists.linaro.org, linux-api@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -41,57 +41,59 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, ink@jurassic.park.msu.ru,
         linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: [PATCH 08/15] m68k: assign syscall number for seccomp
-Date:   Thu, 10 Jan 2019 17:24:28 +0100
-Message-Id: <20190110162435.309262-9-arnd@arndb.de>
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH 04/15] alpha: wire up io_pgetevents system call
+Date:   Thu, 10 Jan 2019 17:24:24 +0100
+Message-Id: <20190110162435.309262-5-arnd@arndb.de>
 X-Mailer: git-send-email 2.20.0
 In-Reply-To: <20190110162435.309262-1-arnd@arndb.de>
 References: <20190110162435.309262-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:cAxqL4Pr32LfUICErQXLweOdeKXEeQmVpfR3EH9HEknl3Rx7o7E
- 3gUWhnJXo/Ubf1H9GjN7gL/hmeHLUh13G8skhoZVYIlxTGcXEAJWfHMK5fqwDp3C4mE6U0X
- qU5L8eRnhl276oNgVKUTHhKQsmD41xIQYhIiHkfU/+doRmo4DFVRig7b6U0yHHq8by33NdZ
- hcAmBJVorlGuA9B3ZJvMQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bDCus6IHYZs=:59ePj81cYO3U2E3eiWHh1M
- sBYu+VjNywqUwFg/ihKW68e09BYM+B9wyJRztaakMTQXqRhqdEmvZ1ojdiFn0PboHSl1sg6Jz
- lktVPIRNjSHV++3RcDapX5ekI8ig/J0IvxH1f4+g6djzOk81uQeI5fVOD5R8OO0yszdfBId8u
- bb2KyOJqmuC0e+cXrMswmdkk/j+BBIteI5Mmb3mP+1uYhOF+TfOtsnOry98sXfwt5ZUPA9G11
- 6Bq2Pyf8idFvfkqnomphG6qXjz59WU2R1Q9Rx7kZwVitLUrtIW2RRr7yq1n7ODZWZGQ2z8AoO
- z24C7F3FN6OHu0pcfqceGVVVuzVusmsWJwQG+I6qPtgtEzJ98nxKoDWen8bapo4VdUefswZ8o
- 6W9+k1MDORiZpzr2jtSy9Ndat8iO6D+3zwTqbLUBoNqQtCgrmkHlAGhalt1LHHGyNhOW148bV
- PpMR+nZk7cIlmB54DRwSnuFmOUO6LDwN1o+g/il93UIM6NlbxyI/DWUKjWVYBGVdQ3s6Ic1Zf
- 0vSKAXuuihlQy5+pZqwaU8DXbOPv4HafkS3SIDPs2yD4d38mWQptPnqKD/bHDpvp4VJ5b/kNU
- aQ+nkmqzQ/IA01YkCZdy/qpBVvRyBS9YoP7Bz5rdcT7rE/Pq4hpkFgqLOPRpxbuJBNTSr2VaF
- icl78Ty7oQCbEHsFAET4OGF8IzhdbEX4J989KHwG97wdV3IRjqDo/uOxwU7z25q/vFvVzTku/
- IOt8wsJUD0b10sFcR6in2Nc/TFY9E3NMoaCyBQ==
+X-Provags-ID: V03:K1:IuTdScJNFP/vlVpLiekPy1ow4ZHjUHd9bBQuCDC76YNBRibrohQ
+ xe4PTU5B3/2nsf++H4PdApUdmfw+lrf+m4akyCZLHyYTCLErcx0kRCUeA5fx2pSYrXhfboI
+ TGcpRPLubhe7ITv+g8HM3hG2m2F8x+f0mihrQflNCCgZKTCoOQI1SPWgWNjeYt2eQffohnL
+ 2+S4SOm3O/NYGRyHFCqnA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xg+0ntML16s=:vQUEgMtLWbgXhUDfOD4tFX
+ XVNGSeubXuS5k5TazDG/RTdD+JSIqKb/pqlh4L0fs8LKwLKGo9Mr7o0bUxYV4FvRtEPZM+GKv
+ UfYdpiNhsKK7dBkmvzm5tkoM7X+/xOL79IaUdjoW/sM48o9/nL0wpTNmfPxRgKXqXbNQIiALo
+ n+08m1jAdAD3r6B+DybJibdim3imldLCouU/K09vqwerADzQiMJc13fKPRn0V60r/kWpeotYH
+ OtY4V38lQzwSmWjU9owIspp0el3VCTwvDZbYu7ojyyAcDHZAYvPrK8caRi3SOaHdwFqesPlpx
+ GUzFCEvd4/c2t6OOcaCMSDOy3AMIWnnOK+CMb6653SXWw3bhDJjZFw3EJL/dSwwWluWv8ILx0
+ 0gajNPyzAPBbJyOhecVf2SSzqeyfzeow/YNVRERPCe+L3c43vvO5D3bIGZExSdI0iLqiyJpXL
+ DSMRbux5mjH5JbIiMck0dOMMoRlUXHbvb9V4XPibE4zBWammySsIbDptCPBfr8Ne895uaLKJ5
+ p+DL/Lg1ijinapAoxBaw8V2s1MIyXB/ov86x7SR2xFfoSb5fyn9VshvOo8iFhkyv+xIPzpyyY
+ vQbuFM1W5zrSVFQlRiSF5Q4hwf/SFkFNVGvJC+s/JC5XiBAffWJcxH0VqilVba1u5pblYuaYz
+ 5eqR6z5hxwaLgpk95sWnUAn0rfYw3vIQCCkKfnvOdk2lPgt/6pLaX3KfQs02ySpY3vvpD5UNK
+ Xq5j6U5WXDRMdBdxYGE53f4ixXF9gjVFB99CiA==
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Most architectures have assigned a numbers for the seccomp syscall
-even when they do not implement it.
+The io_pgetevents system call was added in linux-4.18 but has
+no entry for alpha:
 
-m68k is an exception here, so for consistency lets add the number.
-Unless CONFIG_SECCOMP is implemented, the system call just
-returns -ENOSYS.
+warning: #warning syscall io_pgetevents not implemented [-Wcpp]
 
+Assign a the next system call number here.
+
+Cc: stable@vger.kernel.org
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/m68k/kernel/syscalls/syscall.tbl | 1 +
+ arch/alpha/kernel/syscalls/syscall.tbl | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
-index 1a95c4a1bc0d..85779d6ef935 100644
---- a/arch/m68k/kernel/syscalls/syscall.tbl
-+++ b/arch/m68k/kernel/syscalls/syscall.tbl
-@@ -387,3 +387,4 @@
- 377	common	preadv2				sys_preadv2
- 378	common	pwritev2			sys_pwritev2
- 379	common	statx				sys_statx
-+380	common	seccomp				sys_seccomp
+diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
+index 7b56a53be5e3..e09558edae73 100644
+--- a/arch/alpha/kernel/syscalls/syscall.tbl
++++ b/arch/alpha/kernel/syscalls/syscall.tbl
+@@ -451,3 +451,4 @@
+ 520	common	preadv2				sys_preadv2
+ 521	common	pwritev2			sys_pwritev2
+ 522	common	statx				sys_statx
++523	common	io_pgetevents			sys_io_pgetevents
 -- 
 2.20.0
 
