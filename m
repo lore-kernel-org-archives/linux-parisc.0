@@ -3,69 +3,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13C18C43612
-	for <linux-parisc@archiver.kernel.org>; Fri, 11 Jan 2019 08:07:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15862C43612
+	for <linux-parisc@archiver.kernel.org>; Fri, 11 Jan 2019 17:31:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DE63B20872
-	for <linux-parisc@archiver.kernel.org>; Fri, 11 Jan 2019 08:07:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EB3A920878
+	for <linux-parisc@archiver.kernel.org>; Fri, 11 Jan 2019 17:31:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbfAKIH6 (ORCPT
+        id S2387425AbfAKRbC (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 11 Jan 2019 03:07:58 -0500
-Received: from mail-vs1-f65.google.com ([209.85.217.65]:37983 "EHLO
-        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbfAKIH5 (ORCPT
+        Fri, 11 Jan 2019 12:31:02 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:43900 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbfAKRbC (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 11 Jan 2019 03:07:57 -0500
-Received: by mail-vs1-f65.google.com with SMTP id x64so8687085vsa.5;
-        Fri, 11 Jan 2019 00:07:55 -0800 (PST)
+        Fri, 11 Jan 2019 12:31:02 -0500
+Received: by mail-qt1-f193.google.com with SMTP id i7so19647870qtj.10;
+        Fri, 11 Jan 2019 09:31:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Gk5sRyaMorBl1gCKq795+qZVHE+uAsmqqhSvjIZGPmU=;
-        b=VfyLiJFmoydejEHDkg6wMZ1HKsUA0S3IhvdQWak9Reyfu2GMDG4r6RGR5eFEOiKieW
-         78RcrPDc66lFCJ2Hb03iwHwy7jrgi+JvWsj6vKiv19F5bR+QeRuYa3DZMzdfw5nOLOpV
-         bQhWFdl1Ih7BaHJbSGw/IwT9PEKfehk3285zgKu4NAJsjBDHI9HoGTLiEACg4gq1cdN+
-         xp8MQZ7DzrGVWihzCFVJ6R/bXioC1ItXvN4j9O7kVKka5pikJdwDOGW3m4B1FiG39Vt4
-         YGS/O+rVpXG1a6yrw0YhYuTAXqKolvxXL3RQIAxGIb2USX4ZjBvgpGZ1YmgAwhNSTMqF
-         /Xgg==
-X-Gm-Message-State: AJcUukffb2wnoPPx1NKlDDQe73afmoWFKx9lPHYp0ENSh2kxPwhtv/hY
-        +iKGR4N5scvxwZIA/51V3ic6w7areGsUoMkbc/0=
-X-Google-Smtp-Source: ALg8bN4BZSRCmO8JcdiTKsQLtOiGYCRcA4qcLBhQcTtWAUJ36fVLDe+20wntOZTNXHVnjK/m8j2ch6eOfrp0E8t9JNI=
-X-Received: by 2002:a67:f43:: with SMTP id 64mr5594803vsp.166.1547194075355;
- Fri, 11 Jan 2019 00:07:55 -0800 (PST)
+        bh=SGHCnfowgHn30T+nuPC0hqbUSrYY8+wFH1Oi3pXaRzM=;
+        b=WOOe2QlI17jPqERZWta9eFvu+NjfBer0Y9neCurnsZF53ESKfjLz6qU07k8coOLHA2
+         26ohnScM3GptJ3Y97J6D/00NZ7HTp/dGOKsiImcAfAjjoRhzoBza3RVKT2PLg5GfKFCd
+         CLa62GyCsQyyyOntT6hdtrkIGveqSdC0b14e0+p8BGGlXCkA/u23s/DXrYjrhPWom+SO
+         cKpypT/kelTK+StYBzP5qpPIdKDKBV3KA1HjdfIALIaJXtdtRqPGUu6cGSXYMLWcXHfg
+         c2p72bX2Brq8GdbFgAye8DhwgRIR7tS0FgI2CEjyedBSgIGrBZz5fD3BaWY36d3Ye0+o
+         tYpA==
+X-Gm-Message-State: AJcUukdpVZlLRrTEiBQmWP9XQ4qlglXUB0aQAifbz+IkUpHsQ3GlXQjM
+        C/yz9RsPEpwuuamyW7umpWKckryPJ+wMU0YbvLk=
+X-Google-Smtp-Source: ALg8bN775BnYYqpcTaMAandAOOVFGcb1fag8zY9M3WMS/TPmNFpmSdRaCOyAJ14+1Aq8ng+YTuIZvIzlZbwDHzn2U4I=
+X-Received: by 2002:ac8:2c34:: with SMTP id d49mr14875090qta.152.1547227860501;
+ Fri, 11 Jan 2019 09:31:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20190110162435.309262-1-arnd@arndb.de> <CAMuHMdXYP3=TRHYqddVRfbRRaj_Ou=wfoX6ohKM7XNAx-c2RXw@mail.gmail.com>
- <CAK8P3a0kmr2ju+sZE+f-+=-2t5Eu+t-DS-+r6OKrPVTAxHwf8w@mail.gmail.com>
- <CAMuHMdVpUNUx-wdDYChYNzMYqYi79w5tzjk5x3JskdS88VQCQw@mail.gmail.com> <CAK8P3a07yNiadLCJcA0Tyfo90YeQ0P2XF-wOEy9XAb8cDTFObw@mail.gmail.com>
-In-Reply-To: <CAK8P3a07yNiadLCJcA0Tyfo90YeQ0P2XF-wOEy9XAb8cDTFObw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 11 Jan 2019 09:07:43 +0100
-Message-ID: <CAMuHMdUpThq_fmSitzUrEUFx40itYdURpjmunLs_YLA9BPaMQg@mail.gmail.com>
-Subject: Re: [PATCH 00/15] arch: synchronize syscall tables in preparation for y2038
-To:     Arnd Bergmann <arnd@arndb.de>
+References: <20190110162435.309262-1-arnd@arndb.de> <20190110162435.309262-16-arnd@arndb.de>
+ <20190110203638.GB3676@osiris>
+In-Reply-To: <20190110203638.GB3676@osiris>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 11 Jan 2019 18:30:43 +0100
+Message-ID: <CAK8P3a0M6qSJQAtFNKVS5muissKvyzeE9MSYT_uwKnM4BKCAug@mail.gmail.com>
+Subject: Re: [PATCH 15/15] arch: add pkey and rseq syscall numbers everywhere
+To:     Heiko Carstens <heiko.carstens@de.ibm.com>
 Cc:     y2038 Mailman List <y2038@lists.linaro.org>,
         Linux API <linux-api@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
         Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
         Tony Luck <tony.luck@intel.com>,
         Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Michal Simek <monstr@monstr.eu>,
         Paul Burton <paul.burton@mips.com>,
         Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
         Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        David Miller <davem@davemloft.net>,
         Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
@@ -73,14 +72,14 @@ Cc:     y2038 Mailman List <y2038@lists.linaro.org>,
         "the arch/x86 maintainers" <x86@kernel.org>,
         Max Filippov <jcmvbkbc@gmail.com>,
         Firoz Khan <firoz.khan@linaro.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
         Deepa Dinamani <deepa.kernel@gmail.com>,
         Dominik Brodowski <linux@dominikbrodowski.net>,
         Andrew Morton <akpm@linux-foundation.org>,
         Davidlohr Bueso <dave@stgolabs.net>,
         alpha <linux-alpha@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         linux-mips@vger.kernel.org,
         Parisc List <linux-parisc@vger.kernel.org>,
@@ -94,51 +93,27 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi Arnd,
+On Thu, Jan 10, 2019 at 9:36 PM Heiko Carstens
+<heiko.carstens@de.ibm.com> wrote:
+> On Thu, Jan 10, 2019 at 05:24:35PM +0100, Arnd Bergmann wrote:
 
-On Thu, Jan 10, 2019 at 11:43 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> On Thu, Jan 10, 2019 at 7:11 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Thu, Jan 10, 2019 at 6:06 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > On Thu, Jan 10, 2019 at 5:59 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > On Thu, Jan 10, 2019 at 5:26 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > > The system call tables have diverged a bit over the years, and a number
-> > > > > of the recent additions never made it into all architectures, for one
-> > > > > reason or another.
-> > > > >
-> > > > > This is an attempt to clean it up as far as we can without breaking
-> > > > > compatibility, doing a number of steps:
-> > > >
-> > > > Thanks a lot!
-> > > >
-> > > > > - Add system calls that have not yet been integrated into all
-> > > > >   architectures but that we definitely want there.
-> > > >
-> > > > It looks like you missed wiring up io_pgetevents() on m68k.
-> > > > Is that intentional?
-> > >
-> > > Yes, I thought I had described that somewhere but maybe I
-> > > forgot: semtimedop() and io_pgetevents() get replaced with
-> > > time64 versions in the follow-up, so I only added them in
-> > > 64-bit architectures. If you think we should have both
-> > > io_pgetevents() and io_pgetevents_time32() on all 32-bit
-> > > architectures, I can add that as well.
-> >
-> > Thanks, sounds fine to me.
+> Since you only need/want the system call numbers, could you please
+> change these lines to:
 >
-> Just to be sure, you mean it's fine to not add it, not that we should
-> add it?
+> > +384  common  pkey_alloc              -                               -
+> > +385  common  pkey_free               -                               -
+> > +386  common  pkey_mprotect           -                               -
+>
+> Otherwise it _looks_ like we would need compat wrappers here as well,
+> even though all of them would just jump to sys_ni_syscall() in this
+> case. Making this explicit seems to better.
 
-I'm fine with not having the legacy 32-bit ones.
+Ok, fair enough. I considered doing this originally and then
+decided against it for consistency with the asm-generic file,
+but I don't care much either way.
 
-Sorry for being unclear.
+Is this something you may want to add later? I'm not sure exactly
+how pkey compares to s390 storage keys, or if this is something
+completely unrelated.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+     Arnd
