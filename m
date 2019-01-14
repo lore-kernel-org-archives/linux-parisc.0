@@ -3,28 +3,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 906E9C43444
-	for <linux-parisc@archiver.kernel.org>; Mon, 14 Jan 2019 03:40:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3929C43387
+	for <linux-parisc@archiver.kernel.org>; Mon, 14 Jan 2019 03:59:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6CFCC2086D
-	for <linux-parisc@archiver.kernel.org>; Mon, 14 Jan 2019 03:40:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7B69720879
+	for <linux-parisc@archiver.kernel.org>; Mon, 14 Jan 2019 03:59:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726724AbfANDke (ORCPT
+        id S1726755AbfAND7t (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 13 Jan 2019 22:40:34 -0500
-Received: from ozlabs.org ([203.11.71.1]:42065 "EHLO ozlabs.org"
+        Sun, 13 Jan 2019 22:59:49 -0500
+Received: from ozlabs.org ([203.11.71.1]:34977 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726622AbfANDke (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 13 Jan 2019 22:40:34 -0500
+        id S1726697AbfAND7t (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 13 Jan 2019 22:59:49 -0500
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by ozlabs.org (Postfix) with ESMTPSA id 43dK433MFKz9s9G;
-        Mon, 14 Jan 2019 14:40:17 +1100 (AEDT)
+        by ozlabs.org (Postfix) with ESMTPSA id 43dKVQ4Bklz9s9G;
+        Mon, 14 Jan 2019 14:59:42 +1100 (AEDT)
 From:   Michael Ellerman <mpe@ellerman.id.au>
 To:     Arnd Bergmann <arnd@arndb.de>, y2038@lists.linaro.org,
         linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
@@ -47,8 +47,8 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, ink@jurassic.park.msu.ru,
 Subject: Re: [PATCH 14/15] arch: add split IPC system calls where needed
 In-Reply-To: <20190110162435.309262-15-arnd@arndb.de>
 References: <20190110162435.309262-1-arnd@arndb.de> <20190110162435.309262-15-arnd@arndb.de>
-Date:   Mon, 14 Jan 2019 14:40:14 +1100
-Message-ID: <87r2df29gh.fsf@concordia.ellerman.id.au>
+Date:   Mon, 14 Jan 2019 14:59:41 +1100
+Message-ID: <87pnsz28k2.fsf@concordia.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-parisc-owner@vger.kernel.org
@@ -123,9 +123,10 @@ I'll try and send them today.
 We already have a gap at 366-377 from when we tried to add the split IPC
 calls a few years back.
 
-I guess I don't mind leaving that gap and using the common numbers.
+I guess I don't mind leaving that gap and using the common numbers as
+you've done here.
 
-But would be good to add a comment pointing out that we have room there
-for arch specific syscalls as well.
+But it would be good to add a comment pointing out that we have room
+at 366 for more arch specific syscalls as well.
 
 cheers
