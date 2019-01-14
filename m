@@ -1,137 +1,131 @@
-Return-Path: <SRS0=OInP=PT=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=z5Pf=PW=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0FCAC43387
-	for <linux-parisc@archiver.kernel.org>; Fri, 11 Jan 2019 17:33:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 906E9C43444
+	for <linux-parisc@archiver.kernel.org>; Mon, 14 Jan 2019 03:40:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B167D20870
-	for <linux-parisc@archiver.kernel.org>; Fri, 11 Jan 2019 17:33:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6CFCC2086D
+	for <linux-parisc@archiver.kernel.org>; Mon, 14 Jan 2019 03:40:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388793AbfAKRd0 (ORCPT
+        id S1726724AbfANDke (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 11 Jan 2019 12:33:26 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:40580 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730574AbfAKRdY (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 11 Jan 2019 12:33:24 -0500
-Received: by mail-qt1-f193.google.com with SMTP id k12so19669663qtf.7;
-        Fri, 11 Jan 2019 09:33:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PlXu3O61pUFPLleZ5AMTVxcoWeFNM1mKAK5t7dNAM0o=;
-        b=TP6DXAT3p1j+5A4u4m4BFvUWImSq5n0+2KSpQfsyhkr4kzNAR0Hc/VviiTXMFXtGMX
-         ncYTHe5C53FZ3ATUHerV/9xB4taaYdLvbYfh6QFfS0V15aCXvZ1whAz4Lgk5UdQVZYgX
-         pT7hiCbeRq/SmxjhCvJst8noet5IY6sEC3J86P8YQB2UvoZPo6mGMioKsNYGocdS89xY
-         lnnmssGTiGTglHiIS9nFsPGkx3QskIMkc/kCNP+wcCoHcVd60YuYfv+5TM/qqogRJGxR
-         C2xSeo4AuVNzeljmhVa9RGLSL18Ao7ExyUfgm4bdTAVI6F/XPYE2Kfm09IHOM9Mitbdp
-         avtw==
-X-Gm-Message-State: AJcUukdxwi0KkcGe0N5/5c/JvYJ2QRtML6xS9Q7mlHTMkc5i9pWE59WI
-        Dp66nzV7PKgISL6QqEYhF8Ns0mShDHfZMQICuw4=
-X-Google-Smtp-Source: ALg8bN69vX9vcq63IXhYC33aOwWxtfAvEwzhoWorTBpfa9Zlf+nERekjdxP7iJFo0Zjh4Gu5ospxdXcZfV6z9FLdQY4=
-X-Received: by 2002:ac8:1d12:: with SMTP id d18mr14381544qtl.343.1547228002113;
- Fri, 11 Jan 2019 09:33:22 -0800 (PST)
-MIME-Version: 1.0
-References: <20190110162435.309262-1-arnd@arndb.de> <20190110162435.309262-15-arnd@arndb.de>
- <20190110203253.GA3676@osiris>
-In-Reply-To: <20190110203253.GA3676@osiris>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 11 Jan 2019 18:33:05 +0100
-Message-ID: <CAK8P3a0PahP8Bbc7OfiqrRcoxMReDuoyn8Hw=aSFtPjNeyrjcA@mail.gmail.com>
+        Sun, 13 Jan 2019 22:40:34 -0500
+Received: from ozlabs.org ([203.11.71.1]:42065 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726622AbfANDke (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 13 Jan 2019 22:40:34 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ozlabs.org (Postfix) with ESMTPSA id 43dK433MFKz9s9G;
+        Mon, 14 Jan 2019 14:40:17 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Arnd Bergmann <arnd@arndb.de>, y2038@lists.linaro.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, ink@jurassic.park.msu.ru,
+        mattst88@gmail.com, linux@armlinux.org.uk, catalin.marinas@arm.com,
+        will.deacon@arm.com, tony.luck@intel.com, fenghua.yu@intel.com,
+        geert@linux-m68k.org, monstr@monstr.eu, paul.burton@mips.com,
+        deller@gmx.de, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
+        dalias@libc.org, davem@davemloft.net, luto@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, jcmvbkbc@gmail.com, firoz.khan@linaro.org,
+        ebiederm@xmission.com, deepa.kernel@gmail.com,
+        linux@dominikbrodowski.net, akpm@linux-foundation.org,
+        dave@stgolabs.net, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org
 Subject: Re: [PATCH 14/15] arch: add split IPC system calls where needed
-To:     Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc:     y2038 Mailman List <y2038@lists.linaro.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Paul Burton <paul.burton@mips.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        David Miller <davem@davemloft.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Firoz Khan <firoz.khan@linaro.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-ia64@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        linux-mips@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190110162435.309262-15-arnd@arndb.de>
+References: <20190110162435.309262-1-arnd@arndb.de> <20190110162435.309262-15-arnd@arndb.de>
+Date:   Mon, 14 Jan 2019 14:40:14 +1100
+Message-ID: <87r2df29gh.fsf@concordia.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Thu, Jan 10, 2019 at 9:33 PM Heiko Carstens
-<heiko.carstens@de.ibm.com> wrote:
-> On Thu, Jan 10, 2019 at 05:24:34PM +0100, Arnd Bergmann wrote:
+Hi Arnd,
 
-> > diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
-> > index 022fc099b628..428cf512a757 100644
-> > --- a/arch/s390/kernel/syscalls/syscall.tbl
-> > +++ b/arch/s390/kernel/syscalls/syscall.tbl
-> > @@ -391,3 +391,15 @@
-> >  381  common  kexec_file_load         sys_kexec_file_load             compat_sys_kexec_file_load
-> >  382  common  io_pgetevents           sys_io_pgetevents               compat_sys_io_pgetevents
-> >  383  common  rseq                    sys_rseq                        compat_sys_rseq
-> > +# room for arch specific syscalls
-> > +392  64      semtimedop              sys_semtimedop                  -
-> > +393  common  semget                  sys_semget                      sys_semget
-> ...
-> > +395  common  shmget                  sys_shmget                      sys_shmget
-> ...
-> > +398  common  shmdt                   sys_shmdt                       sys_shmdt
-> > +399  common  msgget                  sys_msgget                      sys_msgget
+Arnd Bergmann <arnd@arndb.de> writes:
+> The IPC system call handling is highly inconsistent across architectures,
+> some use sys_ipc, some use separate calls, and some use both.  We also
+> have some architectures that require passing IPC_64 in the flags, and
+> others that set it implicitly.
 >
-> These four need compat system call wrappers, unfortunately... (well,
-> actually only shmget and shmdt require them, but let's add them for
-> all four). See arch/s390/kernel/compat_wrapper.c
+> For the additon of a y2083 safe semtimedop() system call, I chose to only
+> support the separate entry points, but that requires first supporting
+> the regular ones with their own syscall numbers.
 >
-> I'm afraid this compat special handling will be even more annoying in
-> the future, since s390 will be the only architecture which requires
-> this special handling.
+> The IPC_64 is now implied by the new semctl/shmctl/msgctl system
+> calls even on the architectures that require passing it with the ipc()
+> multiplexer.
 >
-> _Maybe_ it would make sense to automatically generate a weak compat
-> system call wrapper for s390 with the SYSCALL_DEFINE macros, but that
-> probably won't work in all cases.
+> I'm not adding the new semtimedop() or semop() on 32-bit architectures,
+> those will get implemented using the new semtimedop_time64() version
+> that gets added along with the other time64 calls.
+> Three 64-bit architectures (powerpc, s390 and sparc) get semtimedop().
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> One aspect here that might be a bit controversial is the use of
+> the same system call numbers across all architectures, synchronizing
+> all of them with the x86-32 numbers. With the new syscall.tbl
+> files, I hope we can just keep doing that in the future, and no
+> longer require the architecture maintainers to assign a number.
+>
+> This is mainly useful for implementers of the C libraries: if
+> we can add future system calls everywhere at the same time, using
+> a particular version of the kernel headers also guarantees that
+> the system call number macro is visible.
+> ---
+>  arch/m68k/kernel/syscalls/syscall.tbl     | 11 +++++++++++
+>  arch/mips/kernel/syscalls/syscall_o32.tbl | 11 +++++++++++
+>  arch/powerpc/kernel/syscalls/syscall.tbl  | 12 ++++++++++++
 
-For some reason I was under the impression that s390 already did that.
-However, it seems that x86 does, so I'll try to convert the x86 version
-for s390, and see if I can get rid of all the wrappers that way.
+I have some changes I'd like to make to our syscall table that will
+clash with this.
 
-It would certainly be safer to have the wrappers always present,
-especially if we expect future system calls to be added to the
-s390 table by whoever implements the syscall itself.
+I'll try and send them today.
 
-      Arnd
+> diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
+> index db3bbb8744af..1bffab54ff35 100644
+> --- a/arch/powerpc/kernel/syscalls/syscall.tbl
+> +++ b/arch/powerpc/kernel/syscalls/syscall.tbl
+> @@ -425,3 +425,15 @@
+>  386	nospu	pkey_mprotect			sys_pkey_mprotect
+>  387	nospu	rseq				sys_rseq
+>  388	nospu	io_pgetevents			sys_io_pgetevents		compat_sys_io_pgetevents
+> +# room for arch specific syscalls
+> +392	64	semtimedop			sys_semtimedop
+> +393	common	semget				sys_semget
+> +394	common	semctl				sys_semctl			compat_sys_semctl
+> +395	common	shmget				sys_shmget
+> +396	common	shmctl				sys_shmctl			compat_sys_shmctl
+> +397	common	shmat				sys_shmat			compat_sys_shmat
+> +398	common	shmdt				sys_shmdt
+> +399	common	msgget				sys_msgget
+> +400	common	msgsnd				sys_msgsnd			compat_sys_msgsnd
+> +401	common	msgrcv				sys_msgrcv			compat_sys_msgrcv
+> +402	common	msgctl				sys_msgctl			compat_sys_msgctl
+
+We already have a gap at 366-377 from when we tried to add the split IPC
+calls a few years back.
+
+I guess I don't mind leaving that gap and using the common numbers.
+
+But would be good to add a comment pointing out that we have room there
+for arch specific syscalls as well.
+
+cheers
