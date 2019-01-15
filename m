@@ -1,355 +1,273 @@
-Return-Path: <SRS0=z5Pf=PW=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=ssJb=PX=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS,USER_AGENT_MUTT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_NEOMUTT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13FC8C43387
-	for <linux-parisc@archiver.kernel.org>; Mon, 14 Jan 2019 23:33:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FF8BC43387
+	for <linux-parisc@archiver.kernel.org>; Tue, 15 Jan 2019 11:52:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C95C720645
-	for <linux-parisc@archiver.kernel.org>; Mon, 14 Jan 2019 23:33:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 571B220656
+	for <linux-parisc@archiver.kernel.org>; Tue, 15 Jan 2019 11:52:58 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="IM1vVjUk"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726911AbfANXdE (ORCPT
+        id S1728565AbfAOLww (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 14 Jan 2019 18:33:04 -0500
-Received: from mga11.intel.com ([192.55.52.93]:52381 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726886AbfANXdE (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 14 Jan 2019 18:33:04 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Jan 2019 15:33:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.56,479,1539673200"; 
-   d="gz'50?scan'50,208,50";a="118386129"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 14 Jan 2019 15:33:01 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1gjBj2-0007Bg-LV; Tue, 15 Jan 2019 07:33:00 +0800
-Date:   Tue, 15 Jan 2019 07:32:28 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     kbuild-all@01.org, "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/8] parisc: turn GET_IOC into an inline function
-Message-ID: <201901150729.Tlb22JT2%fengguang.wu@intel.com>
-References: <20190114112353.30616-4-hch@lst.de>
+        Tue, 15 Jan 2019 06:52:52 -0500
+Received: from pandora.armlinux.org.uk ([78.32.30.218]:35502 "EHLO
+        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728227AbfAOLww (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 15 Jan 2019 06:52:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2014; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=UtkYBYQEV0zkIFWjLE1poFjLAMViJ0i4p6XlDuJkXsA=; b=IM1vVjUkT2Gq+IQyLcV94IGss
+        VtFPaeJpVR2fEyZVwujSerg4Seq6FO3zEOGQGEoLPTih8ZfkI1OgcXiVThLTXH6ywv/mCCYfQbn6s
+        5LjPwUFbGDKpZOAL3FvnHuHzh6EKBskLbN1V26J3AqolhRE4flIFk6O1QcBr6gzftzQuQ=;
+Received: from e5254000004ec.dyn.armlinux.org.uk ([2002:4e20:1eda:1:5054:ff:fe00:4ec]:35742 helo=shell.armlinux.org.uk)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1gjNGg-0005RZ-3L; Tue, 15 Jan 2019 11:52:30 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.89)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1gjNGf-0004ui-4x; Tue, 15 Jan 2019 11:52:29 +0000
+Date:   Tue, 15 Jan 2019 11:52:29 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     y2038@lists.linaro.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ink@jurassic.park.msu.ru,
+        mattst88@gmail.com, catalin.marinas@arm.com, will.deacon@arm.com,
+        tony.luck@intel.com, fenghua.yu@intel.com, geert@linux-m68k.org,
+        monstr@monstr.eu, paul.burton@mips.com, deller@gmx.de,
+        mpe@ellerman.id.au, schwidefsky@de.ibm.com,
+        heiko.carstens@de.ibm.com, dalias@libc.org, davem@davemloft.net,
+        luto@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, x86@kernel.org, jcmvbkbc@gmail.com,
+        firoz.khan@linaro.org, ebiederm@xmission.com,
+        deepa.kernel@gmail.com, linux@dominikbrodowski.net,
+        akpm@linux-foundation.org, dave@stgolabs.net,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH 15/15] arch: add pkey and rseq syscall numbers everywhere
+Message-ID: <20190115115229.mcrmmpwdmjxf2cra@e5254000004ec.dyn.armlinux.org.uk>
+References: <20190110162435.309262-1-arnd@arndb.de>
+ <20190110162435.309262-16-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="4Ckj6UjgE2iN1+kY"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190114112353.30616-4-hch@lst.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20190110162435.309262-16-arnd@arndb.de>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
+On Thu, Jan 10, 2019 at 05:24:35PM +0100, Arnd Bergmann wrote:
+> Most architectures define system call numbers for the rseq and pkey system
+> calls, even when they don't support the features, and perhaps never will.
+> 
+> Only a few architectures are missing these, so just define them anyway
+> for consistency. If we decide to add them later to one of these, the
+> system call numbers won't get out of sync then.
 
---4Ckj6UjgE2iN1+kY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I was lambasted for adding the pkey syscalls for 32-bit ARM in 2016,
+which will probably never support it.  Why has the attitude towards
+this kind of thing now apparently become acceptable?
 
-Hi Christoph,
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/alpha/include/asm/unistd.h         | 4 ----
+>  arch/alpha/kernel/syscalls/syscall.tbl  | 4 ++++
+>  arch/ia64/kernel/syscalls/syscall.tbl   | 4 ++++
+>  arch/m68k/kernel/syscalls/syscall.tbl   | 4 ++++
+>  arch/parisc/include/asm/unistd.h        | 3 ---
+>  arch/parisc/kernel/syscalls/syscall.tbl | 4 ++++
+>  arch/s390/include/asm/unistd.h          | 3 ---
+>  arch/s390/kernel/syscalls/syscall.tbl   | 3 +++
+>  arch/sh/kernel/syscalls/syscall.tbl     | 4 ++++
+>  arch/sparc/include/asm/unistd.h         | 5 -----
+>  arch/sparc/kernel/syscalls/syscall.tbl  | 4 ++++
+>  arch/xtensa/kernel/syscalls/syscall.tbl | 1 +
+>  12 files changed, 28 insertions(+), 15 deletions(-)
+> 
+> diff --git a/arch/alpha/include/asm/unistd.h b/arch/alpha/include/asm/unistd.h
+> index 564ba87bdc38..31ad350b58a0 100644
+> --- a/arch/alpha/include/asm/unistd.h
+> +++ b/arch/alpha/include/asm/unistd.h
+> @@ -29,9 +29,5 @@
+>  #define __IGNORE_getppid
+>  #define __IGNORE_getuid
+>  
+> -/* Alpha doesn't have protection keys. */
+> -#define __IGNORE_pkey_mprotect
+> -#define __IGNORE_pkey_alloc
+> -#define __IGNORE_pkey_free
+>  
+>  #endif /* _ALPHA_UNISTD_H */
+> diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
+> index b0e247287908..25b4a7e76943 100644
+> --- a/arch/alpha/kernel/syscalls/syscall.tbl
+> +++ b/arch/alpha/kernel/syscalls/syscall.tbl
+> @@ -452,3 +452,7 @@
+>  521	common	pwritev2			sys_pwritev2
+>  522	common	statx				sys_statx
+>  523	common	io_pgetevents			sys_io_pgetevents
+> +524	common	pkey_alloc			sys_pkey_alloc
+> +525	common	pkey_free			sys_pkey_free
+> +526	common	pkey_mprotect			sys_pkey_mprotect
+> +527	common	rseq				sys_rseq
+> diff --git a/arch/ia64/kernel/syscalls/syscall.tbl b/arch/ia64/kernel/syscalls/syscall.tbl
+> index 2e93dbdcdb80..84e03de00177 100644
+> --- a/arch/ia64/kernel/syscalls/syscall.tbl
+> +++ b/arch/ia64/kernel/syscalls/syscall.tbl
+> @@ -339,3 +339,7 @@
+>  327	common	io_pgetevents			sys_io_pgetevents
+>  328	common	perf_event_open			sys_perf_event_open
+>  329	common	seccomp				sys_seccomp
+> +330	common	pkey_alloc			sys_pkey_alloc
+> +331	common	pkey_free			sys_pkey_free
+> +332	common	pkey_mprotect			sys_pkey_mprotect
+> +333	common	rseq				sys_rseq
+> diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
+> index 5354ba02eed2..ae88b85d068e 100644
+> --- a/arch/m68k/kernel/syscalls/syscall.tbl
+> +++ b/arch/m68k/kernel/syscalls/syscall.tbl
+> @@ -388,6 +388,10 @@
+>  378	common	pwritev2			sys_pwritev2
+>  379	common	statx				sys_statx
+>  380	common	seccomp				sys_seccomp
+> +381	common	pkey_alloc			sys_pkey_alloc
+> +382	common	pkey_free			sys_pkey_free
+> +383	common	pkey_mprotect			sys_pkey_mprotect
+> +384	common	rseq				sys_rseq
+>  # room for arch specific calls
+>  393	common	semget				sys_semget
+>  394	common	semctl				sys_semctl
+> diff --git a/arch/parisc/include/asm/unistd.h b/arch/parisc/include/asm/unistd.h
+> index c2c2afb28941..9ec1026af877 100644
+> --- a/arch/parisc/include/asm/unistd.h
+> +++ b/arch/parisc/include/asm/unistd.h
+> @@ -12,9 +12,6 @@
+>  
+>  #define __IGNORE_select			/* newselect */
+>  #define __IGNORE_fadvise64		/* fadvise64_64 */
+> -#define __IGNORE_pkey_mprotect
+> -#define __IGNORE_pkey_alloc
+> -#define __IGNORE_pkey_free
+>  
+>  #ifndef ASM_LINE_SEP
+>  # define ASM_LINE_SEP ;
+> diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
+> index 9bbd2f9f56c8..e07231de3597 100644
+> --- a/arch/parisc/kernel/syscalls/syscall.tbl
+> +++ b/arch/parisc/kernel/syscalls/syscall.tbl
+> @@ -367,3 +367,7 @@
+>  348	common	pwritev2		sys_pwritev2			compat_sys_pwritev2
+>  349	common	statx			sys_statx
+>  350	common	io_pgetevents		sys_io_pgetevents		compat_sys_io_pgetevents
+> +351	common	pkey_alloc		sys_pkey_alloc
+> +352	common	pkey_free		sys_pkey_free
+> +353	common	pkey_mprotect		sys_pkey_mprotect
+> +354	common	rseq			sys_rseq
+> diff --git a/arch/s390/include/asm/unistd.h b/arch/s390/include/asm/unistd.h
+> index a1fbf15d53aa..ed08f114ee91 100644
+> --- a/arch/s390/include/asm/unistd.h
+> +++ b/arch/s390/include/asm/unistd.h
+> @@ -11,9 +11,6 @@
+>  #include <asm/unistd_nr.h>
+>  
+>  #define __IGNORE_time
+> -#define __IGNORE_pkey_mprotect
+> -#define __IGNORE_pkey_alloc
+> -#define __IGNORE_pkey_free
+>  
+>  #define __ARCH_WANT_NEW_STAT
+>  #define __ARCH_WANT_OLD_READDIR
+> diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
+> index 428cf512a757..f84ea364a302 100644
+> --- a/arch/s390/kernel/syscalls/syscall.tbl
+> +++ b/arch/s390/kernel/syscalls/syscall.tbl
+> @@ -391,6 +391,9 @@
+>  381  common	kexec_file_load		sys_kexec_file_load		compat_sys_kexec_file_load
+>  382  common	io_pgetevents		sys_io_pgetevents		compat_sys_io_pgetevents
+>  383  common	rseq			sys_rseq			compat_sys_rseq
+> +384  common	pkey_alloc		sys_pkey_alloc			sys_pkey_alloc
+> +385  common	pkey_free		sys_pkey_free			sys_pkey_free
+> +386  common	pkey_mprotect		sys_pkey_mprotect		sys_pkey_mprotect
+>  # room for arch specific syscalls
+>  392	64	semtimedop		sys_semtimedop			-
+>  393  common	semget			sys_semget			sys_semget
+> diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
+> index 6d0b84e3ef2d..3f96ad0424e1 100644
+> --- a/arch/sh/kernel/syscalls/syscall.tbl
+> +++ b/arch/sh/kernel/syscalls/syscall.tbl
+> @@ -391,6 +391,10 @@
+>  381	common	preadv2				sys_preadv2
+>  382	common	pwritev2			sys_pwritev2
+>  383	common	statx				sys_statx
+> +384	common	pkey_alloc			sys_pkey_alloc
+> +385	common	pkey_free			sys_pkey_free
+> +386	common	pkey_mprotect			sys_pkey_mprotect
+> +387	common	rseq				sys_rseq
+>  # room for arch specific syscalls
+>  393	common	semget				sys_semget
+>  394	common	semctl				sys_semctl
+> diff --git a/arch/sparc/include/asm/unistd.h b/arch/sparc/include/asm/unistd.h
+> index 5194d86ef72d..08696ea5dca8 100644
+> --- a/arch/sparc/include/asm/unistd.h
+> +++ b/arch/sparc/include/asm/unistd.h
+> @@ -59,9 +59,4 @@
+>  #define __IGNORE_getresgid
+>  #endif
+>  
+> -/* Sparc doesn't have protection keys. */
+> -#define __IGNORE_pkey_mprotect
+> -#define __IGNORE_pkey_alloc
+> -#define __IGNORE_pkey_free
+> -
+>  #endif /* _SPARC_UNISTD_H */
+> diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
+> index 8c9580302422..24ebef675184 100644
+> --- a/arch/sparc/kernel/syscalls/syscall.tbl
+> +++ b/arch/sparc/kernel/syscalls/syscall.tbl
+> @@ -407,6 +407,10 @@
+>  359	common	pwritev2		sys_pwritev2			compat_sys_pwritev2
+>  360	common	statx			sys_statx
+>  361	common	io_pgetevents		sys_io_pgetevents		compat_sys_io_pgetevents
+> +362	common	pkey_alloc		sys_pkey_alloc
+> +363	common	pkey_free		sys_pkey_free
+> +364	common	pkey_mprotect		sys_pkey_mprotect
+> +365	common	rseq			sys_rseq
+>  # room for arch specific syscalls
+>  392	64	semtimedop			sys_semtimedop
+>  393	common	semget			sys_semget
+> diff --git a/arch/xtensa/kernel/syscalls/syscall.tbl b/arch/xtensa/kernel/syscalls/syscall.tbl
+> index f8befa11b0c4..c699e014e0dd 100644
+> --- a/arch/xtensa/kernel/syscalls/syscall.tbl
+> +++ b/arch/xtensa/kernel/syscalls/syscall.tbl
+> @@ -372,3 +372,4 @@
+>  349	common	pkey_alloc			sys_pkey_alloc
+>  350	common	pkey_free			sys_pkey_free
+>  351	common	statx				sys_statx
+> +352	common	rseq				sys_rseq
+> -- 
+> 2.20.0
+> 
+> 
 
-I love your patch! Yet something to improve:
-
-[auto build test ERROR on hp-parisc/for-next]
-[also build test ERROR on v5.0-rc2 next-20190114]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
-
-url:    https://github.com/0day-ci/linux/commits/Christoph-Hellwig/parisc-don-t-include-asm-cacheflush-h-in-asm-dma-mapping-h/20190115-034634
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git for-next
-config: parisc-b180_defconfig (attached as .config)
-compiler: hppa-linux-gnu-gcc (Debian 7.2.0-11) 7.2.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # save the attached .config to linux build tree
-        GCC_VERSION=7.2.0 make.cross ARCH=parisc 
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/parisc/hppb.c:26:0:
-   drivers/parisc/iommu.h: In function 'GET_IOC':
->> drivers/parisc/iommu.h:33:14: error: dereferencing pointer to incomplete type 'struct pci_hba_data'
-     return pdata->iommu;
-                 ^~
-
-vim +33 drivers/parisc/iommu.h
-
-    26	
-    27	static inline struct ioc *GET_IOC(struct device *dev)
-    28	{
-    29		struct pci_hba_data *pdata = parisc_walk_tree(dev);
-    30	
-    31		if (!pdata)
-    32			return NULL;
-  > 33		return pdata->iommu;
-    34	}
-    35	
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
-
---4Ckj6UjgE2iN1+kY
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-naMv/wdEIw4GkNIAAA==
-
---4Ckj6UjgE2iN1+kY--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 12.1Mbps down 622kbps up
+According to speedtest.net: 11.9Mbps down 500kbps up
