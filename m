@@ -2,101 +2,145 @@ Return-Path: <SRS0=+leU=P2=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A95DC5ACD3
-	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 17:45:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FEA8C07EBF
+	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 18:50:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D449120883
-	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 17:45:33 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="R9WeU/KM"
+	by mail.kernel.org (Postfix) with ESMTP id 6199D20850
+	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 18:50:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1547837447;
+	bh=VoFGDVLCVcIdDEcxLef2+rlsJOjPa2ebgAiYkYzOvZE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
+	b=HwZx8QRwcxrjMLZQAQyvt+q5WIcd37gKNquwZbrahFxwQogMkdaMgqRVUVey2VgcW
+	 /fGIM8h5kifO7jFYhzyrag+jSX9ZWHNbApVtNlEuLTN/Ynk16rx1KRWjmYTm33Gdsf
+	 aXCKPYr0dugOyUJ+FlxfwQGfa0MKviONc+7nVLac=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728574AbfARRpZ (ORCPT
+        id S1728717AbfARSuq (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 18 Jan 2019 12:45:25 -0500
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:42686 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728514AbfARRpZ (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 18 Jan 2019 12:45:25 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 6FC948EE3EB;
-        Fri, 18 Jan 2019 09:45:21 -0800 (PST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id TXlpfntxv04P; Fri, 18 Jan 2019 09:45:20 -0800 (PST)
-Received: from [153.66.254.194] (unknown [50.35.68.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 18 Jan 2019 13:50:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729047AbfARSun (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 18 Jan 2019 13:50:43 -0500
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 322D28EE10C;
-        Fri, 18 Jan 2019 09:45:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1547833520;
-        bh=XXQLXCymB8vOJAkOPmNQI+AOkRgkwA1dHK7GADdM3yU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=R9WeU/KMkVaa6iP7Pp3wYocx0/dXtN94bF6JMCXpNgrPa0+6kXx+p8ugiGNGWeFvK
-         NyXTpJiwFZR4Yx64OlyySakUFsNn1vA3uDfYr89rHvphDI6UKfVMm7YpmablmnonUb
-         SSSVbS9S63Tvu2GKjTbrRiEXQzC+FJCjZHgJo2VE=
-Message-ID: <1547833518.2794.36.camel@HansenPartnership.com>
-Subject: Re: [PATCH v2 00/29] y2038: add time64 syscalls
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Dennis Clarke <dclarke@blastwave.org>,
-        Arnd Bergmann <arnd@arndb.de>, y2038@lists.linaro.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Cc:     mattst88@gmail.com, linux@armlinux.org.uk, catalin.marinas@arm.com,
-        will.deacon@arm.com, tony.luck@intel.com, fenghua.yu@intel.com,
-        geert@linux-m68k.org, monstr@monstr.eu, paul.burton@mips.com,
-        deller@gmx.de, benh@kernel.crashing.org, mpe@ellerman.id.au,
-        schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, dalias@libc.org,
-        davem@davemloft.net, luto@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org,
-        jcmvbkbc@gmail.com, akpm@linux-foundation.org,
-        deepa.kernel@gmail.com, ebiederm@xmission.com,
-        firoz.khan@linaro.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, netdev@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Date:   Fri, 18 Jan 2019 09:45:18 -0800
-In-Reply-To: <be3863ae-d903-8e9e-5e6c-e4a58fac189d@blastwave.org>
-References: <20190118161835.2259170-1-arnd@arndb.de>
-         <be3863ae-d903-8e9e-5e6c-e4a58fac189d@blastwave.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 29BF62184A
+        for <linux-parisc@vger.kernel.org>; Fri, 18 Jan 2019 18:50:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1547837442;
+        bh=VoFGDVLCVcIdDEcxLef2+rlsJOjPa2ebgAiYkYzOvZE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DywJP3k6H+iZLdOWLhNpkjuA11yZaLbQY7NIRl85r8DEi6PK+JLiiJK2i7CxdLFSi
+         37mZQhM6bmlvbAMbWz9fnq6sjSaX6UNXp7qoXQL4PBfIvKyNcTWoFU1f++CVkC7IYh
+         eReNFOQ/KgRMLwNXqjvc1Ze6jSQuFE2pBg+YmYgo=
+Received: by mail-wr1-f48.google.com with SMTP id v13so16317572wrw.5
+        for <linux-parisc@vger.kernel.org>; Fri, 18 Jan 2019 10:50:42 -0800 (PST)
+X-Gm-Message-State: AJcUukeF7lIqMdPYwQAPwWAH3kwKHIVWbrBarYOFsiOSMKttHzvE6mvq
+        9tc5MsNizbaqzx3g3p4xk675kRPx5jTpvfXcBtoZ6w==
+X-Google-Smtp-Source: ALg8bN67TmQMlfRaxpFOTS6mBbA0hkrufcMeB82R0DYAMNtI7glElQBQro2q4MgunvPtGRQh0RhmI0b7ZOkTrvyT000=
+X-Received: by 2002:adf:e08c:: with SMTP id c12mr17046840wri.199.1547837438534;
+ Fri, 18 Jan 2019 10:50:38 -0800 (PST)
+MIME-Version: 1.0
+References: <20190118161835.2259170-1-arnd@arndb.de> <20190118161835.2259170-30-arnd@arndb.de>
+In-Reply-To: <20190118161835.2259170-30-arnd@arndb.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 18 Jan 2019 10:50:27 -0800
+X-Gmail-Original-Message-ID: <CALCETrXqM5mhvwreN5y-9K99h1j9rs9MAVK-cNLC54s1fdHA6w@mail.gmail.com>
+Message-ID: <CALCETrXqM5mhvwreN5y-9K99h1j9rs9MAVK-cNLC54s1fdHA6w@mail.gmail.com>
+Subject: Re: [PATCH v2 29/29] y2038: add 64-bit time_t syscalls to all 32-bit architectures
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     y2038@lists.linaro.org, Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Paul Burton <paul.burton@mips.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        deepa.kernel@gmail.com,
+        "Eric W. Biederman" <ebiederm@xmission.com>, firoz.khan@linaro.org,
+        linux-alpha@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, 2019-01-18 at 11:57 -0500, Dennis Clarke wrote:
-> On 1/18/19 11:18 AM, Arnd Bergmann wrote:
-> > This is a minor update of the patches I posted last week, I
-> > would like to add this into linux-next now, but would still do
-> > changes if there are concerns about the contents. The first
-> > version did not see a lot of replies, which could mean that
-> > either everyone is happy with it, or that it was largely ignored.
-> > 
-> > See also the article at https://lwn.net/Articles/776435/.
-> 
-> I would be happy to read "Approaching the kernel year-2038 end game"
-> however it is behind a pay wall.  Perhaps it may be best to just
-> host interesting articles about open source idea elsewhere.
+On Fri, Jan 18, 2019 at 8:25 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> This adds 21 new system calls on each ABI that has 32-bit time_t
+> today. All of these have the exact same semantics as their existing
+> counterparts, and the new ones all have macro names that end in 'time64'
+> for clarification.
+>
+> This gets us to the point of being able to safely use a C library
+> that has 64-bit time_t in user space. There are still a couple of
+> loose ends to tie up in various areas of the code, but this is the
+> big one, and should be entirely uncontroversial at this point.
+>
+> In particular, there are four system calls (getitimer, setitimer,
+> waitid, and getrusage) that don't have a 64-bit counterpart yet,
+> but these can all be safely implemented in the C library by wrapping
+> around the existing system calls because the 32-bit time_t they
+> pass only counts elapsed time, not time since the epoch. They
+> will be dealt with later.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> The one point that still needs to be agreed on is the actual
+> number assignment. Following the earlier patch that added
+> the sysv IPC calls with common numbers where possible, I also
+> tried the same here, using consistent numbers on all 32-bit
+> architectures.
+>
+> There are a couple of minor issues with this:
+>
+> - On asm-generic, we now leave the numbers from 295 to 402
+>   unassigned, which wastes a small amount of kernel .data
+>   segment. Originally I had asm-generic start at 300 and
+>   everyone else start at 400 here, which was also not
+>   perfect, and we have gone beyond 400 already, so I ended
+>   up just using the same numbers as the rest here.
+>
+> - Once we get to 512, we clash with the x32 numbers (unless
+>   we remove x32 support first), and probably have to skip
+>   a few more. I also considered using the 512..547 space
+>   for 32-bit-only calls (which never clash with x32), but
+>   that also seems to add a bit of complexity.
 
-Hey, this is an unfair characterization: lwn.net operates an early
-access subscription model, so you can't read the above for 14 days
-after publication without paying for an lwn.net subscription, but by
-the time these patches are upstream there will be no paywall because it
-will expire on 24 January and that URL will then be readable by all. 
-That makes LWN.net a nice, reliable resource for us while still
-supporting some business model to keep it going.
+I have a patch that I'll send soon to make x32 use its own table.  As
+far as I'm concerned, 547 is *it*.  548 is just a normal number and is
+not special.  But let's please not reuse 512..547 for other purposes
+on x86 variants -- that way lies even more confusion, IMO.
 
-James
-
+--Andy
