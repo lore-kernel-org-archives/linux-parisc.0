@@ -1,149 +1,220 @@
-Return-Path: <SRS0=nq32=PY=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=+leU=P2=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 211A0C43387
-	for <linux-parisc@archiver.kernel.org>; Wed, 16 Jan 2019 00:10:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8CADC43387
+	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 12:23:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E5D77206C2
-	for <linux-parisc@archiver.kernel.org>; Wed, 16 Jan 2019 00:10:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9CD192086D
+	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 12:23:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1547814207;
+	bh=vpMtqQTrQFgoVpfb0tpJ2Y9BBUX93b+3jkUKuw4MrSQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=1Axp2emDr1TdQ7qcwCOBk2x5/9RliICOD3wJK8BJti/54AYi09TuIJ14V0xLutQI7
+	 3lVciGWhsn9dif5zRL8OTPaM67cOgh3YbqJbd+ELH9cKWrGkcLop+QNGbVSvH3j/pr
+	 G+Z47Jug+hnAiKVbKfs0tCy2WataM8mjUizs90U0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729602AbfAPAKV (ORCPT
+        id S1727712AbfARMX1 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 15 Jan 2019 19:10:21 -0500
-Received: from ozlabs.org ([203.11.71.1]:46203 "EHLO ozlabs.org"
+        Fri, 18 Jan 2019 07:23:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729247AbfAPAKV (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 15 Jan 2019 19:10:21 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S1727230AbfARMX0 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 18 Jan 2019 07:23:26 -0500
+Received: from localhost (5356596B.cm-6-7b.dynamic.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ozlabs.org (Postfix) with ESMTPSA id 43fSJm5W6fz9sBQ;
-        Wed, 16 Jan 2019 11:10:16 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     y2038 Mailman List <y2038@lists.linaro.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Paul Burton <paul.burton@mips.com>,
-        Helge Deller <deller@gmx.de>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        David Miller <davem@davemloft.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Firoz Khan <firoz.khan@linaro.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-ia64@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        linux-mips@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>
-Subject: Re: [PATCH 14/15] arch: add split IPC system calls where needed
-In-Reply-To: <CAK8P3a0uas76i2W1yjFvxHT-2=A8_egUZeAUM-Vya6386+87Xg@mail.gmail.com>
-References: <20190110162435.309262-1-arnd@arndb.de> <20190110162435.309262-15-arnd@arndb.de> <87pnsz28k2.fsf@concordia.ellerman.id.au> <CAK8P3a0uas76i2W1yjFvxHT-2=A8_egUZeAUM-Vya6386+87Xg@mail.gmail.com>
-Date:   Wed, 16 Jan 2019 11:10:16 +1100
-Message-ID: <871s5dzclz.fsf@concordia.ellerman.id.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id D78B420652;
+        Fri, 18 Jan 2019 12:23:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1547814205;
+        bh=vpMtqQTrQFgoVpfb0tpJ2Y9BBUX93b+3jkUKuw4MrSQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KapLsCZYG4IJBDyQJTj8Bxdy8aSIprbFsJ3Z/W5Es5hSVtVh/oOS57xgc+Yd8ASya
+         BpBgH/RhlBc5YRVGhdrjfdbiqKzaQ0Rpq7ryd2woFnjwexbPJKgoCGYX/LYPS1GenU
+         U2t8KaBR9BKel5TcbzSEbPe/JZ/H7v/SBQf1rQ3M=
+Date:   Fri, 18 Jan 2019 13:23:23 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Meelis Roos <mroos@linux.ee>
+Cc:     Darwin Dingel <darwin.dingel@alliedtelesis.co.nz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-parisc <linux-parisc@vger.kernel.org>
+Subject: Re: bisected: ttyS panic on pa-risc
+Message-ID: <20190118122323.GA11909@kroah.com>
+References: <af9136a8-ae68-5e69-1c1a-001221bb3958@linux.ee>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/mixed; boundary="Nq2Wo0NMKNjxTN9z"
+Content-Disposition: inline
+In-Reply-To: <af9136a8-ae68-5e69-1c1a-001221bb3958@linux.ee>
+User-Agent: Mutt/1.11.2 (2019-01-07)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Arnd Bergmann <arnd@arndb.de> writes:
-> On Mon, Jan 14, 2019 at 4:59 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
->> Arnd Bergmann <arnd@arndb.de> writes:
->> >  arch/m68k/kernel/syscalls/syscall.tbl     | 11 +++++++++++
->> >  arch/mips/kernel/syscalls/syscall_o32.tbl | 11 +++++++++++
->> >  arch/powerpc/kernel/syscalls/syscall.tbl  | 12 ++++++++++++
->>
->> I have some changes I'd like to make to our syscall table that will
->> clash with this.
->>
->> I'll try and send them today.
->
-> Ok. Are those for 5.0 or 5.1? If they are intended for 5.0, it would be
-> nice for me to have a branch based on 5.0-rc1 that I can put
-> the other patches on top of.
 
-For 5.1.
+--Nq2Wo0NMKNjxTN9z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I can put them in a topic branch for you.
+On Thu, Jan 10, 2019 at 05:54:50PM +0200, Meelis Roos wrote:
+> My HP 9000 A500 (pa-risc architecture) paniced in 5.0-rc1. It happened after printing dmesg lines about ttyS and before moving on to scsi printk-s.
+> I bisected it and the panic symptoms changed during that (some had backtrace, some had just panic).
+> 
+> This is one of the crashes I got:
+> Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
+> serial 0000:00:04.0: enabling device (0146 -> 0147)
+> printk: console [ttyS0] disabled
+> 
+> 0000:00:04.0: ttyS0 at MMIO 0xfffffffff8000000 (irq = 21, base_baud = 115200) is a 16550A
+> printk: console [ttyS0] enabled
+> printk: console [ttyS0] enabled
+> printk: bootconsole [ttyB0] disabled
+> printk: bootconsole [ttyB0] disabled
+> 0000:00:04.0: ttyS1 at MMIO 0xfffffffff8000008 (irq = 21, base_baud = 115200) is a 16550A
+> 0000:00:04.0: ttyS2 at MMIO 0xfffffffff8000010 (irq = 21, base_baud = 115200) is a 16550A
+> serial 0000:00:05.0: enabling device (0140 -> 0143)
+> 0000:00:05.0: ttyS3 at MMIO 0xfffffffff8005000 (irq = 22, base_baud = 115200) is a 16550A
+> Backtrace:
+>  [<0000000040502268>] pciserial_init_ports+0x128/0x240
+>  [<00000000405040b8>] pciserial_init_one+0x1e0/0x2f0
+>  [<00000000404b2b8c>] pci_device_probe+0xfc/0x180
+>  [<0000000040513958>] really_probe+0x268/0x3d0
+>  [<0000000040513d28>] driver_probe_device+0xf8/0x100
+>  [<0000000040513e54>] __driver_attach+0x124/0x130
+>  [<0000000040510dc4>] bus_for_each_dev+0x9c/0xe8
+>  [<0000000040513040>] driver_attach+0x28/0x38
+>  [<00000000405128c0>] bus_a
+> 
+> Normal dmesg excerpt from working kernel before the problem:
+> 
+> [    6.746131] Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
+> [    6.771772] serial 0000:00:04.0: enabling device (0146 -> 0147)
+> [    6.792657] printk: console [ttyS0] disabled
+> [    6.829825] 0000:00:04.0: ttyS0 at MMIO 0xfffffffff8000000 (irq = 21, base_baud = 115200) is a 16550A
+> [    6.837151] printk: console [ttyS0] enabled
+> [    6.877768] printk: bootconsole [ttyB0] disabled
+> [    6.904352] 0000:00:04.0: ttyS1 at MMIO 0xfffffffff8000008 (irq = 21, base_baud = 115200) is a 16550A
+> [    6.961051] 0000:00:04.0: ttyS2 at MMIO 0xfffffffff8000010 (irq = 21, base_baud = 115200) is a 16550A
+> [    6.969881] serial 0000:00:05.0: enabling device (0000 -> 0003)
+> [    7.004160] serial 0000:00:05.0: enabling SERR and PARITY (0003 -> 0143)
+> [    7.030298] 0000:00:05.0: ttyS3 at MMIO 0xfffffffff8005000 (irq = 22, base_baud = 115200) is a 16550A
+> [    7.041663] serial 0000:00:05.0: Couldn't register serial port 0, irq 22, type 2, error -28
+> [    7.145456] sym53c8xx 0000:00:01.0: enabling device (0000 -> 0003)
+> 
+> 
+> Bisection leads to this commit:
+> 
+> 6d7f677a2afa1c82d7fc7af7f9159cbffd5dc010 is the first bad commit
+> commit 6d7f677a2afa1c82d7fc7af7f9159cbffd5dc010
+> Author: Darwin Dingel <darwin.dingel@alliedtelesis.co.nz>
+> Date:   Mon Dec 10 11:29:09 2018 +1300
+> 
+>     serial: 8250: Rate limit serial port rx interrupts during input overruns
+> 
+>     When a serial port gets faulty or gets flooded with inputs, its interrupt
+>     handler starts to work double time to get the characters to the workqueue
+>     for the tty layer to handle them. When this busy time on the serial/tty
+>     subsystem happens during boot, where it is also busy on the userspace
+>     trying to initialise, some processes can continuously get preempted
+>     and will be on hold until the interrupts subside.
+> 
+>     The fix is to backoff on processing received characters for a specified
+>     amount of time when an input overrun is seen (received a new character
+>     before the previous one is processed). This only stops receive and will
+>     continue to transmit characters to serial port. After the backoff period
+>     is done, it receive will be re-enabled. This is optional and will only
+>     be enabled by setting 'overrun-throttle-ms' in the dts.
+> 
+>     Signed-off-by: Darwin Dingel <darwin.dingel@alliedtelesis.co.nz>
+>     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> :040000 040000 4ea6cd68ededa0c9ffaa218668ffeb35557070a5 a011db1916fbf5cfdcfff836a81e4fb5ee737003 M      drivers
+> :040000 040000 b1b1dc977965eb2db6b2cc79939446a1cf2f684d 41322ab1c199f504cfcc5b2ca211b4638d41351c M      include
 
->> > diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
->> > index db3bbb8744af..1bffab54ff35 100644
->> > --- a/arch/powerpc/kernel/syscalls/syscall.tbl
->> > +++ b/arch/powerpc/kernel/syscalls/syscall.tbl
->> > @@ -425,3 +425,15 @@
->> >  386  nospu   pkey_mprotect                   sys_pkey_mprotect
->> >  387  nospu   rseq                            sys_rseq
->> >  388  nospu   io_pgetevents                   sys_io_pgetevents               compat_sys_io_pgetevents
->> > +# room for arch specific syscalls
->> > +392  64      semtimedop                      sys_semtimedop
->> > +393  common  semget                          sys_semget
->> > +394  common  semctl                          sys_semctl                      compat_sys_semctl
->> > +395  common  shmget                          sys_shmget
->> > +396  common  shmctl                          sys_shmctl                      compat_sys_shmctl
->> > +397  common  shmat                           sys_shmat                       compat_sys_shmat
->> > +398  common  shmdt                           sys_shmdt
->> > +399  common  msgget                          sys_msgget
->> > +400  common  msgsnd                          sys_msgsnd                      compat_sys_msgsnd
->> > +401  common  msgrcv                          sys_msgrcv                      compat_sys_msgrcv
->> > +402  common  msgctl                          sys_msgctl                      compat_sys_msgctl
->>
->> We already have a gap at 366-377 from when we tried to add the split IPC
->> calls a few years back.
->>
->> I guess I don't mind leaving that gap and using the common numbers as
->> you've done here.
->>
->> But it would be good to add a comment pointing out that we have room
->> at 366 for more arch specific syscalls as well.
->
-> Ah, I missed that. I've added this to my patch now:
->
-> index 5c0936d862fc..2ddfba536d5f 100644
-> --- a/arch/powerpc/kernel/syscalls/syscall.tbl
-> +++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-> @@ -460,6 +460,7 @@
->  363    spu     switch_endian                   sys_ni_syscall
->  364    common  userfaultfd                     sys_userfaultfd
->  365    common  membarrier                      sys_membarrier
-> +# 366-377 originally left for IPC, now unused
->  378    nospu   mlock2                          sys_mlock2
->  379    nospu   copy_file_range                 sys_copy_file_range
->  380    common  preadv2                         sys_preadv2
->          compat_sys_preadv2
+The patch below was just applied to my tree, hopefully ti fixes this
+issue.
 
-Thanks.
+thanks,
 
-cheers
+greg k-h
+
+--Nq2Wo0NMKNjxTN9z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="0002-serial-8250-Fix-serial8250-initialization-crash.patch"
+
+From 352c4cf40c4a7d439fa5d30aa2160f54b394da82 Mon Sep 17 00:00:00 2001
+From: He Zhe <zhe.he@windriver.com>
+Date: Thu, 17 Jan 2019 17:00:19 +0800
+Subject: serial: 8250: Fix serial8250 initialization crash
+
+The initialization code of interrupt backoff work might reference NULL
+pointer and cause the following crash, if no port was found.
+
+[   10.017727] CPU 0 Unable to handle kernel paging request at virtual address 000001b0, epc == 807088e0, ra == 8070863c
+---- snip ----
+[   11.704470] [<807088e0>] serial8250_register_8250_port+0x318/0x4ac
+[   11.747251] [<80708d74>] serial8250_probe+0x148/0x1c0
+[   11.789301] [<80728450>] platform_drv_probe+0x40/0x94
+[   11.830515] [<807264f8>] really_probe+0xf8/0x318
+[   11.870876] [<80726b7c>] __driver_attach+0x110/0x12c
+[   11.910960] [<80724374>] bus_for_each_dev+0x78/0xcc
+[   11.951134] [<80725958>] bus_add_driver+0x200/0x234
+[   11.989756] [<807273d8>] driver_register+0x84/0x148
+[   12.029832] [<80d72f84>] serial8250_init+0x138/0x198
+[   12.070447] [<80100e6c>] do_one_initcall+0x5c/0x2a0
+[   12.110104] [<80d3a208>] kernel_init_freeable+0x370/0x484
+[   12.150722] [<80a49420>] kernel_init+0x10/0xf8
+[   12.191517] [<8010756c>] ret_from_kernel_thread+0x14/0x1c
+
+This patch makes sure the initialization code can be reached only if a port
+is found.
+
+Fixes: 6d7f677a2afa ("serial: 8250: Rate limit serial port rx interrupts during input overruns")
+Signed-off-by: He Zhe <zhe.he@windriver.com>
+Reviewed-by: Darwin Dingel <darwin.dingel@alliedtelesis.co.nz>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/tty/serial/8250/8250_core.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
+index 189ab1212d9a..e441221e04b9 100644
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -1070,15 +1070,16 @@ int serial8250_register_8250_port(struct uart_8250_port *up)
+ 
+ 			ret = 0;
+ 		}
+-	}
+ 
+-	/* Initialise interrupt backoff work if required */
+-	if (up->overrun_backoff_time_ms > 0) {
+-		uart->overrun_backoff_time_ms = up->overrun_backoff_time_ms;
+-		INIT_DELAYED_WORK(&uart->overrun_backoff,
+-				  serial_8250_overrun_backoff_work);
+-	} else {
+-		uart->overrun_backoff_time_ms = 0;
++		/* Initialise interrupt backoff work if required */
++		if (up->overrun_backoff_time_ms > 0) {
++			uart->overrun_backoff_time_ms =
++				up->overrun_backoff_time_ms;
++			INIT_DELAYED_WORK(&uart->overrun_backoff,
++					serial_8250_overrun_backoff_work);
++		} else {
++			uart->overrun_backoff_time_ms = 0;
++		}
+ 	}
+ 
+ 	mutex_unlock(&serial_mutex);
+-- 
+2.20.1
+
+
+--Nq2Wo0NMKNjxTN9z--
