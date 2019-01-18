@@ -4,25 +4,25 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E163BC43387
-	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 16:25:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA9EFC43612
+	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 16:25:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B9B2320850
-	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 16:25:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A553D20850
+	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 16:25:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbfARQUe (ORCPT
+        id S1728229AbfARQZP (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 18 Jan 2019 11:20:34 -0500
-Received: from mout.kundenserver.de ([212.227.17.13]:49391 "EHLO
+        Fri, 18 Jan 2019 11:25:15 -0500
+Received: from mout.kundenserver.de ([217.72.192.75]:33343 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728162AbfARQUd (ORCPT
+        with ESMTP id S1728193AbfARQUe (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 18 Jan 2019 11:20:33 -0500
+        Fri, 18 Jan 2019 11:20:34 -0500
 Received: from wuerfel.lan ([109.192.41.194]) by mrelayeu.kundenserver.de
  (mreue109 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1N4i3d-1hC3o90g59-011gmK; Fri, 18 Jan 2019 17:19:18 +0100
+ 1MxmBc-1hA8vX10n8-00zDnp; Fri, 18 Jan 2019 17:19:29 +0100
 From:   Arnd Bergmann <arnd@arndb.de>
 To:     y2038@lists.linaro.org, linux-api@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
@@ -43,53 +43,52 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, mattst88@gmail.com,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
         sparclinux@vger.kernel.org, netdev@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2 02/29] ia64: add statx and io_pgetevents syscalls
-Date:   Fri, 18 Jan 2019 17:18:08 +0100
-Message-Id: <20190118161835.2259170-3-arnd@arndb.de>
+Subject: [PATCH v2 10/29] sh: add statx system call
+Date:   Fri, 18 Jan 2019 17:18:16 +0100
+Message-Id: <20190118161835.2259170-11-arnd@arndb.de>
 X-Mailer: git-send-email 2.20.0
 In-Reply-To: <20190118161835.2259170-1-arnd@arndb.de>
 References: <20190118161835.2259170-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:iIDCS1VFnyKTHSdfnANmJaXoeSIZjJNeoIeNpmRgK3i74OpuB4O
- eJR7+B640nWU7cI5HbePKVHdmMw6Q9RnL4odwsk7keaOXE1tspGbmTjF+YVFfrsjlCz+8Pk
- c6LKkZNxB5SmFLtBapr7yXQckqoFa5ZTM5Ot72QtiDtCW3tiyH5ohmtPxlTlupzyYoxAsvM
- 0njQaJNBq+N6Kmwm2u2RA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QhW8nqZCixw=:FEDmad82yIffa62QsVqnWE
- uz1Wrim1T8l4l2nNLg7tI/QVN0sQNBVXDYm/NnsKLv7zs8LehTf6t5+qBRKo/0rh35CYACfnh
- HyaRp8O9EjgYHn8q5sfTDpNC1EA1qlL2VgJV7uFhKZ42rkCb/kvXDCLTj6e4eLqMiLLHwkYgA
- tg/kcev5qJ7IM9ob7D3yzCAq8ni94r1+4puI+m2IXISBpGYQAycFdcpnkAdl25Fp/ndfEZBg4
- YXNQwxFdDSigpL4BqDznMEklcUn0WDgyBJuTIe9s/D6zDgeIZoI7nU3riAsN/dWuWcnbkNnyz
- IId+DwROqDXieCnpGuBiZvOiLBS+urH6rgeCYekmDL8q7krWCyjHp4rvWFx7xcHD1o2VXsGot
- 1a/8zGhBF+fqq58MrSp3TEn+6DOva3zIrSvk4tNapXtZZZprR8T75kOgPOvix1rgRrHk4ck8Q
- XG9VJB2f13nJVdtAIWsqENy/zAmWNP8RmLku761b6Sj8zHabwSrP59tSyG90YiRFFrAcrZcBy
- KgsrDJFq33B6rFnPLS6k8KrAwUkLaKXZp2tEwUEl7UxeFy3EamT5ORoeoTGvhxuO3ffTTWGuB
- YHr09kc6nvgYBKaTNvTlODeNk5KwBw66kFtJmW65s3rJj0voBCtwT73q7zm1gdOPRYk7r4ur3
- pOK6QqhYKoWR7gOjVF2r0tazZFTLqGupgU0ddYnvBi9U45R/Ja3Ea+uhLN5Vzw87BFZJr0JNI
- ctK94+FmLls+QETWW952oM3gGqZ4wEKj7crFiQ==
+X-Provags-ID: V03:K1:t6R82Z8zvFPH8uWQ6By1AD6aeG6e8KS2PY2/czpxmB8Es3E26cv
+ 3dhBYAef9afhAuL29iHi03NhT3UhsVoPZnZgPwDSWRTBENn7w6vYQa04n0JEgelAV4AcQV4
+ niYmWNSNREOQA7PmgEZSP8TTUvUovupTfoOkrCAgtXj1/eWPuXUVXUAbdG11E5Dzakhmw3B
+ pcwXh5016l/gnps966ABw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:K/830N4fOkA=:yN6pOj/X6AddYs3f+eMAIX
+ KZAXszxGKZpxuZdFdqWqDpVCdiq7BDlsKw5Zlv3n5jTwNsq1pS7SY/hlDdh1ADT1cb5xsCgET
+ Gb4r4HL1nl/9ZSl1wjr94ugJZp+q6Em6x9V1hItbA3T9OZ3/zX78SQoF69CITLB4KKWknfok0
+ TJOMxaojmcDtEdRmxh0tBzQXNxtPyV45u4zhDAK4/qJk4Fo9usCEZjT1W0mkVwVHYTfKwLSIf
+ HbIj8UKQPvMwOGeLhsnrXZA4dgFFmrDJ4/9M8+UG+tzMakmVh+YLibDaUM19QCE81rxIlw9T7
+ p/zg75cru2OhVCX8iZ6bq3O+jwVsqqyIA/U5RJjjIJzr1EuN4IQLAd77WCJG6v/uc64+wnBWM
+ 7FLDGmYFLengqH3ZTPAKfuApbWgGoFtgkZZ6Pg4UtmLFbpOI2JTTPlSe9plOwagBizOzFsSEX
+ ZAhC3O9XT2DutmKSKdV5rQTGRQKzBk/FlzWUP5/P5IKoHgKjXjXcLOjjPmQxEawiUNDcZg0kZ
+ bZQMQZdNRpio44pggQSPFl6vkB/UQDTJ7EyCzjn+qHq09wFoF+HjbB1SSUO8j9Cuv9Gi2pI53
+ 10zJ/kIT6LsnKordXwiWo06lPR7ZnvRSnvaWbI14kQwXtODJiJyjPiinoFMZxqSJJXq5Qp/YP
+ M7X0SSEku5AAmTelT8L5LGrCy9KOXPvV0ux6a9PVGXvk/IA7FOUywhhMyLCYnJwc3Dw/KEybT
+ VbS5ECidR7DDExAyvQNUJmwmbhphorFSJQSrhQ==
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-All architectures should implement these two, so assign numbers
-and hook them up on ia64.
+statx is available on almost all other architectures but
+got missed on sh, so add it now.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/ia64/kernel/syscalls/syscall.tbl | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/sh/kernel/syscalls/syscall.tbl | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/ia64/kernel/syscalls/syscall.tbl b/arch/ia64/kernel/syscalls/syscall.tbl
-index e97caf51be42..52585281205b 100644
---- a/arch/ia64/kernel/syscalls/syscall.tbl
-+++ b/arch/ia64/kernel/syscalls/syscall.tbl
-@@ -335,3 +335,5 @@
- 323	common	copy_file_range			sys_copy_file_range
- 324	common	preadv2				sys_preadv2
- 325	common	pwritev2			sys_pwritev2
-+326	common	statx				sys_statx
-+327	common	io_pgetevents			sys_io_pgetevents
+diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
+index 21ec75288562..a70db013dbc7 100644
+--- a/arch/sh/kernel/syscalls/syscall.tbl
++++ b/arch/sh/kernel/syscalls/syscall.tbl
+@@ -390,3 +390,4 @@
+ 380	common	copy_file_range			sys_copy_file_range
+ 381	common	preadv2				sys_preadv2
+ 382	common	pwritev2			sys_pwritev2
++383	common	statx				sys_statx
 -- 
 2.20.0
 
