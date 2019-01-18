@@ -6,23 +6,23 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D04AEC43612
-	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 16:25:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7774C43444
+	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 16:26:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AAB5520850
-	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 16:25:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8432620883
+	for <linux-parisc@archiver.kernel.org>; Fri, 18 Jan 2019 16:26:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728258AbfARQUe (ORCPT
+        id S1729090AbfARQ0B (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 18 Jan 2019 11:20:34 -0500
-Received: from mout.kundenserver.de ([217.72.192.75]:50007 "EHLO
+        Fri, 18 Jan 2019 11:26:01 -0500
+Received: from mout.kundenserver.de ([217.72.192.74]:34459 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728078AbfARQUd (ORCPT
+        with ESMTP id S1728759AbfARQ0A (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 18 Jan 2019 11:20:33 -0500
+        Fri, 18 Jan 2019 11:26:00 -0500
 Received: from wuerfel.lan ([109.192.41.194]) by mrelayeu.kundenserver.de
  (mreue109 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MKKd7-1gWQWS33t9-00LmRg; Fri, 18 Jan 2019 17:19:23 +0100
+ 1MJm8N-1gUmN93A53-00K81C; Fri, 18 Jan 2019 17:19:46 +0100
 From:   Arnd Bergmann <arnd@arndb.de>
 To:     y2038@lists.linaro.org, linux-api@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
@@ -43,104 +43,117 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, mattst88@gmail.com,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
         sparclinux@vger.kernel.org, netdev@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
-Subject: [PATCH v2 06/29] ARM: add migrate_pages() system call
-Date:   Fri, 18 Jan 2019 17:18:12 +0100
-Message-Id: <20190118161835.2259170-7-arnd@arndb.de>
+Subject: [PATCH v2 23/29] timex: change syscalls to use struct __kernel_timex
+Date:   Fri, 18 Jan 2019 17:18:29 +0100
+Message-Id: <20190118161835.2259170-24-arnd@arndb.de>
 X-Mailer: git-send-email 2.20.0
 In-Reply-To: <20190118161835.2259170-1-arnd@arndb.de>
 References: <20190118161835.2259170-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:o3bTb4elB3z+286rn9+b5BP7tK9ifOmWUW+jka5ZcLRoBINPDJf
- u8PIZcP2oUy73YnUflDiwxkNfXIDgII5Pyhk+V14swnaTnFx5ocmSc3GvbMfPHBlAdH2hOO
- HnGoII6EJed1+C6r0RoTYwRkjRvEbyOrLcmhc5DagzjWZlLv5X7xA8BSuap5Ej3vVq2kBkR
- J33viKVBFQ1JhizF8SI/A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3TL+IMUlpzQ=:W4KhIatfhW7FMFXhanW/DA
- GRXuaIVZT5yLKobF9hxOAr0++qzuCRc1CvEdJhCRmyjg3tVnuVTea/UC1uvUl5+b8WbMQGZ2y
- IhAzxeBsFmWL53O9WpTTqoDT/nboxRQDmswH0/f/GTKPMN2z3vZwVUlRhzoSirbpF+lnxfjOZ
- sN/4WLTGYuHpbqrOxsstykpo2y8LRe1POgk4jbusH6bQF90n6M4iRhVrGRIOrVw2bdttMMlAA
- uT0OtEXxzSfFi0CYobAlGKnZqnyNhrd53D0fMCInpqHILWFd1DtjVcSRRThpH/sAtDi0bB10+
- Ugb1IEqZY/t6Vwsm27UEtY2WdRDnob3jplYpxp7LEYnA9+MmRRxsSQGX4rwbfAh61hF01Z6w6
- c1gGmtntitfEHrg2cn23IhBqYw4oKw2FRJOxB9tDFAw7RHOCw9DS4DZeuAH/963xwTtIZQzNY
- 1aXUG6Znslmrc13+enLNNpHHdqS95uRqE0RLgCHtmqVJSvSINH3VB0iFWhAu52D9FeScou6Jt
- DMCljPSLrh3jHaukqC84MTlYT6tYVfPoAwYvF7QgVEd2kgvyMgY2cHJMjfNpvBVodJDtgelWN
- WyT2nqJHgERRpJagCPwbdtU6mcbVNfRzxffHnacQ4vUxt4V/sJi/kqkoPRbuRzxPSp7atXUfB
- 1YBkP5nZaJQ1KkngOFAwcAZDCXzHTa7u9SVJNuPiXS2Wwsi0eYe4gZnZnIKeg8MQ2APOz+PXy
- XOmiTdMMxuVgn48bnD8Kw1Cy5XKVXUIjyQPYnQ==
+X-Provags-ID: V03:K1:kVG9L0004kjVGZ3jTNXRJe2zDldO8i8hhwk/XZl6p/GXzXXvSu2
+ S5s+hnfGO6V8L06OXZk9Nmq1uc5XK0SX/tvCGfMVZwqYFwiNbnQCEsDmqBr0jqt+TgbwpgG
+ rE1jCFnNroPTGvKPMDwi6YeE/oC7sqo/dZ97spnSvZMQuFdzPWZsc1U7WyjH13VgDKbUZqy
+ Al7mfxahnL861tlGnkoFg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:GdtX94h4lho=:D72s1WJjk91cfsUv/xJSqk
+ yzlJcqUOV0iT14rOcK/hs9wT1klyjDNQTUkHZpOc88O3AF/voluPHRS4rQ+QgeMruMrPrMGyY
+ sAOjOsrQ1j+eg1PqxQ8lYmIjGjEHhUjaJQdxrUHr7T9ujCGTiHC68Ee88iNIrqzAv8MoZx+Lo
+ /rJ124C6Bz8SG88nu7FouNfocgaJ3Jq9o74/5Tz9mpIVzORSZLNB60Wox966FvxADKx1i5dUF
+ 2Kgm1xJUJ5p4Zerg0lijTxObrW/DJH/XIvcSeSc+o8P6NQOi/U6VaC5H0VlBukKAn9INqr4th
+ dZ77teZe8xj1dM3o4NXA5KGQ7q2PGCEkRUvhIR+XYEWbklVCHlFGL1PN7ghP+g+R2Ep3tc4gM
+ JOc2LvGsidceO6hVIM3WurIQXhNj8xYs4AVI/IiN2Y4UhFS1aFIvMQflPtHS2PzcZ7M12YGFX
+ BTVZq4feGk7odojU0biV2c3YxZ+gOBpUajQ6PmScmmBAVUqSUyrNAuUbNEehuxSbgeTSX6z1V
+ Vsjkii2fGyz4HPp6xswrIWzQdA1esCwzoqCOJZjItDgSa6z7TRtu7mc5R/ngtD1VZwgcRRSHH
+ IxW5flI9YidANdrFLlZ+DicbDV17BjJ4uj5++7QKTRjVivKB5bUazZOfdxTDL97j10Q71uiam
+ mbyJmAXxxLD46k3jDXn8vRyhstR7k0CTVbIC/1VrCDV2a1UY5t1SCmJVUygvCU/QG0u0GvjK+
+ 6q6ELhMwdPbWhoh0P8PUJ4cEasNYJS7FO5SRFg==
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The migrate_pages system call has an assigned number on all architectures
-except ARM. When it got added initially in commit d80ade7b3231 ("ARM:
-Fix warning: #warning syscall migrate_pages not implemented"), it was
-intentionally left out based on the observation that there are no 32-bit
-ARM NUMA systems.
+From: Deepa Dinamani <deepa.kernel@gmail.com>
 
-However, there are now arm64 NUMA machines that can in theory run 32-bit
-kernels (actually enabling NUMA there would require additional work)
-as well as 32-bit user space on 64-bit kernels, so that argument is no
-longer very strong.
+struct timex is not y2038 safe.
+Switch all the syscall apis to use y2038 safe __kernel_timex.
 
-Assigning the number lets us use the system call on 64-bit kernels as well
-as providing a more consistent set of syscalls across architectures.
+Note that sys_adjtimex() does not have a y2038 safe solution.  C libraries
+can implement it by calling clock_adjtime(CLOCK_REALTIME, ...).
 
+Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/include/asm/unistd.h     | 1 -
- arch/arm/tools/syscall.tbl        | 1 +
- arch/arm64/include/asm/unistd.h   | 2 +-
- arch/arm64/include/asm/unistd32.h | 2 ++
- 4 files changed, 4 insertions(+), 2 deletions(-)
+ include/linux/syscalls.h   | 6 +++---
+ kernel/time/posix-timers.c | 2 +-
+ kernel/time/time.c         | 4 +++-
+ 3 files changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/include/asm/unistd.h b/arch/arm/include/asm/unistd.h
-index 88ef2ce1f69a..d713587dfcf4 100644
---- a/arch/arm/include/asm/unistd.h
-+++ b/arch/arm/include/asm/unistd.h
-@@ -45,7 +45,6 @@
-  * Unimplemented (or alternatively implemented) syscalls
-  */
- #define __IGNORE_fadvise64_64
--#define __IGNORE_migrate_pages
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index baa4b70b02d3..09330d5bda0c 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -54,7 +54,7 @@ struct __sysctl_args;
+ struct sysinfo;
+ struct timespec;
+ struct timeval;
+-struct timex;
++struct __kernel_timex;
+ struct timezone;
+ struct tms;
+ struct utimbuf;
+@@ -695,7 +695,7 @@ asmlinkage long sys_gettimeofday(struct timeval __user *tv,
+ 				struct timezone __user *tz);
+ asmlinkage long sys_settimeofday(struct timeval __user *tv,
+ 				struct timezone __user *tz);
+-asmlinkage long sys_adjtimex(struct timex __user *txc_p);
++asmlinkage long sys_adjtimex(struct __kernel_timex __user *txc_p);
  
- #ifdef __ARM_EABI__
- /*
-diff --git a/arch/arm/tools/syscall.tbl b/arch/arm/tools/syscall.tbl
-index 8edf93b4490f..86de9eb34296 100644
---- a/arch/arm/tools/syscall.tbl
-+++ b/arch/arm/tools/syscall.tbl
-@@ -414,3 +414,4 @@
- 397	common	statx			sys_statx
- 398	common	rseq			sys_rseq
- 399	common	io_pgetevents		sys_io_pgetevents
-+400	common	migrate_pages		sys_migrate_pages
-diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
-index a7b1fc58ffdf..261216c3336e 100644
---- a/arch/arm64/include/asm/unistd.h
-+++ b/arch/arm64/include/asm/unistd.h
-@@ -44,7 +44,7 @@
- #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
- #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
+ /* kernel/timer.c */
+ asmlinkage long sys_getpid(void);
+@@ -870,7 +870,7 @@ asmlinkage long sys_open_by_handle_at(int mountdirfd,
+ 				      struct file_handle __user *handle,
+ 				      int flags);
+ asmlinkage long sys_clock_adjtime(clockid_t which_clock,
+-				struct timex __user *tx);
++				struct __kernel_timex __user *tx);
+ asmlinkage long sys_syncfs(int fd);
+ asmlinkage long sys_setns(int fd, int nstype);
+ asmlinkage long sys_sendmmsg(int fd, struct mmsghdr __user *msg,
+diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
+index 2d84b3db1ade..de79f85ae14f 100644
+--- a/kernel/time/posix-timers.c
++++ b/kernel/time/posix-timers.c
+@@ -1060,7 +1060,7 @@ int do_clock_adjtime(const clockid_t which_clock, struct __kernel_timex * ktx)
+ }
  
--#define __NR_compat_syscalls		400
-+#define __NR_compat_syscalls		401
+ SYSCALL_DEFINE2(clock_adjtime, const clockid_t, which_clock,
+-		struct timex __user *, utx)
++		struct __kernel_timex __user *, utx)
+ {
+ 	struct __kernel_timex ktx;
+ 	int err;
+diff --git a/kernel/time/time.c b/kernel/time/time.c
+index d179d33f639a..78b5c8f1495a 100644
+--- a/kernel/time/time.c
++++ b/kernel/time/time.c
+@@ -263,7 +263,8 @@ COMPAT_SYSCALL_DEFINE2(settimeofday, struct old_timeval32 __user *, tv,
+ }
  #endif
  
- #define __ARCH_WANT_SYS_CLONE
-diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
-index 04ee190b90fe..f15bcbacb8f6 100644
---- a/arch/arm64/include/asm/unistd32.h
-+++ b/arch/arm64/include/asm/unistd32.h
-@@ -821,6 +821,8 @@ __SYSCALL(__NR_statx, sys_statx)
- __SYSCALL(__NR_rseq, sys_rseq)
- #define __NR_io_pgetevents 399
- __SYSCALL(__NR_io_pgetevents, compat_sys_io_pgetevents)
-+#define __NR_migrate_pages 400
-+__SYSCALL(__NR_migrate_pages, compat_sys_migrate_pages)
+-SYSCALL_DEFINE1(adjtimex, struct timex __user *, txc_p)
++#if !defined(CONFIG_64BIT_TIME) || defined(CONFIG_64BIT)
++SYSCALL_DEFINE1(adjtimex, struct __kernel_timex __user *, txc_p)
+ {
+ 	struct __kernel_timex txc;		/* Local copy of parameter */
+ 	int ret;
+@@ -277,6 +278,7 @@ SYSCALL_DEFINE1(adjtimex, struct timex __user *, txc_p)
+ 	ret = do_adjtimex(&txc);
+ 	return copy_to_user(txc_p, &txc, sizeof(struct __kernel_timex)) ? -EFAULT : ret;
+ }
++#endif
  
- /*
-  * Please add new compat syscalls above this comment and update
+ #ifdef CONFIG_COMPAT_32BIT_TIME
+ int get_old_timex32(struct __kernel_timex *txc, const struct old_timex32 __user *utp)
 -- 
 2.20.0
 
