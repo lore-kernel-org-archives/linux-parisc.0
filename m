@@ -2,106 +2,139 @@ Return-Path: <SRS0=O7vF=P5=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 762EEC282DB
-	for <linux-parisc@archiver.kernel.org>; Mon, 21 Jan 2019 08:45:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CBAAC282DB
+	for <linux-parisc@archiver.kernel.org>; Mon, 21 Jan 2019 08:56:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4CE0D20861
-	for <linux-parisc@archiver.kernel.org>; Mon, 21 Jan 2019 08:45:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 66F142084A
+	for <linux-parisc@archiver.kernel.org>; Mon, 21 Jan 2019 08:56:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728388AbfAUIpR (ORCPT
+        id S1729765AbfAUI4E (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 21 Jan 2019 03:45:17 -0500
-Received: from smtpq3.mnd.mail.iss.as9143.net ([212.54.34.166]:49886 "EHLO
-        smtpq3.mnd.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727993AbfAUIpR (ORCPT
+        Mon, 21 Jan 2019 03:56:04 -0500
+Received: from mail-ua1-f65.google.com ([209.85.222.65]:43884 "EHLO
+        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729417AbfAUI4C (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 21 Jan 2019 03:45:17 -0500
-Received: from [212.54.34.115] (helo=smtp7.mnd.mail.iss.as9143.net)
-        by smtpq3.mnd.mail.iss.as9143.net with esmtp (Exim 4.86_2)
-        (envelope-from <jongk@linux-m68k.org>)
-        id 1glVCl-0005Pl-Fu
-        for linux-parisc@vger.kernel.org; Mon, 21 Jan 2019 09:45:15 +0100
-Received: from mail-lj1-f178.google.com ([209.85.208.178])
-        by smtp7.mnd.mail.iss.as9143.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <jongk@linux-m68k.org>)
-        id 1glVCl-00084L-DM
-        for linux-parisc@vger.kernel.org; Mon, 21 Jan 2019 09:45:15 +0100
-Received: by mail-lj1-f178.google.com with SMTP id v15-v6so16732861ljh.13
-        for <linux-parisc@vger.kernel.org>; Mon, 21 Jan 2019 00:45:15 -0800 (PST)
-X-Gm-Message-State: AJcUukfgy4zdHsMUQdaS9DRinm5QUH9YGjc3M6/vwW+MwHAn89Y7r6bU
-        kQaia/9IY8ot9sIe+Pvkh/IIOeUvja0sBr1YBm0=
-X-Google-Smtp-Source: ALg8bN4pgO7qA4pD3xpJIWMiPf7hVZx7balWxTJ2QZjP6FunTNWo5JoN1MA2qeYP+SrBSUHzaDo6N3mtAZ0gW2q8dX8=
-X-Received: by 2002:a2e:7f04:: with SMTP id a4-v6mr18708351ljd.156.1548060314842;
- Mon, 21 Jan 2019 00:45:14 -0800 (PST)
+        Mon, 21 Jan 2019 03:56:02 -0500
+Received: by mail-ua1-f65.google.com with SMTP id z11so6652689uaa.10;
+        Mon, 21 Jan 2019 00:56:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OJScdj9p18oAEvTl9TNP9AzhiR3NeXZIyKQOy3xgTy8=;
+        b=sm7UdR7+OQ0Ar8QgmbYdCAoxsTemEPC5AumhUeqc5KyfmeXT2Yy8MSYfhqRJghQOmW
+         Q6YsuPhRMVRJBFtDUMRbdBgQ4XazTDkS9OXtKs31zpaS4sFcziyKkp/DPdXPRq9TlGQJ
+         zL+z/qUXY/8XaSAf0s6EEKjo+iWv9kV8px2D0ikIntk2lZ2ISMej19JuPXf4yXZgOL/F
+         z5c1tNnU8YE+rS33LuXuAL4Zaaoc/BYLBP/cWsmKWH2c7wiLVn3gZg/pySrCSmEm3i4s
+         CbyGL0N+MTObVHBhNX8IqhmdRha7czFHOzdKQhOJKeQHLJAEBK14TME8FK0/yNO03L9q
+         szPQ==
+X-Gm-Message-State: AJcUukcB7/BZDJF49J99W58563FwdAMzDDfH4CcqxS+EMngNwU3FnnWF
+        Z9waKt1LyOLZ0Qji99YCX5eTzHrUuD65YYNM53c=
+X-Google-Smtp-Source: ALg8bN4uFN3zWGMaGcasO6usU7NqldPno3Vg0buANjUHshxvHAfNTtSuQ7VautHVX5df0UK1s1iotaDgJP2GFGxetwA=
+X-Received: by 2002:ab0:7251:: with SMTP id d17mr11840905uap.0.1548060960356;
+ Mon, 21 Jan 2019 00:56:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20181127210107.GA11661@ls3530.dellerweb.de> <alpine.LNX.2.21.1811280815210.28@nippy.intranet>
- <908a3147-1fac-6f38-c61c-b88c81dd23ff@gmx.de> <alpine.LNX.2.21.1901080855180.34@nippy.intranet>
- <CACz-3rg0Jp-QO-1aunwWOFZmd4sdcjQ8cq8QwD5HE+r8t_QQ_A@mail.gmail.com>
-In-Reply-To: <CACz-3rg0Jp-QO-1aunwWOFZmd4sdcjQ8cq8QwD5HE+r8t_QQ_A@mail.gmail.com>
-From:   Kars de Jong <jongk@linux-m68k.org>
-Date:   Mon, 21 Jan 2019 09:45:03 +0100
-X-Gmail-Original-Message-ID: <CACz-3rjx=bcn7qK8qM_mYrW70d-OCpqO1iXS6DZVFb+G_dhvKg@mail.gmail.com>
-Message-ID: <CACz-3rjx=bcn7qK8qM_mYrW70d-OCpqO1iXS6DZVFb+G_dhvKg@mail.gmail.com>
-Subject: Re: [RFC][PATCH] m68k/parisc: Convert hp_sdc_rtc driver to rtc framework
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Helge Deller <deller@gmx.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org
+References: <20190118161835.2259170-1-arnd@arndb.de> <20190118161835.2259170-15-arnd@arndb.de>
+In-Reply-To: <20190118161835.2259170-15-arnd@arndb.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 21 Jan 2019 09:55:48 +0100
+Message-ID: <CAMuHMdWaJyNqUeq4qu3AgU0fYrQdZ_zbo0DFFiM97Y5HESYYnA@mail.gmail.com>
+Subject: Re: [PATCH v2 14/29] arch: add pkey and rseq syscall numbers everywhere
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     y2038 Mailman List <y2038@lists.linaro.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Michal Simek <monstr@monstr.eu>,
+        Paul Burton <paul.burton@mips.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Firoz Khan <firoz.khan@linaro.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-mips@vger.kernel.org,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-SourceIP: 209.85.208.178
-X-Authenticated-Sender: karsdejong@home.nl (via SMTP)
-X-Ziggo-spambar: /
-X-Ziggo-spamscore: 0.0
-X-Ziggo-spamreport: CMAE Analysis: v=2.3 cv=S6mnP7kP c=1 sm=1 tr=0 a=9+rZDBEiDlHhcck0kWbJtElFXBc=:19 a=IkcTkHD0fZMA:10 a=3JhidrIBZZsA:10 a=tBb2bbeoAAAA:8 a=8981fWPbAAAA:8 a=f_8He4JNwzOeKrkuQTkA:9 a=QEXdDO2ut3YA:10 a=Oj-tNtZlA1e06AYgeCfH:22 a=o72u2rHnfW5qNJ_4I8LD:22
-X-Ziggo-Spam-Status: No
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Op di 8 jan. 2019 om 09:34 schreef Kars de Jong <jongk@linux-m68k.org>:
-> Op ma 7 jan. 2019 om 22:59 schreef Finn Thain <fthain@telegraphics.com.au>:
-> >
-> > On Mon, 7 Jan 2019, Helge Deller wrote:
-> >
-> > > On 27.11.18 22:17, Finn Thain wrote:
-> > > > Adding Kars to Cc.
-> > >
-> > > Any chance this can get tested on m68k?
-> > >
-> >
-> > Sorry, I don't have any HP9000/300 hardware. I think that Kars does, which
-> > is why I Cc'd him...
-> >
+On Fri, Jan 18, 2019 at 5:20 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> Most architectures define system call numbers for the rseq and pkey system
+> calls, even when they don't support the features, and perhaps never will.
 >
-> Yes, I do still have the hardware, but I haven't booted Linux on it
-> for a long time. I planned on doing it during the holidays, but didn't
-> get around to it. Maybe I can test it this weekend, but don't hold
-> your breath...
+> Only a few architectures are missing these, so just define them anyway
+> for consistency. If we decide to add them later to one of these, the
+> system call numbers won't get out of sync then.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-I tried to test the patch this weekend. I first started with an
-unpatched kernel. Unfortunately, there are hardware issues:
+>  arch/m68k/kernel/syscalls/syscall.tbl   | 4 ++++
 
-1. The battery of the RTC is dead.
-2. There seems to be a problem which causes autovector interrupt 1 to
-fire spuriously, which is the keyboard and DMA interrupt. At least,
-that's what the OpenBSD kernel reports. It seems to cause the Linux
-kernel to freeze.
-3. The harddisk (original 200 MB Rodime RO3000T) is failing, so I
-can't fully boot OpenBSD to further verify this problem.
+> --- a/arch/m68k/kernel/syscalls/syscall.tbl
+> +++ b/arch/m68k/kernel/syscalls/syscall.tbl
+> @@ -388,6 +388,10 @@
+>  378    common  pwritev2                        sys_pwritev2
+>  379    common  statx                           sys_statx
+>  380    common  seccomp                         sys_seccomp
+> +381    common  pkey_alloc                      sys_pkey_alloc
+> +382    common  pkey_free                       sys_pkey_free
+> +383    common  pkey_mprotect                   sys_pkey_mprotect
+> +384    common  rseq                            sys_rseq
 
-Anyway, I don't think your patch it will work.
+Note that all architectures that already define pkey syscalls, list
+pkey_mprotect
+first.
 
-When running on m68k, you're passing a NULL device pointer to
-devm_rtc_device_register(), which eventually gets passed to
-devres.c:add_dr() and that is definitely not OK.
+Regardless, for m68k:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-I think this calls for a proper platform device on the m68k side.
+>  # room for arch specific calls
+>  393    common  semget                          sys_semget
+>  394    common  semctl                          sys_semctl
 
-Kind regards,
+Gr{oetje,eeting}s,
 
-Kars.
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
