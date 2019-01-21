@@ -6,45 +6,45 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48380C63714
-	for <linux-parisc@archiver.kernel.org>; Mon, 21 Jan 2019 08:56:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E01AEC282DB
+	for <linux-parisc@archiver.kernel.org>; Mon, 21 Jan 2019 08:57:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 21B282084A
-	for <linux-parisc@archiver.kernel.org>; Mon, 21 Jan 2019 08:56:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BBF412084A
+	for <linux-parisc@archiver.kernel.org>; Mon, 21 Jan 2019 08:57:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729846AbfAUI4T (ORCPT
+        id S1729206AbfAUIzz (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 21 Jan 2019 03:56:19 -0500
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:33785 "EHLO
+        Mon, 21 Jan 2019 03:55:55 -0500
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:40717 "EHLO
         mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729453AbfAUI4S (ORCPT
+        with ESMTP id S1728965AbfAUIzy (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 21 Jan 2019 03:56:18 -0500
-Received: by mail-vs1-f67.google.com with SMTP id p74so12182062vsc.0;
-        Mon, 21 Jan 2019 00:56:17 -0800 (PST)
+        Mon, 21 Jan 2019 03:55:54 -0500
+Received: by mail-vs1-f67.google.com with SMTP id z3so12154151vsf.7;
+        Mon, 21 Jan 2019 00:55:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=E/6v0ZVPaXQi5FWJ19dLuHcLgd/E9ZECv5IjLmf6PoI=;
-        b=EyAzTbPENUpPmTYgJxaA1sXp7UQHbKfwqLjssiVYRmV6kNSCGAT9BG/JsSu5+RIxmy
-         H9r4grTvIlZatxclZAGLWfkcrB+qY0TWen9dm+LUXI15aisNr8iFt2MPUfbstKCGHx1l
-         e9kmDE4G29S90ispupcoxwnoQ/+W9J4tIyLFQd4CIJs5p3DJ8vR+mf6218hPExefSlAa
-         pbT+I04ocE0trQ2YFzGQ8Mzp5XnYV6gDcq4tOz83gZVOcsX+ZKSDI+fDxhAy7dcUtCby
-         O45ML/nX9aTj7ewUxjMnvODnVSYJGq4/70tFFd4qrbJRyarnlMCP7uQObSJWsXNZh3qP
-         UDqQ==
-X-Gm-Message-State: AJcUukdObH7NbWqu2LTNEGUl3d+7V8JwkmhidtHkHmiIiAXvvq5RY6EP
-        t+wrENt6kUytwxj7JF/ttgWEdzcd/zAXe7D8KQU=
-X-Google-Smtp-Source: ALg8bN6mqPPGjY0mRgSzvQIVAiUYVEkzmmA1fTVJs4P5AJXGDwVjqnqovDI8HCxNMByb80ziNpDqZXxAv1iGgV8yZxk=
-X-Received: by 2002:a67:3885:: with SMTP id n5mr10358537vsi.96.1548060976721;
- Mon, 21 Jan 2019 00:56:16 -0800 (PST)
+        bh=kVAtAGarxS4wypP/3eT2eCQTmORwhs++L36a9mWKR3U=;
+        b=drvlvRr7QE8789WE1vyVXkVdz7X9R4XFoBOm4CGnKS0+X06iMtR9VGSBmGW6yF+562
+         NlId3BKzUG7svT0RD/CcIQzOQBPNab/J0GaLlbBaOxGDue9T4VNkXRwwB0F3PLWmVaIc
+         I0Move9+X6vdcWeRzNAmLsMNIcNIen34wrFrgrZCzGlM7UEslK6nTbSHj8aTJXwp5Eh5
+         OQIRmReUlSBR1mAcXWwwi6hGjr5SN+N3ZIlrVLWfVQ1wkFhQ8HtmZLJHEDSCZ5SxhjB/
+         5p+8j/rnMMG5g9UbH2wYVLJZXELMhXwZDTIDeVySF4JRhzQmsMwOQI3HIwyzQyhcaLmZ
+         EiMA==
+X-Gm-Message-State: AJcUukcnWaLuJH3dpMWTc61QOsRkAUtBltj3DcviYqYXpr0hSz7QETNE
+        eL2cZcTeLZviZQ593cLJN9tHTlAoA3NWqTLm2Aw=
+X-Google-Smtp-Source: ALg8bN5Be0knSu5403sgnyKm3buMMWtoe1G93e4U+oAPSmiCzzcvAtemg3VTW+OqtwtQMKyCtP28wB0QbzIKsvryMUI=
+X-Received: by 2002:a67:b60d:: with SMTP id d13mr12198772vsm.152.1548060951904;
+ Mon, 21 Jan 2019 00:55:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20190118161835.2259170-1-arnd@arndb.de> <20190118161835.2259170-27-arnd@arndb.de>
-In-Reply-To: <20190118161835.2259170-27-arnd@arndb.de>
+References: <20190118161835.2259170-1-arnd@arndb.de> <20190118161835.2259170-9-arnd@arndb.de>
+In-Reply-To: <20190118161835.2259170-9-arnd@arndb.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 21 Jan 2019 09:56:02 +0100
-Message-ID: <CAMuHMdWiHTjDT9-tnjgJy9qCWRr+qUgsJa6LjpRDJQzhoJqnzw@mail.gmail.com>
-Subject: Re: [PATCH v2 26/29] y2038: use time32 syscall names on 32-bit
+Date:   Mon, 21 Jan 2019 09:55:38 +0100
+Message-ID: <CAMuHMdUH+vJ89O6-Qm1p9r6h30z2ZRred1aQd6=h0sk6xXULMQ@mail.gmail.com>
+Subject: Re: [PATCH v2 08/29] m68k: assign syscall number for seccomp
 To:     Arnd Bergmann <arnd@arndb.de>
 Cc:     y2038 Mailman List <y2038@lists.linaro.org>,
         Linux API <linux-api@vger.kernel.org>,
@@ -93,30 +93,22 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, Jan 18, 2019 at 5:21 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> This is the big flip, where all 32-bit architectures set COMPAT_32BIT_TIME
-> abd use the _time32 system calls from the former compat layer instead
-> of the system calls that take __kernel_timespec and similar arguments.
+On Fri, Jan 18, 2019 at 5:20 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> Most architectures have assigned a numbers for the seccomp syscall
+> even when they do not implement it.
 >
-> The temporary redirects for __kernel_timespec, __kernel_itimerspec
-> and __kernel_timex can get removed with this.
->
-> It would be easy to split this commit by architecture, but with the new
-> generated system call tables, it's easy enough to do it all at once,
-> which makes it a little easier to check that the changes are the same
-> in each table.
+> m68k is an exception here, so for consistency lets add the number.
+> Unless CONFIG_SECCOMP is implemented, the system call just
+> returns -ENOSYS.
 >
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
->  arch/m68k/kernel/syscalls/syscall.tbl       | 42 +++++------
-
-For m68k:
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
 
 Gr{oetje,eeting}s,
 
                         Geert
+
 
 --
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
