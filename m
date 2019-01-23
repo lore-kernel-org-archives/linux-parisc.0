@@ -1,4 +1,4 @@
-Return-Path: <SRS0=+a5Q=P6=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=iM/l=P7=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,27 +6,27 @@ X-Spam-Status: No, score=0.1 required=3.0 tests=DATE_IN_PAST_06_12,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5A1DC282C3
-	for <linux-parisc@archiver.kernel.org>; Tue, 22 Jan 2019 16:41:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13727C282C2
+	for <linux-parisc@archiver.kernel.org>; Wed, 23 Jan 2019 15:47:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 75B2E2085A
-	for <linux-parisc@archiver.kernel.org>; Tue, 22 Jan 2019 16:41:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D905821855
+	for <linux-parisc@archiver.kernel.org>; Wed, 23 Jan 2019 15:47:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729698AbfAVQlE (ORCPT
+        id S1726982AbfAWPri (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 22 Jan 2019 11:41:04 -0500
-Received: from unassigned.psychz.net ([107.160.7.5]:41451 "EHLO
-        boardhousewood.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729690AbfAVQlD (ORCPT
+        Wed, 23 Jan 2019 10:47:38 -0500
+Received: from nl103.nixwebsolutions.com ([185.216.140.103]:43331 "EHLO
+        bucvalu.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726981AbfAWPri (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 22 Jan 2019 11:41:03 -0500
-X-Greylist: delayed 2359 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Jan 2019 11:41:03 EST
+        Wed, 23 Jan 2019 10:47:38 -0500
+X-Greylist: delayed 6044 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Jan 2019 10:47:37 EST
 To:     linux-parisc@vger.kernel.org
-Subject: Just working
-Message-ID: <18f81080bbee934348f45012bacfa156@arizonaiceman.com>
-Date:   Tue, 22 Jan 2019 11:09:21 +0100
-From:   "Laura" <rotrainteearpafnlohanon@verizon.net>
-Reply-To: selfarive@sina.com
+Subject: Want to edit your photos
+Message-ID: <d3bbe2ef908972aad7af8de45f6bd76e@pamperedchef.com>
+Date:   Wed, 23 Jan 2019 09:02:16 +0100
+From:   "Judy" <pinraingteerfpanlop@crcmarinesupply.com>
+Reply-To: hantekapan@sina.com
 MIME-Version: 1.0
 Content-Type: text/plain; format=flowed; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
@@ -35,13 +35,13 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Want to retouch  your photos? we can help you for that.
+We want to work for you to edit your photos.
 
-For your photos we can do white background, sharpen, retouching included
-all for your photos.
+We can do your photos with white background, sharpen, retouching is
+included  for all your photos.
 
-Send us photos for testing, we will start it.
+Waiting for the test photos to start with.
 
 Thanks,
-Laura
+Judy
 
