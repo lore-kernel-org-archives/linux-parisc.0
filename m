@@ -1,49 +1,57 @@
-Return-Path: <SRS0=FM3T=QC=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=SeGT=QE=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.1 required=3.0 tests=DATE_IN_PAST_06_12,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9748AC282C7
-	for <linux-parisc@archiver.kernel.org>; Sat, 26 Jan 2019 21:32:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AC43C282C8
+	for <linux-parisc@archiver.kernel.org>; Mon, 28 Jan 2019 07:34:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 67A7C218A2
-	for <linux-parisc@archiver.kernel.org>; Sat, 26 Jan 2019 21:32:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 44C7821736
+	for <linux-parisc@archiver.kernel.org>; Mon, 28 Jan 2019 07:34:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726373AbfAZVca (ORCPT
+        id S1726630AbfA1Hej (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 26 Jan 2019 16:32:30 -0500
-Received: from discountmugs.com ([185.53.168.43]:53265 "EHLO edarley.com"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726367AbfAZVc3 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 26 Jan 2019 16:32:29 -0500
-X-Greylist: delayed 4239 seconds by postgrey-1.27 at vger.kernel.org; Sat, 26 Jan 2019 16:32:29 EST
-To:     linux-parisc@vger.kernel.org
-Subject: Are your photos ready?
-Message-ID: <4796671ba4b11558e6256ffc66730c6e@bellsbeachbb.com>
-Date:   Sat, 26 Jan 2019 14:09:35 +0100
-From:   "Sophia" <puzimsatak@aol.jp>
-Reply-To: heihequn@sina.com
+        Mon, 28 Jan 2019 02:34:39 -0500
+Received: from verein.lst.de ([213.95.11.211]:38239 "EHLO newverein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726612AbfA1Hej (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 28 Jan 2019 02:34:39 -0500
+Received: by newverein.lst.de (Postfix, from userid 2407)
+        id 3156C7F07E; Mon, 28 Jan 2019 08:34:38 +0100 (CET)
+Date:   Mon, 28 Jan 2019 08:34:38 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Helge Deller <deller@gmx.de>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: DMA-related cleanups for parisc
+Message-ID: <20190128073437.GA3287@lst.de>
+References: <20190114112353.30616-1-hch@lst.de> <20190126171124.GA8151@ls3530.dellerweb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190126171124.GA8151@ls3530.dellerweb.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Did you receive my email from last week?
+On Sat, Jan 26, 2019 at 06:11:24PM +0100, Helge Deller wrote:
+> Thanks for doing that!
+> I tested it. Your patches work, but you need the fixup below (0-day
+> testing complained as well).
 
-Are your photo ready to edit?
+I actually sent a v2 series since then which makes sure the new iommu.h
+includes <linux/pci.h>, so that we don't rely on header ordering.
 
-We can do white background for your pictures, also adding clipping path if
-you need that.
-If you also need retouching, just let me know.
+> 
+> With the one below, you may add
+> Tested-by: Helge Deller <deller@gmx.de>
 
-Waiting for the testing photo to start working for you.
-
-Thanks,
-Sophia
-
+While this series prepares for DMA layerer work it isn't urgent, so
+if you want to pick it up through the parisc tree that is perfectly
+fine with me.
