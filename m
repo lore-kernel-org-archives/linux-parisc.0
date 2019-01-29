@@ -7,44 +7,44 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 687D3C169C4
-	for <linux-parisc@archiver.kernel.org>; Tue, 29 Jan 2019 18:13:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E83C1C282C7
+	for <linux-parisc@archiver.kernel.org>; Tue, 29 Jan 2019 18:13:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 311A520857
-	for <linux-parisc@archiver.kernel.org>; Tue, 29 Jan 2019 18:13:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B1D5F20855
+	for <linux-parisc@archiver.kernel.org>; Tue, 29 Jan 2019 18:13:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="W8zUlumo"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="h9nnQF0Q"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728682AbfA2SNf (ORCPT
+        id S1728454AbfA2SN0 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 29 Jan 2019 13:13:35 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:35188 "EHLO
+        Tue, 29 Jan 2019 13:13:26 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:35150 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729282AbfA2SNc (ORCPT
+        with ESMTP id S1727368AbfA2SNZ (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 29 Jan 2019 13:13:32 -0500
+        Tue, 29 Jan 2019 13:13:25 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
         :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=GSD9JLapBWqIj3ABdywFRH0m0lA8Ni+ahzMil/WnITY=; b=W8zUlumoTZhKLGRBXkwh4iE64S
-        o8q8JjBE37//KO7xfp/vBLj/S+3/AI8cbpOIdr+Cm0FPjz1gNe4tuEIScmj1AG6R6tWYv4+5yXFLd
-        Ga1mK0EjCPwyiqYwpZNqJH1rWSqd4zLHrYEpJxio+W5yhhNvTCTbvzTgiXrvJ0zaZl+EFRmLlDXXf
-        BiY+LNVqJbYXtIoocOS7iQeACz2G7tCModjuKESH72rDUS0WaXIY76fN57w7av5pQf8hQY1PFW4a1
-        S11irsu8Ae5ZmD9F5hqnNZ7E3gxQHtLR/1S5mlNotoUlQU6a7hZ8kfYJQf0rxayoS++HWvT4zxRdt
-        LrPLVQ/A==;
+        bh=3EpTLPTe7MxqR7rhIW83gWtXzmEP4UKkgI2JifEq9Rc=; b=h9nnQF0QAAvN7pvGRn62DMEsNk
+        AxSGH6uiqzCT/H1UNvdMnvEj0gGKRwMMFNDhRhSf70lKsuir2NIE0OeJ4/Jxw4jLeTzm+qj4ROl2d
+        lbXbGHhBCCwVzVF3eq2dotCD7QXeCtKcmJMKpIOZ5LuLcdEWSJ5hmRUZ/yW6kQV/D1S27no21yZ/u
+        3dlvDQaNSVckyWD89eyhjQElAeReT15XqJIyiSgjtfJWIoDn5wGcMjKpzeZ3M3ezUMxavWG7WpSjo
+        7GUR1IAC5dodo3ogK5uIA2Djeg7UC6flP+eZ7ieu8kcbNEDA4QI0ZCp8cdRo82WPNOQwtNTkGCzBe
+        GTeQgIfg==;
 Received: from 213-225-35-141.nat.highway.a1.net ([213.225.35.141] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1goXt5-00083d-Ar; Tue, 29 Jan 2019 18:13:31 +0000
+        id 1goXsw-00082N-Qx; Tue, 29 Jan 2019 18:13:23 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     "James E.J. Bottomley" <jejb@parisc-linux.org>,
         Helge Deller <deller@gmx.de>
 Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/8] parisc/dino: use container_of in DINO_DEV
-Date:   Tue, 29 Jan 2019 19:13:08 +0100
-Message-Id: <20190129181310.5557-7-hch@lst.de>
+Subject: [PATCH 3/8] parisc: turn GET_IOC into an inline function
+Date:   Tue, 29 Jan 2019 19:13:05 +0100
+Message-Id: <20190129181310.5557-4-hch@lst.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190129181310.5557-1-hch@lst.de>
 References: <20190129181310.5557-1-hch@lst.de>
@@ -56,35 +56,36 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Use the type safe container_of macros instead of a blind cast in
-DINO_DEV, and turn the macro into an inline function.
+This makes the function both more readable and more typesafe.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/parisc/dino.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/parisc/iommu.h | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index 6f348c75687c..846b59d15999 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -154,12 +154,10 @@ struct dino_device
- #endif
- };
+diff --git a/drivers/parisc/iommu.h b/drivers/parisc/iommu.h
+index 5a38b635e963..d6fd3ab899ac 100644
+--- a/drivers/parisc/iommu.h
++++ b/drivers/parisc/iommu.h
+@@ -26,10 +26,14 @@ static inline void *parisc_walk_tree(struct device *dev)
+ 	return dev->platform_data;
+ }
  
--/* Looks nice and keeps the compiler happy */
--#define DINO_DEV(d) ({				\
--	void *__pdata = d;			\
--	BUG_ON(!__pdata);			\
--	(struct dino_device *)__pdata; })
--
-+static inline struct dino_device *DINO_DEV(struct pci_hba_data *hba)
+-#define GET_IOC(dev) ({					\
+-	void *__pdata = parisc_walk_tree(dev);		\
+-	__pdata ? HBA_DATA(__pdata)->iommu : NULL;	\
+-})
++static inline struct ioc *GET_IOC(struct device *dev)
 +{
-+	return container_of(hba, struct dino_device, hba);
++	struct pci_hba_data *pdata = parisc_walk_tree(dev);
++
++	if (!pdata)
++		return NULL;
++	return pdata->iommu;
 +}
  
- /*
-  * Dino Configuration Space Accessor Functions
+ #ifdef CONFIG_IOMMU_CCIO
+ void *ccio_get_iommu(const struct parisc_device *dev);
 -- 
 2.20.1
 
