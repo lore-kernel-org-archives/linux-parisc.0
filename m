@@ -5,68 +5,68 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B57CC282DB
-	for <linux-parisc@archiver.kernel.org>; Fri,  1 Feb 2019 15:46:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E438BC282D8
+	for <linux-parisc@archiver.kernel.org>; Fri,  1 Feb 2019 15:46:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 31925218F0
-	for <linux-parisc@archiver.kernel.org>; Fri,  1 Feb 2019 15:46:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9AE81218FC
+	for <linux-parisc@archiver.kernel.org>; Fri,  1 Feb 2019 15:46:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XP7KRo9s"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LxzJyRIK"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730457AbfBAPqC (ORCPT
+        id S1729024AbfBAPo5 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 1 Feb 2019 10:46:02 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:36528 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728634AbfBAPqB (ORCPT
+        Fri, 1 Feb 2019 10:44:57 -0500
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:34150 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727809AbfBAPo4 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 1 Feb 2019 10:46:01 -0500
-Received: by mail-pf1-f195.google.com with SMTP id b85so3396778pfc.3;
-        Fri, 01 Feb 2019 07:46:00 -0800 (PST)
+        Fri, 1 Feb 2019 10:44:56 -0500
+Received: by mail-pl1-f194.google.com with SMTP id w4so3407044plz.1;
+        Fri, 01 Feb 2019 07:44:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dF2LAdEhafWzIQxJixmVAE4RRAMYhlC7Kg9jv7I5j10=;
-        b=XP7KRo9svwCOnSGr/XwaOFUopNKEZ1AZtkrvqQRRfkESyrydFcLoLJD1oZ6GF/csvD
-         udoA6fJdJlwf7fz+Oxt3YVchPP7ADbR2O0DEJ7NfJbyCcyMhqcyE93+x2oJFisrS7MV4
-         uCzrL1kVK05zz2cpVMju/2xMFdF24fy3U3YP8l4+PgPW1b6tVRD9HA+FN/zJw0gRHZCi
-         nNWEYxMlHs441Plq5yVXT8XU5IgEOZiDn7T1Edy7Bjw6s4HZUsfkSheZ50qutXk+eZ+F
-         /HGtYliVmFdoyNG28IS5ccJcb8zCcCbIDIIaUx+pAYlcXd8+afYo6jTQc858W8TvW7q8
-         A58A==
+        bh=kXEku7wVKej63PQJBSR7MpeLK5IYIVw7q0O+wrSF/Ao=;
+        b=LxzJyRIKuk2uU4Jgs68zIOUBdYe3nZ7wiFq0qiWO5uyY5ZQBQY6pVtBOln/Ju4w70c
+         bjJdRVF7zTBZXwpkh2DlFbvTJBwiyWqVm30LGcB2yGnF08Z/aDNhJFqUSk9TBSGoHYcg
+         ZvFG6dJBUvRFApHkg/Dkjwxjdq4BExuNMlubwN9aMrSRMLqK/Vi0RxSs0BWoTGfbqZx2
+         MoTCWkFhzaoP4Es7iEJsDydidERDozwZVxu5U/zU9X5pjz4xcrigbT8PRkC35U+b9go5
+         qU375AUn3QkHUNeg+UXaWRwO9dTmGSaeQS9Bsmaq0rlLqH7X3hv1+9uImPc7hKkhO1dL
+         RY1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=dF2LAdEhafWzIQxJixmVAE4RRAMYhlC7Kg9jv7I5j10=;
-        b=CbpJk7bYnSa8tH4Tb/iBPDTQigNmUc4a/gdR4Zj5bjSXyV+bcXvJ2YUPrytrEgmVYK
-         6TIwTz2vRwQfypHDiGd6x+CcyozBuqBI3/2CyqXzy/Do4P3s/VKlpROQbhNmIgKC99N3
-         nk793JXt/5cG9rbxnKqhwxmcjKVNoMmetJ2E7GuVvjyjlgBWka4SjXMY5UEWh8xAE65e
-         N0lbg2nYln/HDtqYU+CWunW01374FDz2x2+RYIQfLbTXGLzUKRglZZiK+ZWwAuBPUdGp
-         NRr94bmwlseSf7CXzwz2VmaB99f+soDvcfJ7V4EJK4CL636yS4XejLEJ6V8ICQw1A8Un
-         xuQA==
-X-Gm-Message-State: AHQUAuZ8u7pjfY+KxY9fir2RlXH/TOPLguofrGVMJSGj7w2yAdmI+Bmu
-        TAN6lsND7bGVlH25rWBA46Y=
-X-Google-Smtp-Source: AHgI3IZxSwIL7fDZMETlnvedDaHRSlssfqXyO1M+p2LvR0kLdr5faSEu9tPn9N7hBYrxbM8Lqg/dLA==
-X-Received: by 2002:a63:a553:: with SMTP id r19mr2734654pgu.53.1549035960242;
-        Fri, 01 Feb 2019 07:46:00 -0800 (PST)
+        bh=kXEku7wVKej63PQJBSR7MpeLK5IYIVw7q0O+wrSF/Ao=;
+        b=OqY2mpcr9wOZ/6GcS345ZHsyZfnBCJJ037Fb8emrJOthDOHRP/6M7Rw3KIyJkQw9xN
+         W7yJIY1D7QUEPK+gi7Eg7rNps9ctMkOW1Jv0vkXy+oCirrwPk1Hmt5L5Yj6y0SdFU5g5
+         RvI+QthDhV/gIwUL2kRxGwV6Hd2KHWEDUM6JZck/1itL/jaROJ4NnL5zzy2AfvkalIZF
+         VihJWaKubpj3XA0bNSaFMUUgQUPsqCT50Bhb+5zxf7ZlNK0q+KZr+aj6OQ2tA61Ut36h
+         7kvRDMDZBTCie2GJRjl8Vmm5kFStMVrFHB5Lxus32nRWVUkF4WnA68/xKpBYr2AhumjH
+         twkA==
+X-Gm-Message-State: AJcUukcSP2JSS0H3cu6CS4mcTrogqujR63tYDLllZFWgxTcm53QT6iIk
+        BOnN7CsQvlBSt6TXGoP95Lo=
+X-Google-Smtp-Source: ALg8bN5UOATUbo1+WWJAMQDSheWf9EWyZAfytugVMcul6Pny1I0NzkBaDbaFPMo8sd1iMRYgKZttWA==
+X-Received: by 2002:a17:902:7b88:: with SMTP id w8mr39818379pll.320.1549035895792;
+        Fri, 01 Feb 2019 07:44:55 -0800 (PST)
 Received: from localhost.localdomain ([49.206.15.111])
-        by smtp.gmail.com with ESMTPSA id z9sm25886959pfd.99.2019.02.01.07.45.49
+        by smtp.gmail.com with ESMTPSA id z9sm25886959pfd.99.2019.02.01.07.44.45
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 01 Feb 2019 07:45:59 -0800 (PST)
+        Fri, 01 Feb 2019 07:44:55 -0800 (PST)
 From:   Deepa Dinamani <deepa.kernel@gmail.com>
 To:     davem@davemloft.net, linux-kernel@vger.kernel.org
 Cc:     netdev@vger.kernel.org, arnd@arndb.de, y2038@lists.linaro.org,
-        ccaulfie@redhat.com, deller@gmx.de, paulus@samba.org,
-        ralf@linux-mips.org, rth@twiddle.net, cluster-devel@redhat.com,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: [PATCH net-next v4 12/12] sock: Add SO_RCVTIMEO_NEW and SO_SNDTIMEO_NEW
-Date:   Fri,  1 Feb 2019 07:43:56 -0800
-Message-Id: <20190201154356.15536-13-deepa.kernel@gmail.com>
+        deller@gmx.de, dhowells@redhat.com, jejb@parisc-linux.org,
+        ralf@linux-mips.org, rth@twiddle.net,
+        linux-afs@lists.infradead.org, linux-alpha@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mips@linux-mips.org,
+        linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Subject: [PATCH net-next v4 04/12] sockopt: Rename SO_TIMESTAMP* to SO_TIMESTAMP*_OLD
+Date:   Fri,  1 Feb 2019 07:43:48 -0800
+Message-Id: <20190201154356.15536-5-deepa.kernel@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190201154356.15536-1-deepa.kernel@gmail.com>
 References: <20190201154356.15536-1-deepa.kernel@gmail.com>
@@ -75,305 +75,471 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Add new socket timeout options that are y2038 safe.
+SO_TIMESTAMP, SO_TIMESTAMPNS and SO_TIMESTAMPING options, the
+way they are currently defined, are not y2038 safe.
+Subsequent patches in the series add new y2038 safe versions
+of these options which provide 64 bit timestamps on all
+architectures uniformly.
+Hence, rename existing options with OLD tag suffixes.
+
+Also note that kernel will not use the untagged SO_TIMESTAMP*
+and SCM_TIMESTAMP* options internally anymore.
 
 Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
-Cc: ccaulfie@redhat.com
-Cc: davem@davemloft.net
 Cc: deller@gmx.de
-Cc: paulus@samba.org
+Cc: dhowells@redhat.com
+Cc: jejb@parisc-linux.org
 Cc: ralf@linux-mips.org
 Cc: rth@twiddle.net
-Cc: cluster-devel@redhat.com
-Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-afs@lists.infradead.org
 Cc: linux-alpha@vger.kernel.org
 Cc: linux-arch@vger.kernel.org
-Cc: linux-mips@vger.kernel.org
+Cc: linux-mips@linux-mips.org
 Cc: linux-parisc@vger.kernel.org
+Cc: linux-rdma@vger.kernel.org
 Cc: sparclinux@vger.kernel.org
 ---
- arch/alpha/include/uapi/asm/socket.h  | 12 +++++--
- arch/mips/include/uapi/asm/socket.h   | 11 ++++--
- arch/parisc/include/uapi/asm/socket.h | 10 ++++--
- arch/sparc/include/uapi/asm/socket.h  | 11 ++++--
- include/uapi/asm-generic/socket.h     | 11 ++++--
- net/core/sock.c                       | 49 ++++++++++++++++++++-------
- 6 files changed, 81 insertions(+), 23 deletions(-)
+ arch/alpha/include/uapi/asm/socket.h  | 23 ++++++++++++++++-------
+ arch/mips/include/uapi/asm/socket.h   | 23 ++++++++++++++++-------
+ arch/parisc/include/uapi/asm/socket.h | 23 ++++++++++++++++-------
+ arch/sparc/include/uapi/asm/socket.h  | 24 ++++++++++++++++--------
+ include/uapi/asm-generic/socket.h     | 23 ++++++++++++++++-------
+ net/compat.c                          |  6 +++---
+ net/core/sock.c                       | 16 ++++++++--------
+ net/ipv4/tcp.c                        |  6 +++---
+ net/rds/af_rds.c                      |  2 +-
+ net/rds/recv.c                        |  2 +-
+ net/rxrpc/local_object.c              |  2 +-
+ net/socket.c                          |  8 ++++----
+ 12 files changed, 101 insertions(+), 57 deletions(-)
 
 diff --git a/arch/alpha/include/uapi/asm/socket.h b/arch/alpha/include/uapi/asm/socket.h
-index 9826d1db71d0..0d0fddb7e738 100644
+index b1c9b542c021..992a0a6dcea1 100644
 --- a/arch/alpha/include/uapi/asm/socket.h
 +++ b/arch/alpha/include/uapi/asm/socket.h
-@@ -119,19 +119,25 @@
- #define SO_TIMESTAMPNS_NEW      64
- #define SO_TIMESTAMPING_NEW     65
+@@ -51,13 +51,9 @@
+ #define SO_GET_FILTER		SO_ATTACH_FILTER
  
--#if !defined(__KERNEL__)
-+#define SO_RCVTIMEO_NEW         66
-+#define SO_SNDTIMEO_NEW         67
+ #define SO_PEERNAME		28
+-#define SO_TIMESTAMP		29
+-#define SCM_TIMESTAMP		SO_TIMESTAMP
  
--#define	SO_RCVTIMEO SO_RCVTIMEO_OLD
--#define	SO_SNDTIMEO SO_SNDTIMEO_OLD
+ #define SO_PEERSEC		30
+ #define SO_PASSSEC		34
+-#define SO_TIMESTAMPNS		35
+-#define SCM_TIMESTAMPNS		SO_TIMESTAMPNS
+ 
+ /* Security levels - as per NRL IPv6 - don't actually do anything */
+ #define SO_SECURITY_AUTHENTICATION		19
+@@ -66,9 +62,6 @@
+ 
+ #define SO_MARK			36
+ 
+-#define SO_TIMESTAMPING		37
+-#define SCM_TIMESTAMPING	SO_TIMESTAMPING
+-
+ #define SO_RXQ_OVFL             40
+ 
+ #define SO_WIFI_STATUS		41
+@@ -117,4 +110,20 @@
+ 
+ #define SO_BINDTOIFINDEX	62
+ 
++#define SO_TIMESTAMP_OLD        29
++#define SO_TIMESTAMPNS_OLD      35
++#define SO_TIMESTAMPING_OLD     37
++
 +#if !defined(__KERNEL__)
- 
- #if __BITS_PER_LONG == 64
- #define SO_TIMESTAMP		SO_TIMESTAMP_OLD
- #define SO_TIMESTAMPNS		SO_TIMESTAMPNS_OLD
- #define SO_TIMESTAMPING         SO_TIMESTAMPING_OLD
 +
-+#define SO_RCVTIMEO		SO_RCVTIMEO_OLD
-+#define SO_SNDTIMEO		SO_SNDTIMEO_OLD
- #else
- #define SO_TIMESTAMP (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMP_OLD : SO_TIMESTAMP_NEW)
- #define SO_TIMESTAMPNS (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMPNS_OLD : SO_TIMESTAMPNS_NEW)
- #define SO_TIMESTAMPING (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMPING_OLD : SO_TIMESTAMPING_NEW)
++#define SO_TIMESTAMP            SO_TIMESTAMP_OLD
++#define SO_TIMESTAMPNS          SO_TIMESTAMPNS_OLD
++#define SO_TIMESTAMPING         SO_TIMESTAMPING_OLD
 +
-+#define SO_RCVTIMEO (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_RCVTIMEO_OLD : SO_RCVTIMEO_NEW)
-+#define SO_SNDTIMEO (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_SNDTIMEO_OLD : SO_SNDTIMEO_NEW)
- #endif
- 
- #define SCM_TIMESTAMP           SO_TIMESTAMP
++#define SCM_TIMESTAMP           SO_TIMESTAMP
++#define SCM_TIMESTAMPNS         SO_TIMESTAMPNS
++#define SCM_TIMESTAMPING        SO_TIMESTAMPING
++
++#endif
++
+ #endif /* _UAPI_ASM_SOCKET_H */
 diff --git a/arch/mips/include/uapi/asm/socket.h b/arch/mips/include/uapi/asm/socket.h
-index 96cc0e907f12..eb9f33f8a8b3 100644
+index 73e25e35d803..0f4516c34df2 100644
 --- a/arch/mips/include/uapi/asm/socket.h
 +++ b/arch/mips/include/uapi/asm/socket.h
-@@ -130,18 +130,25 @@
- #define SO_TIMESTAMPNS_NEW      64
- #define SO_TIMESTAMPING_NEW     65
+@@ -65,21 +65,14 @@
+ #define SO_GET_FILTER		SO_ATTACH_FILTER
  
-+#define SO_RCVTIMEO_NEW         66
-+#define SO_SNDTIMEO_NEW         67
-+
- #if !defined(__KERNEL__)
+ #define SO_PEERNAME		28
+-#define SO_TIMESTAMP		29
+-#define SCM_TIMESTAMP		SO_TIMESTAMP
  
--#define	SO_RCVTIMEO SO_RCVTIMEO_OLD
--#define	SO_SNDTIMEO SO_SNDTIMEO_OLD
- #if __BITS_PER_LONG == 64
- #define SO_TIMESTAMP		SO_TIMESTAMP_OLD
- #define SO_TIMESTAMPNS		SO_TIMESTAMPNS_OLD
- #define SO_TIMESTAMPING		SO_TIMESTAMPING_OLD
-+
-+#define SO_RCVTIMEO             SO_RCVTIMEO_OLD
-+#define SO_SNDTIMEO             SO_SNDTIMEO_OLD
- #else
- #define SO_TIMESTAMP (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMP_OLD : SO_TIMESTAMP_NEW)
- #define SO_TIMESTAMPNS (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMPNS_OLD : SO_TIMESTAMPNS_NEW)
- #define SO_TIMESTAMPING (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMPING_OLD : SO_TIMESTAMPING_NEW)
-+
-+#define SO_RCVTIMEO (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_RCVTIMEO_OLD : SO_RCVTIMEO_NEW)
-+#define SO_SNDTIMEO (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_SNDTIMEO_OLD : SO_SNDTIMEO_NEW)
- #endif
+ #define SO_PEERSEC		30
+ #define SO_SNDBUFFORCE		31
+ #define SO_RCVBUFFORCE		33
+ #define SO_PASSSEC		34
+-#define SO_TIMESTAMPNS		35
+-#define SCM_TIMESTAMPNS		SO_TIMESTAMPNS
  
- #define SCM_TIMESTAMP           SO_TIMESTAMP
+ #define SO_MARK			36
+ 
+-#define SO_TIMESTAMPING		37
+-#define SCM_TIMESTAMPING	SO_TIMESTAMPING
+-
+ #define SO_RXQ_OVFL		40
+ 
+ #define SO_WIFI_STATUS		41
+@@ -128,4 +121,20 @@
+ 
+ #define SO_BINDTOIFINDEX	62
+ 
++#define SO_TIMESTAMP_OLD        29
++#define SO_TIMESTAMPNS_OLD      35
++#define SO_TIMESTAMPING_OLD     37
++
++#if !defined(__KERNEL__)
++
++#define SO_TIMESTAMP            SO_TIMESTAMP_OLD
++#define SO_TIMESTAMPNS          SO_TIMESTAMPNS_OLD
++#define SO_TIMESTAMPING         SO_TIMESTAMPING_OLD
++
++#define SCM_TIMESTAMP           SO_TIMESTAMP
++#define SCM_TIMESTAMPNS         SO_TIMESTAMPNS
++#define SCM_TIMESTAMPING        SO_TIMESTAMPING
++
++#endif
++
+ #endif /* _UAPI_ASM_SOCKET_H */
 diff --git a/arch/parisc/include/uapi/asm/socket.h b/arch/parisc/include/uapi/asm/socket.h
-index 046f0cd9cce4..16e428f03526 100644
+index 52bed5976cbe..7c180321ebd6 100644
 --- a/arch/parisc/include/uapi/asm/socket.h
 +++ b/arch/parisc/include/uapi/asm/socket.h
-@@ -111,18 +111,24 @@
- #define SO_TIMESTAMPNS_NEW      0x4039
- #define SO_TIMESTAMPING_NEW     0x403A
+@@ -34,10 +34,6 @@
+ #define SO_BSDCOMPAT	0x400e
+ #define SO_PASSCRED	0x4010
+ #define SO_PEERCRED	0x4011
+-#define SO_TIMESTAMP	0x4012
+-#define SCM_TIMESTAMP	SO_TIMESTAMP
+-#define SO_TIMESTAMPNS	0x4013
+-#define SCM_TIMESTAMPNS	SO_TIMESTAMPNS
  
-+#define SO_RCVTIMEO_NEW         0x4040
-+#define SO_SNDTIMEO_NEW         0x4041
+ /* Security levels - as per NRL IPv6 - don't actually do anything */
+ #define SO_SECURITY_AUTHENTICATION		0x4016
+@@ -58,9 +54,6 @@
+ 
+ #define SO_MARK			0x401f
+ 
+-#define SO_TIMESTAMPING		0x4020
+-#define SCM_TIMESTAMPING	SO_TIMESTAMPING
+-
+ #define SO_RXQ_OVFL             0x4021
+ 
+ #define SO_WIFI_STATUS		0x4022
+@@ -109,4 +102,20 @@
+ 
+ #define SO_BINDTOIFINDEX	0x4037
+ 
++#define SO_TIMESTAMP_OLD        0x4012
++#define SO_TIMESTAMPNS_OLD      0x4013
++#define SO_TIMESTAMPING_OLD     0x4020
 +
- #if !defined(__KERNEL__)
- 
--#define	SO_RCVTIMEO SO_RCVTIMEO_OLD
--#define	SO_SNDTIMEO SO_SNDTIMEO_OLD
- #if __BITS_PER_LONG == 64
- #define SO_TIMESTAMP		SO_TIMESTAMP_OLD
- #define SO_TIMESTAMPNS		SO_TIMESTAMPNS_OLD
- #define SO_TIMESTAMPING         SO_TIMESTAMPING_OLD
-+#define SO_RCVTIMEO		SO_RCVTIMEO_OLD
-+#define SO_SNDTIMEO		SO_SNDTIMEO_OLD
- #else
- #define SO_TIMESTAMP (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMP_OLD : SO_TIMESTAMP_NEW)
- #define SO_TIMESTAMPNS (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMPNS_OLD : SO_TIMESTAMPNS_NEW)
- #define SO_TIMESTAMPING (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMPING_OLD : SO_TIMESTAMPING_NEW)
++#if !defined(__KERNEL__)
 +
-+#define SO_RCVTIMEO (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_RCVTIMEO_OLD : SO_RCVTIMEO_NEW)
-+#define SO_SNDTIMEO (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_SNDTIMEO_OLD : SO_SNDTIMEO_NEW)
- #endif
- 
- #define SCM_TIMESTAMP           SO_TIMESTAMP
++#define SO_TIMESTAMP            SO_TIMESTAMP_OLD
++#define SO_TIMESTAMPNS          SO_TIMESTAMPNS_OLD
++#define SO_TIMESTAMPING         SO_TIMESTAMPING_OLD
++
++#define SCM_TIMESTAMP           SO_TIMESTAMP
++#define SCM_TIMESTAMPNS         SO_TIMESTAMPNS
++#define SCM_TIMESTAMPING        SO_TIMESTAMPING
++
++#endif
++
+ #endif /* _UAPI_ASM_SOCKET_H */
 diff --git a/arch/sparc/include/uapi/asm/socket.h b/arch/sparc/include/uapi/asm/socket.h
-index 342ffdc3b424..8c9f74a66b55 100644
+index bbdb81594dd4..d8a1bbc3e6c4 100644
 --- a/arch/sparc/include/uapi/asm/socket.h
 +++ b/arch/sparc/include/uapi/asm/socket.h
-@@ -112,19 +112,26 @@
- #define SO_TIMESTAMPNS_NEW       0x0042
- #define SO_TIMESTAMPING_NEW      0x0043
+@@ -33,7 +33,6 @@
+ #define SO_PROTOCOL	0x1028
+ #define SO_DOMAIN	0x1029
  
-+#define SO_RCVTIMEO_NEW          0x0044
-+#define SO_SNDTIMEO_NEW          0x0045
+-
+ /* Linux specific, keep the same. */
+ #define SO_NO_CHECK	0x000b
+ #define SO_PRIORITY	0x000c
+@@ -45,19 +44,12 @@
+ #define SO_GET_FILTER		SO_ATTACH_FILTER
+ 
+ #define SO_PEERNAME		0x001c
+-#define SO_TIMESTAMP		0x001d
+-#define SCM_TIMESTAMP		SO_TIMESTAMP
+ 
+ #define SO_PEERSEC		0x001e
+ #define SO_PASSSEC		0x001f
+-#define SO_TIMESTAMPNS		0x0021
+-#define SCM_TIMESTAMPNS		SO_TIMESTAMPNS
+ 
+ #define SO_MARK			0x0022
+ 
+-#define SO_TIMESTAMPING		0x0023
+-#define SCM_TIMESTAMPING	SO_TIMESTAMPING
+-
+ #define SO_RXQ_OVFL             0x0024
+ 
+ #define SO_WIFI_STATUS		0x0025
+@@ -111,4 +103,20 @@
+ #define SO_SECURITY_ENCRYPTION_TRANSPORT	0x5002
+ #define SO_SECURITY_ENCRYPTION_NETWORK		0x5004
+ 
++#define SO_TIMESTAMP_OLD         0x001d
++#define SO_TIMESTAMPNS_OLD       0x0021
++#define SO_TIMESTAMPING_OLD      0x0023
 +
- #if !defined(__KERNEL__)
- 
--#define SO_RCVTIMEO              SO_RCVTIMEO_OLD
--#define SO_SNDTIMEO              SO_SNDTIMEO_OLD
- 
- #if __BITS_PER_LONG == 64
- #define SO_TIMESTAMP		SO_TIMESTAMP_OLD
- #define SO_TIMESTAMPNS		SO_TIMESTAMPNS_OLD
- #define SO_TIMESTAMPING		SO_TIMESTAMPING_OLD
++#if !defined(__KERNEL__)
 +
-+#define SO_RCVTIMEO		SO_RCVTIMEO_OLD
-+#define SO_SNDTIMEO		SO_SNDTIMEO_OLD
- #else
- #define SO_TIMESTAMP (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMP_OLD : SO_TIMESTAMP_NEW)
- #define SO_TIMESTAMPNS (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMPNS_OLD : SO_TIMESTAMPNS_NEW)
- #define SO_TIMESTAMPING (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMPING_OLD : SO_TIMESTAMPING_NEW)
++#define SO_TIMESTAMP           SO_TIMESTAMP_OLD
++#define SO_TIMESTAMPNS         SO_TIMESTAMPNS_OLD
++#define SO_TIMESTAMPING        SO_TIMESTAMPING_OLD
 +
-+#define SO_RCVTIMEO (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_RCVTIMEO_OLD : SO_RCVTIMEO_NEW)
-+#define SO_SNDTIMEO (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_SNDTIMEO_OLD : SO_SNDTIMEO_NEW)
- #endif
- 
- #define SCM_TIMESTAMP          SO_TIMESTAMP
++#define SCM_TIMESTAMP          SO_TIMESTAMP
++#define SCM_TIMESTAMPNS        SO_TIMESTAMPNS
++#define SCM_TIMESTAMPING       SO_TIMESTAMPING
++
++#endif
++
+ #endif /* _ASM_SOCKET_H */
 diff --git a/include/uapi/asm-generic/socket.h b/include/uapi/asm-generic/socket.h
-index c56b8b487c12..c8b430cb6dc4 100644
+index 3066ab3853a8..4ef3aed31fb7 100644
 --- a/include/uapi/asm-generic/socket.h
 +++ b/include/uapi/asm-generic/socket.h
-@@ -114,19 +114,26 @@
- #define SO_TIMESTAMPNS_NEW      64
- #define SO_TIMESTAMPING_NEW     65
+@@ -46,21 +46,14 @@
+ #define SO_GET_FILTER		SO_ATTACH_FILTER
  
-+#define SO_RCVTIMEO_NEW         66
-+#define SO_SNDTIMEO_NEW         67
+ #define SO_PEERNAME		28
+-#define SO_TIMESTAMP		29
+-#define SCM_TIMESTAMP		SO_TIMESTAMP
+ 
+ #define SO_ACCEPTCONN		30
+ 
+ #define SO_PEERSEC		31
+ #define SO_PASSSEC		34
+-#define SO_TIMESTAMPNS		35
+-#define SCM_TIMESTAMPNS		SO_TIMESTAMPNS
+ 
+ #define SO_MARK			36
+ 
+-#define SO_TIMESTAMPING		37
+-#define SCM_TIMESTAMPING	SO_TIMESTAMPING
+-
+ #define SO_PROTOCOL		38
+ #define SO_DOMAIN		39
+ 
+@@ -112,4 +105,20 @@
+ 
+ #define SO_BINDTOIFINDEX	62
+ 
++#define SO_TIMESTAMP_OLD        29
++#define SO_TIMESTAMPNS_OLD      35
++#define SO_TIMESTAMPING_OLD     37
 +
- #if !defined(__KERNEL__)
- 
--#define	SO_RCVTIMEO SO_RCVTIMEO_OLD
--#define	SO_SNDTIMEO SO_SNDTIMEO_OLD
- #if __BITS_PER_LONG == 64 || (defined(__x86_64__) && defined(__ILP32__))
- /* on 64-bit and x32, avoid the ?: operator */
- #define SO_TIMESTAMP		SO_TIMESTAMP_OLD
- #define SO_TIMESTAMPNS		SO_TIMESTAMPNS_OLD
- #define SO_TIMESTAMPING		SO_TIMESTAMPING_OLD
++#if !defined(__KERNEL__)
 +
-+#define SO_RCVTIMEO		SO_RCVTIMEO_OLD
-+#define SO_SNDTIMEO		SO_SNDTIMEO_OLD
- #else
- #define SO_TIMESTAMP (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMP_OLD : SO_TIMESTAMP_NEW)
- #define SO_TIMESTAMPNS (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMPNS_OLD : SO_TIMESTAMPNS_NEW)
- #define SO_TIMESTAMPING (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_TIMESTAMPING_OLD : SO_TIMESTAMPING_NEW)
++#define SO_TIMESTAMP            SO_TIMESTAMP_OLD
++#define SO_TIMESTAMPNS          SO_TIMESTAMPNS_OLD
++#define SO_TIMESTAMPING         SO_TIMESTAMPING_OLD
 +
-+#define SO_RCVTIMEO (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_RCVTIMEO_OLD : SO_RCVTIMEO_NEW)
-+#define SO_SNDTIMEO (sizeof(time_t) == sizeof(__kernel_long_t) ? SO_SNDTIMEO_OLD : SO_SNDTIMEO_NEW)
- #endif
- 
- #define SCM_TIMESTAMP           SO_TIMESTAMP
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 0e29e0b0338f..3a74adae23d0 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -335,9 +335,10 @@ int __sk_backlog_rcv(struct sock *sk, struct sk_buff *skb)
- }
- EXPORT_SYMBOL(__sk_backlog_rcv);
- 
--static int sock_get_timeout(long timeo, void *optval)
-+static int sock_get_timeout(long timeo, void *optval, bool old_timeval)
- {
--	struct __kernel_old_timeval tv;
-+	struct __kernel_sock_timeval tv;
-+	int size;
- 
- 	if (timeo == MAX_SCHEDULE_TIMEOUT) {
- 		tv.tv_sec = 0;
-@@ -353,13 +354,23 @@ static int sock_get_timeout(long timeo, void *optval)
- 		return sizeof(tv32);
++#define SCM_TIMESTAMP           SO_TIMESTAMP
++#define SCM_TIMESTAMPNS         SO_TIMESTAMPNS
++#define SCM_TIMESTAMPING        SO_TIMESTAMPING
++
++#endif
++
+ #endif /* __ASM_GENERIC_SOCKET_H */
+diff --git a/net/compat.c b/net/compat.c
+index ce8f6e8cdcd2..ccf93cd0e49b 100644
+--- a/net/compat.c
++++ b/net/compat.c
+@@ -219,7 +219,7 @@ int put_cmsg_compat(struct msghdr *kmsg, int level, int type, int len, void *dat
  	}
  
--	*(struct __kernel_old_timeval *)optval = tv;
--	return sizeof(tv);
-+	if (old_timeval) {
-+		struct __kernel_old_timeval old_tv;
-+		old_tv.tv_sec = tv.tv_sec;
-+		old_tv.tv_usec = tv.tv_usec;
-+		*(struct __kernel_old_timeval *)optval = old_tv;
-+		size = sizeof(old_tv);
-+	} else {
-+		*(struct __kernel_sock_timeval *)optval = tv;
-+		size = sizeof(tv);
-+	}
-+
-+	return size;
- }
+ 	if (!COMPAT_USE_64BIT_TIME) {
+-		if (level == SOL_SOCKET && type == SCM_TIMESTAMP) {
++		if (level == SOL_SOCKET && type == SO_TIMESTAMP_OLD) {
+ 			struct timeval *tv = (struct timeval *)data;
+ 			ctv.tv_sec = tv->tv_sec;
+ 			ctv.tv_usec = tv->tv_usec;
+@@ -227,8 +227,8 @@ int put_cmsg_compat(struct msghdr *kmsg, int level, int type, int len, void *dat
+ 			len = sizeof(ctv);
+ 		}
+ 		if (level == SOL_SOCKET &&
+-		    (type == SCM_TIMESTAMPNS || type == SCM_TIMESTAMPING)) {
+-			int count = type == SCM_TIMESTAMPNS ? 1 : 3;
++		    (type == SO_TIMESTAMPNS_OLD || type == SO_TIMESTAMPING_OLD)) {
++			int count = type == SO_TIMESTAMPNS_OLD ? 1 : 3;
+ 			int i;
+ 			struct timespec *ts = (struct timespec *)data;
+ 			for (i = 0; i < count; i++) {
+diff --git a/net/core/sock.c b/net/core/sock.c
+index a3fe0e7f49b0..5c38c740131d 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -867,10 +867,10 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+ 			clear_bit(SOCK_PASSCRED, &sock->flags);
+ 		break;
  
--static int sock_set_timeout(long *timeo_p, char __user *optval, int optlen)
-+static int sock_set_timeout(long *timeo_p, char __user *optval, int optlen, bool old_timeval)
- {
--	struct __kernel_old_timeval tv;
-+	struct __kernel_sock_timeval tv;
+-	case SO_TIMESTAMP:
+-	case SO_TIMESTAMPNS:
++	case SO_TIMESTAMP_OLD:
++	case SO_TIMESTAMPNS_OLD:
+ 		if (valbool)  {
+-			if (optname == SO_TIMESTAMP)
++			if (optname == SO_TIMESTAMP_OLD)
+ 				sock_reset_flag(sk, SOCK_RCVTSTAMPNS);
+ 			else
+ 				sock_set_flag(sk, SOCK_RCVTSTAMPNS);
+@@ -882,7 +882,7 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+ 		}
+ 		break;
  
- 	if (in_compat_syscall() && !COMPAT_USE_64BIT_TIME) {
- 		struct old_timeval32 tv32;
-@@ -371,6 +382,15 @@ static int sock_set_timeout(long *timeo_p, char __user *optval, int optlen)
- 			return -EFAULT;
- 		tv.tv_sec = tv32.tv_sec;
- 		tv.tv_usec = tv32.tv_usec;
-+	} else if (old_timeval) {
-+		struct __kernel_old_timeval old_tv;
-+
-+		if (optlen < sizeof(old_tv))
-+			return -EINVAL;
-+		if (copy_from_user(&old_tv, optval, sizeof(old_tv)))
-+			return -EFAULT;
-+		tv.tv_sec = old_tv.tv_sec;
-+		tv.tv_usec = old_tv.tv_usec;
- 	} else {
- 		if (optlen < sizeof(tv))
+-	case SO_TIMESTAMPING:
++	case SO_TIMESTAMPING_OLD:
+ 		if (val & ~SOF_TIMESTAMPING_MASK) {
+ 			ret = -EINVAL;
+ 			break;
+@@ -1243,16 +1243,16 @@ int sock_getsockopt(struct socket *sock, int level, int optname,
+ 		sock_warn_obsolete_bsdism("getsockopt");
+ 		break;
+ 
+-	case SO_TIMESTAMP:
++	case SO_TIMESTAMP_OLD:
+ 		v.val = sock_flag(sk, SOCK_RCVTSTAMP) &&
+ 				!sock_flag(sk, SOCK_RCVTSTAMPNS);
+ 		break;
+ 
+-	case SO_TIMESTAMPNS:
++	case SO_TIMESTAMPNS_OLD:
+ 		v.val = sock_flag(sk, SOCK_RCVTSTAMPNS);
+ 		break;
+ 
+-	case SO_TIMESTAMPING:
++	case SO_TIMESTAMPING_OLD:
+ 		v.val = sk->sk_tsflags;
+ 		break;
+ 
+@@ -2168,7 +2168,7 @@ int __sock_cmsg_send(struct sock *sk, struct msghdr *msg, struct cmsghdr *cmsg,
  			return -EINVAL;
-@@ -394,8 +414,8 @@ static int sock_set_timeout(long *timeo_p, char __user *optval, int optlen)
- 	*timeo_p = MAX_SCHEDULE_TIMEOUT;
- 	if (tv.tv_sec == 0 && tv.tv_usec == 0)
- 		return 0;
--	if (tv.tv_sec < (MAX_SCHEDULE_TIMEOUT/HZ - 1))
--		*timeo_p = tv.tv_sec * HZ + DIV_ROUND_UP(tv.tv_usec, USEC_PER_SEC / HZ);
-+	if (tv.tv_sec < (MAX_SCHEDULE_TIMEOUT / HZ - 1))
-+		*timeo_p = tv.tv_sec * HZ + DIV_ROUND_UP((unsigned long)tv.tv_usec, USEC_PER_SEC / HZ);
- 	return 0;
+ 		sockc->mark = *(u32 *)CMSG_DATA(cmsg);
+ 		break;
+-	case SO_TIMESTAMPING:
++	case SO_TIMESTAMPING_OLD:
+ 		if (cmsg->cmsg_len != CMSG_LEN(sizeof(u32)))
+ 			return -EINVAL;
+ 
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index 6f8d292ad501..e29aec59cad1 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -1867,13 +1867,13 @@ static void tcp_recv_timestamp(struct msghdr *msg, const struct sock *sk,
+ 	if (tss->ts[0].tv_sec || tss->ts[0].tv_nsec) {
+ 		if (sock_flag(sk, SOCK_RCVTSTAMP)) {
+ 			if (sock_flag(sk, SOCK_RCVTSTAMPNS)) {
+-				put_cmsg(msg, SOL_SOCKET, SCM_TIMESTAMPNS,
++				put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMPNS_OLD,
+ 					 sizeof(tss->ts[0]), &tss->ts[0]);
+ 			} else {
+ 				tv.tv_sec = tss->ts[0].tv_sec;
+ 				tv.tv_usec = tss->ts[0].tv_nsec / 1000;
+ 
+-				put_cmsg(msg, SOL_SOCKET, SCM_TIMESTAMP,
++				put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_OLD,
+ 					 sizeof(tv), &tv);
+ 			}
+ 		}
+@@ -1893,7 +1893,7 @@ static void tcp_recv_timestamp(struct msghdr *msg, const struct sock *sk,
+ 
+ 	if (has_timestamping) {
+ 		tss->ts[1] = (struct timespec) {0};
+-		put_cmsg(msg, SOL_SOCKET, SCM_TIMESTAMPING,
++		put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMPING_OLD,
+ 			 sizeof(*tss), tss);
+ 	}
  }
- 
-@@ -942,11 +962,13 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
+index 65387e1e6964..eeb4639adbe5 100644
+--- a/net/rds/af_rds.c
++++ b/net/rds/af_rds.c
+@@ -430,7 +430,7 @@ static int rds_setsockopt(struct socket *sock, int level, int optname,
+ 		ret = rds_set_transport(rs, optval, optlen);
+ 		release_sock(sock->sk);
  		break;
+-	case SO_TIMESTAMP:
++	case SO_TIMESTAMP_OLD:
+ 		lock_sock(sock->sk);
+ 		ret = rds_enable_recvtstamp(sock->sk, optval, optlen);
+ 		release_sock(sock->sk);
+diff --git a/net/rds/recv.c b/net/rds/recv.c
+index 727639dac8a7..04e30d63a159 100644
+--- a/net/rds/recv.c
++++ b/net/rds/recv.c
+@@ -550,7 +550,7 @@ static int rds_cmsg_recv(struct rds_incoming *inc, struct msghdr *msg,
+ 	if ((inc->i_rx_tstamp != 0) &&
+ 	    sock_flag(rds_rs_to_sk(rs), SOCK_RCVTSTAMP)) {
+ 		struct timeval tv = ktime_to_timeval(inc->i_rx_tstamp);
+-		ret = put_cmsg(msg, SOL_SOCKET, SCM_TIMESTAMP,
++		ret = put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_OLD,
+ 			       sizeof(tv), &tv);
+ 		if (ret)
+ 			goto out;
+diff --git a/net/rxrpc/local_object.c b/net/rxrpc/local_object.c
+index 0906e51d3cfb..15cf42d5b53a 100644
+--- a/net/rxrpc/local_object.c
++++ b/net/rxrpc/local_object.c
+@@ -202,7 +202,7 @@ static int rxrpc_open_socket(struct rxrpc_local *local, struct net *net)
  
- 	case SO_RCVTIMEO_OLD:
--		ret = sock_set_timeout(&sk->sk_rcvtimeo, optval, optlen);
-+	case SO_RCVTIMEO_NEW:
-+		ret = sock_set_timeout(&sk->sk_rcvtimeo, optval, optlen, optname == SO_RCVTIMEO_OLD);
- 		break;
+ 		/* We want receive timestamps. */
+ 		opt = 1;
+-		ret = kernel_setsockopt(local->socket, SOL_SOCKET, SO_TIMESTAMPNS,
++		ret = kernel_setsockopt(local->socket, SOL_SOCKET, SO_TIMESTAMPNS_OLD,
+ 					(char *)&opt, sizeof(opt));
+ 		if (ret < 0) {
+ 			_debug("setsockopt failed");
+diff --git a/net/socket.c b/net/socket.c
+index e89884e2197b..5087f9e40f3a 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -669,7 +669,7 @@ static bool skb_is_err_queue(const struct sk_buff *skb)
+  * before the software timestamp is received, a hardware TX timestamp may be
+  * returned only if there is no software TX timestamp. Ignore false software
+  * timestamps, which may be made in the __sock_recv_timestamp() call when the
+- * option SO_TIMESTAMP(NS) is enabled on the socket, even when the skb has a
++ * option SO_TIMESTAMP_OLD(NS) is enabled on the socket, even when the skb has a
+  * hardware timestamp.
+  */
+ static bool skb_is_swtx_tstamp(const struct sk_buff *skb, int false_tstamp)
+@@ -721,12 +721,12 @@ void __sock_recv_timestamp(struct msghdr *msg, struct sock *sk,
+ 		if (!sock_flag(sk, SOCK_RCVTSTAMPNS)) {
+ 			struct timeval tv;
+ 			skb_get_timestamp(skb, &tv);
+-			put_cmsg(msg, SOL_SOCKET, SCM_TIMESTAMP,
++			put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_OLD,
+ 				 sizeof(tv), &tv);
+ 		} else {
+ 			struct timespec ts;
+ 			skb_get_timestampns(skb, &ts);
+-			put_cmsg(msg, SOL_SOCKET, SCM_TIMESTAMPNS,
++			put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMPNS_OLD,
+ 				 sizeof(ts), &ts);
+ 		}
+ 	}
+@@ -746,7 +746,7 @@ void __sock_recv_timestamp(struct msghdr *msg, struct sock *sk,
+ 	}
+ 	if (!empty) {
+ 		put_cmsg(msg, SOL_SOCKET,
+-			 SCM_TIMESTAMPING, sizeof(tss), &tss);
++			 SO_TIMESTAMPING_OLD, sizeof(tss), &tss);
  
- 	case SO_SNDTIMEO_OLD:
--		ret = sock_set_timeout(&sk->sk_sndtimeo, optval, optlen);
-+	case SO_SNDTIMEO_NEW:
-+		ret = sock_set_timeout(&sk->sk_sndtimeo, optval, optlen, optname == SO_SNDTIMEO_OLD);
- 		break;
- 
- 	case SO_ATTACH_FILTER:
-@@ -1171,6 +1193,7 @@ int sock_getsockopt(struct socket *sock, int level, int optname,
- 		struct linger ling;
- 		struct old_timeval32 tm32;
- 		struct __kernel_old_timeval tm;
-+		struct  __kernel_sock_timeval stm;
- 		struct sock_txtime txtime;
- 	} v;
- 
-@@ -1280,11 +1303,13 @@ int sock_getsockopt(struct socket *sock, int level, int optname,
- 		break;
- 
- 	case SO_RCVTIMEO_OLD:
--		lv = sock_get_timeout(sk->sk_rcvtimeo, optval);
-+	case SO_RCVTIMEO_NEW:
-+		lv = sock_get_timeout(sk->sk_rcvtimeo, optval, SO_RCVTIMEO_OLD == optname);
- 		break;
- 
- 	case SO_SNDTIMEO_OLD:
--		lv = sock_get_timeout(sk->sk_sndtimeo, optval);
-+	case SO_SNDTIMEO_NEW:
-+		lv = sock_get_timeout(sk->sk_sndtimeo, optval, SO_SNDTIMEO_OLD == optname);
- 		break;
- 
- 	case SO_RCVLOWAT:
+ 		if (skb_is_err_queue(skb) && skb->len &&
+ 		    SKB_EXT_ERR(skb)->opt_stats)
 -- 
 2.17.1
 
