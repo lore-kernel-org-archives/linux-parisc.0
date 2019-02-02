@@ -2,224 +2,119 @@ Return-Path: <SRS0=IL0n=QJ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEB55C282D7
-	for <linux-parisc@archiver.kernel.org>; Sat,  2 Feb 2019 15:37:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2648C282D7
+	for <linux-parisc@archiver.kernel.org>; Sat,  2 Feb 2019 17:28:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 864FA2086C
-	for <linux-parisc@archiver.kernel.org>; Sat,  2 Feb 2019 15:37:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EF5DA2085A
+	for <linux-parisc@archiver.kernel.org>; Sat,  2 Feb 2019 17:28:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sAHg/EBD"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="g4gGfHJb"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727958AbfBBPfS (ORCPT
+        id S1726256AbfBBR2O (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 2 Feb 2019 10:35:18 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:44950 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727457AbfBBPfR (ORCPT
+        Sat, 2 Feb 2019 12:28:14 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.164]:25275 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbfBBR2O (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 2 Feb 2019 10:35:17 -0500
-Received: by mail-pf1-f195.google.com with SMTP id u6so4747425pfh.11;
-        Sat, 02 Feb 2019 07:35:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=MOOCgWMcqNx29qDNgQPggQZMAPyyh787m+mGlOgujkA=;
-        b=sAHg/EBDlVWLBUIoEVcqMCGpCbLoqv7KzituBNXF6/2kks+YcGn2lBgl5/YTFtY0Vn
-         I1pAoAoYa2Z38m+9nA/NnOv90SUfiN4Dxz/JbTSv8ymtdBTNtuXtFBwqOGbWM2dPkF4D
-         djPgs2gC/NzPTcQRhZbvYWglZva7fp4KPyaNuBh9ya7J3yj8aecRhqIrqnnXDsdlrHV5
-         WuRF3eqTv+p2tKoL1IJCH3lEJ4+x4bRJntdTPtRENO9EdenrErqfyifmYvnAVf1ImooQ
-         L1yswmQ6N4GDnhxBteCU9FBXHtnp6ZFSI3otEvJaZVnCc+gZQlriXsLeXoEH/epAoJ15
-         WJ4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=MOOCgWMcqNx29qDNgQPggQZMAPyyh787m+mGlOgujkA=;
-        b=RDhe7fXRsIgNBvlJ9UIMsRXHruADEgF+v8v5lhn0GP1IpMTZYSmDwXaTg2kXG+pLxO
-         ywucu5ilplU+nuCupje3pLx2a5vYvmB0j5c1G9U4Yz9hLrXyfFafIxNwShkP/UzrS0Pj
-         MgaF3yLTDcos+7Np16imPl29OmOqn1HR27DR8njoZj3I+bg/FT3vrHaq2jDik9AlRlna
-         KeFhkWbx1eEP8ul/pSQrjGfU/muf1ZfUB2b70PoUpHS8DcOV4uv3/VgUnyTCHTwl7nBU
-         ji+odnitmH/HbhRe1LOTC5fvYeNqD7+0XI3RiNUUMj7UAs5CPiEeomxWKQv9jEtbeQlS
-         waKQ==
-X-Gm-Message-State: AHQUAubXm2WFFKeGRkEGsCdruFyovVPKKCCzyPYVcwyodcq2Tl9eQ0hU
-        jVtAtkm7HbE0yBbBcPCAE+M=
-X-Google-Smtp-Source: AHgI3IbkxPuSE2KX6LqGdFUe5JKhgMoIzKyTPxycKI5WjfhQPUFzvGqOV6pIQXLHL34393sEkcp+cg==
-X-Received: by 2002:a63:c4b:: with SMTP id 11mr2065733pgm.451.1549121716228;
-        Sat, 02 Feb 2019 07:35:16 -0800 (PST)
-Received: from localhost.localdomain ([49.206.15.111])
-        by smtp.gmail.com with ESMTPSA id m20sm16221611pgb.56.2019.02.02.07.35.04
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 02 Feb 2019 07:35:15 -0800 (PST)
-From:   Deepa Dinamani <deepa.kernel@gmail.com>
-To:     davem@davemloft.net, linux-kernel@vger.kernel.org
+        Sat, 2 Feb 2019 12:28:14 -0500
+X-Greylist: delayed 548 seconds by postgrey-1.27 at vger.kernel.org; Sat, 02 Feb 2019 12:28:12 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1549128491;
+        s=strato-dkim-0002; d=hartkopp.net;
+        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=rehcv0vygKeLFmcL2i9Y89DgKx6ZIYyYldtPdL8iBYk=;
+        b=g4gGfHJbSmGdbqdcgAifY7Gfb/Irj+LmGG3TCFan0Eiak3OyXF7Rt44yyptm7Ruqg0
+        vcie3PSobcgRXb56u6E73lZDGOkmlXdaOqVnNhuX/UGwn2HvUV7oI3KbRyRzuJ+lHLQG
+        d1KfmPXHR2accCCc84dYkoQZRJwXeX1RS+nzgz5EYHEdxGKWcr4m7pWv6nU4dAS4K/Nz
+        K9DxpQDuhEE/JXd8pbpAD2apZxG5WiXtZ5krmR51Kev8HmJpVgHp0VV5WXZppDqpdYHg
+        TGgbwD4a3f5Kw5A9Dx2+doeEFt0hxDfeyy0KAIw4F4bbGiHBtPdNPqFg2tAnjDYQzqug
+        o1ZQ==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1rnbMYliT57T3lT8iOWw="
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.1.200]
+        by smtp.strato.de (RZmta 44.9 DYNA|AUTH)
+        with ESMTPSA id j01e49v12HFkpna
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve secp521r1 with 521 ECDH bits, eq. 15360 bits RSA))
+        (Client did not present a certificate);
+        Sat, 2 Feb 2019 18:15:46 +0100 (CET)
+Subject: Re: [PATCH net-next v5 12/12] sock: Add SO_RCVTIMEO_NEW and
+ SO_SNDTIMEO_NEW
+To:     Deepa Dinamani <deepa.kernel@gmail.com>, davem@davemloft.net,
+        linux-kernel@vger.kernel.org
 Cc:     netdev@vger.kernel.org, arnd@arndb.de, y2038@lists.linaro.org,
-        ccaulfie@redhat.com, chris@zankel.net, cluster-devel@redhat.com,
-        deller@gmx.de, dhowells@redhat.com, fenghua.yu@intel.com,
-        isdn@linux-pingi.de, jejb@parisc-linux.org,
-        linux-afs@lists.infradead.org, linux-alpha@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@linux-mips.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, paulus@samba.org,
-        ralf@linux-mips.org, rth@twiddle.net, schwidefsky@de.ibm.com,
-        sparclinux@vger.kernel.org, tglx@linutronix.de,
-        ubraun@linux.ibm.com
-Subject: [PATCH net-next v5 00/12] net: y2038-safe socket timestamps 
-Date:   Sat,  2 Feb 2019 07:34:42 -0800
-Message-Id: <20190202153454.7121-1-deepa.kernel@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        ccaulfie@redhat.com, deller@gmx.de, paulus@samba.org,
+        ralf@linux-mips.org, rth@twiddle.net, cluster-devel@redhat.com,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20190202153454.7121-1-deepa.kernel@gmail.com>
+ <20190202153454.7121-13-deepa.kernel@gmail.com>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <0fad3f4d-4c0e-d9f2-1af0-7890d40c19c0@hartkopp.net>
+Date:   Sat, 2 Feb 2019 18:15:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
+MIME-Version: 1.0
+In-Reply-To: <20190202153454.7121-13-deepa.kernel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The series introduces new socket timestamps that are
-y2038 safe.
+Hi all,
 
-The time data types used for the existing socket timestamp
-options: SO_TIMESTAMP, SO_TIMESTAMPNS and SO_TIMESTAMPING
-are not y2038 safe. The series introduces SO_TIMESTAMP_NEW,
-SO_TIMESTAMPNS_NEW and SO_TIMESTAMPING_NEW to replace these.
-These new timestamps can be used on all architectures.
+On 02.02.19 16:34, Deepa Dinamani wrote:
+> Add new socket timeout options that are y2038 safe.
+(..)
+> 
+> diff --git a/arch/alpha/include/uapi/asm/socket.h b/arch/alpha/include/uapi/asm/socket.h
+> index 9826d1db71d0..0d0fddb7e738 100644
+> --- a/arch/alpha/include/uapi/asm/socket.h
+> +++ b/arch/alpha/include/uapi/asm/socket.h
+> @@ -119,19 +119,25 @@
+>   #define SO_TIMESTAMPNS_NEW      64
+>   #define SO_TIMESTAMPING_NEW     65
+>   
+> -#if !defined(__KERNEL__)
+> +#define SO_RCVTIMEO_NEW         66
+> +#define SO_SNDTIMEO_NEW         67
+>   
+> -#define	SO_RCVTIMEO SO_RCVTIMEO_OLD
+> -#define	SO_SNDTIMEO SO_SNDTIMEO_OLD
+> +#if !defined(__KERNEL__)
+>   
+>   #if __BITS_PER_LONG == 64
+>   #define SO_TIMESTAMP		SO_TIMESTAMP_OLD
+>   #define SO_TIMESTAMPNS		SO_TIMESTAMPNS_OLD
+>   #define SO_TIMESTAMPING         SO_TIMESTAMPING_OLD
+> +
+> +#define SO_RCVTIMEO		SO_RCVTIMEO_OLD
+> +#define SO_SNDTIMEO		SO_SNDTIMEO_OLD
 
-The alternative considered was to extend the sys_setsockopt()
-by using the flags. We did not receive any strong opinions about
-either of the approaches. Hence, this was chosen, as glibc folks
-preferred this.
+Maybe I'm a bit late in this discussion as you are already in v5 ...
 
-The series does not deal with updating the internal kernel socket
-calls like rxrpc to make them y2038 safe. This will be dealt
-with separately.
+I can see patches making the transition in different steps where it 
+might be helpful to name them *_OLD and *_NEW to understand the patches.
 
-Note that the timestamps behavior already does not match the
-man page specific behavior:
-SIOCGSTAMP
-    This ioctl should only be used if the socket option SO_TIMESTAMP
-	is not set on the socket. Otherwise, it returns the timestamp of
-	the last packet that was received while SO_TIMESTAMP was not set,
-	or it fails if no such packet has been received,
-	(i.e., ioctl(2) returns -1 with errno set to ENOENT).
-	
-The recommendation is to update the man page to remove the above statement.
+But in the end the naming stays in the kernel for a very long time and I 
+remember myself (in early years) to name things 'new', 'new2', 'new3'.
 
-The overview of the socket timestamp series is as below:
-1. Delete asm specific socket.h when possible.
-2. Support SO/SCM_TIMESTAMP* options only in userspace.
-3. Rename current SO/SCM_TIMESTAMP* to SO/SCM_TIMESTAMP*_OLD.
-3. Alter socket options so that SOCK_RCVTSTAMPNS does
-   not rely on SOCK_RCVTSTAMP.
-4. Introduce y2038 safe types for socket timestamp.
-5. Introduce new y2038 safe socket options SO/SCM_TIMESTAMP*_NEW.
-6. Intorduce new y2038 safe socket timeout options.
+In fact SO_TIMESTAMP_OLD should be named SO_TIMESTAMP32 and 
+SO_TIMESTAMP_NEW should be named SO_TIMESTAMP64.
 
-Changes since v4:
-* Fixed the typo in calling sock_get_timeout()
+Especially as it tells you what is 'inside', the naming of these new 
+introduced constants should be replaced with *32 and *64 names.
 
-Changes since v3:
-* Rebased onto net-next and fixups as per review comments
-* Merged the socket timeout series
-* Integrated Arnd's patch to simplify compat handling of timeout syscalls
+The documentation and the other comments still fit perfectly then.
 
-Changes since v2:
-* Removed extra functions to reduce diff churn as per code review
+Regards,
+Oliver
 
-Changes since v1:
-* Dropped the change to disentangle sock flags
-* Renamed sock_timeval to __kernel_sock_timeval
-* Updated a few comments
-* Added documentation changes
-
-Arnd Bergmann (1):
-  socket: move compat timeout handling into sock.c
-
-Deepa Dinamani (11):
-  selftests: add missing include unistd
-  arch: Use asm-generic/socket.h when possible
-  sockopt: Rename SO_TIMESTAMP* to SO_TIMESTAMP*_OLD
-  arch: sparc: Override struct __kernel_old_timeval
-  socket: Use old_timeval types for socket timestamps
-  socket: Add struct __kernel_sock_timeval
-  socket: Add SO_TIMESTAMP[NS]_NEW
-  socket: Add SO_TIMESTAMPING_NEW
-  socket: Update timestamping Documentation
-  socket: Rename SO_RCVTIMEO/ SO_SNDTIMEO with _OLD suffixes
-  sock: Add SO_RCVTIMEO_NEW and SO_SNDTIMEO_NEW
-
- Documentation/networking/timestamping.txt     |  43 ++++-
- arch/alpha/include/uapi/asm/socket.h          |  47 ++++--
- arch/ia64/include/uapi/asm/Kbuild             |   1 +
- arch/ia64/include/uapi/asm/socket.h           | 122 --------------
- arch/mips/include/uapi/asm/socket.h           |  47 ++++--
- arch/parisc/include/uapi/asm/socket.h         |  46 ++++--
- arch/powerpc/include/uapi/asm/socket.h        |   4 +-
- arch/s390/include/uapi/asm/Kbuild             |   1 +
- arch/s390/include/uapi/asm/socket.h           | 119 --------------
- arch/sparc/include/uapi/asm/posix_types.h     |  10 ++
- arch/sparc/include/uapi/asm/socket.h          |  49 ++++--
- arch/x86/include/uapi/asm/Kbuild              |   1 +
- arch/x86/include/uapi/asm/socket.h            |   1 -
- arch/xtensa/include/asm/Kbuild                |   1 +
- arch/xtensa/include/uapi/asm/Kbuild           |   1 +
- arch/xtensa/include/uapi/asm/socket.h         | 124 --------------
- drivers/isdn/mISDN/socket.c                   |   2 +-
- fs/dlm/lowcomms.c                             |   4 +-
- include/linux/skbuff.h                        |  24 ++-
- include/linux/socket.h                        |   8 +
- include/net/sock.h                            |   1 +
- include/uapi/asm-generic/socket.h             |  48 ++++--
- include/uapi/linux/errqueue.h                 |   4 +
- include/uapi/linux/time.h                     |   7 +
- net/bluetooth/hci_sock.c                      |   4 +-
- net/compat.c                                  |  78 +--------
- net/core/scm.c                                |  27 ++++
- net/core/sock.c                               | 151 +++++++++++++-----
- net/ipv4/tcp.c                                |  61 ++++---
- net/rds/af_rds.c                              |  10 +-
- net/rds/recv.c                                |  18 ++-
- net/rxrpc/local_object.c                      |   2 +-
- net/smc/af_smc.c                              |   3 +-
- net/socket.c                                  |  50 ++++--
- net/vmw_vsock/af_vsock.c                      |   4 +-
- .../networking/timestamping/rxtimestamp.c     |   1 +
- 36 files changed, 541 insertions(+), 583 deletions(-)
- delete mode 100644 arch/ia64/include/uapi/asm/socket.h
- delete mode 100644 arch/s390/include/uapi/asm/socket.h
- delete mode 100644 arch/x86/include/uapi/asm/socket.h
- delete mode 100644 arch/xtensa/include/uapi/asm/socket.h
-
--- 
-2.17.1
-
-Cc: ccaulfie@redhat.com
-Cc: chris@zankel.net
-Cc: cluster-devel@redhat.com
-Cc: davem@davemloft.net
-Cc: deller@gmx.de
-Cc: dhowells@redhat.com
-Cc: fenghua.yu@intel.com
-Cc: isdn@linux-pingi.de
-Cc: jejb@parisc-linux.org
-Cc: linux-afs@lists.infradead.org
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-arch@vger.kernel.org
-Cc: linux-ia64@vger.kernel.org
-Cc: linux-mips@linux-mips.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-rdma@vger.kernel.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: netdev@vger.kernel.org
-Cc: paulus@samba.org
-Cc: ralf@linux-mips.org
-Cc: rth@twiddle.net
-Cc: schwidefsky@de.ibm.com
-Cc: sparclinux@vger.kernel.org
-Cc: tglx@linutronix.de
-Cc: ubraun@linux.ibm.com
