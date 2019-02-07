@@ -2,82 +2,74 @@ Return-Path: <SRS0=bQ1H=QO=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8A73C282C4
-	for <linux-parisc@archiver.kernel.org>; Thu,  7 Feb 2019 17:47:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A055C282C2
+	for <linux-parisc@archiver.kernel.org>; Thu,  7 Feb 2019 21:32:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 895DB2083B
-	for <linux-parisc@archiver.kernel.org>; Thu,  7 Feb 2019 17:47:06 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QOO7NXAR"
+	by mail.kernel.org (Postfix) with ESMTP id 078912146E
+	for <linux-parisc@archiver.kernel.org>; Thu,  7 Feb 2019 21:32:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbfBGRrG (ORCPT
+        id S1726958AbfBGVcJ (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 7 Feb 2019 12:47:06 -0500
-Received: from mail-it1-f193.google.com ([209.85.166.193]:55308 "EHLO
-        mail-it1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726401AbfBGRrF (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 7 Feb 2019 12:47:05 -0500
-Received: by mail-it1-f193.google.com with SMTP id m62so1799355ith.5
-        for <linux-parisc@vger.kernel.org>; Thu, 07 Feb 2019 09:47:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aPWuwBB0VUOO0R1ynWa8AdaMVsS5eM2ju9tPwUBkNLY=;
-        b=QOO7NXARBpmCTlliJnxUk6UqLVW6eIw/VgBLelR1WmRwtK/IT9cXhf7/Hq6TqLGjkK
-         Iq2yfsZM1l9yO6FwjsBLYe5a129GYLMTjGWIPWmryBMpjdS493HsbDp4SbssGKdRHLe7
-         BanMZvZHD9gzDsmXl++U5pS/6Fit4MrYwDdT8V3hzhshu5sLDy8V9v28X4KSrRVX1Szc
-         zSQbLDvYv665WXOe8pJdRMgeN335VMUyc3XLV8MFrMkwC54OtF//WaM+bsCsskZWwWuw
-         nxXsU9QDILFRPfryqsgMfrATXZd0VI/pv/+VtwyXgJvPzeZiCCX7wJQUPY806Yc71VnH
-         rjAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aPWuwBB0VUOO0R1ynWa8AdaMVsS5eM2ju9tPwUBkNLY=;
-        b=JiwrXhkC/jAU96g1QpEXpBY1HbfUKuf35u/mi8xeKx4HpOYADtnilpuwUCCCejJBtt
-         GCUVMSWiXEiGaUDJ3zhJUsjIJuDTqBmxwCycR0Sn5TZIWyCeLu609yxfZV/TT6Ia6imK
-         1SO24wfgrYUVr8rp7fwCOvxR7Kr11WM82X4367f3qV2VcCbYb6m+9deA7iheAg+iO7pt
-         Wfm9XOQVkO+Dc2eW8/xsh1PyMF9zZnpsFVeWXFeHnIH4g21lklMN4BerPyJVuyB7MRik
-         w3RoXbpeQ2LhaT8C48hHuy55K0JUkdJsKQaTx2gX1p/I+T131lpqzBupkkHG+XeJdUkL
-         8oGw==
-X-Gm-Message-State: AHQUAubE93WrIWqirtrWehkGfZWg2ER2T3JMUkCPywtZDQx+VOG/l2/a
-        J+plhDtpnsQ94qyxT7e8DcTNkm2KMs6D8A24O10r9A==
-X-Google-Smtp-Source: AHgI3IZVURz+QEZn969QvikELvFu8nBV+kMfCIPqTgFcyR4lDNUxI4ua61l04c3loZgUyjOk75aEhBq/R08MFUB2Zhg=
-X-Received: by 2002:a5e:9318:: with SMTP id k24mr8871173iom.70.1549561625081;
- Thu, 07 Feb 2019 09:47:05 -0800 (PST)
-MIME-Version: 1.0
-References: <20190206222110.GA19527@ls3530.dellerweb.de>
-In-Reply-To: <20190206222110.GA19527@ls3530.dellerweb.de>
-From:   Matt Turner <mattst88@gmail.com>
-Date:   Thu, 7 Feb 2019 09:46:53 -0800
-Message-ID: <CAEdQ38Eb4=i6ED-Ndgqu59C8Nmw-6ECVbm3snxSi06LgHn-sCA@mail.gmail.com>
-Subject: Re: [PATCH] parisc: Add assembly implementations for strlen, strcpy,
- strncpy and strcat
-To:     Helge Deller <deller@gmx.de>
-Cc:     linux-parisc <linux-parisc@vger.kernel.org>,
+        Thu, 7 Feb 2019 16:32:09 -0500
+Received: from mout.gmx.net ([212.227.17.21]:58731 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726512AbfBGVcJ (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 7 Feb 2019 16:32:09 -0500
+Received: from ls3530.dellerweb.de ([92.116.171.129]) by mail.gmx.com
+ (mrgmx101 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 0LsgvV-1hGEf33g1R-012J9A; Thu, 07 Feb 2019 22:32:00 +0100
+Date:   Thu, 7 Feb 2019 22:31:57 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@hansenpartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Sven Schnelle <svens@stackframe.org>
+Subject: [PATCH] parisc: Add PDC_CRASH_PREP PDC function number
+Message-ID: <20190207213157.GA6726@ls3530.dellerweb.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:aq9M2QeIdvT0iT3EhfbPnlm0Cux6sjnCHo2NYekCqQbh0Pp/Q9D
+ YXWKxIJhborT3vP2kZo9KalAn386qEdr6di2cTo5kUZjI1qtxNqUmGQ9RmaIBkd8Bnb/YXo
+ MUDvqb+GJbBbctJAeyrQiI7a5blZ6vfBBnEEvi4iaEIT3ZV0byib5st3SS0Fx2FIdzHAG+v
+ 2j3uGzJ0fwZYCznAXQO7w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:c/cnzjqYW9E=:QVqhIIlpXYAgkYsZYIoL8l
+ 3rp2erLHKdW2nmrZ98eqsA8QMz+Ihb0vxdZM0BAHBiKzLq+yxIxGmMyPqcs+eogCxIN/Sod1W
+ WN/t0oRe7QebwU80mG7RW/vYb/AJ4iTy9WcJ16xxKYaDO2mqyYyFQHRG3v0HyjKo3M6kpEuUa
+ albECo2nJkhi3XBI/gMs6BCGIq82rtXR5qvjUn8yrHG5991/EpRYjp4Tvn+k+3/bBNj40GFuj
+ OM7sEJj0NuRr0UrQQ8hxY5N3ZjhU00Izx6M0F4pacTn5W4+iAljmi8NGooCLJYSltyfG+KKns
+ oR2wtwFvAew/MKIIxJnYvXH+/eG4wFbcy8zIVSS57ApNFkbIX6pp2Xgdh2VKl29QxiYpB3dpf
+ LNOLVz5BgI6nJFVegsQAj/5R+qMTg9SaVg+sdyG7EiXBx/m4vxHFx19gcBha2qm8J6Cyjdr49
+ +976mUpThtu/d3cMRdePYqgu1jCIr+Bez4eOY2XXZd4XcStItOiZnJJFwItclThNVHEkvt+cZ
+ y5vq3zKSpBBhHwhHmUbmwCLV1jJeCR3PUf1R54JTlbgIiV2PF6nr/uz0xnM8+k77Be8uVyGcF
+ 75XO0vxDIZT03cRLk2uqyHY+yZADfkrbzJy5iraGDi96AzGZj0cLZ6uYXzQq3nDOFSLKDO94E
+ /48xHzd1gmLNzpqTX2f8WEQc/SMceAwBrtwjmcS9MTpxSLp48qnJRQOJdYTuERA1+52aIPHYy
+ DZSpjtoc4C8aprO7grqgRdb3KhhtN5Z24Re4ZBsnkAO9vOId1fMw+YwZ5QaCR+avf74FZ0TPt
+ g8pszit5EH18f42aVAxW2SevrdPSKilKxpgt41JeVpYL3UGNhxLa+84jrT5r8tCV8o5d3IF3W
+ cSLdZcQ4hM0Rl0Ut5beRAtZkvp21PVJiKWshIQDevmvOba6iYvtpnLUv1rOVv3
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Wed, Feb 6, 2019 at 2:21 PM Helge Deller <deller@gmx.de> wrote:
->
-> Add performance-optimized versions of the strlen, strcpy, strncpy and
-> strcat string functions.
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Can you say anything else about them? E.g., are you using some feature
-that the compiler isn't able to generate? Do you have performance
-data?
-
-Except for strlen, they look like straightforward translations of the
-simple C implementations.
+diff --git a/arch/parisc/include/uapi/asm/pdc.h b/arch/parisc/include/uapi/asm/pdc.h
+index 593eeb573138..6d68bda2d261 100644
+--- a/arch/parisc/include/uapi/asm/pdc.h
++++ b/arch/parisc/include/uapi/asm/pdc.h
+@@ -167,6 +167,7 @@
+ #define PDC_SOFT_POWER_INFO	0	/* return info about the soft power switch */
+ #define PDC_SOFT_POWER_ENABLE	1	/* enable/disable soft power switch */
+ 
++#define PDC_CRASH_PREP 25		/* Prepare system for crash dump */
+ 
+ /* HVERSION dependent */
+ 
