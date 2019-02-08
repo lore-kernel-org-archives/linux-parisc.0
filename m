@@ -2,180 +2,226 @@ Return-Path: <SRS0=p2uU=QP=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D6D4C282CC
-	for <linux-parisc@archiver.kernel.org>; Fri,  8 Feb 2019 06:03:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10D9FC169C4
+	for <linux-parisc@archiver.kernel.org>; Fri,  8 Feb 2019 08:12:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E998C21916
-	for <linux-parisc@archiver.kernel.org>; Fri,  8 Feb 2019 06:03:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DE0FB21916
+	for <linux-parisc@archiver.kernel.org>; Fri,  8 Feb 2019 08:12:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727165AbfBHGC7 (ORCPT
+        id S1727273AbfBHIM1 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 8 Feb 2019 01:02:59 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:44742 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727150AbfBHGC7 (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 8 Feb 2019 01:02:59 -0500
-Received: by mail-qk1-f196.google.com with SMTP id r21so1444772qkl.11
-        for <linux-parisc@vger.kernel.org>; Thu, 07 Feb 2019 22:02:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+nXOz6pJ3BlFpyk91TAV6qomYY/ubiCtP1T6z27AOU8=;
-        b=BNHbhfxkar0UoXcr0kPaJyPiRZYW0DxzAmavkAiQOZEBYe4lsl1q0j3l2oqLf1imA7
-         9znRM2VOJ7kndGU26zrsPkMfR6fh6BiUs8eTlWfhzzsBB5iO+4XBovFK/KOhXpR5Bq8K
-         ogzEegcgd6UhEpDAcblJRJl+oRJdKB0ml1UKdvCShMN2RW4+fnoIfLOw7DvCKoOrrZYA
-         lpmJZhNE0QSHCdLsar7eg68+pAi2duuo3Synt9JPlrg34YSffg/GoPaXVaDlucfbWbyN
-         Sm9sHzJ7LzGhJnKQ/54wmnpk+qh7lm2uag1gIb5ad1tvj/ip8FA0VyJoAR6IaB5L1gwj
-         NlPg==
-X-Gm-Message-State: AHQUAuZ2lFM6g2r15yZaBAIupcpBmoeBJ+oHFYF2ioQWnrVEs+2lwBMb
-        jIUBcP1tj1ID9sgEF0sh8Qi8Ag==
-X-Google-Smtp-Source: AHgI3IY8UkuNEaunDWPDIIGAubiipW3iirC76VOqANc+nOZM1N0XFgV17IacLCmhs/QrcslrJHU2NQ==
-X-Received: by 2002:ae9:f110:: with SMTP id k16mr10172495qkg.93.1549605777884;
-        Thu, 07 Feb 2019 22:02:57 -0800 (PST)
-Received: from redhat.com (pool-173-76-246-42.bstnma.fios.verizon.net. [173.76.246.42])
-        by smtp.gmail.com with ESMTPSA id y6sm1075699qki.10.2019.02.07.22.02.56
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 07 Feb 2019 22:02:57 -0800 (PST)
-Date:   Fri, 8 Feb 2019 01:02:55 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paul.burton@mips.com>,
-        James Hogan <jhogan@kernel.org>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org
-Subject: [PATCH 2/2] arch: move common mmap flags to linux/mman.h
-Message-ID: <20190124142448.23243-3-mst@redhat.com>
-References: <20190124142448.23243-1-mst@redhat.com>
+        Fri, 8 Feb 2019 03:12:27 -0500
+Received: from mout.gmx.net ([212.227.17.20]:33247 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727231AbfBHIM1 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 8 Feb 2019 03:12:27 -0500
+Received: from ls3530.dellerweb.de ([92.116.178.5]) by mail.gmx.com (mrgmx102
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 0MFR2O-1gvGvG2e6m-00EMf2; Fri, 08
+ Feb 2019 09:12:18 +0100
+Date:   Fri, 8 Feb 2019 09:12:14 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Add assmbly implementation for memset()
+Message-ID: <20190208081205.GA25730@ls3530.dellerweb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190124142448.23243-1-mst@redhat.com>
-X-Mailer: git-send-email 2.17.1.1206.gb667731e2e.dirty
-X-Mutt-Fcc: =sent
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:ayW7FhaY15+NbbhOm5oYVoMGEQbritg+hdO5lB8xJOVAbsgLoKN
+ KKY0MALY0bVqG4n2vuWCtKdCGr8V6Fa/sktopEPjaWNpalqM6CJtPlZrw69kgWUbkOirkXY
+ RU2e50ZtS6fJiIklXawiLcJ0Z23LKCfj9bLpGcEO9AgFukMKJrsI5bKAHXEVXCEGrxPWMLY
+ j8eSmACwvroSWK0vRJ8mg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lFeXYfOJ8G8=:9DeQyUsnU8hirRZPTUliUs
+ n7iAZSkii8maInVqRDMCNEtluJhMsQcv6AORiuv1U4DDlp9nkpkwfQx+Y1FxXGdZhwSdXw4Jm
+ QojfUJtu0kAmrmcz/jwQAp1+WTb9c9I7OykZua8qZZwFJVRRGvGSOzO+ZpXOWwlB/zELHJ7si
+ 3Mzn7dAan3VUEDnG6oc+9d5x15MhbLxKUbfeK2dq5KBOUaP8qPafJu3U6jdcvoyoj58sWN/86
+ X5FUQkG05QBewvN1aJNeZuYa87EgTyMs6gKcQL8UNfN5wX851aDDNSMZ7sljVQYrwhrmizBZf
+ 6GEGt08ILu5Fvf8oIwhw77x7W8FXYz1hShpis0y2PWKcuQ/Nfp9SweTap3yFeOKvtpKMx+6fx
+ +b2UxfjIheKrF9zLfz8/qp8x0zwqf2/jlL7uUkNUcTLkasmyG2ViUSt7Z+QRjaa6LOWEatlNY
+ K6tnZ4vPFY9wV89r/pag1tQHJ2hXzg4BLOUXfjJ2jBRginHkEzburcfsgHpYfeVG4oggekwSY
+ DGaXhTyYNGeYHWky9M1ezAK1+4V+Ya9K5y+KL/2SDlc7vLqxDralab/ryremRp78b6ChmiaP7
+ AN7xnoGa5tsyoYTFi9p26U78A4RJV+KjrKrB3Ow9tySVhDltLCyTk1wQnQVlv1sepYIuzph8K
+ s2O2ruvuJkdPUJ9gs6rOv7AJDADqBv3RUnUuQXAQfjS7qR7mEQ9HzJHr1fFQyn7R0xTc80V0u
+ vU2vHT1FTlgtb5TwXEc11a46p2PPULk+oYCTCLPIU+WEhwVk7PdKzqn9PS/AGPGyI5L8Hyo1u
+ 7h26ahQlV8zlUgLe3bwK6W5IYhqc8IPO7X0qZ7t28nL2jnj2YSviaiek2NfwF31i3Dx/H9EL6
+ 54IPd44UWEsl/KsfLxAt7nhY7eEbsy0doHm+algYhdoHn1iHrzEQZWOtrkd2VW
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Now that we have 3 mmap flags shared by all architectures,
-let's move them into the common header.
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-This will help discourage future architectures from duplicating code.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- arch/alpha/include/uapi/asm/mman.h     | 4 +---
- arch/mips/include/uapi/asm/mman.h      | 4 +---
- arch/parisc/include/uapi/asm/mman.h    | 4 +---
- arch/xtensa/include/uapi/asm/mman.h    | 4 +---
- include/uapi/asm-generic/mman-common.h | 4 +---
- include/uapi/linux/mman.h              | 4 ++++
- 6 files changed, 9 insertions(+), 15 deletions(-)
-
-diff --git a/arch/alpha/include/uapi/asm/mman.h b/arch/alpha/include/uapi/asm/mman.h
-index f9d4e6b6d4bd..ac23379b7a87 100644
---- a/arch/alpha/include/uapi/asm/mman.h
-+++ b/arch/alpha/include/uapi/asm/mman.h
-@@ -10,9 +10,7 @@
- #define PROT_GROWSDOWN	0x01000000	/* mprotect flag: extend change to start of growsdown vma */
- #define PROT_GROWSUP	0x02000000	/* mprotect flag: extend change to end of growsup vma */
+diff --git a/arch/parisc/include/asm/string.h b/arch/parisc/include/asm/string.h
+index 62a9be5e55b2..4a0c9dbd62fd 100644
+--- a/arch/parisc/include/asm/string.h
++++ b/arch/parisc/include/asm/string.h
+@@ -20,4 +20,7 @@ extern char *strncpy(char *dest, const char *src, size_t count);
+ #define __HAVE_ARCH_STRCAT
+ extern char *strcat(char *dest, const char *src);
  
--#define MAP_SHARED	0x01		/* Share changes */
--#define MAP_PRIVATE	0x02		/* Changes are private */
--#define MAP_SHARED_VALIDATE 0x03	/* share + validate extension flags */
-+/* 0x01 - 0x03 are defined in linux/mman.h */
- #define MAP_TYPE	0x0f		/* Mask for type of mapping (OSF/1 is _wrong_) */
- #define MAP_FIXED	0x100		/* Interpret addr exactly */
- #define MAP_ANONYMOUS	0x10		/* don't use a file */
-diff --git a/arch/mips/include/uapi/asm/mman.h b/arch/mips/include/uapi/asm/mman.h
-index 3035ca499cd8..c2b40969eb1f 100644
---- a/arch/mips/include/uapi/asm/mman.h
-+++ b/arch/mips/include/uapi/asm/mman.h
-@@ -27,9 +27,7 @@
- /*
-  * Flags for mmap
-  */
--#define MAP_SHARED	0x001		/* Share changes */
--#define MAP_PRIVATE	0x002		/* Changes are private */
--#define MAP_SHARED_VALIDATE 0x003	/* share + validate extension flags */
-+/* 0x01 - 0x03 are defined in linux/mman.h */
- #define MAP_TYPE	0x00f		/* Mask for type of mapping */
- #define MAP_FIXED	0x010		/* Interpret addr exactly */
- 
-diff --git a/arch/parisc/include/uapi/asm/mman.h b/arch/parisc/include/uapi/asm/mman.h
-index 870fbf8c7088..c98162f494db 100644
---- a/arch/parisc/include/uapi/asm/mman.h
-+++ b/arch/parisc/include/uapi/asm/mman.h
-@@ -10,9 +10,7 @@
- #define PROT_GROWSDOWN	0x01000000	/* mprotect flag: extend change to start of growsdown vma */
- #define PROT_GROWSUP	0x02000000	/* mprotect flag: extend change to end of growsup vma */
- 
--#define MAP_SHARED	0x01		/* Share changes */
--#define MAP_PRIVATE	0x02		/* Changes are private */
--#define MAP_SHARED_VALIDATE 0x03	/* share + validate extension flags */
-+/* 0x01 - 0x03 are defined in linux/mman.h */
- #define MAP_TYPE	0x2b		/* Mask for type of mapping, includes bits 0x08 and 0x20 */
- #define MAP_FIXED	0x04		/* Interpret addr exactly */
- #define MAP_ANONYMOUS	0x10		/* don't use a file */
-diff --git a/arch/xtensa/include/uapi/asm/mman.h b/arch/xtensa/include/uapi/asm/mman.h
-index 58f29a9d895d..be726062412b 100644
---- a/arch/xtensa/include/uapi/asm/mman.h
-+++ b/arch/xtensa/include/uapi/asm/mman.h
-@@ -34,9 +34,7 @@
- /*
-  * Flags for mmap
-  */
--#define MAP_SHARED	0x001		/* Share changes */
--#define MAP_PRIVATE	0x002		/* Changes are private */
--#define MAP_SHARED_VALIDATE 0x003	/* share + validate extension flags */
-+/* 0x01 - 0x03 are defined in linux/mman.h */
- #define MAP_TYPE	0x00f		/* Mask for type of mapping */
- #define MAP_FIXED	0x010		/* Interpret addr exactly */
- 
-diff --git a/include/uapi/asm-generic/mman-common.h b/include/uapi/asm-generic/mman-common.h
-index e7ee32861d51..abd238d0f7a4 100644
---- a/include/uapi/asm-generic/mman-common.h
-+++ b/include/uapi/asm-generic/mman-common.h
-@@ -15,9 +15,7 @@
- #define PROT_GROWSDOWN	0x01000000	/* mprotect flag: extend change to start of growsdown vma */
- #define PROT_GROWSUP	0x02000000	/* mprotect flag: extend change to end of growsup vma */
- 
--#define MAP_SHARED	0x01		/* Share changes */
--#define MAP_PRIVATE	0x02		/* Changes are private */
--#define MAP_SHARED_VALIDATE 0x03	/* share + validate extension flags */
-+/* 0x01 - 0x03 are defined in linux/mman.h */
- #define MAP_TYPE	0x0f		/* Mask for type of mapping */
- #define MAP_FIXED	0x10		/* Interpret addr exactly */
- #define MAP_ANONYMOUS	0x20		/* don't use a file */
-diff --git a/include/uapi/linux/mman.h b/include/uapi/linux/mman.h
-index d0f515d53299..fc1a64c3447b 100644
---- a/include/uapi/linux/mman.h
-+++ b/include/uapi/linux/mman.h
-@@ -12,6 +12,10 @@
- #define OVERCOMMIT_ALWAYS		1
- #define OVERCOMMIT_NEVER		2
- 
-+#define MAP_SHARED	0x01		/* Share changes */
-+#define MAP_PRIVATE	0x02		/* Changes are private */
-+#define MAP_SHARED_VALIDATE 0x03	/* share + validate extension flags */
++#define __HAVE_ARCH_MEMSET
++extern void *memset(void *, int, size_t);
 +
- /*
-  * Huge page size encoding when MAP_HUGETLB is specified, and a huge page
-  * size other than the default is desired.  See hugetlb_encode.h.
--- 
-MST
-
+ #endif
+diff --git a/arch/parisc/lib/Makefile b/arch/parisc/lib/Makefile
+index c2d266358358..ad0a73fff324 100644
+--- a/arch/parisc/lib/Makefile
++++ b/arch/parisc/lib/Makefile
+@@ -2,7 +2,7 @@
+ # Makefile for parisc-specific library files
+ #
+ 
+-lib-y	:= lusercopy.o bitops.o checksum.o io.o memset.o memcpy.o \
++lib-y	:= lusercopy.o bitops.o checksum.o io.o memcpy.o \
+ 	   ucmpdi2.o delay.o string.o
+ 
+ obj-y	:= iomap.o
+diff --git a/arch/parisc/lib/memset.c b/arch/parisc/lib/memset.c
+deleted file mode 100644
+index 1d7929bd7642..000000000000
+--- a/arch/parisc/lib/memset.c
++++ /dev/null
+@@ -1,91 +0,0 @@
+-/* Copyright (C) 1991, 1997 Free Software Foundation, Inc.
+-   This file is part of the GNU C Library.
+-
+-   The GNU C Library is free software; you can redistribute it and/or
+-   modify it under the terms of the GNU Lesser General Public
+-   License as published by the Free Software Foundation; either
+-   version 2.1 of the License, or (at your option) any later version.
+-
+-   The GNU C Library is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-   Lesser General Public License for more details.
+-
+-   You should have received a copy of the GNU Lesser General Public
+-   License along with the GNU C Library; if not, write to the Free
+-   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+-   02111-1307 USA.  */
+-
+-/* Slight modifications for pa-risc linux - Paul Bame <bame@debian.org> */
+-
+-#include <linux/types.h>
+-#include <asm/string.h>
+-
+-#define OPSIZ (BITS_PER_LONG/8)
+-typedef unsigned long op_t;
+-
+-void *
+-memset (void *dstpp, int sc, size_t len)
+-{
+-  unsigned int c = sc;
+-  long int dstp = (long int) dstpp;
+-
+-  if (len >= 8)
+-    {
+-      size_t xlen;
+-      op_t cccc;
+-
+-      cccc = (unsigned char) c;
+-      cccc |= cccc << 8;
+-      cccc |= cccc << 16;
+-      if (OPSIZ > 4)
+-	/* Do the shift in two steps to avoid warning if long has 32 bits.  */
+-	cccc |= (cccc << 16) << 16;
+-
+-      /* There are at least some bytes to set.
+-	 No need to test for LEN == 0 in this alignment loop.  */
+-      while (dstp % OPSIZ != 0)
+-	{
+-	  ((unsigned char *) dstp)[0] = c;
+-	  dstp += 1;
+-	  len -= 1;
+-	}
+-
+-      /* Write 8 `op_t' per iteration until less than 8 `op_t' remain.  */
+-      xlen = len / (OPSIZ * 8);
+-      while (xlen > 0)
+-	{
+-	  ((op_t *) dstp)[0] = cccc;
+-	  ((op_t *) dstp)[1] = cccc;
+-	  ((op_t *) dstp)[2] = cccc;
+-	  ((op_t *) dstp)[3] = cccc;
+-	  ((op_t *) dstp)[4] = cccc;
+-	  ((op_t *) dstp)[5] = cccc;
+-	  ((op_t *) dstp)[6] = cccc;
+-	  ((op_t *) dstp)[7] = cccc;
+-	  dstp += 8 * OPSIZ;
+-	  xlen -= 1;
+-	}
+-      len %= OPSIZ * 8;
+-
+-      /* Write 1 `op_t' per iteration until less than OPSIZ bytes remain.  */
+-      xlen = len / OPSIZ;
+-      while (xlen > 0)
+-	{
+-	  ((op_t *) dstp)[0] = cccc;
+-	  dstp += OPSIZ;
+-	  xlen -= 1;
+-	}
+-      len %= OPSIZ;
+-    }
+-
+-  /* Write the last few bytes.  */
+-  while (len > 0)
+-    {
+-      ((unsigned char *) dstp)[0] = c;
+-      dstp += 1;
+-      len -= 1;
+-    }
+-
+-  return dstpp;
+-}
+diff --git a/arch/parisc/lib/string.S b/arch/parisc/lib/string.S
+index 614ba04f7b05..1521ef8484bb 100644
+--- a/arch/parisc/lib/string.S
++++ b/arch/parisc/lib/string.S
+@@ -104,4 +104,39 @@ ENTRY_CFI(strcat)
+ 	bv,n	r0(rp)
+ ENDPROC_CFI(strcat)
+ 
++
++       .align 16
++ENTRY_CFI(memset, FRAME=0)
++	copy	arg0,ret0
++	cmpb,COND(=) r0,arg0,4f
++	copy	arg0,t2
++	cmpb,COND(=) r0,arg2,4f
++	ldo	-1(arg2),arg3
++	subi	-1,arg3,t0
++	subi	0,t0,t1
++	cmpiclr,COND(>=) 0,t1,arg2
++	ldo	-1(t1),arg2
++	extru arg2,31,2,arg0
++2:	stb	arg1,0(t2)
++	ldo	1(t2),t2
++	addib,>= -1,arg0,2b
++	ldo	-1(arg3),arg3
++	cmpiclr,COND(<=) 4,arg2,r0
++	b,l,n	4f,r0
++#ifdef CONFIG_64BIT
++	depd,*	r0,63,2,arg2
++#else
++	depw	r0,31,2,arg2
++#endif
++	ldo	1(t2),t2
++3:	stb	arg1,-1(t2)
++	stb	arg1,0(t2)
++	stb	arg1,1(t2)
++	stb	arg1,2(t2)
++	addib,COND(>) -4,arg2,3b
++	ldo	4(t2),t2
++4:	bv,n	r0(rp)
++ENDPROC_CFI(memset)
++
++        .end
+ 	.end
