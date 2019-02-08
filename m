@@ -6,43 +6,43 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D681FC282D7
-	for <linux-parisc@archiver.kernel.org>; Fri,  8 Feb 2019 06:03:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D6D4C282CC
+	for <linux-parisc@archiver.kernel.org>; Fri,  8 Feb 2019 06:03:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A855421916
-	for <linux-parisc@archiver.kernel.org>; Fri,  8 Feb 2019 06:03:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E998C21916
+	for <linux-parisc@archiver.kernel.org>; Fri,  8 Feb 2019 06:03:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727190AbfBHGDF (ORCPT
+        id S1727165AbfBHGC7 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 8 Feb 2019 01:03:05 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:41073 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727192AbfBHGDD (ORCPT
+        Fri, 8 Feb 2019 01:02:59 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:44742 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727150AbfBHGC7 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 8 Feb 2019 01:03:03 -0500
-Received: by mail-qk1-f195.google.com with SMTP id u188so1460951qkh.8
-        for <linux-parisc@vger.kernel.org>; Thu, 07 Feb 2019 22:03:02 -0800 (PST)
+        Fri, 8 Feb 2019 01:02:59 -0500
+Received: by mail-qk1-f196.google.com with SMTP id r21so1444772qkl.11
+        for <linux-parisc@vger.kernel.org>; Thu, 07 Feb 2019 22:02:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
         bh=+nXOz6pJ3BlFpyk91TAV6qomYY/ubiCtP1T6z27AOU8=;
-        b=A6hDJW30kcpRa5urkDFTPv5Ej28zDnOsBB7xLQWIw+gOvlX0Jg+FHmJNmGfEnZUTow
-         sGEButbgoCFOX0B7Qpg9Pzv2IzdvK4RuaqwZTqvzqn/+NoPeYZuILKDbqCDLayc6Bbbp
-         8a8ajC1/8NJlMZ7sX6d0wobM2U3wnu7TSon3DqE/U8XXA16aEGXAceLvu/yIHvly1Vau
-         Im+KJLgmyM+5gidex4KV0j+TcVXdJbw/loDxaIn+LCpP6Ccr9xt+MrqYH/WirF6mDIes
-         lJ77lLsJxBu5R2qNeEqVN8Gh+qXqU2Cnjnno/CqpEftfvcgLvzYON8o+59diQ93DGtkQ
-         DcIw==
-X-Gm-Message-State: AHQUAuZ4YF3vRycc/D9+3osfMk9Ft2xW87S6e+GbSCctgvDeToZ/iIF2
-        86tamyt1p6UKvhIBtPq50gNn4A==
-X-Google-Smtp-Source: AHgI3IbuHaFaB9wArNOXePbo8MV6R3uJZMInumojzj3lxRwkyLUILfMNj7HegJ1LovNmUb6R+8Z3LQ==
-X-Received: by 2002:a37:5ac4:: with SMTP id o187mr14187576qkb.282.1549605782088;
-        Thu, 07 Feb 2019 22:03:02 -0800 (PST)
+        b=BNHbhfxkar0UoXcr0kPaJyPiRZYW0DxzAmavkAiQOZEBYe4lsl1q0j3l2oqLf1imA7
+         9znRM2VOJ7kndGU26zrsPkMfR6fh6BiUs8eTlWfhzzsBB5iO+4XBovFK/KOhXpR5Bq8K
+         ogzEegcgd6UhEpDAcblJRJl+oRJdKB0ml1UKdvCShMN2RW4+fnoIfLOw7DvCKoOrrZYA
+         lpmJZhNE0QSHCdLsar7eg68+pAi2duuo3Synt9JPlrg34YSffg/GoPaXVaDlucfbWbyN
+         Sm9sHzJ7LzGhJnKQ/54wmnpk+qh7lm2uag1gIb5ad1tvj/ip8FA0VyJoAR6IaB5L1gwj
+         NlPg==
+X-Gm-Message-State: AHQUAuZ2lFM6g2r15yZaBAIupcpBmoeBJ+oHFYF2ioQWnrVEs+2lwBMb
+        jIUBcP1tj1ID9sgEF0sh8Qi8Ag==
+X-Google-Smtp-Source: AHgI3IY8UkuNEaunDWPDIIGAubiipW3iirC76VOqANc+nOZM1N0XFgV17IacLCmhs/QrcslrJHU2NQ==
+X-Received: by 2002:ae9:f110:: with SMTP id k16mr10172495qkg.93.1549605777884;
+        Thu, 07 Feb 2019 22:02:57 -0800 (PST)
 Received: from redhat.com (pool-173-76-246-42.bstnma.fios.verizon.net. [173.76.246.42])
-        by smtp.gmail.com with ESMTPSA id 8sm1973905qtr.7.2019.02.07.22.03.00
+        by smtp.gmail.com with ESMTPSA id y6sm1075699qki.10.2019.02.07.22.02.56
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 07 Feb 2019 22:03:01 -0800 (PST)
-Date:   Fri, 8 Feb 2019 01:03:00 -0500
+        Thu, 07 Feb 2019 22:02:57 -0800 (PST)
+Date:   Fri, 8 Feb 2019 01:02:55 -0500
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
@@ -57,8 +57,8 @@ Cc:     linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
         linux-xtensa@linux-xtensa.org
-Subject: [PATCH 3/3] arch: move common mmap flags to linux/mman.h
-Message-ID: <20190124142448.23243-5-mst@redhat.com>
+Subject: [PATCH 2/2] arch: move common mmap flags to linux/mman.h
+Message-ID: <20190124142448.23243-3-mst@redhat.com>
 References: <20190124142448.23243-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
