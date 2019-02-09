@@ -1,138 +1,97 @@
-Return-Path: <SRS0=p2uU=QP=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=rolu=QQ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13EC5C169C4
-	for <linux-parisc@archiver.kernel.org>; Fri,  8 Feb 2019 17:28:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C95FC169C4
+	for <linux-parisc@archiver.kernel.org>; Sat,  9 Feb 2019 01:44:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E394E2146E
-	for <linux-parisc@archiver.kernel.org>; Fri,  8 Feb 2019 17:28:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EECA5217D8
+	for <linux-parisc@archiver.kernel.org>; Sat,  9 Feb 2019 01:44:48 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MDAZophP"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbfBHR21 (ORCPT
+        id S1726747AbfBIBos (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 8 Feb 2019 12:28:27 -0500
-Received: from mout.gmx.net ([212.227.15.19]:47167 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726679AbfBHR21 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 8 Feb 2019 12:28:27 -0500
-Received: from ls3530.dellerweb.de ([92.116.155.128]) by mail.gmx.com
- (mrgmx003 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 0MTSrf-1giZJF1Ik3-00SPL1; Fri, 08 Feb 2019 18:28:18 +0100
-Date:   Fri, 8 Feb 2019 18:28:13 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Show machine product number during boot
-Message-ID: <20190208172813.GB29207@ls3530.dellerweb.de>
+        Fri, 8 Feb 2019 20:44:48 -0500
+Received: from mail-it1-f195.google.com ([209.85.166.195]:40427 "EHLO
+        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726522AbfBIBos (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 8 Feb 2019 20:44:48 -0500
+Received: by mail-it1-f195.google.com with SMTP id h193so13771518ita.5;
+        Fri, 08 Feb 2019 17:44:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ll6utr+E4KfSWBkxlzzCxCgAe0VO4EUDQW3TXLdDpGY=;
+        b=MDAZophPccpEBkwjEu0yNdj8ZjsQxHZoRWnzwamVRcFu8r7Ig0NhQlK0YvmzjRF5QR
+         TgcKGXaP4ee1P+S/a0rQ2+7UiyxnPbjp7wIKXUfbI1A+R0bjOHRwHykEAbVrKlZ5XMRy
+         lW4dGvuT+IedIGdh5nShDzxnMDdGO0txe51ksvaZbMsLRx23d76MnlG3BBi4Gmn69thl
+         xWzvM2aGsPw94MO+MhX6e4G6gJeopOb0pawYb13EVs+xmYELU+XgOdMRl1pmrIiKuJsU
+         tlFuRb0FOFESQgKh3xQyw6O3xR2F2JKb17js6wJUSX6C95W2N71tiA5RCxZ2f4L4Gh8H
+         cqKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ll6utr+E4KfSWBkxlzzCxCgAe0VO4EUDQW3TXLdDpGY=;
+        b=H7c37JpxJhWgeBxeIkA7IGAtIG6D8Afn7nmxJDYkw4ymtMHbrq7EyZlKIvkLbCDhbl
+         O8ZwcayKALo4xVI6JcDJV7wf90DVnoweP7gZM8wvlKUH+U0x4r9fzSM42x1agNKkPRo/
+         dt80S4t/uFDQVkVCx9eJ6rlszInmAoKOqHk6M4a7/4Sq7CQaOLlkK2FIM9whx+SZaO37
+         D+EhDc9fxLGm685Af3uqwy/Whd//rGda8a9MNUFLpMz0lur8Qru7KygsBmzknQxQdxgg
+         oLslt6Lc4KXZxq5uKLZhLICEjW6nKAAhnG1QOrtbs4M2IkSfpeJBvHN9Lr3JMxOjdneE
+         hrrA==
+X-Gm-Message-State: AHQUAuZpsXJsOP+ZiOuOFJVeAeJ6GMnTuOEcgoEotSNPBF7Qa+qFxKgE
+        OvZI3+u+0AfhebZgMTJur69wO9iZJ7TgK5JMo3g=
+X-Google-Smtp-Source: AHgI3IY6QR0TgFBSRnx7k50PrdwZjR9n6uuI2e6b4PsPo9m4Lv9EuBSpIZeO3O5wiWXMtobd9tOzC4xAVsLdS+zi4Xs=
+X-Received: by 2002:a24:955:: with SMTP id 82mr788760itm.58.1549676686827;
+ Fri, 08 Feb 2019 17:44:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:avcsgRKnPtdrSOtq4UDO9sGJAL+s7xX4AVyJVXs+IivNUaUtLMF
- UYjXH3fHDp2Yo6fx9PqDgxdfMREtAqD4p/oEJTNMFFGKz6WXnNL9r1ozb8tXQgvgzQlxkFL
- 0VGO3m1Ssc4Pcq0vV2kvQfAywU5EpiFAPC8kTBSrKIQMwxGyYt621Bp8nRir/bqGhrnGrif
- eh2C0G5QkiSVvWkvKdycw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Y6PP8n98TIM=:AJXL+9+mi4GrHPAb9KE/wT
- cn9hhJaDHqMGJWyRTWPsSSjjU3/0Q9kOogaH0G+BmpFEKuHqublyGFXuLhkNOF+t2jixAuxco
- AQPVdNb1isi6YvCP7FX7Ydpw/TMcpEiu0wmF3g/yapRSEL/bPZh71MKSEuwss+eMUdU70SlMn
- fp/H0vHuP3UgOsXftipae/E2nMuJXYGCi6RH0/iYAX1WN3DeYexerpqFM4cM38bwZo49EPP0g
- xNwqJ8854WqBij7LOTsEEE5Ecy74AuulmENBImGH0IvBYgqjTkawhozgG+HcgggFZq/1lOC22
- yTZLpzmmK3YIfAOklu2uuCojVjtirvLHwbgQZKCy2hPRQIgcoMc9NfASHhn6/30HLyP48OWL2
- G2cj47/USjzfj/Z6BcA+ljQdCrmZW7dhtoQ2YxfEYnBkQgZegaBN3X4rwG5UpNh8cwNM7wl7A
- dRN0e4a39UMvN6DQBnW+bsXAhkcXeRaz/7xKckSGC6iIvMWRjsd7OeISdCXV9JeOoP5jygRXe
- V4H1XN2OJY5zn2T33HMF7GAe0S+q+ItsgKvvL0Pu1TVDgHnLjat3T/uw4i8ds+g7bJ6VPWEex
- ZBl1ORyD4nSq9WZb+5mythYMhqhyRyq00nWdGVY1y2UIHHbwDNbgPyeWQkfooipe4cTFSZ98Y
- Z7L6fXHUqRpm2pCcwGYS4ZfL+72gYN27db2p5KtpiYTMRkLcOldm8cQ8AgVMjwBKXdWhfE3WC
- 1OSmVjtFA6CjCXTwn+yUHtflil4QUQWKrOE+ErIm7KPuc1ibALSGC2awyqIxcClSpBPqXAzBb
- 88m/IP2UPY21I14s2CtoN3NJF9f3TvwUDbaRjOqx171J1n/KDYDiB9QXzBl5ips0+xETE2w9m
- fSHNidT8y5Jh8rEC8SjiU0DVmfmUINp9YejJguCEWJSL6WlHU/kMMunFO1/Hbv
+References: <20190202153454.7121-1-deepa.kernel@gmail.com> <20190202153454.7121-13-deepa.kernel@gmail.com>
+ <87r2clku4j.fsf@concordia.ellerman.id.au>
+In-Reply-To: <87r2clku4j.fsf@concordia.ellerman.id.au>
+From:   Deepa Dinamani <deepa.kernel@gmail.com>
+Date:   Fri, 8 Feb 2019 17:44:34 -0800
+Message-ID: <CABeXuvqpexo4g7xQihKPoOd4ce4rLq0Agy-jYMELYvOAnqmXJA@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 12/12] sock: Add SO_RCVTIMEO_NEW and SO_SNDTIMEO_NEW
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Network Devel Mailing List <netdev@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        ccaulfie@redhat.com, Helge Deller <deller@gmx.de>,
+        Paul Mackerras <paulus@samba.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Richard Henderson <rth@twiddle.net>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-alpha@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-mips@vger.kernel.org,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Ask PDC firmware during boot for the original and current product
-number as well as the serial number and show it (if available).
+> You touched powerpc in the previous patch but not this one.
+>
+> That's because we use the asm-generic version I assume.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+That is correct.
 
-diff --git a/arch/parisc/include/asm/pdc.h b/arch/parisc/include/asm/pdc.h
-index 5b187d40d604..19bb2e46cd36 100644
---- a/arch/parisc/include/asm/pdc.h
-+++ b/arch/parisc/include/asm/pdc.h
-@@ -44,6 +44,7 @@ int pdc_model_sysmodel(char *name);
- int pdc_model_cpuid(unsigned long *cpu_id);
- int pdc_model_versions(unsigned long *versions, int id);
- int pdc_model_capabilities(unsigned long *capabilities);
-+int pdc_model_platform_info(char *orig_prod_num, char *current_prod_num, char *serial_no);
- int pdc_cache_info(struct pdc_cache_info *cache);
- int pdc_spaceid_bits(unsigned long *space_bits);
- #ifndef CONFIG_PA20
-diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
-index e6f3b49f2fd7..7a17551ea31e 100644
---- a/arch/parisc/kernel/firmware.c
-+++ b/arch/parisc/kernel/firmware.c
-@@ -568,6 +568,30 @@ int pdc_model_capabilities(unsigned long *capabilities)
-         return retval;
- }
- 
-+/**
-+ * pdc_model_platform_info - Returns machine product and serial number.
-+ * @orig_prod_num: Return buffer for original product number.
-+ * @current_prod_num: Return buffer for current product number.
-+ * @serial_no: Return buffer for serial number.
-+ *
-+ * Returns strings containing the original and current product numbers and the
-+ * serial number of the system.
-+ */
-+int pdc_model_platform_info(char *orig_prod_num, char *current_prod_num,
-+		char *serial_no)
-+{
-+	int retval;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&pdc_lock, flags);
-+	retval = mem_pdc_call(PDC_MODEL, PDC_MODEL_GET_PLATFORM_INFO,
-+		__pa(orig_prod_num), __pa(current_prod_num), __pa(serial_no));
-+	convert_to_wide(pdc_result);
-+	spin_unlock_irqrestore(&pdc_lock, flags);
-+
-+	return retval;
-+}
-+
- /**
-  * pdc_cache_info - Return cache and TLB information.
-  * @cache_info: The return buffer.
-diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
-index 82bd0d0927ce..7f4d042856b5 100644
---- a/arch/parisc/kernel/processor.c
-+++ b/arch/parisc/kernel/processor.c
-@@ -242,6 +242,7 @@ static int __init processor_probe(struct parisc_device *dev)
- void __init collect_boot_cpu_data(void)
- {
- 	unsigned long cr16_seed;
-+	char orig_prod_num[64], current_prod_num[64], serial_no[64];
- 
- 	memset(&boot_cpu_data, 0, sizeof(boot_cpu_data));
- 
-@@ -301,6 +302,14 @@ void __init collect_boot_cpu_data(void)
- 	_parisc_requires_coherency = (boot_cpu_data.cpu_type == mako) ||
- 				(boot_cpu_data.cpu_type == mako2);
- #endif
-+
-+	if (pdc_model_platform_info(orig_prod_num, current_prod_num, serial_no) == PDC_OK) {
-+		printk(KERN_INFO "product %s, original product %s, S/N: %s\n",
-+			current_prod_num, orig_prod_num, serial_no);
-+		add_device_randomness(orig_prod_num, strlen(orig_prod_num));
-+		add_device_randomness(current_prod_num, strlen(current_prod_num));
-+		add_device_randomness(serial_no, strlen(serial_no));
-+	}
- }
- 
- 
+> Would be good to mention in the change log though to avoid any confusion.
+
+I'm not sure how to do that now. It looks like the series has already
+been applied to net-next with a couple of merge conflicts fixed.
+
+-Deepa
