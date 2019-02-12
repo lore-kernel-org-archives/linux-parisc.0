@@ -1,100 +1,179 @@
-Return-Path: <SRS0=rov3=QS=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=xaKY=QT=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE50CC169C4
-	for <linux-parisc@archiver.kernel.org>; Mon, 11 Feb 2019 20:28:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07746C282CA
+	for <linux-parisc@archiver.kernel.org>; Tue, 12 Feb 2019 14:00:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B4818218A4
-	for <linux-parisc@archiver.kernel.org>; Mon, 11 Feb 2019 20:28:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C942820823
+	for <linux-parisc@archiver.kernel.org>; Tue, 12 Feb 2019 14:00:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727457AbfBKU2l (ORCPT
+        id S1727428AbfBLOAC (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 11 Feb 2019 15:28:41 -0500
-Received: from mout.gmx.net ([212.227.17.20]:48631 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726938AbfBKU2l (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 11 Feb 2019 15:28:41 -0500
-Received: from ls3530.dellerweb.de ([92.116.163.173]) by mail.gmx.com
- (mrgmx103 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 0LmJsk-1hStrH0TXG-00a0xN; Mon, 11 Feb 2019 21:28:33 +0100
-Date:   Mon, 11 Feb 2019 21:28:29 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Add constants for various PDC firmware calls
-Message-ID: <20190211202829.GA19306@ls3530.dellerweb.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:rQUvW1r2fWZ2mfUog10ketCVvG42FVsnbq/MHUahY0eAlbcfz/K
- gTM/VMliupISk6nOwJJepH7Z+dQscUNQ9TWb+oBZ/mWRrdETEtt4Sv4pO4BxTwVCKlW2DhQ
- YjxuDDff4WBJWo9mHSJ3+1W7KR4xY96meXHylVDh5VYAHm6hv19iLY3iAhYuZmj/JJb5bPO
- 911mnvk4TiNOcgs2qjtZA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qyCdudzsvGE=:gGRKABI8M1x3j89VN6Z/89
- kW56TOr09XeWJHpvaiZB2epK34mEF2YG+BkOxG7zMd0cqXecdNwVSftSdmh4lu65RdL/HXfpb
- xKfQvj0ogq1zHoD6tfkNAiwbmx6A7vMFIxUumFyYH56UykLsFXyiaW9rGb6JbNinYzzjXhIld
- uxpzIlTWlokkkdgiG3oGtiSAXfHiNKtXKO9xyxVhBB28tMSSCe4AzRJjl1FhtUmmf1jHBP8pv
- 9PLCPNX14Feq3FN+qSJrQh509rEG1w17yAMrZp9bXEciKFoDhMTvvNHRaxbO7osO1ft+mCf6y
- xYdx5jpVS6tNv2vmJ9ql/GMnNfnotK+MuCb6FQh9Zgw/TS0ANUqPB2FEYQgS1u6FADLVRX6xR
- KQkUHse5W/txTJ30gYvvukWouQfOEhsl5SPeYriXgtNzT9myQuEiBPQFfs096zw37UvfO8KdD
- VSd5pnN0vJPZ1t5ZyMHH6Nc+JyB3N+5NV0gsCx2MQUtFWGz3iOD2eoKbcJPSdt2ai8FB7snBK
- I5Rd7LhxZiMzayHhYhQvqN4/ZuBRbmqcZbypqvAT7BCIiPSol5y+FGHTDq+UQGDHbn/rW32cF
- TsROlAPsA//vj2nU4oMrBEYY4YoF2areHsO8q1TWYP60t4wb9UYv6Q3JGYCfCSOAKO+P6yns6
- PAl3fUqofh3sT86nnGvyb0Si+zDPQ/vOccdpbDFXkmeJCTeEyMXQMPmVixkfx2AoyXfHR5RyB
- LmSmzfW1Md0yuHMd0Mj+Pncex3MfRG5YWrRNWp6sEGyfll1yKF8Km+nF0PX1uE8InGw5lMgvP
- WwRIGmg3N3P+0tGdge3BTBny3IxoZmQ72cps0xtmsDnUDUXye9dttvBZL90fVb3ep6GbEE1dt
- foyFo/pK2Y2kZJBk27Q6J02Cg2rvRezRi7xuhRzf6pDfrcscRGQIRjQRcaZ5Z1
+        Tue, 12 Feb 2019 09:00:02 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37330 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728646AbfBLOAB (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 12 Feb 2019 09:00:01 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x1CDwvdG015040
+        for <linux-parisc@vger.kernel.org>; Tue, 12 Feb 2019 09:00:00 -0500
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2qkw1mpg36-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-parisc@vger.kernel.org>; Tue, 12 Feb 2019 09:00:00 -0500
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-parisc@vger.kernel.org> from <rppt@linux.ibm.com>;
+        Tue, 12 Feb 2019 13:59:57 -0000
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 12 Feb 2019 13:59:54 -0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x1CDxrWA44826686
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 Feb 2019 13:59:53 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B3B2EA404D;
+        Tue, 12 Feb 2019 13:59:53 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3C4DCA4040;
+        Tue, 12 Feb 2019 13:59:52 +0000 (GMT)
+Received: from rapoport-lnx (unknown [9.148.59.139])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 12 Feb 2019 13:59:52 +0000 (GMT)
+Received: by rapoport-lnx (sSMTP sendmail emulation); Tue, 12 Feb 2019 15:59:51 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>
+Cc:     linux-parisc@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH] parisc: use memblock_alloc() instead of custom get_memblock()
+Date:   Tue, 12 Feb 2019 15:59:50 +0200
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-GCONF: 00
+x-cbid: 19021213-0028-0000-0000-00000347ABD2
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19021213-0029-0000-0000-00002405CBB7
+Message-Id: <1549979990-6642-1-git-send-email-rppt@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-02-12_08:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1902120102
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-PDC_DEBUG, PDC_ALLOC and PDC_SCSI_PARMS were missing.
-PDC_CONFIG is call #17, not 16. Luckily it's nowhere referenced yet.
+The get_memblock() function implements custom bottom-up memblock allocator.
+Setting 'memblock_bottom_up = true' before any memblock allocation is done
+allows replacing get_memblock() calls with memblock_alloc().
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ arch/parisc/mm/init.c | 52 +++++++++++++++++++--------------------------------
+ 1 file changed, 19 insertions(+), 33 deletions(-)
 
-diff --git a/arch/parisc/include/uapi/asm/pdc.h b/arch/parisc/include/uapi/asm/pdc.h
-index cdab708516b4..ecab6d4e198f 100644
---- a/arch/parisc/include/uapi/asm/pdc.h
-+++ b/arch/parisc/include/uapi/asm/pdc.h
-@@ -114,11 +114,13 @@
- #define PDC_ADD_VALID	12		/* Memory validation PDC call	*/
- #define PDC_ADD_VALID_VERIFY	0	/* Make PDC_ADD_VALID verify region */
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 059187a..38b928e 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -79,36 +79,6 @@ static struct resource sysram_resources[MAX_PHYSMEM_RANGES] __read_mostly;
+ physmem_range_t pmem_ranges[MAX_PHYSMEM_RANGES] __read_mostly;
+ int npmem_ranges __read_mostly;
  
-+#define PDC_DEBUG	14		/* Obsolete			*/
+-/*
+- * get_memblock() allocates pages via memblock.
+- * We can't use memblock_find_in_range(0, KERNEL_INITIAL_SIZE) here since it
+- * doesn't allocate from bottom to top which is needed because we only created
+- * the initial mapping up to KERNEL_INITIAL_SIZE in the assembly bootup code.
+- */
+-static void * __init get_memblock(unsigned long size)
+-{
+-	static phys_addr_t search_addr __initdata;
+-	phys_addr_t phys;
+-
+-	if (!search_addr)
+-		search_addr = PAGE_ALIGN(__pa((unsigned long) &_end));
+-	search_addr = ALIGN(search_addr, size);
+-	while (!memblock_is_region_memory(search_addr, size) ||
+-		memblock_is_region_reserved(search_addr, size)) {
+-		search_addr += size;
+-	}
+-	phys = search_addr;
+-
+-	if (phys)
+-		memblock_reserve(phys, size);
+-	else
+-		panic("get_memblock() failed.\n");
+-
+-	memset(__va(phys), 0, size);
+-
+-	return __va(phys);
+-}
+-
+ #ifdef CONFIG_64BIT
+ #define MAX_MEM         (~0UL)
+ #else /* !CONFIG_64BIT */
+@@ -321,6 +291,13 @@ static void __init setup_bootmem(void)
+ 			max_pfn = start_pfn + npages;
+ 	}
+ 
++	/*
++	 * We can't use memblock top-down allocations because we only
++	 * created the initial mapping up to KERNEL_INITIAL_SIZE in
++	 * the assembly bootup code.
++	 */
++	memblock_set_bottom_up(true);
 +
- #define PDC_INSTR	15		/* get instr to invoke PDCE_CHECK() */
+ 	/* IOMMU is always used to access "high mem" on those boxes
+ 	 * that can support enough mem that a PCI device couldn't
+ 	 * directly DMA to any physical addresses.
+@@ -442,7 +419,10 @@ static void __init map_pages(unsigned long start_vaddr,
+ 		 */
  
- #define PDC_PROC	16		/* (sprockets)			*/
+ 		if (!pmd) {
+-			pmd = (pmd_t *) get_memblock(PAGE_SIZE << PMD_ORDER);
++			pmd = memblock_alloc(PAGE_SIZE << PMD_ORDER,
++					     SMP_CACHE_BYTES);
++			if (!pmd)
++				panic("pmd allocation failed.\n");
+ 			pmd = (pmd_t *) __pa(pmd);
+ 		}
  
--#define PDC_CONFIG	16		/* (sprockets)			*/
-+#define PDC_CONFIG	17		/* (sprockets)			*/
- #define PDC_CONFIG_DECONFIG	0
- #define PDC_CONFIG_DRECONFIG	1
- #define PDC_CONFIG_DRETURN_CONFIG 2
-@@ -168,7 +170,15 @@
- #define PDC_SOFT_POWER_INFO	0	/* return info about the soft power switch */
- #define PDC_SOFT_POWER_ENABLE	1	/* enable/disable soft power switch */
+@@ -461,7 +441,10 @@ static void __init map_pages(unsigned long start_vaddr,
  
--#define PDC_CRASH_PREP 25		/* Prepare system for crash dump */
-+#define PDC_ALLOC	24		/* allocate static storage for PDC & IODC */
+ 			pg_table = (pte_t *)pmd_address(*pmd);
+ 			if (!pg_table) {
+-				pg_table = (pte_t *) get_memblock(PAGE_SIZE);
++				pg_table = memblock_alloc(PAGE_SIZE,
++							  SMP_CACHE_BYTES);
++				if (!pg_table)
++					panic("page table allocation failed\n");
+ 				pg_table = (pte_t *) __pa(pg_table);
+ 			}
+ 
+@@ -700,7 +683,10 @@ static void __init pagetable_init(void)
+ 	}
+ #endif
+ 
+-	empty_zero_page = get_memblock(PAGE_SIZE);
++	empty_zero_page = memblock_alloc(PAGE_SIZE, SMP_CACHE_BYTES);
++	if (!empty_zero_page)
++		panic("zero page allocation failed.\n");
 +
-+#define PDC_CRASH_PREP	25		/* Prepare system for crash dump */
-+#define PDC_CRASH_DUMP		0	/* Do platform specific preparations for dump */
-+#define PDC_CRASH_LOG_CEC_ERROR 1	/* Dump hardware registers	*/
-+
-+#define PDC_SCSI_PARMS	26		/* Get and set SCSI parameters	*/
-+#define PDC_SCSI_GET_PARMS	0	/* Get SCSI parameters for I/O device */
-+#define PDC_SCSI_SET_PARMS	1	/* Set SCSI parameters for I/O device */
+ }
  
- /* HVERSION dependent */
- 
+ static void __init gateway_init(void)
+-- 
+2.7.4
+
