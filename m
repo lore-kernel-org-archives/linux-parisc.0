@@ -6,54 +6,58 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D74AC10F02
-	for <linux-parisc@archiver.kernel.org>; Fri, 15 Feb 2019 18:34:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 386AAC43381
+	for <linux-parisc@archiver.kernel.org>; Fri, 15 Feb 2019 18:35:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4B7C5206C0
-	for <linux-parisc@archiver.kernel.org>; Fri, 15 Feb 2019 18:34:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 155F8206C0
+	for <linux-parisc@archiver.kernel.org>; Fri, 15 Feb 2019 18:35:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389781AbfBOSef (ORCPT
+        id S2389406AbfBOSe7 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 15 Feb 2019 13:34:35 -0500
-Received: from shards.monkeyblade.net ([23.128.96.9]:43892 "EHLO
+        Fri, 15 Feb 2019 13:34:59 -0500
+Received: from shards.monkeyblade.net ([23.128.96.9]:43914 "EHLO
         shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389689AbfBOSef (ORCPT
+        with ESMTP id S2388116AbfBOSe7 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 15 Feb 2019 13:34:35 -0500
+        Fri, 15 Feb 2019 13:34:59 -0500
 Received: from localhost (unknown [IPv6:2601:601:9f80:35cd::bf5])
         (using TLSv1 with cipher AES256-SHA (256/256 bits))
         (Client did not present a certificate)
         (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 5814514F06A70;
-        Fri, 15 Feb 2019 10:34:34 -0800 (PST)
-Date:   Fri, 15 Feb 2019 10:34:31 -0800 (PST)
-Message-Id: <20190215.103431.281080744416004293.davem@davemloft.net>
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id B8BBE14F06A7D;
+        Fri, 15 Feb 2019 10:34:58 -0800 (PST)
+Date:   Fri, 15 Feb 2019 10:34:58 -0800 (PST)
+Message-Id: <20190215.103458.2233581578201067146.davem@davemloft.net>
 To:     hch@lst.de
 Cc:     deller@gmx.de, robin.murphy@arm.com,
         iommu@lists.linux-foundation.org, sparclinux@vger.kernel.org,
         linux-parisc@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] sparc64: refactor the ali DMA quirk
+Subject: Re: [PATCH 3/5] sparc64/iommu: allow large DMA masks
 From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20190215144559.8777-3-hch@lst.de>
+In-Reply-To: <20190215144559.8777-4-hch@lst.de>
 References: <20190215144559.8777-1-hch@lst.de>
-        <20190215144559.8777-3-hch@lst.de>
+        <20190215144559.8777-4-hch@lst.de>
 X-Mailer: Mew version 6.8 on Emacs 26.1
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 15 Feb 2019 10:34:34 -0800 (PST)
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 15 Feb 2019 10:34:59 -0800 (PST)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Christoph Hellwig <hch@lst.de>
-Date: Fri, 15 Feb 2019 15:45:56 +0100
+Date: Fri, 15 Feb 2019 15:45:57 +0100
 
-> Do the quirk first in the dma_supported routines, as we don't need
-> any of the other checks for it, and remove the duplicate mask checking
-> that is already done by the callers.
+> We've been moving to a model where the device just sets the DMA mask
+> supported by it, instead of having to fallback to something it thinks
+> the platform might support.  Sparc64 is the remaining holdout forcing
+> drivers to supply a matching mask.  Change dma_4u_supported to just
+> check if the supplied dma mask is large enough as nothing in the
+> iommu.c code (or the core DMA code) actually looks at the DMA mask
+> later on.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
