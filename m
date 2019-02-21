@@ -4,209 +4,163 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBCD3C43381
-	for <linux-parisc@archiver.kernel.org>; Thu, 21 Feb 2019 11:15:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C559DC4360F
+	for <linux-parisc@archiver.kernel.org>; Thu, 21 Feb 2019 14:14:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 88AD92084F
-	for <linux-parisc@archiver.kernel.org>; Thu, 21 Feb 2019 11:15:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9FA2D2086A
+	for <linux-parisc@archiver.kernel.org>; Thu, 21 Feb 2019 14:14:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725978AbfBULPh (ORCPT
+        id S1727525AbfBUOO3 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 21 Feb 2019 06:15:37 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55362 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725858AbfBULPg (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 21 Feb 2019 06:15:36 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x1LBEmjQ108831
-        for <linux-parisc@vger.kernel.org>; Thu, 21 Feb 2019 06:15:35 -0500
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2qst9nsyaj-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-parisc@vger.kernel.org>; Thu, 21 Feb 2019 06:15:35 -0500
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-parisc@vger.kernel.org> from <rppt@linux.ibm.com>;
-        Thu, 21 Feb 2019 11:15:33 -0000
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 21 Feb 2019 11:15:29 -0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x1LBFSdv47644698
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 21 Feb 2019 11:15:28 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4D592A4051;
-        Thu, 21 Feb 2019 11:15:28 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C5A2CA4059;
-        Thu, 21 Feb 2019 11:15:27 +0000 (GMT)
-Received: from rapoport-lnx (unknown [9.148.8.84])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 21 Feb 2019 11:15:27 +0000 (GMT)
-Date:   Thu, 21 Feb 2019 13:15:26 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Helge Deller <deller@gmx.de>
-Cc:     "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-parisc@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] parisc: use memblock_alloc() instead of custom
- get_memblock()
-References: <1549984572-10867-1-git-send-email-rppt@linux.ibm.com>
- <20190221090752.GA32004@rapoport-lnx>
- <5ce80937-a55a-8e79-2575-27d296078d41@gmx.de>
+        Thu, 21 Feb 2019 09:14:29 -0500
+Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:45122 "EHLO
+        foss.arm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725858AbfBUOO3 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 21 Feb 2019 09:14:29 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D9B1815AB;
+        Thu, 21 Feb 2019 06:14:28 -0800 (PST)
+Received: from fuggles.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.72.51.249])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 752693F575;
+        Thu, 21 Feb 2019 06:14:23 -0800 (PST)
+Date:   Thu, 21 Feb 2019 14:14:20 +0000
+From:   Will Deacon <will.deacon@arm.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linux-arch@vger.kernel.org, x86@kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>
+Subject: Re: [PATCH v4 3/3] locking/rwsem: Optimize down_read_trylock()
+Message-ID: <20190221141420.GC12696@fuggles.cambridge.arm.com>
+References: <1550095217-12047-1-git-send-email-longman@redhat.com>
+ <1550095217-12047-4-git-send-email-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5ce80937-a55a-8e79-2575-27d296078d41@gmx.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-TM-AS-GCONF: 00
-x-cbid: 19022111-0020-0000-0000-000003197C15
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19022111-0021-0000-0000-0000216ACCCF
-Message-Id: <20190221111525.GB32004@rapoport-lnx>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-02-21_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1902210084
+In-Reply-To: <1550095217-12047-4-git-send-email-longman@redhat.com>
+User-Agent: Mutt/1.11.1+86 (6f28e57d73f2) ()
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Thu, Feb 21, 2019 at 11:00:05AM +0100, Helge Deller wrote:
-> On 21.02.19 10:07, Mike Rapoport wrote:
-> > On Tue, Feb 12, 2019 at 05:16:12PM +0200, Mike Rapoport wrote:
-> >> The get_memblock() function implements custom bottom-up memblock allocator.
-> >> Setting 'memblock_bottom_up = true' before any memblock allocation is done
-> >> allows replacing get_memblock() calls with memblock_alloc().
+On Wed, Feb 13, 2019 at 05:00:17PM -0500, Waiman Long wrote:
+> Modify __down_read_trylock() to optimize for an unlocked rwsem and make
+> it generate slightly better code.
 > 
-> >> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Before this patch, down_read_trylock:
 > 
-> Acked-by: Helge Deller <deller@gmx.de>
-> Tested-by: Helge Deller <deller@gmx.de>
+>    0x0000000000000000 <+0>:     callq  0x5 <down_read_trylock+5>
+>    0x0000000000000005 <+5>:     jmp    0x18 <down_read_trylock+24>
+>    0x0000000000000007 <+7>:     lea    0x1(%rdx),%rcx
+>    0x000000000000000b <+11>:    mov    %rdx,%rax
+>    0x000000000000000e <+14>:    lock cmpxchg %rcx,(%rdi)
+>    0x0000000000000013 <+19>:    cmp    %rax,%rdx
+>    0x0000000000000016 <+22>:    je     0x23 <down_read_trylock+35>
+>    0x0000000000000018 <+24>:    mov    (%rdi),%rdx
+>    0x000000000000001b <+27>:    test   %rdx,%rdx
+>    0x000000000000001e <+30>:    jns    0x7 <down_read_trylock+7>
+>    0x0000000000000020 <+32>:    xor    %eax,%eax
+>    0x0000000000000022 <+34>:    retq
+>    0x0000000000000023 <+35>:    mov    %gs:0x0,%rax
+>    0x000000000000002c <+44>:    or     $0x3,%rax
+>    0x0000000000000030 <+48>:    mov    %rax,0x20(%rdi)
+>    0x0000000000000034 <+52>:    mov    $0x1,%eax
+>    0x0000000000000039 <+57>:    retq
 > 
-> Thanks!
-> Shall I push the patch upstream with the parisc tree?
+> After patch, down_read_trylock:
+> 
+>    0x0000000000000000 <+0>:	callq  0x5 <down_read_trylock+5>
+>    0x0000000000000005 <+5>:	xor    %eax,%eax
+>    0x0000000000000007 <+7>:	lea    0x1(%rax),%rdx
+>    0x000000000000000b <+11>:	lock cmpxchg %rdx,(%rdi)
+>    0x0000000000000010 <+16>:	jne    0x29 <down_read_trylock+41>
+>    0x0000000000000012 <+18>:	mov    %gs:0x0,%rax
+>    0x000000000000001b <+27>:	or     $0x3,%rax
+>    0x000000000000001f <+31>:	mov    %rax,0x20(%rdi)
+>    0x0000000000000023 <+35>:	mov    $0x1,%eax
+>    0x0000000000000028 <+40>:	retq
+>    0x0000000000000029 <+41>:	test   %rax,%rax
+>    0x000000000000002c <+44>:	jns    0x7 <down_read_trylock+7>
+>    0x000000000000002e <+46>:	xor    %eax,%eax
+>    0x0000000000000030 <+48>:	retq
+> 
+> By using a rwsem microbenchmark, the down_read_trylock() rate (with a
+> load of 10 to lengthen the lock critical section) on a x86-64 system
+> before and after the patch were:
+> 
+>                  Before Patch    After Patch
+>    # of Threads     rlock           rlock
+>    ------------     -----           -----
+>         1           14,496          14,716
+>         2            8,644           8,453
+> 	4            6,799           6,983
+> 	8            5,664           7,190
+> 
+> On a ARM64 system, the performance results were:
+> 
+>                  Before Patch    After Patch
+>    # of Threads     rlock           rlock
+>    ------------     -----           -----
+>         1           23,676          24,488
+>         2            7,697           9,502
+>         4            4,945           3,440
+>         8            2,641           1,603
+> 
+> For the uncontended case (1 thread), the new down_read_trylock() is a
+> little bit faster. For the contended cases, the new down_read_trylock()
+> perform pretty well in x86-64, but performance degrades at high
+> contention level on ARM64.
+> 
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  kernel/locking/rwsem.h | 13 ++++++++-----
+>  1 file changed, 8 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/locking/rwsem.h b/kernel/locking/rwsem.h
+> index 45ee002..1f5775a 100644
+> --- a/kernel/locking/rwsem.h
+> +++ b/kernel/locking/rwsem.h
+> @@ -174,14 +174,17 @@ static inline int __down_read_killable(struct rw_semaphore *sem)
+>  
+>  static inline int __down_read_trylock(struct rw_semaphore *sem)
+>  {
+> -	long tmp;
+> +	/*
+> +	 * Optimize for the case when the rwsem is not locked at all.
+> +	 */
+> +	long tmp = RWSEM_UNLOCKED_VALUE;
+>  
+> -	while ((tmp = atomic_long_read(&sem->count)) >= 0) {
+> -		if (tmp == atomic_long_cmpxchg_acquire(&sem->count, tmp,
+> -				   tmp + RWSEM_ACTIVE_READ_BIAS)) {
+> +	do {
+> +		if (atomic_long_try_cmpxchg_acquire(&sem->count, &tmp,
+> +					tmp + RWSEM_ACTIVE_READ_BIAS)) {
+>  			return 1;
+>  		}
+> -	}
+> +	} while (tmp >= 0);
 
-Yes, please.
- 
-> Helge
-> 
-> 
-> 
-> >> ---
-> >> v2: fix allocation alignment
-> >>
-> >>  arch/parisc/mm/init.c | 52 +++++++++++++++++++--------------------------------
-> >>  1 file changed, 19 insertions(+), 33 deletions(-)
-> >>
-> >> diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-> >> index 059187a..d0b1662 100644
-> >> --- a/arch/parisc/mm/init.c
-> >> +++ b/arch/parisc/mm/init.c
-> >> @@ -79,36 +79,6 @@ static struct resource sysram_resources[MAX_PHYSMEM_RANGES] __read_mostly;
-> >>  physmem_range_t pmem_ranges[MAX_PHYSMEM_RANGES] __read_mostly;
-> >>  int npmem_ranges __read_mostly;
-> >>  
-> >> -/*
-> >> - * get_memblock() allocates pages via memblock.
-> >> - * We can't use memblock_find_in_range(0, KERNEL_INITIAL_SIZE) here since it
-> >> - * doesn't allocate from bottom to top which is needed because we only created
-> >> - * the initial mapping up to KERNEL_INITIAL_SIZE in the assembly bootup code.
-> >> - */
-> >> -static void * __init get_memblock(unsigned long size)
-> >> -{
-> >> -	static phys_addr_t search_addr __initdata;
-> >> -	phys_addr_t phys;
-> >> -
-> >> -	if (!search_addr)
-> >> -		search_addr = PAGE_ALIGN(__pa((unsigned long) &_end));
-> >> -	search_addr = ALIGN(search_addr, size);
-> >> -	while (!memblock_is_region_memory(search_addr, size) ||
-> >> -		memblock_is_region_reserved(search_addr, size)) {
-> >> -		search_addr += size;
-> >> -	}
-> >> -	phys = search_addr;
-> >> -
-> >> -	if (phys)
-> >> -		memblock_reserve(phys, size);
-> >> -	else
-> >> -		panic("get_memblock() failed.\n");
-> >> -
-> >> -	memset(__va(phys), 0, size);
-> >> -
-> >> -	return __va(phys);
-> >> -}
-> >> -
-> >>  #ifdef CONFIG_64BIT
-> >>  #define MAX_MEM         (~0UL)
-> >>  #else /* !CONFIG_64BIT */
-> >> @@ -321,6 +291,13 @@ static void __init setup_bootmem(void)
-> >>  			max_pfn = start_pfn + npages;
-> >>  	}
-> >>  
-> >> +	/*
-> >> +	 * We can't use memblock top-down allocations because we only
-> >> +	 * created the initial mapping up to KERNEL_INITIAL_SIZE in
-> >> +	 * the assembly bootup code.
-> >> +	 */
-> >> +	memblock_set_bottom_up(true);
-> >> +
-> >>  	/* IOMMU is always used to access "high mem" on those boxes
-> >>  	 * that can support enough mem that a PCI device couldn't
-> >>  	 * directly DMA to any physical addresses.
-> >> @@ -442,7 +419,10 @@ static void __init map_pages(unsigned long start_vaddr,
-> >>  		 */
-> >>  
-> >>  		if (!pmd) {
-> >> -			pmd = (pmd_t *) get_memblock(PAGE_SIZE << PMD_ORDER);
-> >> +			pmd = memblock_alloc(PAGE_SIZE << PMD_ORDER,
-> >> +					     PAGE_SIZE << PMD_ORDER);
-> >> +			if (!pmd)
-> >> +				panic("pmd allocation failed.\n");
-> >>  			pmd = (pmd_t *) __pa(pmd);
-> >>  		}
-> >>  
-> >> @@ -461,7 +441,10 @@ static void __init map_pages(unsigned long start_vaddr,
-> >>  
-> >>  			pg_table = (pte_t *)pmd_address(*pmd);
-> >>  			if (!pg_table) {
-> >> -				pg_table = (pte_t *) get_memblock(PAGE_SIZE);
-> >> +				pg_table = memblock_alloc(PAGE_SIZE,
-> >> +							  PAGE_SIZE);
-> >> +				if (!pg_table)
-> >> +					panic("page table allocation failed\n");
-> >>  				pg_table = (pte_t *) __pa(pg_table);
-> >>  			}
-> >>  
-> >> @@ -700,7 +683,10 @@ static void __init pagetable_init(void)
-> >>  	}
-> >>  #endif
-> >>  
-> >> -	empty_zero_page = get_memblock(PAGE_SIZE);
-> >> +	empty_zero_page = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-> >> +	if (!empty_zero_page)
-> >> +		panic("zero page allocation failed.\n");
-> >> +
-> >>  }
-> >>  
-> >>  static void __init gateway_init(void)
-> >> -- 
-> >> 2.7.4
-> >>
-> > 
-> 
+Nit: but I guess that should be RWSEM_UNLOCKED_VALUE instead of 0.
 
--- 
-Sincerely yours,
-Mike.
-
+Will
