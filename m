@@ -1,112 +1,136 @@
-Return-Path: <SRS0=SKZc=RE=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=AEbl=RI=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	USER_AGENT_NEOMUTT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_PASS,USER_AGENT_MUTT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBE2CC43381
-	for <linux-parisc@archiver.kernel.org>; Fri,  1 Mar 2019 22:12:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5620BC43381
+	for <linux-parisc@archiver.kernel.org>; Tue,  5 Mar 2019 08:07:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 817CE2083D
-	for <linux-parisc@archiver.kernel.org>; Fri,  1 Mar 2019 22:12:22 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=shutemov-name.20150623.gappssmtp.com header.i=@shutemov-name.20150623.gappssmtp.com header.b="Z19Eg8Zm"
+	by mail.kernel.org (Postfix) with ESMTP id 25F0820675
+	for <linux-parisc@archiver.kernel.org>; Tue,  5 Mar 2019 08:07:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727317AbfCAWMT (ORCPT
+        id S1726250AbfCEIHc (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 1 Mar 2019 17:12:19 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:38933 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727147AbfCAWMS (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 1 Mar 2019 17:12:18 -0500
-Received: by mail-pg1-f194.google.com with SMTP id h8so11559181pgp.6
-        for <linux-parisc@vger.kernel.org>; Fri, 01 Mar 2019 14:12:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xgavR2DFMNaf/vLZRKzzbgkI0A+HRsMgfHhmYXn8qi4=;
-        b=Z19Eg8ZmrghAT9eBXNyLpiI/7ERPMdrWg5DQeGPgeU16srlz6HQsrx0aMgpqjuLQlQ
-         cwbxb5u1F8g9p0jGQhOGqdRT8+YRzUxZtcL2tTYYl+0i4zMOLlAw/Af8ZGXeRAIdZkab
-         gN+a3UjlXLRZHSea7cTKzQFud5aqbi+g0zUUKlvey6DJkNLE6G9ETpnNO7MBSOXeM3wr
-         YKObJWB40lILN3qaxB1hHcrNQIOwHAH3mKe0qJ0CvTkVSAilzXaGHLK40B7wJz8+gdTn
-         9YYxqtRcctZhiS4IrS+9+grY1WqYPiU8o8Wn+r+AHvg+kFW6HONdnYpr0XSiKODtNPNl
-         SyiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xgavR2DFMNaf/vLZRKzzbgkI0A+HRsMgfHhmYXn8qi4=;
-        b=TrsqlMBPbOwfCUR8QtrTV7885CETk7GhudKhaoIjETI7lnFHYJiTUPngxvZrhLF8vb
-         g/HwzmWMybvHZgRK4qNJJeZIn0v1iNh8OzvI/nxm9fNIX0IZe+zQzklRdAHxCG8C16TA
-         SAAFFkYQuxAhJVQ1sFmgNc2uozxf5ndDMkepWaJlPcQ9n9KQtn/FtWA5AS0VVASN7oof
-         WE6vo4SUAynKlQ8SEY0y1dG0ieGQa7FSXQl/70LYMcDkEKgAHYfn3FvSk32J5eV6sTh4
-         vMBBUMedpwMDQaXZ1Ve9ul3FlRGmruOz8EgIe6XWMjIB+X4DdTpE58fqAOFNzwfdp7Z6
-         dhog==
-X-Gm-Message-State: AHQUAuaO5zuZ13rtdDP77HQUKh6V+pg8MyGz84Y4GjYqYsGtrC1uLv6S
-        bgDhP1jq4+Ic85mUaHCnNP75wg==
-X-Google-Smtp-Source: AHgI3IYTSxYFj6M42G+F5q8mktYtGtp45mqV2dSA6y4kEmnaHrlMPzNlAqdKw3hK7RfzKI6R5msSYg==
-X-Received: by 2002:a62:ed08:: with SMTP id u8mr7944175pfh.200.1551478337753;
-        Fri, 01 Mar 2019 14:12:17 -0800 (PST)
-Received: from kshutemo-mobl1.localdomain ([192.55.54.43])
-        by smtp.gmail.com with ESMTPSA id l5sm29968347pfi.97.2019.03.01.14.12.16
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 01 Mar 2019 14:12:16 -0800 (PST)
-Received: by kshutemo-mobl1.localdomain (Postfix, from userid 1000)
-        id 2E4AB3007CA; Sat,  2 Mar 2019 01:12:13 +0300 (+03)
-Date:   Sat, 2 Mar 2019 01:12:13 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Helge Deller <deller@gmx.de>
-Cc:     Steven Price <steven.price@arm.com>, linux-mm@kvack.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will.deacon@arm.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        "Liang, Kan" <kan.liang@linux.intel.com>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        linux-parisc@vger.kernel.org
-Subject: Re: [PATCH v3 15/34] parisc: mm: Add p?d_large() definitions
-Message-ID: <20190301221213.snm7cwowr67pdifs@kshutemo-mobl1>
-References: <20190227170608.27963-1-steven.price@arm.com>
- <20190227170608.27963-16-steven.price@arm.com>
- <fa3072ba-f02b-fee5-dc16-d575a5308d4b@gmx.de>
+        Tue, 5 Mar 2019 03:07:32 -0500
+Received: from mout.gmx.net ([212.227.17.22]:56821 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726179AbfCEIHc (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 5 Mar 2019 03:07:32 -0500
+Received: from ls3530.dellerweb.de ([92.116.130.110]) by mail.gmx.com
+ (mrgmx101 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 0MEKZg-1gleku28oC-00FOkL; Tue, 05 Mar 2019 09:07:24 +0100
+Date:   Tue, 5 Mar 2019 09:07:21 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture updates for kernel v5.1
+Message-ID: <20190305080721.GA15719@ls3530.dellerweb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fa3072ba-f02b-fee5-dc16-d575a5308d4b@gmx.de>
-User-Agent: NeoMutt/20180716
+User-Agent: Mutt/1.11.3 (2019-02-01)
+X-Provags-ID: V03:K1:9OUymPM+Z7CE68WJEtmN9wahJmPkH/eRoe0r+H26kp/rCpenIes
+ hvtCEg7o4tqBTe28abyMOVmdyqJ157xOS+/570q1gLoHAhrGzx/e1xVixRO5zQX+ke+Ziac
+ tu18vAciftJxcJt249+eiwsZLyo744HQ/mOpi4kXVHvWgC5zrpn/JRNhQsBDQ82n4mgqw8E
+ 5GOqyAz+KuxG1Js5kH/Gg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xGW/N0LXc6E=:3EgIKKsCmVmu/zhVYFn7OK
+ LaAfCU9dy9hiryLmqx0uVir91DqSTSyJlb7I1RL6W0RMGc1NxCfBwpyMQkt0PZkMgnpqpZkX1
+ tr7KtrXCxrH/mA56xSSCSSzgNUfs+g410Jncz6FsVk/wIPjbA5f+dfhkkSY+9X3DnG2iQrK6L
+ YdYZuSBFNdmFCN3uS7UkpcaRS8ZhV7UUx3ti9Sw7ImOdKcucq2XIIrN7fJZ5XhTzuW3UNXoY6
+ P7v6xgX7CvcgA7RdsR73LztrvfGliFUMkSQxo/ETzuMr38RjIUNAp90+9In1+jx4aqDIhyz10
+ R7z0NFt+iPSCW2YFyk/RUledqdnCwL16nyAu4vVHuM4QJDuKFmwKGJbIOab1MnMies1qOPRhr
+ MadfQsvksWHOWf6BSfX+ejo36omw+kDvZxNMpqzENlXudcQAXnVaE25lvkIUFaj16AbyHwuOt
+ b9i9WUxsFVMUucu5LhR2fUmcFy6PmGYbSkxDojXjMy2Wy5F54ANH+UF9/jD0MAGx43BDzBOdj
+ RlrBGxS/eb5AduoXJYOVrvjPpcpBTaqAgFTMq5V47CjN+uM+2kMK3NERPYhLCxuqoYfFRruXV
+ PNLkR3OcwVadnFVnvrEO+VgZjvMVMJOILO+ZNKlLxYkaPgzib6rySWaL1DxsnxDxnmfNRuLi3
+ lGs9yzIDdvf7FrdkZzDT+eKaBK8wRg6P7k/d+5H0G3b2+ywHKRvgell/BUY0P9TbBFxl7XyCC
+ zrE3z+emuEzSjtoZrTp2wgdIqNDsKkQEfl613lNg6vGHPeGJ5fkYFnGW8edHt0KdZkbeYgwdb
+ TgwOCxi3gFTgPVYLxllEj3nxAd73lfGDEgralw2BitekuTRdXjSDZNFCQ4DkcOlr7b4EFxmWK
+ 9drL/gzkn9eM+ZeQau3aHLXxWMvXo+uwBwFSARPQyiW5e6ATI30p+m11A33gjk
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Wed, Feb 27, 2019 at 07:54:22PM +0100, Helge Deller wrote:
-> On 27.02.19 18:05, Steven Price wrote:
-> > walk_page_range() is going to be allowed to walk page tables other than
-> > those of user space. For this it needs to know when it has reached a
-> > 'leaf' entry in the page tables. This information is provided by the
-> > p?d_large() functions/macros.
-> > 
-> > For parisc, we don't support large pages, so add stubs returning 0.
-> 
-> We do support huge pages on parisc, but not yet on those levels.
+Hi Linus,
 
-Just curious, what level do parisc supports huge pages on?
-AFAICS, it can have 2- or 3- level paging and the patch defines helpers
-for two level: pgd and pmd. Hm?
+please pull parisc architecture fixes and updates for kernel 5.1:
 
--- 
- Kirill A. Shutemov
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.1-1
+
+Most important changes in this patch set:
+- DMA-related cleanups for parisc with the aim to move anything not required by
+  drivers out of <asm/dma-mapping.h>, by Christoph Hellwig 
+- Switch to memblock_alloc(), by Mike Rapoport
+- Makefile cleanups by Masahiro Yamada
+- Switch to bust_spinlocks(), by Sergey Senozhatsky
+- Improved initial SMP affinity selection for IRQs
+- Added IPI- and rescheduling interrupts in /proc/interrupts output
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Christoph Hellwig (8):
+      parisc: don't include <asm/cacheflush.h> in <asm/dma-mapping.h>
+      parisc: move internal implementation details out of <asm/dma-mapping.h>
+      parisc: turn GET_IOC into an inline function
+      parisc: properly type the iommu field in struct pci_hba_data
+      parisc: properly type the return value of parisc_walk_tree
+      parisc/dino: use container_of in DINO_DEV
+      parisc/lba_pci: use container_of in LBA_DEV
+      parisc: remove the HBA_DATA macro
+
+Helge Deller (9):
+      parisc: Hide built-in serial aux port of Tosca GSP card
+      parisc: Show rescheduling interrupts on SMP machines only
+      parisc: Count IPI function call interrupts
+      parisc: Improve initial IRQ to CPU assignment
+      parisc: Use F_EXTEND() macro in iosapic code
+      parisc: Add constants for PDC_RELOCATE PDC call
+      parisc: Show machine product number during boot
+      parisc: Add constant for PDC_PAT_COMPLEX firmware call
+      parisc: Add constants for various PDC firmware calls
+
+Masahiro Yamada (1):
+      parisc: remove meaningless ccflags-y in arch/parisc/boot/Makefile
+
+Mike Rapoport (1):
+      parisc: use memblock_alloc() instead of custom get_memblock()
+
+Sergey Senozhatsky (1):
+      parisc: replace oops_in_progress manipulation with bust_spinlocks()
+
+Sven Schnelle (1):
+      parisc: Add PDC_CRASH_PREP PDC function number
+
+ arch/parisc/boot/Makefile             |  6 ----
+ arch/parisc/include/asm/dma-mapping.h | 46 -----------------------------
+ arch/parisc/include/asm/hardirq.h     |  1 +
+ arch/parisc/include/asm/pci.h         |  4 +--
+ arch/parisc/include/asm/pdc.h         |  1 +
+ arch/parisc/include/asm/pdcpat.h      |  4 +++
+ arch/parisc/include/uapi/asm/pdc.h    | 26 +++++++++++++++--
+ arch/parisc/kernel/firmware.c         | 24 +++++++++++++++
+ arch/parisc/kernel/irq.c              | 19 ++++++++----
+ arch/parisc/kernel/processor.c        |  9 ++++++
+ arch/parisc/kernel/setup.c            |  1 +
+ arch/parisc/kernel/smp.c              |  1 +
+ arch/parisc/kernel/traps.c            |  4 +--
+ arch/parisc/mm/init.c                 | 52 ++++++++++++---------------------
+ drivers/parisc/ccio-dma.c             | 11 +++++--
+ drivers/parisc/dino.c                 | 11 ++++---
+ drivers/parisc/eisa.c                 |  2 ++
+ drivers/parisc/hppb.c                 |  2 ++
+ drivers/parisc/iommu.h                | 55 +++++++++++++++++++++++++++++++++++
+ drivers/parisc/iosapic.c              | 17 +----------
+ drivers/parisc/lba_pci.c              | 30 +++++++++++++------
+ drivers/parisc/sba_iommu.c            |  2 ++
+ 22 files changed, 197 insertions(+), 131 deletions(-)
+ create mode 100644 drivers/parisc/iommu.h
