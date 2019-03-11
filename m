@@ -2,161 +2,78 @@ Return-Path: <SRS0=a68l=RO=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A5A5C4360F
-	for <linux-parisc@archiver.kernel.org>; Mon, 11 Mar 2019 15:39:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE4E8C43381
+	for <linux-parisc@archiver.kernel.org>; Mon, 11 Mar 2019 18:14:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D65BF21872
-	for <linux-parisc@archiver.kernel.org>; Mon, 11 Mar 2019 15:39:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C6FDF20657
+	for <linux-parisc@archiver.kernel.org>; Mon, 11 Mar 2019 18:14:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727623AbfCKPjs (ORCPT
+        id S1728034AbfCKSOP (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 11 Mar 2019 11:39:48 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:44379 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727153AbfCKPjr (ORCPT
+        Mon, 11 Mar 2019 14:14:15 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:40026 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727336AbfCKSOP (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 11 Mar 2019 11:39:47 -0400
-Received: from wuerfel.lan ([109.192.41.194]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MnqbU-1giwm43Jla-00pJck; Mon, 11 Mar 2019 16:39:02 +0100
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     "David S . Miller" <davem@davemloft.net>
-Cc:     Deepa Dinamani <deepa.kernel@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, Laura Abbott <labbott@redhat.com>,
-        netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] y2038: fix socket.h header inclusion
-Date:   Mon, 11 Mar 2019 16:38:17 +0100
-Message-Id: <20190311153857.563743-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.20.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:hbJOlGFctjSe4uIASWSdvohq94Ci+jZkFRBdQPJ/OWMJENbMYXn
- p6diVLksQqT/wvIECJWQdSwuaOMZWQ0QLFzjm5MOU1cbl3c6MYiCGGsCzyNWZhVkYC5yLtW
- j7YY9/8HEBXDzh06CyrsYWzY4rcFhasLmbxOMaLQpnhqIbb35YmXVq/TcxIo+lwnbjS7SLX
- dnU81YbsyenBlRqPf2TBg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:B3/mxksVWSY=:xFc7KSzQwv5Vqct67DwByb
- Y3V37JImFVImcC6lns6wFika45ZzzLtkS4UBSIGYozSLVEaegao9d+Lri62jpMdqbvzbEg/hN
- a1Jkcud6zOGJvFz//q330eqeusWDQUIUuBbknFvyaRuMrJerMdvHxozvBh95Ew1ckmBmjP9dq
- WjqyHMh87EoY8X6fo3iQXs2v9jzBynk7L0b5CgpJuK5kyPkDox/BAtkJONXrV1HVFifM8/Atv
- 918HtQL0odUeaUK2W4cn1ugP4K0ozbnGoZlBOjP1JKnOgujEnaXkQNPr1CV/uCKH0Njpppl7M
- VF/g7jAysP6M8yZ+cD86ylBPmClnwqdyPGBzvpdgHrZYWlAw2MulW7xZ50462QVbhFd6l++UK
- nQEm8IMZVCSC8GZkGSZH4hbQy+1Eox6MNOuYs05+XbpCqeD+amY6FZkvlPpOq8FAl/Vrb+U8J
- PcHl0SHrlVmpL3Br9dVDhMzgwWhvo1HTTD28Fb2xtb3HNWSzoahJ6dozChNwBbKyDCxJxra0z
- eKfH6Y5tDP1tOk6uWTa65+V0c+6qlRBiEnJ5yOsTSGENByCaToy+H1cBBveNn3FA1IMsFNMqO
- RDyITVHC2Md4U/CccXrqXzB79w1JVo9xGX1SbC4RyxIBhljt3EqZHLZdzF58i96PLf1Gl23I6
- 43FXfE5KyL6BM1/sdHTbVdiRxmn/q2d2vFvFC1hCncdExKo2jRCoLYvU2VcxX/XKcEIvDsKgn
- z3QzZdIagN6UJkMY4ckBxcahLZ1E5+7FhPABuw==
+        Mon, 11 Mar 2019 14:14:15 -0400
+Received: from localhost (unknown [IPv6:2601:601:9f80:35cd::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id ECD2F14C61512;
+        Mon, 11 Mar 2019 11:14:13 -0700 (PDT)
+Date:   Mon, 11 Mar 2019 11:14:13 -0700 (PDT)
+Message-Id: <20190311.111413.1140896328197448401.davem@davemloft.net>
+To:     mst@redhat.com
+Cc:     jasowang@redhat.com, hch@infradead.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, peterx@redhat.com,
+        linux-mm@kvack.org, aarcange@redhat.com,
+        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org
+Subject: Re: [RFC PATCH V2 0/5] vhost: accelerate metadata access through
+ vmap()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20190311095405-mutt-send-email-mst@kernel.org>
+References: <20190308141220.GA21082@infradead.org>
+        <56374231-7ba7-0227-8d6d-4d968d71b4d6@redhat.com>
+        <20190311095405-mutt-send-email-mst@kernel.org>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=iso-2022-jp
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 11 Mar 2019 11:14:14 -0700 (PDT)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Referencing the __kernel_long_t type caused some user space applications
-to stop compiling when they had not already included linux/posix_types.h,
-e.g.
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Date: Mon, 11 Mar 2019 09:59:28 -0400
 
-s/multicast.c -o ext/sockets/multicast.lo
-In file included from /builddir/build/BUILD/php-7.3.3/main/php.h:468,
-                 from /builddir/build/BUILD/php-7.3.3/ext/sockets/sockets.c:27:
-/builddir/build/BUILD/php-7.3.3/ext/sockets/sockets.c: In function 'zm_startup_sockets':
-/builddir/build/BUILD/php-7.3.3/ext/sockets/sockets.c:776:40: error: '__kernel_long_t' undeclared (first use in this function)
-  776 |  REGISTER_LONG_CONSTANT("SO_SNDTIMEO", SO_SNDTIMEO, CONST_CS | CONST_PERSISTENT);
+> On Mon, Mar 11, 2019 at 03:13:17PM +0800, Jason Wang wrote:
+>> 
+>> On 2019/3/8 下午10:12, Christoph Hellwig wrote:
+>> > On Wed, Mar 06, 2019 at 02:18:07AM -0500, Jason Wang wrote:
+>> > > This series tries to access virtqueue metadata through kernel virtual
+>> > > address instead of copy_user() friends since they had too much
+>> > > overheads like checks, spec barriers or even hardware feature
+>> > > toggling. This is done through setup kernel address through vmap() and
+>> > > resigter MMU notifier for invalidation.
+>> > > 
+>> > > Test shows about 24% improvement on TX PPS. TCP_STREAM doesn't see
+>> > > obvious improvement.
+>> > How is this going to work for CPUs with virtually tagged caches?
+>> 
+>> 
+>> Anything different that you worry?
+> 
+> If caches have virtual tags then kernel and userspace view of memory
+> might not be automatically in sync if they access memory
+> through different virtual addresses. You need to do things like
+> flush_cache_page, probably multiple times.
 
-It is safe to include that header here, since it only contains kernel
-internal types that do not conflict with other user space types.
-
-It's still possible that some related build failures remain, but those
-are likely to be for code that is not already y2038 safe.
-
-Reported-by: Laura Abbott <labbott@redhat.com>
-Fixes: a9beb86ae6e5 ("sock: Add SO_RCVTIMEO_NEW and SO_SNDTIMEO_NEW")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/alpha/include/uapi/asm/socket.h  | 2 +-
- arch/mips/include/uapi/asm/socket.h   | 2 +-
- arch/parisc/include/uapi/asm/socket.h | 2 +-
- arch/sparc/include/uapi/asm/socket.h  | 2 +-
- include/uapi/asm-generic/socket.h     | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/arch/alpha/include/uapi/asm/socket.h b/arch/alpha/include/uapi/asm/socket.h
-index 0d0fddb7e738..976e89b116e5 100644
---- a/arch/alpha/include/uapi/asm/socket.h
-+++ b/arch/alpha/include/uapi/asm/socket.h
-@@ -2,8 +2,8 @@
- #ifndef _UAPI_ASM_SOCKET_H
- #define _UAPI_ASM_SOCKET_H
- 
-+#include <linux/posix_types.h>
- #include <asm/sockios.h>
--#include <asm/bitsperlong.h>
- 
- /* For setsockopt(2) */
- /*
-diff --git a/arch/mips/include/uapi/asm/socket.h b/arch/mips/include/uapi/asm/socket.h
-index eb9f33f8a8b3..d41765cfbc6e 100644
---- a/arch/mips/include/uapi/asm/socket.h
-+++ b/arch/mips/include/uapi/asm/socket.h
-@@ -10,8 +10,8 @@
- #ifndef _UAPI_ASM_SOCKET_H
- #define _UAPI_ASM_SOCKET_H
- 
-+#include <linux/posix_types.h>
- #include <asm/sockios.h>
--#include <asm/bitsperlong.h>
- 
- /*
-  * For setsockopt(2)
-diff --git a/arch/parisc/include/uapi/asm/socket.h b/arch/parisc/include/uapi/asm/socket.h
-index 16e428f03526..66c5dd245ac7 100644
---- a/arch/parisc/include/uapi/asm/socket.h
-+++ b/arch/parisc/include/uapi/asm/socket.h
-@@ -2,8 +2,8 @@
- #ifndef _UAPI_ASM_SOCKET_H
- #define _UAPI_ASM_SOCKET_H
- 
-+#include <linux/posix_types.h>
- #include <asm/sockios.h>
--#include <asm/bitsperlong.h>
- 
- /* For setsockopt(2) */
- #define SOL_SOCKET	0xffff
-diff --git a/arch/sparc/include/uapi/asm/socket.h b/arch/sparc/include/uapi/asm/socket.h
-index 88fe4f978aca..9265a9eece15 100644
---- a/arch/sparc/include/uapi/asm/socket.h
-+++ b/arch/sparc/include/uapi/asm/socket.h
-@@ -2,8 +2,8 @@
- #ifndef _ASM_SOCKET_H
- #define _ASM_SOCKET_H
- 
-+#include <linux/posix_types.h>
- #include <asm/sockios.h>
--#include <asm/bitsperlong.h>
- 
- /* For setsockopt(2) */
- #define SOL_SOCKET	0xffff
-diff --git a/include/uapi/asm-generic/socket.h b/include/uapi/asm-generic/socket.h
-index c8b430cb6dc4..8c1391c89171 100644
---- a/include/uapi/asm-generic/socket.h
-+++ b/include/uapi/asm-generic/socket.h
-@@ -2,8 +2,8 @@
- #ifndef __ASM_GENERIC_SOCKET_H
- #define __ASM_GENERIC_SOCKET_H
- 
-+#include <linux/posix_types.h>
- #include <asm/sockios.h>
--#include <asm/bitsperlong.h>
- 
- /* For setsockopt(2) */
- #define SOL_SOCKET	1
--- 
-2.20.0
-
+"flush_dcache_page()"
