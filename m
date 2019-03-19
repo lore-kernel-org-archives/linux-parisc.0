@@ -1,106 +1,77 @@
-Return-Path: <SRS0=iI52=RV=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=CLjU=RW=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 015CBC43381
-	for <linux-parisc@archiver.kernel.org>; Mon, 18 Mar 2019 22:03:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E709C43381
+	for <linux-parisc@archiver.kernel.org>; Tue, 19 Mar 2019 06:05:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BFA1620863
-	for <linux-parisc@archiver.kernel.org>; Mon, 18 Mar 2019 22:03:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 942F020989
+	for <linux-parisc@archiver.kernel.org>; Tue, 19 Mar 2019 06:05:50 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="ODiA0Dds"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbfCRWDK (ORCPT
+        id S1726506AbfCSGFu (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 18 Mar 2019 18:03:10 -0400
-Received: from mout.gmx.net ([212.227.15.18]:41991 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726911AbfCRWDJ (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 18 Mar 2019 18:03:09 -0400
-Received: from ls3530.dellerweb.de ([92.116.173.221]) by mail.gmx.com
- (mrgmx002 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 0M3zne-1gpADZ38qY-00rXke; Mon, 18 Mar 2019 23:03:07 +0100
-Date:   Mon, 18 Mar 2019 23:03:06 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     Sven Schnelle <svens@stackframe.org>
-Cc:     deller@gmx.de, linux-parisc@vger.kernel.org
+        Tue, 19 Mar 2019 02:05:50 -0400
+Received: from smtp.duncanthrax.net ([89.31.1.170]:59849 "EHLO
+        smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbfCSGFu (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 19 Mar 2019 02:05:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=duncanthrax.net; s=dkim; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date;
+        bh=ENifPgUCwlGg9YsRClR9Z7jw9FrD7sJYvul/PIeP7a4=; b=ODiA0DdsSheKSlzqkILRXhFQjU
+        M6MFUjqLg2EBzTJ+jGD+CPt6B9c9zhtowXrT+OA0P4Gwb2mtiYKrdYw+zXUhJ2HicpsulR8W2b6b0
+        79hL4GZ7h8U8XA2qNSyy+RldZ+ZyAs4WCDyMrrX/9ofXePJxK+iZfj1gmehn3H45VMMk=;
+Received: from [134.3.47.207] (helo=t470p.stackframe.org)
+        by smtp.eurescom.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.86_2)
+        (envelope-from <svens@stackframe.org>)
+        id 1h67si-0001iw-Q7; Tue, 19 Mar 2019 07:05:48 +0100
+Date:   Tue, 19 Mar 2019 07:05:47 +0100
+From:   Sven Schnelle <svens@stackframe.org>
+To:     Helge Deller <deller@gmx.de>
+Cc:     linux-parisc@vger.kernel.org
 Subject: Re: [PATCH] parisc: fix iosapic address compare
-Message-ID: <20190318220306.GA10060@ls3530.dellerweb.de>
+Message-ID: <20190319060547.GA23466@t470p.stackframe.org>
 References: <20190318141301.14750-1-svens@stackframe.org>
+ <20190318220306.GA10060@ls3530.dellerweb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190318141301.14750-1-svens@stackframe.org>
-User-Agent: Mutt/1.11.3 (2019-02-01)
-X-Provags-ID: V03:K1:Zdf9m1qPypSeoN0IjV6dvdX3XHRUGqoi0k6Eu4612jeTThQp83e
- e2I7N2y02oFmHHXDl6it8E6FIIIzenFZIEAJbVOjcKZt07t4kwo2G1acwmHOCC9FIhcphyX
- nshZUibwOq/K6YC4w2Hs7CH/9BEpSnWmo77yZOTlf3yjrHqtVUcsS4qRTBwTXFH0B2wUmYT
- FdPcgVppzvLszCKlwYkAw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3PWSE3NyEt4=:nCfkglVIyMSV0BKdrXzMYE
- eUqA+TbYJ6NVWGfzeY3iPLW7Yn11hb++oBrcbzrLVnKAEomMmpKYQwXHofjT1uR1dDslw6FM7
- ppNjEoxhq6314fRz9lThbysXz2frhNkwpd0uELOUcOH6JJ+hgsqSIrTMJwzKu+M+PK/Fb0J7Z
- tmu9uTIwnP5RlnmyUJSAllaG3c2IkPxpu+IrbRYiKAfBKQPD53692uOG8fVBlAP6a7iIjZ1/d
- TM9b1NljsJCaAmMQoUhv3ncyRMVgFkC5Q8+RanUTb1iNI7Rg59wFgoSZpygqTzZUFdZjVp9Fl
- PSVm34fKDLFOhlRe7ki8PvANTOCJ+Af75srZN6JcR2GluoolpY29c+9DK+ZRTT/DofPuSXmdV
- ZXUYkPvxtMTH0IMK15RqRa6R8Ywxr32twLNRVu69zrefG3xaCNqkXUHcaFpMKILn0lBpjUMnF
- vn1PfFE6ufmyL/ckW60LU3YFDBnAOFB35RertqmmEZcbPxIxD2gV+1qYDfvOWScqTP1F3yer4
- HEqUQ2x3X8WScpDzxpvkNBf12QxeYh7q74ZJ0tUe56YX9DP2TiK4TOEncIUDbd+K+9jYUxrq8
- dKUgGoFZUwm7N11fuXX2gP3b2A7Mf67ZGZZun12hBOLWLhd2Iw6OOVZBY/1rqVwwJ8AHcnNFL
- WEqy2g1Z3YOjuRQg1Evjh68+ypfVFLlhiHWRi92BFvA8Xp1M7TeR4EkoIXxU1fw/x9jGTgwwT
- +VFTIvifFMduhnBYstwH62P6Y/u+DvU/TXX7mFIo14SDSGHQTqkHGjZKTYIcbwoKTUFz3l+su
- TCg9Ceo1G+xNXQ+T2eXfAPmrVFZGwkPiBcKW4zyQHUPi7HLwPQPW7I6e918wSSGlycTYH+akV
- 860Ge79LjrASNUqLcG0NZRBksnpAz7oklrUihbVUTxg3sSHvZFJgXR6DKvrZxW
+In-Reply-To: <20190318220306.GA10060@ls3530.dellerweb.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi Sven,
+Hi Helge,
 
-* Sven Schnelle <svens@stackframe.org>:
-> i just updated my C3750 to latest git, and got the kernel oops below. It looks
-> like the change to using F_EXTEND breaks using 32 bit kernels on at least my
-> C3750. Not sure whether we should revert the F_EXTEND change, or just cast
-> the other side of the compare to long. The patch below does this.
+On Mon, Mar 18, 2019 at 11:03:06PM +0100, Helge Deller wrote:
+> Hi Sven,
+> 
+> * Sven Schnelle <svens@stackframe.org>:
+> > i just updated my C3750 to latest git, and got the kernel oops below. It looks
+> > like the change to using F_EXTEND breaks using 32 bit kernels on at least my
+> > C3750. Not sure whether we should revert the F_EXTEND change, or just cast
+> > the other side of the compare to long. The patch below does this.
+> 
+> Thanks for testing!
+> I think, as suggested by you, revertig parts of my patch makes most sense.
+> I've committed the patch below to my for-next tree.
+> Can you check if it works for you?
 
-Thanks for testing!
-I think, as suggested by you, revertig parts of my patch makes most sense.
-I've committed the patch below to my for-next tree.
-Can you check if it works for you?
+Yes, works for me. The good thing about this Bug is that i was forced
+to read the NS87560 driver source and have an idea now why it's called
+SuckyIO :)
 
-Helge
+Tested-by: Sven Schnelle <svens@stackframe.org>
 
---------------------
-From dae50289effc106df023796eb25d602244e73ac1 Mon Sep 17 00:00:00 2001
-From: Helge Deller <deller@gmx.de>
-Date: Mon, 18 Mar 2019 22:56:15 +0100
-Subject: [PATCH] Revert: parisc: Use F_EXTEND() macro in iosapic code
-
-Revert parts of commit 97d7e2e3fd8a ("parisc: Use F_EXTEND() macro in
-iosapic code").  It breaks booting the 32-bit kernel.
-
-Reported-by: Sven Schnelle <svens@stackframe.org>
-Fixes: 97d7e2e3fd8a ("parisc: Use F_EXTEND() macro in iosapic code")
-Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
-index 1be571c20062..6bad04cbb1d3 100644
---- a/drivers/parisc/iosapic.c
-+++ b/drivers/parisc/iosapic.c
-@@ -157,8 +157,12 @@
- #define DBG_IRT(x...)
- #endif
- 
-+#ifdef CONFIG_64BIT
-+#define COMPARE_IRTE_ADDR(irte, hpa)	((irte)->dest_iosapic_addr == (hpa))
-+#else
- #define COMPARE_IRTE_ADDR(irte, hpa)	\
--		((irte)->dest_iosapic_addr == F_EXTEND(hpa))
-+		((irte)->dest_iosapic_addr == ((hpa) | 0xffffffff00000000ULL))
-+#endif
- 
- #define IOSAPIC_REG_SELECT              0x00
- #define IOSAPIC_REG_WINDOW              0x10
+Regards
+Sven
