@@ -6,71 +6,70 @@ X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
 	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AE81C43381
-	for <linux-parisc@archiver.kernel.org>; Fri, 22 Mar 2019 17:07:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EC91C43381
+	for <linux-parisc@archiver.kernel.org>; Fri, 22 Mar 2019 17:08:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3A91A2190A
-	for <linux-parisc@archiver.kernel.org>; Fri, 22 Mar 2019 17:07:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5BF2D21900
+	for <linux-parisc@archiver.kernel.org>; Fri, 22 Mar 2019 17:08:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1553274447;
-	bh=ZAh4cwuJavt2z9KTEO6p7hKKHwYKJaaWgEufMtMOppI=;
+	s=default; t=1553274529;
+	bh=NPONG8wAWdU8frpkBP04ZDC1Cm0k8bBvTC60p9VG0bk=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=cvZ/WM4AjmEPp8HpH7/+5vLWOqbhax0a6NlvGcfdOt9h60tP9MdgD4RQqZ2/0HvxQ
-	 dXN3Up4l+ZfcnFRaXEnnOGfg6ez7eAwY81hBaIRam0o4LE3YHfzb0uQt+xPhLlf71D
-	 HoAtzVl2iH++qLMJT+9JEG72abj5jGQ6WMqen5Hg=
+	b=dIDrVsoil0l7yKTu2AHaQ8xkdYrg4VeTnNT+RRhaf6krIOVQl0o21YYG9lRAjKZdX
+	 CEXtGYYILn3LrigjPJUldA3ZJ61F4/AXY0HCISpgZ9etYUA44KiqrZyzaVkHZB+Glm
+	 TSj035Fs5H6USVphUNrN99s0d0afzch/o3LkyfGw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728700AbfCVRH0 (ORCPT
+        id S1728560AbfCVRIt (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 22 Mar 2019 13:07:26 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:33128 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728713AbfCVRHZ (ORCPT
+        Fri, 22 Mar 2019 13:08:49 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:37253 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727058AbfCVRIs (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 22 Mar 2019 13:07:25 -0400
-Received: by mail-lj1-f194.google.com with SMTP id f23so2692992ljc.0
-        for <linux-parisc@vger.kernel.org>; Fri, 22 Mar 2019 10:07:24 -0700 (PDT)
+        Fri, 22 Mar 2019 13:08:48 -0400
+Received: by mail-lj1-f196.google.com with SMTP id v13so2680211ljk.4
+        for <linux-parisc@vger.kernel.org>; Fri, 22 Mar 2019 10:08:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=K5KpCUavpU6jklxItqvKr4mbyrohs/asqf5NX0BYYpc=;
-        b=Xicmuh1ND+AZ9lc/udGkNvWbzi2Lu2j3o6M44sYQ0ZH2WsGeVBgW5f2xPJwNTxlY2d
-         JaSMsr2SEVdWRDbZBYCXJ0vB1W1wIN3vVWqOMIiqWhD3oBYZFF9I7ROZZs9bJvkPzu9N
-         HN8UN8zBc9zkjew06tZVB45+s5iWpvEon1EZk=
+        bh=syf5FC/PD4cN6FgIJM2ms3RJG343jtrhSP64Oe75Sac=;
+        b=IuhoI3hZaIxE4YvOC0/zFIRPXbZPqr4mch9fB87bJI50v/CesoGw5jPm0Ymj36S+8D
+         SIzDojt4m/q1uwaK9P5Is2rLt7NY0cQwo3oRCrDKYwFF22+ZwEkj5rWc3XCpMkx/lh21
+         i/oyaRFuahvewUzvmGuDcKpmqMK2Pff6AsG6Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=K5KpCUavpU6jklxItqvKr4mbyrohs/asqf5NX0BYYpc=;
-        b=BOzSd71emWslGNaEA6Jgs2k0AWHzwL6bnx+CFOwokK+b1szLhhRoYXbEPT+4C5/qIC
-         zAnYR6Kl/WnFdX0ooQe5gv8ehC13nlWQW7fyVox6X4ikq2x+Qxa8Ml5+SSCkzbvWUuyg
-         2CBqkvdOyC70XBnwRyzkez6leOC9aEjyPPhZsHJ1TIz7kz2zHm86VwPA5zrbMrB9PwmT
-         Jp3t+GreuHyaeLqz41Oq5QviRhb/RddvTnXELSs7rcFv34NSaIe4W1J9m982qV4fMR7A
-         krzqbmHOw9Q6hkVGbhgslqtWCjgmfs2H4VpAeLiE7S0w69TED5RViHvE/Jz6ofIRzw0A
-         s/ng==
-X-Gm-Message-State: APjAAAXk9hzHcRhX1CTLBTnpVKgAs+wy8zDjnpF0jZeKykbUVyWBWjRV
-        vF5Rzd8S2xTKOYtb3B5md5iAyY7pUQo=
-X-Google-Smtp-Source: APXvYqyL20ykPvALhXIxlJ8vBsXacT9m6coOgdjT5hOkxKwxFBVeBce3aiINYi/mtY0QHo/XFPuJ3g==
-X-Received: by 2002:a2e:9f05:: with SMTP id u5mr3851214ljk.183.1553274442704;
-        Fri, 22 Mar 2019 10:07:22 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id i190sm1803112lfi.43.2019.03.22.10.07.20
+        bh=syf5FC/PD4cN6FgIJM2ms3RJG343jtrhSP64Oe75Sac=;
+        b=pYxkLLMtrc3FCa7HhULX2iUk5xlys965j3VZ5PMHz8FibsOoITMY1E/jQecGtdl22m
+         nEspEhXuPxOOPeOZjWrtMSfasaNgI87nTwlLh9DHQK+Mn3GCgomgJnbwc4zgPBv2NrFd
+         uwUdROkYYMj4+ai1qBB+a8+C9lr7XucIfG50MNwNMymnZt+eqr9qe3ok42vkKFldcmls
+         CeVqRTlNRbZEsD9TgQ6sDC8qbJSnsQItui1V25ZaCNve9UJaZOc2G7GlgDBXkCrS2StG
+         OY0KOuHxp1SbelN/09a3i7zfA4potJVDenNVCmqsfXSZQZ+RM9UKys0zm+2Sbfl8DYjm
+         m4pg==
+X-Gm-Message-State: APjAAAXm6iyzJEUWB0ACOytnV5FYTLJXReX7LJakFw02pOPXFnBreFn2
+        Brsm42ewr7k1032zY844R+GxFWIxJMM=
+X-Google-Smtp-Source: APXvYqyy9vtuBswinSM3gA+CkvqhWVQn0bJ1HHUZOThgrZvAVwnkJ1TqZG5TZ+OXu7b9UzMunwNKCg==
+X-Received: by 2002:a2e:84ce:: with SMTP id q14mr111128ljh.104.1553274526308;
+        Fri, 22 Mar 2019 10:08:46 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id f1sm1815161lfc.48.2019.03.22.10.08.45
         for <linux-parisc@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Mar 2019 10:07:21 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id f18so2652486lja.10
-        for <linux-parisc@vger.kernel.org>; Fri, 22 Mar 2019 10:07:20 -0700 (PDT)
-X-Received: by 2002:a2e:9786:: with SMTP id y6mr5380150lji.79.1553274440270;
- Fri, 22 Mar 2019 10:07:20 -0700 (PDT)
+        Fri, 22 Mar 2019 10:08:45 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id l7so2668168ljg.6
+        for <linux-parisc@vger.kernel.org>; Fri, 22 Mar 2019 10:08:45 -0700 (PDT)
+X-Received: by 2002:a2e:86ca:: with SMTP id n10mr5880284ljj.135.1553274524897;
+ Fri, 22 Mar 2019 10:08:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190322143008.21313-1-longman@redhat.com> <20190322143008.21313-3-longman@redhat.com>
-In-Reply-To: <20190322143008.21313-3-longman@redhat.com>
+References: <20190322143008.21313-1-longman@redhat.com> <20190322143008.21313-4-longman@redhat.com>
+In-Reply-To: <20190322143008.21313-4-longman@redhat.com>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 22 Mar 2019 10:07:04 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjujKK-Ey7DPnMExaEmphicuEDLmVn-9+W9VzFzR-Ts=A@mail.gmail.com>
-Message-ID: <CAHk-=wjujKK-Ey7DPnMExaEmphicuEDLmVn-9+W9VzFzR-Ts=A@mail.gmail.com>
-Subject: Re: [PATCH v5 2/3] locking/rwsem: Remove rwsem-spinlock.c & use
- rwsem-xadd.c for all archs
+Date:   Fri, 22 Mar 2019 10:08:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi0wwmY-waC1-2SmBz4-XK-Eru2RTx6PrGzUK=P1nwexQ@mail.gmail.com>
+Message-ID: <CAHk-=wi0wwmY-waC1-2SmBz4-XK-Eru2RTx6PrGzUK=P1nwexQ@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] locking/rwsem: Optimize down_read_trylock()
 To:     Waiman Long <longman@redhat.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -104,9 +103,12 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 On Fri, Mar 22, 2019 at 7:30 AM Waiman Long <longman@redhat.com> wrote:
 >
-> For simplication, we are going to remove rwsem-spinlock.c and make all
-> architectures use a single implementation of rwsem - rwsem-xadd.c.
+> Modify __down_read_trylock() to optimize for an unlocked rwsem and make
+> it generate slightly better code.
 
-Ack.
+Oh, that should teach me to read all patches in the series before
+starting to comment on them.
 
-               Linus
+So ignore my comment on #1.
+
+                Linus
