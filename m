@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EC91C43381
-	for <linux-parisc@archiver.kernel.org>; Fri, 22 Mar 2019 17:08:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B642CC43381
+	for <linux-parisc@archiver.kernel.org>; Fri, 22 Mar 2019 17:09:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5BF2D21900
-	for <linux-parisc@archiver.kernel.org>; Fri, 22 Mar 2019 17:08:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7D90F21900
+	for <linux-parisc@archiver.kernel.org>; Fri, 22 Mar 2019 17:09:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1553274529;
-	bh=NPONG8wAWdU8frpkBP04ZDC1Cm0k8bBvTC60p9VG0bk=;
+	s=default; t=1553274546;
+	bh=Cq9EbakpxRuqCopYhn1dCkRrdnNQDwyFy86rBTAr414=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=dIDrVsoil0l7yKTu2AHaQ8xkdYrg4VeTnNT+RRhaf6krIOVQl0o21YYG9lRAjKZdX
-	 CEXtGYYILn3LrigjPJUldA3ZJ61F4/AXY0HCISpgZ9etYUA44KiqrZyzaVkHZB+Glm
-	 TSj035Fs5H6USVphUNrN99s0d0afzch/o3LkyfGw=
+	b=1YoTaR0FmGdDRDeFvfU7HPpPOK+Ku6yegYrZ+mufTYDUKaSexXBnGTQwf2In4g0yk
+	 mcQPLvb7wIU9ADl4BsEqOI+re4TJfCTHaILsSN/0lZN8v7V7P0SXiekworUiuJeNMI
+	 l8QK3ZWwVv9GnD1kATItXeLoxZGN7/F3o8Okkcmg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728560AbfCVRIt (ORCPT
+        id S1728029AbfCVRJG (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 22 Mar 2019 13:08:49 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:37253 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727058AbfCVRIs (ORCPT
+        Fri, 22 Mar 2019 13:09:06 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:45413 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727058AbfCVRJF (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 22 Mar 2019 13:08:48 -0400
-Received: by mail-lj1-f196.google.com with SMTP id v13so2680211ljk.4
-        for <linux-parisc@vger.kernel.org>; Fri, 22 Mar 2019 10:08:47 -0700 (PDT)
+        Fri, 22 Mar 2019 13:09:05 -0400
+Received: by mail-lf1-f68.google.com with SMTP id 5so1872246lft.12
+        for <linux-parisc@vger.kernel.org>; Fri, 22 Mar 2019 10:09:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=syf5FC/PD4cN6FgIJM2ms3RJG343jtrhSP64Oe75Sac=;
-        b=IuhoI3hZaIxE4YvOC0/zFIRPXbZPqr4mch9fB87bJI50v/CesoGw5jPm0Ymj36S+8D
-         SIzDojt4m/q1uwaK9P5Is2rLt7NY0cQwo3oRCrDKYwFF22+ZwEkj5rWc3XCpMkx/lh21
-         i/oyaRFuahvewUzvmGuDcKpmqMK2Pff6AsG6Q=
+        bh=vz3qEaERAPywi/7ygEvysJD/ZMRj5JWoH5GTAfYhS9M=;
+        b=EQb0PJgIUrxIFWDmv2d+roZcOdf47m4oWDh2aF9nqiM4xcdszNPdjlEZ6XBCZ7EETk
+         1IfpVzYln8LpimAQjhRDAkW3OaV5XXtB4BOqOTWHoOqa+CwXq49WMc62V63vMcFKOgKB
+         AUA6dt7kp1lq7E8yacEVhDOuhsd4cjNkTZNrI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=syf5FC/PD4cN6FgIJM2ms3RJG343jtrhSP64Oe75Sac=;
-        b=pYxkLLMtrc3FCa7HhULX2iUk5xlys965j3VZ5PMHz8FibsOoITMY1E/jQecGtdl22m
-         nEspEhXuPxOOPeOZjWrtMSfasaNgI87nTwlLh9DHQK+Mn3GCgomgJnbwc4zgPBv2NrFd
-         uwUdROkYYMj4+ai1qBB+a8+C9lr7XucIfG50MNwNMymnZt+eqr9qe3ok42vkKFldcmls
-         CeVqRTlNRbZEsD9TgQ6sDC8qbJSnsQItui1V25ZaCNve9UJaZOc2G7GlgDBXkCrS2StG
-         OY0KOuHxp1SbelN/09a3i7zfA4potJVDenNVCmqsfXSZQZ+RM9UKys0zm+2Sbfl8DYjm
-         m4pg==
-X-Gm-Message-State: APjAAAXm6iyzJEUWB0ACOytnV5FYTLJXReX7LJakFw02pOPXFnBreFn2
-        Brsm42ewr7k1032zY844R+GxFWIxJMM=
-X-Google-Smtp-Source: APXvYqyy9vtuBswinSM3gA+CkvqhWVQn0bJ1HHUZOThgrZvAVwnkJ1TqZG5TZ+OXu7b9UzMunwNKCg==
-X-Received: by 2002:a2e:84ce:: with SMTP id q14mr111128ljh.104.1553274526308;
-        Fri, 22 Mar 2019 10:08:46 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id f1sm1815161lfc.48.2019.03.22.10.08.45
+        bh=vz3qEaERAPywi/7ygEvysJD/ZMRj5JWoH5GTAfYhS9M=;
+        b=teBf7Je6s+cFnrbxNLiOqbSpj/ssILwbdw8UZ/nJWvvK1YNYAfJ9b+RBXkgwSdP7u3
+         wJY2pzOklw8PrTTcKSM4ESbPPRFZNkQq3yoTw0+Y5Ck+CPRKjcIo2uHyJJLoh1Xeu1L4
+         Ua0A7nNzVn3q17JMHiuLIOq7Zy9aogGXVlDhUJszkaskokvfr9HhOK3UEgyNMyQQrSUQ
+         cUeex2mRipzRQ/szXVQQKB63DDgu3vn1c85NEt4CnQiAKcDlU+kPfQUQ29NubRBgrtga
+         nXqnzuxfdPsItZIf2oSLaXm22K4okKPAWZcrpGSe/iCIsjAVn2/If4ZnoIgXBFj10taV
+         YUQA==
+X-Gm-Message-State: APjAAAWmd0q7Dbp0I/uEdZbIak9HDv31BXgnaWsduCMyVdRjY9NRmeiX
+        0z3WO77EfsiIXXA7e/LlS+3hl+VwfZo=
+X-Google-Smtp-Source: APXvYqzlCSrEO6wCnK66pxOaIwm2qxGvsWsRr6ih1b814GB14O1YNgIDvcm+/QL45Zs8z7BXBV3uRQ==
+X-Received: by 2002:a19:9794:: with SMTP id z142mr6020969lfd.46.1553274543252;
+        Fri, 22 Mar 2019 10:09:03 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id z69sm1822237lfd.65.2019.03.22.10.09.02
         for <linux-parisc@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Mar 2019 10:08:45 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id l7so2668168ljg.6
-        for <linux-parisc@vger.kernel.org>; Fri, 22 Mar 2019 10:08:45 -0700 (PDT)
-X-Received: by 2002:a2e:86ca:: with SMTP id n10mr5880284ljj.135.1553274524897;
- Fri, 22 Mar 2019 10:08:44 -0700 (PDT)
+        Fri, 22 Mar 2019 10:09:03 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id l7so2668979ljg.6
+        for <linux-parisc@vger.kernel.org>; Fri, 22 Mar 2019 10:09:02 -0700 (PDT)
+X-Received: by 2002:a2e:94ca:: with SMTP id r10mr5731037ljh.118.1553274129929;
+ Fri, 22 Mar 2019 10:02:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190322143008.21313-1-longman@redhat.com> <20190322143008.21313-4-longman@redhat.com>
-In-Reply-To: <20190322143008.21313-4-longman@redhat.com>
+References: <20190322143008.21313-1-longman@redhat.com> <20190322143008.21313-2-longman@redhat.com>
+In-Reply-To: <20190322143008.21313-2-longman@redhat.com>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 22 Mar 2019 10:08:29 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi0wwmY-waC1-2SmBz4-XK-Eru2RTx6PrGzUK=P1nwexQ@mail.gmail.com>
-Message-ID: <CAHk-=wi0wwmY-waC1-2SmBz4-XK-Eru2RTx6PrGzUK=P1nwexQ@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] locking/rwsem: Optimize down_read_trylock()
+Date:   Fri, 22 Mar 2019 10:01:53 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wikkO-1f1=FEOEzkSnaDg3yJLP=4Vd59UCuLBztFd0KOw@mail.gmail.com>
+Message-ID: <CAHk-=wikkO-1f1=FEOEzkSnaDg3yJLP=4Vd59UCuLBztFd0KOw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] locking/rwsem: Remove arch specific rwsem files
 To:     Waiman Long <longman@redhat.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -103,12 +103,68 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 On Fri, Mar 22, 2019 at 7:30 AM Waiman Long <longman@redhat.com> wrote:
 >
-> Modify __down_read_trylock() to optimize for an unlocked rwsem and make
-> it generate slightly better code.
+>  19 files changed, 133 insertions(+), 930 deletions(-)
 
-Oh, that should teach me to read all patches in the series before
-starting to comment on them.
+Lovely. And it all looks sane to me.
 
-So ignore my comment on #1.
+So ack.
 
-                Linus
+The only comment I have is about __down_read_trylock(), which probably
+isn't critical enough to actually care about, but:
+
+> +static inline int __down_read_trylock(struct rw_semaphore *sem)
+> +{
+> +       long tmp;
+> +
+> +       while ((tmp = atomic_long_read(&sem->count)) >= 0) {
+> +               if (tmp == atomic_long_cmpxchg_acquire(&sem->count, tmp,
+> +                                  tmp + RWSEM_ACTIVE_READ_BIAS)) {
+> +                       return 1;
+> +               }
+> +       }
+> +       return 0;
+> +}
+
+So this seems to
+
+ (a) read the line early (the whole cacheline in shared state issue)
+
+ (b) read the line again unnecessarily in the while loop
+
+Now, (a) might be explained by "well, maybe we do trylock even with
+existing readers", although I continue to think that the case we
+should optimize for is simply the uncontended one, where we don't even
+have multiple readers.
+
+But (b) just seems silly.
+
+So I wonder if it shouldn't just be
+
+        long tmp = 0;
+
+        do {
+                long new = atomic_long_cmpxchg_acquire(&sem->count, tmp,
+                        tmp + RWSEM_ACTIVE_READ_BIAS);
+                if (likely(new == tmp))
+                        return 1;
+               tmp = new;
+        } while (tmp >= 0);
+        return 0;
+
+which would seem simpler and solve both issues. Hmm?
+
+But honestly, I didn't check what our uses of down_read_trylock() look
+like. We have more of them than I expected, and I _think_ the normal
+case is the "nobody else holds the lock", but that's just a gut
+feeling.
+
+Some of them _might_ be performance-critical. There's the one on
+mmap_sem in the fault handling path, for example. And yes, I'd expect
+the normal case to very much be "no other readers or writers" for that
+one.
+
+NOTE! The above code snippet is absolutely untested, and might be
+completely wrong. Take it as a "something like this" rather than
+anything else.
+
+                   Linus
