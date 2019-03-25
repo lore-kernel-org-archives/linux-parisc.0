@@ -2,204 +2,157 @@ Return-Path: <SRS0=sS5P=R4=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,USER_AGENT_NEOMUTT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7F02C43381
-	for <linux-parisc@archiver.kernel.org>; Mon, 25 Mar 2019 15:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B041C10F03
+	for <linux-parisc@archiver.kernel.org>; Mon, 25 Mar 2019 17:37:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AD28A2087E
-	for <linux-parisc@archiver.kernel.org>; Mon, 25 Mar 2019 15:25:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CFA482087E
+	for <linux-parisc@archiver.kernel.org>; Mon, 25 Mar 2019 17:37:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="Gb0MkZXr"
+	dkim=pass (1024-bit key) header.d=wavesemi.onmicrosoft.com header.i=@wavesemi.onmicrosoft.com header.b="ainsoJHS"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729473AbfCYPZa (ORCPT
+        id S1730054AbfCYRhX (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 25 Mar 2019 11:25:30 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:45723 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725810AbfCYPZ2 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 25 Mar 2019 11:25:28 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 44SdPD2xnBz9v0lr;
-        Mon, 25 Mar 2019 16:25:20 +0100 (CET)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=Gb0MkZXr; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id CrK4rxgSxrO3; Mon, 25 Mar 2019 16:25:20 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 44SdPD1fbZz9tyDn;
-        Mon, 25 Mar 2019 16:25:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1553527520; bh=JrL7MExoxenGmOAA8+6zfD5VS8gV08AijePqq6+rivY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Gb0MkZXr4cfDzR19n8lna6H+IPA5AH3vZL1jNvOtCev91KCVbckg3/MYHKcjqkio5
-         h3ZxOQHblb9nHvTSJ7+rGRyQcDlyWn4FJ8MQkFBX2AdS6cvQu/8kr1/7uriihL47lA
-         Q8KeTVo/1kkW9DTDs2sH3feGWWW85xlVR3ifVPe8=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 464268B8AB;
-        Mon, 25 Mar 2019 16:25:25 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id PjtKP9S86Vzq; Mon, 25 Mar 2019 16:25:25 +0100 (CET)
-Received: from PO15451 (po15451.idsi0.si.c-s.fr [172.25.231.2])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DA4758B74F;
-        Mon, 25 Mar 2019 16:25:24 +0100 (CET)
-Subject: Re: [PATCH v5 3/3] locking/rwsem: Optimize down_read_trylock()
-To:     Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        Mon, 25 Mar 2019 13:37:23 -0400
+Received: from mail-eopbgr750102.outbound.protection.outlook.com ([40.107.75.102]:57229
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729946AbfCYRhV (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 25 Mar 2019 13:37:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=wavesemi.onmicrosoft.com; s=selector1-wavecomp-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KxdGHDqM2Hob1Ge4ufd+xg2dLJBLXLGIts1F7o/D6L0=;
+ b=ainsoJHSuV4wQILShvNFOJKL3XQ5olD9sSMos4w92z0ZAEx9VxfDXjIU5Hs6RXlY13RVBEd2eRDcTdczi690f2Rgxpd4lunYwEQPsrkliqCKuZZDndAjxEKz0Y9tnWOP8HMDgxjHwH+5Kg4DJfJbJdFYnnijGu12VCfH87Aj+fg=
+Received: from MWHPR2201MB1277.namprd22.prod.outlook.com (10.174.162.17) by
+ MWHPR2201MB1392.namprd22.prod.outlook.com (10.172.63.10) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1730.18; Mon, 25 Mar 2019 17:37:12 +0000
+Received: from MWHPR2201MB1277.namprd22.prod.outlook.com
+ ([fe80::b8d4:8f0d:d6d1:4018]) by MWHPR2201MB1277.namprd22.prod.outlook.com
+ ([fe80::b8d4:8f0d:d6d1:4018%3]) with mapi id 15.20.1730.019; Mon, 25 Mar 2019
+ 17:37:12 +0000
+From:   Paul Burton <paul.burton@mips.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-mips@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
-        x86@kernel.org, uclinux-h8-devel@lists.sourceforge.jp,
-        linux-xtensa@linux-xtensa.org, Arnd Bergmann <arnd@arndb.de>,
-        linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org,
-        openrisc@lists.librecores.org, Borislav Petkov <bp@alien8.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        linux-parisc@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        nios2-dev@lists.rocketboards.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org
-References: <20190322143008.21313-1-longman@redhat.com>
- <20190322143008.21313-4-longman@redhat.com>
-From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Message-ID: <014279a5-8998-8e03-adb3-c3d611dff171@c-s.fr>
-Date:   Mon, 25 Mar 2019 16:25:24 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.0
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        James Hogan <jhogan@kernel.org>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Firoz Khan <firoz.khan@linaro.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>
+Subject: Re: [PATCH 2/2] arch: add pidfd and io_uring syscalls everywhere
+Thread-Topic: [PATCH 2/2] arch: add pidfd and io_uring syscalls everywhere
+Thread-Index: AQHU4xnDP1dzfUK3kECwl5vlzfGO86YcnIQA
+Date:   Mon, 25 Mar 2019 17:37:11 +0000
+Message-ID: <20190325173704.mun2cj2ulswv7s3i@pburton-laptop>
+References: <20190325143521.34928-1-arnd@arndb.de>
+ <20190325144737.703921-1-arnd@arndb.de>
+In-Reply-To: <20190325144737.703921-1-arnd@arndb.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BYAPR07CA0093.namprd07.prod.outlook.com
+ (2603:10b6:a03:12b::34) To MWHPR2201MB1277.namprd22.prod.outlook.com
+ (2603:10b6:301:24::17)
+user-agent: NeoMutt/20180716
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=pburton@wavecomp.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [67.207.99.198]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b77b85e2-738a-4beb-6f17-08d6b14882f6
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600127)(711020)(4605104)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7153060)(7193020);SRVR:MWHPR2201MB1392;
+x-ms-traffictypediagnostic: MWHPR2201MB1392:
+x-microsoft-antispam-prvs: <MWHPR2201MB139298757EF5E1EE94647489C15E0@MWHPR2201MB1392.namprd22.prod.outlook.com>
+x-forefront-prvs: 0987ACA2E2
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(39840400004)(346002)(376002)(396003)(366004)(136003)(189003)(199004)(1076003)(68736007)(478600001)(6486002)(14454004)(256004)(4326008)(52116002)(6506007)(386003)(106356001)(66066001)(102836004)(76176011)(8936002)(71190400001)(71200400001)(186003)(105586002)(26005)(99286004)(305945005)(54906003)(486006)(81156014)(6512007)(9686003)(446003)(25786009)(6246003)(42882007)(6916009)(81166006)(58126008)(33716001)(97736004)(8676002)(11346002)(44832011)(476003)(111086002)(7416002)(316002)(7406005)(53936002)(229853002)(3846002)(6116002)(2906002)(5660300002)(7736002)(6436002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR2201MB1392;H:MWHPR2201MB1277.namprd22.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: wavecomp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 2+cUWKxJxdo+gG43J3egSpOoVxfSvfkRRxwHFW1Gcf5cr74uFP4A1HnuCcCx0BVWC9Nm0DI8GfbgBWCfCIjk99T6WqqS29wa7CIo0Ddnac3kM0SXjo9cfXnsqT+qa7uu8Mw5KMLyvOEcF3HzGV95rei1eHjMwb8voN9KgI0pzquq0mU919nohnWilH6h4PqCBb3rWtFiLS1yH9/s0qVv47dFfjoLMhv+l9YBrQPLOVggTkNpLJ7Aaaw1hH+046Ld34QD62zFd7XwrAl500gW4RRk3nppWyI6t3TBQVSLMjBVGfGAFKGeqDIbwm4YAb1W6HKwOLsh8M4B/pW7ZwEBdZ6E1QL0CjNhpMcS3qtSOx+un62AqkL6jaRx3vjYApk/0RLbyWEnKOA3sQ/yQtKHqnmnVNDvzpaKqC0/18le5ic=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <925CEF0D081FD04088D61AE526A67361@namprd22.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20190322143008.21313-4-longman@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: mips.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b77b85e2-738a-4beb-6f17-08d6b14882f6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2019 17:37:11.6927
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 463607d3-1db3-40a0-8a29-970c56230104
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR2201MB1392
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi,
+Hi Arnd,
 
-Could you share the microbenchmark you are using ?
-
-I'd like to test the series on powerpc.
-
-Thanks
-Christophe
-
-Le 22/03/2019 à 15:30, Waiman Long a écrit :
-> Modify __down_read_trylock() to optimize for an unlocked rwsem and make
-> it generate slightly better code.
-> 
-> Before this patch, down_read_trylock:
-> 
->     0x0000000000000000 <+0>:     callq  0x5 <down_read_trylock+5>
->     0x0000000000000005 <+5>:     jmp    0x18 <down_read_trylock+24>
->     0x0000000000000007 <+7>:     lea    0x1(%rdx),%rcx
->     0x000000000000000b <+11>:    mov    %rdx,%rax
->     0x000000000000000e <+14>:    lock cmpxchg %rcx,(%rdi)
->     0x0000000000000013 <+19>:    cmp    %rax,%rdx
->     0x0000000000000016 <+22>:    je     0x23 <down_read_trylock+35>
->     0x0000000000000018 <+24>:    mov    (%rdi),%rdx
->     0x000000000000001b <+27>:    test   %rdx,%rdx
->     0x000000000000001e <+30>:    jns    0x7 <down_read_trylock+7>
->     0x0000000000000020 <+32>:    xor    %eax,%eax
->     0x0000000000000022 <+34>:    retq
->     0x0000000000000023 <+35>:    mov    %gs:0x0,%rax
->     0x000000000000002c <+44>:    or     $0x3,%rax
->     0x0000000000000030 <+48>:    mov    %rax,0x20(%rdi)
->     0x0000000000000034 <+52>:    mov    $0x1,%eax
->     0x0000000000000039 <+57>:    retq
-> 
-> After patch, down_read_trylock:
-> 
->     0x0000000000000000 <+0>:	callq  0x5 <down_read_trylock+5>
->     0x0000000000000005 <+5>:	xor    %eax,%eax
->     0x0000000000000007 <+7>:	lea    0x1(%rax),%rdx
->     0x000000000000000b <+11>:	lock cmpxchg %rdx,(%rdi)
->     0x0000000000000010 <+16>:	jne    0x29 <down_read_trylock+41>
->     0x0000000000000012 <+18>:	mov    %gs:0x0,%rax
->     0x000000000000001b <+27>:	or     $0x3,%rax
->     0x000000000000001f <+31>:	mov    %rax,0x20(%rdi)
->     0x0000000000000023 <+35>:	mov    $0x1,%eax
->     0x0000000000000028 <+40>:	retq
->     0x0000000000000029 <+41>:	test   %rax,%rax
->     0x000000000000002c <+44>:	jns    0x7 <down_read_trylock+7>
->     0x000000000000002e <+46>:	xor    %eax,%eax
->     0x0000000000000030 <+48>:	retq
-> 
-> By using a rwsem microbenchmark, the down_read_trylock() rate (with a
-> load of 10 to lengthen the lock critical section) on a x86-64 system
-> before and after the patch were:
-> 
->                   Before Patch    After Patch
->     # of Threads     rlock           rlock
->     ------------     -----           -----
->          1           14,496          14,716
->          2            8,644           8,453
-> 	4            6,799           6,983
-> 	8            5,664           7,190
-> 
-> On a ARM64 system, the performance results were:
-> 
->                   Before Patch    After Patch
->     # of Threads     rlock           rlock
->     ------------     -----           -----
->          1           23,676          24,488
->          2            7,697           9,502
->          4            4,945           3,440
->          8            2,641           1,603
-> 
-> For the uncontended case (1 thread), the new down_read_trylock() is a
-> little bit faster. For the contended cases, the new down_read_trylock()
-> perform pretty well in x86-64, but performance degrades at high
-> contention level on ARM64.
-> 
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Waiman Long <longman@redhat.com>
+On Mon, Mar 25, 2019 at 03:47:37PM +0100, Arnd Bergmann wrote:
+> Add the io_uring and pidfd_send_signal system calls to all architectures.
+>=20
+> These system calls are designed to handle both native and compat tasks,
+> so all entries are the same across architectures, only arm-compat and
+> the generic tale still use an old format.
+>=20
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->   kernel/locking/rwsem.h | 13 ++++++++-----
->   1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/locking/rwsem.h b/kernel/locking/rwsem.h
-> index 45ee00236e03..1f5775aa6a1d 100644
-> --- a/kernel/locking/rwsem.h
-> +++ b/kernel/locking/rwsem.h
-> @@ -174,14 +174,17 @@ static inline int __down_read_killable(struct rw_semaphore *sem)
->   
->   static inline int __down_read_trylock(struct rw_semaphore *sem)
->   {
-> -	long tmp;
-> +	/*
-> +	 * Optimize for the case when the rwsem is not locked at all.
-> +	 */
-> +	long tmp = RWSEM_UNLOCKED_VALUE;
->   
-> -	while ((tmp = atomic_long_read(&sem->count)) >= 0) {
-> -		if (tmp == atomic_long_cmpxchg_acquire(&sem->count, tmp,
-> -				   tmp + RWSEM_ACTIVE_READ_BIAS)) {
-> +	do {
-> +		if (atomic_long_try_cmpxchg_acquire(&sem->count, &tmp,
-> +					tmp + RWSEM_ACTIVE_READ_BIAS)) {
->   			return 1;
->   		}
-> -	}
-> +	} while (tmp >= 0);
->   	return 0;
->   }
->   
-> 
+>%
+> diff --git a/arch/mips/kernel/syscalls/syscall_n64.tbl b/arch/mips/kernel=
+/syscalls/syscall_n64.tbl
+> index c85502e67b44..c4a49f7d57bb 100644
+> --- a/arch/mips/kernel/syscalls/syscall_n64.tbl
+> +++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
+> @@ -338,3 +338,7 @@
+>  327	n64	rseq				sys_rseq
+>  328	n64	io_pgetevents			sys_io_pgetevents
+>  # 329 through 423 are reserved to sync up with other architectures
+> +424	common	pidfd_send_signal		sys_pidfd_send_signal
+> +425	common	io_uring_setup			sys_io_uring_setup
+> +426	common	io_uring_enter			sys_io_uring_enter
+> +427	common	io_uring_register		sys_io_uring_register
+
+Shouldn't these declare the ABI as "n64"?
+
+I don't see anywhere that it would actually change the generated code,
+but a comment at the top of the file says that every entry should use
+"n64" and so far they all do. Did you have something else in mind here?
+
+Thanks,
+    Paul
