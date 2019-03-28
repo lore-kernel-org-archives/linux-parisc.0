@@ -1,108 +1,75 @@
-Return-Path: <SRS0=jWx0=R6=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=YUJb=R7=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-0.5 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT,HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0C7DC4360F
-	for <linux-parisc@archiver.kernel.org>; Wed, 27 Mar 2019 14:36:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 717E0C43381
+	for <linux-parisc@archiver.kernel.org>; Thu, 28 Mar 2019 10:50:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9803921738
-	for <linux-parisc@archiver.kernel.org>; Wed, 27 Mar 2019 14:36:06 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="iSIvvFXH"
+	by mail.kernel.org (Postfix) with ESMTP id 3EF8D20700
+	for <linux-parisc@archiver.kernel.org>; Thu, 28 Mar 2019 10:50:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728530AbfC0OgF (ORCPT
+        id S1726046AbfC1Kuv convert rfc822-to-8bit (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 27 Mar 2019 10:36:05 -0400
-Received: from mout.gmx.net ([212.227.17.22]:51195 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728821AbfC0OgF (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 27 Mar 2019 10:36:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1553697358;
-        bh=hM/Y1jPhDoz+DT2AI1/26PeuJuF7sKw/8wrOBjPZgsw=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=iSIvvFXH1PQPduSC0RqeddW7bFLpXcsTg3AkO193OwwyXE7VHxXLAOLPPczlpasQ4
-         gA/8a9m9Dqe14JFfNUEoJyYK15C2heUUoQarpSE0F/rbnQjP5slRdQd+5WilZNT7xr
-         WLH7vbS4j3Fg3QfYLmS9ZaeU0yk66TGQ61vo4GRI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [10.4.31.89] ([193.197.95.133]) by mail.gmx.com (mrgmx103
- [212.227.17.168]) with ESMTPSA (Nemesis) id 0MexlN-1hJxPb1e7F-00OVtF; Wed, 27
- Mar 2019 15:35:58 +0100
-Subject: Re: [svens@stackframe.org: kgdb for parisc]
-To:     Sven Schnelle <svens@stackframe.org>, linux-parisc@vger.kernel.org
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>
-References: <20190326084808.GB17214@t470p.stackframe.org>
-From:   Helge Deller <deller@gmx.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=deller@gmx.de; keydata=
- xsBNBFDPIPYBCAC6PdtagIE06GASPWQJtfXiIzvpBaaNbAGgmd3Iv7x+3g039EV7/zJ1do/a
- y9jNEDn29j0/jyd0A9zMzWEmNO4JRwkMd5Z0h6APvlm2D8XhI94r/8stwroXOQ8yBpBcP0yX
- +sqRm2UXgoYWL0KEGbL4XwzpDCCapt+kmarND12oFj30M1xhTjuFe0hkhyNHkLe8g6MC0xNg
- KW3x7B74Rk829TTAtj03KP7oA+dqsp5hPlt/hZO0Lr0kSAxf3kxtaNA7+Z0LLiBqZ1nUerBh
- OdiCasCF82vQ4/y8rUaKotXqdhGwD76YZry9AQ9p6ccqKaYEzWis078Wsj7p0UtHoYDbABEB
- AAHNHEhlbGdlIERlbGxlciA8ZGVsbGVyQGdteC5kZT7CwJIEEwECADwCGwMGCwkIBwMCBhUI
- AgkKCwQWAgMBAh4BAheAFiEE9M/0wAvkPPtRU6Boh8nBUbUeOGQFAlrHzIICGQEACgkQh8nB
- UbUeOGT1GAgAt+EeoHB4DbAx+pZoGbBYp6ZY8L6211n8fSi7wiwgM5VppucJ+C+wILoPkqiU
- +ZHKlcWRbttER2oBUvKOt0+yDfAGcoZwHS0P+iO3HtxR81h3bosOCwek+TofDXl+TH/WSQJa
- iaitof6iiPZLygzUmmW+aLSSeIAHBunpBetRpFiep1e5zujCglKagsW78Pq0DnzbWugGe26A
- 288JcK2W939bT1lZc22D9NhXXRHfX2QdDdrCQY7UsI6g/dAm1d2ldeFlGleqPMdaaQMcv5+E
- vDOur20qjTlenjnR/TFm9tA1zV+K7ePh+JfwKc6BSbELK4EHv8J8WQJjfTphakYLVM7ATQRQ
- zyD2AQgA2SJJapaLvCKdz83MHiTMbyk8yj2AHsuuXdmB30LzEQXjT3JEqj1mpvcEjXrX1B3h
- +0nLUHPI2Q4XWRazrzsseNMGYqfVIhLsK6zT3URPkEAp7R1JxoSiLoh4qOBdJH6AJHex4CWu
- UaSXX5HLqxKl1sq1tO8rq2+hFxY63zbWINvgT0FUEME27Uik9A5t8l9/dmF0CdxKdmrOvGMw
- T770cTt76xUryzM3fAyjtOEVEglkFtVQNM/BN/dnq4jDE5fikLLs8eaJwsWG9k9wQUMtmLpL
- gRXeFPRRK+IT48xuG8rK0g2NOD8aW5ThTkF4apznZe74M7OWr/VbuZbYW443QQARAQABwsBf
- BBgBAgAJBQJQzyD2AhsMAAoJEIfJwVG1HjhkNTgH/idWz2WjLE8DvTi7LvfybzvnXyx6rWUs
- 91tXUdCzLuOtjqWVsqBtSaZynfhAjlbqRlrFZQ8i8jRyJY1IwqgvHP6PO9s+rIxKlfFQtqhl
- kR1KUdhNGtiI90sTpi4aeXVsOyG3572KV3dKeFe47ALU6xE5ZL5U2LGhgQkbjr44I3EhPWc/
- lJ/MgLOPkfIUgjRXt0ZcZEN6pAMPU95+u1N52hmqAOQZvyoyUOJFH1siBMAFRbhgWyv+YE2Y
- ZkAyVDL2WxAedQgD/YCCJ+16yXlGYGNAKlvp07SimS6vBEIXk/3h5Vq4Hwgg0Z8+FRGtYZyD
- KrhlU0uMP9QTB5WAUvxvGy8=
-Message-ID: <b458c8cc-22ec-b425-6c1f-581c5ecd923d@gmx.de>
-Date:   Wed, 27 Mar 2019 15:35:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.0
+        Thu, 28 Mar 2019 06:50:51 -0400
+Received: from mail.quangninh.gov.vn ([203.162.127.222]:6663 "EHLO
+        SMG-QNH.qnh.gov.vn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725779AbfC1Kuu (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 28 Mar 2019 06:50:50 -0400
+X-AuditID: 0a80c63d-f79876d000001e2f-65-5c9ca23c7335
+Received: from localhost (localhost [127.0.0.1])
+        by web2.quangninh.gov.vn (Postfix) with ESMTP id 385964C2148
+        for <linux-parisc@vger.kernel.org>; Thu, 28 Mar 2019 17:43:40 +0700 (+07)
+Received: from web2.quangninh.gov.vn ([127.0.0.1])
+        by localhost (web2.quangninh.gov.vn [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id O1iLJQislBvD for <linux-parisc@vger.kernel.org>;
+        Thu, 28 Mar 2019 17:43:39 +0700 (+07)
+Received: from localhost (localhost [127.0.0.1])
+        by web2.quangninh.gov.vn (Postfix) with ESMTP id DD8094C2041
+        for <linux-parisc@vger.kernel.org>; Thu, 28 Mar 2019 17:43:39 +0700 (+07)
+X-Virus-Scanned: amavisd-new at web.quangninh.gov.vn
+Received: from web2.quangninh.gov.vn ([127.0.0.1])
+        by localhost (web2.quangninh.gov.vn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id FRn4piBxo6f7 for <linux-parisc@vger.kernel.org>;
+        Thu, 28 Mar 2019 17:43:39 +0700 (+07)
+Received: from [192.168.8.102] (unknown [10.128.199.250])
+        by web2.quangninh.gov.vn (Postfix) with ESMTPSA id AEB714C1DB0
+        for <linux-parisc@vger.kernel.org>; Thu, 28 Mar 2019 17:43:38 +0700 (+07)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20190326084808.GB17214@t470p.stackframe.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:D1jvk/MiFjtYfJND9Lq8Hok10IZPSvv2DIFzLYC8RcCdHPVFXvk
- 3I84RnMDtzcMYRUsZ9Eye/fE9S2iYubppq4bIIx5tvzf3h2NoDPtuBcjzNyk8g8LUlCc+Qu
- Vx796mQJ1D62EWmx9FFKljXsZEekH5M/Ino0H4UlzF4C7P2bE2MpwPVBCGxJWi6cDEXZwGG
- UMFeiJKOaBDftf3eNfEHw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vynxAM7AY9M=:a74aYqYQwpu+pvdxPS0k7j
- IiiwCuJNhCr4eSk6J4odvdMvXqRUq0JLQMAS4BC9bNfT+l28MdM/qo/6ePCtTp7rTgpiI8HRm
- bPpCp+jJOvvvgUpm2irrqnVPcVMdREcLPxQsAGASDpvLq/jr9F1wlD6X8K8OXalyGymh4zMe7
- WdT+Yi79gmhWvMNEvXsDEBnj3yVm7ZhiOKqR59phTRC5NwLMBmwlOfiNnuLt2My+faq90pbVz
- IoBiqp+41w0OlI4fIjgb9wi/fp6yl3rhr3jVw6NutfkhhERy/mj9mnkscSRoiAR2CL+ejctb4
- d55bA4zSGq93sAsFGI5Nbejl3yOIYwj3VjzabkuHswhD7Cvg9EVy7aDtFHmGDbC2KooOpxSMX
- ZvjyvM6pPutDQvpo0xcexJaPi3czSCYDL3HFwji/UZMOdiO/qht2AgNFM3rTVr+vgxRHeuuV1
- OUEttwxRawejWETCE8hQ/CUrqHBiSHoymh2P0PxZxb0+irmIZFH8lkObeRqnFfqmo4uXCLBiS
- /VwjibvE0g1Y/Rt2L7T3jQ+/BuFbMFr0br/lw53uOBoW/Vght/3Eg+fF61no6+jlBdKD4JLO6
- /Y9m8Wn1sfb4zrcaifG0Iz/C5XWr2D8QI3yX2xs0w8eJZD+g5ulkLw0VbB65jnltUbEVhwIi5
- oyaO9JWrvFfCQ25gFfEY3mMnfvDdEc9/eRUv7YZi0nKWcPr/vaVZKnnxgZB4ParzI1SCc0kkL
- 7bAM/ry0VC0f59bc9mQBlb6b76ZqZ36ptjT0iV0Q3KOYhhzm/rCKXlBjlt/OCH7YpM5dMFWGc
- sZwVUH+3IIn1A7GWwJysMqPgmxunH2nCJ6mFB91o/nVIn4zYM9DpNh1H7V7pr0pyaEDFyG78G
- e85Hdfh8BfxPu/fx8kH3ZwtI4Jkz850oL0iZ7X0aJmgMM0JzIUscwS1aCLIM5w
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Spende an dich
+To:     linux-parisc@vger.kernel.org
+From:   official@att.net
+Date:   Thu, 28 Mar 2019 03:43:31 -0700
+Reply-To: wanczykmavis107@gmail.com
+X-Antivirus: Avast (VPS 190327-4, 03/27/2019), Outbound message
+X-Antivirus-Status: Clean
+Message-Id: <20190328104338.AEB714C1DB0@web2.quangninh.gov.vn>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGLMWRmVeSWpSXmKPExsXC1XBcUtdr0ZwYg/NTtC0enbrA5MDo8XmT
+        XABjFJdNSmpOZllqkb5dAlfGh+YuloJJzBVv925ibmC8yNTFyMkhIWAicbvrCguELSZx4d56
+        NhBbSGA3o8S+xUEQ9gtGifmvyrsYuSDi867+Z4Vp3jf/JCtEAqjo9peXbBDOMUaJ3qUrgBwO
+        DmYBTYn1u/RBGngFBCVOznwCto1ZQFti2cLXzBAlahJfu0pAwsIC4hJnj3eClYgIKEgcePkc
+        7CA2oOM6vj4GO5pFQFVi5csLjBDHKUusmdoK9YC9xJPJZ9khbEmJJ7cnM0KstZM4e/Ic8wRG
+        kVkIB81CctAsJAfNQjhoASPLKkaJYF933UA/D73C0sS89LzMvAy99PwyvbK8TYzg0D9mu4Px
+        z0bnQ4wCHIxKPLwFWbNjhFgTy4orcw8xSnAwK4nw3p04J0aINyWxsiq1KD++qDQntfgQozQH
+        i5I478cv6dFCAumJJanZqakFqUUwWSYOTqkGRnmvsslbdzmdXdbIY3qXl6vmroHAdSar2F0S
+        iyfoXC9/tZn9tPiSl0frWl4o620P2h30zT7ffKrFo7bAmts9WsnGy5/NPrW1NFT5RnKidOiq
+        26Gvr8a4ztm6+caGTXOMrWrfLTXn8d5deP+xxY2Q5jkC4f6XL2gdeNbYFtRmP2uXTFbO1MfL
+        PJRYijMSDbWYi4oTATtyxwR5AgAA
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi Sven,
+4.800.000 € wurden Ihnen von Mavis Wanczyck gespendet, der im Juli 2017 den Powerball-Jackpot in Höhe von 758.700.000 $ gewonnen hat. Wenden Sie sich per E-Mail an mich, um weitere Informationen zur Rücknahme des Fonds zu erhalten--- [wanczykmavis107@gmail.com]
 
-On 26.03.19 09:48, Sven Schnelle wrote:
-> Another thing is that for software breakpoints we would need to
-> modify kernel text. Currently it's EXEC only (which is good) but
-> that doesn't work with kgdb for obvious reasons. Would it be ok to
-> set it to RWX when KGDB is enabled?
+---
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
 
-Sure, but you could use the function set_kernel_text_rw()...
-
-Helge
