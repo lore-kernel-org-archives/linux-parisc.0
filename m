@@ -1,419 +1,159 @@
-Return-Path: <SRS0=b8iV=SE=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=pF42=SF=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7B9DC4360F
-	for <linux-parisc@archiver.kernel.org>; Tue,  2 Apr 2019 20:48:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26D80C10F0B
+	for <linux-parisc@archiver.kernel.org>; Wed,  3 Apr 2019 01:20:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 698C22082C
-	for <linux-parisc@archiver.kernel.org>; Tue,  2 Apr 2019 20:48:41 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="hvkLz0NS"
+	by mail.kernel.org (Postfix) with ESMTP id F2DE020882
+	for <linux-parisc@archiver.kernel.org>; Wed,  3 Apr 2019 01:20:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbfDBUsl (ORCPT
+        id S1727659AbfDCBUB (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 2 Apr 2019 16:48:41 -0400
-Received: from smtp.duncanthrax.net ([89.31.1.170]:47957 "EHLO
-        smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726206AbfDBUsl (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 2 Apr 2019 16:48:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=duncanthrax.net; s=dkim; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From;
-        bh=LLG69WuuuPnlhypxVj/VbSFulNE9svdXYJNtJACZ3e8=; b=hvkLz0NSzcm2W8WVmti3fZc/TW
-        d+T34blnYU20lOSD5JGmDsRQMNLmTCmQGY2Z9/pxVVBYVDXhAS6/h0TbMddVaHg4doUdqqCmxlv9o
-        3rOsvqYlSStrsT5yBtLP9LNG3AmTYS8v0f5OvSim6lWFiqdXo0EraCQ5uB5fzO9hwmWg=;
-Received: from [134.3.47.207] (helo=t470p.stackframe.org)
-        by smtp.eurescom.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <svens@stackframe.org>)
-        id 1hBQKk-0006Pf-VJ; Tue, 02 Apr 2019 22:48:39 +0200
-From:   Sven Schnelle <svens@stackframe.org>
-To:     deller@gmx.de
-Cc:     linux-parisc@vger.kernel.org, Sven Schnelle <svens@stackframe.org>
-Subject: [PATCH 3/3] parisc: add KGDB support
-Date:   Tue,  2 Apr 2019 22:48:18 +0200
-Message-Id: <20190402204818.5929-4-svens@stackframe.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190402204818.5929-1-svens@stackframe.org>
-References: <20190402204818.5929-1-svens@stackframe.org>
+        Tue, 2 Apr 2019 21:20:01 -0400
+Received: from ozlabs.org ([203.11.71.1]:41751 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726724AbfDCBUB (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 2 Apr 2019 21:20:01 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 44YpCT5B81z9sPS;
+        Wed,  3 Apr 2019 12:19:49 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@mips.com>,
+        James Hogan <jhogan@kernel.org>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Firoz Khan <firoz.khan@linaro.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-ia64@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-mips@vger.kernel.org,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Subject: Re: [PATCH 2/2] arch: add pidfd and io_uring syscalls everywhere
+In-Reply-To: <CAK8P3a14of-jJA2q7rki3gHk6gwE-0TCkzHuXZ1+TkemopgfRA@mail.gmail.com>
+References: <20190325143521.34928-1-arnd@arndb.de> <20190325144737.703921-1-arnd@arndb.de> <87y34vl6ji.fsf@concordia.ellerman.id.au> <CAK8P3a14of-jJA2q7rki3gHk6gwE-0TCkzHuXZ1+TkemopgfRA@mail.gmail.com>
+Date:   Wed, 03 Apr 2019 12:19:49 +1100
+Message-ID: <87wokb28cq.fsf@concordia.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-This patch add KGDB support to PA-RISC. It also implements
-single-stepping utilizing the recovery counter.
+Arnd Bergmann <arnd@arndb.de> writes:
+> On Sun, Mar 31, 2019 at 5:47 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>>
+>> Arnd Bergmann <arnd@arndb.de> writes:
+>> > Add the io_uring and pidfd_send_signal system calls to all architectures.
+>> >
+>> > These system calls are designed to handle both native and compat tasks,
+>> > so all entries are the same across architectures, only arm-compat and
+>> > the generic tale still use an old format.
+>> >
+>> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> > ---
+>> >  arch/alpha/kernel/syscalls/syscall.tbl      | 4 ++++
+>> >  arch/arm/tools/syscall.tbl                  | 4 ++++
+>> >  arch/arm64/include/asm/unistd.h             | 2 +-
+>> >  arch/arm64/include/asm/unistd32.h           | 8 ++++++++
+>> >  arch/ia64/kernel/syscalls/syscall.tbl       | 4 ++++
+>> >  arch/m68k/kernel/syscalls/syscall.tbl       | 4 ++++
+>> >  arch/microblaze/kernel/syscalls/syscall.tbl | 4 ++++
+>> >  arch/mips/kernel/syscalls/syscall_n32.tbl   | 4 ++++
+>> >  arch/mips/kernel/syscalls/syscall_n64.tbl   | 4 ++++
+>> >  arch/mips/kernel/syscalls/syscall_o32.tbl   | 4 ++++
+>> >  arch/parisc/kernel/syscalls/syscall.tbl     | 4 ++++
+>> >  arch/powerpc/kernel/syscalls/syscall.tbl    | 4 ++++
+>>
+>> Have you done any testing?
+>>
+>> I'd rather not wire up syscalls that have never been tested at all on
+>> powerpc.
+>
+> No, I have not. I did review the system calls carefully and added the first
+> patch to fix the bug on x86 compat mode before adding the same bug
+> on the other compat architectures though ;-)
+>
+> Generally, my feeling is that adding system calls is not fundamentally
+> different from adding other ABIs, and we should really do it at
+> the same time across all architectures, rather than waiting for each
+> maintainer to get around to reviewing and testing the new calls
+> first. This is not a problem on powerpc, but a lot of other architectures
+> are less active, which is how we have always ended up with
+> different sets of system calls across architectures.
 
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
----
- arch/parisc/Kconfig            |   1 +
- arch/parisc/include/asm/kgdb.h |  68 +++++++++++
- arch/parisc/kernel/Makefile    |   1 +
- arch/parisc/kernel/kgdb.c      | 210 +++++++++++++++++++++++++++++++++
- arch/parisc/kernel/traps.c     |  15 +++
- 5 files changed, 295 insertions(+)
- create mode 100644 arch/parisc/include/asm/kgdb.h
- create mode 100644 arch/parisc/kernel/kgdb.c
+Well it's still something of a problem on powerpc. No one has
+volunteered to test io_uring on powerpc, so at this stage it will go in
+completely untested.
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index c8e621296092..a80c19c7fc0e 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -54,6 +54,7 @@ config PARISC
- 	select CPU_NO_EFFICIENT_FFS
- 	select NEED_DMA_MAP_STATE
- 	select NEED_SG_DMA_LENGTH
-+	select HAVE_ARCH_KGDB
- 
- 	help
- 	  The PA-RISC microprocessor is designed by Hewlett-Packard and used
-diff --git a/arch/parisc/include/asm/kgdb.h b/arch/parisc/include/asm/kgdb.h
-new file mode 100644
-index 000000000000..f23e7f8f13a5
---- /dev/null
-+++ b/arch/parisc/include/asm/kgdb.h
-@@ -0,0 +1,68 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * PA-RISC KGDB support
-+ *
-+ * Copyright (c) 2019 Sven Schnelle <svens@stackframe.org>
-+ *
-+ */
-+
-+#ifndef __PARISC_KGDB_H__
-+#define __PARISC_KGDB_H__
-+
-+#define BREAK_INSTR_SIZE		4
-+#define PARISC_KGDB_COMPILED_BREAK_INSN	0x3ffc01f
-+#define PARISC_KGDB_BREAK_INSN		0x3ffa01f
-+
-+
-+#define NUMREGBYTES			sizeof(struct parisc_gdb_regs)
-+#define BUFMAX				4096
-+
-+#define CACHE_FLUSH_IS_SAFE		1
-+
-+#ifndef __ASSEMBLY__
-+
-+static inline void arch_kgdb_breakpoint(void)
-+{
-+	asm(".word %0" : : "i"(PARISC_KGDB_COMPILED_BREAK_INSN) : "memory");
-+}
-+
-+struct parisc_gdb_regs {
-+	unsigned long gpr[32];
-+	unsigned long sar;
-+	unsigned long iaoq_f;
-+	unsigned long iasq_f;
-+	unsigned long iaoq_b;
-+	unsigned long iasq_b;
-+	unsigned long eiem;
-+	unsigned long iir;
-+	unsigned long isr;
-+	unsigned long ior;
-+	unsigned long ipsw;
-+	unsigned long __unused0;
-+	unsigned long sr4;
-+	unsigned long sr0;
-+	unsigned long sr1;
-+	unsigned long sr2;
-+	unsigned long sr3;
-+	unsigned long sr5;
-+	unsigned long sr6;
-+	unsigned long sr7;
-+	unsigned long cr0;
-+	unsigned long pid1;
-+	unsigned long pid2;
-+	unsigned long scrccr;
-+	unsigned long pid3;
-+	unsigned long pid4;
-+	unsigned long cr24;
-+	unsigned long cr25;
-+	unsigned long cr26;
-+	unsigned long cr27;
-+	unsigned long cr28;
-+	unsigned long cr29;
-+	unsigned long cr30;
-+
-+	u64 fr[32];
-+};
-+
-+#endif
-+#endif
-diff --git a/arch/parisc/kernel/Makefile b/arch/parisc/kernel/Makefile
-index d29bbd1a73b2..5012da96c196 100644
---- a/arch/parisc/kernel/Makefile
-+++ b/arch/parisc/kernel/Makefile
-@@ -33,3 +33,4 @@ obj-$(CONFIG_64BIT)	+= perf.o perf_asm.o $(obj64-y)
- obj-$(CONFIG_PARISC_CPU_TOPOLOGY)	+= topology.o
- obj-$(CONFIG_FUNCTION_TRACER)		+= ftrace.o
- obj-$(CONFIG_FUNCTION_GRAPH_TRACER)	+= ftrace.o
-+obj-$(CONFIG_KGDB)			+= kgdb.o
-diff --git a/arch/parisc/kernel/kgdb.c b/arch/parisc/kernel/kgdb.c
-new file mode 100644
-index 000000000000..9836e06d20ab
---- /dev/null
-+++ b/arch/parisc/kernel/kgdb.c
-@@ -0,0 +1,210 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * PA-RISC KGDB support
-+ *
-+ * Copyright (c) 2019 Sven Schnelle <svens@stackframe.org>
-+ *
-+ */
-+
-+#include <linux/kgdb.h>
-+#include <linux/string.h>
-+#include <linux/sched.h>
-+#include <linux/notifier.h>
-+#include <linux/kdebug.h>
-+#include <linux/uaccess.h>
-+#include <asm/ptrace.h>
-+#include <asm/traps.h>
-+#include <asm/processor.h>
-+#include <asm/patch.h>
-+#include <asm/cacheflush.h>
-+
-+const struct kgdb_arch arch_kgdb_ops = {
-+	.gdb_bpt_instr = { 0x03, 0xff, 0xa0, 0x1f }
-+};
-+
-+static int __kgdb_notify(struct die_args *args, unsigned long cmd)
-+{
-+	struct pt_regs *regs = args->regs;
-+
-+	if (kgdb_handle_exception(1, args->signr, cmd, regs))
-+		return NOTIFY_DONE;
-+	return NOTIFY_STOP;
-+}
-+
-+static int kgdb_notify(struct notifier_block *self,
-+		       unsigned long cmd, void *ptr)
-+{
-+	unsigned long flags;
-+	int ret;
-+
-+	local_irq_save(flags);
-+	ret = __kgdb_notify(ptr, cmd);
-+	local_irq_restore(flags);
-+
-+	return ret;
-+}
-+
-+static struct notifier_block kgdb_notifier = {
-+	.notifier_call	= kgdb_notify,
-+	.priority	= -INT_MAX,
-+};
-+
-+int kgdb_arch_init(void)
-+{
-+	return register_die_notifier(&kgdb_notifier);
-+}
-+
-+void kgdb_arch_exit(void)
-+{
-+	unregister_die_notifier(&kgdb_notifier);
-+}
-+
-+void pt_regs_to_gdb_regs(unsigned long *gdb_regs, struct pt_regs *regs)
-+{
-+	struct parisc_gdb_regs *gr = (struct parisc_gdb_regs *)gdb_regs;
-+
-+	memset(gr, 0, sizeof(struct parisc_gdb_regs));
-+
-+	memcpy(gr->gpr, regs->gr, sizeof(gr->gpr));
-+	memcpy(gr->fr, regs->fr, sizeof(gr->fr));
-+
-+	gr->sr0 = regs->sr[0];
-+	gr->sr1 = regs->sr[1];
-+	gr->sr2 = regs->sr[2];
-+	gr->sr3 = regs->sr[3];
-+	gr->sr4 = regs->sr[4];
-+	gr->sr5 = regs->sr[5];
-+	gr->sr6 = regs->sr[6];
-+	gr->sr7 = regs->sr[7];
-+
-+	gr->sar = regs->sar;
-+	gr->iir = regs->iir;
-+	gr->isr = regs->isr;
-+	gr->ior = regs->ior;
-+	gr->ipsw = regs->ipsw;
-+	gr->cr27 = regs->cr27;
-+
-+	gr->iaoq_f = regs->iaoq[0];
-+	gr->iasq_f = regs->iasq[0];
-+
-+	gr->iaoq_b = regs->iaoq[1];
-+	gr->iasq_b = regs->iasq[1];
-+}
-+
-+void gdb_regs_to_pt_regs(unsigned long *gdb_regs, struct pt_regs *regs)
-+{
-+	struct parisc_gdb_regs *gr = (struct parisc_gdb_regs *)gdb_regs;
-+
-+
-+	memcpy(regs->gr, gr->gpr, sizeof(regs->gr));
-+	memcpy(regs->fr, gr->fr, sizeof(regs->fr));
-+
-+	regs->sr[0] = gr->sr0;
-+	regs->sr[1] = gr->sr1;
-+	regs->sr[2] = gr->sr2;
-+	regs->sr[3] = gr->sr3;
-+	regs->sr[4] = gr->sr4;
-+	regs->sr[5] = gr->sr5;
-+	regs->sr[6] = gr->sr6;
-+	regs->sr[7] = gr->sr7;
-+
-+	regs->sar = gr->sar;
-+	regs->iir = gr->iir;
-+	regs->isr = gr->isr;
-+	regs->ior = gr->ior;
-+	regs->ipsw = gr->ipsw;
-+	regs->cr27 = gr->cr27;
-+
-+	regs->iaoq[0] = gr->iaoq_f;
-+	regs->iasq[0] = gr->iasq_f;
-+
-+	regs->iaoq[1] = gr->iaoq_b;
-+	regs->iasq[1] = gr->iasq_b;
-+}
-+
-+void sleeping_thread_to_gdb_regs(unsigned long *gdb_regs,
-+				struct task_struct *task)
-+{
-+	struct pt_regs *regs = task_pt_regs(task);
-+	unsigned long gr30, iaoq;
-+
-+	gr30 = regs->gr[30];
-+	iaoq = regs->iaoq[0];
-+
-+	regs->gr[30] = regs->ksp;
-+	regs->iaoq[0] = regs->kpc;
-+	pt_regs_to_gdb_regs(gdb_regs, regs);
-+
-+	regs->gr[30] = gr30;
-+	regs->iaoq[0] = iaoq;
-+
-+}
-+
-+static void step_instruction_queue(struct pt_regs *regs)
-+{
-+	regs->iaoq[0] = regs->iaoq[1];
-+	regs->iaoq[1] += 4;
-+}
-+
-+void kgdb_arch_set_pc(struct pt_regs *regs, unsigned long ip)
-+{
-+	regs->iaoq[0] = ip;
-+	regs->iaoq[1] = ip + 4;
-+}
-+
-+int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
-+{
-+	int ret = probe_kernel_read(bpt->saved_instr, (char *)bpt->bpt_addr,
-+				BREAK_INSTR_SIZE);
-+	if (ret)
-+		return ret;
-+
-+	patch_text((void *)bpt->bpt_addr,
-+			*(unsigned int *)&arch_kgdb_ops.gdb_bpt_instr);
-+	return ret;
-+}
-+
-+int kgdb_arch_remove_breakpoint(struct kgdb_bkpt *bpt)
-+{
-+	patch_text((void *)bpt->bpt_addr, *(unsigned int *)&bpt->saved_instr);
-+	return 0;
-+}
-+
-+int kgdb_arch_handle_exception(int trap, int signo,
-+		int err_code, char *inbuf, char *outbuf,
-+		struct pt_regs *regs)
-+{
-+	unsigned long addr;
-+	char *p = inbuf + 1;
-+
-+	switch (inbuf[0]) {
-+	case 'D':
-+	case 'c':
-+	case 'k':
-+		kgdb_contthread = NULL;
-+		kgdb_single_step = 0;
-+
-+		if (kgdb_hex2long(&p, &addr))
-+			kgdb_arch_set_pc(regs, addr);
-+		else if (trap == 9 && regs->iir ==
-+				PARISC_KGDB_COMPILED_BREAK_INSN)
-+			step_instruction_queue(regs);
-+		return 0;
-+	case 's':
-+		kgdb_single_step = 1;
-+		if (kgdb_hex2long(&p, &addr)) {
-+			kgdb_arch_set_pc(regs, addr);
-+		} else if (trap == 9 && regs->iir ==
-+				PARISC_KGDB_COMPILED_BREAK_INSN) {
-+			step_instruction_queue(regs);
-+			mtctl(-1, 0);
-+		} else {
-+			mtctl(0, 0);
-+		}
-+		regs->gr[0] |= PSW_R;
-+		return 0;
-+
-+	}
-+	return -1;
-+}
-+
-diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index 7e1ccafadf57..91f94fc2abd3 100644
---- a/arch/parisc/kernel/traps.c
-+++ b/arch/parisc/kernel/traps.c
-@@ -42,6 +42,7 @@
- #include <asm/unwind.h>
- #include <asm/tlbflush.h>
- #include <asm/cacheflush.h>
-+#include <linux/kgdb.h>
- 
- #include "../math-emu/math-emu.h"	/* for handle_fpe() */
- 
-@@ -293,6 +294,14 @@ static void handle_break(struct pt_regs *regs)
- 			(tt == BUG_TRAP_TYPE_NONE) ? 9 : 0);
- 	}
- 
-+#ifdef CONFIG_KGDB
-+	if (unlikely(iir == PARISC_KGDB_COMPILED_BREAK_INSN ||
-+		iir == PARISC_KGDB_BREAK_INSN)) {
-+		kgdb_handle_exception(9, SIGTRAP, 0, regs);
-+		return;
-+	}
-+#endif
-+
- 	if (unlikely(iir != GDB_BREAK_INSN))
- 		parisc_printk_ratelimited(0, regs,
- 			KERN_DEBUG "break %d,%d: pid=%d command='%s'\n",
-@@ -518,6 +527,12 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- 	case  3:
- 		/* Recovery counter trap */
- 		regs->gr[0] &= ~PSW_R;
-+
-+		if (kgdb_single_step) {
-+			kgdb_handle_exception(0, SIGTRAP, 0, regs);
-+			return;
-+		}
-+
- 		if (user_space(regs))
- 			handle_gdb_break(regs, TRAP_TRACE);
- 		/* else this must be the start of a syscall - just let it run */
--- 
-2.20.1
+If there was a selftest in the tree I'd be a bit happier, because at
+least then our CI would start testing it as soon as the syscalls were
+wired up in linux-next.
 
+And yeah obviously I should test it, but I don't have infinite time
+unfortunately.
+
+> The problem here is that this makes it harder for the C library to
+> know when a system call is guaranteed to be available. glibc
+> still needs a feature test for newly added syscalls to see if they
+> are working (they might be backported to an older kernel, or
+> disabled), but whenever the minimum kernel version is increased,
+> it makes sense to drop those checks and assume non-optional
+> system calls will work if they were part of that minimum version.
+
+But that's the thing, if we just wire them up untested they may not
+actually work. And then you have the far worse situation where the
+syscall exists in kernel version x but does not actually work properly.
+
+See the mess we have with pkeys for example.
+
+> In the future, I'd hope that any new system calls get added
+> right away on all architectures when they land (it was a bit
+> tricky this time, because I still did a bunch of reworks that
+> conflicted with the new calls). Bugs will happen of course, but
+> I think adding them sooner makes it more likely to catch those
+> bugs early on so we have a chance to fix them properly,
+> and need fewer arch specific workarounds (ideally none)
+> for system calls.
+
+For syscalls that have a selftest in the tree, and don't rely on
+anything arch specific I agree.
+
+I'm a bit more wary of things that are not easily tested and have the
+potential to work differently across arches.
+
+cheers
