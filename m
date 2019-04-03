@@ -2,33 +2,64 @@ Return-Path: <SRS0=pF42=SF=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45A98C4360F
-	for <linux-parisc@archiver.kernel.org>; Wed,  3 Apr 2019 11:11:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 092CAC4360F
+	for <linux-parisc@archiver.kernel.org>; Wed,  3 Apr 2019 13:49:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1EAF12084B
-	for <linux-parisc@archiver.kernel.org>; Wed,  3 Apr 2019 11:11:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C329020700
+	for <linux-parisc@archiver.kernel.org>; Wed,  3 Apr 2019 13:49:39 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel-dk.20150623.gappssmtp.com header.i=@kernel-dk.20150623.gappssmtp.com header.b="a+09Q+zu"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726184AbfDCLLs (ORCPT
+        id S1726157AbfDCNtd (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 3 Apr 2019 07:11:48 -0400
-Received: from foss.arm.com ([217.140.101.70]:38080 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725935AbfDCLLr (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 3 Apr 2019 07:11:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D030B80D;
-        Wed,  3 Apr 2019 04:11:46 -0700 (PDT)
-Received: from fuggles.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.72.51.249])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 201A33F59C;
-        Wed,  3 Apr 2019 04:11:40 -0700 (PDT)
-Date:   Wed, 3 Apr 2019 12:11:34 +0100
-From:   Will Deacon <will.deacon@arm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>, axboe@kernel.dk
+        Wed, 3 Apr 2019 09:49:33 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:44122 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726193AbfDCNtd (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 3 Apr 2019 09:49:33 -0400
+Received: by mail-pf1-f195.google.com with SMTP id y13so8183679pfm.11
+        for <linux-parisc@vger.kernel.org>; Wed, 03 Apr 2019 06:49:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=t5ZVVI/5i5BZgbC0+BF4FpeyupPsSZBs0qT2dr3BKsI=;
+        b=a+09Q+zugRlUHjkyucJBUCWf446/MQuUX5HgeGs3ZuGQQLIWjJL4mBRQrPd8Bx1buN
+         pS4R4TpqP3XhVpa6S7zs10taoPdLsT7v+9IuXra/Uik1YcsijFXT7lR/UJiVHpj8asQt
+         ZKI61os4qE1ceMgeeCWS8eeEqFOYcwVarDSKzOrfLlnJyc5wRdlnXGw37CR8OlhLZqnf
+         yHVyoaWIHJpz8YliG/fKTjFH1niDFOpAo/QavcioqNac4ds3tqnSs5/kTVDh1j1rvHJs
+         S0B+dWgq7An+aJLx8NTQYB7UoUjMFTNUGB972txZpMDJCgnpUlYul4Q6ZsTAr8wNltER
+         O/0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=t5ZVVI/5i5BZgbC0+BF4FpeyupPsSZBs0qT2dr3BKsI=;
+        b=d+8H6aiRX/djT4t2Nu0JrHWvq7xp0lFB7ixPYi9PAla2V7Xw6Rf0JBFD9h6Pgmy5WS
+         AOtZIYj23a2wBBekg1R3eXwGOlZLr9ofOzsl3iNwaXj7+thBxL3Q7ga6Q0GiIUclmPgT
+         7wsmC9bKigXte0tdGAuwd9WM5ORYGa/SzRDTFeKn8BxPPSKlVT6UD8bzvwF4XfahlJvn
+         wYkUxsfYaNkm5lLM8HSMU2QmfaFgKXkMxGD3b9Na5VQPFIafcQ5rVEVNrzYyFN9hB7o+
+         GvFjfsxno4blz1P19hZdLSSnWvsNTZmFBbEWgUiSQ9IR/7c7oDNX9He1gY0+cEmyNjZK
+         nJ1Q==
+X-Gm-Message-State: APjAAAUAWs245Ni8Nk5bDY4In6VNCLGV8ITg7Pz/ck7jgwc5CeMg9MdE
+        YMkuuOEYcpihuuj9uHjoPUwY/A==
+X-Google-Smtp-Source: APXvYqzl4pp2LVq+nDJhXTBECl1hQPThxVc/ItK+ZQpXYL1XB54jwn23RYPTMUJAYmiOOJU/yQZx8A==
+X-Received: by 2002:a62:2687:: with SMTP id m129mr25296327pfm.204.1554299372295;
+        Wed, 03 Apr 2019 06:49:32 -0700 (PDT)
+Received: from [192.168.1.121] (66.29.188.166.static.utbb.net. [66.29.188.166])
+        by smtp.gmail.com with ESMTPSA id g2sm22691245pfd.134.2019.04.03.06.49.28
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Apr 2019 06:49:30 -0700 (PDT)
+Subject: Re: [PATCH 2/2] arch: add pidfd and io_uring syscalls everywhere
+To:     Will Deacon <will.deacon@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
         Andrew Morton <akpm@linux-foundation.org>,
         Richard Henderson <rth@twiddle.net>,
@@ -59,107 +90,98 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
         sparclinux@vger.kernel.org
-Subject: Re: [PATCH 2/2] arch: add pidfd and io_uring syscalls everywhere
-Message-ID: <20190403111134.GA7159@fuggles.cambridge.arm.com>
 References: <20190325143521.34928-1-arnd@arndb.de>
  <20190325144737.703921-1-arnd@arndb.de>
  <87tvff24a1.fsf@concordia.ellerman.id.au>
+ <20190403111134.GA7159@fuggles.cambridge.arm.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <9d673dfd-0051-3676-653e-6376430d73dd@kernel.dk>
+Date:   Wed, 3 Apr 2019 07:49:26 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87tvff24a1.fsf@concordia.ellerman.id.au>
-User-Agent: Mutt/1.11.1+86 (6f28e57d73f2) ()
+In-Reply-To: <20190403111134.GA7159@fuggles.cambridge.arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi Michael,
-
-On Wed, Apr 03, 2019 at 01:47:50PM +1100, Michael Ellerman wrote:
-> Arnd Bergmann <arnd@arndb.de> writes:
-> > diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
-> > index b18abb0c3dae..00f5a63c8d9a 100644
-> > --- a/arch/powerpc/kernel/syscalls/syscall.tbl
-> > +++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-> > @@ -505,3 +505,7 @@
-> >  421	32	rt_sigtimedwait_time64		sys_rt_sigtimedwait		compat_sys_rt_sigtimedwait_time64
-> >  422	32	futex_time64			sys_futex			sys_futex
-> >  423	32	sched_rr_get_interval_time64	sys_sched_rr_get_interval	sys_sched_rr_get_interval
-> > +424	common	pidfd_send_signal		sys_pidfd_send_signal
-> > +425	common	io_uring_setup			sys_io_uring_setup
-> > +426	common	io_uring_enter			sys_io_uring_enter
-> > +427	common	io_uring_register		sys_io_uring_register
+On 4/3/19 5:11 AM, Will Deacon wrote:
+> Hi Michael,
 > 
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+> On Wed, Apr 03, 2019 at 01:47:50PM +1100, Michael Ellerman wrote:
+>> Arnd Bergmann <arnd@arndb.de> writes:
+>>> diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
+>>> index b18abb0c3dae..00f5a63c8d9a 100644
+>>> --- a/arch/powerpc/kernel/syscalls/syscall.tbl
+>>> +++ b/arch/powerpc/kernel/syscalls/syscall.tbl
+>>> @@ -505,3 +505,7 @@
+>>>  421	32	rt_sigtimedwait_time64		sys_rt_sigtimedwait		compat_sys_rt_sigtimedwait_time64
+>>>  422	32	futex_time64			sys_futex			sys_futex
+>>>  423	32	sched_rr_get_interval_time64	sys_sched_rr_get_interval	sys_sched_rr_get_interval
+>>> +424	common	pidfd_send_signal		sys_pidfd_send_signal
+>>> +425	common	io_uring_setup			sys_io_uring_setup
+>>> +426	common	io_uring_enter			sys_io_uring_enter
+>>> +427	common	io_uring_register		sys_io_uring_register
+>>
+>> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+>>
+>> Lightly tested.
+>>
+>> The pidfd_test selftest passes.
 > 
-> Lightly tested.
+> That reports pass for me too, although it fails to unshare the pid ns, which I
+> assume is benign.
 > 
-> The pidfd_test selftest passes.
+>> Ran the io_uring example from fio, which prints lots of:
+> 
+> How did you invoke that? I had a play with the tests in:
 
-That reports pass for me too, although it fails to unshare the pid ns, which I
-assume is benign.
+It's t/io_uring from the fio repo:
 
-> Ran the io_uring example from fio, which prints lots of:
+git://git.kernel.dk/fio
 
-How did you invoke that? I had a play with the tests in:
+and you just run it ala:
 
-  git://git.kernel.dk/liburing
+# make t/io_uring
+# t/io_uring /dev/some_device
 
-but I quickly ran into the kernel oops below.
+>   git://git.kernel.dk/liburing
+> 
+> but I quickly ran into the kernel oops below.
+> 
+> Will
+> 
+> --->8
+> 
+> will@autoplooker:~/liburing/test$ ./io_uring_register 
+> RELIMIT_MEMLOCK: 67108864 (67108864)
+> [   35.477875] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
+> [   35.478969] Mem abort info:
+> [   35.479296]   ESR = 0x96000004
+> [   35.479785]   Exception class = DABT (current EL), IL = 32 bits
+> [   35.480528]   SET = 0, FnV = 0
+> [   35.480980]   EA = 0, S1PTW = 0
+> [   35.481345] Data abort info:
+> [   35.481680]   ISV = 0, ISS = 0x00000004
+> [   35.482267]   CM = 0, WnR = 0
+> [   35.482618] user pgtable: 4k pages, 48-bit VAs, pgdp = (____ptrval____)
+> [   35.483486] [0000000000000070] pgd=0000000000000000
+> [   35.484041] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> [   35.484788] Modules linked in:
+> [   35.485311] CPU: 113 PID: 3973 Comm: io_uring_regist Not tainted 5.1.0-rc3-00012-g40b114779944 #1
+> [   35.486712] Hardware name: linux,dummy-virt (DT)
+> [   35.487450] pstate: 20400005 (nzCv daif +PAN -UAO)
+> [   35.488228] pc : link_pwq+0x10/0x60
+> [   35.488794] lr : apply_wqattrs_commit+0xe0/0x118
+> [   35.489550] sp : ffff000017e2bbc0
 
-Will
+Huh, this looks odd, it's crashing inside the wq setup.
 
---->8
 
-will@autoplooker:~/liburing/test$ ./io_uring_register 
-RELIMIT_MEMLOCK: 67108864 (67108864)
-[   35.477875] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
-[   35.478969] Mem abort info:
-[   35.479296]   ESR = 0x96000004
-[   35.479785]   Exception class = DABT (current EL), IL = 32 bits
-[   35.480528]   SET = 0, FnV = 0
-[   35.480980]   EA = 0, S1PTW = 0
-[   35.481345] Data abort info:
-[   35.481680]   ISV = 0, ISS = 0x00000004
-[   35.482267]   CM = 0, WnR = 0
-[   35.482618] user pgtable: 4k pages, 48-bit VAs, pgdp = (____ptrval____)
-[   35.483486] [0000000000000070] pgd=0000000000000000
-[   35.484041] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[   35.484788] Modules linked in:
-[   35.485311] CPU: 113 PID: 3973 Comm: io_uring_regist Not tainted 5.1.0-rc3-00012-g40b114779944 #1
-[   35.486712] Hardware name: linux,dummy-virt (DT)
-[   35.487450] pstate: 20400005 (nzCv daif +PAN -UAO)
-[   35.488228] pc : link_pwq+0x10/0x60
-[   35.488794] lr : apply_wqattrs_commit+0xe0/0x118
-[   35.489550] sp : ffff000017e2bbc0
-[   35.490088] x29: ffff000017e2bbc0 x28: ffff8004b9118000 
-[   35.490939] x27: 0000000000000000 x26: ffff8004c21c4200 
-[   35.491786] x25: 0000000000000004 x24: ffff00001123e1b0 
-[   35.492640] x23: ffff8004c5390000 x22: ffff8004bb440500 
-[   35.493502] x21: ffff8004bb440500 x20: 0000000000000070 
-[   35.494355] x19: 0000000000000022 x18: 0000000000000000 
-[   35.495202] x17: 0000000000000000 x16: 0000000000000000 
-[   35.496054] x15: 0000000000000000 x14: ffff7e0012e8a240 
-[   35.496910] x13: 00004a73a5e663e2 x12: 0000000000000000 
-[   35.497764] x11: 0000000000000001 x10: 0000000000000070 
-[   35.498611] x9 : ffff8004cb49d610 x8 : 00000000ffffffff 
-[   35.499462] x7 : ffff8004c4ff9c70 x6 : ffff8004cb49ccb0 
-[   35.500308] x5 : ffff8004c66cc4c0 x4 : 0000000000000001 
-[   35.501173] x3 : 0000000000000000 x2 : 0000000000000040 
-[   35.502019] x1 : 0000000000000004 x0 : 0000000000000000 
-[   35.502872] Process io_uring_regist (pid: 3973, stack limit = 0x(____ptrval____))
-[   35.504052] Call trace:
-[   35.504463]  link_pwq+0x10/0x60
-[   35.504987]  apply_wqattrs_commit+0xe0/0x118
-[   35.505681]  apply_workqueue_attrs_locked+0x3c/0x80
-[   35.506460]  apply_workqueue_attrs+0x3c/0x60
-[   35.507152]  alloc_workqueue+0x264/0x430
-[   35.507786]  io_uring_setup+0x478/0x6a8
-[   35.508414]  __arm64_sys_io_uring_setup+0x18/0x20
-[   35.509183]  el0_svc_common+0x80/0xf0
-[   35.509786]  el0_svc_handler+0x2c/0x80
-[   35.510393]  el0_svc+0x8/0xc
-[   35.510873] Code: a9bd7bfd 910003fd a90153f3 9101c014 (f9403802) 
-[   35.511843] ---[ end trace 0a53e45ee26def4c ]---
-Segmentation fault
+-- 
+Jens Axboe
+
