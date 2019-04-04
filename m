@@ -2,107 +2,293 @@ Return-Path: <SRS0=+2mb=SG=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CB98C4360F
-	for <linux-parisc@archiver.kernel.org>; Thu,  4 Apr 2019 17:54:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EF70C10F0C
+	for <linux-parisc@archiver.kernel.org>; Thu,  4 Apr 2019 18:18:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C63B5206BA
-	for <linux-parisc@archiver.kernel.org>; Thu,  4 Apr 2019 17:54:49 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="QlvwBRCH"
+	by mail.kernel.org (Postfix) with ESMTP id E9C9E20663
+	for <linux-parisc@archiver.kernel.org>; Thu,  4 Apr 2019 18:18:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727562AbfDDRyt (ORCPT
+        id S1729456AbfDDSSG (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 4 Apr 2019 13:54:49 -0400
-Received: from mout.gmx.net ([212.227.17.22]:46101 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726418AbfDDRyt (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 4 Apr 2019 13:54:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1554400487;
-        bh=Lb8Fy1pLYCAL2YgRAsh/muw/AnTo+2znz3tqbpvD3oY=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=QlvwBRCHLO7fY1Bb/WzT3gOsLYVMIfdInNulOB1vXFBoKhLQdIN1A8RIHPdPhW9X3
-         1H32oluP1LDW6dpcWvhrP7/j1bL0jLiDOPOUmjNIhOjOamcNNh5x4BDtn7squOyB2d
-         MuGMkX+iJp1y/pCsClKaAgM1wXVcJTtuCYx46kV8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.163.76]) by mail.gmx.com (mrgmx102
- [212.227.17.168]) with ESMTPSA (Nemesis) id 0M0smx-1gvPGi1ERL-00v9gD; Thu, 04
- Apr 2019 19:54:47 +0200
-Subject: Re: [PATCH 0/2] small ptrace fixes
-To:     Sven Schnelle <svens@stackframe.org>, linux-parisc@vger.kernel.org
-References: <20190404161604.6165-1-svens@stackframe.org>
-From:   Helge Deller <deller@gmx.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=deller@gmx.de; keydata=
- xsBNBFDPIPYBCAC6PdtagIE06GASPWQJtfXiIzvpBaaNbAGgmd3Iv7x+3g039EV7/zJ1do/a
- y9jNEDn29j0/jyd0A9zMzWEmNO4JRwkMd5Z0h6APvlm2D8XhI94r/8stwroXOQ8yBpBcP0yX
- +sqRm2UXgoYWL0KEGbL4XwzpDCCapt+kmarND12oFj30M1xhTjuFe0hkhyNHkLe8g6MC0xNg
- KW3x7B74Rk829TTAtj03KP7oA+dqsp5hPlt/hZO0Lr0kSAxf3kxtaNA7+Z0LLiBqZ1nUerBh
- OdiCasCF82vQ4/y8rUaKotXqdhGwD76YZry9AQ9p6ccqKaYEzWis078Wsj7p0UtHoYDbABEB
- AAHNHEhlbGdlIERlbGxlciA8ZGVsbGVyQGdteC5kZT7CwJIEEwECADwCGwMGCwkIBwMCBhUI
- AgkKCwQWAgMBAh4BAheAFiEE9M/0wAvkPPtRU6Boh8nBUbUeOGQFAlrHzIICGQEACgkQh8nB
- UbUeOGT1GAgAt+EeoHB4DbAx+pZoGbBYp6ZY8L6211n8fSi7wiwgM5VppucJ+C+wILoPkqiU
- +ZHKlcWRbttER2oBUvKOt0+yDfAGcoZwHS0P+iO3HtxR81h3bosOCwek+TofDXl+TH/WSQJa
- iaitof6iiPZLygzUmmW+aLSSeIAHBunpBetRpFiep1e5zujCglKagsW78Pq0DnzbWugGe26A
- 288JcK2W939bT1lZc22D9NhXXRHfX2QdDdrCQY7UsI6g/dAm1d2ldeFlGleqPMdaaQMcv5+E
- vDOur20qjTlenjnR/TFm9tA1zV+K7ePh+JfwKc6BSbELK4EHv8J8WQJjfTphakYLVM7ATQRQ
- zyD2AQgA2SJJapaLvCKdz83MHiTMbyk8yj2AHsuuXdmB30LzEQXjT3JEqj1mpvcEjXrX1B3h
- +0nLUHPI2Q4XWRazrzsseNMGYqfVIhLsK6zT3URPkEAp7R1JxoSiLoh4qOBdJH6AJHex4CWu
- UaSXX5HLqxKl1sq1tO8rq2+hFxY63zbWINvgT0FUEME27Uik9A5t8l9/dmF0CdxKdmrOvGMw
- T770cTt76xUryzM3fAyjtOEVEglkFtVQNM/BN/dnq4jDE5fikLLs8eaJwsWG9k9wQUMtmLpL
- gRXeFPRRK+IT48xuG8rK0g2NOD8aW5ThTkF4apznZe74M7OWr/VbuZbYW443QQARAQABwsBf
- BBgBAgAJBQJQzyD2AhsMAAoJEIfJwVG1HjhkNTgH/idWz2WjLE8DvTi7LvfybzvnXyx6rWUs
- 91tXUdCzLuOtjqWVsqBtSaZynfhAjlbqRlrFZQ8i8jRyJY1IwqgvHP6PO9s+rIxKlfFQtqhl
- kR1KUdhNGtiI90sTpi4aeXVsOyG3572KV3dKeFe47ALU6xE5ZL5U2LGhgQkbjr44I3EhPWc/
- lJ/MgLOPkfIUgjRXt0ZcZEN6pAMPU95+u1N52hmqAOQZvyoyUOJFH1siBMAFRbhgWyv+YE2Y
- ZkAyVDL2WxAedQgD/YCCJ+16yXlGYGNAKlvp07SimS6vBEIXk/3h5Vq4Hwgg0Z8+FRGtYZyD
- KrhlU0uMP9QTB5WAUvxvGy8=
-Message-ID: <b3504a3e-fd63-57d5-aa3a-09666b4f46d2@gmx.de>
-Date:   Thu, 4 Apr 2019 19:54:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Thu, 4 Apr 2019 14:18:06 -0400
+Received: from vmicros1.altlinux.org ([194.107.17.57]:52512 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726418AbfDDSSF (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 4 Apr 2019 14:18:05 -0400
+Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id E9BF372CC8C;
+        Thu,  4 Apr 2019 21:17:58 +0300 (MSK)
+Received: by mua.local.altlinux.org (Postfix, from userid 508)
+        id D67DD7CCE4F; Thu,  4 Apr 2019 21:17:58 +0300 (MSK)
+Date:   Thu, 4 Apr 2019 21:17:58 +0300
+From:   "Dmitry V. Levin" <ldv@altlinux.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Roland McGrath <roland@hack.frob.com>,
+        Oleg Nesterov <oleg@redhat.com>, linux-arch@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Dave Martin <dave.martin@arm.com>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, nios2-dev@lists.rocketboards.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org
+Subject: Re: [PATCH 5/6 v3] syscalls: Remove start and number from
+ syscall_get_arguments() args
+Message-ID: <20190404181758.GA8071@altlinux.org>
+References: <20190401134104.676620247@goodmis.org>
+ <20190401134421.278590567@goodmis.org>
 MIME-Version: 1.0
-In-Reply-To: <20190404161604.6165-1-svens@stackframe.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:bzhDrB2kFCAZsJ9zzjy1/RBFdZGBBGn6+rarVnFMXQH2X7psqVU
- /kgbPm2YLrHZ636okoW55M2G3unuFKQ0K6yUMjEDDCZqcLFYqvxOfji43DmZTSYbnh6qmY3
- r67tE21WCJqJf1PE+yjACZOyMQYX33+jrajpOCmzXBEWoQv2+IoBTPIVli5LI1XXYq/znUm
- bMEzPvsb+TPkIPnoupylw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:DFsnwMk3qxU=:vN3dolta1dh2lw8opbwDTE
- ICi5p7tVLHS/9hBaqZ/yKagBIVMsbC4AliwjtMhR0fMtomdTm7gZO6EXFFvGQIF0+i9hYFPID
- jjQChaLS7lfwJBlUwSQBuuB38UIMSk/w8WklQHd6Ds6LdoU3BbHx/MpNF5n5rpexdB+N5G8gO
- Nb/6dg9ZNJI8NS4o3V30zgbqNcRTIU8oVo/WIbylrnMxfl8/cUvlkSzTfXVsstYXpeiaf0Y+D
- JZqWrXJTfD74sU9RJ26tlq6octbsfQqXy7BjQc1ZhJRMif5TwWoKMy8heWckqMCFAEe2jpKJF
- 06Aopmmdv75B0heT3daZ2QbMdlGNhZuQFdlWAHJwWWuWVOS9iehUsCPzepZy4/bm/dQ3NJpVD
- u+cpTHq/XmyQv/bsRTMjeswsQQjX/X8aODWnXFz3JzZ0X9HZ/ulLq4uWbzSN/QuMejmxWI2/D
- FOBL9Kj6LVnFsKqPoBITmqgacRrOXMcfDJ3MEWTULBXdVJuxRjNteg16/BiBIREpmNkBzOkMa
- bzkycvMF7+AHmOEtWunlPl6ep6yKOlPRV3/Uvpc6xUKwa1xrup/4stL5VwasewQKDLDKPygCL
- hHVazIHkmGCmkxOqBv2MxQBGYwgxrWzQpg7TaCnhgqP13Yvm+Z0+oScUP8FtHgVIKf4obuzlK
- lr3/hpCjCZ3diVcAHwwv5GcE+6O6qYHYDj9VmFaQIMoft+zLEDmX7hBymLvKhqKMKzQzI9wMe
- qvMFHCDurj6OVa6pe9P2w+ha5sdDsRLSQaKDEFdabq5XkzH+pVtqi8Zl4mk2Yp9xvWZsgQdmS
- jg8qVkHCE8sGgVq+yVh3skdsqTJMjbv7v7uwXP8009gc3rCJsMDOKQOA+LjrJTBNN8yNIggpK
- oXtNMNXLPBx0t1GqA22jXLMtNpnogCl4G9FMgx5vYIBlGBSzSRrLdgg7tF4EiX
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cWoXeonUoKmBZSoM"
+Content-Disposition: inline
+In-Reply-To: <20190401134421.278590567@goodmis.org>
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 04.04.19 18:16, Sven Schnelle wrote:
-> while working on kprobes i found two small issues in ptrace.h.
->
-> Sven Schnelle (2):
->   parisc: regs_return_value() should return gpr28
->   parisc: also set iaoq_b in instruction_pointer_set()
->
->  arch/parisc/include/asm/ptrace.h | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
 
-Thanks, applied to my for-next tree.
+--cWoXeonUoKmBZSoM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Helge
+On Mon, Apr 01, 2019 at 09:41:09AM -0400, Steven Rostedt wrote:
+> From: "Steven Rostedt (Red Hat)" <rostedt@goodmis.org>
+>=20
+> At Linux Plumbers, Andy Lutomirski approached me and pointed out that the
+> function call syscall_get_arguments() implemented in x86 was horribly
+> written and not optimized for the standard case of passing in 0 and 6 for
+> the starting index and the number of system calls to get. When looking at
+> all the users of this function, I discovered that all instances pass in o=
+nly
+> 0 and 6 for these arguments. Instead of having this function handle
+> different cases that are never used, simply rewrite it to return the firs=
+t 6
+> arguments of a system call.
+>=20
+> This should help out the performance of tracing system calls by ptrace,
+> ftrace and perf.
+>=20
+> Link: http://lkml.kernel.org/r/20161107213233.754809394@goodmis.org
+
+FWIW, you can add
+Reviewed-by: Dmitry V. Levin <ldv@altlinux.org>
+
+There are several places listed below where I'd prefer to see more readable
+equivalents, but feel free to leave it to respective arch maintainers.
+
+> diff --git a/arch/hexagon/include/asm/syscall.h b/arch/hexagon/include/as=
+m/syscall.h
+> index 4af9c7b6f13a..ae3a1e24fabd 100644
+> --- a/arch/hexagon/include/asm/syscall.h
+> +++ b/arch/hexagon/include/asm/syscall.h
+> @@ -37,10 +37,8 @@ static inline long syscall_get_nr(struct task_struct *=
+task,
+> =20
+>  static inline void syscall_get_arguments(struct task_struct *task,
+>  					 struct pt_regs *regs,
+> -					 unsigned int i, unsigned int n,
+>  					 unsigned long *args)
+>  {
+> -	BUG_ON(i + n > 6);
+> -	memcpy(args, &(&regs->r00)[i], n * sizeof(args[0]));
+> +	memcpy(args, &(&regs->r00)[0], 6 * sizeof(args[0]));
+
+A shorter and slightly more readable equivalent is
+
+	memcpy(args, &regs->r00, 6 * sizeof(args[0]));
+
+> diff --git a/arch/nds32/include/asm/syscall.h b/arch/nds32/include/asm/sy=
+scall.h
+> index f7e5e86765fe..89a6ec8731d8 100644
+> --- a/arch/nds32/include/asm/syscall.h
+> +++ b/arch/nds32/include/asm/syscall.h
+> @@ -108,42 +108,21 @@ void syscall_set_return_value(struct task_struct *t=
+ask, struct pt_regs *regs,
+>   * syscall_get_arguments - extract system call parameter values
+>   * @task:	task of interest, must be blocked
+>   * @regs:	task_pt_regs() of @task
+> - * @i:		argument index [0,5]
+> - * @n:		number of arguments; n+i must be [1,6].
+>   * @args:	array filled with argument values
+>   *
+> - * Fetches @n arguments to the system call starting with the @i'th argum=
+ent
+> - * (from 0 through 5).  Argument @i is stored in @args[0], and so on.
+> - * An arch inline version is probably optimal when @i and @n are constan=
+ts.
+> + * Fetches 6 arguments to the system call (from 0 through 5). The first
+> + * argument is stored in @args[0], and so on.
+>   *
+>   * It's only valid to call this when @task is stopped for tracing on
+>   * entry to a system call, due to %TIF_SYSCALL_TRACE or %TIF_SYSCALL_AUD=
+IT.
+> - * It's invalid to call this with @i + @n > 6; we only support system ca=
+lls
+> - * taking up to 6 arguments.
+>   */
+>  #define SYSCALL_MAX_ARGS 6
+>  void syscall_get_arguments(struct task_struct *task, struct pt_regs *reg=
+s,
+> -			   unsigned int i, unsigned int n, unsigned long *args)
+> +			   unsigned long *args)
+>  {
+> -	if (n =3D=3D 0)
+> -		return;
+> -	if (i + n > SYSCALL_MAX_ARGS) {
+> -		unsigned long *args_bad =3D args + SYSCALL_MAX_ARGS - i;
+> -		unsigned int n_bad =3D n + i - SYSCALL_MAX_ARGS;
+> -		pr_warning("%s called with max args %d, handling only %d\n",
+> -			   __func__, i + n, SYSCALL_MAX_ARGS);
+> -		memset(args_bad, 0, n_bad * sizeof(args[0]));
+> -		memset(args_bad, 0, n_bad * sizeof(args[0]));
+> -	}
+> -
+> -	if (i =3D=3D 0) {
+> -		args[0] =3D regs->orig_r0;
+> -		args++;
+> -		i++;
+> -		n--;
+> -	}
+> -
+> -	memcpy(args, &regs->uregs[0] + i, n * sizeof(args[0]));
+> +	args[0] =3D regs->orig_r0;
+> +	args++;
+> +	memcpy(args, &regs->uregs[0] + 1, 5 * sizeof(args[0]));
+>  }
+
+A shorter and slightly more readable equivalent of the last memcpy is
+
+	memcpy(args, &regs->uregs[1], 5 * sizeof(args[0]));
+
+> diff --git a/arch/powerpc/include/asm/syscall.h b/arch/powerpc/include/as=
+m/syscall.h
+> index 1a0e7a8b1c81..5c9b9dc82b7e 100644
+> --- a/arch/powerpc/include/asm/syscall.h
+> +++ b/arch/powerpc/include/asm/syscall.h
+> @@ -65,22 +65,20 @@ static inline void syscall_set_return_value(struct ta=
+sk_struct *task,
+> =20
+>  static inline void syscall_get_arguments(struct task_struct *task,
+>  					 struct pt_regs *regs,
+> -					 unsigned int i, unsigned int n,
+>  					 unsigned long *args)
+>  {
+>  	unsigned long val, mask =3D -1UL;
+> -
+> -	BUG_ON(i + n > 6);
+> +	unsigned int n =3D 6;
+> =20
+>  #ifdef CONFIG_COMPAT
+>  	if (test_tsk_thread_flag(task, TIF_32BIT))
+>  		mask =3D 0xffffffff;
+>  #endif
+>  	while (n--) {
+> -		if (n =3D=3D 0 && i =3D=3D 0)
+> +		if (n =3D=3D 0)
+>  			val =3D regs->orig_gpr3;
+>  		else
+> -			val =3D regs->gpr[3 + i + n];
+> +			val =3D regs->gpr[3 + n];
+> =20
+>  		args[n] =3D val & mask;
+>  	}
+
+A shorter and slightly more readable equivalent of the loop is
+
+	while (--n)
+		args[n] =3D regs->gpr[3 + n] & mask;
+	args[0] =3D regs->orig_gpr3 & mask;
+
+> diff --git a/arch/s390/include/asm/syscall.h b/arch/s390/include/asm/sysc=
+all.h
+> index 96f9a9151fde..ee0b1f6aa36d 100644
+> --- a/arch/s390/include/asm/syscall.h
+> +++ b/arch/s390/include/asm/syscall.h
+> @@ -56,27 +56,20 @@ static inline void syscall_set_return_value(struct ta=
+sk_struct *task,
+> =20
+>  static inline void syscall_get_arguments(struct task_struct *task,
+>  					 struct pt_regs *regs,
+> -					 unsigned int i, unsigned int n,
+>  					 unsigned long *args)
+>  {
+>  	unsigned long mask =3D -1UL;
+> +	unsigned int n =3D 6;
+> =20
+> -	/*
+> -	 * No arguments for this syscall, there's nothing to do.
+> -	 */
+> -	if (!n)
+> -		return;
+> -
+> -	BUG_ON(i + n > 6);
+>  #ifdef CONFIG_COMPAT
+>  	if (test_tsk_thread_flag(task, TIF_31BIT))
+>  		mask =3D 0xffffffff;
+>  #endif
+>  	while (n-- > 0)
+> -		if (i + n > 0)
+> -			args[n] =3D regs->gprs[2 + i + n] & mask;
+> -	if (i =3D=3D 0)
+> -		args[0] =3D regs->orig_gpr2 & mask;
+> +		if (n > 0)
+> +			args[n] =3D regs->gprs[2 + n] & mask;
+> +
+> +	args[0] =3D regs->orig_gpr2 & mask;
+
+A shorter and slightly more readable equivalent of the loop is
+
+	while (--n > 0)
+		args[n] =3D regs->gprs[2 + n] & mask;
+
+
+--=20
+ldv
+
+--cWoXeonUoKmBZSoM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJcpkpWAAoJEAVFT+BVnCUIlOcP/j1eQljKOX/AHCJT/5vQfVVN
+eBtqUihrrz/8PY+hMxpVM5CvZkpiLHBxyU4Ne/XM8v93bpx89F/XfOlFTpA0td0C
+xVr0GFbsF4zNH9bf4b6MI8Ku2kfpsYYVno1hWtsJ2QlYUgOOzTEVzszkeewOWHD1
+Cb/yYyjDwKDFDa83WU5CDCyJ/XNo1o75wolhPWgkVnRRJ9+wosg9xh0KnzY9z1zP
+Pp53uQFQXvMZBw+Onobz1j2EGHJNxPjr7fnOIbrqlcavgItvieUkBxvQ/2qQ+tOe
+88+okvF5TvKLAmlSXXYll8MAhxW5usbCe5sBgz3VXVtJ508j1bt0StivFSPQyGeV
+OQI75cxqalLtgN00NZpaU7tQci/XOFB0GKupRn2Jd3RHyvxtlD64RLpOLfYCtuq2
+CJmpVB2WeuHzQ2e7lmX0jUJazjzk7HPTOPl+YJ6FudHdSXwX9RirrkPonb1kyHl6
+jhp4TLUvuTlFUUfNgt7YmuTj9+mg1Px5ocVshpQ9jp9w64RQWim8wn1wzgJxvMk1
+0/xN1xOkv5TV1T4icCsiJHpu0iwA1Nok3sumZJ68ohFDS8ompd8aN1+f0dBTRXB1
+xboVMcH+OkNHae897yWu8WdjvBCGohVADUvE2rqWKrJPniL09WStw8ie5MOOHiC+
+L1wTLatEoUOlg4wAp6No
+=0pXz
+-----END PGP SIGNATURE-----
+
+--cWoXeonUoKmBZSoM--
