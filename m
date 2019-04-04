@@ -2,88 +2,76 @@ Return-Path: <SRS0=+2mb=SG=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EB62C4360F
-	for <linux-parisc@archiver.kernel.org>; Thu,  4 Apr 2019 07:54:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9391DC10F0E
+	for <linux-parisc@archiver.kernel.org>; Thu,  4 Apr 2019 16:16:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 48AA920674
-	for <linux-parisc@archiver.kernel.org>; Thu,  4 Apr 2019 07:54:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 64048206DD
+	for <linux-parisc@archiver.kernel.org>; Thu,  4 Apr 2019 16:16:16 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="MtvByPsp"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727333AbfDDHx5 (ORCPT
+        id S1727398AbfDDQQQ (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 4 Apr 2019 03:53:57 -0400
-Received: from Galois.linutronix.de ([146.0.238.70]:43866 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726031AbfDDHx5 (ORCPT
+        Thu, 4 Apr 2019 12:16:16 -0400
+Received: from smtp.duncanthrax.net ([89.31.1.170]:50666 "EHLO
+        smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727152AbfDDQQQ (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 4 Apr 2019 03:53:57 -0400
-Received: from p5492e2fc.dip0.t-ipconnect.de ([84.146.226.252] helo=nanos)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1hBxBV-0000WH-Bj; Thu, 04 Apr 2019 09:53:17 +0200
-Date:   Thu, 4 Apr 2019 09:53:16 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Roland McGrath <roland@hack.frob.com>,
-        Oleg Nesterov <oleg@redhat.com>, linux-arch@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Dmitry V. Levin" <ldv@altlinux.org>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Dave Martin <dave.martin@arm.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, nios2-dev@lists.rocketboards.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH 6/6 v3] syscalls: Remove start and number from
- syscall_set_arguments() args
-In-Reply-To: <20190401134421.442323029@goodmis.org>
-Message-ID: <alpine.DEB.2.21.1904040953040.1833@nanos.tec.linutronix.de>
-References: <20190401134104.676620247@goodmis.org> <20190401134421.442323029@goodmis.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Thu, 4 Apr 2019 12:16:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=duncanthrax.net; s=dkim; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From;
+        bh=zLGh7mjPuXZqH/qNEKSqF9veY7azTSBSoBWWCGv4KlY=; b=MtvByPspP6edn2sPwHX5jRAMEw
+        EDC8ZA/6dF/z6eE6F5meFOKFEhMZT+PK5KiVSeg/Y66Y0OvuZu5uP14+od7UWJKH2yDHJaJonw9Jk
+        lShG0Am1UbVRVRo1ZMAUJj5k0pZ9QedmFQZDO4zvKiMlQiXNFG6Wc4W92q8QtQzc9TQY=;
+Received: from [134.3.47.207] (helo=t470p.stackframe.org)
+        by smtp.eurescom.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <svens@stackframe.org>)
+        id 1hC52E-0006MG-0Y; Thu, 04 Apr 2019 18:16:14 +0200
+From:   Sven Schnelle <svens@stackframe.org>
+To:     linux-parisc@vger.kernel.org
+Cc:     Sven Schnelle <svens@stackframe.org>
+Subject: [PATCH 1/2] parisc: regs_return_value() should return gpr28
+Date:   Thu,  4 Apr 2019 18:16:03 +0200
+Message-Id: <20190404161604.6165-2-svens@stackframe.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190404161604.6165-1-svens@stackframe.org>
+References: <20190404161604.6165-1-svens@stackframe.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Transfer-Encoding: 8bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Mon, 1 Apr 2019, Steven Rostedt wrote:
+While working on kretprobes for PA-RISC i was wondering while the
+kprobes sanity test always fails on kretprobes. This is caused by
+returning gpr20 instead of gpr28.
 
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> After removing the start and count arguments of syscall_get_arguments() it
-> seems reasonable to remove them from syscall_set_arguments(). Note, as of
-> today, there are no users of syscall_set_arguments(). But we are told that
-> there will be soon. But for now, at least make it consistent with
-> syscall_get_arguments().
-> 
-> Link: http://lkml.kernel.org/r/20190327222014.GA32540@altlinux.org
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+---
+ arch/parisc/include/asm/ptrace.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-For x86:
+diff --git a/arch/parisc/include/asm/ptrace.h b/arch/parisc/include/asm/ptrace.h
+index 2a27b275ab09..4a87b3d600c6 100644
+--- a/arch/parisc/include/asm/ptrace.h
++++ b/arch/parisc/include/asm/ptrace.h
+@@ -22,7 +22,7 @@ unsigned long profile_pc(struct pt_regs *);
+ 
+ static inline unsigned long regs_return_value(struct pt_regs *regs)
+ {
+-	return regs->gr[20];
++	return regs->gr[28];
+ }
+ 
+ static inline void instruction_pointer_set(struct pt_regs *regs,
+-- 
+2.20.1
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
