@@ -6,39 +6,39 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 221D5C10F0E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C811C10F0C
 	for <linux-parisc@archiver.kernel.org>; Thu,  4 Apr 2019 19:14:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E898F206B7
-	for <linux-parisc@archiver.kernel.org>; Thu,  4 Apr 2019 19:14:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 20B992147C
+	for <linux-parisc@archiver.kernel.org>; Thu,  4 Apr 2019 19:14:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="AHJeR66A"
+	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="G99DgyMY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730227AbfDDTOx (ORCPT
+        id S1730235AbfDDTOx (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
         Thu, 4 Apr 2019 15:14:53 -0400
-Received: from smtp.duncanthrax.net ([89.31.1.170]:33669 "EHLO
+Received: from smtp.duncanthrax.net ([89.31.1.170]:37048 "EHLO
         smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730153AbfDDTOw (ORCPT
+        with ESMTP id S1730227AbfDDTOx (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 4 Apr 2019 15:14:52 -0400
+        Thu, 4 Apr 2019 15:14:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=duncanthrax.net; s=dkim; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From;
-        bh=PI3QXVP21UgPhNF1NtkE/QPJJoKeIS2W7rD+TROp/zs=; b=AHJeR66Am13Nh8pVDt7TjOlyc8
-        fuK1qToJHPaONWGsUTfDmdluQtHVo2SqRs20F9+glyFtul4uLH43Wz6SXgHm0PYlEbDy9qvpwlGTU
-        7M+pMepsK7RhpYhgmtmFnXg1MXcD3UY20zvxiAD9NMP9An5+DdQyJagQjfw90FyUKq9I=;
+        bh=NiIzg6QXCesJ7eIVT6C4ytRl5TIFIzaxSRBcTCW/g9w=; b=G99DgyMYKnhOT+ArxgEOtDjEso
+        GsHdHO0x0jC7dCGSFPEJYJPMC51B/kbhR0YPNF0I481eSWxpMUWkgcSdMyt3uJbaMh/XzFcpAXhGH
+        FkdnN88gO5SThEbY1oYkcpn2QJ79a4D7y/ArQuu+BU1pj+V1p88dURmCNKnwW86ssZXE=;
 Received: from [134.3.47.207] (helo=t470p.stackframe.org)
         by smtp.eurescom.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <svens@stackframe.org>)
-        id 1hC7p5-00012K-HH; Thu, 04 Apr 2019 21:14:51 +0200
+        id 1hC7p4-00012K-LI; Thu, 04 Apr 2019 21:14:50 +0200
 From:   Sven Schnelle <svens@stackframe.org>
 To:     deller@gmx.de
 Cc:     linux-parisc@vger.kernel.org, Sven Schnelle <svens@stackframe.org>
-Subject: [PATCH v2 2/3] parisc: add parisc code patching
-Date:   Thu,  4 Apr 2019 21:14:09 +0200
-Message-Id: <20190404191410.3444-3-svens@stackframe.org>
+Subject: [PATCH v2 1/3] parisc: add set_fixmap()/clear_fixmap()
+Date:   Thu,  4 Apr 2019 21:14:08 +0200
+Message-Id: <20190404191410.3444-2-svens@stackframe.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190404191410.3444-1-svens@stackframe.org>
 References: <20190404191410.3444-1-svens@stackframe.org>
@@ -49,134 +49,147 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Instead of re-mapping the whole kernel text with RWX rights
-add a patch_text() which can be used to replace instructions
-in the kernel .text section. Based on the ARM implementation.
+These functions will be used for adding code patching
+functions later.
 
 Signed-off-by: Sven Schnelle <svens@stackframe.org>
 ---
- arch/parisc/include/asm/patch.h | 11 +++++
- arch/parisc/kernel/Makefile     |  3 +-
- arch/parisc/kernel/patch.c      | 78 +++++++++++++++++++++++++++++++++
- 3 files changed, 91 insertions(+), 1 deletion(-)
- create mode 100644 arch/parisc/include/asm/patch.h
- create mode 100644 arch/parisc/kernel/patch.c
+ arch/parisc/include/asm/fixmap.h | 19 +++++++++++++-
+ arch/parisc/mm/Makefile          |  2 +-
+ arch/parisc/mm/fixmap.c          | 43 ++++++++++++++++++++++++++++++++
+ arch/parisc/mm/init.c            | 14 +++++++----
+ 4 files changed, 71 insertions(+), 7 deletions(-)
+ create mode 100644 arch/parisc/mm/fixmap.c
 
-diff --git a/arch/parisc/include/asm/patch.h b/arch/parisc/include/asm/patch.h
-new file mode 100644
-index 000000000000..685b58a13968
---- /dev/null
-+++ b/arch/parisc/include/asm/patch.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _PARISC_KERNEL_PATCH_H
-+#define _PARISC_KERNEL_PATCH_H
+diff --git a/arch/parisc/include/asm/fixmap.h b/arch/parisc/include/asm/fixmap.h
+index f7c3a0905de4..288da73d4cc0 100644
+--- a/arch/parisc/include/asm/fixmap.h
++++ b/arch/parisc/include/asm/fixmap.h
+@@ -15,17 +15,34 @@
+  * from areas congruently mapped with user space.  It is 8MB large
+  * and must be 16MB aligned */
+ #define TMPALIAS_MAP_START	((__PAGE_OFFSET) - 16*1024*1024)
 +
-+/* stop machine and patch kernel text */
-+void patch_text(void *addr, unsigned int insn);
-+
-+/* patch kernel text with machine already stopped (e.g. in kgdb) */
-+void __patch_text(void *addr, unsigned int insn);
-+
-+#endif
-diff --git a/arch/parisc/kernel/Makefile b/arch/parisc/kernel/Makefile
-index 8e5f1ab65c68..d29bbd1a73b2 100644
---- a/arch/parisc/kernel/Makefile
-+++ b/arch/parisc/kernel/Makefile
-@@ -9,7 +9,8 @@ obj-y	     	:= cache.o pacache.o setup.o pdt.o traps.o time.o irq.o \
- 		   pa7300lc.o syscall.o entry.o sys_parisc.o firmware.o \
- 		   ptrace.o hardware.o inventory.o drivers.o alternative.o \
- 		   signal.o hpmc.o real2.o parisc_ksyms.o unaligned.o \
--		   process.o processor.o pdc_cons.o pdc_chassis.o unwind.o
-+		   process.o processor.o pdc_cons.o pdc_chassis.o unwind.o \
-+		   patch.o
++#define FIXMAP_SIZE		(FIX_BITMAP_COUNT << PAGE_SHIFT)
++#define FIXMAP_START		(TMPALIAS_MAP_START - FIXMAP_SIZE)
+ /* This is the kernel area for all maps (vmalloc, dma etc.)  most
+  * usually, it extends up to TMPALIAS_MAP_START.  Virtual addresses
+  * 0..GATEWAY_PAGE_SIZE are reserved for the gateway page */
+ #define KERNEL_MAP_START	(GATEWAY_PAGE_SIZE)
+-#define KERNEL_MAP_END		(TMPALIAS_MAP_START)
++#define KERNEL_MAP_END		(FIXMAP_START)
  
- ifdef CONFIG_FUNCTION_TRACER
- # Do not profile debug and lowlevel utilities
-diff --git a/arch/parisc/kernel/patch.c b/arch/parisc/kernel/patch.c
-new file mode 100644
-index 000000000000..4a3bff87b177
---- /dev/null
-+++ b/arch/parisc/kernel/patch.c
-@@ -0,0 +1,78 @@
-+// SPDX-License-Identifier: GPL-2.0
-+ /*
-+  * functions to patch RO kernel text during runtime
-+  *
-+  * Copyright (c) 2019 Sven Schnelle <svens@stackframe.org>
-+  */
+ #ifndef __ASSEMBLY__
 +
-+#include <linux/kernel.h>
-+#include <linux/spinlock.h>
-+#include <linux/kprobes.h>
-+#include <linux/mm.h>
-+#include <linux/stop_machine.h>
 +
-+#include <asm/cacheflush.h>
-+#include <asm/fixmap.h>
-+#include <asm/patch.h>
-+
-+struct patch {
-+	void *addr;
-+	unsigned int insn;
++enum fixed_addresses {
++	/* Support writing RO kernel text via kprobes, jump labels, etc. */
++	FIX_TEXT_POKE0,
++	FIX_BITMAP_COUNT
 +};
 +
-+static void __kprobes *patch_map(void *addr, int fixmap, unsigned long *flags)
+ extern void *parisc_vmalloc_start;
+ #define PCXL_DMA_MAP_SIZE	(8*1024*1024)
+ #define VMALLOC_START		((unsigned long)parisc_vmalloc_start)
+ #define VMALLOC_END		(KERNEL_MAP_END)
++
++#define __fix_to_virt(_x) (FIXMAP_START + ((_x) << PAGE_SHIFT))
++
++void set_fixmap(enum fixed_addresses idx, phys_addr_t phys);
++void clear_fixmap(enum fixed_addresses idx);
++
+ #endif /*__ASSEMBLY__*/
+ 
+ #endif /*_ASM_FIXMAP_H*/
+diff --git a/arch/parisc/mm/Makefile b/arch/parisc/mm/Makefile
+index 134393de69d2..20e39b043a60 100644
+--- a/arch/parisc/mm/Makefile
++++ b/arch/parisc/mm/Makefile
+@@ -2,5 +2,5 @@
+ # Makefile for arch/parisc/mm
+ #
+ 
+-obj-y	 := init.o fault.o ioremap.o
++obj-y	 := init.o fault.o ioremap.o fixmap.o
+ obj-$(CONFIG_HUGETLB_PAGE) += hugetlbpage.o
+diff --git a/arch/parisc/mm/fixmap.c b/arch/parisc/mm/fixmap.c
+new file mode 100644
+index 000000000000..6f9744c688ae
+--- /dev/null
++++ b/arch/parisc/mm/fixmap.c
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * fixmaps for parisc
++ *
++ * Copyright (c) 2019 Sven Schnelle <svens@stackframe.org>
++ */
++
++#include <linux/kprobes.h>
++#include <linux/mm.h>
++#include <asm/cacheflush.h>
++#include <asm/fixmap.h>
++
++void set_fixmap(enum fixed_addresses idx, phys_addr_t phys)
 +{
-+	unsigned int uintaddr = (uintptr_t) addr;
-+	bool module = !core_kernel_text(uintaddr);
-+	struct page *page;
++	unsigned long vaddr = __fix_to_virt(idx);
++	pgd_t *pgd = pgd_offset_k(vaddr);
++	pmd_t *pmd = pmd_offset(pgd, vaddr);
++	pte_t *pte;
 +
-+	if (module && IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
-+		page = vmalloc_to_page(addr);
-+	else if (!module && IS_ENABLED(CONFIG_STRICT_KERNEL_RWX))
-+		page = virt_to_page(addr);
-+	else
-+		return addr;
++	if (pmd_none(*pmd))
++		pmd = pmd_alloc(NULL, pgd, vaddr);
 +
-+	set_fixmap(fixmap, page_to_phys(page));
++	pte = pte_offset_kernel(pmd, vaddr);
++	if (pte_none(*pte))
++		pte = pte_alloc_kernel(pmd, vaddr);
 +
-+	return (void *) (__fix_to_virt(fixmap) + (uintaddr & ~PAGE_MASK));
++	set_pte_at(&init_mm, vaddr, pte, __mk_pte(phys, PAGE_KERNEL_RWX));
++	flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE);
 +}
 +
-+static void __kprobes patch_unmap(int fixmap, unsigned long *flags)
++void clear_fixmap(enum fixed_addresses idx)
 +{
-+	clear_fixmap(fixmap);
++	unsigned long vaddr = __fix_to_virt(idx);
++	pgd_t *pgd = pgd_offset_k(vaddr);
++	pmd_t *pmd = pmd_offset(pgd, vaddr);
++	pte_t *pte = pte_offset_kernel(pmd, vaddr);
++
++	pte_clear(&init_mm, vaddr, pte);
++
++	flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE);
 +}
 +
-+void __kprobes __patch_text(void *addr, unsigned int insn)
-+{
-+	unsigned long flags;
-+	void *waddr = addr;
-+	int size;
 +
-+	waddr = patch_map(addr, FIX_TEXT_POKE0, &flags);
-+	*(u32 *)waddr = insn;
-+	size = sizeof(u32);
-+	flush_kernel_vmap_range(waddr, size);
-+	patch_unmap(FIX_TEXT_POKE0, &flags);
-+	flush_icache_range((uintptr_t)(addr),
-+			   (uintptr_t)(addr) + size);
-+}
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index d0b166256f1a..b2b52de2b82b 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -622,15 +622,19 @@ void __init mem_init(void)
+ 	 * But keep code for debugging purposes.
+ 	 */
+ 	printk("virtual kernel memory layout:\n"
+-	       "    vmalloc : 0x%px - 0x%px   (%4ld MB)\n"
+-	       "    memory  : 0x%px - 0x%px   (%4ld MB)\n"
+-	       "      .init : 0x%px - 0x%px   (%4ld kB)\n"
+-	       "      .data : 0x%px - 0x%px   (%4ld kB)\n"
+-	       "      .text : 0x%px - 0x%px   (%4ld kB)\n",
++	       "     vmalloc : 0x%px - 0x%px   (%4ld MB)\n"
++	       "     fixmap  : 0x%px - 0x%px   (%4ld kB)\n"
++	       "     memory  : 0x%px - 0x%px   (%4ld MB)\n"
++	       "       .init : 0x%px - 0x%px   (%4ld kB)\n"
++	       "       .data : 0x%px - 0x%px   (%4ld kB)\n"
++	       "       .text : 0x%px - 0x%px   (%4ld kB)\n",
+ 
+ 	       (void*)VMALLOC_START, (void*)VMALLOC_END,
+ 	       (VMALLOC_END - VMALLOC_START) >> 20,
+ 
++	       (void *)FIXMAP_START, (void *)(FIXMAP_START + FIXMAP_SIZE),
++	       (unsigned long)(FIXMAP_SIZE / 1024),
 +
-+static int __kprobes patch_text_stop_machine(void *data)
-+{
-+	struct patch *patch = data;
-+
-+	__patch_text(patch->addr, patch->insn);
-+
-+	return 0;
-+}
-+
-+void __kprobes patch_text(void *addr, unsigned int insn)
-+{
-+	struct patch patch = {
-+		.addr = addr,
-+		.insn = insn,
-+	};
-+
-+	stop_machine_cpuslocked(patch_text_stop_machine, &patch, NULL);
-+}
+ 	       __va(0), high_memory,
+ 	       ((unsigned long)high_memory - (unsigned long)__va(0)) >> 20,
+ 
 -- 
 2.20.1
 
