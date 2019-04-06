@@ -1,85 +1,86 @@
-Return-Path: <SRS0=+2mb=SG=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=0R8f=SI=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0153AC4360F
-	for <linux-parisc@archiver.kernel.org>; Thu,  4 Apr 2019 21:06:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06D84C10F06
+	for <linux-parisc@archiver.kernel.org>; Sat,  6 Apr 2019 14:45:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D08C52177E
-	for <linux-parisc@archiver.kernel.org>; Thu,  4 Apr 2019 21:06:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C27B82146F
+	for <linux-parisc@archiver.kernel.org>; Sat,  6 Apr 2019 14:45:25 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="AbOC0KrK"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731365AbfDDVGO (ORCPT
+        id S1726451AbfDFOpZ (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 4 Apr 2019 17:06:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57070 "EHLO mail.kernel.org"
+        Sat, 6 Apr 2019 10:45:25 -0400
+Received: from mout.gmx.net ([212.227.15.15]:52241 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729116AbfDDVGO (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 4 Apr 2019 17:06:14 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A42092082E;
-        Thu,  4 Apr 2019 21:06:09 +0000 (UTC)
-Date:   Thu, 4 Apr 2019 17:06:08 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Dmitry V. Levin" <ldv@altlinux.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Roland McGrath <roland@hack.frob.com>,
-        Oleg Nesterov <oleg@redhat.com>, linux-arch@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Dave Martin <dave.martin@arm.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, nios2-dev@lists.rocketboards.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH 5/6 v3] syscalls: Remove start and number from
- syscall_get_arguments() args
-Message-ID: <20190404170608.25cadc7d@gandalf.local.home>
-In-Reply-To: <20190404181758.GA8071@altlinux.org>
-References: <20190401134104.676620247@goodmis.org>
-        <20190401134421.278590567@goodmis.org>
-        <20190404181758.GA8071@altlinux.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726419AbfDFOpZ (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sat, 6 Apr 2019 10:45:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1554561917;
+        bh=gAUAJiijCZZpqFQpPKqAOr50g202utCfkvGyNMRPKWI=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=AbOC0KrK8QOug+RbTTqkFa6H1PczJOroy9tjcMIERE8Os+MYIjMXlSx9i+/7nV083
+         32J60EqzqUTF3xQFlK5/GasAXJ9i3wZlYQKS1tVJo/ub3p4Uy4xayPC1HZsWyhzvIo
+         vDMS+aiwhTuggBr5knzTpjTTHddIpFH9NTHvxxTI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.dellerweb.de ([92.116.164.5]) by mail.gmx.com (mrgmx001
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 0LzskF-1grU9G1EiR-0150dG; Sat, 06
+ Apr 2019 16:45:17 +0200
+Date:   Sat, 6 Apr 2019 16:45:14 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Export running_on_qemu symbol for modules
+Message-ID: <20190406144514.GA661@ls3530.dellerweb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.11.3 (2019-02-01)
+X-Provags-ID: V03:K1:/aD+lqlPwGM33FpW5gIQYCSpCQwz94v/tDFwLSUmFvIsAfMVPap
+ 3o9Ts8ZNKVlzGPnnB8Dt9WGi0qB37oNXMefw1jrRZaicn33AUB48Ht+Ua1wRlKLBBW67ArD
+ qPOd80qqOF3JAD1fO5Bkas8Nz6z3Ob6vr0xFbBv9XI9LZVfpSfFMxDNfp6fQffoT9GGX7Hy
+ Qyn1YUIZ7r2nelomQBhMg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EdTI0BtUzo4=:+TBKL/d3kKYFmaJ8VFws1c
+ tp8LyuS0B3X2WsxqHEd8fyaYqVc5lFVroCRuxlszJIO61cWItr3exvK7VmsQ3h1Jn37Mm1AqK
+ NKyHuSZaKGoUrBk21CYYXO+XyXdx25qL7czyktHr1h2AB5OPLmN8h9TkCMW8oeJPwDQh6f2MH
+ 8zC/PYnkNMoJxH5SE2nIGUhZaJO9CjhLfyhYXjAPQ92nqFNriEeKj0r6NiPdhnQTaDhr3vX1Z
+ TBHbrPC1xSy41egg6ocFY0gFjAMK6dE6m3gchYuO1ZIff/AhFdpNUyhA5vgZEMoQlY7PXjzuy
+ NvQPJZ3OdTj3yByk+zEbphomJzz5JEqI0JVBxWs288C2/E1TCiyNPm6YUASLrRo5wZN+ECFSx
+ iFiTZ/qP9+6viWxyAR7p7BQ7n/ia23At/RG60IHmNvRZBfqwd3GRdSeICQU0EzERtFF5x23A4
+ OuBooqjUdEkik9QV9bdjOhQ4Q1Dczh7/cjUgq/V+huUAU9LgfxsVVzcv1LYw8jddAnT8e7xgh
+ 9ZnZt+lH1xF4TOR0RK/efWilp/sI/4SDjeZGSjX2S34atRukr7vxiG181zDR3jiD6sSeBFcmP
+ SPYriMTsHjA0irlEhL+ws/UZetIvmZKqxXOZsu3moN0EtWRZfgMPBRu9LGf9KO9e4exhOiLs4
+ U6hUOCJIs5JwVG7mK/VawDfkVOiCp0SY95SFz6V5IIFM1AvGNrOgXPwXjS3uFdvD4mlHwJRgj
+ WzytMp+0wLg5TqqDaNKoiVW1mlk0ex77uy7GUzubPfHSvieh9mAMDXflCYOiU0BSCrXMZL/lk
+ 3jcpLwFN6i5OHmVDioQ5eIFAP3QxeQMcjlXYa5tMcqzWD9tKoeZ3v+VKdK6aKU3yo0p+cJc02
+ peb2F9/xl+zJCgRgV/T514BIocQedpERWMtlekN66hla3nvt2GDlBTsNCicJSP
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Thu, 4 Apr 2019 21:17:58 +0300
-"Dmitry V. Levin" <ldv@altlinux.org> wrote:
+Signed-off-by: Helge Deller <deller@gmx.de>
+CC: stable@vger.kernel.org # v4.14+
 
-> There are several places listed below where I'd prefer to see more readable
-> equivalents, but feel free to leave it to respective arch maintainers.
+diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+index 841db71958cd..97c206734e24 100644
+=2D-- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -193,6 +193,7 @@ int dump_task_fpu (struct task_struct *tsk, elf_fpregs=
+et_t *r)
+  */
 
-I was going to do similar changes, but figured I'd do just that (let
-the arch maintainers further optimize the code). I made this more about
-fixing the interface and less about the optimization and clean ups that
-it can allow.
+ int running_on_qemu __read_mostly;
++EXPORT_SYMBOL(running_on_qemu);
 
--- Steve
+ void __cpuidle arch_cpu_idle_dead(void)
+ {
