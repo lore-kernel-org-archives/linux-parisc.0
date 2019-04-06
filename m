@@ -2,97 +2,70 @@ Return-Path: <SRS0=0R8f=SI=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07738C10F06
-	for <linux-parisc@archiver.kernel.org>; Sat,  6 Apr 2019 20:40:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B21C5C10F06
+	for <linux-parisc@archiver.kernel.org>; Sat,  6 Apr 2019 21:05:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C8146213A2
-	for <linux-parisc@archiver.kernel.org>; Sat,  6 Apr 2019 20:40:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 74D3B2171F
+	for <linux-parisc@archiver.kernel.org>; Sat,  6 Apr 2019 21:05:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1554584702;
+	bh=ne8l2wmlw8Lui4EcWDSevTjQ0I1vC+XbeAHf2HvZm4s=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
+	b=HguIYR0L/vtvJd/wMqQ1vLBCQyGJZ86knpVIm/HUrQZPfIYvlx26pvt6kNUPXSjHC
+	 za7bZfNZJXEbon+gu2P9ppzZ6/b9lfer8HTDn53kHl86zO8ZafNVL78jIZnqKv6xO3
+	 Kra9zr/PAx/VgAxo6RukFSBfrzR+rdxoXGgWL8WQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbfDFUk4 (ORCPT
+        id S1726151AbfDFVFC (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 6 Apr 2019 16:40:56 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:46222 "EHLO mx1.redhat.com"
+        Sat, 6 Apr 2019 17:05:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725919AbfDFUk4 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 6 Apr 2019 16:40:56 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 059013082AEE;
-        Sat,  6 Apr 2019 20:40:56 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BB3EC104C53F;
-        Sat,  6 Apr 2019 20:40:55 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id x36KetYo001357;
-        Sat, 6 Apr 2019 16:40:55 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id x36KesAc001353;
-        Sat, 6 Apr 2019 16:40:54 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Sat, 6 Apr 2019 16:40:54 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-cc:     Helge Deller <deller@gmx.de>,
-        John David Anglin <dave.anglin@bell.net>,
-        linux-parisc@vger.kernel.org
-Subject: Re: [PATCH] parisc: use per-pagetable spinlock
-In-Reply-To: <1554582741.5053.7.camel@HansenPartnership.com>
-Message-ID: <alpine.LRH.2.02.1904061635090.31596@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.1904061533530.21941@file01.intranet.prod.int.rdu2.redhat.com>  <1554580144.5053.4.camel@HansenPartnership.com>  <alpine.LRH.2.02.1904061610580.27483@file01.intranet.prod.int.rdu2.redhat.com>
- <1554582741.5053.7.camel@HansenPartnership.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Sat, 06 Apr 2019 20:40:56 +0000 (UTC)
+        id S1725919AbfDFVFB (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sat, 6 Apr 2019 17:05:01 -0400
+Subject: Re: [GIT PULL] parisc architecture updates for kernel v5.1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1554584701;
+        bh=ne8l2wmlw8Lui4EcWDSevTjQ0I1vC+XbeAHf2HvZm4s=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=TC0K4xVeG/5Ruhw7SPo7fp7HJMxAJtxFliKTrcA0tJr3WJpnQUX7A+Pp0NnA5OlZC
+         JNswebOjDWWaX5G1JNE+SUTVARZpaG0UWPn1WZ0mjeG3t7hEk3jh65wqGtk1t2jG/t
+         NFTvmu0GEqKC18G34atPjqUP3MGs4qUBrcePqFzI=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20190406202932.GA24886@ls3530.dellerweb.de>
+References: <20190406202932.GA24886@ls3530.dellerweb.de>
+X-PR-Tracked-List-Id: <linux-parisc.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20190406202932.GA24886@ls3530.dellerweb.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git
+ parisc-5.1-2
+X-PR-Tracked-Commit-Id: d006e95b5561f708d0385e9677ffe2c46f2ae345
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 373c392508577b24e293ff4994e919087fed2495
+Message-Id: <155458470129.32567.17140719010864515644.pr-tracker-bot@kernel.org>
+Date:   Sat, 06 Apr 2019 21:05:01 +0000
+To:     Helge Deller <deller@gmx.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
+The pull request you sent on Sat, 6 Apr 2019 22:29:32 +0200:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.1-2
 
-On Sat, 6 Apr 2019, James Bottomley wrote:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/373c392508577b24e293ff4994e919087fed2495
 
-> On Sat, 2019-04-06 at 16:13 -0400, Mikulas Patocka wrote:
-> > 
-> > > Of course, on systems without a merced bus, we don't need the lock
-> > at 
-> > > all, so runtime patching might be usable to fix that case.
-> > > 
-> > > James
-> > 
-> > The lock is still needed to synchronize TLB fault handlers with the
-> > code that modifies the pagetables - but we could have per-process
-> > lock for this purpose.
-> 
-> It is?  I don't think we need any per-arch sync for that.  The purge
-> should happen after all modifications are done so the next page fault
-> inserts the new TLB entry ... so if there is a place where the purge
-> lock matters to the page table updates, we're doing something wrong.
-> 
-> James
+Thank you!
 
-Suppose that this sequence happens:
-
-CPU1:
-(inside the TLB miss handler)
-read the value XXX from the pagetables to the register
-
-CPU2:
-modify the value in the pagetables to YYY
-broadcast a TLB purge
-
-CPU1:
-receives the TLB purge broadcast and flushes the TLB
-... continues executing the TLB handler and inserts the value XXX from the register into the TLB
-
-And now, CPU1 is running with stale entry in the TLB. We need the lock to 
-prevent this situation.
-
-Mikulas
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
