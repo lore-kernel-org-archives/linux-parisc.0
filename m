@@ -1,147 +1,117 @@
-Return-Path: <SRS0=0R8f=SI=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=zQSf=SJ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95023C282DC
-	for <linux-parisc@archiver.kernel.org>; Sat,  6 Apr 2019 23:09:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07817C282DA
+	for <linux-parisc@archiver.kernel.org>; Sun,  7 Apr 2019 02:48:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5A71021019
-	for <linux-parisc@archiver.kernel.org>; Sat,  6 Apr 2019 23:09:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ADA192171F
+	for <linux-parisc@archiver.kernel.org>; Sun,  7 Apr 2019 02:48:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="fIcFPJrg"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="c4VErtt3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="oWjpwKn3"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbfDFXJf (ORCPT
+        id S1726193AbfDGCsT (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 6 Apr 2019 19:09:35 -0400
-Received: from mout.gmx.net ([212.227.15.18]:47329 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726633AbfDFXJf (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 6 Apr 2019 19:09:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1554592166;
-        bh=+Zm08DoAooomgpyHGsYjUJBqHgo4LPlllKkB73n2GqM=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=fIcFPJrgi8p/e28fjTc82gL6/GXrieUWy3hGkLTX4/Ua3xK8CNRTE6MNxG1oH/2lr
-         xi/GYAgef2nFh5WmJuAzgFCFDHZPGLPhV58xRlQ/BVNnIw61TyaVubWhTuEwE1N+wV
-         hlVgRpM3xBcSjMZywzOHGPG/qDqCuZq+/lAB8ljw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530.dellerweb.de ([92.116.164.5]) by mail.gmx.com (mrgmx002
- [212.227.17.190]) with ESMTPSA (Nemesis) id 0LmKOI-1geOto0pBC-00ZxOc; Sun, 07
- Apr 2019 01:09:26 +0200
-Date:   Sun, 7 Apr 2019 01:09:23 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Sat, 6 Apr 2019 22:48:19 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:58208 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726053AbfDGCsS (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Sat, 6 Apr 2019 22:48:18 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 1513A8EE0ED;
+        Sat,  6 Apr 2019 19:48:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1554605298;
+        bh=HoHRvccC25+lz3xwMsSyhT+fSIfH93yZSprKfw4XF8k=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=c4VErtt3JDR2XDcU2X+5/z2qBJxZxcsKCzJ0y9Gpbg4jaY2LhC8iBCC9+3Gg3gh3h
+         VmcpnufowYMqdDXiI/m/W7+rh1WaOP76z6/Cr5EOG+GF/YoIuEWNrU22Q6OGUbwteS
+         dKmuok8wZAQYMlQRvjkTTZ9v4j4HLyB3IPVkNXFc=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 2vAUoa3qUxnM; Sat,  6 Apr 2019 19:48:17 -0700 (PDT)
+Received: from [153.66.254.194] (unknown [50.35.68.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id E197B8EE0E0;
+        Sat,  6 Apr 2019 19:48:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1554605297;
+        bh=HoHRvccC25+lz3xwMsSyhT+fSIfH93yZSprKfw4XF8k=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=oWjpwKn35ylRPN2WJPEnSm5yH2nhBck/hjfFplGv3GOx/l07gCxu4diP85q+Fluqj
+         ZaTRIfGJr4+tUPHhcvoYzWyfpMz1CVZiy5H65Wilaa3Et/RjPDPMQgiXtKQcOU2Im9
+         HldQOlqExC+Z1Rzz8DRHS4V3/po71fKv19wN5FnI=
+Message-ID: <1554605295.5053.17.camel@HansenPartnership.com>
+Subject: Re: [PATCH] parisc: use per-pagetable spinlock
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Helge Deller <deller@gmx.de>,
+        Mikulas Patocka <mpatocka@redhat.com>,
         John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: PA-Linux requires at least 32 MB RAM
-Message-ID: <20190406230923.GA20080@ls3530.dellerweb.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.11.3 (2019-02-01)
-X-Provags-ID: V03:K1:GnbgLxJInBk+IPvdRM6jSVfFyGn3JsmSz2DuassaMMC9THgPqVT
- HZ6AkmqSEt85WVUmuoEjGn06yNu5bOvHHTLYyiKjyzKBws9svv56fUN0YM+JfTeywpJCVLd
- llP5ygyMRsUiAyhD9+c8tEA5b7oFSCPRBo3/ZvRzTIJXtCQP8KGZvrX6RazydRpSOrp+qtb
- l2Xu+vtp+EdLzrLia0BJA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MX5TVKj8So4=:+t9/uG+bT1E5wc1rxSz8Zt
- qsRT1XBEhOQjRuk4QaH06l94b3L/PWPBfkdFDSNi1/7Z9+5bWJuZdglwFlGoh3WpcvsJiT44X
- fAQetbNhC5x8qEFaVhYx3vB0EriY1fvdXn1kEzvK6NBXbHPXDpJ+fs2R6usXxfGc2CTlG4orK
- sgBPB0ULnCa302LsYTsClWw3JdNZn9vo/KK1IbdfHH2WwSR1NNDl0MW3RcWry8tKctLK5udRU
- Gm7GGSraOFwaOj5hHG6aXPG6SuEVpVPz3vdV0+LkVtfm7j8/HagJbK5gVss2dGjrbg8jpKb31
- tyZMmblQ1xx0aMrEISKdIK7fWIXrDPeoyUMxRvCi+hu+VnP7xsVyo0b9c1GHeDBfpnI5Zo6ku
- ODd6qTOlsfmx8+3KwlLJzmwSF6GmaqIJqp9MeXOjqkE33054fcKW8H2e2lk5TSXgDNXTw4O2k
- hGUR0YEo3nUixObluJB/ltI6yRMhXpbb+Jzv4VttPj4hf4UBRvG8hREQQgOUJpXk+MIcXqBE8
- ILfIbLar5QHvXucYL/S1jjrDst3U6Lx1td75zDh0d+AXkgkLHmnUGZNVoeAQVVsO4ytyPtb9j
- LTfUHkvhK/tfQ+hKguqpodR20hHgqwlBC25whWkJv2y1g9m35OFjdNiPlPl+IEGXxMNgwvr7v
- cAdQB8U9g+COMzh8rpXsg2KjcSrcIzYyMl4bLr/mUu7JsH15KqcW78T/rbQ1uzjA/8BqxtnBo
- /r7yAKXC6jszugzwn9BDZbJmgh7FHfbS25BJ/gAfSf1haiXM6p5qOF/OCaLqprxcwlnFyFVJH
- 6h63golTILcZBXG32LwiMxUxXWHIu5lzkyntkjcKDXfu+A6f8tHV3t5p7Naft/OerfjK6gOtL
- 6z83MBqncRKtB1VLySSiLKiM7brUBy8O+VfzPD4wU1XtL2UByr4ibj/BrKcrDQ
-Content-Transfer-Encoding: quoted-printable
+Cc:     linux-parisc@vger.kernel.org
+Date:   Sat, 06 Apr 2019 19:48:15 -0700
+In-Reply-To: <d340ec78-0829-8a5d-1002-2e08e0b9babb@gmx.de>
+References: <alpine.LRH.2.02.1904061533530.21941@file01.intranet.prod.int.rdu2.redhat.com>
+         <1554580144.5053.4.camel@HansenPartnership.com>
+         <d340ec78-0829-8a5d-1002-2e08e0b9babb@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Even a 32-bit kernel requires at least 27 MB to decompress itself, so
-halt the system with a message if the system has less memory than 32 MB.
+On Sat, 2019-04-06 at 22:15 +0200, Helge Deller wrote:
+> On 06.04.19 21:49, James Bottomley wrote:
+> > On Sat, 2019-04-06 at 15:36 -0400, Mikulas Patocka wrote:
+> > > Parisc uses a global spinlock to protect pagetable updates in the
+> > > TLB
+> > > fault handlers. When multiple cores are taking TLB faults
+> > > simultaneously, the cache line containing the spinlock becomes a
+> > > bottleneck.
+> > 
+> > You can't do this.  As the comment in cache.c says: the lock is to
+> > protect the merced bus, which runs between the CPUs on some
+> > systems.
+> > That means it must be a single, global lock.  Of course, on systems
+> > without a merced bus, we don't need the lock at all, so runtime
+> > patching might be usable to fix that case.
+> 
+> Is there a way to detect if a system has the Merced bus?
+> 
+> See arch/parisc/include/asm/tlbflush.h too:
+> /* This is for the serialisation of PxTLB broadcasts.  At least on
+> the
+>  * N class systems, only one PxTLB inter processor broadcast can be
+>  * active at any one time on the Merced bus.  This tlb purge
+>  * synchronisation is fairly lightweight and harmless so we activate
+>  * it on all systems not just the N class.
+> 
+> 30% speed improvement by Mikulas patches don't seem lightweight...
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Well, that's because when it was originally conceived the patch was
+only about purging.  It never actually involved the TLB insertion hot
+path.  It turns out the entanglement occurred here:
 
-diff --git a/arch/parisc/boot/compressed/misc.c b/arch/parisc/boot/compres=
-sed/misc.c
-index 2556bb181813..2d395998f524 100644
-=2D-- a/arch/parisc/boot/compressed/misc.c
-+++ b/arch/parisc/boot/compressed/misc.c
-@@ -145,14 +145,13 @@ static int putchar(int c)
+commit 01ab60570427caa24b9debc369e452e86cd9beb4
+Author: John David Anglin <dave.anglin@bell.net>
+Date:   Wed Jul 1 17:18:37 2015 -0400
 
- void __noreturn error(char *x)
- {
--	puts("\n\n");
--	puts(x);
--	puts("\n\n -- System halted");
-+	if (x) puts(x);
-+	puts("\n -- System halted\n");
- 	while (1)	/* wait forever */
- 		;
- }
+    parisc: Fix some PTE/TLB race conditions and optimize
+__flush_tlb_range based on timing results
+ 
 
--static int print_hex(unsigned long num)
-+static int print_num(unsigned long num, int base)
- {
- 	const char hex[] =3D "0123456789abcdef";
- 	char str[40];
-@@ -160,12 +159,14 @@ static int print_hex(unsigned long num)
+Which is when the dbit lock got replaced by the tlb purge lock.  I have
+some vague memories about why we needed the dbit lock which I'll try to
+make more coherent.
 
- 	str[i--] =3D '\0';
- 	do {
--		str[i--] =3D hex[num & 0x0f];
--		num >>=3D 4;
-+		str[i--] =3D hex[num % base];
-+		num =3D num / base;
- 	} while (num);
+James
 
--	str[i--] =3D 'x';
--	str[i] =3D '0';
-+	if (base =3D=3D 16) {
-+		str[i--] =3D 'x';
-+		str[i] =3D '0';
-+	} else i++;
- 	puts(&str[i]);
-
- 	return 0;
-@@ -187,8 +188,9 @@ int printf(const char *fmt, ...)
-
- 		if (fmt[++i] =3D=3D '%')
- 			goto put;
-+		print_num(va_arg(args, unsigned long),
-+			fmt[i] =3D=3D 'x' ? 16:10);
- 		++i;
--		print_hex(va_arg(args, unsigned long));
- 	}
-
- 	va_end(args);
-@@ -327,8 +329,15 @@ unsigned long decompress_kernel(unsigned int started_=
-wide,
- 		free_mem_end_ptr =3D rd_start;
- #endif
-
--	if (free_mem_ptr >=3D free_mem_end_ptr)
--		error("Kernel too big for machine.");
-+	if (free_mem_ptr >=3D free_mem_end_ptr) {
-+		int free_ram;
-+		free_ram =3D (free_mem_ptr >> 20) + 1;
-+		if (free_ram < 32)
-+			free_ram =3D 32;
-+		printf("\nKernel requires at least %d MB RAM.\n",
-+			free_ram);
-+		error(NULL);
-+	}
-
- #ifdef DEBUG
- 	printf("\n");
