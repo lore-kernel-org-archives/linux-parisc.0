@@ -2,133 +2,460 @@ Return-Path: <SRS0=FW0n=SM=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88DB4C10F11
-	for <linux-parisc@archiver.kernel.org>; Wed, 10 Apr 2019 16:09:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99BF4C10F11
+	for <linux-parisc@archiver.kernel.org>; Wed, 10 Apr 2019 17:39:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 625CC20693
-	for <linux-parisc@archiver.kernel.org>; Wed, 10 Apr 2019 16:09:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5B4012077C
+	for <linux-parisc@archiver.kernel.org>; Wed, 10 Apr 2019 17:39:28 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="IaLv0ptL"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731481AbfDJQJH (ORCPT
+        id S1729813AbfDJRj2 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 10 Apr 2019 12:09:07 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:47594 "EHLO mx1.redhat.com"
+        Wed, 10 Apr 2019 13:39:28 -0400
+Received: from mout.gmx.net ([212.227.15.19]:48845 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387666AbfDJQJG (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 10 Apr 2019 12:09:06 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 17203AC2D9;
-        Wed, 10 Apr 2019 16:09:06 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D766327190;
-        Wed, 10 Apr 2019 16:09:05 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id x3AG95uE014108;
-        Wed, 10 Apr 2019 12:09:05 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id x3AG94Vi014104;
-        Wed, 10 Apr 2019 12:09:04 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Wed, 10 Apr 2019 12:09:04 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     John David Anglin <dave.anglin@bell.net>
-cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-Subject: Re: [PATCH] parisc: use per-pagetable spinlock
-In-Reply-To: <5028ebb4-e1eb-6c77-5466-86838e938aa2@bell.net>
-Message-ID: <alpine.LRH.2.02.1904101205480.13246@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.1904061533530.21941@file01.intranet.prod.int.rdu2.redhat.com> <1554580144.5053.4.camel@HansenPartnership.com> <alpine.LRH.2.02.1904061610580.27483@file01.intranet.prod.int.rdu2.redhat.com> <1554582741.5053.7.camel@HansenPartnership.com>
- <alpine.LRH.2.02.1904061635090.31596@file01.intranet.prod.int.rdu2.redhat.com> <5028ebb4-e1eb-6c77-5466-86838e938aa2@bell.net>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        id S1729786AbfDJRj1 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 10 Apr 2019 13:39:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1554917954;
+        bh=A2fwi56bMSE++A5xrVndQchVmEte4jLhCrtz7DPcoQQ=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=IaLv0ptLOTYFBfgVjz1WqaPEllmDjEY6HT+F5Hu6OO6nYhaiNHKjITo/tszBNk9Zx
+         47ncHWIhA19hm9UKiEuELSAr88qVhQZkR9Iu0FDSIAX73KKePB1Am074QAoqAU93V/
+         467nUFIKxMQYD199pVtuhp2cZwWc+UVaHzvXJGy4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.dellerweb.de ([92.116.148.203]) by mail.gmx.com
+ (mrgmx002 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 0M3AzH-1gvVor1UYR-00szOO; Wed, 10 Apr 2019 19:39:14 +0200
+Date:   Wed, 10 Apr 2019 19:39:11 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH] parisc: Switch from DISCONTIGMEM to SPARSEMEM
+Message-ID: <20190410173911.GA11288@ls3530.dellerweb.de>
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="185206533-2068880940-1554912545=:13246"
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.38]); Wed, 10 Apr 2019 16:09:06 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.11.3 (2019-02-01)
+X-Provags-ID: V03:K1:WauNiF6BctKyAFv0oV03Ye8EOrbHMQnvdjV9lDBHAd+ICCivZha
+ GLuwYBglRBo+F8mBVuaWJ5uTjf8KROIcvcLutvEXhlRdBZlrDmc3zKxw5rXGX3Kk8Muh6cQ
+ d+O//Cpv/ukk8VanrCe8FbDU+Y2l41FEVpkhYdGsMWiPdMDq2LVpC6zI25pymnHFeZGaaNd
+ 7cCuK0nzuQs4fCQ+dAEEg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YCDwrGj7pWM=:MtKPI44S/QBCXOBFfxsVt7
+ +wdRYmlZwhmqRxq0Cf0GolcrXHkZsrdnKLAiB9FHUnwdWFY/bx6ZZQVlizjXIPAm73UMv3AAD
+ WkIXPp3dUZFBPRVyaGT2KS0KW2s99HtxFmVAItWCHFcFUo5bG8bYATLF66qE2x2KklsOLJQJ8
+ 6QCiqlHHo3IQjrBjGZUfpBrFmsPbeLzL8sNXaw+zN8IX+ZaK5aNPXPuRgHY7jE+q3Qn4ysnEv
+ 6BUUh0og8897qsNWx+oMIRotPbvjXESaE19tdr8OJH6CpH0q2nCmQ8I47OJhqNFSkkUw0rck4
+ zRP5l5RijhJeNpUq3XhAKn4pgLVU3lKAsuwZtf2r506NSxHGpT6Iqc6Ln8ZsLNXCPdEQAKBIt
+ Ki2nj+NZtz9yhgW+CU4AonTDMpBnmzkQjQHHAaumAWGcr+if+BmkQaBhXetr9Ae9CX3vD8pPH
+ DDcYh/eBNk85W3VwDVBzQH/eU39ZItux5PoHC681iOyyjIux41gRINMVXLmdhVsmjaPjmrJ4k
+ eujdgXmbe6WlKaoYP1TWkhUTLs+RwgtuqGZJSUGlAJvBQIuwBIs+so6zXzImPbHEQQ67LCL7o
+ mukPoeEIOjISkSXpxttqEr4DCOIYWjDgrM1zZKHsh0NfsBG8gQC429omVLsif/saO9HMsv3GR
+ Gr466zO8oCPMDr8G+UjMOQp/ir5fu3bjeEzPtc584UhSJaBrqedGHr4cZAMF6IEdTgP2z6ib/
+ U4o5LTie2u42g0iiTxZTx6+3SjYvrjA9Ohd8RFNyxUod/NA35tqSwjJZ4mCMAddYdZXXZyn/q
+ zroVHJd7d7S+RHjf2dAA4FrWRmrMA+TNX+OemM1CKpkSsmb5bplXHKRHX2Xje9C+60uH7mMCC
+ AhD3RCWd2o7z47aRhlMSjr1IdpGhkGwP3GldABeyB8cLyurNMjOUcdFMvMvuez
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+The commit 1c30844d2dfe ("mm: reclaim small amounts of memory when an
+external fragmentation event occurs") breaks memory management on a
+parisc c8000 workstation with this memory layout:
 
---185206533-2068880940-1554912545=:13246
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+	0) Start 0x0000000000000000 End 0x000000003fffffff Size   1024 MB
+	1) Start 0x0000000100000000 End 0x00000001bfdfffff Size   3070 MB
+	2) Start 0x0000004040000000 End 0x00000040ffffffff Size   3072 MB
 
+With the patch 1c30844d2dfe, the kernel will incorrectly reclaim the
+first zone when it fills up, ignoring the fact that there are two
+completely free zones. Basiscally, it limits cache size to 1GiB.
 
+The parisc kernel is currently using the DISCONTIGMEM implementation,
+but isn't NUMA. Avoid this issue and strange work-arounds by switching
+to the more commonly used SPARSEMEM implementation.
 
-On Wed, 10 Apr 2019, John David Anglin wrote:
+Reported-by: Mikulas Patocka <mpatocka@redhat.com>
+Fixes: 1c30844d2dfe ("mm: reclaim small amounts of memory when an external=
+ fragmentation event occurs")
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-> On 2019-04-06 4:40 p.m., Mikulas Patocka wrote:
-> >
-> > On Sat, 6 Apr 2019, James Bottomley wrote:
-> >
-> >> On Sat, 2019-04-06 at 16:13 -0400, Mikulas Patocka wrote:
-> >>>> Of course, on systems without a merced bus, we don't need the lock
-> >>> at 
-> >>>> all, so runtime patching might be usable to fix that case.
-> >>>>
-> >>>> James
-> >>> The lock is still needed to synchronize TLB fault handlers with the
-> >>> code that modifies the pagetables - but we could have per-process
-> >>> lock for this purpose.
-> >> It is?  I don't think we need any per-arch sync for that.  The purge
-> >> should happen after all modifications are done so the next page fault
-> >> inserts the new TLB entry ... so if there is a place where the purge
-> >> lock matters to the page table updates, we're doing something wrong.
-> >>
-> >> James
-> > Suppose that this sequence happens:
-> >
-> > CPU1:
-> > (inside the TLB miss handler)
-> > read the value XXX from the pagetables to the register
-> The value is read holding TLB lock and the value is updated after insert.  Then, lock is released.
-> Only concern is whether TLB inserts are strongly ordered.
-> 
-> >
-> > CPU2:
-> > modify the value in the pagetables to YYY
-> > broadcast a TLB purge
-> CPU2 needs to acquire TLB lock before it can modify value and broadcast TLB purge (see set_pte_at).  Lock is then released.
-> TLB purges are strongly ordered.
-> 
-> So, I don't think this scenario can happen.
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index c8038165b81f..26c215570adf 100644
+=2D-- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -36,6 +36,7 @@ config PARISC
+ 	select GENERIC_STRNCPY_FROM_USER
+ 	select SYSCTL_ARCH_UNALIGN_ALLOW
+ 	select SYSCTL_EXCEPTION_TRACE
++	select ARCH_DISCARD_MEMBLOCK
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select VIRT_TO_BUS
+ 	select MODULES_USE_ELF_RELA
+@@ -314,21 +315,16 @@ config ARCH_SELECT_MEMORY_MODEL
+ 	def_bool y
+ 	depends on 64BIT
 
-It can't happen in the current code. This is hypothetical scenario that 
-could happen if we removed the TLB lock as suggested by James. But James 
-claims that it can't happen because the purge tlb instruction will wait 
-until all the other CPUs finish executing a high-priority interruption.
+-config ARCH_DISCONTIGMEM_ENABLE
++config ARCH_SPARSEMEM_ENABLE
+ 	def_bool y
+ 	depends on 64BIT
 
-What do you think? Could the TLB lock go away?
+ config ARCH_FLATMEM_ENABLE
+ 	def_bool y
 
-Having one lock shared by all four cores degrades performance 
-significantly (30%).
+-config ARCH_DISCONTIGMEM_DEFAULT
++config ARCH_SPARSEMEM_DEFAULT
+ 	def_bool y
+-	depends on ARCH_DISCONTIGMEM_ENABLE
+-
+-config NODES_SHIFT
+-	int
+-	default "3"
+-	depends on NEED_MULTIPLE_NODES
++	depends on ARCH_SPARSEMEM_ENABLE
 
-Mikulas
+ source "kernel/Kconfig.hz"
 
-> >
-> > CPU1:
-> > receives the TLB purge broadcast and flushes the TLB
-> > ... continues executing the TLB handler and inserts the value XXX from the register into the TLB
-> >
-> > And now, CPU1 is running with stale entry in the TLB. We need the lock to 
-> > prevent this situation.
-> >
-> > Mikulas
-> >
-> 
-> Dave
-> 
-> -- 
-> John David Anglin  dave.anglin@bell.net
-> 
-> 
---185206533-2068880940-1554912545=:13246--
+diff --git a/arch/parisc/include/asm/mmzone.h b/arch/parisc/include/asm/mm=
+zone.h
+index fafa3893fd70..8d390406d862 100644
+=2D-- a/arch/parisc/include/asm/mmzone.h
++++ b/arch/parisc/include/asm/mmzone.h
+@@ -2,62 +2,6 @@
+ #ifndef _PARISC_MMZONE_H
+ #define _PARISC_MMZONE_H
+
+-#define MAX_PHYSMEM_RANGES 8 /* Fix the size for now (current known max i=
+s 3) */
++#define MAX_PHYSMEM_RANGES 4 /* Fix the size for now (current known max i=
+s 3) */
+
+-#ifdef CONFIG_DISCONTIGMEM
+-
+-extern int npmem_ranges;
+-
+-struct node_map_data {
+-    pg_data_t pg_data;
+-};
+-
+-extern struct node_map_data node_data[];
+-
+-#define NODE_DATA(nid)          (&node_data[nid].pg_data)
+-
+-/* We have these possible memory map layouts:
+- * Astro: 0-3.75, 67.75-68, 4-64
+- * zx1: 0-1, 257-260, 4-256
+- * Stretch (N-class): 0-2, 4-32, 34-xxx
+- */
+-
+-/* Since each 1GB can only belong to one region (node), we can create
+- * an index table for pfn to nid lookup; each entry in pfnnid_map
+- * represents 1GB, and contains the node that the memory belongs to. */
+-
+-#define PFNNID_SHIFT (30 - PAGE_SHIFT)
+-#define PFNNID_MAP_MAX  512     /* support 512GB */
+-extern signed char pfnnid_map[PFNNID_MAP_MAX];
+-
+-#ifndef CONFIG_64BIT
+-#define pfn_is_io(pfn) ((pfn & (0xf0000000UL >> PAGE_SHIFT)) =3D=3D (0xf0=
+000000UL >> PAGE_SHIFT))
+-#else
+-/* io can be 0xf0f0f0f0f0xxxxxx or 0xfffffffff0000000 */
+-#define pfn_is_io(pfn) ((pfn & (0xf000000000000000UL >> PAGE_SHIFT)) =3D=
+=3D (0xf000000000000000UL >> PAGE_SHIFT))
+-#endif
+-
+-static inline int pfn_to_nid(unsigned long pfn)
+-{
+-	unsigned int i;
+-
+-	if (unlikely(pfn_is_io(pfn)))
+-		return 0;
+-
+-	i =3D pfn >> PFNNID_SHIFT;
+-	BUG_ON(i >=3D ARRAY_SIZE(pfnnid_map));
+-
+-	return pfnnid_map[i];
+-}
+-
+-static inline int pfn_valid(int pfn)
+-{
+-	int nid =3D pfn_to_nid(pfn);
+-
+-	if (nid >=3D 0)
+-		return (pfn < node_end_pfn(nid));
+-	return 0;
+-}
+-
+-#endif
+ #endif /* _PARISC_MMZONE_H */
+diff --git a/arch/parisc/include/asm/page.h b/arch/parisc/include/asm/page=
+.h
+index b77f49ce6220..93caf17ac5e2 100644
+=2D-- a/arch/parisc/include/asm/page.h
++++ b/arch/parisc/include/asm/page.h
+@@ -147,9 +147,9 @@ extern int npmem_ranges;
+ #define __pa(x)			((unsigned long)(x)-PAGE_OFFSET)
+ #define __va(x)			((void *)((unsigned long)(x)+PAGE_OFFSET))
+
+-#ifndef CONFIG_DISCONTIGMEM
++#ifndef CONFIG_SPARSEMEM
+ #define pfn_valid(pfn)		((pfn) < max_mapnr)
+-#endif /* CONFIG_DISCONTIGMEM */
++#endif
+
+ #ifdef CONFIG_HUGETLB_PAGE
+ #define HPAGE_SHIFT		PMD_SHIFT /* fixed for transparent huge pages */
+diff --git a/arch/parisc/include/asm/sparsemem.h b/arch/parisc/include/asm=
+/sparsemem.h
+new file mode 100644
+index 000000000000..b7d1dc9f880c
+=2D-- /dev/null
++++ b/arch/parisc/include/asm/sparsemem.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef ASM_PARISC_SPARSEMEM_H
++#define ASM_PARISC_SPARSEMEM_H
++
++/* We have these possible memory map layouts:
++ * Astro: 0-3.75, 67.75-68, 4-64
++ * zx1: 0-1, 257-260, 4-256
++ * Stretch (N-class): 0-2, 4-32, 34-xxx
++ */
++
++#define MAX_PHYSMEM_BITS	42
++#define SECTION_SIZE_BITS	27
++
++#endif
+diff --git a/arch/parisc/kernel/parisc_ksyms.c b/arch/parisc/kernel/parisc=
+_ksyms.c
+index 7baa2265d439..174213b1716e 100644
+=2D-- a/arch/parisc/kernel/parisc_ksyms.c
++++ b/arch/parisc/kernel/parisc_ksyms.c
+@@ -138,12 +138,6 @@ extern void $$dyncall(void);
+ EXPORT_SYMBOL($$dyncall);
+ #endif
+
+-#ifdef CONFIG_DISCONTIGMEM
+-#include <asm/mmzone.h>
+-EXPORT_SYMBOL(node_data);
+-EXPORT_SYMBOL(pfnnid_map);
+-#endif
+-
+ #ifdef CONFIG_FUNCTION_TRACER
+ extern void _mcount(void);
+ EXPORT_SYMBOL(_mcount);
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index b2b52de2b82b..78e451ce0f1b 100644
+=2D-- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -48,11 +48,6 @@ pmd_t pmd0[PTRS_PER_PMD] __attribute__ ((__section__ ("=
+.data..vm0.pmd"), aligned
+ pgd_t swapper_pg_dir[PTRS_PER_PGD] __attribute__ ((__section__ (".data..v=
+m0.pgd"), aligned(PAGE_SIZE)));
+ pte_t pg0[PT_INITIAL * PTRS_PER_PTE] __attribute__ ((__section__ (".data.=
+.vm0.pte"), aligned(PAGE_SIZE)));
+
+-#ifdef CONFIG_DISCONTIGMEM
+-struct node_map_data node_data[MAX_NUMNODES] __read_mostly;
+-signed char pfnnid_map[PFNNID_MAP_MAX] __read_mostly;
+-#endif
+-
+ static struct resource data_resource =3D {
+ 	.name	=3D "Kernel data",
+ 	.flags	=3D IORESOURCE_BUSY | IORESOURCE_SYSTEM_RAM,
+@@ -76,11 +71,11 @@ static struct resource sysram_resources[MAX_PHYSMEM_RA=
+NGES] __read_mostly;
+  * information retrieved in kernel/inventory.c.
+  */
+
+-physmem_range_t pmem_ranges[MAX_PHYSMEM_RANGES] __read_mostly;
+-int npmem_ranges __read_mostly;
++physmem_range_t pmem_ranges[MAX_PHYSMEM_RANGES] __initdata;
++int npmem_ranges __initdata;
+
+ #ifdef CONFIG_64BIT
+-#define MAX_MEM         (~0UL)
++#define MAX_MEM         (1UL << MAX_PHYSMEM_BITS)
+ #else /* !CONFIG_64BIT */
+ #define MAX_MEM         (3584U*1024U*1024U)
+ #endif /* !CONFIG_64BIT */
+@@ -119,7 +114,7 @@ static void __init mem_limit_func(void)
+ static void __init setup_bootmem(void)
+ {
+ 	unsigned long mem_max;
+-#ifndef CONFIG_DISCONTIGMEM
++#ifndef CONFIG_SPARSEMEM
+ 	physmem_range_t pmem_holes[MAX_PHYSMEM_RANGES - 1];
+ 	int npmem_holes;
+ #endif
+@@ -137,23 +132,20 @@ static void __init setup_bootmem(void)
+ 		int j;
+
+ 		for (j =3D i; j > 0; j--) {
+-			unsigned long tmp;
++			physmem_range_t tmp;
+
+ 			if (pmem_ranges[j-1].start_pfn <
+ 			    pmem_ranges[j].start_pfn) {
+
+ 				break;
+ 			}
+-			tmp =3D pmem_ranges[j-1].start_pfn;
+-			pmem_ranges[j-1].start_pfn =3D pmem_ranges[j].start_pfn;
+-			pmem_ranges[j].start_pfn =3D tmp;
+-			tmp =3D pmem_ranges[j-1].pages;
+-			pmem_ranges[j-1].pages =3D pmem_ranges[j].pages;
+-			pmem_ranges[j].pages =3D tmp;
++			tmp =3D pmem_ranges[j-1];
++			pmem_ranges[j-1] =3D pmem_ranges[j];
++			pmem_ranges[j] =3D tmp;
+ 		}
+ 	}
+
+-#ifndef CONFIG_DISCONTIGMEM
++#ifndef CONFIG_SPARSEMEM
+ 	/*
+ 	 * Throw out ranges that are too far apart (controlled by
+ 	 * MAX_GAP).
+@@ -165,7 +157,7 @@ static void __init setup_bootmem(void)
+ 			 pmem_ranges[i-1].pages) > MAX_GAP) {
+ 			npmem_ranges =3D i;
+ 			printk("Large gap in memory detected (%ld pages). "
+-			       "Consider turning on CONFIG_DISCONTIGMEM\n",
++			       "Consider turning on CONFIG_SPARSEMEM\n",
+ 			       pmem_ranges[i].start_pfn -
+ 			       (pmem_ranges[i-1].start_pfn +
+ 			        pmem_ranges[i-1].pages));
+@@ -230,9 +222,8 @@ static void __init setup_bootmem(void)
+
+ 	printk(KERN_INFO "Total Memory: %ld MB\n",mem_max >> 20);
+
+-#ifndef CONFIG_DISCONTIGMEM
++#ifndef CONFIG_SPARSEMEM
+ 	/* Merge the ranges, keeping track of the holes */
+-
+ 	{
+ 		unsigned long end_pfn;
+ 		unsigned long hole_pages;
+@@ -255,18 +246,6 @@ static void __init setup_bootmem(void)
+ 	}
+ #endif
+
+-#ifdef CONFIG_DISCONTIGMEM
+-	for (i =3D 0; i < MAX_PHYSMEM_RANGES; i++) {
+-		memset(NODE_DATA(i), 0, sizeof(pg_data_t));
+-	}
+-	memset(pfnnid_map, 0xff, sizeof(pfnnid_map));
+-
+-	for (i =3D 0; i < npmem_ranges; i++) {
+-		node_set_state(i, N_NORMAL_MEMORY);
+-		node_set_online(i);
+-	}
+-#endif
+-
+ 	/*
+ 	 * Initialize and free the full range of memory in each range.
+ 	 */
+@@ -314,7 +293,7 @@ static void __init setup_bootmem(void)
+ 	memblock_reserve(__pa(KERNEL_BINARY_TEXT_START),
+ 			(unsigned long)(_end - KERNEL_BINARY_TEXT_START));
+
+-#ifndef CONFIG_DISCONTIGMEM
++#ifndef CONFIG_SPARSEMEM
+
+ 	/* reserve the holes */
+
+@@ -360,6 +339,9 @@ static void __init setup_bootmem(void)
+
+ 	/* Initialize Page Deallocation Table (PDT) and check for bad memory. */
+ 	pdc_pdt_init();
++
++	memblock_allow_resize();
++	memblock_dump_all();
+ }
+
+ static int __init parisc_text_address(unsigned long vaddr)
+@@ -713,37 +695,46 @@ static void __init gateway_init(void)
+ 		  PAGE_SIZE, PAGE_GATEWAY, 1);
+ }
+
+-void __init paging_init(void)
++static void __init parisc_bootmem_free(void)
+ {
++	unsigned long zones_size[MAX_NR_ZONES] =3D { 0, };
++	unsigned long holes_size[MAX_NR_ZONES] =3D { 0, };
++	unsigned long mem_start_pfn =3D ~0UL, mem_end_pfn =3D 0, mem_size_pfn =
+=3D 0;
+ 	int i;
+
++	for (i =3D 0; i < npmem_ranges; i++) {
++		unsigned long start =3D pmem_ranges[i].start_pfn;
++		unsigned long size =3D pmem_ranges[i].pages;
++		unsigned long end =3D start + size;
++
++		if (mem_start_pfn > start)
++			mem_start_pfn =3D start;
++		if (mem_end_pfn < end)
++			mem_end_pfn =3D end;
++		mem_size_pfn +=3D size;
++	}
++
++	zones_size[0] =3D mem_end_pfn - mem_start_pfn;
++	holes_size[0] =3D zones_size[0] - mem_size_pfn;
++
++	free_area_init_node(0, zones_size, mem_start_pfn, holes_size);
++}
++
++void __init paging_init(void)
++{
+ 	setup_bootmem();
+ 	pagetable_init();
+ 	gateway_init();
+ 	flush_cache_all_local(); /* start with known state */
+ 	flush_tlb_all_local(NULL);
+
+-	for (i =3D 0; i < npmem_ranges; i++) {
+-		unsigned long zones_size[MAX_NR_ZONES] =3D { 0, };
+-
+-		zones_size[ZONE_NORMAL] =3D pmem_ranges[i].pages;
+-
+-#ifdef CONFIG_DISCONTIGMEM
+-		/* Need to initialize the pfnnid_map before we can initialize
+-		   the zone */
+-		{
+-		    int j;
+-		    for (j =3D (pmem_ranges[i].start_pfn >> PFNNID_SHIFT);
+-			 j <=3D ((pmem_ranges[i].start_pfn + pmem_ranges[i].pages) >> PFNNID_S=
+HIFT);
+-			 j++) {
+-			pfnnid_map[j] =3D i;
+-		    }
+-		}
+-#endif
+-
+-		free_area_init_node(i, zones_size,
+-				pmem_ranges[i].start_pfn, NULL);
+-	}
++	/*
++	 * Mark all memblocks as present for sparsemem using
++	 * memory_present() and then initialize sparsemem.
++	 */
++	memblocks_present();
++	sparse_init();
++	parisc_bootmem_free();
+ }
+
+ #ifdef CONFIG_PA20
