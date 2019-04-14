@@ -1,86 +1,306 @@
-Return-Path: <SRS0=SQlM=SP=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=rNqQ=SQ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,UNPARSEABLE_RELAY
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D408C10F11
-	for <linux-parisc@archiver.kernel.org>; Sat, 13 Apr 2019 17:57:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E496FC10F13
+	for <linux-parisc@archiver.kernel.org>; Sun, 14 Apr 2019 23:20:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5A2182084D
-	for <linux-parisc@archiver.kernel.org>; Sat, 13 Apr 2019 17:57:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B2C6F20833
+	for <linux-parisc@archiver.kernel.org>; Sun, 14 Apr 2019 23:20:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbfDMR5o (ORCPT
+        id S1725789AbfDNXUn (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 13 Apr 2019 13:57:44 -0400
-Received: from simcoe207srvr.owm.bell.net ([184.150.200.207]:41681 "EHLO
-        torfep01.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726297AbfDMR5o (ORCPT
+        Sun, 14 Apr 2019 19:20:43 -0400
+Received: from simcoe208srvr.owm.bell.net ([184.150.200.208]:44124 "EHLO
+        torfep02.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725775AbfDNXUm (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 13 Apr 2019 13:57:44 -0400
-Received: from bell.net torfep01 184.150.200.158 by torfep01.bell.net
+        Sun, 14 Apr 2019 19:20:42 -0400
+Received: from bell.net torfep02 184.150.200.158 by torfep02.bell.net
           with ESMTP
-          id <20190413175743.ZWDG4584.torfep01.bell.net@torspm02.bell.net>
+          id <20190414232041.BCC4684.torfep02.bell.net@torspm02.bell.net>
           for <linux-parisc@vger.kernel.org>;
-          Sat, 13 Apr 2019 13:57:43 -0400
+          Sun, 14 Apr 2019 19:20:41 -0400
 Received: from [192.168.2.49] (really [70.53.52.226]) by torspm02.bell.net
           with ESMTP
-          id <20190413175743.IWOW30132.torspm02.bell.net@[192.168.2.49]>;
-          Sat, 13 Apr 2019 13:57:43 -0400
-Subject: Re: [PATCH] parisc: use per-pagetable spinlock
-To:     Helge Deller <deller@gmx.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Mikulas Patocka <mpatocka@redhat.com>
-Cc:     linux-parisc@vger.kernel.org
-References: <alpine.LRH.2.02.1904061533530.21941@file01.intranet.prod.int.rdu2.redhat.com>
- <1554580144.5053.4.camel@HansenPartnership.com>
- <14301958-d484-dceb-b48f-c5bb91c0639e@bell.net>
- <a870fe87-0a23-a829-b388-ca9499fc7596@bell.net>
- <359b1ce8-4486-1090-8db7-252f311f51f8@gmx.de>
+          id <20190414232041.ORDO30132.torspm02.bell.net@[192.168.2.49]>;
+          Sun, 14 Apr 2019 19:20:41 -0400
+To:     linux-parisc <linux-parisc@vger.kernel.org>
+Cc:     Helge Deller <deller@gmx.de>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
 From:   John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Use ldcw instruction for SMP spinlock release barrier
 Openpgp: preference=signencrypt
-Message-ID: <1b20a59f-ad4c-2c1a-7b5c-cbdd86082c44@bell.net>
-Date:   Sat, 13 Apr 2019 13:57:42 -0400
+Message-ID: <a12f7c71-553c-1e4d-d986-8a966f6e83dc@bell.net>
+Date:   Sun, 14 Apr 2019 19:20:40 -0400
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <359b1ce8-4486-1090-8db7-252f311f51f8@gmx.de>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-CM-Analysis: v=2.3 cv=bPxo382Z c=1 sm=1 tr=0 a=eekNWfHKKKZHbRJeTMr8Cw==:117 a=eekNWfHKKKZHbRJeTMr8Cw==:17 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=oexKYjalfGEA:10 a=5ypQrAzGAAAA:8 a=FBHGMhGWAAAA:8 a=Jf8cDY2UCG0ndUKv_boA:9 a=QEXdDO2ut3YA:10 a=vfUNbsYLo2IA:10 a=lMylKNZlyRsA:10 a=QnlTcYk_iZbCEFXf-YqT:22 a=9gvnlMMaQFpL9xblJ6ne:22
-X-CM-Envelope: MS4wfJHybbUhy0N0ZbmNI2PMbKvWWOV66iWq59YDQ65XKJ96DO944LkA/cl/Ss7/ZhTPa2PEw6vyXgG+WOk90ckmTYtnpZWkF34X3cxha1/R2XoNpPeV6sia FrQDOUS1xhh0odRiLDnflBmGeHJnPVB51nyuDbnc+X9l3AMVKdTOMrh5ORtBAy6l+H4K8NSqv08T9g==
+Content-Transfer-Encoding: 7bit
+X-CM-Analysis: v=2.3 cv=O5JHQy1W c=1 sm=1 tr=0 a=eekNWfHKKKZHbRJeTMr8Cw==:117 a=eekNWfHKKKZHbRJeTMr8Cw==:17 a=IkcTkHD0fZMA:10 a=oexKYjalfGEA:10 a=FBHGMhGWAAAA:8 a=bsiEr5t9_8d2UFjgbIkA:9 a=QEXdDO2ut3YA:10 a=9gvnlMMaQFpL9xblJ6ne:22
+X-CM-Envelope: MS4wfFl0VTYT9gt7s1Fs+cKemVPTOTnT+Da/dvP4TgAP75vkjggScd1A4YVQ6UNyrWfUTjs9Vmo/wAErasbsTNrL2IJ+Kdrp6TomavlgHrB0PCmD2k8MC+ce IfDtWYG9qEOS2OjJU1KAgSZLhrUdgaU3X9FS4frUS+H4IcQHnnTAUrU4hFUr7IrLG+4jTRYgHb8Puw==
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 2019-04-13 12:23 p.m., Helge Deller wrote:
-> On 10.04.19 21:27, John David Anglin wrote:
->> On 2019-04-10 3:10 p.m., John David Anglin wrote:
->>> Was merced bus used on PA 1.x?  If not, then the locks could be
->>> removed.
->> Openpa states that merced bus was used in L1500, L3000 and N4000.  All are Pa 2.0,
->> so locks are not needed.
-> And according to https://www.openpa.net/pa-risc_chipsets_stretch.html
-> it seems that a IKE I/O controller is used on Stretch only.
-> So, detecting an IKE should be sufficient to check if we need
-> to avoid multiple TLB flushed on the bus...
->
-In hardware.c, we have:
+There are only a couple of instructions that can function as a memory barrier on
+parisc.  Currently, we use the sync instruction as a memory barrier when releasing
+a spinlock.  However, the ldcw instruction is a better barrier when we have a
+handy memory location since it operates in the cache on coherent machines.
 
-        {HPHW_BCPORT, 0x800, 0x0000C, 0x10, "DEW BC Merced Port"},
-        {HPHW_BCPORT, 0x801, 0x0000C, 0x10, "SMC Bus Interface Merced Bus0"},
-        {HPHW_BCPORT, 0x802, 0x0000C, 0x10, "SMC Bus INterface Merced Bus1"},
-        {HPHW_BCPORT, 0x803, 0x0000C, 0x10, "IKE I/O BC Merced Port"},
-        {HPHW_BCPORT, 0x781, 0x0000C, 0x00, "IKE I/O BC Ropes Port"},
-        {HPHW_BCPORT, 0x804, 0x0000C, 0x10, "REO I/O BC Merced Port"},
-        {HPHW_BCPORT, 0x782, 0x0000C, 0x00, "REO I/O BC Ropes Port"},
+This patch updates the spinlock release code to use ldcw.  I also changed the "stw,ma"
+instructions to "stw" instructions as it is not an adequate barrier.
 
-Dave
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
 
--- 
-John David Anglin  dave.anglin@bell.net
+diff --git a/arch/parisc/include/asm/spinlock.h b/arch/parisc/include/asm/spinlock.h
+index 8a63515f03bf..197d2247e4db 100644
+--- a/arch/parisc/include/asm/spinlock.h
++++ b/arch/parisc/include/asm/spinlock.h
+@@ -37,7 +37,11 @@ static inline void arch_spin_unlock(arch_spinlock_t *x)
+ 	volatile unsigned int *a;
+
+ 	a = __ldcw_align(x);
++#ifdef CONFIG_SMP
++	(void) __ldcw(a);
++#else
+ 	mb();
++#endif
+ 	*a = 1;
+ }
+
+diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
+index d5eb19efa65b..a1fc04570ade 100644
+--- a/arch/parisc/kernel/entry.S
++++ b/arch/parisc/kernel/entry.S
+@@ -471,8 +467,9 @@
+ 	nop
+ 	LDREG		0(\ptp),\pte
+ 	bb,<,n		\pte,_PAGE_PRESENT_BIT,3f
++	LDCW		0(\tmp),\tmp1
+ 	b		\fault
+-	stw,ma		\spc,0(\tmp)
++	stw		\spc,0(\tmp)
+ 99:	ALTERNATIVE(98b, 99b, ALT_COND_NO_SMP, INSN_NOP)
+ #endif
+ 2:	LDREG		0(\ptp),\pte
+@@ -481,20 +478,22 @@
+ 	.endm
+
+ 	/* Release pa_tlb_lock lock without reloading lock address. */
+-	.macro		tlb_unlock0	spc,tmp
++	.macro		tlb_unlock0	spc,tmp,tmp1
+ #ifdef CONFIG_SMP
+ 98:	or,COND(=)	%r0,\spc,%r0
+-	stw,ma		\spc,0(\tmp)
++	LDCW		0(\tmp),\tmp1
++	or,COND(=)	%r0,\spc,%r0
++	stw		\spc,0(\tmp)
+ 99:	ALTERNATIVE(98b, 99b, ALT_COND_NO_SMP, INSN_NOP)
+ #endif
+ 	.endm
+
+ 	/* Release pa_tlb_lock lock. */
+-	.macro		tlb_unlock1	spc,tmp
++	.macro		tlb_unlock1	spc,tmp,tmp1
+ #ifdef CONFIG_SMP
+ 98:	load_pa_tlb_lock \tmp
+ 99:	ALTERNATIVE(98b, 99b, ALT_COND_NO_SMP, INSN_NOP)
+-	tlb_unlock0	\spc,\tmp
++	tlb_unlock0	\spc,\tmp,\tmp1
+ #endif
+ 	.endm
+
+@@ -1177,7 +1176,7 @@ dtlb_miss_20w:
+ 	
+ 	idtlbt          pte,prot
+
+-	tlb_unlock1	spc,t0
++	tlb_unlock1	spc,t0,t1
+ 	rfir
+ 	nop
+
+@@ -1203,7 +1202,7 @@ nadtlb_miss_20w:
+
+ 	idtlbt          pte,prot
+
+-	tlb_unlock1	spc,t0
++	tlb_unlock1	spc,t0,t1
+ 	rfir
+ 	nop
+
+@@ -1237,7 +1236,7 @@ dtlb_miss_11:
+
+ 	mtsp		t1, %sr1	/* Restore sr1 */
+
+-	tlb_unlock1	spc,t0
++	tlb_unlock1	spc,t0,t1
+ 	rfir
+ 	nop
+
+@@ -1270,7 +1269,7 @@ nadtlb_miss_11:
+
+ 	mtsp		t1, %sr1	/* Restore sr1 */
+
+-	tlb_unlock1	spc,t0
++	tlb_unlock1	spc,t0,t1
+ 	rfir
+ 	nop
+
+@@ -1299,7 +1298,7 @@ dtlb_miss_20:
+
+ 	idtlbt          pte,prot
+
+-	tlb_unlock1	spc,t0
++	tlb_unlock1	spc,t0,t1
+ 	rfir
+ 	nop
+
+@@ -1327,7 +1326,7 @@ nadtlb_miss_20:
+ 	
+ 	idtlbt		pte,prot
+
+-	tlb_unlock1	spc,t0
++	tlb_unlock1	spc,t0,t1
+ 	rfir
+ 	nop
+
+@@ -1434,7 +1433,7 @@ itlb_miss_20w:
+ 	
+ 	iitlbt          pte,prot
+
+-	tlb_unlock1	spc,t0
++	tlb_unlock1	spc,t0,t1
+ 	rfir
+ 	nop
+
+@@ -1458,7 +1457,7 @@ naitlb_miss_20w:
+
+ 	iitlbt          pte,prot
+
+-	tlb_unlock1	spc,t0
++	tlb_unlock1	spc,t0,t1
+ 	rfir
+ 	nop
+
+@@ -1492,7 +1491,7 @@ itlb_miss_11:
+
+ 	mtsp		t1, %sr1	/* Restore sr1 */
+
+-	tlb_unlock1	spc,t0
++	tlb_unlock1	spc,t0,t1
+ 	rfir
+ 	nop
+
+@@ -1516,7 +1515,7 @@ naitlb_miss_11:
+
+ 	mtsp		t1, %sr1	/* Restore sr1 */
+
+-	tlb_unlock1	spc,t0
++	tlb_unlock1	spc,t0,t1
+ 	rfir
+ 	nop
+
+@@ -1546,7 +1545,7 @@ itlb_miss_20:
+
+ 	iitlbt          pte,prot
+
+-	tlb_unlock1	spc,t0
++	tlb_unlock1	spc,t0,t1
+ 	rfir
+ 	nop
+
+@@ -1566,7 +1565,7 @@ naitlb_miss_20:
+
+ 	iitlbt          pte,prot
+
+-	tlb_unlock1	spc,t0
++	tlb_unlock1	spc,t0,t1
+ 	rfir
+ 	nop
+
+@@ -1596,7 +1595,7 @@ dbit_trap_20w:
+ 		
+ 	idtlbt          pte,prot
+
+-	tlb_unlock0	spc,t0
++	tlb_unlock0	spc,t0,t1
+ 	rfir
+ 	nop
+ #else
+@@ -1622,7 +1621,7 @@ dbit_trap_11:
+
+ 	mtsp            t1, %sr1     /* Restore sr1 */
+
+-	tlb_unlock0	spc,t0
++	tlb_unlock0	spc,t0,t1
+ 	rfir
+ 	nop
+
+@@ -1642,7 +1641,7 @@ dbit_trap_20:
+ 	
+ 	idtlbt		pte,prot
+
+-	tlb_unlock0	spc,t0
++	tlb_unlock0	spc,t0,t1
+ 	rfir
+ 	nop
+ #endif
+diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+index 4f77bd9be66b..e2b4c8d81275 100644
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -640,7 +640,9 @@ cas_action:
+ 	sub,<>	%r28, %r25, %r0
+ 2:	stw	%r24, 0(%r26)
+ 	/* Free lock */
+-	sync
++#ifdef CONFIG_SMP
++	LDCW	0(%sr2,%r20), %r1			/* Barrier */
++#endif
+ 	stw	%r20, 0(%sr2,%r20)
+ #if ENABLE_LWS_DEBUG
+ 	/* Clear thread register indicator */
+@@ -655,7 +657,9 @@ cas_action:
+ 3:		
+ 	/* Error occurred on load or store */
+ 	/* Free lock */
+-	sync
++#ifdef CONFIG_SMP
++	LDCW	0(%sr2,%r20), %r1			/* Barrier */
++#endif
+ 	stw	%r20, 0(%sr2,%r20)
+ #if ENABLE_LWS_DEBUG
+ 	stw	%r0, 4(%sr2,%r20)
+@@ -857,7 +861,9 @@ cas2_action:
+
+ cas2_end:
+ 	/* Free lock */
+-	sync
++#ifdef CONFIG_SMP
++	LDCW	0(%sr2,%r20), %r1			/* Barrier */
++#endif
+ 	stw	%r20, 0(%sr2,%r20)
+ 	/* Enable interrupts */
+ 	ssm	PSW_SM_I, %r0
+@@ -868,7 +874,9 @@ cas2_end:
+ 22:
+ 	/* Error occurred on load or store */
+ 	/* Free lock */
+-	sync
++#ifdef CONFIG_SMP
++	LDCW	0(%sr2,%r20), %r1			/* Barrier */
++#endif
+ 	stw	%r20, 0(%sr2,%r20)
+ 	ssm	PSW_SM_I, %r0
+ 	ldo	1(%r0),%r28
+
+
 
