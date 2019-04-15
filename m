@@ -2,321 +2,134 @@ Return-Path: <SRS0=h12M=SR=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E087CC10F0E
-	for <linux-parisc@archiver.kernel.org>; Mon, 15 Apr 2019 14:31:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 456DBC10F0E
+	for <linux-parisc@archiver.kernel.org>; Mon, 15 Apr 2019 15:54:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A74CE2075B
-	for <linux-parisc@archiver.kernel.org>; Mon, 15 Apr 2019 14:31:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0035920825
+	for <linux-parisc@archiver.kernel.org>; Mon, 15 Apr 2019 15:54:52 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="RmYJg5Zc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbfDOOb2 (ORCPT
+        id S1727129AbfDOPyw (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 15 Apr 2019 10:31:28 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:53183 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbfDOOb1 (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 15 Apr 2019 10:31:27 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MwQw1-1gxXll3SxZ-00sPrc; Mon, 15 Apr 2019 16:30:17 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     linux-arch@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Michal Simek <monstr@monstr.eu>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paul.burton@mips.com>,
-        James Hogan <jhogan@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Firoz Khan <firoz.khan@linaro.org>,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org
-Subject: [PATCH] [v2] arch: add pidfd and io_uring syscalls everywhere
-Date:   Mon, 15 Apr 2019 16:22:57 +0200
-Message-Id: <20190415143007.2989285-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.20.0
+        Mon, 15 Apr 2019 11:54:52 -0400
+Received: from mout.gmx.net ([212.227.17.21]:48903 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725972AbfDOPyw (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 15 Apr 2019 11:54:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1555343683;
+        bh=rxruGYfHp3JrvL0BPq1X/9iiESe2Kaaou4uj79HAT9I=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=RmYJg5ZcwuBLoyNagM0R+/lYH6cAg/8aiFhJMJzf/DyAeFPFUU/v1+UnI9EVlIiby
+         OGvrGqnA+SFcqpHTbv6fG5OHDAZNZ1KtRhOqhROwfnqmqMAX5n7LkPxw5Nqf9jw9cx
+         M1u1oVPzDne6EOTQL9RwEOlnMJRueXv17zEQOGlU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.189.244]) by mail.gmx.com (mrgmx101
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 0MZ8fw-1hYpFX08bs-00KyiZ; Mon, 15
+ Apr 2019 17:54:43 +0200
+Subject: Re: [PATCH] parisc: Use ldcw instruction for SMP spinlock release
+ barrier
+To:     John David Anglin <dave.anglin@bell.net>,
+        linux-parisc <linux-parisc@vger.kernel.org>
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>
+References: <a12f7c71-553c-1e4d-d986-8a966f6e83dc@bell.net>
+ <059fe85b-468c-06b4-fb07-dbcbf2d222c9@gmx.de>
+ <ad7a78c7-ef33-7510-577a-731ceabd5561@bell.net>
+From:   Helge Deller <deller@gmx.de>
+Openpgp: preference=signencrypt
+Autocrypt: addr=deller@gmx.de; keydata=
+ xsBNBFDPIPYBCAC6PdtagIE06GASPWQJtfXiIzvpBaaNbAGgmd3Iv7x+3g039EV7/zJ1do/a
+ y9jNEDn29j0/jyd0A9zMzWEmNO4JRwkMd5Z0h6APvlm2D8XhI94r/8stwroXOQ8yBpBcP0yX
+ +sqRm2UXgoYWL0KEGbL4XwzpDCCapt+kmarND12oFj30M1xhTjuFe0hkhyNHkLe8g6MC0xNg
+ KW3x7B74Rk829TTAtj03KP7oA+dqsp5hPlt/hZO0Lr0kSAxf3kxtaNA7+Z0LLiBqZ1nUerBh
+ OdiCasCF82vQ4/y8rUaKotXqdhGwD76YZry9AQ9p6ccqKaYEzWis078Wsj7p0UtHoYDbABEB
+ AAHNHEhlbGdlIERlbGxlciA8ZGVsbGVyQGdteC5kZT7CwJIEEwECADwCGwMGCwkIBwMCBhUI
+ AgkKCwQWAgMBAh4BAheAFiEE9M/0wAvkPPtRU6Boh8nBUbUeOGQFAlrHzIICGQEACgkQh8nB
+ UbUeOGT1GAgAt+EeoHB4DbAx+pZoGbBYp6ZY8L6211n8fSi7wiwgM5VppucJ+C+wILoPkqiU
+ +ZHKlcWRbttER2oBUvKOt0+yDfAGcoZwHS0P+iO3HtxR81h3bosOCwek+TofDXl+TH/WSQJa
+ iaitof6iiPZLygzUmmW+aLSSeIAHBunpBetRpFiep1e5zujCglKagsW78Pq0DnzbWugGe26A
+ 288JcK2W939bT1lZc22D9NhXXRHfX2QdDdrCQY7UsI6g/dAm1d2ldeFlGleqPMdaaQMcv5+E
+ vDOur20qjTlenjnR/TFm9tA1zV+K7ePh+JfwKc6BSbELK4EHv8J8WQJjfTphakYLVM7ATQRQ
+ zyD2AQgA2SJJapaLvCKdz83MHiTMbyk8yj2AHsuuXdmB30LzEQXjT3JEqj1mpvcEjXrX1B3h
+ +0nLUHPI2Q4XWRazrzsseNMGYqfVIhLsK6zT3URPkEAp7R1JxoSiLoh4qOBdJH6AJHex4CWu
+ UaSXX5HLqxKl1sq1tO8rq2+hFxY63zbWINvgT0FUEME27Uik9A5t8l9/dmF0CdxKdmrOvGMw
+ T770cTt76xUryzM3fAyjtOEVEglkFtVQNM/BN/dnq4jDE5fikLLs8eaJwsWG9k9wQUMtmLpL
+ gRXeFPRRK+IT48xuG8rK0g2NOD8aW5ThTkF4apznZe74M7OWr/VbuZbYW443QQARAQABwsBf
+ BBgBAgAJBQJQzyD2AhsMAAoJEIfJwVG1HjhkNTgH/idWz2WjLE8DvTi7LvfybzvnXyx6rWUs
+ 91tXUdCzLuOtjqWVsqBtSaZynfhAjlbqRlrFZQ8i8jRyJY1IwqgvHP6PO9s+rIxKlfFQtqhl
+ kR1KUdhNGtiI90sTpi4aeXVsOyG3572KV3dKeFe47ALU6xE5ZL5U2LGhgQkbjr44I3EhPWc/
+ lJ/MgLOPkfIUgjRXt0ZcZEN6pAMPU95+u1N52hmqAOQZvyoyUOJFH1siBMAFRbhgWyv+YE2Y
+ ZkAyVDL2WxAedQgD/YCCJ+16yXlGYGNAKlvp07SimS6vBEIXk/3h5Vq4Hwgg0Z8+FRGtYZyD
+ KrhlU0uMP9QTB5WAUvxvGy8=
+Message-ID: <52ec4072-6535-8fcc-61e9-b17b36a92397@gmx.de>
+Date:   Mon, 15 Apr 2019 17:54:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:k5DDhad6u3M53Omk69z1Fxj87X5euYlbMbfOKnekmJE+r49YC4G
- kEvcv1R1zpSdPyqWUVMuXBZPQtS+MhzzB/u8+8fjaybLqmveznvw4PFyXn55w0fgiyeESuG
- MnIBL9zsYbTfDn87LSX0oSbhrZMWCa5NrQpjGBEetglwUWmaqQZcaOQnmQMdb7HS81JAD7t
- obJYdo14coUtDqDhhOCCA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2Zw0XpfPbUQ=:IVbW48zMIcaxVXddZgyR3Q
- shTd9ib/Spy5GvPM20A55tDJtNKxo6yP2Ah0B9Hh+Dfy6s8S8W6hTwYOQg1ixu3GefTm6bP1m
- 8t6E8UacTP0Mw5QvlEe+9DvKTZ4oh+dJpo4b1mLux/70kn2F9qgBRHZgXAkiKxL/WeuSrqMXy
- tXCFuPa8F2Ko1YjwVZHxb2R+imHIx3vXMhWq/XJRga2bGvgWRabOrl/DH9rqgExLreREqoBZH
- uziBkHLZDfRN69Fz/itX4IylIetVLHc3O/iJTq+tOc0tlw8syi66AZtQaMHx7KzwyNbTwq8MA
- a9zOzy/pjsFJzE8/7G+K0w/2L8V34Kbtvu//LxwZ2WU8JTuEqgp3TrJ/OblbGgPu5xc2BUsgX
- 1eSkOIpIvAnK2lNlYr+x86J0LvGV42cDMpjSnOodVLRFKmMpigvKrGIZbsiipdUiXW6ux/ZPA
- Gr8d2Z4bSKcacXZ5g+hOHFKeK36p3TtovyHLG6LDME8sO9KF1HtX/vedSDEl0sy3/Twi6uw8P
- sF49tw4Y/UlOYo2vU12bzfLieQgvjuhBdmPhnZfNi38jXL79ewhnQDbwtFhmX3UWeIRIo6LaW
- LcpGaQXV+xXlTcTdi0dqShlsEt3Fek60n3Z1Mb0GXav76m3poYBrrIOjnxGqCjiikXKF4XUvw
- giZ6P6Y2a+HQdl7DMqdRZCyWOmjakLLsLMIVrICyOQAba1qx7pSwmMhmfNSQolN1gzqiWi6y1
- ft7Nt8bIllfdyaw3GpkseYIX6ifPQPjxIOBnRw==
+In-Reply-To: <ad7a78c7-ef33-7510-577a-731ceabd5561@bell.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:i0LWZh7MVxIqsrllJyFs1SaRO+Ui69MQIvrcPX6hmvbAnhoYI/H
+ xHIXqNuKROsHOOSKlR6WAibqFDnYkl9oPQ4O8uHpg6j53/K6niM1UfO2V9ncpcKYuDIKzsj
+ xOZwR1SxaHsNG1SKlo8tZJglsMw3UpyDCn07z2QTtYPchoe4m1SkC35iFaEGs0mnCfMtUCE
+ 2Ii/Jg5SxAYt1QgdqOCxg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VPFRu5BinFM=:hUEUUOJbJMLXbXln+l7Ajv
+ AxLYN9s+tFxudlo1tGEQAR6LrGsx432bmQk9lOrWlyCFIibwFS5JTqHMlpKdzYxdcWtOcCwkn
+ kv4y1Y7IKtPtZQVP/Cg286oIPuGZScnwuiQV53F3Nsm1yjsSanRsaitDlR7qtW9C56LJPp4Ec
+ z0BOyART4sGptVTzrQyvRFXnSiLmSv/xPA6r+fzDYQNn+6V7aytzHBrcyCyDjMxR4UFD3EkJc
+ DGGjq6kEKmidJPdMCn/fGxou3hLB6xM6KqzXnqaYxHEy7rHvdrltgqs11kW2nlsfmrwtKZWSZ
+ zDKVHnLLWfqNWh+ozMqZ2hQOOJqsUEEmZLyYTdsuA/lEdbEXzKabMoQjhiNE2i+L98dI87XkD
+ 7w72wY/u9hh37VCaw5WUM2LxZEiYSKEjhBb7McwUWY+oip6mOvvgHO0OsNOc4n0tQQ0z6x8ZH
+ /g4MQTs0yYy6JY7G51jimzM09QsHpkAUtTT45F/vaKOJAcexTdQEstMH7pkGdWD/qlD3547T3
+ uVsdsGOto96XjsZdM77KREhoacR6Hx84DhEDf72ePF59oYlbLKwJoETyeDDpbJAgsgtNkVQDx
+ U2sZk5CIgDulmGZ/KgmH4YJuXBdYKDaS1D7aORII9FZpbxDgA7bwVpxnLPgTrDOcskkFsuy8V
+ 8NZ5hnCsoskiVHRy1zNODB9VxIjx861znNCuOlOddloc8LiA/kkWsik5ersGf8rQNeUOCoc7G
+ f7tmaeMDnvhvs4ofwmB1Fd5+YXVEs7F2M5KyOHxQloPDxyn3PAa8HXcQx0O3XbIGEuYMm+A6x
+ 5IE7E7kZdxvt/+d7aOZEfTS08WtPseuj/j2yWkDqDgumH+3ESHJym756NBsLbsyKXFxnIgqir
+ J3t1nhUADIS6j7Tv2SP2+xHEibZx+P8rPmHkeAlqVOa4DWdz6e/QRr5dIH7Ocs
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Add the io_uring and pidfd_send_signal system calls to all architectures.
+On 15.04.19 15:44, John David Anglin wrote:
+> On 2019-04-15 8:43 a.m., Helge Deller wrote:
+>> On 15.04.19 01:20, John David Anglin wrote:
+>>> There are only a couple of instructions that can function as a memory barrier on
+>>> parisc.  Currently, we use the sync instruction as a memory barrier when releasing
+>>> a spinlock.  However, the ldcw instruction is a better barrier when we have a
+>>> handy memory location since it operates in the cache on coherent machines.
+>>>
+>>> This patch updates the spinlock release code to use ldcw.
+>> Just out of curiosity: Did you maye do any timing with that patch?
+> No, but I think it made 800 MHz rp3440 nearly as fast as 1 GHz c8000 based on buildd times.
+>>
+>> Secondly:
+>>
+>>>  	/* Release pa_tlb_lock lock without reloading lock address. */
+>>> -	.macro		tlb_unlock0	spc,tmp
+>>> +	.macro		tlb_unlock0	spc,tmp,tmp1
+>> Above you add the tmp1 variable...
+>>
+>>>  #ifdef CONFIG_SMP
+>>>  98:	or,COND(=)	%r0,\spc,%r0
+>>> -	stw,ma		\spc,0(\tmp)
+>>> +	LDCW		0(\tmp),\tmp1
+>> couldn't instead %r0 be used as register target in all ldcw()
+>> accesses you added as barriers?
+>> Or would the processor "optimize" the access away (which I doubt)?
 
-These system calls are designed to handle both native and compat tasks,
-so all entries are the same across architectures, only arm-compat and
-the generic tale still use an old format.
+> No.  See page 6-12 in PA 2.0 architecture manual.  I had wondered
+> about it when I wrote the code.
+Ah, Ok!
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
-Acked-by: Heiko Carstens <heiko.carstens@de.ibm.com> (s390)
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-Changes since v1:
-- fix s390 table
-- use 'n64' tag in mips-n64 instead of common.
----
- arch/alpha/kernel/syscalls/syscall.tbl      | 4 ++++
- arch/arm/tools/syscall.tbl                  | 4 ++++
- arch/arm64/include/asm/unistd.h             | 2 +-
- arch/arm64/include/asm/unistd32.h           | 8 ++++++++
- arch/ia64/kernel/syscalls/syscall.tbl       | 4 ++++
- arch/m68k/kernel/syscalls/syscall.tbl       | 4 ++++
- arch/microblaze/kernel/syscalls/syscall.tbl | 4 ++++
- arch/mips/kernel/syscalls/syscall_n32.tbl   | 4 ++++
- arch/mips/kernel/syscalls/syscall_n64.tbl   | 4 ++++
- arch/mips/kernel/syscalls/syscall_o32.tbl   | 4 ++++
- arch/parisc/kernel/syscalls/syscall.tbl     | 4 ++++
- arch/powerpc/kernel/syscalls/syscall.tbl    | 4 ++++
- arch/s390/kernel/syscalls/syscall.tbl       | 4 ++++
- arch/sh/kernel/syscalls/syscall.tbl         | 4 ++++
- arch/sparc/kernel/syscalls/syscall.tbl      | 4 ++++
- arch/xtensa/kernel/syscalls/syscall.tbl     | 4 ++++
- 16 files changed, 65 insertions(+), 1 deletion(-)
+I've applied it to the for-next tree.
+Thanks!
 
-diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
-index 63ed39cbd3bd..165f268beafc 100644
---- a/arch/alpha/kernel/syscalls/syscall.tbl
-+++ b/arch/alpha/kernel/syscalls/syscall.tbl
-@@ -463,3 +463,7 @@
- 532	common	getppid				sys_getppid
- # all other architectures have common numbers for new syscall, alpha
- # is the exception.
-+534	common	pidfd_send_signal		sys_pidfd_send_signal
-+535	common	io_uring_setup			sys_io_uring_setup
-+536	common	io_uring_enter			sys_io_uring_enter
-+537	common	io_uring_register		sys_io_uring_register
-diff --git a/arch/arm/tools/syscall.tbl b/arch/arm/tools/syscall.tbl
-index 9016f4081bb9..0393917eaa57 100644
---- a/arch/arm/tools/syscall.tbl
-+++ b/arch/arm/tools/syscall.tbl
-@@ -437,3 +437,7 @@
- 421	common	rt_sigtimedwait_time64		sys_rt_sigtimedwait
- 422	common	futex_time64			sys_futex
- 423	common	sched_rr_get_interval_time64	sys_sched_rr_get_interval
-+424	common	pidfd_send_signal		sys_pidfd_send_signal
-+425	common	io_uring_setup			sys_io_uring_setup
-+426	common	io_uring_enter			sys_io_uring_enter
-+427	common	io_uring_register		sys_io_uring_register
-diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
-index 310d8f1cae7a..c6946fe640e6 100644
---- a/arch/arm64/include/asm/unistd.h
-+++ b/arch/arm64/include/asm/unistd.h
-@@ -49,7 +49,7 @@
- #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
- #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
- 
--#define __NR_compat_syscalls		424
-+#define __NR_compat_syscalls		428
- #endif
- 
- #define __ARCH_WANT_SYS_CLONE
-diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
-index 5590f2623690..23f1a44acada 100644
---- a/arch/arm64/include/asm/unistd32.h
-+++ b/arch/arm64/include/asm/unistd32.h
-@@ -866,6 +866,14 @@ __SYSCALL(__NR_rt_sigtimedwait_time64, compat_sys_rt_sigtimedwait_time64)
- __SYSCALL(__NR_futex_time64, sys_futex)
- #define __NR_sched_rr_get_interval_time64 423
- __SYSCALL(__NR_sched_rr_get_interval_time64, sys_sched_rr_get_interval)
-+#define __NR_pidfd_send_signal 424
-+__SYSCALL(__NR_pidfd_send_signal, sys_pidfd_send_signal)
-+#define __NR_io_uring_setup 425
-+__SYSCALL(__NR_io_uring_setup, sys_io_uring_setup)
-+#define __NR_io_uring_enter 426
-+__SYSCALL(__NR_io_uring_enter, sys_io_uring_enter)
-+#define __NR_io_uring_register 427
-+__SYSCALL(__NR_io_uring_register, sys_io_uring_register)
- 
- /*
-  * Please add new compat syscalls above this comment and update
-diff --git a/arch/ia64/kernel/syscalls/syscall.tbl b/arch/ia64/kernel/syscalls/syscall.tbl
-index ab9cda5f6136..56e3d0b685e1 100644
---- a/arch/ia64/kernel/syscalls/syscall.tbl
-+++ b/arch/ia64/kernel/syscalls/syscall.tbl
-@@ -344,3 +344,7 @@
- 332	common	pkey_free			sys_pkey_free
- 333	common	rseq				sys_rseq
- # 334 through 423 are reserved to sync up with other architectures
-+424	common	pidfd_send_signal		sys_pidfd_send_signal
-+425	common	io_uring_setup			sys_io_uring_setup
-+426	common	io_uring_enter			sys_io_uring_enter
-+427	common	io_uring_register		sys_io_uring_register
-diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
-index 125c14178979..df4ec3ec71d1 100644
---- a/arch/m68k/kernel/syscalls/syscall.tbl
-+++ b/arch/m68k/kernel/syscalls/syscall.tbl
-@@ -423,3 +423,7 @@
- 421	common	rt_sigtimedwait_time64		sys_rt_sigtimedwait
- 422	common	futex_time64			sys_futex
- 423	common	sched_rr_get_interval_time64	sys_sched_rr_get_interval
-+424	common	pidfd_send_signal		sys_pidfd_send_signal
-+425	common	io_uring_setup			sys_io_uring_setup
-+426	common	io_uring_enter			sys_io_uring_enter
-+427	common	io_uring_register		sys_io_uring_register
-diff --git a/arch/microblaze/kernel/syscalls/syscall.tbl b/arch/microblaze/kernel/syscalls/syscall.tbl
-index 8ee3a8c18498..4964947732af 100644
---- a/arch/microblaze/kernel/syscalls/syscall.tbl
-+++ b/arch/microblaze/kernel/syscalls/syscall.tbl
-@@ -429,3 +429,7 @@
- 421	common	rt_sigtimedwait_time64		sys_rt_sigtimedwait
- 422	common	futex_time64			sys_futex
- 423	common	sched_rr_get_interval_time64	sys_sched_rr_get_interval
-+424	common	pidfd_send_signal		sys_pidfd_send_signal
-+425	common	io_uring_setup			sys_io_uring_setup
-+426	common	io_uring_enter			sys_io_uring_enter
-+427	common	io_uring_register		sys_io_uring_register
-diff --git a/arch/mips/kernel/syscalls/syscall_n32.tbl b/arch/mips/kernel/syscalls/syscall_n32.tbl
-index 15f4117900ee..9392dfe33f97 100644
---- a/arch/mips/kernel/syscalls/syscall_n32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
-@@ -362,3 +362,7 @@
- 421	n32	rt_sigtimedwait_time64		compat_sys_rt_sigtimedwait_time64
- 422	n32	futex_time64			sys_futex
- 423	n32	sched_rr_get_interval_time64	sys_sched_rr_get_interval
-+424	n32	pidfd_send_signal		sys_pidfd_send_signal
-+425	n32	io_uring_setup			sys_io_uring_setup
-+426	n32	io_uring_enter			sys_io_uring_enter
-+427	n32	io_uring_register		sys_io_uring_register
-diff --git a/arch/mips/kernel/syscalls/syscall_n64.tbl b/arch/mips/kernel/syscalls/syscall_n64.tbl
-index c85502e67b44..cd0c8aa21fba 100644
---- a/arch/mips/kernel/syscalls/syscall_n64.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
-@@ -338,3 +338,7 @@
- 327	n64	rseq				sys_rseq
- 328	n64	io_pgetevents			sys_io_pgetevents
- # 329 through 423 are reserved to sync up with other architectures
-+424	n64	pidfd_send_signal		sys_pidfd_send_signal
-+425	n64	io_uring_setup			sys_io_uring_setup
-+426	n64	io_uring_enter			sys_io_uring_enter
-+427	n64	io_uring_register		sys_io_uring_register
-diff --git a/arch/mips/kernel/syscalls/syscall_o32.tbl b/arch/mips/kernel/syscalls/syscall_o32.tbl
-index 2e063d0f837e..e849e8ffe4a2 100644
---- a/arch/mips/kernel/syscalls/syscall_o32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
-@@ -411,3 +411,7 @@
- 421	o32	rt_sigtimedwait_time64		sys_rt_sigtimedwait		compat_sys_rt_sigtimedwait_time64
- 422	o32	futex_time64			sys_futex			sys_futex
- 423	o32	sched_rr_get_interval_time64	sys_sched_rr_get_interval	sys_sched_rr_get_interval
-+424	o32	pidfd_send_signal		sys_pidfd_send_signal
-+425	o32	io_uring_setup			sys_io_uring_setup
-+426	o32	io_uring_enter			sys_io_uring_enter
-+427	o32	io_uring_register		sys_io_uring_register
-diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
-index b26766c6647d..fe8ca623add8 100644
---- a/arch/parisc/kernel/syscalls/syscall.tbl
-+++ b/arch/parisc/kernel/syscalls/syscall.tbl
-@@ -420,3 +420,7 @@
- 421	32	rt_sigtimedwait_time64		sys_rt_sigtimedwait		compat_sys_rt_sigtimedwait_time64
- 422	32	futex_time64			sys_futex			sys_futex
- 423	32	sched_rr_get_interval_time64	sys_sched_rr_get_interval	sys_sched_rr_get_interval
-+424	common	pidfd_send_signal		sys_pidfd_send_signal
-+425	common	io_uring_setup			sys_io_uring_setup
-+426	common	io_uring_enter			sys_io_uring_enter
-+427	common	io_uring_register		sys_io_uring_register
-diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
-index b18abb0c3dae..00f5a63c8d9a 100644
---- a/arch/powerpc/kernel/syscalls/syscall.tbl
-+++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-@@ -505,3 +505,7 @@
- 421	32	rt_sigtimedwait_time64		sys_rt_sigtimedwait		compat_sys_rt_sigtimedwait_time64
- 422	32	futex_time64			sys_futex			sys_futex
- 423	32	sched_rr_get_interval_time64	sys_sched_rr_get_interval	sys_sched_rr_get_interval
-+424	common	pidfd_send_signal		sys_pidfd_send_signal
-+425	common	io_uring_setup			sys_io_uring_setup
-+426	common	io_uring_enter			sys_io_uring_enter
-+427	common	io_uring_register		sys_io_uring_register
-diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
-index 02579f95f391..061418f787c3 100644
---- a/arch/s390/kernel/syscalls/syscall.tbl
-+++ b/arch/s390/kernel/syscalls/syscall.tbl
-@@ -426,3 +426,7 @@
- 421	32	rt_sigtimedwait_time64	-				compat_sys_rt_sigtimedwait_time64
- 422	32	futex_time64		-				sys_futex
- 423	32	sched_rr_get_interval_time64	-			sys_sched_rr_get_interval
-+424  common	pidfd_send_signal	sys_pidfd_send_signal		sys_pidfd_send_signal
-+425  common	io_uring_setup		sys_io_uring_setup              sys_io_uring_setup
-+426  common	io_uring_enter		sys_io_uring_enter              sys_io_uring_enter
-+427  common	io_uring_register	sys_io_uring_register           sys_io_uring_register
-diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
-index bfda678576e4..480b057556ee 100644
---- a/arch/sh/kernel/syscalls/syscall.tbl
-+++ b/arch/sh/kernel/syscalls/syscall.tbl
-@@ -426,3 +426,7 @@
- 421	common	rt_sigtimedwait_time64		sys_rt_sigtimedwait
- 422	common	futex_time64			sys_futex
- 423	common	sched_rr_get_interval_time64	sys_sched_rr_get_interval
-+424	common	pidfd_send_signal		sys_pidfd_send_signal
-+425	common	io_uring_setup			sys_io_uring_setup
-+426	common	io_uring_enter			sys_io_uring_enter
-+427	common	io_uring_register		sys_io_uring_register
-diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
-index b9a5a04b2d2c..a1dd24307b00 100644
---- a/arch/sparc/kernel/syscalls/syscall.tbl
-+++ b/arch/sparc/kernel/syscalls/syscall.tbl
-@@ -469,3 +469,7 @@
- 421	32	rt_sigtimedwait_time64		sys_rt_sigtimedwait		compat_sys_rt_sigtimedwait_time64
- 422	32	futex_time64			sys_futex			sys_futex
- 423	32	sched_rr_get_interval_time64	sys_sched_rr_get_interval	sys_sched_rr_get_interval
-+424	common	pidfd_send_signal		sys_pidfd_send_signal
-+425	common	io_uring_setup			sys_io_uring_setup
-+426	common	io_uring_enter			sys_io_uring_enter
-+427	common	io_uring_register		sys_io_uring_register
-diff --git a/arch/xtensa/kernel/syscalls/syscall.tbl b/arch/xtensa/kernel/syscalls/syscall.tbl
-index 6af49929de85..30084eaf8422 100644
---- a/arch/xtensa/kernel/syscalls/syscall.tbl
-+++ b/arch/xtensa/kernel/syscalls/syscall.tbl
-@@ -394,3 +394,7 @@
- 421	common	rt_sigtimedwait_time64		sys_rt_sigtimedwait
- 422	common	futex_time64			sys_futex
- 423	common	sched_rr_get_interval_time64	sys_sched_rr_get_interval
-+424	common	pidfd_send_signal		sys_pidfd_send_signal
-+425	common	io_uring_setup			sys_io_uring_setup
-+426	common	io_uring_enter			sys_io_uring_enter
-+427	common	io_uring_register		sys_io_uring_register
--- 
-2.20.0
-
+Helge
