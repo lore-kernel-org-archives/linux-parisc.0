@@ -1,96 +1,110 @@
-Return-Path: <SRS0=h12M=SR=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=tadI=SS=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAB15C10F0E
-	for <linux-parisc@archiver.kernel.org>; Mon, 15 Apr 2019 23:44:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C7C3C10F13
+	for <linux-parisc@archiver.kernel.org>; Tue, 16 Apr 2019 11:41:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A231420675
-	for <linux-parisc@archiver.kernel.org>; Mon, 15 Apr 2019 23:44:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 384E72077C
+	for <linux-parisc@archiver.kernel.org>; Tue, 16 Apr 2019 11:41:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbfDOXod (ORCPT
+        id S1729231AbfDPLlN (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 15 Apr 2019 19:44:33 -0400
-Received: from vmicros1.altlinux.org ([194.107.17.57]:38648 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727214AbfDOXod (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 15 Apr 2019 19:44:33 -0400
-Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id 00B4A72CC61;
-        Tue, 16 Apr 2019 02:44:31 +0300 (MSK)
-Received: by mua.local.altlinux.org (Postfix, from userid 508)
-        id E3FCD7CC6FF; Tue, 16 Apr 2019 02:44:30 +0300 (MSK)
-Date:   Tue, 16 Apr 2019 02:44:30 +0300
-From:   "Dmitry V. Levin" <ldv@altlinux.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <jejb@parisc-linux.org>,
-        Elvira Khabirova <lineprinter@altlinux.org>,
-        Eugene Syromyatnikov <esyr@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH linux-next v10 4/7] parisc: define syscall_get_error()
-Message-ID: <20190415234430.GD9384@altlinux.org>
-References: <20190415234307.GA9364@altlinux.org>
+        Tue, 16 Apr 2019 07:41:13 -0400
+Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:52938 "EHLO
+        foss.arm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726905AbfDPLlN (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 16 Apr 2019 07:41:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3AC77EBD;
+        Tue, 16 Apr 2019 04:41:12 -0700 (PDT)
+Received: from arrakis.emea.arm.com (arrakis.cambridge.arm.com [10.1.196.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7FF603F68F;
+        Tue, 16 Apr 2019 04:41:06 -0700 (PDT)
+Date:   Tue, 16 Apr 2019 12:41:04 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-arch@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will.deacon@arm.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Michal Simek <monstr@monstr.eu>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@mips.com>,
+        James Hogan <jhogan@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Firoz Khan <firoz.khan@linaro.org>,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Subject: Re: [PATCH] [v2] arch: add pidfd and io_uring syscalls everywhere
+Message-ID: <20190416114103.GB28994@arrakis.emea.arm.com>
+References: <20190415143007.2989285-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190415234307.GA9364@altlinux.org>
+In-Reply-To: <20190415143007.2989285-1-arnd@arndb.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-syscall_get_error() is required to be implemented on all
-architectures in addition to already implemented syscall_get_nr(),
-syscall_get_arguments(), syscall_get_return_value(), and
-syscall_get_arch() functions in order to extend the generic
-ptrace API with PTRACE_GET_SYSCALL_INFO request.
+On Mon, Apr 15, 2019 at 04:22:57PM +0200, Arnd Bergmann wrote:
+> Add the io_uring and pidfd_send_signal system calls to all architectures.
+> 
+> These system calls are designed to handle both native and compat tasks,
+> so all entries are the same across architectures, only arm-compat and
+> the generic tale still use an old format.
+> 
+> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+> Acked-by: Heiko Carstens <heiko.carstens@de.ibm.com> (s390)
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> Changes since v1:
+> - fix s390 table
+> - use 'n64' tag in mips-n64 instead of common.
+> ---
+>  arch/alpha/kernel/syscalls/syscall.tbl      | 4 ++++
+>  arch/arm/tools/syscall.tbl                  | 4 ++++
+>  arch/arm64/include/asm/unistd.h             | 2 +-
+>  arch/arm64/include/asm/unistd32.h           | 8 ++++++++
+>  arch/ia64/kernel/syscalls/syscall.tbl       | 4 ++++
+>  arch/m68k/kernel/syscalls/syscall.tbl       | 4 ++++
+>  arch/microblaze/kernel/syscalls/syscall.tbl | 4 ++++
+>  arch/mips/kernel/syscalls/syscall_n32.tbl   | 4 ++++
+>  arch/mips/kernel/syscalls/syscall_n64.tbl   | 4 ++++
+>  arch/mips/kernel/syscalls/syscall_o32.tbl   | 4 ++++
+>  arch/parisc/kernel/syscalls/syscall.tbl     | 4 ++++
+>  arch/powerpc/kernel/syscalls/syscall.tbl    | 4 ++++
+>  arch/s390/kernel/syscalls/syscall.tbl       | 4 ++++
+>  arch/sh/kernel/syscalls/syscall.tbl         | 4 ++++
+>  arch/sparc/kernel/syscalls/syscall.tbl      | 4 ++++
+>  arch/xtensa/kernel/syscalls/syscall.tbl     | 4 ++++
+>  16 files changed, 65 insertions(+), 1 deletion(-)
 
-Acked-by: Helge Deller <deller@gmx.de> # parisc
-Cc: James E.J. Bottomley <jejb@parisc-linux.org>
-Cc: Elvira Khabirova <lineprinter@altlinux.org>
-Cc: Eugene Syromyatnikov <esyr@redhat.com>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: linux-parisc@vger.kernel.org
-Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
----
+For arm64:
 
-Notes:
-    v10: unchanged
-    v9: unchanged
-    v8: added Acked-by
-    v7: unchanged
-    v6: unchanged
-    v5: initial revision
-
- arch/parisc/include/asm/syscall.h | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/arch/parisc/include/asm/syscall.h b/arch/parisc/include/asm/syscall.h
-index 80757e43cf2c..00b127a5e09b 100644
---- a/arch/parisc/include/asm/syscall.h
-+++ b/arch/parisc/include/asm/syscall.h
-@@ -29,6 +29,13 @@ static inline void syscall_get_arguments(struct task_struct *tsk,
- 	args[0] = regs->gr[26];
- }
- 
-+static inline long syscall_get_error(struct task_struct *task,
-+				     struct pt_regs *regs)
-+{
-+	unsigned long error = regs->gr[28];
-+	return IS_ERR_VALUE(error) ? error : 0;
-+}
-+
- static inline long syscall_get_return_value(struct task_struct *task,
- 						struct pt_regs *regs)
- {
--- 
-ldv
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
