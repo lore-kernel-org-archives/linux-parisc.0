@@ -1,63 +1,67 @@
-Return-Path: <SRS0=tadI=SS=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=jXT6=ST=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE824C10F13
-	for <linux-parisc@archiver.kernel.org>; Tue, 16 Apr 2019 20:38:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFE46C282DC
+	for <linux-parisc@archiver.kernel.org>; Wed, 17 Apr 2019 20:56:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CB0D020821
-	for <linux-parisc@archiver.kernel.org>; Tue, 16 Apr 2019 20:38:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 98242217FA
+	for <linux-parisc@archiver.kernel.org>; Wed, 17 Apr 2019 20:56:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729393AbfDPUiW (ORCPT
+        id S2387561AbfDQUz2 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 16 Apr 2019 16:38:22 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:34213 "EHLO
+        Wed, 17 Apr 2019 16:55:28 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:45925 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727136AbfDPUiW (ORCPT
+        with ESMTP id S2387548AbfDQUz1 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 16 Apr 2019 16:38:22 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1N0nOF-1gtrD33xzx-00wlMo; Tue, 16 Apr 2019 22:37:37 +0200
+        Wed, 17 Apr 2019 16:55:27 -0400
+Received: from wuerfel.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1M3lkT-1hG2Mg2SF1-000wd2; Wed, 17 Apr 2019 22:54:45 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
+To:     netdev@vger.kernel.org
+Cc:     y2038@lists.linaro.org,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
         "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Helge Deller <deller@gmx.de>,
         "David S. Miller" <davem@davemloft.net>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Arnd Bergmann <arnd@arndb.de>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org
-Subject: [PATCH net-next 2/3] asm-generic: generalize asm/sockios.h
-Date:   Tue, 16 Apr 2019 22:32:49 +0200
-Message-Id: <20190416203620.539628-2-arnd@arndb.de>
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: [PATCH v3 2/3] asm-generic: generalize asm/sockios.h
+Date:   Wed, 17 Apr 2019 22:51:49 +0200
+Message-Id: <20190417205404.1877560-2-arnd@arndb.de>
 X-Mailer: git-send-email 2.20.0
-In-Reply-To: <20190416203620.539628-1-arnd@arndb.de>
-References: <20190416203620.539628-1-arnd@arndb.de>
+In-Reply-To: <20190417205404.1877560-1-arnd@arndb.de>
+References: <20190417205404.1877560-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:xkQvlCVeFcocDpA6GJ/DsjcZtCWIXeVY+jedgURaIidy1n6x1Kb
- BCAE2c/OSfq+6+LMaeMdLasPUB8BXpIiI4kJcPRn1psjavRjkQNWtoLHFHBquvN+A0tx5u7
- TSZBiCV/8sJDSXRpWq7wEwvhBdqcQKVD8mVjIeVeYCCbXmLJCToXe0hc+Af+dn8FCVyrwnr
- 41KEsBlq3Nw5UQWS7DZOQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3iqgD1Uyltk=:WCHkFy9q6gsfLPH0m+BbiN
- t/q/aOoKGcnKY99gsEtrbeZgrOPp0ab9lBVlK3EsCSzVNW969D3JvskrQ36TaSSyBOaJHiiJP
- ExgjiCTocbmlHlifIKdCGfUFliohx8fs2nBjf+/+yhtYCVX9ktuPHqg3leyPWULiK0dakEPGH
- Ghgz3NUvLIHYpF6MrdBy2hhVHxg8+8fEWlLFe6BWO6/kDAgVkcoFc3o7ul+6dNj9PZVyCYUZI
- NdHPeg6jLi+JkwkpR5w94Ufs0Hn05SeNhd3UujlkJNLo1tR2reA4hN3nOSxjxWcuhqeEcrM2S
- w5J71TD30FaWXsXVf0fpjXwgvjmMKNMKhbpjQK/YIQuZde0dvlu5v9KwWalh9t2TYXYGwtPue
- YawvYtgnEXQfQ2X6olFLPHTPTYVsGWDL61tQaS/aaPh4nPWsOtiQ1Kzo9PNfoSb/JReRqebuh
- OfdgAVW8Wx/kkSDARcc0LjmXJxZIPawxuIHDmUVWL6pi1cch4vN2y/Ee8kdxHsoxH2IuSRaaM
- zmWjmm8UHwvAEZbNzKcrg4+wCjE8T5CE/qH7im/5jtmmQcXQUHVWoeDtzS/29duTWKvyFG7wH
- lBK/NyjsfRcD7JJ5czYNpbnyao+Ccz987DButlaqs5ymuy6MNHsoibsGu6+AjgKi17pGYby7/
- 4aPCkxgKYW7ybsa1dajubIGLO5pPV1Gnen7CvkdokmZE7aGF57m+ARMLCzPUBMuLmsW6e25Xw
- ZNrAMimAYwcq9Lz+ljDHDNVq5AO4VMIZi8GQaA==
+X-Provags-ID: V03:K1:FOfgVjHtBZ0OW8C3V0LXa7wLWJZ1CEMCBFodtLv5+jGoOIvtmOO
+ 7Zk231Di7aj03uQiKQq0hrnXKaNTIQSryIk2qwUaugxCw/8DWEUiSN0b5l262JHeax7PWEl
+ 2Y6w7jKYvUoTJtSBvV44dWezbbKht+hT9J89mml5w7iV3BjhQ73rMaFWWWrvxUMEX/ZUkb8
+ N9AA90zeyjE1PbHqG5rtw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:k063E2GsEco=:4hVEv7dmqHHw0nvomJ3WWl
+ IM28bbcnMcYNqTyRRBbGidTTZC3+84JbwDV8vlrlz07ri4hDVZI3QqcPBYbz+8Id/Gu6mZGQc
+ S861YuZpM95FOi1DXN7OngEd4KP9ZuTIQEiExZFUsY1w0+jaDqho7EmDyPIMwlfmh9Fh06JPq
+ uCCoWcaompQtiTBlHzuhx8Wj7ULlQKlJwWi+eshk8nuoRoAM8jY9ABgf+ERuV05vxJO8sdalg
+ oQp+eAyq+WmdiWKpuVkzMWTs7YeyPCzyv5NEgT/9W6qrwdVJWEEQxHy4Qshr7xPiu20iG58bW
+ DSUpkbV0LYaGvJaj1pjL8PfeVgBvnrGvV6LBpeBirZ6oLNwS2cSxUowx+qJzU4NLLD7NTYSSS
+ x/caJnvJDNNq2wnslZVYVWNTp6H+9p86/B9125Ivyi3Vss8RUnY2xkexYS6oRuGU/6lcbR8fY
+ fnJpvHchjG8rh/eRoE0Cu9ifkfcxjbuR7CnVggjkKx9N73BYvyGeAdsDrSESKFqa04b4jBf/G
+ Arn/JgIUN+LJfjCcLOF3eNokirNrHAiKPTRyR9H5/t9ZiiqCfpuTrr7lCbVzGy8s6Dcj699jx
+ Imm89Y0VPgUNkGyrU3QAXFvJJ8qOZyGUxhhqRIGiRBYdmri5OpNteR+mE6QQ+60S+M3AsiGjA
+ WlqudfgzixxtHY9T4y+2zD5U4zf9Lul86qFFiJ2tUSfEZyvn+bSfhvuI4vpGwYM/mWhoUIM6U
+ zopSyg2gGU7ywt06aWFeQ41NrrzckovfRLQx0A==
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
@@ -68,6 +72,8 @@ of asm/sockios.h, and x86 is a redirect to the same file, so we
 can just let the header file be generated.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v3: no changes since v1
 ---
  arch/ia64/include/uapi/asm/sockios.h   | 21 ---------------------
  arch/parisc/include/uapi/asm/sockios.h | 14 --------------
