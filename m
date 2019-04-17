@@ -7,41 +7,42 @@ X-Spam-Status: No, score=-8.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FA4FC282DA
-	for <linux-parisc@archiver.kernel.org>; Wed, 17 Apr 2019 20:59:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC80DC282DA
+	for <linux-parisc@archiver.kernel.org>; Wed, 17 Apr 2019 21:01:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CEE4E20693
-	for <linux-parisc@archiver.kernel.org>; Wed, 17 Apr 2019 20:59:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8BE022183E
+	for <linux-parisc@archiver.kernel.org>; Wed, 17 Apr 2019 21:01:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="WmIIC8IY"
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="NwjUuTp1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729331AbfDQU7J (ORCPT
+        id S1728362AbfDQVBW (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 17 Apr 2019 16:59:09 -0400
-Received: from mout.gmx.net ([212.227.17.22]:36375 "EHLO mout.gmx.net"
+        Wed, 17 Apr 2019 17:01:22 -0400
+Received: from mout.gmx.net ([212.227.17.20]:41155 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727013AbfDQU7J (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 17 Apr 2019 16:59:09 -0400
+        id S1728074AbfDQVBW (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 17 Apr 2019 17:01:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1555534739;
-        bh=kiDoPBYyWqczFmljzxKMH8bNieMf27gxdFpXXQtv8yM=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=WmIIC8IY875+rq8AltDgqSK8l40Bywu5ixC85O/REOTNwB/dkKnE1519asBLA/twg
-         pusSLnzPjsrZ/G8WCkewzrEaPh1lt0GJ8r+2BhWLC33WbOGcnHKCqqgDottMsrVR/D
-         RtuPtVNBKcWqwXuuqhWP0q07pfPPpKicMFnJIvYs=
+        s=badeba3b8450; t=1555534875;
+        bh=kgn36woc8sTZtH0vBu1HSQZkgf762Xd45KZ57uU096A=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:References:Date:In-Reply-To;
+        b=NwjUuTp1sorSJe9z1OAsYn8dPEFeeNz9Mqf3sBLBAMZH81EdZSZZrwk5zTN6gIPLQ
+         iL+xcoKq3te63bRoa7lmSp8ck1cTsQmyQg1QBtWCW4HRWQxiWeWdgIgpiD3a+c9vYp
+         2O4Ze+k3vsCKhVKCbNf0qhebEiA8jcyrO5nbYesE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.169.10]) by mail.gmx.com (mrgmx103
- [212.227.17.168]) with ESMTPSA (Nemesis) id 0MRocn-1hRhRC2S09-00SucQ; Wed, 17
- Apr 2019 22:58:59 +0200
+Received: from [192.168.20.60] ([92.116.169.10]) by mail.gmx.com (mrgmx102
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 0MI8iw-1hHQAv15vq-003xnS; Wed, 17
+ Apr 2019 23:01:15 +0200
 Subject: Re: [PATCH] parisc: Remove lock code to serialize TLB operations in
  pacache.S
+From:   Helge Deller <deller@gmx.de>
 To:     Sven Schnelle <svens@stackframe.org>,
         John David Anglin <dave.anglin@bell.net>
 Cc:     linux-parisc <linux-parisc@vger.kernel.org>,
         James Bottomley <James.Bottomley@HansenPartnership.com>
 References: <bd9ad9ce-8e83-6653-00d9-68b8504efc11@bell.net>
  <20190417205515.GA2001@t470p.stackframe.org>
-From:   Helge Deller <deller@gmx.de>
+ <19e13735-bfe6-531a-1920-d8955546040e@gmx.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=deller@gmx.de; keydata=
  xsBNBFDPIPYBCAC6PdtagIE06GASPWQJtfXiIzvpBaaNbAGgmd3Iv7x+3g039EV7/zJ1do/a
@@ -67,68 +68,76 @@ Autocrypt: addr=deller@gmx.de; keydata=
  lJ/MgLOPkfIUgjRXt0ZcZEN6pAMPU95+u1N52hmqAOQZvyoyUOJFH1siBMAFRbhgWyv+YE2Y
  ZkAyVDL2WxAedQgD/YCCJ+16yXlGYGNAKlvp07SimS6vBEIXk/3h5Vq4Hwgg0Z8+FRGtYZyD
  KrhlU0uMP9QTB5WAUvxvGy8=
-Message-ID: <19e13735-bfe6-531a-1920-d8955546040e@gmx.de>
-Date:   Wed, 17 Apr 2019 22:58:57 +0200
+Message-ID: <a8829e22-e5e7-a896-5cd3-0cc82a96c227@gmx.de>
+Date:   Wed, 17 Apr 2019 23:01:12 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190417205515.GA2001@t470p.stackframe.org>
+In-Reply-To: <19e13735-bfe6-531a-1920-d8955546040e@gmx.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0d8aPeyaQEIqsYYX3LUWoPhkvZjJMDWOZOowmkPFEQUyX3bKHAI
- vc+tUI2CXFR/grpRkwRqU8gYBZ+ZsYpJ1bVFpuK0D7mjDzl77jEzvql0z2AaqNGVSFzZmXH
- ayhDpxCyvG4xqNWobXqXlhQSSHzNlA4dACJPh5yQVsOerfAhqEByGmNFHoyGLwBaGuRR2M3
- 1cCvlVJ0G+VDPhGsYxvVg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bx3GaDIOmuw=:Dw7QwKdH1P4Y1lB4DbqIGc
- lIAsrv0kLruL6TlnSYahwq855ew5W5KbOMzIr4+gmM3EQqS1pCOc2pp7lWqBjxgBPU7/NL7z0
- 3JI/Fv8DNgFvUl511+vQQVzPXtIm/n7SnKX3pTFTqEF8VQvqoL5Bqk6R4prKaqM2g7yXXVXJn
- 0mukLN6wMVyqJsdv3urplcgjEBti6LvTrmpYKNDK48IQuPJzO+BOZaOrdAR4tKfvgz0QupQSj
- YowErjAiBG4/98g4f0u+wL0VXjNfKw8g7VaAC9BIUks96dDrdoMhG6nI4lL6mj+/UBpYFqBNo
- /wgl9FHp4A5h1ko5FIP9J0C9rd3JXKdibpPdY+W5GOU6sEhhLYBD//9QrHXbzeDEuRZcZS9Oj
- XEgxF024ilmFfXe0S9qXEBQZdsN9PrP3CJVyeWOK1STJElHDn5W/vxhHRZqD6Pq53GQuHFvBf
- 5oBgl+GEKC0QpwIc1T6eboYtlhRZaA5Wnyva7ijep6DxS8jySGi1y0htUfhybix5hiI8U2cJu
- em7TdQYdodCH8q2CWdEQhMWjTxJY6nS2PzWAO5sYsOY+T6uGA0cCh1unuawY9R67cRws2qqDi
- jALDkE6UfY8HqjG1wpbOEOuOOmBCgdR/weRdzPVp1GTBL7c23eS8WoGSn6/btzJ0sdf++bGfC
- hJx8bjshs5sca4hG3Vje0Do46gWsu3xYKV8I734vpo1XukkcgrgBpxXPHehFcI4h/X6L1ZlaY
- PhhbTxdOJU9Na4xKgUPFEJrekn9Ih6XlqF53JAr44XOIZiEjOmFE0P+dT0OtaCPMjxZ0ESxH8
- AGC7/rbxJuGoSI+cmhxbqdlDR7BkjHTp39i9cIfcUlVcEgnmBJmTUGgqwC2iIbRyArn9d6zuA
- xDrkUEkzA5EnDZQBBLlxbPQiQWPOuFDBMD1cVDUafLTvOssK+txspTA2z6RcZy
+X-Provags-ID: V03:K1:d5IciLRqAkusodPB25tsh6hHh662Klu1C+yv3uyCI6hFkBNPAvl
+ oHX3kMDAttFlU1h3zoL6Tzxfrsgrpz/LCvGdTc2IKwq49DRqpUeRwaTJstJhF03U3/pdMRZ
+ b6lLNq0wrR92PMB41VEkQlyhStBEU6PaKi65hEN1dxWY6q2IDkn3IL9qCj0zM1FpnUnKnw2
+ C37BFYz2mH4SmMaPG0Ueg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VvQfzx7O4pc=:Hzltnt25wtObyOaVLr7T1r
+ 1z6wPVsR5tl2yvnE7MxlalB4TjsD3xtzxXGqe/VXZbtuQXCrfjK/CpzMcYHEw2kt1ix4M9j4f
+ 5++cQbWd/9COnS5y+HnhqLX94BgYSrCtXgl+9MK4FWRYfKLFdL8EqUdjcUeY52IHYld7SLB/Z
+ /y/ByIA6+s0LA6WevFzX1vXWNJC3VaDnx0xigxQcRhmvVtF733QtVNKrjabe8KdAVOlqg05wV
+ MFYZvWHRdg2YOeWhBSWFLRN/dsOJjMpBIeOZ+ZZkHztdPM6cxv6e4FHdImdYJVPHsiCpSk5T+
+ NSiOEjjZqGW9XpYwljDVvvZckMBp3HnevO6F+f2uPlDI4fwjvluOV4lRZAaKlsXLI7tO17Up6
+ ewEQBTN1s9kTQFTLtRqZH3xe/EbwP1DWRMqglEz4Z2jfe1W4oCE0SLSoGbbV14p0iyAgKMumD
+ YBY1v0e8gDku2JX4JFOdJ1YUlYwrNTJ9PO8tC7bGh/PrXtVFFyieMS2TcCbGboPV37fskJt72
+ ApZaSiUA40uAfMhVf0P2GpHlAep3i6qWvHEIyw2amqqDeajVIPw+gTYRxdHNzJpQscmPMY2Ts
+ zapftqU+lDQNfndB1Q40ulNE85uAquowxupm4XWQ2Eks1qex4evKosnMFDKhcUh9LHRE4Ct5H
+ D9I6Eu7mUXGLd+AAMh32xhd57eCUQWzmuqHwe0oDOcHO/NGCkv/MKVrJfJgukf9sJ/43gxPdn
+ EscmjKZ9vfCW4RLQQ5pYTYEP+9LwL9LDlH1sJke7DgOirjNhgi2ipCdamfuhrY9/EdfNdUIN7
+ iZZIee1+7xQChRy+GSEsmxyPuYttBkMCLEW7LWqp+za9ySutqmnsOwRjTya6oGTUAXrZI1ib6
+ 21znfRilIE8oCuAAS3IB8nShF0Gh4IZHKhg9DeY0XhZcthxi57ryRa6zM40Eek
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 17.04.19 22:55, Sven Schnelle wrote:
-> On Fri, Apr 12, 2019 at 07:12:04PM -0400, John David Anglin wrote:
->> TLB operations only need to be serialized on machines with the Merced (=
-Stretch) bus.
->> The only machines in this category are L and N class, and they require =
-a 64-bit PA 2.0
->> kernel.  On these machines, we use local TLB purges in the tmpalias rou=
-tines.  We don't
->> need to serialize TLB purges on all other machines.  Thus, the lock/unl=
-ock code can be
->> removed when CONFIG_PA20 is not defined.  Further, when CONFIG_PA20 is =
-not defined,
->> alternative patching converts the TLB purges to local purges when PA 2.=
-0 hardware has
->> been detected.
+On 17.04.19 22:58, Helge Deller wrote:
+> On 17.04.19 22:55, Sven Schnelle wrote:
+>> On Fri, Apr 12, 2019 at 07:12:04PM -0400, John David Anglin wrote:
+>>> TLB operations only need to be serialized on machines with the Merced =
+(Stretch) bus.
+>>> The only machines in this category are L and N class, and they require=
+ a 64-bit PA 2.0
+>>> kernel.  On these machines, we use local TLB purges in the tmpalias ro=
+utines.  We don't
+>>> need to serialize TLB purges on all other machines.  Thus, the lock/un=
+lock code can be
+>>> removed when CONFIG_PA20 is not defined.  Further, when CONFIG_PA20 is=
+ not defined,
+>>> alternative patching converts the TLB purges to local purges when PA 2=
+.0 hardware has
+>>> been detected.
+>>>
+>>> Signed-off-by: John David Anglin <dave.anglin@bell.net>
 >>
->> Signed-off-by: John David Anglin <dave.anglin@bell.net>
+>> I had this patch running on my C8000 and J5000 for a few days, and have=
+n't
+>> encountered any issues.
 >
-> I had this patch running on my C8000 and J5000 for a few days, and haven=
-'t
-> encountered any issues.
+> Nah...
+> I do have one of the critical machines (rp5470), and I tried
+> to add the necessary code to detect and handle the TLB serialization.
+> Until now the patch sadly doesn't work yet (hangs at boot), it still nee=
+ds more work.
+> You can find it in my git tree:
+> https://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git/=
+commit/?h=3Dtlb-flush-merced-bus&id=3Dfc6044f83cb9828ec6ebecb23a46549d9ebc=
+518f
 
-Nah...
-I do have one of the critical machines (rp5470), and I tried
-to add the necessary code to detect and handle the TLB serialization.
-Until now the patch sadly doesn't work yet (hangs at boot), it still needs=
- more work.
-You can find it in my git tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git/co=
-mmit/?h=3Dtlb-flush-merced-bus&id=3Dfc6044f83cb9828ec6ebecb23a46549d9ebc51=
-8f
+Please ignore my comments.
+Dave's patch is OK.
+
+I mixed it up with the Mikulas Patocka's patch: "use per-pagetable spinloc=
+k"
+https://patchwork.kernel.org/patch/10888249/
 
 Helge
