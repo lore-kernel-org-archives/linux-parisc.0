@@ -3,30 +3,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62169C10F14
-	for <linux-parisc@archiver.kernel.org>; Tue, 23 Apr 2019 05:54:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10AD4C282DD
+	for <linux-parisc@archiver.kernel.org>; Tue, 23 Apr 2019 05:55:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3CB3F20674
-	for <linux-parisc@archiver.kernel.org>; Tue, 23 Apr 2019 05:54:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D44A320843
+	for <linux-parisc@archiver.kernel.org>; Tue, 23 Apr 2019 05:55:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726266AbfDWFyx (ORCPT
+        id S1726363AbfDWFzG (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 23 Apr 2019 01:54:53 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:40186 "EHLO mx1.redhat.com"
+        Tue, 23 Apr 2019 01:55:06 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:33864 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726262AbfDWFyx (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 23 Apr 2019 01:54:53 -0400
+        id S1726358AbfDWFzG (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 23 Apr 2019 01:55:06 -0400
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 2483BF74AC;
-        Tue, 23 Apr 2019 05:54:53 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id BFAE030917AD;
+        Tue, 23 Apr 2019 05:55:05 +0000 (UTC)
 Received: from hp-dl380pg8-01.lab.eng.pek2.redhat.com (hp-dl380pg8-01.lab.eng.pek2.redhat.com [10.73.8.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BD99D1A8F6;
-        Tue, 23 Apr 2019 05:54:43 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 25C64261D3;
+        Tue, 23 Apr 2019 05:54:58 +0000 (UTC)
 From:   Jason Wang <jasowang@redhat.com>
 To:     mst@redhat.com, jasowang@redhat.com, kvm@vger.kernel.org,
         virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
@@ -36,86 +36,238 @@ Cc:     peterx@redhat.com, aarcange@redhat.com,
         davem@davemloft.net, jglisse@redhat.com, linux-mm@kvack.org,
         linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
         christophe.de.dinechin@gmail.com, jrdr.linux@gmail.com
-Subject: [RFC PATCH V3 3/6] vhost: rename vq_iotlb_prefetch() to vq_meta_prefetch()
-Date:   Tue, 23 Apr 2019 01:54:17 -0400
-Message-Id: <20190423055420.26408-4-jasowang@redhat.com>
+Subject: [RFC PATCH V3 5/6] vhost: factor out setting vring addr and num
+Date:   Tue, 23 Apr 2019 01:54:19 -0400
+Message-Id: <20190423055420.26408-6-jasowang@redhat.com>
 In-Reply-To: <20190423055420.26408-1-jasowang@redhat.com>
 References: <20190423055420.26408-1-jasowang@redhat.com>
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.38]); Tue, 23 Apr 2019 05:54:53 +0000 (UTC)
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Tue, 23 Apr 2019 05:55:05 +0000 (UTC)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Rename the function to be more accurate since it actually tries to
-prefetch vq metadata address in IOTLB. And this will be used by
-following patch to prefetch metadata virtual addresses.
+Factoring vring address and num setting which needs special care for
+accelerating vq metadata accessing.
 
 Signed-off-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/vhost/net.c   | 4 ++--
- drivers/vhost/vhost.c | 4 ++--
- drivers/vhost/vhost.h | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/vhost/vhost.c | 177 ++++++++++++++++++++++++------------------
+ 1 file changed, 103 insertions(+), 74 deletions(-)
 
-diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index df51a35cf537..bf55f995ebae 100644
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -971,7 +971,7 @@ static void handle_tx(struct vhost_net *net)
- 	if (!sock)
- 		goto out;
- 
--	if (!vq_iotlb_prefetch(vq))
-+	if (!vq_meta_prefetch(vq))
- 		goto out;
- 
- 	vhost_disable_notify(&net->dev, vq);
-@@ -1140,7 +1140,7 @@ static void handle_rx(struct vhost_net *net)
- 	if (!sock)
- 		goto out;
- 
--	if (!vq_iotlb_prefetch(vq))
-+	if (!vq_meta_prefetch(vq))
- 		goto out;
- 
- 	vhost_disable_notify(&net->dev, vq);
 diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index 7335f2275ed3..bff4d586871d 100644
+index f3f86c3ed659..c2362ed5839e 100644
 --- a/drivers/vhost/vhost.c
 +++ b/drivers/vhost/vhost.c
-@@ -1313,7 +1313,7 @@ static bool iotlb_access_ok(struct vhost_virtqueue *vq,
- 	return true;
+@@ -1468,6 +1468,104 @@ static long vhost_set_memory(struct vhost_dev *d, struct vhost_memory __user *m)
+ 	return -EFAULT;
  }
  
--int vq_iotlb_prefetch(struct vhost_virtqueue *vq)
-+int vq_meta_prefetch(struct vhost_virtqueue *vq)
++static long vhost_vring_set_num(struct vhost_dev *d,
++				struct vhost_virtqueue *vq,
++				void __user *argp)
++{
++	struct vhost_vring_state s;
++
++	/* Resizing ring with an active backend?
++	 * You don't want to do that. */
++	if (vq->private_data)
++		return -EBUSY;
++
++	if (copy_from_user(&s, argp, sizeof s))
++		return -EFAULT;
++
++	if (!s.num || s.num > 0xffff || (s.num & (s.num - 1)))
++		return -EINVAL;
++	vq->num = s.num;
++
++	return 0;
++}
++
++static long vhost_vring_set_addr(struct vhost_dev *d,
++				 struct vhost_virtqueue *vq,
++				 void __user *argp)
++{
++	struct vhost_vring_addr a;
++
++	if (copy_from_user(&a, argp, sizeof a))
++		return -EFAULT;
++	if (a.flags & ~(0x1 << VHOST_VRING_F_LOG))
++		return -EOPNOTSUPP;
++
++	/* For 32bit, verify that the top 32bits of the user
++	   data are set to zero. */
++	if ((u64)(unsigned long)a.desc_user_addr != a.desc_user_addr ||
++	    (u64)(unsigned long)a.used_user_addr != a.used_user_addr ||
++	    (u64)(unsigned long)a.avail_user_addr != a.avail_user_addr)
++		return -EFAULT;
++
++	/* Make sure it's safe to cast pointers to vring types. */
++	BUILD_BUG_ON(__alignof__ *vq->avail > VRING_AVAIL_ALIGN_SIZE);
++	BUILD_BUG_ON(__alignof__ *vq->used > VRING_USED_ALIGN_SIZE);
++	if ((a.avail_user_addr & (VRING_AVAIL_ALIGN_SIZE - 1)) ||
++	    (a.used_user_addr & (VRING_USED_ALIGN_SIZE - 1)) ||
++	    (a.log_guest_addr & (VRING_USED_ALIGN_SIZE - 1)))
++		return -EINVAL;
++
++	/* We only verify access here if backend is configured.
++	 * If it is not, we don't as size might not have been setup.
++	 * We will verify when backend is configured. */
++	if (vq->private_data) {
++		if (!vq_access_ok(vq, vq->num,
++			(void __user *)(unsigned long)a.desc_user_addr,
++			(void __user *)(unsigned long)a.avail_user_addr,
++			(void __user *)(unsigned long)a.used_user_addr))
++			return -EINVAL;
++
++		/* Also validate log access for used ring if enabled. */
++		if ((a.flags & (0x1 << VHOST_VRING_F_LOG)) &&
++			!log_access_ok(vq->log_base, a.log_guest_addr,
++				sizeof *vq->used +
++				vq->num * sizeof *vq->used->ring))
++			return -EINVAL;
++	}
++
++	vq->log_used = !!(a.flags & (0x1 << VHOST_VRING_F_LOG));
++	vq->desc = (void __user *)(unsigned long)a.desc_user_addr;
++	vq->avail = (void __user *)(unsigned long)a.avail_user_addr;
++	vq->log_addr = a.log_guest_addr;
++	vq->used = (void __user *)(unsigned long)a.used_user_addr;
++
++	return 0;
++}
++
++static long vhost_vring_set_num_addr(struct vhost_dev *d,
++				     struct vhost_virtqueue *vq,
++				     unsigned int ioctl,
++				     void __user *argp)
++{
++	long r;
++
++	mutex_lock(&vq->mutex);
++
++	switch (ioctl) {
++	case VHOST_SET_VRING_NUM:
++		r = vhost_vring_set_num(d, vq, argp);
++		break;
++	case VHOST_SET_VRING_ADDR:
++		r = vhost_vring_set_addr(d, vq, argp);
++		break;
++	default:
++		BUG();
++	}
++
++	mutex_unlock(&vq->mutex);
++
++	return r;
++}
+ long vhost_vring_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *argp)
  {
- 	size_t s = vhost_has_feature(vq, VIRTIO_RING_F_EVENT_IDX) ? 2 : 0;
- 	unsigned int num = vq->num;
-@@ -1332,7 +1332,7 @@ int vq_iotlb_prefetch(struct vhost_virtqueue *vq)
- 			       num * sizeof(*vq->used->ring) + s,
- 			       VHOST_ADDR_USED);
- }
--EXPORT_SYMBOL_GPL(vq_iotlb_prefetch);
-+EXPORT_SYMBOL_GPL(vq_meta_prefetch);
+ 	struct file *eventfp, *filep = NULL;
+@@ -1477,7 +1575,6 @@ long vhost_vring_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *arg
+ 	struct vhost_virtqueue *vq;
+ 	struct vhost_vring_state s;
+ 	struct vhost_vring_file f;
+-	struct vhost_vring_addr a;
+ 	u32 idx;
+ 	long r;
  
- /* Can we log writes? */
- /* Caller should have device mutex but not vq mutex */
-diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
-index 9490e7ddb340..7a7fc001265f 100644
---- a/drivers/vhost/vhost.h
-+++ b/drivers/vhost/vhost.h
-@@ -209,7 +209,7 @@ bool vhost_enable_notify(struct vhost_dev *, struct vhost_virtqueue *);
- int vhost_log_write(struct vhost_virtqueue *vq, struct vhost_log *log,
- 		    unsigned int log_num, u64 len,
- 		    struct iovec *iov, int count);
--int vq_iotlb_prefetch(struct vhost_virtqueue *vq);
-+int vq_meta_prefetch(struct vhost_virtqueue *vq);
+@@ -1490,26 +1587,14 @@ long vhost_vring_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *arg
+ 	idx = array_index_nospec(idx, d->nvqs);
+ 	vq = d->vqs[idx];
  
- struct vhost_msg_node *vhost_new_msg(struct vhost_virtqueue *vq, int type);
- void vhost_enqueue_msg(struct vhost_dev *dev,
++	if (ioctl == VHOST_SET_VRING_NUM ||
++	    ioctl == VHOST_SET_VRING_ADDR) {
++		return vhost_vring_set_num_addr(d, vq, ioctl, argp);
++	}
++
+ 	mutex_lock(&vq->mutex);
+ 
+ 	switch (ioctl) {
+-	case VHOST_SET_VRING_NUM:
+-		/* Resizing ring with an active backend?
+-		 * You don't want to do that. */
+-		if (vq->private_data) {
+-			r = -EBUSY;
+-			break;
+-		}
+-		if (copy_from_user(&s, argp, sizeof s)) {
+-			r = -EFAULT;
+-			break;
+-		}
+-		if (!s.num || s.num > 0xffff || (s.num & (s.num - 1))) {
+-			r = -EINVAL;
+-			break;
+-		}
+-		vq->num = s.num;
+-		break;
+ 	case VHOST_SET_VRING_BASE:
+ 		/* Moving base with an active backend?
+ 		 * You don't want to do that. */
+@@ -1535,62 +1620,6 @@ long vhost_vring_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *arg
+ 		if (copy_to_user(argp, &s, sizeof s))
+ 			r = -EFAULT;
+ 		break;
+-	case VHOST_SET_VRING_ADDR:
+-		if (copy_from_user(&a, argp, sizeof a)) {
+-			r = -EFAULT;
+-			break;
+-		}
+-		if (a.flags & ~(0x1 << VHOST_VRING_F_LOG)) {
+-			r = -EOPNOTSUPP;
+-			break;
+-		}
+-		/* For 32bit, verify that the top 32bits of the user
+-		   data are set to zero. */
+-		if ((u64)(unsigned long)a.desc_user_addr != a.desc_user_addr ||
+-		    (u64)(unsigned long)a.used_user_addr != a.used_user_addr ||
+-		    (u64)(unsigned long)a.avail_user_addr != a.avail_user_addr) {
+-			r = -EFAULT;
+-			break;
+-		}
+-
+-		/* Make sure it's safe to cast pointers to vring types. */
+-		BUILD_BUG_ON(__alignof__ *vq->avail > VRING_AVAIL_ALIGN_SIZE);
+-		BUILD_BUG_ON(__alignof__ *vq->used > VRING_USED_ALIGN_SIZE);
+-		if ((a.avail_user_addr & (VRING_AVAIL_ALIGN_SIZE - 1)) ||
+-		    (a.used_user_addr & (VRING_USED_ALIGN_SIZE - 1)) ||
+-		    (a.log_guest_addr & (VRING_USED_ALIGN_SIZE - 1))) {
+-			r = -EINVAL;
+-			break;
+-		}
+-
+-		/* We only verify access here if backend is configured.
+-		 * If it is not, we don't as size might not have been setup.
+-		 * We will verify when backend is configured. */
+-		if (vq->private_data) {
+-			if (!vq_access_ok(vq, vq->num,
+-				(void __user *)(unsigned long)a.desc_user_addr,
+-				(void __user *)(unsigned long)a.avail_user_addr,
+-				(void __user *)(unsigned long)a.used_user_addr)) {
+-				r = -EINVAL;
+-				break;
+-			}
+-
+-			/* Also validate log access for used ring if enabled. */
+-			if ((a.flags & (0x1 << VHOST_VRING_F_LOG)) &&
+-			    !log_access_ok(vq->log_base, a.log_guest_addr,
+-					   sizeof *vq->used +
+-					   vq->num * sizeof *vq->used->ring)) {
+-				r = -EINVAL;
+-				break;
+-			}
+-		}
+-
+-		vq->log_used = !!(a.flags & (0x1 << VHOST_VRING_F_LOG));
+-		vq->desc = (void __user *)(unsigned long)a.desc_user_addr;
+-		vq->avail = (void __user *)(unsigned long)a.avail_user_addr;
+-		vq->log_addr = a.log_guest_addr;
+-		vq->used = (void __user *)(unsigned long)a.used_user_addr;
+-		break;
+ 	case VHOST_SET_VRING_KICK:
+ 		if (copy_from_user(&f, argp, sizeof f)) {
+ 			r = -EFAULT;
 -- 
 2.18.1
 
