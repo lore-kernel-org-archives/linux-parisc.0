@@ -1,62 +1,98 @@
-Return-Path: <SRS0=ky0S=SY=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=sPkK=SZ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B147C10F11
-	for <linux-parisc@archiver.kernel.org>; Mon, 22 Apr 2019 17:29:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F2A9C10F14
+	for <linux-parisc@archiver.kernel.org>; Tue, 23 Apr 2019 05:54:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 536F2214AE
-	for <linux-parisc@archiver.kernel.org>; Mon, 22 Apr 2019 17:29:03 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b="I6cqfNZU"
+	by mail.kernel.org (Postfix) with ESMTP id D159A20674
+	for <linux-parisc@archiver.kernel.org>; Tue, 23 Apr 2019 05:54:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727478AbfDVR3D (ORCPT
+        id S1725939AbfDWFyc (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 22 Apr 2019 13:29:03 -0400
-Received: from a9-30.smtp-out.amazonses.com ([54.240.9.30]:42944 "EHLO
-        a9-30.smtp-out.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726587AbfDVR3C (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 22 Apr 2019 13:29:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1555954141;
-        h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:MIME-Version:Content-Type:Feedback-ID;
-        bh=uTp82GrKS+FoqOpQPeRfRgfZOledo6xDwlMBf3yfJG4=;
-        b=I6cqfNZUSqdVhRoTlDMauiDjIdqVla6mLkcsOz4ds5wrUQGVqk1rB364uz2Xr/5k
-        jY0gYuBl3eDzKi9pPTYJff5zDwUDgoNt9H2BnsBg91m08fD3FfGS1pF/ANBrG1y+uRL
-        1XaNG8omk+ElH0D5ePFpKxCXKRfGUoJ+V/kdW35o=
-Date:   Mon, 22 Apr 2019 17:29:01 +0000
-From:   Christopher Lameter <cl@linux.com>
-X-X-Sender: cl@nuc-kabylake
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-parisc@vger.kernel.org, linux-mm@kvack.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org
-Subject: Re: DISCONTIGMEM is deprecated
-In-Reply-To: <20190419140521.GI7751@bombadil.infradead.org>
-Message-ID: <0100016a461809ed-be5bd8fc-9925-424d-9624-4a325a7a8860-000000@email.amazonses.com>
-References: <20190419094335.GJ18914@techsingularity.net> <20190419140521.GI7751@bombadil.infradead.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-SES-Outgoing: 2019.04.22-54.240.9.30
-Feedback-ID: 1.us-east-1.fQZZZ0Xtj2+TD7V5apTT/NrT6QKuPgzCT/IC7XYgDKI=:AmazonSES
+        Tue, 23 Apr 2019 01:54:32 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:37488 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725888AbfDWFyc (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 23 Apr 2019 01:54:32 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id D805D20277;
+        Tue, 23 Apr 2019 05:54:31 +0000 (UTC)
+Received: from hp-dl380pg8-01.lab.eng.pek2.redhat.com (hp-dl380pg8-01.lab.eng.pek2.redhat.com [10.73.8.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7040E19C7E;
+        Tue, 23 Apr 2019 05:54:22 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     peterx@redhat.com, aarcange@redhat.com,
+        James.Bottomley@hansenpartnership.com, hch@infradead.org,
+        davem@davemloft.net, jglisse@redhat.com, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
+        christophe.de.dinechin@gmail.com, jrdr.linux@gmail.com
+Subject: [RFC PATCH V3 0/6] vhost: accelerate metadata access
+Date:   Tue, 23 Apr 2019 01:54:14 -0400
+Message-Id: <20190423055420.26408-1-jasowang@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.29]); Tue, 23 Apr 2019 05:54:32 +0000 (UTC)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, 19 Apr 2019, Matthew Wilcox wrote:
+This series tries to access virtqueue metadata through kernel virtual
+address instead of copy_user() friends since they had too much
+overheads like checks, spec barriers or even hardware feature
+toggling. This is done through setup kernel address through direct
+mapping and co-opreate VM management with MMU notifiers.
 
-> ia64 (looks complicated ...)
+Test shows about 23% improvement on TX PPS. TCP_STREAM doesn't see
+obvious improvement.
 
-Well as far as I can tell it was not even used 12 or so years ago on
-Itanium when I worked on that stuff.
+Thanks
+
+Changes from RFC V2:
+- switch to use direct mapping instead of vmap()
+- switch to use spinlock + RCU to synchronize MMU notifier and vhost
+  data/control path
+- set dirty pages in the invalidation callbacks
+- always use copy_to/from_users() friends for the archs that may need
+  flush_dcache_pages()
+- various minor fixes
+Changes from V4:
+- use invalidate_range() instead of invalidate_range_start()
+- track dirty pages
+Changes from V3:
+- don't try to use vmap for file backed pages
+- rebase to master
+Changes from V2:
+- fix buggy range overlapping check
+- tear down MMU notifier during vhost ioctl to make sure invalidation
+  request can read metadata userspace address and vq size without
+  holding vq mutex.
+Changes from V1:
+- instead of pinning pages, use MMU notifier to invalidate vmaps and
+  remap duing metadata prefetch
+- fix build warning on MIPS
+
+Jason Wang (6):
+  vhost: generalize adding used elem
+  vhost: fine grain userspace memory accessors
+  vhost: rename vq_iotlb_prefetch() to vq_meta_prefetch()
+  vhost: introduce helpers to get the size of metadata area
+  vhost: factor out setting vring addr and num
+  vhost: access vq metadata through kernel virtual address
+
+ drivers/vhost/net.c   |   4 +-
+ drivers/vhost/vhost.c | 852 ++++++++++++++++++++++++++++++++++++------
+ drivers/vhost/vhost.h |  34 +-
+ 3 files changed, 764 insertions(+), 126 deletions(-)
+
+-- 
+2.18.1
+
