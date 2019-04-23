@@ -2,30 +2,31 @@ Return-Path: <SRS0=sPkK=SZ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F2A9C10F14
-	for <linux-parisc@archiver.kernel.org>; Tue, 23 Apr 2019 05:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62169C10F14
+	for <linux-parisc@archiver.kernel.org>; Tue, 23 Apr 2019 05:54:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D159A20674
-	for <linux-parisc@archiver.kernel.org>; Tue, 23 Apr 2019 05:54:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3CB3F20674
+	for <linux-parisc@archiver.kernel.org>; Tue, 23 Apr 2019 05:54:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725939AbfDWFyc (ORCPT
+        id S1726266AbfDWFyx (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 23 Apr 2019 01:54:32 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:37488 "EHLO mx1.redhat.com"
+        Tue, 23 Apr 2019 01:54:53 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:40186 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725888AbfDWFyc (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 23 Apr 2019 01:54:32 -0400
+        id S1726262AbfDWFyx (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 23 Apr 2019 01:54:53 -0400
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id D805D20277;
-        Tue, 23 Apr 2019 05:54:31 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id 2483BF74AC;
+        Tue, 23 Apr 2019 05:54:53 +0000 (UTC)
 Received: from hp-dl380pg8-01.lab.eng.pek2.redhat.com (hp-dl380pg8-01.lab.eng.pek2.redhat.com [10.73.8.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7040E19C7E;
-        Tue, 23 Apr 2019 05:54:22 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BD99D1A8F6;
+        Tue, 23 Apr 2019 05:54:43 +0000 (UTC)
 From:   Jason Wang <jasowang@redhat.com>
 To:     mst@redhat.com, jasowang@redhat.com, kvm@vger.kernel.org,
         virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
@@ -35,64 +36,86 @@ Cc:     peterx@redhat.com, aarcange@redhat.com,
         davem@davemloft.net, jglisse@redhat.com, linux-mm@kvack.org,
         linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
         christophe.de.dinechin@gmail.com, jrdr.linux@gmail.com
-Subject: [RFC PATCH V3 0/6] vhost: accelerate metadata access
-Date:   Tue, 23 Apr 2019 01:54:14 -0400
-Message-Id: <20190423055420.26408-1-jasowang@redhat.com>
+Subject: [RFC PATCH V3 3/6] vhost: rename vq_iotlb_prefetch() to vq_meta_prefetch()
+Date:   Tue, 23 Apr 2019 01:54:17 -0400
+Message-Id: <20190423055420.26408-4-jasowang@redhat.com>
+In-Reply-To: <20190423055420.26408-1-jasowang@redhat.com>
+References: <20190423055420.26408-1-jasowang@redhat.com>
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.29]); Tue, 23 Apr 2019 05:54:32 +0000 (UTC)
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.38]); Tue, 23 Apr 2019 05:54:53 +0000 (UTC)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-This series tries to access virtqueue metadata through kernel virtual
-address instead of copy_user() friends since they had too much
-overheads like checks, spec barriers or even hardware feature
-toggling. This is done through setup kernel address through direct
-mapping and co-opreate VM management with MMU notifiers.
+Rename the function to be more accurate since it actually tries to
+prefetch vq metadata address in IOTLB. And this will be used by
+following patch to prefetch metadata virtual addresses.
 
-Test shows about 23% improvement on TX PPS. TCP_STREAM doesn't see
-obvious improvement.
+Signed-off-by: Jason Wang <jasowang@redhat.com>
+---
+ drivers/vhost/net.c   | 4 ++--
+ drivers/vhost/vhost.c | 4 ++--
+ drivers/vhost/vhost.h | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-Thanks
-
-Changes from RFC V2:
-- switch to use direct mapping instead of vmap()
-- switch to use spinlock + RCU to synchronize MMU notifier and vhost
-  data/control path
-- set dirty pages in the invalidation callbacks
-- always use copy_to/from_users() friends for the archs that may need
-  flush_dcache_pages()
-- various minor fixes
-Changes from V4:
-- use invalidate_range() instead of invalidate_range_start()
-- track dirty pages
-Changes from V3:
-- don't try to use vmap for file backed pages
-- rebase to master
-Changes from V2:
-- fix buggy range overlapping check
-- tear down MMU notifier during vhost ioctl to make sure invalidation
-  request can read metadata userspace address and vq size without
-  holding vq mutex.
-Changes from V1:
-- instead of pinning pages, use MMU notifier to invalidate vmaps and
-  remap duing metadata prefetch
-- fix build warning on MIPS
-
-Jason Wang (6):
-  vhost: generalize adding used elem
-  vhost: fine grain userspace memory accessors
-  vhost: rename vq_iotlb_prefetch() to vq_meta_prefetch()
-  vhost: introduce helpers to get the size of metadata area
-  vhost: factor out setting vring addr and num
-  vhost: access vq metadata through kernel virtual address
-
- drivers/vhost/net.c   |   4 +-
- drivers/vhost/vhost.c | 852 ++++++++++++++++++++++++++++++++++++------
- drivers/vhost/vhost.h |  34 +-
- 3 files changed, 764 insertions(+), 126 deletions(-)
-
+diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+index df51a35cf537..bf55f995ebae 100644
+--- a/drivers/vhost/net.c
++++ b/drivers/vhost/net.c
+@@ -971,7 +971,7 @@ static void handle_tx(struct vhost_net *net)
+ 	if (!sock)
+ 		goto out;
+ 
+-	if (!vq_iotlb_prefetch(vq))
++	if (!vq_meta_prefetch(vq))
+ 		goto out;
+ 
+ 	vhost_disable_notify(&net->dev, vq);
+@@ -1140,7 +1140,7 @@ static void handle_rx(struct vhost_net *net)
+ 	if (!sock)
+ 		goto out;
+ 
+-	if (!vq_iotlb_prefetch(vq))
++	if (!vq_meta_prefetch(vq))
+ 		goto out;
+ 
+ 	vhost_disable_notify(&net->dev, vq);
+diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+index 7335f2275ed3..bff4d586871d 100644
+--- a/drivers/vhost/vhost.c
++++ b/drivers/vhost/vhost.c
+@@ -1313,7 +1313,7 @@ static bool iotlb_access_ok(struct vhost_virtqueue *vq,
+ 	return true;
+ }
+ 
+-int vq_iotlb_prefetch(struct vhost_virtqueue *vq)
++int vq_meta_prefetch(struct vhost_virtqueue *vq)
+ {
+ 	size_t s = vhost_has_feature(vq, VIRTIO_RING_F_EVENT_IDX) ? 2 : 0;
+ 	unsigned int num = vq->num;
+@@ -1332,7 +1332,7 @@ int vq_iotlb_prefetch(struct vhost_virtqueue *vq)
+ 			       num * sizeof(*vq->used->ring) + s,
+ 			       VHOST_ADDR_USED);
+ }
+-EXPORT_SYMBOL_GPL(vq_iotlb_prefetch);
++EXPORT_SYMBOL_GPL(vq_meta_prefetch);
+ 
+ /* Can we log writes? */
+ /* Caller should have device mutex but not vq mutex */
+diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
+index 9490e7ddb340..7a7fc001265f 100644
+--- a/drivers/vhost/vhost.h
++++ b/drivers/vhost/vhost.h
+@@ -209,7 +209,7 @@ bool vhost_enable_notify(struct vhost_dev *, struct vhost_virtqueue *);
+ int vhost_log_write(struct vhost_virtqueue *vq, struct vhost_log *log,
+ 		    unsigned int log_num, u64 len,
+ 		    struct iovec *iov, int count);
+-int vq_iotlb_prefetch(struct vhost_virtqueue *vq);
++int vq_meta_prefetch(struct vhost_virtqueue *vq);
+ 
+ struct vhost_msg_node *vhost_new_msg(struct vhost_virtqueue *vq, int type);
+ void vhost_enqueue_msg(struct vhost_dev *dev,
 -- 
 2.18.1
 
