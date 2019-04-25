@@ -1,80 +1,109 @@
-Return-Path: <SRS0=FMeG=S2=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=Piev=S3=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03721C10F11
-	for <linux-parisc@archiver.kernel.org>; Wed, 24 Apr 2019 12:22:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5208BC43219
+	for <linux-parisc@archiver.kernel.org>; Thu, 25 Apr 2019 16:29:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CEA8F21773
-	for <linux-parisc@archiver.kernel.org>; Wed, 24 Apr 2019 12:21:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B88F820891
+	for <linux-parisc@archiver.kernel.org>; Thu, 25 Apr 2019 16:29:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727303AbfDXMV7 (ORCPT
+        id S1726626AbfDYQ3D (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 24 Apr 2019 08:21:59 -0400
-Received: from outbound-smtp26.blacknight.com ([81.17.249.194]:51301 "EHLO
-        outbound-smtp26.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729238AbfDXMV7 (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 24 Apr 2019 08:21:59 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp26.blacknight.com (Postfix) with ESMTPS id 8ECE6B888D
-        for <linux-parisc@vger.kernel.org>; Wed, 24 Apr 2019 13:21:57 +0100 (IST)
-Received: (qmail 20196 invoked from network); 24 Apr 2019 12:21:57 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[37.228.225.79])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 24 Apr 2019 12:21:57 -0000
-Date:   Wed, 24 Apr 2019 13:21:56 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
+        Thu, 25 Apr 2019 12:29:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727161AbfDYQ2p (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 25 Apr 2019 12:28:45 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B973C208E4;
+        Thu, 25 Apr 2019 16:28:45 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.92)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1hJhEq-0005MS-C0; Thu, 25 Apr 2019 12:28:44 -0400
+Message-Id: <20190425162844.270281960@goodmis.org>
+User-Agent: quilt/0.65
+Date:   Thu, 25 Apr 2019 12:28:13 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-parisc@vger.kernel.org, linux-mm@kvack.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org
-Subject: Re: DISCONTIGMEM is deprecated
-Message-ID: <20190424122155.GT18914@techsingularity.net>
-References: <20190419094335.GJ18914@techsingularity.net>
- <20190419140521.GI7751@bombadil.infradead.org>
- <20190421063859.GA19926@rapoport-lnx>
- <20190421132606.GJ7751@bombadil.infradead.org>
- <20190421211604.GN18914@techsingularity.net>
- <20190423071354.GB12114@infradead.org>
- <20190424113352.GA6278@rapoport-lnx>
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+Subject: [for-next][PATCH 5/5] function_graph: Place ftrace_graph_entry_stub() prototype in
+ include/linux/ftrace.h
+References: <20190425162808.056301033@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20190424113352.GA6278@rapoport-lnx>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=ISO-8859-15
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Wed, Apr 24, 2019 at 02:33:53PM +0300, Mike Rapoport wrote:
-> On Tue, Apr 23, 2019 at 12:13:54AM -0700, Christoph Hellwig wrote:
-> > On Sun, Apr 21, 2019 at 10:16:04PM +0100, Mel Gorman wrote:
-> > > 32-bit NUMA systems should be non-existent in practice. The last NUMA
-> > > system I'm aware of that was both NUMA and 32-bit only died somewhere
-> > > between 2004 and 2007. If someone is running a 64-bit capable system in
-> > > 32-bit mode with NUMA, they really are just punishing themselves for fun.
-> > 
-> > Can we mark it as BROKEN to see if someone shouts and then remove it
-> > a year or two down the road?  Or just kill it off now..
-> 
-> How about making SPARSEMEM default for x86-32?
-> 
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-While an improvement, I tend to agree with Christoph that marking it
-BROKEN as a patch on top of this makes sense and wait to see who, if
-anyone, screams. If it's quiet for long enough then we can remove it
-entirely.
+ftrace_graph_entry_stub() is defined in generic code, its prototype should
+be in the generic header and not defined throughout architecture specific
+code in order to use it.
 
+Cc: Greentime Hu <green.hu@gmail.com>
+Cc: Vincent Chen <deanbo422@gmail.com>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ arch/nds32/kernel/ftrace.c  | 1 -
+ arch/parisc/kernel/ftrace.c | 1 -
+ include/linux/ftrace.h      | 2 ++
+ 3 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/nds32/kernel/ftrace.c b/arch/nds32/kernel/ftrace.c
+index 8a41372551ff..fd2a54b8cd57 100644
+--- a/arch/nds32/kernel/ftrace.c
++++ b/arch/nds32/kernel/ftrace.c
+@@ -7,7 +7,6 @@
+ #ifndef CONFIG_DYNAMIC_FTRACE
+ extern void (*ftrace_trace_function)(unsigned long, unsigned long,
+ 				     struct ftrace_ops*, struct pt_regs*);
+-extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace);
+ extern void ftrace_graph_caller(void);
+ 
+ noinline void __naked ftrace_stub(unsigned long ip, unsigned long parent_ip,
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index e46a4157a894..a28f915993b1 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -51,7 +51,6 @@ void notrace __hot ftrace_function_trampoline(unsigned long parent,
+ 				unsigned long org_sp_gr3)
+ {
+ 	extern ftrace_func_t ftrace_trace_function;  /* depends on CONFIG_DYNAMIC_FTRACE */
+-	extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace);
+ 
+ 	if (ftrace_trace_function != ftrace_stub) {
+ 		/* struct ftrace_ops *op, struct pt_regs *regs); */
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index 730876187344..9b28fce436ca 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -751,6 +751,8 @@ struct ftrace_graph_ret {
+ typedef void (*trace_func_graph_ret_t)(struct ftrace_graph_ret *); /* return */
+ typedef int (*trace_func_graph_ent_t)(struct ftrace_graph_ent *); /* entry */
+ 
++extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace);
++
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ 
+ struct fgraph_ops {
 -- 
-Mel Gorman
-SUSE Labs
+2.20.1
+
+
