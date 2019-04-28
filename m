@@ -1,95 +1,90 @@
-Return-Path: <SRS0=TiJ5=S5=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=C+Gm=S6=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20F4CC43218
-	for <linux-parisc@archiver.kernel.org>; Sat, 27 Apr 2019 21:58:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7BB5C43218
+	for <linux-parisc@archiver.kernel.org>; Sun, 28 Apr 2019 08:11:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D20FA206E0
-	for <linux-parisc@archiver.kernel.org>; Sat, 27 Apr 2019 21:58:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8E7822075D
+	for <linux-parisc@archiver.kernel.org>; Sun, 28 Apr 2019 08:11:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="JtWf6d2Z"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TFCG+qkP"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbfD0V6B (ORCPT
+        id S1726472AbfD1ILR (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 27 Apr 2019 17:58:01 -0400
-Received: from mout.gmx.net ([212.227.15.19]:42703 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726049AbfD0V6B (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 27 Apr 2019 17:58:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1556402273;
-        bh=5CjKWCPAkkdib2eR4HWH7mpm27fXHdUNIF2MlcdHTeU=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=JtWf6d2ZOGCG5AMZUSW7juEjI+C/4aqL9eDP5zLeRj9BHycKVy5fIcrEosDgxqHOK
-         qklVecSGWnsvVr6EHJMRdhJbJUgsjk8A2CXP7pFxdWU2YCI3v82GN0gtBcJ+n4ISMf
-         TC7Ft2M5PwFcBtVZD2QXEFvtkcUCnmpVXy8DQXfI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530.dellerweb.de ([92.116.137.157]) by mail.gmx.com
- (mrgmx003 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 0M4Gyx-1gUKW33gDD-00rmN8; Sat, 27 Apr 2019 23:57:52 +0200
-Date:   Sat, 27 Apr 2019 23:57:49 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org,
+        Sun, 28 Apr 2019 04:11:17 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:54486 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726466AbfD1ILR (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 28 Apr 2019 04:11:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=9cfzCZHsC8Z1URVhGFCxQrxINgq5TQBCpge+7Hexgeo=; b=TFCG+qkPsR1tZhgIZ7nDdAu0U
+        41Nj91cp2ngQL//A/7D/Qd/9wiELv5/cmOFeNyPyksBVKb+qMzDrmLMV4ybT5jMS9H+MF5ZsLts1l
+        lfKLPgcZ0ZX3lBjNfifZXvn/oylF71G4vYc2rkGFLX8tAm9OrHVcOVcOGG0fnOkbaFDAL4OM0KDPp
+        T8SYAMoCCLFGrrD8yxjawK2PBNYA0Xix+L43FIhjbTddeH2nGIBjguRfnkqeOg3LL21Kp+PkuxAh/
+        4bERD+PCrlUYLJtsUSZQ5FXKeu2DsZb8IsCRYAqtv3geoy0wDTwEDGjksVmGvGbPjksJtmYTcqLcr
+        1c0xSPqAg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1hKetv-00011K-CV; Sun, 28 Apr 2019 08:11:07 +0000
+Date:   Sun, 28 Apr 2019 01:11:07 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
         James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Add memory barrier to asm pdc and sync instructions
-Message-ID: <20190427215749.GA19050@ls3530.dellerweb.de>
+        linux-parisc@vger.kernel.org, linux-mm@kvack.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org
+Subject: Re: DISCONTIGMEM is deprecated
+Message-ID: <20190428081107.GA30901@infradead.org>
+References: <20190419094335.GJ18914@techsingularity.net>
+ <20190419140521.GI7751@bombadil.infradead.org>
+ <20190421063859.GA19926@rapoport-lnx>
+ <20190421132606.GJ7751@bombadil.infradead.org>
+ <20190421211604.GN18914@techsingularity.net>
+ <20190423071354.GB12114@infradead.org>
+ <20190424113352.GA6278@rapoport-lnx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.11.3 (2019-02-01)
-X-Provags-ID: V03:K1:KeVop6xbdOI0Y1eBN+KrhXhYJ18OegY9C204ZGEH/kJEgUImYF2
- OC5MtYsN+kcP9k0BykatYAkhAwr6ufeLsaQ+8sofR7SEmPpTut7n5sZCIea/dQCWsaMDXGW
- nVgFBS3Meu4HtVmXY5z5wyfgy1WDoDy7beLHqFmWUJf52T6rFXjngkbCdvT0KoasGa9FDS1
- 83ktfmiimJtptQz7M+5+w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Gs6yptY8XAg=:06F8BeeU1zwSML7lwKMtxP
- w1s2kN/HXxbySjLaVkV+fYOlbbItYbLvsUzZchTmuRxk21kecBixP9lh+RA7x2VgaVtLvmyYs
- a4ejI9wYxd50zlcQeES1YRJfrijrIZyxriG1HgRVqOMc+DSO1dP9A+ire41L/sjTUC3HWKvjw
- dKRsP8gs0/Y58TJUk2hqwCcvb5/ZXvSoPyQBCMZAct+jR98jctXp4GjsvPzSfH2w/aMgFJfyi
- bchw03yvg0xhXABSBply8eXoLl54zz7DrO1eRU2Xu1KGLWP1H4ZIFDcnFBnnN/YG8gWVM2Umi
- a6tbeUPRAATz248d7a/ZN01bUlGY4q6rPTRVmPXuQKjIjVdXPp6jGOKfmrsypaPB6PYiHsbGv
- v0m/EWU/pRTE927aNmEVrzquydYusN4EUaAKtSc3zT6rBNAsLK05wl04ngdtWcBM9pROdIaGD
- rNTJU+Ury9sSc6FNpEvu9MI0hgcd5Kbomj/uU6GJxmPDJVIH7gnbc+m/t5vvoRYvt6eZ8KDek
- VDAfc1wXSHAldOCb0W+D2giL60xxhyMVGAit9d69fz4fhqLZIm376HOxmc+Ul/f6QZrUtOd0F
- 6zd8jEewFSp7NNy65s4CrHK7Ecpl1wAPYsl5slQspTyr4fcjd+mv9FR0Km4UwjZQf16wP4Q0q
- K2V24K2ZKrhI4XVQjZxnibqJCwJfuZ8/KdVazsZ99Ts2KG/KejmrNoOrQr9s/5lVuGK6QVQX/
- Cr399ispG1GH5lswsldrcelix+eHm4Wjd6mH1k1DzbjOFlSdbFkzuAtlyH3lTm3eVgXQgdgtv
- zboEhvr3/l1dLwQMQ7aiIUWmEExG0zqctwGA5wA7skqLg3kW4zFeo3FqtiPMtpbMosjS24QVY
- ZOyJ9PvD3byNmnYS3oLueLteluDWclBGOUHAAu1tDWo2tBAp2MOUzelAKBgFMR
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20190424113352.GA6278@rapoport-lnx>
+User-Agent: Mutt/1.9.2 (2017-12-15)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Add compiler memory barriers to ensure the compiler doesn't reorder memory
-operations around these instructions.
+On Wed, Apr 24, 2019 at 02:33:53PM +0300, Mike Rapoport wrote:
+> On Tue, Apr 23, 2019 at 12:13:54AM -0700, Christoph Hellwig wrote:
+> > On Sun, Apr 21, 2019 at 10:16:04PM +0100, Mel Gorman wrote:
+> > > 32-bit NUMA systems should be non-existent in practice. The last NUMA
+> > > system I'm aware of that was both NUMA and 32-bit only died somewhere
+> > > between 2004 and 2007. If someone is running a 64-bit capable system in
+> > > 32-bit mode with NUMA, they really are just punishing themselves for fun.
+> > 
+> > Can we mark it as BROKEN to see if someone shouts and then remove it
+> > a year or two down the road?  Or just kill it off now..
+> 
+> How about making SPARSEMEM default for x86-32?
 
-Cc: stable@vger.kernel.org # v4.20+
-Fixes: 3847dab77421 ("parisc: Add alternative coding infrastructure")
-Signed-off-by: Helge Deller <deller@gmx.de>
+Sounds good.
 
-diff --git a/arch/parisc/include/asm/cache.h b/arch/parisc/include/asm/cac=
-he.h
-index c18351cf5876..4016fe1c65a9 100644
-=2D-- a/arch/parisc/include/asm/cache.h
-+++ b/arch/parisc/include/asm/cache.h
-@@ -56,10 +56,10 @@ void parisc_setup_cache_timing(void);
- #define asm_io_fdc(addr) asm volatile("fdc %%r0(%0)" \
- 			ALTERNATIVE(ALT_COND_NO_DCACHE, INSN_NOP) \
- 			ALTERNATIVE(ALT_COND_NO_IOC_FDC, INSN_NOP) \
--			: : "r" (addr))
-+			: : "r" (addr) : "memory")
- #define asm_io_sync()	asm volatile("sync" \
- 			ALTERNATIVE(ALT_COND_NO_DCACHE, INSN_NOP) \
--			ALTERNATIVE(ALT_COND_NO_IOC_FDC, INSN_NOP) :: )
-+			ALTERNATIVE(ALT_COND_NO_IOC_FDC, INSN_NOP) :::"memory")
-
- #endif /* ! __ASSEMBLY__ */
-
+Another question:  I always found the option to even select the memory
+models like a bad tradeoff.  Can we really expect a user to make a sane
+choice?  I'd rather stick to a relativelty optimal choice based on arch
+and maybe a few other parameters (NUMA or not for example) and stick to
+it, reducing the testing matrix.
