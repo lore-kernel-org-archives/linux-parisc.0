@@ -1,77 +1,91 @@
-Return-Path: <SRS0=WNz2=TA=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=uzGP=TB=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06A95C43219
-	for <linux-parisc@archiver.kernel.org>; Tue, 30 Apr 2019 13:41:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05237C43219
+	for <linux-parisc@archiver.kernel.org>; Wed,  1 May 2019 13:00:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CD04421707
-	for <linux-parisc@archiver.kernel.org>; Tue, 30 Apr 2019 13:41:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B51702054F
+	for <linux-parisc@archiver.kernel.org>; Wed,  1 May 2019 13:00:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b="QEyLbGOE"
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="Ezhaboxr"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbfD3NlA (ORCPT
+        id S1725993AbfEANAK (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 30 Apr 2019 09:41:00 -0400
-Received: from a9-99.smtp-out.amazonses.com ([54.240.9.99]:55078 "EHLO
-        a9-99.smtp-out.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726145AbfD3NlA (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 30 Apr 2019 09:41:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1556631659;
-        h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:MIME-Version:Content-Type:Feedback-ID;
-        bh=beBu285rmqBNDiQNDcTz2JoVAX9N/IQQNqAAuEjGf9w=;
-        b=QEyLbGOEOCUS+pzuVbWu7CfTSXtyfCXiSu09ABe7LGl3MQTXMcdv5F6CYG7Mn9m9
-        Cr2tVt+C3bCs9O4bKVDgiFAK0s7ET2m4BRnOyzLL0HT/l29zNxm4UfubaGLY/kPzA8v
-        J2Qz0gIalm+NimzzeXwHdPJ+XRPsb0atevd5DX+M=
-Date:   Tue, 30 Apr 2019 13:40:59 +0000
-From:   Christopher Lameter <cl@linux.com>
-X-X-Sender: cl@nuc-kabylake
-To:     Christoph Hellwig <hch@infradead.org>
-cc:     "Luck, Tony" <tony.luck@intel.com>, Meelis Roos <mroos@linux.ee>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mikulas Patocka <mpatocka@redhat.com>,
+        Wed, 1 May 2019 09:00:10 -0400
+Received: from mout.gmx.net ([212.227.15.15]:57331 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725971AbfEANAK (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 1 May 2019 09:00:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1556715601;
+        bh=g1sa58YQq9I8zwUCR5m5ifkEGjMn/dTtcvSoCvXZYNg=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=Ezhaboxruzc7VjvEmioXt4+aYHnJrzh2Sn04szQjvzgeZHcG8KqzRNTceLbyWgUwX
+         6YaV1ufCfw5/Q8KuDC6XAU2lUq5RkllL0WnecI4JK3DNer8Kq7nqFybph7k6kxF25g
+         j5Ev0BnBD2zCEpk487dBawczVmygK2Ki8i5mbInw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.dellerweb.de ([92.116.140.64]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M7b2d-1hOp6y1itZ-0080a3; Wed, 01
+ May 2019 15:00:01 +0200
+Date:   Wed, 1 May 2019 14:59:58 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@hansenpartnership.com>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>
-Subject: Re: DISCONTIGMEM is deprecated
-In-Reply-To: <20190429200957.GB27158@infradead.org>
-Message-ID: <0100016a6e7a22d8-dcd24705-508f-4acc-8883-e5d61f4c0fa4-000000@email.amazonses.com>
-References: <20190419094335.GJ18914@techsingularity.net> <20190419140521.GI7751@bombadil.infradead.org> <0100016a461809ed-be5bd8fc-9925-424d-9624-4a325a7a8860-000000@email.amazonses.com> <25cabb7c-9602-2e09-2fe0-cad3e54595fa@linux.ee> <20190428081353.GB30901@infradead.org>
- <3908561D78D1C84285E8C5FCA982C28F7E9140BA@ORSMSX104.amr.corp.intel.com> <20190429200957.GB27158@infradead.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Allow live-patching of __meminit functions
+Message-ID: <20190501125958.GA8511@ls3530.dellerweb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-SES-Outgoing: 2019.04.30-54.240.9.99
-Feedback-ID: 1.us-east-1.fQZZZ0Xtj2+TD7V5apTT/NrT6QKuPgzCT/IC7XYgDKI=:AmazonSES
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.11.3 (2019-02-01)
+X-Provags-ID: V03:K1:A3s1y+Yk1g3YYx0O62RJJiIyJmXoYpCgVcyi42iguLaTCoh9e01
+ Ds1Q48Mvxd1iOlOgKMRImrh21obflCbEeNpJSy08/3QTuboTlLjTcnRP7IBv2xtUas2hbwt
+ E6PqfkKF1bifcaEpa031YGxCcSrFZoLpBQzqIhMRr6sII4MRp2fG4AMfUE+iH2u9t7Xpw20
+ Qzn3DFHn8Z3XblkOgRi2w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8zwehFuVgaU=:5+n3W1q2M3XcFrz7Y+zkpM
+ xBbC2u8BFtqBJ6tywZzeK3j6ksbOxXP9qFHhuCFRIt0vAaHDAY68EY8HF0bSt2XeSpetCGE4T
+ ZaEW1oPwJ2L79fRoum3quMFbSi3VtHKqMla27NzuIFEGNJ0CVLBzriCh+v31t22dfJ9VEAi7p
+ TNbp9Xu3fmiIR0wKL/o60waOSKmrkhxgAEiidWP2U785zusCmBwrmYbG72tjbrCHhkRK6sDuG
+ /ZtQY4M7GFFBjjL7Dw5hZdHHCeE6suz07Rywj1fxPUDy+rnrh91bMSHz9ervd1Yd3Zr7eoesC
+ StvickGND/SiZnoZeLt0e8LqFd2MdqwqinBDl9bqymUwHIT4cno2dttsrNHJDU2Pqzbg/WP0h
+ 4S+BEMXgC8KOO+ZNk0X+jd3QiKdn3c65aCsogA+nolPLZADFe0k4fyy0YdanwyNYMq7HOYia/
+ NvL7A2T+P0t4XrceEIrftlifK+Yy1CPWwWMlfcqzZjlrsE6j7cbPq79KwxWT25VqhK+GoIEYB
+ W6ChK0bcF9JOyDakf1uon+y5XecJT9ez6QF4EzY+RU0hiyS69RX1Swt6gw0/1+GyPvU/bJNLn
+ uyZtu8z0QZOg3EzKcz+8qQ6Nq1/AZVmFUeAwxTdJeWN+oGNRp0dWn+F333AmKdJL90wbV04Rx
+ rG8pR+lbTSgvmkbqdvjVypOSJLmkBhYLd1asVMB06Pa6HcFa3NlRyELCJcp0+2SzskJKMrFjQ
+ o1fResXFkwGxiZR5sWWs/5L13Dx6/UToFGqH5Z0CdvJJRxL5maH86IQEGQp0uojo8vFP/SQpO
+ h1LHLVB7CAEJinKZY3sGYoms0vBf2D5/W7RGx5jBOzLCQQeEfvFNEfp48v3h37D67eLEhn/aa
+ cM4i7sRjb+3A6+8FsKzlTTD4gRlQU3CdH8Y0r6NMfWxiMJYhMtSGBA/d8TAJcx
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Mon, 29 Apr 2019, Christoph Hellwig wrote:
+When making the text sections writeable with set_kernel_text_rw(1),
+include all text sections including those in the __init section.
+Otherwise functions marked with __meminit will stay read-only.
 
-> So maybe it it time to mark SN2 broken and see if anyone screams?
->
-> Without SN2 the whole machvec mess could basically go away - the
-> only real difference between the remaining machvecs is which iommu
-> if any we set up.
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: <stable@vger.kernel.org>	# 4.20+
 
-SPARSEMEM with VMEMMAP was developed to address these
-issues and allow one mapping scheme across the different platforms.
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 78e451ce0f1b..79afd9600cca 100644
+=2D-- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -477,7 +477,7 @@ static void __init map_pages(unsigned long start_vaddr=
+,
 
-You do not need DISCONTIGMEM support for SN2. And as far as I know (from a
-decade ago ok....) the distributions were using VMEMMAP instead.
+ void __init set_kernel_text_rw(int enable_read_write)
+ {
+-	unsigned long start =3D (unsigned long) _text;
++	unsigned long start =3D (unsigned long) __init_begin;
+ 	unsigned long end   =3D (unsigned long) &data_start;
 
-
+ 	map_pages(start, __pa(start), end-start,
