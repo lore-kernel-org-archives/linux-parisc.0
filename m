@@ -2,89 +2,50 @@ Return-Path: <SRS0=Qpko=TM=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA5A5C04A6B
-	for <linux-parisc@archiver.kernel.org>; Sun, 12 May 2019 06:28:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1611FC04A6B
+	for <linux-parisc@archiver.kernel.org>; Sun, 12 May 2019 09:51:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A3D022146F
-	for <linux-parisc@archiver.kernel.org>; Sun, 12 May 2019 06:28:46 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uj0bBVzh"
+	by mail.kernel.org (Postfix) with ESMTP id D8125216C4
+	for <linux-parisc@archiver.kernel.org>; Sun, 12 May 2019 09:51:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725978AbfELG2q (ORCPT
+        id S1726128AbfELJvY (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 12 May 2019 02:28:46 -0400
-Received: from mail-yw1-f46.google.com ([209.85.161.46]:40874 "EHLO
-        mail-yw1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbfELG2p (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 12 May 2019 02:28:45 -0400
-Received: by mail-yw1-f46.google.com with SMTP id 18so8303090ywe.7
-        for <linux-parisc@vger.kernel.org>; Sat, 11 May 2019 23:28:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JuAxDHvMkmvrkwWOqNifPPCf9FhTZHojZR1P9pmFxkM=;
-        b=uj0bBVzhPmdfSfsxrXbZcutZu85xU2wn1EO0MqOXmGfHs6sgKuLqC0qNEzjeXwHTr1
-         cBTuG3HnLRobA7MZKCg3AG50y6X/Pnq8xQTIIn8eW2d/nHL4upc4E3bePpbV5EhL6d7/
-         P6FwL3b1U9yN5CEythiDeVVn67UqE4kfVVciWTtL35vk8YxsDfAtAOel3skI7HL6mDHV
-         UNxIlcGA5qqcLIjbPZ95/ndJNR1KFy3twzX9la0TIILinpws0nMYX0H89D52sDd8HRcC
-         EnGWt7U+a5z4AEZMfVZpV+ZNF6U3LK46n9igFRwOwEOplaxFZ4twvv49Ff42NAFW3AZO
-         3xTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JuAxDHvMkmvrkwWOqNifPPCf9FhTZHojZR1P9pmFxkM=;
-        b=MZls8HKwX2wAXWXtDW51180fTNH1GBS9921MsffSBFTtCWTUMsuI0pHMwXev+Zof64
-         L3OuA30wVqUW5cxMeyvWPdf4XbNOTP5+jYplzShiesZhVWHUYHtusRi4Utm9TJzPE3o8
-         wMQIDIxtCmox/XlubgYyveOQd0/y2FhDlXogFeWoI13JPS1jBpRzbSXRJMzO7T4eJUHr
-         hN4QF010s8KbQwLXkONwgA5Q4KeGBKPH24yL7bVHndegTK0RmyUnirAzt7FwLRff0Okd
-         w1Vid2r3hr1AoWZBFnarUsRGtGC3IixOCbCVw+ZkTgwD3XWK4jj0M/2tERJysKU0HVGv
-         HZwg==
-X-Gm-Message-State: APjAAAUDKuYnKBKd2RCxuO7uBoAXbzVe1C+f4ed0gO0y1yJ8pemyyFRo
-        EKOcIIe1hLwq8Ynl8jRp871MEhK/P9+7yLkJCIE=
-X-Google-Smtp-Source: APXvYqxMWZ0G7KM3pW1F+q4naXercgnjTWhrtlORdAxRPcIHP0SSTf3U1PZ6y3TQx7LD4fXs8tT2wDysYSr2clP1SyY=
-X-Received: by 2002:a81:ad20:: with SMTP id l32mr2855574ywh.62.1557642525129;
- Sat, 11 May 2019 23:28:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <c0546c1b-9477-60f8-6fa9-df710e5bbd0c@linux.ee>
- <325c8de3-3869-08d1-696d-b89f5813d537@gmx.de> <CA+QBN9AZzuJe600ngavoVseRFHCBh4ws5-5pHoWEQkkqZ_wU5g@mail.gmail.com>
- <fac5aa59-999f-e61e-774e-b43d0d28779c@bell.net>
-In-Reply-To: <fac5aa59-999f-e61e-774e-b43d0d28779c@bell.net>
-From:   Carlo Pisani <carlojpisani@gmail.com>
-Date:   Sun, 12 May 2019 08:28:17 +0200
-Message-ID: <CA+QBN9D6yQiB2zZAvg51LWoAgFAzO9LeuJQyadRvn3y4+hUxMg@mail.gmail.com>
+        Sun, 12 May 2019 05:51:24 -0400
+Received: from mx2.cyber.ee ([193.40.6.72]:54953 "EHLO mx2.cyber.ee"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726100AbfELJvY (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 12 May 2019 05:51:24 -0400
 Subject: Re: 5.2 hppa merge seems to work on my machines
-To:     John David Anglin <dave.anglin@bell.net>
-Cc:     Helge Deller <deller@gmx.de>, Meelis Roos <mroos@linux.ee>,
-        linux-parisc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+To:     Carlo Pisani <carlojpisani@gmail.com>, Helge Deller <deller@gmx.de>
+Cc:     linux-parisc@vger.kernel.org
+References: <c0546c1b-9477-60f8-6fa9-df710e5bbd0c@linux.ee>
+ <325c8de3-3869-08d1-696d-b89f5813d537@gmx.de>
+ <CA+QBN9AZzuJe600ngavoVseRFHCBh4ws5-5pHoWEQkkqZ_wU5g@mail.gmail.com>
+From:   Meelis Roos <mroos@linux.ee>
+Message-ID: <57fc8e0d-c04d-e82e-04ad-2debec0284fb@linux.ee>
+Date:   Sun, 12 May 2019 12:51:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+In-Reply-To: <CA+QBN9AZzuJe600ngavoVseRFHCBh4ws5-5pHoWEQkkqZ_wU5g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: et-EE
+Content-Transfer-Encoding: 7bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-> Note card is PCIX slot.
+> 1) copy a very big file cp data_16GB.bin copy.bin
+> 2) compare the md5sum for checking the integrity
 
-tested on a C3600
-with a Silicon Image Sil3124
-the first card's brand is "SYBA-II" (from Amazon dot com)
-it's 4 SATA channels, PCI 32bit
+Problems from test like this suggest a problem outside the libata drivers themselves.
 
-the second card's brand is "Adaptec 1210SA"
-it's a 2 SATA channels, PCI 32bit
+To me, it sounds rather something like dma mapping/sync errors, or memory
+management errors (possibly dependent on hppa bus(bridge types).
 
-we do not have a PCI 64bit Silicon Image Sil3124
-
-which is your card's brand?
-
-are you using PCI-hardfail ? or softfail?
-do you have CONFIG_MLONGCALLS=y ?
-
-unfortunately, we do not have a C8000 to test
+-- 
+Meelis Roos
