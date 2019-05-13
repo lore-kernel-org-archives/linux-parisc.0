@@ -1,4 +1,4 @@
-Return-Path: <SRS0=Qpko=TM=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=92ms=TN=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -7,75 +7,91 @@ X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44489C04AB3
-	for <linux-parisc@archiver.kernel.org>; Sun, 12 May 2019 21:16:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71C2BC04AA7
+	for <linux-parisc@archiver.kernel.org>; Mon, 13 May 2019 15:10:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1236F20989
-	for <linux-parisc@archiver.kernel.org>; Sun, 12 May 2019 21:16:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 44249208C3
+	for <linux-parisc@archiver.kernel.org>; Mon, 13 May 2019 15:10:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c/i/NqMV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DG/ioZxR"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbfELVQK (ORCPT
+        id S1731121AbfEMPKo (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 12 May 2019 17:16:10 -0400
-Received: from mail-yw1-f50.google.com ([209.85.161.50]:33736 "EHLO
-        mail-yw1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726664AbfELVQK (ORCPT
+        Mon, 13 May 2019 11:10:44 -0400
+Received: from mail-yw1-f68.google.com ([209.85.161.68]:45953 "EHLO
+        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731118AbfEMPKn (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 12 May 2019 17:16:10 -0400
-Received: by mail-yw1-f50.google.com with SMTP id q11so9409542ywb.0;
-        Sun, 12 May 2019 14:16:09 -0700 (PDT)
+        Mon, 13 May 2019 11:10:43 -0400
+Received: by mail-yw1-f68.google.com with SMTP id w18so11235639ywa.12
+        for <linux-parisc@vger.kernel.org>; Mon, 13 May 2019 08:10:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qvr0F0kwYHeCbEE7X7nfXJQszg2ULC/PKICf98qkw4g=;
-        b=c/i/NqMVt1JZIJ1y1LfSuoubeXL8EWr451se0bvwshMCfYbs3nwoNle1F6YTUt+bTL
-         RYSIuAkUw1lsbTo9I/zmr+VRloHP4nqr6gPiFrz4+LZABrzaxWkUHsDdYVwCV2TdxbzG
-         cRi1urqkpQI81ooMhN9sFEHPJXdPze8em5fHydCX6cgm4gV2zYAWobPHDLLuiERVYTvr
-         bXCgrcny/k9xMTCneOXtyFP5gDvGOhIimqW/NGkySnxqITDAos3W/H7tmNG9qJkYyPuk
-         sBhXcNZfdOGvnMO1ofV022dNK6+yr2Ddp0VkyoAj3OoghYSIClsTnHur2zq1f1lO61BP
-         1rTw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
+        bh=/ALChiOKnMbi5IPfVvBTTx9Afx2HTWGWhcKipkGBRc4=;
+        b=DG/ioZxRbc7Psl2Rwn2D9Ljvkt168cPnUdDyG2qr7woivVllgieIszsYuhKHWnIO4G
+         GCqPQrI+BpWFdHAIH/kt7DXJRxvMVOtgd6LJ9tBxFUToeqJVwyuR+mQ7tOzX4yuxxNYs
+         kk0CojDahTsS606dhWKKYke1XmI4IGjFmUjeNW4I5/wyV4JuNPDsewD1h2zNTq5rUiqS
+         I00jbiO0/5kw/mNW/eTXXm0uf6hHgE1V9ZRlMSzPVOJB/bwToMaHWbMPDinrfnWmzdEv
+         lSsVsECDhKyg6U6YZ9K/4TP4A8EvTZ5mi0jZOMHIS2HaSMYNOmETxYOoQZI2uAYidRrj
+         urig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qvr0F0kwYHeCbEE7X7nfXJQszg2ULC/PKICf98qkw4g=;
-        b=N7aF7YLNCaIMOOVEnLBil7vDNgHGI22pa0apbIxNe+wxJDK4E+aFIOS/4F9Ahy7SyS
-         LWEsEObHx1U0wR+En5uspCB7No/m6bg5F84Maasdee4iyYTxMNbGAR8IMTLjpUqSnfX9
-         8siuFt46aRmbQwrowkQVP2qNHZPojblpluVIaEjJxaDH35ruwi/1BWaUuCbsWe9LMyrM
-         ZUuQ4DjL3OBBYm7Y2ueJMxaxML1BQxgC1c3Q9V9ggciXxjTZYcLrzKPaY77pg/fMff2E
-         kQ7otyffBGtfbg2IghDAq5lna9wogbWklKkWBR5AfCRYpQX4agYpP5M0VKqstie8Jmfr
-         yr5g==
-X-Gm-Message-State: APjAAAVsnQn79KQ+TpJW3Nn8NUXi+50/jF/SN1I921IcY4oP7UEb8Eu3
-        bIHcuRAdth+pCDTQfmcV1KJs7dYt9froGJTRoCo=
-X-Google-Smtp-Source: APXvYqxMd+2U5eNGv45W53rbwmDGaCHOze+e4tOGsODAkZixx0nm0NKGCpzuDX7KgKjXeA5oxU3wdSiu455MhQxtmz4=
-X-Received: by 2002:a81:9284:: with SMTP id j126mr10812146ywg.445.1557695769565;
- Sun, 12 May 2019 14:16:09 -0700 (PDT)
+         :message-id:subject:cc;
+        bh=/ALChiOKnMbi5IPfVvBTTx9Afx2HTWGWhcKipkGBRc4=;
+        b=fu0JUcr6fTS81b0sQH33UEc94h8sB2ThaDb0IuhWBO2KFbMjHWGznB9+qSYVdtXB/5
+         8dZeAOzxUQSzJ9CkMi4BMTKA23H/R1GlGYuER8KBHCnLpMnVAIoURHX/vnvP4dVeffCK
+         tLUExr5oOMydSsTte3NLAybaF4lFngY1oAUFVq65VHZFntjZsO5I7dDw3sw8vMaKIOm8
+         HaZ3eeyJwJSgohzpAQw1Y0lg9psXD3NLsxRDPGw77iYI8cUkZLbYavok6MVk/3D0XCLp
+         JJpqGPc8gEvF0RDVyXL18xb4Vv1Y+f2c2R4iLB6f5nU9Qu0ep0/EhZvM1bbvS4R9Iuif
+         Bjbg==
+X-Gm-Message-State: APjAAAWLInawJxUkxbcEIlaHRq6fI29gTsUqjMMv+m8OW6xbj9qSmKgf
+        y30un/HLMMQMVkGbbe1QINhWnrFh2imnSjz17pJTNoiB
+X-Received: by 2002:a81:9284:: with SMTP id j126mt12287878ywg.445.1557760243034;
+ Mon, 13 May 2019 08:10:43 -0700 (PDT)
 MIME-Version: 1.0
 References: <20190502074519.61272b42@canb.auug.org.au> <a645ff18-4c55-6b4c-0913-5b397ab83e03@gmx.de>
- <CA+QBN9A4PhPZ36otsk0TRaO9KKnKL=hfnskfFJGQJEbtb3=i=Q@mail.gmail.com> <f52cf203-c48a-fd04-5827-19903c3a192f@bell.net>
-In-Reply-To: <f52cf203-c48a-fd04-5827-19903c3a192f@bell.net>
+ <CA+QBN9A4PhPZ36otsk0TRaO9KKnKL=hfnskfFJGQJEbtb3=i=Q@mail.gmail.com>
+In-Reply-To: <CA+QBN9A4PhPZ36otsk0TRaO9KKnKL=hfnskfFJGQJEbtb3=i=Q@mail.gmail.com>
 From:   Carlo Pisani <carlojpisani@gmail.com>
-Date:   Sun, 12 May 2019 23:15:40 +0200
-Message-ID: <CA+QBN9AZHQHTGFVc21UfROHObKxAZz+bwCPeMf-Tpjn2UHmDNg@mail.gmail.com>
+Date:   Mon, 13 May 2019 17:10:13 +0200
+Message-ID: <CA+QBN9CN=n556f0KYj2LZ4q9wY+wx9mbWpaMcC44GufUqbsgEg@mail.gmail.com>
 Subject: Re: C3600, sata controller
-To:     John David Anglin <dave.anglin@bell.net>
 Cc:     Parisc List <linux-parisc@vger.kernel.org>,
         Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-> The c3600 doesn't have any PCI-X slots (only PCI) as far as I can tell from user manuals.
+hi, good news!
+after a burn-in test of 8hours, we can affirm that Adaptec 1210SA does work
+The chip is "Silicon Image Sil31122", so the kernel module is
+"sata_sil" (not sata_sil24)
 
-PCI-32/33 device I/O bus
-PCI-64/33 high-performance device I/O bus <----------------- this is
-PCI-X, 64bit 5V
-PCI-64/66 high-performance graphics I/O bus <----------------- this is
-PCI-X, 64bit 3.3V
+while [ 1 ]
+do
+for item in `ls *.bin`
+    do
+        rm -f $copy.out
+        echo -n "$item ... "
+        mycp $item $copy.out
+        echo "done"
+    done
+done
 
-https://www.openpa.net/systems/hp-visualize_b1000_c3000_c3600.html
+*.bin are giant files, 1GB, 2GB, 4GB, 8GB, 16GB, 32GB
+
+it has been tested on a PCI 32bit lost of a C3600
+with kernel /v4.16!!!
+
+"mycp" does a copy and then checks the md5 checksum
+
+I think this card can be added to the list!
+
+Our list has been already updated
+http://www.downthebunker.com/reloaded/space/viewtopic.php?f=50&p=1632
