@@ -2,78 +2,75 @@ Return-Path: <SRS0=ZazU=TO=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEBABC04AB4
-	for <linux-parisc@archiver.kernel.org>; Tue, 14 May 2019 12:58:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AED8C04AB4
+	for <linux-parisc@archiver.kernel.org>; Tue, 14 May 2019 13:01:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AA8EB208CA
-	for <linux-parisc@archiver.kernel.org>; Tue, 14 May 2019 12:58:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DF9E2208CA
+	for <linux-parisc@archiver.kernel.org>; Tue, 14 May 2019 13:01:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rw+3psM1"
+	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="fM0jYuqB"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbfENM6M (ORCPT
+        id S1725901AbfENNBz (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 14 May 2019 08:58:12 -0400
-Received: from mail-yw1-f46.google.com ([209.85.161.46]:41839 "EHLO
-        mail-yw1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725562AbfENM6M (ORCPT
+        Tue, 14 May 2019 09:01:55 -0400
+Received: from smtp.duncanthrax.net ([89.31.1.170]:53307 "EHLO
+        smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbfENNBz (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 14 May 2019 08:58:12 -0400
-Received: by mail-yw1-f46.google.com with SMTP id o65so13874151ywd.8
-        for <linux-parisc@vger.kernel.org>; Tue, 14 May 2019 05:58:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
-        bh=FV+xKMBik/jZsGRxIWKhkflIB6ciAABEcMQWhOcNOsc=;
-        b=Rw+3psM1FBu1jBzn0zw03T2C9fk7+VWtCy6jx81PDW8/Kn1dnzd9951Ly0UkEzIzhB
-         0mPJs0HKNiiibl60k66l3Ou2EzZ1dOVpd9dM2YqQeP3VouNZ1XSpIMfpjDsPdzi5/Xbc
-         anS/fsQGrmaEJJeueXY1hNqyuG270xEukw9NV4FOEsJHC8cvcGVl/x+lYh0GKEOYogkL
-         +GUpaDSfuGUBJgIJmL/wchxzGYSh9BrSrh809DiHvgknoyiSTlHA0Qk5O3YrxSj4RSeI
-         RgqWkepTPn0Vw+vQgHPlUXpfDQQvGKUIFYkx712IakTEOSgN7NWwRbHYiKOMfpVxQuDK
-         wurg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=FV+xKMBik/jZsGRxIWKhkflIB6ciAABEcMQWhOcNOsc=;
-        b=Suqywd9tu9JLjDz+JtfQYCHARQSMtohkRifWskYa8AbejEpf/iormf/uMOFyB5HXVO
-         N8QHoVZaTYHuYLLbzId5okUb3Y9Yq8JT85FIMHa8cMSRly9xfJUzXsZlTpeqSftLW3ic
-         sE4Oo4ulEesnyNr4HDdIAtwusFYH1cn22jCWYzg4stpQDc/ZH66Bkd85gQ4SN8NoB49+
-         wHzwlvYLjV7Iqjz3JTwtQscn1AClzXvtIVFIpa0TEHhgFO03vSvrqeRz09BJVZ4ATlaj
-         H1ZE75PuZKi2U9AmBhbgbmaMXjW/E0Ni+KFmxJRJR790+jNJNjaAj2BLPy7qeP5OnUpZ
-         bbJw==
-X-Gm-Message-State: APjAAAWB2BoZddB0p2uNN2WTp1CoPbAJAW62T1UqXCWE5bZ+xxtVNWeA
-        OKbwJVY2usZTiHBWHmxBfiRaG/EIXXgwTf0KRQSMsdaI
-X-Google-Smtp-Source: APXvYqyEvGcmLe6686Fms6Jg5z0Yi4mVltCD9e3p1zT8Vds8bKER71GdXz3rs8ujupKCH63jxMThtdycqDYgsupFX8A=
-X-Received: by 2002:a81:9284:: with SMTP id j126mr14992032ywg.445.1557838691322;
- Tue, 14 May 2019 05:58:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190502074519.61272b42@canb.auug.org.au> <a645ff18-4c55-6b4c-0913-5b397ab83e03@gmx.de>
- <CA+QBN9A4PhPZ36otsk0TRaO9KKnKL=hfnskfFJGQJEbtb3=i=Q@mail.gmail.com>
- <f52cf203-c48a-fd04-5827-19903c3a192f@bell.net> <CA+QBN9AZHQHTGFVc21UfROHObKxAZz+bwCPeMf-Tpjn2UHmDNg@mail.gmail.com>
- <66bf0e79-16a4-a411-19ba-cd7d5a232976@bell.net> <CA+QBN9BkXRp2hCd4ADXtWOisHz1Fa0JvWo-0iR56ZTDZiaG=Yg@mail.gmail.com>
+        Tue, 14 May 2019 09:01:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=duncanthrax.net; s=dkim; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date;
+        bh=Fhu9FV2W6saxeloa6DFNr0rFNB/c1p8l2pELI2TQG30=; b=fM0jYuqB/z7ombsC5RDHiQqMl2
+        3Nx4L4wKdkEmgbp+NkTxahvHehOUb1ej70pjCuznGWhoTVa2nIiatMtyrw6VaDaBZ/Z0ulG6SPZBn
+        +JwMF5paYYPiG2kXXhhJvY1l1nX3HUwmN16q7oVw5LPdpdPmT1Fcv0I4B/AqGOd7P+rQ=;
+Received: from frobwit.duncanthrax.net ([89.31.1.178] helo=t470p.stackframe.org)
+        by smtp.eurescom.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.86_2)
+        (envelope-from <svens@stackframe.org>)
+        id 1hQX45-00005N-0Z; Tue, 14 May 2019 15:01:53 +0200
+Date:   Tue, 14 May 2019 15:01:51 +0200
+From:   Sven Schnelle <svens@stackframe.org>
+To:     Carlo Pisani <carlojpisani@gmail.com>
+Cc:     John David Anglin <dave.anglin@bell.net>,
+        linux-parisc <linux-parisc@vger.kernel.org>
+Subject: Re: C3600, sata controller
+Message-ID: <20190514130151.GA530@t470p.stackframe.org>
+References: <CA+QBN9A4PhPZ36otsk0TRaO9KKnKL=hfnskfFJGQJEbtb3=i=Q@mail.gmail.com>
+ <f52cf203-c48a-fd04-5827-19903c3a192f@bell.net>
+ <CA+QBN9AZHQHTGFVc21UfROHObKxAZz+bwCPeMf-Tpjn2UHmDNg@mail.gmail.com>
+ <66bf0e79-16a4-a411-19ba-cd7d5a232976@bell.net>
+ <CA+QBN9BkXRp2hCd4ADXtWOisHz1Fa0JvWo-0iR56ZTDZiaG=Yg@mail.gmail.com>
  <CA+QBN9CPdm2q9FMzo0nOq__XZ=0Rf98pnXSG9fUjpXaUbq0skA@mail.gmail.com>
- <3fd05da8-3601-a0b3-a212-2c72710520c4@bell.net> <CA+QBN9CgMRFmv+isvH-Y=FCCFwKhmD5_5s5u32xg+wk-gTLK5A@mail.gmail.com>
- <44c01dbf-4b6c-c37d-d5cc-844e5679dea5@bell.net> <CA+QBN9BqufJM+8Jm-x_zMgMo0cLHKxHCxuYPrLgbvGsbdQofvw@mail.gmail.com>
+ <3fd05da8-3601-a0b3-a212-2c72710520c4@bell.net>
+ <CA+QBN9CgMRFmv+isvH-Y=FCCFwKhmD5_5s5u32xg+wk-gTLK5A@mail.gmail.com>
+ <44c01dbf-4b6c-c37d-d5cc-844e5679dea5@bell.net>
+ <CA+QBN9BqufJM+8Jm-x_zMgMo0cLHKxHCxuYPrLgbvGsbdQofvw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <CA+QBN9BqufJM+8Jm-x_zMgMo0cLHKxHCxuYPrLgbvGsbdQofvw@mail.gmail.com>
-From:   Carlo Pisani <carlojpisani@gmail.com>
-Date:   Tue, 14 May 2019 14:57:40 +0200
-Message-ID: <CA+QBN9C-UOCBVWdwPRh6zMp8UjR3Kp=OPhTVTWCAMnVP5JgNAw@mail.gmail.com>
-Subject: C3600, optical Fibre Channel, any card?
-Cc:     linux-parisc <linux-parisc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-hi guys
-anyone has ever tried an optical Fibre Channel adapter with C36xx or C37xx?
-e.g. QLA2302F is PCI-X, so ... I have some doubt.
+On Tue, May 14, 2019 at 02:29:07PM +0200, Carlo Pisani wrote:
+> > I had listed these cards because they are PCI64 and the Adaptec site didn't say Intel
+> > architecture was required.
+> 
+> So, if you put the Adaptec AAR-2410SA SATA-card into a non-x86
+> computer ... the BIOS extension is not expected, [..]
 
-let me know
+I think the ATI FireGL card in the C8000 Workstation is a normal x86 graphics
+card and PDC just emulates the stuff required to execute the VGA BIOS. Would
+be interesting whether it would also execute a BIOS on a PCI-X card, but i would
+guess not. So a x86 BIOS in the C8000 is not always unexpected.
+
+Sven
+
