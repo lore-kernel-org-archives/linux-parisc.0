@@ -6,27 +6,27 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99241C282E3
-	for <linux-parisc@archiver.kernel.org>; Fri, 24 May 2019 08:13:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32F76C282E3
+	for <linux-parisc@archiver.kernel.org>; Fri, 24 May 2019 08:13:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6C9812175B
-	for <linux-parisc@archiver.kernel.org>; Fri, 24 May 2019 08:13:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ED4C52175B
+	for <linux-parisc@archiver.kernel.org>; Fri, 24 May 2019 08:13:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389417AbfEXIM5 (ORCPT
+        id S2389425AbfEXIMn (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 24 May 2019 04:12:57 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:50850 "EHLO mx1.redhat.com"
+        Fri, 24 May 2019 04:12:43 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:36244 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389093AbfEXIM4 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 24 May 2019 04:12:56 -0400
+        id S2389093AbfEXIMm (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 24 May 2019 04:12:42 -0400
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id A98B03082B6B;
-        Fri, 24 May 2019 08:12:56 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id 9DCAC3092654;
+        Fri, 24 May 2019 08:12:37 +0000 (UTC)
 Received: from hp-dl380pg8-01.lab.eng.pek2.redhat.com (hp-dl380pg8-01.lab.eng.pek2.redhat.com [10.73.8.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8589E19C4F;
-        Fri, 24 May 2019 08:12:45 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D650119C4F;
+        Fri, 24 May 2019 08:12:31 +0000 (UTC)
 From:   Jason Wang <jasowang@redhat.com>
 To:     mst@redhat.com, jasowang@redhat.com, kvm@vger.kernel.org,
         virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
@@ -35,86 +35,50 @@ Cc:     linux-kernel@vger.kernel.org, peterx@redhat.com,
         davem@davemloft.net, jglisse@redhat.com, linux-mm@kvack.org,
         linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
         christophe.de.dinechin@gmail.com, jrdr.linux@gmail.com
-Subject: [PATCH net-next 3/6] vhost: rename vq_iotlb_prefetch() to vq_meta_prefetch()
-Date:   Fri, 24 May 2019 04:12:15 -0400
-Message-Id: <20190524081218.2502-4-jasowang@redhat.com>
+Subject: [PATCH net-next 1/6] vhost: generalize adding used elem
+Date:   Fri, 24 May 2019 04:12:13 -0400
+Message-Id: <20190524081218.2502-2-jasowang@redhat.com>
 In-Reply-To: <20190524081218.2502-1-jasowang@redhat.com>
 References: <20190524081218.2502-1-jasowang@redhat.com>
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Fri, 24 May 2019 08:12:56 +0000 (UTC)
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.43]); Fri, 24 May 2019 08:12:42 +0000 (UTC)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Rename the function to be more accurate since it actually tries to
-prefetch vq metadata address in IOTLB. And this will be used by
-following patch to prefetch metadata virtual addresses.
+Use one generic vhost_copy_to_user() instead of two dedicated
+accessor. This will simplify the conversion to fine grain
+accessors. About 2% improvement of PPS were seen during vitio-user
+txonly test.
 
 Signed-off-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/vhost/net.c   | 4 ++--
- drivers/vhost/vhost.c | 4 ++--
- drivers/vhost/vhost.h | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/vhost/vhost.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index df51a35cf537..bf55f995ebae 100644
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -971,7 +971,7 @@ static void handle_tx(struct vhost_net *net)
- 	if (!sock)
- 		goto out;
- 
--	if (!vq_iotlb_prefetch(vq))
-+	if (!vq_meta_prefetch(vq))
- 		goto out;
- 
- 	vhost_disable_notify(&net->dev, vq);
-@@ -1140,7 +1140,7 @@ static void handle_rx(struct vhost_net *net)
- 	if (!sock)
- 		goto out;
- 
--	if (!vq_iotlb_prefetch(vq))
-+	if (!vq_meta_prefetch(vq))
- 		goto out;
- 
- 	vhost_disable_notify(&net->dev, vq);
 diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index e78c195448f0..b353a00094aa 100644
+index 1e3ed41ae1f3..47fb3a297c29 100644
 --- a/drivers/vhost/vhost.c
 +++ b/drivers/vhost/vhost.c
-@@ -1313,7 +1313,7 @@ static bool iotlb_access_ok(struct vhost_virtqueue *vq,
- 	return true;
- }
+@@ -2255,16 +2255,7 @@ static int __vhost_add_used_n(struct vhost_virtqueue *vq,
  
--int vq_iotlb_prefetch(struct vhost_virtqueue *vq)
-+int vq_meta_prefetch(struct vhost_virtqueue *vq)
- {
- 	size_t s = vhost_has_feature(vq, VIRTIO_RING_F_EVENT_IDX) ? 2 : 0;
- 	unsigned int num = vq->num;
-@@ -1332,7 +1332,7 @@ int vq_iotlb_prefetch(struct vhost_virtqueue *vq)
- 			       num * sizeof(*vq->used->ring) + s,
- 			       VHOST_ADDR_USED);
- }
--EXPORT_SYMBOL_GPL(vq_iotlb_prefetch);
-+EXPORT_SYMBOL_GPL(vq_meta_prefetch);
- 
- /* Can we log writes? */
- /* Caller should have device mutex but not vq mutex */
-diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
-index 9490e7ddb340..7a7fc001265f 100644
---- a/drivers/vhost/vhost.h
-+++ b/drivers/vhost/vhost.h
-@@ -209,7 +209,7 @@ bool vhost_enable_notify(struct vhost_dev *, struct vhost_virtqueue *);
- int vhost_log_write(struct vhost_virtqueue *vq, struct vhost_log *log,
- 		    unsigned int log_num, u64 len,
- 		    struct iovec *iov, int count);
--int vq_iotlb_prefetch(struct vhost_virtqueue *vq);
-+int vq_meta_prefetch(struct vhost_virtqueue *vq);
- 
- struct vhost_msg_node *vhost_new_msg(struct vhost_virtqueue *vq, int type);
- void vhost_enqueue_msg(struct vhost_dev *dev,
+ 	start = vq->last_used_idx & (vq->num - 1);
+ 	used = vq->used->ring + start;
+-	if (count == 1) {
+-		if (vhost_put_user(vq, heads[0].id, &used->id)) {
+-			vq_err(vq, "Failed to write used id");
+-			return -EFAULT;
+-		}
+-		if (vhost_put_user(vq, heads[0].len, &used->len)) {
+-			vq_err(vq, "Failed to write used len");
+-			return -EFAULT;
+-		}
+-	} else if (vhost_copy_to_user(vq, used, heads, count * sizeof *used)) {
++	if (vhost_copy_to_user(vq, used, heads, count * sizeof *used)) {
+ 		vq_err(vq, "Failed to write used");
+ 		return -EFAULT;
+ 	}
 -- 
 2.18.1
 
