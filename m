@@ -1,101 +1,165 @@
-Return-Path: <SRS0=Wfwv=T2=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=YNOe=T3=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_MUTT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BB5BC28CBF
-	for <linux-parisc@archiver.kernel.org>; Sun, 26 May 2019 20:27:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72035C04AB3
+	for <linux-parisc@archiver.kernel.org>; Mon, 27 May 2019 13:56:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1924320863
-	for <linux-parisc@archiver.kernel.org>; Sun, 26 May 2019 20:27:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3E50620665
+	for <linux-parisc@archiver.kernel.org>; Mon, 27 May 2019 13:56:45 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="L4x1/9iO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbfEZU1r (ORCPT
+        id S1726515AbfE0N4o (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 26 May 2019 16:27:47 -0400
-Received: from port70.net ([81.7.13.123]:59088 "EHLO port70.net"
+        Mon, 27 May 2019 09:56:44 -0400
+Received: from mout.gmx.net ([212.227.15.15]:60607 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbfEZU1q (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 26 May 2019 16:27:46 -0400
-X-Greylist: delayed 420 seconds by postgrey-1.27 at vger.kernel.org; Sun, 26 May 2019 16:27:44 EDT
-Received: by port70.net (Postfix, from userid 1002)
-        id 64F7EABEC0BA; Sun, 26 May 2019 22:20:42 +0200 (CEST)
-Date:   Sun, 26 May 2019 22:20:42 +0200
-From:   Szabolcs Nagy <nsz@port70.net>
-To:     Christian Brauner <christian@brauner.io>
-Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        torvalds@linux-foundation.org, fweimer@redhat.com,
-        jannh@google.com, oleg@redhat.com, tglx@linutronix.de,
-        arnd@arndb.de, shuah@kernel.org, dhowells@redhat.com,
-        tkjos@android.com, ldv@altlinux.org, miklos@szeredi.hu,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v2 1/2] open: add close_range()
-Message-ID: <20190526202041.GO16415@port70.net>
-References: <20190523154747.15162-1-christian@brauner.io>
- <20190523154747.15162-2-christian@brauner.io>
+        id S1726115AbfE0N4o (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 27 May 2019 09:56:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1558965398;
+        bh=ahi+QJmzG9BeU/pUacIWW5qdfX7QdAiqiwPT/val+Cc=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=L4x1/9iOi630sXLBttZ40BWNg8VDzuOmKNCOzCKDPqcHnSNvtvM9B01b6d8z5zHKk
+         2TrJfqpqIB7+zvVE2Qci9WVWwVShxQPLp2gc6hIGb+zSOtqLJuAwUfdswC9nQNVT3O
+         QfM4NtzGOgKz963db30TLTb4anm33GLXRPRZrQvE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [10.20.71.87] ([193.16.224.7]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MNbp3-1hEyiL2tdT-00P9YK; Mon, 27
+ May 2019 15:56:38 +0200
+Subject: Re: Updated installation images for Debian Ports 2019-05-09
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "debian-hppa@lists.debian.org" <debian-hppa@lists.debian.org>
+Cc:     linux-parisc <linux-parisc@vger.kernel.org>
+References: <b8a14609-9bf9-5956-4e6e-5415306a95ac@physik.fu-berlin.de>
+ <FseoXokiJzdprrRNbtaWjm5KHvHa5mlMA2PqnBgbvx8PwHGKzYObU38sBMOuJFy9fuNDYJ0Iaf_so-ju5rMz8lvTtgEcMcOjRogVc0mI6FA=@wintercode.de>
+From:   Helge Deller <deller@gmx.de>
+Openpgp: preference=signencrypt
+Autocrypt: addr=deller@gmx.de; keydata=
+ xsBNBFDPIPYBCAC6PdtagIE06GASPWQJtfXiIzvpBaaNbAGgmd3Iv7x+3g039EV7/zJ1do/a
+ y9jNEDn29j0/jyd0A9zMzWEmNO4JRwkMd5Z0h6APvlm2D8XhI94r/8stwroXOQ8yBpBcP0yX
+ +sqRm2UXgoYWL0KEGbL4XwzpDCCapt+kmarND12oFj30M1xhTjuFe0hkhyNHkLe8g6MC0xNg
+ KW3x7B74Rk829TTAtj03KP7oA+dqsp5hPlt/hZO0Lr0kSAxf3kxtaNA7+Z0LLiBqZ1nUerBh
+ OdiCasCF82vQ4/y8rUaKotXqdhGwD76YZry9AQ9p6ccqKaYEzWis078Wsj7p0UtHoYDbABEB
+ AAHNHEhlbGdlIERlbGxlciA8ZGVsbGVyQGdteC5kZT7CwJIEEwECADwCGwMGCwkIBwMCBhUI
+ AgkKCwQWAgMBAh4BAheAFiEE9M/0wAvkPPtRU6Boh8nBUbUeOGQFAlrHzIICGQEACgkQh8nB
+ UbUeOGT1GAgAt+EeoHB4DbAx+pZoGbBYp6ZY8L6211n8fSi7wiwgM5VppucJ+C+wILoPkqiU
+ +ZHKlcWRbttER2oBUvKOt0+yDfAGcoZwHS0P+iO3HtxR81h3bosOCwek+TofDXl+TH/WSQJa
+ iaitof6iiPZLygzUmmW+aLSSeIAHBunpBetRpFiep1e5zujCglKagsW78Pq0DnzbWugGe26A
+ 288JcK2W939bT1lZc22D9NhXXRHfX2QdDdrCQY7UsI6g/dAm1d2ldeFlGleqPMdaaQMcv5+E
+ vDOur20qjTlenjnR/TFm9tA1zV+K7ePh+JfwKc6BSbELK4EHv8J8WQJjfTphakYLVM7ATQRQ
+ zyD2AQgA2SJJapaLvCKdz83MHiTMbyk8yj2AHsuuXdmB30LzEQXjT3JEqj1mpvcEjXrX1B3h
+ +0nLUHPI2Q4XWRazrzsseNMGYqfVIhLsK6zT3URPkEAp7R1JxoSiLoh4qOBdJH6AJHex4CWu
+ UaSXX5HLqxKl1sq1tO8rq2+hFxY63zbWINvgT0FUEME27Uik9A5t8l9/dmF0CdxKdmrOvGMw
+ T770cTt76xUryzM3fAyjtOEVEglkFtVQNM/BN/dnq4jDE5fikLLs8eaJwsWG9k9wQUMtmLpL
+ gRXeFPRRK+IT48xuG8rK0g2NOD8aW5ThTkF4apznZe74M7OWr/VbuZbYW443QQARAQABwsBf
+ BBgBAgAJBQJQzyD2AhsMAAoJEIfJwVG1HjhkNTgH/idWz2WjLE8DvTi7LvfybzvnXyx6rWUs
+ 91tXUdCzLuOtjqWVsqBtSaZynfhAjlbqRlrFZQ8i8jRyJY1IwqgvHP6PO9s+rIxKlfFQtqhl
+ kR1KUdhNGtiI90sTpi4aeXVsOyG3572KV3dKeFe47ALU6xE5ZL5U2LGhgQkbjr44I3EhPWc/
+ lJ/MgLOPkfIUgjRXt0ZcZEN6pAMPU95+u1N52hmqAOQZvyoyUOJFH1siBMAFRbhgWyv+YE2Y
+ ZkAyVDL2WxAedQgD/YCCJ+16yXlGYGNAKlvp07SimS6vBEIXk/3h5Vq4Hwgg0Z8+FRGtYZyD
+ KrhlU0uMP9QTB5WAUvxvGy8=
+Message-ID: <d4871533-32c4-e8ec-72ef-6fb5f62f6ef8@gmx.de>
+Date:   Mon, 27 May 2019 15:56:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190523154747.15162-2-christian@brauner.io>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <FseoXokiJzdprrRNbtaWjm5KHvHa5mlMA2PqnBgbvx8PwHGKzYObU38sBMOuJFy9fuNDYJ0Iaf_so-ju5rMz8lvTtgEcMcOjRogVc0mI6FA=@wintercode.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:kcv8tPQ6TQlAFRWEradgXahB6zCTKDT4vqU0EsHDOUrm6lIrjMl
+ gcy4puq+xA+DEeOWZm5dsLkZKuYEztyuf8IyNUdjP2Ds6azlivaECiWhBFfP7upJZKZFTrb
+ ub/vXUP48cLIJqnKG9H81sgRJdtwDi3lF88+YIC0pgpwPJWGdoLQ+PeI/zgTP7cB25P78uq
+ YXeab99NkZXZSrZpYNvtA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WeGtWyRU6ls=:SGJXV0fn5xqZhjYZnsPv/y
+ jeSD0oQKyJbqLEl0M1Nn34+S02OoBvWmQfu5Y+mgjCQw07taIxkYEPUXxOwuKSlB/hw9aYRjs
+ GohOWOZ3LlY4PYOPQrMmehmKs7YltelHsDfk2CS4q3yV88tehphsHFfEUp0XHoPmCREEpgQxw
+ 9NVx5Q2qPJ198xPDLARezGI5Cz/3NU0/s5uoL2ppAmEe/21tThGr64xJUyan1m+HwsDOMmbJy
+ VuP/R89DPzr2OC/oh4HPWp4mqAPRaP2fwqbBJSunZhLhS8LEvLsADv15hcfcWz7pvqPwjpO7E
+ oUgnu0dmbcKfzxgTq0u1Nvu9h//4wKxKCOyWA8zEvS+6qwJrwi1t4Ocdmi441lgMt428YpGGC
+ yD+n5ZKj0Y2nyfIenrxtT7Safsjs/bZT0BM4JVqorEeMdxbD1144rb9dU8kzlHRHXdQ+9pUQE
+ /CKf9D0BdGtr+8X105hZdTG1DNOPQfpyUcW4CUOR3xHAQiGucNUFiSyvEe19jOuWtL4YkMSyf
+ 52LPV4FNDPf4/AZFvKjczyo/41Ug45HnBj7V1BjBoDXhiuWiQEUETkHTLIbBckmPzRqLEoq/p
+ CmUwmj5/1pXDoi88HxUFI2UDuVGDPpcYBacC552aog61D3XUTfJ8Y4h8zFLGA+6xGUShRZ+wN
+ rYLGuK7Cj5h+j7WxeK/0CleUHsk6W9NDRgviu78CjGJ/u9TLJTYXBqYOntPfy2LBRZj7xBP/c
+ VnQ9mDv6IOkqmsKrTZyBixPYPll8PuneF1kayL5RQGssDNECrjpJB7yi0t1PM2qNACJoJy1wi
+ p5Xbass9d8g0TD/ytFjLfwVB0TOvKjRc/ikWI2u9aT2foPzLAdK8w5Gara4yZwm4sblFququW
+ OECU0fIdpskbdN7s8K/ea6oMG7wyTF7jOLbqVkfvHDhmBsvoRu8xCEXTFmIVS8ZjLeTBswpnU
+ X3BG2Bc/6mB9JyPjwQCpuHogJyVtR8atfXLYNacLsbj0kqDCb8veM
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-* Christian Brauner <christian@brauner.io> [2019-05-23 17:47:46 +0200]:
-> This adds the close_range() syscall. It allows to efficiently close a range
-> of file descriptors up to all file descriptors of a calling task.
-> 
-> The syscall came up in a recent discussion around the new mount API and
-> making new file descriptor types cloexec by default. During this
-> discussion, Al suggested the close_range() syscall (cf. [1]). Note, a
-> syscall in this manner has been requested by various people over time.
-> 
-> First, it helps to close all file descriptors of an exec()ing task. This
-> can be done safely via (quoting Al's example from [1] verbatim):
-> 
->         /* that exec is sensitive */
->         unshare(CLONE_FILES);
->         /* we don't want anything past stderr here */
->         close_range(3, ~0U);
->         execve(....);
+Hi Adrian,
 
-this does not work in a hosted c implementation unless the libc
-guarantees not to use libc internal fds (e.g. in execve).
-(the libc cannot easily abstract fds, so the syscall abi layer
-fd semantics is necessarily visible to user code.)
+I just sucessfully installed a hppa B180L workstation.
 
-i think this is a new constraint for userspace runtimes.
-(not entirely unreasonable though)
+Installation happened via serial console, since it seems the kernel has
+a bug which hangs the machine when started via graphic console (STIcon and=
+ stifb).
+I dropped the 2019-05-09 NETINST ISO image via "dd" to a second hard disc =
+and
+installed from there, which worked.
 
-> The code snippet above is one way of working around the problem that file
-> descriptors are not cloexec by default. This is aggravated by the fact that
-> we can't just switch them over without massively regressing userspace. For
-> a whole class of programs having an in-kernel method of closing all file
-> descriptors is very helpful (e.g. demons, service managers, programming
-> language standard libraries, container managers etc.).
+Good work!
 
-was cloexec_range(a,b) considered?
+Helge
 
-> (Please note, unshare(CLONE_FILES) should only be needed if the calling
->  task is multi-threaded and shares the file descriptor table with another
->  thread in which case two threads could race with one thread allocating
->  file descriptors and the other one closing them via close_range(). For the
->  general case close_range() before the execve() is sufficient.)
 
-assuming there is no unblocked signal handler that may open fds.
-
-a syscall that tramples on fds not owned by the caller is ugly
-(not generally safe to use and may break things if it gets used),
-i don't have a better solution for fd leaks or missing cloexec,
-but i think it needs more analysis how it can be used.
+On 12.05.19 14:42, LX wrote:
+> 2019-05-09 works now well on my hppa C8000 [on boot, usage of IPL must b=
+e NO, else the installer crashes on hardware detection]
+> IPL no: installation successful, system boots (with and without IPL)
+>
+> =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original=
+ Message =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
+> On Thursday, May 9, 2019 6:23 PM, John Paul Adrian Glaubitz <glaubitz@ph=
+ysik.fu-berlin.de> wrote:
+>
+>> Hello!
+>>
+>> I just uploaded updated installation images 2019-05-09 for the
+>> following Debian Ports architectures:
+>>
+>> -   alpha
+>> -   hppa
+>> -   ia64
+>> -   m68k
+>> -   powerpc
+>> -   ppc64
+>> -   sh4
+>> -   sparc64
+>>
+>>     I uploaded both CD images [1] as well as netboot images [2].
+>>
+>>     Please test those images and report back over the mailing list for
+>>     the corresponding architecture.
+>>
+>>     Known issues:
+..
+>>
+>> -   hppa
+>>     -   No known issues and changes.
+...
+>>
+>> when installing over a serial console. I also need to know
+>> what hardware was used, which installation steps (normal
+>> vs. expert) and which image was used.
+>>
+>> I am currently collecting bug reports but cannot push the fixes
+>> immediately as the imminent Debian Buster release means that
+>> debian-installer and components are effectively frozen.
+>>
+>> Thanks,
+>> Adrian
+>>
+>>> [1] https://cdimage.debian.org/cdimage/ports/2019-05-09/
+>>> [2] https://cdimage.debian.org/cdimage/ports/debian-installer/
