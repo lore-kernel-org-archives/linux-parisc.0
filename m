@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88FBBC28D19
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DC36C46460
 	for <linux-parisc@archiver.kernel.org>; Wed,  5 Jun 2019 20:32:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 63EA32075B
+	by mail.kernel.org (Postfix) with ESMTP id 384872075B
 	for <linux-parisc@archiver.kernel.org>; Wed,  5 Jun 2019 20:32:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="SddVfVGp"
+	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="tTakmL45"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbfFEUc1 (ORCPT
+        id S1726527AbfFEUc1 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
         Wed, 5 Jun 2019 16:32:27 -0400
-Received: from smtp.duncanthrax.net ([89.31.1.170]:36729 "EHLO
+Received: from smtp.duncanthrax.net ([89.31.1.170]:50084 "EHLO
         smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbfFEUc0 (ORCPT
+        with ESMTP id S1726502AbfFEUc0 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
         Wed, 5 Jun 2019 16:32:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=duncanthrax.net; s=dkim; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From;
-        bh=5YGYDUkYdAUpfT0Xr+s3BY3YgmF/shWOzJW/ii8TAfo=; b=SddVfVGpM7HMbFx5sKAqj02f/Q
-        TkkAdt2eh1cGJxCtQ78ECmmYRGq0tCAQKRvFdlYaycLYT+DcFiP8Pnd5Q/TNnHmsjdkXeN3+OW0bm
-        Mh4jVanAHsBd3DjyPXGy+wUb3e3o/Bvf8it4RyYmphhtGGiHRAbCW6dT10TM+DNnt85E=;
+        bh=wchMKd4QnWx9yZ26MZez4ppwTrJJj5iYiSeI3yEAsdw=; b=tTakmL45xf48P4zvWyT6cZy9Sg
+        cDSOHIN9CdwH1aIkNAt80GSCknOInIPHhg7Bsg3nZIpIuDWteedK747glufumUF5xsPkcFaXprW3H
+        FKerpnlxHw138Gg4Q9gzj26KN/UCIwILxZ9rYV629rPZaqnDyM3szkuOfyXOp4e/e+yI=;
 Received: from [134.3.44.134] (helo=t470p.stackframe.org)
         by smtp.eurescom.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <svens@stackframe.org>)
-        id 1hYca8-0004ei-WD; Wed, 05 Jun 2019 22:32:25 +0200
+        id 1hYca9-0004ei-EJ; Wed, 05 Jun 2019 22:32:25 +0200
 From:   Sven Schnelle <svens@stackframe.org>
 To:     deller@gmx.de
 Cc:     linux-parisc@vger.kernel.org, Sven Schnelle <svens@stackframe.org>
-Subject: [PATCH v3 3/6] parisc: add WARN_ON() to clear_fixmap
-Date:   Wed,  5 Jun 2019 22:32:19 +0200
-Message-Id: <20190605203222.6194-4-svens@stackframe.org>
+Subject: [PATCH v3 5/6] compiler.h: add CC_USING_PATCHABLE_FUNCTION_ENTRY
+Date:   Wed,  5 Jun 2019 22:32:21 +0200
+Message-Id: <20190605203222.6194-6-svens@stackframe.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190605203222.6194-1-svens@stackframe.org>
 References: <20190605203222.6194-1-svens@stackframe.org>
@@ -50,28 +50,27 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Calling clear_fixmap() on an already cleared fixed mapping is
-a bad thing to do. Add a WARN_ON() to catch such issues.
+This can be used for architectures implementing dynamic
+ftrace via -fpatchable-function-entry.
 
 Signed-off-by: Sven Schnelle <svens@stackframe.org>
 ---
- arch/parisc/mm/fixmap.c | 3 +++
- 1 file changed, 3 insertions(+)
+ include/linux/compiler_types.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/parisc/mm/fixmap.c b/arch/parisc/mm/fixmap.c
-index c8d41b54fb19..36321bcd75ba 100644
---- a/arch/parisc/mm/fixmap.c
-+++ b/arch/parisc/mm/fixmap.c
-@@ -35,6 +35,9 @@ void clear_fixmap(enum fixed_addresses idx)
- 	pmd_t *pmd = pmd_offset(pgd, vaddr);
- 	pte_t *pte = pte_offset_kernel(pmd, vaddr);
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index 19e58b9138a0..095d55c3834d 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -112,6 +112,8 @@ struct ftrace_likely_data {
  
-+	if (WARN_ON(pte_none(*pte)))
-+		return;
-+
- 	pte_clear(&init_mm, vaddr, pte);
- 
- 	flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE);
+ #if defined(CC_USING_HOTPATCH)
+ #define notrace			__attribute__((hotpatch(0, 0)))
++#elif defined(CC_USING_PATCHABLE_FUNCTION_ENTRY)
++#define notrace			__attribute__((patchable_function_entry(0, 0)))
+ #else
+ #define notrace			__attribute__((__no_instrument_function__))
+ #endif
 -- 
 2.20.1
 
