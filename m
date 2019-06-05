@@ -2,75 +2,70 @@ Return-Path: <SRS0=zn+d=UE=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6596FC28CC5
-	for <linux-parisc@archiver.kernel.org>; Wed,  5 Jun 2019 12:38:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5379EC28CC5
+	for <linux-parisc@archiver.kernel.org>; Wed,  5 Jun 2019 14:33:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 32765206BB
-	for <linux-parisc@archiver.kernel.org>; Wed,  5 Jun 2019 12:38:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D354220866
+	for <linux-parisc@archiver.kernel.org>; Wed,  5 Jun 2019 14:33:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DW1h/jz6"
+	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="OR+QgvMs"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727669AbfFEMi6 (ORCPT
+        id S1728083AbfFEOdt (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 5 Jun 2019 08:38:58 -0400
-Received: from mail-yw1-f51.google.com ([209.85.161.51]:36572 "EHLO
-        mail-yw1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727273AbfFEMi5 (ORCPT
+        Wed, 5 Jun 2019 10:33:49 -0400
+Received: from smtp.duncanthrax.net ([89.31.1.170]:40407 "EHLO
+        smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728026AbfFEOdt (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 5 Jun 2019 08:38:57 -0400
-Received: by mail-yw1-f51.google.com with SMTP id t126so283168ywf.3
-        for <linux-parisc@vger.kernel.org>; Wed, 05 Jun 2019 05:38:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
-        bh=FLoW8CyLozSZf8ymm84Gw0WP3MQ1Agik1tyc6HrVIyM=;
-        b=DW1h/jz6BTdLZPcyeISUo4iV95p9Uak+ldgyToSWr0FZ4Lw1h0ON12OXPIVRr1xyWb
-         5KjQs2IfzH2esibfHfHesNshukpHfHmXegfNww84pKoYIWjKAkhQaNjllAR27FEOr32U
-         NiJdHVpiOLq82pGqCh1ebmIi5TkyOH21w5Q/R7vzOXFG8plLVJ00UYCMF4WqZ0tu4w0l
-         OFEcuv+crwboq1KB5JNH0ZIWW7dPe3t5AVhcsdkJcalgeQ1mv8FFGcsfkW8NFGGSWnAt
-         guC9K3rcpmiJesRtlSzbnVX5iDno+KtCfTYLrYM16+aYxHG59FlzJKd4LjctcDqMlAEq
-         ZjyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=FLoW8CyLozSZf8ymm84Gw0WP3MQ1Agik1tyc6HrVIyM=;
-        b=s6Kx9Jl6XV9TR3lw9KISUaN+XKncGfT4el0Kq5aNfvfeoeTS9gJwDxkGtTB5jbNQms
-         Ara5rInBzaCMl/ORd9Mfyz17lJIYAqNLgf1Q3jbHxj5Ry1Kg71nXtXViOmrzrqbjgTOo
-         UTWEjTITRe/T7Xbq6IKBhwnRTPNAWcatRe4CZBYNG+Hh/cIpDMwu7plKU2QoR/Z4O6Uo
-         durOli3/TODvBVY++RE9HRXb9bmO2MFc7FH5P5EI01U6rYFkoCqh9Pw1Ay1GYBeFfKab
-         Vh0GlrkhsjBxCDZgd0C5A9FKrmsn1iRb7CqjiI2dGt3xnIf7q4Jr2uCIma/77Q2+XXyT
-         Mmtw==
-X-Gm-Message-State: APjAAAXo37T7zbOFIM8r5sOS58VhNJQSahah2YpoHBLJtGjrES/5qvBe
-        LBF7o5P6tYCmJw3I/PhqcycTVMcjVpZ56/6e9+agKGa3
-X-Google-Smtp-Source: APXvYqw4li9NJny6VAVUGBDPsVYqjDZLTIYkFdh3oSu5hErWmkT3rGGsoR0YCmaGJkIYq/b8pflS4mibbAIIwR7oHGo=
-X-Received: by 2002:a81:a186:: with SMTP id y128mr7951503ywg.128.1559738336828;
- Wed, 05 Jun 2019 05:38:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <5d53371f-d918-0333-08a7-ad0d04eb3b26@bell.net>
- <5aaedf55-97bf-8d38-da37-bdafa54b5e9f@gmx.de> <99ef56f8-4814-93ca-4c33-71ccbad5dd61@bell.net>
-In-Reply-To: <99ef56f8-4814-93ca-4c33-71ccbad5dd61@bell.net>
-From:   Carlo Pisani <carlojpisani@gmail.com>
-Date:   Wed, 5 Jun 2019 14:38:31 +0200
-Message-ID: <CA+QBN9BpA80MORxGafyit4-mPXk9jTWhNzd3Nj90WZwpZHoE=Q@mail.gmail.com>
-Subject: SCSI Adaptec aha-3950u2
+        Wed, 5 Jun 2019 10:33:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=duncanthrax.net; s=dkim; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date;
+        bh=xDkIYU5xviD8BThQyk+ZDquRDzLN9rQqGj45asylAX4=; b=OR+QgvMswOlOq4BVqtRVMuufAc
+        IjQGF/a27aHfE3T2Ri1XgMyXjmgxtQ2GPJipu26GlpvWRhf20DP11J1PD3yb1aNvn7IMr2nkSXhSR
+        oLSnSGeQOKfPiuc7Bc4ZKAsV9P8IWXbzkZcS5KEutVnG0DYtVQzx2tCvwLa8R6Mc2Lp0=;
+Received: from [134.3.44.134] (helo=t470p.stackframe.org)
+        by smtp.eurescom.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.86_2)
+        (envelope-from <svens@stackframe.org>)
+        id 1hYWz5-00038H-9S; Wed, 05 Jun 2019 16:33:47 +0200
+Date:   Wed, 5 Jun 2019 16:33:45 +0200
+From:   Sven Schnelle <svens@stackframe.org>
+To:     Carlo Pisani <carlojpisani@gmail.com>
 Cc:     linux-parisc <linux-parisc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+Subject: Re: SCSI Adaptec aha-3950u2
+Message-ID: <20190605143345.GA27783@t470p.stackframe.org>
+References: <5d53371f-d918-0333-08a7-ad0d04eb3b26@bell.net>
+ <5aaedf55-97bf-8d38-da37-bdafa54b5e9f@gmx.de>
+ <99ef56f8-4814-93ca-4c33-71ccbad5dd61@bell.net>
+ <CA+QBN9BpA80MORxGafyit4-mPXk9jTWhNzd3Nj90WZwpZHoE=Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+QBN9BpA80MORxGafyit4-mPXk9jTWhNzd3Nj90WZwpZHoE=Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-hi guys
-has Adaptec aha-3950u2 been tested on HPPA?
-it looks a PCI64 card with a RISC chip on it for processing SCSI commands.
+Hi,
 
-So it looks perfect for a stress test on the PCI bus
+On Wed, Jun 05, 2019 at 02:38:31PM +0200, Carlo Pisani wrote:
+> hi guys
+> has Adaptec aha-3950u2 been tested on HPPA?
+> it looks a PCI64 card with a RISC chip on it for processing SCSI commands.
+> 
+> So it looks perfect for a stress test on the PCI bus
+> 
+> found a discount for qty=4 units, so I am considering it
 
-found a discount for qty=4 units, so I am considering it
+Can't say about 3950u2, but a 29320A works in my J5000.
+Unlikely that this is well tested though, as NCR/LSI/Symbios Logic
+was the default SCSI chipset vendor in the PA-RISC world.
+
+Sven
