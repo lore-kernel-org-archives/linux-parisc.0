@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DC36C46460
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 325F5C28CC6
 	for <linux-parisc@archiver.kernel.org>; Wed,  5 Jun 2019 20:32:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 384872075B
+	by mail.kernel.org (Postfix) with ESMTP id 0CBEF2075B
 	for <linux-parisc@archiver.kernel.org>; Wed,  5 Jun 2019 20:32:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="tTakmL45"
+	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="nnSpg6lj"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726527AbfFEUc1 (ORCPT
+        id S1726543AbfFEUc0 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 5 Jun 2019 16:32:27 -0400
-Received: from smtp.duncanthrax.net ([89.31.1.170]:50084 "EHLO
+        Wed, 5 Jun 2019 16:32:26 -0400
+Received: from smtp.duncanthrax.net ([89.31.1.170]:57192 "EHLO
         smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726502AbfFEUc0 (ORCPT
+        with ESMTP id S1726527AbfFEUc0 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
         Wed, 5 Jun 2019 16:32:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=duncanthrax.net; s=dkim; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From;
-        bh=wchMKd4QnWx9yZ26MZez4ppwTrJJj5iYiSeI3yEAsdw=; b=tTakmL45xf48P4zvWyT6cZy9Sg
-        cDSOHIN9CdwH1aIkNAt80GSCknOInIPHhg7Bsg3nZIpIuDWteedK747glufumUF5xsPkcFaXprW3H
-        FKerpnlxHw138Gg4Q9gzj26KN/UCIwILxZ9rYV629rPZaqnDyM3szkuOfyXOp4e/e+yI=;
+        bh=DkSDqDpsMdGGavYvzoKFcsAqjPo7XeGtb6IBNsHEjGI=; b=nnSpg6ljkl8gllaIHPd5+9WK37
+        0wL1OkfZwwdfOqQ5ge0cdzJckLyVoRAZibsR6c+btnfRGKvZvyvMvBbaekiOdRizHeDLmmOXWING9
+        g6qJwNDXaK8AsTc2OKvnHT4cNpCfhc6EWI9jJrEO0hFrF9J+xbK1qsyFnBr13uC76Q0Y=;
 Received: from [134.3.44.134] (helo=t470p.stackframe.org)
         by smtp.eurescom.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <svens@stackframe.org>)
-        id 1hYca9-0004ei-EJ; Wed, 05 Jun 2019 22:32:25 +0200
+        id 1hYca8-0004ei-Q0; Wed, 05 Jun 2019 22:32:24 +0200
 From:   Sven Schnelle <svens@stackframe.org>
 To:     deller@gmx.de
 Cc:     linux-parisc@vger.kernel.org, Sven Schnelle <svens@stackframe.org>
-Subject: [PATCH v3 5/6] compiler.h: add CC_USING_PATCHABLE_FUNCTION_ENTRY
-Date:   Wed,  5 Jun 2019 22:32:21 +0200
-Message-Id: <20190605203222.6194-6-svens@stackframe.org>
+Subject: [PATCH v3 2/6] parisc: add spinlock to patch function
+Date:   Wed,  5 Jun 2019 22:32:18 +0200
+Message-Id: <20190605203222.6194-3-svens@stackframe.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190605203222.6194-1-svens@stackframe.org>
 References: <20190605203222.6194-1-svens@stackframe.org>
@@ -50,27 +50,88 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-This can be used for architectures implementing dynamic
-ftrace via -fpatchable-function-entry.
+If multiple CPUs are patching code we need the spinlock
+to protect against parallel fixmap maps/unmap calls.
 
 Signed-off-by: Sven Schnelle <svens@stackframe.org>
 ---
- include/linux/compiler_types.h | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/parisc/kernel/patch.c | 25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index 19e58b9138a0..095d55c3834d 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -112,6 +112,8 @@ struct ftrace_likely_data {
+diff --git a/arch/parisc/kernel/patch.c b/arch/parisc/kernel/patch.c
+index 70e9997a3f80..80a0ab372802 100644
+--- a/arch/parisc/kernel/patch.c
++++ b/arch/parisc/kernel/patch.c
+@@ -23,7 +23,9 @@ struct patch {
  
- #if defined(CC_USING_HOTPATCH)
- #define notrace			__attribute__((hotpatch(0, 0)))
-+#elif defined(CC_USING_PATCHABLE_FUNCTION_ENTRY)
-+#define notrace			__attribute__((patchable_function_entry(0, 0)))
- #else
- #define notrace			__attribute__((__no_instrument_function__))
- #endif
+ static DEFINE_RAW_SPINLOCK(patch_lock);
+ 
+-static void __kprobes *patch_map(void *addr, int fixmap, int *need_unmap)
++static void __kprobes *patch_map(void *addr, int fixmap, unsigned long *flags,
++				 int *need_unmap)
++{
+ 	unsigned long uintaddr = (uintptr_t) addr;
+ 	bool module = !core_kernel_text(uintaddr);
+ 	struct page *page;
+@@ -38,19 +40,29 @@ static void __kprobes *patch_map(void *addr, int fixmap, int *need_unmap)
+ 
+ 	*need_unmap = 1;
+ 	set_fixmap(fixmap, page_to_phys(page));
++	if (flags)
++		raw_spin_lock_irqsave(&patch_lock, *flags);
++	else
++		__acquire(&patch_lock);
+ 
+ 	return (void *) (__fix_to_virt(fixmap) + (uintaddr & ~PAGE_MASK));
+ }
+ 
+-static void __kprobes patch_unmap(int fixmap)
++static void __kprobes patch_unmap(int fixmap, unsigned long *flags)
+ {
+ 	clear_fixmap(fixmap);
++
++	if (flags)
++		raw_spin_unlock_irqrestore(&patch_lock, *flags);
++	else
++		__release(&patch_lock);
+ }
+ 
+ void __kprobes __patch_text_multiple(void *addr, u32 *insn, unsigned int len)
+ {
+ 	unsigned long start = (unsigned long)addr;
+ 	unsigned long end = (unsigned long)addr + len;
++	unsigned long flags;
+ 	u32 *p, *fixmap;
+ 	int mapped;
+ 
+@@ -58,7 +70,7 @@ void __kprobes __patch_text_multiple(void *addr, u32 *insn, unsigned int len)
+ 	flush_kernel_vmap_range(addr, len);
+ 	flush_icache_range(start, end);
+ 
+-	p = fixmap = patch_map(addr, FIX_TEXT_POKE0, &mapped);
++	p = fixmap = patch_map(addr, FIX_TEXT_POKE0, &flags, &mapped);
+ 
+ 	while (len >= 4) {
+ 		*p++ = *insn++;
+@@ -72,14 +84,15 @@ void __kprobes __patch_text_multiple(void *addr, u32 *insn, unsigned int len)
+ 			flush_kernel_vmap_range((void *)fixmap,
+ 						(p-fixmap) * sizeof(*p));
+ 			if (mapped)
+-				patch_unmap(FIX_TEXT_POKE0);
+-			p = fixmap = patch_map(addr, FIX_TEXT_POKE0, &mapped);
++				patch_unmap(FIX_TEXT_POKE0, &flags);
++			p = fixmap = patch_map(addr, FIX_TEXT_POKE0, &flags,
++						&mapped);
+ 		}
+ 	}
+ 
+ 	flush_kernel_vmap_range((void *)fixmap, (p-fixmap) * sizeof(*p));
+ 	if (mapped)
+-		patch_unmap(FIX_TEXT_POKE0);
++		patch_unmap(FIX_TEXT_POKE0, &flags);
+ 	flush_icache_range(start, end);
+ }
+ 
 -- 
 2.20.1
 
