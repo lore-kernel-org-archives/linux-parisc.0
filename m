@@ -1,243 +1,126 @@
-Return-Path: <SRS0=zn+d=UE=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=K2wt=UF=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62FF3C46470
-	for <linux-parisc@archiver.kernel.org>; Wed,  5 Jun 2019 20:32:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96850C04AB5
+	for <linux-parisc@archiver.kernel.org>; Thu,  6 Jun 2019 15:40:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 33B7E2075B
-	for <linux-parisc@archiver.kernel.org>; Wed,  5 Jun 2019 20:32:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6176720866
+	for <linux-parisc@archiver.kernel.org>; Thu,  6 Jun 2019 15:40:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="CUukBiNs"
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="GepI+C1a"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbfFEUc1 (ORCPT
+        id S1729196AbfFFPkg (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 5 Jun 2019 16:32:27 -0400
-Received: from smtp.duncanthrax.net ([89.31.1.170]:51573 "EHLO
-        smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbfFEUc1 (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 5 Jun 2019 16:32:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=duncanthrax.net; s=dkim; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From;
-        bh=ZIQfQw//dX+ATnJnm1JHYVg+GQfU15Fv5BWHkuDjnmc=; b=CUukBiNsBnjd73l1RuG9z/7XiG
-        Pjdiqm5UCCVxg5PduIq7S+FInLhDHTEal8yhQKYjmx6z9f9t5kKixqARcm/jsXlVpChaNpxKYXSU0
-        O8bnqSotyAOtC0qmHxWkmwEjgjD6bbjZ7aRBQoQJ4mrGpRmntDMYpjxEWokIhr6HQidE=;
-Received: from [134.3.44.134] (helo=t470p.stackframe.org)
-        by smtp.eurescom.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <svens@stackframe.org>)
-        id 1hYca9-0004ei-5b; Wed, 05 Jun 2019 22:32:25 +0200
-From:   Sven Schnelle <svens@stackframe.org>
-To:     deller@gmx.de
-Cc:     linux-parisc@vger.kernel.org, Sven Schnelle <svens@stackframe.org>
-Subject: [PATCH v3 4/6] parisc: use pr_debug() in kernel/module.c
-Date:   Wed,  5 Jun 2019 22:32:20 +0200
-Message-Id: <20190605203222.6194-5-svens@stackframe.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190605203222.6194-1-svens@stackframe.org>
-References: <20190605203222.6194-1-svens@stackframe.org>
+        Thu, 6 Jun 2019 11:40:36 -0400
+Received: from mout.gmx.net ([212.227.17.22]:33309 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729137AbfFFPkf (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 6 Jun 2019 11:40:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1559835627;
+        bh=W4DJzVZu72Pfh/thQ5Y5tNvxS3terSjGRw/QoIuXP64=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=GepI+C1a9Ghez/pCGDA9Vk1VzkKOJ8e1MKxrOXEUu+OIUOfl7SwDprvteWHwLq696
+         HTPqw0APmuJNlc+UXpDNFhvPhnkjqcEHQGAef/sTAsrAQhejzX9+yB6hjQzaeaCALR
+         N9eEU17YLC9Y6DyUYeDfIz+/lP7z9mFVeYVDs3bo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530 ([193.16.224.33]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MNsw4-1hAlua33gu-00ODC6; Thu, 06
+ Jun 2019 17:40:27 +0200
+Date:   Thu, 6 Jun 2019 17:40:15 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture fixes for kernel v5.2-rc4
+Message-ID: <20190606154015.GA13868@ls3530>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.11.3 (2019-02-01)
+X-Provags-ID: V03:K1:yEQf42Wwdpx1HEzG+5UQkDqf7lZ8Dh9ng1uv1VbR2OOtzsQ69q9
+ H1/R2M+tOY/Dr88cFsFiEnCR1TuJQZl3KglubBrR/7amtOPOZnamY+WM3ZoZ4TGPkArUoCj
+ HZqkzsZTGqXWa8bXVy3Vwo67s9DTqEaBG4IXISB9WX5yHID6x5KucfPzl7tMZ9lDvdYscv4
+ ZDy/qvvVHfYVwCPVWC6UQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FKH3I0ukLis=:I9IdlG5uHoZykPUAEiU+WR
+ onYH4mgxNX+zwtanyk4ZVsfez5+EWoKuOKlDJ4VHtcOwbTOrQb0xIGD0co30GQuMO0ER6kfXc
+ s8lBWt2kM6O5r8HimaIlsDKXNj32mL9qXoREP4JChZamXxd25RXUhRVnz7uR9CIUrYUcnDQE+
+ 7/5slwDMOL6kA+Ar6KSZopAWaBlAVdLLnJyB/wVbhGTjKc77QnYCRNyHzSWpjAKupxVGZgJW0
+ hLS8NTZbPnBfA0svWbESgE76JWbjDejkDOkFqNC2Cy0Jo3/0nXPZUT4mtqIjSInpR1MPN3xVK
+ sjGX18E7YDvD1zHuAoA7OktuV+B+24Se5ONQIw7UIbL/8lRkXVjAxv/nCfU8c4SpQGpGJ836G
+ AtmlHFw2S+BLgKveQscjQfllwiMiGOWXsWZhSFmZ99vDB48Bbigf4wlsPEuznwn8RfRLZ+Zfd
+ APOsAn9tRi7wV3H5Latv5kxkASAmCoHc4p4ssxLO1iFiJu2jFnjOT3NH4nBZBQSuRGguUJZe/
+ b5oG6dGw0C0kR+1icYzSbfcYCSiUWks4gEhATLYSLUcKggQXWF8Boobdal8vrsCOgSVmC3e6f
+ 0silvlBQba7aWLNaXLxg7B9lAl5HZcXiQ4VpDK4ozEgUjA39NA3a/6hviRap/V22oE6aJbByC
+ +rPynLOapyrz5EuoXt2qPeWU2+AVd4Mk+OEMRPm8wDRydb4+uqgzLc+n1WHtxkcSlHegJ8yin
+ Bnfq45z6rSGat37PQ6HvVXnMcA+/XB31nOWzH6yHO4Vqu1Lp3ijbfrWY+w60GJcPfusNlIc+G
+ pSqQZZqb6k/+Amh7y1OuejE/rOu1cnAl5JjmTWJU4HKJQTWL1XlmCIUa3Q3AFNU5S0/IZxvfO
+ +U/OWBgitQnT8WZCvnHhu0LoJ2ZSNFvvaWf7ZzpRAMDqyjW1zz4rghTgZZMzjMPC5vQwwC4Iv
+ DtGhOtWW3nABixfN4SGCa+XtyVLTtX/T0zW8M51pSGNrkv9sssPuc
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Instead of using our own version, switch to the generic
-pr_() calls.
+Hi Linus,
 
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
----
- arch/parisc/kernel/module.c | 44 ++++++++++++++++---------------------
- 1 file changed, 19 insertions(+), 25 deletions(-)
+please pull some additional fixes and cleanups for the parisc architecture from:
 
-diff --git a/arch/parisc/kernel/module.c b/arch/parisc/kernel/module.c
-index 43778420614b..3ff3b48df6e6 100644
---- a/arch/parisc/kernel/module.c
-+++ b/arch/parisc/kernel/module.c
-@@ -48,9 +48,9 @@
-  *	However, SEGREL32 is used only for PARISC unwind entries, and we want
-  *	those entries to have an absolute address, and not just an offset.
-  *
-- *	The unwind table mechanism has the ability to specify an offset for 
-+ *	The unwind table mechanism has the ability to specify an offset for
-  *	the unwind table; however, because we split off the init functions into
-- *	a different piece of memory, it is not possible to do this using a 
-+ *	a different piece of memory, it is not possible to do this using a
-  *	single offset. Instead, we use the above hack for now.
-  */
- 
-@@ -68,12 +68,6 @@
- #include <asm/unwind.h>
- #include <asm/sections.h>
- 
--#if 0
--#define DEBUGP printk
--#else
--#define DEBUGP(fmt...)
--#endif
--
- #define RELOC_REACHABLE(val, bits) \
- 	(( ( !((val) & (1<<((bits)-1))) && ((val)>>(bits)) != 0 )  ||	\
- 	     ( ((val) & (1<<((bits)-1))) && ((val)>>(bits)) != (((__typeof__(val))(~0))>>((bits)+2)))) ? \
-@@ -315,7 +309,7 @@ unsigned int arch_mod_section_prepend(struct module *mod,
- 		* sizeof(struct stub_entry);
- }
- 
--#define CONST 
-+#define CONST
- int module_frob_arch_sections(CONST Elf_Ehdr *hdr,
- 			      CONST Elf_Shdr *sechdrs,
- 			      CONST char *secstrings,
-@@ -401,7 +395,7 @@ static Elf64_Word get_got(struct module *me, unsigned long value, long addend)
- 
- 	got[i].addr = value;
-  out:
--	DEBUGP("GOT ENTRY %d[%x] val %lx\n", i, i*sizeof(struct got_entry),
-+	pr_debug("GOT ENTRY %d[%lx] val %lx\n", i, i*sizeof(struct got_entry),
- 	       value);
- 	return i * sizeof(struct got_entry);
- }
-@@ -554,7 +548,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
- 	//unsigned long dp = (unsigned long)$global$;
- 	register unsigned long dp asm ("r27");
- 
--	DEBUGP("Applying relocate section %u to %u\n", relsec,
-+	pr_debug("Applying relocate section %u to %u\n", relsec,
- 	       targetsec);
- 	for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
- 		/* This is where to make the change */
-@@ -578,7 +572,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
- 
- #if 0
- #define r(t) ELF32_R_TYPE(rel[i].r_info)==t ? #t :
--		DEBUGP("Symbol %s loc 0x%x val 0x%x addend 0x%x: %s\n",
-+		pr_debug("Symbol %s loc 0x%x val 0x%x addend 0x%x: %s\n",
- 			strtab + sym->st_name,
- 			(uint32_t)loc, val, addend,
- 			r(R_PARISC_PLABEL32)
-@@ -619,7 +613,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
- 			/* See note about special handling of SEGREL32 at
- 			 * the beginning of this file.
- 			 */
--			*loc = fsel(val, addend); 
-+			*loc = fsel(val, addend);
- 			break;
- 		case R_PARISC_SECREL32:
- 			/* 32-bit section relative address. */
-@@ -698,7 +692,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
- 	Elf_Addr loc0;
- 	unsigned int targetsec = sechdrs[relsec].sh_info;
- 
--	DEBUGP("Applying relocate section %u to %u\n", relsec,
-+	pr_debug("Applying relocate section %u to %u\n", relsec,
- 	       targetsec);
- 	for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
- 		/* This is where to make the change */
-@@ -740,7 +734,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
- 		case R_PARISC_LTOFF21L:
- 			/* LT-relative; left 21 bits */
- 			val = get_got(me, val, addend);
--			DEBUGP("LTOFF21L Symbol %s loc %p val %lx\n",
-+			pr_debug("LTOFF21L Symbol %s loc %p val %llx\n",
- 			       strtab + sym->st_name,
- 			       loc, val);
- 			val = lrsel(val, 0);
-@@ -751,14 +745,14 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
- 			/* LT-relative; right 14 bits */
- 			val = get_got(me, val, addend);
- 			val = rrsel(val, 0);
--			DEBUGP("LTOFF14R Symbol %s loc %p val %lx\n",
-+			pr_debug("LTOFF14R Symbol %s loc %p val %llx\n",
- 			       strtab + sym->st_name,
- 			       loc, val);
- 			*loc = mask(*loc, 14) | reassemble_14(val);
- 			break;
- 		case R_PARISC_PCREL22F:
- 			/* PC-relative; 22 bits */
--			DEBUGP("PCREL22F Symbol %s loc %p val %lx\n",
-+			pr_debug("PCREL22F Symbol %s loc %p val %llx\n",
- 			       strtab + sym->st_name,
- 			       loc, val);
- 			val += addend;
-@@ -790,7 +784,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
- 					val = get_stub(me, val, addend, ELF_STUB_GOT,
- 						       loc0, targetsec);
- 			}
--			DEBUGP("STUB FOR %s loc %lx, val %lx+%lx at %lx\n", 
-+			pr_debug("STUB FOR %s loc %px, val %llx+%llx at %llx\n",
- 			       strtab + sym->st_name, loc, sym->st_value,
- 			       addend, val);
- 			val = (val - dot - 8)/4;
-@@ -810,7 +804,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
- 			/* See note about special handling of SEGREL32 at
- 			 * the beginning of this file.
- 			 */
--			*loc = fsel(val, addend); 
-+			*loc = fsel(val, addend);
- 			break;
- 		case R_PARISC_SECREL32:
- 			/* 32-bit section relative address. */
-@@ -820,14 +814,14 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
- 			/* 64-bit function address */
- 			if(in_local(me, (void *)(val + addend))) {
- 				*loc64 = get_fdesc(me, val+addend);
--				DEBUGP("FDESC for %s at %p points to %lx\n",
-+				pr_debug("FDESC for %s at %llx points to %llx\n",
- 				       strtab + sym->st_name, *loc64,
- 				       ((Elf_Fdesc *)*loc64)->addr);
- 			} else {
- 				/* if the symbol is not local to this
- 				 * module then val+addend is a pointer
- 				 * to the function descriptor */
--				DEBUGP("Non local FPTR64 Symbol %s loc %p val %lx\n",
-+				pr_debug("Non local FPTR64 Symbol %s loc %p val %llx\n",
- 				       strtab + sym->st_name,
- 				       loc, val);
- 				*loc64 = val + addend;
-@@ -858,7 +852,7 @@ register_unwind_table(struct module *me,
- 	end = table + sechdrs[me->arch.unwind_section].sh_size;
- 	gp = (Elf_Addr)me->core_layout.base + me->arch.got_offset;
- 
--	DEBUGP("register_unwind_table(), sect = %d at 0x%p - 0x%p (gp=0x%lx)\n",
-+	pr_debug("register_unwind_table(), sect = %d at 0x%p - 0x%p (gp=0x%lx)\n",
- 	       me->arch.unwind_section, table, end, gp);
- 	me->arch.unwind = unwind_table_add(me->name, 0, gp, table, end);
- }
-@@ -914,7 +908,7 @@ int module_finalize(const Elf_Ehdr *hdr,
- 		}
- 	}
- 
--	DEBUGP("module %s: strtab %p, symhdr %p\n",
-+	pr_debug("module %s: strtab %p, symhdr %p\n",
- 	       me->name, strtab, symhdr);
- 
- 	if(me->arch.got_count > MAX_GOTS) {
-@@ -933,7 +927,7 @@ int module_finalize(const Elf_Ehdr *hdr,
- 	oldptr = (void *)symhdr->sh_addr;
- 	newptr = oldptr + 1;	/* we start counting at 1 */
- 	nsyms = symhdr->sh_size / sizeof(Elf_Sym);
--	DEBUGP("OLD num_symtab %lu\n", nsyms);
-+	pr_debug("OLD num_symtab %lu\n", nsyms);
- 
- 	for (i = 1; i < nsyms; i++) {
- 		oldptr++;	/* note, count starts at 1 so preincrement */
-@@ -948,7 +942,7 @@ int module_finalize(const Elf_Ehdr *hdr,
- 
- 	}
- 	nsyms = newptr - (Elf_Sym *)symhdr->sh_addr;
--	DEBUGP("NEW num_symtab %lu\n", nsyms);
-+	pr_debug("NEW num_symtab %lu\n", nsyms);
- 	symhdr->sh_size = nsyms * sizeof(Elf_Sym);
- 
- 	/* find .altinstructions section */
--- 
-2.20.1
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.2-3
 
+Changes include
+- Fix crashes when accessing PCI devices on some machines like C240 and J5000.
+  The crashes were triggered because we replaced cache flushes by nops in the
+  alternative coding where we shouldn't for some machines.
+- Dave fixed a race in the usage of the sr1 space register when used to
+  load the coherence index.
+- Use the hardware lpa instruction to to load the physical address of kernel
+  virtual addresses in the iommu driver code.
+- The kernel may fail to link when CONFIG_MLONGCALLS isn't set. Solve that by
+  rearranging functions in the final vmlinux executeable.
+- Some defconfig cleanups and removal of compiler warnings.
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Helge Deller (3):
+      parisc: Allow building 64-bit kernel without -mlong-calls compiler option
+      parisc: Fix compiler warnings in float emulation code
+      parisc: Fix crash due alternative coding for NP iopdir_fdc bit
+
+John David Anglin (2):
+      parisc: Use implicit space register selection for loading the coherence index of I/O pdirs
+      parisc: Use lpa instruction to load physical addresses in driver code
+
+Krzysztof Kozlowski (1):
+      parisc: configs: Remove useless UEVENT_HELPER_PATH
+
+Mike Rapoport (1):
+      parisc: Kconfig: remove ARCH_DISCARD_MEMBLOCK
+
+Yury Norov (1):
+      parisc/slab: cleanup after /proc/slab_allocators removal
+
+ arch/parisc/Kconfig                         |  4 ++--
+ arch/parisc/configs/712_defconfig           |  1 -
+ arch/parisc/configs/a500_defconfig          |  1 -
+ arch/parisc/configs/b180_defconfig          |  1 -
+ arch/parisc/configs/c3000_defconfig         |  1 -
+ arch/parisc/configs/c8000_defconfig         |  2 --
+ arch/parisc/configs/default_defconfig       |  1 -
+ arch/parisc/configs/generic-32bit_defconfig |  1 -
+ arch/parisc/include/asm/special_insns.h     | 24 ++++++++++++++++++++++++
+ arch/parisc/kernel/alternative.c            |  3 ++-
+ arch/parisc/kernel/vmlinux.lds.S            | 21 ++++++++++++++-------
+ arch/parisc/math-emu/cnv_float.h            |  8 ++++----
+ drivers/parisc/ccio-dma.c                   |  6 ++----
+ drivers/parisc/sba_iommu.c                  |  5 ++---
+ 14 files changed, 50 insertions(+), 29 deletions(-)
