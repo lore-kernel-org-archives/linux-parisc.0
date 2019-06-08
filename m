@@ -1,71 +1,113 @@
-Return-Path: <SRS0=K2wt=UF=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=yJk0=UH=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	T_DKIMWL_WL_HIGH autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F13AC04AB5
-	for <linux-parisc@archiver.kernel.org>; Thu,  6 Jun 2019 20:20:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92D9CC28CC5
+	for <linux-parisc@archiver.kernel.org>; Sat,  8 Jun 2019 11:45:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EC573208C3
-	for <linux-parisc@archiver.kernel.org>; Thu,  6 Jun 2019 20:20:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 626D4214AF
+	for <linux-parisc@archiver.kernel.org>; Sat,  8 Jun 2019 11:45:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1559852408;
-	bh=Wh4GqJ1QrWwH3h82KZyFsR/7ezT9IgfqAPS0MThe3Yc=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
-	b=un25zFdKo+UBuoFEiZz9NS9MbK2ef/XazX7qO39J6ZEbGCmjRzGqeTQvWbsHrbRVE
-	 C2aIA+x5x1Y7Au7rvjIdnZ4LgscdgEYIh6EFDxyjRZhL/H6XFDBsXXavmDoeUSHD0I
-	 LSPNrXkLGBRZogTRKMzbKwEfFLDH2Jharg8THal8=
+	s=default; t=1559994314;
+	bh=sVSPEhC3zlekc/OLKlMq0TYhvASDHwGvD7nOh6vOqdE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=GVBgYHQ4je2QlEc5yjm5F7wFOgQRzFuRLjuipfh+uU0fJKR+hdGTkdjVyVnTaeY8d
+	 CJIwdv4KF+IbNoMD7JnwnlDD52PJFjCLKS0n4xmp3djWwUx642qu1/W5MiQK6tJxl3
+	 KOxonh8o63Dd/OywpTVezECZW2dsAgzQQvWlhNeQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbfFFUUC (ORCPT
+        id S1727966AbfFHLpI (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 6 Jun 2019 16:20:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56274 "EHLO mail.kernel.org"
+        Sat, 8 Jun 2019 07:45:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726238AbfFFUUC (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 6 Jun 2019 16:20:02 -0400
-Subject: Re: [GIT PULL] parisc architecture fixes for kernel v5.2-rc4
+        id S1728745AbfFHLn1 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sat, 8 Jun 2019 07:43:27 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4378214D8;
+        Sat,  8 Jun 2019 11:43:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559852401;
-        bh=Wh4GqJ1QrWwH3h82KZyFsR/7ezT9IgfqAPS0MThe3Yc=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Z+qQ3KUA2rM06nWeKJr5cuRZWCQ71rwOCAwI7xcnC2pxPK0wvK51lZR5WXNz24dPm
-         fDGtxPNfw1K6Fhc8zBWNjKZ6cvRHN/84ujGY7Twef9ReX4edxUxk7TWpWAAb/Bc3q6
-         hOUsbV6mJ+aw94tXK5zZE6+2+hMyj7naYCAeyN0s=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20190606154015.GA13868@ls3530>
-References: <20190606154015.GA13868@ls3530>
-X-PR-Tracked-List-Id: <linux-parisc.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20190606154015.GA13868@ls3530>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git
- parisc-5.2-3
-X-PR-Tracked-Commit-Id: 527a1d1ede98479bf90c31a64822107ac7e6d276
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 16d72dd4891fecc1e1bf7ca193bb7d5b9804c038
-Message-Id: <155985240168.29387.12528687456834222878.pr-tracker-bot@kernel.org>
-Date:   Thu, 06 Jun 2019 20:20:01 +0000
-To:     Helge Deller <deller@gmx.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+        s=default; t=1559994207;
+        bh=sVSPEhC3zlekc/OLKlMq0TYhvASDHwGvD7nOh6vOqdE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bdXjJzobO4rQkds8ani1LfRfjak/BjZ2gBxPq6yl+HQasaGVWhpNmXLthQi7Sa4CC
+         oy/FWvucEWgI+TDSqsOED9JnWcs+0+/UGGgDvo2NMvJjgVgKFn2KTn7SOgqPeXQ3ZB
+         XG3HVMIkeh7+Y6CwuUc0/No0NSfdLPRIdtgKTxaI=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 19/49] net: tulip: de4x5: Drop redundant MODULE_DEVICE_TABLE()
+Date:   Sat,  8 Jun 2019 07:42:00 -0400
+Message-Id: <20190608114232.8731-19-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190608114232.8731-1-sashal@kernel.org>
+References: <20190608114232.8731-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The pull request you sent on Thu, 6 Jun 2019 17:40:15 +0200:
+From: Kees Cook <keescook@chromium.org>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.2-3
+[ Upstream commit 3e66b7cc50ef921121babc91487e1fb98af1ba6e ]
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/16d72dd4891fecc1e1bf7ca193bb7d5b9804c038
+Building with Clang reports the redundant use of MODULE_DEVICE_TABLE():
 
-Thank you!
+drivers/net/ethernet/dec/tulip/de4x5.c:2110:1: error: redefinition of '__mod_eisa__de4x5_eisa_ids_device_table'
+MODULE_DEVICE_TABLE(eisa, de4x5_eisa_ids);
+^
+./include/linux/module.h:229:21: note: expanded from macro 'MODULE_DEVICE_TABLE'
+extern typeof(name) __mod_##type##__##name##_device_table               \
+                    ^
+<scratch space>:90:1: note: expanded from here
+__mod_eisa__de4x5_eisa_ids_device_table
+^
+drivers/net/ethernet/dec/tulip/de4x5.c:2100:1: note: previous definition is here
+MODULE_DEVICE_TABLE(eisa, de4x5_eisa_ids);
+^
+./include/linux/module.h:229:21: note: expanded from macro 'MODULE_DEVICE_TABLE'
+extern typeof(name) __mod_##type##__##name##_device_table               \
+                    ^
+<scratch space>:85:1: note: expanded from here
+__mod_eisa__de4x5_eisa_ids_device_table
+^
 
+This drops the one further from the table definition to match the common
+use of MODULE_DEVICE_TABLE().
+
+Fixes: 07563c711fbc ("EISA bus MODALIAS attributes support")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/ethernet/dec/tulip/de4x5.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
+index 66535d1653f6..f16853c3c851 100644
+--- a/drivers/net/ethernet/dec/tulip/de4x5.c
++++ b/drivers/net/ethernet/dec/tulip/de4x5.c
+@@ -2107,7 +2107,6 @@ static struct eisa_driver de4x5_eisa_driver = {
+ 		.remove  = de4x5_eisa_remove,
+         }
+ };
+-MODULE_DEVICE_TABLE(eisa, de4x5_eisa_ids);
+ #endif
+ 
+ #ifdef CONFIG_PCI
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+2.20.1
+
