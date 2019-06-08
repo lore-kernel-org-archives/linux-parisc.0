@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4882C28CC5
-	for <linux-parisc@archiver.kernel.org>; Sat,  8 Jun 2019 11:52:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75A1DC468BC
+	for <linux-parisc@archiver.kernel.org>; Sat,  8 Jun 2019 11:53:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A13FF216C4
-	for <linux-parisc@archiver.kernel.org>; Sat,  8 Jun 2019 11:52:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 45F9E2168B
+	for <linux-parisc@archiver.kernel.org>; Sat,  8 Jun 2019 11:53:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1559994727;
-	bh=JJG+oXo8L7xI8kAMR0LTR1wt7Hovmkk9f0cgYmJh/l8=;
+	s=default; t=1559994828;
+	bh=sVSPEhC3zlekc/OLKlMq0TYhvASDHwGvD7nOh6vOqdE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=cVxgGwN0iFMYltELoYTLMA5jQOnovG/2dwvZZjbops+WEPZpDUEBot9TfKyD6PkP2
-	 3MmwipNBLb9Ir8VA0EzxBIYiv6pTypW7O2+eBx/zLiTM8nbJPjxq37dr3midhVckt+
-	 C6wstA8y0ABxaPzGamlbWf42lT7JUVM1twmm5HpQ=
+	b=SHQ1O62F2mkD38hlQPWxIzuLGmfpCbzczBHS9McbiIA/v3xq8+s+Ow5uqpBU2hRj8
+	 gfK6/H2+F171CQpztw78MrimiAGH7l4F7u1rGXbnAgPZo9a4sQ6HCwM7fYcH6Le+S6
+	 bARlVhzaOQMYZkA1vFDxix95M7ld3UYlPLtLtihs=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728639AbfFHLwC (ORCPT
+        id S1727787AbfFHLkm (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 8 Jun 2019 07:52:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36104 "EHLO mail.kernel.org"
+        Sat, 8 Jun 2019 07:40:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729221AbfFHLrY (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 8 Jun 2019 07:47:24 -0400
+        id S1727777AbfFHLkm (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sat, 8 Jun 2019 07:40:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D12EF214DA;
-        Sat,  8 Jun 2019 11:47:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE071208C0;
+        Sat,  8 Jun 2019 11:40:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559994443;
-        bh=JJG+oXo8L7xI8kAMR0LTR1wt7Hovmkk9f0cgYmJh/l8=;
+        s=default; t=1559994041;
+        bh=sVSPEhC3zlekc/OLKlMq0TYhvASDHwGvD7nOh6vOqdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kFxoOxRRb+qjR0jt6TyvvBuT0xBHtzI7rH2Q6mNfYapwzKGLEmSVJqPOjWYkWajTP
-         Lc4BJ1sM8ww5iIp0dnTqmyGDNz9/6iYe9U/iQbl+P/zF9eEnb9tNXYEoUthW0VSUBD
-         Z79ZhnLN+SXBZpH10v5TCWWzkNJSTFixNHQHayOI=
+        b=XFjtXtxu1QZItDrmGqsVswrnYKpr+diCsfwvjO/LWdjhqIv1Wt7xWj5F2cjlc/x2+
+         KAJY8SitcM8aNQ0S9qEQh/qwGetroMX9peLdMdA1dWnEkjDc3nMOciXGti9eMwm05Z
+         cDY42U6S0YprRcSHPplT/0jEbKwyqrteTC6Xx3nw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 14/31] net: tulip: de4x5: Drop redundant MODULE_DEVICE_TABLE()
-Date:   Sat,  8 Jun 2019 07:46:25 -0400
-Message-Id: <20190608114646.9415-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 32/70] net: tulip: de4x5: Drop redundant MODULE_DEVICE_TABLE()
+Date:   Sat,  8 Jun 2019 07:39:11 -0400
+Message-Id: <20190608113950.8033-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190608114646.9415-1-sashal@kernel.org>
-References: <20190608114646.9415-1-sashal@kernel.org>
+In-Reply-To: <20190608113950.8033-1-sashal@kernel.org>
+References: <20190608113950.8033-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -97,10 +97,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
-index 0affee9c8aa2..0b1e7a96ff49 100644
+index 66535d1653f6..f16853c3c851 100644
 --- a/drivers/net/ethernet/dec/tulip/de4x5.c
 +++ b/drivers/net/ethernet/dec/tulip/de4x5.c
-@@ -2108,7 +2108,6 @@ static struct eisa_driver de4x5_eisa_driver = {
+@@ -2107,7 +2107,6 @@ static struct eisa_driver de4x5_eisa_driver = {
  		.remove  = de4x5_eisa_remove,
          }
  };
