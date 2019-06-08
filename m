@@ -2,112 +2,117 @@ Return-Path: <SRS0=yJk0=UH=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75A1DC468BC
-	for <linux-parisc@archiver.kernel.org>; Sat,  8 Jun 2019 11:53:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B7F5C28CC5
+	for <linux-parisc@archiver.kernel.org>; Sat,  8 Jun 2019 12:52:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 45F9E2168B
-	for <linux-parisc@archiver.kernel.org>; Sat,  8 Jun 2019 11:53:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1559994828;
-	bh=sVSPEhC3zlekc/OLKlMq0TYhvASDHwGvD7nOh6vOqdE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=SHQ1O62F2mkD38hlQPWxIzuLGmfpCbzczBHS9McbiIA/v3xq8+s+Ow5uqpBU2hRj8
-	 gfK6/H2+F171CQpztw78MrimiAGH7l4F7u1rGXbnAgPZo9a4sQ6HCwM7fYcH6Le+S6
-	 bARlVhzaOQMYZkA1vFDxix95M7ld3UYlPLtLtihs=
+	by mail.kernel.org (Postfix) with ESMTP id 794D821537
+	for <linux-parisc@archiver.kernel.org>; Sat,  8 Jun 2019 12:52:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbfFHLkm (ORCPT
+        id S1727038AbfFHMwI (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 8 Jun 2019 07:40:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57974 "EHLO mail.kernel.org"
+        Sat, 8 Jun 2019 08:52:08 -0400
+Received: from smtp.gentoo.org ([140.211.166.183]:39628 "EHLO smtp.gentoo.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727777AbfFHLkm (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 8 Jun 2019 07:40:42 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        id S1726984AbfFHMwI (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sat, 8 Jun 2019 08:52:08 -0400
+Received: from wim.jer (jer.xs4all.nl [212.238.182.54])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE071208C0;
-        Sat,  8 Jun 2019 11:40:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559994041;
-        bh=sVSPEhC3zlekc/OLKlMq0TYhvASDHwGvD7nOh6vOqdE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XFjtXtxu1QZItDrmGqsVswrnYKpr+diCsfwvjO/LWdjhqIv1Wt7xWj5F2cjlc/x2+
-         KAJY8SitcM8aNQ0S9qEQh/qwGetroMX9peLdMdA1dWnEkjDc3nMOciXGti9eMwm05Z
-         cDY42U6S0YprRcSHPplT/0jEbKwyqrteTC6Xx3nw=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 32/70] net: tulip: de4x5: Drop redundant MODULE_DEVICE_TABLE()
-Date:   Sat,  8 Jun 2019 07:39:11 -0400
-Message-Id: <20190608113950.8033-32-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190608113950.8033-1-sashal@kernel.org>
-References: <20190608113950.8033-1-sashal@kernel.org>
+        (Authenticated sender: jer)
+        by smtp.gentoo.org (Postfix) with ESMTPSA id DCC723459F5;
+        Sat,  8 Jun 2019 12:52:06 +0000 (UTC)
+Date:   Sat, 8 Jun 2019 14:52:01 +0200
+From:   Jeroen Roovers <jer@gentoo.org>
+To:     linux-parisc <linux-parisc@vger.kernel.org>
+Cc:     hppa@gentoo.org
+Subject: [RESEND V2] modprobe: ERROR: could not insert 'ipv6': Exec format
+ error / module ipv6: Unknown relocation: 72
+Message-ID: <20190608145201.56c667f5@wim.jer>
+Organization: Gentoo Foundation
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+Second resend. Not sure why e-mail from my Gentoo account and private
+account never arrive. Originally sent on 21 May 2019, but I still see
+this issue in 5.2.0-rc3-JeR-00077-g16d72dd4891f. I attached the kernel
+config in earlier attempts but I am leaving that out this time.
 
-[ Upstream commit 3e66b7cc50ef921121babc91487e1fb98af1ba6e ]
 
-Building with Clang reports the redundant use of MODULE_DEVICE_TABLE():
+<Forwarded message:> 
 
-drivers/net/ethernet/dec/tulip/de4x5.c:2110:1: error: redefinition of '__mod_eisa__de4x5_eisa_ids_device_table'
-MODULE_DEVICE_TABLE(eisa, de4x5_eisa_ids);
-^
-./include/linux/module.h:229:21: note: expanded from macro 'MODULE_DEVICE_TABLE'
-extern typeof(name) __mod_##type##__##name##_device_table               \
-                    ^
-<scratch space>:90:1: note: expanded from here
-__mod_eisa__de4x5_eisa_ids_device_table
-^
-drivers/net/ethernet/dec/tulip/de4x5.c:2100:1: note: previous definition is here
-MODULE_DEVICE_TABLE(eisa, de4x5_eisa_ids);
-^
-./include/linux/module.h:229:21: note: expanded from macro 'MODULE_DEVICE_TABLE'
-extern typeof(name) __mod_##type##__##name##_device_table               \
-                    ^
-<scratch space>:85:1: note: expanded from here
-__mod_eisa__de4x5_eisa_ids_device_table
-^
 
-This drops the one further from the table definition to match the common
-use of MODULE_DEVICE_TABLE().
+# modprobe -v ipv6
+insmod /lib/modules/5.2.0-rc1-JeR/kernel/net/ipv6/ipv6.ko
+modprobe: ERROR: could not insert 'ipv6': Exec format error
 
-Fixes: 07563c711fbc ("EISA bus MODALIAS attributes support")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/dec/tulip/de4x5.c | 1 -
- 1 file changed, 1 deletion(-)
+dmesg:
+module ipv6: Unknown relocation: 72
 
-diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
-index 66535d1653f6..f16853c3c851 100644
---- a/drivers/net/ethernet/dec/tulip/de4x5.c
-+++ b/drivers/net/ethernet/dec/tulip/de4x5.c
-@@ -2107,7 +2107,6 @@ static struct eisa_driver de4x5_eisa_driver = {
- 		.remove  = de4x5_eisa_remove,
-         }
- };
--MODULE_DEVICE_TABLE(eisa, de4x5_eisa_ids);
- #endif
- 
- #ifdef CONFIG_PCI
--- 
-2.20.1
+# modprobe -v nf_conntrack
+insmod /lib/modules/5.2.0-rc1-JeR/kernel/net/netfilter/nf_conntrack.ko
+modprobe: ERROR: could not insert 'nf_conntrack': Exec format error
+
+dmesg:
+module nf_conntrack: Unknown relocation: 72
+
+Note that other modules are loaded properly. Any ideas?
+
+
+Kind regards,
+     jer
+
+
+
+--
+System information:
+
+Linux karsten 5.2.0-rc1-JeR #60 SMP Mon May 20 09:34:40 CEST 2019
+parisc64 PA8800 (Mako) 9000/785/C8000 GNU/Linux
+
+Linux version 5.2.0-rc1-JeR (root@karsten) (gcc version 8.3.0 (Gentoo
+8.3.0 p1.0)) #60 SMP Mon May 20 09:34:40 CEST 2019
+
+at commit commit a188339ca5a396acc588e5851ed7e19f66b0ebd9 (HEAD, tag:
+v5.2-rc1, origin/master, origin/HEAD, master)
+
+ # hppa64-unknown-linux-gnu-gcc -v
+Using built-in specs.
+COLLECT_GCC=hppa64-unknown-linux-gnu-gcc
+COLLECT_LTO_WRAPPER=/usr/libexec/gcc/hppa64-unknown-linux-gnu/8.3.0/lto-wrapper
+Target: hppa64-unknown-linux-gnu
+Configured
+ with: /var/tmp/portage/sys-devel/kgcc64-8.3.0/work/gcc-8.3.0/configure
+ --host=hppa2.0-unknown-linux-gnu --target=hppa64-unknown-linux-gnu
+ --build=hppa2.0-unknown-linux-gnu --prefix=/usr
+ --bindir=/usr/hppa2.0-unknown-linux-gnu/hppa64-unknown-linux-gnu/gcc-bin/8.3.0
+ --includedir=/usr/lib/gcc/hppa64-unknown-linux-gnu/8.3.0/include
+ --datadir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/8.3.0
+ --mandir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/8.3.0/man
+ --infodir=/usr/share/gcc-data/hppa64-unknown-linux-gnu/8.3.0/info
+ --with-gxx-include-dir=/usr/lib/gcc/hppa64-unknown-linux-gnu/8.3.0/include/g++-v8
+ --with-python-dir=/share/gcc-data/hppa64-unknown-linux-gnu/8.3.0/python
+ --enable-languages=c --enable-obsolete --enable-secureplt
+ --disable-werror --with-system-zlib --enable-nls
+ --without-included-gettext --with-bugurl=https://bugs.gentoo.org/
+ --with-pkgversion='Gentoo 8.3.0 p1.0' --disable-libstdcxx-pch
+ --enable-poison-system-directories --disable-shared
+ --disable-libatomic --disable-threads --without-headers
+ --disable-bootstrap --enable-__cxa_atexit --enable-clocale=gnu
+ --disable-multilib --disable-libgomp --disable-libmudflap
+ --disable-libssp --disable-libquadmath --enable-lto --without-cloog
+ --without-ppl Thread model: single gcc version 8.3.0 (Gentoo 8.3.0
+ p1.0)
+
+# hppa64-unknown-linux-gnu-ld -v
+GNU ld (Gentoo 2.31.1 p5) 2.31.1
 
