@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 730C6C31E4B
-	for <linux-parisc@archiver.kernel.org>; Fri, 14 Jun 2019 20:32:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF25CC31E4D
+	for <linux-parisc@archiver.kernel.org>; Fri, 14 Jun 2019 20:34:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4A5172080A
-	for <linux-parisc@archiver.kernel.org>; Fri, 14 Jun 2019 20:32:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9641B21848
+	for <linux-parisc@archiver.kernel.org>; Fri, 14 Jun 2019 20:34:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1560544372;
+	s=default; t=1560544457;
 	bh=+sGlqvlLqmA22YlA2dqVbaydWxLo8aCW4MixVvyHZdc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=oJKXv1VFhgQcuwmaTpuPdUy6cEJ3bhKoUxqGFNEycGtQx5C7y8Pe3Qxmbf8L0r0BB
-	 VrQ3nTEqNNZLIOOQR/qtM95Hn6kGfmvOgzVPGqjhDygLtrmwfYIa9hEuRRQbNbYwkO
-	 oLCeCNotVjVKM9c/7hJGr27IBsjMNCaYX3Ai6rtI=
+	b=azMacE6oOUfzcfWCc0CEYB9EgOMp8VhNLAEUlBydDcyUII0JjbMz36gkwERzooSac
+	 GJTvBLfi9dRai7bS+69icGg41ZjLnfELYzhCJkQLIFTZEu/0hTd7bIqm4T7W42625B
+	 N8tFOAvIdEaFo3gwjSq7xS5euyKFZQ2DxYQwivRI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbfFNUci (ORCPT
+        id S1727831AbfFNUeM (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 14 Jun 2019 16:32:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53814 "EHLO mail.kernel.org"
+        Fri, 14 Jun 2019 16:34:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727807AbfFNUak (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 14 Jun 2019 16:30:40 -0400
+        id S1727528AbfFNUaW (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 14 Jun 2019 16:30:22 -0400
 Received: from sasha-vm.mshome.net (unknown [131.107.159.134])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FAA22184B;
-        Fri, 14 Jun 2019 20:30:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 796CF21850;
+        Fri, 14 Jun 2019 20:30:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560544239;
+        s=default; t=1560544221;
         bh=+sGlqvlLqmA22YlA2dqVbaydWxLo8aCW4MixVvyHZdc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bMFSUam5zW8uNaETeUOwFEorK/4FOspXOsRlkcUG7jOMcHvk0wbButa1JJBNqot5K
-         PWJAxla8ByGaQ12XDqBatYHh3jes1d3/DMPOH2EDdvzjdj28fXR8yEkOMw3Bc2YbxI
-         K2wh6MGklaWOWniOCzlsk4r+kgAnkQVSOUsT2GvA=
+        b=TtAyFk+KlXWCfjz+LNElR7fnp4Wk/51S3Z6yzlWONcjP9heoIiQKayqz/aHMFeABC
+         R5qxzzOty6jrDqcyKdx16RWivCYTQF9UcKFQL3g+HyhOtHTBu+HIDw2rE4RSLDdJcX
+         LnNwi1HPYOGJzjz8qzzRL+tVBYOA6n3ZyDuVdS1k=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
         linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 03/18] parisc: Fix compiler warnings in float emulation code
-Date:   Fri, 14 Jun 2019 16:30:19 -0400
-Message-Id: <20190614203037.27910-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 05/27] parisc: Fix compiler warnings in float emulation code
+Date:   Fri, 14 Jun 2019 16:29:54 -0400
+Message-Id: <20190614203018.27686-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190614203037.27910-1-sashal@kernel.org>
-References: <20190614203037.27910-1-sashal@kernel.org>
+In-Reply-To: <20190614203018.27686-1-sashal@kernel.org>
+References: <20190614203018.27686-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
