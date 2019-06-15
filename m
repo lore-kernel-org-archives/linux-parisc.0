@@ -1,108 +1,76 @@
-Return-Path: <SRS0=EdKK=UN=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=nyNE=UO=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90C05C31E4B
-	for <linux-parisc@archiver.kernel.org>; Fri, 14 Jun 2019 20:38:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D021EC31E47
+	for <linux-parisc@archiver.kernel.org>; Sat, 15 Jun 2019 08:36:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 621D42084D
-	for <linux-parisc@archiver.kernel.org>; Fri, 14 Jun 2019 20:38:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1560544723;
-	bh=+sGlqvlLqmA22YlA2dqVbaydWxLo8aCW4MixVvyHZdc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=RwF80AUe+Pr1sg3OTJbhFTG/Hw7fPX9QLXeP2NHuLfvINxWi+wf38Z9xXly0vSYrZ
-	 8HIMbOm11avwx1K16WYXV2w4PnyYoyntNvRMUvq9qUIovAsEigt3Ay571Mv4TTIOFc
-	 A2QxIsccckRUdvvSp2BFyidYCcIde2cnnRj2PgEE=
+	by mail.kernel.org (Postfix) with ESMTP id A4CB02070B
+	for <linux-parisc@archiver.kernel.org>; Sat, 15 Jun 2019 08:36:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727483AbfFNUif (ORCPT
+        id S1725927AbfFOIgY (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 14 Jun 2019 16:38:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50830 "EHLO mail.kernel.org"
+        Sat, 15 Jun 2019 04:36:24 -0400
+Received: from verein.lst.de ([213.95.11.211]:52431 "EHLO newverein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726688AbfFNU3C (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 14 Jun 2019 16:29:02 -0400
-Received: from sasha-vm.mshome.net (unknown [131.107.159.134])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 617112184D;
-        Fri, 14 Jun 2019 20:29:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560544141;
-        bh=+sGlqvlLqmA22YlA2dqVbaydWxLo8aCW4MixVvyHZdc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J1+oq9r5f0UucZARlZAhj582JAN3uosja3b3myigP1W8I3ScwJGVsTe56taTVCZeu
-         XGEeRJkcf1XrnqJPuymcD3XWH+7ZCS4tROQM7aYqVmoLU8iqDml2C7m0I1dEVGG2kr
-         r9cNlzKsvB5g1z/85EGzGP9BDIgoWXO/KVWNF0qU=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
-        linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 19/59] parisc: Fix compiler warnings in float emulation code
-Date:   Fri, 14 Jun 2019 16:28:03 -0400
-Message-Id: <20190614202843.26941-19-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190614202843.26941-1-sashal@kernel.org>
-References: <20190614202843.26941-1-sashal@kernel.org>
+        id S1725825AbfFOIgY (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sat, 15 Jun 2019 04:36:24 -0400
+Received: by newverein.lst.de (Postfix, from userid 2407)
+        id A382E68AFE; Sat, 15 Jun 2019 10:35:54 +0200 (CEST)
+Date:   Sat, 15 Jun 2019 10:35:54 +0200
+From:   "hch@lst.de" <hch@lst.de>
+To:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+Cc:     "hch@lst.de" <hch@lst.de>,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        "shorne@gmail.com" <shorne@gmail.com>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "vladimir.murzin@arm.com" <vladimir.murzin@arm.com>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "stefan.kristiansson@saunalahti.fi" 
+        <stefan.kristiansson@saunalahti.fi>,
+        "jonas@southpole.se" <jonas@southpole.se>,
+        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
+        "deller@gmx.de" <deller@gmx.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>
+Subject: Re: [PATCH 7/7] arc: use the generic remapping allocator for
+ coherent DMA allocations
+Message-ID: <20190615083554.GC23406@lst.de>
+References: <20190614144431.21760-1-hch@lst.de> <20190614144431.21760-8-hch@lst.de> <78ac563f2815a9a14bfab6076d0ef948497f5b9f.camel@synopsys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <78ac563f2815a9a14bfab6076d0ef948497f5b9f.camel@synopsys.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Helge Deller <deller@gmx.de>
+On Fri, Jun 14, 2019 at 06:05:01PM +0000, Eugeniy Paltsev wrote:
+> Hi Christoph,
+> 
+> Regular question - do you have any public git repository with all this dma changes?
+> I want to test it for ARC.
+> 
+> Pretty sure the
+>  [PATCH 2/7] arc: remove the partial DMA_ATTR_NON_CONSISTENT support
+> is fine.
+> 
+> Not so sure about
+>  [PATCH 7/7] arc: use the generic remapping allocator for coherent DMA allocations
+> :)
 
-[ Upstream commit 6b98d9134e14f5ef4bcf64b27eedf484ed19a1ec ]
+   git://git.infradead.org/users/hch/misc.git dma-not-consistent-cleanup
 
-Avoid such compiler warnings:
-arch/parisc/math-emu/cnv_float.h:71:27: warning: ‘<<’ in boolean context, did you mean ‘<’ ? [-Wint-in-bool-context]
-     ((Dintp1(dint_valueA) << 33 - SGL_EXP_LENGTH) || Dintp2(dint_valueB))
-arch/parisc/math-emu/fcnvxf.c:257:6: note: in expansion of macro ‘Dint_isinexact_to_sgl’
-  if (Dint_isinexact_to_sgl(srcp1,srcp2)) {
+Gitweb:
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/parisc/math-emu/cnv_float.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/parisc/math-emu/cnv_float.h b/arch/parisc/math-emu/cnv_float.h
-index 933423fa5144..b0db61188a61 100644
---- a/arch/parisc/math-emu/cnv_float.h
-+++ b/arch/parisc/math-emu/cnv_float.h
-@@ -60,19 +60,19 @@
-     ((exponent < (SGL_P - 1)) ?				\
-      (Sall(sgl_value) << (SGL_EXP_LENGTH + 1 + exponent)) : FALSE)
- 
--#define Int_isinexact_to_sgl(int_value)	(int_value << 33 - SGL_EXP_LENGTH)
-+#define Int_isinexact_to_sgl(int_value)	((int_value << 33 - SGL_EXP_LENGTH) != 0)
- 
- #define Sgl_roundnearest_from_int(int_value,sgl_value)			\
-     if (int_value & 1<<(SGL_EXP_LENGTH - 2))   /* round bit */		\
--    	if ((int_value << 34 - SGL_EXP_LENGTH) || Slow(sgl_value))	\
-+	if (((int_value << 34 - SGL_EXP_LENGTH) != 0) || Slow(sgl_value)) \
- 		Sall(sgl_value)++
- 
- #define Dint_isinexact_to_sgl(dint_valueA,dint_valueB)		\
--    ((Dintp1(dint_valueA) << 33 - SGL_EXP_LENGTH) || Dintp2(dint_valueB))
-+    (((Dintp1(dint_valueA) << 33 - SGL_EXP_LENGTH) != 0) || Dintp2(dint_valueB))
- 
- #define Sgl_roundnearest_from_dint(dint_valueA,dint_valueB,sgl_value)	\
-     if (Dintp1(dint_valueA) & 1<<(SGL_EXP_LENGTH - 2)) 			\
--    	if ((Dintp1(dint_valueA) << 34 - SGL_EXP_LENGTH) ||		\
-+	if (((Dintp1(dint_valueA) << 34 - SGL_EXP_LENGTH) != 0) ||	\
-     	Dintp2(dint_valueB) || Slow(sgl_value)) Sall(sgl_value)++
- 
- #define Dint_isinexact_to_dbl(dint_value) 	\
--- 
-2.20.1
-
+   http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dma-not-consistent-cleanup
