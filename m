@@ -6,24 +6,25 @@ X-Spam-Status: No, score=-2.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76CBEC31E49
-	for <linux-parisc@archiver.kernel.org>; Wed, 19 Jun 2019 05:39:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9F9AC31E49
+	for <linux-parisc@archiver.kernel.org>; Wed, 19 Jun 2019 05:42:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 50FB520B1F
-	for <linux-parisc@archiver.kernel.org>; Wed, 19 Jun 2019 05:39:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B46A821479
+	for <linux-parisc@archiver.kernel.org>; Wed, 19 Jun 2019 05:42:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725881AbfFSFjZ (ORCPT
+        id S1726246AbfFSFmp (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 19 Jun 2019 01:39:25 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:36419 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbfFSFjY (ORCPT
+        Wed, 19 Jun 2019 01:42:45 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:57845 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725899AbfFSFmp (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 19 Jun 2019 01:39:24 -0400
+        Wed, 19 Jun 2019 01:42:45 -0400
+X-Originating-IP: 79.86.19.127
 Received: from alex.numericable.fr (127.19.86.79.rev.sfr.net [79.86.19.127])
         (Authenticated sender: alex@ghiti.fr)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id DE71124000B;
-        Wed, 19 Jun 2019 05:39:07 +0000 (UTC)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id B0F1240011;
+        Wed, 19 Jun 2019 05:42:27 +0000 (UTC)
 From:   Alexandre Ghiti <alex@ghiti.fr>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
@@ -44,9 +45,9 @@ Cc:     "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
         sparclinux@vger.kernel.org, linux-mm@kvack.org,
         Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH RESEND 0/8] Fix mmap base in bottom-up mmap
-Date:   Wed, 19 Jun 2019 01:38:58 -0400
-Message-Id: <20190619053906.5900-1-alex@ghiti.fr>
+Subject: [PATCH RESEND 0/8] Fix mmap base in bottom-up mmap 
+Date:   Wed, 19 Jun 2019 01:42:16 -0400
+Message-Id: <20190619054224.5983-1-alex@ghiti.fr>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -54,8 +55,6 @@ Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
-
-(Sorry for the previous interrupted series) 
 
 This series fixes the fallback of the top-down mmap: in case of
 failure, a bottom-up scheme can be tried as a last resort between
@@ -70,7 +69,7 @@ mmap_base.
 Along the way, it allows to get rid of of mmap_legacy_base and
 mmap_compat_legacy_base from mm_struct.
 
-Note that arm and mips already implement this behaviour.
+Note that arm and mips already implement this behaviour.  
 
 Alexandre Ghiti (8):
   s390: Start fallback of top-down mmap at mm->mmap_base
