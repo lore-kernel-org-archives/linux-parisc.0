@@ -1,59 +1,56 @@
-Return-Path: <SRS0=D0w1=UT=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=CYsc=UW=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-8.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B5E9C43613
-	for <linux-parisc@archiver.kernel.org>; Thu, 20 Jun 2019 06:03:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2AA8C48BE4
+	for <linux-parisc@archiver.kernel.org>; Sun, 23 Jun 2019 15:09:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7134B20B1F
-	for <linux-parisc@archiver.kernel.org>; Thu, 20 Jun 2019 06:03:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B58B920645
+	for <linux-parisc@archiver.kernel.org>; Sun, 23 Jun 2019 15:09:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726084AbfFTGDF (ORCPT
+        id S1726656AbfFWPJu (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 20 Jun 2019 02:03:05 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:46776 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725871AbfFTGDF (ORCPT
+        Sun, 23 Jun 2019 11:09:50 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:39361 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726429AbfFWPJt (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 20 Jun 2019 02:03:05 -0400
-Received: from relay1-d.mail.gandi.net (unknown [217.70.183.193])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id AADE43A47E6;
-        Thu, 20 Jun 2019 05:08:50 +0000 (UTC)
-X-Originating-IP: 79.86.19.127
-Received: from alex.numericable.fr (127.19.86.79.rev.sfr.net [79.86.19.127])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 08AE424000A;
-        Thu, 20 Jun 2019 05:08:33 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-mm@kvack.org,
-        Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH RESEND 4/8] x86, hugetlbpage: Start fallback of top-down mmap at mm->mmap_base
-Date:   Thu, 20 Jun 2019 01:03:24 -0400
-Message-Id: <20190620050328.8942-5-alex@ghiti.fr>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190620050328.8942-1-alex@ghiti.fr>
-References: <20190620050328.8942-1-alex@ghiti.fr>
+        Sun, 23 Jun 2019 11:09:49 -0400
+Received: by mail-pf1-f195.google.com with SMTP id j2so6049983pfe.6;
+        Sun, 23 Jun 2019 08:09:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=66SWU+ctYxtZn/h5UpypgxOW/HLCO9TF1ChCXAD7X4k=;
+        b=AhVFWJV7ntugcnosGpS2QmPVv4xC49jzuauRAOtdltLkszkmWe6yT1iVQ/jD1zQT8y
+         Vxgf/U9Cibla35TR/T62L/vmY38ajmBVBDyybD90kjgyV9OY4ClDOAJdyY+mXWsfEcdW
+         mF8mJQm04WvDMBPgQqcoiKhdmkzsCB2PldaFHAta0sn13D7jxnG9Zr5Tg7QzV1keA5ru
+         BfI7GhaqPp/HAmZ85IJuUhlFlgsPL0NlwHwqsaJqQJrS6sF87v/DWDyO3LESapOxLDnU
+         /6/h/5Au1o0GnOESpQsa+sHnRbNSNdorAp/inTJhpcfvtytmuyVTHdi+uDZQkMFZKWbW
+         6b5Q==
+X-Gm-Message-State: APjAAAXURz5KVz2/3U+Ed1P8GFOaCfVgUFX12pIqrF0XciDROZsELxr3
+        pSCJzuwNYZJunkX6Gy0pDKc=
+X-Google-Smtp-Source: APXvYqwB2kg9O2RBgY8RpYRzutcwp5sLqRHDdr3hxYqbl2x0R1h6X429vICDzpeFjZy8+rIxtN4VPg==
+X-Received: by 2002:a63:f346:: with SMTP id t6mr17447310pgj.203.1561302589296;
+        Sun, 23 Jun 2019 08:09:49 -0700 (PDT)
+Received: from localhost.localdomain (broadband-188-32-48-208.ip.moscow.rt.ru. [188.32.48.208])
+        by smtp.googlemail.com with ESMTPSA id s24sm8674255pfh.133.2019.06.23.08.09.45
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 23 Jun 2019 08:09:48 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc:     Denis Efremov <efremov@linux.com>, Helge Deller <deller@gmx.de>,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] parisc: asm: psw.h: missing header guard
+Date:   Sun, 23 Jun 2019 18:09:20 +0300
+Message-Id: <20190623150920.26422-1-efremov@linux.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-parisc-owner@vger.kernel.org
@@ -61,43 +58,26 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-In case of mmap failure in top-down mode, there is no need to go through
-the whole address space again for the bottom-up fallback: the goal of this
-fallback is to find, as a last resort, space between the top-down mmap base
-and the stack, which is the only place not covered by the top-down mmap.
+The psw.h header file contains #ifndef directive of the guard,
+but the complimentary #define directive is missing. The patch
+adds the appropriate #define to fix the header guard.
 
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+Signed-off-by: Denis Efremov <efremov@linux.com>
 ---
- arch/x86/mm/hugetlbpage.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/parisc/include/asm/psw.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/mm/hugetlbpage.c b/arch/x86/mm/hugetlbpage.c
-index fab095362c50..4b90339aef50 100644
---- a/arch/x86/mm/hugetlbpage.c
-+++ b/arch/x86/mm/hugetlbpage.c
-@@ -106,11 +106,12 @@ static unsigned long hugetlb_get_unmapped_area_topdown(struct file *file,
- {
- 	struct hstate *h = hstate_file(file);
- 	struct vm_unmapped_area_info info;
-+	unsigned long mmap_base = get_mmap_base(0);
+diff --git a/arch/parisc/include/asm/psw.h b/arch/parisc/include/asm/psw.h
+index 76c301146c31..7a175e866ed0 100644
+--- a/arch/parisc/include/asm/psw.h
++++ b/arch/parisc/include/asm/psw.h
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ #ifndef _PARISC_PSW_H
++#define _PARISC_PSW_H
  
- 	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
- 	info.length = len;
- 	info.low_limit = PAGE_SIZE;
--	info.high_limit = get_mmap_base(0);
-+	info.high_limit = mmap_base;
  
- 	/*
- 	 * If hint address is above DEFAULT_MAP_WINDOW, look for unmapped area
-@@ -132,7 +133,7 @@ static unsigned long hugetlb_get_unmapped_area_topdown(struct file *file,
- 	if (addr & ~PAGE_MASK) {
- 		VM_BUG_ON(addr != -ENOMEM);
- 		info.flags = 0;
--		info.low_limit = TASK_UNMAPPED_BASE;
-+		info.low_limit = mmap_base;
- 		info.high_limit = TASK_SIZE_LOW;
- 		addr = vm_unmapped_area(&info);
- 	}
+ #define	PSW_I	0x00000001
 -- 
-2.20.1
+2.21.0
 
