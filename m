@@ -1,106 +1,96 @@
-Return-Path: <SRS0=ifgz=U5=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=atye=U6=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URI_HEX,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2C85C5B576
-	for <linux-parisc@archiver.kernel.org>; Sun, 30 Jun 2019 19:59:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45EA7C0650E
+	for <linux-parisc@archiver.kernel.org>; Mon,  1 Jul 2019 19:54:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C0A482086D
-	for <linux-parisc@archiver.kernel.org>; Sun, 30 Jun 2019 19:59:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 066172183F
+	for <linux-parisc@archiver.kernel.org>; Mon,  1 Jul 2019 19:54:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="kryxP2e3"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="TUgKNyvg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="ByvctwZr"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbfF3T7m (ORCPT
+        id S1726958AbfGATyd (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 30 Jun 2019 15:59:42 -0400
-Received: from mout.gmx.net ([212.227.15.18]:40963 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726693AbfF3T7m (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 30 Jun 2019 15:59:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1561924754;
-        bh=yQmwx2CGfCVjfOTD+RslXyGtkvidVTBGoQDWmjx7Ojk=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=kryxP2e3XRwwD4/JRZ56y2dOETD1/w2DG/Nsy8xkBJsbK4XXswsqmPB1sSr2ud6ck
-         4R+EEYQZ+dgPUeCh3CNYuIoPGWk846DJlLlrDFpTughtgwR+1KXDeg7vCcTgHeiwv9
-         orReupiG354g0gSmh2oD0GBX3CFky7p7kNJGOITc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.169.182]) by mail.gmx.com (mrgmx001
- [212.227.17.190]) with ESMTPSA (Nemesis) id 0MCLQ1-1hqEhX0U6r-009AJ0; Sun, 30
- Jun 2019 21:59:14 +0200
-Subject: Re: Running the gdb 7.12.1 testsuite breaks kernel 4.13.8 on C8000
-To:     Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        linux-parisc@vger.kernel.org
-References: <11946948.1Lt8Nslq4k@devpool21>
- <16444139.ehY7rFqKE1@daneel.sf-tec.de> <2240883.3K8JbTncdJ@daneel.sf-tec.de>
-From:   Helge Deller <deller@gmx.de>
-Message-ID: <ea25ddf3-0e9c-534f-1dc6-41169dc3edcd@gmx.de>
-Date:   Sun, 30 Jun 2019 21:59:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <2240883.3K8JbTncdJ@daneel.sf-tec.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZPZMN320phLOqvch9itoCTF6q5+YACF32c33bW4j/eHcvHFxdJG
- WJ2rUQDYYL51shEGHzX81AEIiovdR8ozlRmnB0bAfujg/6jE1X92QSMKHzaA/aKwOq0HPGW
- BSZpCWKeUaNVlVvwQnNaYxPbHAXV4fMCrtZ06AeJ4MnJVNAPAUW7mgkedZ6ep4wa9VRmie4
- druFoqyBjHvJ5o14HAd/Q==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6q8bKVC/s3M=:vIcz/u+rHzpkedtEAGlvqn
- +jNnrDKJa444KmhbpxP2XvKJOiNd4kWkZsse/lQZlyOZFKbHcvfF9k65geat5MVjZx8JHFylZ
- a2nEClxxoZhQstk+FZipX8GBFdOTuiEuf1DOU5GXbAfF7vd24GC+Ikqn27WUWLVhSBkiQIbfp
- OP4zAu71jesFBdZhCCQxt/93SoNoOzp2lQEIDDAbLj5SkOiIcPWkTNqomUW8zT8dst0JtEu2S
- ieM6u7t6WU2X/M+WHz5JNXExzqC9bmYtWrOaH69B9IOGJ6Vngw5Pz8tA7GGqPCdrlLHeIWytt
- lHzavp0RvzH3lVuscoo+7oRnCjDPZC1aqFSJ9yfAzvSuCmbYdjAQvNm6KAFiIyywc/d/GsMhM
- kykAPekaqQab8tcaRMUvEB7W4QcPo6WCQniWc3ypodiEJ3e5AmvLGMG4U9DHezbigJ4uE/hyj
- 0pHpI9r/9Af+/9D833txNZKVDTz4KNRosmaXCN4ZC8ueEmBQYZie9t4r6Hb6l7xkQ79zD+jsh
- QAOO/2mUvXGHCAv85NcGtwpi8Af8Z7893+2Tjlf+CqATPK0CKoTUYWGLN5X2+FBjXG0ShiX/m
- r+cYMg5d6MqBHYkNjc2rcxWYm5s+JxdLYuZHf0WXBbHSDKKokU926+feTHC4MKIfReEQr3uBK
- KkYpwGcl3pFzZuAuGkY/86J61Vr64BS5hly8HTLp/nQ7BWJDABQaz0FOFnW1KhkhHJZm61cxo
- HMbBta+rWEUiR8WYXNHsGHnW63hCgsWvl4uo5DZnwXDhXziBGk+C9wjfYO0y7qz8AX41lqaiM
- qvn1mkX7t3kJXqbMmnp+zB0XE/Q9hMZ4BLC8Upo6YaJoqfDJMWLwRIkp9IUyc4/HKSXA6wTND
- bE9ilKfEYyTJwSWkB1e0iEJzFc6/26/mlPoYTC3mRjU5/3WnaQnqWRCLxyLd280fF2ryAflYZ
- PF6nqjLSijQjurvtdVSbK9Ska8c7n90uC1CsDn4Bc8rzGQ2pCv305M6gXv8Rpv8QcujzEo+uN
- XEIZ/qzq3OpP5zRdR5lZlK+6GDFp7pdQNEAe49qswc38pvqbH26u0fe7gfuN/os/6bZsqN/C3
- uxEzW1aV+GZtCE=
+        Mon, 1 Jul 2019 15:54:33 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:60844 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727068AbfGATyQ (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 1 Jul 2019 15:54:16 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 24AC68EE0E3
+        for <linux-parisc@vger.kernel.org>; Mon,  1 Jul 2019 12:54:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1562010856;
+        bh=mXhIYZsMayvdT8UC+WxzVYOHPkWdvE/nMPkIAtIHbHM=;
+        h=Subject:From:To:Date:From;
+        b=TUgKNyvgnkXVvNM43yakTgp74QFe/9Td/WtLwY6AnnLuNTESuviIAqcm6Snh3Mrqo
+         72Uct5Esoh8YBBJ6KrNeJiPVQia9zi3rm/tjK+r60+pLblEmJyzI6O5SviGjeLElwn
+         xn521ZVLZEdJkE4qdWcIj9RNIX7asPtYmMCPUX04=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id z4Fu0Jyaq7tH for <linux-parisc@vger.kernel.org>;
+        Mon,  1 Jul 2019 12:54:15 -0700 (PDT)
+Received: from jarvis.lan (unknown [50.35.68.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id B8BAA8EE0E0
+        for <linux-parisc@vger.kernel.org>; Mon,  1 Jul 2019 12:54:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1562010855;
+        bh=mXhIYZsMayvdT8UC+WxzVYOHPkWdvE/nMPkIAtIHbHM=;
+        h=Subject:From:To:Date:From;
+        b=ByvctwZrnTNydIjOkd9rNrBAdAk4FLi6ifVl+54bqk4EbaKvjBIK4BHxE4GAFfikw
+         U/Pf8SueNaty3NXVXiVjEs/ApqL24xKNmXyJEUpTQvGY7GouIHSgZLaPnVrHao/L3j
+         LUzCvJfOq/ouK3wGfsXr2TWYVPUt5AXIaOgCahlk=
+Message-ID: <1562010854.2762.8.camel@HansenPartnership.com>
+Subject: palo not working on ext2/ext3 partitions
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     linux-parisc@vger.kernel.org
+Date:   Mon, 01 Jul 2019 12:54:14 -0700
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 30.06.19 15:43, Rolf Eike Beer wrote:
-> Am Sonntag, 30. Juni 2019, 12:05:46 CEST schrieb Rolf Eike Beer:
->> Am Donnerstag, 25. Januar 2018, 09:59:03 CEST schrieb Rolf Eike Beer:
->>> The last message I had for the crash below is:
->>>
->>> Running
->>> /var/tmp/portage/sys-devel/gdb-7.12.1/work/gdb-7.12.1/gdb/testsuite/gd=
-b.ba
->>> s
->>> e/bp-permanent.exp ...
->>
->> I just have been told it's still happening with the gdb 8.3 testsuite o=
-n the
->> Gentoo test machine:
->>
->> Linux hake 4.19.52-gentoo #2 Tue Jun 18 13:51:01 EDT 2019 parisc PA8600
->> (PCX-W +) 9000/785/C3600 GNU/Linux
->
-> This seems to be a minimal reproducer:
-> https://481768.bugs.gentoo.org/attachment.cgi?id=3D361728
+I recently had the pleasure of a complete reinstall and found that I
+can't set up palo on the new system (at least not palo that loads from
+an ext2/ext3 filesystem).  The problem doesn't seem to be within palo
+itself, but the fact that mke2fs is no longer working for us.  The
+symptom I see is that after a couple of uses the palo partition
+corrupts itself and then e2fsck destroys the iplboot stored in the
+badblocks list.
 
-It doesn't crash for me on debian (other kernel, other userspace, older gd=
-b).
-But there is something fishy anyway.
-It seems the "set tp =3D {0,0}" doesn't work as expected.
-gdb prints the set zero-values correctly, but it doesn't seem to be stored=
- correctly to memory.
-"set tp.a =3D 10" does work though.
+The problem seems to be with the badblock list because if I do
 
-Helge
+palo -I /dev/sdb
+
+Followed by a fsck -f on the palo partition, it finds errors and wants
+to clear the badblock inode.
+
+I can reproduce this simply by doing
+
+dd if=/dev/zero of=bbtest.img bs=1M count=100
+losetup /dev/loop0 bbtest.img
+a=237; while [ $a -le 450 ]; do echo $a >> bblist.txt; a=$[$a+1]; done
+mke2fs -b 1024 -l /home/jejb/bblist.txt  /dev/loop0
+e2fsck -f /dev/loop0
+
+With no palo involvement, so I don't think it's our fault.
+
+I'll take this to the ext2 tools development list.  Whatever it is
+seems to be really old because I unearthed an mke2fs from 2011 that
+still has the problem.
+
+James
+
