@@ -1,144 +1,116 @@
-Return-Path: <SRS0=/HJN=VF=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=j7Yd=VG=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6D62C5B57D
-	for <linux-parisc@archiver.kernel.org>; Mon,  8 Jul 2019 05:48:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E4C5C606B0
+	for <linux-parisc@archiver.kernel.org>; Tue,  9 Jul 2019 05:46:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 86EB320665
-	for <linux-parisc@archiver.kernel.org>; Mon,  8 Jul 2019 05:48:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 08D522073D
+	for <linux-parisc@archiver.kernel.org>; Tue,  9 Jul 2019 05:46:43 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="ivffd6vt"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728741AbfGHFsH (ORCPT
+        id S1725856AbfGIFqm (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 8 Jul 2019 01:48:07 -0400
-Received: from mx1.mailbox.org ([80.241.60.212]:41686 "EHLO mx1.mailbox.org"
+        Tue, 9 Jul 2019 01:46:42 -0400
+Received: from mout.gmx.net ([212.227.15.19]:53329 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728654AbfGHFsG (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 8 Jul 2019 01:48:06 -0400
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
-        (No client certificate requested)
-        by mx1.mailbox.org (Postfix) with ESMTPS id D5ED350844;
-        Mon,  8 Jul 2019 07:47:59 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter05.heinlein-hosting.de (spamfilter05.heinlein-hosting.de [80.241.56.123]) (amavisd-new, port 10030)
-        with ESMTP id 6HYUzmgqQjbZ; Mon,  8 Jul 2019 07:47:45 +0200 (CEST)
-Date:   Mon, 8 Jul 2019 15:47:35 +1000
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Drysdale <drysdale@google.com>,
-        Chanho Min <chanho.min@lge.com>,
-        Oleg Nesterov <oleg@redhat.com>, Aleksa Sarai <asarai@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        containers@lists.linux-foundation.org, linux-alpha@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, sparclinux@vger.kernel.org
-Subject: Re: [PATCH v9 10/10] selftests: add openat2(2) selftests
-Message-ID: <20190708054735.3fepxxtolqaqwmrp@yavin>
-References: <20190706145737.5299-1-cyphar@cyphar.com>
- <20190706145737.5299-11-cyphar@cyphar.com>
- <878st9iax4.fsf@concordia.ellerman.id.au>
+        id S1725832AbfGIFqm (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 9 Jul 2019 01:46:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1562651196;
+        bh=joE9GeqsQWrzBQwgXRlkWwo09aacLPPhCLf9GSg+/M8=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=ivffd6vtNBtTScwtrDyKMiaKli+g8N7EMsQoRLmYvLSg2MFFJGl/MZ+2go+Kr6wa+
+         IjLCVDcl9NF4wMY8CHihWtRaHQr7u3xYLFsB8hQCQfquz2StA6bANL4hrmi7Ln0wV1
+         OnbhL4q0UJ30R6Q16Uj9124NfoZy81iLifXO9xwM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.dellerweb.de ([92.116.158.121]) by mail.gmx.com
+ (mrgmx002 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 0LfSeH-1iI6tB0IYr-00p3Cv; Tue, 09 Jul 2019 07:46:36 +0200
+Date:   Tue, 9 Jul 2019 07:46:32 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture patches for kernel v5.3
+Message-ID: <20190709054632.GA14843@ls3530.dellerweb.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fv76k6im74ofqhz7"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <878st9iax4.fsf@concordia.ellerman.id.au>
+User-Agent: Mutt/1.12.0 (2019-05-25)
+X-Provags-ID: V03:K1:VIonYAy/xwcpqwB91oMJFKn7kTKiuuCzDbroEXVUs4XqS5MgDcd
+ DRvD4yuITLvSmSlxtkTX5fDlpLgJ0OLZiB9LStyzBnM3igQS/ur6EtP70FoYthCOPW84hoQ
+ fYUxBn43vJl9L0Ma6t5cYddMWNukj1/+ldg/fwDGHGpJH3NTk6yZSGVWvQCZzWOoYW427tl
+ 8r3smvCvz9sTlRYaj/7xQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:564hTMAUo+A=:5YbLjwZiwUbQQMrRrTAPQb
+ rZS97SxbEm8/CgKHjWn0AxCyZBQJz4IRFZIHU3FP82f4xyzCL5b9N2ZbicpDhtDcsEYS6BS4k
+ qZcFzADZOYvMseYcoVvVR6r71Ko0xIX6VJKE+EolXlRJtDfXH/lrFKDmNYOq8XiwAZ9u8yNps
+ s71OklrYXe0a8ZXfCGnbunfpE7dGJB72N2Dg7RlMPQ5HBxF/SGObvvdYijf2guVwHMJ/lCAY/
+ /+qmWLvbE7Ip4YICEkaQQ9nX5BPLAz0WArV8bESzG+UxrhcB4nwmeUiiaBzLno/GNyRv1LWmO
+ Xn5JtyHGWg0UAlvvvRAfzQ8Qg7GUkfMAZ/rtwRWg26qOh4U7ryW3P9eeHrackInp4+oB49dDj
+ HU+/fEEI7AODXtU8dAW3/kGuyJWdd+kc/pDd5LKKNWIvHRSB+Jt5e9al6v5N6L6xjR7dWUFLC
+ L+Tz4yUdfQP0dX2/Kv5HNIIF54X0hzfE3xtA8l5yjHiG7QQ+5w8qKtaEsOak1BJxcjhFvvxFc
+ zORsdAHZsl7deYI56eLcL4S6yJwQb0kbKCt9BBQKdUBjtJR7xk0KCYY5eLQURJeODfqHwP6Eo
+ sR81SlqdsEsmLTePexzgeQcmx4eNOwY4aM1PfTwfX8oHY1h47yzsDE88NX5vUXZr17K7nAm3C
+ DGZoqYX/CVfq6+FVuRyy+D/IY9xzJr/fOL7xnlBEGaewvvJ+ODNW1xQQIAS/YqBrZlotb231V
+ VUyfzlQFBIYr2gtEB7C5kFF1XaJi+I9rwMRy5jy62ZgTrtxBMuGvxt5qlRidFOGjM8tHE9bFq
+ WJnCm/C2bKbyzeC+w7BMbn2VLahtSUB1Zw4/EZ5ZBq9RzTlbkC7G3jj7pTT89BlwG8E+OBp9I
+ u8xqgGc7NqINZvexqtnNvp1jSekGHNeNxbjuloVKT+PGEIaMS6wDSDPUXG0vyhMfdoR9ho1BZ
+ e1kDvYHECZ2lDgabQQVLKRZHxKn22fUlXOputLSgpIECUPtUAMQtpMzmhs6tcFZREu/ehvskL
+ QLkoycvWaS0FNBpqhiD1V6nl+gZpbODt5yovHyinSYGpTPtidPwrwunTwvsLZAXTww==
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
+Hi Linus,
 
---fv76k6im74ofqhz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+please pull enhancements for the parisc architecture for kernel 5.3 from:
 
-On 2019-07-08, Michael Ellerman <mpe@ellerman.id.au> wrote:
-> Aleksa Sarai <cyphar@cyphar.com> writes:
-> > diff --git a/tools/testing/selftests/openat2/Makefile b/tools/testing/s=
-elftests/openat2/Makefile
-> > new file mode 100644
-> > index 000000000000..8235a49928f6
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/openat2/Makefile
-> > @@ -0,0 +1,12 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +
-> > +CFLAGS +=3D -Wall -O2 -g
-> > +TEST_GEN_PROGS :=3D linkmode_test resolve_test rename_attack_test
-> > +
-> > +include ../lib.mk
-> > +
-> > +$(OUTPUT)/linkmode_test: linkmode_test.c helpers.o
-> > +$(OUTPUT)/rename_attack_test: rename_attack_test.c helpers.o
-> > +$(OUTPUT)/resolve_test: resolve_test.c helpers.o
->=20
-> You don't need to tell make that foo depends on foo.c.
->=20
-> Also if you make the dependency be on helpers.c then you won't get an
-> intermediate helpers.o, and then you don't need to clean it.
->=20
-> So the above three lines could just be:
->=20
-> $(TEST_GEN_PROGS): helpers.c
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git pa=
+risc-5.3-1
 
-I had some trouble getting this to work (hence why I went with the
-version in the patch), but it looks like this works. I'll include it in
-the next set.
+Dynamic ftrace support by Sven Schnelle and a header guard fix by Denis Ef=
+remov.
 
-> > +EXTRA_CLEAN =3D helpers.o $(wildcard /tmp/ksft-openat2-*)
->=20
-> If you follow my advice above you don't need helpers.o in there.
->=20
-> Deleting things from /tmp is also a bit fishy on shared machines, ie. it
-> will error if those files happen to be owned by another user.
+Thanks,
+Helge
 
-Good point. I'll drop that hunk in the next set.
+=2D---------------------------------------------------------------
+Denis Efremov (1):
+      parisc: asm: psw.h: missing header guard
 
-Thanks!
+Sven Schnelle (6):
+      parisc: add support for patching multiple words
+      parisc: add spinlock to patch function
+      parisc: add WARN_ON() to clear_fixmap
+      parisc: use pr_debug() in kernel/module.c
+      compiler.h: add CC_USING_PATCHABLE_FUNCTION_ENTRY
+      parisc: add dynamic ftrace
 
---=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-<https://www.cyphar.com/>
-
---fv76k6im74ofqhz7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQSxZm6dtfE8gxLLfYqdlLljIbnQEgUCXSLY8wAKCRCdlLljIbnQ
-Enn2AQC9g0o7YHWuxFtQCLt+aHIE39RQMQDzB5QWrvZA8DdIUQEA69BwekXhnh8X
-m2czJJrJISBz5Nz1y3qJzwUUGBvxEgY=
-=RdsA
------END PGP SIGNATURE-----
-
---fv76k6im74ofqhz7--
+ arch/parisc/Kconfig               |   2 +
+ arch/parisc/Makefile              |  18 ++++++
+ arch/parisc/include/asm/ftrace.h  |  15 ++++-
+ arch/parisc/include/asm/patch.h   |   4 +-
+ arch/parisc/include/asm/psw.h     |   2 +-
+ arch/parisc/kernel/Makefile       |   9 +--
+ arch/parisc/kernel/entry.S        |  64 +++++++++++++++++++
+ arch/parisc/kernel/ftrace.c       | 129 +++++++++++++++++++++++++++++++++=
+++---
+ arch/parisc/kernel/module.c       |  64 +++++++++++--------
+ arch/parisc/kernel/module.lds     |   7 +++
+ arch/parisc/kernel/patch.c        |  88 +++++++++++++++++++++-----
+ arch/parisc/kernel/vmlinux.lds.S  |   2 +
+ arch/parisc/mm/fixmap.c           |   7 ++-
+ include/asm-generic/vmlinux.lds.h |   7 +++
+ include/linux/compiler_types.h    |   2 +
+ 15 files changed, 359 insertions(+), 61 deletions(-)
+ create mode 100644 arch/parisc/kernel/module.lds
