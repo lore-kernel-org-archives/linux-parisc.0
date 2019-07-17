@@ -2,210 +2,81 @@ Return-Path: <SRS0=1hYf=VO=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAB37C7618F
-	for <linux-parisc@archiver.kernel.org>; Wed, 17 Jul 2019 01:29:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73AECC76195
+	for <linux-parisc@archiver.kernel.org>; Wed, 17 Jul 2019 01:48:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 881FD2173E
-	for <linux-parisc@archiver.kernel.org>; Wed, 17 Jul 2019 01:29:43 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="EWeObjoF"
+	by mail.kernel.org (Postfix) with ESMTP id 4FC9B20818
+	for <linux-parisc@archiver.kernel.org>; Wed, 17 Jul 2019 01:48:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbfGQB3N (ORCPT
+        id S1726019AbfGQBsZ (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 16 Jul 2019 21:29:13 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:42266 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbfGQB3M (ORCPT
+        Tue, 16 Jul 2019 21:48:25 -0400
+Received: from zeniv.linux.org.uk ([195.92.253.2]:51824 "EHLO
+        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725856AbfGQBsZ (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 16 Jul 2019 21:29:12 -0400
-Received: by mail-pf1-f196.google.com with SMTP id q10so9965228pff.9
-        for <linux-parisc@vger.kernel.org>; Tue, 16 Jul 2019 18:29:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=lCAdtmytrwTdW3zlJMsL7BH9HcOHIdUFUev907eAt/A=;
-        b=EWeObjoFmWq4Omx3n/Vk5ieecW6ME7Q+UElx0hnCrcAOTTwfJ8WA/Sx8n3WY/vKhA0
-         w6DxbQo2seu7BVmNL69pGIK8MrLb9SGxQw0ZhHDA/oLivg3XTYry1Jl/HOn/8ds0c/xl
-         O9ThCZWa11yjixEiKl5hzy4Eccujt0+y1RLNUSrPKnvavkdRx+ydohJ0NNiQpiV3Ozvx
-         aK7noJb1AfREOkm/Jo45bQYJsqD5CIa30MNowi++lgOE2CEfnJvHQKtzGzh+WEvqD0ri
-         qekgiFl3gec+0sTohyesxiSbunkhOiFPrtSd5l3tnJD2fwW7uxBVPSQs3Dbrtim5XVys
-         eqYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=lCAdtmytrwTdW3zlJMsL7BH9HcOHIdUFUev907eAt/A=;
-        b=JlRlHeXBbzo4mWzOOHFNEjxGJKr3hFQn9LnhJ79TafeV0SN0rIuNpaOYeRmQlkQtAP
-         Nm3DB+8XtfMlLFW+De9oe6LADJbJeksn/Wj3yu48OPDFxkkAQenn7fiLX8sPzVv/mzrQ
-         HzW2JU0NijpTonBHZk/dZOqUgHQBSGFAr6Tg8J2Icw1jvP6vQ2J3vygluLMjA/gr0Yx4
-         n41RRkSExjYWPw77tEK68YQ7D81Z+G63BgNFPDMSIxV9kz/LKn/51JD2YqNPrgy/VH98
-         MijZH6VJikTYhit1UJW02H7X0ZBInfKETR4OctQov3XMcLyPmD2mo3oYmCUpgJHTRjUe
-         PGmw==
-X-Gm-Message-State: APjAAAV4So8fhPghcXhy2bENodT4LCt8Dw4cNdEnzk/XnjwrbcylGz+i
-        9mpenYTtO/sbZXizP+U4kfM7wA==
-X-Google-Smtp-Source: APXvYqxD+A8D1A0efvs/gHSpa51lIoBZYiXr5jNYG6C1/J/dqptdfkqKaxchYfNokKm4TbgakH+Oxw==
-X-Received: by 2002:a17:90a:fa18:: with SMTP id cm24mr39334563pjb.120.1563326951272;
-        Tue, 16 Jul 2019 18:29:11 -0700 (PDT)
-Received: from localhost ([12.206.222.5])
-        by smtp.gmail.com with ESMTPSA id r61sm32564152pjb.7.2019.07.16.18.29.09
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 16 Jul 2019 18:29:10 -0700 (PDT)
-Subject: Add a new fchmodat4() syscall, v2
-Date:   Tue, 16 Jul 2019 18:27:15 -0700
-Message-Id: <20190717012719.5524-1-palmer@sifive.com>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        Tue, 16 Jul 2019 21:48:25 -0400
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1hnZ34-00075C-8b; Wed, 17 Jul 2019 01:48:02 +0000
+Date:   Wed, 17 Jul 2019 02:48:02 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Palmer Dabbelt <palmer@sifive.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
         tony.luck@intel.com, fenghua.yu@intel.com, geert@linux-m68k.org,
         monstr@monstr.eu, ralf@linux-mips.org, paul.burton@mips.com,
-        jhogan@kernel.org, James.Bottomley@HansenPartnership.com,
+        jhogan@kernel.org, James.Bottomley@hansenpartnership.com,
         deller@gmx.de, benh@kernel.crashing.org, paulus@samba.org,
         mpe@ellerman.id.au, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
         borntraeger@de.ibm.com, ysato@users.sourceforge.jp,
         dalias@libc.org, davem@davemloft.net, luto@kernel.org,
         tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        x86@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        peterz@infradead.org, acme@kernel.org,
+        x86@kernel.org, peterz@infradead.org, acme@kernel.org,
         alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, Palmer Dabbelt <palmer@sifive.com>,
-        dhowells@redhat.com, firoz.khan@linaro.org, stefan@agner.ch,
-        schwidefsky@de.ibm.com, axboe@kernel.dk, christian@brauner.io,
-        hare@suse.com, deepa.kernel@gmail.com, tycho@tycho.ws,
-        kim.phillips@arm.com, linux-alpha@vger.kernel.org,
+        namhyung@kernel.org, dhowells@redhat.com, firoz.khan@linaro.org,
+        stefan@agner.ch, schwidefsky@de.ibm.com, axboe@kernel.dk,
+        christian@brauner.io, hare@suse.com, deepa.kernel@gmail.com,
+        tycho@tycho.ws, kim.phillips@arm.com, linux-alpha@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
         linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
         sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
-From:   Palmer Dabbelt <palmer@sifive.com>
-To:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 2/4] Add fchmodat4(), a new syscall
+Message-ID: <20190717014802.GS17978@ZenIV.linux.org.uk>
+References: <20190717012719.5524-1-palmer@sifive.com>
+ <20190717012719.5524-3-palmer@sifive.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190717012719.5524-3-palmer@sifive.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-This patch set adds fchmodat4(), a new syscall. The actual
-implementation is super simple: essentially it's just the same as
-fchmodat(), but LOOKUP_FOLLOW is conditionally set based on the flags.
-I've attempted to make this match "man 2 fchmodat" as closely as
-possible, which says EINVAL is returned for invalid flags (as opposed to
-ENOTSUPP, which is currently returned by glibc for AT_SYMLINK_NOFOLLOW).
-I have a sketch of a glibc patch that I haven't even compiled yet, but
-seems fairly straight-forward:
+On Tue, Jul 16, 2019 at 06:27:17PM -0700, Palmer Dabbelt wrote:
 
-    diff --git a/sysdeps/unix/sysv/linux/fchmodat.c b/sysdeps/unix/sysv/linux/fchmodat.c
-    index 6d9cbc1ce9e0..b1beab76d56c 100644
-    --- a/sysdeps/unix/sysv/linux/fchmodat.c
-    +++ b/sysdeps/unix/sysv/linux/fchmodat.c
-    @@ -29,12 +29,36 @@
-     int
-     fchmodat (int fd, const char *file, mode_t mode, int flag)
-     {
-    -  if (flag & ~AT_SYMLINK_NOFOLLOW)
-    -    return INLINE_SYSCALL_ERROR_RETURN_VALUE (EINVAL);
-    -#ifndef __NR_lchmod		/* Linux so far has no lchmod syscall.  */
-    +  /* There are four paths through this code:
-    +      - The flags are zero.  In this case it's fine to call fchmodat.
-    +      - The flags are non-zero and glibc doesn't have access to
-    +	__NR_fchmodat4.  In this case all we can do is emulate the error codes
-    +	defined by the glibc interface from userspace.
-    +      - The flags are non-zero, glibc has __NR_fchmodat4, and the kernel has
-    +	fchmodat4.  This is the simplest case, as the fchmodat4 syscall exactly
-    +	matches glibc's library interface so it can be called directly.
-    +      - The flags are non-zero, glibc has __NR_fchmodat4, but the kernel does
-    +	not.  In this case we must respect the error codes defined by the glibc
-    +	interface instead of returning ENOSYS.
-    +    The intent here is to ensure that the kernel is called at most once per
-    +    library call, and that the error types defined by glibc are always
-    +    respected.  */
-    +
-    +#ifdef __NR_fchmodat4
-    +  long result;
-    +#endif
-    +
-    +  if (flag == 0)
-    +    return INLINE_SYSCALL (fchmodat, 3, fd, file, mode);
-    +
-    +#ifdef __NR_fchmodat4
-    +  result = INLINE_SYSCALL (fchmodat4, 4, fd, file, mode, flag);
-    +  if (result == 0 || errno != ENOSYS)
-    +    return result;
-    +#endif
-    +
-       if (flag & AT_SYMLINK_NOFOLLOW)
-         return INLINE_SYSCALL_ERROR_RETURN_VALUE (ENOTSUP);
-    -#endif
+> -int do_fchmodat(int dfd, const char __user *filename, umode_t mode)
+> +int do_fchmodat4(int dfd, const char __user *filename, umode_t mode, int flags)
+>  {
+>  	struct path path;
+>  	int error;
+> -	unsigned int lookup_flags = LOOKUP_FOLLOW;
+> +	unsigned int lookup_flags;
+> +
+> +	if (unlikely(flags & ~AT_SYMLINK_NOFOLLOW))
+> +		return -EINVAL;
+> +
+> +	lookup_flags = flags & AT_SYMLINK_NOFOLLOW ? 0 : LOOKUP_FOLLOW;
+> +
 
-    -  return INLINE_SYSCALL (fchmodat, 3, fd, file, mode);
-    +  return INLINE_SYSCALL_ERROR_RETURN_VALUE (EINVAL);
-     }
-
-I've never added a new syscall before so I'm not really sure what the
-proper procedure to follow is.  Based on the feedback from my v1 patch
-set it seems this is somewhat uncontroversial.  At this point I don't
-think there's anything I'm missing, though note that I haven't gotten
-around to testing it this time because the diff from v1 is trivial for
-any platform I could reasonably test on.  The v1 patches suggest a
-simple test case, but I didn't re-run it because I don't want to reboot
-my laptop.
-
-    $ touch test-file
-    $ ln -s test-file test-link
-    $ cat > test.c
-    #include <fcntl.h>
-    #include <stdio.h>
-    #include <unistd.h>
-
-    int main(int argc, char **argv)
-    {
-            long out;
-
-            out = syscall(434, AT_FDCWD, "test-file", 0x888, AT_SYMLINK_NOFOLLOW);
-            printf("fchmodat4(AT_FDCWD, \"test-file\", 0x888, AT_SYMLINK_NOFOLLOW): %ld\n", out);
-
-            out = syscall(434, AT_FDCWD, "test-file", 0x888, 0);
-            printf("fchmodat4(AT_FDCWD, \"test-file\", 0x888, 0): %ld\n", out);
-
-            out = syscall(268, AT_FDCWD, "test-file", 0x888);
-            printf("fchmodat(AT_FDCWD, \"test-file\", 0x888): %ld\n", out);
-
-            out = syscall(434, AT_FDCWD, "test-link", 0x888, AT_SYMLINK_NOFOLLOW);
-            printf("fchmodat4(AT_FDCWD, \"test-link\", 0x888, AT_SYMLINK_NOFOLLOW): %ld\n", out);
-
-            out = syscall(434, AT_FDCWD, "test-link", 0x888, 0);
-            printf("fchmodat4(AT_FDCWD, \"test-link\", 0x888, 0): %ld\n", out);
-
-            out = syscall(268, AT_FDCWD, "test-link", 0x888);
-            printf("fchmodat(AT_FDCWD, \"test-link\", 0x888): %ld\n", out);
-
-            return 0;
-    }
-    $ gcc test.c -o test
-    $ ./test
-    fchmodat4(AT_FDCWD, "test-file", 0x888, AT_SYMLINK_NOFOLLOW): 0
-    fchmodat4(AT_FDCWD, "test-file", 0x888, 0): 0
-    fchmodat(AT_FDCWD, "test-file", 0x888): 0
-    fchmodat4(AT_FDCWD, "test-link", 0x888, AT_SYMLINK_NOFOLLOW): -1
-    fchmodat4(AT_FDCWD, "test-link", 0x888, 0): 0
-    fchmodat(AT_FDCWD, "test-link", 0x888): 0
-
-I've only built this on 64-bit x86.
-
-Changes since v1 [20190531191204.4044-1-palmer@sifive.com]:
-
-* All architectures are now supported, which support squashed into a
-  single patch.
-* The do_fchmodat() helper function has been removed, in favor of directly
-  calling do_fchmodat4().
-* The patches are based on 5.2 instead of 5.1.
-
+	Why not do that in sys_fchmodat4() itself, passing lookup_flags to
+do_fchmodat() and updating old callers to pass it 0 as extra argument?
