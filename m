@@ -1,119 +1,140 @@
-Return-Path: <SRS0=0aPm=VN=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=1hYf=VO=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E2BFC76195
-	for <linux-parisc@archiver.kernel.org>; Tue, 16 Jul 2019 20:14:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4E27C76196
+	for <linux-parisc@archiver.kernel.org>; Wed, 17 Jul 2019 01:29:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7632C2173C
-	for <linux-parisc@archiver.kernel.org>; Tue, 16 Jul 2019 20:14:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A61DC21743
+	for <linux-parisc@archiver.kernel.org>; Wed, 17 Jul 2019 01:29:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="Kw1mKomL"
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="LRzFJFoI"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388568AbfGPUOM (ORCPT
+        id S1726748AbfGQB3U (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 16 Jul 2019 16:14:12 -0400
-Received: from mout.gmx.net ([212.227.15.19]:36299 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728137AbfGPUOL (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 16 Jul 2019 16:14:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1563308042;
-        bh=7VY8YH9jMovACrIdrhvISc8JByEG9+fowfzeNmRgOfo=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Kw1mKomLyf4TbBJ/zg23P7apFrDxlIIFzSokOMo69AtSxElmYEy4eq2eopppd7wMr
-         V8XRtNTIUYn4ltq5K91JC1v/XK7U38Oklx26zHYJGCDzpAqlGcHoZIBzBhosfArtWz
-         QREVdI+1aykJHs0N3A/CQ2T+LAPEzD202Z7jEasM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.163.176]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MkHMZ-1iC4Dg3Ysb-00kbu2; Tue, 16
- Jul 2019 22:14:01 +0200
-Subject: Re: [PATCH 1/2] arch: mark syscall number 435 reserved for clone3
-To:     Christian Brauner <christian@brauner.io>,
-        Sven Schnelle <svens@stackframe.org>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, arnd@arndb.de,
-        linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>, mpe@ellerman.id.au
-References: <20190714192205.27190-1-christian@brauner.io>
- <20190714192205.27190-2-christian@brauner.io>
- <e14eb2f9-43cb-0b9d-dec4-b7e7dcd62091@de.ibm.com>
- <20190716130631.tohj4ub54md25dys@brauner.io>
- <20190716185310.GA12537@t470p.stackframe.org>
- <20190716185554.gwpppirvmxgvnkgb@brauner.io>
-From:   Helge Deller <deller@gmx.de>
-Message-ID: <6d47935e-218c-3eb9-7617-14ce199f5958@gmx.de>
-Date:   Tue, 16 Jul 2019 22:13:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Tue, 16 Jul 2019 21:29:20 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:40080 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726907AbfGQB3T (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 16 Jul 2019 21:29:19 -0400
+Received: by mail-pg1-f195.google.com with SMTP id w10so10300396pgj.7
+        for <linux-parisc@vger.kernel.org>; Tue, 16 Jul 2019 18:29:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=Zt2cGhW98jjWE3OdliFocFdkTeCj4B287sEGZ0SpTug=;
+        b=LRzFJFoIhdEmL95807L32ZJIuoUYPRnejcM4WZZAS5I0UeznU/mAzk5GHoafmOmsHO
+         IM1q2PeVsvlEPnevADzvUbNh7W588och2Rq5fZ7FuM8MS5EZgdQu/E3L+BqIYSfN2XU/
+         fS7NBtFCaQBxI26WtshKHqrbJwSXRxg0DRH2E+7ihFfC5kinDvs9QAQl4LeKl3WMrLal
+         EZk+GjuTQmWvWRkiN6fD0Uh9EK++IoK7hPKkpfs3WJ+9PYY0m//oOKVgI1hVB+8KwfWp
+         /ROJj7wU7v2lVN33h5c47bRwWtpAubgsifHDAD3lPqVXVzkWPuUCHQEfzucJpkMLwZmo
+         z7ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding:cc:from:to;
+        bh=Zt2cGhW98jjWE3OdliFocFdkTeCj4B287sEGZ0SpTug=;
+        b=afm8rCcQX7te236HAhuoHbAdbDWVxD+iLa89E9RgbEV2jlvkOkth2T6f0VJW2Y9VZF
+         g1fdSp/IWb5kJ5wx4drt/RV0x29rnVvNIedB2bqql2LE5F2ZHXLybR3P9PLqT7zdTGl4
+         TXFMy66MejWYnHkPGIPywS98dNnQUROrrep7ctfLdvVUQc77cfhDvXTE5tvJ+f1Snxrm
+         gVVVwzwvpMF86VUt+8PeHbnTSXnohnmL8gRFC+mtUIU3h414V3R7wzntD4m89BJ3BFNr
+         Toc1nvhcZh09KDfmNJDlB1e46X6c/btCXZXbggzEwC+FwClKB+DGsqDG2kMqz4micbHa
+         Ya5Q==
+X-Gm-Message-State: APjAAAWo5cdUznLVNx18nIPs5Coa8NnlMfQTKJtF+d9jlWkZoVwPL9yI
+        Eg2s/VTY2Zy8Y5a9bC92zY9Opw==
+X-Google-Smtp-Source: APXvYqxMG1qk1WTJLj8KetMfpnmMGNIO6J68LTkGZfygoiTvSJog6FgoAv0IrheBQXCx4vxGr6+m3Q==
+X-Received: by 2002:a63:e5a:: with SMTP id 26mr36209824pgo.3.1563326958663;
+        Tue, 16 Jul 2019 18:29:18 -0700 (PDT)
+Received: from localhost ([12.206.222.5])
+        by smtp.gmail.com with ESMTPSA id i3sm23567398pfo.138.2019.07.16.18.29.17
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 16 Jul 2019 18:29:17 -0700 (PDT)
+Subject: [PATCH v2 4/4] tools: Add fchmodat4
+Date:   Tue, 16 Jul 2019 18:27:19 -0700
+Message-Id: <20190717012719.5524-5-palmer@sifive.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190717012719.5524-1-palmer@sifive.com>
+References: <20190717012719.5524-1-palmer@sifive.com>
 MIME-Version: 1.0
-In-Reply-To: <20190716185554.gwpppirvmxgvnkgb@brauner.io>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:2cW2yydYOFZ0K7SnlkSJRJZL6gbN19kSgKbyZFedY35qUSBwLwc
- KFwmZoyiIfN7b/p+DVlTRhgAyhZ7VdGpXdQVEnj51qjaJkW5gaAkDBU8LIwUGMGXiMX9maV
- GUvBYvRjVz9REkKhNe849boNzNZvi79Q2Q2BRRVgSNGmQF+a0pftaHPMxwZ9+pCndGXBx6X
- LsecZ2wqaeXWgof6fVzqg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4Ns/Ko0qGwY=:qtFJO0B/HPz+a+JhQFRjzt
- ZUmBSoerPrHropq5sAotY7F8GaBnQ0NKeQ9hZL+YtLcMAI3L6BI6rfq0NI6MgK1ZvAJLCivvK
- NUgYMbGygYMSZU1miPsKEwZe124zRrnQ4jnIE+BCdyaJL/Ssq6oTdgKcVUBSh2BII2oU+sttV
- ecWbKpu70lESoJDAcsv0lXwvx07tynJ7eNdW3D4REVKuw0BdPjcPkI3qjL7eyNRw1ikd9/Kep
- bnMPAsfRIeDkbNDu5HKUYZziuZQ+rDL3wX4ZQh0M5zvEnDKQQ7ao22hMHeF5HttlHo7j7kBsr
- SBEp/IIYng2xB8hK2juSQCSrriAv4frGKPVlQuWEhsJtrmL4N1pQMyPXVa5vlkRumb5j9Y575
- RurDMzLcXjUk+DNB3VfJZfQY13lyP9TRMdcmdF/8iyYUNhokijDyW6OGl2ZcptYU57mg1mn35
- WXx+gGRZ8OvEmgH8Adw9FYmkq/dAT/6HKGyd7ZfGzQvoAnRV89YHGodH/L0414MH9JmnTpCpI
- goqA+ognB/fN5yuP919sKtuEo0KqX5TJtbnomJickKwpi6bhD/JLgTq6t5rYq305LZwh3V3iK
- OWzAvy9og0GIV4/tAIl1tO59MaKYf4Jn7AEIiGHNMe3Oj3ko4cz2FfKue8lmpYplbnHGOwDPc
- 6LPDVHagzO6qa70bQ4Gv9llAiOXToQvLWXcmDySzZJ5/LpYp44q+l0jHR1BMv2zUk+90s7vrk
- 4yTl0/SIDguuv5NG39l57oLmZbEuMMLEbqBlmac8YZ8/iaPvkK39hs4dVQSc4HjZcKiMa4Fzc
- MV1yaXRWMb/fR7NZDBbv3mDPGqTwsp5HZW4TzEMWF4uFEnlAtTSL3Xns/LIOAusoitQPTDGUp
- H1zyjdpt6XYPGx3d6diD8rIq+nW4jhpwV+UD4re43PHvScbEs2Omuqo04uuO3eavxgmae26tC
- 6LAMUB8EYaSMzPrwEr/RavbNClLho2zcLOfS5QDolc9rna6TUQsVOYVq/V88IYTUsoce2T7ug
- m/f+5kqLNFStp+2aTBQCjG6TUey84zJXzc8FjGVoGBSvxXfqeU7HTShckbQzDRhAeZ92oID8H
- o04wxVl/EgW4Q9b/TZNQ4z9aVVmJ0CCXIFs4R48cmHufzn9EI6krvCJS2QSHx/euHF6sSXWUa
- NNirjIOYkJY82JMmOEVtBD7qpV+2AU18wSLPuvHkxhUkp613AAth7qcOVrwM8dGNvw5lE=
+Content-Transfer-Encoding: 8bit
+Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        tony.luck@intel.com, fenghua.yu@intel.com, geert@linux-m68k.org,
+        monstr@monstr.eu, ralf@linux-mips.org, paul.burton@mips.com,
+        jhogan@kernel.org, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, benh@kernel.crashing.org, paulus@samba.org,
+        mpe@ellerman.id.au, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        borntraeger@de.ibm.com, ysato@users.sourceforge.jp,
+        dalias@libc.org, davem@davemloft.net, luto@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        x86@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        peterz@infradead.org, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, Palmer Dabbelt <palmer@sifive.com>,
+        dhowells@redhat.com, firoz.khan@linaro.org, stefan@agner.ch,
+        schwidefsky@de.ibm.com, axboe@kernel.dk, christian@brauner.io,
+        hare@suse.com, deepa.kernel@gmail.com, tycho@tycho.ws,
+        kim.phillips@arm.com, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
+From:   Palmer Dabbelt <palmer@sifive.com>
+To:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 16.07.19 20:55, Christian Brauner wrote:
-> On Tue, Jul 16, 2019 at 08:53:10PM +0200, Sven Schnelle wrote:
->> Hi,
->>
->> [Adding Helge to CC list]
->>
->> On Tue, Jul 16, 2019 at 03:06:33PM +0200, Christian Brauner wrote:
->>> On Mon, Jul 15, 2019 at 03:56:04PM +0200, Christian Borntraeger wrote:
->>>> I think Vasily already has a clone3 patch for s390x with 435.
->>>
->>> A quick follow-up on this. Helge and Michael have asked whether there
->>> are any tests for clone3. Yes, there will be and I try to have them
->>> ready by the end of the this or next week for review. In the meantime =
-I
->>> hope the following minimalistic test program that just verifies very
->>> very basic functionality (It's not pretty.) will help you test:
->>> [..]
->>
->> On PA-RISC this seems to work fine with Helge's patch to wire up the
->> clone3 syscall.
->
-> [...]
-> In any case, I saw Helge's patch and I think I might've missed to add an
-> Acked-by but feel free to add it.
+I'm not sure why it's necessary to add this explicitly to tools/ as well
+as arch/, but there were a few instances of fspick in here so I blindly
+added fchmodat4 in the same fashion.
 
-Thanks!
-I've added the patch to the parisc-linux for-next tree.
+Signed-off-by: Palmer Dabbelt <palmer@sifive.com>
+---
+ tools/include/uapi/asm-generic/unistd.h           | 4 +++-
+ tools/perf/arch/x86/entry/syscalls/syscall_64.tbl | 1 +
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-Helge
+diff --git a/tools/include/uapi/asm-generic/unistd.h b/tools/include/uapi/asm-generic/unistd.h
+index a87904daf103..36232ea94956 100644
+--- a/tools/include/uapi/asm-generic/unistd.h
++++ b/tools/include/uapi/asm-generic/unistd.h
+@@ -844,9 +844,11 @@ __SYSCALL(__NR_fsconfig, sys_fsconfig)
+ __SYSCALL(__NR_fsmount, sys_fsmount)
+ #define __NR_fspick 433
+ __SYSCALL(__NR_fspick, sys_fspick)
++#define __NR_fchmodat4 434
++__SYSCALL(__NR_fchmodat4, sys_fchmodat4)
+ 
+ #undef __NR_syscalls
+-#define __NR_syscalls 434
++#define __NR_syscalls 435
+ 
+ /*
+  * 32 bit systems traditionally used different
+diff --git a/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl b/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
+index b4e6f9e6204a..b92d5b195e66 100644
+--- a/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -355,6 +355,7 @@
+ 431	common	fsconfig		__x64_sys_fsconfig
+ 432	common	fsmount			__x64_sys_fsmount
+ 433	common	fspick			__x64_sys_fspick
++434	common	fchmodat4		__x64_sys_fchmodat4
+ 
+ #
+ # x32-specific system call numbers start at 512 to avoid cache impact
+-- 
+2.21.0
+
