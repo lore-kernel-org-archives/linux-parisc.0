@@ -2,162 +2,97 @@ Return-Path: <SRS0=1hYf=VO=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,T_TVD_FUZZY_SECURITIES,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10AADC76192
-	for <linux-parisc@archiver.kernel.org>; Wed, 17 Jul 2019 12:40:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C198CC7618F
+	for <linux-parisc@archiver.kernel.org>; Wed, 17 Jul 2019 17:43:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9C7DC205F4
-	for <linux-parisc@archiver.kernel.org>; Wed, 17 Jul 2019 12:40:08 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XcmxneGO"
+	by mail.kernel.org (Postfix) with ESMTP id 6AB1F217F4
+	for <linux-parisc@archiver.kernel.org>; Wed, 17 Jul 2019 17:43:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbfGQMkF (ORCPT
+        id S1727386AbfGQRnO convert rfc822-to-8bit (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 17 Jul 2019 08:40:05 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:46208 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725873AbfGQMkE (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 17 Jul 2019 08:40:04 -0400
-Received: by mail-qt1-f194.google.com with SMTP id h21so23069400qtn.13;
-        Wed, 17 Jul 2019 05:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Q+81HBhn1TUwxu9S0B9qtFUuISibjz0/U9PrqDWTTnk=;
-        b=XcmxneGOy+2RXDL2AYuXAVZJAiyeHolR4ac1SzJQlQzwrwi+HqWSYoPkVqq9Vqmqg1
-         FqUghmpMcUzFuf3FSS4kllx0urGVacAPOsHEEssg1IcCrdVZRwWcHQ0thUX6C1t4cJoL
-         vOVr8CY1w5fJWuX4PjxWH/3qfPYVDkhrsa+FNQHmIYdGekpn15GeZDeuiy9HipKh7sJh
-         AHKocRO3yKYaTZLEjMvmeWDl1D3ocNZt0VWgNuaxapMwQPRA6H6V64dvA6mG81cJSpNL
-         aeJplonp1P4C/Vlc9tUcpxA5HCVp2ra7Vj9yw/aq7skHSfLh4Z2PuuHUmlIKQ9cKj5Od
-         nTqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Q+81HBhn1TUwxu9S0B9qtFUuISibjz0/U9PrqDWTTnk=;
-        b=nePew7iNL2rzy9UMLP4LX5YR99RKvQ9nCGtbuiO8mgZ36CimFI5C7KqlQ57RTC1Pj0
-         SZMppOl8Ec+Tfya1NRLXFK6xfXxS3BXj6TjvST75k6w2l9rEZS51iYX2tJFo3vagU2Qv
-         zIXJtb8ws59Kr0x0V3EloJlI2qy0VL2zx+YGBhd7nJiePxo5tCNn1/oy9HUCwOik1Y6h
-         brKsVJ+EtB9WbX61PAtOkNc5Q/defhjWNfw4Yck4YktI+DxbrbpmvBZ0eozstZjhlJPh
-         phmrLWKZKmVWTN23CWb0Bbkdu4xI9P/ItBYwpyfdRvpVDei18YKlTTEsYXsqvwt2olrv
-         t/tQ==
-X-Gm-Message-State: APjAAAV2Atavfk9+NHMNpEg3rW+OaTvh6TiHcaP7dkQXr4hokv7RxVPr
-        IFXGeph5SSEH/VvinsFYTAk=
-X-Google-Smtp-Source: APXvYqzbfxutvFrMV7t1nPl0gN0Fy5aGVu/YO7Xv3MDir0s1nCKm8BxCu8WphxvR5dCLt5lXuy+aag==
-X-Received: by 2002:aed:33e6:: with SMTP id v93mr27856811qtd.157.1563367202971;
-        Wed, 17 Jul 2019 05:40:02 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.35.11])
-        by smtp.gmail.com with ESMTPSA id y67sm11220164qkd.40.2019.07.17.05.40.01
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 17 Jul 2019 05:40:02 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E255440340; Wed, 17 Jul 2019 09:39:59 -0300 (-03)
-Date:   Wed, 17 Jul 2019 09:39:59 -0300
-To:     Palmer Dabbelt <palmer@sifive.com>
-Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, rth@twiddle.net,
-        ink@jurassic.park.msu.ru, mattst88@gmail.com,
-        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        tony.luck@intel.com, fenghua.yu@intel.com, geert@linux-m68k.org,
-        monstr@monstr.eu, ralf@linux-mips.org, paul.burton@mips.com,
-        jhogan@kernel.org, James.Bottomley@hansenpartnership.com,
-        deller@gmx.de, benh@kernel.crashing.org, paulus@samba.org,
-        mpe@ellerman.id.au, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, ysato@users.sourceforge.jp,
-        dalias@libc.org, davem@davemloft.net, luto@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        x86@kernel.org, peterz@infradead.org,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, dhowells@redhat.com, firoz.khan@linaro.org,
-        stefan@agner.ch, schwidefsky@de.ibm.com, axboe@kernel.dk,
-        christian@brauner.io, hare@suse.com, deepa.kernel@gmail.com,
-        tycho@tycho.ws, kim.phillips@arm.com, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] tools: Add fchmodat4
-Message-ID: <20190717123959.GB24063@kernel.org>
-References: <20190717012719.5524-1-palmer@sifive.com>
- <20190717012719.5524-5-palmer@sifive.com>
+        Wed, 17 Jul 2019 13:43:14 -0400
+Received: from [185.234.218.148] ([185.234.218.148]:11742 "EHLO webmail.co.za"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727280AbfGQRnN (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 17 Jul 2019 13:43:13 -0400
+X-Greylist: delayed 114958 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Jul 2019 13:43:12 EDT
+Reply-To: clinton.morgan@opendoorssecurities.co.uk
+From:   opendoorssecurities1@webmail.co.za
+To:     linux-parisc@vger.kernel.org
+Subject: Your diplomatic luggage
+Date:   17 Jul 2019 10:43:07 -0700
+Message-ID: <20190717104307.0C73386121C06847@webmail.co.za>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190717012719.5524-5-palmer@sifive.com>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.12.0 (2019-05-25)
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Em Tue, Jul 16, 2019 at 06:27:19PM -0700, Palmer Dabbelt escreveu:
-> I'm not sure why it's necessary to add this explicitly to tools/ as well
-> as arch/, but there were a few instances of fspick in here so I blindly
-> added fchmodat4 in the same fashion.
-
-The copies in tools/ for these specific files are used to generate a
-syscall table used by 'perf trace', and we don't/can't access files
-outside of tools/ to build tools/perf/, so we grab a copy and have
-checks in place to warn perf developers when those copies get out of
-sync.
-
-Its not required that kernel developers update anything in tools, you're
-welcomed to do so if you wish tho.
-
-Thanks,
-
-- Arnaldo
+I'm Clinton Morgan, I have been instructed to notify you of the 
+availability of a package deposited by your relative (our client) 
+in your name at the event of demise. We are entrusted and 
+empowered with diplomatic immunity and status to safe keep 
+valuable packages and baggage in trust for our reputable clients.
  
-> Signed-off-by: Palmer Dabbelt <palmer@sifive.com>
-> ---
->  tools/include/uapi/asm-generic/unistd.h           | 4 +++-
->  tools/perf/arch/x86/entry/syscalls/syscall_64.tbl | 1 +
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/include/uapi/asm-generic/unistd.h b/tools/include/uapi/asm-generic/unistd.h
-> index a87904daf103..36232ea94956 100644
-> --- a/tools/include/uapi/asm-generic/unistd.h
-> +++ b/tools/include/uapi/asm-generic/unistd.h
-> @@ -844,9 +844,11 @@ __SYSCALL(__NR_fsconfig, sys_fsconfig)
->  __SYSCALL(__NR_fsmount, sys_fsmount)
->  #define __NR_fspick 433
->  __SYSCALL(__NR_fspick, sys_fspick)
-> +#define __NR_fchmodat4 434
-> +__SYSCALL(__NR_fchmodat4, sys_fchmodat4)
->  
->  #undef __NR_syscalls
-> -#define __NR_syscalls 434
-> +#define __NR_syscalls 435
->  
->  /*
->   * 32 bit systems traditionally used different
-> diff --git a/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl b/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
-> index b4e6f9e6204a..b92d5b195e66 100644
-> --- a/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
-> +++ b/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
-> @@ -355,6 +355,7 @@
->  431	common	fsconfig		__x64_sys_fsconfig
->  432	common	fsmount			__x64_sys_fsmount
->  433	common	fspick			__x64_sys_fspick
-> +434	common	fchmodat4		__x64_sys_fchmodat4
->  
->  #
->  # x32-specific system call numbers start at 512 to avoid cache impact
-> -- 
-> 2.21.0
-
--- 
-
-- Arnaldo
+We work in collaboration with top firms and government bodies of 
+various countries as we have earned a reputation as a service 
+whose hallmarks in reliability and confidentiality are revered. 
+Our clienteles also includes international missions, fellow 
+diplomats as well as embassies of different countries.
+ 
+A financial security package was deposited by a benefactor whose 
+identity can not be disclosed due to a binding Non-Disclosure 
+Agreement, specifically instructing us to contact you in the 
+event of demise. The Non Circumvention and Non Disclosure 
+Agreement signed with the benefactor  mandates and authorises us 
+to fully divulge and disclose the benefactor's identity 18 months 
+after the beneficiary has received the funds. We confirm that 
+these funds are fully free of any liens or encumbrances and are 
+clean, clear and non-criminal origin and are available in the 
+form of
+CASH.
+ 
+By this notice, you are hereby advised to send your Full Contact 
+Information as well as the name of the closest airport to your 
+city in the format stated below. The funds with the 
+documentations of origin will be brought to your country of 
+residence by 3 Diplomats. You will be accompanied to your bank 
+(solely by your request) to deposit the funds in your name with 
+the documentations of its origin which authenticates the facts 
+that the funds are clean with no link to terrorism or drugs as 
+well as exonerates you from any form of investigations and 
+interrogation.
+ 
+ 
+Kindly ensure that no mistake or error is made in the information 
+provide below and it should be forwarded in the manner stated 
+below:
+ 
+Your Full Name: ______________________________
+ 
+Your cell number:______________________________
+ 
+Your Complete Address: ________________________________
+ 
+Name of City of Residence: ____________________
+ 
+Name of Closest Airport to your city of 
+Residence:_________________________________
+ 
+I hereby confirm the the information provided above is correct 
+and accurate to the best of my knowledge.
+Congratulations in advance.
+ 
+Thank you and I sincerely Remain,
+ 
+ 
+Clinton Morgan
+Email: clinton.morgan@opendoorssecurities.co.uk
