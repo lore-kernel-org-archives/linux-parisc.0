@@ -2,158 +2,87 @@ Return-Path: <SRS0=1xTG=VQ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-5.4 required=3.0 tests=FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D951AC76196
-	for <linux-parisc@archiver.kernel.org>; Fri, 19 Jul 2019 12:21:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06745C76195
+	for <linux-parisc@archiver.kernel.org>; Fri, 19 Jul 2019 16:34:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B328D2184E
-	for <linux-parisc@archiver.kernel.org>; Fri, 19 Jul 2019 12:21:15 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=brauner.io header.i=@brauner.io header.b="YA6Eggnr"
+	by mail.kernel.org (Postfix) with ESMTP id D437921873
+	for <linux-parisc@archiver.kernel.org>; Fri, 19 Jul 2019 16:34:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728349AbfGSMVP (ORCPT
+        id S1731144AbfGSQeB (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 19 Jul 2019 08:21:15 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:33899 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728324AbfGSMVK (ORCPT
+        Fri, 19 Jul 2019 12:34:01 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:43579 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729228AbfGSQeB (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 19 Jul 2019 08:21:10 -0400
-Received: by mail-wr1-f65.google.com with SMTP id 31so32116753wrm.1
-        for <linux-parisc@vger.kernel.org>; Fri, 19 Jul 2019 05:21:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brauner.io; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZSNxINB1eoSUuwzdj5DoTcqLmEl60Bp0Y1Hgn40sFfw=;
-        b=YA6EggnrFQ6Rx4knXWvUwz2U9x+1SCXFlO09KhemP39oSM5WYZgQ2m/kFVHmUdPaiL
-         Bm1Ggw6zh2v63WBxSukl1wDC7kjbGrKz1ZXMbEgZLoli/r4F13x+dHAZ6rE4Pz2qeley
-         9tPCOG2cMyDnw62NpBr9grkI92uWPyMgpht0Uw2SLvd9Dz2mAO6avNTIp3+tem/noeAR
-         V4om6zfHYpQNS87JMPrVvHsV4E1J0XeN9bBskUB2432vKBEvTC8+7q2OQdTGZ93iZIvI
-         ohhk/qhXg1mByYO2x65TDsZB/H0HOt+SpMEznQE/4/KLLVO6NYvQR0/hZMhvkRJlJ94I
-         XwzQ==
+        Fri, 19 Jul 2019 12:34:01 -0400
+Received: by mail-io1-f70.google.com with SMTP id q26so35116482ioi.10
+        for <linux-parisc@vger.kernel.org>; Fri, 19 Jul 2019 09:34:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZSNxINB1eoSUuwzdj5DoTcqLmEl60Bp0Y1Hgn40sFfw=;
-        b=fWZ9kYDZCiqGpqVb1bdwhUqyfqaSXJAX0l8ZKc3bouAoCbPpEvizBtB5J7uncIt4Qq
-         tWf+Dvi1BHrPKWFWCtR52ZlZqRn5cEE6lcHT/OVc/jTWjAcICLE0S5qyTUoDIRmDXnS9
-         QtxmkUktmMqti8qX/F6OhXUXFkVCQTFByvKYEXw1y/63mCyz/E5QlMDOTpfu5GyAyd6K
-         bijlW/An21FL4dDqvSQ96XxrDEQ3ws3zVHuc7Vt1qmPplNwL3bftdOyC/XRJQgdG2+FF
-         v78soYYxX4gz4u/OMNlS+pkzt4HegVd3bygsGldwZSVSCCp6iYu62+CpeT+YsVvSpTYY
-         6Pyg==
-X-Gm-Message-State: APjAAAUTZjsqEcPbwr884YsgtPu/junPCzwyietmdgIsuW0vvnecywTv
-        o+g496eKrCN0ZhpU+kMxtfU=
-X-Google-Smtp-Source: APXvYqx9gGrYkCwplFu6XW/mRH357ZdxOoELb3Z3UiLqCzSiDwFdDoevEVdtgUgUKpbiqm5tozaFNg==
-X-Received: by 2002:adf:f851:: with SMTP id d17mr56545224wrq.77.1563538868448;
-        Fri, 19 Jul 2019 05:21:08 -0700 (PDT)
-Received: from brauner.io (p5097b50e.dip0.t-ipconnect.de. [80.151.181.14])
-        by smtp.gmail.com with ESMTPSA id r12sm38324623wrt.95.2019.07.19.05.21.05
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 19 Jul 2019 05:21:07 -0700 (PDT)
-Date:   Fri, 19 Jul 2019 14:20:59 +0200
-From:   Christian Brauner <christian@brauner.io>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, arnd@arndb.de,
-        linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>
-Subject: Re: [PATCH 1/2] arch: mark syscall number 435 reserved for clone3
-Message-ID: <20190719122058.njbtwy2fbd6xrp2d@brauner.io>
-References: <20190714192205.27190-1-christian@brauner.io>
- <20190714192205.27190-2-christian@brauner.io>
- <e14eb2f9-43cb-0b9d-dec4-b7e7dcd62091@de.ibm.com>
- <20190716130631.tohj4ub54md25dys@brauner.io>
- <874l3i8h0l.fsf@concordia.ellerman.id.au>
- <20190719102503.tm3ahvkh4rwykmws@brauner.io>
- <871rym8egj.fsf@concordia.ellerman.id.au>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=K0tO5uO221nvtR7gnlqeSa9IqFZGmt58DDiOBmYEiu8=;
+        b=gNlh4J9LXikYcPe6hpRIWa1Toxtbc2lJACJTIeW/vVeerWnUGNeBjia8Y2RX0dPjSG
+         p+J/WT/u7DDWs2bJVEvGMvqza2qHTp7NV8mEnAYx+2WWwAs7K5n5qa0y9sEo5tci5SZf
+         RSkxr/3xLY0l7IkGjxYrUk6ARZJ+HmlFNp1TbprmsOuvyJS2wOE5XDYEkc3BnrGV1HeV
+         hPUMhaVe2wXkDMHLD4tb1Nqc9Be9bfExRsAIP1YKuVo1MhRj8LF7UR35SW6X0QJzwJVe
+         eg1K/vXa2GUyJ8pxgFIB2VHf8GynyOhwMQuUBCat9KnDvcDjsAeTmaQeACQamb1DKd7x
+         Pslg==
+X-Gm-Message-State: APjAAAWKcOrEicGV/d0swYxWwKDfB1dMMdvomcnGs+9soya+JevLaVMn
+        D3oM7KHOEuhnLtf+7zr3CA7Wl2G+IEqJ8rX1jTEdTEd3Wyh3
+X-Google-Smtp-Source: APXvYqzXnjpSQV9iFQbyh8yurehonYeDVnnn919X9PLqsJYbWXJy2VpoCVH3ZDalQ76trhEOtpL1aMd4nm27xBBAS+sOD1mk8YpL
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <871rym8egj.fsf@concordia.ellerman.id.au>
-User-Agent: NeoMutt/20180716
+X-Received: by 2002:a5d:8c87:: with SMTP id g7mr47222471ion.85.1563554040200;
+ Fri, 19 Jul 2019 09:34:00 -0700 (PDT)
+Date:   Fri, 19 Jul 2019 09:34:00 -0700
+In-Reply-To: <000000000000490679058e0245ee@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000027494e058e0b4b3f@google.com>
+Subject: Re: KASAN: use-after-free Read in finish_task_switch (2)
+From:   syzbot <syzbot+7f067c796eee2acbc57a@syzkaller.appspotmail.com>
+To:     aarcange@redhat.com, akpm@linux-foundation.org,
+        christian@brauner.io, davem@davemloft.net, ebiederm@xmission.com,
+        elena.reshetova@intel.com, guro@fb.com, hch@infradead.org,
+        james.bottomley@hansenpartnership.com, jasowang@redhat.com,
+        jglisse@redhat.com, keescook@chromium.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-parisc@vger.kernel.org,
+        luto@amacapital.net, mhocko@suse.com, mingo@kernel.org,
+        mst@redhat.com, namit@vmware.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, wad@chromium.org,
+        yuehaibing@huawei.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, Jul 19, 2019 at 09:13:16PM +1000, Michael Ellerman wrote:
-> Christian Brauner <christian@brauner.io> writes:
-> > On Fri, Jul 19, 2019 at 08:18:02PM +1000, Michael Ellerman wrote:
-> >> Christian Brauner <christian@brauner.io> writes:
-> >> > On Mon, Jul 15, 2019 at 03:56:04PM +0200, Christian Borntraeger wrote:
-> >> >> I think Vasily already has a clone3 patch for s390x with 435. 
-> >> >
-> >> > A quick follow-up on this. Helge and Michael have asked whether there
-> >> > are any tests for clone3. Yes, there will be and I try to have them
-> >> > ready by the end of the this or next week for review. In the meantime I
-> >> > hope the following minimalistic test program that just verifies very
-> >> > very basic functionality (It's not pretty.) will help you test:
-> >> 
-> >> Hi Christian,
-> >> 
-> >> Thanks for the test.
-> >> 
-> >> This actually oopses on powerpc, it hits the BUG_ON in CHECK_FULL_REGS
-> >> in process.c around line 1633:
-> >> 
-> >> 	} else {
-> >> 		/* user thread */
-> >> 		struct pt_regs *regs = current_pt_regs();
-> >> 		CHECK_FULL_REGS(regs);
-> >> 		*childregs = *regs;
-> >> 		if (usp)
-> >> 
-> >> 
-> >> So I'll have to dig into how we fix that before we wire up clone3.
-> >> 
-> >> Turns out testing is good! :)
-> >
-> > Indeed. I have a test-suite for clone3 in mind and I hope to have it
-> > ready by the end of next week. It's just always the finding the time
-> > part that is annoying. :)
-> 
-> I know the feeling!
-> 
-> > Thanks for digging into this, Michael!
-> 
-> No worries, happy to help where I can.
-> 
-> In the intervening five minutes I remembered how we handle this, we just
-> need a little wrapper to save the non-volatile regs:
-> 
-> _GLOBAL(ppc_clone3)
-> 	bl	save_nvgprs
-> 	bl	sys_clone3
-> 	b	.Lsyscall_exit
+syzbot has bisected this bug to:
 
-Sounds good.
+commit 7f466032dc9e5a61217f22ea34b2df932786bbfc
+Author: Jason Wang <jasowang@redhat.com>
+Date:   Fri May 24 08:12:18 2019 +0000
 
-> 
-> 
-> A while back I meant to make it generate those automatically based on a
-> flag in the syscall.tbl but of course haven't got around to it :)
-> 
-> So with the above it seems all good:
-> 
-> $ ./clone3 ; echo $?
-> Parent process received child's pid 4204 as return value
-> Parent process received child's pidfd 3
-> Parent process received child's pid 4204 as return argument
-> Child process with pid 4204
-> 0
-> 
-> I'll send a patch to wire it up on Monday.
+     vhost: access vq metadata through kernel virtual address
 
-Excellent! Thank you!
-Christian
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=123faf70600000
+start commit:   22051d9c Merge tag 'platform-drivers-x86-v5.3-2' of git://..
+git tree:       upstream
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=113faf70600000
+console output: https://syzkaller.appspot.com/x/log.txt?x=163faf70600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=135cb826ac59d7fc
+dashboard link: https://syzkaller.appspot.com/bug?extid=7f067c796eee2acbc57a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12c1898fa00000
+
+Reported-by: syzbot+7f067c796eee2acbc57a@syzkaller.appspotmail.com
+Fixes: 7f466032dc9e ("vhost: access vq metadata through kernel virtual  
+address")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
