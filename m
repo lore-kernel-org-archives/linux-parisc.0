@@ -2,311 +2,106 @@ Return-Path: <SRS0=6zkG=VU=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1611C76190
-	for <linux-parisc@archiver.kernel.org>; Tue, 23 Jul 2019 20:38:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D51B1C76186
+	for <linux-parisc@archiver.kernel.org>; Tue, 23 Jul 2019 21:30:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8028D229EC
-	for <linux-parisc@archiver.kernel.org>; Tue, 23 Jul 2019 20:38:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 95354218D4
+	for <linux-parisc@archiver.kernel.org>; Tue, 23 Jul 2019 21:30:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="AVe/U2ZX"
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="Mw172/vX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389153AbfGWUiB (ORCPT
+        id S2389341AbfGWVam (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 23 Jul 2019 16:38:01 -0400
-Received: from smtp.duncanthrax.net ([89.31.1.170]:44434 "EHLO
-        smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389119AbfGWUiA (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 23 Jul 2019 16:38:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=duncanthrax.net; s=dkim; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From;
-        bh=r+pOu4JhNcuLHAjSoU7EGPn3OF9ZU7z7MwJqSoQuifQ=; b=AVe/U2ZXcrBlndFuZRXC1j3DGS
-        WJ3eenQX1HF22YsrDrAfb1SVcFZ06MHF3tLGvP2h12sYt3glbaiZEaaNkhSv3nQIgiXdXh1DjuA3+
-        vkNCfechucfjeBVd6Z+5U0zUqwRhlHPS7CkMLiTIUdWAWUYvBGO/DDeyP2SyYzeD7Zz8=;
-Received: from [134.3.44.134] (helo=t470p.stackframe.org)
-        by smtp.eurescom.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <svens@stackframe.org>)
-        id 1hq1Xq-0002i7-H8; Tue, 23 Jul 2019 22:37:58 +0200
-From:   Sven Schnelle <svens@stackframe.org>
-To:     deller@gmx.de
-Cc:     linux-parisc@vger.kernel.org, Sven Schnelle <svens@stackframe.org>
-Subject: [PATCH 2/4] parisc/ftrace: Add KPROBES_ON_FTRACE
-Date:   Tue, 23 Jul 2019 22:37:52 +0200
-Message-Id: <20190723203754.7126-3-svens@stackframe.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190723203754.7126-1-svens@stackframe.org>
-References: <20190723203754.7126-1-svens@stackframe.org>
+        Tue, 23 Jul 2019 17:30:42 -0400
+Received: from mout.gmx.net ([212.227.17.21]:39241 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731616AbfGWVam (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 23 Jul 2019 17:30:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1563917421;
+        bh=ToULRC4irrsdH84boQnpkm5KiZJ47FZlgR9fRYxOddQ=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=Mw172/vXJLuMiXnhcNcxkFLc+1aKNWEZ8PiRunLmcf3dhaVRLy3tt6tEfy4Hy2XqC
+         PyJ35c47qRSvmmSrJacGYW026ubBeNnkC3r0iI352l8MRe5TksbAyXXfEfq2ZaSc1L
+         AXwOe3IbD6QKY7TOSbx6Apv6B+fCU/iCs06Tt8DM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [172.17.9.180] ([87.191.208.243]) by mail.gmx.com (mrgmx101
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 0LtVLE-1iWxrd16mq-010plk; Tue, 23
+ Jul 2019 23:30:21 +0200
+Subject: Re: Build regressions/improvements in v5.3-rc1
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     linux-um@lists.infradead.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-mips@vger.kernel.org,
+        Parisc List <linux-parisc@vger.kernel.org>
+References: <20190723080441.19110-1-geert@linux-m68k.org>
+ <CAMuHMdVuVqXnW8SEnpcbvh8agYvPh775rv9tmV9kGUa6Q2wcwA@mail.gmail.com>
+From:   Helge Deller <deller@gmx.de>
+Message-ID: <738c1891-6ef3-8cd1-d25e-b9a36255e3e7@gmx.de>
+Date:   Tue, 23 Jul 2019 23:30:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdVuVqXnW8SEnpcbvh8agYvPh775rv9tmV9kGUa6Q2wcwA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:T+b1tb8faTODi5y7+U6ZeYg349SPA/Fh6VMkO4Lv68DcHiqWs38
+ yMSq6plB/gXOGf08wjD9XUjitvj8jKdC/8/JaMSNHP9vDAOO7Co7tl7rnvZFkj9FzwyC3he
+ Osdq0XH55YVvzrSSpZfz5GyKiXcltMbOZz4gbER+z1VPvO52/fBz44TmPn60QnwkG/uiNZp
+ Qd7uZwcF8lw5s0lW1uARg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SryDnYPWR3k=:YfaURXV31fWbWOLAGMHGGV
+ Dmnik+n3qAhqkld+yRDUq/ad82uys9dQKsblccpGM1v+nWFWNXHRGjJnWpTHthVgl5MjKareW
+ S8+A4ILBwxCub+9qb285MgdDuTPxS7dGZzzs1i1PXNIU4ej6gydgwM3z7ULTsFyJRl8wF1WoB
+ Ciz5DIEkIBiRgLcXVj6nyJH3dJGRtqSPguFrXaPSrV/pmj04wTImaGupFmt+NfX1jhjZjXIcr
+ DMhTnVxONS3fiOhWtR/1DjnBOcBw26ctyW1tDbpN2jcDeuXM9VjIYVRCYv75waepvsgzx6z+6
+ Y+w+9q+vzUpjB64NgLoPSebj8q0PWxcv5LCm5+4zx+WmEhLPdPZBeZ3593O31bsHpcyWwRKlm
+ zM8DeFk6vuhWjzB7chszUwcyxFIzn/PowsWGt7KTEenxppLvGxPwYXGj4xyFsBQoN3YhLxyIn
+ 3VE0LcZj3lyD8jeXPQ1tQI2xy+8m1GNDoLpvwW310SEdE2L7UmtfHZ1C9mspC4HKXI4f5MuLX
+ wLPTjfr/7eWbl51HcUY2Tozd1IZXhusmqwm+BOXN2AancGej6DJ9BFL+DQfuOaZBlhgugp4An
+ UPf8cUynTng/Rs2/LqzKmQmFYtRBSwc37YTxiJO3cIayyLWJDbGidsCRXBjke2Yn2rQpG1vht
+ huUmUsiUoIhg6pB0qZEQ6xIf/PdZc0yPvuesx1caABIUUpM3BECtj42ujta5WGmAhrZbK45az
+ s0J9qGk2Pf2ZLZyzOGkrgEKjuYspigu8gz2zY93ySXrp/r3sKgUEhrYtc9ZmYkmwz1K2Z8I0m
+ e+IcH6RAD5eBsI/TPmjBiBJnnIEpQ/D9j7EjFzCPIFvRKsU6q1kMfeD+1KecjIzSJo4APWbVM
+ y2pUQKKW0TSl0QYD02OZ+XNA8gvg+sq9vXPt5e5ZEnthuujlO0Eeaj2TRtYqKx5yaWUkyjkuP
+ G26mwOYKDQHdZnvffvqtvcy+HW7DI5GEwBhXj0VE5yPPHcWfD9FUXXe3KfDV/StdlSwan7SVK
+ 1ZVRDKGDPYLYW7zOY4L6y0bPCt3UEF7Naw7mqyC7SZzElpiiuBTVJ0jUZNIrfQr6ybEOJqPYZ
+ RapDmKg7odABSY=
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Allow KPROBES to use the ftrace infrastructure on PA-RISC.
+On 23.07.19 17:39, Geert Uytterhoeven wrote:
+> On Tue, Jul 23, 2019 at 5:22 PM Geert Uytterhoeven <geert@linux-m68k.org=
+> wrote:
+>> Below is the list of build error/warning regressions/improvements in
+>> v5.3-rc1[1] compared to v5.2[2].
+>
+>> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/5f9e832c13707=
+5045d15cd6899ab0505cfb2ca4b/ (241 out of 242 configs)
+>> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/0ecfebd2b5240=
+4ae0c54a878c872bb93363ada36/ (all 242 configs)
+>>
+>>
+>> *** ERRORS ***
+>> ...
+>>    + /kisskb/src/include/linux/kprobes.h: error: implicit declaration o=
+f function 'kprobe_fault_handler'; did you mean 'kprobe_page_fault'? [-Wer=
+ror=3Dimplicit-function-declaration]:  =3D> 477:9
+>
+> parisc-allmodconfig
 
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
----
- .../debug/kprobes-on-ftrace/arch-support.txt  |  2 +-
- arch/parisc/Kconfig                           |  2 +
- arch/parisc/kernel/entry.S                    | 99 +++++++++++++++++++
- arch/parisc/kernel/ftrace.c                   | 58 ++++++++++-
- 4 files changed, 157 insertions(+), 4 deletions(-)
+I've a patch queued up for the next pull request (in the parisc git tree) =
+to fix this:
 
-diff --git a/Documentation/features/debug/kprobes-on-ftrace/arch-support.txt b/Documentation/features/debug/kprobes-on-ftrace/arch-support.txt
-index 68f266944d5f..4fae0464ddff 100644
---- a/Documentation/features/debug/kprobes-on-ftrace/arch-support.txt
-+++ b/Documentation/features/debug/kprobes-on-ftrace/arch-support.txt
-@@ -21,7 +21,7 @@
-     |       nds32: | TODO |
-     |       nios2: | TODO |
-     |    openrisc: | TODO |
--    |      parisc: | TODO |
-+    |      parisc: |  ok  |
-     |     powerpc: |  ok  |
-     |       riscv: | TODO |
-     |        s390: | TODO |
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 6d732e451071..ee59171edffe 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -61,6 +61,8 @@ config PARISC
- 	select HAVE_KRETPROBES
- 	select HAVE_DYNAMIC_FTRACE if $(cc-option,-fpatchable-function-entry=1,1)
- 	select HAVE_FTRACE_MCOUNT_RECORD if HAVE_DYNAMIC_FTRACE
-+	select HAVE_KPROBES_ON_FTRACE
-+	select HAVE_DYNAMIC_FTRACE_WITH_REGS
- 
- 	help
- 	  The PA-RISC microprocessor is designed by Hewlett-Packard and used
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index d9d3387f7c47..1d1d748c227f 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -1996,6 +1996,7 @@ _mcount:
- 	 * calling mcount(), and 2 instructions for ftrace_stub().  That way we
- 	 * have all on one L1 cacheline.
- 	 */
-+	ldi	0, %arg3
- 	b	ftrace_function_trampoline
- 	copy	%r3, %arg2	/* caller original %sp */
- ftrace_stub:
-@@ -2048,6 +2049,7 @@ ftrace_caller:
- 	LDREG	0(%r3), %r25
- 	copy	%rp, %r26
- 	ldo	-8(%r25), %r25
-+	ldi	0, %r23		/* no pt_regs */
- 	b,l	ftrace_function_trampoline, %rp
- 	copy	%r3, %r24
- 
-@@ -2075,6 +2077,103 @@ ftrace_caller:
- 
- ENDPROC_CFI(ftrace_caller)
- 
-+#ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_REGS
-+ENTRY_CFI(ftrace_regs_caller,caller,frame=FTRACE_FRAME_SIZE+PT_SZ_ALGN,
-+	CALLS,SAVE_RP,SAVE_SP)
-+ftrace_regs_caller:
-+	.global ftrace_regs_caller
-+
-+	ldo	-FTRACE_FRAME_SIZE(%sp), %r1
-+	STREG	%rp, -RP_OFFSET(%r1)
-+
-+	copy	%sp, %r1
-+	ldo	PT_SZ_ALGN(%sp), %sp
-+
-+	STREG	%rp, PT_GR2(%r1)
-+	STREG	%r3, PT_GR3(%r1)
-+	STREG	%r4, PT_GR4(%r1)
-+	STREG	%r5, PT_GR5(%r1)
-+	STREG	%r6, PT_GR6(%r1)
-+	STREG	%r7, PT_GR7(%r1)
-+	STREG	%r8, PT_GR8(%r1)
-+	STREG	%r9, PT_GR9(%r1)
-+	STREG   %r10, PT_GR10(%r1)
-+	STREG   %r11, PT_GR11(%r1)
-+	STREG   %r12, PT_GR12(%r1)
-+	STREG   %r13, PT_GR13(%r1)
-+	STREG   %r14, PT_GR14(%r1)
-+	STREG   %r15, PT_GR15(%r1)
-+	STREG   %r16, PT_GR16(%r1)
-+	STREG   %r17, PT_GR17(%r1)
-+	STREG   %r18, PT_GR18(%r1)
-+	STREG	%r19, PT_GR19(%r1)
-+	STREG	%r20, PT_GR20(%r1)
-+	STREG	%r21, PT_GR21(%r1)
-+	STREG	%r22, PT_GR22(%r1)
-+	STREG	%r23, PT_GR23(%r1)
-+	STREG	%r24, PT_GR24(%r1)
-+	STREG	%r25, PT_GR25(%r1)
-+	STREG	%r26, PT_GR26(%r1)
-+	STREG	%r27, PT_GR27(%r1)
-+	STREG	%r28, PT_GR28(%r1)
-+	STREG	%r29, PT_GR29(%r1)
-+	STREG	%r30, PT_GR30(%r1)
-+	STREG	%r31, PT_GR31(%r1)
-+	mfctl	%cr11, %r26
-+	STREG	%r26, PT_SAR(%r1)
-+
-+	copy	%rp, %r26
-+	LDREG	-FTRACE_FRAME_SIZE-PT_SZ_ALGN(%sp), %r25
-+	ldo	-8(%r25), %r25
-+	copy	%r3, %arg2
-+	b,l	ftrace_function_trampoline, %rp
-+	copy	%r1, %arg3 /* struct pt_regs */
-+
-+	ldo	-PT_SZ_ALGN(%sp), %r1
-+
-+	LDREG	PT_SAR(%r1), %rp
-+	mtctl	%rp, %cr11
-+
-+	LDREG	PT_GR2(%r1), %rp
-+	LDREG	PT_GR3(%r1), %r3
-+	LDREG	PT_GR4(%r1), %r4
-+	LDREG	PT_GR5(%r1), %r5
-+	LDREG	PT_GR6(%r1), %r6
-+	LDREG	PT_GR7(%r1), %r7
-+	LDREG	PT_GR8(%r1), %r8
-+	LDREG	PT_GR9(%r1), %r9
-+	LDREG   PT_GR10(%r1),%r10
-+	LDREG   PT_GR11(%r1),%r11
-+	LDREG   PT_GR12(%r1),%r12
-+	LDREG   PT_GR13(%r1),%r13
-+	LDREG   PT_GR14(%r1),%r14
-+	LDREG   PT_GR15(%r1),%r15
-+	LDREG   PT_GR16(%r1),%r16
-+	LDREG   PT_GR17(%r1),%r17
-+	LDREG   PT_GR18(%r1),%r18
-+	LDREG   PT_GR19(%r1),%r19
-+	LDREG   PT_GR20(%r1),%r20
-+	LDREG   PT_GR21(%r1),%r21
-+	LDREG   PT_GR22(%r1),%r22
-+	LDREG   PT_GR23(%r1),%r23
-+	LDREG   PT_GR24(%r1),%r24
-+	LDREG   PT_GR25(%r1),%r25
-+	LDREG   PT_GR26(%r1),%r26
-+	LDREG   PT_GR27(%r1),%r27
-+	LDREG   PT_GR28(%r1),%r28
-+	LDREG   PT_GR29(%r1),%r29
-+	LDREG   PT_GR30(%r1),%r30
-+	LDREG   PT_GR31(%r1),%r31
-+
-+	ldo	-PT_SZ_ALGN(%sp), %sp
-+	LDREGM	-FTRACE_FRAME_SIZE(%sp), %r1
-+	/* Adjust return point to jump back to beginning of traced function */
-+	ldo	-4(%r1), %r1
-+	bv,n	(%r1)
-+
-+ENDPROC_CFI(ftrace_regs_caller)
-+
-+#endif
- #endif
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-index ea5c50de0b65..2c6086dbfe68 100644
---- a/arch/parisc/kernel/ftrace.c
-+++ b/arch/parisc/kernel/ftrace.c
-@@ -13,6 +13,8 @@
- #include <linux/init.h>
- #include <linux/ftrace.h>
- #include <linux/uaccess.h>
-+#include <linux/kprobes.h>
-+#include <linux/ptrace.h>
- 
- #include <asm/assembly.h>
- #include <asm/sections.h>
-@@ -48,7 +50,8 @@ static void __hot prepare_ftrace_return(unsigned long *parent,
- 
- void notrace __hot ftrace_function_trampoline(unsigned long parent,
- 				unsigned long self_addr,
--				unsigned long org_sp_gr3)
-+				unsigned long org_sp_gr3,
-+				struct pt_regs *regs)
- {
- #ifndef CONFIG_DYNAMIC_FTRACE
- 	extern ftrace_func_t ftrace_trace_function;
-@@ -58,11 +61,11 @@ void notrace __hot ftrace_function_trampoline(unsigned long parent,
- 	if (function_trace_op->flags & FTRACE_OPS_FL_ENABLED &&
- 	    ftrace_trace_function != ftrace_stub)
- 		ftrace_trace_function(self_addr, parent,
--				function_trace_op, NULL);
-+				function_trace_op, regs);
- 
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
- 	if (ftrace_graph_return != (trace_func_graph_ret_t) ftrace_stub ||
--		ftrace_graph_entry != ftrace_graph_entry_stub) {
-+	    ftrace_graph_entry != ftrace_graph_entry_stub) {
- 		unsigned long *parent_rp;
- 
- 		/* calculate pointer to %rp in stack */
-@@ -100,6 +103,12 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- 	return 0;
- }
- 
-+int ftrace_modify_call(struct dyn_ftrace *rec, unsigned long old_addr,
-+			unsigned long addr)
-+{
-+	return 0;
-+}
-+
- unsigned long ftrace_call_adjust(unsigned long addr)
- {
- 	return addr+(FTRACE_PATCHABLE_FUNCTION_SIZE-1)*4;
-@@ -190,3 +199,46 @@ int ftrace_make_nop(struct module *mod, struct dyn_ftrace *rec,
- 	return 0;
- }
- #endif
-+
-+#ifdef CONFIG_KPROBES_ON_FTRACE
-+void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
-+			   struct ftrace_ops *ops, struct pt_regs *regs)
-+{
-+	struct kprobe_ctlblk *kcb;
-+	struct kprobe *p = get_kprobe((kprobe_opcode_t *)ip);
-+
-+	if (unlikely(!p) || kprobe_disabled(p))
-+		return;
-+
-+	if (kprobe_running()) {
-+		kprobes_inc_nmissed_count(p);
-+		return;
-+	}
-+
-+	__this_cpu_write(current_kprobe, p);
-+
-+	kcb = get_kprobe_ctlblk();
-+	kcb->kprobe_status = KPROBE_HIT_ACTIVE;
-+
-+	regs->iaoq[0] = ip;
-+	regs->iaoq[1] = ip + 4;
-+
-+	if (!p->pre_handler || !p->pre_handler(p, regs)) {
-+		regs->iaoq[0] = ip + 4;
-+		regs->iaoq[1] = ip + 8;
-+
-+		if (unlikely(p->post_handler)) {
-+			kcb->kprobe_status = KPROBE_HIT_SSDONE;
-+			p->post_handler(p, regs, 0);
-+		}
-+	}
-+	__this_cpu_write(current_kprobe, NULL);
-+}
-+NOKPROBE_SYMBOL(kprobe_ftrace_handler);
-+
-+int arch_prepare_kprobe_ftrace(struct kprobe *p)
-+{
-+	p->ainsn.insn = NULL;
-+	return 0;
-+}
-+#endif
--- 
-2.20.1
+https://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git/co=
+mmit/?h=3Dfor-next&id=3Df5e03d3a04978d2866f82cb11cc7a6b808c8ce07
 
+Helge
