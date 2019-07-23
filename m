@@ -2,44 +2,47 @@ Return-Path: <SRS0=6zkG=VU=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD6BBC76186
-	for <linux-parisc@archiver.kernel.org>; Tue, 23 Jul 2019 20:38:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D833C76194
+	for <linux-parisc@archiver.kernel.org>; Tue, 23 Jul 2019 20:38:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 59EE6229EC
+	by mail.kernel.org (Postfix) with ESMTP id E1A1D229EC
 	for <linux-parisc@archiver.kernel.org>; Tue, 23 Jul 2019 20:38:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="YidJAsUg"
+	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="Jo/WCSKN"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388963AbfGWUiA (ORCPT
+        id S2388897AbfGWUiB (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 23 Jul 2019 16:38:00 -0400
-Received: from smtp.duncanthrax.net ([89.31.1.170]:34545 "EHLO
+        Tue, 23 Jul 2019 16:38:01 -0400
+Received: from smtp.duncanthrax.net ([89.31.1.170]:37614 "EHLO
         smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388897AbfGWUiA (ORCPT
+        with ESMTP id S2389153AbfGWUiB (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 23 Jul 2019 16:38:00 -0400
+        Tue, 23 Jul 2019 16:38:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=duncanthrax.net; s=dkim; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From;
-        bh=IPmAZTF0hKh+QLwv0ELrYrxHMNKuoC35KvFMzbalBcA=; b=YidJAsUgKHlmzN6jb2OrfXWAZ2
-        WFe845YkJSTlMM/dG1sr23PVa6LkPPbuYTgWeuhf2GR/1ONawS62hrWSW7gOFcoOvcCc6wJ+WEuea
-        ZgZUkMgk7z7IdHqagwUWjtdrMhaVPkeApi0C/jCICh+26Xk9yFHvkHW+tPzL160AfX24=;
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From;
+        bh=uwLxBY80USIeRF3LpNlVU4E3cPhwRKycoN+c/b3BV08=; b=Jo/WCSKNwajkR7jVElbR9rbSl/
+        V4Uv1iULCVwoh+WUMFrdDpzf4HBTmKsdZbv7850I7L+IoKLqXWDQQYs+iHWPevZaz63oihanIHH1D
+        JJKXI+oYZbkoe5bBNcWDaqx4qOMtDJ+mpaEfe1qcVlQeLLBkddWdtvuGZTqr6hkTKZlI=;
 Received: from [134.3.44.134] (helo=t470p.stackframe.org)
         by smtp.eurescom.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <svens@stackframe.org>)
-        id 1hq1Xq-0002i7-5q; Tue, 23 Jul 2019 22:37:58 +0200
+        id 1hq1Xq-0002i7-MS; Tue, 23 Jul 2019 22:37:58 +0200
 From:   Sven Schnelle <svens@stackframe.org>
 To:     deller@gmx.de
 Cc:     linux-parisc@vger.kernel.org, Sven Schnelle <svens@stackframe.org>
-Subject: [PATCH 0/4] Add support for kprobes on ftrace
-Date:   Tue, 23 Jul 2019 22:37:50 +0200
-Message-Id: <20190723203754.7126-1-svens@stackframe.org>
+Subject: [PATCH 3/4] parisc: Update feature list
+Date:   Tue, 23 Jul 2019 22:37:53 +0200
+Message-Id: <20190723203754.7126-4-svens@stackframe.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190723203754.7126-1-svens@stackframe.org>
+References: <20190723203754.7126-1-svens@stackframe.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-parisc-owner@vger.kernel.org
@@ -47,29 +50,26 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi,
+Add jump labels to the list of supported features.
 
-these patches add support for running Kprobes on ftrace infrastructure. While
-at it i also fixed on bug in the code patching function and add Jump labels
-to the supported features list for PA-RISC.
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+---
+ Documentation/features/core/jump-labels/arch-support.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards
-Sven
-
-Sven Schnelle (4):
-  parisc/ftrace: Add ARCH_SUPPORTS_FTRACE_OPS support
-  parisc/ftrace: Add KPROBES_ON_FTRACE
-  parisc: Update feature list
-  parisc: fix race condition in patching code
-
- .../core/jump-labels/arch-support.txt         |  2 +-
- .../debug/kprobes-on-ftrace/arch-support.txt  |  2 +-
- arch/parisc/Kconfig                           |  2 +
- arch/parisc/include/asm/ftrace.h              |  1 +
- arch/parisc/kernel/entry.S                    | 99 +++++++++++++++++++
- arch/parisc/kernel/ftrace.c                   | 67 ++++++++++++-
- 6 files changed, 166 insertions(+), 7 deletions(-)
-
+diff --git a/Documentation/features/core/jump-labels/arch-support.txt b/Documentation/features/core/jump-labels/arch-support.txt
+index 7fc2e243dee9..cae7be2f7725 100644
+--- a/Documentation/features/core/jump-labels/arch-support.txt
++++ b/Documentation/features/core/jump-labels/arch-support.txt
+@@ -21,7 +21,7 @@
+     |       nds32: | TODO |
+     |       nios2: | TODO |
+     |    openrisc: | TODO |
+-    |      parisc: | TODO |
++    |      parisc: |  ok  |
+     |     powerpc: |  ok  |
+     |       riscv: | TODO |
+     |        s390: |  ok  |
 -- 
 2.20.1
 
