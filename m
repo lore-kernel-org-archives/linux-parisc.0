@@ -2,89 +2,167 @@ Return-Path: <SRS0=Ow6E=VW=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5110C7618B
-	for <linux-parisc@archiver.kernel.org>; Thu, 25 Jul 2019 06:34:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 221CEC7618B
+	for <linux-parisc@archiver.kernel.org>; Thu, 25 Jul 2019 07:44:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9171721901
-	for <linux-parisc@archiver.kernel.org>; Thu, 25 Jul 2019 06:34:41 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Esvg+F9B"
+	by mail.kernel.org (Postfix) with ESMTP id D76A4218F0
+	for <linux-parisc@archiver.kernel.org>; Thu, 25 Jul 2019 07:44:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728651AbfGYGeM (ORCPT
+        id S2388214AbfGYHoX (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 25 Jul 2019 02:34:12 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:60404 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727645AbfGYGeM (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 25 Jul 2019 02:34:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
-        :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=MC0YAzXDv4UW9aVepSWPET61pXC/qRZc/Q3SPMyp+PQ=; b=Esvg+F9BiaNCjmiQCK2JehhcKp
-        zzy3Y/xqfF/imbthCGLbTIxT3Yk8Wt0IkMCnilvmnai8L8kxBcHxe+90/LFQH8ZsHtzu/eIQsnC1W
-        DozJci7ibHxEpCNTCY4Cpr6I7Z473YFnBurzqqnb8YDNS+RUWbKX30Woy0NcYDvlY3ibiH0+4Xdfe
-        OrG5KvVCVdOzhc3p8y/dwnwNrFC4ooOKry7hSnvcsyyTdN6jJwdBFmHGfkZNFtKzoV07zerTAE3XT
-        +z2o9T8m3oXqkvgtGiGPDCWimt7cBljnOF9pSkrcOO/KVXVLJHC9CHpBFnL+3W40Q99QqGijLsLaX
-        0sRt7JDQ==;
-Received: from p57b3f613.dip0.t-ipconnect.de ([87.179.246.19] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hqXKJ-0000Fp-Pl; Thu, 25 Jul 2019 06:34:08 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     iommu@lists.linux-foundation.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Takashi Iwai <tiwai@suse.de>, Robin Murphy <robin.murphy@arm.com>,
-        Michal Simek <monstr@monstr.eu>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/5] m68knommu: add a pgprot_noncached stub
-Date:   Thu, 25 Jul 2019 08:33:57 +0200
-Message-Id: <20190725063401.29904-2-hch@lst.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190725063401.29904-1-hch@lst.de>
-References: <20190725063401.29904-1-hch@lst.de>
+        Thu, 25 Jul 2019 03:44:23 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:45586 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388193AbfGYHoX (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 25 Jul 2019 03:44:23 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id AD73530917AF;
+        Thu, 25 Jul 2019 07:44:21 +0000 (UTC)
+Received: from [10.72.12.18] (ovpn-12-18.pek2.redhat.com [10.72.12.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B998060852;
+        Thu, 25 Jul 2019 07:44:04 +0000 (UTC)
+Subject: Re: WARNING in __mmdrop
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     syzbot <syzbot+e58112d71f77113ddb7b@syzkaller.appspotmail.com>,
+        aarcange@redhat.com, akpm@linux-foundation.org,
+        christian@brauner.io, davem@davemloft.net, ebiederm@xmission.com,
+        elena.reshetova@intel.com, guro@fb.com, hch@infradead.org,
+        james.bottomley@hansenpartnership.com, jglisse@redhat.com,
+        keescook@chromium.org, ldv@altlinux.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-parisc@vger.kernel.org,
+        luto@amacapital.net, mhocko@suse.com, mingo@kernel.org,
+        namit@vmware.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        wad@chromium.org
+References: <20190722040230-mutt-send-email-mst@kernel.org>
+ <4bd2ff78-6871-55f2-44dc-0982ffef3337@redhat.com>
+ <20190723010019-mutt-send-email-mst@kernel.org>
+ <b4696f2e-678a-bdb2-4b7c-fb4ce040ec2a@redhat.com>
+ <20190723032024-mutt-send-email-mst@kernel.org>
+ <1d14de4d-0133-1614-9f64-3ded381de04e@redhat.com>
+ <20190723035725-mutt-send-email-mst@kernel.org>
+ <3f4178f1-0d71-e032-0f1f-802428ceca59@redhat.com>
+ <20190723051828-mutt-send-email-mst@kernel.org>
+ <caff362a-e208-3468-3688-63e1d093a9d3@redhat.com>
+ <20190725012149-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <55e8930c-2695-365f-a07b-3ad169654d28@redhat.com>
+Date:   Thu, 25 Jul 2019 15:43:41 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <20190725012149-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Thu, 25 Jul 2019 07:44:22 +0000 (UTC)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Provide a pgprot_noncached like all the other nommu ports so that
-common code can rely on it being able to be present.  Note that this is
-generally code that is not actually run on nommu, but at least we can
-avoid nasty ifdefs by having a stub.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/m68k/include/asm/pgtable_no.h | 2 ++
- 1 file changed, 2 insertions(+)
+On 2019/7/25 下午1:52, Michael S. Tsirkin wrote:
+> On Tue, Jul 23, 2019 at 09:31:35PM +0800, Jason Wang wrote:
+>> On 2019/7/23 下午5:26, Michael S. Tsirkin wrote:
+>>> On Tue, Jul 23, 2019 at 04:49:01PM +0800, Jason Wang wrote:
+>>>> On 2019/7/23 下午4:10, Michael S. Tsirkin wrote:
+>>>>> On Tue, Jul 23, 2019 at 03:53:06PM +0800, Jason Wang wrote:
+>>>>>> On 2019/7/23 下午3:23, Michael S. Tsirkin wrote:
+>>>>>>>>> Really let's just use kfree_rcu. It's way cleaner: fire and forget.
+>>>>>>>> Looks not, you need rate limit the fire as you've figured out?
+>>>>>>> See the discussion that followed. Basically no, it's good enough
+>>>>>>> already and is only going to be better.
+>>>>>>>
+>>>>>>>> And in fact,
+>>>>>>>> the synchronization is not even needed, does it help if I leave a comment to
+>>>>>>>> explain?
+>>>>>>> Let's try to figure it out in the mail first. I'm pretty sure the
+>>>>>>> current logic is wrong.
+>>>>>> Here is what the code what to achieve:
+>>>>>>
+>>>>>> - The map was protected by RCU
+>>>>>>
+>>>>>> - Writers are: MMU notifier invalidation callbacks, file operations (ioctls
+>>>>>> etc), meta_prefetch (datapath)
+>>>>>>
+>>>>>> - Readers are: memory accessor
+>>>>>>
+>>>>>> Writer are synchronized through mmu_lock. RCU is used to synchronized
+>>>>>> between writers and readers.
+>>>>>>
+>>>>>> The synchronize_rcu() in vhost_reset_vq_maps() was used to synchronized it
+>>>>>> with readers (memory accessors) in the path of file operations. But in this
+>>>>>> case, vq->mutex was already held, this means it has been serialized with
+>>>>>> memory accessor. That's why I think it could be removed safely.
+>>>>>>
+>>>>>> Anything I miss here?
+>>>>>>
+>>>>> So invalidate callbacks need to reset the map, and they do
+>>>>> not have vq mutex. How can they do this and free
+>>>>> the map safely? They need synchronize_rcu or kfree_rcu right?
+>>>> Invalidation callbacks need but file operations (e.g ioctl) not.
+>>>>
+>>>>
+>>>>> And I worry somewhat that synchronize_rcu in an MMU notifier
+>>>>> is a problem, MMU notifiers are supposed to be quick:
+>>>> Looks not, since it can allow to be blocked and lots of driver depends on
+>>>> this. (E.g mmu_notifier_range_blockable()).
+>>> Right, they can block. So why don't we take a VQ mutex and be
+>>> done with it then? No RCU tricks.
+>>
+>> This is how I want to go with RFC and V1. But I end up with deadlock between
+>> vq locks and some MM internal locks. So I decide to use RCU which is 100%
+>> under the control of vhost.
+>>
+>> Thanks
+> And I guess the deadlock is because GUP is taking mmu locks which are
+> taken on mmu notifier path, right?
 
-diff --git a/arch/m68k/include/asm/pgtable_no.h b/arch/m68k/include/asm/pgtable_no.h
-index fc3a96c77bd8..06194c7ba151 100644
---- a/arch/m68k/include/asm/pgtable_no.h
-+++ b/arch/m68k/include/asm/pgtable_no.h
-@@ -29,6 +29,8 @@
- #define PAGE_READONLY	__pgprot(0)
- #define PAGE_KERNEL	__pgprot(0)
- 
-+#define pgprot_noncached(prot)   (prot)
-+
- extern void paging_init(void);
- #define swapper_pg_dir ((pgd_t *) 0)
- 
--- 
-2.20.1
+
+Yes, but it's not the only lock. I don't remember the details, but I can 
+confirm I meet issues with one or two other locks.
+
+
+>    How about we add a seqlock and take
+> that in invalidate callbacks?  We can then drop the VQ lock before GUP,
+> and take it again immediately after.
+>
+> something like
+> 	if (!vq_meta_mapped(vq)) {
+> 		vq_meta_setup(&uaddrs);
+> 		mutex_unlock(vq->mutex)
+> 		vq_meta_map(&uaddrs);
+
+
+The problem is the vq address could be changed at this time.
+
+
+> 		mutex_lock(vq->mutex)
+>
+> 		/* recheck both sock->private_data and seqlock count. */
+> 		if changed - bail out
+> 	}
+>
+> And also requires that VQ uaddrs is defined like this:
+> - writers must have both vq mutex and dev mutex
+> - readers must have either vq mutex or dev mutex
+>
+>
+> That's a big change though. For now, how about switching to a per-vq SRCU?
+> That is only a little bit more expensive than RCU, and we
+> can use synchronize_srcu_expedited.
+>
+
+Consider we switch to use kfree_rcu(), what's the advantage of per-vq SRCU?
+
+Thanks
 
