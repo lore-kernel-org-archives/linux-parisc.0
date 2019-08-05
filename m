@@ -1,94 +1,133 @@
-Return-Path: <SRS0=Jok0=WA=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=r9Cl=WB=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6436C433FF
-	for <linux-parisc@archiver.kernel.org>; Sun,  4 Aug 2019 15:26:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A63B8C433FF
+	for <linux-parisc@archiver.kernel.org>; Mon,  5 Aug 2019 09:12:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A5FB32070D
-	for <linux-parisc@archiver.kernel.org>; Sun,  4 Aug 2019 15:26:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 78CD621849
+	for <linux-parisc@archiver.kernel.org>; Mon,  5 Aug 2019 09:12:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="Xhg50RY7";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="Xhg50RY7"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="t/QmNF9K"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726190AbfHDP0W (ORCPT
+        id S1728079AbfHEJMR (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 4 Aug 2019 11:26:22 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:48362 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726181AbfHDP0W (ORCPT
+        Mon, 5 Aug 2019 05:12:17 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:34434 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728067AbfHEJMQ (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 4 Aug 2019 11:26:22 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id C5CF88EE19C
-        for <linux-parisc@vger.kernel.org>; Sun,  4 Aug 2019 08:26:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1564932381;
-        bh=wugH/yPtoe4CVFG0Mtd3rW28LazcoE4+Vnt+Ol6SjaI=;
-        h=Subject:From:To:Date:From;
-        b=Xhg50RY7ukNJwwGCNnUppVEQq5LH7UicCDkeQQhMygF11D/J15c90SB38E+ihx0rk
-         wR6j2ITlsez7UGPD/EPnfjj3rpsiBiVpd4kcyj3TJ6iLML1Y5XrEWo6/B2XIQifmLd
-         5Zc8QcKRpxpqq6GZojkGlH8dK24I9dcjX5XZnSlk=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id M-BWXI7XBtl8 for <linux-parisc@vger.kernel.org>;
-        Sun,  4 Aug 2019 08:26:21 -0700 (PDT)
-Received: from jarvis.lan (unknown [50.35.71.147])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 51B4E8EE104
-        for <linux-parisc@vger.kernel.org>; Sun,  4 Aug 2019 08:26:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1564932381;
-        bh=wugH/yPtoe4CVFG0Mtd3rW28LazcoE4+Vnt+Ol6SjaI=;
-        h=Subject:From:To:Date:From;
-        b=Xhg50RY7ukNJwwGCNnUppVEQq5LH7UicCDkeQQhMygF11D/J15c90SB38E+ihx0rk
-         wR6j2ITlsez7UGPD/EPnfjj3rpsiBiVpd4kcyj3TJ6iLML1Y5XrEWo6/B2XIQifmLd
-         5Zc8QcKRpxpqq6GZojkGlH8dK24I9dcjX5XZnSlk=
-Message-ID: <1564932380.3401.1.camel@HansenPartnership.com>
-Subject: [PATCH palo] ext2: fix ext4 group cache
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Parisc List <linux-parisc@vger.kernel.org>
-Date:   Sun, 04 Aug 2019 08:26:20 -0700
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Mon, 5 Aug 2019 05:12:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
+        :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=urEmUUgdHQK/RXisjgziTewBbi9Y6Q1gTs0AWjfkJa4=; b=t/QmNF9K0u3YouJ4rprzdwLiu3
+        pq0Ju27OXGFCUDZNcHEg1LqwhycGIlPuO9U6/SIVaWFJ3jJJq32TokI9y+h6Y7nhet9HM9ZQF/6Bi
+        43+BNkAzi4O31w4OniYVzgQ+zBiJ5QxviAimO5OFhNLV5sHoBI2AyB2LMVuj7S0/TbTPB5tlQhODs
+        hPdLd+WCQj4Cckuo2FZHSP27KP/5vA+VqCt+emHHWH/89phj6Iu0X+UgrEdmFrZ+ZpB4dsa6VcnIm
+        GFA3VknvjrcVZbn0/OIVzey1wxfRVSmbi/SwzhAkTswnvvqZz9QHC67atngF7ukZiGzmNlg+BGbKK
+        TtYIr4tQ==;
+Received: from [195.167.85.94] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1huZ2I-0004x8-6E; Mon, 05 Aug 2019 09:12:11 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     iommu@lists.linux-foundation.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Takashi Iwai <tiwai@suse.de>, Robin Murphy <robin.murphy@arm.com>,
+        Michal Simek <monstr@monstr.eu>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 3/7] dma-mapping: add a dma_can_mmap helper
+Date:   Mon,  5 Aug 2019 12:11:55 +0300
+Message-Id: <20190805091159.7826-4-hch@lst.de>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190805091159.7826-1-hch@lst.de>
+References: <20190805091159.7826-1-hch@lst.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The ext4 group cache is truncated because the read that populates it
-is assuming ext2 fixed group size and not using the ext4 variable
-group size.  This only shows up with large inode numbers because the
-read stops before their contents is read.  The upshot is when you try
-to do ext2_iget() for an ext4 inode above a certain number it fails
-because the group descriptor is random junk.
+Add a helper to check if DMA allocations for a specific device can be
+mapped to userspace using dma_mmap_*.
 
-Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- ipl/ext2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/dma-mapping.h |  5 +++++
+ kernel/dma/mapping.c        | 23 +++++++++++++++++++++++
+ 2 files changed, 28 insertions(+)
 
-diff --git a/ipl/ext2.c b/ipl/ext2.c
-index 96f6e4d..0729429 100644
---- a/ipl/ext2.c
-+++ b/ipl/ext2.c
-@@ -287,7 +287,7 @@ int ext2_mount(long cons_dev, long p_offset, long quiet)
- 	if (Debug) printf("ext2 block size %d\n", ext2_blocksize);
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index f7d1eea32c78..17271857be5d 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -462,6 +462,7 @@ int dma_get_sgtable_attrs(struct device *dev, struct sg_table *sgt,
+ int dma_mmap_attrs(struct device *dev, struct vm_area_struct *vma,
+ 		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+ 		unsigned long attrs);
++bool dma_can_mmap(struct device *dev);
+ int dma_supported(struct device *dev, u64 mask);
+ int dma_set_mask(struct device *dev, u64 mask);
+ int dma_set_coherent_mask(struct device *dev, u64 mask);
+@@ -552,6 +553,10 @@ static inline int dma_mmap_attrs(struct device *dev, struct vm_area_struct *vma,
+ {
+ 	return -ENXIO;
+ }
++static inline bool dma_can_mmap(struct device *dev)
++{
++	return false;
++}
+ static inline int dma_supported(struct device *dev, u64 mask)
+ {
+ 	return 0;
+diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+index cdb157cd70e7..ab6aa355e1a0 100644
+--- a/kernel/dma/mapping.c
++++ b/kernel/dma/mapping.c
+@@ -203,6 +203,29 @@ int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
+ #endif /* !CONFIG_ARCH_NO_COHERENT_DMA_MMAP */
+ }
  
- 	/* read in the group descriptors (immediately follows superblock) */
--	cons_read(dev, gds, ngroups * sizeof(struct ext2_group_desc),
-+	cons_read(dev, gds, ngroups * group_size,
- 		  partition_offset +
-                   ext2_blocksize * (EXT2_MIN_BLOCK_SIZE/ext2_blocksize + 1));
- 	for (i = 0; i < ngroups; i++)
++/**
++ * dma_can_mmap - check if a given device supports dma_mmap_*
++ * @dev: device to check
++ *
++ * Returns %true if @dev supports dma_mmap_coherent() and dma_mmap_attrs() to
++ * map DMA allocations to userspace.
++ */
++bool dma_can_mmap(struct device *dev)
++{
++	const struct dma_map_ops *ops = get_dma_ops(dev);
++
++	if (IS_ENABLED(CONFIG_ARCH_NO_COHERENT_DMA_MMAP))
++		return false;
++
++	if (dma_is_direct(ops)) {
++		return dev_is_dma_coherent(dev) ||
++			IS_ENABLED(CONFIG_ARCH_HAS_DMA_COHERENT_TO_PFN);
++	}
++
++	return ops->mmap != NULL;
++}
++EXPORT_SYMBOL_GPL(dma_can_mmap);
++
+ /**
+  * dma_mmap_attrs - map a coherent DMA allocation into user space
+  * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
 -- 
-2.16.4
+2.20.1
 
