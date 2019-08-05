@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A63B8C433FF
-	for <linux-parisc@archiver.kernel.org>; Mon,  5 Aug 2019 09:12:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0D6FC433FF
+	for <linux-parisc@archiver.kernel.org>; Mon,  5 Aug 2019 09:12:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 78CD621849
-	for <linux-parisc@archiver.kernel.org>; Mon,  5 Aug 2019 09:12:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6D29E20B1F
+	for <linux-parisc@archiver.kernel.org>; Mon,  5 Aug 2019 09:12:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="t/QmNF9K"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RG4oxyke"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728079AbfHEJMR (ORCPT
+        id S1728182AbfHEJM3 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 5 Aug 2019 05:12:17 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:34434 "EHLO
+        Mon, 5 Aug 2019 05:12:29 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:35352 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728067AbfHEJMQ (ORCPT
+        with ESMTP id S1728118AbfHEJM2 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 5 Aug 2019 05:12:16 -0400
+        Mon, 5 Aug 2019 05:12:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
         :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=urEmUUgdHQK/RXisjgziTewBbi9Y6Q1gTs0AWjfkJa4=; b=t/QmNF9K0u3YouJ4rprzdwLiu3
-        pq0Ju27OXGFCUDZNcHEg1LqwhycGIlPuO9U6/SIVaWFJ3jJJq32TokI9y+h6Y7nhet9HM9ZQF/6Bi
-        43+BNkAzi4O31w4OniYVzgQ+zBiJ5QxviAimO5OFhNLV5sHoBI2AyB2LMVuj7S0/TbTPB5tlQhODs
-        hPdLd+WCQj4Cckuo2FZHSP27KP/5vA+VqCt+emHHWH/89phj6Iu0X+UgrEdmFrZ+ZpB4dsa6VcnIm
-        GFA3VknvjrcVZbn0/OIVzey1wxfRVSmbi/SwzhAkTswnvvqZz9QHC67atngF7ukZiGzmNlg+BGbKK
-        TtYIr4tQ==;
+        bh=zRn6JVJn4nNeK9wOHHuTKPsPuOuS2mnSYsSa9Gwz7Rk=; b=RG4oxykeFe0JQMLxGAJ/8S5At7
+        GAA+923n7YeCeXJyTRg/ZL9Qyb+qPDEIyukrr+DcbOQq72koKv2qN+5j1CU6aIokVzQ4sVzvBcaiJ
+        ++jVLfUSymTseLXFVf6usBQU9aUsW7R0FxhIbLRtCrsmVz8LQgwJ2h4VX31/Ozvyyx21f60h2MbfJ
+        CWwUfwJuwZHzEiXGtZ7U22+YZJWxrZr02eb2yC5TmivTYjwDHaczSqQXwDnYMVNCh9482Q9MSjCK8
+        Uqnfuucwd7+du9IIxt0oItEHV40lhkfFXb38uyDMXjoCcwQxHlFnUp8mqXfI+3ot63ZjpR2ENbrpS
+        Qlh3exXQ==;
 Received: from [195.167.85.94] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1huZ2I-0004x8-6E; Mon, 05 Aug 2019 09:12:11 +0000
+        id 1huZ2V-00058g-L3; Mon, 05 Aug 2019 09:12:24 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     iommu@lists.linux-foundation.org,
         Marek Szyprowski <m.szyprowski@samsung.com>
@@ -48,9 +48,9 @@ Cc:     Takashi Iwai <tiwai@suse.de>, Robin Murphy <robin.murphy@arm.com>,
         linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org,
         linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/7] dma-mapping: add a dma_can_mmap helper
-Date:   Mon,  5 Aug 2019 12:11:55 +0300
-Message-Id: <20190805091159.7826-4-hch@lst.de>
+Subject: [PATCH 7/7] dma-mapping: provide a better default ->get_required_mask
+Date:   Mon,  5 Aug 2019 12:11:59 +0300
+Message-Id: <20190805091159.7826-8-hch@lst.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190805091159.7826-1-hch@lst.de>
 References: <20190805091159.7826-1-hch@lst.de>
@@ -62,72 +62,142 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Add a helper to check if DMA allocations for a specific device can be
-mapped to userspace using dma_mmap_*.
+Most dma_map_ops instances are IOMMUs that work perfectly fine in 32-bits
+of IOVA space, and the generic direct mapping code already provides its
+own routines that is intelligent based on the amount of memory actually
+present.  Wire up the dma-direct routine for the ARM direct mapping code
+as well, and otherwise default to the constant 32-bit mask.  This way
+we only need to override it for the occasional odd IOMMU that requires
+64-bit IOVA support, or IOMMU drivers that are more efficient if they
+can fall back to the direct mapping.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/linux/dma-mapping.h |  5 +++++
- kernel/dma/mapping.c        | 23 +++++++++++++++++++++++
- 2 files changed, 28 insertions(+)
+ arch/arm/mm/dma-mapping.c               |  3 +++
+ arch/powerpc/platforms/ps3/system-bus.c |  7 ------
+ arch/x86/kernel/amd_gart_64.c           |  1 +
+ kernel/dma/mapping.c                    | 30 +++++++++----------------
+ 4 files changed, 14 insertions(+), 27 deletions(-)
 
-diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-index f7d1eea32c78..17271857be5d 100644
---- a/include/linux/dma-mapping.h
-+++ b/include/linux/dma-mapping.h
-@@ -462,6 +462,7 @@ int dma_get_sgtable_attrs(struct device *dev, struct sg_table *sgt,
- int dma_mmap_attrs(struct device *dev, struct vm_area_struct *vma,
- 		void *cpu_addr, dma_addr_t dma_addr, size_t size,
- 		unsigned long attrs);
-+bool dma_can_mmap(struct device *dev);
- int dma_supported(struct device *dev, u64 mask);
- int dma_set_mask(struct device *dev, u64 mask);
- int dma_set_coherent_mask(struct device *dev, u64 mask);
-@@ -552,6 +553,10 @@ static inline int dma_mmap_attrs(struct device *dev, struct vm_area_struct *vma,
- {
- 	return -ENXIO;
- }
-+static inline bool dma_can_mmap(struct device *dev)
-+{
-+	return false;
-+}
- static inline int dma_supported(struct device *dev, u64 mask)
- {
- 	return 0;
-diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-index cdb157cd70e7..ab6aa355e1a0 100644
---- a/kernel/dma/mapping.c
-+++ b/kernel/dma/mapping.c
-@@ -203,6 +203,29 @@ int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
- #endif /* !CONFIG_ARCH_NO_COHERENT_DMA_MMAP */
+diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+index 4410af33c5c4..9c9a23e5600d 100644
+--- a/arch/arm/mm/dma-mapping.c
++++ b/arch/arm/mm/dma-mapping.c
+@@ -14,6 +14,7 @@
+ #include <linux/list.h>
+ #include <linux/init.h>
+ #include <linux/device.h>
++#include <linux/dma-direct.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/dma-noncoherent.h>
+ #include <linux/dma-contiguous.h>
+@@ -192,6 +193,7 @@ const struct dma_map_ops arm_dma_ops = {
+ 	.sync_sg_for_cpu	= arm_dma_sync_sg_for_cpu,
+ 	.sync_sg_for_device	= arm_dma_sync_sg_for_device,
+ 	.dma_supported		= arm_dma_supported,
++	.get_required_mask	= dma_direct_get_required_mask,
+ };
+ EXPORT_SYMBOL(arm_dma_ops);
+ 
+@@ -212,6 +214,7 @@ const struct dma_map_ops arm_coherent_dma_ops = {
+ 	.map_sg			= arm_dma_map_sg,
+ 	.map_resource		= dma_direct_map_resource,
+ 	.dma_supported		= arm_dma_supported,
++	.get_required_mask	= dma_direct_get_required_mask,
+ };
+ EXPORT_SYMBOL(arm_coherent_dma_ops);
+ 
+diff --git a/arch/powerpc/platforms/ps3/system-bus.c b/arch/powerpc/platforms/ps3/system-bus.c
+index 70fcc9736a8c..3542b7bd6a46 100644
+--- a/arch/powerpc/platforms/ps3/system-bus.c
++++ b/arch/powerpc/platforms/ps3/system-bus.c
+@@ -686,18 +686,12 @@ static int ps3_dma_supported(struct device *_dev, u64 mask)
+ 	return mask >= DMA_BIT_MASK(32);
  }
  
-+/**
-+ * dma_can_mmap - check if a given device supports dma_mmap_*
-+ * @dev: device to check
-+ *
-+ * Returns %true if @dev supports dma_mmap_coherent() and dma_mmap_attrs() to
-+ * map DMA allocations to userspace.
-+ */
-+bool dma_can_mmap(struct device *dev)
-+{
-+	const struct dma_map_ops *ops = get_dma_ops(dev);
+-static u64 ps3_dma_get_required_mask(struct device *_dev)
+-{
+-	return DMA_BIT_MASK(32);
+-}
+-
+ static const struct dma_map_ops ps3_sb_dma_ops = {
+ 	.alloc = ps3_alloc_coherent,
+ 	.free = ps3_free_coherent,
+ 	.map_sg = ps3_sb_map_sg,
+ 	.unmap_sg = ps3_sb_unmap_sg,
+ 	.dma_supported = ps3_dma_supported,
+-	.get_required_mask = ps3_dma_get_required_mask,
+ 	.map_page = ps3_sb_map_page,
+ 	.unmap_page = ps3_unmap_page,
+ 	.mmap = dma_common_mmap,
+@@ -710,7 +704,6 @@ static const struct dma_map_ops ps3_ioc0_dma_ops = {
+ 	.map_sg = ps3_ioc0_map_sg,
+ 	.unmap_sg = ps3_ioc0_unmap_sg,
+ 	.dma_supported = ps3_dma_supported,
+-	.get_required_mask = ps3_dma_get_required_mask,
+ 	.map_page = ps3_ioc0_map_page,
+ 	.unmap_page = ps3_unmap_page,
+ 	.mmap = dma_common_mmap,
+diff --git a/arch/x86/kernel/amd_gart_64.c b/arch/x86/kernel/amd_gart_64.c
+index a65b4a9c7f87..d02662238b57 100644
+--- a/arch/x86/kernel/amd_gart_64.c
++++ b/arch/x86/kernel/amd_gart_64.c
+@@ -680,6 +680,7 @@ static const struct dma_map_ops gart_dma_ops = {
+ 	.dma_supported			= dma_direct_supported,
+ 	.mmap				= dma_common_mmap,
+ 	.get_sgtable			= dma_common_get_sgtable,
++	.get_required_mask		= dma_direct_get_required_mask,
+ };
+ 
+ static void gart_iommu_shutdown(void)
+diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+index 47765c96fe09..96599f39f67a 100644
+--- a/kernel/dma/mapping.c
++++ b/kernel/dma/mapping.c
+@@ -247,25 +247,6 @@ int dma_mmap_attrs(struct device *dev, struct vm_area_struct *vma,
+ }
+ EXPORT_SYMBOL(dma_mmap_attrs);
+ 
+-static u64 dma_default_get_required_mask(struct device *dev)
+-{
+-	u32 low_totalram = ((max_pfn - 1) << PAGE_SHIFT);
+-	u32 high_totalram = ((max_pfn - 1) >> (32 - PAGE_SHIFT));
+-	u64 mask;
+-
+-	if (!high_totalram) {
+-		/* convert to mask just covering totalram */
+-		low_totalram = (1 << (fls(low_totalram) - 1));
+-		low_totalram += low_totalram - 1;
+-		mask = low_totalram;
+-	} else {
+-		high_totalram = (1 << (fls(high_totalram) - 1));
+-		high_totalram += high_totalram - 1;
+-		mask = (((u64)high_totalram) << 32) + 0xffffffff;
+-	}
+-	return mask;
+-}
+-
+ u64 dma_get_required_mask(struct device *dev)
+ {
+ 	const struct dma_map_ops *ops = get_dma_ops(dev);
+@@ -274,7 +255,16 @@ u64 dma_get_required_mask(struct device *dev)
+ 		return dma_direct_get_required_mask(dev);
+ 	if (ops->get_required_mask)
+ 		return ops->get_required_mask(dev);
+-	return dma_default_get_required_mask(dev);
 +
-+	if (IS_ENABLED(CONFIG_ARCH_NO_COHERENT_DMA_MMAP))
-+		return false;
-+
-+	if (dma_is_direct(ops)) {
-+		return dev_is_dma_coherent(dev) ||
-+			IS_ENABLED(CONFIG_ARCH_HAS_DMA_COHERENT_TO_PFN);
-+	}
-+
-+	return ops->mmap != NULL;
-+}
-+EXPORT_SYMBOL_GPL(dma_can_mmap);
-+
- /**
-  * dma_mmap_attrs - map a coherent DMA allocation into user space
-  * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
++	/*
++	 * We require every DMA ops implementation to at least support a 32-bit
++	 * DMA mask (and use bounce buffering if that isn't supported in
++	 * hardware).  As the direct mapping code has its own routine to
++	 * actually report an optimal mask we default to 32-bit here as that
++	 * is the right thing for most IOMMUs, and at least not actively
++	 * harmful in general.
++	 */
++	return DMA_BIT_MASK(32);
+ }
+ EXPORT_SYMBOL_GPL(dma_get_required_mask);
+ 
 -- 
 2.20.1
 
