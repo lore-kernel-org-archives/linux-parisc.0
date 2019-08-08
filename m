@@ -2,41 +2,42 @@ Return-Path: <SRS0=3TOu=WE=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 314D4C32754
-	for <linux-parisc@archiver.kernel.org>; Thu,  8 Aug 2019 16:00:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E99CAC0650F
+	for <linux-parisc@archiver.kernel.org>; Thu,  8 Aug 2019 16:00:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F0ECD21874
-	for <linux-parisc@archiver.kernel.org>; Thu,  8 Aug 2019 16:00:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BF9962184E
+	for <linux-parisc@archiver.kernel.org>; Thu,  8 Aug 2019 16:00:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="in1PtdbL"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oB8ZxGlI"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403978AbfHHQAd (ORCPT
+        id S2404076AbfHHQAk (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 8 Aug 2019 12:00:33 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:55610 "EHLO
+        Thu, 8 Aug 2019 12:00:40 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:56230 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732698AbfHHQAd (ORCPT
+        with ESMTP id S1732698AbfHHQAj (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 8 Aug 2019 12:00:33 -0400
+        Thu, 8 Aug 2019 12:00:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=8DQlBYhOmPMmqBG4Sr4H2tBPKNk8KBZCVUsrJBapL/Q=; b=in1PtdbL1m9Hp49FBJpHwcQpU
-        wxiD3OW12EH5x6aOPrIHITqyImqiA20BI/DdbjT6S5BY1PtOcEFUXMZrfRtvhzR2ZzgssxPZRwwbk
-        yPiPM2rtUAZ4Y5b9KKBLcC41g1FzN07gpydM/m/IP0DIzcVsmsmb2iYq81tJMBVzdLZQujP2zdLdf
-        26akZjGcj22I3tbe6Fouj5vhpP7GRdx01QECa+JWoq9GPapWbdlUCBaYveF2/FGZvzAejY4GpHd5I
-        nLh9XZtj+bOHriozy/rP2fBUJYFL64fUPjtFgdrqstxnVxopFbBkgoPuxZirBBq5hhyoq4xiNBdwo
-        s2ZuFtQMg==;
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
+        :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=UT0QGbnuDq6FC5quPJwbHVX/HquOJ1BwL51+Ue/v5rM=; b=oB8ZxGlIlwRJNgwFDQdUUkWsQb
+        qbprHg7MnM6taXhqWRfmtOy5rLOIII99AfBkndza0anhdbffJkSVyC7NlcnGkNkGnyBndCvb6ECEv
+        QYUclIgK+vSmzCgT9MVkSi/BtMMFOF49LKuhnxcR5TR3FNb5y5JDPVbABkEU++TyMm3LPKxuJ3QWe
+        5rgAC9N0ohJ1lgGrGn7IYFKXVYjjaxzh10Xr8sgWJSmN8uFBBaP0RLwhiB+CPuzWNgFDDDSsZ9Qvy
+        9QhoJ9XfKVcnYo5QxEPfQ76L9tFEzk1DvoMiWF84lBFIynkGWu0pXuiXoUMip0t5tGw1Lc1Wt4tty
+        luPQpL1g==;
 Received: from [195.167.85.94] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hvkpl-0006Bi-Ij; Thu, 08 Aug 2019 16:00:26 +0000
+        id 1hvkq9-0006ZA-DB; Thu, 08 Aug 2019 16:00:34 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     iommu@lists.linux-foundation.org,
         Marek Szyprowski <m.szyprowski@samsung.com>
@@ -49,10 +50,12 @@ Cc:     Vladimir Murzin <vladimir.murzin@arm.com>,
         linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org,
         linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: remove default fallbacks in dma_map_ops v3
-Date:   Thu,  8 Aug 2019 18:59:57 +0300
-Message-Id: <20190808160005.10325-1-hch@lst.de>
+Subject: [PATCH 2/8] dma-mapping: move the dma_get_sgtable API comments from arm to common code
+Date:   Thu,  8 Aug 2019 18:59:59 +0300
+Message-Id: <20190808160005.10325-3-hch@lst.de>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190808160005.10325-1-hch@lst.de>
+References: <20190808160005.10325-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
@@ -61,23 +64,59 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi all,
+The comments are spot on and should be near the central API, not just
+near a single implementation.
 
-we have a few places where the DMA mapping layer has non-trivial default
-actions that are questionable and/or dangerous.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/arm/mm/dma-mapping.c | 11 -----------
+ kernel/dma/mapping.c      | 11 +++++++++++
+ 2 files changed, 11 insertions(+), 11 deletions(-)
 
-This series instead wires up the mmap, get_sgtable and get_required_mask
-methods explicitly and cleans up some surrounding areas.  This also means
-we could get rid of the ARCH_NO_COHERENT_DMA_MMAP kconfig option, as we
-now require a mmap method wired up, or in case of non-coherent dma-direct
-the presence of the arch_dma_coherent_to_pfn hook.  The only interesting
-case is that the sound code also checked the ARCH_NO_COHERENT_DMA_MMAP
-symbol in somewhat odd ways, so I'd like to see a review of the sound
-situation before going forward with that patch.
+diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+index ad64d32fb39a..b4d65da76393 100644
+--- a/arch/arm/mm/dma-mapping.c
++++ b/arch/arm/mm/dma-mapping.c
+@@ -880,17 +880,6 @@ static void arm_coherent_dma_free(struct device *dev, size_t size, void *cpu_add
+ 	__arm_dma_free(dev, size, cpu_addr, handle, attrs, true);
+ }
+ 
+-/*
+- * The whole dma_get_sgtable() idea is fundamentally unsafe - it seems
+- * that the intention is to allow exporting memory allocated via the
+- * coherent DMA APIs through the dma_buf API, which only accepts a
+- * scattertable.  This presents a couple of problems:
+- * 1. Not all memory allocated via the coherent DMA APIs is backed by
+- *    a struct page
+- * 2. Passing coherent DMA memory into the streaming APIs is not allowed
+- *    as we will try to flush the memory through a different alias to that
+- *    actually being used (and the flushes are redundant.)
+- */
+ int arm_dma_get_sgtable(struct device *dev, struct sg_table *sgt,
+ 		 void *cpu_addr, dma_addr_t handle, size_t size,
+ 		 unsigned long attrs)
+diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+index 9c0f6a8eb5cb..41590d003465 100644
+--- a/kernel/dma/mapping.c
++++ b/kernel/dma/mapping.c
+@@ -136,6 +136,17 @@ int dma_common_get_sgtable(struct device *dev, struct sg_table *sgt,
+ 	return ret;
+ }
+ 
++/*
++ * The whole dma_get_sgtable() idea is fundamentally unsafe - it seems
++ * that the intention is to allow exporting memory allocated via the
++ * coherent DMA APIs through the dma_buf API, which only accepts a
++ * scattertable.  This presents a couple of problems:
++ * 1. Not all memory allocated via the coherent DMA APIs is backed by
++ *    a struct page
++ * 2. Passing coherent DMA memory into the streaming APIs is not allowed
++ *    as we will try to flush the memory through a different alias to that
++ *    actually being used (and the flushes are redundant.)
++ */
+ int dma_get_sgtable_attrs(struct device *dev, struct sg_table *sgt,
+ 		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+ 		unsigned long attrs)
+-- 
+2.20.1
 
-Changes since v2:
- - fix use of dma_can_mmap in alsa
- - improve the CONFIG_* mess a little more
-
-Changes since v1:
- - add a dma_can_mmap helper for alsa
