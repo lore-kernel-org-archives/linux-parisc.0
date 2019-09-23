@@ -2,85 +2,74 @@ Return-Path: <SRS0=WGdv=XS=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8444AC04EBF
-	for <linux-parisc@archiver.kernel.org>; Mon, 23 Sep 2019 10:43:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF196C04EBF
+	for <linux-parisc@archiver.kernel.org>; Mon, 23 Sep 2019 11:42:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4E6C420867
-	for <linux-parisc@archiver.kernel.org>; Mon, 23 Sep 2019 10:43:27 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UcuaChJD"
+	by mail.kernel.org (Postfix) with ESMTP id 8D2FD20820
+	for <linux-parisc@archiver.kernel.org>; Mon, 23 Sep 2019 11:42:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729716AbfIWKn1 (ORCPT
+        id S1732229AbfIWLms (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 23 Sep 2019 06:43:27 -0400
-Received: from mail-yw1-f51.google.com ([209.85.161.51]:45421 "EHLO
-        mail-yw1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729662AbfIWKn0 (ORCPT
+        Mon, 23 Sep 2019 07:42:48 -0400
+Received: from simcoe207srvr.owm.bell.net ([184.150.200.207]:39383 "EHLO
+        torfep01.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726146AbfIWLms (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 23 Sep 2019 06:43:26 -0400
-Received: by mail-yw1-f51.google.com with SMTP id x82so4959165ywd.12
-        for <linux-parisc@vger.kernel.org>; Mon, 23 Sep 2019 03:43:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=bgfikG9k/IfJviqDM4OjqHQwEltltBCXQs2gU6b2qws=;
-        b=UcuaChJDlp6brk8uUWwKaTfheRT0ZZg2Wj362MbR+pPQijZF/UiPPPWLEeo/mjamnT
-         uxxSa1xWZtoZ6LuDAcGSevvmOXmNQyLK5F3n/OBYtm81MZKu/1HE01IOa0A4bZBfr24+
-         Ii2/j1DngiiBEmhERonvSZsvoy5lp0SP4L9i07BXR4kJPzay6NLLjt624qgCYmheJzVc
-         wSpJtsJoTJL6+hvo2tpqqrJS0Q8kpoUVEM6/yqwatlYeL32EtEjjW5AOqxjB7FUezfGt
-         P3Z/ahIt4pcW1lnAK9O5qnT5z4fHREnP+VBP3E0mPklTZr7m77d9J7FjHFziqLHc8Pno
-         gZtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=bgfikG9k/IfJviqDM4OjqHQwEltltBCXQs2gU6b2qws=;
-        b=S+VnH7c+765Y5uDbWdi/ypRdfykv2i6tfvj57+Q8WR9NqCyT9QVlTUIpdjJpPcDvAH
-         OgTGp81jDwMskcFJd6Deh1gxpluyyvxtgsEknhKIiDBTT1vDBmalRGBY1wdqXUbyZBzw
-         0JTWOtfjEUiIXaPyhHK3OTesOwyDfi50+BSYunPbzF8s7JWyS85TvU3AX+O3VkAUEJMS
-         aDb5TwB4xQwK4ViYL+leLxx1IOWxoHmiQCIqwH+9nW7u4xDHTgm51egBoP8wpt6IIF38
-         X87ok+eT/6XPTwxTn7ced2VO9JtwlOaPpmblCmZ9jma0MHzvn9FbphyKz/5kOzbiaNlR
-         ZmnA==
-X-Gm-Message-State: APjAAAUCxA9HfTDejOPDbC+FVyBOFjp7uFRzorcUrAZARrPjCN77hPJ1
-        8Oi2i+4bdDMGYyY5CkxnMyQoa4ASS0NrJEjuiUnIzscJ8qo=
-X-Google-Smtp-Source: APXvYqzf6qIE82kHWlNJu/Ar18I9x/XRRk6HJ/3XJHE6DGvBhi8QoXUYm8ZzwGGnabNWqMIrJhGrghjp1aHRQmikXNY=
-X-Received: by 2002:a81:4702:: with SMTP id u2mr23381134ywa.53.1569235404579;
- Mon, 23 Sep 2019 03:43:24 -0700 (PDT)
-MIME-Version: 1.0
+        Mon, 23 Sep 2019 07:42:48 -0400
+Received: from bell.net torfep01 184.150.200.158 by torfep01.bell.net
+          with ESMTP
+          id <20190923114246.EHLK4584.torfep01.bell.net@torspm01.bell.net>
+          for <linux-parisc@vger.kernel.org>;
+          Mon, 23 Sep 2019 07:42:46 -0400
+Received: from [192.168.2.49] (really [70.53.53.104]) by torspm01.bell.net
+          with ESMTP
+          id <20190923114246.WNDR39285.torspm01.bell.net@[192.168.2.49]>;
+          Mon, 23 Sep 2019 07:42:46 -0400
+Subject: Re: C8000, which is the max MTU of the built-in net card?
+To:     Carlo Pisani <carlojpisani@gmail.com>, linux-parisc@vger.kernel.org
 References: <CAK-9enMxA68mRYFG=2zD02guvCqe-aa3NO0YZuJcTdBWn5MPqg@mail.gmail.com>
- <20190917212844.GJ9591@lunn.ch> <CAK-9enOx8xt_+t6-rpCGEL0j-HJGm=sFXYq9-pgHQ26AwrGm5Q@mail.gmail.com>
- <df0f961d-2d53-63e3-8087-6f0b09e14317@bell.net> <f71e9773-5cfb-f20b-956f-d98b11a5d4a7@gmx.de>
-In-Reply-To: <f71e9773-5cfb-f20b-956f-d98b11a5d4a7@gmx.de>
-From:   Carlo Pisani <carlojpisani@gmail.com>
-Date:   Mon, 23 Sep 2019 12:43:07 +0200
-Message-ID: <CA+QBN9BepXXQKksDXBn3MpRdzSq3Aq=XzTwDh_F+vVjTvnFpBg@mail.gmail.com>
-Subject: C8000, which is the max MTU of the built-in net card?
-To:     linux-parisc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+ <20190917212844.GJ9591@lunn.ch>
+ <CAK-9enOx8xt_+t6-rpCGEL0j-HJGm=sFXYq9-pgHQ26AwrGm5Q@mail.gmail.com>
+ <df0f961d-2d53-63e3-8087-6f0b09e14317@bell.net>
+ <f71e9773-5cfb-f20b-956f-d98b11a5d4a7@gmx.de>
+ <CA+QBN9BepXXQKksDXBn3MpRdzSq3Aq=XzTwDh_F+vVjTvnFpBg@mail.gmail.com>
+From:   John David Anglin <dave.anglin@bell.net>
+Openpgp: preference=signencrypt
+Message-ID: <905e567a-3e82-969e-8062-5dd4c712929a@bell.net>
+Date:   Mon, 23 Sep 2019 07:42:45 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <CA+QBN9BepXXQKksDXBn3MpRdzSq3Aq=XzTwDh_F+vVjTvnFpBg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-Analysis: v=2.3 cv=S9inP7kP c=1 sm=1 tr=0 cx=a_idp_d a=htCe9XT+XAlGhzqgweArVg==:117 a=htCe9XT+XAlGhzqgweArVg==:17 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=J70Eh1EUuV4A:10 a=FBHGMhGWAAAA:8 a=UOMpvLWk_2my8sRCpQgA:9 a=QEXdDO2ut3YA:10 a=9gvnlMMaQFpL9xblJ6ne:22
+X-CM-Envelope: MS4wfJSUpwpyUpGNWQduSDLpNb6287IiyEtZaye+G2h8sKRJI45pbGqUJAkSZ943hBRcipH2daknZ67dDP7rCU193vWlY2QAWyiVUS6LECJpsU6TQZhoIzxH FSfuB3ReNoHcKam3/iFJeUX10YelqcxPMMpw5ytSnGr4VRAbSZRWH/XylSIkM74GxUmEyL/aZiAzUQ==
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-hi guys
-for a special application, I need jumbo frames enabled in the network card.
-I have just checked, and C3600 only allows 1500 MTU.
+On 2019-09-23 6:43 a.m., Carlo Pisani wrote:
+> I need 2000 MTU, 4000 MTU, 7000 MTU, or 9000 MTU
+>
+> can someone check the max MTU capability of the built-in lan on a C8000?
+My c8000 has an intel e1000:
+[   21.140119] e1000: Intel(R) PRO/1000 Network Driver - version 7.3.21-k8-NAPI
 
-cat /sys/class/net/eth0/mtu
-1500
+The driver supports jumbo packets up to 0x3F00:
+dave@mx3210:~/linux/linux-stable/drivers/net/ethernet/intel/e1000$ grep  MAX_JUMBO_FRAME_SIZE *
+e1000_hw.h:#define MAX_JUMBO_FRAME_SIZE         0x3F00
+e1000_main.c:   netdev->max_mtu = MAX_JUMBO_FRAME_SIZE - (ETH_HLEN + ETH_FCS_LEN);
+e1000_main.c:           /* Capable of supporting up to MAX_JUMBO_FRAME_SIZE limit. */
 
-I need 2000 MTU, 4000 MTU, 7000 MTU, or 9000 MTU
+Dave
 
-can someone check the max MTU capability of the built-in lan on a C8000?
+-- 
+John David Anglin  dave.anglin@bell.net
 
-ip link set eth0 mtu 1500
-
-if you have "iproute2" installed, the above is an alternative command
-to set the MTU, but it only works if the hardware does support it.
-
-thanks =)
