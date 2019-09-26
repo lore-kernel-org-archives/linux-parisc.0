@@ -5,51 +5,51 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BD49C352A9
-	for <linux-parisc@archiver.kernel.org>; Thu, 26 Sep 2019 17:57:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C59E5C4360C
+	for <linux-parisc@archiver.kernel.org>; Thu, 26 Sep 2019 17:58:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 28AE0222D3
-	for <linux-parisc@archiver.kernel.org>; Thu, 26 Sep 2019 17:57:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9E061222CD
+	for <linux-parisc@archiver.kernel.org>; Thu, 26 Sep 2019 17:58:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KfnDRarT"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DCGoaVd1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728000AbfIZR55 (ORCPT
+        id S1728485AbfIZR6J (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 26 Sep 2019 13:57:57 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:33450 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727877AbfIZR4V (ORCPT
+        Thu, 26 Sep 2019 13:58:09 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:33214 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727925AbfIZR4U (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 26 Sep 2019 13:56:21 -0400
-Received: by mail-pl1-f195.google.com with SMTP id d22so1641351pls.0
-        for <linux-parisc@vger.kernel.org>; Thu, 26 Sep 2019 10:56:20 -0700 (PDT)
+        Thu, 26 Sep 2019 13:56:20 -0400
+Received: by mail-pg1-f194.google.com with SMTP id i30so1988942pgl.0
+        for <linux-parisc@vger.kernel.org>; Thu, 26 Sep 2019 10:56:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=tfsXsrL5x37ZSQucWl8Bh6EyFQTE0kRi9peGDqUDYWM=;
-        b=KfnDRarTGgWf60O4C9cF+YzTjYXp+pSkpdzWR7YKNXHXP7TAfTSHAkqA4UoYNAcWUP
-         NDUbjKE6AWe2+D+wOTvvlqXbdNAJZsnyYEgw38E2fXR/V8EEz3Xj/vyRfzrhH+es6//f
-         V34BpcFgVde9WGbqi6+RYmyV1MCa8QFUww3V8=
+        bh=WqLTzjTdYtu13eBI1Hsh3syPKd5R5C/bZSENvznkqN8=;
+        b=DCGoaVd19CahdKM67vauwYq6A0n5O1bU2fwJSQI6+6L/QL8IWduHMpbD2D082JUMYu
+         tdZce3zeDL64zrWCWjE/SDwatGi3I36cLWh3ChbpkxGYUJmrkhZ3GZpcYkkrQcTuN6Kz
+         BMWhWC28K9ifpqbHkwnwms2pPbRZQRavPSH8w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=tfsXsrL5x37ZSQucWl8Bh6EyFQTE0kRi9peGDqUDYWM=;
-        b=fvL2TSL9jCNQIm2pmBeBgYgjgZCEyH/PQq+N5Iqes6TSwWmM6+FH75es4+t2acdZAY
-         LfWGpUUls+5qS9AqJJV0foUyVMEvLVL6L72wpDkiFn09H2hGwyJO/1C5biZJp6JjLwtv
-         YE3bjUOxpwe0zYZvIYJEqzy1zteIbztBIDbTmygMiQUe9F1NXxdATv5g+zZiaJ/JRcQS
-         jyQn6iphYgO1zwEZVd+ZMxA8Zgt5Em/H1jZea9clpmI+iNaCOvLDySp2zEpRpbKZgRSg
-         gxMquY92B4atLADsqXRCgKZp8xWTH4B6HiQagpXulmCif8y9Av1+Dc0GvSbWuZmT5DRQ
-         H4gQ==
-X-Gm-Message-State: APjAAAVRFSwvg029Wus35+pQB6sPipKCsghwR9yjPuGNQ/sbvq1DP0PG
-        RB3kdYuQI9BxXZ9HxJKnFTrmxQ==
-X-Google-Smtp-Source: APXvYqxNefsDmg9i8vv1ozpPK1xitEq/TEjXZ0cxntHJv7Z/K7QxcGEiK4QwS+/LuR6Pbs4fqhuAog==
-X-Received: by 2002:a17:902:9a92:: with SMTP id w18mr5189269plp.201.1569520580043;
-        Thu, 26 Sep 2019 10:56:20 -0700 (PDT)
+        bh=WqLTzjTdYtu13eBI1Hsh3syPKd5R5C/bZSENvznkqN8=;
+        b=hitU4quA95Py+tF68AQCchoBhGi2ShMU2mBBdb+av8X9KRP+VyVJEpOkemz7fM2K1O
+         G4dTDLFkxB8swZTaW0R/bYCpESi6xGL3YkYaeDyK+2sSEfGryZ44sx0flhnSf+RXNIQZ
+         1xVgNy16JAQtxgkZpH/K2lpeyMZ5dc5PkwuNz37o9dQSW9R6LoliHRAZUliwvTY5S4aH
+         Y/Q8E2y1CMgNyI0UHxaz+f9tbAx/jpYOmfXWIMlOgA22aJ+oonRJr/eYWmHw9fwnoTpb
+         CGd4sNp6hbXRwXBXDVR3SvB0jkv8+gF/FLYE3QSu+D97pjcJxL6Z0bShW7pG7URU6XSe
+         Lk8g==
+X-Gm-Message-State: APjAAAUpO206SP33M98tDVI9EBt3uFk4BOeGzQ1CCL3bMxTjT6Wo7cgi
+        beKt90/s7C6V+KK6dC8VhGF0rA==
+X-Google-Smtp-Source: APXvYqx+Nc4F3BFxu5gBtlblqAA7dVzSt2eXx8oUumqPJNhjfOYoqU7jhFXju/6qtRKJS06j3p5MdA==
+X-Received: by 2002:aa7:8bcc:: with SMTP id s12mr5094703pfd.93.1569520579420;
+        Thu, 26 Sep 2019 10:56:19 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f15sm2984785pfd.141.2019.09.26.10.56.16
+        by smtp.gmail.com with ESMTPSA id v12sm2855407pgr.31.2019.09.26.10.56.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 26 Sep 2019 10:56:17 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -68,9 +68,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 04/29] alpha: Rename PT_LOAD identifier "kernel" to "text"
-Date:   Thu, 26 Sep 2019 10:55:37 -0700
-Message-Id: <20190926175602.33098-5-keescook@chromium.org>
+Subject: [PATCH 01/29] powerpc: Rename "notes" PT_NOTE to "note"
+Date:   Thu, 26 Sep 2019 10:55:34 -0700
+Message-Id: <20190926175602.33098-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190926175602.33098-1-keescook@chromium.org>
 References: <20190926175602.33098-1-keescook@chromium.org>
@@ -79,46 +79,38 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-In preparation for moving NOTES into RO_DATA, this renames the linker
-script internal identifier for the PT_LOAD Program Header from "kernel"
-to "text" to match other architectures.
+The Program Header identifiers are internal to the linker scripts. In
+preparation for moving the NOTES segment declaration into RO_DATA,
+standardize the identifier for the PT_NOTE entry to "note" as used by
+all other architectures that emit PT_NOTE.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/alpha/kernel/vmlinux.lds.S | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/powerpc/kernel/vmlinux.lds.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/alpha/kernel/vmlinux.lds.S b/arch/alpha/kernel/vmlinux.lds.S
-index c4b5ceceab52..781090cacc96 100644
---- a/arch/alpha/kernel/vmlinux.lds.S
-+++ b/arch/alpha/kernel/vmlinux.lds.S
-@@ -8,7 +8,7 @@
- OUTPUT_FORMAT("elf64-alpha")
- OUTPUT_ARCH(alpha)
- ENTRY(__start)
--PHDRS { kernel PT_LOAD; note PT_NOTE; }
-+PHDRS { text PT_LOAD; note PT_NOTE; }
- jiffies = jiffies_64;
- SECTIONS
- {
-@@ -27,14 +27,14 @@ SECTIONS
- 		LOCK_TEXT
- 		*(.fixup)
- 		*(.gnu.warning)
--	} :kernel
-+	} :text
- 	swapper_pg_dir = SWAPPER_PGD;
- 	_etext = .;	/* End of text section */
+diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
+index 060a1acd7c6d..81e672654789 100644
+--- a/arch/powerpc/kernel/vmlinux.lds.S
++++ b/arch/powerpc/kernel/vmlinux.lds.S
+@@ -19,7 +19,7 @@ ENTRY(_stext)
  
--	NOTES :kernel :note
-+	NOTES :text :note
- 	.dummy : {
- 		*(.dummy)
--	} :kernel
-+	} :text
+ PHDRS {
+ 	kernel PT_LOAD FLAGS(7); /* RWX */
+-	notes PT_NOTE FLAGS(0);
++	note PT_NOTE FLAGS(0);
+ 	dummy PT_NOTE FLAGS(0);
  
- 	RODATA
- 	EXCEPTION_TABLE(16)
+ 	/* binutils < 2.18 has a bug that makes it misbehave when taking an
+@@ -177,7 +177,7 @@ SECTIONS
+ #endif
+ 	EXCEPTION_TABLE(0)
+ 
+-	NOTES :kernel :notes
++	NOTES :kernel :note
+ 
+ 	/* The dummy segment contents for the bug workaround mentioned above
+ 	   near PHDRS.  */
 -- 
 2.17.1
 
