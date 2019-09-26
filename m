@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1B84C352A9
-	for <linux-parisc@archiver.kernel.org>; Thu, 26 Sep 2019 17:56:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FB26C4360C
+	for <linux-parisc@archiver.kernel.org>; Thu, 26 Sep 2019 17:56:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A7E83222CD
-	for <linux-parisc@archiver.kernel.org>; Thu, 26 Sep 2019 17:56:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 04538222CC
+	for <linux-parisc@archiver.kernel.org>; Thu, 26 Sep 2019 17:56:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GIG4pntI"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GqCpdlt2"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728268AbfIZR4u (ORCPT
+        id S1728278AbfIZR4y (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 26 Sep 2019 13:56:50 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:37898 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728185AbfIZR4e (ORCPT
+        Thu, 26 Sep 2019 13:56:54 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:35258 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728190AbfIZR4e (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
         Thu, 26 Sep 2019 13:56:34 -0400
-Received: by mail-pg1-f196.google.com with SMTP id x10so1964163pgi.5
+Received: by mail-pg1-f194.google.com with SMTP id a24so1978029pgj.2
         for <linux-parisc@vger.kernel.org>; Thu, 26 Sep 2019 10:56:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=yn5wfwJoFu2XxkEapi5oUode7Z6ofSq2WooR/oMOeig=;
-        b=GIG4pntI4mSLZBUOLoFMk4guSw8F6GtVAwhEFiBddEsAgwrkRwPjIGbLRlxFjf3FFl
-         AAkc2fNz+FhNHp9iA1Gn1CLcywcbJ+TQMeOOKdi3rLClFQao449j+D61pfii2Lo6mCp9
-         gdFOurgujqWI728AB8TNIMWAJHUqnNxeyVafk=
+        bh=DewAllPq01LncnaE6NYCCskktLTPQ+Oq7qAAM5yWaKA=;
+        b=GqCpdlt27oIxoalJ+q55GpBWVA+O9B4EMwRWAPEitDTY5x/y/r3wW9KbkZvPr2V4X/
+         S8caIKThukUOlDs2WCows35gv3FJcnOv4JTcjIQERxd+vzGaspWFjmHz3dbggEHqAL0H
+         9XgrssZH7A/r46cr0/K6ftOAUAm1WnB4t7vdU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=yn5wfwJoFu2XxkEapi5oUode7Z6ofSq2WooR/oMOeig=;
-        b=c/6MApJVVr/EdYnaqHggsuxGCSUbFMuHXX09cmXMce6YLkiSMbgxBsN7pDVxsn0AtS
-         ZTZzY7zlIaNkZOAfnawaT3WuVU11BdZwnjiEvXPO37x4JEfWZlSkVUUcUw1m9rTH3hRO
-         h6Zje53dJZ7c1srk82cZ1/Mzutg54LFcm1IAhJ9wyGwigJ/G6cbdDitqXVuVlGZlgT4t
-         KhGbdCd/ujF2rnE2Sfo1mihU8hCqUMpYxvrROYqto+odYAoGlbeKrNeoB7l615aulH3E
-         DnLSo01YDkia4a/GGsqNy4T3gxESsJDy+xzujPVlUGzu7EtIKDfApzGuUdd1Jbo2egAB
-         F1lA==
-X-Gm-Message-State: APjAAAW7m869yuIPObesyXD4Qjkrngo8ijZsQTWan89LoaPx1yni6jea
-        kCnvjMB3/v+3Qou4ucR9mStVew==
-X-Google-Smtp-Source: APXvYqztKKvfKjgB5MJEkhZ1uiyu1Mkac35wqulYkyxXb+7C2TAggJBadFx7VmxAR9W2f3IICOin9w==
-X-Received: by 2002:aa7:920d:: with SMTP id 13mr5075737pfo.17.1569520593466;
-        Thu, 26 Sep 2019 10:56:33 -0700 (PDT)
+        bh=DewAllPq01LncnaE6NYCCskktLTPQ+Oq7qAAM5yWaKA=;
+        b=OP0y5exxBALkikhc0oLsZP0HX+S00szVWAbv+6jZf3tGSdMTl+eq5PQHBjuqgi6rAA
+         uFsYTrnb0qWoIxNTguaFy0d8C97bC6dhGG0GvM8wI6xn8eBfbDbvyQDwjfpqbFZeFNKS
+         njBT5KKMYTSvChORGuvqT6/QClxQ0qIcywGKvc/kA4DqFg8h3arHuyorspx8Qu+QR7jB
+         SZT2lcSqiSo5TjhEFzpOl2s6dthkaYsNvbHlNgDGQaJcmWdCzsfG4Dmv1jIa4ve6p5Rg
+         p4mkILXvFMl6otay1qNHy3kqpf4hc/vEQCmffknnehnQqQnZuQdq8pOoUn2LEGZe6aZC
+         8JzA==
+X-Gm-Message-State: APjAAAWa4SzSQusVatforDhCR2fGm6qnQXRA1dXIz/7Lif9Ooh1cokSz
+        7taM/r0OaOVwdwdgU9CNHqe/SQ==
+X-Google-Smtp-Source: APXvYqy6lsJedhQhLRYmBsUadf9UZQvX3qa3S7SjzPO8c/ioUQ997KVZPcsBQte8g5aQEg6d61NfYg==
+X-Received: by 2002:a65:5c0b:: with SMTP id u11mr4650029pgr.294.1569520592850;
+        Thu, 26 Sep 2019 10:56:32 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x6sm7506434pfd.53.2019.09.26.10.56.27
+        by smtp.gmail.com with ESMTPSA id m2sm3024583pgc.19.2019.09.26.10.56.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 26 Sep 2019 10:56:30 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -68,9 +68,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 29/29] x86: Use INT3 instead of NOP for linker fill bytes
-Date:   Thu, 26 Sep 2019 10:56:02 -0700
-Message-Id: <20190926175602.33098-30-keescook@chromium.org>
+Subject: [PATCH 24/29] powerpc: Move EXCEPTION_TABLE to RO_DATA segment
+Date:   Thu, 26 Sep 2019 10:55:57 -0700
+Message-Id: <20190926175602.33098-25-keescook@chromium.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190926175602.33098-1-keescook@chromium.org>
 References: <20190926175602.33098-1-keescook@chromium.org>
@@ -79,58 +79,33 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Instead of using 0x90 (NOP) to fill bytes between functions, which makes
-it easier to sloppily target functions in function pointer overwrite
-attacks, fill with 0xCC (INT3) to force a trap. Also drops the space
-between "=" and the value to better match the binutils documentation
-https://sourceware.org/binutils/docs/ld/Output-Section-Fill.html#Output-Section-Fill
-
-Example "objdump -d" before:
-
-...
-ffffffff810001e0 <start_cpu0>:
-ffffffff810001e0:       48 8b 25 e1 b1 51 01    mov 0x151b1e1(%rip),%rsp        # ffffffff8251b3c8 <initial_stack>
-ffffffff810001e7:       e9 d5 fe ff ff          jmpq   ffffffff810000c1 <secondary_startup_64+0x91>
-ffffffff810001ec:       90                      nop
-ffffffff810001ed:       90                      nop
-ffffffff810001ee:       90                      nop
-ffffffff810001ef:       90                      nop
-
-ffffffff810001f0 <__startup_64>:
-...
-
-After:
-
-...
-ffffffff810001e0 <start_cpu0>:
-ffffffff810001e0:       48 8b 25 41 79 53 01    mov 0x1537941(%rip),%rsp        # ffffffff82537b28 <initial_stack>
-ffffffff810001e7:       e9 d5 fe ff ff          jmpq   ffffffff810000c1 <secondary_startup_64+0x91>
-ffffffff810001ec:       cc                      int3
-ffffffff810001ed:       cc                      int3
-ffffffff810001ee:       cc                      int3
-ffffffff810001ef:       cc                      int3
-
-ffffffff810001f0 <__startup_64>:
-...
+The EXCEPTION_TABLE is read-only, so collapse it into RO_DATA.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/x86/kernel/vmlinux.lds.S | 2 +-
+ arch/powerpc/kernel/vmlinux.lds.S | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index a5c8571e4967..a37817fafb22 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -144,7 +144,7 @@ SECTIONS
- 		*(.text.__x86.indirect_thunk)
- 		__indirect_thunk_end = .;
- #endif
--	} :text = 0x9090
-+	} :text =0xcccc
+diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
+index 4e7cec088c8b..2ed44e5824d5 100644
+--- a/arch/powerpc/kernel/vmlinux.lds.S
++++ b/arch/powerpc/kernel/vmlinux.lds.S
+@@ -7,6 +7,7 @@
  
- 	/* End of text section, which should occupy whole number of pages */
- 	_etext = .;
+ #define BSS_FIRST_SECTIONS *(.bss.prominit)
+ #define EMITS_PT_NOTE
++#define RO_DATA_EXCEPTION_TABLE_ALIGN	0
+ 
+ #include <asm/page.h>
+ #include <asm-generic/vmlinux.lds.h>
+@@ -162,7 +163,6 @@ SECTIONS
+ 		__stop__btb_flush_fixup = .;
+ 	}
+ #endif
+-	EXCEPTION_TABLE(0)
+ 
+ /*
+  * Init sections discarded at runtime
 -- 
 2.17.1
 
