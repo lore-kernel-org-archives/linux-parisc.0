@@ -2,98 +2,144 @@ Return-Path: <SRS0=s0sj=XV=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD653C432C2
-	for <linux-parisc@archiver.kernel.org>; Thu, 26 Sep 2019 07:58:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2431BC4360C
+	for <linux-parisc@archiver.kernel.org>; Thu, 26 Sep 2019 17:56:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 406D52146E
-	for <linux-parisc@archiver.kernel.org>; Thu, 26 Sep 2019 07:58:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EAEAF222C9
+	for <linux-parisc@archiver.kernel.org>; Thu, 26 Sep 2019 17:56:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="kZ08d99M"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="CqN1lXbz"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbfIZH6m (ORCPT
+        id S1727911AbfIZR4T (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 26 Sep 2019 03:58:42 -0400
-Received: from smtp.duncanthrax.net ([89.31.1.170]:41116 "EHLO
-        smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726418AbfIZH6m (ORCPT
+        Thu, 26 Sep 2019 13:56:19 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:40643 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727755AbfIZR4T (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 26 Sep 2019 03:58:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=duncanthrax.net; s=dkim; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date;
-        bh=8Lg4yatCKD7X4fsvvkrBx2B6erVSI9xd/Gf3vtOMCRg=; b=kZ08d99MtIyox77pa2hbYEgswa
-        qsZsocQJHhdjf/xELBRkBwZILVUc7LpcQ674UqyV7p3M1fJSv/+6naGn3ZSbCH8lsBOGQnbUWDKGf
-        Wk2kXZFeMJk7vArKpP97Z4WRq4w/3I1liTu8QeFLzBCR5bzdABb2b/15lXINdeVXFrYc=;
-Received: from [2001:470:70c5:1111:5054:ff:febf:83e1] (helo=stackframe.org)
-        by smtp.eurescom.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.86_2)
-        (envelope-from <svens@stackframe.org>)
-        id 1iDOfh-0002Ar-2w; Thu, 26 Sep 2019 09:58:41 +0200
-Date:   Thu, 26 Sep 2019 09:58:39 +0200
-From:   Sven Schnelle <svens@stackframe.org>
-To:     Helge Deller <deller@gmx.de>
-Cc:     linux-parisc@vger.kernel.org
-Subject: Re: [PATCH] parisc: remove 32-bit DMA enforcement from sba_iommu
-Message-ID: <20190926075839.GA9516@stackframe.org>
-References: <20190924150131.24404-1-svens@stackframe.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190924150131.24404-1-svens@stackframe.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Thu, 26 Sep 2019 13:56:19 -0400
+Received: by mail-pf1-f196.google.com with SMTP id x127so2252244pfb.7
+        for <linux-parisc@vger.kernel.org>; Thu, 26 Sep 2019 10:56:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=twBnW9003cRUVrvl7rna64y+l4pXeTWwCidRvKd4upQ=;
+        b=CqN1lXbzhTBvyldWDeFFG0HQSt646TlwSvqceNpapyoRiUWQ5YqqN4cPwhtdyRn8hE
+         PVXIyXkZUO4laSWWNvkw5iINx8LA8erBgYyntG+Tsm/SabZpT1rGUewt5++Krmp2ifoS
+         gGD+zS0suOHck11+UV+BUipLiBtMBQgjj951s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=twBnW9003cRUVrvl7rna64y+l4pXeTWwCidRvKd4upQ=;
+        b=bScppMAcbRjH3xtMfv3Zn7LCSAPw0qqchNlKLaiMvE2VO12n5CfvctrQjpU0BA9ASM
+         Nnf6gXSW+B9j1qgM33WELZLn6IhIKy0IGnLfczZlG4GMfpe0C7oUiSXwE6/fuCWrYi/X
+         +kqTUjdeFKJX0rsz5sgn9R0asT1sd8U6r/6QmdBKgZYbYlTLo0av1wvJi6IsByJAa/5t
+         4IXDsrv/21b2k5ITGWOiI/EVM8R7qynBwZdrlxyWS+gRyhcxT1tO5HCO+hTech/knuHI
+         qbRpQmxQwDqo3vsjqj8PDmC7ygLKKjv3POmStvBj1nPmenlcC3ClGhCbA60OGLAtUE+E
+         Wmww==
+X-Gm-Message-State: APjAAAW3v0mWtV8zepgl8dTY8WwPXpV8utwBdHOcZ46/YfoiYFgphIgs
+        ZIhvmp06SnFqshUqXL2XrVbK8w==
+X-Google-Smtp-Source: APXvYqz5sqYBOjfwv1yAIr8+Vv2yIfMOshUTCRUhztJ4ypNIaY8nP1T7DvlPeRwIyHth9hoCfN4Y8A==
+X-Received: by 2002:a63:cf4e:: with SMTP id b14mr4713210pgj.109.1569520578734;
+        Thu, 26 Sep 2019 10:56:18 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k184sm5172900pge.57.2019.09.26.10.56.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Sep 2019 10:56:17 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-c6x-dev@linux-c6x.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 03/29] powerpc: Rename PT_LOAD identifier "kernel" to "text"
+Date:   Thu, 26 Sep 2019 10:55:36 -0700
+Message-Id: <20190926175602.33098-4-keescook@chromium.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190926175602.33098-1-keescook@chromium.org>
+References: <20190926175602.33098-1-keescook@chromium.org>
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Helge,
+In preparation for moving NOTES into RO_DATA, this renames the linker
+script internal identifier for the PT_LOAD Program Header from "kernel"
+to "text" to match other architectures.
 
-On Tue, Sep 24, 2019 at 05:01:31PM +0200, Sven Schnelle wrote:
-> This breaks booting from sata_sil24 with the recent DMA
-> change. According to James Bottomley this was in to improve
-> performance. Remove it for now to make DMA working again.
-> 
-> Signed-off-by: Sven Schnelle <svens@stackframe.org>
-> ---
->  drivers/parisc/sba_iommu.c | 8 --------
->  1 file changed, 8 deletions(-)
-> 
-> diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-> index 296668caf7e5..6ac9500f2752 100644
-> --- a/drivers/parisc/sba_iommu.c
-> +++ b/drivers/parisc/sba_iommu.c
-> @@ -678,14 +678,6 @@ static int sba_dma_supported( struct device *dev, u64 mask)
->  		return(0);
->  	}
->  
-> -	/* Documentation/DMA-API-HOWTO.txt tells drivers to try 64-bit
-> -	 * first, then fall back to 32-bit if that fails.
-> -	 * We are just "encouraging" 32-bit DMA masks here since we can
-> -	 * never allow IOMMU bypass unless we add special support for ZX1.
-> -	 */
-> -	if (mask > ~0U)
-> -		return 0;
-> -
->  	ioc = GET_IOC(dev);
->  	if (!ioc)
->  		return 0;
-> -- 
-> 2.23.0.rc1
-> 
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ arch/powerpc/kernel/vmlinux.lds.S | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-please drop that patch for now. With 64-bit DMA my C8000 crashes with HPMCs
-likely caused by invalid DMA transfers. So i have to read up a bit on the DMA
-capabilites, and what "since we can never allow IOMMU bypass unless we add
-special support for ZX1" means.
+diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
+index a3c8492b2b19..e184a63aa5b0 100644
+--- a/arch/powerpc/kernel/vmlinux.lds.S
++++ b/arch/powerpc/kernel/vmlinux.lds.S
+@@ -18,7 +18,7 @@
+ ENTRY(_stext)
+ 
+ PHDRS {
+-	kernel PT_LOAD FLAGS(7); /* RWX */
++	text PT_LOAD FLAGS(7); /* RWX */
+ 	note PT_NOTE FLAGS(0);
+ }
+ 
+@@ -63,7 +63,7 @@ SECTIONS
+ #else /* !CONFIG_PPC64 */
+ 		HEAD_TEXT
+ #endif
+-	} :kernel
++	} :text
+ 
+ 	__head_end = .;
+ 
+@@ -112,7 +112,7 @@ SECTIONS
+ 		__got2_end = .;
+ #endif /* CONFIG_PPC32 */
+ 
+-	} :kernel
++	} :text
+ 
+ 	. = ALIGN(ETEXT_ALIGN_SIZE);
+ 	_etext = .;
+@@ -163,9 +163,9 @@ SECTIONS
+ #endif
+ 	EXCEPTION_TABLE(0)
+ 
+-	NOTES :kernel :note
++	NOTES :text :note
+ 	/* Restore program header away from PT_NOTE. */
+-	.dummy : { *(.dummy) } :kernel
++	.dummy : { *(.dummy) } :text
+ 
+ /*
+  * Init sections discarded at runtime
+@@ -180,7 +180,7 @@ SECTIONS
+ #ifdef CONFIG_PPC64
+ 		*(.tramp.ftrace.init);
+ #endif
+-	} :kernel
++	} :text
+ 
+ 	/* .exit.text is discarded at runtime, not link time,
+ 	 * to deal with references from __bug_table
+-- 
+2.17.1
 
-The other option is to prepare a patch that limits the DMA mask with the
-API Christoph mentioned, but i would first like to understand the
-capabilities of the chipset.
-
-Regards
-Sven
