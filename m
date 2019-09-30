@@ -6,28 +6,28 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2B21C388F3
-	for <linux-parisc@archiver.kernel.org>; Mon, 30 Sep 2019 21:03:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC38BC35280
+	for <linux-parisc@archiver.kernel.org>; Mon, 30 Sep 2019 21:03:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 91E4922517
-	for <linux-parisc@archiver.kernel.org>; Mon, 30 Sep 2019 21:03:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8DED022517
+	for <linux-parisc@archiver.kernel.org>; Mon, 30 Sep 2019 21:03:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732479AbfI3VDx (ORCPT
+        id S1732232AbfI3VDX (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 30 Sep 2019 17:03:53 -0400
-Received: from mx2.mailbox.org ([80.241.60.215]:17068 "EHLO mx2.mailbox.org"
+        Mon, 30 Sep 2019 17:03:23 -0400
+Received: from mx2.mailbox.org ([80.241.60.215]:16406 "EHLO mx2.mailbox.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732101AbfI3VDY (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 30 Sep 2019 17:03:24 -0400
-Received: from smtp2.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        id S1730876AbfI3VDS (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 30 Sep 2019 17:03:18 -0400
+Received: from smtp2.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
         (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
         (No client certificate requested)
-        by mx2.mailbox.org (Postfix) with ESMTPS id D2982A18EA;
-        Mon, 30 Sep 2019 20:35:14 +0200 (CEST)
+        by mx2.mailbox.org (Postfix) with ESMTPS id 54E42A1AF7;
+        Mon, 30 Sep 2019 20:36:35 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at heinlein-support.de
 Received: from smtp2.mailbox.org ([80.241.60.240])
         by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
-        with ESMTP id 11lnC-7cGECu; Mon, 30 Sep 2019 20:35:11 +0200 (CEST)
+        with ESMTP id 4ffal-qoRL_A; Mon, 30 Sep 2019 20:36:30 +0200 (CEST)
 From:   Aleksa Sarai <cyphar@cyphar.com>
 To:     Al Viro <viro@zeniv.linux.org.uk>,
         Jeff Layton <jlayton@kernel.org>,
@@ -64,9 +64,9 @@ Cc:     Aleksa Sarai <cyphar@cyphar.com>,
         linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, sparclinux@vger.kernel.org
-Subject: [PATCH v13 2/9] procfs: switch magic-link modes to be more sane
-Date:   Tue,  1 Oct 2019 04:33:09 +1000
-Message-Id: <20190930183316.10190-3-cyphar@cyphar.com>
+Subject: [PATCH v13 6/9] namei: permit ".." resolution with LOOKUP_{IN_ROOT,BENEATH}
+Date:   Tue,  1 Oct 2019 04:33:13 +1000
+Message-Id: <20190930183316.10190-7-cyphar@cyphar.com>
 In-Reply-To: <20190930183316.10190-1-cyphar@cyphar.com>
 References: <20190930183316.10190-1-cyphar@cyphar.com>
 MIME-Version: 1.0
@@ -76,83 +76,148 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Now that magic-link modes are obeyed for file re-opening purposes, some
-of the pre-existing magic-link modes need to be adjusted to be more
-semantically correct.
+This patch allows for LOOKUP_BENEATH and LOOKUP_IN_ROOT to safely permit
+".." resolution (in the case of LOOKUP_BENEATH the resolution will still
+fail if ".." resolution would resolve a path outside of the root --
+while LOOKUP_IN_ROOT will chroot(2)-style scope it). Magic-link jumps
+are still disallowed entirely[*].
 
-The most blatant example of this is /proc/self/exe, which had a mode of
-a+rwx even though tautologically the file could never be opened for
-writing (because it is the current->mm of a live process).
+The need for this patch (and the original no-".." restriction) is
+explained by observing there is a fairly easy-to-exploit race condition
+with chroot(2) (and thus by extension LOOKUP_IN_ROOT and LOOKUP_BENEATH
+if ".." is allowed) where a rename(2) of a path can be used to "skip
+over" nd->root and thus escape to the filesystem above nd->root.
 
-With the new O_PATH restrictions, changing the default mode of these
-magic-links allows us to avoid delayed-access attacks such as we saw in
-CVE-2019-5736.
+  thread1 [attacker]:
+    for (;;)
+      renameat2(AT_FDCWD, "/a/b/c", AT_FDCWD, "/a/d", RENAME_EXCHANGE);
+  thread2 [victim]:
+    for (;;)
+      openat2(dirb, "b/c/../../etc/shadow",
+              { .flags = O_PATH, .resolve = RESOLVE_IN_ROOT } );
+
+With fairly significant regularity, thread2 will resolve to
+"/etc/shadow" rather than "/a/b/etc/shadow". There is also a similar
+(though somewhat more privileged) attack using MS_MOVE.
+
+With this patch, such cases will be detected *during* ".." resolution
+and will return -EAGAIN for userspace to decide to either retry or abort
+the lookup. It should be noted that ".." is the weak point of chroot(2)
+-- walking *into* a subdirectory tautologically cannot result in you
+walking *outside* nd->root (except through a bind-mount or magic-link).
+There is also no other way for a directory's parent to change (which is
+the primary worry with ".." resolution here) other than a rename or
+MS_MOVE.
+
+This is a first-pass implementation, where -EAGAIN will be returned if
+any rename or mount occurs anywhere on the host (in any namespace). This
+will result in spurious errors, but there isn't a satisfactory
+alternative (other than denying ".." altogether).
+
+One other possible alternative (which previous versions of this patch
+used) would be to check with path_is_under() if there was a racing
+rename or mount (after re-taking the relevant seqlocks). While this does
+work, it results in possible O(n*m) behaviour if there are many renames
+or mounts occuring *anywhere on the system*.
+
+A variant of the above attack is included in the selftests for
+openat2(2) later in this patch series. I've run this test on several
+machines for several days and no instances of a breakout were detected.
+While this is not concrete proof that this is safe, when combined with
+the above argument it should lend some trustworthiness to this
+construction.
+
+[*] It may be acceptable in the future to do a path_is_under() check (as
+    with the alternative solution for "..") for magic-links after they
+    are resolved. However this seems unlikely to be a feature that
+    people *really* need -- it can be added later if it turns out a lot
+    of people want it.
 
 Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
 ---
- fs/proc/base.c       | 20 ++++++++++----------
- fs/proc/namespaces.c |  2 +-
- 2 files changed, 11 insertions(+), 11 deletions(-)
+ fs/namei.c | 43 +++++++++++++++++++++++++++++--------------
+ 1 file changed, 29 insertions(+), 14 deletions(-)
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 96c9ec66846f..908edd0e875e 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -133,9 +133,9 @@ struct pid_entry {
+diff --git a/fs/namei.c b/fs/namei.c
+index efed62c6136e..9c35768fcf4f 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -491,7 +491,7 @@ struct nameidata {
+ 	struct path	root;
+ 	struct inode	*inode; /* path.dentry.d_inode */
+ 	unsigned int	flags;
+-	unsigned	seq, m_seq;
++	unsigned	seq, m_seq, r_seq;
+ 	int		last_type;
+ 	unsigned	depth;
+ 	int		total_link_count;
+@@ -1766,22 +1766,35 @@ static inline int handle_dots(struct nameidata *nd, int type)
+ 	if (type == LAST_DOTDOT) {
+ 		int error = 0;
  
- #define DIR(NAME, MODE, iops, fops)	\
- 	NOD(NAME, (S_IFDIR|(MODE)), &iops, &fops, {} )
--#define LNK(NAME, get_link)					\
--	NOD(NAME, (S_IFLNK|S_IRWXUGO),				\
--		&proc_pid_link_inode_operations, NULL,		\
-+#define LNK(NAME, MODE, get_link)			\
-+	NOD(NAME, (S_IFLNK|(MODE)),			\
-+		&proc_pid_link_inode_operations, NULL,	\
- 		{ .proc_get_link = get_link } )
- #define REG(NAME, MODE, fops)				\
- 	NOD(NAME, (S_IFREG|(MODE)), NULL, &fops, {})
-@@ -3047,9 +3047,9 @@ static const struct pid_entry tgid_base_stuff[] = {
- 	REG("numa_maps",  S_IRUGO, proc_pid_numa_maps_operations),
- #endif
- 	REG("mem",        S_IRUSR|S_IWUSR, proc_mem_operations),
--	LNK("cwd",        proc_cwd_link),
--	LNK("root",       proc_root_link),
--	LNK("exe",        proc_exe_link),
-+	LNK("cwd",        S_IRWXUGO, proc_cwd_link),
-+	LNK("root",       S_IRWXUGO, proc_root_link),
-+	LNK("exe",        S_IRUGO|S_IXUGO, proc_exe_link),
- 	REG("mounts",     S_IRUGO, proc_mounts_operations),
- 	REG("mountinfo",  S_IRUGO, proc_mountinfo_operations),
- 	REG("mountstats", S_IRUSR, proc_mountstats_operations),
-@@ -3448,11 +3448,11 @@ static const struct pid_entry tid_base_stuff[] = {
- 	REG("numa_maps", S_IRUGO, proc_pid_numa_maps_operations),
- #endif
- 	REG("mem",       S_IRUSR|S_IWUSR, proc_mem_operations),
--	LNK("cwd",       proc_cwd_link),
--	LNK("root",      proc_root_link),
--	LNK("exe",       proc_exe_link),
-+	LNK("cwd",       S_IRWXUGO, proc_cwd_link),
-+	LNK("root",      S_IRWXUGO, proc_root_link),
-+	LNK("exe",       S_IRUGO|S_IXUGO, proc_exe_link),
- 	REG("mounts",    S_IRUGO, proc_mounts_operations),
--	REG("mountinfo",  S_IRUGO, proc_mountinfo_operations),
-+	REG("mountinfo", S_IRUGO, proc_mountinfo_operations),
- #ifdef CONFIG_PROC_PAGE_MONITOR
- 	REG("clear_refs", S_IWUSR, proc_clear_refs_operations),
- 	REG("smaps",     S_IRUGO, proc_pid_smaps_operations),
-diff --git a/fs/proc/namespaces.c b/fs/proc/namespaces.c
-index 0142992eceea..cadf0ae796a2 100644
---- a/fs/proc/namespaces.c
-+++ b/fs/proc/namespaces.c
-@@ -94,7 +94,7 @@ static struct dentry *proc_ns_instantiate(struct dentry *dentry,
- 	struct inode *inode;
- 	struct proc_inode *ei;
+-		/*
+-		 * Scoped-lookup flags resolving ".." is not currently safe --
+-		 * races can cause our parent to have moved outside of the root
+-		 * and us to skip over it.
+-		 */
+-		if (unlikely(nd->flags & LOOKUP_DIRFD_SCOPE_FLAGS))
+-			return -EXDEV;
+ 		if (!nd->root.mnt) {
+ 			error = set_root(nd);
+ 			if (error)
+ 				return error;
+ 		}
+-		if (nd->flags & LOOKUP_RCU) {
+-			return follow_dotdot_rcu(nd);
+-		} else
+-			return follow_dotdot(nd);
++		if (nd->flags & LOOKUP_RCU)
++			error = follow_dotdot_rcu(nd);
++		else
++			error = follow_dotdot(nd);
++		if (error)
++			return error;
++
++		if (unlikely(nd->flags & LOOKUP_DIRFD_SCOPE_FLAGS)) {
++			bool m_retry = read_seqretry(&mount_lock, nd->m_seq);
++			bool r_retry = read_seqretry(&rename_lock, nd->r_seq);
++
++			/*
++			 * If there was a racing rename or mount along our
++			 * path, then we can't be sure that ".." hasn't jumped
++			 * above nd->root (and so userspace should retry or use
++			 * some fallback).
++			 *
++			 * In future we could do a path_is_under() check here
++			 * instead, but there are O(n*m) performance
++			 * considerations with such a setup.
++			 */
++			if (unlikely(m_retry || r_retry))
++				return -EAGAIN;
++		}
+ 	}
+ 	return 0;
+ }
+@@ -2251,6 +2264,10 @@ static const char *path_init(struct nameidata *nd, unsigned flags)
+ 	nd->last_type = LAST_ROOT; /* if there are only slashes... */
+ 	nd->flags = flags | LOOKUP_JUMPED | LOOKUP_PARENT;
+ 	nd->depth = 0;
++
++	nd->m_seq = read_seqbegin(&mount_lock);
++	nd->r_seq = read_seqbegin(&rename_lock);
++
+ 	if (flags & LOOKUP_ROOT) {
+ 		struct dentry *root = nd->root.dentry;
+ 		struct inode *inode = root->d_inode;
+@@ -2272,8 +2289,6 @@ static const char *path_init(struct nameidata *nd, unsigned flags)
+ 	nd->path.mnt = NULL;
+ 	nd->path.dentry = NULL;
  
--	inode = proc_pid_make_inode(dentry->d_sb, task, S_IFLNK | S_IRWXUGO);
-+	inode = proc_pid_make_inode(dentry->d_sb, task, S_IFLNK | S_IRUGO);
- 	if (!inode)
- 		return ERR_PTR(-ENOENT);
- 
+-	nd->m_seq = read_seqbegin(&mount_lock);
+-
+ 	/* LOOKUP_IN_ROOT treats absolute paths as being relative-to-dirfd. */
+ 	if (flags & LOOKUP_IN_ROOT)
+ 		while (*s == '/')
 -- 
 2.23.0
 
