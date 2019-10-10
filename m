@@ -2,40 +2,41 @@ Return-Path: <SRS0=UO+F=YD=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EBC2C10F14
-	for <linux-parisc@archiver.kernel.org>; Thu, 10 Oct 2019 10:40:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8662CC4360C
+	for <linux-parisc@archiver.kernel.org>; Thu, 10 Oct 2019 15:25:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F131E2190F
-	for <linux-parisc@archiver.kernel.org>; Thu, 10 Oct 2019 10:40:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6022821D6C
+	for <linux-parisc@archiver.kernel.org>; Thu, 10 Oct 2019 15:25:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alien8.de header.i=@alien8.de header.b="Qb/8B0z/"
+	dkim=pass (1024-bit key) header.d=alien8.de header.i=@alien8.de header.b="XvDnIWbO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732785AbfJJKke (ORCPT
+        id S1726007AbfJJPZ0 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 10 Oct 2019 06:40:34 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:47242 "EHLO mail.skyhub.de"
+        Thu, 10 Oct 2019 11:25:26 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:33680 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726478AbfJJKkd (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 10 Oct 2019 06:40:33 -0400
-Received: from zn.tnic (p200300EC2F0A6300C5CFCA1B921AC096.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:6300:c5cf:ca1b:921a:c096])
+        id S1725909AbfJJPZZ (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 10 Oct 2019 11:25:25 -0400
+Received: from zn.tnic (p200300EC2F0A630005874FFE54801724.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:6300:587:4ffe:5480:1724])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F36DC1EC090E;
-        Thu, 10 Oct 2019 12:40:31 +0200 (CEST)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DD39A1EC0987;
+        Thu, 10 Oct 2019 17:25:23 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1570704032;
+        t=1570721124;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=CEt4dlsSD6hLNCfpcBv+TItcwaLdbCGmBJwVp0jE52Y=;
-        b=Qb/8B0z/8SHuyj10Uu0bnOSkx6C22IC6RH8jC7QFaxkqw3hi2Xw+pMlrCA8MA+lzrMYIcU
-        R9HfBVqfZVc3xwG2eY/U2uTDi6H7SnrRP5zX3UjEj5WLx2T+amIhaiF/8q5v2OnnNYowCN
-        wASThpmynIcqAkL6VETz3CqvLHX0uuc=
-Date:   Thu, 10 Oct 2019 12:40:29 +0200
+        bh=oFtLtIT92PEjPANVccNt8bv5ZEw6stfT1hPzmyy05AU=;
+        b=XvDnIWbOWnxP5VFZO9ko7ahJhTcRm/Xsrm8HgemYJGsHSBOE6Uta44f3AIYcSZ6OfEGl/a
+        AEH1A9BDC9JA4n3PgugNym5/q4Nt+C+NeHY9F4IhvYggxoRn7C5NPgZWNAKd44J4GzphzU
+        Yg/gusTeVLuPtqp+cJTKXO0tNksVAHs=
+Date:   Thu, 10 Oct 2019 17:25:16 +0200
 From:   Borislav Petkov <bp@alien8.de>
 To:     Kees Cook <keescook@chromium.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -52,26 +53,71 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/29] vmlinux.lds.h: Provide EMIT_PT_NOTE to indicate
- export of .notes
-Message-ID: <20191010104029.GE7658@zn.tnic>
+Subject: Re: [PATCH 14/29] vmlinux.lds.h: Allow EXCEPTION_TABLE to live in
+ RO_DATA
+Message-ID: <20191010152516.GG7658@zn.tnic>
 References: <20190926175602.33098-1-keescook@chromium.org>
- <20190926175602.33098-9-keescook@chromium.org>
+ <20190926175602.33098-15-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20190926175602.33098-9-keescook@chromium.org>
+In-Reply-To: <20190926175602.33098-15-keescook@chromium.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Thu, Sep 26, 2019 at 10:55:41AM -0700, Kees Cook wrote:
-> In preparation for moving NOTES into RO_DATA, this provides a mechanism
+On Thu, Sep 26, 2019 at 10:55:47AM -0700, Kees Cook wrote:
+> Many architectures have an EXCEPTION_TABLE that needs only to be
+> read-only. As such, it should live in RO_DATA. This creates a macro to
+> identify this case for the architectures that can move EXCEPTION_TABLE
+> into RO_DATA.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  include/asm-generic/vmlinux.lds.h | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index d57a28786bb8..35a6cba39d9f 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -69,6 +69,17 @@
+>  #define NOTES_HEADERS_RESTORE
+>  #endif
+>  
+> +/*
+> + * Some architectures have non-executable read-only exception tables.
+> + * They can be added to the RO_DATA segment by specifying their desired
+> + * alignment.
+> + */
+> +#ifdef RO_DATA_EXCEPTION_TABLE_ALIGN
+> +#define RO_DATA_EXCEPTION_TABLE	EXCEPTION_TABLE(RO_DATA_EXCEPTION_TABLE_ALIGN)
+> +#else
+> +#define RO_DATA_EXCEPTION_TABLE
+> +#endif
+> +
+>  /* Align . to a 8 byte boundary equals to maximum function alignment. */
+>  #define ALIGN_FUNCTION()  . = ALIGN(8)
+>  
+> @@ -508,6 +519,7 @@
+>  		__stop___modver = .;					\
+>  	}								\
+>  									\
+> +	RO_DATA_EXCEPTION_TABLE						\
+>  	NOTES								\
+>  									\
+>  	. = ALIGN((align));						\
+> -- 
 
-s/this provides/provide/ - imperative tone. Check all your commit
-messages pls.
+I think you can drop the "DATA" from the names as it is kinda clear
+where the exception table lands:
+
+RO_EXCEPTION_TABLE_ALIGN
+RO_EXCEPTION_TABLE
+
+The "read-only" part is the important one.
 
 -- 
 Regards/Gruss,
