@@ -5,53 +5,53 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17BFAC4360C
-	for <linux-parisc@archiver.kernel.org>; Fri, 11 Oct 2019 00:07:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FA91ECE596
+	for <linux-parisc@archiver.kernel.org>; Fri, 11 Oct 2019 00:12:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E756421920
-	for <linux-parisc@archiver.kernel.org>; Fri, 11 Oct 2019 00:07:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7D1D021920
+	for <linux-parisc@archiver.kernel.org>; Fri, 11 Oct 2019 00:12:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Zkm/RKe8"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VJjnLJGI"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727131AbfJKAGW (ORCPT
+        id S1727603AbfJKAM4 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 10 Oct 2019 20:06:22 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:44533 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726751AbfJKAGW (ORCPT
+        Thu, 10 Oct 2019 20:12:56 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:42536 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727589AbfJKAM4 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 10 Oct 2019 20:06:22 -0400
-Received: by mail-pg1-f196.google.com with SMTP id e10so696930pgd.11
-        for <linux-parisc@vger.kernel.org>; Thu, 10 Oct 2019 17:06:22 -0700 (PDT)
+        Thu, 10 Oct 2019 20:12:56 -0400
+Received: by mail-pl1-f195.google.com with SMTP id e5so3582840pls.9
+        for <linux-parisc@vger.kernel.org>; Thu, 10 Oct 2019 17:12:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=7dmckIaKuL5uoyVhYLyxQgvD7laB8s0ddXfS7YNycCU=;
-        b=Zkm/RKe8e+Liv+qZ7ZPm9kwWeSr+NIaspEW7t3lmnI5dNpUpSo6dTzux6vNvY1O0iZ
-         mXmbpcaYzINbphQms11pCzDFWcPo5ulCRYCfFRW5DOq8KNnHUZoPg9cYONZAaxdOzKmE
-         WYECp/MY1nFT0o4uteh9HzWwnmK7DhrJcJDFU=
+        bh=bvYKnL/TaFkIaenIAvKRMlAb1gjfrMgYQ33pk+cyLNw=;
+        b=VJjnLJGIO0uGgKBCPhgyxZ/iGefUMJczEPz55L/NXxQm4X5HtH7Z6IwSEISlxXbPIi
+         0AKWMzRKkEkFoTXpqSQ6so/StMfOF2yJFPqmtCJOuv0Jt6L5qcDOFqlnVgUtBy87cn2m
+         oVq9vePrz89q5V3+gDCK4GhXWqgAgeYpXsYQQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=7dmckIaKuL5uoyVhYLyxQgvD7laB8s0ddXfS7YNycCU=;
-        b=G4d0arMHR4Voeu2BNmRhAq8fbFy+nbsVlCq/RpRcAePHUvwJr00Oj0/JvGDBvThTSQ
-         h8A5FHmLE9Q5ceWHO0q9WpoZHTKNY+Ax+jWqHbk7pe+kfOpioK2i7Ea3N8Byrdxwlcr5
-         j4kfvkftNNj2/faVtqGniEXNwo0+6xpx8yUUqlPiDHHUzFV+IDkjmWnZ3GxU3RCoSs1K
-         ZAbe4zk02hO/ad/tAURgWmtBB+L4llBlcUoWqZgpgmfBsncVGVobMP22PL7IuXcJ3EhO
-         x7d1LFWUrebrpviG67bQOO1kJjEF6Hlw0idUkEEI1Wa5nHd2dWtS2lLT+2+pXLIhK7qb
-         CbXw==
-X-Gm-Message-State: APjAAAXo3kq8029oCnf5Slai89RC3t6l71889is0gGzPBD8a5Kea4S4Z
-        4vjSecmSI75sEsZwm4OIwnxiQA==
-X-Google-Smtp-Source: APXvYqy8lBsu/lNnf25rns+8k/zkBM8oQHwDv9L6rfwj03NX/IG4fGJ+vORVfGqdbtbZOe/1C8n/Lw==
-X-Received: by 2002:a63:554b:: with SMTP id f11mr13613094pgm.151.1570752381593;
-        Thu, 10 Oct 2019 17:06:21 -0700 (PDT)
+        bh=bvYKnL/TaFkIaenIAvKRMlAb1gjfrMgYQ33pk+cyLNw=;
+        b=VJLVpyJs+zVHjUU1VaE7hXAjIA3DiEyiMLJFoVo4Yr5pXW/ObkoLhaoUNkzv3N6RfP
+         VBEunBi+l9/QA8KcnPNxF+kU7I+ihteXUmqnfjzTbjB6nr4RteeiZE8IuYFi3klYBKHk
+         OH4ZAGm0lCv3gSx06nsb7ypeEvYKtU6+iHS7QNGSDqLIoJtxPba28OemlWX1MYHk+MmW
+         MeQSBuoMTzXXpCStSg4NHUtgmKgBEKZUdkIocj2gHbVvHyc1QG/49sY+C4/1P5YCqTcm
+         w8+eqiuYZKNP9xXeaQf7m1h4TWwynngdDgWuFIPlzflS8Z0f3XkxP3CqmuD1wS+7q10M
+         g8ig==
+X-Gm-Message-State: APjAAAVpHRXdfhDGE5EEEXpaJ11SbaFhGZza8rj0pevEJ9jEnDU+cJ0K
+        Bn67iw+Gvk20MCVFTB0f/uD37Q==
+X-Google-Smtp-Source: APXvYqz1nJHbdicuisYaMkUGL4dW9cHVrS4hPr3bZVo4nTa2ffJhe6O1BBJ7QgwtCPb4vvcDzPVB3A==
+X-Received: by 2002:a17:902:b410:: with SMTP id x16mr12316640plr.46.1570752775741;
+        Thu, 10 Oct 2019 17:12:55 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o42sm12777771pjo.32.2019.10.10.17.06.19
+        by smtp.gmail.com with ESMTPSA id j128sm7319082pfg.51.2019.10.10.17.12.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2019 17:06:20 -0700 (PDT)
+        Thu, 10 Oct 2019 17:12:52 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Borislav Petkov <bp@alien8.de>
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -70,9 +70,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 02/29] powerpc: Remove PT_NOTE workaround
-Date:   Thu, 10 Oct 2019 17:05:42 -0700
-Message-Id: <20191011000609.29728-3-keescook@chromium.org>
+Subject: [PATCH v2 22/29] microblaze: Move EXCEPTION_TABLE to RO_DATA segment
+Date:   Thu, 10 Oct 2019 17:06:02 -0700
+Message-Id: <20191011000609.29728-23-keescook@chromium.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20191011000609.29728-1-keescook@chromium.org>
 References: <20191011000609.29728-1-keescook@chromium.org>
@@ -81,56 +81,34 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-In preparation for moving NOTES into RO_DATA, remove the PT_NOTE
-workaround since the kernel requires at least gcc 4.6 now.
+Since the EXCEPTION_TABLE is read-only, collapse it into RO_DATA.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/powerpc/kernel/vmlinux.lds.S | 24 ++----------------------
- 1 file changed, 2 insertions(+), 22 deletions(-)
+ arch/microblaze/kernel/vmlinux.lds.S | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
-index 81e672654789..a3c8492b2b19 100644
---- a/arch/powerpc/kernel/vmlinux.lds.S
-+++ b/arch/powerpc/kernel/vmlinux.lds.S
-@@ -20,20 +20,6 @@ ENTRY(_stext)
- PHDRS {
- 	kernel PT_LOAD FLAGS(7); /* RWX */
- 	note PT_NOTE FLAGS(0);
--	dummy PT_NOTE FLAGS(0);
--
--	/* binutils < 2.18 has a bug that makes it misbehave when taking an
--	   ELF file with all segments at load address 0 as input.  This
--	   happens when running "strip" on vmlinux, because of the AT() magic
--	   in this linker script.  People using GCC >= 4.2 won't run into
--	   this problem, because the "build-id" support will put some data
--	   into the "notes" segment (at a non-zero load address).
--
--	   To work around this, we force some data into both the "dummy"
--	   segment and the kernel segment, so the dummy segment will get a
--	   non-zero load address.  It's not enough to always create the
--	   "notes" segment, since if nothing gets assigned to it, its load
--	   address will be zero.  */
- }
+diff --git a/arch/microblaze/kernel/vmlinux.lds.S b/arch/microblaze/kernel/vmlinux.lds.S
+index b8efb08204a1..760cac41cbfe 100644
+--- a/arch/microblaze/kernel/vmlinux.lds.S
++++ b/arch/microblaze/kernel/vmlinux.lds.S
+@@ -11,6 +11,8 @@
+ OUTPUT_ARCH(microblaze)
+ ENTRY(microblaze_start)
  
- #ifdef CONFIG_PPC64
-@@ -178,14 +164,8 @@ SECTIONS
- 	EXCEPTION_TABLE(0)
++#define RO_EXCEPTION_TABLE_ALIGN	16
++
+ #include <asm/page.h>
+ #include <asm-generic/vmlinux.lds.h>
+ #include <asm/thread_info.h>
+@@ -52,7 +54,6 @@ SECTIONS {
  
- 	NOTES :kernel :note
--
--	/* The dummy segment contents for the bug workaround mentioned above
--	   near PHDRS.  */
--	.dummy : AT(ADDR(.dummy) - LOAD_OFFSET) {
--		LONG(0)
--		LONG(0)
--		LONG(0)
--	} :kernel :dummy
-+	/* Restore program header away from PT_NOTE. */
-+	.dummy : { *(.dummy) } :kernel
+ 	. = ALIGN(16);
+ 	RO_DATA(4096)
+-	EXCEPTION_TABLE(16)
  
- /*
-  * Init sections discarded at runtime
+ 	/*
+ 	 * sdata2 section can go anywhere, but must be word aligned
 -- 
 2.17.1
 
