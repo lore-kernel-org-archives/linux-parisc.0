@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4624C4360C
-	for <linux-parisc@archiver.kernel.org>; Fri, 11 Oct 2019 00:07:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4A30C4360C
+	for <linux-parisc@archiver.kernel.org>; Fri, 11 Oct 2019 00:07:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AC2862196E
-	for <linux-parisc@archiver.kernel.org>; Fri, 11 Oct 2019 00:07:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AD2F721920
+	for <linux-parisc@archiver.kernel.org>; Fri, 11 Oct 2019 00:07:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="h/B19WCk"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TBJeuKMY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727496AbfJKAHX (ORCPT
+        id S1727083AbfJKAHb (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 10 Oct 2019 20:07:23 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:44538 "EHLO
+        Thu, 10 Oct 2019 20:07:31 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:46828 "EHLO
         mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727544AbfJKAG1 (ORCPT
+        with ESMTP id S1727505AbfJKAGY (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 10 Oct 2019 20:06:27 -0400
-Received: by mail-pg1-f194.google.com with SMTP id e10so697013pgd.11
-        for <linux-parisc@vger.kernel.org>; Thu, 10 Oct 2019 17:06:25 -0700 (PDT)
+        Thu, 10 Oct 2019 20:06:24 -0400
+Received: by mail-pg1-f194.google.com with SMTP id b8so4670267pgm.13
+        for <linux-parisc@vger.kernel.org>; Thu, 10 Oct 2019 17:06:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=9QIZQEEx86BzYrPbnl0U6tW2XkUfCUBHfootbZQ3f/s=;
-        b=h/B19WCkyL+xymsA4HFl8hqcGsybKIgVl1/uhhhVSgPKYo6NP7vZ5rRibvBcc9cHi0
-         dKUj61YWLvd6Paq9o21PGCwAwApZ0KSVPAqMWPWlFGYXaNSsjI/dS7B2W11htDcOzgnE
-         DitiicKTEnEB0ngjDQf+AmKVkG49ZOcGoE0gQ=
+        bh=7MxClQbH59XRrbTRajW1Gh8uACzcU2+htsVcXyM7D1g=;
+        b=TBJeuKMY2z8zTRQ1bFw/ImZS5YFoYQAHk+uSCJMry9jQKOeGheQ5i7gXGHU01GWcTB
+         uOgoFqPErAXZia+mP12x9qnkRfY1Ys9PjUB5SmB5We4kWHLZQ5n99yhQi0dIKcFUZu6/
+         hILLkVhE9upOn1PuRtaesOlh4SL00TV9kLm5U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=9QIZQEEx86BzYrPbnl0U6tW2XkUfCUBHfootbZQ3f/s=;
-        b=Id0ImUFKAycljmOtYuPgKRyQsyK+WCL97g5vIXO1CIGy3TVdQ8VNd2azwWeZF5rjH6
-         GeZUzc9rDIv++OsPaasNknghGUYC9hN03KcvSvyuNn5AwtCwxS09JzqaqGeFcNDLDi4f
-         c8Ws1Fl7eZRHiMZ7m8ryzUZgWWMcYOtLU2PDvZp0VvU+SZb54Xqkrar0RRnu/jovPBf4
-         6mLoegeabXWHzqGPfPuKsi/IpC6XTnvKZpx/8FFJuklXmpFFBdlA1NilKRy/YzdJO9rK
-         K2EGp5m3SA2quKndxMGI+5+KV/iwIzR1OHrYEX/ZXECIvZl7QarRkccbA48i0xQKRBws
-         lXFQ==
-X-Gm-Message-State: APjAAAVsYFCkgc2aH2yHv82bj0u581NAtTSSPcLGYYd1Kao0SGZjHj7H
-        l7tAWmSpLGdiawHj2gtNt/Z2hA==
-X-Google-Smtp-Source: APXvYqx4W7fel1DIaEF8YA2JM9DuPiq7TPvvITPEvxb/fDK3Ll5VL5/FYyAVhRaQT1eulT76dS3lTQ==
-X-Received: by 2002:a62:3387:: with SMTP id z129mr13444661pfz.185.1570752385625;
-        Thu, 10 Oct 2019 17:06:25 -0700 (PDT)
+        bh=7MxClQbH59XRrbTRajW1Gh8uACzcU2+htsVcXyM7D1g=;
+        b=ng+iuRwYbj32cU3jSUxf4NF6gcZDbOZYA00unSyt8FQmkynKv8eQ+1T05O2FIe8Jn8
+         yFEdfp+Fyn79Hx5P6Kg6A63vTpsp+/nDXrteImy3mKYT8QysvR6JquD/NsXMR6UTN+UF
+         XbOPSsiNEA8XRL7woj64MpIEyRG1Oafnbk9fFNmwN7CgixjqRGXF0hKt/YjqXllWpSVQ
+         NoeYSyBEE1aI4bV/JY+0/TMFGmn9rdUBxXjfFxldHv0aPi8x4Xz87tJ+tHeD7YQGreS0
+         5AzJ972v2x4n9uUiGOJMA4adBgrNDuQT2+WLlB7CEmxwfll6Ob+0IJ5OarrXfnr9AIgW
+         6HZw==
+X-Gm-Message-State: APjAAAV67HqW5odPDKgS5DBYAr9ms+1KqmNNmpj6wrUYqgiidYGITWEA
+        1eeAD9HpXsvAFCXXZf8iYLBzUA==
+X-Google-Smtp-Source: APXvYqwg7IWyK5GALjp45zOGgCtbjryTtA5MoWvVIZiHDTE9GJEt+Ue8rYJCs4VD37qrCGGbQgqtBg==
+X-Received: by 2002:a62:5bc1:: with SMTP id p184mr12930072pfb.180.1570752383534;
+        Thu, 10 Oct 2019 17:06:23 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 127sm8449250pfw.6.2019.10.10.17.06.21
+        by smtp.gmail.com with ESMTPSA id d5sm5372814pjw.31.2019.10.10.17.06.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2019 17:06:24 -0700 (PDT)
+        Thu, 10 Oct 2019 17:06:20 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Borislav Petkov <bp@alien8.de>
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -70,9 +70,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 05/29] ia64: Rename PT_LOAD identifier "code" to "text"
-Date:   Thu, 10 Oct 2019 17:05:45 -0700
-Message-Id: <20191011000609.29728-6-keescook@chromium.org>
+Subject: [PATCH v2 04/29] alpha: Rename PT_LOAD identifier "kernel" to "text"
+Date:   Thu, 10 Oct 2019 17:05:44 -0700
+Message-Id: <20191011000609.29728-5-keescook@chromium.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20191011000609.29728-1-keescook@chromium.org>
 References: <20191011000609.29728-1-keescook@chromium.org>
@@ -82,69 +82,45 @@ List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
 In preparation for moving NOTES into RO_DATA, rename the linker script
-internal identifier for the PT_LOAD Program Header from "code" to "text"
-to match other architectures.
+internal identifier for the PT_LOAD Program Header from "kernel" to
+"text" to match other architectures.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/ia64/kernel/vmlinux.lds.S | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ arch/alpha/kernel/vmlinux.lds.S | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/ia64/kernel/vmlinux.lds.S b/arch/ia64/kernel/vmlinux.lds.S
-index d9d4e21107cd..2c4f23c390ad 100644
---- a/arch/ia64/kernel/vmlinux.lds.S
-+++ b/arch/ia64/kernel/vmlinux.lds.S
-@@ -13,7 +13,7 @@ ENTRY(phys_start)
+diff --git a/arch/alpha/kernel/vmlinux.lds.S b/arch/alpha/kernel/vmlinux.lds.S
+index c4b5ceceab52..781090cacc96 100644
+--- a/arch/alpha/kernel/vmlinux.lds.S
++++ b/arch/alpha/kernel/vmlinux.lds.S
+@@ -8,7 +8,7 @@
+ OUTPUT_FORMAT("elf64-alpha")
+ OUTPUT_ARCH(alpha)
+ ENTRY(__start)
+-PHDRS { kernel PT_LOAD; note PT_NOTE; }
++PHDRS { text PT_LOAD; note PT_NOTE; }
  jiffies = jiffies_64;
- 
- PHDRS {
--	code   PT_LOAD;
-+	text   PT_LOAD;
- 	percpu PT_LOAD;
- 	data   PT_LOAD;
- 	note   PT_NOTE;
-@@ -36,7 +36,7 @@ SECTIONS {
- 	phys_start = _start - LOAD_OFFSET;
- 
- 	code : {
--	} :code
+ SECTIONS
+ {
+@@ -27,14 +27,14 @@ SECTIONS
+ 		LOCK_TEXT
+ 		*(.fixup)
+ 		*(.gnu.warning)
+-	} :kernel
 +	} :text
- 	. = KERNEL_START;
+ 	swapper_pg_dir = SWAPPER_PGD;
+ 	_etext = .;	/* End of text section */
  
- 	_text = .;
-@@ -68,9 +68,9 @@ SECTIONS {
- 	/*
- 	 * Read-only data
- 	 */
--	NOTES :code :note       /* put .notes in text and mark in PT_NOTE  */
-+	NOTES :text :note       /* put .notes in text and mark in PT_NOTE  */
- 	code_continues : {
--	} : code               /* switch back to regular program...  */
-+	} :text                /* switch back to regular program...  */
- 
- 	EXCEPTION_TABLE(16)
- 
-@@ -102,9 +102,9 @@ SECTIONS {
- 		__start_unwind = .;
- 		*(.IA_64.unwind*)
- 		__end_unwind = .;
--	} :code :unwind
-+	} :text :unwind
- 	code_continues2 : {
--	} : code
+-	NOTES :kernel :note
++	NOTES :text :note
+ 	.dummy : {
+ 		*(.dummy)
+-	} :kernel
 +	} :text
  
  	RODATA
- 
-@@ -214,7 +214,7 @@ SECTIONS {
- 	_end = .;
- 
- 	code : {
--	} :code
-+	} :text
- 
- 	STABS_DEBUG
- 	DWARF_DEBUG
+ 	EXCEPTION_TABLE(16)
 -- 
 2.17.1
 
