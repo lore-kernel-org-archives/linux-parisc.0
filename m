@@ -5,51 +5,51 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A42A8C10F14
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1B91C4360C
 	for <linux-parisc@archiver.kernel.org>; Fri, 11 Oct 2019 00:13:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7BCA42196E
+	by mail.kernel.org (Postfix) with ESMTP id C772721929
 	for <linux-parisc@archiver.kernel.org>; Fri, 11 Oct 2019 00:13:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TKF/H7IX"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="C1PlvZ+0"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbfJKANX (ORCPT
+        id S1727688AbfJKANX (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
         Thu, 10 Oct 2019 20:13:23 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:44085 "EHLO
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:38239 "EHLO
         mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727688AbfJKANB (ORCPT
+        with ESMTP id S1727682AbfJKANA (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 10 Oct 2019 20:13:01 -0400
-Received: by mail-pf1-f195.google.com with SMTP id q21so4931421pfn.11
-        for <linux-parisc@vger.kernel.org>; Thu, 10 Oct 2019 17:13:01 -0700 (PDT)
+        Thu, 10 Oct 2019 20:13:00 -0400
+Received: by mail-pf1-f195.google.com with SMTP id h195so4950145pfe.5
+        for <linux-parisc@vger.kernel.org>; Thu, 10 Oct 2019 17:12:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Wn91QvvOWXGcdAukdBFPOsAS+V9wjbJFfxE/dszqFsM=;
-        b=TKF/H7IXE7UJDzb3rMUleub9owN4KR+Kc5MridCe/6j0nlzZqoEI/zttKy0QHihDrJ
-         2ZeHmtUNHexo6bQLRtT0gDvTipRD0K5TGW8Q7FVWpvhcmLBUGnPT1TySO+nYDUITKTZu
-         3WNoDW0bVMFt0uCMT6eBCSnH00RkY54ViUTLk=
+        bh=l+J574mlC+dRmZJG9pHhpppQFEze5VvTPTaNiTnbyaQ=;
+        b=C1PlvZ+0BEdj9jtliX0A0Huqq47ruf9nBVH5STuBjosSplWIN8Wr5Bj0uznajZR412
+         88yKrget+DCqKxVlllcxd6K5szWGkcPAUypn6xoncOXOV6R6YV83ztEsCSkeh78n0AI2
+         yKxfXdh2vdcul3D71BzoL2J/wyWHTxCQ4Jyq0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=Wn91QvvOWXGcdAukdBFPOsAS+V9wjbJFfxE/dszqFsM=;
-        b=XXYmnvcTRBr4gEHdiQN0CNcVY8iSmXw2mRgQifeNHMypTP4cUJV/YaB+KyKs3UvE0I
-         i2YOekezCVIvEkNesV0CDfYDuBkUhCHubpQ9y3+JtPqoKmO4Eh7n6VAib5eAFkbuxR0G
-         dYoHcHIw4xiZ8SzqY8fATfEV9kv2FjVpbKRxtksL1ENJySGV5dKwnicsWWbykoG2w8YS
-         Eq5d/bfTwycCML703B/h4Je2LUyZCsJjQ429fAKoNt9yyGP8idMdzEptJNG3a8w5eV16
-         CkVMWaMfuzr5NAz6TA+4SC1arX3tHR/vNfbj1SA3ERZ4pdNQU9xodwSuLUVBFwPolLJh
-         bsvg==
-X-Gm-Message-State: APjAAAWIyHrBVBV9NPZNM4z8g17rqBwJFH7FgGht7j2wBogTOE2H3eGL
-        CpRk22IdNM0XMgaPhJQwoGUOUA==
-X-Google-Smtp-Source: APXvYqwhzx8QmNWMryCruzS69inQpCD817u3s0gzfMeJwk1Bb2iOQgca7Hto534MUkNuyGvUJAkyfA==
-X-Received: by 2002:a17:90a:ff0f:: with SMTP id ce15mr14913883pjb.14.1570752780484;
-        Thu, 10 Oct 2019 17:13:00 -0700 (PDT)
+        bh=l+J574mlC+dRmZJG9pHhpppQFEze5VvTPTaNiTnbyaQ=;
+        b=ejc/hnVKdwaMtVFDJVoamPLztUBw2buovzENjt3Uu9D22dxOaijk0wnloz7ir9bzCv
+         LRW3S7taXARVkmXRprX+tSS91sVYled/h4SabrM7jpNukl1pHvG6guLar+ECAzVc4ZML
+         ckjuJBrBbu0kktkEsAJauHd6CIa/PXbU2gdip8yVnbZJlZYixNi17XgX1TNwMOjfGOBG
+         ftoJXh2pHPMygWz8P65fIQ7Ye6R1N8QjDfNqvrEplsN55vj0jl9ssivT9lF6fukBZ1WX
+         xkg8UiLG81RdLWHOGzXgM5wU8sDgX7D1d4093HuWqje/o8Hfsoqv0S6AoJtc3nePBQLm
+         1GVQ==
+X-Gm-Message-State: APjAAAWUzPjYGqgEihlpw40d05f2x3SSBhiRIBgFHeFEg7P2pKbQFyFz
+        O6pPD6bigMnxPZzueP9zNzwAfQ==
+X-Google-Smtp-Source: APXvYqy4PLu05rX5bRRgJJfyDhm9F1ghOcCs3VwNTK0YfAFFK8MX8ZPUgv1lA3bQ8SclnhiYx4k3qw==
+X-Received: by 2002:a63:44f:: with SMTP id 76mr14137515pge.164.1570752778758;
+        Thu, 10 Oct 2019 17:12:58 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y144sm7993803pfb.188.2019.10.10.17.12.54
+        by smtp.gmail.com with ESMTPSA id a8sm7285998pfa.182.2019.10.10.17.12.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 10 Oct 2019 17:12:56 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -70,9 +70,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 29/29] x86: Use INT3 instead of NOP for linker fill bytes
-Date:   Thu, 10 Oct 2019 17:06:09 -0700
-Message-Id: <20191011000609.29728-30-keescook@chromium.org>
+Subject: [PATCH v2 19/29] c6x: Move EXCEPTION_TABLE to RO_DATA segment
+Date:   Thu, 10 Oct 2019 17:05:59 -0700
+Message-Id: <20191011000609.29728-20-keescook@chromium.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20191011000609.29728-1-keescook@chromium.org>
 References: <20191011000609.29728-1-keescook@chromium.org>
@@ -81,58 +81,36 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Instead of using 0x90 (NOP) to fill bytes between functions, which makes
-it easier to sloppily target functions in function pointer overwrite
-attacks, fill with 0xCC (INT3) to force a trap. Also drop the space
-between "=" and the value to better match the binutils documentation
-https://sourceware.org/binutils/docs/ld/Output-Section-Fill.html#Output-Section-Fill
-
-Example "objdump -d" before:
-
-...
-ffffffff810001e0 <start_cpu0>:
-ffffffff810001e0:       48 8b 25 e1 b1 51 01    mov 0x151b1e1(%rip),%rsp        # ffffffff8251b3c8 <initial_stack>
-ffffffff810001e7:       e9 d5 fe ff ff          jmpq   ffffffff810000c1 <secondary_startup_64+0x91>
-ffffffff810001ec:       90                      nop
-ffffffff810001ed:       90                      nop
-ffffffff810001ee:       90                      nop
-ffffffff810001ef:       90                      nop
-
-ffffffff810001f0 <__startup_64>:
-...
-
-After:
-
-...
-ffffffff810001e0 <start_cpu0>:
-ffffffff810001e0:       48 8b 25 41 79 53 01    mov 0x1537941(%rip),%rsp        # ffffffff82537b28 <initial_stack>
-ffffffff810001e7:       e9 d5 fe ff ff          jmpq   ffffffff810000c1 <secondary_startup_64+0x91>
-ffffffff810001ec:       cc                      int3
-ffffffff810001ed:       cc                      int3
-ffffffff810001ee:       cc                      int3
-ffffffff810001ef:       cc                      int3
-
-ffffffff810001f0 <__startup_64>:
-...
+Since the EXCEPTION_TABLE is read-only, collapse it into RO_DATA.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/x86/kernel/vmlinux.lds.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/c6x/kernel/vmlinux.lds.S | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index b06d6e1188de..3a1a819da137 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -144,7 +144,7 @@ SECTIONS
- 		*(.text.__x86.indirect_thunk)
- 		__indirect_thunk_end = .;
- #endif
--	} :text = 0x9090
-+	} :text =0xcccc
+diff --git a/arch/c6x/kernel/vmlinux.lds.S b/arch/c6x/kernel/vmlinux.lds.S
+index a3547f9d415b..ac99ba0864bf 100644
+--- a/arch/c6x/kernel/vmlinux.lds.S
++++ b/arch/c6x/kernel/vmlinux.lds.S
+@@ -5,6 +5,9 @@
+  *  Copyright (C) 2010, 2011 Texas Instruments Incorporated
+  *  Mark Salter <msalter@redhat.com>
+  */
++
++#define RO_EXCEPTION_TABLE_ALIGN	16
++
+ #include <asm-generic/vmlinux.lds.h>
+ #include <asm/thread_info.h>
+ #include <asm/page.h>
+@@ -80,8 +83,6 @@ SECTIONS
+ 		*(.gnu.warning)
+ 	}
  
- 	/* End of text section, which should occupy whole number of pages */
- 	_etext = .;
+-	EXCEPTION_TABLE(16)
+-
+ 	RO_DATA(PAGE_SIZE)
+ 	.const :
+ 	{
 -- 
 2.17.1
 
