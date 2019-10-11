@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 344EFC4360C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB494C10F14
 	for <linux-parisc@archiver.kernel.org>; Fri, 11 Oct 2019 00:07:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 09B81222C1
+	by mail.kernel.org (Postfix) with ESMTP id B737721D56
 	for <linux-parisc@archiver.kernel.org>; Fri, 11 Oct 2019 00:07:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="cHZ91CVx"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="carhZDVu"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727565AbfJKAHI (ORCPT
+        id S1727564AbfJKAHN (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 10 Oct 2019 20:07:08 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:35683 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727563AbfJKAG3 (ORCPT
+        Thu, 10 Oct 2019 20:07:13 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:36225 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727535AbfJKAG2 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 10 Oct 2019 20:06:29 -0400
-Received: by mail-pf1-f193.google.com with SMTP id 205so4958396pfw.2
+        Thu, 10 Oct 2019 20:06:28 -0400
+Received: by mail-pf1-f195.google.com with SMTP id y22so4947143pfr.3
         for <linux-parisc@vger.kernel.org>; Thu, 10 Oct 2019 17:06:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=NdxCafKKRqXAoKJS3a+7E7MX2efPsfhraTr7Vwa5zkA=;
-        b=cHZ91CVxuyng0UUZxGcb/ber128JimxZzD4s8SDtIkcbdkfkK9QM8pnThLhmF0agpR
-         T7rmBmBvoM7a8G3Gx26RdR3XR/1f8VRXaujTb/vPtdDG1XhtEUbWfIJWjMRQdw9gHq3B
-         iOZPAybj973b7Yiu/eaaA1VBQXDHW1/4thP5g=
+        bh=n5VmKDs7q8vdBz4+9T2sJG9hHU7BSOvzC0pvhvZX8so=;
+        b=carhZDVuV7aWHe/mVOzWup+o5oNODCRSaKYDJLBEexacyYhrHfUMNbKXFo59HsfLdT
+         wZ6hMFSRQexCI22v5IG5NUFM2WcEObK5BgW99c0DZtHkj30esilAfjApmPDIP3pjvWiL
+         pfzZb27IerlCy8SvvnyBoQgndOKKC0Ory7bvc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=NdxCafKKRqXAoKJS3a+7E7MX2efPsfhraTr7Vwa5zkA=;
-        b=QJzhKGdgR7tknNubDd3i5Nit66ZioBs+2JCN7ZX4l1umeAfyG2enU4MXDA85upnOPd
-         OEWpatSDDTbV81wdpYyp6YPFFIkrvWiWyC3zQPyafgpigIkNfxxm/DyniROV8qLfzqE7
-         6UFNiE89rdtVcq77YqHR4Si2DSRdiw9b5M5SzhoLOOzQyV8DVRvAMerTIGCnM38s0BmV
-         ygO0uA4PqpOnuSxDaNxdnrKuFB2DvtTKat7WsSx5BIx5YHbqpC2oXmBqwjdN0XrSUeot
-         CbAu7JZJ/gZopqrQWDa79jbHZJgEUsUthd7rb+7Kfhf0zDEhcuuqXWgC4ErOARZQpS00
-         QOEg==
-X-Gm-Message-State: APjAAAXLhwYdwXaVQ3nYFzyWDDXPfWY20NSPPeQ6QUTksX4aE8yGRcz1
-        g7Iiq6DjZXQv4JMemVuyp0rtYw==
-X-Google-Smtp-Source: APXvYqz3ed6UFMtmTs9WyLDFjU7LZoWgRldfZKGM1qhYTNl+e8Jhzebc8fAsIpgzugR9ERVwOeUjmA==
-X-Received: by 2002:a62:1bd3:: with SMTP id b202mr13350926pfb.50.1570752388551;
-        Thu, 10 Oct 2019 17:06:28 -0700 (PDT)
+        bh=n5VmKDs7q8vdBz4+9T2sJG9hHU7BSOvzC0pvhvZX8so=;
+        b=hVYTXOis0Tpl1UCUJxdB6yzq3xin7DSV9M5DrRE6P5CssBgdzHMKWhvPLarUTkR7TP
+         TKzwH7iGkPlGZWD+UR0X2kTyYUhQtxzn5w1ayyz5HOaxzrGfhv440r0nZro9hZKHdLRh
+         /taJyyweUy/EYISt8VvfnkR4Sx+gvXu5iMoKX5XM1bjtBsSZ1FAmmjgO1ZlDLZ2jO49h
+         xsxDzPI2UUtAF1xgLjET7wPZYNlbNHCPq05uWzFYUw6h6fSVYY+wQuQPVZ4IhKiS+WDB
+         s31jGarAN7+5iNk3hWYXRWgqSoJ6zr7nj0RsKWc3mwCnEPVHOvvjjrLpCHlwKOnlqe3b
+         bEoA==
+X-Gm-Message-State: APjAAAWHJOcKIHmbKP9nPjRIfQZncnyLtPLjN/2IRQ028jbuh7ayDlh/
+        nuhHT1oJ14RTm8nD64iwraRJbg==
+X-Google-Smtp-Source: APXvYqx8Gwnw4oVnhwjvlupfQ+jLMpTkOFUHSLw0DgIUj0K31Z94tjG2CFAjw0mYBaG87MVpGGwzjQ==
+X-Received: by 2002:a62:1b45:: with SMTP id b66mr13449656pfb.34.1570752387906;
+        Thu, 10 Oct 2019 17:06:27 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 64sm9017564pfx.31.2019.10.10.17.06.24
+        by smtp.gmail.com with ESMTPSA id d19sm6444280pjz.5.2019.10.10.17.06.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 10 Oct 2019 17:06:24 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -70,9 +70,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 11/29] vmlinux.lds.h: Replace RODATA with RO_DATA
-Date:   Thu, 10 Oct 2019 17:05:51 -0700
-Message-Id: <20191011000609.29728-12-keescook@chromium.org>
+Subject: [PATCH v2 08/29] vmlinux.lds.h: Provide EMIT_PT_NOTE to indicate export of .notes
+Date:   Thu, 10 Oct 2019 17:05:48 -0700
+Message-Id: <20191011000609.29728-9-keescook@chromium.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20191011000609.29728-1-keescook@chromium.org>
 References: <20191011000609.29728-1-keescook@chromium.org>
@@ -81,113 +81,132 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-There's no reason to keep the RODATA macro: replace the callers with
-the expected RO_DATA macro.
+In preparation for moving NOTES into RO_DATA, provide a mechanism for
+architectures that want to emit a PT_NOTE Program Header to do so.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/alpha/kernel/vmlinux.lds.S      | 2 +-
- arch/ia64/kernel/vmlinux.lds.S       | 2 +-
- arch/microblaze/kernel/vmlinux.lds.S | 2 +-
- arch/mips/kernel/vmlinux.lds.S       | 2 +-
- arch/um/include/asm/common.lds.S     | 2 +-
- arch/xtensa/kernel/vmlinux.lds.S     | 2 +-
- include/asm-generic/vmlinux.lds.h    | 4 +---
- 7 files changed, 7 insertions(+), 9 deletions(-)
+ arch/alpha/kernel/vmlinux.lds.S   |  3 +++
+ arch/ia64/kernel/vmlinux.lds.S    |  2 ++
+ arch/mips/kernel/vmlinux.lds.S    | 12 ++++++------
+ arch/powerpc/kernel/vmlinux.lds.S |  1 +
+ arch/s390/kernel/vmlinux.lds.S    |  2 ++
+ arch/x86/kernel/vmlinux.lds.S     |  2 ++
+ include/asm-generic/vmlinux.lds.h |  8 ++++++++
+ 7 files changed, 24 insertions(+), 6 deletions(-)
 
 diff --git a/arch/alpha/kernel/vmlinux.lds.S b/arch/alpha/kernel/vmlinux.lds.S
-index bf28043485f6..af411817dd7d 100644
+index 781090cacc96..363a60ba7c31 100644
 --- a/arch/alpha/kernel/vmlinux.lds.S
 +++ b/arch/alpha/kernel/vmlinux.lds.S
-@@ -34,7 +34,7 @@ SECTIONS
- 	swapper_pg_dir = SWAPPER_PGD;
- 	_etext = .;	/* End of text section */
- 
--	RODATA
-+	RO_DATA(4096)
- 	EXCEPTION_TABLE(16)
- 
- 	/* Will be freed after init */
+@@ -1,4 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
++
++#define EMITS_PT_NOTE
++
+ #include <asm-generic/vmlinux.lds.h>
+ #include <asm/thread_info.h>
+ #include <asm/cache.h>
 diff --git a/arch/ia64/kernel/vmlinux.lds.S b/arch/ia64/kernel/vmlinux.lds.S
-index fae077595756..11d5115bc44d 100644
+index 2c4f23c390ad..7cf4958b732d 100644
 --- a/arch/ia64/kernel/vmlinux.lds.S
 +++ b/arch/ia64/kernel/vmlinux.lds.S
-@@ -104,7 +104,7 @@ SECTIONS {
- 	code_continues2 : {
- 	} :text
+@@ -5,6 +5,8 @@
+ #include <asm/pgtable.h>
+ #include <asm/thread_info.h>
  
--	RODATA
-+	RO_DATA(4096)
++#define EMITS_PT_NOTE
++
+ #include <asm-generic/vmlinux.lds.h>
  
- 	.opd : AT(ADDR(.opd) - LOAD_OFFSET) {
- 		__start_opd = .;
-diff --git a/arch/microblaze/kernel/vmlinux.lds.S b/arch/microblaze/kernel/vmlinux.lds.S
-index d008e50bb212..2299694748ea 100644
---- a/arch/microblaze/kernel/vmlinux.lds.S
-+++ b/arch/microblaze/kernel/vmlinux.lds.S
-@@ -51,7 +51,7 @@ SECTIONS {
- 	}
- 
- 	. = ALIGN(16);
--	RODATA
-+	RO_DATA(4096)
- 	EXCEPTION_TABLE(16)
- 
- 	/*
+ OUTPUT_FORMAT("elf64-ia64-little")
 diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
-index 91e566defc16..a5f00ec73ea6 100644
+index 33ee0d18fb0a..1c95612eb800 100644
 --- a/arch/mips/kernel/vmlinux.lds.S
 +++ b/arch/mips/kernel/vmlinux.lds.S
-@@ -82,7 +82,7 @@ SECTIONS
+@@ -10,6 +10,11 @@
+  */
+ #define BSS_FIRST_SECTIONS *(.bss..swapper_pg_dir)
+ 
++/* Cavium Octeon should not have a separate PT_NOTE Program Header. */
++#ifndef CONFIG_CAVIUM_OCTEON_SOC
++#define EMITS_PT_NOTE
++#endif
++
+ #include <asm-generic/vmlinux.lds.h>
+ 
+ #undef mips
+@@ -76,12 +81,7 @@ SECTIONS
+ 		__stop___dbe_table = .;
  	}
  
+-#ifdef CONFIG_CAVIUM_OCTEON_SOC
+-#define NOTES_HEADER
+-#else /* CONFIG_CAVIUM_OCTEON_SOC */
+-#define NOTES_HEADER :note
+-#endif /* CONFIG_CAVIUM_OCTEON_SOC */
+-	NOTES :text NOTES_HEADER
++	NOTES NOTES_HEADERS
+ 	.dummy : { *(.dummy) } :text
+ 
  	_sdata = .;			/* Start of data section */
--	RODATA
-+	RO_DATA(4096)
+diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
+index e184a63aa5b0..7e26e20c8324 100644
+--- a/arch/powerpc/kernel/vmlinux.lds.S
++++ b/arch/powerpc/kernel/vmlinux.lds.S
+@@ -6,6 +6,7 @@
+ #endif
  
- 	/* writeable */
- 	.data : {	/* Data */
-diff --git a/arch/um/include/asm/common.lds.S b/arch/um/include/asm/common.lds.S
-index 91aca356095f..7145ce699982 100644
---- a/arch/um/include/asm/common.lds.S
-+++ b/arch/um/include/asm/common.lds.S
-@@ -9,7 +9,7 @@
-   _sdata = .;
-   PROVIDE (sdata = .);
+ #define BSS_FIRST_SECTIONS *(.bss.prominit)
++#define EMITS_PT_NOTE
  
--  RODATA
-+  RO_DATA(4096)
+ #include <asm/page.h>
+ #include <asm-generic/vmlinux.lds.h>
+diff --git a/arch/s390/kernel/vmlinux.lds.S b/arch/s390/kernel/vmlinux.lds.S
+index 13294fef473e..646d939346df 100644
+--- a/arch/s390/kernel/vmlinux.lds.S
++++ b/arch/s390/kernel/vmlinux.lds.S
+@@ -15,6 +15,8 @@
+ /* Handle ro_after_init data on our own. */
+ #define RO_AFTER_INIT_DATA
  
-   .unprotected : { *(.unprotected) }
-   . = ALIGN(4096);
-diff --git a/arch/xtensa/kernel/vmlinux.lds.S b/arch/xtensa/kernel/vmlinux.lds.S
-index a0a843745695..b97e5798b9cf 100644
---- a/arch/xtensa/kernel/vmlinux.lds.S
-+++ b/arch/xtensa/kernel/vmlinux.lds.S
-@@ -124,7 +124,7 @@ SECTIONS
++#define EMITS_PT_NOTE
++
+ #include <asm-generic/vmlinux.lds.h>
+ #include <asm/vmlinux.lds.h>
  
-   . = ALIGN(16);
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 788e78978030..2e18bf5c1aed 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -21,6 +21,8 @@
+ #define LOAD_OFFSET __START_KERNEL_map
+ #endif
  
--  RODATA
-+  RO_DATA(4096)
- 
-   /*  Relocation table */
- 
++#define EMITS_PT_NOTE
++
+ #include <asm-generic/vmlinux.lds.h>
+ #include <asm/asm-offsets.h>
+ #include <asm/thread_info.h>
 diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index dc3390ec6b60..a0a989fbe411 100644
+index dae64600ccbf..f5dd45ce73f1 100644
 --- a/include/asm-generic/vmlinux.lds.h
 +++ b/include/asm-generic/vmlinux.lds.h
-@@ -518,9 +518,7 @@
- 	. = ALIGN((align));						\
- 	__end_rodata = .;
+@@ -54,6 +54,14 @@
+ #define LOAD_OFFSET 0
+ #endif
  
--/* RODATA & RO_DATA provided for backward compatibility.
-- * All archs are supposed to use RO_DATA() */
--#define RODATA          RO_DATA_SECTION(4096)
-+/* All archs are supposed to use RO_DATA() */
- #define RO_DATA(align)  RO_DATA_SECTION(align)
++/*
++ * Only some architectures want to have the .notes segment visible in
++ * a separate PT_NOTE ELF Program Header.
++ */
++#ifdef EMITS_PT_NOTE
++#define NOTES_HEADERS		:text :note
++#endif
++
+ /* Align . to a 8 byte boundary equals to maximum function alignment. */
+ #define ALIGN_FUNCTION()  . = ALIGN(8)
  
- /*
 -- 
 2.17.1
 
