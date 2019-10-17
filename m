@@ -2,115 +2,123 @@ Return-Path: <SRS0=TXNq=YK=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23B82FA372A
-	for <linux-parisc@archiver.kernel.org>; Thu, 17 Oct 2019 11:17:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24F13ECE58E
+	for <linux-parisc@archiver.kernel.org>; Thu, 17 Oct 2019 17:46:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 01DE22089C
-	for <linux-parisc@archiver.kernel.org>; Thu, 17 Oct 2019 11:17:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0121F21925
+	for <linux-parisc@archiver.kernel.org>; Thu, 17 Oct 2019 17:46:07 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RjRieJd8"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439662AbfJQLRy (ORCPT
+        id S2440767AbfJQRqG (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 17 Oct 2019 07:17:54 -0400
-Received: from belmont80srvr.owm.bell.net ([184.150.200.80]:46838 "EHLO
-        mtlfep02.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2439661AbfJQLRy (ORCPT
+        Thu, 17 Oct 2019 13:46:06 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:52566 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440688AbfJQRqF (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 17 Oct 2019 07:17:54 -0400
-Received: from bell.net mtlfep02 184.150.200.30 by mtlfep02.bell.net
-          with ESMTP
-          id <20191017111753.WFIQ4444.mtlfep02.bell.net@mtlspm01.bell.net>
-          for <linux-parisc@vger.kernel.org>;
-          Thu, 17 Oct 2019 07:17:53 -0400
-Received: from [192.168.2.49] (really [70.53.53.104]) by mtlspm01.bell.net
-          with ESMTP
-          id <20191017111752.XTAG87666.mtlspm01.bell.net@[192.168.2.49]>;
-          Thu, 17 Oct 2019 07:17:52 -0400
-Subject: Re: Data TLB miss fault terminating ld on parisc in
- 5.4.0-rc3-00037-g3b1f00aceb7a
-To:     Meelis Roos <mroos@linux.ee>, linux-parisc@vger.kernel.org
-References: <a016e30d-4e31-3582-9069-7da02944a401@linux.ee>
-From:   John David Anglin <dave.anglin@bell.net>
-Openpgp: preference=signencrypt
-Message-ID: <94cbccf7-048e-b379-3c5a-e5e484ec5fea@bell.net>
-Date:   Thu, 17 Oct 2019 07:17:50 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Thu, 17 Oct 2019 13:46:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
+        :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=LVEPu9/s1693dWfYlkD3Fqnhr0FkMtGhuRv/aJrvhOg=; b=RjRieJd82TpPK9jRpIQFlwUQn8
+        rXPon9JuYUTZmAL1n9JR2nFjDASe7YxIYzEgRNyPtsyXMNApyap2c3pldQe89O0UfWLoJ4sAbFUYE
+        yZFJqWKO35Vs7y7rWCsospb60FEjg9xxZyW/mCPccwxfH7qilMgMbY/A3IQRzjr/Ba13SUirLL73V
+        JM+jcEr6RD+KtbH1A7hv86+6wW1A7zez/feRzYtKgaVDp8Hp8W+h2pUq62Cx0Q/DeJXyVj+ee6eQH
+        2FtyfR8VKesOj1hdWsKfZ5DX/5o1uzAMjExm0qBhF/Fce5kYtW4LLLmh36+5rSFLWUWNavpjBNHCa
+        sRP3HyLg==;
+Received: from [2001:4bb8:18c:d7b:c70:4a89:bc61:3] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iL9qb-0005Rn-DA; Thu, 17 Oct 2019 17:46:01 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Guan Xuetao <gxt@pku.edu.cn>, x86@kernel.org
+Cc:     linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-mtd@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 02/21] unicore32: remove ioremap_cached
+Date:   Thu, 17 Oct 2019 19:45:35 +0200
+Message-Id: <20191017174554.29840-3-hch@lst.de>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191017174554.29840-1-hch@lst.de>
+References: <20191017174554.29840-1-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <a016e30d-4e31-3582-9069-7da02944a401@linux.ee>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-Analysis: v=2.3 cv=ZMOpZkzb c=1 sm=1 tr=0 cx=a_idp_d a=htCe9XT+XAlGhzqgweArVg==:117 a=htCe9XT+XAlGhzqgweArVg==:17 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=XobE76Q3jBoA:10 a=CCpqsmhAAAAA:8 a=FBHGMhGWAAAA:8 a=aAlx2eK2OOD-6x7-UjwA:9 a=QEXdDO2ut3YA:10 a=ul9cdbp4aOFLsgKbc677:22 a=9gvnlMMaQFpL9xblJ6ne:22
-X-CM-Envelope: MS4wfOtX2NIIvEsO+17igCpmCjgi2zzpBJ/eKuUP27dlTjJnL6TPTVaLqTxOzdaffJ+gdlFx1ixlmM//PJc+JZNiHJj1tB5rwKn91VeCHWlDQlcENW3zyZ1n ClGZoEEMGDErOAsdvfxvoLbUbnxIf6MKmuou7SxlNxLx3XSKlfY5UkHeqlD/Grzlh9ROeA1Z0y+Pag==
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-I think this fault may be related to this bug:
-https://sourceware.org/bugzilla/show_bug.cgi?id=23296
+No users of ioremap_cached are left, remove it.
 
-It typically shows up during lazy binding of multi-threaded applications on SMP machines.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/unicore32/include/asm/io.h | 4 +---
+ arch/unicore32/mm/ioremap.c     | 8 --------
+ 2 files changed, 1 insertion(+), 11 deletions(-)
 
-Working on it...
-
-Dave
-
-On 2019-10-17 1:47 a.m., Meelis Roos wrote:
-> I just tested 5.4.0-rc3-00037-g3b1f00aceb7a on 3 parisc machines and did a gentoo world emerge
-> after boot for test. On my rp3440, I got a build failure of one package and the
-> following in dmesg. While userspace apps can crash with invalid behaviour any time, this
-> one looks like kernel trouble to me - Data TLB miss fault. It was not easily reproducible, next
-> world emerge ran fine past that package.
->
->
-> [42140.123639] do_page_fault() command='ld' type=15 address=0x00000000 in libbfd-2.31.1.gentoo-sys-devel-binutils-st.so[f8644000+c5000]
->                trap #15: Data TLB miss fault
-> [42140.123671] CPU: 0 PID: 23985 Comm: ld Not tainted 5.4.0-rc3-00037-g3b1f00aceb7a #226
-> [42140.123675] Hardware name: 9000/800/rp3440
->
-> [42140.123683]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> [42140.123688] PSW: 00000000000001101111111000001111 Not tainted
-> [42140.123694] r00-03  000000ff0006fe0f 00000000f8713cf8 00000000f86a672b 00000000faa13a48
-> [42140.123700] r04-07  00000000f87144f8 0000000000000000 00000000426861d0 0000000000000000
-> [42140.123707] r08-11  0000000000002b92 00000000f8712630 000000004251ffd0 00000000f87124a4
-> [42140.123713] r12-15  00000000faa13a58 00000000faa13a0c 00000000faa13a04 0000000000208000
-> [42140.123719] r16-19  00000000420a13fc 00000000420a0000 0000000000000000 00000000f87144f8
-> [42140.123725] r20-23  00000000000000fd 00000000f8691804 00000000f86b13f4 0000000000000000
-> [42140.123731] r24-27  00000000faa13a48 00000000faa13a48 0000000000000000 000000004209f000
-> [42140.123738] r28-31  0000000000000000 00000000f81b0a6c 00000000faa13c40 00000000f8645114
-> [42140.123744] sr00-03  000000000cc3e000 000000000cc3e000 0000000000000000 000000000cc3e000
-> [42140.123750] sr04-07  000000000cc3e000 000000000cc3e000 000000000cc3e000 000000000cc3e000
->
-> [42140.123757]       VZOUICununcqcqcqcqcqcrmunTDVZOUI
-> [42140.123761] FPSR: 00000000000000000000000000000000
-> [42140.123764] FPER1: 00000000
-> [42140.123770] fr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> [42140.123777] fr04-07  3fcc58dcd6e825cf 4024000000000000 00067fa0f62430a5 3b10ba0000000000
-> [42140.123783] fr08-11  0005e868ef76ad40 00006a1331052bda 001a7e5b84dd9db6 0009eea07d0ae4fa
-> [42140.123789] fr12-15  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> [42140.123795] fr16-19  0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> [42140.123801] fr20-23  0000000000000000 0000000000000000 0000000000000020 0000000200000000
-> [42140.123807] fr24-27  0000000000388500 0000000000000000 3fd555555551305b 3ee45a79979bc1a6
-> [42140.123813] fr28-31  40026bb4485fa06f 0000000000000000 0000000000000000 3fcffffffffffafc
->
-> [42140.123822] IASQ: 000000000cc3e000 000000000cc3e000 IAOQ: 00000000f8691807 00000000f869180b
-> [42140.123827]  IIR: 0f401015    ISR: 000000000cc3e000  IOR: 0000000000000000
-> [42140.123832]  CPU:        0   CR30: 0000004104b94000 CR31: ffffffffffffffff
-> [42140.123835]  ORIG_R28: 0000000000000000
-> [42140.123839]  IAOQ[0]: 00000000f8691807
-> [42140.123843]  IAOQ[1]: 00000000f869180b
-> [42140.123847]  RP(r2): 00000000f86a672b
->
-> The ambient temperature in the room was 32 degrees Celsius, so hot but not too hot hopefully.
-> Nothing in BMC logs so hopefully not hardware trouble but slightly unsure.
->
-
-
+diff --git a/arch/unicore32/include/asm/io.h b/arch/unicore32/include/asm/io.h
+index c71aa4b95996..4b460e01acfa 100644
+--- a/arch/unicore32/include/asm/io.h
++++ b/arch/unicore32/include/asm/io.h
+@@ -18,10 +18,9 @@
+ #include <asm-generic/io.h>
+ 
+ /*
+- * __uc32_ioremap and __uc32_ioremap_cached takes CPU physical address.
++ * __uc32_ioremap takes CPU physical address.
+  */
+ extern void __iomem *__uc32_ioremap(unsigned long, size_t);
+-extern void __iomem *__uc32_ioremap_cached(unsigned long, size_t);
+ extern void __uc32_iounmap(volatile void __iomem *addr);
+ 
+ /*
+@@ -32,7 +31,6 @@ extern void __uc32_iounmap(volatile void __iomem *addr);
+  *
+  */
+ #define ioremap(cookie, size)		__uc32_ioremap(cookie, size)
+-#define ioremap_cached(cookie, size)	__uc32_ioremap_cached(cookie, size)
+ #define ioremap_nocache(cookie, size)	__uc32_ioremap(cookie, size)
+ #define iounmap(cookie)			__uc32_iounmap(cookie)
+ 
+diff --git a/arch/unicore32/mm/ioremap.c b/arch/unicore32/mm/ioremap.c
+index cf6d656f240c..46a64bd6156a 100644
+--- a/arch/unicore32/mm/ioremap.c
++++ b/arch/unicore32/mm/ioremap.c
+@@ -220,14 +220,6 @@ __uc32_ioremap(unsigned long phys_addr, size_t size)
+ }
+ EXPORT_SYMBOL(__uc32_ioremap);
+ 
+-void __iomem *
+-__uc32_ioremap_cached(unsigned long phys_addr, size_t size)
+-{
+-	return __uc32_ioremap_caller(phys_addr, size, MT_DEVICE_CACHED,
+-			__builtin_return_address(0));
+-}
+-EXPORT_SYMBOL(__uc32_ioremap_cached);
+-
+ void __uc32_iounmap(volatile void __iomem *io_addr)
+ {
+ 	void *addr = (void *)(PAGE_MASK & (unsigned long)io_addr);
 -- 
-John David Anglin  dave.anglin@bell.net
+2.20.1
 
