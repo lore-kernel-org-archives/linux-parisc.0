@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43888ECE58E
-	for <linux-parisc@archiver.kernel.org>; Thu, 17 Oct 2019 17:47:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C407ECE58D
+	for <linux-parisc@archiver.kernel.org>; Thu, 17 Oct 2019 17:47:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1761F21D7A
-	for <linux-parisc@archiver.kernel.org>; Thu, 17 Oct 2019 17:47:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 69A8221835
+	for <linux-parisc@archiver.kernel.org>; Thu, 17 Oct 2019 17:47:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="uyvOTadM"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OO8uHH01"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441053AbfJQRrJ (ORCPT
+        id S2441084AbfJQRrN (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 17 Oct 2019 13:47:09 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:56162 "EHLO
+        Thu, 17 Oct 2019 13:47:13 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:56944 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441029AbfJQRrC (ORCPT
+        with ESMTP id S2441071AbfJQRrM (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 17 Oct 2019 13:47:02 -0400
+        Thu, 17 Oct 2019 13:47:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
         :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=WraJJZ4CnVm1/5iGrwMbKw8/4siTBhdQPaGfX048ILE=; b=uyvOTadMdTOyv1LyZafJz+GbZY
-        iZqeDpg7G2Kd9pYToaABUkwSeoChB1nrQU4kmzpNDp61f4WKRA0qhPy2Y075IwdURsRlsFQXhNZv4
-        I33q26WN42npLBMit6hAY+en1nFrTrCTgxejEvV/AUrWt4p30pR+Grp/Zqp1HoVbSFbKzYV1L2b4w
-        yKn4I2EE9oxh6UcuN+7J1APHrw/Vo9cymhS+0+zZ84CVhctPzJ8N6xf/c1euHbUO0noTFViSDYPkc
-        cLh4dn9qrkdYc0HAPgm9r9+ZRdIESm5nWiXsKwWJyVIW5gcD2ZRiZGOcxvfdl5xO/hjSHA63AWwbM
-        iQ1gQZeA==;
+        bh=0G9VjTCDn1azePVEARZDWm3/hUf6+uTfkQZKCgB5wVo=; b=OO8uHH01lkLNVGTfVkN8iIpwAT
+        c2D1h9fcU7xuzjCEXklU+jLEGv3IwTxxLz/2EcFDHIyiP8rpusO1EfGfiUGWQeaGn6TzZIIaIQ9fd
+        i8g3G8yHRLmEgMEim4c5nxpmPiquio55+xykcpp1o6otIZQPJETr7caoZDRKDVemF8bvgyRdq5Tda
+        9ybeiLPk/H6YcZIzQCkjM9Ahb6xauO0lGIOWcGtFISjAvIET5w+4N8Fks4o0JIyOvRJylsDLLysWs
+        7wf/sZNlRvhTsfGd/nRqT9yL+dGtqdW+8RZ7WI/QY89rVNLkIa3SnAWVs0DkpX1gyM65Cstdew87K
+        02aaH6lQ==;
 Received: from [2001:4bb8:18c:d7b:c70:4a89:bc61:3] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iL9rI-0006GX-Ff; Thu, 17 Oct 2019 17:46:44 +0000
+        id 1iL9rT-0006Qq-S0; Thu, 17 Oct 2019 17:46:56 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
         Michal Simek <monstr@monstr.eu>,
@@ -54,9 +54,9 @@ Cc:     linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
         sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
         linux-mtd@lists.infradead.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 17/21] lib: provide a simple generic ioremap implementation
-Date:   Thu, 17 Oct 2019 19:45:50 +0200
-Message-Id: <20191017174554.29840-18-hch@lst.de>
+Subject: [PATCH 21/21] csky: use generic ioremap
+Date:   Thu, 17 Oct 2019 19:45:54 +0200
+Message-Id: <20191017174554.29840-22-hch@lst.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191017174554.29840-1-hch@lst.de>
 References: <20191017174554.29840-1-hch@lst.de>
@@ -68,117 +68,120 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-A lot of architectures reuse the same simple ioremap implementation, so
-start lifting the most simple variant to lib/ioremap.c.  It provides
-ioremap_prot and iounmap, plus a default ioremap that uses prot_noncached,
-although that can be overridden by asm/io.h.
+Use the generic ioremap_prot and iounmap helpers.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/asm-generic/io.h | 20 ++++++++++++++++----
- lib/Kconfig              |  3 +++
- lib/ioremap.c            | 39 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 58 insertions(+), 4 deletions(-)
+ arch/csky/Kconfig               |  1 +
+ arch/csky/include/asm/io.h      |  8 +++---
+ arch/csky/include/asm/pgtable.h |  4 +++
+ arch/csky/mm/ioremap.c          | 45 ---------------------------------
+ 4 files changed, 8 insertions(+), 50 deletions(-)
 
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index 4e45e1cb6560..4a661fdd1937 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -923,9 +923,10 @@ static inline void *phys_to_virt(unsigned long address)
-  * DOC: ioremap() and ioremap_*() variants
-  *
-  * Architectures with an MMU are expected to provide ioremap() and iounmap()
-- * themselves.  For NOMMU architectures we provide a default nop-op
-- * implementation that expect that the physical address used for MMIO are
-- * already marked as uncached, and can be used as kernel virtual addresses.
-+ * themselves or rely on GENERIC_IOREMAP.  For NOMMU architectures we provide
-+ * a default nop-op implementation that expect that the physical address used
-+ * for MMIO are already marked as uncached, and can be used as kernel virtual
-+ * addresses.
-  *
-  * ioremap_wc() and ioremap_wt() can provide more relaxed caching attributes
-  * for specific drivers if the architecture choses to implement them.  If they
-@@ -946,7 +947,18 @@ static inline void iounmap(void __iomem *addr)
+diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
+index 3973847b5f42..da09c884cc30 100644
+--- a/arch/csky/Kconfig
++++ b/arch/csky/Kconfig
+@@ -17,6 +17,7 @@ config CSKY
+ 	select IRQ_DOMAIN
+ 	select HANDLE_DOMAIN_IRQ
+ 	select DW_APB_TIMER_OF
++	select GENERIC_IOREMAP
+ 	select GENERIC_LIB_ASHLDI3
+ 	select GENERIC_LIB_ASHRDI3
+ 	select GENERIC_LIB_LSHRDI3
+diff --git a/arch/csky/include/asm/io.h b/arch/csky/include/asm/io.h
+index f572605d5ad5..332f51bc68fb 100644
+--- a/arch/csky/include/asm/io.h
++++ b/arch/csky/include/asm/io.h
+@@ -36,11 +36,9 @@
+ /*
+  * I/O memory mapping functions.
+  */
+-extern void __iomem *__ioremap(phys_addr_t addr, size_t size, pgprot_t prot);
+-extern void iounmap(void *addr);
+-
+-#define ioremap(addr, size)		__ioremap((addr), (size), pgprot_noncached(PAGE_KERNEL))
+-#define ioremap_wc(addr, size)		__ioremap((addr), (size), pgprot_writecombine(PAGE_KERNEL))
++#define ioremap_wc(addr, size) \
++	ioremap_prot((addr), (size), \
++		(_PAGE_IOREMAP & ~_CACHE_MASK) | _CACHE_UNCACHED)
+ 
+ #include <asm-generic/io.h>
+ 
+diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgtable.h
+index 7c21985c60dc..4b2a41e15f2e 100644
+--- a/arch/csky/include/asm/pgtable.h
++++ b/arch/csky/include/asm/pgtable.h
+@@ -86,6 +86,10 @@
+ #define PAGE_USERIO	__pgprot(_PAGE_PRESENT | _PAGE_READ | _PAGE_WRITE | \
+ 				_CACHE_CACHED)
+ 
++#define _PAGE_IOREMAP \
++	(_PAGE_PRESENT | __READABLE | __WRITEABLE | _PAGE_GLOBAL | \
++	 _CACHE_UNCACHED | _PAGE_SO)
++
+ #define __P000	PAGE_NONE
+ #define __P001	PAGE_READONLY
+ #define __P010	PAGE_COPY
+diff --git a/arch/csky/mm/ioremap.c b/arch/csky/mm/ioremap.c
+index ae78256a56fd..70c8268d3b2b 100644
+--- a/arch/csky/mm/ioremap.c
++++ b/arch/csky/mm/ioremap.c
+@@ -3,53 +3,8 @@
+ 
+ #include <linux/export.h>
+ #include <linux/mm.h>
+-#include <linux/vmalloc.h>
+ #include <linux/io.h>
+ 
+-#include <asm/pgtable.h>
+-
+-static void __iomem *__ioremap_caller(phys_addr_t addr, size_t size,
+-				      pgprot_t prot, void *caller)
+-{
+-	phys_addr_t last_addr;
+-	unsigned long offset, vaddr;
+-	struct vm_struct *area;
+-
+-	last_addr = addr + size - 1;
+-	if (!size || last_addr < addr)
+-		return NULL;
+-
+-	offset = addr & (~PAGE_MASK);
+-	addr &= PAGE_MASK;
+-	size = PAGE_ALIGN(size + offset);
+-
+-	area = get_vm_area_caller(size, VM_IOREMAP, caller);
+-	if (!area)
+-		return NULL;
+-
+-	vaddr = (unsigned long)area->addr;
+-
+-	if (ioremap_page_range(vaddr, vaddr + size, addr, prot)) {
+-		free_vm_area(area);
+-		return NULL;
+-	}
+-
+-	return (void __iomem *)(vaddr + offset);
+-}
+-
+-void __iomem *__ioremap(phys_addr_t phys_addr, size_t size, pgprot_t prot)
+-{
+-	return __ioremap_caller(phys_addr, size, prot,
+-				__builtin_return_address(0));
+-}
+-EXPORT_SYMBOL(__ioremap);
+-
+-void iounmap(void __iomem *addr)
+-{
+-	vunmap((void *)((unsigned long)addr & PAGE_MASK));
+-}
+-EXPORT_SYMBOL(iounmap);
+-
+ pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
+ 			      unsigned long size, pgprot_t vma_prot)
  {
- }
- #endif
--#endif /* CONFIG_MMU */
-+#elif defined(CONFIG_GENERIC_IOREMAP)
-+#include <asm/pgtable.h>
-+
-+void __iomem *ioremap_prot(phys_addr_t addr, size_t size, unsigned long prot);
-+void iounmap(volatile void __iomem *addr);
-+
-+static inline void __iomem *ioremap(phys_addr_t addr, size_t size)
-+{
-+	/* _PAGE_IOREMAP needs to be supplied by the architecture */
-+	return ioremap_prot(addr, size, _PAGE_IOREMAP);
-+}
-+#endif /* !CONFIG_MMU || CONFIG_GENERIC_IOREMAP */
- 
- #ifndef ioremap_nocache
- #define ioremap_nocache ioremap
-diff --git a/lib/Kconfig b/lib/Kconfig
-index 183f92a297ca..afc78aaf2b25 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -638,6 +638,9 @@ config STRING_SELFTEST
- 
- endmenu
- 
-+config GENERIC_IOREMAP
-+	bool
-+
- config GENERIC_LIB_ASHLDI3
- 	bool
- 
-diff --git a/lib/ioremap.c b/lib/ioremap.c
-index 0a2ffadc6d71..3f0e18543de8 100644
---- a/lib/ioremap.c
-+++ b/lib/ioremap.c
-@@ -231,3 +231,42 @@ int ioremap_page_range(unsigned long addr,
- 
- 	return err;
- }
-+
-+#ifdef CONFIG_GENERIC_IOREMAP
-+void __iomem *ioremap_prot(phys_addr_t addr, size_t size, unsigned long prot)
-+{
-+	unsigned long offset, vaddr;
-+	phys_addr_t last_addr;
-+	struct vm_struct *area;
-+
-+	/* Disallow wrap-around or zero size */
-+	last_addr = addr + size - 1;
-+	if (!size || last_addr < addr)
-+		return NULL;
-+
-+	/* Page-align mappings */
-+	offset = addr & (~PAGE_MASK);
-+	addr -= offset;
-+	size = PAGE_ALIGN(size + offset);
-+
-+	area = get_vm_area_caller(size, VM_IOREMAP,
-+			__builtin_return_address(0));
-+	if (!area)
-+		return NULL;
-+	vaddr = (unsigned long)area->addr;
-+
-+	if (ioremap_page_range(vaddr, vaddr + size, addr, __pgprot(prot))) {
-+		free_vm_area(area);
-+		return NULL;
-+	}
-+
-+	return (void __iomem *)(vaddr + offset);
-+}
-+EXPORT_SYMBOL(ioremap_prot);
-+
-+void iounmap(volatile void __iomem *addr)
-+{
-+	vunmap((void *)((unsigned long)addr & PAGE_MASK));
-+}
-+EXPORT_SYMBOL(iounmap);
-+#endif /* CONFIG_GENERIC_IOREMAP */
 -- 
 2.20.1
 
