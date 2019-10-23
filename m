@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F5E0CA9EB6
-	for <linux-parisc@archiver.kernel.org>; Wed, 23 Oct 2019 09:29:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53A1FCA9EB7
+	for <linux-parisc@archiver.kernel.org>; Wed, 23 Oct 2019 09:30:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 15D2521D71
-	for <linux-parisc@archiver.kernel.org>; Wed, 23 Oct 2019 09:29:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1B23221BE5
+	for <linux-parisc@archiver.kernel.org>; Wed, 23 Oct 2019 09:30:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1571822999;
-	bh=qDjKGJyQVo3F8Wi8mGENmG0Ak/6nIdbJH/SzAL2uh50=;
+	s=default; t=1571823002;
+	bh=KqzjIAZzqNHguQtFElvC1a/bVLZPeyC2TfAhdpe4I2I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=hC8IXnnLecTsVhnje/586hih7fvhL39HcjqOzHWDMnGxrA6+QP5SN+1sG7SDt9DAY
-	 r3wqWwBxAd76xwaofKmFKcELNsoUuZeXcubJ/nttTV+tng5AJAHL1HheRBUHS1LOvi
-	 hH+tV7WyMY52TB3JWNucBZAYc2GSRsvNpkiSojYw=
+	b=GFD6bTM7xOg/Xar/R4wdtm/iv/+sJgwkZcBoO38OkyOHUtCiboE0syhOLrMHuptUb
+	 MELjKHKTjgoeJw70fDivnq12p1KGvYshE9nh1bqexJdZGPAS6WmfnfvGkNkdzVL2LH
+	 Geb3tmJADYHsIcFOmrin4t6VxyKBxJp1v3RjEwCI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390866AbfJWJ3y (ORCPT
+        id S2403909AbfJWJ3h (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 23 Oct 2019 05:29:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39598 "EHLO mail.kernel.org"
+        Wed, 23 Oct 2019 05:29:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390363AbfJWJ3y (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 23 Oct 2019 05:29:54 -0400
+        id S2403892AbfJWJ3h (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 23 Oct 2019 05:29:37 -0400
 Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B86821928;
-        Wed, 23 Oct 2019 09:29:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFD4B21920;
+        Wed, 23 Oct 2019 09:29:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571822993;
-        bh=qDjKGJyQVo3F8Wi8mGENmG0Ak/6nIdbJH/SzAL2uh50=;
+        s=default; t=1571822976;
+        bh=KqzjIAZzqNHguQtFElvC1a/bVLZPeyC2TfAhdpe4I2I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cJLALp3jHDWYPQYu5RNU2aNgFd/gF5L/ONiQy+6dAvXjk1VzY/AKeGBr+b7t3hbg1
-         f+7JHJyN8P55oNhRCa8UC5a11wEcweViRUuBC0L27yV3vgl6eMEw0bgYeT3glihTSL
-         9b7YsbwYZ1sBSB4kkbJ1hDIoMcvdxRYLEw1m11NE=
+        b=KQj0Imey5lR4vEMNYuWzroHs3nO1YNJ0Ub5IUbrTkjnGb2UBCHZdlwYKaIijq5Io1
+         TU2gk3b5eLRVL/7zF6AZjNldBVDJaQA3kWhwPKAZx6tHKEblt2fm0DWfJn+XGPJyKr
+         JGdjoqWKiqcWkbFDDILr76UAmtMKP2ZeLoVo0orY=
 From:   Mike Rapoport <rppt@kernel.org>
 To:     linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -67,9 +67,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org,
         linux-um@lists.infradead.org, sparclinux@vger.kernel.org,
         Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH 04/12] m68k: nommu: use pgtable-nopud instead of 4level-fixup
-Date:   Wed, 23 Oct 2019 12:28:53 +0300
-Message-Id: <1571822941-29776-5-git-send-email-rppt@kernel.org>
+Subject: [PATCH 02/12] arm: nommu: use pgtable-nopud instead of 4level-fixup
+Date:   Wed, 23 Oct 2019 12:28:51 +0300
+Message-Id: <1571822941-29776-3-git-send-email-rppt@kernel.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1571822941-29776-1-git-send-email-rppt@kernel.org>
 References: <1571822941-29776-1-git-send-email-rppt@kernel.org>
@@ -88,22 +88,22 @@ include/asm-generic/pgtable-nopud.h.
 
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/m68k/include/asm/pgtable_no.h | 2 +-
+ arch/arm/include/asm/pgtable.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/include/asm/pgtable_no.h b/arch/m68k/include/asm/pgtable_no.h
-index c18165b..ccc4568 100644
---- a/arch/m68k/include/asm/pgtable_no.h
-+++ b/arch/m68k/include/asm/pgtable_no.h
-@@ -2,7 +2,7 @@
- #ifndef _M68KNOMMU_PGTABLE_H
- #define _M68KNOMMU_PGTABLE_H
+diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
+index 3ae120c..eabcb48 100644
+--- a/arch/arm/include/asm/pgtable.h
++++ b/arch/arm/include/asm/pgtable.h
+@@ -12,7 +12,7 @@
+ 
+ #ifndef CONFIG_MMU
  
 -#include <asm-generic/4level-fixup.h>
 +#include <asm-generic/pgtable-nopud.h>
+ #include <asm/pgtable-nommu.h>
  
- /*
-  * (C) Copyright 2000-2002, Greg Ungerer <gerg@snapgear.com>
+ #else
 -- 
 2.7.4
 
