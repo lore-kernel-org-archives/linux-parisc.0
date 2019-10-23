@@ -2,49 +2,33 @@ Return-Path: <SRS0=ydUL=YQ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 565F8CA9EB6
-	for <linux-parisc@archiver.kernel.org>; Wed, 23 Oct 2019 09:41:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B28ABCA9EB6
+	for <linux-parisc@archiver.kernel.org>; Wed, 23 Oct 2019 10:25:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2CC8C21929
-	for <linux-parisc@archiver.kernel.org>; Wed, 23 Oct 2019 09:41:43 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="tSh0TWsL"
+	by mail.kernel.org (Postfix) with ESMTP id 82A1B20663
+	for <linux-parisc@archiver.kernel.org>; Wed, 23 Oct 2019 10:25:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403844AbfJWJlj (ORCPT
+        id S2391063AbfJWKZH (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 23 Oct 2019 05:41:39 -0400
-Received: from pandora.armlinux.org.uk ([78.32.30.218]:57066 "EHLO
-        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403799AbfJWJlj (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 23 Oct 2019 05:41:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Zj5XfgeeJGpKuLcZ9xIMs7v8y6wlyVmuVne2tYjeW1M=; b=tSh0TWsLv0zTB/+cgvenf9Alp
-        bJ97VOL1Q4Q/wIuvnA12UaDMLRf78wnJjHpbggLuo4iMGeNglZ1as6l8RASl1TDll+uOHTPG25/pR
-        acvy9GNDVqZ7KfBh47xSWs+PI5asIdAhm13tXE6BItpl+2VzngNhBvzuj+zOzsXjQrFsNNJCGjnRC
-        AbTb9a1MpJm1fedkHTRfoEwRE0vhBKPst8jQpneLESyhJ64OYxELIPZrr0oJy1xuGi9RVf/xLwxxe
-        lNgreE5Mr25YZDU0qQD3g4xFyjZHQ8a3w8RDULX7AAdieMMMEEubl0LuajXBuQGADa2mAfoNErhWi
-        9nNtjsKOg==;
-Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:46362)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1iND8K-00047D-6h; Wed, 23 Oct 2019 10:40:48 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1iND7x-0005NN-6r; Wed, 23 Oct 2019 10:40:25 +0100
-Date:   Wed, 23 Oct 2019 10:40:25 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+        Wed, 23 Oct 2019 06:25:07 -0400
+Received: from mail.sf-mail.de ([116.202.16.50]:33033 "EHLO mail.sf-mail.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390977AbfJWKZH (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 23 Oct 2019 06:25:07 -0400
+Received: (qmail 27735 invoked from network); 23 Oct 2019 10:20:38 -0000
+Received: from mail.sf-mail.de ([2a01:4f8:1c17:6fae:616d:6c69:616d:6c69]:43938 HELO webmail.sf-mail.de) (auth=eike@sf-mail.de)
+        by mail.sf-mail.de (Qsmtpd 0.36dev) with (DHE-RSA-AES256-GCM-SHA384 encrypted) ESMTPSA
+        for <rppt@kernel.org>; Wed, 23 Oct 2019 12:20:38 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 23 Oct 2019 12:20:29 +0200
+From:   Rolf Eike Beer <eike-kernel@sf-tec.de>
 To:     Mike Rapoport <rppt@kernel.org>
 Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         Anton Ivanov <anton.ivanov@cambridgegreys.com>,
@@ -54,7 +38,7 @@ Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         Greentime Hu <green.hu@gmail.com>,
         Greg Ungerer <gerg@linux-m68k.org>,
         Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
         Jeff Dike <jdike@addtoit.com>,
         "Kirill A. Shutemov" <kirill@shutemov.name>,
         Linus Torvalds <torvalds@linux-foundation.org>,
@@ -62,6 +46,7 @@ Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         Matt Turner <mattst88@gmail.com>,
         Michal Simek <monstr@monstr.eu>,
         Richard Weinberger <richard@nod.at>,
+        Russell King <linux@armlinux.org.uk>,
         Sam Creasey <sammy@sammy.net>,
         Vincent Chen <deanbo422@gmail.com>,
         Vineet Gupta <Vineet.Gupta1@synopsys.com>,
@@ -69,60 +54,45 @@ Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
         linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
-        sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH 02/12] arm: nommu: use pgtable-nopud instead of
- 4level-fixup
-Message-ID: <20191023094025.GY25745@shell.armlinux.org.uk>
+        sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        linux-parisc-owner@vger.kernel.org
+Subject: Re: [PATCH 08/12] parisc: use pgtable-nopXd instead of 4level-fixup
+In-Reply-To: <1571822941-29776-9-git-send-email-rppt@kernel.org>
 References: <1571822941-29776-1-git-send-email-rppt@kernel.org>
- <1571822941-29776-3-git-send-email-rppt@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1571822941-29776-3-git-send-email-rppt@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+ <1571822941-29776-9-git-send-email-rppt@kernel.org>
+Message-ID: <70339cfc547e2fa0f6b98fefb1b1a9fa@sf-tec.de>
+X-Sender: eike-kernel@sf-tec.de
+User-Agent: Roundcube Webmail/1.3.8
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 12:28:51PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+> diff --git a/arch/parisc/include/asm/page.h 
+> b/arch/parisc/include/asm/page.h
+> index 93caf17..1d339ee 100644
+> --- a/arch/parisc/include/asm/page.h
+> +++ b/arch/parisc/include/asm/page.h
+> @@ -42,48 +42,54 @@ typedef struct { unsigned long pte; } pte_t; /*
+> either 32 or 64bit */
 > 
-> The generic nommu implementation of page table manipulation takes care of
-> folding of the upper levels and does not require fixups.
+>  /* NOTE: even on 64 bits, these entries are __u32 because we allocate
+>   * the pmd and pgd in ZONE_DMA (i.e. under 4GB) */
+> -typedef struct { __u32 pmd; } pmd_t;
+>  typedef struct { __u32 pgd; } pgd_t;
+>  typedef struct { unsigned long pgprot; } pgprot_t;
 > 
-> Simply replace of include/asm-generic/4level-fixup.h with
-> include/asm-generic/pgtable-nopud.h.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> -#define pte_val(x)	((x).pte)
+> -/* These do not work lvalues, so make sure we don't use them as such. 
+> */
+> +#if CONFIG_PGTABLE_LEVELS == 3
+> +typedef struct { __u32 pmd; } pmd_t;
+> +#define __pmd(x)	((pmd_t) { (x) } )
+> +/* pXd_val() do not work lvalues, so make sure we don't use them as 
+> such. */
 
-Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
+For me it sounds like there is something missing, maybe an "as" before 
+lvalues?
+And it was "These", so plural, and now it is singular, so do -> does?
 
-Thanks.
-
-> ---
->  arch/arm/include/asm/pgtable.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
-> index 3ae120c..eabcb48 100644
-> --- a/arch/arm/include/asm/pgtable.h
-> +++ b/arch/arm/include/asm/pgtable.h
-> @@ -12,7 +12,7 @@
->  
->  #ifndef CONFIG_MMU
->  
-> -#include <asm-generic/4level-fixup.h>
-> +#include <asm-generic/pgtable-nopud.h>
->  #include <asm/pgtable-nommu.h>
->  
->  #else
-> -- 
-> 2.7.4
-> 
-> 
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 12.1Mbps down 622kbps up
-According to speedtest.net: 11.9Mbps down 500kbps up
+Eike
