@@ -2,35 +2,77 @@ Return-Path: <SRS0=ydUL=YQ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B28ABCA9EB6
-	for <linux-parisc@archiver.kernel.org>; Wed, 23 Oct 2019 10:25:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4191CA9EB6
+	for <linux-parisc@archiver.kernel.org>; Wed, 23 Oct 2019 10:33:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 82A1B20663
-	for <linux-parisc@archiver.kernel.org>; Wed, 23 Oct 2019 10:25:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 91DD12064A
+	for <linux-parisc@archiver.kernel.org>; Wed, 23 Oct 2019 10:33:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1571826785;
+	bh=z4ipP4Ck0yBqTHzgeKqG4ObZnNyOh+UsmqwlDY/xwzg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
+	b=wnqzvCEIWYKTw6FB8v5ljESLyOdZED+GlN34rvHkLhcTuzbH97BO9hX8K7ZiIC7lv
+	 S/naf+Cnq2MV1XSI3OzXNEYjEOIaPOavJvBGi1FzgZ+FwEGOq56/rbDNtsbx/GImdu
+	 iAUDd3XbOeFQTtnl/2MltL637kDD+FLfYQMMgSmo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391063AbfJWKZH (ORCPT
+        id S2404529AbfJWKdF (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 23 Oct 2019 06:25:07 -0400
-Received: from mail.sf-mail.de ([116.202.16.50]:33033 "EHLO mail.sf-mail.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390977AbfJWKZH (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 23 Oct 2019 06:25:07 -0400
-Received: (qmail 27735 invoked from network); 23 Oct 2019 10:20:38 -0000
-Received: from mail.sf-mail.de ([2a01:4f8:1c17:6fae:616d:6c69:616d:6c69]:43938 HELO webmail.sf-mail.de) (auth=eike@sf-mail.de)
-        by mail.sf-mail.de (Qsmtpd 0.36dev) with (DHE-RSA-AES256-GCM-SHA384 encrypted) ESMTPSA
-        for <rppt@kernel.org>; Wed, 23 Oct 2019 12:20:38 +0200
+        Wed, 23 Oct 2019 06:33:05 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:37379 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404332AbfJWKdF (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 23 Oct 2019 06:33:05 -0400
+Received: by mail-lj1-f194.google.com with SMTP id l21so20523535lje.4
+        for <linux-parisc@vger.kernel.org>; Wed, 23 Oct 2019 03:33:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aRWUNj4J7qgXSXD2PSfXvGDEs07MKcTmNuTdcaVnUGw=;
+        b=Slb+IaA7gxUyVr09pbGzJOB54Jv239tGUr7XIcQxfolpIG44u/NoAMOhLnza+Em4WR
+         TEPsZuhBtQdRHRD82otLdcY2uJ9E7K4xMc5ZFii1pfI6kkUC5qwEGbYYfYuTwlvtQiDO
+         wMOTH/ObIO23qcZyZJ2PI3HvK563JGx6aHaAU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aRWUNj4J7qgXSXD2PSfXvGDEs07MKcTmNuTdcaVnUGw=;
+        b=YDDfmVTz+u6giG921ZiiGJ7EMveglkBV/Dfbeo6i3czmcMXjwMHL7ZVOw9W8pBLEhd
+         vgyEW/fpYW6Q5xBAgvulmdLzkFtxfkc8G41p88fGc3SCs45noRUUVbu/9SEcsZyKUZUS
+         a96L+zXQTm82iL9LuipnedV8v2OMsPfLvy1MYzejYGyU9A995zptg24zj0Ns7sOw+Qcr
+         fY1/hP0bIijFn9au1tMZXUxsC8AZ4GLKTF2hGOPNZ/yhpxQeq31n4dhhlUwF1EOYMAGB
+         PrZIwroQOJ/iGULJsGkcAsvXq+kyg7wrPZKnWVLntq8pVFtoDwdbveKsixJzmcS73UTh
+         0kbg==
+X-Gm-Message-State: APjAAAXAMRl1MaZHMxR4E7S57SFRQL/x0MRe/QoVRPJZRae8H85X4dBr
+        f7be0ltWGmDy2SLIzM3woFwYSEQ2tWnuww==
+X-Google-Smtp-Source: APXvYqwlfUDr7KTofzhANunRfTDGQsVjXMiucCCD2ttxWG6R4NqQKx30dIlQImBkIf+ZFHgOYHe6Pw==
+X-Received: by 2002:a2e:5354:: with SMTP id t20mr19348658ljd.30.1571826781181;
+        Wed, 23 Oct 2019 03:33:01 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id t135sm10909548lff.70.2019.10.23.03.33.00
+        for <linux-parisc@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Oct 2019 03:33:00 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id q78so5379521lje.5
+        for <linux-parisc@vger.kernel.org>; Wed, 23 Oct 2019 03:33:00 -0700 (PDT)
+X-Received: by 2002:a2e:29dd:: with SMTP id p90mr21979653ljp.26.1571826364626;
+ Wed, 23 Oct 2019 03:26:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 23 Oct 2019 12:20:29 +0200
-From:   Rolf Eike Beer <eike-kernel@sf-tec.de>
+References: <1571822941-29776-1-git-send-email-rppt@kernel.org>
+In-Reply-To: <1571822941-29776-1-git-send-email-rppt@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 23 Oct 2019 06:25:48 -0400
+X-Gmail-Original-Message-ID: <CAHk-=whd6wNfx2bq7BmN4ouZgt=NQ5pw+3uqPOTbvz_Qb3itFg@mail.gmail.com>
+Message-ID: <CAHk-=whd6wNfx2bq7BmN4ouZgt=NQ5pw+3uqPOTbvz_Qb3itFg@mail.gmail.com>
+Subject: Re: [PATCH 00/12] mm: remove __ARCH_HAS_4LEVEL_HACK
 To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Anton Ivanov <anton.ivanov@cambridgegreys.com>,
         Arnd Bergmann <arnd@arndb.de>,
         "David S. Miller" <davem@davemloft.net>,
@@ -41,7 +83,6 @@ Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
         Jeff Dike <jdike@addtoit.com>,
         "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
         Mark Salter <msalter@redhat.com>,
         Matt Turner <mattst88@gmail.com>,
         Michal Simek <monstr@monstr.eu>,
@@ -50,49 +91,29 @@ Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         Sam Creasey <sammy@sammy.net>,
         Vincent Chen <deanbo422@gmail.com>,
         Vineet Gupta <Vineet.Gupta1@synopsys.com>,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-c6x-dev@linux-c6x.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
         linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
-        sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        linux-parisc-owner@vger.kernel.org
-Subject: Re: [PATCH 08/12] parisc: use pgtable-nopXd instead of 4level-fixup
-In-Reply-To: <1571822941-29776-9-git-send-email-rppt@kernel.org>
-References: <1571822941-29776-1-git-send-email-rppt@kernel.org>
- <1571822941-29776-9-git-send-email-rppt@kernel.org>
-Message-ID: <70339cfc547e2fa0f6b98fefb1b1a9fa@sf-tec.de>
-X-Sender: eike-kernel@sf-tec.de
-User-Agent: Roundcube Webmail/1.3.8
+        sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-> diff --git a/arch/parisc/include/asm/page.h 
-> b/arch/parisc/include/asm/page.h
-> index 93caf17..1d339ee 100644
-> --- a/arch/parisc/include/asm/page.h
-> +++ b/arch/parisc/include/asm/page.h
-> @@ -42,48 +42,54 @@ typedef struct { unsigned long pte; } pte_t; /*
-> either 32 or 64bit */
-> 
->  /* NOTE: even on 64 bits, these entries are __u32 because we allocate
->   * the pmd and pgd in ZONE_DMA (i.e. under 4GB) */
-> -typedef struct { __u32 pmd; } pmd_t;
->  typedef struct { __u32 pgd; } pgd_t;
->  typedef struct { unsigned long pgprot; } pgprot_t;
-> 
-> -#define pte_val(x)	((x).pte)
-> -/* These do not work lvalues, so make sure we don't use them as such. 
-> */
-> +#if CONFIG_PGTABLE_LEVELS == 3
-> +typedef struct { __u32 pmd; } pmd_t;
-> +#define __pmd(x)	((pmd_t) { (x) } )
-> +/* pXd_val() do not work lvalues, so make sure we don't use them as 
-> such. */
+On Wed, Oct 23, 2019 at 5:29 AM Mike Rapoport <rppt@kernel.org> wrote:
+>
+> These patches convert several architectures to use page table folding and
+> remove __ARCH_HAS_4LEVEL_HACK along with include/asm-generic/4level-fixup.h.
 
-For me it sounds like there is something missing, maybe an "as" before 
-lvalues?
-And it was "These", so plural, and now it is singular, so do -> does?
+Thanks for doing this.
 
-Eike
+The patches look sane from a quick scan, and it's definitely the right
+thing to do. So ack on my part, but obviously testing the different
+architectures would be a really good thing...
+
+                Linus
