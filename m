@@ -2,77 +2,95 @@ Return-Path: <SRS0=zf9P=YX=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C0A7CA9EC5
-	for <linux-parisc@archiver.kernel.org>; Wed, 30 Oct 2019 15:25:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5CC0CA9EC7
+	for <linux-parisc@archiver.kernel.org>; Wed, 30 Oct 2019 15:42:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4915020679
-	for <linux-parisc@archiver.kernel.org>; Wed, 30 Oct 2019 15:25:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7B59E217F9
+	for <linux-parisc@archiver.kernel.org>; Wed, 30 Oct 2019 15:42:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbfJ3PZV (ORCPT
+        id S1726175AbfJ3PmZ (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 30 Oct 2019 11:25:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56988 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726246AbfJ3PZU (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 30 Oct 2019 11:25:20 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2F6B7B1AE;
-        Wed, 30 Oct 2019 15:25:19 +0000 (UTC)
-Date:   Wed, 30 Oct 2019 16:25:17 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Mark Rutland <mark.rutland@arm.com>
-cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        amit.kachhap@arm.com, catalin.marinas@arm.com, deller@gmx.de,
-        duwe@suse.de, James.Bottomley@HansenPartnership.com,
-        james.morse@arm.com, jeyu@kernel.org, jpoimboe@redhat.com,
-        jthierry@redhat.com, linux-parisc@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, rostedt@goodmis.org,
-        svens@stackframe.org, takahiro.akashi@linaro.org, will@kernel.org
-Subject: Re: [PATCHv2 3/8] arm64: module: rework special section handling
-In-Reply-To: <20191029165832.33606-4-mark.rutland@arm.com>
-Message-ID: <alpine.LSU.2.21.1910301614330.18400@pobox.suse.cz>
-References: <20191029165832.33606-1-mark.rutland@arm.com> <20191029165832.33606-4-mark.rutland@arm.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Wed, 30 Oct 2019 11:42:25 -0400
+Received: from foss.arm.com ([217.140.110.172]:36674 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727357AbfJ3PmY (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 30 Oct 2019 11:42:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC85F68D;
+        Wed, 30 Oct 2019 08:42:23 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B40743F6C4;
+        Wed, 30 Oct 2019 08:42:22 -0700 (PDT)
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Qais Yousef <qais.yousef@arm.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Richard Fontana <rfontana@redhat.com>,
+        Armijn Hemel <armijn@tjaldur.nl>, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 06/12] parisc: Replace cpu_up/down with device_online/offline
+Date:   Wed, 30 Oct 2019 15:38:31 +0000
+Message-Id: <20191030153837.18107-7-qais.yousef@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20191030153837.18107-1-qais.yousef@arm.com>
+References: <20191030153837.18107-1-qais.yousef@arm.com>
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue, 29 Oct 2019, Mark Rutland wrote:
+The core device API performs extra housekeeping bits that are missing
+from directly calling cpu_up/down.
 
-> When we load a module, we have to perform some special work for a couple
-> of named sections. To do this, we iterate over all of the module's
-> sections, and perform work for each section we recognize.
-> 
-> To make it easier to handle the unexpected absence of a section, and to
-> make the section-specific logic easer to read, let's factor the section
+See commit a6717c01ddc2 ("powerpc/rtas: use device model APIs and
+serialization during LPM") for an example description of what might go
+wrong.
 
-s/easer/easier/
+This also prepares to make cpu_up/down a private interface for anything
+but the cpu subsystem.
 
-> search into a helper. Similar is already done in the core module loader,
-> and other architectures (and ideally we'd unify these in future).
-> 
-> If we expect a module to have an ftrace trampoline section, but it
-> doesn't have one, we'll now reject loading the module. When
-> ARM64_MODULE_PLTS is selected, any correctly built module should have
-> one (and this is assumed by arm64's ftrace PLT code) and the absence of
-> such a section implies something has gone wrong at build time.
-> 
-> Subsequent patches will make use of the new helper.
-> 
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Reviewed-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: James Morse <james.morse@arm.com>
-> Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+CC: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+CC: Helge Deller <deller@gmx.de>
+CC: Richard Fontana <rfontana@redhat.com>
+CC: Armijn Hemel <armijn@tjaldur.nl>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: linux-parisc@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+---
 
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Couldn't compile test this one.
 
-M
+I'm not confident that this is a correct patch to be honest. This __init
+indicates we're booting the secondary cpus and that might be too early in the
+process to use the core API..?
+
+
+ arch/parisc/kernel/processor.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
+index 13f771f74ee3..4dde5fe78f0c 100644
+--- a/arch/parisc/kernel/processor.c
++++ b/arch/parisc/kernel/processor.c
+@@ -212,7 +212,9 @@ static int __init processor_probe(struct parisc_device *dev)
+ #ifdef CONFIG_SMP
+ 	if (cpuid) {
+ 		set_cpu_present(cpuid, true);
+-		cpu_up(cpuid);
++		lock_device_hotplug();
++		device_online(get_cpu_device(cpuid));
++		unlock_device_hotplug();
+ 	}
+ #endif
+ 
+-- 
+2.17.1
+
