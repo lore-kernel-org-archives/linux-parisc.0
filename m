@@ -2,95 +2,90 @@ Return-Path: <SRS0=zf9P=YX=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5CC0CA9EC7
-	for <linux-parisc@archiver.kernel.org>; Wed, 30 Oct 2019 15:42:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11C0DCA9EC5
+	for <linux-parisc@archiver.kernel.org>; Wed, 30 Oct 2019 17:02:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7B59E217F9
-	for <linux-parisc@archiver.kernel.org>; Wed, 30 Oct 2019 15:42:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CC73220717
+	for <linux-parisc@archiver.kernel.org>; Wed, 30 Oct 2019 17:02:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726175AbfJ3PmZ (ORCPT
+        id S1726879AbfJ3RC2 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 30 Oct 2019 11:42:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:36674 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727357AbfJ3PmY (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 30 Oct 2019 11:42:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC85F68D;
-        Wed, 30 Oct 2019 08:42:23 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B40743F6C4;
-        Wed, 30 Oct 2019 08:42:22 -0700 (PDT)
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Richard Fontana <rfontana@redhat.com>,
-        Armijn Hemel <armijn@tjaldur.nl>, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 06/12] parisc: Replace cpu_up/down with device_online/offline
-Date:   Wed, 30 Oct 2019 15:38:31 +0000
-Message-Id: <20191030153837.18107-7-qais.yousef@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191030153837.18107-1-qais.yousef@arm.com>
-References: <20191030153837.18107-1-qais.yousef@arm.com>
+        Wed, 30 Oct 2019 13:02:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41706 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726695AbfJ3RC2 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 30 Oct 2019 13:02:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id A82D6B374;
+        Wed, 30 Oct 2019 17:02:26 +0000 (UTC)
+Date:   Wed, 30 Oct 2019 18:02:24 +0100
+From:   Torsten Duwe <duwe@suse.de>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        amit.kachhap@arm.com, catalin.marinas@arm.com, deller@gmx.de,
+        James.Bottomley@hansenpartnership.com, james.morse@arm.com,
+        jeyu@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        linux-parisc@vger.kernel.org, mingo@redhat.com,
+        peterz@infradead.org, rostedt@goodmis.org, svens@stackframe.org,
+        takahiro.akashi@linaro.org, will@kernel.org
+Subject: Re: [PATCHv2 0/8] arm64: ftrace cleanup + FTRACE_WITH_REGS
+Message-ID: <20191030170224.GB965@suse.de>
+References: <20191029165832.33606-1-mark.rutland@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191029165832.33606-1-mark.rutland@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The core device API performs extra housekeeping bits that are missing
-from directly calling cpu_up/down.
 
-See commit a6717c01ddc2 ("powerpc/rtas: use device model APIs and
-serialization during LPM") for an example description of what might go
-wrong.
+Whole series, on top of Linus' HEAD 320000e72ec0613e164ce9 (5.4.0-rc5)
 
-This also prepares to make cpu_up/down a private interface for anything
-but the cpu subsystem.
+[    0.418079] Testing dynamic ftrace: PASSED
+[    0.670416] Testing dynamic ftrace ops #1: 
+[    0.751367] (1 0 1 0 0) 
+[    0.751374] (1 1 2 0 0) 
+[    0.857303] (2 1 3 0 281230) 
+[    0.857327] (2 2 4 0 281332) PASSED
+[    0.930124] Testing dynamic ftrace ops #2: 
+[    1.110333] (1 0 1 281189 0) 
+[    1.110360] (1 1 2 281329 0) 
+[    1.110815] (2 1 3 1 2) 
+[    1.110841] (2 2 4 113 114) PASSED
+[    1.170653] Testing ftrace recursion: PASSED
+[    1.192250] Testing ftrace recursion safe: PASSED
+[    1.213819] Testing ftrace regs: PASSED
+[    1.235397] Testing tracer nop: PASSED
+[    1.235404] Testing tracer wakeup: PASSED
+[    1.363921] Testing tracer wakeup_rt: PASSED
+[    1.494283] Testing tracer wakeup_dl: PASSED
+[    1.623948] Testing tracer function_graph: PASSED
 
-Signed-off-by: Qais Yousef <qais.yousef@arm.com>
-CC: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-CC: Helge Deller <deller@gmx.de>
-CC: Richard Fontana <rfontana@redhat.com>
-CC: Armijn Hemel <armijn@tjaldur.nl>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Thomas Gleixner <tglx@linutronix.de>
-CC: linux-parisc@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
----
+# tracer: function_graph
+#
+# CPU  DURATION                  FUNCTION CALLS
+# |     |   |                     |   |   |   |
+ 0)               |  wake_up_process() {
+ 0)               |    try_to_wake_up() {
+ 0)               |      select_task_rq_fair() {
+ 0)               |        select_idle_sibling() {
+ 0)   3.360 us    |          available_idle_cpu();
+ 0) + 10.940 us   |        }
+[...]
 
-Couldn't compile test this one.
+The graph tracer is the trickiest part to get working correctly, from my
+experience. IOW: everything looks fine.
 
-I'm not confident that this is a correct patch to be honest. This __init
-indicates we're booting the secondary cpus and that might be too early in the
-process to use the core API..?
+Whole series,
+Tested-by: Torsten Duwe <duwe@suse.de>
 
-
- arch/parisc/kernel/processor.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor.c
-index 13f771f74ee3..4dde5fe78f0c 100644
---- a/arch/parisc/kernel/processor.c
-+++ b/arch/parisc/kernel/processor.c
-@@ -212,7 +212,9 @@ static int __init processor_probe(struct parisc_device *dev)
- #ifdef CONFIG_SMP
- 	if (cpuid) {
- 		set_cpu_present(cpuid, true);
--		cpu_up(cpuid);
-+		lock_device_hotplug();
-+		device_online(get_cpu_device(cpuid));
-+		unlock_device_hotplug();
- 	}
- #endif
- 
--- 
-2.17.1
+	Torsten
 
