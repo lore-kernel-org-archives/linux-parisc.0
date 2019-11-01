@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EFCEC47E49
-	for <linux-parisc@archiver.kernel.org>; Fri,  1 Nov 2019 08:40:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63A66CA9ED2
+	for <linux-parisc@archiver.kernel.org>; Fri,  1 Nov 2019 08:40:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4646A218DE
-	for <linux-parisc@archiver.kernel.org>; Fri,  1 Nov 2019 08:40:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A873217F9
+	for <linux-parisc@archiver.kernel.org>; Fri,  1 Nov 2019 08:40:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1572597634;
-	bh=yv9SFIdg5D2vfTnwk1AOT8EqOCosf2YIIQ4xx40h8eQ=;
+	s=default; t=1572597658;
+	bh=CW7Gp1IjfwDkl8IVaPenEWtXdVAOv0d2q6q7M1mNsx8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Cv+DHD80PtICmnnKIq+LH6p9Fvf3Gmb9HbVoGzr/gkMHCyz3MObjZRtryoalGrBrm
-	 WzVX8+OEUFjhNP4/Vnm1F3vBwv48e/OBN4Rfubw+IWM4yXW7Z6KGe49rppLlLT5fOG
-	 nB5dZxTvA51WifYCoE+NqxNoTDhnV5Ihj30UjaqA=
+	b=lBJZBnu6L9kClN33mLdp3iv1wR2P0ExuSBGLWAPdRsFuvej267YjX5XYVqW9a+yLF
+	 eBGowiofD+J/g0lNJn82dhr2g2t32pYQzUWo5l4jwaiZ4XyDdNUz0gDtqqTXpPKV5p
+	 yul+aE3NzSBL6QZ2pEyKga7UVTyw/uFJo/saWQtM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727194AbfKAIkd (ORCPT
+        id S1727526AbfKAIky (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 1 Nov 2019 04:40:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48722 "EHLO mail.kernel.org"
+        Fri, 1 Nov 2019 04:40:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727170AbfKAIkd (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 1 Nov 2019 04:40:33 -0400
+        id S1727437AbfKAIkv (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 1 Nov 2019 04:40:51 -0400
 Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F79421855;
-        Fri,  1 Nov 2019 08:40:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4F6021835;
+        Fri,  1 Nov 2019 08:40:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572597632;
-        bh=yv9SFIdg5D2vfTnwk1AOT8EqOCosf2YIIQ4xx40h8eQ=;
+        s=default; t=1572597650;
+        bh=CW7Gp1IjfwDkl8IVaPenEWtXdVAOv0d2q6q7M1mNsx8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EZ+ypoIFQCODDWFgNBiPbEWH2b8LmFQxFUuVM5HjnoECoEWfbwyMgd8F6MDmzUzYD
-         r07LAQ9ytIRnaljuvGgItkkmZKzhifn9o8iscdAYsA5XqXAJAU/VpVtxCfEb3m2Je2
-         2QWPncGgetNJnttZky6QK5sZ1WGZ8C0G5wLKUsgM=
+        b=AU+tTU/qu6GHmK0BqkJm9x143PQ6sybgIsaKClipyAvAmmcFUCQ0h+qrjhaHEWSru
+         B+43J2YrNUQrVCf/ay30RFajvYC/ULVUhjd56yeNNtPvjXPUIZQrmLwS5pwg7KgyFw
+         hXeFwqc753Bb6tZIZB0lQklWHQsNM2TmWf9Dzw48=
 From:   Mike Rapoport <rppt@kernel.org>
 To:     linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -68,9 +68,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org,
         linux-um@lists.infradead.org, sparclinux@vger.kernel.org,
         Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH v2 04/13] m68k: nommu: use pgtable-nopud instead of 4level-fixup
-Date:   Fri,  1 Nov 2019 10:39:35 +0200
-Message-Id: <1572597584-6390-5-git-send-email-rppt@kernel.org>
+Subject: [PATCH v2 06/13] microblaze: use pgtable-nopmd instead of 4level-fixup
+Date:   Fri,  1 Nov 2019 10:39:37 +0200
+Message-Id: <1572597584-6390-7-git-send-email-rppt@kernel.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1572597584-6390-1-git-send-email-rppt@kernel.org>
 References: <1572597584-6390-1-git-send-email-rppt@kernel.org>
@@ -81,31 +81,245 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-The generic nommu implementation of page table manipulation takes care of
-folding of the upper levels and does not require fixups.
+microblaze has only two-level page tables and can use pgtable-nopmd and
+folding of the upper layers.
 
-Simply replace of include/asm-generic/4level-fixup.h with
-include/asm-generic/pgtable-nopud.h.
+Replace usage of include/asm-generic/4level-fixup.h and explicit definition
+of __PAGETABLE_PMD_FOLDED in microblaze with
+include/asm-generic/pgtable-nopmd.h and adjust page table manipulation
+macros and functions accordingly.
 
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
 ---
- arch/m68k/include/asm/pgtable_no.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/microblaze/include/asm/page.h    |  3 ---
+ arch/microblaze/include/asm/pgalloc.h | 16 ----------------
+ arch/microblaze/include/asm/pgtable.h | 32 ++------------------------------
+ arch/microblaze/kernel/signal.c       | 10 +++++++---
+ arch/microblaze/mm/init.c             |  7 +++++--
+ arch/microblaze/mm/pgtable.c          | 13 +++++++++++--
+ 6 files changed, 25 insertions(+), 56 deletions(-)
 
-diff --git a/arch/m68k/include/asm/pgtable_no.h b/arch/m68k/include/asm/pgtable_no.h
-index c18165b..ccc4568 100644
---- a/arch/m68k/include/asm/pgtable_no.h
-+++ b/arch/m68k/include/asm/pgtable_no.h
-@@ -2,7 +2,7 @@
- #ifndef _M68KNOMMU_PGTABLE_H
- #define _M68KNOMMU_PGTABLE_H
+diff --git a/arch/microblaze/include/asm/page.h b/arch/microblaze/include/asm/page.h
+index d506bb0..f4b44b2 100644
+--- a/arch/microblaze/include/asm/page.h
++++ b/arch/microblaze/include/asm/page.h
+@@ -90,7 +90,6 @@ typedef struct { unsigned long	pte; }		pte_t;
+ typedef struct { unsigned long	pgprot; }	pgprot_t;
+ /* FIXME this can depend on linux kernel version */
+ #   ifdef CONFIG_MMU
+-typedef struct { unsigned long pmd; } pmd_t;
+ typedef struct { unsigned long pgd; } pgd_t;
+ #   else /* CONFIG_MMU */
+ typedef struct { unsigned long	ste[64]; }	pmd_t;
+@@ -103,7 +102,6 @@ typedef struct { p4d_t		pge[1]; }	pgd_t;
+ # define pgprot_val(x)	((x).pgprot)
+ 
+ #   ifdef CONFIG_MMU
+-#   define pmd_val(x)      ((x).pmd)
+ #   define pgd_val(x)      ((x).pgd)
+ #   else  /* CONFIG_MMU */
+ #   define pmd_val(x)	((x).ste[0])
+@@ -112,7 +110,6 @@ typedef struct { p4d_t		pge[1]; }	pgd_t;
+ #   endif  /* CONFIG_MMU */
+ 
+ # define __pte(x)	((pte_t) { (x) })
+-# define __pmd(x)	((pmd_t) { (x) })
+ # define __pgd(x)	((pgd_t) { (x) })
+ # define __pgprot(x)	((pgprot_t) { (x) })
+ 
+diff --git a/arch/microblaze/include/asm/pgalloc.h b/arch/microblaze/include/asm/pgalloc.h
+index 7ecb05b..fcf1e23 100644
+--- a/arch/microblaze/include/asm/pgalloc.h
++++ b/arch/microblaze/include/asm/pgalloc.h
+@@ -41,13 +41,6 @@ static inline void free_pgd(pgd_t *pgd)
+ 
+ #define pmd_pgtable(pmd)	pmd_page(pmd)
+ 
+-/*
+- * We don't have any real pmd's, and this code never triggers because
+- * the pgd will always be present..
+- */
+-#define pmd_alloc_one_fast(mm, address)	({ BUG(); ((pmd_t *)1); })
+-#define pmd_alloc_one(mm, address)	({ BUG(); ((pmd_t *)2); })
+-
+ extern pte_t *pte_alloc_one_kernel(struct mm_struct *mm);
+ 
+ #define __pte_free_tlb(tlb, pte, addr)	pte_free((tlb)->mm, (pte))
+@@ -58,15 +51,6 @@ extern pte_t *pte_alloc_one_kernel(struct mm_struct *mm);
+ #define pmd_populate_kernel(mm, pmd, pte) \
+ 		(pmd_val(*(pmd)) = (unsigned long) (pte))
+ 
+-/*
+- * We don't have any real pmd's, and this code never triggers because
+- * the pgd will always be present..
+- */
+-#define pmd_alloc_one(mm, address)	({ BUG(); ((pmd_t *)2); })
+-#define pmd_free(mm, x)			do { } while (0)
+-#define __pmd_free_tlb(tlb, x, addr)	pmd_free((tlb)->mm, x)
+-#define pgd_populate(mm, pmd, pte)	BUG()
+-
+ #endif /* CONFIG_MMU */
+ 
+ #endif /* _ASM_MICROBLAZE_PGALLOC_H */
+diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/include/asm/pgtable.h
+index 954b69a..2def331 100644
+--- a/arch/microblaze/include/asm/pgtable.h
++++ b/arch/microblaze/include/asm/pgtable.h
+@@ -59,9 +59,7 @@ extern int mem_init_done;
+ 
+ #else /* CONFIG_MMU */
  
 -#include <asm-generic/4level-fixup.h>
-+#include <asm-generic/pgtable-nopud.h>
+-
+-#define __PAGETABLE_PMD_FOLDED 1
++#include <asm-generic/pgtable-nopmd.h>
  
+ #ifdef __KERNEL__
+ #ifndef __ASSEMBLY__
+@@ -138,13 +136,8 @@ static inline pte_t pte_mkspecial(pte_t pte)	{ return pte; }
+  *
+  */
+ 
+-/* PMD_SHIFT determines the size of the area mapped by the PTE pages */
+-#define PMD_SHIFT	(PAGE_SHIFT + PTE_SHIFT)
+-#define PMD_SIZE	(1UL << PMD_SHIFT)
+-#define PMD_MASK	(~(PMD_SIZE-1))
+-
+ /* PGDIR_SHIFT determines what a top-level page table entry can map */
+-#define PGDIR_SHIFT	PMD_SHIFT
++#define PGDIR_SHIFT	(PAGE_SHIFT + PTE_SHIFT)
+ #define PGDIR_SIZE	(1UL << PGDIR_SHIFT)
+ #define PGDIR_MASK	(~(PGDIR_SIZE-1))
+ 
+@@ -165,9 +158,6 @@ static inline pte_t pte_mkspecial(pte_t pte)	{ return pte; }
+ #define pte_ERROR(e) \
+ 	printk(KERN_ERR "%s:%d: bad pte "PTE_FMT".\n", \
+ 		__FILE__, __LINE__, pte_val(e))
+-#define pmd_ERROR(e) \
+-	printk(KERN_ERR "%s:%d: bad pmd %08lx.\n", \
+-		__FILE__, __LINE__, pmd_val(e))
+ #define pgd_ERROR(e) \
+ 	printk(KERN_ERR "%s:%d: bad pgd %08lx.\n", \
+ 		__FILE__, __LINE__, pgd_val(e))
+@@ -314,18 +304,6 @@ extern unsigned long empty_zero_page[1024];
+ 
+ #ifndef __ASSEMBLY__
  /*
-  * (C) Copyright 2000-2002, Greg Ungerer <gerg@snapgear.com>
+- * The "pgd_xxx()" functions here are trivial for a folded two-level
+- * setup: the pgd is never bad, and a pmd always exists (as it's folded
+- * into the pgd entry)
+- */
+-static inline int pgd_none(pgd_t pgd)		{ return 0; }
+-static inline int pgd_bad(pgd_t pgd)		{ return 0; }
+-static inline int pgd_present(pgd_t pgd)	{ return 1; }
+-#define pgd_clear(xp)				do { } while (0)
+-#define pgd_page(pgd) \
+-	((unsigned long) __va(pgd_val(pgd) & PAGE_MASK))
+-
+-/*
+  * The following only work if pte_present() is true.
+  * Undefined behaviour if not..
+  */
+@@ -479,12 +457,6 @@ static inline void ptep_mkdirty(struct mm_struct *mm,
+ #define pgd_index(address)	 ((address) >> PGDIR_SHIFT)
+ #define pgd_offset(mm, address)	 ((mm)->pgd + pgd_index(address))
+ 
+-/* Find an entry in the second-level page table.. */
+-static inline pmd_t *pmd_offset(pgd_t *dir, unsigned long address)
+-{
+-	return (pmd_t *) dir;
+-}
+-
+ /* Find an entry in the third-level page table.. */
+ #define pte_index(address)		\
+ 	(((address) >> PAGE_SHIFT) & (PTRS_PER_PTE - 1))
+diff --git a/arch/microblaze/kernel/signal.c b/arch/microblaze/kernel/signal.c
+index cdd4feb..c9125c3 100644
+--- a/arch/microblaze/kernel/signal.c
++++ b/arch/microblaze/kernel/signal.c
+@@ -160,6 +160,9 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
+ 	int err = 0, sig = ksig->sig;
+ 	unsigned long address = 0;
+ #ifdef CONFIG_MMU
++	pgd_t *pgdp;
++	p4d_t *p4dp;
++	pud_t *pudp;
+ 	pmd_t *pmdp;
+ 	pte_t *ptep;
+ #endif
+@@ -195,9 +198,10 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
+ 
+ 	address = ((unsigned long)frame->tramp);
+ #ifdef CONFIG_MMU
+-	pmdp = pmd_offset(pud_offset(
+-			pgd_offset(current->mm, address),
+-					address), address);
++	pgdp = pgd_offset(current->mm, address);
++	p4dp = p4d_offset(pgdp, address);
++	pudp = pud_offset(p4dp, address);
++	pmdp = pmd_offset(pudp, address);
+ 
+ 	preempt_disable();
+ 	ptep = pte_offset_map(pmdp, address);
+diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
+index a015a95..050fc62 100644
+--- a/arch/microblaze/mm/init.c
++++ b/arch/microblaze/mm/init.c
+@@ -53,8 +53,11 @@ EXPORT_SYMBOL(kmap_prot);
+ 
+ static inline pte_t *virt_to_kpte(unsigned long vaddr)
+ {
+-	return pte_offset_kernel(pmd_offset(pgd_offset_k(vaddr),
+-			vaddr), vaddr);
++	pgd_t *pgd = pgd_offset_k(vaddr);
++	p4d_t *p4d = p4d_offset(pgd, vaddr);
++	pud_t *pud = pud_offset(p4d, vaddr);
++
++	return pte_offset_kernel(pmd_offset(pud, vaddr), vaddr);
+ }
+ 
+ static void __init highmem_init(void)
+diff --git a/arch/microblaze/mm/pgtable.c b/arch/microblaze/mm/pgtable.c
+index 010bb9c..68c26ca 100644
+--- a/arch/microblaze/mm/pgtable.c
++++ b/arch/microblaze/mm/pgtable.c
+@@ -134,11 +134,16 @@ EXPORT_SYMBOL(iounmap);
+ 
+ int map_page(unsigned long va, phys_addr_t pa, int flags)
+ {
++	p4d_t *p4d;
++	pud_t *pud;
+ 	pmd_t *pd;
+ 	pte_t *pg;
+ 	int err = -ENOMEM;
++
+ 	/* Use upper 10 bits of VA to index the first level map */
+-	pd = pmd_offset(pgd_offset_k(va), va);
++	p4d = p4d_offset(pgd_offset_k(va), va);
++	pud = pud_offset(p4d, va);
++	pd = pmd_offset(pud, va);
+ 	/* Use middle 10 bits of VA to index the second-level map */
+ 	pg = pte_alloc_kernel(pd, va); /* from powerpc - pgtable.c */
+ 	/* pg = pte_alloc_kernel(&init_mm, pd, va); */
+@@ -188,13 +193,17 @@ void __init mapin_ram(void)
+ static int get_pteptr(struct mm_struct *mm, unsigned long addr, pte_t **ptep)
+ {
+ 	pgd_t	*pgd;
++	p4d_t	*p4d;
++	pud_t	*pud;
+ 	pmd_t	*pmd;
+ 	pte_t	*pte;
+ 	int     retval = 0;
+ 
+ 	pgd = pgd_offset(mm, addr & PAGE_MASK);
+ 	if (pgd) {
+-		pmd = pmd_offset(pgd, addr & PAGE_MASK);
++		p4d = p4d_offset(pgd, addr & PAGE_MASK);
++		pud = pud_offset(p4d, addr & PAGE_MASK);
++		pmd = pmd_offset(pud, addr & PAGE_MASK);
+ 		if (pmd_present(*pmd)) {
+ 			pte = pte_offset_kernel(pmd, addr & PAGE_MASK);
+ 			if (pte) {
 -- 
 2.7.4
 
