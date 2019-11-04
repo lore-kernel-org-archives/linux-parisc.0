@@ -3,71 +3,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=no autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84366CA9EB5
-	for <linux-parisc@archiver.kernel.org>; Mon,  4 Nov 2019 13:53:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 358B0CA9EB5
+	for <linux-parisc@archiver.kernel.org>; Mon,  4 Nov 2019 13:55:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 573B520869
-	for <linux-parisc@archiver.kernel.org>; Mon,  4 Nov 2019 13:53:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 06F4F20869
+	for <linux-parisc@archiver.kernel.org>; Mon,  4 Nov 2019 13:55:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728634AbfKDNxb (ORCPT
+        id S1727782AbfKDNzr (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 4 Nov 2019 08:53:31 -0500
-Received: from smtprelay0245.hostedemail.com ([216.40.44.245]:40440 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728613AbfKDNxb (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 4 Nov 2019 08:53:31 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 5DE2B181D304D;
-        Mon,  4 Nov 2019 13:53:29 +0000 (UTC)
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-HE-Tag: air76_580e2771dcc23
-X-Filterd-Recvd-Size: 1758
-Received: from grimm.local.home (unknown [146.247.46.6])
-        (Authenticated sender: rostedt@goodmis.org)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Mon,  4 Nov 2019 13:53:24 +0000 (UTC)
-Date:   Mon, 4 Nov 2019 08:53:21 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mark Rutland <mark.rutland@arm.com>
+        Mon, 4 Nov 2019 08:55:47 -0500
+Received: from foss.arm.com ([217.140.110.172]:43552 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727838AbfKDNzr (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 4 Nov 2019 08:55:47 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D21141FB;
+        Mon,  4 Nov 2019 05:55:44 -0800 (PST)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 976583F6C4;
+        Mon,  4 Nov 2019 05:55:42 -0800 (PST)
+Date:   Mon, 4 Nov 2019 13:55:40 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Amit Daniel Kachhap <amit.kachhap@arm.com>
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        amit.kachhap@arm.com, catalin.marinas@arm.com, deller@gmx.de,
-        duwe@suse.de, James.Bottomley@HansenPartnership.com,
-        james.morse@arm.com, jeyu@kernel.org, jpoimboe@redhat.com,
-        jthierry@redhat.com, linux-parisc@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, svens@stackframe.org,
+        catalin.marinas@arm.com, deller@gmx.de, duwe@suse.de,
+        James.Bottomley@HansenPartnership.com, james.morse@arm.com,
+        jeyu@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        linux-parisc@vger.kernel.org, mingo@redhat.com,
+        peterz@infradead.org, rostedt@goodmis.org, svens@stackframe.org,
         takahiro.akashi@linaro.org, will@kernel.org
-Subject: Re: [PATCHv2 1/8] ftrace: add ftrace_init_nop()
-Message-ID: <20191104085321.7636be56@grimm.local.home>
-In-Reply-To: <20191104133836.GF45140@lakrids.cambridge.arm.com>
+Subject: Re: [PATCHv2 4/8] arm64: module/ftrace: intialize PLT at load time
+Message-ID: <20191104135540.GH45140@lakrids.cambridge.arm.com>
 References: <20191029165832.33606-1-mark.rutland@arm.com>
-        <20191029165832.33606-2-mark.rutland@arm.com>
-        <20191104081620.732320a8@grimm.local.home>
-        <20191104133836.GF45140@lakrids.cambridge.arm.com>
-X-Mailer: Claws Mail 3.17.4git49 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20191029165832.33606-5-mark.rutland@arm.com>
+ <d22b27b5-6b76-6124-efff-fd577a8f482e@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d22b27b5-6b76-6124-efff-fd577a8f482e@arm.com>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Mon, 4 Nov 2019 13:38:36 +0000
-Mark Rutland <mark.rutland@arm.com> wrote:
+On Sat, Nov 02, 2019 at 05:50:02PM +0530, Amit Daniel Kachhap wrote:
+> On 10/29/19 10:28 PM, Mark Rutland wrote:
+> > @@ -485,24 +486,33 @@ static const Elf_Shdr *find_section(const Elf_Ehdr *hdr,
+> >   	return NULL;
+> >   }
+> > +int module_init_ftrace_plt(const Elf_Ehdr *hdr,
+> > +			   const Elf_Shdr *sechdrs,
+> > +			   struct module *mod)
+> I think this function can be made static as it is not used anywhere.
 
-> > Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>  
-> 
-> Thanks!
-> 
-> Just to check, are you happy if this were to go via the arm64 tree with
-> the rest of the patches?
+It's only called by module_finalize() below, so making it static makese
+sense; done.
 
-Yes, if I wasn't I would have said something. But I guess I should have
-been explicit and stated that I'm fine with it going in your tree. My
-current updates should not conflict with this.
+Thanks
+Mark.
 
--- Steve
+> > +{
+> > +#if defined(CONFIG_ARM64_MODULE_PLTS) && defined(CONFIG_DYNAMIC_FTRACE)
+> > +	const Elf_Shdr *s;
+> > +	struct plt_entry *plt;
+> > +
+> > +	s = find_section(hdr, sechdrs, ".text.ftrace_trampoline");
+> > +	if (!s)
+> > +		return -ENOEXEC;
+> > +
+> > +	plt = (void *)s->sh_addr;
+> > +	*plt = get_plt_entry(FTRACE_ADDR, plt);
+> > +	mod->arch.ftrace_trampoline = plt;
+> > +#endif
+> > +	return 0;
+> > +}
+> > +
+> >   int module_finalize(const Elf_Ehdr *hdr,
+> >   		    const Elf_Shdr *sechdrs,
+> >   		    struct module *me)
+> >   {
+> >   	const Elf_Shdr *s;
+> > -
+> >   	s = find_section(hdr, sechdrs, ".altinstructions");
+> >   	if (s)
+> >   		apply_alternatives_module((void *)s->sh_addr, s->sh_size);
+> > -#ifdef CONFIG_ARM64_MODULE_PLTS
+> > -	if (IS_ENABLED(CONFIG_DYNAMIC_FTRACE)) {
+> > -		s = find_section(hdr, sechdrs, ".text.ftrace_trampoline");
+> > -		if (!s)
+> > -			return -ENOEXEC;
+> > -		me->arch.ftrace_trampoline = (void *)s->sh_addr;
+> > -	}
+> > -#endif
+> > -
+> > -	return 0;
+> > +	return module_init_ftrace_plt(hdr, sechdrs, me);
+> >   }
+> > 
