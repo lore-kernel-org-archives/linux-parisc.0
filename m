@@ -2,58 +2,50 @@ Return-Path: <SRS0=wAJK=Y7=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=FREEMAIL_REPLYTO_END_DIGIT,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EDCC8C5DF61
-	for <linux-parisc@archiver.kernel.org>; Thu,  7 Nov 2019 11:31:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADE9FC43331
+	for <linux-parisc@archiver.kernel.org>; Thu,  7 Nov 2019 15:12:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B94E0214D8
-	for <linux-parisc@archiver.kernel.org>; Thu,  7 Nov 2019 11:31:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 874B5218AE
+	for <linux-parisc@archiver.kernel.org>; Thu,  7 Nov 2019 15:12:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbfKGLby (ORCPT
+        id S1729953AbfKGPMT (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 7 Nov 2019 06:31:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:54514 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727437AbfKGLby (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 7 Nov 2019 06:31:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6AA6C31B;
-        Thu,  7 Nov 2019 03:31:53 -0800 (PST)
-Received: from arrakis.emea.arm.com (arrakis.cambridge.arm.com [10.1.197.42])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5DECE3F6C4;
-        Thu,  7 Nov 2019 03:31:50 -0800 (PST)
-Date:   Thu, 7 Nov 2019 11:31:47 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        amit.kachhap@arm.com, deller@gmx.de, duwe@suse.de,
-        James.Bottomley@HansenPartnership.com, james.morse@arm.com,
-        jeyu@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        linux-parisc@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, rostedt@goodmis.org, svens@stackframe.org,
-        takahiro.akashi@linaro.org, will@kernel.org
-Subject: Re: [PATCHv2 0/8] arm64: ftrace cleanup + FTRACE_WITH_REGS
-Message-ID: <20191107113147.GB16965@arrakis.emea.arm.com>
-References: <20191029165832.33606-1-mark.rutland@arm.com>
+        Thu, 7 Nov 2019 10:12:19 -0500
+Received: from [211.53.128.215] ([211.53.128.215]:56209 "EHLO MAIL.isd.co.kr"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726640AbfKGPMT (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 7 Nov 2019 10:12:19 -0500
+Received: from 192.168.1.3 (217.217.179.17) by MAIL.isd.co.kr (10.10.10.22)
+ with Microsoft SMTP Server id 14.3.123.3; Fri, 8 Nov 2019 00:08:41 +0900
+Date:   Thu, 7 Nov 2019 16:08:40 +0100
+From:   Peter Wong <choimj@isd.co.kr>
+Reply-To: Peter Wong <pw178483@protonmail.com>
+To:     <linux-parisc@vger.kernel.org>
+Message-ID: <1997241.22597.1573139322242.JavaMail.cash@211.53.128.215>
+Subject: Investment opportunity
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191029165832.33606-1-mark.rutland@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [217.217.179.17]
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue, Oct 29, 2019 at 04:58:24PM +0000, Mark Rutland wrote:
-> [2] git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git arm64/ftrace-with-regs
+Greetings,
 
-I pulled the latest on this branch into the arm64 for-next/core.
+Find attached email very confidential. reply for more details
 
 Thanks.
+Peter Wong
 
--- 
-Catalin
+
+
+
+----------------------------------------------------
+This email was sent by the shareware version of Postman Professional.
+
