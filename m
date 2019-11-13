@@ -6,23 +6,23 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3EC2C17448
-	for <linux-parisc@archiver.kernel.org>; Wed, 13 Nov 2019 02:03:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE5DBC17440
+	for <linux-parisc@archiver.kernel.org>; Wed, 13 Nov 2019 02:09:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9E3DE222C9
-	for <linux-parisc@archiver.kernel.org>; Wed, 13 Nov 2019 02:03:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 86FF1222D4
+	for <linux-parisc@archiver.kernel.org>; Wed, 13 Nov 2019 02:09:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729913AbfKMCDn (ORCPT
+        id S1730725AbfKMCJw (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 12 Nov 2019 21:03:43 -0500
-Received: from zeniv.linux.org.uk ([195.92.253.2]:39298 "EHLO
+        Tue, 12 Nov 2019 21:09:52 -0500
+Received: from zeniv.linux.org.uk ([195.92.253.2]:39438 "EHLO
         ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728300AbfKMCDm (ORCPT
+        with ESMTP id S1727468AbfKMCJt (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 12 Nov 2019 21:03:42 -0500
+        Tue, 12 Nov 2019 21:09:49 -0500
 Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iUhzv-0008C3-Ic; Wed, 13 Nov 2019 02:03:07 +0000
-Date:   Wed, 13 Nov 2019 02:03:07 +0000
+        id 1iUi5t-0008S0-DR; Wed, 13 Nov 2019 02:09:17 +0000
+Date:   Wed, 13 Nov 2019 02:09:17 +0000
 From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     Aleksa Sarai <cyphar@cyphar.com>
 Cc:     Jeff Layton <jlayton@kernel.org>,
@@ -34,12 +34,14 @@ Cc:     Jeff Layton <jlayton@kernel.org>,
         Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Christian Brauner <christian.brauner@ubuntu.com>,
+        Jann Horn <jannh@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Eric Biederman <ebiederm@xmission.com>,
         Andy Lutomirski <luto@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>, Tycho Andersen <tycho@tycho.ws>,
+        Tycho Andersen <tycho@tycho.ws>,
         David Drysdale <drysdale@google.com>,
         Chanho Min <chanho.min@lge.com>,
         Oleg Nesterov <oleg@redhat.com>,
@@ -49,7 +51,6 @@ Cc:     Jeff Layton <jlayton@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Christian Brauner <christian@brauner.io>,
         Aleksa Sarai <asarai@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
         containers@lists.linux-foundation.org, linux-alpha@vger.kernel.org,
         linux-api@vger.kernel.org, libc-alpha@sourceware.org,
         linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
@@ -59,39 +60,29 @@ Cc:     Jeff Layton <jlayton@kernel.org>,
         linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, sparclinux@vger.kernel.org
-Subject: Re: [PATCH v15 5/9] namei: LOOKUP_IN_ROOT: chroot-like scoped
- resolution
-Message-ID: <20191113020307.GB26530@ZenIV.linux.org.uk>
+Subject: Re: [PATCH v15 6/9] namei: LOOKUP_{IN_ROOT,BENEATH}: permit limited
+ ".." resolution
+Message-ID: <20191113020917.GC26530@ZenIV.linux.org.uk>
 References: <20191105090553.6350-1-cyphar@cyphar.com>
- <20191105090553.6350-6-cyphar@cyphar.com>
+ <20191105090553.6350-7-cyphar@cyphar.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191105090553.6350-6-cyphar@cyphar.com>
+In-Reply-To: <20191105090553.6350-7-cyphar@cyphar.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue, Nov 05, 2019 at 08:05:49PM +1100, Aleksa Sarai wrote:
+On Tue, Nov 05, 2019 at 08:05:50PM +1100, Aleksa Sarai wrote:
 
-> @@ -2277,12 +2277,20 @@ static const char *path_init(struct nameidata *nd, unsigned flags)
->  
->  	nd->m_seq = read_seqbegin(&mount_lock);
->  
-> -	/* Figure out the starting path and root (if needed). */
-> -	if (*s == '/') {
-> +	/* Absolute pathname -- fetch the root. */
-> +	if (flags & LOOKUP_IN_ROOT) {
-> +		/* With LOOKUP_IN_ROOT, act as a relative path. */
-> +		while (*s == '/')
-> +			s++;
+> One other possible alternative (which previous versions of this patch
+> used) would be to check with path_is_under() if there was a racing
+> rename or mount (after re-taking the relevant seqlocks). While this does
+> work, it results in possible O(n*m) behaviour if there are many renames
+> or mounts occuring *anywhere on the system*.
 
-Er...  Why bother skipping slashes?  I mean, not only link_path_walk()
-will skip them just fine, you are actually risking breakage in this:
-                if (*s && unlikely(!d_can_lookup(dentry))) {
-                        fdput(f);
-                        return ERR_PTR(-ENOTDIR);
-                }
-which is downstream from there with you patch, AFAICS.
+BTW, do you realize that open-by-fhandle (or working nfsd, for that matter)
+will trigger arseloads of write_seqlock(&rename_lock) simply on d_splice_alias()
+bringing disconnected subtrees in contact with parent?
