@@ -1,66 +1,91 @@
-Return-Path: <SRS0=VRgA=ZN=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=uX69=ZO=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BE15C432C0
-	for <linux-parisc@archiver.kernel.org>; Thu, 21 Nov 2019 23:30:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 789F4C33C9A
+	for <linux-parisc@archiver.kernel.org>; Fri, 22 Nov 2019 05:30:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 07D28206D7
-	for <linux-parisc@archiver.kernel.org>; Thu, 21 Nov 2019 23:30:36 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="ftocBRxn"
+	by mail.kernel.org (Postfix) with ESMTP id 4865A20708
+	for <linux-parisc@archiver.kernel.org>; Fri, 22 Nov 2019 05:30:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1574400634;
+	bh=7xewnJeJ8wvHZnKDS85LFPSw2Dl2V6Zdfz+YH65mXK4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=I/eunrLDEt3f+tdT1Q5Tw/ZRGaPUvhjwEt3FYL+d7tJzx9Z5Vi0r2OIsFLWrhAGS+
+	 Uwbn6MHR+3qFTGkPITXgwmYLCMex5eqAPlFckOeGWcRpQ4nRM9IcKUnQW02Ox+0BOz
+	 dKTXEcEiH4w1qgbKdBbGHsiLhhO0Swb/+cZhOG0Q=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbfKUXag (ORCPT
+        id S1727296AbfKVFaZ (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 21 Nov 2019 18:30:36 -0500
-Received: from mail-40132.protonmail.ch ([185.70.40.132]:64278 "EHLO
-        mail-40132.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbfKUXag (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 21 Nov 2019 18:30:36 -0500
-Date:   Thu, 21 Nov 2019 23:30:30 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=proton;
-        t=1574379034; bh=6KbYvpux2nDwaPelUh4amIrvxMu3Rdu4WfqOTwdqS3M=;
-        h=Date:To:From:Reply-To:Subject:Feedback-ID:From;
-        b=ftocBRxnchJdoHPOo6VWI3rNYv3/oZ5J4dPoRa2SfdsziuSe8q9l7b0JdszcnUUJZ
-         gKwpU74mBStI/U51h8DPNNqqpNdWcGq7yA8dk61yYo4IO6FOGID69TuGV3WQD0LULE
-         XdQPkDAiq9SVdY7gGgB8edWF3SaS70LZqef/qbsmXNiJwgQ7o1Chs/0uQrejDiyoSE
-         QFJWXQ2ZkFENH9XQewpHrbTklBpNdgd/nQNboDKpUB5G/BfNnxH/43MdqhDbp7YPe0
-         QKkqjtzFVruqt7fe37s+UPn70lQ4KSODjfnjfQg1RPnxdMWW2DCWHs6/EXVsn2fEU8
-         yFN2lBQhEco4Q==
-To:     linux-parisc@vger.kernel.org
-From:   Phil Scarr <phil.scarr@pm.me>
-Reply-To: Phil Scarr <phil.scarr@pm.me>
-Subject: tigon3 firmware
-Message-ID: <48306AD4-DA2B-4E37-B52A-050A02E9B565@pm.me>
-Feedback-ID: AnDrjaQTA1mIrVwhEbJn-LrXpVWgkp5-ycaTfIL-MTxGUAlZPyisXimQB5plDXm-ITvR42cG8qwUhD6jMQpd3Q==:Ext:ProtonMail
+        Fri, 22 Nov 2019 00:30:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727279AbfKVFaY (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 22 Nov 2019 00:30:24 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B825E20708;
+        Fri, 22 Nov 2019 05:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1574400624;
+        bh=7xewnJeJ8wvHZnKDS85LFPSw2Dl2V6Zdfz+YH65mXK4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=R1+3nkQ7GXbWgAuKSLvQG9nmq/gnfWuyKaHTDHYB/iGltLaCWe56l8+xQywVZDwy0
+         sEw9nSaYXEBawnuDVXkaqEX8Clwuzy5FHUbVSYhrNdUHv9zc4wpFH3vBtWxMaRSQbi
+         rvy2ZzNjpRRwKFYMKJMf3wpy/ZReGk3WA2z+pH18=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
+        linux-parisc@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 023/219] parisc: Fix HP SDC hpa address output
+Date:   Fri, 22 Nov 2019 00:26:45 -0500
+Message-Id: <20191122053001.752-16-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191122053001.752-1-sashal@kernel.org>
+References: <20191122053001.752-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-I=E2=80=99m getting the following errors when the system rebuilds initrd:
+From: Helge Deller <deller@gmx.de>
 
-update-initramfs: Generating /boot/initrd.img-4.16.0-1-parisc64-smp
-W: Possible missing firmware /lib/firmware/tigon/tg3_tso5.bin for module tg=
-3
-W: Possible missing firmware /lib/firmware/tigon/tg3_tso.bin for module tg3
-W: Possible missing firmware /lib/firmware/tigon/tg3.bin for module tg3
+[ Upstream commit c4bff35ca1bfba886da6223c9fed76a2b1382b8e ]
 
-There don=E2=80=99t appear to be any nonfree firmware for hppa.  Is this ex=
-pected?
+Show the hpa address of the HP SDC instead of a hashed value, e.g.:
+HP SDC: HP SDC at 0xf0201000, IRQ 23 (NMI IRQ 24)
 
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/input/serio/hp_sdc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---=20
-Currently Reading
-
-  Get your own email signature
-
+diff --git a/drivers/input/serio/hp_sdc.c b/drivers/input/serio/hp_sdc.c
+index 0b8a25c58d02e..654252361653d 100644
+--- a/drivers/input/serio/hp_sdc.c
++++ b/drivers/input/serio/hp_sdc.c
+@@ -884,8 +884,8 @@ static int __init hp_sdc_init(void)
+ 			"HP SDC NMI", &hp_sdc))
+ 		goto err2;
+ 
+-	printk(KERN_INFO PREFIX "HP SDC at 0x%p, IRQ %d (NMI IRQ %d)\n",
+-	       (void *)hp_sdc.base_io, hp_sdc.irq, hp_sdc.nmi);
++	pr_info(PREFIX "HP SDC at 0x%08lx, IRQ %d (NMI IRQ %d)\n",
++	       hp_sdc.base_io, hp_sdc.irq, hp_sdc.nmi);
+ 
+ 	hp_sdc_status_in8();
+ 	hp_sdc_data_in8();
+-- 
+2.20.1
 
