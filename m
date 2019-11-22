@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61E09C432C0
-	for <linux-parisc@archiver.kernel.org>; Fri, 22 Nov 2019 06:19:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DBA9AC432C0
+	for <linux-parisc@archiver.kernel.org>; Fri, 22 Nov 2019 06:30:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 301152053B
-	for <linux-parisc@archiver.kernel.org>; Fri, 22 Nov 2019 06:19:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ACD9D20674
+	for <linux-parisc@archiver.kernel.org>; Fri, 22 Nov 2019 06:30:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1574403574;
-	bh=cLe4GfX3E+Qhpoe7pEAgaJTKy8YO6Tx/QDZhLXEeOIw=;
+	s=default; t=1574404234;
+	bh=7xewnJeJ8wvHZnKDS85LFPSw2Dl2V6Zdfz+YH65mXK4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=YB9JEJznkwyCDu46KVfL2JxGF3lfTt2kp5/VrkVonQqlvcuDRlaZhHkjSI1aTfpsq
-	 zGn/daCNBNTMAoSjggXKJDwUWKCiuSc5s/501Kcy9MY9xMbw8SlM6rV+s66uJLkwsY
-	 eOJsAS2sz8mz4RSbJt1F6QnXSUZ9CVdq92H7JC3k=
+	b=01bPLTlNOAN92EIHtYfrsfGy8CuVlTFlnpezbxLJ9I0xdce6SycKa9Z1yuwYKXRyA
+	 2F3HSQKGVCf3L0+lw8DWFwbVkmWhvi08B7SO+s2/TH5kVFhk4irEOsp0s6P87jSN09
+	 SzLGsbHWDlgdtK4TA++lWiKDLt7fN8RQeyWcAgg4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbfKVGTd (ORCPT
+        id S1727121AbfKVGa3 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 22 Nov 2019 01:19:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33468 "EHLO mail.kernel.org"
+        Fri, 22 Nov 2019 01:30:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728943AbfKVFzv (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 22 Nov 2019 00:55:51 -0500
+        id S1727102AbfKVFte (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 22 Nov 2019 00:49:34 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2050C20659;
-        Fri, 22 Nov 2019 05:55:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E20A220708;
+        Fri, 22 Nov 2019 05:49:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574402150;
-        bh=cLe4GfX3E+Qhpoe7pEAgaJTKy8YO6Tx/QDZhLXEeOIw=;
+        s=default; t=1574401773;
+        bh=7xewnJeJ8wvHZnKDS85LFPSw2Dl2V6Zdfz+YH65mXK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lm9DeAeaUamfBfNkWq039ajw2s2V4gJCMD4ZO/kFawqEF0ErulMM3oVqXpi/V6cFm
-         Hwf6XD35W2bhlH/xFwtMoR5GiF+9Td8gE5tqHtCkM5iMl5+aHLdwFEcjAhCJPSmW5r
-         GhrUyNrnCiE/2yIcBoUExl1gCIeDhHjLjHyVTVak=
+        b=nhQlhJCDql3kJuJorBSacp+c0FWqATX77QZg0r9Qrg9HBCTesjn5PgFHrdZhbMfD3
+         Kr80N+G0GPF3c04xnxd7gx7an5nfuhfS9Ulj6jTidl3ZrSFgEANu0sivWK/SElmqXf
+         AuW4eZfp7iUaYrUpYvUuej3FFH+X89NqTLjTWYeY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
         linux-parisc@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 006/127] parisc: Fix serio address output
-Date:   Fri, 22 Nov 2019 00:53:44 -0500
-Message-Id: <20191122055544.3299-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 023/219] parisc: Fix HP SDC hpa address output
+Date:   Fri, 22 Nov 2019 00:45:55 -0500
+Message-Id: <20191122054911.1750-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191122055544.3299-1-sashal@kernel.org>
-References: <20191122055544.3299-1-sashal@kernel.org>
+In-Reply-To: <20191122054911.1750-1-sashal@kernel.org>
+References: <20191122054911.1750-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -60,36 +60,32 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Helge Deller <deller@gmx.de>
 
-[ Upstream commit 785145171d17af2554128becd6a7c8f89e101141 ]
+[ Upstream commit c4bff35ca1bfba886da6223c9fed76a2b1382b8e ]
 
-We want the hpa addresses printed in the serio modules, not some
-virtual ioremap()ed address, e.g.:
-
- serio: gsc-ps2-keyboard port at 0xf0108000 irq 22 @ 2:0:11
- serio: gsc-ps2-mouse port at 0xf0108100 irq 22 @ 2:0:12
+Show the hpa address of the HP SDC instead of a hashed value, e.g.:
+HP SDC: HP SDC at 0xf0201000, IRQ 23 (NMI IRQ 24)
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/gscps2.c | 4 ++--
+ drivers/input/serio/hp_sdc.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/serio/gscps2.c b/drivers/input/serio/gscps2.c
-index aa9f29b875dea..d84e3b70215ad 100644
---- a/drivers/input/serio/gscps2.c
-+++ b/drivers/input/serio/gscps2.c
-@@ -382,9 +382,9 @@ static int __init gscps2_probe(struct parisc_device *dev)
- 		goto fail;
- #endif
+diff --git a/drivers/input/serio/hp_sdc.c b/drivers/input/serio/hp_sdc.c
+index 0b8a25c58d02e..654252361653d 100644
+--- a/drivers/input/serio/hp_sdc.c
++++ b/drivers/input/serio/hp_sdc.c
+@@ -884,8 +884,8 @@ static int __init hp_sdc_init(void)
+ 			"HP SDC NMI", &hp_sdc))
+ 		goto err2;
  
--	printk(KERN_INFO "serio: %s port at 0x%p irq %d @ %s\n",
-+	pr_info("serio: %s port at 0x%08lx irq %d @ %s\n",
- 		ps2port->port->name,
--		ps2port->addr,
-+		hpa,
- 		ps2port->padev->irq,
- 		ps2port->port->phys);
+-	printk(KERN_INFO PREFIX "HP SDC at 0x%p, IRQ %d (NMI IRQ %d)\n",
+-	       (void *)hp_sdc.base_io, hp_sdc.irq, hp_sdc.nmi);
++	pr_info(PREFIX "HP SDC at 0x%08lx, IRQ %d (NMI IRQ %d)\n",
++	       hp_sdc.base_io, hp_sdc.irq, hp_sdc.nmi);
  
+ 	hp_sdc_status_in8();
+ 	hp_sdc_data_in8();
 -- 
 2.20.1
 
