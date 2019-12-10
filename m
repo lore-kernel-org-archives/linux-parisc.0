@@ -2,89 +2,131 @@ Return-Path: <SRS0=xpXY=2A=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF9A6C43603
-	for <linux-parisc@archiver.kernel.org>; Tue, 10 Dec 2019 04:29:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99290C43603
+	for <linux-parisc@archiver.kernel.org>; Tue, 10 Dec 2019 19:41:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9522120652
-	for <linux-parisc@archiver.kernel.org>; Tue, 10 Dec 2019 04:29:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6996320652
+	for <linux-parisc@archiver.kernel.org>; Tue, 10 Dec 2019 19:41:17 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cG5STPDb"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbfLJE3W (ORCPT
+        id S1726364AbfLJTlQ (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:29:22 -0500
-Received: from shards.monkeyblade.net ([23.128.96.9]:39810 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbfLJE3V (ORCPT
+        Tue, 10 Dec 2019 14:41:16 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:33037 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbfLJTlQ (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:29:21 -0500
-Received: from localhost (unknown [IPv6:2601:601:9f00:1c3::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 49291154F0CC5;
-        Mon,  9 Dec 2019 20:29:21 -0800 (PST)
-Date:   Mon, 09 Dec 2019 20:29:20 -0800 (PST)
-Message-Id: <20191209.202920.1031568566965416683.davem@davemloft.net>
-To:     natechancellor@gmail.com
+        Tue, 10 Dec 2019 14:41:16 -0500
+Received: by mail-ot1-f66.google.com with SMTP id d17so16658064otc.0;
+        Tue, 10 Dec 2019 11:41:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=R83QtXeO25iJn8IIxnah9iFn17pE1UtDQO4xFZfF6uY=;
+        b=cG5STPDbLQSxbyR1qFBtw0bm8F8a+PZv4SlrIwwgoIhOh87cC39hofilNVzE6l87gR
+         pvJe8RsQB5yKofwnt0nmWhQ1r8XDDHK/S74AbpArymg5/6++VKraI6CNa/VB4SXqWGNP
+         J7+gjQZpbV7CnqnfIWxsqOyT3891pAf2SjkTTlohHLSn8MnJhx3C1xFosPGTBcEXkAHm
+         Mdve8NsOcbpVJc36EdqCRzPVUpLA4O4gFEJmTulj+KHRXXxqYTkZM3fCRs6f2SL+BAvw
+         YDv5ibI77J2z3lXSkPfem+cQrGZg6pu1XUXyrMUfpEPXsW2cLqYLNh5H2r0z2fQF+VEH
+         yIKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=R83QtXeO25iJn8IIxnah9iFn17pE1UtDQO4xFZfF6uY=;
+        b=e9lYDabNL2j+4jCE/xG9M9kgVjwrxrNq3qRBwl/22EUHdiA7RqyKBoTpnMukL93RD7
+         ldlo3W4WvC4D8SDjFoj20LykgUC7yh6xfGhjD5FHueFyzVEbVHwdfSWSwm+2ogUCSqyO
+         6v8kFWx6U16EI6NjvxzjECE2JoIPyJIw/s8IE++/qQEiyGQhRpNBEvUXxffali3UMkyj
+         aUsIm+t/S0rkitsN7lW6JHPW1VwlFLXYSSXJtVPBPbgibpU3FhTpVV23wAvEQqJEljgr
+         Wuon5dV0/Xugc6M5/tulc/gRiyxxoyzEq54TBry0RLx9fgZHnDtTYsURr0ln1pCGlhZ/
+         ZefQ==
+X-Gm-Message-State: APjAAAXSCEufAGcVWN78qtpN+wF3l9Y5SyvtmHcJvsjNrX12LyRlmwfL
+        RaB/9QmkPLrqAo30Fqu2mhxO64lfeqI=
+X-Google-Smtp-Source: APXvYqwj7IlFzd7fTg//b46vTz/Bnh16nomGJYdN53u03HEpszXsPKwNobIL27/F2dZstEw06Uwqgg==
+X-Received: by 2002:a05:6830:1492:: with SMTP id s18mr27774328otq.285.1576006875389;
+        Tue, 10 Dec 2019 11:41:15 -0800 (PST)
+Received: from ubuntu-m2-xlarge-x86 ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id f85sm1758884oib.38.2019.12.10.11.41.14
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 10 Dec 2019 11:41:14 -0800 (PST)
+Date:   Tue, 10 Dec 2019 12:41:13 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     David Miller <davem@davemloft.net>
 Cc:     netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
 Subject: Re: [PATCH] net: tulip: Adjust indentation in
  {dmfe,uli526x}_init_module
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20191209211623.44166-1-natechancellor@gmail.com>
+Message-ID: <20191210194113.GA10106@ubuntu-m2-xlarge-x86>
 References: <20191209211623.44166-1-natechancellor@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 09 Dec 2019 20:29:21 -0800 (PST)
+ <20191209.202920.1031568566965416683.davem@davemloft.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191209.202920.1031568566965416683.davem@davemloft.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
-Date: Mon,  9 Dec 2019 14:16:23 -0700
+On Mon, Dec 09, 2019 at 08:29:20PM -0800, David Miller wrote:
+> From: Nathan Chancellor <natechancellor@gmail.com>
+> Date: Mon,  9 Dec 2019 14:16:23 -0700
+> 
+> > Clang warns:
+> > 
+> > ../drivers/net/ethernet/dec/tulip/uli526x.c:1812:3: warning: misleading
+> > indentation; statement is not part of the previous 'if'
+> > [-Wmisleading-indentation]
+> >         switch (mode) {
+> >         ^
+> > ../drivers/net/ethernet/dec/tulip/uli526x.c:1809:2: note: previous
+> > statement is here
+> >         if (cr6set)
+> >         ^
+> > 1 warning generated.
+> > 
+> > ../drivers/net/ethernet/dec/tulip/dmfe.c:2217:3: warning: misleading
+> > indentation; statement is not part of the previous 'if'
+> > [-Wmisleading-indentation]
+> >         switch(mode) {
+> >         ^
+> > ../drivers/net/ethernet/dec/tulip/dmfe.c:2214:2: note: previous
+> > statement is here
+> >         if (cr6set)
+> >         ^
+> > 1 warning generated.
+> > 
+> > This warning occurs because there is a space before the tab on these
+> > lines. Remove them so that the indentation is consistent with the Linux
+> > kernel coding style and clang no longer warns.
+> > 
+> > While we are here, adjust the default block in dmfe_init_module to have
+> > a proper break between the label and assignment and add a space between
+> > the switch and opening parentheses to avoid a checkpatch warning.
+> > 
+> > Fixes: e1c3e5014040 ("[PATCH] initialisation cleanup for ULI526x-net-driver")
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/795
+> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> 
+> Applied, but it's really crummy that the tool gets tripped up by the
+> fact that a space preceeds the TAB.  It's what the code visually looks
+> like, not what exact kinds of SPACE characters were used to get there.
 
-> Clang warns:
-> 
-> ../drivers/net/ethernet/dec/tulip/uli526x.c:1812:3: warning: misleading
-> indentation; statement is not part of the previous 'if'
-> [-Wmisleading-indentation]
->         switch (mode) {
->         ^
-> ../drivers/net/ethernet/dec/tulip/uli526x.c:1809:2: note: previous
-> statement is here
->         if (cr6set)
->         ^
-> 1 warning generated.
-> 
-> ../drivers/net/ethernet/dec/tulip/dmfe.c:2217:3: warning: misleading
-> indentation; statement is not part of the previous 'if'
-> [-Wmisleading-indentation]
->         switch(mode) {
->         ^
-> ../drivers/net/ethernet/dec/tulip/dmfe.c:2214:2: note: previous
-> statement is here
->         if (cr6set)
->         ^
-> 1 warning generated.
-> 
-> This warning occurs because there is a space before the tab on these
-> lines. Remove them so that the indentation is consistent with the Linux
-> kernel coding style and clang no longer warns.
-> 
-> While we are here, adjust the default block in dmfe_init_module to have
-> a proper break between the label and assignment and add a space between
-> the switch and opening parentheses to avoid a checkpatch warning.
-> 
-> Fixes: e1c3e5014040 ("[PATCH] initialisation cleanup for ULI526x-net-driver")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/795
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+I agree. There is a follow up patch from the author of the warning that
+claims to alieviate some of these but that is still in discussion and as
+far as I understand it, it won't fix all of them so I'm just dealing
+with all of them on the Linux side.
 
-Applied, but it's really crummy that the tool gets tripped up by the
-fact that a space preceeds the TAB.  It's what the code visually looks
-like, not what exact kinds of SPACE characters were used to get there.
+https://reviews.llvm.org/D71037
+
+Thanks for picking them up!
+Nathan
