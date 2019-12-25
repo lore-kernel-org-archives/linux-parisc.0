@@ -1,72 +1,92 @@
-Return-Path: <SRS0=4AB4=2L=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=6ex9=2P=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	LOTS_OF_MONEY,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 367EAC2D0C0
-	for <linux-parisc@archiver.kernel.org>; Sat, 21 Dec 2019 14:55:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EFD16C2D0DB
+	for <linux-parisc@archiver.kernel.org>; Wed, 25 Dec 2019 08:33:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 07C1421927
-	for <linux-parisc@archiver.kernel.org>; Sat, 21 Dec 2019 14:55:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1576940104;
-	bh=jHa7TApmdG6ObaG+VsBoYVH6ssS/P+jWiCh/4Qyrq0s=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
-	b=hrgNMseuOIC0/I5DT3+kRK/dkmOcoyZhvzeBhh0w6Ys3aUOlpGGN4yn5y9yvwXYAs
-	 8s2Sgli4AzN4alX97TquiNX0LRbFdO5HghUQ0KPfNOD8p43A53W2taCdqDxMBRIihQ
-	 OGUGBp/3wzHTVx/hW872rD1m7F0ogrcSnyuEt3ks=
+	by mail.kernel.org (Postfix) with ESMTP id C784620730
+	for <linux-parisc@archiver.kernel.org>; Wed, 25 Dec 2019 08:33:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbfLUOzD (ORCPT
+        id S1726400AbfLYIdT (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 21 Dec 2019 09:55:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726715AbfLUOzD (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 21 Dec 2019 09:55:03 -0500
-Subject: Re: [GIT PULL] parisc architecture fixes for kernel v5.5-rc3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576940102;
-        bh=jHa7TApmdG6ObaG+VsBoYVH6ssS/P+jWiCh/4Qyrq0s=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=b5H4mJG5ErGsSjYlflLJjv2ul/DWVMeRHPm7kBgD+rN7vyaeYJe4m6B9Vc57Gr/5E
-         lwdgeUxurkXPO682wqFJClGbacwsLP8VEz/zRhmAt5FH6diH1lkvX+GpM7iIeE3UYf
-         Df8mPw6y7xy+Ko9aPC59/cyiKPS9nWyTXKhbF5oI=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20191221143539.GA29263@ls3530.fritz.box>
-References: <20191221143539.GA29263@ls3530.fritz.box>
-X-PR-Tracked-List-Id: <linux-parisc.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20191221143539.GA29263@ls3530.fritz.box>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git
- parisc-5.5-2
-X-PR-Tracked-Commit-Id: 75cf9797006a3a9f29a3a25c1febd6842a4a9eb2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6210469417fd967ec72dea56723593beefeecafb
-Message-Id: <157694010258.20544.2019681266417561363.pr-tracker-bot@kernel.org>
-Date:   Sat, 21 Dec 2019 14:55:02 +0000
-To:     Helge Deller <deller@gmx.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>,
-        Sven Schnelle <svens@stackframe.org>
+        Wed, 25 Dec 2019 03:33:19 -0500
+Received: from mail02.vodafone.es ([217.130.24.81]:27624 "EHLO
+        mail02.vodafone.es" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbfLYIdT (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 25 Dec 2019 03:33:19 -0500
+X-Greylist: delayed 302 seconds by postgrey-1.27 at vger.kernel.org; Wed, 25 Dec 2019 03:33:18 EST
+IronPort-SDR: PlwLikndLn8vmN3OFkaewEPqLvregsBjPStfIpHjnV5Ytot+lKzRmXJc0+CwrtH0sXMD5z2nt8
+ LHkGM//V59oA==
+IronPort-PHdr: =?us-ascii?q?9a23=3AOHVHehOvs5dVcersSN0l6mtUPXoX/o7sNwtQ0K?=
+ =?us-ascii?q?IMzox0Iv38rarrMEGX3/hxlliBBdydt6sfzbCM6Ou/AyQp2tWoiDg6aptCVh?=
+ =?us-ascii?q?sI2409vjcLJ4q7M3D9N+PgdCcgHc5PBxdP9nC/NlVJSo6lPwWB6nK94iQPFR?=
+ =?us-ascii?q?rhKAF7Ovr6GpLIj8Swyuu+54Dfbx9HiTagb75+Ngu6oRvfu8UZg4ZuNLs6xw?=
+ =?us-ascii?q?fUrHdPZ+lY335jK0iJnxb76Mew/Zpj/DpVtvk86cNOUrj0crohQ7BAAzsoL2?=
+ =?us-ascii?q?465MvwtRneVgSP/WcTUn8XkhVTHQfI6gzxU4rrvSv7sup93zSaPdHzQLspVz?=
+ =?us-ascii?q?mu87tnRRn1gyoBKjU38nzYitZogaxVoByhvQJxzY3Jbo6aKPVwcbjQfc8YSG?=
+ =?us-ascii?q?VdQspdSzBNDp26YoASD+QBJ+FYr4zlqlUItxS1GBOiBPnuyj9Nh3/2waw60/?=
+ =?us-ascii?q?o7Hgrb2wEgA88OsHDIo9X0KagdS/u1wbLNzTrZbvNW3S3x6JTWfRAlv/6MRa?=
+ =?us-ascii?q?h/ftbLxUk3CwPIl1OdopHmMTONzukBrXWX4uh6We6yhWMrtxt9riagy8s2hI?=
+ =?us-ascii?q?TEhoQYwU3e+ypj2oY6P9i4RVZ+Yd6jDZRfqTmXN5BzQsM+W2Fovzs6yqEetZ?=
+ =?us-ascii?q?67YicKzJMnygbaa/OdcoiI5gjjW/iVITtki39pYqy/hxGv/ke6xO38Uc+030?=
+ =?us-ascii?q?hQoiVbidnArnEN1xrN5cibUvZx4Fqt1DSV2wzO5OxIPVo4mbTUJpI7zLM9lo?=
+ =?us-ascii?q?IfsUHZES/3nEX2grWWdkIh+uWw9+Tnf7HmqYOdN4BpkA7+Kb8jmsmlDuQ5Ng?=
+ =?us-ascii?q?gCRXSb9vq41LL95U32WqlFgucukqnFqJzaP9gUpralAw9J1YYu8xK/Dzag0N?=
+ =?us-ascii?q?QFkngLNUpFdwidj4joIFHBPOv1Demwg1uyijdn3fPGMaP7ApXLMHfDlK3tfb?=
+ =?us-ascii?q?Fn605Tm0IPyoVb5pRJGvQZKejyQUTZqtPVFFk6PhayzuKhD89yhbkTQWaePq?=
+ =?us-ascii?q?jMFKqaiUWJ4+MzIveFLNsRsS7nKv0k+//whHIisU0afa6s1JoTLn2lSKdIOU?=
+ =?us-ascii?q?KcNF7lyu8bEGILogsgRaS+lECGWj9fbm2aWqs94ncnBYarFY7IAJix1u/SlB?=
+ =?us-ascii?q?ynF4FbMzgVQmuHFm3lIt2J?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2GTKgBOHQNemCMYgtllgkQBGAEBgns?=
+ =?us-ascii?q?3GyASk0JUBnUdihKFM4N8FYYaDIFbDQEBAQEBNQIBAYRAgiIkOBMCAw0BAQU?=
+ =?us-ascii?q?BAQEBAQUEAQECEAEBAQEBCAsLBimFSkIBDAGBayKEF4EDgSyDA4JTKa0XGgK?=
+ =?us-ascii?q?FI4R1gTYBjBgaeYEHgUSCMoUCARIBbIUhBI1FIYhLYZd+gj4EljANgikBjDg?=
+ =?us-ascii?q?DglSJEacigjdVgQuBCnFNOIFyGYEdTxgNjSyOLUCBFhACT4VAh1yCMgEB?=
+X-IPAS-Result: =?us-ascii?q?A2GTKgBOHQNemCMYgtllgkQBGAEBgns3GyASk0JUBnUdi?=
+ =?us-ascii?q?hKFM4N8FYYaDIFbDQEBAQEBNQIBAYRAgiIkOBMCAw0BAQUBAQEBAQUEAQECE?=
+ =?us-ascii?q?AEBAQEBCAsLBimFSkIBDAGBayKEF4EDgSyDA4JTKa0XGgKFI4R1gTYBjBgae?=
+ =?us-ascii?q?YEHgUSCMoUCARIBbIUhBI1FIYhLYZd+gj4EljANgikBjDgDglSJEacigjdVg?=
+ =?us-ascii?q?QuBCnFNOIFyGYEdTxgNjSyOLUCBFhACT4VAh1yCMgEB?=
+X-IronPort-AV: E=Sophos;i="5.69,353,1571695200"; 
+   d="scan'208";a="317906378"
+Received: from mailrel04.vodafone.es ([217.130.24.35])
+  by mail02.vodafone.es with ESMTP; 25 Dec 2019 09:27:58 +0100
+Received: (qmail 32233 invoked from network); 25 Dec 2019 04:33:51 -0000
+Received: from unknown (HELO 192.168.1.88) (seigo@[217.217.179.17])
+          (envelope-sender <tulcidas@mail.telepac.pt>)
+          by mailrel04.vodafone.es (qmail-ldap-1.03) with SMTP
+          for <linux-parisc@vger.kernel.org>; 25 Dec 2019 04:33:51 -0000
+Date:   Wed, 25 Dec 2019 05:33:42 +0100 (CET)
+From:   La Primitiva <tulcidas@mail.telepac.pt>
+Reply-To: La Primitiva <laprimitivaes@zohomail.eu>
+To:     linux-parisc@vger.kernel.org
+Message-ID: <27026285.259381.1577248423113.JavaMail.javamailuser@localhost>
+Subject: Take home 750,000 Euros this end of year
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The pull request you sent on Sat, 21 Dec 2019 15:35:39 +0100:
+Attn: Email User,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.5-2
+You have won, you are to reply back with your name and phone number for
+claim.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6210469417fd967ec72dea56723593beefeecafb
+La Primitiva
 
-Thank you!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+
+
+----------------------------------------------------
+This email was sent by the shareware version of Postman Professional.
+
