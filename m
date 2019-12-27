@@ -1,92 +1,103 @@
-Return-Path: <SRS0=6ex9=2P=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=NDYn=2R=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	LOTS_OF_MONEY,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFD16C2D0DB
-	for <linux-parisc@archiver.kernel.org>; Wed, 25 Dec 2019 08:33:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32B4AC2D0CE
+	for <linux-parisc@archiver.kernel.org>; Fri, 27 Dec 2019 17:43:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C784620730
-	for <linux-parisc@archiver.kernel.org>; Wed, 25 Dec 2019 08:33:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 075D121927
+	for <linux-parisc@archiver.kernel.org>; Fri, 27 Dec 2019 17:43:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1577468603;
+	bh=V4IO6kOWJmt05tF5obmitFkuflGbBRrOd2f4vBuEhxQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=T5bn7O6Siublet3f4Cj2u7sFcrJURgT3N1lrSQLEPQRo7bSKvjjPq4n/tNMG6yN4R
+	 FSXKXgSaqVhu/AHodE14tqV4gdV5M7XM3oqKbUo8zsu/YcAa2Hk28tkrvNl0B87INu
+	 ct3e6Yerr1kIrNqaj9+3AVliw0q4k4jV8Q7xsMZU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbfLYIdT (ORCPT
+        id S1728215AbfL0RnW (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 25 Dec 2019 03:33:19 -0500
-Received: from mail02.vodafone.es ([217.130.24.81]:27624 "EHLO
-        mail02.vodafone.es" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbfLYIdT (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 25 Dec 2019 03:33:19 -0500
-X-Greylist: delayed 302 seconds by postgrey-1.27 at vger.kernel.org; Wed, 25 Dec 2019 03:33:18 EST
-IronPort-SDR: PlwLikndLn8vmN3OFkaewEPqLvregsBjPStfIpHjnV5Ytot+lKzRmXJc0+CwrtH0sXMD5z2nt8
- LHkGM//V59oA==
-IronPort-PHdr: =?us-ascii?q?9a23=3AOHVHehOvs5dVcersSN0l6mtUPXoX/o7sNwtQ0K?=
- =?us-ascii?q?IMzox0Iv38rarrMEGX3/hxlliBBdydt6sfzbCM6Ou/AyQp2tWoiDg6aptCVh?=
- =?us-ascii?q?sI2409vjcLJ4q7M3D9N+PgdCcgHc5PBxdP9nC/NlVJSo6lPwWB6nK94iQPFR?=
- =?us-ascii?q?rhKAF7Ovr6GpLIj8Swyuu+54Dfbx9HiTagb75+Ngu6oRvfu8UZg4ZuNLs6xw?=
- =?us-ascii?q?fUrHdPZ+lY335jK0iJnxb76Mew/Zpj/DpVtvk86cNOUrj0crohQ7BAAzsoL2?=
- =?us-ascii?q?465MvwtRneVgSP/WcTUn8XkhVTHQfI6gzxU4rrvSv7sup93zSaPdHzQLspVz?=
- =?us-ascii?q?mu87tnRRn1gyoBKjU38nzYitZogaxVoByhvQJxzY3Jbo6aKPVwcbjQfc8YSG?=
- =?us-ascii?q?VdQspdSzBNDp26YoASD+QBJ+FYr4zlqlUItxS1GBOiBPnuyj9Nh3/2waw60/?=
- =?us-ascii?q?o7Hgrb2wEgA88OsHDIo9X0KagdS/u1wbLNzTrZbvNW3S3x6JTWfRAlv/6MRa?=
- =?us-ascii?q?h/ftbLxUk3CwPIl1OdopHmMTONzukBrXWX4uh6We6yhWMrtxt9riagy8s2hI?=
- =?us-ascii?q?TEhoQYwU3e+ypj2oY6P9i4RVZ+Yd6jDZRfqTmXN5BzQsM+W2Fovzs6yqEetZ?=
- =?us-ascii?q?67YicKzJMnygbaa/OdcoiI5gjjW/iVITtki39pYqy/hxGv/ke6xO38Uc+030?=
- =?us-ascii?q?hQoiVbidnArnEN1xrN5cibUvZx4Fqt1DSV2wzO5OxIPVo4mbTUJpI7zLM9lo?=
- =?us-ascii?q?IfsUHZES/3nEX2grWWdkIh+uWw9+Tnf7HmqYOdN4BpkA7+Kb8jmsmlDuQ5Ng?=
- =?us-ascii?q?gCRXSb9vq41LL95U32WqlFgucukqnFqJzaP9gUpralAw9J1YYu8xK/Dzag0N?=
- =?us-ascii?q?QFkngLNUpFdwidj4joIFHBPOv1Demwg1uyijdn3fPGMaP7ApXLMHfDlK3tfb?=
- =?us-ascii?q?Fn605Tm0IPyoVb5pRJGvQZKejyQUTZqtPVFFk6PhayzuKhD89yhbkTQWaePq?=
- =?us-ascii?q?jMFKqaiUWJ4+MzIveFLNsRsS7nKv0k+//whHIisU0afa6s1JoTLn2lSKdIOU?=
- =?us-ascii?q?KcNF7lyu8bEGILogsgRaS+lECGWj9fbm2aWqs94ncnBYarFY7IAJix1u/SlB?=
- =?us-ascii?q?ynF4FbMzgVQmuHFm3lIt2J?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2GTKgBOHQNemCMYgtllgkQBGAEBgns?=
- =?us-ascii?q?3GyASk0JUBnUdihKFM4N8FYYaDIFbDQEBAQEBNQIBAYRAgiIkOBMCAw0BAQU?=
- =?us-ascii?q?BAQEBAQUEAQECEAEBAQEBCAsLBimFSkIBDAGBayKEF4EDgSyDA4JTKa0XGgK?=
- =?us-ascii?q?FI4R1gTYBjBgaeYEHgUSCMoUCARIBbIUhBI1FIYhLYZd+gj4EljANgikBjDg?=
- =?us-ascii?q?DglSJEacigjdVgQuBCnFNOIFyGYEdTxgNjSyOLUCBFhACT4VAh1yCMgEB?=
-X-IPAS-Result: =?us-ascii?q?A2GTKgBOHQNemCMYgtllgkQBGAEBgns3GyASk0JUBnUdi?=
- =?us-ascii?q?hKFM4N8FYYaDIFbDQEBAQEBNQIBAYRAgiIkOBMCAw0BAQUBAQEBAQUEAQECE?=
- =?us-ascii?q?AEBAQEBCAsLBimFSkIBDAGBayKEF4EDgSyDA4JTKa0XGgKFI4R1gTYBjBgae?=
- =?us-ascii?q?YEHgUSCMoUCARIBbIUhBI1FIYhLYZd+gj4EljANgikBjDgDglSJEacigjdVg?=
- =?us-ascii?q?QuBCnFNOIFyGYEdTxgNjSyOLUCBFhACT4VAh1yCMgEB?=
-X-IronPort-AV: E=Sophos;i="5.69,353,1571695200"; 
-   d="scan'208";a="317906378"
-Received: from mailrel04.vodafone.es ([217.130.24.35])
-  by mail02.vodafone.es with ESMTP; 25 Dec 2019 09:27:58 +0100
-Received: (qmail 32233 invoked from network); 25 Dec 2019 04:33:51 -0000
-Received: from unknown (HELO 192.168.1.88) (seigo@[217.217.179.17])
-          (envelope-sender <tulcidas@mail.telepac.pt>)
-          by mailrel04.vodafone.es (qmail-ldap-1.03) with SMTP
-          for <linux-parisc@vger.kernel.org>; 25 Dec 2019 04:33:51 -0000
-Date:   Wed, 25 Dec 2019 05:33:42 +0100 (CET)
-From:   La Primitiva <tulcidas@mail.telepac.pt>
-Reply-To: La Primitiva <laprimitivaes@zohomail.eu>
-To:     linux-parisc@vger.kernel.org
-Message-ID: <27026285.259381.1577248423113.JavaMail.javamailuser@localhost>
-Subject: Take home 750,000 Euros this end of year
+        Fri, 27 Dec 2019 12:43:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728205AbfL0RnV (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 27 Dec 2019 12:43:21 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE08721744;
+        Fri, 27 Dec 2019 17:43:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577468600;
+        bh=V4IO6kOWJmt05tF5obmitFkuflGbBRrOd2f4vBuEhxQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=RDCqRBoxRTLivkVMn0Mnhy5KW2iB8LcuKWhM2W0vkMsblEoOS6F+eRxl7nu8hs0Dv
+         SZhg/X1HEOaxdekWNQYV8vEAakOZaXN+it0S8xbQRl1H1+cOPF1zWJ05VOBtwXtN13
+         NSxneasjNm3Sl2bZ8Om4JroGLaZZPZWD8z8uC1vA=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Sven Schnelle <svens@stackframe.org>, Helge Deller <deller@gmx.de>,
+        Sasha Levin <sashal@kernel.org>, linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 121/187] parisc: add missing __init annotation
+Date:   Fri, 27 Dec 2019 12:39:49 -0500
+Message-Id: <20191227174055.4923-121-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191227174055.4923-1-sashal@kernel.org>
+References: <20191227174055.4923-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Attn: Email User,
+From: Sven Schnelle <svens@stackframe.org>
 
-You have won, you are to reply back with your name and phone number for
-claim.
+[ Upstream commit aeea5eae4fd54e94d820ed17ea3b238160be723e ]
 
-La Primitiva
+compilation failed with:
 
+MODPOST vmlinux.o
+WARNING: vmlinux.o(.text.unlikely+0xa0c): Section mismatch in reference from the function walk_lower_bus() to the function .init.text:walk_native_bus()
+The function walk_lower_bus() references
+the function __init walk_native_bus().
+This is often because walk_lower_bus lacks a __init
+annotation or the annotation of walk_native_bus is wrong.
 
+FATAL: modpost: Section mismatches detected.
+Set CONFIG_SECTION_MISMATCH_WARN_ONLY=y to allow them.
+make[2]: *** [/home/svens/linux/parisc-linux/src/scripts/Makefile.modpost:64: __modpost] Error 1
+make[1]: *** [/home/svens/linux/parisc-linux/src/Makefile:1077: vmlinux] Error 2
+make[1]: Leaving directory '/home/svens/linux/parisc-linux/build'
+make: *** [Makefile:179: sub-make] Error 2
 
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/parisc/kernel/drivers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-----------------------------------------------------
-This email was sent by the shareware version of Postman Professional.
+diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
+index 3b330e58a4f0..a6c9f49c6612 100644
+--- a/arch/parisc/kernel/drivers.c
++++ b/arch/parisc/kernel/drivers.c
+@@ -810,7 +810,7 @@ EXPORT_SYMBOL(device_to_hwpath);
+ static void walk_native_bus(unsigned long io_io_low, unsigned long io_io_high,
+                             struct device *parent);
+ 
+-static void walk_lower_bus(struct parisc_device *dev)
++static void __init walk_lower_bus(struct parisc_device *dev)
+ {
+ 	unsigned long io_io_low, io_io_high;
+ 
+-- 
+2.20.1
 
