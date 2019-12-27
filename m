@@ -7,48 +7,50 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40CB7C2D0CE
-	for <linux-parisc@archiver.kernel.org>; Fri, 27 Dec 2019 17:47:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACD33C2D0DB
+	for <linux-parisc@archiver.kernel.org>; Fri, 27 Dec 2019 17:51:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1497421D7E
-	for <linux-parisc@archiver.kernel.org>; Fri, 27 Dec 2019 17:47:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 816152176D
+	for <linux-parisc@archiver.kernel.org>; Fri, 27 Dec 2019 17:51:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1577468832;
-	bh=h4EI1R3/8ZqYDlUaddUK89wFS87jVB3ZVX4EeXuri7Y=;
+	s=default; t=1577469107;
+	bh=zOuj6n+fYGJwlWbMnFsq3QNqgVU7cb1hz3VpkEgVXtw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=2PnCIZRlJblOo8QNxTQ0uo5yaQEUbSvg8+8zcGYh1+wx65axuGI9jhbvcZgXj9/kC
-	 +UVzbnrSt5cGwdOK5NOPnSowSRqGhnHxotnfssgYwF3UwTHC5nHktrkQNx6AOwLQKS
-	 tO/d0tMOV7mcQBgK4Jx9GRD1AKgTfWqa40R0ZYDM=
+	b=FsJjKeHeOi3N20mMXdJKH79bp2Pwp7VIYZuyrZ03vxFki29u8TMkTljCpS4cODZYm
+	 XUr1PCtneJ1zhNBXWVInIcIfPClWnhTvZ0UhL9aXMDmukEXqq+7tUlJ9Wu1efHfk6n
+	 yyB3SPOCKlUd0we9KDsUvzn/1CDgo+LeBoBn7j+g=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728126AbfL0RrH (ORCPT
+        id S1728207AbfL0RnU (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 27 Dec 2019 12:47:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43420 "EHLO mail.kernel.org"
+        Fri, 27 Dec 2019 12:43:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728261AbfL0RpB (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 27 Dec 2019 12:45:01 -0500
+        id S1728204AbfL0RnU (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 27 Dec 2019 12:43:20 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70E42222C4;
-        Fri, 27 Dec 2019 17:45:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF58624125;
+        Fri, 27 Dec 2019 17:43:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577468701;
-        bh=h4EI1R3/8ZqYDlUaddUK89wFS87jVB3ZVX4EeXuri7Y=;
+        s=default; t=1577468599;
+        bh=zOuj6n+fYGJwlWbMnFsq3QNqgVU7cb1hz3VpkEgVXtw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Aa7jvE2RwYcoFdUM1IIfsWSVOuu2GBs1zsOQ8jqmrsYcqdGUcP47C0We9WmDT3P7P
-         j11QFW1MjyVyGloiOj4N5O/AYxte/BU4Gg9pzhkdFeLpqVvkNK81OmPJyPOHd6P30f
-         wzHlY+GJG/vTWzte3p22Po8mK/qnRp9sBc1XWkpI=
+        b=czF3PFaFOytCq8N9iKpJ9RCyyCQUd59/JGNQGsKbQ7+XVA4qp3+1en/fMFxKDMtg3
+         OUrv8yPTrvppVhfcVagSGK6uqGz6oDjM4UC+UzdwvckLm+qxXTKeQ5ZzfPd0yTcxWF
+         ALN2QvmMOIDUcpQWvVO/ofxud74CsEV77MWhw5j0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sven Schnelle <svens@stackframe.org>, Helge Deller <deller@gmx.de>,
-        Sasha Levin <sashal@kernel.org>, linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 57/84] parisc: add missing __init annotation
-Date:   Fri, 27 Dec 2019 12:43:25 -0500
-Message-Id: <20191227174352.6264-57-sashal@kernel.org>
+Cc:     Sven Schnelle <svens@stackframe.org>,
+        kbuild test robot <lkp@intel.com>,
+        Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
+        linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 120/187] parisc: fix compilation when KEXEC=n and KEXEC_FILE=y
+Date:   Fri, 27 Dec 2019 12:39:48 -0500
+Message-Id: <20191227174055.4923-120-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191227174352.6264-1-sashal@kernel.org>
-References: <20191227174352.6264-1-sashal@kernel.org>
+In-Reply-To: <20191227174055.4923-1-sashal@kernel.org>
+References: <20191227174055.4923-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -60,44 +62,51 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Sven Schnelle <svens@stackframe.org>
 
-[ Upstream commit aeea5eae4fd54e94d820ed17ea3b238160be723e ]
+[ Upstream commit e16260c21f87b16a33ae8ecac9e8c79f3a8b89bd ]
 
-compilation failed with:
+Fix compilation when the CONFIG_KEXEC_FILE=y and
+CONFIG_KEXEC=n.
 
-MODPOST vmlinux.o
-WARNING: vmlinux.o(.text.unlikely+0xa0c): Section mismatch in reference from the function walk_lower_bus() to the function .init.text:walk_native_bus()
-The function walk_lower_bus() references
-the function __init walk_native_bus().
-This is often because walk_lower_bus lacks a __init
-annotation or the annotation of walk_native_bus is wrong.
-
-FATAL: modpost: Section mismatches detected.
-Set CONFIG_SECTION_MISMATCH_WARN_ONLY=y to allow them.
-make[2]: *** [/home/svens/linux/parisc-linux/src/scripts/Makefile.modpost:64: __modpost] Error 1
-make[1]: *** [/home/svens/linux/parisc-linux/src/Makefile:1077: vmlinux] Error 2
-make[1]: Leaving directory '/home/svens/linux/parisc-linux/build'
-make: *** [Makefile:179: sub-make] Error 2
-
+Reported-by: kbuild test robot <lkp@intel.com>
 Signed-off-by: Sven Schnelle <svens@stackframe.org>
 Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/parisc/kernel/drivers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/parisc/include/asm/kexec.h | 4 ----
+ arch/parisc/kernel/Makefile     | 2 +-
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
-index 5eb979d04b90..a1a5e4c59e6b 100644
---- a/arch/parisc/kernel/drivers.c
-+++ b/arch/parisc/kernel/drivers.c
-@@ -789,7 +789,7 @@ EXPORT_SYMBOL(device_to_hwpath);
- static void walk_native_bus(unsigned long io_io_low, unsigned long io_io_high,
-                             struct device *parent);
+diff --git a/arch/parisc/include/asm/kexec.h b/arch/parisc/include/asm/kexec.h
+index a99ea747d7ed..87e174006995 100644
+--- a/arch/parisc/include/asm/kexec.h
++++ b/arch/parisc/include/asm/kexec.h
+@@ -2,8 +2,6 @@
+ #ifndef _ASM_PARISC_KEXEC_H
+ #define _ASM_PARISC_KEXEC_H
  
--static void walk_lower_bus(struct parisc_device *dev)
-+static void __init walk_lower_bus(struct parisc_device *dev)
- {
- 	unsigned long io_io_low, io_io_high;
+-#ifdef CONFIG_KEXEC
+-
+ /* Maximum physical address we can use pages from */
+ #define KEXEC_SOURCE_MEMORY_LIMIT (-1UL)
+ /* Maximum address we can reach in physical address mode */
+@@ -32,6 +30,4 @@ static inline void crash_setup_regs(struct pt_regs *newregs,
  
+ #endif /* __ASSEMBLY__ */
+ 
+-#endif /* CONFIG_KEXEC */
+-
+ #endif /* _ASM_PARISC_KEXEC_H */
+diff --git a/arch/parisc/kernel/Makefile b/arch/parisc/kernel/Makefile
+index 2663c8f8be11..068d90950d93 100644
+--- a/arch/parisc/kernel/Makefile
++++ b/arch/parisc/kernel/Makefile
+@@ -37,5 +37,5 @@ obj-$(CONFIG_FUNCTION_GRAPH_TRACER)	+= ftrace.o
+ obj-$(CONFIG_JUMP_LABEL)		+= jump_label.o
+ obj-$(CONFIG_KGDB)			+= kgdb.o
+ obj-$(CONFIG_KPROBES)			+= kprobes.o
+-obj-$(CONFIG_KEXEC)			+= kexec.o relocate_kernel.o
++obj-$(CONFIG_KEXEC_CORE)		+= kexec.o relocate_kernel.o
+ obj-$(CONFIG_KEXEC_FILE)		+= kexec_file.o
 -- 
 2.20.1
 
