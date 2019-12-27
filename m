@@ -7,51 +7,50 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACD33C2D0DB
-	for <linux-parisc@archiver.kernel.org>; Fri, 27 Dec 2019 17:51:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35A7BC2D0C6
+	for <linux-parisc@archiver.kernel.org>; Fri, 27 Dec 2019 18:03:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 816152176D
-	for <linux-parisc@archiver.kernel.org>; Fri, 27 Dec 2019 17:51:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 09DCD206CB
+	for <linux-parisc@archiver.kernel.org>; Fri, 27 Dec 2019 18:03:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1577469107;
-	bh=zOuj6n+fYGJwlWbMnFsq3QNqgVU7cb1hz3VpkEgVXtw=;
+	s=default; t=1577469830;
+	bh=sy2Calgp9CwR7ibuyNniX63iyl5RxqkfSkdj2DtD6cM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=FsJjKeHeOi3N20mMXdJKH79bp2Pwp7VIYZuyrZ03vxFki29u8TMkTljCpS4cODZYm
-	 XUr1PCtneJ1zhNBXWVInIcIfPClWnhTvZ0UhL9aXMDmukEXqq+7tUlJ9Wu1efHfk6n
-	 yyB3SPOCKlUd0we9KDsUvzn/1CDgo+LeBoBn7j+g=
+	b=Lg/wAyd4yyjxwsDOY6wOgMf3aVGTzKlORxfwP7qNKC1LOqvJUgkJmmNAr7hbbJwik
+	 D2O2/iRrAJtUrbCVl7y9koI4F/RGRVXKYirZwVX/q3XWDPKn4NpYhlD+yOZ2qZ9lCV
+	 mYNxEdZ87Y+mbeBK4u86Bdkw2iy3wMBysYjTRq5s=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728207AbfL0RnU (ORCPT
+        id S1728691AbfL0SD3 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 27 Dec 2019 12:43:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40766 "EHLO mail.kernel.org"
+        Fri, 27 Dec 2019 13:03:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728204AbfL0RnU (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 27 Dec 2019 12:43:20 -0500
+        id S1728686AbfL0SD1 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 27 Dec 2019 13:03:27 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF58624125;
-        Fri, 27 Dec 2019 17:43:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A43C2173E;
+        Fri, 27 Dec 2019 18:03:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577468599;
-        bh=zOuj6n+fYGJwlWbMnFsq3QNqgVU7cb1hz3VpkEgVXtw=;
+        s=default; t=1577469806;
+        bh=sy2Calgp9CwR7ibuyNniX63iyl5RxqkfSkdj2DtD6cM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=czF3PFaFOytCq8N9iKpJ9RCyyCQUd59/JGNQGsKbQ7+XVA4qp3+1en/fMFxKDMtg3
-         OUrv8yPTrvppVhfcVagSGK6uqGz6oDjM4UC+UzdwvckLm+qxXTKeQ5ZzfPd0yTcxWF
-         ALN2QvmMOIDUcpQWvVO/ofxud74CsEV77MWhw5j0=
+        b=wtV4bh0S0i/t5I3QqXbndb1eHygbgjOX5YprWVvqn+EiNRX7Ny+4TzsxG29gXcnxy
+         2PZNqcDFkqL1Kr4d/XQE41yqmYY936eMplM/4UvM1vpo7LTrVAJgv5xR+F2rvaE+XL
+         EH4Ch7k4I3fRJydxpUG5XmQn/657gvNz+EpoH9VE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sven Schnelle <svens@stackframe.org>,
-        kbuild test robot <lkp@intel.com>,
-        Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
+Cc:     Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
         linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 120/187] parisc: fix compilation when KEXEC=n and KEXEC_FILE=y
-Date:   Fri, 27 Dec 2019 12:39:48 -0500
-Message-Id: <20191227174055.4923-120-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 53/57] parisc: Fix compiler warnings in debug_core.c
+Date:   Fri, 27 Dec 2019 13:02:18 -0500
+Message-Id: <20191227180222.7076-53-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191227174055.4923-1-sashal@kernel.org>
-References: <20191227174055.4923-1-sashal@kernel.org>
+In-Reply-To: <20191227180222.7076-1-sashal@kernel.org>
+References: <20191227180222.7076-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -60,53 +59,48 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Sven Schnelle <svens@stackframe.org>
+From: Helge Deller <deller@gmx.de>
 
-[ Upstream commit e16260c21f87b16a33ae8ecac9e8c79f3a8b89bd ]
+[ Upstream commit 75cf9797006a3a9f29a3a25c1febd6842a4a9eb2 ]
 
-Fix compilation when the CONFIG_KEXEC_FILE=y and
-CONFIG_KEXEC=n.
+Fix this compiler warning:
+kernel/debug/debug_core.c: In function ‘kgdb_cpu_enter’:
+arch/parisc/include/asm/cmpxchg.h:48:3: warning: value computed is not used [-Wunused-value]
+   48 |  ((__typeof__(*(ptr)))__xchg((unsigned long)(x), (ptr), sizeof(*(ptr))))
+arch/parisc/include/asm/atomic.h:78:30: note: in expansion of macro ‘xchg’
+   78 | #define atomic_xchg(v, new) (xchg(&((v)->counter), new))
+      |                              ^~~~
+kernel/debug/debug_core.c:596:4: note: in expansion of macro ‘atomic_xchg’
+  596 |    atomic_xchg(&kgdb_active, cpu);
+      |    ^~~~~~~~~~~
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
 Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/parisc/include/asm/kexec.h | 4 ----
- arch/parisc/kernel/Makefile     | 2 +-
- 2 files changed, 1 insertion(+), 5 deletions(-)
+ arch/parisc/include/asm/cmpxchg.h | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/parisc/include/asm/kexec.h b/arch/parisc/include/asm/kexec.h
-index a99ea747d7ed..87e174006995 100644
---- a/arch/parisc/include/asm/kexec.h
-+++ b/arch/parisc/include/asm/kexec.h
-@@ -2,8 +2,6 @@
- #ifndef _ASM_PARISC_KEXEC_H
- #define _ASM_PARISC_KEXEC_H
+diff --git a/arch/parisc/include/asm/cmpxchg.h b/arch/parisc/include/asm/cmpxchg.h
+index f627c37dad9c..ab5c215cf46c 100644
+--- a/arch/parisc/include/asm/cmpxchg.h
++++ b/arch/parisc/include/asm/cmpxchg.h
+@@ -44,8 +44,14 @@ __xchg(unsigned long x, __volatile__ void *ptr, int size)
+ **		if (((unsigned long)p & 0xf) == 0)
+ **			return __ldcw(p);
+ */
+-#define xchg(ptr, x) \
+-	((__typeof__(*(ptr)))__xchg((unsigned long)(x), (ptr), sizeof(*(ptr))))
++#define xchg(ptr, x)							\
++({									\
++	__typeof__(*(ptr)) __ret;					\
++	__typeof__(*(ptr)) _x_ = (x);					\
++	__ret = (__typeof__(*(ptr)))					\
++		__xchg((unsigned long)_x_, (ptr), sizeof(*(ptr)));	\
++	__ret;								\
++})
  
--#ifdef CONFIG_KEXEC
--
- /* Maximum physical address we can use pages from */
- #define KEXEC_SOURCE_MEMORY_LIMIT (-1UL)
- /* Maximum address we can reach in physical address mode */
-@@ -32,6 +30,4 @@ static inline void crash_setup_regs(struct pt_regs *newregs,
- 
- #endif /* __ASSEMBLY__ */
- 
--#endif /* CONFIG_KEXEC */
--
- #endif /* _ASM_PARISC_KEXEC_H */
-diff --git a/arch/parisc/kernel/Makefile b/arch/parisc/kernel/Makefile
-index 2663c8f8be11..068d90950d93 100644
---- a/arch/parisc/kernel/Makefile
-+++ b/arch/parisc/kernel/Makefile
-@@ -37,5 +37,5 @@ obj-$(CONFIG_FUNCTION_GRAPH_TRACER)	+= ftrace.o
- obj-$(CONFIG_JUMP_LABEL)		+= jump_label.o
- obj-$(CONFIG_KGDB)			+= kgdb.o
- obj-$(CONFIG_KPROBES)			+= kprobes.o
--obj-$(CONFIG_KEXEC)			+= kexec.o relocate_kernel.o
-+obj-$(CONFIG_KEXEC_CORE)		+= kexec.o relocate_kernel.o
- obj-$(CONFIG_KEXEC_FILE)		+= kexec_file.o
+ /* bug catcher for when unsupported size is used - won't link */
+ extern void __cmpxchg_called_with_bad_pointer(void);
 -- 
 2.20.1
 
