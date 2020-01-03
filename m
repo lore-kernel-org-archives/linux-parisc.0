@@ -1,130 +1,87 @@
-Return-Path: <SRS0=1KZg=2X=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=idTa=2Y=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF92CC2D0DC
-	for <linux-parisc@archiver.kernel.org>; Thu,  2 Jan 2020 17:24:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF467C2D0C2
+	for <linux-parisc@archiver.kernel.org>; Fri,  3 Jan 2020 16:39:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 96EA521734
-	for <linux-parisc@archiver.kernel.org>; Thu,  2 Jan 2020 17:24:46 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aTDKPpiC"
+	by mail.kernel.org (Postfix) with ESMTP id 936C92465B
+	for <linux-parisc@archiver.kernel.org>; Fri,  3 Jan 2020 16:39:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1578069574;
+	bh=KcvtLb+TfRw1uY1bkvdvgbpsv4uEyCRqJ6XVxzKKvF0=;
+	h=From:To:Cc:Subject:Date:List-ID:From;
+	b=wGfdXuSQJRXnmq+V9VKCNOr500jrLsQRR5zSNbi9G9hBAlBhU3b7P7TL7gglZ0yb8
+	 BTG8OIIywgR5Hj0arJjyb8BqcZxpxIBhByK+T90rP3m36kp3nQmbUJLA08JMVHz89P
+	 m3eBp2gbHY0pBetqtcUKyqpYmcX26WVIhT73buME=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727422AbgABRYn (ORCPT
+        id S1728024AbgACQje (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 2 Jan 2020 12:24:43 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:33920 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727854AbgABRYV (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 2 Jan 2020 12:24:21 -0500
-Received: by mail-wr1-f68.google.com with SMTP id t2so39963464wrr.1;
-        Thu, 02 Jan 2020 09:24:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=L1XTkfPnf+xygEwiEa8xupdElziS0T1yXcRh//IpEmk=;
-        b=aTDKPpiCwVSTja4oES5GrKlvuc++gzMK0wRFPgM9RFp6FDFXnhIvqVR37S1wOloKgc
-         8PHFWsZHUUHwNchW5ypD7FMh/aRveA56atk+VfNafRRwcVvHiOpTg5RMehfRqicVzeZi
-         fgyWXfvccl7ZR6kNFLcInbO+IEPQiwOrEsFnyu2Lqc+kUv1Wyc7MEnLCoFmZ72dPRrHD
-         QUW5sbxh60hYTgM3WAcJb7tk2gyqGqP1FUyc6uDPfLRlWZbCX+rjc5or/MW0e82ORdGp
-         xkVnWXOyQaOQm60PpakJZI94qub7G9owf/iV0kfm0dW1A3NsIujTEEbx6iUYvr2vsruo
-         A9qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=L1XTkfPnf+xygEwiEa8xupdElziS0T1yXcRh//IpEmk=;
-        b=PUdlRTn4gsudEDyYL3yss9lTpH68DQLIJpmgyaNNrt8hoDHl9Q/nKSto1tcB2tYioF
-         oT88YexY9ckgfa6pEkUoH2Mu9vOQEw2Mh6nUkcaK6UbYds6rMTOHMF8RcSMqbjrGZ/2t
-         kaEDr53GigcoUmO3SUH/JWdg55+0nge/W4mvAWV/BpDvMkZYtUYrSO1VpdrY53TQ0GA7
-         6kUO+1nZTWEIF9ArRlkjr4I4r8pZAwYWa4wH5z09mrsHaRJAid5czTWHAE8WynFi0iV7
-         5jeHUc/m71oXZh3pY7qMtLw3CN8PHA1kVlXTBQVNyDad4ZQ+QgU7NSYXXC84vtAKRZ4y
-         SztA==
-X-Gm-Message-State: APjAAAVJ4ZoREFter5Qnu5Y0APHDHCkYdw7OiL020BZBhUhwdsH4EkBH
-        UJzqIEbXnMTZXhSjOYMcrF1Rc8VFhzaBepW8
-X-Google-Smtp-Source: APXvYqzmOOKoMQKUxWUbitYsx3DhPyjVEL1vmWvRp3MkUNKIFndDIEsRrTuY+pZUkYhi78MTdV2b3A==
-X-Received: by 2002:adf:ea88:: with SMTP id s8mr83518881wrm.293.1577985859767;
-        Thu, 02 Jan 2020 09:24:19 -0800 (PST)
-Received: from amanieu-laptop.home ([2a01:cb19:8051:6200:3fe7:84:7f3:e713])
-        by smtp.gmail.com with ESMTPSA id z21sm9480328wml.5.2020.01.02.09.24.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jan 2020 09:24:19 -0800 (PST)
-From:   Amanieu d'Antras <amanieu@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Christian Brauner <christian@brauner.io>, stable@vger.kernel.org,
-        Amanieu d'Antras <amanieu@gmail.com>,
-        linux-parisc@vger.kernel.org
-Subject: [PATCH 4/7] parisc: Implement copy_thread_tls
-Date:   Thu,  2 Jan 2020 18:24:10 +0100
-Message-Id: <20200102172413.654385-5-amanieu@gmail.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200102172413.654385-1-amanieu@gmail.com>
-References: <20200102172413.654385-1-amanieu@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 3 Jan 2020 11:39:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727859AbgACQjd (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 3 Jan 2020 11:39:33 -0500
+Received: from localhost.localdomain (unknown [194.230.155.149])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4208206DB;
+        Fri,  3 Jan 2020 16:39:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1578069573;
+        bh=KcvtLb+TfRw1uY1bkvdvgbpsv4uEyCRqJ6XVxzKKvF0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LOZmr+i4jRgwSxWi5VgUA43TvKSnrW8qnE6mK25b30xr16UOeTUcaErQWMoD9qcpg
+         8B/9TLXN7UCk8ZoD7SaC9Lv1rS4KYBHAbPSV1IVdIYgkbR7YAiiy66zDTa79ID0zPH
+         zGq/Ij7X9oIc//Otvl1X7ZH6i8D5CQFRYN32r1dY=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] parisc: Use proper printk format for resource_size_t
+Date:   Fri,  3 Jan 2020 17:39:25 +0100
+Message-Id: <20200103163925.3967-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-This is required for clone3 which passes the TLS value through a
-struct rather than a register.
+resource_size_t should be printed with its own size-independent format
+to fix warnings when compiling on 64-bit platform (e.g. with
+COMPILE_TEST):
 
-Signed-off-by: Amanieu d'Antras <amanieu@gmail.com>
-Cc: linux-parisc@vger.kernel.org
-Cc: <stable@vger.kernel.org> # 5.3.x
+    arch/parisc/kernel/drivers.c: In function 'print_parisc_device':
+    arch/parisc/kernel/drivers.c:892:9: warning:
+        format '%p' expects argument of type 'void *',
+        but argument 4 has type 'resource_size_t {aka unsigned int}' [-Wformat=]
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/parisc/Kconfig          | 1 +
- arch/parisc/kernel/process.c | 8 ++++----
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ arch/parisc/kernel/drivers.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index b16237c95ea3..0c29d6cb2c8d 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -62,6 +62,7 @@ config PARISC
- 	select HAVE_FTRACE_MCOUNT_RECORD if HAVE_DYNAMIC_FTRACE
- 	select HAVE_KPROBES_ON_FTRACE
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
-+	select HAVE_COPY_THREAD_TLS
+diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
+index a6c9f49c6612..a154de424421 100644
+--- a/arch/parisc/kernel/drivers.c
++++ b/arch/parisc/kernel/drivers.c
+@@ -889,8 +889,8 @@ static void print_parisc_device(struct parisc_device *dev)
+ 	static int count;
  
- 	help
- 	  The PA-RISC microprocessor is designed by Hewlett-Packard and used
-diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-index ecc5c2771208..230a6422b99f 100644
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -208,8 +208,8 @@ arch_initcall(parisc_idle_init);
-  * Copy architecture-specific thread state
-  */
- int
--copy_thread(unsigned long clone_flags, unsigned long usp,
--	    unsigned long kthread_arg, struct task_struct *p)
-+copy_thread_tls(unsigned long clone_flags, unsigned long usp,
-+	    unsigned long kthread_arg, struct task_struct *p, unsigned long tls)
- {
- 	struct pt_regs *cregs = &(p->thread.regs);
- 	void *stack = task_stack_page(p);
-@@ -254,9 +254,9 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
- 		cregs->ksp = (unsigned long)stack + THREAD_SZ_ALGN + FRAME_SIZE;
- 		cregs->kpc = (unsigned long) &child_return;
+ 	print_pa_hwpath(dev, hw_path);
+-	pr_info("%d. %s at 0x%px [%s] { %d, 0x%x, 0x%.3x, 0x%.5x }",
+-		++count, dev->name, (void*) dev->hpa.start, hw_path, dev->id.hw_type,
++	pr_info("%d. %s at %pa[p] [%s] { %d, 0x%x, 0x%.3x, 0x%.5x }",
++		++count, dev->name, &(dev->hpa.start), hw_path, dev->id.hw_type,
+ 		dev->id.hversion_rev, dev->id.hversion, dev->id.sversion);
  
--		/* Setup thread TLS area from the 4th parameter in clone */
-+		/* Setup thread TLS area */
- 		if (clone_flags & CLONE_SETTLS)
--			cregs->cr27 = cregs->gr[23];
-+			cregs->cr27 = tls;
- 	}
- 
- 	return 0;
+ 	if (dev->num_addrs) {
 -- 
-2.24.1
+2.17.1
 
