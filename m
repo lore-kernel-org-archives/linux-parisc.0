@@ -1,87 +1,109 @@
-Return-Path: <SRS0=idTa=2Y=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=xjK1=23=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF467C2D0C2
-	for <linux-parisc@archiver.kernel.org>; Fri,  3 Jan 2020 16:39:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A9F5C33C9E
+	for <linux-parisc@archiver.kernel.org>; Mon,  6 Jan 2020 17:40:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 936C92465B
-	for <linux-parisc@archiver.kernel.org>; Fri,  3 Jan 2020 16:39:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 51A49207FD
+	for <linux-parisc@archiver.kernel.org>; Mon,  6 Jan 2020 17:40:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1578069574;
-	bh=KcvtLb+TfRw1uY1bkvdvgbpsv4uEyCRqJ6XVxzKKvF0=;
-	h=From:To:Cc:Subject:Date:List-ID:From;
-	b=wGfdXuSQJRXnmq+V9VKCNOr500jrLsQRR5zSNbi9G9hBAlBhU3b7P7TL7gglZ0yb8
-	 BTG8OIIywgR5Hj0arJjyb8BqcZxpxIBhByK+T90rP3m36kp3nQmbUJLA08JMVHz89P
-	 m3eBp2gbHY0pBetqtcUKyqpYmcX26WVIhT73buME=
+	s=default; t=1578332437;
+	bh=2O0W/tynC6b80YiiQJpFk+G/MQLdNHQcIH7GT7Csbyc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=RkiNI0oR8XJlObH89RZcQtJtq7peYSOBoQWuk05QTERqgQGYxfxckmTXO1hRDZJ/Q
+	 jqvzjIAd7Ut9PZcbwO+c2qC2A4JrEIppNRRO44TV6ACWTKIFv1zfN/fDZeeiwS/nMq
+	 U4D9x1ZkeiPOIuaPEcj9TU8chA0tHEuACrH3lXW0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728024AbgACQje (ORCPT
+        id S1726569AbgAFRkg (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 3 Jan 2020 11:39:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44882 "EHLO mail.kernel.org"
+        Mon, 6 Jan 2020 12:40:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727859AbgACQjd (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 3 Jan 2020 11:39:33 -0500
-Received: from localhost.localdomain (unknown [194.230.155.149])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726448AbgAFRkg (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 6 Jan 2020 12:40:36 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4208206DB;
-        Fri,  3 Jan 2020 16:39:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 249F42072A;
+        Mon,  6 Jan 2020 17:40:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578069573;
-        bh=KcvtLb+TfRw1uY1bkvdvgbpsv4uEyCRqJ6XVxzKKvF0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LOZmr+i4jRgwSxWi5VgUA43TvKSnrW8qnE6mK25b30xr16UOeTUcaErQWMoD9qcpg
-         8B/9TLXN7UCk8ZoD7SaC9Lv1rS4KYBHAbPSV1IVdIYgkbR7YAiiy66zDTa79ID0zPH
-         zGq/Ij7X9oIc//Otvl1X7ZH6i8D5CQFRYN32r1dY=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] parisc: Use proper printk format for resource_size_t
-Date:   Fri,  3 Jan 2020 17:39:25 +0100
-Message-Id: <20200103163925.3967-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        s=default; t=1578332435;
+        bh=2O0W/tynC6b80YiiQJpFk+G/MQLdNHQcIH7GT7Csbyc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZdvlhiL42A1vrTkEu8EuJM3kwhLOD5LAtOJZ2dMMQ+Trc98AtvLqwbzxFuJAY3qGu
+         AR9tbjzyxO35jsrOCkr4krGu09W0XFU5HVDpoh1Voqju+MowENLQR9vGskyNASKx+3
+         by7d90gv3cMm9dd0JtCc6D+hev+8ErOYAiM2/FCs=
+Date:   Mon, 6 Jan 2020 17:40:28 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        James Hogan <jhogan@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Robert Richter <rric@kernel.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        oprofile-list@lists.sf.net, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Subject: Re: [PATCH v3 02/22] compat: provide compat_ptr() on all
+ architectures
+Message-ID: <20200106174027.GC9676@willie-the-truck>
+References: <20200102145552.1853992-1-arnd@arndb.de>
+ <20200102145552.1853992-3-arnd@arndb.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200102145552.1853992-3-arnd@arndb.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-resource_size_t should be printed with its own size-independent format
-to fix warnings when compiling on 64-bit platform (e.g. with
-COMPILE_TEST):
+On Thu, Jan 02, 2020 at 03:55:20PM +0100, Arnd Bergmann wrote:
+> In order to avoid needless #ifdef CONFIG_COMPAT checks,
+> move the compat_ptr() definition to linux/compat.h
+> where it can be seen by any file regardless of the
+> architecture.
+> 
+> Only s390 needs a special definition, this can use the
+> self-#define trick we have elsewhere.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/arm64/include/asm/compat.h   | 17 -----------------
+>  arch/mips/include/asm/compat.h    | 18 ------------------
+>  arch/parisc/include/asm/compat.h  | 17 -----------------
+>  arch/powerpc/include/asm/compat.h | 17 -----------------
+>  arch/powerpc/oprofile/backtrace.c |  2 +-
+>  arch/s390/include/asm/compat.h    |  6 +-----
+>  arch/sparc/include/asm/compat.h   | 17 -----------------
+>  arch/x86/include/asm/compat.h     | 17 -----------------
+>  include/linux/compat.h            | 18 ++++++++++++++++++
+>  9 files changed, 20 insertions(+), 109 deletions(-)
 
-    arch/parisc/kernel/drivers.c: In function 'print_parisc_device':
-    arch/parisc/kernel/drivers.c:892:9: warning:
-        format '%p' expects argument of type 'void *',
-        but argument 4 has type 'resource_size_t {aka unsigned int}' [-Wformat=]
+For arm64:
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/parisc/kernel/drivers.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Acked-by: Will Deacon <will@kernel.org>
 
-diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
-index a6c9f49c6612..a154de424421 100644
---- a/arch/parisc/kernel/drivers.c
-+++ b/arch/parisc/kernel/drivers.c
-@@ -889,8 +889,8 @@ static void print_parisc_device(struct parisc_device *dev)
- 	static int count;
- 
- 	print_pa_hwpath(dev, hw_path);
--	pr_info("%d. %s at 0x%px [%s] { %d, 0x%x, 0x%.3x, 0x%.5x }",
--		++count, dev->name, (void*) dev->hpa.start, hw_path, dev->id.hw_type,
-+	pr_info("%d. %s at %pa[p] [%s] { %d, 0x%x, 0x%.3x, 0x%.5x }",
-+		++count, dev->name, &(dev->hpa.start), hw_path, dev->id.hw_type,
- 		dev->id.hversion_rev, dev->id.hversion, dev->id.sversion);
- 
- 	if (dev->num_addrs) {
--- 
-2.17.1
-
+Will
