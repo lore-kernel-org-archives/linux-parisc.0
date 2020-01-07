@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FA59C33C9E
-	for <linux-parisc@archiver.kernel.org>; Tue,  7 Jan 2020 16:54:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 717C2C3F68F
+	for <linux-parisc@archiver.kernel.org>; Tue,  7 Jan 2020 16:55:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 46CDD222D9
-	for <linux-parisc@archiver.kernel.org>; Tue,  7 Jan 2020 16:54:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 448B924679
+	for <linux-parisc@archiver.kernel.org>; Tue,  7 Jan 2020 16:55:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1578416099;
-	bh=kYrH24ncGNFFYQLQ9wHiRAtooGLl8xeKtAWqiO+vhmI=;
+	s=default; t=1578416100;
+	bh=OxGpMROhFQfzTTYuwcffnfrxlv/oQuz0yC/lpIU6MVM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=XrXJnhDQHch5o9BXF9cU4SCB110lTEMmkSLzc3a8qiVo9s74U0m3DRfdAVthcjhEB
-	 QP+C3knWox20Xe4zBC/k6qXrZ20A+rNrcf0czT9Cw5H+169YmKhcuzL/IxTYu5Ojpl
-	 XnNtxLPktGW0K40wPy95z+Y866GuEw2vrRrvGHFY=
+	b=jY5DKWO4yuB99qi97gZX3E7+8pkkQK8q7mKxj+ZRtiH5uhe44jE5fsqVI3ltwpO3P
+	 CGWw8j6Vr6xj1+IczEls1DruHBLHS993fxGkulmjeDLqWvb71l+JnctJxNJiVhDJ6J
+	 32H6x00zgoYliVu+2G7hMq+reb4nVKfNzYEOoqzA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728671AbgAGQyw (ORCPT
+        id S1728695AbgAGQy7 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 7 Jan 2020 11:54:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42646 "EHLO mail.kernel.org"
+        Tue, 7 Jan 2020 11:54:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728391AbgAGQyv (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 7 Jan 2020 11:54:51 -0500
+        id S1728391AbgAGQy7 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 7 Jan 2020 11:54:59 -0500
 Received: from PC-kkoz.proceq.com (unknown [213.160.61.66])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95E1224677;
-        Tue,  7 Jan 2020 16:54:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC2332073D;
+        Tue,  7 Jan 2020 16:54:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578416090;
-        bh=kYrH24ncGNFFYQLQ9wHiRAtooGLl8xeKtAWqiO+vhmI=;
+        s=default; t=1578416098;
+        bh=OxGpMROhFQfzTTYuwcffnfrxlv/oQuz0yC/lpIU6MVM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ktJ602nrKO22v0uNZz36NC/2TQ72yN6ijh2qShGKTyM6sP8S4sHzrYeq95duxemBM
-         F0Hlx7sC2SFMxEUl0tafeD+qmflFDYmaI7aUvp442eXhKcmauRa4vF7iN/d/RiSgKl
-         +G0tMhwntosCt0ljDnAplFNWUVM/SIIt7orUHcV0=
+        b=PcOSHuIz8JBQafaZPl+Y77y1zkCvkDs1VBTp8LO+zbVny8hx/J6wPKXXuNO7qZWEv
+         t6vz7ARhdkvNJkn9k0UR4+64ynQfKbLLkft81RKWt9DPPnm6RjSRwXpheXwqqvs7m6
+         FQodZWHFP1QQuRMVqE/1jSl8YKy77s4AYmuLiyXQ=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Richard Henderson <rth@twiddle.net>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
@@ -79,9 +79,9 @@ To:     Richard Henderson <rth@twiddle.net>,
         virtualization@lists.linux-foundation.org,
         linux-arch@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [RFT 07/13] drm/mgag200: Constify ioreadX() iomem argument (as in generic implementation)
-Date:   Tue,  7 Jan 2020 17:53:06 +0100
-Message-Id: <1578415992-24054-10-git-send-email-krzk@kernel.org>
+Subject: [RFT 08/13] drm/nouveau: Constify ioreadX() iomem argument (as in generic implementation)
+Date:   Tue,  7 Jan 2020 17:53:07 +0100
+Message-Id: <1578415992-24054-11-git-send-email-krzk@kernel.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1578415992-24054-1-git-send-email-krzk@kernel.org>
 References: <1578415992-24054-1-git-send-email-krzk@kernel.org>
@@ -99,25 +99,22 @@ consistency among architectures.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/gpu/drm/mgag200/mgag200_drv.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_bo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/mgag200/mgag200_drv.h b/drivers/gpu/drm/mgag200/mgag200_drv.h
-index aa32aad222c2..6512b3af4fb7 100644
---- a/drivers/gpu/drm/mgag200/mgag200_drv.h
-+++ b/drivers/gpu/drm/mgag200/mgag200_drv.h
-@@ -34,9 +34,9 @@
+diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
+index f8015e0318d7..5120d062c2df 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_bo.c
++++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
+@@ -613,7 +613,7 @@ nouveau_bo_rd32(struct nouveau_bo *nvbo, unsigned index)
+ 	mem += index;
  
- #define MGAG200FB_CONN_LIMIT 1
- 
--#define RREG8(reg) ioread8(((void __iomem *)mdev->rmmio) + (reg))
-+#define RREG8(reg) ioread8(((const void __iomem *)mdev->rmmio) + (reg))
- #define WREG8(reg, v) iowrite8(v, ((void __iomem *)mdev->rmmio) + (reg))
--#define RREG32(reg) ioread32(((void __iomem *)mdev->rmmio) + (reg))
-+#define RREG32(reg) ioread32(((const void __iomem *)mdev->rmmio) + (reg))
- #define WREG32(reg, v) iowrite32(v, ((void __iomem *)mdev->rmmio) + (reg))
- 
- #define ATTR_INDEX 0x1fc0
+ 	if (is_iomem)
+-		return ioread32_native((void __force __iomem *)mem);
++		return ioread32_native((const void __force __iomem *)mem);
+ 	else
+ 		return *mem;
+ }
 -- 
 2.7.4
 
