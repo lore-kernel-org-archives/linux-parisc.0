@@ -7,38 +7,38 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6744C33CA2
-	for <linux-parisc@archiver.kernel.org>; Wed,  8 Jan 2020 20:06:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A8EAC33CA1
+	for <linux-parisc@archiver.kernel.org>; Wed,  8 Jan 2020 20:06:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8CE9B20643
+	by mail.kernel.org (Postfix) with ESMTP id F31F220643
 	for <linux-parisc@archiver.kernel.org>; Wed,  8 Jan 2020 20:06:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1578514001;
-	bh=HCaYTB1zjoRsDFDAYW5IZdMXtSdvLZDxsdHLQEpJXVw=;
+	s=default; t=1578514002;
+	bh=GncZJES9Pi+VGkKtqPts7U7bz/5zDiGW+ajpMZK1gUg=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=WzrrgeYcGXok/22AV5hXLnN9bbTXFbCwzMAnX9xFehlJHnNlI8jdwK/9uFe7B4CsY
-	 HyaqmNtRXq6T6UklAUOgJC6JbjAwabM5ndFmUeP6cHTQDX4zf4wtpq1ldvB45I1cmo
-	 xtH9YTvcFuppd/ryzOembtBfrDIqUhrzjdMPdQr0=
+	b=SDyjT6x5oh4zIRTkpAjjO7wU7N7yGaFxrIOATs5TCjBwfqbZ3lgCNu18ngIpPeNt6
+	 o4LviCUjFwr0RHUU5WcS+PKDc+tHV23suqvYVFj6UMMh8QJ32wcTo1yXJX1uOMM1wX
+	 XrGDKX4FdEbDe8VyVjCovg4Cd2CAQXLx56/xqfBE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbgAHUGe (ORCPT
+        id S1727137AbgAHUGZ (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 8 Jan 2020 15:06:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60040 "EHLO mail.kernel.org"
+        Wed, 8 Jan 2020 15:06:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726702AbgAHUGd (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 8 Jan 2020 15:06:33 -0500
+        id S1727127AbgAHUGY (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 8 Jan 2020 15:06:24 -0500
 Received: from localhost.localdomain (unknown [83.218.167.187])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C73972072A;
-        Wed,  8 Jan 2020 20:06:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0CD320705;
+        Wed,  8 Jan 2020 20:06:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578513992;
-        bh=HCaYTB1zjoRsDFDAYW5IZdMXtSdvLZDxsdHLQEpJXVw=;
+        s=default; t=1578513983;
+        bh=GncZJES9Pi+VGkKtqPts7U7bz/5zDiGW+ajpMZK1gUg=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=m+nvoD3luPC+M4NYm9Cy4BcKfxdPdPUsJ31Cd7NkOVQ+WOFcAXwSaITpIPz1EqvoH
-         +eMoq0S0mICrEfHCjUhhQI8kcaAxgbrRKLZuMNnZxLLRWRLbcmGrTPANM+zEfxOomW
-         kmDDOtmeZ9MFoNKtMrTgtyh+9s8VZmSJxKatZzaI=
+        b=kZmAdTXAIH93VZ7xMF5Tlek9euzWKJeDMcMLgREM96Lm0wU6+4tSnGhi3xZVs0qsy
+         7HMtGcLv4d3nPEcSEgyudvX4g/JRIQY1BmbYHTuBqturlEGI3oBAItsgQ9JvRd2+zR
+         bWS5j+8gDixdaKa8O8oxs69s2fpbmcWBqAK1Jq2k=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Richard Henderson <rth@twiddle.net>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
@@ -78,9 +78,9 @@ To:     Richard Henderson <rth@twiddle.net>,
         netdev@vger.kernel.org, linux-ntb@googlegroups.com,
         virtualization@lists.linux-foundation.org,
         linux-arch@vger.kernel.org
-Subject: [PATCH v2 5/9] arc: Constify ioreadX() iomem argument (as in generic implementation)
-Date:   Wed,  8 Jan 2020 21:05:24 +0100
-Message-Id: <20200108200528.4614-6-krzk@kernel.org>
+Subject: [PATCH v2 4/9] virtio: pci: Constify ioreadX() iomem argument (as in generic implementation)
+Date:   Wed,  8 Jan 2020 21:05:23 +0100
+Message-Id: <20200108200528.4614-5-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200108200528.4614-1-krzk@kernel.org>
 References: <20200108200528.4614-1-krzk@kernel.org>
@@ -92,37 +92,45 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 The ioreadX() helpers have inconsistent interface.  On some architectures
 void *__iomem address argument is a pointer to const, on some not.
 
-Implementations of ioreadX() do not modify the memory under the
-address so they can be converted to a "const" version for const-safety
-and consistency among architectures.
+Implementations of ioreadX() do not modify the memory under the address
+so they can be converted to a "const" version for const-safety and
+consistency among architectures.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arc/plat-axs10x/axs10x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-diff --git a/arch/arc/plat-axs10x/axs10x.c b/arch/arc/plat-axs10x/axs10x.c
-index 63ea5a606ecd..180c260a8221 100644
---- a/arch/arc/plat-axs10x/axs10x.c
-+++ b/arch/arc/plat-axs10x/axs10x.c
-@@ -84,7 +84,7 @@ static void __init axs10x_print_board_ver(unsigned int creg, const char *str)
- 		unsigned int val;
- 	} board;
- 
--	board.val = ioread32((void __iomem *)creg);
-+	board.val = ioread32((const void __iomem *)creg);
- 	pr_info("AXS: %s FPGA Date: %u-%u-%u\n", str, board.d, board.m,
- 		board.y);
+---
+
+Changes since v1:
+1. Add Geert's review.
+---
+ drivers/virtio/virtio_pci_modern.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+index 7abcc50838b8..fc58db4ab6c3 100644
+--- a/drivers/virtio/virtio_pci_modern.c
++++ b/drivers/virtio/virtio_pci_modern.c
+@@ -26,16 +26,16 @@
+  * method, i.e. 32-bit accesses for 32-bit fields, 16-bit accesses
+  * for 16-bit fields and 8-bit accesses for 8-bit fields.
+  */
+-static inline u8 vp_ioread8(u8 __iomem *addr)
++static inline u8 vp_ioread8(const u8 __iomem *addr)
+ {
+ 	return ioread8(addr);
  }
-@@ -95,7 +95,7 @@ static void __init axs10x_early_init(void)
- 	char mb[32];
+-static inline u16 vp_ioread16 (__le16 __iomem *addr)
++static inline u16 vp_ioread16 (const __le16 __iomem *addr)
+ {
+ 	return ioread16(addr);
+ }
  
- 	/* Determine motherboard version */
--	if (ioread32((void __iomem *) CREG_MB_CONFIG) & (1 << 28))
-+	if (ioread32((const void __iomem *) CREG_MB_CONFIG) & (1 << 28))
- 		mb_rev = 3;	/* HT-3 (rev3.0) */
- 	else
- 		mb_rev = 2;	/* HT-2 (rev2.0) */
+-static inline u32 vp_ioread32(__le32 __iomem *addr)
++static inline u32 vp_ioread32(const __le32 __iomem *addr)
+ {
+ 	return ioread32(addr);
+ }
 -- 
 2.17.1
 
