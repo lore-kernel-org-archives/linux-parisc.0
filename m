@@ -1,101 +1,109 @@
-Return-Path: <SRS0=DA76=3Y=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=lPRd=3Z=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 716D3C35247
-	for <linux-parisc@archiver.kernel.org>; Tue,  4 Feb 2020 23:01:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74B9FC35249
+	for <linux-parisc@archiver.kernel.org>; Wed,  5 Feb 2020 07:06:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 433B321927
-	for <linux-parisc@archiver.kernel.org>; Tue,  4 Feb 2020 23:01:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1580857286;
-	bh=TscEwCGrJfk8nmOKrVfU8NkJhiw3fKGZsMsnV9nMQ74=;
-	h=From:To:Cc:Subject:Date:List-ID:From;
-	b=XPG1qvVRQNShxJS+7Fh9Z+0yGagBlxIE5RKtiuYMBjLe8nVxLs/ny1II4XJV7OQfm
-	 6HcTj4H/6O8SOjL4YVxh9l+JqS6Opts5iDljIm9/E9Mr6nfIbwfduYk9F/ydnja8W5
-	 aSH7/x1GcGSMbw/z86aI8nYS40j9LiaplIHA49+Q=
+	by mail.kernel.org (Postfix) with ESMTP id 4377C21741
+	for <linux-parisc@archiver.kernel.org>; Wed,  5 Feb 2020 07:06:15 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="juVcxY+3"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727461AbgBDXBX (ORCPT
+        id S1726386AbgBEHGP (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 4 Feb 2020 18:01:23 -0500
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:50859 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbgBDXBX (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 4 Feb 2020 18:01:23 -0500
-Received: by mail-pj1-f67.google.com with SMTP id r67so91961pjb.0;
-        Tue, 04 Feb 2020 15:01:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=H2ogUhcETgyZrfpUeKlCnyr0e1cCASv1/pIpN8mrzTw=;
-        b=ZdprRkijdmA5DFXtvCouv0JBJ1jW1Pa4KkU++Xr90YvgFQS4683KK4uDKZE3cQwk1w
-         8o4Ua9ajjtmgutDz7jj1Z/Q0mQS8Lq9XxRi6kAF3CZyS/IYw6yFe1+T6wGYtBesiirar
-         OzlOYGsA/I1YNiVROrb89PhjclYogTU8WMxnsnHTLqo6azpZYeybLe54m8goiHAU3Eff
-         C7z3XrHeZaFs67s36aiwWN2uiErFx8odrvxG+rBVAxl7eFsvS+z8g1vRvxqMfj1WmvNx
-         hl7KUiOeJ7F+fovDm7+KW8xGoHHlpX4jDazLXRqX8SUdxWHQnLFrfT8bN/Jx2uQyYzS+
-         KlNg==
-X-Gm-Message-State: APjAAAWv1152xyRihHHjcVCrTQxLmHTLaPBP6OhOXCixz3XSsjD5Jm9s
-        9XQ/ereWn0BGq7YAGNcgHT8lG/7G378=
-X-Google-Smtp-Source: APXvYqz15TdBALzoPut4mWMZyx+cVQGcVHC9dYLt1u+GbpYVc3BPFP7q8E4863hbWSpAz5wmROszLg==
-X-Received: by 2002:a17:902:9a8c:: with SMTP id w12mr31653717plp.149.1580857282051;
-        Tue, 04 Feb 2020 15:01:22 -0800 (PST)
-Received: from localhost ([2601:647:5b00:710:ffa7:88dc:9c39:76d9])
-        by smtp.gmail.com with ESMTPSA id b188sm24295650pfb.56.2020.02.04.15.01.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Feb 2020 15:01:21 -0800 (PST)
-From:   Moritz Fischer <mdf@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        mst@redhat.com, hkallweit1@gmail.com, davem@davemloft.net,
-        morats@google.com, Moritz Fischer <mdf@kernel.org>
-Subject: [PATCH] net: ethernet: dec: tulip: Fix length mask in receive length calculation
-Date:   Tue,  4 Feb 2020 15:01:18 -0800
-Message-Id: <20200204230118.7877-1-mdf@kernel.org>
-X-Mailer: git-send-email 2.25.0
+        Wed, 5 Feb 2020 02:06:15 -0500
+Received: from mout.gmx.net ([212.227.17.22]:47401 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725875AbgBEHGO (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 5 Feb 2020 02:06:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1580886368;
+        bh=sFyepofbS14sAHZ6pDuWzLmkNs4XyhFZqJzFXP5JZxs=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=juVcxY+3qLTnTDKbEclnCk0Vj3TJA7fbLEMcwbXchMLYivIjekzGFWzrrRY8mrLmI
+         dB4XANVZOdcfKSpfwmf3GqRcalmmf8gs0N16VBmgyH79cn50rebfOSdpCYIA4SGLmR
+         on+ut8cqaxs2oxPw6cF306Eaqi1nIhJq432Wb6M4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.129.171]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MfHAB-1jRhxj17xz-00gtHl; Wed, 05
+ Feb 2020 08:06:08 +0100
+Date:   Wed, 5 Feb 2020 08:06:04 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture fixes for kernel v5.6
+Message-ID: <20200205070604.GA11613@ls3530.fritz.box>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:JvLviVfc4B9PfeafhwMkRK5L+rJd5hX8jPz1hZLdhc8VEooUv/Z
+ +hjTND8xnqJyDVWg2eoS5iwgauUJLKjIhwoP9zbdkvzuFaTLxn4rB9OcrF8u23qYXnMr5sb
+ d/qM2mAcn4TAjn/++SQ0gAXMoR7pF7JJy/qBL9uynVeL3xltPFOOVcLsLA2tfAuwTXIEFRj
+ 7P2LtAzl/xG8tg+hELWrw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:p5p43E+zilc=:BPhHaLHqhzweV6LwRmR9eY
+ jg659WPr2nwORFobCelaY0KT3nM0TmTe5P4I8dl3uK5W+7rA0biWPVYYnReJY5mDXvzBHukWE
+ Hyf77AnlLHggohCzqDKHOBGbCIIyDG8NFdRPRExPOE12hsASBMMhzLx/OfoF6tbEEE/fw0ykh
+ VlOXBNXS3nJCbWcEZMZtHMZZuYkFE0bDBGiQLuT2GCGIDalKwtY+UodE7OJDOI8qevWFkFtCL
+ dRJqrZZWVRPyGWbCmbz0FoSdoJuC4KQCjPJ3GJW4ADDVXf4hjtcceWH/ts9xfwE/9h/J2MGHW
+ cbw+7qHy1cYk4VbUCSclKb9ST45ygQTTJL3mzrJoWiD8zLw1A8V8HTW3MYvaAEJIhtoVRFk7J
+ EFFRJvKtsrxnjElKoNaIJ38vAN3Y9zi9WL5IKCyykGJvprVGT5AkClT449RI6+vFYa/rFoCE4
+ Y2oowhAqC/1SR3zOyENDcW+uODLGNr+b+sNPKseuJ5G4v4EYjXBdPSNHIYTJ1RxoDPljzYU9H
+ yhSYasdLc9RcRt6vuD8TlD/oDqqTJptt0Y/BtaKxUkWVI3k0n6QML6B/BzU4B3gsZ8RTNIpGT
+ 8zhyM01Vmqi2U133LKyMsjfLB4UjBWZtILq/6rOKf0ayU9roCFnLVDgqanYul1o8JkRR3h4Qh
+ N05JXnJWhQdQwep+9EoyZB/dTvDOQUGd4razp04cL6aMzljU31rEOkmFSjKOMXZHmP5+KHyYn
+ mW/q/Gcxvs56YiBaRi6yBTFKvhoJE4CG9VkuRit2wFmfkgDmsQ7zoMOKrz6TWF3nFQXK45s5x
+ jx1Bf522qFpVH4n5ClF+CDkowccw6MuvBuhND7LYzo5CrWZGoKTPKHeruRf/JzQ/cJdOuqVck
+ PFkmmxp3xYrUuxJd3SDrKQmY6mlnbzFU92hInRtg5XJUb6A1X4IEa6+ZUnlT7VysTIIWHXFfm
+ G5a3MbUQqCbLU7n92FSydPFO3sdrsFVbsr8gx4IvLTvankiWkqyARmIXw6pmA7xBtYZJ97C95
+ m76UFUeS/JqN49rMSQFIdoqY7KSmSHorCNbmZSGQXxC+7wUM7jWIiBmzITbrHgFbrAsRVIsST
+ 8CVOiFSPhPTskH0V8bdbtodnD+Ao8cYVVZ85eweBimT6CjxUi5oHH+i2sAAZlwFKo0w95JoOz
+ cCghEQN5qZkkJXV/v2F2ZK5QOKjgck4/OMw7UVcG7DaMF6jc2TKLbjBxY6JYAB4B9BKmN5Nj1
+ xu3VDg8bR0PZxvMIb
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The receive frame length calculation uses a wrong mask to calculate the
-length of the received frames.
+Hi Linus,
 
-Per spec table 4-1 the length is contained in the FL (Frame Length)
-field in bits 30:16.
+please pull two patches for the parisc architecture for kernel 5.6 from:
 
-This didn't show up as an issue so far since frames were limited to
-1500 bytes which falls within the 11 bit window.
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.6-1
 
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
----
- drivers/net/ethernet/dec/tulip/de2104x.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+A page table initialization cleanup from Mike Rapoport and regenerated
+defconfig files from Helge Deller.
 
-diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
-index d305d1b24b0a..42b798a3fad4 100644
---- a/drivers/net/ethernet/dec/tulip/de2104x.c
-+++ b/drivers/net/ethernet/dec/tulip/de2104x.c
-@@ -417,7 +417,10 @@ static void de_rx (struct de_private *de)
- 		if (status & DescOwn)
- 			break;
- 
--		len = ((status >> 16) & 0x7ff) - 4;
-+		/* the length is actually a 15 bit value here according
-+		 * to Table 4-1 in the DE2104x spec so mask is 0x7fff
-+		 */
-+		len = ((status >> 16) & 0x7fff) - 4;
- 		mapping = de->rx_skb[rx_tail].mapping;
- 
- 		if (unlikely(drop)) {
--- 
-2.25.0
+Thanks,
+Helge
 
+----------------------------------------------------------------
+Helge Deller (1):
+      parisc: Regenerate parisc defconfigs
+
+Mike Rapoport (1):
+      parisc: map_pages(): cleanup page table initialization
+
+ arch/parisc/configs/712_defconfig           | 181 ---------------------
+ arch/parisc/configs/a500_defconfig          | 177 ---------------------
+ arch/parisc/configs/b180_defconfig          |  97 ------------
+ arch/parisc/configs/c3000_defconfig         | 151 ------------------
+ arch/parisc/configs/c8000_defconfig         | 234 ----------------------------
+ arch/parisc/configs/defconfig               | 206 ------------------------
+ arch/parisc/configs/generic-32bit_defconfig |  93 +++--------
+ arch/parisc/configs/generic-64bit_defconfig |  72 +++------
+ arch/parisc/mm/init.c                       |  50 ++----
+ 9 files changed, 55 insertions(+), 1206 deletions(-)
+ delete mode 100644 arch/parisc/configs/712_defconfig
+ delete mode 100644 arch/parisc/configs/a500_defconfig
+ delete mode 100644 arch/parisc/configs/b180_defconfig
+ delete mode 100644 arch/parisc/configs/c3000_defconfig
+ delete mode 100644 arch/parisc/configs/c8000_defconfig
+ delete mode 100644 arch/parisc/configs/defconfig
