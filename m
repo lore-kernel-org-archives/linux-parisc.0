@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F25DC3405F
-	for <linux-parisc@archiver.kernel.org>; Wed, 19 Feb 2020 17:52:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80731C34056
+	for <linux-parisc@archiver.kernel.org>; Wed, 19 Feb 2020 17:52:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 17279206DB
-	for <linux-parisc@archiver.kernel.org>; Wed, 19 Feb 2020 17:52:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5EB6624676
+	for <linux-parisc@archiver.kernel.org>; Wed, 19 Feb 2020 17:52:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1582134721;
-	bh=2gDbrtlrI3Wh9HVURrYGxvGcl+OexnI7Xd0KupjKyjg=;
+	s=default; t=1582134739;
+	bh=iR+Ao5saiVxRTvb2au3o6+lrJj/L8pgoUJPaqHXT/tQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=0i3HSSz5jXKo/DNlZaMR+3ZQB5HlbeQv1gZqERhCacVsDjiEm1Q7cePXYr0q6CR41
-	 56Bq4QTpNZlTwmnr68O6Q2cjH3cgz4Kz7oftpFQsl9tVYDhrJZU13HDgyH3Ny7RrF4
-	 fLEhLfxazbs30wfwKjJqNxmdIMUT7/5ITVMTorZ0=
+	b=BO3XIx8+A10BoUDZdrSBNFJZzSH/Q7kC2iAwsv+gFojmdFt4qhf2moKAPYP81xz/0
+	 9xGK7W19aAne77dCxhwa6o3cCVR3P28n+kWkbvtFvF+ealWytCHtlN0SMO0D1z/uNS
+	 LuuoABNAqbDhErK9cFWoqSZ63SHLVMDtxDYXCgio=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727206AbgBSRwA (ORCPT
+        id S1726703AbgBSRwL (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 19 Feb 2020 12:52:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51228 "EHLO mail.kernel.org"
+        Wed, 19 Feb 2020 12:52:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726634AbgBSRv7 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 19 Feb 2020 12:51:59 -0500
+        id S1726634AbgBSRwK (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 19 Feb 2020 12:52:10 -0500
 Received: from localhost.localdomain (unknown [194.230.155.125])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3EF324672;
-        Wed, 19 Feb 2020 17:51:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5864A2467D;
+        Wed, 19 Feb 2020 17:51:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582134718;
-        bh=2gDbrtlrI3Wh9HVURrYGxvGcl+OexnI7Xd0KupjKyjg=;
+        s=default; t=1582134729;
+        bh=iR+Ao5saiVxRTvb2au3o6+lrJj/L8pgoUJPaqHXT/tQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=edkRajat2UNJS10RWJb/1RntpeeJvXzGEKSl8t+0qmueFy60wVKSkZY9k3um0UCWK
-         BDJJRT4tj0OYJkV5EJS//0rfJOrz9S0kvr3zdTuqdKL9Dv8NVW/B+Iz2qn1Os5BqCU
-         brhDmyKjHMktBxYrUCddp3CdipBpPeIOiqI/MDPs=
+        b=Pw+9ejv73mhY1CR0G17KZh3Lsqa5fiV0O/7QI6gk9U2PDs9MO3ClU02Y37BTLXByA
+         GN0d182iKI80TD2kQnS9S6hifIyWgmQDeqbf00LTAX3OWcGloRKcgGg2t8jDCWtng+
+         jSpnBjCv8a/bUDQcIr+HVIMFPZ9vmp1qxH03hhJk=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Richard Henderson <rth@twiddle.net>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
@@ -79,9 +79,9 @@ To:     Richard Henderson <rth@twiddle.net>,
         virtualization@lists.linux-foundation.org,
         linux-arch@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [RESEND PATCH v2 5/9] arc: Constify ioreadX() iomem argument (as in generic implementation)
-Date:   Wed, 19 Feb 2020 18:50:03 +0100
-Message-Id: <20200219175007.13627-6-krzk@kernel.org>
+Subject: [RESEND PATCH v2 6/9] drm/mgag200: Constify ioreadX() iomem argument (as in generic implementation)
+Date:   Wed, 19 Feb 2020 18:50:04 +0100
+Message-Id: <20200219175007.13627-7-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200219175007.13627-1-krzk@kernel.org>
 References: <20200219175007.13627-1-krzk@kernel.org>
@@ -93,43 +93,37 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 The ioreadX() helpers have inconsistent interface.  On some architectures
 void *__iomem address argument is a pointer to const, on some not.
 
-Implementations of ioreadX() do not modify the memory under the
-address so they can be converted to a "const" version for const-safety
-and consistency among architectures.
+Implementations of ioreadX() do not modify the memory under the address
+so they can be converted to a "const" version for const-safety and
+consistency among architectures.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Alexey Brodkin <abrodkin@synopsys.com>
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
 
 ---
 
 Changes since v1:
-1. Add Alexey's ack.
+1. Add Thomas' review.
 ---
- arch/arc/plat-axs10x/axs10x.c | 4 ++--
+ drivers/gpu/drm/mgag200/mgag200_drv.h | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arc/plat-axs10x/axs10x.c b/arch/arc/plat-axs10x/axs10x.c
-index 63ea5a606ecd..180c260a8221 100644
---- a/arch/arc/plat-axs10x/axs10x.c
-+++ b/arch/arc/plat-axs10x/axs10x.c
-@@ -84,7 +84,7 @@ static void __init axs10x_print_board_ver(unsigned int creg, const char *str)
- 		unsigned int val;
- 	} board;
+diff --git a/drivers/gpu/drm/mgag200/mgag200_drv.h b/drivers/gpu/drm/mgag200/mgag200_drv.h
+index aa32aad222c2..6512b3af4fb7 100644
+--- a/drivers/gpu/drm/mgag200/mgag200_drv.h
++++ b/drivers/gpu/drm/mgag200/mgag200_drv.h
+@@ -34,9 +34,9 @@
  
--	board.val = ioread32((void __iomem *)creg);
-+	board.val = ioread32((const void __iomem *)creg);
- 	pr_info("AXS: %s FPGA Date: %u-%u-%u\n", str, board.d, board.m,
- 		board.y);
- }
-@@ -95,7 +95,7 @@ static void __init axs10x_early_init(void)
- 	char mb[32];
+ #define MGAG200FB_CONN_LIMIT 1
  
- 	/* Determine motherboard version */
--	if (ioread32((void __iomem *) CREG_MB_CONFIG) & (1 << 28))
-+	if (ioread32((const void __iomem *) CREG_MB_CONFIG) & (1 << 28))
- 		mb_rev = 3;	/* HT-3 (rev3.0) */
- 	else
- 		mb_rev = 2;	/* HT-2 (rev2.0) */
+-#define RREG8(reg) ioread8(((void __iomem *)mdev->rmmio) + (reg))
++#define RREG8(reg) ioread8(((const void __iomem *)mdev->rmmio) + (reg))
+ #define WREG8(reg, v) iowrite8(v, ((void __iomem *)mdev->rmmio) + (reg))
+-#define RREG32(reg) ioread32(((void __iomem *)mdev->rmmio) + (reg))
++#define RREG32(reg) ioread32(((const void __iomem *)mdev->rmmio) + (reg))
+ #define WREG32(reg, v) iowrite32(v, ((void __iomem *)mdev->rmmio) + (reg))
+ 
+ #define ATTR_INDEX 0x1fc0
 -- 
 2.17.1
 
