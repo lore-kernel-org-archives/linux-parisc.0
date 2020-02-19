@@ -2,99 +2,149 @@ Return-Path: <SRS0=yXBw=4H=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACAC0C34050
-	for <linux-parisc@archiver.kernel.org>; Wed, 19 Feb 2020 07:54:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D5E4C34047
+	for <linux-parisc@archiver.kernel.org>; Wed, 19 Feb 2020 14:09:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 859E324656
-	for <linux-parisc@archiver.kernel.org>; Wed, 19 Feb 2020 07:54:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6AADC20801
+	for <linux-parisc@archiver.kernel.org>; Wed, 19 Feb 2020 14:09:50 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="LsKzlIob"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726163AbgBSHyp (ORCPT
+        id S1728105AbgBSOJs (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 19 Feb 2020 02:54:45 -0500
-Received: from mga07.intel.com ([134.134.136.100]:6491 "EHLO mga07.intel.com"
+        Wed, 19 Feb 2020 09:09:48 -0500
+Received: from mout.gmx.net ([212.227.15.18]:38567 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726156AbgBSHyp (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 19 Feb 2020 02:54:45 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Feb 2020 23:54:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,459,1574150400"; 
-   d="scan'208";a="436148633"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 18 Feb 2020 23:54:42 -0800
-Received: from [10.125.252.130] (abudanko-mobl.ccr.corp.intel.com [10.125.252.130])
-        by linux.intel.com (Postfix) with ESMTP id 40E9A580270;
-        Tue, 18 Feb 2020 23:54:36 -0800 (PST)
-Subject: Re: [PATCH v7 01/12] capabilities: introduce CAP_PERFMON to kernel
- and user space
-To:     James Morris <jmorris@namei.org>
-Cc:     Serge Hallyn <serge@hallyn.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "joonas.lahtinen@linux.intel.com" <joonas.lahtinen@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        oprofile-list@lists.sf.net,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        linux-man@vger.kernel.org
-References: <c8de937a-0b3a-7147-f5ef-69f467e87a13@linux.intel.com>
- <f56fbb5c-1477-44d5-7346-85a1ca0869dc@linux.intel.com>
- <alpine.LRH.2.21.2002190621180.10165@namei.org>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <4664bbc7-e4ef-5d6e-7f71-96e5567fcf60@linux.intel.com>
-Date:   Wed, 19 Feb 2020 10:54:35 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1727786AbgBSOJs (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 19 Feb 2020 09:09:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1582121380;
+        bh=xbE6eA9MBqvG8pB6J+HAfxztNDTpYVT7w6C2yRa7mZo=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=LsKzlIobNWN0ZUDoHUl+prTDVODvGtu7gGjj9uvD04yAuMLUnDi6Gf3ygP7PinClr
+         h7mOvMO3Y2t3XrSsnVLAHpPtQkqMF7k8kU6HxL1t4EK8gQZbxYlBz06I56RBdh6u9y
+         /XefX92DckoLnNC01WHxkhyA7np4l6Qyuveb5TAU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.186.19]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MowKi-1joGmQ2Zoc-00qNwI; Wed, 19
+ Feb 2020 15:09:40 +0100
+Date:   Wed, 19 Feb 2020 15:09:38 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Add arch_trigger_cpumask_backtrace() function
+Message-ID: <20200219140938.GA27510@ls3530.fritz.box>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LRH.2.21.2002190621180.10165@namei.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:2nHx+pRpw/FApTpHYujUCyRXjQX25bho8Al/PfzvhmkNmMdf/0o
+ FYpju0H0s3jm/dfvW4dF8iOBuNDr3FmxvEGBPLyyHJqiA9NsPru3MMbAijgt/G6aDZSQIwD
+ 1EfM1Ou3L1ocA9QrSSbnINpdp0soXElwp+/IpkGKl+zPtG1o73aM0SRqimWhWYES1Z2OZqo
+ +Kf7KqWKbDiwRpNSKiXdw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:evSLJ0Mvgz8=:6Gq+6TTkG5Hx+drm4sg2Sb
+ xQnAahuOt51CI7eRv9WNDHHkxv7I1T/VEF+SXwyae4rjmXA+2eOxqmCQQ5Jx0paZZvGlrubiZ
+ 47RO266cQ5hW6RoxUfH1+vsiYweEq8/+TjOJct61O/iTrtkOfVV6dqr01WiwY51v9If4fHLgv
+ mWfI5CKiX+mc7u3IxPVyeVYnPf5FZ9fr7AJYSoKQsdw6MRdmakS9GZ1IaU5Jgq7GUyIHsjz1N
+ fvn1DVEQ4D+4hqEwIcW2SehsYuIyNAsxKPHzwM5XM1u74qur1Ca0FzatLRuzP61u5fb6EZPF8
+ 1fIxlJclAhn/So5Xw8MpVTc9+hehiWTU1nNYPdZD4Rk76MkFCQZMGAfdOhO2FGUpxSZd7+dao
+ VFmiale5bJ/KZ2G3HEHyb1YnXje1Xt+WnJUI0lddqNlokvm9v0n0WK77y+31jvGgwjuxvi+KJ
+ MaxUzAHvnjf33tyt0hLJc/fa1kA9GmB70C8maKda2jpEUTjHo7wOnw4YiRNU3Dnvosll6d+xp
+ gikOt2FNsxERpg5Oc9ZPGx+YuHa7UdwbrnnW03FPBylKeirB1MArvOXHHzJ0x4nOU1IAPxZBj
+ jVDESzuCY0k0rywHPZ6YMAxFmfxaCcNmTb8C+B9dVktJKbfTDu61ZE2iUfIVuJriAC0fsFLSS
+ fw63tNmUdcj3grkrOwMT3Gbt7i6Iur7ZkmlTHtcJQlYKmjrKch8bqqM7tptZSFLX5QYsPBuC1
+ CKbFP5XJotql9Ngca/UvJjhvCzzf3XkNEL4oF4KkDE62jPtVzvRiuVgNN/HgAWmi39H+fWqWr
+ VDD7zHpW6NQmU/9gC+mfdFDF9ugLzORr+hloVerc8rqsb6ZFMrQCA/iKm+CCPHSmlQylufwje
+ fRF48Ztkb1xT/+8c3n1UcWtyn4SJXVMVv43YXg+cCyDzB3vXJtGNafgCam88RZE4ctCZF9iRy
+ 139g5P1zQ2w5CDl7YMTH8ar4WwzJzW8r3BH5hKUuhi7GZxanX69RmXVxOKZS739+rd6/7FCu1
+ lwICLrFm/boGGc9CZ9vsj8A2KZExHCCNoT0cnPWAC5n/UOqHMVx4Z2EpUWZAVwqmuva05xgbw
+ QkXOZ+/TvA5g7gBYT5BQSG5arr1LtqDkg7uFww+ST+NFQg7GMzOfRIeV/5ruS5H3DFIRGGyES
+ vucoS//ucazjxDXLQFs0lQqVeXXy4epanXBZcTB9hm5pCF9xC7V8pXTjD61HVpj9hAOr0p9y5
+ 0/wb3bvAWWJpQqQc+
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
+Implement the parisc version for the arch_trigger_cpumask_backtrace()
+function to provide IPI-triggered per-CPU backtrace printouts.
 
-On 18.02.2020 22:21, James Morris wrote:
-> On Mon, 17 Feb 2020, Alexey Budankov wrote:
-> 
->>
->> Introduce CAP_PERFMON capability designed to secure system performance
->> monitoring and observability operations so that CAP_PERFMON would assist
->> CAP_SYS_ADMIN capability in its governing role for performance
->> monitoring and observability subsystems.
-> 
-> 
-> Acked-by: James Morris <jamorris@linux.microsoft.com>
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Thanks James! 
-I appreciate your involvement and collaboration 
-w.r.t to the whole patch set.
+diff --git a/arch/parisc/include/asm/irq.h b/arch/parisc/include/asm/irq.h
+index 959e79cd2c14..c978d50bd29e 100644
+=2D-- a/arch/parisc/include/asm/irq.h
++++ b/arch/parisc/include/asm/irq.h
+@@ -50,4 +50,10 @@ extern int cpu_check_affinity(struct irq_data *d, const=
+ struct cpumask *dest);
+ /* soft power switch support (power.c) */
+ extern struct tasklet_struct power_tasklet;
 
-Gratefully,
-Alexey
++#ifdef CONFIG_SMP
++extern void arch_trigger_cpumask_backtrace(const cpumask_t *mask,
++					   bool exclude_self);
++#define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
++#endif
++
+ #endif	/* _ASM_PARISC_IRQ_H */
+diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
+index e202c37e56af..7cdbe98c26a8 100644
+=2D-- a/arch/parisc/kernel/smp.c
++++ b/arch/parisc/kernel/smp.c
+@@ -29,6 +29,7 @@
+ #include <linux/bitops.h>
+ #include <linux/ftrace.h>
+ #include <linux/cpu.h>
++#include <linux/nmi.h>
+
+ #include <linux/atomic.h>
+ #include <asm/current.h>
+@@ -71,7 +72,8 @@ enum ipi_message_type {
+ 	IPI_CALL_FUNC,
+ 	IPI_CPU_START,
+ 	IPI_CPU_STOP,
+-	IPI_CPU_TEST
++	IPI_CPU_TEST,
++	IPI_CPU_BACKTRACE
+ };
+
+
+@@ -170,6 +172,14 @@ ipi_interrupt(int irq, void *dev_id)
+ 				smp_debug(100, KERN_DEBUG "CPU%d is alive!\n", this_cpu);
+ 				break;
+
++			case IPI_CPU_BACKTRACE:
++				printk_nmi_enter();
++				irq_enter();
++				nmi_cpu_backtrace(get_irq_regs());
++				irq_exit();
++				printk_nmi_exit();
++				break;
++
+ 			default:
+ 				printk(KERN_CRIT "Unknown IPI num on CPU%d: %lu\n",
+ 					this_cpu, which);
+@@ -248,6 +258,16 @@ void arch_send_call_function_single_ipi(int cpu)
+ 	send_IPI_single(cpu, IPI_CALL_FUNC);
+ }
+
++static void raise_nmi(cpumask_t *mask)
++{
++	send_IPI_mask(mask, IPI_CPU_BACKTRACE);
++}
++
++void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_s=
+elf)
++{
++	nmi_trigger_cpumask_backtrace(mask, exclude_self, raise_nmi);
++}
++
+ /*
+  * Called by secondaries to update state and initialize CPU registers.
+  */
