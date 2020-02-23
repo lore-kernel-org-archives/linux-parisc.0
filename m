@@ -1,131 +1,145 @@
-Return-Path: <SRS0=Z2mB=4I=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=KZ7/=4L=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A6A6C11D04
-	for <linux-parisc@archiver.kernel.org>; Thu, 20 Feb 2020 13:05:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99973C35666
+	for <linux-parisc@archiver.kernel.org>; Sun, 23 Feb 2020 19:29:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DE78324670
-	for <linux-parisc@archiver.kernel.org>; Thu, 20 Feb 2020 13:05:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7556B20880
+	for <linux-parisc@archiver.kernel.org>; Sun, 23 Feb 2020 19:29:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbgBTNFj (ORCPT
+        id S1726534AbgBWT3y (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 20 Feb 2020 08:05:39 -0500
-Received: from mga03.intel.com ([134.134.136.65]:57895 "EHLO mga03.intel.com"
+        Sun, 23 Feb 2020 14:29:54 -0500
+Received: from foss.arm.com ([217.140.110.172]:51252 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727989AbgBTNFj (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 20 Feb 2020 08:05:39 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Feb 2020 05:05:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,464,1574150400"; 
-   d="scan'208";a="283399590"
-Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 20 Feb 2020 05:05:21 -0800
-Received: from [10.125.252.166] (abudanko-mobl.ccr.corp.intel.com [10.125.252.166])
-        by linux.intel.com (Postfix) with ESMTP id 253CC580472;
-        Thu, 20 Feb 2020 05:05:12 -0800 (PST)
-Subject: Re: [PATCH v5 01/10] capabilities: introduce CAP_PERFMON to kernel
- and user space
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Serge Hallyn <serge@hallyn.com>,
-        James Morris <jmorris@namei.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
-        "joonas.lahtinen@linux.intel.com" <joonas.lahtinen@linux.intel.com>,
-        "rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
+        id S1726208AbgBWT3y (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 23 Feb 2020 14:29:54 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D692101E;
+        Sun, 23 Feb 2020 11:29:54 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 437293F6CF;
+        Sun, 23 Feb 2020 11:29:52 -0800 (PST)
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
-        Will Deacon <will.deacon@arm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Juergen Gross <jgross@suse.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        oprofile-list@lists.sf.net, Andy Lutomirski <luto@amacapital.net>
-References: <875zgizkyk.fsf@nanos.tec.linutronix.de>
- <7d6f4210-423f-e454-3910-9f8e17dff1aa@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <95aa57e6-4d78-39df-386c-a98734f19777@linux.intel.com>
-Date:   Thu, 20 Feb 2020 16:05:11 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <7d6f4210-423f-e454-3910-9f8e17dff1aa@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        xen-devel@lists.xenproject.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 01/15] cpu: Add new {add,remove}_cpu() functions
+Date:   Sun, 23 Feb 2020 19:29:28 +0000
+Message-Id: <20200223192942.18420-2-qais.yousef@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200223192942.18420-1-qais.yousef@arm.com>
+References: <20200223192942.18420-1-qais.yousef@arm.com>
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
+The new functions use device_{online,offline}() which are userspace
+safe.
 
-On 07.02.2020 16:39, Alexey Budankov wrote:
-> 
-> On 07.02.2020 14:38, Thomas Gleixner wrote:
->> Alexey Budankov <alexey.budankov@linux.intel.com> writes:
->>> On 22.01.2020 17:25, Alexey Budankov wrote:
->>>> On 22.01.2020 17:07, Stephen Smalley wrote:
->>>>>> It keeps the implementation simple and readable. The implementation is more
->>>>>> performant in the sense of calling the API - one capable() call for CAP_PERFMON
->>>>>> privileged process.
->>>>>>
->>>>>> Yes, it bloats audit log for CAP_SYS_ADMIN privileged and unprivileged processes,
->>>>>> but this bloating also advertises and leverages using more secure CAP_PERFMON
->>>>>> based approach to use perf_event_open system call.
->>>>>
->>>>> I can live with that.  We just need to document that when you see
->>>>> both a CAP_PERFMON and a CAP_SYS_ADMIN audit message for a process,
->>>>> try only allowing CAP_PERFMON first and see if that resolves the
->>>>> issue.  We have a similar issue with CAP_DAC_READ_SEARCH versus
->>>>> CAP_DAC_OVERRIDE.
->>>>
->>>> perf security [1] document can be updated, at least, to align and document 
->>>> this audit logging specifics.
->>>
->>> And I plan to update the document right after this patch set is accepted.
->>> Feel free to let me know of the places in the kernel docs that also
->>> require update w.r.t CAP_PERFMON extension.
->>
->> The documentation update wants be part of the patch set and not planned
->> to be done _after_ the patch set is merged.
-> 
-> Well, accepted. It is going to make patches #11 and beyond.
+This is in preparation to move cpu_{up, down} kernel users to use
+a safer interface that is not racy with userspace.
 
-Patches #11 and #12 of v7 [1] contain information on CAP_PERFMON intention and usage.
-Patch for man-pages [2] extends perf_event_open.2 documentation.
-
-Thanks,
-Alexey
-
+Suggested-by: "Paul E. McKenney" <paulmck@kernel.org>
+Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: "Paul E. McKenney" <paulmck@kernel.org>
+CC: Helge Deller <deller@gmx.de>
+CC: Michael Ellerman <mpe@ellerman.id.au>
+CC: "David S. Miller" <davem@davemloft.net>
+CC: Juergen Gross <jgross@suse.com>
+CC: Mark Rutland <mark.rutland@arm.com>
+CC: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC: xen-devel@lists.xenproject.org
+CC: linux-parisc@vger.kernel.org
+CC: sparclinux@vger.kernel.org
+CC: linuxppc-dev@lists.ozlabs.org
+CC: linux-arm-kernel@lists.infradead.org
+CC: x86@kernel.org
+CC: linux-kernel@vger.kernel.org
 ---
-[1] https://lore.kernel.org/lkml/c8de937a-0b3a-7147-f5ef-69f467e87a13@linux.intel.com/
-[2] https://lore.kernel.org/lkml/18d1083d-efe5-f5f8-c531-d142c0e5c1a8@linux.intel.com/
+ include/linux/cpu.h |  2 ++
+ kernel/cpu.c        | 24 ++++++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
+
+diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+index 1ca2baf817ed..cf8cf38dca43 100644
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -89,6 +89,7 @@ extern ssize_t arch_cpu_release(const char *, size_t);
+ #ifdef CONFIG_SMP
+ extern bool cpuhp_tasks_frozen;
+ int cpu_up(unsigned int cpu);
++int add_cpu(unsigned int cpu);
+ void notify_cpu_starting(unsigned int cpu);
+ extern void cpu_maps_update_begin(void);
+ extern void cpu_maps_update_done(void);
+@@ -118,6 +119,7 @@ extern void cpu_hotplug_disable(void);
+ extern void cpu_hotplug_enable(void);
+ void clear_tasks_mm_cpumask(int cpu);
+ int cpu_down(unsigned int cpu);
++int remove_cpu(unsigned int cpu);
+ 
+ #else /* CONFIG_HOTPLUG_CPU */
+ 
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 9c706af713fb..069802f7010f 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1057,6 +1057,18 @@ int cpu_down(unsigned int cpu)
+ }
+ EXPORT_SYMBOL(cpu_down);
+ 
++int remove_cpu(unsigned int cpu)
++{
++	int ret;
++
++	lock_device_hotplug();
++	ret = device_offline(get_cpu_device(cpu));
++	unlock_device_hotplug();
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(remove_cpu);
++
+ #else
+ #define takedown_cpu		NULL
+ #endif /*CONFIG_HOTPLUG_CPU*/
+@@ -1209,6 +1221,18 @@ int cpu_up(unsigned int cpu)
+ }
+ EXPORT_SYMBOL_GPL(cpu_up);
+ 
++int add_cpu(unsigned int cpu)
++{
++	int ret;
++
++	lock_device_hotplug();
++	ret = device_online(get_cpu_device(cpu));
++	unlock_device_hotplug();
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(add_cpu);
++
+ #ifdef CONFIG_PM_SLEEP_SMP
+ static cpumask_var_t frozen_cpus;
+ 
+-- 
+2.17.1
 
