@@ -1,174 +1,184 @@
-Return-Path: <SRS0=DaIp=4U=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=uTqL=4V=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E69C3C3F2C6
-	for <linux-parisc@archiver.kernel.org>; Tue,  3 Mar 2020 17:25:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A65EC3F2D1
+	for <linux-parisc@archiver.kernel.org>; Wed,  4 Mar 2020 00:50:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C3D69208C3
-	for <linux-parisc@archiver.kernel.org>; Tue,  3 Mar 2020 17:25:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CFA1021741
+	for <linux-parisc@archiver.kernel.org>; Wed,  4 Mar 2020 00:50:33 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zgrfj9HW"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730219AbgCCRZZ (ORCPT
+        id S1727903AbgCDAuc (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 3 Mar 2020 12:25:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41142 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728242AbgCCRZY (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 3 Mar 2020 12:25:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BED26ACB8;
-        Tue,  3 Mar 2020 17:25:16 +0000 (UTC)
-Subject: Re: [RFC 1/3] mm/vma: Define a default value for
- VM_DATA_DEFAULT_FLAGS
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Salter <msalter@redhat.com>, Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
+        Tue, 3 Mar 2020 19:50:32 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:41043 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727958AbgCDAub (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 3 Mar 2020 19:50:31 -0500
+Received: by mail-pg1-f193.google.com with SMTP id b1so128414pgm.8;
+        Tue, 03 Mar 2020 16:50:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=4i5Gs/Sv4Lt/cK2/XelvZbksB2WGpOmI+ebmeTuAw3k=;
+        b=Zgrfj9HWQDfYBP/g4bKX+LsQ/AYbxX7PBhz1sV1WAm+fX9wrOTRaClFlFuHNpRQE9M
+         RHgEz3DVUW05rnuAbH/88rV/PCAxRA+fbytqMHG2cOTX3kqCb5i0KhP4cQxAEHBC2TA1
+         ZZoGCbwi5G2dVeLji7lSQdjUkgpHw59IyHWWShK9xkIW3xyk7fXRu9b/Aq230l4+Klb2
+         YJ0RJ8QNevuwjQLfwHOiGm52WcJSaVqUOEZuxFjC5o89D7SVibB64t1dYH/FktVanrNE
+         pZduxRXVKD+y/rxHsPdEJ3fHazausM0elvIlmwiUN7xkgUkEPuYlL2fqU/Io9itENrXA
+         J4Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=4i5Gs/Sv4Lt/cK2/XelvZbksB2WGpOmI+ebmeTuAw3k=;
+        b=iVL2bLLw04H/rl52Ci51GNQ04MZR3Et6W/TqzZHCsYgG8hbACR6aQTR8nSWK3EPVrx
+         fEHtNaJcespl7PoHXLW75HCpQW3szfaKZ4hGXL5c8/m19+9krT4XD1czrFJGZdoHJ1y/
+         cJ37Ugwrbw+VW86PzCPqqnMYHzaQgy6p2CRyrN/Nmz0EDwLDEX2xaQVNB9nddIE3E78g
+         53aHCuM6rYRpSHZgWw6dwomS5AU2sxqLTSeoSrdoQZC+m93+xincEYC+5GCxJIFxiAFo
+         ZRR0xyr9jzhQZuvLq52NufPCGGNoWfuMS6w9d5wa3M4XlRpgWT0Myl7AUy661T3EBg67
+         GX0g==
+X-Gm-Message-State: ANhLgQ2FKFhy+wucFg0IM1CSfdbk37bjjf5kdYRQSb2lHo6hZi2EZVb9
+        SwhuFL8GSr9ggIBUUfpuQH+I3q9v
+X-Google-Smtp-Source: ADFU+vto7qeGWxTXYn+Nw8Dl/kD7gogfFj7/Si3GbeJXMDT8c5Kn0G0k6Yd1nqEBHaUMWyVCAjOkYA==
+X-Received: by 2002:a63:cf14:: with SMTP id j20mr130606pgg.67.1583283030448;
+        Tue, 03 Mar 2020 16:50:30 -0800 (PST)
+Received: from localhost.localdomain ([106.51.232.35])
+        by smtp.gmail.com with ESMTPSA id d186sm7555662pfc.8.2020.03.03.16.50.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Mar 2020 16:50:29 -0800 (PST)
+From:   afzal mohammed <afzal.mohd.ma@gmail.com>
+To:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     afzal mohammed <afzal.mohd.ma@gmail.com>,
         "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Guan Xuetao <gxt@pku.edu.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jeff Dike <jdike@addtoit.com>, Chris Zankel <chris@zankel.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-References: <1583131666-15531-1-git-send-email-anshuman.khandual@arm.com>
- <1583131666-15531-2-git-send-email-anshuman.khandual@arm.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <b243be54-7b5e-c6e9-fb68-46369d7d7aa4@suse.cz>
-Date:   Tue, 3 Mar 2020 18:25:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <1583131666-15531-2-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Helge Deller <deller@gmx.de>
+Subject: [PATCH v3] parisc: Replace setup_irq() by request_irq()
+Date:   Wed,  4 Mar 2020 06:20:24 +0530
+Message-Id: <20200304005025.5179-1-afzal.mohd.ma@gmail.com>
+X-Mailer: git-send-email 2.18.0
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 3/2/20 7:47 AM, Anshuman Khandual wrote:
-> There are many platforms with exact same value for VM_DATA_DEFAULT_FLAGS
-> This creates a default value for VM_DATA_DEFAULT_FLAGS in line with the
-> existing VM_STACK_DEFAULT_FLAGS. While here, also define some more macros
-> with standard VMA access flag combinations that are used frequently across
-> many platforms. Apart from simplification, this reduces code duplication
-> as well.
-> 
-> Cc: Richard Henderson <rth@twiddle.net>
-> Cc: Vineet Gupta <vgupta@synopsys.com>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Mark Salter <msalter@redhat.com>
-> Cc: Guo Ren <guoren@kernel.org>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Brian Cain <bcain@codeaurora.org>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Michal Simek <monstr@monstr.eu>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Nick Hu <nickhu@andestech.com>
-> Cc: Ley Foon Tan <ley.foon.tan@intel.com>
-> Cc: Jonas Bonn <jonas@southpole.se>
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Guan Xuetao <gxt@pku.edu.cn>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Jeff Dike <jdike@addtoit.com>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-alpha@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-c6x-dev@linux-c6x.org
-> Cc: uclinux-h8-devel@lists.sourceforge.jp
-> Cc: linux-hexagon@vger.kernel.org
-> Cc: linux-ia64@vger.kernel.org
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: nios2-dev@lists.rocketboards.org
-> Cc: openrisc@lists.librecores.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: sparclinux@vger.kernel.org
-> Cc: linux-um@lists.infradead.org
-> Cc: linux-xtensa@linux-xtensa.org
-> Cc: linux-mm@kvack.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+request_irq() is preferred over setup_irq(). Invocations of setup_irq()
+occur after memory allocators are ready.
 
-Nit:
+Per tglx[1], setup_irq() existed in olden days when allocators were not
+ready by the time early interrupts were initialized.
 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index b0e53ef13ff1..7a764ae6ab68 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -342,6 +342,21 @@ extern unsigned int kobjsize(const void *objp);
->  /* Bits set in the VMA until the stack is in its final location */
->  #define VM_STACK_INCOMPLETE_SETUP	(VM_RAND_READ | VM_SEQ_READ)
->  
-> +#define TASK_EXEC ((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0)
-> +
-> +/* Common data flag combinations */
-> +#define VM_DATA_FLAGS_TSK_EXEC	(VM_READ | VM_WRITE | TASK_EXEC | \
-> +				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-> +#define VM_DATA_FLAGS_NON_EXEC	(VM_READ | VM_WRITE | VM_MAYREAD | \
-> +				 VM_MAYWRITE | VM_MAYEXEC)
-> +#define VM_DATA_FLAGS_EXEC	(VM_READ | VM_WRITE | VM_EXEC | \
-> +				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-> +
-> +#ifndef VM_DATA_DEFAULT_FLAGS		/* arch can override this */
-> +#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
-> +				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+Hence replace setup_irq() by request_irq().
 
-Should you use VM_DATA_FLAGS_EXEC here? Yeah one more macro to expand, but it's
-right above this.
+[1] https://lkml.kernel.org/r/alpine.DEB.2.20.1710191609480.1971@nanos
 
-> +#endif
-> +
->  #ifndef VM_STACK_DEFAULT_FLAGS		/* arch can override this */
->  #define VM_STACK_DEFAULT_FLAGS VM_DATA_DEFAULT_FLAGS
->  #endif
-> 
+Signed-off-by: afzal mohammed <afzal.mohd.ma@gmail.com>
+---
+Hi parisc maintainers,
+
+if okay w/ this change, please consider taking it thr' your tree, else please
+let me know.
+
+Regards
+afzal
+
+Link to v2 & v1,
+[v2] https://lkml.kernel.org/r/cover.1582471508.git.afzal.mohd.ma@gmail.com
+[v1] https://lkml.kernel.org/r/cover.1581478323.git.afzal.mohd.ma@gmail.com
+
+v3:
+ * Split out from tree wide series, as Thomas suggested to get it thr'
+	respective maintainers
+ * Modify pr_err displayed in case of error
+ * Re-arrange code & choose pr_err args as required to improve readability
+ * Remove irrelevant parts from commit message & improve
+ 
+v2:
+ * Replace pr_err("request_irq() on %s failed" by
+           pr_err("%s: request_irq() failed"
+ * Commit message massage
+
+ arch/parisc/kernel/irq.c | 22 ++++++----------------
+ drivers/parisc/eisa.c    |  8 ++------
+ 2 files changed, 8 insertions(+), 22 deletions(-)
+
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index e5fcfb70cc7c..e76c86619949 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -560,33 +560,23 @@ void do_cpu_irq_mask(struct pt_regs *regs)
+ 	goto out;
+ }
+ 
+-static struct irqaction timer_action = {
+-	.handler = timer_interrupt,
+-	.name = "timer",
+-	.flags = IRQF_TIMER | IRQF_PERCPU | IRQF_IRQPOLL,
+-};
+-
+-#ifdef CONFIG_SMP
+-static struct irqaction ipi_action = {
+-	.handler = ipi_interrupt,
+-	.name = "IPI",
+-	.flags = IRQF_PERCPU,
+-};
+-#endif
+-
+ static void claim_cpu_irqs(void)
+ {
++	unsigned long flags = IRQF_TIMER | IRQF_PERCPU | IRQF_IRQPOLL;
+ 	int i;
++
+ 	for (i = CPU_IRQ_BASE; i <= CPU_IRQ_MAX; i++) {
+ 		irq_set_chip_and_handler(i, &cpu_interrupt_type,
+ 					 handle_percpu_irq);
+ 	}
+ 
+ 	irq_set_handler(TIMER_IRQ, handle_percpu_irq);
+-	setup_irq(TIMER_IRQ, &timer_action);
++	if (request_irq(TIMER_IRQ, timer_interrupt, flags, "timer", NULL))
++		pr_err("Failed to register timer interrupt\n");
+ #ifdef CONFIG_SMP
+ 	irq_set_handler(IPI_IRQ, handle_percpu_irq);
+-	setup_irq(IPI_IRQ, &ipi_action);
++	if (request_irq(IPI_IRQ, ipi_interrupt, IRQF_PERCPU, "IPI", NULL))
++		pr_err("Failed to register IPI interrupt\n");
+ #endif
+ }
+ 
+diff --git a/drivers/parisc/eisa.c b/drivers/parisc/eisa.c
+index 9d00a24277aa..f96e5eaee87e 100644
+--- a/drivers/parisc/eisa.c
++++ b/drivers/parisc/eisa.c
+@@ -243,11 +243,6 @@ static irqreturn_t dummy_irq2_handler(int _, void *dev)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static struct irqaction irq2_action = {
+-	.handler = dummy_irq2_handler,
+-	.name = "cascade",
+-};
+-
+ static void init_eisa_pic(void)
+ {
+ 	unsigned long flags;
+@@ -335,7 +330,8 @@ static int __init eisa_probe(struct parisc_device *dev)
+ 	}
+ 
+ 	/* Reserve IRQ2 */
+-	setup_irq(2, &irq2_action);
++	if (request_irq(2, dummy_irq2_handler, 0, "cascade", NULL))
++		pr_err("Failed to request irq 2 (cascade)\n");
+ 	for (i = 0; i < 16; i++) {
+ 		irq_set_chip_and_handler(i, &eisa_interrupt_type,
+ 					 handle_simple_irq);
+-- 
+2.25.1
 
