@@ -2,128 +2,132 @@ Return-Path: <SRS0=r32O=4W=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34D3CC3F2D1
-	for <linux-parisc@archiver.kernel.org>; Thu,  5 Mar 2020 07:34:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C9D9C3F2D1
+	for <linux-parisc@archiver.kernel.org>; Thu,  5 Mar 2020 11:23:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 17A9E208C3
-	for <linux-parisc@archiver.kernel.org>; Thu,  5 Mar 2020 07:34:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 724D62073D
+	for <linux-parisc@archiver.kernel.org>; Thu,  5 Mar 2020 11:23:53 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="bKp6mtkg"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725944AbgCEHef (ORCPT
+        id S1726049AbgCELXx (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 5 Mar 2020 02:34:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:44192 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725866AbgCEHef (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 5 Mar 2020 02:34:35 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D7F0E1FB;
-        Wed,  4 Mar 2020 23:34:33 -0800 (PST)
-Received: from [10.163.1.88] (unknown [10.163.1.88])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B93CE3F534;
-        Wed,  4 Mar 2020 23:38:16 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH] mm/special: Create generic fallbacks for pte_special()
- and pte_mkspecial()
-To:     linux-mm@kvack.org, Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Guo Ren <guoren@kernel.org>, Brian Cain <bcain@codeaurora.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Sam Creasey <sammy@sammy.net>, Michal Simek <monstr@monstr.eu>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Guan Xuetao <gxt@pku.edu.cn>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, nios2-dev@lists.rocketboards.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1583114190-7678-1-git-send-email-anshuman.khandual@arm.com>
-Message-ID: <58aecdcf-ea16-c958-0deb-97541792e081@arm.com>
-Date:   Thu, 5 Mar 2020 13:04:19 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Thu, 5 Mar 2020 06:23:53 -0500
+Received: from gateway33.websitewelcome.com ([192.185.145.190]:25739 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725880AbgCELXx (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 5 Mar 2020 06:23:53 -0500
+X-Greylist: delayed 1212 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Mar 2020 06:23:52 EST
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id AE45223E39
+        for <linux-parisc@vger.kernel.org>; Thu,  5 Mar 2020 05:03:40 -0600 (CST)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id 9oI0jQ6fWSl8q9oI0j2ZRU; Thu, 05 Mar 2020 05:03:40 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
+        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=AKyS/FSSKOcktqfRdmBIG2IkRBKAyZrf6dcf3eo+zjY=; b=bKp6mtkgJEuAkukD00EYIF48Rx
+        mieJyYDNSDAzAP/A0l8ZE+HjCkLGj6fWmKc82C9MN4jy57+ZwR1xOv3g5mMPO3889iBE29//9yUPh
+        lMwDbqkjN6BCDRaM/wwyx8rAt4J/KVXxmbB6tMXwMEhP1045AS7mbpTK8V3+wX56qPc16ADsLC9pE
+        tldiSA36SXYx8bR86PYzY7YNzWfMPdhFaC+ERz8MULe9lRebA9teFSqnW/YVGlzPU662zhau5UF3H
+        VttR5po0oLB7MBbeCrbmsylIviT0SpAWXrvMRk5TriWzKqNFmS2zmMjmWZ9RTvdoj2DlE50YuU5av
+        bB3KkAFg==;
+Received: from [201.166.169.220] (port=7940 helo=embeddedor)
+        by gator4166.hostgator.com with esmtpa (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1j9oHy-003n2K-UE; Thu, 05 Mar 2020 05:03:39 -0600
+Date:   Thu, 5 Mar 2020 05:06:44 -0600
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] net: tulip: Replace zero-length array with
+ flexible-array member
+Message-ID: <20200305110644.GA8604@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <1583114190-7678-1-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.166.169.220
+X-Source-L: No
+X-Exim-ID: 1j9oHy-003n2K-UE
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (embeddedor) [201.166.169.220]:7940
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-On 03/02/2020 07:26 AM, Anshuman Khandual wrote:
-> diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-> index aef5378f909c..8e4e4be1ca00 100644
-> --- a/arch/mips/include/asm/pgtable.h
-> +++ b/arch/mips/include/asm/pgtable.h
-> @@ -269,6 +269,36 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
->   */
->  extern pgd_t swapper_pg_dir[];
->  
-> +/*
-> + * Platform specific pte_special() and pte_mkspecial() definitions
-> + * are required only when ARCH_HAS_PTE_SPECIAL is enabled.
-> + */
-> +#if !defined(CONFIG_32BIT) && !defined(CONFIG_CPU_HAS_RIXI)
-> +#if defined(CONFIG_PHYS_ADDR_T_64BIT) && defined(CONFIG_CPU_MIPS32)
-> +static inline int pte_special(pte_t pte)
-> +{
-> +	return pte.pte_low & _PAGE_SPECIAL;
-> +}
-> +
-> +static inline pte_t pte_mkspecial(pte_t pte)
-> +{
-> +	pte.pte_low |= _PAGE_SPECIAL;
-> +	return pte;
-> +}
-> +#else
-> +static inline int pte_special(pte_t pte)
-> +{
-> +	return pte_val(pte) & _PAGE_SPECIAL;
-> +}
-> +
-> +static inline pte_t pte_mkspecial(pte_t pte)
-> +{
-> +	pte_val(pte) |= _PAGE_SPECIAL;
-> +	return pte;
-> +}
-> +#endif
-> +#endif
-> +
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-Hello Ralf/Paul,
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
 
-This change now restricts mips definitions for pte_special() and pte_mkspecial()
-and makes them visible only for configs where ARCH_HAS_PTE_SPECIAL is enabled.
-Does this look okay ? In almost all other platforms we drop the stub definitions
-for pte_special() and pte_mkspecial().
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
 
-- Anshuman
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
+
+This issue was found with the help of Coccinelle.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/net/ethernet/dec/tulip/tulip.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/dec/tulip/tulip.h b/drivers/net/ethernet/dec/tulip/tulip.h
+index b458140aeaef..815907259048 100644
+--- a/drivers/net/ethernet/dec/tulip/tulip.h
++++ b/drivers/net/ethernet/dec/tulip/tulip.h
+@@ -381,7 +381,7 @@ struct mediatable {
+ 	unsigned has_reset:6;
+ 	u32 csr15dir;
+ 	u32 csr15val;		/* 21143 NWay setting. */
+-	struct medialeaf mleaf[0];
++	struct medialeaf mleaf[];
+ };
+ 
+ 
+-- 
+2.25.0
+
