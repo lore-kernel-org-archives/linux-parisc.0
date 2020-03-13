@@ -1,184 +1,102 @@
-Return-Path: <SRS0=FqUx=45=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=vhU4=46=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2C19C1975A
-	for <linux-parisc@archiver.kernel.org>; Thu, 12 Mar 2020 10:56:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07504C2BB1D
+	for <linux-parisc@archiver.kernel.org>; Fri, 13 Mar 2020 12:39:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9E0F620716
-	for <linux-parisc@archiver.kernel.org>; Thu, 12 Mar 2020 10:56:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D5E362074A
+	for <linux-parisc@archiver.kernel.org>; Fri, 13 Mar 2020 12:39:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="kjtDKke2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pCaYXyky"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgCLK4E (ORCPT
+        id S1726605AbgCMMj2 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 12 Mar 2020 06:56:04 -0400
-Received: from ozlabs.org ([203.11.71.1]:35749 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725978AbgCLK4D (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 12 Mar 2020 06:56:03 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 48dQjL3pfwz9sPF;
-        Thu, 12 Mar 2020 21:55:50 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1584010558;
-        bh=72/MkVf9VVMOXQXQBCEOJd5iIUWgKkmEQGqh1LToq2c=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=kjtDKke2a24ahWnaI2Uj0G4Fe2Y+Jmmv/GYwuEOLFEW9uRKLJ/Eh8hY/uIvPOkWOq
-         hSpbFhZ+nkMkq9HnJFD5n60KJODzNOkbfNQ2xKBvxmtGjcLFu/cP0AF6WyLXOSMULb
-         6fFjUvKvb8/nZ+iPRU20W0VkcxW1QK6SeQvdds5ZfmEH3nf/wYggGS/dPu8fp0XU/0
-         5piT2dBaqMVbWuvgxSVjBFiUYMtS2zI6exgAeql41Nme4eoBMZr+hItq7bW8gr3rM3
-         jCRuhb1gAjdGh5ftRaRGO6Z5fFXzHCOWGuRXdE2RxOkjZdMiy8L8pyOPyQMC+hwaj9
-         VAqGftLnfpYYg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jiri Slaby <jirislaby@gmail.com>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jon Mason <jdmason@kudzu.us>, Allen Hubbe <allenbh@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-ntb@googlegroups.com,
-        virtualization@lists.linux-foundation.org,
-        linux-arch@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [RESEND PATCH v2 1/9] iomap: Constify ioreadX() iomem argument (as in generic implementation)
-In-Reply-To: <20200219175007.13627-2-krzk@kernel.org>
-References: <20200219175007.13627-1-krzk@kernel.org> <20200219175007.13627-2-krzk@kernel.org>
-Date:   Thu, 12 Mar 2020 21:55:44 +1100
-Message-ID: <87ftedj0zz.fsf@mpe.ellerman.id.au>
+        Fri, 13 Mar 2020 08:39:28 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:40649 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726216AbgCMMj1 (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 13 Mar 2020 08:39:27 -0400
+Received: by mail-pg1-f193.google.com with SMTP id t24so4934871pgj.7;
+        Fri, 13 Mar 2020 05:39:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=82fh5ikZzwKUrDyxKdkrVpEoXp45d69vwfzZrK4OB9Y=;
+        b=pCaYXykyMMfYJbyQ038KVkMaZj5sVhcE1wI9n+DIITZBD1COymiWYDlC2+vi3BkDe5
+         i7kQH6pmbvgu8eANJjGjeZlLUrWXum7PjEX4DjLSqgLEctKva8qM21NXiDYAf/DDQQQE
+         L8rxZMTefdgs00WF8xnVu/Y2y8Mwji2lTJixln5E6Q0Vu8eaUMKHQUSworyvlNbGMb4w
+         IHqkVBWBsEsO6tOsMRMy+L9MW6A5kxdx//5JLo7nnCLfITirV2XeXYXFuyW/ULCzklY1
+         3TmT73s3kFSu496C7jyF5KB3W39w/czyDIczygu6zBAEbcnfy6NyYVEfe8Q2rCDwcn7K
+         XoiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=82fh5ikZzwKUrDyxKdkrVpEoXp45d69vwfzZrK4OB9Y=;
+        b=lrrAXZ/ySUvrtMzKrk//L5Kt30ErUfhJjKOnPz2rypAQmYXQcp35oN6vb0ZvBTpEXi
+         uU4iblh2d89b2cCIm8IHxKFEk76G76ii6E7tWXD0jwhC9OqjiVk++fhTgM5tETx6eGni
+         R/JNvHiixn3SttHRK3JKn73dnGO7DMY4FLxIQJTQzeJd+aMVMcuYoK8AVyNT76vmnFNn
+         eQyPhLA2lUDXQp19vQgY1FebMsDcGDKjQ1tlCzBQZDo57xuEnLS2Y3HArSUmcQW4kCRR
+         B4y9leaOulBKnKGcsGW0d6F1i17qvtu+b8EkTs8LFoWA0L3yk4tt+ZFYmw9JcCzdbi8j
+         1/0Q==
+X-Gm-Message-State: ANhLgQ1CWs0+y+J2J/aRdq+/j/q2VulJHbTz4wfmSsppfzZrBRhpLGDH
+        E4GkIgfzfPkWIIkThVuxLTwPX+AZ
+X-Google-Smtp-Source: ADFU+vuImrtM0XybOBDGHeqm5s5eZa/2ofaKmPkRzVsqKSc+epZy8Mo8eq/uT1r3tLISxjO+lRdp6w==
+X-Received: by 2002:aa7:81d6:: with SMTP id c22mr5822084pfn.147.1584103166804;
+        Fri, 13 Mar 2020 05:39:26 -0700 (PDT)
+Received: from localhost ([106.51.232.35])
+        by smtp.gmail.com with ESMTPSA id t17sm57522622pgn.94.2020.03.13.05.39.25
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 13 Mar 2020 05:39:26 -0700 (PDT)
+Date:   Fri, 13 Mar 2020 18:09:24 +0530
+From:   afzal mohammed <afzal.mohd.ma@gmail.com>
+To:     "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>
+Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] parisc: Replace setup_irq() by request_irq()
+Message-ID: <20200313123924.GA7225@afzalpc>
+References: <20200304005025.5179-1-afzal.mohd.ma@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200304005025.5179-1-afzal.mohd.ma@gmail.com>
+User-Agent: Mutt/1.9.3 (2018-01-21)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Krzysztof Kozlowski <krzk@kernel.org> writes:
-> diff --git a/arch/powerpc/kernel/iomap.c b/arch/powerpc/kernel/iomap.c
-> index 5ac84efc6ede..9fe4fb3b08aa 100644
-> --- a/arch/powerpc/kernel/iomap.c
-> +++ b/arch/powerpc/kernel/iomap.c
-> @@ -15,23 +15,23 @@
->   * Here comes the ppc64 implementation of the IOMAP 
->   * interfaces.
->   */
-> -unsigned int ioread8(void __iomem *addr)
-> +unsigned int ioread8(const void __iomem *addr)
->  {
->  	return readb(addr);
->  }
-> -unsigned int ioread16(void __iomem *addr)
-> +unsigned int ioread16(const void __iomem *addr)
->  {
->  	return readw(addr);
->  }
-> -unsigned int ioread16be(void __iomem *addr)
-> +unsigned int ioread16be(const void __iomem *addr)
->  {
->  	return readw_be(addr);
->  }
-> -unsigned int ioread32(void __iomem *addr)
-> +unsigned int ioread32(const void __iomem *addr)
->  {
->  	return readl(addr);
->  }
-> -unsigned int ioread32be(void __iomem *addr)
-> +unsigned int ioread32be(const void __iomem *addr)
->  {
->  	return readl_be(addr);
->  }
-> @@ -41,27 +41,27 @@ EXPORT_SYMBOL(ioread16be);
->  EXPORT_SYMBOL(ioread32);
->  EXPORT_SYMBOL(ioread32be);
->  #ifdef __powerpc64__
-> -u64 ioread64(void __iomem *addr)
-> +u64 ioread64(const void __iomem *addr)
->  {
->  	return readq(addr);
->  }
-> -u64 ioread64_lo_hi(void __iomem *addr)
-> +u64 ioread64_lo_hi(const void __iomem *addr)
->  {
->  	return readq(addr);
->  }
-> -u64 ioread64_hi_lo(void __iomem *addr)
-> +u64 ioread64_hi_lo(const void __iomem *addr)
->  {
->  	return readq(addr);
->  }
-> -u64 ioread64be(void __iomem *addr)
-> +u64 ioread64be(const void __iomem *addr)
->  {
->  	return readq_be(addr);
->  }
-> -u64 ioread64be_lo_hi(void __iomem *addr)
-> +u64 ioread64be_lo_hi(const void __iomem *addr)
->  {
->  	return readq_be(addr);
->  }
-> -u64 ioread64be_hi_lo(void __iomem *addr)
-> +u64 ioread64be_hi_lo(const void __iomem *addr)
->  {
->  	return readq_be(addr);
->  }
-> @@ -139,15 +139,15 @@ EXPORT_SYMBOL(iowrite64be_hi_lo);
->   * FIXME! We could make these do EEH handling if we really
->   * wanted. Not clear if we do.
->   */
-> -void ioread8_rep(void __iomem *addr, void *dst, unsigned long count)
-> +void ioread8_rep(const void __iomem *addr, void *dst, unsigned long count)
->  {
->  	readsb(addr, dst, count);
->  }
-> -void ioread16_rep(void __iomem *addr, void *dst, unsigned long count)
-> +void ioread16_rep(const void __iomem *addr, void *dst, unsigned long count)
->  {
->  	readsw(addr, dst, count);
->  }
-> -void ioread32_rep(void __iomem *addr, void *dst, unsigned long count)
-> +void ioread32_rep(const void __iomem *addr, void *dst, unsigned long count)
->  {
->  	readsl(addr, dst, count);
->  }
+Hi Helge Deller,
 
-This looks OK to me.
+On Wed, Mar 04, 2020 at 06:20:24AM +0530, afzal mohammed wrote:
+> request_irq() is preferred over setup_irq(). Invocations of setup_irq()
+> occur after memory allocators are ready.
+> 
+> Per tglx[1], setup_irq() existed in olden days when allocators were not
+> ready by the time early interrupts were initialized.
+> 
+> Hence replace setup_irq() by request_irq().
+> 
+> [1] https://lkml.kernel.org/r/alpine.DEB.2.20.1710191609480.1971@nanos
+> 
+> Signed-off-by: afzal mohammed <afzal.mohd.ma@gmail.com>
+> ---
+> Hi parisc maintainers,
+> 
+> if okay w/ this change, please consider taking it thr' your tree, else please
+> let me know.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Seems you handle the pull requests for parisc, if this patch is okay,
+can you please consider for inclusion in your tree.
 
-cheers
+Regards
+afzal
