@@ -1,199 +1,119 @@
-Return-Path: <SRS0=PF/I=5B=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=gIZ+=5G=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4401FC0044D
-	for <linux-parisc@archiver.kernel.org>; Mon, 16 Mar 2020 14:41:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B1EBC43332
+	for <linux-parisc@archiver.kernel.org>; Sat, 21 Mar 2020 17:43:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 12F2D20658
-	for <linux-parisc@archiver.kernel.org>; Mon, 16 Mar 2020 14:41:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 238A020777
+	for <linux-parisc@archiver.kernel.org>; Sat, 21 Mar 2020 17:43:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="RRzmiGnt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UXIHaUBh"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731627AbgCPOlh (ORCPT
+        id S1727428AbgCURnM (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 16 Mar 2020 10:41:37 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:39782 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731596AbgCPOlg (ORCPT
+        Sat, 21 Mar 2020 13:43:12 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:46899 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726961AbgCURnM (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 16 Mar 2020 10:41:36 -0400
-Received: by mail-pl1-f194.google.com with SMTP id j20so8099622pll.6
-        for <linux-parisc@vger.kernel.org>; Mon, 16 Mar 2020 07:41:35 -0700 (PDT)
+        Sat, 21 Mar 2020 13:43:12 -0400
+Received: by mail-pg1-f196.google.com with SMTP id k191so3631741pgc.13;
+        Sat, 21 Mar 2020 10:43:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=googlenew;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ooWUba+WuFM1LT+rG8Ix9OwtU31ZH6sCxTrj5FjF2+E=;
-        b=RRzmiGntFjx3swzVfTda7U4xZacTsYm6K9zFvuZcyL1jVtrG2V+lgrSGjSTqpPDiIR
-         bhNBPwtU23IIj81xOpKjNaymf6lt2WfyOJ4BhH93umWmwKy/QQwLly+6ZBd7ztyrGFGD
-         gjPBVuoeOqJ4LNhi0O3L3m3NpJoUqGL25p84Xb0QsQg5gEG7U42ouuMmUyAOzd2K9gRr
-         UNe+jUcZmr0N7Na38Uk/FPwEtlh8XN/xf6ThS12jyTwZ4XXVFAHCVpRwu2xfeg/K1os3
-         7YR7V/8DhUqoE2SdpZdfdr/BONtod+KRq2nxG5zLE1isiFK7x3Lv3/s6IPuRq1T8FR7/
-         /6rQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3fStVl9rL3YRgIiAf/TzVVtMNrh3VX50fi0qgiiuA8o=;
+        b=UXIHaUBhFEcnW+OMHvNaZ8x6pk7Kw7xSi1XSqUQ/ypXJwX+/0kjbU9/UcI39UYrFww
+         L4SWYiuz/x5ZDo+euy1EVFm6/xEfsJuGVNtbr58w1aJIyLLbxr5Zvw2YV6+Jz2IFJLx1
+         hSKDnD+ugCfCtYPbwa0qtQZzvaVCFI/U0Hh49Bh/9v4+8cPYNZpxmxPxHCL/ucL4FfPB
+         t55wM9/sifQrsJ2x7qaYOUyTwSXOMqFFX7kbT5BvfLIkW8EyaBXHAHAACDZSlA65LB0e
+         +oYG1mMj2pkG+negyyMWiq2E57sl6r93kYgmOlv5Tvke5FfWZ2pC2/wfVUCgtyT6TaL9
+         9P/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ooWUba+WuFM1LT+rG8Ix9OwtU31ZH6sCxTrj5FjF2+E=;
-        b=Rmr+V4W6XKEKuHG0ZeidjKopWIzlyO5SrRX6uGyTugxxK9qjREjo+AR1N6Js/2IfQf
-         0esKUwPXIvIhOfkHxesn+lbCr1s7WpQ66WBcJZEnQZTP1l9+wdg1KN2aGoD1D7RdlaCL
-         DWwVaCQwu7LLec2EytdejJP7Cv5LjWl2dvD0pt/13iY6FQqOT2X2eVRMrlJOwvNHx50q
-         4mvWoCyPX9VLUhOfu6FIRIW+YZY9D7C/MNa9lROB5ADY9mfZ1n+8BEpI26cj1aPRNK3+
-         HmUU2pxnNCzuFQrZZpHxSVAcdosoQ7jyYrm+IZpDukohQjV3e72z/IDkZCPTXdYojKZM
-         J//A==
-X-Gm-Message-State: ANhLgQ2Uca9nW2ZnSgjMMv8HPXTqO+v55MSMiOMG+qzm3CxcTujE1o8k
-        nROZZXj9x+aTu7LdWObUVK9QGw==
-X-Google-Smtp-Source: ADFU+vuk1Nax5JXjWEjr21XPm5/y0ppQ2bw6f25AJVd/HAFgjQBil3QYq0tzGY1BdFrIh7N2s8c0bg==
-X-Received: by 2002:a17:90a:c301:: with SMTP id g1mr25092050pjt.88.1584369694718;
-        Mon, 16 Mar 2020 07:41:34 -0700 (PDT)
-Received: from Mindolluin.aristanetworks.com ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id i2sm81524pjs.21.2020.03.16.07.41.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Mar 2020 07:41:34 -0700 (PDT)
-From:   Dmitry Safonov <dima@arista.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Dmitry Safonov <dima@arista.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Slaby <jslaby@suse.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        linux-parisc@vger.kernel.org
-Subject: [PATCHv2 25/50] parisc: Add show_stack_loglvl()
-Date:   Mon, 16 Mar 2020 14:38:51 +0000
-Message-Id: <20200316143916.195608-26-dima@arista.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200316143916.195608-1-dima@arista.com>
-References: <20200316143916.195608-1-dima@arista.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3fStVl9rL3YRgIiAf/TzVVtMNrh3VX50fi0qgiiuA8o=;
+        b=Za4uAK/Rnst3X52J/G6OTQ+l4s/AZHOKh6kKpQ5ZdDLx15z4OYR19Y68wga1kyVUUG
+         ee5zp6q5qTKny4UFqJGpeahJ/qbnOYjH1s7/aAjvoabkGxio6N2MmF1B0inrNYClKF9Z
+         MOd0xVTsyXhNx5gGofVLaVBNvXW8pVFwDfi3J6j7y008urMcx6FX2pPbORPJ3I/qcYNr
+         IUiPrlnt7xGuMXWU6edZb9U/MOBHUwNGMOwT3jQEnIOFM1lfl1EPLWcYQSrcMbwm9rXV
+         eklcwN1zNrtM67GneGGnNA2PoQjkjbwMKjFMWBSJG+MQzQ9NbQcQblBL0Dv5ERnfTyFi
+         MKlg==
+X-Gm-Message-State: ANhLgQ2QqQUUd2GCN1Ivg6KqoHNYnAiZxGyaoY7bqL3CaSA4W3yIPBqY
+        SDFD7Q2H5qPCaJxAoSHqado=
+X-Google-Smtp-Source: ADFU+vtSB9sj3T3LCfhecLdyVMoQimjNCV0Ow3ys209048E+VImdKW1kqpUYGGvxT4nwaYSYvsoI7Q==
+X-Received: by 2002:a63:e856:: with SMTP id a22mr1215468pgk.283.1584812590871;
+        Sat, 21 Mar 2020 10:43:10 -0700 (PDT)
+Received: from localhost ([49.207.51.24])
+        by smtp.gmail.com with ESMTPSA id f127sm8973833pfa.9.2020.03.21.10.43.09
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 21 Mar 2020 10:43:10 -0700 (PDT)
+Date:   Sat, 21 Mar 2020 23:13:03 +0530
+From:   afzal mohammed <afzal.mohd.ma@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, x86@kernel.org,
+        linux-sh@vger.kernel.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-c6x-dev@linux-c6x.org, linux-omap@vger.kernel.org,
+        linux-alpha@vger.kernel.org, Julia Lawall <Julia.Lawall@lip6.fr>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>
+Subject: Re: [PATCH 00/18] genirq: Remove setup_irq()
+Message-ID: <20200321174303.GA7930@afzalpc>
+References: <cover.1581478323.git.afzal.mohd.ma@gmail.com>
+ <87y2somido.fsf@nanos.tec.linutronix.de>
+ <20200227110713.GA5708@afzalpc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200227110713.GA5708@afzalpc>
+User-Agent: Mutt/1.9.3 (2018-01-21)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Currently, the log-level of show_stack() depends on a platform
-realization. It creates situations where the headers are printed with
-lower log level or higher than the stacktrace (depending on
-a platform or user).
+Hi Thomas,
 
-Furthermore, it forces the logic decision from user to an architecture
-side. In result, some users as sysrq/kdb/etc are doing tricks with
-temporary rising console_loglevel while printing their messages.
-And in result it not only may print unwanted messages from other CPUs,
-but also omit printing at all in the unlucky case where the printk()
-was deferred.
+On Thu, Feb 27, 2020 at 04:37:13PM +0530, afzal mohammed wrote:
+> On Thu, Feb 27, 2020 at 11:31:15AM +0100, Thomas Gleixner wrote:
 
-Introducing log-level parameter and KERN_UNSUPPRESSED [1] seems
-an easier approach than introducing more printk buffers.
-Also, it will consolidate printings with headers.
+> > Vs. merging this series, I suggest the following approach:
+> > 
+> >    - Resubmit the individual changes as single patches or small series
+> >      to the relevant maintainers and subsystem mailing lists. They have
+> >      no dependency on a core change and can be applied where they belong
+> >      to.
+> > 
+> >    - After 5.6-rc6, verify which parts have made their way into
+> >      linux-next and resubmit the ignored ones as a series to me along
+> >      with the removal of the core parts.
+> > 
+> > That way we can avoid conflicting changes between subsystems and the tip
+> > irq/core branch as much as possible.
+> 
+> Okay, i will do accordingly.
 
-Introduce show_stack_loglvl(), that eventually will substitute
-show_stack().
+i am on it, is delayed due to the reason as mentioned at,
 
-Cc: Helge Deller <deller@gmx.de>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: linux-parisc@vger.kernel.org
-[1]: https://lore.kernel.org/lkml/20190528002412.1625-1-dima@arista.com/T/#u
-Signed-off-by: Dmitry Safonov <dima@arista.com>
----
- arch/parisc/kernel/traps.c | 28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+https://lkml.kernel.org/r/20200321172626.GA6323@afzalpc
 
-diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index 82fc01189488..c2411de3730f 100644
---- a/arch/parisc/kernel/traps.c
-+++ b/arch/parisc/kernel/traps.c
-@@ -49,7 +49,7 @@
- #include "../math-emu/math-emu.h"	/* for handle_fpe() */
- 
- static void parisc_show_stack(struct task_struct *task,
--	struct pt_regs *regs);
-+	struct pt_regs *regs, const char *loglvl);
- 
- static int printbinary(char *buf, unsigned long x, int nbits)
- {
-@@ -155,7 +155,7 @@ void show_regs(struct pt_regs *regs)
- 		printk("%s IAOQ[1]: %pS\n", level, (void *) regs->iaoq[1]);
- 		printk("%s RP(r2): %pS\n", level, (void *) regs->gr[2]);
- 
--		parisc_show_stack(current, regs);
-+		parisc_show_stack(current, regs, KERN_DEFAULT);
- 	}
- }
- 
-@@ -170,37 +170,43 @@ static DEFINE_RATELIMIT_STATE(_hppa_rs,
- }
- 
- 
--static void do_show_stack(struct unwind_frame_info *info)
-+static void do_show_stack(struct unwind_frame_info *info, const char *loglvl)
- {
- 	int i = 1;
- 
--	printk(KERN_CRIT "Backtrace:\n");
-+	printk("%sBacktrace:\n", loglvl);
- 	while (i <= MAX_UNWIND_ENTRIES) {
- 		if (unwind_once(info) < 0 || info->ip == 0)
- 			break;
- 
- 		if (__kernel_text_address(info->ip)) {
--			printk(KERN_CRIT " [<" RFMT ">] %pS\n",
--				info->ip, (void *) info->ip);
-+			printk("%s [<" RFMT ">] %pS\n",
-+				loglvl, info->ip, (void *) info->ip);
- 			i++;
- 		}
- 	}
--	printk(KERN_CRIT "\n");
-+	printk("%s\n", loglvl);
- }
- 
- static void parisc_show_stack(struct task_struct *task,
--	struct pt_regs *regs)
-+	struct pt_regs *regs, const char *loglvl)
- {
- 	struct unwind_frame_info info;
- 
- 	unwind_frame_init_task(&info, task, regs);
- 
--	do_show_stack(&info);
-+	do_show_stack(&info, loglvl);
-+}
-+
-+void show_stack_loglvl(struct task_struct *t, unsigned long *sp,
-+		       const char *loglvl)
-+{
-+	parisc_show_stack(t, NULL, loglvl);
- }
- 
- void show_stack(struct task_struct *t, unsigned long *sp)
- {
--	parisc_show_stack(t, NULL);
-+	show_stack_loglvl(t, sp, KERN_CRIT)
- }
- 
- int is_valid_bugaddr(unsigned long iaoq)
-@@ -446,7 +452,7 @@ void parisc_terminate(char *msg, struct pt_regs *regs, int code, unsigned long o
- 		/* show_stack(NULL, (unsigned long *)regs->gr[30]); */
- 		struct unwind_frame_info info;
- 		unwind_frame_init(&info, current, regs);
--		do_show_stack(&info);
-+		do_show_stack(&info, KERN_CRIT);
- 	}
- 
- 	printk("\n");
--- 
-2.25.1
+[ not repeating contents here since other mail was sent just now,
+  cc'ing you ]
+
+Regards
+afzal
 
