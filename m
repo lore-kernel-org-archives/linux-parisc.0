@@ -1,119 +1,222 @@
-Return-Path: <SRS0=gIZ+=5G=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=G9+q=5I=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B1EBC43332
-	for <linux-parisc@archiver.kernel.org>; Sat, 21 Mar 2020 17:43:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D0E8C3F2CD
+	for <linux-parisc@archiver.kernel.org>; Mon, 23 Mar 2020 13:51:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 238A020777
-	for <linux-parisc@archiver.kernel.org>; Sat, 21 Mar 2020 17:43:13 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UXIHaUBh"
+	by mail.kernel.org (Postfix) with ESMTP id 7323320753
+	for <linux-parisc@archiver.kernel.org>; Mon, 23 Mar 2020 13:51:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727428AbgCURnM (ORCPT
+        id S1728508AbgCWNvS (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 21 Mar 2020 13:43:12 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:46899 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726961AbgCURnM (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 21 Mar 2020 13:43:12 -0400
-Received: by mail-pg1-f196.google.com with SMTP id k191so3631741pgc.13;
-        Sat, 21 Mar 2020 10:43:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3fStVl9rL3YRgIiAf/TzVVtMNrh3VX50fi0qgiiuA8o=;
-        b=UXIHaUBhFEcnW+OMHvNaZ8x6pk7Kw7xSi1XSqUQ/ypXJwX+/0kjbU9/UcI39UYrFww
-         L4SWYiuz/x5ZDo+euy1EVFm6/xEfsJuGVNtbr58w1aJIyLLbxr5Zvw2YV6+Jz2IFJLx1
-         hSKDnD+ugCfCtYPbwa0qtQZzvaVCFI/U0Hh49Bh/9v4+8cPYNZpxmxPxHCL/ucL4FfPB
-         t55wM9/sifQrsJ2x7qaYOUyTwSXOMqFFX7kbT5BvfLIkW8EyaBXHAHAACDZSlA65LB0e
-         +oYG1mMj2pkG+negyyMWiq2E57sl6r93kYgmOlv5Tvke5FfWZ2pC2/wfVUCgtyT6TaL9
-         9P/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3fStVl9rL3YRgIiAf/TzVVtMNrh3VX50fi0qgiiuA8o=;
-        b=Za4uAK/Rnst3X52J/G6OTQ+l4s/AZHOKh6kKpQ5ZdDLx15z4OYR19Y68wga1kyVUUG
-         ee5zp6q5qTKny4UFqJGpeahJ/qbnOYjH1s7/aAjvoabkGxio6N2MmF1B0inrNYClKF9Z
-         MOd0xVTsyXhNx5gGofVLaVBNvXW8pVFwDfi3J6j7y008urMcx6FX2pPbORPJ3I/qcYNr
-         IUiPrlnt7xGuMXWU6edZb9U/MOBHUwNGMOwT3jQEnIOFM1lfl1EPLWcYQSrcMbwm9rXV
-         eklcwN1zNrtM67GneGGnNA2PoQjkjbwMKjFMWBSJG+MQzQ9NbQcQblBL0Dv5ERnfTyFi
-         MKlg==
-X-Gm-Message-State: ANhLgQ2QqQUUd2GCN1Ivg6KqoHNYnAiZxGyaoY7bqL3CaSA4W3yIPBqY
-        SDFD7Q2H5qPCaJxAoSHqado=
-X-Google-Smtp-Source: ADFU+vtSB9sj3T3LCfhecLdyVMoQimjNCV0Ow3ys209048E+VImdKW1kqpUYGGvxT4nwaYSYvsoI7Q==
-X-Received: by 2002:a63:e856:: with SMTP id a22mr1215468pgk.283.1584812590871;
-        Sat, 21 Mar 2020 10:43:10 -0700 (PDT)
-Received: from localhost ([49.207.51.24])
-        by smtp.gmail.com with ESMTPSA id f127sm8973833pfa.9.2020.03.21.10.43.09
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 21 Mar 2020 10:43:10 -0700 (PDT)
-Date:   Sat, 21 Mar 2020 23:13:03 +0530
-From:   afzal mohammed <afzal.mohd.ma@gmail.com>
+        Mon, 23 Mar 2020 09:51:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:49402 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728423AbgCWNvS (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 23 Mar 2020 09:51:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2962E1FB;
+        Mon, 23 Mar 2020 06:51:17 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 82C293F52E;
+        Mon, 23 Mar 2020 06:51:14 -0700 (PDT)
+From:   Qais Yousef <qais.yousef@arm.com>
 To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, x86@kernel.org,
-        linux-sh@vger.kernel.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-c6x-dev@linux-c6x.org, linux-omap@vger.kernel.org,
-        linux-alpha@vger.kernel.org, Julia Lawall <Julia.Lawall@lip6.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: Re: [PATCH 00/18] genirq: Remove setup_irq()
-Message-ID: <20200321174303.GA7930@afzalpc>
-References: <cover.1581478323.git.afzal.mohd.ma@gmail.com>
- <87y2somido.fsf@nanos.tec.linutronix.de>
- <20200227110713.GA5708@afzalpc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200227110713.GA5708@afzalpc>
-User-Agent: Mutt/1.9.3 (2018-01-21)
+Cc:     linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Helge Deller <deller@gmx.de>, Juergen Gross <jgross@suse.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        xen-devel@lists.xenproject.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org
+Subject: [PATCH v4 00/17] Convert cpu_up/down to device_online/offline
+Date:   Mon, 23 Mar 2020 13:50:53 +0000
+Message-Id: <20200323135110.30522-1-qais.yousef@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi Thomas,
+=============
+Changes in v4
+=============
 
-On Thu, Feb 27, 2020 at 04:37:13PM +0530, afzal mohammed wrote:
-> On Thu, Feb 27, 2020 at 11:31:15AM +0100, Thomas Gleixner wrote:
+	* Split arm and arm64 patches so that the change to use reboot_cpu goes
+	  into its own separate patch (Russell)
+	* Collected new Acked-by
+	* Rebased on top of v5.6-rc6
+	* Trimmed the CC list on the cover letter as lists were rejecting it
 
-> > Vs. merging this series, I suggest the following approach:
-> > 
-> >    - Resubmit the individual changes as single patches or small series
-> >      to the relevant maintainers and subsystem mailing lists. They have
-> >      no dependency on a core change and can be applied where they belong
-> >      to.
-> > 
-> >    - After 5.6-rc6, verify which parts have made their way into
-> >      linux-next and resubmit the ignored ones as a series to me along
-> >      with the removal of the core parts.
-> > 
-> > That way we can avoid conflicting changes between subsystems and the tip
-> > irq/core branch as much as possible.
-> 
-> Okay, i will do accordingly.
 
-i am on it, is delayed due to the reason as mentioned at,
+	git clone git://linux-arm.org/linux-qy.git -b cpu-hp-cleanup-v4
 
-https://lkml.kernel.org/r/20200321172626.GA6323@afzalpc
 
-[ not repeating contents here since other mail was sent just now,
-  cc'ing you ]
+Older post can be found here
+----------------------------
 
-Regards
-afzal
+	https://lore.kernel.org/lkml/20200223192942.18420-2-qais.yousef@arm.com/
+
+
+=============
+Test Coverage
+=============
+
+	All tests ran with LOCKDEP enabled.
+
+Platform: Juno-r2: arm64
+------------------------
+
+	* Overnight rcutorture
+	* Overnight locktorture
+	* kexec -f Image --command="$(cat /proc/cmdline) reboot=s[0-5]"
+	* Hibernate to disk (using suspend option)
+	* Userspace hotplug via sysfs
+	* PSCI firemware checker
+
+Notes:
+
+	* Couldn't convince Juno to hibernate using [reboot] or [shutdown]
+	  options.
+
+Platform: qemu (8 vCPUs) and VM (2 vCPUs): x86_64
+-------------------------------------------------
+
+	* Overnight rcutorture
+	* Overnight locktorture
+	* Userspace hotplug via sysfs
+	* echo mmiotrace > /sys/kernel/debug/tracing/current_tracer &&
+	  echo nop > /sys/kernel/debug/tracing/current_tracer
+	* Ran with CONFIG_DEBUG_HOTPLUG_CPU0 and CONFIG_BOOTPARAM_HOTPLUG_CPU0
+
+Notes:
+
+	* qemu failed to bring cpu0 after offlining. Same behavior observed on
+	  vanilla v5.6-rc6. Worked fine on the VM.
+
+	* mmiotrace successfully brought down all cpus when enabled,
+	  then back online again when disabled. Including when cpu0 was
+	  offline.
+
+	* My xen shenanigans are too 'humble' too create environment to test
+	  the change in xen yet..
+
+
+=====================
+Original Cover Letter
+=====================
+
+Using cpu_up/down directly to bring cpus online/offline loses synchronization
+with sysfs and could suffer from a race similar to what is described in
+commit a6717c01ddc2 ("powerpc/rtas: use device model APIs and serialization
+during LPM").
+
+cpu_up/down seem to be more of a internal implementation detail for the cpu
+subsystem to use to boot up cpus, perform suspend/resume and low level hotplug
+operations. Users outside of the cpu subsystem would be better using the device
+core API to bring a cpu online/offline which is the interface used to hotplug
+memory and other system devices.
+
+Several users have already migrated to use the device core API, this series
+converts the remaining users and hides cpu_up/down from internal users at the
+end.
+
+I noticed this problem while working on a hack to disable offlining
+a particular CPU but noticed that setting the offline_disabled attribute in the
+device struct isn't enough because users can easily bypass the device core.
+While my hack isn't a valid use case but it did highlight the inconsistency in
+the way cpus are being onlined/offlined and this attempt hopefully improves on
+this.
+
+The first patch introduces new API to {add,remove}_cpu() using device_{online,
+offline}() with correct locks held and export it.
+
+The following 10 patches fix arch users.
+
+The remaining 6 patches fix generic code users. Particularly creating a new
+special exported API for the device core to use instead of cpu_up/down.
+
+The last patch removes cpu_up/down from cpu.h and unexport the functions.
+
+In some cases where the use of cpu_up/down seemed legitimate, I encapsulated
+the logic in a higher level - special purposed function; and converted the code
+to use that instead.
+
+
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: Tony Luck <tony.luck@intel.com>
+CC: Fenghua Yu <fenghua.yu@intel.com>
+CC: Russell King <linux@armlinux.org.uk>
+CC: Catalin Marinas <catalin.marinas@arm.com>
+CC: Michael Ellerman <mpe@ellerman.id.au>
+CC: "David S. Miller" <davem@davemloft.net>
+CC: Helge Deller <deller@gmx.de>
+CC: Juergen Gross <jgross@suse.com>
+CC: Mark Rutland <mark.rutland@arm.com>
+CC: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC: "Paul E. McKenney" <paulmck@kernel.org>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: xen-devel@lists.xenproject.org
+CC: linux-parisc@vger.kernel.org
+CC: sparclinux@vger.kernel.org
+CC: linuxppc-dev@lists.ozlabs.org
+CC: x86@kernel.org
+CC: linux-arm-kernel@lists.infradead.org
+CC: linux-ia64@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+
+Qais Yousef (17):
+  cpu: Add new {add,remove}_cpu() functions
+  smp: Create a new function to shutdown nonboot cpus
+  ia64: Replace cpu_down with smp_shutdown_nonboot_cpus()
+  arm: Don't use disable_nonboot_cpus()
+  arm: Use reboot_cpu instead of hardcoding it to 0
+  arm64: Don't use disable_nonboot_cpus()
+  arm64: Use reboot_cpu instead of hardconding it to 0
+  arm64: hibernate.c: Create a new function to handle cpu_up(sleep_cpu)
+  x86: Replace cpu_up/down with add/remove_cpu
+  powerpc: Replace cpu_up/down with add/remove_cpu
+  sparc: Replace cpu_up/down with add/remove_cpu
+  parisc: Replace cpu_up/down with add/remove_cpu
+  driver: xen: Replace cpu_up/down with device_online/offline
+  firmware: psci: Replace cpu_up/down with add/remove_cpu
+  torture: Replace cpu_up/down with add/remove_cpu
+  smp: Create a new function to bringup nonboot cpus online
+  cpu: Hide cpu_up/down
+
+ arch/arm/kernel/reboot.c             |   4 +-
+ arch/arm64/kernel/hibernate.c        |  13 +--
+ arch/arm64/kernel/process.c          |   4 +-
+ arch/ia64/kernel/process.c           |   8 +-
+ arch/parisc/kernel/processor.c       |   2 +-
+ arch/powerpc/kexec/core_64.c         |   2 +-
+ arch/sparc/kernel/ds.c               |   4 +-
+ arch/x86/kernel/topology.c           |  22 ++---
+ arch/x86/mm/mmio-mod.c               |   4 +-
+ arch/x86/xen/smp.c                   |   2 +-
+ drivers/base/cpu.c                   |   4 +-
+ drivers/firmware/psci/psci_checker.c |   4 +-
+ drivers/xen/cpu_hotplug.c            |   2 +-
+ include/linux/cpu.h                  |  10 +-
+ kernel/cpu.c                         | 134 ++++++++++++++++++++++++++-
+ kernel/smp.c                         |   9 +-
+ kernel/torture.c                     |   9 +-
+ 17 files changed, 172 insertions(+), 65 deletions(-)
+
+-- 
+2.17.1
 
