@@ -1,106 +1,71 @@
-Return-Path: <SRS0=TfRo=5W=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=u15Z=5X=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0806EC2BA80
-	for <linux-parisc@archiver.kernel.org>; Mon,  6 Apr 2020 20:16:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDFFDC2D0EC
+	for <linux-parisc@archiver.kernel.org>; Tue,  7 Apr 2020 19:55:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D60B12072F
-	for <linux-parisc@archiver.kernel.org>; Mon,  6 Apr 2020 20:16:28 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="GnOpoaPs"
+	by mail.kernel.org (Postfix) with ESMTP id 84A4620748
+	for <linux-parisc@archiver.kernel.org>; Tue,  7 Apr 2020 19:55:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1586289303;
+	bh=r+VImNmnLBQUKy6aPx4G7SRNP8Qk/clSP1tZpxClntI=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
+	b=qk7WE3YThwRWAqZ4wlA+Tjgv7k6u9NFt4bAy29TIPXoOmuOfSoaYFitdc7LDbBOHJ
+	 vHV5i14TZsRufm+WdwlwMQEF8iYVJ/z1l9E9SUbrIBaVWhCVTeBSSgPy1JuIcP7JXJ
+	 ENzHWHX+2yeO2RijyWGx19Igfd8ez0BouS5dJ0TM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbgDFUQ1 (ORCPT
+        id S1727009AbgDGTzD (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 6 Apr 2020 16:16:27 -0400
-Received: from mout.gmx.net ([212.227.17.20]:55685 "EHLO mout.gmx.net"
+        Tue, 7 Apr 2020 15:55:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725895AbgDFUQ0 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 6 Apr 2020 16:16:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1586204178;
-        bh=oG1yq8a/DhIc/9gEG2YsWIiXtkuwm4ES6uWA/6KSCjk=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=GnOpoaPsH58dBiAx7bZGg1akExGH7ESKyRLpT0rolkR0kWsJzcbVRbyIHOBNVM17V
-         jdpdcw3dXldUjZ8DfQQD3acOHRbbpaVg+vr1JdV6nFqe0YVkIzuECfeQsfWqhKXT+3
-         41lMSFvQQePw4D6boiwPJdajMURtq5p+NaGh00AU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530.fritz.box ([92.116.138.44]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MBDnC-1jSieF3dRW-00ClUE; Mon, 06
- Apr 2020 22:16:17 +0200
-Date:   Mon, 6 Apr 2020 22:16:15 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        id S1726712AbgDGTzD (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 7 Apr 2020 15:55:03 -0400
+Subject: Re: [GIT PULL] parisc architecture fixes for kernel v5.7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586289302;
+        bh=r+VImNmnLBQUKy6aPx4G7SRNP8Qk/clSP1tZpxClntI=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=f+VShvUrPZxu1C1Ms2KDU5EdVJqfo1DVQFjuvXIE2D7VSZ9q5S+etPphEm0wfuRAK
+         BMcRBUWWUrW7lnZUJLcac5lJlye54Y39VAKA9wZDvX1TO3s/jiNG/xKisWu7tlciFI
+         I6BUIPq7nie29FcuY0bc7opuFp6UEakT2v6vZ6sE=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200406201615.GA23183@ls3530.fritz.box>
+References: <20200406201615.GA23183@ls3530.fritz.box>
+X-PR-Tracked-List-Id: <linux-parisc.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200406201615.GA23183@ls3530.fritz.box>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git
+ parisc-5.7-1
+X-PR-Tracked-Commit-Id: 106c90922e1e0cd5fcbb34be8ebbb3e8a8e71909
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f9db97d751870cbffc85f4aa0d8aca8a79432691
+Message-Id: <158628930265.3792.541815435181788203.pr-tracker-bot@kernel.org>
+Date:   Tue, 07 Apr 2020 19:55:02 +0000
+To:     Helge Deller <deller@gmx.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@hansenpartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Subject: [GIT PULL] parisc architecture fixes for kernel v5.7
-Message-ID: <20200406201615.GA23183@ls3530.fritz.box>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:g0DlnhRdrNw8HmoSXCXhHF8diqMYig6+OyRgPRSdgBy2WzFL2sf
- QhQIPzC93CNQYPiuiFFWrgqZclj/Os5T2uuaslKSez1XCTecqjuk18ufYne9fR3+MwB2z7F
- C6U9ks+1CWsWUeIWW8ofZX0vIZDzdWKKeder1sU/BQSdQN763A9vNcpUVo4lcRbbwFq/7dZ
- ZMOpdXzb/DpRjSYF9lAvw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:cDYWPsDJmIQ=:8cF9npHUYDS7HwxW6TwB7g
- nbMTjQo5wZvqL85LNIeIaB+B7bdHi7H3VpqoIvep+Kyepo+xzpDMXCicy84E5wzQoS4izj9dV
- yU7DX0g7+BjCZrDfipWJ40h76iWddApI1OHJdQmBPxCO9F3JPXSJ/r3uRSgVlLDXbc4BUzbgc
- ZVydxx4SN7lm3gzCuFzEh7uXCPxiesReMWoyP6dPNbhSQSXkX+eFUdQmN4gtYiIYUn6FO2Ymi
- mmTYYdw8ni3yp4FpavJLyfW0pTygVMalAuBY8lA5vMU2PqaJ6VPSpqEzwW38F4RgWSgZT2/wb
- KU3mLgtgFuoLR7SEHzuiJGeuNFSbNOfX+ofyFWOGhux3PAyChacN95ic/buBMzLZU45sPJafQ
- zuGTfJur5jVJQaMI3uNh/oHJGlP0Btfw1uQIhY7FPol/0BTg2BG4N3c2UqTLyPBKmTXPZKCTq
- zPjYbUiLNa7oKiwFvh4rClYIGb3+W0KzYzPUpQR50aX5PZy9DCgjGB7TLpcW/9fOHXxH9bvMy
- FEd8mi/liA29iCa8H1UjWkNJr+ely72tDQj88KvT5tpbtvmq4C4GWGEuetxjeAvXJziVjOiQ0
- V6fVkR27ILb7t6dFsXeEzqI6Sg1vK5BTJlHL7eBq2HElAYZKku1kIQx5KTN0/Mux5cqveD7qy
- 37Z/GOaE4g3AP1iTGoNLK2uPj5ksP3aGuf7kNMeXJwoyakUsM06FJ2w75VUQ2iQJAilWHpn4B
- drOKajClzMTyttCD4Mm501RZN+jTD4GXg6b+/ZFnYpYgKm/DoBeVuNgWK30jn+SlUiZQkrOHW
- 5ZLcaWxY+Cuh5kNxsaYVCQeZfDvWbVzCMD0TTHuiFUbCUNRGThQdjZhH1WMhXKSdDzpbsNBaj
- HrEihsj4q8VxmieJ/ZwF6XTqLXBptNE5RtFMSPS0wQxjmMpPHmQnDCkF6M1oMVXQyn7X3SuKf
- GDY4vdmUTbZl7+keaI1HbiKa+E6VMoSjm71FKFN9w1y/qdxaN6N6sfDo3OMetvMcc0mbFjrzE
- Ulcuth+AxGFLLG0ezfIsJboYGpEYWJ0Z6KI18JINL9s/oUXeU8blYeRiEPrl5xmDp7yLiUKRq
- veFvaymxXoOl9vMxq+qfYVVhifu5rXmOqmDi1fqgNr4lFXrZLS8RrYyIQWD9EjX/V3t2GM61g
- Cxtjv4nmqFH7YX5ilhRmDQ0m6/z0YYRt+JdtWXp1pUTO1ekL5HttWPOB9Uh3Tj6Z8oBroZG89
- CNT4lwA6VXyjTU/f9
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi Linus,
+The pull request you sent on Mon, 6 Apr 2020 22:16:15 +0200:
 
-please pull the updates for the parisc architecture for kernel 5.7 from:
+> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.7-1
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.7-1
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f9db97d751870cbffc85f4aa0d8aca8a79432691
 
-Some cleanups in arch_rw locking functions, improved interrupt handling in arch
-spinlocks, coversions to request_irq() and syscall table generation cleanups.
+Thank you!
 
-Thanks,
-Helge
-
-----------------------------------------------------------------
-Firoz Khan (1):
-      parisc: remove nargs from __SYSCALL
-
-Helge Deller (3):
-      parisc: Improve interrupt handling in arch_spin_lock_flags()
-      parisc: Rework arch_rw locking functions
-      parisc: Refactor alternative code to accept multiple conditions
-
-afzal mohammed (1):
-      parisc: Replace setup_irq() by request_irq()
-
- arch/parisc/include/asm/spinlock.h        | 160 ++++++++++++++----------------
- arch/parisc/include/asm/spinlock_types.h  |  14 ++-
- arch/parisc/kernel/alternative.c          |  37 +++----
- arch/parisc/kernel/irq.c                  |  22 ++--
- arch/parisc/kernel/syscall.S              |   2 +-
- arch/parisc/kernel/syscalls/syscalltbl.sh |   4 +-
- drivers/parisc/eisa.c                     |   8 +-
- 7 files changed, 114 insertions(+), 133 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
