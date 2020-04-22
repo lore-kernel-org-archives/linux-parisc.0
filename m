@@ -6,29 +6,35 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D909C54FCB
-	for <linux-parisc@archiver.kernel.org>; Wed, 22 Apr 2020 16:14:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C392AC54FCB
+	for <linux-parisc@archiver.kernel.org>; Wed, 22 Apr 2020 16:56:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DA99320774
-	for <linux-parisc@archiver.kernel.org>; Wed, 22 Apr 2020 16:14:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9EDAB21473
+	for <linux-parisc@archiver.kernel.org>; Wed, 22 Apr 2020 16:56:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726842AbgDVQOA (ORCPT
+        id S1726881AbgDVQ4F (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 22 Apr 2020 12:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726667AbgDVQOA (ORCPT
+        Wed, 22 Apr 2020 12:56:05 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:34306 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726429AbgDVQ4F (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 22 Apr 2020 12:14:00 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040F6C03C1A9;
-        Wed, 22 Apr 2020 09:14:00 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jRI0N-008ZHc-IT; Wed, 22 Apr 2020 16:13:43 +0000
-Date:   Wed, 22 Apr 2020 17:13:43 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Nate Karstens <nate.karstens@garmin.com>,
+        Wed, 22 Apr 2020 12:56:05 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-100-3Htmdqx8M26lXy7JzYFCfA-1; Wed, 22 Apr 2020 17:56:01 +0100
+X-MC-Unique: 3Htmdqx8M26lXy7JzYFCfA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 22 Apr 2020 17:55:58 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 22 Apr 2020 17:55:58 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Bernd Petrovitsch' <bernd@petrovitsch.priv.at>,
+        "Karstens, Nate" <Nate.Karstens@garmin.com>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Jeff Layton <jlayton@kernel.org>,
         "J. Bruce Fields" <bfields@fieldses.org>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -39,46 +45,49 @@ Cc:     Nate Karstens <nate.karstens@garmin.com>,
         Helge Deller <deller@gmx.de>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Changli Gao <xiaosuo@gmail.com>
-Subject: Re: Implement close-on-fork
-Message-ID: <20200422161343.GM23230@ZenIV.linux.org.uk>
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Changli Gao <xiaosuo@gmail.com>
+Subject: RE: [PATCH 1/4] fs: Implement close-on-fork
+Thread-Topic: [PATCH 1/4] fs: Implement close-on-fork
+Thread-Index: AQHWGMN8ssv9Cm82zkePzv5DmgsrOaiFW04w
+Date:   Wed, 22 Apr 2020 16:55:58 +0000
+Message-ID: <337320db094d4426a621858fa0f6d7fd@AcuMS.aculab.com>
 References: <20200420071548.62112-1-nate.karstens@garmin.com>
- <20200422150107.GK23230@ZenIV.linux.org.uk>
- <20200422151815.GT5820@bombadil.infradead.org>
- <20200422160032.GL23230@ZenIV.linux.org.uk>
+ <20200420071548.62112-2-nate.karstens@garmin.com>
+ <fa6c5c9c7c434f878c94a7c984cd43ba@garmin.com>
+ <20200422154356.GU5820@bombadil.infradead.org>
+ <6ed7bd08892b4311b70636658321904f@garmin.com>
+ <97f05204-a27c-7cc8-429a-edcf6eebaa11@petrovitsch.priv.at>
+In-Reply-To: <97f05204-a27c-7cc8-429a-edcf6eebaa11@petrovitsch.priv.at>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422160032.GL23230@ZenIV.linux.org.uk>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 05:00:32PM +0100, Al Viro wrote:
+RnJvbTogQmVybmQgUGV0cm92aXRzY2gNCj4gU2VudDogMjIgQXByaWwgMjAyMCAxNzozMg0KLi4u
+DQo+IEFwYXJ0IGZyb20gdGhhdCwgc3lzdGVtKCkgaXMgYSBQSVRBIGV2ZW4gb24NCj4gc2luZ2xl
+L25vbi10aHJlYWRlZCBhcHBzLg0KDQpOb3Qgb25seSB0aGF0LCBpdCBpcyBibG9vZHkgZGFuZ2Vy
+b3VzIGJlY2F1c2UgKHR5cGljYWxseSkNCnNoZWxsIGlzIGRvaW5nIHBvc3Qgc3Vic3RpdHV0aW9u
+IHN5bnRheCBhbmFseXNpcy4NCg0KSWYgeW91IG5lZWQgdG8gcnVuIGFuIGV4dGVybmFsIHByb2Nl
+c3MgeW91IG5lZWQgdG8gZ2VuZXJhdGUNCmFuIGFydltdIGFycmF5IGNvbnRhaW5pbmcgdGhlIHBh
+cmFtZXRlcnMuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJy
+YW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lz
+dHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-> *snort*
-> 
-> Alan Coopersmith in that thread:
-> || https://lwn.net/Articles/785430/ suggests AIX, BSD, & MacOS have also defined
-> || it, and though it's been proposed multiple times for Linux, never adopted there.
-> 
-> Now, look at the article in question.  You'll see that it should've been
-> "someone's posting in the end of comments thread under LWN article says that
-> apparently it exists on AIX, BSD, ..."
-> 
-> The strength of evidence aside, that got me curious; I have checked the
-> source of FreeBSD, NetBSD and OpenBSD.  No such thing exists in either of
-> their kernels, so at least that part can be considered an urban legend.
-> 
-> As for the original problem...  what kind of exclusion is used between
-> the reaction to netlink notifications (including closing every socket,
-> etc.) and actual IO done on those sockets?
-
-Not an idle question, BTW - unlike Solaris we do NOT (and will not) have
-close(2) abort IO on the same descriptor from another thread.  So if one
-thread sits in recvmsg(2) while another does close(2), the socket will
-*NOT* actually shut down until recvmsg(2) returns.
