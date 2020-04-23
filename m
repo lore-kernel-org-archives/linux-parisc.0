@@ -2,155 +2,133 @@ Return-Path: <SRS0=mECk=6H=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0108FC55186
-	for <linux-parisc@archiver.kernel.org>; Thu, 23 Apr 2020 12:36:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 737B5C54FD0
+	for <linux-parisc@archiver.kernel.org>; Thu, 23 Apr 2020 21:21:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DA05C2074F
-	for <linux-parisc@archiver.kernel.org>; Thu, 23 Apr 2020 12:36:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4EA2620776
+	for <linux-parisc@archiver.kernel.org>; Thu, 23 Apr 2020 21:21:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgDWMgB (ORCPT
+        id S1726168AbgDWVVG (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 23 Apr 2020 08:36:01 -0400
-Received: from esgaroth.petrovitsch.at ([78.47.184.11]:3302 "EHLO
-        esgaroth.tuxoid.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgDWMgB (ORCPT
+        Thu, 23 Apr 2020 17:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726002AbgDWVVF (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 23 Apr 2020 08:36:01 -0400
-Received: from [10.68.100.236] (h10-gesig.woeg.acw.at [217.116.178.11] (may be forged))
-        (authenticated bits=0)
-        by esgaroth.tuxoid.at (8.15.2/8.15.2) with ESMTPSA id 03NCY9Ht015917
-        (version=TLSv1 cipher=DHE-RSA-AES128-SHA bits=128 verify=NO);
-        Thu, 23 Apr 2020 14:34:10 +0200
-Subject: Re: [PATCH 1/4] fs: Implement close-on-fork
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "Karstens, Nate" <Nate.Karstens@garmin.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Changli Gao <xiaosuo@gmail.com>
-References: <20200420071548.62112-1-nate.karstens@garmin.com>
- <20200420071548.62112-2-nate.karstens@garmin.com>
- <fa6c5c9c7c434f878c94a7c984cd43ba@garmin.com>
- <20200422154356.GU5820@bombadil.infradead.org>
- <6ed7bd08892b4311b70636658321904f@garmin.com>
- <97f05204-a27c-7cc8-429a-edcf6eebaa11@petrovitsch.priv.at>
- <337320db094d4426a621858fa0f6d7fd@AcuMS.aculab.com>
-From:   Bernd Petrovitsch <bernd@petrovitsch.priv.at>
-X-Pep-Version: 2.0
-Message-ID: <f3640ed9-d846-9cbd-7690-53da5ff1473a@petrovitsch.priv.at>
-Date:   Thu, 23 Apr 2020 12:34:09 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 23 Apr 2020 17:21:05 -0400
+X-Greylist: delayed 1057 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 23 Apr 2020 14:21:05 PDT
+Received: from wp441.webpack.hosteurope.de (wp441.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:85d2::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79810C09B042
+        for <linux-parisc@vger.kernel.org>; Thu, 23 Apr 2020 14:21:05 -0700 (PDT)
+Received: from [2a02:2028:62b:4200:21c:c4ff:fe1f:fd93] (helo=valdese.nms.ulrich-teichert.org); authenticated
+        by wp441.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1jRj0H-0006Wv-7W; Thu, 23 Apr 2020 23:03:25 +0200
+Received: from valdese.nms.ulrich-teichert.org (localhost [127.0.0.1])
+        by valdese.nms.ulrich-teichert.org (8.15.2/8.15.2/Debian-8) with ESMTPS id 03NL3Ojh008745
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-parisc@vger.kernel.org>; Thu, 23 Apr 2020 23:03:24 +0200
+Received: (from ut@localhost)
+        by valdese.nms.ulrich-teichert.org (8.15.2/8.15.2/Submit) id 03NL3OBS008743
+        for linux-parisc@vger.kernel.org; Thu, 23 Apr 2020 23:03:24 +0200
+Message-Id: <202004232103.03NL3OBS008743@valdese.nms.ulrich-teichert.org>
+Subject: STI init_graph failed on J6700
+To:     linux-parisc@vger.kernel.org (PA-RISC Linux Mailinglist)
+Date:   Thu, 23 Apr 2020 23:03:24 +0200 (CEST)
+From:   Ulrich Teichert <krypton@ulrich-teichert.org>
+X-Mailer: ELM [version 2.5 PL8]
 MIME-Version: 1.0
-In-Reply-To: <337320db094d4426a621858fa0f6d7fd@AcuMS.aculab.com>
-Content-Type: multipart/mixed;
- boundary="------------985EBFE9F348F8C36FCBAAF1"
-Content-Language: en-US
-X-DCC-wuwien-Metrics: esgaroth.tuxoid.at 1290; Body=22 Fuz1=22 Fuz2=22
-X-Virus-Scanned: clamav-milter 0.97 at esgaroth.tuxoid.at
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;ut@ulrich-teichert.org;1587676865;792e91ef;
+X-HE-SMSGID: 1jRj0H-0006Wv-7W
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------985EBFE9F348F8C36FCBAAF1
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all!
+I've recently acquired a J6700 (8 GB, 2 CPUs) and I'm happly running Linux
+on it, so thanks to all who are still caring about HPPA :-)
 
-On 22/04/2020 16:55, David Laight wrote:
-> From: Bernd Petrovitsch
->> Sent: 22 April 2020 17:32
-> ...
->> Apart from that, system() is a PITA even on
->> single/non-threaded apps.
->=20
-> Not only that, it is bloody dangerous because (typically)
-> shell is doing post substitution syntax analysis.
+I've noticed a kernel warning on bootup, though:
+...
+[    8.789817] PDC Stable Storage facility v0.30
+[    9.167048] STI GSC/PCI core graphics driver Version 0.9b
+[    9.219224] STI PCI graphic ROM found at fffffffff5000000 (2048 kB), fb at fffffffffa000000 (32 MB)
+[    9.387078] STI ROM supports 32 and 64 bit firmware functions.
+[    9.447064] STI selected 8x16 framebuffer font VGA8x16 for sticon
+[    9.507118]     id 35acda30-9a02587, conforms to spec rev. 8.0d
+[    9.571080] ------------[ cut here ]------------
+[    9.611040] Out of 32bit-range pointers!
+[    9.611152] WARNING: CPU: 1 PID: 1 at drivers/video/console/sticore.c:1106 sti_call+0xcc/0xd8
+[    9.743055] Modules linked in:
+[    9.767055] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc2 #1
+[    9.831044] Hardware name: 9000/785/J6700
 
-I actually meant exactly that with PITA;-)
+[    9.867078]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+[    9.911044] PSW: 00001000000001001111111100001110 Not tainted
+[    9.971061] r00-03  000000ff0804ff0e 0000000040a58720 000000004066e86c 000000113fcb4cd0
+[   10.059075] r04-07  0000000040a37f20 000000113fd66d00 000000113fda1000 000000113fda1000
+[   10.147058] r08-11  0000000040c372c8 000000000800000f 0000000040c8ca08 0000000040a93f20
+[   10.235047] r12-15  000000113fcb4ca0 0000000000000030 0000000000000014 000000113fd66dc0
+[   10.323075] r16-19  000000113fda1010 000000113fd66d68 0000000040a93f20 0000000001c3c000
+[   10.411047] r20-23  000000000800000e 0000000000000000 00000000002aaaab 0000000040d5490c
+[   10.499057] r24-27  0000000000000000 0000000040d54524 0000000040d5490c 0000000040a37f20
+[   10.587075] r28-31  000000000000001c 000000113fcb5050 000000113fcb4d60 0000000000000000
+[   10.675058] sr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+[   10.767047] sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
 
-> If you need to run an external process you need to generate
-> an arv[] array containing the parameters.
+[   10.859043] IASQ: 0000000000000000 0000000000000000 IAOQ: 000000004066e86c 000000004066e870
+[   10.951045]  IIR: 03ffe01f    ISR: 0000000010240000  IOR: 000000076cdb3298
+[   11.023058]  CPU:        1   CR30: 000000113fcb4000 CR31: 0000000011111111
+[   11.095043]  ORIG_R28: 0000000040a93f20
+[   11.131060]  IAOQ[0]: sti_call+0xcc/0xd8
+[   11.163076]  IAOQ[1]: sti_call+0xd0/0xd8
+[   11.199065]  RP(r2): sti_call+0xcc/0xd8
+[   11.231055] Backtrace:
+[   11.247058]  [<00000000406702b4>] sti_try_rom_generic+0x504/0x740
+[   11.307076]  [<000000004066f16c>] sticore_pci_init+0x13c/0x260
+[   11.367064]  [<000000004064603c>] pci_device_probe+0x16c/0x280
+[   11.427076]  [<00000000406d5f20>] really_probe+0x1b0/0x618
+[   11.483061]  [<00000000406d66ec>] driver_probe_device+0x154/0x168
+[   11.547074]  [<00000000406d6ab0>] device_driver_attach+0xc8/0xd8
+[   11.607058]  [<00000000406d6b78>] __driver_attach+0xb8/0x1e8
+[   11.667074]  [<00000000406d2150>] bus_for_each_dev+0xd8/0x140
+[   11.723059]  [<00000000406d5340>] driver_attach+0x48/0x60
+[   11.779048]  [<00000000406d471c>] bus_add_driver+0x31c/0x428
+[   11.835065]  [<00000000406d7910>] driver_register+0xb0/0x238
+[   11.891049]  [<00000000406451fc>] __pci_register_driver+0x74/0x88
+[   11.955065]  [<000000004066e76c>] sti_get_rom+0x14c/0x180
+[   12.007052]  [<00000000401310fc>] sticonsole_init+0x54/0x150
+[   12.067067]  [<000000004017e258>] do_one_initcall+0xf0/0x2d0
+[   12.123065]  [<0000000040102c8c>] kernel_init_freeable+0x3d4/0x4e8
+[   12.187065]  [<00000000409a7220>] kernel_init+0x30/0x2e0
+[   12.239054]  [<0000000040189020>] ret_from_kernel_thread+0x20/0x28
 
-FullACK. That is usually similar trivial ...
+[   12.307052] ---[ end trace db6f7bccbf9663af ]---
+[   12.351047] STI init_graph failed (ret -1, errno 0)
+[   12.399046] Unable to handle STI device '0000:01:01.0'
+...
 
-MfG,
-	Bernd
---=20
-There is no cloud, just other people computers.
--- https://static.fsf.org/nosvn/stickers/thereisnocloud.svg
+Kernel 5.7-rc2 (but happens too with 5.4.28), serial console, gcc 9.2.0,
+SMP, 64 bit kernel. System.map and .config available on request.
+The installed graphic card is (according to lspci):
 
---------------985EBFE9F348F8C36FCBAAF1
-Content-Type: application/pgp-keys;
- name="pEpkey.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="pEpkey.asc"
+01:01.0 Display controller: Hewlett-Packard Company Visualize FX (rev 02)
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+As I'm using the serial console, I have not noticed any ill effects,
+despite the warning. My theory is that the card gets mapped into
+a 64bit-only accessible range and that the STI driver can not manage
+that type of addressing? Can it handle that card anyway?
 
-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3D=3D
-=3DGX6K
------END PGP PUBLIC KEY BLOCK-----
-
---------------985EBFE9F348F8C36FCBAAF1--
+TIA,
+Uli
+-- 
+Dipl. Inf. Ulrich Teichert|e-mail: Ulrich.Teichert@gmx.de | Listening to:
+Stormweg 24               | Syndrome 81: Le Condor De La Rade, The Briefs:
+24539 Neumuenster, Germany| She's The Rat, The Bellrays: Bad Reaction
