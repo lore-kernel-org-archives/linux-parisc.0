@@ -1,33 +1,33 @@
-Return-Path: <SRS0=839x=6G=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=mECk=6H=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C8EBC5518B
-	for <linux-parisc@archiver.kernel.org>; Wed, 22 Apr 2020 17:03:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0108FC55186
+	for <linux-parisc@archiver.kernel.org>; Thu, 23 Apr 2020 12:36:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 833DE20776
-	for <linux-parisc@archiver.kernel.org>; Wed, 22 Apr 2020 17:03:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DA05C2074F
+	for <linux-parisc@archiver.kernel.org>; Thu, 23 Apr 2020 12:36:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgDVRD0 (ORCPT
+        id S1726614AbgDWMgB (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 22 Apr 2020 13:03:26 -0400
-Received: from esgaroth.petrovitsch.at ([78.47.184.11]:4925 "EHLO
+        Thu, 23 Apr 2020 08:36:01 -0400
+Received: from esgaroth.petrovitsch.at ([78.47.184.11]:3302 "EHLO
         esgaroth.tuxoid.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgDVRD0 (ORCPT
+        with ESMTP id S1726090AbgDWMgB (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 22 Apr 2020 13:03:26 -0400
-X-Greylist: delayed 1790 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Apr 2020 13:03:23 EDT
+        Thu, 23 Apr 2020 08:36:01 -0400
 Received: from [10.68.100.236] (h10-gesig.woeg.acw.at [217.116.178.11] (may be forged))
         (authenticated bits=0)
-        by esgaroth.tuxoid.at (8.15.2/8.15.2) with ESMTPSA id 03MGVYYO000469
+        by esgaroth.tuxoid.at (8.15.2/8.15.2) with ESMTPSA id 03NCY9Ht015917
         (version=TLSv1 cipher=DHE-RSA-AES128-SHA bits=128 verify=NO);
-        Wed, 22 Apr 2020 18:31:34 +0200
+        Thu, 23 Apr 2020 14:34:10 +0200
 Subject: Re: [PATCH 1/4] fs: Implement close-on-fork
-To:     "Karstens, Nate" <Nate.Karstens@garmin.com>,
+To:     David Laight <David.Laight@ACULAB.COM>,
+        "Karstens, Nate" <Nate.Karstens@garmin.com>,
         Matthew Wilcox <willy@infradead.org>
 Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Jeff Layton <jlayton@kernel.org>,
@@ -47,25 +47,26 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>,
         Changli Gao <xiaosuo@gmail.com>
 References: <20200420071548.62112-1-nate.karstens@garmin.com>
  <20200420071548.62112-2-nate.karstens@garmin.com>
  <fa6c5c9c7c434f878c94a7c984cd43ba@garmin.com>
  <20200422154356.GU5820@bombadil.infradead.org>
  <6ed7bd08892b4311b70636658321904f@garmin.com>
+ <97f05204-a27c-7cc8-429a-edcf6eebaa11@petrovitsch.priv.at>
+ <337320db094d4426a621858fa0f6d7fd@AcuMS.aculab.com>
 From:   Bernd Petrovitsch <bernd@petrovitsch.priv.at>
 X-Pep-Version: 2.0
-Message-ID: <97f05204-a27c-7cc8-429a-edcf6eebaa11@petrovitsch.priv.at>
-Date:   Wed, 22 Apr 2020 16:31:34 +0000
+Message-ID: <f3640ed9-d846-9cbd-7690-53da5ff1473a@petrovitsch.priv.at>
+Date:   Thu, 23 Apr 2020 12:34:09 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <6ed7bd08892b4311b70636658321904f@garmin.com>
+In-Reply-To: <337320db094d4426a621858fa0f6d7fd@AcuMS.aculab.com>
 Content-Type: multipart/mixed;
- boundary="------------5C6F5C422D1052E6828086F8"
+ boundary="------------985EBFE9F348F8C36FCBAAF1"
 Content-Language: en-US
-X-DCC-INFN-TO-Metrics: esgaroth.tuxoid.at 1233; Body=22 Fuz1=22 Fuz2=22
+X-DCC-wuwien-Metrics: esgaroth.tuxoid.at 1290; Body=22 Fuz1=22 Fuz2=22
 X-Virus-Scanned: clamav-milter 0.97 at esgaroth.tuxoid.at
 X-Virus-Status: Clean
 Sender: linux-parisc-owner@vger.kernel.org
@@ -74,31 +75,28 @@ List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
 This is a multi-part message in MIME format.
---------------5C6F5C422D1052E6828086F8
+--------------985EBFE9F348F8C36FCBAAF1
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 22/04/2020 16:02, Karstens, Nate wrote:
->> It's not safe to call system() from a threaded app.  That's all.  It's=
- right there in the DESCRIPTION:
+Hi all!
+
+On 22/04/2020 16:55, David Laight wrote:
+> From: Bernd Petrovitsch
+>> Sent: 22 April 2020 17:32
+> ...
+>> Apart from that, system() is a PITA even on
+>> single/non-threaded apps.
 >=20
-> That is true, but that description is missing from both the Linux man p=
-age and the glibc documentation (https://www.gnu.org/software/libc/manual=
-/html_mono/libc.html#Running-a-Command). It seems like a minor point that=
- won't be noticed until it causes a problem, and problems are rare enough=
- they might go unnoticed for a while. We have removed system() from our a=
-pplication, but we're also concerned that libraries we integrate will use=
- system() without our knowledge.
+> Not only that, it is bloody dangerous because (typically)
+> shell is doing post substitution syntax analysis.
 
-Reimplementing system() is trivial.
-LD_LIBRARY_PRELOAD should take care of all system(3) calls.
+I actually meant exactly that with PITA;-)
 
-I wonder it it has some value to add runtime checking for
-"multi-threaded" to such lib functions and error out if
-yes.
+> If you need to run an external process you need to generate
+> an arv[] array containing the parameters.
 
-Apart from that, system() is a PITA even on
-single/non-threaded apps.
+FullACK. That is usually similar trivial ...
 
 MfG,
 	Bernd
@@ -106,7 +104,7 @@ MfG,
 There is no cloud, just other people computers.
 -- https://static.fsf.org/nosvn/stickers/thereisnocloud.svg
 
---------------5C6F5C422D1052E6828086F8
+--------------985EBFE9F348F8C36FCBAAF1
 Content-Type: application/pgp-keys;
  name="pEpkey.asc"
 Content-Transfer-Encoding: quoted-printable
@@ -155,4 +153,4 @@ H2CEDcqDEBnjApKnTO1a6DtRkQzEs0aLhvXwhvt/HL6/lXIVQA=3D=3D
 =3DGX6K
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------5C6F5C422D1052E6828086F8--
+--------------985EBFE9F348F8C36FCBAAF1--
