@@ -2,156 +2,316 @@ Return-Path: <SRS0=nVGg=6K=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 779E9C55185
-	for <linux-parisc@archiver.kernel.org>; Sun, 26 Apr 2020 03:01:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D2DAC55197
+	for <linux-parisc@archiver.kernel.org>; Sun, 26 Apr 2020 05:54:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2482620724
-	for <linux-parisc@archiver.kernel.org>; Sun, 26 Apr 2020 03:01:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1587870089;
-	bh=tCSwWc8iRTvfzhr9Bpi0vaaHrDRBHLwWGG3vKGlFHqg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
-	b=nVJzL+0RERtLwjcm6/NC+N3Zv3njsHcTdPuQ/3jfNV6l0I5kO+uVKLI7YuRXcbEyG
-	 +V/GTt637hKSvFDkvxDR6PFn+VopitsHCpy7JhgJ+xmoIus1KcmonwiPoiWT8ILfPx
-	 rzB3v/528VOCqzXhbHAbI4xTzWhDHheQbpiHo+uY=
+	by mail.kernel.org (Postfix) with ESMTP id 62808206BF
+	for <linux-parisc@archiver.kernel.org>; Sun, 26 Apr 2020 05:54:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgDZDB2 (ORCPT
+        id S1726303AbgDZFy0 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 25 Apr 2020 23:01:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59150 "EHLO mail.kernel.org"
+        Sun, 26 Apr 2020 01:54:26 -0400
+Received: from mga05.intel.com ([192.55.52.43]:34948 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726092AbgDZDB2 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 25 Apr 2020 23:01:28 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6969B206D4;
-        Sun, 26 Apr 2020 03:01:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587870086;
-        bh=tCSwWc8iRTvfzhr9Bpi0vaaHrDRBHLwWGG3vKGlFHqg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UVpTWp7EJhgRsQXBhfo6AT4VrUdy1nNy8nOq/LfihYfu1NC4LJc05Iz8GAX1ZT5f3
-         axlF830cN9T/YdFik2zo+N3qO2F4mins96Mu5bgI3K/fB5ghL5mkLmCLUuWklYIKG9
-         HZl62/U2hyOlgj8km6aRA/b/nX2GmC3gaq8w7s7A=
-Date:   Sat, 25 Apr 2020 20:01:24 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
+        id S1726228AbgDZFyY (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 26 Apr 2020 01:54:24 -0400
+IronPort-SDR: yik+lW6jLFww72iGqqtV+gwEW5b2Cqu5v2V0GfswzYKOLd/cbabjIXUiUpwElsrf0zdAY3TKG9
+ 4Adxy+Os6HYA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2020 22:54:23 -0700
+IronPort-SDR: JbrFxZQOg4mMIuwtoATzRdij1dRliQGnUgWcjgmHA5TRHF3mzGglJEjgI5nDw5LX1Vgmb6bj/B
+ U1DQQme6oOjQ==
+X-IronPort-AV: E=Sophos;i="5.73,319,1583222400"; 
+   d="scan'208";a="302014809"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2020 22:54:23 -0700
+From:   ira.weiny@intel.com
+To:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Helge Deller <deller@gmx.de>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
         "David S. Miller" <davem@davemloft.net>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm/hugetlb: Introduce
- HAVE_ARCH_CLEAR_HUGEPAGE_FLAGS
-Message-Id: <20200425200124.20d0c75fcaef05d062d3667c@linux-foundation.org>
-In-Reply-To: <87d37591-caa2-b82b-392a-3a29b2c7e9a6@arm.com>
-References: <1586864670-21799-1-git-send-email-anshuman.khandual@arm.com>
-        <1586864670-21799-4-git-send-email-anshuman.khandual@arm.com>
-        <20200425175511.7a68efb5e2f4436fe0328c1d@linux-foundation.org>
-        <87d37591-caa2-b82b-392a-3a29b2c7e9a6@arm.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org
+Subject: [PATCH 4/5] arch/kmap_atomic: Consolidate duplicate code
+Date:   Sat, 25 Apr 2020 22:54:05 -0700
+Message-Id: <20200426055406.134198-5-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200426055406.134198-1-ira.weiny@intel.com>
+References: <20200426055406.134198-1-ira.weiny@intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Sun, 26 Apr 2020 08:13:17 +0530 Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+From: Ira Weiny <ira.weiny@intel.com>
 
-> 
-> 
-> On 04/26/2020 06:25 AM, Andrew Morton wrote:
-> > On Tue, 14 Apr 2020 17:14:30 +0530 Anshuman Khandual <anshuman.khandual@arm.com> wrote:
-> > 
-> >> There are multiple similar definitions for arch_clear_hugepage_flags() on
-> >> various platforms. This introduces HAVE_ARCH_CLEAR_HUGEPAGE_FLAGS for those
-> >> platforms that need to define their own arch_clear_hugepage_flags() while
-> >> also providing a generic fallback definition for others to use. This help
-> >> reduce code duplication.
-> >>
-> >> ...
-> >>
-> >> --- a/include/linux/hugetlb.h
-> >> +++ b/include/linux/hugetlb.h
-> >> @@ -544,6 +544,10 @@ static inline int is_hugepage_only_range(struct mm_struct *mm,
-> >>  }
-> >>  #endif
-> >>  
-> >> +#ifndef HAVE_ARCH_CLEAR_HUGEPAGE_FLAGS
-> >> +static inline void arch_clear_hugepage_flags(struct page *page) { }
-> >> +#endif
-> >> +
-> >>  #ifndef arch_make_huge_pte
-> >>  static inline pte_t arch_make_huge_pte(pte_t entry, struct vm_area_struct *vma,
-> >>  				       struct page *page, int writable)
-> > 
-> > This is the rather old-school way of doing it.  The Linus-suggested way is
-> > 
-> > #ifndef arch_clear_hugepage_flags
-> > static inline void arch_clear_hugepage_flags(struct page *page)
-> > {
-> > }
-> > #define arch_clear_hugepage_flags arch_clear_hugepage_flags
-> 
-> Do we need that above line here ? Is not that implicit.
+Every arch has the same check for a not HIGHMEM page.  Define
+kmap_atomic_fast() to quickly return already mapped pages and reduce the
+code duplication by lifting this check to the core.
 
-It depends if other header files want to test whether
-arch_clear_hugepage_flags is already defined.  If the header heorarchy
-is well-defined and working properly, they shouldn't need to, because
-we're reliably indluding the relevant arch header before (or early
-within) include/linux/hugetlb.h.
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+ arch/arc/mm/highmem.c        | 7 +++----
+ arch/arm/mm/highmem.c        | 8 +++-----
+ arch/csky/mm/highmem.c       | 7 +++----
+ arch/microblaze/mm/highmem.c | 8 +++-----
+ arch/mips/mm/highmem.c       | 7 +++----
+ arch/nds32/mm/highmem.c      | 7 +++----
+ arch/powerpc/mm/highmem.c    | 7 +++----
+ arch/sparc/mm/highmem.c      | 7 +++----
+ arch/x86/mm/highmem_32.c     | 8 +++-----
+ arch/xtensa/mm/highmem.c     | 7 +++----
+ include/linux/highmem.h      | 9 +++++++++
+ 11 files changed, 39 insertions(+), 43 deletions(-)
 
-It would be nice if
+diff --git a/arch/arc/mm/highmem.c b/arch/arc/mm/highmem.c
+index 4db13a6b9f3b..1cae4b911a33 100644
+--- a/arch/arc/mm/highmem.c
++++ b/arch/arc/mm/highmem.c
+@@ -53,11 +53,10 @@ void *kmap_atomic(struct page *page)
+ {
+ 	int idx, cpu_idx;
+ 	unsigned long vaddr;
++	void *addr = kmap_atomic_fast(page);
+ 
+-	preempt_disable();
+-	pagefault_disable();
+-	if (!PageHighMem(page))
+-		return page_address(page);
++	if (addr)
++		return addr;
+ 
+ 	cpu_idx = kmap_atomic_idx_push();
+ 	idx = cpu_idx + KM_TYPE_NR * smp_processor_id();
+diff --git a/arch/arm/mm/highmem.c b/arch/arm/mm/highmem.c
+index c700b32350ee..4a629f616a6a 100644
+--- a/arch/arm/mm/highmem.c
++++ b/arch/arm/mm/highmem.c
+@@ -35,13 +35,11 @@ void *kmap_atomic(struct page *page)
+ {
+ 	unsigned int idx;
+ 	unsigned long vaddr;
+-	void *kmap;
++	void *kmap = kmap_atomic_fast(page);
+ 	int type;
+ 
+-	preempt_disable();
+-	pagefault_disable();
+-	if (!PageHighMem(page))
+-		return page_address(page);
++	if (kmap)
++		return kmap;
+ 
+ #ifdef CONFIG_DEBUG_HIGHMEM
+ 	/*
+diff --git a/arch/csky/mm/highmem.c b/arch/csky/mm/highmem.c
+index 69b1931986ae..1191f57f53ae 100644
+--- a/arch/csky/mm/highmem.c
++++ b/arch/csky/mm/highmem.c
+@@ -25,12 +25,11 @@ EXPORT_SYMBOL(kmap);
+ void *kmap_atomic(struct page *page)
+ {
+ 	unsigned long vaddr;
++	void *addr = kmap_atomic_fast(page);
+ 	int idx, type;
+ 
+-	preempt_disable();
+-	pagefault_disable();
+-	if (!PageHighMem(page))
+-		return page_address(page);
++	if (addr)
++		return addr;
+ 
+ 	type = kmap_atomic_idx_push();
+ 	idx = type + KM_TYPE_NR*smp_processor_id();
+diff --git a/arch/microblaze/mm/highmem.c b/arch/microblaze/mm/highmem.c
+index d7569f77fa15..99fdf826edc2 100644
+--- a/arch/microblaze/mm/highmem.c
++++ b/arch/microblaze/mm/highmem.c
+@@ -36,13 +36,11 @@ void *kmap_atomic_prot(struct page *page, pgprot_t prot)
+ {
+ 
+ 	unsigned long vaddr;
++	void *addr = kmap_atomic_fast(page);
+ 	int idx, type;
+ 
+-	preempt_disable();
+-	pagefault_disable();
+-	if (!PageHighMem(page))
+-		return page_address(page);
+-
++	if (addr)
++		return addr;
+ 
+ 	type = kmap_atomic_idx_push();
+ 	idx = type + KM_TYPE_NR*smp_processor_id();
+diff --git a/arch/mips/mm/highmem.c b/arch/mips/mm/highmem.c
+index c3c9fe962f0f..ba03ca75d4a1 100644
+--- a/arch/mips/mm/highmem.c
++++ b/arch/mips/mm/highmem.c
+@@ -33,12 +33,11 @@ EXPORT_SYMBOL(kmap);
+ void *kmap_atomic(struct page *page)
+ {
+ 	unsigned long vaddr;
++	void *addr = kmap_atomic_fast(page);
+ 	int idx, type;
+ 
+-	preempt_disable();
+-	pagefault_disable();
+-	if (!PageHighMem(page))
+-		return page_address(page);
++	if (addr)
++		return addr;
+ 
+ 	type = kmap_atomic_idx_push();
+ 	idx = type + KM_TYPE_NR*smp_processor_id();
+diff --git a/arch/nds32/mm/highmem.c b/arch/nds32/mm/highmem.c
+index f9348bec0ecb..4aabde586489 100644
+--- a/arch/nds32/mm/highmem.c
++++ b/arch/nds32/mm/highmem.c
+@@ -14,13 +14,12 @@ void *kmap_atomic(struct page *page)
+ {
+ 	unsigned int idx;
+ 	unsigned long vaddr, pte;
++	void *addr = kmap_atomic_fast(page);
+ 	int type;
+ 	pte_t *ptep;
+ 
+-	preempt_disable();
+-	pagefault_disable();
+-	if (!PageHighMem(page))
+-		return page_address(page);
++	if (addr)
++		return addr;
+ 
+ 	type = kmap_atomic_idx_push();
+ 
+diff --git a/arch/powerpc/mm/highmem.c b/arch/powerpc/mm/highmem.c
+index 320c1672b2ae..cdf5b716801a 100644
+--- a/arch/powerpc/mm/highmem.c
++++ b/arch/powerpc/mm/highmem.c
+@@ -33,12 +33,11 @@
+ void *kmap_atomic_prot(struct page *page, pgprot_t prot)
+ {
+ 	unsigned long vaddr;
++	void *addr = kmap_atomic_fast(page);
+ 	int idx, type;
+ 
+-	preempt_disable();
+-	pagefault_disable();
+-	if (!PageHighMem(page))
+-		return page_address(page);
++	if (addr)
++		return addr;
+ 
+ 	type = kmap_atomic_idx_push();
+ 	idx = type + KM_TYPE_NR*smp_processor_id();
+diff --git a/arch/sparc/mm/highmem.c b/arch/sparc/mm/highmem.c
+index d4a80adea7e5..178641805567 100644
+--- a/arch/sparc/mm/highmem.c
++++ b/arch/sparc/mm/highmem.c
+@@ -56,12 +56,11 @@ void __init kmap_init(void)
+ void *kmap_atomic(struct page *page)
+ {
+ 	unsigned long vaddr;
++	void *addr = kmap_atomic_fast(page);
+ 	long idx, type;
+ 
+-	preempt_disable();
+-	pagefault_disable();
+-	if (!PageHighMem(page))
+-		return page_address(page);
++	if (addr)
++		return addr;
+ 
+ 	type = kmap_atomic_idx_push();
+ 	idx = type + KM_TYPE_NR*smp_processor_id();
+diff --git a/arch/x86/mm/highmem_32.c b/arch/x86/mm/highmem_32.c
+index c4ebfd0ae401..34770499b0ff 100644
+--- a/arch/x86/mm/highmem_32.c
++++ b/arch/x86/mm/highmem_32.c
+@@ -15,13 +15,11 @@
+ void *kmap_atomic_prot(struct page *page, pgprot_t prot)
+ {
+ 	unsigned long vaddr;
++	void *addr = kmap_atomic_fast(page);
+ 	int idx, type;
+ 
+-	preempt_disable();
+-	pagefault_disable();
+-
+-	if (!PageHighMem(page))
+-		return page_address(page);
++	if (addr)
++		return addr;
+ 
+ 	type = kmap_atomic_idx_push();
+ 	idx = type + KM_TYPE_NR*smp_processor_id();
+diff --git a/arch/xtensa/mm/highmem.c b/arch/xtensa/mm/highmem.c
+index 184ceadccc1a..38c14e0b578c 100644
+--- a/arch/xtensa/mm/highmem.c
++++ b/arch/xtensa/mm/highmem.c
+@@ -41,11 +41,10 @@ void *kmap_atomic(struct page *page)
+ {
+ 	enum fixed_addresses idx;
+ 	unsigned long vaddr;
++	void *addr = kmap_atomic_fast(page);
+ 
+-	preempt_disable();
+-	pagefault_disable();
+-	if (!PageHighMem(page))
+-		return page_address(page);
++	if (addr)
++		return addr;
+ 
+ 	idx = kmap_idx(kmap_atomic_idx_push(),
+ 		       DCACHE_ALIAS(page_to_phys(page)));
+diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+index 1a3b7690c78c..eee53e151900 100644
+--- a/include/linux/highmem.h
++++ b/include/linux/highmem.h
+@@ -60,6 +60,15 @@ static inline void kunmap(struct page *page)
+ 	kunmap_high(page);
+ }
+ 
++static inline void *kmap_atomic_fast(struct page *page)
++{
++	preempt_disable();
++	pagefault_disable();
++	if (!PageHighMem(page))
++		return page_address(page);
++	return NULL;
++}
++
+ /* declarations for linux/mm/highmem.c */
+ unsigned int nr_free_highpages(void);
+ extern atomic_long_t _totalhigh_pages;
+-- 
+2.25.1
 
-#define arch_clear_hugepage_flags arch_clear_hugepage_flags
-#define arch_clear_hugepage_flags arch_clear_hugepage_flags
-
-were to generate an compiler error but it doesn't.  If it did we could
-detect these incorrect inclusion orders.
-
-> > #endif
-> > 
-> > And the various arch headers do
-> > 
-> > static inline void arch_clear_hugepage_flags(struct page *page)
-> > {
-> > 	<some implementation>
-> > }
-> > #define arch_clear_hugepage_flags arch_clear_hugepage_flags
-> > 
-> > It's a small difference - mainly to avoid adding two variables to the
-> > overall namespace where one would do.
-> 
-> Understood, will change and resend.
-
-That's OK - I've queued up that fix.
