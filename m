@@ -2,145 +2,155 @@ Return-Path: <SRS0=6DXU=6S=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD93CC47254
-	for <linux-parisc@archiver.kernel.org>; Mon,  4 May 2020 05:04:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B746C47258
+	for <linux-parisc@archiver.kernel.org>; Mon,  4 May 2020 05:24:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8FED3206EB
-	for <linux-parisc@archiver.kernel.org>; Mon,  4 May 2020 05:04:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 870572075B
+	for <linux-parisc@archiver.kernel.org>; Mon,  4 May 2020 05:24:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgEDFEv (ORCPT
+        id S1727108AbgEDFYX (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 4 May 2020 01:04:51 -0400
-Received: from mga12.intel.com ([192.55.52.136]:43373 "EHLO mga12.intel.com"
+        Mon, 4 May 2020 01:24:23 -0400
+Received: from mga07.intel.com ([134.134.136.100]:26822 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725894AbgEDFEu (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 4 May 2020 01:04:50 -0400
-IronPort-SDR: RI4gvK+9HDVAKbRklvMRzIq+pixxdYwbvyTVuNGFD83c+J+nmEf9PVYs8K3ZAJRRWmwQxHCADe
- 82/fHngT1KIw==
+        id S1727076AbgEDFYS (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 4 May 2020 01:24:18 -0400
+IronPort-SDR: 8SAkRLyIZefCcBECzWIHxMr2SowRue5B1HN7yxR79shIeQhLRjs4PZjiYDYjetSAOr3tuKSrlM
+ qk7tadh/MKVw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 22:04:49 -0700
-IronPort-SDR: MxCGejezytWAFr2qtWtnEu9Zlbx9sDBny4KBWGPuntnxpb8eeVieC20Y3SJ8U7XteAAgk3t7Pj
- fSoUNNLnXPgQ==
-X-ExtLoop1: 1
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 22:24:18 -0700
+IronPort-SDR: NzvbNRHq6UBAlopwxxgTn8DqRhO3MZ+WvXLnxag1GcYjgoWzoU8q73WIVYyrSRLbwVzFSf9jpH
+ S9ORNEppR9Sg==
 X-IronPort-AV: E=Sophos;i="5.73,350,1583222400"; 
-   d="scan'208";a="295395757"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga008.jf.intel.com with ESMTP; 03 May 2020 22:04:48 -0700
-Date:   Sun, 3 May 2020 22:04:47 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org,
+   d="scan'208";a="433985282"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 22:24:18 -0700
+From:   ira.weiny@intel.com
+To:     linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH V2 00/11] Subject: Remove duplicated kmap code
-Message-ID: <20200504050447.GA979899@iweiny-DESK2.sc.intel.com>
-References: <20200504010912.982044-1-ira.weiny@intel.com>
- <20200504013509.GU23230@ZenIV.linux.org.uk>
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Ira Weiny <ira.weiny@intel.com>, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>
+Subject: [PATCH 2/2] parisc/kmap: Remove duplicate kmap code
+Date:   Sun,  3 May 2020 22:24:15 -0700
+Message-Id: <20200504052415.984585-3-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200504052415.984585-1-ira.weiny@intel.com>
+References: <20200504052415.984585-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504013509.GU23230@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Mon, May 04, 2020 at 02:35:09AM +0100, Al Viro wrote:
-> On Sun, May 03, 2020 at 06:09:01PM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > The kmap infrastructure has been copied almost verbatim to every architecture.
-> > This series consolidates obvious duplicated code by defining core functions
-> > which call into the architectures only when needed.
-> > 
-> > Some of the k[un]map_atomic() implementations have some similarities but the
-> > similarities were not sufficient to warrant further changes.
-> > 
-> > In addition we remove a duplicate implementation of kmap() in DRM.
-> > 
-> > Testing was done by 0day to cover all the architectures I can't readily
-> > build/test.
-> 
-> OK...  Looking through my old notes on kmap unification (this winter, never
-> went anywhere),
-> 
-> * arch/mips/mm/cache.c ought to use linux/highmem.h, not asm/highmem.h
-> I suspect that your series doesn't build on some configs there.  Hadn't
-> verified that, though.
+From: Ira Weiny <ira.weiny@intel.com>
 
-Yes patch 6 makes the change because kmap_atomic() was no longer declared in
-asm/highmem.h.  I'm pretty sure 0-day caught that ...  but I seem to remember
-noticing some oddness in that file and I did go through it by hand.
+parisc reimplements the kmap calls except to flush it's dcache.  This is
+arguably an abuse of kmap but regardless it is messy and confusing.
 
-> 
-> * kmap_atomic_to_page() is dead, but not quite gone - csky and nds32 brought
-> the damn thing back (nds32 - only an extern).  It needs killin'...
+Remove the duplicate code and have parisc define
+ARCH_HAS_FLUSH_ON_KUNMAP for a kunmap_flush_on_unmap() architecture
+specific call to flush the cache.
 
-Easy enough. Added as a follow on patch.
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+ arch/parisc/include/asm/cacheflush.h | 28 ++--------------------------
+ include/linux/highmem.h              | 10 +++++++---
+ 2 files changed, 9 insertions(+), 29 deletions(-)
 
-> 
-> * parisc is (arguably) abusing kunmap()/kunmap_atomic() for cache flushing.
-> Replace the bulk of its highmem.h with
-> #define ARCH_HAS_FLUSH_ON_KUNMAP
-> #define arch_before_kunmap flush_kernel_dcache_page_addr
-> and have default kunmap()/kunmap_atomic() do
-> #ifdef ARCH_HAS_FLUSH_ON_KUNMAP
-> 	arch_before_kunmap(page_address(page));
-> #endif
-> and
-> #ifdef ARCH_HAS_FLUSH_ON_KUNMAP
-> 	arch_before_kunmap(addr);
-> #endif
-> resp.  Kills ARCH_HAS_KMAP along with ifdefs on it, makes parisc use somewhat
-> less hacky.
-
-Agreed.  Done in a follow on patch.
-
-> 
-> I'd suggest checking various configs on mips - that's likely to cause headache.
-> Said that, my analysis of include chains back then is pretty much worthless
-> by now - I really hate the amount of indirect include chains leading to that
-> sucker on some, but not all configs ;-/  IIRC, the proof that everything
-> using kmap*/kunmap* would pull linux/highmem.h regardless of config took several
-> hours of digging, ran for several pages and had been hopelessly brittle.
-> arch/mips/mm/cache.c was the only exception caught by it, but these days
-> there might be more.
-
-Grepping for 'asm/highmem.h' and investigations don't reveal any issues...  But
-you do have me worried.  That said 0-day has been crunching on multiple
-versions of this series without issues such as this (save the mips issue
-above).
-
-I have to say it would be nice if the relation between linux/highmem.h and
-asm/highmem.h was more straightforward.
-
-Ira
+diff --git a/arch/parisc/include/asm/cacheflush.h b/arch/parisc/include/asm/cacheflush.h
+index 119c9a7681bc..99663fc1f997 100644
+--- a/arch/parisc/include/asm/cacheflush.h
++++ b/arch/parisc/include/asm/cacheflush.h
+@@ -100,35 +100,11 @@ flush_anon_page(struct vm_area_struct *vma, struct page *page, unsigned long vma
+ 	}
+ }
+ 
+-#include <asm/kmap_types.h>
+-
+-#define ARCH_HAS_KMAP
+-
+-static inline void *kmap(struct page *page)
+-{
+-	might_sleep();
+-	return page_address(page);
+-}
+-
+-static inline void kunmap(struct page *page)
+-{
+-	flush_kernel_dcache_page_addr(page_address(page));
+-}
+-
+-static inline void *kmap_atomic(struct page *page)
+-{
+-	preempt_disable();
+-	pagefault_disable();
+-	return page_address(page);
+-}
+-
+-static inline void kunmap_atomic_high(void *addr)
++#define ARCH_HAS_FLUSH_ON_KUNMAP
++static inline void kunmap_flush_on_unmap(void *addr)
+ {
+ 	flush_kernel_dcache_page_addr(addr);
+ }
+ 
+-#define kmap_atomic_prot(page, prot)	kmap_atomic(page)
+-#define kmap_atomic_pfn(pfn)	kmap_atomic(pfn_to_page(pfn))
+-
+ #endif /* _PARISC_CACHEFLUSH_H */
+ 
+diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+index 89838306f50d..cc0c3904e501 100644
+--- a/include/linux/highmem.h
++++ b/include/linux/highmem.h
+@@ -129,7 +129,6 @@ static inline struct page *kmap_to_page(void *addr)
+ 
+ static inline unsigned long totalhigh_pages(void) { return 0UL; }
+ 
+-#ifndef ARCH_HAS_KMAP
+ static inline void *kmap(struct page *page)
+ {
+ 	might_sleep();
+@@ -138,6 +137,9 @@ static inline void *kmap(struct page *page)
+ 
+ static inline void kunmap(struct page *page)
+ {
++#ifdef ARCH_HAS_FLUSH_ON_KUNMAP
++	kunmap_flush_on_unmap(page_address(page));
++#endif
+ }
+ 
+ static inline void *kmap_atomic(struct page *page)
+@@ -150,14 +152,16 @@ static inline void *kmap_atomic(struct page *page)
+ 
+ static inline void kunmap_atomic_high(void *addr)
+ {
+-	/* Nothing to do in the CONFIG_HIGHMEM=n case as kunmap_atomic()
++	/* Mostly nothing to do in the CONFIG_HIGHMEM=n case as kunmap_atomic()
+ 	 * handles re-enabling faults + preemption */
++#ifdef ARCH_HAS_FLUSH_ON_KUNMAP
++	kunmap_flush_on_unmap(addr);
++#endif
+ }
+ 
+ #define kmap_atomic_pfn(pfn)	kmap_atomic(pfn_to_page(pfn))
+ 
+ #define kmap_flush_unused()	do {} while(0)
+-#endif
+ 
+ #endif /* CONFIG_HIGHMEM */
+ 
+-- 
+2.25.1
 
