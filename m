@@ -2,43 +2,38 @@ Return-Path: <SRS0=6DXU=6S=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F35DCC47257
-	for <linux-parisc@archiver.kernel.org>; Mon,  4 May 2020 01:10:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C031AC47257
+	for <linux-parisc@archiver.kernel.org>; Mon,  4 May 2020 01:35:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DA29C2073B
-	for <linux-parisc@archiver.kernel.org>; Mon,  4 May 2020 01:10:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A8ABD206F0
+	for <linux-parisc@archiver.kernel.org>; Mon,  4 May 2020 01:35:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbgEDBJW (ORCPT
+        id S1726907AbgEDBfY (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 3 May 2020 21:09:22 -0400
-Received: from mga11.intel.com ([192.55.52.93]:17935 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726282AbgEDBJW (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 3 May 2020 21:09:22 -0400
-IronPort-SDR: A9YDjvCFSAVRZt9PK6T6bah1ORcFaay/xLXeYJlc6YM+kvTo9s31EfXuPQPfGhntjjL6mPEk1b
- znGgE4vjXnFQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 18:09:20 -0700
-IronPort-SDR: fHucA4RWhttBOWYdNcVbZcLe92djrCMA36BhMr8sTNTq9uR1pF6GcVTIexdnyZrcSkJFrWzqIJ
- LnPtCLKlHAVA==
-X-IronPort-AV: E=Sophos;i="5.73,350,1583222400"; 
-   d="scan'208";a="248071661"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 18:09:19 -0700
-From:   ira.weiny@intel.com
-To:     linux-kernel@vger.kernel.org,
+        Sun, 3 May 2020 21:35:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726377AbgEDBfY (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 3 May 2020 21:35:24 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83FBC061A0E;
+        Sun,  3 May 2020 18:35:23 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jVQ0j-000SR4-3a; Mon, 04 May 2020 01:35:09 +0000
+Date:   Mon, 4 May 2020 02:35:09 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
         Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Huang Rui <ray.huang@amd.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
         Helge Deller <deller@gmx.de>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
@@ -57,92 +52,63 @@ Cc:     Ira Weiny <ira.weiny@intel.com>,
         linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH V2 00/11] Subject: Remove duplicated kmap code
-Date:   Sun,  3 May 2020 18:09:01 -0700
-Message-Id: <20200504010912.982044-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH V2 00/11] Subject: Remove duplicated kmap code
+Message-ID: <20200504013509.GU23230@ZenIV.linux.org.uk>
+References: <20200504010912.982044-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200504010912.982044-1-ira.weiny@intel.com>
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+On Sun, May 03, 2020 at 06:09:01PM -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> The kmap infrastructure has been copied almost verbatim to every architecture.
+> This series consolidates obvious duplicated code by defining core functions
+> which call into the architectures only when needed.
+> 
+> Some of the k[un]map_atomic() implementations have some similarities but the
+> similarities were not sufficient to warrant further changes.
+> 
+> In addition we remove a duplicate implementation of kmap() in DRM.
+> 
+> Testing was done by 0day to cover all the architectures I can't readily
+> build/test.
 
-The kmap infrastructure has been copied almost verbatim to every architecture.
-This series consolidates obvious duplicated code by defining core functions
-which call into the architectures only when needed.
+OK...  Looking through my old notes on kmap unification (this winter, never
+went anywhere),
 
-Some of the k[un]map_atomic() implementations have some similarities but the
-similarities were not sufficient to warrant further changes.
+* arch/mips/mm/cache.c ought to use linux/highmem.h, not asm/highmem.h
+I suspect that your series doesn't build on some configs there.  Hadn't
+verified that, though.
 
-In addition we remove a duplicate implementation of kmap() in DRM.
+* kmap_atomic_to_page() is dead, but not quite gone - csky and nds32 brought
+the damn thing back (nds32 - only an extern).  It needs killin'...
 
-Testing was done by 0day to cover all the architectures I can't readily
-build/test.
+* parisc is (arguably) abusing kunmap()/kunmap_atomic() for cache flushing.
+Replace the bulk of its highmem.h with
+#define ARCH_HAS_FLUSH_ON_KUNMAP
+#define arch_before_kunmap flush_kernel_dcache_page_addr
+and have default kunmap()/kunmap_atomic() do
+#ifdef ARCH_HAS_FLUSH_ON_KUNMAP
+	arch_before_kunmap(page_address(page));
+#endif
+and
+#ifdef ARCH_HAS_FLUSH_ON_KUNMAP
+	arch_before_kunmap(addr);
+#endif
+resp.  Kills ARCH_HAS_KMAP along with ifdefs on it, makes parisc use somewhat
+less hacky.
 
----
-Changes from V1:
-	Fix bisect-ability
-	Update commit message and fix line lengths
-	Remove unneded kunmap_atomic_high() declarations
-	Remove unneded kmap_atomic_high() declarations
-	collect reviews
-	rebase to 5.7-rc4
-
-Changes from V0:
-	Define kmap_flush_tlb() and make kmap() truely arch independent.
-	Redefine the k[un]map_atomic_* code to call into the architectures for
-		high mem pages
-	Ensure all architectures define kmap_prot, use it appropriately, and
-		define kmap_atomic_prot()
-	Remove drm implementation of kmap_atomic()
-
-Ira Weiny (11):
-  arch/kmap: Remove BUG_ON()
-  arch/xtensa: Move kmap build bug out of the way
-  arch/kmap: Remove redundant arch specific kmaps
-  arch/kunmap: Remove duplicate kunmap implementations
-  {x86,powerpc,microblaze}/kmap: Move preempt disable
-  arch/kmap_atomic: Consolidate duplicate code
-  arch/kunmap_atomic: Consolidate duplicate code
-  arch/kmap: Ensure kmap_prot visibility
-  arch/kmap: Don't hard code kmap_prot values
-  arch/kmap: Define kmap_atomic_prot() for all arch's
-  drm: Remove drm specific kmap_atomic code
-
- arch/arc/include/asm/highmem.h        | 15 -------
- arch/arc/mm/highmem.c                 | 28 +++---------
- arch/arm/include/asm/highmem.h        |  7 ---
- arch/arm/mm/highmem.c                 | 35 +++------------
- arch/csky/include/asm/highmem.h       |  9 +---
- arch/csky/mm/highmem.c                | 43 +++++--------------
- arch/microblaze/include/asm/highmem.h | 28 +-----------
- arch/microblaze/mm/highmem.c          | 16 ++-----
- arch/microblaze/mm/init.c             |  3 --
- arch/mips/include/asm/highmem.h       |  9 +---
- arch/mips/mm/cache.c                  |  6 +--
- arch/mips/mm/highmem.c                | 49 ++++-----------------
- arch/nds32/include/asm/highmem.h      |  7 ---
- arch/nds32/mm/highmem.c               | 39 +++--------------
- arch/parisc/include/asm/cacheflush.h  |  4 +-
- arch/powerpc/include/asm/highmem.h    | 29 +------------
- arch/powerpc/mm/highmem.c             | 21 ++-------
- arch/powerpc/mm/mem.c                 |  3 --
- arch/sparc/include/asm/highmem.h      | 22 ----------
- arch/sparc/mm/highmem.c               | 18 +++-----
- arch/x86/include/asm/highmem.h        |  9 ----
- arch/x86/mm/highmem_32.c              | 50 ++-------------------
- arch/xtensa/include/asm/highmem.h     | 27 ------------
- arch/xtensa/mm/highmem.c              | 22 ++++------
- drivers/gpu/drm/ttm/ttm_bo_util.c     | 56 ++----------------------
- drivers/gpu/drm/vmwgfx/vmwgfx_blit.c  | 16 +++----
- include/drm/ttm/ttm_bo_api.h          |  4 --
- include/linux/highmem.h               | 62 +++++++++++++++++++++++++--
- 28 files changed, 140 insertions(+), 497 deletions(-)
-
--- 
-2.25.1
-
+I'd suggest checking various configs on mips - that's likely to cause headache.
+Said that, my analysis of include chains back then is pretty much worthless
+by now - I really hate the amount of indirect include chains leading to that
+sucker on some, but not all configs ;-/  IIRC, the proof that everything
+using kmap*/kunmap* would pull linux/highmem.h regardless of config took several
+hours of digging, ran for several pages and had been hopelessly brittle.
+arch/mips/mm/cache.c was the only exception caught by it, but these days
+there might be more.
