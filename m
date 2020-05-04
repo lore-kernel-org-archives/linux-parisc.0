@@ -2,41 +2,41 @@ Return-Path: <SRS0=6DXU=6S=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01C9FC4725C
-	for <linux-parisc@archiver.kernel.org>; Mon,  4 May 2020 01:10:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F35DCC47257
+	for <linux-parisc@archiver.kernel.org>; Mon,  4 May 2020 01:10:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E0DA220735
-	for <linux-parisc@archiver.kernel.org>; Mon,  4 May 2020 01:10:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DA29C2073B
+	for <linux-parisc@archiver.kernel.org>; Mon,  4 May 2020 01:10:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727835AbgEDBKJ (ORCPT
+        id S1727106AbgEDBJW (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 3 May 2020 21:10:09 -0400
-Received: from mga04.intel.com ([192.55.52.120]:56280 "EHLO mga04.intel.com"
+        Sun, 3 May 2020 21:09:22 -0400
+Received: from mga11.intel.com ([192.55.52.93]:17935 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727105AbgEDBJX (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 3 May 2020 21:09:23 -0400
-IronPort-SDR: 9Fib3TsgvOINsLEJXwIFwZNFC+bbu4N04nX2RwsVME7ByXZy++CWx5ggmbFythPHhVk75G/6rJ
- MWmgfDM2D8Cw==
+        id S1726282AbgEDBJW (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 3 May 2020 21:09:22 -0400
+IronPort-SDR: A9YDjvCFSAVRZt9PK6T6bah1ORcFaay/xLXeYJlc6YM+kvTo9s31EfXuPQPfGhntjjL6mPEk1b
+ znGgE4vjXnFQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 18:09:22 -0700
-IronPort-SDR: 0sfTWrdVl9taYpdiQf4rbNyObgvnrL4HY5A/wwdVowOhzm+BQ1szN8Ld3ck7vtPYcDwAf8cgkk
- odi25qXkZcbQ==
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 18:09:20 -0700
+IronPort-SDR: fHucA4RWhttBOWYdNcVbZcLe92djrCMA36BhMr8sTNTq9uR1pF6GcVTIexdnyZrcSkJFrWzqIJ
+ LnPtCLKlHAVA==
 X-IronPort-AV: E=Sophos;i="5.73,350,1583222400"; 
-   d="scan'208";a="249047740"
+   d="scan'208";a="248071661"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 18:09:21 -0700
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 18:09:19 -0700
 From:   ira.weiny@intel.com
 To:     linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
         Christian Koenig <christian.koenig@amd.com>,
         Huang Rui <ray.huang@amd.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Christoph Hellwig <hch@lst.de>,
+Cc:     Ira Weiny <ira.weiny@intel.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Helge Deller <deller@gmx.de>,
@@ -57,13 +57,12 @@ Cc:     Ira Weiny <ira.weiny@intel.com>, Christoph Hellwig <hch@lst.de>,
         linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH V2 02/11] arch/xtensa: Move kmap build bug out of the way
-Date:   Sun,  3 May 2020 18:09:03 -0700
-Message-Id: <20200504010912.982044-3-ira.weiny@intel.com>
+Subject: [PATCH V2 00/11] Subject: Remove duplicated kmap code
+Date:   Sun,  3 May 2020 18:09:01 -0700
+Message-Id: <20200504010912.982044-1-ira.weiny@intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200504010912.982044-1-ira.weiny@intel.com>
-References: <20200504010912.982044-1-ira.weiny@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
@@ -72,51 +71,78 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Ira Weiny <ira.weiny@intel.com>
 
-Move the kmap() build bug to kmap_init() to facilitate patches to lift
-kmap() to the core.
+The kmap infrastructure has been copied almost verbatim to every architecture.
+This series consolidates obvious duplicated code by defining core functions
+which call into the architectures only when needed.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Some of the k[un]map_atomic() implementations have some similarities but the
+similarities were not sufficient to warrant further changes.
+
+In addition we remove a duplicate implementation of kmap() in DRM.
+
+Testing was done by 0day to cover all the architectures I can't readily
+build/test.
 
 ---
 Changes from V1:
-	combine code onto 1 line.
----
- arch/xtensa/include/asm/highmem.h | 5 -----
- arch/xtensa/mm/highmem.c          | 4 ++++
- 2 files changed, 4 insertions(+), 5 deletions(-)
+	Fix bisect-ability
+	Update commit message and fix line lengths
+	Remove unneded kunmap_atomic_high() declarations
+	Remove unneded kmap_atomic_high() declarations
+	collect reviews
+	rebase to 5.7-rc4
 
-diff --git a/arch/xtensa/include/asm/highmem.h b/arch/xtensa/include/asm/highmem.h
-index 413848cc1e56..a9587c85be85 100644
---- a/arch/xtensa/include/asm/highmem.h
-+++ b/arch/xtensa/include/asm/highmem.h
-@@ -68,11 +68,6 @@ void kunmap_high(struct page *page);
- 
- static inline void *kmap(struct page *page)
- {
--	/* Check if this memory layout is broken because PKMAP overlaps
--	 * page table.
--	 */
--	BUILD_BUG_ON(PKMAP_BASE <
--		     TLBTEMP_BASE_1 + TLBTEMP_SIZE);
- 	might_sleep();
- 	if (!PageHighMem(page))
- 		return page_address(page);
-diff --git a/arch/xtensa/mm/highmem.c b/arch/xtensa/mm/highmem.c
-index 184ceadccc1a..da734a2ed641 100644
---- a/arch/xtensa/mm/highmem.c
-+++ b/arch/xtensa/mm/highmem.c
-@@ -88,6 +88,10 @@ void __init kmap_init(void)
- {
- 	unsigned long kmap_vstart;
- 
-+	/* Check if this memory layout is broken because PKMAP overlaps
-+	 * page table.
-+	 */
-+	BUILD_BUG_ON(PKMAP_BASE < TLBTEMP_BASE_1 + TLBTEMP_SIZE);
- 	/* cache the first kmap pte */
- 	kmap_vstart = __fix_to_virt(FIX_KMAP_BEGIN);
- 	kmap_pte = kmap_get_fixmap_pte(kmap_vstart);
+Changes from V0:
+	Define kmap_flush_tlb() and make kmap() truely arch independent.
+	Redefine the k[un]map_atomic_* code to call into the architectures for
+		high mem pages
+	Ensure all architectures define kmap_prot, use it appropriately, and
+		define kmap_atomic_prot()
+	Remove drm implementation of kmap_atomic()
+
+Ira Weiny (11):
+  arch/kmap: Remove BUG_ON()
+  arch/xtensa: Move kmap build bug out of the way
+  arch/kmap: Remove redundant arch specific kmaps
+  arch/kunmap: Remove duplicate kunmap implementations
+  {x86,powerpc,microblaze}/kmap: Move preempt disable
+  arch/kmap_atomic: Consolidate duplicate code
+  arch/kunmap_atomic: Consolidate duplicate code
+  arch/kmap: Ensure kmap_prot visibility
+  arch/kmap: Don't hard code kmap_prot values
+  arch/kmap: Define kmap_atomic_prot() for all arch's
+  drm: Remove drm specific kmap_atomic code
+
+ arch/arc/include/asm/highmem.h        | 15 -------
+ arch/arc/mm/highmem.c                 | 28 +++---------
+ arch/arm/include/asm/highmem.h        |  7 ---
+ arch/arm/mm/highmem.c                 | 35 +++------------
+ arch/csky/include/asm/highmem.h       |  9 +---
+ arch/csky/mm/highmem.c                | 43 +++++--------------
+ arch/microblaze/include/asm/highmem.h | 28 +-----------
+ arch/microblaze/mm/highmem.c          | 16 ++-----
+ arch/microblaze/mm/init.c             |  3 --
+ arch/mips/include/asm/highmem.h       |  9 +---
+ arch/mips/mm/cache.c                  |  6 +--
+ arch/mips/mm/highmem.c                | 49 ++++-----------------
+ arch/nds32/include/asm/highmem.h      |  7 ---
+ arch/nds32/mm/highmem.c               | 39 +++--------------
+ arch/parisc/include/asm/cacheflush.h  |  4 +-
+ arch/powerpc/include/asm/highmem.h    | 29 +------------
+ arch/powerpc/mm/highmem.c             | 21 ++-------
+ arch/powerpc/mm/mem.c                 |  3 --
+ arch/sparc/include/asm/highmem.h      | 22 ----------
+ arch/sparc/mm/highmem.c               | 18 +++-----
+ arch/x86/include/asm/highmem.h        |  9 ----
+ arch/x86/mm/highmem_32.c              | 50 ++-------------------
+ arch/xtensa/include/asm/highmem.h     | 27 ------------
+ arch/xtensa/mm/highmem.c              | 22 ++++------
+ drivers/gpu/drm/ttm/ttm_bo_util.c     | 56 ++----------------------
+ drivers/gpu/drm/vmwgfx/vmwgfx_blit.c  | 16 +++----
+ include/drm/ttm/ttm_bo_api.h          |  4 --
+ include/linux/highmem.h               | 62 +++++++++++++++++++++++++--
+ 28 files changed, 140 insertions(+), 497 deletions(-)
+
 -- 
 2.25.1
 
