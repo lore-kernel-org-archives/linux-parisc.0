@@ -2,99 +2,130 @@ Return-Path: <SRS0=E0Zb=6U=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0064BC47256
-	for <linux-parisc@archiver.kernel.org>; Wed,  6 May 2020 06:14:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F842C4725A
+	for <linux-parisc@archiver.kernel.org>; Wed,  6 May 2020 06:22:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D616620721
-	for <linux-parisc@archiver.kernel.org>; Wed,  6 May 2020 06:14:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4FCEC20747
+	for <linux-parisc@archiver.kernel.org>; Wed,  6 May 2020 06:22:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YQdcPidw"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ient0gQF"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbgEFGON (ORCPT
+        id S1728135AbgEFGWh (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 6 May 2020 02:14:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57424 "EHLO
+        Wed, 6 May 2020 02:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726495AbgEFGON (ORCPT
+        by vger.kernel.org with ESMTP id S1728164AbgEFGWg (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 6 May 2020 02:14:13 -0400
+        Wed, 6 May 2020 02:22:36 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D22AC061A0F;
-        Tue,  5 May 2020 23:14:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D35C061A0F;
+        Tue,  5 May 2020 23:22:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4GHTrlwGxcD7riSfw6FoiiWpv9lgWgy1e6SGI+Jf+lk=; b=YQdcPidwWxUsGPCqlsV5vlo08W
-        WE8x+MoDuXM7hVPD+/jHc3dDvfTrn9tM8b6ev+ngbwncTVqcdaxewm6WCDle9njCK90Fa6uDM8pzz
-        V1XKGx1+Kpcns1k6UZYJf5Fj5DEan46YXQrVVoWIg1pzlOvy252FRwu+V+Xz4mzIUqpwuO0rHOWQ3
-        44n+12vujyorLPu546uL9Jr9Rjc2cs3Px+jF8MGMUozOLUVhKI7jXCci3SoqI+7OPayG3rYjHx9QF
-        3xqDiBy6CDrTege8f3bj4NtjfsI9xry8OurnktjyDACV315FnjWOvzsuEqTT6dzYmPcWVFR+g3F8g
-        +dARHVUA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jWDJq-00064d-Uc; Wed, 06 May 2020 06:14:10 +0000
-Date:   Tue, 5 May 2020 23:14:10 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH V2 10/11] arch/kmap: Define kmap_atomic_prot() for all
- arch's
-Message-ID: <20200506061410.GE5192@infradead.org>
-References: <20200504010912.982044-1-ira.weiny@intel.com>
- <20200504010912.982044-11-ira.weiny@intel.com>
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=LNedO/lL6g8P+QsVFWLVScVEptUSGiGTZWf8H0Q1tZA=; b=Ient0gQF5ZZv/U5I8U/y01snEC
+        h4yy57dpv8lN1NOdb9k4LbJIWN4kQ0LKYB87X144QoORnRYFG7L47uMllctWcXQ63BH3+b9nUgHJ1
+        +EhB27VS5LNR1crsFXtej2B9qqGEyIkQuYcDW7NJmYJYti3hn7bEQjDFaZEO5XhnOhQyOp1SuPiv5
+        9WKOcimSDIw8gLOE+TyqYy5bRiT6RPy6m3A8yeVrS9gpSCvwg4bLkWKNKCgl5SYi8pLlK3/QL7X/l
+        7GmU94JKUSF56LTvXxKFWydL7/TPkQkZWFd6JV95GmIl24bPfXU42VZiyXwb4YEgqg4O74AsUICcS
+        Ek5T077g==;
+Received: from [2001:4bb8:191:66b6:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jWDRy-0006Vj-MY; Wed, 06 May 2020 06:22:35 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 03/15] maccess: remove duplicate kerneldoc commens
+Date:   Wed,  6 May 2020 08:22:11 +0200
+Message-Id: <20200506062223.30032-4-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200506062223.30032-1-hch@lst.de>
+References: <20200506062223.30032-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504010912.982044-11-ira.weiny@intel.com>
+Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Sun, May 03, 2020 at 06:09:11PM -0700, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> To support kmap_atomic_prot(), all architectures need to support
-> protections passed to their kmap_atomic_high() function.  Pass
-> protections into kmap_atomic_high() and change the name to
-> kmap_atomic_high_prot() to match.
-> 
-> Then define kmap_atomic_prot() as a core function which calls
-> kmap_atomic_high_prot() when needed.
-> 
-> Finally, redefine kmap_atomic() as a wrapper of kmap_atomic_prot() with
-> the default kmap_prot exported by the architectures.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Many of the maccess routines have a copy of the kerneldoc comment
+in the header.  Remove it as it is not useful and will get out of
+sync sooner or later.
 
-Looks good,
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ include/linux/uaccess.h | 38 --------------------------------------
+ 1 file changed, 38 deletions(-)
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+index a2c606a403745..5a36a298a85f8 100644
+--- a/include/linux/uaccess.h
++++ b/include/linux/uaccess.h
+@@ -301,50 +301,12 @@ copy_struct_from_user(void *dst, size_t ksize, const void __user *src,
+ 	return 0;
+ }
+ 
+-/*
+- * probe_kernel_read(): safely attempt to read from a location
+- * @dst: pointer to the buffer that shall take the data
+- * @src: address to read from
+- * @size: size of the data chunk
+- *
+- * Safely read from address @src to the buffer at @dst.  If a kernel fault
+- * happens, handle that and return -EFAULT.
+- */
+ extern long probe_kernel_read(void *dst, const void *src, size_t size);
+ extern long probe_kernel_read_strict(void *dst, const void *src, size_t size);
+ extern long __probe_kernel_read(void *dst, const void *src, size_t size);
+-
+-/*
+- * probe_user_read(): safely attempt to read from a location in user space
+- * @dst: pointer to the buffer that shall take the data
+- * @src: address to read from
+- * @size: size of the data chunk
+- *
+- * Safely read from address @src to the buffer at @dst.  If a kernel fault
+- * happens, handle that and return -EFAULT.
+- */
+ extern long probe_user_read(void *dst, const void __user *src, size_t size);
+ 
+-/*
+- * probe_kernel_write(): safely attempt to write to a location
+- * @dst: address to write to
+- * @src: pointer to the data that shall be written
+- * @size: size of the data chunk
+- *
+- * Safely write to address @dst from the buffer at @src.  If a kernel fault
+- * happens, handle that and return -EFAULT.
+- */
+ extern long notrace probe_kernel_write(void *dst, const void *src, size_t size);
+-
+-/*
+- * probe_user_write(): safely attempt to write to a location in user space
+- * @dst: address to write to
+- * @src: pointer to the data that shall be written
+- * @size: size of the data chunk
+- *
+- * Safely write to address @dst from the buffer at @src.  If a kernel fault
+- * happens, handle that and return -EFAULT.
+- */
+ extern long notrace probe_user_write(void __user *dst, const void *src, size_t size);
+ 
+ extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
+-- 
+2.26.2
+
