@@ -7,94 +7,117 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93A72C38A24
-	for <linux-parisc@archiver.kernel.org>; Thu,  7 May 2020 11:09:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85909C54E4A
+	for <linux-parisc@archiver.kernel.org>; Thu,  7 May 2020 15:00:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7332820725
-	for <linux-parisc@archiver.kernel.org>; Thu,  7 May 2020 11:09:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6CF6420838
+	for <linux-parisc@archiver.kernel.org>; Thu,  7 May 2020 15:00:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgEGLJi (ORCPT
+        id S1726476AbgEGPAJ (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 7 May 2020 07:09:38 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3843 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725809AbgEGLJh (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 7 May 2020 07:09:37 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 77D7E37C0B2A99914725;
-        Thu,  7 May 2020 19:09:33 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Thu, 7 May 2020
- 19:09:26 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <davem@davemloft.net>, <yanaijie@huawei.com>,
-        <netdev@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] net: tulip: de4x5: make PCI_signature() return void
-Date:   Thu, 7 May 2020 19:08:47 +0800
-Message-ID: <20200507110847.37940-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        Thu, 7 May 2020 11:00:09 -0400
+Received: from mga03.intel.com ([134.134.136.65]:26742 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726467AbgEGPAJ (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 7 May 2020 11:00:09 -0400
+IronPort-SDR: plkFD8kEOtxk76X+G4A30Z/WCGQ2QCEDiA0jCVByY5RACVJynJ3eAtduf7HM2LdDadNpu65o3+
+ /UcR7yLt5thA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 08:00:08 -0700
+IronPort-SDR: QqfM/WVijykp1e76UKZHvvEv3qS4oash02sa2hE0349Z+qr8zsJuzpIQ77z0OtNXZPr22IWitJ
+ CZhwozUGcsJg==
+X-IronPort-AV: E=Sophos;i="5.73,364,1583222400"; 
+   d="scan'208";a="285021391"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 08:00:07 -0700
+From:   ira.weiny@intel.com
+To:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Christoph Hellwig <hch@lst.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org,
+        Christian Koenig <christian.koenig@amd.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH V3 02/15] arch/xtensa: Move kmap build bug out of the way
+Date:   Thu,  7 May 2020 07:59:50 -0700
+Message-Id: <20200507150004.1423069-3-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200507150004.1423069-1-ira.weiny@intel.com>
+References: <20200507150004.1423069-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-This function always return 0 now, we can make it return void to
-simplify the code. This fixes the following coccicheck warning:
+From: Ira Weiny <ira.weiny@intel.com>
 
-drivers/net/ethernet/dec/tulip/de4x5.c:3908:11-17: Unneeded variable:
-"status". Return "0" on line 3912
+Move the kmap() build bug to kmap_init() to facilitate patches to lift
+kmap() to the core.
 
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
 ---
- drivers/net/ethernet/dec/tulip/de4x5.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+Changes from V1:
+	combine code onto 1 line.
+---
+ arch/xtensa/include/asm/highmem.h | 5 -----
+ arch/xtensa/mm/highmem.c          | 4 ++++
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
-index f16853c3c851..0ccd9994ad45 100644
---- a/drivers/net/ethernet/dec/tulip/de4x5.c
-+++ b/drivers/net/ethernet/dec/tulip/de4x5.c
-@@ -951,7 +951,7 @@ static void    reset_init_sia(struct net_device *dev, s32 sicr, s32 strr, s32 si
- static int     test_ans(struct net_device *dev, s32 irqs, s32 irq_mask, s32 msec);
- static int     test_tp(struct net_device *dev, s32 msec);
- static int     EISA_signature(char *name, struct device *device);
--static int     PCI_signature(char *name, struct de4x5_private *lp);
-+static void    PCI_signature(char *name, struct de4x5_private *lp);
- static void    DevicePresent(struct net_device *dev, u_long iobase);
- static void    enet_addr_rst(u_long aprom_addr);
- static int     de4x5_bad_srom(struct de4x5_private *lp);
-@@ -3902,14 +3902,14 @@ EISA_signature(char *name, struct device *device)
- /*
- ** Look for a particular board name in the PCI configuration space
- */
--static int
-+static void
- PCI_signature(char *name, struct de4x5_private *lp)
+diff --git a/arch/xtensa/include/asm/highmem.h b/arch/xtensa/include/asm/highmem.h
+index 413848cc1e56..a9587c85be85 100644
+--- a/arch/xtensa/include/asm/highmem.h
++++ b/arch/xtensa/include/asm/highmem.h
+@@ -68,11 +68,6 @@ void kunmap_high(struct page *page);
+ 
+ static inline void *kmap(struct page *page)
  {
--    int i, status = 0, siglen = ARRAY_SIZE(de4x5_signatures);
-+    int i, siglen = ARRAY_SIZE(de4x5_signatures);
+-	/* Check if this memory layout is broken because PKMAP overlaps
+-	 * page table.
+-	 */
+-	BUILD_BUG_ON(PKMAP_BASE <
+-		     TLBTEMP_BASE_1 + TLBTEMP_SIZE);
+ 	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return page_address(page);
+diff --git a/arch/xtensa/mm/highmem.c b/arch/xtensa/mm/highmem.c
+index 184ceadccc1a..da734a2ed641 100644
+--- a/arch/xtensa/mm/highmem.c
++++ b/arch/xtensa/mm/highmem.c
+@@ -88,6 +88,10 @@ void __init kmap_init(void)
+ {
+ 	unsigned long kmap_vstart;
  
-     if (lp->chipset == DC21040) {
- 	strcpy(name, "DE434/5");
--	return status;
-+	return;
-     } else {                           /* Search for a DEC name in the SROM */
- 	int tmp = *((char *)&lp->srom + 19) * 3;
- 	strncpy(name, (char *)&lp->srom + 26 + tmp, 8);
-@@ -3935,8 +3935,6 @@ PCI_signature(char *name, struct de4x5_private *lp)
-     } else if ((lp->chipset & ~0x00ff) == DC2114x) {
- 	lp->useSROM = true;
-     }
--
--    return status;
- }
- 
- /*
++	/* Check if this memory layout is broken because PKMAP overlaps
++	 * page table.
++	 */
++	BUILD_BUG_ON(PKMAP_BASE < TLBTEMP_BASE_1 + TLBTEMP_SIZE);
+ 	/* cache the first kmap pte */
+ 	kmap_vstart = __fix_to_virt(FIX_KMAP_BEGIN);
+ 	kmap_pte = kmap_get_fixmap_pte(kmap_vstart);
 -- 
-2.21.1
+2.25.1
 
