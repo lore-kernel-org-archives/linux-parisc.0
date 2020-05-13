@@ -2,135 +2,74 @@ Return-Path: <SRS0=zGiz=63=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21C53C43461
-	for <linux-parisc@archiver.kernel.org>; Wed, 13 May 2020 15:05:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 967CAC433DF
+	for <linux-parisc@archiver.kernel.org>; Wed, 13 May 2020 16:00:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E86CE20899
-	for <linux-parisc@archiver.kernel.org>; Wed, 13 May 2020 14:48:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C208C205ED
+	for <linux-parisc@archiver.kernel.org>; Wed, 13 May 2020 16:00:44 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ib3n/68s"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388167AbgEMOsc (ORCPT
+        id S1732120AbgEMQAo (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 13 May 2020 10:48:32 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:43190 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732972AbgEMOsa (ORCPT
+        Wed, 13 May 2020 12:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729561AbgEMQAo (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 13 May 2020 10:48:30 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jYsgK-0000yu-51; Wed, 13 May 2020 08:48:24 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jYsg9-0006lM-P3; Wed, 13 May 2020 08:48:23 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Helge Deller <deller@gmx.de>,
-        Parisc List <linux-parisc@vger.kernel.org>, yzaikin@google.com,
-        linux-fsdevel@vger.kernel.org,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20200511111123.68ccbaa3@canb.auug.org.au>
-        <99095805-8cbe-d140-e2f1-0c5a3e84d7e7@huawei.com>
-        <20200512003305.GX11244@42.do-not-panic.com>
-        <87y2pxs73w.fsf@x220.int.ebiederm.org>
-        <20200512172413.GC11244@42.do-not-panic.com>
-        <87k11hrqzc.fsf@x220.int.ebiederm.org>
-        <20200512220341.GE11244@42.do-not-panic.com>
-        <87d078oss9.fsf@x220.int.ebiederm.org>
-        <20200513141421.GP11244@42.do-not-panic.com>
-Date:   Wed, 13 May 2020 09:44:40 -0500
-In-Reply-To: <20200513141421.GP11244@42.do-not-panic.com> (Luis Chamberlain's
-        message of "Wed, 13 May 2020 14:14:22 +0000")
-Message-ID: <87tv0jopwn.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 13 May 2020 12:00:44 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECCC0C061A0C;
+        Wed, 13 May 2020 09:00:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=MBXmzxvlvBp3urj1EfRdDjo/Nomb7enLOBCi4+LnpPQ=; b=Ib3n/68sFKiWSoHFw243qGtEKT
+        uIMPw1Lc04Of4bpkSt7Yyoo0wEMWGWlEBGRZGg5YyY/J85MCuuRtD8Ut4Pn8dQ6rjt2FAKlGCj3sb
+        EEPJaiqvvdNnys5f1elW1iOxmECbdFi3IJvzsq+A0h2GI5wayolWIt/6gvyUvcZ01/Szg72cbrPCN
+        qNmqVuL9aiEVYBc2HDVNuCEJXxyCpm8znHdnG6ASXSUsHemRJz+fYGd/RxrRO30wHhzmQ+8ewNAa3
+        f6A+qvxSlwXvcBAMKYxwhnw2ERDv5CBYBSAprCzOe7Y+NJNQef3YEA4wJB2dhF3pa55P9f2f8xwIL
+        Xthl7C4w==;
+Received: from [2001:4bb8:180:9d3f:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jYtoF-0004fx-T9; Wed, 13 May 2020 16:00:41 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: clean up and streamline probe_kernel_* and friends v2
+Date:   Wed, 13 May 2020 18:00:20 +0200
+Message-Id: <20200513160038.2482415-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jYsg9-0006lM-P3;;;mid=<87tv0jopwn.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19FNoLfkTBHcu+1wfubNVYoTzAxcIgHFsA=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-Subject: Re: linux-next: manual merge of the vfs tree with the parisc-hd tree
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Luis Chamberlain <mcgrof@kernel.org> writes:
+Hi all,
 
-> On Wed, May 13, 2020 at 08:42:30AM -0500, Eric W. Biederman wrote:
->> Luis Chamberlain <mcgrof@kernel.org> writes:
->> 
->> > On Tue, May 12, 2020 at 12:40:55PM -0500, Eric W. Biederman wrote:
->> >> Luis Chamberlain <mcgrof@kernel.org> writes:
->> >> 
->> >> > On Tue, May 12, 2020 at 06:52:35AM -0500, Eric W. Biederman wrote:
->> >> >> Luis Chamberlain <mcgrof@kernel.org> writes:
->> >> >> 
->> >> >> > +static struct ctl_table fs_base_table[] = {
->> >> >> > +	{
->> >> >> > +		.procname	= "fs",
->> >> >> > +		.mode		= 0555,
->> >> >> > +		.child		= fs_table,
->> >> >> > +	},
->> >> >> > +	{ }
->> >> >> > +};
->> >> >>   ^^^^^^^^^^^^^^^^^^^^^^^^ You don't need this at all.
->> >> >> > > +static int __init fs_procsys_init(void)
->> >> >> > +{
->> >> >> > +	struct ctl_table_header *hdr;
->> >> >> > +
->> >> >> > +	hdr = register_sysctl_table(fs_base_table);
->> >> >>               ^^^^^^^^^^^^^^^^^^^^^ Please use register_sysctl instead.
->> >> >> 	AKA
->> >> >>         hdr = register_sysctl("fs", fs_table);
->> >> >
->> >> > Ah, much cleaner thanks!
->> >> 
->> >> It is my hope you we can get rid of register_sysctl_table one of these
->> >> days.  It was the original interface but today it is just a
->> >> compatibility wrapper.
->> >> 
->> >> I unfortunately ran out of steam last time before I finished converting
->> >> everything over.
->> >
->> > Let's give it one more go. I'll start with the fs stuff.
->> 
->> Just to be clear moving the tables out of kernel/sysctl.c is a related
->> but slightly different problem.
->
-> Sure, but also before we go on this crusade, how about we add a few
-> helpers:
->
-> register_sysctl_kernel()
-> register_sysctl_vm()
-> register_sysctl_fs()
-> register_sysctl_debug()
-> register_sysctl_dev()
+this series start cleaning up the safe kernel and user memory probing
+helpers in mm/maccess.c, and then allows architectures to implement
+the kernel probing without overriding the address space limit and
+temporarily allowing access to user memory.  It then switches x86
+over to this new mechanism by reusing the unsafe_* uaccess logic.
 
-Hmm.
+This version also switches to the saner copy_{from,to}_kernel_nofault
+naming suggested by Linus.
 
-  register_sysctl("kernel")
-
-> That should make it easier to look for these, and shorter. We *know*
-> this is a common path, given the size of the existing table.
-
-I don't really care but one character shorter doesn't look like it
-really helps.  Not really for grepping and not maintenance as we get a
-bunch of trivial one line implementations.
-
-Eric
+I kept the x86 helprs as-is without calling unsage_{get,put}_user as
+that avoids a number of hard to trace casts, and it will still work
+with the asm-goto based version easily.
