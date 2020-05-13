@@ -2,58 +2,36 @@ Return-Path: <SRS0=zGiz=63=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E13F2C433E0
-	for <linux-parisc@archiver.kernel.org>; Wed, 13 May 2020 15:02:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21C53C43461
+	for <linux-parisc@archiver.kernel.org>; Wed, 13 May 2020 15:05:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DBF17207D4
-	for <linux-parisc@archiver.kernel.org>; Wed, 13 May 2020 15:02:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1589382146;
-	bh=MUVbOzmo8GzDjE2qVR87T11DM0yQvIi++WZvLydnjDs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=gWuwQCK+ZalsuqlFwJ3V/LDYG8rW2k8n37pJwd3rOH2/y0v17V+veg0J1vI9pexw+
-	 z69kTObeXancze4jtcoHxbQ6xUOlf5SlZ+9fNMZBBAEvHfgNjZdAjmh++RWZk5bcqZ
-	 X3I2BX4s6VzyMegNwj+8BC9vyj8Xl4EBHh99MzLk=
+	by mail.kernel.org (Postfix) with ESMTP id E86CE20899
+	for <linux-parisc@archiver.kernel.org>; Wed, 13 May 2020 14:48:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389058AbgEMPC0 (ORCPT
+        id S2388167AbgEMOsc (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 13 May 2020 11:02:26 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:37249 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388039AbgEMPC0 (ORCPT
+        Wed, 13 May 2020 10:48:32 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:43190 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732972AbgEMOsa (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 13 May 2020 11:02:26 -0400
-Received: by mail-pl1-f193.google.com with SMTP id x10so6925109plr.4;
-        Wed, 13 May 2020 08:02:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MT118aZMRZUFyZNYM/mGEw6BOShbBFfm71Ixm+ag1Wk=;
-        b=cVIFMuVnuPs7PgQTPIo1QazG+t0er1quF9fQ7qhDhobKz8hMN23xAH5+oHk6o5CjtS
-         UDZmbUuXecLs9AnPr0NFKHB4Gcr0klmaAwRfFBkGcOw1tpavFaH0or7jpYJMDnLrfUj9
-         YF7Ltz+KbOLUq7GXkcGhcWOa9ArVCXLwgnQMAp9mOZSQTFKrAsdsEYgKf8CFITzszOTM
-         QmJ2ej+zSFiWCPaiwPqPPrQA3VIxJ1fgWAsHqZrEY0cSLR9wDxEnTy89/OC1V90Y+7OL
-         fNTICzNHLvaDdU4bQmtwCVeuzrjCEqaUr/Ct4LqS127gDX8bozGEW57N0M/Q+0TeM3/v
-         Tzaw==
-X-Gm-Message-State: AGi0Pub2/mRccT3gjZSzv9ByWYcEZGxgS3T9pNCnFNxu3WYyR4Dv1wga
-        FFKS7Hw/dQGg4uyg6lOr/qw=
-X-Google-Smtp-Source: APiQypK/sufcq0cPAVcSuD3w73WdinHwTgnomrdyOeuh+IFkYrhqG3MPdpqAxWm6ywWZBeKsT2aoCA==
-X-Received: by 2002:a17:90a:8c9:: with SMTP id 9mr35596299pjn.183.1589382143917;
-        Wed, 13 May 2020 08:02:23 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id c124sm14605811pfb.187.2020.05.13.08.02.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 08:02:22 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 8E5C34063E; Wed, 13 May 2020 15:02:21 +0000 (UTC)
-Date:   Wed, 13 May 2020 15:02:21 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
+        Wed, 13 May 2020 10:48:30 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jYsgK-0000yu-51; Wed, 13 May 2020 08:48:24 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jYsg9-0006lM-P3; Wed, 13 May 2020 08:48:23 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Luis Chamberlain <mcgrof@kernel.org>
 Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
         Kees Cook <keescook@chromium.org>,
         Xiaoming Ni <nixiaoming@huawei.com>,
@@ -64,92 +42,95 @@ Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
         Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Christoph Hellwig <hch@lst.de>
-Subject: Re: linux-next: manual merge of the vfs tree with the parisc-hd tree
-Message-ID: <20200513150221.GQ11244@42.do-not-panic.com>
 References: <20200511111123.68ccbaa3@canb.auug.org.au>
- <99095805-8cbe-d140-e2f1-0c5a3e84d7e7@huawei.com>
- <20200512003305.GX11244@42.do-not-panic.com>
- <87y2pxs73w.fsf@x220.int.ebiederm.org>
- <20200512172413.GC11244@42.do-not-panic.com>
- <87k11hrqzc.fsf@x220.int.ebiederm.org>
- <20200512220341.GE11244@42.do-not-panic.com>
- <87d078oss9.fsf@x220.int.ebiederm.org>
- <20200513141421.GP11244@42.do-not-panic.com>
- <87tv0jopwn.fsf@x220.int.ebiederm.org>
+        <99095805-8cbe-d140-e2f1-0c5a3e84d7e7@huawei.com>
+        <20200512003305.GX11244@42.do-not-panic.com>
+        <87y2pxs73w.fsf@x220.int.ebiederm.org>
+        <20200512172413.GC11244@42.do-not-panic.com>
+        <87k11hrqzc.fsf@x220.int.ebiederm.org>
+        <20200512220341.GE11244@42.do-not-panic.com>
+        <87d078oss9.fsf@x220.int.ebiederm.org>
+        <20200513141421.GP11244@42.do-not-panic.com>
+Date:   Wed, 13 May 2020 09:44:40 -0500
+In-Reply-To: <20200513141421.GP11244@42.do-not-panic.com> (Luis Chamberlain's
+        message of "Wed, 13 May 2020 14:14:22 +0000")
+Message-ID: <87tv0jopwn.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87tv0jopwn.fsf@x220.int.ebiederm.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-XM-SPF: eid=1jYsg9-0006lM-P3;;;mid=<87tv0jopwn.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19FNoLfkTBHcu+1wfubNVYoTzAxcIgHFsA=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: linux-next: manual merge of the vfs tree with the parisc-hd tree
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Wed, May 13, 2020 at 09:44:40AM -0500, Eric W. Biederman wrote:
-> Luis Chamberlain <mcgrof@kernel.org> writes:
-> 
-> > On Wed, May 13, 2020 at 08:42:30AM -0500, Eric W. Biederman wrote:
-> >> Luis Chamberlain <mcgrof@kernel.org> writes:
-> >> 
-> >> > On Tue, May 12, 2020 at 12:40:55PM -0500, Eric W. Biederman wrote:
-> >> >> Luis Chamberlain <mcgrof@kernel.org> writes:
-> >> >> 
-> >> >> > On Tue, May 12, 2020 at 06:52:35AM -0500, Eric W. Biederman wrote:
-> >> >> >> Luis Chamberlain <mcgrof@kernel.org> writes:
-> >> >> >> 
-> >> >> >> > +static struct ctl_table fs_base_table[] = {
-> >> >> >> > +	{
-> >> >> >> > +		.procname	= "fs",
-> >> >> >> > +		.mode		= 0555,
-> >> >> >> > +		.child		= fs_table,
-> >> >> >> > +	},
-> >> >> >> > +	{ }
-> >> >> >> > +};
-> >> >> >>   ^^^^^^^^^^^^^^^^^^^^^^^^ You don't need this at all.
-> >> >> >> > > +static int __init fs_procsys_init(void)
-> >> >> >> > +{
-> >> >> >> > +	struct ctl_table_header *hdr;
-> >> >> >> > +
-> >> >> >> > +	hdr = register_sysctl_table(fs_base_table);
-> >> >> >>               ^^^^^^^^^^^^^^^^^^^^^ Please use register_sysctl instead.
-> >> >> >> 	AKA
-> >> >> >>         hdr = register_sysctl("fs", fs_table);
-> >> >> >
-> >> >> > Ah, much cleaner thanks!
-> >> >> 
-> >> >> It is my hope you we can get rid of register_sysctl_table one of these
-> >> >> days.  It was the original interface but today it is just a
-> >> >> compatibility wrapper.
-> >> >> 
-> >> >> I unfortunately ran out of steam last time before I finished converting
-> >> >> everything over.
-> >> >
-> >> > Let's give it one more go. I'll start with the fs stuff.
-> >> 
-> >> Just to be clear moving the tables out of kernel/sysctl.c is a related
-> >> but slightly different problem.
-> >
-> > Sure, but also before we go on this crusade, how about we add a few
-> > helpers:
-> >
-> > register_sysctl_kernel()
-> > register_sysctl_vm()
-> > register_sysctl_fs()
-> > register_sysctl_debug()
-> > register_sysctl_dev()
-> 
-> Hmm.
-> 
->   register_sysctl("kernel")
-> 
-> > That should make it easier to look for these, and shorter. We *know*
-> > this is a common path, given the size of the existing table.
-> 
-> I don't really care but one character shorter doesn't look like it
-> really helps.  Not really for grepping and not maintenance as we get a
-> bunch of trivial one line implementations.
+Luis Chamberlain <mcgrof@kernel.org> writes:
 
-Alright, let's skip the helpers for now.
+> On Wed, May 13, 2020 at 08:42:30AM -0500, Eric W. Biederman wrote:
+>> Luis Chamberlain <mcgrof@kernel.org> writes:
+>> 
+>> > On Tue, May 12, 2020 at 12:40:55PM -0500, Eric W. Biederman wrote:
+>> >> Luis Chamberlain <mcgrof@kernel.org> writes:
+>> >> 
+>> >> > On Tue, May 12, 2020 at 06:52:35AM -0500, Eric W. Biederman wrote:
+>> >> >> Luis Chamberlain <mcgrof@kernel.org> writes:
+>> >> >> 
+>> >> >> > +static struct ctl_table fs_base_table[] = {
+>> >> >> > +	{
+>> >> >> > +		.procname	= "fs",
+>> >> >> > +		.mode		= 0555,
+>> >> >> > +		.child		= fs_table,
+>> >> >> > +	},
+>> >> >> > +	{ }
+>> >> >> > +};
+>> >> >>   ^^^^^^^^^^^^^^^^^^^^^^^^ You don't need this at all.
+>> >> >> > > +static int __init fs_procsys_init(void)
+>> >> >> > +{
+>> >> >> > +	struct ctl_table_header *hdr;
+>> >> >> > +
+>> >> >> > +	hdr = register_sysctl_table(fs_base_table);
+>> >> >>               ^^^^^^^^^^^^^^^^^^^^^ Please use register_sysctl instead.
+>> >> >> 	AKA
+>> >> >>         hdr = register_sysctl("fs", fs_table);
+>> >> >
+>> >> > Ah, much cleaner thanks!
+>> >> 
+>> >> It is my hope you we can get rid of register_sysctl_table one of these
+>> >> days.  It was the original interface but today it is just a
+>> >> compatibility wrapper.
+>> >> 
+>> >> I unfortunately ran out of steam last time before I finished converting
+>> >> everything over.
+>> >
+>> > Let's give it one more go. I'll start with the fs stuff.
+>> 
+>> Just to be clear moving the tables out of kernel/sysctl.c is a related
+>> but slightly different problem.
+>
+> Sure, but also before we go on this crusade, how about we add a few
+> helpers:
+>
+> register_sysctl_kernel()
+> register_sysctl_vm()
+> register_sysctl_fs()
+> register_sysctl_debug()
+> register_sysctl_dev()
 
-  Luis
+Hmm.
+
+  register_sysctl("kernel")
+
+> That should make it easier to look for these, and shorter. We *know*
+> this is a common path, given the size of the existing table.
+
+I don't really care but one character shorter doesn't look like it
+really helps.  Not really for grepping and not maintenance as we get a
+bunch of trivial one line implementations.
+
+Eric
