@@ -2,192 +2,79 @@ Return-Path: <SRS0=ISJk=66=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73F32C433DF
-	for <linux-parisc@archiver.kernel.org>; Sat, 16 May 2020 03:43:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A114C433E0
+	for <linux-parisc@archiver.kernel.org>; Sat, 16 May 2020 13:29:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4DA2220756
-	for <linux-parisc@archiver.kernel.org>; Sat, 16 May 2020 03:43:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1589600586;
-	bh=9Yr3NqlaT8J3yD/oIp4iOMhtlWnif5o5ocW4LHaILdM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
-	b=K8P6W2TqN07OzxJHl8FMKpXROV4Y7CzGUv68PuU4eFUfuar7zy33BGD+AbiqQEsh+
-	 71cvL2e1nu+yLlP/hIUkLCHNunv5oPvgCnVCRPUM4QPi5vLMDYg+ZaCy2yzKzFNAeO
-	 t9RvGPB52EUmRybfCHJ5b11qAo6chSQ/Wixdc7VA=
+	by mail.kernel.org (Postfix) with ESMTP id 32FB8206D8
+	for <linux-parisc@archiver.kernel.org>; Sat, 16 May 2020 13:29:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727938AbgEPDnG (ORCPT
+        id S1726425AbgEPN3w (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 15 May 2020 23:43:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726247AbgEPDnF (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 15 May 2020 23:43:05 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 773F320728;
-        Sat, 16 May 2020 03:43:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589600585;
-        bh=9Yr3NqlaT8J3yD/oIp4iOMhtlWnif5o5ocW4LHaILdM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gyBQnTy1kkqh/qqbQgXTvgoLZUb4vpkCq+qjNMxNfH2LO1uD/nFf2CQ93t2pqZ2HH
-         Nvv3z8XinGroioseW6l362KaQNKI1k7UrzuUhEywWLMpAOhwLDsF/32qhs84qDVP/z
-         cpTKthgjLlt17JXXUVZs8KirdFerSU19m7odBjKc=
-Date:   Sat, 16 May 2020 12:42:59 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 14/18] maccess: allow architectures to provide kernel
- probing directly
-Message-Id: <20200516124259.5b68a4e1d4670efa1397a1e0@kernel.org>
-In-Reply-To: <20200513160038.2482415-15-hch@lst.de>
-References: <20200513160038.2482415-1-hch@lst.de>
-        <20200513160038.2482415-15-hch@lst.de>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Sat, 16 May 2020 09:29:52 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34046 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726298AbgEPN3v (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Sat, 16 May 2020 09:29:51 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jZwsS-0004mh-36; Sat, 16 May 2020 13:29:20 +0000
+Date:   Sat, 16 May 2020 15:29:18 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Nate Karstens <nate.karstens@garmin.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Changli Gao <xiaosuo@gmail.com>,
+        a.josey@opengroup.org
+Subject: Re: [PATCH v2] Implement close-on-fork
+Message-ID: <20200516132918.edq7p2tyh6elorjm@wittgenstein>
+References: <20200515152321.9280-1-nate.karstens@garmin.com>
+ <20200515155730.GF16070@bombadil.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200515155730.GF16070@bombadil.infradead.org>
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi Christoph,
-
-On Wed, 13 May 2020 18:00:34 +0200
-Christoph Hellwig <hch@lst.de> wrote:
-
-> Provide alternative versions of probe_kernel_read, probe_kernel_write
-> and strncpy_from_kernel_unsafe that don't need set_fs magic, but instead
-> use arch hooks that are modelled after unsafe_{get,put}_user to access
-> kernel memory in an exception safe way.
-
-This patch seems to introduce new implementation of probe_kernel_read/write()
-and strncpy_from_kernel_unsafe(), but also drops copy_from/to_kernel_nofault()
-and strncpy_from_kernel_nofault() if HAVE_ARCH_PROBE_KERNEL is defined.
-In the result, this cause a link error with BPF and kprobe events.
-
-BTW, what is the difference of *_unsafe() and *_nofault()?
-(maybe we make those to *_nofault() finally?)
-
-Thank you,
-
+On Fri, May 15, 2020 at 08:57:30AM -0700, Matthew Wilcox wrote:
+> On Fri, May 15, 2020 at 10:23:17AM -0500, Nate Karstens wrote:
+> > Series of 4 patches to implement close-on-fork. Tests have been
+> > published to https://github.com/nkarstens/ltp/tree/close-on-fork
+> > and cover close-on-fork functionality in the following syscalls:
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  mm/maccess.c | 76 ++++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 76 insertions(+)
+> [...]
 > 
-> diff --git a/mm/maccess.c b/mm/maccess.c
-> index 9773e2253b495..e9efe2f98e34a 100644
-> --- a/mm/maccess.c
-> +++ b/mm/maccess.c
-> @@ -12,6 +12,81 @@ bool __weak probe_kernel_read_allowed(void *dst, const void *unsafe_src,
->  	return true;
->  }
->  
-> +#ifdef HAVE_ARCH_PROBE_KERNEL
-> +
-> +#define probe_kernel_read_loop(dst, src, len, type, err_label)		\
-> +	while (len >= sizeof(type)) {					\
-> +		arch_kernel_read(dst, src, type, err_label);		\
-> +		dst += sizeof(type);					\
-> +		src += sizeof(type);					\
-> +		len -= sizeof(type);					\
-> +	}
-> +
-> +long probe_kernel_read(void *dst, const void *src, size_t size)
-> +{
-> +	if (!probe_kernel_read_allowed(dst, src, size))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +	probe_kernel_read_loop(dst, src, size, u64, Efault);
-> +	probe_kernel_read_loop(dst, src, size, u32, Efault);
-> +	probe_kernel_read_loop(dst, src, size, u16, Efault);
-> +	probe_kernel_read_loop(dst, src, size, u8, Efault);
-> +	pagefault_enable();
-> +	return 0;
-> +Efault:
-> +	pagefault_enable();
-> +	return -EFAULT;
-> +}
-> +EXPORT_SYMBOL_GPL(probe_kernel_read);
-> +
-> +#define probe_kernel_write_loop(dst, src, len, type, err_label)		\
-> +	while (len >= sizeof(type)) {					\
-> +		arch_kernel_write(dst, src, type, err_label);		\
-> +		dst += sizeof(type);					\
-> +		src += sizeof(type);					\
-> +		len -= sizeof(type);					\
-> +	}
-> +
-> +long probe_kernel_write(void *dst, const void *src, size_t size)
-> +{
-> +	pagefault_disable();
-> +	probe_kernel_write_loop(dst, src, size, u64, Efault);
-> +	probe_kernel_write_loop(dst, src, size, u32, Efault);
-> +	probe_kernel_write_loop(dst, src, size, u16, Efault);
-> +	probe_kernel_write_loop(dst, src, size, u8, Efault);
-> +	pagefault_enable();
-> +	return 0;
-> +Efault:
-> +	pagefault_enable();
-> +	return -EFAULT;
-> +}
-> +
-> +long strncpy_from_kernel_unsafe(char *dst, const void *unsafe_addr, long count)
-> +{
-> +	const void *src = unsafe_addr;
-> +
-> +	if (unlikely(count <= 0))
-> +		return 0;
-> +	if (!probe_kernel_read_allowed(dst, unsafe_addr, count))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +	do {
-> +		arch_kernel_read(dst, src, u8, Efault);
-> +		dst++;
-> +		src++;
-> +	} while (dst[-1] && src - unsafe_addr < count);
-> +	pagefault_enable();
-> +
-> +	dst[-1] = '\0';
-> +	return src - unsafe_addr;
-> +Efault:
-> +	pagefault_enable();
-> +	dst[-1] = '\0';
-> +	return -EFAULT;
-> +}
-> +#else /* HAVE_ARCH_PROBE_KERNEL */
->  /**
->   * probe_kernel_read(): safely attempt to read from kernel-space
->   * @dst: pointer to the buffer that shall take the data
-> @@ -114,6 +189,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
->  
->  	return ret ? -EFAULT : src - unsafe_addr;
->  }
-> +#endif /* HAVE_ARCH_PROBE_KERNEL */
->  
->  /**
->   * probe_user_read(): safely attempt to read from a user-space location
-> -- 
-> 2.26.2
+> > This functionality was approved by the Austin Common Standards
+> > Revision Group for inclusion in the next revision of the POSIX
+> > standard (see issue 1318 in the Austin Group Defect Tracker).
 > 
+> NAK to this patch series, and the entire concept.
 
+Yeah.
+But also, stuff like this should really be on linux-api.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Christian
